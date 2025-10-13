@@ -17,7 +17,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Webhook endpoints.
+ * Stripe Webhook handler class.
+ *
+ * @since x.x.x
  */
 class Stripe_Webhook {
 	use Get_Instance;
@@ -35,6 +37,8 @@ class Stripe_Webhook {
 
 	/**
 	 * Constructor function.
+	 *
+	 * @since x.x.x
 	 */
 	public function __construct() {
 		add_action( 'rest_api_init', [ $this, 'register_endpoints' ] );
@@ -43,6 +47,7 @@ class Stripe_Webhook {
 	/**
 	 * Registers endpoint for webhook.
 	 *
+	 * @since x.x.x
 	 * @return void
 	 */
 	public function register_endpoints() {
@@ -60,6 +65,7 @@ class Stripe_Webhook {
 	/**
 	 * Validates the Stripe signature for webhook requests through middleware.
 	 *
+	 * @since x.x.x
 	 * @return array<string, mixed>|bool
 	 */
 	public function validate_stripe_signature(): array|bool {
@@ -136,6 +142,7 @@ class Stripe_Webhook {
 	 * Validates the Stripe signature manually without using Stripe SDK.
 	 * Uses native PHP HMAC-SHA256 verification.
 	 *
+	 * @since x.x.x
 	 * @return array<string, mixed>|bool
 	 */
 	public function validate_stripe_signature_wsdk(): array|bool {
@@ -250,6 +257,7 @@ class Stripe_Webhook {
 	/**
 	 * Development version - skips signature validation for testing.
 	 *
+	 * @since x.x.x
 	 * @return array<string, mixed>|bool
 	 */
 	public function dev_validate_stripe_signature(): array|bool {
@@ -279,6 +287,7 @@ class Stripe_Webhook {
 	/**
 	 * This function listens webhook events.
 	 *
+	 * @since x.x.x
 	 * @return void
 	 */
 	public function webhook_listener(): void {
@@ -331,6 +340,7 @@ class Stripe_Webhook {
 	 * Refunds form entry payment via webhook call.
 	 *
 	 * @param array<string, mixed> $charge Payment charge object.
+	 * @since x.x.x
 	 * @return void
 	 */
 	public function create_refund_record( array $charge ): void {
@@ -391,6 +401,7 @@ class Stripe_Webhook {
 	 * Handles invoice.payment_succeeded webhook for subscription payments.
 	 *
 	 * @param array<string, mixed> $invoice Invoice object from Stripe.
+	 * @since x.x.x
 	 * @return void
 	 */
 	public function handle_invoice_payment_succeeded( array $invoice ): void {
@@ -461,6 +472,7 @@ class Stripe_Webhook {
 	 * Calculate total refunds for a payment.
 	 *
 	 * @param int $payment_id Payment ID.
+	 * @since x.x.x
 	 * @return float Total refunded amount.
 	 */
 	public function calculate_total_refunds( int $payment_id ): float {
@@ -476,6 +488,7 @@ class Stripe_Webhook {
 	 * @param int                  $refund_amount Refund amount in cents.
 	 * @param string               $currency Currency code.
 	 * @param string|null          $payment Payment method.
+	 * @since x.x.x
 	 * @return bool Whether the update was successful.
 	 */
 	public function update_refund_data( int $payment_id, array $refund_response, int $refund_amount, string $currency, ?string $payment = null ): bool {
@@ -607,6 +620,7 @@ class Stripe_Webhook {
 	 * @param array<string, mixed> $subscription_record Subscription record from database.
 	 * @param array<string, mixed> $invoice Invoice object from Stripe.
 	 * @param string               $charge_id Charge ID from Stripe.
+	 * @since x.x.x
 	 * @return void
 	 */
 	private function process_initial_subscription_payment( array $subscription_record, array $invoice, string $charge_id ): void {
@@ -655,6 +669,7 @@ class Stripe_Webhook {
 	 * @param array<string, mixed> $invoice Invoice object from Stripe.
 	 * @param string               $charge_id Charge ID from Stripe.
 	 * @param string               $block_id Block ID from metadata.
+	 * @since x.x.x
 	 * @return void
 	 */
 	private function process_subscription_renewal_payment( array $subscription_record, array $invoice, string $charge_id, string $block_id ): void {

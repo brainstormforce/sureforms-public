@@ -12,31 +12,39 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+/**
+ * Stripe Helper functions for SureForms Payments.
+ *
+ * @since x.x.x
+ */
 class Stripe_Helper {
 	/**
 	 * Check if Stripe is connected.
 	 *
+	 * @since x.x.x
 	 * @return bool True if Stripe is connected, false otherwise.
 	 */
 	public static function is_stripe_connected() {
 		$payment_settings = get_option( 'srfm_payments_settings', [] );
-		return ! empty( $payment_settings['stripe_connected'] );
+		return is_array( $payment_settings ) && isset( $payment_settings['stripe_connected'] ) && is_bool( $payment_settings['stripe_connected'] ) ? $payment_settings['stripe_connected'] : false;
 	}
 
 	/**
 	 * Get the current Stripe mode (test or live).
 	 *
+	 * @since x.x.x
 	 * @return string The current payment mode ('test' or 'live').
 	 */
 	public static function get_stripe_mode() {
 		$payment_settings = get_option( 'srfm_payments_settings', [] );
-		return $payment_settings['payment_mode'] ?? 'test';
+		return is_array( $payment_settings ) && isset( $payment_settings['payment_mode'] ) && is_string( $payment_settings['payment_mode'] ) ? $payment_settings['payment_mode'] : 'test';
 	}
 
 	/**
 	 * Get Stripe secret key for the specified mode.
 	 *
 	 * @param string|null $mode The payment mode ('test' or 'live'). If null, uses current mode.
+	 * @since x.x.x
 	 * @return string The secret key for the specified mode, or empty string if not found.
 	 */
 	public static function get_stripe_secret_key( $mode = null ) {
@@ -46,41 +54,35 @@ class Stripe_Helper {
 			$mode = self::get_stripe_mode();
 		}
 
-		if ( 'live' === $mode ) {
-			return $payment_settings['stripe_live_secret_key'] ?? '';
-		}
-
-		return $payment_settings['stripe_test_secret_key'] ?? '';
+		return is_array( $payment_settings ) && isset( $payment_settings[ 'stripe_' . $mode . '_secret_key' ] ) && is_string( $payment_settings[ 'stripe_' . $mode . '_secret_key' ] ) ? $payment_settings[ 'stripe_' . $mode . '_secret_key' ] : '';
 	}
 
 	/**
 	 * Get Stripe publishable key for the specified mode.
 	 *
 	 * @param string|null $mode The payment mode ('test' or 'live'). If null, uses current mode.
+	 * @since x.x.x
 	 * @return string The publishable key for the specified mode, or empty string if not found.
 	 */
 	public static function get_stripe_publishable_key( $mode = null ) {
-		$payment_settings = get_option( 'srfm_payments_settings', [] );
-
 		if ( null === $mode ) {
 			$mode = self::get_stripe_mode();
 		}
 
-		if ( 'live' === $mode ) {
-			return $payment_settings['stripe_live_publishable_key'] ?? '';
-		}
+		$payment_settings = get_option( 'srfm_payments_settings', [] );
 
-		return $payment_settings['stripe_test_publishable_key'] ?? '';
+		return is_array( $payment_settings ) && isset( $payment_settings[ 'stripe_' . $mode . '_publishable_key' ] ) && is_string( $payment_settings[ 'stripe_' . $mode . '_publishable_key' ] ) ? $payment_settings[ 'stripe_' . $mode . '_publishable_key' ] : '';
 	}
 
 	/**
 	 * Get the default currency from payment settings.
 	 *
+	 * @since x.x.x
 	 * @return string The currency code (e.g., 'USD').
 	 */
 	public static function get_currency() {
 		$payment_settings = get_option( 'srfm_payments_settings', [] );
-		return $payment_settings['currency'] ?? 'USD';
+		return is_array( $payment_settings ) && isset( $payment_settings['currency'] ) && is_string( $payment_settings['currency'] ) ? $payment_settings['currency'] : 'USD';
 	}
 
 	/**
@@ -91,6 +93,7 @@ class Stripe_Helper {
 	 * http://localhost:10008/wp-admin/admin.php?page=sureforms_form_settings&tab=general-settings
 	 * The site URL is dynamic and will adapt to the current WordPress installation.
 	 *
+	 * @since x.x.x
 	 * @return string The URL to the Stripe settings page.
 	 */
 	public static function get_stripe_settings_url() {
@@ -100,13 +103,14 @@ class Stripe_Helper {
 	/**
 	 * Make a request to the Stripe API.
 	 *
-	 * @param string $endpoint    The API endpoint to call.
-	 * @param string $method      The HTTP method (GET, POST, PUT, PATCH, DELETE). Default 'POST'.
-	 * @param array  $data        The data to send with the request. Default empty array.
-	 * @param string $resource_id The resource ID to append to the endpoint. Default empty string.
-	 * @return array Response array with 'success' boolean and either 'data' or 'error' key.
+	 * @param string       $endpoint    The API endpoint to call.
+	 * @param string       $method      The HTTP method (GET, POST, PUT, PATCH, DELETE). Default 'POST'.
+	 * @param array<mixed> $data        The data to send with the request. Default empty array.
+	 * @param string       $resource_id The resource ID to append to the endpoint. Default empty string.
+	 * @since x.x.x
+	 * @return array<mixed> Response array with 'success' boolean and either 'data' or 'error' key.
 	 */
-	public static function stripe_api_request( $endpoint, $method = 'POST', $data = [], $resource_id = '' ) {
+	public static function stripe_api_request( string $endpoint, string $method = 'POST', array $data = [], string $resource_id = '' ): array {
 		if ( ! self::is_stripe_connected() ) {
 			// TODO: Handle proper error handling.
 			return [
@@ -120,8 +124,8 @@ class Stripe_Helper {
 			];
 		}
 
-		$payment_mode = self::get_stripe_mode();
-		$secret_key   = self::get_stripe_secret_key();
+		$payment_mode = (string) self::get_stripe_mode();
+		$secret_key   = (string) self::get_stripe_secret_key();
 
 		if ( empty( $secret_key ) ) {
 			// TODO: Handle proper error handling.
@@ -156,7 +160,7 @@ class Stripe_Helper {
 			'timeout' => 30,
 		];
 
-		if ( ! empty( $data ) && in_array( $method, [ 'POST', 'PUT', 'PATCH' ] ) ) {
+		if ( ! empty( $data ) && in_array( $method, [ 'POST', 'PUT', 'PATCH' ], true ) ) {
 			$args['body'] = http_build_query( self::flatten_stripe_data( $data ) );
 		} elseif ( ! empty( $data ) && 'GET' === $method ) {
 			$url .= '?' . http_build_query( self::flatten_stripe_data( $data ) );
@@ -200,10 +204,10 @@ class Stripe_Helper {
 		}
 
 		if ( $code >= 400 ) {
-			$stripe_error  = $decoded_body['error'] ?? [];
-			$error_code    = $stripe_error['code'] ?? 'unknown_error';
-			$error_message = $stripe_error['message'] ?? 'Unknown Stripe API error';
-			$error_type    = $stripe_error['type'] ?? 'api_error';
+			$stripe_error  = is_array( $decoded_body ) && isset( $decoded_body['error'] ) && is_array( $decoded_body['error'] ) ? $decoded_body['error'] : [];
+			$error_code    = isset( $stripe_error['code'] ) ? (string) $stripe_error['code'] : 'unknown_error';
+			$error_message = isset( $stripe_error['message'] ) ? (string) $stripe_error['message'] : 'Unknown Stripe API error';
+			$error_type    = isset( $stripe_error['type'] ) ? (string) $stripe_error['type'] : 'api_error';
 
 			return [
 				'success' => false,
@@ -231,12 +235,12 @@ class Stripe_Helper {
 	 * This is useful for preparing data to be sent to the Stripe API, which expects
 	 * nested parameters to be formatted as key[subkey]=value.
 	 *
-	 * @param array  $data   The multidimensional array to flatten.
-	 * @param string $prefix (Optional) The prefix for nested keys. Default is an empty string.
-	 *
-	 * @return array The flattened array with bracket notation keys.
+	 * @param array<mixed> $data   The multidimensional array to flatten.
+	 * @param string       $prefix (Optional) The prefix for nested keys. Default is an empty string.
+	 * @since x.x.x
+	 * @return array<mixed> The flattened array with bracket notation keys.
 	 */
-	private static function flatten_stripe_data( $data, $prefix = '' ) {
+	private static function flatten_stripe_data( array $data, string $prefix = '' ): array {
 		$result = [];
 
 		foreach ( $data as $key => $value ) {
@@ -250,5 +254,16 @@ class Stripe_Helper {
 		}
 
 		return $result;
+	}
+
+	/**
+	 * Get the middleware base URL.
+	 *
+	 * @since x.x.x
+	 * @return string The middleware base URL.
+	 */
+	public static function middle_ware_base_url() {
+		// phpcs:ignoreFile -- Disable phpstan strict comparison warning about environment strings
+		return SRFM_PAYMENTS_ENV === 'prod' ? SRFM_PAYMENTS_PROD : SRFM_PAYMENTS_LOCAL;
 	}
 }

@@ -50,7 +50,6 @@ const STATUS_FILTERS = [
 	{ value: 'pending', label: __( 'Pending', 'sureforms' ) },
 	{ value: 'failed', label: __( 'Failed', 'sureforms' ) },
 	{ value: 'refunded', label: __( 'Refunded', 'sureforms' ) },
-	{ value: 'cancelled', label: __( 'Cancelled', 'sureforms' ) },
 ];
 
 const PaymentTable = () => {
@@ -455,11 +454,6 @@ const PaymentTable = () => {
 					className: 'w-1/8',
 				},
 				{
-					key: 'customer',
-					title: __( 'Customer', 'sureforms' ),
-					className: 'w-1/6',
-				},
-				{
 					key: 'amountPaid',
 					title: __( 'Amount Paid', 'sureforms' ),
 					className: 'w-1/8',
@@ -583,7 +577,6 @@ const PaymentTable = () => {
 			[
 				{ key: 'form', content: payment.form },
 				{ key: 'type', content: paymentType },
-				{ key: 'customer', content: payment.customer },
 				{ key: 'amountPaid', content: rowAmountPaid },
 				{ key: 'status', content: rowStatusBadge },
 				{

@@ -884,6 +884,7 @@ class StripePayment {
 				return {
 					blockId,
 					paymentType: 'subscription',
+					valid: true,
 					...result,
 				};
 			}
@@ -896,14 +897,10 @@ class StripePayment {
 			return {
 				blockId,
 				paymentType: 'one-time',
+				valid: true,
 				...result,
 			};
 		} catch ( error ) {
-			// console.error(
-			// 	`Failed to create ${ paymentType } intent for block ${ blockId }:`,
-			// 	error
-			// );
-			// throw error;
 			return {
 				status: false,
 				message: error.message || 'Failed to create payment intent',

@@ -106,7 +106,7 @@ class Frontend_Assets {
 			'stripe-js',
 			'https://js.stripe.com/v3/',
 			[],
-			null,
+			null, // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion. This is a third-party script, and specifying a version may lead to caching issues. Using null ensures the latest version is always loaded.
 			true
 		);
 

@@ -25,6 +25,7 @@ import {
 	formatAmount,
 	formatDateTime,
 	formatLogTimestamp,
+	getStatusLabel
 } from '../components/utils';
 import PaymentNotes from '../components/paymentNotes';
 import PaymentLogs from '../components/paymentLogs';
@@ -563,11 +564,7 @@ const ViewPayment = () => {
 											row.status
 										) }
 										size="xs"
-										label={
-											row.status === 'succeeded'
-												? __( 'Paid', 'sureforms' )
-												: row.status
-										}
+										label={ getStatusLabel( row.status ) }
 										type="pill"
 										className="w-fit"
 									/>

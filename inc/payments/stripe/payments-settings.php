@@ -123,20 +123,27 @@ class Payments_Settings {
 	 * Add payments settings to global settings
 	 *
 	 * @param array $settings Existing settings.
-	 * @return array
 	 * @since x.x.x
+	 * @return array
 	 */
-	public function add_payments_settings( $settings ) {
+	/**
+	 * Add payments settings to global settings
+	 *
+	 * @param array<mixed> $settings Existing settings.
+	 * @since x.x.x
+	 * @return array<mixed>
+	 */
+	public function add_payments_settings( array $settings ): array {
 		$payments_settings                  = get_option( self::OPTION_NAME, $this->get_default_settings() );
-		$settings['srfm_payments_settings'] = $payments_settings;
+		$settings['srfm_payments_settings'] = is_array( $payments_settings ) ? $payments_settings : $this->get_default_settings();
 		return $settings;
 	}
 
 	/**
 	 * Get Stripe Connect URL
 	 *
-	 * @return \WP_REST_Response
 	 * @since x.x.x
+	 * @return \WP_REST_Response
 	 */
 	public function get_stripe_connect_url() {
 		// Stripe client ID from checkout-plugins-stripe-woo.
@@ -151,13 +158,15 @@ class Payments_Settings {
 		set_transient( 'srfm_stripe_connect_nonce_' . get_current_user_id(), $nonce, HOUR_IN_SECONDS );
 
 		// Create state parameter exactly like checkout-plugins-stripe-woo.
-		$state = base64_encode( // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
-			wp_json_encode(
-				[
-					'redirect' => $redirect_with_nonce,
-				]
-			)
+		$state_param = wp_json_encode(
+			[
+				'redirect' => $redirect_with_nonce,
+			]
 		);
+		$state       = '';
+		if ( is_string( $state_param ) ) {
+			$state = base64_encode( $state_param ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
+		}
 
 		$connect_url = add_query_arg(
 			[
@@ -177,10 +186,10 @@ class Payments_Settings {
 	/**
 	 * Intercept Stripe OAuth callback
 	 *
-	 * @return void
 	 * @since x.x.x
+	 * @return void
 	 */
-	public function intercept_stripe_callback() {
+	public function intercept_stripe_callback(): void {
 		// Check if this is a Stripe callback for our flow.
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		if ( ! isset( $_GET['page'] ) || 'sureforms_form_settings' !== $_GET['page'] ) {
@@ -212,10 +221,10 @@ class Payments_Settings {
 	/**
 	 * Handle Stripe OAuth callback
 	 *
-	 * @return void
 	 * @since x.x.x
+	 * @return void
 	 */
-	public function handle_stripe_callback() {
+	public function handle_stripe_callback(): void {
 		// Check if we have OAuth response data.
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		if ( isset( $_GET['response'] ) ) {
@@ -247,14 +256,18 @@ class Payments_Settings {
 	/**
 	 * Disconnect Stripe account
 	 *
-	 * @return \WP_REST_Response
 	 * @since x.x.x
+	 * @return \WP_REST_Response
 	 */
 	public function disconnect_stripe() {
 		// Delete Stripe webhook endpoints for both test and live modes.
-		$webhook_result = $this->delete_stripe_webhooks();
+		$this->delete_stripe_webhooks();
 
-		$settings                                = get_option( self::OPTION_NAME, $this->get_default_settings() );
+		$settings = get_option( self::OPTION_NAME, $this->get_default_settings() );
+		if ( ! is_array( $settings ) ) {
+			$settings = $this->get_default_settings();
+		}
+
 		$settings['stripe_connected']            = false;
 		$settings['stripe_account_id']           = '';
 		$settings['stripe_account_email']        = '';
@@ -286,10 +299,10 @@ class Payments_Settings {
 	/**
 	 * Get available currencies
 	 *
-	 * @return array
 	 * @since x.x.x
+	 * @return array<string, string>
 	 */
-	public static function get_currencies() {
+	public static function get_currencies(): array {
 		return [
 			'USD' => __( 'US Dollar', 'sureforms' ),
 			'EUR' => __( 'Euro', 'sureforms' ),
@@ -322,8 +335,8 @@ class Payments_Settings {
 	/**
 	 * Handle webhook creation request (REST API handler)
 	 *
-	 * @return \WP_REST_Response
 	 * @since x.x.x
+	 * @return \WP_REST_Response
 	 */
 	public function handle_webhook_creation_request() {
 		// Call the core webhook creation function.
@@ -335,11 +348,14 @@ class Payments_Settings {
 	/**
 	 * Setup Stripe webhooks for both test and live modes
 	 *
-	 * @return array Array containing webhook creation results and details
 	 * @since x.x.x
+	 * @return array<mixed> Array containing webhook creation results and details
 	 */
-	public function setup_stripe_webhooks() {
+	public function setup_stripe_webhooks(): array {
 		$settings = get_option( self::OPTION_NAME, $this->get_default_settings() );
+		if ( ! is_array( $settings ) ) {
+			$settings = $this->get_default_settings();
+		}
 
 		if ( empty( $settings['stripe_connected'] ) ) {
 			return [
@@ -355,8 +371,8 @@ class Payments_Settings {
 
 		foreach ( $modes as $mode ) {
 			$secret_key = 'live' === $mode
-				? $settings['stripe_live_secret_key']
-				: $settings['stripe_test_secret_key'];
+				? ( $settings['stripe_live_secret_key'] ?? '' )
+				: ( $settings['stripe_test_secret_key'] ?? '' );
 
 			if ( empty( $secret_key ) ) {
 				continue;
@@ -379,16 +395,14 @@ class Payments_Settings {
 
 				$api_response = Stripe_Helper::stripe_api_request( 'webhook_endpoints', 'POST', $webhook_data );
 
-				if ( ! $api_response['success'] ) {
-					$error_details = $api_response['error'];
-					$error_message = $error_details['message'];
-
+				if ( ! isset( $api_response['success'] ) || ! $api_response['success'] ) {
+					$error_details = $api_response['error'] ?? [];
+					$error_message = isset( $error_details['message'] ) ? $error_details['message'] : '';
 					// TODO: Handle proper error handling.
-
 					throw new \Exception( $error_message );
 				}
 
-				$webhook = $api_response['data'];
+				$webhook = $api_response['data'] ?? [];
 
 				// Validate webhook response structure.
 				if ( ! is_array( $webhook ) ) {
@@ -472,8 +486,8 @@ class Payments_Settings {
 	/**
 	 * Handle webhook deletion request (REST API handler)
 	 *
-	 * @return \WP_REST_Response
 	 * @since x.x.x
+	 * @return \WP_REST_Response
 	 */
 	public function handle_webhook_deletion_request() {
 		// Call the core webhook deletion function.
@@ -485,11 +499,14 @@ class Payments_Settings {
 	/**
 	 * Delete Stripe webhooks for both test and live modes
 	 *
-	 * @return array Array containing deletion results
 	 * @since x.x.x
+	 * @return array<mixed> Array containing deletion results
 	 */
-	public function delete_stripe_webhooks() {
+	public function delete_stripe_webhooks(): array {
 		$settings = get_option( self::OPTION_NAME, $this->get_default_settings() );
+		if ( ! is_array( $settings ) ) {
+			$settings = $this->get_default_settings();
+		}
 
 		if ( empty( $settings['stripe_connected'] ) ) {
 			return [
@@ -502,40 +519,52 @@ class Payments_Settings {
 		$error_message    = '';
 		$modes            = [ 'test', 'live' ];
 
+		$return_response = [];
+
 		foreach ( $modes as $mode ) {
 			$secret_key = 'live' === $mode
-				? $settings['stripe_live_secret_key']
-				: $settings['stripe_test_secret_key'];
+				? ( $settings['stripe_live_secret_key'] ?? '' )
+				: ( $settings['stripe_test_secret_key'] ?? '' );
 
 			$webhook_id = 'live' === $mode
-				? $settings['webhook_live_id'] ?? ''
-				: $settings['webhook_test_id'] ?? '';
+				? ( $settings['webhook_live_id'] ?? '' )
+				: ( $settings['webhook_test_id'] ?? '' );
 
 			if ( empty( $secret_key ) || empty( $webhook_id ) ) {
 				continue;
 			}
 
 			try {
-				$api_response = Stripe_Helper::stripe_api_request( 'webhook_endpoints', 'DELETE', [], $webhook_id );
+				$api_response = Stripe_Helper::stripe_api_request( 'webhook_endpoints', 'DELETE', [], (string) $webhook_id );
 
-				if ( ! $api_response['success'] ) {
-					$error_details = $api_response['error'];
-					$error_message = $error_details['message'];
-
+				if ( ! isset( $api_response['success'] ) || ! $api_response['success'] ) {
+					$error_details = $api_response['error'] ?? [];
+					$error_message = isset( $error_details['message'] ) ? $error_details['message'] : '';
 					// TODO: Handle proper error handling.
-
-					throw new \Exception( $error_message );
+					$return_response[] = [
+						'success' => false,
+						'message' => $error_message,
+					];
+					continue;
 				}
 
-				$delete_result = $api_response['data'];
+				$delete_result = $api_response['data'] ?? [];
 
 				// Validate deletion response.
 				if ( ! is_array( $delete_result ) ) {
-					throw new \Exception( __( 'Invalid webhook deletion response format.', 'sureforms' ) );
+					$return_response[] = [
+						'success' => false,
+						'message' => __( 'Invalid webhook deletion response format.', 'sureforms' ),
+					];
+					continue;
 				}
 
 				if ( empty( $delete_result['deleted'] ) || true !== $delete_result['deleted'] ) {
-					throw new \Exception( __( 'Webhook deletion was not confirmed by Stripe.', 'sureforms' ) );
+					$return_response[] = [
+						'success' => false,
+						'message' => __( 'Webhook deletion was not confirmed by Stripe.', 'sureforms' ),
+					];
+					continue;
 				}
 
 				// Clean up stored webhook data from settings.
@@ -550,16 +579,19 @@ class Payments_Settings {
 				}
 
 				$webhooks_deleted++;
+				$return_response[] = [
+					'success' => true,
+					'message' => __( 'Webhook deleted successfully.', 'sureforms' ),
+				];
 
 			} catch ( \Exception $e ) {
 				$error_message = $e->getMessage();
 				// TODO: Handle proper error handling.
+				$return_response[] = [
+					'success' => false,
+					'message' => $error_message,
+				];
 			}
-		}
-
-		// Update settings if any webhooks were deleted.
-		if ( $webhooks_deleted > 0 ) {
-			update_option( self::OPTION_NAME, $settings );
 		}
 
 		// Prepare response.
@@ -567,14 +599,25 @@ class Payments_Settings {
 			'success' => $webhooks_deleted > 0,
 		];
 
+		// Update settings if any webhooks were deleted.
 		if ( $webhooks_deleted > 0 ) {
+			update_option( self::OPTION_NAME, $settings );
 			$response_data['message'] = sprintf(
 				/* translators: %d: number of webhooks deleted */
 				__( 'Webhooks deleted successfully for %d mode(s).', 'sureforms' ),
 				$webhooks_deleted
 			);
 		} else {
-			$response_data['message'] = $error_message ? $error_message : __( 'Failed to delete webhooks.', 'sureforms' );
+			$message = '';
+
+			foreach ( $return_response as $response ) {
+				// Since $response is always array{success: bool, message: string}, isset() is redundant.
+				if ( $response['success'] && is_string( $response['message'] ) ) {
+					$message .= $response['message'] . '<br>';
+				}
+			}
+
+			$response_data['message'] = $message ? $message : __( 'Failed to delete webhooks.', 'sureforms' );
 		}
 
 		return $response_data;
@@ -583,12 +626,15 @@ class Payments_Settings {
 	/**
 	 * Delete payment webhooks
 	 *
-	 * @param \WP_REST_Request|array $request_or_modes Request object or array of modes to delete.
-	 * @return \WP_REST_Response
+	 * @param \WP_REST_Request|array<int, string>|null $request_or_modes Request object or array of modes to delete.
 	 * @since x.x.x
+	 * @return \WP_REST_Response
 	 */
 	public function delete_payment_webhooks( $request_or_modes = null ) {
 		$settings = get_option( self::OPTION_NAME, $this->get_default_settings() );
+		if ( ! is_array( $settings ) ) {
+			$settings = $this->get_default_settings();
+		}
 
 		if ( empty( $settings['stripe_connected'] ) ) {
 			return rest_ensure_response(
@@ -612,7 +658,7 @@ class Payments_Settings {
 				$modes = $request_modes;
 			} else {
 				// Fallback to single mode parameter for backward compatibility.
-				$mode_to_delete = $request_or_modes->get_param( 'mode' ) ?? $settings['payment_mode'] ?? 'test';
+				$mode_to_delete = $request_or_modes->get_param( 'mode' ) ?? ( $settings['payment_mode'] ?? 'test' );
 				$modes          = [ $mode_to_delete ];
 			}
 		} else {
@@ -637,21 +683,21 @@ class Payments_Settings {
 
 		foreach ( $modes as $mode ) {
 			$secret_key = 'live' === $mode
-				? $settings['stripe_live_secret_key']
-				: $settings['stripe_test_secret_key'];
+				? ( $settings['stripe_live_secret_key'] ?? '' )
+				: ( $settings['stripe_test_secret_key'] ?? '' );
 
-			$webhook_id = 'live' === $mode ? $settings['webhook_live_id'] ?? '' : $settings['webhook_test_id'] ?? '';
+			$webhook_id = 'live' === $mode ? ( $settings['webhook_live_id'] ?? '' ) : ( $settings['webhook_test_id'] ?? '' );
 
 			if ( empty( $secret_key ) || empty( $webhook_id ) ) {
 				continue;
 			}
 
 			try {
-				$api_response = Stripe_Helper::stripe_api_request( 'webhook_endpoints', 'DELETE', [], $webhook_id );
+				$api_response = Stripe_Helper::stripe_api_request( 'webhook_endpoints', 'DELETE', [], (string) $webhook_id );
 
-				if ( ! $api_response['success'] ) {
-					$error_details = $api_response['error'];
-					$error_message = $error_details['message'];
+				if ( ! isset( $api_response['success'] ) || ! $api_response['success'] ) {
+					$error_details = $api_response['error'] ?? [];
+					$error_message = isset( $error_details['message'] ) ? $error_details['message'] : '';
 
 					// TODO: Handle proper error handling.
 
@@ -663,7 +709,7 @@ class Payments_Settings {
 					);
 				}
 
-				$delete_result = $api_response['data'];
+				$delete_result = $api_response['data'] ?? [];
 
 				// Validate deletion response.
 				if ( ! is_array( $delete_result ) ) {
@@ -731,22 +777,25 @@ class Payments_Settings {
 				]
 			);
 		}
-			return rest_ensure_response(
-				[
-					'success' => false,
-					'message' => $error_message ? $error_message : __( 'Failed to delete webhook.', 'sureforms' ),
-				]
-			);
+		return rest_ensure_response(
+			[
+				'success' => false,
+				'message' => $error_message ? $error_message : __( 'Failed to delete webhook.', 'sureforms' ),
+			]
+		);
 	}
 
 	/**
 	 * Get Stripe account information using stored account ID
 	 *
-	 * @return array Array containing account information or error details
 	 * @since x.x.x
+	 * @return array<mixed> Array containing account information or error details
 	 */
-	public function get_account_info() {
+	public function get_account_info(): array {
 		$settings = get_option( self::OPTION_NAME, $this->get_default_settings() );
+		if ( ! is_array( $settings ) ) {
+			$settings = $this->get_default_settings();
+		}
 
 		// Check if Stripe is connected.
 		if ( empty( $settings['stripe_connected'] ) ) {
@@ -772,9 +821,9 @@ class Payments_Settings {
 		}
 
 		// Call Stripe API to get account information.
-		$api_response = Stripe_Helper::stripe_api_request( 'accounts', 'GET', [], $account_id );
+		$api_response = Stripe_Helper::stripe_api_request( 'accounts', 'GET', [], (string) $account_id );
 
-		if ( ! $api_response['success'] ) {
+		if ( ! isset( $api_response['success'] ) || ! $api_response['success'] ) {
 			return $api_response; // Return the error from API.
 		}
 
@@ -784,10 +833,10 @@ class Payments_Settings {
 	/**
 	 * Get default settings
 	 *
-	 * @return array
 	 * @since x.x.x
+	 * @return array<mixed>
 	 */
-	private function get_default_settings() {
+	private function get_default_settings(): array {
 		return [
 			'stripe_connected'            => false,
 			'stripe_account_id'           => '',
@@ -811,49 +860,76 @@ class Payments_Settings {
 	/**
 	 * Process OAuth success response.
 	 *
-	 * @return \WP_REST_Response
 	 * @since x.x.x
+	 * @return \WP_REST_Response
 	 */
 	private function process_oauth_success() {
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		if ( ! isset( $_GET['response'] ) ) {
-			return new \WP_Error( 'missing_response', __( 'Missing OAuth response data.', 'sureforms' ) );
+			return rest_ensure_response(
+				[
+					'success' => false,
+					'error'   => [
+						'message' => __( 'Missing OAuth response data.', 'sureforms' ),
+						'code'    => 'missing_response',
+					],
+				]
+			);
 		}
 
-		$response_data = sanitize_text_field( wp_unslash( $_GET['response'] ) );
-		$response      = json_decode( base64_decode( $response_data ), true ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_decode
+		$response_data = sanitize_text_field( wp_unslash( $_GET['response'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$decoded       = base64_decode( $response_data, true ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_decode
+		$response      = false;
+		if ( is_string( $decoded ) ) {
+			$response = json_decode( $decoded, true );
+		}
 
-		if ( ! $response ) {
-			return new \WP_Error( 'invalid_response', __( 'Invalid OAuth response.', 'sureforms' ) );
+		if ( ! is_array( $response ) ) {
+			return rest_ensure_response(
+				[
+					'success' => false,
+					'error'   => [
+						'message' => __( 'Invalid OAuth response.', 'sureforms' ),
+						'code'    => 'invalid_response',
+					],
+				]
+			);
 		}
 
 		// Extract OAuth data following checkout-plugins-stripe-woo pattern.
 		$settings = get_option( self::OPTION_NAME, $this->get_default_settings() );
-		$settings = empty( $settings ) ? $this->get_default_settings() : $settings;
+		$settings = ( is_array( $settings ) && ! empty( $settings ) ) ? $settings : $this->get_default_settings();
 
 		// Store live keys.
-		if ( isset( $response['live'] ) ) {
+		if ( isset( $response['live'] ) && is_array( $response['live'] ) ) {
 			$settings['stripe_live_publishable_key'] = sanitize_text_field( $response['live']['stripe_publishable_key'] ?? '' );
 			$settings['stripe_live_secret_key']      = sanitize_text_field( $response['live']['access_token'] ?? '' );
 			$settings['stripe_account_id']           = sanitize_text_field( $response['live']['stripe_user_id'] ?? '' );
 		}
 
 		// Store test keys.
-		if ( isset( $response['test'] ) ) {
+		if ( isset( $response['test'] ) && is_array( $response['test'] ) ) {
 			$settings['stripe_test_publishable_key'] = sanitize_text_field( $response['test']['stripe_publishable_key'] ?? '' );
 			$settings['stripe_test_secret_key']      = sanitize_text_field( $response['test']['access_token'] ?? '' );
 		}
 
 		// Mark as connected.
 		$settings['stripe_connected']     = true;
-		$settings['stripe_account_email'] = sanitize_email( $response['account']['email'] ?? '' );
+		$settings['stripe_account_email'] = isset( $response['account'], $response['account']['email'] )
+			? sanitize_email( $response['account']['email'] )
+			: '';
 
 		// Save settings.
 		update_option( self::OPTION_NAME, $settings );
 
 		$account_info = $this->get_account_info();
 
-		if ( isset( $account_info['success'] ) && ! empty( $account_info['data'] ) ) {
+		if (
+			isset( $account_info['success'], $account_info['data'] )
+			&& $account_info['success']
+			&& ! empty( $account_info['data'] )
+			&& is_array( $account_info['data'] )
+		) {
 			$settings['account_data'] = $account_info['data'];
 			update_option( self::OPTION_NAME, $settings );
 		}
@@ -872,20 +948,24 @@ class Payments_Settings {
 	/**
 	 * Process OAuth error response
 	 *
-	 * @return void
 	 * @since x.x.x
+	 * @return void
 	 */
-	private function process_oauth_error() {
+	private function process_oauth_error(): void {
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		if ( isset( $_GET['error'] ) ) {
-			$error_data = sanitize_text_field( wp_unslash( $_GET['error'] ) );
-			$error      = json_decode( base64_decode( $error_data ), true ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_decode
+			$error_data = sanitize_text_field( wp_unslash( $_GET['error'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			$decoded    = base64_decode( $error_data, true ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_decode
+			$error      = is_string( $decoded ) ? json_decode( $decoded, true ) : [];
+			if ( ! is_array( $error ) ) {
+				$error = [];
+			}
 		} else {
 			$error = [];
 		}
 
 		$error_message = __( 'Failed to connect to Stripe.', 'sureforms' );
-		if ( isset( $error['message'] ) ) {
+		if ( isset( $error['message'] ) && is_string( $error['message'] ) ) {
 			$error_message = sanitize_text_field( $error['message'] );
 		}
 

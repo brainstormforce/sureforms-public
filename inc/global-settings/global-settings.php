@@ -306,17 +306,18 @@ class Global_Settings {
 	public static function srfm_save_payments_settings( $setting_options ) {
 		// Get current settings to preserve connection data.
 		$current_settings = get_option( 'srfm_payments_settings', [] );
+		$current_settings = is_array( $current_settings ) ? $current_settings : [];
 
 		// Only update the fields that can be changed via settings.
-		$currency     = $setting_options['currency'] ?? 'USD';
-		$payment_mode = $setting_options['payment_mode'] ?? 'test';
+		$currency     = isset( $setting_options['currency'] ) && ! empty( $setting_options['currency'] ) && is_string( $setting_options['currency'] ) ? sanitize_text_field( $setting_options['currency'] ) : 'USD';
+		$payment_mode = isset( $setting_options['payment_mode'] ) && ! empty( $setting_options['payment_mode'] ) && is_string( $setting_options['payment_mode'] ) ? sanitize_text_field( $setting_options['payment_mode'] ) : 'test';
 
 		// Preserve existing connection data.
 		$updated_settings = array_merge(
 			$current_settings,
 			[
-				'currency'     => sanitize_text_field( $currency ),
-				'payment_mode' => sanitize_text_field( $payment_mode ),
+				'currency'     => $currency,
+				'payment_mode' => $payment_mode,
 			]
 		);
 

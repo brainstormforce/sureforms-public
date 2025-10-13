@@ -9,34 +9,21 @@ import {
 	RadioButton,
 	Select,
 	toast,
+	Dialog,
 } from '@bsf/force-ui';
 import ContentSection from '@Admin/settings/components/ContentSection';
 import { currencies, AlertForFee } from '../components/utils';
 
 const Payments = ( {
 	loading,
-	paymentsSettings: initialSettings,
+	paymentsSettings,
 	updateGlobalSettings,
+	setPaymentsSettings,
 } ) => {
-	const [ paymentsSettings, setPaymentsSettings ] = useState(
-		initialSettings || {
-			stripe_connected: false,
-			stripe_account_id: '',
-			stripe_account_email: '',
-			currency: 'USD',
-			payment_mode: 'test',
-		}
-	);
 	const [ isConnecting, setIsConnecting ] = useState( false );
 	const [ isDisconnecting, setIsDisconnecting ] = useState( false );
 	const [ isCreatingWebhook, setIsCreatingWebhook ] = useState( false );
-
-	// Update local state when props change
-	useEffect( () => {
-		if ( initialSettings ) {
-			setPaymentsSettings( initialSettings );
-		}
-	}, [ initialSettings ] );
+	const [ isDisconnectDialogOpen, setIsDisconnectDialogOpen ] = useState( false );
 
 	// Load settings on mount
 	useEffect( () => {
@@ -99,19 +86,13 @@ const Payments = ( {
 		}
 	};
 
-	// Handle Stripe Disconnect
-	const handleStripeDisconnect = async () => {
-		if (
-			! confirm(
-				__(
-					'Are you sure you want to disconnect your Stripe account?',
-					'sureforms'
-				)
-			)
-		) {
-			return;
-		}
+	// Handle Stripe Disconnect - Open confirmation dialog
+	const handleStripeDisconnect = () => {
+		setIsDisconnectDialogOpen( true );
+	};
 
+	// Confirm and process Stripe disconnect
+	const confirmStripeDisconnect = async () => {
 		setIsDisconnecting( true );
 		try {
 			const response = await apiFetch( {
@@ -166,6 +147,7 @@ const Payments = ( {
 			toast.success(
 				__( 'Stripe account disconnected successfully.', 'sureforms' )
 			);
+			setIsDisconnectDialogOpen( false );
 		} catch ( error ) {
 			const errorMessage =
 				error.message ||
@@ -257,7 +239,7 @@ const Payments = ( {
 			>
 				<Select.Button
 					type="button"
-					label={ __( 'Default Currency', 'sureforms' ) }
+					label={ __( 'Select Currency', 'sureforms' ) }
 					size="md"
 				>
 					{ getCurrentCurrencyLabel() }
@@ -275,7 +257,7 @@ const Payments = ( {
 					</Select.Options>
 				</Select.Portal>
 			</Select>
-			<p className="mt-1 text-sm text-text-tertiary">
+			<p className="text-sm text-text-tertiary">
 				{ __(
 					'Select the default currency for payment forms.',
 					'sureforms'
@@ -286,7 +268,7 @@ const Payments = ( {
 
 	const paymentMode = (
 		<div className="flex flex-col gap-2">
-			<Label size="md" variant="neutral">
+			<Label size="sm" variant="neutral">
 				{ __( 'Payment Mode', 'sureforms' ) }
 			</Label>
 			<RadioButton.Group
@@ -318,10 +300,10 @@ const Payments = ( {
 
 	const accountDetails = (
 		<div className="flex flex-col gap-2">
-			<Label size="md" variant="neutral">
+			<Label size="sm" variant="neutral">
 				{ __( 'Connection Status', 'sureforms' ) }
 			</Label>
-			<div className="flex items-center justify-between p-4 rounded-lg border border-border-subtle solid shadow-sm">
+			<div className="flex items-center justify-between p-4 rounded-lg border-0.5 border-border-subtle border-solid shadow-sm">
 				<div className="flex items-center gap-2">
 					<CircleCheck className="text-support-success" />
 					<div>
@@ -338,9 +320,9 @@ const Payments = ( {
 					disabled={ isDisconnecting || loading }
 					icon={ isDisconnecting && <Loader /> }
 					iconPosition="left"
-					variant="ghost"
+					variant="link"
 					size="xs"
-					className="text-red-600 hover:text-red-700 shadow-sm"
+					className="text-red-600 hover:text-red-700"
 				>
 					{ isDisconnecting
 						? __( 'Disconnecting…', 'sureforms' )
@@ -357,7 +339,7 @@ const Payments = ( {
 
 	const webhookManagement = (
 		<div className="flex flex-col gap-2">
-			<Label size="md" variant="neutral">
+			<Label size="sm" variant="neutral">
 				{ __( 'Webhook', 'sureforms' ) }
 			</Label>
 
@@ -399,6 +381,58 @@ const Payments = ( {
 				</div>
 			) }
 		</div>
+	);
+
+	// Disconnect Confirmation Dialog
+	const disconnectDialog = (
+		<Dialog
+			open={ isDisconnectDialogOpen }
+			setOpen={ setIsDisconnectDialogOpen }
+			design="simple"
+			exitOnEsc
+			scrollLock
+		>
+			<Dialog.Backdrop />
+			<Dialog.Panel>
+				<Dialog.Header>
+					<div className="flex items-center justify-between">
+						<Dialog.Title>
+							{ __( 'Disconnect Stripe Account', 'sureforms' ) }
+						</Dialog.Title>
+						<Dialog.CloseButton
+							onClick={ () => setIsDisconnectDialogOpen( false ) }
+						/>
+					</div>
+					<Dialog.Description>
+						{ __(
+							'Are you sure you want to disconnect your Stripe account? This will stop all active payments, subscriptions, and form transactions connected to this account.',
+							'sureforms'
+						) }
+					</Dialog.Description>
+				</Dialog.Header>
+				<Dialog.Footer className="flex justify-end gap-2">
+					<Button
+						variant="outline"
+						onClick={ () => setIsDisconnectDialogOpen( false ) }
+						disabled={ isDisconnecting }
+					>
+						{ __( 'Cancel', 'sureforms' ) }
+					</Button>
+					<Button
+						variant="primary"
+						onClick={ confirmStripeDisconnect }
+						disabled={ isDisconnecting }
+						icon={ isDisconnecting && <Loader /> }
+						iconPosition="left"
+						className="bg-red-600 hover:bg-red-700"
+					>
+						{ isDisconnecting
+							? __( 'Disconnecting…', 'sureforms' )
+							: __( 'Disconnect', 'sureforms' ) }
+					</Button>
+				</Dialog.Footer>
+			</Dialog.Panel>
+		</Dialog>
 	);
 
 	// Content for Payment Settings section
@@ -469,6 +503,7 @@ const Payments = ( {
 					content={ stripeConnectContent }
 				/>
 			) }
+			{ disconnectDialog }
 		</div>
 	);
 };

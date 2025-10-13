@@ -415,14 +415,14 @@ class Payments extends Base {
 		}
 
 		$results = self::get_instance()->get_results( [ 'id' => absint( $payment_id ) ] );
-		return $results[0] ?? null;
+		return is_array( $results ) && isset( $results[0] ) && is_array( $results[0] ) ? $results[0] : null;
 	}
 
 	/**
 	 * Get all payments with optional parameters.
 	 *
-	 * @param array $args Query arguments.
-	 * @param bool  $set_limit Whether to apply limit to query.
+	 * @param array<mixed> $args Query arguments.
+	 * @param bool         $set_limit Whether to apply limit to query.
 	 * @since x.x.x
 	 * @return array Array of payments.
 	 */
@@ -457,9 +457,9 @@ class Payments extends Base {
 	/**
 	 * Get total payments count by status.
 	 *
-	 * @param string $status Status to filter by ('all', 'pending', 'succeeded', etc.).
-	 * @param int    $form_id Optional form ID to filter by.
-	 * @param array  $where_conditions Optional additional where conditions.
+	 * @param string       $status Status to filter by ('all', 'pending', 'succeeded', etc.).
+	 * @param int          $form_id Optional form ID to filter by.
+	 * @param array<mixed> $where_conditions Optional additional where conditions.
 	 * @since x.x.x
 	 * @return int Total count.
 	 */
@@ -522,7 +522,7 @@ class Payments extends Base {
 	/**
 	 * Get available months for payments.
 	 *
-	 * @param array $where_conditions Optional where conditions.
+	 * @param array<mixed> $where_conditions Optional where conditions.
 	 * @since x.x.x
 	 * @return array Array of month values and labels.
 	 */
@@ -576,7 +576,7 @@ class Payments extends Base {
 	/**
 	 * Get form IDs by payment IDs.
 	 *
-	 * @param array $payment_ids Array of payment IDs.
+	 * @param array<mixed> $payment_ids Array of payment IDs.
 	 * @since x.x.x
 	 * @return array Array of unique form IDs.
 	 */
@@ -762,8 +762,8 @@ class Payments extends Base {
 	/**
 	 * Add refund data to payment_data column.
 	 *
-	 * @param int   $payment_id Payment ID.
-	 * @param array $refund_data Refund data to add.
+	 * @param int          $payment_id Payment ID.
+	 * @param array<mixed> $refund_data Refund data to add.
 	 * @since x.x.x
 	 * @return int|false Number of rows updated or false on error.
 	 */
@@ -780,9 +780,10 @@ class Payments extends Base {
 
 		// Get current payment data.
 		$payment_data = self::get_payment_data( $payment_id );
+		$payment_data = is_array( $payment_data ) ? $payment_data : [];
 
 		// Initialize refunds array if it doesn't exist.
-		if ( ! isset( $payment_data['refunds'] ) ) {
+		if ( ! isset( $payment_data['refunds'] ) || ! is_array( $payment_data['refunds'] ) ) {
 			$payment_data['refunds'] = [];
 		}
 
@@ -977,8 +978,8 @@ class Payments extends Base {
 	 * Shows: subscription records OR one-time payments (payment type with no subscription_id)
 	 * Hides: payment records that have subscription_id (individual subscription transactions)
 	 *
-	 * @param array $args Query arguments.
-	 * @param bool  $set_limit Whether to apply limit to query.
+	 * @param array<mixed> $args Query arguments.
+	 * @param bool         $set_limit Whether to apply limit to query.
 	 * @since x.x.x
 	 * @return array Array of payments for main table display.
 	 */
@@ -1052,9 +1053,9 @@ class Payments extends Base {
 	 * Counts: subscription records OR one-time payments (payment type with no subscription_id)
 	 * Excludes: payment records that have subscription_id (individual subscription transactions)
 	 *
-	 * @param string $status Status to filter by ('all', 'pending', 'succeeded', etc.).
-	 * @param int    $form_id Optional form ID to filter by.
-	 * @param array  $where_conditions Optional additional where conditions.
+	 * @param string       $status Status to filter by ('all', 'pending', 'succeeded', etc.).
+	 * @param int          $form_id Optional form ID to filter by.
+	 * @param array<mixed> $where_conditions Optional additional where conditions.
 	 * @since x.x.x
 	 * @return int Total count.
 	 */

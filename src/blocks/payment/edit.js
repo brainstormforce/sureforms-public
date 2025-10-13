@@ -224,27 +224,6 @@ const Edit = ( props ) => {
 			),
 		},
 		{
-			id: 'payment-description',
-			component: (
-				<SRFMTextControl
-					label={ __( 'Payment Description', 'sureforms' ) }
-					value={ description }
-					variant="textarea"
-					data={ {
-						value: description,
-						label: 'description',
-					} }
-					onChange={ ( value ) =>
-						setAttributes( { description: value } )
-					}
-					help={ __(
-						'This will appear on the payment receipt and in Stripe dashboard.',
-						'sureforms'
-					) }
-				/>
-			),
-		},
-		{
 			id: 'payment-type',
 			component: (
 				<MultiButtonsControl
@@ -450,6 +429,31 @@ const Edit = ( props ) => {
 				},
 			  ]
 			: [] ),
+		{
+			id: 'separator',
+			component: <Separator />,
+		},
+		{
+			id: 'payment-description',
+			component: (
+				<SRFMTextControl
+					label={ __( 'Payment Description', 'sureforms' ) }
+					value={ description }
+					variant="textarea"
+					data={ {
+						value: description,
+						label: 'description',
+					} }
+					onChange={ ( value ) =>
+						setAttributes( { description: value } )
+					}
+					help={ __(
+						'This will appear on the payment receipt and in Stripe dashboard.',
+						'sureforms'
+					) }
+				/>
+			),
+		},
 	];
 
 	const filterOptions = attributeOptionsWithFilter( attributeOptions, props );

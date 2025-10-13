@@ -780,9 +780,9 @@ class Admin {
 			'onboarding_redirect'        => isset( $_GET['srfm-activation-redirect'] ), // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce is not required for the activation redirection.
 			'pointer_nonce'              => wp_create_nonce( 'sureforms_pointer_action' ),
 			'general_settings_url'       => admin_url( '/options-general.php' ),
-			'payments' => [
-				'stripe_connected' => Stripe_Helper::is_stripe_connected(),
-				'stripe_mode' => Stripe_Helper::get_stripe_mode(),
+			'payments'                   => [
+				'stripe_connected'   => Stripe_Helper::is_stripe_connected(),
+				'stripe_mode'        => Stripe_Helper::get_stripe_mode(),
 				'stripe_connect_url' => Stripe_Helper::get_stripe_settings_url(),
 			],
 		];

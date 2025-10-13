@@ -212,7 +212,7 @@ async function processAllPayments( form, paymentBlock ) {
 			paymentBlock
 		);
 
-		if ( ! paymentResultOnCreateIntent.status ) {
+		if ( ! paymentResultOnCreateIntent?.valid ) {
 			return {
 				valid: false,
 				message: paymentResultOnCreateIntent.message,

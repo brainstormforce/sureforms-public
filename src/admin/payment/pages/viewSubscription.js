@@ -25,6 +25,7 @@ import {
 } from '../components/apiCalls';
 import {
 	getStatusVariant,
+	getStatusLabel,
 	formatAmount,
 	formatDateTimeDetailed,
 	formatLogTimestamp,
@@ -801,15 +802,9 @@ const ViewSubscription = () => {
 								</Table.Cell>
 								<Table.Cell>
 									<Badge
-										variant={ getStatusVariant(
-											row.status
-										) }
+										variant={ getStatusVariant( row.status ) }
 										size="xs"
-										label={
-											row.status === 'paid'
-												? __( 'Paid', 'sureforms' )
-												: row.status
-										}
+										label={ getStatusLabel( row.status ) }
 										type="pill"
 										className="w-fit"
 									/>

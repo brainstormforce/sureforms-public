@@ -315,6 +315,7 @@ const Component = ( { path } ) => {
 						loading={ loading }
 						paymentsSettings={ paymentsSettings }
 						updateGlobalSettings={ updateGlobalSettings }
+						setPaymentsSettings={ setPaymentsSettings }
 					/>
 				) }
 				{ applyFilters(

@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Admin Payment Operations handler class.
  *
- * @since 1.0.0
+ * @since x.x.x
  */
 class Admin_Handler {
 	use Get_Instance;
@@ -25,8 +25,8 @@ class Admin_Handler {
 	/**
 	 * Class constructor.
 	 *
+	 * @since x.x.x
 	 * @return void
-	 * @since 1.0.0
 	 */
 	public function __construct() {
 		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_scripts' ] );
@@ -43,8 +43,8 @@ class Admin_Handler {
 	/**
 	 * Enqueue Admin Scripts for Payment Operations.
 	 *
+	 * @since x.x.x
 	 * @return void
-	 * @since 1.0.0
 	 */
 	public function enqueue_scripts() {
 		$current_screen = get_current_screen();
@@ -89,20 +89,18 @@ class Admin_Handler {
 	/**
 	 * AJAX handler for fetching payments data.
 	 *
+	 * @since x.x.x
 	 * @return void
-	 * @since 1.0.0
 	 */
 	public function fetch_payments() {
 		// Verify nonce for security.
 		if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'srfm_payment_admin_nonce' ) ) {
 			wp_send_json_error( [ 'message' => __( 'Security verification failed.', 'sureforms' ) ] );
-			return;
 		}
 
 		// Check user capabilities.
 		if ( ! current_user_can( 'manage_options' ) ) {
 			wp_send_json_error( [ 'message' => __( 'Insufficient permissions.', 'sureforms' ) ] );
-			return;
 		}
 
 		try {
@@ -122,12 +120,10 @@ class Admin_Handler {
 			// Validate date format if provided.
 			if ( ! empty( $date_from ) && ! $this->validate_date( $date_from ) ) {
 				wp_send_json_error( [ 'message' => __( 'Invalid date format for date_from.', 'sureforms' ) ] );
-				return;
 			}
 
 			if ( ! empty( $date_to ) && ! $this->validate_date( $date_to ) ) {
 				wp_send_json_error( [ 'message' => __( 'Invalid date format for date_to.', 'sureforms' ) ] );
-				return;
 			}
 
 			// Get total count for pagination.
@@ -175,27 +171,24 @@ class Admin_Handler {
 	/**
 	 * AJAX handler for fetching single payment data.
 	 *
+	 * @since x.x.x
 	 * @return void
-	 * @since 1.0.0
 	 */
 	public function fetch_single_payment() {
 		// Verify nonce for security.
 		if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'srfm_payment_admin_nonce' ) ) {
 			wp_send_json_error( [ 'message' => __( 'Security verification failed.', 'sureforms' ) ] );
-			return;
 		}
 
 		// Check user capabilities.
 		if ( ! current_user_can( 'manage_options' ) ) {
 			wp_send_json_error( [ 'message' => __( 'Insufficient permissions.', 'sureforms' ) ] );
-			return;
 		}
 
 		// Validate payment ID.
 		$payment_id = isset( $_POST['payment_id'] ) ? absint( $_POST['payment_id'] ) : 0;
 		if ( empty( $payment_id ) ) {
 			wp_send_json_error( [ 'message' => __( 'Payment ID is required.', 'sureforms' ) ] );
-			return;
 		}
 
 		try {
@@ -204,7 +197,6 @@ class Admin_Handler {
 
 			if ( ! $payment ) {
 				wp_send_json_error( [ 'message' => __( 'Payment not found.', 'sureforms' ) ] );
-				return;
 			}
 
 			// Transform payment data for frontend.
@@ -220,27 +212,24 @@ class Admin_Handler {
 	/**
 	 * AJAX handler for fetching subscription data with billing history.
 	 *
+	 * @since x.x.x
 	 * @return void
-	 * @since 1.0.0
 	 */
 	public function fetch_subscription() {
 		// Verify nonce for security.
 		if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'srfm_payment_admin_nonce' ) ) {
 			wp_send_json_error( [ 'message' => __( 'Security verification failed.', 'sureforms' ) ] );
-			return;
 		}
 
 		// Check user capabilities.
 		if ( ! current_user_can( 'manage_options' ) ) {
 			wp_send_json_error( [ 'message' => __( 'Insufficient permissions.', 'sureforms' ) ] );
-			return;
 		}
 
 		// Validate subscription ID - could be main subscription record ID or subscription_id.
 		$subscription_id = isset( $_POST['subscription_id'] ) ? sanitize_text_field( wp_unslash( $_POST['subscription_id'] ) ) : '';
 		if ( empty( $subscription_id ) ) {
 			wp_send_json_error( [ 'message' => __( 'Subscription ID is required.', 'sureforms' ) ] );
-			return;
 		}
 
 		try {
@@ -252,19 +241,16 @@ class Admin_Handler {
 					$stripe_subscription_id = $payment_record['subscription_id'] ?? '';
 					if ( empty( $stripe_subscription_id ) ) {
 						wp_send_json_error( [ 'message' => __( 'Stripe subscription ID not found in payment record.', 'sureforms' ) ] );
-						return;
 					}
 					$main_subscription = $payment_record;
 				} else {
 					wp_send_json_error( [ 'message' => __( 'Invalid subscription record.', 'sureforms' ) ] );
-					return;
 				}
 			} else {
 				// This should be a Stripe subscription ID, get the main subscription record.
 				$main_subscription = Payments::get_main_subscription_record( $subscription_id );
 				if ( ! $main_subscription ) {
 					wp_send_json_error( [ 'message' => __( 'Subscription not found.', 'sureforms' ) ] );
-					return;
 				}
 				$stripe_subscription_id = $subscription_id;
 			}
@@ -309,8 +295,8 @@ class Admin_Handler {
 	 * @param string $date_to   End date filter.
 	 * @param int    $limit     Number of records to return.
 	 * @param int    $offset    Number of records to skip.
+	 * @since x.x.x
 	 * @return array Filtered payments data.
-	 * @since 1.0.0
 	 */
 	private function get_payments_data( $search = '', $status = '', $date_from = '', $date_to = '', $limit = 20, $offset = 0 ) {
 		// Build WHERE conditions for database query.
@@ -401,8 +387,8 @@ class Admin_Handler {
 	 * Get payment IDs that match search criteria.
 	 *
 	 * @param string $search_term Search term with wildcards.
+	 * @since x.x.x
 	 * @return array Array of payment IDs.
-	 * @since 1.0.0
 	 */
 	private function get_payment_ids_by_search( $search_term ) {
 		global $wpdb;
@@ -435,8 +421,8 @@ class Admin_Handler {
 	 * Map frontend status to database status.
 	 *
 	 * @param string $frontend_status Status from frontend.
+	 * @since x.x.x
 	 * @return string|false Database status or false if invalid.
-	 * @since 1.0.0
 	 */
 	private function map_frontend_status_to_db( $frontend_status ) {
 		$status_mapping = [
@@ -455,8 +441,8 @@ class Admin_Handler {
 	 * Map database status to frontend status.
 	 *
 	 * @param string $db_status Status from database.
+	 * @since x.x.x
 	 * @return string Frontend status.
-	 * @since 1.0.0
 	 */
 	private function map_db_status_to_frontend( $db_status ) {
 		$status_mapping = [
@@ -477,23 +463,23 @@ class Admin_Handler {
 	/**
 	 * Transform database payment record to frontend format.
 	 *
-	 * @param array $payment Database payment record.
+	 * @param array<mixed> $payment Database payment record.
+	 * @since x.x.x
 	 * @return array Transformed payment data.
-	 * @since 1.0.0
 	 */
 	private function transform_payment_for_frontend( $payment ) {
 		static $form_titles = []; // Cache for form titles.
 
 		// Get form title with caching using WordPress built-in function.
-		$form_id = $payment['form_id'];
-		if ( ! isset( $form_titles[ $form_id ] ) ) {
-			$form_titles[ $form_id ] = get_the_title( $form_id ) ?: __( 'Unknown Form', 'sureforms' );
+		$form_id = isset( $payment['form_id'] ) && ! empty( $payment['form_id'] ) && is_numeric( $payment['form_id'] ) ? intval( $payment['form_id'] ) : 0;
+		if ( is_numeric( $form_id ) && ! isset( $form_titles[ $form_id ] ) ) {
+			$form_titles[ $form_id ] = get_the_title( intval( $form_id ) ) ?: __( 'Unknown Form', 'sureforms' );
 		}
-		$form_title = $form_titles[ $form_id ];
+		$form_title = isset( $form_titles[ $form_id ] ) && ! empty( $form_titles[ $form_id ] ) ? $form_titles[ $form_id ] : __( 'Unknown Form', 'sureforms' );
 
 		// Get customer name - for now use customer_id, in real implementation.
 		// you would get customer data from entries or payment_data.
-		$customer_name = ! empty( $payment['customer_id'] ) ? 'Customer #' . $payment['customer_id'] : 'Guest';
+		$customer_name = ! empty( $payment['customer_id'] ) ? __( 'Customer #' . $payment['customer_id'], 'sureforms' ) : __( 'Guest', 'sureforms' );
 
 		// Determine payment type
 		$payment_type = 'subscription' === $payment['type'] ? __( 'Subscription', 'sureforms' ) : __( 'One-time', 'sureforms' );
@@ -544,8 +530,8 @@ class Admin_Handler {
 	 * @param string $status    Payment status filter.
 	 * @param string $date_from Start date filter.
 	 * @param string $date_to   End date filter.
+	 * @since x.x.x
 	 * @return int Total count.
-	 * @since 1.0.0
 	 */
 	private function get_payments_count( $search = '', $status = '', $date_from = '', $date_to = '' ) {
 		// Build WHERE conditions similar to get_payments_data.
@@ -615,9 +601,9 @@ class Admin_Handler {
 	/**
 	 * Get subscription billing interval from payment data.
 	 *
-	 * @param array $subscription_record Main subscription payment record.
+	 * @param array<mixed> $subscription_record Main subscription payment record.
+	 * @since x.x.x
 	 * @return string Billing interval.
-	 * @since 1.0.0
 	 */
 	private function get_subscription_interval( $subscription_record ) {
 		// Try to get interval from payment_data.
@@ -635,7 +621,7 @@ class Admin_Handler {
 
 			foreach ( $interval_paths as $path ) {
 				$interval = $this->get_nested_array_value( $payment_data, $path );
-				if ( ! empty( $interval ) ) {
+				if ( ! empty( $interval ) && is_string( $interval ) ) {
 					return ucfirst( $interval ); // month -> Month, year -> Year.
 				}
 			}
@@ -647,9 +633,9 @@ class Admin_Handler {
 	/**
 	 * Get next payment date from subscription data.
 	 *
-	 * @param array $subscription_record Main subscription payment record.
+	 * @param array<mixed> $subscription_record Main subscription payment record.
+	 * @since x.x.x
 	 * @return string|null Next payment date or null.
-	 * @since 1.0.0
 	 */
 	private function get_next_payment_date( $subscription_record ) {
 		// Try to get next payment date from payment_data.
@@ -666,7 +652,8 @@ class Admin_Handler {
 			foreach ( $date_paths as $path ) {
 				$timestamp = $this->get_nested_array_value( $payment_data, $path );
 				if ( ! empty( $timestamp ) && is_numeric( $timestamp ) ) {
-					return gmdate( 'Y-m-d H:i:s', $timestamp );
+					$timestamp_int = intval( $timestamp );
+					return gmdate( 'Y-m-d H:i:s', $timestamp_int );
 				}
 			}
 		}
@@ -677,10 +664,10 @@ class Admin_Handler {
 	/**
 	 * Get nested value from array using dot notation.
 	 *
-	 * @param array  $array Array to search.
-	 * @param string $path Dot-separated path.
+	 * @param array<mixed> $array Array to search.
+	 * @param string       $path Dot-separated path.
+	 * @since x.x.x
 	 * @return mixed Value or null if not found.
-	 * @since 1.0.0
 	 */
 	private function get_nested_array_value( $array, $path ) {
 		$keys    = explode( '.', $path );
@@ -700,8 +687,8 @@ class Admin_Handler {
 	 * Validate date format (YYYY-MM-DD).
 	 *
 	 * @param string $date Date string to validate.
+	 * @since x.x.x
 	 * @return bool True if valid, false otherwise.
-	 * @since 1.0.0
 	 */
 	private function validate_date( $date ) {
 		$parsed_date = \DateTime::createFromFormat( 'Y-m-d', $date );
@@ -711,20 +698,18 @@ class Admin_Handler {
 	/**
 	 * AJAX handler for adding a note to payment.
 	 *
+	 * @since x.x.x
 	 * @return void
-	 * @since 1.0.0
 	 */
 	public function ajax_add_note() {
 		// Verify nonce for security.
 		if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'srfm_payment_admin_nonce' ) ) {
 			wp_send_json_error( [ 'message' => __( 'Security verification failed.', 'sureforms' ) ] );
-			return;
 		}
 
 		// Check user capabilities.
 		if ( ! current_user_can( 'manage_options' ) ) {
 			wp_send_json_error( [ 'message' => __( 'Insufficient permissions.', 'sureforms' ) ] );
-			return;
 		}
 
 		// Validate and sanitize inputs.
@@ -733,12 +718,10 @@ class Admin_Handler {
 
 		if ( empty( $payment_id ) ) {
 			wp_send_json_error( [ 'message' => __( 'Payment ID is required.', 'sureforms' ) ] );
-			return;
 		}
 
 		if ( empty( trim( $note_text ) ) ) {
 			wp_send_json_error( [ 'message' => __( 'Note text cannot be empty.', 'sureforms' ) ] );
-			return;
 		}
 
 		try {
@@ -747,7 +730,6 @@ class Admin_Handler {
 
 			if ( false === $updated_notes ) {
 				wp_send_json_error( [ 'message' => __( 'Failed to add note.', 'sureforms' ) ] );
-				return;
 			}
 
 			wp_send_json_success( [ 'notes' => $updated_notes ] );
@@ -761,20 +743,18 @@ class Admin_Handler {
 	/**
 	 * AJAX handler for deleting a note from payment.
 	 *
+	 * @since x.x.x
 	 * @return void
-	 * @since 1.0.0
 	 */
 	public function ajax_delete_note() {
 		// Verify nonce for security.
 		if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'srfm_payment_admin_nonce' ) ) {
 			wp_send_json_error( [ 'message' => __( 'Security verification failed.', 'sureforms' ) ] );
-			return;
 		}
 
 		// Check user capabilities.
 		if ( ! current_user_can( 'manage_options' ) ) {
 			wp_send_json_error( [ 'message' => __( 'Insufficient permissions.', 'sureforms' ) ] );
-			return;
 		}
 
 		// Validate and sanitize inputs.
@@ -783,12 +763,10 @@ class Admin_Handler {
 
 		if ( empty( $payment_id ) ) {
 			wp_send_json_error( [ 'message' => __( 'Payment ID is required.', 'sureforms' ) ] );
-			return;
 		}
 
 		if ( $note_index < 0 ) {
 			wp_send_json_error( [ 'message' => __( 'Invalid note index.', 'sureforms' ) ] );
-			return;
 		}
 
 		try {
@@ -797,7 +775,6 @@ class Admin_Handler {
 
 			if ( false === $updated_notes ) {
 				wp_send_json_error( [ 'message' => __( 'Failed to delete note.', 'sureforms' ) ] );
-				return;
 			}
 
 			wp_send_json_success( [ 'notes' => $updated_notes ] );
@@ -813,8 +790,8 @@ class Admin_Handler {
 	 *
 	 * @param int    $payment_id Payment ID.
 	 * @param string $note_text  Note text to add.
+	 * @since x.x.x
 	 * @return array|false Updated notes array or false on failure.
-	 * @since 1.0.0
 	 */
 	private function add_payment_note( $payment_id, $note_text ) {
 		if ( empty( $payment_id ) || empty( trim( $note_text ) ) ) {
@@ -860,8 +837,8 @@ class Admin_Handler {
 	 *
 	 * @param int $payment_id Payment ID.
 	 * @param int $note_index Index of note to delete.
+	 * @since x.x.x
 	 * @return array|false Updated notes array or false on failure.
-	 * @since 1.0.0
 	 */
 	private function delete_payment_note( $payment_id, $note_index ) {
 		if ( empty( $payment_id ) || $note_index < 0 ) {
@@ -906,20 +883,18 @@ class Admin_Handler {
 	/**
 	 * AJAX handler for deleting a log entry from payment.
 	 *
+	 * @since x.x.x
 	 * @return void
-	 * @since 1.0.0
 	 */
 	public function ajax_delete_log() {
 		// Verify nonce for security.
 		if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'srfm_payment_admin_nonce' ) ) {
 			wp_send_json_error( [ 'message' => __( 'Security verification failed.', 'sureforms' ) ] );
-			return;
 		}
 
 		// Check user capabilities.
 		if ( ! current_user_can( 'manage_options' ) ) {
 			wp_send_json_error( [ 'message' => __( 'Insufficient permissions.', 'sureforms' ) ] );
-			return;
 		}
 
 		// Validate and sanitize inputs.
@@ -928,12 +903,10 @@ class Admin_Handler {
 
 		if ( empty( $payment_id ) ) {
 			wp_send_json_error( [ 'message' => __( 'Payment ID is required.', 'sureforms' ) ] );
-			return;
 		}
 
 		if ( $log_index < 0 ) {
 			wp_send_json_error( [ 'message' => __( 'Invalid log index.', 'sureforms' ) ] );
-			return;
 		}
 
 		try {
@@ -942,7 +915,6 @@ class Admin_Handler {
 
 			if ( false === $updated_logs ) {
 				wp_send_json_error( [ 'message' => __( 'Failed to delete log entry.', 'sureforms' ) ] );
-				return;
 			}
 
 			wp_send_json_success( [ 'logs' => $updated_logs ] );
@@ -958,8 +930,8 @@ class Admin_Handler {
 	 *
 	 * @param int $payment_id Payment ID.
 	 * @param int $log_index  Index of log entry to delete.
+	 * @since x.x.x
 	 * @return array|false Updated formatted logs array or false on failure.
-	 * @since 1.0.0
 	 */
 	private function delete_payment_log( $payment_id, $log_index ) {
 		if ( empty( $payment_id ) || $log_index < 0 ) {
@@ -1004,16 +976,19 @@ class Admin_Handler {
 			return false;
 		}
 
+		$encoded_logs = wp_json_encode( $logs );
+		$encoded_logs = is_string( $encoded_logs ) ? $encoded_logs : '';
+
 		// Return formatted logs for frontend.
-		return $this->get_formatted_logs( wp_json_encode( $logs ) );
+		return $this->get_formatted_logs( $encoded_logs );
 	}
 
 	/**
 	 * Get formatted logs from log data.
 	 *
 	 * @param string $log_data JSON encoded log data.
+	 * @since x.x.x
 	 * @return array Formatted logs array.
-	 * @since 1.0.0
 	 */
 	private function get_formatted_logs( $log_data ) {
 		if ( empty( $log_data ) ) {
@@ -1056,20 +1031,18 @@ class Admin_Handler {
 	/**
 	 * AJAX handler for pausing a subscription.
 	 *
+	 * @since x.x.x
 	 * @return void
-	 * @since 1.0.0
 	 */
 	public function pause_subscription() {
 		// Verify nonce for security.
 		if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'srfm_payment_admin_nonce' ) ) {
 			wp_send_json_error( [ 'message' => __( 'Security verification failed.', 'sureforms' ) ] );
-			return;
 		}
 
 		// Check user capabilities.
 		if ( ! current_user_can( 'manage_options' ) ) {
 			wp_send_json_error( [ 'message' => __( 'Insufficient permissions.', 'sureforms' ) ] );
-			return;
 		}
 
 		// Get subscription ID.
@@ -1077,7 +1050,6 @@ class Admin_Handler {
 
 		if ( empty( $subscription_id ) ) {
 			wp_send_json_error( [ 'message' => __( 'Subscription ID is required.', 'sureforms' ) ] );
-			return;
 		}
 
 		try {
@@ -1086,13 +1058,11 @@ class Admin_Handler {
 
 			if ( ! $subscription ) {
 				wp_send_json_error( [ 'message' => __( 'Subscription not found.', 'sureforms' ) ] );
-				return;
 			}
 
 			// Verify this is a subscription.
 			if ( 'subscription' !== $subscription['type'] ) {
 				wp_send_json_error( [ 'message' => __( 'This payment is not a subscription.', 'sureforms' ) ] );
-				return;
 			}
 
 			// TODO: Implement actual Stripe API call to pause subscription.
@@ -1116,20 +1086,18 @@ class Admin_Handler {
 	/**
 	 * AJAX handler for bulk deleting payments.
 	 *
+	 * @since x.x.x
 	 * @return void
-	 * @since 1.0.0
 	 */
 	public function ajax_bulk_delete_payments() {
 		// Verify nonce for security.
 		if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'srfm_payment_admin_nonce' ) ) {
 			wp_send_json_error( [ 'message' => __( 'Security verification failed.', 'sureforms' ) ] );
-			return;
 		}
 
 		// Check user capabilities.
 		if ( ! current_user_can( 'manage_options' ) ) {
 			wp_send_json_error( [ 'message' => __( 'Insufficient permissions.', 'sureforms' ) ] );
-			return;
 		}
 
 		// Get and validate payment IDs.
@@ -1144,7 +1112,6 @@ class Admin_Handler {
 			// Check if JSON decode was successful.
 			if ( json_last_error() !== JSON_ERROR_NONE ) {
 				wp_send_json_error( [ 'message' => __( 'Invalid JSON format for payment IDs.', 'sureforms' ) ] );
-				return;
 			}
 		} else {
 			$payment_ids = $payment_ids_raw;
@@ -1153,7 +1120,6 @@ class Admin_Handler {
 		// Ensure it's an array.
 		if ( ! is_array( $payment_ids ) ) {
 			wp_send_json_error( [ 'message' => __( 'Invalid payment IDs format.', 'sureforms' ) ] );
-			return;
 		}
 
 		// Sanitize: Convert to integers and remove invalid values.
@@ -1171,11 +1137,9 @@ class Admin_Handler {
 
 		// wp_send_json_error( [ 'message' => __( 'No valid payment IDs provided.', 'sureforms' ) ] );
 
-
 		// Check if array is empty after sanitization.
 		if ( empty( $payment_ids ) ) {
 			wp_send_json_error( [ 'message' => __( 'No valid payment IDs provided.', 'sureforms' ) ] );
-			return;
 		}
 
 		// Limit bulk operations to prevent timeout (max 100 at once).
@@ -1185,7 +1149,6 @@ class Admin_Handler {
 					'message' => __( 'Cannot delete more than 100 payments at once. Please select fewer payments.', 'sureforms' ),
 				]
 			);
-			return;
 		}
 
 		try {

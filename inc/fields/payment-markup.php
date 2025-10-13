@@ -148,6 +148,7 @@ class Payment_Markup extends Base {
 			$payment_config['paymentItems'] = $this->payment_items;
 		}
 		$payment_config = wp_json_encode( $payment_config );
+		$payment_config = is_string( $payment_config ) ? $payment_config : '';
 
 		ob_start();
 		?>
@@ -161,6 +162,7 @@ class Payment_Markup extends Base {
 			<?php } ?>
 			class="<?php echo esc_attr( $field_classes ); ?>">
 			<?php echo $this->label_markup; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+			<?php echo $this->help_markup; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 			<div class="srfm-payment-field-wrapper">
 				<div class="srfm-payment-items-wrapper"></div>
 				<!-- Payment Amount Display -->
@@ -199,7 +201,6 @@ class Payment_Markup extends Base {
 				</div>
 			</div>
 
-			<?php echo $this->help_markup; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 			<?php echo $this->error_msg_markup; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 		</div>
 		<?php
@@ -235,7 +236,8 @@ class Payment_Markup extends Base {
 			</div>
 		</div>
 		<?php
-		return ob_get_clean();
+		$result = ob_get_clean();
+		return is_string( $result ) ? $result : '';
 	}
 
 	/**

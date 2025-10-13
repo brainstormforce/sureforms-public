@@ -2,6 +2,9 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
+import { RichText } from '@wordpress/block-editor';
+import HelpText from '@Components/misc/HelpText';
+import { decodeHtmlEntities } from '@Blocks/util';
 
 /**
  * Payment Component
@@ -10,13 +13,14 @@ import { __ } from '@wordpress/i18n';
  * @return {JSX.Element} Payment component
  */
 export const PaymentComponent = ( props ) => {
-	const { attributes } = props;
+	const { attributes, setAttributes } = props;
 	const {
 		label = 'Payment Details',
 		help = '',
 		required = true,
 		paymentType = 'one-time',
 		subscriptionPlan = {},
+		block_id
 	} = attributes;
 
 	// Get global stripe settings
@@ -87,16 +91,25 @@ export const PaymentComponent = ( props ) => {
 			</>
 		);
 	}
+	const isRequired = required ? ' srfm-required' : '';
 
 	return (
 		<div className="srfm-block-single srfm-payment-block">
-			{ label && (
-				<label className="srfm-block-label">
-					{ label }
-					{ required && <span className="srfm-required">*</span> }
-				</label>
-			) }
-
+			<RichText
+				tagName="label"
+				value={ label }
+				onChange={ ( value ) => {
+					setAttributes( { label: decodeHtmlEntities( value ) } );
+				} }
+				className={ `srfm-block-label${ isRequired }` }
+				multiline={ false }
+				allowedFormats={ [] }
+			/>
+			<HelpText
+				help={ help }
+				setAttributes={ setAttributes }
+				block_id={ block_id }
+			/>
 			<div className="srfm-payment-field-wrapper">
 				<p>
 					{ __(
@@ -106,8 +119,6 @@ export const PaymentComponent = ( props ) => {
 				</p>
 				{ stripeConnectedComponent }
 			</div>
-
-			{ help && <div className="srfm-help-text">{ help }</div> }
 		</div>
 	);
 };
