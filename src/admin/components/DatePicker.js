@@ -51,6 +51,9 @@ const DatePicker = ( props ) => {
 	};
 
 	const handleApply = () => {
+		if ( ! selectedDate.from || ! selectedDate.to ) {
+			return;
+		}
 		if ( typeof onApply === 'function' ) {
 			onApply( selectedDate );
 		}
@@ -98,6 +101,9 @@ const DatePicker = ( props ) => {
 						onDateSelect={ handleSelect }
 						selected={ selectedDate }
 						onApply={ handleApply }
+						disabled={ {
+							after: new Date(),
+						} }
 					/>
 				</div>
 			) }
