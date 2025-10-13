@@ -7,10 +7,7 @@ import { useState, useCallback } from '@wordpress/element';
  * @param {string} initialOrder  - Initial sort order (default: '')
  * @return {Object} Sort state and handlers
  */
-export const useEntriesSort = (
-	initialSortBy = '',
-	initialOrder = ''
-) => {
+export const useEntriesSort = ( initialSortBy = '', initialOrder = '' ) => {
 	const [ sortBy, setSortBy ] = useState( initialSortBy );
 	const [ order, setOrder ] = useState( initialOrder );
 

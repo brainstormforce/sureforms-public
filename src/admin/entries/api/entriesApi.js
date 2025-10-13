@@ -35,16 +35,16 @@ export const fetchFormsList = () => {
 /**
  * Fetch entries list with filters and pagination
  *
- * @param {Object} params          - Query parameters
- * @param {number} params.form_id  - Form ID to filter (0 for all forms)
- * @param {string} params.status   - Entry status: 'all', 'read', 'unread', 'trash'
- * @param {string} params.search   - Search term for entry ID
+ * @param {Object} params           - Query parameters
+ * @param {number} params.form_id   - Form ID to filter (0 for all forms)
+ * @param {string} params.status    - Entry status: 'all', 'read', 'unread', 'trash'
+ * @param {string} params.search    - Search term for entry ID
  * @param {string} params.date_from - Start date filter in YYYY-MM-DD format
- * @param {string} params.date_to  - End date filter in YYYY-MM-DD format
- * @param {string} params.orderby  - Column to order by
- * @param {string} params.order    - Sort direction: 'ASC' or 'DESC'
- * @param {number} params.per_page - Number of entries per page
- * @param {number} params.page     - Current page number
+ * @param {string} params.date_to   - End date filter in YYYY-MM-DD format
+ * @param {string} params.orderby   - Column to order by
+ * @param {string} params.order     - Sort direction: 'ASC' or 'DESC'
+ * @param {number} params.per_page  - Number of entries per page
+ * @param {number} params.page      - Current page number
  * @return {Promise<Object>} Promise resolving to entries data
  */
 export const fetchEntriesList = ( params = {} ) => {

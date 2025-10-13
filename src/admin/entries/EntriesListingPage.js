@@ -157,11 +157,24 @@ const EntriesListingPage = () => {
 	// Reset to first page when any filter changes
 	useEffect( () => {
 		goToPage( 1 );
-	}, [ statusFilter, formFilter, searchQuery, dateRange?.from, dateRange?.to ] );
+	}, [
+		statusFilter,
+		formFilter,
+		searchQuery,
+		dateRange?.from,
+		dateRange?.to,
+	] );
 
 	// Action handlers
 	const handleEdit = ( entry ) => {
-		window.open( decodeURIComponent( srfm_admin?.view_entry_url ).replace( '[id]', entry.id ), '_self', 'noopener,noreferrer' );
+		window.open(
+			decodeURIComponent( srfm_admin?.view_entry_url ).replace(
+				'[id]',
+				entry.id
+			),
+			'_self',
+			'noopener,noreferrer'
+		);
 	};
 
 	const handleDelete = ( entry ) => {
@@ -223,13 +236,13 @@ const EntriesListingPage = () => {
 					'Delete Entries Permanently?',
 					selectedEntries.length,
 					'sureforms'
-				)
+				  )
 				: _n(
 					'Move Entry to Trash?',
 					'Move Entries to Trash?',
 					selectedEntries.length,
 					'sureforms'
-				),
+				  ),
 			description: allInTrash
 				? sprintf(
 					// translators: %s is the number of entries to be deleted.
@@ -240,7 +253,7 @@ const EntriesListingPage = () => {
 						'sureforms'
 					),
 					selectedEntries.length
-				)
+				  )
 				: sprintf(
 					// translators: %s is the number of entries to be moved to trash.
 					_n(
@@ -250,7 +263,7 @@ const EntriesListingPage = () => {
 						'sureforms'
 					),
 					selectedEntries.length
-				),
+				  ),
 			confirmLabel: allInTrash
 				? __( 'Delete Permanently', 'sureforms' )
 				: __( 'Move to Trash', 'sureforms' ),

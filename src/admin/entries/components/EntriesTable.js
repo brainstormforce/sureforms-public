@@ -48,11 +48,12 @@ const EntriesTable = ( {
 					const sortDirection = header.sortable
 						? getSortDirection?.( header.key )
 						: null;
-					const SortIcon = sortDirection === 'asc'
-						? ChevronUp
-						: sortDirection === 'desc'
-							? ChevronDown
-							: ChevronsUpDown;
+					const SortIcon =
+						sortDirection === 'asc'
+							? ChevronUp
+							: sortDirection === 'desc'
+								? ChevronDown
+								: ChevronsUpDown;
 
 					const content = (
 						<Container
@@ -83,7 +84,10 @@ const EntriesTable = ( {
 									className="cursor-pointer select-none"
 									onClick={ () => onSort?.( header.key ) }
 									onKeyDown={ ( e ) => {
-										if ( e.key === 'Enter' || e.key === ' ' ) {
+										if (
+											e.key === 'Enter' ||
+											e.key === ' '
+										) {
 											e.preventDefault();
 											onSort?.( header.key );
 										}
@@ -101,13 +105,20 @@ const EntriesTable = ( {
 			<Table.Body>
 				{ isLoading ? (
 					Array.from( { length: 10 }, ( _, index ) => (
-						<Table.Row key={ index } className="[&_div:has(label)]:invisible relative">
+						<Table.Row
+							key={ index }
+							className="[&_div:has(label)]:invisible relative"
+						>
 							{ TABLE_HEADERS.map( ( header, headerIndex ) => (
 								<Table.Cell key={ headerIndex }>
 									<Skeleton className="absolute left-3.5 size-4 rounded-md" />
 									<Skeleton
 										variant="rectangular"
-										className={ cn( 'h-4 rounded-md w-28', header.align === 'right' && 'ml-auto' ) }
+										className={ cn(
+											'h-4 rounded-md w-28',
+											header.align === 'right' &&
+												'ml-auto'
+										) }
 									/>
 								</Table.Cell>
 							) ) }
@@ -141,7 +152,9 @@ const EntriesTable = ( {
 						<Skeleton className="h-8 w-24 rounded-md" />
 						<Skeleton className="h-8 w-32 rounded-md" />
 					</div>
-				) : children }
+				) : (
+					children
+				) }
 			</Table.Footer>
 		</Table>
 	);

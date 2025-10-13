@@ -96,7 +96,9 @@ export const transformEntry = ( entry, formsMap = {} ) => {
 		id: parseInt( entry.ID, 10 ),
 		entryId: `${ __( 'Entry', 'sureforms' ) } #${ entry.ID }`,
 		formId: parseInt( entry.form_id, 10 ),
-		formName: formsMap[ entry.form_id ] || `${ __( 'Form', 'sureforms' ) } #${ entry.form_id }`,
+		formName:
+			formsMap[ entry.form_id ] ||
+			`${ __( 'Form', 'sureforms' ) } #${ entry.form_id }`,
 		status: entry.status,
 		statusLabel: getStatusLabel( entry.status ),
 		firstField: getFirstFieldValue( entry.form_data ),
