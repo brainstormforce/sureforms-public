@@ -61,11 +61,11 @@ const DatePicker = ( props ) => {
 	};
 
 	// Update selected date when Datepicker opens.
-	useLayoutEffect( () => {
-		if ( show ) {
-			setSelectedDate( value );
+	useEffect( () => {
+		if ( ! show ) {
+			setSelectedDate( value || { from: null, to: null } );
 		}
-	}, [ show ] );
+	}, [ show, value ] );
 
 	// Handle click outside to close the date picker.
 	useEffect( () => {
