@@ -37,6 +37,7 @@ class Admin_Ajax {
 		add_action( 'wp_ajax_sureforms_recommended_plugin_activate', [ $this, 'required_plugin_activate' ] );
 		add_action( 'wp_ajax_sureforms_recommended_plugin_install', 'wp_ajax_install_plugin' );
 		add_action( 'wp_ajax_sureforms_integration', [ $this, 'generate_data_for_suretriggers_integration' ] );
+		add_action( 'wp_ajax_srfm_download_export', [ $this, 'download_export_file' ] );
 
 		add_filter( SRFM_SLUG . '_admin_filter', [ $this, 'localize_script_integration' ] );
 
@@ -365,6 +366,81 @@ class Admin_Ajax {
 	 */
 	public function print_rest_nonce() {
 		echo esc_js( wp_create_nonce( 'wp_rest' ) );
+		exit;
+	}
+
+	/**
+	 * Download exported file.
+	 *
+	 * @since 1.6.1
+	 * @return void
+	 */
+	public function download_export_file() {
+		// Check user permissions.
+		if ( ! Helper::current_user_can() ) {
+			wp_die( esc_html__( 'You do not have permission to access this file.', 'sureforms' ) );
+		}
+
+		// Verify nonce for security.
+		if ( ! isset( $_GET['_wpnonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ), 'srfm_download_export' ) ) {
+			wp_die( esc_html__( 'Security check failed.', 'sureforms' ) );
+		}
+
+		// Get and sanitize the file parameter.
+		$file = isset( $_GET['file'] ) ? sanitize_file_name( wp_unslash( $_GET['file'] ) ) : '';
+
+		if ( empty( $file ) ) {
+			wp_die( esc_html__( 'Invalid file request.', 'sureforms' ) );
+		}
+
+		// Build the full file path.
+		$temp_dir = wp_normalize_path( trailingslashit( get_temp_dir() ) );
+		$filepath  = $temp_dir . $file;
+
+		// Security check: ensure the file is in the temp directory.
+		if ( strpos( wp_normalize_path( $filepath ), $temp_dir ) !== 0 ) {
+			wp_die( esc_html__( 'Invalid file path.', 'sureforms' ) );
+		}
+
+		// Check if file exists.
+		if ( ! file_exists( $filepath ) ) {
+			wp_die( esc_html__( 'File not found.', 'sureforms' ) );
+		}
+
+		// Get file info.
+		$file_size = filesize( $filepath );
+		$file_info = pathinfo( $filepath );
+
+		// Determine content type and filename based on file extension.
+		$content_type = 'application/octet-stream';
+		$filename     = $file_info['basename'];
+		if ( isset( $file_info['extension'] ) ) {
+			if ( 'csv' === $file_info['extension'] ) {
+				$content_type = 'text/csv';
+			} elseif ( 'zip' === $file_info['extension'] ) {
+				$content_type = 'application/zip';
+				$filename     = 'SureForms Entries.zip';
+			}
+		}
+
+		// Set headers for download.
+		header( 'Content-Type: ' . $content_type );
+		header( 'Content-Disposition: attachment; filename="' . $filename . '"' );
+		header( 'Content-Length: ' . $file_size );
+		header( 'Cache-Control: private, max-age=0, must-revalidate' );
+		header( 'Pragma: public' );
+
+		// Clear output buffers.
+		if ( ob_get_level() ) {
+			ob_end_clean();
+		}
+
+		// Output the file.
+		readfile( $filepath ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_read_readfile -- Need direct file output for download.
+
+		// Clean up the temporary file.
+		unlink( $filepath );
+
 		exit;
 	}
 }

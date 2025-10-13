@@ -294,10 +294,6 @@ const EntriesListingPage = () => {
 	};
 
 	const handleBulkExport = () => {
-		if ( selectedEntries.length === 0 ) {
-			return;
-		}
-
 		exportEntriesMutation(
 			{
 				entry_ids: selectedEntries,

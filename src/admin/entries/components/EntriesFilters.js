@@ -4,9 +4,9 @@ import {
 	Calendar,
 	X,
 	Trash2,
-	Download,
 	MoreVertical,
 	RotateCcw,
+	ArchiveRestore,
 } from 'lucide-react';
 import { Select, Input, Button, DropdownMenu } from '@bsf/force-ui';
 import { useRef, useEffect, useMemo } from '@wordpress/element';
@@ -107,25 +107,36 @@ const EntriesFilters = ( {
 	const dateFilterProps = dateRange &&
 		dateRange?.from &&
 		dateRange?.to && {
-			value: `${ formatDate( dateRange?.from ) } - ${ formatDate(
-				dateRange?.to
-			) }`,
-			suffix: (
-				<Button
-					type="button"
-					onClick={ () => {
-						onDateRangeChange( null );
-					} }
-					variant="ghost"
-					size="xs"
-					className="bg-transparent p-0 pointer-events-auto text-icon-secondary hover:text-icon-primary transition"
-					icon={ <X /> }
-				/>
-			),
-		};
+		value: `${ formatDate( dateRange?.from ) } - ${ formatDate(
+			dateRange?.to
+		) }`,
+		suffix: (
+			<Button
+				type="button"
+				onClick={ () => {
+					onDateRangeChange( null );
+				} }
+				variant="ghost"
+				size="xs"
+				className="bg-transparent p-0 pointer-events-auto text-icon-secondary hover:text-icon-primary transition"
+				icon={ <X /> }
+			/>
+		),
+	};
 
 	return (
 		<div className="flex items-center gap-4">
+			<Button
+				variant="outline"
+				size="sm"
+				onClick={ onBulkExport }
+				icon={ <ArchiveRestore className="w-4 h-4" /> }
+				iconPosition="left"
+				className="min-w-fit"
+			>
+				{ __( 'Export', 'sureforms' ) }
+			</Button>
+
 			{ /* Show filters when no items are selected */ }
 			{ ! hasSelectedEntries && (
 				<>
@@ -253,17 +264,6 @@ const EntriesFilters = ( {
 						destructive
 					>
 						{ __( 'Delete', 'sureforms' ) }
-					</Button>
-
-					<Button
-						variant="outline"
-						size="sm"
-						onClick={ onBulkExport }
-						icon={ <Download className="w-4 h-4" /> }
-						iconPosition="left"
-						className="min-w-fit"
-					>
-						{ __( 'Export', 'sureforms' ) }
 					</Button>
 
 					<DropdownMenu placement="bottom-end">

@@ -503,7 +503,11 @@ class Rest_Api {
 				'filename'     => $result['filename'],
 				'filepath'     => $result['filepath'],
 				'type'         => $result['type'],
-				'download_url' => admin_url( 'admin-ajax.php?action=srfm_download_export&file=' . rawurlencode( basename( $result['filepath'] ) ) ),
+				'download_url' => add_query_arg(
+					'_wpnonce',
+					wp_create_nonce( 'srfm_download_export' ),
+					admin_url( 'admin-ajax.php?action=srfm_download_export&file=' . rawurlencode( basename( $result['filepath'] ) ) )
+				),
 			],
 			200
 		);
