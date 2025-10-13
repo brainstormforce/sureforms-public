@@ -1,5 +1,5 @@
 import { __ } from '@wordpress/i18n';
-import { ChevronsUpDown } from 'lucide-react';
+import { ChevronsUpDown, ChevronUp, ChevronDown } from 'lucide-react';
 import { Container, Table, Skeleton } from '@bsf/force-ui';
 import { TABLE_HEADERS } from '../constants';
 import EntriesTableRow from './EntriesTableRow';
@@ -19,6 +19,8 @@ import { cn } from '@Utils/Helpers';
  * @param {Function} props.onDelete             - Handler for delete action
  * @param {Function} props.onRestore            - Handler for restore action
  * @param {boolean}  props.isLoading            - Whether data is loading
+ * @param {Function} props.onSort               - Handler for sort column change
+ * @param {Function} props.getSortDirection     - Function to get sort direction for a column
  * @param {Node}     props.children             - Child components (typically pagination)
  */
 const EntriesTable = ( {
@@ -31,6 +33,8 @@ const EntriesTable = ( {
 	onDelete,
 	onRestore,
 	isLoading = false,
+	onSort,
+	getSortDirection,
 	children,
 } ) => {
 	return (
@@ -40,8 +44,17 @@ const EntriesTable = ( {
 				onChangeSelection={ onToggleAll }
 				indeterminate={ indeterminate }
 			>
-				{ TABLE_HEADERS.map( ( header, index ) => (
-					<Table.HeadCell key={ index }>
+				{ TABLE_HEADERS.map( ( header, index ) => {
+					const sortDirection = header.sortable
+						? getSortDirection?.( header.key )
+						: null;
+					const SortIcon = sortDirection === 'asc'
+						? ChevronUp
+						: sortDirection === 'desc'
+							? ChevronDown
+							: ChevronsUpDown;
+
+					const content = (
 						<Container
 							align="center"
 							className="gap-2"
@@ -49,11 +62,41 @@ const EntriesTable = ( {
 						>
 							{ header.label }
 							{ header.sortable && (
-								<ChevronsUpDown className="w-4 h-4 text-text-primary" />
+								<SortIcon
+									className={ cn(
+										'w-4 h-4',
+										sortDirection
+											? 'text-text-primary'
+											: 'text-text-tertiary'
+									) }
+								/>
 							) }
 						</Container>
-					</Table.HeadCell>
-				) ) }
+					);
+
+					return (
+						<Table.HeadCell key={ index }>
+							{ header.sortable ? (
+								<div
+									role="button"
+									tabIndex={ 0 }
+									className="cursor-pointer select-none"
+									onClick={ () => onSort?.( header.key ) }
+									onKeyDown={ ( e ) => {
+										if ( e.key === 'Enter' || e.key === ' ' ) {
+											e.preventDefault();
+											onSort?.( header.key );
+										}
+									} }
+								>
+									{ content }
+								</div>
+							) : (
+								content
+							) }
+						</Table.HeadCell>
+					);
+				} ) }
 			</Table.Head>
 			<Table.Body>
 				{ isLoading ? (

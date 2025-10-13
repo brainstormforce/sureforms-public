@@ -9,6 +9,7 @@ import ConfirmationDialog from './components/ConfirmationDialog';
 import { useEntriesFilters } from './hooks/useEntriesFilters';
 import { useEntriesSelection } from './hooks/useEntriesSelection';
 import { usePagination } from './hooks/usePagination';
+import { useEntriesSort } from './hooks/useEntriesSort';
 import {
 	useEntries,
 	useForms,
@@ -50,6 +51,8 @@ const EntriesListingPage = () => {
 		changeEntriesPerPage,
 	} = usePagination( 1, 10 );
 
+	const { sortBy, order, handleSort, getSortDirection } = useEntriesSort();
+
 	// Convert dateRange to formatted date strings for API
 	const dateFilters = useMemo( () => {
 		if ( ! dateRange || ! dateRange.from ) {
@@ -84,8 +87,8 @@ const EntriesListingPage = () => {
 		search: searchQuery,
 		date_from: dateFilters.date_from,
 		date_to: dateFilters.date_to,
-		orderby: 'created_at',
-		order: 'DESC',
+		orderby: sortBy,
+		order,
 		per_page: entriesPerPage,
 		page: currentPage,
 	} );
@@ -451,6 +454,8 @@ const EntriesListingPage = () => {
 						onDelete={ handleDelete }
 						onRestore={ handleRestore }
 						isLoading={ isLoading }
+						onSort={ handleSort }
+						getSortDirection={ getSortDirection }
 					>
 						<EntriesPagination
 							currentPage={ currentPage }
