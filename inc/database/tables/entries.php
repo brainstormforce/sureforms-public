@@ -342,7 +342,7 @@ class Entries extends Base {
 		 * Refactored the get_all method to use the get_records_by_args method from the Base class.
 		 * Moved the common logic inside the Base class so it can be reused by other tables as well.
 		 *
-		 * @since x.x.x
+		 * @since 1.13.0
 		 */
 		return self::get_instance()->get_records_by_args( $args, $set_limit );
 	}
