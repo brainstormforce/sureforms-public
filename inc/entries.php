@@ -76,6 +76,8 @@ class Entries {
 
 		$args = wp_parse_args( $args, $defaults );
 
+		/** @var array{form_id: int, status: string, search: string, date_from: string, date_to: string, orderby: string, order: string, per_page: int, page: int, entry_ids: array<int>} $args */
+
 		// Build where conditions.
 		$where_conditions = self::build_where_conditions( $args );
 
@@ -245,13 +247,7 @@ class Entries {
 	 * }
 	 *
 	 * @since 1.0.0
-	 * @return array<string,mixed> {
-	 *     @type bool   $success  Whether the export was successful.
-	 *     @type string $filename Export filename (if single form).
-	 *     @type string $filepath Full path to the exported file.
-	 *     @type string $type     Export type: 'csv' or 'zip'.
-	 *     @type string $error    Error message if failed.
-	 * }
+	 * @return array{success: bool, filename?: string, filepath?: string, type?: string, error?: string} Export result.
 	 */
 	public static function export_entries( $args = [] ) {
 		$defaults = [
@@ -264,6 +260,8 @@ class Entries {
 		];
 
 		$args = wp_parse_args( $args, $defaults );
+
+/** @var array{entry_ids: int|array<int>, form_id: int, status: string, search: string, date_from: string, date_to: string} $args */
 
 		// Get entry IDs to export.
 		if ( empty( $args['entry_ids'] ) ) {
@@ -278,7 +276,8 @@ class Entries {
 			);
 			$entry_ids        = array_map( 'absint', array_column( $all_entries, 'ID' ) );
 		} else {
-			$entry_ids = is_array( $args['entry_ids'] ) ? array_map( 'absint', $args['entry_ids'] ) : [ absint( $args['entry_ids'] ) ];
+			/** @var array<int> $entry_ids */
+			$entry_ids = is_array( $args['entry_ids'] ) ? array_map( 'absint', $args['entry_ids'] ) : [ absint( (int) $args['entry_ids'] ) ];
 		}
 
 		if ( empty( $entry_ids ) ) {
@@ -405,7 +404,7 @@ class Entries {
 	/**
 	 * Build where conditions for entry queries.
 	 *
-	 * @param array<string,mixed> $args Query arguments.
+	 * @param array<string, int|string|array<int>> $args Query arguments.
 	 *
 	 * @since 1.0.0
 	 * @return array<mixed> Where conditions array.
@@ -478,8 +477,6 @@ class Entries {
 
 			if ( count( $date_conditions ) > 1 ) {
 				$where_conditions[] = $date_conditions;
-			} else {
-				$where_conditions[] = $date_conditions[0];
 			}
 		}
 
@@ -536,7 +533,7 @@ class Entries {
 	 * @param array<mixed> $results Entry results.
 	 *
 	 * @since 1.0.0
-	 * @return array<string,array<mixed>> Map and labels.
+	 * @return array{map: array<string,string>, labels: array<string,string>} Map and labels.
 	 */
 	private static function build_block_key_map_and_labels( $results ) {
 		$block_key_map = [];
@@ -571,8 +568,8 @@ class Entries {
 	/**
 	 * Write CSV header row.
 	 *
-	 * @param resource     $stream       File stream.
-	 * @param array<mixed> $block_labels Block labels.
+	 * @param resource             $stream       File stream.
+	 * @param array<string,string> $block_labels Block labels.
 	 *
 	 * @since 1.0.0
 	 * @return void
@@ -588,9 +585,9 @@ class Entries {
 	/**
 	 * Write CSV data rows.
 	 *
-	 * @param resource     $stream        File stream.
-	 * @param array<mixed> $results       Entry results.
-	 * @param array<mixed> $block_key_map Block key map.
+	 * @param resource             $stream        File stream.
+	 * @param array<mixed>         $results       Entry results.
+	 * @param array<string,string> $block_key_map Block key map.
 	 *
 	 * @since 1.0.0
 	 * @return void
