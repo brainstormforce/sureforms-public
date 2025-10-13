@@ -365,6 +365,8 @@ easy.
 You can report the issue through our [Bug Bounty Program](https://brainstormforce.com/bug-bounty-program/). We collaborate with Patchstack to provide opportunities for researchers to report vulnerabilities. The Patchstack team will help validate, triage, and handle any reported security issues.
 
 == Changelog ==
+= x.x.x =
+* Improvement: Added a message as fall for email failure for single entries page when SMTP plugin is not present.
 = 1.13.0 - 14th October 2025 =
 * Fix: Resolved an issue where multiple entries were being recorded when submit button was clicked multiple times for a single form submission.
 * Fix: Resolved an issue where empty <p> tag in being added before and after repeater field table in form confirmation success message.

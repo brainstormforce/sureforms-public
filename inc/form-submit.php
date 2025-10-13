@@ -847,18 +847,29 @@ class Form_Submit {
 									]
 								);
 							} else {
+								$reason = ! empty( $email_report )
+									? esc_html( $email_report )
+									: ( ! Helper::is_any_smtp_plugin_active()
+									? esc_html__( 'No SMTP plugin detected. Please configure one to enable email sending.', 'sureforms' )
+									: esc_html__( 'Unable to determine the cause of the failure.', 'sureforms' )
+									);
+
 								$entries_db_instance->update_log(
 									$log_key,
 									null,
 									[
 										sprintf(
-											/* translators: Here, %1$s is the comma separated emails list and %2$s is error report ( if any ). */
-											__( 'Email server was unable to send the email notification. Recipient: %1$s. Reason: %2$s', 'sureforms' ),
+										/* translators: Here, %1$s is the comma separated emails list and %2$s is error report ( if any ). */
+											__(
+												'Email server was unable to send the email notification. Recipient: %1$s. Reason: %2$s',
+												'sureforms'
+											),
 											esc_html( $parsed['to'] ),
-											! empty( $email_report ) ? esc_html( $email_report ) : esc_html__( 'Unknown', 'sureforms' )
+											$reason
 										),
 									]
 								);
+
 							}
 						}
 
