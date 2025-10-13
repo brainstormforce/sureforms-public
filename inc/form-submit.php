@@ -851,7 +851,7 @@ class Form_Submit {
 									? esc_html( $email_report )
 									: ( ! Helper::is_any_smtp_plugin_active()
 									? esc_html__( 'No SMTP plugin detected. Please configure one to enable email sending.', 'sureforms' )
-									: esc_html__( 'Unable to determine the cause of the failure.', 'sureforms' )
+									: esc_html__( 'The failure occurred due to an undetermined cause.', 'sureforms' )
 									);
 
 								$entries_db_instance->update_log(
