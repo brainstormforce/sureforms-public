@@ -312,15 +312,15 @@ class Rest_Api {
 		$params = $request->get_params();
 
 		$args = [
-			'form_id'  => isset( $params['form_id'] ) ? absint( $params['form_id'] ) : 0,
-			'status'   => isset( $params['status'] ) ? sanitize_text_field( $params['status'] ) : 'all',
-			'search'   => isset( $params['search'] ) ? sanitize_text_field( $params['search'] ) : '',
+			'form_id'   => isset( $params['form_id'] ) ? absint( $params['form_id'] ) : 0,
+			'status'    => isset( $params['status'] ) ? sanitize_text_field( $params['status'] ) : 'all',
+			'search'    => isset( $params['search'] ) ? sanitize_text_field( $params['search'] ) : '',
 			'date_from' => isset( $params['date_from'] ) ? sanitize_text_field( $params['date_from'] ) : '',
-			'date_to'  => isset( $params['date_to'] ) ? sanitize_text_field( $params['date_to'] ) : '',
-			'orderby'  => isset( $params['orderby'] ) ? sanitize_text_field( $params['orderby'] ) : 'created_at',
-			'order'    => isset( $params['order'] ) ? sanitize_text_field( $params['order'] ) : 'DESC',
-			'per_page' => isset( $params['per_page'] ) ? absint( $params['per_page'] ) : 20,
-			'page'     => isset( $params['page'] ) ? absint( $params['page'] ) : 1,
+			'date_to'   => isset( $params['date_to'] ) ? sanitize_text_field( $params['date_to'] ) : '',
+			'orderby'   => isset( $params['orderby'] ) ? sanitize_text_field( $params['orderby'] ) : 'created_at',
+			'order'     => isset( $params['order'] ) ? sanitize_text_field( $params['order'] ) : 'DESC',
+			'per_page'  => isset( $params['per_page'] ) ? absint( $params['per_page'] ) : 20,
+			'page'      => isset( $params['page'] ) ? absint( $params['page'] ) : 1,
 		];
 
 		$result = Entries_Class::get_entries( $args );
@@ -484,7 +484,7 @@ class Rest_Api {
 			'status'    => isset( $params['status'] ) ? sanitize_text_field( $params['status'] ) : 'all',
 			'search'    => isset( $params['search'] ) ? sanitize_text_field( $params['search'] ) : '',
 			'date_from' => isset( $params['date_from'] ) ? sanitize_text_field( $params['date_from'] ) : '',
-			'date_to'  => isset( $params['date_to'] ) ? sanitize_text_field( $params['date_to'] ) : '',
+			'date_to'   => isset( $params['date_to'] ) ? sanitize_text_field( $params['date_to'] ) : '',
 		];
 
 		$result = Entries_Class::export_entries( $args );
@@ -597,15 +597,15 @@ class Rest_Api {
 					'callback'            => [ $this, 'get_entries_list' ],
 					'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
 					'args'                => [
-						'form_id'  => [
+						'form_id'   => [
 							'sanitize_callback' => 'absint',
 							'default'           => 0,
 						],
-						'status'   => [
+						'status'    => [
 							'sanitize_callback' => 'sanitize_text_field',
 							'default'           => 'all',
 						],
-						'search'   => [
+						'search'    => [
 							'sanitize_callback' => 'sanitize_text_field',
 							'default'           => '',
 						],
@@ -613,23 +613,23 @@ class Rest_Api {
 							'sanitize_callback' => 'sanitize_text_field',
 							'default'           => '',
 						],
-						'date_to'  => [
+						'date_to'   => [
 							'sanitize_callback' => 'sanitize_text_field',
 							'default'           => '',
 						],
-						'orderby'  => [
+						'orderby'   => [
 							'sanitize_callback' => 'sanitize_text_field',
 							'default'           => 'created_at',
 						],
-						'order'    => [
+						'order'     => [
 							'sanitize_callback' => 'sanitize_text_field',
 							'default'           => 'DESC',
 						],
-						'per_page' => [
+						'per_page'  => [
 							'sanitize_callback' => 'absint',
 							'default'           => 20,
 						],
-						'page'     => [
+						'page'      => [
 							'sanitize_callback' => 'absint',
 							'default'           => 1,
 						],
@@ -703,7 +703,7 @@ class Rest_Api {
 							'sanitize_callback' => 'sanitize_text_field',
 							'default'           => '',
 						],
-						'date_to'  => [
+						'date_to'   => [
 							'sanitize_callback' => 'sanitize_text_field',
 							'default'           => '',
 						],

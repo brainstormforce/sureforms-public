@@ -98,15 +98,17 @@ class Entries {
 		);
 
 		// Check if trash is empty.
-		$trash_count = EntriesTable::get_instance()->get_total_count( [
+		$trash_count = EntriesTable::get_instance()->get_total_count(
 			[
 				[
-					'key'     => 'status',
-					'compare' => '=',
-					'value'   => 'trash',
+					[
+						'key'     => 'status',
+						'compare' => '=',
+						'value'   => 'trash',
+					],
 				],
-			],
-		] );
+			]
+		);
 
 		return [
 			'entries'      => $entries,
@@ -114,7 +116,7 @@ class Entries {
 			'per_page'     => absint( $args['per_page'] ),
 			'current_page' => absint( $args['page'] ),
 			'total_pages'  => ceil( $total / absint( $args['per_page'] ) ),
-			'emptyTrash'   => $trash_count === 0,
+			'emptyTrash'   => 0 === $trash_count,
 		];
 	}
 
@@ -617,8 +619,7 @@ class Entries {
 	/**
 	 * Normalize field values for CSV export.
 	 *
-	 * @param string $srfm_key    Field key.
-	 * @param mixed  $field_value Field value.
+	 * @param mixed $field_value Field value.
 	 *
 	 * @since 1.0.0
 	 * @return string Normalized value.

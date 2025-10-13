@@ -395,7 +395,7 @@ class Admin_Ajax {
 
 		// Build the full file path.
 		$temp_dir = wp_normalize_path( trailingslashit( get_temp_dir() ) );
-		$filepath  = $temp_dir . $file;
+		$filepath = $temp_dir . $file;
 
 		// Security check: ensure the file is in the temp directory.
 		if ( strpos( wp_normalize_path( $filepath ), $temp_dir ) !== 0 ) {
