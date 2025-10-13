@@ -151,6 +151,11 @@ const EntriesListingPage = () => {
 		);
 	}, [ error ] );
 
+	// Reset to first page when any filter changes
+	useEffect( () => {
+		goToPage( 1 );
+	}, [ statusFilter, formFilter, searchQuery, dateRange?.from, dateRange?.to ] );
+
 	// Action handlers
 	const handleEdit = ( entry ) => {
 		window.open( decodeURIComponent( srfm_admin?.view_entry_url ).replace( '[id]', entry.id ), '_self', 'noopener,noreferrer' );
@@ -411,7 +416,7 @@ const EntriesListingPage = () => {
 
 	return (
 		<div className="p-8 bg-background-secondary min-h-screen">
-			<div className="max-w-[1374px] mx-auto">
+			<div className="mx-auto">
 				<div className="bg-white rounded-xl border-0.5 border-border-subtle shadow-sm p-4 space-y-2">
 					<div className="p-1">
 						<div className="flex justify-between items-center gap-5">
