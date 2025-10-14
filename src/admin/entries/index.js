@@ -1,9 +1,9 @@
 import domReady from '@wordpress/dom-ready';
 import { createRoot } from '@wordpress/element';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { RouterProvider } from '@tanstack/react-router';
 import FormPageHeader from '../components/PageHeader';
-import EntriesListingPage from './EntriesListingPage';
-import { Toaster } from '@bsf/force-ui';
+import { router } from './routes';
 
 // Create a client
 const queryClient = new QueryClient( {
@@ -24,15 +24,14 @@ function renderApp() {
 		headerRoot.render( <FormPageHeader /> );
 	}
 
-	// Render entries table.
+	// Render entries application with router.
 	const entriesApp = document.getElementById( 'srfm-root' );
 	const entriesRoot = createRoot( entriesApp );
 
 	if ( entriesRoot ) {
 		entriesRoot.render(
 			<QueryClientProvider client={ queryClient }>
-				<EntriesListingPage />
-				<Toaster className="z-999999" />
+				<RouterProvider router={ router } />
 			</QueryClientProvider>
 		);
 	}
