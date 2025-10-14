@@ -1601,16 +1601,23 @@ class Helper {
 	 * Returns false if all plugins are activated.
 	 *
 	 * @since x.x.x
-	 * @return array|false The current plugin data or false if all plugins are activated.
+	 * @return array<string, mixed>|false The current plugin data or false if all plugins are activated.
 	 */
 	public static function get_rotating_plugin_banner() {
 		$all_plugins = self::sureforms_get_integration();
+
+		if ( ! is_array( $all_plugins ) ) {
+			return false;
+		}
 
 		$available_plugins = [];
 
 		// Only include non-activated plugins.
 		foreach ( $all_plugins as $plugin ) {
-			if ( isset( $plugin['status'] ) && 'Activated' !== $plugin['status'] ) {
+			if ( ! is_array( $plugin ) ) {
+				continue;
+			}
+			if ( isset( $plugin['status'] ) && is_string( $plugin['status'] ) && 'Activated' !== $plugin['status'] ) {
 				$available_plugins[] = $plugin;
 			}
 		}
@@ -1627,6 +1634,10 @@ class Helper {
 		// Get stored rotation data.
 		$rotation_data = self::get_srfm_option( 'plugin_banner_rotation', [] );
 
+		if ( ! is_array( $rotation_data ) ) {
+			$rotation_data = [];
+		}
+
 		// Initialize rotation data if empty.
 		if ( empty( $rotation_data ) ) {
 			$current_time = time();
@@ -1637,11 +1648,11 @@ class Helper {
 					'plugin_index'       => 0,
 				]
 			);
-			return $available_plugins[0];
+			return isset( $available_plugins[0] ) && is_array( $available_plugins[0] ) ? $available_plugins[0] : false;
 		}
 
-		$last_rotation_date = isset( $rotation_data['last_rotation_date'] ) ? $rotation_data['last_rotation_date'] : 0;
-		$plugin_index       = isset( $rotation_data['plugin_index'] ) ? intval( $rotation_data['plugin_index'] ) : 0;
+		$last_rotation_date = isset( $rotation_data['last_rotation_date'] ) && is_int( $rotation_data['last_rotation_date'] ) ? $rotation_data['last_rotation_date'] : 0;
+		$plugin_index       = isset( $rotation_data['plugin_index'] ) && is_numeric( $rotation_data['plugin_index'] ) ? intval( $rotation_data['plugin_index'] ) : 0;
 
 		$current_time        = time();
 		$days_since_rotation = ( $current_time - $last_rotation_date ) / DAY_IN_SECONDS;
@@ -1649,7 +1660,8 @@ class Helper {
 		// Rotate every 2 days.
 		if ( $days_since_rotation >= 2 ) {
 			// Rotate to next plugin.
-			$plugin_index = ( $plugin_index + 1 ) % $total_plugins;
+			++$plugin_index;
+			$plugin_index = $plugin_index % $total_plugins;
 
 			// Update the rotation data.
 			self::update_srfm_option(
@@ -1666,7 +1678,7 @@ class Helper {
 			$plugin_index = 0;
 		}
 
-		return $available_plugins[ $plugin_index ];
+		return isset( $available_plugins[ $plugin_index ] ) && is_array( $available_plugins[ $plugin_index ] ) ? $available_plugins[ $plugin_index ] : false;
 	}
 
 	/**
