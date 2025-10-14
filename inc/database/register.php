@@ -38,7 +38,7 @@ class Register {
 		 * 5. Finally, stop the DB upgrade and update the current version in option table.
 		 *
 		 * Replaced self::get_db_tables() to static::get_db_tables() for allowing overrides.
-		 * @since x.x.x
+		 * @since 1.13.0
 		 */
 		foreach ( static::get_db_tables() as $instance ) {
 			$instance->start_db_upgrade();
