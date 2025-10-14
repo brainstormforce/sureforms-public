@@ -495,35 +495,39 @@ class Rest_Api {
 		}
 
 		// Process form data.
-		$form_data = [];
+		$form_data       = [];
 		$excluded_fields = [ 'srfm-honeypot-field', 'g-recaptcha-response', 'srfm-sender-email-field' ];
+		$entry_form_data = $entry['form_data'] ?? [];
 
-		foreach ( $entry['form_data'] as $field_name => $value ) {
-			if ( in_array( $field_name, $excluded_fields, true ) ) {
-				continue;
+		if ( is_array( $entry_form_data ) ) {
+			foreach ( $entry_form_data as $field_name => $value ) {
+				if ( ! is_string( $field_name ) || in_array( $field_name, $excluded_fields, true ) ) {
+					continue;
+				}
+				if ( false === str_contains( $field_name, '-lbl-' ) ) {
+					continue;
+				}
+
+				$label_parts      = explode( '-lbl-', $field_name );
+				$label            = isset( $label_parts[1] ) ? explode( '-', $label_parts[1] )[0] : '';
+				$label            = $label ? Helper::decrypt( $label ) : '';
+				$field_block_name = Helper::get_block_name_from_field( $field_name );
+
+				$form_data[] = [
+					'field_name' => $field_name,
+					'label'      => $label,
+					'value'      => $value,
+					'block_name' => $field_block_name,
+				];
 			}
-			if ( false === str_contains( $field_name, '-lbl-' ) ) {
-				continue;
-			}
-
-			$label = explode( '-lbl-', $field_name )[1];
-			$label = explode( '-', $label )[0];
-			$label = $label ? Helper::decrypt( $label ) : '';
-			$field_block_name = Helper::get_block_name_from_field( $field_name );
-
-			$form_data[] = [
-				'field_name'      => $field_name,
-				'label'           => $label,
-				'value'           => $value,
-				'block_name'      => $field_block_name,
-			];
 		}
 
 		// Get user info.
-		$user_id = Helper::get_integer_value( $entry['user_id'] );
+		$user_id   = Helper::get_integer_value( $entry['user_id'] );
 		$user_info = 0 !== $user_id ? get_userdata( $user_id ) : null;
 
 		// Get form info.
+		// Translators: %d is the form ID.
 		$form_name = ! empty( get_the_title( $entry['form_id'] ) ) ? get_the_title( $entry['form_id'] ) : sprintf( __( 'SureForms Form #%d', 'sureforms' ), intval( $entry['form_id'] ) );
 
 		$response_data = [
@@ -567,8 +571,10 @@ class Rest_Api {
 		}
 
 		$entry_id = absint( $request->get_param( 'id' ) );
-		$per_page = absint( $request->get_param( 'per_page' ) ) ?: 3;
-		$page = absint( $request->get_param( 'page' ) ) ?: 1;
+		$per_page = absint( $request->get_param( 'per_page' ) );
+		$per_page = $per_page ? $per_page : 3;
+		$page     = absint( $request->get_param( 'page' ) );
+		$page     = $page ? $page : 1;
 
 		if ( empty( $entry_id ) ) {
 			return new \WP_REST_Response(
@@ -586,10 +592,11 @@ class Rest_Api {
 			);
 		}
 
-		$logs = $entry['logs'] ?? [];
-		$total_logs = count( $logs );
+		$logs        = $entry['logs'] ?? [];
+		$logs        = is_array( $logs ) ? $logs : [];
+		$total_logs  = count( $logs );
 		$total_pages = ceil( $total_logs / $per_page );
-		$offset = ( $page - 1 ) * $per_page;
+		$offset      = ( $page - 1 ) * $per_page;
 
 		// Paginate logs.
 		$paginated_logs = array_slice( $logs, $offset, $per_page );
@@ -597,6 +604,9 @@ class Rest_Api {
 		// Format logs with unique IDs for deletion.
 		$formatted_logs = [];
 		foreach ( $paginated_logs as $index => $log ) {
+			if ( ! is_array( $log ) ) {
+				continue;
+			}
 			$formatted_logs[] = [
 				'id'        => $offset + $index, // Use offset-based ID for consistent deletion.
 				'title'     => $log['title'] ?? '',
@@ -691,7 +701,7 @@ class Rest_Api {
 		return apply_filters(
 			'srfm_rest_api_endpoints',
 			[
-				'generate-form'         => [
+				'generate-form'                    => [
 					'methods'             => 'POST',
 					'callback'            => [ AI_Form_Builder::get_instance(), 'generate_ai_form' ],
 					'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
@@ -702,48 +712,48 @@ class Rest_Api {
 					],
 				],
 				// This route is used to map the AI response to SureForms fields markup.
-				'map-fields'            => [
+				'map-fields'                       => [
 					'methods'             => 'POST',
 					'callback'            => [ Field_Mapping::get_instance(), 'generate_gutenberg_fields_from_questions' ],
 					'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
 				],
 				// This route is used to initiate auth process when user tries to authenticate on billing portal.
-				'initiate-auth'         => [
+				'initiate-auth'                    => [
 					'methods'             => 'GET',
 					'callback'            => [ AI_Auth::get_instance(), 'get_auth_url' ],
 					'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
 				],
 				// This route is to used to decrypt the access key and save it in the database.
-				'handle-access-key'     => [
+				'handle-access-key'                => [
 					'methods'             => 'POST',
 					'callback'            => [ AI_Auth::get_instance(), 'handle_access_key' ],
 					'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
 				],
 				// This route is to get the form submissions for the last 30 days.
-				'entries-chart-data'    => [
+				'entries-chart-data'               => [
 					'methods'             => 'GET',
 					'callback'            => [ $this, 'get_entries_chart_data' ],
 					'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
 				],
 				// This route is to get all forms data.
-				'form-data'             => [
+				'form-data'                        => [
 					'methods'             => 'GET',
 					'callback'            => [ $this, 'get_form_data' ],
 					'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
 				],
 				// Onboarding endpoints.
-				'onboarding/set-status' => [
+				'onboarding/set-status'            => [
 					'methods'             => 'POST',
 					'callback'            => [ $this, 'set_onboarding_status' ],
 					'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
 				],
-				'onboarding/get-status' => [
+				'onboarding/get-status'            => [
 					'methods'             => 'GET',
 					'callback'            => [ $this, 'get_onboarding_status' ],
 					'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
 				],
 				// Plugin status endpoint.
-				'plugin-status'         => [
+				'plugin-status'                    => [
 					'methods'             => 'GET',
 					'callback'            => [ $this, 'get_plugin_status' ],
 					'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
@@ -755,7 +765,7 @@ class Rest_Api {
 					],
 				],
 				// Entries endpoints.
-				'entries/list'          => [
+				'entries/list'                     => [
 					'methods'             => 'GET',
 					'callback'            => [ $this, 'get_entries_list' ],
 					'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
@@ -798,7 +808,7 @@ class Rest_Api {
 						],
 					],
 				],
-				'entries/read-status'   => [
+				'entries/read-status'              => [
 					'methods'             => 'POST',
 					'callback'            => [ $this, 'update_entries_read_status' ],
 					'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
@@ -814,7 +824,7 @@ class Rest_Api {
 						],
 					],
 				],
-				'entries/trash'         => [
+				'entries/trash'                    => [
 					'methods'             => 'POST',
 					'callback'            => [ $this, 'update_entries_trash_status' ],
 					'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
@@ -830,7 +840,7 @@ class Rest_Api {
 						],
 					],
 				],
-				'entries/delete'        => [
+				'entries/delete'                   => [
 					'methods'             => 'POST',
 					'callback'            => [ $this, 'delete_entries' ],
 					'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
@@ -841,7 +851,7 @@ class Rest_Api {
 						],
 					],
 				],
-				'entries/export'        => [
+				'entries/export'                   => [
 					'methods'             => 'POST',
 					'callback'            => [ $this, 'export_entries' ],
 					'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
@@ -885,12 +895,12 @@ class Rest_Api {
 					],
 				],
 				// Get Single Entry Logs.
-				'single-entry/(?P<id>\d+)/logs' => [
+				'single-entry/(?P<id>\d+)/logs'    => [
 					'methods'             => 'GET',
 					'callback'            => [ $this, 'get_entry_logs' ],
 					'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
 					'args'                => [
-						'id' => [
+						'id'       => [
 							'required'          => true,
 							'sanitize_callback' => 'absint',
 						],
@@ -898,7 +908,7 @@ class Rest_Api {
 							'sanitize_callback' => 'absint',
 							'default'           => 3,
 						],
-						'page' => [
+						'page'     => [
 							'sanitize_callback' => 'absint',
 							'default'           => 1,
 						],
