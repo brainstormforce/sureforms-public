@@ -20,7 +20,7 @@ import {
 	CircleCheckBig,
 	ShieldCheckIcon,
 	XIcon,
-	ShieldAlert,
+	TriangleAlert,
 } from 'lucide-react';
 
 import Integrations from '../integrations';
@@ -144,7 +144,7 @@ const Dialog = ( {
 			{
 				id: 'spam_protection',
 				label: __( 'Spam Protection', 'sureforms' ),
-				icon: <ShieldAlert />,
+				icon: <TriangleAlert />,
 				component: <SpamProtection />,
 			},
 			{

@@ -53,7 +53,11 @@ const TabContentWrapper = ( {
 						) }
 						<Title tag="h4" title={ title } size="md" />
 					</Container.Item>
-					<Container.Item className={ cn( shouldAddHelpTextPadding ? 'pl-7' : '' ) }>
+					<Container.Item
+						className={ cn(
+							shouldAddHelpTextPadding ? 'pl-7' : ''
+						) }
+					>
 						{ shouldShowAutoSaveText && (
 							<Label
 								size="sm"
