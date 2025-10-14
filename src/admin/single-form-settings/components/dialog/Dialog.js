@@ -117,6 +117,16 @@ const Dialog = ( {
 		[
 			/*parent tabs linked to nav*/
 			{
+				id: 'email_notification',
+				label: __( 'Email Notification', 'sureforms' ),
+				icon: <ShieldCheckIcon />,
+				component: (
+					<EmailNotification
+						{ ...{ setHasValidationErrors, emailNotificationData } }
+					/>
+				),
+			},
+			{
 				id: 'form_confirmation',
 				label: __( 'Form Confirmation', 'sureforms' ),
 				icon: <CircleCheckBig />,
@@ -124,16 +134,6 @@ const Dialog = ( {
 					<FormConfirmSetting
 						setHasValidationErrors={ setHasValidationErrors }
 						toast={ toast }
-					/>
-				),
-			},
-			{
-				id: 'email_notification',
-				label: __( 'Email Notification', 'sureforms' ),
-				icon: <ShieldCheckIcon />,
-				component: (
-					<EmailNotification
-						{ ...{ setHasValidationErrors, emailNotificationData } }
 					/>
 				),
 			},
@@ -185,6 +185,34 @@ const Dialog = ( {
 			setHasValidationErrors,
 		}
 	);
+
+	const desiredOrder = [
+		'email_notification',
+		'form_confirmation',
+		'ottokit',
+		'pdf',
+		'advanced-settings',
+		'user_registration',
+		'post-feed',
+		'form_custom_css',
+	];
+
+	const orderedTabs = [ ...tabs ].sort( ( a, b ) => {
+		const indexA = desiredOrder.indexOf( a.id );
+		const indexB = desiredOrder.indexOf( b.id );
+
+		if ( indexA === -1 && indexB === -1 ) {
+			return 0;
+		}
+		if ( indexA === -1 ) {
+			return 1;
+		}
+		if ( indexB === -1 ) {
+			return -1;
+		}
+
+		return indexA - indexB;
+	} );
 
 	setFormSpecificSmartTags( updateBlockAttributes );
 
@@ -261,7 +289,7 @@ const Dialog = ( {
 						<div className="w-full h-[calc(100%-3rem)] flex justify-start items-stretch">
 							{ /* Sidebar Navigation */ }
 							<SidebarNav
-								tabs={ tabs }
+								tabs={ orderedTabs }
 								selectedTab={ selectedTab }
 								setSelectedTab={ setSelectedTab }
 								parentTab={ parentTab }
