@@ -20,12 +20,14 @@ import {
 	CircleCheckBig,
 	ShieldCheckIcon,
 	XIcon,
+	ShieldAlert,
 } from 'lucide-react';
 
 import Integrations from '../integrations';
 import Suretriggers from '../integrations/suretriggers';
 import Compliance from '../Compliance';
 import FormCustomCssPanel from '../FormCustomCssPanel';
+import SpamProtection from '../SpamProtection';
 import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
 import EmailNotification from '../email-settings/EmailNotification';
@@ -138,6 +140,12 @@ const Dialog = ( {
 						{ ...{ setHasValidationErrors, emailNotificationData } }
 					/>
 				),
+			},
+			{
+				id: 'spam_protection',
+				label: __( 'Spam Protection', 'sureforms' ),
+				icon: <ShieldAlert />,
+				component: <SpamProtection />,
 			},
 			{
 				id: 'advanced-settings',

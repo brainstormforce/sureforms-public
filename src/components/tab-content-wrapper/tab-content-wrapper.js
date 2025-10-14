@@ -15,6 +15,11 @@ const TabContentWrapper = ( {
 	actionLeftContent,
 	actionBtnDisabled = false,
 	shouldShowAutoSaveText = false,
+	autoSaveHelpText = __(
+		'All changes will be saved automatically when you press back.',
+		'sureforms'
+	),
+	shouldAddHelpTextPadding = true,
 } ) => {
 	const handleBack = () => {
 		if ( typeof onClickBack !== 'function' ) {
@@ -32,8 +37,6 @@ const TabContentWrapper = ( {
 		onClickAction( data );
 	};
 
-	const autoSaveHelpText = __( 'All changes will be saved automatically when you press back.', 'sureforms' );
-
 	return (
 		<div className="space-y-7 pb-8">
 			<Container align="center" justify="between">
@@ -50,9 +53,13 @@ const TabContentWrapper = ( {
 						) }
 						<Title tag="h4" title={ title } size="md" />
 					</Container.Item>
-					<Container.Item className="pl-7">
+					<Container.Item className={ cn( shouldAddHelpTextPadding ? 'pl-7' : '' ) }>
 						{ shouldShowAutoSaveText && (
-							<Label size="sm" variant="help" className="text-text-on-button-disabled font-normal">
+							<Label
+								size="sm"
+								variant="help"
+								className="text-text-on-button-disabled font-normal"
+							>
 								{ autoSaveHelpText }
 							</Label>
 						) }
