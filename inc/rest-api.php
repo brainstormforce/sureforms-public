@@ -460,6 +460,163 @@ class Rest_Api {
 	}
 
 	/**
+	 * Get entry details with form data, submission info, and metadata.
+	 *
+	 * @param \WP_REST_Request $request Full details about the request.
+	 * @since x.x.x
+	 * @return \WP_REST_Response
+	 */
+	public function get_entry_details( $request ) {
+		$nonce = Helper::get_string_value( $request->get_header( 'X-WP-Nonce' ) );
+
+		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'wp_rest' ) ) {
+			return new \WP_REST_Response(
+				[ 'error' => __( 'Nonce verification failed.', 'sureforms' ) ],
+				403
+			);
+		}
+
+		$entry_id = absint( $request->get_param( 'id' ) );
+
+		if ( empty( $entry_id ) ) {
+			return new \WP_REST_Response(
+				[ 'error' => __( 'Entry ID is required.', 'sureforms' ) ],
+				400
+			);
+		}
+
+		$entry = Entries::get( $entry_id );
+
+		if ( ! $entry ) {
+			return new \WP_REST_Response(
+				[ 'error' => __( 'Entry not found.', 'sureforms' ) ],
+				404
+			);
+		}
+
+		// Process form data.
+		$form_data = [];
+		$excluded_fields = [ 'srfm-honeypot-field', 'g-recaptcha-response', 'srfm-sender-email-field' ];
+
+		foreach ( $entry['form_data'] as $field_name => $value ) {
+			if ( in_array( $field_name, $excluded_fields, true ) ) {
+				continue;
+			}
+			if ( false === str_contains( $field_name, '-lbl-' ) ) {
+				continue;
+			}
+
+			$label = explode( '-lbl-', $field_name )[1];
+			$label = explode( '-', $label )[0];
+			$label = $label ? Helper::decrypt( $label ) : '';
+			$field_block_name = Helper::get_block_name_from_field( $field_name );
+
+			$form_data[] = [
+				'field_name'      => $field_name,
+				'label'           => $label,
+				'value'           => $value,
+				'block_name'      => $field_block_name,
+			];
+		}
+
+		// Get user info.
+		$user_id = Helper::get_integer_value( $entry['user_id'] );
+		$user_info = 0 !== $user_id ? get_userdata( $user_id ) : null;
+
+		// Get form info.
+		$form_name = ! empty( get_the_title( $entry['form_id'] ) ) ? get_the_title( $entry['form_id'] ) : sprintf( __( 'SureForms Form #%d', 'sureforms' ), intval( $entry['form_id'] ) );
+
+		$response_data = [
+			'id'              => $entry_id,
+			'form_id'         => $entry['form_id'],
+			'form_name'       => $form_name,
+			'form_permalink'  => get_permalink( $entry['form_id'] ),
+			'status'          => $entry['status'],
+			'created_at'      => $entry['created_at'],
+			'form_data'       => $form_data,
+			'submission_info' => [
+				'user_ip'      => $entry['submission_info']['user_ip'] ?? '',
+				'browser_name' => $entry['submission_info']['browser_name'] ?? '',
+				'device_name'  => $entry['submission_info']['device_name'] ?? '',
+			],
+			'user'            => $user_info ? [
+				'id'           => $user_id,
+				'display_name' => $user_info->display_name,
+				'profile_url'  => get_author_posts_url( $user_id ),
+			] : null,
+		];
+
+		return new \WP_REST_Response( $response_data, 200 );
+	}
+
+	/**
+	 * Get entry logs with pagination support.
+	 *
+	 * @param \WP_REST_Request $request Full details about the request.
+	 * @since x.x.x
+	 * @return \WP_REST_Response
+	 */
+	public function get_entry_logs( $request ) {
+		$nonce = Helper::get_string_value( $request->get_header( 'X-WP-Nonce' ) );
+
+		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'wp_rest' ) ) {
+			return new \WP_REST_Response(
+				[ 'error' => __( 'Nonce verification failed.', 'sureforms' ) ],
+				403
+			);
+		}
+
+		$entry_id = absint( $request->get_param( 'id' ) );
+		$per_page = absint( $request->get_param( 'per_page' ) ) ?: 3;
+		$page = absint( $request->get_param( 'page' ) ) ?: 1;
+
+		if ( empty( $entry_id ) ) {
+			return new \WP_REST_Response(
+				[ 'error' => __( 'Entry ID is required.', 'sureforms' ) ],
+				400
+			);
+		}
+
+		$entry = Entries::get( $entry_id );
+
+		if ( ! $entry ) {
+			return new \WP_REST_Response(
+				[ 'error' => __( 'Entry not found.', 'sureforms' ) ],
+				404
+			);
+		}
+
+		$logs = $entry['logs'] ?? [];
+		$total_logs = count( $logs );
+		$total_pages = ceil( $total_logs / $per_page );
+		$offset = ( $page - 1 ) * $per_page;
+
+		// Paginate logs.
+		$paginated_logs = array_slice( $logs, $offset, $per_page );
+
+		// Format logs with unique IDs for deletion.
+		$formatted_logs = [];
+		foreach ( $paginated_logs as $index => $log ) {
+			$formatted_logs[] = [
+				'id'        => $offset + $index, // Use offset-based ID for consistent deletion.
+				'title'     => $log['title'] ?? '',
+				'timestamp' => $log['timestamp'] ?? time(),
+				'messages'  => $log['messages'] ?? [],
+			];
+		}
+
+		$response_data = [
+			'logs'         => $formatted_logs,
+			'current_page' => $page,
+			'per_page'     => $per_page,
+			'total'        => $total_logs,
+			'total_pages'  => $total_pages,
+		];
+
+		return new \WP_REST_Response( $response_data, 200 );
+	}
+
+	/**
 	 * Export entries to CSV or ZIP.
 	 *
 	 * @param \WP_REST_Request $request Full details about the request.
@@ -712,6 +869,38 @@ class Rest_Api {
 						'date_to'   => [
 							'sanitize_callback' => 'sanitize_text_field',
 							'default'           => '',
+						],
+					],
+				],
+				// Get Single Entry Form Data.
+				'single-entry/(?P<id>\d+)/details' => [
+					'methods'             => 'GET',
+					'callback'            => [ $this, 'get_entry_details' ],
+					'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
+					'args'                => [
+						'id' => [
+							'required'          => true,
+							'sanitize_callback' => 'absint',
+						],
+					],
+				],
+				// Get Single Entry Logs.
+				'single-entry/(?P<id>\d+)/logs' => [
+					'methods'             => 'GET',
+					'callback'            => [ $this, 'get_entry_logs' ],
+					'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
+					'args'                => [
+						'id' => [
+							'required'          => true,
+							'sanitize_callback' => 'absint',
+						],
+						'per_page' => [
+							'sanitize_callback' => 'absint',
+							'default'           => 3,
+						],
+						'page' => [
+							'sanitize_callback' => 'absint',
+							'default'           => 1,
 						],
 					],
 				],
