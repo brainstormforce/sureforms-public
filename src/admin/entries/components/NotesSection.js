@@ -1,5 +1,5 @@
 import { __, sprintf } from '@wordpress/i18n';
-import { Plus, Trash2 } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Plus, Trash2 } from 'lucide-react';
 import { Button } from '@bsf/force-ui';
 
 /**
@@ -44,7 +44,7 @@ const NotesSection = ( { entryData } ) => {
 
 	return (
 		<div className="bg-background-primary border-0.5 border-solid border-border-subtle rounded-lg shadow-sm">
-			<div className="p-4">
+			<div className="pb-0 px-4 pt-4">
 				<div className="flex items-center justify-between">
 					<h3 className="text-base font-semibold text-text-primary">
 						{ __( 'Notes', 'sureforms' ) }
@@ -65,7 +65,7 @@ const NotesSection = ( { entryData } ) => {
 				{ notes.map( ( note ) => (
 					<div
 						key={ note.id }
-						className="bg-background-primary rounded-md p-3 relative z-10 shadow-sm"
+						className="bg-background-primary rounded-md p-3 relative shadow-sm"
 					>
 						<div className="flex justify-between items-start gap-4">
 							<div className="flex-1 space-y-2">
@@ -91,6 +91,15 @@ const NotesSection = ( { entryData } ) => {
 						</div>
 					</div>
 				) ) }
+			</div>
+			{ /* Pagination */ }
+			<div className="w-full flex items-center justify-end space-x-2 pb-3 pr-3">
+				<Button variant="ghost" size="xs" icon={ <ArrowLeft /> } iconPosition="left">
+					{ __( 'Previous', 'sureforms' ) }
+				</Button>
+				<Button variant="ghost" size="xs" icon={ <ArrowRight /> } iconPosition="right">
+					{ __( 'Next', 'sureforms' ) }
+				</Button>
 			</div>
 		</div>
 	);

@@ -1,4 +1,6 @@
+import { Button } from '@bsf/force-ui';
 import { __ } from '@wordpress/i18n';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
 
 /**
  * EntryLogsSection Component
@@ -26,7 +28,7 @@ const EntryLogsSection = ( { entryData } ) => {
 
 	return (
 		<div className="bg-background-primary border-0.5 border-solid border-border-subtle rounded-lg shadow-sm">
-			<div className="p-4">
+			<div className="pb-0 px-4 pt-4">
 				<h3 className="text-base font-semibold text-text-primary">
 					{ __( 'Entry Logs', 'sureforms' ) }
 				</h3>
@@ -35,7 +37,7 @@ const EntryLogsSection = ( { entryData } ) => {
 				{ logs.map( ( log ) => (
 					<div
 						key={ log.id }
-						className="bg-background-primary rounded-md p-3 relative shadow-sm z-10"
+						className="bg-background-primary rounded-md p-3 relative shadow-sm"
 					>
 						<div className="flex items-start gap-4">
 							<div className="flex-1 space-y-2">
@@ -49,6 +51,15 @@ const EntryLogsSection = ( { entryData } ) => {
 						</div>
 					</div>
 				) ) }
+			</div>
+			{ /* Pagination */ }
+			<div className="w-full flex items-center justify-end space-x-2 pb-3 pr-3">
+				<Button variant="ghost" size="xs" icon={ <ArrowLeft /> } iconPosition="left">
+					{ __( 'Previous', 'sureforms' ) }
+				</Button>
+				<Button variant="ghost" size="xs" icon={ <ArrowRight /> } iconPosition="right">
+					{ __( 'Next', 'sureforms' ) }
+				</Button>
 			</div>
 		</div>
 	);

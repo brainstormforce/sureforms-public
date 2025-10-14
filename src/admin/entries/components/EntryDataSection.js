@@ -25,7 +25,7 @@ const EntryDataSection = ( { entryData, onEdit } ) => {
 
 	return (
 		<div className="bg-background-primary border-0.5 border-solid border-border-subtle rounded-lg shadow-sm">
-			<div className="p-4">
+			<div className="pb-0 px-4 pt-4">
 				<div className="flex items-center justify-between">
 					<h3 className="text-base font-semibold text-text-primary">
 						{ __( 'Entry Data', 'sureforms' ) }
@@ -45,7 +45,7 @@ const EntryDataSection = ( { entryData, onEdit } ) => {
 				{ fields.map( ( field, index ) => (
 					<div
 						key={ index }
-						className="p-3 relative bg-background-primary rounded-md shadow-sm z-10"
+						className="p-3 relative bg-background-primary rounded-md shadow-sm"
 					>
 						<div className="flex gap-4">
 							<div className="w-40 flex-shrink-0">

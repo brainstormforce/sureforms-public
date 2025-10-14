@@ -23,7 +23,7 @@ const SubmissionInfoSection = ( { entryData } ) => {
 
 	return (
 		<div className="bg-background-primary border-0.5 border-solid border-border-subtle rounded-lg shadow-sm">
-			<div className="p-4">
+			<div className="pb-0 px-4 pt-4">
 				<h3 className="text-sm font-semibold text-text-primary">
 					{ __( 'Submission Info', 'sureforms' ) }
 				</h3>
@@ -32,7 +32,7 @@ const SubmissionInfoSection = ( { entryData } ) => {
 				{ infoFields.map( ( field, index ) => (
 					<div
 						key={ index }
-						className="flex items-center py-3 px-3 relative bg-background-primary rounded-md shadow-sm z-10"
+						className="flex items-center py-3 px-3 relative bg-background-primary rounded-md shadow-sm"
 					>
 						<div className="w-32 flex-shrink-0">
 							<span className="text-sm font-medium text-text-primary">
