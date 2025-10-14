@@ -161,25 +161,6 @@ const SpamProtection = () => {
 			shouldAddHelpTextPadding={ false }
 		>
 			<div className="space-y-6">
-				{ /* Info notice */ }
-				<div className="flex items-center justify-between gap-3 p-3 bg-[#E0F2FE] border border-[#7DD3FC] rounded-lg text-sm text-gray-900 mb-3">
-					<div className="flex items-center gap-2">
-						<Info color="#0284C7" size={ 20 } />
-						<span>
-							{ __(
-								'Before selecting the security type, please make sure you have configured the API keys',
-								'sureforms'
-							) }
-						</span>
-					</div>
-					<a
-						href={ srfm_admin.security_settings_url }
-						className="text-orange-600 font-medium no-underline"
-					>
-						{ __( 'Here', 'sureforms' ) }
-					</a>
-				</div>
-
 				{ /* Security Type */ }
 				<div className="space-y-1.5">
 					<Label htmlFor="security-type">
@@ -285,7 +266,7 @@ const SpamProtection = () => {
 						</div>
 						<a
 							href={ srfm_admin.security_settings_url }
-							className="text-orange-600 font-medium no-underline"
+							className="text-[#DC2626] font-medium no-underline"
 						>
 							{ __( 'Global Settings', 'sureforms' ) }
 						</a>
