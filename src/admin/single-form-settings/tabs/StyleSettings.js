@@ -30,6 +30,7 @@ import EditorPremiumBadge from '@Admin/components/EditorPremiumBadge';
 import Background from '@Components/enhanced-background';
 import Spacing from '@Components/spacing';
 import { embedFormAttributes } from '@Attributes/getBlocksDefaultAttributes';
+import UpgradePrompt from '@Admin/components/UpgradePrompt';
 
 function StyleSettings( props ) {
 	const { editPost } = useDispatch( editorStore );
@@ -1208,6 +1209,9 @@ function StyleSettings( props ) {
 					/>
 					{ chevronDown }
 				</div>
+
+<UpgradePrompt />
+
 			</div>
 		</>
 	);
