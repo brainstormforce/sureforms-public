@@ -1,6 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import { Button, Container, Label, Title } from '@bsf/force-ui';
-import { Dot, Check } from 'lucide-react';
+import { Dot } from 'lucide-react';
 import { addQueryParam, cn } from '@Utils/Helpers';
 
 const FeaturePreview = ( {
