@@ -3,16 +3,20 @@ import apiFetch from '@wordpress/api-fetch';
 import { __ } from '@wordpress/i18n';
 import { useDebouncedCallback } from 'use-debounce';
 import { toast } from '@bsf/force-ui';
+import { cn } from '@Utils/Helpers';
 import { navigation } from './Navigation';
 import GeneralPage from './pages/General';
 import ValidationsPage from './pages/Validations';
 import SecurityPage from './pages/Security';
 import IntegrationPage from './pages/Integrations';
+import OttoKitPage from './pages/OttoKit';
 import { applyFilters } from '@wordpress/hooks';
 import PageTitleSection from '@Admin/components/PageTitleSection';
 
 const Component = ( { path } ) => {
 	const [ pageTitle, setPageTitle ] = useState( '' );
+	// State to maintain whether to hide the page title.
+	const [ hidePageTitle, setHidePageTitle ] = useState( false );
 	const [ loading, setLoading ] = useState( false );
 
 	// Global settings states.
@@ -60,9 +64,12 @@ const Component = ( { path } ) => {
 			navigation.forEach( ( single ) => {
 				const slug = single?.slug && single.slug ? single.slug : '';
 				const title = single?.name && single.name ? single.name : '';
+				// Check for the property to hide the page title.
+				const hideTitle = !! single?.hidePageTitle;
 				if ( slug ) {
 					if ( slug === path ) {
 						setPageTitle( title );
+						setHidePageTitle( hideTitle );
 					}
 				}
 			} );
@@ -233,11 +240,24 @@ const Component = ( { path } ) => {
 		}
 		debouncedSave( updatedTabOptions, tab );
 	}
+	const pathsForFullWidth = [ 'ottokit-settings', 'integration-settings' ];
+	const isFullWidth = pathsForFullWidth.includes( path );
 
 	return (
 		<>
-			{ pageTitle && <PageTitleSection title={ pageTitle } /> }
-			<div className="max-w-content-container mx-auto p-4 rounded-xl bg-background-primary shadow-sm">
+			{ pageTitle && (
+				<PageTitleSection
+					title={ pageTitle }
+					hidePageTitle={ hidePageTitle }
+				/>
+			) }
+			{ /* Added the below check to make the container full width for the OttoKit tab. */ }
+			<div
+				className={ cn(
+					'mx-auto p-4 rounded-xl bg-background-primary shadow-sm',
+					isFullWidth ? 'w-full' : 'max-w-content-container'
+				) }
+			>
 				{ 'general-settings' === path && (
 					<GeneralPage
 						loading={ loading }
@@ -260,6 +280,10 @@ const Component = ( { path } ) => {
 						generalTabOptions={ generalTabOptions }
 						updateGlobalSettings={ updateGlobalSettings }
 					/>
+				) }
+
+				{ 'ottokit-settings' === path && (
+					<OttoKitPage loading={ loading } />
 				) }
 
 				{ 'integration-settings' === path && (

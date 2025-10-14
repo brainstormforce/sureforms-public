@@ -30,7 +30,7 @@ const SidebarNav = ( {
 								>
 									<span
 										className={ cn(
-											'[&>svg]:size-5 text-icon-secondary [&>svg]:!text-icon-secondary shrink-0',
+											'[&>svg]:size-5 [&>img]:size-5 text-icon-secondary [&>svg]:!text-icon-secondary shrink-0 h-[20px]',
 											isActive &&
 												'text-icon-interactive [&>svg]:!text-icon-interactive'
 										) }

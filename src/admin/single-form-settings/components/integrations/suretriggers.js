@@ -1,35 +1,28 @@
 import { __ } from '@wordpress/i18n';
-import { Button, Container, Title } from '@bsf/force-ui';
-import { ArrowLeftIcon } from 'lucide-react';
+import { Title } from '@bsf/force-ui';
+import { useEffect } from '@wordpress/element';
 
-const Suretriggers = ( { setSelectedTab } ) => {
+const Suretriggers = () => {
 	// Adding validation for the SureTriggersConfig and SureTriggers object
-	if ( window?.SureTriggers && window?.SureTriggersConfig ) {
-		window.SureTriggers.init( window.SureTriggersConfig );
-	}
+	useEffect( () => {
+		if ( window?.SureTriggers && window?.SureTriggersConfig ) {
+			window.SureTriggers.init( window.SureTriggersConfig );
+		}
+	}, [] );
 
 	return (
-		<div className="space-y-7 h-full pb-10">
-			<Container align="center" className="gap-2">
-				<Button
-					className="p-0"
-					size="md"
-					variant="ghost"
-					onClick={ () => setSelectedTab( 'integrations' ) }
-					icon={ <ArrowLeftIcon /> }
+		<div className="h-full bg-background-primary rounded-xl p-4 mb-6 flex flex-col gap-2">
+			<Title
+				tag="h4"
+				title={ __( 'OttoKit Settings', 'sureforms' ) }
+				size="md"
+				className="p-2"
+			/>
+			<div className="h-full flex flex-col gap-1 bg-background-secondary rounded-lg p-2">
+				<div
+					id="suretriggers-iframe-wrapper"
+					className="size-full [&>iframe]:rounded-md"
 				/>
-				<Title
-					tag="h5"
-					title={ __( 'OttoKit Integrations', 'sureforms' ) }
-				/>
-			</Container>
-			<div className="h-full bg-background-primary rounded-xl p-4 shadow-sm mb-6">
-				<div className="h-full flex flex-col gap-1 bg-background-secondary rounded-lg p-2">
-					<div
-						id="suretriggers-iframe-wrapper"
-						className="size-full [&>iframe]:border [&>iframe]:border-solid [&>iframe]:border-border-subtle [&>iframe]:rounded-md"
-					/>
-				</div>
 			</div>
 		</div>
 	);
