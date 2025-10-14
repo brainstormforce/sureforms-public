@@ -71,7 +71,11 @@ const EntriesTableRow = ( {
 					label={ entry.statusLabel }
 				/>
 			</Table.Cell>
-			<Table.Cell>{ entry.firstField }</Table.Cell>
+			<Table.Cell>
+				{ typeof entry?.firstField === 'string'
+					? entry.firstField
+					: __( 'Repeater', 'sureforms' ) }
+			</Table.Cell>
 			<Table.Cell>{ entry.dateTime }</Table.Cell>
 			<Table.Cell>
 				<Container align="center" className="gap-2" justify="end">
