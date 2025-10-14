@@ -1,5 +1,6 @@
 import { __, _n, sprintf } from '@wordpress/i18n';
 import { useEffect, useMemo, useState } from '@wordpress/element';
+import { toast } from '@bsf/force-ui';
 import EntriesHeader from './components/EntriesHeader';
 import EntriesFilters from './components/EntriesFilters';
 import EntriesTable from './components/EntriesTable';
@@ -20,7 +21,6 @@ import {
 } from './hooks/useEntriesQuery';
 import { transformEntry } from './utils/entryHelpers';
 import { getFormOptions } from './constants';
-import { toast } from '@bsf/force-ui';
 
 /**
  * EntriesListingPage Component
@@ -107,7 +107,6 @@ const EntriesListingPage = () => {
 		return getFormOptions( formsMap );
 	}, [ formsMap ] );
 
-	// Check if any filters are active
 	const hasActiveFilters = useMemo( () => {
 		return (
 			( statusFilter !== '' && statusFilter !== 'all' ) ||
@@ -463,17 +462,17 @@ const EntriesListingPage = () => {
 					</div>
 
 					<EntriesTable
-						entries={ entries }
-						selectedEntries={ selectedEntries }
+						data={ entries }
+						selectedItems={ selectedEntries }
 						onToggleAll={ handleToggleAll }
 						onChangeRowSelection={ handleChangeRowCheckbox }
 						indeterminate={ indeterminate }
-						onEdit={ handleEdit }
-						onDelete={ handleDelete }
-						onRestore={ handleRestore }
 						isLoading={ isLoading }
 						onSort={ handleSort }
 						getSortDirection={ getSortDirection }
+						onEdit={ handleEdit }
+						onDelete={ handleDelete }
+						onRestore={ handleRestore }
 					>
 						<EntriesPagination
 							currentPage={ currentPage }
