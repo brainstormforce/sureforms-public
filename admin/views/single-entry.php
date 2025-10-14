@@ -475,6 +475,10 @@ class Single_Entry {
 							continue;
 						}
 
+						if ( ! Helper::has_pro() && 'srfm-repeater' === $field_block_name ) {
+							continue;
+						}
+
 						?>
 						<tr>
 							<td style="word-break: break-word;"><b><?php echo $label ? wp_kses_post( $label ) : ''; ?></b></td>

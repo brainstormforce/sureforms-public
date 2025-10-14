@@ -14,6 +14,7 @@ const TabContentWrapper = ( {
 	actionBtnVariant = 'primary',
 	actionLeftContent,
 	actionBtnDisabled = false,
+	hideTitle = false, // Hide the title from the content area.
 	shouldShowAutoSaveText = false,
 	autoSaveHelpText = __(
 		'All changes will be saved automatically when you press back.',
@@ -37,7 +38,8 @@ const TabContentWrapper = ( {
 	};
 
 	return (
-		<div className="space-y-7 pb-8">
+		// Add the spacing only if title is not hidden.
+		<div className={ cn( 'pb-8', ! hideTitle && 'space-y-7' ) }>
 			<Container align="center" justify="between">
 				<Container className="gap-0" direction="column">
 					<Container.Item className="flex items-center gap-2">
@@ -50,7 +52,9 @@ const TabContentWrapper = ( {
 								icon={ <ArrowLeftIcon /> }
 							/>
 						) }
-						<Title tag="h4" title={ title } size="md" />
+						{ ! hideTitle && (
+							<Title tag="h4" title={ title } size="md" />
+						) }
 					</Container.Item>
 					<Container.Item className="pl-7">
 						{ shouldShowAutoSaveText && (

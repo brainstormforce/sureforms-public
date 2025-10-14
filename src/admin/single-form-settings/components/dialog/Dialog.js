@@ -5,6 +5,7 @@ import {
 	useEffect,
 	memo,
 	useContext,
+	useMemo,
 } from '@wordpress/element';
 import {
 	Dialog as ForceUIDialog,
@@ -16,7 +17,6 @@ import SidebarNav from './SidebarNav';
 import {
 	Settings,
 	Code2Icon,
-	CpuIcon,
 	CircleCheckBig,
 	ShieldCheckIcon,
 	XIcon,
@@ -27,7 +27,6 @@ import {
 	FileText,
 } from 'lucide-react';
 
-import Integrations from '../integrations';
 import Suretriggers from '../integrations/suretriggers';
 import Compliance from '../Compliance';
 import FormCustomCssPanel from '../FormCustomCssPanel';
@@ -42,6 +41,8 @@ import { store as blockEditorStore } from '@wordpress/block-editor';
 import FormRestriction from '../form-restrictions/FormRestriction';
 import { FormRestrictionContext } from '../form-restrictions/context';
 import FeaturePreview from '../FeaturePreview';
+import OttoKitPage from '@Admin/settings/pages/OttoKit';
+import ottoKitIcon from '@Image/suretriggers-grayscale.svg';
 
 const Dialog = ( {
 	open,
@@ -116,9 +117,6 @@ const Dialog = ( {
 	);
 
 	const [ parentTab, setParentTab ] = useState( null );
-	const [ action, setAction ] = useState();
-	const [ CTA, setCTA ] = useState();
-	const [ pluginConnected, setPluginConnected ] = useState( null );
 
 	const tabs = applyFilters(
 		'srfm.formSettings.tabs',
@@ -157,20 +155,17 @@ const Dialog = ( {
 				),
 			},
 			{
-				id: 'integrations',
-				label: __( 'Integrations', 'sureforms' ),
-				icon: <CpuIcon />,
+				id: 'ottokit',
+				label: __( 'OttoKit', 'sureforms' ),
+				icon: (
+					<img
+						src={ ottoKitIcon }
+						alt={ __( 'OttoKit', 'sureforms' ) }
+					/>
+				),
 				component: (
-					<Integrations
-						{ ...{
-							setSelectedTab,
-							action,
-							setAction,
-							CTA,
-							setCTA,
-							pluginConnected,
-							setPluginConnected,
-						} }
+					<OttoKitPage
+						{ ...{ isFormSettings: true, setSelectedTab } }
 					/>
 				),
 			},
@@ -311,10 +306,10 @@ const Dialog = ( {
 			},
 			{
 				id: 'suretriggers',
-				parent: 'integrations',
+				parent: 'ottokit',
 				label: __( 'SureTriggers', 'sureforms' ),
 				icon: {},
-				component: <Suretriggers { ...{ setSelectedTab } } />,
+				component: <Suretriggers />,
 			},
 			/* can contain child tabs not linked to nav */
 			/* add parent nav id for child tabs */
@@ -344,9 +339,26 @@ const Dialog = ( {
 		setSelectedTab( targetTab );
 	}, [ targetTab, open ] );
 
+	// Apply filter to allow specific classes for pro tabs.
+	const tabSpecificClasses = useMemo(
+		() =>
+			applyFilters(
+				'srfm.formSettings.dialog.tabClasses',
+				{
+					suretriggers:
+						'h-full min-w-[800px] bg-background-primary shadow-sm rounded-xl',
+					ottokit:
+						'min-w-[800px] bg-background-primary p-4 shadow-sm rounded-xl border-subtle',
+					default: 'h-full max-w-[43.5rem]',
+				},
+				selectedTab
+			),
+		[ selectedTab ]
+	);
+
 	const containerClassName = cn(
-		'w-full h-full mx-auto',
-		selectedTab === 'suretriggers' ? 'min-w-[800px]' : 'max-w-[43.5rem]'
+		'w-full mx-auto',
+		tabSpecificClasses[ selectedTab ] || tabSpecificClasses.default
 	);
 
 	return (
@@ -358,14 +370,14 @@ const Dialog = ( {
 				scrollLock
 				open={ open }
 				setOpen={ setOpen }
-				className="[&>div>div]:h-full z-99999"
+				className="[&>div>div]:h-full z-99999 border-radius-none"
 			>
 				<ForceUIDialog.Backdrop />
-				<ForceUIDialog.Panel className="srfm-dialog-panel size-[calc(100%-80px)] m-auto">
+				<ForceUIDialog.Panel className="h-full w-full m-auto rounded-none srfm-dialog-panel">
 					<Container
 						direction="column"
 						gap="none"
-						className="w-full h-full py-3 divide-y divide-x-0 divide-solid divide-border-subtle"
+						className="w-full h-full pt-3 divide-y divide-x-0 divide-solid divide-border-subtle"
 					>
 						<Container className="py-2 px-4" justify="between">
 							<Title
