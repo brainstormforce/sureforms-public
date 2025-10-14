@@ -181,7 +181,7 @@ const Dialog = ( {
 				component: (
 					<FeaturePreview
 						featureName={ __( 'PDF Generation', 'sureforms' ) }
-						autoSaveHelpText={ __(
+						featureHelpText={ __(
 							'Generate and customize PDF copies of form submissions.',
 							'sureforms'
 						) }
@@ -222,7 +222,7 @@ const Dialog = ( {
 				component: (
 					<FeaturePreview
 						featureName={ __( 'User Registration', 'sureforms' ) }
-						autoSaveHelpText={ __(
+						featureHelpText={ __(
 							'Register new users or update existing accounts with form submissions.',
 							'sureforms'
 						) }
@@ -266,7 +266,7 @@ const Dialog = ( {
 				component: (
 					<FeaturePreview
 						featureName={ __( 'Post Feed', 'sureforms' ) }
-						autoSaveHelpText={ __(
+						featureHelpText={ __(
 							'Automatically create WordPress posts from form submissions.',
 							'sureforms'
 						) }

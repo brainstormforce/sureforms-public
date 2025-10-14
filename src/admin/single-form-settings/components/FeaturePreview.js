@@ -5,14 +5,14 @@ import { addQueryParam, cn } from '@Utils/Helpers';
 
 const FeaturePreview = ( {
 	featureName = '',
-	icon = <Check className="text-green-500" size={ 40 } strokeWidth={ 1 } />,
+	icon = null,
 	title = '',
 	subtitle = '',
 	featureList = [],
 	utmMedium = '',
 	actionLeftContent,
-	shouldShowAutoSaveText = true,
-	autoSaveHelpText = '',
+	shouldShowFeatureHelpText = true,
+	featureHelpText = '',
 } ) => {
 	return (
 		<div className="space-y-7 pb-8">
@@ -23,13 +23,13 @@ const FeaturePreview = ( {
 						<Title tag="h4" title={ featureName } size="md" />
 					</Container.Item>
 					<Container.Item>
-						{ shouldShowAutoSaveText && (
+						{ shouldShowFeatureHelpText && (
 							<Label
 								size="sm"
 								variant="help"
 								className="text-text-on-button-disabled font-normal"
 							>
-								{ autoSaveHelpText }
+								{ featureHelpText }
 							</Label>
 						) }
 					</Container.Item>
@@ -52,7 +52,7 @@ const FeaturePreview = ( {
 						className="bg-white p-6 rounded-md shadow-sm gap-3"
 					>
 						{ /* Icon */ }
-						<Container.Item>{ icon }</Container.Item>
+						<Container.Item>{ icon && icon }</Container.Item>
 
 						{ /* Title */ }
 						<Container.Item>
