@@ -71,6 +71,23 @@ export const fetchEntriesList = ( params = {} ) => {
 };
 
 /**
+ * Fetch single entry details
+ *
+ * @param {number} entryId - Entry ID to fetch
+ * @return {Promise<Object>} Promise resolving to entry data
+ */
+export const fetchEntryDetail = ( entryId ) => {
+	return apiFetch( {
+		path: `/sureforms/v1/entries/${ entryId }`,
+		method: 'GET',
+		headers: {
+			'Content-Type': 'application/json',
+			'X-WP-Nonce': getNonce(),
+		},
+	} );
+};
+
+/**
  * Update entries read status (mark as read/unread)
  *
  * @param {Object}   params           - Request parameters

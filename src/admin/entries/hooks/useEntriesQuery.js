@@ -9,6 +9,7 @@ import { __, _n, sprintf } from '@wordpress/i18n';
 import {
 	fetchEntriesList,
 	fetchFormsList,
+	fetchEntryDetail,
 	updateEntriesReadStatus,
 	trashEntries,
 	deleteEntries,
@@ -66,6 +67,21 @@ export const useForms = () => {
 		queryKey: formsKeys.list(),
 		queryFn: fetchFormsList,
 		staleTime: 1000 * 60 * 10, // Consider data fresh for 10 minutes (forms don't change often)
+	} );
+};
+
+/**
+ * Hook to fetch single entry details
+ *
+ * @param {number} entryId - Entry ID to fetch
+ * @return {Object} Query result
+ */
+export const useEntryDetail = ( entryId ) => {
+	return useQuery( {
+		queryKey: entriesKeys.detail( entryId ),
+		queryFn: () => fetchEntryDetail( entryId ),
+		enabled: !! entryId, // Only run query if entryId is provided
+		staleTime: 1000 * 60 * 5, // Consider data fresh for 5 minutes
 	} );
 };
 
