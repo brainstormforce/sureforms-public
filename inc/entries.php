@@ -3,7 +3,7 @@
  * Sureforms entries.
  *
  * @package sureforms.
- * @since 0.0.1
+ * @since x.x.x
  */
 
 namespace SRFM\Inc;
@@ -18,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Entries Class.
  *
- * @since 0.0.1
+ * @since x.x.x
  */
 class Entries {
 	use Get_Instance;
@@ -26,7 +26,7 @@ class Entries {
 	/**
 	 * Constructor
 	 *
-	 * @since 0.0.1
+	 * @since x.x.x
 	 */
 	public function __construct() {
 		// Constructor code here.
@@ -49,7 +49,7 @@ class Entries {
 	 *     @type array<mixed> $entry_ids   Specific entry IDs to fetch. Default empty array.
 	 * }
 	 *
-	 * @since 1.0.0
+	 * @since x.x.x
 	 * @return array<string,mixed> {
 	 *     @type array<mixed> $entries      Array of entry objects.
 	 *     @type int          $total        Total number of entries matching the query.
@@ -109,7 +109,7 @@ class Entries {
 	 * @param int|array<int> $entry_ids Entry ID or array of entry IDs.
 	 * @param string         $status    New status: 'trash', 'unread', 'read', or 'restore'.
 	 *
-	 * @since 1.0.0
+	 * @since x.x.x
 	 * @return array<string,mixed> {
 	 *     @type bool  $success   Whether the operation was successful.
 	 *     @type int   $updated   Number of entries updated.
@@ -170,7 +170,7 @@ class Entries {
 	 *
 	 * @param int|array<int> $entry_ids Entry ID or array of entry IDs.
 	 *
-	 * @since 1.0.0
+	 * @since x.x.x
 	 * @return array<string,mixed> {
 	 *     @type bool  $success   Whether the operation was successful.
 	 *     @type int   $deleted   Number of entries deleted.
@@ -226,7 +226,7 @@ class Entries {
 	 *     @type string         $month     Month filter.
 	 * }
 	 *
-	 * @since 1.0.0
+	 * @since x.x.x
 	 * @return array<string,mixed> {
 	 *     @type bool   $success  Whether the export was successful.
 	 *     @type string $filename Export filename (if single form).
@@ -388,7 +388,7 @@ class Entries {
 	 *
 	 * @param array<string,mixed> $args Query arguments.
 	 *
-	 * @since 1.0.0
+	 * @since x.x.x
 	 * @return array<mixed> Where conditions array.
 	 */
 	private static function build_where_conditions( $args ) {
@@ -480,7 +480,7 @@ class Entries {
 	 * @param array<int> $entry_ids Entry IDs.
 	 * @param int        $form_id   Form ID.
 	 *
-	 * @since 1.0.0
+	 * @since x.x.x
 	 * @return array<mixed> Entry data.
 	 */
 	private static function get_entries_data_for_export( $entry_ids, $form_id ) {
@@ -511,7 +511,7 @@ class Entries {
 	 *
 	 * @param array<mixed> $results Entry results.
 	 *
-	 * @since 1.0.0
+	 * @since x.x.x
 	 * @return array<string,array<mixed>> Map and labels.
 	 */
 	private static function build_block_key_map_and_labels( $results ) {
@@ -550,7 +550,7 @@ class Entries {
 	 * @param resource     $stream       File stream.
 	 * @param array<mixed> $block_labels Block labels.
 	 *
-	 * @since 1.0.0
+	 * @since x.x.x
 	 * @return void
 	 */
 	private static function write_csv_header( $stream, $block_labels ) {
@@ -568,7 +568,7 @@ class Entries {
 	 * @param array<mixed> $results       Entry results.
 	 * @param array<mixed> $block_key_map Block key map.
 	 *
-	 * @since 1.0.0
+	 * @since x.x.x
 	 * @return void
 	 */
 	private static function write_csv_rows( $stream, $results, $block_key_map ) {
@@ -598,7 +598,7 @@ class Entries {
 	 * @param string $srfm_key    Field key.
 	 * @param mixed  $field_value Field value.
 	 *
-	 * @since 1.0.0
+	 * @since x.x.x
 	 * @return string Normalized value.
 	 */
 	private static function normalize_field_values( $srfm_key, $field_value ) {
