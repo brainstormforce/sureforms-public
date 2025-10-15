@@ -338,29 +338,13 @@ class Entries extends Base {
 	 * @return array<mixed> The results of the query, typically an array of objects or associative arrays.
 	 */
 	public static function get_all( $args = [], $set_limit = true ) {
-		$_args         = wp_parse_args(
-			$args,
-			[
-				'where'   => [],
-				'columns' => '*',
-				'limit'   => 10,
-				'offset'  => 0,
-				'orderby' => 'created_at',
-				'order'   => 'DESC',
-			]
-		);
-		$extra_queries = [
-			sprintf( 'ORDER BY `%1$s` %2$s', Helper::get_string_value( esc_sql( $_args['orderby'] ) ), Helper::get_string_value( esc_sql( $_args['order'] ) ) ),
-		];
-
-		if ( $set_limit ) {
-			$extra_queries[] = sprintf( 'LIMIT %1$d, %2$d', absint( $_args['offset'] ), absint( $_args['limit'] ) );
-		}
-		return self::get_instance()->get_results(
-			$_args['where'],
-			$_args['columns'],
-			$extra_queries
-		);
+		/**
+		 * Refactored the get_all method to use the get_records_by_args method from the Base class.
+		 * Moved the common logic inside the Base class so it can be reused by other tables as well.
+		 *
+		 * @since 1.13.0
+		 */
+		return self::get_instance()->get_records_by_args( $args, $set_limit );
 	}
 
 	/**
