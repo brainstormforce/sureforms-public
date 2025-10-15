@@ -208,7 +208,7 @@ const Dialog = ( {
 								'sureforms'
 							),
 						] }
-						utmMedium="pdf-preview-single-form-settings"
+						utmMedium="integrations-preview-single-form-settings"
 					/>
 				),
 			},
