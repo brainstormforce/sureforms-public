@@ -427,12 +427,13 @@ class Entries {
 		}
 
 		// Filter by form ID.
-		if ( ! empty( $args['form_id'] ) && absint( $args['form_id'] ) > 0 ) {
+		$form_id = Helper::get_integer_value( $args['form_id'] ?? 0 );
+		if ( ! empty( $args['form_id'] ) && $form_id > 0 ) {
 			$where_conditions[] = [
 				[
 					'key'     => 'form_id',
 					'compare' => '=',
-					'value'   => absint( $args['form_id'] ),
+					'value'   => $form_id,
 				],
 			];
 		}
@@ -461,7 +462,7 @@ class Entries {
 
 		// Filter by search (entry ID only).
 		if ( ! empty( $args['search'] ) ) {
-			$search_term        = absint( $args['search'] );
+			$search_term        = Helper::get_integer_value( $args['search'] );
 			$where_conditions[] = [
 				[
 					'key'     => 'ID',
@@ -512,7 +513,7 @@ class Entries {
 	 * @param array<mixed> $results Entry results.
 	 *
 	 * @since x.x.x
-	 * @return array<string,array<mixed>> Map and labels.
+	 * @return array{map: array<string,string>, labels: array<string,string>} Map and labels.
 	 */
 	private static function build_block_key_map_and_labels( $results ) {
 		$block_key_map = [];
@@ -547,8 +548,8 @@ class Entries {
 	/**
 	 * Write CSV header row.
 	 *
-	 * @param resource     $stream       File stream.
-	 * @param array<mixed> $block_labels Block labels.
+	 * @param resource      $stream       File stream.
+	 * @param array<string> $block_labels Block labels.
 	 *
 	 * @since x.x.x
 	 * @return void
@@ -564,9 +565,9 @@ class Entries {
 	/**
 	 * Write CSV data rows.
 	 *
-	 * @param resource     $stream        File stream.
-	 * @param array<mixed> $results       Entry results.
-	 * @param array<mixed> $block_key_map Block key map.
+	 * @param resource             $stream        File stream.
+	 * @param array<mixed>         $results       Entry results.
+	 * @param array<string,string> $block_key_map Block key map.
 	 *
 	 * @since x.x.x
 	 * @return void

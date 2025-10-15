@@ -495,13 +495,14 @@ class Rest_Api {
 		}
 
 		// Return file information for download.
+		$filepath = Helper::get_string_value( $result['filepath'] );
 		return new \WP_REST_Response(
 			[
 				'success'      => true,
 				'filename'     => $result['filename'],
 				'filepath'     => $result['filepath'],
 				'type'         => $result['type'],
-				'download_url' => admin_url( 'admin-ajax.php?action=srfm_download_export&file=' . rawurlencode( basename( $result['filepath'] ) ) ),
+				'download_url' => admin_url( 'admin-ajax.php?action=srfm_download_export&file=' . rawurlencode( basename( $filepath ) ) ),
 			],
 			200
 		);
