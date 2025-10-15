@@ -1,6 +1,32 @@
 import { __ } from '@wordpress/i18n';
-import { Edit3 } from 'lucide-react';
+import { SquarePen } from 'lucide-react';
 import { Button } from '@bsf/force-ui';
+import UpgradeTooltip from '@Admin/entries/components/UpgradeTooltip';
+
+const EditEntryButton = ( { onEdit } ) => {
+	return (
+		<UpgradeTooltip
+			heading={ __( 'Unlock Edit Form Entires', 'sureforms' ) }
+			content={ __(
+				'With the SureForms Starter plan, you can easily edit your entries to suit your needs.',
+				'sureforms'
+			) }
+			placement="top"
+			utmMedium="edit_entry"
+		>
+			<Button
+				variant="outline"
+				size="xs"
+				icon={ <SquarePen className="w-4 h-4" /> }
+				iconPosition="left"
+				onClick={ onEdit }
+				disabled
+			>
+				{ __( 'Edit Entries', 'sureforms' ) }
+			</Button>
+		</UpgradeTooltip>
+	);
+};
 
 /**
  * EntryDataSection Component
@@ -30,15 +56,7 @@ const EntryDataSection = ( { entryData, onEdit } ) => {
 					<h3 className="text-base font-semibold text-text-primary">
 						{ __( 'Entry Data', 'sureforms' ) }
 					</h3>
-					<Button
-						variant="outline"
-						size="xs"
-						icon={ <Edit3 className="w-4 h-4" /> }
-						iconPosition="left"
-						onClick={ onEdit }
-					>
-						{ __( 'Edit Entries', 'sureforms' ) }
-					</Button>
+					<EditEntryButton onEdit={ onEdit } />
 				</div>
 			</div>
 			<div className="p-4 space-y-1 relative before:content-[''] before:block before:absolute before:inset-3 before:bg-background-secondary before:rounded-lg">

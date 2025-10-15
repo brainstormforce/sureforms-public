@@ -1,4 +1,7 @@
 import { __ } from '@wordpress/i18n';
+import { useState } from '@wordpress/element';
+import { Button } from '@bsf/force-ui';
+import { useUpdateEntriesReadStatus } from '../hooks/useEntriesQuery';
 
 /**
  * SubmissionInfoSection Component
@@ -8,18 +11,38 @@ import { __ } from '@wordpress/i18n';
  * @param {Object} props.entryData - The entry data object
  */
 const SubmissionInfoSection = ( { entryData } ) => {
+	const [ status, setStatus ] = useState( entryData?.status || 'read' );
+	const updateReadStatusMutation = useUpdateEntriesReadStatus();
+
 	// Mock data for now - replace with actual entry data structure
 	const infoFields = [
-		{ label: __( 'Entry:', 'sureforms' ), value: '#7' },
-		{ label: __( 'Form Name:', 'sureforms' ), value: 'Basic Contact From' },
-		{ label: __( 'User IP:', 'sureforms' ), value: '103.180.47.90' },
-		{ label: __( 'URL:', 'sureforms' ), value: 'https//:www.areallyreallylongurlexample.com/premium/join/' },
-		{ label: __( 'Browser:', 'sureforms' ), value: 'Test' },
-		{ label: __( 'Type:', 'sureforms' ), value: 'Completed' },
-		{ label: __( 'User:', 'sureforms' ), value: 'Aaditya' },
-		{ label: __( 'Status:', 'sureforms' ), value: 'Read' },
-		{ label: __( 'Submitted On:', 'sureforms' ), value: '2023-03-09 15:29:23' },
+		{ id: 'entry', label: __( 'Entry:', 'sureforms' ), value: '#7' },
+		{ id: 'form-name', label: __( 'Form Name:', 'sureforms' ), value: 'Basic Contact From' },
+		{ id: 'user-ip', label: __( 'User IP:', 'sureforms' ), value: '103.180.47.90' },
+		{ id: 'url', label: __( 'URL:', 'sureforms' ), value: 'https//:www.areallyreallylongurlexample.com/premium/join/' },
+		{ id: 'browser', label: __( 'Browser:', 'sureforms' ), value: 'Test' },
+		{ id: 'type', label: __( 'Type:', 'sureforms' ), value: 'Completed' },
+		{ id: 'user', label: __( 'User:', 'sureforms' ), value: 'Aaditya' },
+		{ id: 'status', label: __( 'Status:', 'sureforms' ), value: status.toLowerCase() },
+		{ id: 'submitted-on', label: __( 'Submitted On:', 'sureforms' ), value: '2023-03-09 15:29:23' },
 	];
+
+	const handleMarkAsUnread = () => {
+		console.log( 'Mark as Unread clicked', entryData );
+		if ( entryData?.ID ) {
+			updateReadStatusMutation.mutate(
+				{
+					entry_ids: [ entryData.ID ],
+					action: 'unread',
+				},
+				{
+					onSuccess: () => {
+						setStatus( 'unread' );
+					},
+				}
+			);
+		}
+	};
 
 	return (
 		<div className="bg-background-primary border-0.5 border-solid border-border-subtle rounded-lg shadow-sm">
@@ -39,10 +62,23 @@ const SubmissionInfoSection = ( { entryData } ) => {
 								{ field.label }
 							</span>
 						</div>
-						<div className="flex-1">
-							<span className="text-sm font-normal text-text-secondary">
+						<div className="flex-1 flex items-center justify-between">
+							<span className="text-sm font-normal text-text-secondary capitalize">
 								{ field.value }
 							</span>
+							{ field.id === 'status' && field.value === 'read' && (
+								<Button
+									variant="link"
+									size="xs"
+									onClick={ handleMarkAsUnread }
+									disabled={ updateReadStatusMutation.isLoading }
+									className="text-link-primary hover:text-link-primary-hover ml-2"
+								>
+									{ updateReadStatusMutation.isLoading
+										? __( 'Updating…', 'sureforms' )
+										: __( 'Mark as Unread', 'sureforms' ) }
+								</Button>
+							) }
 						</div>
 					</div>
 				) ) }

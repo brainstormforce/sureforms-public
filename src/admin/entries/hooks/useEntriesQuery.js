@@ -95,9 +95,49 @@ export const useUpdateEntriesReadStatus = () => {
 
 	return useMutation( {
 		mutationFn: updateEntriesReadStatus,
-		onSuccess: () => {
+		onSuccess: ( data, variables ) => {
 			// Invalidate and refetch entries list
 			queryClient.invalidateQueries( { queryKey: entriesKeys.lists() } );
+
+			// Invalidate entry detail queries if entry IDs are provided
+			if ( variables?.entry_ids?.length > 0 ) {
+				variables.entry_ids.forEach( ( entryId ) => {
+					queryClient.invalidateQueries( {
+						queryKey: entriesKeys.detail( entryId ),
+					} );
+				} );
+			}
+
+			// Show success message
+			const action = variables?.action || '';
+			const count = variables?.entry_ids?.length || 1;
+			if ( action === 'read' ) {
+				toast.success(
+					sprintf(
+						// translators: %s is the number of entries marked as read.
+						_n(
+							'%s entry marked as read.',
+							'%s entries marked as read.',
+							count,
+							'sureforms'
+						),
+						count
+					)
+				);
+			} else if ( action === 'unread' ) {
+				toast.success(
+					sprintf(
+						// translators: %s is the number of entries marked as unread.
+						_n(
+							'%s entry marked as unread.',
+							'%s entries marked as unread.',
+							count,
+							'sureforms'
+						),
+						count
+					)
+				);
+			}
 		},
 		onError: ( error ) => {
 			const msg =
