@@ -29,7 +29,7 @@ import { chevronUp } from '@wordpress/icons';
 import Background from '@Components/enhanced-background';
 import Spacing from '@Components/spacing';
 import { embedFormAttributes } from '@Attributes/getBlocksDefaultAttributes';
-import UpgradePrompt from '@Admin/components/UpgradePrompt';
+import UpgradePrompt from '@Admin/single-form-settings/components/UpgradePrompt';
 
 function StyleSettings( props ) {
 	const { editPost } = useDispatch( editorStore );
