@@ -625,6 +625,52 @@ abstract class Base {
 	}
 
 	/**
+	 * Retrieves a list of records based on the provided arguments.
+	 *
+	 * This method fetches results from the database, allowing for various
+	 * customization options such as filtering, pagination, and sorting.
+	 *
+	 * @param array<string,mixed> $args {
+	 *     Optional. An array of arguments to customize the query.
+	 *
+	 *     @type array  $where   An associative array of conditions to filter the results.
+	 *     @type int    $limit   The maximum number of results to return. Default is 10.
+	 *     @type int    $offset  The number of records to skip before starting to collect results. Default is 0.
+	 *     @type string $orderby  The column by which to order the results. Default is 'created_at'.
+	 *     @type string $order    The direction of the order (ASC or DESC). Default is 'DESC'.
+	 * }
+	 * @param bool                $set_limit Whether to set the limit on the query. Default is true.
+	 *
+	 * @since 1.13.0
+	 * @return array<mixed> The results of the query, typically an array of objects or associative arrays.
+	 */
+	public function get_records_by_args( $args = [], $set_limit = true ) {
+		$_args         = wp_parse_args(
+			$args,
+			[
+				'where'   => [],
+				'columns' => '*',
+				'limit'   => 10,
+				'offset'  => 0,
+				'orderby' => 'created_at',
+				'order'   => 'DESC',
+			]
+		);
+		$extra_queries = [
+			sprintf( 'ORDER BY `%1$s` %2$s', Helper::get_string_value( esc_sql( $_args['orderby'] ) ), Helper::get_string_value( esc_sql( $_args['order'] ) ) ),
+		];
+
+		if ( $set_limit ) {
+			$extra_queries[] = sprintf( 'LIMIT %1$d, %2$d', absint( $_args['offset'] ), absint( $_args['limit'] ) );
+		}
+		return $this->get_results(
+			$_args['where'],
+			$_args['columns'],
+			$extra_queries
+		);
+	}
+
+	/**
 	 * Get the total number of rows in the table.
 	 *
 	 * @param array<mixed> $where_clauses Optional. An associative array of WHERE clauses for the SQL query.

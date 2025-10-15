@@ -368,10 +368,8 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 = x.x.x =
 * Improvement: Revamped add new form screen.
 = 1.13.0 - 14th October 2025 =
-* Fix: Resolved an issue where multiple entries were being recorded when submit button was clicked multiple times for a single form submission.
-* Fix: Resolved an issue where empty <p> tag in being added before and after repeater field table in form confirmation success message.
-* Fix: Resolved an issue where entries first field value is missing for upload field.
-* Fix: Resolved and issue where scripts related to SureForms were loading in all the screens causing console errors.
+* New: Added support for Native Integrations in Pro Plan.
+* Fix: Prevented multiple entries from being recorded when the submit button is clicked repeatedly.
 = 1.12.3 - 30th September 2025 =
 * Fix: AI form generation not redirecting to the SureForms editor after creation.
 * Fix: Forms not publishing or saving with certain blocks on low PHP memory servers.
@@ -379,20 +377,6 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 * Improvement: Made the submit note button responsive in single entries to prevent overflow in translations.
 * Improvement: Smart tag output now shows single file uploads as links and multiple files as a list.
 * Fix: Addressed a security bug. Props to Wordfence for reporting it responsibly.
-= 1.12.1 - 18th September 2025 =
-* New: Added default country selection option for Phone field when auto country detection is disabled.
-* Improvement: Added filter 'srfm_value_after_label_placeholder' to customize required field sign.
-* Fix: Addressed a security bug. Props to Wordfence for reporting it responsibly.
-* Fix: Fixed single form settings popup overlapping admin menu when full screen editor mode is disabled.
-= 1.12.0 - 4th September 2025 =
-* Fix: Fixed form submission issue when embedded in LearnDash lessons.
-= 1.11.0 - 2nd September 2025 =
-* Improvement: Refined weekly email summary content.
-* Fix: Resolved an issue with the readability of multiple uploaded image links in notification emails.
-* Fix: Missing form values in emails now display correctly.
-* Fix: Fixed incorrect validation of "From Email" in notification.
-* Fix: Resolved an issue where the upload field URL was breaking in email notifications.
-* Fix: Icon block styles now apply inside Spectra Modal.
 
 The full changelog is available [here](https://sureforms.com/whats-new/).
 
