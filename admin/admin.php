@@ -13,7 +13,6 @@ use SRFM\Inc\AI_Form_Builder\AI_Helper;
 use SRFM\Inc\Database\Tables\Entries;
 use SRFM\Inc\Helper;
 use SRFM\Inc\Onboarding;
-use SRFM\Inc\Post_Types;
 use SRFM\Inc\Traits\Get_Instance;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -785,9 +784,9 @@ class Admin {
 			'view_entry_url'             => wp_nonce_url(
 				add_query_arg(
 					[
-					'entry_id' => '[id]',
-					'view'     => 'details',
-					'action'   => 'read',
+                        'entry_id' => '[id]',
+                        'view'     => 'details',
+                        'action'   => 'read',
 					],
 					admin_url( 'admin.php?page=sureforms_entries' )
 				),
