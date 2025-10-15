@@ -25,6 +25,8 @@ import {
 	FilePlus,
 	File,
 	FileText,
+	Cpu,
+	Link
 } from 'lucide-react';
 
 import Suretriggers from '../integrations/suretriggers';
@@ -166,6 +168,47 @@ const Dialog = ( {
 				component: (
 					<OttoKitPage
 						{ ...{ isFormSettings: true, setSelectedTab } }
+					/>
+				),
+			},
+			{
+				id: 'integrations-preview',
+				label: __( 'Integrations', 'sureforms' ),
+				icon: <Cpu />,
+				component: (
+					<FeaturePreview
+						featureName={ __( 'Integrations', 'sureforms' ) }
+						featureHelpText={ __(
+							'Integrations let you connect SureForms with your favorite apps to automate tasks and sync data seamlessly.',
+							'sureforms'
+						) }
+						icon={
+							<Link
+								className="text-orange-500"
+								size={ 40 }
+								strokeWidth={ 1 }
+							/>
+						}
+						title={ __( 'Connect Native Integrations with SureForms', 'sureforms' ) }
+						subtitle={ __(
+							'Unlock powerful integrations in the Premimum plan to automate your workflows and connect SureForms directly with your favorite tools.',
+							'sureforms'
+						) }
+						featureList={ [
+							__(
+								'Send form submissions straight to CRMs, email, and marketing platforms.',
+								'sureforms'
+							),
+							__(
+								'Automate repetitive tasks with seamless data syncing.',
+								'sureforms'
+							),
+							__(
+								'Access exclusive native integrations for faster workflows.',
+								'sureforms'
+							),
+						] }
+						utmMedium="pdf-preview-single-form-settings"
 					/>
 				),
 			},
