@@ -155,6 +155,8 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 								}
 							/>
 							<SRFMTextControl
+														variant="textarea"
+
 								label={ __( 'Help Text', 'sureforms' ) }
 								value={ help }
 								data={ {
