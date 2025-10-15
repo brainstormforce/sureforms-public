@@ -252,7 +252,7 @@ class Rest_Api {
 	 * Sanitize entry IDs.
 	 *
 	 * @param mixed $value Value to sanitize.
-	 * @since 1.0.0
+	 * @since x.x.x
 	 * @return array<int>
 	 */
 	public function sanitize_entry_ids( $value ) {
@@ -285,7 +285,7 @@ class Rest_Api {
 	 * Validate trash action parameter.
 	 *
 	 * @param string $param Action parameter value.
-	 * @since 1.0.0
+	 * @since x.x.x
 	 * @return bool
 	 */
 	public function validate_trash_action( $param ) {
@@ -332,7 +332,7 @@ class Rest_Api {
 	 * Update entries read status (read/unread).
 	 *
 	 * @param \WP_REST_Request $request Full details about the request.
-	 * @since 1.0.0
+	 * @since x.x.x
 	 * @return \WP_REST_Response
 	 */
 	public function update_entries_read_status( $request ) {
@@ -381,7 +381,7 @@ class Rest_Api {
 	 * Update entries trash status (trash/restore).
 	 *
 	 * @param \WP_REST_Request $request Full details about the request.
-	 * @since 1.0.0
+	 * @since x.x.x
 	 * @return \WP_REST_Response
 	 */
 	public function update_entries_trash_status( $request ) {
@@ -430,7 +430,7 @@ class Rest_Api {
 	 * Permanently delete entries.
 	 *
 	 * @param \WP_REST_Request $request Full details about the request.
-	 * @since 1.0.0
+	 * @since x.x.x
 	 * @return \WP_REST_Response
 	 */
 	public function delete_entries( $request ) {
@@ -463,7 +463,7 @@ class Rest_Api {
 	 * Export entries to CSV or ZIP.
 	 *
 	 * @param \WP_REST_Request $request Full details about the request.
-	 * @since 1.0.0
+	 * @since x.x.x
 	 * @return \WP_REST_Response
 	 */
 	public function export_entries( $request ) {
@@ -503,6 +503,7 @@ class Rest_Api {
 		}
 
 		// Return file information for download.
+		$filepath = Helper::get_string_value( $result['filepath'] );
 		return new \WP_REST_Response(
 			[
 				'success'      => true,
@@ -512,7 +513,7 @@ class Rest_Api {
 				'download_url' => add_query_arg(
 					'_wpnonce',
 					wp_create_nonce( 'srfm_download_export' ),
-					admin_url( 'admin-ajax.php?action=srfm_download_export&file=' . rawurlencode( basename( $result['filepath'] ) ) )
+					admin_url( 'admin-ajax.php?action=srfm_download_export&file=' . rawurlencode( basename( $filepath ) ) )
 				),
 			],
 			200
