@@ -883,7 +883,7 @@ class Rest_Api {
 					],
 				],
 				// Get Single Entry Form Data.
-				'single-entry/(?P<id>\d+)/details' => [
+				'entry/(?P<id>\d+)/details' => [
 					'methods'             => 'GET',
 					'callback'            => [ $this, 'get_entry_details' ],
 					'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
@@ -895,7 +895,7 @@ class Rest_Api {
 					],
 				],
 				// Get Single Entry Logs.
-				'single-entry/(?P<id>\d+)/logs'    => [
+				'entry/(?P<id>\d+)/logs'    => [
 					'methods'             => 'GET',
 					'callback'            => [ $this, 'get_entry_logs' ],
 					'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
