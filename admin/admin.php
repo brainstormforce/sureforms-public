@@ -784,9 +784,9 @@ class Admin {
 			'view_entry_url'             => wp_nonce_url(
 				add_query_arg(
 					[
-                        'entry_id' => '[id]',
-                        'view'     => 'details',
-                        'action'   => 'read',
+						'entry_id' => '[id]',
+						'view'     => 'details',
+						'action'   => 'read',
 					],
 					admin_url( 'admin.php?page=sureforms_entries' )
 				),
