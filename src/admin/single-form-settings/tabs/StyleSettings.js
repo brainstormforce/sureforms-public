@@ -1203,12 +1203,6 @@ function StyleSettings( props ) {
 				},
 			  ]
 			: [] ),
-		{
-			panelId: 'advanced',
-			title: __( 'Advanced', 'sureforms' ),
-			content: advanced,
-			initialOpen: false,
-		},
 	];
 
 	const enhancedStylePanels = getStylePanels( baseStylePanels, {
@@ -1217,6 +1211,14 @@ function StyleSettings( props ) {
 		editPost,
 		formStyling,
 		updateFormStyling,
+	} );
+
+	// Append the advanced panel at the end.
+	enhancedStylePanels.push( {
+		panelId: 'advanced',
+		title: __( 'Advanced', 'sureforms' ),
+		content: advanced,
+		initialOpen: false,
 	} );
 
 	const presetPreview = (
