@@ -189,6 +189,7 @@ const Dialog = ( {
 	const desiredOrder = [
 		'email_notification',
 		'form_confirmation',
+		'integrations',
 		'ottokit',
 		'pdf',
 		'advanced-settings',
