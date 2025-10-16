@@ -3,7 +3,7 @@ import { __ } from '@wordpress/i18n';
 import Logo from '../dashboard/templates/Logo';
 import useWhatsNewRSS from '../../lib/whats-new/useWhatsNewRSS';
 import { Topbar, Badge, Button, HamburgerMenu, Label } from '@bsf/force-ui';
-import { CircleHelp, ArrowUpRight, BookOpen } from 'lucide-react';
+import { CircleHelp, ArrowUpRight, Megaphone } from 'lucide-react';
 import { addQueryParam, cn } from '@Utils/Helpers';
 import UpgradeNotice from './UpgradeNotice';
 import Tooltip from './Tooltip';
@@ -84,13 +84,13 @@ const Header = () => {
 		uniqueKey: 'sureforms',
 		rssFeedURL: 'https://sureforms.com/whats-new/feed/',
 		selector: '#srfm_whats_new',
-		icon: renderToString( <BookOpen className="size-4" /> ),
+		icon: renderToString( <Megaphone className="size-4" /> ),
 		flyout: {
 			title: __( "What's New?", 'sureforms' ),
 		},
 		triggerButton: {
 			icon: renderToString(
-				<BookOpen className="size-4 text-text-primary" />
+				<Megaphone className="size-4 text-text-primary" />
 			),
 		},
 	} );
@@ -287,7 +287,7 @@ const Header = () => {
 						}
 					/>
 					<HeaderTooltipItem
-						title={ __( 'Knowledge Base', 'sureforms' ) }
+						title={ __( 'What\’s new', 'sureforms' ) }
 					>
 						<div id="srfm_whats_new" className="[&_a]:!p-1" />
 					</HeaderTooltipItem>
