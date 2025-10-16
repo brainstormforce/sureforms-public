@@ -1,4 +1,5 @@
-import { __ } from '@wordpress/i18n';
+import { sprintf, _n, __ } from '@wordpress/i18n';
+import { applyFilters } from '@wordpress/hooks';
 import { SquarePen } from 'lucide-react';
 import { Button } from '@bsf/force-ui';
 import UpgradeTooltip from '@Admin/entries/components/UpgradeTooltip';
@@ -31,18 +32,90 @@ const EditEntryButton = ( { onEdit } ) => {
 /**
  * Render field value - handles both regular and repeater fields
  *
- * @param {*} value - Field value (can be string, array for repeater, etc.)
+ * @param {Field} field - Field value (can be string, array for repeater, etc.)
  * @return {string} Rendered value
  */
-const renderFieldValue = ( value ) => {
+const formatField = ( field ) => {
+	const renderProFields = applyFilters(
+		'srfm-pro.entry-details.render-pro-fields'
+	);
+
+	// Handle repeater fields and other PRO fields
+	if ( typeof renderProFields === 'function' ) {
+		return renderProFields( field );
+	}
+	const { value, label } = field;
+
 	// Handle repeater fields (array of objects)
-	if ( Array.isArray( value ) ) {
+	if ( Array.isArray( field?.value ) ) {
 		// For repeater fields, show a count or summary
-		return `${ value.length } ${ value.length === 1 ? __( 'item', 'sureforms' ) : __( 'items', 'sureforms' ) }`;
+		return {
+			label,
+			value: sprintf(
+			// translators: %d: number of items
+				_n( '%d item', '%d items', value.length, 'sureforms' ),
+				value.length
+			),
+		};
 	}
 
 	// Handle regular fields
-	return value || '-';
+	return {
+		...field,
+		label,
+		value: value || '-',
+	};
+};
+
+/**
+ * Render a single field
+ *
+ * @typedef {Object} Field
+ * @property {string}                           label       - Field label
+ * @property {string | Array | Object | number} value       - Field value
+ *
+ * @param    {Object}                           props
+ * @param    {Field}                            props.field - Field object with label and value
+ * @return {JSX.Element} RenderField component
+ */
+export const RenderField = ( props ) => {
+	const { field } = props;
+
+	console.log( field );
+
+	if ( Array.isArray( field ) ) {
+		return field.map( ( item, idx ) => (
+			<RenderField key={ `${ field.label }-${ idx }` } field={ item } />
+		) );
+	}
+
+	return (
+		<>
+			<div className="p-3 relative bg-background-primary rounded-md shadow-sm">
+				<div className="flex gap-4">
+					{ field?.label && ( <div className="w-40 flex-shrink-0">
+						<span className="text-sm font-semibold text-text-primary">
+							{ field.label }
+						</span>
+					</div> ) }
+					{ ! Array.isArray( field.value ) && (
+						<div className="flex-1">
+							<span className="text-sm font-medium text-text-secondary">
+								{ field?.value ?? field }
+							</span>
+						</div>
+					) }
+				</div>
+			</div>
+			{ Array.isArray( field.value ) &&
+				field.value.map( ( item, idx ) => (
+					<RenderField
+						key={ `${ field.label }-${ idx }` }
+						field={ item }
+					/>
+				) ) }
+		</>
+	);
 };
 
 /**
@@ -55,10 +128,7 @@ const renderFieldValue = ( value ) => {
  */
 const EntryDataSection = ( { entryData, onEdit } ) => {
 	// Extract and transform form data fields from entry data
-	const fields = ( entryData?.formData || [] ).map( ( field ) => ( {
-		label: field.label,
-		value: renderFieldValue( field.value ),
-	} ) );
+	const fields = ( entryData?.formData || [] ).map( formatField );
 
 	return (
 		<div className="bg-background-primary border-0.5 border-solid border-border-subtle rounded-lg shadow-sm">
@@ -72,23 +142,7 @@ const EntryDataSection = ( { entryData, onEdit } ) => {
 			</div>
 			<div className="p-4 space-y-1 relative before:content-[''] before:block before:absolute before:inset-3 before:bg-background-secondary before:rounded-lg">
 				{ fields.map( ( field, index ) => (
-					<div
-						key={ index }
-						className="p-3 relative bg-background-primary rounded-md shadow-sm"
-					>
-						<div className="flex gap-4">
-							<div className="w-40 flex-shrink-0">
-								<span className="text-sm font-semibold text-text-primary">
-									{ field.label }
-								</span>
-							</div>
-							<div className="flex-1">
-								<span className="text-sm font-medium text-text-secondary">
-									{ field.value }
-								</span>
-							</div>
-						</div>
-					</div>
+					<RenderField key={ index } field={ field } />
 				) ) }
 			</div>
 		</div>

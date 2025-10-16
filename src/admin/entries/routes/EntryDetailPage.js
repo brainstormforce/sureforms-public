@@ -1,6 +1,6 @@
-import { useParams, Link, useSearch, useNavigate, useLocation } from '@tanstack/react-router';
+import { useParams, Link, useNavigate, useLocation } from '@tanstack/react-router';
 import { __, sprintf } from '@wordpress/i18n';
-import { useState, useMemo, useEffect } from '@wordpress/element';
+import { useMemo, useEffect } from '@wordpress/element';
 import { Button, Text } from '@bsf/force-ui';
 import { useEntryDetail, useUpdateEntriesReadStatus } from '../hooks/useEntriesQuery';
 import EntryDataSection from '../components/EntryDataSection';
@@ -69,22 +69,23 @@ const EntryDetailPage = () => {
 
 	// Mark entry as read if "read" query param is present
 	useEffect( () => {
-		if ( location?.search?.read ) {
-			const newSearch = { ...location.search };
-			delete newSearch.read;
-			updateReadStatusMutation(
-				{
-					entry_ids: [ id ],
-					action: 'read',
-					skipToast: true,
-				},
-				{
-					onSuccess: () => {
-						navigate( { to: '/entry/$id', params: { id }, search: newSearch, replace: true } );
-					},
-				}
-			);
+		if ( ! location?.search?.read ) {
+			return;
 		}
+		const newSearch = { ...location.search };
+		delete newSearch.read;
+		updateReadStatusMutation(
+			{
+				entry_ids: [ id ],
+				action: 'read',
+				skipToast: true,
+			},
+			{
+				onSuccess: () => {
+					navigate( { to: '/entry/$id', params: { id }, search: newSearch, replace: true } );
+				},
+			}
+		);
 	}, [ location?.search, id, updateReadStatusMutation, navigate ] );
 
 	const handleEditEntry = () => {
