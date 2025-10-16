@@ -133,8 +133,9 @@ const Table = ( {
 						<FUITable.Row
 							key={ item.id }
 							selected={ selectedItems.includes( item.id ) }
-							onChangeSelection={ () => onChangeRowSelection( item.id ) }
+							onChangeSelection={ onChangeRowSelection }
 							className="hover:bg-background-primary"
+							value={ item }
 						>
 							{ columns.map( ( col, colIndex ) => (
 								<FUITable.Cell key={ colIndex }>

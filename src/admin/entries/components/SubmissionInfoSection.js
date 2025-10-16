@@ -1,5 +1,4 @@
 import { __ } from '@wordpress/i18n';
-import { useState } from '@wordpress/element';
 import { Button } from '@bsf/force-ui';
 import { useUpdateEntriesReadStatus } from '../hooks/useEntriesQuery';
 
@@ -11,35 +10,92 @@ import { useUpdateEntriesReadStatus } from '../hooks/useEntriesQuery';
  * @param {Object} props.entryData - The entry data object
  */
 const SubmissionInfoSection = ( { entryData } ) => {
-	const [ status, setStatus ] = useState( entryData?.status || 'read' );
 	const updateReadStatusMutation = useUpdateEntriesReadStatus();
 
-	// Mock data for now - replace with actual entry data structure
+	// Build info fields from actual entry data
 	const infoFields = [
-		{ id: 'entry', label: __( 'Entry:', 'sureforms' ), value: '#7' },
-		{ id: 'form-name', label: __( 'Form Name:', 'sureforms' ), value: 'Basic Contact From' },
-		{ id: 'user-ip', label: __( 'User IP:', 'sureforms' ), value: '103.180.47.90' },
-		{ id: 'url', label: __( 'URL:', 'sureforms' ), value: 'https//:www.areallyreallylongurlexample.com/premium/join/' },
-		{ id: 'browser', label: __( 'Browser:', 'sureforms' ), value: 'Test' },
-		{ id: 'type', label: __( 'Type:', 'sureforms' ), value: 'Completed' },
-		{ id: 'user', label: __( 'User:', 'sureforms' ), value: 'Aaditya' },
-		{ id: 'status', label: __( 'Status:', 'sureforms' ), value: status.toLowerCase() },
-		{ id: 'submitted-on', label: __( 'Submitted On:', 'sureforms' ), value: '2023-03-09 15:29:23' },
+		{
+			id: 'entry',
+			label: __( 'Entry:', 'sureforms' ),
+			value: entryData?.id ? `#${ entryData.id }` : '-',
+		},
+		{
+			id: 'form-name',
+			label: __( 'Form Name:', 'sureforms' ),
+			value: entryData?.formName || '-',
+		},
+		{
+			id: 'user-ip',
+			label: __( 'User IP:', 'sureforms' ),
+			value: entryData?.submissionInfo?.userIp || '-',
+		},
+		{
+			id: 'url',
+			label: __( 'URL:', 'sureforms' ),
+			value: entryData?.formPermalink || '-',
+			render: ( val ) => (
+				<Button
+					variant="link"
+					tag="a"
+					href={ val }
+					className="no-underline hover:underline"
+					target="_blank"
+					rel="noopener noreferrer"
+				>
+					{ val }
+				</Button>
+			),
+		},
+		{
+			id: 'browser',
+			label: __( 'Browser:', 'sureforms' ),
+			value: entryData?.submissionInfo?.browserName || '-',
+		},
+		{
+			id: 'device',
+			label: __( 'Device:', 'sureforms' ),
+			value: entryData?.submissionInfo?.deviceName || '-',
+		},
+		{
+			id: 'user',
+			label: __( 'User:', 'sureforms' ),
+			value: entryData?.user?.displayName || '-',
+			render: ( val ) =>
+				entryData?.user?.profileUrl ? (
+					<Button
+						variant="link"
+						tag="a"
+						href={ entryData.user.profileUrl }
+						target="_blank"
+						className="no-underline hover:underline"
+						rel="noopener noreferrer"
+					>
+						{ val }
+					</Button>
+				) : (
+					val
+				),
+		},
+		{
+			id: 'status',
+			label: __( 'Status:', 'sureforms' ),
+			value: entryData.status.toLowerCase(),
+			render: ( val ) => val.charAt( 0 ).toUpperCase() + val.slice( 1 ),
+		},
+		{
+			id: 'created_at',
+			label: __( 'Submitted On:', 'sureforms' ),
+			value: entryData?.formattedDateTime || '-',
+		},
 	];
 
 	const handleMarkAsUnread = () => {
-		console.log( 'Mark as Unread clicked', entryData );
-		if ( entryData?.ID ) {
+		if ( entryData?.id ) {
 			updateReadStatusMutation.mutate(
 				{
-					entry_ids: [ entryData.ID ],
+					entry_ids: [ entryData.id ],
 					action: 'unread',
 				},
-				{
-					onSuccess: () => {
-						setStatus( 'unread' );
-					},
-				}
 			);
 		}
 	};
@@ -63,20 +119,28 @@ const SubmissionInfoSection = ( { entryData } ) => {
 							</span>
 						</div>
 						<div className="flex-1 flex items-center justify-between">
-							<span className="text-sm font-normal text-text-secondary capitalize">
-								{ field.value }
+							<span className="text-sm font-normal text-text-secondary">
+								{ typeof field?.render === 'function'
+									? field.render( field.value )
+									: field.value }
 							</span>
-							{ field.id === 'status' && field.value === 'read' && (
+							{ field.id === 'status' &&
+								field.value === 'read' && (
 								<Button
 									variant="link"
 									size="xs"
 									onClick={ handleMarkAsUnread }
-									disabled={ updateReadStatusMutation.isLoading }
+									disabled={
+										updateReadStatusMutation.isLoading
+									}
 									className="text-link-primary hover:text-link-primary-hover ml-2"
 								>
 									{ updateReadStatusMutation.isLoading
 										? __( 'Updating…', 'sureforms' )
-										: __( 'Mark as Unread', 'sureforms' ) }
+										: __(
+											'Mark as Unread',
+											'sureforms'
+											  ) }
 								</Button>
 							) }
 						</div>

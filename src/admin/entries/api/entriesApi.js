@@ -78,7 +78,7 @@ export const fetchEntriesList = ( params = {} ) => {
  */
 export const fetchEntryDetail = ( entryId ) => {
 	return apiFetch( {
-		path: `/sureforms/v1/entries/${ entryId }`,
+		path: `/sureforms/v1/single-entry/${ entryId }/details`,
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json',

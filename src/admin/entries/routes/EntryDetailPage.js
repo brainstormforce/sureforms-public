@@ -1,14 +1,15 @@
-import { useParams, Link } from '@tanstack/react-router';
+import { useParams, Link, useSearch, useNavigate, useLocation } from '@tanstack/react-router';
 import { __, sprintf } from '@wordpress/i18n';
-import { useState } from '@wordpress/element';
+import { useState, useMemo, useEffect } from '@wordpress/element';
 import { Button, Text } from '@bsf/force-ui';
-import { useEntryDetail } from '../hooks/useEntriesQuery';
+import { useEntryDetail, useUpdateEntriesReadStatus } from '../hooks/useEntriesQuery';
 import EntryDataSection from '../components/EntryDataSection';
 import SubmissionInfoSection from '../components/SubmissionInfoSection';
 import NotesSection from '../components/NotesSection';
 import EntryLogsSection from '../components/EntryLogsSection';
 import { ArrowLeft } from 'lucide-react';
 import UpgradeTooltip from '../components/UpgradeTooltip';
+import { transformEntryDetail } from '../utils/entryHelpers';
 
 /**
  * Button to send entry details via email
@@ -53,10 +54,38 @@ const SendDetailsButton = ( { handleSendEmail } ) => {
  */
 const EntryDetailPage = () => {
 	const { id } = useParams( { strict: false } );
-	const [ isLoading ] = useState( false );
+
+	const location = useLocation( { from: '/entry/$id' } );
+	const navigate = useNavigate();
+	const { mutate: updateReadStatusMutation } = useUpdateEntriesReadStatus();
 
 	// Fetch entry details
-	const { data: entryData, isLoading: isEntryLoading } = useEntryDetail( id );
+	const { data: rawEntryData, isLoading } = useEntryDetail( id );
+
+	// Transform entry data
+	const entryData = useMemo( () => {
+		return transformEntryDetail( rawEntryData );
+	}, [ rawEntryData ] );
+
+	// Mark entry as read if "read" query param is present
+	useEffect( () => {
+		if ( location?.search?.read ) {
+			const newSearch = { ...location.search };
+			delete newSearch.read;
+			updateReadStatusMutation(
+				{
+					entry_ids: [ id ],
+					action: 'read',
+					skipToast: true,
+				},
+				{
+					onSuccess: () => {
+						navigate( { to: '/entry/$id', params: { id }, search: newSearch, replace: true } );
+					},
+				}
+			);
+		}
+	}, [ location?.search, id, updateReadStatusMutation, navigate ] );
 
 	const handleEditEntry = () => {
 		// TODO: Implement edit entry functionality
@@ -90,7 +119,7 @@ const EntryDetailPage = () => {
 			</div>
 			<div className="max-w-[1374px] mx-auto">
 				<div className="bg-white rounded-xl border-0.5 border-solid border-border-subtle shadow-sm p-6 space-y-6">
-					{ isLoading || isEntryLoading ? (
+					{ isLoading ? (
 						<div className="flex items-center justify-center py-12">
 							<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-primary-600" />
 						</div>

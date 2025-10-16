@@ -170,7 +170,12 @@ const EntriesListingPage = () => {
 
 	// Action handlers
 	const handleEdit = ( entry ) => {
-		navigate( { to: '/entry/$id', params: { id: entry.id } } );
+		const navObj = { to: '/entry/$id', params: { id: entry.id } };
+		// If entry is unread, add "read" query param to mark it as read
+		if ( entry.status === 'unread' ) {
+			navObj.search = { read: true };
+		}
+		navigate( navObj );
 	};
 
 	const handleDelete = ( entry ) => {

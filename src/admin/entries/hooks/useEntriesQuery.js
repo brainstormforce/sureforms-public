@@ -28,7 +28,7 @@ export const entriesKeys = {
 	lists: () => [ ...entriesKeys.all, 'list' ],
 	list: ( filters ) => [ ...entriesKeys.lists(), filters ],
 	details: () => [ ...entriesKeys.all, 'detail' ],
-	detail: ( id ) => [ ...entriesKeys.details(), id ],
+	detail: ( id ) => [ ...entriesKeys.details(), +id ],
 };
 
 /**
@@ -106,6 +106,11 @@ export const useUpdateEntriesReadStatus = () => {
 						queryKey: entriesKeys.detail( entryId ),
 					} );
 				} );
+			}
+
+			// Skip showing toast if requested
+			if ( variables?.skipToast ) {
+				return;
 			}
 
 			// Show success message

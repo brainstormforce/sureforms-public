@@ -29,6 +29,23 @@ const EditEntryButton = ( { onEdit } ) => {
 };
 
 /**
+ * Render field value - handles both regular and repeater fields
+ *
+ * @param {*} value - Field value (can be string, array for repeater, etc.)
+ * @return {string} Rendered value
+ */
+const renderFieldValue = ( value ) => {
+	// Handle repeater fields (array of objects)
+	if ( Array.isArray( value ) ) {
+		// For repeater fields, show a count or summary
+		return `${ value.length } ${ value.length === 1 ? __( 'item', 'sureforms' ) : __( 'items', 'sureforms' ) }`;
+	}
+
+	// Handle regular fields
+	return value || '-';
+};
+
+/**
  * EntryDataSection Component
  * Displays the form fields and their values for an entry
  *
@@ -37,17 +54,11 @@ const EditEntryButton = ( { onEdit } ) => {
  * @param {Function} props.onEdit    - Handler for edit action
  */
 const EntryDataSection = ( { entryData, onEdit } ) => {
-	// Mock data for now - replace with actual entry data structure
-	const fields = [
-		{ label: __( 'First Name:', 'sureforms' ), value: 'Aaditya Sharma' },
-		{ label: __( 'Email:', 'sureforms' ), value: 'ads@gmail.com' },
-		{ label: __( 'Gender:', 'sureforms' ), value: 'Male' },
-		{ label: __( 'Phone Number:', 'sureforms' ), value: '+91-8006572823' },
-		{
-			label: __( 'Message:', 'sureforms' ),
-			value: 'Suspendisse egestas amet in varius commodo in in morbi. Quis viverra in quis vitae aliquam viverra tellus phasellus. Diam netus imperdiet risus amet turpis massa cras donec morbi. Viverra ac egestas mollis.',
-		},
-	];
+	// Extract and transform form data fields from entry data
+	const fields = ( entryData?.formData || [] ).map( ( field ) => ( {
+		label: field.label,
+		value: renderFieldValue( field.value ),
+	} ) );
 
 	return (
 		<div className="bg-background-primary border-0.5 border-solid border-border-subtle rounded-lg shadow-sm">
