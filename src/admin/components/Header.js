@@ -287,7 +287,7 @@ const Header = () => {
 						}
 					/>
 					<HeaderTooltipItem
-						title={ __( 'What\’s new', 'sureforms' ) }
+						title={ __( 'What\’s New', 'sureforms' ) }
 					>
 						<div id="srfm_whats_new" className="[&_a]:!p-1" />
 					</HeaderTooltipItem>
