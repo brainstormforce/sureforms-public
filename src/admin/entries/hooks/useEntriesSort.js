@@ -15,7 +15,7 @@ export const useEntriesSort = ( initialSortBy = '', initialOrder = '' ) => {
 	 * Map frontend column keys to backend API field names
 	 */
 	const columnToApiFieldMap = {
-		formId: 'id',
+		id: 'id',
 		status: 'status',
 		dateTime: 'created_at',
 	};
