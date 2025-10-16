@@ -7,6 +7,7 @@ import EntryDataSection from '../components/EntryDataSection';
 import SubmissionInfoSection from '../components/SubmissionInfoSection';
 import NotesSection from '../components/NotesSection';
 import EntryLogsSection from '../components/EntryLogsSection';
+import EntryDetailSkeleton from '../components/EntryDetailSkeleton';
 import { ArrowLeft } from 'lucide-react';
 import UpgradeTooltip from '../components/UpgradeTooltip';
 import { transformEntryDetail } from '../utils/entryHelpers';
@@ -98,6 +99,10 @@ const EntryDetailPage = () => {
 		console.log( 'Send email clicked' );
 	};
 
+	if ( isLoading ) {
+		return <EntryDetailSkeleton />;
+	}
+
 	return (
 		<div className="p-8 bg-background-secondary min-h-screen space-y-6">
 			{ /* Header */ }
@@ -119,42 +124,36 @@ const EntryDetailPage = () => {
 				</Text>
 			</div>
 			<div className="max-w-[1374px] mx-auto">
-				<div className="bg-white rounded-xl border-0.5 border-solid border-border-subtle shadow-sm p-6 space-y-6">
-					{ isLoading ? (
-						<div className="flex items-center justify-center py-12">
-							<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-primary-600" />
-						</div>
-					) : (
-						<div className="space-y-6">
-							{ /* Main Content Grid */ }
-							<div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-								{ /* Left Column */ }
-								<div className="lg:col-span-2 space-y-6">
-									<EntryDataSection
-										entryData={ entryData }
-										onEdit={ handleEditEntry }
-									/>
-									<SubmissionInfoSection
-										entryData={ entryData }
-									/>
-								</div>
+				<div className="space-y-6">
+					<div className="space-y-6">
+						{ /* Main Content Grid */ }
+						<div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+							{ /* Left Column */ }
+							<div className="lg:col-span-2 space-y-6">
+								<EntryDataSection
+									entryData={ entryData }
+									onEdit={ handleEditEntry }
+								/>
+								<SubmissionInfoSection
+									entryData={ entryData }
+								/>
+							</div>
 
-								{ /* Right Column */ }
-								<div className="space-y-4">
-									<NotesSection entryData={ entryData } />
-									<EntryLogsSection entryData={ entryData } />
-									{ /* Action buttons */ }
-									<div className="ml-0.5">
-										<SendDetailsButton
-											handleSendEmail={
-												handleSendEmail
-											}
-										/>
-									</div>
+							{ /* Right Column */ }
+							<div className="space-y-4">
+								<NotesSection entryData={ entryData } />
+								<EntryLogsSection entryData={ entryData } />
+								{ /* Action buttons */ }
+								<div className="ml-0.5">
+									<SendDetailsButton
+										handleSendEmail={
+											handleSendEmail
+										}
+									/>
 								</div>
 							</div>
 						</div>
-					) }
+					</div>
 				</div>
 			</div>
 		</div>
