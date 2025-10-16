@@ -26,7 +26,7 @@ import {
 	File,
 	FileText,
 	Cpu,
-	Link
+	Link,
 } from 'lucide-react';
 
 import Suretriggers from '../integrations/suretriggers';
@@ -189,7 +189,10 @@ const Dialog = ( {
 								strokeWidth={ 1 }
 							/>
 						}
-						title={ __( 'Connect Native Integrations with SureForms', 'sureforms' ) }
+						title={ __(
+							'Connect Native Integrations with SureForms',
+							'sureforms'
+						) }
 						subtitle={ __(
 							'Unlock powerful integrations in the Premimum plan to automate your workflows and connect SureForms directly with your favorite tools.',
 							'sureforms'
