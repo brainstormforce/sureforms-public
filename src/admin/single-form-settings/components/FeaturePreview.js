@@ -69,7 +69,7 @@ const FeaturePreview = ( {
 						<Container.Item>
 							<Label
 								size="sm"
-								className="text-text-tertiary text-base font-normal leading-relaxed"
+								className="text-[#4B5563] text-base font-normal leading-relaxed"
 							>
 								{ subtitle }
 							</Label>
