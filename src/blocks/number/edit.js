@@ -332,8 +332,7 @@ const SureformInput = ( props ) => {
 			id: 'help-text',
 			component: (
 				<SRFMTextControl
-											variant="textarea"
-
+					variant="textarea"
 					label={ __( 'Help Text', 'sureforms' ) }
 					value={ help }
 					data={ {

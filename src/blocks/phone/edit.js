@@ -37,13 +37,16 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 	} = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
 	// Create translatable country options using useMemo
-	const countryOptions = useMemo( () => [
-		{ label: __( 'Select Country', 'sureforms' ), value: '' },
-		...Object.entries( countries ).map( ( [ code, name ] ) => ( {
-			label: name,
-			value: code,
-		} ) ),
-	], [] );
+	const countryOptions = useMemo(
+		() => [
+			{ label: __( 'Select Country', 'sureforms' ), value: '' },
+			...Object.entries( countries ).map( ( [ code, name ] ) => ( {
+				label: name,
+				value: code,
+			} ) ),
+		],
+		[]
+	);
 
 	useEffect( () => {
 		if ( formId !== currentFormId ) {
@@ -154,8 +157,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 								/>
 							) }
 							<SRFMTextControl
-														variant="textarea"
-
+								variant="textarea"
 								label={ __( 'Help Text', 'sureforms' ) }
 								value={ help }
 								data={ {

@@ -76,8 +76,7 @@ export default ( { attributes, setAttributes } ) => {
 							/>
 						) }
 						<SRFMTextControl
-													variant="textarea"
-
+							variant="textarea"
 							label={ __( 'Help Text', 'sureforms' ) }
 							value={ help }
 							data={ {
