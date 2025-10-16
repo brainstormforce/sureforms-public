@@ -3,7 +3,7 @@ import { __ } from '@wordpress/i18n';
 import Logo from '../dashboard/templates/Logo';
 import useWhatsNewRSS from '../../lib/whats-new/useWhatsNewRSS';
 import { Topbar, Badge, Button, HamburgerMenu, Label } from '@bsf/force-ui';
-import { CircleHelp, ArrowUpRight, Megaphone } from 'lucide-react';
+import { BookOpen, ArrowUpRight, Megaphone } from 'lucide-react';
 import { addQueryParam, cn } from '@Utils/Helpers';
 import UpgradeNotice from './UpgradeNotice';
 import Tooltip from './Tooltip';
@@ -276,8 +276,8 @@ const Header = () => {
 						</Topbar.Item>
 					) }
 					<HeaderTooltipItem
-						title={ __( 'Help Center', 'sureforms' ) }
-						icon={ <CircleHelp className="size-4" /> }
+						title={ __( 'Knowledge Base', 'sureforms' ) }
+						icon={ <BookOpen className="size-4" /> }
 						onClick={ () =>
 							window.open(
 								'https://sureforms.com/docs/',
