@@ -162,45 +162,48 @@ const SpamProtection = () => {
 		>
 			<div className="space-y-6">
 				{ /* Security Type */ }
-				<div className="space-y-1.5">
-					<Label htmlFor="security-type">
-						{ __( 'Spam Protection Type', 'sureforms' ) }
-					</Label>
-					<Select
-						value={
-							sureformsKeys._srfm_captcha_security_type || 'none'
-						}
-						onChange={ handleSecurityTypeChange }
-						options={ securityTypeOptions }
-					>
-						<Select.Button
-							id="security-type"
-							placeholder={ __(
-								'Select Security Type',
-								'sureforms'
-							) }
+				<div className="space-y-1.5 flex flex-col gap-2">
+					<div className="flex flex-col gap-1.5">
+						<Label htmlFor="security-type">
+							{ __( 'Spam Protection Type', 'sureforms' ) }
+						</Label>
+						<Select
+							value={
+								sureformsKeys._srfm_captcha_security_type ||
+								'none'
+							}
+							onChange={ handleSecurityTypeChange }
+							options={ securityTypeOptions }
 						>
-							{ securityTypeOptions.find(
-								( o ) =>
-									o.value ===
-									sureformsKeys._srfm_captcha_security_type
-							)?.label || __( 'None', 'sureforms' ) }
-						</Select.Button>
-						<Select.Options>
-							{ securityTypeOptions.map( ( option ) => (
-								<Select.Option
-									key={ option.value }
-									value={ option.value }
-									selected={
-										option.value ===
+							<Select.Button
+								id="security-type"
+								placeholder={ __(
+									'Select Security Type',
+									'sureforms'
+								) }
+							>
+								{ securityTypeOptions.find(
+									( o ) =>
+										o.value ===
 										sureformsKeys._srfm_captcha_security_type
-									}
-								>
-									{ option.label }
-								</Select.Option>
-							) ) }
-						</Select.Options>
-					</Select>
+								)?.label || __( 'None', 'sureforms' ) }
+							</Select.Button>
+							<Select.Options>
+								{ securityTypeOptions.map( ( option ) => (
+									<Select.Option
+										key={ option.value }
+										value={ option.value }
+										selected={
+											option.value ===
+											sureformsKeys._srfm_captcha_security_type
+										}
+									>
+										{ option.label }
+									</Select.Option>
+								) ) }
+							</Select.Options>
+						</Select>
+					</div>
 					<Label size="sm" variant="help" className="font-normal">
 						{ __(
 							'Select a spam protection service from the list above. Make sure API keys are configured before enabling.',
@@ -267,6 +270,7 @@ const SpamProtection = () => {
 						<a
 							href={ srfm_admin.security_settings_url }
 							className="text-[#DC2626] font-medium no-underline"
+							target="_blank" rel="noreferrer"
 						>
 							{ __( 'Global Settings', 'sureforms' ) }
 						</a>
