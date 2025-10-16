@@ -83,12 +83,12 @@ const FeaturePreview = ( {
 									className="flex items-start"
 								>
 									<Dot
-										className="w-5 h-5 text-text-primary"
+										className="w-5 h-5 text-[#4B5563]"
 										strokeWidth={ 2 }
 									/>
 									<Label
 										size="sm"
-										className="text-text-primary font-normal"
+										className="text-[#4B5563] font-normal"
 									>
 										{ point }
 									</Label>
