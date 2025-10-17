@@ -217,7 +217,7 @@ const SpamProtection = () => {
 					'g-recaptcha' && (
 					<>
 						{ showRecaptchaConflictNotice && (
-							<Container className="w-full p-3 gap-2 border-solid border-alert-border-warning bg-alert-background-warning rounded-lg">
+							<Container className="w-full p-3 gap-2 border border-solid border-alert-border-warning bg-alert-background-warning rounded-lg">
 								<span className="size-5">
 									{ parse( svg?.warning ) }
 								</span>
@@ -257,7 +257,7 @@ const SpamProtection = () => {
 
 				{ /* Error message */ }
 				{ showErr && (
-					<div className="flex items-center justify-between gap-3 p-3 bg-[#FEE2E2] border-solid border-[#FCA5A5] rounded-lg text-sm text-gray-900">
+					<div className="flex items-center justify-between gap-3 p-3 bg-[#FEE2E2] border border-solid border-[#FCA5A5] rounded-lg text-sm text-gray-900">
 						<div className="flex items-center gap-2">
 							<Info color="#DC2626" size={ 20 } />
 							<span>
