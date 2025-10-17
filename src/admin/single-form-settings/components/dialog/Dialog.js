@@ -264,7 +264,7 @@ const Dialog = ( {
 					<FeaturePreview
 						featureName={ __( 'User Registration', 'sureforms' ) }
 						featureHelpText={ __(
-							'Register new users or update existing accounts with form submissions.',
+							'Onboard new users or update or existing accounts through beautiful looking forms.',
 							'sureforms'
 						) }
 						icon={
@@ -279,16 +279,16 @@ const Dialog = ( {
 							'sureforms'
 						) }
 						subtitle={ __(
-							'Streamline the user onboarding for your sites with form-powered registration.',
+							'Streamline the entire user onboarding process for your sites with seamless form-powered logins and registrations.',
 							'sureforms'
 						) }
 						featureList={ [
 							__(
-								'Register new users directly from your form submissions.',
+								'Register new users directly via your form submissions.',
 								'sureforms'
 							),
 							__(
-								'Update existing accounts with custom data.',
+								'Create or update existing accounts by mapping form data to user fields.',
 								'sureforms'
 							),
 							__(
@@ -308,7 +308,7 @@ const Dialog = ( {
 					<FeaturePreview
 						featureName={ __( 'Post Feed', 'sureforms' ) }
 						featureHelpText={ __(
-							'Automatically create WordPress posts from form submissions.',
+							'Transform your form submission into WordPress posts.',
 							'sureforms'
 						) }
 						icon={
@@ -319,7 +319,7 @@ const Dialog = ( {
 							/>
 						}
 						title={ __(
-							'Automatically create WordPress posts from form submissions.',
+							'Post Feed',
 							'sureforms'
 						) }
 						subtitle={ __(
