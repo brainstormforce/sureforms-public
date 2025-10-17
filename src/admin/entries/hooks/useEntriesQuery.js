@@ -14,6 +14,8 @@ import {
 	trashEntries,
 	deleteEntries,
 	exportEntries,
+	fetchEntryLogs,
+	deleteEntryLog,
 } from '../api/entriesApi';
 
 /**
@@ -39,6 +41,20 @@ export const entriesKeys = {
 export const formsKeys = {
 	all: [ 'forms' ],
 	list: () => [ ...formsKeys.all, 'list' ],
+};
+
+/**
+ * Query key factory for entry logs
+ *
+ * @param {number} entryId - Entry ID
+ * @return {Object} Query key object
+ */
+export const entryLogsKeys = {
+	all: [ 'entry-logs' ],
+	lists: () => [ ...entryLogsKeys.all, 'list' ],
+	list: ( entryId, pagination ) => [ ...entryLogsKeys.lists(), entryId, pagination ],
+	details: () => [ ...entryLogsKeys.all, 'detail' ],
+	detail: ( entryId, logId ) => [ ...entryLogsKeys.details(), entryId, logId ],
 };
 
 /**
@@ -274,6 +290,51 @@ export const useExportEntries = () => {
 					'An error occurred during export. Please try again.',
 					'sureforms'
 				);
+			toast.error( msg );
+		},
+	} );
+};
+
+/**
+ * Hook to fetch entry logs with pagination
+ *
+ * @param {number} entryId    - Entry ID to fetch logs for
+ * @param {Object} pagination - Object with page and per_page properties
+ * @return {Object} Query result
+ */
+export const useEntryLogs = ( entryId, pagination = { page: 1, per_page: 3 } ) => {
+	return useQuery( {
+		queryKey: entryLogsKeys.list( entryId, pagination ),
+		queryFn: () => fetchEntryLogs( { id: entryId, ...pagination } ),
+		enabled: !! entryId,
+		staleTime: 1000 * 60 * 5, // Consider data fresh for 5 minutes
+	} );
+};
+
+/**
+ * Hook to delete a single entry log
+ *
+ * @return {Object} Mutation result
+ */
+export const useDeleteEntryLog = () => {
+	const queryClient = useQueryClient();
+
+	return useMutation( {
+		mutationFn: deleteEntryLog,
+		onSuccess: () => {
+			// Invalidate and refetch logs for this entry
+			queryClient.invalidateQueries( {
+				queryKey: entryLogsKeys.lists(),
+			} );
+
+			toast.success(
+				__( 'Log deleted successfully.', 'sureforms' )
+			);
+		},
+		onError: ( error ) => {
+			const msg =
+				error?.message ||
+				__( 'An error occurred while deleting the log. Please try again.', 'sureforms' );
 			toast.error( msg );
 		},
 	} );

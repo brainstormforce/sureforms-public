@@ -184,3 +184,47 @@ export const exportEntries = ( params = {} ) => {
 		},
 	} );
 };
+
+/**
+ * Fetch entry logs with pagination
+ *
+ * @param {Object} params          - Query parameters
+ * @param {number} params.id       - Entry ID
+ * @param {number} params.page     - Page number (default: 1)
+ * @param {number} params.per_page - Logs per page (default: 3)
+ * @return {Promise<Object>} Promise resolving to logs data with pagination
+ */
+export const fetchEntryLogs = ( { id, page = 1, per_page = 3 } ) => {
+	const queryParams = {
+		page,
+		per_page,
+	};
+
+	return apiFetch( {
+		path: addQueryArgs( `/sureforms/v1/entry/${ id }/logs`, queryParams ),
+		method: 'GET',
+		headers: {
+			'Content-Type': 'application/json',
+			'X-WP-Nonce': getNonce(),
+		},
+	} );
+};
+
+/**
+ * Delete a single entry log
+ *
+ * @param {Object} params        - Parameters
+ * @param {number} params.id     - Entry ID (required)
+ * @param {number} params.log_id - Log ID to delete (required)
+ * @return {Promise<Object>} Promise resolving to deletion result
+ */
+export const deleteEntryLog = ( { id, log_id } ) => {
+	return apiFetch( {
+		path: `/sureforms/v1/entry/${ id }/logs/${ log_id }`,
+		method: 'DELETE',
+		headers: {
+			'Content-Type': 'application/json',
+			'X-WP-Nonce': getNonce(),
+		},
+	} );
+};

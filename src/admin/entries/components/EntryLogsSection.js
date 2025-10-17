@@ -1,30 +1,72 @@
-import { Button } from '@bsf/force-ui';
+import { useState } from '@wordpress/element';
+import { Button, Text } from '@bsf/force-ui';
 import { __ } from '@wordpress/i18n';
-import { ArrowLeft, ArrowRight } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Trash2 } from 'lucide-react';
+import { useEntryLogs, useDeleteEntryLog } from '../hooks/useEntriesQuery';
 
 /**
  * EntryLogsSection Component
- * Displays entry logs and activities
+ * Displays entry logs and activities with pagination and delete functionality
  *
  * @param {Object} props
- * @param {Object} props.entryData - The entry data object
+ * @param {number} props.entryId - The entry ID for fetching logs
+ * @return {JSX.Element} EntryLogsSection component
  */
-const EntryLogsSection = ( { entryData } ) => {
-	// Mock data for now - replace with actual logs data
-	const logs = [
-		{
-			id: 1,
-			timestamp: '2023-03-09 15:29:24',
-			action: 'EmailNotification (Email Sending Initiated)',
-			details: 'Email Notification broadcasted to support@sureforms.com. Subject: Test the form',
-		},
-		{
-			id: 2,
-			timestamp: '2023-03-09 15:29:24',
-			action: 'EmailNotification (Email Sending Initiated)',
-			details: 'Email Notification broadcasted to support@sureforms.com. Subject: Test the form',
-		},
-	];
+const EntryLogsSection = ( { entryId } ) => {
+	const [ pagination, setPagination ] = useState( { page: 1, per_page: 3 } );
+
+	// Fetch entry logs
+	const { data: logsData, isLoading } = useEntryLogs( entryId, pagination );
+
+	// Delete log mutation
+	const { mutate: deleteLog, isPending: isDeleting } = useDeleteEntryLog();
+
+	// Extract logs from data
+	const logs = logsData?.logs || [];
+	const totalPages = logsData?.total_pages || 1;
+	const currentPage = pagination.page;
+
+	/**
+	 * Format timestamp to YYYY-MM-DD HH:MM:SS format
+	 *
+	 * @param {string|number} timestamp - The timestamp to format
+	 * @return {string} Formatted date string
+	 */
+	const formatTimestamp = ( timestamp ) => {
+		if ( ! timestamp ) {
+			return '';
+		}
+
+		const date = new Date( timestamp );
+		const year = date.getFullYear();
+		const month = String( date.getMonth() + 1 ).padStart( 2, '0' );
+		const day = String( date.getDate() ).padStart( 2, '0' );
+		const hours = String( date.getHours() ).padStart( 2, '0' );
+		const minutes = String( date.getMinutes() ).padStart( 2, '0' );
+		const seconds = String( date.getSeconds() ).padStart( 2, '0' );
+
+		return `${ year }-${ month }-${ day } ${ hours }:${ minutes }:${ seconds }`;
+	};
+
+	const handleDeleteLog = ( logId ) => {
+		if ( confirm( __( 'Are you sure you want to delete this log?', 'sureforms' ) ) ) {
+			deleteLog( { id: entryId, log_id: logId } );
+		}
+	};
+
+	const handlePreviousPage = () => {
+		setPagination( ( prev ) => ( {
+			...prev,
+			page: Math.max( 1, prev.page - 1 ),
+		} ) );
+	};
+
+	const handleNextPage = () => {
+		setPagination( ( prev ) => ( {
+			...prev,
+			page: Math.min( totalPages, prev.page + 1 ),
+		} ) );
+	};
 
 	return (
 		<div className="bg-background-primary border-0.5 border-solid border-border-subtle rounded-lg shadow-sm">
@@ -34,32 +76,67 @@ const EntryLogsSection = ( { entryData } ) => {
 				</h3>
 			</div>
 			<div className="p-4 space-y-1 relative before:content-[''] before:block before:absolute before:inset-3 before:bg-background-secondary before:rounded-lg">
-				{ logs.map( ( log ) => (
-					<div
-						key={ log.id }
-						className="bg-background-primary rounded-md p-3 relative shadow-sm"
-					>
-						<div className="flex items-start gap-4">
+				{ isLoading ? (
+					<div className="text-center py-4 text-text-secondary">
+						{ __( 'Loading logs…', 'sureforms' ) }
+					</div>
+				) : logs.length === 0 ? (
+					<div className="text-center py-4 text-text-secondary">
+						{ __( 'No logs available.', 'sureforms' ) }
+					</div>
+				) : (
+					logs.map( ( log ) => (
+						<div
+							key={ log.id }
+							className="bg-background-primary rounded-md p-3 relative shadow-sm flex items-start justify-between gap-3"
+						>
 							<div className="flex-1 space-y-2">
 								<div className="text-sm font-semibold text-text-primary">
-									{ log.action } at { log.timestamp }
+									{ log.title } { log.timestamp && `at ${ formatTimestamp( log.timestamp ) }` }
 								</div>
-								<div className="text-sm font-normal text-text-primary">
-									{ log.details }
-								</div>
+								{ log.messages && log.messages.map( ( message, index ) => (
+									<Text key={ index } size={ 14 } weight={ 400 } color="primary">
+										{ message }
+									</Text>
+								) ) }
 							</div>
+							<Button
+								className="text-icon-secondary hover:text-icon-primary"
+								variant="ghost"
+								size="xs"
+								icon={ <Trash2 /> }
+								onClick={ () => handleDeleteLog( log.id ) }
+								disabled={ isDeleting }
+								aria-label={ __( 'Delete log', 'sureforms' ) }
+							/>
 						</div>
-					</div>
-				) ) }
+					) )
+				) }
 			</div>
 			{ /* Pagination */ }
-			<div className="w-full flex items-center justify-end space-x-2 pb-3 pr-3">
-				<Button variant="ghost" size="xs" icon={ <ArrowLeft /> } iconPosition="left">
-					{ __( 'Previous', 'sureforms' ) }
-				</Button>
-				<Button variant="ghost" size="xs" icon={ <ArrowRight /> } iconPosition="right">
-					{ __( 'Next', 'sureforms' ) }
-				</Button>
+			<div className="w-full flex items-center justify-end pb-3 pr-3 pl-3">
+				<div className="flex items-center gap-2">
+					<Button
+						variant="ghost"
+						size="xs"
+						icon={ <ArrowLeft /> }
+						iconPosition="left"
+						onClick={ handlePreviousPage }
+						disabled={ currentPage === 1 || isLoading }
+					>
+						{ __( 'Previous', 'sureforms' ) }
+					</Button>
+					<Button
+						variant="ghost"
+						size="xs"
+						icon={ <ArrowRight /> }
+						iconPosition="right"
+						onClick={ handleNextPage }
+						disabled={ currentPage === totalPages || isLoading }
+					>
+						{ __( 'Next', 'sureforms' ) }
+					</Button>
+				</div>
 			</div>
 		</div>
 	);

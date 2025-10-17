@@ -142,7 +142,7 @@ const EntryDetailPage = () => {
 							{ /* Right Column */ }
 							<div className="space-y-4">
 								<NotesSection entryData={ entryData } />
-								<EntryLogsSection entryData={ entryData } />
+								<EntryLogsSection entryId={ id } />
 								{ /* Action buttons */ }
 								<div className="ml-0.5">
 									<SendDetailsButton
