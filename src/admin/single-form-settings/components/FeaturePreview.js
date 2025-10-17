@@ -97,7 +97,7 @@ const FeaturePreview = ( {
 						</Container>
 
 						{ /* Upgrade Button */ }
-						<Container.Item>
+						<Container.Item className='mt-2'>
 							<Button
 								className="w-fit p-2.5"
 								size="md"

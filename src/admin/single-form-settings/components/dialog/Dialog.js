@@ -233,16 +233,16 @@ const Dialog = ( {
 							'sureforms'
 						) }
 						subtitle={ __(
-							'Streamline the user onboarding for your sites with form-powered registration.',
+							'Streamline the entire user onboarding process for your sites with seamless form-powered logins and registrations.',
 							'sureforms'
 						) }
 						featureList={ [
 							__(
-								'Register new users directly from your form submissions.',
+								'Register new users directly via your form submissions.',
 								'sureforms'
 							),
 							__(
-								'Update existing accounts with custom data.',
+								'Create or update existing accounts by mapping form data to user fields.',
 								'sureforms'
 							),
 							__(
