@@ -1,13 +1,22 @@
-import { useParams, Link, useNavigate, useLocation } from '@tanstack/react-router';
+import {
+	useParams,
+	Link,
+	useNavigate,
+	useLocation,
+} from '@tanstack/react-router';
 import { __, sprintf } from '@wordpress/i18n';
-import { useMemo, useEffect } from '@wordpress/element';
+import { useMemo, useEffect, useState } from '@wordpress/element';
 import { Button, Text } from '@bsf/force-ui';
-import { useEntryDetail, useUpdateEntriesReadStatus } from '../hooks/useEntriesQuery';
+import {
+	useEntryDetail,
+	useUpdateEntriesReadStatus,
+} from '../hooks/useEntriesQuery';
 import EntryDataSection from '../components/EntryDataSection';
 import SubmissionInfoSection from '../components/SubmissionInfoSection';
 import NotesSection from '../components/NotesSection';
 import EntryLogsSection from '../components/EntryLogsSection';
 import EntryDetailSkeleton from '../components/EntryDetailSkeleton';
+import ConfirmationDialog from '../components/ConfirmationDialog';
 import { ArrowLeft } from 'lucide-react';
 import UpgradeTooltip from '../components/UpgradeTooltip';
 import { transformEntryDetail } from '../utils/entryHelpers';
@@ -23,10 +32,7 @@ import { transformEntryDetail } from '../utils/entryHelpers';
 const SendDetailsButton = ( { handleSendEmail } ) => {
 	return (
 		<UpgradeTooltip
-			heading={ __(
-				'Unlock Resend Email Notification',
-				'sureforms'
-			) }
+			heading={ __( 'Unlock Resend Email Notification', 'sureforms' ) }
 			content={ __(
 				'With the SureForms Starter plan, you can effortlessly resend email notifications, ensuring your important updates reach their recipients with ease.',
 				'sureforms'
@@ -40,10 +46,7 @@ const SendDetailsButton = ( { handleSendEmail } ) => {
 				onClick={ handleSendEmail }
 				disabled
 			>
-				{ __(
-					'Send Details via Email',
-					'sureforms'
-				) }
+				{ __( 'Send Details via Email', 'sureforms' ) }
 			</Button>
 		</UpgradeTooltip>
 	);
@@ -59,6 +62,17 @@ const EntryDetailPage = () => {
 	const location = useLocation( { from: '/entry/$id' } );
 	const navigate = useNavigate();
 	const { mutate: updateReadStatusMutation } = useUpdateEntriesReadStatus();
+
+	// State for confirmation dialog
+	const [ confirmationDialog, setConfirmationDialog ] = useState( {
+		open: false,
+		title: '',
+		description: '',
+		confirmLabel: '',
+		onConfirm: null,
+		isLoading: false,
+		destructive: true,
+	} );
 
 	// Fetch entry details
 	const { data: rawEntryData, isLoading } = useEntryDetail( id );
@@ -83,7 +97,12 @@ const EntryDetailPage = () => {
 			},
 			{
 				onSuccess: () => {
-					navigate( { to: '/entry/$id', params: { id }, search: newSearch, replace: true } );
+					navigate( {
+						to: '/entry/$id',
+						params: { id },
+						search: newSearch,
+						replace: true,
+					} );
 				},
 			}
 		);
@@ -99,64 +118,103 @@ const EntryDetailPage = () => {
 		console.log( 'Send email clicked' );
 	};
 
+	/**
+	 * Handler function for triggering confirmation dialogs from child components
+	 *
+	 * @param {Object}   config              - Configuration object
+	 * @param {string}   config.title        - Dialog title
+	 * @param {string}   config.description  - Dialog description
+	 * @param {string}   config.confirmLabel - Confirm button label
+	 * @param {Function} config.onConfirm    - Function to call on confirm
+	 * @param {boolean}  config.isLoading    - Whether action is loading
+	 * @param {boolean}  config.destructive  - Whether action is destructive
+	 */
+	const handleConfirmation = ( config ) => {
+		setConfirmationDialog( {
+			open: true,
+			title: config.title,
+			description: config.description,
+			confirmLabel: config.confirmLabel,
+			onConfirm: config.onConfirm,
+			isLoading: config.isLoading || false,
+			destructive: config.destructive !== false, // Default to true
+		} );
+	};
+
 	if ( isLoading ) {
 		return <EntryDetailSkeleton />;
 	}
 
 	return (
-		<div className="p-8 bg-background-secondary min-h-screen space-y-6">
-			{ /* Header */ }
-			<div className="flex items-center gap-3">
-				<Button
-					tag={ Link }
-					to="/"
-					variant="ghost"
-					size="lg"
-					className="p-2"
-					icon={ <ArrowLeft /> }
-				/>
-				<Text size={ 36 } color="primary" weight={ 600 }>
-					{ sprintf(
-						// translators: %s is the entry ID
-						__( 'Entry #%s', 'sureforms' ),
-						id
-					) }
-				</Text>
-			</div>
-			<div className="max-w-[1374px] mx-auto">
-				<div className="space-y-6">
+		<>
+			<div className="p-8 bg-background-secondary min-h-screen space-y-6">
+				{ /* Header */ }
+				<div className="flex items-center gap-3">
+					<Button
+						tag={ Link }
+						to="/"
+						variant="ghost"
+						size="lg"
+						className="p-2"
+						icon={ <ArrowLeft /> }
+					/>
+					<Text size={ 36 } color="primary" weight={ 600 }>
+						{ sprintf(
+							// translators: %s is the entry ID
+							__( 'Entry #%s', 'sureforms' ),
+							id
+						) }
+					</Text>
+				</div>
+				<div className="max-w-[1374px] mx-auto">
 					<div className="space-y-6">
-						{ /* Main Content Grid */ }
-						<div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-							{ /* Left Column */ }
-							<div className="lg:col-span-2 space-y-6">
-								<EntryDataSection
-									entryData={ entryData }
-									onEdit={ handleEditEntry }
-								/>
-								<SubmissionInfoSection
-									entryData={ entryData }
-								/>
-							</div>
-
-							{ /* Right Column */ }
-							<div className="space-y-4">
-								<NotesSection entryData={ entryData } />
-								<EntryLogsSection entryId={ id } />
-								{ /* Action buttons */ }
-								<div className="ml-0.5">
-									<SendDetailsButton
-										handleSendEmail={
-											handleSendEmail
-										}
+						<div className="space-y-6">
+							{ /* Main Content Grid */ }
+							<div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+								{ /* Left Column */ }
+								<div className="lg:col-span-2 space-y-6">
+									<EntryDataSection
+										entryData={ entryData }
+										onEdit={ handleEditEntry }
 									/>
+									<SubmissionInfoSection
+										entryData={ entryData }
+									/>
+								</div>
+
+								{ /* Right Column */ }
+								<div className="space-y-4">
+									<NotesSection entryData={ entryData } />
+									<EntryLogsSection
+										entryId={ id }
+										onConfirmation={ handleConfirmation }
+									/>
+									{ /* Action buttons */ }
+									<div className="ml-0.5">
+										<SendDetailsButton
+											handleSendEmail={ handleSendEmail }
+										/>
+									</div>
 								</div>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-		</div>
+
+			<ConfirmationDialog
+				open={ confirmationDialog.open }
+				setOpen={ ( open ) =>
+					setConfirmationDialog( ( prev ) => ( { ...prev, open } ) )
+				}
+				onConfirm={ confirmationDialog.onConfirm }
+				title={ confirmationDialog.title }
+				description={ confirmationDialog.description }
+				confirmLabel={ confirmationDialog.confirmLabel }
+				isLoading={ confirmationDialog.isLoading }
+				destructive={ confirmationDialog.destructive }
+			/>
+		</>
 	);
 };
 
