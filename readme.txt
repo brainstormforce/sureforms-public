@@ -367,6 +367,7 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 == Changelog ==
 = x.x.x =
 * Improvement: Added popup for getting started video in dashboard.
+* Fix: Resolved an UI issue where country list for phone number is not visible with Spectra modal for mobile devices.
 = 1.13.0 - 14th October 2025 =
 * New: Added support for Native Integrations in Pro Plan.
 * Fix: Prevented multiple entries from being recorded when the submit button is clicked repeatedly.
