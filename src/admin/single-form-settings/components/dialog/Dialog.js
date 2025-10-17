@@ -179,7 +179,7 @@ const Dialog = ( {
 					<FeaturePreview
 						featureName={ __( 'Integrations', 'sureforms' ) }
 						featureHelpText={ __(
-							'Integrations let you connect SureForms with your favorite apps to automate tasks and sync data seamlessly.',
+							'Connect SureForms with your favorite apps to automate tasks and sync data seamlessly.',
 							'sureforms'
 						) }
 						icon={
