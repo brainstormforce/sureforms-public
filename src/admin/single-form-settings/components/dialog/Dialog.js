@@ -26,7 +26,7 @@ import {
 	File,
 	FileText,
 	Cpu,
-	Link,
+	Link2,
 } from 'lucide-react';
 
 import Suretriggers from '../integrations/suretriggers';
@@ -183,7 +183,7 @@ const Dialog = ( {
 							'sureforms'
 						) }
 						icon={
-							<Link
+							<Link2
 								className="text-orange-500"
 								size={ 40 }
 								strokeWidth={ 1 }
