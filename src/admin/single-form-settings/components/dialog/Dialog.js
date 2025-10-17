@@ -218,7 +218,7 @@ const Dialog = ( {
 					<FeaturePreview
 						featureName={ __( 'User Registration', 'sureforms' ) }
 						featureHelpText={ __(
-							'Register new users or update existing accounts with form submissions.',
+							'Onboard new users or update or existing accounts through beautiful looking forms.',
 							'sureforms'
 						) }
 						icon={
@@ -262,7 +262,7 @@ const Dialog = ( {
 					<FeaturePreview
 						featureName={ __( 'Post Feed', 'sureforms' ) }
 						featureHelpText={ __(
-							'Automatically create WordPress posts from form submissions.',
+							'Transform your form submission into WordPress posts.',
 							'sureforms'
 						) }
 						icon={
@@ -273,7 +273,7 @@ const Dialog = ( {
 							/>
 						}
 						title={ __(
-							'Automatically create WordPress posts from form submissions.',
+							'Post Feed',
 							'sureforms'
 						) }
 						subtitle={ __(
