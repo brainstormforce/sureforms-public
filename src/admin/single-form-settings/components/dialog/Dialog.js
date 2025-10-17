@@ -318,10 +318,7 @@ const Dialog = ( {
 								strokeWidth={ 1 }
 							/>
 						}
-						title={ __(
-							'Post Feed',
-							'sureforms'
-						) }
+						title={ __( 'Post Feed', 'sureforms' ) }
 						subtitle={ __(
 							'Automatically turn form submissions into WordPress posts, pages, or custom post types. Save big on time and let your forms publish content directly.',
 							'sureforms'
