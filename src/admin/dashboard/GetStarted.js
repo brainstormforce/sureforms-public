@@ -120,7 +120,7 @@ export default () => {
 			{ /* Popup Video */ }
 			{ popupVideo && (
 				<div
-					className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 cursor-pointer z-[9999] w-full"
+					className="fixed inset-0 flex items-center justify-center bg-misc-overlay cursor-pointer z-[9999] w-full"
 					onClick={ () => setPopupVideo( null ) }
 				>
 					{ /* Close Button */ }
@@ -135,11 +135,11 @@ export default () => {
 					</div>
 
 					<div
-						className="relative rounded-lg shadow-lg cursor-default w-full max-w-[1206px] "
+						className="relative rounded-lg shadow-lg cursor-default w-full max-w-[1206px] h-[760px]"
 						onClick={ ( e ) => e.stopPropagation() }
 					>
 						<iframe
-							className="w-full aspect-video rounded-lg lg:h-188 sm:h-120 h-60"
+							className="w-full h-full aspect-video rounded-lg"
 							src={ popupVideo }
 							title={ __(
 								'SureForms: Custom WordPress Forms MADE SIMPLE',
