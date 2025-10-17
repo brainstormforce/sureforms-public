@@ -1,13 +1,11 @@
 import { __ } from '@wordpress/i18n';
 import { addQueryParam } from '@Utils/Helpers';
-import blurImage from '@Image/blur.png';
 
 const UpgradePrompt = () => {
 	return (
 		<div className="srfm-upgrade-prompt">
 			<div
 				className="srfm-upgrade-prompt__background"
-				style={ { backgroundImage: `url(${ blurImage })` } }
 				aria-hidden="true"
 			>
 				<div className="srfm-upgrade-prompt__content">
