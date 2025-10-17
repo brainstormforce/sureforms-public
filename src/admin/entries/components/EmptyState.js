@@ -5,7 +5,7 @@
  */
 
 import { __ } from '@wordpress/i18n';
-import { Text } from '@bsf/force-ui';
+import { Button, Text } from '@bsf/force-ui';
 import EmptyStateImage from '@Image/empty-state-header.svg';
 
 const FEATURES = [
@@ -15,12 +15,16 @@ const FEATURES = [
 	__( 'Edit and manage your entries with ease', 'sureforms' ),
 ];
 
+const handleClickViewAllForms = () => {
+	window.open( srfm_admin.site_url + '/wp-admin/edit.php?post_type=sureforms_form', '_self' );
+};
+
 const EmptyState = () => {
 	return (
 		<div className="flex items-center justify-center p-2 bg-background-secondary rounded-lg">
 			<div className="flex flex-col md:flex-row items-center gap-6 bg-background-primary rounded-md shadow-sm-blur-1 p-6 w-full">
 				{ /* Image Section */ }
-				<div className="flex-shrink-0">
+				<div className="flex-shrink-0 p-2">
 					<img
 						src={ EmptyStateImage }
 						alt={ __( 'No entries yet', 'sureforms' ) }
@@ -39,24 +43,13 @@ const EmptyState = () => {
 						color="primary"
 					>
 						{ __(
-							'This page will be flooded with entries soon!',
+							'No entries? No worries! This page will be flooded soon!',
 							'sureforms'
 						) }
 					</Text>
 
 					<div className="flex flex-col">
 						{ /* Description */ }
-						<Text
-							size={ 16 }
-							lineHeight={ 24 }
-							weight={ 400 }
-							color="secondary"
-						>
-							{ __(
-								"It's rather quiet in here—because there are no entries collect yet.",
-								'sureforms'
-							) }
-						</Text>
 						<Text
 							size={ 16 }
 							lineHeight={ 24 }
@@ -86,6 +79,10 @@ const EmptyState = () => {
 							) ) }
 						</ul>
 					</div>
+
+					<Button className="w-fit mt-2" variant="primary" size="md" onClick={ handleClickViewAllForms }>
+						{ __( 'View All Forms', 'sureforms' ) }
+					</Button>
 				</div>
 			</div>
 		</div>
