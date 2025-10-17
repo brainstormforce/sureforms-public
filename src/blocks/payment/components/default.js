@@ -13,14 +13,14 @@ import { decodeHtmlEntities } from '@Blocks/util';
  * @return {JSX.Element} Payment component
  */
 export const PaymentComponent = ( props ) => {
-	const { attributes, setAttributes } = props;
+	const { attributes, setAttributes, availableFormFields } = props;
 	const {
 		label = 'Payment Details',
 		help = '',
 		required = true,
 		paymentType = 'one-time',
 		subscriptionPlan = {},
-		block_id
+		block_id,
 	} = attributes;
 
 	// Get global stripe settings
@@ -35,12 +35,27 @@ export const PaymentComponent = ( props ) => {
 		}
 	};
 
+	// Verify if the field is valid
+	const verifyFieldIsValid = ( fieldSlug ) => {
+		if ( '' === fieldSlug ) {
+			return false;
+		}
+
+		return availableFormFields?.some( ( field ) => {
+			return field.slug === fieldSlug;
+		} );
+	};
+
 	// Check if subscription requires name and email fields
 	const isSubscription = paymentType === 'subscription';
 	const customerName = subscriptionPlan?.customer_name || '';
 	const customerEmail = subscriptionPlan?.customer_email || '';
-	const missingNameField = isSubscription && ! customerName;
-	const missingEmailField = isSubscription && ! customerEmail;
+	const missingNameField =
+		isSubscription &&
+		( ! customerName || ! verifyFieldIsValid( customerName ) );
+	const missingEmailField =
+		isSubscription &&
+		( ! customerEmail || ! verifyFieldIsValid( customerEmail ) );
 	const hasSubscriptionError = missingNameField || missingEmailField;
 
 	let stripeConnectedComponent = null;
@@ -50,7 +65,7 @@ export const PaymentComponent = ( props ) => {
 		stripeConnectedComponent = (
 			<p className="srfm-stripe-payment-error-text">
 				{ __(
-					'Name and Email fields are required to collect payments for subscriptions. Please map these fields in the block settings.',
+					'Name and Email fields are required to collect payments for subscriptions. Please map these fields in the block settings. Also, make sure the fields are mapped correctly.',
 					'sureforms'
 				) }
 			</p>
@@ -60,11 +75,19 @@ export const PaymentComponent = ( props ) => {
 	// Add validation for payment items.
 	const paymentItems = attributes.paymentItems || [];
 	const hasPaymentItems = paymentItems.length > 0;
-	if ( ! hasPaymentItems ) {
+
+	const verifyPaymentItems = ( checkPaymentItems ) => {
+		return checkPaymentItems?.every( ( item ) => {
+			return verifyFieldIsValid( item );
+		} );
+	};
+
+	// If payment items are not set, show validation error.
+	if ( ! hasPaymentItems || ! verifyPaymentItems( paymentItems ) ) {
 		stripeConnectedComponent = (
 			<p className="srfm-stripe-payment-error-text">
 				{ __(
-					'Payment items are required to collect payments for this form. Please map these items in the block settings.',
+					'Payment items are required to collect payments for this form. Please map these items in the block settings. Also, make sure the fields are mapped correctly.',
 					'sureforms'
 				) }
 			</p>

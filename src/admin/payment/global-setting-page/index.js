@@ -23,7 +23,8 @@ const Payments = ( {
 	const [ isConnecting, setIsConnecting ] = useState( false );
 	const [ isDisconnecting, setIsDisconnecting ] = useState( false );
 	const [ isCreatingWebhook, setIsCreatingWebhook ] = useState( false );
-	const [ isDisconnectDialogOpen, setIsDisconnectDialogOpen ] = useState( false );
+	const [ isDisconnectDialogOpen, setIsDisconnectDialogOpen ] =
+		useState( false );
 
 	// Load settings on mount
 	useEffect( () => {
@@ -257,7 +258,7 @@ const Payments = ( {
 					</Select.Options>
 				</Select.Portal>
 			</Select>
-			<p className="text-sm text-text-tertiary">
+			<p className="text-base text-field-helper">
 				{ __(
 					'Select the default currency for payment forms.',
 					'sureforms'
@@ -322,7 +323,7 @@ const Payments = ( {
 					iconPosition="left"
 					variant="link"
 					size="xs"
-					className="text-red-600 hover:text-red-700"
+					className="text-red-600 hover:text-red-700 no-underline hover:no-underline"
 				>
 					{ isDisconnecting
 						? __( 'Disconnecting…', 'sureforms' )
@@ -344,7 +345,7 @@ const Payments = ( {
 			</Label>
 
 			{ currentWebhookSecret ? (
-				<div className="flex items-center p-4 rounded-lg border border-border-subtle solid shadow-sm gap-2">
+				<div className="flex items-center p-4 rounded-lg border-0.5 border-border-subtle border-solid shadow-sm gap-2">
 					<CircleCheck className="text-support-success" />
 					<div>
 						<p className="text-base text-text-primary font-semibold">
@@ -437,7 +438,7 @@ const Payments = ( {
 
 	// Content for Payment Settings section
 	const paymentSettingsContent = (
-		<div className="flex flex-col gap-4 px-2">
+		<div className="flex flex-col gap-6 px-2">
 			{ /* Currency Selection */ }
 			{ selectCountry }
 			{ /* Payment Mode */ }
@@ -451,40 +452,39 @@ const Payments = ( {
 	);
 
 	const stripeConnectContent = (
-		<div className="space-y-6">
-			<div className="space-y-4">
-				<p className="text-text-tertiary">
-					{ __(
-						'Connect your Stripe account to start accepting payments through your forms.',
-						'sureforms'
-					) }
-				</p>
-
-				<Button
-					onClick={ handleStripeConnect }
-					disabled={ isConnecting || loading }
-					variant="primary"
-					size="sm"
+		<div className="flex flex-col gap-[8px] px-2">
+			<Label size="sm" variant="neutral">
+				{ __(
+					'Connect your Stripe account to start accepting payments through your forms.',
+					'sureforms'
+				) }
+			</Label>
+			<Button
+				onClick={ handleStripeConnect }
+				disabled={ isConnecting || loading }
+				variant="primary"
+				size="sm"
+				className="w-fit"
+			>
+				{ isConnecting
+					? __( 'Connecting…', 'sureforms' )
+					: __( 'Connect to Stripe', 'sureforms' ) }
+			</Button>
+			<p className="text-field-helper text-sm">
+				{ __(
+					'Securely connect to Stripe with just a few clicks to begin accepting payments! ',
+					'sureforms'
+				) }
+				<a
+					href="https://sureforms.com/docs/stripe-connect"
+					target="_blank"
+					rel="noopener noreferrer"
+					className="text-link-primary no-underline"
 				>
-					{ isConnecting
-						? __( 'Connecting…', 'sureforms' )
-						: __( 'Connect to Stripe', 'sureforms' ) }
-				</Button>
-				<p className="text-text-primary">
-					{ __(
-						'Securely connect to Stripe with just a few clicks to begin accepting payments!',
-						'sureforms'
-					) }
-					<a
-						href="https://sureforms.com/docs/stripe-connect"
-						target="_blank"
-						rel="noopener noreferrer"
-					>
-						{ __( 'Learn More', 'sureforms' ) }
-					</a>
-				</p>
-				<AlertForFee />
-			</div>
+					{ __( 'Learn More', 'sureforms' ) }
+				</a>
+			</p>
+			<AlertForFee />
 		</div>
 	);
 

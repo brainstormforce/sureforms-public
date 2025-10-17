@@ -28,14 +28,14 @@ const NAV_ITEMS = [
 	},
 	{
 		slug: 'sureforms_payments',
-		text: __( 'Payments', 'sureforms' ),
+		text: __( 'Payment Logs', 'sureforms' ),
 		link: `${ siteURL }/wp-admin/admin.php?page=sureforms_payments`,
 	},
 	{
 		slug: 'sureforms_form_settings',
 		text: __( 'Settings', 'sureforms' ),
 		link: `${ siteURL }/wp-admin/admin.php?page=sureforms_form_settings&tab=general-settings`,
-	}
+	},
 ];
 
 const Header = () => {

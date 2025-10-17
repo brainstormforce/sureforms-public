@@ -223,53 +223,15 @@ const ViewSubscription = () => {
 		setIsCancelDialogOpen( true );
 	};
 
-	// Loading state
-	if ( isLoading ) {
-		return <PaymentLoadingSkeleton />;
-	}
-
-	// Error state
-	if ( error ) {
+	// Loading, error, not found states
+	if ( isLoading || error || ! subscriptionData ) {
 		return (
-			<div className="srfm-single-payment-wrapper min-h-screen bg-background-secondary p-8">
-				<div className="flex items-center justify-center h-96">
-					<div className="text-center">
-						<Text className="text-red-600 mb-4">
-							{ __(
-								'Error loading subscription details',
-								'sureforms'
-							) }
-						</Text>
-						<Button
-							variant="outline"
-							onClick={ () => setViewSingleSubscription( false ) }
-						>
-							{ __( 'Back to Payments', 'sureforms' ) }
-						</Button>
-					</div>
-				</div>
-			</div>
-		);
-	}
-
-	// No subscription data
-	if ( ! subscriptionData ) {
-		return (
-			<div className="srfm-single-payment-wrapper min-h-screen bg-background-secondary p-8">
-				<div className="flex items-center justify-center h-96">
-					<div className="text-center">
-						<Text className="mb-4">
-							{ __( 'Subscription not found', 'sureforms' ) }
-						</Text>
-						<Button
-							variant="outline"
-							onClick={ () => setViewSingleSubscription( false ) }
-						>
-							{ __( 'Back to Payments', 'sureforms' ) }
-						</Button>
-					</div>
-				</div>
-			</div>
+			<PaymentLoadingSkeleton
+				loading={ isLoading }
+				error={ error }
+				notFound={ ! subscriptionData }
+				setViewSinglePayment={ setViewSingleSubscription }
+			/>
 		);
 	}
 
@@ -759,7 +721,7 @@ const ViewSubscription = () => {
 							{ __( 'Status', 'sureforms' ) }
 						</Table.HeadCell>
 						<Table.HeadCell>
-							{ __( 'Date & Time', 'sureforms' ) }
+							{ __( 'Transaction Date', 'sureforms' ) }
 						</Table.HeadCell>
 					</Table.Head>
 					<Table.Body>
@@ -802,7 +764,9 @@ const ViewSubscription = () => {
 								</Table.Cell>
 								<Table.Cell>
 									<Badge
-										variant={ getStatusVariant( row.status ) }
+										variant={ getStatusVariant(
+											row.status
+										) }
 										size="xs"
 										label={ getStatusLabel( row.status ) }
 										type="pill"
@@ -830,10 +794,6 @@ const ViewSubscription = () => {
 			value:
 				subscriptionData.form_title ||
 				__( 'Unknown Form', 'sureforms' ),
-		},
-		{
-			title: __( 'Payment Method', 'sureforms' ),
-			value: subscriptionData.gateway || __( 'Unknown', 'sureforms' ),
 		},
 		{
 			title: __( 'Payment Mode', 'sureforms' ),
@@ -868,7 +828,7 @@ const ViewSubscription = () => {
 			value: subscriptionData.customer_id || __( 'Guest', 'sureforms' ),
 		},
 		{
-			title: __( 'Submitted On', 'sureforms' ),
+			title: __( 'Received On', 'sureforms' ),
 			value: formatDateTimeDetailed( subscriptionData.created_at ),
 		},
 	];
@@ -917,68 +877,59 @@ const ViewSubscription = () => {
 					align="center"
 					justify="between"
 				>
-					<Label size="sm" className="font-semibold">
+					<Label size="md" className="font-semibold">
 						{ __( 'Subscription Details', 'sureforms' ) }
 					</Label>
-					<div className="flex gap-2">
-						<Button
-							icon={ null }
-							iconPosition="left"
-							size="xs"
-							variant="outline"
-							onClick={ handleViewEntry }
-							disabled={ ! subscriptionData?.entry_id }
-						>
-							{ __( 'View Entry', 'sureforms' ) }
-						</Button>
-						<DropdownMenu
-							placement="bottom-start"
-							className="min-w-fit"
-						>
-							<DropdownMenu.Trigger>
-								<Button
-									icon={
-										<EllipsisVertical className="!size-5" />
-									}
-									iconPosition="right"
-									size="sm"
-									variant="outline"
-								>
-									{ __( 'Actions', 'sureforms' ) }
-								</Button>
-							</DropdownMenu.Trigger>
-							<DropdownMenu.ContentWrapper>
-								<DropdownMenu.Content className="w-60">
-									<DropdownMenu.List>
-										<DropdownMenu.Item
-											onClick={ openCancelDialog }
-										>
-											{ __(
-												'Cancel Subscription',
-												'sureforms'
-											) }
-										</DropdownMenu.Item>
-										<DropdownMenu.Item
-											onClick={ openPauseDialog }
-										>
-											{ __(
-												'Pause Subscription',
-												'sureforms'
-											) }
-										</DropdownMenu.Item>
-										<DropdownMenu.Item
-											onClick={ handleRefundLatestEMI }
-										>
-											{ __(
-												'Refund Latest EMI',
-												'sureforms'
-											) }
-										</DropdownMenu.Item>
-									</DropdownMenu.List>
-								</DropdownMenu.Content>
-							</DropdownMenu.ContentWrapper>
-						</DropdownMenu>
-					</div>
+					<DropdownMenu
+						placement="bottom-start"
+						className="min-w-fit"
+					>
+						<DropdownMenu.Trigger>
+							<Button
+								icon={
+									<EllipsisVertical className="!size-4" />
+								}
+								iconPosition="right"
+								size="xs"
+								variant="outline"
+							>
+								{ __( 'Actions', 'sureforms' ) }
+							</Button>
+						</DropdownMenu.Trigger>
+						<DropdownMenu.ContentWrapper>
+							<DropdownMenu.Content className="w-60">
+								<DropdownMenu.List>
+									<DropdownMenu.Item
+										onClick={ openCancelDialog }
+										className="text-sm"
+									>
+										{ __(
+											'Cancel Subscription',
+											'sureforms'
+										) }
+									</DropdownMenu.Item>
+									<DropdownMenu.Item
+										onClick={ openPauseDialog }
+										className="text-sm"
+									>
+										{ __(
+											'Pause Subscription',
+											'sureforms'
+										) }
+									</DropdownMenu.Item>
+									<DropdownMenu.Item
+										onClick={ handleRefundLatestEMI }
+										className="text-sm"
+									>
+										{ __(
+											'Refund The Last Charge',
+											'sureforms'
+										) }
+									</DropdownMenu.Item>
+								</DropdownMenu.List>
+							</DropdownMenu.Content>
+						</DropdownMenu.ContentWrapper>
+					</DropdownMenu>
 				</Container>
 				<Container className="flex flex-col bg-background-secondary gap-1 p-1 rounded-lg">
 					{ billingDetails }
@@ -995,10 +946,10 @@ const ViewSubscription = () => {
 					justify="between"
 				>
 					<Label size="sm" className="font-semibold">
-						{ __( 'Payment Info', 'sureforms' ) }
+						{ __( 'Payment Information', 'sureforms' ) }
 					</Label>
 					<Button
-						icon={ <ArrowUpRight className="!size-5" /> }
+						icon={ <ArrowUpRight className="!size-4" /> }
 						iconPosition="right"
 						variant="link"
 						size="sm"
@@ -1044,23 +995,23 @@ const ViewSubscription = () => {
 			<Container
 				containerType="flex"
 				direction="column"
-				gap="xs"
-				className="w-full h-full"
+				className="w-full h-full gap-[24px]"
 			>
 				<PaymentHeader
-					title={ __( 'Subscription ID', 'sureforms' ) }
-					id={ subscriptionData.id }
+					title={ __( 'Order ID', 'sureforms' ) }
+					paymentData={ subscriptionData }
+					handleViewEntry={ handleViewEntry }
 					onBack={ handleBackToList }
 				/>
 				<Container
-					className="w-full gap-8"
+					className="w-full gap-6"
 					containerType="grid"
 					cols={ 12 }
 				>
-					<div className="flex flex-col gap-8 col-span-12 xl:col-span-8">
+					<div className="flex flex-col gap-6 col-span-12 xl:col-span-8">
 						{ PAYMENT_SECTION_COLUMN_1 }
 					</div>
-					<div className="flex flex-col gap-8 col-span-12 xl:col-span-4">
+					<div className="flex flex-col gap-4 col-span-12 xl:col-span-4">
 						{ PAYMENT_SECTION_COLUMN_2 }
 					</div>
 				</Container>

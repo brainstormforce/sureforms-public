@@ -517,7 +517,7 @@ class Admin_Stripe_Handler {
 				wp_send_json_error( __( 'Invalid refund parameters provided.', 'sureforms' ) );
 			}
 
-			$payment_id     = isset( $payment['id'] ) && is_int( $payment['id'] ) ? $payment['id'] : 0;
+			$payment_id     = isset( $payment['id'] ) ? $payment['id'] : 0;
 			$transaction_id = isset( $payment['transaction_id'] ) && is_string( $payment['transaction_id'] ) ? $payment['transaction_id'] : '';
 			$currency       = is_string( $payment['currency'] ) ? $payment['currency'] : 'USD';
 
@@ -697,7 +697,7 @@ class Admin_Stripe_Handler {
 	 */
 	private function is_subscription_related_payment( array $payment ): bool {
 		// Check if it's a main subscription record.
-		if ( ! empty( $payment['type'] ) && 'subscription' === $payment['type'] ) {
+		if ( ! empty( $payment['type'] ) && 'renewal' === $payment['type'] ) {
 			return true;
 		}
 
@@ -718,10 +718,10 @@ class Admin_Stripe_Handler {
 	 * @return array{valid: bool, message: string} Validation result with 'valid' boolean and 'message' string.
 	 */
 	private function validate_subscription_refund_amount( array $payment, int $refund_amount ): array {
-		$original_amount      = ( isset( $payment['total_amount'] ) && ( is_float( $payment['total_amount'] ) || is_int( $payment['total_amount'] ) ) )
+		$original_amount      = ( isset( $payment['total_amount'] ) && $payment['total_amount'] )
 			? floatval( $payment['total_amount'] ) * 100
 			: 0.0; // Convert to cents.
-		$already_refunded     = ( isset( $payment['refunded_amount'] ) && ( is_float( $payment['refunded_amount'] ) || is_int( $payment['refunded_amount'] ) ) )
+		$already_refunded     = ( isset( $payment['refunded_amount'] ) )
 			? floatval( $payment['refunded_amount'] ) * 100
 			: 0.0; // Convert to cents.
 		$available_for_refund = $original_amount - $already_refunded;

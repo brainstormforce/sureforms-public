@@ -1,4 +1,5 @@
 import { __ } from '@wordpress/i18n';
+import { ArrowUpRight } from 'lucide-react';
 import { Alert } from '@bsf/force-ui';
 
 export const currencies = [
@@ -126,18 +127,20 @@ export const AlertForFee = () => {
 	return (
 		<Alert
 			content={
-				<p className="text-sm font-normal">
+				<p className="text-xs font-normal mt-0.5">
 					{ __(
-						'You\'ll pay a 2.9% transaction fee plus standard Stripe fees.',
+						"You'll pay a 2.9% transaction fee plus standard Stripe fees.",
 						'sureforms'
-					) }{ ' ' }
+					) }
 					<a
 						href="https://sureforms.com/pricing"
 						target="_blank"
 						rel="noopener noreferrer"
+						className="ml-1 mr-1 text-blue-600 font-semibold no-underline inline-flex items-center"
 					>
 						{ __( 'Upgrade', 'sureforms' ) }
-					</a>{ ' ' }
+						<ArrowUpRight className="!size-4 ml-1" />
+					</a>
 					{ __(
 						'to skip these fees and get access to premium features.',
 						'sureforms'
@@ -146,6 +149,7 @@ export const AlertForFee = () => {
 			}
 			title={ __( 'Pay-as-you-go Pricing', 'sureforms' ) }
 			variant="info"
+			className="shadow-none"
 		/>
 	);
 };
