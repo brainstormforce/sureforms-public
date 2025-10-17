@@ -43,7 +43,7 @@ const EntriesTable = ( {
 } ) => {
 	const defaultColumns = [
 		{
-			label: __( 'Form ID', 'sureforms' ),
+			label: __( 'Entry ID', 'sureforms' ),
 			key: 'entryId',
 			sortable: true,
 			sortBy: 'id',

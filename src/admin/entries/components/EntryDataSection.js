@@ -1,3 +1,4 @@
+import { isValidElement } from '@wordpress/element';
 import { sprintf, _n, __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
 import { SquarePen } from 'lucide-react';
@@ -52,7 +53,7 @@ const formatField = ( field ) => {
 		return {
 			label,
 			value: sprintf(
-			// translators: %d: number of items
+				// translators: %d: number of items
 				_n( '%d item', '%d items', value.length, 'sureforms' ),
 				value.length
 			),
@@ -81,8 +82,6 @@ const formatField = ( field ) => {
 export const RenderField = ( props ) => {
 	const { field } = props;
 
-	console.log( field );
-
 	if ( Array.isArray( field ) ) {
 		return field.map( ( item, idx ) => (
 			<RenderField key={ `${ field.label }-${ idx }` } field={ item } />
@@ -93,11 +92,19 @@ export const RenderField = ( props ) => {
 		<>
 			<div className="p-3 relative bg-background-primary rounded-md shadow-sm">
 				<div className="flex gap-4">
-					{ field?.label && ( <div className="w-40 flex-shrink-0">
-						<span className="text-sm font-semibold text-text-primary">
-							{ field.label }
-						</span>
-					</div> ) }
+					{ field?.label && (
+						<div className="w-40 flex-shrink-0">
+							<span className="text-sm font-semibold text-text-primary">
+								{ field.label }
+							</span>
+						</div>
+					) }
+					{ Array.isArray( field.value ) &&
+						isValidElement( field.value[ 0 ] ) && (
+						<div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 place-content-center gap-2">
+							{ field.value }
+						</div>
+					) }
 					{ ! Array.isArray( field.value ) && (
 						<div className="flex-1">
 							<span className="text-sm font-medium text-text-secondary">
@@ -108,6 +115,7 @@ export const RenderField = ( props ) => {
 				</div>
 			</div>
 			{ Array.isArray( field.value ) &&
+				! isValidElement( field.value[ 0 ] ) &&
 				field.value.map( ( item, idx ) => (
 					<RenderField
 						key={ `${ field.label }-${ idx }` }
