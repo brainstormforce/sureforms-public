@@ -1,9 +1,16 @@
-import { Container, Label, Button, Text, TextArea, Tooltip } from '@bsf/force-ui';
+import {
+	Container,
+	Label,
+	Button,
+	Text,
+	TextArea,
+	Tooltip,
+} from '@bsf/force-ui';
 import { Plus, Trash2, FileSearch2 } from 'lucide-react';
 import { __ } from '@wordpress/i18n';
 import { useState } from '@wordpress/element';
 
-const paymentNotes = ( {
+const PaymentNotes = ( {
 	notes,
 	isAddingNote,
 	newNoteText,
@@ -59,15 +66,15 @@ const paymentNotes = ( {
 			direction="column"
 		>
 			<Container className="p-1 gap-2" align="center" justify="between">
-				<Label size="sm" className="font-semibold">
+				<Label size="md" className="font-semibold">
 					{ __( 'Notes', 'sureforms' ) }
 				</Label>
 				<Button
 					icon={ <Plus className="!size-5" /> }
 					iconPosition="left"
 					variant="link"
-					size="sm"
-					className="h-full text-link-primary text-sm font-semibold no-underline hover:no-underline hover:text-link-primary-hover px-1 content-center [box-shadow:none] focus:[box-shadow:none] focus:outline-none"
+					size="xs"
+					className="h-full text-link-primary no-underline hover:no-underline hover:text-link-primary-hover px-1 content-center [box-shadow:none] focus:[box-shadow:none] focus:outline-none"
 					onClick={ handleAddNoteClick }
 					disabled={ isAddingNote }
 				>
@@ -98,7 +105,10 @@ const paymentNotes = ( {
 								arrow
 								offset={ 20 }
 								content={
-									<Container direction="column" className="gap-2">
+									<Container
+										direction="column"
+										className="gap-2"
+									>
 										<p className="text-[13px] font-normal">
 											{ __(
 												'Are you sure to delete this?',
@@ -109,21 +119,35 @@ const paymentNotes = ( {
 											<Button
 												variant="outline"
 												size="xs"
-												onClick={ () => setShowDeletePopup( null ) }
+												onClick={ () =>
+													setShowDeletePopup(
+														null
+													)
+												}
 												className="px-3"
 											>
-												{ __( 'Cancel', 'sureforms' ) }
+												{ __(
+													'Cancel',
+													'sureforms'
+												) }
 											</Button>
 											<Button
 												variant="primary"
 												size="xs"
 												onClick={ () => {
-													handleDeleteNote( index );
-													setShowDeletePopup( null );
+													handleDeleteNote(
+														index
+													);
+													setShowDeletePopup(
+														null
+													);
 												} }
 												className="px-2 ml-2 bg-red-600 hover:bg-red-700 border-red-600 hover:border-red-700"
 											>
-												{ __( 'Confirm', 'sureforms' ) }
+												{ __(
+													'Confirm',
+													'sureforms'
+												) }
 											</Button>
 										</Container>
 									</Container>
@@ -135,14 +159,20 @@ const paymentNotes = ( {
 								className="z-999999"
 								variant="light"
 								open={ showDeletePopup === index }
-								setOpen={ () => setShowDeletePopup( index ) }
+								setOpen={ () =>
+									setShowDeletePopup( index )
+								}
 							>
 								<Button
 									variant="ghost"
 									size="xs"
 									icon={ <Trash2 className="!size-4" /> }
-									onClick={ () => setShowDeletePopup( index ) }
-									disabled={ deleteNoteMutation.isPending }
+									onClick={ () =>
+										setShowDeletePopup( index )
+									}
+									disabled={
+										deleteNoteMutation.isPending
+									}
 									className="text-icon-secondary hover:text-red-700"
 								/>
 							</Tooltip>
@@ -152,7 +182,7 @@ const paymentNotes = ( {
 						<Text className="text-sm text-text-secondary p-3 text-center flex items-center justify-center gap-2">
 							<FileSearch2 className="!size-5" />
 							{ __(
-								'Add an internal note about this subscription',
+								'Add an internal note about this transaction',
 								'sureforms'
 							) }
 						</Text>
@@ -162,4 +192,4 @@ const paymentNotes = ( {
 	);
 };
 
-export default paymentNotes;
+export default PaymentNotes;

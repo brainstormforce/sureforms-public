@@ -1,8 +1,10 @@
 import { Container, Button, Title } from '@bsf/force-ui';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, ArrowUpRight } from 'lucide-react';
 import { __, sprintf } from '@wordpress/i18n';
 
-const PaymentHeader = ( { title, id, onBack } ) => {
+const PaymentHeader = ( { title, onBack, paymentData, handleViewEntry } ) => {
+	const { id, entry_id } = paymentData;
+
 	return (
 		<Container
 			containerType="flex"
@@ -11,21 +13,34 @@ const PaymentHeader = ( { title, id, onBack } ) => {
 			className="w-full justify-between items-center"
 		>
 			<Title
-				icon={null}
-				size="sm"
+				icon={ null }
+				size="lg"
 				tag="h2"
-				title={ sprintf( __( '%s #%s', 'sureforms' ), title, id ) }
+				/* translators: 1: title, 2: ID number */
+				title={ sprintf( __( '%1$s #%2$s', 'sureforms' ), title, id ) }
 			/>
-
-			<Button
-				variant="outline"
-				size="s"
-				icon={ <ArrowLeft className='!size-4'/> }
-				onClick={ onBack }
-				className="text-text-secondary hover:text-text-primary rounded-sm p-2.5"
-			>
-				{ __( 'Back', 'sureforms' ) }
-			</Button>
+			<div className="flex gap-2 items-center">
+				<Button
+					icon={ <ArrowUpRight className="!size-4" /> }
+					iconPosition="right"
+					size="s"
+					variant="outline"
+					onClick={ handleViewEntry }
+					disabled={ ! entry_id }
+					className="text-text-primary rounded-[4px] p-2 gap-0.5"
+				>
+					{ __( 'View Entry', 'sureforms' ) }
+				</Button>
+				<Button
+					variant="outline"
+					size="s"
+					icon={ <ArrowLeft className="!size-4" /> }
+					onClick={ onBack }
+					className="text-text-primary rounded-[4px] p-2 gap-0.5"
+				>
+					{ __( 'Back', 'sureforms' ) }
+				</Button>
+			</div>
 		</Container>
 	);
 };

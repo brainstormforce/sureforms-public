@@ -185,7 +185,10 @@ export async function handleFormPayment( form ) {
 		);
 
 		// Process all payments
-		const paymentResultOnCreateIntent = await processAllPayments( form, paymentBlock );
+		const paymentResultOnCreateIntent = await processAllPayments(
+			form,
+			paymentBlock
+		);
 
 		return paymentResultOnCreateIntent;
 	} catch ( error ) {
@@ -207,10 +210,11 @@ export async function handleFormPayment( form ) {
 async function processAllPayments( form, paymentBlock ) {
 	try {
 		// Step 1: Create payment intents for all payment blocks
-		const paymentResultOnCreateIntent = await window.StripePayment.createPaymentIntentsForForm(
-			form,
-			paymentBlock
-		);
+		const paymentResultOnCreateIntent =
+			await window.StripePayment.createPaymentIntentsForForm(
+				form,
+				paymentBlock
+			);
 
 		if ( ! paymentResultOnCreateIntent?.valid ) {
 			return {
@@ -243,7 +247,13 @@ async function processAllPayments( form, paymentBlock ) {
 
 			// Return true if payment succeeded (result is truthy and not empty string)
 			// return paymentResult && '' !== paymentResult;
-			return paymentResult ? { valid: true, message: 'Payment successful', paymentResult } : { valid: false, message: 'Payment failed', paymentResult: null };
+			return paymentResult
+				? { valid: true, message: 'Payment successful', paymentResult }
+				: {
+					valid: false,
+					message: 'Payment failed',
+					paymentResult: null,
+				  };
 		}
 
 		console.warn(

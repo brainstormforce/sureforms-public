@@ -8,11 +8,12 @@ import Header from '@Admin/components/Header.js';
 const PaymentListWrapper = () => {
 	const { viewSinglePayment, singlePaymentType } =
 		useContext( PaymentContext );
-	console.log( { viewSinglePayment } );
 
 	let showViewPayment = null;
+	let wrapperClassName = '';
 
 	if ( viewSinglePayment ) {
+		wrapperClassName = 'max-w-[1550px] m-auto';
 		if ( singlePaymentType === 'subscription' ) {
 			showViewPayment = <ViewSubscription />;
 		} else {
@@ -25,7 +26,7 @@ const PaymentListWrapper = () => {
 	return (
 		<>
 			<Header />
-			<div className="sureforms-payments-app max-w-[1550px] m-auto">
+			<div className={ `sureforms-payments-app ${ wrapperClassName }` }>
 				{ showViewPayment }
 			</div>
 		</>

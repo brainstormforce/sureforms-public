@@ -9,7 +9,7 @@ import {
 	Dialog,
 	Input,
 } from '@bsf/force-ui';
-import { ArrowUpRight } from 'lucide-react';
+import { ArrowUpRight, RotateCcw } from 'lucide-react';
 import { __, sprintf } from '@wordpress/i18n';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { PaymentContext } from '../components/context';
@@ -25,7 +25,7 @@ import {
 	formatAmount,
 	formatDateTime,
 	formatLogTimestamp,
-	getStatusLabel
+	getStatusLabel,
 } from '../components/utils';
 import PaymentNotes from '../components/paymentNotes';
 import PaymentLogs from '../components/paymentLogs';
@@ -149,57 +149,17 @@ const ViewPayment = () => {
 		setIsRefundDialogOpen( true );
 	};
 
-	// Loading state
-	if ( isLoading ) {
-		return <PaymentLoadingSkeleton />;
-	}
-
-	// Error state
-	if ( error ) {
+	// Loading, error, not found states
+	if ( isLoading || error || ! paymentData ) {
 		return (
-			<div className="srfm-single-payment-wrapper min-h-screen bg-background-secondary p-8">
-				<div className="flex items-center justify-center h-96">
-					<div className="text-center">
-						<Text className="text-red-600 mb-4">
-							{ __(
-								'Error loading payment details',
-								'sureforms'
-							) }
-						</Text>
-						<Button
-							variant="outline"
-							onClick={ () => setViewSinglePayment( false ) }
-						>
-							{ __( 'Back to Payments', 'sureforms' ) }
-						</Button>
-					</div>
-				</div>
-			</div>
+			<PaymentLoadingSkeleton
+				loading={ isLoading }
+				error={ error }
+				notFound={ ! paymentData }
+				setViewSinglePayment={ setViewSinglePayment }
+			/>
 		);
 	}
-
-	// No payment data
-	if ( ! paymentData ) {
-		return (
-			<div className="srfm-single-payment-wrapper min-h-screen bg-background-secondary p-8">
-				<div className="flex items-center justify-center h-96">
-					<div className="text-center">
-						<Text className="mb-4">
-							{ __( 'Payment not found', 'sureforms' ) }
-						</Text>
-						<Button
-							variant="outline"
-							onClick={ () => setViewSinglePayment( false ) }
-						>
-							{ __( 'Back to Payments', 'sureforms' ) }
-						</Button>
-					</div>
-				</div>
-			</div>
-		);
-	}
-
-	// Removed unused handlers: handleViewInStripe, handleResendEmail, handleCancelRefund
 
 	const handleRefund = () => {
 		openRefundDialog();
@@ -514,16 +474,16 @@ const ViewPayment = () => {
 							{ __( 'Status', 'sureforms' ) }
 						</Table.HeadCell>
 						<Table.HeadCell>
-							{ __( 'Date & Time', 'sureforms' ) }
+							{ __( 'Transaction Date', 'sureforms' ) }
 						</Table.HeadCell>
-						<Table.HeadCell className="w-1/6">
+						<Table.HeadCell className="w-1/6 text-right">
 							{ __( 'Action', 'sureforms' ) }
 						</Table.HeadCell>
 					</Table.Head>
 					<Table.Body>
 						{ billingData.map( ( row ) => (
 							<Table.Row key={ row.id }>
-								<Table.Cell className="font-medium">
+								<Table.Cell>
 									{ row.refunded_amount > 0 ? (
 										<span
 											style={ {
@@ -572,10 +532,11 @@ const ViewPayment = () => {
 								<Table.Cell>
 									{ formatDateTime( row.date_time ) }
 								</Table.Cell>
-								<Table.Cell>
+								<Table.Cell className="flex justify-end">
 									<Button
-										icon={ null }
-										iconPosition="left"
+										icon={
+											<RotateCcw className="!size-3" />
+										}
 										size="xs"
 										variant="outline"
 										onClick={ () => handleRefund( row.id ) }
@@ -600,17 +561,28 @@ const ViewPayment = () => {
 		{
 			id: 'form-name',
 			title: __( 'Form Name', 'sureforms' ),
-			value: <span className='text-link-primary'>{paymentData.form_title}</span> || __( 'Unknown Form', 'sureforms' ),
-		},
-		{
-			id: 'payment-method',
-			title: __( 'Payment Method', 'sureforms' ),
-			value: paymentData.gateway || __( 'Unknown', 'sureforms' ),
+			value:
+				(
+					<span className="text-link-primary">
+						{ paymentData.form_title }
+					</span>
+				) || __( 'Unknown Form', 'sureforms' ),
 		},
 		{
 			id: 'payment-mode',
 			title: __( 'Payment Mode', 'sureforms' ),
-			value: <span className='text-link-primary'>{paymentData.mode}</span> || __( 'Unknown', 'sureforms' ),
+			value:
+				'live' === paymentData.mode ? (
+					<Badge
+						variant="green"
+						label={ __( 'Live Mode', 'sureforms' ) }
+					/>
+				) : (
+					<Badge
+						variant="yellow"
+						label={ __( 'Test Mode', 'sureforms' ) }
+					/>
+				),
 		},
 		{
 			id: 'payment-type',
@@ -628,8 +600,8 @@ const ViewPayment = () => {
 			value: paymentData.customer_id || __( 'Guest', 'sureforms' ),
 		},
 		{
-			id: 'submitted-on',
-			title: __( 'Submitted On', 'sureforms' ),
+			id: 'received-on',
+			title: __( 'Received On', 'sureforms' ),
 			value: formatDateTime( paymentData.created_at ),
 		},
 	];
@@ -648,7 +620,7 @@ const ViewPayment = () => {
 					lineHeight={ 20 }
 					size={ 14 }
 					weight={ 400 }
-					className="w-[160px]"
+					className="w-[131px]"
 				>
 					{ title }:
 				</Text>
@@ -676,19 +648,9 @@ const ViewPayment = () => {
 					align="center"
 					justify="between"
 				>
-					<Label size="sm" className="font-semibold">
+					<Label size="md" className="font-semibold">
 						{ __( 'Billing Details', 'sureforms' ) }
 					</Label>
-					<Button
-						icon={ null }
-						iconPosition="left"
-						size="xs"
-						variant="outline"
-						onClick={ handleViewEntry }
-						disabled={ ! paymentData?.entry_id }
-					>
-						{ __( 'View Entry', 'sureforms' ) }
-					</Button>
 				</Container>
 				<Container className="flex flex-col bg-background-secondary gap-1 p-1 rounded-lg">
 					{ billingDetails }
@@ -705,10 +667,10 @@ const ViewPayment = () => {
 					justify="between"
 				>
 					<Label size="sm" className="font-semibold">
-						{ __( 'Payment Info', 'sureforms' ) }
+						{ __( 'Payment Information', 'sureforms' ) }
 					</Label>
 					<Button
-						icon={ <ArrowUpRight className="!size-5" /> }
+						icon={ <ArrowUpRight className="!size-4" /> }
 						iconPosition="right"
 						variant="link"
 						size="sm"
@@ -757,19 +719,20 @@ const ViewPayment = () => {
 				className="w-full h-full gap-[24px]"
 			>
 				<PaymentHeader
-					title={ __( 'Payment ID', 'sureforms' ) }
-					id={ paymentData.id }
+					title={ __( 'Order ID', 'sureforms' ) }
+					paymentData={ paymentData }
+					handleViewEntry={ handleViewEntry }
 					onBack={ handleBackToList }
 				/>
 				<Container
-					className="w-full gap-8"
+					className="w-full gap-6"
 					containerType="grid"
 					cols={ 12 }
 				>
-					<div className="flex flex-col gap-8 col-span-12 xl:col-span-8">
+					<div className="flex flex-col gap-6 col-span-12 xl:col-span-8">
 						{ PAYMENT_SECTION_COLUMN_1 }
 					</div>
-					<div className="flex flex-col gap-8 col-span-12 xl:col-span-4">
+					<div className="flex flex-col gap-4 col-span-12 xl:col-span-4">
 						{ PAYMENT_SECTION_COLUMN_2 }
 					</div>
 				</Container>

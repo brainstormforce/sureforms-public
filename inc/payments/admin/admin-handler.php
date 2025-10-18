@@ -38,6 +38,67 @@ class Admin_Handler {
 		add_action( 'wp_ajax_srfm_delete_payment_note', [ $this, 'ajax_delete_note' ] );
 		add_action( 'wp_ajax_srfm_delete_payment_log', [ $this, 'ajax_delete_log' ] );
 		add_action( 'wp_ajax_srfm_bulk_delete_payments', [ $this, 'ajax_bulk_delete_payments' ] );
+
+		// Register filters to alter entry field value rendering for payment fields in admin.
+		// Filter: Modify if a field should have a custom value renderer in the Entry Details.
+		add_filter( 'srfm_entry_render_field_custom_value', [ $this, 'filter_entry_render_field_custom_value_for_payment' ], 10, 2 );
+		// Filter: Actually generate the custom value output for payment fields.
+		add_filter( 'srfm_entry_custom_value', [ $this, 'filter_entry_custom_value_for_payment' ], 10, 2 );
+	}
+
+	/**
+	 * Determines whether an entry field is a payment reference for custom rendering.
+	 *
+	 * This filter is used in the Entry Details table rendering to check if a field should invoke
+	 * custom HTML output, such as a link to view a payment in admin.
+	 *
+	 * @param bool   $should_render_custom Whether to use custom rendering. Default false.
+	 * @param string $field_name           The current field key.
+	 * @since x.x.x
+	 * @return bool True if field name starts with 'srfm-payment-', otherwise original value.
+	 */
+	public function filter_entry_render_field_custom_value_for_payment( $should_render_custom, $field_name ) {
+		if ( 0 === strpos( $field_name, 'srfm-payment-' ) ) {
+			return true;
+		}
+		return $should_render_custom;
+	}
+
+	/**
+	 * Returns hyperlink markup for a payment admin page, based on payment ID field value.
+	 *
+	 * This filter is used to generate the output for payment reference fields inside entry details.
+	 * If the field value is a valid payment ID, returns anchor tag that links to the payment admin screen.
+	 *
+	 * Example of returned URL:
+	 *   https://example.com/wp-admin/admin.php?page=sureforms_payments&srfm_payment_id=226
+	 *
+	 * @param string $output            The default output value.
+	 * @param mixed  $field_actual_value Actual value of the payment field (usually payment ID).
+	 * @since x.x.x
+	 * @return string HTML anchor to view payment in admin or empty string if not a valid payment ID.
+	 */
+	public function filter_entry_custom_value_for_payment( $output, $field_actual_value ) {
+		$payment_id = intval( $field_actual_value );
+		if ( $payment_id > 0 ) {
+			/**
+			 * Example of generated URL:
+			 * https://example.com/wp-admin/admin.php?page=sureforms_payments&srfm_payment_id=226
+			 */
+			$url = add_query_arg(
+				[
+					'page'            => 'sureforms_payments',
+					'srfm_payment_id' => $payment_id,
+				],
+				admin_url( 'admin.php' )
+			);
+			return sprintf(
+				'<a href="%s" target="_blank">%s</a>',
+				esc_url( $url ),
+				esc_html__( 'View Payment', 'sureforms' )
+			);
+		}
+		return '';
 	}
 
 	/**
@@ -111,6 +172,7 @@ class Admin_Handler {
 			$date_to   = isset( $_POST['date_to'] ) ? sanitize_text_field( wp_unslash( $_POST['date_to'] ) ) : '';
 			$page      = isset( $_POST['page'] ) ? absint( $_POST['page'] ) : 1;
 			$per_page  = isset( $_POST['per_page'] ) ? absint( $_POST['per_page'] ) : 20;
+			$sort_by   = isset( $_POST['sort_by'] ) ? sanitize_text_field( wp_unslash( $_POST['sort_by'] ) ) : '';
 
 			// Validate pagination parameters.
 			$page     = max( 1, $page );
@@ -150,7 +212,7 @@ class Admin_Handler {
 			}
 
 			// Get payments data from database.
-			$payments = $this->get_payments_data( $search, $status, $date_from, $date_to, $per_page, $offset );
+			$payments = $this->get_payments_data( $search, $status, $date_from, $date_to, $per_page, $offset, $sort_by );
 
 			wp_send_json_success(
 				[
@@ -298,7 +360,7 @@ class Admin_Handler {
 	 * @since x.x.x
 	 * @return array Filtered payments data.
 	 */
-	private function get_payments_data( $search = '', $status = '', $date_from = '', $date_to = '', $limit = 20, $offset = 0 ) {
+	private function get_payments_data( $search = '', $status = '', $date_from = '', $date_to = '', $limit = 20, $offset = 0, $sort_by = '' ) {
 		// Build WHERE conditions for database query.
 		$where_conditions = [];
 
@@ -363,13 +425,25 @@ class Admin_Handler {
 			}
 		}
 
+		// Determine sorting based on sort_by parameter.
+		$orderby = 'created_at';
+		$order   = 'DESC';
+
+		if ( 'amount-asc' === $sort_by ) {
+			$orderby = 'total_amount';
+			$order   = 'ASC';
+		} elseif ( 'amount-desc' === $sort_by ) {
+			$orderby = 'total_amount';
+			$order   = 'DESC';
+		}
+
 		// Get payments from database using the main payments method.
 		$args = [
 			'where'   => $where_conditions,
 			'limit'   => $limit,
 			'offset'  => $offset,
-			'orderby' => 'created_at',
-			'order'   => 'DESC',
+			'orderby' => $orderby,
+			'order'   => $order,
 		];
 
 		$db_payments = Payments::get_all_main_payments( $args, true );
@@ -476,6 +550,7 @@ class Admin_Handler {
 			$form_titles[ $form_id ] = get_the_title( intval( $form_id ) ) ?: __( 'Unknown Form', 'sureforms' );
 		}
 		$form_title = isset( $form_titles[ $form_id ] ) && ! empty( $form_titles[ $form_id ] ) ? $form_titles[ $form_id ] : __( 'Unknown Form', 'sureforms' );
+		$form_url   = isset( $form_titles[ $form_id ] ) && ! empty( $form_titles[ $form_id ] ) ? html_entity_decode( get_edit_post_link( intval( $form_id ) ) ) : '';
 
 		// Get customer name - for now use customer_id, in real implementation.
 		// you would get customer data from entries or payment_data.
@@ -510,6 +585,7 @@ class Admin_Handler {
 
 			// Additional frontend fields.
 			'form_title'             => $form_title,
+			'form_url'               => $form_url,
 			'form'                   => $form_title, // Keep for backward compatibility.
 			'customer'               => $customer_name,
 			'amount'                 => floatval( $payment['total_amount'] ),

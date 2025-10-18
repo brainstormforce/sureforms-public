@@ -1,7 +1,8 @@
 import apiFetch from '@wordpress/api-fetch';
 
 export const fetchPayments = async ( args ) => {
-	const { searchTerm, filter, selectedDates, page, itemsPerPage } = args;
+	const { searchTerm, filter, selectedDates, page, itemsPerPage, sortBy } =
+		args;
 	try {
 		// Prepare form data as URLSearchParams for better apiFetch compatibility
 		const formData = new URLSearchParams();
@@ -26,6 +27,7 @@ export const fetchPayments = async ( args ) => {
 		);
 		formData.append( 'page', page || 1 );
 		formData.append( 'per_page', itemsPerPage || 10 );
+		formData.append( 'sort_by', sortBy || '' );
 
 		// Use apiFetch with proper configuration for admin-ajax.php
 		const data = await apiFetch( {

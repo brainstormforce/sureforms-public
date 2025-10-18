@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect } from '@wordpress/element';
+import { useContext, useState, useEffect, useRef } from '@wordpress/element';
 import { applyFilters } from '@wordpress/hooks';
 import {
 	Table,
@@ -11,16 +11,20 @@ import {
 	Container,
 	Dialog,
 	toast,
+	Tooltip,
 } from '@bsf/force-ui';
 import {
 	Eye as ViewIcon,
 	Search,
 	Calendar,
 	X,
-	RefreshCw as ResendIcon,
 	Trash as DeleteIcon,
+	ExternalLink,
+	ChevronsUpDown,
+	ChevronUp,
+	ChevronDown,
 } from 'lucide-react';
-import { __, sprintf, _n } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { PaymentContext } from '../components/context';
 import { fetchPayments, bulkDeletePayments } from '../components/apiCalls';
@@ -74,6 +78,8 @@ const PaymentTable = () => {
 		to: null,
 	} );
 	const [ isDatePickerOpen, setIsDatePickerOpen ] = useState( false );
+	const datePickerContainerRef = useRef( null );
+	const [ sortBy, setSortBy ] = useState( null ); // 'amount-asc' or 'amount-desc'
 
 	// Pagination state
 	const [ page, setPage ] = useState( 1 );
@@ -83,7 +89,7 @@ const PaymentTable = () => {
 	const queryData = useQuery( {
 		queryKey: [
 			'payments',
-			{ searchTerm, filter, selectedDates, page, itemsPerPage },
+			{ searchTerm, filter, selectedDates, page, itemsPerPage, sortBy },
 		],
 		queryFn: () =>
 			fetchPayments( {
@@ -92,6 +98,7 @@ const PaymentTable = () => {
 				selectedDates,
 				page,
 				itemsPerPage,
+				sortBy,
 			} ),
 		staleTime: 5 * 60 * 1000, // 5 minutes
 		refetchOnWindowFocus: false,
@@ -109,8 +116,6 @@ const PaymentTable = () => {
 	const bulkDeleteMutation = useMutation( {
 		mutationFn: bulkDeletePayments,
 		onSuccess: ( data ) => {
-			console.log( 'Delete mutation success:', data );
-
 			// APP layer handles all message formatting
 			let message;
 
@@ -119,10 +124,7 @@ const PaymentTable = () => {
 				// Show warning toast for partial success
 				message =
 					data.message ||
-					__(
-						'Some payments could not be deleted',
-						'sureforms'
-					);
+					__( 'Some payments could not be deleted', 'sureforms' );
 				toast.warning( message, {
 					duration: 5000, // 5 seconds for warnings
 				} );
@@ -145,57 +147,43 @@ const PaymentTable = () => {
 			// Close dialog
 			setIsDeleteDialogOpen( false );
 		},
-		onError: ( error ) => {
+		onError: ( mutationError ) => {
 			console.error( 'Delete mutation error:', error );
 			console.error( 'Error type:', {
-				isApiError: error.isApiError,
-				isNetworkError: error.isNetworkError,
-				isValidationError: error.isValidationError,
+				isApiError: mutationError.isApiError,
+				isNetworkError: mutationError.isNetworkError,
+				isValidationError: mutationError.isValidationError,
 			} );
-			console.error( 'Error data:', error.data );
+			console.error( 'Error data:', mutationError.data );
 
 			// APP layer extracts and formats error messages
 			let errorMessage;
 
 			// Check for backend API error message
-			if ( error.data?.message ) {
-				errorMessage = error.data.message;
-			}
-			// Check for validation error
-			else if ( error.isValidationError ) {
-				errorMessage = __(
-					'No payment IDs provided',
-					'sureforms'
-				);
-			}
-			// Check for network/connectivity error
-			else if ( error.isNetworkError ) {
+			if ( mutationError.data?.message ) {
+				errorMessage = mutationError.data.message;
+			} else if ( mutationError.isValidationError ) {
+				errorMessage = __( 'No payment IDs provided', 'sureforms' );
+			} else if ( mutationError.isNetworkError ) {
 				errorMessage = __(
 					'Network error. Please check your connection and try again.',
 					'sureforms'
 				);
-			}
-			// Check for generic error message
-			else if (
-				error.message &&
-				error.message !== 'API request failed' &&
-				error.message !== 'Validation failed'
+			} else if (
+				mutationError.message &&
+				mutationError.message !== 'API request failed' &&
+				mutationError.message !== 'Validation failed'
 			) {
-				errorMessage = error.message;
-			}
-			// Final fallback
-			else {
+				errorMessage = mutationError.message;
+			} else {
 				errorMessage = __(
 					'Failed to delete payments. Please try again.',
 					'sureforms'
 				);
 			}
 
-			console.log("error getting->", errorMessage);
-
 			// Show error toast with formatted message
-			toast.error( errorMessage, {
-			} );
+			toast.error( errorMessage, {} );
 
 			// Close dialog
 			setIsDeleteDialogOpen( false );
@@ -231,6 +219,9 @@ const PaymentTable = () => {
 		if ( urlParams.srfm_payment_per_page ) {
 			setItemsPerPage( parseInt( urlParams.srfm_payment_per_page ) );
 		}
+		if ( urlParams.srfm_payment_sort ) {
+			setSortBy( urlParams.srfm_payment_sort );
+		}
 
 		// Parse date range
 		if (
@@ -243,11 +234,6 @@ const PaymentTable = () => {
 			} );
 		}
 	}, [] ); // Run once on mount
-
-	// // Reset page to 1 when filters or items per page change
-	// useEffect( () => {
-	// 	setPage( 1 );
-	// }, [ searchTerm, filter, selectedDates, itemsPerPage ] );
 
 	// Sync page to URL
 	useEffect( () => {
@@ -304,6 +290,13 @@ const PaymentTable = () => {
 		updateUrlParams( params );
 	}, [ selectedDates ] );
 
+	// Sync sortBy to URL
+	useEffect( () => {
+		updateUrlParams( {
+			srfm_payment_sort: sortBy || undefined,
+		} );
+	}, [ sortBy ] );
+
 	// Handle browser back/forward buttons
 	useEffect( () => {
 		const handlePopState = () => {
@@ -337,6 +330,26 @@ const PaymentTable = () => {
 		};
 	}, [] );
 
+	// Click Outside Handler for DatePicker
+	useEffect( () => {
+		function handleClickOutside( event ) {
+			if (
+				isDatePickerOpen &&
+				datePickerContainerRef.current &&
+				! datePickerContainerRef.current.contains( event.target )
+			) {
+				setIsDatePickerOpen( false );
+			}
+		}
+
+		// Bind the event listener
+		document.addEventListener( 'mousedown', handleClickOutside );
+		return () => {
+			// Unbind the event listener on cleanup
+			document.removeEventListener( 'mousedown', handleClickOutside );
+		};
+	}, [ isDatePickerOpen ] );
+
 	// Handle individual row selection
 	const handleSelectRow = ( rowId ) => {
 		setSelectedRows( ( prev ) =>
@@ -367,12 +380,6 @@ const PaymentTable = () => {
 		setIsDeleteDialogOpen( true );
 	};
 
-	// Placeholder handlers for batch actions
-	const handleResend = ( paymentIds ) => {
-		console.log( 'resend', paymentIds );
-		// TODO: Implement resend payment functionality
-	};
-
 	const handleDelete = ( paymentIds ) => {
 		// Open confirmation dialog for bulk delete
 		setDeletePaymentIds( paymentIds );
@@ -391,7 +398,6 @@ const PaymentTable = () => {
 
 	// Placeholder handlers for filters
 	const handleDateApply = ( dates ) => {
-		console.log( 'date filter', dates );
 		setSelectedDates( dates );
 		setIsDatePickerOpen( false );
 		// TODO: Implement date filtering
@@ -410,6 +416,17 @@ const PaymentTable = () => {
 	const handleItemsPerPageChange = ( newItemsPerPage ) => {
 		setItemsPerPage( newItemsPerPage );
 		setSelectedRows( [] ); // Clear selections when changing page size
+	};
+
+	// Handle amount sorting
+	const handleAmountSort = () => {
+		if ( sortBy === null ) {
+			setSortBy( 'amount-asc' );
+		} else if ( sortBy === 'amount-asc' ) {
+			setSortBy( 'amount-desc' );
+		} else {
+			setSortBy( null );
+		}
 	};
 
 	const tableLoading = () => (
@@ -445,33 +462,46 @@ const PaymentTable = () => {
 			[
 				{
 					key: 'form',
-					title: __( 'Form', 'sureforms' ),
-					className: 'w-1/6',
+					title: __( 'Order Id', 'sureforms' ),
 				},
 				{
 					key: 'type',
 					title: __( 'Type', 'sureforms' ),
-					className: 'w-1/8',
 				},
 				{
 					key: 'amountPaid',
-					title: __( 'Amount Paid', 'sureforms' ),
-					className: 'w-1/8',
+					title: (
+						<div className="flex items-center gap-2">
+							{ __( 'Amount Paid', 'sureforms' ) }
+							<Button
+								variant="ghost"
+								size="sm"
+								onClick={ handleAmountSort }
+								icon={
+									sortBy === 'amount-asc' ? (
+										<ChevronUp className="w-4 h-4" />
+									) : sortBy === 'amount-desc' ? (
+										<ChevronDown className="w-4 h-4" />
+									) : (
+										<ChevronsUpDown className="w-4 h-4" />
+									)
+								}
+							/>
+						</div>
+					),
 				},
 				{
 					key: 'status',
 					title: __( 'Status', 'sureforms' ),
-					className: 'w-1/6',
 				},
 				{
 					key: 'dateTime',
-					title: __( 'Date & Time', 'sureforms' ),
-					className: 'w-1/6',
+					title: __( 'Transaction Date', 'sureforms' ),
 				},
 				{
 					key: 'actions',
 					title: __( 'Actions', 'sureforms' ),
-					className: 'w-1/8',
+					className: 'text-right',
 				},
 			]
 		);
@@ -499,26 +529,76 @@ const PaymentTable = () => {
 
 	const tableRow = ( payment ) => {
 		const rowAction = (
-			<div className="flex items-center gap-2">
-				<Button
-					variant="ghost"
-					size="sm"
-					onClick={ () =>
-						handleView( {
-							id: payment.id,
-							type: payment.type,
-						} )
+			<div className="flex items-center justify-end gap-2">
+				<Tooltip
+					arrow
+					content={
+						<span>{ __( 'View Transaction', 'sureforms' ) }</span>
 					}
+					placement="top"
+					variant="dark"
+					triggers={ [ 'hover', 'focus' ] }
+					tooltipPortalId="srfm-settings-container"
+					interactive
+					className="z-999999"
 				>
-					<ViewIcon className="w-4 h-4" />
-				</Button>
-				<Button
-					variant="ghost"
-					size="sm"
-					onClick={ () => handleDeleteSingle( payment.id ) }
+					<Button
+						variant="ghost"
+						size="sm"
+						className="p-0"
+						onClick={ () =>
+							handleView( {
+								id: payment.id,
+								type: payment.type,
+							} )
+						}
+					>
+						<ViewIcon className="w-4 h-4" />
+					</Button>
+				</Tooltip>
+				<Tooltip
+					arrow
+					content={ <span>{ __( 'View Form', 'sureforms' ) }</span> }
+					placement="top"
+					variant="dark"
+					triggers={ [ 'hover', 'focus' ] }
+					tooltipPortalId="srfm-settings-container"
+					interactive
+					className="z-999999"
 				>
-					<DeleteIcon className="w-4 h-4" />
-				</Button>
+					<Button
+						variant="ghost"
+						size="sm"
+						tag="a"
+						href={ payment.form_url }
+						target="_blank"
+						rel="noopener noreferrer"
+						className="p-0"
+					>
+						<ExternalLink className="w-4 h-4" />
+					</Button>
+				</Tooltip>
+				<Tooltip
+					arrow
+					content={
+						<span>{ __( 'Remove Transaction', 'sureforms' ) }</span>
+					}
+					placement="top"
+					variant="dark"
+					triggers={ [ 'hover', 'focus' ] }
+					tooltipPortalId="srfm-settings-container"
+					interactive
+					className="z-999999"
+				>
+					<Button
+						variant="ghost"
+						size="sm"
+						onClick={ () => handleDeleteSingle( payment.id ) }
+						className="p-0"
+					>
+						<DeleteIcon className="w-4 h-4" />
+					</Button>
+				</Tooltip>
 			</div>
 		);
 
@@ -535,7 +615,7 @@ const PaymentTable = () => {
 		const paymentType = (
 			<Badge
 				label={ payment.payment_type }
-				variant="neutral"
+				variant={ 'subscription' === payment.type ? 'blue' : 'neutral' }
 				size="sm"
 				className="max-w-fit"
 				disableHover
@@ -564,18 +644,20 @@ const PaymentTable = () => {
 						color: '#6c757d',
 					} }
 				>
-					{ formatAmount( originalAmount ) }
+					{ formatAmount( originalAmount, payment.currency ) }
 				</span>
-				<strong>{ formatAmount( remainingAmount ) }</strong>
+				<strong>
+					{ formatAmount( remainingAmount, payment.currency ) }
+				</strong>
 			</span>
 		) : (
-			formatAmount( originalAmount )
+			formatAmount( originalAmount, payment.currency )
 		);
 
 		const tableRowContent = applyFilters(
 			'srfm_payment_admin_table_row_content',
 			[
-				{ key: 'form', content: payment.form },
+				{ key: 'form', content: `SF-${ payment.id }` },
 				{ key: 'type', content: paymentType },
 				{ key: 'amountPaid', content: rowAmountPaid },
 				{ key: 'status', content: rowStatusBadge },
@@ -617,7 +699,10 @@ const PaymentTable = () => {
 	}
 
 	// IF paymentsData.transactions_is_empty = "with_no_filter"
-	if ( paymentsData.transactions_is_empty === 'with_no_filter' ) {
+	if (
+		! paymentsData ||
+		paymentsData?.transactions_is_empty === 'with_no_filter'
+	) {
 		return <PaymentListPlaceHolder />;
 	}
 
@@ -640,16 +725,19 @@ const PaymentTable = () => {
 						<Dialog.CloseButton onClick={ cancelDelete } />
 					</div>
 					<Dialog.Description>
-						{ sprintf(
-							/* translators: %d: number of payments */
-							_n(
-								'Are you sure you want to delete %d payment? This action cannot be undone.',
-								'Are you sure you want to delete %d payments? This action cannot be undone.',
-								deletePaymentIds.length,
+						{ deletePaymentIds.length === 1
+							? __(
+								'Are you sure you want to delete this payment? This action cannot be undone.',
 								'sureforms'
-							),
-							deletePaymentIds.length
-						) }
+							  )
+							: sprintf(
+								/* translators: %d: number of payments */
+								__(
+									'Are you sure you want to delete %d payments? This action cannot be undone.',
+									'sureforms'
+								),
+								deletePaymentIds.length
+							  ) }
 					</Dialog.Description>
 				</Dialog.Header>
 				<Dialog.Body>
@@ -687,28 +775,17 @@ const PaymentTable = () => {
 
 	return (
 		<div className="min-h-screen px-8 py-8 bg-background-secondary">
-			<div className="p-4 space-y-2 border-0.5 border-solid shadow-sm bg-background-primary rounded-xl border-border-subtle">
+			<div className="p-4 border-0.5 border-solid shadow-sm bg-background-primary rounded-xl border-border-subtle">
 				<div>
 					{ /* Filters or Batch Actions */ }
 					<div className="flex items-center justify-between p-1.25">
 						<h1 className="text-xl font-semibold text-text-primary">
-							{ __( 'Payment Table', 'sureforms' ) }
+							{ __( 'Payment Logs', 'sureforms' ) }
 						</h1>
 						<div className="flex space-x-4">
 							{ selectedRows.length > 0 ? (
 								// Batch Action Buttons
 								<>
-									<Button
-										variant="primary"
-										icon={ <ResendIcon /> }
-										size="sm"
-										onClick={ () =>
-											handleResend( selectedRows )
-										}
-										className="font-medium"
-									>
-										{ __( 'Resend Payments', 'sureforms' ) }
-									</Button>
 									<Button
 										variant="outline"
 										icon={ <DeleteIcon /> }
@@ -741,6 +818,7 @@ const PaymentTable = () => {
 												setFilter( '' );
 												setSearchTerm( '' );
 												setPage( 1 );
+												setSortBy( null );
 
 												// Clear URL params
 												clearUrlParams( [
@@ -750,6 +828,7 @@ const PaymentTable = () => {
 													'srfm_payment_date_to',
 													'srfm_payment_page',
 													'srfm_payment_per_page',
+													'srfm_payment_sort',
 												] );
 											} }
 											destructive
@@ -822,7 +901,10 @@ const PaymentTable = () => {
 										</Select>
 									</div>
 									{ /* Date Range Picker */ }
-									<div className="relative">
+									<div
+										className="relative"
+										ref={ datePickerContainerRef }
+									>
 										<Input
 											type="text"
 											size="sm"
@@ -874,7 +956,7 @@ const PaymentTable = () => {
 				</div>
 
 				{ /* Payment Table Content */ }
-				<div className="overflow-hidden bg-background-primary">
+				<div className="bg-background-primary mt-4">
 					<div className="overflow-x-auto">
 						<Table className="w-full" checkboxSelection>
 							{ tableHead() }
@@ -910,7 +992,7 @@ const PaymentTable = () => {
 												}
 											</Select.Button>
 											<Select.Options>
-												{ [ 3, 5, 7, 10, 12 ].map(
+												{ [ 2, 5, 10, 20, 50, 100 ].map(
 													( count ) => (
 														<Select.Option
 															key={ count }

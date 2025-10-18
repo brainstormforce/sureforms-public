@@ -1,6 +1,6 @@
 import { Container, Label, Text, Button, Tooltip } from '@bsf/force-ui';
 import { Trash2 } from 'lucide-react';
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import { useState } from '@wordpress/element';
 
 const PaymentLogs = ( {
@@ -17,8 +17,8 @@ const PaymentLogs = ( {
 			direction="column"
 		>
 			<Container className="p-1 gap-2" align="center" justify="between">
-				<Label size="sm" className="font-semibold">
-					{ __( 'Payment Log', 'sureforms' ) }
+				<Label size="md" className="font-semibold">
+					{ __( 'Payment Logs', 'sureforms' ) }
 				</Label>
 			</Container>
 			<Container className="flex flex-col items-center justify-center bg-background-secondary gap-1 p-1 rounded-lg min-h-[89px]">
@@ -42,12 +42,17 @@ const PaymentLogs = ( {
 							>
 								<div className="flex justify-between items-start gap-2">
 									<div className="flex-1">
-										<Text className="text-sm font-semibold">
-											{ logTitle }
-										</Text>
-										<Text className="text-xs text-text-tertiary mt-1">
-											{ formatLogTimestamp(
-												log.timestamp
+										<Text className="text-base font-semibold">
+											{ sprintf(
+												/* translators: 1: Log title, 2: Timestamp */
+												__(
+													'%1$s at %2$s',
+													'sureforms'
+												),
+												logTitle,
+												formatLogTimestamp(
+													log.timestamp
+												)
 											) }
 										</Text>
 									</div>
@@ -55,7 +60,10 @@ const PaymentLogs = ( {
 										arrow
 										offset={ 20 }
 										content={
-											<Container direction="column" className="gap-2">
+											<Container
+												direction="column"
+												className="gap-2"
+											>
 												<p className="text-[13px] font-normal">
 													{ __(
 														'Are you sure to delete this?',
@@ -66,21 +74,35 @@ const PaymentLogs = ( {
 													<Button
 														variant="outline"
 														size="xs"
-														onClick={ () => setShowDeletePopup( null ) }
+														onClick={ () =>
+															setShowDeletePopup(
+																null
+															)
+														}
 														className="px-3"
 													>
-														{ __( 'Cancel', 'sureforms' ) }
+														{ __(
+															'Cancel',
+															'sureforms'
+														) }
 													</Button>
 													<Button
 														variant="primary"
 														size="xs"
 														onClick={ () => {
-															handleDeleteLog( index );
-															setShowDeletePopup( null );
+															handleDeleteLog(
+																index
+															);
+															setShowDeletePopup(
+																null
+															);
 														} }
 														className="px-2 ml-2 bg-red-600 hover:bg-red-700 border-red-600 hover:border-red-700"
 													>
-														{ __( 'Confirm', 'sureforms' ) }
+														{ __(
+															'Confirm',
+															'sureforms'
+														) }
 													</Button>
 												</Container>
 											</Container>
@@ -92,14 +114,22 @@ const PaymentLogs = ( {
 										className="z-999999"
 										variant="light"
 										open={ showDeletePopup === index }
-										setOpen={ () => setShowDeletePopup( index ) }
+										setOpen={ () =>
+											setShowDeletePopup( index )
+										}
 									>
 										<Button
 											variant="ghost"
 											size="xs"
-											icon={ <Trash2 className="!size-4" /> }
-											onClick={ () => setShowDeletePopup( index ) }
-											disabled={ deleteLogMutation.isPending }
+											icon={
+												<Trash2 className="!size-4" />
+											}
+											onClick={ () =>
+												setShowDeletePopup( index )
+											}
+											disabled={
+												deleteLogMutation.isPending
+											}
 											className="text-icon-secondary hover:text-red-700"
 										/>
 									</Tooltip>

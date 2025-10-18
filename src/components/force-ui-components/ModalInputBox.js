@@ -29,7 +29,11 @@ const ModalInputBox = ( {
 			tooltipPortalId="srfm-settings-container"
 			className="rounded-md border border-solid border-border-subtle shadow-sm"
 		>
-			<Label htmlFor={ id } size="sm" className="font-medium border-b border-t-0 border-l-0 border-r-0 border-dotted border-text-primary cursor-help inline-block">
+			<Label
+				htmlFor={ id }
+				size="sm"
+				className="font-medium border-b border-t-0 border-l-0 border-r-0 border-dotted border-text-primary cursor-help inline-block"
+			>
 				{ label }
 			</Label>
 		</Tooltip>

@@ -4,6 +4,42 @@
  * @since x.x.x
  */
 /* global Stripe, srfm_ajax */
+
+/**
+ * Get currency symbol for a given currency code.
+ *
+ * @param {string} currencyCode - Currency code (e.g., 'USD', 'INR').
+ * @return {string} Currency symbol.
+ */
+function getCurrencySymbol( currencyCode ) {
+	const currencies = {
+		USD: '$',
+		EUR: '€',
+		GBP: '£',
+		JPY: '¥',
+		AUD: 'A$',
+		CAD: 'C$',
+		CHF: 'CHF',
+		CNY: '¥',
+		SEK: 'kr',
+		NZD: 'NZ$',
+		MXN: 'MX$',
+		SGD: 'S$',
+		HKD: 'HK$',
+		NOK: 'kr',
+		KRW: '₩',
+		TRY: '₺',
+		RUB: '₽',
+		INR: '₹',
+		BRL: 'R$',
+		ZAR: 'R',
+		AED: 'د.إ',
+	};
+
+	const upperCurrencyCode = currencyCode?.toUpperCase();
+	return currencies[ upperCurrencyCode ] || currencyCode;
+}
+
 class StripePayment {
 	// Store Stripe instances
 	static stripeInstances = {};
@@ -128,7 +164,8 @@ class StripePayment {
 					}
 
 					// Get and refine the amount based on format type
-					const getTheAmount = this.refineTheAmount( getThePaymentItem );
+					const getTheAmount =
+						this.refineTheAmount( getThePaymentItem );
 					const getTheTitle = getThePaymentItem
 						.closest( '.srfm-block' )
 						.querySelector( '.srfm-block-label' ).textContent;
@@ -160,7 +197,10 @@ class StripePayment {
 
 				// Update the main payment value display
 				if ( getPaymentItemWrapperHTML ) {
-					getPaymentItemWrapperHTML.textContent = `$${ totalAmount.toFixed(
+					const currency =
+						paymentHiddenInput.dataset.currency || 'usd';
+					const currencySymbol = getCurrencySymbol( currency );
+					getPaymentItemWrapperHTML.textContent = `${ currencySymbol }${ totalAmount.toFixed(
 						2
 					) }`;
 				}
@@ -175,7 +215,11 @@ class StripePayment {
 	}
 
 	updatePaymentIntentAmount( blockId, newAmount, paymentHiddenInput ) {
-		console.log( `Amount updated for block ${ blockId }: $${ newAmount }` );
+		const currency = paymentHiddenInput.dataset.currency || 'usd';
+		const currencySymbol = getCurrencySymbol( currency );
+		console.log(
+			`Amount updated for block ${ blockId }: ${ currencySymbol }${ newAmount }`
+		);
 
 		// In deferred mode, we update the Elements configuration instead of payment intent
 		const elementData = StripePayment.paymentElements[ blockId ];
@@ -191,7 +235,6 @@ class StripePayment {
 
 		try {
 			// Update elements based on payment type (subscription vs one-time)
-			const currency = paymentHiddenInput.dataset.currency || 'usd';
 			const paymentType = elementData.paymentType || 'one-time';
 
 			if ( paymentType === 'subscription' ) {
@@ -215,7 +258,7 @@ class StripePayment {
 			elementData.currentAmount = newAmount;
 
 			console.log(
-				`SureForms: Elements updated with new amount $${ newAmount } for block ${ blockId } (type: ${ paymentType })`
+				`SureForms: Elements updated with new amount ${ currencySymbol }${ newAmount } for block ${ blockId } (type: ${ paymentType })`
 			);
 		} catch ( error ) {
 			console.warn(
@@ -269,9 +312,10 @@ class StripePayment {
 	 */
 	async createPaymentIntentOnSubmission( blockId, amount, paymentInput ) {
 		if ( amount <= 0 ) {
-			throw new Error(
-				'createPaymentIntentOnSubmission: Amount must be greater than 0'
-			);
+			return {
+				valid: false,
+				message: `Invalid payment amount ${ amount } for block ${ blockId }`,
+			};
 		}
 
 		// In deferred mode, we always create a new payment intent during submission
@@ -327,13 +371,17 @@ class StripePayment {
 
 				return { clientSecret, paymentIntentId };
 			}
-			throw new Error(
-				responseData.data || 'Failed to create payment intent'
-			);
+			return {
+				valid: false,
+				message: responseData.data || 'Failed to create payment intent',
+			};
 		} catch ( error ) {
 			this.set_block_loading( blockId, false );
 			console.error( 'Error creating payment intent:', error );
-			throw error;
+			return {
+				valid: false,
+				message: error.message || 'Failed to create payment intent',
+			};
 		}
 	}
 
@@ -701,9 +749,10 @@ class StripePayment {
 		paymentInput
 	) {
 		if ( amount <= 0 ) {
-			throw new Error(
-				'createSubscriptionIntentOnSubmission: Amount must be greater than 0'
-			);
+			return {
+				valid: false,
+				message: `Invalid payment amount ${ amount } for block ${ blockId }`,
+			};
 		}
 
 		this.set_block_loading( blockId, true );
@@ -771,22 +820,24 @@ class StripePayment {
 					subscriptionId,
 					customerId,
 					paymentIntentId,
-					status: true
+					status: true,
 				};
-			} else {
-				return {
-					status: false,
-					message: responseData.data?.message || responseData.data || 'Failed to create subscription',
-				}
 			}
+			return {
+				valid: false,
+				message:
+					responseData.data?.message ||
+					responseData.data ||
+					'Failed to create subscription',
+			};
 		} catch ( error ) {
 			this.set_block_loading( blockId, false );
 			// console.error( 'SureForms: Error creating subscription:', error );
 			// throw error;
 			return {
-				status: false,
+				valid: false,
 				message: error.message || 'Failed to create subscription',
-			}
+			};
 		}
 	}
 
@@ -854,7 +905,10 @@ class StripePayment {
 			paymentBlock.getAttribute( 'data-payment-type' ) || 'one-time';
 
 		if ( ! paymentInput ) {
-			throw new Error( `Payment input not found for block ${ blockId }` );
+			return {
+				valid: false,
+				message: `Payment input not found for block ${ blockId }`,
+			};
 		}
 
 		// Calculate current amount from form
@@ -865,9 +919,10 @@ class StripePayment {
 		const amount = parseFloat( amountText.replace( /[^0-9.]/g, '' ) ) || 0;
 
 		if ( amount <= 0 ) {
-			throw new Error(
-				`Invalid payment amount ${ amount } for block ${ blockId }`
-			);
+			return {
+				valid: false,
+				message: `Invalid payment amount ${ amount } for block ${ blockId }`,
+			};
 		}
 
 		try {
@@ -902,9 +957,9 @@ class StripePayment {
 			};
 		} catch ( error ) {
 			return {
-				status: false,
+				valid: false,
 				message: error.message || 'Failed to create payment intent',
-			}
+			};
 		}
 	}
 

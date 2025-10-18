@@ -42,6 +42,8 @@ const Edit = ( props ) => {
 	const [ availableNumberFields, setAvailableNumberFields ] = useState( [] );
 	const [ availableFormFields, setAvailableFormFields ] = useState( [] );
 
+	console.log( 'availableFormFields', availableFormFields );
+
 	// Get all blocks from the current form
 	const { getBlocks } = useSelect(
 		( select ) => select( 'core/block-editor' ),
@@ -99,7 +101,7 @@ const Edit = ( props ) => {
 
 	// Update available fields when form changes
 	useEffect( () => {
-		if ( isSelected ) {
+		if ( isSelected || ! availableFormFields?.length ) {
 			const { numberFields, allFields } = extractFormFields();
 			setAvailableNumberFields( numberFields );
 			setAvailableFormFields( allFields );
@@ -487,6 +489,7 @@ const Edit = ( props ) => {
 					blockID={ block_id }
 					setAttributes={ setAttributes }
 					attributes={ attributes }
+					availableFormFields={ availableFormFields }
 				/>
 				<div className="srfm-error-wrap"></div>
 			</>
