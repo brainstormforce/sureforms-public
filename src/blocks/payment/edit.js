@@ -34,12 +34,13 @@ const Edit = ( props ) => {
 		formId,
 		preview,
 		className,
-		paymentItems,
 		paymentType,
 		subscriptionPlan,
+		amountType,
+		fixedAmount,
+		amountLabel,
 	} = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
-	const [ availableNumberFields, setAvailableNumberFields ] = useState( [] );
 	const [ availableFormFields, setAvailableFormFields ] = useState( [] );
 
 	console.log( 'availableFormFields', availableFormFields );
@@ -50,15 +51,14 @@ const Edit = ( props ) => {
 		[]
 	);
 
-	// Function to extract both number fields and all form fields in a single traversal
+	// Function to extract all form fields
 	const extractFormFields = () => {
 		if ( ! currentFormId ) {
-			return { numberFields: [], allFields: [] };
+			return [];
 		}
 
 		try {
 			const blocks = getBlocks();
-			const numberFields = [];
 			const allFields = [];
 
 			blocks.forEach( ( block ) => {
@@ -78,32 +78,20 @@ const Edit = ( props ) => {
 						label: `${ label } (${ fieldType })`,
 						type: fieldType,
 					} );
-
-					// If it's a number field, also add to number fields array
-					if ( block.name === 'srfm/number' ) {
-						numberFields.push( {
-							slug,
-							label:
-								block.attributes.label ||
-								__( 'Number Field', 'sureforms' ),
-							selected: paymentItems?.includes( slug ) || false,
-						} );
-					}
 				}
 			} );
 
-			return { numberFields, allFields };
+			return allFields;
 		} catch ( error ) {
 			console.error( 'Error extracting form fields:', error );
-			return { numberFields: [], allFields: [] };
+			return [];
 		}
 	};
 
 	// Update available fields when form changes
 	useEffect( () => {
 		if ( isSelected || ! availableFormFields?.length ) {
-			const { numberFields, allFields } = extractFormFields();
-			setAvailableNumberFields( numberFields );
+			const allFields = extractFormFields();
 			setAvailableFormFields( allFields );
 		}
 	}, [ isSelected ] );
@@ -118,13 +106,6 @@ const Edit = ( props ) => {
 		currentMessage: currentErrorMsg,
 		setCurrentMessage: setCurrentErrorMsg,
 	} = useErrMessage( 'srfm_payment_block_required_text', errorMsg );
-
-	// Handler for updating selected item (single selection)
-	const handleItemChange = ( selectedValue ) => {
-		// Keep only one value in the array
-		const newItems = selectedValue ? [ selectedValue ] : [];
-		setAttributes( { paymentItems: newItems } );
-	};
 
 	// Show the block preview on hover.
 	if ( preview ) {
@@ -181,49 +162,84 @@ const Edit = ( props ) => {
 			component: <Separator />,
 		},
 		{
-			id: 'payment-items',
+			id: 'amount-type',
 			component: (
-				<div className="components-base-control">
-					{ availableNumberFields.length === 0 ? (
-						<p
-							style={ {
-								fontSize: '12px',
-								color: '#757575',
-								fontStyle: 'italic',
-							} }
-						>
-							{ __(
-								'No number fields found in the form. Add number input fields to configure payment items.',
-								'sureforms'
-							) }
-						</p>
-					) : (
-						<SelectControl
-							label={ __( 'Select Payment Item', 'sureforms' ) }
-							value={
-								paymentItems && paymentItems.length > 0
-									? paymentItems[ 0 ]
-									: ''
-							}
-							options={ [
-								{
-									label: __( 'Select a field…', 'sureforms' ),
-									value: '',
-								},
-								...availableNumberFields.map( ( field ) => ( {
-									label: `${ field.label } (${ field.slug })`,
-									value: field.slug,
-								} ) ),
-							] }
-							onChange={ handleItemChange }
-							help={ __(
-								'Select one number field to include in payment calculations',
-								'sureforms'
-							) }
-						/>
+				<MultiButtonsControl
+					setAttributes={ setAttributes }
+					label={ __( 'Amount Type', 'sureforms' ) }
+					data={ {
+						value: amountType,
+						label: 'amountType',
+					} }
+					options={ [
+						{
+							value: 'fixed',
+							label: __( 'Fixed Amount', 'sureforms' ),
+						},
+						{
+							value: 'user-defined',
+							label: __( 'User-Defined', 'sureforms' ),
+						},
+					] }
+					showIcons={ false }
+					help={ __(
+						'Choose whether to use a fixed amount or let users enter their own amount',
+						'sureforms'
 					) }
-				</div>
+				/>
 			),
+		},
+		...( amountType === 'fixed'
+			? [
+					{
+						id: 'fixed-amount',
+						component: (
+							<SRFMTextControl
+								label={ __( 'Fixed Amount', 'sureforms' ) }
+								type="number"
+								value={ fixedAmount }
+								data={ {
+									value: fixedAmount,
+									label: 'fixedAmount',
+								} }
+								onChange={ ( value ) =>
+									setAttributes( {
+										fixedAmount: parseFloat( value ) || 0,
+									} )
+								}
+								help={ __(
+									'Enter the fixed payment amount',
+									'sureforms'
+								) }
+							/>
+						),
+					},
+			  ]
+			: [
+					{
+						id: 'amount-label',
+						component: (
+							<SRFMTextControl
+								label={ __( 'Amount Field Label', 'sureforms' ) }
+								value={ amountLabel }
+								data={ {
+									value: amountLabel,
+									label: 'amountLabel',
+								} }
+								onChange={ ( value ) =>
+									setAttributes( { amountLabel: value } )
+								}
+								help={ __(
+									'Label for the user-defined amount input field',
+									'sureforms'
+								) }
+							/>
+						),
+					},
+			  ] ),
+		{
+			id: 'separator-2',
+			component: <Separator />,
 		},
 		{
 			id: 'payment-type',

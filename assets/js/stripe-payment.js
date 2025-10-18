@@ -46,7 +46,6 @@ class StripePayment {
 	static paymentElements = {};
 	static paymentIntents = {};
 	static subscriptionIntents = {};
-	static slugForPayment = [];
 
 	// Initialize on page load
 	static {
@@ -70,149 +69,28 @@ class StripePayment {
 			this.processPayment( field );
 		} );
 
-		// Listen the form input changes.
-		this.listen_the_form_input_changes();
-	}
-
-	listen_the_form_input_changes() {
-		// if the slug is in the slugForPayment array, then listen the input change
-		if ( StripePayment.slugForPayment.length > 0 ) {
-			StripePayment.slugForPayment.forEach( ( slug ) => {
-				this.form
-					.querySelectorAll(
-						`.srfm-slug-${ slug } .srfm-input-number`
-					)
-					.forEach( ( input ) => {
-						input.addEventListener( 'input', () => {
-							// Update payment intent when value changes
-							this.updatePaymentIntent( { slug } );
-						} );
-
-						// update payment intent without input change.
-						this.updatePaymentIntent( { slug } );
-					} );
-			} );
-		}
+		// Listen for user-defined amount changes
+		this.listenUserAmountChanges();
 	}
 
 	/**
-	 * Refine the amount by removing format characters based on format type.
-	 * Converts formatted numbers to clean decimal strings for calculation.
-	 *
-	 * @param {HTMLElement} input - The input element with format-type attribute.
-	 * @return {string} Clean number string (e.g., "1234.56").
+	 * Listen for changes to user-defined amount inputs
 	 */
-	refineTheAmount( input ) {
-		const rawValue = input?.value || '0';
-		const formatType = input?.getAttribute( 'format-type' ) || 'us-style';
+	listenUserAmountChanges() {
+		const userAmountInputs = this.form.querySelectorAll( '.srfm-user-amount-field' );
 
-		// Handle empty or invalid input
-		if ( ! rawValue || rawValue.trim() === '' ) {
-			return '0';
-		}
+		userAmountInputs.forEach( ( input ) => {
+			input.addEventListener( 'input', () => {
+				const paymentBlock = input.closest( '.srfm-payment-block' );
+				const blockId = paymentBlock.getAttribute( 'data-block-id' );
+				const amount = parseFloat( input.value || 0 );
 
-		let cleanedValue = rawValue.trim();
-
-		if ( 'eu-style' === formatType ) {
-			// EU-style: 1.234,56
-			// Remove dots (thousands separator): 1234,56
-			// Replace comma (decimal separator) with dot: 1234.56
-			cleanedValue = cleanedValue
-				.replace( /\./g, '' ) // Remove all dots
-				.replace( ',', '.' ); // Replace comma with dot
-		} else {
-			// US-style: 1,234.56 (default)
-			// Remove commas (thousands separator): 1234.56
-			// Keep dot (decimal separator): 1234.56
-			cleanedValue = cleanedValue.replace( /,/g, '' ); // Remove all commas
-		}
-
-		// Validate the result is a valid number
-		const numericValue = parseFloat( cleanedValue );
-		if ( isNaN( numericValue ) ) {
-			console.warn(
-				'SureForms: Invalid number value after refinement:',
-				rawValue
-			);
-			return '0';
-		}
-
-		return cleanedValue;
+				const paymentInput = paymentBlock.querySelector( '.srfm-payment-input' );
+				this.updatePaymentIntentAmount( blockId, amount, paymentInput );
+			} );
+		} );
 	}
 
-	updatePaymentIntent( args ) {
-		const fieldSlug = args.slug;
-		const getPaymentHiddenInputs = this.form.querySelectorAll(
-			'.srfm-payment-input[data-payment-items]'
-		);
-
-		for ( const paymentHiddenInput of getPaymentHiddenInputs ) {
-			const getTheSlug = this.getSlugForPayment( paymentHiddenInput );
-
-			const paymentDetails = [];
-
-			// If in the slug array, then update the payment intent
-			if ( getTheSlug.includes( fieldSlug ) ) {
-				// paymentHiddenInput is the payment configuration wrapper in which we need to add all the payment details.
-				for ( const slug of getTheSlug ) {
-					const getThePaymentItem = this.form.querySelector(
-						`.srfm-slug-${ slug } .srfm-input-number`
-					);
-
-					if ( ! getThePaymentItem ) {
-						continue;
-					}
-
-					// Get and refine the amount based on format type
-					const getTheAmount =
-						this.refineTheAmount( getThePaymentItem );
-					const getTheTitle = getThePaymentItem
-						.closest( '.srfm-block' )
-						.querySelector( '.srfm-block-label' ).textContent;
-
-					paymentDetails.push( {
-						title: getTheTitle,
-						amount: getTheAmount,
-					} );
-				}
-
-				// new amount
-				const getPaymentItemBlockWrapper =
-					paymentHiddenInput.closest( '.srfm-block' );
-				const blockId =
-					getPaymentItemBlockWrapper.getAttribute( 'data-block-id' );
-				const getPaymentItemWrapperHTML =
-					getPaymentItemBlockWrapper.querySelector(
-						'.srfm-payment-value'
-					);
-
-				// Generate HTML for payment items and calculate total in single loop
-				let totalAmount = 0;
-				if ( paymentDetails.length > 0 ) {
-					paymentDetails.forEach( ( item ) => {
-						const itemAmount = parseFloat( item.amount || 0 );
-						totalAmount += itemAmount;
-					} );
-				}
-
-				// Update the main payment value display
-				if ( getPaymentItemWrapperHTML ) {
-					const currency =
-						paymentHiddenInput.dataset.currency || 'usd';
-					const currencySymbol = getCurrencySymbol( currency );
-					getPaymentItemWrapperHTML.textContent = `${ currencySymbol }${ totalAmount.toFixed(
-						2
-					) }`;
-				}
-
-				this.updatePaymentIntentAmount(
-					blockId,
-					totalAmount,
-					paymentHiddenInput
-				);
-			}
-		}
-	}
 
 	updatePaymentIntentAmount( blockId, newAmount, paymentHiddenInput ) {
 		const currency = paymentHiddenInput.dataset.currency || 'usd';
@@ -385,21 +263,6 @@ class StripePayment {
 		}
 	}
 
-	getSlugForPayment( input ) {
-		try {
-			const slugForPayment = input.dataset.paymentItems;
-			if ( ! slugForPayment ) {
-				return null;
-			}
-
-			const paymentItems = JSON.parse( slugForPayment );
-
-			return paymentItems?.paymentItems || null;
-		} catch ( error ) {
-			return null;
-		}
-	}
-
 	processPayment( field ) {
 		const paymentInput = field.querySelector( 'input.srfm-payment-input' );
 		const blockId = field.getAttribute( 'data-block-id' );
@@ -411,25 +274,6 @@ class StripePayment {
 			);
 			return;
 		}
-
-		const slugForPayment = this.getSlugForPayment( paymentInput );
-
-		if ( ! slugForPayment ) {
-			console.error(
-				'SureForms: Payment items like data-payment-items not found for block' +
-					blockId,
-				blockId
-			);
-			return;
-		}
-
-		// push the slugs in the variables
-		StripePayment.slugForPayment = [
-			...new Set( [
-				...StripePayment.slugForPayment,
-				...slugForPayment,
-			] ),
-		];
 
 		// Check payment type from data attribute
 		const paymentType =
@@ -561,37 +405,27 @@ class StripePayment {
 	}
 
 	/**
-	 * Calculate current payment amount from form.
+	 * Calculate current payment amount based on amount type (fixed or user-defined).
 	 *
 	 * @param {HTMLElement} paymentInput - The payment input element.
 	 * @return {number} The calculated amount in dollars.
 	 */
 	calculateCurrentAmount( paymentInput ) {
-		// Get payment items configuration
-		const slugForPayment = this.getSlugForPayment( paymentInput );
+		const amountType = paymentInput.dataset.amountType || 'fixed';
+		let amount = 0;
 
-		if ( ! slugForPayment || slugForPayment.length === 0 ) {
-			// No dynamic items, check for fixed amount in payment input
-			const fixedAmount =
-				paymentInput.dataset.amount || paymentInput.value || '10.00';
-			return parseFloat( fixedAmount ) || 10.0; // Default to $10 if no amount found
-		}
-
-		// Calculate total from dynamic payment items
-		let totalAmount = 0;
-		for ( const slug of slugForPayment ) {
-			const paymentItem = this.form.querySelector(
-				`.srfm-slug-${ slug } .srfm-input-number`
-			);
-
-			if ( paymentItem ) {
-				const itemAmount = parseFloat( paymentItem.value || 0 );
-				totalAmount += itemAmount;
-			}
+		if ( amountType === 'fixed' ) {
+			// Get fixed amount from data attribute
+			amount = parseFloat( paymentInput.dataset.fixedAmount || 0 );
+		} else {
+			// Get user-defined amount from input field
+			const paymentBlock = paymentInput.closest( '.srfm-payment-block' );
+			const userAmountInput = paymentBlock?.querySelector( '.srfm-user-amount-field' );
+			amount = parseFloat( userAmountInput?.value || 0 );
 		}
 
 		// Return at least $1.00 minimum for Stripe
-		const finalAmount = Math.max( totalAmount, 1.0 );
+		const finalAmount = Math.max( amount, 1.0 );
 
 		// Validate the amount
 		if ( ! StripePayment.validatePaymentAmount( finalAmount ) ) {
@@ -911,12 +745,18 @@ class StripePayment {
 			};
 		}
 
-		// Calculate current amount from form
-		const paymentValueElement = paymentBlock.querySelector(
-			'.srfm-payment-value'
-		);
-		const amountText = paymentValueElement?.textContent || '$0.00';
-		const amount = parseFloat( amountText.replace( /[^0-9.]/g, '' ) ) || 0;
+		// Calculate current amount based on amount type
+		const amountType = paymentInput.dataset.amountType || 'fixed';
+		let amount = 0;
+
+		if ( amountType === 'fixed' ) {
+			// Get fixed amount from data attribute
+			amount = parseFloat( paymentInput.dataset.fixedAmount || 0 );
+		} else {
+			// Get user-defined amount from input field
+			const userAmountInput = paymentBlock.querySelector( '.srfm-user-amount-field' );
+			amount = parseFloat( userAmountInput?.value || 0 );
+		}
 
 		if ( amount <= 0 ) {
 			return {

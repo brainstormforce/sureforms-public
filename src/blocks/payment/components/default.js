@@ -21,6 +21,9 @@ export const PaymentComponent = ( props ) => {
 		paymentType = 'one-time',
 		subscriptionPlan = {},
 		block_id,
+		amountType = 'fixed',
+		fixedAmount = 10,
+		amountLabel = 'Enter Amount',
 	} = attributes;
 
 	// Get global stripe settings
@@ -72,28 +75,6 @@ export const PaymentComponent = ( props ) => {
 		);
 	}
 
-	// Add validation for payment items.
-	const paymentItems = attributes.paymentItems || [];
-	const hasPaymentItems = paymentItems.length > 0;
-
-	const verifyPaymentItems = ( checkPaymentItems ) => {
-		return checkPaymentItems?.every( ( item ) => {
-			return verifyFieldIsValid( item );
-		} );
-	};
-
-	// If payment items are not set, show validation error.
-	if ( ! hasPaymentItems || ! verifyPaymentItems( paymentItems ) ) {
-		stripeConnectedComponent = (
-			<p className="srfm-stripe-payment-error-text">
-				{ __(
-					'Payment items are required to collect payments for this form. Please map these items in the block settings. Also, make sure the fields are mapped correctly.',
-					'sureforms'
-				) }
-			</p>
-		);
-	}
-
 	// If stripe is not connected, show connect message.
 	if ( ! stripeConnected ) {
 		stripeConnectedComponent = (
@@ -134,7 +115,32 @@ export const PaymentComponent = ( props ) => {
 				block_id={ block_id }
 			/>
 			<div className="srfm-payment-field-wrapper">
-				<p>
+				{ amountType === 'fixed' ? (
+					<div className="srfm-amount-preview">
+						<p className="srfm-amount-label">
+							{ __( 'Amount:', 'sureforms' ) }
+						</p>
+						<p className="srfm-amount-value">
+							<strong>
+								${ fixedAmount || 0 }
+							</strong>
+						</p>
+					</div>
+				) : (
+					<div className="srfm-user-amount-preview">
+						<label htmlFor={ `amount-preview-${ block_id }` }>
+							{ amountLabel }
+						</label>
+						<input
+							id={ `amount-preview-${ block_id }` }
+							type="number"
+							placeholder={ __( '0.00', 'sureforms' ) }
+							className="srfm-amount-input-preview"
+							disabled
+						/>
+					</div>
+				) }
+				<p style={ { marginTop: '12px', fontSize: '13px', color: '#757575' } }>
 					{ __(
 						'This is a placeholder for the Stripe Payment block. The actual payment fields will only appear when you preview or publish the form.',
 						'sureforms'

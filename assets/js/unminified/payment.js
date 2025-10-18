@@ -19,72 +19,39 @@ function validateThePaymentBlock( form ) {
 
 	const paymentInput = paymentBlock.querySelector( '.srfm-payment-input' );
 
-	// Validate payment items.
-	const paymentItemsAttr = paymentInput.getAttribute( 'data-payment-items' );
+	// Validate amount based on amount type (fixed or user-defined)
+	const amountType = paymentInput.getAttribute( 'data-amount-type' ) || 'fixed';
 
-	if ( ! paymentItemsAttr || paymentItemsAttr.trim() === '' ) {
-		return {
-			valid: false,
-			slug: 'no-payment-items',
-			message: 'Payment Input is not configured.',
-		};
-	}
+	if ( amountType === 'fixed' ) {
+		// Validate fixed amount exists and is valid
+		const fixedAmount = parseFloat( paymentInput.getAttribute( 'data-fixed-amount' ) );
 
-	// Parse payment items JSON
-	let paymentItemsData;
-	try {
-		paymentItemsData = JSON.parse( paymentItemsAttr );
-	} catch ( error ) {
-		return {
-			valid: false,
-			slug: 'invalid-payment-items-json',
-			message: 'Payment configuration error. Please contact support.',
-		};
-	}
-
-	// Check if paymentItems array exists and has items
-	if (
-		! paymentItemsData.paymentItems ||
-		! Array.isArray( paymentItemsData.paymentItems ) ||
-		paymentItemsData.paymentItems.length === 0
-	) {
-		return {
-			valid: false,
-			slug: 'no-payment-items',
-			message: 'Payment Input is not configured.',
-		};
-	}
-
-	// Validate payment item amounts (check if linked fields have valid values)
-	const paymentItems = paymentItemsData.paymentItems;
-
-	// class="srfm-block-single srfm-block srfm-number-block srf-number-e77b36ba-block  srfm-block-width-100 srfm-slug-number"
-
-	for ( const itemSlug of paymentItems ) {
-		// Find the input field by slug
-		// Noted: As of now we are allowing the number blocks only for the items, may be latest we add other blocks for the items.
-		const itemBlock = form.querySelector(
-			`.srfm-number-block.srfm-slug-${ itemSlug }`
-		);
-		const itemInput = itemBlock?.querySelector( 'input.srfm-input-number' );
-
-		if ( ! itemInput ) {
+		if ( ! fixedAmount || isNaN( fixedAmount ) || fixedAmount <= 0 ) {
 			return {
 				valid: false,
-				slug: 'payment-item-field-not-found',
-				message: `Payment item field '${ itemSlug }' not found in form.`,
+				slug: 'invalid-fixed-amount',
+				message: 'Payment amount must be configured properly.',
+			};
+		}
+	} else if ( amountType === 'user-defined' ) {
+		// Validate user entered an amount
+		const userAmountInput = paymentBlock.querySelector( '.srfm-user-amount-field' );
+
+		if ( ! userAmountInput ) {
+			return {
+				valid: false,
+				slug: 'user-amount-field-not-found',
+				message: 'Payment amount input field not found.',
 			};
 		}
 
-		// Get the field value and validate it's a valid positive number
-		const itemValue = parseFloat( itemInput.value.replace( /,/g, '' ) );
+		const userAmount = parseFloat( userAmountInput.value || 0 );
 
-		// Clean up the number value.
-		if ( isNaN( itemValue ) || itemValue <= 0 ) {
+		if ( ! userAmount || isNaN( userAmount ) || userAmount <= 0 ) {
 			return {
 				valid: false,
-				slug: 'invalid-payment-amount',
-				message: 'Payment amount must be greater than zero.',
+				slug: 'invalid-user-amount',
+				message: 'Please enter a valid payment amount greater than zero.',
 			};
 		}
 	}
@@ -344,14 +311,23 @@ async function confirmOneTimePayment( blockId, paymentData, form ) {
 			'.srfm-payment-input'
 		);
 
-		const getItems = getPaymentInput.getAttribute( 'data-payment-items' );
-		const jsonParseItems = JSON.parse( getItems );
+		// Get amount details based on amount type
+		const amountType = getPaymentInput.getAttribute( 'data-amount-type' ) || 'fixed';
+		let amount = 0;
+
+		if ( amountType === 'fixed' ) {
+			amount = parseFloat( getPaymentInput.getAttribute( 'data-fixed-amount' ) || 0 );
+		} else {
+			const userAmountInput = getPaymentBlock.querySelector( '.srfm-user-amount-field' );
+			amount = parseFloat( userAmountInput?.value || 0 );
+		}
 
 		let prepareInputValueData = {
-			paymentItems: jsonParseItems,
 			paymentId: paymentIntent.id,
 			blockId,
 			paymentType: 'stripe',
+			amountType,
+			amount,
 		};
 
 		prepareInputValueData = JSON.stringify( prepareInputValueData );
@@ -421,9 +397,16 @@ async function confirmSubscription( blockId, paymentData, form ) {
 				'.srfm-payment-input'
 			);
 
-			const existingItems =
-				paymentInput.getAttribute( 'data-payment-items' );
-			const jsonParseItems = JSON.parse( existingItems );
+			// Get amount details based on amount type
+			const amountType = paymentInput.getAttribute( 'data-amount-type' ) || 'fixed';
+			let amount = 0;
+
+			if ( amountType === 'fixed' ) {
+				amount = parseFloat( paymentInput.getAttribute( 'data-fixed-amount' ) || 0 );
+			} else {
+				const userAmountInput = paymentBlock.querySelector( '.srfm-user-amount-field' );
+				amount = parseFloat( userAmountInput?.value || 0 );
+			}
 
 			const inputValueData = {
 				paymentId: result.setupIntent.payment_method,
@@ -433,7 +416,8 @@ async function confirmSubscription( blockId, paymentData, form ) {
 				blockId,
 				paymentType: 'stripe-subscription',
 				status: 'succeeded',
-				paymentItems: jsonParseItems,
+				amountType,
+				amount,
 			};
 
 			paymentInput.value = JSON.stringify( inputValueData );

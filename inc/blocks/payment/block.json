@@ -75,6 +75,18 @@
 				"customer_name": "",
 				"customer_email": ""
 			}
+		},
+		"amountType": {
+			"type": "string",
+			"default": "fixed"
+		},
+		"fixedAmount": {
+			"type": "number",
+			"default": 10
+		},
+		"amountLabel": {
+			"type": "string",
+			"default": "Enter Amount"
 		}
 	}
 }

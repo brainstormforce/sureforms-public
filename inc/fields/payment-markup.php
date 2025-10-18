@@ -69,14 +69,6 @@ class Payment_Markup extends Base {
 	protected $payment_mode;
 
 	/**
-	 * Payment items.
-	 *
-	 * @var array
-	 * @since x.x.x
-	 */
-	protected $payment_items;
-
-	/**
 	 * Payment type.
 	 *
 	 * @var string
@@ -91,6 +83,30 @@ class Payment_Markup extends Base {
 	 * @since x.x.x
 	 */
 	protected $subscription_plan;
+
+	/**
+	 * Amount type.
+	 *
+	 * @var string
+	 * @since x.x.x
+	 */
+	protected $amount_type;
+
+	/**
+	 * Fixed amount.
+	 *
+	 * @var float
+	 * @since x.x.x
+	 */
+	protected $fixed_amount;
+
+	/**
+	 * Amount label.
+	 *
+	 * @var string
+	 * @since x.x.x
+	 */
+	protected $amount_label;
 
 	/**
 	 * Constructor for the Payment Markup class.
@@ -126,9 +142,11 @@ class Payment_Markup extends Base {
 		// Get appropriate Stripe publishable key based on mode.
 		$this->stripe_publishable_key = Stripe_Helper::get_stripe_publishable_key();
 
-		$this->payment_items     = $attributes['paymentItems'] ?? [];
 		$this->payment_type      = $attributes['paymentType'] ?? 'one-time';
 		$this->subscription_plan = $attributes['subscriptionPlan'] ?? [];
+		$this->amount_type       = $attributes['amountType'] ?? 'fixed';
+		$this->fixed_amount      = $attributes['fixedAmount'] ?? 10;
+		$this->amount_label      = $attributes['amountLabel'] ?? 'Enter Amount';
 	}
 
 	/**
@@ -142,13 +160,7 @@ class Payment_Markup extends Base {
 			return $this->render_not_connected_message();
 		}
 
-		$field_classes  = $this->get_field_classes();
-		$payment_config = [];
-		if ( ! empty( $this->payment_items ) ) {
-			$payment_config['paymentItems'] = $this->payment_items;
-		}
-		$payment_config = wp_json_encode( $payment_config );
-		$payment_config = is_string( $payment_config ) ? $payment_config : '';
+		$field_classes = $this->get_field_classes();
 
 		ob_start();
 		?>
@@ -165,13 +177,34 @@ class Payment_Markup extends Base {
 			<?php echo $this->help_markup; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 			<div class="srfm-payment-field-wrapper">
 				<div class="srfm-payment-items-wrapper"></div>
-				<!-- Payment Amount Display -->
-				<div class="srfm-payment-amount">
-					<span class="srfm-payment-label"><?php echo esc_html( $this->description ); ?>:</span>
-					<span class="srfm-payment-value">
-						<?php echo esc_html( $this->format_currency( $this->amount, $this->currency ) ); ?>
-					</span>
-				</div>
+
+				<?php if ( 'fixed' === $this->amount_type ) : ?>
+					<!-- Fixed Payment Amount Display -->
+					<div class="srfm-payment-amount">
+						<span class="srfm-payment-label"><?php echo esc_html( $this->description ); ?>:</span>
+						<span class="srfm-payment-value">
+							<?php echo esc_html( $this->format_currency( $this->fixed_amount, $this->currency ) ); ?>
+						</span>
+					</div>
+				<?php else : ?>
+					<!-- User-Defined Payment Amount Input -->
+					<div class="srfm-user-amount-input">
+						<label for="srfm-amount-<?php echo esc_attr( $this->block_id ); ?>" class="srfm-amount-label">
+							<?php echo esc_html( $this->amount_label ); ?>
+						</label>
+						<input
+							type="number"
+							id="srfm-amount-<?php echo esc_attr( $this->block_id ); ?>"
+							name="srfm_user_amount_<?php echo esc_attr( $this->block_id ); ?>"
+							class="srfm-user-amount-field"
+							placeholder="0.00"
+							step="0.01"
+							min="0"
+							data-currency="<?php echo esc_attr( strtolower( $this->currency ) ); ?>"
+							<?php echo $this->required ? 'required' : ''; ?>
+						/>
+					</div>
+				<?php endif; ?>
 
 				<!-- Stripe Elements Container -->
 				<div id="srfm-payment-element-<?php echo esc_attr( $this->block_id ); ?>" class="srfm-stripe-payment-element">
@@ -179,16 +212,17 @@ class Payment_Markup extends Base {
 				</div>
 
 				<!-- Hidden fields for payment data -->
-				<input type="hidden" 
-					name="<?php echo esc_attr( $this->field_name ); ?>" 
+				<input type="hidden"
+					name="<?php echo esc_attr( $this->field_name ); ?>"
 					class="srfm-payment-input"
 					data-currency="<?php echo esc_attr( strtolower( $this->currency ) ); ?>"
 					data-description="<?php echo esc_attr( $this->description ); ?>"
 					data-required="<?php echo esc_attr( $this->data_require_attr ); ?>"
 					data-stripe-key="<?php echo esc_attr( $this->stripe_publishable_key ); ?>"
 					data-payment-mode="<?php echo esc_attr( $this->payment_mode ); ?>"
+					data-amount-type="<?php echo esc_attr( $this->amount_type ); ?>"
+					data-fixed-amount="<?php echo esc_attr( $this->fixed_amount ); ?>"
 					aria-describedby="<?php echo esc_attr( trim( $this->aria_described_by ) ); ?>"
-					data-payment-items="<?php echo esc_attr( $payment_config ); ?>"
 					<?php echo $this->required ? 'required' : ''; ?>
 				/>
 
