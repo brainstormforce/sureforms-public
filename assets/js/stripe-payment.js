@@ -283,35 +283,37 @@ class StripePayment {
 			`SureForms: Initializing payment for block ${ blockId }, type: ${ paymentType }`
 		);
 
-		// Initialize Stripe elements based on payment type
-		if ( paymentType === 'subscription' ) {
-			this.initializeSubscriptionElements( blockId, paymentInput );
-		} else {
-			this.initializeStripeElements( blockId, paymentInput );
-		}
+		// Initialize Stripe elements using unified function
+		this.initializePaymentElements( blockId, paymentInput, paymentType );
 	}
 
 	/**
-	 * Initialize Stripe elements with deferred payment intent creation.
-	 * Uses real amount calculation to fix "card element is incomplete" errors.
-	 * Payment intent will be created only during form submission.
+	 * Initialize Stripe elements for one-time payments or subscriptions.
+	 * Unified function that handles both payment types based on the paymentType parameter.
 	 *
 	 * @param {string}      blockId      - Block ID.
 	 * @param {HTMLElement} paymentInput - The payment input element.
+	 * @param {string}      paymentType  - Payment type: 'one-time' or 'subscription'.
 	 * @return {void} This function does not return a value.
 	 */
-	initializeStripeElements( blockId, paymentInput ) {
+	initializePaymentElements( blockId, paymentInput, paymentType = 'one-time' ) {
 		// CRITICAL: Check if elements already exist to prevent re-initialization
 		// Re-mounting elements destroys user-entered card data
 		if ( StripePayment.paymentElements[ blockId ] ) {
+			const typeLabel =
+				paymentType === 'subscription' ? 'SUBSCRIPTION' : 'ONE-TIME PAYMENT';
 			console.log(
-				`SureForms: ONE-TIME PAYMENT elements already initialized for block ${ blockId }, skipping re-initialization (preserving card data)`
+				`SureForms: ${ typeLabel } elements already initialized for block ${ blockId }, skipping re-initialization (preserving card data)`
 			);
 			return;
 		}
 
+		const typeLabel =
+			paymentType === 'subscription' ? 'SUBSCRIPTION' : 'ONE-TIME PAYMENT';
+		const modeLabel =
+			paymentType === 'subscription' ? 'subscription' : 'payment, captureMethod: manual';
 		console.log(
-			`SureForms: Initializing ONE-TIME PAYMENT elements for block ${ blockId } with mode: payment, captureMethod: manual`
+			`SureForms: Initializing ${ typeLabel } elements for block ${ blockId } with mode: ${ modeLabel }`
 		);
 
 		const stripeKey = paymentInput.dataset.stripeKey;
@@ -334,17 +336,10 @@ class StripePayment {
 
 		const stripe = StripePayment.stripeInstances[ blockId ];
 
-		// Get real payment amount from form (not placeholder)
-		const currentAmount = this.calculateCurrentAmount( paymentInput );
-
-		// Initialize Elements with mode and captureMethod to match backend configuration
-		// captureMethod: 'manual' tells Elements to expect manual capture PaymentIntents
-		// This prevents "capture_method mismatch" errors when backend uses manual capture
-		const elements = stripe.elements( {
-			mode: 'payment',
-			amount: Math.round( currentAmount * 100 ),
+		// Build elements configuration based on payment type
+		const elementsConfig = {
+			mode: paymentType === 'subscription' ? 'subscription' : 'payment',
 			currency: paymentInput.dataset.currency || 'usd',
-			captureMethod: 'manual',
 			appearance: {
 				theme: 'stripe',
 				variables: {
@@ -354,52 +349,100 @@ class StripePayment {
 					colorDanger: '#df1b41',
 					spacingUnit: '4px',
 					borderRadius: '4px',
-					fontFamily: '"Manrope", sans-serif', // ✅ Use quotes for fonts with name + fallback
+					fontFamily: '"Manrope", sans-serif',
 				},
 			},
-		} );
+		};
 
-		// Create payment element
+		// Add type-specific configuration
+		let currentAmount = null;
+		if ( paymentType === 'subscription' ) {
+			// Placeholder amount for subscriptions, will be updated by backend
+			elementsConfig.amount = 1200;
+		} else {
+			// Get real payment amount for one-time payments
+			currentAmount = this.calculateCurrentAmount( paymentInput );
+			elementsConfig.amount = Math.round( currentAmount * 100 );
+			// captureMethod: 'manual' tells Elements to expect manual capture PaymentIntents
+			// This prevents "capture_method mismatch" errors when backend uses manual capture
+			elementsConfig.captureMethod = 'manual';
+		}
+
+		// Create and mount payment element
+		const elements = stripe.elements( elementsConfig );
 		const paymentElement = elements.create( 'payment' );
 		paymentElement.mount( elementContainer );
 
-		// Store references without payment intent (will be created on submission)
-		StripePayment.paymentElements[ blockId ] = {
+		// Store references (structure varies by payment type)
+		const storedData = {
 			stripe,
 			elements,
 			paymentElement,
-			clientSecret: null, // Will be set when payment intent is created
-			currentAmount, // Store current amount for later comparison
+			clientSecret: null, // Will be set when payment/subscription intent is created
 		};
+
+		if ( paymentType === 'subscription' ) {
+			storedData.paymentType = 'subscription';
+		} else {
+			storedData.currentAmount = currentAmount; // Store current amount for later comparison
+		}
+
+		StripePayment.paymentElements[ blockId ] = storedData;
 
 		// Update window object
 		window.srfmPaymentElements = StripePayment.paymentElements;
 
-		// Handle payment element events
+		// Setup event handlers
+		this.setupPaymentElementEvents( paymentElement, blockId, paymentType );
+	}
+
+	/**
+	 * Setup event handlers for payment element.
+	 *
+	 * @param {Object} paymentElement - The Stripe payment element.
+	 * @param {string} blockId        - Block ID.
+	 * @param {string} paymentType    - Payment type: 'one-time' or 'subscription'.
+	 * @return {void} This function does not return a value.
+	 */
+	setupPaymentElementEvents( paymentElement, blockId, paymentType ) {
+		// Ready event
 		paymentElement.on( 'ready', () => {
+			const typeLabel = paymentType === 'subscription' ? 'Subscription' : 'Payment';
 			console.log(
-				'SureForms: Payment element ready for block',
-				blockId
+				`SureForms: ${ typeLabel } element ready for block ${ blockId }`
 			);
 		} );
 
+		// Change event (handling differs by payment type)
 		paymentElement.on( 'change', ( event ) => {
-			// Handle element validation with improved error filtering
 			if ( event.error ) {
-				// Only show meaningful validation errors, skip incomplete warnings during typing
-				if ( this.shouldDisplayValidationError( event.error ) ) {
+				if ( paymentType === 'subscription' ) {
+					// Simple warning for subscriptions (often non-fatal validation warnings)
 					console.warn(
-						`SureForms: Card element validation for block ${ blockId }:`,
+						`SureForms: Subscription element validation warning for block ${ blockId }:`,
 						event.error
 					);
-					this.displayElementError( blockId, event.error );
+				} else {
+					// Filtered validation for one-time payments
+					// Only show meaningful validation errors, skip incomplete warnings during typing
+					if ( this.shouldDisplayValidationError( event.error ) ) {
+						console.warn(
+							`SureForms: Card element validation for block ${ blockId }:`,
+							event.error
+						);
+						this.displayElementError( blockId, event.error );
+					}
 				}
 			} else if ( event.complete ) {
+				const typeLabel = paymentType === 'subscription' ? 'Subscription' : 'Card';
 				console.log(
-					`SureForms: Card element completed for block ${ blockId }`
+					`SureForms: ${ typeLabel } element completed for block ${ blockId }`
 				);
-				// Clear any previous error messages
-				this.clearElementError( blockId );
+
+				// Clear any previous error messages (only for one-time payments)
+				if ( paymentType !== 'subscription' ) {
+					this.clearElementError( blockId );
+				}
 			}
 		} );
 	}
@@ -465,109 +508,6 @@ class StripePayment {
 		}
 	}
 
-	/**
-	 * Initialize Stripe elements for subscriptions.
-	 *
-	 * @param {string}      blockId      - Block ID.
-	 * @param {HTMLElement} paymentInput - The payment input element.
-	 * @return {void} This function does not return a value.
-	 */
-	initializeSubscriptionElements( blockId, paymentInput ) {
-		// CRITICAL: Check if elements already exist to prevent re-initialization
-		// Re-mounting elements destroys user-entered card data
-		if ( StripePayment.paymentElements[ blockId ] ) {
-			const existingMode =
-				StripePayment.paymentElements[ blockId ].paymentType;
-			console.log(
-				`SureForms: SUBSCRIPTION elements already initialized for block ${ blockId } (existing type: ${ existingMode }), skipping re-initialization (preserving card data)`
-			);
-			return;
-		}
-
-		console.log(
-			`SureForms: Initializing SUBSCRIPTION elements for block ${ blockId } with mode: subscription`
-		);
-
-		const stripeKey = paymentInput.dataset.stripeKey;
-
-		if ( ! stripeKey ) {
-			console.error(
-				'SureForms: Stripe key is required for subscription initialization.'
-			);
-			return;
-		}
-
-		const elementContainer = paymentInput
-			.closest( '.srfm-block' )
-			.querySelector( '.srfm-stripe-payment-element' );
-
-		// Initialize Stripe
-		if ( ! StripePayment.stripeInstances[ blockId ] ) {
-			StripePayment.stripeInstances[ blockId ] = Stripe( stripeKey );
-		}
-
-		const stripe = StripePayment.stripeInstances[ blockId ];
-
-		// Initialize Elements with subscription mode for subscriptions
-		// Subscription mode is used with confirmSetup() and SetupIntent
-		// captureMethod is NOT applicable for subscriptions (only for one-time payments)
-		const elements = stripe.elements( {
-			mode: 'subscription',
-			currency: paymentInput.dataset.currency || 'usd',
-			amount: 1200, // Placeholder amount in cents ($12.00), will be updated by backend subscription
-			appearance: {
-				theme: 'stripe',
-				variables: {
-					colorPrimary: '#0073aa',
-					colorBackground: '#ffffff',
-					colorText: '#424242',
-					colorDanger: '#df1b41',
-					spacingUnit: '4px',
-					borderRadius: '4px',
-					fontFamily: '"Manrope", sans-serif', // ✅ Use quotes for fonts with name + fallback
-				},
-			},
-		} );
-
-		// Create payment element for subscriptions
-		const paymentElement = elements.create( 'payment' );
-		paymentElement.mount( elementContainer );
-
-		// Store references without subscription intent
-		StripePayment.paymentElements[ blockId ] = {
-			stripe,
-			elements,
-			paymentElement,
-			clientSecret: null, // Will be set when subscription intent is created
-			paymentType: 'subscription',
-		};
-
-		// Update window object
-		window.srfmPaymentElements = StripePayment.paymentElements;
-
-		// Handle payment element events
-		paymentElement.on( 'ready', () => {
-			console.log(
-				'SureForms: Subscription element ready for block',
-				blockId
-			);
-		} );
-
-		paymentElement.on( 'change', ( event ) => {
-			// Handle element validation errors without disrupting payment flow
-			if ( event.error ) {
-				console.warn(
-					`SureForms: Subscription element validation warning for block ${ blockId }:`,
-					event.error
-				);
-				// Don't throw errors here as they're often non-fatal validation warnings
-			} else if ( event.complete ) {
-				console.log(
-					`SureForms: Subscription element completed for block ${ blockId }`
-				);
-			}
-		} );
-	}
 
 	/**
 	 * Create subscription intent using simplified approach like simple-stripe-subscriptions.
