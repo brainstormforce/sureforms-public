@@ -15,6 +15,8 @@ const queryClient = new QueryClient( {
 		},
 	},
 } );
+// Expose query client globally
+window.srfm_query_client = queryClient;
 
 function renderApp() {
 	// Render page header.

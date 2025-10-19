@@ -15,7 +15,6 @@ import {
 	deleteEntries,
 	exportEntries,
 	fetchEntryLogs,
-	deleteEntryLog,
 } from '../api/entriesApi';
 
 /**
@@ -311,31 +310,3 @@ export const useEntryLogs = ( entryId, pagination = { page: 1, per_page: 3 } ) =
 	} );
 };
 
-/**
- * Hook to delete a single entry log
- *
- * @return {Object} Mutation result
- */
-export const useDeleteEntryLog = () => {
-	const queryClient = useQueryClient();
-
-	return useMutation( {
-		mutationFn: deleteEntryLog,
-		onSuccess: () => {
-			// Invalidate and refetch logs for this entry
-			queryClient.invalidateQueries( {
-				queryKey: entryLogsKeys.lists(),
-			} );
-
-			toast.success(
-				__( 'Log deleted successfully.', 'sureforms' )
-			);
-		},
-		onError: ( error ) => {
-			const msg =
-				error?.message ||
-				__( 'An error occurred while deleting the log. Please try again.', 'sureforms' );
-			toast.error( msg );
-		},
-	} );
-};

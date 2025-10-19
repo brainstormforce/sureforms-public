@@ -1,5 +1,8 @@
 import { Outlet } from '@tanstack/react-router';
-import { Toaster } from '@bsf/force-ui';
+import { toast, Toaster } from '@bsf/force-ui';
+
+// Expose toast globally for easy access across the admin interface
+window.srfm_toast = toast;
 
 /**
  * RootLayout Component

@@ -8,9 +8,9 @@ const EntryDetailSkeleton = () => {
 	return (
 		<div className="p-8 bg-background-secondary min-h-screen space-y-6">
 			{ /* Header Skeleton */ }
-			<div className="flex items-center gap-3">
-				<Skeleton className="w-10 h-10 rounded-md" />
-				<Skeleton className="h-9 w-48" />
+			<div className="flex items-center gap-3 max-w-[1374px] mx-auto">
+				<Skeleton className="w-8 h-8 rounded-md" />
+				<Skeleton className="h-8 w-48" />
 			</div>
 
 			<div className="max-w-[1374px] mx-auto">

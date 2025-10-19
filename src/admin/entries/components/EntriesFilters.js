@@ -125,7 +125,7 @@ const EntriesFilters = ( {
 	};
 
 	return (
-		<div className="flex flex-wrap xl:flex-nowrap items-center justify-end gap-2 sm:gap-3 lg:gap-4 mt-4 lg:mt-0">
+		<div className="flex flex-wrap lg:flex-nowrap items-center justify-end gap-2 sm:gap-3 lg:gap-4 mt-4 lg:!mt-0">
 			<Button
 				variant="outline"
 				size="sm"

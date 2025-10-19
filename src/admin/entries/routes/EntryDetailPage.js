@@ -149,16 +149,16 @@ const EntryDetailPage = () => {
 		<>
 			<div className="p-8 bg-background-secondary min-h-screen space-y-6">
 				{ /* Header */ }
-				<div className="flex items-center gap-3">
+				<div className="flex items-center gap-3 max-w-[1374px] mx-auto">
 					<Button
 						tag={ Link }
 						to="/"
 						variant="ghost"
-						size="lg"
-						className="p-2"
+						size="md"
+						className="p-1"
 						icon={ <ArrowLeft /> }
 					/>
-					<Text size={ 36 } color="primary" weight={ 600 }>
+					<Text size={ 24 } color="primary" weight={ 600 }>
 						{ sprintf(
 							// translators: %s is the entry ID
 							__( 'Entry #%s', 'sureforms' ),

@@ -1,8 +1,9 @@
+import { applyFilters } from '@wordpress/hooks';
 import { useState } from '@wordpress/element';
 import { Button, Text } from '@bsf/force-ui';
 import { __ } from '@wordpress/i18n';
-import { ArrowLeft, ArrowRight, Trash2 } from 'lucide-react';
-import { useEntryLogs, useDeleteEntryLog } from '../hooks/useEntriesQuery';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
+import { useEntryLogs } from '../hooks/useEntriesQuery';
 
 /**
  * EntryLogsSection Component
@@ -18,9 +19,6 @@ const EntryLogsSection = ( { entryId, onConfirmation } ) => {
 
 	// Fetch entry logs
 	const { data: logsData, isLoading } = useEntryLogs( entryId, pagination );
-
-	// Delete log mutation
-	const { mutate: deleteLog, isPending: isDeleting } = useDeleteEntryLog();
 
 	// Extract logs from data
 	const logs = logsData?.logs || [];
@@ -49,24 +47,6 @@ const EntryLogsSection = ( { entryId, onConfirmation } ) => {
 		return `${ year }-${ month }-${ day } ${ hours }:${ minutes }:${ seconds }`;
 	};
 
-	const handleDeleteLog = ( logId ) => {
-		onConfirmation( {
-			title: __( 'Delete Log Entry?', 'sureforms' ),
-			description: __(
-				'This action cannot be undone. The log entry will be permanently deleted.',
-				'sureforms'
-			),
-			confirmLabel: __( 'Delete Log', 'sureforms' ),
-			onConfirm: () => handleDeleteLogConfirm( logId ),
-			isLoading: isDeleting,
-			destructive: true,
-		} );
-	};
-
-	const handleDeleteLogConfirm = ( logId ) => {
-		deleteLog( { id: entryId, log_id: logId } );
-	};
-
 	const handlePreviousPage = () => {
 		setPagination( ( prev ) => ( {
 			...prev,
@@ -80,6 +60,10 @@ const EntryLogsSection = ( { entryId, onConfirmation } ) => {
 			page: Math.min( totalPages, prev.page + 1 ),
 		} ) );
 	};
+
+	const RenderDeleteButton = applyFilters(
+		'srfm-pro.entry-details.render-delete-log-button'
+	);
 
 	return (
 		<>
@@ -126,18 +110,13 @@ const EntryLogsSection = ( { entryId, onConfirmation } ) => {
 											)
 										) }
 								</div>
-								<Button
-									className="text-icon-secondary hover:text-icon-primary"
-									variant="ghost"
-									size="xs"
-									icon={ <Trash2 /> }
-									onClick={ () => handleDeleteLog( log.id ) }
-									disabled={ isDeleting }
-									aria-label={ __(
-										'Delete log',
-										'sureforms'
-									) }
-								/>
+								{ !! RenderDeleteButton && (
+									<RenderDeleteButton
+										entryId={ entryId }
+										log={ log }
+										onConfirmation={ onConfirmation }
+									/>
+								) }
 							</div>
 						) )
 					) }
