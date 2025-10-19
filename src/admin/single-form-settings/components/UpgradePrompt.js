@@ -30,7 +30,7 @@ const UpgradePrompt = () => {
 						) }
 						rel="noreferrer"
 					>
-						{ __( 'Upgrade To Unlock', 'sureforms' ) }
+						{ __( 'Upgrade Now', 'sureforms' ) }
 					</a>
 				</div>
 			</div>

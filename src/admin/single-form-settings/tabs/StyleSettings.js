@@ -25,7 +25,6 @@ import {
 	getGradientCSS,
 	setDefaultFormAttributes,
 } from '@Utils/Helpers';
-import { chevronUp } from '@wordpress/icons';
 import Background from '@Components/enhanced-background';
 import Spacing from '@Components/spacing';
 import { embedFormAttributes } from '@Attributes/getBlocksDefaultAttributes';
@@ -1186,18 +1185,12 @@ function StyleSettings( props ) {
 
 	const presetPreview = (
 		<>
-			<div className="srfm-panel-preview">
-				<div
-					className="components-panel__body"
-					style={ { 'border-bottom': 'unset' } }
-				>
-					<h2 className="components-panel__body-title">
-						{ __( 'Form Theme', 'sureforms' ) }
-					</h2>
-					{ chevronUp }
-				</div>
+			<SRFMAdvancedPanelBody
+				title={ __( 'Form Theme', 'sureforms' ) }
+				initialOpen={ true }
+			>
 				<UpgradePrompt />
-			</div>
+			</SRFMAdvancedPanelBody>
 		</>
 	);
 
