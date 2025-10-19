@@ -1,5 +1,5 @@
 import { applyFilters } from '@wordpress/hooks';
-import { useState } from '@wordpress/element';
+import { useState, useEffect } from '@wordpress/element';
 import { Button, Text } from '@bsf/force-ui';
 import { __ } from '@wordpress/i18n';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
@@ -24,6 +24,19 @@ const EntryLogsSection = ( { entryId, onConfirmation } ) => {
 	const logs = logsData?.logs || [];
 	const totalPages = logsData?.total_pages || 1;
 	const currentPage = pagination.page;
+
+	// Handle page adjustment when logs are deleted
+	useEffect( () => {
+		if ( isLoading ) {
+			return;
+		}
+		if ( logs.length === 0 && currentPage > 1 ) {
+			setPagination( ( prev ) => ( {
+				...prev,
+				page: prev.page - 1,
+			} ) );
+		}
+	}, [ logs.length, currentPage, isLoading ] );
 
 	/**
 	 * Format timestamp to YYYY-MM-DD HH:MM:SS format
