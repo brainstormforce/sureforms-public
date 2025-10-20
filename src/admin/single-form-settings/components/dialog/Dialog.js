@@ -189,12 +189,13 @@ const Dialog = ( {
 	const desiredOrder = [
 		'email_notification',
 		'form_confirmation',
+		// 'spam_protection', adding this now for future use.
 		'integrations',
-		'ottokit',
 		'pdf',
 		'advanced-settings',
 		'user_registration',
 		'post-feed',
+		'ottokit',
 		'form_custom_css',
 	];
 
