@@ -5,6 +5,7 @@ import {
 	useLocation,
 } from '@tanstack/react-router';
 import { __, sprintf } from '@wordpress/i18n';
+import { applyFilters } from '@wordpress/hooks';
 import { useMemo, useEffect, useState } from '@wordpress/element';
 import { Button, Text } from '@bsf/force-ui';
 import {
@@ -26,9 +27,24 @@ import { transformEntryDetail } from '../utils/entryHelpers';
  *
  * @param {Object}   props                 - Component props
  * @param {Function} props.handleSendEmail - Function to handle sending email
+ * @param {boolean}  props.isDisabled      - Whether the button is disabled
  * @return {JSX.Element} SendDetailsButton component
  */
-const SendDetailsButton = ( { handleSendEmail } ) => {
+const SendDetailsButton = ( { handleSendEmail, isDisabled = true } ) => {
+	// If component is available (pro version), render without tooltip
+	if ( ! isDisabled ) {
+		return (
+			<Button
+				variant="primary"
+				size="md"
+				onClick={ handleSendEmail }
+			>
+				{ __( 'Send Details via Email', 'sureforms' ) }
+			</Button>
+		);
+	}
+
+	// If component is not available (free version), render with upgrade tooltip
 	return (
 		<UpgradeTooltip
 			heading={ __( 'Unlock Resend Email Notification', 'sureforms' ) }
@@ -73,6 +89,10 @@ const EntryDetailPage = () => {
 		destructive: true,
 	} );
 
+	// State for resend notification modal
+	const [ openResendNotificationModal, setOpenResendNotificationModal ] =
+		useState( false );
+
 	// Fetch entry details
 	const { data: rawEntryData, isLoading } = useEntryDetail( id );
 
@@ -80,6 +100,11 @@ const EntryDetailPage = () => {
 	const entryData = useMemo( () => {
 		return transformEntryDetail( rawEntryData );
 	}, [ rawEntryData ] );
+
+	// Get ResendNotificationModal component from filter (pro feature)
+	const ResendNotificationModal = applyFilters(
+		'srfm-pro.entry-details.render-resend-notification-modal'
+	);
 
 	// Mark entry as read if "read" query param is present
 	useEffect( () => {
@@ -113,8 +138,11 @@ const EntryDetailPage = () => {
 	};
 
 	const handleSendEmail = () => {
-		// TODO: Implement send email functionality
-		console.log( 'Send email clicked' );
+		if ( ! ResendNotificationModal ) {
+			return;
+		}
+
+		setOpenResendNotificationModal( true );
 	};
 
 	/**
@@ -192,6 +220,7 @@ const EntryDetailPage = () => {
 									<div className="ml-0.5">
 										<SendDetailsButton
 											handleSendEmail={ handleSendEmail }
+											isDisabled={ ! ResendNotificationModal }
 										/>
 									</div>
 								</div>
@@ -213,6 +242,16 @@ const EntryDetailPage = () => {
 				isLoading={ confirmationDialog.isLoading }
 				destructive={ confirmationDialog.destructive }
 			/>
+
+			{ /* Render ResendNotificationModal if available */ }
+			{ !! ResendNotificationModal && entryData?.formId && (
+				<ResendNotificationModal
+					open={ openResendNotificationModal }
+					setOpen={ setOpenResendNotificationModal }
+					entryIds={ [ parseInt( id, 10 ) ] }
+					formId={ entryData.formId }
+				/>
+			) }
 		</>
 	);
 };
