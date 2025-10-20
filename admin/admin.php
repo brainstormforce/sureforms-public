@@ -13,7 +13,6 @@ use SRFM\Inc\AI_Form_Builder\AI_Helper;
 use SRFM\Inc\Database\Tables\Entries;
 use SRFM\Inc\Helper;
 use SRFM\Inc\Onboarding;
-use SRFM\Inc\Post_Types;
 use SRFM\Inc\Traits\Get_Instance;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -781,13 +780,12 @@ class Admin {
 			'sureforms_dashboard_url'    => admin_url( '/admin.php?page=sureforms_menu' ),
 			'plugin_version'             => SRFM_VER,
 			'global_settings_nonce'      => Helper::current_user_can() ? wp_create_nonce( 'wp_rest' ) : '',
-			// TODO: Remove this once the single entry view is fully migrated to React.
 			'view_entry_url'             => wp_nonce_url(
 				add_query_arg(
 					[
-					'entry_id' => '[id]',
-					'view'     => 'details',
-					'action'   => 'read',
+                        'entry_id' => '[id]',
+                        'view'     => 'details',
+                        'action'   => 'read',
 					],
 					admin_url( 'admin.php?page=sureforms_entries' )
 				),

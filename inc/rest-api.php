@@ -487,13 +487,12 @@ class Rest_Api {
 			'date_to'   => isset( $params['date_to'] ) ? sanitize_text_field( $params['date_to'] ) : '',
 		];
 
-		$result = Entries_Class::export_entries( $args );
-
 		/**
 		 * Export result with success status and either error message or file details.
 		 *
 		 * @var array{success: false, error: string} | array{success: true, filename: string, filepath: string, type: string} $result
 		 */
+		$result = Entries_Class::export_entries( $args );
 
 		if ( ! $result['success'] ) {
 			return new \WP_REST_Response(

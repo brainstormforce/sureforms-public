@@ -74,13 +74,12 @@ class Entries {
 			'entry_ids' => [],
 		];
 
-		$args = wp_parse_args( $args, $defaults );
-
 		/**
 		 * Parsed and sanitized arguments for the entries query.
 		 *
 		 * @var array{form_id: int, status: string, search: string, date_from: string, date_to: string, orderby: string, order: string, per_page: int, page: int, entry_ids: array<int>} $args
 		 */
+		$args = wp_parse_args( $args, $defaults );
 
 		// Build where conditions.
 		$where_conditions = self::build_where_conditions( $args );
@@ -269,13 +268,12 @@ class Entries {
 			'date_to'   => '',
 		];
 
-		$args = wp_parse_args( $args, $defaults );
-
 		/**
 		 * Parsed and sanitized arguments for the export operation.
 		 *
 		 * @var array{entry_ids: int|array<int>, form_id: int, status: string, search: string, date_from: string, date_to: string} $args
 		 */
+		$args = wp_parse_args( $args, $defaults );
 
 		// Get entry IDs to export.
 		if ( empty( $args['entry_ids'] ) ) {
@@ -623,7 +621,7 @@ class Entries {
 			$row[]     = isset( $entry['status'] ) ? Helper::get_string_value( $entry['status'] ) : '';
 			$form_data = isset( $entry['form_data'] ) ? Helper::get_array_value( $entry['form_data'] ) : [];
 
-			foreach ( $block_key_map as $block_id => $srfm_key ) {
+			foreach ( $block_key_map as $srfm_key ) {
 				$field_value = $form_data[ $srfm_key ] ?? '';
 				$row[]       = self::normalize_field_values( $field_value );
 			}
