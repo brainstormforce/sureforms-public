@@ -28,7 +28,6 @@ import { transformEntryDetail } from '../utils/entryHelpers';
  * @param {Function} props.handleSendEmail - Function to handle sending email
  * @return {JSX.Element} SendDetailsButton component
  */
-
 const SendDetailsButton = ( { handleSendEmail } ) => {
 	return (
 		<UpgradeTooltip
@@ -184,7 +183,7 @@ const EntryDetailPage = () => {
 
 								{ /* Right Column */ }
 								<div className="space-y-4">
-									<NotesSection entryData={ entryData } />
+									<NotesSection entryId={ id } />
 									<EntryLogsSection
 										entryId={ id }
 										onConfirmation={ handleConfirmation }
