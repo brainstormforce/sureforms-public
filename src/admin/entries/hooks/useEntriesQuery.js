@@ -51,9 +51,7 @@ export const formsKeys = {
 export const entryLogsKeys = {
 	all: [ 'entry-logs' ],
 	lists: () => [ ...entryLogsKeys.all, 'list' ],
-	list: ( entryId, pagination ) => [ ...entryLogsKeys.lists(), entryId, pagination ],
-	details: () => [ ...entryLogsKeys.all, 'detail' ],
-	detail: ( entryId, logId ) => [ ...entryLogsKeys.details(), entryId, logId ],
+	list: ( entryId, pagination ) => [ ...entryLogsKeys.lists(), +entryId, pagination ],
 };
 
 /**
