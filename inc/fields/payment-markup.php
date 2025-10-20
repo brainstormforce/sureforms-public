@@ -42,7 +42,7 @@ class Payment_Markup extends Base {
 	 * @var string
 	 * @since x.x.x
 	 */
-	protected $description;
+	// protected $description;
 
 	/**
 	 * Stripe publishable key.
@@ -101,12 +101,20 @@ class Payment_Markup extends Base {
 	protected $fixed_amount;
 
 	/**
-	 * Amount label.
+	 * Fixed amount label.
 	 *
 	 * @var string
 	 * @since x.x.x
 	 */
-	protected $amount_label;
+	protected $fixed_amount_label;
+
+	/**
+	 * User-defined amount label.
+	 *
+	 * @var string
+	 * @since x.x.x
+	 */
+	protected $user_defined_amount_label;
 
 	/**
 	 * Constructor for the Payment Markup class.
@@ -132,7 +140,7 @@ class Payment_Markup extends Base {
 		// Set payment-specific properties.
 		$this->amount      = $attributes['amount'] ?? 10;
 		$this->currency    = $attributes['currency'] ?? 'USD';
-		$this->description = $attributes['description'] ?? 'Payment';
+		// $this->description = $attributes['description'] ?? 'Payment';
 
 		// Use currency from settings if not specified in block.
 		if ( empty( $this->currency ) || 'USD' === $this->currency ) {
@@ -146,7 +154,25 @@ class Payment_Markup extends Base {
 		$this->subscription_plan = $attributes['subscriptionPlan'] ?? [];
 		$this->amount_type       = $attributes['amountType'] ?? 'fixed';
 		$this->fixed_amount      = $attributes['fixedAmount'] ?? 10;
-		$this->amount_label      = $attributes['amountLabel'] ?? 'Enter Amount';
+
+		// Set default labels
+		$fixed_label_default = __( 'Payment Amount:', 'sureforms' );
+		$user_label_default  = __( 'Enter Amount', 'sureforms' );
+
+		// Apply filters to allow customization
+		$this->fixed_amount_label = apply_filters(
+			'srfm_payment_fixed_amount_label',
+			$fixed_label_default,
+			$this->block_id,
+			$attributes
+		);
+
+		$this->user_defined_amount_label = apply_filters(
+			'srfm_payment_user_defined_amount_label',
+			$user_label_default,
+			$this->block_id,
+			$attributes
+		);
 	}
 
 	/**
@@ -176,12 +202,12 @@ class Payment_Markup extends Base {
 			<?php echo $this->label_markup; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 			<?php echo $this->help_markup; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 			<div class="srfm-payment-field-wrapper">
-				<div class="srfm-payment-items-wrapper"></div>
-
 				<?php if ( 'fixed' === $this->amount_type ) : ?>
 					<!-- Fixed Payment Amount Display -->
 					<div class="srfm-payment-amount">
-						<span class="srfm-payment-label"><?php echo esc_html( $this->description ); ?>:</span>
+						<span class="srfm-payment-label">
+							<?php echo esc_html( $this->fixed_amount_label ); ?>
+						</span>
 						<span class="srfm-payment-value">
 							<?php echo esc_html( $this->format_currency( $this->fixed_amount, $this->currency ) ); ?>
 						</span>
@@ -190,7 +216,7 @@ class Payment_Markup extends Base {
 					<!-- User-Defined Payment Amount Input -->
 					<div class="srfm-user-amount-input">
 						<label for="srfm-amount-<?php echo esc_attr( $this->block_id ); ?>" class="srfm-amount-label">
-							<?php echo esc_html( $this->amount_label ); ?>
+							<?php echo esc_html( $this->user_defined_amount_label ); ?>
 						</label>
 						<input
 							type="number"
@@ -216,7 +242,6 @@ class Payment_Markup extends Base {
 					name="<?php echo esc_attr( $this->field_name ); ?>"
 					class="srfm-payment-input"
 					data-currency="<?php echo esc_attr( strtolower( $this->currency ) ); ?>"
-					data-description="<?php echo esc_attr( $this->description ); ?>"
 					data-required="<?php echo esc_attr( $this->data_require_attr ); ?>"
 					data-stripe-key="<?php echo esc_attr( $this->stripe_publishable_key ); ?>"
 					data-payment-mode="<?php echo esc_attr( $this->payment_mode ); ?>"

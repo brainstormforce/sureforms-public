@@ -29,7 +29,7 @@ const Edit = ( props ) => {
 		help,
 		required,
 		block_id,
-		description,
+		// description,
 		errorMsg,
 		formId,
 		preview,
@@ -38,7 +38,7 @@ const Edit = ( props ) => {
 		subscriptionPlan,
 		amountType,
 		fixedAmount,
-		amountLabel,
+		// amountLabel,
 	} = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
 	const [ availableFormFields, setAvailableFormFields ] = useState( [] );
@@ -115,35 +115,6 @@ const Edit = ( props ) => {
 
 	const attributeOptions = [
 		{
-			id: 'required',
-			component: (
-				<ToggleControl
-					label={ __( 'Required', 'sureforms' ) }
-					checked={ required }
-					onChange={ ( checked ) =>
-						setAttributes( { required: checked } )
-					}
-				/>
-			),
-		},
-		{
-			id: 'error-message',
-			component: required ? (
-				<SRFMTextControl
-					label={ __( 'Error Message', 'sureforms' ) }
-					data={ {
-						value: errorMsg,
-						label: 'errorMsg',
-					} }
-					value={ currentErrorMsg }
-					onChange={ ( value ) => {
-						setCurrentErrorMsg( value );
-						setAttributes( { errorMsg: value } );
-					} }
-				/>
-			) : null,
-		},
-		{
 			id: 'help-text',
 			component: (
 				<SRFMTextControl
@@ -215,28 +186,35 @@ const Edit = ( props ) => {
 						),
 					},
 			  ]
-			: [
-					{
-						id: 'amount-label',
-						component: (
-							<SRFMTextControl
-								label={ __( 'Amount Field Label', 'sureforms' ) }
-								value={ amountLabel }
-								data={ {
-									value: amountLabel,
-									label: 'amountLabel',
-								} }
-								onChange={ ( value ) =>
-									setAttributes( { amountLabel: value } )
-								}
-								help={ __(
-									'Label for the user-defined amount input field',
-									'sureforms'
-								) }
-							/>
-						),
-					},
-			  ] ),
+			: [{
+					id: 'required',
+					component: (
+						<ToggleControl
+							label={ __( 'Required', 'sureforms' ) }
+							checked={ required }
+							onChange={ ( checked ) =>
+								setAttributes( { required: checked } )
+							}
+						/>
+					),
+				},
+				{
+					id: 'error-message',
+					component: required ? (
+						<SRFMTextControl
+							label={ __( 'Error Message', 'sureforms' ) }
+							data={ {
+								value: errorMsg,
+								label: 'errorMsg',
+							} }
+							value={ currentErrorMsg }
+							onChange={ ( value ) => {
+								setCurrentErrorMsg( value );
+								setAttributes( { errorMsg: value } );
+							} }
+						/>
+					) : null,
+				}] ),
 		{
 			id: 'separator-2',
 			component: <Separator />,
@@ -447,31 +425,31 @@ const Edit = ( props ) => {
 				},
 			  ]
 			: [] ),
-		{
-			id: 'separator',
-			component: <Separator />,
-		},
-		{
-			id: 'payment-description',
-			component: (
-				<SRFMTextControl
-					label={ __( 'Payment Description', 'sureforms' ) }
-					value={ description }
-					variant="textarea"
-					data={ {
-						value: description,
-						label: 'description',
-					} }
-					onChange={ ( value ) =>
-						setAttributes( { description: value } )
-					}
-					help={ __(
-						'This will appear on the payment receipt and in Stripe dashboard.',
-						'sureforms'
-					) }
-				/>
-			),
-		},
+		// {
+		// 	id: 'separator',
+		// 	component: <Separator />,
+		// },
+		// {
+		// 	id: 'payment-description',
+		// 	component: (
+		// 		<SRFMTextControl
+		// 			label={ __( 'Payment Description', 'sureforms' ) }
+		// 			value={ description }
+		// 			variant="textarea"
+		// 			data={ {
+		// 				value: description,
+		// 				label: 'description',
+		// 			} }
+		// 			onChange={ ( value ) =>
+		// 				setAttributes( { description: value } )
+		// 			}
+		// 			help={ __(
+		// 				'This will appear on the payment receipt and in Stripe dashboard.',
+		// 				'sureforms'
+		// 			) }
+		// 		/>
+		// 	),
+		// },
 	];
 
 	const filterOptions = attributeOptionsWithFilter( attributeOptions, props );

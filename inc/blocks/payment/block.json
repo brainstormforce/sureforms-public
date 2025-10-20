@@ -22,10 +22,6 @@
 		"block_id": {
 			"type": "string"
 		},
-		"description": {
-			"type": "string",
-			"default": "Payment"
-		},
 		"required": {
 			"type": "boolean",
 			"default": true
@@ -83,10 +79,6 @@
 		"fixedAmount": {
 			"type": "number",
 			"default": 10
-		},
-		"amountLabel": {
-			"type": "string",
-			"default": "Enter Amount"
 		}
 	}
 }
