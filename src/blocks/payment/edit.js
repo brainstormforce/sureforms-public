@@ -38,10 +38,15 @@ const Edit = ( props ) => {
 		subscriptionPlan,
 		amountType,
 		fixedAmount,
+		customerNameField,
+		customerEmailField,
 		// amountLabel,
 	} = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
-	const [ availableFormFields, setAvailableFormFields ] = useState( [] );
+	const [ availableFormFields, setAvailableFormFields ] = useState( {
+		emailsFields: [],
+		nameFields: []
+	} );
 
 	console.log( 'availableFormFields', availableFormFields );
 
@@ -51,15 +56,16 @@ const Edit = ( props ) => {
 		[]
 	);
 
-	// Function to extract all form fields
+	// Function to extract and filter form fields by type
 	const extractFormFields = () => {
 		if ( ! currentFormId ) {
-			return [];
+			return { emailsFields: [], nameFields: [] };
 		}
 
 		try {
 			const blocks = getBlocks();
-			const allFields = [];
+			const emailsFields = [];
+			const nameFields = [];
 
 			blocks.forEach( ( block ) => {
 				// Check if block has a slug (is a form field)
@@ -69,30 +75,40 @@ const Edit = ( props ) => {
 						block.attributes.label ||
 						block.name ||
 						__( 'Form Field', 'sureforms' );
-					const fieldType =
-						block.name?.replace( 'srfm/', '' ) || 'field';
+					const blockName = block.name;
 
-					// Add to all fields array
-					allFields.push( {
-						slug,
-						label: `${ label } (${ fieldType })`,
-						type: fieldType,
-					} );
+					// Filter email fields - only srfm/email
+					if ( blockName === 'srfm/email' ) {
+						emailsFields.push( {
+							slug,
+							label: `${ label } (email)`,
+							type: 'email',
+						} );
+					}
+
+					// Filter name/input fields - only srfm/input
+					if ( blockName === 'srfm/input' ) {
+						nameFields.push( {
+							slug,
+							label: `${ label } (input)`,
+							type: 'input',
+						} );
+					}
 				}
 			} );
 
-			return allFields;
+			return { emailsFields, nameFields };
 		} catch ( error ) {
 			console.error( 'Error extracting form fields:', error );
-			return [];
+			return { emailsFields: [], nameFields: [] };
 		}
 	};
 
 	// Update available fields when form changes
 	useEffect( () => {
-		if ( isSelected || ! availableFormFields?.length ) {
-			const allFields = extractFormFields();
-			setAvailableFormFields( allFields );
+		if ( isSelected || ! availableFormFields?.emailsFields?.length ) {
+			const { emailsFields, nameFields } = extractFormFields();
+			setAvailableFormFields( { emailsFields, nameFields } );
 		}
 	}, [ isSelected ] );
 
@@ -220,6 +236,62 @@ const Edit = ( props ) => {
 			component: <Separator />,
 		},
 		{
+			id: 'customer-name-field',
+			component: (
+				<SelectControl
+					label={ __( 'Customer Name Field (Required)', 'sureforms' ) }
+					value={ customerNameField || '' }
+					options={ [
+						{
+							label: __( 'Select a field…', 'sureforms' ),
+							value: '',
+						},
+						...( availableFormFields?.nameFields || [] ).map( ( field ) => ( {
+							label: field.label,
+							value: field.slug,
+						} ) ),
+					] }
+					onChange={ ( value ) => {
+						setAttributes( { customerNameField: value } );
+					} }
+					help={ __(
+						'Select the input field that contains the customer name',
+						'sureforms'
+					) }
+				/>
+			),
+		},
+		{
+			id: 'customer-email-field',
+			component: (
+				<SelectControl
+					label={ __( 'Customer Email Field (Required)', 'sureforms' ) }
+					value={ customerEmailField || '' }
+					options={ [
+						{
+							label: __( 'Select a field…', 'sureforms' ),
+							value: '',
+						},
+						...( availableFormFields?.emailsFields || [] ).map( ( field ) => ( {
+							label: field.label,
+							value: field.slug,
+						} ) ),
+					] }
+					onChange={ ( value ) => {
+						setAttributes( { customerEmailField: value } );
+					} }
+					help={ __(
+						'Select the email field that contains the customer email',
+						'sureforms'
+					) }
+				/>
+			),
+		},
+		{
+			id: 'separator-3',
+			component: <Separator />,
+		},
+		{
 			id: 'payment-type',
 			component: (
 				<MultiButtonsControl
@@ -344,80 +416,6 @@ const Edit = ( props ) => {
 							} }
 							help={ __(
 								'Select the number of billing cycles or ongoing for unlimited',
-								'sureforms'
-							) }
-						/>
-					),
-				},
-				{
-					id: 'customer-name-field',
-					component: (
-						<SelectControl
-							label={ __(
-								'Customer Name Field',
-								'sureforms'
-							) }
-							value={ subscriptionPlan?.customer_name || '' }
-							options={ [
-								{
-									label: __(
-										'Select a field…',
-										'sureforms'
-									),
-									value: '',
-								},
-								...availableFormFields.map( ( field ) => ( {
-									label: field.label,
-									value: field.slug,
-								} ) ),
-							] }
-							onChange={ ( value ) => {
-								setAttributes( {
-									subscriptionPlan: {
-										...( subscriptionPlan || {} ),
-										customer_name: value,
-									},
-								} );
-							} }
-							help={ __(
-								'Select the field that contains the customer name',
-								'sureforms'
-							) }
-						/>
-					),
-				},
-				{
-					id: 'customer-email-field',
-					component: (
-						<SelectControl
-							label={ __(
-								'Customer Email Field',
-								'sureforms'
-							) }
-							value={ subscriptionPlan?.customer_email || '' }
-							options={ [
-								{
-									label: __(
-										'Select a field…',
-										'sureforms'
-									),
-									value: '',
-								},
-								...availableFormFields.map( ( field ) => ( {
-									label: field.label,
-									value: field.slug,
-								} ) ),
-							] }
-							onChange={ ( value ) => {
-								setAttributes( {
-									subscriptionPlan: {
-										...( subscriptionPlan || {} ),
-										customer_email: value,
-									},
-								} );
-							} }
-							help={ __(
-								'Select the field that contains the customer email',
 								'sureforms'
 							) }
 						/>

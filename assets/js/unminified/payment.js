@@ -59,69 +59,60 @@ function validateThePaymentBlock( form ) {
 	// Get payment type from block
 	const paymentType = paymentBlock.getAttribute( 'data-payment-type' );
 
-	// If subscription, validate name and email fields
-	if ( paymentType === 'subscription' ) {
-		// Get customer name and email field slugs from subscription plan data
-		const customerNameFieldSlug = paymentBlock.getAttribute(
-			'data-customer-name-field'
-		);
-		const customerEmailFieldSlug = paymentBlock.getAttribute(
-			'data-customer-email-field'
-		);
+	// Get customer field mappings (required for both payment types)
+	const customerNameFieldSlug = paymentBlock.getAttribute(
+		'data-customer-name-field'
+	);
+	const customerEmailFieldSlug = paymentBlock.getAttribute(
+		'data-customer-email-field'
+	);
 
-		// Validate that name field is mapped
-		if ( ! customerNameFieldSlug || customerNameFieldSlug.trim() === '' ) {
-			return {
-				valid: false,
-				slug: 'subscription-name-not-mapped',
-				message:
-					'Name field is required for subscription payments. Please configure it in the payment block settings.',
-			};
-		}
+	// Validate that name field is mapped
+	if ( ! customerNameFieldSlug || customerNameFieldSlug.trim() === '' ) {
+		return {
+			valid: false,
+			slug: 'payment-name-not-mapped',
+			message:
+				'Customer name field is required for payments. Please configure it in the payment block settings.',
+		};
+	}
 
-		// Validate that email field is mapped
-		if (
-			! customerEmailFieldSlug ||
-			customerEmailFieldSlug.trim() === ''
-		) {
-			return {
-				valid: false,
-				slug: 'subscription-email-not-mapped',
-				message:
-					'Email field is required for subscription payments. Please configure it in the payment block settings.',
-			};
-		}
+	// Validate that email field is mapped
+	if ( ! customerEmailFieldSlug || customerEmailFieldSlug.trim() === '' ) {
+		return {
+			valid: false,
+			slug: 'payment-email-not-mapped',
+			message:
+				'Customer email field is required for payments. Please configure it in the payment block settings.',
+		};
+	}
 
-		// Find the actual name input field in the form
-		const nameInput = form.querySelector(
-			`.srfm-input-block.srfm-slug-${ customerNameFieldSlug } .srfm-input-common`
-		);
-		const nameInputValue = nameInput.value ? nameInput.value.trim() : '';
+	// Find the actual name input field in the form
+	const nameInput = form.querySelector(
+		`.srfm-input-block.srfm-slug-${ customerNameFieldSlug } .srfm-input-common`
+	);
+	const nameInputValue = nameInput ? nameInput.value.trim() : '';
 
-		if ( ! nameInput || nameInputValue === '' ) {
-			return {
-				valid: false,
-				slug: 'subscription-name-field-not-found',
-				message:
-					'Name field is required for subscription payments. Please configure it in the payment block settings.',
-			};
-		}
+	if ( ! nameInput || nameInputValue === '' ) {
+		return {
+			valid: false,
+			slug: 'payment-name-required',
+			message: 'Please enter your name.',
+		};
+	}
 
-		// Find the actual email input field in the form
-		const emailInput = form.querySelector(
-			`.srfm-email-block.srfm-slug-${ customerEmailFieldSlug } .srfm-input-common`
-		);
+	// Find the actual email input field in the form
+	const emailInput = form.querySelector(
+		`.srfm-email-block.srfm-slug-${ customerEmailFieldSlug } .srfm-input-common`
+	);
+	const emailInputValue = emailInput ? emailInput.value.trim() : '';
 
-		const emailInputValue = emailInput.value ? emailInput.value.trim() : '';
-
-		if ( ! emailInput || emailInputValue === '' ) {
-			return {
-				valid: false,
-				slug: 'subscription-email-field-not-found',
-				message:
-					'Email field is required for subscription payments. Please configure it in the payment block settings.',
-			};
-		}
+	if ( ! emailInput || emailInputValue === '' ) {
+		return {
+			valid: false,
+			slug: 'payment-email-required',
+			message: 'Please enter your email.',
+		};
 	}
 
 	// All validations passed

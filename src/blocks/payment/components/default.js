@@ -18,8 +18,8 @@ export const PaymentComponent = ( props ) => {
 		label = 'Payment Details',
 		help = '',
 		required = true,
-		paymentType = 'one-time',
-		subscriptionPlan = {},
+		// paymentType = 'one-time',
+		// subscriptionPlan = {},
 		block_id,
 		// amountType = 'fixed',
 		// fixedAmount = 10,
@@ -38,37 +38,39 @@ export const PaymentComponent = ( props ) => {
 		}
 	};
 
-	// Verify if the field is valid
+	// Verify if the field is valid (check both name and email fields)
 	const verifyFieldIsValid = ( fieldSlug ) => {
 		if ( '' === fieldSlug ) {
 			return false;
 		}
 
-		return availableFormFields?.some( ( field ) => {
+		// Check in both nameFields and emailsFields arrays
+		const nameFieldExists = availableFormFields?.nameFields?.some( ( field ) => {
 			return field.slug === fieldSlug;
 		} );
+
+		const emailFieldExists = availableFormFields?.emailsFields?.some( ( field ) => {
+			return field.slug === fieldSlug;
+		} );
+
+		return nameFieldExists || emailFieldExists;
 	};
 
-	// Check if subscription requires name and email fields
-	const isSubscription = paymentType === 'subscription';
-	const customerName = subscriptionPlan?.customer_name || '';
-	const customerEmail = subscriptionPlan?.customer_email || '';
-	const missingNameField =
-		isSubscription &&
-		( ! customerName || ! verifyFieldIsValid( customerName ) );
-	const missingEmailField =
-		isSubscription &&
-		( ! customerEmail || ! verifyFieldIsValid( customerEmail ) );
-	const hasSubscriptionError = missingNameField || missingEmailField;
+	// Check if payment requires name and email fields (required for BOTH payment types)
+	const customerName = attributes.customerNameField || '';
+	const customerEmail = attributes.customerEmailField || '';
+	const missingNameField = ! customerName || ! verifyFieldIsValid( customerName );
+	const missingEmailField = ! customerEmail || ! verifyFieldIsValid( customerEmail );
+	const hasCustomerFieldsError = missingNameField || missingEmailField;
 
 	let stripeConnectedComponent = null;
 
-	// If subscription and missing name/email fields, show validation error.
-	if ( stripeConnected && hasSubscriptionError ) {
+	// If missing name/email fields, show validation error (for both one-time and subscription payments)
+	if ( stripeConnected && hasCustomerFieldsError ) {
 		stripeConnectedComponent = (
 			<p className="srfm-stripe-payment-error-text">
 				{ __(
-					'Name and Email fields are required to collect payments for subscriptions. Please map these fields in the block settings. Also, make sure the fields are mapped correctly.',
+					'Name and Email fields are required to collect payments. Please map these fields in the block settings. Also, make sure the fields are mapped correctly.',
 					'sureforms'
 				) }
 			</p>
@@ -95,7 +97,7 @@ export const PaymentComponent = ( props ) => {
 			</>
 		);
 	}
-	const isRequired = required ? ' srfm-required' : '';
+	// const isRequired = required ? ' srfm-required' : '';
 
 	return (
 		<div className="srfm-block-single srfm-payment-block">
@@ -105,7 +107,7 @@ export const PaymentComponent = ( props ) => {
 				onChange={ ( value ) => {
 					setAttributes( { label: decodeHtmlEntities( value ) } );
 				} }
-				className={ `srfm-block-label${ isRequired }` }
+				className={ `srfm-block-label` }
 				multiline={ false }
 				allowedFormats={ [] }
 			/>

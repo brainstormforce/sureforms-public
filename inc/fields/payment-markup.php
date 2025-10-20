@@ -117,6 +117,22 @@ class Payment_Markup extends Base {
 	protected $user_defined_amount_label;
 
 	/**
+	 * Customer name field slug.
+	 *
+	 * @var string
+	 * @since x.x.x
+	 */
+	protected $customer_name_field;
+
+	/**
+	 * Customer email field slug.
+	 *
+	 * @var string
+	 * @since x.x.x
+	 */
+	protected $customer_email_field;
+
+	/**
 	 * Constructor for the Payment Markup class.
 	 *
 	 * @param array<mixed> $attributes Block attributes.
@@ -173,6 +189,19 @@ class Payment_Markup extends Base {
 			$this->block_id,
 			$attributes
 		);
+
+		// Set customer field mappings
+		$this->customer_name_field  = $attributes['customerNameField'] ?? '';
+		$this->customer_email_field = $attributes['customerEmailField'] ?? '';
+
+		// BACKWARD COMPATIBILITY: Migrate customer fields from subscriptionPlan
+		if ( empty( $this->customer_name_field ) && ! empty( $this->subscription_plan['customer_name'] ) ) {
+			$this->customer_name_field = $this->subscription_plan['customer_name'];
+		}
+
+		if ( empty( $this->customer_email_field ) && ! empty( $this->subscription_plan['customer_email'] ) ) {
+			$this->customer_email_field = $this->subscription_plan['customer_email'];
+		}
 	}
 
 	/**
@@ -192,11 +221,11 @@ class Payment_Markup extends Base {
 		?>
 		<div data-block-id="<?php echo esc_attr( $this->block_id ); ?>"
 			data-payment-type="<?php echo esc_attr( $this->payment_type ); ?>"
+			data-customer-name-field="<?php echo esc_attr( $this->customer_name_field ); ?>"
+			data-customer-email-field="<?php echo esc_attr( $this->customer_email_field ); ?>"
 			<?php if ( 'subscription' === $this->payment_type && ! empty( $this->subscription_plan ) ) { ?>
 			data-subscription-plan-name="<?php echo esc_attr( $this->subscription_plan['name'] ?? 'Subscription Plan' ); ?>"
 			data-subscription-interval="<?php echo esc_attr( $this->subscription_plan['interval'] ?? 'month' ); ?>"
-			data-customer-name-field="<?php echo esc_attr( $this->subscription_plan['customer_name'] ?? '' ); ?>"
-			data-customer-email-field="<?php echo esc_attr( $this->subscription_plan['customer_email'] ?? '' ); ?>"
 			<?php } ?>
 			class="<?php echo esc_attr( $field_classes ); ?>">
 			<?php echo $this->label_markup; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
@@ -226,8 +255,7 @@ class Payment_Markup extends Base {
 							placeholder="0.00"
 							step="0.01"
 							min="0"
-							data-currency="<?php echo esc_attr( strtolower( $this->currency ) ); ?>"
-							<?php echo $this->required ? 'required' : ''; ?>
+							data-currency="<?php echo esc_attr( strtolower( $this->currency ) ); ?>"						
 						/>
 					</div>
 				<?php endif; ?>
@@ -242,13 +270,11 @@ class Payment_Markup extends Base {
 					name="<?php echo esc_attr( $this->field_name ); ?>"
 					class="srfm-payment-input"
 					data-currency="<?php echo esc_attr( strtolower( $this->currency ) ); ?>"
-					data-required="<?php echo esc_attr( $this->data_require_attr ); ?>"
 					data-stripe-key="<?php echo esc_attr( $this->stripe_publishable_key ); ?>"
 					data-payment-mode="<?php echo esc_attr( $this->payment_mode ); ?>"
 					data-amount-type="<?php echo esc_attr( $this->amount_type ); ?>"
 					data-fixed-amount="<?php echo esc_attr( $this->fixed_amount ); ?>"
 					aria-describedby="<?php echo esc_attr( trim( $this->aria_described_by ) ); ?>"
-					<?php echo $this->required ? 'required' : ''; ?>
 				/>
 
 				<!-- Payment processing status -->

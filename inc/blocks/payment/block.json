@@ -54,10 +54,6 @@
 			"type": "string",
 			"default": ""
 		},
-		"paymentItems": {
-			"type": "array",
-			"default": []
-		},
 		"paymentType": {
 			"type": "string",
 			"default": "one-time"
@@ -67,10 +63,16 @@
 			"default": {
 				"name": "Subscription Plan",
 				"interval": "month",
-				"billingCycles": 2,
-				"customer_name": "",
-				"customer_email": ""
+				"billingCycles": 2
 			}
+		},
+		"customerNameField": {
+			"type": "string",
+			"default": ""
+		},
+		"customerEmailField": {
+			"type": "string",
+			"default": ""
 		},
 		"amountType": {
 			"type": "string",
@@ -79,6 +81,10 @@
 		"fixedAmount": {
 			"type": "number",
 			"default": 10
+		},
+		"amountLabel": {
+			"type": "string",
+			"default": "Enter Amount"
 		}
 	}
 }

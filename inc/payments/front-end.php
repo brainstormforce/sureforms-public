@@ -390,7 +390,6 @@ class Front_End {
 				 * - blockId: Form block identifier (e.g., "be920796")
 				 * - paymentType: Payment type identifier ("stripe-subscription")
 				 * - status: Payment status ("succeeded")
-				 * - paymentItems: Array containing subscription item details
 				 */
 				$payment_response = $this->verify_stripe_subscription_intent_and_save( $payment_value, $block_id, $form_data );
 			} else {
