@@ -135,7 +135,7 @@ export default () => {
 					</div>
 
 					<div
-						className="relative rounded-lg shadow-lg cursor-default w-full max-w-[1206px] h-[760px]"
+						className="relative rounded-lg shadow-lg cursor-default w-full max-w-[80%] h-[760px]"
 						onClick={ ( e ) => e.stopPropagation() }
 					>
 						<iframe
