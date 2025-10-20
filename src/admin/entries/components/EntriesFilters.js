@@ -1,4 +1,5 @@
 import { __ } from '@wordpress/i18n';
+import { applyFilters } from '@wordpress/hooks';
 import {
 	Search,
 	Calendar,
@@ -7,9 +8,16 @@ import {
 	MoreVertical,
 	RotateCcw,
 	ArchiveRestore,
+	Send,
 } from 'lucide-react';
 import { Select, Input, Button, DropdownMenu } from '@bsf/force-ui';
-import { useRef, useEffect, useMemo } from '@wordpress/element';
+import {
+	useRef,
+	useEffect,
+	useMemo,
+	Fragment,
+	useState,
+} from '@wordpress/element';
 import DatePicker from '@Admin/components/DatePicker';
 import { STATUS_OPTIONS } from '../constants';
 
@@ -51,6 +59,8 @@ const EntriesFilters = ( {
 	onMarkAsUnread,
 	onBulkRestore,
 } ) => {
+	const [ openSendNotificationModal, setOpenSendNotificationModal ] =
+		useState( false );
 	const searchInputRef = useRef( null );
 
 	// Dropdown menu options for bulk actions
@@ -124,180 +134,227 @@ const EntriesFilters = ( {
 		),
 	};
 
+	const ResendNotificationModal = applyFilters(
+		'srfm-pro.entry-details.render-resend-notification-modal'
+	);
+
+	const handleResendEmailNotifications = () => {
+		if ( ! ResendNotificationModal ) {
+			return;
+		}
+
+		setOpenSendNotificationModal( true );
+	};
+
 	return (
-		<div className="flex flex-wrap lg:flex-nowrap items-center justify-end gap-2 sm:gap-3 lg:gap-4 mt-4 lg:!mt-0">
-			<Button
-				variant="outline"
-				size="sm"
-				onClick={ onBulkExport }
-				icon={ <ArchiveRestore className="w-4 h-4" /> }
-				iconPosition="left"
-				className="min-w-fit"
-			>
-				{ __( 'Export', 'sureforms' ) }
-			</Button>
+		<Fragment>
+			<div className="flex flex-wrap lg:flex-nowrap items-center justify-end gap-2 sm:gap-3 lg:gap-4 mt-4 lg:!mt-0">
+				<Button
+					variant="outline"
+					size="sm"
+					onClick={ onBulkExport }
+					icon={ <ArchiveRestore className="w-4 h-4" /> }
+					iconPosition="left"
+					className="min-w-fit"
+				>
+					{ __( 'Export', 'sureforms' ) }
+				</Button>
 
-			{ /* Show filters when no items are selected */ }
-			{ ! hasSelectedEntries && (
-				<>
-					<div className="w-fit flex-1 lg:flex-initial min-w-24 sm:w-24">
-						<Select
-							value={ statusFilter }
-							onChange={ onStatusFilterChange }
-							size="sm"
-						>
-							<Select.Button
-								placeholder={ __( 'Status', 'sureforms' ) }
+				{ /* Show filters when no items are selected */ }
+				{ ! hasSelectedEntries && (
+					<>
+						<div className="w-fit flex-1 lg:flex-initial min-w-24 sm:w-24">
+							<Select
+								value={ statusFilter }
+								onChange={ onStatusFilterChange }
+								size="sm"
 							>
-								{
-									STATUS_OPTIONS.find(
-										( option ) =>
-											option.value === statusFilter
-									)?.label
-								}
-							</Select.Button>
-							<Select.Options className="z-999999">
-								{ STATUS_OPTIONS.map( ( option ) => (
-									<Select.Option
-										key={ option.value }
-										value={ option.value }
-									>
-										{ option.label }
-									</Select.Option>
-								) ) }
-							</Select.Options>
-						</Select>
-					</div>
+								<Select.Button
+									placeholder={ __( 'Status', 'sureforms' ) }
+								>
+									{
+										STATUS_OPTIONS.find(
+											( option ) =>
+												option.value === statusFilter
+										)?.label
+									}
+								</Select.Button>
+								<Select.Options className="z-999999">
+									{ STATUS_OPTIONS.map( ( option ) => (
+										<Select.Option
+											key={ option.value }
+											value={ option.value }
+										>
+											{ option.label }
+										</Select.Option>
+									) ) }
+								</Select.Options>
+							</Select>
+						</div>
 
-					<div className="w-full min-w-32 lg:w-40">
-						<Select
-							value={ formFilter }
-							onChange={ onFormFilterChange }
-							size="sm"
-						>
-							<Select.Button
-								placeholder={ __( 'All Forms', 'sureforms' ) }
+						<div className="w-full min-w-32 lg:w-40">
+							<Select
+								value={ formFilter }
+								onChange={ onFormFilterChange }
+								size="sm"
 							>
-								{
-									formOptions.find(
-										( option ) =>
-											option.value === formFilter
-									)?.label
+								<Select.Button
+									placeholder={ __(
+										'All Forms',
+										'sureforms'
+									) }
+								>
+									{
+										formOptions.find(
+											( option ) =>
+												option.value === formFilter
+										)?.label
+									}
+								</Select.Button>
+								<Select.Options className="z-999999">
+									{ formOptions.map( ( option ) => (
+										<Select.Option
+											key={ option.value }
+											value={ option.value }
+										>
+											{ option.label }
+										</Select.Option>
+									) ) }
+								</Select.Options>
+							</Select>
+						</div>
+
+						<div className="w-full min-w-[11.25rem] lg:w-auto lg:min-w-[13.125rem]">
+							<DatePicker
+								value={ dateRange }
+								onApply={ onDateRangeChange }
+								trigger={ ( { setShow } ) => (
+									<Input
+										type="text"
+										placeholder="dd/mm/yyyy - dd/mm/yyyy"
+										readOnly
+										onClick={ () =>
+											setShow( ( prev ) => ! prev )
+										}
+										prefix={
+											<Calendar className="w-4 h-4 text-icon-secondary" />
+										}
+										{ ...dateFilterProps }
+									/>
+								) }
+							/>
+						</div>
+						{ /* Search box */ }
+						<div className="w-full min-w-40 lg:w-auto">
+							<Input
+								type="search"
+								placeholder={ __(
+									'Search your entry.',
+									'sureforms'
+								) }
+								ref={ searchInputRef }
+								onChange={ handleSearchChange }
+								onKeyDown={ handleSearchKeyDown }
+								prefix={
+									<Search className="w-4 h-4 text-icon-secondary" />
 								}
-							</Select.Button>
-							<Select.Options className="z-999999">
-								{ formOptions.map( ( option ) => (
-									<Select.Option
-										key={ option.value }
-										value={ option.value }
-									>
-										{ option.label }
-									</Select.Option>
-								) ) }
-							</Select.Options>
-						</Select>
-					</div>
+							/>
+						</div>
+					</>
+				) }
 
-					<div className="w-full min-w-[11.25rem] lg:w-auto lg:min-w-[13.125rem]">
-						<DatePicker
-							value={ dateRange }
-							onApply={ onDateRangeChange }
-							trigger={ ( { setShow } ) => (
-								<Input
-									type="text"
-									placeholder="dd/mm/yyyy - dd/mm/yyyy"
-									readOnly
-									onClick={ () =>
-										setShow( ( prev ) => ! prev )
-									}
-									prefix={
-										<Calendar className="w-4 h-4 text-icon-secondary" />
-									}
-									{ ...dateFilterProps }
-								/>
-							) }
-						/>
-					</div>
-					{ /* Search box */ }
-					<div className="w-full min-w-40 lg:w-auto">
-						<Input
-							type="search"
-							placeholder={ __(
-								'Search your entry.',
-								'sureforms'
-							) }
-							ref={ searchInputRef }
-							onChange={ handleSearchChange }
-							onKeyDown={ handleSearchKeyDown }
-							prefix={
-								<Search className="w-4 h-4 text-icon-secondary" />
-							}
-						/>
-					</div>
-				</>
-			) }
-
-			{ /* Show bulk action buttons when items are selected */ }
-			{ hasSelectedEntries && (
-				<>
-					{ /* Show restore button when trash filter is active */ }
-					{ statusFilter === 'trash' && (
-						<Button
-							variant="outline"
-							size="sm"
-							onClick={ onBulkRestore }
-							icon={ <RotateCcw className="w-4 h-4" /> }
-							iconPosition="left"
-							className="min-w-fit"
-						>
-							{ __( 'Restore', 'sureforms' ) }
-						</Button>
-					) }
-
-					<Button
-						variant="outline"
-						size="sm"
-						onClick={ onBulkDelete }
-						icon={ <Trash2 className="w-4 h-4" /> }
-						iconPosition="left"
-						className="min-w-fit"
-						destructive
-					>
-						{ __( 'Delete', 'sureforms' ) }
-					</Button>
-
-					<DropdownMenu placement="bottom-end">
-						<DropdownMenu.Trigger>
+				{ /* Show bulk action buttons when items are selected */ }
+				{ hasSelectedEntries && (
+					<>
+						{ /* Show resend notifications button if modal is available */ }
+						{ !! ResendNotificationModal &&
+							( formFilter !== 'all' && formFilter !== '' ) && (
 							<Button
 								variant="outline"
 								size="sm"
-								icon={ <MoreVertical className="w-4 h-4" /> }
-								className="min-w-fit px-2"
-							/>
-						</DropdownMenu.Trigger>
-						<DropdownMenu.Portal id="srfm-dialog-root">
-							<DropdownMenu.ContentWrapper>
-								<DropdownMenu.Content className="w-48">
-									<DropdownMenu.List>
-										{ DROPDOWN_MENU_OPTIONS.map(
-											( option, index ) => (
-												<DropdownMenu.Item
-													key={ index }
-													onClick={ option.onClick }
-													className="text-sm font-normal text-text-secondary hover:bg-background-secondary hover:text-text-primary focus:bg-background-secondary focus:text-text-primary cursor-pointer"
-												>
-													{ option.label }
-												</DropdownMenu.Item>
-											)
-										) }
-									</DropdownMenu.List>
-								</DropdownMenu.Content>
-							</DropdownMenu.ContentWrapper>
-						</DropdownMenu.Portal>
-					</DropdownMenu>
-				</>
+								onClick={ handleResendEmailNotifications }
+								icon={ <Send className="w-4 h-4" /> }
+								iconPosition="left"
+								className="min-w-fit"
+							>
+								{ __(
+									'Resend Notifications',
+									'sureforms'
+								) }
+							</Button>
+						) }
+						{ /* Show restore button when trash filter is active */ }
+						{ statusFilter === 'trash' && (
+							<Button
+								variant="outline"
+								size="sm"
+								onClick={ onBulkRestore }
+								icon={ <RotateCcw className="w-4 h-4" /> }
+								iconPosition="left"
+								className="min-w-fit"
+							>
+								{ __( 'Restore', 'sureforms' ) }
+							</Button>
+						) }
+
+						<Button
+							variant="outline"
+							size="sm"
+							onClick={ onBulkDelete }
+							icon={ <Trash2 className="w-4 h-4" /> }
+							iconPosition="left"
+							className="min-w-fit"
+							destructive
+						>
+							{ __( 'Delete', 'sureforms' ) }
+						</Button>
+
+						<DropdownMenu placement="bottom-end">
+							<DropdownMenu.Trigger>
+								<Button
+									variant="outline"
+									size="sm"
+									icon={
+										<MoreVertical className="w-4 h-4" />
+									}
+									className="min-w-fit px-2"
+								/>
+							</DropdownMenu.Trigger>
+							<DropdownMenu.Portal id="srfm-dialog-root">
+								<DropdownMenu.ContentWrapper>
+									<DropdownMenu.Content className="w-48">
+										<DropdownMenu.List>
+											{ DROPDOWN_MENU_OPTIONS.map(
+												( option, index ) => (
+													<DropdownMenu.Item
+														key={ index }
+														onClick={
+															option.onClick
+														}
+														className="text-sm font-normal text-text-secondary hover:bg-background-secondary hover:text-text-primary focus:bg-background-secondary focus:text-text-primary cursor-pointer"
+													>
+														{ option.label }
+													</DropdownMenu.Item>
+												)
+											) }
+										</DropdownMenu.List>
+									</DropdownMenu.Content>
+								</DropdownMenu.ContentWrapper>
+							</DropdownMenu.Portal>
+						</DropdownMenu>
+					</>
+				) }
+			</div>
+			{ !! ResendNotificationModal &&
+				( formFilter !== 'all' && formFilter !== '' ) && (
+				<ResendNotificationModal
+					open={ openSendNotificationModal }
+					setOpen={ setOpenSendNotificationModal }
+					entryIds={ selectedEntries }
+					formId={ parseInt( formFilter, 10 ) }
+				/>
 			) }
-		</div>
+		</Fragment>
 	);
 };
 
