@@ -3,6 +3,36 @@ function SRFMFormatNumber( number, formatType ) {
 		return '';
 	}
 
+	// Convert all to empty strings except: Numbers, Dots, Commas, and a single leading Minus.
+	number = number.replace( /(?!^-)[^0-9,.-]+/g, '' );
+
+	if ( number.length === 1 && number.startsWith( '-' ) ) {
+		// It means, user has just started negative number. Eg: "-".
+		return number;
+	}
+
+	if ( number.endsWith( '.' ) || number.endsWith( ',' ) ) {
+		// It means, user has just started decimal point. Eg: "2." or "2,"
+		return number;
+	}
+
+	const decimalSeparator = formatType === 'eu-style' ? ',' : '.';
+
+	// Check if number has decimal part with trailing zeros
+	const preserveTrailingZeros = ( num ) => {
+		const parts = num.split( decimalSeparator );
+		if ( parts.length === 2 && parts[ 1 ].includes( '0' ) ) {
+			return true;
+		}
+		return false;
+	};
+
+	// Store original decimal part if it has trailing zeros
+	let originalDecimalPart = '';
+	if ( preserveTrailingZeros( number ) ) {
+		originalDecimalPart = number.split( decimalSeparator )[ 1 ];
+	}
+
 	let formattedNumber = '';
 	const formatOptions = { style: 'decimal', maximumFractionDigits: 20 };
 
@@ -22,6 +52,14 @@ function SRFMFormatNumber( number, formatType ) {
 			'en-US',
 			formatOptions
 		).format( parseFloat( number.replace( /,/g, '' ) ) );
+	}
+
+	// Preserve trailing zeros if needed
+	if ( originalDecimalPart ) {
+		formattedNumber =
+			formattedNumber.split( decimalSeparator )[ 0 ] +
+			decimalSeparator +
+			originalDecimalPart;
 	}
 
 	if ( 'NaN' === formattedNumber ) {
