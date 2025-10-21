@@ -125,7 +125,7 @@ class Forms_Data {
 			'forms' => [
 				'methods'             => 'GET',
 				'callback'            => [ $this, 'get_forms_list' ],
-				'permission_callback' => [ Helper::class, 'get_items_permissions_check' ], // TODO: Verify permission callback.
+				'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
 				'args'                => [
 					'page'     => [
 						'type'        => 'integer',
