@@ -209,7 +209,7 @@ class Export {
 		$params = $request->get_params();
 
 		// Get forms data from the request.
-		$forms_data = isset( $params['forms_data'] ) && is_array( $params['forms_data'] ) ? $params['forms_data'] : [];
+		$forms_data     = isset( $params['forms_data'] ) && is_array( $params['forms_data'] ) ? $params['forms_data'] : [];
 		$default_status = isset( $params['default_status'] ) ? sanitize_text_field( Helper::get_string_value( $params['default_status'] ) ) : 'draft';
 
 		if ( empty( $forms_data ) ) {
@@ -239,9 +239,9 @@ class Export {
 
 		return new \WP_REST_Response(
 			[
-				'success'       => true,
-				'message'       => __( 'Forms imported successfully.', 'sureforms' ),
-				'forms_mapping' => $result,
+				'success'        => true,
+				'message'        => __( 'Forms imported successfully.', 'sureforms' ),
+				'forms_mapping'  => $result,
 				'imported_count' => count( $result ),
 			]
 		);
