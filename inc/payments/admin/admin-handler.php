@@ -473,7 +473,7 @@ class Admin_Handler {
 		// Search in specific fields: id, customer_name, customer_email, transaction_id, srfm_txn_id.
 		$query = $wpdb->prepare(
 			"SELECT DISTINCT id FROM {$payments_table}
-			WHERE id LIKE %s
+			WHERE id LIKE %d
 			OR customer_name LIKE %s
 			OR customer_email LIKE %s
 			OR transaction_id LIKE %s

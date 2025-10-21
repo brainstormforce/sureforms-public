@@ -1033,8 +1033,16 @@ class Payments extends Base {
 				if ( is_array( $where_group ) ) {
 					foreach ( $where_group as $condition ) {
 						if ( isset( $condition['key'], $condition['compare'], $condition['value'] ) ) {
-							$where_clause .= " AND {$condition['key']} {$condition['compare']} %s";
-							$params[]      = $condition['value'];
+							if ( strtoupper( $condition['compare'] ) === 'IN' && is_array( $condition['value'] ) ) {
+								$placeholders = implode( ',', array_fill( 0, count( $condition['value'] ), '%d' ) );
+								$where_clause .= " AND {$condition['key']} IN ({$placeholders})";
+								foreach ( $condition['value'] as $val ) {
+									$params[] = $val;
+								}
+							} else {
+								$where_clause .= " AND {$condition['key']} {$condition['compare']} %s";
+								$params[]      = $condition['value'];
+							}
 						}
 					}
 				}
@@ -1106,8 +1114,22 @@ class Payments extends Base {
 				if ( is_array( $where_group ) ) {
 					foreach ( $where_group as $condition ) {
 						if ( isset( $condition['key'], $condition['compare'], $condition['value'] ) ) {
-							$where_clause .= " AND {$condition['key']} {$condition['compare']} %s";
-							$params[]      = $condition['value'];
+							// Special handling for IN/NOT IN with arrays
+							if ( in_array( strtoupper( trim( $condition['compare'] ) ), [ 'IN', 'NOT IN' ], true ) && is_array( $condition['value'] ) ) {
+								$ids = array_map( 'absint', $condition['value'] );
+								// Prevent empty IN ()
+								if ( empty( $ids ) ) {
+									$ids = [ 0 ];
+								}
+								$placeholders = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
+								$where_clause .= " AND {$condition['key']} {$condition['compare']} ($placeholders)";
+								foreach ( $ids as $id ) {
+									$params[] = $id;
+								}
+							} else {
+								$where_clause .= " AND {$condition['key']} {$condition['compare']} %s";
+								$params[]      = $condition['value'];
+							}
 						}
 					}
 				}
