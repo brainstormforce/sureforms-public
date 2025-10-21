@@ -2,13 +2,7 @@ import { renderToString, useEffect, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import Logo from '../dashboard/templates/Logo';
 import useWhatsNewRSS from '../../lib/whats-new/useWhatsNewRSS';
-import {
-	Topbar,
-	Badge,
-	Button,
-	HamburgerMenu,
-	Label,
-} from '@bsf/force-ui';
+import { Topbar, Badge, Button, HamburgerMenu, Label } from '@bsf/force-ui';
 import { CircleHelp, ArrowUpRight, Megaphone } from 'lucide-react';
 import { addQueryParam, cn } from '@Utils/Helpers';
 import UpgradeNotice from './UpgradeNotice';
@@ -151,21 +145,23 @@ const Header = ( { breadCrumb } ) => {
 				</Topbar.Left>
 				<Topbar.Middle align="left" className="h-full hidden lg:flex">
 					<Topbar.Item>
-						{ ! breadCrumb && <nav className="flex items-center gap-4 h-full">
-							{ NAV_ITEMS.map( ( item ) => (
-								<a
-									className={ cn(
-										'h-full text-text-secondary text-sm font-medium no-underline px-1 content-center relative focus:outline-none hover:text-text-primary focus:[box-shadow:none]',
-										activePage?.slug === item?.slug &&
-											'text-text-primary before:content-[""] before:absolute before:h-px before:bg-border-interactive before:bottom-0 before:inset-x-0'
-									) }
-									href={ item.link }
-									key={ item.slug }
-								>
-									{ item.text }
-								</a>
-							) ) }
-						</nav> }
+						{ ! breadCrumb && (
+							<nav className="flex items-center gap-4 h-full">
+								{ NAV_ITEMS.map( ( item ) => (
+									<a
+										className={ cn(
+											'h-full text-text-secondary text-sm font-medium no-underline px-1 content-center relative focus:outline-none hover:text-text-primary focus:[box-shadow:none]',
+											activePage?.slug === item?.slug &&
+												'text-text-primary before:content-[""] before:absolute before:h-px before:bg-border-interactive before:bottom-0 before:inset-x-0'
+										) }
+										href={ item.link }
+										key={ item.slug }
+									>
+										{ item.text }
+									</a>
+								) ) }
+							</nav>
+						) }
 					</Topbar.Item>
 					{ ! isProActive &&
 						! isLicenseActive &&

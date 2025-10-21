@@ -1,9 +1,6 @@
 import { applyFilters } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';
-import {
-	FileSearch,
-	Plus,
-} from 'lucide-react';
+import { FileSearch, Plus } from 'lucide-react';
 import { Button, Text } from '@bsf/force-ui';
 import UpgradeTooltip from './UpgradeTooltip';
 
@@ -42,7 +39,7 @@ const AddEntryButton = () => {
  */
 const NotesSection = ( { entryId } ) => {
 	const NoteComponent = applyFilters(
-		'srfm-pro.entry-details.render-notes-section',
+		'srfm-pro.entry-details.render-notes-section'
 	);
 
 	if ( !! NoteComponent ) {

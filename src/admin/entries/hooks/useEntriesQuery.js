@@ -51,7 +51,11 @@ export const formsKeys = {
 export const entryLogsKeys = {
 	all: [ 'entry-logs' ],
 	lists: () => [ ...entryLogsKeys.all, 'list' ],
-	list: ( entryId, pagination ) => [ ...entryLogsKeys.lists(), +entryId, pagination ],
+	list: ( entryId, pagination ) => [
+		...entryLogsKeys.lists(),
+		+entryId,
+		pagination,
+	],
 };
 
 /**
@@ -299,7 +303,10 @@ export const useExportEntries = () => {
  * @param {Object} pagination - Object with page and per_page properties
  * @return {Object} Query result
  */
-export const useEntryLogs = ( entryId, pagination = { page: 1, per_page: 3 } ) => {
+export const useEntryLogs = (
+	entryId,
+	pagination = { page: 1, per_page: 3 }
+) => {
 	return useQuery( {
 		queryKey: entryLogsKeys.list( entryId, pagination ),
 		queryFn: () => fetchEntryLogs( { id: entryId, ...pagination } ),
@@ -307,4 +314,3 @@ export const useEntryLogs = ( entryId, pagination = { page: 1, per_page: 3 } ) =
 		staleTime: 1000 * 60 * 5, // Consider data fresh for 5 minutes
 	} );
 };
-

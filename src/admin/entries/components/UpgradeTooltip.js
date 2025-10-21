@@ -13,7 +13,13 @@ import Tooltip from '@Admin/components/Tooltip';
  * @param {import('react').ReactNode} props.children  - Child components to wrap with the tooltip
  * @return {JSX.Element} UpgradeTooltip component
  */
-const UpgradeTooltip = ( { heading, content, placement, utmMedium = '', children } ) => {
+const UpgradeTooltip = ( {
+	heading,
+	content,
+	placement,
+	utmMedium = '',
+	children,
+} ) => {
 	return (
 		<Tooltip
 			className="z-999999 max-w-[268px]"
@@ -23,16 +29,14 @@ const UpgradeTooltip = ( { heading, content, placement, utmMedium = '', children
 						<p className="text-text-inverse text-xs font-semibold">
 							{ heading }
 						</p>
-						<p className="text-text-inverse text-xs">
-							{ content }
-						</p>
+						<p className="text-text-inverse text-xs">{ content }</p>
 					</div>
 					<a
 						className="block w-fit tooltip-link text-link-inverse text-xs font-semibold no-underline hover:no-underline"
 						target="_blank"
 						href={ addQueryParam(
 							srfm_admin?.pricing_page_url ||
-									srfm_admin?.sureforms_pricing_page,
+								srfm_admin?.sureforms_pricing_page,
 							utmMedium
 						) }
 						rel="noreferrer"

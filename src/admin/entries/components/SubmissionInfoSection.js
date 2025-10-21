@@ -91,12 +91,10 @@ const SubmissionInfoSection = ( { entryData } ) => {
 
 	const handleMarkAsUnread = () => {
 		if ( entryData?.id ) {
-			updateReadStatusMutation.mutate(
-				{
-					entry_ids: [ entryData.id ],
-					action: 'unread',
-				},
-			);
+			updateReadStatusMutation.mutate( {
+				entry_ids: [ entryData.id ],
+				action: 'unread',
+			} );
 		}
 	};
 

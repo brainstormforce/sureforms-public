@@ -34,11 +34,7 @@ const SendDetailsButton = ( { handleSendEmail, isDisabled = true } ) => {
 	// If component is available (pro version), render without tooltip
 	if ( ! isDisabled ) {
 		return (
-			<Button
-				variant="primary"
-				size="md"
-				onClick={ handleSendEmail }
-			>
+			<Button variant="primary" size="md" onClick={ handleSendEmail }>
 				{ __( 'Resend Notification', 'sureforms' ) }
 			</Button>
 		);
@@ -220,7 +216,9 @@ const EntryDetailPage = () => {
 									<div className="ml-0.5">
 										<SendDetailsButton
 											handleSendEmail={ handleSendEmail }
-											isDisabled={ ! ResendNotificationModal }
+											isDisabled={
+												! ResendNotificationModal
+											}
 										/>
 									</div>
 								</div>

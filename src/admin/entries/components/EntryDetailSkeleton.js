@@ -29,14 +29,19 @@ const EntryDetailSkeleton = () => {
 								</div>
 								<div className="p-4 space-y-1 relative before:content-[''] before:block before:absolute before:inset-3 before:bg-background-secondary before:rounded-lg">
 									{ /* Simulate multiple fields */ }
-									{ Array.from( { length: 5 } ).map( ( _, index ) => (
-										<div key={ index } className="p-3 relative bg-background-primary rounded-md shadow-sm">
-											<div className="flex gap-4">
-												<Skeleton className="w-40 h-4" />
-												<Skeleton className="flex-1 h-4" />
+									{ Array.from( { length: 5 } ).map(
+										( _, index ) => (
+											<div
+												key={ index }
+												className="p-3 relative bg-background-primary rounded-md shadow-sm"
+											>
+												<div className="flex gap-4">
+													<Skeleton className="w-40 h-4" />
+													<Skeleton className="flex-1 h-4" />
+												</div>
 											</div>
-										</div>
-									) ) }
+										)
+									) }
 								</div>
 							</div>
 
@@ -47,12 +52,17 @@ const EntryDetailSkeleton = () => {
 								</div>
 								<div className="p-4 space-y-4">
 									{ /* Simulate info rows */ }
-									{ Array.from( { length: 4 } ).map( ( _, index ) => (
-										<div key={ index } className="flex gap-4">
-											<Skeleton className="w-32 h-4" />
-											<Skeleton className="flex-1 h-4" />
-										</div>
-									) ) }
+									{ Array.from( { length: 4 } ).map(
+										( _, index ) => (
+											<div
+												key={ index }
+												className="flex gap-4"
+											>
+												<Skeleton className="w-32 h-4" />
+												<Skeleton className="flex-1 h-4" />
+											</div>
+										)
+									) }
 								</div>
 							</div>
 						</div>
@@ -76,15 +86,20 @@ const EntryDetailSkeleton = () => {
 								</div>
 								<div className="p-4 space-y-3">
 									{ /* Simulate log entries */ }
-									{ Array.from( { length: 3 } ).map( ( _, index ) => (
-										<div key={ index } className="flex gap-3">
-											<Skeleton className="w-8 h-8 rounded-full" />
-											<div className="flex-1 space-y-1">
-												<Skeleton className="h-4 w-3/4" />
-												<Skeleton className="h-3 w-1/2" />
+									{ Array.from( { length: 3 } ).map(
+										( _, index ) => (
+											<div
+												key={ index }
+												className="flex gap-3"
+											>
+												<Skeleton className="w-8 h-8 rounded-full" />
+												<div className="flex-1 space-y-1">
+													<Skeleton className="h-4 w-3/4" />
+													<Skeleton className="h-3 w-1/2" />
+												</div>
 											</div>
-										</div>
-									) ) }
+										)
+									) }
 								</div>
 							</div>
 

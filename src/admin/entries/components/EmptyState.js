@@ -16,7 +16,10 @@ const FEATURES = [
 ];
 
 const handleClickViewAllForms = () => {
-	window.open( srfm_admin.site_url + '/wp-admin/edit.php?post_type=sureforms_form', '_self' );
+	window.open(
+		srfm_admin.site_url + '/wp-admin/edit.php?post_type=sureforms_form',
+		'_self'
+	);
 };
 
 const EmptyState = () => {
@@ -80,7 +83,12 @@ const EmptyState = () => {
 						</ul>
 					</div>
 
-					<Button className="w-fit mt-2" variant="primary" size="md" onClick={ handleClickViewAllForms }>
+					<Button
+						className="w-fit mt-2"
+						variant="primary"
+						size="md"
+						onClick={ handleClickViewAllForms }
+					>
 						{ __( 'View All Forms', 'sureforms' ) }
 					</Button>
 				</div>

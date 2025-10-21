@@ -78,14 +78,18 @@ const Table = ( {
 									role="button"
 									tabIndex={ 0 }
 									className="cursor-pointer select-none"
-									onClick={ () => onSort?.( header?.sortBy ?? header.key ) }
+									onClick={ () =>
+										onSort?.( header?.sortBy ?? header.key )
+									}
 									onKeyDown={ ( e ) => {
 										if (
 											e.key === 'Enter' ||
 											e.key === ' '
 										) {
 											e.preventDefault();
-											onSort?.( header?.sortBy ?? header.key );
+											onSort?.(
+												header?.sortBy ?? header.key
+											);
 										}
 									} }
 								>
@@ -139,7 +143,9 @@ const Table = ( {
 						>
 							{ columns.map( ( col, colIndex ) => (
 								<FUITable.Cell key={ colIndex }>
-									{ col.render ? col.render( item ) : item[ col.key ] }
+									{ col.render
+										? col.render( item )
+										: item[ col.key ] }
 								</FUITable.Cell>
 							) ) }
 						</FUITable.Row>

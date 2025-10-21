@@ -268,7 +268,8 @@ const EntriesFilters = ( {
 					<>
 						{ /* Show resend notifications button if modal is available */ }
 						{ !! ResendNotificationModal &&
-							( formFilter !== 'all' && formFilter !== '' ) && (
+							formFilter !== 'all' &&
+							formFilter !== '' && (
 							<Button
 								variant="outline"
 								size="sm"
@@ -346,7 +347,8 @@ const EntriesFilters = ( {
 				) }
 			</div>
 			{ !! ResendNotificationModal &&
-				( formFilter !== 'all' && formFilter !== '' ) && (
+				formFilter !== 'all' &&
+				formFilter !== '' && (
 				<ResendNotificationModal
 					open={ openSendNotificationModal }
 					setOpen={ setOpenSendNotificationModal }

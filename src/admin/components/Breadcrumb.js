@@ -20,24 +20,16 @@ const Breadcrumb = ( { options } ) => {
 				{ options.map( ( item, index ) => {
 					switch ( item.type ) {
 						case 'separator':
-							return (
-								<FUIBreadcrumb.Separator
-									key={ index }
-								/>
-							);
+							return <FUIBreadcrumb.Separator key={ index } />;
 						case 'ellipsis':
 							return (
-								<FUIBreadcrumb.Item
-									key={ index }
-								>
+								<FUIBreadcrumb.Item key={ index }>
 									<FUIBreadcrumb.Ellipsis />
 								</FUIBreadcrumb.Item>
 							);
 						case 'page':
 							return (
-								<FUIBreadcrumb.Item
-									key={ index }
-								>
+								<FUIBreadcrumb.Item key={ index }>
 									<FUIBreadcrumb.Page>
 										{ item.text }
 									</FUIBreadcrumb.Page>
@@ -45,12 +37,8 @@ const Breadcrumb = ( { options } ) => {
 							);
 						default:
 							return (
-								<FUIBreadcrumb.Item
-									key={ index }
-								>
-									<FUIBreadcrumb.Link
-										{ ...item?.linkProps }
-									>
+								<FUIBreadcrumb.Item key={ index }>
+									<FUIBreadcrumb.Link { ...item?.linkProps }>
 										{ item.text }
 									</FUIBreadcrumb.Link>
 								</FUIBreadcrumb.Item>
