@@ -84,13 +84,13 @@ const Header = () => {
 		uniqueKey: 'sureforms',
 		rssFeedURL: 'https://sureforms.com/whats-new/feed/',
 		selector: '#srfm_whats_new',
-		icon: renderToString( <Megaphone className="size-4" /> ),
+		icon: renderToString( <Megaphone className="size-4 m-1" /> ),
 		flyout: {
 			title: __( "What's New?", 'sureforms' ),
 		},
 		triggerButton: {
 			icon: renderToString(
-				<Megaphone className="size-4 text-text-primary" />
+				<Megaphone className="size-4 m-1 text-text-primary" />
 			),
 		},
 	} );
@@ -289,7 +289,7 @@ const Header = () => {
 					<HeaderTooltipItem
 						title={ __( 'What\’s New', 'sureforms' ) }
 					>
-						<div id="srfm_whats_new" className="[&_a]:!p-1" />
+						<div id="srfm_whats_new" className="[&>a]:p-0.5 [&>a]:pl-0" />
 					</HeaderTooltipItem>
 				</Topbar.Right>
 			</Topbar>
