@@ -250,25 +250,30 @@ async function srfmConfirmPayment( blockId, paymentData, form ) {
 		`Card validation successful for block ${ blockId } paymentType: ${ paymentType }`
 	);
 
-	// Handle subscription vs one-time payment confirmation
-	if ( paymentType === 'subscription' ) {
-		return await confirmSubscription( blockId, paymentData, form );
-	}
-	return await confirmOneTimePayment( blockId, paymentData, form );
+	// Handle payment confirmation via unified handler
+	return await confirmStripePayment( blockId, paymentData, form );
 }
 
 /**
- * Confirm one-time payment
+ * Unified confirm handler for one-time payments and subscriptions
  * @param {string}      blockId     - Block ID.
  * @param {Object}      paymentData - The payment data.
  * @param {HTMLElement} form        - The form element.
- * @return {Promise<string>} The payment intent ID if successful.
+ * @return {Promise<string>} The intent ID (payment or setup) if successful.
  */
-async function confirmOneTimePayment( blockId, paymentData, form ) {
-	const { stripe, elements, clientSecret } = paymentData;
+async function confirmStripePayment( blockId, paymentData, form ) {
+	const { stripe, elements, clientSecret, paymentType } = paymentData;
 
 	// Get the payment block element
 	const paymentBlock = form.querySelector( `[data-block-id="${ blockId }"]` );
+	// Update form input with subscription data for backend processing
+	const paymentInput = paymentBlock.querySelector(
+			'.srfm-payment-input'
+		);
+
+	const amount = window.StripePayment.getPaymentAmount( paymentInput );
+	const amountType =
+		paymentInput.getAttribute( 'data-amount-type' ) || 'fixed';
 
 	// Prepare billing details using StripePayment class methods
 	const billingDetails = {
@@ -276,10 +281,7 @@ async function confirmOneTimePayment( blockId, paymentData, form ) {
 		email: window.StripePayment.extractBillingEmail( form, paymentBlock ),
 	};
 
-	console.log( 'One-time payment billing details:', billingDetails );
-
-	// Confirm the payment
-	const confirmPaymentResult = await stripe.confirmPayment( {
+	const stripeArgs = {
 		elements,
 		clientSecret,
 		confirmParams: {
@@ -289,36 +291,49 @@ async function confirmOneTimePayment( blockId, paymentData, form ) {
 			},
 		},
 		redirect: 'if_required',
-	} );
+	}
 
-	console.log( 'confirmPaymentResult->', confirmPaymentResult );
+	if ( paymentType === 'subscription' ) {
+		const subscriptionData =
+			window.StripePayment.subscriptionIntents[ blockId ];
+
+		const result = await stripe.confirmSetup( stripeArgs );
+
+		if ( result.error ) {
+			throw new Error( result.error.message || result.error );
+		}
+
+		const inputValueData = {
+			paymentId: result.setupIntent.payment_method,
+			setupIntent: result.setupIntent.id,
+			subscriptionId: subscriptionData?.subscriptionId,
+			customerId: subscriptionData?.customerId,
+			blockId,
+			paymentType: 'stripe-subscription',
+			status: 'succeeded',
+			amountType,
+			amount,
+		};
+
+		paymentInput.value = JSON.stringify( inputValueData );
+
+		return result.setupIntent.id;
+	}
+
+	// Handle one-time payment
+	const confirmPaymentResult = await stripe.confirmPayment( stripeArgs );
 
 	const { error, paymentIntent } = confirmPaymentResult;
 
 	if ( error ) {
-		throw new Error( error );
+		throw new Error( error.message || error );
 	}
 
 	if (
 		paymentIntent.status === 'succeeded' ||
 		paymentIntent.status === 'requires_capture'
 	) {
-		console.log( `Payment succeeded for block ${ blockId }` );
-
-		// update the payment detail in the input value by the json stringify.
-		const getPaymentBlock = form.querySelector(
-			`[data-block-id="${ blockId }"]`
-		);
-		const getPaymentInput = getPaymentBlock.querySelector(
-			'.srfm-payment-input'
-		);
-
-		// Get amount using StripePayment helper method
-		const amount = window.StripePayment.getPaymentAmount( getPaymentInput );
-		const amountType =
-			getPaymentInput.getAttribute( 'data-amount-type' ) || 'fixed';
-
-		let prepareInputValueData = {
+		const prepareInputValueData = {
 			paymentId: paymentIntent.id,
 			blockId,
 			paymentType: 'stripe',
@@ -326,105 +341,9 @@ async function confirmOneTimePayment( blockId, paymentData, form ) {
 			amount,
 		};
 
-		prepareInputValueData = JSON.stringify( prepareInputValueData );
-
-		getPaymentInput.value = prepareInputValueData;
+		paymentInput.value = JSON.stringify( prepareInputValueData );
 
 		return paymentIntent.id;
 	}
 	throw new Error( `Payment not completed for block ${ blockId }` );
-}
-
-/**
- * Confirm subscription payment with proper Payment Method creation and client secret handling
- * @param {string}      blockId     - Block ID.
- * @param {Object}      paymentData - The payment data.
- * @param {HTMLElement} form        - The form element.
- * @return {Promise<string>} The setup intent ID if successful.
- */
-async function confirmSubscription( blockId, paymentData, form ) {
-	const { stripe, elements, clientSecret } = paymentData;
-	const subscriptionData =
-		window.StripePayment.subscriptionIntents[ blockId ];
-
-	console.log(
-		`SureForms: Confirming subscription for block ${ blockId } using simple-stripe-subscriptions approach`
-	);
-
-	// Get the payment block element
-	const paymentBlock = form.querySelector( `[data-block-id="${ blockId }"]` );
-
-	// Prepare billing details using StripePayment class methods
-	const billingDetails = {
-		name: window.StripePayment.extractBillingName( form, paymentBlock ),
-		email: window.StripePayment.extractBillingEmail( form, paymentBlock ),
-	};
-
-	console.log( 'Subscription billing details:', billingDetails );
-
-	try {
-		// Use single confirmPayment approach from simple-stripe-subscriptions
-		// This works for both payment intents and subscription confirmations
-		const result = await stripe.confirmSetup( {
-			elements,
-			clientSecret,
-			confirmParams: {
-				return_url: window.location.href,
-				payment_method_data: {
-					billing_details: billingDetails,
-				},
-			},
-			redirect: 'if_required',
-		} );
-
-		console.log(
-			`confirmPaymentResult SureForms: Subscription confirmation result for block ${ blockId }:`,
-			result
-		);
-
-		if ( result.error ) {
-			console.error(
-				`SureForms: Subscription confirmation failed for block ${ blockId }:`,
-				result.error
-			);
-		} else {
-			// Payment succeeded - subscription automatically activated by Stripe like simple-stripe-subscriptions
-			// Update form input with subscription data for backend processing
-			const paymentBlock = form.querySelector(
-				`[data-block-id="${ blockId }"]`
-			);
-			const paymentInput = paymentBlock.querySelector(
-				'.srfm-payment-input'
-			);
-
-			// Get amount using StripePayment helper method
-			const amount = window.StripePayment.getPaymentAmount( paymentInput );
-			const amountType =
-				paymentInput.getAttribute( 'data-amount-type' ) || 'fixed';
-
-			const inputValueData = {
-				paymentId: result.setupIntent.payment_method,
-				setupIntent: result.setupIntent.id,
-				subscriptionId: subscriptionData?.subscriptionId,
-				customerId: subscriptionData?.customerId,
-				blockId,
-				paymentType: 'stripe-subscription',
-				status: 'succeeded',
-				amountType,
-				amount,
-			};
-
-			paymentInput.value = JSON.stringify( inputValueData );
-
-			return result.setupIntent.id;
-		}
-	} catch ( error ) {
-		console.error(
-			`SureForms: Error confirming subscription for block ${ blockId }:`,
-			error
-		);
-		throw new Error(
-			`Subscription confirmation failed: ${ error.message }`
-		);
-	}
 }

@@ -14,11 +14,7 @@ import { decodeHtmlEntities } from '@Blocks/util';
  */
 export const PaymentComponent = ( props ) => {
 	const { attributes, setAttributes, availableFormFields } = props;
-	const {
-		label = 'Payment Details',
-		help = '',
-		block_id,
-	} = attributes;
+	const { label = 'Payment Details', help = '', block_id } = attributes;
 
 	// Get global stripe settings
 	const paymentSettings = window?.srfm_admin?.payments || {};
