@@ -325,6 +325,30 @@ class Rest_Api {
 						],
 					],
 				],
+				// Export forms endpoint.
+				'forms/export'          => [
+					'methods'             => 'POST',
+					'callback'            => [ Export::get_instance(), 'handle_export_form_rest' ],
+					'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
+					'args'                => [
+						'post_ids' => [
+							'required'          => true,
+							'type'              => [ 'array', 'string' ],
+							'sanitize_callback' => static function( $value ) {
+								if ( is_array( $value ) ) {
+									return array_map( 'intval', $value );
+								}
+								return sanitize_text_field( $value );
+							},
+							'validate_callback' => static function( $value ) {
+								if ( is_array( $value ) ) {
+									return ! empty( $value );
+								}
+								return ! empty( trim( $value ) );
+							},
+						],
+					],
+				],
 			]
 		);
 	}
