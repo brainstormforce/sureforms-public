@@ -5,7 +5,7 @@
  */
 function validateThePaymentBlock( form ) {
 	// Check if payment block exists & Get payment input element
-	const paymentBlock = form.querySelector( '.srfm-block.srfm-payment-block' );
+	const paymentBlock = form.querySelector( '.srfm-block.srfm-payment-block:not(.hide-element)' );
 
 	if ( ! paymentBlock ) {
 		console.warn( 'Payment block or payment input not found' );
@@ -133,6 +133,13 @@ function validateThePaymentBlock( form ) {
 export async function handleFormPayment( form ) {
 	try {
 		const valiDatePaymentBlocks = validateThePaymentBlock( form );
+
+		if( valiDatePaymentBlocks.valid && 'no-payment-block' === valiDatePaymentBlocks.slug ) {
+			return {
+				valid: true,
+				message: '',
+			};
+		}
 
 		if ( ! valiDatePaymentBlocks.valid ) {
 			return {
