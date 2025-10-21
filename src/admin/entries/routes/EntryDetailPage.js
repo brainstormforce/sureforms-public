@@ -207,7 +207,10 @@ const EntryDetailPage = () => {
 
 								{ /* Right Column */ }
 								<div className="space-y-4">
-									<NotesSection entryId={ id } />
+									<NotesSection
+										entryId={ id }
+										onConfirmation={ handleConfirmation }
+									/>
 									<EntryLogsSection
 										entryId={ id }
 										onConfirmation={ handleConfirmation }

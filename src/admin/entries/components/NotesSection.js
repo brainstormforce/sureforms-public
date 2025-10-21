@@ -33,17 +33,23 @@ const AddEntryButton = () => {
  * NotesSection Component
  * Displays notes for an entry with add note functionality
  *
- * @param {Object} props
- * @param {number} props.entryId - The entry ID for fetching notes
+ * @param {Object}   props
+ * @param {number}   props.entryId        - The entry ID for fetching notes
+ * @param {Function} props.onConfirmation - Callback for confirmation actions
  * @return {JSX.Element} NotesSection component
  */
-const NotesSection = ( { entryId } ) => {
+const NotesSection = ( { entryId, onConfirmation } ) => {
 	const NoteComponent = applyFilters(
 		'srfm-pro.entry-details.render-notes-section'
 	);
 
 	if ( !! NoteComponent ) {
-		return <NoteComponent entryId={ entryId } />;
+		return (
+			<NoteComponent
+				entryId={ entryId }
+				onConfirmation={ onConfirmation }
+			/>
+		);
 	}
 
 	return (
