@@ -241,11 +241,11 @@
 		}
 	}
 
-	.srfm-payment-field-wrapper{
+	.srfm-payment-field-wrapper {
 		display: flex;
 		flex-direction: column;
-		gap: var(--srfm-column-gap-between-blocks);
-		margin-top: var(--srfm-column-gap-between-blocks);
+		gap: var( --srfm-column-gap-between-blocks );
+		margin-top: var( --srfm-column-gap-between-blocks );
 	}
 
 	@keyframes srfm-spin {

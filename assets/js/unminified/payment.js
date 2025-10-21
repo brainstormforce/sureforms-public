@@ -20,11 +20,14 @@ function validateThePaymentBlock( form ) {
 	const paymentInput = paymentBlock.querySelector( '.srfm-payment-input' );
 
 	// Validate amount based on amount type (fixed or user-defined)
-	const amountType = paymentInput.getAttribute( 'data-amount-type' ) || 'fixed';
+	const amountType =
+		paymentInput.getAttribute( 'data-amount-type' ) || 'fixed';
 
 	if ( amountType === 'fixed' ) {
 		// Validate fixed amount exists and is valid
-		const fixedAmount = parseFloat( paymentInput.getAttribute( 'data-fixed-amount' ) );
+		const fixedAmount = parseFloat(
+			paymentInput.getAttribute( 'data-fixed-amount' )
+		);
 
 		if ( ! fixedAmount || isNaN( fixedAmount ) || fixedAmount <= 0 ) {
 			return {
@@ -35,7 +38,9 @@ function validateThePaymentBlock( form ) {
 		}
 	} else if ( amountType === 'user-defined' ) {
 		// Validate user entered an amount
-		const userAmountInput = paymentBlock.querySelector( '.srfm-user-amount-field' );
+		const userAmountInput = paymentBlock.querySelector(
+			'.srfm-user-amount-field'
+		);
 
 		if ( ! userAmountInput ) {
 			return {
@@ -51,13 +56,11 @@ function validateThePaymentBlock( form ) {
 			return {
 				valid: false,
 				slug: 'invalid-user-amount',
-				message: 'Please enter a valid payment amount greater than zero.',
+				message:
+					'Please enter a valid payment amount greater than zero.',
 			};
 		}
 	}
-
-	// Get payment type from block
-	const paymentType = paymentBlock.getAttribute( 'data-payment-type' );
 
 	// Get customer field mappings (required for both payment types)
 	const customerNameFieldSlug = paymentBlock.getAttribute(
@@ -264,6 +267,17 @@ async function srfmConfirmPayment( blockId, paymentData, form ) {
 async function confirmOneTimePayment( blockId, paymentData, form ) {
 	const { stripe, elements, clientSecret } = paymentData;
 
+	// Get the payment block element
+	const paymentBlock = form.querySelector( `[data-block-id="${ blockId }"]` );
+
+	// Prepare billing details using StripePayment class methods
+	const billingDetails = {
+		name: window.StripePayment.extractBillingName( form, paymentBlock ),
+		email: window.StripePayment.extractBillingEmail( form, paymentBlock ),
+	};
+
+	console.log( 'One-time payment billing details:', billingDetails );
+
 	// Confirm the payment
 	const confirmPaymentResult = await stripe.confirmPayment( {
 		elements,
@@ -271,10 +285,7 @@ async function confirmOneTimePayment( blockId, paymentData, form ) {
 		confirmParams: {
 			return_url: window.location.href,
 			payment_method_data: {
-				billing_details: {
-					// email: extractBillingEmail( form, blockId ),
-					email: 'test@gmail.com',
-				},
+				billing_details: billingDetails,
 			},
 		},
 		redirect: 'if_required',
@@ -302,16 +313,10 @@ async function confirmOneTimePayment( blockId, paymentData, form ) {
 			'.srfm-payment-input'
 		);
 
-		// Get amount details based on amount type
-		const amountType = getPaymentInput.getAttribute( 'data-amount-type' ) || 'fixed';
-		let amount = 0;
-
-		if ( amountType === 'fixed' ) {
-			amount = parseFloat( getPaymentInput.getAttribute( 'data-fixed-amount' ) || 0 );
-		} else {
-			const userAmountInput = getPaymentBlock.querySelector( '.srfm-user-amount-field' );
-			amount = parseFloat( userAmountInput?.value || 0 );
-		}
+		// Get amount using StripePayment helper method
+		const amount = window.StripePayment.getPaymentAmount( getPaymentInput );
+		const amountType =
+			getPaymentInput.getAttribute( 'data-amount-type' ) || 'fixed';
 
 		let prepareInputValueData = {
 			paymentId: paymentIntent.id,
@@ -346,12 +351,16 @@ async function confirmSubscription( blockId, paymentData, form ) {
 		`SureForms: Confirming subscription for block ${ blockId } using simple-stripe-subscriptions approach`
 	);
 
+	// Get the payment block element
+	const paymentBlock = form.querySelector( `[data-block-id="${ blockId }"]` );
+
+	// Prepare billing details using StripePayment class methods
 	const billingDetails = {
-		name: extractBillingName( form, blockId ),
-		email: extractBillingEmail( form, blockId ),
+		name: window.StripePayment.extractBillingName( form, paymentBlock ),
+		email: window.StripePayment.extractBillingEmail( form, paymentBlock ),
 	};
 
-	console.log( 'billingDetails:', billingDetails );
+	console.log( 'Subscription billing details:', billingDetails );
 
 	try {
 		// Use single confirmPayment approach from simple-stripe-subscriptions
@@ -388,16 +397,10 @@ async function confirmSubscription( blockId, paymentData, form ) {
 				'.srfm-payment-input'
 			);
 
-			// Get amount details based on amount type
-			const amountType = paymentInput.getAttribute( 'data-amount-type' ) || 'fixed';
-			let amount = 0;
-
-			if ( amountType === 'fixed' ) {
-				amount = parseFloat( paymentInput.getAttribute( 'data-fixed-amount' ) || 0 );
-			} else {
-				const userAmountInput = paymentBlock.querySelector( '.srfm-user-amount-field' );
-				amount = parseFloat( userAmountInput?.value || 0 );
-			}
+			// Get amount using StripePayment helper method
+			const amount = window.StripePayment.getPaymentAmount( paymentInput );
+			const amountType =
+				paymentInput.getAttribute( 'data-amount-type' ) || 'fixed';
 
 			const inputValueData = {
 				paymentId: result.setupIntent.payment_method,
@@ -424,74 +427,4 @@ async function confirmSubscription( blockId, paymentData, form ) {
 			`Subscription confirmation failed: ${ error.message }`
 		);
 	}
-}
-
-/**
- * Extract billing name from form fields
- * @param {HTMLElement} form    - The form element.
- * @param {string}      blockId - Block ID.
- * @return {string} The extracted billing name or a default value.
- */
-function extractBillingName( form, blockId ) {
-	// Try to find name fields in the form with priority order
-	const nameSelectors = [
-		'input[name*="first_name"], input[name*="last_name"]', // Full name fields
-		'input[name*="name"]', // General name fields
-		'input[name*="billing_name"]', // Billing specific
-		'input[type="text"]', // Fallback to any text input
-	];
-
-	for ( const selector of nameSelectors ) {
-		const nameInputs = form.querySelectorAll( selector );
-		const names = [];
-
-		for ( const input of nameInputs ) {
-			if ( input.value && input.value.trim() && ! input.hidden ) {
-				names.push( input.value.trim() );
-			}
-		}
-
-		if ( names.length > 0 ) {
-			return names.join( ' ' );
-		}
-	}
-
-	console.warn(
-		`SureForms: No billing name found for block ${ blockId }, using default`
-	);
-	return 'SureForms Customer';
-}
-
-/**
- * Extract billing email from form fields
- * @param {HTMLElement} form    - The form element.
- * @param {string}      blockId - Block ID.
- */
-function extractBillingEmail( form, blockId ) {
-	// Try to find email fields in the form with priority order
-	const emailSelectors = [
-		'input[name*="billing_email"]', // Billing specific email
-		'input[type="email"]', // Email input type
-		'input[name*="email"]', // General email fields
-	];
-
-	for ( const selector of emailSelectors ) {
-		const emailInputs = form.querySelectorAll( selector );
-
-		for ( const input of emailInputs ) {
-			if ( input.value && input.value.trim() && ! input.hidden ) {
-				const email = input.value.trim();
-				// Validate email format
-				const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-				if ( emailRegex.test( email ) ) {
-					return email;
-				}
-			}
-		}
-	}
-
-	console.warn(
-		`SureForms: No valid billing email found for block ${ blockId }, using default`
-	);
-	return 'customer@example.com';
 }

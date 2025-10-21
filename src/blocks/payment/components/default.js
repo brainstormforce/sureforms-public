@@ -17,13 +17,7 @@ export const PaymentComponent = ( props ) => {
 	const {
 		label = 'Payment Details',
 		help = '',
-		required = true,
-		// paymentType = 'one-time',
-		// subscriptionPlan = {},
 		block_id,
-		// amountType = 'fixed',
-		// fixedAmount = 10,
-		// amountLabel = 'Enter Amount',
 	} = attributes;
 
 	// Get global stripe settings
@@ -45,13 +39,17 @@ export const PaymentComponent = ( props ) => {
 		}
 
 		// Check in both nameFields and emailsFields arrays
-		const nameFieldExists = availableFormFields?.nameFields?.some( ( field ) => {
-			return field.slug === fieldSlug;
-		} );
+		const nameFieldExists = availableFormFields?.nameFields?.some(
+			( field ) => {
+				return field.slug === fieldSlug;
+			}
+		);
 
-		const emailFieldExists = availableFormFields?.emailsFields?.some( ( field ) => {
-			return field.slug === fieldSlug;
-		} );
+		const emailFieldExists = availableFormFields?.emailsFields?.some(
+			( field ) => {
+				return field.slug === fieldSlug;
+			}
+		);
 
 		return nameFieldExists || emailFieldExists;
 	};
@@ -59,8 +57,10 @@ export const PaymentComponent = ( props ) => {
 	// Check if payment requires name and email fields (required for BOTH payment types)
 	const customerName = attributes.customerNameField || '';
 	const customerEmail = attributes.customerEmailField || '';
-	const missingNameField = ! customerName || ! verifyFieldIsValid( customerName );
-	const missingEmailField = ! customerEmail || ! verifyFieldIsValid( customerEmail );
+	const missingNameField =
+		! customerName || ! verifyFieldIsValid( customerName );
+	const missingEmailField =
+		! customerEmail || ! verifyFieldIsValid( customerEmail );
 	const hasCustomerFieldsError = missingNameField || missingEmailField;
 
 	let stripeConnectedComponent = null;
@@ -117,7 +117,13 @@ export const PaymentComponent = ( props ) => {
 				block_id={ block_id }
 			/>
 			<div className="srfm-payment-field-wrapper">
-				<p style={ { marginTop: '12px', fontSize: '13px', color: '#757575' } }>
+				<p
+					style={ {
+						marginTop: '12px',
+						fontSize: '13px',
+						color: '#757575',
+					} }
+				>
 					{ __(
 						'This is a placeholder for the Stripe Payment block. The actual payment fields will only appear when you preview or publish the form.',
 						'sureforms'

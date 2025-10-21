@@ -45,7 +45,7 @@ const Edit = ( props ) => {
 	const currentFormId = useGetCurrentFormId( clientId );
 	const [ availableFormFields, setAvailableFormFields ] = useState( {
 		emailsFields: [],
-		nameFields: []
+		nameFields: [],
 	} );
 
 	console.log( 'availableFormFields', availableFormFields );
@@ -178,31 +178,32 @@ const Edit = ( props ) => {
 		},
 		...( amountType === 'fixed'
 			? [
-					{
-						id: 'fixed-amount',
-						component: (
-							<SRFMTextControl
-								label={ __( 'Fixed Amount', 'sureforms' ) }
-								type="number"
-								value={ fixedAmount }
-								data={ {
-									value: fixedAmount,
-									label: 'fixedAmount',
-								} }
-								onChange={ ( value ) =>
-									setAttributes( {
-										fixedAmount: parseFloat( value ) || 0,
-									} )
-								}
-								help={ __(
-									'Enter the fixed payment amount',
-									'sureforms'
-								) }
-							/>
-						),
-					},
+				{
+					id: 'fixed-amount',
+					component: (
+						<SRFMTextControl
+							label={ __( 'Fixed Amount', 'sureforms' ) }
+							type="number"
+							value={ fixedAmount }
+							data={ {
+								value: fixedAmount,
+								label: 'fixedAmount',
+							} }
+							onChange={ ( value ) =>
+								setAttributes( {
+									fixedAmount: parseFloat( value ) || 0,
+								} )
+							}
+							help={ __(
+								'Enter the fixed payment amount',
+								'sureforms'
+							) }
+						/>
+					),
+				},
 			  ]
-			: [{
+			: [
+				{
 					id: 'required',
 					component: (
 						<ToggleControl
@@ -230,7 +231,8 @@ const Edit = ( props ) => {
 							} }
 						/>
 					) : null,
-				}] ),
+				},
+			  ] ),
 		{
 			id: 'separator-2',
 			component: <Separator />,
@@ -239,17 +241,22 @@ const Edit = ( props ) => {
 			id: 'customer-name-field',
 			component: (
 				<SelectControl
-					label={ __( 'Customer Name Field (Required)', 'sureforms' ) }
+					label={ __(
+						'Customer Name Field (Required)',
+						'sureforms'
+					) }
 					value={ customerNameField || '' }
 					options={ [
 						{
 							label: __( 'Select a field…', 'sureforms' ),
 							value: '',
 						},
-						...( availableFormFields?.nameFields || [] ).map( ( field ) => ( {
-							label: field.label,
-							value: field.slug,
-						} ) ),
+						...( availableFormFields?.nameFields || [] ).map(
+							( field ) => ( {
+								label: field.label,
+								value: field.slug,
+							} )
+						),
 					] }
 					onChange={ ( value ) => {
 						setAttributes( { customerNameField: value } );
@@ -265,17 +272,22 @@ const Edit = ( props ) => {
 			id: 'customer-email-field',
 			component: (
 				<SelectControl
-					label={ __( 'Customer Email Field (Required)', 'sureforms' ) }
+					label={ __(
+						'Customer Email Field (Required)',
+						'sureforms'
+					) }
 					value={ customerEmailField || '' }
 					options={ [
 						{
 							label: __( 'Select a field…', 'sureforms' ),
 							value: '',
 						},
-						...( availableFormFields?.emailsFields || [] ).map( ( field ) => ( {
-							label: field.label,
-							value: field.slug,
-						} ) ),
+						...( availableFormFields?.emailsFields || [] ).map(
+							( field ) => ( {
+								label: field.label,
+								value: field.slug,
+							} )
+						),
 					] }
 					onChange={ ( value ) => {
 						setAttributes( { customerEmailField: value } );
