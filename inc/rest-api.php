@@ -349,6 +349,28 @@ class Rest_Api {
 						],
 					],
 				],
+				// Import forms endpoint.
+				'forms/import'          => [
+					'methods'             => 'POST',
+					'callback'            => [ Export::get_instance(), 'handle_import_form_rest' ],
+					'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
+					'args'                => [
+						'forms_data' => [
+							'required'          => true,
+							'type'              => 'array',
+							'validate_callback' => static function( $value ) {
+								return is_array( $value ) && ! empty( $value );
+							},
+						],
+						'default_status' => [
+							'required'          => false,
+							'type'              => 'string',
+							'default'           => 'draft',
+							'enum'              => [ 'draft', 'publish', 'private' ],
+							'sanitize_callback' => 'sanitize_text_field',
+						],
+					],
+				],
 			]
 		);
 	}

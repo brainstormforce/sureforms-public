@@ -189,6 +189,65 @@ class Export {
 	}
 
 	/**
+	 * Handle Import form via REST API
+	 *
+	 * @param \WP_REST_Request $request Full details about the request.
+	 * @since x.x.x
+	 * @return \WP_REST_Response|\WP_Error
+	 */
+	public function handle_import_form_rest( $request ) {
+		$nonce = sanitize_text_field( Helper::get_string_value( $request->get_header( 'X-WP-Nonce' ) ) );
+
+		if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
+			return new \WP_Error(
+				'invalid_nonce',
+				__( 'Nonce verification failed.', 'sureforms' ),
+				[ 'status' => 403 ]
+			);
+		}
+
+		$params = $request->get_params();
+
+		// Get forms data from the request.
+		$forms_data = isset( $params['forms_data'] ) && is_array( $params['forms_data'] ) ? $params['forms_data'] : [];
+		$default_status = isset( $params['default_status'] ) ? sanitize_text_field( Helper::get_string_value( $params['default_status'] ) ) : 'draft';
+
+		if ( empty( $forms_data ) ) {
+			return new \WP_Error(
+				'no_forms_data',
+				__( 'No forms data provided for import.', 'sureforms' ),
+				[ 'status' => 400 ]
+			);
+		}
+
+		// Validate forms data structure.
+		foreach ( $forms_data as $form_data ) {
+			if ( ! is_array( $form_data ) || ! isset( $form_data['post'] ) || ! isset( $form_data['post_meta'] ) ) {
+				return new \WP_Error(
+					'invalid_form_data',
+					__( 'Invalid form data structure provided.', 'sureforms' ),
+					[ 'status' => 400 ]
+				);
+			}
+		}
+
+		$result = $this->import_forms_with_meta( $forms_data, $default_status );
+
+		if ( is_wp_error( $result ) ) {
+			return $result;
+		}
+
+		return new \WP_REST_Response(
+			[
+				'success'       => true,
+				'message'       => __( 'Forms imported successfully.', 'sureforms' ),
+				'forms_mapping' => $result,
+				'imported_count' => count( $result ),
+			]
+		);
+	}
+
+	/**
 	 * Import Forms with Meta
 	 * Uses:
 	 *     - In Design Library for importing the Spectra Block Patterns and Pages with SureForms form.
