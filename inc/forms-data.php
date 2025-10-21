@@ -171,9 +171,9 @@ class Forms_Data {
 	 * @since x.x.x
 	 */
 	public function get_forms_list( $request ) {
-		$nonce = Helper::get_string_value( $request->get_header( 'X-WP-Nonce' ) );
+		$nonce = sanitize_text_field( Helper::get_string_value( $request->get_header( 'X-WP-Nonce' ) ) );
 
-		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'wp_rest' ) ) {
+		if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
 			return new WP_Error(
 				'invalid_nonce',
 				__( 'Nonce verification failed.', 'sureforms' ),
