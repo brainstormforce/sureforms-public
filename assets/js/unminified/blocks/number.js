@@ -6,13 +6,12 @@ function SRFMFormatNumber( number, formatType ) {
 	// Convert all to empty strings except: Numbers, Dots, Commas, and a single leading Minus.
 	number = number.replace( /(?!^-)[^0-9,.-]+/g, '' );
 
-	if ( number.length === 1 && number.startsWith( '-' ) ) {
-		// It means, user has just started negative number. Eg: "-".
-		return number;
-	}
-
-	if ( number.endsWith( '.' ) || number.endsWith( ',' ) ) {
-		// It means, user has just started decimal point. Eg: "2." or "2,"
+	if (
+		( number.length === 1 && number === '-' ) ||
+		number.endsWith( '.' ) ||
+		number.endsWith( ',' )
+	) {
+		// User is in the middle of typing a number: "-", "2.", or "2,"
 		return number;
 	}
 
