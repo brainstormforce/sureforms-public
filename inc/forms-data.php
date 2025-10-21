@@ -8,8 +8,8 @@
 
 namespace SRFM\Inc;
 
-use SRFM\Inc\Traits\Get_Instance;
 use SRFM\Inc\Database\Tables\Entries;
+use SRFM\Inc\Traits\Get_Instance;
 use WP_Error;
 use WP_REST_Response;
 
@@ -115,7 +115,7 @@ class Forms_Data {
 
 	/**
 	 * Add Forms Data Endpoints to the list of REST API Endpoints.
-	 * 
+	 *
 	 * @param array<mixed> $endpoints List of existing REST API Endpoints.
 	 * @return array<mixed> Modified list of REST API Endpoints.
 	 * @since x.x.x
@@ -128,33 +128,33 @@ class Forms_Data {
 				'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
 				'args'                => [
 					'page'     => [
-						'type'        => 'integer',
-						'default'     => 1,
-						'minimum'     => 1,
+						'type'    => 'integer',
+						'default' => 1,
+						'minimum' => 1,
 					],
 					'per_page' => [
-						'type'        => 'integer',
-						'default'     => 20,
-						'minimum'     => 1,
-						'maximum'     => 100,
+						'type'    => 'integer',
+						'default' => 20,
+						'minimum' => 1,
+						'maximum' => 100,
 					],
 					'search'   => [
-						'type'        => 'string',
+						'type' => 'string',
 					],
 					'status'   => [
-						'type'        => 'string',
-						'enum'        => [ 'publish', 'draft', 'trash', 'any' ],
-						'default'     => 'publish',
+						'type'    => 'string',
+						'enum'    => [ 'publish', 'draft', 'trash', 'any' ],
+						'default' => 'publish',
 					],
 					'orderby'  => [
-						'type'        => 'string',
-						'default'     => 'date',
-						'enum'        => [ 'date', 'id', 'title', 'modified' ],
+						'type'    => 'string',
+						'default' => 'date',
+						'enum'    => [ 'date', 'id', 'title', 'modified' ],
 					],
 					'order'    => [
-						'type'        => 'string',
-						'default'     => 'desc',
-						'enum'        => [ 'asc', 'desc' ],
+						'type'    => 'string',
+						'default' => 'desc',
+						'enum'    => [ 'asc', 'desc' ],
 					],
 				],
 			],
@@ -192,7 +192,7 @@ class Forms_Data {
 		// Build query arguments.
 		$args = [
 			'post_type'      => SRFM_FORMS_POST_TYPE,
-			'post_status'    => $status === 'any' ? [ 'publish', 'draft' ] : $status,
+			'post_status'    => 'any' === $status ? [ 'publish', 'draft' ] : $status,
 			'posts_per_page' => $per_page,
 			'paged'          => $page,
 			'orderby'        => $orderby,
@@ -208,13 +208,17 @@ class Forms_Data {
 		$query = new \WP_Query( $args );
 
 		$forms = [];
+		/**
+		 * Post object from the query.
+		 *
+		 * @var \WP_Post $post */
 		foreach ( $query->posts as $post ) {
 			$forms[] = $this->prepare_form_for_listing( $post );
 		}
 
 		// Prepare response.
 		$response_data = [
-			'forms'      => $forms,
+			'forms'        => $forms,
 			'total'        => Helper::get_integer_value( $query->found_posts ),
 			'total_pages'  => Helper::get_integer_value( $query->max_num_pages ),
 			'current_page' => $page,
@@ -235,7 +239,7 @@ class Forms_Data {
 		$form_id = $post->ID;
 
 		// Get author information.
-		$author = get_userdata( $post->post_author );
+		$author      = get_userdata( Helper::get_integer_value( $post->post_author ) );
 		$author_data = $author ? [
 			'id'   => (int) $author->ID,
 			'name' => $author->display_name,
