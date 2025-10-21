@@ -190,7 +190,7 @@ async function processAllPayments( form, paymentBlock ) {
 		const paymentType = paymentData?.paymentType || 'one-time';
 
 		if ( paymentData && paymentData.clientSecret ) {
-			const paymentResult = await srfmConfirmPayment(
+			const paymentResult = await window.StripePayment.srfmConfirmPayment(
 				blockId,
 				paymentData,
 				form
@@ -204,10 +204,9 @@ async function processAllPayments( form, paymentBlock ) {
 				return null;
 			} );
 
-			console.log( 'Payment completed:', paymentResult );
+			console.log( 'Payment completed via new method:', paymentResult );
 
 			// Return true if payment succeeded (result is truthy and not empty string)
-			// return paymentResult && '' !== paymentResult;
 			return paymentResult
 				? { valid: true, message: 'Payment successful', paymentResult }
 				: {
@@ -225,125 +224,4 @@ async function processAllPayments( form, paymentBlock ) {
 		console.error( 'Payment processing failed:', error );
 		return false;
 	}
-}
-
-/**
- * Confirm payment for a specific block
- * @param {string}      blockId     - The block ID.
- * @param {Object}      paymentData - The payment data.
- * @param {HTMLElement} form        - The form element.
- * @return {Promise<string>} The payment intent or setup intent ID if successful.
- */
-async function srfmConfirmPayment( blockId, paymentData, form ) {
-	const { elements, paymentType } = paymentData;
-
-	// Validate card details AFTER payment intent is created but BEFORE confirmation
-	// This is the correct timing to avoid card data loss
-	const { error: submitError } = await elements.submit();
-
-	if ( submitError ) {
-		console.error( 'Card validation failed:', submitError );
-		throw new Error( submitError.message );
-	}
-
-	console.log(
-		`Card validation successful for block ${ blockId } paymentType: ${ paymentType }`
-	);
-
-	// Handle payment confirmation via unified handler
-	return await confirmStripePayment( blockId, paymentData, form );
-}
-
-/**
- * Unified confirm handler for one-time payments and subscriptions
- * @param {string}      blockId     - Block ID.
- * @param {Object}      paymentData - The payment data.
- * @param {HTMLElement} form        - The form element.
- * @return {Promise<string>} The intent ID (payment or setup) if successful.
- */
-async function confirmStripePayment( blockId, paymentData, form ) {
-	const { stripe, elements, clientSecret, paymentType } = paymentData;
-
-	// Get the payment block element
-	const paymentBlock = form.querySelector( `[data-block-id="${ blockId }"]` );
-	// Update form input with subscription data for backend processing
-	const paymentInput = paymentBlock.querySelector(
-			'.srfm-payment-input'
-		);
-
-	const amount = window.StripePayment.getPaymentAmount( paymentInput );
-	const amountType =
-		paymentInput.getAttribute( 'data-amount-type' ) || 'fixed';
-
-	// Prepare billing details using StripePayment class methods
-	const billingDetails = {
-		name: window.StripePayment.extractBillingName( form, paymentBlock ),
-		email: window.StripePayment.extractBillingEmail( form, paymentBlock ),
-	};
-
-	const stripeArgs = {
-		elements,
-		clientSecret,
-		confirmParams: {
-			return_url: window.location.href,
-			payment_method_data: {
-				billing_details: billingDetails,
-			},
-		},
-		redirect: 'if_required',
-	}
-
-	if ( paymentType === 'subscription' ) {
-		const subscriptionData =
-			window.StripePayment.subscriptionIntents[ blockId ];
-
-		const result = await stripe.confirmSetup( stripeArgs );
-
-		if ( result.error ) {
-			throw new Error( result.error.message || result.error );
-		}
-
-		const inputValueData = {
-			paymentId: result.setupIntent.payment_method,
-			setupIntent: result.setupIntent.id,
-			subscriptionId: subscriptionData?.subscriptionId,
-			customerId: subscriptionData?.customerId,
-			blockId,
-			paymentType: 'stripe-subscription',
-			status: 'succeeded',
-			amountType,
-			amount,
-		};
-
-		paymentInput.value = JSON.stringify( inputValueData );
-
-		return result.setupIntent.id;
-	}
-
-	// Handle one-time payment
-	const confirmPaymentResult = await stripe.confirmPayment( stripeArgs );
-
-	const { error, paymentIntent } = confirmPaymentResult;
-
-	if ( error ) {
-		throw new Error( error.message || error );
-	}
-
-	if (
-		paymentIntent.status === 'succeeded' ||
-		paymentIntent.status === 'requires_capture'
-	) {
-		const prepareInputValueData = {
-			paymentId: paymentIntent.id,
-			blockId,
-			paymentType: 'stripe',
-			amountType,
-			amount,
-		};
-
-		paymentInput.value = JSON.stringify( prepareInputValueData );
-
-		return paymentIntent.id;
-	}
-	throw new Error( `Payment not completed for block ${ blockId }` );
 }

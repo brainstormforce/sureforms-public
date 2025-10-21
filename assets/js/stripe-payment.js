@@ -833,6 +833,170 @@ class StripePayment {
 		// Return the trimmed value
 		return emailInput.value.trim() || '';
 	}
+
+	/**
+	 * Confirm payment for a specific block
+	 * @param {string}      blockId     - The block ID.
+	 * @param {Object}      paymentData - The payment data.
+	 * @param {HTMLElement} form        - The form element.
+	 * @return {Promise<string>} The payment intent or setup intent ID if successful.
+	 */
+	static async srfmConfirmPayment( blockId, paymentData, form ) {
+		const { elements, paymentType } = paymentData;
+		console.log("start confirmPayment");
+
+		// Validate card details AFTER payment intent is created but BEFORE confirmation
+		// This is the correct timing to avoid card data loss
+		const { error: submitError } = await elements.submit();
+
+		if ( submitError ) {
+			console.error( 'Card validation failed:', submitError );
+			throw new Error( submitError.message );
+		}
+
+		console.log(
+			`Card validation successful for block ${ blockId } paymentType: ${ paymentType }`
+		);
+
+		// Handle payment confirmation via unified handler
+		return await StripePayment.confirmStripePayment(
+			blockId,
+			paymentData,
+			form
+		);
+	}
+
+	static async confirmStripePayment( blockId, paymentData, form ) {
+		const { stripe, elements, clientSecret, paymentType } = paymentData;
+
+		// Get the payment block element
+		const paymentBlock = form.querySelector(
+			`[data-block-id="${ blockId }"]`
+		);
+		// Update form input with subscription data for backend processing
+		const paymentInput = paymentBlock.querySelector(
+			'.srfm-payment-input'
+		);
+
+		const amount = StripePayment.getPaymentAmount( paymentInput );
+		const amountType =
+			paymentInput.getAttribute( 'data-amount-type' ) || 'fixed';
+
+		// Prepare billing details using StripePayment class methods
+		const billingDetails = {
+			name: StripePayment.extractBillingName( form, paymentBlock ),
+			email: StripePayment.extractBillingEmail( form, paymentBlock ),
+		};
+
+		const stripeArgs = {
+			elements,
+			clientSecret,
+			confirmParams: {
+				return_url: window.location.href,
+				payment_method_data: {
+					billing_details: billingDetails,
+				},
+			},
+			redirect: 'if_required',
+		};
+
+		const paymentResult = await ( paymentType === 'subscription'
+			? stripe.confirmSetup( stripeArgs )
+			: stripe.confirmPayment( stripeArgs ) );
+
+		if ( paymentResult?.error ) {
+			StripePayment.addErrorValueInInput( paymentInput, paymentResult?.error );
+			throw new Error(
+				paymentResult?.error?.message || paymentResult?.error
+			);
+		}
+
+		if (
+			'one-time' === paymentType &&
+			! [ 'succeeded', 'requires_capture' ].includes(
+				paymentResult?.paymentIntent?.status
+			)
+		) {
+			StripePayment.addErrorValueInInput(
+				paymentInput,
+				new Error( `Payment not completed for block ${ blockId }` )
+			);
+			throw new Error( `Payment not completed for block ${ blockId }` );
+		}
+
+		const resultArgs = {
+			paymentResult,
+			blockId,
+			paymentType,
+			amountType,
+			amount,
+			paymentInput,
+			billingDetails
+		};
+
+		StripePayment.prepareInputValueData( resultArgs );
+
+		return true;
+	}
+
+	/**
+	 * Prepares and sets the payment input value data as a JSON string.
+	 *
+	 * @param {Object} args - The configuration arguments.
+	 * @param {string} args.blockId - The payment block ID.
+	 * @param {string} args.paymentType - The type of payment ('subscription' or 'one-time').
+	 * @param {string} args.amountType - The type of amount ('fixed' or 'user-defined').
+	 * @param {number} args.amount - The payment amount.
+	 * @param {HTMLInputElement} args.paymentInput - The input field to store payment data.
+	 * @param {Object} args.paymentResult - The result object from Stripe payment confirmation.
+	 */
+	static prepareInputValueData( args ) {
+		const {
+			blockId,
+			paymentType,
+			amountType,
+			amount,
+			paymentInput,
+			paymentResult,
+			billingDetails
+		} = args;
+		
+		let value = {
+			blockId,
+			amountType,
+			amount,
+			...( billingDetails || {} )
+		};
+
+		if ( 'subscription' === paymentType ) {
+			const subscriptionData = StripePayment.subscriptionIntents[ blockId ];
+
+			value.paymentId = paymentResult?.setupIntent?.payment_method;
+			value.setupIntent = paymentResult?.setupIntent?.id;
+			value.subscriptionId = subscriptionData?.subscriptionId;
+			value.customerId = subscriptionData?.customerId;
+			value.paymentType = 'stripe-subscription';
+			value.status = 'succeeded';
+		} else {
+			value.paymentId = paymentResult?.paymentIntent?.id;
+			value.paymentType = 'stripe';
+		}
+
+		paymentInput.value = JSON.stringify( value );
+	}
+
+	/**
+	 * Adds an error message to the payment input field in JSON format.
+	 *
+	 * @param {HTMLInputElement} paymentInput - The input field to store the error.
+	 * @param {Error|string} error - The error object or message to store.
+	 */
+	addErrorValueInInput( paymentInput, error ) {
+		paymentInput.value = JSON.stringify( {
+			errorType: 'stripe_payment_confirmation_error',
+			error: error?.message || error,
+		} );
+	}
 }
 
 // Make StripePayment available globally for form submission

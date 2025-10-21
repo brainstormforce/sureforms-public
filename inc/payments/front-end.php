@@ -393,7 +393,7 @@ class Front_End {
 				 */
 				$payment_response = $this->verify_stripe_subscription_intent_and_save( $payment_value, $block_id, $form_data );
 			} else {
-				$payment_response = $this->verify_stripe_payment_intent_and_save( $payment_id, $block_id, $form_data );
+				$payment_response = $this->verify_stripe_payment_intent_and_save( $payment_value,$payment_id, $block_id, $form_data );
 			}
 
 			if ( ! empty( $payment_response ) && isset( $payment_response['payment_id'] ) ) {
@@ -412,14 +412,15 @@ class Front_End {
 	/**
 	 * Verify payment intent status
 	 *
-	 * @param string       $payment_intent_id Payment intent ID.
+	 * @param array<mixed> $payment_value Payment value.
+	 * @param string       $payment_id Payment ID.
 	 * @param string       $block_id Block ID.
 	 * @param array<mixed> $form_data Form data.
 	 *
 	 * @since x.x.x
 	 * @return void|array<mixed>
 	 */
-	private function verify_stripe_payment_intent_and_save( $payment_intent_id, $block_id, $form_data ) {
+	private function verify_stripe_payment_intent_and_save( $payment_value, $payment_id, $block_id, $form_data ) {
 		try {
 			$payment_mode = Stripe_Helper::get_stripe_mode();
 			$secret_key   = Stripe_Helper::get_stripe_secret_key();
@@ -435,7 +436,7 @@ class Front_End {
 				'srfm_retrieve_payment_intent_data',
 				[
 					'secret_key'        => $secret_key,
-					'payment_intent_id' => $payment_intent_id,
+					'payment_intent_id' => $payment_id,
 				]
 			);
 
@@ -498,7 +499,7 @@ class Front_End {
 			$confirm_payment_id       = is_array( $confirmed_payment_intent ) && isset( $confirmed_payment_intent['id'] ) && ! empty( $confirmed_payment_intent['id'] ) ? (string) $confirmed_payment_intent['id'] : '';
 
 			// Extract customer data and generate transaction ID.
-			$customer_data = $this->extract_customer_data( $form_data, $block_id );
+			$customer_data = $this->extract_customer_data( $payment_value );
 			$txn_id        = $this->generate_transaction_id( $confirm_payment_id );
 
 			// update payment status and save to the payment entries table.
@@ -671,7 +672,7 @@ class Front_End {
 			$subscription_status = isset( $subscription['status'] ) && ! empty( $subscription['status'] ) && is_string( $subscription['status'] ) ? $subscription['status'] : '';
 
 			// Extract customer data and generate transaction ID.
-			$customer_data = $this->extract_customer_data( $form_data, $block_id );
+			$customer_data = $this->extract_customer_data( $subscription_value );
 			$txn_id        = $this->generate_transaction_id( $subscription_id );
 
 			// Prepare minimal subscription data for database.
@@ -1244,100 +1245,16 @@ class Front_End {
 	 * Uses the payment block's customerNameField and customerEmailField attributes
 	 * to find the corresponding field slugs, then extracts the values from form data.
 	 *
-	 * @param array<string,mixed> $form_data Form submission data.
-	 * @param string              $block_id Payment block ID.
+	 * @param array<string,mixed> $input_value Input value.
 	 * @since x.x.x
 	 * @return array{name: string, email: string} Customer data array.
 	 */
-	private function extract_customer_data( $form_data, $block_id ) {
+	private function extract_customer_data( $input_value ) {
 		$customer_data = [
-			'name'  => '',
-			'email' => '',
+			'name'  => ! empty( $input_value['name'] ) && is_string( $input_value['name'] ) ? sanitize_text_field( $input_value['name'] ) : '',
+			'email' => ! empty( $input_value['email'] ) && is_email( $input_value['email'] ) ? sanitize_email( $input_value['email'] ) : '',
 		];
 
-		// Get form ID from form data.
-		$form_id = isset( $form_data['form-id'] ) && ! empty( $form_data['form-id'] ) ? intval( $form_data['form-id'] ) : 0;
-
-		if ( empty( $form_id ) || empty( $block_id ) ) {
-			return $customer_data;
-		}
-
-		// Get the form post to parse blocks.
-		$form_post = get_post( $form_id );
-		if ( ! $form_post || empty( $form_post->post_content ) ) {
-			return $customer_data;
-		}
-
-		// Parse blocks to find the payment block.
-		$blocks = parse_blocks( $form_post->post_content );
-		$payment_block = $this->find_payment_block( $blocks, $block_id );
-
-		if ( ! $payment_block || ! isset( $payment_block['attrs'] ) ) {
-			return $customer_data;
-		}
-
-		// Get customer field slugs from payment block attributes.
-		$customer_name_slug  = isset( $payment_block['attrs']['customerNameField'] ) ? $payment_block['attrs']['customerNameField'] : '';
-		$customer_email_slug = isset( $payment_block['attrs']['customerEmailField'] ) ? $payment_block['attrs']['customerEmailField'] : '';
-
-		// Extract values from form data using slugs.
-		// Form field keys use the pattern: {slug}-lbl-{label}
-		foreach ( $form_data as $field_key => $field_value ) {
-			// Skip non-field data.
-			if ( strpos( $field_key, '-lbl-' ) === false ) {
-				continue;
-			}
-
-			// Extract slug from field key (format: slug-lbl-label).
-			$field_parts = explode( '-lbl-', $field_key );
-			if ( count( $field_parts ) < 2 ) {
-				continue;
-			}
-
-			$field_slug = $field_parts[0];
-
-			// Match against customer name field slug.
-			if ( ! empty( $customer_name_slug ) && $field_slug === $customer_name_slug ) {
-				$customer_data['name'] = is_string( $field_value ) ? sanitize_text_field( $field_value ) : '';
-			}
-
-			// Match against customer email field slug.
-			if ( ! empty( $customer_email_slug ) && $field_slug === $customer_email_slug ) {
-				$customer_data['email'] = is_string( $field_value ) ? sanitize_email( $field_value ) : '';
-			}
-		}
-
 		return $customer_data;
-	}
-
-	/**
-	 * Find payment block by block_id in parsed blocks array
-	 *
-	 * Recursively searches through blocks and innerBlocks to find the payment block.
-	 *
-	 * @param array<mixed> $blocks Parsed blocks array.
-	 * @param string       $block_id Block ID to find.
-	 * @since x.x.x
-	 * @return array<mixed>|null Payment block or null if not found.
-	 */
-	private function find_payment_block( $blocks, $block_id ) {
-		foreach ( $blocks as $block ) {
-			// Check if this is the payment block we're looking for.
-			if ( isset( $block['blockName'] ) && $block['blockName'] === 'srfm/payment' ) {
-				if ( isset( $block['attrs']['block_id'] ) && $block['attrs']['block_id'] === $block_id ) {
-					return $block;
-				}
-			}
-
-			// Recursively search in innerBlocks.
-			if ( ! empty( $block['innerBlocks'] ) && is_array( $block['innerBlocks'] ) ) {
-				$found = $this->find_payment_block( $block['innerBlocks'], $block_id );
-				if ( $found ) {
-					return $found;
-				}
-			}
-		}
-
-		return null;
 	}
 }
