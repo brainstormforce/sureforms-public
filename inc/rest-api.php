@@ -487,6 +487,43 @@ class Rest_Api {
 						],
 					],
 				],
+				// Forms listing endpoint.
+				'forms'                 => [
+					'methods'             => 'GET',
+					'callback'            => [ Forms_Data::get_instance(), 'get_forms_list' ],
+					'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
+					'args'                => [
+						'page'     => [
+							'type'    => 'integer',
+							'default' => 1,
+							'minimum' => 1,
+						],
+						'per_page' => [
+							'type'    => 'integer',
+							'default' => 20,
+							'minimum' => 1,
+							'maximum' => 100,
+						],
+						'search'   => [
+							'type' => 'string',
+						],
+						'status'   => [
+							'type'    => 'string',
+							'enum'    => [ 'publish', 'draft', 'trash', 'any' ],
+							'default' => 'publish',
+						],
+						'orderby'  => [
+							'type'    => 'string',
+							'default' => 'date',
+							'enum'    => [ 'date', 'id', 'title', 'modified' ],
+						],
+						'order'    => [
+							'type'    => 'string',
+							'default' => 'desc',
+							'enum'    => [ 'asc', 'desc' ],
+						],
+					],
+				],
 				// Form lifecycle management endpoint (trash/restore/delete).
 				'forms/manage'          => [
 					'methods'             => 'POST',

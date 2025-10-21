@@ -32,7 +32,6 @@ class Forms_Data {
 	 */
 	public function __construct() {
 		add_action( 'rest_api_init', [ $this, 'register_custom_endpoint' ] );
-		add_filter( 'srfm_rest_api_endpoints', [ $this, 'add_forms_data_endpoint' ] );
 	}
 
 	/**
@@ -111,56 +110,6 @@ class Forms_Data {
 		}
 
 		return new WP_REST_Response( $data );
-	}
-
-	/**
-	 * Add Forms Data Endpoints to the list of REST API Endpoints.
-	 *
-	 * @param array<mixed> $endpoints List of existing REST API Endpoints.
-	 * @return array<mixed> Modified list of REST API Endpoints.
-	 * @since x.x.x
-	 */
-	public function add_forms_data_endpoint( $endpoints ) {
-		$form_endpoints = [
-			'forms' => [
-				'methods'             => 'GET',
-				'callback'            => [ $this, 'get_forms_list' ],
-				'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
-				'args'                => [
-					'page'     => [
-						'type'    => 'integer',
-						'default' => 1,
-						'minimum' => 1,
-					],
-					'per_page' => [
-						'type'    => 'integer',
-						'default' => 20,
-						'minimum' => 1,
-						'maximum' => 100,
-					],
-					'search'   => [
-						'type' => 'string',
-					],
-					'status'   => [
-						'type'    => 'string',
-						'enum'    => [ 'publish', 'draft', 'trash', 'any' ],
-						'default' => 'publish',
-					],
-					'orderby'  => [
-						'type'    => 'string',
-						'default' => 'date',
-						'enum'    => [ 'date', 'id', 'title', 'modified' ],
-					],
-					'order'    => [
-						'type'    => 'string',
-						'default' => 'desc',
-						'enum'    => [ 'asc', 'desc' ],
-					],
-				],
-			],
-		];
-
-		return array_merge( $endpoints, $form_endpoints );
 	}
 
 	/**
