@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect, useRef } from '@wordpress/element';
+import { useContext, useState, useEffect } from '@wordpress/element';
 import { applyFilters } from '@wordpress/hooks';
 import {
 	Table,
@@ -6,17 +6,14 @@ import {
 	Button,
 	Input,
 	Select,
-	DatePicker,
 	Pagination,
 	Container,
-	Dialog,
 	toast,
 	Tooltip,
 } from '@bsf/force-ui';
 import {
 	Eye as ViewIcon,
 	Search,
-	Calendar,
 	X,
 	Trash as DeleteIcon,
 	ExternalLink,
@@ -33,9 +30,10 @@ import {
 	getStatusVariant,
 	formatAmount,
 	formatDateTime,
-	getSelectedDateRange,
 	getStatusLabel,
 } from '../components/utils';
+import DeleteConfirmationDialog from '../components/DeleteConfirmationDialog';
+import DateRangePicker from '../components/DateRangePicker';
 import {
 	getUrlParams,
 	updateUrlParams,
@@ -55,6 +53,27 @@ const STATUS_FILTERS = [
 	{ value: 'failed', label: __( 'Failed', 'sureforms' ) },
 	{ value: 'refunded', label: __( 'Refunded', 'sureforms' ) },
 ];
+
+/**
+ * Custom hook for debouncing a value
+ *
+ * @param {any}    value - The value to debounce
+ * @param {number} delay - Delay in milliseconds
+ * @return {any} Debounced value
+ */
+const useDebounce = ( value, delay = 500 ) => {
+	const [ debouncedValue, setDebouncedValue ] = useState( value );
+
+	useEffect( () => {
+		const handler = setTimeout( () => {
+			setDebouncedValue( value );
+		}, delay );
+
+		return () => clearTimeout( handler );
+	}, [ value, delay ] );
+
+	return debouncedValue;
+};
 
 const PaymentTable = () => {
 	// Selection state management
@@ -77,9 +96,10 @@ const PaymentTable = () => {
 		from: null,
 		to: null,
 	} );
-	const [ isDatePickerOpen, setIsDatePickerOpen ] = useState( false );
-	const datePickerContainerRef = useRef( null );
 	const [ sortBy, setSortBy ] = useState( null ); // 'amount-asc' or 'amount-desc'
+
+	// Debounce search term to avoid excessive API calls
+	const debouncedSearchTerm = useDebounce( searchTerm, 500 );
 
 	// Pagination state
 	const [ page, setPage ] = useState( 1 );
@@ -89,11 +109,11 @@ const PaymentTable = () => {
 	const queryData = useQuery( {
 		queryKey: [
 			'payments',
-			{ searchTerm, filter, selectedDates, page, itemsPerPage, sortBy },
+			{ searchTerm: debouncedSearchTerm, filter, selectedDates, page, itemsPerPage, sortBy },
 		],
 		queryFn: () =>
 			fetchPayments( {
-				searchTerm,
+				searchTerm: debouncedSearchTerm,
 				filter,
 				selectedDates,
 				page,
@@ -244,12 +264,12 @@ const PaymentTable = () => {
 		}
 	}, [ page ] );
 
-	// Sync search to URL
+	// Sync search to URL (use debounced value to avoid URL flickering)
 	useEffect( () => {
 		updateUrlParams( {
-			srfm_payment_search: searchTerm || undefined,
+			srfm_payment_search: debouncedSearchTerm || undefined,
 		} );
-	}, [ searchTerm ] );
+	}, [ debouncedSearchTerm ] );
 
 	// Sync status filter to URL
 	useEffect( () => {
@@ -330,26 +350,6 @@ const PaymentTable = () => {
 		};
 	}, [] );
 
-	// Click Outside Handler for DatePicker
-	useEffect( () => {
-		function handleClickOutside( event ) {
-			if (
-				isDatePickerOpen &&
-				datePickerContainerRef.current &&
-				! datePickerContainerRef.current.contains( event.target )
-			) {
-				setIsDatePickerOpen( false );
-			}
-		}
-
-		// Bind the event listener
-		document.addEventListener( 'mousedown', handleClickOutside );
-		return () => {
-			// Unbind the event listener on cleanup
-			document.removeEventListener( 'mousedown', handleClickOutside );
-		};
-	}, [ isDatePickerOpen ] );
-
 	// Handle individual row selection
 	const handleSelectRow = ( rowId ) => {
 		setSelectedRows( ( prev ) =>
@@ -396,15 +396,9 @@ const PaymentTable = () => {
 		setDeletePaymentIds( [] );
 	};
 
-	// Placeholder handlers for filters
+	// Date range filter handlers
 	const handleDateApply = ( dates ) => {
 		setSelectedDates( dates );
-		setIsDatePickerOpen( false );
-		// TODO: Implement date filtering
-	};
-
-	const handleDateCancel = () => {
-		setIsDatePickerOpen( false );
 	};
 
 	// Pagination event handlers
@@ -710,69 +704,14 @@ const PaymentTable = () => {
 
 	// Delete confirmation dialog
 	const deleteConfirmationDialog = (
-		<Dialog
-			open={ isDeleteDialogOpen }
-			setOpen={ setIsDeleteDialogOpen }
-			design="simple"
-			exitOnEsc
-			scrollLock
-		>
-			<Dialog.Backdrop />
-			<Dialog.Panel>
-				<Dialog.Header>
-					<div className="flex items-center justify-between">
-						<Dialog.Title>
-							{ __( 'Delete Payments', 'sureforms' ) }
-						</Dialog.Title>
-						<Dialog.CloseButton onClick={ cancelDelete } />
-					</div>
-					<Dialog.Description>
-						{ deletePaymentIds.length === 1
-							? __(
-								'Are you sure you want to delete this payment? This action cannot be undone.',
-								'sureforms'
-							  )
-							: sprintf(
-								/* translators: %d: number of payments */
-								__(
-									'Are you sure you want to delete %d payments? This action cannot be undone.',
-									'sureforms'
-								),
-								deletePaymentIds.length
-							  ) }
-					</Dialog.Description>
-				</Dialog.Header>
-				<Dialog.Body>
-					<div className="p-3 border border-red-200 rounded-md bg-red-50">
-						<p className="text-sm text-red-700">
-							{ __(
-								'Warning: Deleting payments will permanently remove all associated data including notes, logs, and transaction information.',
-								'sureforms'
-							) }
-						</p>
-					</div>
-				</Dialog.Body>
-				<Dialog.Footer className="flex justify-end gap-2">
-					<Button
-						variant="outline"
-						onClick={ cancelDelete }
-						disabled={ bulkDeleteMutation.isPending }
-					>
-						{ __( 'Cancel', 'sureforms' ) }
-					</Button>
-					<Button
-						variant="primary"
-						onClick={ confirmDelete }
-						disabled={ bulkDeleteMutation.isPending }
-						className="bg-red-600 hover:bg-red-700 border-red-600 hover:border-red-700"
-					>
-						{ bulkDeleteMutation.isPending
-							? __( 'Deleting…', 'sureforms' )
-							: __( 'Delete Payments', 'sureforms' ) }
-					</Button>
-				</Dialog.Footer>
-			</Dialog.Panel>
-		</Dialog>
+		<DeleteConfirmationDialog
+			isOpen={ isDeleteDialogOpen }
+			setIsOpen={ setIsDeleteDialogOpen }
+			deletePaymentIds={ deletePaymentIds }
+			onConfirm={ confirmDelete }
+			onCancel={ cancelDelete }
+			isDeleting={ bulkDeleteMutation.isPending }
+		/>
 	);
 
 	return (
@@ -903,54 +842,10 @@ const PaymentTable = () => {
 										</Select>
 									</div>
 									{ /* Date Range Picker */ }
-									<div
-										className="relative"
-										ref={ datePickerContainerRef }
-									>
-										<Input
-											type="text"
-											size="sm"
-											value={ getSelectedDateRange(
-												selectedDates
-											) }
-											suffix={
-												<Calendar className="text-icon-secondary" />
-											}
-											onClick={ () =>
-												setIsDatePickerOpen(
-													! isDatePickerOpen
-												)
-											}
-											placeholder={ __(
-												'mm/dd/yyyy - mm/dd/yyyy',
-												'sureforms'
-											) }
-											className="cursor-pointer w-52"
-											readOnly
-										/>
-										{ isDatePickerOpen && (
-											<div className="absolute right-0 z-10 mt-2 rounded-lg shadow-lg">
-												<DatePicker
-													applyButtonText={ __(
-														'Apply',
-														'sureforms'
-													) }
-													cancelButtonText={ __(
-														'Cancel',
-														'sureforms'
-													) }
-													selectionType="range"
-													showOutsideDays={ false }
-													variant="presets"
-													onApply={ handleDateApply }
-													onCancel={
-														handleDateCancel
-													}
-													selected={ selectedDates }
-												/>
-											</div>
-										) }
-									</div>
+									<DateRangePicker
+										selectedDates={ selectedDates }
+										onApply={ handleDateApply }
+									/>
 								</>
 							) }
 						</div>
