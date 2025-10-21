@@ -1,7 +1,6 @@
 import { Container } from '@bsf/force-ui';
 import { __ } from '@wordpress/i18n';
-// import LoadingSkeleton from '@Admin/components/LoadingSkeleton';
-// import PaymentListPlaceHolder from '@Image/payment-list-placeholder.svg';
+import paymentPlaceHolder from '@Image/payment-list-placeholder.svg';
 
 const PaymentListPlaceHolder = () => {
 	return (
@@ -22,7 +21,13 @@ const PaymentListPlaceHolder = () => {
 						gap="xs"
 						className="w-full bg-background-primary border-0.5 border-solid rounded-xl border-border-subtle p-6 shadow-sm flex items-center gap-6"
 					>
-						<div className="min-h-[240px] min-w-[240px] bg-background-secondary"></div>
+						<div className="min-h-[240px] min-w-[240px] bg-background-secondary">
+							<img
+								src={ paymentPlaceHolder }
+								alt={ __( 'Payment Placeholder', 'sureforms' ) }
+								className="w-[240px] h-[240px]"
+							/>
+						</div>
 						<div className="flex flex-col gap-2">
 							<p className="text-xl font-bold">
 								{ __(

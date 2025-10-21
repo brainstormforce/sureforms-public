@@ -554,7 +554,8 @@ class Admin_Handler {
 
 		// Get customer name - for now use customer_id, in real implementation.
 		// you would get customer data from entries or payment_data.
-		$customer_name = ! empty( $payment['customer_id'] ) ? __( 'Customer #' . $payment['customer_id'], 'sureforms' ) : __( 'Guest', 'sureforms' );
+		$customer_name = ! empty( $payment['name'] ) ? $payment['name'] : __( 'N/A', 'sureforms' );
+		$customer_email = ! empty( $payment['email'] ) ? $payment['email'] : __( 'N/A', 'sureforms' );
 
 		// Determine payment type
 		$payment_type = 'subscription' === $payment['type'] ? __( 'Subscription', 'sureforms' ) : __( 'One-time', 'sureforms' );
@@ -587,7 +588,8 @@ class Admin_Handler {
 			'form_title'             => $form_title,
 			'form_url'               => $form_url,
 			'form'                   => $form_title, // Keep for backward compatibility.
-			'customer'               => $customer_name,
+			'customer_name'          => $customer_name,
+			'customer_email'         => $customer_email,
 			'amount'                 => floatval( $payment['total_amount'] ),
 			'frontend_status'        => $this->map_db_status_to_frontend( $payment['status'] ),
 			'datetime'               => $payment['created_at'], // Keep for backward compatibility.

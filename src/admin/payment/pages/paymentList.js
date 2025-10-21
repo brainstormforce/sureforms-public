@@ -461,8 +461,12 @@ const PaymentTable = () => {
 			'srfm_payment_admin_table_head_content',
 			[
 				{
-					key: 'form',
+					key: 'order_id',
 					title: __( 'Order Id', 'sureforms' ),
+				},
+				{
+					key: 'customer_email',
+					title: __( 'Customer Email', 'sureforms' ),
 				},
 				{
 					key: 'type',
@@ -657,17 +661,15 @@ const PaymentTable = () => {
 		const tableRowContent = applyFilters(
 			'srfm_payment_admin_table_row_content',
 			[
-				{ key: 'form', content: `SF-${ payment.id }` },
+				{ key: 'order_id', content: `SF-${ payment.id }` },
+				{ key: 'customer_email', content: payment.customer_email },
 				{ key: 'type', content: paymentType },
 				{ key: 'amountPaid', content: rowAmountPaid },
 				{ key: 'status', content: rowStatusBadge },
-				{
-					key: 'dateTime',
-					content: formatDateTime( payment.datetime ),
-				},
+				{ key: 'dateTime', content: formatDateTime( payment.datetime ) },
 				{ key: 'actions', content: rowAction },
 			],
-			payment
+			payment,
 		);
 
 		return (
