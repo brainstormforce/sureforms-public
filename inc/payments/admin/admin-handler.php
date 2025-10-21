@@ -470,15 +470,15 @@ class Admin_Handler {
 		// Get payments table name.
 		$payments_table = Payments::get_instance()->get_tablename();
 
-		// Search in multiple fields - for now, search in transaction_id and gateway.
-		// In a real implementation, you might want to join with forms/entries tables.
-		// to search in form names and customer data.
+		// Search in specific fields: id, customer_name, customer_email, transaction_id, srfm_txn_id.
 		$query = $wpdb->prepare(
-			"SELECT DISTINCT id FROM {$payments_table} 
-			WHERE transaction_id LIKE %s 
-			OR customer_id LIKE %s 
-			OR gateway LIKE %s
-			OR id LIKE %s",
+			"SELECT DISTINCT id FROM {$payments_table}
+			WHERE id LIKE %s
+			OR customer_name LIKE %s
+			OR customer_email LIKE %s
+			OR transaction_id LIKE %s
+			OR srfm_txn_id LIKE %s",
+			$search_term,
 			$search_term,
 			$search_term,
 			$search_term,
@@ -554,8 +554,8 @@ class Admin_Handler {
 
 		// Get customer name - for now use customer_id, in real implementation.
 		// you would get customer data from entries or payment_data.
-		$customer_name = ! empty( $payment['name'] ) ? $payment['name'] : __( 'N/A', 'sureforms' );
-		$customer_email = ! empty( $payment['email'] ) ? $payment['email'] : __( 'N/A', 'sureforms' );
+		$customer_name = ! empty( $payment['customer_name'] ) ? $payment['customer_name'] : __( 'N/A', 'sureforms' );
+		$customer_email = ! empty( $payment['customer_email'] ) ? $payment['customer_email'] : __( 'N/A', 'sureforms' );
 
 		// Determine payment type
 		$payment_type = 'subscription' === $payment['type'] ? __( 'Subscription', 'sureforms' ) : __( 'One-time', 'sureforms' );

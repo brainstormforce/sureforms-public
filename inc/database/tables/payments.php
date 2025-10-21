@@ -230,12 +230,12 @@ class Payments extends Base {
 				'default' => '',
 			],
 			// Customer email.
-			'email'               => [
+			'customer_email'      => [
 				'type'    => 'string',
 				'default' => '',
 			],
 			// Customer name.
-			'name'                => [
+			'customer_name'       => [
 				'type'    => 'string',
 				'default' => '',
 			],
@@ -268,8 +268,8 @@ class Payments extends Base {
 			'created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP',
 			'updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP',
 			'srfm_txn_id VARCHAR(100) NOT NULL',
-			'email VARCHAR(255) NOT NULL',
-			'name VARCHAR(255) NOT NULL',
+			'customer_email VARCHAR(255) NOT NULL',
+			'customer_name VARCHAR(255) NOT NULL',
 		];
 	}
 

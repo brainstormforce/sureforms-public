@@ -514,8 +514,8 @@ class Front_End {
 			$entry_data['mode']           = $payment_mode;
 			$entry_data['transaction_id'] = $confirm_payment_id;
 			$entry_data['srfm_txn_id']    = $txn_id;
-			$entry_data['email']          = $customer_data['email'];
-			$entry_data['name']           = $customer_data['name'];
+			$entry_data['customer_email'] = $customer_data['email'];
+			$entry_data['customer_name']  = $customer_data['name'];
 
 			$get_payment_entry_id = Payments::add( $entry_data );
 
@@ -691,8 +691,8 @@ class Front_End {
 				'subscription_id'     => $subscription_id,
 				'subscription_status' => $subscription_status,
 				'srfm_txn_id'         => $txn_id,
-				'email'               => $customer_data['email'],
-				'name'                => $customer_data['name'],
+				'customer_email'      => $customer_data['email'],
+				'customer_name'       => $customer_data['name'],
 				'payment_data'        => [
 					'initial_invoice' => $paid_invoice,
 					'subscription'    => $subscription,
@@ -799,6 +799,8 @@ class Front_End {
 			'customer_id'         => $customer_id,
 			'subscription_id'     => $subscription_id, // Link back to subscription.
 			'subscription_status' => '', // Not applicable for individual payments.
+			'customer_email'      => isset( $subscription['customer_email'] ) ? sanitize_email( $subscription['customer_email'] ) : '',
+			'customer_name'       => isset( $subscription['customer_name'] ) ? sanitize_text_field( $subscription['customer_name'] ) : '',
 			'payment_data'        => $invoice_data, // Store complete invoice data for refunds and debugging.
 		];
 
