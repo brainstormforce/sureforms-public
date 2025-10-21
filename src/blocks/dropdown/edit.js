@@ -355,6 +355,41 @@ const Edit = ( props ) => {
 			),
 		},
 		{
+			id: 'errorMsg',
+			component: required ? (
+				<SRFMTextControl
+					label={ __( 'Error Message', 'sureforms' ) }
+					data={ {
+						value: errorMsg,
+						label: 'errorMsg',
+					} }
+					value={ currentErrorMsg }
+					onChange={ ( value ) => {
+						setCurrentErrorMsg( value );
+						setAttributes( { errorMsg: value } );
+					} }
+				/>
+			) : null,
+		},
+		{
+			id: 'help',
+			component: (
+				<SRFMTextControl
+					data={ {
+						value: help,
+						label: 'help',
+					} }
+					label={ __( 'Help Text', 'sureforms' ) }
+					value={ help }
+					onChange={ ( value ) => setAttributes( { help: value } ) }
+				/>
+			),
+		},
+		{
+			id: 'separator-1',
+			component: <div className="srfm-settings-separator" />,
+		},
+		{
 			id: 'multiSelect',
 			component: (
 				<ToggleControl
@@ -382,23 +417,7 @@ const Edit = ( props ) => {
 				/>
 			),
 		},
-		{
-			id: 'errorMsg',
-			component: required ? (
-				<SRFMTextControl
-					label={ __( 'Error Message', 'sureforms' ) }
-					data={ {
-						value: errorMsg,
-						label: 'errorMsg',
-					} }
-					value={ currentErrorMsg }
-					onChange={ ( value ) => {
-						setCurrentErrorMsg( value );
-						setAttributes( { errorMsg: value } );
-					} }
-				/>
-			) : null,
-		},
+
 		{
 			id: 'dropDownOptions',
 			component: dropDownOptions,
@@ -406,20 +425,6 @@ const Edit = ( props ) => {
 		{
 			id: 'addNewOption',
 			component: addNewOption,
-		},
-		{
-			id: 'help',
-			component: (
-				<SRFMTextControl
-					data={ {
-						value: help,
-						label: 'help',
-					} }
-					label={ __( 'Help Text', 'sureforms' ) }
-					value={ help }
-					onChange={ ( value ) => setAttributes( { help: value } ) }
-				/>
-			),
 		},
 	];
 

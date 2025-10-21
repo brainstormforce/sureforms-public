@@ -60,36 +60,6 @@ const Edit = ( props ) => {
 
 	const attributeOptions = [
 		{
-			id: 'default-value',
-			component: (
-				<SRFMTextControl
-					variant="textarea"
-					label={ __( 'Default Value', 'sureforms' ) }
-					value={ defaultValue }
-					withSmartTagDropdown={ true }
-					data={ {
-						value: defaultValue,
-						label: 'defaultValue',
-					} }
-					onChange={ ( value ) =>
-						setAttributes( { defaultValue: value } )
-					}
-				/>
-			),
-		},
-		{
-			id: 'read-only',
-			component: (
-				<ToggleControl
-					label={ __( 'Read Only', 'sureforms' ) }
-					checked={ readOnly }
-					onChange={ ( checked ) =>
-						setAttributes( { readOnly: checked } )
-					}
-				/>
-			),
-		},
-		{
 			id: 'required',
 			component: (
 				<ToggleControl
@@ -97,18 +67,6 @@ const Edit = ( props ) => {
 					checked={ required }
 					onChange={ ( checked ) =>
 						setAttributes( { required: checked } )
-					}
-				/>
-			),
-		},
-		{
-			id: 'rich-text',
-			component: (
-				<ToggleControl
-					label={ __( 'Rich Text Editor', 'sureforms' ) }
-					checked={ isRichText }
-					onChange={ ( checked ) =>
-						setAttributes( { isRichText: checked } )
 					}
 				/>
 			),
@@ -127,6 +85,66 @@ const Edit = ( props ) => {
 						setCurrentErrorMsg( value );
 						setAttributes( { errorMsg: value } );
 					} }
+				/>
+			),
+		},
+		{
+			id: 'help-text',
+			component: (
+				<SRFMTextControl
+					label={ __( 'Help Text', 'sureforms' ) }
+					value={ help }
+					data={ {
+						value: help,
+						label: 'help',
+					} }
+					onChange={ ( value ) => setAttributes( { help: value } ) }
+				/>
+			),
+		},
+		{
+			id: 'default-value',
+			component: (
+				<SRFMTextControl
+					variant="textarea"
+					label={ __( 'Default Value', 'sureforms' ) }
+					value={ defaultValue }
+					withSmartTagDropdown={ true }
+					data={ {
+						value: defaultValue,
+						label: 'defaultValue',
+					} }
+					onChange={ ( value ) =>
+						setAttributes( { defaultValue: value } )
+					}
+				/>
+			),
+		},
+		{
+			id: 'separator-1',
+			component: <div className="srfm-settings-separator" />,
+		},
+		{
+			id: 'read-only',
+			component: (
+				<ToggleControl
+					label={ __( 'Read Only', 'sureforms' ) }
+					checked={ readOnly }
+					onChange={ ( checked ) =>
+						setAttributes( { readOnly: checked } )
+					}
+				/>
+			),
+		},
+		{
+			id: 'rich-text',
+			component: (
+				<ToggleControl
+					label={ __( 'Rich Text Editor', 'sureforms' ) }
+					checked={ isRichText }
+					onChange={ ( checked ) =>
+						setAttributes( { isRichText: checked } )
+					}
 				/>
 			),
 		},
@@ -167,20 +185,6 @@ const Edit = ( props ) => {
 						} }
 					/>
 				</>
-			),
-		},
-		{
-			id: 'help-text',
-			component: (
-				<SRFMTextControl
-					label={ __( 'Help Text', 'sureforms' ) }
-					value={ help }
-					data={ {
-						value: help,
-						label: 'help',
-					} }
-					onChange={ ( value ) => setAttributes( { help: value } ) }
-				/>
 			),
 		},
 	];

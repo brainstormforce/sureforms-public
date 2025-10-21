@@ -73,16 +73,6 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 									setAttributes( { errorMsg: value } );
 								} }
 							/>
-							<ToggleControl
-								label={ __(
-									'Checked by default',
-									'sureforms'
-								) }
-								checked={ isChecked }
-								onChange={ ( checked ) =>
-									setAttributes( { checked } )
-								}
-							/>
 							<SRFMTextControl
 								data={ {
 									value: help,
@@ -92,6 +82,17 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 								value={ help }
 								onChange={ ( value ) =>
 									setAttributes( { help: value } )
+								}
+							/>
+							<div className="srfm-settings-separator" />
+							<ToggleControl
+								label={ __(
+									'Checked by default',
+									'sureforms'
+								) }
+								checked={ isChecked }
+								onChange={ ( checked ) =>
+									setAttributes( { checked } )
 								}
 							/>
 						</SRFMAdvancedPanelBody>
