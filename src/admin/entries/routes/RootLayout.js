@@ -1,8 +1,22 @@
 import { Outlet } from '@tanstack/react-router';
-import { toast, Toaster } from '@bsf/force-ui';
+import { Toaster } from '@bsf/force-ui';
+import Header from '@Admin/components/Header';
+import { cn } from '@Utils/Helpers';
 
-// Expose toast globally for easy access across the admin interface
-window.srfm_toast = toast;
+/**
+ * FormPageHeader Component
+ *
+ * @param {Object} props           Component props
+ * @param {string} props.className - Additional class names for styling
+ * @return {JSX.Element}            FormPageHeader component
+ */
+const PageHeader = ( { className } ) => {
+	return (
+		<div className={ cn( 'z-50 relative', className ) }>
+			<Header />
+		</div>
+	);
+};
 
 /**
  * RootLayout Component
@@ -11,6 +25,7 @@ window.srfm_toast = toast;
 const RootLayout = () => {
 	return (
 		<>
+			<PageHeader />
 			<Outlet />
 			<Toaster className="z-999999" />
 		</>

@@ -2,10 +2,18 @@ import { renderToString, useEffect, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import Logo from '../dashboard/templates/Logo';
 import useWhatsNewRSS from '../../lib/whats-new/useWhatsNewRSS';
-import { Topbar, Badge, Button, HamburgerMenu, Label } from '@bsf/force-ui';
+import {
+	Topbar,
+	Badge,
+	Button,
+	HamburgerMenu,
+	Label,
+} from '@bsf/force-ui';
 import { CircleHelp, ArrowUpRight, Megaphone } from 'lucide-react';
 import { addQueryParam, cn } from '@Utils/Helpers';
 import UpgradeNotice from './UpgradeNotice';
+import LogoFull from '@Admin/dashboard/templates/LogoFull';
+import Breadcrumb from './Breadcrumb';
 
 const { site_url: siteURL = '', is_pro_active: isProActive = false } =
 	srfm_admin;
@@ -33,7 +41,14 @@ const NAV_ITEMS = [
 	},
 ];
 
-const Header = () => {
+/**
+ * Header Component
+ *
+ * @param {Object}                                       props            Component props
+ * @param {Array<import('./Breadcrumb').BreadcrumbItem>} props.breadCrumb Breadcrumb items
+ * @return {JSX.Element}                Header component
+ */
+const Header = ( { breadCrumb } ) => {
 	const [ activePage, setActivePage ] = useState( null );
 	const [ isLicenseActive, setIsLicenseActive ] = useState(
 		srfm_admin?.is_license_active || false
@@ -85,7 +100,7 @@ const Header = () => {
 				activePage?.slug === 'sureforms_menu' &&
 				isFirstFormCreated &&
 				srfm_admin?.check_three_days_threshold && <UpgradeNotice /> }
-			<Topbar className="py-0 px-4 pt-0 pb-0 min-h-0 h-14 gap-4 shadow-sm bg-background-primary/75 backdrop-blur-[5px]">
+			<Topbar className="py-0 px-4 min-h-0 h-14 gap-4 shadow-sm bg-background-primary/75 backdrop-blur-[5px]">
 				<Topbar.Left className="gap-3">
 					<Topbar.Item className="w-auto h-auto lg:hidden">
 						<HamburgerMenu>
@@ -126,12 +141,17 @@ const Header = () => {
 						</HamburgerMenu>
 					</Topbar.Item>
 					<Topbar.Item>
-						<Logo />
+						{ ! breadCrumb ? <Logo /> : <LogoFull /> }
 					</Topbar.Item>
+					{ breadCrumb && !! breadCrumb?.length && (
+						<Topbar.Item className="[&_li]:m-0 -ml-1">
+							<Breadcrumb options={ breadCrumb } />
+						</Topbar.Item>
+					) }
 				</Topbar.Left>
 				<Topbar.Middle align="left" className="h-full hidden lg:flex">
 					<Topbar.Item>
-						<nav className="flex items-center gap-4 h-full">
+						{ ! breadCrumb && <nav className="flex items-center gap-4 h-full">
 							{ NAV_ITEMS.map( ( item ) => (
 								<a
 									className={ cn(
@@ -145,7 +165,7 @@ const Header = () => {
 									{ item.text }
 								</a>
 							) ) }
-						</nav>
+						</nav> }
 					</Topbar.Item>
 					{ ! isProActive &&
 						! isLicenseActive &&
