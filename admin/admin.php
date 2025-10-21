@@ -863,7 +863,6 @@ class Admin {
 				)
 			);
 			wp_enqueue_style( SRFM_SLUG . '-dashboard', SRFM_URL . 'assets/build/dashboard.css', [], SRFM_VER, 'all' );
-
 		}
 
 		if ( $is_screen_sureforms_form_settings ) {
@@ -874,9 +873,6 @@ class Admin {
 		if ( $is_screen_sureforms_entries ) {
 			$asset_handle = '-entries';
 			wp_enqueue_script( SRFM_SLUG . $asset_handle, SRFM_URL . 'assets/build/entries.js', $script_info['dependencies'], SRFM_VER, true );
-
-			// Filter to add entries page specific scripts from Pro plugin.
-			do_action( 'srfm_enqueue_entries_page_scripts' );
 
 			$script_translations_handlers[] = SRFM_SLUG . $asset_handle;
 		}
