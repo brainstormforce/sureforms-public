@@ -4,7 +4,7 @@
 **Requires at least:** 6.4  
 **Tested up to:** 6.8.3  
 **Requires PHP:** 7.4  
-**Stable tag:** 1.13.0  
+**Stable tag:** 1.13.1  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -365,16 +365,16 @@ easy.
 You can report the issue through our [Bug Bounty Program](https://brainstormforce.com/bug-bounty-program/). We collaborate with Patchstack to provide opportunities for researchers to report vulnerabilities. The Patchstack team will help validate, triage, and handle any reported security issues.
 
 ## Changelog ##
+### 1.13.1 - 22nd October 2025 ###
+* Fix: Fixed compatibility issue with Presto Player.
+* Fix: Resolved an issue where trailing zeros in number fields were removed after the decimal on the frontend.
+* Fix: Resolved an issue where the phone field country list wasn’t visible in Spectra modal on mobile devices.
 ### 1.13.0 - 14th October 2025 ###
 * New: Added support for Native Integrations in Pro Plan.
 * Fix: Prevented multiple entries from being recorded when the submit button is clicked repeatedly.
 ### 1.12.3 - 30th September 2025 ###
 * Fix: AI form generation not redirecting to the SureForms editor after creation.
 * Fix: Forms not publishing or saving with certain blocks on low PHP memory servers.
-### 1.12.2 - 26th September 2025 ###
-* Improvement: Made the submit note button responsive in single entries to prevent overflow in translations.
-* Improvement: Smart tag output now shows single file uploads as links and multiple files as a list.
-* Fix: Addressed a security bug. Props to Wordfence for reporting it responsibly.
 
 The full changelog is available [here](https://sureforms.com/whats-new/).
 
