@@ -63,6 +63,8 @@ class Front_End {
 		$currency    = sanitize_text_field( wp_unslash( $_POST['currency'] ?? 'usd' ) );
 		$description = sanitize_text_field( wp_unslash( $_POST['description'] ?? 'SureForms Payment' ) );
 		$block_id    = sanitize_text_field( wp_unslash( $_POST['block_id'] ?? '' ) );
+		$customer_email = sanitize_email( wp_unslash( $_POST['customer_email'] ?? '' ) );
+		$customer_name = sanitize_text_field( wp_unslash( $_POST['customer_name'] ?? '' ) );
 
 		if ( $amount <= 0 ) {
 			wp_send_json_error( __( 'Invalid payment amount.', 'sureforms' ) );
@@ -89,6 +91,7 @@ class Front_End {
 					'currency'                  => strtolower( $currency ),
 					'description'               => $description,
 					'confirm'                   => false, // Will be confirmed by frontend.
+					"receipt_email"             => $customer_email,
 					'automatic_payment_methods' => [
 						'enabled'         => true,
 						'allow_redirects' => 'never',
@@ -97,6 +100,8 @@ class Front_End {
 						'source'          => 'SureForms',
 						'block_id'        => $block_id,
 						'original_amount' => $amount,
+						"receipt_email"             => $customer_email,
+						"customer_name"             => $customer_name,
 					],
 				]
 			);
@@ -166,6 +171,8 @@ class Front_End {
 
 		$subscription_interval = sanitize_text_field( wp_unslash( $_POST['interval'] ?? 'month' ) );
 		$plan_name             = sanitize_text_field( wp_unslash( $_POST['plan_name'] ?? 'Subscription Plan' ) );
+		$customer_email        = sanitize_email( wp_unslash( $_POST['customer_email'] ?? '' ) );
+		$customer_name         = sanitize_text_field( wp_unslash( $_POST['customer_name'] ?? '' ) );
 
 		// Validate amount like simple-stripe-subscriptions.
 		if ( $amount <= 0 ) {
@@ -191,7 +198,7 @@ class Front_End {
 			}
 
 			// Get or create Stripe customer for subscriptions.
-			$customer_id = $this->get_or_create_stripe_customer();
+			$customer_id = $this->get_or_create_stripe_customer([ 'email' => $customer_email, 'name' => $customer_name ]);
 			if ( ! $customer_id ) {
 				throw new \Exception( __( 'Failed to create customer for subscription.', 'sureforms' ) );
 			}
@@ -852,10 +859,11 @@ class Front_End {
 	/**
 	 * Get or create Stripe customer
 	 *
+	 * @param array<string,string> $customer_data Customer data containing 'email' and 'name' from POST.
 	 * @since x.x.x
 	 * @return string|false Customer ID on success, false on failure.
 	 */
-	private function get_or_create_stripe_customer() {
+	private function get_or_create_stripe_customer( $customer_data = [] ) {
 		$current_user = wp_get_current_user();
 
 		if ( $current_user->ID > 0 ) {
@@ -867,24 +875,42 @@ class Front_End {
 			}
 
 			// Create new customer for logged-in user.
-			return $this->create_stripe_customer_for_user( $current_user );
+			return $this->create_stripe_customer_for_user( $current_user, $customer_data );
 		}
-			// Non-logged-in user - create temporary customer.
-			return $this->create_stripe_customer_for_guest();
+
+		// Non-logged-in user - create temporary customer.
+		return $this->create_stripe_customer_for_guest( $customer_data );
 	}
 	/**
 	 * Create Stripe customer for logged-in user
 	 *
-	 * @param \WP_User $user WordPress user object.
+	 * @param \WP_User             $user WordPress user object.
+	 * @param array<string,string> $post_customer_data Customer data from POST containing 'email' and 'name'.
 	 * @since x.x.x
 	 * @return string|false Customer ID on success, false on failure.
 	 */
-	private function create_stripe_customer_for_user( $user ) {
+	private function create_stripe_customer_for_user( $user, $post_customer_data = [] ) {
 		try {
+			// Use POST email if provided, else use logged-in user email.
+			$customer_email = ! empty( $post_customer_data['email'] ) ? $post_customer_data['email'] : $user->user_email;
+
+			// Use POST name if provided, else use logged-in user name.
+			$customer_name = ! empty( $post_customer_data['name'] ) ? $post_customer_data['name'] : ( trim( $user->first_name . ' ' . $user->last_name ) ?: $user->display_name );
+
+			// Build description with provided email and name.
+			$description_parts = [];
+			if ( ! empty( $customer_email ) ) {
+				$description_parts[] = $customer_email;
+			}
+			if ( ! empty( $customer_name ) ) {
+				$description_parts[] = $customer_name;
+			}
+			$description = ! empty( $description_parts ) ? implode( ', ', $description_parts ) : sprintf( 'WordPress User ID: %d', $user->ID );
+
 			$customer_data = [
-				'email'       => $user->user_email,
-				'name'        => trim( $user->first_name . ' ' . $user->last_name ) ?: $user->display_name,
-				'description' => sprintf( 'WordPress User ID: %d', $user->ID ),
+				'email'       => $customer_email,
+				'name'        => $customer_name,
+				'description' => $description,
 				'metadata'    => [
 					'source'        => 'SureForms',
 					'wp_user_id'    => $user->ID,
@@ -913,16 +939,28 @@ class Front_End {
 	/**
 	 * Create Stripe customer for guest user
 	 *
+	 * @param array<string,string> $post_customer_data Customer data from POST containing 'email' and 'name'.
 	 * @since x.x.x
 	 * @return string|false Customer ID on success, false on failure.
 	 */
-	private function create_stripe_customer_for_guest() {
+	private function create_stripe_customer_for_guest( $post_customer_data = [] ) {
 		try {
-			// Get form data if available for guest customer info.
-			$form_data = $this->get_form_data_for_guest_customer();
+			// Use email and name from POST data.
+			$customer_email = ! empty( $post_customer_data['email'] ) ? sanitize_email( $post_customer_data['email'] ) : '';
+			$customer_name  = ! empty( $post_customer_data['name'] ) ? sanitize_text_field( $post_customer_data['name'] ) : '';
+
+			// Build description with provided email and name.
+			$description_parts = [];
+			if ( ! empty( $customer_email ) ) {
+				$description_parts[] = $customer_email;
+			}
+			if ( ! empty( $customer_name ) ) {
+				$description_parts[] = $customer_name;
+			}
+			$description = ! empty( $description_parts ) ? implode( ', ', $description_parts ) : 'Guest User - SureForms Subscription';
 
 			$customer_data = [
-				'description' => 'Guest User - SureForms Subscription',
+				'description' => $description,
 				'metadata'    => [
 					'source'     => 'SureForms',
 					'user_type'  => 'guest',
@@ -931,15 +969,16 @@ class Front_End {
 				],
 			];
 
-			// Add email and name if available from form data.
-			if ( ! empty( $form_data['email'] ) ) {
-				$customer_data['email']                  = sanitize_email( $form_data['email'] );
-				$customer_data['metadata']['form_email'] = $form_data['email'];
+			// Add email if available from POST data.
+			if ( ! empty( $customer_email ) ) {
+				$customer_data['email']                  = $customer_email;
+				$customer_data['metadata']['form_email'] = $customer_email;
 			}
 
-			if ( ! empty( $form_data['name'] ) ) {
-				$customer_data['name']                  = sanitize_text_field( $form_data['name'] );
-				$customer_data['metadata']['form_name'] = $form_data['name'];
+			// Add name if available from POST data.
+			if ( ! empty( $customer_name ) ) {
+				$customer_data['name']                  = $customer_name;
+				$customer_data['metadata']['form_name'] = $customer_name;
 			}
 
 			$customer = $this->stripe_api_request( 'customers', 'POST', $customer_data );

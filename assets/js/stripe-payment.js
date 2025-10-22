@@ -203,6 +203,7 @@ class StripePayment {
 		// Setup
 		const isSubscription = paymentType === 'subscription';
 		const typeLabel = isSubscription ? 'subscription' : 'payment intent';
+		const customerData = this.extractCustomerData( paymentInput );
 
 		console.log(
 			`SureForms: Creating ${ typeLabel } for block ${ blockId } during form submission`
@@ -228,11 +229,11 @@ class StripePayment {
 		data.append( 'currency', currency );
 		data.append( 'description', description );
 		data.append( 'block_id', blockId );
+		data.append( 'customer_email', customerData.email );
+		data.append( 'customer_name', customerData.name );
 
 		// Add subscription-specific data
-		let customerData = null;
 		if ( isSubscription ) {
-			customerData = this.extractCustomerData( paymentInput );
 			data.append( 'interval', customerData.interval );
 			data.append( 'plan_name', customerData.planName );
 		}
