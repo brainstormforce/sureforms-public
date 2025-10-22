@@ -4,6 +4,7 @@ import { Button, Text } from '@bsf/force-ui';
 import { __ } from '@wordpress/i18n';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { useEntryLogs } from '../hooks/useEntriesQuery';
+import domPurify from 'dompurify';
 
 /**
  * EntryLogsSection Component
@@ -117,9 +118,10 @@ const EntryLogsSection = ( { entryId, onConfirmation } ) => {
 													size={ 14 }
 													weight={ 400 }
 													color="primary"
-												>
-													{ message }
-												</Text>
+													dangerouslySetInnerHTML={ {
+														__html: domPurify.sanitize( message ),
+													} }
+												/>
 											)
 										) }
 								</div>
