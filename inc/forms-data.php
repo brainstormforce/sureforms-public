@@ -131,12 +131,14 @@ class Forms_Data {
 		}
 
 		// Get and validate request parameters.
-		$page     = max( 1, Helper::get_integer_value( $request->get_param( 'page' ) ) );
-		$per_page = min( 100, max( 1, Helper::get_integer_value( $request->get_param( 'per_page' ) ) ) );
-		$search   = sanitize_text_field( $request->get_param( 'search' ) );
-		$status   = sanitize_text_field( $request->get_param( 'status' ) );
-		$orderby  = sanitize_text_field( $request->get_param( 'orderby' ) );
-		$order    = sanitize_text_field( $request->get_param( 'order' ) );
+		$page      = max( 1, Helper::get_integer_value( $request->get_param( 'page' ) ) );
+		$per_page  = min( 100, max( 1, Helper::get_integer_value( $request->get_param( 'per_page' ) ) ) );
+		$search    = sanitize_text_field( $request->get_param( 'search' ) );
+		$status    = sanitize_text_field( $request->get_param( 'status' ) );
+		$orderby   = sanitize_text_field( $request->get_param( 'orderby' ) );
+		$order     = sanitize_text_field( $request->get_param( 'order' ) );
+		$date_from = sanitize_text_field( $request->get_param( 'date_from' ) );
+		$date_to   = sanitize_text_field( $request->get_param( 'date_to' ) );
 
 		// Build query arguments.
 		$args = [
@@ -151,6 +153,22 @@ class Forms_Data {
 		// Add search parameter.
 		if ( ! empty( $search ) ) {
 			$args['s'] = $search;
+		}
+
+		// Add date range filtering.
+		if ( ! empty( $date_from ) || ! empty( $date_to ) ) {
+			$date_query = [];
+
+			if ( ! empty( $date_from ) ) {
+				$date_query['after'] = $date_from;
+			}
+
+			if ( ! empty( $date_to ) ) {
+				$date_query['before'] = $date_to;
+			}
+
+			$date_query['inclusive'] = true;
+			$args['date_query']      = [ $date_query ];
 		}
 
 		// Execute query.

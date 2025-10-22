@@ -447,34 +447,56 @@ class Rest_Api {
 					'callback'            => [ Forms_Data::get_instance(), 'get_forms_list' ],
 					'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
 					'args'                => [
-						'page'     => [
+						'page'      => [
 							'type'    => 'integer',
 							'default' => 1,
 							'minimum' => 1,
 						],
-						'per_page' => [
+						'per_page'  => [
 							'type'    => 'integer',
 							'default' => 20,
 							'minimum' => 1,
 							'maximum' => 100,
 						],
-						'search'   => [
+						'search'    => [
 							'type' => 'string',
 						],
-						'status'   => [
+						'status'    => [
 							'type'    => 'string',
 							'enum'    => [ 'publish', 'draft', 'trash', 'any' ],
 							'default' => 'publish',
 						],
-						'orderby'  => [
+						'orderby'   => [
 							'type'    => 'string',
 							'default' => 'date',
 							'enum'    => [ 'date', 'id', 'title', 'modified' ],
 						],
-						'order'    => [
+						'order'     => [
 							'type'    => 'string',
 							'default' => 'desc',
 							'enum'    => [ 'asc', 'desc' ],
+						],
+						'date_from' => [
+							'type'              => 'string',
+							'format'            => 'date',
+							'sanitize_callback' => 'sanitize_text_field',
+							'validate_callback' => static function( $value ) {
+								if ( empty( $value ) ) {
+									return true;
+								}
+								return (bool) strtotime( $value );
+							},
+						],
+						'date_to'   => [
+							'type'              => 'string',
+							'format'            => 'date',
+							'sanitize_callback' => 'sanitize_text_field',
+							'validate_callback' => static function( $value ) {
+								if ( empty( $value ) ) {
+									return true;
+								}
+								return (bool) strtotime( $value );
+							},
 						],
 					],
 				],
