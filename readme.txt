@@ -366,6 +366,7 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 
 == Changelog ==
 = x.x.x =
+* Fix: Resolved an issue with missing attr key in the frontend causing PHP warning.
 * Fix: Resolved a compatibility issue with Presto Player.
 * Fix: Resolved an issue where trailing 0's for number field are being removed in the frontend when added after decimal.
 * Fix: Resolved an UI issue where country list for phone number is not visible with Spectra modal for mobile devices.
