@@ -2,7 +2,7 @@ import { Button, Title } from '@bsf/force-ui';
 import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
 
-const PageTitleSection = ( { title, hidePageTitle, helpText } ) => {
+const PageTitleSection = ( { title, hidePageTitle } ) => {
 	if ( ! title ) {
 		return null;
 	}
@@ -28,7 +28,7 @@ const PageTitleSection = ( { title, hidePageTitle, helpText } ) => {
 	return (
 		// Do not render the title section if hidePageTitle is true.
 		! hidePageTitle && (
-			<div className="max-w-content-container mx-auto flex justify-between mb-6 flex-col gap-1">
+			<div className="max-w-content-container mx-auto flex items-center justify-between mb-6">
 				<Title
 					tag="h4"
 					className="inline-block"
@@ -38,11 +38,6 @@ const PageTitleSection = ( { title, hidePageTitle, helpText } ) => {
 				{ ! exclusionList.includes( getCurrentPage() ) && (
 					<Button>{ __( 'Save', 'sureforms' ) }</Button>
 				) }
-				{helpText && <span
-					className='text-[14px] text-[#6B7280] leading-5'
-				>
-					{ helpText }
-				</span>}
 			</div>
 		)
 	);
