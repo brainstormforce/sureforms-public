@@ -146,7 +146,8 @@ class Smart_Tags {
 			$is_valid_tag = isset( $get_smart_tag_list[ $tag ] ) ||
 			strpos( $tag, 'get_input:' ) ||
 			strpos( $tag, 'get_cookie:' ) ||
-			0 === strpos( $tag, '{form:' );
+			0 === strpos( $tag, '{form:' ) ||
+			0 === strpos( $tag, '{form-payment:' );
 
 			if ( ! $is_valid_tag ) {
 				continue;
@@ -301,6 +302,10 @@ class Smart_Tags {
 
 				if ( 0 === strpos( $tag, '{form:' ) ) {
 					return self::parse_form_input( $tag, $submission_data, $form_data );
+				}
+
+				if ( 0 === strpos( $tag, '{form-payment:' ) ) {
+					return self::parse_payment_smart_tag( $tag, $submission_data, $form_data );
 				}
 				break;
 		}
@@ -502,6 +507,124 @@ class Smart_Tags {
 			}
 		}
 		return $replacement_data;
+	}
+
+	/**
+	 * Parse Payment Smart Tag.
+	 *
+	 * Parses payment smart tags in the format: {form-payment:slug:property}
+	 * where property can be: order-id, amount, email, name, status
+	 *
+	 * @param string            $value tag.
+	 * @param array<mixed>|null $submission_data data from submission.
+	 * @param array<mixed>|null $form_data data from form.
+	 * @since  x.x.x
+	 * @return string
+	 */
+	public static function parse_payment_smart_tag( $value, $submission_data = null, $form_data = null ) {
+
+		if ( ! $submission_data || ! $form_data ) {
+			return '';
+		}
+
+		// Extract slug and property from tag: {form-payment:slug:property}
+		if ( ! preg_match( '/\{form-payment:(.*?):(.*?)}/', $value, $matches ) ) {
+			return '';
+		}
+
+		$target_slug = $matches[1];
+		$property    = $matches[2];
+
+		// Valid properties for payment smart tags.
+		$valid_properties = [ 'order-id', 'amount', 'email', 'name', 'status' ];
+		if ( ! in_array( $property, $valid_properties, true ) ) {
+			return '';
+		}
+
+		// Find payment entry ID from submission data.
+		$payment_entry_id = null;
+
+		if ( ! is_array( $submission_data ) ) {
+			return '';
+		}
+
+		foreach ( $submission_data as $submission_item_key => $submission_item_value ) {
+			// Check if this is a payment field.
+			if ( strpos( $submission_item_key, '-lbl-' ) === false ) {
+				continue;
+			}
+
+			// Split to get block type and label.
+			$name_parts = explode( '-lbl-', $submission_item_key );
+			if ( count( $name_parts ) < 2 ) {
+				continue;
+			}
+
+			// Check if it's a payment block.
+			if ( strpos( $name_parts[0], 'srfm-payment-' ) !== 0 ) {
+				continue;
+			}
+
+			// Get the slug from the label part.
+			$label      = $name_parts[1];
+			$slug       = implode( '-', array_slice( explode( '-', $label ), 1 ) );
+
+			// Check if this is the payment block we're looking for.
+			if ( $slug === $target_slug ) {
+				// The submission value should be the payment entry ID.
+				$payment_entry_id = is_numeric( $submission_item_value ) ? intval( $submission_item_value ) : null;
+				break;
+			}
+		}
+
+		// If no payment entry found, return empty.
+		if ( ! $payment_entry_id ) {
+			return '';
+		}
+
+		// Load the Payments class if not already loaded.
+		if ( ! class_exists( 'SRFM\Inc\Database\Tables\Payments' ) ) {
+			return '';
+		}
+
+		// Get payment entry from database.
+		$payment_entry = \SRFM\Inc\Database\Tables\Payments::get( $payment_entry_id );
+
+		if ( ! $payment_entry || ! is_array( $payment_entry ) ) {
+			return '';
+		}
+
+		// Return the requested property.
+		switch ( $property ) {
+			case 'order-id':
+				// Return formatted order ID: SF-#{srfm_txn_id} or SF-#{id}.
+				$order_id = ! empty( $payment_entry['srfm_txn_id'] ) ? $payment_entry['srfm_txn_id'] : $payment_entry['id'];
+				return 'SF-#' . $order_id;
+
+			case 'amount':
+				// Return formatted amount with currency.
+				$amount   = ! empty( $payment_entry['total_amount'] ) ? floatval( $payment_entry['total_amount'] ) : 0;
+				$currency = ! empty( $payment_entry['currency'] ) ? strtoupper( $payment_entry['currency'] ) : 'USD';
+				return Helper::get_string_value( number_format( $amount, 2 ) ) . ' ' . $currency;
+
+			case 'email':
+				// Return customer email.
+				return ! empty( $payment_entry['customer_email'] ) ? sanitize_email( $payment_entry['customer_email'] ) : '';
+
+			case 'name':
+				// Return customer name.
+				return ! empty( $payment_entry['customer_name'] ) ? sanitize_text_field( $payment_entry['customer_name'] ) : '';
+
+			case 'status':
+				// Return payment status or subscription status based on type.
+				if ( 'subscription' === $payment_entry['type'] && ! empty( $payment_entry['subscription_status'] ) ) {
+					return sanitize_text_field( $payment_entry['subscription_status'] );
+				}
+				return ! empty( $payment_entry['status'] ) ? sanitize_text_field( $payment_entry['status'] ) : '';
+
+			default:
+				return '';
+		}
 	}
 
 	/**
