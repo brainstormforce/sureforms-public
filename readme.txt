@@ -366,8 +366,8 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 
 == Changelog ==
 = 1.13.1 - 22nd October 2025 =
-* Fix: Fixed compatibility issue with Presto Player.
-* Fix: Resolved an issue where trailing zeros in number fields were removed after the decimal on the frontend.
+* Improvement: Preserved trailing zeros in number field after the decimal.
+* Fix: Fixed compatibility with Presto Player.
 * Fix: Resolved an issue where the phone field country list wasn’t visible in Spectra modal on mobile devices.
 = 1.13.0 - 14th October 2025 =
 * New: Added support for Native Integrations in Pro Plan.
