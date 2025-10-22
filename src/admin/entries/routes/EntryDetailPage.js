@@ -128,11 +128,6 @@ const EntryDetailPage = () => {
 		);
 	}, [ location?.search, id, updateReadStatusMutation, navigate ] );
 
-	const handleEditEntry = () => {
-		// TODO: Implement edit entry functionality
-		console.log( 'Edit entry clicked' );
-	};
-
 	const handleSendEmail = () => {
 		if ( ! ResendNotificationModal ) {
 			return;
@@ -198,7 +193,6 @@ const EntryDetailPage = () => {
 								<div className="lg:col-span-2 space-y-6">
 									<EntryDataSection
 										entryData={ entryData }
-										onEdit={ handleEditEntry }
 									/>
 									<SubmissionInfoSection
 										entryData={ entryData }
