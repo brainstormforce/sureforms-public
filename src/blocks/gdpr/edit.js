@@ -84,7 +84,6 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 									setAttributes( { help: value } )
 								}
 							/>
-							<div className="srfm-settings-separator" />
 							<ToggleControl
 								label={ __(
 									'Checked by default',
