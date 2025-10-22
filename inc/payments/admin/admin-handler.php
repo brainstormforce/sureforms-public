@@ -583,6 +583,7 @@ class Admin_Handler {
 			'log'                    => $payment['log'] ?? '[]',
 			'created_at'             => $payment['created_at'],
 			'updated_at'             => $payment['updated_at'],
+			'srfm_txn_id'             => $payment['srfm_txn_id'],
 
 			// Additional frontend fields.
 			'form_title'             => $form_title,

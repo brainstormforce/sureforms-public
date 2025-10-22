@@ -652,10 +652,13 @@ const PaymentTable = () => {
 			formatAmount( originalAmount, payment.currency )
 		);
 
+		let orderId = payment?.srfm_txn_id ? payment.srfm_txn_id : payment.id;
+		orderId = `SF-#${ orderId }`;
+
 		const tableRowContent = applyFilters(
 			'srfm_payment_admin_table_row_content',
 			[
-				{ key: 'order_id', content: `SF-${ payment.id }` },
+				{ key: 'order_id', content: orderId },
 				{ key: 'customer_email', content: payment.customer_email },
 				{ key: 'type', content: paymentType },
 				{ key: 'amountPaid', content: rowAmountPaid },

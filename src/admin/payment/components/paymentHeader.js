@@ -3,7 +3,11 @@ import { ArrowLeft, ArrowUpRight } from 'lucide-react';
 import { __, sprintf } from '@wordpress/i18n';
 
 const PaymentHeader = ( { title, onBack, paymentData, handleViewEntry } ) => {
-	const { id, entry_id } = paymentData;
+	const { id, entry_id, srfm_txn_id } = paymentData;
+
+	// Generate order ID in the same format as payment list
+	let orderId = srfm_txn_id ? srfm_txn_id : id;
+	orderId = `SF-#${ orderId }`;
 
 	return (
 		<Container
@@ -16,8 +20,8 @@ const PaymentHeader = ( { title, onBack, paymentData, handleViewEntry } ) => {
 				icon={ null }
 				size="lg"
 				tag="h2"
-				/* translators: 1: title, 2: ID number */
-				title={ sprintf( __( '%1$s #%2$s', 'sureforms' ), title, id ) }
+				/* translators: 1: title, 2: Order ID */
+				title={ sprintf( __( '%1$s %2$s', 'sureforms' ), title, orderId ) }
 			/>
 			<div className="flex gap-2 items-center">
 				<Button

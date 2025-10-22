@@ -498,9 +498,8 @@ class Front_End {
 			$confirm_payment_currency = is_array( $confirmed_payment_intent ) && isset( $confirmed_payment_intent['currency'] ) && ! empty( $confirmed_payment_intent['currency'] ) ? (string) $confirmed_payment_intent['currency'] : 'usd';
 			$confirm_payment_id       = is_array( $confirmed_payment_intent ) && isset( $confirmed_payment_intent['id'] ) && ! empty( $confirmed_payment_intent['id'] ) ? (string) $confirmed_payment_intent['id'] : '';
 
-			// Extract customer data and generate transaction ID.
+			// Extract customer data.
 			$customer_data = $this->extract_customer_data( $payment_value );
-			$txn_id        = $this->generate_transaction_id( $confirm_payment_id );
 
 			// update payment status and save to the payment entries table.
 			$entry_data['form_id']        = $form_id;
@@ -513,13 +512,17 @@ class Front_End {
 			$entry_data['type']           = 'payment';
 			$entry_data['mode']           = $payment_mode;
 			$entry_data['transaction_id'] = $confirm_payment_id;
-			$entry_data['srfm_txn_id']    = $txn_id;
+			$entry_data['srfm_txn_id']    = ''; // Will be updated after getting payment entry ID.
 			$entry_data['customer_email'] = $customer_data['email'];
 			$entry_data['customer_name']  = $customer_data['name'];
 
 			$get_payment_entry_id = Payments::add( $entry_data );
 
 			if ( $get_payment_entry_id ) {
+				// Generate unique payment ID using the auto-increment ID and update the entry.
+				$unique_payment_id = $this->generate_unique_payment_id( $get_payment_entry_id );
+				Payments::update( $get_payment_entry_id, [ 'srfm_txn_id' => $unique_payment_id ] );
+
 				$add_in_static_value = [
 					'payment_id' => $confirm_payment_id,
 					'block_id'   => $block_id,
@@ -671,9 +674,8 @@ class Front_End {
 			$form_id             = isset( $form_data['form-id'] ) && ! empty( $form_data['form-id'] ) ? intval( $form_data['form-id'] ) : 0;
 			$subscription_status = isset( $subscription['status'] ) && ! empty( $subscription['status'] ) && is_string( $subscription['status'] ) ? $subscription['status'] : '';
 
-			// Extract customer data and generate transaction ID.
+			// Extract customer data.
 			$customer_data = $this->extract_customer_data( $subscription_value );
-			$txn_id        = $this->generate_transaction_id( $subscription_id );
 
 			// Prepare minimal subscription data for database.
 			$entry_data = [
@@ -690,7 +692,7 @@ class Front_End {
 				'customer_id'         => $customer_id,
 				'subscription_id'     => $subscription_id,
 				'subscription_status' => $subscription_status,
-				'srfm_txn_id'         => $txn_id,
+				'srfm_txn_id'         => '', // Will be updated after getting payment entry ID.
 				'customer_email'      => $customer_data['email'],
 				'customer_name'       => $customer_data['name'],
 				'payment_data'        => [
@@ -725,6 +727,10 @@ class Front_End {
 			$payment_entry_id = Payments::add( $entry_data );
 
 			if ( $payment_entry_id ) {
+				// Generate unique payment ID using the auto-increment ID and update the entry.
+				$unique_payment_id = $this->generate_unique_payment_id( $payment_entry_id );
+				Payments::update( $payment_entry_id, [ 'srfm_txn_id' => $unique_payment_id ] );
+
 				// Store in static array for later entry linking.
 				$this->stripe_payment_entries[] = [
 					'payment_id' => $subscription_id,
@@ -1221,7 +1227,7 @@ class Front_End {
 	}
 
 	/**
-	 * Generate unique transaction ID
+	 * Generate unique transaction ID (deprecated - kept for backwards compatibility)
 	 *
 	 * Format: {6-random-chars}_{payment_id}
 	 * Example: a2bf45_pi_3QhgmFHqS7N4oFQh0x4UQjBv
@@ -1239,6 +1245,37 @@ class Front_End {
 		}
 
 		return $random . '_' . $payment_id;
+	}
+
+	/**
+	 * Generate unique payment ID using base36 encoding and random string, always 14 characters.
+	 *
+	 * Format: {base36_encoded_id}{random_chars},
+	 * Example: 3F7B9A1E4C7D2A (exactly 14 chars)
+	 *
+	 * @param int $auto_increment_id The database auto-increment ID.
+	 * @since x.x.x
+	 * @return string Generated unique payment ID (always 14 characters).
+	 */
+	private function generate_unique_payment_id( $auto_increment_id ) {
+		// Convert the auto-increment ID to base36.
+		$encoded_id = base_convert( $auto_increment_id, 10, 36 );
+
+		// Calculate the length of random part needed to make the ID exactly 14 chars.
+		$random_length = 14 - strlen( $encoded_id );
+		if ( $random_length < 1 ) {
+			$random_length = 1; // Always leave at least 1 random char for collision prevention.
+		}
+
+		// Generate random part using only valid base36 (alphanumeric) chars.
+		// bin2hex gives 2 chars per byte, so we need ceil($random_length / 2) bytes.
+		$random_bytes = bin2hex( random_bytes( (int) ceil( $random_length / 2 ) ) );
+		$random_part = substr( $random_bytes, 0, $random_length );
+
+		$unique_id = strtoupper( $encoded_id . $random_part );
+
+		// Ensure exactly 14 chars.
+		return substr( $unique_id, 0, 14 );
 	}
 
 	/**
