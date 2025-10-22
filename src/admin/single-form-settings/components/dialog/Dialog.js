@@ -218,7 +218,7 @@ const Dialog = ( {
 					<FeaturePreview
 						featureName={ __( 'User Registration', 'sureforms' ) }
 						featureHelpText={ __(
-							'Onboard new users or update or existing accounts through beautiful looking forms.',
+							'Onboard new users or update an existing accounts through beautiful looking forms.',
 							'sureforms'
 						) }
 						icon={
@@ -272,10 +272,7 @@ const Dialog = ( {
 								strokeWidth={ 1 }
 							/>
 						}
-						title={ __(
-							'Post Feed',
-							'sureforms'
-						) }
+						title={ __( 'Post Feed', 'sureforms' ) }
 						subtitle={ __(
 							'Automatically turn form submissions into WordPress posts, pages, or custom post types. Save big on time and let your forms publish content directly.',
 							'sureforms'
