@@ -65,7 +65,9 @@ const Component = ( { path } ) => {
 			navigation.forEach( ( single ) => {
 				const slug = single?.slug && single.slug ? single.slug : '';
 				const title = single?.name && single.name ? single.name : '';
-				const helpText = single?.helpText && single.helpText ? single.helpText : '';
+				// eslint-disable-next-line no-shadow
+				const helpText =
+					single?.helpText && single.helpText ? single.helpText : '';
 				// Check for the property to hide the page title.
 				const hideTitle = !! single?.hidePageTitle;
 				if ( slug ) {
@@ -252,7 +254,7 @@ const Component = ( { path } ) => {
 				<PageTitleSection
 					title={ pageTitle }
 					hidePageTitle={ hidePageTitle }
-					helpText={helpText}
+					helpText={ helpText }
 				/>
 			) }
 			{ /* Added the below check to make the container full width for the OttoKit tab. */ }

@@ -15,13 +15,19 @@ export const navigation = applyFilters( 'srfm.settings.navigation', [
 		name: __( 'General', 'sureforms' ),
 		slug: 'general-settings',
 		icon: <Settings />,
-		helpText: __( 'Set up email summaries, admin alerts, and data preferences to manage your forms with ease.', 'sureforms' ),
+		helpText: __(
+			'Set up email summaries, admin alerts, and data preferences to manage your forms with ease.',
+			'sureforms'
+		),
 	},
 	{
 		name: __( 'Form Validation', 'sureforms' ),
 		slug: 'validation-settings',
 		icon: <ShieldCheck />,
-		helpText: __( 'Customize default error messages shown when users submit invalid or incomplete form entries.', 'sureforms' ),
+		helpText: __(
+			'Customize default error messages shown when users submit invalid or incomplete form entries.',
+			'sureforms'
+		),
 	},
 	{
 		name: __( 'Spam Protection', 'sureforms' ),
@@ -45,7 +51,10 @@ export const navigation = applyFilters( 'srfm.settings.navigation', [
 				slug: 'honeypot',
 			},
 		],
-		helpText: __( 'Enable spam protection for your forms using CAPTCHA services or honeypot security.', 'sureforms' ),
+		helpText: __(
+			'Enable spam protection for your forms using CAPTCHA services or honeypot security.',
+			'sureforms'
+		),
 	},
 	{
 		name: __( 'OttoKit', 'sureforms' ),

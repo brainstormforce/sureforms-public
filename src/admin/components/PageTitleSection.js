@@ -38,11 +38,11 @@ const PageTitleSection = ( { title, hidePageTitle, helpText } ) => {
 				{ ! exclusionList.includes( getCurrentPage() ) && (
 					<Button>{ __( 'Save', 'sureforms' ) }</Button>
 				) }
-				{helpText && <span
-					className='text-[14px] text-[#6B7280] leading-5'
-				>
-					{ helpText }
-				</span>}
+				{ helpText && (
+					<span className="text-[14px] text-[#6B7280] leading-5">
+						{ helpText }
+					</span>
+				) }
 			</div>
 		)
 	);
