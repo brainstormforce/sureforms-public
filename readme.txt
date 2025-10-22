@@ -4,7 +4,7 @@ Tags: contact form, custom form, forms,  WP Forms, form builder
 Requires at least: 6.4
 Tested up to: 6.8.3
 Requires PHP: 7.4
-Stable tag: 1.13.0
+Stable tag: 1.13.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -365,7 +365,7 @@ easy.
 You can report the issue through our [Bug Bounty Program](https://brainstormforce.com/bug-bounty-program/). We collaborate with Patchstack to provide opportunities for researchers to report vulnerabilities. The Patchstack team will help validate, triage, and handle any reported security issues.
 
 == Changelog ==
-= x.x.x =
+= 1.13.1 - 22nd October 2025 =
 * Fix: Resolved a compatibility issue with Presto Player.
 * Fix: Resolved an issue where trailing 0's for number field are being removed in the frontend when added after decimal.
 * Fix: Resolved an UI issue where country list for phone number is not visible with Spectra modal for mobile devices.
