@@ -218,7 +218,7 @@ const Dialog = ( {
 					<FeaturePreview
 						featureName={ __( 'User Registration', 'sureforms' ) }
 						featureHelpText={ __(
-							'Onboard new users or update an existing accounts through beautiful looking forms.',
+							'Onboard new users or update existing accounts through beautiful looking forms.',
 							'sureforms'
 						) }
 						icon={
