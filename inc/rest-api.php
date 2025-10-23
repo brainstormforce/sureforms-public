@@ -527,8 +527,11 @@ class Rest_Api {
 		$user_info = 0 !== $user_id ? get_userdata( $user_id ) : null;
 
 		// Get form info.
+		$form_title = get_the_title( $entry['form_id'] );
 		// Translators: %d is the form ID.
-		$form_name = ! empty( get_the_title( $entry['form_id'] ) ) ? get_the_title( $entry['form_id'] ) : sprintf( __( 'SureForms Form #%d', 'sureforms' ), intval( $entry['form_id'] ) );
+		$form_name = ! empty( $form_title ) ? $form_title : sprintf( __( 'SureForms Form #%d', 'sureforms' ), intval( $entry['form_id'] ) );
+		// Get the form content.
+		$form_content = get_post_field( 'post_content', $entry['form_id'] );
 
 		$response_data = [
 			'id'              => $entry_id,
@@ -538,6 +541,7 @@ class Rest_Api {
 			'status'          => $entry['status'],
 			'created_at'      => $entry['created_at'],
 			'form_data'       => $form_data,
+			'form_content'    => $form_content,
 			'submission_info' => [
 				'user_ip'      => $entry['submission_info']['user_ip'] ?? '',
 				'browser_name' => $entry['submission_info']['browser_name'] ?? '',
