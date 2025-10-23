@@ -365,6 +365,9 @@ easy.
 You can report the issue through our [Bug Bounty Program](https://brainstormforce.com/bug-bounty-program/). We collaborate with Patchstack to provide opportunities for researchers to report vulnerabilities. The Patchstack team will help validate, triage, and handle any reported security issues.
 
 == Changelog ==
+= x.x.x =
+* Improvement: Added popup for getting started video in dashboard.
+* Fix: Resolved an UI issue where country list for phone number is not visible with Spectra modal for mobile devices.
 = 1.13.1 - 22nd October 2025 =
 * Improvement: Preserved trailing zeros in number field after the decimal.
 * Fix: Fixed compatibility with Presto Player.
