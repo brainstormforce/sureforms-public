@@ -241,10 +241,17 @@ const Edit = ( props ) => {
 			id: 'customer-name-field',
 			component: (
 				<SelectControl
-					label={ __(
-						'Customer Name Field (Required)',
-						'sureforms'
-					) }
+					label={
+						paymentType === 'subscription'
+							? __(
+								'Customer Name Field (Required)',
+								'sureforms'
+							  )
+							: __(
+								'Customer Name Field (Optional)',
+								'sureforms'
+							  )
+					}
 					value={ customerNameField || '' }
 					options={ [
 						{
@@ -261,10 +268,17 @@ const Edit = ( props ) => {
 					onChange={ ( value ) => {
 						setAttributes( { customerNameField: value } );
 					} }
-					help={ __(
-						'Select the input field that contains the customer name',
-						'sureforms'
-					) }
+					help={
+						paymentType === 'subscription'
+							? __(
+								'Select the input field that contains the customer name (Required for subscriptions)',
+								'sureforms'
+							  )
+							: __(
+								'Select the input field that contains the customer name',
+								'sureforms'
+							  )
+					}
 				/>
 			),
 		},

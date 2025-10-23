@@ -1,7 +1,7 @@
 import apiFetch from '@wordpress/api-fetch';
 
 export const fetchPayments = async ( args ) => {
-	const { searchTerm, filter, selectedDates, page, itemsPerPage, sortBy } =
+	const { searchTerm, filter, selectedDates, page, itemsPerPage, sortBy, formFilter } =
 		args;
 	try {
 		// Prepare form data as URLSearchParams for better apiFetch compatibility
@@ -13,6 +13,7 @@ export const fetchPayments = async ( args ) => {
 		);
 		formData.append( 'search', searchTerm || '' );
 		formData.append( 'status', filter || '' );
+		formData.append( 'form_id', formFilter || '' );
 		formData.append(
 			'date_from',
 			selectedDates?.from
@@ -179,6 +180,44 @@ export const fetchSubscription = async ( subscriptionId ) => {
 		return data.data;
 	} catch ( error ) {
 		console.error( 'Error fetching subscription:', error );
+		throw error;
+	}
+};
+
+export const fetchForms = async () => {
+	try {
+		// Prepare form data for forms list fetch
+		const formData = new URLSearchParams();
+		formData.append( 'action', 'srfm_fetch_forms_list' );
+		formData.append(
+			'nonce',
+			window.srfm_payment_admin.srfm_payment_admin_nonce || ''
+		);
+
+		// Use apiFetch with proper configuration for admin-ajax.php
+		const data = await apiFetch( {
+			url: window.srfm_payment_admin.ajax_url,
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded',
+			},
+			body: formData.toString(),
+		} );
+
+		console.log( 'Forms list AJAX response:', data );
+
+		// Check WordPress AJAX response format
+		if ( ! data.success ) {
+			const errorMessage =
+				data.data?.message || 'Failed to fetch forms list';
+			console.error( 'Forms list AJAX error:', errorMessage );
+			throw new Error( errorMessage );
+		}
+
+		// Return the forms array from response
+		return data.data.forms;
+	} catch ( error ) {
+		console.error( 'Error fetching forms:', error );
 		throw error;
 	}
 };

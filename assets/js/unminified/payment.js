@@ -62,7 +62,7 @@ function validateThePaymentBlock( form ) {
 		}
 	}
 
-	// Get customer field mappings (required for both payment types)
+	// Get customer field mappings
 	const customerNameFieldSlug = paymentBlock.getAttribute(
 		'data-customer-name-field'
 	);
@@ -70,17 +70,21 @@ function validateThePaymentBlock( form ) {
 		'data-customer-email-field'
 	);
 
-	// Validate that name field is mapped
-	if ( ! customerNameFieldSlug || customerNameFieldSlug.trim() === '' ) {
+	// Get payment type (subscription or one-time)
+	const paymentType = paymentBlock.getAttribute( 'data-payment-type' ) || 'one-time';
+	const isSubscription = paymentType === 'subscription';
+
+	// Validate that name field is mapped (required only for subscriptions)
+	if ( isSubscription && ( ! customerNameFieldSlug || customerNameFieldSlug.trim() === '' ) ) {
 		return {
 			valid: false,
 			slug: 'payment-name-not-mapped',
 			message:
-				'Customer name field is required for payments. Please configure it in the payment block settings.',
+				'Customer name field is required for subscriptions. Please configure it in the payment block settings.',
 		};
 	}
 
-	// Validate that email field is mapped
+	// Validate that email field is mapped (required for all payment types)
 	if ( ! customerEmailFieldSlug || customerEmailFieldSlug.trim() === '' ) {
 		return {
 			valid: false,
@@ -90,18 +94,20 @@ function validateThePaymentBlock( form ) {
 		};
 	}
 
-	// Find the actual name input field in the form
-	const nameInput = form.querySelector(
-		`.srfm-input-block.srfm-slug-${ customerNameFieldSlug } .srfm-input-common`
-	);
-	const nameInputValue = nameInput ? nameInput.value.trim() : '';
+	// Find and validate the actual name input field in the form (only for subscriptions)
+	if ( isSubscription && customerNameFieldSlug && customerNameFieldSlug.trim() !== '' ) {
+		const nameInput = form.querySelector(
+			`.srfm-input-block.srfm-slug-${ customerNameFieldSlug } .srfm-input-common`
+		);
+		const nameInputValue = nameInput ? nameInput.value.trim() : '';
 
-	if ( ! nameInput || nameInputValue === '' ) {
-		return {
-			valid: false,
-			slug: 'payment-name-required',
-			message: 'Please enter your name.',
-		};
+		if ( ! nameInput || nameInputValue === '' ) {
+			return {
+				valid: false,
+				slug: 'payment-name-required',
+				message: 'Please enter your name.',
+			};
+		}
 	}
 
 	// Find the actual email input field in the form

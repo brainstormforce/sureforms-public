@@ -367,3 +367,13 @@ export const getSelectedDateRange = ( dates ) => {
 	}
 	return '';
 };
+
+/**
+ * Format payment object to order ID with SF-# prefix
+ * @param {Object} payment - Payment object with srfm_txn_id and id properties
+ * @return {string} Formatted order ID (e.g., "SF-#ABC123")
+ */
+export const formatOrderId = ( payment ) => {
+	const orderId = payment?.srfm_txn_id ? payment.srfm_txn_id : payment?.id;
+	return `SF-#${ orderId }`;
+};

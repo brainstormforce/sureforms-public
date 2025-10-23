@@ -24,13 +24,14 @@ import {
 import { __, sprintf } from '@wordpress/i18n';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { PaymentContext } from '../components/context';
-import { fetchPayments, bulkDeletePayments } from '../components/apiCalls';
+import { fetchPayments, bulkDeletePayments, fetchForms } from '../components/apiCalls';
 import {
 	getPaginationRange,
 	getStatusVariant,
 	formatAmount,
 	formatDateTime,
 	getStatusLabel,
+	formatOrderId,
 } from '../components/utils';
 import DeleteConfirmationDialog from '../components/DeleteConfirmationDialog';
 import DateRangePicker from '../components/DateRangePicker';
@@ -92,6 +93,7 @@ const PaymentTable = () => {
 	// Filter and search state
 	const [ searchTerm, setSearchTerm ] = useState( '' );
 	const [ filter, setFilter ] = useState( '' );
+	const [ formFilter, setFormFilter ] = useState( '' );
 	const [ selectedDates, setSelectedDates ] = useState( {
 		from: null,
 		to: null,
@@ -105,16 +107,27 @@ const PaymentTable = () => {
 	const [ page, setPage ] = useState( 1 );
 	const [ itemsPerPage, setItemsPerPage ] = useState( 10 );
 
+	// Fetch forms list using React Query
+	const { data: formsData } = useQuery( {
+		queryKey: [ 'forms' ],
+		queryFn: fetchForms,
+		staleTime: 10 * 60 * 1000, // 10 minutes - forms don't change often
+		refetchOnWindowFocus: false,
+	} );
+
+	const formsList = formsData || [];
+
 	// Fetch payments data using React Query
 	const queryData = useQuery( {
 		queryKey: [
 			'payments',
-			{ searchTerm: debouncedSearchTerm, filter, selectedDates, page, itemsPerPage, sortBy },
+			{ searchTerm: debouncedSearchTerm, filter, formFilter, selectedDates, page, itemsPerPage, sortBy },
 		],
 		queryFn: () =>
 			fetchPayments( {
 				searchTerm: debouncedSearchTerm,
 				filter,
+				formFilter,
 				selectedDates,
 				page,
 				itemsPerPage,
@@ -236,6 +249,9 @@ const PaymentTable = () => {
 		if ( urlParams.srfm_payment_status ) {
 			setFilter( urlParams.srfm_payment_status );
 		}
+		if ( urlParams.srfm_payment_form ) {
+			setFormFilter( urlParams.srfm_payment_form );
+		}
 		if ( urlParams.srfm_payment_per_page ) {
 			setItemsPerPage( parseInt( urlParams.srfm_payment_per_page ) );
 		}
@@ -277,6 +293,13 @@ const PaymentTable = () => {
 			srfm_payment_status: filter || undefined,
 		} );
 	}, [ filter ] );
+
+	// Sync form filter to URL
+	useEffect( () => {
+		updateUrlParams( {
+			srfm_payment_form: formFilter || undefined,
+		} );
+	}, [ formFilter ] );
 
 	// Sync items per page to URL (only if not default)
 	useEffect( () => {
@@ -326,6 +349,7 @@ const PaymentTable = () => {
 			setPage( parseInt( urlParams.srfm_payment_page ) || 1 );
 			setSearchTerm( urlParams.srfm_payment_search || '' );
 			setFilter( urlParams.srfm_payment_status || '' );
+			setFormFilter( urlParams.srfm_payment_form || '' );
 			setItemsPerPage(
 				parseInt( urlParams.srfm_payment_per_page ) || 10
 			);
@@ -600,10 +624,12 @@ const PaymentTable = () => {
 			</div>
 		);
 
+		const rawStatus = "subscription" === payment.type ? payment.subscription_status : payment.status;
+
 		const rowStatusBadge = (
 			<Badge
-				label={ getStatusLabel( payment.status ) }
-				variant={ getStatusVariant( payment.status ) }
+				label={ getStatusLabel( rawStatus ) }
+				variant={ getStatusVariant( rawStatus ) }
 				size="sm"
 				className="max-w-fit"
 				disableHover
@@ -652,8 +678,7 @@ const PaymentTable = () => {
 			formatAmount( originalAmount, payment.currency )
 		);
 
-		let orderId = payment?.srfm_txn_id ? payment.srfm_txn_id : payment.id;
-		orderId = `SF-#${ orderId }`;
+		const orderId = formatOrderId( payment );
 
 		const tableRowContent = applyFilters(
 			'srfm_payment_admin_table_row_content',
@@ -749,6 +774,7 @@ const PaymentTable = () => {
 									{ ( selectedDates.from ||
 										selectedDates.to ||
 										filter ||
+										formFilter ||
 										searchTerm ) && (
 										<Button
 											variant="link"
@@ -760,6 +786,7 @@ const PaymentTable = () => {
 													to: null,
 												} );
 												setFilter( '' );
+												setFormFilter( '' );
 												setSearchTerm( '' );
 												setPage( 1 );
 												setSortBy( null );
@@ -768,6 +795,7 @@ const PaymentTable = () => {
 												clearUrlParams( [
 													'srfm_payment_search',
 													'srfm_payment_status',
+													'srfm_payment_form',
 													'srfm_payment_date_from',
 													'srfm_payment_date_to',
 													'srfm_payment_page',
@@ -799,6 +827,49 @@ const PaymentTable = () => {
 											<Search className="text-icon-secondary" />
 										}
 									/>
+
+									{ /* Form Filter */ }
+									<div className="min-w-[200px]">
+										<Select
+											value={ formFilter }
+											onChange={ setFormFilter }
+											size="sm"
+										>
+											<Select.Button
+												className="w-52 h-[2rem] [&_div]:text-xs"
+												placeholder={ __(
+													'Form',
+													'sureforms'
+												) }
+											>
+												{ ( { value: renderValue } ) => {
+													if ( ! renderValue ) {
+														return __(
+															'Form',
+															'sureforms'
+														);
+													}
+													const selectedForm = formsList.find(
+														( form ) => form.id === parseInt( renderValue )
+													);
+													return selectedForm
+														? selectedForm.title
+														: __( 'Form', 'sureforms' );
+												} }
+											</Select.Button>
+											<Select.Options>
+												{ formsList.map( ( form ) => (
+													<Select.Option
+														key={ form.id }
+														value={ form.id }
+														className="text-xs"
+													>
+														<span>{ form.title }</span>
+													</Select.Option>
+												) ) }
+											</Select.Options>
+										</Select>
+									</div>
 
 									{ /* Status Filter */ }
 									<div className="min-w-[200px]">

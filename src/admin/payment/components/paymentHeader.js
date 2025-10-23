@@ -1,13 +1,13 @@
 import { Container, Button, Title } from '@bsf/force-ui';
 import { ArrowLeft, ArrowUpRight } from 'lucide-react';
 import { __, sprintf } from '@wordpress/i18n';
+import { formatOrderId } from './utils';
 
 const PaymentHeader = ( { title, onBack, paymentData, handleViewEntry } ) => {
-	const { id, entry_id, srfm_txn_id } = paymentData;
+	const { entry_id } = paymentData;
 
 	// Generate order ID in the same format as payment list
-	let orderId = srfm_txn_id ? srfm_txn_id : id;
-	orderId = `SF-#${ orderId }`;
+	const orderId = formatOrderId( paymentData );
 
 	return (
 		<Container

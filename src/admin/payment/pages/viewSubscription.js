@@ -774,7 +774,7 @@ const ViewSubscription = () => {
 									/>
 								</Table.Cell>
 								<Table.Cell>
-									{ formatDateTimeDetailed( row.date_time ) }
+									{ formatDateTimeDetailed( row.created_at ) }
 								</Table.Cell>
 							</Table.Row>
 						) ) }

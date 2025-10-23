@@ -59,15 +59,20 @@ class Front_End {
 			wp_send_json_error( __( 'Invalid nonce.', 'sureforms' ) );
 		}
 
-		$amount      = intval( $_POST['amount'] ?? 0 );
-		$currency    = sanitize_text_field( wp_unslash( $_POST['currency'] ?? 'usd' ) );
-		$description = sanitize_text_field( wp_unslash( $_POST['description'] ?? 'SureForms Payment' ) );
-		$block_id    = sanitize_text_field( wp_unslash( $_POST['block_id'] ?? '' ) );
+		$amount         = intval( $_POST['amount'] ?? 0 );
+		$currency       = sanitize_text_field( wp_unslash( $_POST['currency'] ?? 'usd' ) );
+		$description    = sanitize_text_field( wp_unslash( $_POST['description'] ?? 'SureForms Payment' ) );
+		$block_id       = sanitize_text_field( wp_unslash( $_POST['block_id'] ?? '' ) );
 		$customer_email = sanitize_email( wp_unslash( $_POST['customer_email'] ?? '' ) );
-		$customer_name = sanitize_text_field( wp_unslash( $_POST['customer_name'] ?? '' ) );
+		$customer_name  = sanitize_text_field( wp_unslash( $_POST['customer_name'] ?? '' ) );
 
 		if ( $amount <= 0 ) {
 			wp_send_json_error( __( 'Invalid payment amount.', 'sureforms' ) );
+		}
+
+		// Validate customer email (required for one-time payments).
+		if ( empty( $customer_email ) || ! is_email( $customer_email ) ) {
+			wp_send_json_error( __( 'Valid customer email is required for payments.', 'sureforms' ) );
 		}
 
 		try {
@@ -173,6 +178,16 @@ class Front_End {
 		$plan_name             = sanitize_text_field( wp_unslash( $_POST['plan_name'] ?? 'Subscription Plan' ) );
 		$customer_email        = sanitize_email( wp_unslash( $_POST['customer_email'] ?? '' ) );
 		$customer_name         = sanitize_text_field( wp_unslash( $_POST['customer_name'] ?? '' ) );
+
+		// Validate customer email (required for all subscriptions).
+		if ( empty( $customer_email ) || ! is_email( $customer_email ) ) {
+			wp_send_json_error( __( 'Valid customer email is required for subscriptions.', 'sureforms' ) );
+		}
+
+		// Validate customer name (required for subscriptions).
+		if ( empty( $customer_name ) ) {
+			wp_send_json_error( __( 'Customer name is required for subscriptions.', 'sureforms' ) );
+		}
 
 		// Validate amount like simple-stripe-subscriptions.
 		if ( $amount <= 0 ) {

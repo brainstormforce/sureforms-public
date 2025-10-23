@@ -50,25 +50,57 @@ export const PaymentComponent = ( props ) => {
 		return nameFieldExists || emailFieldExists;
 	};
 
-	// Check if payment requires name and email fields (required for BOTH payment types)
+	// Check payment type (subscription or one-time)
+	const paymentType = attributes.paymentType || 'one-time';
+	const isSubscription = paymentType === 'subscription';
+
+	// Check if payment requires name and email fields
 	const customerName = attributes.customerNameField || '';
 	const customerEmail = attributes.customerEmailField || '';
-	const missingNameField =
-		! customerName || ! verifyFieldIsValid( customerName );
-	const missingEmailField =
-		! customerEmail || ! verifyFieldIsValid( customerEmail );
+
+	// Name field validation: required only for subscriptions
+	const missingNameField = isSubscription && ( ! customerName || ! verifyFieldIsValid( customerName ) );
+
+	// Email field validation: required for all payment types
+	const missingEmailField = ! customerEmail || ! verifyFieldIsValid( customerEmail );
+
 	const hasCustomerFieldsError = missingNameField || missingEmailField;
 
 	let stripeConnectedComponent = null;
 
-	// If missing name/email fields, show validation error (for both one-time and subscription payments)
+	// If missing required fields, show validation error
 	if ( stripeConnected && hasCustomerFieldsError ) {
+		let errorMessage = '';
+
+		if ( isSubscription ) {
+			// For subscriptions: both name and email are required
+			if ( missingNameField && missingEmailField ) {
+				errorMessage = __(
+					'Name and Email fields are required for subscriptions. Please map these fields in the block settings. Also, make sure the fields are mapped correctly.',
+					'sureforms'
+				);
+			} else if ( missingNameField ) {
+				errorMessage = __(
+					'Name field is required for subscriptions. Please map this field in the block settings and make sure it is mapped correctly.',
+					'sureforms'
+				);
+			} else if ( missingEmailField ) {
+				errorMessage = __(
+					'Email field is required for subscriptions. Please map this field in the block settings and make sure it is mapped correctly.',
+					'sureforms'
+				);
+			}
+		} else {
+			// For one-time payments: only email is required
+			errorMessage = __(
+				'Email field is required to collect payments. Please map this field in the block settings and make sure it is mapped correctly.',
+				'sureforms'
+			);
+		}
+
 		stripeConnectedComponent = (
 			<p className="srfm-stripe-payment-error-text">
-				{ __(
-					'Name and Email fields are required to collect payments. Please map these fields in the block settings. Also, make sure the fields are mapped correctly.',
-					'sureforms'
-				) }
+				{ errorMessage }
 			</p>
 		);
 	}
