@@ -16,6 +16,10 @@ const TabContentWrapper = ( {
 	actionBtnDisabled = false,
 	hideTitle = false, // Hide the title from the content area.
 	shouldShowAutoSaveText = false,
+	autoSaveHelpText = __(
+		'All changes will be saved automatically when you press back.',
+		'sureforms'
+	),
 } ) => {
 	const handleBack = () => {
 		if ( typeof onClickBack !== 'function' ) {
@@ -32,8 +36,6 @@ const TabContentWrapper = ( {
 
 		onClickAction( data );
 	};
-
-	const autoSaveHelpText = __( 'All changes will be saved automatically when you press back.', 'sureforms' );
 
 	return (
 		// Add the spacing only if title is not hidden.
@@ -56,7 +58,11 @@ const TabContentWrapper = ( {
 					</Container.Item>
 					<Container.Item className="pl-7">
 						{ shouldShowAutoSaveText && (
-							<Label size="sm" variant="help" className="text-text-on-button-disabled font-normal">
+							<Label
+								size="sm"
+								variant="help"
+								className="text-text-on-button-disabled font-normal"
+							>
 								{ autoSaveHelpText }
 							</Label>
 						) }
