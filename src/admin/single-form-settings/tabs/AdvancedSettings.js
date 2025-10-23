@@ -2,9 +2,6 @@ import { __ } from '@wordpress/i18n';
 import { useState } from '@wordpress/element';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { store as editorStore } from '@wordpress/editor';
-import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
-import SRFMTextControl from '@Components/text-control';
-import apiFetch from '@wordpress/api-fetch';
 import FormBehaviorPopupButton from '../../components/FormBehaviorPopupButton';
 import Dialog from '../components/dialog/Dialog';
 import { FormRestrictionProvider } from '../components/form-restrictions/context';
@@ -73,14 +70,6 @@ function AdvancedSettings( props ) {
 		sureformsKeys = defaultKeys;
 		editPost( {
 			meta: sureformsKeys,
-		} );
-	}
-
-	function updateMeta( option, value ) {
-		const option_array = {};
-		option_array[ option ] = value;
-		editPost( {
-			meta: option_array,
 		} );
 	}
 

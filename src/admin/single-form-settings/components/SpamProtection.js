@@ -270,7 +270,8 @@ const SpamProtection = () => {
 						<a
 							href={ srfm_admin.security_settings_url }
 							className="text-[#DC2626] font-medium no-underline"
-							target="_blank" rel="noreferrer"
+							target="_blank"
+							rel="noreferrer"
 						>
 							{ __( 'Global Settings', 'sureforms' ) }
 						</a>
