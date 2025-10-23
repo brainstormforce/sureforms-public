@@ -366,6 +366,7 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 
 == Changelog ==
 = x.x.x =
+* Improvement: Added a message as fall for email failure for single entries page when SMTP plugin is not present.
 * Improvement: Added popup for getting started video in dashboard.
 * Fix: Resolved an UI issue where country list for phone number is not visible with Spectra modal for mobile devices.
 = 1.13.1 - 22nd October 2025 =
