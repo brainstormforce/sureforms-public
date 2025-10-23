@@ -6,9 +6,9 @@ import {
 	TextArea,
 	Tooltip,
 } from '@bsf/force-ui';
-import { Plus, Trash2, FileSearch2 } from 'lucide-react';
+import { Plus, Trash2, FileSearch2, ChevronLeft, ChevronRight } from 'lucide-react';
 import { __ } from '@wordpress/i18n';
-import { useState } from '@wordpress/element';
+import { useState, useEffect } from '@wordpress/element';
 
 const PaymentNotes = ( {
 	notes,
@@ -23,6 +23,39 @@ const PaymentNotes = ( {
 	deleteNoteMutation,
 } ) => {
 	const [ showDeletePopup, setShowDeletePopup ] = useState( null );
+	const [ currentPage, setCurrentPage ] = useState( 1 );
+	const itemsPerPage = 3;
+
+	// Calculate pagination
+	const totalPages = Math.ceil( ( notes?.length || 0 ) / itemsPerPage );
+	const startIndex = ( currentPage - 1 ) * itemsPerPage;
+	const endIndex = startIndex + itemsPerPage;
+	const paginatedNotes = notes?.slice( startIndex, endIndex ) || [];
+
+	// Reset to page 1 when a new note is added
+	useEffect( () => {
+		if ( addNoteMutation.isSuccess && ! addNoteMutation.isPending ) {
+			setCurrentPage( 1 );
+		}
+	}, [ addNoteMutation.isSuccess, addNoteMutation.isPending ] );
+
+	// Adjust current page if it exceeds total pages after deletion
+	useEffect( () => {
+		if ( notes?.length > 0 ) {
+			const maxPossiblePage = Math.ceil( notes.length / itemsPerPage );
+			if ( currentPage > maxPossiblePage ) {
+				setCurrentPage( maxPossiblePage );
+			}
+		}
+	}, [ notes?.length, currentPage, itemsPerPage ] );
+
+	const handlePreviousPage = () => {
+		setCurrentPage( ( prev ) => Math.max( prev - 1, 1 ) );
+	};
+
+	const handleNextPage = () => {
+		setCurrentPage( ( prev ) => Math.min( prev + 1, totalPages ) );
+	};
 
 	const addNewComponent = () => {
 		return (
@@ -84,7 +117,10 @@ const PaymentNotes = ( {
 			<Container className="flex flex-col items-center justify-center bg-background-secondary gap-1 p-1 rounded-lg min-h-[89px]">
 				{ isAddingNote && addNewComponent() }
 				{ notes && notes.length > 0
-					? notes.map( ( note, index ) => (
+					? paginatedNotes.map( ( note, index ) => {
+						// Calculate the actual index in the original notes array
+						const actualIndex = startIndex + index;
+						return (
 						<div
 							key={ index }
 							className="w-full flex justify-between items-start gap-2 p-3 bg-background-primary rounded-lg border border-border-subtle"
@@ -136,7 +172,7 @@ const PaymentNotes = ( {
 												size="xs"
 												onClick={ () => {
 													handleDeleteNote(
-														index
+														actualIndex
 													);
 													setShowDeletePopup(
 														null
@@ -158,9 +194,9 @@ const PaymentNotes = ( {
 								interactive
 								className="z-999999"
 								variant="light"
-								open={ showDeletePopup === index }
+								open={ showDeletePopup === actualIndex }
 								setOpen={ () =>
-									setShowDeletePopup( index )
+									setShowDeletePopup( actualIndex )
 								}
 							>
 								<Button
@@ -168,7 +204,7 @@ const PaymentNotes = ( {
 									size="xs"
 									icon={ <Trash2 className="!size-4" /> }
 									onClick={ () =>
-										setShowDeletePopup( index )
+										setShowDeletePopup( actualIndex )
 									}
 									disabled={
 										deleteNoteMutation.isPending
@@ -177,7 +213,8 @@ const PaymentNotes = ( {
 								/>
 							</Tooltip>
 						</div>
-					  ) )
+						);
+					} )
 					: ! isAddingNote && (
 						<Text className="text-sm text-text-secondary p-3 text-center flex items-center justify-center gap-2">
 							<FileSearch2 className="!size-5" />
@@ -188,6 +225,33 @@ const PaymentNotes = ( {
 						</Text>
 					  ) }
 			</Container>
+
+			{ /* Pagination Controls - Show only if more than 3 notes */ }
+			{ notes && notes.length > itemsPerPage && (
+				<Container className="flex items-center justify-between px-2 py-1">
+					<Text className="text-xs text-text-secondary">
+						{ __( 'Page', 'sureforms' ) } { currentPage } { __( 'of', 'sureforms' ) } { totalPages }
+					</Text>
+					<Container className="gap-1">
+						<Button
+							variant="ghost"
+							size="xs"
+							icon={ <ChevronLeft className="!size-4" /> }
+							onClick={ handlePreviousPage }
+							disabled={ currentPage === 1 }
+							className="text-icon-secondary hover:text-icon-primary"
+						/>
+						<Button
+							variant="ghost"
+							size="xs"
+							icon={ <ChevronRight className="!size-4" /> }
+							onClick={ handleNextPage }
+							disabled={ currentPage === totalPages }
+							className="text-icon-secondary hover:text-icon-primary"
+						/>
+					</Container>
+				</Container>
+			) }
 		</Container>
 	);
 };

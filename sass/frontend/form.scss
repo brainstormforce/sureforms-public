@@ -246,6 +246,11 @@
 		flex-direction: column;
 		gap: var( --srfm-column-gap-between-blocks );
 		margin-top: var( --srfm-column-gap-between-blocks );
+		
+		.srfm-payment-amount{
+			display: flex;
+			justify-content: space-between;
+		}
 	}
 
 	@keyframes srfm-spin {

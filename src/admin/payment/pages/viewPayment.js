@@ -595,9 +595,14 @@ const ViewPayment = () => {
 			value: paymentData.transaction_id || __( 'N/A', 'sureforms' ),
 		},
 		{
-			id: 'customer-id',
-			title: __( 'Customer ID', 'sureforms' ),
-			value: paymentData.customer_id || __( 'Guest', 'sureforms' ),
+			id: 'customer-name',
+			title: __( 'Customer Name', 'sureforms' ),
+			value: paymentData.customer_name || __( 'Guest', 'sureforms' ),
+		},
+		{
+			id: 'customer-email',
+			title: __( 'Customer Email', 'sureforms' ),
+			value: paymentData.customer_email || __( 'N/A', 'sureforms' ),
 		},
 		{
 			id: 'received-on',

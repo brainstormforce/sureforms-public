@@ -521,9 +521,9 @@ class Smart_Tags {
 	 * @since  x.x.x
 	 * @return string
 	 */
-	public static function parse_payment_smart_tag( $value, $submission_data = null, $form_data = null ) {
+	public static function parse_payment_smart_tag( $value, $submission_data = null ) {
 
-		if ( ! $submission_data || ! $form_data ) {
+		if ( ! $submission_data ) {
 			return '';
 		}
 

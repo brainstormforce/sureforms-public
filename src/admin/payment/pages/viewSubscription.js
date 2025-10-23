@@ -792,12 +792,27 @@ const ViewSubscription = () => {
 		{
 			title: __( 'Form Name', 'sureforms' ),
 			value:
-				subscriptionData.form_title ||
-				__( 'Unknown Form', 'sureforms' ),
+				(
+					<span className="text-link-primary">
+						{ subscriptionData.form_title }
+					</span>
+				) || __( 'Unknown Form', 'sureforms' ),
 		},
 		{
+			id: 'payment-mode',
 			title: __( 'Payment Mode', 'sureforms' ),
-			value: subscriptionData.mode || __( 'Unknown', 'sureforms' ),
+			value:
+				'live' === subscriptionData.mode ? (
+					<Badge
+						variant="green"
+						label={ __( 'Live Mode', 'sureforms' ) }
+					/>
+				) : (
+					<Badge
+						variant="yellow"
+						label={ __( 'Test Mode', 'sureforms' ) }
+					/>
+				),
 		},
 		{
 			title: __( 'Payment Type', 'sureforms' ),
@@ -822,6 +837,16 @@ const ViewSubscription = () => {
 			value:
 				subscriptionData.stripe_subscription_id ||
 				__( 'N/A', 'sureforms' ),
+		},
+		{
+			id: 'customer-name',
+			title: __( 'Customer Name', 'sureforms' ),
+			value: subscriptionData.customer_name || __( 'Guest', 'sureforms' ),
+		},
+		{
+			id: 'customer-email',
+			title: __( 'Customer Email', 'sureforms' ),
+			value: subscriptionData.customer_email || __( 'N/A', 'sureforms' ),
 		},
 		{
 			title: __( 'Customer ID', 'sureforms' ),
@@ -877,9 +902,18 @@ const ViewSubscription = () => {
 					align="center"
 					justify="between"
 				>
-					<Label size="md" className="font-semibold">
-						{ __( 'Subscription Details', 'sureforms' ) }
-					</Label>
+					<div className="flex items-center gap-2">
+						<Label size="md" className="font-semibold">
+							{ __( 'Subscription Details', 'sureforms' ) }
+						</Label>
+						<Badge
+							label={ getStatusLabel( subscriptionData.subscription_status ) }
+							variant={ getStatusVariant( subscriptionData.subscription_status ) }
+							size="sm"
+							className="max-w-fit"
+							disableHover
+						/>
+					</div>
 					<DropdownMenu
 						placement="bottom-start"
 						className="min-w-fit"

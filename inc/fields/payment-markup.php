@@ -172,7 +172,7 @@ class Payment_Markup extends Base {
 		$this->fixed_amount      = $attributes['fixedAmount'] ?? 10;
 
 		// Set default labels
-		$fixed_label_default = __( 'Payment Amount:', 'sureforms' );
+		$fixed_label_default = __( 'Payment Amount', 'sureforms' );
 		$user_label_default  = __( 'Enter Amount', 'sureforms' );
 
 		// Apply filters to allow customization
@@ -233,7 +233,7 @@ class Payment_Markup extends Base {
 			<div class="srfm-payment-field-wrapper">
 				<?php if ( 'fixed' === $this->amount_type ) : ?>
 					<!-- Fixed Payment Amount Display -->
-					<div class="srfm-payment-amount">
+					<div class="srfm-payment-amount srfm-block-label">
 						<span class="srfm-payment-label">
 							<?php echo esc_html( $this->fixed_amount_label ); ?>
 						</span>
@@ -244,14 +244,14 @@ class Payment_Markup extends Base {
 				<?php else : ?>
 					<!-- User-Defined Payment Amount Input -->
 					<div class="srfm-user-amount-input">
-						<label for="srfm-amount-<?php echo esc_attr( $this->block_id ); ?>" class="srfm-amount-label">
+						<label for="srfm-amount-<?php echo esc_attr( $this->block_id ); ?>" class="srfm-amount-label srfm-block-label">
 							<?php echo esc_html( $this->user_defined_amount_label ); ?>
 						</label>
 						<input
 							type="number"
 							id="srfm-amount-<?php echo esc_attr( $this->block_id ); ?>"
 							name="srfm_user_amount_<?php echo esc_attr( $this->block_id ); ?>"
-							class="srfm-user-amount-field"
+							class="srfm-user-amount-field srfm-input-common srfm-input-number"
 							placeholder="0.00"
 							step="0.01"
 							min="0"
