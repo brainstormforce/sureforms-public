@@ -10,6 +10,7 @@ import { store as editorStore } from '@wordpress/editor';
 import { applyFilters } from '@wordpress/hooks';
 import AdvancedPopColorControl from '@Components/color-control/advanced-pop-color-control.js';
 import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
+import SRFMTextControl from '@Components/text-control';
 import MultiButtonsControl from '@Components/multi-buttons-control';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -1151,6 +1152,34 @@ function StyleSettings( props ) {
 		},
 	];
 
+	const advanced = [
+		{
+			id: 'additional_css_classes',
+			component: (
+				<>
+					<SRFMTextControl
+						data={ {
+							value: sureformsKeys._srfm_additional_classes,
+							label: '_srfm_additional_classes',
+						} }
+						label={ __( 'Add Custom CSS Class(es)', 'sureforms' ) }
+						value={ sureformsKeys._srfm_additional_classes }
+						onChange={ ( value ) => {
+							updateMeta( '_srfm_additional_classes', value );
+						} }
+						isFormSpecific={ true }
+					/>
+					<p className="components-base-control__help">
+						{ __(
+							'Class names should be separated by spaces. Each class name must not start with a digit, hyphen, or underscore. They can only include letters (including Unicode characters), numbers, hyphens, and underscores.',
+							'sureforms'
+						) }
+					</p>
+				</>
+			),
+		},
+	];
+
 	const baseStylePanels = [
 		{
 			panelId: 'form',
@@ -1182,6 +1211,14 @@ function StyleSettings( props ) {
 		editPost,
 		formStyling,
 		updateFormStyling,
+	} );
+
+	// Append the advanced panel at the end.
+	enhancedStylePanels.push( {
+		panelId: 'advanced',
+		title: __( 'Advanced', 'sureforms' ),
+		content: advanced,
+		initialOpen: false,
 	} );
 
 	const presetPreview = (
