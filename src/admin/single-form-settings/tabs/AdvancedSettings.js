@@ -4,6 +4,7 @@ import { useSelect, useDispatch } from '@wordpress/data';
 import { store as editorStore } from '@wordpress/editor';
 import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
 import SRFMTextControl from '@Components/text-control';
+import apiFetch from '@wordpress/api-fetch';
 import FormBehaviorPopupButton from '../../components/FormBehaviorPopupButton';
 import Dialog from '../components/dialog/Dialog';
 import { FormRestrictionProvider } from '../components/form-restrictions/context';
@@ -85,29 +86,6 @@ function AdvancedSettings( props ) {
 
 	return (
 		<>
-			<SRFMAdvancedPanelBody
-				title={ __( 'Advanced', 'sureforms' ) }
-				initialOpen={ false }
-			>
-				<SRFMTextControl
-					data={ {
-						value: sureformsKeys._srfm_additional_classes,
-						label: '_srfm_additional_classes',
-					} }
-					label={ __( 'Additional CSS Class(es)', 'sureforms' ) }
-					value={ sureformsKeys._srfm_additional_classes }
-					onChange={ ( value ) => {
-						updateMeta( '_srfm_additional_classes', value );
-					} }
-					isFormSpecific={ true }
-				/>
-				<p className="components-base-control__help">
-					{ __(
-						'Class names should be separated by spaces. Each class name must not start with a digit, hyphen, or underscore. They can only include letters (including Unicode characters), numbers, hyphens, and underscores.',
-						'sureforms'
-					) }
-				</p>
-			</SRFMAdvancedPanelBody>
 			<FormBehaviorPopupButton
 				settingName={ __( 'Custom CSS', 'sureforms' ) }
 				popupId={ 'form_custom_css' }
