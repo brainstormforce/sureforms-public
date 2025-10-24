@@ -605,7 +605,7 @@ class Admin_Handler {
 
 		// Get customer name - for now use customer_id, in real implementation.
 		// you would get customer data from entries or payment_data.
-		$customer_name = ! empty( $payment['customer_name'] ) ? $payment['customer_name'] : __( 'N/A', 'sureforms' );
+		$customer_name  = ! empty( $payment['customer_name'] ) ? $payment['customer_name'] : __( 'N/A', 'sureforms' );
 		$customer_email = ! empty( $payment['customer_email'] ) ? $payment['customer_email'] : __( 'N/A', 'sureforms' );
 
 		// Determine payment type
@@ -634,7 +634,7 @@ class Admin_Handler {
 			'log'                    => $payment['log'] ?? '[]',
 			'created_at'             => $payment['created_at'],
 			'updated_at'             => $payment['updated_at'],
-			'srfm_txn_id'             => $payment['srfm_txn_id'],
+			'srfm_txn_id'            => $payment['srfm_txn_id'],
 
 			// Additional frontend fields.
 			'form_title'             => $form_title,

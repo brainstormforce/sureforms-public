@@ -96,7 +96,7 @@ class Front_End {
 					'currency'                  => strtolower( $currency ),
 					'description'               => $description,
 					'confirm'                   => false, // Will be confirmed by frontend.
-					"receipt_email"             => $customer_email,
+					'receipt_email'             => $customer_email,
 					'automatic_payment_methods' => [
 						'enabled'         => true,
 						'allow_redirects' => 'never',
@@ -105,8 +105,8 @@ class Front_End {
 						'source'          => 'SureForms',
 						'block_id'        => $block_id,
 						'original_amount' => $amount,
-						"receipt_email"             => $customer_email,
-						"customer_name"             => $customer_name,
+						'receipt_email'   => $customer_email,
+						'customer_name'   => $customer_name,
 					],
 				]
 			);
@@ -213,7 +213,12 @@ class Front_End {
 			}
 
 			// Get or create Stripe customer for subscriptions.
-			$customer_id = $this->get_or_create_stripe_customer([ 'email' => $customer_email, 'name' => $customer_name ]);
+			$customer_id = $this->get_or_create_stripe_customer(
+				[
+					'email' => $customer_email,
+					'name'  => $customer_name,
+				]
+			);
 			if ( ! $customer_id ) {
 				throw new \Exception( __( 'Failed to create customer for subscription.', 'sureforms' ) );
 			}
@@ -415,7 +420,7 @@ class Front_End {
 				 */
 				$payment_response = $this->verify_stripe_subscription_intent_and_save( $payment_value, $block_id, $form_data );
 			} else {
-				$payment_response = $this->verify_stripe_payment_intent_and_save( $payment_value,$payment_id, $block_id, $form_data );
+				$payment_response = $this->verify_stripe_payment_intent_and_save( $payment_value, $payment_id, $block_id, $form_data );
 			}
 
 			if ( ! empty( $payment_response ) && isset( $payment_response['payment_id'] ) ) {
@@ -1324,7 +1329,7 @@ class Front_End {
 		// Generate random part using only valid base36 (alphanumeric) chars.
 		// bin2hex gives 2 chars per byte, so we need ceil($random_length / 2) bytes.
 		$random_bytes = bin2hex( random_bytes( (int) ceil( $random_length / 2 ) ) );
-		$random_part = substr( $random_bytes, 0, $random_length );
+		$random_part  = substr( $random_bytes, 0, $random_length );
 
 		$unique_id = strtoupper( $encoded_id . $random_part );
 

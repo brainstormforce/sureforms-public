@@ -95,7 +95,13 @@ class Admin_Stripe_Handler {
 		}
 
 		// Update database status to cancelled (following WPForms pattern).
-		$updated = Payments::update( $payment_id, [ 'subscription_status' => 'cancelled', 'status' => 'cancelled' ] );
+		$updated = Payments::update(
+			$payment_id,
+			[
+				'subscription_status' => 'cancelled',
+				'status'              => 'cancelled',
+			]
+		);
 		if ( ! $updated ) {
 			wp_send_json_error( [ 'message' => esc_html__( 'Failed to update subscription status in database.', 'sureforms' ) ] );
 		}

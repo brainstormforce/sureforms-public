@@ -154,8 +154,8 @@ class Payment_Markup extends Base {
 		$this->set_field_name( $this->unique_slug );
 
 		// Set payment-specific properties.
-		$this->amount      = $attributes['amount'] ?? 10;
-		$this->currency    = $attributes['currency'] ?? 'USD';
+		$this->amount   = $attributes['amount'] ?? 10;
+		$this->currency = $attributes['currency'] ?? 'USD';
 		// $this->description = $attributes['description'] ?? 'Payment';
 
 		// Use currency from settings if not specified in block.

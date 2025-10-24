@@ -1034,7 +1034,7 @@ class Payments extends Base {
 					foreach ( $where_group as $condition ) {
 						if ( isset( $condition['key'], $condition['compare'], $condition['value'] ) ) {
 							if ( strtoupper( $condition['compare'] ) === 'IN' && is_array( $condition['value'] ) ) {
-								$placeholders = implode( ',', array_fill( 0, count( $condition['value'] ), '%d' ) );
+								$placeholders  = implode( ',', array_fill( 0, count( $condition['value'] ), '%d' ) );
 								$where_clause .= " AND {$condition['key']} IN ({$placeholders})";
 								foreach ( $condition['value'] as $val ) {
 									$params[] = $val;
@@ -1121,7 +1121,7 @@ class Payments extends Base {
 								if ( empty( $ids ) ) {
 									$ids = [ 0 ];
 								}
-								$placeholders = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
+								$placeholders  = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
 								$where_clause .= " AND {$condition['key']} {$condition['compare']} ($placeholders)";
 								foreach ( $ids as $id ) {
 									$params[] = $id;

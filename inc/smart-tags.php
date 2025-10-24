@@ -566,8 +566,8 @@ class Smart_Tags {
 			}
 
 			// Get the slug from the label part.
-			$label      = $name_parts[1];
-			$slug       = implode( '-', array_slice( explode( '-', $label ), 1 ) );
+			$label = $name_parts[1];
+			$slug  = implode( '-', array_slice( explode( '-', $label ), 1 ) );
 
 			// Check if this is the payment block we're looking for.
 			if ( $slug === $target_slug ) {
