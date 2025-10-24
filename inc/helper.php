@@ -1599,7 +1599,7 @@ class Helper {
 			'starter_templates' => [
 				'title'       => __( 'Starter Templates', 'sureforms' ),
 				'singleLineDescription' => __( 'Launch Beautiful Websites in Minutes!', 'sureforms' ),
-				'subtitle'    => __( 'Launch beautiful websites in minutes. Choose from professionally designed templates, import with one click, and customize effortlessly to match your brand.', 'sureforms' ),
+				'subtitle'    => __( 'Choose from professionally designed templates, import with one click, and customize effortlessly to match your brand.', 'sureforms' ),
 				'status'      => self::get_plugin_status( self::check_starter_template_plugin() ),
 				'slug'        => 'astra-sites',
 				'path'        => self::check_starter_template_plugin(),
