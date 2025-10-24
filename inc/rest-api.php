@@ -530,8 +530,10 @@ class Rest_Api {
 		$form_title = get_the_title( $entry['form_id'] );
 		// Translators: %d is the form ID.
 		$form_name = ! empty( $form_title ) ? $form_title : sprintf( __( 'SureForms Form #%d', 'sureforms' ), intval( $entry['form_id'] ) );
-		// Get the form content.
+
+		// Parse form content to get structured field data.
 		$form_content = get_post_field( 'post_content', $entry['form_id'] );
+		$form_fields = $this->parse_form_fields( $form_content );
 
 		$response_data = [
 			'id'              => $entry_id,
@@ -541,7 +543,7 @@ class Rest_Api {
 			'status'          => $entry['status'],
 			'created_at'      => $entry['created_at'],
 			'form_data'       => $form_data,
-			'form_content'    => $form_content,
+			'form_content'    => $form_fields,
 			'submission_info' => [
 				'user_ip'      => $entry['submission_info']['user_ip'] ?? '',
 				'browser_name' => $entry['submission_info']['browser_name'] ?? '',
@@ -555,6 +557,106 @@ class Rest_Api {
 		];
 
 		return new \WP_REST_Response( $response_data, 200 );
+	}
+
+	/**
+	 * Parse form content and return structured field data with attributes.
+	 *
+	 * @param string $form_content The form post content.
+	 * @return array
+	 * @since x.x.x
+	 */
+	private function parse_form_fields( $form_content ) {
+		if ( empty( $form_content ) ) {
+			return [];
+		}
+
+		// Parse blocks from form content.
+		$blocks = parse_blocks( $form_content );
+		if ( empty( $blocks ) ) {
+			return [];
+		}
+
+		// Get registered SureForms block attributes.
+		$registry = \WP_Block_Type_Registry::get_instance();
+		$registered_blocks = $registry->get_all_registered();
+
+		$sureforms_blocks = [];
+		foreach ( $registered_blocks as $block_name => $block_type ) {
+			if ( strpos( $block_name, 'srfm/' ) === 0 ) {
+				$block_key = str_replace( 'srfm/', '', $block_name );
+				$sureforms_blocks[ $block_key ] = $block_type->attributes;
+			}
+		}
+
+		$form_fields = [];
+		$this->extract_form_fields( $blocks, $sureforms_blocks, $form_fields );
+
+		return $form_fields;
+	}
+
+	/**
+	 * Recursively extract form fields from blocks.
+	 *
+	 * @param array $blocks The blocks array.
+	 * @param array $sureforms_blocks Registered SureForms block attributes.
+	 * @param array &$form_fields Reference to form fields array.
+	 * @return void
+	 */
+	private function extract_form_fields( $blocks, $sureforms_blocks, &$form_fields ) {
+		static $dropdown_counter = 0;
+
+		foreach ( $blocks as $block ) {
+			// Check if it's a SureForms block.
+			if ( ! empty( $block['blockName'] ) && strpos( $block['blockName'], 'srfm/' ) === 0 ) {
+				$block_type = str_replace( 'srfm/', '', $block['blockName'] );
+
+				if ( isset( $sureforms_blocks[ $block_type ] ) ) {
+					$block_attributes = $block['attrs'] ?? [];
+					$default_attributes = $sureforms_blocks[ $block_type ];
+
+					// Merge block instance attributes with defaults.
+					$merged_attributes = [];
+					foreach ( $default_attributes as $attr_name => $attr_config ) {
+						$merged_attributes[ $attr_name ] = $block_attributes[ $attr_name ] ?? ( $attr_config['default'] ?? null );
+					}
+
+					// Generate field name using the exact same logic as frontend.
+					$label = $merged_attributes['label'] ?? '';
+					$slug = $merged_attributes['slug'] ?? '';
+					$block_id = $merged_attributes['block_id'] ?? '';
+					$field_name = '';
+
+					if ( ! empty( $label ) && ! empty( $slug ) && ! empty( $block_id ) ) {
+						$input_label = '-lbl-' . Helper::encrypt( $label );
+						$base_field_name = $input_label . '-' . $slug;
+
+						// Handle special case for dropdown with instance counter.
+						if ( 'dropdown' === $block_type ) {
+							$dropdown_counter++;
+							$unique_slug = $block_type . '-' . $dropdown_counter;
+							$field_name = 'srfm-' . $unique_slug . '-' . $block_id . $base_field_name;
+						} else if ( 'multi-choice' === $block_type ) {
+							// Multi-choice uses standard pattern.
+							$field_name = 'srfm-input-' . $block_type . '-' . $block_id . $base_field_name;
+						} else {
+							// Standard field name for other blocks.
+							$field_name = 'srfm-' . $block_type . '-' . $block_id . $base_field_name;
+						}
+					}
+
+					$form_fields[] = [
+						'field_name' => $field_name,
+						'attributes' => $merged_attributes,
+					];
+				}
+			}
+
+			// Recursively process inner blocks.
+			if ( ! empty( $block['innerBlocks'] ) ) {
+				$this->extract_form_fields( $block['innerBlocks'], $sureforms_blocks, $form_fields );
+			}
+		}
 	}
 
 	/**
