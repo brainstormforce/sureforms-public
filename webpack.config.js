@@ -50,6 +50,7 @@ module.exports = {
 		suremail: path.resolve( __dirname, 'src/admin/SureMail.js' ),
 		blocks: path.resolve( __dirname, 'src/blocks/blocks.js' ),
 		entries: path.resolve( __dirname, 'src/admin/entries/index.js' ),
+		forms: path.resolve( __dirname, 'src/admin/forms/index.js' ),
 	},
 	resolve: {
 		alias: {

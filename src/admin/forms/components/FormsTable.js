@@ -1,0 +1,173 @@
+import { __ } from '@wordpress/i18n';
+import { ChevronsUpDown, ChevronUp, ChevronDown } from 'lucide-react';
+import { Container, Table, Skeleton } from '@bsf/force-ui';
+import { cn } from '@Utils/Helpers';
+import FormsTableRow from './FormsTableRow';
+
+/**
+ * Table headers configuration
+ */
+const TABLE_HEADERS = [
+	{
+		key: 'title',
+		label: __( 'Title', 'sureforms' ),
+		sortable: true,
+		align: 'left',
+	},
+	{
+		key: 'status',
+		label: __( 'Status', 'sureforms' ),
+		sortable: false,
+		align: 'left',
+	},
+	{
+		key: 'entries_count',
+		label: __( 'Entries', 'sureforms' ),
+		sortable: true,
+		align: 'center',
+	},
+	{
+		key: 'author',
+		label: __( 'Author', 'sureforms' ),
+		sortable: false,
+		align: 'left',
+	},
+	{
+		key: 'date',
+		label: __( 'Date', 'sureforms' ),
+		sortable: true,
+		align: 'left',
+	},
+	{
+		key: 'actions',
+		label: '',
+		sortable: false,
+		align: 'right',
+	},
+];
+
+/**
+ * FormsTable Component
+ * Displays the forms table with headers and rows
+ */
+const FormsTable = ( {
+	forms = [],
+	selectedForms = [],
+	onToggleAll,
+	onChangeRowSelection,
+	indeterminate = false,
+	onEdit,
+	onTrash,
+	onRestore,
+	onDelete,
+	isLoading = false,
+	onSort,
+	getSortDirection,
+} ) => {
+	// Skeleton loading rows
+	const renderSkeletonRows = () => (
+		Array.from( { length: 5 }, ( _, index ) => (
+			<Table.Row key={ `skeleton-${ index }` } className="hover:bg-background-primary">
+				<Table.Cell><Skeleton className="h-4 w-8" /></Table.Cell>
+				<Table.Cell><Skeleton className="h-4 w-32" /></Table.Cell>
+				<Table.Cell><Skeleton className="h-6 w-16" /></Table.Cell>
+				<Table.Cell><Skeleton className="h-4 w-12" /></Table.Cell>
+				<Table.Cell><Skeleton className="h-4 w-24" /></Table.Cell>
+				<Table.Cell><Skeleton className="h-4 w-20" /></Table.Cell>
+				<Table.Cell><Skeleton className="h-8 w-20" /></Table.Cell>
+			</Table.Row>
+		) )
+	);
+
+	return (
+		<Table className="w-full" checkboxSelection>
+			<Table.Head
+				selected={ !! selectedForms.length }
+				onChangeSelection={ onToggleAll }
+				indeterminate={ indeterminate }
+				className="bg-background-tertiary"
+			>
+				{ TABLE_HEADERS.map( ( header, index ) => {
+					const sortDirection = header.sortable
+						? getSortDirection?.( header.key )
+						: null;
+					const SortIcon =
+						sortDirection === 'asc'
+							? ChevronUp
+							: sortDirection === 'desc'
+								? ChevronDown
+								: ChevronsUpDown;
+
+					const content = (
+						<Container
+							align="center"
+							className="gap-2"
+							justify={ header.align === 'right' ? 'end' : header.align === 'center' ? 'center' : 'start' }
+						>
+							{ header.label }
+							{ header.sortable && (
+								<SortIcon
+									className={ cn(
+										'w-4 h-4',
+										sortDirection
+											? 'text-text-primary'
+											: 'text-text-tertiary'
+									) }
+								/>
+							) }
+						</Container>
+					);
+
+					return (
+						<Table.HeadCell key={ index }>
+							{ header.sortable ? (
+								<div
+									role="button"
+									tabIndex={ 0 }
+									className="cursor-pointer select-none"
+									onClick={ () => onSort?.( header.key ) }
+									onKeyDown={ ( e ) => {
+										if (
+											e.key === 'Enter' ||
+											e.key === ' '
+										) {
+											e.preventDefault();
+											onSort?.( header.key );
+										}
+									} }
+								>
+									{ content }
+								</div>
+							) : (
+								content
+							) }
+						</Table.HeadCell>
+					);
+				} ) }
+			</Table.Head>
+
+			<Table.Body>
+				{ isLoading && forms.length === 0 ? (
+					renderSkeletonRows()
+				) : (
+					forms.map( ( form ) => (
+						<FormsTableRow
+							key={ form.id }
+							form={ form }
+							isSelected={ selectedForms.includes( form.id ) }
+							onChangeSelection={ ( selected ) =>
+								onChangeRowSelection( form.id, selected )
+							}
+							onEdit={ onEdit }
+							onTrash={ onTrash }
+							onRestore={ onRestore }
+							onDelete={ onDelete }
+						/>
+					) )
+				) }
+			</Table.Body>
+		</Table>
+	);
+};
+
+export default FormsTable;
