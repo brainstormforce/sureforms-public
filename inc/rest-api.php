@@ -696,8 +696,8 @@ class Rest_Api {
 	 * Parse form content and return structured field data with attributes.
 	 *
 	 * @param string $form_content The form post content.
-	 * @return array
 	 * @since x.x.x
+	 * @return array
 	 */
 	private function parse_form_fields( $form_content ) {
 		if ( empty( $form_content ) ) {
@@ -734,6 +734,7 @@ class Rest_Api {
 	 * @param array<mixed>                $blocks The blocks array.
 	 * @param array<string, array<mixed>> $sureforms_blocks Registered SureForms block attributes.
 	 * @param array<mixed>                &$form_fields Reference to form fields array.
+	 * @since x.x.x
 	 * @return void
 	 */
 	private function extract_form_fields( $blocks, $sureforms_blocks, &$form_fields ) {
