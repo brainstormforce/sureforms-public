@@ -324,59 +324,71 @@ const FormsManager = () => {
 					direction="column"
 					gap="2xl"
 				>
-					{/* Combined Header and Filters Card */}
-					<Container
-						direction="column"
-						className="w-full p-6 gap-6 rounded-xl bg-background-primary border-0.5 border-solid border-border-subtle shadow-sm-blur-2"
-					>
-						<FormsHeader
-							searchQuery={ filters.search }
-							onSearchChange={ handleSearch }
-							selectedForms={ selectedForms }
-							onBulkTrash={ handleBulkTrash }
-							onBulkExport={ handleBulkExport }
-							statusFilter={ filters.status }
-							onStatusFilterChange={ handleStatusFilter }
-							statusCounts={ statusCounts }
-							selectedDates={ selectedDates }
-							onDateChange={ handleDateChange }
-						/>
-					</Container>
-
 					{/* Content */}
 					{ forms.length === 0 && hasActiveFilters ? (
 						<Container
 							direction="column"
 							className="w-full p-6 gap-4 rounded-xl bg-background-primary border-0.5 border-solid border-border-subtle shadow-sm-blur-2"
 						>
-							<EmptyState 
-								hasActiveFilters={ true }
-								onClearFilters={ () => {
-									setFilters( { search: '', status: 'any', orderby: 'date', order: 'desc' } );
-									setSelectedDates( { from: null, to: null } );
-									fetchForms( { search: '', status: 'any', page: 1 } );
-								} }
+							<FormsHeader
+								searchQuery={ filters.search }
+								onSearchChange={ handleSearch }
+								selectedForms={ selectedForms }
+								onBulkTrash={ handleBulkTrash }
+								onBulkExport={ handleBulkExport }
+								statusFilter={ filters.status }
+								onStatusFilterChange={ handleStatusFilter }
+								statusCounts={ statusCounts }
+								selectedDates={ selectedDates }
+								onDateChange={ handleDateChange }
 							/>
+							<div className="border-t border-border-subtle pt-6">
+								<EmptyState 
+									hasActiveFilters={ true }
+									onClearFilters={ () => {
+										setFilters( { search: '', status: 'any', orderby: 'date', order: 'desc' } );
+										setSelectedDates( { from: null, to: null } );
+										fetchForms( { search: '', status: 'any', page: 1 } );
+									} }
+								/>
+							</div>
 						</Container>
 					) : (
 						<Container
 							direction="column"
-							className="w-full p-0 gap-0 rounded-xl bg-background-primary border-0.5 border-solid border-border-subtle shadow-sm-blur-2 overflow-hidden"
+							className="w-full rounded-xl bg-background-primary border-0.5 border-solid border-border-subtle shadow-sm-blur-2 overflow-hidden p-4 gap-2"
 						>
-							<FormsTable
-								forms={ forms }
-								selectedForms={ selectedForms }
-								onToggleAll={ handleToggleAll }
-								onChangeRowSelection={ handleRowSelection }
-								indeterminate={ isIndeterminate }
-								onEdit={ handleFormEdit }
-								onTrash={ handleFormTrash }
-								onRestore={ handleFormRestore }
-								onDelete={ handleFormDelete }
-								isLoading={ loading }
-								onSort={ handleSort }
-								getSortDirection={ getSortDirection }
-							/>
+							<Container.Item className="p-1">
+								<FormsHeader
+									searchQuery={ filters.search }
+									onSearchChange={ handleSearch }
+									selectedForms={ selectedForms }
+									onBulkTrash={ handleBulkTrash }
+									onBulkExport={ handleBulkExport }
+									statusFilter={ filters.status }
+									onStatusFilterChange={ handleStatusFilter }
+									statusCounts={ statusCounts }
+									selectedDates={ selectedDates }
+									onDateChange={ handleDateChange }
+								/>
+							</Container.Item>
+							
+							<Container.Item className="border-t border-border-subtle">
+								<FormsTable
+									forms={ forms }
+									selectedForms={ selectedForms }
+									onToggleAll={ handleToggleAll }
+									onChangeRowSelection={ handleRowSelection }
+									indeterminate={ isIndeterminate }
+									onEdit={ handleFormEdit }
+									onTrash={ handleFormTrash }
+									onRestore={ handleFormRestore }
+									onDelete={ handleFormDelete }
+									isLoading={ loading }
+									onSort={ handleSort }
+									getSortDirection={ getSortDirection }
+								/>
+							</Container.Item>
 							
 							{ pagination.totalPages > 1 && (
 								<Container.Item className="border-t border-border-subtle px-6 py-4">
