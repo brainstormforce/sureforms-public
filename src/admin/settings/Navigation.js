@@ -12,7 +12,7 @@ function useQuery() {
 
 export const navigation = applyFilters( 'srfm.settings.navigation', [
 	{
-		name: __( 'General', 'sureforms' ),
+		name: __( 'General Settings', 'sureforms' ),
 		slug: 'general-settings',
 		icon: <Settings />,
 		helpText: __(
