@@ -1564,8 +1564,8 @@ class Helper {
 				'sure_triggers'     => [
 					'title'                 => __( 'OttoKit', 'sureforms' ),
 					'singleLineDescription' => __( 'Automate Your WordPress Workflows Like Magic!', 'sureforms' ),
-					'subtitle'              => __( 'Connect apps, sync data, and run actions using a clean, visual automation builder.', 'sureforms' ),
-					'description'           => __( 'OttoKit is a powerful automation platform that helps you connect your various plugins and apps together. It allows you to automate repetitive tasks, so you can focus on more important work.', 'sureforms' ),
+					'description'           => __( 'Connect apps, sync data, and run actions using a clean, visual automation builder.', 'sureforms' ),
+					'subtitle'              => __( 'OttoKit is a powerful automation platform that helps you connect your various plugins and apps together. It allows you to automate repetitive tasks, so you can focus on more important work.', 'sureforms' ),
 					'status'                => self::get_plugin_status( 'suretriggers/suretriggers.php' ),
 					'slug'                  => 'suretriggers',
 					'path'                  => 'suretriggers/suretriggers.php',
@@ -1586,7 +1586,7 @@ class Helper {
 				'starter_templates' => [
 					'title'                 => __( 'Starter Templates', 'sureforms' ),
 					'singleLineDescription' => __( 'Launch Beautiful Websites in Minutes!', 'sureforms' ),
-					'subtitle'              => __( 'Choose from professionally designed templates, import with one click, and customize effortlessly to match your brand.', 'sureforms' ),
+					'subtitle'              => __( 'Launch beautiful websites in minutes. Choose from professionally designed templates, import with one click, and customize effortlessly to match your brand.', 'sureforms' ),
 					'status'                => self::get_plugin_status( self::check_starter_template_plugin() ),
 					'slug'                  => 'astra-sites',
 					'path'                  => self::check_starter_template_plugin(),
