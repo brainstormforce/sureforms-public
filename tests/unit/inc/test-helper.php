@@ -511,31 +511,89 @@ class Test_Helper extends TestCase {
         }
     }
 
+     /**
+     * Test the generic get_plugin_if_installed method.
+     */
+    public function test_get_plugin_if_installed() {
+        // Case 1: Only premium plugin exists
+        self::$mock_plugins = [
+            'astra-pro-sites/astra-pro-sites.php' => [ 'Name' => 'Starter Templates Pro' ],
+        ];
+        $this->assertEquals(
+            'astra-pro-sites/astra-pro-sites.php',
+            Helper::get_plugin_if_installed(
+                ['astra-pro-sites/astra-pro-sites.php', 'astra-sites/astra-sites.php'],
+                'astra-sites/astra-sites.php'
+            ),
+            'Failed when only premium plugin is available'
+        );
+
+        // Case 2: Only free plugin exists
+        self::$mock_plugins = [
+            'astra-sites/astra-sites.php' => [ 'Name' => 'Starter Templates' ],
+        ];
+        $this->assertEquals(
+            'astra-sites/astra-sites.php',
+            Helper::get_plugin_if_installed(
+                ['astra-pro-sites/astra-pro-sites.php', 'astra-sites/astra-sites.php'],
+                'astra-sites/astra-sites.php'
+            ),
+            'Failed when only free plugin is available'
+        );
+
+        // Case 3: Both plugins exist, prefer first in array
+        self::$mock_plugins = [
+            'astra-pro-sites/astra-pro-sites.php' => [ 'Name' => 'Starter Templates Pro' ],
+            'astra-sites/astra-sites.php' => [ 'Name' => 'Starter Templates' ],
+        ];
+        $this->assertEquals(
+            'astra-pro-sites/astra-pro-sites.php',
+            Helper::get_plugin_if_installed(
+                ['astra-pro-sites/astra-pro-sites.php', 'astra-sites/astra-sites.php'],
+                'astra-sites/astra-sites.php'
+            ),
+            'Failed when both plugins exist (should prefer premium)'
+        );
+
+        // Case 4: Neither plugin exists
+        self::$mock_plugins = [
+            'hello-dolly/hello.php' => [],
+        ];
+        $this->assertEquals(
+            'astra-sites/astra-sites.php',
+            Helper::get_plugin_if_installed(
+                ['astra-pro-sites/astra-pro-sites.php', 'astra-sites/astra-sites.php'],
+                'astra-sites/astra-sites.php'
+            ),
+            'Failed when no plugin found'
+        );
+    }
+
     /**
-     * Test the check_starter_template_plugin method with mock plugin data.
+     * Test check_starter_template_plugin method (specific helper).
      */
     public function test_check_starter_template_plugin() {
-        // Case 1: Only premium plugin available
+        // Case 1: Only premium plugin
         self::$mock_plugins = [
             'astra-pro-sites/astra-pro-sites.php' => [ 'Name' => 'Starter Templates Pro' ],
         ];
         $this->assertEquals(
             'astra-pro-sites/astra-pro-sites.php',
             Helper::check_starter_template_plugin(),
-            'Failed when premium plugin is available'
+            'Failed when premium plugin exists'
         );
 
-        // Case 2: Only free plugin available
+        // Case 2: Only free plugin
         self::$mock_plugins = [
             'astra-sites/astra-sites.php' => [ 'Name' => 'Starter Templates' ],
         ];
         $this->assertEquals(
             'astra-sites/astra-sites.php',
             Helper::check_starter_template_plugin(),
-            'Failed when only free plugin is available'
+            'Failed when only free plugin exists'
         );
 
-        // Case 3: Both plugins available (prefer premium)
+        // Case 3: Both plugins (should prefer premium)
         self::$mock_plugins = [
             'astra-pro-sites/astra-pro-sites.php' => [ 'Name' => 'Starter Templates Pro' ],
             'astra-sites/astra-sites.php' => [ 'Name' => 'Starter Templates' ],
@@ -543,17 +601,17 @@ class Test_Helper extends TestCase {
         $this->assertEquals(
             'astra-pro-sites/astra-pro-sites.php',
             Helper::check_starter_template_plugin(),
-            'Failed when both plugins are available (should prefer premium)'
+            'Failed when both plugins exist (should prefer premium)'
         );
 
-        // Case 4: Neither plugin available
+        // Case 4: Neither plugin exists
         self::$mock_plugins = [
             'hello-dolly/hello.php' => [],
         ];
         $this->assertEquals(
             'astra-sites/astra-sites.php',
             Helper::check_starter_template_plugin(),
-            'Failed when no starter template plugin is found'
+            'Failed when no starter plugin exists'
         );
     }
 
@@ -1326,51 +1384,51 @@ class Test_Helper extends TestCase {
         if ( ! defined( 'SRFM_FORMS_POST_TYPE' ) ) {
             $this->markTestSkipped( 'SRFM_FORMS_POST_TYPE constant is not defined' );
         }
-        
+
         // Since we cannot easily mock the static Entries::get_entries_count_after method,
         // we'll test the method's behavior with forms only (without entry counts).
         // This still tests the core functionality: filtering published forms, handling blank titles,
         // sorting, and limiting results.
-        
+
         // Create mock forms.
         $form1_id = wp_insert_post([
             'post_type' => SRFM_FORMS_POST_TYPE,
             'post_status' => 'publish',
             'post_title' => 'Contact Form'
         ]);
-        
+
         $form2_id = wp_insert_post([
             'post_type' => SRFM_FORMS_POST_TYPE,
             'post_status' => 'publish',
             'post_title' => 'Newsletter Signup'
         ]);
-        
+
         $form3_id = wp_insert_post([
             'post_type' => SRFM_FORMS_POST_TYPE,
             'post_status' => 'publish',
             'post_title' => ''  // Test blank title
         ]);
-        
+
         // Create a draft form (should not be included).
         $draft_form_id = wp_insert_post([
             'post_type' => SRFM_FORMS_POST_TYPE,
             'post_status' => 'draft',
             'post_title' => 'Draft Form'
         ]);
-        
+
         // Test basic functionality.
         $result = Helper::get_forms_with_entry_counts(strtotime('-7 days'));
-        
+
         // Should return only published forms.
         $this->assertCount(3, $result, 'Should return only published forms');
-        
+
         // Check that all results have the expected structure.
         foreach ($result as $form) {
             $this->assertArrayHasKey('form_id', $form, 'Each result should have form_id');
             $this->assertArrayHasKey('title', $form, 'Each result should have title');
             $this->assertArrayHasKey('count', $form, 'Each result should have count');
         }
-        
+
         // Find the form with blank title to verify it was replaced.
         $blank_title_found = false;
         foreach ($result as $form) {
@@ -1381,21 +1439,21 @@ class Test_Helper extends TestCase {
             }
         }
         $this->assertTrue($blank_title_found, 'Form with blank title should be in results');
-        
+
         // Test with limit.
         $result_limited = Helper::get_forms_with_entry_counts(strtotime('-7 days'), 2);
         $this->assertCount(2, $result_limited, 'Should respect the limit parameter');
-        
+
         // Test without sorting.
         $result_unsorted = Helper::get_forms_with_entry_counts(strtotime('-7 days'), 0, false);
         $this->assertCount(3, $result_unsorted, 'Should return all forms when sort is false');
-        
+
         // Clean up.
         wp_delete_post($form1_id, true);
         wp_delete_post($form2_id, true);
         wp_delete_post($form3_id, true);
         wp_delete_post($draft_form_id, true);
-        
+
         // Test when no forms exist.
         $result_empty = Helper::get_forms_with_entry_counts(strtotime('-7 days'));
         $this->assertEmpty($result_empty, 'Should return empty array when no forms exist');
@@ -1411,7 +1469,7 @@ class Test_Helper extends TestCase {
         if ( ! defined( 'SRFM_FORMS_POST_TYPE' ) ) {
             $this->markTestSkipped( 'SRFM_FORMS_POST_TYPE constant is not defined' );
         }
-        
+
         // Create multiple forms to test sorting.
         $form_ids = [];
         for ($i = 1; $i <= 3; $i++) {
@@ -1421,28 +1479,28 @@ class Test_Helper extends TestCase {
                 'post_title' => 'Form ' . $i
             ]);
         }
-        
+
         // Test that results are returned (even if all counts are 0).
         $result = Helper::get_forms_with_entry_counts(strtotime('-7 days'));
-        
+
         $this->assertCount(3, $result, 'Should return all published forms');
-        
+
         // When all entry counts are the same (likely 0 in test environment),
         // forms should be sorted by form_id descending.
         if ($result[0]['count'] === $result[1]['count'] && $result[1]['count'] === $result[2]['count']) {
             // Check form_id descending order when counts are equal.
             $this->assertGreaterThan(
-                $result[1]['form_id'], 
-                $result[0]['form_id'], 
+                $result[1]['form_id'],
+                $result[0]['form_id'],
                 'When counts are equal, should sort by form_id descending'
             );
             $this->assertGreaterThan(
-                $result[2]['form_id'], 
-                $result[1]['form_id'], 
+                $result[2]['form_id'],
+                $result[1]['form_id'],
                 'When counts are equal, should sort by form_id descending'
             );
         }
-        
+
         // Clean up.
         foreach ($form_ids as $form_id) {
             wp_delete_post($form_id, true);
