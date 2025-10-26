@@ -87,28 +87,47 @@ class Front_End {
 				throw new \Exception( __( 'Stripe secret key not found.', 'sureforms' ) );
 			}
 
+			// Create or get customer ID for logged-in users.
+			$customer_id = null;
+			if ( is_user_logged_in() ) {
+				$customer_id = $this->get_or_create_stripe_customer(
+					[
+						'email' => $customer_email,
+						'name'  => $customer_name,
+					]
+				);
+			}
+
 			// Create payment intent with confirm: true for immediate processing.
+			$payment_intent_data = [
+				'secret_key'                => $secret_key,
+				'amount'                    => $amount,
+				'currency'                  => strtolower( $currency ),
+				'description'               => $description,
+				'confirm'                   => false, // Will be confirmed by frontend.
+				'receipt_email'             => $customer_email,
+				'automatic_payment_methods' => [
+					'enabled'         => true,
+					'allow_redirects' => 'never',
+				],
+				'metadata'                  => [
+					'source'          => 'SureForms',
+					'block_id'        => $block_id,
+					'original_amount' => $amount,
+					'receipt_email'   => $customer_email,
+					'customer_name'   => $customer_name,
+				],
+			];
+
+			// Add customer ID to payment intent data if user is logged in.
+			if ( ! empty( $customer_id ) ) {
+				$payment_intent_data['customer'] = $customer_id;
+			}
+
 			$payment_intent_data = apply_filters(
 				'srfm_create_payment_intent_data',
-				[
-					'secret_key'                => $secret_key,
-					'amount'                    => $amount,
-					'currency'                  => strtolower( $currency ),
-					'description'               => $description,
-					'confirm'                   => false, // Will be confirmed by frontend.
-					'receipt_email'             => $customer_email,
-					'automatic_payment_methods' => [
-						'enabled'         => true,
-						'allow_redirects' => 'never',
-					],
-					'metadata'                  => [
-						'source'          => 'SureForms',
-						'block_id'        => $block_id,
-						'original_amount' => $amount,
-						'receipt_email'   => $customer_email,
-						'customer_name'   => $customer_name,
-					],
-				]
+				$payment_intent_data,
+				$customer_id
 			);
 
 			$payment_intent_data = wp_json_encode( $payment_intent_data );
