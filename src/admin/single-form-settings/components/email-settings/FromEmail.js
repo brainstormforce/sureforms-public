@@ -223,17 +223,10 @@ const FromEmail = ( {
 
 const ModalWarning = ( { message } ) => {
 	return (
-		// <Container className="w-full p-3 gap-2 border border-solid border-alert-border-warning bg-alert-background-warning">
-		// 	<span className="size-5">{ parse( svg?.warning ) }</span>
-		// 	<span className="text-sm font-normal">{ message }</span>
-		// </Container>
-					<Alert
-					content={ 
-						message
-					}
-					variant="warning"
-					className="mt-4 !shadow-none"
-				/>
+		<Container className="w-full p-3 gap-2 border border-solid border-alert-border-warning bg-alert-background-warning rounded-lg">
+			<span className="size-5">{ parse( svg?.warning ) }</span>
+			<span className="text-sm font-normal">{ message }</span>
+		</Container>
 	);
 };
 
