@@ -85,11 +85,6 @@ function AdvancedSettings( props ) {
 
 	return (
 		<>
-			<FormBehaviorPopupButton
-				settingName={ __( 'Spam Protection', 'sureforms' ) }
-				popupId={ 'spam_protection' }
-				openModal={ openModal }
-			/>
 			<SRFMAdvancedPanelBody
 				title={ __( 'Advanced', 'sureforms' ) }
 				initialOpen={ false }
