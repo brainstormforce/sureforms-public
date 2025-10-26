@@ -20,8 +20,12 @@ const PaymentHeader = ( { title, onBack, paymentData, handleViewEntry } ) => {
 				icon={ null }
 				size="lg"
 				tag="h2"
-				/* translators: 1: title, 2: Order ID */
-				title={ sprintf( __( '%1$s %2$s', 'sureforms' ), title, orderId ) }
+				title={ sprintf(
+					/* translators: 1: title, 2: Order ID */
+					__( '%1$s %2$s', 'sureforms' ),
+					title,
+					orderId
+				) }
 			/>
 			<div className="flex gap-2 items-center">
 				<Button

@@ -223,19 +223,41 @@ const pushSmartTagToArray = (
 			const fieldSlug = blockSlugs[ block.attributes.block_id ];
 
 			// Skip if no slug or already processed
-			if ( ! fieldSlug || fieldSlug === '-1' || uniqueSlugs.includes( fieldSlug ) ) {
+			if (
+				! fieldSlug ||
+				fieldSlug === '-1' ||
+				uniqueSlugs.includes( fieldSlug )
+			) {
 				return;
 			}
 
-			const blockLabel = trimTextToWords( block.attributes.label || 'Payment', 5 );
+			const blockLabel = trimTextToWords(
+				block.attributes.label || 'Payment',
+				5
+			);
 
 			// Generate payment smart tags
 			const paymentTags = [
-				[ `{form-payment:${ fieldSlug }:order-id}`, `${ blockLabel } - Order ID` ],
-				[ `{form-payment:${ fieldSlug }:amount}`, `${ blockLabel } - Amount` ],
-				[ `{form-payment:${ fieldSlug }:email}`, `${ blockLabel } - Customer Email` ],
-				[ `{form-payment:${ fieldSlug }:name}`, `${ blockLabel } - Customer Name` ],
-				[ `{form-payment:${ fieldSlug }:status}`, `${ blockLabel } - Status` ],
+				[
+					`{form-payment:${ fieldSlug }:order-id}`,
+					`${ blockLabel } - Order ID`,
+				],
+				[
+					`{form-payment:${ fieldSlug }:amount}`,
+					`${ blockLabel } - Amount`,
+				],
+				[
+					`{form-payment:${ fieldSlug }:email}`,
+					`${ blockLabel } - Customer Email`,
+				],
+				[
+					`{form-payment:${ fieldSlug }:name}`,
+					`${ blockLabel } - Customer Name`,
+				],
+				[
+					`{form-payment:${ fieldSlug }:status}`,
+					`${ blockLabel } - Status`,
+				],
 			];
 
 			// Add all payment tags to the array

@@ -6,7 +6,13 @@ import {
 	TextArea,
 	Tooltip,
 } from '@bsf/force-ui';
-import { Plus, Trash2, FileSearch2, ChevronLeft, ChevronRight } from 'lucide-react';
+import {
+	Plus,
+	Trash2,
+	FileSearch2,
+	ChevronLeft,
+	ChevronRight,
+} from 'lucide-react';
 import { __ } from '@wordpress/i18n';
 import { useState, useEffect } from '@wordpress/element';
 
@@ -121,100 +127,104 @@ const PaymentNotes = ( {
 						// Calculate the actual index in the original notes array
 						const actualIndex = startIndex + index;
 						return (
-						<div
-							key={ index }
-							className="w-full flex justify-between items-start gap-2 p-3 bg-background-primary rounded-lg border border-border-subtle"
-						>
-							<div className="flex-1">
-								<Text className="text-sm text-text-primary">
-									{ note.text || note }
-								</Text>
-								{ note.created_at && (
-									<Text className="text-xs text-text-tertiary mt-1">
-										{ new Date(
-											note.created_at
-										).toLocaleString() }
-									</Text>
-								) }
-							</div>
-							<Tooltip
-								arrow
-								offset={ 20 }
-								content={
-									<Container
-										direction="column"
-										className="gap-2"
-									>
-										<p className="text-[13px] font-normal">
-											{ __(
-												'Are you sure to delete this?',
-												'sureforms'
-											) }
-										</p>
-										<Container className="gap-3">
-											<Button
-												variant="outline"
-												size="xs"
-												onClick={ () =>
-													setShowDeletePopup(
-														null
-													)
-												}
-												className="px-3"
-											>
-												{ __(
-													'Cancel',
-													'sureforms'
-												) }
-											</Button>
-											<Button
-												variant="primary"
-												size="xs"
-												onClick={ () => {
-													handleDeleteNote(
-														actualIndex
-													);
-													setShowDeletePopup(
-														null
-													);
-												} }
-												className="px-2 ml-2 bg-red-600 hover:bg-red-700 border-red-600 hover:border-red-700"
-											>
-												{ __(
-													'Confirm',
-													'sureforms'
-												) }
-											</Button>
-										</Container>
-									</Container>
-								}
-								placement="top"
-								triggers={ [ 'click', 'focus' ] }
-								tooltipPortalId="srfm-settings-container"
-								interactive
-								className="z-999999"
-								variant="light"
-								open={ showDeletePopup === actualIndex }
-								setOpen={ () =>
-									setShowDeletePopup( actualIndex )
-								}
+							<div
+								key={ index }
+								className="w-full flex justify-between items-start gap-2 p-3 bg-background-primary rounded-lg border border-border-subtle"
 							>
-								<Button
-									variant="ghost"
-									size="xs"
-									icon={ <Trash2 className="!size-4" /> }
-									onClick={ () =>
+								<div className="flex-1">
+									<Text className="text-sm text-text-primary">
+										{ note.text || note }
+									</Text>
+									{ note.created_at && (
+										<Text className="text-xs text-text-tertiary mt-1">
+											{ new Date(
+												note.created_at
+											).toLocaleString() }
+										</Text>
+									) }
+								</div>
+								<Tooltip
+									arrow
+									offset={ 20 }
+									content={
+										<Container
+											direction="column"
+											className="gap-2"
+										>
+											<p className="text-[13px] font-normal">
+												{ __(
+													'Are you sure to delete this?',
+													'sureforms'
+												) }
+											</p>
+											<Container className="gap-3">
+												<Button
+													variant="outline"
+													size="xs"
+													onClick={ () =>
+														setShowDeletePopup(
+															null
+														)
+													}
+													className="px-3"
+												>
+													{ __(
+														'Cancel',
+														'sureforms'
+													) }
+												</Button>
+												<Button
+													variant="primary"
+													size="xs"
+													onClick={ () => {
+														handleDeleteNote(
+															actualIndex
+														);
+														setShowDeletePopup(
+															null
+														);
+													} }
+													className="px-2 ml-2 bg-red-600 hover:bg-red-700 border-red-600 hover:border-red-700"
+												>
+													{ __(
+														'Confirm',
+														'sureforms'
+													) }
+												</Button>
+											</Container>
+										</Container>
+									}
+									placement="top"
+									triggers={ [ 'click', 'focus' ] }
+									tooltipPortalId="srfm-settings-container"
+									interactive
+									className="z-999999"
+									variant="light"
+									open={ showDeletePopup === actualIndex }
+									setOpen={ () =>
 										setShowDeletePopup( actualIndex )
 									}
-									disabled={
-										deleteNoteMutation.isPending
-									}
-									className="text-icon-secondary hover:text-red-700"
-								/>
-							</Tooltip>
-						</div>
+								>
+									<Button
+										variant="ghost"
+										size="xs"
+										icon={
+											<Trash2 className="!size-4" />
+										}
+										onClick={ () =>
+											setShowDeletePopup(
+												actualIndex
+											)
+										}
+										disabled={
+											deleteNoteMutation.isPending
+										}
+										className="text-icon-secondary hover:text-red-700"
+									/>
+								</Tooltip>
+							</div>
 						);
-					} )
+					  } )
 					: ! isAddingNote && (
 						<Text className="text-sm text-text-secondary p-3 text-center flex items-center justify-center gap-2">
 							<FileSearch2 className="!size-5" />
@@ -230,7 +240,8 @@ const PaymentNotes = ( {
 			{ notes && notes.length > itemsPerPage && (
 				<Container className="flex items-center justify-between px-2 py-1">
 					<Text className="text-xs text-text-secondary">
-						{ __( 'Page', 'sureforms' ) } { currentPage } { __( 'of', 'sureforms' ) } { totalPages }
+						{ __( 'Page', 'sureforms' ) } { currentPage }{ ' ' }
+						{ __( 'of', 'sureforms' ) } { totalPages }
 					</Text>
 					<Container className="gap-1">
 						<Button

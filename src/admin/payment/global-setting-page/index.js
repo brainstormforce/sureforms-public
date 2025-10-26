@@ -258,7 +258,7 @@ const Payments = ( {
 					</Select.Options>
 				</Select.Portal>
 			</Select>
-			<p className="text-base text-field-helper">
+			<p className="text-sm text-field-helper">
 				{ __(
 					'Select the default currency for payment forms.',
 					'sureforms'
@@ -489,7 +489,7 @@ const Payments = ( {
 	);
 
 	return (
-		<div>
+		<div className="srfm-payment-wrapper">
 			{ paymentsSettings?.stripe_connected ? (
 				<ContentSection
 					loading={ loading }

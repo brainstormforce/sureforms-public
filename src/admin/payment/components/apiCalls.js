@@ -1,8 +1,15 @@
 import apiFetch from '@wordpress/api-fetch';
 
 export const fetchPayments = async ( args ) => {
-	const { searchTerm, filter, selectedDates, page, itemsPerPage, sortBy, formFilter } =
-		args;
+	const {
+		searchTerm,
+		filter,
+		selectedDates,
+		page,
+		itemsPerPage,
+		sortBy,
+		formFilter,
+	} = args;
 	try {
 		// Prepare form data as URLSearchParams for better apiFetch compatibility
 		const formData = new URLSearchParams();

@@ -17,7 +17,9 @@ const PaymentLogs = ( {
 	const reversedLogs = logs ? [ ...logs ].reverse() : [];
 
 	// Calculate pagination
-	const totalPages = Math.ceil( ( reversedLogs?.length || 0 ) / itemsPerPage );
+	const totalPages = Math.ceil(
+		( reversedLogs?.length || 0 ) / itemsPerPage
+	);
 	const startIndex = ( currentPage - 1 ) * itemsPerPage;
 	const endIndex = startIndex + itemsPerPage;
 	const paginatedLogs = reversedLogs?.slice( startIndex, endIndex ) || [];
@@ -25,7 +27,9 @@ const PaymentLogs = ( {
 	// Adjust current page if it exceeds total pages after deletion
 	useEffect( () => {
 		if ( reversedLogs?.length > 0 ) {
-			const maxPossiblePage = Math.ceil( reversedLogs.length / itemsPerPage );
+			const maxPossiblePage = Math.ceil(
+				reversedLogs.length / itemsPerPage
+			);
 			if ( currentPage > maxPossiblePage ) {
 				setCurrentPage( maxPossiblePage );
 			}
@@ -158,7 +162,9 @@ const PaymentLogs = ( {
 												<Trash2 className="!size-4" />
 											}
 											onClick={ () =>
-												setShowDeletePopup( actualIndex )
+												setShowDeletePopup(
+													actualIndex
+												)
 											}
 											disabled={
 												deleteLogMutation.isPending
@@ -195,7 +201,8 @@ const PaymentLogs = ( {
 			{ logs && logs.length > itemsPerPage && (
 				<Container className="flex items-center justify-between px-2 py-1">
 					<Text className="text-xs text-text-secondary">
-						{ __( 'Page', 'sureforms' ) } { currentPage } { __( 'of', 'sureforms' ) } { totalPages }
+						{ __( 'Page', 'sureforms' ) } { currentPage }{ ' ' }
+						{ __( 'of', 'sureforms' ) } { totalPages }
 					</Text>
 					<Container className="gap-1">
 						<Button

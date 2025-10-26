@@ -1016,6 +1016,7 @@ class Admin {
 				'srfm/number',
 				'srfm/inline-button',
 				'srfm/advanced-heading',
+				'srfm/payment',
 			]
 		);
 		if ( ! is_array( $default_allowed_quick_sidebar_blocks ) ) {

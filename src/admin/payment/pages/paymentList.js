@@ -21,10 +21,14 @@ import {
 	ChevronUp,
 	ChevronDown,
 } from 'lucide-react';
-import { __, sprintf } from '@wordpress/i18n';
+import { __ } from '@wordpress/i18n';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { PaymentContext } from '../components/context';
-import { fetchPayments, bulkDeletePayments, fetchForms } from '../components/apiCalls';
+import {
+	fetchPayments,
+	bulkDeletePayments,
+	fetchForms,
+} from '../components/apiCalls';
 import {
 	getPaginationRange,
 	getStatusVariant,
@@ -121,7 +125,15 @@ const PaymentTable = () => {
 	const queryData = useQuery( {
 		queryKey: [
 			'payments',
-			{ searchTerm: debouncedSearchTerm, filter, formFilter, selectedDates, page, itemsPerPage, sortBy },
+			{
+				searchTerm: debouncedSearchTerm,
+				filter,
+				formFilter,
+				selectedDates,
+				page,
+				itemsPerPage,
+				sortBy,
+			},
 		],
 		queryFn: () =>
 			fetchPayments( {
@@ -480,7 +492,7 @@ const PaymentTable = () => {
 			[
 				{
 					key: 'order_id',
-					title: __( 'Order Id', 'sureforms' ),
+					title: __( 'Order ID', 'sureforms' ),
 				},
 				{
 					key: 'customer_email',
@@ -624,7 +636,10 @@ const PaymentTable = () => {
 			</div>
 		);
 
-		const rawStatus = "subscription" === payment.type ? payment.subscription_status : payment.status;
+		const rawStatus =
+			'subscription' === payment.type
+				? payment.subscription_status
+				: payment.status;
 
 		const rowStatusBadge = (
 			<Badge
@@ -688,10 +703,13 @@ const PaymentTable = () => {
 				{ key: 'type', content: paymentType },
 				{ key: 'amountPaid', content: rowAmountPaid },
 				{ key: 'status', content: rowStatusBadge },
-				{ key: 'dateTime', content: formatDateTime( payment.datetime ) },
+				{
+					key: 'dateTime',
+					content: formatDateTime( payment.datetime ),
+				},
 				{ key: 'actions', content: rowAction },
 			],
-			payment,
+			payment
 		);
 
 		return (
@@ -842,19 +860,29 @@ const PaymentTable = () => {
 													'sureforms'
 												) }
 											>
-												{ ( { value: renderValue } ) => {
+												{ ( {
+													value: renderValue,
+												} ) => {
 													if ( ! renderValue ) {
 														return __(
 															'Form',
 															'sureforms'
 														);
 													}
-													const selectedForm = formsList.find(
-														( form ) => form.id === parseInt( renderValue )
-													);
+													const selectedForm =
+														formsList.find(
+															( form ) =>
+																form.id ===
+																parseInt(
+																	renderValue
+																)
+														);
 													return selectedForm
 														? selectedForm.title
-														: __( 'Form', 'sureforms' );
+														: __(
+															'Form',
+															'sureforms'
+														  );
 												} }
 											</Select.Button>
 											<Select.Options>
@@ -864,7 +892,9 @@ const PaymentTable = () => {
 														value={ form.id }
 														className="text-xs"
 													>
-														<span>{ form.title }</span>
+														<span>
+															{ form.title }
+														</span>
 													</Select.Option>
 												) ) }
 											</Select.Options>

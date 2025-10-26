@@ -330,7 +330,7 @@ const Edit = ( props ) => {
 					options={ [
 						{
 							value: 'one-time',
-							label: __( 'One-time', 'sureforms' ),
+							label: __( 'Checkout', 'sureforms' ),
 						},
 						{
 							value: 'subscription',
@@ -369,6 +369,7 @@ const Edit = ( props ) => {
 									},
 								} );
 							} }
+							allowReset={ false }
 						/>
 					),
 				},
@@ -449,31 +450,6 @@ const Edit = ( props ) => {
 				},
 			  ]
 			: [] ),
-		// {
-		// 	id: 'separator',
-		// 	component: <Separator />,
-		// },
-		// {
-		// 	id: 'payment-description',
-		// 	component: (
-		// 		<SRFMTextControl
-		// 			label={ __( 'Payment Description', 'sureforms' ) }
-		// 			value={ description }
-		// 			variant="textarea"
-		// 			data={ {
-		// 				value: description,
-		// 				label: 'description',
-		// 			} }
-		// 			onChange={ ( value ) =>
-		// 				setAttributes( { description: value } )
-		// 			}
-		// 			help={ __(
-		// 				'This will appear on the payment receipt and in Stripe dashboard.',
-		// 				'sureforms'
-		// 			) }
-		// 		/>
-		// 	),
-		// },
 	];
 
 	const filterOptions = attributeOptionsWithFilter( attributeOptions, props );

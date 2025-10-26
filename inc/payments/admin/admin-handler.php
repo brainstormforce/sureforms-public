@@ -375,7 +375,7 @@ class Admin_Handler {
 			foreach ( $forms as $form_id => $form_title ) {
 				$forms_list[] = [
 					'id'    => $form_id,
-					'title' => $form_title,
+					'title' => ! empty( $form_title ) ? $form_title : sprintf( __( 'Form - #%d', 'sureforms' ), $form_id ),
 				];
 			}
 
@@ -601,7 +601,7 @@ class Admin_Handler {
 			$form_titles[ $form_id ] = get_the_title( intval( $form_id ) ) ?: __( 'Unknown Form', 'sureforms' );
 		}
 		$form_title = isset( $form_titles[ $form_id ] ) && ! empty( $form_titles[ $form_id ] ) ? $form_titles[ $form_id ] : __( 'Unknown Form', 'sureforms' );
-		$form_url   = isset( $form_titles[ $form_id ] ) && ! empty( $form_titles[ $form_id ] ) ? html_entity_decode( get_edit_post_link( intval( $form_id ) ) ) : '';
+		$form_url   = isset( $form_titles[ $form_id ] ) && ! empty( $form_titles[ $form_id ] ) ? html_entity_decode( get_permalink( intval( $form_id ) ) ) : '';
 
 		// Get customer name - for now use customer_id, in real implementation.
 		// you would get customer data from entries or payment_data.
@@ -609,7 +609,7 @@ class Admin_Handler {
 		$customer_email = ! empty( $payment['customer_email'] ) ? $payment['customer_email'] : __( 'N/A', 'sureforms' );
 
 		// Determine payment type
-		$payment_type = 'subscription' === $payment['type'] ? __( 'Subscription', 'sureforms' ) : __( 'One-time', 'sureforms' );
+		$payment_type = 'subscription' === $payment['type'] ? __( 'Subscription', 'sureforms' ) : __( 'Checkout', 'sureforms' );
 
 		$payment_front_end_data = [
 			// All original payment_data fields.

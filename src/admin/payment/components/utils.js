@@ -352,6 +352,7 @@ export const getStatusLabel = ( status ) => {
 		failed: __( 'Failed', 'sureforms' ),
 		refunded: __( 'Refunded', 'sureforms' ),
 		cancelled: __( 'Cancelled', 'sureforms' ),
+		active: __( 'Active', 'sureforms' ),
 	};
 	return statusMap[ status ] || status;
 };

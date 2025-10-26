@@ -7,10 +7,10 @@ import { getSelectedDateRange } from './utils';
 /**
  * DateRangePicker component for selecting date ranges.
  *
- * @param {Object}   props                - Component props.
- * @param {Object}   props.selectedDates  - Selected date range object with 'from' and 'to'.
- * @param {Function} props.onApply        - Callback when date range is applied.
- * @param {Function} props.onCancel       - Optional callback when date selection is canceled.
+ * @param {Object}   props               - Component props.
+ * @param {Object}   props.selectedDates - Selected date range object with 'from' and 'to'.
+ * @param {Function} props.onApply       - Callback when date range is applied.
+ * @param {Function} props.onCancel      - Optional callback when date selection is canceled.
  * @return {JSX.Element} The DateRangePicker component.
  */
 const DateRangePicker = ( { selectedDates, onApply, onCancel } ) => {

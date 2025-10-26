@@ -5,7 +5,9 @@
  */
 function validateThePaymentBlock( form ) {
 	// Check if payment block exists & Get payment input element
-	const paymentBlock = form.querySelector( '.srfm-block.srfm-payment-block:not(.hide-element)' );
+	const paymentBlock = form.querySelector(
+		'.srfm-block.srfm-payment-block:not(.hide-element)'
+	);
 
 	if ( ! paymentBlock ) {
 		console.warn( 'Payment block or payment input not found' );
@@ -66,16 +68,17 @@ function validateThePaymentBlock( form ) {
 	const customerNameFieldSlug = paymentBlock.getAttribute(
 		'data-customer-name-field'
 	);
-	const customerEmailFieldSlug = paymentBlock.getAttribute(
-		'data-customer-email-field'
-	);
 
 	// Get payment type (subscription or one-time)
-	const paymentType = paymentBlock.getAttribute( 'data-payment-type' ) || 'one-time';
+	const paymentType =
+		paymentBlock.getAttribute( 'data-payment-type' ) || 'one-time';
 	const isSubscription = paymentType === 'subscription';
 
 	// Validate that name field is mapped (required only for subscriptions)
-	if ( isSubscription && ( ! customerNameFieldSlug || customerNameFieldSlug.trim() === '' ) ) {
+	if (
+		isSubscription &&
+		( ! customerNameFieldSlug || customerNameFieldSlug.trim() === '' )
+	) {
 		return {
 			valid: false,
 			slug: 'payment-name-not-mapped',
@@ -83,6 +86,10 @@ function validateThePaymentBlock( form ) {
 				'Customer name field is required for subscriptions. Please configure it in the payment block settings.',
 		};
 	}
+
+	const customerEmailFieldSlug = paymentBlock.getAttribute(
+		'data-customer-email-field'
+	);
 
 	// Validate that email field is mapped (required for all payment types)
 	if ( ! customerEmailFieldSlug || customerEmailFieldSlug.trim() === '' ) {
@@ -95,7 +102,11 @@ function validateThePaymentBlock( form ) {
 	}
 
 	// Find and validate the actual name input field in the form (only for subscriptions)
-	if ( isSubscription && customerNameFieldSlug && customerNameFieldSlug.trim() !== '' ) {
+	if (
+		isSubscription &&
+		customerNameFieldSlug &&
+		customerNameFieldSlug.trim() !== ''
+	) {
 		const nameInput = form.querySelector(
 			`.srfm-input-block.srfm-slug-${ customerNameFieldSlug } .srfm-input-common`
 		);
@@ -140,7 +151,10 @@ export async function handleFormPayment( form ) {
 	try {
 		const valiDatePaymentBlocks = validateThePaymentBlock( form );
 
-		if( valiDatePaymentBlocks.valid && 'no-payment-block' === valiDatePaymentBlocks.slug ) {
+		if (
+			valiDatePaymentBlocks.valid &&
+			'no-payment-block' === valiDatePaymentBlocks.slug
+		) {
 			return {
 				valid: true,
 				message: '',

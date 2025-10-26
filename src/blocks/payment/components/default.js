@@ -59,10 +59,13 @@ export const PaymentComponent = ( props ) => {
 	const customerEmail = attributes.customerEmailField || '';
 
 	// Name field validation: required only for subscriptions
-	const missingNameField = isSubscription && ( ! customerName || ! verifyFieldIsValid( customerName ) );
+	const missingNameField =
+		isSubscription &&
+		( ! customerName || ! verifyFieldIsValid( customerName ) );
 
 	// Email field validation: required for all payment types
-	const missingEmailField = ! customerEmail || ! verifyFieldIsValid( customerEmail );
+	const missingEmailField =
+		! customerEmail || ! verifyFieldIsValid( customerEmail );
 
 	const hasCustomerFieldsError = missingNameField || missingEmailField;
 
@@ -99,9 +102,7 @@ export const PaymentComponent = ( props ) => {
 		}
 
 		stripeConnectedComponent = (
-			<p className="srfm-stripe-payment-error-text">
-				{ errorMessage }
-			</p>
+			<p className="srfm-stripe-payment-error-text">{ errorMessage }</p>
 		);
 	}
 

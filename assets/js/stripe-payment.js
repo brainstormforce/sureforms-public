@@ -497,16 +497,12 @@ class StripePayment {
 						`SureForms: Subscription element validation warning for block ${ blockId }:`,
 						event.error
 					);
-				} else {
-					// Filtered validation for one-time payments
-					// Only show meaningful validation errors, skip incomplete warnings during typing
-					if ( this.shouldDisplayValidationError( event.error ) ) {
-						console.warn(
-							`SureForms: Card element validation for block ${ blockId }:`,
-							event.error
-						);
-						this.displayElementError( blockId, event.error );
-					}
+				} else if ( this.shouldDisplayValidationError( event.error ) ) {
+					console.warn(
+						`SureForms: Card element validation for block ${ blockId }:`,
+						event.error
+					);
+					this.displayElementError( blockId, event.error );
 				}
 			} else if ( event.complete ) {
 				const typeLabel =
@@ -844,7 +840,7 @@ class StripePayment {
 	 */
 	static async srfmConfirmPayment( blockId, paymentData, form ) {
 		const { elements, paymentType } = paymentData;
-		console.log("start confirmPayment");
+		console.log( 'start confirmPayment' );
 
 		// Validate card details AFTER payment intent is created but BEFORE confirmation
 		// This is the correct timing to avoid card data loss
@@ -906,7 +902,10 @@ class StripePayment {
 			: stripe.confirmPayment( stripeArgs ) );
 
 		if ( paymentResult?.error ) {
-			StripePayment.addErrorValueInInput( paymentInput, paymentResult?.error );
+			StripePayment.addErrorValueInInput(
+				paymentInput,
+				paymentResult?.error
+			);
 			throw new Error(
 				paymentResult?.error?.message || paymentResult?.error
 			);
@@ -932,7 +931,7 @@ class StripePayment {
 			amountType,
 			amount,
 			paymentInput,
-			billingDetails
+			billingDetails,
 		};
 
 		StripePayment.prepareInputValueData( resultArgs );
@@ -943,13 +942,13 @@ class StripePayment {
 	/**
 	 * Prepares and sets the payment input value data as a JSON string.
 	 *
-	 * @param {Object} args - The configuration arguments.
-	 * @param {string} args.blockId - The payment block ID.
-	 * @param {string} args.paymentType - The type of payment ('subscription' or 'one-time').
-	 * @param {string} args.amountType - The type of amount ('fixed' or 'user-defined').
-	 * @param {number} args.amount - The payment amount.
-	 * @param {HTMLInputElement} args.paymentInput - The input field to store payment data.
-	 * @param {Object} args.paymentResult - The result object from Stripe payment confirmation.
+	 * @param {Object}           args               - The configuration arguments.
+	 * @param {string}           args.blockId       - The payment block ID.
+	 * @param {string}           args.paymentType   - The type of payment ('subscription' or 'one-time').
+	 * @param {string}           args.amountType    - The type of amount ('fixed' or 'user-defined').
+	 * @param {number}           args.amount        - The payment amount.
+	 * @param {HTMLInputElement} args.paymentInput  - The input field to store payment data.
+	 * @param {Object}           args.paymentResult - The result object from Stripe payment confirmation.
 	 */
 	static prepareInputValueData( args ) {
 		const {
@@ -959,18 +958,19 @@ class StripePayment {
 			amount,
 			paymentInput,
 			paymentResult,
-			billingDetails
+			billingDetails,
 		} = args;
-		
-		let value = {
+
+		const value = {
 			blockId,
 			amountType,
 			amount,
-			...( billingDetails || {} )
+			...( billingDetails || {} ),
 		};
 
 		if ( 'subscription' === paymentType ) {
-			const subscriptionData = StripePayment.subscriptionIntents[ blockId ];
+			const subscriptionData =
+				StripePayment.subscriptionIntents[ blockId ];
 
 			value.paymentId = paymentResult?.setupIntent?.payment_method;
 			value.setupIntent = paymentResult?.setupIntent?.id;
@@ -990,7 +990,7 @@ class StripePayment {
 	 * Adds an error message to the payment input field in JSON format.
 	 *
 	 * @param {HTMLInputElement} paymentInput - The input field to store the error.
-	 * @param {Error|string} error - The error object or message to store.
+	 * @param {Error|string}     error        - The error object or message to store.
 	 */
 	addErrorValueInInput( paymentInput, error ) {
 		paymentInput.value = JSON.stringify( {

@@ -4,13 +4,13 @@ import { __, sprintf } from '@wordpress/i18n';
 /**
  * DeleteConfirmationDialog component for confirming payment deletion.
  *
- * @param {Object}   props                        - Component props.
- * @param {boolean}  props.isOpen                 - Whether the dialog is open.
- * @param {Function} props.setIsOpen              - Function to set dialog open state.
- * @param {Array}    props.deletePaymentIds       - Array of payment IDs to delete.
- * @param {Function} props.onConfirm              - Callback when delete is confirmed.
- * @param {Function} props.onCancel               - Callback when delete is canceled.
- * @param {boolean}  props.isDeleting             - Whether deletion is in progress.
+ * @param {Object}   props                  - Component props.
+ * @param {boolean}  props.isOpen           - Whether the dialog is open.
+ * @param {Function} props.setIsOpen        - Function to set dialog open state.
+ * @param {Array}    props.deletePaymentIds - Array of payment IDs to delete.
+ * @param {Function} props.onConfirm        - Callback when delete is confirmed.
+ * @param {Function} props.onCancel         - Callback when delete is canceled.
+ * @param {boolean}  props.isDeleting       - Whether deletion is in progress.
  * @return {JSX.Element} The DeleteConfirmationDialog component.
  */
 const DeleteConfirmationDialog = ( {
@@ -41,16 +41,16 @@ const DeleteConfirmationDialog = ( {
 					<Dialog.Description>
 						{ deletePaymentIds.length === 1
 							? __(
-									'Are you sure you want to delete this payment? This action cannot be undone.',
-									'sureforms'
+								'Are you sure you want to delete this payment? This action cannot be undone.',
+								'sureforms'
 							  )
 							: sprintf(
-									/* translators: %d: number of payments */
-									__(
-										'Are you sure you want to delete %d payments? This action cannot be undone.',
-										'sureforms'
-									),
-									deletePaymentIds.length
+								/* translators: %d: number of payments */
+								__(
+									'Are you sure you want to delete %d payments? This action cannot be undone.',
+									'sureforms'
+								),
+								deletePaymentIds.length
 							  ) }
 					</Dialog.Description>
 				</Dialog.Header>

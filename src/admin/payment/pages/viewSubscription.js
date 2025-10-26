@@ -907,8 +907,12 @@ const ViewSubscription = () => {
 							{ __( 'Subscription Details', 'sureforms' ) }
 						</Label>
 						<Badge
-							label={ getStatusLabel( subscriptionData.subscription_status ) }
-							variant={ getStatusVariant( subscriptionData.subscription_status ) }
+							label={ getStatusLabel(
+								subscriptionData.subscription_status
+							) }
+							variant={ getStatusVariant(
+								subscriptionData.subscription_status
+							) }
 							size="sm"
 							className="max-w-fit"
 							disableHover

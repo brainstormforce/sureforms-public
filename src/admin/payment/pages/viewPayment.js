@@ -555,7 +555,7 @@ const ViewPayment = () => {
 	const paymentInfoData = [
 		{
 			id: 'payment-id',
-			title: __( 'Payment Id', 'sureforms' ),
+			title: __( 'Payment ID', 'sureforms' ),
 			value: `#${ paymentData.id }`,
 		},
 		{
