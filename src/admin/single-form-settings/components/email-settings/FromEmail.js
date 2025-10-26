@@ -3,7 +3,7 @@ import { useEffect, useState } from '@wordpress/element';
 import svg from '@Svg/svgs.json';
 import parse from 'html-react-parser';
 import ModalInputBox from '@Components/force-ui-components/ModalInputBox';
-import { Container } from '@bsf/force-ui';
+import { Container, Alert } from '@bsf/force-ui';
 
 const FromEmail = ( {
 	formData,
@@ -223,10 +223,17 @@ const FromEmail = ( {
 
 const ModalWarning = ( { message } ) => {
 	return (
-		<Container className="w-full p-3 gap-2 border border-solid border-alert-border-warning bg-alert-background-warning">
-			<span className="size-5">{ parse( svg?.warning ) }</span>
-			<span className="text-sm font-normal">{ message }</span>
-		</Container>
+		// <Container className="w-full p-3 gap-2 border border-solid border-alert-border-warning bg-alert-background-warning">
+		// 	<span className="size-5">{ parse( svg?.warning ) }</span>
+		// 	<span className="text-sm font-normal">{ message }</span>
+		// </Container>
+					<Alert
+					content={ 
+						message
+					}
+					variant="warning"
+					className="mt-4 !shadow-none"
+				/>
 	);
 };
 
