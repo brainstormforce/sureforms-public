@@ -83,6 +83,10 @@
 			"type": "number",
 			"default": 10
 		},
+		"minimumAmount": {
+			"type": "number",
+			"default": 0
+		},
 		"amountLabel": {
 			"type": "string",
 			"default": "Enter Amount"

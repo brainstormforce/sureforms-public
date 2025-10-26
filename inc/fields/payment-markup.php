@@ -101,6 +101,14 @@ class Payment_Markup extends Base {
 	protected $fixed_amount;
 
 	/**
+	 * Minimum amount.
+	 *
+	 * @var float
+	 * @since x.x.x
+	 */
+	protected $minimum_amount;
+
+	/**
 	 * Fixed amount label.
 	 *
 	 * @var string
@@ -170,6 +178,7 @@ class Payment_Markup extends Base {
 		$this->subscription_plan = $attributes['subscriptionPlan'] ?? [];
 		$this->amount_type       = $attributes['amountType'] ?? 'fixed';
 		$this->fixed_amount      = $attributes['fixedAmount'] ?? 10;
+		$this->minimum_amount    = $attributes['minimumAmount'] ?? 0;
 
 		// Set default labels
 		$fixed_label_default = __( 'Payment', 'sureforms' );
@@ -291,11 +300,26 @@ class Payment_Markup extends Base {
 							id="srfm-amount-<?php echo esc_attr( $this->block_id ); ?>"
 							name="srfm_user_amount_<?php echo esc_attr( $this->block_id ); ?>"
 							class="srfm-user-amount-field srfm-input-common srfm-input-number"
+							value="<?php echo esc_attr( $this->fixed_amount ); ?>"
 							placeholder="0.00"
 							step="0.01"
-							min="0"
-							data-currency="<?php echo esc_attr( strtolower( $this->currency ) ); ?>"						
+							min="<?php echo esc_attr( $this->minimum_amount ); ?>"
+							data-currency="<?php echo esc_attr( strtolower( $this->currency ) ); ?>"
+							data-minimum-amount="<?php echo esc_attr( $this->minimum_amount ); ?>"
 						/>
+						<?php if ( $this->minimum_amount > 0 ) : ?>
+							<p class="srfm-help-text">
+								<?php
+								/* translators: %s: Minimum amount with currency */
+								echo esc_html(
+									sprintf(
+										__( 'Minimum amount: %s', 'sureforms' ),
+										$this->format_currency( $this->minimum_amount, $this->currency )
+									)
+								);
+								?>
+							</p>
+						<?php endif; ?>
 					</div>
 				<?php endif; ?>
 

@@ -1,4 +1,37 @@
 /**
+ * Get currency symbol from currency code
+ * @param {string} currency - Currency code (e.g., 'usd', 'eur')
+ * @return {string} - Currency symbol
+ */
+function getCurrencySymbol( currency ) {
+	const currencySymbols = {
+		usd: '$',
+		eur: '€',
+		gbp: '£',
+		jpy: '¥',
+		aud: 'A$',
+		cad: 'C$',
+		chf: 'CHF',
+		cny: '¥',
+		sek: 'kr',
+		nzd: 'NZ$',
+		mxn: 'MX$',
+		sgd: 'S$',
+		hkd: 'HK$',
+		nok: 'kr',
+		krw: '₩',
+		try: '₺',
+		rub: '₽',
+		inr: '₹',
+		brl: 'R$',
+		zar: 'R',
+		aed: 'د.إ',
+	};
+
+	return currencySymbols[ currency.toLowerCase() ] || currency.toUpperCase() + ' ';
+}
+
+/**
  * Validate payment block before form submission
  * @param {HTMLElement} form - The form element
  * @return {Object} - Validation result object with { valid: boolean, slug: string, message: string }
@@ -60,6 +93,26 @@ function validateThePaymentBlock( form ) {
 				slug: 'invalid-user-amount',
 				message:
 					'Please enter a valid payment amount greater than zero.',
+			};
+		}
+
+		// Validate minimum amount
+		const minimumAmount = parseFloat(
+			userAmountInput.getAttribute( 'data-minimum-amount' ) || 0
+		);
+
+		if ( minimumAmount > 0 && userAmount < minimumAmount ) {
+			// Get currency symbol for better error message
+			const currency =
+				userAmountInput.getAttribute( 'data-currency' ) || 'usd';
+			const currencySymbol = getCurrencySymbol( currency );
+
+			return {
+				valid: false,
+				slug: 'amount-below-minimum',
+				message: `Payment amount must be at least ${ currencySymbol }${ minimumAmount.toFixed(
+					2
+				) }.`,
 			};
 		}
 	}

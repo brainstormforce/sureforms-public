@@ -38,6 +38,7 @@ const Edit = ( props ) => {
 		subscriptionPlan,
 		amountType,
 		fixedAmount,
+		minimumAmount,
 		customerNameField,
 		customerEmailField,
 		// amountLabel,
@@ -313,33 +314,62 @@ const Edit = ( props ) => {
 				/>
 			),
 		},
-		...( amountType === 'fixed'
+		{
+			id: 'fixed-amount',
+			component: (
+				<SRFMTextControl
+					label={
+						amountType === 'fixed'
+							? __( 'Fixed Amount', 'sureforms' )
+							: __( 'Default Amount', 'sureforms' )
+					}
+					type="number"
+					value={ fixedAmount }
+					data={ {
+						value: fixedAmount,
+						label: 'fixedAmount',
+					} }
+					onChange={ ( value ) =>
+						setAttributes( {
+							fixedAmount: parseFloat( value ) || 0,
+						} )
+					}
+					help={
+						amountType === 'fixed'
+							? __( 'Enter the fixed payment amount', 'sureforms' )
+							: __(
+								'Enter the default amount (users can change this)',
+								'sureforms'
+							  )
+					}
+				/>
+			),
+		},
+		...( amountType === 'user-defined'
 			? [
 				{
-					id: 'fixed-amount',
+					id: 'minimum-amount',
 					component: (
 						<SRFMTextControl
-							label={ __( 'Fixed Amount', 'sureforms' ) }
+							label={ __( 'Minimum Amount', 'sureforms' ) }
 							type="number"
-							value={ fixedAmount }
+							value={ minimumAmount }
 							data={ {
-								value: fixedAmount,
-								label: 'fixedAmount',
+								value: minimumAmount,
+								label: 'minimumAmount',
 							} }
 							onChange={ ( value ) =>
 								setAttributes( {
-									fixedAmount: parseFloat( value ) || 0,
+									minimumAmount: parseFloat( value ) || 0,
 								} )
 							}
 							help={ __(
-								'Enter the fixed payment amount',
+								'Set the minimum amount users can enter (0 for no minimum)',
 								'sureforms'
 							) }
 						/>
 					),
 				},
-			  ]
-			: [
 				{
 					id: 'required',
 					component: (
@@ -369,7 +399,8 @@ const Edit = ( props ) => {
 						/>
 					) : null,
 				},
-			  ] ),
+			  ]
+			: [] ),
 		{
 			id: 'separator-2',
 			component: <Separator />,
