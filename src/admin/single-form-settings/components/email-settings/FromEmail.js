@@ -3,7 +3,7 @@ import { useEffect, useState } from '@wordpress/element';
 import svg from '@Svg/svgs.json';
 import parse from 'html-react-parser';
 import ModalInputBox from '@Components/force-ui-components/ModalInputBox';
-import { Container, Alert } from '@bsf/force-ui';
+import { Container } from '@bsf/force-ui';
 
 const FromEmail = ( {
 	formData,
