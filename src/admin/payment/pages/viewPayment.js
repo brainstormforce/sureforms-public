@@ -24,7 +24,6 @@ import {
 	getStatusVariant,
 	formatAmount,
 	formatDateTime,
-	formatLogTimestamp,
 	getStatusLabel,
 } from '../components/utils';
 import PaymentNotes from '../components/paymentNotes';
@@ -711,7 +710,6 @@ const ViewPayment = () => {
 				logs={ logs }
 				handleDeleteLog={ handleDeleteLog }
 				deleteLogMutation={ deleteLogMutation }
-				formatLogTimestamp={ formatLogTimestamp }
 			/>
 		</>
 	);

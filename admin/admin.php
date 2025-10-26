@@ -485,8 +485,8 @@ class Admin {
 
 		$entries_hook = add_submenu_page(
 			'sureforms_menu',
-			__( 'Payment Summary', 'sureforms' ),
-			__( 'Payment Logs', 'sureforms' ),
+			__( 'Payments', 'sureforms' ),
+			__( 'Payments', 'sureforms' ),
 			'edit_others_posts',
 			SRFM_PAYMENTS,
 			[ $this, 'render_payments' ],

@@ -143,7 +143,144 @@ const Edit = ( props ) => {
 					onChange={ ( value ) => setAttributes( { help: value } ) }
 				/>
 			),
+		},,
+		{
+			id: 'separator-3',
+			component: <Separator />,
 		},
+		{
+			id: 'payment-type',
+			component: (
+				<MultiButtonsControl
+					setAttributes={ setAttributes }
+					label={ __( 'Payment Type', 'sureforms' ) }
+					data={ {
+						value: paymentType,
+						label: 'paymentType',
+					} }
+					options={ [
+						{
+							value: 'one-time',
+							label: __( 'Checkout', 'sureforms' ),
+						},
+						{
+							value: 'subscription',
+							label: __( 'Subscription', 'sureforms' ),
+						},
+					] }
+					showIcons={ false }
+				/>
+			),
+		},
+		...( paymentType === 'subscription'
+			? [
+				{
+					id: 'subscription-plan-name',
+					component: (
+						<SRFMTextControl
+							label={ __(
+								'Subscription Plan Name',
+								'sureforms'
+							) }
+							value={
+								subscriptionPlan?.name ||
+									'Subscription Plan'
+							}
+							data={ {
+								value:
+										subscriptionPlan?.name ||
+										'Subscription Plan',
+								label: 'subscription-plan-name',
+							} }
+							onChange={ ( value ) => {
+								setAttributes( {
+									subscriptionPlan: {
+										...( subscriptionPlan || {} ),
+										name: value,
+									},
+								} );
+							} }
+							allowReset={ false }
+						/>
+					),
+				},
+				{
+					id: 'subscription-interval',
+					component: (
+						<SelectControl
+							label={ __( 'Billing Interval', 'sureforms' ) }
+							value={ subscriptionPlan?.interval || 'month' }
+							options={ [
+								{
+									label: __( 'Daily', 'sureforms' ),
+									value: 'day',
+								},
+								{
+									label: __( 'Weekly', 'sureforms' ),
+									value: 'week',
+								},
+								{
+									label: __( 'Monthly', 'sureforms' ),
+									value: 'month',
+								},
+								{
+									label: __( 'Quarterly', 'sureforms' ),
+									value: 'quarter',
+								},
+								{
+									label: __( 'Yearly', 'sureforms' ),
+									value: 'year',
+								},
+							] }
+							onChange={ ( value ) => {
+								setAttributes( {
+									subscriptionPlan: {
+										...( subscriptionPlan || {} ),
+										interval: value,
+									},
+								} );
+							} }
+						/>
+					),
+				},
+				{
+					id: 'billing-cycles',
+					component: (
+						<SelectControl
+							label={ __( 'Billing Cycles', 'sureforms' ) }
+							value={
+								subscriptionPlan?.billingCycles || 'ongoing'
+							}
+							options={ [
+								{
+									label: __( 'Ongoing', 'sureforms' ),
+									value: 'ongoing',
+								},
+								...Array.from(
+									{ length: 23 },
+									( _, i ) => ( {
+										label: `${ i + 2 } cycles`,
+										value: i + 2,
+									} )
+								),
+							] }
+							onChange={ ( value ) => {
+								setAttributes( {
+									subscriptionPlan: {
+										...( subscriptionPlan || {} ),
+										billingCycles: value,
+									},
+								} );
+							} }
+							help={ __(
+								'Select the number of billing cycles or ongoing for unlimited',
+								'sureforms'
+							) }
+						/>
+					),
+				},
+			]
+			: [] ),
 		{
 			id: 'separator',
 			component: <Separator />,
@@ -313,143 +450,6 @@ const Edit = ( props ) => {
 				/>
 			),
 		},
-		{
-			id: 'separator-3',
-			component: <Separator />,
-		},
-		{
-			id: 'payment-type',
-			component: (
-				<MultiButtonsControl
-					setAttributes={ setAttributes }
-					label={ __( 'Payment Type', 'sureforms' ) }
-					data={ {
-						value: paymentType,
-						label: 'paymentType',
-					} }
-					options={ [
-						{
-							value: 'one-time',
-							label: __( 'Checkout', 'sureforms' ),
-						},
-						{
-							value: 'subscription',
-							label: __( 'Subscription', 'sureforms' ),
-						},
-					] }
-					showIcons={ false }
-				/>
-			),
-		},
-		...( paymentType === 'subscription'
-			? [
-				{
-					id: 'subscription-plan-name',
-					component: (
-						<SRFMTextControl
-							label={ __(
-								'Subscription Plan Name',
-								'sureforms'
-							) }
-							value={
-								subscriptionPlan?.name ||
-									'Subscription Plan'
-							}
-							data={ {
-								value:
-										subscriptionPlan?.name ||
-										'Subscription Plan',
-								label: 'subscription-plan-name',
-							} }
-							onChange={ ( value ) => {
-								setAttributes( {
-									subscriptionPlan: {
-										...( subscriptionPlan || {} ),
-										name: value,
-									},
-								} );
-							} }
-							allowReset={ false }
-						/>
-					),
-				},
-				{
-					id: 'subscription-interval',
-					component: (
-						<SelectControl
-							label={ __( 'Billing Interval', 'sureforms' ) }
-							value={ subscriptionPlan?.interval || 'month' }
-							options={ [
-								{
-									label: __( 'Daily', 'sureforms' ),
-									value: 'day',
-								},
-								{
-									label: __( 'Weekly', 'sureforms' ),
-									value: 'week',
-								},
-								{
-									label: __( 'Monthly', 'sureforms' ),
-									value: 'month',
-								},
-								{
-									label: __( 'Quarterly', 'sureforms' ),
-									value: 'quarter',
-								},
-								{
-									label: __( 'Yearly', 'sureforms' ),
-									value: 'year',
-								},
-							] }
-							onChange={ ( value ) => {
-								setAttributes( {
-									subscriptionPlan: {
-										...( subscriptionPlan || {} ),
-										interval: value,
-									},
-								} );
-							} }
-						/>
-					),
-				},
-				{
-					id: 'billing-cycles',
-					component: (
-						<SelectControl
-							label={ __( 'Billing Cycles', 'sureforms' ) }
-							value={
-								subscriptionPlan?.billingCycles || 'ongoing'
-							}
-							options={ [
-								{
-									label: __( 'Ongoing', 'sureforms' ),
-									value: 'ongoing',
-								},
-								...Array.from(
-									{ length: 23 },
-									( _, i ) => ( {
-										label: `${ i + 2 } cycles`,
-										value: i + 2,
-									} )
-								),
-							] }
-							onChange={ ( value ) => {
-								setAttributes( {
-									subscriptionPlan: {
-										...( subscriptionPlan || {} ),
-										billingCycles: value,
-									},
-								} );
-							} }
-							help={ __(
-								'Select the number of billing cycles or ongoing for unlimited',
-								'sureforms'
-							) }
-						/>
-					),
-				},
-			  ]
-			: [] ),
 	];
 
 	const filterOptions = attributeOptionsWithFilter( attributeOptions, props );

@@ -2,12 +2,12 @@ import { Container, Label, Text, Button, Tooltip } from '@bsf/force-ui';
 import { Trash2, ChevronLeft, ChevronRight } from 'lucide-react';
 import { __, sprintf } from '@wordpress/i18n';
 import { useState, useEffect } from '@wordpress/element';
+import { formatLogTimestamp } from './utils';
 
 const PaymentLogs = ( {
 	logs,
 	handleDeleteLog,
 	deleteLogMutation,
-	formatLogTimestamp,
 } ) => {
 	const [ showDeletePopup, setShowDeletePopup ] = useState( null );
 	const [ currentPage, setCurrentPage ] = useState( 1 );
@@ -44,6 +44,8 @@ const PaymentLogs = ( {
 		setCurrentPage( ( prev ) => Math.min( prev + 1, totalPages ) );
 	};
 
+	const isLogsAvailable = logs && logs.length > 0;
+
 	return (
 		<Container
 			className="w-full bg-background-primary border-0.5 border-solid rounded-xl border-border-subtle p-3 gap-2 shadow-sm"
@@ -54,8 +56,14 @@ const PaymentLogs = ( {
 					{ __( 'Payment Logs', 'sureforms' ) }
 				</Label>
 			</Container>
-			<Container className="flex flex-col items-center justify-center bg-background-secondary gap-1 p-1 rounded-lg min-h-[89px]">
-				{ logs && logs.length > 0 ? (
+			<Container 
+				className={
+					`flex flex-col items-center justify-center bg-background-secondary gap-1 p-1 rounded-lg ${
+						! isLogsAvailable && 'min-h-[89px]'
+					}`
+				}
+			>
+				{ isLogsAvailable ? (
 					paginatedLogs.map( ( log, index ) => {
 						// Calculate the actual index in the original logs array
 						// Since we reversed the logs, we need to map back to original index
@@ -198,7 +206,7 @@ const PaymentLogs = ( {
 			</Container>
 
 			{ /* Pagination Controls - Show only if more than 3 logs */ }
-			{ logs && logs.length > itemsPerPage && (
+			{ isLogsAvailable && (
 				<Container className="flex items-center justify-between px-2 py-1">
 					<Text className="text-xs text-text-secondary">
 						{ __( 'Page', 'sureforms' ) } { currentPage }{ ' ' }

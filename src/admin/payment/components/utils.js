@@ -257,7 +257,7 @@ export const formatAmount = ( amount, currency = 'USD' ) => {
 };
 
 /**
- * Format datetime to readable format with validation
+ * Format datetime to "Mon DD / H:MM AM" (e.g., "Oct 23 / 2:23 PM")
  * @param {string|Date} datetime - Date string or Date object
  * @return {string} Formatted datetime string or 'N/A' if invalid
  */
@@ -272,42 +272,11 @@ export const formatDateTime = ( datetime ) => {
 		return 'N/A';
 	}
 
-	return date.toLocaleString( 'en-US', {
-		month: 'short',
-		day: 'numeric',
-		year: 'numeric',
-		hour: 'numeric',
-		minute: '2-digit',
-		hour12: true,
-	} );
-};
+	const month = date.toLocaleString('en-US', { month: 'short' });
+	const day = date.getDate();
+	const time = date.toLocaleString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true }).replace(/^0/, '');
 
-/**
- * Format datetime with separate date and time (used in viewSubscription)
- * @param {string|Date} dateString - Date string or Date object
- * @return {string} Formatted as "Month DD, YYYY at HH:MM AM/PM"
- */
-export const formatDateTimeDetailed = ( dateString ) => {
-	if ( ! dateString ) {
-		return 'N/A';
-	}
-	const date = new Date( dateString );
-
-	if ( isNaN( date.getTime() ) ) {
-		return 'N/A';
-	}
-
-	const formattedDate = date.toLocaleDateString( 'en-US', {
-		month: 'short',
-		day: 'numeric',
-		year: 'numeric',
-	} );
-	const formattedTime = date.toLocaleTimeString( 'en-US', {
-		hour: '2-digit',
-		minute: '2-digit',
-		hour12: true,
-	} );
-	return `${ formattedDate } at ${ formattedTime }`;
+	return `${ month } ${ day } / ${ time }`;
 };
 
 /**

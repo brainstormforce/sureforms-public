@@ -29,17 +29,6 @@ const PaymentHeader = ( { title, onBack, paymentData, handleViewEntry } ) => {
 			/>
 			<div className="flex gap-2 items-center">
 				<Button
-					icon={ <ArrowUpRight className="!size-4" /> }
-					iconPosition="right"
-					size="s"
-					variant="outline"
-					onClick={ handleViewEntry }
-					disabled={ ! entry_id }
-					className="text-text-primary rounded-[4px] p-2 gap-0.5"
-				>
-					{ __( 'View Entry', 'sureforms' ) }
-				</Button>
-				<Button
 					variant="outline"
 					size="s"
 					icon={ <ArrowLeft className="!size-4" /> }
@@ -47,6 +36,17 @@ const PaymentHeader = ( { title, onBack, paymentData, handleViewEntry } ) => {
 					className="text-text-primary rounded-[4px] p-2 gap-0.5"
 				>
 					{ __( 'Back', 'sureforms' ) }
+				</Button>
+				<Button
+					variant="outline"
+					size="s"
+					icon={ <ArrowUpRight className="!size-4" /> }
+					iconPosition="right"
+					onClick={ handleViewEntry }
+					disabled={ ! entry_id }
+					className="text-text-primary rounded-[4px] p-2 gap-0.5"
+				>
+					{ __( 'View Entry', 'sureforms' ) }
 				</Button>
 			</div>
 		</Container>

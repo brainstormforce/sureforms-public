@@ -1,4 +1,4 @@
-import { useState, useRef } from '@wordpress/element';
+import { useState, useRef, useEffect } from '@wordpress/element';
 import { Input, DatePicker } from '@bsf/force-ui';
 import { Calendar } from 'lucide-react';
 import { __ } from '@wordpress/i18n';
@@ -16,6 +16,41 @@ import { getSelectedDateRange } from './utils';
 const DateRangePicker = ( { selectedDates, onApply, onCancel } ) => {
 	const [ isDatePickerOpen, setIsDatePickerOpen ] = useState( false );
 	const datePickerContainerRef = useRef( null );
+
+	useEffect( () => {
+		if ( ! isDatePickerOpen ) {
+			return;
+		}
+
+		const handleClickOutside = ( event ) => {
+			if (
+				datePickerContainerRef.current &&
+				! datePickerContainerRef.current.contains( event.target )
+			) {
+				setIsDatePickerOpen( false );
+				if ( onCancel ) {
+					onCancel();
+				}
+			}
+		};
+
+		const handleKeyDown = ( event ) => {
+			if ( event.key === 'Escape' ) {
+				setIsDatePickerOpen( false );
+				if ( onCancel ) {
+					onCancel();
+				}
+			}
+		};
+
+		document.addEventListener( 'mousedown', handleClickOutside );
+		document.addEventListener( 'keydown', handleKeyDown );
+
+		return () => {
+			document.removeEventListener( 'mousedown', handleClickOutside );
+			document.removeEventListener( 'keydown', handleKeyDown );
+		};
+	}, [ isDatePickerOpen, onCancel ] );
 
 	const handleApply = ( dates ) => {
 		setIsDatePickerOpen( false );

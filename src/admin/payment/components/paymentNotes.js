@@ -99,6 +99,8 @@ const PaymentNotes = ( {
 		);
 	};
 
+	const isNotesAvailable = notes && notes.length > 0;
+
 	return (
 		<Container
 			className="w-full bg-background-primary border-0.5 border-solid rounded-xl border-border-subtle p-3 gap-2 shadow-sm"
@@ -120,9 +122,15 @@ const PaymentNotes = ( {
 					{ __( 'Add Note', 'sureforms' ) }
 				</Button>
 			</Container>
-			<Container className="flex flex-col items-center justify-center bg-background-secondary gap-1 p-1 rounded-lg min-h-[89px]">
+			<Container 
+				className={
+					`flex flex-col items-center justify-center bg-background-secondary gap-1 p-1 rounded-lg ${
+						! isNotesAvailable && ! isAddingNote && 'min-h-[89px]'
+					}`
+				}
+			>
 				{ isAddingNote && addNewComponent() }
-				{ notes && notes.length > 0
+				{ isNotesAvailable
 					? paginatedNotes.map( ( note, index ) => {
 						// Calculate the actual index in the original notes array
 						const actualIndex = startIndex + index;
@@ -237,7 +245,7 @@ const PaymentNotes = ( {
 			</Container>
 
 			{ /* Pagination Controls - Show only if more than 3 notes */ }
-			{ notes && notes.length > itemsPerPage && (
+			{ isNotesAvailable && (
 				<Container className="flex items-center justify-between px-2 py-1">
 					<Text className="text-xs text-text-secondary">
 						{ __( 'Page', 'sureforms' ) } { currentPage }{ ' ' }

@@ -10,6 +10,7 @@ import {
 	Select,
 	toast,
 	Dialog,
+	Input,
 } from '@bsf/force-ui';
 import ContentSection from '@Admin/settings/components/ContentSection';
 import { currencies, AlertForFee } from '../components/utils';
@@ -25,6 +26,7 @@ const Payments = ( {
 	const [ isCreatingWebhook, setIsCreatingWebhook ] = useState( false );
 	const [ isDisconnectDialogOpen, setIsDisconnectDialogOpen ] =
 		useState( false );
+	const [ confirmationInput, setConfirmationInput ] = useState( '' );
 
 	// Load settings on mount
 	useEffect( () => {
@@ -92,6 +94,12 @@ const Payments = ( {
 		setIsDisconnectDialogOpen( true );
 	};
 
+	// Handle dialog close - Reset confirmation input
+	const handleDialogClose = () => {
+		setIsDisconnectDialogOpen( false );
+		setConfirmationInput( '' );
+	};
+
 	// Confirm and process Stripe disconnect
 	const confirmStripeDisconnect = async () => {
 		setIsDisconnecting( true );
@@ -148,7 +156,7 @@ const Payments = ( {
 			toast.success(
 				__( 'Stripe account disconnected successfully.', 'sureforms' )
 			);
-			setIsDisconnectDialogOpen( false );
+			handleDialogClose();
 		} catch ( error ) {
 			const errorMessage =
 				error.message ||
@@ -318,7 +326,7 @@ const Payments = ( {
 
 				<Button
 					onClick={ handleStripeDisconnect }
-					disabled={ isDisconnecting || loading }
+					disabled={ isDisconnecting }
 					icon={ isDisconnecting && <Loader /> }
 					iconPosition="left"
 					variant="link"
@@ -348,9 +356,6 @@ const Payments = ( {
 				<div className="flex items-center p-4 rounded-lg border-0.5 border-border-subtle border-solid shadow-sm gap-2">
 					<CircleCheck className="text-support-success" />
 					<div>
-						<p className="text-base text-text-primary font-semibold">
-							{ __( 'Webhook is connected', 'sureforms' ) }
-						</p>
 						<p className="text-sm text-text-secondary font-normal">
 							{ __(
 								'Webhook successfully connected, all Stripe events are being tracked.',
@@ -401,7 +406,7 @@ const Payments = ( {
 							{ __( 'Disconnect Stripe Account', 'sureforms' ) }
 						</Dialog.Title>
 						<Dialog.CloseButton
-							onClick={ () => setIsDisconnectDialogOpen( false ) }
+							onClick={ handleDialogClose }
 						/>
 					</div>
 					<Dialog.Description>
@@ -410,18 +415,33 @@ const Payments = ( {
 							'sureforms'
 						) }
 					</Dialog.Description>
+					<Dialog.Description>
+						{ __( 'To confirm, type "confirm" in the box below.', 'sureforms' ) }
+					</Dialog.Description>
+					<Input
+						type="text"
+						value={ confirmationInput }
+						onChange={ ( value ) => setConfirmationInput( value ) }
+						placeholder={ __( 'Type "confirm"', 'sureforms' ) }
+						disabled={ isDisconnecting }
+						size="sm"
+					/>
 				</Dialog.Header>
 				<Dialog.Footer className="flex justify-end gap-2">
 					<Button
 						variant="outline"
-						onClick={ () => setIsDisconnectDialogOpen( false ) }
+						onClick={ handleDialogClose }
 						disabled={ isDisconnecting }
 					>
 						{ __( 'Cancel', 'sureforms' ) }
 					</Button>
 					<Button
 						variant="primary"
-						onClick={ confirmStripeDisconnect }
+						onClick={ () => {
+							if ( confirmationInput === 'confirm' ) {
+								confirmStripeDisconnect();
+							}
+						} }
 						disabled={ isDisconnecting }
 						icon={ isDisconnecting && <Loader /> }
 						iconPosition="left"

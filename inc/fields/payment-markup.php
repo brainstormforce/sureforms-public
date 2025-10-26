@@ -172,7 +172,7 @@ class Payment_Markup extends Base {
 		$this->fixed_amount      = $attributes['fixedAmount'] ?? 10;
 
 		// Set default labels
-		$fixed_label_default = __( 'Payment Amount', 'sureforms' );
+		$fixed_label_default = __( 'Payment', 'sureforms' );
 		$user_label_default  = __( 'Enter Amount', 'sureforms' );
 
 		// Apply filters to allow customization
@@ -238,7 +238,46 @@ class Payment_Markup extends Base {
 							<?php echo esc_html( $this->fixed_amount_label ); ?>
 						</span>
 						<span class="srfm-payment-value">
-							<?php echo esc_html( $this->format_currency( $this->fixed_amount, $this->currency ) ); ?>
+							<?php
+							if ( 'subscription' === $this->payment_type && ! empty( $this->subscription_plan ) ) {
+								$interval       = $this->subscription_plan['interval'] ?? 'month';
+								$billing_cycles = $this->subscription_plan['billingCycles'] ?? 0;
+								$interval_label = $this->get_interval_label( $interval );
+
+								// Build subscription text
+								if ( 'ongoing' === $billing_cycles ) {
+									/* translators: 1: Amount with currency, 2: Interval (day/week/month/quarter/year) */
+									echo esc_html(
+										sprintf(
+											__( '%1$s per %2$s until canceled', 'sureforms' ),
+											$this->format_currency( $this->fixed_amount, $this->currency ),
+											$interval_label
+										)
+									);
+								} elseif ( $billing_cycles > 0 ) {
+									/* translators: 1: Amount with currency, 2: Interval (day/week/month/quarter/year), 3: Number of billing cycles */
+									echo esc_html(
+										sprintf(
+											__( '%1$s per %2$s until %3$s payments', 'sureforms' ),
+											$this->format_currency( $this->fixed_amount, $this->currency ),
+											$interval_label,
+											$billing_cycles
+										)
+									);
+								} else {
+									/* translators: 1: Amount with currency, 2: Interval (day/week/month/quarter/year) */
+									echo esc_html(
+										sprintf(
+											__( '%1$s per %2$s', 'sureforms' ),
+											$this->format_currency( $this->fixed_amount, $this->currency ),
+											$interval_label
+										)
+									);
+								}
+							} else {
+								echo esc_html( $this->format_currency( $this->fixed_amount, $this->currency ) );
+							}
+							?>
 						</span>
 					</div>
 				<?php else : ?>
@@ -367,5 +406,24 @@ class Payment_Markup extends Base {
 		}
 
 		return $symbol . number_format( $amount, 2 );
+	}
+
+	/**
+	 * Get translatable interval label from interval slug.
+	 *
+	 * @param string $interval_slug Interval slug (day/week/month/quarter/yearly).
+	 * @return string Translatable interval label.
+	 * @since x.x.x
+	 */
+	private function get_interval_label( $interval_slug ) {
+		$interval_labels = [
+			'day'     => __( 'day', 'sureforms' ),
+			'week'    => __( 'week', 'sureforms' ),
+			'month'   => __( 'month', 'sureforms' ),
+			'quarter' => __( 'quarter', 'sureforms' ),
+			'yearly'  => __( 'year', 'sureforms' ),
+		];
+
+		return $interval_labels[ $interval_slug ] ?? $interval_slug;
 	}
 }

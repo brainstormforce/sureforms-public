@@ -693,7 +693,20 @@ const PaymentTable = () => {
 			formatAmount( originalAmount, payment.currency )
 		);
 
-		const orderId = formatOrderId( payment );
+		let orderId = formatOrderId( payment );
+		orderId = <Button
+					variant="ghost"
+					size="sm"
+					className="p-0 text-text-secondary text-sm weight-medium font-normal"
+					onClick={ () =>
+						handleView( {
+							id: payment.id,
+							type: payment.type,
+						} )
+					}
+				>
+					{ orderId }
+				</Button>
 
 		const tableRowContent = applyFilters(
 			'srfm_payment_admin_table_row_content',

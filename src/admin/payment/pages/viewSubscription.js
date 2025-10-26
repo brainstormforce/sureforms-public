@@ -27,8 +27,7 @@ import {
 	getStatusVariant,
 	getStatusLabel,
 	formatAmount,
-	formatDateTimeDetailed,
-	formatLogTimestamp,
+	formatDateTime,
 } from '../components/utils';
 import PaymentNotes from '../components/paymentNotes';
 import PaymentLogs from '../components/paymentLogs';
@@ -774,7 +773,7 @@ const ViewSubscription = () => {
 									/>
 								</Table.Cell>
 								<Table.Cell>
-									{ formatDateTimeDetailed( row.created_at ) }
+									{ formatDateTime( row.created_at ) }
 								</Table.Cell>
 							</Table.Row>
 						) ) }
@@ -854,7 +853,7 @@ const ViewSubscription = () => {
 		},
 		{
 			title: __( 'Received On', 'sureforms' ),
-			value: formatDateTimeDetailed( subscriptionData.created_at ),
+			value: formatDateTime( subscriptionData.created_at ),
 		},
 	];
 
@@ -1023,7 +1022,6 @@ const ViewSubscription = () => {
 				logs={ logs }
 				handleDeleteLog={ handleDeleteLog }
 				deleteLogMutation={ deleteLogMutation }
-				formatLogTimestamp={ formatLogTimestamp }
 			/>
 		</>
 	);
