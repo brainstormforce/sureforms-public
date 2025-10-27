@@ -128,6 +128,7 @@ export const transformEntryDetail = ( entryDetail ) => {
 		createdAt: entryDetail.created_at,
 		formattedDateTime: formatDateTime( entryDetail.created_at ),
 		formData: entryDetail.form_data || [],
+		formContent: entryDetail.form_content || [],
 		submissionInfo: {
 			userIp: entryDetail.submission_info?.user_ip || '-',
 			browserName: entryDetail.submission_info?.browser_name || '-',
