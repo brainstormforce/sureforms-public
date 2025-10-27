@@ -1,13 +1,7 @@
 import { __ } from '@wordpress/i18n';
 import { useRef, useEffect, useMemo, useState } from '@wordpress/element';
 import { Trash, Calendar, Import, ArchiveRestore, Search } from 'lucide-react';
-import {
-	Input,
-	Button,
-	Container,
-	Select,
-	DatePicker,
-} from '@bsf/force-ui';
+import { Input, Button, Container, Select, DatePicker } from '@bsf/force-ui';
 import {
 	getDatePlaceholder,
 	getSelectedDate,
@@ -237,7 +231,9 @@ const FormsFilters = ( {
 					value={ localSearchValue }
 					onChange={ handleSearchChange }
 					onKeyDown={ handleSearchKeyDown }
-					prefix={ <Search className="w-4 h-4 text-icon-secondary" /> }
+					prefix={
+						<Search className="w-4 h-4 text-icon-secondary" />
+					}
 					className="min-w-[200px]"
 				/>
 			</Container.Item>

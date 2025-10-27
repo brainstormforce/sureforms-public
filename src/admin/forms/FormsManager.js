@@ -247,18 +247,6 @@ const FormsManager = () => {
 	const isIndeterminate =
 		selectedForms.length > 0 && selectedForms.length < forms.length;
 
-	// Loading state
-	if ( isLoading && forms.length === 0 ) {
-		return (
-			<Container className="p-6 bg-background-secondary rounded-lg">
-				<FormsHeader />
-				<div className="mt-6">
-					{ __( 'Loading forms…', 'sureforms' ) }
-				</div>
-			</Container>
-		);
-	}
-
 	// Error state
 	if ( isError && forms.length === 0 ) {
 		return (
@@ -272,8 +260,8 @@ const FormsManager = () => {
 		);
 	}
 
-	// Empty state for no forms
-	if ( forms.length === 0 && ! hasActiveFilters ) {
+	// Empty state for no forms (only when not loading)
+	if ( forms.length === 0 && ! hasActiveFilters && ! isLoading ) {
 		return (
 			<Container className="p-6 bg-background-secondary rounded-lg">
 				<FormsHeader />
@@ -296,7 +284,7 @@ const FormsManager = () => {
 					gap="2xl"
 				>
 					{ /* Content */ }
-					{ forms.length === 0 && hasActiveFilters ? (
+					{ forms.length === 0 && hasActiveFilters && ! isLoading ? (
 						<Container
 							direction="column"
 							className="w-full p-6 gap-4 rounded-xl bg-background-primary border-0.5 border-solid border-border-subtle shadow-sm-blur-2"

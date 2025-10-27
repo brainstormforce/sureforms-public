@@ -69,31 +69,34 @@ const FormsTable = ( {
 } ) => {
 	// Skeleton loading rows
 	const renderSkeletonRows = () =>
-		Array.from( { length: 5 }, ( _, index ) => (
+		Array.from( { length: 10 }, ( _, index ) => (
 			<Table.Row
 				key={ `skeleton-${ index }` }
 				className="hover:bg-background-primary"
 			>
+				{ /* Title - auto width (takes remaining space) */ }
+				<Table.Cell>
+					<Skeleton className="h-4 w-full max-w-xs" />
+				</Table.Cell>
+				{ /* Shortcode - 15% width */ }
+				<Table.Cell>
+					<Skeleton className="h-6 w-full max-w-[120px]" />
+				</Table.Cell>
+				{ /* Entries - 8% width */ }
 				<Table.Cell>
 					<Skeleton className="h-4 w-8" />
 				</Table.Cell>
-				<Table.Cell>
-					<Skeleton className="h-4 w-32" />
-				</Table.Cell>
-				<Table.Cell>
-					<Skeleton className="h-6 w-16" />
-				</Table.Cell>
-				<Table.Cell>
-					<Skeleton className="h-4 w-12" />
-				</Table.Cell>
-				<Table.Cell>
-					<Skeleton className="h-4 w-24" />
-				</Table.Cell>
+				{ /* Author - 15% width */ }
 				<Table.Cell>
 					<Skeleton className="h-4 w-20" />
 				</Table.Cell>
+				{ /* Date & Time - 18% width */ }
 				<Table.Cell>
-					<Skeleton className="h-8 w-20" />
+					<Skeleton className="h-4 w-24" />
+				</Table.Cell>
+				{ /* Actions - 160px fixed width */ }
+				<Table.Cell>
+					<Skeleton className="h-8 w-32" />
 				</Table.Cell>
 			</Table.Row>
 		) );
@@ -175,9 +178,18 @@ const FormsTable = ( {
 			</Table.Head>
 
 			<Table.Body>
-				{ isLoading && forms.length === 0
-					? renderSkeletonRows()
-					: forms.map( ( form ) => (
+				{ isLoading ? (
+					renderSkeletonRows()
+				) : forms.length === 0 ? (
+					<Table.Row className="[&_div:has(label)]:invisible">
+						<Table.Cell colSpan={ TABLE_HEADERS.length }>
+							<div className="text-center py-8 text-text-secondary">
+								{ __( 'No forms found', 'sureforms' ) }
+							</div>
+						</Table.Cell>
+					</Table.Row>
+				) : (
+					forms.map( ( form ) => (
 						<FormsTableRow
 							key={ form.id }
 							form={ form }
@@ -190,7 +202,8 @@ const FormsTable = ( {
 							onRestore={ onRestore }
 							onDelete={ onDelete }
 						/>
-					  ) ) }
+					) )
+				) }
 			</Table.Body>
 		</Table>
 	);
