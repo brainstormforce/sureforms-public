@@ -1,6 +1,6 @@
 import { __, _n, sprintf } from '@wordpress/i18n';
 import { useEffect, useMemo, useState } from '@wordpress/element';
-import { useNavigate } from '@tanstack/react-router';
+import { useNavigate } from 'react-router-dom';
 import { toast } from '@bsf/force-ui';
 import EntriesHeader from '../components/EntriesHeader';
 import EntriesFilters from '../components/EntriesFilters';
@@ -170,12 +170,12 @@ const EntriesListingPage = () => {
 
 	// Action handlers
 	const handleEdit = ( entry ) => {
-		const navObj = { to: '/entry/$id', params: { id: entry.id } };
 		// If entry is unread, add "read" query param to mark it as read
 		if ( entry.status === 'unread' ) {
-			navObj.search = { read: true };
+			navigate( `/entry/${ entry.id }?read=true` );
+		} else {
+			navigate( `/entry/${ entry.id }` );
 		}
-		navigate( navObj );
 	};
 
 	const handleDelete = ( entry ) => {

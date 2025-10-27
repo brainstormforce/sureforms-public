@@ -1,6 +1,6 @@
 import { __, sprintf } from '@wordpress/i18n';
 import { Toaster } from '@bsf/force-ui';
-import { Link, Outlet, useParams } from '@tanstack/react-router';
+import { Link, Outlet, useParams } from 'react-router-dom';
 import Header from '@Admin/components/Header';
 import { cn } from '@Utils/Helpers';
 

@@ -1,9 +1,8 @@
 import {
 	useParams,
 	Link,
-	useNavigate,
-	useLocation,
-} from '@tanstack/react-router';
+	useSearchParams,
+} from 'react-router-dom';
 import { __, sprintf } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
 import { useMemo, useEffect, useState } from '@wordpress/element';
@@ -68,10 +67,8 @@ const SendDetailsButton = ( { handleSendEmail, isDisabled = true } ) => {
  * Displays detailed view of a single entry
  */
 const EntryDetailPage = () => {
-	const { id } = useParams( { strict: false } );
-
-	const location = useLocation( { from: '/entry/$id' } );
-	const navigate = useNavigate();
+	const { id } = useParams();
+	const [ searchParams, setSearchParams ] = useSearchParams();
 	const { mutate: updateReadStatusMutation } = useUpdateEntriesReadStatus();
 
 	// State for confirmation dialog
@@ -104,11 +101,10 @@ const EntryDetailPage = () => {
 
 	// Mark entry as read if "read" query param is present
 	useEffect( () => {
-		if ( ! location?.search?.read ) {
+		const readParam = searchParams.get( 'read' );
+		if ( ! readParam ) {
 			return;
 		}
-		const newSearch = { ...location.search };
-		delete newSearch.read;
 		updateReadStatusMutation(
 			{
 				entry_ids: [ id ],
@@ -117,16 +113,13 @@ const EntryDetailPage = () => {
 			},
 			{
 				onSuccess: () => {
-					navigate( {
-						to: '/entry/$id',
-						params: { id },
-						search: newSearch,
-						replace: true,
-					} );
+					// Remove the read query param
+					searchParams.delete( 'read' );
+					setSearchParams( searchParams, { replace: true } );
 				},
 			}
 		);
-	}, [ location?.search, id, updateReadStatusMutation, navigate ] );
+	}, [ searchParams, id, updateReadStatusMutation, setSearchParams ] );
 
 	const handleSendEmail = () => {
 		if ( ! ResendNotificationModal ) {

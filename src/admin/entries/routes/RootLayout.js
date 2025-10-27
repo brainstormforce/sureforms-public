@@ -1,4 +1,4 @@
-import { Outlet } from '@tanstack/react-router';
+import { Outlet } from 'react-router-dom';
 import { Toaster } from '@bsf/force-ui';
 import Header from '@Admin/components/Header';
 import { cn } from '@Utils/Helpers';

@@ -2,8 +2,7 @@ import domReady from '@wordpress/dom-ready';
 import { createRoot } from '@wordpress/element';
 import { toast } from '@bsf/force-ui';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { RouterProvider } from '@tanstack/react-router';
-import { router } from './routes';
+import { AppRouter } from './routes';
 
 // Create a client
 const queryClient = new QueryClient( {
@@ -30,7 +29,7 @@ function renderApp() {
 	if ( entriesRoot ) {
 		entriesRoot.render(
 			<QueryClientProvider client={ queryClient }>
-				<RouterProvider router={ router } />
+				<AppRouter />
 			</QueryClientProvider>
 		);
 	}
