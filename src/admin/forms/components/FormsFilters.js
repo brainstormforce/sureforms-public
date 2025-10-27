@@ -1,7 +1,7 @@
 import { __ } from '@wordpress/i18n';
 import { useRef, useEffect, useMemo, useState } from '@wordpress/element';
-import { Search, X, Trash, Calendar, Import, ArchiveRestore } from 'lucide-react';
-import { Input, Button, Container, Select, DatePicker } from '@bsf/force-ui';
+import { Trash, Calendar, Import, ArchiveRestore } from 'lucide-react';
+import { Input, Button, Container, Select, DatePicker, SearchBox } from '@bsf/force-ui';
 import { getDatePlaceholder, getSelectedDate, getLastNDays } from '@Utils/Helpers';
 import ImportForm from './ImportForm';
 
@@ -26,6 +26,7 @@ const FormsFilters = ( {
 	const containerRef = useRef( null );
 	const [ isDatePickerOpen, setIsDatePickerOpen ] = useState( false );
 	const [ isImportDialogOpen, setIsImportDialogOpen ] = useState( false );
+	const [ localSearchValue, setLocalSearchValue ] = useState( searchQuery );
 
 	// Check if any forms are selected
 	const hasSelectedForms = useMemo(
@@ -34,28 +35,19 @@ const FormsFilters = ( {
 	);
 
 	useEffect( () => {
-		if ( searchInputRef.current ) {
-			searchInputRef.current.value = searchQuery;
-		}
+		setLocalSearchValue( searchQuery );
 	}, [ searchQuery ] );
 
 	// Handle search functionality
 	const handleSearchChange = ( value ) => {
-		onSearchChange( value );
+		setLocalSearchValue( value );
 	};
 
 	const handleSearchKeyDown = ( event ) => {
 		if ( event.key === 'Enter' ) {
 			event.preventDefault();
-			onSearchChange( event.target.value );
+			onSearchChange( localSearchValue );
 		}
-	};
-
-	const clearSearch = () => {
-		if ( searchInputRef.current ) {
-			searchInputRef.current.value = '';
-		}
-		onSearchChange( '' );
 	};
 
 	const handleImportForm = () => {
@@ -246,27 +238,21 @@ const FormsFilters = ( {
 
 			{/* Search */}
 			<Container.Item>
-				<div className="relative min-w-[280px]">
-					<Input
+				<SearchBox
+					variant="secondary"
+					size="sm"
+					open={ false }
+					className="w-full"
+					filter={ false }
+				>
+					<SearchBox.Input
 						ref={ searchInputRef }
 						placeholder={ __( 'Search forms...', 'sureforms' ) }
-						size="sm"
+						value={ localSearchValue }
+						onChange={ handleSearchChange }
 						onKeyDown={ handleSearchKeyDown }
-						onChange={ ( e ) => handleSearchChange( e.target.value ) }
-						icon={ <Search className="w-4 h-4" /> }
-						iconPosition="left"
-						className="w-full"
 					/>
-					{ searchQuery && (
-						<Button
-							variant="ghost"
-							size="xs"
-							icon={ <X className="w-3 h-3" /> }
-							onClick={ clearSearch }
-							className="absolute right-2 top-1/2 transform -translate-y-1/2 p-1"
-						/>
-					) }
-				</div>
+				</SearchBox>
 			</Container.Item>
 
 			{/* Import Form Button */}
