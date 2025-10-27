@@ -7,7 +7,13 @@ import EntryLayout from './EntryLayout';
 // Router component with hash routing
 export const AppRouter = () => {
 	return (
-		<HashRouter>
+		<HashRouter
+			basename="/"
+			future={ {
+				v7_startTransition: true,
+				v7_relativeSplatPath: true,
+			} }
+		>
 			<Routes>
 				{ /* Listing page with RootLayout */ }
 				<Route path="/" element={ <RootLayout /> }>
