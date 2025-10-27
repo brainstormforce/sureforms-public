@@ -15,7 +15,6 @@ const FormsHeader = ( {
 	onBulkExport,
 	statusFilter,
 	onStatusFilterChange,
-	statusCounts = {},
 	selectedDates = { from: null, to: null },
 	onDateChange,
 } ) => {
@@ -62,7 +61,6 @@ const FormsHeader = ( {
 					onBulkExport={ onBulkExport }
 					statusFilter={ statusFilter }
 					onStatusFilterChange={ onStatusFilterChange }
-					statusCounts={ statusCounts }
 					selectedDates={ selectedDates }
 					onDateChange={ onDateChange }
 				/>

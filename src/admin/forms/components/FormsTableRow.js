@@ -164,7 +164,7 @@ const FormsTableRow = ( {
 					onClick={ () => window.open( `admin.php?page=sureforms_entries&form_filter=${ form.id }`, '_self' ) }
 					className="text-text-primary hover:text-text-primary-hover p-0 h-auto font-medium"
 				>
-					{ form.entries_count || 0 }
+					{ String( form.entries_count ?? 0 ) }
 				</Button>
 			</Table.Cell>
 

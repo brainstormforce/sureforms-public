@@ -18,7 +18,6 @@ const FormsFilters = ( {
 	onBulkExport,
 	statusFilter,
 	onStatusFilterChange,
-	statusCounts = {},
 	selectedDates = { from: null, to: null },
 	onDateChange,
 	onImportSuccess,
@@ -69,27 +68,23 @@ const FormsFilters = ( {
 		setIsImportDialogOpen( false );
 	};
 
-	// Status options with counts
+	// Status options
 	const statusOptions = [
 		{
 			key: 'any',
 			label: __( 'All Forms', 'sureforms' ),
-			count: statusCounts.total || 0,
 		},
 		{
 			key: 'publish',
 			label: __( 'Published', 'sureforms' ),
-			count: statusCounts.publish || 0,
 		},
 		{
 			key: 'draft',
 			label: __( 'Drafts', 'sureforms' ),
-			count: statusCounts.draft || 0,
 		},
 		{
 			key: 'trash',
 			label: __( 'Trash', 'sureforms' ),
-			count: statusCounts.trash || 0,
 		},
 	];
 
@@ -192,7 +187,7 @@ const FormsFilters = ( {
 									key={ option.key }
 									value={ option.key }
 								>
-									{ option.label } ({ option.count })
+									{ option.label }
 								</Select.Option>
 							) ) }
 						</Select.Options>

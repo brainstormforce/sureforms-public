@@ -30,14 +30,6 @@ const FormsManager = () => {
 		from: null,
 		to: null,
 	} );
-
-	// Status counts
-	const [statusCounts, setStatusCounts] = useState( {
-		total: 0,
-		publish: 0,
-		draft: 0,
-		trash: 0
-	} );
 	
 	// Pagination state
 	const [pagination, setPagination] = useState( {
@@ -92,30 +84,6 @@ const FormsManager = () => {
 			toast.error( err.message || __( 'Failed to fetch forms', 'sureforms' ) );
 		} finally {
 			setLoading( false );
-		}
-	};
-
-	const fetchStatusCounts = async () => {
-		try {
-			const statuses = [ 'publish', 'draft', 'trash' ];
-			const promises = statuses.map( async ( status ) => {
-				const response = await apiFetch( {
-					path: `/sureforms/v1/forms?status=${ status }&per_page=1`
-				} );
-				return { status, count: response.total || 0 };
-			} );
-
-			const results = await Promise.all( promises );
-			const counts = { total: 0 };
-			
-			results.forEach( ( { status, count } ) => {
-				counts[ status ] = count;
-				counts.total += count;
-			} );
-
-			setStatusCounts( counts );
-		} catch ( err ) {
-			console.error( 'Error fetching status counts:', err );
 		}
 	};
 
@@ -301,7 +269,6 @@ const FormsManager = () => {
 
 	useEffect( () => {
 		fetchForms();
-		fetchStatusCounts();
 	}, [] );
 
 	// Loading state
@@ -365,7 +332,6 @@ const FormsManager = () => {
 								onBulkExport={ handleBulkExport }
 								statusFilter={ filters.status }
 								onStatusFilterChange={ handleStatusFilter }
-								statusCounts={ statusCounts }
 								selectedDates={ selectedDates }
 								onDateChange={ handleDateChange }
 							/>
@@ -395,7 +361,6 @@ const FormsManager = () => {
 									onImportSuccess={ handleImportSuccess }
 									statusFilter={ filters.status }
 									onStatusFilterChange={ handleStatusFilter }
-									statusCounts={ statusCounts }
 									selectedDates={ selectedDates }
 									onDateChange={ handleDateChange }
 								/>
