@@ -1,13 +1,12 @@
 import { __ } from '@wordpress/i18n';
 import { useRef, useEffect, useMemo, useState } from '@wordpress/element';
-import { Trash, Calendar, Import, ArchiveRestore } from 'lucide-react';
+import { Trash, Calendar, Import, ArchiveRestore, Search } from 'lucide-react';
 import {
 	Input,
 	Button,
 	Container,
 	Select,
 	DatePicker,
-	SearchBox,
 } from '@bsf/force-ui';
 import {
 	getDatePlaceholder,
@@ -230,21 +229,17 @@ const FormsFilters = ( {
 
 			{ /* Search */ }
 			<Container.Item>
-				<SearchBox
-					variant="secondary"
+				<Input
+					ref={ searchInputRef }
+					type="text"
 					size="sm"
-					open={ false }
-					className="w-full"
-					filter={ false }
-				>
-					<SearchBox.Input
-						ref={ searchInputRef }
-						placeholder={ __( 'Search forms…', 'sureforms' ) }
-						value={ localSearchValue }
-						onChange={ handleSearchChange }
-						onKeyDown={ handleSearchKeyDown }
-					/>
-				</SearchBox>
+					placeholder={ __( 'Search forms…', 'sureforms' ) }
+					value={ localSearchValue }
+					onChange={ handleSearchChange }
+					onKeyDown={ handleSearchKeyDown }
+					prefix={ <Search className="w-4 h-4 text-icon-secondary" /> }
+					className="min-w-[200px]"
+				/>
 			</Container.Item>
 
 			{ /* Import Form Button */ }
