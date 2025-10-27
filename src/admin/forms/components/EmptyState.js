@@ -2,10 +2,7 @@ import { __ } from '@wordpress/i18n';
 import { Button, Text, Container } from '@bsf/force-ui';
 import { Plus, Search } from 'lucide-react';
 
-/**
- * EmptyState Component
- * Displays different empty states based on context
- */
+// EmptyState Component - Displays different empty states based on context
 const EmptyState = ( { hasActiveFilters = false, onClearFilters } ) => {
 	const handleAddNew = () => {
 		window.location.href = 'admin.php?page=add-new-form';
@@ -34,7 +31,10 @@ const EmptyState = ( { hasActiveFilters = false, onClearFilters } ) => {
 						color="secondary"
 						className="mb-4"
 					>
-						{ __( 'No forms match your current filters. Try adjusting your search terms or clearing the filters.', 'sureforms' ) }
+						{ __(
+							'No forms match your current filters. Try adjusting your search terms or clearing the filters.',
+							'sureforms'
+						) }
 					</Text>
 					<Button
 						variant="secondary"
@@ -52,14 +52,14 @@ const EmptyState = ( { hasActiveFilters = false, onClearFilters } ) => {
 	return (
 		<Container className="flex items-center justify-center p-8 bg-background-primary rounded-lg">
 			<div className="flex flex-col md:flex-row items-center gap-8 max-w-4xl">
-				{/* Icon/Visual */}
+				{ /* Icon/Visual */ }
 				<div className="flex-shrink-0">
 					<div className="w-32 h-32 bg-background-secondary rounded-full flex items-center justify-center">
 						<Plus className="w-12 h-12 text-text-tertiary" />
 					</div>
 				</div>
 
-				{/* Content */}
+				{ /* Content */ }
 				<div className="flex-1 text-center md:text-left">
 					<Text
 						size={ 24 }
@@ -71,14 +71,17 @@ const EmptyState = ( { hasActiveFilters = false, onClearFilters } ) => {
 					>
 						{ __( 'Create your first form', 'sureforms' ) }
 					</Text>
-					
+
 					<Text
 						size={ 16 }
 						lineHeight={ 24 }
 						color="secondary"
 						className="mb-6"
 					>
-						{ __( 'Get started by creating your first form. SureForms makes it easy to build beautiful, responsive forms with drag-and-drop blocks.', 'sureforms' ) }
+						{ __(
+							'Get started by creating your first form. SureForms makes it easy to build beautiful, responsive forms with drag-and-drop blocks.',
+							'sureforms'
+						) }
 					</Text>
 
 					<div className="space-y-3">
@@ -90,17 +93,38 @@ const EmptyState = ( { hasActiveFilters = false, onClearFilters } ) => {
 						>
 							{ __( 'With SureForms you can:', 'sureforms' ) }
 						</Text>
-						
+
 						<ul className="text-left space-y-2">
 							{ [
-								__( 'Build forms with native WordPress blocks', 'sureforms' ),
-								__( 'Collect and manage form submissions', 'sureforms' ),
-								__( 'Customize styling and behavior', 'sureforms' ),
-								__( 'Export data for further analysis', 'sureforms' ),
+								__(
+									'Build forms with native WordPress blocks',
+									'sureforms'
+								),
+								__(
+									'Collect and manage form submissions',
+									'sureforms'
+								),
+								__(
+									'Customize styling and behavior',
+									'sureforms'
+								),
+								__(
+									'Export data for further analysis',
+									'sureforms'
+								),
 							].map( ( feature, index ) => (
-								<li key={ index } className="flex items-start gap-2">
-									<span className="text-accent-primary mt-1">•</span>
-									<Text size={ 14 } lineHeight={ 20 } color="secondary">
+								<li
+									key={ index }
+									className="flex items-start gap-2"
+								>
+									<span className="text-accent-primary mt-1">
+										•
+									</span>
+									<Text
+										size={ 14 }
+										lineHeight={ 20 }
+										color="secondary"
+									>
 										{ feature }
 									</Text>
 								</li>

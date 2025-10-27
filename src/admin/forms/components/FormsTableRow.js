@@ -5,10 +5,7 @@ import { useState } from '@wordpress/element';
 import Tooltip from '@Admin/components/Tooltip';
 import { exportForms } from '../utils';
 
-/**
- * FormsTableRow Component
- * Displays a single form row in the table
- */
+// FormsTableRow Component - Displays a single form row in the table
 const FormsTableRow = ( {
 	form,
 	isSelected,
@@ -37,7 +34,9 @@ const FormsTableRow = ( {
 	// Handle copy shortcode
 	const handleCopyShortcode = async () => {
 		try {
-			await navigator.clipboard.writeText( `[sureforms id='${ form.id }']` );
+			await navigator.clipboard.writeText(
+				`[sureforms id='${ form.id }']`
+			);
 			setHasCopied( true );
 			setTimeout( () => setHasCopied( false ), 2000 );
 		} catch ( err ) {
@@ -72,7 +71,7 @@ const FormsTableRow = ( {
 
 	// Build action buttons based on form status
 	const actions = [];
-	
+
 	if ( form.status !== 'trash' ) {
 		// Export action
 		actions.push( {
@@ -130,20 +129,20 @@ const FormsTableRow = ( {
 			onChangeSelection={ onChangeSelection }
 			className="hover:bg-background-primary"
 		>
-			{/* Title */}
+			{ /* Title */ }
 			<Table.Cell>
 				<div>
-					<Text
-						size={ 14 }
-						color="secondary"
-					>
+					<Text size={ 14 } color="secondary">
 						{ form.title || __( '(no title)', 'sureforms' ) }{ ' ' }
-						<span className='font-semibold'>{ form.status === 'draft' && __( '- Draft', 'sureforms' ) }</span>
+						<span className="font-semibold">
+							{ form.status === 'draft' &&
+								__( '- Draft', 'sureforms' ) }
+						</span>
 					</Text>
 				</div>
 			</Table.Cell>
 
-			{/* Shortcode */}
+			{ /* Shortcode */ }
 			<Table.Cell>
 				<Badge
 					label={ form.shortcode }
@@ -152,37 +151,48 @@ const FormsTableRow = ( {
 					icon={ <Copy className="w-3 h-3" /> }
 					onClick={ handleCopyShortcode }
 					className="cursor-pointer hover:bg-background-secondary rounded-sm w-fit"
-					title={ hasCopied ? __( 'Copied!', 'sureforms' ) : __( 'Copy Shortcode', 'sureforms' ) }
+					title={
+						hasCopied
+							? __( 'Copied!', 'sureforms' )
+							: __( 'Copy Shortcode', 'sureforms' )
+					}
 				/>
 			</Table.Cell>
 
-			{/* Entries Count */}
+			{ /* Entries Count */ }
 			<Table.Cell>
 				<Button
 					variant="link"
 					size="sm"
-					onClick={ () => window.open( `admin.php?page=sureforms_entries&form_filter=${ form.id }`, '_self' ) }
+					onClick={ () =>
+						window.open(
+							`admin.php?page=sureforms_entries&form_filter=${ form.id }`,
+							'_self'
+						)
+					}
 					className="text-text-primary hover:text-text-primary-hover p-0 h-auto font-medium"
 				>
 					{ String( form.entries_count ?? 0 ) }
 				</Button>
 			</Table.Cell>
 
-			{/* Author */}
+			{ /* Author */ }
 			<Table.Cell>
 				<Text size={ 14 } color="secondary">
-					{ form.author ? form.author.name : __( 'Unknown', 'sureforms' ) }
+					{ form.author
+						? form.author.name
+						: __( 'Unknown', 'sureforms' ) }
 				</Text>
 			</Table.Cell>
 
-			{/* Date & Time */}
+			{ /* Date & Time */ }
 			<Table.Cell>
 				<Text size={ 14 } color="secondary">
 					{ formatDateTime( form.date_created ) }
 				</Text>
 			</Table.Cell>
 
-			{/* Actions */}
+			{ /* Actions */ }
 			<Table.Cell>
 				<Container align="center" className="gap-2">
 					{ actions.map( ( action ) => (

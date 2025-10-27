@@ -1,15 +1,23 @@
 import { __ } from '@wordpress/i18n';
 import { useRef, useEffect, useMemo, useState } from '@wordpress/element';
 import { Trash, Calendar, Import, ArchiveRestore } from 'lucide-react';
-import { Input, Button, Container, Select, DatePicker, SearchBox } from '@bsf/force-ui';
-import { getDatePlaceholder, getSelectedDate, getLastNDays } from '@Utils/Helpers';
+import {
+	Input,
+	Button,
+	Container,
+	Select,
+	DatePicker,
+	SearchBox,
+} from '@bsf/force-ui';
+import {
+	getDatePlaceholder,
+	getSelectedDate,
+	getLastNDays,
+} from '@Utils/Helpers';
 import ImportForm from './ImportForm';
 
-/**
- * FormsFilters Component
- * Displays all filters: status dropdown, date picker, search, and import button
- * Shows bulk actions when forms are selected
- */
+// FormsFilters Component - Displays all filters: status dropdown, date picker, search, and import button
+// Shows bulk actions when forms are selected
 const FormsFilters = ( {
 	searchQuery,
 	onSearchChange,
@@ -81,7 +89,7 @@ const FormsFilters = ( {
 	];
 
 	const getStatusLabel = ( key ) => {
-		const option = statusOptions.find( opt => opt.key === key );
+		const option = statusOptions.find( ( opt ) => opt.key === key );
 		return option ? option.label : __( 'All Forms', 'sureforms' );
 	};
 
@@ -162,7 +170,7 @@ const FormsFilters = ( {
 	// Render regular filters
 	return (
 		<Container direction="row" align="center" className="gap-3">
-			{/* Status Dropdown */}
+			{ /* Status Dropdown */ }
 			<Container.Item>
 				<div className="min-w-[160px]">
 					<Select
@@ -187,56 +195,40 @@ const FormsFilters = ( {
 				</div>
 			</Container.Item>
 
-			{/* Date Picker */}
+			{ /* Date Picker */ }
 			<Container.Item>
-				<div
-					className="relative"
-					ref={ containerRef }
-				>
+				<div className="relative" ref={ containerRef }>
 					<Input
 						type="text"
 						size="sm"
 						value={ getSelectedDate( selectedDates ) }
-						suffix={
-							<Calendar className="text-icon-secondary" />
-						}
+						suffix={ <Calendar className="text-icon-secondary" /> }
 						onClick={ () =>
 							setIsDatePickerOpen( ( prev ) => ! prev )
 						}
 						placeholder={ getDatePlaceholder() }
 						className="min-w-[200px]"
 						readOnly
-						aria-label={ __(
-							'Select Date Range',
-							'sureforms'
-						) }
+						aria-label={ __( 'Select Date Range', 'sureforms' ) }
 					/>
 					{ isDatePickerOpen && (
 						<div className="absolute z-999999 mt-2 rounded-lg shadow-lg right-0 bg-background-primary">
 							<DatePicker
-								applyButtonText={ __(
-									'Apply',
-									'sureforms'
-								) }
-								cancelButtonText={ __(
-									'Cancel',
-									'sureforms'
-								) }
+								applyButtonText={ __( 'Apply', 'sureforms' ) }
+								cancelButtonText={ __( 'Cancel', 'sureforms' ) }
 								selectionType="range"
 								showOutsideDays={ false }
 								variant="presets"
 								onApply={ handleDateApply }
 								onCancel={ handleDateCancel }
-								selected={ getLastNDays(
-									selectedDates
-								) }
+								selected={ getLastNDays( selectedDates ) }
 							/>
 						</div>
 					) }
 				</div>
 			</Container.Item>
 
-			{/* Search */}
+			{ /* Search */ }
 			<Container.Item>
 				<SearchBox
 					variant="secondary"
@@ -247,7 +239,7 @@ const FormsFilters = ( {
 				>
 					<SearchBox.Input
 						ref={ searchInputRef }
-						placeholder={ __( 'Search forms...', 'sureforms' ) }
+						placeholder={ __( 'Search forms…', 'sureforms' ) }
 						value={ localSearchValue }
 						onChange={ handleSearchChange }
 						onKeyDown={ handleSearchKeyDown }
@@ -255,7 +247,7 @@ const FormsFilters = ( {
 				</SearchBox>
 			</Container.Item>
 
-			{/* Import Form Button */}
+			{ /* Import Form Button */ }
 			<Container.Item>
 				<Button
 					variant="outline"
@@ -274,7 +266,6 @@ const FormsFilters = ( {
 				onImportSuccess={ handleImportSuccess }
 			/>
 		</Container>
-
 	);
 };
 

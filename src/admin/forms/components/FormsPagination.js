@@ -7,13 +7,11 @@ import { cn } from '@Utils/Helpers';
  */
 const ENTRIES_PER_PAGE_OPTIONS = [ 10, 20, 50, 100 ];
 
-/**
- * Generate pagination range
- */
+// Generate pagination range
 const getPaginationRange = ( currentPage, totalPages ) => {
 	const range = [];
 	const showPages = 5; // Number of page numbers to show
-	
+
 	if ( totalPages <= showPages ) {
 		// Show all pages if total is small
 		for ( let i = 1; i <= totalPages; i++ ) {
@@ -23,18 +21,18 @@ const getPaginationRange = ( currentPage, totalPages ) => {
 		// Show pages with ellipsis
 		const start = Math.max( 1, currentPage - 2 );
 		const end = Math.min( totalPages, currentPage + 2 );
-		
+
 		if ( start > 1 ) {
 			range.push( 1 );
 			if ( start > 2 ) {
 				range.push( 'ellipsis' );
 			}
 		}
-		
+
 		for ( let i = start; i <= end; i++ ) {
 			range.push( i );
 		}
-		
+
 		if ( end < totalPages ) {
 			if ( end < totalPages - 1 ) {
 				range.push( 'ellipsis' );
@@ -42,14 +40,11 @@ const getPaginationRange = ( currentPage, totalPages ) => {
 			range.push( totalPages );
 		}
 	}
-	
+
 	return range;
 };
 
-/**
- * FormsPagination Component
- * Displays pagination controls and entries per page selector
- */
+// FormsPagination Component - Displays pagination controls and entries per page selector
 const FormsPagination = ( {
 	currentPage,
 	totalPages,
@@ -63,7 +58,7 @@ const FormsPagination = ( {
 
 	return (
 		<div className="flex items-center justify-between flex-wrap gap-4 w-full">
-			{/* Page info and per-page selector */}
+			{ /* Page info and per-page selector */ }
 			<div className="flex items-center gap-3">
 				<Text size={ 14 } color="secondary">
 					{ __( 'Page', 'sureforms' ) } { currentPage }{ ' ' }
@@ -90,14 +85,15 @@ const FormsPagination = ( {
 				</Text>
 			</div>
 
-			{/* Pagination controls */}
+			{ /* Pagination controls */ }
 			<Pagination className="w-auto">
 				<Pagination.Content>
 					<Pagination.Previous
 						onClick={ onPreviousPage }
 						disabled={ currentPage === 1 }
 						className={ cn(
-							currentPage === 1 && 'opacity-50 text-text-tertiary cursor-not-allowed'
+							currentPage === 1 &&
+								'opacity-50 text-text-tertiary cursor-not-allowed'
 						) }
 					/>
 					{ paginationItems.map( ( item, index ) => {

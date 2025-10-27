@@ -12,40 +12,39 @@ import ConfirmationDialog from './components/ConfirmationDialog';
 
 const FormsManager = () => {
 	// State management
-	const [forms, setForms] = useState( [] );
-	const [loading, setLoading] = useState( true );
-	const [error, setError] = useState( null );
-	const [selectedForms, setSelectedForms] = useState( [] );
-	
+	const [ forms, setForms ] = useState( [] );
+	const [ loading, setLoading ] = useState( true );
+	const [ error, setError ] = useState( null );
+	const [ selectedForms, setSelectedForms ] = useState( [] );
+
 	// Filters state
-	const [filters, setFilters] = useState( {
+	const [ filters, setFilters ] = useState( {
 		search: '',
 		status: 'any',
 		orderby: 'date',
-		order: 'desc'
+		order: 'desc',
 	} );
 
 	// Date filter state
-	const [selectedDates, setSelectedDates] = useState( {
+	const [ selectedDates, setSelectedDates ] = useState( {
 		from: null,
 		to: null,
 	} );
-	
+
 	// Pagination state
-	const [pagination, setPagination] = useState( {
+	const [ pagination, setPagination ] = useState( {
 		total: 0,
 		totalPages: 0,
 		currentPage: 1,
-		perPage: 20
+		perPage: 20,
 	} );
-	
-	
+
 	// Dialog state
-	const [confirmDialog, setConfirmDialog] = useState( {
+	const [ confirmDialog, setConfirmDialog ] = useState( {
 		open: false,
 		title: '',
 		description: '',
-		action: null
+		action: null,
 	} );
 
 	// API functions
@@ -61,13 +60,19 @@ const FormsManager = () => {
 				status: currentFilters.status || 'any',
 				orderby: currentFilters.orderby || 'date',
 				order: currentFilters.order || 'desc',
-				...( currentFilters.search && { search: currentFilters.search } ),
-				...( selectedDates.from && { after: new Date( selectedDates.from ).toISOString() } ),
-				...( selectedDates.to && { before: new Date( selectedDates.to ).toISOString() } )
+				...( currentFilters.search && {
+					search: currentFilters.search,
+				} ),
+				...( selectedDates.from && {
+					after: new Date( selectedDates.from ).toISOString(),
+				} ),
+				...( selectedDates.to && {
+					before: new Date( selectedDates.to ).toISOString(),
+				} ),
 			} );
 
 			const response = await apiFetch( {
-				path: `/sureforms/v1/forms?${ queryParams.toString() }`
+				path: `/sureforms/v1/forms?${ queryParams.toString() }`,
 			} );
 
 			setForms( response.forms || [] );
@@ -75,13 +80,16 @@ const FormsManager = () => {
 				total: response.total || 0,
 				totalPages: response.total_pages || 0,
 				currentPage: response.current_page || 1,
-				perPage: response.per_page || 20
+				perPage: response.per_page || 20,
 			} );
 			setFilters( currentFilters );
-
 		} catch ( err ) {
-			setError( err.message || __( 'Failed to fetch forms', 'sureforms' ) );
-			toast.error( err.message || __( 'Failed to fetch forms', 'sureforms' ) );
+			setError(
+				err.message || __( 'Failed to fetch forms', 'sureforms' )
+			);
+			toast.error(
+				err.message || __( 'Failed to fetch forms', 'sureforms' )
+			);
 		} finally {
 			setLoading( false );
 		}
@@ -110,9 +118,8 @@ const FormsManager = () => {
 			await exportForms( selectedForms );
 			// Clear selected forms after successful export
 			setSelectedForms( [] );
-		} catch ( error ) {
-			console.error( 'Bulk export error:', error );
-			// TODO: Show user-friendly error message
+		} catch ( err ) {
+			console.error( 'Bulk export error:', err );
 		}
 	};
 
@@ -126,7 +133,12 @@ const FormsManager = () => {
 				type: 'success',
 				message: sprintf(
 					/* translators: %d: number of imported forms */
-					_n( '%d form imported successfully.', '%d forms imported successfully.', response.count || 1, 'sureforms' ),
+					_n(
+						'%d form imported successfully.',
+						'%d forms imported successfully.',
+						response.count || 1,
+						'sureforms'
+					),
 					response.count || 1
 				),
 			} );
@@ -134,7 +146,10 @@ const FormsManager = () => {
 	};
 
 	const handleSort = ( column ) => {
-		const newOrder = filters.orderby === column && filters.order === 'desc' ? 'asc' : 'desc';
+		const newOrder =
+			filters.orderby === column && filters.order === 'desc'
+				? 'asc'
+				: 'desc';
 		fetchForms( { orderby: column, order: newOrder } );
 	};
 
@@ -153,14 +168,14 @@ const FormsManager = () => {
 
 	// Selection handlers
 	const handleToggleAll = ( checked ) => {
-		setSelectedForms( checked ? forms.map( form => form.id ) : [] );
+		setSelectedForms( checked ? forms.map( ( form ) => form.id ) : [] );
 	};
 
 	const handleRowSelection = ( formId, selected ) => {
-		setSelectedForms( prev => 
-			selected 
+		setSelectedForms( ( prev ) =>
+			selected
 				? [ ...prev, formId ]
-				: prev.filter( id => id !== formId )
+				: prev.filter( ( id ) => id !== formId )
 		);
 	};
 
@@ -172,35 +187,53 @@ const FormsManager = () => {
 				method: 'POST',
 				data: {
 					form_ids: formIds,
-					action: action
-				}
+					action,
+				},
 			} );
 
 			if ( response.success ) {
 				const count = formIds.length;
 				let message = '';
-				
+
 				switch ( action ) {
 					case 'trash':
-						message = sprintf( 
-							_n( '%d form moved to trash.', '%d forms moved to trash.', count, 'sureforms' ), 
-							count 
+						message = sprintf(
+							/* translators: %d: number of forms */
+							_n(
+								'%d form moved to trash.',
+								'%d forms moved to trash.',
+								count,
+								'sureforms'
+							),
+							count
 						);
 						break;
 					case 'restore':
-						message = sprintf( 
-							_n( '%d form restored.', '%d forms restored.', count, 'sureforms' ), 
-							count 
+						message = sprintf(
+							/* translators: %d: number of forms */
+							_n(
+								'%d form restored.',
+								'%d forms restored.',
+								count,
+								'sureforms'
+							),
+							count
 						);
 						break;
 					case 'delete':
-						message = sprintf( 
-							_n( '%d form permanently deleted.', '%d forms permanently deleted.', count, 'sureforms' ), 
-							count 
+						message = sprintf(
+							/* translators: %d: number of forms */
+							_n(
+								'%d form permanently deleted.',
+								'%d forms permanently deleted.',
+								count,
+								'sureforms'
+							),
+							count
 						);
 						break;
 				}
-				
+
 				toast.success( message );
 				setSelectedForms( [] );
 				fetchForms();
@@ -214,19 +247,19 @@ const FormsManager = () => {
 		setConfirmDialog( {
 			open: true,
 			title: __( 'Move to Trash', 'sureforms' ),
-			description: sprintf( 
-				_n( 
-					'Are you sure you want to move %d form to trash?', 
-					'Are you sure you want to move %d forms to trash?', 
-					selectedForms.length, 
-					'sureforms' 
-				), 
-				selectedForms.length 
+			description: sprintf(
+				/* translators: %d: number of forms */
+				_n(
+					'Are you sure you want to move %d form to trash?',
+					'Are you sure you want to move %d forms to trash?',
+					selectedForms.length,
+					'sureforms'
+				),
+				selectedForms.length
 			),
-			action: () => handleBulkAction( 'trash', selectedForms )
+			action: () => handleBulkAction( 'trash', selectedForms ),
 		} );
 	};
-
 
 	// Individual form actions
 	const handleFormEdit = ( form ) => {
@@ -237,8 +270,15 @@ const FormsManager = () => {
 		setConfirmDialog( {
 			open: true,
 			title: __( 'Move to Trash', 'sureforms' ),
-			description: sprintf( __( 'Are you sure you want to move "%s" to trash?', 'sureforms' ), form.title ),
-			action: () => handleBulkAction( 'trash', [ form.id ] )
+			description: sprintf(
+				/* translators: %s: form title */
+				__(
+					'Are you sure you want to move "%s" to trash?',
+					'sureforms'
+				),
+				form.title
+			),
+			action: () => handleBulkAction( 'trash', [ form.id ] ),
 		} );
 	};
 
@@ -250,8 +290,15 @@ const FormsManager = () => {
 		setConfirmDialog( {
 			open: true,
 			title: __( 'Delete Permanently', 'sureforms' ),
-			description: sprintf( __( 'Are you sure you want to permanently delete "%s"? This action cannot be undone.', 'sureforms' ), form.title ),
-			action: () => handleBulkAction( 'delete', [ form.id ] )
+			description: sprintf(
+				/* translators: %s: form title */
+				__(
+					'Are you sure you want to permanently delete "%s"? This action cannot be undone.',
+					'sureforms'
+				),
+				form.title
+			),
+			action: () => handleBulkAction( 'delete', [ form.id ] ),
 		} );
 	};
 
@@ -265,7 +312,8 @@ const FormsManager = () => {
 		);
 	}, [ filters, selectedDates ] );
 
-	const isIndeterminate = selectedForms.length > 0 && selectedForms.length < forms.length;
+	const isIndeterminate =
+		selectedForms.length > 0 && selectedForms.length < forms.length;
 
 	useEffect( () => {
 		fetchForms();
@@ -277,7 +325,7 @@ const FormsManager = () => {
 			<Container className="p-6 bg-background-secondary rounded-lg">
 				<FormsHeader />
 				<div className="mt-6">
-					{ __( 'Loading forms...', 'sureforms' ) }
+					{ __( 'Loading forms…', 'sureforms' ) }
 				</div>
 			</Container>
 		);
@@ -289,7 +337,8 @@ const FormsManager = () => {
 			<Container className="p-6 bg-background-secondary rounded-lg">
 				<FormsHeader />
 				<div className="mt-6 text-text-error">
-					{ __( 'Error loading forms: ', 'sureforms' ) }{ error }
+					{ __( 'Error loading forms: ', 'sureforms' ) }
+					{ error }
 				</div>
 			</Container>
 		);
@@ -309,16 +358,16 @@ const FormsManager = () => {
 
 	return (
 		<Container className="h-full" direction="column" gap={ 0 }>
-			{/* Header */}
+			{ /* Header */ }
 			<Header />
-			
+
 			<Container.Item>
 				<Container
 					className="p-5 pb-8 xl:p-8 w-full bg-background-secondary"
 					direction="column"
 					gap="2xl"
 				>
-					{/* Content */}
+					{ /* Content */ }
 					{ forms.length === 0 && hasActiveFilters ? (
 						<Container
 							direction="column"
@@ -336,12 +385,24 @@ const FormsManager = () => {
 								onDateChange={ handleDateChange }
 							/>
 							<div className="border-t border-border-subtle pt-6">
-								<EmptyState 
+								<EmptyState
 									hasActiveFilters={ true }
 									onClearFilters={ () => {
-										setFilters( { search: '', status: 'any', orderby: 'date', order: 'desc' } );
-										setSelectedDates( { from: null, to: null } );
-										fetchForms( { search: '', status: 'any', page: 1 } );
+										setFilters( {
+											search: '',
+											status: 'any',
+											orderby: 'date',
+											order: 'desc',
+										} );
+										setSelectedDates( {
+											from: null,
+											to: null,
+										} );
+										fetchForms( {
+											search: '',
+											status: 'any',
+											page: 1,
+										} );
 									} }
 								/>
 							</div>
@@ -365,7 +426,7 @@ const FormsManager = () => {
 									onDateChange={ handleDateChange }
 								/>
 							</Container.Item>
-							
+
 							<Container.Item className="border-t border-border-subtle">
 								<FormsTable
 									forms={ forms }
@@ -382,7 +443,7 @@ const FormsManager = () => {
 									getSortDirection={ getSortDirection }
 								/>
 							</Container.Item>
-							
+
 							{ pagination.totalPages > 1 && (
 								<Container.Item className="border-t border-border-subtle px-6 py-4">
 									<FormsPagination
@@ -390,9 +451,19 @@ const FormsManager = () => {
 										totalPages={ pagination.totalPages }
 										entriesPerPage={ pagination.perPage }
 										onPageChange={ handlePageChange }
-										onEntriesPerPageChange={ handlePerPageChange }
-										onNextPage={ () => handlePageChange( pagination.currentPage + 1 ) }
-										onPreviousPage={ () => handlePageChange( pagination.currentPage - 1 ) }
+										onEntriesPerPageChange={
+											handlePerPageChange
+										}
+										onNextPage={ () =>
+											handlePageChange(
+												pagination.currentPage + 1
+											)
+										}
+										onPreviousPage={ () =>
+											handlePageChange(
+												pagination.currentPage - 1
+											)
+										}
 									/>
 								</Container.Item>
 							) }
@@ -403,7 +474,9 @@ const FormsManager = () => {
 
 			<ConfirmationDialog
 				open={ confirmDialog.open }
-				setOpen={ ( open ) => setConfirmDialog( prev => ( { ...prev, open } ) ) }
+				setOpen={ ( open ) =>
+					setConfirmDialog( ( prev ) => ( { ...prev, open } ) )
+				}
 				title={ confirmDialog.title }
 				description={ confirmDialog.description }
 				onConfirm={ confirmDialog.action }

@@ -52,10 +52,7 @@ const TABLE_HEADERS = [
 	},
 ];
 
-/**
- * FormsTable Component
- * Displays the forms table with headers and rows
- */
+//  FormsTable Component - Displays the forms table with headers and rows
 const FormsTable = ( {
 	forms = [],
 	selectedForms = [],
@@ -71,19 +68,35 @@ const FormsTable = ( {
 	getSortDirection,
 } ) => {
 	// Skeleton loading rows
-	const renderSkeletonRows = () => (
+	const renderSkeletonRows = () =>
 		Array.from( { length: 5 }, ( _, index ) => (
-			<Table.Row key={ `skeleton-${ index }` } className="hover:bg-background-primary">
-				<Table.Cell><Skeleton className="h-4 w-8" /></Table.Cell>
-				<Table.Cell><Skeleton className="h-4 w-32" /></Table.Cell>
-				<Table.Cell><Skeleton className="h-6 w-16" /></Table.Cell>
-				<Table.Cell><Skeleton className="h-4 w-12" /></Table.Cell>
-				<Table.Cell><Skeleton className="h-4 w-24" /></Table.Cell>
-				<Table.Cell><Skeleton className="h-4 w-20" /></Table.Cell>
-				<Table.Cell><Skeleton className="h-8 w-20" /></Table.Cell>
+			<Table.Row
+				key={ `skeleton-${ index }` }
+				className="hover:bg-background-primary"
+			>
+				<Table.Cell>
+					<Skeleton className="h-4 w-8" />
+				</Table.Cell>
+				<Table.Cell>
+					<Skeleton className="h-4 w-32" />
+				</Table.Cell>
+				<Table.Cell>
+					<Skeleton className="h-6 w-16" />
+				</Table.Cell>
+				<Table.Cell>
+					<Skeleton className="h-4 w-12" />
+				</Table.Cell>
+				<Table.Cell>
+					<Skeleton className="h-4 w-24" />
+				</Table.Cell>
+				<Table.Cell>
+					<Skeleton className="h-4 w-20" />
+				</Table.Cell>
+				<Table.Cell>
+					<Skeleton className="h-8 w-20" />
+				</Table.Cell>
 			</Table.Row>
-		) )
-	);
+		) );
 
 	return (
 		<Table className="w-full" checkboxSelection>
@@ -108,7 +121,13 @@ const FormsTable = ( {
 						<Container
 							align="center"
 							className="gap-2"
-							justify={ header.align === 'right' ? 'end' : header.align === 'center' ? 'center' : 'start' }
+							justify={
+								header.align === 'right'
+									? 'end'
+									: header.align === 'center'
+										? 'center'
+										: 'start'
+							}
 						>
 							{ header.label }
 							{ header.sortable && (
@@ -125,8 +144,8 @@ const FormsTable = ( {
 					);
 
 					return (
-						<Table.HeadCell 
-							key={ index } 
+						<Table.HeadCell
+							key={ index }
 							style={ { width: header.width } }
 						>
 							{ header.sortable ? (
@@ -156,10 +175,9 @@ const FormsTable = ( {
 			</Table.Head>
 
 			<Table.Body>
-				{ isLoading && forms.length === 0 ? (
-					renderSkeletonRows()
-				) : (
-					forms.map( ( form ) => (
+				{ isLoading && forms.length === 0
+					? renderSkeletonRows()
+					: forms.map( ( form ) => (
 						<FormsTableRow
 							key={ form.id }
 							form={ form }
@@ -172,8 +190,7 @@ const FormsTable = ( {
 							onRestore={ onRestore }
 							onDelete={ onDelete }
 						/>
-					) )
-				) }
+					  ) ) }
 			</Table.Body>
 		</Table>
 	);

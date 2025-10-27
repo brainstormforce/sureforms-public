@@ -1,10 +1,7 @@
 import { Dialog, Button, Container } from '@bsf/force-ui';
 import { __ } from '@wordpress/i18n';
 
-/**
- * ConfirmationDialog component
- * Displays a confirmation dialog for destructive actions
- */
+// ConfirmationDialog component - Displays a confirmation dialog for destructive actions
 const ConfirmationDialog = ( {
 	open,
 	setOpen,
@@ -44,7 +41,7 @@ const ConfirmationDialog = ( {
 				</Dialog.Header>
 
 				{ body && <Dialog.Body>{ body }</Dialog.Body> }
-				
+
 				<Dialog.Footer className="border-t border-b-0 border-x-0 border-solid border-border-subtle">
 					<Container gap="sm" justify="end">
 						<Button

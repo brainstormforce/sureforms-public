@@ -3,10 +3,7 @@ import { Button, Container } from '@bsf/force-ui';
 import { Plus } from 'lucide-react';
 import FormsFilters from './FormsFilters';
 
-/**
- * FormsHeader Component
- * Combined header with title, add new button, and filters component
- */
+// FormsHeader Component - Combined header with title, add new button, and filters component
 const FormsHeader = ( {
 	searchQuery,
 	onSearchChange,
@@ -25,11 +22,11 @@ const FormsHeader = ( {
 	return (
 		<Container
 			direction="row"
-			align="center" 
+			align="center"
 			justify="between"
 			className="w-full"
 		>
-			{/* Left side - Title and Add New button */}
+			{ /* Left side - Title and Add New button */ }
 			<Container.Item>
 				<Container direction="row" align="center" className="gap-6">
 					<Container.Item>
@@ -51,7 +48,7 @@ const FormsHeader = ( {
 				</Container>
 			</Container.Item>
 
-			{/* Right side - Filters component */}
+			{ /* Right side - Filters component */ }
 			<Container.Item>
 				<FormsFilters
 					searchQuery={ searchQuery }
