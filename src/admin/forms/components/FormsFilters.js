@@ -1,6 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import { useRef, useEffect, useMemo, useState } from '@wordpress/element';
-import { Search, X, Trash2, Calendar, Upload, Download } from 'lucide-react';
+import { Search, X, Trash, Calendar, Import, ArchiveRestore } from 'lucide-react';
 import { Input, Button, Container, Select, DatePicker } from '@bsf/force-ui';
 import { getDatePlaceholder, getSelectedDate, getLastNDays } from '@Utils/Helpers';
 
@@ -139,9 +139,9 @@ const FormsFilters = ( {
 			<Container direction="row" align="center" className="gap-3">
 				<Container.Item>
 					<Button
-						variant="ghost"
+						variant="outline"
 						size="sm"
-						icon={ <Trash2 className="w-4 h-4" /> }
+						icon={ <Trash className="w-4 h-4" /> }
 						iconPosition="left"
 						onClick={ onBulkTrash }
 						destructive
@@ -153,7 +153,7 @@ const FormsFilters = ( {
 					<Button
 						variant="outline"
 						size="sm"
-						icon={ <Download className="w-4 h-4" /> }
+						icon={ <ArchiveRestore className="w-4 h-4" /> }
 						iconPosition="left"
 						onClick={ onBulkExport }
 					>
@@ -271,7 +271,7 @@ const FormsFilters = ( {
 				<Button
 					variant="outline"
 					size="sm"
-					icon={ <Upload className="w-4 h-4" /> }
+					icon={ <Import className="w-4 h-4" /> }
 					iconPosition="left"
 					onClick={ handleImportForm }
 				>

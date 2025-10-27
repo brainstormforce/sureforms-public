@@ -1,7 +1,8 @@
 import { __ } from '@wordpress/i18n';
 import { Edit3, Trash2, RotateCcw, Copy, Eye, Share } from 'lucide-react';
-import { Button, Container, Table, Badge, Text, Tooltip } from '@bsf/force-ui';
+import { Button, Container, Table, Badge, Text } from '@bsf/force-ui';
 import { useState } from '@wordpress/element';
+import Tooltip from '@Admin/components/Tooltip';
 
 /**
  * FormsTableRow Component
