@@ -20,8 +20,6 @@ import { store as preferencesStore } from '@wordpress/preferences';
 
 import GeneralSettings from './tabs/GeneralSettings.js';
 import StyleSettings from './tabs/StyleSettings.js';
-import AdvancedSettings from './tabs/AdvancedSettings.js';
-
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {
 	SRFMTabs,
@@ -251,7 +249,7 @@ const SureformsFormSpecificSettings = ( props ) => {
 				title={ __( 'Form Options', 'sureforms' ) }
 			>
 				<InspectorTabs
-					tabs={ [ 'general', 'style', 'advance' ] }
+					tabs={ [ 'general', 'style' ] }
 					defaultTab={ 'general' }
 				>
 					<InspectorTab { ...SRFMTabs.general }>
@@ -274,9 +272,6 @@ const SureformsFormSpecificSettings = ( props ) => {
 							}
 							isPageBreak={ isPageBreak }
 						/>
-					</InspectorTab>
-					<InspectorTab { ...SRFMTabs.advance } parentProps={ props }>
-						<AdvancedSettings defaultKeys={ defaultKeys } />
 					</InspectorTab>
 				</InspectorTabs>
 				<PluginPostPublishPanel>
