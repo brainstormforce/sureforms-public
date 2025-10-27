@@ -438,7 +438,10 @@ const Payments = ( {
 					<Button
 						variant="primary"
 						onClick={ () => {
-							if ( confirmationInput === 'confirm' ) {
+							if (
+								typeof confirmationInput === 'string' &&
+								confirmationInput.trim().toLowerCase() === 'confirm'
+							) {
 								confirmStripeDisconnect();
 							}
 						} }

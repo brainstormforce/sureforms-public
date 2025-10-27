@@ -79,24 +79,24 @@ export const PaymentComponent = ( props ) => {
 			// For subscriptions: both name and email are required
 			if ( missingNameField && missingEmailField ) {
 				errorMessage = __(
-					'Name and Email fields are required for subscriptions. Please map these fields in the block settings. Also, make sure the fields are mapped correctly.',
+					'Name and Email fields are required for subscriptions. Please configure these fields in the block settings.',
 					'sureforms'
 				);
 			} else if ( missingNameField ) {
 				errorMessage = __(
-					'Name field is required for subscriptions. Please map this field in the block settings and make sure it is mapped correctly.',
+					'Name field is required for subscriptions. Please configure this field in the block settings.',
 					'sureforms'
 				);
 			} else if ( missingEmailField ) {
 				errorMessage = __(
-					'Email field is required for subscriptions. Please map this field in the block settings and make sure it is mapped correctly.',
+					'Email field is required for subscriptions. Please configure this field in the block settings.',
 					'sureforms'
 				);
 			}
 		} else {
 			// For one-time payments: only email is required
 			errorMessage = __(
-				'Email field is required to collect payments. Please map this field in the block settings and make sure it is mapped correctly.',
+				'Email field is required to accept payments. Please configure the email field in the block settings.',
 				'sureforms'
 			);
 		}

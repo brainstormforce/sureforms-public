@@ -28,7 +28,7 @@ const NAV_ITEMS = [
 	},
 	{
 		slug: 'sureforms_payments',
-		text: __( 'Payment Logs', 'sureforms' ),
+		text: __( 'Payments', 'sureforms' ),
 		link: `${ siteURL }/wp-admin/admin.php?page=sureforms_payments`,
 	},
 	{

@@ -181,7 +181,7 @@ class Payment_Markup extends Base {
 		$this->minimum_amount    = $attributes['minimumAmount'] ?? 0;
 
 		// Set default labels
-		$fixed_label_default = __( 'Payment', 'sureforms' );
+		$fixed_label_default = __( 'Amount', 'sureforms' );
 		$user_label_default  = __( 'Enter Amount', 'sureforms' );
 
 		// Apply filters to allow customization

@@ -248,7 +248,7 @@ const Edit = ( props ) => {
 					id: 'billing-cycles',
 					component: (
 						<SelectControl
-							label={ __( 'Billing Cycles', 'sureforms' ) }
+							label={ __( 'Stop Subscription After', 'sureforms' ) }
 							value={
 								subscriptionPlan?.billingCycles || 'ongoing'
 							}

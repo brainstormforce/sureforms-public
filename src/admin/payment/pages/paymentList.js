@@ -772,7 +772,7 @@ const PaymentTable = () => {
 					{ /* Filters or Batch Actions */ }
 					<div className="flex items-center justify-between p-1.25">
 						<h1 className="text-xl font-semibold text-text-primary">
-							{ __( 'Payment Logs', 'sureforms' ) }
+							{ __( 'Payments', 'sureforms' ) }
 						</h1>
 						<div className="flex space-x-4">
 							{ selectedRows.length > 0 ? (
@@ -998,7 +998,7 @@ const PaymentTable = () => {
 												}
 											</Select.Button>
 											<Select.Options>
-												{ [ 2, 5, 10, 20, 50, 100 ].map(
+												{ [ 10, 20, 50, 100, 200 ].map(
 													( count ) => (
 														<Select.Option
 															key={ count }
