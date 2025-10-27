@@ -1,6 +1,6 @@
 import { __ } from '@wordpress/i18n';
-import { Edit3, Trash2, RotateCcw, Copy } from 'lucide-react';
-import { Button, Container, Table, Badge, Text } from '@bsf/force-ui';
+import { Edit3, Trash2, RotateCcw, Copy, Eye, Share } from 'lucide-react';
+import { Button, Container, Table, Badge, Text, Tooltip } from '@bsf/force-ui';
 import { useState } from '@wordpress/element';
 
 /**
@@ -51,39 +51,69 @@ const FormsTableRow = ( {
 		}
 	};
 
+	// Handle export action
+	const handleExport = () => {
+		console.log( 'Export form:', form.id );
+		// TODO: Implement export functionality
+	};
+
+	// Handle view action
+	const handleView = () => {
+		if ( form.frontend_url ) {
+			window.open( form.frontend_url, '_blank' );
+		}
+	};
+
 	// Build action buttons based on form status
-	const buttons = [];
+	const actions = [];
 	
 	if ( form.status !== 'trash' ) {
-		buttons.push( {
-			label: __( 'Edit', 'sureforms' ),
+		// Export action
+		actions.push( {
+			key: 'export',
+			label: __( 'Export', 'sureforms' ),
+			icon: <Share className="w-4 h-4" />,
+			onClick: handleExport,
+		} );
+
+		// Edit action
+		actions.push( {
+			key: 'edit',
+			label: __( 'View', 'sureforms' ),
 			icon: <Edit3 className="w-4 h-4" />,
 			onClick: () => onEdit( form ),
-			variant: 'ghost',
 		} );
-	}
 
-	if ( form.status === 'trash' ) {
-		buttons.push( {
-			label: __( 'Restore', 'sureforms' ),
-			icon: <RotateCcw className="w-4 h-4" />,
-			onClick: () => onRestore( form ),
-			variant: 'ghost',
+		// View action
+		actions.push( {
+			key: 'view',
+			label: __( 'Preview', 'sureforms' ),
+			icon: <Eye className="w-4 h-4" />,
+			onClick: handleView,
 		} );
-		buttons.push( {
-			label: __( 'Delete Permanently', 'sureforms' ),
-			icon: <Trash2 className="w-4 h-4" />,
-			onClick: () => onDelete( form ),
-			variant: 'ghost',
-			destructive: true,
-		} );
-	} else {
-		buttons.push( {
+
+		// Delete action
+		actions.push( {
+			key: 'delete',
 			label: __( 'Move to Trash', 'sureforms' ),
 			icon: <Trash2 className="w-4 h-4" />,
 			onClick: () => onTrash( form ),
-			variant: 'ghost',
-			destructive: true,
+		} );
+	} else {
+		// Restore action for trashed items
+		actions.push( {
+			key: 'restore',
+			label: __( 'Restore', 'sureforms' ),
+			icon: <RotateCcw className="w-4 h-4" />,
+			onClick: () => onRestore( form ),
+		} );
+
+		// Delete permanently action for trashed items
+		actions.push( {
+			key: 'delete-permanent',
+			label: __( 'Delete Permanently', 'sureforms' ),
+			icon: <Trash2 className="w-4 h-4" />,
+			onClick: () => onDelete( form ),
 		} );
 	}
 
@@ -148,18 +178,22 @@ const FormsTableRow = ( {
 
 			{/* Actions */}
 			<Table.Cell>
-				<Container align="center" className="gap-1" justify="end">
-					{ buttons.map( ( button, index ) => (
-						<Button
-							key={ index }
-							variant={ button.variant }
-							size="xs"
-							icon={ button.icon }
-							onClick={ button.onClick }
-							destructive={ button.destructive }
-							className="p-1.5"
-							title={ button.label }
-						/>
+				<Container align="center" className="gap-2" justify="end">
+					{ actions.map( ( action ) => (
+						<Tooltip
+							key={ action.key }
+							content={ action.label }
+							placement="top"
+							arrow={ true }
+						>
+							<Button
+								variant="ghost"
+								size="xs"
+								icon={ action.icon }
+								onClick={ action.onClick }
+								className="p-1.5 text-text-primary [&>svg]:size-5"
+							/>
+						</Tooltip>
 					) ) }
 				</Container>
 			</Table.Cell>
