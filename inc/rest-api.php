@@ -693,53 +693,17 @@ class Rest_Api {
 	}
 
 	/**
-	 * Parse form content and return structured field data with attributes.
-	 *
-	 * @param string       $form_content The form post content.
-	 * @param array<mixed> $entry_data The entry form data.
-	 * @since x.x.x
-	 * @return array<string, array<mixed>>
-	 */
-	private function parse_form_fields( $form_content, $entry_data = [] ) {
-		if ( empty( $form_content ) ) {
-			return [];
-		}
-
-		// Parse blocks from form content.
-		$blocks = parse_blocks( $form_content );
-		if ( empty( $blocks ) ) {
-			return [];
-		}
-
-		// Get registered SureForms block attributes.
-		$registry          = \WP_Block_Type_Registry::get_instance();
-		$registered_blocks = $registry->get_all_registered();
-
-		$sureforms_blocks = [];
-		foreach ( $registered_blocks as $block_name => $block_type ) {
-			if ( strpos( $block_name, 'srfm/' ) === 0 && is_array( $block_type->attributes ) ) {
-				$block_key                      = str_replace( 'srfm/', '', $block_name );
-				$sureforms_blocks[ $block_key ] = $block_type->attributes;
-			}
-		}
-
-		$form_fields = [];
-		$this->extract_form_fields( $blocks, $sureforms_blocks, $form_fields, $entry_data );
-
-		return $form_fields;
-	}
-
-	/**
 	 * Recursively extract form fields from blocks.
 	 *
 	 * @param array<mixed>                $blocks The blocks array.
 	 * @param array<string, array<mixed>> $sureforms_blocks Registered SureForms block attributes.
 	 * @param array<string, array<mixed>> &$form_fields Reference to form fields array.
 	 * @param array<mixed>                $entry_data The entry form data.
+	 * @param bool                        $is_special_block Whether the current block is a special block (like address).
 	 * @since x.x.x
 	 * @return void
 	 */
-	private function extract_form_fields( $blocks, $sureforms_blocks, &$form_fields, $entry_data = [] ) {
+	public function extract_form_fields( $blocks, $sureforms_blocks, &$form_fields, $entry_data = [], $is_special_block = false ) {
 		static $dropdown_counter = 0;
 		$block_type              = '';
 
@@ -751,6 +715,10 @@ class Rest_Api {
 			// Check if it's a SureForms block.
 			if ( strpos( $block['blockName'], 'srfm/' ) === 0 ) {
 				$block_type = str_replace( 'srfm/', '', $block['blockName'] );
+				// Skip inline button or fields inside nested blocks except address.
+				if ( 'inline-button' === $block_type || ( $is_special_block && 'address' !== $block_type ) ) {
+					continue;
+				}
 
 				if ( isset( $sureforms_blocks[ $block_type ] ) && is_array( $sureforms_blocks[ $block_type ] ) ) {
 					$block_attributes   = isset( $block['attrs'] ) && is_array( $block['attrs'] ) ? $block['attrs'] : [];
@@ -803,22 +771,66 @@ class Rest_Api {
 					// Special handling for address blocks - extract inner fields.
 					if ( 'address' === $block_type && isset( $block['innerBlocks'] ) && is_array( $block['innerBlocks'] ) ) {
 						$inner_fields = [];
-						$this->extract_form_fields( $block['innerBlocks'], $sureforms_blocks, $inner_fields, $entry_data );
-						$field_value = [ $inner_fields ];
+						$this->extract_form_fields( $block['innerBlocks'], $sureforms_blocks, $inner_fields, $entry_data, false );
+						$field_value = $inner_fields;
 					}
 
-					$form_fields[ $field_name ] = [
-						'attributes' => $merged_attributes,
+					// Allow plugins to handle special blocks.
+					$field_value = apply_filters( 'srfm_handle_special_block', $field_value, $block_type, $block, $sureforms_blocks, $this );
+
+					$form_fields[] = [
+						'field_name' => $field_name,
+						'block_name' => Helper::get_block_name_from_field( $field_name ),
 						'value'      => $field_value,
+						'attributes' => $merged_attributes,
 					];
 				}
 			}
 
 			// Recursively process inner blocks but skip for address blocks.
 			if ( isset( $block['innerBlocks'] ) && is_array( $block['innerBlocks'] ) && 'address' !== $block_type ) {
-				$this->extract_form_fields( $block['innerBlocks'], $sureforms_blocks, $form_fields, $entry_data );
+				// Pass true if current block has inner blocks and it doesn't need to be duplicated in the main fields array.
+				$is_special_block = apply_filters( 'srfm_is_special_block', false, $block_type );
+				$this->extract_form_fields( $block['innerBlocks'], $sureforms_blocks, $form_fields, $entry_data, $is_special_block );
 			}
 		}
+	}
+
+	/**
+	 * Parse form content and return structured field data with attributes.
+	 *
+	 * @param string       $form_content The form post content.
+	 * @param array<mixed> $entry_data The entry form data.
+	 * @since x.x.x
+	 * @return array<string, array<mixed>>
+	 */
+	private function parse_form_fields( $form_content, $entry_data = [] ) {
+		if ( empty( $form_content ) ) {
+			return [];
+		}
+
+		// Parse blocks from form content.
+		$blocks = parse_blocks( $form_content );
+		if ( empty( $blocks ) ) {
+			return [];
+		}
+
+		// Get registered SureForms block attributes.
+		$registry          = \WP_Block_Type_Registry::get_instance();
+		$registered_blocks = $registry->get_all_registered();
+
+		$sureforms_blocks = [];
+		foreach ( $registered_blocks as $block_name => $block_type ) {
+			if ( strpos( $block_name, 'srfm/' ) === 0 && is_array( $block_type->attributes ) ) {
+				$block_key                      = str_replace( 'srfm/', '', $block_name );
+				$sureforms_blocks[ $block_key ] = $block_type->attributes;
+			}
+		}
+
+		$form_fields = [];
+		$this->extract_form_fields( $blocks, $sureforms_blocks, $form_fields, $entry_data, false );
+
+		return $form_fields;
 	}
 
 	/**
