@@ -122,13 +122,7 @@ class Forms_Data {
 	public function get_forms_list( $request ) {
 		$nonce = sanitize_text_field( Helper::get_string_value( $request->get_header( 'X-WP-Nonce' ) ) );
 
-		if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
-			return new WP_Error(
-				'invalid_nonce',
-				__( 'Nonce verification failed.', 'sureforms' ),
-				[ 'status' => 403 ]
-			);
-		}
+		Helper::verify_nonce_and_capabilities( 'rest', $nonce, 'wp_rest' );
 
 		// Get and validate request parameters.
 		$page      = max( 1, Helper::get_integer_value( $request->get_param( 'page' ) ) );
@@ -157,18 +151,13 @@ class Forms_Data {
 
 		// Add date range filtering.
 		if ( ! empty( $date_from ) || ! empty( $date_to ) ) {
-			$date_query = [];
-
-			if ( ! empty( $date_from ) ) {
-				$date_query['after'] = $date_from;
-			}
-
-			if ( ! empty( $date_to ) ) {
-				$date_query['before'] = $date_to;
-			}
-
-			$date_query['inclusive'] = true;
-			$args['date_query']      = [ $date_query ];
+			$args['date_query'] = [
+				[
+					'after'     => ! empty( $date_from ) ? $date_from : null,
+					'before'    => ! empty( $date_to ) ? $date_to : null,
+					'inclusive' => true,
+				],
+			];
 		}
 
 		// Execute query.
@@ -213,15 +202,7 @@ class Forms_Data {
 		] : null;
 
 		// Get entries count.
-		$entries_count = 0;
-		if ( class_exists( 'SRFM\Inc\Database\Tables\Entries' ) ) {
-			try {
-				$entries_count = Helper::get_integer_value( Entries::get_total_entries_by_status( 'all', $form_id ) );
-			} catch ( \Exception $e ) {
-				// Silently fail and return 0.
-				$entries_count = 0;
-			}
-		}
+		$entries_count = Helper::get_integer_value( Entries::get_total_entries_by_status( 'all', $form_id ) );
 
 		return [
 			'id'            => $form_id,
