@@ -7,7 +7,6 @@ import {
 	Input,
 	Select,
 	Pagination,
-	Container,
 	toast,
 	Tooltip,
 } from '@bsf/force-ui';
@@ -44,7 +43,6 @@ import {
 	updateUrlParams,
 	clearUrlParams,
 } from '../components/urlUtils';
-import LoadingSkeleton from '@Admin/components/LoadingSkeleton';
 import PaymentListPlaceHolder from '../components/paymentListPlaceHolder';
 
 // Payment status filters - mapped to database statuses
@@ -351,6 +349,14 @@ const PaymentTable = () => {
 			srfm_payment_sort: sortBy || undefined,
 		} );
 	}, [ sortBy ] );
+
+	// Reset pagination when filters change
+	useEffect( () => {
+		// Only reset if not on page 1 (avoid unnecessary state update on initial load)
+		if ( page !== 1 ) {
+			setPage( 1 );
+		}
+	}, [ debouncedSearchTerm, filter, formFilter, selectedDates.from, selectedDates.to ] );
 
 	// Handle browser back/forward buttons
 	useEffect( () => {
@@ -738,25 +744,11 @@ const PaymentTable = () => {
 		);
 	};
 
-	if ( isLoading ) {
-		return (
-			<div className="srfm-single-payment-wrapper min-h-screen bg-background-secondary p-8">
-				<Container
-					containerType="flex"
-					direction="column"
-					gap="xs"
-					className="w-full h-full"
-				>
-					<LoadingSkeleton count={ 10 } className="min-h-[44px]" />
-				</Container>
-			</div>
-		);
-	}
-
-	// IF paymentsData.transactions_is_empty = "with_no_filter"
+	// IF paymentsData.transactions_is_empty = "with_no_filter" (only on initial load)
 	if (
-		! paymentsData ||
-		paymentsData?.transactions_is_empty === 'with_no_filter'
+		! isLoading &&
+		( ! paymentsData ||
+			paymentsData?.transactions_is_empty === 'with_no_filter' )
 	) {
 		return <PaymentListPlaceHolder />;
 	}
