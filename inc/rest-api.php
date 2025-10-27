@@ -274,7 +274,7 @@ class Rest_Api {
 	 * Validate read action parameter.
 	 *
 	 * @param string $param Action parameter value.
-	 * @since 1.0.0
+	 * @since x.x.x
 	 * @return bool
 	 */
 	public function validate_read_action( $param ) {
