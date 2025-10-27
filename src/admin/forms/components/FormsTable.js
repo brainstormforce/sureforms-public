@@ -13,36 +13,42 @@ const TABLE_HEADERS = [
 		label: __( 'Title', 'sureforms' ),
 		sortable: true,
 		align: 'left',
+		width: 'auto', // Takes remaining space
 	},
 	{
 		key: 'shortcode',
 		label: __( 'Shortcode', 'sureforms' ),
 		sortable: false,
 		align: 'left',
+		width: '15%', // 15% of table width
 	},
 	{
 		key: 'entries_count',
 		label: __( 'Entries', 'sureforms' ),
 		sortable: false,
-		align: 'center',
+		align: 'left',
+		width: '8%', // Small percentage for numbers
 	},
 	{
 		key: 'author',
 		label: __( 'Author', 'sureforms' ),
 		sortable: false,
 		align: 'left',
+		width: '15%', // Moderate percentage for names
 	},
 	{
 		key: 'datetime',
 		label: __( 'Date & Time', 'sureforms' ),
 		sortable: true,
 		align: 'left',
+		width: '18%', // Consistent percentage for dates
 	},
 	{
 		key: 'actions',
-		label: __( 'Actions', 'sureforms' ),
+		label: __( 'Action', 'sureforms' ),
 		sortable: false,
-		align: 'right',
+		align: 'left',
+		width: '160px', // Percentage for action buttons
 	},
 ];
 
@@ -119,7 +125,10 @@ const FormsTable = ( {
 					);
 
 					return (
-						<Table.HeadCell key={ index }>
+						<Table.HeadCell 
+							key={ index } 
+							style={ { width: header.width } }
+						>
 							{ header.sortable ? (
 								<div
 									role="button"

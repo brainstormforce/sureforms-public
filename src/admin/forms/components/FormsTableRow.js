@@ -157,7 +157,7 @@ const FormsTableRow = ( {
 			</Table.Cell>
 
 			{/* Entries Count */}
-			<Table.Cell className="text-center">
+			<Table.Cell>
 				<Button
 					variant="link"
 					size="sm"
@@ -184,7 +184,7 @@ const FormsTableRow = ( {
 
 			{/* Actions */}
 			<Table.Cell>
-				<Container align="center" className="gap-2" justify="end">
+				<Container align="center" className="gap-2">
 					{ actions.map( ( action ) => (
 						<Tooltip
 							key={ action.key }
