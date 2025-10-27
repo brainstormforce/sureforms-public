@@ -204,13 +204,13 @@ class Smart_Tags {
 
 		// Replace <p> around block-level elements with <div>.
 		$content = preg_replace(
-			'/<p([^>]*)>\s*(<(table|div|h[1-6]|ul|ol|style|script)\b)/i',
+			'/<p\b([^>]*)>\s*(<(table|div|h[1-6]|ul|ol|style|script)\b)/i',
 			'<div$1>$2',
 			Helper::get_string_value( $content )
 		);
 
 		$content = preg_replace(
-			'/(<\/(table|div|h[1-6]|ul|ol|style|script)>)\s*<\/p>/i',
+			'/(<\/(table|div|h[1-6]|ul|ol|style|script)>)\s*<\/p\b[^>]*>/i',
 			'$1</div>',
 			Helper::get_string_value( $content )
 		);
