@@ -47,15 +47,21 @@ const EntriesTable = ( {
 			key: 'entryId',
 			sortable: true,
 			sortBy: 'id',
+			headerClassName: 'w-[13%]',
 		},
 		{
 			label: __( 'Form Name', 'sureforms' ),
 			key: 'formName',
+			headerClassName: 'w-[27%]',
+			render: ( entry ) => (
+				<span className="line-clamp-1">{ entry.formName }</span>
+			),
 		},
 		{
 			label: __( 'Status', 'sureforms' ),
 			key: 'status',
 			sortable: true,
+			headerClassName: 'w-[10%]',
 			render: ( entry ) => (
 				<Badge
 					className="w-fit"
@@ -68,20 +74,48 @@ const EntriesTable = ( {
 		{
 			label: __( 'First Field', 'sureforms' ),
 			key: 'firstField',
-			render: ( entry ) =>
-				typeof entry?.firstField === 'string'
-					? entry.firstField
-					: __( 'Repeater', 'sureforms' ),
+			render: ( entry ) => {
+				if ( typeof entry?.firstField === 'string' ) {
+					return (
+						<span className="line-clamp-1">
+							{ entry.firstField }
+						</span>
+					);
+				}
+
+				if (
+					Array.isArray( entry?.firstField ) &&
+					typeof entry?.firstField[ 0 ] === 'string'
+				) {
+					return (
+						<span className="line-clamp-1">
+							{ __( 'Upload', 'sureforms' ) }
+						</span>
+					);
+				}
+
+				return (
+					<span className="line-clamp-1">
+						{ ' ' }
+						{ __( 'Repeater', 'sureforms' ) }{ ' ' }
+					</span>
+				);
+			},
 		},
 		{
 			label: __( 'Date & Time', 'sureforms' ),
 			key: 'dateTime',
 			sortable: true,
+			headerClassName: 'w-52',
+			render: ( entry ) => (
+				<span className="line-clamp-1">{ entry.dateTime }</span>
+			),
 		},
 		{
 			label: __( 'Actions', 'sureforms' ),
 			key: 'actions',
 			align: 'right',
+			headerClassName: 'w-[12%]',
 			render: ( entry ) => {
 				const buttons = [];
 				if ( entry.status !== 'trash' ) {
