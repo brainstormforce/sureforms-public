@@ -38,7 +38,7 @@ import { defaultKeys, forcePanel } from './utils.js';
 import InstantForm from './InstantForm.js';
 import useContainerDynamicClass from './components/useContainerDynamicClass.js';
 
-const SureformsFormSpecificSettings = ( props ) => {
+const SureformsFormSpecificSettings = () => {
 	const [ hasCopied, setHasCopied ] = useState( false );
 	const [ enableQuickActionSidebar, setEnableQuickActionSidebar ] =
 		useState( 'enabled' );
