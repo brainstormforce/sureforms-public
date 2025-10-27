@@ -3,6 +3,7 @@ import { Edit3, Trash2, RotateCcw, Copy, Eye, Share } from 'lucide-react';
 import { Button, Container, Table, Badge, Text } from '@bsf/force-ui';
 import { useState } from '@wordpress/element';
 import Tooltip from '@Admin/components/Tooltip';
+import { exportForms } from '../utils';
 
 /**
  * FormsTableRow Component
@@ -53,9 +54,13 @@ const FormsTableRow = ( {
 	};
 
 	// Handle export action
-	const handleExport = () => {
-		console.log( 'Export form:', form.id );
-		// TODO: Implement export functionality
+	const handleExport = async () => {
+		try {
+			await exportForms( form.id );
+		} catch ( error ) {
+			console.error( 'Export error:', error );
+			// TODO: Show user-friendly error message
+		}
 	};
 
 	// Handle view action

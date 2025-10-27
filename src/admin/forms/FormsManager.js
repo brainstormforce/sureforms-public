@@ -2,6 +2,7 @@ import { __, _n, sprintf } from '@wordpress/i18n';
 import { useEffect, useMemo, useState } from '@wordpress/element';
 import { toast, Container } from '@bsf/force-ui';
 import apiFetch from '@wordpress/api-fetch';
+import { exportForms } from './utils';
 import Header from '../components/Header';
 import FormsHeader from './components/FormsHeader';
 import FormsTable from './components/FormsTable';
@@ -132,9 +133,19 @@ const FormsManager = () => {
 		fetchForms( { page: 1 } );
 	};
 
-	const handleBulkExport = () => {
-		// TODO: Implement bulk export functionality
-		console.log( 'Export selected forms:', selectedForms );
+	const handleBulkExport = async () => {
+		if ( selectedForms.length === 0 ) {
+			return;
+		}
+
+		try {
+			await exportForms( selectedForms );
+			// Clear selected forms after successful export
+			setSelectedForms( [] );
+		} catch ( error ) {
+			console.error( 'Bulk export error:', error );
+			// TODO: Show user-friendly error message
+		}
 	};
 
 
