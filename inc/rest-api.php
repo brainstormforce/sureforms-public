@@ -533,7 +533,7 @@ class Rest_Api {
 
 		// Parse form content to get structured field data.
 		$form_content = get_post_field( 'post_content', $entry['form_id'] );
-		$form_fields  = $this->parse_form_fields( $form_content );
+		$form_fields  = $this->parse_form_fields( $form_content, $entry['form_data'] ?? [] );
 
 		$response_data = [
 			'id'              => $entry_id,
@@ -695,11 +695,12 @@ class Rest_Api {
 	/**
 	 * Parse form content and return structured field data with attributes.
 	 *
-	 * @param string $form_content The form post content.
+	 * @param string       $form_content The form post content.
+	 * @param array<mixed> $entry_data The entry form data.
 	 * @since x.x.x
-	 * @return array
+	 * @return array<string, array<mixed>>
 	 */
-	private function parse_form_fields( $form_content ) {
+	private function parse_form_fields( $form_content, $entry_data = [] ) {
 		if ( empty( $form_content ) ) {
 			return [];
 		}
@@ -723,7 +724,7 @@ class Rest_Api {
 		}
 
 		$form_fields = [];
-		$this->extract_form_fields( $blocks, $sureforms_blocks, $form_fields );
+		$this->extract_form_fields( $blocks, $sureforms_blocks, $form_fields, $entry_data );
 
 		return $form_fields;
 	}
@@ -733,12 +734,14 @@ class Rest_Api {
 	 *
 	 * @param array<mixed>                $blocks The blocks array.
 	 * @param array<string, array<mixed>> $sureforms_blocks Registered SureForms block attributes.
-	 * @param array<mixed>                &$form_fields Reference to form fields array.
+	 * @param array<string, array<mixed>> &$form_fields Reference to form fields array.
+	 * @param array<mixed>                $entry_data The entry form data.
 	 * @since x.x.x
 	 * @return void
 	 */
-	private function extract_form_fields( $blocks, $sureforms_blocks, &$form_fields ) {
+	private function extract_form_fields( $blocks, $sureforms_blocks, &$form_fields, $entry_data = [] ) {
 		static $dropdown_counter = 0;
+		$block_type              = '';
 
 		foreach ( $blocks as $block ) {
 			if ( ! is_array( $block ) || ! isset( $block['blockName'] ) || ! is_string( $block['blockName'] ) ) {
@@ -767,10 +770,11 @@ class Rest_Api {
 					}
 
 					// Generate field name.
-					$label      = is_string( $merged_attributes['label'] ?? '' ) ? $merged_attributes['label'] : '';
-					$slug       = is_string( $merged_attributes['slug'] ?? '' ) ? $merged_attributes['slug'] : '';
-					$block_id   = is_string( $merged_attributes['block_id'] ?? '' ) ? $merged_attributes['block_id'] : '';
-					$field_name = '';
+					$label           = is_string( $merged_attributes['label'] ?? '' ) ? $merged_attributes['label'] : '';
+					$slug            = is_string( $merged_attributes['slug'] ?? '' ) ? $merged_attributes['slug'] : '';
+					$block_id        = is_string( $merged_attributes['block_id'] ?? '' ) ? $merged_attributes['block_id'] : '';
+					$field_name      = '';
+					$base_field_name = '';
 
 					if ( ! empty( $label ) && ! empty( $slug ) && ! empty( $block_id ) ) {
 						$input_label     = '-lbl-' . Helper::encrypt( $label );
@@ -790,16 +794,29 @@ class Rest_Api {
 						}
 					}
 
-					$form_fields[] = [
-						'field_name' => $field_name,
+					// Allow pro plugin to modify field_name.
+					$field_name = apply_filters( 'srfm_extract_form_fields_field_name', $field_name, $base_field_name, $block_type, $block_id );
+
+					// Get the value from entry data or use default.
+					$field_value = $entry_data[ $field_name ] ?? ( $merged_attributes['defaultValue'] ?? '' );
+
+					// Special handling for address blocks - extract inner fields.
+					if ( 'address' === $block_type && isset( $block['innerBlocks'] ) && is_array( $block['innerBlocks'] ) ) {
+						$inner_fields = [];
+						$this->extract_form_fields( $block['innerBlocks'], $sureforms_blocks, $inner_fields, $entry_data );
+						$field_value = [ $inner_fields ];
+					}
+
+					$form_fields[ $field_name ] = [
 						'attributes' => $merged_attributes,
+						'value'      => $field_value,
 					];
 				}
 			}
 
-			// Recursively process inner blocks.
-			if ( isset( $block['innerBlocks'] ) && is_array( $block['innerBlocks'] ) ) {
-				$this->extract_form_fields( $block['innerBlocks'], $sureforms_blocks, $form_fields );
+			// Recursively process inner blocks but skip for address blocks.
+			if ( isset( $block['innerBlocks'] ) && is_array( $block['innerBlocks'] ) && 'address' !== $block_type ) {
+				$this->extract_form_fields( $block['innerBlocks'], $sureforms_blocks, $form_fields, $entry_data );
 			}
 		}
 	}
