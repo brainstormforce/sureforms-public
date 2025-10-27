@@ -1,15 +1,34 @@
 import { __ } from '@wordpress/i18n';
+import { useState } from '@wordpress/element';
 import { Button, Text, Container } from '@bsf/force-ui';
-import { Plus, Search } from 'lucide-react';
+import { Plus, Search, Dot } from 'lucide-react';
+import noFormsImage from '../no-forms.svg';
+import ImportForm from './ImportForm';
 
 // EmptyState Component - Displays different empty states based on context
-const EmptyState = ( { hasActiveFilters = false, onClearFilters } ) => {
+const EmptyState = ( {
+	hasActiveFilters = false,
+	onClearFilters,
+	onImportSuccess,
+} ) => {
+	const [ isImportDialogOpen, setIsImportDialogOpen ] = useState( false );
+
 	const handleAddNew = () => {
 		window.location.href = 'admin.php?page=add-new-form';
 	};
 
+	const handleImportForm = () => {
+		setIsImportDialogOpen( true );
+	};
+
+	// Handle import success
+	const handleImportSuccess = ( response ) => {
+		onImportSuccess?.( response );
+		setIsImportDialogOpen( false );
+	};
+
 	// Empty state when filters are active but no results
-	if ( hasActiveFilters ) {
+	if ( ! hasActiveFilters ) {
 		return (
 			<Container className="flex items-center justify-center p-8 bg-background-primary rounded-lg">
 				<div className="text-center max-w-md">
@@ -50,100 +69,105 @@ const EmptyState = ( { hasActiveFilters = false, onClearFilters } ) => {
 
 	// Empty state when no forms exist at all
 	return (
-		<Container className="flex items-center justify-center p-8 bg-background-primary rounded-lg">
-			<div className="flex flex-col md:flex-row items-center gap-8 max-w-4xl">
-				{ /* Icon/Visual */ }
-				<div className="flex-shrink-0">
-					<div className="w-32 h-32 bg-background-secondary rounded-full flex items-center justify-center">
-						<Plus className="w-12 h-12 text-text-tertiary" />
-					</div>
-				</div>
-
-				{ /* Content */ }
-				<div className="flex-1 text-center md:text-left">
-					<Text
-						size={ 24 }
-						lineHeight={ 32 }
-						weight={ 600 }
-						letterSpacing={ -0.5 }
-						color="primary"
-						className="mb-3"
-					>
-						{ __( 'Create your first form', 'sureforms' ) }
-					</Text>
-
-					<Text
-						size={ 16 }
-						lineHeight={ 24 }
-						color="secondary"
-						className="mb-6"
-					>
-						{ __(
-							'Get started by creating your first form. SureForms makes it easy to build beautiful, responsive forms with drag-and-drop blocks.',
-							'sureforms'
-						) }
-					</Text>
-
-					<div className="space-y-3">
-						<Text
-							size={ 14 }
-							lineHeight={ 20 }
-							color="secondary"
-							className="mb-4"
-						>
-							{ __( 'With SureForms you can:', 'sureforms' ) }
-						</Text>
-
-						<ul className="text-left space-y-2">
-							{ [
-								__(
-									'Build forms with native WordPress blocks',
+		<Container className="flex bg-background-primary rounded-xl">
+			<Container className="p-2 rounded-lg bg-background-secondary gap-2 w-full">
+				<Container className="p-6 gap-6 rounded-md bg-background-primary w-full">
+					<Container>
+						<img
+							src={ noFormsImage }
+							alt={ __( 'No Forms', 'sureforms' ) }
+							className="w-[320px] h-[320px]"
+						/>
+					</Container>
+					<Container className="gap-8 items-center">
+						<div className="space-y-2 p-2">
+							<Text
+								size={ 20 }
+								lineHeight={ 30 }
+								weight={ 600 }
+								letterSpacing={ -0.5 }
+								color="primary"
+								className="mb-3"
+							>
+								{ __(
+									"Hi there, let's get you started",
 									'sureforms'
-								),
-								__(
-									'Collect and manage form submissions',
+								) }
+							</Text>
+
+							<Text
+								size={ 16 }
+								lineHeight={ 24 }
+								color="secondary"
+								className="mb-6"
+							>
+								{ __(
+									"It looks like you haven't created any forms yet. Start building with SureForms and launch powerful forms in just a few clicks.",
 									'sureforms'
-								),
-								__(
-									'Customize styling and behavior',
-									'sureforms'
-								),
-								__(
-									'Export data for further analysis',
-									'sureforms'
-								),
-							].map( ( feature, index ) => (
-								<li
-									key={ index }
-									className="flex items-start gap-2"
+								) }
+							</Text>
+
+							<div className="space-y-3">
+								<div className="text-left space-y-2">
+									{ [
+										__(
+											'Design forms with our Gutenberg-native builder.',
+											'sureforms'
+										),
+										__(
+											'Use AI to generate forms instantly from a simple prompt.',
+											'sureforms'
+										),
+										__(
+											'Build instant forms and share them with a link-no embedding needed.',
+											'sureforms'
+										),
+										__(
+											'Build engaging conversational, calculation, and multi-step forms.',
+											'sureforms'
+										),
+									].map( ( feature, index ) => (
+										<Container
+											key={ index }
+											className="flex items-center gap-1"
+										>
+											<Dot className="text-icon-secondary" />
+											<Text size={ 16 } color="secondary">
+												{ feature }
+											</Text>
+										</Container>
+									) ) }
+								</div>
+							</div>
+
+							<Container className="p-2 gap-3 flex-row">
+								<Button
+									variant="primary"
+									size="md"
+									icon={ <Plus className="w-4 h-4" /> }
+									iconPosition="left"
+									onClick={ handleAddNew }
 								>
-									<span className="text-accent-primary mt-1">
-										•
-									</span>
-									<Text
-										size={ 14 }
-										lineHeight={ 20 }
-										color="secondary"
-									>
-										{ feature }
-									</Text>
-								</li>
-							) ) }
-						</ul>
-					</div>
-
-					<Button
-						variant="primary"
-						size="md"
-						icon={ <Plus className="w-4 h-4" /> }
-						iconPosition="left"
-						onClick={ handleAddNew }
-						className="mt-6"
-					>
-						{ __( 'Create Your First Form', 'sureforms' ) }
-					</Button>
-				</div>
-			</div>
+									{ __( 'Create Form', 'sureforms' ) }
+								</Button>
+								<Button
+									variant="outline"
+									size="md"
+									onClick={ handleImportForm }
+								>
+									{ __( 'Import Form', 'sureforms' ) }
+								</Button>
+							</Container>
+						</div>
+					</Container>
+				</Container>
+			</Container>
+			{ /* Import Form Dialog */ }
+			<ImportForm
+				open={ isImportDialogOpen }
+				setOpen={ setIsImportDialogOpen }
+				onImportSuccess={ handleImportSuccess }
+			/>
 		</Container>
 	);
 };

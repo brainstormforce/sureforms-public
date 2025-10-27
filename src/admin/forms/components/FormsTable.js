@@ -178,18 +178,9 @@ const FormsTable = ( {
 			</Table.Head>
 
 			<Table.Body>
-				{ isLoading ? (
-					renderSkeletonRows()
-				) : forms.length === 0 ? (
-					<Table.Row className="[&_div:has(label)]:invisible">
-						<Table.Cell colSpan={ TABLE_HEADERS.length }>
-							<div className="text-center py-8 text-text-secondary">
-								{ __( 'No forms found', 'sureforms' ) }
-							</div>
-						</Table.Cell>
-					</Table.Row>
-				) : (
-					forms.map( ( form ) => (
+				{ isLoading
+					? renderSkeletonRows()
+					: forms.map( ( form ) => (
 						<FormsTableRow
 							key={ form.id }
 							form={ form }
@@ -202,8 +193,7 @@ const FormsTable = ( {
 							onRestore={ onRestore }
 							onDelete={ onDelete }
 						/>
-					) )
-				) }
+					  ) ) }
 			</Table.Body>
 		</Table>
 	);

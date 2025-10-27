@@ -266,7 +266,7 @@ const FormsManager = () => {
 			<Container className="p-6 bg-background-secondary rounded-lg">
 				<FormsHeader />
 				<div className="mt-6">
-					<EmptyState />
+					<EmptyState onImportSuccess={ handleImportSuccess } />
 				</div>
 			</Container>
 		);
