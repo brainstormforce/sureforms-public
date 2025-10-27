@@ -72,7 +72,13 @@ const Table = ( {
 					);
 
 					return (
-						<FUITable.HeadCell key={ index }>
+						<FUITable.HeadCell
+							key={ index }
+							className={ cn(
+								'whitespace-nowrap',
+								header?.headerClassName
+							) }
+						>
 							{ header.sortable ? (
 								<div
 									role="button"
@@ -142,7 +148,10 @@ const Table = ( {
 							value={ item }
 						>
 							{ columns.map( ( col, colIndex ) => (
-								<FUITable.Cell key={ colIndex }>
+								<FUITable.Cell
+									key={ colIndex }
+									className={ cn( col?.columnsClassName ) }
+								>
 									{ col.render
 										? col.render( item )
 										: item[ col.key ] }
