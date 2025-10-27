@@ -148,6 +148,22 @@ const FormsManager = () => {
 		}
 	};
 
+	// Handle import success
+	const handleImportSuccess = ( response ) => {
+		if ( response.success ) {
+			// Refresh forms list to show imported forms
+			fetchForms();
+			// Show success message
+			toast.add( {
+				type: 'success',
+				message: sprintf(
+					/* translators: %d: number of imported forms */
+					_n( '%d form imported successfully.', '%d forms imported successfully.', response.count || 1, 'sureforms' ),
+					response.count || 1
+				),
+			} );
+		}
+	};
 
 	const handleSort = ( column ) => {
 		const newOrder = filters.orderby === column && filters.order === 'desc' ? 'asc' : 'desc';
@@ -376,6 +392,7 @@ const FormsManager = () => {
 									selectedForms={ selectedForms }
 									onBulkTrash={ handleBulkTrash }
 									onBulkExport={ handleBulkExport }
+									onImportSuccess={ handleImportSuccess }
 									statusFilter={ filters.status }
 									onStatusFilterChange={ handleStatusFilter }
 									statusCounts={ statusCounts }

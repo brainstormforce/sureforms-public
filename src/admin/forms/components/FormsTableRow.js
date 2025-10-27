@@ -1,5 +1,5 @@
 import { __ } from '@wordpress/i18n';
-import { Edit3, Trash2, RotateCcw, Copy, Eye, Share } from 'lucide-react';
+import { Edit3, Trash, FileDown, Copy, Eye, Share } from 'lucide-react';
 import { Button, Container, Table, Badge, Text } from '@bsf/force-ui';
 import { useState } from '@wordpress/element';
 import Tooltip from '@Admin/components/Tooltip';
@@ -78,7 +78,7 @@ const FormsTableRow = ( {
 		actions.push( {
 			key: 'export',
 			label: __( 'Export', 'sureforms' ),
-			icon: <Share className="w-4 h-4" />,
+			icon: <Share className="size-4" />,
 			onClick: handleExport,
 		} );
 
@@ -86,7 +86,7 @@ const FormsTableRow = ( {
 		actions.push( {
 			key: 'edit',
 			label: __( 'View', 'sureforms' ),
-			icon: <Edit3 className="w-4 h-4" />,
+			icon: <Edit3 className="size-4" />,
 			onClick: () => onEdit( form ),
 		} );
 
@@ -94,7 +94,7 @@ const FormsTableRow = ( {
 		actions.push( {
 			key: 'view',
 			label: __( 'Preview', 'sureforms' ),
-			icon: <Eye className="w-4 h-4" />,
+			icon: <Eye className="size-4" />,
 			onClick: handleView,
 		} );
 
@@ -102,7 +102,7 @@ const FormsTableRow = ( {
 		actions.push( {
 			key: 'delete',
 			label: __( 'Move to Trash', 'sureforms' ),
-			icon: <Trash2 className="w-4 h-4" />,
+			icon: <Trash className="size-4" />,
 			onClick: () => onTrash( form ),
 		} );
 	} else {
@@ -110,15 +110,15 @@ const FormsTableRow = ( {
 		actions.push( {
 			key: 'restore',
 			label: __( 'Restore', 'sureforms' ),
-			icon: <RotateCcw className="w-4 h-4" />,
+			icon: <FileDown className="size-4" />,
 			onClick: () => onRestore( form ),
 		} );
 
 		// Delete permanently action for trashed items
 		actions.push( {
 			key: 'delete-permanent',
-			label: __( 'Delete Permanently', 'sureforms' ),
-			icon: <Trash2 className="w-4 h-4" />,
+			label: __( 'Permanently Delete', 'sureforms' ),
+			icon: <Trash className="size-4" />,
 			onClick: () => onDelete( form ),
 		} );
 	}
@@ -197,7 +197,7 @@ const FormsTableRow = ( {
 								size="xs"
 								icon={ action.icon }
 								onClick={ action.onClick }
-								className="p-1.5 text-text-primary [&>svg]:size-5"
+								className="p-1.5 text-text-primary [&>svg]:size-4"
 							/>
 						</Tooltip>
 					) ) }

@@ -3,6 +3,7 @@ import { useRef, useEffect, useMemo, useState } from '@wordpress/element';
 import { Search, X, Trash, Calendar, Import, ArchiveRestore } from 'lucide-react';
 import { Input, Button, Container, Select, DatePicker } from '@bsf/force-ui';
 import { getDatePlaceholder, getSelectedDate, getLastNDays } from '@Utils/Helpers';
+import ImportForm from './ImportForm';
 
 /**
  * FormsFilters Component
@@ -20,10 +21,12 @@ const FormsFilters = ( {
 	statusCounts = {},
 	selectedDates = { from: null, to: null },
 	onDateChange,
+	onImportSuccess,
 } ) => {
 	const searchInputRef = useRef( null );
 	const containerRef = useRef( null );
 	const [ isDatePickerOpen, setIsDatePickerOpen ] = useState( false );
+	const [ isImportDialogOpen, setIsImportDialogOpen ] = useState( false );
 
 	// Check if any forms are selected
 	const hasSelectedForms = useMemo(
@@ -57,8 +60,13 @@ const FormsFilters = ( {
 	};
 
 	const handleImportForm = () => {
-		// TODO: Implement import form functionality
-		console.log( 'Import form clicked' );
+		setIsImportDialogOpen( true );
+	};
+
+	// Handle import success
+	const handleImportSuccess = ( response ) => {
+		onImportSuccess?.( response );
+		setIsImportDialogOpen( false );
 	};
 
 	// Status options with counts
@@ -278,7 +286,14 @@ const FormsFilters = ( {
 					{ __( 'Import Form', 'sureforms' ) }
 				</Button>
 			</Container.Item>
+			{ /* Import Form */ }
+			<ImportForm
+				open={ isImportDialogOpen }
+				setOpen={ setIsImportDialogOpen }
+				onImportSuccess={ handleImportSuccess }
+			/>
 		</Container>
+
 	);
 };
 
