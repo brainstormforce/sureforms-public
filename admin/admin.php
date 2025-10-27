@@ -884,7 +884,7 @@ class Admin {
 
 		}
 
-		if ( $is_screen_sureforms_form_settings ) {
+		if ( $is_screen_sureforms_form_settings || $is_screen_sureforms_forms ) {
 			wp_enqueue_style( SRFM_SLUG . '-settings', $css_uri . 'backend/settings' . $file_prefix . $rtl . '.css', [], SRFM_VER );
 		}
 

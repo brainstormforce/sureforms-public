@@ -37,7 +37,7 @@ const TABLE_HEADERS = [
 		width: '15%', // Moderate percentage for names
 	},
 	{
-		key: 'datetime',
+		key: 'date',
 		label: __( 'Date & Time', 'sureforms' ),
 		sortable: true,
 		align: 'left',
