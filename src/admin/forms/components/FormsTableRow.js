@@ -1,38 +1,7 @@
 import { __ } from '@wordpress/i18n';
-import { Edit3, Trash2, RotateCcw } from 'lucide-react';
+import { Edit3, Trash2, RotateCcw, Copy } from 'lucide-react';
 import { Button, Container, Table, Badge, Text } from '@bsf/force-ui';
-
-/**
- * Get status badge variant based on form status
- */
-const getStatusBadgeVariant = ( status ) => {
-	switch ( status ) {
-		case 'publish':
-			return 'green';
-		case 'draft':
-			return 'yellow';
-		case 'trash':
-			return 'red';
-		default:
-			return 'neutral';
-	}
-};
-
-/**
- * Get status label
- */
-const getStatusLabel = ( status ) => {
-	switch ( status ) {
-		case 'publish':
-			return __( 'Published', 'sureforms' );
-		case 'draft':
-			return __( 'Draft', 'sureforms' );
-		case 'trash':
-			return __( 'Trash', 'sureforms' );
-		default:
-			return status;
-	}
-};
+import { useState } from '@wordpress/element';
 
 /**
  * FormsTableRow Component
@@ -47,14 +16,39 @@ const FormsTableRow = ( {
 	onRestore,
 	onDelete,
 } ) => {
-	// Format date
-	const formatDate = ( dateString ) => {
+	// State for copy button feedback
+	const [ hasCopied, setHasCopied ] = useState( false );
+
+	// Format date and time
+	const formatDateTime = ( dateString ) => {
 		const date = new Date( dateString );
-		return date.toLocaleDateString( 'en-US', {
+		return date.toLocaleString( 'en-US', {
 			year: 'numeric',
 			month: 'short',
 			day: 'numeric',
+			hour: 'numeric',
+			minute: '2-digit',
+			hour12: true,
 		} );
+	};
+
+	// Handle copy shortcode
+	const handleCopyShortcode = async () => {
+		try {
+			await navigator.clipboard.writeText( `[sureforms id='${ form.id }']` );
+			setHasCopied( true );
+			setTimeout( () => setHasCopied( false ), 2000 );
+		} catch ( err ) {
+			// Fallback for older browsers
+			const textArea = document.createElement( 'textarea' );
+			textArea.value = `[sureforms id="${ form.id }"]`;
+			document.body.appendChild( textArea );
+			textArea.select();
+			document.execCommand( 'copy' );
+			document.body.removeChild( textArea );
+			setHasCopied( true );
+			setTimeout( () => setHasCopied( false ), 2000 );
+		}
 	};
 
 	// Build action buttons based on form status
@@ -101,46 +95,28 @@ const FormsTableRow = ( {
 			className="hover:bg-background-primary"
 		>
 			{/* Title */}
-			<Table.Cell className="max-w-xs">
+			<Table.Cell>
 				<div>
 					<Text
 						size={ 14 }
-						weight={ 600 }
-						color="primary"
-						className="truncate"
+						color="secondary"
 					>
-						{ form.title || __( '(no title)', 'sureforms' ) }
+						{ form.title || __( '(no title)', 'sureforms' ) }{ ' ' }
+						<span className='font-semibold'>{ form.status === 'draft' && __( '- Draft', 'sureforms' ) }</span>
 					</Text>
-					{ form.edit_url && (
-						<div className="flex items-center gap-3 mt-1">
-							<Button
-								variant="link"
-								size="xs"
-								onClick={ () => onEdit( form ) }
-								className="text-text-secondary hover:text-text-primary p-0 h-auto"
-							>
-								{ __( 'Edit', 'sureforms' ) }
-							</Button>
-							<span className="text-text-tertiary">|</span>
-							<Button
-								variant="link"
-								size="xs"
-								onClick={ () => window.open( `admin.php?page=sureforms_entries&form_filter=${ form.id }`, '_self' ) }
-								className="text-text-secondary hover:text-text-primary p-0 h-auto"
-							>
-								{ __( 'Entries', 'sureforms' ) }
-							</Button>
-						</div>
-					) }
 				</div>
 			</Table.Cell>
 
-			{/* Status */}
+			{/* Shortcode */}
 			<Table.Cell>
 				<Badge
-					variant={ getStatusBadgeVariant( form.status ) }
-					size="sm"
-					label={ getStatusLabel( form.status ) }
+					label={ form.shortcode }
+					size="xs"
+					variant="neutral"
+					icon={ <Copy className="w-3 h-3" /> }
+					onClick={ handleCopyShortcode }
+					className="cursor-pointer hover:bg-background-secondary rounded-sm w-fit"
+					title={ hasCopied ? __( 'Copied!', 'sureforms' ) : __( 'Copy Shortcode', 'sureforms' ) }
 				/>
 			</Table.Cell>
 
@@ -163,10 +139,10 @@ const FormsTableRow = ( {
 				</Text>
 			</Table.Cell>
 
-			{/* Date */}
+			{/* Date & Time */}
 			<Table.Cell>
 				<Text size={ 14 } color="secondary">
-					{ formatDate( form.date_created ) }
+					{ formatDateTime( form.date_created ) }
 				</Text>
 			</Table.Cell>
 

@@ -15,15 +15,15 @@ const TABLE_HEADERS = [
 		align: 'left',
 	},
 	{
-		key: 'status',
-		label: __( 'Status', 'sureforms' ),
+		key: 'shortcode',
+		label: __( 'Shortcode', 'sureforms' ),
 		sortable: false,
 		align: 'left',
 	},
 	{
 		key: 'entries_count',
 		label: __( 'Entries', 'sureforms' ),
-		sortable: true,
+		sortable: false,
 		align: 'center',
 	},
 	{
@@ -33,14 +33,14 @@ const TABLE_HEADERS = [
 		align: 'left',
 	},
 	{
-		key: 'date',
-		label: __( 'Date', 'sureforms' ),
+		key: 'datetime',
+		label: __( 'Date & Time', 'sureforms' ),
 		sortable: true,
 		align: 'left',
 	},
 	{
 		key: 'actions',
-		label: '',
+		label: __( 'Actions', 'sureforms' ),
 		sortable: false,
 		align: 'right',
 	},
