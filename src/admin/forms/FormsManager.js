@@ -1,7 +1,6 @@
 import { __, _n, sprintf } from '@wordpress/i18n';
-import { useEffect, useMemo, useState } from '@wordpress/element';
-import { toast, Container } from '@bsf/force-ui';
-import apiFetch from '@wordpress/api-fetch';
+import { useMemo, useState } from '@wordpress/element';
+import { Container } from '@bsf/force-ui';
 import { exportForms } from './utils';
 import Header from '../components/Header';
 import FormsHeader from './components/FormsHeader';
@@ -9,12 +8,14 @@ import FormsTable from './components/FormsTable';
 import FormsPagination from './components/FormsPagination';
 import EmptyState from './components/EmptyState';
 import ConfirmationDialog from './components/ConfirmationDialog';
+import {
+	useForms,
+	useBulkFormsAction,
+	useImportForms,
+} from './hooks/useFormsQuery';
 
 const FormsManager = () => {
 	// State management
-	const [ forms, setForms ] = useState( [] );
-	const [ loading, setLoading ] = useState( true );
-	const [ error, setError ] = useState( null );
 	const [ selectedForms, setSelectedForms ] = useState( [] );
 
 	// Filters state
@@ -33,8 +34,6 @@ const FormsManager = () => {
 
 	// Pagination state
 	const [ pagination, setPagination ] = useState( {
-		total: 0,
-		totalPages: 0,
 		currentPage: 1,
 		perPage: 20,
 	} );
@@ -47,66 +46,61 @@ const FormsManager = () => {
 		action: null,
 	} );
 
-	// API functions
-	const fetchForms = async ( params = {} ) => {
-		try {
-			setLoading( true );
-			setError( null );
+	// Query parameters for API
+	const queryParams = useMemo(
+		() => ( {
+			page: pagination.currentPage,
+			per_page: pagination.perPage,
+			status: filters.status,
+			orderby: filters.orderby,
+			order: filters.order,
+			...( filters.search && { search: filters.search } ),
+			...( selectedDates.from && {
+				after: new Date( selectedDates.from ).toISOString(),
+			} ),
+			...( selectedDates.to && {
+				before: new Date( selectedDates.to ).toISOString(),
+			} ),
+		} ),
+		[ filters, selectedDates, pagination ]
+	);
 
-			const currentFilters = { ...filters, ...params };
-			const queryParams = new URLSearchParams( {
-				page: currentFilters.page || pagination.currentPage || 1,
-				per_page: currentFilters.per_page || pagination.perPage || 20,
-				status: currentFilters.status || 'any',
-				orderby: currentFilters.orderby || 'date',
-				order: currentFilters.order || 'desc',
-				...( currentFilters.search && {
-					search: currentFilters.search,
-				} ),
-				...( selectedDates.from && {
-					after: new Date( selectedDates.from ).toISOString(),
-				} ),
-				...( selectedDates.to && {
-					before: new Date( selectedDates.to ).toISOString(),
-				} ),
-			} );
+	// Fetch forms using React Query
+	const {
+		data: formsData,
+		isLoading,
+		isError,
+		error,
+	} = useForms( queryParams );
 
-			const response = await apiFetch( {
-				path: `/sureforms/v1/forms?${ queryParams.toString() }`,
-			} );
-
-			setForms( response.forms || [] );
-			setPagination( {
-				total: response.total || 0,
-				totalPages: response.total_pages || 0,
-				currentPage: response.current_page || 1,
-				perPage: response.per_page || 20,
-			} );
-			setFilters( currentFilters );
-		} catch ( err ) {
-			setError(
-				err.message || __( 'Failed to fetch forms', 'sureforms' )
-			);
-			toast.error(
-				err.message || __( 'Failed to fetch forms', 'sureforms' )
-			);
-		} finally {
-			setLoading( false );
-		}
+	// Extract data from API response
+	const forms = formsData?.forms || [];
+	const paginationData = {
+		total: formsData?.total || 0,
+		totalPages: formsData?.total_pages || 0,
+		currentPage: formsData?.current_page || pagination.currentPage,
+		perPage: formsData?.per_page || pagination.perPage,
 	};
+
+	// Mutations
+	const { mutate: bulkActionMutation, isPending: isBulkActionPending } =
+		useBulkFormsAction();
+	const { mutate: importFormsMutation } = useImportForms();
 
 	// Event handlers
 	const handleSearch = ( searchTerm ) => {
-		fetchForms( { search: searchTerm, page: 1 } );
+		setFilters( ( prev ) => ( { ...prev, search: searchTerm } ) );
+		setPagination( ( prev ) => ( { ...prev, currentPage: 1 } ) );
 	};
 
 	const handleStatusFilter = ( status ) => {
-		fetchForms( { status, page: 1 } );
+		setFilters( ( prev ) => ( { ...prev, status } ) );
+		setPagination( ( prev ) => ( { ...prev, currentPage: 1 } ) );
 	};
 
 	const handleDateChange = ( dates ) => {
 		setSelectedDates( dates );
-		fetchForms( { page: 1 } );
+		setPagination( ( prev ) => ( { ...prev, currentPage: 1 } ) );
 	};
 
 	const handleBulkExport = async () => {
@@ -126,22 +120,8 @@ const FormsManager = () => {
 	// Handle import success
 	const handleImportSuccess = ( response ) => {
 		if ( response.success ) {
-			// Refresh forms list to show imported forms
-			fetchForms();
-			// Show success message
-			toast.add( {
-				type: 'success',
-				message: sprintf(
-					/* translators: %d: number of imported forms */
-					_n(
-						'%d form imported successfully.',
-						'%d forms imported successfully.',
-						response.count || 1,
-						'sureforms'
-					),
-					response.count || 1
-				),
-			} );
+			// Import mutation will handle refetching and showing success message
+			importFormsMutation( response );
 		}
 	};
 
@@ -150,7 +130,11 @@ const FormsManager = () => {
 			filters.orderby === column && filters.order === 'desc'
 				? 'asc'
 				: 'desc';
-		fetchForms( { orderby: column, order: newOrder } );
+		setFilters( ( prev ) => ( {
+			...prev,
+			orderby: column,
+			order: newOrder,
+		} ) );
 	};
 
 	const getSortDirection = ( column ) => {
@@ -159,11 +143,11 @@ const FormsManager = () => {
 
 	// Pagination handlers
 	const handlePageChange = ( page ) => {
-		fetchForms( { page } );
+		setPagination( ( prev ) => ( { ...prev, currentPage: page } ) );
 	};
 
 	const handlePerPageChange = ( perPage ) => {
-		fetchForms( { per_page: perPage, page: 1 } );
+		setPagination( ( prev ) => ( { ...prev, perPage, currentPage: 1 } ) );
 	};
 
 	// Selection handlers
@@ -180,67 +164,15 @@ const FormsManager = () => {
 	};
 
 	// Bulk action handlers
-	const handleBulkAction = async ( action, formIds ) => {
-		try {
-			const response = await apiFetch( {
-				path: '/sureforms/v1/forms/manage',
-				method: 'POST',
-				data: {
-					form_ids: formIds,
-					action,
+	const handleBulkAction = ( action, formIds ) => {
+		bulkActionMutation(
+			{ action, form_ids: formIds },
+			{
+				onSuccess: () => {
+					setSelectedForms( [] );
 				},
-			} );
-
-			if ( response.success ) {
-				const count = formIds.length;
-				let message = '';
-
-				switch ( action ) {
-					case 'trash':
-						message = sprintf(
-							/* translators: %d: number of forms */
-							_n(
-								'%d form moved to trash.',
-								'%d forms moved to trash.',
-								count,
-								'sureforms'
-							),
-							count
-						);
-						break;
-					case 'restore':
-						message = sprintf(
-							/* translators: %d: number of forms */
-							_n(
-								'%d form restored.',
-								'%d forms restored.',
-								count,
-								'sureforms'
-							),
-							count
-						);
-						break;
-					case 'delete':
-						message = sprintf(
-							/* translators: %d: number of forms */
-							_n(
-								'%d form permanently deleted.',
-								'%d forms permanently deleted.',
-								count,
-								'sureforms'
-							),
-							count
-						);
-						break;
-				}
-
-				toast.success( message );
-				setSelectedForms( [] );
-				fetchForms();
 			}
-		} catch ( err ) {
-			toast.error( err.message || __( 'Action failed', 'sureforms' ) );
-		}
+		);
 	};
 
 	const handleBulkTrash = () => {
@@ -315,12 +247,8 @@ const FormsManager = () => {
 	const isIndeterminate =
 		selectedForms.length > 0 && selectedForms.length < forms.length;
 
-	useEffect( () => {
-		fetchForms();
-	}, [] );
-
 	// Loading state
-	if ( loading && forms.length === 0 ) {
+	if ( isLoading && forms.length === 0 ) {
 		return (
 			<Container className="p-6 bg-background-secondary rounded-lg">
 				<FormsHeader />
@@ -332,13 +260,13 @@ const FormsManager = () => {
 	}
 
 	// Error state
-	if ( error && forms.length === 0 ) {
+	if ( isError && forms.length === 0 ) {
 		return (
 			<Container className="p-6 bg-background-secondary rounded-lg">
 				<FormsHeader />
 				<div className="mt-6 text-text-error">
 					{ __( 'Error loading forms: ', 'sureforms' ) }
-					{ error }
+					{ error?.message }
 				</div>
 			</Container>
 		);
@@ -398,11 +326,10 @@ const FormsManager = () => {
 											from: null,
 											to: null,
 										} );
-										fetchForms( {
-											search: '',
-											status: 'any',
-											page: 1,
-										} );
+										setPagination( ( prev ) => ( {
+											...prev,
+											currentPage: 1,
+										} ) );
 									} }
 								/>
 							</div>
@@ -438,30 +365,34 @@ const FormsManager = () => {
 									onTrash={ handleFormTrash }
 									onRestore={ handleFormRestore }
 									onDelete={ handleFormDelete }
-									isLoading={ loading }
+									isLoading={ isLoading }
 									onSort={ handleSort }
 									getSortDirection={ getSortDirection }
 								/>
 							</Container.Item>
 
-							{ pagination.totalPages > 1 && (
+							{ paginationData.totalPages > 1 && (
 								<Container.Item className="border-t border-border-subtle px-6 py-4">
 									<FormsPagination
-										currentPage={ pagination.currentPage }
-										totalPages={ pagination.totalPages }
-										entriesPerPage={ pagination.perPage }
+										currentPage={
+											paginationData.currentPage
+										}
+										totalPages={ paginationData.totalPages }
+										entriesPerPage={
+											paginationData.perPage
+										}
 										onPageChange={ handlePageChange }
 										onEntriesPerPageChange={
 											handlePerPageChange
 										}
 										onNextPage={ () =>
 											handlePageChange(
-												pagination.currentPage + 1
+												paginationData.currentPage + 1
 											)
 										}
 										onPreviousPage={ () =>
 											handlePageChange(
-												pagination.currentPage - 1
+												paginationData.currentPage - 1
 											)
 										}
 									/>
@@ -480,7 +411,7 @@ const FormsManager = () => {
 				title={ confirmDialog.title }
 				description={ confirmDialog.description }
 				onConfirm={ confirmDialog.action }
-				isLoading={ loading }
+				isLoading={ isBulkActionPending }
 			/>
 		</Container>
 	);
