@@ -72,7 +72,7 @@ class Export {
 	 *     - On websitedemos.net, for exporting the Spectra Block Patterns & Pages with SureForms form.
 	 *
 	 * @since 1.13.0
-	 * @param array<int, string> $post_ids Array of post IDs to retrieve forms for.
+	 * @param array<int,string>|array<int, int> $post_ids Array of post IDs to retrieve forms for.
 	 * @return array Array of forms with their post data and meta data.
 	 */
 	public function get_forms_with_meta( $post_ids = [] ) {
@@ -128,6 +128,123 @@ class Export {
 
 		$posts = $this->get_forms_with_meta( $post_ids );
 		wp_send_json( $posts );
+	}
+
+	/**
+	 * Handle Export form via REST API
+	 *
+	 * @param \WP_REST_Request $request Full details about the request.
+	 * @since x.x.x
+	 * @return \WP_REST_Response|\WP_Error
+	 */
+	public function handle_export_form_rest( $request ) {
+		$nonce = sanitize_text_field( Helper::get_string_value( $request->get_header( 'X-WP-Nonce' ) ) );
+
+		if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
+			return new \WP_Error(
+				'invalid_nonce',
+				__( 'Nonce verification failed.', 'sureforms' ),
+				[ 'status' => 403 ]
+			);
+		}
+
+		$params   = $request->get_params();
+		$post_ids = [];
+
+		// Handle post_ids parameter - can be array or comma-separated string.
+		if ( isset( $params['post_ids'] ) ) {
+			if ( is_array( $params['post_ids'] ) ) {
+				$post_ids = array_map( 'intval', $params['post_ids'] );
+			} else {
+				$post_ids = array_map( 'intval', explode( ',', sanitize_text_field( Helper::get_string_value( $params['post_ids'] ) ) ) );
+			}
+		}
+
+		// Validate that all post IDs are valid sureforms_form posts.
+		$validated_post_ids = [];
+		foreach ( $post_ids as $post_id ) {
+			$post = get_post( $post_id );
+			if ( $post && 'sureforms_form' === $post->post_type ) {
+				$validated_post_ids[] = $post_id;
+			}
+		}
+
+		if ( empty( $validated_post_ids ) ) {
+			return new \WP_Error(
+				'no_valid_forms',
+				__( 'No valid forms found for export.', 'sureforms' ),
+				[ 'status' => 400 ]
+			);
+		}
+
+		$posts = $this->get_forms_with_meta( $validated_post_ids );
+
+		return new \WP_REST_Response(
+			[
+				'success' => true,
+				'data'    => $posts,
+				'count'   => count( $posts ),
+			]
+		);
+	}
+
+	/**
+	 * Handle Import form via REST API
+	 *
+	 * @param \WP_REST_Request $request Full details about the request.
+	 * @since x.x.x
+	 * @return \WP_REST_Response|\WP_Error
+	 */
+	public function handle_import_form_rest( $request ) {
+		$nonce = sanitize_text_field( Helper::get_string_value( $request->get_header( 'X-WP-Nonce' ) ) );
+
+		if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
+			return new \WP_Error(
+				'invalid_nonce',
+				__( 'Nonce verification failed.', 'sureforms' ),
+				[ 'status' => 403 ]
+			);
+		}
+
+		$params = $request->get_params();
+
+		// Get forms data from the request.
+		$forms_data     = isset( $params['forms_data'] ) && is_array( $params['forms_data'] ) ? $params['forms_data'] : [];
+		$default_status = isset( $params['default_status'] ) ? sanitize_text_field( Helper::get_string_value( $params['default_status'] ) ) : 'draft';
+
+		if ( empty( $forms_data ) ) {
+			return new \WP_Error(
+				'no_forms_data',
+				__( 'No forms data provided for import.', 'sureforms' ),
+				[ 'status' => 400 ]
+			);
+		}
+
+		// Validate forms data structure.
+		foreach ( $forms_data as $form_data ) {
+			if ( ! is_array( $form_data ) || ! isset( $form_data['post'] ) || ! isset( $form_data['post_meta'] ) ) {
+				return new \WP_Error(
+					'invalid_form_data',
+					__( 'Invalid form data structure provided.', 'sureforms' ),
+					[ 'status' => 400 ]
+				);
+			}
+		}
+
+		$result = $this->import_forms_with_meta( $forms_data, $default_status );
+
+		if ( is_wp_error( $result ) ) {
+			return $result;
+		}
+
+		return new \WP_REST_Response(
+			[
+				'success'        => true,
+				'message'        => __( 'Forms imported successfully.', 'sureforms' ),
+				'forms_mapping'  => $result,
+				'imported_count' => count( $result ),
+			]
+		);
 	}
 
 	/**
