@@ -82,6 +82,29 @@ const FormsManager = () => {
 		perPage: formsData?.per_page || pagination.perPage,
 	};
 
+	// Check for trash forms when "All Forms" is empty to detect if all forms are trashed
+	const trashQueryParams = useMemo(
+		() => ( {
+			page: 1,
+			per_page: 1, // Just need to check if any exist
+			status: 'trash',
+		} ),
+		[]
+	);
+
+	const {
+		data: trashData,
+		isLoading: isTrashLoading,
+	} = useForms( trashQueryParams, {
+		enabled: 
+			filters.status === 'any' &&
+			forms.length === 0 &&
+			! isLoading &&
+			! filters.search.trim() &&
+			! selectedDates.from &&
+			! selectedDates.to
+	} );
+
 	// Mutations
 	const { mutate: bulkActionMutation, isPending: isBulkActionPending } =
 		useBulkFormsAction();
@@ -244,6 +267,23 @@ const FormsManager = () => {
 		);
 	}, [ filters, selectedDates ] );
 
+	// Check if there are any forms in trash
+	const hasTrashForms = trashData?.total > 0;
+
+	// Only show initial empty state when truly no forms exist anywhere
+	const shouldShowInitialEmptyState = useMemo( () => {
+		return (
+			forms.length === 0 &&
+			filters.status === 'any' &&
+			! filters.search.trim() &&
+			! selectedDates.from &&
+			! selectedDates.to &&
+			! isLoading &&
+			! isTrashLoading &&
+			! hasTrashForms // Only show initial state if no trash forms exist
+		);
+	}, [ forms.length, filters, selectedDates, isLoading, isTrashLoading, hasTrashForms ] );
+
 	const isIndeterminate =
 		selectedForms.length > 0 && selectedForms.length < forms.length;
 
@@ -272,9 +312,7 @@ const FormsManager = () => {
 					gap="2xl"
 				>
 					{ /* Content */ }
-					{ forms.length === 0 &&
-					! hasActiveFilters &&
-					! isLoading ? (
+					{ shouldShowInitialEmptyState ? (
 							<div className="p-6 bg-background-secondary rounded-lg">
 								<EmptyState
 									onImportSuccess={ handleImportSuccess }
