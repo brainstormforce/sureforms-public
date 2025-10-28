@@ -1,6 +1,7 @@
 import { __, _n, sprintf } from '@wordpress/i18n';
 import { useMemo, useState } from '@wordpress/element';
-import { Container } from '@bsf/force-ui';
+import { Container, toast } from '@bsf/force-ui';
+import { useQueryClient } from '@tanstack/react-query';
 import { exportForms } from './utils';
 import Header from '../components/Header';
 import FormsHeader from './components/FormsHeader';
@@ -8,13 +9,12 @@ import FormsTable from './components/FormsTable';
 import FormsPagination from './components/FormsPagination';
 import EmptyState from './components/EmptyState';
 import ConfirmationDialog from './components/ConfirmationDialog';
-import {
-	useForms,
-	useBulkFormsAction,
-	useImportForms,
-} from './hooks/useFormsQuery';
+import { useForms, useBulkFormsAction, formsKeys } from './hooks/useFormsQuery';
 
 const FormsManager = () => {
+	// React Query client for cache invalidation
+	const queryClient = useQueryClient();
+
 	// State management
 	const [ selectedForms, setSelectedForms ] = useState( [] );
 
@@ -108,7 +108,6 @@ const FormsManager = () => {
 	// Mutations
 	const { mutate: bulkActionMutation, isPending: isBulkActionPending } =
 		useBulkFormsAction();
-	const { mutate: importFormsMutation } = useImportForms();
 
 	// Event handlers
 	const handleSearch = ( searchTerm ) => {
@@ -143,8 +142,22 @@ const FormsManager = () => {
 	// Handle import success
 	const handleImportSuccess = ( response ) => {
 		if ( response.success ) {
-			// Import mutation will handle refetching and showing success message
-			importFormsMutation( response );
+			// Show success toast message
+			const count = response.imported_count || 1;
+			const message = sprintf(
+				/* translators: %d: number of imported forms */
+				_n(
+					'%d form imported successfully.',
+					'%d forms imported successfully.',
+					count,
+					'sureforms'
+				),
+				count
+			);
+			toast.success( message );
+
+			// Invalidate cache to refresh the table
+			queryClient.invalidateQueries( { queryKey: formsKeys.lists() } );
 		}
 	};
 

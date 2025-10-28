@@ -10,6 +10,7 @@ const FormsHeader = ( {
 	selectedForms = [],
 	onBulkTrash,
 	onBulkExport,
+	onImportSuccess,
 	statusFilter,
 	onStatusFilterChange,
 	selectedDates = { from: null, to: null },
@@ -56,6 +57,7 @@ const FormsHeader = ( {
 					selectedForms={ selectedForms }
 					onBulkTrash={ onBulkTrash }
 					onBulkExport={ onBulkExport }
+					onImportSuccess={ onImportSuccess }
 					statusFilter={ statusFilter }
 					onStatusFilterChange={ onStatusFilterChange }
 					selectedDates={ selectedDates }
