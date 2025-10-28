@@ -35,7 +35,7 @@ import {
 	formatDateTime,
 	getStatusLabel,
 	formatOrderId,
-	PartialAmount
+	PartialAmount,
 } from '../components/utils';
 import DeleteConfirmationDialog from '../components/DeleteConfirmationDialog';
 import DateRangePicker from '../components/DateRangePicker';
@@ -357,7 +357,13 @@ const PaymentTable = () => {
 		if ( page !== 1 ) {
 			setPage( 1 );
 		}
-	}, [ debouncedSearchTerm, filter, formFilter, selectedDates.from, selectedDates.to ] );
+	}, [
+		debouncedSearchTerm,
+		filter,
+		formFilter,
+		selectedDates.from,
+		selectedDates.to,
+	] );
 
 	// Handle browser back/forward buttons
 	useEffect( () => {
@@ -683,25 +689,31 @@ const PaymentTable = () => {
 
 		// Format amount display based on refund status.
 		const rowAmountPaid = isPartiallyRefunded ? (
-			<PartialAmount amount={ originalAmount } partialAmount={ remainingAmount } currency={ payment.currency } />
+			<PartialAmount
+				amount={ originalAmount }
+				partialAmount={ remainingAmount }
+				currency={ payment.currency }
+			/>
 		) : (
 			formatAmount( originalAmount, payment.currency )
 		);
 
 		let orderId = formatOrderId( payment );
-		orderId = <Button
-					variant="ghost"
-					size="sm"
-					className="p-0 text-text-secondary text-sm weight-medium font-normal"
-					onClick={ () =>
-						handleView( {
-							id: payment.id,
-							type: payment.type,
-						} )
-					}
-				>
-					{ orderId }
-				</Button>
+		orderId = (
+			<Button
+				variant="ghost"
+				size="sm"
+				className="p-0 text-text-secondary text-sm weight-medium font-normal"
+				onClick={ () =>
+					handleView( {
+						id: payment.id,
+						type: payment.type,
+					} )
+				}
+			>
+				{ orderId }
+			</Button>
+		);
 
 		const tableRowContent = applyFilters(
 			'srfm_payment_admin_table_row_content',

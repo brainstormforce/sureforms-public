@@ -405,9 +405,7 @@ const Payments = ( {
 						<Dialog.Title>
 							{ __( 'Disconnect Stripe Account', 'sureforms' ) }
 						</Dialog.Title>
-						<Dialog.CloseButton
-							onClick={ handleDialogClose }
-						/>
+						<Dialog.CloseButton onClick={ handleDialogClose } />
 					</div>
 					<Dialog.Description>
 						{ __(
@@ -416,7 +414,10 @@ const Payments = ( {
 						) }
 					</Dialog.Description>
 					<Dialog.Description>
-						{ __( 'To confirm, type "confirm" in the box below.', 'sureforms' ) }
+						{ __(
+							'To confirm, type "confirm" in the box below.',
+							'sureforms'
+						) }
 					</Dialog.Description>
 					<Input
 						type="text"
@@ -440,7 +441,8 @@ const Payments = ( {
 						onClick={ () => {
 							if (
 								typeof confirmationInput === 'string' &&
-								confirmationInput.trim().toLowerCase() === 'confirm'
+								confirmationInput.trim().toLowerCase() ===
+									'confirm'
 							) {
 								confirmStripeDisconnect();
 							}

@@ -1929,4 +1929,31 @@ class Helper {
 		// If conversion fails, return false.
 		return false;
 	}
+
+	/**
+	 * Log error messages to the error log.
+	 *
+	 * This function checks if error_log function exists, validates the message,
+	 * and logs it with the print_r second argument set to true.
+	 *
+	 * @param mixed  $message The error message to log. Can be string or any type.
+	 * @param string $prefix Optional prefix to add before the message. Default: 'SureForms Error :-> '.
+	 *
+	 * @since x.x.x
+	 * @return void
+	 */
+	public static function srfm_log( $message, $prefix = 'SureForms Error :-> ' ) {
+		// Check if error_log function exists.
+		if ( ! function_exists( 'error_log' ) ) {
+			return;
+		}
+
+		// If message is a string, log it directly without print_r.
+		if ( is_string( $message ) ) {
+			error_log( $prefix . $message ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+		} else {
+			// For non-string types, use print_r with second argument true to return the output.
+			error_log( $prefix . print_r( $message, true ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log, WordPress.PHP.DevelopmentFunctions.error_log_print_r
+		}
+	}
 }

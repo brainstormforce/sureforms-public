@@ -28,7 +28,10 @@ function getCurrencySymbol( currency ) {
 		aed: 'د.إ',
 	};
 
-	return currencySymbols[ currency.toLowerCase() ] || currency.toUpperCase() + ' ';
+	return (
+		currencySymbols[ currency.toLowerCase() ] ||
+		currency.toUpperCase() + ' '
+	);
 }
 
 /**

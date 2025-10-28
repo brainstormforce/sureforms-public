@@ -4,11 +4,7 @@ import { __, sprintf } from '@wordpress/i18n';
 import { useState, useEffect } from '@wordpress/element';
 import { formatDateTime } from './utils';
 
-const PaymentLogs = ( {
-	logs,
-	handleDeleteLog,
-	deleteLogMutation,
-} ) => {
+const PaymentLogs = ( { logs, handleDeleteLog, deleteLogMutation } ) => {
 	const [ showDeletePopup, setShowDeletePopup ] = useState( null );
 	const [ currentPage, setCurrentPage ] = useState( 1 );
 	const itemsPerPage = 3;
@@ -56,12 +52,10 @@ const PaymentLogs = ( {
 					{ __( 'Payment Logs', 'sureforms' ) }
 				</Label>
 			</Container>
-			<Container 
-				className={
-					`flex flex-col items-center justify-center bg-background-secondary gap-1 p-1 rounded-lg ${
-						! isLogsAvailable && 'min-h-[89px]'
-					}`
-				}
+			<Container
+				className={ `flex flex-col items-center justify-center bg-background-secondary gap-1 p-1 rounded-lg ${
+					! isLogsAvailable && 'min-h-[89px]'
+				}` }
 			>
 				{ isLogsAvailable ? (
 					paginatedLogs.map( ( log, index ) => {
@@ -95,9 +89,7 @@ const PaymentLogs = ( {
 													'sureforms'
 												),
 												logTitle,
-												formatDateTime(
-													log.timestamp
-												)
+												formatDateTime( log.timestamp )
 											) }
 										</Text>
 									</div>

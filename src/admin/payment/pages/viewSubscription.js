@@ -28,6 +28,7 @@ import {
 	getStatusLabel,
 	formatAmount,
 	formatDateTime,
+	PartialAmount,
 } from '../components/utils';
 import PaymentNotes from '../components/paymentNotes';
 import PaymentLogs from '../components/paymentLogs';
@@ -727,12 +728,18 @@ const ViewSubscription = () => {
 						{ subscriptionBillingData.map( ( row ) => (
 							<Table.Row key={ row.id }>
 								<Table.Cell className="font-medium">
-									{ row.refunded_amount > 0 ? <PartialAmount 
-											amount={ row.total_amount } 
-											partialAmount={ row.total_amount - row.refunded_amount } 
-											currency={ subscriptionData.currency } 
+									{ row.refunded_amount > 0 ? (
+										<PartialAmount
+											amount={ row.total_amount }
+											partialAmount={
+												row.total_amount -
+												row.refunded_amount
+											}
+											currency={
+												subscriptionData.currency
+											}
 										/>
-									: (
+									) : (
 										formatAmount(
 											row.total_amount,
 											subscriptionData.currency

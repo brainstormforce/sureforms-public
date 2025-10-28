@@ -272,9 +272,15 @@ export const formatDateTime = ( datetime ) => {
 		return 'N/A';
 	}
 
-	const month = date.toLocaleString('en-US', { month: 'short' });
+	const month = date.toLocaleString( 'en-US', { month: 'short' } );
 	const day = date.getDate();
-	const time = date.toLocaleString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true }).replace(/^0/, '');
+	const time = date
+		.toLocaleString( 'en-US', {
+			hour: 'numeric',
+			minute: '2-digit',
+			hour12: true,
+		} )
+		.replace( /^0/, '' );
 
 	return `${ month } ${ day } / ${ time }`;
 };
@@ -324,21 +330,26 @@ export const formatOrderId = ( payment ) => {
  *
  * Shows the original amount struck through, followed by the partial/refunded amount.
  *
- * @param {number} amount - The original payment amount.
- * @param {number} partialAmount - The new (partial/refunded) payment amount.
- * @param {string} currency - The currency code.
- * @return {JSX.Element} React element showing both amounts formatted.
+ * @param {Object} props               - Component props
+ * @param {number} props.amount        - Original amount
+ * @param {number} props.partialAmount - Partial amount
+ * @param {string} props.currency      - Currency code
  */
-export const PartialAmount = ( {amount, partialAmount, currency}) => {
+export const PartialAmount = ( { amount, partialAmount, currency } ) => {
+	// Return the JSX element showing both amounts formatted.
 	return (
-		<span style={ {
-			display: 'flex',
-			gap: '8px',
-		} }>
-			<span style={ {
-				textDecoration: 'line-through',
-				color: '#6c757d',
-			} }>
+		<span
+			style={ {
+				display: 'flex',
+				gap: '8px',
+			} }
+		>
+			<span
+				style={ {
+					textDecoration: 'line-through',
+					color: '#6c757d',
+				} }
+			>
 				{ formatAmount( amount, currency ) }
 			</span>
 			{ formatAmount( partialAmount, currency ) }

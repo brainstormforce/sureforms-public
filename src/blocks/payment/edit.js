@@ -248,7 +248,10 @@ const Edit = ( props ) => {
 					id: 'billing-cycles',
 					component: (
 						<SelectControl
-							label={ __( 'Stop Subscription After', 'sureforms' ) }
+							label={ __(
+								'Stop Subscription After',
+								'sureforms'
+							) }
 							value={
 								subscriptionPlan?.billingCycles || 'ongoing'
 							}
@@ -280,7 +283,7 @@ const Edit = ( props ) => {
 						/>
 					),
 				},
-			]
+			  ]
 			: [] ),
 		{
 			id: 'separator',
@@ -336,7 +339,10 @@ const Edit = ( props ) => {
 					}
 					help={
 						amountType === 'fixed'
-							? __( 'Enter the fixed payment amount', 'sureforms' )
+							? __(
+								'Enter the fixed payment amount',
+								'sureforms'
+							  )
 							: __(
 								'Enter the default amount (users can change this)',
 								'sureforms'

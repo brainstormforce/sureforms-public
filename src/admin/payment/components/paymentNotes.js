@@ -123,12 +123,10 @@ const PaymentNotes = ( {
 					{ __( 'Add Note', 'sureforms' ) }
 				</Button>
 			</Container>
-			<Container 
-				className={
-					`flex flex-col items-center justify-center bg-background-secondary gap-1 p-1 rounded-lg ${
-						! isNotesAvailable && ! isAddingNote && 'min-h-[89px]'
-					}`
-				}
+			<Container
+				className={ `flex flex-col items-center justify-center bg-background-secondary gap-1 p-1 rounded-lg ${
+					! isNotesAvailable && ! isAddingNote && 'min-h-[89px]'
+				}` }
 			>
 				{ isAddingNote && addNewComponent() }
 				{ isNotesAvailable
@@ -146,7 +144,9 @@ const PaymentNotes = ( {
 									</Text>
 									{ note.created_at && (
 										<Text className="text-xs text-text-tertiary mt-1">
-											{ formatDateTime( note.created_at ) }
+											{ formatDateTime(
+												note.created_at
+											) }
 										</Text>
 									) }
 								</div>
