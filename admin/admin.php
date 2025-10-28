@@ -529,7 +529,7 @@ class Admin {
 			return;
 		}
 
-		echo '<div id="srfm-root"></div>';
+		echo '<div id="srfm-entries-root"></div>';
 
 		// Render all entries view.
 

@@ -23,7 +23,7 @@ window.srfm_toast = toast;
 
 function renderApp() {
 	// Render entries application with router.
-	const entriesApp = document.getElementById( 'srfm-root' );
+	const entriesApp = document.getElementById( 'srfm-entries-root' );
 	const entriesRoot = createRoot( entriesApp );
 
 	if ( entriesRoot ) {
