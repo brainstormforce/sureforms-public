@@ -9602,16 +9602,6 @@ namespace SRFM\Inc {
         {
         }
         /**
-         * Show blank slate.
-         *
-         * @param string $which String which tablenav is being shown.
-         * @return void
-         * @since  0.0.1
-         */
-        public function maybe_render_blank_form_state($which)
-        {
-        }
-        /**
          * Set up a div for the header to render into it.
          *
          * @return void

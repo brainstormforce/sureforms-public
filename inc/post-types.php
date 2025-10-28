@@ -8,7 +8,6 @@
 
 namespace SRFM\Inc;
 
-use SRFM\Inc\Database\Tables\Entries;
 use SRFM\Inc\Traits\Get_Instance;
 use WP_Admin_Bar;
 use WP_Post;
@@ -35,14 +34,8 @@ class Post_Types {
 		$this->restrict_unwanted_insertions();
 		add_action( 'init', [ $this, 'register_post_types' ] );
 		add_action( 'init', [ $this, 'register_post_metas' ] );
-		add_filter( 'manage_sureforms_form_posts_columns', [ $this, 'custom_form_columns' ] );
-		add_action( 'manage_sureforms_form_posts_custom_column', [ $this, 'custom_form_column_data' ], 10, 2 );
 		add_shortcode( 'sureforms', [ $this, 'forms_shortcode' ] );
-		add_action( 'manage_posts_extra_tablenav', [ $this, 'maybe_render_blank_form_state' ] );
 		add_action( 'in_admin_header', [ $this, 'embed_page_header' ] );
-		add_filter( 'post_row_actions', [ $this, 'modify_entries_list_row_actions' ], 10, 2 );
-		add_filter( 'bulk_actions-edit-sureforms_form', [ $this, 'register_modify_bulk_actions' ], 99 );
-		add_action( 'admin_notices', [ $this, 'import_form_popup' ] );
 		add_action( 'admin_bar_menu', [ $this, 'remove_admin_bar_menu_item' ], 80, 1 );
 		add_action( 'template_redirect', [ $this, 'srfm_instant_form_redirect' ] );
 		add_action( 'template_redirect', [ $this, 'disable_sureforms_archive_page' ], 9 );
@@ -128,29 +121,6 @@ class Post_Types {
 	 * @since  0.0.1
 	 */
 	public function sureforms_render_blank_state( $post_type ) {
-
-		if ( SRFM_FORMS_POST_TYPE === $post_type ) {
-			$page_name    = 'add-new-form';
-			$new_form_url = admin_url( 'admin.php?page=' . $page_name );
-			ob_start();
-			?>
-			<button class="button button-secondary srfm-import-btn"><?php echo esc_html__( 'Import Form', 'sureforms' ); ?></button>
-			<?php
-			$import_button = ob_get_clean();
-
-			$this->get_blank_page_markup(
-				esc_html__( 'Let’s build your first form', 'sureforms' ),
-				esc_html__(
-					'Craft beautiful and functional forms in minutes',
-					'sureforms'
-				),
-				'add-new-form',
-				esc_html__( 'Add New Form', 'sureforms' ),
-				$new_form_url,
-				$import_button ? $import_button : ''
-			);
-		}
-
 		if ( SRFM_ENTRIES === $post_type ) {
 
 			$this->get_blank_page_markup(
@@ -254,55 +224,6 @@ class Post_Types {
 	}
 
 	/**
-	 * Modify list row actions.
-	 *
-	 * @param array<mixed> $actions An array of row action links.
-	 * @param \WP_Post     $post  The current WP_Post object.
-	 *
-	 * @return array<mixed> $actions Modified row action links.
-	 * @since  0.0.1
-	 */
-	public function modify_entries_list_row_actions( $actions, $post ) {
-		if ( 'sureforms_form' === $post->post_type ) {
-			ob_start();
-			?>
-			<a href="#" onclick="exportForm(<?php echo esc_attr( strval( $post->ID ) ); ?>)"><?php echo esc_html__( 'Export', 'sureforms' ); ?></a>
-			<?php
-			$export_link       = ob_get_clean();
-			$actions['export'] = $export_link;
-		}
-
-		return $actions;
-	}
-
-	/**
-	 * Modify list bulk actions.
-	 *
-	 * @param array<mixed> $bulk_actions An array of bulk action links.
-	 * @since 0.0.1
-	 * @return array<mixed> $bulk_actions Modified action links.
-	 */
-	public function register_modify_bulk_actions( $bulk_actions ) {
-
-		$white_listed_actions = [
-			'edit',
-			'trash',
-			'delete',
-			'untrash',
-		];
-
-		// remove all actions except white listed actions.
-		$bulk_actions = array_intersect_key( $bulk_actions, array_flip( $white_listed_actions ) );
-
-		// Add export action only if edit and trash actions are present in bulk actions.
-		if ( isset( $bulk_actions['edit'] ) && isset( $bulk_actions['trash'] ) ) {
-			$bulk_actions['export'] = __( 'Export', 'sureforms' );
-		}
-
-		return $bulk_actions;
-	}
-
-	/**
 	 * Show blank slate styles.
 	 *
 	 * @return void
@@ -355,46 +276,15 @@ class Post_Types {
 	}
 
 	/**
-	 * Show blank slate.
-	 *
-	 * @param string $which String which tablenav is being shown.
-	 * @return void
-	 * @since  0.0.1
-	 */
-	public function maybe_render_blank_form_state( $which ) {
-		$screen    = get_current_screen();
-		$post_type = $screen ? $screen->post_type : '';
-
-		if ( SRFM_FORMS_POST_TYPE === $post_type && 'bottom' === $which ) {
-
-			$counts = (array) wp_count_posts( SRFM_FORMS_POST_TYPE );
-			unset( $counts['auto-draft'] );
-			$count = array_sum( $counts );
-
-			if ( 0 < $count ) {
-				return;
-			}
-
-			$this->sureforms_render_blank_state( $post_type );
-
-			$this->get_blank_state_styles();
-
-		}
-	}
-
-	/**
 	 * Set up a div for the header to render into it.
 	 *
 	 * @return void
 	 * @since  0.0.1
 	 */
 	public static function embed_page_header() {
-		$screen    = get_current_screen();
-		$screen_id = $screen ? $screen->id : '';
-
 		$is_screen_sureforms_entries = Helper::validate_request_context( SRFM_ENTRIES, 'page' );
 
-		if ( 'edit-' . SRFM_FORMS_POST_TYPE === $screen_id || $is_screen_sureforms_entries ) {
+		if ( $is_screen_sureforms_entries ) {
 			?>
 		<style>
 			.srfm-page-header {
@@ -1198,93 +1088,6 @@ class Post_Types {
 		}
 
 		return esc_html__( 'This form has been deleted or is unavailable.', 'sureforms' );
-	}
-
-	/**
-	 * Add custom column header.
-	 *
-	 * @param array<mixed> $columns Attributes.
-	 * @return array<mixed> $columns Post Content.
-	 * @since 0.0.1
-	 */
-	public function custom_form_columns( $columns ) {
-		return [
-			'cb'        => $columns['cb'],
-			'title'     => $columns['title'],
-			'sureforms' => __( 'Shortcode', 'sureforms' ),
-			'entries'   => __( 'Entries', 'sureforms' ),
-			'author'    => $columns['author'],
-			'date'      => $columns['date'],
-		];
-	}
-
-	/**
-	 * Populate custom column with data.
-	 *
-	 * @param string $column Attributes.
-	 * @param int    $post_id Attributes.
-	 * @return void
-	 * @since 0.0.1
-	 */
-	public function custom_form_column_data( $column, $post_id ) {
-		if ( 'sureforms' === $column ) {
-			ob_start();
-			?>
-			<div class="srfm-shortcode-container">
-				<input id="srfm-shortcode-input-<?php echo esc_attr( Helper::get_string_value( $post_id ) ); ?>" class="srfm-shortcode-input" type="text" readonly value="[sureforms id='<?php echo esc_attr( Helper::get_string_value( $post_id ) ); ?>']" />
-				<button type="button" class="components-button components-clipboard-button has-icon srfm-shortcode" onclick="handleFormShortcode(this)">
-					<span id="srfm-copy-icon" class="dashicon dashicons dashicons-admin-page"></span>
-				</button>
-			</div>
-			<?php
-			ob_end_flush();
-		}
-		if ( 'entries' === $column ) {
-			// Entries URL to redirect user based on the form ID.
-			$entries_url = wp_nonce_url(
-				add_query_arg(
-					[
-						'form_filter' => $post_id,
-					],
-					admin_url( 'admin.php?page=sureforms_entries' )
-				),
-				'srfm_entries_action'
-			);
-
-			// Get the entry count for the form.
-			$entries_count = Entries::get_total_entries_by_status( 'all', $post_id );
-
-			ob_start();
-			?>
-				<p class="srfm-entries-number"><a href="<?php echo esc_url( $entries_url ); ?>"><?php echo esc_html( Helper::get_string_value( $entries_count ) ); ?></a></p>
-			<?php
-			ob_end_flush();
-		}
-	}
-
-	/**
-	 * Show the import form popup
-	 *
-	 * @since 0.0.1
-	 * @return void
-	 */
-	public function import_form_popup() {
-		$screen = get_current_screen();
-		$id     = $screen ? $screen->id : '';
-		if ( 'edit-sureforms_form' === $id ) {
-			?>
-			<div class="srfm-import-plugin-wrap">
-				<div class="srfm-import-wrap">
-					<p class="srfm-import-help"><?php echo esc_html__( 'Please choose the SureForms export file (.json) that you wish to import.', 'sureforms' ); ?></p>
-					<form method="post" enctype="multipart/form-data" class="srfm-import-form">
-						<input type="file" id="srfm-import-file" onchange="handleFileChange(event)" name="import form" accept=".json">
-						<input type="submit" name="import-form-submit" id="import-form-submit" class="srfm-import-button" value="<?php esc_attr_e( 'Import Now', 'sureforms' ); ?>" disabled>
-					</form>
-					<p id="srfm-import-error"><?php echo esc_html__( 'There is some error in json file, please export the SureForms Forms again.', 'sureforms' ); ?></p>
-				</div>
-			</div>
-			<?php
-		}
 	}
 
 	/**
