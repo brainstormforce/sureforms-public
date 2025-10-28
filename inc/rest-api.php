@@ -780,7 +780,7 @@ class Rest_Api {
 
 					$form_fields[] = [
 						'field_name' => $field_name,
-						'block_name' => Helper::get_block_name_from_field( $field_name ),
+						'block_name' => 'multi-choice' === $block_type ? 'srfm-multi' : Helper::get_block_name_from_field( $field_name ),
 						'value'      => $field_value,
 						'attributes' => $merged_attributes,
 					];
