@@ -208,7 +208,7 @@ const EntriesFilters = ( {
 										formOptions.find(
 											( option ) =>
 												option.value === formFilter
-										)?.label
+										)?.label || __( 'Untitled', 'sureforms' )
 									}
 								</Select.Button>
 								<Select.Options className="z-999999">
@@ -217,7 +217,7 @@ const EntriesFilters = ( {
 											key={ option.value }
 											value={ option.value }
 										>
-											{ option.label }
+											{ option.label || __( 'Untitled', 'sureforms' ) }
 										</Select.Option>
 									) ) }
 								</Select.Options>
