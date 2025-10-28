@@ -20,6 +20,7 @@ const TabContentWrapper = ( {
 		'All changes will be saved automatically when you press back.',
 		'sureforms'
 	),
+	shouldAddHelpTextPadding = true,
 } ) => {
 	const handleBack = () => {
 		if ( typeof onClickBack !== 'function' ) {
@@ -56,7 +57,11 @@ const TabContentWrapper = ( {
 							<Title tag="h4" title={ title } size="md" />
 						) }
 					</Container.Item>
-					<Container.Item className="pl-7">
+					<Container.Item
+						className={ cn(
+							shouldAddHelpTextPadding ? 'pl-7' : ''
+						) }
+					>
 						{ shouldShowAutoSaveText && (
 							<Label
 								size="sm"
