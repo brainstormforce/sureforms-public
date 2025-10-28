@@ -35,6 +35,7 @@ import {
 	formatDateTime,
 	getStatusLabel,
 	formatOrderId,
+	PartialAmount
 } from '../components/utils';
 import DeleteConfirmationDialog from '../components/DeleteConfirmationDialog';
 import DateRangePicker from '../components/DateRangePicker';
@@ -512,7 +513,7 @@ const PaymentTable = () => {
 					key: 'amountPaid',
 					title: (
 						<div className="flex items-center gap-2">
-							{ __( 'Amount Paid', 'sureforms' ) }
+							{ __( 'Amount', 'sureforms' ) }
 							<Button
 								variant="ghost"
 								size="sm"
@@ -680,21 +681,9 @@ const PaymentTable = () => {
 		const refundedAmount = parseFloat( payment.refunded_amount || 0 );
 		const remainingAmount = originalAmount - refundedAmount;
 
-		// Format amount display based on refund status
+		// Format amount display based on refund status.
 		const rowAmountPaid = isPartiallyRefunded ? (
-			<span style={ { display: 'flex', gap: '8px' } }>
-				<span
-					style={ {
-						textDecoration: 'line-through',
-						color: '#6c757d',
-					} }
-				>
-					{ formatAmount( originalAmount, payment.currency ) }
-				</span>
-				<strong>
-					{ formatAmount( remainingAmount, payment.currency ) }
-				</strong>
-			</span>
+			<PartialAmount amount={ originalAmount } partialAmount={ remainingAmount } currency={ payment.currency } />
 		) : (
 			formatAmount( originalAmount, payment.currency )
 		);

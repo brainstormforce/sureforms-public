@@ -280,35 +280,6 @@ export const formatDateTime = ( datetime ) => {
 };
 
 /**
- * Format Unix timestamp to readable date (used for payment logs)
- * @param {number} timestamp - Unix timestamp in seconds
- * @return {string} Formatted datetime or error message
- */
-export const formatLogTimestamp = ( timestamp ) => {
-	// Validate timestamp
-	if ( ! timestamp || isNaN( timestamp ) || timestamp <= 0 ) {
-		return __( 'N/A', 'sureforms' );
-	}
-
-	const date = new Date( timestamp * 1000 );
-
-	// Check if date is valid
-	if ( isNaN( date.getTime() ) ) {
-		return __( 'Invalid Date', 'sureforms' );
-	}
-
-	return date.toLocaleString( 'en-US', {
-		year: 'numeric',
-		month: '2-digit',
-		day: '2-digit',
-		hour: '2-digit',
-		minute: '2-digit',
-		second: '2-digit',
-		hour12: false,
-	} );
-};
-
-/**
  * Get human-readable label for payment status
  * @param {string} status - Payment status code
  * @return {string} Translated status label
@@ -346,4 +317,31 @@ export const getSelectedDateRange = ( dates ) => {
 export const formatOrderId = ( payment ) => {
 	const orderId = payment?.srfm_txn_id ? payment.srfm_txn_id : payment?.id;
 	return `SF-#${ orderId }`;
+};
+
+/**
+ * Display original and partial payment amounts with styling.
+ *
+ * Shows the original amount struck through, followed by the partial/refunded amount.
+ *
+ * @param {number} amount - The original payment amount.
+ * @param {number} partialAmount - The new (partial/refunded) payment amount.
+ * @param {string} currency - The currency code.
+ * @return {JSX.Element} React element showing both amounts formatted.
+ */
+export const PartialAmount = ( {amount, partialAmount, currency}) => {
+	return (
+		<span style={ {
+			display: 'flex',
+			gap: '8px',
+		} }>
+			<span style={ {
+				textDecoration: 'line-through',
+				color: '#6c757d',
+			} }>
+				{ formatAmount( amount, currency ) }
+			</span>
+			{ formatAmount( partialAmount, currency ) }
+		</span>
+	);
 };

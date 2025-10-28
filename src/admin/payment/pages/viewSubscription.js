@@ -714,7 +714,7 @@ const ViewSubscription = () => {
 				<Table className="w-full">
 					<Table.Head>
 						<Table.HeadCell>
-							{ __( 'Amount Paid', 'sureforms' ) }
+							{ __( 'Amount', 'sureforms' ) }
 						</Table.HeadCell>
 						<Table.HeadCell>
 							{ __( 'Status', 'sureforms' ) }
@@ -727,34 +727,12 @@ const ViewSubscription = () => {
 						{ subscriptionBillingData.map( ( row ) => (
 							<Table.Row key={ row.id }>
 								<Table.Cell className="font-medium">
-									{ row.refunded_amount > 0 ? (
-										<span
-											style={ {
-												display: 'flex',
-												gap: '8px',
-											} }
-										>
-											<span
-												style={ {
-													textDecoration:
-														'line-through',
-													color: '#6c757d',
-												} }
-											>
-												{ formatAmount(
-													row.total_amount,
-													subscriptionData.currency
-												) }
-											</span>
-											<strong>
-												{ formatAmount(
-													row.total_amount -
-														row.refunded_amount,
-													subscriptionData.currency
-												) }
-											</strong>
-										</span>
-									) : (
+									{ row.refunded_amount > 0 ? <PartialAmount 
+											amount={ row.total_amount } 
+											partialAmount={ row.total_amount - row.refunded_amount } 
+											currency={ subscriptionData.currency } 
+										/>
+									: (
 										formatAmount(
 											row.total_amount,
 											subscriptionData.currency
@@ -785,7 +763,7 @@ const ViewSubscription = () => {
 
 	const subscriptionDetailsData = [
 		{
-			title: __( 'Subscription Id', 'sureforms' ),
+			title: __( 'Subscription ID', 'sureforms' ),
 			value: `#${ subscriptionData.id }`,
 		},
 		{

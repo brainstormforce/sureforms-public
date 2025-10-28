@@ -2,7 +2,7 @@ import { Container, Label, Text, Button, Tooltip } from '@bsf/force-ui';
 import { Trash2, ChevronLeft, ChevronRight } from 'lucide-react';
 import { __, sprintf } from '@wordpress/i18n';
 import { useState, useEffect } from '@wordpress/element';
-import { formatLogTimestamp } from './utils';
+import { formatDateTime } from './utils';
 
 const PaymentLogs = ( {
 	logs,
@@ -95,7 +95,7 @@ const PaymentLogs = ( {
 													'sureforms'
 												),
 												logTitle,
-												formatLogTimestamp(
+												formatDateTime(
 													log.timestamp
 												)
 											) }

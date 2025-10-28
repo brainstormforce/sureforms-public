@@ -25,6 +25,7 @@ import {
 	formatAmount,
 	formatDateTime,
 	getStatusLabel,
+	PartialAmount
 } from '../components/utils';
 import PaymentNotes from '../components/paymentNotes';
 import PaymentLogs from '../components/paymentLogs';
@@ -467,7 +468,7 @@ const ViewPayment = () => {
 				<Table className="w-full">
 					<Table.Head>
 						<Table.HeadCell>
-							{ __( 'Amount Paid', 'sureforms' ) }
+							{ __( 'Amount', 'sureforms' ) }
 						</Table.HeadCell>
 						<Table.HeadCell>
 							{ __( 'Status', 'sureforms' ) }
@@ -483,34 +484,11 @@ const ViewPayment = () => {
 						{ billingData.map( ( row ) => (
 							<Table.Row key={ row.id }>
 								<Table.Cell>
-									{ row.refunded_amount > 0 ? (
-										<span
-											style={ {
-												display: 'flex',
-												gap: '8px',
-											} }
-										>
-											<span
-												style={ {
-													textDecoration:
-														'line-through',
-													color: '#6c757d',
-												} }
-											>
-												{ formatAmount(
-													row.amount_paid,
-													paymentData.currency
-												) }
-											</span>
-											<strong>
-												{ formatAmount(
-													row.amount_paid -
-														row.refunded_amount,
-													paymentData.currency
-												) }
-											</strong>
-										</span>
-									) : (
+									{ row.refunded_amount > 0 ? <PartialAmount 
+											amount={ row.amount_paid } 
+											partialAmount={ row.amount_paid - row.refunded_amount } 
+											currency={ paymentData.currency } 
+										/>: (
 										formatAmount(
 											row.amount_paid,
 											paymentData.currency

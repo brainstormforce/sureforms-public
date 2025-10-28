@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { __ } from '@wordpress/i18n';
 import { useState, useEffect } from '@wordpress/element';
+import { formatDateTime } from './utils';
 
 const PaymentNotes = ( {
 	notes,
@@ -145,9 +146,7 @@ const PaymentNotes = ( {
 									</Text>
 									{ note.created_at && (
 										<Text className="text-xs text-text-tertiary mt-1">
-											{ new Date(
-												note.created_at
-											).toLocaleString() }
+											{ formatDateTime( note.created_at ) }
 										</Text>
 									) }
 								</div>
