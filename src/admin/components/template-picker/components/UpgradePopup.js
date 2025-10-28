@@ -1,40 +1,34 @@
 import { __ } from '@wordpress/i18n';
-import Header from './Header.js';
-import ICONS from './icons.js';
-import AiFormBuilder from './AiFormBuilder.js';
+import ICONS from '../components/icons.js';
 import { Button, Container, Label } from '@bsf/force-ui';
 import { applyFilters } from '@wordpress/hooks';
+import { Zap, Check } from 'lucide-react';
 
-const LimitReachedPopup = ( {
-	title = __( 'Limit Reached', 'sureforms' ),
+const UpgradePopup = ( {
+	title = '',
 	paraOne,
 	paraTwo,
 	buttonText,
 	onclick,
 	deactivatedLicense = false,
+	onClose,
+	features = [],
 } ) => {
 	// Get filter values
 	const {
 		paraOne: filteredParaOne,
 		paraTwo: filteredParaTwo,
 		title: filteredTitle,
-		activateLicenseButton: ActivateLicenseButton,
 	} = applyFilters( 'srfm.aiFormScreen.freeCreds.expired', null ) || {};
 
 	const finalTitle = deactivatedLicense ? filteredTitle : title;
 	const finalParaOne = deactivatedLicense ? filteredParaOne : paraOne;
 	const finalParaTwo = deactivatedLicense ? filteredParaTwo : paraTwo;
-	const FinalButton =
-		deactivatedLicense && ActivateLicenseButton ? (
-			<ActivateLicenseButton />
-		) : (
-			<Button size="md" variant="primary" onClick={ onclick }>
-				{ buttonText ?? __( 'Connect Now', 'sureforms' ) }
-			</Button>
-		);
-
-	const is_pro_active =
-		srfm_admin?.is_pro_active && srfm_admin?.is_pro_license_active;
+	const FinalButton = (
+		<Button size="md" variant="primary" onClick={ onclick }>
+			{ buttonText ?? __( 'Connect Now', 'sureforms' ) }
+		</Button>
+	);
 
 	const renderLimitReachedContent = () => (
 		<Container
@@ -52,54 +46,56 @@ const LimitReachedPopup = ( {
 						variant="neutral"
 						className="text-lg font-bold flex gap-3"
 					>
-						{ ! deactivatedLicense && (
-							<span className="pt-1">{ ICONS.warning }</span>
-						) }
+						<span className="pt-1">{ <Zap /> }</span>
 						{ finalTitle }
 						<span
 							className="absolute top-[-10px] right-[-15px] cursor-pointer"
-							onClick={ () =>
-								( window.location.href =
-									srfm_admin.site_url +
-									'/wp-admin/post-new.php?post_type=sureforms_form' )
-							}
+							onClick={ onClose }
 						>
 							{ ICONS.close }
 						</span>
 					</Label>
 				</Container.Item>
 
-				<Container.Item className="flex flex-col gap-4">
+				<Container className="gap-1 p-2 w-full" direction="column">
+					{ /* Title */ }
 					<Label
-						size="md"
-						className="text-text-secondary font-normal"
+						as="h2"
+						size="lg"
+						className="text-[#141338] font-semibold text-lg"
 					>
+						{ __(
+							'Build Better Forms with SureForms',
+							'sureforms'
+						) }
 						{ finalParaOne }
 					</Label>
+
+					{ /* Paragraph */ }
 					<Label
-						size="md"
-						className="text-text-secondary font-normal"
+						size="sm"
+						className="text-[#4F4E7C] text-sm font-normal leading-relaxed w-full"
 					>
 						{ finalParaTwo }
 					</Label>
-				</Container.Item>
+				</Container>
+
+				<Container className="flex-col w-full p-2">
+					{ features.map( ( item, index ) => (
+						<Container.Item
+							key={ index }
+							className="flex items-start gap-2 text-base text-[#141338]"
+						>
+							<Check className="w-4 h-4 text-brand-800 mt-0.5" />
+							<Label size="sm" className="font-normal">
+								{ item }
+							</Label>
+						</Container.Item>
+					) ) }
+				</Container>
 
 				<Container.Item className="flex flex-col w-full gap-3 pb-2">
 					{ FinalButton }
-
-					{ ! is_pro_active ? (
-						<Button
-							size="md"
-							variant="outline"
-							onClick={ () => {
-								window.location.href = `${ srfm_admin.site_url }/wp-admin/post-new.php?post_type=sureforms_form`;
-							} }
-						>
-							{ __( 'Or Build It Yourself', 'sureforms' ) }
-						</Button>
-					) : (
-						''
-					) }
 				</Container.Item>
 			</Container>
 		</Container>
@@ -107,11 +103,9 @@ const LimitReachedPopup = ( {
 
 	return (
 		<>
-			<Header />
 			{ renderLimitReachedContent() }
-			<AiFormBuilder />
 		</>
 	);
 };
 
-export default LimitReachedPopup;
+export default UpgradePopup;

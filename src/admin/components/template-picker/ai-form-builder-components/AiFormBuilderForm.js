@@ -6,20 +6,26 @@ import {
 	TextArea,
 	Title,
 	toast,
-	Label,
 	Tooltip,
 } from '@bsf/force-ui';
-import { ArrowRight, SendHorizontal, MicOff, Mic } from 'lucide-react';
+import {
+	ArrowRight,
+	Sparkles,
+	MicOff,
+	Mic,
+} from 'lucide-react';
 import { applyFilters } from '@wordpress/hooks';
 import { cn, srfmClassNames } from '@Utils/Helpers';
 import ConnectWithAIBanner from '../ai-form-builder-components/ConnectWithAIBanner.js';
 import LimitReachedBanner from '../ai-form-builder-components/LimitReachedBanner.js';
 import FormTypeSelector from '../components/FormTypeSelector.js';
+import CreditDetailsPopup from './CreditDetailsPopup.js';
+import { useLocation } from 'react-router-dom';
 
 const VoiceToggleButton = memo( ( { isListening, toggleListening } ) => {
 	const buttonProps = isListening
 		? {
-			icon: <Mic size={ 12 } />,
+			icon: <Mic className="w-3 h-3" />,
 			required_className: [
 				'bg-badge-background-green',
 				'border-badge-border-green',
@@ -28,7 +34,7 @@ const VoiceToggleButton = memo( ( { isListening, toggleListening } ) => {
 			],
 		  }
 		: {
-			icon: <MicOff size={ 12 } />,
+			icon: <MicOff className="w-3 h-3" />,
 			required_className: [
 				'border-badge-border-gray',
 				'bg-badge-background-gray',
@@ -76,10 +82,21 @@ export default ( props ) => {
 	const [ placeholderIndex, setPlaceholderIndex ] = useState( 0 );
 	const [ displayedPlaceholder, setDisplayedPlaceholder ] = useState( '' );
 
+	// 👇 added new state for banner visibility
+	const [ showBanner, setShowBanner ] = useState( false );
+
 	const handlePromptClick = ( prompt ) => {
 		setText( prompt );
 		setCharacterCount( prompt.length );
 	};
+
+	function useQuery() {
+		return new URLSearchParams( useLocation().search );
+	}
+
+	const query = useQuery();
+
+	const page = query.get( 'page' );
 
 	const initSpeechRecognition = () => {
 		const SpeechRecognition =
@@ -169,19 +186,52 @@ export default ( props ) => {
 		'srfm.aiFormScreen.examplePrompts',
 		[
 			{
-				title: __( 'Create simple contact form', 'sureforms' ),
+				title: __(
+					'Contact form to collect name, email, and message from visitors',
+					'sureforms'
+				),
 			},
 			{
-				title: __( 'Create a lead generation form', 'sureforms' ),
+				title: __(
+					'Job application form for "Marketing Manager" with resume upload',
+					'sureforms'
+				),
 			},
 			{
-				title: __( 'Generate a user feedback form', 'sureforms' ),
+				title: __(
+					'Feedback form to ask customers: "How would you rate our product and what should we improve?',
+					'sureforms'
+				),
 			},
 			{
-				title: __( 'Create a job application form', 'sureforms' ),
+				title: __(
+					'Event registration form for "Photography Workshop" with date and seat selection',
+					'sureforms'
+				),
 			},
 			{
-				title: __( 'Make an event registration form', 'sureforms' ),
+				title: __(
+					'Newsletter signup form with name and email to join mailing list',
+					'sureforms'
+				),
+			},
+			{
+				title: __(
+					'Order form for "Custom T-Shirt" with size, color, and quantity options',
+					'sureforms'
+				),
+			},
+			{
+				title: __(
+					'Survey form: "How satisfied are you with our service? (1–5 stars)"',
+					'sureforms'
+				),
+			},
+			{
+				title: __(
+					'Appointment booking form for "Consultation Call" with preferred time',
+					'sureforms'
+				),
 			},
 		],
 		formTypeObj,
@@ -247,6 +297,11 @@ export default ( props ) => {
 	const type = srfm_admin?.srfm_ai_1usage_details?.type;
 	const formCreationleft = srfm_admin?.srfm_ai_usage_details?.remaining ?? 0;
 
+	const isRegistered =
+		srfm_admin?.srfm_ai_usage_details?.type === 'registered';
+	const finalFormCreationCountRemaining =
+		isRegistered && formCreationleft > 20 ? 20 : formCreationleft;
+
 	const banner =
 		type === 'registered' && formCreationleft === 0 ? (
 			<LimitReachedBanner />
@@ -262,7 +317,7 @@ export default ( props ) => {
 			<Container.Item>{ ! is_pro_active && banner }</Container.Item>
 			<Container.Item>
 				<Container
-					className="p-8 gap-8 mx-auto w-full h-screen bg-background-secondary"
+					className="p-8 gap-6 mx-auto w-full h-screen bg-background-secondary"
 					direction="column"
 					justify="center"
 					align="center"
@@ -272,24 +327,24 @@ export default ( props ) => {
 							direction="column"
 							align="center"
 							justify="center"
-							className="gap-2.5 p-2"
+							className="gap-6"
 						>
 							<Container.Item>
 								<Title
-									tag="h4"
 									size="md"
 									title={ __(
-										'Start with AI. Just describe your form…',
+										'Describe the form that you want',
 										'sureforms'
 									) }
+									className="text-3xl font-semibold text-text-primary"
 								/>
 							</Container.Item>
 							<Container.Item>
 								<Container
-									className="gap-1.5 w-full h-full min-w-[750px] mx-auto"
+									className="gap-2 p-2 w-full h-full min-w-[750px] mx-auto"
 									direction="column"
 								>
-									<Container.Item className="flex flex-col gap-2 shadow-md-blur-32 border border-solid border-field-border rounded-lg bg-background-primary">
+									<Container.Item className="focus-within:border-brand-primary-600 focus-within:ring-1 focus-within:ring-brand-primary-600 flex flex-col gap-2 shadow-md-blur-32 border-[0.5 border-solid border-t-background-brand rounded-lg bg-background-primary">
 										<TextArea
 											aria-label={ __(
 												'Describe the form you want to create',
@@ -327,13 +382,6 @@ export default ( props ) => {
 														setformLayout
 													}
 												/>
-												<Label
-													variant="help"
-													size="sm"
-													className="font-semibold"
-												>
-													{ characterCount }/2000
-												</Label>
 											</Container.Item>
 											<Container.Item className="gap-4 flex flex-row">
 												<VoiceToggleButton
@@ -345,17 +393,13 @@ export default ( props ) => {
 												<Button
 													className="gap-1"
 													icon={
-														<SendHorizontal
-															size={ 20 }
-														/>
+														<Sparkles className="w-4 h-4" />
 													}
-													iconPosition="right"
+													iconPosition="left"
 													size="md"
 													variant="primary"
-													disabled={
-														characterCount <= 0
-													}
 													onClick={ () => {
+														setShowBanner( true );
 														if (
 															! text ||
 															! text.trim()
@@ -378,7 +422,10 @@ export default ( props ) => {
 														);
 													} }
 												>
-													{ '' }
+													{ __(
+														'Generate',
+														'sureforms'
+													) }
 												</Button>
 											</Container.Item>
 										</Container>
@@ -388,20 +435,30 @@ export default ( props ) => {
 						</Container>
 					</Container.Item>
 
-					<div className="w-full max-w-[616px] border border-solid border-border-subtle"></div>
+					{ page === 'add-new-form' &&
+						( ! srfm_admin?.is_pro_active ||
+							! srfm_admin?.is_pro_license_active ) && (
+						<CreditDetailsPopup
+							finalFormCreationCountRemaining={
+								finalFormCreationCountRemaining
+							}
+							showBanner={ showBanner }
+							setShowBanner={ setShowBanner }
+						/>
+					) }
 
 					<Container.Item className="flex p-2 gap-6 justify-center">
 						<Button
 							className="text-text-tertiary hover:cursor-pointer hover:text-text-secondary"
 							icon={ <ArrowRight size={ 16 } /> }
 							iconPosition="right"
-							size="md"
+							size="sm"
 							variant="ghost"
 							onClick={ () => {
 								window.location.href = `${ srfm_admin.site_url }/wp-admin/post-new.php?post_type=sureforms_form`;
 							} }
 						>
-							{ __( 'Build from Scratch', 'sureforms' ) }
+							{ __( 'Or Build It Yourself', 'sureforms' ) }
 						</Button>
 					</Container.Item>
 				</Container>

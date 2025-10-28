@@ -1,15 +1,22 @@
 import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
-import PremiumBadge from '../../../components/PremiumBadge';
-import { Container, Select, Label, Badge } from '@bsf/force-ui';
+import { Container, Button, Tooltip } from '@bsf/force-ui';
+import { Calculator, MessagesSquare } from 'lucide-react';
+import { useState } from '@wordpress/element';
+import UpgradePopup from './UpgradePopup.js';
+import { addQueryParam, cn } from '@Utils/Helpers';
 
-const FormTypeSelectorNew = ( {
+const FormTypeSelector = ( {
 	formTypeObj,
 	setFormTypeObj,
 	formType,
 	setFormType,
 	setformLayout,
 } ) => {
+	const [ showUpgradePopup, setShowUpgradePopup ] = useState( false );
+	const [ selectedUpgradeOption, setSelectedUpgradeOption ] =
+		useState( null );
+
 	const formTypeOptions = applyFilters(
 		'srfm.ai_form_builder.form_type_options',
 		[
@@ -19,137 +26,199 @@ const FormTypeSelectorNew = ( {
 				isAvailable: true,
 			},
 			{
-				label: __( 'Calculator', 'sureforms' ),
+				label: __( 'Calculations', 'sureforms' ),
 				slug: 'calculator',
 				isAvailable: false,
+				tooltipPosition: 'bottom',
 				upgradeTooltipContent: {
-					tooltipHeadin: __( 'Unlock Calculations', 'sureforms' ),
+					tooltipHeading: __(
+						'Unlock Calculator Forms',
+						'sureforms'
+					),
+					tooltipContentTitle: __(
+						'Build Smart Forms That Calculate Instantly',
+						'sureforms'
+					),
 					tooltipContent: __(
-						'Upgrade to the SureForms Business Plan to create advanced forms with real-time calculations, such as project quote calculators, BMI calculators, loan calculators, and more.',
+						'Empower your forms with advanced calculations. From loan calculators to BMI checkers — create interactive forms that give real-time results..',
 						'sureforms'
 					),
 					utmMedium: 'ai_builder_calculator',
 					tooltipPosition: 'bottom',
+					features: [
+						__( 'Add complex formulas with ease', 'sureforms' ),
+						__( 'Provide instant answers to users', 'sureforms' ),
+						__(
+							'Perfect for finance, health, and pricing forms',
+							'sureforms'
+						),
+					],
 				},
 			},
 			{
-				label: __( 'Conversational Form', 'sureforms' ),
+				label: __( 'Conversational', 'sureforms' ),
 				slug: 'conversational',
 				isAvailable: false,
 				upgradeTooltipContent: {
-					tooltipHeadin: __(
+					tooltipHeading: __(
 						'Unlock Conversational Forms',
 						'sureforms'
 					),
+					tooltipContentTitle: __(
+						'Turn Simple Forms Into Conversations',
+						'sureforms'
+					),
 					tooltipContent: __(
-						'Upgrade to the SureForms Business Plan to create advanced forms with real-time conversations, such as project quote calculators, BMI calculators, loan calculators, and more.',
+						'Transform boring forms into friendly, chat-like experiences. Ask one question at a time, just like a real conversation, and see higher engagement.',
 						'sureforms'
 					),
 					utmMedium: 'ai_builder_conversational',
 					tooltipPosition: 'bottom',
+					features: [
+						__(
+							'One question at a time, in chat flow',
+							'sureforms'
+						),
+						__(
+							'More engaging than traditional forms',
+							'sureforms'
+						),
+						__(
+							'Boosts completion rates with a friendly interface',
+							'sureforms'
+						),
+					],
 				},
 			},
 		]
 	);
 
+	// Ensure default type is 'simple' if not set
+	if ( ! formType ) {
+		setFormType( 'simple' );
+	}
+
 	const handleSelection = ( option ) => {
 		if ( ! option.isAvailable ) {
+			setSelectedUpgradeOption( option );
+			setShowUpgradePopup( true );
+			return;
+		}
+
+		// Toggle behavior
+		if ( formType === option.slug ) {
+			setFormType( 'simple' );
+			setFormTypeObj( {
+				...formTypeObj,
+				isConversationalForm: false,
+			} );
 			return;
 		}
 
 		setFormType( option.slug );
 
-		if ( option.slug === 'calculator' ) {
+		if (
+			option.slug === 'calculator' ||
+			option.slug === 'conversational'
+		) {
 			setformLayout( {} );
 		}
 
-		if ( option.slug === 'conversational' ) {
-			setformLayout( {} );
-			setFormTypeObj( {
-				...formTypeObj,
-				isConversationalForm: true,
-			} );
-		}
+		setFormTypeObj( {
+			...formTypeObj,
+			isConversationalForm: option.slug === 'conversational',
+		} );
 	};
 
-	const getFormTypeLabel = ( slug ) => {
-		const match = formTypeOptions.find( ( opt ) => opt.slug === slug );
-		return match ? match.label : __( 'Select…', 'sureforms' );
-	};
+	const visibleFormTypes = formTypeOptions.filter(
+		( option ) => option.slug !== 'simple'
+	);
 
 	return (
-		<Container.Item className="flex flex-col gap-2">
-			<Select
-				value={ formTypeOptions.find(
-					( opt ) => opt.slug === formType
-				) }
-				onChange={ ( selectedOption ) =>
-					handleSelection( selectedOption )
-				}
-				size="sm"
-			>
-				<Select.Button
-					placeholder={ __( 'Select…', 'sureforms' ) }
-					className="rounded-full px-1.5 !py-0.5 border-0.5 bg-badge-background-gray"
+		<Container.Item className="flex gap-2">
+			{ visibleFormTypes.map( ( option, index ) => (
+				<div
+					key={ index }
+					className="flex items-center justify-between gap-2"
 				>
-					<Badge
-						label={ getFormTypeLabel( formType ) }
-						size="md"
-						type="pill"
-						variant="neutral"
-						className="border-0 p-0 text-sm font-medium"
-					/>
-				</Select.Button>
+					<Tooltip
+						arrow
+						content={
+							option.slug === 'calculator'
+								? __(
+									'Select this if you need calculations in your form. For example: Loan interest calculator.',
+									'sureforms'
+								  )
+								: __(
+									'Select this if you want your form to display one question at a time, like a chat.',
+									'sureforms'
+								  )
+						}
+						placement="bottom"
+						triggers={ [ 'hover' ] }
+						variant="dark"
+						tooltipPortalId="srfm-add-new-form-container"
+						className="text-xs"
+					>
+						<Button
+							className={ cn(
+								'px-1.5 py-1 font-medium text-icon-secondary border border-solid border-border-strong flex-1 transition-colors duration-150 focus:[box-shadow:none] bg-background-secondary hover:bg-background-secondary',
+								formType === option.slug &&
+									'hover:bg-brand-background-hover-100 bg-brand-background-hover-100 border-0.5 border-solid border-border-ai-button text-icon-interactive'
+							) }
+							iconPosition="left"
+							icon={
+								option.slug === 'calculator' ? (
+									<Calculator className="size-4" />
+								) : (
+									<MessagesSquare className="size-4" />
+								)
+							}
+							size="md"
+							variant="outline"
+							onClick={ () => handleSelection( option ) }
+						>
+							{ option.label }
+						</Button>
+					</Tooltip>
+				</div>
+			) ) }
 
-				<Select.Options className="z-50 !max-w-[274px] p-1">
-					{ formTypeOptions.map( ( option, index ) =>
-						option.isAvailable ? (
-							<Select.Option
-								key={ index }
-								value={ option }
-								selected={ formType === option.slug }
-								className=""
-							>
-								<span className="whitespace-normal break-words text-sm font-normal p-1 gap-1">
-									{ option.label }
-								</span>
-							</Select.Option>
-						) : (
-							<div
-								key={ index }
-								className="flex items-center justify-between"
-							>
-								<Label
-									size="xs"
-									variant="disabled"
-									className="text-text-on-button-disabled text-sm font-normal px-2 py-1 gap-1"
-								>
-									{ option.label }
-								</Label>
-								<PremiumBadge
-									tooltipHeading={
-										option?.upgradeTooltipContent
-											?.tooltipHeadin
-									}
-									tooltipContent={
-										option?.upgradeTooltipContent
-											?.tooltipContent
-									}
-									utmMedium={
-										option?.upgradeTooltipContent?.utmMedium
-									}
-									tooltipPosition={
-										option?.upgradeTooltipContent
-											?.tooltipPosition
-									}
-								/>
-							</div>
+			{ showUpgradePopup && selectedUpgradeOption && (
+				<UpgradePopup
+					title={
+						selectedUpgradeOption.upgradeTooltipContent
+							.tooltipHeading
+					}
+					paraOne={
+						selectedUpgradeOption.upgradeTooltipContent
+							.tooltipContentTitle
+					}
+					paraTwo={
+						selectedUpgradeOption.upgradeTooltipContent
+							.tooltipContent
+					}
+					features={
+						selectedUpgradeOption.upgradeTooltipContent.features
+					}
+					buttonText={ __( 'Upgrade Now', 'sureforms' ) }
+					onclick={ () =>
+						window.open(
+							addQueryParam(
+								srfm_admin?.pricing_page_url ||
+									srfm_admin?.sureforms_pricing_page,
+								selectedUpgradeOption.upgradeTooltipContent
+									.utmMedium
+							),
+							'_blank',
+							'noreferrer'
 						)
-					) }
-				</Select.Options>
-			</Select>
+					}
+					onClose={ () => setShowUpgradePopup( false ) }
+				/>
+			) }
 		</Container.Item>
 	);
 };
 
-export default FormTypeSelectorNew;
+export default FormTypeSelector;

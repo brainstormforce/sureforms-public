@@ -54,6 +54,8 @@ module.exports = withTW( {
 				'border-error': '#FECACA',
 				'border-transparent-subtle': '#37415114',
 				'border-white': '#FFFFFF',
+				'border-ai-button': '#EA580C',
+				'border-ai-banner': '#FB923C',
 				// text
 				'text-primary': '#111827',
 				'text-secondary': '#4B5563',
