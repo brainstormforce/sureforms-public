@@ -28,7 +28,7 @@ const EmptyState = ( {
 	};
 
 	// Empty state when filters are active but no results
-	if ( ! hasActiveFilters ) {
+	if ( hasActiveFilters ) {
 		return (
 			<Container className="flex items-center justify-center p-8 bg-background-primary rounded-lg">
 				<div className="text-center max-w-md">
