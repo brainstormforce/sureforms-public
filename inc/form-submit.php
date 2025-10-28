@@ -738,17 +738,127 @@ class Form_Submit {
 		// Add the From: to the headers.
 		$headers .= self::add_from_data_in_header( $submission_data, $item, $smart_tags );
 
+		// Handle Reply-To with proper sanitization.
 		if ( isset( $item['email_reply_to'] ) && ! empty( $item['email_reply_to'] ) ) {
-			$headers .= 'Reply-To:' . esc_html( Helper::get_string_value( $smart_tags->process_smart_tags( $item['email_reply_to'], $submission_data ) ) ) . "\r\n";
+			$raw    = Helper::get_string_value(
+				$smart_tags->process_smart_tags( $item['email_reply_to'], $submission_data )
+			);
+			$parsed = self::sanitize_email_list( $raw );
+			if ( $parsed['header'] !== '' ) {
+				$headers .= 'Reply-To: ' . $parsed['header'] . "\r\n";
+			}
 		}
+
+		// Handle CC with proper sanitization.
 		if ( isset( $item['email_cc'] ) && ! empty( $item['email_cc'] ) ) {
-			$headers .= 'Cc:' . esc_html( Helper::get_string_value( $smart_tags->process_smart_tags( $item['email_cc'], $submission_data ) ) ) . "\r\n";
+			$raw    = Helper::get_string_value(
+				$smart_tags->process_smart_tags( $item['email_cc'], $submission_data )
+			);
+			$parsed = self::sanitize_email_list( $raw );
+			if ( $parsed['header'] !== '' ) {
+				$headers .= 'Cc: ' . $parsed['header'] . "\r\n";
+			}
 		}
+
+		// Handle BCC with proper sanitization.
 		if ( isset( $item['email_bcc'] ) && ! empty( $item['email_bcc'] ) ) {
-			$headers .= 'Bcc:' . esc_html( Helper::get_string_value( $smart_tags->process_smart_tags( $item['email_bcc'], $submission_data ) ) ) . "\r\n";
+			$raw    = Helper::get_string_value(
+				$smart_tags->process_smart_tags( $item['email_bcc'], $submission_data )
+			);
+			$parsed = self::sanitize_email_list( $raw );
+			if ( $parsed['header'] !== '' ) {
+				$headers .= 'Bcc: ' . $parsed['header'] . "\r\n";
+			}
 		}
 
 		return compact( 'to', 'subject', 'message', 'headers' );
+	}
+
+	/**
+	 * Parse and sanitize an email list string which may contain:
+	 * @param string $raw email addresses.
+	 * @since x.x.x
+	 * @return array<string,string> An associative array with 'plain' and 'header' keys containing sanitized email addresses.
+	 */
+	public static function sanitize_email_list( $raw ) {
+		$raw = trim( (string) $raw );
+		if ( $raw === '' ) {
+			return [
+				'plain'  => '',
+				'header' => '',
+			];
+		}
+
+		// Split safely by commas not within quotes.
+		$parts = preg_split( '/,(?=(?:[^"]*"[^"]*")*[^"]*$)/', $raw );
+
+		$plain_emails = [];
+		$header_parts = [];
+
+		foreach ( $parts as $part ) {
+			$part = trim( $part );
+			if ( $part === '' ) {
+				continue;
+			}
+
+			$name  = '';
+			$email = '';
+
+			// If contains <...>, extract name and email.
+			if ( preg_match( '/^(.*)<\s*([^>]+)\s*>$/', $part, $m ) ) {
+				$name  = trim( $m[1], " \t\n\r\0\x0B\"'" ); // Remove extra quotes/spaces.
+				$email = trim( $m[2] );
+			} else {
+				// Fallback: last token looks like an email.
+				if ( preg_match( '/([^\s]+@[^\s]+)$/', $part, $m2 ) ) {
+					$email = trim( $m2[1] );
+					// Name is everything before email (if there is).
+					$name = trim( substr( $part, 0, -strlen( $email ) ) );
+					$name = trim( $name, " \t\n\r\0\x0B\"'" );
+				} else {
+					$email = $part;
+				}
+			}
+
+			// Sanitize email.
+			if ( function_exists( 'sanitize_email' ) ) {
+				$sanitized_email = sanitize_email( $email );
+				$valid_email     = ( ! empty( $sanitized_email ) && is_email( $sanitized_email ) );
+			} else {
+				$sanitized_email = filter_var( $email, FILTER_SANITIZE_EMAIL );
+				$valid_email     = ( $sanitized_email && filter_var( $sanitized_email, FILTER_VALIDATE_EMAIL ) );
+			}
+
+			if ( ! $valid_email ) {
+				// Skip invalid address.
+				continue;
+			}
+
+			$plain_emails[] = $sanitized_email;
+
+			// Sanitize display name.
+			$display = trim( (string) $name );
+			// Remove angle brackets and control characters.
+			$display = preg_replace( '/[\\\\\/\r\n\t<>]/', ' ', $display );
+			$display = preg_replace( '/\s+/', ' ', $display );
+			$display = trim( $display );
+
+			if ( $display !== '' ) {
+				// Do not wrap name in quotes.
+				$header_parts[] = sprintf( '%s <%s>', $display, $sanitized_email );
+			} else {
+				$header_parts[] = $sanitized_email;
+			}
+		}
+
+		// De-duplicate while preserving order.
+		$plain_emails = array_values( array_unique( $plain_emails ) );
+		$header_parts = array_values( array_unique( $header_parts ) );
+
+		return [
+			'plain'  => implode( ', ', $plain_emails ),
+			'header' => implode( ', ', $header_parts ),
+		];
 	}
 
 	/**
