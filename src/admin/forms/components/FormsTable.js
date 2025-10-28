@@ -3,6 +3,7 @@ import { ChevronsUpDown, ChevronUp, ChevronDown } from 'lucide-react';
 import { Container, Table, Skeleton } from '@bsf/force-ui';
 import { cn } from '@Utils/Helpers';
 import FormsTableRow from './FormsTableRow';
+import EmptyState from './EmptyState';
 
 /**
  * Table headers configuration
@@ -66,6 +67,8 @@ const FormsTable = ( {
 	isLoading = false,
 	onSort,
 	getSortDirection,
+	hasActiveFilters = false,
+	onClearFilters,
 } ) => {
 	// Skeleton loading rows
 	const renderSkeletonRows = () =>
@@ -102,100 +105,116 @@ const FormsTable = ( {
 		) );
 
 	return (
-		<Table className="w-full" checkboxSelection>
-			<Table.Head
-				selected={ !! selectedForms.length }
-				onChangeSelection={ onToggleAll }
-				indeterminate={ indeterminate }
-				className="bg-background-tertiary"
-			>
-				{ TABLE_HEADERS.map( ( header, index ) => {
-					const sortDirection = header.sortable
-						? getSortDirection?.( header.key )
-						: null;
-					const SortIcon =
-						sortDirection === 'asc'
-							? ChevronUp
-							: sortDirection === 'desc'
-								? ChevronDown
-								: ChevronsUpDown;
+		<div>
+			<Table className="w-full" checkboxSelection>
+				<Table.Head
+					selected={ !! selectedForms.length }
+					onChangeSelection={ onToggleAll }
+					indeterminate={ indeterminate }
+					className="bg-background-tertiary"
+				>
+					{ TABLE_HEADERS.map( ( header, index ) => {
+						const sortDirection = header.sortable
+							? getSortDirection?.( header.key )
+							: null;
+						const SortIcon =
+							sortDirection === 'asc'
+								? ChevronUp
+								: sortDirection === 'desc'
+									? ChevronDown
+									: ChevronsUpDown;
 
-					const content = (
-						<Container
-							align="center"
-							className="gap-2"
-							justify={
-								header.align === 'right'
-									? 'end'
-									: header.align === 'center'
-										? 'center'
-										: 'start'
-							}
-						>
-							{ header.label }
-							{ header.sortable && (
-								<SortIcon
-									className={ cn(
-										'w-4 h-4',
-										sortDirection
-											? 'text-text-primary'
-											: 'text-text-tertiary'
-									) }
-								/>
-							) }
-						</Container>
-					);
+						const content = (
+							<Container
+								align="center"
+								className="gap-2"
+								justify={
+									header.align === 'right'
+										? 'end'
+										: header.align === 'center'
+											? 'center'
+											: 'start'
+								}
+							>
+								{ header.label }
+								{ header.sortable && (
+									<SortIcon
+										className={ cn(
+											'w-4 h-4',
+											sortDirection
+												? 'text-text-primary'
+												: 'text-text-tertiary'
+										) }
+									/>
+								) }
+							</Container>
+						);
 
-					return (
-						<Table.HeadCell
-							key={ index }
-							style={ { width: header.width } }
-						>
-							{ header.sortable ? (
-								<div
-									role="button"
-									tabIndex={ 0 }
-									className="cursor-pointer select-none"
-									onClick={ () => onSort?.( header.key ) }
-									onKeyDown={ ( e ) => {
-										if (
-											e.key === 'Enter' ||
-											e.key === ' '
-										) {
-											e.preventDefault();
-											onSort?.( header.key );
-										}
-									} }
-								>
-									{ content }
-								</div>
-							) : (
-								content
-							) }
-						</Table.HeadCell>
-					);
-				} ) }
-			</Table.Head>
+						return (
+							<Table.HeadCell
+								key={ index }
+								style={ { width: header.width } }
+							>
+								{ header.sortable ? (
+									<div
+										role="button"
+										tabIndex={ 0 }
+										className="cursor-pointer select-none"
+										onClick={ () => onSort?.( header.key ) }
+										onKeyDown={ ( e ) => {
+											if (
+												e.key === 'Enter' ||
+												e.key === ' '
+											) {
+												e.preventDefault();
+												onSort?.( header.key );
+											}
+										} }
+									>
+										{ content }
+									</div>
+								) : (
+									content
+								) }
+							</Table.HeadCell>
+						);
+					} ) }
+				</Table.Head>
 
-			<Table.Body>
-				{ isLoading
-					? renderSkeletonRows()
-					: forms.map( ( form ) => (
-						<FormsTableRow
-							key={ form.id }
-							form={ form }
-							isSelected={ selectedForms.includes( form.id ) }
-							onChangeSelection={ ( selected ) =>
-								onChangeRowSelection( form.id, selected )
-							}
-							onEdit={ onEdit }
-							onTrash={ onTrash }
-							onRestore={ onRestore }
-							onDelete={ onDelete }
-						/>
-					  ) ) }
-			</Table.Body>
-		</Table>
+				<Table.Body>
+					{ isLoading
+						? renderSkeletonRows()
+						: forms.map( ( form ) => (
+							<FormsTableRow
+								key={ form.id }
+								form={ form }
+								isSelected={ selectedForms.includes(
+									form.id
+								) }
+								onChangeSelection={ ( selected ) =>
+									onChangeRowSelection(
+										form.id,
+										selected
+									)
+								}
+								onEdit={ onEdit }
+								onTrash={ onTrash }
+								onRestore={ onRestore }
+								onDelete={ onDelete }
+							/>
+						  ) ) }
+				</Table.Body>
+			</Table>
+
+			{ forms.length === 0 && hasActiveFilters && ! isLoading && (
+				<div className="px-6 py-4">
+					<EmptyState
+						hasActiveFilters={ true }
+						onClearFilters={ onClearFilters }
+					/>
+				</div>
+			) }
+		</div>
 	);
 };
 

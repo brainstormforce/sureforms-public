@@ -260,18 +260,6 @@ const FormsManager = () => {
 		);
 	}
 
-	// Empty state for no forms (only when not loading)
-	if ( forms.length === 0 && ! hasActiveFilters && ! isLoading ) {
-		return (
-			<Container className="p-6 bg-background-secondary rounded-lg">
-				<FormsHeader />
-				<div className="mt-6">
-					<EmptyState onImportSuccess={ handleImportSuccess } />
-				</div>
-			</Container>
-		);
-	}
-
 	return (
 		<Container className="h-full" direction="column" gap={ 0 }>
 			{ /* Header */ }
@@ -284,110 +272,97 @@ const FormsManager = () => {
 					gap="2xl"
 				>
 					{ /* Content */ }
-					{ forms.length === 0 && hasActiveFilters && ! isLoading ? (
-						<Container
-							direction="column"
-							className="w-full p-6 gap-4 rounded-xl bg-background-primary border-0.5 border-solid border-border-subtle shadow-sm-blur-2"
-						>
-							<FormsHeader
-								searchQuery={ filters.search }
-								onSearchChange={ handleSearch }
-								selectedForms={ selectedForms }
-								onBulkTrash={ handleBulkTrash }
-								onBulkExport={ handleBulkExport }
-								statusFilter={ filters.status }
-								onStatusFilterChange={ handleStatusFilter }
-								selectedDates={ selectedDates }
-								onDateChange={ handleDateChange }
-							/>
-							<div className="border-t border-border-subtle pt-6">
+					{ forms.length === 0 &&
+					! hasActiveFilters &&
+					! isLoading ? (
+							<div className="p-6 bg-background-secondary rounded-lg">
 								<EmptyState
-									hasActiveFilters={ true }
-									onClearFilters={ () => {
-										setFilters( {
-											search: '',
-											status: 'any',
-											orderby: 'date',
-											order: 'desc',
-										} );
-										setSelectedDates( {
-											from: null,
-											to: null,
-										} );
-										setPagination( ( prev ) => ( {
-											...prev,
-											currentPage: 1,
-										} ) );
-									} }
+									onImportSuccess={ handleImportSuccess }
 								/>
 							</div>
-						</Container>
-					) : (
-						<Container
-							direction="column"
-							className="w-full rounded-xl bg-background-primary border-0.5 border-solid border-border-subtle shadow-sm-blur-2 overflow-hidden p-4 gap-2"
-						>
-							<Container.Item className="p-1">
-								<FormsHeader
-									searchQuery={ filters.search }
-									onSearchChange={ handleSearch }
-									selectedForms={ selectedForms }
-									onBulkTrash={ handleBulkTrash }
-									onBulkExport={ handleBulkExport }
-									onImportSuccess={ handleImportSuccess }
-									statusFilter={ filters.status }
-									onStatusFilterChange={ handleStatusFilter }
-									selectedDates={ selectedDates }
-									onDateChange={ handleDateChange }
-								/>
-							</Container.Item>
-
-							<Container.Item className="border-t border-border-subtle">
-								<FormsTable
-									forms={ forms }
-									selectedForms={ selectedForms }
-									onToggleAll={ handleToggleAll }
-									onChangeRowSelection={ handleRowSelection }
-									indeterminate={ isIndeterminate }
-									onEdit={ handleFormEdit }
-									onTrash={ handleFormTrash }
-									onRestore={ handleFormRestore }
-									onDelete={ handleFormDelete }
-									isLoading={ isLoading }
-									onSort={ handleSort }
-									getSortDirection={ getSortDirection }
-								/>
-							</Container.Item>
-
-							{ paginationData.totalPages > 1 && (
-								<Container.Item className="border-t border-border-subtle px-6 py-4">
-									<FormsPagination
-										currentPage={
-											paginationData.currentPage
-										}
-										totalPages={ paginationData.totalPages }
-										entriesPerPage={
-											paginationData.perPage
-										}
-										onPageChange={ handlePageChange }
-										onEntriesPerPageChange={
-											handlePerPageChange
-										}
-										onNextPage={ () =>
-											handlePageChange(
-												paginationData.currentPage + 1
-											)
-										}
-										onPreviousPage={ () =>
-											handlePageChange(
-												paginationData.currentPage - 1
-											)
-										}
+						) : (
+							<Container
+								direction="column"
+								className="w-full rounded-xl bg-background-primary border-0.5 border-solid border-border-subtle shadow-sm-blur-2 overflow-hidden p-4 gap-2"
+							>
+								<Container.Item className="p-1">
+									<FormsHeader
+										searchQuery={ filters.search }
+										onSearchChange={ handleSearch }
+										selectedForms={ selectedForms }
+										onBulkTrash={ handleBulkTrash }
+										onBulkExport={ handleBulkExport }
+										onImportSuccess={ handleImportSuccess }
+										statusFilter={ filters.status }
+										onStatusFilterChange={ handleStatusFilter }
+										selectedDates={ selectedDates }
+										onDateChange={ handleDateChange }
 									/>
 								</Container.Item>
-							) }
-						</Container>
-					) }
+
+								<Container.Item className="border-t border-border-subtle">
+									<FormsTable
+										forms={ forms }
+										selectedForms={ selectedForms }
+										onToggleAll={ handleToggleAll }
+										onChangeRowSelection={ handleRowSelection }
+										indeterminate={ isIndeterminate }
+										onEdit={ handleFormEdit }
+										onTrash={ handleFormTrash }
+										onRestore={ handleFormRestore }
+										onDelete={ handleFormDelete }
+										isLoading={ isLoading }
+										onSort={ handleSort }
+										getSortDirection={ getSortDirection }
+										hasActiveFilters={ hasActiveFilters }
+										onClearFilters={ () => {
+											setFilters( {
+												search: '',
+												status: 'any',
+												orderby: 'date',
+												order: 'desc',
+											} );
+											setSelectedDates( {
+												from: null,
+												to: null,
+											} );
+											setPagination( ( prev ) => ( {
+												...prev,
+												currentPage: 1,
+											} ) );
+										} }
+									/>
+								</Container.Item>
+
+								{ paginationData.totalPages > 1 && (
+									<Container.Item className="border-t border-border-subtle px-6 py-4">
+										<FormsPagination
+											currentPage={
+												paginationData.currentPage
+											}
+											totalPages={ paginationData.totalPages }
+											entriesPerPage={
+												paginationData.perPage
+											}
+											onPageChange={ handlePageChange }
+											onEntriesPerPageChange={
+												handlePerPageChange
+											}
+											onNextPage={ () =>
+												handlePageChange(
+													paginationData.currentPage + 1
+												)
+											}
+											onPreviousPage={ () =>
+												handlePageChange(
+													paginationData.currentPage - 1
+												)
+											}
+										/>
+									</Container.Item>
+								) }
+							</Container>
+						) }
 				</Container>
 			</Container.Item>
 

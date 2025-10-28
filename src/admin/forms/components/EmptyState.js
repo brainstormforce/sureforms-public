@@ -1,7 +1,7 @@
 import { __ } from '@wordpress/i18n';
 import { useState } from '@wordpress/element';
 import { Button, Text, Container } from '@bsf/force-ui';
-import { Plus, Search, Dot } from 'lucide-react';
+import { Plus, Dot } from 'lucide-react';
 import noFormsImage from '../no-forms.svg';
 import ImportForm from './ImportForm';
 
@@ -34,21 +34,22 @@ const EmptyState = ( {
 				<div className="text-center max-w-md">
 					<Text
 						size={ 18 }
-						lineHeight={ 26 }
+						lineHeight={ 28 }
 						weight={ 600 }
 						color="primary"
 						className="mb-2"
 					>
-						{ __( 'No forms found', 'sureforms' ) }
+						{ __( 'No results to show here', 'sureforms' ) }
 					</Text>
 					<Text
-						size={ 14 }
-						lineHeight={ 20 }
+						size={ 16 }
+						lineHeight={ 24 }
+						weight={ 400 }
 						color="secondary"
 						className="mb-4"
 					>
 						{ __(
-							'No forms match your current filters. Try adjusting your search terms or clearing the filters.',
+							"We couldn't find any records matching your filters. Try adjusting the filters or resetting them to see all results.",
 							'sureforms'
 						) }
 					</Text>
@@ -57,7 +58,7 @@ const EmptyState = ( {
 						size="sm"
 						onClick={ onClearFilters }
 					>
-						{ __( 'Clear Filters', 'sureforms' ) }
+						{ __( 'Clear Filter', 'sureforms' ) }
 					</Button>
 				</div>
 			</Container>
@@ -66,7 +67,7 @@ const EmptyState = ( {
 
 	// Empty state when no forms exist at all
 	return (
-		<Container className="flex bg-background-primary rounded-xl">
+		<Container className="flex bg-background-primary rounded-xl p-4 gap-2">
 			<Container className="p-2 rounded-lg bg-background-secondary gap-2 w-full">
 				<Container className="p-6 gap-6 rounded-md bg-background-primary w-full">
 					<Container>
