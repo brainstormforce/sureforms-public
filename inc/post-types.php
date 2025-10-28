@@ -199,7 +199,7 @@ class Post_Types {
 				'has_archive'       => true,
 				'show_ui'           => true,
 				'supports'          => [ 'title', 'author', 'editor', 'custom-fields' ],
-				'show_in_menu'      => 'sureforms_menu',
+				'show_in_menu'      => false,
 				'show_in_nav_menus' => true,
 				'capabilities'      => [
 					'edit_post'          => 'manage_options',

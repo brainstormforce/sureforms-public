@@ -780,7 +780,6 @@ class Admin {
 
 		$file_prefix = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? '' : '.min';
 		$dir_name    = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? 'unminified' : 'minified';
-		$js_uri      = SRFM_URL . 'assets/js/' . $dir_name . '/';
 		$css_uri     = SRFM_URL . 'assets/css/' . $dir_name . '/';
 		$is_rtl      = is_rtl();
 		$rtl         = $is_rtl ? '-rtl' : '';
@@ -899,7 +898,7 @@ class Admin {
 		// Enqueue scripts for the forms page.
 		if ( $is_screen_sureforms_forms ) {
 			$asset_handle = '-forms';
-			
+
 			$script_asset_path = SRFM_DIR . 'assets/build/forms.asset.php';
 			$script_info       = file_exists( $script_asset_path )
 				? include $script_asset_path
@@ -907,7 +906,7 @@ class Admin {
 					'dependencies' => [],
 					'version'      => SRFM_VER,
 				];
-			
+
 			wp_enqueue_script( SRFM_SLUG . $asset_handle, SRFM_URL . 'assets/build/forms.js', $script_info['dependencies'], SRFM_VER, true );
 			wp_localize_script(
 				SRFM_SLUG . $asset_handle,
@@ -962,22 +961,6 @@ class Admin {
 		// Admin Submenu Styles.
 		wp_enqueue_style( SRFM_SLUG . '-admin', $css_uri . 'backend/admin' . $file_prefix . $rtl . '.css', [], SRFM_VER );
 
-		if ( 'edit-' . SRFM_FORMS_POST_TYPE === $current_screen->id ) {
-			$asset_handle = 'page_header';
-
-			$script_asset_path = SRFM_DIR . 'assets/build/' . $asset_handle . '.asset.php';
-			$script_info       = file_exists( $script_asset_path )
-			? include $script_asset_path
-			: [
-				'dependencies' => [],
-				'version'      => SRFM_VER,
-			];
-			wp_enqueue_script( SRFM_SLUG . '-form-page-header', SRFM_URL . 'assets/build/' . $asset_handle . '.js', $script_info['dependencies'], SRFM_VER, true );
-			wp_enqueue_style( SRFM_SLUG . '-form-archive-styles', $css_uri . 'form-archive-styles' . $file_prefix . $rtl . '.css', [], SRFM_VER );
-
-			$script_translations_handlers[] = SRFM_SLUG . '-form-page-header';
-		}
-
 		if ( $is_screen_sureforms_form_settings ) {
 			$asset_handle = 'settings';
 
@@ -997,34 +980,6 @@ class Admin {
 			);
 
 			$script_translations_handlers[] = SRFM_SLUG . '-settings';
-		}
-		if ( 'edit-' . SRFM_FORMS_POST_TYPE === $current_screen->id ) {
-			wp_enqueue_script( SRFM_SLUG . '-form-archive', $js_uri . 'form-archive' . $file_prefix . '.js', [], SRFM_VER, true );
-			wp_enqueue_script( SRFM_SLUG . '-export', $js_uri . 'export' . $file_prefix . '.js', [ 'wp-i18n' ], SRFM_VER, true );
-			wp_localize_script(
-				SRFM_SLUG . '-export',
-				SRFM_SLUG . '_export',
-				[
-					'ajaxurl'           => admin_url( 'admin-ajax.php' ),
-					'srfm_export_nonce' => wp_create_nonce( 'export_form_nonce' ),
-					'site_url'          => get_site_url(),
-					'import_form_nonce' => Helper::current_user_can() ? wp_create_nonce( 'wp_rest' ) : '',
-					'import_btn_string' => __( 'Import Form', 'sureforms' ),
-				]
-			);
-
-			wp_enqueue_script( SRFM_SLUG . '-backend', $js_uri . 'backend' . $file_prefix . '.js', [], SRFM_VER, true );
-			wp_localize_script(
-				SRFM_SLUG . '-backend',
-				SRFM_SLUG . '_backend',
-				[
-					'site_url' => get_site_url(),
-				]
-			);
-
-			$script_translations_handlers[] = SRFM_SLUG . '-form-archive';
-			$script_translations_handlers[] = SRFM_SLUG . '-export';
-			$script_translations_handlers[] = SRFM_SLUG . '-backend';
 		}
 
 		if ( $is_screen_add_new_form ) {
