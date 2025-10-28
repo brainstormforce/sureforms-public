@@ -1,8 +1,4 @@
-import {
-	useParams,
-	Link,
-	useSearchParams,
-} from 'react-router-dom';
+import { useParams, Link, useSearchParams } from 'react-router-dom';
 import { __, sprintf } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
 import { useMemo, useEffect, useState } from '@wordpress/element';
@@ -184,9 +180,7 @@ const EntryDetailPage = () => {
 							<div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 								{ /* Left Column */ }
 								<div className="lg:col-span-2 space-y-6">
-									<EntryDataSection
-										entryData={ entryData }
-									/>
+									<EntryDataSection entryData={ entryData } />
 									<SubmissionInfoSection
 										entryData={ entryData }
 									/>

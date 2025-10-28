@@ -119,7 +119,9 @@ const EntryLogsSection = ( { entryId, onConfirmation } ) => {
 													weight={ 400 }
 													color="primary"
 													dangerouslySetInnerHTML={ {
-														__html: domPurify.sanitize( message ),
+														__html: domPurify.sanitize(
+															message
+														),
 													} }
 												/>
 											)
