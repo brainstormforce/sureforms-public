@@ -744,7 +744,7 @@ class Form_Submit {
 				$smart_tags->process_smart_tags( $item['email_reply_to'], $submission_data )
 			);
 			$parsed = self::sanitize_email_list( $raw );
-			if ( $parsed['header'] !== '' ) {
+			if ( '' !== $parsed['header'] ) {
 				$headers .= 'Reply-To: ' . $parsed['header'] . "\r\n";
 			}
 		}
@@ -755,7 +755,7 @@ class Form_Submit {
 				$smart_tags->process_smart_tags( $item['email_cc'], $submission_data )
 			);
 			$parsed = self::sanitize_email_list( $raw );
-			if ( $parsed['header'] !== '' ) {
+			if ( '' !== $parsed['header'] ) {
 				$headers .= 'Cc: ' . $parsed['header'] . "\r\n";
 			}
 		}
@@ -766,7 +766,7 @@ class Form_Submit {
 				$smart_tags->process_smart_tags( $item['email_bcc'], $submission_data )
 			);
 			$parsed = self::sanitize_email_list( $raw );
-			if ( $parsed['header'] !== '' ) {
+			if ( '' !== $parsed['header'] ) {
 				$headers .= 'Bcc: ' . $parsed['header'] . "\r\n";
 			}
 		}
@@ -776,13 +776,14 @@ class Form_Submit {
 
 	/**
 	 * Parse and sanitize an email list string which may contain:
+	 *
 	 * @param string $raw email addresses.
 	 * @since x.x.x
 	 * @return array<string,string> An associative array with 'plain' and 'header' keys containing sanitized email addresses.
 	 */
 	public static function sanitize_email_list( $raw ) {
-		$raw = trim( (string) $raw );
-		if ( $raw === '' ) {
+		$raw = trim( Helper::get_string_value( $raw ) );
+		if ( '' === $raw ) {
 			return [
 				'plain'  => '',
 				'header' => '',
@@ -791,13 +792,14 @@ class Form_Submit {
 
 		// Split safely by commas not within quotes.
 		$parts = preg_split( '/,(?=(?:[^"]*"[^"]*")*[^"]*$)/', $raw );
+		$parts = Helper::get_array_value( $parts );
 
 		$plain_emails = [];
 		$header_parts = [];
 
 		foreach ( $parts as $part ) {
 			$part = trim( $part );
-			if ( $part === '' ) {
+			if ( '' === $part ) {
 				continue;
 			}
 
@@ -837,13 +839,13 @@ class Form_Submit {
 			$plain_emails[] = $sanitized_email;
 
 			// Sanitize display name.
-			$display = trim( (string) $name );
+			$display = trim( Helper::get_string_value( $name ) );
 			// Remove angle brackets and control characters.
 			$display = preg_replace( '/[\\\\\/\r\n\t<>]/', ' ', $display );
-			$display = preg_replace( '/\s+/', ' ', $display );
-			$display = trim( $display );
+			$display = preg_replace( '/\s+/', ' ', Helper::get_string_value( $display ) );
+			$display = trim( Helper::get_string_value( $display ) );
 
-			if ( $display !== '' ) {
+			if ( '' !== $display ) {
 				// Do not wrap name in quotes.
 				$header_parts[] = sprintf( '%s <%s>', $display, $sanitized_email );
 			} else {
