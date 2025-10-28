@@ -282,7 +282,7 @@ class Frontend_Assets {
 		}
 
 		if ( isset( $block['blockName'] ) ) {
-			$attr = is_array( $block['attrs'] ) ? $block['attrs'] : [];
+			$attr = isset( $block['attrs'] ) && is_array( $block['attrs'] ) ? $block['attrs'] : [];
 
 			self::enqueue_srfm_script( $block['blockName'], $attr );
 		}
