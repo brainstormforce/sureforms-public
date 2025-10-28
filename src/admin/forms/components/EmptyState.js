@@ -32,9 +32,6 @@ const EmptyState = ( {
 		return (
 			<Container className="flex items-center justify-center p-8 bg-background-primary rounded-lg">
 				<div className="text-center max-w-md">
-					<div className="mb-4">
-						<Search className="w-12 h-12 mx-auto text-text-tertiary" />
-					</div>
 					<Text
 						size={ 18 }
 						lineHeight={ 26 }
@@ -56,7 +53,7 @@ const EmptyState = ( {
 						) }
 					</Text>
 					<Button
-						variant="secondary"
+						variant="outline"
 						size="sm"
 						onClick={ onClearFilters }
 					>
