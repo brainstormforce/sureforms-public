@@ -827,7 +827,7 @@ class Rest_Api {
 						'date_to'   => [
 							'sanitize_callback' => 'sanitize_text_field',
 							'default'           => '',
-						]
+						],
 					],
 				],
 				// Forms listing endpoint.
