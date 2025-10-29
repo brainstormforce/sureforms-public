@@ -1,7 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import ICONS from '../components/icons.js';
 import { Button, Container, Label } from '@bsf/force-ui';
-import { applyFilters } from '@wordpress/hooks';
 import { Zap, Check } from 'lucide-react';
 
 const UpgradePopup = ( {

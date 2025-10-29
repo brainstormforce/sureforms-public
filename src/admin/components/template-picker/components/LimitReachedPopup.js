@@ -96,7 +96,7 @@ const LimitReachedPopup = ( {
 
 					{ ! is_pro_active ? (
 						<hr className="border-b-5 border-x-0 border-t-0 w-full border-solid border-border-subtle" />
-					) : (''
+					) : ( ''
 					) }
 
 					{ ! is_pro_active && ! deactivatedLicense && ! ActivateLicenseButton ? (
