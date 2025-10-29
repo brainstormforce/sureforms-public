@@ -1038,7 +1038,7 @@ class Helper {
 
 			// Match "Name <email>".
 			if ( preg_match( '/^(.*)<(.+)>$/', $part, $matches ) ) {
-				$name  = trim( $matches[1], "\" \t\n\r\0\x0B" ); // trim quotes
+				$name  = trim( $matches[1], "\" \t\n\r\0\x0B" ); // trim quotes.
 				$email = sanitize_email( trim( $matches[2] ) );
 
 				if ( is_email( $email ) ) {
