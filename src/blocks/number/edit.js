@@ -319,12 +319,6 @@ const SureformInput = ( props ) => {
 							) }
 						</p>
 					) }
-					<p className="components-base-control__help">
-						{ __(
-							'Note: Maximum value should always be greater than minimum value',
-							'sureforms'
-						) }
-					</p>
 				</>
 			),
 		},

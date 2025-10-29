@@ -151,7 +151,7 @@ const Edit = ( props ) => {
 						showControlHeader={ false }
 					/>
 					<Range
-						label={ __( 'Rows', 'sureforms' ) }
+						label={ __( 'Text Area Height', 'sureforms' ) }
 						value={ rows }
 						displayUnit={ false }
 						min={ 1 }

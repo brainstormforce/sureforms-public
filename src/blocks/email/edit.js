@@ -117,7 +117,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 							) }
 							<ToggleControl
 								label={ __(
-									'Validate as Unique',
+									'Unique Entry',
 									'sureforms'
 								) }
 								checked={ isUnique }
