@@ -51,7 +51,6 @@ class Gutenberg_Hooks {
 		add_filter( 'block_categories_all', [ $this, 'register_block_categories' ], 10, 1 );
 		add_filter( 'allowed_block_types_all', [ $this, 'disable_forms_wrapper_block' ], 10, 2 );
 		add_action( 'save_post_sureforms_form', [ $this, 'update_field_slug' ], 10, 2 );
-		add_action( 'rest_after_insert_sureforms_form', [ $this, 'update_block_config_on_rest_save' ], 10, 2 );
 		add_action( 'load-post.php', [ $this, 'maybe_migrate_form_stylings' ] );
 	}
 
@@ -256,11 +255,6 @@ class Gutenberg_Hooks {
 	 * @return void
 	 */
 	public function update_field_slug( $post_id, $post ) {
-		// Prevent infinite loops by checking if we're already inside a save operation.
-		if ( defined( 'SRFM_SAVING_POST' ) && SRFM_SAVING_POST ) {
-			return;
-		}
-
 		$blocks = parse_blocks( $post->post_content );
 
 		if ( empty( $blocks ) ) {
@@ -277,22 +271,14 @@ class Gutenberg_Hooks {
 
 		[ $blocks, $slugs, $updated ] = Helper::process_blocks( $blocks, $slugs, $updated );
 
-		// Always update block config, even if slugs weren't updated.
-		// This ensures field settings (like "Required") are always saved to the database.
-		// Set flag to prevent infinite loops.
-		if ( ! defined( 'SRFM_SAVING_POST' ) ) {
-			define( 'SRFM_SAVING_POST', true );
-		}
-
-		// Process and store block configurations for form fields.
-		// This must be called before wp_update_post to ensure config is saved.
-		Field_Validation::add_block_config( $blocks, $post_id );
-
 		if ( ! $updated ) {
 			return;
 		}
 
 		$post_content = addslashes( serialize_blocks( $blocks ) );
+
+		// Process and store block configurations for form fields.
+		Field_Validation::add_block_config( $blocks, $post_id );
 
 		wp_update_post(
 			[
@@ -300,46 +286,6 @@ class Gutenberg_Hooks {
 				'post_content' => $post_content,
 			]
 		);
-	}
-
-	/**
-	 * Update block configuration when form is saved via REST API (Gutenberg editor).
-	 *
-	 * This ensures that field configuration changes (like "Required" status) are
-	 * immediately persisted to the database when the form is saved in the block editor.
-	 *
-	 * @param \WP_Post $post     Inserted or updated post object.
-	 * @param bool     $update   Whether this is an existing post being updated.
-	 * @since x.x.x
-	 * @return void
-	 */
-	public function update_block_config_on_rest_save( $post, $update ) {
-		// Acknowledge the $update parameter to avoid unused variable warning.
-		$update = $update;
-
-		// Prevent infinite loops.
-		if ( defined( 'SRFM_SAVING_POST' ) && SRFM_SAVING_POST ) {
-			return;
-		}
-
-		// Validate post object.
-		if ( ! ( $post instanceof \WP_Post ) || empty( $post->post_content ) ) {
-			return;
-		}
-
-		// Set flag to prevent infinite loops.
-		if ( ! defined( 'SRFM_SAVING_POST' ) ) {
-			define( 'SRFM_SAVING_POST', true );
-		}
-
-		// Parse blocks from the post content.
-		if ( function_exists( 'parse_blocks' ) ) {
-			$blocks = parse_blocks( $post->post_content );
-			if ( is_array( $blocks ) && ! empty( $blocks ) ) {
-				// Update block configuration in the database.
-				Field_Validation::add_block_config( $blocks, $post->ID );
-			}
-		}
 	}
 
 	/**

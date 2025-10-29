@@ -31,11 +31,6 @@ class Field_Validation {
 	 * @since 1.12.2
 	 */
 	public static function add_block_config( $blocks, $form_id ) {
-		// Validate form ID to ensure it's a positive integer.
-		if ( ! is_int( $form_id ) || $form_id <= 0 ) {
-			return;
-		}
-
 		// Initialize array to store processed block configurations.
 		$block_config = [];
 
@@ -65,19 +60,10 @@ class Field_Validation {
 			}
 		}
 
-		// Always delete the existing meta first to ensure clean overwrites.
-		// This prevents stale data from persisting due to WordPress meta caching.
-		delete_post_meta( $form_id, '_srfm_block_config' );
-
-		// Clear object cache to force WordPress to refresh the meta cache.
-		wp_cache_delete( $form_id, 'post_meta' );
-
-		// Update meta with the latest configuration.
-		// Save even if empty to ensure the meta key exists and is up to date.
-		update_post_meta( $form_id, '_srfm_block_config', $block_config );
-
-		// Force another cache clear after update to ensure consistency.
-		wp_cache_delete( $form_id, 'post_meta' );
+		// Only update meta if we have processed configurations.
+		if ( ! empty( $block_config ) ) {
+			update_post_meta( $form_id, '_srfm_block_config', $block_config );
+		}
 	}
 
 	/**
