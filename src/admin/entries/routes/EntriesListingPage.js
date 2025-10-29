@@ -428,6 +428,13 @@ const EntriesListingPage = () => {
 		);
 	};
 
+	const handleClearFilters = () => {
+		setStatusFilter( '' );
+		setFormFilter( '' );
+		setSearchQuery( '' );
+		setDateRange( { from: null, to: null } );
+	};
+
 	if (
 		! hasActiveFilters &&
 		entries.length === 0 &&
@@ -468,6 +475,8 @@ const EntriesListingPage = () => {
 								onMarkAsRead={ handleMarkAsRead }
 								onMarkAsUnread={ handleMarkAsUnread }
 								onBulkRestore={ handleBulkRestore }
+								onClearFilters={ handleClearFilters }
+								hasActiveFilters={ hasActiveFilters }
 							/>
 						</div>
 					</div>

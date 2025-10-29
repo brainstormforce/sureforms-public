@@ -41,6 +41,8 @@ import { STATUS_OPTIONS } from '../constants';
  * @param {Function} props.onMarkAsRead         - Handler for mark as read action
  * @param {Function} props.onMarkAsUnread       - Handler for mark as unread action
  * @param {Function} props.onBulkRestore        - Handler for bulk restore action
+ * @param {Function} props.onClearFilters       - Handler for clearing all filters
+ * @param {boolean}  props.hasActiveFilters     - Whether any filters are currently active
  */
 const EntriesFilters = ( {
 	statusFilter,
@@ -58,6 +60,8 @@ const EntriesFilters = ( {
 	onMarkAsRead,
 	onMarkAsUnread,
 	onBulkRestore,
+	onClearFilters,
+	hasActiveFilters = false,
 } ) => {
 	const [ openSendNotificationModal, setOpenSendNotificationModal ] =
 		useState( false );
@@ -159,6 +163,21 @@ const EntriesFilters = ( {
 				>
 					{ __( 'Export', 'sureforms' ) }
 				</Button>
+
+				{ /* Clear Filters button - shown when filters are active */ }
+				{ hasActiveFilters && ! hasSelectedEntries && (
+					<Button
+						variant="outline"
+						size="sm"
+						onClick={ onClearFilters }
+						icon={ <X className="w-4 h-4" /> }
+						iconPosition="left"
+						className="min-w-fit"
+						destructive
+					>
+						{ __( 'Clear Filters', 'sureforms' ) }
+					</Button>
+				) }
 
 				{ /* Show filters when no items are selected */ }
 				{ ! hasSelectedEntries && (
