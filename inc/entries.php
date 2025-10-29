@@ -41,7 +41,8 @@ class Entries {
 	 *     @type int          $form_id     Form ID to filter entries. Default 0 (all forms).
 	 *     @type string       $status      Entry status: 'all', 'read', 'unread', 'trash'. Default 'all'.
 	 *     @type string       $search      Search term to filter entries by entry ID. Default empty.
-	 *     @type string       $month       Month filter in YYYYMM format. Default empty.
+	 *     @type string       $date_from   Start date for filtering entries (YYYY-MM-DD format). Default empty.
+	 *     @type string       $date_to     End date for filtering entries (YYYY-MM-DD format). Default empty.
 	 *     @type string       $orderby     Column to order by. Default 'created_at'.
 	 *     @type string       $order       Sort direction: 'ASC' or 'DESC'. Default 'DESC'.
 	 *     @type int          $per_page    Number of entries per page. Default 20.
@@ -56,6 +57,7 @@ class Entries {
 	 *     @type int          $per_page     Number of entries per page.
 	 *     @type int          $current_page Current page number.
 	 *     @type int          $total_pages  Total number of pages.
+	 *     @type bool         $emptyTrash   Whether the trash is empty (true) or contains items (false).
 	 * }
 	 */
 	public static function get_entries( $args = [] ) {
@@ -63,7 +65,8 @@ class Entries {
 			'form_id'   => 0,
 			'status'    => 'all',
 			'search'    => '',
-			'month'     => '',
+			'date_from' => '',
+			'date_to'   => '',
 			'orderby'   => 'created_at',
 			'order'     => 'DESC',
 			'per_page'  => 20,
@@ -71,6 +74,11 @@ class Entries {
 			'entry_ids' => [],
 		];
 
+		/**
+		 * Parsed and sanitized arguments for the entries query.
+		 *
+		 * @var array{form_id: int, status: string, search: string, date_from: string, date_to: string, orderby: string, order: string, per_page: int, page: int, entry_ids: array<int>} $args
+		 */
 		$args = wp_parse_args( $args, $defaults );
 
 		// Build where conditions.
@@ -94,12 +102,26 @@ class Entries {
 			]
 		);
 
+		// Check if trash is empty.
+		$trash_count = EntriesTable::get_instance()->get_total_count(
+			[
+				[
+					[
+						'key'     => 'status',
+						'compare' => '=',
+						'value'   => 'trash',
+					],
+				],
+			]
+		);
+
 		return [
 			'entries'      => $entries,
 			'total'        => $total,
 			'per_page'     => absint( $args['per_page'] ),
 			'current_page' => absint( $args['page'] ),
 			'total_pages'  => ceil( $total / absint( $args['per_page'] ) ),
+			'emptyTrash'   => 0 === $trash_count,
 		];
 	}
 
@@ -223,7 +245,8 @@ class Entries {
 	 *     @type int            $form_id   Form ID to export all entries from.
 	 *     @type string         $status    Entry status filter.
 	 *     @type string         $search    Search term filter.
-	 *     @type string         $month     Month filter.
+	 *     @type string         $date_from Start date for filtering entries (YYYY-MM-DD format).
+	 *     @type string         $date_to   End date for filtering entries (YYYY-MM-DD format).
 	 * }
 	 *
 	 * @since x.x.x
@@ -241,9 +264,15 @@ class Entries {
 			'form_id'   => 0,
 			'status'    => 'all',
 			'search'    => '',
-			'month'     => '',
+			'date_from' => '',
+			'date_to'   => '',
 		];
 
+		/**
+		 * Parsed and sanitized arguments for the export operation.
+		 *
+		 * @var array{entry_ids: int|array<int>, form_id: int, status: string, search: string, date_from: string, date_to: string} $args
+		 */
 		$args = wp_parse_args( $args, $defaults );
 
 		// Get entry IDs to export.
@@ -259,7 +288,12 @@ class Entries {
 			);
 			$entry_ids        = array_map( 'absint', array_column( $all_entries, 'ID' ) );
 		} else {
-			$entry_ids = is_array( $args['entry_ids'] ) ? array_map( 'absint', $args['entry_ids'] ) : [ absint( $args['entry_ids'] ) ];
+			/**
+			 * Entry IDs converted to array of integers.
+			 *
+			 * @var array<int> $entry_ids
+			 */
+			$entry_ids = is_array( $args['entry_ids'] ) ? array_map( 'absint', $args['entry_ids'] ) : [ absint( (int) $args['entry_ids'] ) ];
 		}
 
 		if ( empty( $entry_ids ) ) {
@@ -386,7 +420,7 @@ class Entries {
 	/**
 	 * Build where conditions for entry queries.
 	 *
-	 * @param array<string,mixed> $args Query arguments.
+	 * @param array<string, int|string|array<int>> $args Query arguments.
 	 *
 	 * @since x.x.x
 	 * @return array<mixed> Where conditions array.
@@ -438,25 +472,28 @@ class Entries {
 			];
 		}
 
-		// Filter by month.
-		if ( ! empty( $args['month'] ) && 'all' !== $args['month'] ) {
-			$month = Helper::get_string_value( $args['month'] );
-			if ( strlen( $month ) === 6 ) {
-				$year  = substr( $month, 0, 4 );
-				$month = substr( $month, 4, 2 );
+		// Filter by date range.
+		if ( ! empty( $args['date_from'] ) || ! empty( $args['date_to'] ) ) {
+			$date_conditions = [];
 
-				$where_conditions[] = [
-					[
-						'key'     => 'MONTH(created_at)',
-						'compare' => '=',
-						'value'   => $month,
-					],
-					[
-						'key'     => 'YEAR(created_at)',
-						'compare' => '=',
-						'value'   => $year,
-					],
+			if ( ! empty( $args['date_from'] ) ) {
+				$date_conditions[] = [
+					'key'     => 'created_at',
+					'compare' => '>=',
+					'value'   => Helper::get_string_value( $args['date_from'] ),
 				];
+			}
+
+			if ( ! empty( $args['date_to'] ) ) {
+				$date_conditions[] = [
+					'key'     => 'created_at',
+					'compare' => '<=',
+					'value'   => Helper::get_string_value( $args['date_to'] ),
+				];
+			}
+
+			if ( count( $date_conditions ) > 1 ) {
+				$where_conditions[] = $date_conditions;
 			}
 		}
 
@@ -584,9 +621,9 @@ class Entries {
 			$row[]     = isset( $entry['status'] ) ? Helper::get_string_value( $entry['status'] ) : '';
 			$form_data = isset( $entry['form_data'] ) ? Helper::get_array_value( $entry['form_data'] ) : [];
 
-			foreach ( $block_key_map as $block_id => $srfm_key ) {
+			foreach ( $block_key_map as $srfm_key ) {
 				$field_value = $form_data[ $srfm_key ] ?? '';
-				$row[]       = self::normalize_field_values( $srfm_key, $field_value );
+				$row[]       = self::normalize_field_values( $field_value );
 			}
 
 			fputcsv( $stream, $row ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fputcsv
@@ -596,13 +633,12 @@ class Entries {
 	/**
 	 * Normalize field values for CSV export.
 	 *
-	 * @param string $srfm_key    Field key.
-	 * @param mixed  $field_value Field value.
+	 * @param mixed $field_value Field value.
 	 *
 	 * @since x.x.x
 	 * @return string Normalized value.
 	 */
-	private static function normalize_field_values( $srfm_key, $field_value ) {
+	private static function normalize_field_values( $field_value ) {
 		// Handle arrays (multi-select, checkboxes, etc.).
 		if ( is_array( $field_value ) ) {
 			return implode( ', ', array_map( 'sanitize_text_field', $field_value ) );

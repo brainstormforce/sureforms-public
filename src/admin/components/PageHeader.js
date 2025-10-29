@@ -1,24 +1,12 @@
+import { cn } from '@Utils/Helpers';
 import Header from './Header';
-import { render } from '@wordpress/element';
 
-const FormPageHeader = () => {
+const FormPageHeader = ( { className } ) => {
 	return (
-		<div className="z-50 relative">
+		<div className={ cn( 'z-50 relative', className ) }>
 			<Header />
 		</div>
 	);
 };
 
 export default FormPageHeader;
-
-( function () {
-	const app = document.getElementById( 'srfm-page-header' );
-
-	function renderApp() {
-		if ( null !== app ) {
-			render( <FormPageHeader />, app );
-		}
-	}
-
-	document.addEventListener( 'DOMContentLoaded', renderApp );
-}() );
