@@ -1587,7 +1587,7 @@ class Helper {
 			'sure_triggers'     => [
 				'title'                 => __( 'OttoKit', 'sureforms' ),
 				'singleLineDescription' => __( 'Automate your WordPress workflows effortlessly.', 'sureforms' ),
-				'subtitle'              => __( 'Connect apps, sync data, and run actions using a clean, visual automation builder.', 'sureforms' ),
+				'subtitle'              => __( 'Connect your WordPress plugins and favourite apps, automate tasks, and sync data effortlessly using OttoKit’s clean, visual workflow builder — no coding or complex setup required.', 'sureforms' ),
 				'status'                => self::get_plugin_status( 'suretriggers/suretriggers.php' ),
 				'slug'                  => 'suretriggers',
 				'path'                  => 'suretriggers/suretriggers.php',
