@@ -740,80 +740,20 @@ class Form_Submit {
 
 		// Handle Reply-To with proper sanitization.
 		if ( isset( $item['email_reply_to'] ) && ! empty( $item['email_reply_to'] ) ) {
-			$headers .= 'Reply-To: ' . self::sanitize_email_header( Helper::get_string_value( $smart_tags->process_smart_tags( $item['email_reply_to'], $submission_data ) ) ) . "\r\n";
+			$headers .= 'Reply-To: ' . Helper::sanitize_email_header( Helper::get_string_value( $smart_tags->process_smart_tags( $item['email_reply_to'], $submission_data ) ) ) . "\r\n";
 		}
 
 		// Handle CC with proper sanitization.
 		if ( isset( $item['email_cc'] ) && ! empty( $item['email_cc'] ) ) {
-			$headers .= 'Cc: ' . self::sanitize_email_header( Helper::get_string_value( $smart_tags->process_smart_tags( $item['email_cc'], $submission_data ) ) ) . "\r\n";
+			$headers .= 'Cc: ' . Helper::sanitize_email_header( Helper::get_string_value( $smart_tags->process_smart_tags( $item['email_cc'], $submission_data ) ) ) . "\r\n";
 		}
 
 		// Handle BCC with proper sanitization.
 		if ( isset( $item['email_bcc'] ) && ! empty( $item['email_bcc'] ) ) {
-			$headers .= 'Bcc: ' . self::sanitize_email_header( Helper::get_string_value( $smart_tags->process_smart_tags( $item['email_bcc'], $submission_data ) ) ) . "\r\n";
+			$headers .= 'Bcc: ' . Helper::sanitize_email_header( Helper::get_string_value( $smart_tags->process_smart_tags( $item['email_bcc'], $submission_data ) ) ) . "\r\n";
 		}
 
 		return compact( 'to', 'subject', 'message', 'headers' );
-	}
-
-	/**
-	 * Parse and sanitize an email list string which may contain:
-	 *
-	 * @param string $raw email addresses.
-	 * @since x.x.x
-	 * @return string Sanitized email header string.
-	 */
-	public static function sanitize_email_header( $raw ) {
-		$raw = trim( $raw );
-
-		$parts        = preg_split( '/,(?=(?:[^"]*"[^"]*")*[^"]*$)/', $raw );
-		$parts        = Helper::get_array_value( $parts );
-		$header_parts = [];
-
-		foreach ( $parts as $part ) {
-			$part = trim( $part );
-			if ( '' === $part ) {
-				continue;
-			}
-
-			$name  = '';
-			$email = '';
-
-			// Extract name and email if in <email> format.
-			if ( preg_match( '/^(.*)<\s*([^>]+)\s*>$/', $part, $m ) ) {
-				$name  = trim( $m[1], " \t\n\r\0\x0B\"'" );
-				$email = trim( $m[2] );
-			} else {
-				// fallback: assume last token is email.
-				if ( preg_match( '/([^\s]+@[^\s]+)$/', $part, $m2 ) ) {
-					$email = trim( $m2[1] );
-					$name  = trim( substr( $part, 0, -strlen( $email ) ), " \t\n\r\0\x0B\"'" );
-				} else {
-					$email = $part;
-				}
-			}
-
-			// Sanitize email.
-			$sanitized_email = function_exists( 'sanitize_email' ) ? sanitize_email( $email ) : filter_var( $email, FILTER_SANITIZE_EMAIL );
-			if ( empty( $sanitized_email ) || ! is_email( $sanitized_email ) ) {
-				continue;
-			}
-
-			// Sanitize display name.
-			$display = preg_replace( '/[\\\\\/\r\n\t<>]/', ' ', Helper::get_string_value( $name ) );
-			$display = preg_replace( '/\s+/', ' ', trim( Helper::get_string_value( $display ) ) );
-
-			if ( '' !== $display ) {
-				$header_parts[] = sprintf( '%s <%s>', $display, $sanitized_email );
-			} else {
-				$header_parts[] = $sanitized_email;
-			}
-		}
-
-		// Remove duplicates.
-		$header_parts = array_values( array_unique( $header_parts ) );
-
-		return implode( ', ', $header_parts );
 	}
 
 	/**
