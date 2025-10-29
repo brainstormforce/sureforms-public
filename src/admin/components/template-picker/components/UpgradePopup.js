@@ -10,20 +10,9 @@ const UpgradePopup = ( {
 	paraTwo,
 	buttonText,
 	onclick,
-	deactivatedLicense = false,
 	onClose,
 	features = [],
 } ) => {
-	// Get filter values
-	const {
-		paraOne: filteredParaOne,
-		paraTwo: filteredParaTwo,
-		title: filteredTitle,
-	} = applyFilters( 'srfm.aiFormScreen.freeCreds.expired', null ) || {};
-
-	const finalTitle = deactivatedLicense ? filteredTitle : title;
-	const finalParaOne = deactivatedLicense ? filteredParaOne : paraOne;
-	const finalParaTwo = deactivatedLicense ? filteredParaTwo : paraTwo;
 	const FinalButton = (
 		<Button size="md" variant="primary" onClick={ onclick }>
 			{ buttonText ?? __( 'Connect Now', 'sureforms' ) }
@@ -39,15 +28,15 @@ const UpgradePopup = ( {
 		>
 			<Container
 				direction="column"
-				className="bg-background-primary gap-6 py-4 px-5 rounded-lg max-w-md shadow-lg"
+				className="bg-background-primary gap-4 p-5 rounded-lg max-w-md shadow-lg"
 			>
 				<Container.Item className="relative pt-2">
 					<Label
 						variant="neutral"
-						className="text-lg font-bold flex gap-3"
+						className="text-xs font-semibold flex gap-3 text-brand-800"
 					>
-						<span className="pt-1">{ <Zap /> }</span>
-						{ finalTitle }
+						<span className="pt-1">{ <Zap className="size-4 text-brand-800" /> }</span>
+						{ title }
 						<span
 							className="absolute top-[-10px] right-[-15px] cursor-pointer"
 							onClick={ onClose }
@@ -57,34 +46,29 @@ const UpgradePopup = ( {
 					</Label>
 				</Container.Item>
 
-				<Container className="gap-1 p-2 w-full" direction="column">
+				<Container className="gap-1 w-full" direction="column">
 					{ /* Title */ }
 					<Label
-						as="h2"
-						size="lg"
-						className="text-[#141338] font-semibold text-lg"
+						size="md"
+						className="text-text-primary font-semibold text-lg"
 					>
-						{ __(
-							'Build Better Forms with SureForms',
-							'sureforms'
-						) }
-						{ finalParaOne }
+						{ paraOne }
 					</Label>
 
 					{ /* Paragraph */ }
 					<Label
 						size="sm"
-						className="text-[#4F4E7C] text-sm font-normal leading-relaxed w-full"
+						className="text-text-secondary text-sm font-normal leading-relaxed w-full"
 					>
-						{ finalParaTwo }
+						{ paraTwo }
 					</Label>
 				</Container>
 
-				<Container className="flex-col w-full p-2">
+				<Container className="flex-col w-full gap-2">
 					{ features.map( ( item, index ) => (
 						<Container.Item
 							key={ index }
-							className="flex items-start gap-2 text-base text-[#141338]"
+							className="flex items-start gap-2 text-base text-text-primary"
 						>
 							<Check className="w-4 h-4 text-brand-800 mt-0.5" />
 							<Label size="sm" className="font-normal">
@@ -93,6 +77,8 @@ const UpgradePopup = ( {
 						</Container.Item>
 					) ) }
 				</Container>
+
+				<hr className="border-b-5 border-x-0 border-t-0 w-full border-solid border-border-subtle" />
 
 				<Container.Item className="flex flex-col w-full gap-3 pb-2">
 					{ FinalButton }

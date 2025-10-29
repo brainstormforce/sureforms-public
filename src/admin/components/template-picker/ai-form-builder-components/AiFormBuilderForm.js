@@ -317,7 +317,7 @@ export default ( props ) => {
 			<Container.Item>{ ! is_pro_active && banner }</Container.Item>
 			<Container.Item>
 				<Container
-					className="p-8 gap-6 mx-auto w-full h-screen bg-background-secondary"
+					className={ cn( 'p-8 gap-6 mx-auto w-full h-screen bg-background-secondary', showBanner && 'mt-8' ) }
 					direction="column"
 					justify="center"
 					align="center"

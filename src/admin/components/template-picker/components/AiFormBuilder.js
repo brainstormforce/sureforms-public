@@ -188,7 +188,7 @@ const AiFormBuilder = () => {
 	const toasterPosition = isRTL ? 'bottom-left' : 'bottom-right';
 
 	return (
-		<div className="max-h-screen">
+		<div className="max-h-screen overflow-auto">
 			<Toaster
 				className={ cn(
 					'z-[999999]',
@@ -247,6 +247,11 @@ export const getLimitReachedPopup = () => {
 	) {
 		return (
 			<LimitReachedPopup
+				title={ __( 'Form Generation Limit Reached', 'sureforms' ) }
+				paraTitle={ __(
+					'You have Hit Your FUP Limit.',
+					'sureforms'
+				) }
 				paraOne={ __(
 					'You have reached the FUP limit of AI form generations for the day.',
 					'sureforms'
@@ -279,10 +284,14 @@ export const getLimitReachedPopup = () => {
 					'sureforms'
 				) }
 				paraTwo={ __(
-					'Please upgrade your free plan to keep creating more forms with AI.',
+					'Upgrade today and continue creating smarter forms without limits.',
 					'sureforms'
 				) }
-				buttonText={ __( 'Upgrade Plan', 'sureforms' ) }
+				paraTitle={ __(
+					'You have Hit Your Free Limit.',
+					'sureforms'
+				) }
+				buttonText={ __( 'Upgrade Now', 'sureforms' ) }
 				onclick={ () => {
 					window.open(
 						addQueryParam(
@@ -294,6 +303,7 @@ export const getLimitReachedPopup = () => {
 					);
 				} }
 				deactivatedLicense={ deactivatedLicense }
+				title={ __( 'Unlock Unlimited Generations', 'sureforms' ) }
 			/>
 		);
 	}
@@ -302,6 +312,10 @@ export const getLimitReachedPopup = () => {
 	if ( type === 'non-registered' && formCreationleft === 0 ) {
 		return (
 			<LimitReachedPopup
+				paraTitle={ __(
+					'You have Hit Your Free Limit.',
+					'sureforms'
+				) }
 				paraOne={ __(
 					'You have reached the maximum number of form generations.',
 					'sureforms'
