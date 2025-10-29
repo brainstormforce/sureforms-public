@@ -375,6 +375,7 @@ const Edit = ( props ) => {
 			id: 'help',
 			component: (
 				<SRFMTextControl
+					variant="textarea"
 					data={ {
 						value: help,
 						label: 'help',
@@ -425,7 +426,7 @@ const Edit = ( props ) => {
 		{
 			id: 'addNewOption',
 			component: addNewOption,
-		},
+		}
 	];
 
 	const filterOptions = attributeOptionsWithFilter( attributeOptions, props );

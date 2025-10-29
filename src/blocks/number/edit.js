@@ -166,6 +166,7 @@ const SureformInput = ( props ) => {
 			id: 'help-text',
 			component: (
 				<SRFMTextControl
+					variant="textarea"
 					label={ __( 'Help Text', 'sureforms' ) }
 					value={ help }
 					data={ {
@@ -348,7 +349,7 @@ const SureformInput = ( props ) => {
 					</p>
 				</>
 			),
-		},
+		}
 	];
 
 	const filterOptions = attributeOptionsWithFilter( attributeOptions, props );

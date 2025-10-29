@@ -20,11 +20,20 @@ import {
 	CircleCheckBig,
 	ShieldCheckIcon,
 	XIcon,
+	TriangleAlert,
+	UserPlus,
+	FileDown,
+	FilePlus,
+	File,
+	FileText,
+	Cpu,
+	Link2,
 } from 'lucide-react';
 
 import Suretriggers from '../integrations/suretriggers';
 import Compliance from '../Compliance';
 import FormCustomCssPanel from '../FormCustomCssPanel';
+import SpamProtection from '../SpamProtection';
 import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
 import EmailNotification from '../email-settings/EmailNotification';
@@ -35,6 +44,7 @@ import { useDispatch, useSelect } from '@wordpress/data';
 import { store as blockEditorStore } from '@wordpress/block-editor';
 import FormRestriction from '../form-restrictions/FormRestriction';
 import { FormRestrictionContext } from '../form-restrictions/context';
+import FeaturePreview from '../FeaturePreview';
 import OttoKitPage from '@Admin/settings/pages/OttoKit';
 import ottoKitIcon from '@Image/suretriggers-grayscale.svg';
 
@@ -138,6 +148,12 @@ const Dialog = ( {
 				),
 			},
 			{
+				id: 'spam_protection',
+				label: __( 'Spam Protection', 'sureforms' ),
+				icon: <TriangleAlert />,
+				component: <SpamProtection />,
+			},
+			{
 				id: 'advanced-settings',
 				label: __( 'Advanced Settings', 'sureforms' ),
 				icon: <Settings />,
@@ -160,6 +176,176 @@ const Dialog = ( {
 				component: (
 					<OttoKitPage
 						{ ...{ isFormSettings: true, setSelectedTab } }
+					/>
+				),
+			},
+			{
+				id: 'integrations-preview',
+				label: __( 'Integrations', 'sureforms' ),
+				icon: <Cpu />,
+				component: (
+					<FeaturePreview
+						featureName={ __( 'Integrations', 'sureforms' ) }
+						featureHelpText={ __(
+							'Connect SureForms with your favorite apps to automate tasks and sync data seamlessly.',
+							'sureforms'
+						) }
+						icon={
+							<Link2
+								className="text-orange-500"
+								size={ 40 }
+								strokeWidth={ 1 }
+							/>
+						}
+						title={ __(
+							'Connect Native Integrations with SureForms',
+							'sureforms'
+						) }
+						subtitle={ __(
+							'Unlock powerful integrations in the Premimum plan to automate your workflows and connect SureForms directly with your favorite tools.',
+							'sureforms'
+						) }
+						featureList={ [
+							__(
+								'Send form submissions straight to CRMs, email, and marketing platforms.',
+								'sureforms'
+							),
+							__(
+								'Automate repetitive tasks with seamless data syncing.',
+								'sureforms'
+							),
+							__(
+								'Access exclusive native integrations for faster workflows.',
+								'sureforms'
+							),
+						] }
+						utmMedium="integrations-preview-single-form-settings"
+					/>
+				),
+			},
+			{
+				id: 'pdf-generation-preview',
+				label: __( 'PDF Generation', 'sureforms' ),
+				icon: <File />,
+				component: (
+					<FeaturePreview
+						featureName={ __( 'PDF Generation', 'sureforms' ) }
+						featureHelpText={ __(
+							'Generate and customize PDF copies of form submissions.',
+							'sureforms'
+						) }
+						icon={
+							<FileDown
+								className="text-orange-500"
+								size={ 40 }
+								strokeWidth={ 1 }
+							/>
+						}
+						title={ __( 'Generate Submission PDFs', 'sureforms' ) }
+						subtitle={ __(
+							'Turn every form entry into a polished PDF file, making it perfect for reports, records, or sharing.',
+							'sureforms'
+						) }
+						featureList={ [
+							__(
+								'Automatically generate PDFs from your form submissions.',
+								'sureforms'
+							),
+							__(
+								'Customize PDF templates with your branding.',
+								'sureforms'
+							),
+							__(
+								'Download or email PDFs instantly.',
+								'sureforms'
+							),
+						] }
+						utmMedium="pdf-preview-single-form-settings"
+					/>
+				),
+			},
+			{
+				id: 'user-login-preview',
+				label: __( 'User Registration', 'sureforms' ),
+				icon: <UserPlus />,
+				component: (
+					<FeaturePreview
+						featureName={ __( 'User Registration', 'sureforms' ) }
+						featureHelpText={ __(
+							'Onboard new users or update existing accounts through beautiful looking forms.',
+							'sureforms'
+						) }
+						icon={
+							<UserPlus
+								className="text-orange-500"
+								size={ 40 }
+								strokeWidth={ 1 }
+							/>
+						}
+						title={ __(
+							'Register Users with SureForms',
+							'sureforms'
+						) }
+						subtitle={ __(
+							'Streamline the entire user onboarding process for your sites with seamless form-powered logins and registrations.',
+							'sureforms'
+						) }
+						featureList={ [
+							__(
+								'Register new users directly via your form submissions.',
+								'sureforms'
+							),
+							__(
+								'Create or update existing accounts by mapping form data to user fields.',
+								'sureforms'
+							),
+							__(
+								'Assign roles and control access automatically.',
+								'sureforms'
+							),
+						] }
+						utmMedium="user-registration-preview-single-form-settings"
+					/>
+				),
+			},
+			{
+				id: 'post-feed-preview',
+				label: __( 'Post Feed', 'sureforms' ),
+				icon: <FileText />,
+				component: (
+					<FeaturePreview
+						featureName={ __( 'Post Feed', 'sureforms' ) }
+						featureHelpText={ __(
+							'Transform your form submission into WordPress posts.',
+							'sureforms'
+						) }
+						icon={
+							<FilePlus
+								className="text-orange-500"
+								size={ 40 }
+								strokeWidth={ 1 }
+							/>
+						}
+						title={ __( 'Post Feed', 'sureforms' ) }
+						subtitle={ __(
+							'Automatically turn form submissions into WordPress posts, pages, or custom post types. Save big on time and let your forms publish content directly.',
+							'sureforms'
+						) }
+						featureList={ [
+							__(
+								'Create posts, pages, or CPTs from your form entries.',
+								'sureforms'
+							),
+							__(
+								'Map form fields to your post fields easily.',
+								'sureforms'
+							),
+							__(
+								'Automate the content publishing flow with few simple steps.',
+								'sureforms'
+							),
+						] }
+						utmMedium="post-feed-preview-single-form-settings"
 					/>
 				),
 			},
