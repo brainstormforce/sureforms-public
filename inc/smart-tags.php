@@ -253,7 +253,7 @@ class Smart_Tags {
 					if ( $post instanceof \WP_Post ) {
 							// If this is a page (or non-form post), extract the actual form ID from the block markup.
 						if ( 'sureforms_form' !== $post->post_type && ! empty( $post->post_content ) ) {
-							// Look for the SureForms block: <!-- wp:srfm/form {"id":95} /-->
+							// Look for the SureForms block: <!-- wp:srfm/form {"id":95} /-->.
 							if ( preg_match( '/<!--\s*wp:srfm\/form\s+{"id":(\d+)[^}]*}\s*\/-->/', $post->post_content, $matches ) ) {
 								$form_id = absint( $matches[1] );
 								if ( $form_id ) {
