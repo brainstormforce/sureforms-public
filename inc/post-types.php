@@ -892,10 +892,7 @@ class Post_Types {
 
 		ob_start();
 		?>
-		<p style="text-align: center;">
-			<img src="<?php echo esc_attr( $check_icon ); ?>" alt="" aria-hidden="true" />
-		</p>
-		<h2 style="text-align: center;"><?php echo esc_html__( 'Thank you', 'sureforms' ); ?></h2>
+		<p style="text-align: center;"><img src="<?php echo esc_attr( $check_icon ); ?>" alt="" aria-hidden="true" /></p><h2 style="text-align: center;"><?php echo esc_html__( 'Thank you', 'sureforms' ); ?></h2>
 		<?php
 		$default_confirmation_message = ob_get_clean();
 

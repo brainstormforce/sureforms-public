@@ -869,7 +869,7 @@ class Admin {
 				}
 			}
 
-			$localization_data['security_settings_url']    = admin_url( '/admin.php?page=sureforms_form_settings&tab=security-settings' );
+			$localization_data['security_settings_url']    = admin_url( '/admin.php?page=sureforms_form_settings&tab=security-settings&subpage=recaptcha' );
 			$localization_data['integration_settings_url'] = admin_url( '/admin.php?page=sureforms_form_settings&tab=integration-settings' );
 			wp_localize_script(
 				SRFM_SLUG . $asset_handle,

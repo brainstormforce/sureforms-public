@@ -3,9 +3,10 @@ import { __ } from '@wordpress/i18n';
 import Logo from '../dashboard/templates/Logo';
 import useWhatsNewRSS from '../../lib/whats-new/useWhatsNewRSS';
 import { Topbar, Badge, Button, HamburgerMenu, Label } from '@bsf/force-ui';
-import { CircleHelp, ArrowUpRight, Megaphone } from 'lucide-react';
+import { BookOpen, ArrowUpRight, Megaphone } from 'lucide-react';
 import { addQueryParam, cn } from '@Utils/Helpers';
 import UpgradeNotice from './UpgradeNotice';
+import Tooltip from './Tooltip';
 
 const { site_url: siteURL = '', is_pro_active: isProActive = false } =
 	srfm_admin;
@@ -33,6 +34,30 @@ const NAV_ITEMS = [
 	},
 ];
 
+const HeaderTooltipItem = ( { title, icon, onClick, children } ) => (
+	<Topbar.Item className="p-1 gap-2">
+		<Tooltip
+			title={ title }
+			placement="bottom"
+			className="z-999999"
+			portalId="srfm-dashboard-container"
+			variant="dark"
+		>
+			{ children ? (
+				children
+			) : (
+				<Button
+					size="xs"
+					variant="ghost"
+					className="p-0 focus:[box-shadow:none] [box-shadow:none] text-text-primary"
+					onClick={ onClick }
+					icon={ icon }
+				/>
+			) }
+		</Tooltip>
+	</Topbar.Item>
+);
+
 const Header = () => {
 	const [ activePage, setActivePage ] = useState( null );
 	const [ isLicenseActive, setIsLicenseActive ] = useState(
@@ -59,13 +84,13 @@ const Header = () => {
 		uniqueKey: 'sureforms',
 		rssFeedURL: 'https://sureforms.com/whats-new/feed/',
 		selector: '#srfm_whats_new',
-		icon: renderToString( <Megaphone className="size-4" /> ),
+		icon: renderToString( <Megaphone className="size-4 m-1" /> ),
 		flyout: {
 			title: __( "What's New?", 'sureforms' ),
 		},
 		triggerButton: {
 			icon: renderToString(
-				<Megaphone className="size-4 text-text-primary" />
+				<Megaphone className="size-4 m-1 text-text-primary" />
 			),
 		},
 	} );
@@ -250,24 +275,22 @@ const Header = () => {
 							></Button>
 						</Topbar.Item>
 					) }
-					<Topbar.Item className="p-1">
-						<Button
-							size="xs"
-							variant="ghost"
-							className="p-0 focus:[box-shadow:none] [box-shadow:none] text-text-primary"
-							onClick={ () => {
-								window.open(
-									'https://sureforms.com/docs/',
-									'_blank',
-									'noopener noreferrer'
-								);
-							} }
-							icon={ <CircleHelp className="size-4" /> }
-						></Button>
-					</Topbar.Item>
-					<Topbar.Item className="gap-2">
-						<div id="srfm_whats_new" className="[&_a]:!p-1" />
-					</Topbar.Item>
+					<HeaderTooltipItem
+						title={ __( 'Knowledge Base', 'sureforms' ) }
+						icon={ <BookOpen className="size-4" /> }
+						onClick={ () =>
+							window.open(
+								'https://sureforms.com/docs/',
+								'_blank',
+								'noopener noreferrer'
+							)
+						}
+					/>
+					<HeaderTooltipItem
+						title={ __( 'What\’s New', 'sureforms' ) }
+					>
+						<div id="srfm_whats_new" className="[&>a]:p-0.5 [&>a]:pl-0" />
+					</HeaderTooltipItem>
 				</Topbar.Right>
 			</Topbar>
 		</div>
