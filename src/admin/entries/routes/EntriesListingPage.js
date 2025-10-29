@@ -106,6 +106,15 @@ const EntriesListingPage = () => {
 		return rawEntries.map( ( entry ) => transformEntry( entry, formsMap ) );
 	}, [ rawEntries, formsMap ] );
 
+	useEffect( () => {
+		if ( currentPage <= 1 || entries.length > 0 ) {
+			return;
+		}
+		if ( currentPage > totalPages ) {
+			goToPage( totalPages );
+		}
+	}, [ entries ] );
+
 	// Generate form options for filter
 	const formOptions = useMemo( () => {
 		return getFormOptions( formsMap );
