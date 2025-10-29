@@ -8,12 +8,12 @@ const EntryDetailSkeleton = () => {
 	return (
 		<div className="p-8 bg-background-secondary min-h-screen space-y-6">
 			{ /* Header Skeleton */ }
-			<div className="flex items-center gap-3 max-w-[1374px] mx-auto">
+			<div className="flex items-center gap-3 max-w-[1920px] mx-auto">
 				<Skeleton className="w-8 h-8 rounded-md" />
 				<Skeleton className="h-8 w-48" />
 			</div>
 
-			<div className="max-w-[1374px] mx-auto">
+			<div className="max-w-[1920px] mx-auto">
 				<div className="space-y-6">
 					{ /* Main Content Grid Skeleton */ }
 					<div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

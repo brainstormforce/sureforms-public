@@ -156,7 +156,7 @@ const EntryDetailPage = () => {
 		<>
 			<div className="p-8 bg-background-secondary min-h-screen space-y-6">
 				{ /* Header */ }
-				<div className="flex items-center gap-3 max-w-[1374px] mx-auto">
+				<div className="flex items-center gap-3 mx-auto">
 					<Button
 						tag={ Link }
 						to="/"
@@ -173,7 +173,7 @@ const EntryDetailPage = () => {
 						) }
 					</Text>
 				</div>
-				<div className="max-w-[1374px] mx-auto">
+				<div className="mx-auto">
 					<div className="space-y-6">
 						<div className="space-y-6">
 							{ /* Main Content Grid */ }
