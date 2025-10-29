@@ -2,9 +2,9 @@
 Contributors: brainstormforce
 Tags: contact form, custom form, forms,  WP Forms, form builder
 Requires at least: 6.4
-Tested up to: 6.8.2
+Tested up to: 6.8.3
 Requires PHP: 7.4
-Stable tag: 1.12.3
+Stable tag: 1.13.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -365,27 +365,16 @@ easy.
 You can report the issue through our [Bug Bounty Program](https://brainstormforce.com/bug-bounty-program/). We collaborate with Patchstack to provide opportunities for researchers to report vulnerabilities. The Patchstack team will help validate, triage, and handle any reported security issues.
 
 == Changelog ==
+= 1.13.1 - 22nd October 2025 =
+* Improvement: Preserved trailing zeros in number field after the decimal.
+* Fix: Fixed compatibility with Presto Player.
+* Fix: Resolved an issue where the phone field country list wasn’t visible in Spectra modal on mobile devices.
+= 1.13.0 - 14th October 2025 =
+* New: Added support for Native Integrations in Pro Plan.
+* Fix: Prevented multiple entries from being recorded when the submit button is clicked repeatedly.
 = 1.12.3 - 30th September 2025 =
 * Fix: AI form generation not redirecting to the SureForms editor after creation.
 * Fix: Forms not publishing or saving with certain blocks on low PHP memory servers.
-= 1.12.2 - 26th September 2025 =
-* Improvement: Made the submit note button responsive in single entries to prevent overflow in translations.
-* Improvement: Smart tag output now shows single file uploads as links and multiple files as a list.
-* Fix: Addressed a security bug. Props to Wordfence for reporting it responsibly.
-= 1.12.1 - 18th September 2025 =
-* New: Added default country selection option for Phone field when auto country detection is disabled.
-* Improvement: Added filter 'srfm_value_after_label_placeholder' to customize required field sign.
-* Fix: Addressed a security bug. Props to Wordfence for reporting it responsibly.
-* Fix: Fixed single form settings popup overlapping admin menu when full screen editor mode is disabled.
-= 1.12.0 - 4th September 2025 =
-* Fix: Fixed form submission issue when embedded in LearnDash lessons.
-= 1.11.0 - 2nd September 2025 =
-* Improvement: Refined weekly email summary content.
-* Fix: Resolved an issue with the readability of multiple uploaded image links in notification emails.
-* Fix: Missing form values in emails now display correctly.
-* Fix: Fixed incorrect validation of "From Email" in notification.
-* Fix: Resolved an issue where the upload field URL was breaking in email notifications.
-* Fix: Icon block styles now apply inside Spectra Modal.
 
 The full changelog is available [here](https://sureforms.com/whats-new/).
 
