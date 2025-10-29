@@ -154,32 +154,6 @@ const Dialog = ( {
 				component: <SpamProtection />,
 			},
 			{
-				id: 'advanced-settings',
-				label: __( 'Advanced Settings', 'sureforms' ),
-				icon: <Settings />,
-				component: (
-					<>
-						<FormRestriction />
-						<Compliance { ...{ complianceData } } />
-					</>
-				),
-			},
-			{
-				id: 'ottokit',
-				label: __( 'OttoKit', 'sureforms' ),
-				icon: (
-					<img
-						src={ ottoKitIcon }
-						alt={ __( 'OttoKit', 'sureforms' ) }
-					/>
-				),
-				component: (
-					<OttoKitPage
-						{ ...{ isFormSettings: true, setSelectedTab } }
-					/>
-				),
-			},
-			{
 				id: 'integrations-preview',
 				label: __( 'Integrations', 'sureforms' ),
 				icon: <Cpu />,
@@ -262,6 +236,17 @@ const Dialog = ( {
 						] }
 						utmMedium="pdf-preview-single-form-settings"
 					/>
+				),
+			},
+			{
+				id: 'advanced-settings',
+				label: __( 'Advanced Settings', 'sureforms' ),
+				icon: <Settings />,
+				component: (
+					<>
+						<FormRestriction />
+						<Compliance { ...{ complianceData } } />
+					</>
 				),
 			},
 			{
@@ -350,6 +335,21 @@ const Dialog = ( {
 				),
 			},
 			{
+				id: 'ottokit',
+				label: __( 'OttoKit', 'sureforms' ),
+				icon: (
+					<img
+						src={ ottoKitIcon }
+						alt={ __( 'OttoKit', 'sureforms' ) }
+					/>
+				),
+				component: (
+					<OttoKitPage
+						{ ...{ isFormSettings: true, setSelectedTab } }
+					/>
+				),
+			},
+			{
 				id: 'form_custom_css',
 				label: __( 'Custom CSS', 'sureforms' ),
 				icon: <Code2Icon />,
@@ -371,36 +371,6 @@ const Dialog = ( {
 			setHasValidationErrors,
 		}
 	);
-
-	const desiredOrder = [
-		'email_notification',
-		'form_confirmation',
-		// 'spam_protection', adding this now for future use.
-		'integrations',
-		'pdf',
-		'advanced-settings',
-		'user_registration',
-		'post-feed',
-		'ottokit',
-		'form_custom_css',
-	];
-
-	const orderedTabs = [ ...tabs ].sort( ( a, b ) => {
-		const indexA = desiredOrder.indexOf( a.id );
-		const indexB = desiredOrder.indexOf( b.id );
-
-		if ( indexA === -1 && indexB === -1 ) {
-			return 0;
-		}
-		if ( indexA === -1 ) {
-			return 1;
-		}
-		if ( indexB === -1 ) {
-			return -1;
-		}
-
-		return indexA - indexB;
-	} );
 
 	setFormSpecificSmartTags( updateBlockAttributes );
 
@@ -477,7 +447,7 @@ const Dialog = ( {
 						<div className="w-full h-[calc(100%-3rem)] flex justify-start items-stretch">
 							{ /* Sidebar Navigation */ }
 							<SidebarNav
-								tabs={ orderedTabs }
+								tabs={ tabs }
 								selectedTab={ selectedTab }
 								setSelectedTab={ setSelectedTab }
 								parentTab={ parentTab }
