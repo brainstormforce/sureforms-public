@@ -13,7 +13,6 @@ use SRFM\Inc\AI_Form_Builder\AI_Helper;
 use SRFM\Inc\Database\Tables\Entries;
 use SRFM\Inc\Helper;
 use SRFM\Inc\Onboarding;
-use SRFM\Inc\Post_Types;
 use SRFM\Inc\Traits\Get_Instance;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -518,7 +517,11 @@ class Admin {
 			return;
 		}
 
+		echo '<div id="srfm-root"></div>';
+
 		// Render all entries view.
+
+		/*
 		$entries_table = new Entries_List_Table();
 		$entries_table->prepare_items();
 		?>
@@ -538,6 +541,7 @@ class Admin {
 			</form>
 		</div>
 		<?php
+		*/
 	}
 
 	/**
@@ -764,6 +768,17 @@ class Admin {
 			'sureforms_dashboard_url'    => admin_url( '/admin.php?page=sureforms_menu' ),
 			'plugin_version'             => SRFM_VER,
 			'global_settings_nonce'      => Helper::current_user_can() ? wp_create_nonce( 'wp_rest' ) : '',
+			'view_entry_url'             => wp_nonce_url(
+				add_query_arg(
+					[
+						'entry_id' => '[id]',
+						'view'     => 'details',
+						'action'   => 'read',
+					],
+					admin_url( 'admin.php?page=sureforms_entries' )
+				),
+				'srfm_entries_action'
+			),
 			'is_pro_active'              => Helper::has_pro(),
 			'is_first_form_created'      => self::is_first_form_created(),
 			'check_three_days_threshold' => self::check_first_form_creation_threshold(),
