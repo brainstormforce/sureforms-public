@@ -20,6 +20,7 @@ import {
 	CircleCheckBig,
 	ShieldCheckIcon,
 	XIcon,
+	TriangleAlert,
 	UserPlus,
 	FileDown,
 	FilePlus,
@@ -32,6 +33,7 @@ import {
 import Suretriggers from '../integrations/suretriggers';
 import Compliance from '../Compliance';
 import FormCustomCssPanel from '../FormCustomCssPanel';
+import SpamProtection from '../SpamProtection';
 import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
 import EmailNotification from '../email-settings/EmailNotification';
@@ -144,6 +146,12 @@ const Dialog = ( {
 						toast={ toast }
 					/>
 				),
+			},
+			{
+				id: 'spam_protection',
+				label: __( 'Spam Protection', 'sureforms' ),
+				icon: <TriangleAlert />,
+				component: <SpamProtection />,
 			},
 			{
 				id: 'advanced-settings',

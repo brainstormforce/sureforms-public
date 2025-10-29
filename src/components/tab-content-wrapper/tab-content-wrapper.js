@@ -18,6 +18,11 @@ const TabContentWrapper = ( {
 	shouldShowAutoSaveText = false,
 	showTitleHelpText = false,
 	titleHelpText = '',
+	autoSaveHelpText = __(
+		'All changes will be saved automatically when you press back.',
+		'sureforms'
+	),
+	shouldAddHelpTextPadding = true,
 } ) => {
 	const handleBack = () => {
 		if ( typeof onClickBack !== 'function' ) {
@@ -34,11 +39,6 @@ const TabContentWrapper = ( {
 
 		onClickAction( data );
 	};
-
-	const autoSaveHelpText = __(
-		'All changes will be saved automatically when you press back.',
-		'sureforms'
-	);
 
 	return (
 		// Add the spacing only if title is not hidden.
@@ -72,16 +72,23 @@ const TabContentWrapper = ( {
 					) }
 
 					{ shouldShowAutoSaveText && (
-						<Container.Item className="pl-7">
-							<Label
-								size="sm"
-								variant="help"
-								className="text-text-on-button-disabled font-normal"
-							>
-								{ autoSaveHelpText }
-							</Label>
+						<Container.Item
+							className={ cn(
+								shouldAddHelpTextPadding ? 'pl-7' : ''
+							) }
+						>
+							{ shouldShowAutoSaveText && (
+								<Label
+									size="sm"
+									variant="help"
+									className="text-text-on-button-disabled font-normal"
+								>
+									{ autoSaveHelpText }
+								</Label>
+							) }
 						</Container.Item>
 					) }
+
 				</Container>
 				<Container align="center" className="gap-3">
 					{ actionLeftContent }
