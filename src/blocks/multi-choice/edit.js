@@ -524,7 +524,7 @@ const Edit = ( props ) => {
 			component: (
 				<span className="srfm-control-label srfm-control__header" />
 			),
-		}
+		},
 	];
 
 	const filterOptions = attributeOptionsWithFilter( attributeOptions, props );

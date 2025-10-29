@@ -349,7 +349,7 @@ const SureformInput = ( props ) => {
 					</p>
 				</>
 			),
-		}
+		},
 	];
 
 	const filterOptions = attributeOptionsWithFilter( attributeOptions, props );

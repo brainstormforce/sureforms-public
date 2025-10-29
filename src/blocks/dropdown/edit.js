@@ -426,7 +426,7 @@ const Edit = ( props ) => {
 		{
 			id: 'addNewOption',
 			component: addNewOption,
-		}
+		},
 	];
 
 	const filterOptions = attributeOptionsWithFilter( attributeOptions, props );
