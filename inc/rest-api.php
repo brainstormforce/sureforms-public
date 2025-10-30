@@ -1034,7 +1034,7 @@ class Rest_Api {
 					],
 				],
 				// Forms listing endpoint.
-				'forms'                 => [
+				'forms'                     => [
 					'methods'             => 'GET',
 					'callback'            => [ Forms_Data::get_instance(), 'get_forms_list' ],
 					'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
@@ -1093,7 +1093,7 @@ class Rest_Api {
 					],
 				],
 				// Export forms endpoint.
-				'forms/export'          => [
+				'forms/export'              => [
 					'methods'             => 'POST',
 					'callback'            => [ Export::get_instance(), 'handle_export_form_rest' ],
 					'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
@@ -1117,7 +1117,7 @@ class Rest_Api {
 					],
 				],
 				// Import forms endpoint.
-				'forms/import'          => [
+				'forms/import'              => [
 					'methods'             => 'POST',
 					'callback'            => [ Export::get_instance(), 'handle_import_form_rest' ],
 					'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
@@ -1139,7 +1139,7 @@ class Rest_Api {
 					],
 				],
 				// Form lifecycle management endpoint (trash/restore/delete).
-				'forms/manage'          => [
+				'forms/manage'              => [
 					'methods'             => 'POST',
 					'callback'            => [ $this, 'manage_form_lifecycle' ],
 					'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
