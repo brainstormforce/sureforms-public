@@ -745,11 +745,11 @@ class Entries_List_Table extends \WP_List_Table {
 	 */
 	protected function column_first_field( $item ) {
 		// Get the first field key.
-		$first_key       = key( $item['form_data'] );
+		$first_key       = Helper::get_string_value( key( $item['form_data'] ) );
 		$excluded_fields = Helper::get_excluded_fields();
 		$form_data       = array_diff_key( $item['form_data'], array_flip( $excluded_fields ) );
 		$first_field     = reset( $form_data );
-		$field_name      = array_keys( $form_data )[0];
+		$field_name      = ! empty( $form_data ) ? array_keys( $form_data )[0] : '';
 
 		$field_block_name = Helper::get_block_name_from_field( $field_name );
 
@@ -802,12 +802,6 @@ class Entries_List_Table extends \WP_List_Table {
 			$first_field = implode( ', ', $filenames );
 		}
 
-		$max_length = 28;
-
-		if ( strlen( $first_field ) > $max_length ) {
-			$first_field = substr( $first_field, 0, $max_length - 3 ) . '...';
-		}
-
 		// Check if the first field is a textarea.
 		if ( strpos( $first_key, 'srfm-textarea' ) !== false ) {
 			// Strip HTML tags from the textarea value.
@@ -825,7 +819,11 @@ class Entries_List_Table extends \WP_List_Table {
 			}
 		} else {
 			// Get the first field value directly.
-			$first_field = ! empty( $set_entry_first_field ) ? $set_entry_first_field : reset( $item['form_data'] );
+			$first_field = ! empty( $set_entry_first_field ) ? ( is_array( $set_entry_first_field ) ? __( 'Array', 'sureforms' ) : $set_entry_first_field ) : reset( $item['form_data'] );
+			$max_length  = 28;
+			if ( strlen( $first_field ) > $max_length ) {
+				$first_field = substr( $first_field, 0, $max_length - 3 ) . '...';
+			}
 		}
 
 		// Return the first field value in a paragraph element.

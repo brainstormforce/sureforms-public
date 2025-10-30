@@ -54,7 +54,7 @@ class Admin {
 		add_action( 'admin_menu', [ $this, 'settings_page' ] );
 		add_action( 'admin_menu', [ $this, 'add_new_form' ] );
 		add_action( 'admin_menu', [ $this, 'add_suremail_page' ] );
-		if ( ! Helper::has_pro() && self::is_first_form_created() ) {
+		if ( ! Helper::has_pro() ) {
 			add_action( 'admin_menu', [ $this, 'add_upgrade_to_pro' ] );
 			add_action( 'admin_footer', [ $this, 'add_upgrade_to_pro_target_attr' ] );
 		}
@@ -354,12 +354,6 @@ class Admin {
 	 * @since 1.6.1
 	 */
 	public function add_upgrade_to_pro_target_attr() {
-
-		// only add if first form was created more than 8 days ago.
-		if ( ! self::check_first_form_creation_threshold( 8 ) ) {
-			return;
-		}
-
 		?>
 		<script type="text/javascript">
 			document.addEventListener('DOMContentLoaded', function () {
@@ -384,12 +378,6 @@ class Admin {
 	 * @since 1.6.1
 	 */
 	public function add_upgrade_to_pro() {
-
-		// only add if first form was created more than 8 days ago.
-		if ( ! self::check_first_form_creation_threshold( 8 ) ) {
-			return;
-		}
-
 		// The url used here is used as a selector for css to style the upgrade to pro submenu.
 		// If you are changing this url, please make sure to update the css as well.
 		$upgrade_url = add_query_arg(
@@ -780,7 +768,6 @@ class Admin {
 			'sureforms_dashboard_url'    => admin_url( '/admin.php?page=sureforms_menu' ),
 			'plugin_version'             => SRFM_VER,
 			'global_settings_nonce'      => Helper::current_user_can() ? wp_create_nonce( 'wp_rest' ) : '',
-			// TODO: Remove this once the single entry view is fully migrated to React.
 			'view_entry_url'             => wp_nonce_url(
 				add_query_arg(
 					[
@@ -864,7 +851,7 @@ class Admin {
 				}
 			}
 
-			$localization_data['security_settings_url']    = admin_url( '/admin.php?page=sureforms_form_settings&tab=security-settings' );
+			$localization_data['security_settings_url']    = admin_url( '/admin.php?page=sureforms_form_settings&tab=security-settings&subpage=recaptcha' );
 			$localization_data['integration_settings_url'] = admin_url( '/admin.php?page=sureforms_form_settings&tab=integration-settings' );
 			wp_localize_script(
 				SRFM_SLUG . $asset_handle,
@@ -1057,19 +1044,22 @@ class Admin {
 		$quick_sidebar_allowed_blocks = get_option( 'srfm_quick_sidebar_allowed_blocks' );
 		$quick_sidebar_allowed_blocks = ! empty( $quick_sidebar_allowed_blocks ) && is_array( $quick_sidebar_allowed_blocks ) ? $quick_sidebar_allowed_blocks : $default_allowed_quick_sidebar_blocks;
 		$srfm_ajax_nonce              = wp_create_nonce( 'srfm_ajax_nonce' );
-		wp_enqueue_script( SRFM_SLUG . '-quick-action-siderbar', SRFM_URL . 'assets/build/quickActionSidebar.js', [], SRFM_VER, true );
-		wp_localize_script(
-			SRFM_SLUG . '-quick-action-siderbar',
-			SRFM_SLUG . '_quick_sidebar_blocks',
-			[
-				'allowed_blocks'                   => $quick_sidebar_allowed_blocks,
-				'srfm_enable_quick_action_sidebar' => $srfm_enable_quick_action_sidebar,
-				'srfm_ajax_nonce'                  => $srfm_ajax_nonce,
-				'srfm_ajax_url'                    => admin_url( 'admin-ajax.php' ),
-			]
-		);
 
-		$script_translations_handlers[] = SRFM_SLUG . '-quick-action-siderbar';
+		if ( Helper::is_sureforms_admin_page() ) {
+			wp_enqueue_script( SRFM_SLUG . '-quick-action-siderbar', SRFM_URL . 'assets/build/quickActionSidebar.js', [], SRFM_VER, true );
+			wp_localize_script(
+				SRFM_SLUG . '-quick-action-siderbar',
+				SRFM_SLUG . '_quick_sidebar_blocks',
+				[
+					'allowed_blocks'                   => $quick_sidebar_allowed_blocks,
+					'srfm_enable_quick_action_sidebar' => $srfm_enable_quick_action_sidebar,
+					'srfm_ajax_nonce'                  => $srfm_ajax_nonce,
+					'srfm_ajax_url'                    => admin_url( 'admin-ajax.php' ),
+				]
+			);
+
+			$script_translations_handlers[] = SRFM_SLUG . '-quick-action-siderbar';
+		}
 
 		/**
 		 * Enqueuing SureTriggers Integration script.

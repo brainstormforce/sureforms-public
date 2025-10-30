@@ -30,8 +30,8 @@ export const ENTRIES_PER_PAGE_OPTIONS = [ 10, 25, 50, 100 ];
 
 export const TABLE_HEADERS = [
 	{
-		label: __( 'Form ID', 'sureforms' ),
-		key: 'formId',
+		label: __( 'Entry ID', 'sureforms' ),
+		key: 'id',
 		sortable: true,
 	},
 	{
