@@ -274,7 +274,7 @@ class Rest_Api {
 	 * Validate read action parameter.
 	 *
 	 * @param string $param Action parameter value.
-	 * @since 1.0.0
+	 * @since x.x.x
 	 * @return bool
 	 */
 	public function validate_read_action( $param ) {
@@ -527,8 +527,11 @@ class Rest_Api {
 		$user_info = 0 !== $user_id ? get_userdata( $user_id ) : null;
 
 		// Get form info.
+		$form_title = get_the_title( $entry['form_id'] );
 		// Translators: %d is the form ID.
-		$form_name = ! empty( get_the_title( $entry['form_id'] ) ) ? get_the_title( $entry['form_id'] ) : sprintf( __( 'SureForms Form #%d', 'sureforms' ), intval( $entry['form_id'] ) );
+		$form_name = ! empty( $form_title ) ? $form_title : sprintf( __( 'SureForms Form #%d', 'sureforms' ), intval( $entry['form_id'] ) );
+		// Get the form content.
+		$form_content = get_post_field( 'post_content', $entry['form_id'] );
 
 		$response_data = [
 			'id'              => $entry_id,
@@ -538,6 +541,7 @@ class Rest_Api {
 			'status'          => $entry['status'],
 			'created_at'      => $entry['created_at'],
 			'form_data'       => $form_data,
+			'form_content'    => $form_content,
 			'submission_info' => [
 				'user_ip'      => $entry['submission_info']['user_ip'] ?? '',
 				'browser_name' => $entry['submission_info']['browser_name'] ?? '',
@@ -684,6 +688,121 @@ class Rest_Api {
 			],
 			200
 		);
+	}
+	/**
+	 * Manage form lifecycle operations (trash, restore, delete).
+	 *
+	 * @param \WP_REST_Request $request Full details about the request.
+	 * @since x.x.x
+	 * @return \WP_REST_Response|\WP_Error
+	 */
+	public function manage_form_lifecycle( $request ) {
+		$nonce = Helper::get_string_value( $request->get_header( 'X-WP-Nonce' ) );
+
+		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'wp_rest' ) ) {
+			return new \WP_Error(
+				'invalid_nonce',
+				__( 'Nonce verification failed.', 'sureforms' ),
+				[ 'status' => 403 ]
+			);
+		}
+
+		$params   = $request->get_params();
+		$form_ids = isset( $params['form_ids'] ) && is_array( $params['form_ids'] ) ?
+			array_map( 'intval', $params['form_ids'] ) :
+			[ intval( $params['form_ids'] ) ];
+		$action   = isset( $params['action'] ) ? sanitize_text_field( Helper::get_string_value( $params['action'] ) ) : '';
+
+		if ( empty( $form_ids ) || empty( $action ) ) {
+			return new \WP_Error(
+				'missing_parameters',
+				__( 'Form IDs and action are required.', 'sureforms' ),
+				[ 'status' => 400 ]
+			);
+		}
+
+		$results = [];
+		$errors  = [];
+
+		foreach ( $form_ids as $form_id ) {
+			$post = get_post( $form_id );
+
+			// Validate that the post exists and is a sureforms_form.
+			if ( ! $post || 'sureforms_form' !== $post->post_type ) {
+				$errors[] = [
+					'form_id' => $form_id,
+					'error'   => __( 'Form not found or invalid post type.', 'sureforms' ),
+				];
+				continue;
+			}
+
+			$result = false;
+
+			switch ( $action ) {
+				case 'trash':
+					if ( 'trash' === $post->post_status ) {
+						$errors[] = [
+							'form_id' => $form_id,
+							'error'   => __( 'Form is already in trash.', 'sureforms' ),
+						];
+					} else {
+						$result = wp_trash_post( $form_id );
+					}
+					break;
+
+				case 'restore':
+					if ( 'trash' !== $post->post_status ) {
+						$errors[] = [
+							'form_id' => $form_id,
+							'error'   => __( 'Form is not in trash.', 'sureforms' ),
+						];
+					} else {
+						$result = wp_untrash_post( $form_id );
+					}
+					break;
+
+				case 'delete':
+					// Force delete permanently.
+					$result = wp_delete_post( $form_id, true );
+					break;
+
+				default:
+					$errors[] = [
+						'form_id' => $form_id,
+						'error'   => __( 'Invalid action specified.', 'sureforms' ),
+					];
+					break;
+			}
+
+			if ( $result ) {
+				$results[] = [
+					'form_id' => $form_id,
+					'action'  => $action,
+					'success' => true,
+				];
+			} elseif ( ! isset( $errors[ array_search( $form_id, array_column( $errors, 'form_id' ), true ) ] ) ) {
+				$errors[] = [
+					'form_id' => $form_id,
+					/* translators: %s: action name */
+					'error'   => sprintf( __( 'Failed to %s form.', 'sureforms' ), $action ),
+				];
+			}
+		}
+
+		$response_data = [
+			'success'       => ! empty( $results ),
+			'action'        => $action,
+			'processed_ids' => array_column( $results, 'form_id' ),
+			'success_count' => count( $results ),
+			'results'       => $results,
+		];
+
+		if ( ! empty( $errors ) ) {
+			$response_data['errors']      = $errors;
+			$response_data['error_count'] = count( $errors );
+		}
+
+		return new \WP_REST_Response( $response_data );
 	}
 
 	/**
@@ -911,6 +1030,141 @@ class Rest_Api {
 						'page'     => [
 							'sanitize_callback' => 'absint',
 							'default'           => 1,
+						],
+					],
+				],
+				// Forms listing endpoint.
+				'forms'                     => [
+					'methods'             => 'GET',
+					'callback'            => [ Forms_Data::get_instance(), 'get_forms_list' ],
+					'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
+					'args'                => [
+						'page'      => [
+							'type'    => 'integer',
+							'default' => 1,
+							'minimum' => 1,
+						],
+						'per_page'  => [
+							'type'    => 'integer',
+							'default' => 20,
+							'minimum' => 1,
+							'maximum' => 100,
+						],
+						'search'    => [
+							'type' => 'string',
+						],
+						'status'    => [
+							'type'    => 'string',
+							'enum'    => [ 'publish', 'draft', 'trash', 'any' ],
+							'default' => 'publish',
+						],
+						'orderby'   => [
+							'type'    => 'string',
+							'default' => 'date',
+							'enum'    => [ 'date', 'id', 'title', 'modified' ],
+						],
+						'order'     => [
+							'type'    => 'string',
+							'default' => 'desc',
+							'enum'    => [ 'asc', 'desc' ],
+						],
+						'date_from' => [
+							'type'              => 'string',
+							'format'            => 'date',
+							'sanitize_callback' => 'sanitize_text_field',
+							'validate_callback' => static function( $value ) {
+								if ( empty( $value ) ) {
+									return true;
+								}
+								return (bool) strtotime( $value );
+							},
+						],
+						'date_to'   => [
+							'type'              => 'string',
+							'format'            => 'date',
+							'sanitize_callback' => 'sanitize_text_field',
+							'validate_callback' => static function( $value ) {
+								if ( empty( $value ) ) {
+									return true;
+								}
+								return (bool) strtotime( $value );
+							},
+						],
+					],
+				],
+				// Export forms endpoint.
+				'forms/export'              => [
+					'methods'             => 'POST',
+					'callback'            => [ Export::get_instance(), 'handle_export_form_rest' ],
+					'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
+					'args'                => [
+						'post_ids' => [
+							'required'          => true,
+							'type'              => [ 'array', 'string' ],
+							'sanitize_callback' => static function( $value ) {
+								if ( is_array( $value ) ) {
+									return array_map( 'intval', $value );
+								}
+								return sanitize_text_field( $value );
+							},
+							'validate_callback' => static function( $value ) {
+								if ( is_array( $value ) ) {
+									return ! empty( $value );
+								}
+								return ! empty( trim( $value ) );
+							},
+						],
+					],
+				],
+				// Import forms endpoint.
+				'forms/import'              => [
+					'methods'             => 'POST',
+					'callback'            => [ Export::get_instance(), 'handle_import_form_rest' ],
+					'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
+					'args'                => [
+						'forms_data'     => [
+							'required'          => true,
+							'type'              => 'array',
+							'validate_callback' => static function( $value ) {
+								return is_array( $value ) && ! empty( $value );
+							},
+						],
+						'default_status' => [
+							'required'          => false,
+							'type'              => 'string',
+							'default'           => 'draft',
+							'enum'              => [ 'draft', 'publish', 'private' ],
+							'sanitize_callback' => 'sanitize_text_field',
+						],
+					],
+				],
+				// Form lifecycle management endpoint (trash/restore/delete).
+				'forms/manage'              => [
+					'methods'             => 'POST',
+					'callback'            => [ $this, 'manage_form_lifecycle' ],
+					'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
+					'args'                => [
+						'form_ids' => [
+							'required'          => true,
+							'type'              => [ 'array', 'integer' ],
+							'sanitize_callback' => static function( $value ) {
+								if ( is_array( $value ) ) {
+									return array_map( 'intval', $value );
+								}
+								return [ intval( $value ) ];
+							},
+							'validate_callback' => static function( $value ) {
+								if ( is_array( $value ) ) {
+									return ! empty( $value );
+								}
+								return $value > 0;
+							},
+						],
+						'action'   => [
+							'required'          => true,
+							'type'              => 'string',
+							'enum'              => [ 'trash', 'restore', 'delete' ],
+							'sanitize_callback' => 'sanitize_text_field',
 						],
 					],
 				],
