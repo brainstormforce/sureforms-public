@@ -1,8 +1,4 @@
-import {
-	useEffect,
-	useRef,
-	useState,
-} from '@wordpress/element';
+import { useEffect, useRef, useState } from '@wordpress/element';
 import { DatePicker as FUIDatePicker } from '@bsf/force-ui';
 import { cn } from '@Utils/Helpers';
 

@@ -11,7 +11,7 @@ import { addQueryArgs } from '@wordpress/url';
  *
  * @return {string} The nonce for REST API requests
  */
-const getNonce = () => {
+export const getNonce = () => {
 	return srfm_admin?.global_settings_nonce || '';
 };
 
@@ -62,6 +62,23 @@ export const fetchEntriesList = ( params = {} ) => {
 
 	return apiFetch( {
 		path: addQueryArgs( '/sureforms/v1/entries/list', queryParams ),
+		method: 'GET',
+		headers: {
+			'Content-Type': 'application/json',
+			'X-WP-Nonce': getNonce(),
+		},
+	} );
+};
+
+/**
+ * Fetch single entry details
+ *
+ * @param {number} entryId - Entry ID to fetch
+ * @return {Promise<Object>} Promise resolving to entry data
+ */
+export const fetchEntryDetail = ( entryId ) => {
+	return apiFetch( {
+		path: `/sureforms/v1/entry/${ entryId }/details`,
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json',
@@ -164,6 +181,31 @@ export const exportEntries = ( params = {} ) => {
 			search: params.search || '',
 			date_from: params.date_from || '',
 			date_to: params.date_to || '',
+		},
+	} );
+};
+
+/**
+ * Fetch entry logs with pagination
+ *
+ * @param {Object} params          - Query parameters
+ * @param {number} params.id       - Entry ID
+ * @param {number} params.page     - Page number (default: 1)
+ * @param {number} params.per_page - Logs per page (default: 3)
+ * @return {Promise<Object>} Promise resolving to logs data with pagination
+ */
+export const fetchEntryLogs = ( { id, page = 1, per_page = 3 } ) => {
+	const queryParams = {
+		page,
+		per_page,
+	};
+
+	return apiFetch( {
+		path: addQueryArgs( `/sureforms/v1/entry/${ id }/logs`, queryParams ),
+		method: 'GET',
+		headers: {
+			'Content-Type': 'application/json',
+			'X-WP-Nonce': getNonce(),
 		},
 	} );
 };

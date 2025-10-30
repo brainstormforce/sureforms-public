@@ -296,7 +296,7 @@ class Rest_Api {
 	 * Get entries list with filters and pagination.
 	 *
 	 * @param \WP_REST_Request $request Full details about the request.
-	 * @since 1.0.0
+	 * @since x.x.x
 	 * @return \WP_REST_Response
 	 */
 	public function get_entries_list( $request ) {

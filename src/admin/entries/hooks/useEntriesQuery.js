@@ -9,10 +9,12 @@ import { __, _n, sprintf } from '@wordpress/i18n';
 import {
 	fetchEntriesList,
 	fetchFormsList,
+	fetchEntryDetail,
 	updateEntriesReadStatus,
 	trashEntries,
 	deleteEntries,
 	exportEntries,
+	fetchEntryLogs,
 } from '../api/entriesApi';
 
 /**
@@ -27,7 +29,7 @@ export const entriesKeys = {
 	lists: () => [ ...entriesKeys.all, 'list' ],
 	list: ( filters ) => [ ...entriesKeys.lists(), filters ],
 	details: () => [ ...entriesKeys.all, 'detail' ],
-	detail: ( id ) => [ ...entriesKeys.details(), id ],
+	detail: ( id ) => [ ...entriesKeys.details(), +id ],
 };
 
 /**
@@ -38,6 +40,22 @@ export const entriesKeys = {
 export const formsKeys = {
 	all: [ 'forms' ],
 	list: () => [ ...formsKeys.all, 'list' ],
+};
+
+/**
+ * Query key factory for entry logs
+ *
+ * @param {number} entryId - Entry ID
+ * @return {Object} Query key object
+ */
+export const entryLogsKeys = {
+	all: [ 'entry-logs' ],
+	lists: () => [ ...entryLogsKeys.all, 'list' ],
+	list: ( entryId, pagination ) => [
+		...entryLogsKeys.lists(),
+		+entryId,
+		pagination,
+	],
 };
 
 /**
@@ -70,6 +88,21 @@ export const useForms = () => {
 };
 
 /**
+ * Hook to fetch single entry details
+ *
+ * @param {number} entryId - Entry ID to fetch
+ * @return {Object} Query result
+ */
+export const useEntryDetail = ( entryId ) => {
+	return useQuery( {
+		queryKey: entriesKeys.detail( entryId ),
+		queryFn: () => fetchEntryDetail( entryId ),
+		enabled: !! entryId, // Only run query if entryId is provided
+		staleTime: 1000 * 60 * 5, // Consider data fresh for 5 minutes
+	} );
+};
+
+/**
  * Hook to update entries read status
  *
  * @return {Object} Mutation result
@@ -79,9 +112,54 @@ export const useUpdateEntriesReadStatus = () => {
 
 	return useMutation( {
 		mutationFn: updateEntriesReadStatus,
-		onSuccess: () => {
+		onSuccess: ( data, variables ) => {
 			// Invalidate and refetch entries list
 			queryClient.invalidateQueries( { queryKey: entriesKeys.lists() } );
+
+			// Invalidate entry detail queries if entry IDs are provided
+			if ( variables?.entry_ids?.length > 0 ) {
+				variables.entry_ids.forEach( ( entryId ) => {
+					queryClient.invalidateQueries( {
+						queryKey: entriesKeys.detail( entryId ),
+					} );
+				} );
+			}
+
+			// Skip showing toast if requested
+			if ( variables?.skipToast ) {
+				return;
+			}
+
+			// Show success message
+			const action = variables?.action || '';
+			const count = variables?.entry_ids?.length || 1;
+			if ( action === 'read' ) {
+				toast.success(
+					sprintf(
+						// translators: %s is the number of entries marked as read.
+						_n(
+							'%s entry marked as read.',
+							'%s entries marked as read.',
+							count,
+							'sureforms'
+						),
+						count
+					)
+				);
+			} else if ( action === 'unread' ) {
+				toast.success(
+					sprintf(
+						// translators: %s is the number of entries marked as unread.
+						_n(
+							'%s entry marked as unread.',
+							'%s entries marked as unread.',
+							count,
+							'sureforms'
+						),
+						count
+					)
+				);
+			}
 		},
 		onError: ( error ) => {
 			const msg =
@@ -215,5 +293,24 @@ export const useExportEntries = () => {
 				);
 			toast.error( msg );
 		},
+	} );
+};
+
+/**
+ * Hook to fetch entry logs with pagination
+ *
+ * @param {number} entryId    - Entry ID to fetch logs for
+ * @param {Object} pagination - Object with page and per_page properties
+ * @return {Object} Query result
+ */
+export const useEntryLogs = (
+	entryId,
+	pagination = { page: 1, per_page: 3 }
+) => {
+	return useQuery( {
+		queryKey: entryLogsKeys.list( entryId, pagination ),
+		queryFn: () => fetchEntryLogs( { id: entryId, ...pagination } ),
+		enabled: !! entryId,
+		staleTime: 1000 * 60 * 5, // Consider data fresh for 5 minutes
 	} );
 };

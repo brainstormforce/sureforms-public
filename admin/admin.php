@@ -768,17 +768,6 @@ class Admin {
 			'sureforms_dashboard_url'    => admin_url( '/admin.php?page=sureforms_menu' ),
 			'plugin_version'             => SRFM_VER,
 			'global_settings_nonce'      => Helper::current_user_can() ? wp_create_nonce( 'wp_rest' ) : '',
-			'view_entry_url'             => wp_nonce_url(
-				add_query_arg(
-					[
-						'entry_id' => '[id]',
-						'view'     => 'details',
-						'action'   => 'read',
-					],
-					admin_url( 'admin.php?page=sureforms_entries' )
-				),
-				'srfm_entries_action'
-			),
 			'is_pro_active'              => Helper::has_pro(),
 			'is_first_form_created'      => self::is_first_form_created(),
 			'check_three_days_threshold' => self::check_first_form_creation_threshold(),
@@ -862,7 +851,6 @@ class Admin {
 				)
 			);
 			wp_enqueue_style( SRFM_SLUG . '-dashboard', SRFM_URL . 'assets/build/dashboard.css', [], SRFM_VER, 'all' );
-
 		}
 
 		if ( $is_screen_sureforms_form_settings ) {
