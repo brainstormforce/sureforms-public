@@ -135,7 +135,7 @@ const Edit = ( props ) => {
 			component: ! isRichText && (
 				<>
 					<SRFMNumberControl
-						label={ __( 'Text Maximum Length', 'sureforms' ) }
+						label={ __( 'Maximum Characters', 'sureforms' ) }
 						value={ maxLength }
 						displayUnit={ false }
 						data={ {
@@ -151,7 +151,7 @@ const Edit = ( props ) => {
 						showControlHeader={ false }
 					/>
 					<Range
-						label={ __( 'Text Area Height', 'sureforms' ) }
+						label={ __( 'Textarea Height', 'sureforms' ) }
 						value={ rows }
 						displayUnit={ false }
 						min={ 1 }
