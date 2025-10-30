@@ -59,7 +59,6 @@ const ModalInputBox = ( {
 				placement="top"
 				triggers={ [ 'hover', 'focus' ] }
 				variant="dark"
-				open={true}
 			>
 				<Info className="size-4 !text-icon-secondary" />
 			</Tooltip>
