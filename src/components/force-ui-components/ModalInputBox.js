@@ -51,7 +51,7 @@ const ModalInputBox = ( {
 				content={
 					<span>
 						{ __(
-							'Excepted format for emails - email@sureforms.com or John Doe <email@sureforms.com>',
+							'Expected format for emails - email@sureforms.com or John Doe <email@sureforms.com>',
 							'sureforms'
 						) }
 					</span>
