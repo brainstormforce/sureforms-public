@@ -173,6 +173,7 @@ const Edit = ( props ) => {
 			id: 'help-text',
 			component: (
 				<SRFMTextControl
+					variant="textarea"
 					label={ __( 'Help Text', 'sureforms' ) }
 					value={ help }
 					data={ {

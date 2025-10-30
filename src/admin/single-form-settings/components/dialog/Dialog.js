@@ -5,6 +5,7 @@ import {
 	useEffect,
 	memo,
 	useContext,
+	useMemo,
 } from '@wordpress/element';
 import {
 	Dialog as ForceUIDialog,
@@ -16,16 +17,23 @@ import SidebarNav from './SidebarNav';
 import {
 	Settings,
 	Code2Icon,
-	CpuIcon,
 	CircleCheckBig,
 	ShieldCheckIcon,
 	XIcon,
+	TriangleAlert,
+	UserPlus,
+	FileDown,
+	FilePlus,
+	File,
+	FileText,
+	Cpu,
+	Link2,
 } from 'lucide-react';
 
-import Integrations from '../integrations';
 import Suretriggers from '../integrations/suretriggers';
 import Compliance from '../Compliance';
 import FormCustomCssPanel from '../FormCustomCssPanel';
+import SpamProtection from '../SpamProtection';
 import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
 import EmailNotification from '../email-settings/EmailNotification';
@@ -36,6 +44,9 @@ import { useDispatch, useSelect } from '@wordpress/data';
 import { store as blockEditorStore } from '@wordpress/block-editor';
 import FormRestriction from '../form-restrictions/FormRestriction';
 import { FormRestrictionContext } from '../form-restrictions/context';
+import FeaturePreview from '../FeaturePreview';
+import OttoKitPage from '@Admin/settings/pages/OttoKit';
+import ottoKitIcon from '@Image/suretriggers-grayscale.svg';
 
 const Dialog = ( {
 	open,
@@ -110,9 +121,6 @@ const Dialog = ( {
 	);
 
 	const [ parentTab, setParentTab ] = useState( null );
-	const [ action, setAction ] = useState();
-	const [ CTA, setCTA ] = useState();
-	const [ pluginConnected, setPluginConnected ] = useState( null );
 
 	const tabs = applyFilters(
 		'srfm.formSettings.tabs',
@@ -140,6 +148,12 @@ const Dialog = ( {
 				),
 			},
 			{
+				id: 'spam_protection',
+				label: __( 'Spam Protection', 'sureforms' ),
+				icon: <TriangleAlert />,
+				component: <SpamProtection />,
+			},
+			{
 				id: 'advanced-settings',
 				label: __( 'Advanced Settings', 'sureforms' ),
 				icon: <Settings />,
@@ -151,20 +165,187 @@ const Dialog = ( {
 				),
 			},
 			{
-				id: 'integrations',
-				label: __( 'Integrations', 'sureforms' ),
-				icon: <CpuIcon />,
+				id: 'ottokit',
+				label: __( 'OttoKit', 'sureforms' ),
+				icon: (
+					<img
+						src={ ottoKitIcon }
+						alt={ __( 'OttoKit', 'sureforms' ) }
+					/>
+				),
 				component: (
-					<Integrations
-						{ ...{
-							setSelectedTab,
-							action,
-							setAction,
-							CTA,
-							setCTA,
-							pluginConnected,
-							setPluginConnected,
-						} }
+					<OttoKitPage
+						{ ...{ isFormSettings: true, setSelectedTab } }
+					/>
+				),
+			},
+			{
+				id: 'integrations-preview',
+				label: __( 'Integrations', 'sureforms' ),
+				icon: <Cpu />,
+				component: (
+					<FeaturePreview
+						featureName={ __( 'Integrations', 'sureforms' ) }
+						featureHelpText={ __(
+							'Connect SureForms with your favorite apps to automate tasks and sync data seamlessly.',
+							'sureforms'
+						) }
+						icon={
+							<Link2
+								className="text-orange-500"
+								size={ 40 }
+								strokeWidth={ 1 }
+							/>
+						}
+						title={ __(
+							'Connect Native Integrations with SureForms',
+							'sureforms'
+						) }
+						subtitle={ __(
+							'Unlock powerful integrations in the Premimum plan to automate your workflows and connect SureForms directly with your favorite tools.',
+							'sureforms'
+						) }
+						featureList={ [
+							__(
+								'Send form submissions straight to CRMs, email, and marketing platforms.',
+								'sureforms'
+							),
+							__(
+								'Automate repetitive tasks with seamless data syncing.',
+								'sureforms'
+							),
+							__(
+								'Access exclusive native integrations for faster workflows.',
+								'sureforms'
+							),
+						] }
+						utmMedium="integrations-preview-single-form-settings"
+					/>
+				),
+			},
+			{
+				id: 'pdf-generation-preview',
+				label: __( 'PDF Generation', 'sureforms' ),
+				icon: <File />,
+				component: (
+					<FeaturePreview
+						featureName={ __( 'PDF Generation', 'sureforms' ) }
+						featureHelpText={ __(
+							'Generate and customize PDF copies of form submissions.',
+							'sureforms'
+						) }
+						icon={
+							<FileDown
+								className="text-orange-500"
+								size={ 40 }
+								strokeWidth={ 1 }
+							/>
+						}
+						title={ __( 'Generate Submission PDFs', 'sureforms' ) }
+						subtitle={ __(
+							'Turn every form entry into a polished PDF file, making it perfect for reports, records, or sharing.',
+							'sureforms'
+						) }
+						featureList={ [
+							__(
+								'Automatically generate PDFs from your form submissions.',
+								'sureforms'
+							),
+							__(
+								'Customize PDF templates with your branding.',
+								'sureforms'
+							),
+							__(
+								'Download or email PDFs instantly.',
+								'sureforms'
+							),
+						] }
+						utmMedium="pdf-preview-single-form-settings"
+					/>
+				),
+			},
+			{
+				id: 'user-login-preview',
+				label: __( 'User Registration', 'sureforms' ),
+				icon: <UserPlus />,
+				component: (
+					<FeaturePreview
+						featureName={ __( 'User Registration', 'sureforms' ) }
+						featureHelpText={ __(
+							'Onboard new users or update existing accounts through beautiful looking forms.',
+							'sureforms'
+						) }
+						icon={
+							<UserPlus
+								className="text-orange-500"
+								size={ 40 }
+								strokeWidth={ 1 }
+							/>
+						}
+						title={ __(
+							'Register Users with SureForms',
+							'sureforms'
+						) }
+						subtitle={ __(
+							'Streamline the entire user onboarding process for your sites with seamless form-powered logins and registrations.',
+							'sureforms'
+						) }
+						featureList={ [
+							__(
+								'Register new users directly via your form submissions.',
+								'sureforms'
+							),
+							__(
+								'Create or update existing accounts by mapping form data to user fields.',
+								'sureforms'
+							),
+							__(
+								'Assign roles and control access automatically.',
+								'sureforms'
+							),
+						] }
+						utmMedium="user-registration-preview-single-form-settings"
+					/>
+				),
+			},
+			{
+				id: 'post-feed-preview',
+				label: __( 'Post Feed', 'sureforms' ),
+				icon: <FileText />,
+				component: (
+					<FeaturePreview
+						featureName={ __( 'Post Feed', 'sureforms' ) }
+						featureHelpText={ __(
+							'Transform your form submission into WordPress posts.',
+							'sureforms'
+						) }
+						icon={
+							<FilePlus
+								className="text-orange-500"
+								size={ 40 }
+								strokeWidth={ 1 }
+							/>
+						}
+						title={ __( 'Post Feed', 'sureforms' ) }
+						subtitle={ __(
+							'Automatically turn form submissions into WordPress posts, pages, or custom post types. Save big on time and let your forms publish content directly.',
+							'sureforms'
+						) }
+						featureList={ [
+							__(
+								'Create posts, pages, or CPTs from your form entries.',
+								'sureforms'
+							),
+							__(
+								'Map form fields to your post fields easily.',
+								'sureforms'
+							),
+							__(
+								'Automate the content publishing flow with few simple steps.',
+								'sureforms'
+							),
+						] }
+						utmMedium="post-feed-preview-single-form-settings"
 					/>
 				),
 			},
@@ -176,10 +357,10 @@ const Dialog = ( {
 			},
 			{
 				id: 'suretriggers',
-				parent: 'integrations',
+				parent: 'ottokit',
 				label: __( 'SureTriggers', 'sureforms' ),
 				icon: {},
-				component: <Suretriggers { ...{ setSelectedTab } } />,
+				component: <Suretriggers />,
 			},
 			/* can contain child tabs not linked to nav */
 			/* add parent nav id for child tabs */
@@ -209,9 +390,26 @@ const Dialog = ( {
 		setSelectedTab( targetTab );
 	}, [ targetTab, open ] );
 
+	// Apply filter to allow specific classes for pro tabs.
+	const tabSpecificClasses = useMemo(
+		() =>
+			applyFilters(
+				'srfm.formSettings.dialog.tabClasses',
+				{
+					suretriggers:
+						'h-full min-w-[800px] bg-background-primary shadow-sm rounded-xl',
+					ottokit:
+						'min-w-[800px] bg-background-primary p-4 shadow-sm rounded-xl border-subtle',
+					default: 'h-full max-w-[43.5rem]',
+				},
+				selectedTab
+			),
+		[ selectedTab ]
+	);
+
 	const containerClassName = cn(
-		'w-full h-full mx-auto',
-		selectedTab === 'suretriggers' ? 'min-w-[800px]' : 'max-w-[43.5rem]'
+		'w-full mx-auto',
+		tabSpecificClasses[ selectedTab ] || tabSpecificClasses.default
 	);
 
 	return (
@@ -223,14 +421,14 @@ const Dialog = ( {
 				scrollLock
 				open={ open }
 				setOpen={ setOpen }
-				className="[&>div>div]:h-full z-99999"
+				className="[&>div>div]:h-full z-99999 border-radius-none"
 			>
 				<ForceUIDialog.Backdrop />
-				<ForceUIDialog.Panel className="srfm-dialog-panel size-[calc(100%-80px)] m-auto">
+				<ForceUIDialog.Panel className="h-full w-full m-auto rounded-none srfm-dialog-panel">
 					<Container
 						direction="column"
 						gap="none"
-						className="w-full h-full py-3 divide-y divide-x-0 divide-solid divide-border-subtle"
+						className="w-full h-full pt-3 divide-y divide-x-0 divide-solid divide-border-subtle"
 					>
 						<Container className="py-2 px-4" justify="between">
 							<Title
