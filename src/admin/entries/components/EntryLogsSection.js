@@ -118,6 +118,7 @@ const EntryLogsSection = ( { entryId, onConfirmation } ) => {
 													size={ 14 }
 													weight={ 400 }
 													color="primary"
+													className="[overflow-wrap:anywhere]"
 													dangerouslySetInnerHTML={ {
 														__html: domPurify.sanitize(
 															message
