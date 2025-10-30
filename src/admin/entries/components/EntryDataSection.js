@@ -81,7 +81,7 @@ export const RenderField = ( props ) => {
 					{ ! Array.isArray( field.value ) && (
 						<div className="flex-1">
 							<span className="text-sm font-medium text-text-secondary">
-								{ field?.value ?? field }
+								{ field?.value ?? '-' }
 							</span>
 						</div>
 					) }
