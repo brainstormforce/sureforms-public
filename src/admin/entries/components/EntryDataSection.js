@@ -2,6 +2,7 @@ import { isValidElement } from '@wordpress/element';
 import { sprintf, _n, __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
 import EntryEdit from './EntryEdit';
+import { decodeHTMLEntities } from '../utils/entryHelpers';
 
 /**
  * Render field value - handles both regular and repeater fields
@@ -33,11 +34,17 @@ const formatField = ( field ) => {
 		};
 	}
 
+	let decodedValue = value;
+	if ( typeof value === 'string' && value.match( /&[a-zA-Z0-9#]+;/ ) ) {
+		// If field value contains encoded html entities, decode them
+		decodedValue = decodeHTMLEntities( value );
+	}
+
 	// Handle regular fields
 	return {
 		...field,
 		label,
-		value: value || '-',
+		value: decodedValue || '-',
 	};
 };
 
@@ -80,7 +87,7 @@ export const RenderField = ( props ) => {
 					) }
 					{ ! Array.isArray( field.value ) && (
 						<div className="flex-1">
-							<span className="text-sm font-medium text-text-secondary">
+							<span className="text-sm font-medium text-text-secondary [overflow-wrap:anywhere]">
 								{ field?.value ?? '-' }
 							</span>
 						</div>

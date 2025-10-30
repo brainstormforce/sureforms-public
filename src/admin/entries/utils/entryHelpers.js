@@ -216,3 +216,26 @@ export const getPaginationRange = (
 
 	return pages;
 };
+
+/**
+ * Decode HTML entities (supports double-encoding).
+ *
+ * @param {string} html - The HTML string to decode.
+ * @return {string} Decoded string.
+ */
+export const decodeHTMLEntities = ( html ) => {
+	if ( ! html ) {
+		return '';
+	}
+	const textarea = document.createElement( 'textarea' );
+	textarea.innerHTML = html;
+	let decoded = textarea.value;
+
+	// Check if still encoded and decode again if needed
+	if ( decoded.includes( '&lt;' ) || decoded.includes( '&gt;' ) || decoded.includes( '&amp;' ) ) {
+		textarea.innerHTML = decoded;
+		decoded = textarea.value;
+	}
+
+	return decoded;
+};
