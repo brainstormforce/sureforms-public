@@ -92,16 +92,15 @@ class Background_Process {
 	 * @return \WP_REST_Response|\WP_Error Response object on success, or WP_Error object on failure.
 	 */
 	public function handle_after_submission( $request ) {
-		// get nonce from get param
 		$this->submission_id = Helper::get_integer_value( $request->get_param( 'submission_id' ) );
 
-		// if is_after_submission_process_triggered is already true, return early
 		$entry  = Entries::get( $this->submission_id );
 		$extras = Helper::get_array_value( $entry['extras'] )[0] ?? [];
 
-		$is_after_submission_process_triggered = json_decode( Helper::get_string_value( $extras ), true )['is_after_submission_process_triggered'] ?? false;
+		$extras_decoded                        = json_decode( Helper::get_string_value( $extras ), true );
+		$is_after_submission_process_triggered = is_array( $extras_decoded ) && isset( $extras_decoded['is_after_submission_process_triggered'] ) ? $extras_decoded['is_after_submission_process_triggered'] : false;
 
-		if ( isset( $is_after_submission_process_triggered ) && true === $is_after_submission_process_triggered ) {
+		if ( $is_after_submission_process_triggered === true ) {
 			return new \WP_Error(
 				'process_already_triggered',
 				__( 'After submission process has already been triggered for this submission.', 'sureforms' ),
