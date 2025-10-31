@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect, useRef } from '@wordpress/element';
+import { useContext, useState, useEffect } from '@wordpress/element';
 import { applyFilters } from '@wordpress/hooks';
 import {
 	Table,
@@ -6,17 +6,13 @@ import {
 	Button,
 	Input,
 	Select,
-	DatePicker,
 	Pagination,
-	Container,
-	Dialog,
 	toast,
 	Tooltip,
 } from '@bsf/force-ui';
 import {
 	Eye as ViewIcon,
 	Search,
-	Calendar,
 	X,
 	Trash as DeleteIcon,
 	ExternalLink,
@@ -24,24 +20,30 @@ import {
 	ChevronUp,
 	ChevronDown,
 } from 'lucide-react';
-import { __, sprintf } from '@wordpress/i18n';
+import { __ } from '@wordpress/i18n';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { PaymentContext } from '../components/context';
-import { fetchPayments, bulkDeletePayments } from '../components/apiCalls';
+import {
+	fetchPayments,
+	bulkDeletePayments,
+	fetchForms,
+} from '../components/apiCalls';
 import {
 	getPaginationRange,
 	getStatusVariant,
 	formatAmount,
 	formatDateTime,
-	getSelectedDateRange,
 	getStatusLabel,
+	formatOrderId,
+	PartialAmount,
 } from '../components/utils';
+import DeleteConfirmationDialog from '../components/DeleteConfirmationDialog';
+import DateRangePicker from '../components/DateRangePicker';
 import {
 	getUrlParams,
 	updateUrlParams,
 	clearUrlParams,
 } from '../components/urlUtils';
-import LoadingSkeleton from '@Admin/components/LoadingSkeleton';
 import PaymentListPlaceHolder from '../components/paymentListPlaceHolder';
 
 // Payment status filters - mapped to database statuses
@@ -55,6 +57,27 @@ const STATUS_FILTERS = [
 	{ value: 'failed', label: __( 'Failed', 'sureforms' ) },
 	{ value: 'refunded', label: __( 'Refunded', 'sureforms' ) },
 ];
+
+/**
+ * Custom hook for debouncing a value
+ *
+ * @param {any}    value - The value to debounce
+ * @param {number} delay - Delay in milliseconds
+ * @return {any} Debounced value
+ */
+const useDebounce = ( value, delay = 500 ) => {
+	const [ debouncedValue, setDebouncedValue ] = useState( value );
+
+	useEffect( () => {
+		const handler = setTimeout( () => {
+			setDebouncedValue( value );
+		}, delay );
+
+		return () => clearTimeout( handler );
+	}, [ value, delay ] );
+
+	return debouncedValue;
+};
 
 const PaymentTable = () => {
 	// Selection state management
@@ -73,28 +96,49 @@ const PaymentTable = () => {
 	// Filter and search state
 	const [ searchTerm, setSearchTerm ] = useState( '' );
 	const [ filter, setFilter ] = useState( '' );
+	const [ formFilter, setFormFilter ] = useState( '' );
 	const [ selectedDates, setSelectedDates ] = useState( {
 		from: null,
 		to: null,
 	} );
-	const [ isDatePickerOpen, setIsDatePickerOpen ] = useState( false );
-	const datePickerContainerRef = useRef( null );
 	const [ sortBy, setSortBy ] = useState( null ); // 'amount-asc' or 'amount-desc'
+
+	// Debounce search term to avoid excessive API calls
+	const debouncedSearchTerm = useDebounce( searchTerm, 500 );
 
 	// Pagination state
 	const [ page, setPage ] = useState( 1 );
 	const [ itemsPerPage, setItemsPerPage ] = useState( 10 );
 
+	// Fetch forms list using React Query
+	const { data: formsData } = useQuery( {
+		queryKey: [ 'forms' ],
+		queryFn: fetchForms,
+		staleTime: 10 * 60 * 1000, // 10 minutes - forms don't change often
+		refetchOnWindowFocus: false,
+	} );
+
+	const formsList = formsData || [];
+
 	// Fetch payments data using React Query
 	const queryData = useQuery( {
 		queryKey: [
 			'payments',
-			{ searchTerm, filter, selectedDates, page, itemsPerPage, sortBy },
+			{
+				searchTerm: debouncedSearchTerm,
+				filter,
+				formFilter,
+				selectedDates,
+				page,
+				itemsPerPage,
+				sortBy,
+			},
 		],
 		queryFn: () =>
 			fetchPayments( {
-				searchTerm,
+				searchTerm: debouncedSearchTerm,
 				filter,
+				formFilter,
 				selectedDates,
 				page,
 				itemsPerPage,
@@ -216,6 +260,9 @@ const PaymentTable = () => {
 		if ( urlParams.srfm_payment_status ) {
 			setFilter( urlParams.srfm_payment_status );
 		}
+		if ( urlParams.srfm_payment_form ) {
+			setFormFilter( urlParams.srfm_payment_form );
+		}
 		if ( urlParams.srfm_payment_per_page ) {
 			setItemsPerPage( parseInt( urlParams.srfm_payment_per_page ) );
 		}
@@ -244,12 +291,12 @@ const PaymentTable = () => {
 		}
 	}, [ page ] );
 
-	// Sync search to URL
+	// Sync search to URL (use debounced value to avoid URL flickering)
 	useEffect( () => {
 		updateUrlParams( {
-			srfm_payment_search: searchTerm || undefined,
+			srfm_payment_search: debouncedSearchTerm || undefined,
 		} );
-	}, [ searchTerm ] );
+	}, [ debouncedSearchTerm ] );
 
 	// Sync status filter to URL
 	useEffect( () => {
@@ -257,6 +304,13 @@ const PaymentTable = () => {
 			srfm_payment_status: filter || undefined,
 		} );
 	}, [ filter ] );
+
+	// Sync form filter to URL
+	useEffect( () => {
+		updateUrlParams( {
+			srfm_payment_form: formFilter || undefined,
+		} );
+	}, [ formFilter ] );
 
 	// Sync items per page to URL (only if not default)
 	useEffect( () => {
@@ -297,6 +351,20 @@ const PaymentTable = () => {
 		} );
 	}, [ sortBy ] );
 
+	// Reset pagination when filters change
+	useEffect( () => {
+		// Only reset if not on page 1 (avoid unnecessary state update on initial load)
+		if ( page !== 1 ) {
+			setPage( 1 );
+		}
+	}, [
+		debouncedSearchTerm,
+		filter,
+		formFilter,
+		selectedDates.from,
+		selectedDates.to,
+	] );
+
 	// Handle browser back/forward buttons
 	useEffect( () => {
 		const handlePopState = () => {
@@ -306,6 +374,7 @@ const PaymentTable = () => {
 			setPage( parseInt( urlParams.srfm_payment_page ) || 1 );
 			setSearchTerm( urlParams.srfm_payment_search || '' );
 			setFilter( urlParams.srfm_payment_status || '' );
+			setFormFilter( urlParams.srfm_payment_form || '' );
 			setItemsPerPage(
 				parseInt( urlParams.srfm_payment_per_page ) || 10
 			);
@@ -329,26 +398,6 @@ const PaymentTable = () => {
 			window.removeEventListener( 'popstate', handlePopState );
 		};
 	}, [] );
-
-	// Click Outside Handler for DatePicker
-	useEffect( () => {
-		function handleClickOutside( event ) {
-			if (
-				isDatePickerOpen &&
-				datePickerContainerRef.current &&
-				! datePickerContainerRef.current.contains( event.target )
-			) {
-				setIsDatePickerOpen( false );
-			}
-		}
-
-		// Bind the event listener
-		document.addEventListener( 'mousedown', handleClickOutside );
-		return () => {
-			// Unbind the event listener on cleanup
-			document.removeEventListener( 'mousedown', handleClickOutside );
-		};
-	}, [ isDatePickerOpen ] );
 
 	// Handle individual row selection
 	const handleSelectRow = ( rowId ) => {
@@ -396,15 +445,9 @@ const PaymentTable = () => {
 		setDeletePaymentIds( [] );
 	};
 
-	// Placeholder handlers for filters
+	// Date range filter handlers
 	const handleDateApply = ( dates ) => {
 		setSelectedDates( dates );
-		setIsDatePickerOpen( false );
-		// TODO: Implement date filtering
-	};
-
-	const handleDateCancel = () => {
-		setIsDatePickerOpen( false );
 	};
 
 	// Pagination event handlers
@@ -461,8 +504,12 @@ const PaymentTable = () => {
 			'srfm_payment_admin_table_head_content',
 			[
 				{
-					key: 'form',
-					title: __( 'Order Id', 'sureforms' ),
+					key: 'order_id',
+					title: __( 'Order ID', 'sureforms' ),
+				},
+				{
+					key: 'customer_email',
+					title: __( 'Customer Email', 'sureforms' ),
 				},
 				{
 					key: 'type',
@@ -472,7 +519,7 @@ const PaymentTable = () => {
 					key: 'amountPaid',
 					title: (
 						<div className="flex items-center gap-2">
-							{ __( 'Amount Paid', 'sureforms' ) }
+							{ __( 'Amount', 'sureforms' ) }
 							<Button
 								variant="ghost"
 								size="sm"
@@ -602,10 +649,15 @@ const PaymentTable = () => {
 			</div>
 		);
 
+		const rawStatus =
+			'subscription' === payment.type
+				? payment.subscription_status
+				: payment.status;
+
 		const rowStatusBadge = (
 			<Badge
-				label={ getStatusLabel( payment.status ) }
-				variant={ getStatusVariant( payment.status ) }
+				label={ getStatusLabel( rawStatus ) }
+				variant={ getStatusVariant( rawStatus ) }
 				size="sm"
 				className="max-w-fit"
 				disableHover
@@ -635,29 +687,39 @@ const PaymentTable = () => {
 		const refundedAmount = parseFloat( payment.refunded_amount || 0 );
 		const remainingAmount = originalAmount - refundedAmount;
 
-		// Format amount display based on refund status
+		// Format amount display based on refund status.
 		const rowAmountPaid = isPartiallyRefunded ? (
-			<span style={ { display: 'flex', gap: '8px' } }>
-				<span
-					style={ {
-						textDecoration: 'line-through',
-						color: '#6c757d',
-					} }
-				>
-					{ formatAmount( originalAmount, payment.currency ) }
-				</span>
-				<strong>
-					{ formatAmount( remainingAmount, payment.currency ) }
-				</strong>
-			</span>
+			<PartialAmount
+				amount={ originalAmount }
+				partialAmount={ remainingAmount }
+				currency={ payment.currency }
+			/>
 		) : (
 			formatAmount( originalAmount, payment.currency )
+		);
+
+		let orderId = formatOrderId( payment );
+		orderId = (
+			<Button
+				variant="ghost"
+				size="sm"
+				className="p-0 text-text-secondary text-sm weight-medium font-normal"
+				onClick={ () =>
+					handleView( {
+						id: payment.id,
+						type: payment.type,
+					} )
+				}
+			>
+				{ orderId }
+			</Button>
 		);
 
 		const tableRowContent = applyFilters(
 			'srfm_payment_admin_table_row_content',
 			[
-				{ key: 'form', content: `SF-${ payment.id }` },
+				{ key: 'order_id', content: orderId },
+				{ key: 'customer_email', content: payment.customer_email },
 				{ key: 'type', content: paymentType },
 				{ key: 'amountPaid', content: rowAmountPaid },
 				{ key: 'status', content: rowStatusBadge },
@@ -683,94 +745,25 @@ const PaymentTable = () => {
 		);
 	};
 
-	if ( isLoading ) {
-		return (
-			<div className="srfm-single-payment-wrapper min-h-screen bg-background-secondary p-8">
-				<Container
-					containerType="flex"
-					direction="column"
-					gap="xs"
-					className="w-full h-full"
-				>
-					<LoadingSkeleton count={ 10 } className="min-h-[44px]" />
-				</Container>
-			</div>
-		);
-	}
-
-	// IF paymentsData.transactions_is_empty = "with_no_filter"
+	// IF paymentsData.transactions_is_empty = "with_no_filter" (only on initial load)
 	if (
-		! paymentsData ||
-		paymentsData?.transactions_is_empty === 'with_no_filter'
+		! isLoading &&
+		( ! paymentsData ||
+			paymentsData?.transactions_is_empty === 'with_no_filter' )
 	) {
 		return <PaymentListPlaceHolder />;
 	}
 
 	// Delete confirmation dialog
 	const deleteConfirmationDialog = (
-		<Dialog
-			open={ isDeleteDialogOpen }
-			setOpen={ setIsDeleteDialogOpen }
-			design="simple"
-			exitOnEsc
-			scrollLock
-		>
-			<Dialog.Backdrop />
-			<Dialog.Panel>
-				<Dialog.Header>
-					<div className="flex items-center justify-between">
-						<Dialog.Title>
-							{ __( 'Delete Payments', 'sureforms' ) }
-						</Dialog.Title>
-						<Dialog.CloseButton onClick={ cancelDelete } />
-					</div>
-					<Dialog.Description>
-						{ deletePaymentIds.length === 1
-							? __(
-								'Are you sure you want to delete this payment? This action cannot be undone.',
-								'sureforms'
-							  )
-							: sprintf(
-								/* translators: %d: number of payments */
-								__(
-									'Are you sure you want to delete %d payments? This action cannot be undone.',
-									'sureforms'
-								),
-								deletePaymentIds.length
-							  ) }
-					</Dialog.Description>
-				</Dialog.Header>
-				<Dialog.Body>
-					<div className="p-3 border border-red-200 rounded-md bg-red-50">
-						<p className="text-sm text-red-700">
-							{ __(
-								'Warning: Deleting payments will permanently remove all associated data including notes, logs, and transaction information.',
-								'sureforms'
-							) }
-						</p>
-					</div>
-				</Dialog.Body>
-				<Dialog.Footer className="flex justify-end gap-2">
-					<Button
-						variant="outline"
-						onClick={ cancelDelete }
-						disabled={ bulkDeleteMutation.isPending }
-					>
-						{ __( 'Cancel', 'sureforms' ) }
-					</Button>
-					<Button
-						variant="primary"
-						onClick={ confirmDelete }
-						disabled={ bulkDeleteMutation.isPending }
-						className="bg-red-600 hover:bg-red-700 border-red-600 hover:border-red-700"
-					>
-						{ bulkDeleteMutation.isPending
-							? __( 'Deleting…', 'sureforms' )
-							: __( 'Delete Payments', 'sureforms' ) }
-					</Button>
-				</Dialog.Footer>
-			</Dialog.Panel>
-		</Dialog>
+		<DeleteConfirmationDialog
+			isOpen={ isDeleteDialogOpen }
+			setIsOpen={ setIsDeleteDialogOpen }
+			deletePaymentIds={ deletePaymentIds }
+			onConfirm={ confirmDelete }
+			onCancel={ cancelDelete }
+			isDeleting={ bulkDeleteMutation.isPending }
+		/>
 	);
 
 	return (
@@ -780,7 +773,7 @@ const PaymentTable = () => {
 					{ /* Filters or Batch Actions */ }
 					<div className="flex items-center justify-between p-1.25">
 						<h1 className="text-xl font-semibold text-text-primary">
-							{ __( 'Payment Logs', 'sureforms' ) }
+							{ __( 'Payments', 'sureforms' ) }
 						</h1>
 						<div className="flex space-x-4">
 							{ selectedRows.length > 0 ? (
@@ -805,6 +798,7 @@ const PaymentTable = () => {
 									{ ( selectedDates.from ||
 										selectedDates.to ||
 										filter ||
+										formFilter ||
 										searchTerm ) && (
 										<Button
 											variant="link"
@@ -816,6 +810,7 @@ const PaymentTable = () => {
 													to: null,
 												} );
 												setFilter( '' );
+												setFormFilter( '' );
 												setSearchTerm( '' );
 												setPage( 1 );
 												setSortBy( null );
@@ -824,6 +819,7 @@ const PaymentTable = () => {
 												clearUrlParams( [
 													'srfm_payment_search',
 													'srfm_payment_status',
+													'srfm_payment_form',
 													'srfm_payment_date_from',
 													'srfm_payment_date_to',
 													'srfm_payment_page',
@@ -855,6 +851,61 @@ const PaymentTable = () => {
 											<Search className="text-icon-secondary" />
 										}
 									/>
+
+									{ /* Form Filter */ }
+									<div className="min-w-[200px]">
+										<Select
+											value={ formFilter }
+											onChange={ setFormFilter }
+											size="sm"
+										>
+											<Select.Button
+												className="w-52 h-[2rem] [&_div]:text-xs"
+												placeholder={ __(
+													'Form',
+													'sureforms'
+												) }
+											>
+												{ ( {
+													value: renderValue,
+												} ) => {
+													if ( ! renderValue ) {
+														return __(
+															'Form',
+															'sureforms'
+														);
+													}
+													const selectedForm =
+														formsList.find(
+															( form ) =>
+																form.id ===
+																parseInt(
+																	renderValue
+																)
+														);
+													return selectedForm
+														? selectedForm.title
+														: __(
+															'Form',
+															'sureforms'
+														  );
+												} }
+											</Select.Button>
+											<Select.Options>
+												{ formsList.map( ( form ) => (
+													<Select.Option
+														key={ form.id }
+														value={ form.id }
+														className="text-xs"
+													>
+														<span>
+															{ form.title }
+														</span>
+													</Select.Option>
+												) ) }
+											</Select.Options>
+										</Select>
+									</div>
 
 									{ /* Status Filter */ }
 									<div className="min-w-[200px]">
@@ -901,54 +952,10 @@ const PaymentTable = () => {
 										</Select>
 									</div>
 									{ /* Date Range Picker */ }
-									<div
-										className="relative"
-										ref={ datePickerContainerRef }
-									>
-										<Input
-											type="text"
-											size="sm"
-											value={ getSelectedDateRange(
-												selectedDates
-											) }
-											suffix={
-												<Calendar className="text-icon-secondary" />
-											}
-											onClick={ () =>
-												setIsDatePickerOpen(
-													! isDatePickerOpen
-												)
-											}
-											placeholder={ __(
-												'mm/dd/yyyy - mm/dd/yyyy',
-												'sureforms'
-											) }
-											className="cursor-pointer w-52"
-											readOnly
-										/>
-										{ isDatePickerOpen && (
-											<div className="absolute right-0 z-10 mt-2 rounded-lg shadow-lg">
-												<DatePicker
-													applyButtonText={ __(
-														'Apply',
-														'sureforms'
-													) }
-													cancelButtonText={ __(
-														'Cancel',
-														'sureforms'
-													) }
-													selectionType="range"
-													showOutsideDays={ false }
-													variant="presets"
-													onApply={ handleDateApply }
-													onCancel={
-														handleDateCancel
-													}
-													selected={ selectedDates }
-												/>
-											</div>
-										) }
-									</div>
+									<DateRangePicker
+										selectedDates={ selectedDates }
+										onApply={ handleDateApply }
+									/>
 								</>
 							) }
 						</div>
@@ -992,7 +999,7 @@ const PaymentTable = () => {
 												}
 											</Select.Button>
 											<Select.Options>
-												{ [ 2, 5, 10, 20, 50, 100 ].map(
+												{ [ 10, 20, 50, 100, 200 ].map(
 													( count ) => (
 														<Select.Option
 															key={ count }

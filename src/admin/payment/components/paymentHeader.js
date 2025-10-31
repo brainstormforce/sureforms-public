@@ -1,9 +1,13 @@
 import { Container, Button, Title } from '@bsf/force-ui';
 import { ArrowLeft, ArrowUpRight } from 'lucide-react';
 import { __, sprintf } from '@wordpress/i18n';
+import { formatOrderId } from './utils';
 
 const PaymentHeader = ( { title, onBack, paymentData, handleViewEntry } ) => {
-	const { id, entry_id } = paymentData;
+	const { entry_id } = paymentData;
+
+	// Generate order ID in the same format as payment list
+	const orderId = formatOrderId( paymentData );
 
 	return (
 		<Container
@@ -16,21 +20,14 @@ const PaymentHeader = ( { title, onBack, paymentData, handleViewEntry } ) => {
 				icon={ null }
 				size="lg"
 				tag="h2"
-				/* translators: 1: title, 2: ID number */
-				title={ sprintf( __( '%1$s #%2$s', 'sureforms' ), title, id ) }
+				title={ sprintf(
+					/* translators: 1: title, 2: Order ID */
+					__( '%1$s %2$s', 'sureforms' ),
+					title,
+					orderId
+				) }
 			/>
 			<div className="flex gap-2 items-center">
-				<Button
-					icon={ <ArrowUpRight className="!size-4" /> }
-					iconPosition="right"
-					size="s"
-					variant="outline"
-					onClick={ handleViewEntry }
-					disabled={ ! entry_id }
-					className="text-text-primary rounded-[4px] p-2 gap-0.5"
-				>
-					{ __( 'View Entry', 'sureforms' ) }
-				</Button>
 				<Button
 					variant="outline"
 					size="s"
@@ -39,6 +36,17 @@ const PaymentHeader = ( { title, onBack, paymentData, handleViewEntry } ) => {
 					className="text-text-primary rounded-[4px] p-2 gap-0.5"
 				>
 					{ __( 'Back', 'sureforms' ) }
+				</Button>
+				<Button
+					variant="outline"
+					size="s"
+					icon={ <ArrowUpRight className="!size-4" /> }
+					iconPosition="right"
+					onClick={ handleViewEntry }
+					disabled={ ! entry_id }
+					className="text-text-primary rounded-[4px] p-2 gap-0.5"
+				>
+					{ __( 'View Entry', 'sureforms' ) }
 				</Button>
 			</div>
 		</Container>

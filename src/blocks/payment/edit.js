@@ -29,18 +29,25 @@ const Edit = ( props ) => {
 		help,
 		required,
 		block_id,
-		description,
+		// description,
 		errorMsg,
 		formId,
 		preview,
 		className,
-		paymentItems,
 		paymentType,
 		subscriptionPlan,
+		amountType,
+		fixedAmount,
+		minimumAmount,
+		customerNameField,
+		customerEmailField,
+		// amountLabel,
 	} = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
-	const [ availableNumberFields, setAvailableNumberFields ] = useState( [] );
-	const [ availableFormFields, setAvailableFormFields ] = useState( [] );
+	const [ availableFormFields, setAvailableFormFields ] = useState( {
+		emailsFields: [],
+		nameFields: [],
+	} );
 
 	console.log( 'availableFormFields', availableFormFields );
 
@@ -50,16 +57,16 @@ const Edit = ( props ) => {
 		[]
 	);
 
-	// Function to extract both number fields and all form fields in a single traversal
+	// Function to extract and filter form fields by type
 	const extractFormFields = () => {
 		if ( ! currentFormId ) {
-			return { numberFields: [], allFields: [] };
+			return { emailsFields: [], nameFields: [] };
 		}
 
 		try {
 			const blocks = getBlocks();
-			const numberFields = [];
-			const allFields = [];
+			const emailsFields = [];
+			const nameFields = [];
 
 			blocks.forEach( ( block ) => {
 				// Check if block has a slug (is a form field)
@@ -69,42 +76,40 @@ const Edit = ( props ) => {
 						block.attributes.label ||
 						block.name ||
 						__( 'Form Field', 'sureforms' );
-					const fieldType =
-						block.name?.replace( 'srfm/', '' ) || 'field';
+					const blockName = block.name;
 
-					// Add to all fields array
-					allFields.push( {
-						slug,
-						label: `${ label } (${ fieldType })`,
-						type: fieldType,
-					} );
-
-					// If it's a number field, also add to number fields array
-					if ( block.name === 'srfm/number' ) {
-						numberFields.push( {
+					// Filter email fields - only srfm/email
+					if ( blockName === 'srfm/email' ) {
+						emailsFields.push( {
 							slug,
-							label:
-								block.attributes.label ||
-								__( 'Number Field', 'sureforms' ),
-							selected: paymentItems?.includes( slug ) || false,
+							label: `${ label } (email)`,
+							type: 'email',
+						} );
+					}
+
+					// Filter name/input fields - only srfm/input
+					if ( blockName === 'srfm/input' ) {
+						nameFields.push( {
+							slug,
+							label: `${ label } (input)`,
+							type: 'input',
 						} );
 					}
 				}
 			} );
 
-			return { numberFields, allFields };
+			return { emailsFields, nameFields };
 		} catch ( error ) {
 			console.error( 'Error extracting form fields:', error );
-			return { numberFields: [], allFields: [] };
+			return { emailsFields: [], nameFields: [] };
 		}
 	};
 
 	// Update available fields when form changes
 	useEffect( () => {
-		if ( isSelected || ! availableFormFields?.length ) {
-			const { numberFields, allFields } = extractFormFields();
-			setAvailableNumberFields( numberFields );
-			setAvailableFormFields( allFields );
+		if ( isSelected || ! availableFormFields?.emailsFields?.length ) {
+			const { emailsFields, nameFields } = extractFormFields();
+			setAvailableFormFields( { emailsFields, nameFields } );
 		}
 	}, [ isSelected ] );
 
@@ -119,13 +124,6 @@ const Edit = ( props ) => {
 		setCurrentMessage: setCurrentErrorMsg,
 	} = useErrMessage( 'srfm_payment_block_required_text', errorMsg );
 
-	// Handler for updating selected item (single selection)
-	const handleItemChange = ( selectedValue ) => {
-		// Keep only one value in the array
-		const newItems = selectedValue ? [ selectedValue ] : [];
-		setAttributes( { paymentItems: newItems } );
-	};
-
 	// Show the block preview on hover.
 	if ( preview ) {
 		const fieldName = __( 'Payment Field Preview', 'sureforms' );
@@ -133,35 +131,6 @@ const Edit = ( props ) => {
 	}
 
 	const attributeOptions = [
-		{
-			id: 'required',
-			component: (
-				<ToggleControl
-					label={ __( 'Required', 'sureforms' ) }
-					checked={ required }
-					onChange={ ( checked ) =>
-						setAttributes( { required: checked } )
-					}
-				/>
-			),
-		},
-		{
-			id: 'error-message',
-			component: required ? (
-				<SRFMTextControl
-					label={ __( 'Error Message', 'sureforms' ) }
-					data={ {
-						value: errorMsg,
-						label: 'errorMsg',
-					} }
-					value={ currentErrorMsg }
-					onChange={ ( value ) => {
-						setCurrentErrorMsg( value );
-						setAttributes( { errorMsg: value } );
-					} }
-				/>
-			) : null,
-		},
 		{
 			id: 'help-text',
 			component: (
@@ -175,55 +144,10 @@ const Edit = ( props ) => {
 					onChange={ ( value ) => setAttributes( { help: value } ) }
 				/>
 			),
-		},
+		},,
 		{
-			id: 'separator',
+			id: 'separator-3',
 			component: <Separator />,
-		},
-		{
-			id: 'payment-items',
-			component: (
-				<div className="components-base-control">
-					{ availableNumberFields.length === 0 ? (
-						<p
-							style={ {
-								fontSize: '12px',
-								color: '#757575',
-								fontStyle: 'italic',
-							} }
-						>
-							{ __(
-								'No number fields found in the form. Add number input fields to configure payment items.',
-								'sureforms'
-							) }
-						</p>
-					) : (
-						<SelectControl
-							label={ __( 'Select Payment Item', 'sureforms' ) }
-							value={
-								paymentItems && paymentItems.length > 0
-									? paymentItems[ 0 ]
-									: ''
-							}
-							options={ [
-								{
-									label: __( 'Select a field…', 'sureforms' ),
-									value: '',
-								},
-								...availableNumberFields.map( ( field ) => ( {
-									label: `${ field.label } (${ field.slug })`,
-									value: field.slug,
-								} ) ),
-							] }
-							onChange={ handleItemChange }
-							help={ __(
-								'Select one number field to include in payment calculations',
-								'sureforms'
-							) }
-						/>
-					) }
-				</div>
-			),
 		},
 		{
 			id: 'payment-type',
@@ -238,7 +162,7 @@ const Edit = ( props ) => {
 					options={ [
 						{
 							value: 'one-time',
-							label: __( 'One-time', 'sureforms' ),
+							label: __( 'Checkout', 'sureforms' ),
 						},
 						{
 							value: 'subscription',
@@ -277,6 +201,7 @@ const Edit = ( props ) => {
 									},
 								} );
 							} }
+							allowReset={ false }
 						/>
 					),
 				},
@@ -323,7 +248,10 @@ const Edit = ( props ) => {
 					id: 'billing-cycles',
 					component: (
 						<SelectControl
-							label={ __( 'Billing Cycles', 'sureforms' ) }
+							label={ __(
+								'Stop Subscription After',
+								'sureforms'
+							) }
 							value={
 								subscriptionPlan?.billingCycles || 'ongoing'
 							}
@@ -355,80 +283,6 @@ const Edit = ( props ) => {
 						/>
 					),
 				},
-				{
-					id: 'customer-name-field',
-					component: (
-						<SelectControl
-							label={ __(
-								'Customer Name Field',
-								'sureforms'
-							) }
-							value={ subscriptionPlan?.customer_name || '' }
-							options={ [
-								{
-									label: __(
-										'Select a field…',
-										'sureforms'
-									),
-									value: '',
-								},
-								...availableFormFields.map( ( field ) => ( {
-									label: field.label,
-									value: field.slug,
-								} ) ),
-							] }
-							onChange={ ( value ) => {
-								setAttributes( {
-									subscriptionPlan: {
-										...( subscriptionPlan || {} ),
-										customer_name: value,
-									},
-								} );
-							} }
-							help={ __(
-								'Select the field that contains the customer name',
-								'sureforms'
-							) }
-						/>
-					),
-				},
-				{
-					id: 'customer-email-field',
-					component: (
-						<SelectControl
-							label={ __(
-								'Customer Email Field',
-								'sureforms'
-							) }
-							value={ subscriptionPlan?.customer_email || '' }
-							options={ [
-								{
-									label: __(
-										'Select a field…',
-										'sureforms'
-									),
-									value: '',
-								},
-								...availableFormFields.map( ( field ) => ( {
-									label: field.label,
-									value: field.slug,
-								} ) ),
-							] }
-							onChange={ ( value ) => {
-								setAttributes( {
-									subscriptionPlan: {
-										...( subscriptionPlan || {} ),
-										customer_email: value,
-									},
-								} );
-							} }
-							help={ __(
-								'Select the field that contains the customer email',
-								'sureforms'
-							) }
-						/>
-					),
-				},
 			  ]
 			: [] ),
 		{
@@ -436,21 +290,198 @@ const Edit = ( props ) => {
 			component: <Separator />,
 		},
 		{
-			id: 'payment-description',
+			id: 'amount-type',
+			component: (
+				<MultiButtonsControl
+					setAttributes={ setAttributes }
+					label={ __( 'Amount Type', 'sureforms' ) }
+					data={ {
+						value: amountType,
+						label: 'amountType',
+					} }
+					options={ [
+						{
+							value: 'fixed',
+							label: __( 'Fixed Amount', 'sureforms' ),
+						},
+						{
+							value: 'user-defined',
+							label: __( 'User-Defined', 'sureforms' ),
+						},
+					] }
+					showIcons={ false }
+					help={ __(
+						'Choose whether to use a fixed amount or let users enter their own amount',
+						'sureforms'
+					) }
+				/>
+			),
+		},
+		{
+			id: 'fixed-amount',
 			component: (
 				<SRFMTextControl
-					label={ __( 'Payment Description', 'sureforms' ) }
-					value={ description }
-					variant="textarea"
+					label={
+						amountType === 'fixed'
+							? __( 'Fixed Amount', 'sureforms' )
+							: __( 'Default Amount', 'sureforms' )
+					}
+					type="number"
+					value={ fixedAmount }
 					data={ {
-						value: description,
-						label: 'description',
+						value: fixedAmount,
+						label: 'fixedAmount',
 					} }
 					onChange={ ( value ) =>
-						setAttributes( { description: value } )
+						setAttributes( {
+							fixedAmount: parseFloat( value ) || 0,
+						} )
 					}
+					help={
+						amountType === 'fixed'
+							? __(
+								'Enter the fixed payment amount',
+								'sureforms'
+							  )
+							: __(
+								'Enter the default amount (users can change this)',
+								'sureforms'
+							  )
+					}
+				/>
+			),
+		},
+		...( amountType === 'user-defined'
+			? [
+				{
+					id: 'minimum-amount',
+					component: (
+						<SRFMTextControl
+							label={ __( 'Minimum Amount', 'sureforms' ) }
+							type="number"
+							value={ minimumAmount }
+							data={ {
+								value: minimumAmount,
+								label: 'minimumAmount',
+							} }
+							onChange={ ( value ) =>
+								setAttributes( {
+									minimumAmount: parseFloat( value ) || 0,
+								} )
+							}
+							help={ __(
+								'Set the minimum amount users can enter (0 for no minimum)',
+								'sureforms'
+							) }
+						/>
+					),
+				},
+				{
+					id: 'required',
+					component: (
+						<ToggleControl
+							label={ __( 'Required', 'sureforms' ) }
+							checked={ required }
+							onChange={ ( checked ) =>
+								setAttributes( { required: checked } )
+							}
+						/>
+					),
+				},
+				{
+					id: 'error-message',
+					component: required ? (
+						<SRFMTextControl
+							label={ __( 'Error Message', 'sureforms' ) }
+							data={ {
+								value: errorMsg,
+								label: 'errorMsg',
+							} }
+							value={ currentErrorMsg }
+							onChange={ ( value ) => {
+								setCurrentErrorMsg( value );
+								setAttributes( { errorMsg: value } );
+							} }
+						/>
+					) : null,
+				},
+			  ]
+			: [] ),
+		{
+			id: 'separator-2',
+			component: <Separator />,
+		},
+		{
+			id: 'customer-name-field',
+			component: (
+				<SelectControl
+					label={
+						paymentType === 'subscription'
+							? __(
+								'Customer Name Field (Required)',
+								'sureforms'
+							  )
+							: __(
+								'Customer Name Field (Optional)',
+								'sureforms'
+							  )
+					}
+					value={ customerNameField || '' }
+					options={ [
+						{
+							label: __( 'Select a field…', 'sureforms' ),
+							value: '',
+						},
+						...( availableFormFields?.nameFields || [] ).map(
+							( field ) => ( {
+								label: field.label,
+								value: field.slug,
+							} )
+						),
+					] }
+					onChange={ ( value ) => {
+						setAttributes( { customerNameField: value } );
+					} }
+					help={
+						paymentType === 'subscription'
+							? __(
+								'Select the input field that contains the customer name (Required for subscriptions)',
+								'sureforms'
+							  )
+							: __(
+								'Select the input field that contains the customer name',
+								'sureforms'
+							  )
+					}
+				/>
+			),
+		},
+		{
+			id: 'customer-email-field',
+			component: (
+				<SelectControl
+					label={ __(
+						'Customer Email Field (Required)',
+						'sureforms'
+					) }
+					value={ customerEmailField || '' }
+					options={ [
+						{
+							label: __( 'Select a field…', 'sureforms' ),
+							value: '',
+						},
+						...( availableFormFields?.emailsFields || [] ).map(
+							( field ) => ( {
+								label: field.label,
+								value: field.slug,
+							} )
+						),
+					] }
+					onChange={ ( value ) => {
+						setAttributes( { customerEmailField: value } );
+					} }
 					help={ __(
-						'This will appear on the payment receipt and in Stripe dashboard.',
+						'Select the email field that contains the customer email',
 						'sureforms'
 					) }
 				/>

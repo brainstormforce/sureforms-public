@@ -75,7 +75,7 @@ class Stripe_Webhook {
 		$signature = trim( $signature );
 
 		if ( empty( $payload ) || empty( $signature ) ) {
-			error_log( 'SureForms: Missing webhook payload or signature.' );
+			Helper::srfm_log( 'Missing webhook payload or signature.' );
 			return false;
 		}
 
@@ -95,7 +95,7 @@ class Stripe_Webhook {
 		}
 
 		if ( empty( $webhook_secret ) ) {
-			error_log( 'SureForms: Webhook secret not configured for mode: ' . $this->mode . '.' );
+			Helper::srfm_log( 'Webhook secret not configured for mode: ' . $this->mode . '.' );
 			return false;
 		}
 
@@ -121,7 +121,7 @@ class Stripe_Webhook {
 
 		// Handle middleware communication errors.
 		if ( is_wp_error( $response ) ) {
-			error_log( 'SureForms: Middleware request failed: ' . $response->get_error_message() . '.' );
+			Helper::srfm_log( 'Middleware request failed: ' . $response->get_error_message() . '.' );
 			return false;
 		}
 
@@ -152,7 +152,7 @@ class Stripe_Webhook {
 		$signature = trim( $signature );
 
 		if ( empty( $payload ) || empty( $signature ) ) {
-			error_log( 'SureForms: Missing webhook payload or signature.' );
+			Helper::srfm_log( 'Missing webhook payload or signature.' );
 			return false;
 		}
 
@@ -172,7 +172,7 @@ class Stripe_Webhook {
 		}
 
 		if ( empty( $webhook_secret ) ) {
-			error_log( 'SureForms: Webhook secret not configured for mode: ' . $this->mode . '.' );
+			Helper::srfm_log( 'Webhook secret not configured for mode: ' . $this->mode . '.' );
 			return false;
 		}
 
@@ -199,7 +199,7 @@ class Stripe_Webhook {
 
 		// Step 2: Validate we have required parts.
 		if ( null === $timestamp || empty( $signatures ) ) {
-			error_log( 'SureForms: Invalid signature header format - missing timestamp or v1 signature.' );
+			Helper::srfm_log( 'Invalid signature header format - missing timestamp or v1 signature.' );
 			return false;
 		}
 
@@ -220,7 +220,7 @@ class Stripe_Webhook {
 		}
 
 		if ( ! $signature_valid ) {
-			error_log( 'SureForms: Signature verification failed - computed signature does not match.' );
+			Helper::srfm_log( 'Signature verification failed - computed signature does not match.' );
 			return false;
 		}
 
@@ -230,9 +230,9 @@ class Stripe_Webhook {
 		$current_time = time();
 
 		if ( abs( $current_time - $timestamp ) > $tolerance ) {
-			error_log(
+			Helper::srfm_log(
 				sprintf(
-					'SureForms: Timestamp outside tolerance zone. Current: %d, Webhook: %d, Diff: %d seconds.',
+					'Timestamp outside tolerance zone. Current: %d, Webhook: %d, Diff: %d seconds.',
 					$current_time,
 					$timestamp,
 					abs( $current_time - $timestamp )
@@ -245,11 +245,11 @@ class Stripe_Webhook {
 		$event = json_decode( $payload, true );
 
 		if ( ! $event || ! is_array( $event ) || ! isset( $event['type'] ) ) {
-			error_log( 'SureForms: Invalid JSON payload in webhook.' );
+			Helper::srfm_log( 'Invalid JSON payload in webhook.' );
 			return false;
 		}
 
-		error_log( 'SureForms: Webhook signature verified successfully (manual verification).' );
+		Helper::srfm_log( 'Webhook signature verified successfully (manual verification).' );
 
 		return $event;
 	}
@@ -264,10 +264,10 @@ class Stripe_Webhook {
 		// Get the raw payload.
 		$payload = file_get_contents( 'php://input' );
 
-		// error_log( 'SureForms DEV: Payload: ' . print_r( $payload, true ) );
+		// Helper::srfm_log( $payload, 'SureForms DEV: Payload: ' );
 
 		if ( empty( $payload ) ) {
-			error_log( 'SureForms DEV: Missing webhook payload.' );
+			Helper::srfm_log( 'Missing webhook payload.', 'SureForms DEV: ' );
 			return false;
 		}
 
@@ -275,11 +275,11 @@ class Stripe_Webhook {
 		$event = json_decode( $payload, true );
 
 		if ( ! $event || ! is_array( $event ) ) {
-			error_log( 'SureForms DEV: Invalid JSON payload.' );
+			Helper::srfm_log( 'Invalid JSON payload.', 'SureForms DEV: ' );
 			return false;
 		}
 
-		error_log( 'SureForms DEV: Event type: ' . ( $event['type'] ?? 'unknown' ) . '.' );
+		Helper::srfm_log( 'Event type: ' . ( $event['type'] ?? 'unknown' ) . '.', 'SureForms DEV: ' );
 
 		return $event;
 	}
@@ -298,17 +298,17 @@ class Stripe_Webhook {
 		$event = $this->validate_stripe_signature();
 
 		if ( ! $event || ! isset( $event['type'] ) ) {
-			error_log( 'SureForms: Invalid webhook event.' );
+			Helper::srfm_log( 'Invalid webhook event.' );
 			return;
 		}
 
-		error_log( 'SureForms: Processing event type: ' . $event['type'] . '.' );
+		Helper::srfm_log( 'Processing event type: ' . $event['type'] . '.' );
 
 		switch ( $event['type'] ) {
 			case 'charge.refund.updated':
 				// Existing refund logic.
 				if ( ! isset( $event['data']['object'] ) ) {
-					error_log( 'SureForms: Invalid webhook event.' );
+					Helper::srfm_log( 'Invalid webhook event.' );
 					return;
 				}
 				$charge = $event['data']['object'];
@@ -317,7 +317,7 @@ class Stripe_Webhook {
 
 			case 'invoice.payment_succeeded':
 				if ( ! isset( $event['data']['object'] ) ) {
-					error_log( 'SureForms: Invalid webhook event.' );
+					Helper::srfm_log( 'Invalid webhook event.' );
 					return;
 				}
 				$invoice = $event['data']['object'];
@@ -325,7 +325,7 @@ class Stripe_Webhook {
 				break;
 
 			default:
-				error_log( 'SureForms: Unhandled event type: ' . $event['type'] . '.' );
+				Helper::srfm_log( 'Unhandled event type: ' . $event['type'] . '.' );
 				break;
 		}
 
@@ -364,9 +364,9 @@ class Stripe_Webhook {
 
 		// Final check: If still not found, log detailed error and return.
 		if ( ! $get_payment_entry ) {
-			error_log(
+			Helper::srfm_log(
 				sprintf(
-					'SureForms: Could not find payment entry for refund. Refund ID: %s, Payment Intent: %s, Charge: %s, Chare All data: %s',
+					'Could not find payment entry for refund. Refund ID: %s, Payment Intent: %s, Charge: %s, Chare All data: %s',
 					$charge['id'] ?? 'unknown',
 					$payment_intent ?: 'none',
 					$charge_id ?: 'none',
@@ -383,13 +383,13 @@ class Stripe_Webhook {
 		$update_refund_data = $this->update_refund_data( $payment_entry_id, $charge, $refund_amount, $currency, 'webhook' );
 
 		if ( ! $update_refund_data ) {
-			error_log( 'SureForms: Failed to update refund data for payment entry ID: ' . $payment_entry_id . '.' );
+			Helper::srfm_log( 'Failed to update refund data for payment entry ID: ' . $payment_entry_id . '.' );
 			return;
 		}
 
-		error_log(
+		Helper::srfm_log(
 			sprintf(
-				'SureForms: Payment refunded successfully. Amount: %s for entry ID: %s (via %s).',
+				'Payment refunded successfully. Amount: %s for entry ID: %s (via %s).',
 				$refund_amount,
 				$payment_entry_id,
 				! empty( $payment_intent ) ? 'payment_intent' : 'charge_id'
@@ -405,26 +405,26 @@ class Stripe_Webhook {
 	 * @return void
 	 */
 	public function handle_invoice_payment_succeeded( array $invoice ): void {
-		error_log( 'SureForms: Processing invoice.payment_succeeded webhook.' );
+		Helper::srfm_log( 'Processing invoice.payment_succeeded webhook.' );
 
 		// Validate billing reason is subscription cycle.
 		$billing_reason = sanitize_text_field( $invoice['billing_reason'] ?? '' );
 		if ( 'subscription_cycle' !== $billing_reason ) {
-			error_log( 'SureForms: Invoice payment succeeded - not a subscription cycle payment. Billing reason: ' . $billing_reason . '.' );
+			Helper::srfm_log( 'Invoice payment succeeded - not a subscription cycle payment. Billing reason: ' . $billing_reason . '.' );
 			return;
 		}
 
 		// Extract subscription ID.
 		$subscription_id = sanitize_text_field( $invoice['subscription'] ?? '' );
 		if ( empty( $subscription_id ) ) {
-			error_log( 'SureForms: Invoice payment succeeded - missing subscription ID.' );
+			Helper::srfm_log( 'Invoice payment succeeded - missing subscription ID.' );
 			return;
 		}
 
 		// Find subscription record in database.
 		$subscription_record = Payments::get_main_subscription_record( $subscription_id );
 		if ( ! $subscription_record ) {
-			error_log( 'SureForms: Invoice payment succeeded - subscription not found: ' . $subscription_id . '.' );
+			Helper::srfm_log( 'Invoice payment succeeded - subscription not found: ' . $subscription_id . '.' );
 			return;
 		}
 
@@ -437,7 +437,7 @@ class Stripe_Webhook {
 		if ( ! empty( $charge_id ) ) {
 			$existing_payment = Payments::get_by_transaction_id( $charge_id );
 			if ( $existing_payment ) {
-				error_log( 'SureForms: Invoice payment already processed. Charge ID: ' . $charge_id . '.' );
+				Helper::srfm_log( 'Invoice payment already processed. Charge ID: ' . $charge_id . '.' );
 				return;
 			}
 		}
@@ -457,9 +457,9 @@ class Stripe_Webhook {
 			$this->process_subscription_renewal_payment( $subscription_record, $invoice, $charge_id, $block_id );
 		}
 
-		error_log(
+		Helper::srfm_log(
 			sprintf(
-				'SureForms: Subscription payment processed successfully. Type: %s, Subscription ID: %s, Amount: %s %s.',
+				'Subscription payment processed successfully. Type: %s, Subscription ID: %s, Amount: %s %s.',
 				$is_initial_payment ? 'Initial' : 'Renewal',
 				$subscription_id,
 				number_format( $amount_paid / 100, 2 ),
@@ -499,7 +499,7 @@ class Stripe_Webhook {
 		// Get payment record if not provided.
 		$payment = Payments::get( $payment_id );
 		if ( ! $payment ) {
-			error_log( 'SureForms: Payment record not found for ID: ' . $payment_id . '.' );
+			Helper::srfm_log( 'Payment record not found for ID: ' . $payment_id . '.' );
 			return false;
 		}
 
@@ -529,9 +529,9 @@ class Stripe_Webhook {
 		$total_after_refund = $existing_refunds + $new_refund_amount;
 
 		if ( $total_after_refund > $original_amount ) {
-			error_log(
+			Helper::srfm_log(
 				sprintf(
-					'SureForms: Over-refund attempt blocked. Payment ID: %d, Original: $%s, Existing refunds: $%s, New refund: $%s.',
+					'Over-refund attempt blocked. Payment ID: %d, Original: $%s, Existing refunds: $%s, New refund: $%s.',
 					$payment_id,
 					number_format( $original_amount, 2 ),
 					number_format( $existing_refunds, 2 ),
@@ -588,22 +588,22 @@ class Stripe_Webhook {
 
 		// Check if all operations succeeded.
 		if ( false === $payment_data_result ) {
-			error_log( 'SureForms: Failed to store refund data in payment_data for payment ID: ' . $payment_id . '.' );
+			Helper::srfm_log( 'Failed to store refund data in payment_data for payment ID: ' . $payment_id . '.' );
 		}
 
 		if ( false === $refund_amount_result ) {
-			error_log( 'SureForms: Failed to update refunded_amount column for payment ID: ' . $payment_id . '.' );
+			Helper::srfm_log( 'Failed to update refunded_amount column for payment ID: ' . $payment_id . '.' );
 			return false;
 		}
 
 		if ( false === $payment_update_result ) {
-			error_log( 'SureForms: Failed to update payment status and log for payment ID: ' . $payment_id . '.' );
+			Helper::srfm_log( 'Failed to update payment status and log for payment ID: ' . $payment_id . '.' );
 			return false;
 		}
 
-		error_log(
+		Helper::srfm_log(
 			sprintf(
-				'SureForms: Refund processed successfully. Payment ID: %d, Refund ID: %s, Amount: %s %s.',
+				'Refund processed successfully. Payment ID: %d, Refund ID: %s, Amount: %s %s.',
 				$payment_id,
 				$refund_data['refund_id'],
 				number_format( $refund_amount / 100, 2 ),
@@ -627,7 +627,7 @@ class Stripe_Webhook {
 		$subscription_id = intval( $subscription_record['id'] ?? 0 );
 
 		if ( ! $subscription_id ) {
-			error_log( 'SureForms: Invalid subscription record for initial payment processing.' );
+			Helper::srfm_log( 'Invalid subscription record for initial payment processing.' );
 			return;
 		}
 
@@ -656,9 +656,9 @@ class Stripe_Webhook {
 		$result = Payments::update( $subscription_id, $update_data );
 
 		if ( false === $result ) {
-			error_log( 'SureForms: Failed to update subscription record for initial payment. Subscription ID: ' . $subscription_id . '.' );
+			Helper::srfm_log( 'Failed to update subscription record for initial payment. Subscription ID: ' . $subscription_id . '.' );
 		} else {
-			error_log( 'SureForms: Initial subscription payment processed successfully. Subscription ID: ' . $subscription_id . '.' );
+			Helper::srfm_log( 'Initial subscription payment processed successfully. Subscription ID: ' . $subscription_id . '.' );
 		}
 	}
 

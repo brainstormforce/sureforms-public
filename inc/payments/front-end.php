@@ -59,13 +59,20 @@ class Front_End {
 			wp_send_json_error( __( 'Invalid nonce.', 'sureforms' ) );
 		}
 
-		$amount      = intval( $_POST['amount'] ?? 0 );
-		$currency    = sanitize_text_field( wp_unslash( $_POST['currency'] ?? 'usd' ) );
-		$description = sanitize_text_field( wp_unslash( $_POST['description'] ?? 'SureForms Payment' ) );
-		$block_id    = sanitize_text_field( wp_unslash( $_POST['block_id'] ?? '' ) );
+		$amount         = intval( $_POST['amount'] ?? 0 );
+		$currency       = sanitize_text_field( wp_unslash( $_POST['currency'] ?? 'usd' ) );
+		$description    = sanitize_text_field( wp_unslash( $_POST['description'] ?? 'SureForms Payment' ) );
+		$block_id       = sanitize_text_field( wp_unslash( $_POST['block_id'] ?? '' ) );
+		$customer_email = sanitize_email( wp_unslash( $_POST['customer_email'] ?? '' ) );
+		$customer_name  = sanitize_text_field( wp_unslash( $_POST['customer_name'] ?? '' ) );
 
 		if ( $amount <= 0 ) {
 			wp_send_json_error( __( 'Invalid payment amount.', 'sureforms' ) );
+		}
+
+		// Validate customer email (required for one-time payments).
+		if ( empty( $customer_email ) || ! is_email( $customer_email ) ) {
+			wp_send_json_error( __( 'Valid customer email is required for payments.', 'sureforms' ) );
 		}
 
 		try {
@@ -80,25 +87,47 @@ class Front_End {
 				throw new \Exception( __( 'Stripe secret key not found.', 'sureforms' ) );
 			}
 
+			// Create or get customer ID for logged-in users.
+			$customer_id = null;
+			if ( is_user_logged_in() ) {
+				$customer_id = $this->get_or_create_stripe_customer(
+					[
+						'email' => $customer_email,
+						'name'  => $customer_name,
+					]
+				);
+			}
+
 			// Create payment intent with confirm: true for immediate processing.
+			$payment_intent_data = [
+				'secret_key'                => $secret_key,
+				'amount'                    => $amount,
+				'currency'                  => strtolower( $currency ),
+				'description'               => $description,
+				'confirm'                   => false, // Will be confirmed by frontend.
+				'receipt_email'             => $customer_email,
+				'automatic_payment_methods' => [
+					'enabled'         => true,
+					'allow_redirects' => 'never',
+				],
+				'metadata'                  => [
+					'source'          => 'SureForms',
+					'block_id'        => $block_id,
+					'original_amount' => $amount,
+					'receipt_email'   => $customer_email,
+					'customer_name'   => $customer_name,
+				],
+			];
+
+			// Add customer ID to payment intent data if user is logged in.
+			if ( ! empty( $customer_id ) ) {
+				$payment_intent_data['customer'] = $customer_id;
+			}
+
 			$payment_intent_data = apply_filters(
 				'srfm_create_payment_intent_data',
-				[
-					'secret_key'                => $secret_key,
-					'amount'                    => $amount,
-					'currency'                  => strtolower( $currency ),
-					'description'               => $description,
-					'confirm'                   => false, // Will be confirmed by frontend.
-					'automatic_payment_methods' => [
-						'enabled'         => true,
-						'allow_redirects' => 'never',
-					],
-					'metadata'                  => [
-						'source'          => 'SureForms',
-						'block_id'        => $block_id,
-						'original_amount' => $amount,
-					],
-				]
+				$payment_intent_data,
+				$customer_id
 			);
 
 			$payment_intent_data = wp_json_encode( $payment_intent_data );
@@ -166,6 +195,18 @@ class Front_End {
 
 		$subscription_interval = sanitize_text_field( wp_unslash( $_POST['interval'] ?? 'month' ) );
 		$plan_name             = sanitize_text_field( wp_unslash( $_POST['plan_name'] ?? 'Subscription Plan' ) );
+		$customer_email        = sanitize_email( wp_unslash( $_POST['customer_email'] ?? '' ) );
+		$customer_name         = sanitize_text_field( wp_unslash( $_POST['customer_name'] ?? '' ) );
+
+		// Validate customer email (required for all subscriptions).
+		if ( empty( $customer_email ) || ! is_email( $customer_email ) ) {
+			wp_send_json_error( __( 'Valid customer email is required for subscriptions.', 'sureforms' ) );
+		}
+
+		// Validate customer name (required for subscriptions).
+		if ( empty( $customer_name ) ) {
+			wp_send_json_error( __( 'Customer name is required for subscriptions.', 'sureforms' ) );
+		}
 
 		// Validate amount like simple-stripe-subscriptions.
 		if ( $amount <= 0 ) {
@@ -191,7 +232,12 @@ class Front_End {
 			}
 
 			// Get or create Stripe customer for subscriptions.
-			$customer_id = $this->get_or_create_stripe_customer();
+			$customer_id = $this->get_or_create_stripe_customer(
+				[
+					'email' => $customer_email,
+					'name'  => $customer_name,
+				]
+			);
 			if ( ! $customer_id ) {
 				throw new \Exception( __( 'Failed to create customer for subscription.', 'sureforms' ) );
 			}
@@ -390,11 +436,10 @@ class Front_End {
 				 * - blockId: Form block identifier (e.g., "be920796")
 				 * - paymentType: Payment type identifier ("stripe-subscription")
 				 * - status: Payment status ("succeeded")
-				 * - paymentItems: Array containing subscription item details
 				 */
 				$payment_response = $this->verify_stripe_subscription_intent_and_save( $payment_value, $block_id, $form_data );
 			} else {
-				$payment_response = $this->verify_stripe_payment_intent_and_save( $payment_id, $block_id, $form_data );
+				$payment_response = $this->verify_stripe_payment_intent_and_save( $payment_value, $payment_id, $block_id, $form_data );
 			}
 
 			if ( ! empty( $payment_response ) && isset( $payment_response['payment_id'] ) ) {
@@ -413,14 +458,15 @@ class Front_End {
 	/**
 	 * Verify payment intent status
 	 *
-	 * @param string       $payment_intent_id Payment intent ID.
+	 * @param array<mixed> $payment_value Payment value.
+	 * @param string       $payment_id Payment ID.
 	 * @param string       $block_id Block ID.
 	 * @param array<mixed> $form_data Form data.
 	 *
 	 * @since x.x.x
 	 * @return void|array<mixed>
 	 */
-	private function verify_stripe_payment_intent_and_save( $payment_intent_id, $block_id, $form_data ) {
+	private function verify_stripe_payment_intent_and_save( $payment_value, $payment_id, $block_id, $form_data ) {
 		try {
 			$payment_mode = Stripe_Helper::get_stripe_mode();
 			$secret_key   = Stripe_Helper::get_stripe_secret_key();
@@ -436,7 +482,7 @@ class Front_End {
 				'srfm_retrieve_payment_intent_data',
 				[
 					'secret_key'        => $secret_key,
-					'payment_intent_id' => $payment_intent_id,
+					'payment_intent_id' => $payment_id,
 				]
 			);
 
@@ -498,6 +544,9 @@ class Front_End {
 			$confirm_payment_currency = is_array( $confirmed_payment_intent ) && isset( $confirmed_payment_intent['currency'] ) && ! empty( $confirmed_payment_intent['currency'] ) ? (string) $confirmed_payment_intent['currency'] : 'usd';
 			$confirm_payment_id       = is_array( $confirmed_payment_intent ) && isset( $confirmed_payment_intent['id'] ) && ! empty( $confirmed_payment_intent['id'] ) ? (string) $confirmed_payment_intent['id'] : '';
 
+			// Extract customer data.
+			$customer_data = $this->extract_customer_data( $payment_value );
+
 			// update payment status and save to the payment entries table.
 			$entry_data['form_id']        = $form_id;
 			$entry_data['block_id']       = $block_id;
@@ -509,10 +558,17 @@ class Front_End {
 			$entry_data['type']           = 'payment';
 			$entry_data['mode']           = $payment_mode;
 			$entry_data['transaction_id'] = $confirm_payment_id;
+			$entry_data['srfm_txn_id']    = ''; // Will be updated after getting payment entry ID.
+			$entry_data['customer_email'] = $customer_data['email'];
+			$entry_data['customer_name']  = $customer_data['name'];
 
 			$get_payment_entry_id = Payments::add( $entry_data );
 
 			if ( $get_payment_entry_id ) {
+				// Generate unique payment ID using the auto-increment ID and update the entry.
+				$unique_payment_id = $this->generate_unique_payment_id( $get_payment_entry_id );
+				Payments::update( $get_payment_entry_id, [ 'srfm_txn_id' => $unique_payment_id ] );
+
 				$add_in_static_value = [
 					'payment_id' => $confirm_payment_id,
 					'block_id'   => $block_id,
@@ -664,6 +720,9 @@ class Front_End {
 			$form_id             = isset( $form_data['form-id'] ) && ! empty( $form_data['form-id'] ) ? intval( $form_data['form-id'] ) : 0;
 			$subscription_status = isset( $subscription['status'] ) && ! empty( $subscription['status'] ) && is_string( $subscription['status'] ) ? $subscription['status'] : '';
 
+			// Extract customer data.
+			$customer_data = $this->extract_customer_data( $subscription_value );
+
 			// Prepare minimal subscription data for database.
 			$entry_data = [
 				'form_id'             => $form_id,
@@ -679,6 +738,9 @@ class Front_End {
 				'customer_id'         => $customer_id,
 				'subscription_id'     => $subscription_id,
 				'subscription_status' => $subscription_status,
+				'srfm_txn_id'         => '', // Will be updated after getting payment entry ID.
+				'customer_email'      => $customer_data['email'],
+				'customer_name'       => $customer_data['name'],
 				'payment_data'        => [
 					'initial_invoice' => $paid_invoice,
 					'subscription'    => $subscription,
@@ -711,6 +773,10 @@ class Front_End {
 			$payment_entry_id = Payments::add( $entry_data );
 
 			if ( $payment_entry_id ) {
+				// Generate unique payment ID using the auto-increment ID and update the entry.
+				$unique_payment_id = $this->generate_unique_payment_id( $payment_entry_id );
+				Payments::update( $payment_entry_id, [ 'srfm_txn_id' => $unique_payment_id ] );
+
 				// Store in static array for later entry linking.
 				$this->stripe_payment_entries[] = [
 					'payment_id' => $subscription_id,
@@ -785,6 +851,8 @@ class Front_End {
 			'customer_id'         => $customer_id,
 			'subscription_id'     => $subscription_id, // Link back to subscription.
 			'subscription_status' => '', // Not applicable for individual payments.
+			'customer_email'      => isset( $subscription['customer_email'] ) ? sanitize_email( $subscription['customer_email'] ) : '',
+			'customer_name'       => isset( $subscription['customer_name'] ) ? sanitize_text_field( $subscription['customer_name'] ) : '',
 			'payment_data'        => $invoice_data, // Store complete invoice data for refunds and debugging.
 		];
 
@@ -830,10 +898,11 @@ class Front_End {
 	/**
 	 * Get or create Stripe customer
 	 *
+	 * @param array<string,string> $customer_data Customer data containing 'email' and 'name' from POST.
 	 * @since x.x.x
 	 * @return string|false Customer ID on success, false on failure.
 	 */
-	private function get_or_create_stripe_customer() {
+	private function get_or_create_stripe_customer( $customer_data = [] ) {
 		$current_user = wp_get_current_user();
 
 		if ( $current_user->ID > 0 ) {
@@ -845,24 +914,42 @@ class Front_End {
 			}
 
 			// Create new customer for logged-in user.
-			return $this->create_stripe_customer_for_user( $current_user );
+			return $this->create_stripe_customer_for_user( $current_user, $customer_data );
 		}
-			// Non-logged-in user - create temporary customer.
-			return $this->create_stripe_customer_for_guest();
+
+		// Non-logged-in user - create temporary customer.
+		return $this->create_stripe_customer_for_guest( $customer_data );
 	}
 	/**
 	 * Create Stripe customer for logged-in user
 	 *
-	 * @param \WP_User $user WordPress user object.
+	 * @param \WP_User             $user WordPress user object.
+	 * @param array<string,string> $post_customer_data Customer data from POST containing 'email' and 'name'.
 	 * @since x.x.x
 	 * @return string|false Customer ID on success, false on failure.
 	 */
-	private function create_stripe_customer_for_user( $user ) {
+	private function create_stripe_customer_for_user( $user, $post_customer_data = [] ) {
 		try {
+			// Use POST email if provided, else use logged-in user email.
+			$customer_email = ! empty( $post_customer_data['email'] ) ? $post_customer_data['email'] : $user->user_email;
+
+			// Use POST name if provided, else use logged-in user name.
+			$customer_name = ! empty( $post_customer_data['name'] ) ? $post_customer_data['name'] : ( trim( $user->first_name . ' ' . $user->last_name ) ?: $user->display_name );
+
+			// Build description with provided email and name.
+			$description_parts = [];
+			if ( ! empty( $customer_email ) ) {
+				$description_parts[] = $customer_email;
+			}
+			if ( ! empty( $customer_name ) ) {
+				$description_parts[] = $customer_name;
+			}
+			$description = ! empty( $description_parts ) ? implode( ', ', $description_parts ) : sprintf( 'WordPress User ID: %d', $user->ID );
+
 			$customer_data = [
-				'email'       => $user->user_email,
-				'name'        => trim( $user->first_name . ' ' . $user->last_name ) ?: $user->display_name,
-				'description' => sprintf( 'WordPress User ID: %d', $user->ID ),
+				'email'       => $customer_email,
+				'name'        => $customer_name,
+				'description' => $description,
 				'metadata'    => [
 					'source'        => 'SureForms',
 					'wp_user_id'    => $user->ID,
@@ -891,16 +978,28 @@ class Front_End {
 	/**
 	 * Create Stripe customer for guest user
 	 *
+	 * @param array<string,string> $post_customer_data Customer data from POST containing 'email' and 'name'.
 	 * @since x.x.x
 	 * @return string|false Customer ID on success, false on failure.
 	 */
-	private function create_stripe_customer_for_guest() {
+	private function create_stripe_customer_for_guest( $post_customer_data = [] ) {
 		try {
-			// Get form data if available for guest customer info.
-			$form_data = $this->get_form_data_for_guest_customer();
+			// Use email and name from POST data.
+			$customer_email = ! empty( $post_customer_data['email'] ) ? sanitize_email( $post_customer_data['email'] ) : '';
+			$customer_name  = ! empty( $post_customer_data['name'] ) ? sanitize_text_field( $post_customer_data['name'] ) : '';
+
+			// Build description with provided email and name.
+			$description_parts = [];
+			if ( ! empty( $customer_email ) ) {
+				$description_parts[] = $customer_email;
+			}
+			if ( ! empty( $customer_name ) ) {
+				$description_parts[] = $customer_name;
+			}
+			$description = ! empty( $description_parts ) ? implode( ', ', $description_parts ) : 'Guest User - SureForms Subscription';
 
 			$customer_data = [
-				'description' => 'Guest User - SureForms Subscription',
+				'description' => $description,
 				'metadata'    => [
 					'source'     => 'SureForms',
 					'user_type'  => 'guest',
@@ -909,15 +1008,16 @@ class Front_End {
 				],
 			];
 
-			// Add email and name if available from form data.
-			if ( ! empty( $form_data['email'] ) ) {
-				$customer_data['email']                  = sanitize_email( $form_data['email'] );
-				$customer_data['metadata']['form_email'] = $form_data['email'];
+			// Add email if available from POST data.
+			if ( ! empty( $customer_email ) ) {
+				$customer_data['email']                  = $customer_email;
+				$customer_data['metadata']['form_email'] = $customer_email;
 			}
 
-			if ( ! empty( $form_data['name'] ) ) {
-				$customer_data['name']                  = sanitize_text_field( $form_data['name'] );
-				$customer_data['metadata']['form_name'] = $form_data['name'];
+			// Add name if available from POST data.
+			if ( ! empty( $customer_name ) ) {
+				$customer_data['name']                  = $customer_name;
+				$customer_data['metadata']['form_name'] = $customer_name;
 			}
 
 			$customer = $this->stripe_api_request( 'customers', 'POST', $customer_data );
@@ -1202,5 +1302,76 @@ class Front_End {
 		}
 
 		return $result;
+	}
+
+	/**
+	 * Generate unique transaction ID (deprecated - kept for backwards compatibility)
+	 *
+	 * Format: {6-random-chars}_{payment_id}
+	 * Example: a2bf45_pi_3QhgmFHqS7N4oFQh0x4UQjBv
+	 *
+	 * @param string $payment_id Payment intent ID or subscription ID.
+	 * @since x.x.x
+	 * @return string Generated transaction ID.
+	 */
+	private function generate_transaction_id( $payment_id ) {
+		// Generate 6-character random alphanumeric string.
+		$characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
+		$random     = '';
+		for ( $i = 0; $i < 6; $i++ ) {
+			$random .= $characters[ wp_rand( 0, strlen( $characters ) - 1 ) ];
+		}
+
+		return $random . '_' . $payment_id;
+	}
+
+	/**
+	 * Generate unique payment ID using base36 encoding and random string, always 14 characters.
+	 *
+	 * Format: {base36_encoded_id}{random_chars},
+	 * Example: 3F7B9A1E4C7D2A (exactly 14 chars)
+	 *
+	 * @param int $auto_increment_id The database auto-increment ID.
+	 * @since x.x.x
+	 * @return string Generated unique payment ID (always 14 characters).
+	 */
+	private function generate_unique_payment_id( $auto_increment_id ) {
+		// Convert the auto-increment ID to base36.
+		$encoded_id = base_convert( $auto_increment_id, 10, 36 );
+
+		// Calculate the length of random part needed to make the ID exactly 14 chars.
+		$random_length = 14 - strlen( $encoded_id );
+		if ( $random_length < 1 ) {
+			$random_length = 1; // Always leave at least 1 random char for collision prevention.
+		}
+
+		// Generate random part using only valid base36 (alphanumeric) chars.
+		// bin2hex gives 2 chars per byte, so we need ceil($random_length / 2) bytes.
+		$random_bytes = bin2hex( random_bytes( (int) ceil( $random_length / 2 ) ) );
+		$random_part  = substr( $random_bytes, 0, $random_length );
+
+		$unique_id = strtoupper( $encoded_id . $random_part );
+
+		// Ensure exactly 14 chars.
+		return substr( $unique_id, 0, 14 );
+	}
+
+	/**
+	 * Extract customer name and email from form data
+	 *
+	 * Uses the payment block's customerNameField and customerEmailField attributes
+	 * to find the corresponding field slugs, then extracts the values from form data.
+	 *
+	 * @param array<string,mixed> $input_value Input value.
+	 * @since x.x.x
+	 * @return array{name: string, email: string} Customer data array.
+	 */
+	private function extract_customer_data( $input_value ) {
+		$customer_data = [
+			'name'  => ! empty( $input_value['name'] ) && is_string( $input_value['name'] ) ? sanitize_text_field( $input_value['name'] ) : '',
+			'email' => ! empty( $input_value['email'] ) && is_email( $input_value['email'] ) ? sanitize_email( $input_value['email'] ) : '',
+		];
+
+		return $customer_data;
 	}
 }

@@ -42,7 +42,7 @@ class Payment_Markup extends Base {
 	 * @var string
 	 * @since x.x.x
 	 */
-	protected $description;
+	// protected $description;
 
 	/**
 	 * Stripe publishable key.
@@ -69,14 +69,6 @@ class Payment_Markup extends Base {
 	protected $payment_mode;
 
 	/**
-	 * Payment items.
-	 *
-	 * @var array
-	 * @since x.x.x
-	 */
-	protected $payment_items;
-
-	/**
 	 * Payment type.
 	 *
 	 * @var string
@@ -91,6 +83,62 @@ class Payment_Markup extends Base {
 	 * @since x.x.x
 	 */
 	protected $subscription_plan;
+
+	/**
+	 * Amount type.
+	 *
+	 * @var string
+	 * @since x.x.x
+	 */
+	protected $amount_type;
+
+	/**
+	 * Fixed amount.
+	 *
+	 * @var float
+	 * @since x.x.x
+	 */
+	protected $fixed_amount;
+
+	/**
+	 * Minimum amount.
+	 *
+	 * @var float
+	 * @since x.x.x
+	 */
+	protected $minimum_amount;
+
+	/**
+	 * Fixed amount label.
+	 *
+	 * @var string
+	 * @since x.x.x
+	 */
+	protected $fixed_amount_label;
+
+	/**
+	 * User-defined amount label.
+	 *
+	 * @var string
+	 * @since x.x.x
+	 */
+	protected $user_defined_amount_label;
+
+	/**
+	 * Customer name field slug.
+	 *
+	 * @var string
+	 * @since x.x.x
+	 */
+	protected $customer_name_field;
+
+	/**
+	 * Customer email field slug.
+	 *
+	 * @var string
+	 * @since x.x.x
+	 */
+	protected $customer_email_field;
 
 	/**
 	 * Constructor for the Payment Markup class.
@@ -114,9 +162,9 @@ class Payment_Markup extends Base {
 		$this->set_field_name( $this->unique_slug );
 
 		// Set payment-specific properties.
-		$this->amount      = $attributes['amount'] ?? 10;
-		$this->currency    = $attributes['currency'] ?? 'USD';
-		$this->description = $attributes['description'] ?? 'Payment';
+		$this->amount   = $attributes['amount'] ?? 10;
+		$this->currency = $attributes['currency'] ?? 'USD';
+		// $this->description = $attributes['description'] ?? 'Payment';
 
 		// Use currency from settings if not specified in block.
 		if ( empty( $this->currency ) || 'USD' === $this->currency ) {
@@ -126,9 +174,43 @@ class Payment_Markup extends Base {
 		// Get appropriate Stripe publishable key based on mode.
 		$this->stripe_publishable_key = Stripe_Helper::get_stripe_publishable_key();
 
-		$this->payment_items     = $attributes['paymentItems'] ?? [];
 		$this->payment_type      = $attributes['paymentType'] ?? 'one-time';
 		$this->subscription_plan = $attributes['subscriptionPlan'] ?? [];
+		$this->amount_type       = $attributes['amountType'] ?? 'fixed';
+		$this->fixed_amount      = $attributes['fixedAmount'] ?? 10;
+		$this->minimum_amount    = $attributes['minimumAmount'] ?? 0;
+
+		// Set default labels
+		$fixed_label_default = __( 'Amount', 'sureforms' );
+		$user_label_default  = __( 'Enter Amount', 'sureforms' );
+
+		// Apply filters to allow customization
+		$this->fixed_amount_label = apply_filters(
+			'srfm_payment_fixed_amount_label',
+			$fixed_label_default,
+			$this->block_id,
+			$attributes
+		);
+
+		$this->user_defined_amount_label = apply_filters(
+			'srfm_payment_user_defined_amount_label',
+			$user_label_default,
+			$this->block_id,
+			$attributes
+		);
+
+		// Set customer field mappings
+		$this->customer_name_field  = $attributes['customerNameField'] ?? '';
+		$this->customer_email_field = $attributes['customerEmailField'] ?? '';
+
+		// BACKWARD COMPATIBILITY: Migrate customer fields from subscriptionPlan
+		if ( empty( $this->customer_name_field ) && ! empty( $this->subscription_plan['customer_name'] ) ) {
+			$this->customer_name_field = $this->subscription_plan['customer_name'];
+		}
+
+		if ( empty( $this->customer_email_field ) && ! empty( $this->subscription_plan['customer_email'] ) ) {
+			$this->customer_email_field = $this->subscription_plan['customer_email'];
+		}
 	}
 
 	/**
@@ -142,36 +224,104 @@ class Payment_Markup extends Base {
 			return $this->render_not_connected_message();
 		}
 
-		$field_classes  = $this->get_field_classes();
-		$payment_config = [];
-		if ( ! empty( $this->payment_items ) ) {
-			$payment_config['paymentItems'] = $this->payment_items;
-		}
-		$payment_config = wp_json_encode( $payment_config );
-		$payment_config = is_string( $payment_config ) ? $payment_config : '';
+		$field_classes = $this->get_field_classes();
 
 		ob_start();
 		?>
 		<div data-block-id="<?php echo esc_attr( $this->block_id ); ?>"
 			data-payment-type="<?php echo esc_attr( $this->payment_type ); ?>"
+			data-customer-name-field="<?php echo esc_attr( $this->customer_name_field ); ?>"
+			data-customer-email-field="<?php echo esc_attr( $this->customer_email_field ); ?>"
 			<?php if ( 'subscription' === $this->payment_type && ! empty( $this->subscription_plan ) ) { ?>
 			data-subscription-plan-name="<?php echo esc_attr( $this->subscription_plan['name'] ?? 'Subscription Plan' ); ?>"
 			data-subscription-interval="<?php echo esc_attr( $this->subscription_plan['interval'] ?? 'month' ); ?>"
-			data-customer-name-field="<?php echo esc_attr( $this->subscription_plan['customer_name'] ?? '' ); ?>"
-			data-customer-email-field="<?php echo esc_attr( $this->subscription_plan['customer_email'] ?? '' ); ?>"
 			<?php } ?>
 			class="<?php echo esc_attr( $field_classes ); ?>">
 			<?php echo $this->label_markup; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 			<?php echo $this->help_markup; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 			<div class="srfm-payment-field-wrapper">
-				<div class="srfm-payment-items-wrapper"></div>
-				<!-- Payment Amount Display -->
-				<div class="srfm-payment-amount">
-					<span class="srfm-payment-label"><?php echo esc_html( $this->description ); ?>:</span>
-					<span class="srfm-payment-value">
-						<?php echo esc_html( $this->format_currency( $this->amount, $this->currency ) ); ?>
-					</span>
-				</div>
+				<?php if ( 'fixed' === $this->amount_type ) : ?>
+					<!-- Fixed Payment Amount Display -->
+					<div class="srfm-payment-amount srfm-block-label">
+						<span class="srfm-payment-label">
+							<?php echo esc_html( $this->fixed_amount_label ); ?>
+						</span>
+						<span class="srfm-payment-value">
+							<?php
+							if ( 'subscription' === $this->payment_type && ! empty( $this->subscription_plan ) ) {
+								$interval       = $this->subscription_plan['interval'] ?? 'month';
+								$billing_cycles = $this->subscription_plan['billingCycles'] ?? 0;
+								$interval_label = $this->get_interval_label( $interval );
+
+								// Build subscription text
+								if ( 'ongoing' === $billing_cycles ) {
+									/* translators: 1: Amount with currency, 2: Interval (day/week/month/quarter/year) */
+									echo esc_html(
+										sprintf(
+											__( '%1$s per %2$s until canceled', 'sureforms' ),
+											$this->format_currency( $this->fixed_amount, $this->currency ),
+											$interval_label
+										)
+									);
+								} elseif ( $billing_cycles > 0 ) {
+									/* translators: 1: Amount with currency, 2: Interval (day/week/month/quarter/year), 3: Number of billing cycles */
+									echo esc_html(
+										sprintf(
+											__( '%1$s per %2$s until %3$s payments', 'sureforms' ),
+											$this->format_currency( $this->fixed_amount, $this->currency ),
+											$interval_label,
+											$billing_cycles
+										)
+									);
+								} else {
+									/* translators: 1: Amount with currency, 2: Interval (day/week/month/quarter/year) */
+									echo esc_html(
+										sprintf(
+											__( '%1$s per %2$s', 'sureforms' ),
+											$this->format_currency( $this->fixed_amount, $this->currency ),
+											$interval_label
+										)
+									);
+								}
+							} else {
+								echo esc_html( $this->format_currency( $this->fixed_amount, $this->currency ) );
+							}
+							?>
+						</span>
+					</div>
+				<?php else : ?>
+					<!-- User-Defined Payment Amount Input -->
+					<div class="srfm-user-amount-input">
+						<label for="srfm-amount-<?php echo esc_attr( $this->block_id ); ?>" class="srfm-amount-label srfm-block-label">
+							<?php echo esc_html( $this->user_defined_amount_label ); ?>
+						</label>
+						<input
+							type="number"
+							id="srfm-amount-<?php echo esc_attr( $this->block_id ); ?>"
+							name="srfm_user_amount_<?php echo esc_attr( $this->block_id ); ?>"
+							class="srfm-user-amount-field srfm-input-common srfm-input-number"
+							value="<?php echo esc_attr( $this->fixed_amount ); ?>"
+							placeholder="0.00"
+							step="0.01"
+							min="<?php echo esc_attr( $this->minimum_amount ); ?>"
+							data-currency="<?php echo esc_attr( strtolower( $this->currency ) ); ?>"
+							data-minimum-amount="<?php echo esc_attr( $this->minimum_amount ); ?>"
+						/>
+						<?php if ( $this->minimum_amount > 0 ) : ?>
+							<p class="srfm-help-text">
+								<?php
+								/* translators: %s: Minimum amount with currency */
+								echo esc_html(
+									sprintf(
+										__( 'Minimum amount: %s', 'sureforms' ),
+										$this->format_currency( $this->minimum_amount, $this->currency )
+									)
+								);
+								?>
+							</p>
+						<?php endif; ?>
+					</div>
+				<?php endif; ?>
 
 				<!-- Stripe Elements Container -->
 				<div id="srfm-payment-element-<?php echo esc_attr( $this->block_id ); ?>" class="srfm-stripe-payment-element">
@@ -179,17 +329,15 @@ class Payment_Markup extends Base {
 				</div>
 
 				<!-- Hidden fields for payment data -->
-				<input type="hidden" 
-					name="<?php echo esc_attr( $this->field_name ); ?>" 
+				<input type="hidden"
+					name="<?php echo esc_attr( $this->field_name ); ?>"
 					class="srfm-payment-input"
 					data-currency="<?php echo esc_attr( strtolower( $this->currency ) ); ?>"
-					data-description="<?php echo esc_attr( $this->description ); ?>"
-					data-required="<?php echo esc_attr( $this->data_require_attr ); ?>"
 					data-stripe-key="<?php echo esc_attr( $this->stripe_publishable_key ); ?>"
 					data-payment-mode="<?php echo esc_attr( $this->payment_mode ); ?>"
+					data-amount-type="<?php echo esc_attr( $this->amount_type ); ?>"
+					data-fixed-amount="<?php echo esc_attr( $this->fixed_amount ); ?>"
 					aria-describedby="<?php echo esc_attr( trim( $this->aria_described_by ) ); ?>"
-					data-payment-items="<?php echo esc_attr( $payment_config ); ?>"
-					<?php echo $this->required ? 'required' : ''; ?>
 				/>
 
 				<!-- Payment processing status -->
@@ -282,5 +430,24 @@ class Payment_Markup extends Base {
 		}
 
 		return $symbol . number_format( $amount, 2 );
+	}
+
+	/**
+	 * Get translatable interval label from interval slug.
+	 *
+	 * @param string $interval_slug Interval slug (day/week/month/quarter/yearly).
+	 * @return string Translatable interval label.
+	 * @since x.x.x
+	 */
+	private function get_interval_label( $interval_slug ) {
+		$interval_labels = [
+			'day'     => __( 'day', 'sureforms' ),
+			'week'    => __( 'week', 'sureforms' ),
+			'month'   => __( 'month', 'sureforms' ),
+			'quarter' => __( 'quarter', 'sureforms' ),
+			'yearly'  => __( 'year', 'sureforms' ),
+		];
+
+		return $interval_labels[ $interval_slug ] ?? $interval_slug;
 	}
 }

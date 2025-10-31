@@ -24,8 +24,8 @@ import {
 	getStatusVariant,
 	formatAmount,
 	formatDateTime,
-	formatLogTimestamp,
 	getStatusLabel,
+	PartialAmount,
 } from '../components/utils';
 import PaymentNotes from '../components/paymentNotes';
 import PaymentLogs from '../components/paymentLogs';
@@ -468,7 +468,7 @@ const ViewPayment = () => {
 				<Table className="w-full">
 					<Table.Head>
 						<Table.HeadCell>
-							{ __( 'Amount Paid', 'sureforms' ) }
+							{ __( 'Amount', 'sureforms' ) }
 						</Table.HeadCell>
 						<Table.HeadCell>
 							{ __( 'Status', 'sureforms' ) }
@@ -485,32 +485,14 @@ const ViewPayment = () => {
 							<Table.Row key={ row.id }>
 								<Table.Cell>
 									{ row.refunded_amount > 0 ? (
-										<span
-											style={ {
-												display: 'flex',
-												gap: '8px',
-											} }
-										>
-											<span
-												style={ {
-													textDecoration:
-														'line-through',
-													color: '#6c757d',
-												} }
-											>
-												{ formatAmount(
-													row.amount_paid,
-													paymentData.currency
-												) }
-											</span>
-											<strong>
-												{ formatAmount(
-													row.amount_paid -
-														row.refunded_amount,
-													paymentData.currency
-												) }
-											</strong>
-										</span>
+										<PartialAmount
+											amount={ row.amount_paid }
+											partialAmount={
+												row.amount_paid -
+												row.refunded_amount
+											}
+											currency={ paymentData.currency }
+										/>
 									) : (
 										formatAmount(
 											row.amount_paid,
@@ -555,7 +537,7 @@ const ViewPayment = () => {
 	const paymentInfoData = [
 		{
 			id: 'payment-id',
-			title: __( 'Payment Id', 'sureforms' ),
+			title: __( 'Payment ID', 'sureforms' ),
 			value: `#${ paymentData.id }`,
 		},
 		{
@@ -595,9 +577,14 @@ const ViewPayment = () => {
 			value: paymentData.transaction_id || __( 'N/A', 'sureforms' ),
 		},
 		{
-			id: 'customer-id',
-			title: __( 'Customer ID', 'sureforms' ),
-			value: paymentData.customer_id || __( 'Guest', 'sureforms' ),
+			id: 'customer-name',
+			title: __( 'Customer Name', 'sureforms' ),
+			value: paymentData.customer_name || __( 'Guest', 'sureforms' ),
+		},
+		{
+			id: 'customer-email',
+			title: __( 'Customer Email', 'sureforms' ),
+			value: paymentData.customer_email || __( 'N/A', 'sureforms' ),
 		},
 		{
 			id: 'received-on',
@@ -706,7 +693,6 @@ const ViewPayment = () => {
 				logs={ logs }
 				handleDeleteLog={ handleDeleteLog }
 				deleteLogMutation={ deleteLogMutation }
-				formatLogTimestamp={ formatLogTimestamp }
 			/>
 		</>
 	);

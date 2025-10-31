@@ -95,7 +95,13 @@ class Admin_Stripe_Handler {
 		}
 
 		// Update database status to cancelled (following WPForms pattern).
-		$updated = Payments::update( $payment_id, [ 'subscription_status' => 'cancelled' ] );
+		$updated = Payments::update(
+			$payment_id,
+			[
+				'subscription_status' => 'cancelled',
+				'status'              => 'cancelled',
+			]
+		);
 		if ( ! $updated ) {
 			wp_send_json_error( [ 'message' => esc_html__( 'Failed to update subscription status in database.', 'sureforms' ) ] );
 		}
@@ -229,12 +235,17 @@ class Admin_Stripe_Handler {
 	 */
 	public function cancel_subscription( string $subscription_id ): bool {
 		try {
-			// Retrieve and cancel subscription using direct Stripe API.
+			// Retrieve the subscription using direct Stripe API.
 			$subscription = $this->stripe_api_request( 'subscriptions', 'GET', [], $subscription_id );
 
 			if ( ! is_array( $subscription ) ) {
 				// TODO: Handle proper error handling.
 				return false;
+			}
+
+			// If subscription is valid, check the status. If status is not 'active', return true early.
+			if ( isset( $subscription['status'] ) && ! in_array( $subscription['status'], [ 'active', 'trialing' ], true ) ) {
+				return true;
 			}
 
 			$updated_metadata = array_merge(

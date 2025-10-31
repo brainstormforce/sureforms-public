@@ -257,7 +257,7 @@ export const formatAmount = ( amount, currency = 'USD' ) => {
 };
 
 /**
- * Format datetime to readable format with validation
+ * Format datetime to "Mon DD / H:MM AM" (e.g., "Oct 23 / 2:23 PM")
  * @param {string|Date} datetime - Date string or Date object
  * @return {string} Formatted datetime string or 'N/A' if invalid
  */
@@ -272,71 +272,17 @@ export const formatDateTime = ( datetime ) => {
 		return 'N/A';
 	}
 
-	return date.toLocaleString( 'en-US', {
-		month: 'short',
-		day: 'numeric',
-		year: 'numeric',
-		hour: 'numeric',
-		minute: '2-digit',
-		hour12: true,
-	} );
-};
+	const month = date.toLocaleString( 'en-US', { month: 'short' } );
+	const day = date.getDate();
+	const time = date
+		.toLocaleString( 'en-US', {
+			hour: 'numeric',
+			minute: '2-digit',
+			hour12: true,
+		} )
+		.replace( /^0/, '' );
 
-/**
- * Format datetime with separate date and time (used in viewSubscription)
- * @param {string|Date} dateString - Date string or Date object
- * @return {string} Formatted as "Month DD, YYYY at HH:MM AM/PM"
- */
-export const formatDateTimeDetailed = ( dateString ) => {
-	if ( ! dateString ) {
-		return 'N/A';
-	}
-	const date = new Date( dateString );
-
-	if ( isNaN( date.getTime() ) ) {
-		return 'N/A';
-	}
-
-	const formattedDate = date.toLocaleDateString( 'en-US', {
-		month: 'short',
-		day: 'numeric',
-		year: 'numeric',
-	} );
-	const formattedTime = date.toLocaleTimeString( 'en-US', {
-		hour: '2-digit',
-		minute: '2-digit',
-		hour12: true,
-	} );
-	return `${ formattedDate } at ${ formattedTime }`;
-};
-
-/**
- * Format Unix timestamp to readable date (used for payment logs)
- * @param {number} timestamp - Unix timestamp in seconds
- * @return {string} Formatted datetime or error message
- */
-export const formatLogTimestamp = ( timestamp ) => {
-	// Validate timestamp
-	if ( ! timestamp || isNaN( timestamp ) || timestamp <= 0 ) {
-		return __( 'N/A', 'sureforms' );
-	}
-
-	const date = new Date( timestamp * 1000 );
-
-	// Check if date is valid
-	if ( isNaN( date.getTime() ) ) {
-		return __( 'Invalid Date', 'sureforms' );
-	}
-
-	return date.toLocaleString( 'en-US', {
-		year: 'numeric',
-		month: '2-digit',
-		day: '2-digit',
-		hour: '2-digit',
-		minute: '2-digit',
-		second: '2-digit',
-		hour12: false,
-	} );
+	return `${ month } ${ day } / ${ time }`;
 };
 
 /**
@@ -352,6 +298,7 @@ export const getStatusLabel = ( status ) => {
 		failed: __( 'Failed', 'sureforms' ),
 		refunded: __( 'Refunded', 'sureforms' ),
 		cancelled: __( 'Cancelled', 'sureforms' ),
+		active: __( 'Active', 'sureforms' ),
 	};
 	return statusMap[ status ] || status;
 };
@@ -366,4 +313,46 @@ export const getSelectedDateRange = ( dates ) => {
 		return `${ dates.from.toLocaleDateString() } - ${ dates.to.toLocaleDateString() }`;
 	}
 	return '';
+};
+
+/**
+ * Format payment object to order ID with SF-# prefix
+ * @param {Object} payment - Payment object with srfm_txn_id and id properties
+ * @return {string} Formatted order ID (e.g., "SF-#ABC123")
+ */
+export const formatOrderId = ( payment ) => {
+	const orderId = payment?.srfm_txn_id ? payment.srfm_txn_id : payment?.id;
+	return `SF-#${ orderId }`;
+};
+
+/**
+ * Display original and partial payment amounts with styling.
+ *
+ * Shows the original amount struck through, followed by the partial/refunded amount.
+ *
+ * @param {Object} props               - Component props
+ * @param {number} props.amount        - Original amount
+ * @param {number} props.partialAmount - Partial amount
+ * @param {string} props.currency      - Currency code
+ */
+export const PartialAmount = ( { amount, partialAmount, currency } ) => {
+	// Return the JSX element showing both amounts formatted.
+	return (
+		<span
+			style={ {
+				display: 'flex',
+				gap: '8px',
+			} }
+		>
+			<span
+				style={ {
+					textDecoration: 'line-through',
+					color: '#6c757d',
+				} }
+			>
+				{ formatAmount( amount, currency ) }
+			</span>
+			{ formatAmount( partialAmount, currency ) }
+		</span>
+	);
 };

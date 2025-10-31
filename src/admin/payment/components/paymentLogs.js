@@ -1,15 +1,46 @@
 import { Container, Label, Text, Button, Tooltip } from '@bsf/force-ui';
-import { Trash2 } from 'lucide-react';
+import { Trash2, ChevronLeft, ChevronRight } from 'lucide-react';
 import { __, sprintf } from '@wordpress/i18n';
-import { useState } from '@wordpress/element';
+import { useState, useEffect } from '@wordpress/element';
+import { formatDateTime } from './utils';
 
-const PaymentLogs = ( {
-	logs,
-	handleDeleteLog,
-	deleteLogMutation,
-	formatLogTimestamp,
-} ) => {
+const PaymentLogs = ( { logs, handleDeleteLog, deleteLogMutation } ) => {
 	const [ showDeletePopup, setShowDeletePopup ] = useState( null );
+	const [ currentPage, setCurrentPage ] = useState( 1 );
+	const itemsPerPage = 3;
+
+	// Reverse logs to show latest first
+	const reversedLogs = logs ? [ ...logs ].reverse() : [];
+
+	// Calculate pagination
+	const totalPages = Math.ceil(
+		( reversedLogs?.length || 0 ) / itemsPerPage
+	);
+	const startIndex = ( currentPage - 1 ) * itemsPerPage;
+	const endIndex = startIndex + itemsPerPage;
+	const paginatedLogs = reversedLogs?.slice( startIndex, endIndex ) || [];
+
+	// Adjust current page if it exceeds total pages after deletion
+	useEffect( () => {
+		if ( reversedLogs?.length > 0 ) {
+			const maxPossiblePage = Math.ceil(
+				reversedLogs.length / itemsPerPage
+			);
+			if ( currentPage > maxPossiblePage ) {
+				setCurrentPage( maxPossiblePage );
+			}
+		}
+	}, [ reversedLogs?.length, currentPage, itemsPerPage ] );
+
+	const handlePreviousPage = () => {
+		setCurrentPage( ( prev ) => Math.max( prev - 1, 1 ) );
+	};
+
+	const handleNextPage = () => {
+		setCurrentPage( ( prev ) => Math.min( prev + 1, totalPages ) );
+	};
+
+	const isLogsAvailable = logs && logs.length > 0;
 
 	return (
 		<Container
@@ -21,9 +52,17 @@ const PaymentLogs = ( {
 					{ __( 'Payment Logs', 'sureforms' ) }
 				</Label>
 			</Container>
-			<Container className="flex flex-col items-center justify-center bg-background-secondary gap-1 p-1 rounded-lg min-h-[89px]">
-				{ logs && logs.length > 0 ? (
-					[ ...logs ].reverse().map( ( log, index ) => {
+			<Container
+				className={ `flex flex-col items-center justify-center bg-background-secondary gap-1 p-1 rounded-lg ${
+					! isLogsAvailable && 'min-h-[89px]'
+				}` }
+			>
+				{ isLogsAvailable ? (
+					paginatedLogs.map( ( log, index ) => {
+						// Calculate the actual index in the original logs array
+						// Since we reversed the logs, we need to map back to original index
+						const reversedIndex = startIndex + index;
+						const actualIndex = logs.length - 1 - reversedIndex;
 						// Defensive checks for log data
 						if ( ! log || typeof log !== 'object' ) {
 							return null;
@@ -50,9 +89,7 @@ const PaymentLogs = ( {
 													'sureforms'
 												),
 												logTitle,
-												formatLogTimestamp(
-													log.timestamp
-												)
+												formatDateTime( log.timestamp )
 											) }
 										</Text>
 									</div>
@@ -91,7 +128,7 @@ const PaymentLogs = ( {
 														size="xs"
 														onClick={ () => {
 															handleDeleteLog(
-																index
+																actualIndex
 															);
 															setShowDeletePopup(
 																null
@@ -113,9 +150,9 @@ const PaymentLogs = ( {
 										interactive
 										className="z-999999"
 										variant="light"
-										open={ showDeletePopup === index }
+										open={ showDeletePopup === actualIndex }
 										setOpen={ () =>
-											setShowDeletePopup( index )
+											setShowDeletePopup( actualIndex )
 										}
 									>
 										<Button
@@ -125,7 +162,9 @@ const PaymentLogs = ( {
 												<Trash2 className="!size-4" />
 											}
 											onClick={ () =>
-												setShowDeletePopup( index )
+												setShowDeletePopup(
+													actualIndex
+												)
 											}
 											disabled={
 												deleteLogMutation.isPending
@@ -157,6 +196,34 @@ const PaymentLogs = ( {
 					</Text>
 				) }
 			</Container>
+
+			{ /* Pagination Controls - Show only if more than 3 logs */ }
+			{ isLogsAvailable && (
+				<Container className="flex items-center justify-between px-2 py-1">
+					<Text className="text-xs text-text-secondary">
+						{ __( 'Page', 'sureforms' ) } { currentPage }{ ' ' }
+						{ __( 'of', 'sureforms' ) } { totalPages }
+					</Text>
+					<Container className="gap-1">
+						<Button
+							variant="ghost"
+							size="xs"
+							icon={ <ChevronLeft className="!size-4" /> }
+							onClick={ handlePreviousPage }
+							disabled={ currentPage === 1 }
+							className="text-icon-secondary hover:text-icon-primary"
+						/>
+						<Button
+							variant="ghost"
+							size="xs"
+							icon={ <ChevronRight className="!size-4" /> }
+							onClick={ handleNextPage }
+							disabled={ currentPage === totalPages }
+							className="text-icon-secondary hover:text-icon-primary"
+						/>
+					</Container>
+				</Container>
+			) }
 		</Container>
 	);
 };

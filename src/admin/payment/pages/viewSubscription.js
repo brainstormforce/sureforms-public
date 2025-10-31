@@ -27,8 +27,8 @@ import {
 	getStatusVariant,
 	getStatusLabel,
 	formatAmount,
-	formatDateTimeDetailed,
-	formatLogTimestamp,
+	formatDateTime,
+	PartialAmount,
 } from '../components/utils';
 import PaymentNotes from '../components/paymentNotes';
 import PaymentLogs from '../components/paymentLogs';
@@ -715,7 +715,7 @@ const ViewSubscription = () => {
 				<Table className="w-full">
 					<Table.Head>
 						<Table.HeadCell>
-							{ __( 'Amount Paid', 'sureforms' ) }
+							{ __( 'Amount', 'sureforms' ) }
 						</Table.HeadCell>
 						<Table.HeadCell>
 							{ __( 'Status', 'sureforms' ) }
@@ -729,32 +729,16 @@ const ViewSubscription = () => {
 							<Table.Row key={ row.id }>
 								<Table.Cell className="font-medium">
 									{ row.refunded_amount > 0 ? (
-										<span
-											style={ {
-												display: 'flex',
-												gap: '8px',
-											} }
-										>
-											<span
-												style={ {
-													textDecoration:
-														'line-through',
-													color: '#6c757d',
-												} }
-											>
-												{ formatAmount(
-													row.total_amount,
-													subscriptionData.currency
-												) }
-											</span>
-											<strong>
-												{ formatAmount(
-													row.total_amount -
-														row.refunded_amount,
-													subscriptionData.currency
-												) }
-											</strong>
-										</span>
+										<PartialAmount
+											amount={ row.total_amount }
+											partialAmount={
+												row.total_amount -
+												row.refunded_amount
+											}
+											currency={
+												subscriptionData.currency
+											}
+										/>
 									) : (
 										formatAmount(
 											row.total_amount,
@@ -774,7 +758,7 @@ const ViewSubscription = () => {
 									/>
 								</Table.Cell>
 								<Table.Cell>
-									{ formatDateTimeDetailed( row.date_time ) }
+									{ formatDateTime( row.created_at ) }
 								</Table.Cell>
 							</Table.Row>
 						) ) }
@@ -786,18 +770,33 @@ const ViewSubscription = () => {
 
 	const subscriptionDetailsData = [
 		{
-			title: __( 'Subscription Id', 'sureforms' ),
+			title: __( 'Subscription ID', 'sureforms' ),
 			value: `#${ subscriptionData.id }`,
 		},
 		{
 			title: __( 'Form Name', 'sureforms' ),
 			value:
-				subscriptionData.form_title ||
-				__( 'Unknown Form', 'sureforms' ),
+				(
+					<span className="text-link-primary">
+						{ subscriptionData.form_title }
+					</span>
+				) || __( 'Unknown Form', 'sureforms' ),
 		},
 		{
+			id: 'payment-mode',
 			title: __( 'Payment Mode', 'sureforms' ),
-			value: subscriptionData.mode || __( 'Unknown', 'sureforms' ),
+			value:
+				'live' === subscriptionData.mode ? (
+					<Badge
+						variant="green"
+						label={ __( 'Live Mode', 'sureforms' ) }
+					/>
+				) : (
+					<Badge
+						variant="yellow"
+						label={ __( 'Test Mode', 'sureforms' ) }
+					/>
+				),
 		},
 		{
 			title: __( 'Payment Type', 'sureforms' ),
@@ -824,12 +823,22 @@ const ViewSubscription = () => {
 				__( 'N/A', 'sureforms' ),
 		},
 		{
+			id: 'customer-name',
+			title: __( 'Customer Name', 'sureforms' ),
+			value: subscriptionData.customer_name || __( 'Guest', 'sureforms' ),
+		},
+		{
+			id: 'customer-email',
+			title: __( 'Customer Email', 'sureforms' ),
+			value: subscriptionData.customer_email || __( 'N/A', 'sureforms' ),
+		},
+		{
 			title: __( 'Customer ID', 'sureforms' ),
 			value: subscriptionData.customer_id || __( 'Guest', 'sureforms' ),
 		},
 		{
 			title: __( 'Received On', 'sureforms' ),
-			value: formatDateTimeDetailed( subscriptionData.created_at ),
+			value: formatDateTime( subscriptionData.created_at ),
 		},
 	];
 
@@ -877,9 +886,22 @@ const ViewSubscription = () => {
 					align="center"
 					justify="between"
 				>
-					<Label size="md" className="font-semibold">
-						{ __( 'Subscription Details', 'sureforms' ) }
-					</Label>
+					<div className="flex items-center gap-2">
+						<Label size="md" className="font-semibold">
+							{ __( 'Subscription Details', 'sureforms' ) }
+						</Label>
+						<Badge
+							label={ getStatusLabel(
+								subscriptionData.subscription_status
+							) }
+							variant={ getStatusVariant(
+								subscriptionData.subscription_status
+							) }
+							size="sm"
+							className="max-w-fit"
+							disableHover
+						/>
+					</div>
 					<DropdownMenu
 						placement="bottom-start"
 						className="min-w-fit"
@@ -985,7 +1007,6 @@ const ViewSubscription = () => {
 				logs={ logs }
 				handleDeleteLog={ handleDeleteLog }
 				deleteLogMutation={ deleteLogMutation }
-				formatLogTimestamp={ formatLogTimestamp }
 			/>
 		</>
 	);

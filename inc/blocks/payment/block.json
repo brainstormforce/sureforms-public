@@ -7,7 +7,8 @@
 	"textdomain": "sureforms",
 	"supports": {
 		"reusable": false,
-		"html": false
+		"html": false,
+		"multiple": false
 	},
 	"example": {
 		"attributes": {
@@ -22,10 +23,6 @@
 		"block_id": {
 			"type": "string"
 		},
-		"description": {
-			"type": "string",
-			"default": "Payment"
-		},
 		"required": {
 			"type": "boolean",
 			"default": true
@@ -36,7 +33,7 @@
 		},
 		"label": {
 			"type": "string",
-			"default": "Payment Block"
+			"default": "Payment"
 		},
 		"help": {
 			"type": "string",
@@ -58,10 +55,6 @@
 			"type": "string",
 			"default": ""
 		},
-		"paymentItems": {
-			"type": "array",
-			"default": []
-		},
 		"paymentType": {
 			"type": "string",
 			"default": "one-time"
@@ -71,10 +64,32 @@
 			"default": {
 				"name": "Subscription Plan",
 				"interval": "month",
-				"billingCycles": 2,
-				"customer_name": "",
-				"customer_email": ""
+				"billingCycles": 2
 			}
+		},
+		"customerNameField": {
+			"type": "string",
+			"default": ""
+		},
+		"customerEmailField": {
+			"type": "string",
+			"default": ""
+		},
+		"amountType": {
+			"type": "string",
+			"default": "fixed"
+		},
+		"fixedAmount": {
+			"type": "number",
+			"default": 10
+		},
+		"minimumAmount": {
+			"type": "number",
+			"default": 0
+		},
+		"amountLabel": {
+			"type": "string",
+			"default": "Enter Amount"
 		}
 	}
 }
