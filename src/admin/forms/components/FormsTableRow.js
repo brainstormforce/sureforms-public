@@ -42,7 +42,7 @@ const FormsTableRow = ( {
 		} catch ( err ) {
 			// Fallback for older browsers
 			const textArea = document.createElement( 'textarea' );
-			textArea.value = `[sureforms id="${ form.id }"]`;
+			textArea.value = `[sureforms id='${ form.id }']`;
 			document.body.appendChild( textArea );
 			textArea.select();
 			document.execCommand( 'copy' );
@@ -144,19 +144,23 @@ const FormsTableRow = ( {
 
 			{ /* Shortcode */ }
 			<Table.Cell>
-				<Badge
-					label={ form.shortcode }
-					size="xs"
-					variant="neutral"
-					icon={ <Copy className="w-3 h-3" /> }
+				<div
 					onClick={ handleCopyShortcode }
-					className="cursor-pointer hover:bg-background-secondary rounded-sm w-fit"
-					title={
-						hasCopied
-							? __( 'Copied!', 'sureforms' )
-							: __( 'Copy Shortcode', 'sureforms' )
-					}
-				/>
+					className="cursor-pointer w-fit"
+				>
+					<Badge
+						label={ form.shortcode }
+						size="xs"
+						variant="neutral"
+						icon={ <Copy className="w-3 h-3" /> }
+						className="hover:bg-background-secondary rounded-sm"
+						title={
+							hasCopied
+								? __( 'Copied!', 'sureforms' )
+								: __( 'Copy Shortcode', 'sureforms' )
+						}
+					/>
+				</div>
 			</Table.Cell>
 
 			{ /* Entries Count */ }

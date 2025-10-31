@@ -528,7 +528,7 @@ class Admin {
 	 * Forms page callback.
 	 *
 	 * @return void
-	 * @since 1.11.0
+	 * @since x.x.x
 	 */
 	public function render_forms() {
 		?>
