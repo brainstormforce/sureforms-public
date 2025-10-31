@@ -820,6 +820,14 @@ class Admin {
 			wp_enqueue_style( SRFM_SLUG . '-settings', $css_uri . 'backend/settings' . $file_prefix . $rtl . '.css', [], SRFM_VER );
 		}
 
+		// Enqueue styles for the entries page.
+		if ( $is_screen_sureforms_entries ) {
+			$asset_handle = '-entries';
+			wp_enqueue_script( SRFM_SLUG . $asset_handle, SRFM_URL . 'assets/build/entries.js', $script_info['dependencies'], SRFM_VER, true );
+
+			$script_translations_handlers[] = SRFM_SLUG . $asset_handle;
+		}
+
 		// Enqueue scripts for the SureMail promotional page.
 		$is_screen_sureforms_smtp = Helper::validate_request_context( 'sureforms_smtp', 'page' );
 		if ( $is_screen_sureforms_smtp ) {
