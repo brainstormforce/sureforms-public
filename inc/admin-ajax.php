@@ -372,7 +372,7 @@ class Admin_Ajax {
 	/**
 	 * Download exported file.
 	 *
-	 * @since 1.6.1
+	 * @since x.x.x
 	 * @return void
 	 */
 	public function download_export_file() {

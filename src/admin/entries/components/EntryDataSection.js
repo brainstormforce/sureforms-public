@@ -1,34 +1,8 @@
 import { isValidElement } from '@wordpress/element';
 import { sprintf, _n, __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
-import { SquarePen } from 'lucide-react';
-import { Button } from '@bsf/force-ui';
-import UpgradeTooltip from '@Admin/entries/components/UpgradeTooltip';
-
-const EditEntryButton = ( { onEdit } ) => {
-	return (
-		<UpgradeTooltip
-			heading={ __( 'Unlock Edit Form Entires', 'sureforms' ) }
-			content={ __(
-				'With the SureForms Starter plan, you can easily edit your entries to suit your needs.',
-				'sureforms'
-			) }
-			placement="top"
-			utmMedium="edit_entry"
-		>
-			<Button
-				variant="outline"
-				size="xs"
-				icon={ <SquarePen className="w-4 h-4" /> }
-				iconPosition="left"
-				onClick={ onEdit }
-				disabled
-			>
-				{ __( 'Edit Entries', 'sureforms' ) }
-			</Button>
-		</UpgradeTooltip>
-	);
-};
+import EntryEdit from './EntryEdit';
+import { decodeHTMLEntities } from '../utils/entryHelpers';
 
 /**
  * Render field value - handles both regular and repeater fields
@@ -60,11 +34,17 @@ const formatField = ( field ) => {
 		};
 	}
 
+	let decodedValue = value;
+	if ( typeof value === 'string' && value.match( /&[a-zA-Z0-9#]+;/ ) ) {
+		// If field value contains encoded html entities, decode them
+		decodedValue = decodeHTMLEntities( value );
+	}
+
 	// Handle regular fields
 	return {
 		...field,
 		label,
-		value: value || '-',
+		value: decodedValue || '-',
 	};
 };
 
@@ -107,8 +87,8 @@ export const RenderField = ( props ) => {
 					) }
 					{ ! Array.isArray( field.value ) && (
 						<div className="flex-1">
-							<span className="text-sm font-medium text-text-secondary">
-								{ field?.value ?? field }
+							<span className="text-sm font-medium text-text-secondary [overflow-wrap:anywhere]">
+								{ field?.value ?? '-' }
 							</span>
 						</div>
 					) }
@@ -130,11 +110,10 @@ export const RenderField = ( props ) => {
  * EntryDataSection Component
  * Displays the form fields and their values for an entry
  *
- * @param {Object}   props
- * @param {Object}   props.entryData - The entry data object
- * @param {Function} props.onEdit    - Handler for edit action
+ * @param {Object} props
+ * @param {Object} props.entryData - The entry data object
  */
-const EntryDataSection = ( { entryData, onEdit } ) => {
+const EntryDataSection = ( { entryData } ) => {
 	// Extract and transform form data fields from entry data
 	const fields = ( entryData?.formData || [] ).map( formatField );
 
@@ -145,7 +124,7 @@ const EntryDataSection = ( { entryData, onEdit } ) => {
 					<h3 className="text-base font-semibold text-text-primary">
 						{ __( 'Entry Data', 'sureforms' ) }
 					</h3>
-					<EditEntryButton onEdit={ onEdit } />
+					<EntryEdit entry={ entryData } />
 				</div>
 			</div>
 			<div className="p-4 space-y-1 relative before:content-[''] before:block before:absolute before:inset-3 before:bg-background-secondary before:rounded-lg">

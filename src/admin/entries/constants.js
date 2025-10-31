@@ -1,7 +1,7 @@
 import { __ } from '@wordpress/i18n';
 
 export const STATUS_OPTIONS = [
-	{ value: 'all', label: __( 'All Status', 'sureforms' ) },
+	{ value: '', label: __( 'All Status', 'sureforms' ) },
 	{ value: 'read', label: __( 'Read', 'sureforms' ) },
 	{ value: 'unread', label: __( 'Unread', 'sureforms' ) },
 	{ value: 'trash', label: __( 'Trash', 'sureforms' ) },
@@ -14,7 +14,7 @@ export const STATUS_OPTIONS = [
  * @return {Array} Form options array
  */
 export const getFormOptions = ( formsMap = {} ) => {
-	const options = [ { value: 'all', label: __( 'All Forms', 'sureforms' ) } ];
+	const options = [ { value: '', label: __( 'All Forms', 'sureforms' ) } ];
 
 	Object.entries( formsMap ).forEach( ( [ id, title ] ) => {
 		options.push( {

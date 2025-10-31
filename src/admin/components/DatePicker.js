@@ -45,12 +45,12 @@ const DatePicker = ( props ) => {
 		setShow( false );
 	};
 
-	const handleApply = () => {
-		if ( ! selectedDate.from || ! selectedDate.to ) {
+	const handleApply = ( newValue ) => {
+		if ( ! newValue.from || ! newValue.to ) {
 			return;
 		}
 		if ( typeof onApply === 'function' ) {
-			onApply( selectedDate );
+			onApply( newValue );
 		}
 		setShow( false );
 	};
@@ -91,7 +91,7 @@ const DatePicker = ( props ) => {
 					<FUIDatePicker
 						{ ...props }
 						onCancel={ handleCancel }
-						variant="dualdate"
+						variant="presets"
 						selectionType="range"
 						onDateSelect={ handleSelect }
 						selected={ selectedDate }

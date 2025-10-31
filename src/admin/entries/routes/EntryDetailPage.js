@@ -1,9 +1,4 @@
-import {
-	useParams,
-	Link,
-	useNavigate,
-	useLocation,
-} from '@tanstack/react-router';
+import { useParams, Link, useSearchParams } from 'react-router-dom';
 import { __, sprintf } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
 import { useMemo, useEffect, useState } from '@wordpress/element';
@@ -68,10 +63,8 @@ const SendDetailsButton = ( { handleSendEmail, isDisabled = true } ) => {
  * Displays detailed view of a single entry
  */
 const EntryDetailPage = () => {
-	const { id } = useParams( { strict: false } );
-
-	const location = useLocation( { from: '/entry/$id' } );
-	const navigate = useNavigate();
+	const { id } = useParams();
+	const [ searchParams, setSearchParams ] = useSearchParams();
 	const { mutate: updateReadStatusMutation } = useUpdateEntriesReadStatus();
 
 	// State for confirmation dialog
@@ -104,11 +97,10 @@ const EntryDetailPage = () => {
 
 	// Mark entry as read if "read" query param is present
 	useEffect( () => {
-		if ( ! location?.search?.read ) {
+		const readParam = searchParams.get( 'read' );
+		if ( ! readParam ) {
 			return;
 		}
-		const newSearch = { ...location.search };
-		delete newSearch.read;
 		updateReadStatusMutation(
 			{
 				entry_ids: [ id ],
@@ -117,21 +109,13 @@ const EntryDetailPage = () => {
 			},
 			{
 				onSuccess: () => {
-					navigate( {
-						to: '/entry/$id',
-						params: { id },
-						search: newSearch,
-						replace: true,
-					} );
+					// Remove the read query param
+					searchParams.delete( 'read' );
+					setSearchParams( searchParams, { replace: true } );
 				},
 			}
 		);
-	}, [ location?.search, id, updateReadStatusMutation, navigate ] );
-
-	const handleEditEntry = () => {
-		// TODO: Implement edit entry functionality
-		console.log( 'Edit entry clicked' );
-	};
+	}, [ searchParams, id, updateReadStatusMutation, setSearchParams ] );
 
 	const handleSendEmail = () => {
 		if ( ! ResendNotificationModal ) {
@@ -172,7 +156,7 @@ const EntryDetailPage = () => {
 		<>
 			<div className="p-8 bg-background-secondary min-h-screen space-y-6">
 				{ /* Header */ }
-				<div className="flex items-center gap-3 max-w-[1374px] mx-auto">
+				<div className="flex items-center gap-3 mx-auto">
 					<Button
 						tag={ Link }
 						to="/"
@@ -189,17 +173,14 @@ const EntryDetailPage = () => {
 						) }
 					</Text>
 				</div>
-				<div className="max-w-[1374px] mx-auto">
+				<div className="mx-auto">
 					<div className="space-y-6">
 						<div className="space-y-6">
 							{ /* Main Content Grid */ }
 							<div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 								{ /* Left Column */ }
 								<div className="lg:col-span-2 space-y-6">
-									<EntryDataSection
-										entryData={ entryData }
-										onEdit={ handleEditEntry }
-									/>
+									<EntryDataSection entryData={ entryData } />
 									<SubmissionInfoSection
 										entryData={ entryData }
 									/>
