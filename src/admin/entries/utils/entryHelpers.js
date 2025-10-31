@@ -108,6 +108,43 @@ export const transformEntry = ( entry, formsMap = {} ) => {
 };
 
 /**
+ * Transform entry detail API response to component-friendly format
+ *
+ * @param {Object} entryDetail - Entry detail from API
+ * @return {Object} Transformed entry detail
+ */
+export const transformEntryDetail = ( entryDetail ) => {
+	if ( ! entryDetail ) {
+		return null;
+	}
+
+	return {
+		id: entryDetail.id,
+		formId: entryDetail.form_id,
+		formName: entryDetail.form_name,
+		formPermalink: entryDetail.form_permalink,
+		status: entryDetail.status,
+		statusLabel: getStatusLabel( entryDetail.status ),
+		createdAt: entryDetail.created_at,
+		formattedDateTime: formatDateTime( entryDetail.created_at ),
+		formData: entryDetail.form_data || [],
+		submissionInfo: {
+			userIp: entryDetail.submission_info?.user_ip || '-',
+			browserName: entryDetail.submission_info?.browser_name || '-',
+			deviceName: entryDetail.submission_info?.device_name || '-',
+		},
+		user: entryDetail.user
+			? {
+				id: entryDetail.user.id,
+				displayName: entryDetail.user.display_name,
+				profileUrl: entryDetail.user.profile_url,
+			  }
+			: null,
+		rawData: entryDetail, // Keep original data for reference
+	};
+};
+
+/**
  * Generates a range of page numbers and ellipses for pagination.
  *
  * @param {number} currentPage  - The current active page.

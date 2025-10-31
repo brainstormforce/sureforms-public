@@ -53,7 +53,7 @@ const EntriesPagination = ( {
 				</div>
 			</div>
 
-			<Pagination className="w-full md:w-fit">
+			<Pagination className="w-full md:!w-fit">
 				<Pagination.Content>
 					<Pagination.Previous
 						onClick={ onPreviousPage }

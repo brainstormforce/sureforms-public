@@ -1,9 +1,9 @@
 import domReady from '@wordpress/dom-ready';
 import { createRoot } from '@wordpress/element';
+import { toast } from '@bsf/force-ui';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import FormPageHeader from '../components/PageHeader';
-import EntriesListingPage from './EntriesListingPage';
-import { Toaster } from '@bsf/force-ui';
+import { RouterProvider } from '@tanstack/react-router';
+import { router } from './routes';
 
 // Create a client
 const queryClient = new QueryClient( {
@@ -16,23 +16,20 @@ const queryClient = new QueryClient( {
 	},
 } );
 
-function renderApp() {
-	// Render page header.
-	const headerApp = document.getElementById( 'srfm-page-header' );
-	const headerRoot = createRoot( headerApp );
-	if ( headerRoot ) {
-		headerRoot.render( <FormPageHeader /> );
-	}
+// Expose query client globally
+window.srfm_query_client = queryClient;
+// Expose toast globally for easy access across the admin interface
+window.srfm_toast = toast;
 
-	// Render entries table.
+function renderApp() {
+	// Render entries application with router.
 	const entriesApp = document.getElementById( 'srfm-root' );
 	const entriesRoot = createRoot( entriesApp );
 
 	if ( entriesRoot ) {
 		entriesRoot.render(
 			<QueryClientProvider client={ queryClient }>
-				<EntriesListingPage />
-				<Toaster className="z-999999" />
+				<RouterProvider router={ router } />
 			</QueryClientProvider>
 		);
 	}

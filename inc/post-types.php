@@ -392,9 +392,7 @@ class Post_Types {
 		$screen    = get_current_screen();
 		$screen_id = $screen ? $screen->id : '';
 
-		$is_screen_sureforms_entries = Helper::validate_request_context( SRFM_ENTRIES, 'page' );
-
-		if ( 'edit-' . SRFM_FORMS_POST_TYPE === $screen_id || $is_screen_sureforms_entries ) {
+		if ( 'edit-' . SRFM_FORMS_POST_TYPE === $screen_id ) {
 			?>
 		<style>
 			.srfm-page-header {

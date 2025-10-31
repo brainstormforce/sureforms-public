@@ -1,15 +1,17 @@
 import { __, _n, sprintf } from '@wordpress/i18n';
 import { useEffect, useMemo, useState } from '@wordpress/element';
-import EntriesHeader from './components/EntriesHeader';
-import EntriesFilters from './components/EntriesFilters';
-import EntriesTable from './components/EntriesTable';
-import EntriesPagination from './components/EntriesPagination';
-import EmptyState from './components/EmptyState';
-import ConfirmationDialog from './components/ConfirmationDialog';
-import { useEntriesFilters } from './hooks/useEntriesFilters';
-import { useEntriesSelection } from './hooks/useEntriesSelection';
-import { usePagination } from './hooks/usePagination';
-import { useEntriesSort } from './hooks/useEntriesSort';
+import { useNavigate } from '@tanstack/react-router';
+import { toast } from '@bsf/force-ui';
+import EntriesHeader from '../components/EntriesHeader';
+import EntriesFilters from '../components/EntriesFilters';
+import EntriesTable from '../components/EntriesTable';
+import EntriesPagination from '../components/EntriesPagination';
+import EmptyState from '../components/EmptyState';
+import ConfirmationDialog from '../components/ConfirmationDialog';
+import { useEntriesFilters } from '../hooks/useEntriesFilters';
+import { useEntriesSelection } from '../hooks/useEntriesSelection';
+import { usePagination } from '../hooks/usePagination';
+import { useEntriesSort } from '../hooks/useEntriesSort';
 import {
 	useEntries,
 	useForms,
@@ -17,10 +19,9 @@ import {
 	useTrashEntries,
 	useUpdateEntriesReadStatus,
 	useExportEntries,
-} from './hooks/useEntriesQuery';
-import { transformEntry } from './utils/entryHelpers';
-import { getFormOptions } from './constants';
-import { toast } from '@bsf/force-ui';
+} from '../hooks/useEntriesQuery';
+import { transformEntry } from '../utils/entryHelpers';
+import { getFormOptions } from '../constants';
 
 /**
  * EntriesListingPage Component
@@ -28,6 +29,9 @@ import { toast } from '@bsf/force-ui';
  * Handles data fetching with TanStack Query
  */
 const EntriesListingPage = () => {
+	// Router navigation hook
+	const navigate = useNavigate();
+
 	// Fetch forms data using React Query
 	const { data: formsMap = {} } = useForms();
 	// Custom hooks for state management
@@ -107,7 +111,6 @@ const EntriesListingPage = () => {
 		return getFormOptions( formsMap );
 	}, [ formsMap ] );
 
-	// Check if any filters are active
 	const hasActiveFilters = useMemo( () => {
 		return (
 			( statusFilter !== '' && statusFilter !== 'all' ) ||
@@ -167,14 +170,12 @@ const EntriesListingPage = () => {
 
 	// Action handlers
 	const handleEdit = ( entry ) => {
-		window.open(
-			decodeURIComponent( srfm_admin?.view_entry_url ).replace(
-				'[id]',
-				entry.id
-			),
-			'_self',
-			'noopener,noreferrer'
-		);
+		const navObj = { to: '/entry/$id', params: { id: entry.id } };
+		// If entry is unread, add "read" query param to mark it as read
+		if ( entry.status === 'unread' ) {
+			navObj.search = { read: true };
+		}
+		navigate( navObj );
 	};
 
 	const handleDelete = ( entry ) => {
@@ -427,7 +428,7 @@ const EntriesListingPage = () => {
 		return (
 			<div className="p-8 bg-background-secondary min-h-screen">
 				<div className="max-w-[1374px] mx-auto">
-					<div className="bg-white rounded-xl border-0.5 border-border-subtle shadow-sm p-2 space-y-2">
+					<div className="bg-white rounded-xl border-0.5 border-solid border-border-subtle shadow-sm p-2 space-y-2">
 						<EmptyState />
 					</div>
 				</div>
@@ -438,7 +439,7 @@ const EntriesListingPage = () => {
 	return (
 		<div className="p-8 bg-background-secondary min-h-screen">
 			<div className="mx-auto">
-				<div className="bg-white rounded-xl border-0.5 border-border-subtle shadow-sm p-4 space-y-2">
+				<div className="bg-white rounded-xl border-0.5 border-solid border-border-subtle shadow-sm p-4 space-y-2">
 					<div className="p-1">
 						<div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-4 xl:gap-5">
 							<EntriesHeader />
@@ -463,17 +464,17 @@ const EntriesListingPage = () => {
 					</div>
 
 					<EntriesTable
-						entries={ entries }
-						selectedEntries={ selectedEntries }
+						data={ entries }
+						selectedItems={ selectedEntries }
 						onToggleAll={ handleToggleAll }
 						onChangeRowSelection={ handleChangeRowCheckbox }
 						indeterminate={ indeterminate }
-						onEdit={ handleEdit }
-						onDelete={ handleDelete }
-						onRestore={ handleRestore }
 						isLoading={ isLoading }
 						onSort={ handleSort }
 						getSortDirection={ getSortDirection }
+						onEdit={ handleEdit }
+						onDelete={ handleDelete }
+						onRestore={ handleRestore }
 					>
 						<EntriesPagination
 							currentPage={ currentPage }
