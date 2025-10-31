@@ -489,7 +489,9 @@ class Post_Types {
 			[
 				'single'        => true,
 				'type'          => 'object',
-				'auth_callback' => '__return_true',
+				'auth_callback' => static function() {
+					return Helper::current_user_can();
+				},
 				'show_in_rest'  => [
 					'schema' => [
 						'type'       => 'object',
@@ -563,8 +565,9 @@ class Post_Types {
 			[
 				'single'        => true,
 				'type'          => 'object',
-				'auth_callback' => '__return_true',
-				'show_in_rest'  => [
+				'auth_callback' => static function() {
+					return Helper::current_user_can();
+				},				'show_in_rest'  => [
 					'schema' => [
 						'type'       => 'object',
 						'properties' => [
@@ -889,8 +892,9 @@ class Post_Types {
 			[
 				'single'        => true,
 				'type'          => 'array',
-				'auth_callback' => '__return_true',
-				'show_in_rest'  => [
+				'auth_callback' => static function() {
+					return Helper::current_user_can();
+				},				'show_in_rest'  => [
 					'schema' => [
 						'type'  => 'array',
 						'items' => [
@@ -962,8 +966,9 @@ class Post_Types {
 			[
 				'single'        => true,
 				'type'          => 'array',
-				'auth_callback' => '__return_true',
-				'show_in_rest'  => [
+				'auth_callback' => static function() {
+					return Helper::current_user_can();
+				},				'show_in_rest'  => [
 					'schema' => [
 						'type'  => 'array',
 						'items' => [
