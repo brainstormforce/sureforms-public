@@ -567,7 +567,8 @@ class Post_Types {
 				'type'          => 'object',
 				'auth_callback' => static function() {
 					return Helper::current_user_can();
-				},				'show_in_rest'  => [
+				},
+				'show_in_rest'  => [
 					'schema' => [
 						'type'       => 'object',
 						'properties' => [
@@ -894,7 +895,8 @@ class Post_Types {
 				'type'          => 'array',
 				'auth_callback' => static function() {
 					return Helper::current_user_can();
-				},				'show_in_rest'  => [
+				},
+				'show_in_rest'  => [
 					'schema' => [
 						'type'  => 'array',
 						'items' => [
@@ -968,7 +970,8 @@ class Post_Types {
 				'type'          => 'array',
 				'auth_callback' => static function() {
 					return Helper::current_user_can();
-				},				'show_in_rest'  => [
+				},
+				'show_in_rest'  => [
 					'schema' => [
 						'type'  => 'array',
 						'items' => [
