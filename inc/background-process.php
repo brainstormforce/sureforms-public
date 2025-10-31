@@ -100,7 +100,7 @@ class Background_Process {
 		$extras_decoded                        = json_decode( Helper::get_string_value( $extras ), true );
 		$is_after_submission_process_triggered = is_array( $extras_decoded ) && isset( $extras_decoded['is_after_submission_process_triggered'] ) ? $extras_decoded['is_after_submission_process_triggered'] : false;
 
-		if ( $is_after_submission_process_triggered === true ) {
+		if ( $is_after_submission_process_triggered ) {
 			return new \WP_Error(
 				'process_already_triggered',
 				__( 'After submission process has already been triggered for this submission.', 'sureforms' ),
