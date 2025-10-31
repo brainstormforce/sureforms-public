@@ -98,18 +98,15 @@ class Background_Process {
 		// if is_after_submission_process_triggered is already true, return early
 		$entry  = Entries::get( $this->submission_id );
 		$extras = Helper::get_array_value( $entry['extras'] )[0] ?? [];
-		// if ( isset( $extras['is_after_submission_process_triggered'] ) && true === $extras['is_after_submission_process_triggered'] ) {
-		// return;
-		// }
 
 		$is_after_submission_process_triggered = json_decode( Helper::get_string_value( $extras ), true )['is_after_submission_process_triggered'] ?? false;
 
 		if ( isset( $is_after_submission_process_triggered ) && true === $is_after_submission_process_triggered ) {
-						return new \WP_Error(
-							'process_already_triggered',
-							__( 'After submission process has already been triggered for this submission.', 'sureforms' ),
-							[ 'status' => 403 ]
-						);
+			return new \WP_Error(
+				'process_already_triggered',
+				__( 'After submission process has already been triggered for this submission.', 'sureforms' ),
+				[ 'status' => 403 ]
+			);
 		}
 
 		$nonce = Helper::get_string_value( $request->get_param( 'after_submit_nonce' ) );
