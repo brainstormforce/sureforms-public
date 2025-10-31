@@ -103,6 +103,19 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 									} }
 								/>
 							) }
+							<SRFMTextControl
+								variant="textarea"
+								label={ __( 'Help Text', 'sureforms' ) }
+								value={ help }
+								data={ {
+									value: help,
+									label: 'help',
+								} }
+								onChange={ ( value ) =>
+									setAttributes( { help: value } )
+								}
+							/>
+							<div className="srfm-settings-separator" />
 							<ToggleControl
 								label={ __(
 									'Validate as Unique',
@@ -156,18 +169,6 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 									options={ countryOptions }
 								/>
 							) }
-							<SRFMTextControl
-								variant="textarea"
-								label={ __( 'Help Text', 'sureforms' ) }
-								value={ help }
-								data={ {
-									value: help,
-									label: 'help',
-								} }
-								onChange={ ( value ) =>
-									setAttributes( { help: value } )
-								}
-							/>
 						</SRFMAdvancedPanelBody>
 					</InspectorTab>
 					<InspectorTab { ...SRFMTabs.style }></InspectorTab>

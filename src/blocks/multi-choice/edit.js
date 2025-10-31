@@ -433,6 +433,25 @@ const Edit = ( props ) => {
 			),
 		},
 		{
+			id: 'help',
+			component: (
+				<SRFMTextControl
+					variant="textarea"
+					data={ {
+						value: help,
+						label: 'help',
+					} }
+					label={ __( 'Help Text', 'sureforms' ) }
+					value={ help }
+					onChange={ ( value ) => setAttributes( { help: value } ) }
+				/>
+			),
+		},
+		{
+			id: 'separator-1',
+			component: <div className="srfm-settings-separator" />,
+		},
+		{
 			id: 'verticalLayout',
 			component: (
 				<ToggleControl
@@ -504,21 +523,6 @@ const Edit = ( props ) => {
 
 			component: (
 				<span className="srfm-control-label srfm-control__header" />
-			),
-		},
-		{
-			id: 'help',
-			component: (
-				<SRFMTextControl
-					variant="textarea"
-					data={ {
-						value: help,
-						label: 'help',
-					} }
-					label={ __( 'Help Text', 'sureforms' ) }
-					value={ help }
-					onChange={ ( value ) => setAttributes( { help: value } ) }
-				/>
 			),
 		},
 	];
