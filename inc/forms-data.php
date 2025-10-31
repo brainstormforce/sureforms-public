@@ -131,8 +131,8 @@ class Forms_Data {
 		$status    = sanitize_text_field( $request->get_param( 'status' ) );
 		$orderby   = sanitize_text_field( $request->get_param( 'orderby' ) );
 		$order     = sanitize_text_field( $request->get_param( 'order' ) );
-		$date_from = sanitize_text_field( $request->get_param( 'date_from' ) );
-		$date_to   = sanitize_text_field( $request->get_param( 'date_to' ) );
+		$date_from = sanitize_text_field( $request->get_param( 'after' ) );
+		$date_to   = sanitize_text_field( $request->get_param( 'before' ) );
 
 		// Build query arguments.
 		$args = [
@@ -206,7 +206,7 @@ class Forms_Data {
 
 		return [
 			'id'            => $form_id,
-			'title'         => get_the_title( $post ),
+			'title'         => $post->post_title,
 			'status'        => $post->post_status,
 			'date_created'  => mysql_to_rfc3339( $post->post_date ),
 			'date_modified' => mysql_to_rfc3339( $post->post_modified ),
