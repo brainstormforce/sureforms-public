@@ -188,7 +188,7 @@ const AiFormBuilder = () => {
 	const toasterPosition = isRTL ? 'bottom-left' : 'bottom-right';
 
 	return (
-		<div className="max-h-screen overflow-auto">
+		<div className="max-h-screen">
 			<Toaster
 				className={ cn(
 					'z-[999999]',
@@ -202,14 +202,16 @@ const AiFormBuilder = () => {
 				dismissAfter={ 5000 }
 			/>
 			<Header />
-			<AiFormBuilderForm
-				handleCreateAiForm={ handleCreateAiForm }
-				setIsBuildingForm={ setIsBuildingForm }
-				formTypeObj={ formTypeObj }
-				setFormTypeObj={ setFormTypeObj }
-				setFormType={ setFormType }
-				formType={ formType }
-			/>
+			<div className="mt-14">
+				<AiFormBuilderForm
+					handleCreateAiForm={ handleCreateAiForm }
+					setIsBuildingForm={ setIsBuildingForm }
+					formTypeObj={ formTypeObj }
+					setFormTypeObj={ setFormTypeObj }
+					setFormType={ setFormType }
+					formType={ formType }
+				/>
+			</div>
 		</div>
 	);
 };
@@ -312,6 +314,7 @@ export const getLimitReachedPopup = () => {
 	if ( type === 'non-registered' && formCreationleft === 0 ) {
 		return (
 			<LimitReachedPopup
+				title={ __( 'Free Form Generation Limit Reached', 'sureforms' ) }
 				paraTitle={ __(
 					'You have Hit Your Free Limit.',
 					'sureforms'

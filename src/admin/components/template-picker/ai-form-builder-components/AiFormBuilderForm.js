@@ -4,16 +4,10 @@ import {
 	Button,
 	Container,
 	TextArea,
-	Title,
 	toast,
 	Tooltip,
 } from '@bsf/force-ui';
-import {
-	ArrowRight,
-	Sparkles,
-	MicOff,
-	Mic,
-} from 'lucide-react';
+import { ArrowRight, Sparkles, MicOff, Mic } from 'lucide-react';
 import { applyFilters } from '@wordpress/hooks';
 import { cn, srfmClassNames } from '@Utils/Helpers';
 import ConnectWithAIBanner from '../ai-form-builder-components/ConnectWithAIBanner.js';
@@ -84,6 +78,7 @@ export default ( props ) => {
 
 	// 👇 added new state for banner visibility
 	const [ showBanner, setShowBanner ] = useState( false );
+	const [ isFocused, setIsFocused ] = useState( false );
 
 	const handlePromptClick = ( prompt ) => {
 		setText( prompt );
@@ -264,43 +259,37 @@ export default ( props ) => {
 			return;
 		}
 
-		let i = displayedPlaceholder.length;
-		let typingPhase = false;
+		let i = 0; // Start typing from first character
 
 		const interval = setInterval( () => {
-			if ( ! typingPhase ) {
-				// Backspacing faster
-				if ( i > 0 ) {
-					setDisplayedPlaceholder( ( prev ) => prev.slice( 0, -1 ) );
-					i--;
-				} else {
-					typingPhase = true;
-					i = 0;
-				}
-			} else if ( i < textAreaPlaceholder.length ) {
-				// Typing new text
+			if ( i < textAreaPlaceholder.length ) {
+				// Typing one character at a time
 				setDisplayedPlaceholder(
 					( prev ) => prev + textAreaPlaceholder.charAt( i )
 				);
 				i++;
 			} else {
+				// Fully typed, stop interval
 				clearInterval( interval );
 			}
 		}, 50 );
 
+		// Clear previous placeholder before typing new one
+		setDisplayedPlaceholder( '' );
+
 		return () => clearInterval( interval );
 	}, [ textAreaPlaceholder ] );
 
-	const is_pro_active =
-		srfm_admin?.is_pro_active && srfm_admin?.is_pro_license_active;
-
-	const type = srfm_admin?.srfm_ai_1usage_details?.type;
 	const formCreationleft = srfm_admin?.srfm_ai_usage_details?.remaining ?? 0;
 
 	const isRegistered =
 		srfm_admin?.srfm_ai_usage_details?.type === 'registered';
 	const finalFormCreationCountRemaining =
 		isRegistered && formCreationleft > 20 ? 20 : formCreationleft;
+
+	const is_pro_active =
+		srfm_admin?.is_pro_active && srfm_admin?.is_pro_license_active;
+	const type = srfm_admin?.srfm_ai_1usage_details?.type;
 
 	const banner =
 		type === 'registered' && formCreationleft === 0 ? (
@@ -311,13 +300,19 @@ export default ( props ) => {
 
 	return (
 		<Container
-			className={ cn( 'gap-0', is_pro_active && 'mt-12' ) }
+			className={ cn(
+				'gap-0',
+				showBanner && 'h-screen overflow-y-auto'
+			) }
 			direction="column"
 		>
 			<Container.Item>{ ! is_pro_active && banner }</Container.Item>
-			<Container.Item>
+			<Container.Item className="w-full">
 				<Container
-					className={ cn( 'p-8 gap-6 mx-auto w-full h-screen bg-background-secondary', showBanner && 'mt-8' ) }
+					className={ cn(
+						'p-8 gap-6 mx-auto w-full bg-background-secondary',
+						! is_pro_active ? 'min-h-screen pb-16' : 'h-screen'
+					) }
 					direction="column"
 					justify="center"
 					align="center"
@@ -330,107 +325,130 @@ export default ( props ) => {
 							className="gap-6"
 						>
 							<Container.Item>
-								<Title
-									size="md"
-									title={ __(
+								<span className="text-3xl font-semibold text-text-primary">
+									{ __(
 										'Describe the form that you want',
 										'sureforms'
 									) }
-									className="text-3xl font-semibold text-text-primary"
-								/>
+								</span>
 							</Container.Item>
 							<Container.Item>
-								<Container
-									className="gap-2 p-2 w-full h-full min-w-[750px] mx-auto"
-									direction="column"
-								>
-									<Container.Item className="focus-within:border-brand-primary-600 focus-within:ring-1 focus-within:ring-brand-primary-600 flex flex-col gap-2 shadow-md-blur-32 border-[0.5 border-solid border-t-background-brand rounded-lg bg-background-primary">
-										<TextArea
-											aria-label={ __(
-												'Describe the form you want to create',
-												'sureforms'
-											) }
-											placeholder={ displayedPlaceholder }
-											id="textarea"
-											value={ text }
-											size="lg"
-											className={ cn(
-												'focus:[box-shadow:none] focus:outline-none resize-none gap-2 w-full min-h-[140px] text-field-placeholder py-2 px-4 border-0',
-												characterCount > 0 &&
-													'text-text-primary'
-											) }
-											onChange={ ( e ) => {
-												handlePromptClick( e );
-											} }
-											onInput={ handleTyping }
-											maxLength={ 2000 }
-										/>
-										<Container
-											className="flex-wrap py-2 px-4"
-											align="center"
-											justify="between"
-										>
-											<Container.Item className="flex flex-row gap-4 items-center">
-												<FormTypeSelector
-													formTypeObj={ formTypeObj }
-													setFormTypeObj={
-														setFormTypeObj
-													}
-													formType={ formType }
-													setFormType={ setFormType }
-													setformLayout={
-														setformLayout
-													}
-												/>
-											</Container.Item>
-											<Container.Item className="gap-4 flex flex-row">
-												<VoiceToggleButton
-													isListening={ isListening }
-													toggleListening={
-														toggleListening
-													}
-												/>
-												<Button
-													className="gap-1"
-													icon={
-														<Sparkles className="w-4 h-4" />
-													}
-													iconPosition="left"
-													size="md"
-													variant="primary"
-													onClick={ () => {
-														setShowBanner( true );
-														if (
-															! text ||
-															! text.trim()
-														) {
-															const textArea =
-																document.getElementById(
-																	'textarea'
-																);
-															textArea.focus();
-															return;
-														}
-
-														handleCreateAiForm(
-															text,
-															[],
-															true
-														);
-														setIsBuildingForm(
-															true
-														);
-													} }
-												>
-													{ __(
-														'Generate',
+								<div className="w-full min-w-[750px] mx-auto p-2 relative">
+									<div
+										className="relative rounded-lg shadow-lg p-[1px]"
+										style={
+											! isFocused
+												? {
+													background:
+															'linear-gradient(180deg, #FF5811 0%, #8B2E16 5%, #000000 10%, #000000 100%)',
+												  }
+												: {}
+										}
+									>
+										<div className="relative bg-white rounded-[calc(0.5rem-1px)]">
+											<div className="relative leading-none">
+												<TextArea
+													aria-label={ __(
+														'Describe the form you want to create',
 														'sureforms'
 													) }
-												</Button>
-											</Container.Item>
-										</Container>
-									</Container.Item>
-								</Container>
+													placeholder={
+														displayedPlaceholder
+													}
+													id="textarea"
+													value={ text }
+													size="lg"
+													className={ cn(
+														'border-none active:border active:border-solid active:border-focus-border focus:border focus:border-solid focus:border-focus-border resize-y w-full min-h-[140px] text-field-placeholder pt-3 px-4 pb-14 rounded-[calc(0.5rem-1px)]',
+														characterCount > 0 &&
+															'text-text-primary'
+													) }
+													onChange={ ( e ) => {
+														handlePromptClick( e );
+													} }
+													onInput={ handleTyping }
+													onFocus={ () =>
+														setIsFocused( true )
+													}
+													onBlur={ () =>
+														setIsFocused( false )
+													}
+													maxLength={ 2000 }
+												/>
+
+												{ /* Left side controls */ }
+												<div className="absolute left-5 bottom-3 flex flex-row gap-4 items-center">
+													<FormTypeSelector
+														formTypeObj={
+															formTypeObj
+														}
+														setFormTypeObj={
+															setFormTypeObj
+														}
+														formType={ formType }
+														setFormType={
+															setFormType
+														}
+														setformLayout={
+															setformLayout
+														}
+													/>
+												</div>
+
+												{ /* Right side controls */ }
+												<div className="absolute right-5 bottom-3 gap-3 flex flex-row items-center">
+													<VoiceToggleButton
+														isListening={
+															isListening
+														}
+														toggleListening={
+															toggleListening
+														}
+													/>
+													<Button
+														className="gap-1"
+														icon={
+															<Sparkles className="w-4 h-4" />
+														}
+														iconPosition="left"
+														size="md"
+														variant="primary"
+														onClick={ () => {
+															setShowBanner(
+																true
+															);
+															if (
+																! text ||
+																! text.trim()
+															) {
+																const textArea =
+																	document.getElementById(
+																		'textarea'
+																	);
+																textArea.focus();
+																return;
+															}
+
+															handleCreateAiForm(
+																text,
+																[],
+																true
+															);
+															setIsBuildingForm(
+																true
+															);
+														} }
+													>
+														{ __(
+															'Generate',
+															'sureforms'
+														) }
+													</Button>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
 							</Container.Item>
 						</Container>
 					</Container.Item>

@@ -55,7 +55,9 @@ const LimitReachedPopup = ( {
 						variant="neutral"
 						className="text-xs font-semibold flex gap-3 text-brand-800"
 					>
-						<span className="pt-1">{ <Zap className="size-4 text-brand-800" /> }</span>
+						<span className="pt-1">
+							{ <Zap className="size-4 text-brand-800" /> }
+						</span>
 						{ finalTitle }
 						<span
 							className="absolute -top-2 -right-1 cursor-pointer"
@@ -96,22 +98,25 @@ const LimitReachedPopup = ( {
 
 					{ ! is_pro_active ? (
 						<hr className="border-b-5 border-x-0 border-t-0 w-full border-solid border-border-subtle" />
-					) : ( ''
-					) }
-
-					{ ! is_pro_active && ! deactivatedLicense && ! ActivateLicenseButton ? (
-						<Button
-							size="md"
-							variant="outline"
-							onClick={ () => {
-								window.location.href = `${ srfm_admin.site_url }/wp-admin/post-new.php?post_type=sureforms_form`;
-							} }
-						>
-							{ __( 'Or Build It Yourself', 'sureforms' ) }
-						</Button>
 					) : (
 						''
 					) }
+
+					{ ! is_pro_active &&
+					! deactivatedLicense &&
+					! ActivateLicenseButton ? (
+							<Button
+								size="md"
+								variant="outline"
+								onClick={ () => {
+									window.location.href = `${ srfm_admin.site_url }/wp-admin/post-new.php?post_type=sureforms_form`;
+								} }
+							>
+								{ __( 'Or Build It Yourself', 'sureforms' ) }
+							</Button>
+						) : (
+							''
+						) }
 				</Container.Item>
 			</Container>
 		</Container>

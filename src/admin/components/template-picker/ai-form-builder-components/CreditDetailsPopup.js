@@ -3,7 +3,11 @@ import { Button, Container, Label } from '@bsf/force-ui';
 import { ChevronRight, X } from 'lucide-react';
 import { addQueryParam } from '@Utils/Helpers';
 
-const CreditDetailsPopup = ( { finalFormCreationCountRemaining = 0, showBanner, setShowBanner } ) => {
+const CreditDetailsPopup = ( {
+	finalFormCreationCountRemaining = 0,
+	showBanner,
+	setShowBanner,
+} ) => {
 	const upgradeLink = () =>
 		window.open(
 			addQueryParam(
@@ -77,7 +81,7 @@ const CreditDetailsPopup = ( { finalFormCreationCountRemaining = 0, showBanner, 
 								className="font-normal break-words underline cursor-pointer text-brand-800 hover:text-brand-900"
 								onClick={ () =>
 									window.open(
-										'https://sureforms.com/main',
+										'https://sureforms.com',
 										'_blank',
 										'noreferrer'
 									)

@@ -1,4 +1,5 @@
 import { useLocation } from 'react-router-dom';
+import { X } from 'lucide-react';
 import { Topbar, Button } from '@bsf/force-ui';
 import Breadcrumbs from './Breadcrumbs';
 import ICONS from './icons';
@@ -41,6 +42,21 @@ const Header = () => {
 						<Breadcrumbs />
 					</Topbar.Item>
 				</Topbar.Left>
+				<Topbar.Right>
+					<Topbar.Item className="p-5">
+						<Button
+							variant="ghost"
+							className="p-1 hover:bg-background-secondary rounded-sm transition-colors [box-shadow:none] focus:[box-shadow:none]"
+							onClick={ () => {
+								window.location.href =
+									'/wp-admin/admin.php?page=sureforms_menu';
+							} }
+							icon={
+								<X className="size-4 text-text-secondary" />
+							}
+						/>
+					</Topbar.Item>
+				</Topbar.Right>
 			</Topbar>
 		</div>
 	);

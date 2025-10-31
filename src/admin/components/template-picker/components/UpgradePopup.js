@@ -34,7 +34,9 @@ const UpgradePopup = ( {
 						variant="neutral"
 						className="text-xs font-semibold flex gap-3 text-brand-800"
 					>
-						<span className="pt-1">{ <Zap className="size-4 text-brand-800" /> }</span>
+						<span className="pt-1">
+							{ <Zap className="size-4 text-brand-800" /> }
+						</span>
 						{ title }
 						<span
 							className="absolute top-[-10px] right-[-15px] cursor-pointer"
@@ -86,11 +88,7 @@ const UpgradePopup = ( {
 		</Container>
 	);
 
-	return (
-		<>
-			{ renderLimitReachedContent() }
-		</>
-	);
+	return <>{ renderLimitReachedContent() }</>;
 };
 
 export default UpgradePopup;
