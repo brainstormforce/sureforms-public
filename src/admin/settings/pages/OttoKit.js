@@ -4,7 +4,7 @@ import {
 	getPluginStatusText,
 	handlePluginActionTrigger as externalHandlePluginActionTrigger,
 } from '@Utils/Helpers';
-import { Dot, Plus } from 'lucide-react';
+import { Dot, Plus, Settings } from 'lucide-react';
 import ottoKitImage from '@Image/ottokit-integration.svg';
 import LoadingSkeleton from '@Admin/components/LoadingSkeleton';
 import apiFetch from '@wordpress/api-fetch';
@@ -13,15 +13,15 @@ import { useState, useEffect } from '@wordpress/element';
 const OttoKitPage = ( { loading, isFormSettings = false, setSelectedTab } ) => {
 	const features = [
 		__(
-			'Instantly send form entries to Slack, Mailchimp, or other apps',
+			'Push entries to Slack, Mailchimp, Google Sheets, or hundreds of other apps.',
 			'sureforms'
 		),
 		__(
-			'Set up alerts, notifications, or actions based on form submissions',
+			'Create automatic workflows for every time someone submits a form.',
 			'sureforms'
 		),
 		__(
-			'Automate tasks like follow-ups, lead assignments, or data sync',
+			'Keep your tools updated, without lifting a finger.',
 			'sureforms'
 		),
 	];
@@ -126,8 +126,13 @@ const OttoKitPage = ( { loading, isFormSettings = false, setSelectedTab } ) => {
 
 	// Complete plugin lifecycle management from integrations/index.js
 	const handlePluginActionTrigger = ( event ) => {
+		
 		// For global settings: always use external helper
 		if ( ! isFormSettings ) {
+			console.log(plugin);
+
+			// if I am
+
 			externalHandlePluginActionTrigger( { plugin, event } );
 			return;
 		}
@@ -226,7 +231,7 @@ const OttoKitPage = ( { loading, isFormSettings = false, setSelectedTab } ) => {
 
 	const getAction = ( status ) => {
 		if ( status === 'Activated' ) {
-			return '';
+			return 'sureforms_ottokit_activated';
 		} else if ( status === 'Installed' ) {
 			return 'sureforms_recommended_plugin_activate';
 		}
@@ -241,7 +246,7 @@ const OttoKitPage = ( { loading, isFormSettings = false, setSelectedTab } ) => {
 				}
 				return __( 'Connect with OttoKit', 'sureforms' );
 			}
-			return __( 'Activated', 'sureforms' );
+			return __( 'Activated!!', 'sureforms' );
 		} else if ( status === 'Installed' ) {
 			return __( 'Activate', 'sureforms' );
 		}
@@ -306,7 +311,7 @@ const OttoKitPage = ( { loading, isFormSettings = false, setSelectedTab } ) => {
 									<Title
 										tag="h3"
 										title={ __(
-											'Setup Integration via OttoKit',
+											'Automate What Happens After Someone Submits Your Form',
 											'sureforms'
 										) }
 										size="md"
@@ -317,7 +322,17 @@ const OttoKitPage = ( { loading, isFormSettings = false, setSelectedTab } ) => {
 										color="secondary"
 									>
 										{ __(
-											'OttoKit connects with SureForms to help you send form data to your favorite tools and trigger automated workflows, no code needed.',
+											'Every time someone fills out a form, something needs to happen next: a Slack alert for your team, a lead added to your CRM, a follow-up email, a new row in Google Sheets…',
+											'sureforms'
+										) }
+									</Text>
+									<Text
+										size={ 16 }
+										weight={ 400 }
+										color="secondary"
+									>
+										{ __(
+											'Doing all that manually? That\'s where OttoKit comes in. With OttoKit, you can:',
 											'sureforms'
 										) }
 									</Text>
@@ -339,16 +354,16 @@ const OttoKitPage = ( { loading, isFormSettings = false, setSelectedTab } ) => {
 									<Container className="p-2 gap-3">
 										<Button
 											size="md"
-											className={
-												! isFormSettings &&
-												plugin?.status === 'Activated'
-													? 'bg-badge-background-green hover:bg-badge-background-green'
-													: ''
-											}
+											// className={
+											// 	! isFormSettings &&
+											// 	plugin?.status === 'Activated'
+											// 		? 'bg-badge-background-green hover:bg-badge-background-green'
+											// 		: ''
+											// }
 											variant={
 												! isFormSettings &&
 												plugin?.status === 'Activated'
-													? 'outline'
+													? 'primary'
 													: 'primary'
 											}
 											onClick={
@@ -358,7 +373,7 @@ const OttoKitPage = ( { loading, isFormSettings = false, setSelectedTab } ) => {
 											icon={
 												plugin?.status === 'Install' ? (
 													<Plus className="size-5" />
-												) : null
+												) : <Settings className="size-5" />
 											}
 										>
 											{ CTA ||
