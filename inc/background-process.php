@@ -92,18 +92,34 @@ class Background_Process {
 	 * @return \WP_REST_Response|\WP_Error Response object on success, or WP_Error object on failure.
 	 */
 	public function handle_after_submission( $request ) {
+		// get nonce from get param
+		$this->submission_id = Helper::get_integer_value( $request->get_param( 'submission_id' ) );
 
-		$nonce = Helper::get_string_value( $request->get_header( 'X-WP-Nonce' ) );
+		// if is_after_submission_process_triggered is already true, return early
+		$entry  = Entries::get( $this->submission_id );
+		$extras = Helper::get_array_value( $entry['extras'] )[0] ?? [];
+		// if ( isset( $extras['is_after_submission_process_triggered'] ) && true === $extras['is_after_submission_process_triggered'] ) {
+		// return;
+		// }
 
-		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'wp_rest' ) ) {
+		$is_after_submission_process_triggered = json_decode( Helper::get_string_value( $extras ), true )['is_after_submission_process_triggered'] ?? false;
+
+		if ( isset( $is_after_submission_process_triggered ) && true === $is_after_submission_process_triggered ) {
+						return new \WP_Error(
+							'process_already_triggered',
+							__( 'After submission process has already been triggered for this submission.', 'sureforms' ),
+							[ 'status' => 403 ]
+						);
+		}
+
+		$nonce = Helper::get_string_value( $request->get_param( 'after_submit_nonce' ) );
+		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'srfm_after_submission_' . Helper::get_string_value( $this->submission_id ) ) ) {
 			return new \WP_Error(
 				'rest_nonce_failed',
 				__( 'Nonce verification failed.', 'sureforms' ),
 				[ 'status' => 403 ]
 			);
 		}
-
-		$this->submission_id = Helper::get_integer_value( $request->get_param( 'submission_id' ) );
 
 		if ( ! ( 0 < $this->submission_id ) ) {
 			return new \WP_Error(
@@ -148,6 +164,20 @@ class Background_Process {
 		 * @param array $form_data form data related to submission.
 		 */
 		do_action( 'srfm_after_submission_process', $form_data );
+
+		// Update the extras column to track that the after submission process was triggered.
+		if ( 0 < $this->submission_id ) {
+			$process_data = [
+				'is_after_submission_process_triggered' => true,
+			];
+			Entries::update(
+				$this->submission_id,
+				[
+					'extras' => wp_json_encode( $process_data ),
+				]
+			);
+		}
+
 		return true;
 	}
 }

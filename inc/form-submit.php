@@ -607,9 +607,10 @@ class Form_Submit {
 				'success'      => true,
 				'message'      => $confirmation_message,
 				'data'         => [
-					'name'          => $name,
-					'submission_id' => $entry_id,
-					'after_submit'  => true,
+					'name'               => $name,
+					'submission_id'      => $entry_id,
+					'after_submit'       => true,
+					'after_submit_nonce' => wp_create_nonce( 'srfm_after_submission_' . Helper::get_string_value( $entry_id ) ),
 				],
 				'redirect_url' => Generate_Form_Markup::get_redirect_url( $form_data, $submission_data ),
 			];
