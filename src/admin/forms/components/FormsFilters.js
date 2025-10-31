@@ -1,6 +1,13 @@
 import { __ } from '@wordpress/i18n';
 import { useRef, useEffect, useMemo, useState } from '@wordpress/element';
-import { Trash, Calendar, Import, ArchiveRestore, Search } from 'lucide-react';
+import {
+	Trash,
+	Calendar,
+	Import,
+	ArchiveRestore,
+	Search,
+	X,
+} from 'lucide-react';
 import { Input, Button, Container, Select, DatePicker } from '@bsf/force-ui';
 import {
 	getDatePlaceholder,
@@ -22,12 +29,18 @@ const FormsFilters = ( {
 	selectedDates = { from: null, to: null },
 	onDateChange,
 	onImportSuccess,
+	onClearFilters,
+	hasActiveFilters = false,
 } ) => {
 	const searchInputRef = useRef( null );
 	const containerRef = useRef( null );
+	const datePickerRef = useRef( null );
 	const [ isDatePickerOpen, setIsDatePickerOpen ] = useState( false );
 	const [ isImportDialogOpen, setIsImportDialogOpen ] = useState( false );
 	const [ localSearchValue, setLocalSearchValue ] = useState( searchQuery );
+	const [ datePickerPosition, setDatePickerPosition ] = useState( {
+		right: 0,
+	} );
 
 	// Check if any forms are selected
 	const hasSelectedForms = useMemo(
@@ -117,7 +130,9 @@ const FormsFilters = ( {
 			if (
 				isDatePickerOpen &&
 				containerRef.current &&
-				! containerRef.current.contains( event.target )
+				! containerRef.current.contains( event.target ) &&
+				datePickerRef.current &&
+				! datePickerRef.current.contains( event.target )
 			) {
 				setIsDatePickerOpen( false );
 			}
@@ -163,6 +178,23 @@ const FormsFilters = ( {
 	// Render regular filters
 	return (
 		<Container direction="row" align="center" className="gap-3">
+			{ /* Clear Filters button - shown when filters are active */ }
+			{ hasActiveFilters && ! hasSelectedForms && (
+				<Container.Item>
+					<Button
+						variant="outline"
+						size="sm"
+						onClick={ onClearFilters }
+						icon={ <X className="w-4 h-4" /> }
+						iconPosition="left"
+						className="min-w-fit"
+						destructive
+					>
+						{ __( 'Clear Filters', 'sureforms' ) }
+					</Button>
+				</Container.Item>
+			) }
+
 			{ /* Status Dropdown */ }
 			<Container.Item>
 				<div className="min-w-[160px]">
@@ -196,29 +228,43 @@ const FormsFilters = ( {
 						size="sm"
 						value={ getSelectedDate( selectedDates ) }
 						suffix={ <Calendar className="text-icon-secondary" /> }
-						onClick={ () =>
-							setIsDatePickerOpen( ( prev ) => ! prev )
-						}
+						onClick={ () => {
+							if ( ! isDatePickerOpen && containerRef.current ) {
+								const rect =
+									containerRef.current.getBoundingClientRect();
+								setDatePickerPosition( {
+									right: window.innerWidth - rect.right,
+								} );
+							}
+							setIsDatePickerOpen( ( prev ) => ! prev );
+						} }
 						placeholder={ getDatePlaceholder() }
 						className="min-w-[200px]"
 						readOnly
 						aria-label={ __( 'Select Date Range', 'sureforms' ) }
 					/>
-					{ isDatePickerOpen && (
-						<div className="absolute z-999999 mt-2 rounded-lg shadow-lg right-0 bg-background-primary">
-							<DatePicker
-								applyButtonText={ __( 'Apply', 'sureforms' ) }
-								cancelButtonText={ __( 'Cancel', 'sureforms' ) }
-								selectionType="range"
-								showOutsideDays={ false }
-								variant="dualdate"
-								onApply={ handleDateApply }
-								onCancel={ handleDateCancel }
-								selected={ getLastNDays( selectedDates ) }
-							/>
-						</div>
-					) }
 				</div>
+				{ /* Date Picker inside Container.Item but outside relative div */ }
+				{ isDatePickerOpen && (
+					<div
+						ref={ datePickerRef }
+						className="absolute z-[9999] mt-2 rounded-md shadow-soft-shadow-md bg-background-primary"
+						style={ {
+							right: datePickerPosition.right,
+						} }
+					>
+						<DatePicker
+							applyButtonText={ __( 'Apply', 'sureforms' ) }
+							cancelButtonText={ __( 'Cancel', 'sureforms' ) }
+							selectionType="range"
+							showOutsideDays={ false }
+							variant="presets"
+							onApply={ handleDateApply }
+							onCancel={ handleDateCancel }
+							selected={ getLastNDays( selectedDates ) }
+						/>
+					</div>
+				) }
 			</Container.Item>
 
 			{ /* Search */ }

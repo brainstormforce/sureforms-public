@@ -15,6 +15,8 @@ const FormsHeader = ( {
 	onStatusFilterChange,
 	selectedDates = { from: null, to: null },
 	onDateChange,
+	onClearFilters,
+	hasActiveFilters = false,
 } ) => {
 	const handleAddNew = () => {
 		window.location.href = 'admin.php?page=add-new-form';
@@ -62,6 +64,8 @@ const FormsHeader = ( {
 					onStatusFilterChange={ onStatusFilterChange }
 					selectedDates={ selectedDates }
 					onDateChange={ onDateChange }
+					onClearFilters={ onClearFilters }
+					hasActiveFilters={ hasActiveFilters }
 				/>
 			</Container.Item>
 		</Container>

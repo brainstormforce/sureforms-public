@@ -270,6 +270,25 @@ const FormsManager = () => {
 		} );
 	};
 
+	const handleClearFilters = () => {
+		setFilters( {
+			search: '',
+			status: 'any',
+			orderby: 'date',
+			order: 'desc',
+		} );
+
+		setSelectedDates( {
+			from: null,
+			to: null,
+		} );
+
+		setPagination( ( prev ) => ( {
+			...prev,
+			currentPage: 1,
+		} ) );
+	};
+
 	// Computed values
 	const hasActiveFilters = useMemo( () => {
 		return (
@@ -355,6 +374,8 @@ const FormsManager = () => {
 									onStatusFilterChange={ handleStatusFilter }
 									selectedDates={ selectedDates }
 									onDateChange={ handleDateChange }
+									hasActiveFilters={ hasActiveFilters }
+									onClearFilters={ handleClearFilters }
 								/>
 							</Container.Item>
 
@@ -373,22 +394,7 @@ const FormsManager = () => {
 									onSort={ handleSort }
 									getSortDirection={ getSortDirection }
 									hasActiveFilters={ hasActiveFilters }
-									onClearFilters={ () => {
-										setFilters( {
-											search: '',
-											status: 'any',
-											orderby: 'date',
-											order: 'desc',
-										} );
-										setSelectedDates( {
-											from: null,
-											to: null,
-										} );
-										setPagination( ( prev ) => ( {
-											...prev,
-											currentPage: 1,
-										} ) );
-									} }
+									onClearFilters={ handleClearFilters }
 								/>
 							</Container.Item>
 
