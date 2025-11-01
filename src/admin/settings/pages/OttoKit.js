@@ -4,7 +4,7 @@ import {
 	getPluginStatusText,
 	handlePluginActionTrigger as externalHandlePluginActionTrigger,
 } from '@Utils/Helpers';
-import { Dot, Plus, Settings } from 'lucide-react';
+import { Dot, Plus } from 'lucide-react';
 import ottoKitImage from '@Image/ottokit-integration.svg';
 import LoadingSkeleton from '@Admin/components/LoadingSkeleton';
 import apiFetch from '@wordpress/api-fetch';
