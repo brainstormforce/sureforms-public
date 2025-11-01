@@ -301,10 +301,10 @@ const OttoKitPage = ( { loading, isFormSettings = false, setSelectedTab } ) => {
 								<img
 									src={ ottoKitImage }
 									alt={ __( 'OttoKit', 'sureforms' ) }
-									className="w-[280px] h-[280px]"
+									className="w-[320px] h-[320px]"
 								/>
 							</Container>
-							<Container className="gap-8">
+							<Container className="gap-8 items-center ">
 								<div className="space-y-2">
 									<Title
 										tag="h3"
