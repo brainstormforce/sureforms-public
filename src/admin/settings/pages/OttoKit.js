@@ -20,10 +20,7 @@ const OttoKitPage = ( { loading, isFormSettings = false, setSelectedTab } ) => {
 			'Create automatic workflows for every time someone submits a form.',
 			'sureforms'
 		),
-		__(
-			'Keep your tools updated, without lifting a finger.',
-			'sureforms'
-		),
+		__( 'Keep your tools updated, without lifting a finger.', 'sureforms' ),
 	];
 	const plugin = srfm_admin?.integrations?.sure_triggers;
 
@@ -126,12 +123,13 @@ const OttoKitPage = ( { loading, isFormSettings = false, setSelectedTab } ) => {
 
 	// Complete plugin lifecycle management from integrations/index.js
 	const handlePluginActionTrigger = ( event ) => {
-		
 		// For global settings: always use external helper
 		if ( ! isFormSettings ) {
-			console.log(plugin);
-
-			// if I am
+			// if plugin is activated, go to its settings page
+			if ( plugin.status === 'Activated' ) {
+				window.location.href = plugin.redirection;
+				return;
+			}
 
 			externalHandlePluginActionTrigger( { plugin, event } );
 			return;
@@ -246,7 +244,7 @@ const OttoKitPage = ( { loading, isFormSettings = false, setSelectedTab } ) => {
 				}
 				return __( 'Connect with OttoKit', 'sureforms' );
 			}
-			return __( 'Activated!!', 'sureforms' );
+			return __( 'Go to OttoKit Settings', 'sureforms' );
 		} else if ( status === 'Installed' ) {
 			return __( 'Activate', 'sureforms' );
 		}
@@ -332,7 +330,7 @@ const OttoKitPage = ( { loading, isFormSettings = false, setSelectedTab } ) => {
 										color="secondary"
 									>
 										{ __(
-											'Doing all that manually? That\'s where OttoKit comes in. With OttoKit, you can:',
+											"Doing all that manually? That's where OttoKit comes in. With OttoKit, you can:",
 											'sureforms'
 										) }
 									</Text>
@@ -354,18 +352,7 @@ const OttoKitPage = ( { loading, isFormSettings = false, setSelectedTab } ) => {
 									<Container className="p-2 gap-3">
 										<Button
 											size="md"
-											// className={
-											// 	! isFormSettings &&
-											// 	plugin?.status === 'Activated'
-											// 		? 'bg-badge-background-green hover:bg-badge-background-green'
-											// 		: ''
-											// }
-											variant={
-												! isFormSettings &&
-												plugin?.status === 'Activated'
-													? 'primary'
-													: 'primary'
-											}
+											variant={ 'primary' }
 											onClick={
 												handlePluginActionTrigger
 											}
@@ -373,7 +360,7 @@ const OttoKitPage = ( { loading, isFormSettings = false, setSelectedTab } ) => {
 											icon={
 												plugin?.status === 'Install' ? (
 													<Plus className="size-5" />
-												) : <Settings className="size-5" />
+												) : null
 											}
 										>
 											{ CTA ||
