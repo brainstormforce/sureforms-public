@@ -229,7 +229,7 @@ const OttoKitPage = ( { loading, isFormSettings = false, setSelectedTab } ) => {
 
 	const getAction = ( status ) => {
 		if ( status === 'Activated' ) {
-			return 'sureforms_ottokit_activated';
+			return '';
 		} else if ( status === 'Installed' ) {
 			return 'sureforms_recommended_plugin_activate';
 		}
