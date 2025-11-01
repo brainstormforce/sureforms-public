@@ -166,7 +166,7 @@ const Dialog = ( {
 			},
 			{
 				id: 'ottokit',
-				label: __( 'OttoKit', 'sureforms' ),
+				label: __( 'Automations', 'sureforms' ),
 				icon: (
 					<img
 						src={ ottoKitIcon }
