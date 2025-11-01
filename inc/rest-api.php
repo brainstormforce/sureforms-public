@@ -454,7 +454,7 @@ class Rest_Api {
 						],
 						'per_page'  => [
 							'type'    => 'integer',
-							'default' => 20,
+							'default' => 10,
 							'minimum' => 1,
 							'maximum' => 100,
 						],

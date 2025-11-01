@@ -15,7 +15,7 @@ import { addQueryArgs } from '@wordpress/url';
 export const fetchFormsList = async ( params = {} ) => {
 	const queryParams = {
 		page: params.page || 1,
-		per_page: params.per_page || 20,
+		per_page: params.per_page || 10,
 		status: params.status || 'any',
 		orderby: params.orderby || 'date',
 		order: params.order || 'desc',

@@ -35,7 +35,7 @@ const FormsManager = () => {
 	// Pagination state
 	const [ pagination, setPagination ] = useState( {
 		currentPage: 1,
-		perPage: 20,
+		perPage: 10,
 	} );
 
 	// Dialog state
