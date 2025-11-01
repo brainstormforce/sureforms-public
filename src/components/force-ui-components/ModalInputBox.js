@@ -43,7 +43,7 @@ const ModalInputBox = ( {
 	);
 
 	const renderInfoWithTooltip = () => (
-		<Label className="text-base">
+		<Label className="text-base flex justify-center items-center gap-1">
 			{ label }
 			<Tooltip
 				tooltipPortalId="srfm-settings-container"
@@ -60,7 +60,7 @@ const ModalInputBox = ( {
 				triggers={ [ 'hover', 'focus' ] }
 				variant="dark"
 			>
-				<Info className="size-4 !text-icon-secondary" />
+				<Info className="size-4 !text-icon-secondary mb-1" />
 			</Tooltip>
 		</Label>
 	);
