@@ -127,7 +127,7 @@ const OttoKitPage = ( { loading, isFormSettings = false, setSelectedTab } ) => {
 		if ( ! isFormSettings ) {
 			// if plugin is activated, go to its settings page
 			if ( plugin.status === 'Activated' ) {
-				window.location.href = plugin.redirection;
+				window.location.href = plugin.connection_url;
 				return;
 			}
 
