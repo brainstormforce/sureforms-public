@@ -1,12 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import { useState, useRef, useEffect, memo } from '@wordpress/element';
-import {
-	Button,
-	Container,
-	TextArea,
-	toast,
-	Tooltip,
-} from '@bsf/force-ui';
+import { Button, Container, TextArea, toast, Tooltip } from '@bsf/force-ui';
 import { ArrowRight, Sparkles, MicOff, Mic } from 'lucide-react';
 import { applyFilters } from '@wordpress/hooks';
 import { cn, srfmClassNames } from '@Utils/Helpers';
@@ -335,7 +329,7 @@ export default ( props ) => {
 							<Container.Item>
 								<div className="w-full min-w-[750px] mx-auto p-2 relative">
 									<div
-										className="relative rounded-lg shadow-lg p-[1px]"
+										className="relative rounded-lg shadow-lg p-[2px]"
 										style={
 											! isFocused
 												? {
@@ -359,7 +353,7 @@ export default ( props ) => {
 													value={ text }
 													size="lg"
 													className={ cn(
-														'border-none active:border active:border-solid active:border-focus-border focus:border focus:border-solid focus:border-focus-border resize-y w-full min-h-[140px] text-field-placeholder pt-3 px-4 pb-14 rounded-[calc(0.5rem-1px)]',
+														'border-none resize-y w-full min-h-[140px] text-field-placeholder pt-3 px-4 pb-14 rounded-[calc(0.5rem-1px)]',
 														characterCount > 0 &&
 															'text-text-primary'
 													) }
@@ -407,6 +401,7 @@ export default ( props ) => {
 													/>
 													<Button
 														className="gap-1"
+														disabled={ characterCount === 0 }
 														icon={
 															<Sparkles className="w-4 h-4" />
 														}
@@ -414,9 +409,6 @@ export default ( props ) => {
 														size="md"
 														variant="primary"
 														onClick={ () => {
-															setShowBanner(
-																true
-															);
 															if (
 																! text ||
 																! text.trim()
