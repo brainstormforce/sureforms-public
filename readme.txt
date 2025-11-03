@@ -372,6 +372,7 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 * Improvement: Added a message as fall for email failure for single entries page when SMTP plugin is not present.
 * Improvement: Added popup for getting started video in dashboard.
 * Fix: Resolved an UI issue where country list for phone number is not visible with Spectra modal for mobile devices.
+* Fix: Addressed a security bug. Props to Wordfence for reporting it responsibly.
 = 1.13.1 - 22nd October 2025 =
 * Improvement: Preserved trailing zeros in number field after the decimal.
 * Fix: Fixed compatibility with Presto Player.
