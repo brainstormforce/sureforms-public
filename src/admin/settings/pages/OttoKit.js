@@ -297,7 +297,7 @@ const OttoKitPage = ( { loading, isFormSettings = false, setSelectedTab } ) => {
 				<Container className="flex bg-background-primary rounded-xl">
 					<Container className="p-2 rounded-lg bg-background-secondary gap-2 w-full">
 						<Container className="p-6 gap-6 rounded-md bg-background-primary w-full">
-							<Container className='items-start'>
+							<Container className="items-start">
 								<img
 									src={ ottoKitImage }
 									alt={ __( 'OttoKit', 'sureforms' ) }
@@ -355,7 +355,7 @@ const OttoKitPage = ( { loading, isFormSettings = false, setSelectedTab } ) => {
 										color="secondary"
 									>
 										{ __(
-											"OttoKit turns your forms into powerful workflows. Set it up once, and let automation do the rest.",
+											'OttoKit turns your forms into powerful workflows. Set it up once, and let automation do the rest.',
 											'sureforms'
 										) }
 									</Text>
