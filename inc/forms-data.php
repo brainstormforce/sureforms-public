@@ -214,6 +214,7 @@ class Forms_Data {
 			'entries_count' => $entries_count,
 			'shortcode'     => "[sureforms id='{$form_id}']",
 			'edit_url'      => admin_url( "post.php?post={$form_id}&action=edit" ),
+			'frontend_url'  => get_permalink( $form_id ),
 		];
 	}
 }
