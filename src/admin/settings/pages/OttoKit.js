@@ -297,14 +297,14 @@ const OttoKitPage = ( { loading, isFormSettings = false, setSelectedTab } ) => {
 				<Container className="flex bg-background-primary rounded-xl">
 					<Container className="p-2 rounded-lg bg-background-secondary gap-2 w-full">
 						<Container className="p-6 gap-6 rounded-md bg-background-primary w-full">
-							<Container>
+							<Container className='items-start'>
 								<img
 									src={ ottoKitImage }
 									alt={ __( 'OttoKit', 'sureforms' ) }
-									className="w-[320px] h-[320px]"
+									className="w-[300px] h-300px]"
 								/>
 							</Container>
-							<Container className="gap-8 items-center ">
+							<Container className="gap-8 items-start">
 								<div className="space-y-2">
 									<Title
 										tag="h3"
@@ -337,7 +337,7 @@ const OttoKitPage = ( { loading, isFormSettings = false, setSelectedTab } ) => {
 									{ features.map( ( feature, index ) => (
 										<Container
 											key={ index }
-											className="flex items-center gap-1.5"
+											className="flex items-start gap-1.5"
 										>
 											<Dot className="text-icon-secondary" />
 											<Text
@@ -349,6 +349,16 @@ const OttoKitPage = ( { loading, isFormSettings = false, setSelectedTab } ) => {
 											</Text>
 										</Container>
 									) ) }
+									<Text
+										size={ 16 }
+										weight={ 400 }
+										color="secondary"
+									>
+										{ __(
+											"OttoKit turns your forms into powerful workflows. Set it up once, and let automation do the rest.",
+											'sureforms'
+										) }
+									</Text>
 									<Container className="p-2 gap-3">
 										<Button
 											size="md"

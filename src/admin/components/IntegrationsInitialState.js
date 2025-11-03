@@ -24,7 +24,7 @@ const IntegrationsInitialState = ( {
 		<Container className="flex bg-background-primary rounded-xl">
 			<Container className="p-2 rounded-lg bg-background-secondary gap-2 w-full">
 				<Container className="p-6 gap-6 rounded-md bg-background-primary w-full">
-					<Container>
+					<Container className="items-start">
 						{ image && (
 							<img
 								src={ image }
@@ -32,7 +32,7 @@ const IntegrationsInitialState = ( {
 									title || __( 'Integration', 'sureforms' )
 								}
 								className={ cn(
-									'w-[280px] h-[280px]',
+									'w-[300px] h-[300px]',
 									imageClassName
 								) }
 							/>
