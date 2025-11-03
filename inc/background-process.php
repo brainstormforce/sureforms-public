@@ -130,7 +130,7 @@ class Background_Process {
 		$this->form_id         = Helper::get_integer_value( $entry_data['form_id'] );
 		$this->submission_data = Helper::get_array_value( $entry_data['form_data'] );
 
-		if ( ! $this->trigger_after_submission_process() ) {
+		if ( ! $this->trigger_after_submission_process( $entry_data ) ) {
 			return new \WP_Error(
 				'process_failed',
 				__( 'Something went wrong. We have logged the error for further investigation', 'sureforms' ),
@@ -144,10 +144,11 @@ class Background_Process {
 	/**
 	 * Handle 'After Submission' background process
 	 *
+	 * @param array<mixed> $entry_data Entry data from database.
 	 * @since 0.0.3
 	 * @return bool
 	 */
-	public function trigger_after_submission_process() {
+	public function trigger_after_submission_process( $entry_data ) {
 		if ( ! is_integer( $this->form_id ) || ! is_array( $this->submission_data ) ) {
 			return false;
 		}
@@ -163,14 +164,27 @@ class Background_Process {
 
 		// Update the extras column to track that the after submission process was triggered.
 		if ( 0 < $this->submission_id ) {
-			$process_data = [
-				'is_after_submission_process_triggered' => true,
-			];
+			$extras = Helper::get_array_value( $entry_data['extras'] )[0] ?? [];
+
+			// Decode existing extras (if any)
+			$extras_decoded = is_string( $extras )
+				? json_decode( Helper::get_string_value( $extras ), true )
+				: ( is_array( $extras ) ? $extras : [] );
+
+			if ( ! is_array( $extras_decoded ) ) {
+				$extras_decoded = [];
+			}
+
+			// Merge new data
+			$updated_extras = array_merge(
+				$extras_decoded,
+				[ 'is_after_submission_process_triggered' => true ]
+			);
+
+			// Update entry
 			Entries::update(
 				$this->submission_id,
-				[
-					'extras' => wp_json_encode( $process_data ),
-				]
+				[ 'extras' => wp_json_encode( $updated_extras ) ]
 			);
 		}
 
