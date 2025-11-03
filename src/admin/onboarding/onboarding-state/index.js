@@ -9,6 +9,7 @@ export const ONBOARDING_STORAGE_KEYS = [
 	'srfm_onboarding_premium_selections',
 	'srfm_onboarding_current_plan',
 	'srfm_onboarding_user_id',
+	'srfm_suremail_installation_started',
 ];
 
 // Initial state

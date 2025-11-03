@@ -213,10 +213,11 @@ class Entries_List_Table extends \WP_List_Table {
 	 */
 	public function column_cb( $item ) {
 		$entry_id = esc_attr( $item['ID'] );
-		return sprintf(
-			'<input type="checkbox" name="entry[]" value="%s" />',
-			$entry_id
-		);
+		ob_start();
+		?>
+		<input type="checkbox" name="entry[]" value="<?php echo esc_attr( $entry_id ); ?>" />
+		<?php
+		return ob_get_clean();
 	}
 
 	/**
@@ -594,7 +595,9 @@ class Entries_List_Table extends \WP_List_Table {
 			}
 		}
 
-		echo '<div class="notice notice-' . esc_attr( $type ) . ' is-dismissible"><p>' . esc_html( $message ) . '</p></div>';
+		?>
+		<div class="notice notice-<?php echo esc_attr( $type ); ?> is-dismissible"><p><?php echo esc_html( $message ); ?></p></div>
+		<?php
 	}
 
 	/**
@@ -674,12 +677,11 @@ class Entries_List_Table extends \WP_List_Table {
 			'srfm_entries_action'
 		);
 
-		return sprintf(
-			'<strong><a class="row-title" href="%1$s">%2$s%3$s</a></strong>',
-			$view_url,
-			esc_html__( 'Entry #', 'sureforms' ),
-			$entry_id
-		) . $this->row_actions( $this->package_row_actions( $item ) );
+		ob_start();
+		?>
+		<strong><a class="row-title" href="<?php echo esc_url( $view_url ); ?>"><?php echo esc_html__( 'Entry #', 'sureforms' ); ?><?php echo esc_html( $entry_id ); ?></a></strong>
+		<?php
+		return ob_get_clean() . $this->row_actions( $this->package_row_actions( $item ) );
 	}
 
 	/**
@@ -694,7 +696,11 @@ class Entries_List_Table extends \WP_List_Table {
 		$form_name = get_the_title( $item['form_id'] );
 		// translators: %1$s is the word "form", %2$d is the form ID.
 		$form_name = ! empty( $form_name ) ? $form_name : sprintf( 'SureForms %1$s #%2$d', esc_html__( 'Form', 'sureforms' ), Helper::get_integer_value( $item['form_id'] ) );
-		return sprintf( '<strong><a class="row-title" href="%1$s" target="_blank">%2$s</a></strong>', get_the_permalink( $item['form_id'] ), esc_html( $form_name ) );
+		ob_start();
+		?>
+			<strong><a class="row-title" href="<?php echo esc_url( get_the_permalink( $item['form_id'] ) ); ?>" target="_blank" rel="noopener noreferrer"><?php echo esc_html( $form_name ); ?></a></strong>
+		<?php
+		return ob_get_clean();
 	}
 
 	/**
@@ -719,11 +725,11 @@ class Entries_List_Table extends \WP_List_Table {
 				break;
 		}
 
-		return sprintf(
-			'<span class="status-%1$s">%2$s</span>',
-			esc_attr( $item['status'] ),
-			$translated_status
-		);
+		ob_start();
+		?>
+		<span class="status-<?php echo esc_attr( $item['status'] ); ?>"><?php echo esc_html( $translated_status ); ?></span>
+		<?php
+		return ob_get_clean();
 	}
 
 	/**
@@ -739,11 +745,11 @@ class Entries_List_Table extends \WP_List_Table {
 	 */
 	protected function column_first_field( $item ) {
 		// Get the first field key.
-		$first_key       = key( $item['form_data'] );
+		$first_key       = Helper::get_string_value( key( $item['form_data'] ) );
 		$excluded_fields = Helper::get_excluded_fields();
 		$form_data       = array_diff_key( $item['form_data'], array_flip( $excluded_fields ) );
 		$first_field     = reset( $form_data );
-		$field_name      = array_keys( $form_data )[0];
+		$field_name      = ! empty( $form_data ) ? array_keys( $form_data )[0] : '';
 
 		$field_block_name = Helper::get_block_name_from_field( $field_name );
 
@@ -796,12 +802,6 @@ class Entries_List_Table extends \WP_List_Table {
 			$first_field = implode( ', ', $filenames );
 		}
 
-		$max_length = 28;
-
-		if ( strlen( $first_field ) > $max_length ) {
-			$first_field = substr( $first_field, 0, $max_length - 3 ) . '...';
-		}
-
 		// Check if the first field is a textarea.
 		if ( strpos( $first_key, 'srfm-textarea' ) !== false ) {
 			// Strip HTML tags from the textarea value.
@@ -819,14 +819,19 @@ class Entries_List_Table extends \WP_List_Table {
 			}
 		} else {
 			// Get the first field value directly.
-			$first_field = ! empty( $set_entry_first_field ) ? $set_entry_first_field : reset( $item['form_data'] );
+			$first_field = ! empty( $set_entry_first_field ) ? ( is_array( $set_entry_first_field ) ? __( 'Array', 'sureforms' ) : $set_entry_first_field ) : reset( $item['form_data'] );
+			$max_length  = 28;
+			if ( strlen( $first_field ) > $max_length ) {
+				$first_field = substr( $first_field, 0, $max_length - 3 ) . '...';
+			}
 		}
 
 		// Return the first field value in a paragraph element.
-		return sprintf(
-			'<p>%s</p>',
-			esc_html( $first_field )
-		);
+		ob_start();
+		?>
+		<p><?php echo esc_html( $first_field ); ?></p>
+		<?php
+		return ob_get_clean();
 	}
 
 	/**
@@ -840,11 +845,11 @@ class Entries_List_Table extends \WP_List_Table {
 	protected function column_created_at( $item ) {
 		$created_at = gmdate( 'Y/m/d \a\t g:i a', strtotime( $item['created_at'] ) );
 
-		return sprintf(
-			'<span>%1$s<br>%2$s</span>',
-			esc_html__( 'Published', 'sureforms' ),
-			$created_at
-		);
+		ob_start();
+		?>
+		<span><?php echo esc_html__( 'Published', 'sureforms' ); ?><br><?php echo esc_html( $created_at ); ?></span>
+		<?php
+		return ob_get_clean();
 	}
 
 	/**
@@ -880,9 +885,21 @@ class Entries_List_Table extends \WP_List_Table {
 			'srfm_entries_action'
 		);
 
+		ob_start();
+		?>
+		<a href="<?php echo esc_url( $view_url ); ?>"><?php echo esc_html__( 'View', 'sureforms' ); ?></a>
+		<?php
+		$view_action = ob_get_clean();
+
+		ob_start();
+		?>
+		<a href="<?php echo esc_url( $trash_url ); ?>"><?php echo esc_html__( 'Trash', 'sureforms' ); ?></a>
+		<?php
+		$trash_action = ob_get_clean();
+
 		$row_actions = [
-			'view'  => sprintf( '<a href="%1$s">%2$s</a>', esc_url( $view_url ), esc_html__( 'View', 'sureforms' ) ),
-			'trash' => sprintf( '<a href="%1$s">%2$s</a>', esc_url( $trash_url ), esc_html__( 'Trash', 'sureforms' ) ),
+			'view'  => $view_action,
+			'trash' => $trash_action,
 		];
 
 		if ( self::is_trash_view() ) {
@@ -915,8 +932,20 @@ class Entries_List_Table extends \WP_List_Table {
 					'srfm_entries_action'
 				);
 
-			$row_actions['restore'] = sprintf( '<a href="%1$s">%2$s</a>', esc_url( $restore_url ), esc_html__( 'Restore', 'sureforms' ) );
-			$row_actions['delete']  = sprintf( '<a href="%1$s">%2$s</a>', esc_url( $delete_url ), esc_html__( 'Delete Permanently', 'sureforms' ) );
+			ob_start();
+			?>
+			<a href="<?php echo esc_url( $restore_url ); ?>"><?php echo esc_html__( 'Restore', 'sureforms' ); ?></a>
+			<?php
+			$restore_action = ob_get_clean();
+
+			ob_start();
+			?>
+			<a href="<?php echo esc_url( $delete_url ); ?>"><?php echo esc_html__( 'Delete Permanently', 'sureforms' ); ?></a>
+			<?php
+			$delete_action = ob_get_clean();
+
+			$row_actions['restore'] = $restore_action;
+			$row_actions['delete']  = $delete_action;
 		}
 
 		return apply_filters( 'sureforms_entries_table_row_actions', $row_actions, $item );
@@ -1043,18 +1072,24 @@ class Entries_List_Table extends \WP_List_Table {
 		// Added the phpcs ignore nonce verification as no database operations are performed in this function.
 		$view = isset( $_GET['view'] ) ? sanitize_text_field( wp_unslash( $_GET['view'] ) ) : 'all'; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 
-		echo '<input type="hidden" name="view" value="' . esc_attr( $view ) . '" />';
-		echo '<select name="form_filter">';
-		echo '<option value="all">' . esc_html__( 'All Form Entries', 'sureforms' ) . '</option>';
+		?>
+		<input type="hidden" name="view" value="<?php echo esc_attr( $view ); ?>" />
+		<select name="form_filter">
+			<option value="all"><?php echo esc_html__( 'All Form Entries', 'sureforms' ); ?></option>
+		<?php
 		foreach ( $forms as $form_id => $form_name ) {
 			$form_name = ! empty( $form_name ) ? $form_name : sprintf( 'SureForms %1$s #%2$d', esc_html__( 'Form', 'sureforms' ), esc_attr( $form_id ) );
 			// Adding the phpcs ignore nonce verification as no database operations are performed in this function.
 			// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			$selected = isset( $_GET['form_filter'] ) && Helper::get_integer_value( sanitize_text_field( wp_unslash( $_GET['form_filter'] ) ) ) === $form_id ? ' selected="selected"' : '';
-			printf( '<option value="%s"%s>%s</option>', esc_attr( $form_id ), esc_attr( $selected ), esc_html( $form_name ) );
+			?>
+			<option value="<?php echo esc_attr( $form_id ); ?>"<?php echo $selected; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>><?php echo esc_html( $form_name ); ?></option>
+			<?php
 		}
-		echo '</select>';
-		echo '<input type="submit" name="filter_action" value="Filter" class="button" />';
+		?>
+		</select>
+		<input type="submit" name="filter_action" value="Filter" class="button" />
+		<?php
 	}
 
 	/**
@@ -1074,13 +1109,19 @@ class Entries_List_Table extends \WP_List_Table {
 		// Sort the months in descending order according to key.
 		krsort( $months );
 
-		echo '<select name="month_filter">';
-		echo '<option value="all">' . esc_html__( 'All Dates', 'sureforms' ) . '</option>';
-		foreach ( $months as $month_value => $month_label ) {
-			$selected = isset( $_GET['month_filter'] ) && Helper::get_string_value( $month_value ) === sanitize_text_field( wp_unslash( $_GET['month_filter'] ) ) ? ' selected="selected"' : '';
-			printf( '<option value="%s"%s>%s</option>', esc_attr( $month_value ), esc_attr( $selected ), esc_html( $month_label ) );
-		}
-		echo '</select>';
+		?>
+		<select name="month_filter">
+			<option value="all"><?php echo esc_html__( 'All Dates', 'sureforms' ); ?></option>
+			<?php
+			foreach ( $months as $month_value => $month_label ) {
+				$selected = isset( $_GET['month_filter'] ) && Helper::get_string_value( $month_value ) === sanitize_text_field( wp_unslash( $_GET['month_filter'] ) ) ? ' selected="selected"' : '';
+				?>
+				<option value="<?php echo esc_attr( $month_value ); ?>" <?php echo $selected; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>><?php echo esc_html( $month_label ); ?></option>
+				<?php
+			}
+			?>
+		</select>
+		<?php
 	}
 
 	/**

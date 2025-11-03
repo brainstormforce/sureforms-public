@@ -410,8 +410,8 @@ class Base {
 		$this->conditional_class  = apply_filters( 'srfm_conditional_logic_classes', $this->form_id, $this->block_id );
 		$this->data_require_attr  = $this->required ? 'true' : 'false';
 		$this->block_width        = $this->field_width ? ' srfm-block-width-' . str_replace( '.', '-', $this->field_width ) : '';
-		$this->placeholder_attr   = $this->placeholder ? ' placeholder="' . $this->placeholder . '" ' : '';
-		$this->default_value_attr = $this->default ? ' value="' . $this->default . '" ' : '';
+		$this->placeholder_attr   = '' !== $this->placeholder ? ' placeholder="' . esc_attr( $this->placeholder ) . '" ' : '';
+		$this->default_value_attr = '' !== $this->default ? ' value="' . esc_attr( $this->default ) . '" ' : '';
 		$this->checked_attr       = $this->checked ? 'checked' : '';
 		$this->aria_unique        = $this->is_unique ? 'true' : 'false';
 		$this->allowed_tags       = [
@@ -532,7 +532,7 @@ class Base {
 	 * @return void
 	 */
 	protected function set_aria_described_by() {
-		$this->aria_described_by .= ' srfm-error-' . $this->block_id;
-		$this->aria_described_by .= ! empty( $this->help ) ? ' srfm-description-' . $this->block_id : '';
+		$this->aria_described_by .= ' srfm-error-' . esc_attr( $this->block_id );
+		$this->aria_described_by .= ! empty( $this->help ) ? ' srfm-description-' . esc_attr( $this->block_id ) : '';
 	}
 }
