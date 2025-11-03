@@ -8005,7 +8005,7 @@ namespace SRFM\Inc {
          * @since 0.0.3
          * @return bool
          */
-        public function trigger_after_submission_process( $entry_data ) {
+        public function trigger_after_submission_process( $entry_data )
         {
         }
     }
