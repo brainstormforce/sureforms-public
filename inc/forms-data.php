@@ -58,7 +58,7 @@ class Forms_Data {
 	 * @since 0.0.1
 	 */
 	public function get_form_permissions_check() {
-		if ( current_user_can( 'edit_posts' ) ) {
+		if ( Helper::current_user_can( 'edit_posts' ) ) {
 			return true;
 		}
 
