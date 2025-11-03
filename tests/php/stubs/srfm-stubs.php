@@ -8001,11 +8001,10 @@ namespace SRFM\Inc {
         /**
          * Handle 'After Submission' background process
          *
-         * @param array<mixed> $entry_data Entry data from database.
          * @since 0.0.3
          * @return bool
          */
-        public function trigger_after_submission_process( $entry_data )
+        public function trigger_after_submission_process()
         {
         }
     }
