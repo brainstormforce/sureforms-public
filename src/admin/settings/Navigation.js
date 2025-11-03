@@ -57,7 +57,7 @@ export const navigation = applyFilters( 'srfm.settings.navigation', [
 		),
 	},
 	{
-		name: __( 'OttoKit', 'sureforms' ),
+		name: __( 'Automations', 'sureforms' ),
 		slug: 'ottokit-settings',
 		icon: (
 			<img
