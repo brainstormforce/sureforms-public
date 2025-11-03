@@ -166,7 +166,7 @@ class Background_Process {
 		if ( 0 < $this->submission_id ) {
 			$extras = Helper::get_array_value( $entry_data['extras'] )[0] ?? [];
 
-			// Decode existing extras (if any)
+			// Decode existing extras (if any).
 			$extras_decoded = is_string( $extras )
 				? json_decode( Helper::get_string_value( $extras ), true )
 				: ( is_array( $extras ) ? $extras : [] );
@@ -175,13 +175,13 @@ class Background_Process {
 				$extras_decoded = [];
 			}
 
-			// Merge new data
+			// Merge new data.
 			$updated_extras = array_merge(
 				$extras_decoded,
 				[ 'is_after_submission_process_triggered' => true ]
 			);
 
-			// Update entry
+			// Update entry.
 			Entries::update(
 				$this->submission_id,
 				[ 'extras' => wp_json_encode( $updated_extras ) ]
