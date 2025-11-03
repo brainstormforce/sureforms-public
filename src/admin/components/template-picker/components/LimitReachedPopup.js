@@ -1,6 +1,4 @@
 import { __ } from '@wordpress/i18n';
-import Header from './Header.js';
-import AiFormBuilder from './AiFormBuilder.js';
 import { Button, Container, Label } from '@bsf/force-ui';
 import { applyFilters } from '@wordpress/hooks';
 import { Zap, X } from 'lucide-react';
@@ -93,14 +91,14 @@ const LimitReachedPopup = ( {
 					</Label>
 				</Container.Item>
 
+				{ ! is_pro_active ? (
+					<hr className="border-b-5 border-x-0 border-t-0 w-full border-solid border-border-subtle" />
+				) : (
+					''
+				) }
+
 				<Container.Item className="flex flex-col w-full gap-3 pb-2">
 					{ FinalButton }
-
-					{ ! is_pro_active ? (
-						<hr className="border-b-5 border-x-0 border-t-0 w-full border-solid border-border-subtle" />
-					) : (
-						''
-					) }
 
 					{ ! is_pro_active &&
 					! deactivatedLicense &&
@@ -124,9 +122,7 @@ const LimitReachedPopup = ( {
 
 	return (
 		<>
-			<Header />
 			{ renderLimitReachedContent() }
-			<AiFormBuilder />
 		</>
 	);
 };

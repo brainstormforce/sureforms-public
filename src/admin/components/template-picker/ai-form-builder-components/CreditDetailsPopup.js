@@ -1,12 +1,12 @@
 import { __, sprintf } from '@wordpress/i18n';
 import { Button, Container, Label } from '@bsf/force-ui';
 import { ChevronRight, X } from 'lucide-react';
-import { addQueryParam } from '@Utils/Helpers';
+import { addQueryParam, initiateAuth } from '@Utils/Helpers';
 
 const CreditDetailsPopup = ( {
 	finalFormCreationCountRemaining = 0,
-	showBanner,
 	setShowBanner,
+	type,
 } ) => {
 	const upgradeLink = () =>
 		window.open(
@@ -27,7 +27,37 @@ const CreditDetailsPopup = ( {
 		__( 'Send Forms Submissions to Your CRM or Any App', 'sureforms' ),
 	];
 
-	return showBanner ? (
+	const compactCreditsBanner = (
+		<Container.Item className="fixed bottom-4 right-4 flex items-center justify-between gap-2 p-4 shadow-lg rounded-xl z-[9999] max-w-[360px] bg-brand-background-hover-100 border border-solid border-border-ai-banner">
+			<Label variant="neutral" className="text-sm font-semibold">
+				{ sprintf(
+					// translators: %d is the number of form generations left.
+					__(
+						'%d AI Generations Left, Connect to SureForms AI to Get 10 More',
+						'sureforms'
+					),
+					finalFormCreationCountRemaining
+				) }
+			</Label>
+
+			<Button
+				size="xs"
+				variant="secondary"
+				className="w-[92px] flex-shrink-0"
+				onClick={
+					finalFormCreationCountRemaining === 2
+						? initiateAuth
+						: upgradeLink
+				}
+			>
+				{ finalFormCreationCountRemaining === 2
+					? __( 'Connect Now', 'sureforms' )
+					: __( 'Upgrade Now', 'sureforms' ) }
+			</Button>
+		</Container.Item>
+	);
+
+	const openCreditsBanner = (
 		// ✅ Expanded banner view
 		<Container.Item>
 			<Container className="flex flex-col w-[450px] min-h-[268px] bg-brand-background-hover-100 p-5 gap-2 shadow-sm-blur-1 rounded-xl border border-border-subtle overflow-hidden">
@@ -105,26 +135,24 @@ const CreditDetailsPopup = ( {
 				</Container.Item>
 			</Container>
 		</Container.Item>
-	) : (
-		// ✅ Compact floating banner view
-		<Container.Item className="fixed bottom-4 right-4 flex items-center justify-between gap-2 p-4 shadow-lg rounded-xl z-[9999] min-w-[360px] bg-brand-background-hover-100 border border-solid border-border-ai-banner">
-			<Label variant="neutral" className="text-sm font-semibold">
-				{ sprintf(
-					// translators: %d is the number of form generations left.
-					__( '%d AI Generations Left.', 'sureforms' ),
-					finalFormCreationCountRemaining
-				) }
-			</Label>
-
-			<Button
-				size="xs"
-				variant="secondary"
-				onClick={ () => setShowBanner( true ) }
-			>
-				{ __( 'Upgrade Now', 'sureforms' ) }
-			</Button>
-		</Container.Item>
 	);
+
+	const showBannerFinal = () => {
+		switch ( type ) {
+			case 'non-registered':
+				return finalFormCreationCountRemaining <= 2
+					? compactCreditsBanner
+					: null;
+			case 'registered':
+				return finalFormCreationCountRemaining <= 9
+					? openCreditsBanner
+					: null;
+			default:
+				return null;
+		}
+	};
+
+	return showBannerFinal();
 };
 
 export default CreditDetailsPopup;

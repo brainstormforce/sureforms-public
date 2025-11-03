@@ -24,10 +24,21 @@ const AiFormBuilder = () => {
 	const [ percentBuild, setPercentBuild ] = useState( 0 );
 	const [ showFormCreationErr, setShowFormCreationErr ] = useState( false );
 	const [ showAuthErrorPopup, setShowAuthErrorPopup ] = useState( false );
-	const urlParams = new URLSearchParams( window.location.search );
-	const accessKey = urlParams.get( 'access_key' );
 	const [ formTypeObj, setFormTypeObj ] = useState( {} );
 	const [ formType, setFormType ] = useState( 'simple' );
+
+	const urlParams = new URLSearchParams( window.location.search );
+	const accessKey = urlParams.get( 'access_key' );
+
+	const isRTL = srfm_admin?.is_rtl;
+	const toasterPosition = isRTL ? 'bottom-left' : 'bottom-right';
+
+	const [ showPopup, setShowPopup ] = useState( false );
+
+	// Callback to receive data from child
+	const handleDataFromChild = ( data ) => {
+		setShowPopup( data ); // Update state
+	};
 
 	const handleCreateAiForm = async (
 		userCommand,
@@ -149,8 +160,7 @@ const AiFormBuilder = () => {
 
 		if ( response?.success ) {
 			window.location.href =
-				srfm_admin.site_url +
-				`/wp-admin/admin.php?page=add-new-form`;
+				srfm_admin.site_url + `/wp-admin/admin.php?page=add-new-form`;
 		} else {
 			setShowAuthErrorPopup( true );
 			console.error( 'Error handling access key: ', response.message );
@@ -163,6 +173,127 @@ const AiFormBuilder = () => {
 			handleAccessKey();
 		}
 	}, [ accessKey ] );
+
+	const type = srfm_admin?.srfm_ai_usage_details?.type;
+	const formCreationleft = srfm_admin?.srfm_ai_usage_details?.remaining ?? 0;
+	const errorCode = srfm_admin?.srfm_ai_usage_details?.code;
+	const resetAt = srfm_admin?.srfm_ai_usage_details?.resetAt;
+
+	const getLimitReachedPopup = () => {
+		// shows when the user has encountered an error.
+		if ( errorCode ) {
+			return (
+				<LimitReachedPopup
+					title={ srfm_admin?.srfm_ai_usage_details?.title }
+					paraOne={ srfm_admin?.srfm_ai_usage_details?.message }
+					buttonText={ __( 'Try Again', 'sureforms' ) }
+					onclick={ () => {
+						window.location.href =
+							srfm_admin.site_url +
+							'/wp-admin/admin.php?page=add-new-form';
+					} }
+				/>
+			);
+		}
+
+		// When pro limit is consumed
+		if (
+			type === 'subscribed' &&
+			srfm_admin?.is_pro_active &&
+			srfm_admin?.is_pro_license_active &&
+			formCreationleft === 0 &&
+			resetAt &&
+			resetAt > Date.now() / 1000
+		) {
+			return (
+				<LimitReachedPopup
+					title={ __( 'Form Generation Limit Reached', 'sureforms' ) }
+					paraTitle={ __(
+						'You have Hit Your FUP Limit.',
+						'sureforms'
+					) }
+					paraOne={ __(
+						'You have reached the FUP limit of AI form generations for the day.',
+						'sureforms'
+					) }
+					paraTwo={ sprintf(
+						/* translators: %s: reset time */
+						__( 'Please try again after %s.', 'sureforms' ),
+						new Date( resetAt * 1000 ).toLocaleString()
+					) }
+					buttonText={ __( 'Try Again', 'sureforms' ) }
+					onclick={ () => {
+						window.location.href =
+							srfm_admin.site_url +
+							'/wp-admin/admin.php?page=add-new-form';
+					} }
+				/>
+			);
+		}
+
+		// Check if the user has a premium plan and not activated the license
+		const deactivatedLicense =
+			srfm_admin?.is_pro_active && ! srfm_admin?.is_pro_license_active;
+
+		// When registered limit is consumed
+		if ( type === 'registered' && formCreationleft === 0 ) {
+			return (
+				<LimitReachedPopup
+					paraOne={ __(
+						'You have reached the maximum number of form generations in your Free Plan.',
+						'sureforms'
+					) }
+					paraTwo={ __(
+						'Upgrade today and continue creating smarter forms without limits.',
+						'sureforms'
+					) }
+					paraTitle={ __(
+						'You have Hit Your Free Limit.',
+						'sureforms'
+					) }
+					buttonText={ __( 'Upgrade Now', 'sureforms' ) }
+					onclick={ () => {
+						window.open(
+							addQueryParam(
+								srfm_admin?.pricing_page_url,
+								'limit-reached-popup-cta'
+							),
+							'_blank',
+							'noreferrer'
+						);
+					} }
+					deactivatedLicense={ deactivatedLicense }
+					title={ __( 'Unlock Unlimited Generations', 'sureforms' ) }
+				/>
+			);
+		}
+
+		// when initial 3 forms are consumed
+		if (
+			type === 'non-registered' &&
+			formCreationleft === 0 &&
+			showPopup
+		) {
+			return (
+				<LimitReachedPopup
+					title={ __( 'Connect to SureForms AI', 'sureforms' ) }
+					paraTitle={ __(
+						'You have Hit Your Free Limit.',
+						'sureforms'
+					) }
+					paraOne={ __(
+						'You have reached the maximum number of form generations.',
+						'sureforms'
+					) }
+					paraTwo={ __(
+						'Please connect your website with SureForms AI to create 10 more forms with AI.',
+						'sureforms'
+					) }
+					onclick={ initiateAuth }
+				/>
+			);
+		}
+	};
 
 	// shows while the form is being built
 	if ( isBuildingForm ) {
@@ -183,9 +314,6 @@ const AiFormBuilder = () => {
 	if ( showAuthErrorPopup ) {
 		return <AuthErrorPopup initiateAuth={ initiateAuth } />;
 	}
-
-	const isRTL = srfm_admin?.is_rtl;
-	const toasterPosition = isRTL ? 'bottom-left' : 'bottom-right';
 
 	return (
 		<div className="max-h-screen">
@@ -210,129 +338,17 @@ const AiFormBuilder = () => {
 					setFormTypeObj={ setFormTypeObj }
 					setFormType={ setFormType }
 					formType={ formType }
+					onDataSend={ handleDataFromChild }
+					type={ type }
 				/>
 			</div>
+
+			{ srfm_admin?.srfm_ai_usage_details?.remaining === 0 ||
+			srfm_admin?.srfm_ai_usage_details?.code
+				? getLimitReachedPopup()
+				: null }
 		</div>
 	);
-};
-
-export const getLimitReachedPopup = () => {
-	const type = srfm_admin?.srfm_ai_usage_details?.type;
-	const formCreationleft = srfm_admin?.srfm_ai_usage_details?.remaining ?? 0;
-	const errorCode = srfm_admin?.srfm_ai_usage_details?.code;
-	const resetAt = srfm_admin?.srfm_ai_usage_details?.resetAt;
-
-	// shows when the user has encountered an error.
-	if ( errorCode ) {
-		return (
-			<LimitReachedPopup
-				title={ srfm_admin?.srfm_ai_usage_details?.title }
-				paraOne={ srfm_admin?.srfm_ai_usage_details?.message }
-				buttonText={ __( 'Try Again', 'sureforms' ) }
-				onclick={ () => {
-					window.location.href =
-						srfm_admin.site_url +
-						'/wp-admin/admin.php?page=add-new-form';
-				} }
-			/>
-		);
-	}
-
-	// When pro limit is consumed
-	if (
-		type === 'subscribed' &&
-		srfm_admin?.is_pro_active &&
-		srfm_admin?.is_pro_license_active &&
-		formCreationleft === 0 &&
-		resetAt &&
-		resetAt > Date.now() / 1000
-	) {
-		return (
-			<LimitReachedPopup
-				title={ __( 'Form Generation Limit Reached', 'sureforms' ) }
-				paraTitle={ __(
-					'You have Hit Your FUP Limit.',
-					'sureforms'
-				) }
-				paraOne={ __(
-					'You have reached the FUP limit of AI form generations for the day.',
-					'sureforms'
-				) }
-				paraTwo={ sprintf(
-					/* translators: %s: reset time */
-					__( 'Please try again after %s.', 'sureforms' ),
-					new Date( resetAt * 1000 ).toLocaleString()
-				) }
-				buttonText={ __( 'Try Again', 'sureforms' ) }
-				onclick={ () => {
-					window.location.href =
-						srfm_admin.site_url +
-						'/wp-admin/admin.php?page=add-new-form';
-				} }
-			/>
-		);
-	}
-
-	// Check if the user has a premium plan and not activated the license
-	const deactivatedLicense =
-		srfm_admin?.is_pro_active && ! srfm_admin?.is_pro_license_active;
-
-	// When registered limit is consumed
-	if ( type === 'registered' && formCreationleft === 0 ) {
-		return (
-			<LimitReachedPopup
-				paraOne={ __(
-					'You have reached the maximum number of form generations in your Free Plan.',
-					'sureforms'
-				) }
-				paraTwo={ __(
-					'Upgrade today and continue creating smarter forms without limits.',
-					'sureforms'
-				) }
-				paraTitle={ __(
-					'You have Hit Your Free Limit.',
-					'sureforms'
-				) }
-				buttonText={ __( 'Upgrade Now', 'sureforms' ) }
-				onclick={ () => {
-					window.open(
-						addQueryParam(
-							srfm_admin?.pricing_page_url,
-							'limit-reached-popup-cta'
-						),
-						'_blank',
-						'noreferrer'
-					);
-				} }
-				deactivatedLicense={ deactivatedLicense }
-				title={ __( 'Unlock Unlimited Generations', 'sureforms' ) }
-			/>
-		);
-	}
-
-	// when initial 3 forms are consumed
-	if ( type === 'non-registered' && formCreationleft === 0 ) {
-		return (
-			<LimitReachedPopup
-				title={ __( 'Free Form Generation Limit Reached', 'sureforms' ) }
-				paraTitle={ __(
-					'You have Hit Your Free Limit.',
-					'sureforms'
-				) }
-				paraOne={ __(
-					'You have reached the maximum number of form generations.',
-					'sureforms'
-				) }
-				paraTwo={ __(
-					'Please connect your website with SureForms AI to create 10 more forms with AI.',
-					'sureforms'
-				) }
-				onclick={ initiateAuth }
-			/>
-		);
-	}
-
-	return <AiFormBuilder />;
 };
 
 export default AiFormBuilder;

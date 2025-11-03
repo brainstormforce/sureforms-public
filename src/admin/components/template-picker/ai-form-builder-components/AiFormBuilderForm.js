@@ -4,8 +4,6 @@ import { Button, Container, TextArea, toast, Tooltip } from '@bsf/force-ui';
 import { ArrowRight, Sparkles, MicOff, Mic } from 'lucide-react';
 import { applyFilters } from '@wordpress/hooks';
 import { cn, srfmClassNames } from '@Utils/Helpers';
-import ConnectWithAIBanner from '../ai-form-builder-components/ConnectWithAIBanner.js';
-import LimitReachedBanner from '../ai-form-builder-components/LimitReachedBanner.js';
 import FormTypeSelector from '../components/FormTypeSelector.js';
 import CreditDetailsPopup from './CreditDetailsPopup.js';
 import { useLocation } from 'react-router-dom';
@@ -60,6 +58,8 @@ export default ( props ) => {
 		setFormTypeObj,
 		setFormType,
 		formType,
+		onDataSend,
+		type,
 	} = props;
 
 	const [ isListening, setIsListening ] = useState( false ); // State to manage voice recording
@@ -110,6 +110,12 @@ export default ( props ) => {
 	};
 
 	const toggleListening = () => {
+		const textArea = document.getElementById( 'textarea' );
+		if ( ! isFocused ) {
+			setIsFocused( true );
+			textArea.focus();
+		}
+
 		// initialize SpeechRecognition instance if not already initialized
 		if ( ! recognitionRef.current ) {
 			recognitionRef.current = initSpeechRecognition();
@@ -283,14 +289,6 @@ export default ( props ) => {
 
 	const is_pro_active =
 		srfm_admin?.is_pro_active && srfm_admin?.is_pro_license_active;
-	const type = srfm_admin?.srfm_ai_1usage_details?.type;
-
-	const banner =
-		type === 'registered' && formCreationleft === 0 ? (
-			<LimitReachedBanner />
-		) : (
-			<ConnectWithAIBanner />
-		);
 
 	return (
 		<Container
@@ -300,7 +298,6 @@ export default ( props ) => {
 			) }
 			direction="column"
 		>
-			<Container.Item>{ ! is_pro_active && banner }</Container.Item>
 			<Container.Item className="w-full">
 				<Container
 					className={ cn(
@@ -347,13 +344,15 @@ export default ( props ) => {
 														'sureforms'
 													) }
 													placeholder={
-														displayedPlaceholder
+														isListening
+															? ''
+															: displayedPlaceholder
 													}
 													id="textarea"
 													value={ text }
 													size="lg"
 													className={ cn(
-														'border-none resize-y w-full min-h-[140px] text-field-placeholder pt-3 px-4 pb-14 rounded-[calc(0.5rem-1px)]',
+														'border-none resize-y w-full min-h-[140px] max-h-[300px] text-field-placeholder pt-3 px-4 pb-14 rounded-[calc(0.5rem-1px)]',
 														characterCount > 0 &&
 															'text-text-primary'
 													) }
@@ -401,7 +400,7 @@ export default ( props ) => {
 													/>
 													<Button
 														className="gap-1"
-														disabled={ characterCount === 0 }
+														// disabled={ characterCount === 0 }
 														icon={
 															<Sparkles className="w-4 h-4" />
 														}
@@ -409,6 +408,7 @@ export default ( props ) => {
 														size="md"
 														variant="primary"
 														onClick={ () => {
+															onDataSend( true );
 															if (
 																! text ||
 																! text.trim()
@@ -452,8 +452,8 @@ export default ( props ) => {
 							finalFormCreationCountRemaining={
 								finalFormCreationCountRemaining
 							}
-							showBanner={ showBanner }
 							setShowBanner={ setShowBanner }
+							type={ type }
 						/>
 					) }
 
@@ -462,7 +462,7 @@ export default ( props ) => {
 							className="text-text-tertiary hover:cursor-pointer hover:text-text-secondary"
 							icon={ <ArrowRight size={ 16 } /> }
 							iconPosition="right"
-							size="sm"
+							size="md"
 							variant="ghost"
 							onClick={ () => {
 								window.location.href = `${ srfm_admin.site_url }/wp-admin/post-new.php?post_type=sureforms_form`;
