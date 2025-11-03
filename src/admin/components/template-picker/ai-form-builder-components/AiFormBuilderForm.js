@@ -343,11 +343,7 @@ export default ( props ) => {
 														'Describe the form you want to create',
 														'sureforms'
 													) }
-													placeholder={
-														isListening
-															? ''
-															: displayedPlaceholder
-													}
+													placeholder={ displayedPlaceholder }
 													id="textarea"
 													value={ text }
 													size="lg"
