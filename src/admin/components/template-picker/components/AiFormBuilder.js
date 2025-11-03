@@ -236,7 +236,7 @@ const AiFormBuilder = () => {
 			srfm_admin?.is_pro_active && ! srfm_admin?.is_pro_license_active;
 
 		// When registered limit is consumed
-		if ( type === 'registered' && formCreationleft === 0 ) {
+		if ( type === 'registered' && formCreationleft === 0 && showPopup ) {
 			return (
 				<LimitReachedPopup
 					paraOne={ __(
@@ -282,11 +282,11 @@ const AiFormBuilder = () => {
 						'sureforms'
 					) }
 					paraOne={ __(
-						'You have reached the maximum number of form generations.',
+						'You have reached the maximum number of form generations in your Free Plan.',
 						'sureforms'
 					) }
 					paraTwo={ __(
-						'Please connect your website with SureForms AI to create 10 more forms with AI.',
+						'Connect to SureForms AI to Get 10 More.',
 						'sureforms'
 					) }
 					onclick={ initiateAuth }
