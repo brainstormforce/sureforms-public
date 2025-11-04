@@ -1,5 +1,5 @@
 import { __ } from '@wordpress/i18n';
-import { Edit3, Trash2, RotateCcw, Eye, Share, Copy } from 'lucide-react';
+import { Edit3, Trash, RotateCcw, Eye, Share, Copy } from 'lucide-react';
 import { Button, Container, Badge, Text } from '@bsf/force-ui';
 import Tooltip from '@Admin/components/Tooltip';
 import Table from '@Admin/components/Table';
@@ -209,7 +209,7 @@ const FormsTable = ( {
 					actions.push( {
 						key: 'delete',
 						label: __( 'Move to Trash', 'sureforms' ),
-						icon: <Trash2 className="size-4" />,
+						icon: <Trash className="size-4" />,
 						onClick: () => onTrash?.( form ),
 					} );
 				} else {
@@ -225,7 +225,7 @@ const FormsTable = ( {
 					actions.push( {
 						key: 'delete-permanent',
 						label: __( 'Permanently Delete', 'sureforms' ),
-						icon: <Trash2 className="size-4" />,
+						icon: <Trash className="size-4" />,
 						onClick: () => onDelete?.( form ),
 					} );
 				}

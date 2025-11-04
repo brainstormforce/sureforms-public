@@ -193,11 +193,11 @@ const FormsManager = () => {
 		setSelectedForms( checked ? forms.map( ( form ) => form.id ) : [] );
 	};
 
-	const handleRowSelection = ( formId, selected ) => {
+	const handleRowSelection = ( selected, item ) => {
 		setSelectedForms( ( prev ) =>
 			selected
-				? [ ...prev, formId ]
-				: prev.filter( ( id ) => id !== formId )
+				? [ ...prev, item.id ]
+				: prev.filter( ( id ) => id !== item.id )
 		);
 	};
 
@@ -214,14 +214,22 @@ const FormsManager = () => {
 	};
 
 	const handleBulkTrash = () => {
+		handleBulkAction( 'trash', selectedForms );
+	};
+
+	const handleBulkRestore = () => {
+		handleBulkAction( 'restore', selectedForms );
+	};
+
+	const handleBulkDelete = () => {
 		setConfirmDialog( {
 			open: true,
-			title: __( 'Move to Trash', 'sureforms' ),
+			title: __( 'Delete Permanently', 'sureforms' ),
 			description: sprintf(
 				/* translators: %d: number of forms */
 				_n(
-					'Are you sure you want to move %d form to trash?',
-					'Are you sure you want to move %d forms to trash?',
+					'Are you sure you want to permanently delete %d form? This action cannot be undone.',
+					'Are you sure you want to permanently delete %d forms? This action cannot be undone.',
 					selectedForms.length,
 					'sureforms'
 				),
@@ -229,14 +237,14 @@ const FormsManager = () => {
 			),
 			action: async () => {
 				await new Promise( ( resolve ) => {
-					handleBulkAction( 'trash', selectedForms );
+					handleBulkAction( 'delete', selectedForms );
 					resolve();
 				} );
 				setConfirmDialog( ( prev ) => ( { ...prev, open: false } ) );
 			},
-			confirmButtonText: __( 'Move to Trash', 'sureforms' ),
+			confirmButtonText: __( 'Delete Permanently', 'sureforms' ),
 			destructive: true,
-			requireConfirmation: false,
+			requireConfirmation: true,
 		} );
 	};
 
@@ -246,28 +254,7 @@ const FormsManager = () => {
 	};
 
 	const handleFormTrash = ( form ) => {
-		setConfirmDialog( {
-			open: true,
-			title: __( 'Move to Trash', 'sureforms' ),
-			description: sprintf(
-				/* translators: %s: form title */
-				__(
-					'Are you sure you want to move "%s" to trash?',
-					'sureforms'
-				),
-				form.title
-			),
-			action: async () => {
-				await new Promise( ( resolve ) => {
-					handleBulkAction( 'trash', [ form.id ] );
-					resolve();
-				} );
-				setConfirmDialog( ( prev ) => ( { ...prev, open: false } ) );
-			},
-			confirmButtonText: __( 'Move to Trash', 'sureforms' ),
-			destructive: true,
-			requireConfirmation: false,
-		} );
+		handleBulkAction( 'trash', [ form.id ] );
 	};
 
 	const handleFormRestore = ( form ) => {
@@ -397,7 +384,9 @@ const FormsManager = () => {
 									onSearchChange={ handleSearch }
 									selectedForms={ selectedForms }
 									onBulkTrash={ handleBulkTrash }
+									onBulkDelete={ handleBulkDelete }
 									onBulkExport={ handleBulkExport }
+									onBulkRestore={ handleBulkRestore }
 									onImportSuccess={ handleImportSuccess }
 									statusFilter={ filters.status }
 									onStatusFilterChange={ handleStatusFilter }

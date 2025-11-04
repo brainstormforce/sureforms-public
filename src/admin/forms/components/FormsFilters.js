@@ -7,6 +7,7 @@ import {
 	ArchiveRestore,
 	Search,
 	X,
+	RotateCcw,
 } from 'lucide-react';
 import { Input, Button, Container, Select, DatePicker } from '@bsf/force-ui';
 import {
@@ -24,6 +25,8 @@ const FormsFilters = ( {
 	selectedForms = [],
 	onBulkTrash,
 	onBulkExport,
+	onBulkRestore,
+	onBulkDelete,
 	statusFilter,
 	onStatusFilterChange,
 	selectedDates = { from: null, to: null },
@@ -148,18 +151,46 @@ const FormsFilters = ( {
 	if ( hasSelectedForms ) {
 		return (
 			<Container direction="row" align="center" className="gap-3">
-				<Container.Item>
-					<Button
-						variant="outline"
-						size="sm"
-						icon={ <Trash className="w-4 h-4" /> }
-						iconPosition="left"
-						onClick={ onBulkTrash }
-						destructive
-					>
-						{ __( 'Trash', 'sureforms' ) }
-					</Button>
-				</Container.Item>
+				{ statusFilter === 'trash' && (
+					<Container.Item>
+						<Button
+							variant="outline"
+							size="sm"
+							icon={ <RotateCcw className="w-4 h-4" /> }
+							iconPosition="left"
+							onClick={ onBulkRestore }
+						>
+							{ __( 'Restore', 'sureforms' ) }
+						</Button>
+					</Container.Item>
+				) }
+				{ statusFilter === 'trash' ? (
+					<Container.Item>
+						<Button
+							variant="outline"
+							size="sm"
+							icon={ <Trash className="w-4 h-4" /> }
+							iconPosition="left"
+							onClick={ onBulkDelete }
+							destructive
+						>
+							{ __( 'Delete', 'sureforms' ) }
+						</Button>
+					</Container.Item>
+				) : (
+					<Container.Item>
+						<Button
+							variant="outline"
+							size="sm"
+							icon={ <Trash className="w-4 h-4" /> }
+							iconPosition="left"
+							onClick={ onBulkTrash }
+							destructive
+						>
+							{ __( 'Trash', 'sureforms' ) }
+						</Button>
+					</Container.Item>
+				) }
 				<Container.Item>
 					<Button
 						variant="outline"
