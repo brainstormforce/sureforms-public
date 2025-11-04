@@ -1,32 +1,64 @@
-import { useState } from '@wordpress/element';
+import { useState, useEffect, useCallback } from '@wordpress/element';
+import { useSearchParams } from 'react-router-dom';
 
 /**
- * Custom hook to manage pagination state
+ * Custom hook to manage pagination state with URL synchronization
  *
  * @param {number} initialPage    - Initial page number
  * @param {number} initialPerPage - Initial entries per page
  * @return {Object} Pagination states and handlers
  */
 export const usePagination = ( initialPage = 1, initialPerPage = 10 ) => {
-	const [ currentPage, setCurrentPage ] = useState( initialPage );
-	const [ entriesPerPage, setEntriesPerPage ] = useState( initialPerPage );
+	const [ searchParams, setSearchParams ] = useSearchParams();
 
-	const goToPage = ( page ) => {
+	// Initialize state from URL params
+	const [ currentPage, setCurrentPage ] = useState( () => {
+		const pageFromUrl = searchParams.get( 'page' );
+		return pageFromUrl ? parseInt( pageFromUrl, 10 ) : initialPage;
+	} );
+
+	const [ entriesPerPage, setEntriesPerPage ] = useState( () => {
+		const perPageFromUrl = searchParams.get( 'per_page' );
+		return perPageFromUrl
+			? parseInt( perPageFromUrl, 10 )
+			: initialPerPage;
+	} );
+
+	// Update URL params when pagination changes
+	useEffect( () => {
+		const params = new URLSearchParams( searchParams );
+
+		if ( currentPage > 1 ) {
+			params.set( 'page', currentPage.toString() );
+		} else {
+			params.delete( 'page' );
+		}
+
+		if ( entriesPerPage !== initialPerPage ) {
+			params.set( 'per_page', entriesPerPage.toString() );
+		} else {
+			params.delete( 'per_page' );
+		}
+
+		setSearchParams( params, { replace: true } );
+	}, [ currentPage, entriesPerPage, initialPerPage, searchParams, setSearchParams ] );
+
+	const goToPage = useCallback( ( page ) => {
 		setCurrentPage( page );
-	};
+	}, [] );
 
-	const nextPage = ( totalPages ) => {
+	const nextPage = useCallback( ( totalPages ) => {
 		setCurrentPage( ( prev ) => Math.min( totalPages, prev + 1 ) );
-	};
+	}, [] );
 
-	const previousPage = () => {
+	const previousPage = useCallback( () => {
 		setCurrentPage( ( prev ) => Math.max( 1, prev - 1 ) );
-	};
+	}, [] );
 
-	const changeEntriesPerPage = ( perPage ) => {
+	const changeEntriesPerPage = useCallback( ( perPage ) => {
 		setEntriesPerPage( perPage );
 		setCurrentPage( 1 ); // Reset to first page when changing per page
-	};
+	}, [] );
 
 	return {
 		currentPage,

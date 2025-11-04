@@ -1,5 +1,5 @@
 import { __, _n, sprintf } from '@wordpress/i18n';
-import { useEffect, useMemo, useState } from '@wordpress/element';
+import { useEffect, useMemo, useState, useRef } from '@wordpress/element';
 import { useNavigate } from 'react-router-dom';
 import { Button, Text, toast } from '@bsf/force-ui';
 import EntriesHeader from '../components/EntriesHeader';
@@ -31,6 +31,9 @@ import { getFormOptions } from '../constants';
 const EntriesListingPage = () => {
 	// Router navigation hook
 	const navigate = useNavigate();
+
+	// Track if this is the initial mount
+	const isInitialMount = useRef( true );
 
 	// Fetch forms data using React Query
 	const { data: formsMap = {} } = useForms();
@@ -166,8 +169,12 @@ const EntriesListingPage = () => {
 		);
 	}, [ error ] );
 
-	// Reset to first page when any filter changes
+	// Reset to first page when any filter changes (but not on initial mount)
 	useEffect( () => {
+		if ( isInitialMount.current ) {
+			isInitialMount.current = false;
+			return;
+		}
 		goToPage( 1 );
 	}, [
 		statusFilter,
