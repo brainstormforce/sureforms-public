@@ -7,8 +7,10 @@ import {
 	Trash2,
 	MoreVertical,
 	RotateCcw,
-	ArchiveRestore,
 	Send,
+	ArchiveRestore,
+	Eye,
+	EyeOff,
 } from 'lucide-react';
 import { Select, Input, Button, DropdownMenu, Skeleton } from '@bsf/force-ui';
 import {
@@ -69,23 +71,37 @@ const EntriesFilters = ( {
 		useState( false );
 	const searchInputRef = useRef( null );
 
-	// Dropdown menu options for bulk actions
-	const DROPDOWN_MENU_OPTIONS = [
-		{
-			label: __( 'Mark as Read', 'sureforms' ),
-			onClick: onMarkAsRead,
-		},
-		{
-			label: __( 'Mark as Unread', 'sureforms' ),
-			onClick: onMarkAsUnread,
-		},
-	];
-
 	// Check if any entries are selected
 	const hasSelectedEntries = useMemo(
 		() => selectedEntries.length > 0,
 		[ selectedEntries ]
 	);
+
+	// Dropdown menu options for bulk actions
+	const DROPDOWN_MENU_OPTIONS = [
+		{
+			label: hasSelectedEntries
+				? __( 'Export Selected', 'sureforms' )
+				: __( 'Export All', 'sureforms' ),
+			onClick: onBulkExport,
+			icon: <ArchiveRestore />,
+		},
+	];
+
+	if ( hasSelectedEntries ) {
+		DROPDOWN_MENU_OPTIONS.push(
+			{
+				label: __( 'Mark as Read', 'sureforms' ),
+				onClick: onMarkAsRead,
+				icon: <Eye />,
+			},
+			{
+				label: __( 'Mark as Unread', 'sureforms' ),
+				onClick: onMarkAsUnread,
+				icon: <EyeOff />,
+			}
+		);
+	}
 
 	useEffect( () => {
 		if ( searchInputRef.current ) {
@@ -155,17 +171,6 @@ const EntriesFilters = ( {
 	return (
 		<Fragment>
 			<div className="flex flex-wrap lg:flex-nowrap items-center justify-end gap-2 sm:gap-3 lg:gap-4 mt-4 lg:!mt-0">
-				<Button
-					variant="outline"
-					size="sm"
-					onClick={ onBulkExport }
-					icon={ <ArchiveRestore className="w-4 h-4" /> }
-					iconPosition="left"
-					className="min-w-fit"
-				>
-					{ __( 'Export', 'sureforms' ) }
-				</Button>
-
 				{ /* Clear Filters button - shown when filters are active */ }
 				{ hasActiveFilters && ! hasSelectedEntries && (
 					<Button
@@ -212,7 +217,6 @@ const EntriesFilters = ( {
 								</Select.Options>
 							</Select>
 						</div>
-
 						<div className="w-full min-w-32 lg:w-40">
 							{ isLoadingForms ? (
 								<Skeleton className="h-8 w-full rounded-md" />
@@ -228,12 +232,11 @@ const EntriesFilters = ( {
 											'sureforms'
 										) }
 									>
-										{
-											formOptions.find(
-												( option ) =>
-													option.value === formFilter
-											)?.label || __( 'Untitled', 'sureforms' )
-										}
+										{ formOptions.find(
+											( option ) =>
+												option.value === formFilter
+										)?.label ||
+											__( 'Untitled', 'sureforms' ) }
 									</Select.Button>
 									<Select.Options className="z-999999">
 										{ formOptions.map( ( option ) => (
@@ -241,13 +244,18 @@ const EntriesFilters = ( {
 												key={ option.value }
 												value={ option.value }
 											>
-												{ option.label || __( 'Untitled', 'sureforms' ) }
+												{ option.label ||
+													__(
+														'Untitled',
+														'sureforms'
+													) }
 											</Select.Option>
 										) ) }
 									</Select.Options>
 								</Select>
 							) }
-						</div>						<div className="w-full min-w-[11.25rem] lg:w-auto lg:min-w-[13.125rem]">
+						</div>{ ' ' }
+						<div className="w-full min-w-[11.25rem] lg:w-auto lg:min-w-[13.125rem]">
 							<DatePicker
 								value={ dateRange }
 								onApply={ onDateRangeChange }
@@ -332,42 +340,39 @@ const EntriesFilters = ( {
 						>
 							{ __( 'Delete', 'sureforms' ) }
 						</Button>
-
-						<DropdownMenu placement="bottom-end">
-							<DropdownMenu.Trigger>
-								<Button
-									variant="outline"
-									size="sm"
-									icon={
-										<MoreVertical className="w-4 h-4" />
-									}
-									className="min-w-fit px-2"
-								/>
-							</DropdownMenu.Trigger>
-							<DropdownMenu.Portal id="srfm-dialog-root">
-								<DropdownMenu.ContentWrapper>
-									<DropdownMenu.Content className="w-48">
-										<DropdownMenu.List>
-											{ DROPDOWN_MENU_OPTIONS.map(
-												( option, index ) => (
-													<DropdownMenu.Item
-														key={ index }
-														onClick={
-															option.onClick
-														}
-														className="text-sm font-normal text-text-secondary hover:bg-background-secondary hover:text-text-primary focus:bg-background-secondary focus:text-text-primary cursor-pointer"
-													>
-														{ option.label }
-													</DropdownMenu.Item>
-												)
-											) }
-										</DropdownMenu.List>
-									</DropdownMenu.Content>
-								</DropdownMenu.ContentWrapper>
-							</DropdownMenu.Portal>
-						</DropdownMenu>
 					</>
 				) }
+
+				<DropdownMenu placement="bottom-end">
+					<DropdownMenu.Trigger>
+						<Button
+							variant="outline"
+							size="sm"
+							icon={ <MoreVertical className="w-4 h-4" /> }
+							className="min-w-fit px-2"
+						/>
+					</DropdownMenu.Trigger>
+					<DropdownMenu.Portal id="srfm-dialog-root">
+						<DropdownMenu.ContentWrapper>
+							<DropdownMenu.Content className="w-48">
+								<DropdownMenu.List>
+									{ DROPDOWN_MENU_OPTIONS.map(
+										( option, index ) => (
+											<DropdownMenu.Item
+												key={ index }
+												onClick={ option.onClick }
+												className="text-sm [&>svg]:size-4 font-normal text-text-secondary hover:bg-background-secondary hover:text-text-primary focus:bg-background-secondary focus:text-text-primary cursor-pointer"
+											>
+												{ option.icon }
+												{ option.label }
+											</DropdownMenu.Item>
+										)
+									) }
+								</DropdownMenu.List>
+							</DropdownMenu.Content>
+						</DropdownMenu.ContentWrapper>
+					</DropdownMenu.Portal>
+				</DropdownMenu>
 			</div>
 			{ !! ResendNotificationModal &&
 				formFilter !== 'all' &&
