@@ -350,6 +350,7 @@ const EntriesListingPage = () => {
 			{
 				onSuccess: () => {
 					clearSelection();
+					toast.success( __( 'Entries exported successfully.', 'sureforms' ) );
 				},
 			}
 		);
