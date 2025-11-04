@@ -8,7 +8,7 @@ import FormsHeader from './components/FormsHeader';
 import FormsTable from './components/FormsTable';
 import FormsPagination from './components/FormsPagination';
 import EmptyState from './components/EmptyState';
-import ConfirmationDialog from './components/ConfirmationDialog';
+import ConfirmationDialog from '@Admin/components/ConfirmationDialog';
 import { useForms, useBulkFormsAction, formsKeys } from './hooks/useFormsQuery';
 
 const FormsManager = () => {
@@ -44,6 +44,9 @@ const FormsManager = () => {
 		title: '',
 		description: '',
 		action: null,
+		confirmButtonText: null,
+		destructive: true,
+		requireConfirmation: false,
 	} );
 
 	// Query parameters for API
@@ -106,8 +109,7 @@ const FormsManager = () => {
 	);
 
 	// Mutations
-	const { mutate: bulkActionMutation, isPending: isBulkActionPending } =
-		useBulkFormsAction();
+	const { mutate: bulkActionMutation } = useBulkFormsAction();
 
 	// Event handlers
 	const handleSearch = ( searchTerm ) => {
@@ -225,7 +227,16 @@ const FormsManager = () => {
 				),
 				selectedForms.length
 			),
-			action: () => handleBulkAction( 'trash', selectedForms ),
+			action: async () => {
+				await new Promise( ( resolve ) => {
+					handleBulkAction( 'trash', selectedForms );
+					resolve();
+				} );
+				setConfirmDialog( ( prev ) => ( { ...prev, open: false } ) );
+			},
+			confirmButtonText: __( 'Move to Trash', 'sureforms' ),
+			destructive: true,
+			requireConfirmation: false,
 		} );
 	};
 
@@ -246,7 +257,16 @@ const FormsManager = () => {
 				),
 				form.title
 			),
-			action: () => handleBulkAction( 'trash', [ form.id ] ),
+			action: async () => {
+				await new Promise( ( resolve ) => {
+					handleBulkAction( 'trash', [ form.id ] );
+					resolve();
+				} );
+				setConfirmDialog( ( prev ) => ( { ...prev, open: false } ) );
+			},
+			confirmButtonText: __( 'Move to Trash', 'sureforms' ),
+			destructive: true,
+			requireConfirmation: false,
 		} );
 	};
 
@@ -257,16 +277,25 @@ const FormsManager = () => {
 	const handleFormDelete = ( form ) => {
 		setConfirmDialog( {
 			open: true,
-			title: __( 'Delete Permanently', 'sureforms' ),
+			title: __( 'Delete Form', 'sureforms' ),
 			description: sprintf(
 				/* translators: %s: form title */
 				__(
-					'Are you sure you want to permanently delete "%s"? This action cannot be undone.',
+					'Are you sure you want to permanently delete this form?',
 					'sureforms'
 				),
 				form.title
 			),
-			action: () => handleBulkAction( 'delete', [ form.id ] ),
+			action: async () => {
+				await new Promise( ( resolve ) => {
+					handleBulkAction( 'delete', [ form.id ] );
+					resolve();
+				} );
+				setConfirmDialog( ( prev ) => ( { ...prev, open: false } ) );
+			},
+			confirmButtonText: __( 'Permanently Delete', 'sureforms' ),
+			destructive: true,
+			requireConfirmation: true,
 		} );
 	};
 
@@ -425,14 +454,17 @@ const FormsManager = () => {
 			</Container.Item>
 
 			<ConfirmationDialog
-				open={ confirmDialog.open }
-				setOpen={ ( open ) =>
-					setConfirmDialog( ( prev ) => ( { ...prev, open } ) )
+				isOpen={ confirmDialog.open }
+				onCancel={ () =>
+					setConfirmDialog( ( prev ) => ( { ...prev, open: false } ) )
 				}
 				title={ confirmDialog.title }
 				description={ confirmDialog.description }
 				onConfirm={ confirmDialog.action }
-				isLoading={ isBulkActionPending }
+				confirmButtonText={ confirmDialog.confirmButtonText || __( 'Confirm', 'sureforms' ) }
+				cancelButtonText={ __( 'Cancel', 'sureforms' ) }
+				destructiveConfirmButton={ confirmDialog.destructive !== false }
+				requireConfirmation={ confirmDialog.requireConfirmation || false }
 			/>
 		</Container>
 	);

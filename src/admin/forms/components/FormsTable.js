@@ -1,7 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import { Edit3, Trash2, RotateCcw, Eye, Share, Copy } from 'lucide-react';
 import { Button, Container, Badge, Text } from '@bsf/force-ui';
-import { useState } from '@wordpress/element';
 import Tooltip from '@Admin/components/Tooltip';
 import Table from '@Admin/components/Table';
 import { exportForms } from '../utils';
@@ -232,7 +231,7 @@ const FormsTable = ( {
 				}
 
 				return (
-					<Container align="center" className="gap-2">
+					<Container className="gap-2 justify-end">
 						{ actions.map( ( action ) => (
 							<Tooltip
 								key={ action.key }
