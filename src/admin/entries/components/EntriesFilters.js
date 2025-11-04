@@ -10,7 +10,7 @@ import {
 	ArchiveRestore,
 	Send,
 } from 'lucide-react';
-import { Select, Input, Button, DropdownMenu } from '@bsf/force-ui';
+import { Select, Input, Button, DropdownMenu, Skeleton } from '@bsf/force-ui';
 import {
 	useRef,
 	useEffect,
@@ -35,6 +35,7 @@ import { STATUS_OPTIONS } from '../constants';
  * @param {Object}   props.dateRange            - Current date range
  * @param {Function} props.onDateRangeChange    - Handler for date range change
  * @param {Array}    props.formOptions          - Array of form options
+ * @param {boolean}  props.isLoadingForms       - Whether forms are loading
  * @param {Array}    props.selectedEntries      - Array of selected entry IDs
  * @param {Function} props.onBulkDelete         - Handler for bulk delete action
  * @param {Function} props.onBulkExport         - Handler for bulk export action
@@ -54,6 +55,7 @@ const EntriesFilters = ( {
 	dateRange,
 	onDateRangeChange,
 	formOptions = [],
+	isLoadingForms = false,
 	selectedEntries = [],
 	onBulkDelete,
 	onBulkExport,
@@ -212,38 +214,40 @@ const EntriesFilters = ( {
 						</div>
 
 						<div className="w-full min-w-32 lg:w-40">
-							<Select
-								value={ formFilter }
-								onChange={ onFormFilterChange }
-								size="sm"
-							>
-								<Select.Button
-									placeholder={ __(
-										'All Forms',
-										'sureforms'
-									) }
+							{ isLoadingForms ? (
+								<Skeleton className="h-8 w-full rounded-md" />
+							) : (
+								<Select
+									value={ formFilter }
+									onChange={ onFormFilterChange }
+									size="sm"
 								>
-									{
-										formOptions.find(
-											( option ) =>
-												option.value === formFilter
-										)?.label || __( 'Untitled', 'sureforms' )
-									}
-								</Select.Button>
-								<Select.Options className="z-999999">
-									{ formOptions.map( ( option ) => (
-										<Select.Option
-											key={ option.value }
-											value={ option.value }
-										>
-											{ option.label || __( 'Untitled', 'sureforms' ) }
-										</Select.Option>
-									) ) }
-								</Select.Options>
-							</Select>
-						</div>
-
-						<div className="w-full min-w-[11.25rem] lg:w-auto lg:min-w-[13.125rem]">
+									<Select.Button
+										placeholder={ __(
+											'All Forms',
+											'sureforms'
+										) }
+									>
+										{
+											formOptions.find(
+												( option ) =>
+													option.value === formFilter
+											)?.label || __( 'Untitled', 'sureforms' )
+										}
+									</Select.Button>
+									<Select.Options className="z-999999">
+										{ formOptions.map( ( option ) => (
+											<Select.Option
+												key={ option.value }
+												value={ option.value }
+											>
+												{ option.label || __( 'Untitled', 'sureforms' ) }
+											</Select.Option>
+										) ) }
+									</Select.Options>
+								</Select>
+							) }
+						</div>						<div className="w-full min-w-[11.25rem] lg:w-auto lg:min-w-[13.125rem]">
 							<DatePicker
 								value={ dateRange }
 								onApply={ onDateRangeChange }

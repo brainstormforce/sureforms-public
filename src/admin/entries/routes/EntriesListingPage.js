@@ -36,7 +36,7 @@ const EntriesListingPage = () => {
 	const isInitialMount = useRef( true );
 
 	// Fetch forms data using React Query
-	const { data: formsMap = {} } = useForms();
+	const { data: formsMap = {}, isLoading: isLoadingForms } = useForms();
 	// Custom hooks for state management
 	const {
 		statusFilter,
@@ -476,6 +476,7 @@ const EntriesListingPage = () => {
 								dateRange={ dateRange }
 								onDateRangeChange={ setDateRange }
 								formOptions={ formOptions }
+								isLoadingForms={ isLoadingForms }
 								selectedEntries={ selectedEntries }
 								onBulkDelete={ handleBulkDelete }
 								onBulkExport={ handleBulkExport }
