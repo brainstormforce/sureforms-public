@@ -1,5 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import { Button } from '@bsf/force-ui';
+import { useNavigate } from 'react-router-dom';
 import { useUpdateEntriesReadStatus } from '../hooks/useEntriesQuery';
 
 /**
@@ -11,6 +12,7 @@ import { useUpdateEntriesReadStatus } from '../hooks/useEntriesQuery';
  */
 const SubmissionInfoSection = ( { entryData } ) => {
 	const updateReadStatusMutation = useUpdateEntriesReadStatus();
+	const navigate = useNavigate();
 
 	// Build info fields from actual entry data
 	const infoFields = [
@@ -94,6 +96,7 @@ const SubmissionInfoSection = ( { entryData } ) => {
 			updateReadStatusMutation.mutate( {
 				entry_ids: [ entryData.id ],
 				action: 'unread',
+				onSuccess: () => setTimeout( () => navigate( '/' ), 100 ),
 			} );
 		}
 	};

@@ -1,5 +1,4 @@
 import { Outlet } from 'react-router-dom';
-import { Toaster } from '@bsf/force-ui';
 import Header from '@Admin/components/Header';
 import { cn } from '@Utils/Helpers';
 
@@ -27,7 +26,6 @@ const RootLayout = () => {
 		<>
 			<PageHeader />
 			<Outlet />
-			<Toaster className="z-999999" />
 		</>
 	);
 };

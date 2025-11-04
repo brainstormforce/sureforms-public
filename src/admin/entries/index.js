@@ -1,6 +1,6 @@
 import domReady from '@wordpress/dom-ready';
 import { createRoot } from '@wordpress/element';
-import { toast } from '@bsf/force-ui';
+import { toast, Toaster } from '@bsf/force-ui';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AppRouter } from './routes';
 
@@ -30,6 +30,7 @@ function renderApp() {
 		entriesRoot.render(
 			<QueryClientProvider client={ queryClient }>
 				<AppRouter />
+				<Toaster className="z-999999" />
 			</QueryClientProvider>
 		);
 	}

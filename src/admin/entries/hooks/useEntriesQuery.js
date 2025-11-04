@@ -133,32 +133,35 @@ export const useUpdateEntriesReadStatus = () => {
 			// Show success message
 			const action = variables?.action || '';
 			const count = variables?.entry_ids?.length || 1;
-			if ( action === 'read' ) {
+			if ( count === 1 ) {
+				const entryId = variables.entry_ids[ 0 ];
 				toast.success(
 					sprintf(
-						// translators: %s is the number of entries marked as read.
+						// translators: %1$s is the entry ID, %2$s is the action (read/unread).
+						__( 'Entry#%1$s marked as %2$s.', 'sureforms' ),
+						entryId,
+						action
+					)
+				);
+			} else {
+				toast.success(
+					sprintf(
+						// translators: %1$s is the number of entries marked as read, %2$s is the action.
 						_n(
-							'%s entry marked as read.',
-							'%s entries marked as read.',
+							'%1$s entry marked as %2$s.',
+							'%1$s entries marked as %2$s.',
 							count,
 							'sureforms'
 						),
-						count
+						count,
+						action
 					)
 				);
-			} else if ( action === 'unread' ) {
-				toast.success(
-					sprintf(
-						// translators: %s is the number of entries marked as unread.
-						_n(
-							'%s entry marked as unread.',
-							'%s entries marked as unread.',
-							count,
-							'sureforms'
-						),
-						count
-					)
-				);
+			}
+
+			// Call custom onSuccess if provided
+			if ( typeof variables?.onSuccess === 'function' ) {
+				variables.onSuccess();
 			}
 		},
 		onError: ( error ) => {
