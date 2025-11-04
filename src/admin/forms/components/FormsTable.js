@@ -111,8 +111,8 @@ const FormsTable = ( {
 			headerClassName: 'w-auto',
 			render: ( form ) => (
 				<div>
-					<Text 
-						size={ 14 } 
+					<Text
+						size={ 14 }
 						color="secondary"
 						onClick={ () => onEdit( form ) }
 						className="cursor-pointer hover:text-link-primary hover:underline"
@@ -139,16 +139,18 @@ const FormsTable = ( {
 						label={ form.shortcode }
 						size="xs"
 						variant="neutral"
-						icon={ 
-							copiedFormId === form.id ? 
-								<Check className="w-3 h-3 text-green-600" /> : 
-								<Copy className="w-3 h-3" /> 
+						icon={
+							copiedFormId === form.id ? (
+								<Check className="w-3 h-3 text-green-600" />
+							) : (
+								<Copy className="w-3 h-3" />
+							)
 						}
 						className="hover:bg-background-secondary rounded-sm"
-						title={ 
-							copiedFormId === form.id ? 
-								__( 'Copied!', 'sureforms' ) : 
-								__( 'Copy Shortcode', 'sureforms' ) 
+						title={
+							copiedFormId === form.id
+								? __( 'Copied!', 'sureforms' )
+								: __( 'Copy Shortcode', 'sureforms' )
 						}
 					/>
 				</div>

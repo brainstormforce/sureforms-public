@@ -8,7 +8,7 @@ import {
 } from '@wordpress/element';
 import { __, sprintf } from '@wordpress/i18n';
 
-const CONFIRMATION_TEXT = __( 'delete', 'sureforms-pro' );
+const CONFIRMATION_TEXT = __( 'delete', 'sureforms' );
 
 const ConfirmationDialog = ( {
 	isOpen,
@@ -16,8 +16,8 @@ const ConfirmationDialog = ( {
 	description,
 	onConfirm = () => {},
 	onCancel = () => {},
-	confirmButtonText = __( 'Confirm', 'sureforms-pro' ),
-	cancelButtonText = __( 'Cancel', 'sureforms-pro' ),
+	confirmButtonText = __( 'Confirm', 'sureforms' ),
+	cancelButtonText = __( 'Cancel', 'sureforms' ),
 	destructiveConfirmButton = true,
 	requireConfirmation = false,
 } ) => {
@@ -77,7 +77,7 @@ const ConfirmationDialog = ( {
 			setErrorMessage(
 				sprintf(
 					// translators: %s is the confirmation text
-					__( 'Please type "%s" in the input box', 'sureforms-pro' ),
+					__( 'Please type "%s" in the input box', 'sureforms' ),
 					CONFIRMATION_TEXT
 				)
 			);
@@ -128,7 +128,7 @@ const ConfirmationDialog = ( {
 						>
 							{ __(
 								'To confirm, type delete in the box below:',
-								'sureforms-pro'
+								'sureforms'
 							) }
 						</Label>
 						<div>
@@ -143,7 +143,7 @@ const ConfirmationDialog = ( {
 								type="text"
 								placeholder={ sprintf(
 									// translators: %s is the confirmation text
-									__( 'Type "%s"', 'sureforms-pro' ),
+									__( 'Type "%s"', 'sureforms' ),
 									CONFIRMATION_TEXT
 								) }
 								className="w-full"

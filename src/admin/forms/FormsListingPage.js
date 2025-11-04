@@ -265,13 +265,9 @@ const FormsListingPage = () => {
 		setConfirmDialog( {
 			open: true,
 			title: __( 'Delete Form', 'sureforms' ),
-			description: sprintf(
-				/* translators: %s: form title */
-				__(
-					'Are you sure you want to permanently delete this form?',
-					'sureforms'
-				),
-				form.title
+			description: __(
+				'Are you sure you want to permanently delete this form?',
+				'sureforms'
 			),
 			action: async () => {
 				await new Promise( ( resolve ) => {
@@ -341,11 +337,7 @@ const FormsListingPage = () => {
 
 	// Show filtered empty state when filters are active but no results
 	const shouldShowFilteredEmptyState = useMemo( () => {
-		return (
-			hasActiveFilters &&
-			forms.length === 0 &&
-			! isLoading
-		);
+		return hasActiveFilters && forms.length === 0 && ! isLoading;
 	}, [ hasActiveFilters, forms.length, isLoading ] );
 
 	const isIndeterminate =
@@ -411,8 +403,12 @@ const FormsListingPage = () => {
 									<div className="p-6">
 										<EmptyState
 											hasActiveFilters={ true }
-											onClearFilters={ handleClearFilters }
-											onImportSuccess={ handleImportSuccess }
+											onClearFilters={
+												handleClearFilters
+											}
+											onImportSuccess={
+												handleImportSuccess
+											}
 										/>
 									</div>
 								) : (
@@ -420,7 +416,9 @@ const FormsListingPage = () => {
 										data={ forms }
 										selectedItems={ selectedForms }
 										onToggleAll={ handleToggleAll }
-										onChangeRowSelection={ handleRowSelection }
+										onChangeRowSelection={
+											handleRowSelection
+										}
 										indeterminate={ isIndeterminate }
 										onEdit={ handleFormEdit }
 										onTrash={ handleFormTrash }
@@ -434,7 +432,9 @@ const FormsListingPage = () => {
 											currentPage={
 												paginationData.currentPage
 											}
-											totalPages={ paginationData.totalPages }
+											totalPages={
+												paginationData.totalPages
+											}
 											entriesPerPage={
 												paginationData.perPage
 											}
@@ -444,12 +444,14 @@ const FormsListingPage = () => {
 											}
 											onNextPage={ () =>
 												handlePageChange(
-													paginationData.currentPage + 1
+													paginationData.currentPage +
+														1
 												)
 											}
 											onPreviousPage={ () =>
 												handlePageChange(
-													paginationData.currentPage - 1
+													paginationData.currentPage -
+														1
 												)
 											}
 										/>
@@ -469,10 +471,15 @@ const FormsListingPage = () => {
 				title={ confirmDialog.title }
 				description={ confirmDialog.description }
 				onConfirm={ confirmDialog.action }
-				confirmButtonText={ confirmDialog.confirmButtonText || __( 'Confirm', 'sureforms' ) }
+				confirmButtonText={
+					confirmDialog.confirmButtonText ||
+					__( 'Confirm', 'sureforms' )
+				}
 				cancelButtonText={ __( 'Cancel', 'sureforms' ) }
 				destructiveConfirmButton={ confirmDialog.destructive !== false }
-				requireConfirmation={ confirmDialog.requireConfirmation || false }
+				requireConfirmation={
+					confirmDialog.requireConfirmation || false
+				}
 			/>
 		</Container>
 	);
