@@ -11,7 +11,7 @@ import EmptyState from './components/EmptyState';
 import ConfirmationDialog from '@Admin/components/ConfirmationDialog';
 import { useForms, useBulkFormsAction, formsKeys } from './hooks/useFormsQuery';
 
-const FormsManager = () => {
+const FormsListingPage = () => {
 	// React Query client for cache invalidation
 	const queryClient = useQueryClient();
 
@@ -459,4 +459,4 @@ const FormsManager = () => {
 	);
 };
 
-export default FormsManager;
+export default FormsListingPage;
