@@ -1,5 +1,5 @@
 import { __, _n, sprintf } from '@wordpress/i18n';
-import { useEffect, useMemo, useState, useRef } from '@wordpress/element';
+import { useEffect, useMemo, useState } from '@wordpress/element';
 import { useNavigate } from 'react-router-dom';
 import { Button, Text, toast } from '@bsf/force-ui';
 import EntriesHeader from '../components/EntriesHeader';
@@ -32,9 +32,6 @@ const EntriesListingPage = () => {
 	// Router navigation hook
 	const navigate = useNavigate();
 
-	// Track if this is the initial mount
-	const isInitialMount = useRef( true );
-
 	// Fetch forms data using React Query
 	const { data: formsMap = {}, isLoading: isLoadingForms } = useForms();
 	// Custom hooks for state management
@@ -49,10 +46,32 @@ const EntriesListingPage = () => {
 		setDateRange,
 	} = useEntriesFilters();
 
+	// Filter change handlers with page reset
+	const handleStatusFilterChange = ( value ) => {
+		setStatusFilter( value );
+		goToPage( 1 );
+	};
+
+	const handleFormFilterChange = ( value ) => {
+		setFormFilter( value );
+		goToPage( 1 );
+	};
+
+	const handleSearchChange = ( value ) => {
+		setSearchQuery( value );
+		goToPage( 1 );
+	};
+
+	const handleDateRangeChange = ( value ) => {
+		setDateRange( value );
+		goToPage( 1 );
+	};
+
 	const {
 		currentPage,
 		entriesPerPage,
 		goToPage,
+		silentGoToPage,
 		nextPage,
 		previousPage,
 		changeEntriesPerPage,
@@ -168,21 +187,6 @@ const EntriesListingPage = () => {
 				__( 'An error occurred while fetching entries.', 'sureforms' )
 		);
 	}, [ error ] );
-
-	// Reset to first page when any filter changes (but not on initial mount)
-	useEffect( () => {
-		if ( isInitialMount.current ) {
-			isInitialMount.current = false;
-			return;
-		}
-		goToPage( 1 );
-	}, [
-		statusFilter,
-		formFilter,
-		searchQuery,
-		dateRange?.from,
-		dateRange?.to,
-	] );
 
 	// Action handlers
 	const handleEdit = ( entry ) => {
@@ -364,6 +368,7 @@ const EntriesListingPage = () => {
 			{
 				onSuccess: () => {
 					clearSelection();
+					silentGoToPage( 1 );
 				},
 			}
 		);
@@ -382,6 +387,7 @@ const EntriesListingPage = () => {
 			{
 				onSuccess: () => {
 					clearSelection();
+					silentGoToPage( 1 );
 				},
 			}
 		);
@@ -440,6 +446,7 @@ const EntriesListingPage = () => {
 		setFormFilter( '' );
 		setSearchQuery( '' );
 		setDateRange( { from: null, to: null } );
+		goToPage( 1 );
 	};
 
 	if (
@@ -468,13 +475,13 @@ const EntriesListingPage = () => {
 							<EntriesHeader />
 							<EntriesFilters
 								statusFilter={ statusFilter }
-								onStatusFilterChange={ setStatusFilter }
+								onStatusFilterChange={ handleStatusFilterChange }
 								formFilter={ formFilter }
-								onFormFilterChange={ setFormFilter }
+								onFormFilterChange={ handleFormFilterChange }
 								searchQuery={ searchQuery }
-								onSearchChange={ setSearchQuery }
+								onSearchChange={ handleSearchChange }
 								dateRange={ dateRange }
-								onDateRangeChange={ setDateRange }
+								onDateRangeChange={ handleDateRangeChange }
 								formOptions={ formOptions }
 								isLoadingForms={ isLoadingForms }
 								selectedEntries={ selectedEntries }
@@ -505,12 +512,7 @@ const EntriesListingPage = () => {
 								<Button
 									size="sm"
 									variant="outline"
-									onClick={ () => {
-										setStatusFilter( '' );
-										setFormFilter( '' );
-										setSearchQuery( '' );
-										setDateRange( { from: null, to: null } );
-									} }
+									onClick={ handleClearFilters }
 								>
 									{ __( 'Clear Filters', 'sureforms' ) }
 								</Button>

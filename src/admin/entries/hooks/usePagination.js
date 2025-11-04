@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from '@wordpress/element';
+import { useState, useEffect, useCallback, useRef } from '@wordpress/element';
 import { useSearchParams } from 'react-router-dom';
 
 /**
@@ -10,6 +10,7 @@ import { useSearchParams } from 'react-router-dom';
  */
 export const usePagination = ( initialPage = 1, initialPerPage = 10 ) => {
 	const [ searchParams, setSearchParams ] = useSearchParams();
+	const skipUrlUpdateRef = useRef( false );
 
 	// Initialize state from URL params
 	const [ currentPage, setCurrentPage ] = useState( () => {
@@ -26,6 +27,11 @@ export const usePagination = ( initialPage = 1, initialPerPage = 10 ) => {
 
 	// Update URL params when pagination changes
 	useEffect( () => {
+		if ( skipUrlUpdateRef.current ) {
+			skipUrlUpdateRef.current = false;
+			return;
+		}
+
 		const params = new URLSearchParams( searchParams );
 
 		if ( currentPage > 1 ) {
@@ -47,6 +53,11 @@ export const usePagination = ( initialPage = 1, initialPerPage = 10 ) => {
 		setCurrentPage( page );
 	}, [] );
 
+	const silentGoToPage = useCallback( ( page ) => {
+		skipUrlUpdateRef.current = true;
+		setCurrentPage( page );
+	}, [] );
+
 	const nextPage = useCallback( ( totalPages ) => {
 		setCurrentPage( ( prev ) => Math.min( totalPages, prev + 1 ) );
 	}, [] );
@@ -64,6 +75,7 @@ export const usePagination = ( initialPage = 1, initialPerPage = 10 ) => {
 		currentPage,
 		entriesPerPage,
 		goToPage,
+		silentGoToPage,
 		nextPage,
 		previousPage,
 		changeEntriesPerPage,
