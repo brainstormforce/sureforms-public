@@ -35,7 +35,6 @@ const FormsListingPage = () => {
 	// Pagination state
 	const [ pagination, setPagination ] = useState( {
 		currentPage: 1,
-		perPage: 10,
 	} );
 
 	// Dialog state
@@ -53,7 +52,7 @@ const FormsListingPage = () => {
 	const queryParams = useMemo(
 		() => ( {
 			page: pagination.currentPage,
-			per_page: pagination.perPage,
+			...( pagination.perPage && { per_page: pagination.perPage } ),
 			status: filters.status,
 			orderby: filters.orderby,
 			order: filters.order,

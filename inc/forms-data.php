@@ -125,10 +125,20 @@ class Forms_Data {
 		Helper::verify_nonce_and_capabilities( 'rest', $nonce, 'wp_rest' );
 
 		// Get and validate request parameters.
-		$page      = max( 1, Helper::get_integer_value( $request->get_param( 'page' ) ) );
-		$per_page  = min( 100, max( 1, Helper::get_integer_value( $request->get_param( 'per_page' ) ) ) );
+		$page   = max( 1, Helper::get_integer_value( $request->get_param( 'page' ) ) );
+		$status = sanitize_text_field( $request->get_param( 'status' ) );
+
+		// Get per_page from option first, then request parameter, with fallback to 10.
+		$saved_per_page   = Helper::get_srfm_option( 'forms_per_page', 10 );
+		$request_per_page = $request->get_param( 'per_page' );
+		$per_page         = $request_per_page ? min( 100, max( 1, Helper::get_integer_value( $request_per_page ) ) ) : $saved_per_page;
+
+		// Save per_page to option if it came from request.
+		if ( $request_per_page && 'trash' !== $status && 1 < $request_per_page ) {
+			Helper::update_srfm_option( 'forms_per_page', $per_page );
+		}
+
 		$search    = sanitize_text_field( $request->get_param( 'search' ) );
-		$status    = sanitize_text_field( $request->get_param( 'status' ) );
 		$orderby   = sanitize_text_field( $request->get_param( 'orderby' ) );
 		$order     = sanitize_text_field( $request->get_param( 'order' ) );
 		$date_from = sanitize_text_field( $request->get_param( 'after' ) );
