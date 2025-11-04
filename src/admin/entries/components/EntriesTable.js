@@ -1,5 +1,5 @@
 import { __ } from '@wordpress/i18n';
-import { Edit3, Trash2, RotateCcw } from 'lucide-react';
+import { Trash2, RotateCcw, Eye } from 'lucide-react';
 import { Button, Container, Badge } from '@bsf/force-ui';
 import Tooltip from '@Admin/components/Tooltip';
 import { getStatusBadgeVariant } from '../utils/entryHelpers';
@@ -130,9 +130,9 @@ const EntriesTable = ( {
 				const buttons = [];
 				if ( entry.status !== 'trash' ) {
 					buttons.push( {
-						content: __( 'Edit', 'sureforms' ),
-						ariaLabel: __( 'Edit', 'sureforms' ),
-						icon: <Edit3 />,
+						content: __( 'Preview', 'sureforms' ),
+						ariaLabel: __( 'Preview', 'sureforms' ),
+						icon: <Eye />,
 						onClick: () => onEdit?.( entry ),
 					} );
 				}
