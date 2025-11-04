@@ -211,9 +211,19 @@ class Email_Template {
 						}
 
 						if ( is_array( $value ) ) {
-							$values_array = $value;
+							$values_array = array_filter(
+								$value,
+								static function( $v ) {
+									return ! empty( Helper::get_string_value( $v ) );
+								}
+							);
 						} else {
 							$value = Helper::get_string_value( $value );
+						}
+
+						// Skip if both $value and $values_array are empty.
+						if ( ( is_array( $value ) && empty( $values_array ) ) || ( ! is_array( $value ) && '' === trim( $value ) ) ) {
+							continue;
 						}
 
 						?>
