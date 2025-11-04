@@ -48,6 +48,16 @@ const EntriesTable = ( {
 			sortable: true,
 			sortBy: 'id',
 			headerClassName: 'w-[13%]',
+			render: ( entry ) => (
+				<Button
+					variant="link"
+					size="md"
+					className="[&>span]:p-0 text-text-secondary font-normal hover:underline no-underline"
+					onClick={ () => onEdit?.( entry ) }
+				>
+					{ entry.entryId }
+				</Button>
+			),
 		},
 		{
 			label: __( 'Form Name', 'sureforms' ),
