@@ -1,5 +1,6 @@
 import { __ } from '@wordpress/i18n';
-import { Edit3, Trash, RotateCcw, Eye, Share, Copy } from 'lucide-react';
+import { useState } from '@wordpress/element';
+import { Edit3, Trash, RotateCcw, Eye, Share, Copy, Check } from 'lucide-react';
 import { Button, Container, Badge, Text } from '@bsf/force-ui';
 import Tooltip from '@Admin/components/Tooltip';
 import Table from '@Admin/components/Table';
@@ -43,6 +44,8 @@ const FormsTable = ( {
 	onDelete,
 	children,
 } ) => {
+	// State to track which shortcode was recently copied
+	const [ copiedFormId, setCopiedFormId ] = useState( null );
 	// Format date and time function
 	const formatDateTime = ( dateString ) => {
 		const date = new Date( dateString );
@@ -62,7 +65,12 @@ const FormsTable = ( {
 			await navigator.clipboard.writeText(
 				`[sureforms id='${ form.id }']`
 			);
-			// TODO: Show copied feedback
+			// Show copied feedback
+			setCopiedFormId( form.id );
+			// Reset after 2 seconds
+			setTimeout( () => {
+				setCopiedFormId( null );
+			}, 1000 );
 		} catch ( err ) {
 			// Fallback for older browsers
 			const textArea = document.createElement( 'textarea' );
@@ -71,6 +79,11 @@ const FormsTable = ( {
 			textArea.select();
 			document.execCommand( 'copy' );
 			document.body.removeChild( textArea );
+			// Show copied feedback for fallback too
+			setCopiedFormId( form.id );
+			setTimeout( () => {
+				setCopiedFormId( null );
+			}, 1000 );
 		}
 	};
 
@@ -98,7 +111,12 @@ const FormsTable = ( {
 			headerClassName: 'w-auto',
 			render: ( form ) => (
 				<div>
-					<Text size={ 14 } color="secondary">
+					<Text 
+						size={ 14 } 
+						color="secondary"
+						onClick={ () => onEdit( form ) }
+						className="cursor-pointer hover:text-link-primary hover:underline"
+					>
 						{ form.title || __( '(no title)', 'sureforms' ) }{ ' ' }
 						<span className="font-semibold">
 							{ form.status === 'draft' &&
@@ -121,9 +139,17 @@ const FormsTable = ( {
 						label={ form.shortcode }
 						size="xs"
 						variant="neutral"
-						icon={ <Copy className="w-3 h-3" /> }
+						icon={ 
+							copiedFormId === form.id ? 
+								<Check className="w-3 h-3 text-green-600" /> : 
+								<Copy className="w-3 h-3" /> 
+						}
 						className="hover:bg-background-secondary rounded-sm"
-						title={ __( 'Copy Shortcode', 'sureforms' ) }
+						title={ 
+							copiedFormId === form.id ? 
+								__( 'Copied!', 'sureforms' ) : 
+								__( 'Copy Shortcode', 'sureforms' ) 
+						}
 					/>
 				</div>
 			),
