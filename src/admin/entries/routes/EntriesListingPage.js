@@ -107,13 +107,13 @@ const EntriesListingPage = () => {
 	}, [ rawEntries, formsMap ] );
 
 	useEffect( () => {
-		if ( currentPage <= 1 || entries.length > 0 ) {
+		if ( currentPage <= 1 || entries.length > 0 || isLoading ) {
 			return;
 		}
-		if ( currentPage > totalPages ) {
+		if ( currentPage > totalPages && entries?.length === 0 ) {
 			goToPage( totalPages );
 		}
-	}, [ entries ] );
+	}, [ entries, isLoading ] );
 
 	// Generate form options for filter
 	const formOptions = useMemo( () => {
