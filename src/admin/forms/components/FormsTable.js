@@ -1,220 +1,275 @@
 import { __ } from '@wordpress/i18n';
-import { ChevronsUpDown, ChevronUp, ChevronDown } from 'lucide-react';
-import { Container, Table, Skeleton } from '@bsf/force-ui';
-import { cn } from '@Utils/Helpers';
-import FormsTableRow from './FormsTableRow';
-import EmptyState from './EmptyState';
+import { Edit3, Trash2, RotateCcw, Eye, Share, Copy } from 'lucide-react';
+import { Button, Container, Badge, Text } from '@bsf/force-ui';
+import { useState } from '@wordpress/element';
+import Tooltip from '@Admin/components/Tooltip';
+import Table from '@Admin/components/Table';
+import { exportForms } from '../utils';
 
 /**
- * Table headers configuration
+ * FormsTable Component
+ * Displays the forms table with headers and rows
+ *
+ * @param {Object}   props
+ * @param {Array}    props.data                 - Array of data objects (forms)
+ * @param {Array}    props.columns              - Array of column definitions
+ * @param {Array}    props.selectedItems        - Array of selected item IDs
+ * @param {Function} props.onToggleAll          - Handler for toggle all checkbox
+ * @param {Function} props.onChangeRowSelection - Handler for row selection change
+ * @param {boolean}  props.indeterminate        - Whether the header checkbox is indeterminate
+ * @param {boolean}  props.isLoading            - Whether data is loading
+ * @param {Function} props.onSort               - Handler for sort column change
+ * @param {Function} props.getSortDirection     - Function to get sort direction for a column
+ * @param {string}   props.emptyMessage         - Message to display when no data
+ * @param {Function} props.onEdit               - Handler for edit action
+ * @param {Function} props.onTrash              - Handler for trash action
+ * @param {Function} props.onRestore            - Handler for restore action
+ * @param {Function} props.onDelete             - Handler for delete action
+ * @param {Node}     props.children             - Child components (typically pagination)
  */
-const TABLE_HEADERS = [
-	{
-		key: 'title',
-		label: __( 'Title', 'sureforms' ),
-		sortable: true,
-		align: 'left',
-		width: 'auto', // Takes remaining space
-	},
-	{
-		key: 'shortcode',
-		label: __( 'Shortcode', 'sureforms' ),
-		sortable: false,
-		align: 'left',
-		width: '15%', // 15% of table width
-	},
-	{
-		key: 'entries_count',
-		label: __( 'Entries', 'sureforms' ),
-		sortable: false,
-		align: 'left',
-		width: '8%', // Small percentage for numbers
-	},
-	{
-		key: 'author',
-		label: __( 'Author', 'sureforms' ),
-		sortable: false,
-		align: 'left',
-		width: '15%', // Moderate percentage for names
-	},
-	{
-		key: 'date',
-		label: __( 'Date & Time', 'sureforms' ),
-		sortable: true,
-		align: 'left',
-		width: '18%', // Consistent percentage for dates
-	},
-	{
-		key: 'actions',
-		label: __( 'Action', 'sureforms' ),
-		sortable: false,
-		align: 'left',
-		width: '160px', // Percentage for action buttons
-	},
-];
 
-//  FormsTable Component - Displays the forms table with headers and rows
 const FormsTable = ( {
-	forms = [],
-	selectedForms = [],
+	data = [],
+	selectedItems = [],
 	onToggleAll,
 	onChangeRowSelection,
 	indeterminate = false,
+	isLoading = false,
+	onSort,
+	getSortDirection,
+	emptyMessage = __( 'No forms found', 'sureforms' ),
 	onEdit,
 	onTrash,
 	onRestore,
 	onDelete,
-	isLoading = false,
-	onSort,
-	getSortDirection,
-	hasActiveFilters = false,
-	onClearFilters,
+	children,
 } ) => {
-	// Skeleton loading rows
-	const renderSkeletonRows = () =>
-		Array.from( { length: 10 }, ( _, index ) => (
-			<Table.Row
-				key={ `skeleton-${ index }` }
-				className="hover:bg-background-primary"
-			>
-				{ /* Title - auto width (takes remaining space) */ }
-				<Table.Cell>
-					<Skeleton className="h-4 w-full max-w-xs" />
-				</Table.Cell>
-				{ /* Shortcode - 15% width */ }
-				<Table.Cell>
-					<Skeleton className="h-6 w-full max-w-[120px]" />
-				</Table.Cell>
-				{ /* Entries - 8% width */ }
-				<Table.Cell>
-					<Skeleton className="h-4 w-8" />
-				</Table.Cell>
-				{ /* Author - 15% width */ }
-				<Table.Cell>
-					<Skeleton className="h-4 w-20" />
-				</Table.Cell>
-				{ /* Date & Time - 18% width */ }
-				<Table.Cell>
-					<Skeleton className="h-4 w-24" />
-				</Table.Cell>
-				{ /* Actions - 160px fixed width */ }
-				<Table.Cell>
-					<Skeleton className="h-8 w-32" />
-				</Table.Cell>
-			</Table.Row>
-		) );
+	// Format date and time function
+	const formatDateTime = ( dateString ) => {
+		const date = new Date( dateString );
+		return date.toLocaleString( 'en-US', {
+			year: 'numeric',
+			month: 'short',
+			day: 'numeric',
+			hour: 'numeric',
+			minute: '2-digit',
+			hour12: true,
+		} );
+	};
 
-	return (
-		<div>
-			<Table className="w-full" checkboxSelection>
-				<Table.Head
-					selected={ !! selectedForms.length }
-					onChangeSelection={ onToggleAll }
-					indeterminate={ indeterminate }
-					className="bg-background-tertiary"
+	// Handle copy shortcode
+	const handleCopyShortcode = async ( form ) => {
+		try {
+			await navigator.clipboard.writeText(
+				`[sureforms id='${ form.id }']`
+			);
+			// TODO: Show copied feedback
+		} catch ( err ) {
+			// Fallback for older browsers
+			const textArea = document.createElement( 'textarea' );
+			textArea.value = `[sureforms id='${ form.id }']`;
+			document.body.appendChild( textArea );
+			textArea.select();
+			document.execCommand( 'copy' );
+			document.body.removeChild( textArea );
+		}
+	};
+
+	// Handle export action
+	const handleExport = async ( form ) => {
+		try {
+			await exportForms( form.id );
+		} catch ( error ) {
+			console.error( 'Export error:', error );
+		}
+	};
+
+	// Handle view action
+	const handleView = ( form ) => {
+		if ( form.frontend_url ) {
+			window.open( form.frontend_url, '_blank' );
+		}
+	};
+
+	const defaultColumns = [
+		{
+			label: __( 'Title', 'sureforms' ),
+			key: 'title',
+			sortable: true,
+			headerClassName: 'w-auto',
+			render: ( form ) => (
+				<div>
+					<Text size={ 14 } color="secondary">
+						{ form.title || __( '(no title)', 'sureforms' ) }{ ' ' }
+						<span className="font-semibold">
+							{ form.status === 'draft' &&
+								__( '- Draft', 'sureforms' ) }
+						</span>
+					</Text>
+				</div>
+			),
+		},
+		{
+			label: __( 'Shortcode', 'sureforms' ),
+			key: 'shortcode',
+			headerClassName: 'w-[15%]',
+			render: ( form ) => (
+				<div
+					onClick={ () => handleCopyShortcode( form ) }
+					className="cursor-pointer w-fit"
 				>
-					{ TABLE_HEADERS.map( ( header, index ) => {
-						const sortDirection = header.sortable
-							? getSortDirection?.( header.key )
-							: null;
-						const SortIcon =
-							sortDirection === 'asc'
-								? ChevronUp
-								: sortDirection === 'desc'
-									? ChevronDown
-									: ChevronsUpDown;
-
-						const content = (
-							<Container
-								align="center"
-								className="gap-2"
-								justify={
-									header.align === 'right'
-										? 'end'
-										: header.align === 'center'
-											? 'center'
-											: 'start'
-								}
-							>
-								{ header.label }
-								{ header.sortable && (
-									<SortIcon
-										className={ cn(
-											'w-4 h-4',
-											sortDirection
-												? 'text-text-primary'
-												: 'text-text-tertiary'
-										) }
-									/>
-								) }
-							</Container>
-						);
-
-						return (
-							<Table.HeadCell
-								key={ index }
-								style={ { width: header.width } }
-							>
-								{ header.sortable ? (
-									<div
-										role="button"
-										tabIndex={ 0 }
-										className="cursor-pointer select-none"
-										onClick={ () => onSort?.( header.key ) }
-										onKeyDown={ ( e ) => {
-											if (
-												e.key === 'Enter' ||
-												e.key === ' '
-											) {
-												e.preventDefault();
-												onSort?.( header.key );
-											}
-										} }
-									>
-										{ content }
-									</div>
-								) : (
-									content
-								) }
-							</Table.HeadCell>
-						);
-					} ) }
-				</Table.Head>
-
-				<Table.Body>
-					{ isLoading
-						? renderSkeletonRows()
-						: forms.map( ( form ) => (
-							<FormsTableRow
-								key={ form.id }
-								form={ form }
-								isSelected={ selectedForms.includes(
-									form.id
-								) }
-								onChangeSelection={ ( selected ) =>
-									onChangeRowSelection(
-										form.id,
-										selected
-									)
-								}
-								onEdit={ onEdit }
-								onTrash={ onTrash }
-								onRestore={ onRestore }
-								onDelete={ onDelete }
-							/>
-						  ) ) }
-				</Table.Body>
-			</Table>
-
-			{ forms.length === 0 && hasActiveFilters && ! isLoading && (
-				<div className="px-6 py-4">
-					<EmptyState
-						hasActiveFilters={ true }
-						onClearFilters={ onClearFilters }
+					<Badge
+						label={ form.shortcode }
+						size="xs"
+						variant="neutral"
+						icon={ <Copy className="w-3 h-3" /> }
+						className="hover:bg-background-secondary rounded-sm"
+						title={ __( 'Copy Shortcode', 'sureforms' ) }
 					/>
 				</div>
-			) }
-		</div>
+			),
+		},
+		{
+			label: __( 'Entries', 'sureforms' ),
+			key: 'entries_count',
+			headerClassName: 'w-[8%]',
+			render: ( form ) => (
+				<Button
+					variant="link"
+					size="sm"
+					onClick={ () =>
+						window.open(
+							`admin.php?page=sureforms_entries&form_filter=${ form.id }`,
+							'_self'
+						)
+					}
+					className="text-text-primary hover:text-text-primary-hover p-0 h-auto font-medium"
+				>
+					{ String( form.entries_count ?? 0 ) }
+				</Button>
+			),
+		},
+		{
+			label: __( 'Author', 'sureforms' ),
+			key: 'author',
+			headerClassName: 'w-[15%]',
+			render: ( form ) => (
+				<Text size={ 14 } color="secondary">
+					{ form.author
+						? form.author.name
+						: __( 'Unknown', 'sureforms' ) }
+				</Text>
+			),
+		},
+		{
+			label: __( 'Date & Time', 'sureforms' ),
+			key: 'date',
+			sortable: true,
+			headerClassName: 'w-[18%]',
+			render: ( form ) => (
+				<Text size={ 14 } color="secondary">
+					{ formatDateTime( form.date_created ) }
+				</Text>
+			),
+		},
+		{
+			label: __( 'Actions', 'sureforms' ),
+			key: 'actions',
+			align: 'right',
+			headerClassName: 'w-[160px]',
+			render: ( form ) => {
+				// Build action buttons based on form status
+				const actions = [];
+
+				if ( form.status !== 'trash' ) {
+					// Export action
+					actions.push( {
+						key: 'export',
+						label: __( 'Export', 'sureforms' ),
+						icon: <Share className="size-4" />,
+						onClick: () => handleExport( form ),
+					} );
+
+					// Edit action
+					actions.push( {
+						key: 'edit',
+						label: __( 'Edit', 'sureforms' ),
+						icon: <Edit3 className="size-4" />,
+						onClick: () => onEdit?.( form ),
+					} );
+
+					// View action
+					actions.push( {
+						key: 'view',
+						label: __( 'Preview', 'sureforms' ),
+						icon: <Eye className="size-4" />,
+						onClick: () => handleView( form ),
+					} );
+
+					// Delete action
+					actions.push( {
+						key: 'delete',
+						label: __( 'Move to Trash', 'sureforms' ),
+						icon: <Trash2 className="size-4" />,
+						onClick: () => onTrash?.( form ),
+					} );
+				} else {
+					// Restore action for trashed items
+					actions.push( {
+						key: 'restore',
+						label: __( 'Restore', 'sureforms' ),
+						icon: <RotateCcw className="size-4" />,
+						onClick: () => onRestore?.( form ),
+					} );
+
+					// Delete permanently action for trashed items
+					actions.push( {
+						key: 'delete-permanent',
+						label: __( 'Permanently Delete', 'sureforms' ),
+						icon: <Trash2 className="size-4" />,
+						onClick: () => onDelete?.( form ),
+					} );
+				}
+
+				return (
+					<Container align="center" className="gap-2">
+						{ actions.map( ( action ) => (
+							<Tooltip
+								key={ action.key }
+								content={ action.label }
+								placement="top"
+								arrow={ true }
+							>
+								<Button
+									variant="ghost"
+									size="xs"
+									icon={ action.icon }
+									onClick={ action.onClick }
+									className="p-1.5 text-text-primary [&>svg]:size-4"
+								/>
+							</Tooltip>
+						) ) }
+					</Container>
+				);
+			},
+		},
+	];
+
+	return (
+		<Table
+			data={ data }
+			columns={ defaultColumns }
+			selectedItems={ selectedItems }
+			onToggleAll={ onToggleAll }
+			onChangeRowSelection={ onChangeRowSelection }
+			indeterminate={ indeterminate }
+			isLoading={ isLoading }
+			onSort={ onSort }
+			getSortDirection={ getSortDirection }
+			emptyMessage={ emptyMessage }
+		>
+			{ children }
+		</Table>
 	);
 };
 

@@ -381,8 +381,8 @@ const FormsManager = () => {
 
 							<Container.Item className="border-t border-border-subtle">
 								<FormsTable
-									forms={ forms }
-									selectedForms={ selectedForms }
+									data={ forms }
+									selectedItems={ selectedForms }
 									onToggleAll={ handleToggleAll }
 									onChangeRowSelection={ handleRowSelection }
 									indeterminate={ isIndeterminate }
@@ -393,13 +393,7 @@ const FormsManager = () => {
 									isLoading={ isLoading }
 									onSort={ handleSort }
 									getSortDirection={ getSortDirection }
-									hasActiveFilters={ hasActiveFilters }
-									onClearFilters={ handleClearFilters }
-								/>
-							</Container.Item>
-
-							{ paginationData.totalPages > 1 && (
-								<Container.Item className="border-t border-border-subtle px-6 py-4">
+								>
 									<FormsPagination
 										currentPage={
 											paginationData.currentPage
@@ -423,8 +417,8 @@ const FormsManager = () => {
 											)
 										}
 									/>
-								</Container.Item>
-							) }
+								</FormsTable>
+							</Container.Item>
 						</Container>
 					) }
 				</Container>
