@@ -339,6 +339,15 @@ const FormsListingPage = () => {
 		hasTrashForms,
 	] );
 
+	// Show filtered empty state when filters are active but no results
+	const shouldShowFilteredEmptyState = useMemo( () => {
+		return (
+			hasActiveFilters &&
+			forms.length === 0 &&
+			! isLoading
+		);
+	}, [ hasActiveFilters, forms.length, isLoading ] );
+
 	const isIndeterminate =
 		selectedForms.length > 0 && selectedForms.length < forms.length;
 
@@ -398,44 +407,54 @@ const FormsListingPage = () => {
 							</Container.Item>
 
 							<Container.Item className="border-t border-border-subtle">
-								<FormsTable
-									data={ forms }
-									selectedItems={ selectedForms }
-									onToggleAll={ handleToggleAll }
-									onChangeRowSelection={ handleRowSelection }
-									indeterminate={ isIndeterminate }
-									onEdit={ handleFormEdit }
-									onTrash={ handleFormTrash }
-									onRestore={ handleFormRestore }
-									onDelete={ handleFormDelete }
-									isLoading={ isLoading }
-									onSort={ handleSort }
-									getSortDirection={ getSortDirection }
-								>
-									<FormsPagination
-										currentPage={
-											paginationData.currentPage
-										}
-										totalPages={ paginationData.totalPages }
-										entriesPerPage={
-											paginationData.perPage
-										}
-										onPageChange={ handlePageChange }
-										onEntriesPerPageChange={
-											handlePerPageChange
-										}
-										onNextPage={ () =>
-											handlePageChange(
-												paginationData.currentPage + 1
-											)
-										}
-										onPreviousPage={ () =>
-											handlePageChange(
-												paginationData.currentPage - 1
-											)
-										}
-									/>
-								</FormsTable>
+								{ shouldShowFilteredEmptyState ? (
+									<div className="p-6">
+										<EmptyState
+											hasActiveFilters={ true }
+											onClearFilters={ handleClearFilters }
+											onImportSuccess={ handleImportSuccess }
+										/>
+									</div>
+								) : (
+									<FormsTable
+										data={ forms }
+										selectedItems={ selectedForms }
+										onToggleAll={ handleToggleAll }
+										onChangeRowSelection={ handleRowSelection }
+										indeterminate={ isIndeterminate }
+										onEdit={ handleFormEdit }
+										onTrash={ handleFormTrash }
+										onRestore={ handleFormRestore }
+										onDelete={ handleFormDelete }
+										isLoading={ isLoading }
+										onSort={ handleSort }
+										getSortDirection={ getSortDirection }
+									>
+										<FormsPagination
+											currentPage={
+												paginationData.currentPage
+											}
+											totalPages={ paginationData.totalPages }
+											entriesPerPage={
+												paginationData.perPage
+											}
+											onPageChange={ handlePageChange }
+											onEntriesPerPageChange={
+												handlePerPageChange
+											}
+											onNextPage={ () =>
+												handlePageChange(
+													paginationData.currentPage + 1
+												)
+											}
+											onPreviousPage={ () =>
+												handlePageChange(
+													paginationData.currentPage - 1
+												)
+											}
+										/>
+									</FormsTable>
+								) }
 							</Container.Item>
 						</Container>
 					) }

@@ -39,7 +39,7 @@ const EmptyState = ( {
 						color="primary"
 						className="mb-2"
 					>
-						{ __( 'No results to show here', 'sureforms' ) }
+						{ __( 'No results found', 'sureforms' ) }
 					</Text>
 					<Text
 						size={ 16 }
