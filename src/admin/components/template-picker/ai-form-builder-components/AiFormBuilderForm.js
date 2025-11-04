@@ -71,7 +71,7 @@ export default ( props ) => {
 	const [ displayedPlaceholder, setDisplayedPlaceholder ] = useState( '' );
 
 	// 👇 added new state for banner visibility
-	const [ showBanner, setShowBanner ] = useState( false );
+	const [ showBanner, setShowBanner ] = useState( true );
 	const [ isFocused, setIsFocused ] = useState( false );
 
 	const handlePromptClick = ( prompt ) => {
@@ -294,7 +294,7 @@ export default ( props ) => {
 		<Container
 			className={ cn(
 				'gap-0',
-				showBanner && 'h-screen overflow-y-auto'
+				showBanner && ! is_pro_active && 'h-screen overflow-y-auto'
 			) }
 			direction="column"
 		>
@@ -343,7 +343,9 @@ export default ( props ) => {
 														'Describe the form you want to create',
 														'sureforms'
 													) }
-													placeholder={ displayedPlaceholder }
+													placeholder={
+														displayedPlaceholder
+													}
 													id="textarea"
 													value={ text }
 													size="lg"
@@ -442,13 +444,13 @@ export default ( props ) => {
 					</Container.Item>
 
 					{ page === 'add-new-form' &&
-						( ! srfm_admin?.is_pro_active ||
-							! srfm_admin?.is_pro_license_active ) && (
+						! srfm_admin?.is_pro_active && (
 						<CreditDetailsPopup
 							finalFormCreationCountRemaining={
 								finalFormCreationCountRemaining
 							}
 							setShowBanner={ setShowBanner }
+							showBanner={ showBanner }
 							type={ type }
 						/>
 					) }
