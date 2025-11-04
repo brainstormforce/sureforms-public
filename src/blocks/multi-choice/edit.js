@@ -146,7 +146,7 @@ const Edit = ( props ) => {
 	const minMaxValue = ! singleSelection && options.length > 1 && (
 		<>
 			<SRFMNumberControl
-				label={ __( 'Minimum Value', 'sureforms' ) }
+				label={ __( 'Minimum Selections', 'sureforms' ) }
 				displayUnit={ false }
 				data={ {
 					value: minValue,
@@ -171,7 +171,7 @@ const Edit = ( props ) => {
 				showControlHeader={ false }
 			/>
 			<SRFMNumberControl
-				label={ __( 'Maximum Value', 'sureforms' ) }
+				label={ __( 'Maximum Selections', 'sureforms' ) }
 				displayUnit={ false }
 				data={ {
 					value: maxValue,
@@ -203,12 +203,6 @@ const Edit = ( props ) => {
 					) }
 				</p>
 			) }
-			<p className="components-base-control__help">
-				{ __(
-					'Note: Maximum value should always be greater than minimum value',
-					'sureforms'
-				) }
-			</p>
 		</>
 	);
 
@@ -467,7 +461,7 @@ const Edit = ( props ) => {
 			id: 'singleSelection',
 			component: (
 				<ToggleControl
-					label={ __( 'Allow Only Single Selection', 'sureforms' ) }
+					label={ __( 'Single Choice Only', 'sureforms' ) }
 					checked={ singleSelection }
 					onChange={ ( checked ) =>
 						setAttributes( { singleSelection: checked } )

@@ -118,7 +118,7 @@ const Edit = ( props ) => {
 	const minMaxComponent = multiSelect && options.length > 1 && (
 		<>
 			<SRFMNumberControl
-				label={ __( 'Minimum Value', 'sureforms' ) }
+				label={ __( 'Minimum Selections', 'sureforms' ) }
 				displayUnit={ false }
 				data={ {
 					value: minValue,
@@ -143,7 +143,7 @@ const Edit = ( props ) => {
 				showControlHeader={ false }
 			/>
 			<SRFMNumberControl
-				label={ __( 'Maximum Value', 'sureforms' ) }
+				label={ __( 'Maximum Selections', 'sureforms' ) }
 				displayUnit={ false }
 				data={ {
 					value: maxValue,
@@ -175,12 +175,6 @@ const Edit = ( props ) => {
 					) }
 				</p>
 			) }
-			<p className="components-base-control__help">
-				{ __(
-					'Note: Maximum value should always be greater than minimum value',
-					'sureforms'
-				) }
-			</p>
 		</>
 	);
 
@@ -394,7 +388,7 @@ const Edit = ( props ) => {
 			id: 'multiSelect',
 			component: (
 				<ToggleControl
-					label={ __( 'Enable Multiple Selections', 'sureforms' ) }
+					label={ __( 'Allow Multiple', 'sureforms' ) }
 					checked={ multiSelect }
 					onChange={ ( checked ) =>
 						setAttributes( { multiSelect: checked } )
@@ -410,7 +404,7 @@ const Edit = ( props ) => {
 			id: 'searchable',
 			component: (
 				<ToggleControl
-					label={ __( 'Enable Search', 'sureforms' ) }
+					label={ __( 'Enable Dropdown Search', 'sureforms' ) }
 					checked={ searchable }
 					onChange={ ( checked ) =>
 						setAttributes( { searchable: checked } )

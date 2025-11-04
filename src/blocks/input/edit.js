@@ -227,7 +227,7 @@ const Edit = ( props ) => {
 			id: 'unique',
 			component: (
 				<ToggleControl
-					label={ __( 'Validate as Unique', 'sureforms' ) }
+					label={ __( 'Unique Entry', 'sureforms' ) }
 					checked={ isUnique }
 					onChange={ ( checked ) =>
 						setAttributes( { isUnique: checked } )
@@ -259,7 +259,7 @@ const Edit = ( props ) => {
 			id: 'max-text-length',
 			component: (
 				<Range
-					label={ __( 'Maximum Text Length', 'sureforms' ) }
+					label={ __( 'Maximum Characters', 'sureforms' ) }
 					displayUnit={ false }
 					value={ textLength }
 					min={ 0 }
