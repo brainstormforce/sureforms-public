@@ -209,14 +209,6 @@ const FormsTable = ( {
 				const actions = [];
 
 				if ( form.status !== 'trash' ) {
-					// Export action
-					actions.push( {
-						key: 'export',
-						label: __( 'Export', 'sureforms' ),
-						icon: <Share className="size-4" />,
-						onClick: () => handleExport( form ),
-					} );
-
 					// Edit action
 					actions.push( {
 						key: 'edit',
@@ -231,6 +223,14 @@ const FormsTable = ( {
 						label: __( 'Preview', 'sureforms' ),
 						icon: <Eye className="size-4" />,
 						onClick: () => handleView( form ),
+					} );
+
+					// Export action
+					actions.push( {
+						key: 'export',
+						label: __( 'Export', 'sureforms' ),
+						icon: <Share className="size-4" />,
+						onClick: () => handleExport( form ),
 					} );
 
 					// Delete action
