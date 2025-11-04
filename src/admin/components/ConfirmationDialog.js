@@ -156,7 +156,7 @@ const ConfirmationDialog = ( {
 					</Dialog.Body>
 				) : null }
 				<Dialog.Footer>
-					<Button variant="ghost" onClick={ handleCancel }>
+					<Button variant="outline" onClick={ handleCancel }>
 						{ cancelButtonText }
 					</Button>
 					<Button
