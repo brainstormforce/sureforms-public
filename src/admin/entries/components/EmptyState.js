@@ -89,7 +89,7 @@ const EmptyState = () => {
 						size="md"
 						onClick={ handleClickViewAllForms }
 					>
-						{ __( 'View All Forms', 'sureforms' ) }
+						{ __( 'Go to Forms', 'sureforms' ) }
 					</Button>
 				</div>
 			</div>
