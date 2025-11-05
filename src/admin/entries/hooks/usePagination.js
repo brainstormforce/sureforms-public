@@ -18,12 +18,23 @@ export const usePagination = ( initialPage = 1, initialPerPage = 10 ) => {
 		return pageFromUrl ? parseInt( pageFromUrl, 10 ) : initialPage;
 	} );
 
-	const [ entriesPerPage, setEntriesPerPage ] = useState( () => {
+	const [ entriesPerPage, setEntriesPerPage ] = useState( initialPerPage );
+
+	// Initialize entriesPerPage from localStorage or URL
+	useEffect( () => {
+		const stored = localStorage.getItem( 'sureforms_entries_per_page' );
+		if ( stored ) {
+			const parsed = parseInt( stored, 10 );
+			if ( parsed > 0 && parsed <= 1000 ) {
+				setEntriesPerPage( parsed );
+				return;
+			}
+		}
 		const perPageFromUrl = searchParams.get( 'per_page' );
-		return perPageFromUrl
-			? parseInt( perPageFromUrl, 10 )
-			: initialPerPage;
-	} );
+		if ( perPageFromUrl ) {
+			setEntriesPerPage( parseInt( perPageFromUrl, 10 ) );
+		}
+	}, [ searchParams ] );
 
 	// Update URL params when pagination changes
 	useEffect( () => {
@@ -47,7 +58,13 @@ export const usePagination = ( initialPage = 1, initialPerPage = 10 ) => {
 		}
 
 		setSearchParams( params, { replace: true } );
-	}, [ currentPage, entriesPerPage, initialPerPage, searchParams, setSearchParams ] );
+	}, [
+		currentPage,
+		entriesPerPage,
+		initialPerPage,
+		searchParams,
+		setSearchParams,
+	] );
 
 	const goToPage = useCallback( ( page ) => {
 		setCurrentPage( page );
@@ -68,6 +85,10 @@ export const usePagination = ( initialPage = 1, initialPerPage = 10 ) => {
 
 	const changeEntriesPerPage = useCallback( ( perPage ) => {
 		setEntriesPerPage( perPage );
+		localStorage.setItem(
+			'sureforms_entries_per_page',
+			perPage.toString()
+		);
 		setCurrentPage( 1 ); // Reset to first page when changing per page
 	}, [] );
 
