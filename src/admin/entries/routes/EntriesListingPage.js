@@ -212,6 +212,8 @@ const EntriesListingPage = () => {
 				onConfirm: () => handlePermanentDelete( entry ),
 				isLoading: isDeleting,
 				destructive: true,
+				enableVerification: true,
+				verificationText: 'delete',
 			} );
 		} else {
 			// Otherwise, move to trash
@@ -291,6 +293,8 @@ const EntriesListingPage = () => {
 			onConfirm: handleBulkDeleteConfirm,
 			isLoading: isDeleting,
 			destructive: true,
+			enableVerification: allInTrash,
+			verificationText: 'delete',
 		} );
 	};
 
@@ -557,6 +561,8 @@ const EntriesListingPage = () => {
 				confirmLabel={ confirmationDialog.confirmLabel }
 				isLoading={ confirmationDialog.isLoading }
 				destructive={ confirmationDialog?.destructive }
+				enableVerification={ confirmationDialog?.enableVerification }
+				verificationText={ confirmationDialog?.verificationText }
 			/>
 		</div>
 	);
