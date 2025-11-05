@@ -453,7 +453,12 @@ class Post_Types {
 			'sureforms_form',
 			'_srfm_form_custom_css',
 			[
-				'show_in_rest'      => true,
+				'show_in_rest'      => [
+					'schema' => [
+						'type'    => 'string',
+						'context' => [ 'edit' ],
+					],
+				],
 				'type'              => 'string',
 				'single'            => true,
 				'auth_callback'     => static function() {
@@ -471,7 +476,12 @@ class Post_Types {
 				$meta,
 				[
 					'object_subtype'    => SRFM_FORMS_POST_TYPE,
-					'show_in_rest'      => true,
+					'show_in_rest'      => [
+						'schema' => [
+							'type'    => $type,
+							'context' => [ 'edit' ],
+						],
+					],
 					'single'            => true,
 					'type'              => $type,
 					'sanitize_callback' => 'sanitize_text_field',
@@ -495,6 +505,7 @@ class Post_Types {
 				'show_in_rest'  => [
 					'schema' => [
 						'type'       => 'object',
+						'context'    => [ 'edit' ],
 						'properties' => [
 							'site_logo'              => [
 								'type' => 'string',
@@ -571,6 +582,7 @@ class Post_Types {
 				'show_in_rest'  => [
 					'schema' => [
 						'type'       => 'object',
+						'context'    => [ 'edit' ],
 						'properties' => [
 							'primary_color'               => [
 								'type' => 'string',
@@ -898,8 +910,9 @@ class Post_Types {
 				},
 				'show_in_rest'  => [
 					'schema' => [
-						'type'  => 'array',
-						'items' => [
+						'type'    => 'array',
+						'context' => [ 'edit' ],
+						'items'   => [
 							'type'       => 'object',
 							'properties' => [
 								'id'             => [
@@ -973,8 +986,9 @@ class Post_Types {
 				},
 				'show_in_rest'  => [
 					'schema' => [
-						'type'  => 'array',
-						'items' => [
+						'type'    => 'array',
+						'context' => [ 'edit' ],
+						'items'   => [
 							'type'       => 'object',
 							'properties' => [
 								'id'                   => [
@@ -1070,8 +1084,9 @@ class Post_Types {
 				},
 				'show_in_rest'      => [
 					'schema' => [
-						'type'  => 'array',
-						'items' => [
+						'type'    => 'array',
+						'context' => [ 'edit' ],
+						'items'   => [
 							'type'       => 'object',
 							'properties' => [
 								'id'                  => [
@@ -1128,7 +1143,12 @@ class Post_Types {
 			[
 				'type'              => 'string',  // Will store as JSON string.
 				'single'            => true,    // Store as single value.
-				'show_in_rest'      => true, // Make available in REST API.
+				'show_in_rest'      => [
+					'schema' => [
+						'type'    => 'string',
+						'context' => [ 'edit' ],
+					],
+				],
 				// Custom callback to sanitize the data.
 				'sanitize_callback' => [ $this, 'sanitize_form_restriction_data' ],
 				'object_subtype'    => SRFM_FORMS_POST_TYPE,
