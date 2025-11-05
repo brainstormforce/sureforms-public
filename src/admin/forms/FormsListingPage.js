@@ -10,32 +10,32 @@ import FormsPagination from './components/FormsPagination';
 import EmptyState from './components/EmptyState';
 import ConfirmationDialog from '@Admin/components/ConfirmationDialog';
 import { useForms, useBulkFormsAction, formsKeys } from './hooks/useFormsQuery';
+import { useFormsFilters } from './hooks/useFormsFilters';
+import { useFormsSort } from './hooks/useFormsSort';
+import { useFormsPagination } from './hooks/useFormsPagination';
 
 const FormsListingPage = () => {
 	// React Query client for cache invalidation
 	const queryClient = useQueryClient();
 
-	// State management
+	// URL-based state management
+	const {
+		statusFilter,
+		setStatusFilter,
+		searchQuery,
+		setSearchQuery,
+		dateRange,
+		setDateRange,
+		resetFilters: resetUrlFilters,
+	} = useFormsFilters();
+
+	const { sortBy, sortOrder, handleSort, getSortDirection } = useFormsSort();
+
+	const { currentPage, perPage, setCurrentPage, setPerPage } =
+		useFormsPagination();
+
+	// Local state management
 	const [ selectedForms, setSelectedForms ] = useState( [] );
-
-	// Filters state
-	const [ filters, setFilters ] = useState( {
-		search: '',
-		status: 'any',
-		orderby: 'date',
-		order: 'desc',
-	} );
-
-	// Date filter state
-	const [ selectedDates, setSelectedDates ] = useState( {
-		from: null,
-		to: null,
-	} );
-
-	// Pagination state
-	const [ pagination, setPagination ] = useState( {
-		currentPage: 1,
-	} );
 
 	// Dialog state
 	const [ confirmDialog, setConfirmDialog ] = useState( {
@@ -51,20 +51,28 @@ const FormsListingPage = () => {
 	// Query parameters for API
 	const queryParams = useMemo(
 		() => ( {
-			page: pagination.currentPage,
-			...( pagination.perPage && { per_page: pagination.perPage } ),
-			status: filters.status,
-			orderby: filters.orderby,
-			order: filters.order,
-			...( filters.search && { search: filters.search } ),
-			...( selectedDates.from && {
-				after: new Date( selectedDates.from ).toISOString(),
+			page: currentPage,
+			...( perPage && { per_page: perPage } ),
+			status: statusFilter,
+			orderby: sortBy,
+			order: sortOrder,
+			...( searchQuery && { search: searchQuery } ),
+			...( dateRange.from && {
+				after: new Date( dateRange.from ).toISOString(),
 			} ),
-			...( selectedDates.to && {
-				before: new Date( selectedDates.to ).toISOString(),
+			...( dateRange.to && {
+				before: new Date( dateRange.to ).toISOString(),
 			} ),
 		} ),
-		[ filters, selectedDates, pagination ]
+		[
+			statusFilter,
+			searchQuery,
+			dateRange,
+			sortBy,
+			sortOrder,
+			currentPage,
+			perPage,
+		]
 	);
 
 	// Fetch forms using React Query
@@ -80,8 +88,8 @@ const FormsListingPage = () => {
 	const paginationData = {
 		total: formsData?.total || 0,
 		totalPages: formsData?.total_pages || 0,
-		currentPage: formsData?.current_page || pagination.currentPage,
-		perPage: formsData?.per_page || pagination.perPage,
+		currentPage: formsData?.current_page || currentPage,
+		perPage: formsData?.per_page || perPage,
 	};
 
 	// Check for trash forms when "All Forms" is empty to detect if all forms are trashed
@@ -98,12 +106,12 @@ const FormsListingPage = () => {
 		trashQueryParams,
 		{
 			enabled:
-				filters.status === 'any' &&
+				statusFilter === 'any' &&
 				forms.length === 0 &&
 				! isLoading &&
-				! filters.search.trim() &&
-				! selectedDates.from &&
-				! selectedDates.to,
+				! searchQuery.trim() &&
+				! dateRange.from &&
+				! dateRange.to,
 		}
 	);
 
@@ -112,18 +120,18 @@ const FormsListingPage = () => {
 
 	// Event handlers
 	const handleSearch = ( searchTerm ) => {
-		setFilters( ( prev ) => ( { ...prev, search: searchTerm } ) );
-		setPagination( ( prev ) => ( { ...prev, currentPage: 1 } ) );
+		setSearchQuery( searchTerm );
+		setCurrentPage( 1 );
 	};
 
 	const handleStatusFilter = ( status ) => {
-		setFilters( ( prev ) => ( { ...prev, status } ) );
-		setPagination( ( prev ) => ( { ...prev, currentPage: 1 } ) );
+		setStatusFilter( status );
+		setCurrentPage( 1 );
 	};
 
 	const handleDateChange = ( dates ) => {
-		setSelectedDates( dates );
-		setPagination( ( prev ) => ( { ...prev, currentPage: 1 } ) );
+		setDateRange( dates );
+		setCurrentPage( 1 );
 	};
 
 	const handleBulkExport = async () => {
@@ -162,29 +170,13 @@ const FormsListingPage = () => {
 		}
 	};
 
-	const handleSort = ( column ) => {
-		const newOrder =
-			filters.orderby === column && filters.order === 'desc'
-				? 'asc'
-				: 'desc';
-		setFilters( ( prev ) => ( {
-			...prev,
-			orderby: column,
-			order: newOrder,
-		} ) );
-	};
-
-	const getSortDirection = ( column ) => {
-		return filters.orderby === column ? filters.order : null;
-	};
-
 	// Pagination handlers
 	const handlePageChange = ( page ) => {
-		setPagination( ( prev ) => ( { ...prev, currentPage: page } ) );
+		setCurrentPage( page );
 	};
 
-	const handlePerPageChange = ( perPage ) => {
-		setPagination( ( prev ) => ( { ...prev, perPage, currentPage: 1 } ) );
+	const handlePerPageChange = ( perPageValue ) => {
+		setPerPage( perPageValue );
 	};
 
 	// Selection handlers
@@ -310,33 +302,19 @@ const FormsListingPage = () => {
 	};
 
 	const handleClearFilters = () => {
-		setFilters( {
-			search: '',
-			status: 'any',
-			orderby: 'date',
-			order: 'desc',
-		} );
-
-		setSelectedDates( {
-			from: null,
-			to: null,
-		} );
-
-		setPagination( ( prev ) => ( {
-			...prev,
-			currentPage: 1,
-		} ) );
+		resetUrlFilters();
+		setCurrentPage( 1 );
 	};
 
 	// Computed values
 	const hasActiveFilters = useMemo( () => {
 		return (
-			( filters.status !== '' && filters.status !== 'any' ) ||
-			filters.search.trim() !== '' ||
-			selectedDates.from ||
-			selectedDates.to
+			( statusFilter !== '' && statusFilter !== 'any' ) ||
+			searchQuery.trim() !== '' ||
+			dateRange.from ||
+			dateRange.to
 		);
-	}, [ filters, selectedDates ] );
+	}, [ statusFilter, searchQuery, dateRange ] );
 
 	// Check if there are any forms in trash
 	const hasTrashForms = trashData?.total > 0;
@@ -345,18 +323,19 @@ const FormsListingPage = () => {
 	const shouldShowInitialEmptyState = useMemo( () => {
 		return (
 			forms.length === 0 &&
-			filters.status === 'any' &&
-			! filters.search.trim() &&
-			! selectedDates.from &&
-			! selectedDates.to &&
+			statusFilter === 'any' &&
+			! searchQuery.trim() &&
+			! dateRange.from &&
+			! dateRange.to &&
 			! isLoading &&
 			! isTrashLoading &&
 			! hasTrashForms // Only show initial state if no trash forms exist
 		);
 	}, [
 		forms.length,
-		filters,
-		selectedDates,
+		statusFilter,
+		searchQuery,
+		dateRange,
 		isLoading,
 		isTrashLoading,
 		hasTrashForms,
@@ -408,7 +387,7 @@ const FormsListingPage = () => {
 						>
 							<Container.Item className="p-1">
 								<FormsHeader
-									searchQuery={ filters.search }
+									searchQuery={ searchQuery }
 									onSearchChange={ handleSearch }
 									selectedForms={ selectedForms }
 									onBulkTrash={ handleBulkTrash }
@@ -416,9 +395,9 @@ const FormsListingPage = () => {
 									onBulkExport={ handleBulkExport }
 									onBulkRestore={ handleBulkRestore }
 									onImportSuccess={ handleImportSuccess }
-									statusFilter={ filters.status }
+									statusFilter={ statusFilter }
 									onStatusFilterChange={ handleStatusFilter }
-									selectedDates={ selectedDates }
+									selectedDates={ dateRange }
 									onDateChange={ handleDateChange }
 									hasActiveFilters={ hasActiveFilters }
 									onClearFilters={ handleClearFilters }
