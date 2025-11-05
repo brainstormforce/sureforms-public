@@ -79,13 +79,13 @@ const LimitReachedPopup = ( {
 					</Label>
 					<Label
 						size="md"
-						className="text-text-secondary font-normal"
+						className="text-text-secondary text-sm font-normal"
 					>
 						{ finalParaOne }
 					</Label>
 					<Label
 						size="md"
-						className="text-text-secondary font-normal"
+						className="text-text-secondary text-sm font-normal"
 					>
 						{ finalParaTwo }
 					</Label>
@@ -105,7 +105,7 @@ const LimitReachedPopup = ( {
 					! ActivateLicenseButton ? (
 							<Button
 								size="md"
-								variant="outline"
+								variant="ghost"
 								onClick={ () => {
 									window.location.href = `${ srfm_admin.site_url }/wp-admin/post-new.php?post_type=sureforms_form`;
 								} }
