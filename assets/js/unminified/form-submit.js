@@ -135,14 +135,6 @@ function initializeFormHandlers() {
 			// Set the login completion status to true after form submission.
 			form.__loginSuccess = true;
 		} );
-
-		// // Add the event after the form initialization to ensure that all third party libraries are loaded and initialized.
-		// Dispatch a custom event *before* the form is submitted.
-		document.dispatchEvent(
-			new CustomEvent( 'srfm_form_after_initialization', {
-				detail: { form },
-			} )
-		);
 	}
 }
 
@@ -347,6 +339,10 @@ function showSuccessMessage(
 	if ( ! document.dispatchEvent( event ) ) {
 		return; // Stop further execution if event.preventDefault() was called.
 	}
+
+	// Re-enable submit button after showing success message.
+	enableSubmitButton( form );
+
 	if ( afterSubmission === 'hide form' ) {
 		form.style.opacity = 1;
 		form.style.display = 'none';
@@ -459,6 +455,22 @@ function hideErrorMessage( form ) {
 	} );
 }
 
+/**
+ * Re-enables the submit button and restores pointer events.
+ * @since 1.13.0
+ *
+ * @param {HTMLFormElement} form - The form element containing the submit button.
+ */
+function enableSubmitButton( form ) {
+	const submitBtn = form.querySelector(
+		'#srfm-submit-btn, button[type="submit"], .srfm-custom-button'
+	);
+	if ( submitBtn ) {
+		submitBtn.disabled = false;
+		submitBtn.style.pointerEvents = '';
+	}
+}
+
 async function handleFormSubmission(
 	form,
 	formId,
@@ -477,6 +489,15 @@ async function handleFormSubmission(
 ) {
 	try {
 		loader.classList.add( 'srfm-active' );
+
+		// Disable submit button to prevent multiple submissions.
+		const submitBtn = form.querySelector(
+			'#srfm-submit-btn, button[type="submit"], .srfm-custom-button'
+		);
+		if ( submitBtn ) {
+			submitBtn.disabled = true;
+			submitBtn.style.pointerEvents = 'none';
+		}
 
 		// Hide any previous error messages.
 		hideErrorMessage( form );
@@ -501,6 +522,9 @@ async function handleFormSubmission(
 		 */
 		if ( isValidate?.validateResult || ! isCaptchaValid ) {
 			loader.classList.remove( 'srfm-active' );
+
+			// Re-enable submit button after validation fails.
+			enableSubmitButton( form );
 
 			if ( isValidate?.validateResult ) {
 				// Handle scroll and focus on error field when validation fails.
@@ -530,13 +554,15 @@ async function handleFormSubmission(
 
 		if ( ! document.dispatchEvent( event ) ) {
 			loader.classList.remove( 'srfm-active' );
+
+			// Re-enable submit button if submission is cancelled.
+			enableSubmitButton( form );
+
 			return; // Stop further execution if event.preventDefault() was called.
 		}
 
 		// Process payment submission
 		const paymentResult = await handleFormPayment( form );
-
-		console.log( 'paymentResult:', paymentResult );
 
 		if ( ! paymentResult?.valid ) {
 			showErrorMessage( { form, message: paymentResult?.message } );
@@ -562,6 +588,9 @@ async function handleFormSubmission(
 					submitType
 				);
 				loader.classList.remove( 'srfm-active' );
+
+				// Re-enable submit button after successful submission.
+				enableSubmitButton( form );
 			} else if (
 				/**
 				 * This condition is similar to above one but we are using this for custom-app
@@ -584,6 +613,9 @@ async function handleFormSubmission(
 					redirectToUrl( formStatus?.redirect_url );
 				}
 				loader.classList.remove( 'srfm-active' );
+
+				// Re-enable submit button after redirect.
+				enableSubmitButton( form );
 			}
 			// Moving afterSubmit action out of specific method so it should work for all submission mode
 			if ( formStatus?.data?.after_submit ) {
@@ -593,6 +625,9 @@ async function handleFormSubmission(
 			const errorData = formStatus?.data || {};
 			showErrorMessage( { form, ...errorData } );
 			loader.classList.remove( 'srfm-active' );
+
+			// Re-enable submit button after error.
+			enableSubmitButton( form );
 		}
 	} catch ( error ) {
 		// Create and dispatch a custom event
@@ -614,6 +649,10 @@ async function handleFormSubmission(
 		document.dispatchEvent( event );
 
 		loader.classList.remove( 'srfm-active' );
+
+		// Re-enable submit button after exception.
+		enableSubmitButton( form );
+
 		showErrorMessage( { form } );
 	}
 }

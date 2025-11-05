@@ -96,6 +96,5 @@ module.exports = {
 		sessionStorage: true,
 		jQuery: true,
 		sureformsPointerData: true,
-		sureformsRefundData: true,
 	},
 };

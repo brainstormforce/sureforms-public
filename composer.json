@@ -56,8 +56,7 @@
 		"composer/installers": "^2.3",
 		"brainstormforce/nps-survey": "^1.0",
     "brainstormforce/bsf-analytics": "^1.0",
-		"brainstormforce/astra-notices": "^1.1",
-		"stripe/stripe-php": "^17.4"
+		"brainstormforce/astra-notices": "^1.1"
 	},
 	"repositories": [
 		{
