@@ -81,7 +81,7 @@ export const RenderField = ( props ) => {
 					) }
 					{ Array.isArray( field.value ) &&
 						isValidElement( field.value[ 0 ] ) && (
-						<div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 place-content-center gap-2">
+						<div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 2xl:grid-cols-6 place-content-center gap-2">
 							{ field.value }
 						</div>
 					) }
