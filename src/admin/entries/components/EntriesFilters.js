@@ -46,6 +46,8 @@ import { STATUS_OPTIONS } from '../constants';
  * @param {Function} props.onBulkRestore        - Handler for bulk restore action
  * @param {Function} props.onClearFilters       - Handler for clearing all filters
  * @param {boolean}  props.hasActiveFilters     - Whether any filters are currently active
+ * @param {boolean}  props.hasUnreadSelected    - Whether some selected entries are unread
+ * @param {boolean}  props.hasReadSelected      - Whether some selected entries are read
  */
 const EntriesFilters = ( {
 	statusFilter,
@@ -66,6 +68,8 @@ const EntriesFilters = ( {
 	onBulkRestore,
 	onClearFilters,
 	hasActiveFilters = false,
+	hasUnreadSelected = false,
+	hasReadSelected = false,
 } ) => {
 	const [ openSendNotificationModal, setOpenSendNotificationModal ] =
 		useState( false );
@@ -88,13 +92,18 @@ const EntriesFilters = ( {
 		},
 	];
 
-	if ( hasSelectedEntries ) {
+	if ( hasUnreadSelected ) {
 		DROPDOWN_MENU_OPTIONS.push(
 			{
 				label: __( 'Mark as Read', 'sureforms' ),
 				onClick: onMarkAsRead,
 				icon: <Eye />,
-			},
+			}
+		);
+	}
+
+	if ( hasReadSelected ) {
+		DROPDOWN_MENU_OPTIONS.push(
 			{
 				label: __( 'Mark as Unread', 'sureforms' ),
 				onClick: onMarkAsUnread,

@@ -177,6 +177,21 @@ const EntriesListingPage = () => {
 		indeterminate,
 	} = useEntriesSelection( entries );
 
+	// Compute if selected entries include unread or read entries
+	const hasUnreadSelected = useMemo( () => {
+		return selectedEntries?.some( ( entryId ) => {
+			const entry = entries.find( ( e ) => parseInt( e.id ) === parseInt( entryId ) );
+			return entry && entry.status === 'unread';
+		} );
+	}, [ selectedEntries, entries ] );
+
+	const hasReadSelected = useMemo( () => {
+		return selectedEntries?.some( ( entryId ) => {
+			const entry = entries.find( ( e ) => parseInt( e.id ) === parseInt( entryId ) );
+			return entry && entry.status === 'read';
+		} );
+	}, [ selectedEntries, entries ] );
+
 	// Show an error toast if fetching entries fails
 	useEffect( () => {
 		if ( ! isError ) {
@@ -497,6 +512,8 @@ const EntriesListingPage = () => {
 								onBulkRestore={ handleBulkRestore }
 								onClearFilters={ handleClearFilters }
 								hasActiveFilters={ hasActiveFilters }
+								hasUnreadSelected={ hasUnreadSelected }
+								hasReadSelected={ hasReadSelected }
 							/>
 						</div>
 					</div>
