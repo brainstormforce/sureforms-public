@@ -39,8 +39,24 @@ class Post_Types {
 		add_action( 'admin_bar_menu', [ $this, 'remove_admin_bar_menu_item' ], 80, 1 );
 		add_action( 'template_redirect', [ $this, 'srfm_instant_form_redirect' ] );
 		add_action( 'template_redirect', [ $this, 'disable_sureforms_archive_page' ], 9 );
+		add_action( 'load-edit.php', [ $this, 'redirect_forms_listing_page' ] );
 
 		add_filter( 'rest_prepare_sureforms_form', [ $this, 'sureforms_normalize_meta_for_rest' ], 10, 2 );
+	}
+
+	/**
+	 * Redirect the forms listing page to the updated forms page.
+	 *
+	 * @return void
+	 * @since x.x.x
+	 */
+	public function redirect_forms_listing_page() {
+		global $pagenow;
+
+		if ( 'edit.php' === $pagenow && isset( $_GET['post_type'] ) && SRFM_FORMS_POST_TYPE === $_GET['post_type'] ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce is not required for the redirection.
+			wp_safe_redirect( admin_url( 'admin.php?page=sureforms_forms' ) );
+			exit;
+		}
 	}
 
 	/**
