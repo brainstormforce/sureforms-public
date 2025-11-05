@@ -93,23 +93,19 @@ const EntriesFilters = ( {
 	];
 
 	if ( hasUnreadSelected ) {
-		DROPDOWN_MENU_OPTIONS.push(
-			{
-				label: __( 'Mark as Read', 'sureforms' ),
-				onClick: onMarkAsRead,
-				icon: <Eye />,
-			}
-		);
+		DROPDOWN_MENU_OPTIONS.push( {
+			label: __( 'Mark as Read', 'sureforms' ),
+			onClick: onMarkAsRead,
+			icon: <Eye />,
+		} );
 	}
 
 	if ( hasReadSelected ) {
-		DROPDOWN_MENU_OPTIONS.push(
-			{
-				label: __( 'Mark as Unread', 'sureforms' ),
-				onClick: onMarkAsUnread,
-				icon: <EyeOff />,
-			}
-		);
+		DROPDOWN_MENU_OPTIONS.push( {
+			label: __( 'Mark as Unread', 'sureforms' ),
+			onClick: onMarkAsUnread,
+			icon: <EyeOff />,
+		} );
 	}
 
 	useEffect( () => {

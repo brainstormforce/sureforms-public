@@ -180,14 +180,18 @@ const EntriesListingPage = () => {
 	// Compute if selected entries include unread or read entries
 	const hasUnreadSelected = useMemo( () => {
 		return selectedEntries?.some( ( entryId ) => {
-			const entry = entries.find( ( e ) => parseInt( e.id ) === parseInt( entryId ) );
+			const entry = entries.find(
+				( e ) => parseInt( e.id ) === parseInt( entryId )
+			);
 			return entry && entry.status === 'unread';
 		} );
 	}, [ selectedEntries, entries ] );
 
 	const hasReadSelected = useMemo( () => {
 		return selectedEntries?.some( ( entryId ) => {
-			const entry = entries.find( ( e ) => parseInt( e.id ) === parseInt( entryId ) );
+			const entry = entries.find(
+				( e ) => parseInt( e.id ) === parseInt( entryId )
+			);
 			return entry && entry.status === 'read';
 		} );
 	}, [ selectedEntries, entries ] );
@@ -369,7 +373,9 @@ const EntriesListingPage = () => {
 			{
 				onSuccess: () => {
 					clearSelection();
-					toast.success( __( 'Entries exported successfully.', 'sureforms' ) );
+					toast.success(
+						__( 'Entries exported successfully.', 'sureforms' )
+					);
 				},
 			}
 		);
@@ -495,7 +501,9 @@ const EntriesListingPage = () => {
 							<EntriesHeader />
 							<EntriesFilters
 								statusFilter={ statusFilter }
-								onStatusFilterChange={ handleStatusFilterChange }
+								onStatusFilterChange={
+									handleStatusFilterChange
+								}
 								formFilter={ formFilter }
 								onFormFilterChange={ handleFormFilterChange }
 								searchQuery={ searchQuery }
