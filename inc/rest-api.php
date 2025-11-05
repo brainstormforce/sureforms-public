@@ -554,6 +554,7 @@ class Rest_Api {
 				'display_name' => $user_info->display_name,
 				'profile_url'  => get_author_posts_url( $user_id ),
 			] : null,
+			'extras'          => $entry['extras'] ?? [],
 		];
 
 		return new \WP_REST_Response( $response_data, 200 );
