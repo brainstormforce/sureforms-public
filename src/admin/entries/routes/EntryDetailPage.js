@@ -10,6 +10,7 @@ import {
 import EntryDataSection from '../components/EntryDataSection';
 import SubmissionInfoSection from '../components/SubmissionInfoSection';
 import NotesSection from '../components/NotesSection';
+import PdfFilesSection from '../components/PdfFilesSection';
 import EntryLogsSection from '../components/EntryLogsSection';
 import EntryDetailSkeleton from '../components/EntryDetailSkeleton';
 import ConfirmationDialog from '../components/ConfirmationDialog';
@@ -203,6 +204,9 @@ const EntryDetailPage = () => {
 									<NotesSection
 										entryId={ id }
 										onConfirmation={ handleConfirmation }
+									/>
+									<PdfFilesSection
+										pdfLinks={ entryData?.pdfLinks }
 									/>
 									<EntryLogsSection
 										entryId={ id }

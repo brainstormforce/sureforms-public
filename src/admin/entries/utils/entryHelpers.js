@@ -141,6 +141,7 @@ export const transformEntryDetail = ( entryDetail ) => {
 				profileUrl: entryDetail.user.profile_url,
 			  }
 			: null,
+		pdfLinks: entryDetail.extras?.pdf_links || null,
 		rawData: entryDetail, // Keep original data for reference
 	};
 };
