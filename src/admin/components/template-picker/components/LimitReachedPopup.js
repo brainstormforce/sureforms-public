@@ -5,10 +5,10 @@ import { Zap, X } from 'lucide-react';
 
 const LimitReachedPopup = ( {
 	title = '',
-	paraOne,
-	paraTwo,
-	buttonText,
-	onclick,
+	paraOne = '',
+	paraTwo = '',
+	buttonText = '',
+	onclick = () => {},
 	deactivatedLicense = false,
 	paraTitle = '',
 } ) => {
@@ -91,7 +91,7 @@ const LimitReachedPopup = ( {
 					</Label>
 				</Container.Item>
 
-				{ ! is_pro_active ? (
+				{ ! is_pro_active && ! deactivatedLicense ? (
 					<hr className="border-b-5 border-x-0 border-t-0 w-full border-solid border-border-subtle" />
 				) : (
 					''

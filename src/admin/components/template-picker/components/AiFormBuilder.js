@@ -236,6 +236,15 @@ const AiFormBuilder = () => {
 			srfm_admin?.is_pro_active && ! srfm_admin?.is_pro_license_active;
 
 		// When registered limit is consumed
+		if ( type === 'registered' && formCreationleft === 0 && deactivatedLicense ) {
+			return (
+				<LimitReachedPopup
+					deactivatedLicense={ deactivatedLicense }
+					title={ __( 'Unlock Unlimited Generations', 'sureforms' ) }
+				/>
+			);
+		}
+
 		if ( type === 'registered' && formCreationleft === 0 && showPopup ) {
 			return (
 				<LimitReachedPopup
