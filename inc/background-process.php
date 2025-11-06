@@ -92,18 +92,27 @@ class Background_Process {
 	 * @return \WP_REST_Response|\WP_Error Response object on success, or WP_Error object on failure.
 	 */
 	public function handle_after_submission( $request ) {
+		$this->submission_id = Helper::get_integer_value( $request->get_param( 'submission_id' ) );
 
-		$nonce = Helper::get_string_value( $request->get_header( 'X-WP-Nonce' ) );
+		$extras_decoded                        = $this->get_decoded_extras( $this->submission_id );
+		$is_after_submission_process_triggered = $extras_decoded['is_after_submission_process_triggered'] ?? false;
 
-		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'wp_rest' ) ) {
+		if ( $is_after_submission_process_triggered ) {
+			return new \WP_Error(
+				'process_already_triggered',
+				__( 'After submission process has already been triggered for this submission.', 'sureforms' ),
+				[ 'status' => 403 ]
+			);
+		}
+
+		$nonce = Helper::get_string_value( $request->get_param( 'after_submit_nonce' ) );
+		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'srfm_after_submission_' . Helper::get_string_value( $this->submission_id ) ) ) {
 			return new \WP_Error(
 				'rest_nonce_failed',
 				__( 'Nonce verification failed.', 'sureforms' ),
 				[ 'status' => 403 ]
 			);
 		}
-
-		$this->submission_id = Helper::get_integer_value( $request->get_param( 'submission_id' ) );
 
 		if ( ! ( 0 < $this->submission_id ) ) {
 			return new \WP_Error(
@@ -148,6 +157,47 @@ class Background_Process {
 		 * @param array $form_data form data related to submission.
 		 */
 		do_action( 'srfm_after_submission_process', $form_data );
+
+		// Update the extras column to track that the after submission process was triggered.
+		if ( 0 < $this->submission_id ) {
+			$extras_decoded = $this->get_decoded_extras( $this->submission_id );
+
+			// Merge new data.
+			$updated_extras = array_merge(
+				$extras_decoded,
+				[ 'is_after_submission_process_triggered' => true ]
+			);
+
+			// Update entry.
+			Entries::update(
+				$this->submission_id,
+				[ 'extras' => wp_json_encode( $updated_extras ) ]
+			);
+		}
+
 		return true;
+	}
+
+	/**
+	 * Get and decode extras data from entry.
+	 *
+	 * @param int $submission_id Submission ID.
+	 * @since x.x.x
+	 * @return array<mixed> Decoded extras array.
+	 */
+	protected function get_decoded_extras( $submission_id ) {
+		$entry_data = Entries::get( $submission_id );
+		$extras     = Helper::get_array_value( $entry_data['extras'] )[0] ?? [];
+
+		// Decode existing extras (if any).
+		$extras_decoded = is_string( $extras )
+			? json_decode( Helper::get_string_value( $extras ), true )
+			: ( is_array( $extras ) ? $extras : [] );
+
+		if ( ! is_array( $extras_decoded ) ) {
+			$extras_decoded = [];
+		}
+
+		return $extras_decoded;
 	}
 }
