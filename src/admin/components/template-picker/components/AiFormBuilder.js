@@ -189,6 +189,10 @@ const AiFormBuilder = () => {
 			);
 		}
 
+		// Check if the user has a premium plan and not activated the license
+		const deactivatedLicense =
+			srfm_admin?.is_pro_active && ! srfm_admin?.is_pro_license_active;
+
 		// When pro limit is consumed
 		if (
 			type === 'subscribed' &&
@@ -220,13 +224,10 @@ const AiFormBuilder = () => {
 							srfm_admin.site_url +
 							'/wp-admin/admin.php?page=add-new-form';
 					} }
+					deactivatedLicense={ deactivatedLicense }
 				/>
 			);
 		}
-
-		// Check if the user has a premium plan and not activated the license
-		const deactivatedLicense =
-			srfm_admin?.is_pro_active && ! srfm_admin?.is_pro_license_active;
 
 		// When registered limit is consumed
 		if ( type === 'registered' && formCreationleft === 0 ) {
@@ -255,7 +256,6 @@ const AiFormBuilder = () => {
 							'noreferrer'
 						);
 					} }
-					deactivatedLicense={ deactivatedLicense }
 					title={ __( 'Unlock Unlimited Generations', 'sureforms' ) }
 				/>
 			);
