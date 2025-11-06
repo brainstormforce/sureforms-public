@@ -213,8 +213,8 @@ class Email_Template {
 						if ( is_array( $value ) ) {
 							$values_array = array_filter(
 								$value,
-								static function( $v ) {
-									return ! empty( Helper::get_string_value( $v ) );
+								static function( $input_value ) {
+									return ! empty( Helper::get_string_value( $input_value ) );
 								}
 							);
 						} else {
@@ -222,7 +222,7 @@ class Email_Template {
 						}
 
 						// Skip if both $value and $values_array are empty.
-						if ( ( is_array( $value ) && empty( $values_array ) ) || ( ! is_array( $value ) && '' === trim( $value ) ) ) {
+						if ( empty( $value ) || ( is_array( $value ) && empty( $values_array ) ) ) {
 							continue;
 						}
 
@@ -267,7 +267,7 @@ class Email_Template {
 								</ol>
 								<?php
 							}
-						} elseif ( ! empty( $value ) && is_string( $value ) && filter_var( $value, FILTER_VALIDATE_URL ) ) {
+						} elseif ( is_string( $value ) && filter_var( $value, FILTER_VALIDATE_URL ) ) {
 							ob_start();
 							?>
 								<a target="_blank" href="<?php echo esc_url( $value ); ?>">
