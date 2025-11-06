@@ -366,6 +366,7 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 
 == Changelog ==
 = x.x.x =
+* Fix: Resolved an issue where redirection url query params on form submit is not being escaped properly.
 * Fix: Resolved an issue where block config is not updated consistently on form update.
 * Fix: Resolved an issue with missing attr key in the frontend causing PHP warning.
 * Improvement: Added a message as fall for email failure for single entries page when SMTP plugin is not present.
