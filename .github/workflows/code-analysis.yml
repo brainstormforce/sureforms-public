@@ -46,7 +46,7 @@ jobs:
 
             - name: Install composer dependencies
               env:
-                  COMPOSER_AUTH: '{"github-oauth": {"github.com": "${{ secrets.GITHUB_TOKEN }}"}}'
+                  COMPOSER_AUTH: '{"github-oauth": {"github.com": "${{ secrets.BSF_PRODUCTS_REPO_TOKEN }}"}}'
               run: composer install --prefer-dist --no-progress
 
             # - name: PHPCS check
