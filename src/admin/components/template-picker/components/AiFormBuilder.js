@@ -195,7 +195,6 @@ const AiFormBuilder = () => {
 
 		//When pro limit is consumed with deactivated license
 		if (
-			type === 'registered' &&
 			srfm_admin?.is_pro_active &&
 			! srfm_admin?.is_pro_license_active &&
 			formCreationleft === 0
