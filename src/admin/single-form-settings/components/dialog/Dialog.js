@@ -127,6 +127,16 @@ const Dialog = ( {
 		[
 			/*parent tabs linked to nav*/
 			{
+				id: 'email_notification',
+				label: __( 'Email Notification', 'sureforms' ),
+				icon: <ShieldCheckIcon />,
+				component: (
+					<EmailNotification
+						{ ...{ setHasValidationErrors, emailNotificationData } }
+					/>
+				),
+			},
+			{
 				id: 'form_confirmation',
 				label: __( 'Form Confirmation', 'sureforms' ),
 				icon: <CircleCheckBig />,
@@ -138,46 +148,10 @@ const Dialog = ( {
 				),
 			},
 			{
-				id: 'email_notification',
-				label: __( 'Email Notification', 'sureforms' ),
-				icon: <ShieldCheckIcon />,
-				component: (
-					<EmailNotification
-						{ ...{ setHasValidationErrors, emailNotificationData } }
-					/>
-				),
-			},
-			{
 				id: 'spam_protection',
 				label: __( 'Spam Protection', 'sureforms' ),
 				icon: <TriangleAlert />,
 				component: <SpamProtection />,
-			},
-			{
-				id: 'advanced-settings',
-				label: __( 'Advanced Settings', 'sureforms' ),
-				icon: <Settings />,
-				component: (
-					<>
-						<FormRestriction />
-						<Compliance { ...{ complianceData } } />
-					</>
-				),
-			},
-			{
-				id: 'ottokit',
-				label: __( 'OttoKit', 'sureforms' ),
-				icon: (
-					<img
-						src={ ottoKitIcon }
-						alt={ __( 'OttoKit', 'sureforms' ) }
-					/>
-				),
-				component: (
-					<OttoKitPage
-						{ ...{ isFormSettings: true, setSelectedTab } }
-					/>
-				),
 			},
 			{
 				id: 'integrations-preview',
@@ -265,6 +239,17 @@ const Dialog = ( {
 				),
 			},
 			{
+				id: 'advanced-settings',
+				label: __( 'Advanced Settings', 'sureforms' ),
+				icon: <Settings />,
+				component: (
+					<>
+						<FormRestriction />
+						<Compliance { ...{ complianceData } } />
+					</>
+				),
+			},
+			{
 				id: 'user-login-preview',
 				label: __( 'User Registration', 'sureforms' ),
 				icon: <UserPlus />,
@@ -346,6 +331,21 @@ const Dialog = ( {
 							),
 						] }
 						utmMedium="post-feed-preview-single-form-settings"
+					/>
+				),
+			},
+			{
+				id: 'ottokit',
+				label: __( 'OttoKit', 'sureforms' ),
+				icon: (
+					<img
+						src={ ottoKitIcon }
+						alt={ __( 'OttoKit', 'sureforms' ) }
+					/>
+				),
+				component: (
+					<OttoKitPage
+						{ ...{ isFormSettings: true, setSelectedTab } }
 					/>
 				),
 			},

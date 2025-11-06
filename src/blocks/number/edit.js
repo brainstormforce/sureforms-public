@@ -134,6 +134,52 @@ const SureformInput = ( props ) => {
 
 	const attributeOptions = [
 		{
+			id: 'required',
+			component: (
+				<ToggleControl
+					label={ __( 'Required', 'sureforms' ) }
+					checked={ required }
+					onChange={ ( newValue ) =>
+						setAttributes( { required: newValue } )
+					}
+				/>
+			),
+		},
+		{
+			id: 'error-message',
+			component: required && (
+				<SRFMTextControl
+					label={ __( 'Error Message', 'sureforms' ) }
+					data={ {
+						value: errorMsg,
+						label: 'errorMsg',
+					} }
+					value={ currentErrorMsg }
+					onChange={ ( value ) => {
+						setCurrentErrorMsg( value );
+						setAttributes( { errorMsg: value } );
+					} }
+				/>
+			),
+		},
+		{
+			id: 'help-text',
+			component: (
+				<SRFMTextControl
+					variant="textarea"
+					label={ __( 'Help Text', 'sureforms' ) }
+					value={ help }
+					data={ {
+						value: help,
+						label: 'help',
+					} }
+					onChange={ ( newValue ) =>
+						setAttributes( { help: newValue } )
+					}
+				/>
+			),
+		},
+		{
 			id: 'default-value',
 			component: (
 				<SRFMTextControl
@@ -155,6 +201,11 @@ const SureformInput = ( props ) => {
 					showControlHeader={ false }
 				/>
 			),
+		},
+		{
+			// separator
+			id: 'separator-1',
+			component: <div className="srfm-settings-separator" />,
 		},
 		{
 			id: 'read-only',
@@ -197,35 +248,6 @@ const SureformInput = ( props ) => {
 					onChange={ ( newValue ) =>
 						setAttributes( { suffix: newValue } )
 					}
-				/>
-			),
-		},
-		{
-			id: 'required',
-			component: (
-				<ToggleControl
-					label={ __( 'Required', 'sureforms' ) }
-					checked={ required }
-					onChange={ ( newValue ) =>
-						setAttributes( { required: newValue } )
-					}
-				/>
-			),
-		},
-		{
-			id: 'error-message',
-			component: required && (
-				<SRFMTextControl
-					label={ __( 'Error Message', 'sureforms' ) }
-					data={ {
-						value: errorMsg,
-						label: 'errorMsg',
-					} }
-					value={ currentErrorMsg }
-					onChange={ ( value ) => {
-						setCurrentErrorMsg( value );
-						setAttributes( { errorMsg: value } );
-					} }
 				/>
 			),
 		},
@@ -319,30 +341,7 @@ const SureformInput = ( props ) => {
 							) }
 						</p>
 					) }
-					<p className="components-base-control__help">
-						{ __(
-							'Note: Maximum value should always be greater than minimum value',
-							'sureforms'
-						) }
-					</p>
 				</>
-			),
-		},
-		{
-			id: 'help-text',
-			component: (
-				<SRFMTextControl
-					variant="textarea"
-					label={ __( 'Help Text', 'sureforms' ) }
-					value={ help }
-					data={ {
-						value: help,
-						label: 'help',
-					} }
-					onChange={ ( newValue ) =>
-						setAttributes( { help: newValue } )
-					}
-				/>
 			),
 		},
 	];

@@ -218,7 +218,14 @@ const FormConfirmSetting = ( { toast, setHasValidationErrors } ) => {
 	}, [ data ] );
 
 	return (
-		<TabContentWrapper title={ __( 'Form Confirmation', 'sureforms' ) }>
+		<TabContentWrapper
+			title={ __( 'Form Confirmation', 'sureforms' ) }
+			titleHelpText={ __(
+				'Customize the confirmation message or redirect the users after submitting the form.',
+				'sureforms'
+			) }
+			showTitleHelpText={ true }
+		>
 			<div className="space-y-6">
 				<div className="space-y-2">
 					<Label>{ __( 'Confirmation Type', 'sureforms' ) }</Label>

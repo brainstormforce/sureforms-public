@@ -32,28 +32,6 @@ export default ( { attributes, setAttributes } ) => {
 						title={ __( 'Attributes', 'sureforms' ) }
 						initialOpen={ true }
 					>
-						<SRFMTextControl
-							label={ __( 'Default Value', 'sureforms' ) }
-							className="srfm-with-dropdown"
-							value={ defaultValue ? defaultValue : '' }
-							withSmartTagDropdown={ true }
-							data={ {
-								value: defaultValue,
-								label: 'defaultValue',
-							} }
-							onChange={ ( value ) =>
-								setAttributes( { defaultValue: value } )
-							}
-						/>
-						{ defaultValue && (
-							<ToggleControl
-								label={ __( 'Read Only', 'sureforms' ) }
-								checked={ readOnly }
-								onChange={ ( checked ) =>
-									setAttributes( { readOnly: checked } )
-								}
-							/>
-						) }
 						<ToggleControl
 							label={ __( 'Required', 'sureforms' ) }
 							checked={ required }
@@ -87,6 +65,28 @@ export default ( { attributes, setAttributes } ) => {
 								setAttributes( { help: value } )
 							}
 						/>
+						<SRFMTextControl
+							label={ __( 'Default Value', 'sureforms' ) }
+							className="srfm-with-dropdown"
+							value={ defaultValue ? defaultValue : '' }
+							withSmartTagDropdown={ true }
+							data={ {
+								value: defaultValue,
+								label: 'defaultValue',
+							} }
+							onChange={ ( value ) =>
+								setAttributes( { defaultValue: value } )
+							}
+						/>
+						{ defaultValue && (
+							<ToggleControl
+								label={ __( 'Read Only', 'sureforms' ) }
+								checked={ readOnly }
+								onChange={ ( checked ) =>
+									setAttributes( { readOnly: checked } )
+								}
+							/>
+						) }
 					</SRFMAdvancedPanelBody>
 				</InspectorTab>
 				<InspectorTab { ...SRFMTabs.style }></InspectorTab>
