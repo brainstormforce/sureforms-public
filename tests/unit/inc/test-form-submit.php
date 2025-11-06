@@ -84,7 +84,7 @@ class Test_Form_Submit extends TestCase {
      * Test process_form_fields method.
      */
     public function test_process_form_fields() {
-        
+
         // Test case 1: Valid sureforms fields with -lbl-
         $form_data = [
             'text-lbl-field-name' => 'John Doe',

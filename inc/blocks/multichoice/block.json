@@ -4,7 +4,7 @@
 	"title": "Multiple Choice",
 	"description": "Displays a SureForms Multi-Choice Field",
 	"category": "sureforms",
-	"keywords": [ "multi-choice", "quiz", "multi", "sureforms" ],
+	"keywords": [ "multi-choice", "quiz", "multi", "sureforms", "radio" ],
 	"textdomain": "sureforms",
 	"supports": {
 		"reusable": false,

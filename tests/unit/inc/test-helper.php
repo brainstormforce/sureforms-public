@@ -251,6 +251,47 @@ class Test_Helper extends TestCase {
     }
 
     /**
+     * Test sanitize_email_header method.
+     */
+    public function test_sanitize_email_header() {
+        // Test case 1: Empty input
+        $input = '';
+        $expected = '';
+        $result = Helper::sanitize_email_header($input);
+        $this->assertEquals($expected, $result, 'Failed asserting for empty input.');
+
+        // Test case 2: Single valid email
+        $input = 'john@example.com';
+        $expected = 'john@example.com';
+        $result = Helper::sanitize_email_header($input);
+        $this->assertEquals($expected, $result, 'Failed asserting for single valid email.');
+
+        // Test case 3: Single valid email with name
+        $input = 'John Doe <john@example.com>';
+        $expected = 'John Doe <john@example.com>';
+        $result = Helper::sanitize_email_header($input);
+        $this->assertEquals($expected, $result, 'Failed asserting for email with name.');
+
+        // Test case 4: Multiple emails, with and without names
+        $input = 'John Doe <john@example.com>, jane@example.com, "Admin" <admin@example.com>';
+        $expected = 'John Doe <john@example.com>, jane@example.com, Admin <admin@example.com>';
+        $result = Helper::sanitize_email_header($input);
+        $this->assertEquals($expected, $result, 'Failed asserting for multiple emails.');
+
+        // Test case 5: Invalid emails should be ignored
+        $input = 'invalid-email, John Doe <john@example.com>';
+        $expected = 'John Doe <john@example.com>';
+        $result = Helper::sanitize_email_header($input);
+        $this->assertEquals($expected, $result, 'Failed asserting that invalid emails are ignored.');
+
+        // Test case 6: Emails with extra whitespace and quotes
+        $input = ' "John Doe" <john@example.com> , jane@example.com ';
+        $expected = 'John Doe <john@example.com>, jane@example.com';
+        $result = Helper::sanitize_email_header($input);
+        $this->assertEquals($expected, $result, 'Failed asserting trimming of whitespace and quotes.');
+    }
+
+    /**
      * Data provider for sanitize_recursively tests
      */
     public function provideSanitizeTestCases() {
