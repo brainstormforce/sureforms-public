@@ -1,6 +1,6 @@
-=== SureForms - Drag and Drop Contact Form Builder - Multi-step Forms, Conversational Forms and more ===
+=== SureForms - Contact Form, Custom Form Builder, Calculator & More ===
 Contributors: brainstormforce
-Tags: contact form, custom form, forms,  WP Forms, form builder
+Tags: contact form, custom form, forms, WordPress form plugin, form builder
 Requires at least: 6.4
 Tested up to: 6.8.3
 Requires PHP: 7.4
@@ -12,7 +12,7 @@ The most beginner-friendly, AI Form Builder for WordPress to create contact form
 
 == Description ==
 
-#### SUREFORMS – THE BEST NO-CODE FORM BUILDER
+#### SUREFORMS – THE BEST NO-CODE CUSTOM FORM BUILDER
 
 ★★★★★
 
@@ -158,8 +158,8 @@ Instantly create downloadable PDFs of form submissions for records or sharing.
 [**Registration & Login Forms**](https://sureforms.com/features/login-and-registration/):
 Fully functional, branded Registration & Login form for your site using just a block.
 
-[**Advanced Integration**](https://sureforms.com/features/integrations/):
-Connect your forms with leading apps and services to automate workflows and save time.
+[**Advanced Native Integration**](https://sureforms.com/features/integrations/):
+Connect your forms natively with top apps and services like Telegram, FluentCRM, Mailchimp, Brevo, and more to automate workflows and save time.
 
 [**Calculators**](https://sureforms.com/features/calculator-form/):
 Provide instant quotes or results with interactive calculators in your site. Designed to bring more traffic to your site.
