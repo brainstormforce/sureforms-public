@@ -1,7 +1,7 @@
 import domReady from '@wordpress/dom-ready';
 import { createRoot } from '@wordpress/element';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { BrowserRouter } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 import FormsListingPage from './FormsListingPage';
 import { Toaster } from '@bsf/force-ui';
 import '../tw-base.scss';
@@ -16,12 +16,18 @@ const queryClient = new QueryClient( {
 	},
 } );
 
+// Component to handle invalid routes with blank screen
+const NotFound = () => <div />;
+
 const App = () => (
 	<QueryClientProvider client={ queryClient }>
-		<BrowserRouter>
-			<FormsListingPage />
+		<Router>
+			<Routes>
+				<Route path="/" element={ <FormsListingPage /> } />
+				<Route path="*" element={ <NotFound /> } />
+			</Routes>
 			<Toaster />
-		</BrowserRouter>
+		</Router>
 	</QueryClientProvider>
 );
 

@@ -1,5 +1,5 @@
 import { __, _n, sprintf } from '@wordpress/i18n';
-import { useMemo, useState } from '@wordpress/element';
+import { useMemo, useState, useCallback, useEffect } from '@wordpress/element';
 import { Container, toast } from '@bsf/force-ui';
 import { useQueryClient } from '@tanstack/react-query';
 import { exportForms } from './utils';
@@ -87,10 +87,38 @@ const FormsListingPage = () => {
 	const forms = formsData?.forms || [];
 	const paginationData = {
 		total: formsData?.total || 0,
-		totalPages: formsData?.total_pages || 0,
+		totalPages: Math.max( 1, formsData?.total_pages || 0 ),
 		currentPage: formsData?.current_page || currentPage,
 		perPage: formsData?.per_page || perPage,
 	};
+
+	// Handle pagination validation and redirect when needed
+	useEffect( () => {
+		if ( ! isLoading && formsData ) {
+			const apiTotalPages = formsData.total_pages || 0;
+
+			// Validate URL-based page parameter
+			// If current page exceeds available pages, redirect to last valid page
+			if ( currentPage > apiTotalPages && apiTotalPages > 0 ) {
+				setCurrentPage( apiTotalPages );
+				return;
+			}
+
+			// Handle case when all forms on current page are deleted
+			// Only redirect if:
+			// 1. Current page > 1 (don't redirect from page 1)
+			// 2. No forms on current page
+			// 3. Total pages from API is less than current page
+			if (
+				currentPage > 1 &&
+				forms.length === 0 &&
+				apiTotalPages < currentPage
+			) {
+				const targetPage = Math.max( 1, apiTotalPages );
+				setCurrentPage( targetPage );
+			}
+		}
+	}, [ isLoading, currentPage, forms.length, formsData, setCurrentPage ] );
 
 	// Check for trash forms when "All Forms" is empty to detect if all forms are trashed
 	const trashQueryParams = useMemo(
@@ -178,6 +206,14 @@ const FormsListingPage = () => {
 	const handlePerPageChange = ( perPageValue ) => {
 		setPerPage( perPageValue );
 	};
+
+	const nextPage = useCallback( ( totalPages ) => {
+		setCurrentPage( ( prev ) => Math.min( totalPages, prev + 1 ) );
+	}, [] );
+
+	const previousPage = useCallback( () => {
+		setCurrentPage( ( prev ) => Math.max( 1, prev - 1 ) );
+	}, [] );
 
 	// Selection handlers
 	const handleToggleAll = ( checked ) => {
@@ -449,17 +485,11 @@ const FormsListingPage = () => {
 												handlePerPageChange
 											}
 											onNextPage={ () =>
-												handlePageChange(
-													paginationData.currentPage +
-														1
+												nextPage(
+													paginationData.totalPages
 												)
 											}
-											onPreviousPage={ () =>
-												handlePageChange(
-													paginationData.currentPage -
-														1
-												)
-											}
+											onPreviousPage={ previousPage }
 										/>
 									</FormsTable>
 								) }

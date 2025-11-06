@@ -16,12 +16,9 @@ export const useFormsPagination = ( initialPage = 1 ) => {
 		return page ? parseInt( page, 10 ) : initialPage;
 	} );
 
-	const [ perPage, setPerPageState ] = useState( () => {
-		const perPageParam = searchParams.get( 'per_page' );
-		return perPageParam ? parseInt( perPageParam, 10 ) : undefined;
-	} );
+	const [ perPage, setPerPageState ] = useState( undefined );
 
-	// Update URL params when pagination changes
+	// Update URL params when pagination changes (only page, not perPage)
 	useEffect( () => {
 		const params = new URLSearchParams( searchParams );
 
@@ -31,14 +28,8 @@ export const useFormsPagination = ( initialPage = 1 ) => {
 			params.delete( 'paged' );
 		}
 
-		if ( perPage ) {
-			params.set( 'per_page', perPage.toString() );
-		} else {
-			params.delete( 'per_page' );
-		}
-
 		setSearchParams( params, { replace: true } );
-	}, [ currentPage, perPage, searchParams, setSearchParams ] );
+	}, [ currentPage, searchParams, setSearchParams ] );
 
 	const setCurrentPage = useCallback( ( page ) => {
 		setCurrentPageState( page );
