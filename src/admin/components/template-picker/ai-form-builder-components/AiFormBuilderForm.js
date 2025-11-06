@@ -58,7 +58,6 @@ export default ( props ) => {
 		setFormTypeObj,
 		setFormType,
 		formType,
-		onDataSend,
 		type,
 	} = props;
 
@@ -406,7 +405,6 @@ export default ( props ) => {
 														size="md"
 														variant="primary"
 														onClick={ () => {
-															onDataSend( true );
 															if (
 																! text ||
 																! text.trim()

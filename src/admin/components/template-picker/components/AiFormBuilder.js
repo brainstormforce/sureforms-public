@@ -33,13 +33,6 @@ const AiFormBuilder = () => {
 	const isRTL = srfm_admin?.is_rtl;
 	const toasterPosition = isRTL ? 'bottom-left' : 'bottom-right';
 
-	const [ showPopup, setShowPopup ] = useState( false );
-
-	// Callback to receive data from child
-	const handleDataFromChild = ( data ) => {
-		setShowPopup( data ); // Update state
-	};
-
 	const handleCreateAiForm = async (
 		userCommand,
 		previousMessages,
@@ -236,16 +229,7 @@ const AiFormBuilder = () => {
 			srfm_admin?.is_pro_active && ! srfm_admin?.is_pro_license_active;
 
 		// When registered limit is consumed
-		if ( type === 'registered' && formCreationleft === 0 && deactivatedLicense ) {
-			return (
-				<LimitReachedPopup
-					deactivatedLicense={ deactivatedLicense }
-					title={ __( 'Unlock Unlimited Generations', 'sureforms' ) }
-				/>
-			);
-		}
-
-		if ( type === 'registered' && formCreationleft === 0 && showPopup ) {
+		if ( type === 'registered' && formCreationleft === 0 ) {
 			return (
 				<LimitReachedPopup
 					paraOne={ __(
@@ -280,8 +264,7 @@ const AiFormBuilder = () => {
 		// when initial 3 forms are consumed
 		if (
 			type === 'non-registered' &&
-			formCreationleft === 0 &&
-			showPopup
+			formCreationleft === 0
 		) {
 			return (
 				<LimitReachedPopup
@@ -299,6 +282,7 @@ const AiFormBuilder = () => {
 						'sureforms'
 					) }
 					onclick={ initiateAuth }
+					buttonText={ __( 'Connect Now', 'sureforms' ) }
 				/>
 			);
 		}
@@ -347,7 +331,6 @@ const AiFormBuilder = () => {
 					setFormTypeObj={ setFormTypeObj }
 					setFormType={ setFormType }
 					formType={ formType }
-					onDataSend={ handleDataFromChild }
 					type={ type }
 				/>
 			</div>
