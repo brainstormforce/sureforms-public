@@ -8,7 +8,7 @@ const LimitReachedPopup = ( {
 	paraOne = '',
 	paraTwo = '',
 	buttonText = '',
-	onclick,
+	onclick = () => {},
 	deactivatedLicense = false,
 	paraTitle = '',
 } ) => {

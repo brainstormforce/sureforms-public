@@ -193,6 +193,20 @@ const AiFormBuilder = () => {
 		const deactivatedLicense =
 			srfm_admin?.is_pro_active && ! srfm_admin?.is_pro_license_active;
 
+		//When pro limit is consumed with deactivated license
+		if (
+			type === 'subscribed' &&
+			srfm_admin?.is_pro_active &&
+			! srfm_admin?.is_pro_license_active &&
+			formCreationleft === 0
+		) {
+			return (
+				<LimitReachedPopup
+					deactivatedLicense={ deactivatedLicense }
+				/>
+			);
+		}
+
 		// When pro limit is consumed
 		if (
 			type === 'subscribed' &&
