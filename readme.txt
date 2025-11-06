@@ -366,11 +366,11 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 
 == Changelog ==
 = x.x.x =
+* Fix: Resolved an issue where block config is not updated consistently on form update.
 * Fix: Resolved an issue with missing attr key in the frontend causing PHP warning.
-* Fix: Resolved a compatibility issue with Presto Player.
-* Fix: Resolved an issue where trailing 0's for number field are being removed in the frontend when added after decimal.
 * Improvement: Added a message as fall for email failure for single entries page when SMTP plugin is not present.
 * Improvement: Added popup for getting started video in dashboard.
+* Fix: Resolved an issue where CC, BCC, and Reply-To email fields were incorrectly sanitized, causing certain formatted addresses to break.
 * Fix: Resolved an UI issue where country list for phone number is not visible with Spectra modal for mobile devices.
 = 1.13.1 - 22nd October 2025 =
 * Improvement: Preserved trailing zeros in number field after the decimal.
