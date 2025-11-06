@@ -326,14 +326,10 @@ export default ( props ) => {
 								<div className="w-full min-w-[750px] mx-auto p-2 relative">
 									<div
 										className="relative rounded-lg shadow-lg p-[2px]"
-										style={
-											! isFocused
-												? {
-													background:
-															'linear-gradient(180deg, #FF5811 0%, #8B2E16 5%, #000000 10%, #000000 100%)',
-												  }
-												: {}
-										}
+										style={ {
+											background: 'linear-gradient(180deg, #FF5811 0%, #8B2E16 5%, #000000 10%, #000000 100%)',
+
+										} }
 									>
 										<div className="relative bg-white rounded-[calc(0.5rem-1px)]">
 											<div className="relative leading-none">
@@ -349,7 +345,7 @@ export default ( props ) => {
 													value={ text }
 													size="lg"
 													className={ cn(
-														'border-none resize-y w-full min-h-[140px] max-h-[300px] text-field-placeholder pt-3 px-4 pb-14 rounded-[calc(0.5rem-1px)]',
+														'border-none focus:[box-shadow:none] focus:outline-none resize-y w-full min-h-[140px] max-h-[300px] text-field-placeholder pt-3 px-4 pb-14 rounded-[calc(0.5rem-1px)]',
 														characterCount > 0 &&
 															'text-text-primary'
 													) }
