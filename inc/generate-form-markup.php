@@ -514,9 +514,10 @@ class Generate_Form_Markup {
 						do_action( 'srfm_page_break_btn', $id );
 					}
 					$srfm_button_classes = apply_filters( 'srfm_add_button_classes', [ '1' === $btn_from_theme ? 'wp-block-button__link' : 'srfm-btn-frontend srfm-button srfm-submit-button', 'v3-reCAPTCHA' === $recaptcha_version ? ' g-recaptcha' : '' ] );
-					echo apply_filters( // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-						'srfm_submit_container',
-						'
+					echo wp_kses_post(
+						apply_filters(
+							'srfm_submit_container',
+							'
 						<div class="srfm-submit-container ' . esc_attr( $is_page_break ? 'srfm-hide' : '' ) . '" style="' . ( ! $should_show_submit_button ? 'visibility:hidden;position:absolute;' : '' ) . '">
 							<div style="width: ' . esc_attr( $full ? '100%' : '' ) . '; text-align: ' . esc_attr( $submit_button_alignment ) . '" class="wp-block-button">
 								' . ( $should_show_submit_button ? '
@@ -534,18 +535,19 @@ class Generate_Form_Markup {
 							</div>
 						</div>
 						',
-						[
-							'id'                      => $id,
-							'should_show_submit_btn'  => $should_show_submit_button,
-							'button_text'             => $button_text,
-							'submit_button_alignment' => $submit_button_alignment,
-							'full'                    => $full,
-							'btn_from_theme'          => $btn_from_theme,
-							'is_page_break'           => $is_page_break,
-							'recaptcha_version'       => $recaptcha_version,
-							'google_captcha_site_key' => $google_captcha_site_key,
-							'srfm_button_classes'     => $srfm_button_classes,
-						]
+							[
+								'id'                      => $id,
+								'should_show_submit_btn'  => $should_show_submit_button,
+								'button_text'             => $button_text,
+								'submit_button_alignment' => $submit_button_alignment,
+								'full'                    => $full,
+								'btn_from_theme'          => $btn_from_theme,
+								'is_page_break'           => $is_page_break,
+								'recaptcha_version'       => $recaptcha_version,
+								'google_captcha_site_key' => $google_captcha_site_key,
+								'srfm_button_classes'     => $srfm_button_classes,
+							]
+						)
 					);
 		}
 				self::common_error_message( 'footer' );
