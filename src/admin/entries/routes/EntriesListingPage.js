@@ -483,7 +483,7 @@ const EntriesListingPage = () => {
 	) {
 		return (
 			<div className="p-8 bg-background-secondary min-h-screen">
-				<div className="mx-auto">
+				<div className="mx-auto max-w-[1550px]">
 					<div className="bg-white rounded-xl border-0.5 border-solid border-border-subtle shadow-sm p-2 space-y-2">
 						<EmptyState />
 					</div>
@@ -494,7 +494,7 @@ const EntriesListingPage = () => {
 
 	return (
 		<div className="p-8 bg-background-secondary min-h-screen">
-			<div className="mx-auto">
+			<div className="mx-auto max-w-[1550px]">
 				<div className="bg-white rounded-xl border-0.5 border-solid border-border-subtle shadow-sm p-4 space-y-2">
 					<div className="p-1">
 						<div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-4 xl:gap-5">
