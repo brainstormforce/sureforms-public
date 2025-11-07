@@ -42,6 +42,8 @@ class Post_Types {
 		add_action( 'load-edit.php', [ $this, 'redirect_forms_listing_page' ] );
 
 		add_filter( 'rest_prepare_sureforms_form', [ $this, 'sureforms_normalize_meta_for_rest' ], 10, 2 );
+		add_action( 'admin_bar_menu', [ $this, 'add_edit_form_admin_bar_menu' ], 100 );
+
 	}
 
 	/**
@@ -57,6 +59,48 @@ class Post_Types {
 			wp_safe_redirect( admin_url( 'admin.php?page=sureforms_forms' ) );
 			exit;
 		}
+	}
+
+	/**
+	 * Add edit form link to admin bar menu.
+	 *
+	 * @param WP_Admin_Bar $wp_admin_bar WP_Admin_Bar instance.
+	 *
+	 * @return void
+	 * @since x.x.x
+	 */
+	public function add_edit_form_admin_bar_menu( $wp_admin_bar ) {
+		global $post;
+
+		// Only for logged-in users and when a post exists.
+		if ( ! is_user_logged_in() || empty( $post ) ) {
+			return;
+		}
+
+		// Only apply to your custom post type.
+		if ( $post->post_type !== SRFM_FORMS_POST_TYPE ) {
+			return;
+		}
+
+		$edit_link = get_edit_post_link( $post->ID );
+		if ( ! $edit_link ) {
+			return;
+		}
+
+		$wp_admin_bar->add_node(
+			[
+				'id'    => 'edit-form',
+				'title' => '<span class="ab-icon dashicons dashicons-edit" style="line-height:1.2;margin-right:4px;"></span>'
+						. '<span class="ab-label" style="position:relative;top:-1px;">'
+						. __( 'Edit Form', 'sureforms' )
+						. '</span>',
+				'href'  => $edit_link,
+				'meta'  => [
+					'title' => __( 'Edit this form', 'sureforms' ),
+				],
+				'html'  => true,
+			]
+		);
 	}
 
 	/**
