@@ -1,10 +1,24 @@
 import { __ } from '@wordpress/i18n';
 import { Button, Container, Label, Title } from '@bsf/force-ui';
-import { Plus } from 'lucide-react';
+import { Plus, X } from 'lucide-react';
 import ExternalLinkIcon from '@Image/external-link-icon.js';
+import { useState, useEffect } from '@wordpress/element';
 
 export default () => {
 	const siteUrl = srfm_admin.site_url;
+	const [ popupVideo, setPopupVideo ] = useState( null );
+
+	const videoUrl = 'https://www.youtube.com/embed/it16jGnZBus?showinfo=0&rel=0&autoplay=1';
+
+	useEffect( () => {
+		const handleKeyDown = ( e ) => {
+			if ( e.key === 'Escape' ) {
+				setPopupVideo( null );
+			}
+		};
+		window.addEventListener( 'keydown', handleKeyDown );
+		return () => window.removeEventListener( 'keydown', handleKeyDown );
+	}, [] );
 
 	return (
 		<Container
@@ -51,6 +65,7 @@ export default () => {
 					>
 						{ __( 'Create New Form', 'sureforms' ) }
 					</Button>
+
 					<Button
 						className="gap-1"
 						icon={
@@ -64,30 +79,78 @@ export default () => {
 						iconPosition="right"
 						size="md"
 						variant="ghost"
-						onClick={ () => {
+						onClick={ () =>
 							window.open(
 								'https://sureforms.com/docs/',
 								'_blank'
-							);
-						} }
+							)
+						}
 					>
 						{ __( 'Read Full Guide', 'sureforms' ) }
 					</Button>
 				</Container>
 			</Container.Item>
-			<Container className="p-2 gap-2 col-span-12 md:col-span-5 lg:col-span-5 aspect-video">
-				<iframe
-					className="w-full h-full rounded border border-solid border-border-subtle"
-					src="https://www.youtube.com/embed/it16jGnZBus"
-					title={ __(
-						'SureForms: Custom WordPress Forms MADE SIMPLE',
-						'sureforms'
-					) }
-					allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-					referrerPolicy="strict-origin-when-cross-origin"
-					allowFullScreen
-				></iframe>
-			</Container>
+
+			<Container.Item className="col-span-12 md:col-span-5 lg:col-span-5 p-2">
+				<div
+					className="relative aspect-video cursor-pointer group"
+					onClick={ () => {
+						setPopupVideo( videoUrl );
+					} }
+				>
+					<img
+						src="https://img.youtube.com/vi/it16jGnZBus/hqdefault.jpg"
+						alt={ __( 'SureForms Video Thumbnail', 'sureforms' ) }
+						className="w-full h-full rounded border border-solid border-border-subtle object-cover"
+					/>
+					<div className="absolute inset-0 flex items-center justify-center">
+						<div className="w-14 h-14 flex items-center justify-center bg-black bg-opacity-50 group-hover:bg-opacity-80 transition-all duration-300 rounded-full">
+							<svg
+								className="w-8 h-8 text-white"
+								viewBox="0 0 24 24"
+								fill="currentColor"
+							>
+								<path d="M8 5v14l11-7L8 5z" />
+							</svg>
+						</div>
+					</div>
+				</div>
+			</Container.Item>
+
+			{ /* Popup Video */ }
+			{ popupVideo && (
+				<div
+					className="fixed inset-0 flex items-center justify-center bg-misc-overlay cursor-pointer z-[9999] w-full"
+					onClick={ () => setPopupVideo( null ) }
+				>
+					{ /* Close Button */ }
+					<div className="absolute top-10 right-8 text-white cursor-pointer">
+						<X
+							size={ 24 }
+							onClick={ ( e ) => {
+								e.stopPropagation();
+								setPopupVideo( null );
+							} }
+						/>
+					</div>
+
+					<div
+						className="relative rounded-lg shadow-lg cursor-default w-full max-w-[80%] h-[760px]"
+						onClick={ ( e ) => e.stopPropagation() }
+					>
+						<iframe
+							className="w-full h-full aspect-video rounded-lg"
+							src={ popupVideo }
+							title={ __(
+								'SureForms: Custom WordPress Forms MADE SIMPLE',
+								'sureforms'
+							) }
+							allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+							allowFullScreen
+						></iframe>
+					</div>
+				</div>
+			) }
 		</Container>
 	);
 };
