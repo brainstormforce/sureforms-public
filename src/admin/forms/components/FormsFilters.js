@@ -284,8 +284,6 @@ const FormsFilters = ( {
 						} }
 					>
 						<DatePicker
-							applyButtonText={ __( 'Apply', 'sureforms' ) }
-							cancelButtonText={ __( 'Cancel', 'sureforms' ) }
 							selectionType="range"
 							showOutsideDays={ false }
 							variant="presets"
