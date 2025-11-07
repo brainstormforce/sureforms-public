@@ -366,12 +366,14 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 
 == Changelog ==
 = x.x.x =
+* Fix: Resolved an issue where redirection url query params on form submit is not being escaped properly.
 * Fix: Resolved an issue where block config is not updated consistently on form update.
 * Fix: Resolved an issue with missing attr key in the frontend causing PHP warning.
 * Improvement: Added a message as fall for email failure for single entries page when SMTP plugin is not present.
 * Improvement: Added popup for getting started video in dashboard.
 * Fix: Resolved an issue where CC, BCC, and Reply-To email fields were incorrectly sanitized, causing certain formatted addresses to break.
 * Fix: Resolved an UI issue where country list for phone number is not visible with Spectra modal for mobile devices.
+* Fix: Addressed a security bug. Props to Wordfence for reporting it responsibly.
 = 1.13.1 - 22nd October 2025 =
 * Improvement: Preserved trailing zeros in number field after the decimal.
 * Fix: Fixed compatibility with Presto Player.
