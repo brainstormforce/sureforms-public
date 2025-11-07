@@ -282,6 +282,7 @@ const EmailConfirmation = ( props ) => {
 							email_cc: formData.email_cc + tag,
 						} )
 					}
+					labelWithInfoTooltip={ true }
 				/>
 			),
 		},
@@ -317,6 +318,7 @@ const EmailConfirmation = ( props ) => {
 							email_bcc: formData.email_bcc + tag,
 						} )
 					}
+					labelWithInfoTooltip={ true }
 				/>
 			),
 		},
@@ -352,6 +354,7 @@ const EmailConfirmation = ( props ) => {
 							email_reply_to: formData.email_reply_to + tag,
 						} )
 					}
+					labelWithInfoTooltip={ true }
 				/>
 			),
 		},
