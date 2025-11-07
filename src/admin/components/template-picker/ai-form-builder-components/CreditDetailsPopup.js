@@ -127,17 +127,24 @@ const CreditDetailsPopup = ( {
 			</Container.Item>
 		) : null;
 
-	const bannerText = type === 'non-registered'
-		? sprintf(
-			// translators: %d is the number of form generations left.
-			__( '%d AI Generations Left, Connect to SureForms AI to Get 10 More', 'sureforms' ),
-			finalFormCreationCountRemaining
-		)
-		: sprintf(
-			// translators: %d is the number of form generations left.
-			__( '%d AI Generations Left. Upgrade to SureForms Premium', 'sureforms' ),
-			finalFormCreationCountRemaining
-		);
+	const bannerText =
+		type === 'non-registered'
+			? sprintf(
+				// translators: %d is the number of form generations left.
+				__(
+					'%d AI Generations Left, Connect to SureForms AI to Get 10 More',
+					'sureforms'
+				),
+				finalFormCreationCountRemaining
+			  )
+			: sprintf(
+				// translators: %d is the number of form generations left.
+				__(
+					'%d AI Generations Left. Upgrade to SureForms Premium',
+					'sureforms'
+				),
+				finalFormCreationCountRemaining
+			  );
 
 	// Compact banner
 	const compactCreditsBanner = (

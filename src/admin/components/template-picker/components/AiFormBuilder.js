@@ -200,9 +200,7 @@ const AiFormBuilder = () => {
 			formCreationleft === 0
 		) {
 			return (
-				<LimitReachedPopup
-					deactivatedLicense={ deactivatedLicense }
-				/>
+				<LimitReachedPopup deactivatedLicense={ deactivatedLicense } />
 			);
 		}
 
@@ -219,7 +217,7 @@ const AiFormBuilder = () => {
 				<LimitReachedPopup
 					title={ __( 'Form Generation Limit Reached', 'sureforms' ) }
 					paraTitle={ __(
-						'You have Hit Your FUP Limit.',
+						'You Have Hit Your FUP Limit.',
 						'sureforms'
 					) }
 					paraOne={ __(
@@ -237,7 +235,6 @@ const AiFormBuilder = () => {
 							srfm_admin.site_url +
 							'/wp-admin/admin.php?page=add-new-form';
 					} }
-					deactivatedLicense={ deactivatedLicense }
 				/>
 			);
 		}
@@ -255,7 +252,7 @@ const AiFormBuilder = () => {
 						'sureforms'
 					) }
 					paraTitle={ __(
-						'You have Hit Your Free Limit.',
+						'You Have Hit Your Free Limit.',
 						'sureforms'
 					) }
 					buttonText={ __( 'Upgrade Now', 'sureforms' ) }
@@ -275,15 +272,12 @@ const AiFormBuilder = () => {
 		}
 
 		// when initial 3 forms are consumed
-		if (
-			type === 'non-registered' &&
-			formCreationleft === 0
-		) {
+		if ( type === 'non-registered' && formCreationleft === 0 ) {
 			return (
 				<LimitReachedPopup
 					title={ __( 'Connect to SureForms AI', 'sureforms' ) }
 					paraTitle={ __(
-						'You have Hit Your Free Limit.',
+						'You Have Hit Your Free Limit.',
 						'sureforms'
 					) }
 					paraOne={ __(

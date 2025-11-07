@@ -193,7 +193,7 @@ export default ( props ) => {
 			},
 			{
 				title: __(
-					'Feedback form to ask customers: "How would you rate our product and what should we improve?',
+					'Feedback form to ask customers: "How would you rate our product and what should we improve?"',
 					'sureforms'
 				),
 			},
@@ -327,43 +327,46 @@ export default ( props ) => {
 									<div
 										className="relative rounded-lg shadow-lg p-[2px]"
 										style={ {
-											background: 'linear-gradient(180deg, #FF5811 0%, #8B2E16 5%, #000000 10%, #000000 100%)',
-
+											background:
+												'linear-gradient(180deg, #FF5811 0%, #8B2E16 5%, #000000 10%, #000000 100%)',
 										} }
 									>
 										<div className="relative bg-white rounded-[calc(0.5rem-1px)]">
-											<div className="relative leading-none">
-												<TextArea
-													aria-label={ __(
-														'Describe the form you want to create',
-														'sureforms'
-													) }
-													placeholder={
-														displayedPlaceholder
-													}
-													id="textarea"
-													value={ text }
-													size="lg"
-													className={ cn(
-														'border-none focus:[box-shadow:none] focus:outline-none resize-y w-full min-h-[140px] max-h-[300px] text-field-placeholder pt-3 px-4 pb-14 rounded-[calc(0.5rem-1px)]',
-														characterCount > 0 &&
-															'text-text-primary'
-													) }
-													onChange={ ( e ) => {
-														handlePromptClick( e );
-													} }
-													onInput={ handleTyping }
-													onFocus={ () =>
-														setIsFocused( true )
-													}
-													onBlur={ () =>
-														setIsFocused( false )
-													}
-													maxLength={ 2000 }
-												/>
+											<TextArea
+												aria-label={ __(
+													'Describe the form you want to create',
+													'sureforms'
+												) }
+												placeholder={
+													displayedPlaceholder
+												}
+												id="textarea"
+												value={ text }
+												size="lg"
+												className={ cn(
+													'border-none focus:[box-shadow:none] focus:outline-none resize-none w-full min-h-[140px] max-h-[300px] text-field-placeholder pt-3 px-4 pb-14 rounded-[calc(0.5rem-1px)]',
+													characterCount > 0 &&
+														'text-text-primary'
+												) }
+												onChange={ ( e ) => {
+													handlePromptClick( e );
+												} }
+												onInput={ handleTyping }
+												onFocus={ () =>
+													setIsFocused( true )
+												}
+												onBlur={ () =>
+													setIsFocused( false )
+												}
+												maxLength={ 2000 }
+											/>
 
-												{ /* Left side controls */ }
-												<div className="absolute left-5 bottom-3 flex flex-row gap-4 items-center">
+											<Container
+												className="flex-wrap py-2 px-4"
+												align="center"
+												justify="between"
+											>
+												<Container.Item className="flex flex-row gap-4 items-center">
 													<FormTypeSelector
 														formTypeObj={
 															formTypeObj
@@ -379,10 +382,8 @@ export default ( props ) => {
 															setformLayout
 														}
 													/>
-												</div>
-
-												{ /* Right side controls */ }
-												<div className="absolute right-5 bottom-3 gap-3 flex flex-row items-center">
+												</Container.Item>
+												<Container.Item className="gap-4 flex flex-row">
 													<VoiceToggleButton
 														isListening={
 															isListening
@@ -393,7 +394,6 @@ export default ( props ) => {
 													/>
 													<Button
 														className="gap-1"
-														// disabled={ characterCount === 0 }
 														icon={
 															<Sparkles className="w-4 h-4" />
 														}
@@ -428,8 +428,8 @@ export default ( props ) => {
 															'sureforms'
 														) }
 													</Button>
-												</div>
-											</div>
+												</Container.Item>
+											</Container>
 										</div>
 									</div>
 								</div>

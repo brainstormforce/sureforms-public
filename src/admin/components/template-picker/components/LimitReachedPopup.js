@@ -1,7 +1,7 @@
 import { __ } from '@wordpress/i18n';
 import { Button, Container, Label } from '@bsf/force-ui';
 import { applyFilters } from '@wordpress/hooks';
-import { Zap, X } from 'lucide-react';
+import { Zap } from 'lucide-react';
 
 const LimitReachedPopup = ( {
 	title = '',
@@ -57,16 +57,6 @@ const LimitReachedPopup = ( {
 							{ <Zap className="size-4 text-brand-800" /> }
 						</span>
 						{ finalTitle }
-						<span
-							className="absolute -top-2 -right-1 cursor-pointer"
-							onClick={ () =>
-								( window.location.href =
-									srfm_admin.site_url +
-									'/wp-admin/post-new.php?post_type=sureforms_form' )
-							}
-						>
-							<X className="size-4" />
-						</span>
 					</Label>
 				</Container.Item>
 
@@ -120,11 +110,7 @@ const LimitReachedPopup = ( {
 		</Container>
 	);
 
-	return (
-		<>
-			{ renderLimitReachedContent() }
-		</>
-	);
+	return <>{ renderLimitReachedContent() }</>;
 };
 
 export default LimitReachedPopup;

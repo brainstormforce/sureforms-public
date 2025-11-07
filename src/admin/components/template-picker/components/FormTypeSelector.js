@@ -40,7 +40,7 @@ const FormTypeSelector = ( {
 						'sureforms'
 					),
 					tooltipContent: __(
-						'Empower your forms with advanced calculations. From loan calculators to BMI checkers — create interactive forms that give real-time results..',
+						'Empower your forms with advanced calculations. From loan calculators to BMI checkers — create interactive forms that give real-time results.',
 						'sureforms'
 					),
 					utmMedium: 'ai_builder_calculator',
