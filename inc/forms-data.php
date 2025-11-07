@@ -161,13 +161,21 @@ class Forms_Data {
 
 		// Add date range filtering.
 		if ( ! empty( $date_from ) || ! empty( $date_to ) ) {
-			$args['date_query'] = [
-				[
-					'after'     => ! empty( $date_from ) ? $date_from : null,
-					'before'    => ! empty( $date_to ) ? $date_to : null,
-					'inclusive' => true,
-				],
-			];
+			$date_query = [];
+			// Handle 'after' date.
+			if ( ! empty( $date_from ) ) {
+				$date_query['after'] = $date_from;
+			}
+
+			// Handle 'before' date - add 1 day to include the full end date.
+			if ( ! empty( $date_to ) ) {
+				$end_date = new \DateTime( $date_to );
+				$end_date->add( new \DateInterval( 'P1D' ) ); // Add 1 day.
+				$date_query['before'] = $end_date->format( 'Y-m-d' );
+			}
+
+			$date_query['inclusive'] = true;
+			$args['date_query']      = [ $date_query ];
 		}
 
 		// Execute query.

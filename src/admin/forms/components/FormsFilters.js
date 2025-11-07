@@ -10,11 +10,7 @@ import {
 	RotateCcw,
 } from 'lucide-react';
 import { Input, Button, Container, Select, DatePicker } from '@bsf/force-ui';
-import {
-	getDatePlaceholder,
-	getSelectedDate,
-	getLastNDays,
-} from '@Utils/Helpers';
+import { getSelectedDate } from '@Utils/Helpers';
 import ImportForm from './ImportForm';
 
 // FormsFilters Component - Displays all filters: status dropdown, date picker, search, and import button
@@ -269,7 +265,10 @@ const FormsFilters = ( {
 							}
 							setIsDatePickerOpen( ( prev ) => ! prev );
 						} }
-						placeholder={ getDatePlaceholder() }
+						placeholder={ __(
+							'mm/dd/yyyy - mm/dd/yyyy',
+							'sureforms'
+						) }
 						className="min-w-[200px]"
 						readOnly
 						aria-label={ __( 'Select Date Range', 'sureforms' ) }
@@ -292,7 +291,9 @@ const FormsFilters = ( {
 							variant="presets"
 							onApply={ handleDateApply }
 							onCancel={ handleDateCancel }
-							selected={ getLastNDays( selectedDates ) }
+							disabled={ {
+								after: new Date(),
+							} }
 						/>
 					</div>
 				) }
