@@ -63,9 +63,21 @@ const EntriesTable = ( {
 			label: __( 'Form Name', 'sureforms' ),
 			key: 'formName',
 			headerClassName: 'w-[27%]',
-			render: ( entry ) => (
-				<span className="line-clamp-1">{ entry.formName }</span>
-			),
+			render: ( entry ) =>
+				!! entry.formPermalink ? (
+					<Button
+						className="line-clamp-1 text-text-secondary font-normal no-underline hover:underline"
+						tag="a"
+						variant="link"
+						size="md"
+						href={ entry.formPermalink }
+						target="_blank"
+					>
+						{ entry.formName }
+					</Button>
+				) : (
+					<span className="line-clamp-1">{ entry.formName }</span>
+				),
 		},
 		{
 			label: __( 'Status', 'sureforms' ),
@@ -116,7 +128,7 @@ const EntriesTable = ( {
 			label: __( 'Date & Time', 'sureforms' ),
 			key: 'dateTime',
 			sortable: true,
-			headerClassName: 'w-52',
+			headerClassName: 'w-[15%]',
 			render: ( entry ) => (
 				<span className="line-clamp-1">{ entry.dateTime }</span>
 			),
