@@ -1,8 +1,7 @@
 import { __ } from '@wordpress/i18n';
 import { useState } from '@wordpress/element';
 import { Edit3, Trash, RotateCcw, Eye, Share, Copy, Check } from 'lucide-react';
-import { Button, Container, Badge, Text } from '@bsf/force-ui';
-import Tooltip from '@Admin/components/Tooltip';
+import { Button, Container, Badge, Text, Tooltip } from '@bsf/force-ui';
 import Table from '@Admin/components/Table';
 import { exportForms } from '../utils';
 
@@ -49,7 +48,18 @@ const FormsTable = ( {
 	// Format date and time function
 	const formatDateTime = ( dateString ) => {
 		const date = new Date( dateString );
-		return date.toLocaleString( 'en-US', {
+
+		// Short format for display: Nov 7, 10:20 AM
+		const shortFormat = date.toLocaleString( 'en-US', {
+			month: 'short',
+			day: 'numeric',
+			hour: 'numeric',
+			minute: '2-digit',
+			hour12: true,
+		} );
+
+		// Full format for tooltip: Nov 7, 2025, 10:20 AM
+		const fullFormat = date.toLocaleString( 'en-US', {
 			year: 'numeric',
 			month: 'short',
 			day: 'numeric',
@@ -57,6 +67,8 @@ const FormsTable = ( {
 			minute: '2-digit',
 			hour12: true,
 		} );
+
+		return { shortFormat, fullFormat };
 	};
 
 	// Handle copy shortcode
@@ -193,11 +205,26 @@ const FormsTable = ( {
 			key: 'date',
 			sortable: true,
 			headerClassName: 'w-[18%]',
-			render: ( form ) => (
-				<Text size={ 14 } color="secondary">
-					{ formatDateTime( form.date_created ) }
-				</Text>
-			),
+			render: ( form ) => {
+				const { shortFormat, fullFormat } = formatDateTime(
+					form.date_created
+				);
+				return (
+					<Tooltip
+						content={ <span>{ fullFormat }</span> }
+						placement="top"
+						variant="dark"
+						arrow
+						interactive
+						tooltipPortalId="srfm-settings-container"
+						className="z-999999"
+					>
+						<span className="text-sm font-normal text-text-secondary">
+							{ shortFormat }
+						</span>
+					</Tooltip>
+				);
+			},
 		},
 		{
 			label: __( 'Actions', 'sureforms' ),
