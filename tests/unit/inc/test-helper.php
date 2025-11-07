@@ -251,6 +251,47 @@ class Test_Helper extends TestCase {
     }
 
     /**
+     * Test sanitize_email_header method.
+     */
+    public function test_sanitize_email_header() {
+        // Test case 1: Empty input
+        $input = '';
+        $expected = '';
+        $result = Helper::sanitize_email_header($input);
+        $this->assertEquals($expected, $result, 'Failed asserting for empty input.');
+
+        // Test case 2: Single valid email
+        $input = 'john@example.com';
+        $expected = 'john@example.com';
+        $result = Helper::sanitize_email_header($input);
+        $this->assertEquals($expected, $result, 'Failed asserting for single valid email.');
+
+        // Test case 3: Single valid email with name
+        $input = 'John Doe <john@example.com>';
+        $expected = 'John Doe <john@example.com>';
+        $result = Helper::sanitize_email_header($input);
+        $this->assertEquals($expected, $result, 'Failed asserting for email with name.');
+
+        // Test case 4: Multiple emails, with and without names
+        $input = 'John Doe <john@example.com>, jane@example.com, "Admin" <admin@example.com>';
+        $expected = 'John Doe <john@example.com>, jane@example.com, Admin <admin@example.com>';
+        $result = Helper::sanitize_email_header($input);
+        $this->assertEquals($expected, $result, 'Failed asserting for multiple emails.');
+
+        // Test case 5: Invalid emails should be ignored
+        $input = 'invalid-email, John Doe <john@example.com>';
+        $expected = 'John Doe <john@example.com>';
+        $result = Helper::sanitize_email_header($input);
+        $this->assertEquals($expected, $result, 'Failed asserting that invalid emails are ignored.');
+
+        // Test case 6: Emails with extra whitespace and quotes
+        $input = ' "John Doe" <john@example.com> , jane@example.com ';
+        $expected = 'John Doe <john@example.com>, jane@example.com';
+        $result = Helper::sanitize_email_header($input);
+        $this->assertEquals($expected, $result, 'Failed asserting trimming of whitespace and quotes.');
+    }
+
+    /**
      * Data provider for sanitize_recursively tests
      */
     public function provideSanitizeTestCases() {
@@ -1326,51 +1367,51 @@ class Test_Helper extends TestCase {
         if ( ! defined( 'SRFM_FORMS_POST_TYPE' ) ) {
             $this->markTestSkipped( 'SRFM_FORMS_POST_TYPE constant is not defined' );
         }
-        
+
         // Since we cannot easily mock the static Entries::get_entries_count_after method,
         // we'll test the method's behavior with forms only (without entry counts).
         // This still tests the core functionality: filtering published forms, handling blank titles,
         // sorting, and limiting results.
-        
+
         // Create mock forms.
         $form1_id = wp_insert_post([
             'post_type' => SRFM_FORMS_POST_TYPE,
             'post_status' => 'publish',
             'post_title' => 'Contact Form'
         ]);
-        
+
         $form2_id = wp_insert_post([
             'post_type' => SRFM_FORMS_POST_TYPE,
             'post_status' => 'publish',
             'post_title' => 'Newsletter Signup'
         ]);
-        
+
         $form3_id = wp_insert_post([
             'post_type' => SRFM_FORMS_POST_TYPE,
             'post_status' => 'publish',
             'post_title' => ''  // Test blank title
         ]);
-        
+
         // Create a draft form (should not be included).
         $draft_form_id = wp_insert_post([
             'post_type' => SRFM_FORMS_POST_TYPE,
             'post_status' => 'draft',
             'post_title' => 'Draft Form'
         ]);
-        
+
         // Test basic functionality.
         $result = Helper::get_forms_with_entry_counts(strtotime('-7 days'));
-        
+
         // Should return only published forms.
         $this->assertCount(3, $result, 'Should return only published forms');
-        
+
         // Check that all results have the expected structure.
         foreach ($result as $form) {
             $this->assertArrayHasKey('form_id', $form, 'Each result should have form_id');
             $this->assertArrayHasKey('title', $form, 'Each result should have title');
             $this->assertArrayHasKey('count', $form, 'Each result should have count');
         }
-        
+
         // Find the form with blank title to verify it was replaced.
         $blank_title_found = false;
         foreach ($result as $form) {
@@ -1381,21 +1422,21 @@ class Test_Helper extends TestCase {
             }
         }
         $this->assertTrue($blank_title_found, 'Form with blank title should be in results');
-        
+
         // Test with limit.
         $result_limited = Helper::get_forms_with_entry_counts(strtotime('-7 days'), 2);
         $this->assertCount(2, $result_limited, 'Should respect the limit parameter');
-        
+
         // Test without sorting.
         $result_unsorted = Helper::get_forms_with_entry_counts(strtotime('-7 days'), 0, false);
         $this->assertCount(3, $result_unsorted, 'Should return all forms when sort is false');
-        
+
         // Clean up.
         wp_delete_post($form1_id, true);
         wp_delete_post($form2_id, true);
         wp_delete_post($form3_id, true);
         wp_delete_post($draft_form_id, true);
-        
+
         // Test when no forms exist.
         $result_empty = Helper::get_forms_with_entry_counts(strtotime('-7 days'));
         $this->assertEmpty($result_empty, 'Should return empty array when no forms exist');
@@ -1411,7 +1452,7 @@ class Test_Helper extends TestCase {
         if ( ! defined( 'SRFM_FORMS_POST_TYPE' ) ) {
             $this->markTestSkipped( 'SRFM_FORMS_POST_TYPE constant is not defined' );
         }
-        
+
         // Create multiple forms to test sorting.
         $form_ids = [];
         for ($i = 1; $i <= 3; $i++) {
@@ -1421,28 +1462,28 @@ class Test_Helper extends TestCase {
                 'post_title' => 'Form ' . $i
             ]);
         }
-        
+
         // Test that results are returned (even if all counts are 0).
         $result = Helper::get_forms_with_entry_counts(strtotime('-7 days'));
-        
+
         $this->assertCount(3, $result, 'Should return all published forms');
-        
+
         // When all entry counts are the same (likely 0 in test environment),
         // forms should be sorted by form_id descending.
         if ($result[0]['count'] === $result[1]['count'] && $result[1]['count'] === $result[2]['count']) {
             // Check form_id descending order when counts are equal.
             $this->assertGreaterThan(
-                $result[1]['form_id'], 
-                $result[0]['form_id'], 
+                $result[1]['form_id'],
+                $result[0]['form_id'],
                 'When counts are equal, should sort by form_id descending'
             );
             $this->assertGreaterThan(
-                $result[2]['form_id'], 
-                $result[1]['form_id'], 
+                $result[2]['form_id'],
+                $result[1]['form_id'],
                 'When counts are equal, should sort by form_id descending'
             );
         }
-        
+
         // Clean up.
         foreach ($form_ids as $form_id) {
             wp_delete_post($form_id, true);

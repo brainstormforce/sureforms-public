@@ -59,7 +59,7 @@ jobs:
 
       - name: Install dependencies
         env:
-            COMPOSER_AUTH: '{"github-oauth": {"github.com": "${{ secrets.PRIVATE_ACCESS_TOKEN }}"}}'
+            COMPOSER_AUTH: '{"github-oauth": {"github.com": "${{ secrets.BSF_PRODUCTS_REPO_TOKEN }}"}}'
         run: composer install --prefer-dist --no-progress --prefer-dist --optimize-autoloader
 
       - name: Setup problem matchers for PHPUnit

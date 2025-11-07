@@ -271,14 +271,14 @@ class Gutenberg_Hooks {
 
 		[ $blocks, $slugs, $updated ] = Helper::process_blocks( $blocks, $slugs, $updated );
 
+		// Process and store block configurations for form fields.
+		Field_Validation::add_block_config( $blocks, $post_id );
+
 		if ( ! $updated ) {
 			return;
 		}
 
 		$post_content = addslashes( serialize_blocks( $blocks ) );
-
-		// Process and store block configurations for form fields.
-		Field_Validation::add_block_config( $blocks, $post_id );
 
 		wp_update_post(
 			[
