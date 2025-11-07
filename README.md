@@ -367,7 +367,7 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 ## Changelog ##
 ### 1.13.2 - 7th November 2025 ###
 * Improvement: Added a fallback message for email failures on the single entries page when the SMTP plugin is missing.
-* Improvement: Added support for "Name <email>" format in CC, BCC, and Reply-To fields.
+* Improvement: Added support for "Name <email\>" format in CC, BCC, and Reply-To fields.
 * Fix: Addressed a security bug. Props to Wordfence for reporting it responsibly.
 * Fix: Fixed redirection URL encoding issue after form submission.
 * Fix: Fixed the country list not being visible for the phone field inside the Spectra modal on mobile devices.
