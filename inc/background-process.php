@@ -182,7 +182,7 @@ class Background_Process {
 	 * Get and decode extras data from entry.
 	 *
 	 * @param int $submission_id Submission ID.
-	 * @since x.x.x
+	 * @since 1.13.2
 	 * @return array<mixed> Decoded extras array.
 	 */
 	protected function get_decoded_extras( $submission_id ) {

@@ -4,7 +4,7 @@ Tags: contact form, custom form, forms, WordPress form plugin, form builder
 Requires at least: 6.4
 Tested up to: 6.8.3
 Requires PHP: 7.4
-Stable tag: 1.13.1
+Stable tag: 1.13.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -367,13 +367,15 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 == Changelog ==
 = x.x.x =
 * Improvement: Revamped add new form screen.
-* Fix: Resolved an issue where redirection url query params on form submit is not being escaped properly.
-* Fix: Resolved an issue with missing attr key in the frontend causing PHP warning.
-* Improvement: Added a message as fall for email failure for single entries page when SMTP plugin is not present.
 * Improvement: Added popup for getting started video in dashboard.
 * Fix: Resolved an issue where block config is not updated consistently on form update.
-* Fix: Resolved an issue where CC, BCC, and Reply-To email fields were incorrectly sanitized, causing certain formatted addresses to break.
+= 1.13.2 - 7th November 2025 =
+* Improvement: Added a fallback message for email failures on the single entries page when the SMTP plugin is missing.
+* Improvement: Added support for "Name <email\>" format in CC, BCC, and Reply-To fields.
 * Fix: Addressed a security bug. Props to Wordfence for reporting it responsibly.
+* Fix: Fixed redirection URL encoding issue after form submission.
+* Fix: Fixed the country list not being visible for the phone field inside the Spectra modal on mobile devices.
+* Fix: Fixed missing attribute key on the frontend, causing PHP warnings.
 = 1.13.1 - 22nd October 2025 =
 * Improvement: Preserved trailing zeros in number field after the decimal.
 * Fix: Fixed compatibility with Presto Player.
@@ -381,9 +383,6 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 = 1.13.0 - 14th October 2025 =
 * New: Added support for Native Integrations in Pro Plan.
 * Fix: Prevented multiple entries from being recorded when the submit button is clicked repeatedly.
-= 1.12.3 - 30th September 2025 =
-* Fix: AI form generation not redirecting to the SureForms editor after creation.
-* Fix: Forms not publishing or saving with certain blocks on low PHP memory servers.
 
 The full changelog is available [here](https://sureforms.com/whats-new/).
 

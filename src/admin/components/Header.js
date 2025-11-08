@@ -147,15 +147,10 @@ const Header = () => {
 							) ) }
 						</nav>
 					</Topbar.Item>
-					{ ! isProActive &&
-						! isLicenseActive &&
-						isFirstFormCreated &&
-						srfm_admin?.check_eight_days_threshold && (
+					{ ! isProActive && ! isLicenseActive && (
 						<Topbar.Item>
 							<Button
-								icon={
-									<ArrowUpRight className="!size-5" />
-								}
+								icon={ <ArrowUpRight className="!size-5" /> }
 								iconPosition="right"
 								variant="link"
 								size="sm"
@@ -164,7 +159,7 @@ const Header = () => {
 									window.open(
 										addQueryParam(
 											srfm_admin?.pricing_page_url ||
-													srfm_admin?.sureforms_pricing_page,
+												srfm_admin?.sureforms_pricing_page,
 											'dashboard-header-cta'
 										),
 										'_blank',
