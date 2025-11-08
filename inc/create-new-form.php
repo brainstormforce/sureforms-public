@@ -58,9 +58,9 @@ class Create_New_Form {
 	 * @since 0.0.2
 	 */
 	public static function get_default_meta_keys() {
-		return [
+		$default_values = [
 			'_srfm_submit_button_text'       => [ __( 'Submit', 'sureforms' ) ],
-			'_srfm_use_label_as_placeholder' => [ '' ],
+			'_srfm_use_label_as_placeholder' => [ false ],
 			'_srfm_single_page_form_title'   => [ 1 ],
 			'_srfm_instant_form'             => [ '' ],
 			'_srfm_form_container_width'     => [ 650 ],
@@ -76,7 +76,10 @@ class Create_New_Form {
 			'_srfm_additional_classes'       => [ '' ],
 			'_srfm_submit_type'              => [ 'message' ],
 			'_srfm_form_recaptcha'           => [ 'none' ],
+			'_srfm_is_inline_button'         => [ false ], // @since x.x.x -- adding required default value.
 		];
+
+		return apply_filters( 'srfm_add_post_meta_defaults', $default_values );
 	}
 
 	/**
