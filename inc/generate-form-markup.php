@@ -744,10 +744,11 @@ class Generate_Form_Markup {
 		$page_url          = $confirmation_data['page_url'] ?? '';
 		$custom_url        = $confirmation_data['custom_url'] ?? '';
 		$confirmation_type = $confirmation_data['confirmation_type'] ?? '';
+
 		if ( 'different page' === $confirmation_type ) {
-			$redirect_url = esc_url( $page_url );
+			$redirect_url = esc_url_raw( $page_url );
 		} elseif ( 'custom url' === $confirmation_type ) {
-			$redirect_url = esc_url( $custom_url );
+			$redirect_url = esc_url_raw( $custom_url );
 		}
 
 		if ( empty( $redirect_url ) ) {
@@ -765,7 +766,7 @@ class Generate_Form_Markup {
 		$query_params = [];
 		foreach ( $confirmation_data['query_params'] as $params ) {
 			if ( is_array( $params ) && ! empty( array_keys( $params ) ) && ! empty( array_values( $params ) ) ) {
-				$query_params[ esc_attr( array_keys( $params )[0] ) ] = esc_attr( array_values( $params )[0] );
+				$query_params[ sanitize_text_field( array_keys( $params )[0] ) ] = sanitize_text_field( array_values( $params )[0] );
 			}
 		}
 
@@ -778,6 +779,6 @@ class Generate_Form_Markup {
 			$redirect_url                    = html_entity_decode( Helper::get_string_value( $smart_tags->process_smart_tags( $redirect_url, $submission_data, $form_data ) ) );
 		}
 
-		return esc_url( apply_filters( 'srfm_after_submit_redirect_url', $redirect_url ) );
+		return esc_url_raw( apply_filters( 'srfm_after_submit_redirect_url', $redirect_url ) );
 	}
 }
