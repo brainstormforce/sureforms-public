@@ -475,7 +475,7 @@ class Post_Types {
 
 		foreach ( $metas as $meta => $type ) {
 			// Get default value if exists.
-			$default_value = isset( $default_meta_keys[ $meta ] ) ? $default_meta_keys[ $meta ][0] : null;
+			$default_value = $default_meta_keys[ $meta ] ?? null;
 
 			$meta_args = [
 				'show_in_rest'      => [
