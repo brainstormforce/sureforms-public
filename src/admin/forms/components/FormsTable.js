@@ -2,7 +2,7 @@ import { __ } from '@wordpress/i18n';
 import { useState } from '@wordpress/element';
 import { Edit3, Trash, RotateCcw, Eye, Share, Copy, Check } from 'lucide-react';
 import { Button, Container, Badge, Text, Tooltip } from '@bsf/force-ui';
-import Table from '@Admin/components/Table';
+import Table from '@Admin/common/listing/components/Table';
 import { exportForms } from '../utils';
 import { formatDateTime } from '@Utils/Helpers';
 

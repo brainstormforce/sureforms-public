@@ -3,7 +3,7 @@ import { Trash, RotateCcw, Eye } from 'lucide-react';
 import { Button, Container, Badge, Tooltip as FUITooltip } from '@bsf/force-ui';
 import Tooltip from '@Admin/components/Tooltip';
 import { getStatusBadgeVariant } from '../utils/entryHelpers';
-import Table from '@Admin/components/Table';
+import Table from '@Admin/common/listing/components/Table';
 import { formatDateTime } from '@Utils/Helpers';
 
 /**
