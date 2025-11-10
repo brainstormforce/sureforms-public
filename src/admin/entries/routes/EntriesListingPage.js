@@ -1,7 +1,7 @@
 import { __, _n, sprintf } from '@wordpress/i18n';
 import { useEffect, useMemo, useState } from '@wordpress/element';
 import { useNavigate } from 'react-router-dom';
-import { Button, Text, toast } from '@bsf/force-ui';
+import { toast } from '@bsf/force-ui';
 import EntriesHeader from '../components/EntriesHeader';
 import EntriesFilters from '../components/EntriesFilters';
 import EntriesTable from '../components/EntriesTable';
@@ -22,6 +22,7 @@ import {
 } from '../hooks/useEntriesQuery';
 import { transformEntry } from '../utils/entryHelpers';
 import { getFormOptions } from '../constants';
+import NoResultsFound from '@Admin/common/listing/components/NoResultsFound';
 
 /**
  * EntriesListingPage Component
@@ -529,24 +530,9 @@ const EntriesListingPage = () => {
 					{ hasActiveFilters &&
 					entries.length === 0 &&
 					! isLoading ? (
-							<div className="space-y-3 py-8 flex flex-col items-center justify-center mx-auto max-w-md">
-								<Text as="h3" color="primary" size={ 24 }>
-									{ __( 'No entries found', 'sureforms' ) }
-								</Text>
-								<Text color="secondary" className="text-center">
-									{ __(
-										'No entries matches current filters. Try adjusting your search terms or clearing filters.',
-										'sureforms'
-									) }
-								</Text>
-								<Button
-									size="sm"
-									variant="outline"
-									onClick={ handleClearFilters }
-								>
-									{ __( 'Clear Filters', 'sureforms' ) }
-								</Button>
-							</div>
+							<NoResultsFound
+								handleClearFilters={ handleClearFilters }
+							/>
 						) : (
 							<EntriesTable
 								data={ entries }

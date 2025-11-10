@@ -4,7 +4,7 @@ import {
 	Search,
 	Calendar,
 	X,
-	Trash2,
+	Trash,
 	MoreVertical,
 	RotateCcw,
 	Send,
@@ -138,7 +138,7 @@ const EntriesFilters = ( {
 		const year = date.getFullYear();
 		const month = String( date.getMonth() + 1 ).padStart( 2, '0' );
 		const day = String( date.getDate() ).padStart( 2, '0' );
-		return `${ day }/${ month }/${ year }`;
+		return `${ month }/${ day }/${ year }`;
 	};
 
 	const dateFilterProps = dateRange &&
@@ -147,18 +147,6 @@ const EntriesFilters = ( {
 		value: `${ formatDate( dateRange?.from ) } - ${ formatDate(
 			dateRange?.to
 		) }`,
-		suffix: (
-			<Button
-				type="button"
-				onClick={ () => {
-					onDateRangeChange( null );
-				} }
-				variant="ghost"
-				size="xs"
-				className="bg-transparent p-0 pointer-events-auto text-icon-secondary hover:text-icon-primary transition"
-				icon={ <X /> }
-			/>
-		),
 	};
 
 	const ResendNotificationModal = applyFilters(
@@ -267,12 +255,15 @@ const EntriesFilters = ( {
 								trigger={ ( { setShow } ) => (
 									<Input
 										type="text"
-										placeholder="dd/mm/yyyy - dd/mm/yyyy"
+										placeholder={ __(
+											'dd/mm/yyyy - dd/mm/yyyy',
+											'sureforms'
+										) }
 										readOnly
 										onClick={ () =>
 											setShow( ( prev ) => ! prev )
 										}
-										prefix={
+										suffix={
 											<Calendar className="w-4 h-4 text-icon-secondary" />
 										}
 										{ ...dateFilterProps }
@@ -285,7 +276,7 @@ const EntriesFilters = ( {
 							<Input
 								type="search"
 								placeholder={ __(
-									'Search your entry.',
+									'Search entries…',
 									'sureforms'
 								) }
 								ref={ searchInputRef }
@@ -338,7 +329,7 @@ const EntriesFilters = ( {
 							variant="outline"
 							size="sm"
 							onClick={ onBulkDelete }
-							icon={ <Trash2 className="w-4 h-4" /> }
+							icon={ <Trash className="w-4 h-4" /> }
 							iconPosition="left"
 							className="min-w-fit"
 							destructive

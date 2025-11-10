@@ -4,6 +4,7 @@ import { Edit3, Trash, RotateCcw, Eye, Share, Copy, Check } from 'lucide-react';
 import { Button, Container, Badge, Text, Tooltip } from '@bsf/force-ui';
 import Table from '@Admin/components/Table';
 import { exportForms } from '../utils';
+import { formatDateTime } from '@Utils/Helpers';
 
 /**
  * FormsTable Component
@@ -45,31 +46,6 @@ const FormsTable = ( {
 } ) => {
 	// State to track which shortcode was recently copied
 	const [ copiedFormId, setCopiedFormId ] = useState( null );
-	// Format date and time function
-	const formatDateTime = ( dateString ) => {
-		const date = new Date( dateString );
-
-		// Short format for display: Nov 7, 10:20 AM
-		const shortFormat = date.toLocaleString( 'en-US', {
-			month: 'short',
-			day: 'numeric',
-			hour: 'numeric',
-			minute: '2-digit',
-			hour12: true,
-		} );
-
-		// Full format for tooltip: Nov 7, 2025, 10:20 AM
-		const fullFormat = date.toLocaleString( 'en-US', {
-			year: 'numeric',
-			month: 'short',
-			day: 'numeric',
-			hour: 'numeric',
-			minute: '2-digit',
-			hour12: true,
-		} );
-
-		return { shortFormat, fullFormat };
-	};
 
 	// Handle copy shortcode
 	const handleCopyShortcode = async ( form ) => {

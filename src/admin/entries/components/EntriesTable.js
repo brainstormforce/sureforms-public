@@ -1,9 +1,10 @@
 import { __ } from '@wordpress/i18n';
-import { Trash2, RotateCcw, Eye } from 'lucide-react';
-import { Button, Container, Badge } from '@bsf/force-ui';
+import { Trash, RotateCcw, Eye } from 'lucide-react';
+import { Button, Container, Badge, Tooltip as FUITooltip } from '@bsf/force-ui';
 import Tooltip from '@Admin/components/Tooltip';
 import { getStatusBadgeVariant } from '../utils/entryHelpers';
 import Table from '@Admin/components/Table';
+import { formatDateTime } from '@Utils/Helpers';
 
 /**
  * EntriesTable Component
@@ -96,10 +97,11 @@ const EntriesTable = ( {
 		{
 			label: __( 'First Field', 'sureforms' ),
 			key: 'firstField',
+			headerClassName: 'w-[23%]',
 			render: ( entry ) => {
 				if ( typeof entry?.firstField === 'string' ) {
 					return (
-						<span className="line-clamp-1">
+						<span className="line-clamp-1 break-all overflow-hidden">
 							{ entry.firstField }
 						</span>
 					);
@@ -110,14 +112,14 @@ const EntriesTable = ( {
 					typeof entry?.firstField[ 0 ] === 'string'
 				) {
 					return (
-						<span className="line-clamp-1">
+						<span className="line-clamp-1 break-all overflow-hidden">
 							{ __( 'Upload', 'sureforms' ) }
 						</span>
 					);
 				}
 
 				return (
-					<span className="line-clamp-1">
+					<span className="line-clamp-1 break-all overflow-hidden">
 						{ ' ' }
 						{ __( 'Repeater', 'sureforms' ) }{ ' ' }
 					</span>
@@ -129,9 +131,26 @@ const EntriesTable = ( {
 			key: 'dateTime',
 			sortable: true,
 			headerClassName: 'w-[15%]',
-			render: ( entry ) => (
-				<span className="line-clamp-1">{ entry.dateTime }</span>
-			),
+			render: ( entry ) => {
+				const { shortFormat, fullFormat } = formatDateTime(
+					entry.dateTime
+				);
+				return (
+					<FUITooltip
+						content={ <span>{ fullFormat }</span> }
+						placement="top"
+						variant="dark"
+						arrow
+						interactive
+						tooltipPortalId="srfm-settings-container"
+						className="z-999999"
+					>
+						<span className="text-sm font-normal text-text-secondary">
+							{ shortFormat }
+						</span>
+					</FUITooltip>
+				);
+			},
 		},
 		{
 			label: __( 'Actions', 'sureforms' ),
@@ -158,14 +177,14 @@ const EntriesTable = ( {
 					buttons.push( {
 						content: __( 'Delete Permanently', 'sureforms' ),
 						ariaLabel: __( 'Delete Permanently', 'sureforms' ),
-						icon: <Trash2 />,
+						icon: <Trash />,
 						onClick: () => onDelete?.( entry ),
 					} );
 				} else {
 					buttons.push( {
 						content: __( 'Move to Trash', 'sureforms' ),
 						ariaLabel: __( 'Move to Trash', 'sureforms' ),
-						icon: <Trash2 />,
+						icon: <Trash />,
 						onClick: () => onDelete?.( entry ),
 					} );
 				}

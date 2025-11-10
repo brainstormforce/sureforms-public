@@ -103,7 +103,7 @@ const EntryLogsSection = ( { entryId, onConfirmation } ) => {
 								className="bg-background-primary rounded-md p-3 relative shadow-sm flex items-start justify-between gap-3"
 							>
 								<div className="flex-1 space-y-2">
-									<div className="text-sm font-semibold text-text-primary">
+									<div className="text-xs font-semibold text-text-secondary">
 										{ log.title }{ ' ' }
 										{ log.timestamp &&
 											`at ${ formatTimestamp(
