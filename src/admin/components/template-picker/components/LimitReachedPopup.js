@@ -41,13 +41,11 @@ const LimitReachedPopup = ( {
 	const is_pro_active =
 		srfm_admin?.is_pro_active && srfm_admin?.is_pro_license_active;
 
-
-	useEffect(() => {
-		if (showFeatures) {
-			localStorage.setItem('srfm_ai_banner_closed', 'true');
+	useEffect( () => {
+		if ( showFeatures ) {
+			localStorage.setItem( 'srfm_ai_banner_closed', 'true' );
 		}
-	}, [showFeatures]);
-
+	}, [ showFeatures ] );
 
 	const renderLimitReachedContent = () => (
 		<Container
