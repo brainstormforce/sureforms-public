@@ -736,6 +736,24 @@ function StyleSettings( props ) {
 			component: (
 				<div className="srfm-bg-component">
 					<Background
+						bgTextOptions={ [
+							{
+								value: 'color',
+								label: __( 'Solid', 'sureforms' ),
+								tooltip: __( 'Solid', 'sureforms' ),
+							},
+							{
+								value: 'gradient',
+								label: __( 'Gradient', 'sureforms' ),
+								tooltip: __( 'Gradient', 'sureforms' ),
+							},
+							{
+								value: 'image',
+								label: __( 'Image', 'sureforms' ),
+								tooltip: __( 'Image', 'sureforms' ),
+							},
+						] }
+						disableOverlay={ true }
 						// Background Properties
 						backgroundType={ {
 							value: bg_type || 'color',
@@ -1098,7 +1116,7 @@ function StyleSettings( props ) {
 				<>
 					<p className="components-base-control__help" />
 					<MultiButtonsControl
-						label={ __( 'Submit Button Alignment', 'sureforms' ) }
+						label={ __( 'Button Alignment', 'sureforms' ) }
 						data={ {
 							value: formStyling?.submit_button_alignment,
 							label: 'submit_button_alignment',

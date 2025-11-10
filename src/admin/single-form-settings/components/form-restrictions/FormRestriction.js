@@ -21,7 +21,14 @@ const FormRestriction = () => {
 	);
 
 	return (
-		<TabContentWrapper title={ __( 'Advanced Settings', 'sureforms' ) }>
+		<TabContentWrapper
+			title={ __( 'Advanced Settings', 'sureforms' ) }
+			showTitleHelpText={ true }
+			titleHelpText={ __(
+				'Set limits on how many times a form can be submitted and manage compliance options, including GDPR and data retention.',
+				'sureforms'
+			) }
+		>
 			<div id="srfm-form-restriction-panel" />
 			<Title
 				size="xs"

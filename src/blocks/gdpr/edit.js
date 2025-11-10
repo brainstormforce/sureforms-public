@@ -73,16 +73,6 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 									setAttributes( { errorMsg: value } );
 								} }
 							/>
-							<ToggleControl
-								label={ __(
-									'Checked by default',
-									'sureforms'
-								) }
-								checked={ isChecked }
-								onChange={ ( checked ) =>
-									setAttributes( { checked } )
-								}
-							/>
 							<SRFMTextControl
 								variant="textarea"
 								data={ {
@@ -93,6 +83,16 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 								value={ help }
 								onChange={ ( value ) =>
 									setAttributes( { help: value } )
+								}
+							/>
+							<ToggleControl
+								label={ __(
+									'Checked by default',
+									'sureforms'
+								) }
+								checked={ isChecked }
+								onChange={ ( checked ) =>
+									setAttributes( { checked } )
 								}
 							/>
 						</SRFMAdvancedPanelBody>

@@ -1019,6 +1019,45 @@ class Helper {
 	}
 
 	/**
+	 * Parse and sanitize an email list string which may contain:
+	 *
+	 * @param string $input email addresses.
+	 * @since 1.13.2
+	 * @return string Sanitized email header string.
+	 */
+	public static function sanitize_email_header( $input ) {
+		if ( empty( $input ) ) {
+			return '';
+		}
+
+		$parts  = explode( ',', $input );
+		$output = [];
+
+		foreach ( $parts as $part ) {
+			$part = trim( $part );
+
+			// Match "Name <email>".
+			if ( preg_match( '/^(.*)<(.+)>$/', $part, $matches ) ) {
+				$name  = trim( $matches[1], "\" \t\n\r\0\x0B" ); // trim quotes.
+				$email = sanitize_email( trim( $matches[2] ) );
+
+				if ( is_email( $email ) ) {
+					$safe_name = sanitize_text_field( $name );
+					$output[]  = $safe_name . ' <' . $email . '>';
+				}
+			} else {
+				// Plain email case.
+				$email = sanitize_email( $part );
+				if ( is_email( $email ) ) {
+					$output[] = $email;
+				}
+			}
+		}
+
+		return ! empty( $output ) ? implode( ', ', $output ) : '';
+	}
+
+	/**
 	 * Process blocks and inner blocks.
 	 *
 	 * @param array<mixed>  $blocks The block data.
@@ -1575,34 +1614,34 @@ class Helper {
 
 		$integrations = [
 			'sure_mails'        => [
-				'title'       => __( 'SureMail', 'sureforms' ),
-				'subtitle'    => __( 'Free and easy SMTP mails plugin.', 'sureforms' ),
-				'status'      => self::get_plugin_status( 'suremails/suremails.php' ),
-				'slug'        => 'suremails',
-				'path'        => 'suremails/suremails.php',
-				'redirection' => admin_url( 'options-general.php?page=suremail#/dashboard' ),
-				'logo'        => self::encode_svg( is_string( $logo_sure_mails ) ? $logo_sure_mails : '' ),
+				'title'                 => __( 'SureMail', 'sureforms' ),
+				'singleLineDescription' => __( 'Boost Your Email Deliverability Instantly!', 'sureforms' ),
+				'subtitle'              => __( 'Access a powerful, easy-to-use email delivery service that ensures your emails land in inboxes, not spam folders. Automate your WordPress email workflows confidently with SureMail.', 'sureforms' ),
+				'status'                => self::get_plugin_status( 'suremails/suremails.php' ),
+				'slug'                  => 'suremails',
+				'path'                  => 'suremails/suremails.php',
+				'logo'                  => self::encode_svg( is_string( $logo_sure_mails ) ? $logo_sure_mails : '' ),
 			],
 			'sure_triggers'     => [
-				'title'       => __( 'OttoKit', 'sureforms' ),
-				'subtitle'    => __( 'No-code automation tool for WordPress.', 'sureforms' ),
-				'description' => __( 'OttoKit is a powerful automation platform that helps you connect your various plugins and apps together. It allows you to automate repetitive tasks, so you can focus on more important work.', 'sureforms' ),
-				'status'      => self::get_plugin_status( 'suretriggers/suretriggers.php' ),
-				'slug'        => 'suretriggers',
-				'path'        => 'suretriggers/suretriggers.php',
-				'redirection' => admin_url( 'admin.php?page=suretriggers' ),
-				'logo'        => self::encode_svg( is_string( $logo_sure_triggers ) ? $logo_sure_triggers : '' ),
-				'logo_full'   => self::encode_svg( is_string( $logo_full ) ? $logo_full : '' ),
-				'connected'   => $suretrigger_connected,
+				'title'                 => __( 'OttoKit', 'sureforms' ),
+				'singleLineDescription' => __( 'Automate your WordPress workflows effortlessly.', 'sureforms' ),
+				'subtitle'              => __( 'Connect your WordPress plugins and favourite apps, automate tasks, and sync data effortlessly using OttoKit’s clean, visual workflow builder — no coding or complex setup required.', 'sureforms' ),
+				'status'                => self::get_plugin_status( 'suretriggers/suretriggers.php' ),
+				'slug'                  => 'suretriggers',
+				'path'                  => 'suretriggers/suretriggers.php',
+				'logo'                  => self::encode_svg( is_string( $logo_sure_triggers ) ? $logo_sure_triggers : '' ),
+				'logo_full'             => self::encode_svg( is_string( $logo_full ) ? $logo_full : '' ),
+				'connected'             => $suretrigger_connected,
+				'connection_url'        => admin_url( 'admin.php?page=suretriggers' ),
 			],
 			'starter_templates' => [
-				'title'       => __( 'Starter Templates', 'sureforms' ),
-				'subtitle'    => __( 'Build your dream website in minutes with AI.', 'sureforms' ),
-				'status'      => self::get_plugin_status( self::check_starter_template_plugin() ),
-				'slug'        => 'astra-sites',
-				'path'        => self::check_starter_template_plugin(),
-				'redirection' => admin_url( 'admin.php?page=starter-templates' ),
-				'logo'        => self::encode_svg( is_string( $logo_starter_templates ) ? $logo_starter_templates : '' ),
+				'title'                 => __( 'Starter Templates', 'sureforms' ),
+				'singleLineDescription' => __( 'Launch Beautiful Websites in Minutes!', 'sureforms' ),
+				'subtitle'              => __( 'Choose from professionally designed templates, import with one click, and customize effortlessly to match your brand.', 'sureforms' ),
+				'status'                => self::get_plugin_status( self::check_starter_template_plugin() ),
+				'slug'                  => 'astra-sites',
+				'path'                  => self::check_starter_template_plugin(),
+				'logo'                  => self::encode_svg( is_string( $logo_starter_templates ) ? $logo_starter_templates : '' ),
 			],
 		];
 
@@ -1610,26 +1649,114 @@ class Helper {
 
 		if ( $elementor_installed ) {
 			$integrations['uae'] = [
-				'title'    => __( 'Ultimate Addons for Elementor', 'sureforms' ),
-				'subtitle' => __( 'Build modern websites with elementor addons.', 'sureforms' ),
-				'status'   => self::get_plugin_status( 'header-footer-elementor/header-footer-elementor.php' ),
-				'slug'     => 'header-footer-elementor',
-				'path'     => 'header-footer-elementor/header-footer-elementor.php',
-				'logo'     => self::encode_svg( is_string( $logo_uae ) ? $logo_uae : '' ),
+				'title'                 => __( 'Ultimate Addons for Elementor', 'sureforms' ),
+				'singleLineDescription' => __( 'Power Up Elementor to Build Stunning Websites Faster!', 'sureforms' ),
+				'subtitle'              => __( 'Enhance Elementor with powerful widgets and templates. Build stunning, high-performing websites faster with creative design elements and seamless customization.', 'sureforms' ),
+				'status'                => self::get_plugin_status( 'header-footer-elementor/header-footer-elementor.php' ),
+				'slug'                  => 'header-footer-elementor',
+				'path'                  => 'header-footer-elementor/header-footer-elementor.php',
+				'logo'                  => self::encode_svg( is_string( $logo_uae ) ? $logo_uae : '' ),
 			];
 		} else {
 			$integrations['sure_rank'] = [
-				'title'       => __( 'SureRank', 'sureforms' ),
-				'subtitle'    => __( ' Boost your website\'s visibility with smart SEO automation. Optimize content, track keyword performance, and get actionable insights, all inside WordPress.', 'sureforms' ),
-				'status'      => self::get_plugin_status( 'surerank/surerank.php' ),
-				'slug'        => 'surerank',
-				'path'        => 'surerank/surerank.php',
-				'redirection' => admin_url( 'admin.php?page=surerank#/dashboard' ),
-				'logo'        => self::encode_svg( is_string( $logo_sure_rank ) ? $logo_sure_rank : '' ),
+				'title'                 => __( 'SureRank', 'sureforms' ),
+				'singleLineDescription' => __( 'Elevate Your SEO and Climb Search Rankings Effortlessly!', 'sureforms' ),
+				'subtitle'              => __( 'Boost your website\'s visibility with smart SEO automation. Optimize content, track keyword performance, and get actionable insights, all inside WordPress.', 'sureforms' ),
+				'status'                => self::get_plugin_status( 'surerank/surerank.php' ),
+				'slug'                  => 'surerank',
+				'path'                  => 'surerank/surerank.php',
+				'logo'                  => self::encode_svg( is_string( $logo_sure_rank ) ? $logo_sure_rank : '' ),
 			];
 		}
 
 		return apply_filters( 'srfm_integrated_plugins', $integrations );
+	}
+
+	/**
+	 * Get the current rotating plugin for the banner.
+	 *
+	 * Plugins rotate every 2 days. Only non-activated plugins are shown.
+	 * Returns false if all plugins are activated.
+	 *
+	 * @since x.x.x
+	 * @return array<string, mixed>|false The current plugin data or false if all plugins are activated.
+	 */
+	public static function get_rotating_plugin_banner() {
+		$all_plugins = self::sureforms_get_integration();
+
+		if ( ! is_array( $all_plugins ) ) {
+			return false;
+		}
+
+		$available_plugins = [];
+
+		// Only include non-activated plugins.
+		foreach ( $all_plugins as $plugin ) {
+			if ( ! is_array( $plugin ) ) {
+				continue;
+			}
+			if ( isset( $plugin['status'] ) && is_string( $plugin['status'] ) && 'Activated' !== $plugin['status'] ) {
+				$available_plugins[] = $plugin;
+			}
+		}
+
+		// Re-index the array to have sequential numeric keys.
+		$available_plugins = array_values( $available_plugins );
+		$total_plugins     = count( $available_plugins );
+
+		// Hide section if all plugins are active.
+		if ( 0 === $total_plugins ) {
+			return false;
+		}
+
+		// Get stored rotation data.
+		$rotation_data = self::get_srfm_option( 'plugin_banner_rotation', [] );
+
+		if ( ! is_array( $rotation_data ) ) {
+			$rotation_data = [];
+		}
+
+		// Initialize rotation data if empty.
+		if ( empty( $rotation_data ) ) {
+			$current_time = time();
+			self::update_srfm_option(
+				'plugin_banner_rotation',
+				[
+					'last_rotation_date' => $current_time,
+					'plugin_index'       => 0,
+				]
+			);
+			return isset( $available_plugins[0] ) && is_array( $available_plugins[0] ) ? $available_plugins[0] : false;
+		}
+
+		$last_rotation_date = isset( $rotation_data['last_rotation_date'] ) && is_int( $rotation_data['last_rotation_date'] ) ? $rotation_data['last_rotation_date'] : 0;
+		$plugin_index       = isset( $rotation_data['plugin_index'] ) && is_numeric( $rotation_data['plugin_index'] ) ? intval( $rotation_data['plugin_index'] ) : 0;
+
+		$current_time        = time();
+		$days_since_rotation = ( $current_time - $last_rotation_date ) / DAY_IN_SECONDS;
+
+		// Rotate every 2 days.
+		if ( $days_since_rotation >= 2 ) {
+			// Rotate to next plugin.
+			++$plugin_index;
+			$plugin_index %= $total_plugins;
+
+			// Update the rotation data.
+			self::update_srfm_option(
+				'plugin_banner_rotation',
+				[
+					'last_rotation_date' => $current_time,
+					'plugin_index'       => $plugin_index,
+				]
+			);
+		}
+
+		// Ensure the index is within bounds.
+		if ( $plugin_index >= $total_plugins ) {
+			$plugin_index = 0;
+		}
+
+		return isset( $available_plugins[ $plugin_index ] ) && is_array( $available_plugins[ $plugin_index ] ) ? $available_plugins[ $plugin_index ] : false;
 	}
 
 	/**
