@@ -365,6 +365,10 @@ easy.
 You can report the issue through our [Bug Bounty Program](https://brainstormforce.com/bug-bounty-program/). We collaborate with Patchstack to provide opportunities for researchers to report vulnerabilities. The Patchstack team will help validate, triage, and handle any reported security issues.
 
 == Changelog ==
+= x.x.x =
+* Improvement: Revamped add new form screen.
+* Improvement: Added popup for getting started video in dashboard.
+* Fix: Resolved an issue where block config is not updated consistently on form update.
 = 1.13.2 - 7th November 2025 =
 * Improvement: Added a fallback message for email failures on the single entries page when the SMTP plugin is missing.
 * Improvement: Added support for "Name <email\>" format in CC, BCC, and Reply-To fields.

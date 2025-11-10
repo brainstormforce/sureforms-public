@@ -68,7 +68,7 @@ const Done = () => {
 					},
 				},
 			} ).then( () => {
-				window.location.href = `${ srfm_admin.site_url }/wp-admin/admin.php?page=add-new-form&method=ai`;
+				window.location.href = `${ srfm_admin.site_url }/wp-admin/admin.php?page=add-new-form`;
 			} );
 		}, 100 );
 	};

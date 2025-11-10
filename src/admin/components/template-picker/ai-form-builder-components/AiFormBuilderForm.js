@@ -1,20 +1,54 @@
 import { __ } from '@wordpress/i18n';
-import { useState, useRef } from '@wordpress/element';
-import {
-	Button,
-	Container,
-	Label,
-	TextArea,
-	Title,
-	toast,
-	Switch,
-} from '@bsf/force-ui';
-import { ArrowRight, ChevronDown, ChevronUp, MicOff, Mic } from 'lucide-react';
+import { useState, useRef, useEffect, memo } from '@wordpress/element';
+import { Button, Container, TextArea, toast, Tooltip } from '@bsf/force-ui';
+import { ArrowRight, Sparkles, MicOff, Mic } from 'lucide-react';
 import { applyFilters } from '@wordpress/hooks';
-import PremiumBadge from '@Admin/components/PremiumBadge';
 import { cn, srfmClassNames } from '@Utils/Helpers';
-import ConnectWithAIBanner from '../ai-form-builder-components/ConnectWithAIBanner.js';
 import FormTypeSelector from '../components/FormTypeSelector.js';
+import CreditDetailsPopup from './CreditDetailsPopup.js';
+import { useLocation } from 'react-router-dom';
+
+const VoiceToggleButton = memo( ( { isListening, toggleListening } ) => {
+	const buttonProps = isListening
+		? {
+			icon: <Mic className="w-3 h-3" />,
+			required_className: [
+				'bg-badge-background-green',
+				'border-badge-border-green',
+				'text-badge-color-green',
+				'hover:bg-badge-background-green',
+			],
+		  }
+		: {
+			icon: <MicOff className="w-3 h-3" />,
+			required_className: [
+				'border-badge-border-gray',
+				'bg-badge-background-gray',
+			],
+		  };
+
+	return (
+		<Tooltip
+			tooltipPortalId="srfm-add-new-form-container"
+			arrow
+			className="z-999999"
+			title={ __( 'Voice Input', 'sureforms' ) }
+			placement="bottom"
+			triggers={ [ 'hover', 'focus' ] }
+		>
+			<Button
+				icon={ buttonProps.icon }
+				iconPosition="left"
+				variant="outline"
+				size="xs"
+				className={ `p-3 rounded-full border-0.5 border-solid font-medium hover:cursor-pointer ${ srfmClassNames(
+					buttonProps.required_className
+				) }` }
+				onClick={ toggleListening }
+			/>
+		</Tooltip>
+	);
+} );
 
 export default ( props ) => {
 	const {
@@ -22,33 +56,37 @@ export default ( props ) => {
 		setIsBuildingForm,
 		formTypeObj,
 		setFormTypeObj,
-		showEmptyError,
-		setShowEmptyError,
 		setFormType,
 		formType,
+		type,
+		showCreditDetailsPopup,
+		setShowCreditDetailsPopup,
+		features,
 	} = props;
 
 	const [ isListening, setIsListening ] = useState( false ); // State to manage voice recording
-	const [ showFormIdeas, setShowFormIdeas ] = useState( true );
 	const [ characterCount, setCharacterCount ] = useState( 0 );
 	const [ text, setText ] = useState( '' );
 	const recognitionRef = useRef( null ); // To store SpeechRecognition instance
 	const [ formLayout, setformLayout ] = useState( {} );
-	const showAiConversationalFormToggle = false;
-	const conversationalFormAiToggle = applyFilters(
-		'srfm.aiFormScreen.conversational.toggle',
-		showAiConversationalFormToggle,
-		formTypeObj,
-		setFormTypeObj,
-		formLayout,
-		setformLayout
-	);
+	const [ placeholderIndex, setPlaceholderIndex ] = useState( 0 );
+	const [ displayedPlaceholder, setDisplayedPlaceholder ] = useState( '' );
+
+	// 👇 added new state for banner visibility
+	const [ isFocused, setIsFocused ] = useState( false );
 
 	const handlePromptClick = ( prompt ) => {
-		setShowEmptyError( false );
 		setText( prompt );
 		setCharacterCount( prompt.length );
 	};
+
+	function useQuery() {
+		return new URLSearchParams( useLocation().search );
+	}
+
+	const query = useQuery();
+
+	const page = query.get( 'page' );
 
 	const initSpeechRecognition = () => {
 		const SpeechRecognition =
@@ -70,10 +108,15 @@ export default ( props ) => {
 			recognitionRef.current.stop();
 			setIsListening( false );
 		}
-		setShowEmptyError( false );
 	};
 
 	const toggleListening = () => {
+		const textArea = document.getElementById( 'textarea' );
+		if ( ! isFocused ) {
+			setIsFocused( true );
+			textArea.focus();
+		}
+
 		// initialize SpeechRecognition instance if not already initialized
 		if ( ! recognitionRef.current ) {
 			recognitionRef.current = initSpeechRecognition();
@@ -139,280 +182,288 @@ export default ( props ) => {
 		'srfm.aiFormScreen.examplePrompts',
 		[
 			{
-				title: __( 'Create simple contact form', 'sureforms' ),
+				title: __(
+					'Contact form to collect name, email, and message from visitors',
+					'sureforms'
+				),
 			},
 			{
-				title: __( 'Create a lead generation form', 'sureforms' ),
+				title: __(
+					'Job application form for "Marketing Manager" with resume upload',
+					'sureforms'
+				),
 			},
 			{
-				title: __( 'Generate a user feedback form', 'sureforms' ),
+				title: __(
+					'Feedback form to ask customers: "How would you rate our product and what should we improve?"',
+					'sureforms'
+				),
 			},
 			{
-				title: __( 'Create a job application form', 'sureforms' ),
+				title: __(
+					'Event registration form for "Photography Workshop" with date and seat selection',
+					'sureforms'
+				),
 			},
 			{
-				title: __( 'Make an event registration form', 'sureforms' ),
+				title: __(
+					'Newsletter signup form with name and email to join mailing list',
+					'sureforms'
+				),
+			},
+			{
+				title: __(
+					'Order form for "Custom T-Shirt" with size, color, and quantity options',
+					'sureforms'
+				),
+			},
+			{
+				title: __(
+					'Survey form: "How satisfied are you with our service? (1–5 stars)"',
+					'sureforms'
+				),
+			},
+			{
+				title: __(
+					'Appointment booking form for "Consultation Call" with preferred time',
+					'sureforms'
+				),
 			},
 		],
 		formTypeObj,
 		formType
 	);
 
-	const aiPromptPlaceholder = applyFilters(
-		'srfm.aiFormScreen.aiPromptPlaceholder',
-		'',
-		formLayout,
-		formType
-	);
+	const rotatingPlaceholders = examplePrompts
+		.map( ( prompt ) =>
+			typeof prompt === 'string' ? prompt : prompt.title
+		)
+		.filter( Boolean ); // remove empty values
 
-	// conversational form toggle
-	const conversationalAiToggle = (
-		<Container.Item className="py-2 flex flex-wrap items-center gap-2">
-			<Switch
-				aria-label={ __( 'Create Conversational Form', 'sureforms' ) }
-				id="switch-element"
-				size="sm"
-				className="shadow-sm-blur-2 bg-toggle-off border border-solid border-toggle-off-border"
-				disabled={ true }
-			/>
-			<Label variant="neutral" size="sm">
-				{ __( 'Create Conversational Form', 'sureforms' ) }
-			</Label>
-			<PremiumBadge
-				tooltipHeading={ __(
-					'Unlock Conversational Forms',
-					'sureforms'
-				) }
-				tooltipContent={ __(
-					'With the SureForms Pro Plan, you can transform your forms into engaging conversational layouts for a seamless user experience.',
-					'sureforms'
-				) }
-				utmMedium="ai_builder"
-			/>
-		</Container.Item>
-	);
+	useEffect( () => {
+		if ( rotatingPlaceholders.length > 1 ) {
+			const interval = setInterval( () => {
+				setPlaceholderIndex(
+					( prevIndex ) =>
+						( prevIndex + 1 ) % rotatingPlaceholders.length
+				);
+			}, 2000 );
+
+			return () => clearInterval( interval );
+		}
+	}, [ formType, rotatingPlaceholders, formLayout ] );
+
+	const textAreaPlaceholder = rotatingPlaceholders[ placeholderIndex ];
+
+	useEffect( () => {
+		if ( ! textAreaPlaceholder ) {
+			return;
+		}
+
+		let i = 0; // Start typing from first character
+
+		const interval = setInterval( () => {
+			if ( i < textAreaPlaceholder.length ) {
+				// Typing one character at a time
+				setDisplayedPlaceholder(
+					( prev ) => prev + textAreaPlaceholder.charAt( i )
+				);
+				i++;
+			} else {
+				// Fully typed, stop interval
+				clearInterval( interval );
+			}
+		}, 50 );
+
+		// Clear previous placeholder before typing new one
+		setDisplayedPlaceholder( '' );
+
+		return () => clearInterval( interval );
+	}, [ textAreaPlaceholder ] );
+
+	const formCreationleft = srfm_admin?.srfm_ai_usage_details?.remaining ?? 0;
+
+	const isRegistered =
+		srfm_admin?.srfm_ai_usage_details?.type === 'registered';
+	const finalFormCreationCountRemaining =
+		isRegistered && formCreationleft > 20 ? 20 : formCreationleft;
 
 	const is_pro_active =
 		srfm_admin?.is_pro_active && srfm_admin?.is_pro_license_active;
 
-	const VoiceToggleButton = () => {
-		const buttonProps = isListening
-			? {
-				icon: <Mic size={ 12 } />,
-				required_className: [
-					'bg-badge-background-green',
-					'border-badge-border-green',
-					'text-badge-color-green',
-					'hover:bg-badge-background-green',
-				],
-				label: __( 'Listening', 'sureforms' ),
-			  }
-			: {
-				icon: <MicOff size={ 12 } />,
-				required_className: [
-					'bg-badge-background-orange-10',
-					'border-badge-background-orange-30',
-					'text-brand-800',
-					'hover:bg-badge-background-orange-10',
-				],
-				label: __( 'Voice Input', 'sureforms' ),
-			  };
-
-		return (
-			<Button
-				icon={ buttonProps.icon }
-				iconPosition="left"
-				variant="outline"
-				size="xs"
-				className={ `rounded-full border-0.5 border-solid font-medium hover:cursor-pointer ${ srfmClassNames(
-					buttonProps.required_className
-				) }` }
-				onClick={ toggleListening }
-			>
-				{ buttonProps.label }
-			</Button>
-		);
-	};
-
-	const textAreaPlaceholder =
-		formType === 'simple'
-			? __(
-				"E.g. Form to gather feedback from our customer for our product functionality, usability , how much you will rate it and what you don't like about it.",
-				'sureforms'
-			  )
-			: aiPromptPlaceholder;
-
 	return (
 		<Container
-			className={ cn( 'pb-8 gap-8', is_pro_active && 'mt-12' ) }
+			className={ cn(
+				'gap-0',
+				showCreditDetailsPopup && ! is_pro_active && 'h-screen overflow-y-auto'
+			) }
 			direction="column"
 		>
-			<Container.Item>
-				{ ! is_pro_active && <ConnectWithAIBanner /> }
-			</Container.Item>
-			<Container.Item>
+			<Container.Item className="w-full">
 				<Container
-					className="p-4 gap-2 bg-background-primary border-0.5 border-solid border-border-subtle shadow-sm-blur-2 rounded-xl w-full h-full max-w-[42.5rem] mx-auto"
+					className={ cn(
+						'p-8 gap-6 mx-auto w-full bg-background-secondary',
+						! is_pro_active ? 'min-h-screen pb-16' : 'h-screen'
+					) }
 					direction="column"
+					justify="center"
+					align="center"
 				>
-					<FormTypeSelector
-						formType={ formType }
-						setFormType={ setFormType }
-						setformLayout={ setformLayout }
-					/>
-					<Container.Item className="flex p-2 gap-6">
-						<Title
-							tag="h4"
-							size="md"
-							title={ __(
-								'Please describe the form you want to create',
-								'sureforms'
-							) }
-						/>
-					</Container.Item>
-					<Container.Item className="flex flex-col px-2 gap-2">
-						{ formType !== 'simple' && (
-							<Label size="xs" variant="help">
-								{ __(
-									'The AI-generated form may require manual review and adjustments. Please verify all fields before publishing the form.',
-									'sureforms'
-								) }
-							</Label>
-						) }
-						<TextArea
-							aria-label={ __(
-								'Describe the form you want to create',
-								'sureforms'
-							) }
-							placeholder={ textAreaPlaceholder }
-							id="textarea"
-							value={ text }
-							size="lg"
-							className={ cn(
-								'gap-2 w-full h-[124px] text-field-placeholder py-2 px-4',
-								characterCount > 0 && 'text-text-primary'
-							) }
-							onChange={ ( e ) => {
-								handlePromptClick( e );
-							} }
-							onInput={ handleTyping }
-							maxLength={ 2000 }
-						/>
-						{ showEmptyError && (
-							<Label
-								size="sm"
-								variant="error"
-								className="font-semibold"
-							>
-								{ __( 'Prompt cannot be empty.', 'sureforms' ) }
-							</Label>
-						) }
-						{ 'simple' === formType && (
-							<Container
-								className="flex-wrap"
-								align="center"
-								justify="between"
-							>
-								{ false === conversationalFormAiToggle
-									? conversationalAiToggle
-									: conversationalFormAiToggle }
-								<Container.Item className="py-2 gap-2">
-									<VoiceToggleButton />
-								</Container.Item>
-							</Container>
-						) }
-					</Container.Item>
-					<Container.Item className="p-2 gap-6">
-						<Container direction="column">
+					<Container.Item>
+						<Container
+							direction="column"
+							align="center"
+							justify="center"
+							className="gap-6"
+						>
 							<Container.Item>
-								<Container
-									className="flex-wrap p-1"
-									align="center"
-									justify="between"
-								>
-									<Container.Item>
-										<Label
-											variant="neutral"
-											size="sm"
-											className="gap-1 flex items-center cursor-pointer"
-											onClick={ () =>
-												setShowFormIdeas(
-													! showFormIdeas
-												)
-											}
-										>
-											{ __(
-												'Some Form Ideas',
-												'sureforms'
-											) }
-											{ showFormIdeas ? (
-												<ChevronUp className="!text-icon-secondary !size-5" />
-											) : (
-												<ChevronDown className="!text-icon-secondary !size-5" />
-											) }
-										</Label>
-									</Container.Item>
-									<Container.Item className="gap-2">
-										{ 'simple' !== formType && (
-											<VoiceToggleButton />
-										) }
-									</Container.Item>
-								</Container>
+								<span className="text-3xl font-semibold text-text-primary">
+									{ __(
+										'Describe the form that you want',
+										'sureforms'
+									) }
+								</span>
 							</Container.Item>
-							{ showFormIdeas && (
-								<Container.Item>
-									<Container className="gap-2 flex-wrap">
-										{ examplePrompts.map(
-											( prompt, index ) => (
-												<Label
-													key={ index }
-													size="md"
-													type="pill"
-													variant="neutral"
-													className="rounded-full border-0.5 border-solid border-badge-border-gray bg-badge-background-gray hover:bg-badge-background-gray hover:cursor-pointer font-medium text-sm py-1 px-1.5 gap-0.5 flex"
-													onClick={ () =>
-														handlePromptClick(
-															prompt.title
-														)
-													}
-												>
-													{ prompt.title }
-												</Label>
-											)
-										) }
-									</Container>
-								</Container.Item>
-							) }
+							<Container.Item>
+								<div className="w-full min-w-[750px] mx-auto p-2 relative">
+									<div
+										className="relative rounded-lg shadow-lg p-[2px]"
+										style={ {
+											background:
+												'linear-gradient(180deg, #FF5811 0%, #8B2E16 5%, #000000 10%, #000000 100%)',
+										} }
+									>
+										<div className="relative bg-white rounded-[calc(0.5rem-1px)]">
+											<TextArea
+												aria-label={ __(
+													'Describe the form you want to create',
+													'sureforms'
+												) }
+												placeholder={
+													displayedPlaceholder
+												}
+												id="textarea"
+												value={ text }
+												size="lg"
+												className={ cn(
+													'border-none focus:[box-shadow:none] focus:outline-none resize-none w-full min-h-[140px] max-h-[300px] text-field-placeholder pt-3 px-4 pb-14 rounded-[calc(0.5rem-1px)]',
+													characterCount > 0 &&
+														'text-text-primary'
+												) }
+												onChange={ ( e ) => {
+													handlePromptClick( e );
+												} }
+												onInput={ handleTyping }
+												onFocus={ () =>
+													setIsFocused( true )
+												}
+												onBlur={ () =>
+													setIsFocused( false )
+												}
+												maxLength={ 2000 }
+											/>
+
+											<Container
+												className="flex-wrap py-2 px-4"
+												align="center"
+												justify="between"
+											>
+												<Container.Item className="flex flex-row gap-4 items-center">
+													<FormTypeSelector
+														formTypeObj={
+															formTypeObj
+														}
+														setFormTypeObj={
+															setFormTypeObj
+														}
+														formType={ formType }
+														setFormType={
+															setFormType
+														}
+														setformLayout={
+															setformLayout
+														}
+													/>
+												</Container.Item>
+												<Container.Item className="gap-4 flex flex-row">
+													<VoiceToggleButton
+														isListening={
+															isListening
+														}
+														toggleListening={
+															toggleListening
+														}
+													/>
+													<Button
+														className="gap-1"
+														icon={
+															<Sparkles className="w-4 h-4" />
+														}
+														iconPosition="left"
+														size="md"
+														variant="primary"
+														onClick={ () => {
+															if (
+																! text ||
+																! text.trim()
+															) {
+																const textArea =
+																	document.getElementById(
+																		'textarea'
+																	);
+																textArea.focus();
+																return;
+															}
+
+															handleCreateAiForm(
+																text,
+																[],
+																true
+															);
+															setIsBuildingForm(
+																true
+															);
+														} }
+													>
+														{ __(
+															'Generate',
+															'sureforms'
+														) }
+													</Button>
+												</Container.Item>
+											</Container>
+										</div>
+									</div>
+								</div>
+							</Container.Item>
 						</Container>
 					</Container.Item>
-					<Container.Item className="py-1 px-2 gap-3 flex flex-col sm:flex-row justify-end">
-						<Label
-							variant="help"
-							size="sm"
-							className="font-semibold"
-						>
-							{ characterCount }/2000
-						</Label>
+
+					{ page === 'add-new-form' &&
+						! srfm_admin?.is_pro_active && (
+						<CreditDetailsPopup
+							finalFormCreationCountRemaining={
+								finalFormCreationCountRemaining
+							}
+							setShowCreditDetailsPopup={ setShowCreditDetailsPopup }
+							showCreditDetailsPopup={ showCreditDetailsPopup }
+							type={ type }
+							features={ features }
+						/>
+					) }
+
+					<Container.Item className="flex p-2 gap-6 justify-center">
 						<Button
-							className="gap-1"
-							icon={ <ArrowRight size={ 20 } /> }
+							className="text-text-tertiary hover:cursor-pointer hover:text-text-secondary"
+							icon={ <ArrowRight size={ 16 } /> }
 							iconPosition="right"
 							size="md"
-							variant="primary"
+							variant="ghost"
 							onClick={ () => {
-								if ( ! text || ! text.trim() ) {
-									setShowEmptyError( true );
-									const textArea =
-										document.getElementById( 'textarea' );
-									textArea.focus();
-									return;
-								}
-
-								handleCreateAiForm( text, [], true );
-								setIsBuildingForm( true );
+								window.location.href = `${ srfm_admin.site_url }/wp-admin/post-new.php?post_type=sureforms_form`;
 							} }
 						>
-							{ __( 'Generate Form', 'sureforms' ) }
+							{ __( 'Or Build It Yourself', 'sureforms' ) }
 						</Button>
 					</Container.Item>
 				</Container>
