@@ -3,6 +3,7 @@ import ICONS from './icons.js';
 import { Button, Container, Label } from '@bsf/force-ui';
 import { applyFilters } from '@wordpress/hooks';
 import { Zap, ChevronRight } from 'lucide-react';
+import { useEffect } from '@wordpress/element';
 
 const LimitReachedPopup = ( {
 	title = '',
@@ -40,11 +41,13 @@ const LimitReachedPopup = ( {
 	const is_pro_active =
 		srfm_admin?.is_pro_active && srfm_admin?.is_pro_license_active;
 
-	{ showFeatures && (
-		useEffect( () => {
-			localStorage.setItem( 'srfm_ai_banner_closed', 'true' );
-		}, [] )
-	) }
+
+	useEffect(() => {
+		if (showFeatures) {
+			localStorage.setItem('srfm_ai_banner_closed', 'true');
+		}
+	}, [showFeatures]);
+
 
 	const renderLimitReachedContent = () => (
 		<Container
