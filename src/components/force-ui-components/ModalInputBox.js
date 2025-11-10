@@ -1,6 +1,8 @@
 import SmartTagList from '@Components/misc/SmartTagList';
 import { Label, Input, Container, Tooltip } from '@bsf/force-ui';
 import { cn } from '@Utils/Helpers';
+import { Info } from 'lucide-react';
+import { __ } from '@wordpress/i18n';
 
 const ModalInputBox = ( {
 	label,
@@ -18,6 +20,7 @@ const ModalInputBox = ( {
 	inputProps = {},
 	placeholder = '',
 	labelWithTooltip = false,
+	labelWithInfoTooltip = false,
 } ) => {
 	const renderLabelWithTooltip = () => (
 		<Tooltip
@@ -39,6 +42,29 @@ const ModalInputBox = ( {
 		</Tooltip>
 	);
 
+	const renderInfoWithTooltip = () => (
+		<Label className="text-base flex justify-center items-center gap-1">
+			{ label }
+			<Tooltip
+				tooltipPortalId="srfm-settings-container"
+				arrow
+				content={
+					<span>
+						{ __(
+							'Expected format for emails - email@sureforms.com or John Doe <email@sureforms.com>',
+							'sureforms'
+						) }
+					</span>
+				}
+				placement="top"
+				triggers={ [ 'hover', 'focus' ] }
+				variant="dark"
+			>
+				<Info className="size-4 !text-icon-secondary mb-1" />
+			</Tooltip>
+		</Label>
+	);
+
 	return (
 		<Container
 			direction="column"
@@ -54,7 +80,9 @@ const ModalInputBox = ( {
 						value={ value }
 						label={
 							! labelWithTooltip
-								? label
+								? labelWithInfoTooltip
+									? renderInfoWithTooltip()
+									: label
 								: renderLabelWithTooltip()
 						}
 						required={ required }

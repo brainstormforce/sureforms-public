@@ -634,7 +634,7 @@ body.post-type-sureforms_form {
 	/*
 	* Custom Styling Component Styles.
 	*/
-	.srfm-btn-bg {
+	.srfm-btn-bg, .srfm-bg-component {
 		.srfm-bg-type-container {
 			.srfm-multi-buttons-control {
 				display: flex;
@@ -718,6 +718,13 @@ html[dir="rtl"] body.post-type-sureforms_form {
 		padding: 0;
 		color: #50575e;
 	}
+}
+
+.srfm-settings-separator {
+	width: auto;
+	margin: 0px -16px 20px;
+	height: 1px;
+	background-color: #e4e4e7;
 }
 
 /**

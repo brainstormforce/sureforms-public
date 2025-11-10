@@ -251,6 +251,47 @@ class Test_Helper extends TestCase {
     }
 
     /**
+     * Test sanitize_email_header method.
+     */
+    public function test_sanitize_email_header() {
+        // Test case 1: Empty input
+        $input = '';
+        $expected = '';
+        $result = Helper::sanitize_email_header($input);
+        $this->assertEquals($expected, $result, 'Failed asserting for empty input.');
+
+        // Test case 2: Single valid email
+        $input = 'john@example.com';
+        $expected = 'john@example.com';
+        $result = Helper::sanitize_email_header($input);
+        $this->assertEquals($expected, $result, 'Failed asserting for single valid email.');
+
+        // Test case 3: Single valid email with name
+        $input = 'John Doe <john@example.com>';
+        $expected = 'John Doe <john@example.com>';
+        $result = Helper::sanitize_email_header($input);
+        $this->assertEquals($expected, $result, 'Failed asserting for email with name.');
+
+        // Test case 4: Multiple emails, with and without names
+        $input = 'John Doe <john@example.com>, jane@example.com, "Admin" <admin@example.com>';
+        $expected = 'John Doe <john@example.com>, jane@example.com, Admin <admin@example.com>';
+        $result = Helper::sanitize_email_header($input);
+        $this->assertEquals($expected, $result, 'Failed asserting for multiple emails.');
+
+        // Test case 5: Invalid emails should be ignored
+        $input = 'invalid-email, John Doe <john@example.com>';
+        $expected = 'John Doe <john@example.com>';
+        $result = Helper::sanitize_email_header($input);
+        $this->assertEquals($expected, $result, 'Failed asserting that invalid emails are ignored.');
+
+        // Test case 6: Emails with extra whitespace and quotes
+        $input = ' "John Doe" <john@example.com> , jane@example.com ';
+        $expected = 'John Doe <john@example.com>, jane@example.com';
+        $result = Helper::sanitize_email_header($input);
+        $this->assertEquals($expected, $result, 'Failed asserting trimming of whitespace and quotes.');
+    }
+
+    /**
      * Data provider for sanitize_recursively tests
      */
     public function provideSanitizeTestCases() {
@@ -1572,6 +1613,239 @@ class Test_Helper extends TestCase {
         $expected = 'srfm-textarea';
         $result = Helper::get_block_name_from_field($field_name);
         $this->assertEquals($expected, $result);
+    }
+
+    /**
+     * Test get_rotating_plugin_banner returns false when all plugins are activated.
+     */
+    public function test_get_rotating_plugin_banner_all_activated() {
+        // Mock all plugins as activated
+        add_filter('srfm_integrated_plugins', function() {
+            return [
+                'plugin1' => ['status' => 'Activated'],
+                'plugin2' => ['status' => 'Activated'],
+            ];
+        });
+
+        $result = Helper::get_rotating_plugin_banner();
+
+        $this->assertFalse($result, 'Should return false when all plugins are activated');
+
+        remove_all_filters('srfm_integrated_plugins');
+    }
+
+    /**
+     * Test get_rotating_plugin_banner initializes correctly on first run.
+     */
+    public function test_get_rotating_plugin_banner_first_run() {
+        // Clear rotation data
+        Helper::update_srfm_option('plugin_banner_rotation', []);
+
+        // Mock plugins with some not activated
+        add_filter('srfm_integrated_plugins', function() {
+            return [
+                'plugin1' => ['status' => 'Install', 'title' => 'Plugin 1'],
+                'plugin2' => ['status' => 'Install', 'title' => 'Plugin 2'],
+            ];
+        });
+
+        $result = Helper::get_rotating_plugin_banner();
+
+        // Should return first plugin
+        $this->assertIsArray($result, 'Should return an array on first run');
+        $this->assertEquals('Install', $result['status'], 'Should return first non-activated plugin');
+        $this->assertEquals('Plugin 1', $result['title'], 'Should return Plugin 1 on first run');
+
+        // Check that rotation data was initialized
+        $rotation_data = Helper::get_srfm_option('plugin_banner_rotation', []);
+        $this->assertNotEmpty($rotation_data, 'Rotation data should be initialized');
+        $this->assertEquals(0, $rotation_data['plugin_index'], 'Should start at index 0');
+
+        remove_all_filters('srfm_integrated_plugins');
+    }
+
+    /**
+     * Test get_rotating_plugin_banner rotates after 2 days.
+     */
+    public function test_get_rotating_plugin_banner_rotation() {
+        // Mock plugins
+        add_filter('srfm_integrated_plugins', function() {
+            return [
+                'plugin1' => ['status' => 'Install', 'title' => 'Plugin 1'],
+                'plugin2' => ['status' => 'Install', 'title' => 'Plugin 2'],
+                'plugin3' => ['status' => 'Install', 'title' => 'Plugin 3'],
+            ];
+        });
+
+        // Set rotation data to 3 days ago (more than 2 days)
+        $three_days_ago = time() - (3 * DAY_IN_SECONDS);
+        Helper::update_srfm_option('plugin_banner_rotation', [
+            'last_rotation_date' => $three_days_ago,
+            'plugin_index' => 0,
+        ]);
+
+        $result = Helper::get_rotating_plugin_banner();
+
+        // Should rotate to next plugin (index 1)
+        $this->assertIsArray($result, 'Should return an array');
+        $this->assertEquals('Plugin 2', $result['title'], 'Should rotate to Plugin 2 after 2 days');
+
+        // Check rotation data was updated
+        $rotation_data = Helper::get_srfm_option('plugin_banner_rotation', []);
+        $this->assertEquals(1, $rotation_data['plugin_index'], 'Plugin index should be 1');
+
+        remove_all_filters('srfm_integrated_plugins');
+    }
+
+    /**
+     * Test get_rotating_plugin_banner shows same plugin within 2 days.
+     */
+    public function test_get_rotating_plugin_banner_no_rotation_within_2_days() {
+        // Mock plugins
+        add_filter('srfm_integrated_plugins', function() {
+            return [
+                'plugin1' => ['status' => 'Install', 'title' => 'Plugin 1'],
+                'plugin2' => ['status' => 'Install', 'title' => 'Plugin 2'],
+            ];
+        });
+
+        // Set rotation data to 1 day ago (less than 2 days)
+        $one_day_ago = time() - DAY_IN_SECONDS;
+        Helper::update_srfm_option('plugin_banner_rotation', [
+            'last_rotation_date' => $one_day_ago,
+            'plugin_index' => 0,
+        ]);
+
+        $result = Helper::get_rotating_plugin_banner();
+
+        // Should still show same plugin
+        $this->assertIsArray($result, 'Should return an array');
+        $this->assertEquals('Plugin 1', $result['title'], 'Should show same plugin within 2 days');
+
+        // Check rotation data was NOT updated
+        $rotation_data = Helper::get_srfm_option('plugin_banner_rotation', []);
+        $this->assertEquals(0, $rotation_data['plugin_index'], 'Plugin index should still be 0');
+
+        remove_all_filters('srfm_integrated_plugins');
+    }
+
+    /**
+     * Test get_rotating_plugin_banner cycles back to first plugin after reaching the end.
+     */
+    public function test_get_rotating_plugin_banner_cycles_back() {
+        // Mock 2 plugins
+        add_filter('srfm_integrated_plugins', function() {
+            return [
+                'plugin1' => ['status' => 'Install', 'title' => 'Plugin 1'],
+                'plugin2' => ['status' => 'Install', 'title' => 'Plugin 2'],
+            ];
+        });
+
+        // Set to last plugin (index 1, which is the last of 2 plugins)
+        // and 3 days ago to trigger rotation
+        $three_days_ago = time() - (3 * DAY_IN_SECONDS);
+        Helper::update_srfm_option('plugin_banner_rotation', [
+            'last_rotation_date' => $three_days_ago,
+            'plugin_index' => 1,
+        ]);
+
+        $result = Helper::get_rotating_plugin_banner();
+
+        // Should cycle back to first plugin (index 0)
+        $this->assertIsArray($result, 'Should return an array');
+        $this->assertEquals('Plugin 1', $result['title'], 'Should cycle back to Plugin 1');
+
+        // Check rotation data cycles back to 0
+        $rotation_data = Helper::get_srfm_option('plugin_banner_rotation', []);
+        $this->assertEquals(0, $rotation_data['plugin_index'], 'Plugin index should cycle back to 0');
+
+        remove_all_filters('srfm_integrated_plugins');
+    }
+
+    /**
+     * Test get_rotating_plugin_banner only shows non-activated plugins.
+     */
+    public function test_get_rotating_plugin_banner_filters_activated() {
+        // Clear rotation data
+        Helper::update_srfm_option('plugin_banner_rotation', []);
+
+        // Mock plugins with mixed statuses
+        add_filter('srfm_integrated_plugins', function() {
+            return [
+                'plugin1' => ['status' => 'Activated', 'title' => 'Plugin 1'],
+                'plugin2' => ['status' => 'Install', 'title' => 'Plugin 2'],
+                'plugin3' => ['status' => 'Installed', 'title' => 'Plugin 3'],
+                'plugin4' => ['status' => 'Activated', 'title' => 'Plugin 4'],
+            ];
+        });
+
+        $result = Helper::get_rotating_plugin_banner();
+
+        // Should return first non-activated plugin (Plugin 2)
+        $this->assertIsArray($result, 'Should return an array');
+        $this->assertEquals('Plugin 2', $result['title'], 'Should only show non-activated plugins');
+
+        remove_all_filters('srfm_integrated_plugins');
+    }
+
+    /**
+     * Test get_rotating_plugin_banner continues showing plugin for full 2 days.
+     */
+    public function test_get_rotating_plugin_banner_full_duration() {
+        // Mock 3 plugins
+        add_filter('srfm_integrated_plugins', function() {
+            return [
+                'plugin1' => ['status' => 'Install', 'title' => 'Plugin 1'],
+                'plugin2' => ['status' => 'Install', 'title' => 'Plugin 2'],
+                'plugin3' => ['status' => 'Install', 'title' => 'Plugin 3'],
+            ];
+        });
+
+        // Set to plugin at index 2 with 1 day passed (less than 2)
+        $one_day_ago = time() - DAY_IN_SECONDS;
+        Helper::update_srfm_option('plugin_banner_rotation', [
+            'last_rotation_date' => $one_day_ago,
+            'plugin_index' => 2,
+        ]);
+
+        $result = Helper::get_rotating_plugin_banner();
+
+        // Should still show same plugin
+        $this->assertIsArray($result, 'Should return an array');
+        $this->assertEquals('Plugin 3', $result['title'], 'Should show plugin for full 2 days');
+
+        // Plugin index should remain the same
+        $rotation_data = Helper::get_srfm_option('plugin_banner_rotation', []);
+        $this->assertEquals(2, $rotation_data['plugin_index'], 'Plugin index should remain at 2');
+
+        remove_all_filters('srfm_integrated_plugins');
+    }
+
+    /**
+     * Test get_rotating_plugin_banner handles index bounds correctly.
+     */
+    public function test_get_rotating_plugin_banner_bounds_check() {
+        // Mock plugins
+        add_filter('srfm_integrated_plugins', function() {
+            return [
+                'plugin1' => ['status' => 'Install', 'title' => 'Plugin 1'],
+                'plugin2' => ['status' => 'Install', 'title' => 'Plugin 2'],
+            ];
+        });
+
+        // Set index out of bounds (higher than available plugins)
+        Helper::update_srfm_option('plugin_banner_rotation', [
+            'last_rotation_date' => time(),
+            'plugin_index' => 5, // Out of bounds
+        ]);
+
+        $result = Helper::get_rotating_plugin_banner();
+
+        // Should reset to first plugin (index 0)
+        $this->assertIsArray($result, 'Should return an array');
+        $this->assertEquals('Plugin 1', $result['title'], 'Should reset to first plugin when index out of bounds');
+
+        remove_all_filters('srfm_integrated_plugins');
     }
 
 }

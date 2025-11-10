@@ -18,6 +18,7 @@ const Component = ( { path } ) => {
 	// State to maintain whether to hide the page title.
 	const [ hidePageTitle, setHidePageTitle ] = useState( false );
 	const [ loading, setLoading ] = useState( false );
+	const [ helpText, setHelpText ] = useState( '' );
 
 	// Global settings states.
 	const [ generalTabOptions, setGeneralTabOptions ] = useState( {
@@ -64,12 +65,16 @@ const Component = ( { path } ) => {
 			navigation.forEach( ( single ) => {
 				const slug = single?.slug && single.slug ? single.slug : '';
 				const title = single?.name && single.name ? single.name : '';
+				// eslint-disable-next-line no-shadow
+				const helpText =
+					single?.helpText && single.helpText ? single.helpText : '';
 				// Check for the property to hide the page title.
 				const hideTitle = !! single?.hidePageTitle;
 				if ( slug ) {
 					if ( slug === path ) {
 						setPageTitle( title );
 						setHidePageTitle( hideTitle );
+						setHelpText( helpText );
 					}
 				}
 			} );
@@ -249,6 +254,7 @@ const Component = ( { path } ) => {
 				<PageTitleSection
 					title={ pageTitle }
 					hidePageTitle={ hidePageTitle }
+					helpText={ helpText }
 				/>
 			) }
 			{ /* Added the below check to make the container full width for the OttoKit tab. */ }

@@ -69,6 +69,74 @@ const Edit = ( props ) => {
 
 	const attributeOptions = [
 		{
+			id: 'required',
+			component: (
+				<ToggleControl
+					label={ __( 'Required', 'sureforms' ) }
+					checked={ required }
+					onChange={ ( checked ) =>
+						setAttributes( { required: checked } )
+					}
+				/>
+			),
+		},
+		{
+			id: 'error-message',
+			component: required ? (
+				<SRFMTextControl
+					label={ __( 'Error Message', 'sureforms' ) }
+					data={ {
+						value: errorMsg,
+						label: 'errorMsg',
+					} }
+					value={ currentErrorMsg }
+					onChange={ ( value ) => {
+						setCurrentErrorMsg( value );
+						setAttributes( { errorMsg: value } );
+					} }
+				/>
+			) : null,
+		},
+		{
+			id: 'help-text',
+			component: (
+				<SRFMTextControl
+					variant="textarea"
+					label={ __( 'Help Text', 'sureforms' ) }
+					value={ help }
+					data={ {
+						value: help,
+						label: 'help',
+					} }
+					onChange={ ( value ) => setAttributes( { help: value } ) }
+				/>
+			),
+		},
+		{
+			id: 'default-value',
+			component: (
+				<SRFMTextControl
+					label={ __( 'Default Value', 'sureforms' ) }
+					className="srfm-with-dropdown"
+					value={ defaultValue }
+					withSmartTagDropdown={ true }
+					data={ {
+						value: defaultValue,
+						label: 'defaultValue',
+					} }
+					onChange={ ( value ) =>
+						setAttributes( { defaultValue: value } )
+					}
+				/>
+			),
+		},
+		{
+			// separator
+			id: 'separator-1',
+			component: <div className="srfm-settings-separator" />,
+		},
+
+		{
 			id: 'input-pattern',
 			component: (
 				<SelectControl
@@ -144,24 +212,6 @@ const Edit = ( props ) => {
 				) : null,
 		},
 		{
-			id: 'default-value',
-			component: (
-				<SRFMTextControl
-					label={ __( 'Default Value', 'sureforms' ) }
-					className="srfm-with-dropdown"
-					value={ defaultValue }
-					withSmartTagDropdown={ true }
-					data={ {
-						value: defaultValue,
-						label: 'defaultValue',
-					} }
-					onChange={ ( value ) =>
-						setAttributes( { defaultValue: value } )
-					}
-				/>
-			),
-		},
-		{
 			id: 'read-only',
 			component: defaultValue ? (
 				<ToggleControl
@@ -174,39 +224,10 @@ const Edit = ( props ) => {
 			) : null,
 		},
 		{
-			id: 'required',
-			component: (
-				<ToggleControl
-					label={ __( 'Required', 'sureforms' ) }
-					checked={ required }
-					onChange={ ( checked ) =>
-						setAttributes( { required: checked } )
-					}
-				/>
-			),
-		},
-		{
-			id: 'error-message',
-			component: required ? (
-				<SRFMTextControl
-					label={ __( 'Error Message', 'sureforms' ) }
-					data={ {
-						value: errorMsg,
-						label: 'errorMsg',
-					} }
-					value={ currentErrorMsg }
-					onChange={ ( value ) => {
-						setCurrentErrorMsg( value );
-						setAttributes( { errorMsg: value } );
-					} }
-				/>
-			) : null,
-		},
-		{
 			id: 'unique',
 			component: (
 				<ToggleControl
-					label={ __( 'Validate as Unique', 'sureforms' ) }
+					label={ __( 'Unique Entry', 'sureforms' ) }
 					checked={ isUnique }
 					onChange={ ( checked ) =>
 						setAttributes( { isUnique: checked } )
@@ -235,25 +256,10 @@ const Edit = ( props ) => {
 			) : null,
 		},
 		{
-			id: 'help-text',
-			component: (
-				<SRFMTextControl
-					variant="textarea"
-					label={ __( 'Help Text', 'sureforms' ) }
-					value={ help }
-					data={ {
-						value: help,
-						label: 'help',
-					} }
-					onChange={ ( value ) => setAttributes( { help: value } ) }
-				/>
-			),
-		},
-		{
 			id: 'max-text-length',
 			component: (
 				<Range
-					label={ __( 'Maximum Text Length', 'sureforms' ) }
+					label={ __( 'Maximum Characters', 'sureforms' ) }
 					displayUnit={ false }
 					value={ textLength }
 					min={ 0 }

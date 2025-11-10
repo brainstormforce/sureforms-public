@@ -607,9 +607,10 @@ class Form_Submit {
 				'success'      => true,
 				'message'      => $confirmation_message,
 				'data'         => [
-					'name'          => $name,
-					'submission_id' => $entry_id,
-					'after_submit'  => true,
+					'name'               => $name,
+					'submission_id'      => $entry_id,
+					'after_submit'       => true,
+					'after_submit_nonce' => wp_create_nonce( 'srfm_after_submission_' . Helper::get_string_value( $entry_id ) ),
 				],
 				'redirect_url' => Generate_Form_Markup::get_redirect_url( $form_data, $submission_data ),
 			];
@@ -738,14 +739,19 @@ class Form_Submit {
 		// Add the From: to the headers.
 		$headers .= self::add_from_data_in_header( $submission_data, $item, $smart_tags );
 
+		// Handle Reply-To with proper sanitization.
 		if ( isset( $item['email_reply_to'] ) && ! empty( $item['email_reply_to'] ) ) {
-			$headers .= 'Reply-To:' . esc_html( Helper::get_string_value( $smart_tags->process_smart_tags( $item['email_reply_to'], $submission_data ) ) ) . "\r\n";
+			$headers .= 'Reply-To: ' . Helper::sanitize_email_header( Helper::get_string_value( $smart_tags->process_smart_tags( $item['email_reply_to'], $submission_data ) ) ) . "\r\n";
 		}
+
+		// Handle CC with proper sanitization.
 		if ( isset( $item['email_cc'] ) && ! empty( $item['email_cc'] ) ) {
-			$headers .= 'Cc:' . esc_html( Helper::get_string_value( $smart_tags->process_smart_tags( $item['email_cc'], $submission_data ) ) ) . "\r\n";
+			$headers .= 'Cc: ' . Helper::sanitize_email_header( Helper::get_string_value( $smart_tags->process_smart_tags( $item['email_cc'], $submission_data ) ) ) . "\r\n";
 		}
+
+		// Handle BCC with proper sanitization.
 		if ( isset( $item['email_bcc'] ) && ! empty( $item['email_bcc'] ) ) {
-			$headers .= 'Bcc:' . esc_html( Helper::get_string_value( $smart_tags->process_smart_tags( $item['email_bcc'], $submission_data ) ) ) . "\r\n";
+			$headers .= 'Bcc: ' . Helper::sanitize_email_header( Helper::get_string_value( $smart_tags->process_smart_tags( $item['email_bcc'], $submission_data ) ) ) . "\r\n";
 		}
 
 		return compact( 'to', 'subject', 'message', 'headers' );
@@ -847,18 +853,29 @@ class Form_Submit {
 									]
 								);
 							} else {
+								$reason = ! empty( $email_report )
+									? esc_html( $email_report )
+									: ( ! Helper::is_any_smtp_plugin_active()
+									? esc_html__( 'No SMTP plugin detected. Please configure one to enable email sending.', 'sureforms' )
+									: esc_html__( 'The failure occurred due to an undetermined cause.', 'sureforms' )
+									);
+
 								$entries_db_instance->update_log(
 									$log_key,
 									null,
 									[
 										sprintf(
-											/* translators: Here, %1$s is the comma separated emails list and %2$s is error report ( if any ). */
-											__( 'Email server was unable to send the email notification. Recipient: %1$s. Reason: %2$s', 'sureforms' ),
+										/* translators: Here, %1$s is the comma separated emails list and %2$s is error report ( if any ). */
+											__(
+												'Email server was unable to send the email notification. Recipient: %1$s. Reason: %2$s',
+												'sureforms'
+											),
 											esc_html( $parsed['to'] ),
-											! empty( $email_report ) ? esc_html( $email_report ) : esc_html__( 'Unknown', 'sureforms' )
+											$reason
 										),
 									]
 								);
+
 							}
 						}
 
