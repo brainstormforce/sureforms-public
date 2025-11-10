@@ -36,9 +36,6 @@ class Post_Types {
 		add_action( 'init', [ $this, 'register_post_metas' ] );
 		add_shortcode( 'sureforms', [ $this, 'forms_shortcode' ] );
 		add_action( 'manage_posts_extra_tablenav', [ $this, 'maybe_render_blank_form_state' ] );
-		add_filter( 'post_row_actions', [ $this, 'modify_entries_list_row_actions' ], 10, 2 );
-		add_filter( 'bulk_actions-edit-sureforms_form', [ $this, 'register_modify_bulk_actions' ], 99 );
-		add_action( 'admin_notices', [ $this, 'import_form_popup' ] );
 		add_action( 'admin_bar_menu', [ $this, 'remove_admin_bar_menu_item' ], 80, 1 );
 		add_action( 'template_redirect', [ $this, 'srfm_instant_form_redirect' ] );
 		add_action( 'template_redirect', [ $this, 'disable_sureforms_archive_page' ], 9 );
