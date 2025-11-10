@@ -4,6 +4,7 @@ import { Button, Text, Container } from '@bsf/force-ui';
 import { Plus, Dot } from 'lucide-react';
 import noFormsImage from '../no-forms.svg';
 import ImportForm from './ImportForm';
+import NoResultsFound from '@Admin/components/NoResultsFound';
 
 // EmptyState Component - Displays different empty states based on context
 const EmptyState = ( {
@@ -29,40 +30,7 @@ const EmptyState = ( {
 
 	// Empty state when filters are active but no results
 	if ( hasActiveFilters ) {
-		return (
-			<Container className="flex items-center justify-center p-8 bg-background-primary rounded-lg">
-				<div className="text-center max-w-md">
-					<Text
-						size={ 18 }
-						lineHeight={ 28 }
-						weight={ 600 }
-						color="primary"
-						className="mb-2"
-					>
-						{ __( 'No results found', 'sureforms' ) }
-					</Text>
-					<Text
-						size={ 16 }
-						lineHeight={ 24 }
-						weight={ 400 }
-						color="secondary"
-						className="mb-4"
-					>
-						{ __(
-							"We couldn't find any records matching your filters. Try adjusting the filters or resetting them to see all results.",
-							'sureforms'
-						) }
-					</Text>
-					<Button
-						variant="outline"
-						size="sm"
-						onClick={ onClearFilters }
-					>
-						{ __( 'Clear Filter', 'sureforms' ) }
-					</Button>
-				</div>
-			</Container>
-		);
+		return <NoResultsFound handleClearFilters={ onClearFilters } />;
 	}
 
 	// Empty state when no forms exist at all

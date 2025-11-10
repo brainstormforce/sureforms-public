@@ -442,17 +442,11 @@ const FormsListingPage = () => {
 
 							<Container.Item className="border-t border-border-subtle">
 								{ shouldShowFilteredEmptyState ? (
-									<div className="p-6">
-										<EmptyState
-											hasActiveFilters={ true }
-											onClearFilters={
-												handleClearFilters
-											}
-											onImportSuccess={
-												handleImportSuccess
-											}
-										/>
-									</div>
+									<EmptyState
+										hasActiveFilters={ true }
+										onClearFilters={ handleClearFilters }
+										onImportSuccess={ handleImportSuccess }
+									/>
 								) : (
 									<FormsTable
 										data={ forms }
