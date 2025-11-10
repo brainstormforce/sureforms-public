@@ -1,5 +1,5 @@
 import { __ } from '@wordpress/i18n';
-import { Edit3, Trash2, RotateCcw } from 'lucide-react';
+import { Trash2, RotateCcw, Eye } from 'lucide-react';
 import { Button, Container, Badge } from '@bsf/force-ui';
 import Tooltip from '@Admin/components/Tooltip';
 import { getStatusBadgeVariant } from '../utils/entryHelpers';
@@ -48,14 +48,36 @@ const EntriesTable = ( {
 			sortable: true,
 			sortBy: 'id',
 			headerClassName: 'w-[13%]',
+			render: ( entry ) => (
+				<Button
+					variant="link"
+					size="md"
+					className="[&>span]:p-0 text-text-secondary font-normal hover:underline no-underline"
+					onClick={ () => onEdit?.( entry ) }
+				>
+					{ entry.entryId }
+				</Button>
+			),
 		},
 		{
 			label: __( 'Form Name', 'sureforms' ),
 			key: 'formName',
 			headerClassName: 'w-[27%]',
-			render: ( entry ) => (
-				<span className="line-clamp-1">{ entry.formName }</span>
-			),
+			render: ( entry ) =>
+				!! entry.formPermalink ? (
+					<Button
+						className="line-clamp-1 text-text-secondary font-normal no-underline hover:underline"
+						tag="a"
+						variant="link"
+						size="md"
+						href={ entry.formPermalink }
+						target="_blank"
+					>
+						{ entry.formName }
+					</Button>
+				) : (
+					<span className="line-clamp-1">{ entry.formName }</span>
+				),
 		},
 		{
 			label: __( 'Status', 'sureforms' ),
@@ -106,7 +128,7 @@ const EntriesTable = ( {
 			label: __( 'Date & Time', 'sureforms' ),
 			key: 'dateTime',
 			sortable: true,
-			headerClassName: 'w-52',
+			headerClassName: 'w-[15%]',
 			render: ( entry ) => (
 				<span className="line-clamp-1">{ entry.dateTime }</span>
 			),
@@ -120,9 +142,9 @@ const EntriesTable = ( {
 				const buttons = [];
 				if ( entry.status !== 'trash' ) {
 					buttons.push( {
-						content: __( 'Edit', 'sureforms' ),
-						ariaLabel: __( 'Edit', 'sureforms' ),
-						icon: <Edit3 />,
+						content: __( 'Preview', 'sureforms' ),
+						ariaLabel: __( 'Preview', 'sureforms' ),
+						icon: <Eye />,
 						onClick: () => onEdit?.( entry ),
 					} );
 				}

@@ -1,15 +1,23 @@
-import { useState, useCallback } from '@wordpress/element';
+import { useState, useCallback, useEffect } from '@wordpress/element';
+import { useSearchParams } from 'react-router-dom';
 
 /**
- * Custom hook for managing entries sorting state
+ * Custom hook for managing entries sorting state with URL synchronization
  *
  * @param {string} initialSortBy - Initial sort column (default: '')
  * @param {string} initialOrder  - Initial sort order (default: '')
  * @return {Object} Sort state and handlers
  */
 export const useEntriesSort = ( initialSortBy = '', initialOrder = '' ) => {
-	const [ sortBy, setSortBy ] = useState( initialSortBy );
-	const [ order, setOrder ] = useState( initialOrder );
+	const [ searchParams, setSearchParams ] = useSearchParams();
+
+	// Initialize state from URL params
+	const [ sortBy, setSortBy ] = useState(
+		searchParams.get( 'sortBy' ) || initialSortBy
+	);
+	const [ order, setOrder ] = useState(
+		searchParams.get( 'order' ) || initialOrder
+	);
 
 	/**
 	 * Map frontend column keys to backend API field names
@@ -19,6 +27,25 @@ export const useEntriesSort = ( initialSortBy = '', initialOrder = '' ) => {
 		status: 'status',
 		dateTime: 'created_at',
 	};
+
+	// Update URL params when sort changes
+	useEffect( () => {
+		const params = new URLSearchParams( searchParams );
+
+		if ( sortBy ) {
+			params.set( 'sortBy', sortBy );
+		} else {
+			params.delete( 'sortBy' );
+		}
+
+		if ( order ) {
+			params.set( 'order', order );
+		} else {
+			params.delete( 'order' );
+		}
+
+		setSearchParams( params, { replace: true } );
+	}, [ sortBy, order, searchParams, setSearchParams ] );
 
 	/**
 	 * Handle sort column change

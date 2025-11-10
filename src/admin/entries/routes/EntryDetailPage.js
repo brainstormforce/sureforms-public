@@ -1,4 +1,4 @@
-import { useParams, Link, useSearchParams } from 'react-router-dom';
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { __, sprintf } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
 import { useMemo, useEffect, useState } from '@wordpress/element';
@@ -10,6 +10,7 @@ import {
 import EntryDataSection from '../components/EntryDataSection';
 import SubmissionInfoSection from '../components/SubmissionInfoSection';
 import NotesSection from '../components/NotesSection';
+import PdfFilesSection from '../components/PdfFilesSection';
 import EntryLogsSection from '../components/EntryLogsSection';
 import EntryDetailSkeleton from '../components/EntryDetailSkeleton';
 import ConfirmationDialog from '../components/ConfirmationDialog';
@@ -64,6 +65,7 @@ const SendDetailsButton = ( { handleSendEmail, isDisabled = true } ) => {
  */
 const EntryDetailPage = () => {
 	const { id } = useParams();
+	const navigate = useNavigate();
 	const [ searchParams, setSearchParams ] = useSearchParams();
 	const { mutate: updateReadStatusMutation } = useUpdateEntriesReadStatus();
 
@@ -126,6 +128,18 @@ const EntryDetailPage = () => {
 	};
 
 	/**
+	 * Navigate back to previous page or fallback to root
+	 */
+	const handleBackClick = () => {
+		// Check if there's history to go back to
+		if ( window.history.state && window.history.state.idx > 0 ) {
+			navigate( -1 );
+		} else {
+			navigate( '/' );
+		}
+	};
+
+	/**
 	 * Handler function for triggering confirmation dialogs from child components
 	 *
 	 * @param {Object}   config              - Configuration object
@@ -156,10 +170,9 @@ const EntryDetailPage = () => {
 		<>
 			<div className="p-8 bg-background-secondary min-h-screen space-y-6">
 				{ /* Header */ }
-				<div className="flex items-center gap-3 mx-auto">
+				<div className="flex items-center gap-3 mx-auto max-w-[1550px]">
 					<Button
-						tag={ Link }
-						to="/"
+						onClick={ handleBackClick }
 						variant="ghost"
 						size="md"
 						className="p-1"
@@ -173,7 +186,7 @@ const EntryDetailPage = () => {
 						) }
 					</Text>
 				</div>
-				<div className="mx-auto">
+				<div className="mx-auto max-w-[1550px]">
 					<div className="space-y-6">
 						<div className="space-y-6">
 							{ /* Main Content Grid */ }
@@ -191,6 +204,9 @@ const EntryDetailPage = () => {
 									<NotesSection
 										entryId={ id }
 										onConfirmation={ handleConfirmation }
+									/>
+									<PdfFilesSection
+										pdfLinks={ entryData?.pdfLinks }
 									/>
 									<EntryLogsSection
 										entryId={ id }

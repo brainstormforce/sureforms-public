@@ -23,7 +23,7 @@ const EditEntryButton = ( { onClick, disabled } ) => {
 			onClick={ onClick }
 			disabled={ disabled }
 		>
-			{ __( 'Edit Entries', 'sureforms' ) }
+			{ __( 'Edit Entry', 'sureforms' ) }
 		</Button>
 	);
 

@@ -133,32 +133,33 @@ export const useUpdateEntriesReadStatus = () => {
 			// Show success message
 			const action = variables?.action || '';
 			const count = variables?.entry_ids?.length || 1;
-			if ( action === 'read' ) {
-				toast.success(
-					sprintf(
-						// translators: %s is the number of entries marked as read.
-						_n(
-							'%s entry marked as read.',
-							'%s entries marked as read.',
-							count,
-							'sureforms'
-						),
-						count
-					)
+			let message = '';
+			if ( count === 1 ) {
+				const entryId = variables.entry_ids[ 0 ];
+				message = sprintf(
+					// translators: %1$s is the entry ID, %2$s is the action (read/unread).
+					__( 'Entry#%1$s marked as %2$s.', 'sureforms' ),
+					entryId,
+					action
 				);
-			} else if ( action === 'unread' ) {
-				toast.success(
-					sprintf(
-						// translators: %s is the number of entries marked as unread.
-						_n(
-							'%s entry marked as unread.',
-							'%s entries marked as unread.',
-							count,
-							'sureforms'
-						),
-						count
-					)
+			} else {
+				message = sprintf(
+					// translators: %1$s is the number of entries marked as read, %2$s is the action.
+					_n(
+						'%1$s entry marked as %2$s.',
+						'%1$s entries marked as %2$s.',
+						count,
+						'sureforms'
+					),
+					count,
+					action
 				);
+			}
+			toast.success( message );
+
+			// Call custom onSuccess if provided
+			if ( typeof variables?.onSuccess === 'function' ) {
+				variables.onSuccess();
 			}
 		},
 		onError: ( error ) => {
@@ -190,38 +191,40 @@ export const useTrashEntries = () => {
 			// Show a toast depending on the action (trash or restore)
 			const action = variables?.action || '';
 			const count = variables?.entry_ids?.length || 1;
-			if ( action === 'trash' ) {
-				toast.success(
-					sprintf(
-						// translators: %s is the number of entries moved to trash.
-						_n(
-							'%s entry moved to Trash.',
-							'%s entries moved to Trash.',
-							count,
-							'sureforms'
-						),
-						count
-					)
-				);
-			} else if ( action === 'restore' ) {
-				toast.success(
-					sprintf(
-						// translators: %s is the number of entries restored.
-						_n(
-							'%s entry restored successfully.',
-							'%s entries restored successfully.',
-							count,
-							'sureforms'
-						),
-						count
-					)
+			let message = '';
+			if ( count === 1 ) {
+				const entryId = variables.entry_ids[ 0 ];
+				message = action === 'trash' ? sprintf(
+					// translators: %s is the entry ID.
+					__( 'Entry#%s moved to trash.', 'sureforms' ),
+					entryId,
+				) : sprintf(
+					// translators: %s is the entry ID.
+					__( 'Entry#%s restored successfully.', 'sureforms' ),
+					entryId,
 				);
 			} else {
-				// generic success
-				toast.success(
-					data?.message || __( 'Action completed.', 'sureforms' )
+				message = action === 'trash' ? sprintf(
+					// translators: %s is the number of entries moved to trash.
+					_n(
+						'%1$s entry moved to trash.',
+						'%1$s entries moved to trash.',
+						count,
+						'sureforms'
+					),
+					count,
+				) : sprintf(
+					// translators: %s is the number of entries restored.
+					_n(
+						'%1$s entry restored successfully.',
+						'%1$s entries restored successfully.',
+						count,
+						'sureforms'
+					),
+					count
 				);
 			}
+			toast.success( message );
 		},
 		onError: ( error ) => {
 			const msg =
@@ -246,8 +249,16 @@ export const useDeleteEntries = () => {
 			// Invalidate and refetch entries list
 			queryClient.invalidateQueries( { queryKey: entriesKeys.lists() } );
 			const count = variables?.entry_ids?.length || 1;
-			toast.success(
-				sprintf(
+			let message = '';
+			if ( count === 1 ) {
+				const entryId = variables.entry_ids[ 0 ];
+				message = sprintf(
+					// translators: %s is the entry ID.
+					__( 'Entry#%s deleted permanently.', 'sureforms' ),
+					entryId
+				);
+			} else {
+				message = sprintf(
 					// translators: %s is the number of entries deleted.
 					_n(
 						'%s entry deleted permanently.',
@@ -256,8 +267,9 @@ export const useDeleteEntries = () => {
 						'sureforms'
 					),
 					count
-				)
-			);
+				);
+			}
+			toast.success( message );
 		},
 		onError: ( error ) => {
 			const msg =

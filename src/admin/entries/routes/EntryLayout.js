@@ -1,5 +1,4 @@
 import { __, sprintf } from '@wordpress/i18n';
-import { Toaster } from '@bsf/force-ui';
 import { Link, Outlet, useParams } from 'react-router-dom';
 import Header from '@Admin/components/Header';
 import { cn } from '@Utils/Helpers';
@@ -55,7 +54,6 @@ const EntryLayout = () => {
 		<>
 			<PageHeader />
 			<Outlet />
-			<Toaster className="z-999999" />
 		</>
 	);
 };

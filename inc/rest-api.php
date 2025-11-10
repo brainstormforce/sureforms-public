@@ -325,6 +325,15 @@ class Rest_Api {
 
 		$result = Entries_Class::get_entries( $args );
 
+		// Add form permalink to each entry.
+		if ( isset( $result['entries'] ) && is_array( $result['entries'] ) ) {
+			foreach ( $result['entries'] as &$entry ) {
+				if ( isset( $entry['form_id'] ) ) {
+					$entry['form_permalink'] = get_permalink( absint( $entry['form_id'] ) );
+				}
+			}
+		}
+
 		return new \WP_REST_Response( $result, 200 );
 	}
 
@@ -554,6 +563,7 @@ class Rest_Api {
 				'display_name' => $user_info->display_name,
 				'profile_url'  => get_author_posts_url( $user_id ),
 			] : null,
+			'extras'          => $entry['extras'] ?? [],
 		];
 
 		return new \WP_REST_Response( $response_data, 200 );

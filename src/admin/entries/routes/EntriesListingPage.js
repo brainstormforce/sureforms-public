@@ -33,7 +33,7 @@ const EntriesListingPage = () => {
 	const navigate = useNavigate();
 
 	// Fetch forms data using React Query
-	const { data: formsMap = {} } = useForms();
+	const { data: formsMap = {}, isLoading: isLoadingForms } = useForms();
 	// Custom hooks for state management
 	const {
 		statusFilter,
@@ -46,10 +46,32 @@ const EntriesListingPage = () => {
 		setDateRange,
 	} = useEntriesFilters();
 
+	// Filter change handlers with page reset
+	const handleStatusFilterChange = ( value ) => {
+		setStatusFilter( value );
+		goToPage( 1 );
+	};
+
+	const handleFormFilterChange = ( value ) => {
+		setFormFilter( value );
+		goToPage( 1 );
+	};
+
+	const handleSearchChange = ( value ) => {
+		setSearchQuery( value );
+		goToPage( 1 );
+	};
+
+	const handleDateRangeChange = ( value ) => {
+		setDateRange( value );
+		goToPage( 1 );
+	};
+
 	const {
 		currentPage,
 		entriesPerPage,
 		goToPage,
+		silentGoToPage,
 		nextPage,
 		previousPage,
 		changeEntriesPerPage,
@@ -107,13 +129,13 @@ const EntriesListingPage = () => {
 	}, [ rawEntries, formsMap ] );
 
 	useEffect( () => {
-		if ( currentPage <= 1 || entries.length > 0 ) {
+		if ( currentPage <= 1 || entries.length > 0 || isLoading ) {
 			return;
 		}
-		if ( currentPage > totalPages ) {
+		if ( currentPage > totalPages && entries?.length === 0 ) {
 			goToPage( totalPages );
 		}
-	}, [ entries ] );
+	}, [ entries, isLoading ] );
 
 	// Generate form options for filter
 	const formOptions = useMemo( () => {
@@ -155,6 +177,25 @@ const EntriesListingPage = () => {
 		indeterminate,
 	} = useEntriesSelection( entries );
 
+	// Compute if selected entries include unread or read entries
+	const hasUnreadSelected = useMemo( () => {
+		return selectedEntries?.some( ( entryId ) => {
+			const entry = entries.find(
+				( e ) => parseInt( e.id ) === parseInt( entryId )
+			);
+			return entry && entry.status === 'unread';
+		} );
+	}, [ selectedEntries, entries ] );
+
+	const hasReadSelected = useMemo( () => {
+		return selectedEntries?.some( ( entryId ) => {
+			const entry = entries.find(
+				( e ) => parseInt( e.id ) === parseInt( entryId )
+			);
+			return entry && entry.status === 'read';
+		} );
+	}, [ selectedEntries, entries ] );
+
 	// Show an error toast if fetching entries fails
 	useEffect( () => {
 		if ( ! isError ) {
@@ -165,17 +206,6 @@ const EntriesListingPage = () => {
 				__( 'An error occurred while fetching entries.', 'sureforms' )
 		);
 	}, [ error ] );
-
-	// Reset to first page when any filter changes
-	useEffect( () => {
-		goToPage( 1 );
-	}, [
-		statusFilter,
-		formFilter,
-		searchQuery,
-		dateRange?.from,
-		dateRange?.to,
-	] );
 
 	// Action handlers
 	const handleEdit = ( entry ) => {
@@ -201,6 +231,8 @@ const EntriesListingPage = () => {
 				onConfirm: () => handlePermanentDelete( entry ),
 				isLoading: isDeleting,
 				destructive: true,
+				enableVerification: true,
+				verificationText: 'delete',
 			} );
 		} else {
 			// Otherwise, move to trash
@@ -280,6 +312,8 @@ const EntriesListingPage = () => {
 			onConfirm: handleBulkDeleteConfirm,
 			isLoading: isDeleting,
 			destructive: true,
+			enableVerification: allInTrash,
+			verificationText: 'delete',
 		} );
 	};
 
@@ -339,6 +373,9 @@ const EntriesListingPage = () => {
 			{
 				onSuccess: () => {
 					clearSelection();
+					toast.success(
+						__( 'Entries exported successfully.', 'sureforms' )
+					);
 				},
 			}
 		);
@@ -357,6 +394,7 @@ const EntriesListingPage = () => {
 			{
 				onSuccess: () => {
 					clearSelection();
+					silentGoToPage( 1 );
 				},
 			}
 		);
@@ -375,6 +413,7 @@ const EntriesListingPage = () => {
 			{
 				onSuccess: () => {
 					clearSelection();
+					silentGoToPage( 1 );
 				},
 			}
 		);
@@ -433,6 +472,7 @@ const EntriesListingPage = () => {
 		setFormFilter( '' );
 		setSearchQuery( '' );
 		setDateRange( { from: null, to: null } );
+		goToPage( 1 );
 	};
 
 	if (
@@ -443,7 +483,7 @@ const EntriesListingPage = () => {
 	) {
 		return (
 			<div className="p-8 bg-background-secondary min-h-screen">
-				<div className="mx-auto">
+				<div className="mx-auto max-w-[1550px]">
 					<div className="bg-white rounded-xl border-0.5 border-solid border-border-subtle shadow-sm p-2 space-y-2">
 						<EmptyState />
 					</div>
@@ -454,21 +494,24 @@ const EntriesListingPage = () => {
 
 	return (
 		<div className="p-8 bg-background-secondary min-h-screen">
-			<div className="mx-auto">
+			<div className="mx-auto max-w-[1550px]">
 				<div className="bg-white rounded-xl border-0.5 border-solid border-border-subtle shadow-sm p-4 space-y-2">
 					<div className="p-1">
 						<div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-4 xl:gap-5">
 							<EntriesHeader />
 							<EntriesFilters
 								statusFilter={ statusFilter }
-								onStatusFilterChange={ setStatusFilter }
+								onStatusFilterChange={
+									handleStatusFilterChange
+								}
 								formFilter={ formFilter }
-								onFormFilterChange={ setFormFilter }
+								onFormFilterChange={ handleFormFilterChange }
 								searchQuery={ searchQuery }
-								onSearchChange={ setSearchQuery }
+								onSearchChange={ handleSearchChange }
 								dateRange={ dateRange }
-								onDateRangeChange={ setDateRange }
+								onDateRangeChange={ handleDateRangeChange }
 								formOptions={ formOptions }
+								isLoadingForms={ isLoadingForms }
 								selectedEntries={ selectedEntries }
 								onBulkDelete={ handleBulkDelete }
 								onBulkExport={ handleBulkExport }
@@ -477,6 +520,8 @@ const EntriesListingPage = () => {
 								onBulkRestore={ handleBulkRestore }
 								onClearFilters={ handleClearFilters }
 								hasActiveFilters={ hasActiveFilters }
+								hasUnreadSelected={ hasUnreadSelected }
+								hasReadSelected={ hasReadSelected }
 							/>
 						</div>
 					</div>
@@ -497,12 +542,7 @@ const EntriesListingPage = () => {
 								<Button
 									size="sm"
 									variant="outline"
-									onClick={ () => {
-										setStatusFilter( '' );
-										setFormFilter( '' );
-										setSearchQuery( '' );
-										setDateRange( { from: null, to: null } );
-									} }
+									onClick={ handleClearFilters }
 								>
 									{ __( 'Clear Filters', 'sureforms' ) }
 								</Button>
@@ -546,6 +586,8 @@ const EntriesListingPage = () => {
 				confirmLabel={ confirmationDialog.confirmLabel }
 				isLoading={ confirmationDialog.isLoading }
 				destructive={ confirmationDialog?.destructive }
+				enableVerification={ confirmationDialog?.enableVerification }
+				verificationText={ confirmationDialog?.verificationText }
 			/>
 		</div>
 	);

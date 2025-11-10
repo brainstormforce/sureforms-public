@@ -96,6 +96,7 @@ export const transformEntry = ( entry, formsMap = {} ) => {
 		id: parseInt( entry.ID, 10 ),
 		entryId: `${ __( 'Entry', 'sureforms' ) } #${ entry.ID }`,
 		formId: parseInt( entry.form_id, 10 ),
+		formPermalink: entry.form_permalink,
 		formName:
 			formsMap[ entry.form_id ] ||
 			`${ __( 'Form', 'sureforms' ) } #${ entry.form_id }`,
@@ -141,6 +142,7 @@ export const transformEntryDetail = ( entryDetail ) => {
 				profileUrl: entryDetail.user.profile_url,
 			  }
 			: null,
+		pdfLinks: entryDetail.extras?.pdf_links || null,
 		rawData: entryDetail, // Keep original data for reference
 	};
 };
