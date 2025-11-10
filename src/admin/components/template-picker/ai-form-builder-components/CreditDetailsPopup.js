@@ -2,6 +2,7 @@ import { __, sprintf } from '@wordpress/i18n';
 import { Button, Container, Label } from '@bsf/force-ui';
 import { ChevronRight, X } from 'lucide-react';
 import { addQueryParam, initiateAuth } from '@Utils/Helpers';
+import { useEffect } from '@wordpress/element';
 
 const CreditDetailsPopup = ( {
 	finalFormCreationCountRemaining = 0,
@@ -9,6 +10,21 @@ const CreditDetailsPopup = ( {
 	showBanner,
 	type,
 } ) => {
+	// On component mount, read banner state from localStorage
+	useEffect( () => {
+		const savedBannerState = localStorage.getItem(
+			'srfm_ai_banner_closed'
+		);
+		if ( savedBannerState === 'true' ) {
+			setShowBanner( false );
+		}
+	}, [ setShowBanner ] );
+
+	const handleCloseBanner = () => {
+		setShowBanner( false );
+		localStorage.setItem( 'srfm_ai_banner_closed', 'true' );
+	};
+
 	const upgradeLink = () =>
 		window.open(
 			addQueryParam(
@@ -68,7 +84,7 @@ const CreditDetailsPopup = ( {
 							) }
 							<span
 								className="absolute -top-1 -right-1 cursor-pointer"
-								onClick={ () => setShowBanner( false ) }
+								onClick={ handleCloseBanner }
 							>
 								<X className="w-3 h-3" />
 							</span>

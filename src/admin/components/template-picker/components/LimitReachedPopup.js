@@ -1,7 +1,7 @@
 import { __ } from '@wordpress/i18n';
 import { Button, Container, Label } from '@bsf/force-ui';
 import { applyFilters } from '@wordpress/hooks';
-import { Zap } from 'lucide-react';
+import { Zap, ChevronRight } from 'lucide-react';
 
 const LimitReachedPopup = ( {
 	title = '',
@@ -11,6 +11,8 @@ const LimitReachedPopup = ( {
 	onclick = () => {},
 	deactivatedLicense = false,
 	paraTitle = '',
+	features = [],
+	showFeatures = false,
 } ) => {
 	// Get filter values
 	const {
@@ -73,12 +75,52 @@ const LimitReachedPopup = ( {
 					>
 						{ finalParaOne }
 					</Label>
-					<Label
-						size="md"
-						className="text-text-secondary text-sm font-normal"
-					>
-						{ finalParaTwo }
-					</Label>
+					{ showFeatures ? (
+						<Container className="flex flex-col gap-2">
+							{ features.map( ( item, index ) => (
+								<Container.Item
+									key={ index }
+									className="flex flex-row gap-1.5 text-sm text-text-primary items-center"
+								>
+									<ChevronRight className="w-3.5 h-3.5" />
+									<Label
+										size="sm"
+										className="font-normal break-words"
+									>
+										{ item }
+									</Label>
+								</Container.Item>
+							) ) }
+
+							<Container.Item className="flex flex-row gap-1.5 text-sm text-text-primary items-center">
+								<ChevronRight className="w-3.5 h-3.5" />
+								<Container.Item className="flex flex-row text-sm gap-1">
+									<span>{ __( 'and ', 'sureforms' ) }</span>
+									<Label
+										as="a"
+										size="sm"
+										className="font-normal break-words underline cursor-pointer text-brand-800 hover:text-brand-900"
+										onClick={ () =>
+											window.open(
+												'https://sureforms.com',
+												'_blank',
+												'noreferrer'
+											)
+										}
+									>
+										{ __( 'more…', 'sureforms' ) }
+									</Label>
+								</Container.Item>
+							</Container.Item>
+						</Container>
+					) : (
+						<Label
+							size="md"
+							className="text-text-secondary text-sm font-normal"
+						>
+							{ finalParaTwo }
+						</Label>
+					) }
 				</Container.Item>
 
 				{ ! is_pro_active && ! deactivatedLicense ? (

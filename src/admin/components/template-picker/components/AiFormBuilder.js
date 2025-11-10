@@ -172,6 +172,19 @@ const AiFormBuilder = () => {
 	const errorCode = srfm_admin?.srfm_ai_usage_details?.code;
 	const resetAt = srfm_admin?.srfm_ai_usage_details?.resetAt;
 
+	const isRegistered =
+		srfm_admin?.srfm_ai_usage_details?.type === 'registered';
+	const finalFormCreationCountRemaining =
+		isRegistered && formCreationleft > 20 ? 20 : formCreationleft;
+
+	const features = [
+		__( 'Create Unlimited Forms with AI', 'sureforms' ),
+		__( 'Add Advanced Field Types', 'sureforms' ),
+		__( 'Create Calculator, Surveys, etc.', 'sureforms' ),
+		__( 'Design Multistep Forms', 'sureforms' ),
+		__( 'Send Forms Submissions to Your CRM or Any App', 'sureforms' ),
+	];
+
 	const getLimitReachedPopup = () => {
 		// shows when the user has encountered an error.
 		if ( errorCode ) {
@@ -244,16 +257,13 @@ const AiFormBuilder = () => {
 			return (
 				<LimitReachedPopup
 					paraOne={ __(
-						'You have reached the maximum number of form generations in your Free Plan.',
+						'You have reached the maximum number of form generations in your Free Plan. SureForms Premium allows:',
 						'sureforms'
 					) }
-					paraTwo={ __(
-						'Upgrade today and continue creating smarter forms without limits.',
-						'sureforms'
-					) }
-					paraTitle={ __(
-						'You Have Hit Your Free Limit.',
-						'sureforms'
+					paraTitle={ sprintf(
+						/* translators: %s: form creation count */
+						__( '%s AI Generations Left.', 'sureforms' ),
+						finalFormCreationCountRemaining
 					) }
 					buttonText={ __( 'Upgrade Now', 'sureforms' ) }
 					onclick={ () => {
@@ -267,6 +277,8 @@ const AiFormBuilder = () => {
 						);
 					} }
 					title={ __( 'Unlock Unlimited Generations', 'sureforms' ) }
+					features={ features }
+					showFeatures={ true }
 				/>
 			);
 		}
