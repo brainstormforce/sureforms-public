@@ -20,9 +20,9 @@ const NAV_ITEMS = [
 		link: `${ siteURL }/wp-admin/admin.php?page=sureforms_menu`,
 	},
 	{
-		slug: 'sureforms_form',
+		slug: 'sureforms_forms',
 		text: __( 'Forms', 'sureforms' ),
-		link: `${ siteURL }/wp-admin/edit.php?post_type=sureforms_form`,
+		link: `${ siteURL }/wp-admin/admin.php?page=sureforms_forms`,
 	},
 	{
 		slug: 'sureforms_entries',
