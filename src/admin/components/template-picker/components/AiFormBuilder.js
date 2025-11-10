@@ -358,6 +358,7 @@ const AiFormBuilder = () => {
 					type={ type }
 					showCreditDetailsPopup={ showCreditDetailsPopup }
 					setShowCreditDetailsPopup={ setShowCreditDetailsPopup }
+					features={ features }
 				/>
 			</div>
 

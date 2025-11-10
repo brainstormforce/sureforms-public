@@ -9,6 +9,7 @@ const CreditDetailsPopup = ( {
 	setShowCreditDetailsPopup,
 	showCreditDetailsPopup,
 	type,
+	features,
 } ) => {
 	// On component mount, read banner state from localStorage
 	useEffect( () => {
@@ -35,14 +36,6 @@ const CreditDetailsPopup = ( {
 			'_blank',
 			'noreferrer'
 		);
-
-	const features = [
-		__( 'Create Unlimited Forms with AI', 'sureforms' ),
-		__( 'Add Advanced Field Types', 'sureforms' ),
-		__( 'Create Calculator, Surveys, etc.', 'sureforms' ),
-		__( 'Design Multistep Forms', 'sureforms' ),
-		__( 'Send Forms Submissions to Your CRM or Any App', 'sureforms' ),
-	];
 
 	let values = null;
 

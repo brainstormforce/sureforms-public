@@ -61,6 +61,7 @@ export default ( props ) => {
 		type,
 		showCreditDetailsPopup,
 		setShowCreditDetailsPopup,
+		features,
 	} = props;
 
 	const [ isListening, setIsListening ] = useState( false ); // State to manage voice recording
@@ -447,6 +448,7 @@ export default ( props ) => {
 							setShowCreditDetailsPopup={ setShowCreditDetailsPopup }
 							showCreditDetailsPopup={ showCreditDetailsPopup }
 							type={ type }
+							features={ features }
 						/>
 					) }
 
