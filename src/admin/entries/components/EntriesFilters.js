@@ -1,0 +1,396 @@
+import { __ } from '@wordpress/i18n';
+import { applyFilters } from '@wordpress/hooks';
+import {
+	Search,
+	Calendar,
+	X,
+	Trash2,
+	MoreVertical,
+	RotateCcw,
+	Send,
+	ArchiveRestore,
+	Eye,
+	EyeOff,
+} from 'lucide-react';
+import { Select, Input, Button, DropdownMenu, Skeleton } from '@bsf/force-ui';
+import {
+	useRef,
+	useEffect,
+	useMemo,
+	Fragment,
+	useState,
+} from '@wordpress/element';
+import DatePicker from '@Admin/components/DatePicker';
+import { STATUS_OPTIONS } from '../constants';
+
+/**
+ * EntriesFilters Component
+ * Displays all filter controls for entries or bulk action buttons when items are selected
+ *
+ * @param {Object}   props                      - Component props
+ * @param {string}   props.statusFilter         - Current status filter value
+ * @param {Function} props.onStatusFilterChange - Handler for status filter change
+ * @param {string}   props.formFilter           - Current form filter value
+ * @param {Function} props.onFormFilterChange   - Handler for form filter change
+ * @param {string}   props.searchQuery          - Current search query
+ * @param {Function} props.onSearchChange       - Handler for search input change
+ * @param {Object}   props.dateRange            - Current date range
+ * @param {Function} props.onDateRangeChange    - Handler for date range change
+ * @param {Array}    props.formOptions          - Array of form options
+ * @param {boolean}  props.isLoadingForms       - Whether forms are loading
+ * @param {Array}    props.selectedEntries      - Array of selected entry IDs
+ * @param {Function} props.onBulkDelete         - Handler for bulk delete action
+ * @param {Function} props.onBulkExport         - Handler for bulk export action
+ * @param {Function} props.onMarkAsRead         - Handler for mark as read action
+ * @param {Function} props.onMarkAsUnread       - Handler for mark as unread action
+ * @param {Function} props.onBulkRestore        - Handler for bulk restore action
+ * @param {Function} props.onClearFilters       - Handler for clearing all filters
+ * @param {boolean}  props.hasActiveFilters     - Whether any filters are currently active
+ * @param {boolean}  props.hasUnreadSelected    - Whether some selected entries are unread
+ * @param {boolean}  props.hasReadSelected      - Whether some selected entries are read
+ */
+const EntriesFilters = ( {
+	statusFilter,
+	onStatusFilterChange,
+	formFilter,
+	onFormFilterChange,
+	searchQuery,
+	onSearchChange,
+	dateRange,
+	onDateRangeChange,
+	formOptions = [],
+	isLoadingForms = false,
+	selectedEntries = [],
+	onBulkDelete,
+	onBulkExport,
+	onMarkAsRead,
+	onMarkAsUnread,
+	onBulkRestore,
+	onClearFilters,
+	hasActiveFilters = false,
+	hasUnreadSelected = false,
+	hasReadSelected = false,
+} ) => {
+	const [ openSendNotificationModal, setOpenSendNotificationModal ] =
+		useState( false );
+	const searchInputRef = useRef( null );
+
+	// Check if any entries are selected
+	const hasSelectedEntries = useMemo(
+		() => selectedEntries.length > 0,
+		[ selectedEntries ]
+	);
+
+	// Dropdown menu options for bulk actions
+	const DROPDOWN_MENU_OPTIONS = [
+		{
+			label: hasSelectedEntries
+				? __( 'Export Selected', 'sureforms' )
+				: __( 'Export All', 'sureforms' ),
+			onClick: onBulkExport,
+			icon: <ArchiveRestore />,
+		},
+	];
+
+	if ( hasUnreadSelected ) {
+		DROPDOWN_MENU_OPTIONS.push( {
+			label: __( 'Mark as Read', 'sureforms' ),
+			onClick: onMarkAsRead,
+			icon: <Eye />,
+		} );
+	}
+
+	if ( hasReadSelected ) {
+		DROPDOWN_MENU_OPTIONS.push( {
+			label: __( 'Mark as Unread', 'sureforms' ),
+			onClick: onMarkAsUnread,
+			icon: <EyeOff />,
+		} );
+	}
+
+	useEffect( () => {
+		if ( searchInputRef.current ) {
+			searchInputRef.current.value = searchQuery;
+		}
+	}, [ searchQuery ] );
+
+	const handleSearchKeyDown = ( event ) => {
+		if ( event.key === 'Enter' ) {
+			onSearchChange( event.target.value );
+		}
+	};
+
+	const handleSearchChange = ( value ) => {
+		// Clear search query immediately when input becomes empty
+		if ( value === '' ) {
+			onSearchChange( '' );
+		}
+	};
+
+	const formatDate = ( value ) => {
+		if ( ! value ) {
+			return '';
+		}
+		const date = new Date( value );
+		if ( isNaN( date ) ) {
+			return '';
+		}
+		const year = date.getFullYear();
+		const month = String( date.getMonth() + 1 ).padStart( 2, '0' );
+		const day = String( date.getDate() ).padStart( 2, '0' );
+		return `${ day }/${ month }/${ year }`;
+	};
+
+	const dateFilterProps = dateRange &&
+		dateRange?.from &&
+		dateRange?.to && {
+		value: `${ formatDate( dateRange?.from ) } - ${ formatDate(
+			dateRange?.to
+		) }`,
+		suffix: (
+			<Button
+				type="button"
+				onClick={ () => {
+					onDateRangeChange( null );
+				} }
+				variant="ghost"
+				size="xs"
+				className="bg-transparent p-0 pointer-events-auto text-icon-secondary hover:text-icon-primary transition"
+				icon={ <X /> }
+			/>
+		),
+	};
+
+	const ResendNotificationModal = applyFilters(
+		'srfm-pro.entry-details.render-resend-notification-modal'
+	);
+
+	const handleResendEmailNotifications = () => {
+		if ( ! ResendNotificationModal ) {
+			return;
+		}
+
+		setOpenSendNotificationModal( true );
+	};
+
+	return (
+		<Fragment>
+			<div className="flex flex-wrap lg:flex-nowrap items-center justify-end gap-2 sm:gap-3 lg:gap-4 mt-4 lg:!mt-0">
+				{ /* Clear Filters button - shown when filters are active */ }
+				{ hasActiveFilters && ! hasSelectedEntries && (
+					<Button
+						variant="outline"
+						size="sm"
+						onClick={ onClearFilters }
+						icon={ <X className="w-4 h-4" /> }
+						iconPosition="left"
+						className="min-w-fit"
+						destructive
+					>
+						{ __( 'Clear Filters', 'sureforms' ) }
+					</Button>
+				) }
+
+				{ /* Show filters when no items are selected */ }
+				{ ! hasSelectedEntries && (
+					<>
+						<div className="w-fit flex-1 lg:flex-initial min-w-24 sm:w-24">
+							<Select
+								value={ statusFilter }
+								onChange={ onStatusFilterChange }
+								size="sm"
+							>
+								<Select.Button
+									placeholder={ __( 'Status', 'sureforms' ) }
+								>
+									{
+										STATUS_OPTIONS.find(
+											( option ) =>
+												option.value === statusFilter
+										)?.label
+									}
+								</Select.Button>
+								<Select.Options className="z-999999">
+									{ STATUS_OPTIONS.map( ( option ) => (
+										<Select.Option
+											key={ option.value }
+											value={ option.value }
+										>
+											{ option.label }
+										</Select.Option>
+									) ) }
+								</Select.Options>
+							</Select>
+						</div>
+						<div className="w-full min-w-32 lg:w-40">
+							{ isLoadingForms ? (
+								<Skeleton className="h-8 w-full rounded-md" />
+							) : (
+								<Select
+									value={ formFilter }
+									onChange={ onFormFilterChange }
+									size="sm"
+								>
+									<Select.Button
+										placeholder={ __(
+											'All Forms',
+											'sureforms'
+										) }
+									>
+										{ formOptions.find(
+											( option ) =>
+												option.value === formFilter
+										)?.label ||
+											__( 'Untitled', 'sureforms' ) }
+									</Select.Button>
+									<Select.Options className="z-999999">
+										{ formOptions.map( ( option ) => (
+											<Select.Option
+												key={ option.value }
+												value={ option.value }
+											>
+												{ option.label ||
+													__(
+														'Untitled',
+														'sureforms'
+													) }
+											</Select.Option>
+										) ) }
+									</Select.Options>
+								</Select>
+							) }
+						</div>{ ' ' }
+						<div className="w-full min-w-[11.25rem] lg:w-auto lg:min-w-[13.125rem]">
+							<DatePicker
+								value={ dateRange }
+								onApply={ onDateRangeChange }
+								trigger={ ( { setShow } ) => (
+									<Input
+										type="text"
+										placeholder="dd/mm/yyyy - dd/mm/yyyy"
+										readOnly
+										onClick={ () =>
+											setShow( ( prev ) => ! prev )
+										}
+										prefix={
+											<Calendar className="w-4 h-4 text-icon-secondary" />
+										}
+										{ ...dateFilterProps }
+									/>
+								) }
+							/>
+						</div>
+						{ /* Search box */ }
+						<div className="w-full min-w-40 lg:w-auto">
+							<Input
+								type="search"
+								placeholder={ __(
+									'Search your entry.',
+									'sureforms'
+								) }
+								ref={ searchInputRef }
+								onChange={ handleSearchChange }
+								onKeyDown={ handleSearchKeyDown }
+								prefix={
+									<Search className="w-4 h-4 text-icon-secondary" />
+								}
+							/>
+						</div>
+					</>
+				) }
+
+				{ /* Show bulk action buttons when items are selected */ }
+				{ hasSelectedEntries && (
+					<>
+						{ /* Show resend notifications button if modal is available */ }
+						{ !! ResendNotificationModal &&
+							formFilter !== 'all' &&
+							formFilter !== '' && (
+							<Button
+								variant="outline"
+								size="sm"
+								onClick={ handleResendEmailNotifications }
+								icon={ <Send className="w-4 h-4" /> }
+								iconPosition="left"
+								className="min-w-fit"
+							>
+								{ __(
+									'Resend Notifications',
+									'sureforms'
+								) }
+							</Button>
+						) }
+						{ /* Show restore button when trash filter is active */ }
+						{ statusFilter === 'trash' && (
+							<Button
+								variant="outline"
+								size="sm"
+								onClick={ onBulkRestore }
+								icon={ <RotateCcw className="w-4 h-4" /> }
+								iconPosition="left"
+								className="min-w-fit"
+							>
+								{ __( 'Restore', 'sureforms' ) }
+							</Button>
+						) }
+
+						<Button
+							variant="outline"
+							size="sm"
+							onClick={ onBulkDelete }
+							icon={ <Trash2 className="w-4 h-4" /> }
+							iconPosition="left"
+							className="min-w-fit"
+							destructive
+						>
+							{ __( 'Delete', 'sureforms' ) }
+						</Button>
+					</>
+				) }
+
+				<DropdownMenu placement="bottom-end">
+					<DropdownMenu.Trigger>
+						<Button
+							variant="outline"
+							size="sm"
+							icon={ <MoreVertical className="w-4 h-4" /> }
+							className="min-w-fit px-2"
+						/>
+					</DropdownMenu.Trigger>
+					<DropdownMenu.Portal id="srfm-dialog-root">
+						<DropdownMenu.ContentWrapper>
+							<DropdownMenu.Content className="w-48">
+								<DropdownMenu.List>
+									{ DROPDOWN_MENU_OPTIONS.map(
+										( option, index ) => (
+											<DropdownMenu.Item
+												key={ index }
+												onClick={ option.onClick }
+												className="text-sm [&>svg]:size-4 font-normal text-text-secondary hover:bg-background-secondary hover:text-text-primary focus:bg-background-secondary focus:text-text-primary cursor-pointer"
+											>
+												{ option.icon }
+												{ option.label }
+											</DropdownMenu.Item>
+										)
+									) }
+								</DropdownMenu.List>
+							</DropdownMenu.Content>
+						</DropdownMenu.ContentWrapper>
+					</DropdownMenu.Portal>
+				</DropdownMenu>
+			</div>
+			{ !! ResendNotificationModal &&
+				formFilter !== 'all' &&
+				formFilter !== '' && (
+				<ResendNotificationModal
+					open={ openSendNotificationModal }
+					setOpen={ setOpenSendNotificationModal }
+					entryIds={ selectedEntries }
+					formId={ parseInt( formFilter, 10 ) }
+				/>
+			) }
+		</Fragment>
+	);
+};
+
+export default EntriesFilters;

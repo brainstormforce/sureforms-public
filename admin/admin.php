@@ -7,13 +7,10 @@
 
 namespace SRFM\Admin;
 
-use SRFM\Admin\Views\Entries_List_Table;
-use SRFM\Admin\Views\Single_Entry;
 use SRFM\Inc\AI_Form_Builder\AI_Helper;
 use SRFM\Inc\Database\Tables\Entries;
 use SRFM\Inc\Helper;
 use SRFM\Inc\Onboarding;
-use SRFM\Inc\Post_Types;
 use SRFM\Inc\Traits\Get_Instance;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -70,10 +67,6 @@ class Admin {
 
 		add_action( 'current_screen', [ $this, 'enable_gutenberg_for_sureforms' ], 100 );
 		add_action( 'admin_notices', [ $this, 'srfm_pro_version_compatibility' ] );
-
-		// Handle entry actions.
-		add_action( 'admin_init', [ $this, 'handle_entry_actions' ] );
-		add_action( 'admin_notices', [ Entries_List_Table::class, 'display_bulk_action_notice' ] );
 
 		// This action enqueues translations for NPS Survey library.
 		// A better solution will be required from library to resolve plugin conflict.
@@ -528,37 +521,11 @@ class Admin {
 	 * Entries page callback.
 	 *
 	 * @since 0.0.13
+	 * @since x.x.x - Updated the entries UI and the function definition.
 	 * @return void
 	 */
 	public function render_entries() {
-		// Render single entry view.
-		// Adding the phpcs ignore nonce verification as no database operations are performed in this function, it is used to display the single entry view.
-		if ( isset( $_GET['entry_id'] ) && is_numeric( $_GET['entry_id'] ) && isset( $_GET['view'] ) && 'details' === $_GET['view'] ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verification is not needed here and explained in the comments above as well.
-			$single_entry_view = new Single_Entry();
-			$single_entry_view->render();
-			return;
-		}
-
-		// Render all entries view.
-		$entries_table = new Entries_List_Table();
-		$entries_table->prepare_items();
-		?>
-		<div class="wrap">
-			<h1 class="wp-heading-inline"><?php echo esc_html__( 'Entries', 'sureforms' ); ?></h1>
-			<?php
-			if ( empty( $entries_table->all_entries_count ) && empty( $entries_table->trash_entries_count ) ) {
-				$instance = Post_Types::get_instance();
-				$instance->sureforms_render_blank_state( SRFM_ENTRIES );
-				$instance->get_blank_state_styles();
-				return;
-			}
-			?>
-			<form method="get">
-				<input type="hidden" name="page" value="sureforms_entries">
-				<?php $entries_table->display(); ?>
-			</form>
-		</div>
-		<?php
+		echo '<div id="srfm-entries-root"></div>';
 	}
 
 	/**
@@ -869,7 +836,6 @@ class Admin {
 				)
 			);
 			wp_enqueue_style( SRFM_SLUG . '-dashboard', SRFM_URL . 'assets/build/dashboard.css', [], SRFM_VER, 'all' );
-
 		}
 
 		if ( $is_screen_sureforms_form_settings || $is_screen_sureforms_forms ) {
@@ -1118,40 +1084,6 @@ class Admin {
 		}
 
 		return $status;
-	}
-
-	// Entries methods.
-
-	/**
-	 * Handle entry actions.
-	 *
-	 * @since 0.0.13
-	 * @return void
-	 */
-	public function handle_entry_actions() {
-		Entries_List_Table::process_bulk_actions();
-
-		if ( ! isset( $_GET['page'] ) || SRFM_ENTRIES !== $_GET['page'] ) {
-			return;
-		}
-		if ( ! isset( $_GET['entry_id'] ) || ! isset( $_GET['action'] ) ) {
-			return;
-		}
-		if ( ! isset( $_GET['_wpnonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ), 'srfm_entries_action' ) ) {
-			wp_die( esc_html__( 'Nonce verification failed.', 'sureforms' ) );
-		}
-		$action   = isset( $_GET['action'] ) ? sanitize_text_field( wp_unslash( $_GET['action'] ) ) : '';
-		$entry_id = Helper::get_integer_value( sanitize_text_field( wp_unslash( $_GET['entry_id'] ) ) );
-		$view     = isset( $_GET['view'] ) ? sanitize_text_field( wp_unslash( $_GET['view'] ) ) : '';
-		if ( $entry_id > 0 ) {
-			if ( 'read' === $action && 'details' === $view ) {
-				$entry_status = Entries::get( $entry_id )['status'];
-				if ( 'trash' === $entry_status ) {
-					wp_die( esc_html__( 'You cannot view this entry because it is in trash.', 'sureforms' ) );
-				}
-			}
-			Entries_List_Table::handle_entry_status( $entry_id, $action, $view );
-		}
 	}
 
 	/**

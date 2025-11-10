@@ -9602,12 +9602,13 @@ namespace SRFM\Inc {
         {
         }
         /**
-         * Set up a div for the header to render into it.
+         * Show blank slate.
          *
+         * @param string $which String which tablenav is being shown.
          * @return void
          * @since  0.0.1
          */
-        public static function embed_page_header()
+        public function maybe_render_blank_form_state($which)
         {
         }
         /**

@@ -35,7 +35,7 @@ class Post_Types {
 		add_action( 'init', [ $this, 'register_post_types' ] );
 		add_action( 'init', [ $this, 'register_post_metas' ] );
 		add_shortcode( 'sureforms', [ $this, 'forms_shortcode' ] );
-		add_action( 'in_admin_header', [ $this, 'embed_page_header' ] );
+		add_action( 'manage_posts_extra_tablenav', [ $this, 'maybe_render_blank_form_state' ] );
 		add_action( 'admin_bar_menu', [ $this, 'remove_admin_bar_menu_item' ], 80, 1 );
 		add_action( 'template_redirect', [ $this, 'srfm_instant_form_redirect' ] );
 		add_action( 'template_redirect', [ $this, 'disable_sureforms_archive_page' ], 9 );
@@ -336,28 +336,30 @@ class Post_Types {
 	}
 
 	/**
-	 * Set up a div for the header to render into it.
+	 * Show blank slate.
 	 *
+	 * @param string $which String which tablenav is being shown.
 	 * @return void
 	 * @since  0.0.1
 	 */
-	public static function embed_page_header() {
-		$is_screen_sureforms_entries = Helper::validate_request_context( SRFM_ENTRIES, 'page' );
+	public function maybe_render_blank_form_state( $which ) {
+		$screen    = get_current_screen();
+		$post_type = $screen ? $screen->post_type : '';
 
-		if ( $is_screen_sureforms_entries ) {
-			?>
-		<style>
-			.srfm-page-header {
-				min-height: 56px;
-				@media screen and ( max-width: 600px ) {
-					padding-top: 46px;
-				}
+		if ( SRFM_FORMS_POST_TYPE === $post_type && 'bottom' === $which ) {
+
+			$counts = (array) wp_count_posts( SRFM_FORMS_POST_TYPE );
+			unset( $counts['auto-draft'] );
+			$count = array_sum( $counts );
+
+			if ( 0 < $count ) {
+				return;
 			}
-		</style>
-		<div id="srfm-page-header" class="srfm-page-header srfm-admin-wrapper">
-			<div class="srfm-page-pre-nav-content"></div>
-		</div>
-			<?php
+
+			$this->sureforms_render_blank_state( $post_type );
+
+			$this->get_blank_state_styles();
+
 		}
 	}
 

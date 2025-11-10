@@ -6,6 +6,8 @@ import { Topbar, Badge, Button, HamburgerMenu, Label } from '@bsf/force-ui';
 import { BookOpen, ArrowUpRight, Megaphone } from 'lucide-react';
 import { addQueryParam, cn } from '@Utils/Helpers';
 import UpgradeNotice from './UpgradeNotice';
+import LogoFull from '@Admin/dashboard/templates/LogoFull';
+import Breadcrumb from './Breadcrumb';
 import Tooltip from './Tooltip';
 
 const { site_url: siteURL = '', is_pro_active: isProActive = false } =
@@ -58,7 +60,14 @@ const HeaderTooltipItem = ( { title, icon, onClick, children } ) => (
 	</Topbar.Item>
 );
 
-const Header = () => {
+/**
+ * Header Component
+ *
+ * @param {Object}                                       props            Component props
+ * @param {Array<import('./Breadcrumb').BreadcrumbItem>} props.breadCrumb Breadcrumb items
+ * @return {JSX.Element}                Header component
+ */
+const Header = ( { breadCrumb } ) => {
 	const [ activePage, setActivePage ] = useState( null );
 	const [ isLicenseActive, setIsLicenseActive ] = useState(
 		srfm_admin?.is_license_active || false
@@ -110,7 +119,7 @@ const Header = () => {
 				activePage?.slug === 'sureforms_menu' &&
 				isFirstFormCreated &&
 				srfm_admin?.check_three_days_threshold && <UpgradeNotice /> }
-			<Topbar className="py-0 px-4 pt-0 pb-0 min-h-0 h-14 gap-4 shadow-sm bg-background-primary/75 backdrop-blur-[5px]">
+			<Topbar className="py-0 px-4 min-h-0 h-14 gap-4 shadow-sm bg-background-primary/75 backdrop-blur-[5px]">
 				<Topbar.Left className="gap-3">
 					<Topbar.Item className="w-auto h-auto lg:hidden">
 						<HamburgerMenu>
@@ -151,26 +160,33 @@ const Header = () => {
 						</HamburgerMenu>
 					</Topbar.Item>
 					<Topbar.Item>
-						<Logo />
+						{ ! breadCrumb ? <Logo /> : <LogoFull /> }
 					</Topbar.Item>
+					{ breadCrumb && !! breadCrumb?.length && (
+						<Topbar.Item className="[&_li]:m-0 -ml-1">
+							<Breadcrumb options={ breadCrumb } />
+						</Topbar.Item>
+					) }
 				</Topbar.Left>
 				<Topbar.Middle align="left" className="h-full hidden lg:flex">
 					<Topbar.Item>
-						<nav className="flex items-center gap-4 h-full">
-							{ NAV_ITEMS.map( ( item ) => (
-								<a
-									className={ cn(
-										'h-full text-text-secondary text-sm font-medium no-underline px-1 content-center relative focus:outline-none hover:text-text-primary focus:[box-shadow:none]',
-										activePage?.slug === item?.slug &&
-											'text-text-primary before:content-[""] before:absolute before:h-px before:bg-border-interactive before:bottom-0 before:inset-x-0'
-									) }
-									href={ item.link }
-									key={ item.slug }
-								>
-									{ item.text }
-								</a>
-							) ) }
-						</nav>
+						{ ! breadCrumb && (
+							<nav className="flex items-center gap-4 h-full">
+								{ NAV_ITEMS.map( ( item ) => (
+									<a
+										className={ cn(
+											'h-full text-text-secondary text-sm font-medium no-underline px-1 content-center relative focus:outline-none hover:text-text-primary focus:[box-shadow:none]',
+											activePage?.slug === item?.slug &&
+												'text-text-primary before:content-[""] before:absolute before:h-px before:bg-border-interactive before:bottom-0 before:inset-x-0'
+										) }
+										href={ item.link }
+										key={ item.slug }
+									>
+										{ item.text }
+									</a>
+								) ) }
+							</nav>
+						) }
 					</Topbar.Item>
 					{ ! isProActive && ! isLicenseActive && (
 						<Topbar.Item>
