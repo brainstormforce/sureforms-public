@@ -7816,7 +7816,8 @@ namespace SRFM\Inc {
         /**
          * Get default post metas for form when creating using template.
          *
-         * @return array<string, array<int, int|string>> Default meta keys.
+         * @return array<string, int|string|bool> Default meta keys.
+         * @since x.x.x updated the return type.
          * @since 0.0.3
          */
         public static function get_default_meta_keys()

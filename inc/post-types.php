@@ -422,25 +422,37 @@ class Post_Types {
 			]
 		);
 
+		// Get default values for meta keys.
+		$default_meta_keys = Create_New_Form::get_default_meta_keys();
+
 		foreach ( $metas as $meta => $type ) {
-			register_meta(
-				'post',
-				$meta,
-				[
-					'object_subtype'    => SRFM_FORMS_POST_TYPE,
-					'show_in_rest'      => [
-						'schema' => [
-							'type'    => $type,
-							'context' => [ 'edit' ],
-						],
+			// Get default value if exists.
+			$default_value = $default_meta_keys[ $meta ] ?? null;
+
+			$meta_args = [
+				'show_in_rest'      => [
+					'schema' => [
+						'type'    => $type,
+						'context' => [ 'edit' ],
 					],
-					'single'            => true,
-					'type'              => $type,
-					'sanitize_callback' => 'sanitize_text_field',
-					'auth_callback'     => static function() {
-						return Helper::current_user_can();
-					},
-				]
+				],
+				'single'            => true,
+				'type'              => $type,
+				'sanitize_callback' => 'sanitize_text_field',
+				'auth_callback'     => static function() {
+					return Helper::current_user_can();
+				},
+			];
+
+			// Add default value if it exists.
+			if ( null !== $default_value ) {
+				$meta_args['default'] = $default_value;
+			}
+
+			register_post_meta(
+				SRFM_FORMS_POST_TYPE,
+				$meta,
+				$meta_args
 			);
 		}
 
