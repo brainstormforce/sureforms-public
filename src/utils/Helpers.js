@@ -921,3 +921,47 @@ export const decodeJson = ( obj ) => {
 export const deepCopy = ( arrayOrObject ) => {
 	return JSON.parse( JSON.stringify( arrayOrObject, null, 2 ) );
 };
+
+/**
+ * Formats date and time into short and full formats to display.
+ * @param {number | string} dateString     - The date string timestamp to format.
+ * @param {boolean}         submissionInfo - Whether to format for submission info.
+ * @return {Object} An object containing shortFormat and fullFormat strings.
+ */
+export const formatDateTime = ( dateString, submissionInfo = false ) => {
+	const options = {
+		month: 'short',
+		day: 'numeric',
+		hour: 'numeric',
+		minute: '2-digit',
+		hour12: true,
+	};
+	if ( submissionInfo ) {
+		if ( ! dateString ) {
+			return '-';
+		}
+
+		try {
+			const date = new Date( dateString.replace( ' ', 'T' ) );
+			return date.toLocaleString( 'en-US', options );
+		} catch ( error ) {
+			return dateString;
+		}
+	}
+	const date = new Date( dateString );
+
+	// Short format for display: Nov 7, 10:20 AM
+	const shortFormat = date.toLocaleString( 'en-US', options );
+
+	// Full format for tooltip: Nov 7, 2025, 10:20 AM
+	const fullFormat = date.toLocaleString( 'en-US', {
+		year: 'numeric',
+		month: 'short',
+		day: 'numeric',
+		hour: 'numeric',
+		minute: '2-digit',
+		hour12: true,
+	} );
+
+	return { shortFormat, fullFormat };
+};

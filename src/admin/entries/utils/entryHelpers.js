@@ -127,7 +127,6 @@ export const transformEntryDetail = ( entryDetail ) => {
 		status: entryDetail.status,
 		statusLabel: getStatusLabel( entryDetail.status ),
 		createdAt: entryDetail.created_at,
-		formattedDateTime: formatDateTime( entryDetail.created_at ),
 		formData: entryDetail.form_data || [],
 		formContent: entryDetail.form_content || [],
 		submissionInfo: {

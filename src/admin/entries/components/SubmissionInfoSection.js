@@ -2,6 +2,7 @@ import { __ } from '@wordpress/i18n';
 import { Button } from '@bsf/force-ui';
 import { useNavigate } from 'react-router-dom';
 import { useUpdateEntriesReadStatus } from '../hooks/useEntriesQuery';
+import { formatDateTime } from '@Utils/Helpers';
 
 /**
  * SubmissionInfoSection Component
@@ -87,7 +88,7 @@ const SubmissionInfoSection = ( { entryData } ) => {
 		{
 			id: 'created_at',
 			label: __( 'Submitted On:', 'sureforms' ),
-			value: entryData?.formattedDateTime || '-',
+			value: formatDateTime( entryData?.createdAt, true ) || '-',
 		},
 	];
 

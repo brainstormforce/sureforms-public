@@ -1,9 +1,10 @@
 import { __ } from '@wordpress/i18n';
 import { Trash2, RotateCcw, Eye } from 'lucide-react';
-import { Button, Container, Badge } from '@bsf/force-ui';
+import { Button, Container, Badge, Tooltip as FUITooltip } from '@bsf/force-ui';
 import Tooltip from '@Admin/components/Tooltip';
 import { getStatusBadgeVariant } from '../utils/entryHelpers';
 import Table from '@Admin/components/Table';
+import { formatDateTime } from '@Utils/Helpers';
 
 /**
  * EntriesTable Component
@@ -129,9 +130,26 @@ const EntriesTable = ( {
 			key: 'dateTime',
 			sortable: true,
 			headerClassName: 'w-[15%]',
-			render: ( entry ) => (
-				<span className="line-clamp-1">{ entry.dateTime }</span>
-			),
+			render: ( entry ) => {
+				const { shortFormat, fullFormat } = formatDateTime(
+					entry.dateTime
+				);
+				return (
+					<FUITooltip
+						content={ <span>{ fullFormat }</span> }
+						placement="top"
+						variant="dark"
+						arrow
+						interactive
+						tooltipPortalId="srfm-settings-container"
+						className="z-999999"
+					>
+						<span className="text-sm font-normal text-text-secondary">
+							{ shortFormat }
+						</span>
+					</FUITooltip>
+				);
+			},
 		},
 		{
 			label: __( 'Actions', 'sureforms' ),
