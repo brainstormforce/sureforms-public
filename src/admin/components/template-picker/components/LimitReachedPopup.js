@@ -1,4 +1,5 @@
 import { __ } from '@wordpress/i18n';
+import ICONS from './icons.js';
 import { Button, Container, Label } from '@bsf/force-ui';
 import { applyFilters } from '@wordpress/hooks';
 import { Zap, ChevronRight } from 'lucide-react';
@@ -39,6 +40,10 @@ const LimitReachedPopup = ( {
 	const is_pro_active =
 		srfm_admin?.is_pro_active && srfm_admin?.is_pro_license_active;
 
+	useEffect( () => {
+		localStorage.setItem( 'srfm_ai_banner_closed', 'true' );
+	}, [] );
+
 	const renderLimitReachedContent = () => (
 		<Container
 			direction="column"
@@ -59,6 +64,16 @@ const LimitReachedPopup = ( {
 							{ <Zap className="size-4 text-brand-800" /> }
 						</span>
 						{ finalTitle }
+						<span
+							className="absolute top-[-10px] right-[-15px] cursor-pointer"
+							onClick={ () =>
+								( window.location.href =
+									srfm_admin.site_url +
+									'/wp-admin/admin.php?page=sureforms_menu' )
+							}
+						>
+							{ ICONS.close }
+						</span>
 					</Label>
 				</Container.Item>
 
