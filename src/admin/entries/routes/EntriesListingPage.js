@@ -22,7 +22,7 @@ import {
 } from '../hooks/useEntriesQuery';
 import { transformEntry } from '../utils/entryHelpers';
 import { getFormOptions } from '../constants';
-import NoResultsFound from '@Admin/components/NoResultsFound';
+import NoResultsFound from '@Admin/components/listing/NoResultsFound';
 
 /**
  * EntriesListingPage Component
