@@ -15,6 +15,7 @@ const LimitReachedPopup = ( {
 	paraTitle = '',
 	features = [],
 	showFeatures = false,
+	setShowCreditDetailsPopup,
 } ) => {
 	// Get filter values
 	const {
@@ -44,6 +45,7 @@ const LimitReachedPopup = ( {
 	useEffect( () => {
 		if ( showFeatures ) {
 			localStorage.setItem( 'srfm_ai_banner_closed', 'true' );
+			setShowCreditDetailsPopup( false );
 		}
 	}, [ showFeatures ] );
 

@@ -6,8 +6,8 @@ import { useEffect } from '@wordpress/element';
 
 const CreditDetailsPopup = ( {
 	finalFormCreationCountRemaining = 0,
-	setShowBanner,
-	showBanner,
+	setShowCreditDetailsPopup,
+	showCreditDetailsPopup,
 	type,
 } ) => {
 	// On component mount, read banner state from localStorage
@@ -16,12 +16,12 @@ const CreditDetailsPopup = ( {
 			'srfm_ai_banner_closed'
 		);
 		if ( savedBannerState === 'true' ) {
-			setShowBanner( false );
+			setShowCreditDetailsPopup( false );
 		}
-	}, [ setShowBanner ] );
+	}, [ setShowCreditDetailsPopup ] );
 
 	const handleCloseBanner = () => {
-		setShowBanner( false );
+		setShowCreditDetailsPopup( false );
 		localStorage.setItem( 'srfm_ai_banner_closed', 'true' );
 	};
 
@@ -182,7 +182,7 @@ const CreditDetailsPopup = ( {
 
 	// Decide which banner to show
 	if ( type === 'registered' && finalFormCreationCountRemaining <= 9 ) {
-		return showBanner ? openCreditsBanner : compactCreditsBanner;
+		return showCreditDetailsPopup ? openCreditsBanner : compactCreditsBanner;
 	} else if (
 		type === 'non-registered' &&
 		finalFormCreationCountRemaining <= 2

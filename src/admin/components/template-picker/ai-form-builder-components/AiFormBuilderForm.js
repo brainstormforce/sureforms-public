@@ -59,6 +59,8 @@ export default ( props ) => {
 		setFormType,
 		formType,
 		type,
+		showCreditDetailsPopup,
+		setShowCreditDetailsPopup,
 	} = props;
 
 	const [ isListening, setIsListening ] = useState( false ); // State to manage voice recording
@@ -70,7 +72,6 @@ export default ( props ) => {
 	const [ displayedPlaceholder, setDisplayedPlaceholder ] = useState( '' );
 
 	// 👇 added new state for banner visibility
-	const [ showBanner, setShowBanner ] = useState( true );
 	const [ isFocused, setIsFocused ] = useState( false );
 
 	const handlePromptClick = ( prompt ) => {
@@ -293,7 +294,7 @@ export default ( props ) => {
 		<Container
 			className={ cn(
 				'gap-0',
-				showBanner && ! is_pro_active && 'h-screen overflow-y-auto'
+				showCreditDetailsPopup && ! is_pro_active && 'h-screen overflow-y-auto'
 			) }
 			direction="column"
 		>
@@ -443,8 +444,8 @@ export default ( props ) => {
 							finalFormCreationCountRemaining={
 								finalFormCreationCountRemaining
 							}
-							setShowBanner={ setShowBanner }
-							showBanner={ showBanner }
+							setShowCreditDetailsPopup={ setShowCreditDetailsPopup }
+							showCreditDetailsPopup={ showCreditDetailsPopup }
 							type={ type }
 						/>
 					) }

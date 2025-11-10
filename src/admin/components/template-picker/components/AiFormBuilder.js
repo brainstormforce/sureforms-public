@@ -27,6 +27,10 @@ const AiFormBuilder = () => {
 	const [ formTypeObj, setFormTypeObj ] = useState( {} );
 	const [ formType, setFormType ] = useState( 'simple' );
 
+	const [ showCreditDetailsPopup, setShowCreditDetailsPopup ] = useState(
+		localStorage.getItem( 'srfm_ai_banner_closed' ) !== 'true'
+	);
+
 	const urlParams = new URLSearchParams( window.location.search );
 	const accessKey = urlParams.get( 'access_key' );
 
@@ -279,6 +283,7 @@ const AiFormBuilder = () => {
 					title={ __( 'Unlock Unlimited Generations', 'sureforms' ) }
 					features={ features }
 					showFeatures={ true }
+					setShowCreditDetailsPopup={ setShowCreditDetailsPopup }
 				/>
 			);
 		}
@@ -351,6 +356,8 @@ const AiFormBuilder = () => {
 					setFormType={ setFormType }
 					formType={ formType }
 					type={ type }
+					showCreditDetailsPopup={ showCreditDetailsPopup }
+					setShowCreditDetailsPopup={ setShowCreditDetailsPopup }
 				/>
 			</div>
 
