@@ -9612,15 +9612,6 @@ namespace SRFM\Inc {
         {
         }
         /**
-         * Set up a div for the header to render into it.
-         *
-         * @return void
-         * @since  0.0.1
-         */
-        public static function embed_page_header()
-        {
-        }
-        /**
          * Registers the sureforms metas.
          *
          * @return void

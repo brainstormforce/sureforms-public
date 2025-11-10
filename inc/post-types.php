@@ -39,7 +39,6 @@ class Post_Types {
 		add_action( 'manage_sureforms_form_posts_custom_column', [ $this, 'custom_form_column_data' ], 10, 2 );
 		add_shortcode( 'sureforms', [ $this, 'forms_shortcode' ] );
 		add_action( 'manage_posts_extra_tablenav', [ $this, 'maybe_render_blank_form_state' ] );
-		add_action( 'in_admin_header', [ $this, 'embed_page_header' ] );
 		add_filter( 'post_row_actions', [ $this, 'modify_entries_list_row_actions' ], 10, 2 );
 		add_filter( 'bulk_actions-edit-sureforms_form', [ $this, 'register_modify_bulk_actions' ], 99 );
 		add_action( 'admin_notices', [ $this, 'import_form_popup' ] );
@@ -379,33 +378,6 @@ class Post_Types {
 
 			$this->get_blank_state_styles();
 
-		}
-	}
-
-	/**
-	 * Set up a div for the header to render into it.
-	 *
-	 * @return void
-	 * @since  0.0.1
-	 */
-	public static function embed_page_header() {
-		$screen    = get_current_screen();
-		$screen_id = $screen ? $screen->id : '';
-
-		if ( 'edit-' . SRFM_FORMS_POST_TYPE === $screen_id ) {
-			?>
-		<style>
-			.srfm-page-header {
-				min-height: 56px;
-				@media screen and ( max-width: 600px ) {
-					padding-top: 46px;
-				}
-			}
-		</style>
-		<div id="srfm-page-header" class="srfm-page-header srfm-admin-wrapper">
-			<div class="srfm-page-pre-nav-content"></div>
-		</div>
-			<?php
 		}
 	}
 
