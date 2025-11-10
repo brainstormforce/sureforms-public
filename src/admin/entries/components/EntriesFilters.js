@@ -4,7 +4,7 @@ import {
 	Search,
 	Calendar,
 	X,
-	Trash2,
+	Trash,
 	MoreVertical,
 	RotateCcw,
 	Send,
@@ -329,7 +329,7 @@ const EntriesFilters = ( {
 							variant="outline"
 							size="sm"
 							onClick={ onBulkDelete }
-							icon={ <Trash2 className="w-4 h-4" /> }
+							icon={ <Trash className="w-4 h-4" /> }
 							iconPosition="left"
 							className="min-w-fit"
 							destructive
