@@ -125,14 +125,24 @@ class Forms_Data {
 		Helper::verify_nonce_and_capabilities( 'rest', $nonce, 'wp_rest' );
 
 		// Get and validate request parameters.
-		$page      = max( 1, Helper::get_integer_value( $request->get_param( 'page' ) ) );
-		$per_page  = min( 100, max( 1, Helper::get_integer_value( $request->get_param( 'per_page' ) ) ) );
+		$page   = max( 1, Helper::get_integer_value( $request->get_param( 'page' ) ) );
+		$status = sanitize_text_field( $request->get_param( 'status' ) );
+
+		// Get per_page from option first, then request parameter, with fallback to 10.
+		$saved_per_page   = Helper::get_srfm_option( 'forms_per_page', 10 );
+		$request_per_page = $request->get_param( 'per_page' );
+		$per_page         = $request_per_page ? min( 100, max( 1, Helper::get_integer_value( $request_per_page ) ) ) : $saved_per_page;
+
+		// Save per_page to option if it came from request.
+		if ( $request_per_page && 'trash' !== $status && 1 < $request_per_page ) {
+			Helper::update_srfm_option( 'forms_per_page', $per_page );
+		}
+
 		$search    = sanitize_text_field( $request->get_param( 'search' ) );
-		$status    = sanitize_text_field( $request->get_param( 'status' ) );
 		$orderby   = sanitize_text_field( $request->get_param( 'orderby' ) );
 		$order     = sanitize_text_field( $request->get_param( 'order' ) );
-		$date_from = sanitize_text_field( $request->get_param( 'date_from' ) );
-		$date_to   = sanitize_text_field( $request->get_param( 'date_to' ) );
+		$date_from = sanitize_text_field( $request->get_param( 'after' ) );
+		$date_to   = sanitize_text_field( $request->get_param( 'before' ) );
 
 		// Build query arguments.
 		$args = [
@@ -151,13 +161,21 @@ class Forms_Data {
 
 		// Add date range filtering.
 		if ( ! empty( $date_from ) || ! empty( $date_to ) ) {
-			$args['date_query'] = [
-				[
-					'after'     => ! empty( $date_from ) ? $date_from : null,
-					'before'    => ! empty( $date_to ) ? $date_to : null,
-					'inclusive' => true,
-				],
-			];
+			$date_query = [];
+			// Handle 'after' date.
+			if ( ! empty( $date_from ) ) {
+				$date_query['after'] = $date_from;
+			}
+
+			// Handle 'before' date - add 1 day to include the full end date.
+			if ( ! empty( $date_to ) ) {
+				$end_date = new \DateTime( $date_to );
+				$end_date->add( new \DateInterval( 'P1D' ) ); // Add 1 day.
+				$date_query['before'] = $end_date->format( 'Y-m-d' );
+			}
+
+			$date_query['inclusive'] = true;
+			$args['date_query']      = [ $date_query ];
 		}
 
 		// Execute query.
@@ -206,7 +224,7 @@ class Forms_Data {
 
 		return [
 			'id'            => $form_id,
-			'title'         => get_the_title( $post ),
+			'title'         => $post->post_title,
 			'status'        => $post->post_status,
 			'date_created'  => mysql_to_rfc3339( $post->post_date ),
 			'date_modified' => mysql_to_rfc3339( $post->post_modified ),
@@ -214,6 +232,7 @@ class Forms_Data {
 			'entries_count' => $entries_count,
 			'shortcode'     => "[sureforms id='{$form_id}']",
 			'edit_url'      => admin_url( "post.php?post={$form_id}&action=edit" ),
+			'frontend_url'  => get_permalink( $form_id ),
 		];
 	}
 }
