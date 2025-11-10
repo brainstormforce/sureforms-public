@@ -255,7 +255,10 @@ const EntriesFilters = ( {
 								trigger={ ( { setShow } ) => (
 									<Input
 										type="text"
-										placeholder={ __( "dd/mm/yyyy - dd/mm/yyyy", "sureforms" ) }
+										placeholder={ __(
+											'dd/mm/yyyy - dd/mm/yyyy',
+											'sureforms'
+										) }
 										readOnly
 										onClick={ () =>
 											setShow( ( prev ) => ! prev )
