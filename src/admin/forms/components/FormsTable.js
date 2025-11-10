@@ -293,7 +293,7 @@ const FormsTable = ( {
 								content={ action.label }
 								placement="top"
 								variant="dark"
-								tooltipPortalId='srfm-settings-container'
+								tooltipPortalId="srfm-settings-container"
 								arrow
 							>
 								<Button
