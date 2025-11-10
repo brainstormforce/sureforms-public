@@ -152,21 +152,15 @@ const LimitReachedPopup = ( {
 				<Container.Item className="flex flex-col w-full gap-3 pb-2">
 					{ FinalButton }
 
-					{ ! is_pro_active &&
-					! deactivatedLicense &&
-					! ActivateLicenseButton ? (
-							<Button
-								size="md"
-								variant="ghost"
-								onClick={ () => {
-									window.location.href = `${ srfm_admin.site_url }/wp-admin/post-new.php?post_type=sureforms_form`;
-								} }
-							>
-								{ __( 'Or Build It Yourself', 'sureforms' ) }
-							</Button>
-						) : (
-							''
-						) }
+					<Button
+						size="md"
+						variant="ghost"
+						onClick={ () => {
+							window.location.href = `${ srfm_admin.site_url }/wp-admin/post-new.php?post_type=sureforms_form`;
+						} }
+					>
+						{ __( 'Or Build It Yourself', 'sureforms' ) }
+					</Button>
 				</Container.Item>
 			</Container>
 		</Container>
