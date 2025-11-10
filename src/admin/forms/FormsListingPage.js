@@ -6,7 +6,7 @@ import { exportForms } from './utils';
 import Header from '../components/Header';
 import FormsHeader from './components/FormsHeader';
 import FormsTable from './components/FormsTable';
-import FormsPagination from './components/FormsPagination';
+import Pagination from '@Admin/common/listing/components/Pagination';
 import EmptyState from './components/EmptyState';
 import ConfirmationDialog from '@Admin/components/ConfirmationDialog';
 import { useForms, useBulkFormsAction, formsKeys } from './hooks/useFormsQuery';
@@ -464,18 +464,16 @@ const FormsListingPage = () => {
 										onSort={ handleSort }
 										getSortDirection={ getSortDirection }
 									>
-										<FormsPagination
+										<Pagination
 											currentPage={
 												paginationData.currentPage
 											}
 											totalPages={
 												paginationData.totalPages
 											}
-											entriesPerPage={
-												paginationData.perPage
-											}
+											perPage={ paginationData.perPage }
 											onPageChange={ handlePageChange }
-											onEntriesPerPageChange={
+											onPerPageChange={
 												handlePerPageChange
 											}
 											onNextPage={ () =>
