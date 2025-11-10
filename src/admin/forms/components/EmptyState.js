@@ -4,7 +4,7 @@ import { Button, Text, Container } from '@bsf/force-ui';
 import { Plus, Dot } from 'lucide-react';
 import noFormsImage from '../no-forms.svg';
 import ImportForm from './ImportForm';
-import NoResultsFound from '@Admin/components/listing/NoResultsFound';
+import NoResultsFound from '@Admin/common/listing/components/NoResultsFound';
 
 // EmptyState Component - Displays different empty states based on context
 const EmptyState = ( {
