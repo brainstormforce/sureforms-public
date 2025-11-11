@@ -2,7 +2,6 @@ import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
 import {
 	Search,
-	Calendar,
 	X,
 	Trash,
 	MoreVertical,
@@ -127,28 +126,6 @@ const EntriesFilters = ( {
 		}
 	};
 
-	const formatDate = ( value ) => {
-		if ( ! value ) {
-			return '';
-		}
-		const date = new Date( value );
-		if ( isNaN( date ) ) {
-			return '';
-		}
-		const year = date.getFullYear();
-		const month = String( date.getMonth() + 1 ).padStart( 2, '0' );
-		const day = String( date.getDate() ).padStart( 2, '0' );
-		return `${ month }/${ day }/${ year }`;
-	};
-
-	const dateFilterProps = dateRange &&
-		dateRange?.from &&
-		dateRange?.to && {
-		value: `${ formatDate( dateRange?.from ) } - ${ formatDate(
-			dateRange?.to
-		) }`,
-	};
-
 	const ResendNotificationModal = applyFilters(
 		'srfm-pro.entry-details.render-resend-notification-modal'
 	);
@@ -252,23 +229,6 @@ const EntriesFilters = ( {
 							<DatePicker
 								value={ dateRange }
 								onApply={ onDateRangeChange }
-								trigger={ ( { setShow } ) => (
-									<Input
-										type="text"
-										placeholder={ __(
-											'dd/mm/yyyy - dd/mm/yyyy',
-											'sureforms'
-										) }
-										readOnly
-										onClick={ () =>
-											setShow( ( prev ) => ! prev )
-										}
-										suffix={
-											<Calendar className="w-4 h-4 text-icon-secondary" />
-										}
-										{ ...dateFilterProps }
-									/>
-								) }
 							/>
 						</div>
 						{ /* Search box */ }

@@ -2,7 +2,6 @@ import { __ } from '@wordpress/i18n';
 import { useRef, useEffect, useMemo, useState } from '@wordpress/element';
 import {
 	Trash,
-	Calendar,
 	Import,
 	ArchiveRestore,
 	Search,
@@ -11,7 +10,6 @@ import {
 } from 'lucide-react';
 import { Input, Button, Container, Select } from '@bsf/force-ui';
 import DatePicker from '@Admin/components/DatePicker';
-import { getSelectedDate } from '@Utils/Helpers';
 import ImportForm from './ImportForm';
 
 // FormsFilters Component - Displays all filters: status dropdown, date picker, search, and import button
@@ -223,27 +221,6 @@ const FormsFilters = ( {
 					<DatePicker
 						value={ selectedDates }
 						onApply={ handleDateApply }
-						trigger={ ( { setShow } ) => (
-							<Input
-								type="text"
-								size="sm"
-								value={ getSelectedDate( selectedDates ) }
-								suffix={
-									<Calendar className="text-icon-secondary" />
-								}
-								onClick={ () => setShow( ( prev ) => ! prev ) }
-								placeholder={ __(
-									'mm/dd/yyyy - mm/dd/yyyy',
-									'sureforms'
-								) }
-								className="min-w-[200px]"
-								readOnly
-								aria-label={ __(
-									'Select Date Range',
-									'sureforms'
-								) }
-							/>
-						) }
 					/>
 				</div>
 			</Container.Item>
