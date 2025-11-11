@@ -999,12 +999,46 @@ function addEmailBlurListener( areaInput, blockClass ) {
 	// Get references to both email fields and blocks
 	const mainEmailField = parentBlock.querySelector( '.srfm-input-email' );
 	const mainEmailBlock = parentBlock.querySelector( '.srfm-email-block' );
-	const confirmEmailBlock = parentBlock.querySelector( '.srfm-email-confirm-block' );
-	const confirmEmailField = confirmEmailBlock?.querySelector( '.srfm-input-email-confirm' );
+	const confirmEmailBlock = parentBlock.querySelector(
+		'.srfm-email-confirm-block'
+	);
+	const confirmEmailField = confirmEmailBlock?.querySelector(
+		'.srfm-input-email-confirm'
+	);
 
 	// Regular expression for validating email
 	const emailRegex =
 		/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+	/**-------------------------------
+	 *  Helper functions
+	 * ------------------------------- */
+	const showError = ( block, message, addClass = true ) => {
+		const errorContainer = block?.querySelector( '.srfm-error-message' );
+		if ( ! errorContainer ) {
+			return;
+		}
+		errorContainer.style.display = 'block';
+		errorContainer.textContent = message;
+		if ( addClass ) {
+			parentBlock.classList.add( 'srfm-valid-email-error' );
+		}
+		window?.srfm?.toggleErrorState( block, true );
+	};
+
+	const hideError = ( block, clearId = false ) => {
+		const errorContainer = block?.querySelector( '.srfm-error-message' );
+		if ( ! errorContainer ) {
+			return;
+		}
+		errorContainer.style.display = 'none';
+		errorContainer.textContent = '';
+		if ( clearId ) {
+			errorContainer.removeAttribute( 'id' );
+		}
+		parentBlock.classList.remove( 'srfm-valid-email-error' );
+		window?.srfm?.toggleErrorState( block, false );
+	};
 
 	/**
 	 * Validates the main email field for proper email format
@@ -1015,24 +1049,22 @@ function addEmailBlurListener( areaInput, blockClass ) {
 		}
 
 		const mainValue = mainEmailField.value.trim().toLowerCase();
-		const mainErrorContainer = mainEmailBlock?.querySelector( '.srfm-error-message' );
 		const isValidEmail = mainValue === '' || emailRegex.test( mainValue );
+		const errorContainer = mainEmailBlock?.querySelector(
+			'.srfm-error-message'
+		);
 
 		if ( mainValue && ! isValidEmail ) {
-			// Invalid email format
-			parentBlock.classList.add( 'srfm-valid-email-error' );
-			if ( mainErrorContainer ) {
-				mainErrorContainer.style.display = 'block';
-				mainErrorContainer.innerHTML = window?.srfm_submit?.messages?.srfm_valid_email;
-				mainErrorContainer.id = mainErrorContainer.getAttribute( 'data-srfm-id' );
+			showError(
+				mainEmailBlock,
+				window?.srfm_submit?.messages?.srfm_valid_email
+			);
+			if ( errorContainer ) {
+				errorContainer.id =
+					errorContainer.getAttribute( 'data-srfm-id' );
 			}
 		} else {
-			// Valid email or empty
-			parentBlock.classList.remove( 'srfm-valid-email-error' );
-			if ( mainErrorContainer ) {
-				mainErrorContainer.style.display = 'none';
-				mainErrorContainer.removeAttribute( 'id' );
-			}
+			hideError( mainEmailBlock, true );
 		}
 	};
 
@@ -1046,47 +1078,40 @@ function addEmailBlurListener( areaInput, blockClass ) {
 
 		const mainValue = mainEmailField?.value.trim() || '';
 		const confirmValue = confirmEmailField.value.trim();
-		const confirmErrorContainer = confirmEmailBlock.querySelector( '.srfm-error-message' );
 
-		// Only validate if main email has a value
 		if ( mainValue ) {
 			if ( ! confirmValue ) {
-				// Main filled, confirm empty - show required error
-				confirmErrorContainer.style.display = 'block';
-				parentBlock.classList.add( 'srfm-valid-email-error' );
-				confirmErrorContainer.textContent = confirmErrorContainer.getAttribute( 'data-error-msg' );
-				window?.srfm?.toggleErrorState( confirmEmailBlock, true );
+				showError(
+					confirmEmailBlock,
+					confirmEmailBlock
+						.querySelector( '.srfm-error-message' )
+						?.getAttribute( 'data-error-msg' )
+				);
 			} else if ( confirmValue !== mainValue ) {
-				// Both filled but don't match
-				confirmErrorContainer.style.display = 'block';
-				parentBlock.classList.add( 'srfm-valid-email-error' );
-				confirmErrorContainer.textContent = window?.srfm_submit?.messages?.srfm_confirm_email_same;
-				window?.srfm?.toggleErrorState( confirmEmailBlock, true );
+				showError(
+					confirmEmailBlock,
+					window?.srfm_submit?.messages?.srfm_confirm_email_same
+				);
 			} else {
-				// Both match
-				confirmErrorContainer.style.display = 'none';
-				parentBlock.classList.remove( 'srfm-valid-email-error' );
-				confirmErrorContainer.textContent = '';
-				window?.srfm?.toggleErrorState( confirmEmailBlock, false );
+				hideError( confirmEmailBlock );
 			}
+		} else if ( confirmValue && ! mainValue ) {
+			showError(
+				confirmEmailBlock,
+				window?.srfm_submit?.messages?.srfm_confirm_email_same
+			);
 		} else {
-			// Main email empty - clear confirm errors
-			confirmErrorContainer.style.display = 'none';
-			parentBlock.classList.remove( 'srfm-valid-email-error' );
-			confirmErrorContainer.textContent = '';
-			window?.srfm?.toggleErrorState( confirmEmailBlock, false );
+			hideError( confirmEmailBlock );
 		}
 	};
 
 	// Add event listeners
 	emailInputs.forEach( ( emailField ) => {
-		emailField.addEventListener( 'input', async function () {
-			// Trim and lowercase the email input value
+		emailField.addEventListener( 'input', () => {
 			emailField.value = emailField.value.trim().toLowerCase();
-
-			// Determine which field is being edited
-			const isConfirmField = emailField.classList.contains( 'srfm-input-email-confirm' );
-
+			const isConfirmField = emailField.classList.contains(
+				'srfm-input-email-confirm'
+			);
 			if ( isConfirmField ) {
 				// Typing in confirm field - validate confirm field
 				validateConfirmEmail();
