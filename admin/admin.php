@@ -7,13 +7,10 @@
 
 namespace SRFM\Admin;
 
-use SRFM\Admin\Views\Entries_List_Table;
-use SRFM\Admin\Views\Single_Entry;
 use SRFM\Inc\AI_Form_Builder\AI_Helper;
 use SRFM\Inc\Database\Tables\Entries;
 use SRFM\Inc\Helper;
 use SRFM\Inc\Onboarding;
-use SRFM\Inc\Post_Types;
 use SRFM\Inc\Traits\Get_Instance;
 use SRFM\Inc\Payments\Stripe\Stripe_Helper;
 
@@ -71,10 +68,6 @@ class Admin {
 
 		add_action( 'current_screen', [ $this, 'enable_gutenberg_for_sureforms' ], 100 );
 		add_action( 'admin_notices', [ $this, 'srfm_pro_version_compatibility' ] );
-
-		// Handle entry actions.
-		add_action( 'admin_init', [ $this, 'handle_entry_actions' ] );
-		add_action( 'admin_notices', [ Entries_List_Table::class, 'display_bulk_action_notice' ] );
 
 		// This action enqueues translations for NPS Survey library.
 		// A better solution will be required from library to resolve plugin conflict.
@@ -470,6 +463,15 @@ class Admin {
 	public function add_new_form() {
 		add_submenu_page(
 			'sureforms_menu',
+			__( 'Forms', 'sureforms' ),
+			__( 'Forms', 'sureforms' ),
+			self::$sureforms_page_default_capability,
+			'sureforms_forms',
+			[ $this, 'render_forms' ],
+			1
+		);
+		add_submenu_page(
+			'sureforms_menu',
 			__( 'New Form', 'sureforms' ),
 			__( 'New Form', 'sureforms' ),
 			self::$sureforms_page_default_capability,
@@ -527,40 +529,26 @@ class Admin {
 	}
 
 	/**
+	 * Forms page callback.
+	 *
+	 * @return void
+	 * @since x.x.x
+	 */
+	public function render_forms() {
+		?>
+		<div id="srfm-forms-root" class="srfm-admin-wrapper"></div>
+		<?php
+	}
+
+	/**
 	 * Entries page callback.
 	 *
 	 * @since 0.0.13
+	 * @since x.x.x - Updated the entries UI and the function definition.
 	 * @return void
 	 */
 	public function render_entries() {
-		// Render single entry view.
-		// Adding the phpcs ignore nonce verification as no database operations are performed in this function, it is used to display the single entry view.
-		if ( isset( $_GET['entry_id'] ) && is_numeric( $_GET['entry_id'] ) && isset( $_GET['view'] ) && 'details' === $_GET['view'] ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verification is not needed here and explained in the comments above as well.
-			$single_entry_view = new Single_Entry();
-			$single_entry_view->render();
-			return;
-		}
-
-		// Render all entries view.
-		$entries_table = new Entries_List_Table();
-		$entries_table->prepare_items();
-		?>
-		<div class="wrap">
-			<h1 class="wp-heading-inline"><?php echo esc_html__( 'Entries', 'sureforms' ); ?></h1>
-			<?php
-			if ( empty( $entries_table->all_entries_count ) && empty( $entries_table->trash_entries_count ) ) {
-				$instance = Post_Types::get_instance();
-				$instance->sureforms_render_blank_state( SRFM_ENTRIES );
-				$instance->get_blank_state_styles();
-				return;
-			}
-			?>
-			<form method="get">
-				<input type="hidden" name="page" value="sureforms_entries">
-				<?php $entries_table->display(); ?>
-			</form>
-		</div>
-		<?php
+		echo '<div id="srfm-entries-root"></div>';
 	}
 
 	/**
@@ -770,7 +758,6 @@ class Admin {
 
 		$file_prefix = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? '' : '.min';
 		$dir_name    = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? 'unminified' : 'minified';
-		$js_uri      = SRFM_URL . 'assets/js/' . $dir_name . '/';
 		$css_uri     = SRFM_URL . 'assets/css/' . $dir_name . '/';
 		$is_rtl      = is_rtl();
 		$rtl         = $is_rtl ? '-rtl' : '';
@@ -797,6 +784,7 @@ class Admin {
 			'field_spacing_vars'         => Helper::get_css_vars(),
 			'is_ver_lower_than_6_7'      => version_compare( $wp_version, '6.6.2', '<=' ),
 			'integrations'               => Helper::sureforms_get_integration(),
+			'rotating_plugin_banner'     => Helper::get_rotating_plugin_banner(),
 			'ajax_url'                   => admin_url( 'admin-ajax.php' ),
 			'sf_plugin_manager_nonce'    => wp_create_nonce( 'sf_plugin_manager_nonce' ),
 			'plugin_installer_nonce'     => wp_create_nonce( 'updates' ),
@@ -819,6 +807,7 @@ class Admin {
 
 		$is_screen_sureforms_menu          = Helper::validate_request_context( 'sureforms_menu', 'page' );
 		$is_screen_add_new_form            = Helper::validate_request_context( 'add-new-form', 'page' );
+		$is_screen_sureforms_forms         = Helper::validate_request_context( 'sureforms_forms', 'page' );
 		$is_screen_sureforms_form_settings = Helper::validate_request_context( 'sureforms_form_settings', 'page' );
 		$is_screen_sureforms_payments = Helper::validate_request_context( 'sureforms_payments', 'page' );
 		$is_screen_sureforms_entries       = Helper::validate_request_context( SRFM_ENTRIES, 'page' );
@@ -835,7 +824,7 @@ class Admin {
 			];
 		}
 
-		if ( $is_screen_sureforms_menu || $is_post_type_sureforms_form || $is_screen_add_new_form || $is_screen_sureforms_form_settings || $is_screen_sureforms_entries || $is_screen_sureforms_payments ) {
+		if ( $is_screen_sureforms_menu || $is_post_type_sureforms_form || $is_screen_add_new_form || $is_screen_sureforms_forms || $is_screen_sureforms_form_settings || $is_screen_sureforms_entries || $is_screen_sureforms_payments ) {
 			$asset_handle = '-dashboard';
 
 			wp_enqueue_style( SRFM_SLUG . $asset_handle . '-font', 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap', [], SRFM_VER );
@@ -865,7 +854,7 @@ class Admin {
 				}
 			}
 
-			$localization_data['security_settings_url']    = admin_url( '/admin.php?page=sureforms_form_settings&tab=security-settings' );
+			$localization_data['security_settings_url']    = admin_url( '/admin.php?page=sureforms_form_settings&tab=security-settings&subpage=recaptcha' );
 			$localization_data['integration_settings_url'] = admin_url( '/admin.php?page=sureforms_form_settings&tab=integration-settings' );
 			wp_localize_script(
 				SRFM_SLUG . $asset_handle,
@@ -876,10 +865,9 @@ class Admin {
 				)
 			);
 			wp_enqueue_style( SRFM_SLUG . '-dashboard', SRFM_URL . 'assets/build/dashboard.css', [], SRFM_VER, 'all' );
-
 		}
 
-		if ( $is_screen_sureforms_form_settings ) {
+		if ( $is_screen_sureforms_form_settings || $is_screen_sureforms_forms ) {
 			wp_enqueue_style( SRFM_SLUG . '-settings', $css_uri . 'backend/settings' . $file_prefix . $rtl . '.css', [], SRFM_VER );
 		}
 
@@ -887,6 +875,29 @@ class Admin {
 		if ( $is_screen_sureforms_entries ) {
 			$asset_handle = '-entries';
 			wp_enqueue_script( SRFM_SLUG . $asset_handle, SRFM_URL . 'assets/build/entries.js', $script_info['dependencies'], SRFM_VER, true );
+
+			$script_translations_handlers[] = SRFM_SLUG . $asset_handle;
+		}
+
+		// Enqueue scripts for the forms page.
+		if ( $is_screen_sureforms_forms ) {
+			$asset_handle = '-forms';
+
+			$script_asset_path = SRFM_DIR . 'assets/build/forms.asset.php';
+			$script_info       = file_exists( $script_asset_path )
+				? include $script_asset_path
+				: [
+					'dependencies' => [],
+					'version'      => SRFM_VER,
+				];
+
+			wp_enqueue_script( SRFM_SLUG . $asset_handle, SRFM_URL . 'assets/build/forms.js', $script_info['dependencies'], SRFM_VER, true );
+			wp_localize_script(
+				SRFM_SLUG . $asset_handle,
+				SRFM_SLUG . '_admin',
+				$localization_data
+			);
+			wp_enqueue_style( SRFM_SLUG . $asset_handle, SRFM_URL . 'assets/build/forms.css', [], SRFM_VER, 'all' );
 
 			$script_translations_handlers[] = SRFM_SLUG . $asset_handle;
 		}
@@ -934,22 +945,6 @@ class Admin {
 		// Admin Submenu Styles.
 		wp_enqueue_style( SRFM_SLUG . '-admin', $css_uri . 'backend/admin' . $file_prefix . $rtl . '.css', [], SRFM_VER );
 
-		if ( 'edit-' . SRFM_FORMS_POST_TYPE === $current_screen->id ) {
-			$asset_handle = 'page_header';
-
-			$script_asset_path = SRFM_DIR . 'assets/build/' . $asset_handle . '.asset.php';
-			$script_info       = file_exists( $script_asset_path )
-			? include $script_asset_path
-			: [
-				'dependencies' => [],
-				'version'      => SRFM_VER,
-			];
-			wp_enqueue_script( SRFM_SLUG . '-form-page-header', SRFM_URL . 'assets/build/' . $asset_handle . '.js', $script_info['dependencies'], SRFM_VER, true );
-			wp_enqueue_style( SRFM_SLUG . '-form-archive-styles', $css_uri . 'form-archive-styles' . $file_prefix . $rtl . '.css', [], SRFM_VER );
-
-			$script_translations_handlers[] = SRFM_SLUG . '-form-page-header';
-		}
-
 		if ( $is_screen_sureforms_form_settings ) {
 			$asset_handle = 'settings';
 
@@ -969,34 +964,6 @@ class Admin {
 			);
 
 			$script_translations_handlers[] = SRFM_SLUG . '-settings';
-		}
-		if ( 'edit-' . SRFM_FORMS_POST_TYPE === $current_screen->id ) {
-			wp_enqueue_script( SRFM_SLUG . '-form-archive', $js_uri . 'form-archive' . $file_prefix . '.js', [], SRFM_VER, true );
-			wp_enqueue_script( SRFM_SLUG . '-export', $js_uri . 'export' . $file_prefix . '.js', [ 'wp-i18n' ], SRFM_VER, true );
-			wp_localize_script(
-				SRFM_SLUG . '-export',
-				SRFM_SLUG . '_export',
-				[
-					'ajaxurl'           => admin_url( 'admin-ajax.php' ),
-					'srfm_export_nonce' => wp_create_nonce( 'export_form_nonce' ),
-					'site_url'          => get_site_url(),
-					'import_form_nonce' => Helper::current_user_can() ? wp_create_nonce( 'wp_rest' ) : '',
-					'import_btn_string' => __( 'Import Form', 'sureforms' ),
-				]
-			);
-
-			wp_enqueue_script( SRFM_SLUG . '-backend', $js_uri . 'backend' . $file_prefix . '.js', [], SRFM_VER, true );
-			wp_localize_script(
-				SRFM_SLUG . '-backend',
-				SRFM_SLUG . '_backend',
-				[
-					'site_url' => get_site_url(),
-				]
-			);
-
-			$script_translations_handlers[] = SRFM_SLUG . '-form-archive';
-			$script_translations_handlers[] = SRFM_SLUG . '-export';
-			$script_translations_handlers[] = SRFM_SLUG . '-backend';
 		}
 
 		if ( $is_screen_add_new_form ) {
@@ -1147,40 +1114,6 @@ class Admin {
 		}
 
 		return $status;
-	}
-
-	// Entries methods.
-
-	/**
-	 * Handle entry actions.
-	 *
-	 * @since 0.0.13
-	 * @return void
-	 */
-	public function handle_entry_actions() {
-		Entries_List_Table::process_bulk_actions();
-
-		if ( ! isset( $_GET['page'] ) || SRFM_ENTRIES !== $_GET['page'] ) {
-			return;
-		}
-		if ( ! isset( $_GET['entry_id'] ) || ! isset( $_GET['action'] ) ) {
-			return;
-		}
-		if ( ! isset( $_GET['_wpnonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ), 'srfm_entries_action' ) ) {
-			wp_die( esc_html__( 'Nonce verification failed.', 'sureforms' ) );
-		}
-		$action   = isset( $_GET['action'] ) ? sanitize_text_field( wp_unslash( $_GET['action'] ) ) : '';
-		$entry_id = Helper::get_integer_value( sanitize_text_field( wp_unslash( $_GET['entry_id'] ) ) );
-		$view     = isset( $_GET['view'] ) ? sanitize_text_field( wp_unslash( $_GET['view'] ) ) : '';
-		if ( $entry_id > 0 ) {
-			if ( 'read' === $action && 'details' === $view ) {
-				$entry_status = Entries::get( $entry_id )['status'];
-				if ( 'trash' === $entry_status ) {
-					wp_die( esc_html__( 'You cannot view this entry because it is in trash.', 'sureforms' ) );
-				}
-			}
-			Entries_List_Table::handle_entry_status( $entry_id, $action, $view );
-		}
 	}
 
 	/**

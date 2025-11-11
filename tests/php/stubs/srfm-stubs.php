@@ -7816,7 +7816,8 @@ namespace SRFM\Inc {
         /**
          * Get default post metas for form when creating using template.
          *
-         * @return array<string, array<int, int|string>> Default meta keys.
+         * @return array<string, int|string|bool> Default meta keys.
+         * @since x.x.x updated the return type.
          * @since 0.0.3
          */
         public static function get_default_meta_keys()
@@ -9609,15 +9610,6 @@ namespace SRFM\Inc {
          * @since  0.0.1
          */
         public function maybe_render_blank_form_state($which)
-        {
-        }
-        /**
-         * Set up a div for the header to render into it.
-         *
-         * @return void
-         * @since  0.0.1
-         */
-        public static function embed_page_header()
         {
         }
         /**

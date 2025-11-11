@@ -68,3 +68,9 @@
 		display: none !important;
 	}
 }
+// Hide WP notices in entries screen
+#wpbody:has( #srfm-entries-root ) {
+	#wpbody-content > .notice {
+		display: none;
+	}
+}

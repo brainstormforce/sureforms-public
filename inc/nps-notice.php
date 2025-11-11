@@ -37,7 +37,7 @@ if ( ! class_exists( 'Nps_Notice' ) ) {
 			'toplevel_page_sureforms_menu',
 			'sureforms_page_sureforms_form_settings',
 			'sureforms_page_sureforms_entries',
-			'edit-sureforms_form',
+			'sureforms_page_sureforms_forms', // @since x.x.x - Added for forms list page and removed native forms page.
 		];
 
 		/**

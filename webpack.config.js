@@ -51,6 +51,7 @@ module.exports = {
 		blocks: path.resolve( __dirname, 'src/blocks/blocks.js' ),
 		entries: path.resolve( __dirname, 'src/admin/entries/index.js' ),
 		payments: path.resolve( __dirname, 'src/admin/payment/index.js' ),
+		forms: path.resolve( __dirname, 'src/admin/forms/index.js' ),
 	},
 	resolve: {
 		alias: {

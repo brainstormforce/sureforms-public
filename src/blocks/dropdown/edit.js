@@ -118,7 +118,7 @@ const Edit = ( props ) => {
 	const minMaxComponent = multiSelect && options.length > 1 && (
 		<>
 			<SRFMNumberControl
-				label={ __( 'Minimum Value', 'sureforms' ) }
+				label={ __( 'Minimum Selections', 'sureforms' ) }
 				displayUnit={ false }
 				data={ {
 					value: minValue,
@@ -143,7 +143,7 @@ const Edit = ( props ) => {
 				showControlHeader={ false }
 			/>
 			<SRFMNumberControl
-				label={ __( 'Maximum Value', 'sureforms' ) }
+				label={ __( 'Maximum Selections', 'sureforms' ) }
 				displayUnit={ false }
 				data={ {
 					value: maxValue,
@@ -175,12 +175,6 @@ const Edit = ( props ) => {
 					) }
 				</p>
 			) }
-			<p className="components-base-control__help">
-				{ __(
-					'Note: Maximum value should always be greater than minimum value',
-					'sureforms'
-				) }
-			</p>
 		</>
 	);
 
@@ -355,34 +349,6 @@ const Edit = ( props ) => {
 			),
 		},
 		{
-			id: 'multiSelect',
-			component: (
-				<ToggleControl
-					label={ __( 'Enable Multiple Selections', 'sureforms' ) }
-					checked={ multiSelect }
-					onChange={ ( checked ) =>
-						setAttributes( { multiSelect: checked } )
-					}
-				/>
-			),
-		},
-		{
-			id: 'minMaxComponent',
-			component: minMaxComponent,
-		},
-		{
-			id: 'searchable',
-			component: (
-				<ToggleControl
-					label={ __( 'Enable Search', 'sureforms' ) }
-					checked={ searchable }
-					onChange={ ( checked ) =>
-						setAttributes( { searchable: checked } )
-					}
-				/>
-			),
-		},
-		{
 			id: 'errorMsg',
 			component: required ? (
 				<SRFMTextControl
@@ -400,17 +366,10 @@ const Edit = ( props ) => {
 			) : null,
 		},
 		{
-			id: 'dropDownOptions',
-			component: dropDownOptions,
-		},
-		{
-			id: 'addNewOption',
-			component: addNewOption,
-		},
-		{
 			id: 'help',
 			component: (
 				<SRFMTextControl
+					variant="textarea"
 					data={ {
 						value: help,
 						label: 'help',
@@ -420,6 +379,47 @@ const Edit = ( props ) => {
 					onChange={ ( value ) => setAttributes( { help: value } ) }
 				/>
 			),
+		},
+		{
+			id: 'separator-1',
+			component: <div className="srfm-settings-separator" />,
+		},
+		{
+			id: 'multiSelect',
+			component: (
+				<ToggleControl
+					label={ __( 'Allow Multiple', 'sureforms' ) }
+					checked={ multiSelect }
+					onChange={ ( checked ) =>
+						setAttributes( { multiSelect: checked } )
+					}
+				/>
+			),
+		},
+		{
+			id: 'minMaxComponent',
+			component: minMaxComponent,
+		},
+		{
+			id: 'searchable',
+			component: (
+				<ToggleControl
+					label={ __( 'Enable Dropdown Search', 'sureforms' ) }
+					checked={ searchable }
+					onChange={ ( checked ) =>
+						setAttributes( { searchable: checked } )
+					}
+				/>
+			),
+		},
+
+		{
+			id: 'dropDownOptions',
+			component: dropDownOptions,
+		},
+		{
+			id: 'addNewOption',
+			component: addNewOption,
 		},
 	];
 

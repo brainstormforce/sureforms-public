@@ -3,9 +3,12 @@ import { __ } from '@wordpress/i18n';
 import Logo from '../dashboard/templates/Logo';
 import useWhatsNewRSS from '../../lib/whats-new/useWhatsNewRSS';
 import { Topbar, Badge, Button, HamburgerMenu, Label } from '@bsf/force-ui';
-import { CircleHelp, ArrowUpRight, Megaphone } from 'lucide-react';
+import { BookOpen, ArrowUpRight, Megaphone } from 'lucide-react';
 import { addQueryParam, cn } from '@Utils/Helpers';
 import UpgradeNotice from './UpgradeNotice';
+import LogoFull from '@Admin/dashboard/templates/LogoFull';
+import Breadcrumb from './Breadcrumb';
+import Tooltip from './Tooltip';
 
 const { site_url: siteURL = '', is_pro_active: isProActive = false } =
 	srfm_admin;
@@ -17,9 +20,9 @@ const NAV_ITEMS = [
 		link: `${ siteURL }/wp-admin/admin.php?page=sureforms_menu`,
 	},
 	{
-		slug: 'sureforms_form',
+		slug: 'sureforms_forms',
 		text: __( 'Forms', 'sureforms' ),
-		link: `${ siteURL }/wp-admin/edit.php?post_type=sureforms_form`,
+		link: `${ siteURL }/wp-admin/admin.php?page=sureforms_forms`,
 	},
 	{
 		slug: 'sureforms_entries',
@@ -38,7 +41,38 @@ const NAV_ITEMS = [
 	},
 ];
 
-const Header = () => {
+const HeaderTooltipItem = ( { title, icon, onClick, children } ) => (
+	<Topbar.Item className="p-1 gap-2">
+		<Tooltip
+			title={ title }
+			placement="bottom"
+			className="z-999999"
+			portalId="srfm-dashboard-container"
+			variant="dark"
+		>
+			{ children ? (
+				children
+			) : (
+				<Button
+					size="xs"
+					variant="ghost"
+					className="p-0 focus:[box-shadow:none] [box-shadow:none] text-text-primary"
+					onClick={ onClick }
+					icon={ icon }
+				/>
+			) }
+		</Tooltip>
+	</Topbar.Item>
+);
+
+/**
+ * Header Component
+ *
+ * @param {Object}                                       props            Component props
+ * @param {Array<import('./Breadcrumb').BreadcrumbItem>} props.breadCrumb Breadcrumb items
+ * @return {JSX.Element}                Header component
+ */
+const Header = ( { breadCrumb } ) => {
 	const [ activePage, setActivePage ] = useState( null );
 	const [ isLicenseActive, setIsLicenseActive ] = useState(
 		srfm_admin?.is_license_active || false
@@ -64,13 +98,13 @@ const Header = () => {
 		uniqueKey: 'sureforms',
 		rssFeedURL: 'https://sureforms.com/whats-new/feed/',
 		selector: '#srfm_whats_new',
-		icon: renderToString( <Megaphone className="size-4" /> ),
+		icon: renderToString( <Megaphone className="size-4 m-1" /> ),
 		flyout: {
 			title: __( "What's New?", 'sureforms' ),
 		},
 		triggerButton: {
 			icon: renderToString(
-				<Megaphone className="size-4 text-text-primary" />
+				<Megaphone className="size-4 m-1 text-text-primary" />
 			),
 		},
 	} );
@@ -90,7 +124,7 @@ const Header = () => {
 				activePage?.slug === 'sureforms_menu' &&
 				isFirstFormCreated &&
 				srfm_admin?.check_three_days_threshold && <UpgradeNotice /> }
-			<Topbar className="py-0 px-4 pt-0 pb-0 min-h-0 h-14 gap-4 shadow-sm bg-background-primary/75 backdrop-blur-[5px]">
+			<Topbar className="py-0 px-4 min-h-0 h-14 gap-4 shadow-sm bg-background-primary/75 backdrop-blur-[5px]">
 				<Topbar.Left className="gap-3">
 					<Topbar.Item className="w-auto h-auto lg:hidden">
 						<HamburgerMenu>
@@ -131,26 +165,33 @@ const Header = () => {
 						</HamburgerMenu>
 					</Topbar.Item>
 					<Topbar.Item>
-						<Logo />
+						{ ! breadCrumb ? <Logo /> : <LogoFull /> }
 					</Topbar.Item>
+					{ breadCrumb && !! breadCrumb?.length && (
+						<Topbar.Item className="[&_li]:m-0 -ml-1">
+							<Breadcrumb options={ breadCrumb } />
+						</Topbar.Item>
+					) }
 				</Topbar.Left>
 				<Topbar.Middle align="left" className="h-full hidden lg:flex">
 					<Topbar.Item>
-						<nav className="flex items-center gap-4 h-full">
-							{ NAV_ITEMS.map( ( item ) => (
-								<a
-									className={ cn(
-										'h-full text-text-secondary text-sm font-medium no-underline px-1 content-center relative focus:outline-none hover:text-text-primary focus:[box-shadow:none]',
-										activePage?.slug === item?.slug &&
-											'text-text-primary before:content-[""] before:absolute before:h-px before:bg-border-interactive before:bottom-0 before:inset-x-0'
-									) }
-									href={ item.link }
-									key={ item.slug }
-								>
-									{ item.text }
-								</a>
-							) ) }
-						</nav>
+						{ ! breadCrumb && (
+							<nav className="flex items-center gap-4 h-full">
+								{ NAV_ITEMS.map( ( item ) => (
+									<a
+										className={ cn(
+											'h-full text-text-secondary text-sm font-medium no-underline px-1 content-center relative focus:outline-none hover:text-text-primary focus:[box-shadow:none]',
+											activePage?.slug === item?.slug &&
+												'text-text-primary before:content-[""] before:absolute before:h-px before:bg-border-interactive before:bottom-0 before:inset-x-0'
+										) }
+										href={ item.link }
+										key={ item.slug }
+									>
+										{ item.text }
+									</a>
+								) ) }
+							</nav>
+						) }
 					</Topbar.Item>
 					{ ! isProActive && ! isLicenseActive && (
 						<Topbar.Item>
@@ -250,24 +291,22 @@ const Header = () => {
 							></Button>
 						</Topbar.Item>
 					) }
-					<Topbar.Item className="p-1">
-						<Button
-							size="xs"
-							variant="ghost"
-							className="p-0 focus:[box-shadow:none] [box-shadow:none] text-text-primary"
-							onClick={ () => {
-								window.open(
-									'https://sureforms.com/docs/',
-									'_blank',
-									'noopener noreferrer'
-								);
-							} }
-							icon={ <CircleHelp className="size-4" /> }
-						></Button>
-					</Topbar.Item>
-					<Topbar.Item className="gap-2">
-						<div id="srfm_whats_new" className="[&_a]:!p-1" />
-					</Topbar.Item>
+					<HeaderTooltipItem
+						title={ __( 'Knowledge Base', 'sureforms' ) }
+						icon={ <BookOpen className="size-4" /> }
+						onClick={ () =>
+							window.open(
+								'https://sureforms.com/docs/',
+								'_blank',
+								'noopener noreferrer'
+							)
+						}
+					/>
+					<HeaderTooltipItem
+						title={ __( 'What\’s New', 'sureforms' ) }
+					>
+						<div id="srfm_whats_new" className="[&>a]:p-0.5 [&>a]:pl-0" />
+					</HeaderTooltipItem>
 				</Topbar.Right>
 			</Topbar>
 		</div>
