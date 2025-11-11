@@ -522,6 +522,33 @@ class Rest_Api {
 				$label            = $label ? Helper::decrypt( $label ) : '';
 				$field_block_name = Helper::get_block_name_from_field( $field_name );
 
+				/**
+				 * Filter: 'srfm_entry_value'
+				 *
+				 * This filter is used to allow 3rd party plugins or custom code to modify
+				 * the entry field value in the entry details REST API response, if required.
+				 * For example, you may want to decrypt, format, or mask sensitive data before output.
+				 *
+				 * @since x.x.x
+				 *
+				 * @param mixed $value             The original value for the field.
+				 * @param array $context           An array of context, including:
+				 *                                 - field_name (string)
+				 *                                 - label (string)
+				 *                                 - field_block_name (string)
+				 *
+				 * @return mixed
+				 */
+				$value = apply_filters(
+					'srfm_entry_value',
+					$value,
+					[
+						'field_name'       => $field_name,
+						'label'            => $label,
+						'field_block_name' => $field_block_name,
+					]
+				);
+
 				$form_data[] = [
 					'field_name' => $field_name,
 					'label'      => $label,
