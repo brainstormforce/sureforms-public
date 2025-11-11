@@ -419,7 +419,7 @@ const FormsListingPage = () => {
 					) : (
 						<Container
 							direction="column"
-							className="w-full rounded-xl bg-background-primary border-0.5 border-solid border-border-subtle shadow-sm-blur-2 overflow-hidden p-4 gap-2"
+							className="w-full rounded-xl bg-background-primary border-0.5 border-solid border-border-subtle shadow-sm-blur-2 p-4 gap-2"
 						>
 							<Container.Item className="p-1">
 								<FormsHeader

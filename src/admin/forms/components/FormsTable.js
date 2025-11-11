@@ -154,7 +154,7 @@ const FormsTable = ( {
 					size="sm"
 					onClick={ () =>
 						window.open(
-							`admin.php?page=sureforms_entries&form_filter=${ form.id }`,
+							`admin.php?page=sureforms_entries#/?form=${ form.id }`,
 							'_self'
 						)
 					}
