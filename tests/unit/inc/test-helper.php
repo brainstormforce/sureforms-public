@@ -19,6 +19,18 @@ use Yoast\PHPUnitPolyfills\TestCases\TestCase;
 use SRFM\Inc\Helper;
 
 /**
+ * Mock class for testing generate_unique_id
+ */
+class Mock_Empty_Table {
+    /**
+     * Always returns null to simulate no collision
+     */
+    public static function get( $id ) {
+        return null;
+    }
+}
+
+/**
  * Tests Plugin Initialization.
  *
  */
@@ -1563,7 +1575,7 @@ class Test_Helper extends TestCase {
     public function testGenerateUniqueIdReturnsString() {
         // Test that generate_unique_id returns a string
         // We call the Helper static method directly with a mock class
-        $id = \SRFM\Inc\Helper::generate_unique_id('MockClass');
+        $id = \SRFM\Inc\Helper::generate_unique_id(Mock_Empty_Table::class);
 
         $this->assertIsString($id);
         $this->assertNotEmpty($id);
@@ -1572,22 +1584,22 @@ class Test_Helper extends TestCase {
     public function testGenerateUniqueIdLength() {
         // Test that the generated ID has the expected length
         // bin2hex(random_bytes(8)) should produce 16 characters
-        $id = \SRFM\Inc\Helper::generate_unique_id('MockClass');
+        $id = \SRFM\Inc\Helper::generate_unique_id(Mock_Empty_Table::class);
 
         $this->assertEquals(16, strlen($id));
     }
 
     public function testGenerateUniqueIdFormat() {
         // Test that the generated ID contains only hexadecimal characters
-        $id = \SRFM\Inc\Helper::generate_unique_id('MockClass');
+        $id = \SRFM\Inc\Helper::generate_unique_id(Mock_Empty_Table::class);
 
         $this->assertMatchesRegularExpression('/^[a-f0-9]+$/', $id);
     }
 
     public function testGenerateUniqueIdUniqueness() {
         // Test that multiple calls generate different IDs
-        $id1 = \SRFM\Inc\Helper::generate_unique_id('MockClass');
-        $id2 = \SRFM\Inc\Helper::generate_unique_id('MockClass');
+        $id1 = \SRFM\Inc\Helper::generate_unique_id(Mock_Empty_Table::class);
+        $id2 = \SRFM\Inc\Helper::generate_unique_id(Mock_Empty_Table::class);
 
         $this->assertNotEquals($id1, $id2);
     }
@@ -1598,7 +1610,7 @@ class Test_Helper extends TestCase {
         $iterations = 100;
 
         for ($i = 0; $i < $iterations; $i++) {
-            $id = \SRFM\Inc\Helper::generate_unique_id('MockClass');
+            $id = \SRFM\Inc\Helper::generate_unique_id(Mock_Empty_Table::class);
             $this->assertNotContains($id, $ids, "Duplicate ID generated: $id");
             $ids[] = $id;
         }
@@ -1611,7 +1623,7 @@ class Test_Helper extends TestCase {
         $expectedLength = 16;
 
         for ($i = 0; $i < 50; $i++) {
-            $id = \SRFM\Inc\Helper::generate_unique_id('MockClass');
+            $id = \SRFM\Inc\Helper::generate_unique_id(Mock_Empty_Table::class);
             $this->assertEquals($expectedLength, strlen($id), "ID length mismatch on iteration $i: $id");
         }
     }
@@ -1621,7 +1633,7 @@ class Test_Helper extends TestCase {
         $validHexChars = '0123456789abcdef';
 
         for ($i = 0; $i < 10; $i++) {
-            $id = \SRFM\Inc\Helper::generate_unique_id('MockClass');
+            $id = \SRFM\Inc\Helper::generate_unique_id(Mock_Empty_Table::class);
 
             for ($j = 0; $j < strlen($id); $j++) {
                 $char = $id[$j];
@@ -1633,7 +1645,7 @@ class Test_Helper extends TestCase {
     public function testGenerateUniqueIdNoUppercase() {
         // Test that generated IDs contain no uppercase letters
         for ($i = 0; $i < 20; $i++) {
-            $id = \SRFM\Inc\Helper::generate_unique_id('MockClass');
+            $id = \SRFM\Inc\Helper::generate_unique_id(Mock_Empty_Table::class);
             $this->assertEquals(strtolower($id), $id, "ID contains uppercase characters: $id");
         }
     }
@@ -1643,7 +1655,7 @@ class Test_Helper extends TestCase {
         $startTime = microtime(true);
 
         for ($i = 0; $i < 1000; $i++) {
-            \SRFM\Inc\Helper::generate_unique_id('MockClass');
+            \SRFM\Inc\Helper::generate_unique_id(Mock_Empty_Table::class);
         }
 
         $endTime = microtime(true);
@@ -1658,7 +1670,7 @@ class Test_Helper extends TestCase {
         $ids = [];
 
         for ($i = 0; $i < 100; $i++) {
-            $ids[] = \SRFM\Inc\Helper::generate_unique_id('MockClass');
+            $ids[] = \SRFM\Inc\Helper::generate_unique_id(Mock_Empty_Table::class);
         }
 
         // Calculate character frequency to ensure randomness
@@ -1682,9 +1694,9 @@ class Test_Helper extends TestCase {
 
     public function testGenerateUniqueIdNotPredictable() {
         // Test that consecutive IDs don't follow a predictable pattern
-        $id1 = \SRFM\Inc\Helper::generate_unique_id('MockClass');
-        $id2 = \SRFM\Inc\Helper::generate_unique_id('MockClass');
-        $id3 = \SRFM\Inc\Helper::generate_unique_id('MockClass');
+        $id1 = \SRFM\Inc\Helper::generate_unique_id(Mock_Empty_Table::class);
+        $id2 = \SRFM\Inc\Helper::generate_unique_id(Mock_Empty_Table::class);
+        $id3 = \SRFM\Inc\Helper::generate_unique_id(Mock_Empty_Table::class);
 
         // Calculate hamming distance between consecutive IDs
         $distance12 = $this->calculateHammingDistance($id1, $id2);
@@ -1701,7 +1713,7 @@ class Test_Helper extends TestCase {
 
         // Simulate rapid successive calls
         for ($i = 0; $i < 1000; $i++) {
-            $id = \SRFM\Inc\Helper::generate_unique_id('MockClass');
+            $id = \SRFM\Inc\Helper::generate_unique_id(Mock_Empty_Table::class);
             $this->assertNotContains($id, $ids, "Duplicate ID in rapid succession: $id");
             $ids[] = $id;
         }
