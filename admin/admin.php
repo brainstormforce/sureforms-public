@@ -55,7 +55,7 @@ class Admin {
 		add_action( 'admin_menu', [ $this, 'settings_page' ] );
 		add_action( 'admin_menu', [ $this, 'add_new_form' ] );
 		add_action( 'admin_menu', [ $this, 'add_suremail_page' ] );
-		if ( ! Helper::has_pro() && self::is_first_form_created() ) {
+		if ( ! Helper::has_pro() ) {
 			add_action( 'admin_menu', [ $this, 'add_upgrade_to_pro' ] );
 			add_action( 'admin_footer', [ $this, 'add_upgrade_to_pro_target_attr' ] );
 		}
@@ -355,12 +355,6 @@ class Admin {
 	 * @since 1.6.1
 	 */
 	public function add_upgrade_to_pro_target_attr() {
-
-		// only add if first form was created more than 8 days ago.
-		if ( ! self::check_first_form_creation_threshold( 8 ) ) {
-			return;
-		}
-
 		?>
 		<script type="text/javascript">
 			document.addEventListener('DOMContentLoaded', function () {
@@ -385,12 +379,6 @@ class Admin {
 	 * @since 1.6.1
 	 */
 	public function add_upgrade_to_pro() {
-
-		// only add if first form was created more than 8 days ago.
-		if ( ! self::check_first_form_creation_threshold( 8 ) ) {
-			return;
-		}
-
 		// The url used here is used as a selector for css to style the upgrade to pro submenu.
 		// If you are changing this url, please make sure to update the css as well.
 		$upgrade_url = add_query_arg(
