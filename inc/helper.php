@@ -1972,8 +1972,8 @@ class Helper {
 	 * Generate a unique ID for the saved form.
 	 * Also ensures that the generated ID does not already exist in the database table.
 	 *
-	 * @param string $class  The class name where the get method is defined to check for existing IDs.
-	 * @param int<1, max>  $length The length of the random bytes to generate. Default is 8.
+	 * @param string      $class  The class name where the get method is defined to check for existing IDs.
+	 * @param int<1, max> $length The length of the random bytes to generate. Default is 8.
 	 * @return string
 	 * @since x.x.x
 	 */
