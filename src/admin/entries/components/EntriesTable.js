@@ -24,7 +24,7 @@ import { formatDateTime } from '@Utils/Helpers';
  * @param {Function} props.onEdit               - Handler for edit action
  * @param {Function} props.onDelete             - Handler for delete action
  * @param {Function} props.onRestore            - Handler for restore action
- * @param {Node}     props.children             - Child components (typically pagination)
+ * @param {Object}   props.paginationProps      - Props for pagination component
  */
 const EntriesTable = ( {
 	data = [],
@@ -40,7 +40,7 @@ const EntriesTable = ( {
 	onEdit,
 	onDelete,
 	onRestore,
-	children,
+	paginationProps,
 } ) => {
 	const defaultColumns = [
 		{
@@ -225,9 +225,8 @@ const EntriesTable = ( {
 			onSort={ onSort }
 			getSortDirection={ getSortDirection }
 			emptyMessage={ emptyMessage }
-		>
-			{ children }
-		</Table>
+			paginationProps={ paginationProps }
+		/>
 	);
 };
 
