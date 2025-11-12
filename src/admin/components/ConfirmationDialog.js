@@ -126,9 +126,13 @@ const ConfirmationDialog = ( {
 							variant="neutral"
 							size="sm"
 						>
-							{ __(
-								'To confirm, type delete in the box below:',
-								'sureforms'
+							{ sprintf(
+								// translators: %s is the confirmation text
+								__(
+									'To confirm, type "%s" in the box below:',
+									'sureforms'
+								),
+								CONFIRMATION_TEXT
 							) }
 						</Label>
 						<div>
