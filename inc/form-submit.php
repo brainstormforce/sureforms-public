@@ -607,9 +607,10 @@ class Form_Submit {
 				'success'      => true,
 				'message'      => $confirmation_message,
 				'data'         => [
-					'name'          => $name,
-					'submission_id' => $entry_id,
-					'after_submit'  => true,
+					'name'               => $name,
+					'submission_id'      => $entry_id,
+					'after_submit'       => true,
+					'after_submit_nonce' => wp_create_nonce( 'srfm_after_submission_' . Helper::get_string_value( $entry_id ) ),
 				],
 				'redirect_url' => Generate_Form_Markup::get_redirect_url( $form_data, $submission_data ),
 			];
@@ -738,14 +739,19 @@ class Form_Submit {
 		// Add the From: to the headers.
 		$headers .= self::add_from_data_in_header( $submission_data, $item, $smart_tags );
 
+		// Handle Reply-To with proper sanitization.
 		if ( isset( $item['email_reply_to'] ) && ! empty( $item['email_reply_to'] ) ) {
-			$headers .= 'Reply-To:' . esc_html( Helper::get_string_value( $smart_tags->process_smart_tags( $item['email_reply_to'], $submission_data ) ) ) . "\r\n";
+			$headers .= 'Reply-To: ' . Helper::sanitize_email_header( Helper::get_string_value( $smart_tags->process_smart_tags( $item['email_reply_to'], $submission_data ) ) ) . "\r\n";
 		}
+
+		// Handle CC with proper sanitization.
 		if ( isset( $item['email_cc'] ) && ! empty( $item['email_cc'] ) ) {
-			$headers .= 'Cc:' . esc_html( Helper::get_string_value( $smart_tags->process_smart_tags( $item['email_cc'], $submission_data ) ) ) . "\r\n";
+			$headers .= 'Cc: ' . Helper::sanitize_email_header( Helper::get_string_value( $smart_tags->process_smart_tags( $item['email_cc'], $submission_data ) ) ) . "\r\n";
 		}
+
+		// Handle BCC with proper sanitization.
 		if ( isset( $item['email_bcc'] ) && ! empty( $item['email_bcc'] ) ) {
-			$headers .= 'Bcc:' . esc_html( Helper::get_string_value( $smart_tags->process_smart_tags( $item['email_bcc'], $submission_data ) ) ) . "\r\n";
+			$headers .= 'Bcc: ' . Helper::sanitize_email_header( Helper::get_string_value( $smart_tags->process_smart_tags( $item['email_bcc'], $submission_data ) ) ) . "\r\n";
 		}
 
 		return compact( 'to', 'subject', 'message', 'headers' );

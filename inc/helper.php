@@ -1019,6 +1019,45 @@ class Helper {
 	}
 
 	/**
+	 * Parse and sanitize an email list string which may contain:
+	 *
+	 * @param string $input email addresses.
+	 * @since 1.13.2
+	 * @return string Sanitized email header string.
+	 */
+	public static function sanitize_email_header( $input ) {
+		if ( empty( $input ) ) {
+			return '';
+		}
+
+		$parts  = explode( ',', $input );
+		$output = [];
+
+		foreach ( $parts as $part ) {
+			$part = trim( $part );
+
+			// Match "Name <email>".
+			if ( preg_match( '/^(.*)<(.+)>$/', $part, $matches ) ) {
+				$name  = trim( $matches[1], "\" \t\n\r\0\x0B" ); // trim quotes.
+				$email = sanitize_email( trim( $matches[2] ) );
+
+				if ( is_email( $email ) ) {
+					$safe_name = sanitize_text_field( $name );
+					$output[]  = $safe_name . ' <' . $email . '>';
+				}
+			} else {
+				// Plain email case.
+				$email = sanitize_email( $part );
+				if ( is_email( $email ) ) {
+					$output[] = $email;
+				}
+			}
+		}
+
+		return ! empty( $output ) ? implode( ', ', $output ) : '';
+	}
+
+	/**
 	 * Process blocks and inner blocks.
 	 *
 	 * @param array<mixed>  $blocks The block data.
