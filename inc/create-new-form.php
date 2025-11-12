@@ -73,7 +73,7 @@ class Create_New_Form {
 			'_srfm_submit_alignment'         => 'left',
 			'_srfm_submit_alignment_backend' => '100%',
 			'_srfm_submit_width'             => '',
-			'_srfm_inherit_theme_button'     => '',
+			'_srfm_inherit_theme_button'     => false,
 			'_srfm_additional_classes'       => '',
 			'_srfm_submit_type'              => 'message',
 			'_srfm_form_recaptcha'           => 'none',
