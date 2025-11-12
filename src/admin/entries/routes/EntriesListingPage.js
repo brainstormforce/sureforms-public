@@ -6,7 +6,7 @@ import EntriesHeader from '../components/EntriesHeader';
 import EntriesFilters from '../components/EntriesFilters';
 import EntriesTable from '../components/EntriesTable';
 import EmptyState from '../components/EmptyState';
-import ConfirmationDialog from '../components/ConfirmationDialog';
+import ConfirmationDialog from '@Admin/components/ConfirmationDialog';
 import { useEntriesFilters } from '../hooks/useEntriesFilters';
 import { useEntriesSelection } from '../hooks/useEntriesSelection';
 import { usePagination } from '../hooks/usePagination';
@@ -222,9 +222,9 @@ const EntriesListingPage = () => {
 		if ( entry.status === 'trash' ) {
 			setConfirmationDialog( {
 				open: true,
-				title: __( 'Delete Entry Permanently?', 'sureforms' ),
+				title: __( 'Delete Entry', 'sureforms' ),
 				description: __(
-					'This action cannot be undone. The entry will be permanently deleted from the database.',
+					'Are you sure you want to permanently delete this entry? This action cannot be undone.',
 					'sureforms'
 				),
 				confirmLabel: __( 'Delete Permanently', 'sureforms' ),
@@ -274,8 +274,8 @@ const EntriesListingPage = () => {
 			open: true,
 			title: allInTrash
 				? _n(
-					'Delete Entry Permanently?',
-					'Delete Entries Permanently?',
+					'Delete Entry',
+					'Delete Entries',
 					selectedEntries.length,
 					'sureforms'
 				  )
@@ -289,8 +289,8 @@ const EntriesListingPage = () => {
 				? sprintf(
 					// translators: %s is the number of entries to be deleted.
 					_n(
-						'This action cannot be undone. %s entry will be permanently deleted from the database.',
-						'This action cannot be undone. %s entries will be permanently deleted from the database.',
+						'Are you sure you want to permanently delete %s entry? This action cannot be undone.',
+						'Are you sure you want to permanently delete %s entries? This action cannot be undone.',
 						selectedEntries.length,
 						'sureforms'
 					),
@@ -427,16 +427,16 @@ const EntriesListingPage = () => {
 		setConfirmationDialog( {
 			open: true,
 			title: _n(
-				'Restore Entry?',
-				'Restore Entries?',
+				'Restore Entry',
+				'Restore Entries',
 				selectedEntries.length,
 				'sureforms'
 			),
 			description: sprintf(
 				// translators: %s is the number of entries to be restored.
 				_n(
-					'%s entry will be restored from trash and will be visible in the entries list again.',
-					'%s entries will be restored from trash and will be visible in the entries list again.',
+					'%s entry will be restored from trash.',
+					'%s entries will be restored from trash.',
 					selectedEntries.length,
 					'sureforms'
 				),
@@ -560,18 +560,19 @@ const EntriesListingPage = () => {
 			</div>
 
 			<ConfirmationDialog
-				open={ confirmationDialog.open }
-				setOpen={ ( open ) =>
-					setConfirmationDialog( ( prev ) => ( { ...prev, open } ) )
+				isOpen={ confirmationDialog.open }
+				onCancel={ () =>
+					setConfirmationDialog( ( prev ) => ( {
+						...prev,
+						open: false,
+					} ) )
 				}
 				onConfirm={ confirmationDialog.onConfirm }
 				title={ confirmationDialog.title }
 				description={ confirmationDialog.description }
-				confirmLabel={ confirmationDialog.confirmLabel }
-				isLoading={ confirmationDialog.isLoading }
-				destructive={ confirmationDialog?.destructive }
-				enableVerification={ confirmationDialog?.enableVerification }
-				verificationText={ confirmationDialog?.verificationText }
+				confirmButtonText={ confirmationDialog.confirmLabel }
+				destructiveConfirmButton={ confirmationDialog?.destructive }
+				requireConfirmation={ confirmationDialog?.enableVerification }
 			/>
 		</div>
 	);

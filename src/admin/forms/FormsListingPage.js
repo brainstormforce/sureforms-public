@@ -272,13 +272,46 @@ const FormsListingPage = () => {
 	};
 
 	const handleBulkRestore = () => {
-		handleBulkAction( 'restore', selectedForms );
+		setConfirmDialog( {
+			open: true,
+			title: _n(
+				'Restore Form',
+				'Restore Forms',
+				selectedForms.length,
+				'sureforms'
+			),
+			description: sprintf(
+				/* translators: %d: number of forms */
+				_n(
+					'%d form will be restored from trash.',
+					'%d forms will be restored from trash.',
+					selectedForms.length,
+					'sureforms'
+				),
+				selectedForms.length
+			),
+			action: async () => {
+				await new Promise( ( resolve ) => {
+					handleBulkAction( 'restore', selectedForms );
+					resolve();
+				} );
+				setConfirmDialog( ( prev ) => ( { ...prev, open: false } ) );
+			},
+			confirmButtonText: __( 'Restore', 'sureforms' ),
+			destructive: false,
+			requireConfirmation: false,
+		} );
 	};
 
 	const handleBulkDelete = () => {
 		setConfirmDialog( {
 			open: true,
-			title: __( 'Delete Permanently', 'sureforms' ),
+			title: _n(
+				'Delete Form',
+				'Delete Forms',
+				selectedForms.length,
+				'sureforms'
+			),
 			description: sprintf(
 				/* translators: %d: number of forms */
 				_n(
@@ -320,7 +353,7 @@ const FormsListingPage = () => {
 			open: true,
 			title: __( 'Delete Form', 'sureforms' ),
 			description: __(
-				'Are you sure you want to permanently delete this form?',
+				'Are you sure you want to permanently delete this form? This action cannot be undone.',
 				'sureforms'
 			),
 			action: async () => {
@@ -330,7 +363,7 @@ const FormsListingPage = () => {
 				} );
 				setConfirmDialog( ( prev ) => ( { ...prev, open: false } ) );
 			},
-			confirmButtonText: __( 'Permanently Delete', 'sureforms' ),
+			confirmButtonText: __( 'Delete Permanently', 'sureforms' ),
 			destructive: true,
 			requireConfirmation: true,
 		} );
