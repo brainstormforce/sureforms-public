@@ -6,7 +6,6 @@ import { exportForms } from './utils';
 import Header from '../components/Header';
 import FormsHeader from './components/FormsHeader';
 import FormsTable from './components/FormsTable';
-import FormsPagination from './components/FormsPagination';
 import EmptyState from './components/EmptyState';
 import ConfirmationDialog from '@Admin/components/ConfirmationDialog';
 import { useForms, useBulkFormsAction, formsKeys } from './hooks/useFormsQuery';
@@ -419,7 +418,7 @@ const FormsListingPage = () => {
 					) : (
 						<Container
 							direction="column"
-							className="w-full rounded-xl bg-background-primary border-0.5 border-solid border-border-subtle shadow-sm-blur-2 overflow-hidden p-4 gap-2"
+							className="w-full rounded-xl bg-background-primary border-0.5 border-solid border-border-subtle shadow-sm-blur-2 p-4 gap-2"
 						>
 							<Container.Item className="p-1">
 								<FormsHeader
@@ -463,29 +462,22 @@ const FormsListingPage = () => {
 										isLoading={ isLoading }
 										onSort={ handleSort }
 										getSortDirection={ getSortDirection }
-									>
-										<FormsPagination
-											currentPage={
-												paginationData.currentPage
-											}
-											totalPages={
-												paginationData.totalPages
-											}
-											entriesPerPage={
-												paginationData.perPage
-											}
-											onPageChange={ handlePageChange }
-											onEntriesPerPageChange={
-												handlePerPageChange
-											}
-											onNextPage={ () =>
+										paginationProps={ {
+											currentPage:
+												paginationData.currentPage,
+											totalPages:
+												paginationData.totalPages,
+											perPage: paginationData.perPage,
+											onPageChange: handlePageChange,
+											onPerPageChange:
+												handlePerPageChange,
+											onNextPage: () =>
 												nextPage(
 													paginationData.totalPages
-												)
-											}
-											onPreviousPage={ previousPage }
-										/>
-									</FormsTable>
+												),
+											onPreviousPage: previousPage,
+										} }
+									/>
 								) }
 							</Container.Item>
 						</Container>

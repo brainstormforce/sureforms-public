@@ -5,7 +5,6 @@ import { toast } from '@bsf/force-ui';
 import EntriesHeader from '../components/EntriesHeader';
 import EntriesFilters from '../components/EntriesFilters';
 import EntriesTable from '../components/EntriesTable';
-import EntriesPagination from '../components/EntriesPagination';
 import EmptyState from '../components/EmptyState';
 import ConfirmationDialog from '../components/ConfirmationDialog';
 import { useEntriesFilters } from '../hooks/useEntriesFilters';
@@ -546,17 +545,16 @@ const EntriesListingPage = () => {
 								onEdit={ handleEdit }
 								onDelete={ handleDelete }
 								onRestore={ handleRestore }
-							>
-								<EntriesPagination
-									currentPage={ currentPage }
-									totalPages={ totalPages }
-									entriesPerPage={ entriesPerPage }
-									onPageChange={ goToPage }
-									onEntriesPerPageChange={ changeEntriesPerPage }
-									onNextPage={ () => nextPage( totalPages ) }
-									onPreviousPage={ previousPage }
-								/>
-							</EntriesTable>
+								paginationProps={ {
+									currentPage,
+									totalPages,
+									perPage: entriesPerPage,
+									onPageChange: goToPage,
+									onPerPageChange: changeEntriesPerPage,
+									onNextPage: () => nextPage( totalPages ),
+									onPreviousPage: previousPage,
+								} }
+							/>
 						) }
 				</div>
 			</div>

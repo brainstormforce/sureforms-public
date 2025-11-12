@@ -2,15 +2,14 @@ import { __ } from '@wordpress/i18n';
 import { useRef, useEffect, useMemo, useState } from '@wordpress/element';
 import {
 	Trash,
-	Calendar,
 	Import,
 	ArchiveRestore,
 	Search,
 	X,
 	RotateCcw,
 } from 'lucide-react';
-import { Input, Button, Container, Select, DatePicker } from '@bsf/force-ui';
-import { getSelectedDate } from '@Utils/Helpers';
+import { Input, Button, Container, Select } from '@bsf/force-ui';
+import DatePicker from '@Admin/components/DatePicker';
 import ImportForm from './ImportForm';
 
 // FormsFilters Component - Displays all filters: status dropdown, date picker, search, and import button
@@ -32,14 +31,8 @@ const FormsFilters = ( {
 	hasActiveFilters = false,
 } ) => {
 	const searchInputRef = useRef( null );
-	const containerRef = useRef( null );
-	const datePickerRef = useRef( null );
-	const [ isDatePickerOpen, setIsDatePickerOpen ] = useState( false );
 	const [ isImportDialogOpen, setIsImportDialogOpen ] = useState( false );
 	const [ localSearchValue, setLocalSearchValue ] = useState( searchQuery );
-	const [ datePickerPosition, setDatePickerPosition ] = useState( {
-		right: 0,
-	} );
 
 	// Check if any forms are selected
 	const hasSelectedForms = useMemo(
@@ -116,32 +109,7 @@ const FormsFilters = ( {
 		} else {
 			onDateChange( { from: null, to: null } );
 		}
-		setIsDatePickerOpen( false );
 	};
-
-	const handleDateCancel = () => {
-		setIsDatePickerOpen( false );
-	};
-
-	// Click Outside Handler for date picker
-	useEffect( () => {
-		function handleClickOutside( event ) {
-			if (
-				isDatePickerOpen &&
-				containerRef.current &&
-				! containerRef.current.contains( event.target ) &&
-				datePickerRef.current &&
-				! datePickerRef.current.contains( event.target )
-			) {
-				setIsDatePickerOpen( false );
-			}
-		}
-
-		document.addEventListener( 'mousedown', handleClickOutside );
-		return () => {
-			document.removeEventListener( 'mousedown', handleClickOutside );
-		};
-	}, [ isDatePickerOpen ] );
 
 	// Render bulk actions when forms are selected
 	if ( hasSelectedForms ) {
@@ -249,52 +217,12 @@ const FormsFilters = ( {
 
 			{ /* Date Picker */ }
 			<Container.Item>
-				<div className="relative" ref={ containerRef }>
-					<Input
-						type="text"
-						size="sm"
-						value={ getSelectedDate( selectedDates ) }
-						suffix={ <Calendar className="text-icon-secondary" /> }
-						onClick={ () => {
-							if ( ! isDatePickerOpen && containerRef.current ) {
-								const rect =
-									containerRef.current.getBoundingClientRect();
-								setDatePickerPosition( {
-									right: window.innerWidth - rect.right,
-								} );
-							}
-							setIsDatePickerOpen( ( prev ) => ! prev );
-						} }
-						placeholder={ __(
-							'mm/dd/yyyy - mm/dd/yyyy',
-							'sureforms'
-						) }
-						className="min-w-[200px]"
-						readOnly
-						aria-label={ __( 'Select Date Range', 'sureforms' ) }
+				<div className="min-w-[200px]">
+					<DatePicker
+						value={ selectedDates }
+						onApply={ handleDateApply }
 					/>
 				</div>
-				{ /* Date Picker inside Container.Item but outside relative div */ }
-				{ isDatePickerOpen && (
-					<div
-						ref={ datePickerRef }
-						className="absolute z-[9999] mt-2 rounded-md shadow-soft-shadow-md bg-background-primary"
-						style={ {
-							right: datePickerPosition.right,
-						} }
-					>
-						<DatePicker
-							selectionType="range"
-							showOutsideDays={ false }
-							variant="presets"
-							onApply={ handleDateApply }
-							onCancel={ handleDateCancel }
-							disabled={ {
-								after: new Date(),
-							} }
-						/>
-					</div>
-				) }
 			</Container.Item>
 
 			{ /* Search */ }

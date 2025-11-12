@@ -2,7 +2,7 @@ import { __ } from '@wordpress/i18n';
 import { useState } from '@wordpress/element';
 import { Edit3, Trash, RotateCcw, Eye, Share, Copy, Check } from 'lucide-react';
 import { Button, Container, Badge, Text, Tooltip } from '@bsf/force-ui';
-import Table from '@Admin/components/Table';
+import Table from '@Admin/common/listing/components/Table';
 import { exportForms } from '../utils';
 import { formatDateTime } from '@Utils/Helpers';
 
@@ -25,7 +25,7 @@ import { formatDateTime } from '@Utils/Helpers';
  * @param {Function} props.onTrash              - Handler for trash action
  * @param {Function} props.onRestore            - Handler for restore action
  * @param {Function} props.onDelete             - Handler for delete action
- * @param {Node}     props.children             - Child components (typically pagination)
+ * @param {Object}   props.paginationProps      - Props for pagination component
  */
 
 const FormsTable = ( {
@@ -42,7 +42,7 @@ const FormsTable = ( {
 	onTrash,
 	onRestore,
 	onDelete,
-	children,
+	paginationProps,
 } ) => {
 	// State to track which shortcode was recently copied
 	const [ copiedFormId, setCopiedFormId ] = useState( null );
@@ -154,7 +154,7 @@ const FormsTable = ( {
 					size="sm"
 					onClick={ () =>
 						window.open(
-							`admin.php?page=sureforms_entries&form_filter=${ form.id }`,
+							`admin.php?page=sureforms_entries#/?form=${ form.id }`,
 							'_self'
 						)
 					}
@@ -299,9 +299,8 @@ const FormsTable = ( {
 			onSort={ onSort }
 			getSortDirection={ getSortDirection }
 			emptyMessage={ emptyMessage }
-		>
-			{ children }
-		</Table>
+			paginationProps={ paginationProps }
+		/>
 	);
 };
 
