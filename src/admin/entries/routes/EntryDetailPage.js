@@ -13,7 +13,7 @@ import NotesSection from '../components/NotesSection';
 import PdfFilesSection from '../components/PdfFilesSection';
 import EntryLogsSection from '../components/EntryLogsSection';
 import EntryDetailSkeleton from '../components/EntryDetailSkeleton';
-import ConfirmationDialog from '../components/ConfirmationDialog';
+import ConfirmationDialog from '@Admin/components/ConfirmationDialog';
 import { ArrowLeft } from 'lucide-react';
 import UpgradeTooltip from '../components/UpgradeTooltip';
 import { transformEntryDetail } from '../utils/entryHelpers';
@@ -170,7 +170,7 @@ const EntryDetailPage = () => {
 		<>
 			<div className="p-8 bg-background-secondary min-h-screen space-y-6">
 				{ /* Header */ }
-				<div className="flex items-center gap-3 mx-auto max-w-[1550px]">
+				<div className="flex items-center gap-3 mx-auto max-w-[1500px]">
 					<Button
 						onClick={ handleBackClick }
 						variant="ghost"
@@ -186,7 +186,7 @@ const EntryDetailPage = () => {
 						) }
 					</Text>
 				</div>
-				<div className="mx-auto max-w-[1550px]">
+				<div className="mx-auto max-w-[1500px]">
 					<div className="space-y-6">
 						<div className="space-y-6">
 							{ /* Main Content Grid */ }
@@ -229,16 +229,18 @@ const EntryDetailPage = () => {
 			</div>
 
 			<ConfirmationDialog
-				open={ confirmationDialog.open }
-				setOpen={ ( open ) =>
-					setConfirmationDialog( ( prev ) => ( { ...prev, open } ) )
+				isOpen={ confirmationDialog.open }
+				onCancel={ () =>
+					setConfirmationDialog( ( prev ) => ( {
+						...prev,
+						open: false,
+					} ) )
 				}
 				onConfirm={ confirmationDialog.onConfirm }
 				title={ confirmationDialog.title }
 				description={ confirmationDialog.description }
-				confirmLabel={ confirmationDialog.confirmLabel }
-				isLoading={ confirmationDialog.isLoading }
-				destructive={ confirmationDialog.destructive }
+				confirmButtonText={ confirmationDialog.confirmLabel }
+				destructiveConfirmButton={ confirmationDialog.destructive }
 			/>
 
 			{ /* Render ResendNotificationModal if available */ }

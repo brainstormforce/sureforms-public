@@ -2,6 +2,7 @@ import { __ } from '@wordpress/i18n';
 import { ChevronsUpDown, ChevronUp, ChevronDown } from 'lucide-react';
 import { Container, Table as FUITable, Skeleton } from '@bsf/force-ui';
 import { cn } from '@Utils/Helpers';
+import Pagination from './Pagination';
 
 /**
  * Table Component
@@ -19,6 +20,7 @@ import { cn } from '@Utils/Helpers';
  * @param {Function} props.getSortDirection     - Function to get sort direction for a column
  * @param {string}   props.emptyMessage         - Message to display when no data
  * @param {Node}     props.children             - Child components (typically pagination)
+ * @param {Object}   props.paginationProps      - Props for pagination component
  */
 const Table = ( {
 	data = [],
@@ -31,7 +33,8 @@ const Table = ( {
 	onSort,
 	getSortDirection,
 	emptyMessage = __( 'No entries found', 'sureforms' ),
-	children,
+	children = null,
+	paginationProps = null,
 } ) => {
 	return (
 		<FUITable className="rounded-md" checkboxSelection>
@@ -167,6 +170,8 @@ const Table = ( {
 						<Skeleton className="h-8 w-24 rounded-md" />
 						<Skeleton className="h-8 w-32 rounded-md" />
 					</div>
+				) : paginationProps ? (
+					<Pagination { ...paginationProps } />
 				) : (
 					children
 				) }

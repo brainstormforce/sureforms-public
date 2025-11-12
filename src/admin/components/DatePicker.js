@@ -1,19 +1,22 @@
 import { useEffect, useRef, useState } from '@wordpress/element';
-import { DatePicker as FUIDatePicker } from '@bsf/force-ui';
-import { cn } from '@Utils/Helpers';
+import { DatePicker as FUIDatePicker, Input } from '@bsf/force-ui';
+import { Calendar } from 'lucide-react';
+import { __ } from '@wordpress/i18n';
+import { cn, getSelectedDate } from '@Utils/Helpers';
 
 /**
  * DatePicker component.
  *
  * @typedef {Object} TriggerArgs
- * @property {boolean}                                            show            Whether the picker is visible.
- * @property {(value:boolean|((prev:boolean)=>boolean))=>void}    setShow         Setter for show (accepts boolean or updater).
+ * @property {boolean}                                            show                     Whether the picker is visible.
+ * @property {(value:boolean|((prev:boolean)=>boolean))=>void}    setShow                  Setter for show (accepts boolean or updater).
  *
- * @param    {Object}                                             props           Component props.
- * @param    {'bottom-start'|'bottom-end'|'top-start'|'top-end'}  props.placement Placement of the date picker relative to the trigger. Options: 'bottom-start', 'bottom-end', 'top-start', 'top-end'. Default is 'bottom-end'.
- * @param    {JSX.Element|((args:TriggerArgs)=>JSX.Element)|null} props.trigger   The element or function that triggers the date picker. If a function is provided, it receives an object with `show` and `setShow` properties.
- * @param    {Function}                                           props.onApply   Callback function when the date range is applied. Receives the selected date range as an argument.
- * @param    {{from: Date|null, to: Date|null}}                   props.value     The currently selected date range. Should have `from` and `to` properties.
+ * @param    {Object}                                             props                    Component props.
+ * @param    {'bottom-start'|'bottom-end'|'top-start'|'top-end'}  props.placement          Placement of the date picker relative to the trigger. Options: 'bottom-start', 'bottom-end', 'top-start', 'top-end'. Default is 'bottom-end'.
+ * @param    {JSX.Element|((args:TriggerArgs)=>JSX.Element)|null} props.trigger            The element or function that triggers the date picker. If null, uses default Input trigger.
+ * @param    {Function}                                           props.onApply            Callback function when the date range is applied. Receives the selected date range as an argument.
+ * @param    {{from: Date|null, to: Date|null}}                   props.value              The currently selected date range. Should have `from` and `to` properties.
+ * @param    {string}                                             props.triggerPlaceholder Placeholder text for default Input trigger.
  * @return {JSX.Element} DatePicker component.
  */
 const DatePicker = ( props ) => {
@@ -22,6 +25,8 @@ const DatePicker = ( props ) => {
 		trigger = null,
 		onApply,
 		value = { from: null, to: null },
+		triggerPlaceholder = __( 'mm/dd/yyyy - mm/dd/yyyy', 'sureforms' ),
+		...restProps
 	} = props;
 
 	const placementClassName =
@@ -76,11 +81,28 @@ const DatePicker = ( props ) => {
 		};
 	}, [ show ] );
 
+	// Default trigger component
+	const defaultTrigger = ( { setShow: toggleShow } ) => (
+		<Input
+			type="text"
+			size="sm"
+			value={ getSelectedDate( value ) }
+			suffix={ <Calendar className="text-icon-secondary" /> }
+			onClick={ () => toggleShow( ( prev ) => ! prev ) }
+			placeholder={ triggerPlaceholder }
+			readOnly
+			aria-label={ __( 'Select Date Range', 'sureforms' ) }
+			{ ...restProps }
+		/>
+	);
+
 	return (
 		<div className="relative" ref={ container }>
-			{ typeof trigger === 'function'
-				? trigger( { show, setShow } )
-				: trigger }
+			{ trigger === null
+				? defaultTrigger( { show, setShow } )
+				: typeof trigger === 'function'
+					? trigger( { show, setShow } )
+					: trigger }
 			{ show && (
 				<div
 					className={ cn(
@@ -89,7 +111,6 @@ const DatePicker = ( props ) => {
 					) }
 				>
 					<FUIDatePicker
-						{ ...props }
 						onCancel={ handleCancel }
 						variant="presets"
 						selectionType="range"
