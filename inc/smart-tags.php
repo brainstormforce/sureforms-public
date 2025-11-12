@@ -41,18 +41,32 @@ class Smart_Tags {
 	 * @return string
 	 */
 	public function render_form( $block_content, $block ) {
-		$id = get_the_id();
+		// Check if this block is a SureForms form block.
+		if ( strpos( $block_content, 'srfm-block' ) !== false ) {
 
-		// Simulating $form_data required form some of the smart tags.
-		$form_data = [ 'form-id' => $id ];
+			if ( isset( $block['blockName'] ) && 'srfm/form' === $block['blockName'] && ! empty( $block['attrs']['id'] ) ) {
 
-		if ( self::check_form_by_id( $id ) ) {
-			return Helper::get_string_value( self::process_smart_tags( $block_content, null, $form_data ) );
+				$form_id   = absint( $block['attrs']['id'] );
+				$form_data = [ 'form-id' => $form_id ];
+
+				return Helper::get_string_value(
+					self::process_smart_tags( $block_content, null, $form_data )
+				);
+			}
+
+			return $block_content;
 		}
 
-		if ( isset( $block['blockName'] ) && ( 'srfm/form' === $block['blockName'] ) ) {
-			if ( isset( $block['attrs']['id'] ) && $block['attrs']['id'] ) {
-				return Helper::get_string_value( self::process_smart_tags( $block_content, null, $form_data ) );
+		// Check if the block content contains any SureForms smart tags like {*}.
+		if ( preg_match( '/\{[^\}]+\}/', $block_content ) ) {
+
+			$id        = get_the_id();
+			$form_data = [ 'form-id' => $id ];
+
+			if ( self::check_form_by_id( $id ) ) {
+				return Helper::get_string_value(
+					self::process_smart_tags( $block_content, null, $form_data )
+				);
 			}
 		}
 
@@ -249,23 +263,7 @@ class Smart_Tags {
 					$id   = absint( $form_data['form-id'] );
 					$post = get_post( $id );
 
-					// If the post exists.
 					if ( $post instanceof \WP_Post ) {
-							// If this is a page (or non-form post), extract the actual form ID from the block markup.
-						if ( 'sureforms_form' !== $post->post_type && ! empty( $post->post_content ) ) {
-							// Look for the SureForms block: <!-- wp:srfm/form {"id":95} /-->.
-							if ( preg_match( '/<!--\s*wp:srfm\/form\s+{"id":(\d+)[^}]*}\s*\/-->/', $post->post_content, $matches ) ) {
-								$form_id = absint( $matches[1] );
-								if ( $form_id ) {
-									$form_post = get_post( $form_id );
-									if ( $form_post instanceof \WP_Post ) {
-										return esc_html( $form_post->post_title ) ?? '';
-									}
-								}
-							}
-						}
-
-						// Otherwise, just return the title as before.
 						return esc_html( $post->post_title ) ?? '';
 					}
 				}
