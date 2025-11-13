@@ -597,7 +597,7 @@ class Admin_Stripe_Handler {
 				printf(
 					/* translators: %1$s: Payment settings link */
 					esc_html__(
-						'Webhooks keep SureForms in sync with Stripe by automatically updating payment and subscription data. Please %1$s Webhook',
+						'Webhooks keep SureForms in sync with Stripe by automatically updating payment and subscription data. Please %1$s Webhook.',
 						'sureforms'
 					),
 					sprintf(

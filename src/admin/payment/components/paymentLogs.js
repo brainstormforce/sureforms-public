@@ -1,5 +1,5 @@
 import { Text, Button } from '@bsf/force-ui';
-import { Trash2, ArrowLeft, ArrowRight } from 'lucide-react';
+import { Trash, ArrowLeft, ArrowRight } from 'lucide-react';
 import { __ } from '@wordpress/i18n';
 import { useState, useEffect } from '@wordpress/element';
 import { formatDateTime } from './utils';
@@ -89,7 +89,7 @@ const PaymentLogs = ( {
 							<Button
 								variant="ghost"
 								size="xs"
-								icon={ <Trash2 className="!size-4" /> }
+								icon={ <Trash className="!size-4" /> }
 								onClick={ () =>
 									handleDeleteLogConfirmation( actualIndex )
 								}

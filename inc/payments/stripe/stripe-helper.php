@@ -755,6 +755,8 @@ class Stripe_Helper {
 			'revocation_of_authorization'       => __( 'The authorization for this transaction has been revoked. Please try again.', 'sureforms' ),
 			'transaction_not_allowed'           => __( 'This transaction is not allowed. Please contact your bank.', 'sureforms' ),
 			'try_again_later'                   => __( 'The transaction could not be processed. Please try again later.', 'sureforms' ),
+			'live_mode_test_card'               => __( 'Your card was declined. Your request was in live mode, but used a known test card.', 'sureforms' ),
+			'test_mode_live_card'				=> __( 'Your card was declined. Your request was in test mode, but used a non test card. For a list of valid test cards, visit: https://stripe.com/docs/testing.', 'sureforms' ),
 
 			// Default values and placeholders.
 			'sureforms_subscription'            => __( 'SureForms Subscription', 'sureforms' ),

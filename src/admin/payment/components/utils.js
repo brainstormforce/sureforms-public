@@ -551,7 +551,7 @@ export const WebhookConfigure = ( props ) => {
 	const translatedText = sprintf(
 		/* translators: %1$s: Stripe dashboard button */
 		__(
-			'Webhooks keep SureForms in sync with Stripe by automatically updating payment and subscription data. Please %1$s Webhook',
+			'Webhooks keep SureForms in sync with Stripe by automatically updating payment and subscription data. Please %1$s Webhook.',
 			'sureforms'
 		),
 		'%1$s'
