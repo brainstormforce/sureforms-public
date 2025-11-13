@@ -807,6 +807,7 @@ class Admin {
 				'webhook_url'             => Stripe_Helper::get_webhook_url(),
 				'webhook_test_connected'  => Stripe_Helper::is_webhook_configured( 'test', true ),
 				'webhook_live_connected'  => Stripe_Helper::is_webhook_configured( 'live', true ),
+				'is_transaction_present'  => Stripe_Helper::is_transaction_present(),
 			],
 		];
 

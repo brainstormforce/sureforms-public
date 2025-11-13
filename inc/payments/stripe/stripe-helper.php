@@ -8,6 +8,7 @@
 
 namespace SRFM\Inc\Payments\Stripe;
 
+use SRFM\Inc\Database\Tables\Payments;
 use SRFM_Pro\Admin\Licensing;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -933,5 +934,31 @@ class Stripe_Helper {
 			return null;
 		}
 		return Licensing::get_instance();
+	}
+
+	/**
+	 * Check if any transaction is present in the payments table.
+	 *
+	 * @since x.x.x
+	 * @return bool True if at least one transaction exists, false otherwise.
+	 */
+	public static function is_transaction_present() {
+		global $wpdb;
+
+		// Get payments table name.
+		$payments_table = Payments::get_instance()->get_tablename();
+
+		if ( empty( $payments_table ) || ! is_string( $payments_table ) ) {
+			return false;
+		}
+
+		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table query to check transaction existence, table name is validated and cannot be parameterized with prepare().
+		$count = $wpdb->get_var(
+			"SELECT COUNT(*) FROM {$payments_table} LIMIT 1"
+		);
+		// phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+
+		return ! empty( $count ) && absint( $count ) > 0;
 	}
 }
