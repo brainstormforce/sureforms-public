@@ -4,34 +4,13 @@
  * @return {string} - Currency symbol
  */
 function getCurrencySymbol( currency ) {
-	const currencySymbols = {
-		usd: '$',
-		eur: '€',
-		gbp: '£',
-		jpy: '¥',
-		aud: 'A$',
-		cad: 'C$',
-		chf: 'CHF',
-		cny: '¥',
-		sek: 'kr',
-		nzd: 'NZ$',
-		mxn: 'MX$',
-		sgd: 'S$',
-		hkd: 'HK$',
-		nok: 'kr',
-		krw: '₩',
-		try: '₺',
-		rub: '₽',
-		inr: '₹',
-		brl: 'R$',
-		zar: 'R',
-		aed: 'د.إ',
-	};
+	// Use localized currency data from PHP
+	const currenciesData = window.srfmStripe?.currenciesData || {};
+	const upperCurrencyCode = currency?.toUpperCase();
+	const currencyData = currenciesData[ upperCurrencyCode ];
 
-	return (
-		currencySymbols[ currency.toLowerCase() ] ||
-		currency.toUpperCase() + ' '
-	);
+	// Return symbol from localized data, or fallback to currency code
+	return currencyData?.symbol || currency.toUpperCase() + ' ';
 }
 
 /**
@@ -46,8 +25,6 @@ function validateThePaymentBlock( form ) {
 	);
 
 	if ( ! paymentBlock ) {
-		console.warn( 'Payment block or payment input not found' );
-
 		return {
 			valid: true,
 			slug: 'no-payment-block',
@@ -57,7 +34,7 @@ function validateThePaymentBlock( form ) {
 
 	const paymentInput = paymentBlock.querySelector( '.srfm-payment-input' );
 
-	// Validate amount based on amount type (fixed or user-defined)
+	// Validate amount based on amount type (fixed or variable)
 	const amountType =
 		paymentInput.getAttribute( 'data-amount-type' ) || 'fixed';
 
@@ -71,63 +48,64 @@ function validateThePaymentBlock( form ) {
 			return {
 				valid: false,
 				slug: 'invalid-fixed-amount',
-				message: 'Payment amount must be configured properly.',
+				message: window.srfmPaymentUtility?.getStripeStrings(
+					'payment_amount_not_configured',
+					'Payment is currently unavailable. Please contact the site administrator to configure the payment amount.'
+				),
 			};
 		}
-	} else if ( amountType === 'user-defined' ) {
-		// Validate user entered an amount
-		const userAmountInput = paymentBlock.querySelector(
-			'.srfm-user-amount-field'
-		);
+	} else if ( amountType === 'variable' ) {
+		// For variable amounts, the amount is stored in the paymentInput.value
+		// which is populated by the PAYMENT_UTILITY.updatePaymentBlockAmount function
+		const variableAmount = parseFloat( paymentInput.value || 0 );
 
-		if ( ! userAmountInput ) {
+		if ( isNaN( variableAmount ) || variableAmount <= 0 ) {
 			return {
 				valid: false,
-				slug: 'user-amount-field-not-found',
-				message: 'Payment amount input field not found.',
-			};
-		}
-
-		const userAmount = parseFloat( userAmountInput.value || 0 );
-
-		if ( ! userAmount || isNaN( userAmount ) || userAmount <= 0 ) {
-			return {
-				valid: false,
-				slug: 'invalid-user-amount',
-				message:
-					'Please enter a valid payment amount greater than zero.',
+				slug: 'invalid-variable-amount',
+				message: window.srfmPaymentUtility?.getStripeStrings(
+					'invalid_variable_amount',
+					'Please enter a valid payment amount greater than zero.'
+				),
 			};
 		}
 
 		// Validate minimum amount
 		const minimumAmount = parseFloat(
-			userAmountInput.getAttribute( 'data-minimum-amount' ) || 0
+			paymentInput.getAttribute( 'data-minimum-amount' ) || 0
 		);
 
-		if ( minimumAmount > 0 && userAmount < minimumAmount ) {
+		if ( minimumAmount > 0 && variableAmount < minimumAmount ) {
 			// Get currency symbol for better error message
 			const currency =
-				userAmountInput.getAttribute( 'data-currency' ) || 'usd';
+				paymentInput.getAttribute( 'data-currency' ) || 'usd';
 			const currencySymbol = getCurrencySymbol( currency );
+
+			// Get localized string and replace placeholders
+			const messageTemplate = window.srfmPaymentUtility?.getStripeStrings(
+				'amount_below_minimum',
+				'Payment amount must be at least {symbol}{amount}.'
+			);
+			const message = messageTemplate
+				.replace( '{symbol}', currencySymbol )
+				.replace( '{amount}', minimumAmount.toFixed( 2 ) );
 
 			return {
 				valid: false,
 				slug: 'amount-below-minimum',
-				message: `Payment amount must be at least ${ currencySymbol }${ minimumAmount.toFixed(
-					2
-				) }.`,
+				message,
 			};
 		}
 	}
 
 	// Get customer field mappings
-	const customerNameFieldSlug = paymentBlock.getAttribute(
+	const customerNameFieldSlug = paymentInput.getAttribute(
 		'data-customer-name-field'
 	);
 
 	// Get payment type (subscription or one-time)
 	const paymentType =
-		paymentBlock.getAttribute( 'data-payment-type' ) || 'one-time';
+		paymentInput.getAttribute( 'data-payment-type' ) || 'one-time';
 	const isSubscription = paymentType === 'subscription';
 
 	// Validate that name field is mapped (required only for subscriptions)
@@ -138,12 +116,14 @@ function validateThePaymentBlock( form ) {
 		return {
 			valid: false,
 			slug: 'payment-name-not-mapped',
-			message:
-				'Customer name field is required for subscriptions. Please configure it in the payment block settings.',
+			message: window.srfmPaymentUtility?.getStripeStrings(
+				'payment_name_not_mapped',
+				'Payment is currently unavailable. Please contact the site administrator to configure the customer name field.'
+			),
 		};
 	}
 
-	const customerEmailFieldSlug = paymentBlock.getAttribute(
+	const customerEmailFieldSlug = paymentInput.getAttribute(
 		'data-customer-email-field'
 	);
 
@@ -152,8 +132,10 @@ function validateThePaymentBlock( form ) {
 		return {
 			valid: false,
 			slug: 'payment-email-not-mapped',
-			message:
-				'Customer email field is required for payments. Please configure it in the payment block settings.',
+			message: window.srfmPaymentUtility?.getStripeStrings(
+				'payment_email_not_mapped',
+				'Payment is currently unavailable. Please contact the site administrator to configure the customer email field.'
+			),
 		};
 	}
 
@@ -172,7 +154,10 @@ function validateThePaymentBlock( form ) {
 			return {
 				valid: false,
 				slug: 'payment-name-required',
-				message: 'Please enter your name.',
+				message: window.srfmPaymentUtility?.getStripeStrings(
+					'payment_name_required',
+					'Please enter your name.'
+				),
 			};
 		}
 	}
@@ -187,7 +172,10 @@ function validateThePaymentBlock( form ) {
 		return {
 			valid: false,
 			slug: 'payment-email-required',
-			message: 'Please enter your email.',
+			message: window.srfmPaymentUtility?.getStripeStrings(
+				'payment_email_required',
+				'Please enter your email.'
+			),
 		};
 	}
 
@@ -236,10 +224,12 @@ export async function handleFormPayment( form ) {
 
 		return paymentResultOnCreateIntent;
 	} catch ( error ) {
-		console.error( 'Payment processing failed:', error );
 		return {
 			valid: false,
-			message: 'Payment failed',
+			message: window.srfmPaymentUtility?.getStripeStrings(
+				'payment_failed',
+				'Payment failed'
+			),
 			paymentResultOnCreateIntent: null,
 		};
 	}
@@ -270,41 +260,36 @@ async function processAllPayments( form, paymentBlock ) {
 		// Step 2: Confirm payment with error handling
 		const blockId = paymentBlock.getAttribute( 'data-block-id' );
 		const paymentData = window.srfmPaymentElements?.[ blockId ];
-		const paymentType = paymentData?.paymentType || 'one-time';
 
 		if ( paymentData && paymentData.clientSecret ) {
 			const paymentResult = await window.StripePayment.srfmConfirmPayment(
 				blockId,
 				paymentData,
 				form
-			).catch( ( error ) => {
-				// Enhanced error reporting
-				const errorMessage = `${
-					paymentType.charAt( 0 ).toUpperCase() +
-					paymentType.slice( 1 )
-				} payment failed for block ${ blockId }: ${ error.message }`;
-				console.error( 'error from confirmPayment:', errorMessage );
+			).catch( () => {
 				return null;
 			} );
 
-			console.log( 'Payment completed via new method:', paymentResult );
+			if ( ! paymentResult?.valid ) {
+				return {
+					valid: false,
+					message: paymentResult.message,
+					paymentResult: null,
+				};
+			}
 
 			// Return true if payment succeeded (result is truthy and not empty string)
-			return paymentResult
-				? { valid: true, message: 'Payment successful', paymentResult }
-				: {
-					valid: false,
-					message: 'Payment failed',
-					paymentResult: null,
-				  };
+			return {
+				valid: true,
+				message: window.srfmPaymentUtility?.getStripeStrings(
+					'payment_successful',
+					'Payment successful'
+				),
+				paymentResult,
+			};
 		}
-
-		console.warn(
-			`Skipping block ${ blockId } - missing payment data or client secret`
-		);
 		return false;
 	} catch ( error ) {
-		console.error( 'Payment processing failed:', error );
 		return false;
 	}
 }

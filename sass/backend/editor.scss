@@ -121,6 +121,10 @@ body.post-type-sureforms_form {
 			}
 		}
 
+		.srfm-option-outer-text-control {
+			flex: 1;
+		}
+
 		.srfm-option-value {
 			width: 75px;
 		}
@@ -634,7 +638,8 @@ body.post-type-sureforms_form {
 	/*
 	* Custom Styling Component Styles.
 	*/
-	.srfm-btn-bg, .srfm-bg-component {
+	.srfm-btn-bg,
+	.srfm-bg-component {
 		.srfm-bg-type-container {
 			.srfm-multi-buttons-control {
 				display: flex;

@@ -1,28 +1,45 @@
+import domReady from '@wordpress/dom-ready';
 import { createRoot } from '@wordpress/element';
-import PaymentListWrapper from './pages/paymentListWrapper.js';
-import { PaymentDataProvider } from './components/context.js';
+import { toast, Toaster } from '@bsf/force-ui';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { PaymentDataProvider } from './components/context.js';
+import { AppRouter } from './routes';
 import '../tw-base.scss';
 
-const WithContext = () => {
-	const queryClient = new QueryClient();
+// Create a client
+const queryClient = new QueryClient( {
+	defaultOptions: {
+		queries: {
+			refetchOnWindowFocus: false,
+			refetchOnMount: true,
+			retry: 1,
+			staleTime: 1000 * 60 * 5, // 5 minutes
+		},
+	},
+} );
 
-	return (
-		<PaymentDataProvider>
-			<QueryClientProvider client={ queryClient }>
-				<PaymentListWrapper />
-			</QueryClientProvider>
-		</PaymentDataProvider>
+// Expose query client globally
+window.srfm_payment_query_client = queryClient;
+// Expose toast globally for easy access across the payment interface
+window.srfm_payment_toast = toast;
+
+function renderApp() {
+	// Render payments application with router.
+	const paymentsApp = document.getElementById(
+		'srfm-payments-react-container'
 	);
-};
 
-( function () {
-	const app = document.getElementById( 'srfm-payments-react-container' );
+	if ( paymentsApp ) {
+		const paymentsRoot = createRoot( paymentsApp );
+		paymentsRoot.render(
+			<PaymentDataProvider>
+				<QueryClientProvider client={ queryClient }>
+					<AppRouter />
+					<Toaster className="z-999999" />
+				</QueryClientProvider>
+			</PaymentDataProvider>
+		);
+	}
+}
 
-	document.addEventListener( 'DOMContentLoaded', function () {
-		if ( null !== app ) {
-			const root = createRoot( app );
-			root.render( <WithContext /> );
-		}
-	} );
-}() );
+domReady( renderApp );

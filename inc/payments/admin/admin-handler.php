@@ -8,6 +8,7 @@
 namespace SRFM\Inc\Payments\Admin;
 
 use SRFM\Inc\Database\Tables\Payments;
+use SRFM\Inc\Payments\Stripe\Stripe_Helper;
 use SRFM\Inc\Traits\Get_Instance;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -38,67 +39,6 @@ class Admin_Handler {
 		add_action( 'wp_ajax_srfm_delete_payment_note', [ $this, 'ajax_delete_note' ] );
 		add_action( 'wp_ajax_srfm_delete_payment_log', [ $this, 'ajax_delete_log' ] );
 		add_action( 'wp_ajax_srfm_bulk_delete_payments', [ $this, 'ajax_bulk_delete_payments' ] );
-
-		// Register filters to alter entry field value rendering for payment fields in admin.
-		// Filter: Modify if a field should have a custom value renderer in the Entry Details.
-		add_filter( 'srfm_entry_render_field_custom_value', [ $this, 'filter_entry_render_field_custom_value_for_payment' ], 10, 2 );
-		// Filter: Actually generate the custom value output for payment fields.
-		add_filter( 'srfm_entry_custom_value', [ $this, 'filter_entry_custom_value_for_payment' ], 10, 2 );
-	}
-
-	/**
-	 * Determines whether an entry field is a payment reference for custom rendering.
-	 *
-	 * This filter is used in the Entry Details table rendering to check if a field should invoke
-	 * custom HTML output, such as a link to view a payment in admin.
-	 *
-	 * @param bool   $should_render_custom Whether to use custom rendering. Default false.
-	 * @param string $field_name           The current field key.
-	 * @since x.x.x
-	 * @return bool True if field name starts with 'srfm-payment-', otherwise original value.
-	 */
-	public function filter_entry_render_field_custom_value_for_payment( $should_render_custom, $field_name ) {
-		if ( 0 === strpos( $field_name, 'srfm-payment-' ) ) {
-			return true;
-		}
-		return $should_render_custom;
-	}
-
-	/**
-	 * Returns hyperlink markup for a payment admin page, based on payment ID field value.
-	 *
-	 * This filter is used to generate the output for payment reference fields inside entry details.
-	 * If the field value is a valid payment ID, returns anchor tag that links to the payment admin screen.
-	 *
-	 * Example of returned URL:
-	 *   https://example.com/wp-admin/admin.php?page=sureforms_payments&srfm_payment_id=226
-	 *
-	 * @param string $output            The default output value.
-	 * @param mixed  $field_actual_value Actual value of the payment field (usually payment ID).
-	 * @since x.x.x
-	 * @return string HTML anchor to view payment in admin or empty string if not a valid payment ID.
-	 */
-	public function filter_entry_custom_value_for_payment( $output, $field_actual_value ) {
-		$payment_id = intval( $field_actual_value );
-		if ( $payment_id > 0 ) {
-			/**
-			 * Example of generated URL:
-			 * https://example.com/wp-admin/admin.php?page=sureforms_payments&srfm_payment_id=226
-			 */
-			$url = add_query_arg(
-				[
-					'page'            => 'sureforms_payments',
-					'srfm_payment_id' => $payment_id,
-				],
-				admin_url( 'admin.php' )
-			);
-			return sprintf(
-				'<a href="%s" target="_blank">%s</a>',
-				esc_url( $url ),
-				esc_html__( 'View Payment', 'sureforms' )
-			);
-		}
-		return '';
 	}
 
 	/**
@@ -117,8 +57,7 @@ class Admin_Handler {
 
 		// Check if we're on payment related pages.
 		if ( isset( $current_screen->id ) &&
-			( strpos( $current_screen->id, 'sureforms_payments' ) !== false ||
-			  strpos( $current_screen->id, 'sureforms_payments_react' ) !== false ) ) {
+			( strpos( $current_screen->id, 'sureforms_payments' ) !== false || strpos( $current_screen->id, 'sureforms_payments_react' ) !== false ) ) {
 			// Enqueue payment specific scripts.
 			wp_enqueue_script( SRFM_SLUG . '-payments', SRFM_URL . 'assets/build/payments.js', [], SRFM_VER, true );
 			wp_enqueue_style( SRFM_SLUG . '-payments', SRFM_URL . 'assets/build/payments.css', [], SRFM_VER );
@@ -131,6 +70,8 @@ class Admin_Handler {
 					'ajax_url'                 => admin_url( 'admin-ajax.php' ),
 					'srfm_payment_admin_nonce' => wp_create_nonce( 'srfm_payment_admin_nonce' ),
 					'payment_test'             => 'payment test',
+					'zeroDecimalCurrencies'    => Stripe_Helper::get_zero_decimal_currencies(),
+					'currenciesData'           => Stripe_Helper::get_all_currencies_data(),
 				]
 			);
 
@@ -166,14 +107,14 @@ class Admin_Handler {
 
 		try {
 			// Sanitize input parameters.
-			$search    = isset( $_POST['search'] ) ? sanitize_text_field( wp_unslash( $_POST['search'] ) ) : '';
-			$status    = isset( $_POST['status'] ) ? sanitize_text_field( wp_unslash( $_POST['status'] ) ) : '';
-			$form_id   = isset( $_POST['form_id'] ) ? absint( $_POST['form_id'] ) : 0;
-			$date_from = isset( $_POST['date_from'] ) ? sanitize_text_field( wp_unslash( $_POST['date_from'] ) ) : '';
-			$date_to   = isset( $_POST['date_to'] ) ? sanitize_text_field( wp_unslash( $_POST['date_to'] ) ) : '';
-			$page      = isset( $_POST['page'] ) ? absint( $_POST['page'] ) : 1;
-			$per_page  = isset( $_POST['per_page'] ) ? absint( $_POST['per_page'] ) : 20;
-			$sort_by   = isset( $_POST['sort_by'] ) ? sanitize_text_field( wp_unslash( $_POST['sort_by'] ) ) : '';
+			$search       = isset( $_POST['search'] ) ? sanitize_text_field( wp_unslash( $_POST['search'] ) ) : '';
+			$status       = isset( $_POST['status'] ) ? sanitize_text_field( wp_unslash( $_POST['status'] ) ) : '';
+			$form_id      = isset( $_POST['form_id'] ) ? absint( $_POST['form_id'] ) : 0;
+			$payment_mode = isset( $_POST['payment_mode'] ) ? sanitize_text_field( wp_unslash( $_POST['payment_mode'] ) ) : '';
+			$date_from    = isset( $_POST['date_from'] ) ? sanitize_text_field( wp_unslash( $_POST['date_from'] ) ) : '';
+			$date_to      = isset( $_POST['date_to'] ) ? sanitize_text_field( wp_unslash( $_POST['date_to'] ) ) : '';
+			$page         = isset( $_POST['page'] ) ? absint( $_POST['page'] ) : 1;
+			$per_page     = isset( $_POST['per_page'] ) ? absint( $_POST['per_page'] ) : 20;
 
 			// Validate pagination parameters.
 			$page     = max( 1, $page );
@@ -190,9 +131,9 @@ class Admin_Handler {
 			}
 
 			// Get total count for pagination.
-			$total_count = $this->get_payments_count( $search, $status, $date_from, $date_to, $form_id );
+			$total_count = $this->get_payments_count( $search, $status, $date_from, $date_to, $form_id, $payment_mode );
 
-			if ( 0 === $total_count && empty( $search ) && empty( $status ) && empty( $date_from ) && empty( $date_to ) && empty( $form_id ) ) {
+			if ( 0 === $total_count && empty( $search ) && empty( $status ) && empty( $date_from ) && empty( $date_to ) && empty( $form_id ) && empty( $payment_mode ) ) {
 				wp_send_json_success(
 					[
 						'payments'              => [],
@@ -202,7 +143,7 @@ class Admin_Handler {
 				);
 			}
 
-			if ( 0 === $total_count && ( ! empty( $search ) || ! empty( $status ) || ! empty( $date_from ) || ! empty( $date_to ) || ! empty( $form_id ) ) ) {
+			if ( 0 === $total_count && ( ! empty( $search ) || ! empty( $status ) || ! empty( $date_from ) || ! empty( $date_to ) || ! empty( $form_id ) || ! empty( $payment_mode ) ) ) {
 				wp_send_json_success(
 					[
 						'payments'              => [],
@@ -213,7 +154,7 @@ class Admin_Handler {
 			}
 
 			// Get payments data from database.
-			$payments = $this->get_payments_data( $search, $status, $date_from, $date_to, $per_page, $offset, $sort_by, $form_id );
+			$payments = $this->get_payments_data( $search, $status, $date_from, $date_to, $per_page, $offset, $form_id, $payment_mode );
 
 			wp_send_json_success(
 				[
@@ -336,7 +277,7 @@ class Admin_Handler {
 			$subscription_data['next_payment_date']      = $this->get_next_payment_date( $main_subscription );
 			$subscription_data['amount_per_cycle']       = $subscription_data['total_amount']; // Use total_amount as cycle amount.
 
-			// Combine data
+			// Combine data.
 			$response_data = [
 				'subscription' => $subscription_data,
 				'payments'     => $billing_data,
@@ -368,21 +309,301 @@ class Admin_Handler {
 
 		try {
 			// Get all published forms.
-			$forms = \SRFM\Inc\Helper::get_sureforms();
+			$all_forms = \SRFM\Inc\Helper::get_sureforms();
 
-			// Transform forms array to have id and title.
+			// Get form IDs that have payments.
+			$forms_with_payments = \SRFM\Inc\Database\Tables\Payments::get_all_forms_with_payments();
+
+			// Filter forms to only include those with payments.
 			$forms_list = [];
-			foreach ( $forms as $form_id => $form_title ) {
-				$forms_list[] = [
-					'id'    => $form_id,
-					'title' => ! empty( $form_title ) ? $form_title : sprintf( __( 'Form - #%d', 'sureforms' ), $form_id ),
-				];
+			foreach ( $all_forms as $form_id => $form_title ) {
+				// Only include forms that have payment records.
+				if ( in_array( (int) $form_id, $forms_with_payments, true ) ) {
+					$forms_list[] = [
+						'id'    => $form_id,
+						/* translators: %d: Form ID */
+						'title' => ! empty( $form_title ) ? $form_title : sprintf( __( 'Form - #%d', 'sureforms' ), $form_id ),
+					];
+				}
 			}
 
 			wp_send_json_success( [ 'forms' => $forms_list ] );
 
 		} catch ( \Exception $e ) {
 			wp_send_json_error( [ 'message' => __( 'An error occurred while fetching forms list.', 'sureforms' ) ] );
+		}
+	}
+
+	/**
+	 * AJAX handler for adding a note to payment.
+	 *
+	 * @since x.x.x
+	 * @return void
+	 */
+	public function ajax_add_note() {
+		// Verify nonce for security.
+		if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'srfm_payment_admin_nonce' ) ) {
+			wp_send_json_error( [ 'message' => __( 'Security verification failed.', 'sureforms' ) ] );
+		}
+
+		// Check user capabilities.
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( [ 'message' => __( 'Insufficient permissions.', 'sureforms' ) ] );
+		}
+
+		// Validate and sanitize inputs.
+		$payment_id = isset( $_POST['payment_id'] ) ? absint( $_POST['payment_id'] ) : 0;
+		$note_text  = isset( $_POST['note_text'] ) ? sanitize_textarea_field( wp_unslash( $_POST['note_text'] ) ) : '';
+
+		if ( empty( $payment_id ) ) {
+			wp_send_json_error( [ 'message' => __( 'Payment ID is required.', 'sureforms' ) ] );
+		}
+
+		if ( empty( trim( $note_text ) ) ) {
+			wp_send_json_error( [ 'message' => __( 'Note text cannot be empty.', 'sureforms' ) ] );
+		}
+
+		try {
+			// Add the note.
+			$updated_notes = $this->add_payment_note( $payment_id, $note_text );
+
+			if ( false === $updated_notes ) {
+				wp_send_json_error( [ 'message' => __( 'Failed to add note.', 'sureforms' ) ] );
+			}
+
+			wp_send_json_success( [ 'notes' => $this->get_formatted_notes( $updated_notes ) ] );
+
+		} catch ( \Exception $e ) {
+			wp_send_json_error( [ 'message' => __( 'An error occurred while adding the note.', 'sureforms' ) ] );
+		}
+	}
+
+	/**
+	 * AJAX handler for deleting a note from payment.
+	 *
+	 * @since x.x.x
+	 * @return void
+	 */
+	public function ajax_delete_note() {
+		// Verify nonce for security.
+		if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'srfm_payment_admin_nonce' ) ) {
+			wp_send_json_error( [ 'message' => __( 'Security verification failed.', 'sureforms' ) ] );
+		}
+
+		// Check user capabilities.
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( [ 'message' => __( 'Insufficient permissions.', 'sureforms' ) ] );
+		}
+
+		// Validate and sanitize inputs.
+		$payment_id = isset( $_POST['payment_id'] ) ? absint( $_POST['payment_id'] ) : 0;
+		$note_index = isset( $_POST['note_index'] ) ? absint( $_POST['note_index'] ) : -1;
+
+		if ( empty( $payment_id ) ) {
+			wp_send_json_error( [ 'message' => __( 'Payment ID is required.', 'sureforms' ) ] );
+		}
+
+		if ( $note_index < 0 ) {
+			wp_send_json_error( [ 'message' => __( 'Invalid note index.', 'sureforms' ) ] );
+		}
+
+		try {
+			// Delete the note.
+			$updated_notes = $this->delete_payment_note( $payment_id, $note_index );
+
+			if ( false === $updated_notes ) {
+				wp_send_json_error( [ 'message' => __( 'Failed to delete note.', 'sureforms' ) ] );
+			}
+
+			wp_send_json_success( [ 'notes' => $this->get_formatted_notes( $updated_notes ) ] );
+
+		} catch ( \Exception $e ) {
+			wp_send_json_error( [ 'message' => __( 'An error occurred while deleting the note.', 'sureforms' ) ] );
+		}
+	}
+
+	/**
+	 * AJAX handler for deleting a log entry from payment.
+	 *
+	 * @since x.x.x
+	 * @return void
+	 */
+	public function ajax_delete_log() {
+		// Verify nonce for security.
+		if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'srfm_payment_admin_nonce' ) ) {
+			wp_send_json_error( [ 'message' => __( 'Security verification failed.', 'sureforms' ) ] );
+		}
+
+		// Check user capabilities.
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( [ 'message' => __( 'Insufficient permissions.', 'sureforms' ) ] );
+		}
+
+		// Validate and sanitize inputs.
+		$payment_id = isset( $_POST['payment_id'] ) ? absint( $_POST['payment_id'] ) : 0;
+		$log_index  = isset( $_POST['log_index'] ) ? absint( $_POST['log_index'] ) : -1;
+
+		if ( empty( $payment_id ) ) {
+			wp_send_json_error( [ 'message' => __( 'Payment ID is required.', 'sureforms' ) ] );
+		}
+
+		if ( $log_index < 0 ) {
+			wp_send_json_error( [ 'message' => __( 'Invalid log index.', 'sureforms' ) ] );
+		}
+
+		try {
+			// Delete the log entry.
+			$updated_logs = $this->delete_payment_log( $payment_id, $log_index );
+
+			if ( false === $updated_logs ) {
+				wp_send_json_error( [ 'message' => __( 'Failed to delete log entry.', 'sureforms' ) ] );
+			}
+
+			wp_send_json_success( [ 'logs' => $updated_logs ] );
+
+		} catch ( \Exception $e ) {
+			wp_send_json_error( [ 'message' => __( 'An error occurred while deleting the log entry.', 'sureforms' ) ] );
+		}
+	}
+
+	/**
+	 * AJAX handler for bulk deleting payments.
+	 *
+	 * @since x.x.x
+	 * @return void
+	 */
+	public function ajax_bulk_delete_payments() {
+		// Verify nonce for security.
+		if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'srfm_payment_admin_nonce' ) ) {
+			wp_send_json_error( [ 'message' => __( 'Security verification failed.', 'sureforms' ) ] );
+		}
+
+		// Check user capabilities.
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( [ 'message' => __( 'Insufficient permissions.', 'sureforms' ) ] );
+		}
+
+		// Get and validate payment IDs.
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Sanitized below after JSON decode.
+		$payment_ids_raw = isset( $_POST['payment_ids'] ) ? wp_unslash( $_POST['payment_ids'] ) : [];
+
+		// Handle JSON string or array format.
+		if ( is_string( $payment_ids_raw ) ) {
+			// Decode JSON string.
+			$payment_ids = json_decode( $payment_ids_raw, true );
+
+			// Check if JSON decode was successful.
+			if ( json_last_error() !== JSON_ERROR_NONE ) {
+				wp_send_json_error( [ 'message' => __( 'Invalid JSON format for payment IDs.', 'sureforms' ) ] );
+			}
+		} else {
+			$payment_ids = $payment_ids_raw;
+		}
+
+		// Ensure it's an array.
+		if ( ! is_array( $payment_ids ) ) {
+			wp_send_json_error( [ 'message' => __( 'Invalid payment IDs format.', 'sureforms' ) ] );
+		}
+
+		// Sanitize: Convert to integers and remove invalid values.
+		// This handles both string numbers ("169") and actual integers.
+		$payment_ids = array_map( 'absint', $payment_ids );
+		$payment_ids = array_filter(
+			$payment_ids,
+			static function ( $id ) {
+				return $id > 0;
+			}
+		);
+
+		// Re-index array to ensure sequential keys.
+		$payment_ids = array_values( $payment_ids );
+
+		// Check if array is empty after sanitization.
+		if ( empty( $payment_ids ) ) {
+			wp_send_json_error( [ 'message' => __( 'No valid payment IDs provided.', 'sureforms' ) ] );
+		}
+
+		// Limit bulk operations to prevent timeout (max 100 at once).
+		if ( count( $payment_ids ) > 100 ) {
+			wp_send_json_error(
+				[
+					'message' => __( 'Cannot delete more than 100 payments at once. Please select fewer payments.', 'sureforms' ),
+				]
+			);
+		}
+
+		try {
+			$deleted_count = 0;
+			$failed_ids    = [];
+
+			// Delete each payment with proper error handling.
+			foreach ( $payment_ids as $payment_id ) {
+				// Verify payment exists before attempting delete.
+				$payment = Payments::get( $payment_id );
+
+				if ( ! $payment ) {
+					$failed_ids[] = $payment_id;
+					continue;
+				}
+
+				// Attempt deletion.
+				$result = Payments::delete( $payment_id );
+
+				if ( $result ) {
+					$deleted_count++;
+				} else {
+					$failed_ids[] = $payment_id;
+				}
+			}
+
+			// Prepare response message.
+			if ( count( $payment_ids ) === $deleted_count ) {
+				// All deleted successfully.
+				wp_send_json_success(
+					[
+						'message'       => sprintf(
+							/* translators: %d: number of payments deleted */
+							_n(
+								'%d payment deleted successfully.',
+								'%d payments deleted successfully.',
+								$deleted_count,
+								'sureforms'
+							),
+							$deleted_count
+						),
+						'deleted_count' => $deleted_count,
+					]
+				);
+			} elseif ( $deleted_count > 0 ) {
+				// Partial success.
+				wp_send_json_success(
+					[
+						'message'       => sprintf(
+							/* translators: 1: number deleted, 2: number failed */
+							__( '%1$d payment(s) deleted successfully. %2$d failed.', 'sureforms' ),
+							$deleted_count,
+							count( $failed_ids )
+						),
+						'deleted_count' => $deleted_count,
+						'failed_count'  => count( $failed_ids ),
+						'partial'       => true,
+					]
+				);
+			} else {
+				// All failed.
+				wp_send_json_error(
+					[
+						'message'      => __( 'Failed to delete payments. Please try again.', 'sureforms' ),
+						'failed_count' => count( $failed_ids ),
+					]
+				);
+			}
+		} catch ( \Exception $e ) {
+			wp_send_json_error(
+				[
+					'message' => __( 'An error occurred while deleting payments.', 'sureforms' ),
+				]
+			);
 		}
 	}
 
@@ -395,12 +616,12 @@ class Admin_Handler {
 	 * @param string $date_to   End date filter.
 	 * @param int    $limit     Number of records to return.
 	 * @param int    $offset    Number of records to skip.
-	 * @param string $sort_by   Sort order for amount.
 	 * @param int    $form_id   Form ID filter.
+	 * @param string $payment_mode Payment mode filter (test/live).
 	 * @since x.x.x
 	 * @return array Filtered payments data.
 	 */
-	private function get_payments_data( $search = '', $status = '', $date_from = '', $date_to = '', $limit = 20, $offset = 0, $sort_by = '', $form_id = 0 ) {
+	private function get_payments_data( $search = '', $status = '', $date_from = '', $date_to = '', $limit = 20, $offset = 0, $form_id = 0, $payment_mode = '' ) {
 		// Build WHERE conditions for database query.
 		$where_conditions = [];
 
@@ -442,7 +663,18 @@ class Admin_Handler {
 			];
 		}
 
-		// Add date range filter
+		// Add payment mode filter (test/live).
+		if ( ! empty( $payment_mode ) && in_array( $payment_mode, [ 'test', 'live' ], true ) ) {
+			$where_conditions[] = [
+				[
+					'key'     => 'mode',
+					'compare' => '=',
+					'value'   => $payment_mode,
+				],
+			];
+		}
+
+		// Add date range filter.
 		if ( ! empty( $date_from ) || ! empty( $date_to ) ) {
 			if ( ! empty( $date_from ) && ! empty( $date_to ) ) {
 				$where_conditions[] = [
@@ -476,25 +708,14 @@ class Admin_Handler {
 			}
 		}
 
-		// Determine sorting based on sort_by parameter.
-		$orderby = 'created_at';
-		$order   = 'DESC';
-
-		if ( 'amount-asc' === $sort_by ) {
-			$orderby = 'total_amount';
-			$order   = 'ASC';
-		} elseif ( 'amount-desc' === $sort_by ) {
-			$orderby = 'total_amount';
-			$order   = 'DESC';
-		}
-
 		// Get payments from database using the main payments method.
+		// Sorted by created_at in descending order (newest first).
 		$args = [
 			'where'   => $where_conditions,
 			'limit'   => $limit,
 			'offset'  => $offset,
-			'orderby' => $orderby,
-			'order'   => $order,
+			'orderby' => 'created_at',
+			'order'   => 'DESC',
 		];
 
 		$db_payments = Payments::get_all_main_payments( $args, true );
@@ -521,22 +742,28 @@ class Admin_Handler {
 		// Get payments table name.
 		$payments_table = Payments::get_instance()->get_tablename();
 
-		// Search in specific fields: id, customer_name, customer_email, transaction_id, srfm_txn_id.
-		$query = $wpdb->prepare(
-			"SELECT DISTINCT id FROM {$payments_table}
-			WHERE id LIKE %d
+		if ( empty( $payments_table ) || ! is_string( $payments_table ) ) {
+			return [ 0 ];
+		}
+
+		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table query for search, table name is validated and cannot be parameterized with prepare().
+		$results = $wpdb->get_col(
+			$wpdb->prepare(
+				"SELECT DISTINCT id FROM {$payments_table}
+			WHERE id LIKE %s
 			OR customer_name LIKE %s
 			OR customer_email LIKE %s
 			OR transaction_id LIKE %s
 			OR srfm_txn_id LIKE %s",
-			$search_term,
-			$search_term,
-			$search_term,
-			$search_term,
-			$search_term
+				$search_term,
+				$search_term,
+				$search_term,
+				$search_term,
+				$search_term
+			)
 		);
-
-		$results = $wpdb->get_col( $query );
+		// phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 
 		// If no results found, return array with 0 to prevent empty IN clause.
 		return ! empty( $results ) ? array_map( 'absint', $results ) : [ 0 ];
@@ -598,18 +825,28 @@ class Admin_Handler {
 		// Get form title with caching using WordPress built-in function.
 		$form_id = isset( $payment['form_id'] ) && ! empty( $payment['form_id'] ) && is_numeric( $payment['form_id'] ) ? intval( $payment['form_id'] ) : 0;
 		if ( is_numeric( $form_id ) && ! isset( $form_titles[ $form_id ] ) ) {
-			$form_titles[ $form_id ] = get_the_title( intval( $form_id ) ) ?: __( 'Unknown Form', 'sureforms' );
+			$form_title              = get_the_title( intval( $form_id ) );
+			$form_titles[ $form_id ] = ! empty( $form_title ) ? $form_title : __( 'Unknown Form', 'sureforms' );
 		}
-		$form_title = isset( $form_titles[ $form_id ] ) && ! empty( $form_titles[ $form_id ] ) ? $form_titles[ $form_id ] : __( 'Unknown Form', 'sureforms' );
-		$form_url   = isset( $form_titles[ $form_id ] ) && ! empty( $form_titles[ $form_id ] ) ? html_entity_decode( get_permalink( intval( $form_id ) ) ) : '';
+		$form_title     = isset( $form_titles[ $form_id ] ) && ! empty( $form_titles[ $form_id ] ) ? $form_titles[ $form_id ] : __( 'Unknown Form', 'sureforms' );
+		$form_permalink = isset( $form_titles[ $form_id ] ) && ! empty( $form_titles[ $form_id ] ) ? get_permalink( intval( $form_id ) ) : '';
+		$form_url       = ! empty( $form_permalink ) && is_string( $form_permalink ) ? html_entity_decode( $form_permalink ) : '';
 
 		// Get customer name - for now use customer_id, in real implementation.
-		// you would get customer data from entries or payment_data.
+		// You would get customer data from entries or payment_data.
 		$customer_name  = ! empty( $payment['customer_name'] ) ? $payment['customer_name'] : __( 'N/A', 'sureforms' );
 		$customer_email = ! empty( $payment['customer_email'] ) ? $payment['customer_email'] : __( 'N/A', 'sureforms' );
+		$notes          = Payments::get_extra_value( $payment['id'], 'notes', [] );
+		$notes          = ! empty( $notes ) && is_array( $notes ) ? $notes : [];
 
-		// Determine payment type
-		$payment_type = 'subscription' === $payment['type'] ? __( 'Subscription', 'sureforms' ) : __( 'Checkout', 'sureforms' );
+		// Determine payment type display label.
+		if ( 'subscription' === $payment['type'] ) {
+			$payment_type = __( 'Subscription', 'sureforms' );
+		} elseif ( 'renewal' === $payment['type'] ) {
+			$payment_type = __( 'Renewal', 'sureforms' );
+		} else {
+			$payment_type = __( 'One Time', 'sureforms' );
+		}
 
 		$payment_front_end_data = [
 			// All original payment_data fields.
@@ -646,7 +883,7 @@ class Admin_Handler {
 			'frontend_status'        => $this->map_db_status_to_frontend( $payment['status'] ),
 			'datetime'               => $payment['created_at'], // Keep for backward compatibility.
 			'payment_type'           => $payment_type,
-			'notes'                  => Payments::get_extra_value( $payment['id'], 'notes', [] ),
+			'notes'                  => $this->get_formatted_notes( $notes ),
 			'logs'                   => $this->get_formatted_logs( $payment['log'] ),
 		];
 
@@ -661,10 +898,11 @@ class Admin_Handler {
 	 * @param string $date_from Start date filter.
 	 * @param string $date_to   End date filter.
 	 * @param int    $form_id   Form ID filter.
+	 * @param string $payment_mode Payment mode filter (test/live).
 	 * @since x.x.x
 	 * @return int Total count.
 	 */
-	private function get_payments_count( $search = '', $status = '', $date_from = '', $date_to = '', $form_id = 0 ) {
+	private function get_payments_count( $search = '', $status = '', $date_from = '', $date_to = '', $form_id = 0, $payment_mode = '' ) {
 		// Build WHERE conditions similar to get_payments_data.
 		$where_conditions = [];
 
@@ -700,6 +938,17 @@ class Admin_Handler {
 					'key'     => 'form_id',
 					'compare' => '=',
 					'value'   => $form_id,
+				],
+			];
+		}
+
+		// Add payment mode filter (test/live).
+		if ( ! empty( $payment_mode ) && in_array( $payment_mode, [ 'test', 'live' ], true ) ) {
+			$where_conditions[] = [
+				[
+					'key'     => 'mode',
+					'compare' => '=',
+					'value'   => $payment_mode,
 				],
 			];
 		}
@@ -838,96 +1087,6 @@ class Admin_Handler {
 	}
 
 	/**
-	 * AJAX handler for adding a note to payment.
-	 *
-	 * @since x.x.x
-	 * @return void
-	 */
-	public function ajax_add_note() {
-		// Verify nonce for security.
-		if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'srfm_payment_admin_nonce' ) ) {
-			wp_send_json_error( [ 'message' => __( 'Security verification failed.', 'sureforms' ) ] );
-		}
-
-		// Check user capabilities.
-		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_send_json_error( [ 'message' => __( 'Insufficient permissions.', 'sureforms' ) ] );
-		}
-
-		// Validate and sanitize inputs.
-		$payment_id = isset( $_POST['payment_id'] ) ? absint( $_POST['payment_id'] ) : 0;
-		$note_text  = isset( $_POST['note_text'] ) ? sanitize_textarea_field( wp_unslash( $_POST['note_text'] ) ) : '';
-
-		if ( empty( $payment_id ) ) {
-			wp_send_json_error( [ 'message' => __( 'Payment ID is required.', 'sureforms' ) ] );
-		}
-
-		if ( empty( trim( $note_text ) ) ) {
-			wp_send_json_error( [ 'message' => __( 'Note text cannot be empty.', 'sureforms' ) ] );
-		}
-
-		try {
-			// Add the note.
-			$updated_notes = $this->add_payment_note( $payment_id, $note_text );
-
-			if ( false === $updated_notes ) {
-				wp_send_json_error( [ 'message' => __( 'Failed to add note.', 'sureforms' ) ] );
-			}
-
-			wp_send_json_success( [ 'notes' => $updated_notes ] );
-
-		} catch ( \Exception $e ) {
-			// TODO: Handle proper error handling.
-			wp_send_json_error( [ 'message' => __( 'An error occurred while adding the note.', 'sureforms' ) ] );
-		}
-	}
-
-	/**
-	 * AJAX handler for deleting a note from payment.
-	 *
-	 * @since x.x.x
-	 * @return void
-	 */
-	public function ajax_delete_note() {
-		// Verify nonce for security.
-		if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'srfm_payment_admin_nonce' ) ) {
-			wp_send_json_error( [ 'message' => __( 'Security verification failed.', 'sureforms' ) ] );
-		}
-
-		// Check user capabilities.
-		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_send_json_error( [ 'message' => __( 'Insufficient permissions.', 'sureforms' ) ] );
-		}
-
-		// Validate and sanitize inputs.
-		$payment_id = isset( $_POST['payment_id'] ) ? absint( $_POST['payment_id'] ) : 0;
-		$note_index = isset( $_POST['note_index'] ) ? absint( $_POST['note_index'] ) : -1;
-
-		if ( empty( $payment_id ) ) {
-			wp_send_json_error( [ 'message' => __( 'Payment ID is required.', 'sureforms' ) ] );
-		}
-
-		if ( $note_index < 0 ) {
-			wp_send_json_error( [ 'message' => __( 'Invalid note index.', 'sureforms' ) ] );
-		}
-
-		try {
-			// Delete the note.
-			$updated_notes = $this->delete_payment_note( $payment_id, $note_index );
-
-			if ( false === $updated_notes ) {
-				wp_send_json_error( [ 'message' => __( 'Failed to delete note.', 'sureforms' ) ] );
-			}
-
-			wp_send_json_success( [ 'notes' => $updated_notes ] );
-
-		} catch ( \Exception $e ) {
-			// TODO: Handle proper error handling.
-			wp_send_json_error( [ 'message' => __( 'An error occurred while deleting the note.', 'sureforms' ) ] );
-		}
-	}
-
-	/**
 	 * Add a note to payment.
 	 *
 	 * @param int    $payment_id Payment ID.
@@ -1023,51 +1182,6 @@ class Admin_Handler {
 	}
 
 	/**
-	 * AJAX handler for deleting a log entry from payment.
-	 *
-	 * @since x.x.x
-	 * @return void
-	 */
-	public function ajax_delete_log() {
-		// Verify nonce for security.
-		if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'srfm_payment_admin_nonce' ) ) {
-			wp_send_json_error( [ 'message' => __( 'Security verification failed.', 'sureforms' ) ] );
-		}
-
-		// Check user capabilities.
-		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_send_json_error( [ 'message' => __( 'Insufficient permissions.', 'sureforms' ) ] );
-		}
-
-		// Validate and sanitize inputs.
-		$payment_id = isset( $_POST['payment_id'] ) ? absint( $_POST['payment_id'] ) : 0;
-		$log_index  = isset( $_POST['log_index'] ) ? absint( $_POST['log_index'] ) : -1;
-
-		if ( empty( $payment_id ) ) {
-			wp_send_json_error( [ 'message' => __( 'Payment ID is required.', 'sureforms' ) ] );
-		}
-
-		if ( $log_index < 0 ) {
-			wp_send_json_error( [ 'message' => __( 'Invalid log index.', 'sureforms' ) ] );
-		}
-
-		try {
-			// Delete the log entry.
-			$updated_logs = $this->delete_payment_log( $payment_id, $log_index );
-
-			if ( false === $updated_logs ) {
-				wp_send_json_error( [ 'message' => __( 'Failed to delete log entry.', 'sureforms' ) ] );
-			}
-
-			wp_send_json_success( [ 'logs' => $updated_logs ] );
-
-		} catch ( \Exception $e ) {
-			// TODO: Handle proper error handling.
-			wp_send_json_error( [ 'message' => __( 'An error occurred while deleting the log entry.', 'sureforms' ) ] );
-		}
-	}
-
-	/**
 	 * Delete a log entry from payment by index.
 	 *
 	 * @param int $payment_id Payment ID.
@@ -1154,15 +1268,15 @@ class Admin_Handler {
 			// Handle both object and array formats.
 			if ( is_object( $log ) ) {
 				$formatted_logs[] = [
-					'title'     => $log->title ?? '',
-					'timestamp' => $log->timestamp ?? 0,
-					'messages'  => $log->messages ?? [],
+					'title'      => $log->title ?? '',
+					'created_at' => $log->created_at ?? 0,
+					'messages'   => $log->messages ?? [],
 				];
 			} elseif ( is_array( $log ) ) {
 				$formatted_logs[] = [
-					'title'     => $log['title'] ?? '',
-					'timestamp' => $log['timestamp'] ?? 0,
-					'messages'  => $log['messages'] ?? [],
+					'title'      => $log['title'] ?? '',
+					'created_at' => $log['created_at'] ?? 0,
+					'messages'   => $log['messages'] ?? [],
 				];
 			}
 		}
@@ -1171,146 +1285,63 @@ class Admin_Handler {
 	}
 
 	/**
-	 * AJAX handler for bulk deleting payments.
+	 * Get formatted notes from notes data.
 	 *
+	 * @param array<mixed> $notes_data Notes array from extra data.
 	 * @since x.x.x
-	 * @return void
+	 * @return array Formatted notes array.
 	 */
-	public function ajax_bulk_delete_payments() {
-		// Verify nonce for security.
-		if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'srfm_payment_admin_nonce' ) ) {
-			wp_send_json_error( [ 'message' => __( 'Security verification failed.', 'sureforms' ) ] );
+	private function get_formatted_notes( $notes_data ) {
+		if ( empty( $notes_data ) ) {
+			return [];
 		}
 
-		// Check user capabilities.
-		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_send_json_error( [ 'message' => __( 'Insufficient permissions.', 'sureforms' ) ] );
+		// If not an array, return empty.
+		if ( ! is_array( $notes_data ) ) {
+			return [];
 		}
 
-		// Get and validate payment IDs.
-		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Sanitized below after JSON decode.
-		$payment_ids_raw = isset( $_POST['payment_ids'] ) ? wp_unslash( $_POST['payment_ids'] ) : [];
+		$formatted_notes = [];
 
-		// Handle JSON string or array format.
-		if ( is_string( $payment_ids_raw ) ) {
-			// Decode JSON string.
-			$payment_ids = json_decode( $payment_ids_raw, true );
-
-			// Check if JSON decode was successful.
-			if ( json_last_error() !== JSON_ERROR_NONE ) {
-				wp_send_json_error( [ 'message' => __( 'Invalid JSON format for payment IDs.', 'sureforms' ) ] );
+		foreach ( $notes_data as $note ) {
+			// Handle both object and array formats.
+			if ( is_object( $note ) ) {
+				$formatted_notes[] = [
+					'text'                 => $note->text ?? '',
+					'created_at'           => $note->created_at ?? '',
+					'created_by'           => $note->created_by ?? 0,
+					'created_by_user_name' => isset( $note->created_by ) && is_numeric( $note->created_by ) ? $this->get_user_detail_by_id( $note->created_by ) : __( 'Guest User', 'sureforms' ),
+				];
+			} elseif ( is_array( $note ) ) {
+				$formatted_notes[] = [
+					'text'                 => $note['text'] ?? '',
+					'created_at'           => $note['created_at'] ?? '',
+					'created_by'           => $note['created_by'] ?? 0,
+					'created_by_user_name' => isset( $note['created_by'] ) && is_numeric( $note['created_by'] ) ? $this->get_user_detail_by_id( $note['created_by'] ) : __( 'Guest User', 'sureforms' ),
+				];
 			}
-		} else {
-			$payment_ids = $payment_ids_raw;
 		}
 
-		// Ensure it's an array.
-		if ( ! is_array( $payment_ids ) ) {
-			wp_send_json_error( [ 'message' => __( 'Invalid payment IDs format.', 'sureforms' ) ] );
+		return $formatted_notes;
+	}
+
+	/**
+	 * Get user detail by ID.
+	 *
+	 * @param mixed $user_id User ID.
+	 * @since x.x.x
+	 * @return string User name or 'Guest User' if user not found.
+	 */
+	private function get_user_detail_by_id( $user_id ) {
+		if ( empty( $user_id ) || ! is_numeric( $user_id ) || $user_id <= 0 ) {
+			return __( 'Guest User', 'sureforms' );
 		}
-
-		// Sanitize: Convert to integers and remove invalid values.
-		// This handles both string numbers ("169") and actual integers.
-		$payment_ids = array_map( 'absint', $payment_ids );
-		$payment_ids = array_filter(
-			$payment_ids,
-			function ( $id ) {
-				return $id > 0;
-			}
-		);
-
-		// Re-index array to ensure sequential keys.
-		$payment_ids = array_values( $payment_ids );
-
-		// wp_send_json_error( [ 'message' => __( 'No valid payment IDs provided.', 'sureforms' ) ] );
-
-		// Check if array is empty after sanitization.
-		if ( empty( $payment_ids ) ) {
-			wp_send_json_error( [ 'message' => __( 'No valid payment IDs provided.', 'sureforms' ) ] );
+		$user_id = is_numeric( $user_id ) ? intval( $user_id ) : 0;
+		if ( $user_id <= 0 ) {
+			return __( 'Guest User', 'sureforms' );
 		}
-
-		// Limit bulk operations to prevent timeout (max 100 at once).
-		if ( count( $payment_ids ) > 100 ) {
-			wp_send_json_error(
-				[
-					'message' => __( 'Cannot delete more than 100 payments at once. Please select fewer payments.', 'sureforms' ),
-				]
-			);
-		}
-
-		try {
-			$deleted_count = 0;
-			$failed_ids    = [];
-
-			// Delete each payment with proper error handling.
-			foreach ( $payment_ids as $payment_id ) {
-				// Verify payment exists before attempting delete.
-				$payment = Payments::get( $payment_id );
-
-				if ( ! $payment ) {
-					$failed_ids[] = $payment_id;
-					continue;
-				}
-
-				// Attempt deletion.
-				$result = Payments::delete( $payment_id );
-
-				if ( $result ) {
-					$deleted_count++;
-				} else {
-					$failed_ids[] = $payment_id;
-				}
-			}
-
-			// Prepare response message.
-			if ( $deleted_count === count( $payment_ids ) ) {
-				// All deleted successfully.
-				wp_send_json_success(
-					[
-						'message'       => sprintf(
-							/* translators: %d: number of payments deleted */
-							_n(
-								'%d payment deleted successfully.',
-								'%d payments deleted successfully.',
-								$deleted_count,
-								'sureforms'
-							),
-							$deleted_count
-						),
-						'deleted_count' => $deleted_count,
-					]
-				);
-			} elseif ( $deleted_count > 0 ) {
-				// Partial success.
-				wp_send_json_success(
-					[
-						'message'       => sprintf(
-							/* translators: 1: number deleted, 2: number failed */
-							__( '%1$d payment(s) deleted successfully. %2$d failed.', 'sureforms' ),
-							$deleted_count,
-							count( $failed_ids )
-						),
-						'deleted_count' => $deleted_count,
-						'failed_count'  => count( $failed_ids ),
-						'partial'       => true,
-					]
-				);
-			} else {
-				// All failed.
-				wp_send_json_error(
-					[
-						'message'      => __( 'Failed to delete payments. Please try again.', 'sureforms' ),
-						'failed_count' => count( $failed_ids ),
-					]
-				);
-			}
-		} catch ( \Exception $e ) {
-			error_log( 'Bulk delete payments error: ' . $e->getMessage() ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
-			wp_send_json_error(
-				[
-					'message' => __( 'An error occurred while deleting payments.', 'sureforms' ),
-				]
-			);
-		}
+		$user      = get_userdata( $user_id );
+		$user_name = $user ? $user->user_login : '';
+		return is_string( $user_name ) ? $user_name : __( 'Guest User', 'sureforms' );
 	}
 }

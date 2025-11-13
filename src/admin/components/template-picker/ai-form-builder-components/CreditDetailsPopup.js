@@ -175,7 +175,9 @@ const CreditDetailsPopup = ( {
 
 	// Decide which banner to show
 	if ( type === 'registered' && finalFormCreationCountRemaining <= 9 ) {
-		return showCreditDetailsPopup ? openCreditsBanner : compactCreditsBanner;
+		return showCreditDetailsPopup
+			? openCreditsBanner
+			: compactCreditsBanner;
 	} else if (
 		type === 'non-registered' &&
 		finalFormCreationCountRemaining <= 2

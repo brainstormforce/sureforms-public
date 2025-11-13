@@ -1,22 +1,11 @@
-import { useState, useContext, useEffect } from '@wordpress/element';
-import {
-	Button,
-	Badge,
-	Container,
-	Label,
-	Text,
-	Table,
-	DropdownMenu,
-	Dialog,
-	Input,
-} from '@bsf/force-ui';
-import { ArrowUpRight, EllipsisVertical } from 'lucide-react';
+import { useState, useEffect } from '@wordpress/element';
+import { Button, Badge, Text, Table, Dialog } from '@bsf/force-ui';
+import { ArrowUpRight, Eye } from 'lucide-react';
 import { __, sprintf } from '@wordpress/i18n';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { PaymentContext } from '../components/context';
 import {
 	fetchSubscription,
-	refundPayment,
 	cancelSubscription,
 	pauseSubscription,
 	addPaymentNote,
@@ -34,17 +23,20 @@ import PaymentNotes from '../components/paymentNotes';
 import PaymentLogs from '../components/paymentLogs';
 import PaymentHeader from '../components/paymentHeader';
 import PaymentLoadingSkeleton from '../components/paymentLoadingSkeleton';
+import RefundDialog from '../components/RefundDialog';
+import ConfirmationDialog from '@Admin/components/ConfirmationDialog';
 
 const ViewSubscription = () => {
-	const {
-		viewSinglePayment: viewSingleSubscription,
-		setViewSinglePayment: setViewSingleSubscription,
-	} = useContext( PaymentContext );
+	const { id } = useParams();
+	const navigate = useNavigate();
 	const queryClient = useQueryClient();
+
+	// Parse subscription ID from URL params
+	const viewSingleSubscription = id ? parseInt( id ) : null;
 
 	// Handler to navigate back to payment list
 	const handleBackToList = () => {
-		setViewSingleSubscription( false );
+		navigate( '/' );
 	};
 
 	// Fetch subscription data (includes subscription info + billing history)
@@ -62,24 +54,6 @@ const ViewSubscription = () => {
 	// Extract subscription data and billing data from API response
 	const subscriptionData = subscriptionApiData?.subscription;
 	const billingData = subscriptionApiData?.payments || [];
-
-	// Refund mutation for individual subscription payments
-	const refundMutation = useMutation( {
-		mutationFn: refundPayment,
-		onSuccess: () => {
-			// Refresh subscription data (includes billing history)
-			queryClient.invalidateQueries( [
-				'subscription',
-				viewSingleSubscription,
-			] );
-			queryClient.invalidateQueries( [ 'payments' ] );
-			setIsRefundDialogOpen( false );
-		},
-		onError: ( refundError ) => {
-			console.error( 'Refund failed:', refundError );
-			alert( __( 'Refund failed. Please try again.', 'sureforms' ) );
-		},
-	} );
 
 	// Cancel subscription mutation
 	const cancelMutation = useMutation( {
@@ -186,11 +160,21 @@ const ViewSubscription = () => {
 	const [ isRefundDialogOpen, setIsRefundDialogOpen ] = useState( false );
 	const [ isCancelDialogOpen, setIsCancelDialogOpen ] = useState( false );
 	const [ isPauseDialogOpen, setIsPauseDialogOpen ] = useState( false );
-	const [ refundAmount, setRefundAmount ] = useState( '' );
 	const [ selectedPaymentForRefund, setSelectedPaymentForRefund ] =
 		useState( null );
 	const [ isAddingNote, setIsAddingNote ] = useState( false );
 	const [ newNoteText, setNewNoteText ] = useState( '' );
+
+	// State for confirmation dialog
+	const [ confirmationDialog, setConfirmationDialog ] = useState( {
+		open: false,
+		title: '',
+		description: '',
+		confirmLabel: '',
+		onConfirm: null,
+		isLoading: false,
+		destructive: true,
+	} );
 
 	// Sync notes from subscriptionData when it loads
 	useEffect( () => {
@@ -206,14 +190,10 @@ const ViewSubscription = () => {
 		}
 	}, [ subscriptionData?.logs ] );
 
-	// Set default refund amount when dialog opens for individual payment
+	// Set payment for refund when dialog opens for individual payment
 	const openRefundDialog = ( payment ) => {
 		if ( payment ) {
 			setSelectedPaymentForRefund( payment );
-			const totalAmount = parseFloat( payment.total_amount );
-			const alreadyRefunded = parseFloat( payment.refunded_amount || 0 );
-			const refundableAmount = totalAmount - alreadyRefunded;
-			setRefundAmount( refundableAmount.toFixed( 2 ) );
 		}
 		setIsRefundDialogOpen( true );
 	};
@@ -230,10 +210,33 @@ const ViewSubscription = () => {
 				loading={ isLoading }
 				error={ error }
 				notFound={ ! subscriptionData }
-				setViewSinglePayment={ setViewSingleSubscription }
+				setViewSinglePayment={ () => navigate( '/' ) }
 			/>
 		);
 	}
+
+	/**
+	 * Handler function for triggering confirmation dialogs from child components
+	 *
+	 * @param {Object}   config              - Configuration object
+	 * @param {string}   config.title        - Dialog title
+	 * @param {string}   config.description  - Dialog description
+	 * @param {string}   config.confirmLabel - Confirm button label
+	 * @param {Function} config.onConfirm    - Function to call on confirm
+	 * @param {boolean}  config.isLoading    - Whether action is loading
+	 * @param {boolean}  config.destructive  - Whether action is destructive
+	 */
+	const handleConfirmation = ( config ) => {
+		setConfirmationDialog( {
+			open: true,
+			title: config.title,
+			description: config.description,
+			confirmLabel: config.confirmLabel,
+			onConfirm: config.onConfirm,
+			isLoading: config.isLoading || false,
+			destructive: config.destructive !== false, // Default to true
+		} );
+	};
 
 	const handleAddNoteClick = () => {
 		setIsAddingNote( true );
@@ -285,295 +288,77 @@ const ViewSubscription = () => {
 		}
 	};
 
+	const handleViewRenewalPayment = ( paymentId ) => {
+		if ( paymentId ) {
+			navigate( `/payment/${ paymentId }` );
+		}
+	};
+
 	const handleRefundLatestEMI = () => {
-		// Find the latest (most recent) paid EMI transaction
-		const latestPaidEMI = subscriptionBillingData
+		// Find the first (initial/linked) paid EMI transaction
+		// Note: 'active' status is used for subscription records, 'succeeded' for one-time payments
+		const firstPaidEMI = subscriptionBillingData
 			.filter(
 				( payment ) =>
+					payment.status === 'active' ||
 					payment.status === 'paid' ||
 					payment.status === 'succeeded' ||
 					payment.status === 'partially_refunded'
 			)
 			.sort(
-				( a, b ) => new Date( b.date_time ) - new Date( a.date_time )
+				( a, b ) => new Date( a.created_at ) - new Date( b.created_at )
 			)[ 0 ];
 
-		if ( ! latestPaidEMI ) {
+		if ( ! firstPaidEMI ) {
 			alert( __( 'No paid EMI found to refund.', 'sureforms' ) );
 			return;
 		}
 
-		// Open refund dialog with latest EMI
-		openRefundDialog( latestPaidEMI );
+		// Check if the first EMI is fully refunded
+		const isFullyRefunded =
+			parseFloat( firstPaidEMI.total_amount ) ===
+				parseFloat( firstPaidEMI.refunded_amount || 0 ) ||
+			firstPaidEMI.status === 'refunded';
+
+		if ( isFullyRefunded ) {
+			alert(
+				__(
+					'This payment has already been fully refunded.',
+					'sureforms'
+				)
+			);
+			return;
+		}
+
+		// Open refund dialog with first EMI (linked transaction)
+		openRefundDialog( firstPaidEMI );
 	};
 
 	const openPauseDialog = () => {
 		setIsPauseDialogOpen( true );
 	};
 
-	const closeRefundDialog = () => {
-		setIsRefundDialogOpen( false );
-	};
-
-	const processRefund = () => {
-		if ( ! selectedPaymentForRefund || ! refundAmount ) {
-			return;
-		}
-
-		const totalAmount = parseFloat( selectedPaymentForRefund.total_amount );
-		const alreadyRefunded = parseFloat(
-			selectedPaymentForRefund.refunded_amount || 0
-		);
-		const refundableAmount = totalAmount - alreadyRefunded;
-		const requestedAmount = parseFloat( refundAmount );
-
-		// Auto-determine refund type based on amount
-		const isFullRefund =
-			Math.abs( requestedAmount - refundableAmount ) < 0.01; // Allow for small floating point differences
-		const refundType = isFullRefund ? 'full' : 'partial';
-
-		// Convert to cents for backend
-		const finalRefundAmount = Math.round( requestedAmount * 100 );
-
-		refundMutation.mutate( {
-			paymentId: selectedPaymentForRefund.id,
-			transactionId: selectedPaymentForRefund.transaction_id,
-			refundAmount: finalRefundAmount,
-			refundType,
-		} );
-	};
-
-	// Generate dynamic refund message based on input amount
-	const getRefundMessage = () => {
-		if ( ! selectedPaymentForRefund || ! refundAmount ) {
-			return '';
-		}
-
-		const totalAmount = parseFloat( selectedPaymentForRefund.total_amount );
-		const alreadyRefunded = parseFloat(
-			selectedPaymentForRefund.refunded_amount || 0
-		);
-		const refundableAmount = totalAmount - alreadyRefunded;
-		const requestedAmount = parseFloat( refundAmount );
-
-		// Validation checks
-		if ( isNaN( requestedAmount ) || requestedAmount <= 0 ) {
-			return {
-				type: 'error',
-				message: __(
-					'Please enter a valid refund amount.',
-					'sureforms'
-				),
-			};
-		}
-
-		if ( requestedAmount > refundableAmount ) {
-			return {
-				type: 'error',
-				message: sprintf(
-					/* translators: %s: maximum refundable amount */
-					__( 'Amount cannot exceed %s.', 'sureforms' ),
-					formatAmount(
-						refundableAmount,
-						selectedPaymentForRefund.currency
-					)
-				),
-			};
-		}
-
-		// Check if it's a full refund (allowing for small floating point differences)
-		const isFullRefund =
-			Math.abs( requestedAmount - refundableAmount ) < 0.01;
-
-		if ( isFullRefund ) {
-			return {
-				type: 'info',
-				message: sprintf(
-					/* translators: %s: refund amount */
-					__(
-						'This will issue a complete refund of %s. The entire payment will be refunded.',
-						'sureforms'
-					),
-					formatAmount(
-						requestedAmount,
-						selectedPaymentForRefund.currency
-					)
-				),
-			};
-		}
-		const remainingBalance = refundableAmount - requestedAmount;
-		return {
-			type: 'warning',
-			message: sprintf(
-				/* translators: 1: partial refund amount, 2: remaining balance */
-				__(
-					'This will issue a partial refund of %1$s. Remaining balance of %2$s will still be valid.',
-					'sureforms'
-				),
-				formatAmount(
-					requestedAmount,
-					selectedPaymentForRefund.currency
-				),
-				formatAmount(
-					remainingBalance,
-					selectedPaymentForRefund.currency
-				)
-			),
-		};
-	};
-
 	// Subscription billing history data - use fetched billing data or empty array
 	const subscriptionBillingData = billingData || [];
 
-	// Calculate refundable amount for selected payment
-	const totalAmount = selectedPaymentForRefund
-		? parseFloat( selectedPaymentForRefund.total_amount )
-		: 0;
-	const alreadyRefunded = selectedPaymentForRefund
-		? parseFloat( selectedPaymentForRefund.refunded_amount || 0 )
-		: 0;
-	const refundableAmount = totalAmount - alreadyRefunded;
+	// Check if the first paid EMI is fully refunded (for disabling refund button)
+	const firstPaidEMI = subscriptionBillingData
+		.filter(
+			( payment ) =>
+				payment.status === 'active' ||
+				payment.status === 'paid' ||
+				payment.status === 'succeeded' ||
+				payment.status === 'partially_refunded'
+		)
+		.sort(
+			( a, b ) => new Date( a.created_at ) - new Date( b.created_at )
+		)[ 0 ];
 
-	// Get dynamic message for current refund amount
-	const refundMessage = getRefundMessage();
-	const isValidRefund = refundMessage.type !== 'error';
-
-	const refundDialog = (
-		<Dialog
-			open={ isRefundDialogOpen }
-			setOpen={ setIsRefundDialogOpen }
-			design="simple"
-			exitOnEsc
-			scrollLock
-		>
-			<Dialog.Backdrop />
-			<Dialog.Panel>
-				<Dialog.Header>
-					<div className="flex items-center justify-between">
-						<Dialog.Title>
-							{ __( 'Refund Payment', 'sureforms' ) }
-						</Dialog.Title>
-						<Dialog.CloseButton onClick={ closeRefundDialog } />
-					</div>
-					<Dialog.Description>
-						{ selectedPaymentForRefund &&
-							sprintf(
-								/* translators: %s: payment ID */
-								__(
-									"Process refund for payment #%s. The refunded amount will be sent to the customer's original payment method.",
-									'sureforms'
-								),
-								selectedPaymentForRefund.id
-							) }
-					</Dialog.Description>
-				</Dialog.Header>
-				<Dialog.Body>
-					<div className="space-y-4">
-						<div>
-							<Label className="text-sm font-medium">
-								{ __( 'Refund Amount', 'sureforms' ) }
-							</Label>
-							<Input
-								type="number"
-								value={ refundAmount }
-								onChange={ setRefundAmount }
-								placeholder={ sprintf(
-									/* translators: %s: maximum refundable amount */
-									__( 'Max: %s', 'sureforms' ),
-									refundableAmount.toFixed( 2 )
-								) }
-								max={ refundableAmount }
-								min="0.01"
-								step="0.01"
-								className="mt-1"
-							/>
-							<Text className="text-xs text-text-secondary mt-1">
-								{ selectedPaymentForRefund &&
-									sprintf(
-										/* translators: %s: maximum refundable amount */
-										__(
-											'Maximum refundable amount: %s',
-											'sureforms'
-										),
-										formatAmount(
-											refundableAmount,
-											selectedPaymentForRefund.currency
-										)
-									) }
-							</Text>
-						</div>
-
-						{ /* Dynamic refund message */ }
-						{ refundMessage && (
-							<div
-								className={ `p-3 rounded-md ${
-									refundMessage.type === 'error'
-										? 'bg-red-50 border border-red-200'
-										: refundMessage.type === 'warning'
-											? 'bg-yellow-50 border border-yellow-200'
-											: 'bg-blue-50 border border-blue-200'
-								}` }
-							>
-								<Text
-									className={ `text-sm ${
-										refundMessage.type === 'error'
-											? 'text-red-700'
-											: refundMessage.type === 'warning'
-												? 'text-yellow-700'
-												: 'text-blue-700'
-									}` }
-								>
-									{ refundMessage.message }
-								</Text>
-							</div>
-						) }
-
-						{ /* Refund history info */ }
-						{ alreadyRefunded > 0 && (
-							<div className="p-3 border border-border-subtle rounded-md bg-background-secondary">
-								<Text className="text-sm text-text-secondary">
-									{ selectedPaymentForRefund &&
-										sprintf(
-											/* translators: %s: already refunded amount */
-											__(
-												'Already refunded: %s',
-												'sureforms'
-											),
-											formatAmount(
-												alreadyRefunded,
-												selectedPaymentForRefund.currency
-											)
-										) }
-								</Text>
-							</div>
-						) }
-					</div>
-				</Dialog.Body>
-				<Dialog.Footer className="flex justify-end gap-2">
-					<Button
-						variant="outline"
-						onClick={ closeRefundDialog }
-						disabled={ refundMutation.isPending }
-					>
-						{ __( 'Cancel', 'sureforms' ) }
-					</Button>
-					<Button
-						variant="primary"
-						onClick={ processRefund }
-						disabled={
-							refundMutation.isPending ||
-							! isValidRefund ||
-							! refundAmount
-						}
-					>
-						{ refundMutation.isPending
-							? __( 'Processing…', 'sureforms' )
-							: __( 'Process Refund', 'sureforms' ) }
-					</Button>
-				</Dialog.Footer>
-			</Dialog.Panel>
-		</Dialog>
-	);
+	const isFirstEMIFullyRefunded = firstPaidEMI
+		? parseFloat( firstPaidEMI.total_amount ) ===
+				parseFloat( firstPaidEMI.refunded_amount || 0 ) ||
+		  firstPaidEMI.status === 'refunded'
+		: false;
 
 	// Cancel subscription dialog
 	const cancelDialog = (
@@ -710,61 +495,76 @@ const ViewSubscription = () => {
 	);
 
 	const billingDetails = (
-		<div className="overflow-hidden bg-background-primary">
-			<div className="overflow-x-auto">
-				<Table className="w-full">
-					<Table.Head>
-						<Table.HeadCell>
-							{ __( 'Amount', 'sureforms' ) }
-						</Table.HeadCell>
-						<Table.HeadCell>
-							{ __( 'Status', 'sureforms' ) }
-						</Table.HeadCell>
-						<Table.HeadCell>
-							{ __( 'Transaction Date', 'sureforms' ) }
-						</Table.HeadCell>
-					</Table.Head>
-					<Table.Body>
-						{ subscriptionBillingData.map( ( row ) => (
-							<Table.Row key={ row.id }>
-								<Table.Cell className="font-medium">
-									{ row.refunded_amount > 0 ? (
-										<PartialAmount
-											amount={ row.total_amount }
-											partialAmount={
-												row.total_amount -
-												row.refunded_amount
-											}
-											currency={
-												subscriptionData.currency
-											}
-										/>
-									) : (
-										formatAmount(
-											row.total_amount,
-											subscriptionData.currency
-										)
-									) }
-								</Table.Cell>
-								<Table.Cell>
-									<Badge
-										variant={ getStatusVariant(
-											row.status
-										) }
-										size="xs"
-										label={ getStatusLabel( row.status ) }
-										type="pill"
-										className="w-fit"
+		<div className="overflow-x-auto bg-background-primary rounded-md shadow-sm">
+			<Table className="w-full">
+				<Table.Head>
+					<Table.HeadCell>
+						{ __( 'Amount', 'sureforms' ) }
+					</Table.HeadCell>
+					<Table.HeadCell>
+						{ __( 'Status', 'sureforms' ) }
+					</Table.HeadCell>
+					<Table.HeadCell>
+						{ __( 'Transaction Date', 'sureforms' ) }
+					</Table.HeadCell>
+					<Table.HeadCell className="w-20 text-right">
+						{ __( 'Action', 'sureforms' ) }
+					</Table.HeadCell>
+				</Table.Head>
+				<Table.Body>
+					{ subscriptionBillingData.map( ( row ) => (
+						<Table.Row key={ row.id }>
+							<Table.Cell className="font-medium">
+								{ row.refunded_amount > 0 ? (
+									<PartialAmount
+										amount={ row.total_amount }
+										partialAmount={
+											row.total_amount -
+											row.refunded_amount
+										}
+										currency={ subscriptionData.currency }
 									/>
-								</Table.Cell>
-								<Table.Cell>
-									{ formatDateTime( row.created_at ) }
-								</Table.Cell>
-							</Table.Row>
-						) ) }
-					</Table.Body>
-				</Table>
-			</div>
+								) : (
+									formatAmount(
+										row.total_amount,
+										subscriptionData.currency
+									)
+								) }
+							</Table.Cell>
+							<Table.Cell>
+								<Badge
+									variant={ getStatusVariant(
+										'active' === row.status
+											? 'succeeded'
+											: row.status
+									) }
+									size="xs"
+									label={ getStatusLabel(
+										'active' === row.status
+											? 'succeeded'
+											: row.status
+									) }
+									type="pill"
+									className="w-fit"
+								/>
+							</Table.Cell>
+							<Table.Cell>
+								{ formatDateTime( row.created_at ) }
+							</Table.Cell>
+							<Table.Cell className="text-right flex justify-center">
+								<Button
+									icon={ <Eye className="!size-4" /> }
+									size="xs"
+									variant="ghost"
+									onClick={ () =>
+										handleViewRenewalPayment( row.id )
+									}
+								/>
+							</Table.Cell>
+						</Table.Row>
+					) ) }
+				</Table.Body>
+			</Table>
 		</div>
 	);
 
@@ -775,12 +575,27 @@ const ViewSubscription = () => {
 		},
 		{
 			title: __( 'Form Name', 'sureforms' ),
-			value:
-				(
-					<span className="text-link-primary">
-						{ subscriptionData.form_title }
-					</span>
-				) || __( 'Unknown Form', 'sureforms' ),
+			value: subscriptionData.form_url ? (
+				<Button
+					icon={ <ArrowUpRight className="!size-4" /> }
+					iconPosition="right"
+					variant="link"
+					size="sm"
+					className="h-full text-link-primary text-sm font-semibold no-underline hover:no-underline hover:text-link-primary-hover px-1 content-center [box-shadow:none] focus:[box-shadow:none] focus:outline-none"
+					onClick={ () =>
+						window.open(
+							subscriptionData.form_url,
+							'_blank',
+							'noopener,noreferrer'
+						)
+					}
+				>
+					{ subscriptionData.form_title ||
+						__( 'Unknown Form', 'sureforms' ) }
+				</Button>
+			) : (
+				subscriptionData.form_title || __( 'Unknown Form', 'sureforms' )
+			),
 		},
 		{
 			id: 'payment-mode',
@@ -788,12 +603,16 @@ const ViewSubscription = () => {
 			value:
 				'live' === subscriptionData.mode ? (
 					<Badge
+						className="w-fit"
 						variant="green"
+						size="md"
 						label={ __( 'Live Mode', 'sureforms' ) }
 					/>
 				) : (
 					<Badge
+						className="w-fit"
 						variant="yellow"
+						size="md"
 						label={ __( 'Test Mode', 'sureforms' ) }
 					/>
 				),
@@ -842,150 +661,105 @@ const ViewSubscription = () => {
 		},
 	];
 
-	// Subscription details component
-	const subscriptionDetails = subscriptionDetailsData.map(
-		( item, index ) => {
-			const { title, value } = item;
-			return (
-				<div
-					key={ `payment-info-${ index }` }
-					className="flex gap-1 items-center p-3"
-				>
-					<Text
-						as="p"
-						color="primary"
-						lineHeight={ 20 }
-						size={ 14 }
-						weight={ 600 }
-						className="w-[160px]"
-					>
-						{ title }:
-					</Text>
-					<Text
-						as="p"
-						color="secondary"
-						lineHeight={ 20 }
-						size={ 14 }
-						weight={ 500 }
-					>
-						{ value }
-					</Text>
-				</div>
-			);
-		}
+	// Subscription details component - using Table structure
+	const subscriptionDetails = (
+		<div className="overflow-x-auto bg-background-primary rounded-md shadow-sm">
+			<Table className="w-full">
+				<Table.Body>
+					{ subscriptionDetailsData.map( ( field, index ) => (
+						<Table.Row key={ index }>
+							<Table.Cell className="w-1/3 font-medium text-text-primary">
+								{ field.title }
+							</Table.Cell>
+							<Table.Cell className="text-text-secondary">
+								{ typeof field?.render === 'function'
+									? field.render( field.value )
+									: field.value }
+							</Table.Cell>
+						</Table.Row>
+					) ) }
+				</Table.Body>
+			</Table>
+		</div>
 	);
 
 	const PAYMENT_SECTION_COLUMN_1 = (
 		<>
-			<Container
-				className="w-full bg-background-primary border-0.5 border-solid rounded-xl border-border-subtle p-3 gap-2 shadow-sm"
-				direction="column"
-			>
-				<Container
-					className="p-1 gap-2 relative z-10"
-					align="center"
-					justify="between"
-				>
-					<div className="flex items-center gap-2">
-						<Label size="md" className="font-semibold">
-							{ __( 'Subscription Details', 'sureforms' ) }
-						</Label>
-						<Badge
-							label={ getStatusLabel(
-								subscriptionData.subscription_status
-							) }
-							variant={ getStatusVariant(
-								subscriptionData.subscription_status
-							) }
-							size="sm"
-							className="max-w-fit"
-							disableHover
-						/>
-					</div>
-					<DropdownMenu
-						placement="bottom-start"
-						className="min-w-fit"
-					>
-						<DropdownMenu.Trigger>
+			<div className="bg-background-primary border-0.5 border-solid border-border-subtle rounded-lg shadow-sm">
+				<div className="pb-0 px-4 pt-4">
+					<div className="flex items-center justify-between">
+						<div className="flex items-center gap-2">
+							<h3 className="text-base font-semibold text-text-primary">
+								{ __( 'Subscription Details', 'sureforms' ) }
+							</h3>
+							<Badge
+								label={ getStatusLabel(
+									subscriptionData.subscription_status
+								) }
+								variant={ getStatusVariant(
+									subscriptionData.subscription_status
+								) }
+								size="sm"
+								className="max-w-fit"
+								disableHover
+							/>
+						</div>
+						<div className="flex gap-2">
 							<Button
-								icon={
-									<EllipsisVertical className="!size-4" />
-								}
-								iconPosition="right"
+								onClick={ openCancelDialog }
 								size="xs"
 								variant="outline"
 							>
-								{ __( 'Actions', 'sureforms' ) }
+								{ __( 'Cancel', 'sureforms' ) }
 							</Button>
-						</DropdownMenu.Trigger>
-						<DropdownMenu.ContentWrapper>
-							<DropdownMenu.Content className="w-60">
-								<DropdownMenu.List>
-									<DropdownMenu.Item
-										onClick={ openCancelDialog }
-										className="text-sm"
-									>
-										{ __(
-											'Cancel Subscription',
-											'sureforms'
-										) }
-									</DropdownMenu.Item>
-									<DropdownMenu.Item
-										onClick={ openPauseDialog }
-										className="text-sm"
-									>
-										{ __(
-											'Pause Subscription',
-											'sureforms'
-										) }
-									</DropdownMenu.Item>
-									<DropdownMenu.Item
-										onClick={ handleRefundLatestEMI }
-										className="text-sm"
-									>
-										{ __(
-											'Refund The Last Charge',
-											'sureforms'
-										) }
-									</DropdownMenu.Item>
-								</DropdownMenu.List>
-							</DropdownMenu.Content>
-						</DropdownMenu.ContentWrapper>
-					</DropdownMenu>
-				</Container>
-				<Container className="flex flex-col bg-background-secondary gap-1 p-1 rounded-lg">
+							<Button
+								onClick={ openPauseDialog }
+								size="xs"
+								variant="outline"
+							>
+								{ __( 'Pause', 'sureforms' ) }
+							</Button>
+							<Button
+								onClick={ handleRefundLatestEMI }
+								size="xs"
+								variant="outline"
+								disabled={
+									isFirstEMIFullyRefunded || ! firstPaidEMI
+								}
+							>
+								{ __( 'Refund', 'sureforms' ) }
+							</Button>
+						</div>
+					</div>
+				</div>
+				<div className="p-4 space-y-1 relative before:content-[''] before:block before:absolute before:inset-3 before:bg-background-secondary before:rounded-lg">
 					{ billingDetails }
-				</Container>
-			</Container>
+				</div>
+			</div>
 			{ /* Payment Info */ }
-			<Container
-				className="w-full bg-background-primary border-0.5 border-solid rounded-xl border-border-subtle p-3 gap-2 shadow-sm"
-				direction="column"
-			>
-				<Container
-					className="p-1 gap-2"
-					align="center"
-					justify="between"
-				>
-					<Label size="sm" className="font-semibold">
-						{ __( 'Payment Information', 'sureforms' ) }
-					</Label>
-					<Button
-						icon={ <ArrowUpRight className="!size-4" /> }
-						iconPosition="right"
-						variant="link"
-						size="sm"
-						className="h-full text-link-primary text-sm font-semibold no-underline hover:no-underline hover:text-link-primary-hover px-1 content-center [box-shadow:none] focus:[box-shadow:none] focus:outline-none"
-						onClick={ handleViewInStripe }
-						disabled={ ! subscriptionData?.stripe_subscription_id }
-					>
-						{ __( 'View In Stripe', 'sureforms' ) }
-					</Button>
-				</Container>
-				<Container className="flex flex-col gap-1 p-1 rounded-lg">
-					{ subscriptionDetails }
-				</Container>
-			</Container>
+			<div className="bg-background-primary border-0.5 border-solid border-border-subtle rounded-lg shadow-sm">
+				<div className="pb-0 px-4 pt-4">
+					<div className="flex items-center justify-between">
+						<h3 className="text-sm font-semibold text-text-primary">
+							{ __( 'Payment Information', 'sureforms' ) }
+						</h3>
+						<Button
+							icon={ <ArrowUpRight className="!size-4" /> }
+							iconPosition="right"
+							variant="link"
+							size="xs"
+							className="text-link-primary hover:text-link-primary-hover"
+							onClick={ handleViewInStripe }
+							disabled={
+								! subscriptionData?.stripe_subscription_id
+							}
+						>
+							{ __( 'View In Stripe', 'sureforms' ) }
+						</Button>
+					</div>
+				</div>
+				<div className="p-4">{ subscriptionDetails }</div>
+			</div>
 		</>
 	);
 
@@ -1002,45 +776,68 @@ const ViewSubscription = () => {
 				handleDeleteNote={ handleDeleteNote }
 				addNoteMutation={ addNoteMutation }
 				deleteNoteMutation={ deleteNoteMutation }
+				onConfirmation={ handleConfirmation }
 			/>
 			<PaymentLogs
 				logs={ logs }
 				handleDeleteLog={ handleDeleteLog }
 				deleteLogMutation={ deleteLogMutation }
+				onConfirmation={ handleConfirmation }
 			/>
 		</>
 	);
 
 	return (
-		<div className="srfm-single-payment-wrapper min-h-screen bg-background-secondary p-8">
-			<Container
-				containerType="flex"
-				direction="column"
-				className="w-full h-full gap-[24px]"
-			>
-				<PaymentHeader
-					title={ __( 'Order ID', 'sureforms' ) }
-					paymentData={ subscriptionData }
-					handleViewEntry={ handleViewEntry }
-					onBack={ handleBackToList }
-				/>
-				<Container
-					className="w-full gap-6"
-					containerType="grid"
-					cols={ 12 }
-				>
-					<div className="flex flex-col gap-6 col-span-12 xl:col-span-8">
-						{ PAYMENT_SECTION_COLUMN_1 }
+		<>
+			{ /* Header */ }
+			<PaymentHeader
+				title={ __( 'Order ID', 'sureforms' ) }
+				paymentData={ subscriptionData }
+				handleViewEntry={ handleViewEntry }
+				onBack={ handleBackToList }
+			/>
+			<div className="mx-auto">
+				<div className="space-y-6">
+					<div className="space-y-6">
+						{ /* Main Content Grid */ }
+						<div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+							{ /* Left Column */ }
+							<div className="lg:col-span-2 space-y-6">
+								{ PAYMENT_SECTION_COLUMN_1 }
+							</div>
+
+							{ /* Right Column */ }
+							<div className="space-y-4">
+								{ PAYMENT_SECTION_COLUMN_2 }
+							</div>
+						</div>
 					</div>
-					<div className="flex flex-col gap-4 col-span-12 xl:col-span-4">
-						{ PAYMENT_SECTION_COLUMN_2 }
-					</div>
-				</Container>
-			</Container>
-			{ refundDialog }
+				</div>
+			</div>
+			<RefundDialog
+				isOpen={ isRefundDialogOpen }
+				setIsOpen={ setIsRefundDialogOpen }
+				payment={ selectedPaymentForRefund }
+				queryKey={ [ 'subscription', viewSingleSubscription ] }
+			/>
 			{ cancelDialog }
 			{ pauseDialog }
-		</div>
+
+			<ConfirmationDialog
+				isOpen={ confirmationDialog.open }
+				onCancel={ () =>
+					setConfirmationDialog( ( prev ) => ( {
+						...prev,
+						open: false,
+					} ) )
+				}
+				onConfirm={ confirmationDialog.onConfirm }
+				title={ confirmationDialog.title }
+				description={ confirmationDialog.description }
+				confirmButtonText={ confirmationDialog.confirmLabel }
+				destructiveConfirmButton={ confirmationDialog.destructive }
+			/>
+		</>
 	);
 };
 

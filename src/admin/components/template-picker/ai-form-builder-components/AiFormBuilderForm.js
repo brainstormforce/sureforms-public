@@ -295,7 +295,9 @@ export default ( props ) => {
 		<Container
 			className={ cn(
 				'gap-0',
-				showCreditDetailsPopup && ! is_pro_active && 'h-screen overflow-y-auto'
+				showCreditDetailsPopup &&
+					! is_pro_active &&
+					'h-screen overflow-y-auto'
 			) }
 			direction="column"
 		>
@@ -445,8 +447,12 @@ export default ( props ) => {
 							finalFormCreationCountRemaining={
 								finalFormCreationCountRemaining
 							}
-							setShowCreditDetailsPopup={ setShowCreditDetailsPopup }
-							showCreditDetailsPopup={ showCreditDetailsPopup }
+							setShowCreditDetailsPopup={
+								setShowCreditDetailsPopup
+							}
+							showCreditDetailsPopup={
+								showCreditDetailsPopup
+							}
 							type={ type }
 							features={ features }
 						/>

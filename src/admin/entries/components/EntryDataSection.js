@@ -87,9 +87,21 @@ export const RenderField = ( props ) => {
 					) }
 					{ ! Array.isArray( field.value ) && (
 						<div className="flex-1">
-							<span className="text-sm font-medium text-text-secondary [overflow-wrap:anywhere]">
-								{ field?.value ?? '-' }
-							</span>
+							{ typeof field?.value === 'string' &&
+							field.value.match( /<[^>]+>/g ) ? (
+								// Render HTML content for fields that contain HTML tags
+									<span
+										className="text-sm font-medium text-text-secondary [overflow-wrap:anywhere]"
+										dangerouslySetInnerHTML={ {
+											__html: field.value,
+										} }
+									/>
+								) : (
+								// Render plain text for regular fields
+									<span className="text-sm font-medium text-text-secondary [overflow-wrap:anywhere]">
+										{ field?.value ?? '-' }
+									</span>
+								) }
 						</div>
 					) }
 				</div>
@@ -115,7 +127,9 @@ export const RenderField = ( props ) => {
  */
 const EntryDataSection = ( { entryData } ) => {
 	// Extract and transform form data fields from entry data
-	const fields = ( entryData?.formData || [] ).map( formatField ).filter( Boolean );
+	const fields = ( entryData?.formData || [] )
+		.map( formatField )
+		.filter( Boolean );
 
 	return (
 		<div className="bg-background-primary border-0.5 border-solid border-border-subtle rounded-lg shadow-sm">

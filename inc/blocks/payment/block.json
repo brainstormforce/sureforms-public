@@ -1,7 +1,7 @@
 {
 	"name": "srfm/payment",
 	"title": "Payment",
-	"description": "Displays a SureForms Payment Field with Stripe integration",
+	"description": "Displays a SureForms Payment Field",
 	"category": "sureforms",
 	"keywords": [ "payment", "stripe", "money", "charge", "billing" ],
 	"textdomain": "sureforms",
@@ -64,7 +64,7 @@
 			"default": {
 				"name": "Subscription Plan",
 				"interval": "month",
-				"billingCycles": 2
+				"billingCycles": "ongoing"
 			}
 		},
 		"customerNameField": {
@@ -90,6 +90,10 @@
 		"amountLabel": {
 			"type": "string",
 			"default": "Enter Amount"
+		},
+		"variableAmountField": {
+			"type": "string",
+			"default": ""
 		}
 	}
 }

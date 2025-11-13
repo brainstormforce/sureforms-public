@@ -33,6 +33,12 @@ class Stripe_Webhook {
 	public const SRFM_TEST_LAST_FAILURE_AT = 'srfm_test_webhook_last_failure_at';
 	public const SRFM_TEST_LAST_ERROR      = 'srfm_test_webhook_last_error';
 
+	/**
+	 * Payment mode.
+	 *
+	 * @var string
+	 * @since x.x.x
+	 */
 	private string $mode = 'test';
 
 	/**
@@ -51,12 +57,28 @@ class Stripe_Webhook {
 	 * @return void
 	 */
 	public function register_endpoints() {
+		// Test mode webhook endpoint.
 		register_rest_route(
 			'sureforms',
-			'/webhook',
+			'/webhook_test',
 			[
 				'methods'             => 'POST',
-				'callback'            => [ $this, 'webhook_listener' ],
+				'callback'            => function() {
+					$this->webhook_listener( 'test' );
+				},
+				'permission_callback' => '__return_true',
+			]
+		);
+
+		// Live mode webhook endpoint.
+		register_rest_route(
+			'sureforms',
+			'/webhook_live',
+			[
+				'methods'             => 'POST',
+				'callback'            => function() {
+					$this->webhook_listener( 'live' );
+				},
 				'permission_callback' => '__return_true',
 			]
 		);
@@ -65,13 +87,16 @@ class Stripe_Webhook {
 	/**
 	 * Validates the Stripe signature for webhook requests through middleware.
 	 *
+	 * @param string|null $mode The payment mode ('test' or 'live'). If null, uses setting.
 	 * @since x.x.x
 	 * @return array<string, mixed>|bool
 	 */
-	public function validate_stripe_signature(): array|bool {
+	public function validate_stripe_signature( $mode = null ): array|bool {
 		// Get the raw payload and Stripe signature header.
-		$payload   = file_get_contents( 'php://input' );
-		$signature = $_SERVER['HTTP_STRIPE_SIGNATURE'] ?? '';
+		$payload = file_get_contents( 'php://input' );
+		// phpcs:disable
+		$signature = ! empty( $_SERVER['HTTP_STRIPE_SIGNATURE'] ) && is_string( $_SERVER['HTTP_STRIPE_SIGNATURE'] ) ? sanitize_text_field( $_SERVER['HTTP_STRIPE_SIGNATURE'] ) : '';
+		// phpcs:enable
 		$signature = trim( $signature );
 
 		if ( empty( $payload ) || empty( $signature ) ) {
@@ -84,7 +109,9 @@ class Stripe_Webhook {
 		if ( ! is_array( $settings ) ) {
 			$settings = [];
 		}
-		$this->mode = $settings['payment_mode'] ?? 'test';
+
+		// Determine mode: use parameter if provided, otherwise fall back to settings (backward compatibility).
+		$this->mode = $mode ?? ( $settings['payment_mode'] ?? 'test' );
 
 		// Get the appropriate webhook secret based on payment mode.
 		$webhook_secret = '';
@@ -106,11 +133,13 @@ class Stripe_Webhook {
 			'webhook_secret' => $webhook_secret,
 		];
 
+		$endpoint = Stripe_Helper::middle_ware_base_url() . 'webhook/validate-signature';
+
 		// Make request to middleware for signature verification.
 		$response = wp_remote_post(
-			'prod' === SRFM_PAYMENTS_ENV ? SRFM_PAYMENTS_PROD . 'webhook/validate-signature' : SRFM_PAYMENTS_LOCAL . 'webhook/validate-signature',
+			$endpoint,
 			[
-				'body'      => base64_encode( wp_json_encode( $middleware_request_data ) ?: '' ),
+				'body'      => Helper::srfm_base64_json_encode( $middleware_request_data ),
 				'headers'   => [
 					'Content-Type' => 'application/json',
 				],
@@ -139,123 +168,8 @@ class Stripe_Webhook {
 	}
 
 	/**
-	 * Validates the Stripe signature manually without using Stripe SDK.
-	 * Uses native PHP HMAC-SHA256 verification.
-	 *
-	 * @since x.x.x
-	 * @return array<string, mixed>|bool
-	 */
-	public function validate_stripe_signature_wsdk(): array|bool {
-		// Get the raw payload and Stripe signature header.
-		$payload   = file_get_contents( 'php://input' );
-		$signature = $_SERVER['HTTP_STRIPE_SIGNATURE'] ?? '';
-		$signature = trim( $signature );
-
-		if ( empty( $payload ) || empty( $signature ) ) {
-			Helper::srfm_log( 'Missing webhook payload or signature.' );
-			return false;
-		}
-
-		// Get payment settings.
-		$settings = get_option( Payments_Settings::OPTION_NAME, [] );
-		if ( ! is_array( $settings ) ) {
-			$settings = [];
-		}
-		$this->mode = $settings['payment_mode'] ?? 'test';
-
-		// Get the appropriate webhook secret based on payment mode.
-		$webhook_secret = '';
-		if ( 'live' === $this->mode ) {
-			$webhook_secret = is_string( $settings['webhook_live_secret'] ?? '' ) ? $settings['webhook_live_secret'] : '';
-		} else {
-			$webhook_secret = is_string( $settings['webhook_test_secret'] ?? '' ) ? $settings['webhook_test_secret'] : '';
-		}
-
-		if ( empty( $webhook_secret ) ) {
-			Helper::srfm_log( 'Webhook secret not configured for mode: ' . $this->mode . '.' );
-			return false;
-		}
-
-		// Step 1: Parse the signature header.
-		// Format: t=timestamp,v1=signature,v0=old_signature.
-		$sig_parts  = explode( ',', $signature );
-		$timestamp  = null;
-		$signatures = [];
-
-		foreach ( $sig_parts as $part ) {
-			$key_value = explode( '=', $part, 2 );
-			if ( count( $key_value ) !== 2 ) {
-				continue;
-			}
-
-			list( $key, $value ) = $key_value;
-
-			if ( 't' === $key ) {
-				$timestamp = is_numeric( $value ) ? (int) $value : null;
-			} elseif ( 'v1' === $key ) {
-				$signatures[] = $value;
-			}
-		}
-
-		// Step 2: Validate we have required parts.
-		if ( null === $timestamp || empty( $signatures ) ) {
-			Helper::srfm_log( 'Invalid signature header format - missing timestamp or v1 signature.' );
-			return false;
-		}
-
-		// Step 3: Construct the signed payload.
-		// Format: {timestamp}.{raw_payload}.
-		$signed_payload = $timestamp . '.' . $payload;
-
-		// Step 4: Compute the expected signature using HMAC-SHA256.
-		$expected_signature = hash_hmac( 'sha256', $signed_payload, $webhook_secret );
-
-		// Step 5: Compare signatures using timing-safe comparison.
-		$signature_valid = false;
-		foreach ( $signatures as $sig ) {
-			if ( hash_equals( $expected_signature, $sig ) ) {
-				$signature_valid = true;
-				break;
-			}
-		}
-
-		if ( ! $signature_valid ) {
-			Helper::srfm_log( 'Signature verification failed - computed signature does not match.' );
-			return false;
-		}
-
-		// Step 6: Verify timestamp is within tolerance (prevent replay attacks).
-		// Default tolerance: 300 seconds (5 minutes).
-		$tolerance    = 300;
-		$current_time = time();
-
-		if ( abs( $current_time - $timestamp ) > $tolerance ) {
-			Helper::srfm_log(
-				sprintf(
-					'Timestamp outside tolerance zone. Current: %d, Webhook: %d, Diff: %d seconds.',
-					$current_time,
-					$timestamp,
-					abs( $current_time - $timestamp )
-				)
-			);
-			return false;
-		}
-
-		// Step 7: Parse and return the event.
-		$event = json_decode( $payload, true );
-
-		if ( ! $event || ! is_array( $event ) || ! isset( $event['type'] ) ) {
-			Helper::srfm_log( 'Invalid JSON payload in webhook.' );
-			return false;
-		}
-
-		Helper::srfm_log( 'Webhook signature verified successfully (manual verification).' );
-
-		return $event;
-	}
-
-	/**
 	 * Development version - skips signature validation for testing.
+	 * This function is intended for development purposes only and should not be used in production.
 	 *
 	 * @since x.x.x
 	 * @return array<string, mixed>|bool
@@ -263,8 +177,6 @@ class Stripe_Webhook {
 	public function dev_validate_stripe_signature(): array|bool {
 		// Get the raw payload.
 		$payload = file_get_contents( 'php://input' );
-
-		// Helper::srfm_log( $payload, 'SureForms DEV: Payload: ' );
 
 		if ( empty( $payload ) ) {
 			Helper::srfm_log( 'Missing webhook payload.', 'SureForms DEV: ' );
@@ -287,15 +199,12 @@ class Stripe_Webhook {
 	/**
 	 * This function listens webhook events.
 	 *
+	 * @param string|null $mode The payment mode ('test' or 'live'). If null, uses setting.
 	 * @since x.x.x
 	 * @return void
 	 */
-	public function webhook_listener(): void {
-		// For development - use dev validation (no signature check).
-		// $event = $this->dev_validate_stripe_signature();
-
-		// For production - uncomment this line:
-		$event = $this->validate_stripe_signature();
+	public function webhook_listener( $mode = null ): void {
+		$event = $this->validate_stripe_signature( $mode );
 
 		if ( ! $event || ! isset( $event['type'] ) ) {
 			Helper::srfm_log( 'Invalid webhook event.' );
@@ -303,24 +212,28 @@ class Stripe_Webhook {
 		}
 
 		Helper::srfm_log( 'Processing event type: ' . $event['type'] . '.' );
+		Helper::srfm_log( $event, 'Processing ectual event : ' );
 
 		switch ( $event['type'] ) {
 			case 'charge.refund.updated':
-				// Existing refund logic.
-				if ( ! isset( $event['data']['object'] ) ) {
-					Helper::srfm_log( 'Invalid webhook event.' );
+				// Handle refund webhook event.
+				$event_data = isset( $event['data'] ) && is_array( $event['data'] ) ? $event['data'] : [];
+				if ( ! isset( $event_data['object'] ) ) {
+					Helper::srfm_log( 'charge.refund.updated: Invalid webhook event - missing data object.' );
 					return;
 				}
-				$charge = $event['data']['object'];
-				$this->create_refund_record( $charge );
+				// Note: $event['data']['object'] is a Refund object, not a Charge object.
+				$refund = $event_data['object'] ?? [];
+				$this->handle_refund_record( $refund );
 				break;
 
 			case 'invoice.payment_succeeded':
-				if ( ! isset( $event['data']['object'] ) ) {
+				$event_data = isset( $event['data'] ) && is_array( $event['data'] ) ? $event['data'] : [];
+				if ( ! isset( $event_data['object'] ) ) {
 					Helper::srfm_log( 'Invalid webhook event.' );
 					return;
 				}
-				$invoice = $event['data']['object'];
+				$invoice = $event_data['object'] ?? [];
 				$this->handle_invoice_payment_succeeded( $invoice );
 				break;
 
@@ -337,62 +250,119 @@ class Stripe_Webhook {
 	}
 
 	/**
-	 * Refunds form entry payment via webhook call.
+	 * Handles refund record - both creation and cancellation via webhook call.
 	 *
-	 * @param array<string, mixed> $charge Payment charge object.
+	 * @param array<string, mixed> $refund Refund object from Stripe webhook.
 	 * @since x.x.x
 	 * @return void
 	 */
-	public function create_refund_record( array $charge ): void {
-		// Try to find payment by payment_intent first (for regular payments).
-		$payment_intent    = sanitize_text_field( $charge['payment_intent'] ?? '' );
-		$get_payment_entry = null;
-		$charge_id         = '';
+	public function handle_refund_record( array $refund ): void {
+		$refund_id = ! empty( $refund['id'] ) && is_string( $refund['id'] ) ? sanitize_text_field( $refund['id'] ) : '';
+		Helper::srfm_log( 'Processing refund: ' . $refund_id );
 
+		// Extract payment identifiers from refund object.
+		$payment_intent = ! empty( $refund['payment_intent'] ) && is_string( $refund['payment_intent'] ) ? sanitize_text_field( $refund['payment_intent'] ) : '';
+		$charge_id      = ! empty( $refund['charge'] ) && is_string( $refund['charge'] ) ? sanitize_text_field( $refund['charge'] ) : '';
+
+		Helper::srfm_log(
+			sprintf(
+				'Refund lookup info - Refund ID: %s, Payment Intent: %s, Charge ID: %s',
+				$refund_id,
+				$payment_intent ? $payment_intent : 'null',
+				$charge_id ? $charge_id : 'null'
+			)
+		);
+
+		$get_payment_entry = null;
+		$lookup_method     = '';
+
+		// Method 1: Try to find payment by payment_intent (for one-time payments).
 		if ( ! empty( $payment_intent ) ) {
+			Helper::srfm_log( 'Attempting lookup by payment_intent: ' . $payment_intent );
 			$get_payment_entry = Payments::get_by_transaction_id( $payment_intent );
+			if ( $get_payment_entry ) {
+				$lookup_method = 'payment_intent';
+				Helper::srfm_log( 'Found payment entry by payment_intent' );
+			}
 		}
 
-		// Fallback: Try to find by charge ID (for subscription payments).
-		if ( ! $get_payment_entry ) {
-			$charge_id = sanitize_text_field( $charge['charge'] ?? '' );
-
-			if ( ! empty( $charge_id ) ) {
-				$get_payment_entry = Payments::get_by_transaction_id( $charge_id );
+		// Method 2: Try to find by charge ID (for subscription payments and one-time fallback).
+		if ( ! $get_payment_entry && ! empty( $charge_id ) ) {
+			Helper::srfm_log( 'Attempting lookup by charge_id: ' . $charge_id );
+			$get_payment_entry = Payments::get_by_transaction_id( $charge_id );
+			if ( $get_payment_entry ) {
+				$lookup_method = 'charge_id';
+				Helper::srfm_log( 'Found payment entry by charge_id' );
 			}
+		}
+
+		// Method 3: Try to find in payment_data for one-time payments that might have charge stored there.
+		if ( ! $get_payment_entry && ! empty( $charge_id ) ) {
+			Helper::srfm_log( 'Attempting lookup in payment_data by charge_id' );
+			// This would require a custom query or storing charge_id differently.
+			// For now, log that we're trying this method.
 		}
 
 		// Final check: If still not found, log detailed error and return.
 		if ( ! $get_payment_entry ) {
 			Helper::srfm_log(
 				sprintf(
-					'Could not find payment entry for refund. Refund ID: %s, Payment Intent: %s, Charge: %s, Chare All data: %s',
-					$charge['id'] ?? 'unknown',
-					$payment_intent ?: 'none',
-					$charge_id ?: 'none',
-					print_r( $charge, true )
+					'REFUND FAILED: Could not find payment entry. Refund ID: %s, Payment Intent: %s, Charge ID: %s. Full refund object: %s',
+					$refund_id,
+					$payment_intent ? $payment_intent : 'null',
+					$charge_id ? $charge_id : 'null',
+					wp_json_encode( $refund )
 				)
 			);
 			return;
 		}
 
-		$payment_entry_id = $get_payment_entry['id'] ?? 0;
-		$refund_amount    = is_numeric( $charge['amount'] ?? 0 ) ? (int) $charge['amount'] : 0;
+		// Extract refund details.
+		$payment_entry_id = ! empty( $get_payment_entry['id'] ) && is_numeric( $get_payment_entry['id'] ) ? intval( $get_payment_entry['id'] ) : 0;
+		$refund_amount    = isset( $refund['amount'] ) && ( is_numeric( $refund['amount'] ) || is_float( $refund['amount'] ) || is_string( $refund['amount'] ) ) ? $refund['amount'] : 0;
+		$currency         = ! empty( $refund['currency'] ) && is_string( $refund['currency'] ) ? sanitize_text_field( strtolower( $refund['currency'] ) ) : 'usd';
+		$refund_status    = ! empty( $refund['status'] ) && is_string( $refund['status'] ) ? sanitize_text_field( $refund['status'] ) : 'unknown';
 
-		$currency           = is_string( $charge['currency'] ?? '' ) ? $charge['currency'] : 'usd';
-		$update_refund_data = $this->update_refund_data( $payment_entry_id, $charge, $refund_amount, $currency, 'webhook' );
+		Helper::srfm_log(
+			sprintf(
+				'Processing refund for payment entry ID: %d, Amount: %s %s, Status: %s',
+				$payment_entry_id,
+				Stripe_Helper::amount_from_stripe_format( $refund_amount, $currency ),
+				strtoupper( $currency ),
+				$refund_status
+			)
+		);
+
+		// Route based on refund status.
+		if ( 'canceled' === $refund_status ) {
+			// Handle refund cancellation.
+			Helper::srfm_log( 'Refund status is canceled - processing refund cancellation.' );
+			$this->process_refund_cancellation( $payment_entry_id, $refund, $currency, $lookup_method );
+			return;
+		}
+
+		// Handle refund creation (succeeded status).
+		if ( 'succeeded' !== $refund_status ) {
+			Helper::srfm_log( 'Unexpected refund status: ' . $refund_status . '. Skipping processing.' );
+			return;
+		}
+
+		// Update refund data in database.
+		$update_refund_data = $this->update_refund_data( $payment_entry_id, $refund, $refund_amount, $currency, 'webhook' );
 
 		if ( ! $update_refund_data ) {
-			Helper::srfm_log( 'Failed to update refund data for payment entry ID: ' . $payment_entry_id . '.' );
+			Helper::srfm_log( 'REFUND FAILED: Failed to update refund data for payment entry ID: ' . $payment_entry_id );
 			return;
 		}
 
 		Helper::srfm_log(
 			sprintf(
-				'Payment refunded successfully. Amount: %s for entry ID: %s (via %s).',
-				$refund_amount,
+				'REFUND SUCCESS: Payment refunded successfully. Refund ID: %s, Amount: %s %s, Payment Entry ID: %d (found via %s)',
+				$refund_id,
+				Stripe_Helper::amount_from_stripe_format( $refund_amount, $currency ),
+				$currency,
 				$payment_entry_id,
-				! empty( $payment_intent ) ? 'payment_intent' : 'charge_id'
+				$lookup_method
 			)
 		);
 	}
@@ -405,33 +375,49 @@ class Stripe_Webhook {
 	 * @return void
 	 */
 	public function handle_invoice_payment_succeeded( array $invoice ): void {
-		Helper::srfm_log( 'Processing invoice.payment_succeeded webhook.' );
+		$invoice_id = $invoice['id'] ?? 'unknown';
+		Helper::srfm_log( 'Processing invoice.payment_succeeded webhook. Invoice ID: ' . $invoice_id . '.' );
 
 		// Validate billing reason is subscription cycle.
-		$billing_reason = sanitize_text_field( $invoice['billing_reason'] ?? '' );
+		$billing_reason = ! empty( $invoice['billing_reason'] ) && is_string( $invoice['billing_reason'] ) ? sanitize_text_field( $invoice['billing_reason'] ) : '';
 		if ( 'subscription_cycle' !== $billing_reason ) {
 			Helper::srfm_log( 'Invoice payment succeeded - not a subscription cycle payment. Billing reason: ' . $billing_reason . '.' );
 			return;
 		}
 
-		// Extract subscription ID.
-		$subscription_id = sanitize_text_field( $invoice['subscription'] ?? '' );
+		Helper::srfm_log( 'Billing reason validated: subscription_cycle.' );
+
+		// Extract subscription ID using backward-compatible helper.
+		$subscription_id = $this->extract_subscription_id_from_invoice( $invoice );
 		if ( empty( $subscription_id ) ) {
-			Helper::srfm_log( 'Invoice payment succeeded - missing subscription ID.' );
+			Helper::srfm_log( 'Invoice payment succeeded - missing subscription ID. Invoice ID: ' . $invoice_id . '.' );
 			return;
 		}
+
+		Helper::srfm_log( 'Subscription ID extracted successfully: ' . $subscription_id . '.' );
 
 		// Find subscription record in database.
 		$subscription_record = Payments::get_main_subscription_record( $subscription_id );
 		if ( ! $subscription_record ) {
-			Helper::srfm_log( 'Invoice payment succeeded - subscription not found: ' . $subscription_id . '.' );
+			Helper::srfm_log( 'Invoice payment succeeded - subscription not found in database: ' . $subscription_id . '.' );
 			return;
 		}
 
-		// Extract invoice data.
-		$charge_id   = sanitize_text_field( $invoice['charge'] ?? '' );
-		$amount_paid = intval( $invoice['amount_paid'] ?? 0 );
-		$currency    = sanitize_text_field( strtoupper( $invoice['currency'] ?? 'USD' ) );
+		Helper::srfm_log( 'Subscription record found in database. Record ID: ' . ( ! empty( $subscription_record['id'] ) && is_numeric( $subscription_record['id'] ) ? intval( $subscription_record['id'] ) : 'unknown' ) . '.' );
+
+		// Extract invoice data using backward-compatible helpers.
+		$charge_id   = $this->extract_charge_id_from_invoice( $invoice );
+		$amount_paid = isset( $invoice['amount_paid'] ) && ( is_numeric( $invoice['amount_paid'] ) || is_float( $invoice['amount_paid'] ) || is_string( $invoice['amount_paid'] ) ) ? $invoice['amount_paid'] : 0;
+		$currency    = ! empty( $invoice['currency'] ) && is_string( $invoice['currency'] ) ? sanitize_text_field( strtolower( $invoice['currency'] ) ) : 'usd';
+
+		Helper::srfm_log(
+			sprintf(
+				'Invoice details - Charge ID: %s, Amount: %s %s.',
+				$charge_id ? $charge_id : 'empty',
+				Stripe_Helper::amount_from_stripe_format( $amount_paid, $currency ),
+				$currency
+			)
+		);
 
 		// Check if this payment was already processed.
 		if ( ! empty( $charge_id ) ) {
@@ -443,17 +429,31 @@ class Stripe_Webhook {
 		}
 
 		// Extract block_id from line items metadata.
-		$block_id = '';
-		if ( isset( $invoice['lines']['data'][0]['metadata']['block_id'] ) ) {
-			$block_id = sanitize_text_field( $invoice['lines']['data'][0]['metadata']['block_id'] );
-		}
+		$block_id            = '';
+		$invoice_lines       = isset( $invoice['lines'] ) && is_array( $invoice['lines'] ) ? $invoice['lines'] : [];
+		$invoice_line_data   = isset( $invoice_lines['data'] ) && is_array( $invoice_lines['data'] ) ? $invoice_lines['data'] : [];
+		$invoice_line_data_0 = isset( $invoice_line_data[0] ) && is_array( $invoice_line_data[0] ) ? $invoice_line_data[0] : [];
+		$metadata            = isset( $invoice_line_data_0['metadata'] ) && is_array( $invoice_line_data_0['metadata'] ) ? $invoice_line_data_0['metadata'] : [];
+		$block_id            = ! empty( $metadata['block_id'] ) && is_string( $metadata['block_id'] ) ? sanitize_text_field( $metadata['block_id'] ) : '';
+
+		Helper::srfm_log( 'Block ID from metadata: ' . ( $block_id ? $block_id : 'not found' ) . '.' );
 
 		// Check if this is the initial payment or a renewal.
 		$is_initial_payment = empty( $subscription_record['transaction_id'] ?? '' );
 
+		Helper::srfm_log(
+			sprintf(
+				'Payment type detected: %s. Subscription record has transaction_id: %s.',
+				$is_initial_payment ? 'Initial Payment' : 'Renewal Payment',
+				! empty( $subscription_record['transaction_id'] ?? '' ) ? 'YES' : 'NO'
+			)
+		);
+
 		if ( $is_initial_payment ) {
+			Helper::srfm_log( 'Processing as initial subscription payment...' );
 			$this->process_initial_subscription_payment( $subscription_record, $invoice, $charge_id );
 		} else {
+			Helper::srfm_log( 'Processing as subscription renewal payment...' );
 			$this->process_subscription_renewal_payment( $subscription_record, $invoice, $charge_id, $block_id );
 		}
 
@@ -462,22 +462,10 @@ class Stripe_Webhook {
 				'Subscription payment processed successfully. Type: %s, Subscription ID: %s, Amount: %s %s.',
 				$is_initial_payment ? 'Initial' : 'Renewal',
 				$subscription_id,
-				number_format( $amount_paid / 100, 2 ),
+				Stripe_Helper::amount_from_stripe_format( $amount_paid, $currency ),
 				$currency
 			)
 		);
-	}
-
-	/**
-	 * Calculate total refunds for a payment.
-	 *
-	 * @param int $payment_id Payment ID.
-	 * @since x.x.x
-	 * @return float Total refunded amount.
-	 */
-	public function calculate_total_refunds( int $payment_id ): float {
-		// Use the new refunded_amount column for direct access.
-		return Payments::get_refunded_amount( $payment_id );
 	}
 
 	/**
@@ -485,13 +473,13 @@ class Stripe_Webhook {
 	 *
 	 * @param int                  $payment_id Payment ID.
 	 * @param array<string, mixed> $refund_response Refund response data.
-	 * @param int                  $refund_amount Refund amount in cents.
+	 * @param int|float|string     $refund_amount Refund amount in cents.
 	 * @param string               $currency Currency code.
 	 * @param string|null          $payment Payment method.
 	 * @since x.x.x
 	 * @return bool Whether the update was successful.
 	 */
-	public function update_refund_data( int $payment_id, array $refund_response, int $refund_amount, string $currency, ?string $payment = null ): bool {
+	public function update_refund_data( int $payment_id, array $refund_response, int|float|string $refund_amount, string $currency, ?string $payment = null ): bool {
 		if ( empty( $payment_id ) || empty( $refund_response ) ) {
 			return false;
 		}
@@ -510,14 +498,14 @@ class Stripe_Webhook {
 
 		// Prepare refund data for payment_data column.
 		$refund_data = [
-			'refund_id'      => sanitize_text_field( $refund_response['id'] ?? '' ),
+			'refund_id'      => ! empty( $refund_response['id'] ) && is_string( $refund_response['id'] ) ? sanitize_text_field( $refund_response['id'] ) : '',
 			'amount'         => absint( $refund_amount ),
 			'currency'       => sanitize_text_field( strtoupper( $currency ) ),
-			'status'         => sanitize_text_field( $refund_response['status'] ?? 'processed' ),
+			'status'         => ! empty( $refund_response['status'] ) && is_string( $refund_response['status'] ) ? sanitize_text_field( $refund_response['status'] ) : 'processed',
 			'created'        => time(),
-			'reason'         => sanitize_text_field( $refund_response['reason'] ?? 'requested_by_customer' ),
-			'description'    => sanitize_text_field( $refund_response['description'] ?? '' ),
-			'receipt_number' => sanitize_text_field( $refund_response['receipt_number'] ?? '' ),
+			'reason'         => ! empty( $refund_response['reason'] ) && is_string( $refund_response['reason'] ) ? sanitize_text_field( $refund_response['reason'] ) : 'requested_by_customer',
+			'description'    => ! empty( $refund_response['description'] ) && is_string( $refund_response['description'] ) ? sanitize_text_field( $refund_response['description'] ) : '',
+			'receipt_number' => ! empty( $refund_response['receipt_number'] ) && is_string( $refund_response['receipt_number'] ) ? sanitize_text_field( $refund_response['receipt_number'] ) : '',
 			'refunded_by'    => 'stripe_dashboard',
 			'refunded_at'    => gmdate( 'Y-m-d H:i:s' ),
 		];
@@ -525,7 +513,7 @@ class Stripe_Webhook {
 		// Validate refund amount to prevent over-refunding.
 		$original_amount    = floatval( $payment['total_amount'] );
 		$existing_refunds   = floatval( $payment['refunded_amount'] ?? 0 ); // Use column directly.
-		$new_refund_amount  = $refund_amount / 100; // Convert cents to dollars.
+		$new_refund_amount  = Stripe_Helper::amount_from_stripe_format( $refund_amount, $currency );
 		$total_after_refund = $existing_refunds + $new_refund_amount;
 
 		if ( $total_after_refund > $original_amount ) {
@@ -557,23 +545,32 @@ class Stripe_Webhook {
 
 		// Update payment status and log.
 		$current_logs   = Helper::get_array_value( $payment['log'] );
-		$refund_type    = $total_after_refund >= $original_amount ? 'Full' : 'Partial';
+		$refund_type    = $total_after_refund >= $original_amount ? __( 'Full', 'sureforms' ) : __( 'Partial', 'sureforms' );
 		$new_log        = [
-			'title'     => sprintf( '%s Payment Refund', $refund_type ),
-			'timestamp' => time(),
-			'messages'  => [
-				sprintf( 'Refund ID: %s', $refund_response['id'] ?? 'N/A' ),
-				sprintf( 'Refund Amount: %s %s', number_format( $refund_amount / 100, 2 ), strtoupper( $currency ) ),
+			// translators: %s: Refund type (e.g., Full, Partial).
+			'title'      => sprintf( __( '%s Payment Refund', 'sureforms' ), $refund_type ),
+			'created_at' => current_time( 'mysql' ),
+			'messages'   => [
+				// translators: %s: Refund ID.
+				sprintf( __( 'Refund ID: %s', 'sureforms' ), ! empty( $refund_response['id'] ) && is_string( $refund_response['id'] ) ? sanitize_text_field( $refund_response['id'] ) : 'N/A' ),
+				// translators: %s: Payment gateway name (e.g., Stripe).
+				sprintf( __( 'Payment Gateway: %s', 'sureforms' ), 'Stripe' ),
+				// translators: 1: Refund amount, 2: Currency.
+				sprintf( __( 'Refund Amount: %1$s %2$s', 'sureforms' ), number_format( Stripe_Helper::amount_from_stripe_format( $refund_amount, $currency ), 2 ), strtoupper( $currency ) ),
 				sprintf(
-					'Total Refunded: %s %s of %s %s',
+					/* translators: 1: Total refunded amount, 2: Currency, 3: Original amount, 4: Currency */
+					__( 'Total Refunded: %1$s %2$s of %3$s %4$s', 'sureforms' ),
 					number_format( $total_after_refund, 2 ),
 					strtoupper( $currency ),
 					number_format( $original_amount, 2 ),
 					strtoupper( $currency )
 				),
-				sprintf( 'Refund Status: %s', $refund_response['status'] ?? 'processed' ),
-				sprintf( 'Payment Status: %s', ucfirst( str_replace( '_', ' ', $payment_status ) ) ),
-				sprintf( 'Refunded by: %s', wp_get_current_user()->display_name ),
+				// translators: %s: Refund status (e.g., succeeded, failed).
+				sprintf( __( 'Refund Status: %s', 'sureforms' ), ! empty( $refund_response['status'] ) && is_string( $refund_response['status'] ) ? sanitize_text_field( $refund_response['status'] ) : 'processed' ),
+				// translators: %s: Payment status (e.g., refunded, partially refunded).
+				sprintf( __( 'Payment Status: %s', 'sureforms' ), ucfirst( str_replace( '_', ' ', $payment_status ) ) ),
+				// translators: %s: Refunded by method (e.g., Webhook).
+				sprintf( __( 'Refunded by: %s', 'sureforms' ), __( 'Webhook', 'sureforms' ) ),
 			],
 		];
 		$current_logs[] = $new_log;
@@ -603,15 +600,250 @@ class Stripe_Webhook {
 
 		Helper::srfm_log(
 			sprintf(
+				/* translators: %d: Payment ID, %s: Refund ID, %s: Amount, %s: Currency */
 				'Refund processed successfully. Payment ID: %d, Refund ID: %s, Amount: %s %s.',
 				$payment_id,
 				$refund_data['refund_id'],
-				number_format( $refund_amount / 100, 2 ),
+				Stripe_Helper::amount_from_stripe_format( $refund_amount, $currency ),
 				$currency
 			)
 		);
 
 		return true;
+	}
+
+	/**
+	 * Process refund cancellation - reverses a previously processed refund.
+	 *
+	 * @param int                  $payment_id Payment ID.
+	 * @param array<string, mixed> $refund Refund object from Stripe webhook.
+	 * @param string               $currency Currency code.
+	 * @param string               $lookup_method How the payment was found.
+	 * @since x.x.x
+	 * @return void
+	 */
+	private function process_refund_cancellation( int $payment_id, array $refund, string $currency, string $lookup_method ): void {
+		$refund_id = ! empty( $refund['id'] ) && is_string( $refund['id'] ) ? sanitize_text_field( $refund['id'] ) : '';
+
+		Helper::srfm_log( 'Processing refund cancellation for refund ID: ' . $refund_id );
+
+		// Get payment record.
+		$payment = Payments::get( $payment_id );
+		if ( ! $payment ) {
+			Helper::srfm_log( 'REFUND CANCELLATION FAILED: Payment record not found for ID: ' . $payment_id );
+			return;
+		}
+
+		// Get payment_data and check if refund exists.
+		$payment_data = Helper::get_array_value( $payment['payment_data'] ?? [] );
+		$refunds      = isset( $payment_data['refunds'] ) && is_array( $payment_data['refunds'] ) ? $payment_data['refunds'] : [];
+
+		// Check if the refund exists in the payment data.
+		if ( ! isset( $refunds[ $refund_id ] ) ) {
+			Helper::srfm_log(
+				sprintf(
+					'REFUND CANCELLATION SKIPPED: Refund ID %s not found in payment data for payment ID %d. It may have already been canceled or never existed.',
+					$refund_id,
+					$payment_id
+				)
+			);
+			return;
+		}
+
+		// Get the refund data to extract the amount and currency.
+		$existing_refund              = $refunds[ $refund_id ];
+		$canceled_refund_amount_cents = isset( $existing_refund['amount'] ) && is_numeric( $existing_refund['amount'] ) ? $existing_refund['amount'] : 0;
+		$refund_currency              = ! empty( $existing_refund['currency'] ) && is_string( $existing_refund['currency'] ) ? sanitize_text_field( strtolower( $existing_refund['currency'] ) ) : $currency;
+
+		if ( $canceled_refund_amount_cents <= 0 ) {
+			Helper::srfm_log( 'REFUND CANCELLATION FAILED: Invalid refund amount in existing refund data.' );
+			return;
+		}
+
+		// Convert from Stripe format (cents) to decimal format (handles zero-decimal currencies).
+		$canceled_refund_amount = Stripe_Helper::amount_from_stripe_format( $canceled_refund_amount_cents, $refund_currency );
+
+		// Remove the refund from payment_data.
+		unset( $refunds[ $refund_id ] );
+		$payment_data['refunds'] = $refunds;
+
+		// Update payment_data in database.
+		$payment_data_update = Payments::update(
+			$payment_id,
+			[
+				'payment_data' => $payment_data,
+			]
+		);
+
+		if ( false === $payment_data_update ) {
+			Helper::srfm_log( 'REFUND CANCELLATION FAILED: Could not update payment_data for payment ID: ' . $payment_id );
+			return;
+		}
+
+		// Subtract the refund amount from refunded_amount column.
+		$current_refunded_amount = floatval( $payment['refunded_amount'] ?? 0 );
+		$new_refunded_amount     = max( 0, $current_refunded_amount - $canceled_refund_amount );
+
+		$refund_amount_update = Payments::update(
+			$payment_id,
+			[
+				'refunded_amount' => $new_refunded_amount,
+			]
+		);
+
+		if ( false === $refund_amount_update ) {
+			Helper::srfm_log( 'REFUND CANCELLATION FAILED: Could not update refunded_amount for payment ID: ' . $payment_id );
+			return;
+		}
+
+		// Recalculate payment status based on new refunded amount.
+		$original_amount = floatval( $payment['total_amount'] );
+		$payment_status  = 'succeeded'; // Default.
+
+		if ( $new_refunded_amount >= $original_amount ) {
+			$payment_status = 'refunded'; // Fully refunded.
+		} elseif ( $new_refunded_amount > 0 ) {
+			$payment_status = 'partially_refunded'; // Partially refunded.
+		}
+
+		// Extract failure reason from refund object.
+		$failure_reason = ! empty( $refund['failure_reason'] ) && is_string( $refund['failure_reason'] ) ? sanitize_text_field( $refund['failure_reason'] ) : 'unknown';
+
+		// Add log entry for the cancellation.
+		$current_logs = Helper::get_array_value( $payment['log'] );
+		$new_log      = [
+			'title'      => __( 'Refund Canceled', 'sureforms' ),
+			'created_at' => current_time( 'mysql' ),
+			'messages'   => [
+				// translators: %s: Refund ID.
+				sprintf( __( 'Refund ID: %s', 'sureforms' ), $refund_id ),
+				// translators: %s: Payment gateway name (e.g., Stripe).
+				sprintf( __( 'Payment Gateway: %s', 'sureforms' ), 'Stripe' ),
+				// translators: 1: Canceled amount, 2: Currency.
+				sprintf( __( 'Canceled Refund Amount: %1$s %2$s', 'sureforms' ), number_format( $canceled_refund_amount, 2 ), strtoupper( $refund_currency ) ),
+				sprintf(
+					/* translators: 1: Remaining refunded amount, 2: Currency, 3: Original amount, 4: Currency */
+					__( 'Remaining Refunded: %1$s %2$s of %3$s %4$s', 'sureforms' ),
+					number_format( $new_refunded_amount, 2 ),
+					strtoupper( $refund_currency ),
+					number_format( $original_amount, 2 ),
+					strtoupper( $refund_currency )
+				),
+				// translators: %s: Failure reason.
+				sprintf( __( 'Cancellation Reason: %s', 'sureforms' ), ucfirst( str_replace( '_', ' ', $failure_reason ) ) ),
+				// translators: %s: Payment status (e.g., succeeded, partially refunded).
+				sprintf( __( 'Payment Status: %s', 'sureforms' ), ucfirst( str_replace( '_', ' ', $payment_status ) ) ),
+				// translators: %s: Canceled by method (e.g., Webhook).
+				sprintf( __( 'Canceled by: %s', 'sureforms' ), __( 'Webhook', 'sureforms' ) ),
+			],
+		];
+
+		$current_logs[] = $new_log;
+
+		// Update payment status and log.
+		$status_update = Payments::update(
+			$payment_id,
+			[
+				'status' => $payment_status,
+				'log'    => $current_logs,
+			]
+		);
+
+		if ( false === $status_update ) {
+			Helper::srfm_log( 'REFUND CANCELLATION: Updated amounts but failed to update payment status and log for payment ID: ' . $payment_id );
+			return;
+		}
+
+		Helper::srfm_log(
+			sprintf(
+				'REFUND CANCELLATION SUCCESS: Refund ID: %s, Canceled Amount: %s %s, Remaining Refunded: %s %s, Payment Status: %s, Payment ID: %d (found via %s)',
+				$refund_id,
+				number_format( $canceled_refund_amount, 2 ),
+				strtoupper( $refund_currency ),
+				number_format( $new_refunded_amount, 2 ),
+				strtoupper( $refund_currency ),
+				$payment_status,
+				$payment_id,
+				$lookup_method
+			)
+		);
+	}
+
+	/**
+	 * Extracts subscription ID from invoice object with backward compatibility.
+	 * Handles both old and new Stripe API structures.
+	 *
+	 * @param array<string, mixed> $invoice Invoice object from Stripe.
+	 * @since x.x.x
+	 * @return string Subscription ID or empty string if not found.
+	 */
+	private function extract_subscription_id_from_invoice( array $invoice ): string {
+		// Method 1: Parent subscription_details (new API structure - 2025+).
+		$subscription_parent  = isset( $invoice['parent'] ) && is_array( $invoice['parent'] ) ? $invoice['parent'] : [];
+		$subscription_details = isset( $subscription_parent['subscription_details'] ) && is_array( $subscription_parent['subscription_details'] ) ? $subscription_parent['subscription_details'] : [];
+		$subscription         = isset( $subscription_details['subscription'] ) && is_string( $subscription_details['subscription'] ) ? sanitize_text_field( $subscription_details['subscription'] ) : '';
+		if ( ! empty( $subscription ) ) {
+			Helper::srfm_log( 'Subscription ID found at: $invoice[\'parent\'][\'subscription_details\'][\'subscription\'].' );
+			return $subscription;
+		}
+
+		// Not found - log invoice structure for debugging.
+		Helper::srfm_log(
+			sprintf(
+				'Subscription ID not found in invoice. Invoice ID: %s, Keys present: %s.',
+				! empty( $invoice['id'] ) && is_string( $invoice['id'] ) ? sanitize_text_field( $invoice['id'] ) : 'unknown',
+				implode( ', ', array_keys( $invoice ) )
+			)
+		);
+
+		return '';
+	}
+
+	/**
+	 * Extracts charge ID from invoice object with backward compatibility.
+	 * Falls back to payment_intent, fetching from API, or invoice ID if charge is not available.
+	 *
+	 * @param array<string, mixed> $invoice Invoice object from Stripe.
+	 * @since x.x.x
+	 * @return string Charge ID, payment_intent, or invoice ID.
+	 */
+	private function extract_charge_id_from_invoice( array $invoice ): string {
+		// Method 1: Direct charge field (old API structure and most common).
+		if ( ! empty( $invoice['charge'] ) ) {
+			Helper::srfm_log( 'Charge ID found at: $invoice[\'charge\'].' );
+			return ! empty( $invoice['charge'] ) && is_string( $invoice['charge'] ) ? sanitize_text_field( $invoice['charge'] ) : '';
+		}
+
+		// Method 2: Payment intent (alternative in newer API or pending payments).
+		if ( ! empty( $invoice['payment_intent'] ) ) {
+			Helper::srfm_log( 'Charge ID not found, using payment_intent as transaction ID: $invoice[\'payment_intent\'].' );
+			return ! empty( $invoice['payment_intent'] ) && is_string( $invoice['payment_intent'] ) ? sanitize_text_field( $invoice['payment_intent'] ) : '';
+		}
+
+		// Method 3: Fetch invoice from Stripe API to get charge ID.
+		if ( ! empty( $invoice['id'] ) ) {
+			$invoice_id = ! empty( $invoice['id'] ) && is_string( $invoice['id'] ) ? sanitize_text_field( $invoice['id'] ) : '';
+			Helper::srfm_log( 'Attempting to fetch charge ID from Stripe API using invoice ID: ' . $invoice_id . '.' );
+
+			$api_response = Stripe_Helper::stripe_api_request( 'invoices', 'GET', [], $invoice_id, [ 'mode' => $this->mode ] );
+
+			if ( $api_response['success'] && ! empty( $api_response['data']['charge'] ) ) {
+				$charge_id = sanitize_text_field( $api_response['data']['charge'] );
+				Helper::srfm_log( 'Charge ID successfully retrieved from Stripe API: ' . $charge_id . '.' );
+				return $charge_id;
+			}
+
+			Helper::srfm_log( 'Failed to retrieve charge ID from Stripe API. Response: ' . wp_json_encode( $api_response ) . '.' );
+		}
+
+		// Method 4: Invoice ID as absolute last resort (for tracking purposes).
+		if ( ! empty( $invoice['id'] ) ) {
+			Helper::srfm_log( 'WARNING: Using invoice ID as transaction ID (last resort): $invoice[\'id\'].' );
+			return ! empty( $invoice['id'] ) && is_string( $invoice['id'] ) ? sanitize_text_field( $invoice['id'] ) : '';
+		}
+
+		Helper::srfm_log( 'CRITICAL: No transaction identifier found in invoice object.' );
+		return '';
 	}
 
 	/**
@@ -624,7 +856,7 @@ class Stripe_Webhook {
 	 * @return void
 	 */
 	private function process_initial_subscription_payment( array $subscription_record, array $invoice, string $charge_id ): void {
-		$subscription_id = intval( $subscription_record['id'] ?? 0 );
+		$subscription_id = ! empty( $subscription_record['id'] ) && is_numeric( $subscription_record['id'] ) ? intval( $subscription_record['id'] ) : 0;
 
 		if ( ! $subscription_id ) {
 			Helper::srfm_log( 'Invalid subscription record for initial payment processing.' );
@@ -637,17 +869,36 @@ class Stripe_Webhook {
 			'status'         => 'succeeded',
 		];
 
+		// Generate srfm_txn_id if it's not already set.
+		$current_srfm_txn_id = ! empty( $subscription_record['srfm_txn_id'] ) && is_string( $subscription_record['srfm_txn_id'] ) ? sanitize_text_field( $subscription_record['srfm_txn_id'] ) : '';
+		if ( empty( $current_srfm_txn_id ) ) {
+			$unique_payment_id          = Stripe_Helper::generate_unique_payment_id( $subscription_id );
+			$update_data['srfm_txn_id'] = $unique_payment_id;
+			Helper::srfm_log( 'Generated srfm_txn_id for initial subscription payment: ' . $unique_payment_id . '.' );
+		}
+
+		$currency       = isset( $invoice['currency'] ) && is_string( $invoice['currency'] ) ? sanitize_text_field( strtolower( $invoice['currency'] ) ) : 'usd';
+		$invoice_amount = isset( $invoice['amount_paid'] ) && ( is_numeric( $invoice['amount_paid'] ) || is_float( $invoice['amount_paid'] ) || is_string( $invoice['amount_paid'] ) ) ? $invoice['amount_paid'] : 0;
+		$invoice_id     = isset( $invoice['id'] ) && is_string( $invoice['id'] ) ? sanitize_text_field( $invoice['id'] ) : '';
+
 		// Add log entry for initial payment success.
-		$current_logs       = Helper::get_array_value( $subscription_record['log'] ?? [] );
+		$current_logs       = isset( $subscription_record['log'] ) && is_array( $subscription_record['log'] ) ? $subscription_record['log'] : [];
 		$new_log            = [
-			'title'     => 'Initial Subscription Payment Succeeded',
-			'timestamp' => time(),
-			'messages'  => [
-				sprintf( 'Charge ID: %s', $charge_id ),
-				sprintf( 'Invoice ID: %s', sanitize_text_field( $invoice['id'] ?? '' ) ),
-				sprintf( 'Amount: %s %s', number_format( intval( $invoice['amount_paid'] ?? 0 ) / 100, 2 ), strtoupper( $invoice['currency'] ?? 'USD' ) ),
-				'Payment Status: Succeeded',
-				'Subscription Status: Active',
+			'title'      => __( 'Initial Subscription Payment Succeeded', 'sureforms' ),
+			'created_at' => current_time( 'mysql' ),
+			'messages'   => [
+				/* translators: %s: Charge ID */
+				sprintf( __( 'Charge ID: %s', 'sureforms' ), $charge_id ),
+				/* translators: %s: Invoice ID */
+				sprintf( __( 'Invoice ID: %s', 'sureforms' ), $invoice_id ),
+				sprintf(
+					/* translators: 1: Amount, 2: Currency */
+					__( 'Amount: %1$s %2$s', 'sureforms' ),
+					number_format( Stripe_Helper::amount_from_stripe_format( $invoice_amount, $currency ), 2 ),
+					strtoupper( $currency )
+				),
+				__( 'Payment Status: Succeeded', 'sureforms' ),
+				__( 'Subscription Status: Active', 'sureforms' ),
 			],
 		];
 		$current_logs[]     = $new_log;
@@ -673,48 +924,95 @@ class Stripe_Webhook {
 	 * @return void
 	 */
 	private function process_subscription_renewal_payment( array $subscription_record, array $invoice, string $charge_id, string $block_id ): void {
-		// Prepare renewal payment data.
-		$payment_data = [
-			'form_id'         => intval( $subscription_record['form_id'] ?? 0 ),
-			'block_id'        => $block_id ? $block_id : sanitize_text_field( $subscription_record['block_id'] ?? '' ),
-			'status'          => 'succeeded',
-			'total_amount'    => number_format( intval( $invoice['amount_paid'] ?? 0 ) / 100, 8 ),
-			'currency'        => sanitize_text_field( strtoupper( $invoice['currency'] ?? 'USD' ) ),
-			'entry_id'        => intval( $subscription_record['entry_id'] ?? 0 ),
-			'type'            => 'payment',
-			'transaction_id'  => $charge_id,
-			'gateway'         => 'stripe',
-			'mode'            => $this->mode,
-			'subscription_id' => sanitize_text_field( $subscription_record['subscription_id'] ?? '' ),
-			'customer_email'  => sanitize_text_field( $invoice['customer_email'] ?? '' ),
-			'customer_name'   => sanitize_text_field( $invoice['customer_name'] ?? '' ),
-			'payment_data'    => [
-				'invoice_id'     => sanitize_text_field( $invoice['id'] ?? '' ),
-				'payment_intent' => sanitize_text_field( $invoice['payment_intent'] ?? '' ),
-				'billing_reason' => sanitize_text_field( $invoice['billing_reason'] ?? '' ),
-				'period_start'   => intval( $invoice['period_start'] ?? 0 ),
-				'period_end'     => intval( $invoice['period_end'] ?? 0 ),
-				'amount_due'     => intval( $invoice['amount_due'] ?? 0 ),
-				'amount_paid'    => intval( $invoice['amount_paid'] ?? 0 ),
-				'created'        => intval( $invoice['created'] ?? 0 ),
-			],
-			'log'             => [
-				[
-					'title'     => 'Subscription Renewal Payment',
-					'timestamp' => time(),
-					'messages'  => [
-						sprintf( 'Charge ID: %s', $charge_id ),
-						sprintf( 'Invoice ID: %s', sanitize_text_field( $invoice['id'] ?? '' ) ),
-						sprintf( 'Amount: %s %s', number_format( intval( $invoice['amount_paid'] ?? 0 ) / 100, 2 ), strtoupper( $invoice['currency'] ?? 'USD' ) ),
-						'Payment Status: Succeeded',
-						'Type: Subscription Renewal',
-					],
+		$customer_id    = ! empty( $subscription_record['customer_id'] ) && is_string( $subscription_record['customer_id'] ) ? sanitize_text_field( $subscription_record['customer_id'] ) : '';
+		$customer_email = ! empty( $subscription_record['customer_email'] ) && is_string( $subscription_record['customer_email'] ) ? sanitize_email( $subscription_record['customer_email'] ) : '';
+		$customer_name  = ! empty( $subscription_record['customer_name'] ) && is_string( $subscription_record['customer_name'] ) ? sanitize_text_field( $subscription_record['customer_name'] ) : '';
+
+		$invoice_amount = isset( $invoice['amount_paid'] ) && ( is_numeric( $invoice['amount_paid'] ) || is_float( $invoice['amount_paid'] ) || is_string( $invoice['amount_paid'] ) ) ? $invoice['amount_paid'] : 0;
+		$currency       = isset( $invoice['currency'] ) && is_string( $invoice['currency'] ) ? sanitize_text_field( strtolower( $invoice['currency'] ) ) : 'usd';
+		$amount_paid    = Stripe_Helper::amount_from_stripe_format( $invoice_amount, $currency );
+
+		$block_id = empty( $block_id ) || ! is_string( $block_id ) ? '' : $block_id;
+		$block_id = empty( $block_id ) && ! empty( $subscription_record['block_id'] ) && is_string( $subscription_record['block_id'] ) ? sanitize_text_field( $subscription_record['block_id'] ) : '';
+
+		$form_id  = ! empty( $subscription_record['form_id'] ) && is_numeric( $subscription_record['form_id'] ) ? intval( $subscription_record['form_id'] ) : 0;
+		$entry_id = ! empty( $subscription_record['entry_id'] ) && is_numeric( $subscription_record['entry_id'] ) ? intval( $subscription_record['entry_id'] ) : 0;
+
+		$subscription_id = ! empty( $subscription_record['subscription_id'] ) && is_string( $subscription_record['subscription_id'] ) ? $subscription_record['subscription_id'] : '';
+
+		$invoice_id     = ! empty( $invoice['id'] ) && is_string( $invoice['id'] ) ? sanitize_text_field( $invoice['id'] ) : '';
+		$payment_intent = ! empty( $invoice['payment_intent'] ) && is_string( $invoice['payment_intent'] ) ? sanitize_text_field( $invoice['payment_intent'] ) : '';
+		$billing_reason = ! empty( $invoice['billing_reason'] ) && is_string( $invoice['billing_reason'] ) ? sanitize_text_field( $invoice['billing_reason'] ) : '';
+
+		$logs = [
+			[
+				'title'      => __( 'Subscription Charge Payment', 'sureforms' ),
+				'created_at' => current_time( 'mysql' ),
+				'messages'   => [
+					/* translators: %s: Charge ID */
+					sprintf( __( 'Transaction ID: %s', 'sureforms' ), $charge_id ),
+					/* translators: %s: Payment Gateway */
+					sprintf( __( 'Payment Gateway: %s', 'sureforms' ), 'Stripe' ),
+					/* translators: 1: Amount, 2: Currency */
+					sprintf( __( 'Amount: %1$s %2$s', 'sureforms' ), $amount_paid, strtoupper( $currency ) ),
+					/* translators: %s: Status */
+					sprintf( __( 'Status: %s', 'sureforms' ), __( 'Succeeded', 'sureforms' ) ),
+					/* translators: %s: Subscription ID */
+					sprintf( __( 'Subscription ID: %s', 'sureforms' ), $subscription_id ),
+					/* translators: %s: Invoice ID */
+					sprintf( __( 'Invoice ID: %s', 'sureforms' ), $invoice_id ),
+					/* translators: %s: Customer ID */
+					sprintf( __( 'Customer ID: %s', 'sureforms' ), $customer_id ),
+					/* translators: %s: Customer Email */
+					sprintf( __( 'Customer Email: %s', 'sureforms' ), $customer_email ),
+					/* translators: %s: Customer Name */
+					sprintf( __( 'Customer Name: %s', 'sureforms' ), $customer_name ),
+					__( 'Created via subscription billing cycle', 'sureforms' ),
 				],
 			],
 		];
 
+		// Get parent subscription database ID for linking renewal payments.
+		$parent_subscription_db_id = ! empty( $subscription_record['id'] ) && is_numeric( $subscription_record['id'] ) ? intval( $subscription_record['id'] ) : 0;
+
+		// Prepare renewal payment data.
+		$payment_data = [
+			'form_id'                => $form_id,
+			'block_id'               => $block_id,
+			'status'                 => 'succeeded',
+			'total_amount'           => $amount_paid,
+			'currency'               => $currency,
+			'entry_id'               => $entry_id,
+			'type'                   => 'renewal',
+			'transaction_id'         => $charge_id,
+			'gateway'                => 'stripe',
+			'mode'                   => $this->mode,
+			'subscription_id'        => $subscription_id,
+			'parent_subscription_id' => $parent_subscription_db_id,
+			'srfm_txn_id'            => '', // Will be updated after getting payment entry ID.
+			'customer_email'         => $customer_email,
+			'customer_name'          => $customer_name,
+			'customer_id'            => $customer_id,
+			'payment_data'           => [
+				'invoice_id'     => $invoice_id,
+				'payment_intent' => $payment_intent,
+				'billing_reason' => $billing_reason,
+				'amount_paid'    => $amount_paid,
+			],
+			'log'                    => $logs,
+		];
+
 		// Create the renewal payment record.
-		Payments::add( $payment_data );
+		$payment_entry_id = Payments::add( $payment_data );
+
+		if ( $payment_entry_id ) {
+			// Generate unique payment ID using the auto-increment ID and update the entry.
+			$unique_payment_id = Stripe_Helper::generate_unique_payment_id( $payment_entry_id );
+			Payments::update( $payment_entry_id, [ 'srfm_txn_id' => $unique_payment_id ] );
+			Helper::srfm_log( 'Renewal payment record created with srfm_txn_id: ' . $unique_payment_id . ', Payment ID: ' . $payment_entry_id . '.' );
+		} else {
+			Helper::srfm_log( 'Failed to create renewal payment record.' );
+		}
 	}
 
 	/**

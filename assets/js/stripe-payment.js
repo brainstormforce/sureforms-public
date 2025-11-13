@@ -5,41 +5,6 @@
  */
 /* global Stripe, srfm_ajax */
 
-/**
- * Get currency symbol for a given currency code.
- *
- * @param {string} currencyCode - Currency code (e.g., 'USD', 'INR').
- * @return {string} Currency symbol.
- */
-function getCurrencySymbol( currencyCode ) {
-	const currencies = {
-		USD: '$',
-		EUR: '€',
-		GBP: '£',
-		JPY: '¥',
-		AUD: 'A$',
-		CAD: 'C$',
-		CHF: 'CHF',
-		CNY: '¥',
-		SEK: 'kr',
-		NZD: 'NZ$',
-		MXN: 'MX$',
-		SGD: 'S$',
-		HKD: 'HK$',
-		NOK: 'kr',
-		KRW: '₩',
-		TRY: '₺',
-		RUB: '₽',
-		INR: '₹',
-		BRL: 'R$',
-		ZAR: 'R',
-		AED: 'د.إ',
-	};
-
-	const upperCurrencyCode = currencyCode?.toUpperCase();
-	return currencies[ upperCurrencyCode ] || currencyCode;
-}
-
 class StripePayment {
 	// Store Stripe instances
 	static stripeInstances = {};
@@ -58,9 +23,6 @@ class StripePayment {
 	 */
 	constructor( form ) {
 		this.form = form;
-
-		console.log( 'SureForms: StripePayment constructor' );
-
 		// Find all payment blocks within the form.
 		const getPaymentFields = this.form.querySelectorAll(
 			'.srfm-block.srfm-payment-block'
@@ -70,118 +32,6 @@ class StripePayment {
 		getPaymentFields.forEach( ( field ) => {
 			this.processPayment( field );
 		} );
-
-		// Listen for user-defined amount changes
-		this.listenUserAmountChanges();
-	}
-
-	/**
-	 * Listen for changes to user-defined amount inputs
-	 */
-	listenUserAmountChanges() {
-		const userAmountInputs = this.form.querySelectorAll(
-			'.srfm-user-amount-field'
-		);
-
-		userAmountInputs.forEach( ( input ) => {
-			input.addEventListener( 'input', () => {
-				const paymentBlock = input.closest( '.srfm-payment-block' );
-				const blockId = paymentBlock.getAttribute( 'data-block-id' );
-				const amount = parseFloat( input.value || 0 );
-
-				const paymentInput = paymentBlock.querySelector(
-					'.srfm-payment-input'
-				);
-				this.updatePaymentIntentAmount( blockId, amount, paymentInput );
-			} );
-		} );
-	}
-
-	updatePaymentIntentAmount( blockId, newAmount, paymentHiddenInput ) {
-		const currency = paymentHiddenInput.dataset.currency || 'usd';
-		const currencySymbol = getCurrencySymbol( currency );
-		console.log(
-			`Amount updated for block ${ blockId }: ${ currencySymbol }${ newAmount }`
-		);
-
-		// In deferred mode, we update the Elements configuration instead of payment intent
-		const elementData = StripePayment.paymentElements[ blockId ];
-		if ( ! elementData ) {
-			return;
-		}
-
-		// Don't update if amount hasn't changed significantly
-		const previousAmount = elementData.currentAmount || 0;
-		if ( Math.abs( newAmount - previousAmount ) < 0.01 ) {
-			return;
-		}
-
-		try {
-			// Update elements based on payment type (subscription vs one-time)
-			const paymentType = elementData.paymentType || 'one-time';
-
-			if ( paymentType === 'subscription' ) {
-				// For subscriptions: use mode 'subscription', NO captureMethod
-				elementData.elements.update( {
-					mode: 'subscription',
-					amount: Math.round( newAmount * 100 ),
-					currency,
-				} );
-			} else {
-				// For one-time payments: use mode 'payment' with captureMethod 'manual'
-				elementData.elements.update( {
-					mode: 'payment',
-					amount: Math.round( newAmount * 100 ),
-					currency,
-					captureMethod: 'manual',
-				} );
-			}
-
-			// Store new amount for later use
-			elementData.currentAmount = newAmount;
-
-			console.log(
-				`SureForms: Elements updated with new amount ${ currencySymbol }${ newAmount } for block ${ blockId } (type: ${ paymentType })`
-			);
-		} catch ( error ) {
-			console.warn(
-				`SureForms: Failed to update amount for block ${ blockId }:`,
-				error
-			);
-			// Continue without throwing - non-critical failure
-		}
-	}
-
-	/**
-	 * Determine if validation error should be displayed to user.
-	 * Filters out common typing-related incomplete warnings.
-	 *
-	 * @param {Object} error - The error object returned from Stripe or validation.
-	 * @return {boolean} True if the error should be displayed to the user, false otherwise.
-	 */
-	shouldDisplayValidationError( error ) {
-		// Don't show incomplete errors while user is still typing
-		const incompleteErrors = [
-			'incomplete_number',
-			'incomplete_cvc',
-			'incomplete_expiry',
-			'incomplete_zip',
-		];
-
-		// Don't show these common incomplete errors that occur during typing
-		if ( incompleteErrors.includes( error.code ) ) {
-			return false;
-		}
-
-		// Show invalid format errors and other validation errors
-		return (
-			error.type === 'validation_error' &&
-			( error.code === 'invalid_number' ||
-				error.code === 'invalid_expiry_month' ||
-				error.code === 'invalid_expiry_year' ||
-				error.code === 'invalid_cvc' ||
-				error.code === 'card_declined' )
-		);
 	}
 
 	/**
@@ -202,19 +52,21 @@ class StripePayment {
 	) {
 		// Setup
 		const isSubscription = paymentType === 'subscription';
-		const typeLabel = isSubscription ? 'subscription' : 'payment intent';
 		const customerData = this.extractCustomerData( paymentInput );
-
-		console.log(
-			`SureForms: Creating ${ typeLabel } for block ${ blockId } during form submission`
-		);
-		this.set_block_loading( blockId, true );
 
 		// Extract common data
 		const currency = paymentInput.dataset.currency || 'usd';
 		const description =
 			paymentInput.dataset.description ||
-			( isSubscription ? 'SureForms Subscription' : 'SureForms Payment' );
+			( isSubscription
+				? PAYMENT_UTILITY.getStripeStrings(
+					'sureforms_subscription',
+					'SureForms Subscription'
+				  )
+				: PAYMENT_UTILITY.getStripeStrings(
+					'sureforms_payment',
+					'SureForms Payment'
+				  ) );
 
 		// Build FormData
 		const data = new FormData();
@@ -225,7 +77,14 @@ class StripePayment {
 				: 'srfm_create_payment_intent'
 		);
 		data.append( 'nonce', srfm_ajax.nonce );
-		data.append( 'amount', parseInt( amount * 100 ) );
+		// Handle zero-decimal currencies (JPY, KRW, etc.) - don't multiply by 100
+		const formattedAmount =
+			window?.srfmStripe?.zeroDecimalCurrencies?.includes(
+				currency.toUpperCase()
+			)
+				? parseInt( amount )
+				: parseInt( amount * 100 );
+		data.append( 'amount', formattedAmount );
 		data.append( 'currency', currency );
 		data.append( 'description', description );
 		data.append( 'block_id', blockId );
@@ -247,34 +106,28 @@ class StripePayment {
 
 			const responseData = await response.json();
 
-			this.set_block_loading( blockId, false );
-
-			console.log(
-				`SureForms: ${
-					isSubscription ? 'Subscription' : 'Payment'
-				} response:`,
-				responseData
-			);
-
 			// Handle success
 			if ( responseData.success ) {
 				const clientSecret = responseData.data.client_secret;
 				const paymentIntentId = responseData.data.payment_intent_id;
+				const customerId = responseData?.data?.customer_id || null;
 
 				// Store payment/subscription data
 				if ( isSubscription ) {
 					const subscriptionId = responseData.data.subscription_id;
-					const customerId = responseData.data.customer_id;
 
 					StripePayment.subscriptionIntents[ blockId ] = {
 						subscriptionId,
-						customerId,
+						customerId: customerId || null,
 						paymentIntentId,
 						amount,
 						interval: customerData.interval,
 					};
 				} else {
-					StripePayment.paymentIntents[ blockId ] = paymentIntentId;
+					StripePayment.paymentIntents[ blockId ] = {
+						paymentIntentId,
+						customerId: customerId || null,
+					};
 				}
 
 				// Update elements with client secret
@@ -283,25 +136,9 @@ class StripePayment {
 					// CRITICAL: Store client secret WITHOUT calling elements.update()
 					// This preserves user-entered card data
 					elementData.clientSecret = clientSecret;
-
-					console.log(
-						`SureForms: Client secret stored for ${
-							isSubscription ? 'subscription' : 'payment'
-						} block ${ blockId } (card data preserved)`
-					);
 				}
 
-				// Return type-specific response
-				if ( isSubscription ) {
-					return {
-						clientSecret,
-						subscriptionId: responseData.data.subscription_id,
-						customerId: responseData.data.customer_id,
-						paymentIntentId,
-						status: true,
-					};
-				}
-				return { clientSecret, paymentIntentId };
+				return { valid: true };
 			}
 
 			// Handle failure
@@ -310,37 +147,35 @@ class StripePayment {
 				message:
 					responseData.data?.message ||
 					responseData.data ||
-					`Failed to create ${ typeLabel }`,
+					PAYMENT_UTILITY.getStripeStrings(
+						'payment_unavailable',
+						'Payment is currently unavailable. Please contact the site administrator.'
+					),
 			};
 		} catch ( error ) {
-			this.set_block_loading( blockId, false );
-			console.error( `SureForms: Error creating ${ typeLabel }:`, error );
 			return {
 				valid: false,
-				message: error.message || `Failed to create ${ typeLabel }`,
+				message:
+					error.message ||
+					PAYMENT_UTILITY.getStripeStrings(
+						'payment_unavailable',
+						'Payment is currently unavailable. Please contact the site administrator.'
+					),
 			};
 		}
 	}
 
 	processPayment( field ) {
 		const paymentInput = field.querySelector( 'input.srfm-payment-input' );
-		const blockId = field.getAttribute( 'data-block-id' );
 
 		if ( ! paymentInput ) {
-			console.error(
-				'SureForms: Payment input not found for block',
-				blockId
-			);
 			return;
 		}
 
+		const blockId = field.getAttribute( 'data-block-id' );
 		// Check payment type from data attribute
 		const paymentType =
-			field.getAttribute( 'data-payment-type' ) || 'one-time';
-
-		console.log(
-			`SureForms: Initializing payment for block ${ blockId }, type: ${ paymentType }`
-		);
+			paymentInput.getAttribute( 'data-payment-type' ) || 'one-time';
 
 		// Initialize Stripe elements using unified function
 		this.initializePaymentElements( blockId, paymentInput, paymentType );
@@ -363,34 +198,12 @@ class StripePayment {
 		// CRITICAL: Check if elements already exist to prevent re-initialization
 		// Re-mounting elements destroys user-entered card data
 		if ( StripePayment.paymentElements[ blockId ] ) {
-			const typeLabel =
-				paymentType === 'subscription'
-					? 'SUBSCRIPTION'
-					: 'ONE-TIME PAYMENT';
-			console.log(
-				`SureForms: ${ typeLabel } elements already initialized for block ${ blockId }, skipping re-initialization (preserving card data)`
-			);
 			return;
 		}
-
-		const typeLabel =
-			paymentType === 'subscription'
-				? 'SUBSCRIPTION'
-				: 'ONE-TIME PAYMENT';
-		const modeLabel =
-			paymentType === 'subscription'
-				? 'subscription'
-				: 'payment, captureMethod: manual';
-		console.log(
-			`SureForms: Initializing ${ typeLabel } elements for block ${ blockId } with mode: ${ modeLabel }`
-		);
 
 		const stripeKey = paymentInput.dataset.stripeKey;
 
 		if ( ! stripeKey ) {
-			console.error(
-				'SureForms: Stripe key is required for payment initialization.'
-			);
 			return;
 		}
 
@@ -409,6 +222,7 @@ class StripePayment {
 		const elementsConfig = {
 			mode: paymentType === 'subscription' ? 'subscription' : 'payment',
 			currency: paymentInput.dataset.currency || 'usd',
+			amount: 1200,
 			appearance: {
 				theme: 'stripe',
 				variables: {
@@ -429,16 +243,7 @@ class StripePayment {
 		};
 
 		// Add type-specific configuration
-		let currentAmount = null;
-		if ( paymentType === 'subscription' ) {
-			// Placeholder amount for subscriptions, will be updated by backend
-			elementsConfig.amount = 1200;
-		} else {
-			// Get real payment amount for one-time payments
-			currentAmount = StripePayment.getPaymentAmount( paymentInput );
-			elementsConfig.amount = Math.round( currentAmount * 100 );
-			// captureMethod: 'manual' tells Elements to expect manual capture PaymentIntents
-			// This prevents "capture_method mismatch" errors when backend uses manual capture
+		if ( paymentType === 'one-time' ) {
 			elementsConfig.captureMethod = 'manual';
 		}
 
@@ -453,13 +258,8 @@ class StripePayment {
 			elements,
 			paymentElement,
 			clientSecret: null, // Will be set when payment/subscription intent is created
+			paymentType,
 		};
-
-		if ( paymentType === 'subscription' ) {
-			storedData.paymentType = 'subscription';
-		} else {
-			storedData.currentAmount = currentAmount; // Store current amount for later comparison
-		}
 
 		StripePayment.paymentElements[ blockId ] = storedData;
 
@@ -467,55 +267,22 @@ class StripePayment {
 		window.srfmPaymentElements = StripePayment.paymentElements;
 
 		// Setup event handlers
-		this.setupPaymentElementEvents( paymentElement, blockId, paymentType );
+		this.setupPaymentElementEvents( paymentElement );
 	}
 
 	/**
 	 * Setup event handlers for payment element.
 	 *
 	 * @param {Object} paymentElement - The Stripe payment element.
-	 * @param {string} blockId        - Block ID.
-	 * @param {string} paymentType    - Payment type: 'one-time' or 'subscription'.
 	 * @return {void} This function does not return a value.
 	 */
-	setupPaymentElementEvents( paymentElement, blockId, paymentType ) {
+	setupPaymentElementEvents( paymentElement ) {
 		// Ready event
-		paymentElement.on( 'ready', () => {
-			const typeLabel =
-				paymentType === 'subscription' ? 'Subscription' : 'Payment';
-			console.log(
-				`SureForms: ${ typeLabel } element ready for block ${ blockId }`
-			);
-		} );
+		paymentElement.on( 'ready', () => {} );
 
 		// Change event (handling differs by payment type)
-		paymentElement.on( 'change', ( event ) => {
-			if ( event.error ) {
-				if ( paymentType === 'subscription' ) {
-					// Simple warning for subscriptions (often non-fatal validation warnings)
-					console.warn(
-						`SureForms: Subscription element validation warning for block ${ blockId }:`,
-						event.error
-					);
-				} else if ( this.shouldDisplayValidationError( event.error ) ) {
-					console.warn(
-						`SureForms: Card element validation for block ${ blockId }:`,
-						event.error
-					);
-					this.displayElementError( blockId, event.error );
-				}
-			} else if ( event.complete ) {
-				const typeLabel =
-					paymentType === 'subscription' ? 'Subscription' : 'Card';
-				console.log(
-					`SureForms: ${ typeLabel } element completed for block ${ blockId }`
-				);
-
-				// Clear any previous error messages (only for one-time payments)
-				if ( paymentType !== 'subscription' ) {
-					this.clearElementError( blockId );
-				}
-			}
+		paymentElement.on( 'change', () => {
+			// Lets manage the event.error, event.complete events if required.
 		} );
 	}
 
@@ -523,7 +290,7 @@ class StripePayment {
 	 * Get payment amount based on amount type (fixed or user-defined).
 	 *
 	 * @param {HTMLElement} paymentInput - The payment input element.
-	 * @return {number} The payment amount in dollars.
+	 * @return {number|false} The payment amount in dollars, or false if invalid.
 	 */
 	static getPaymentAmount( paymentInput ) {
 		const amountType = paymentInput.dataset.amountType || 'fixed';
@@ -533,53 +300,28 @@ class StripePayment {
 			// Get fixed amount from data attribute
 			amount = parseFloat( paymentInput.dataset.fixedAmount || 0 );
 		} else {
-			// Get user-defined amount from input field
-			const paymentBlock = paymentInput.closest( '.srfm-payment-block' );
-			const userAmountInput = paymentBlock?.querySelector(
-				'.srfm-user-amount-field'
-			);
-			amount = parseFloat( userAmountInput?.value || 0 );
+			amount = parseFloat( paymentInput?.value || 0 );
 		}
 
-		// Return at least $1.00 minimum for Stripe
-		const finalAmount = Math.max( amount, 1.0 );
-
-		// Validate the amount
-		if ( ! StripePayment.validatePaymentAmount( finalAmount ) ) {
-			console.warn(
-				'SureForms: Invalid payment amount, using minimum $1.00'
-			);
-			return 1.0;
+		// Validate the amount - must be valid, not negative, and greater than 0
+		if ( isNaN( amount ) ) {
+			return false;
 		}
 
-		return finalAmount;
-	}
-
-	/**
-	 * Set or unset loading state for a payment block and its submit button.
-	 *
-	 * @param {string}  blockId        - The unique identifier for the payment block.
-	 * @param {boolean} [loading=true] - Whether to set (true) or unset (false) the loading state.
-	 * @return {void} This function does not return a value.
-	 */
-	set_block_loading( blockId, loading = true ) {
-		const block = this.form.querySelector(
-			`.srfm-block[data-block-id="${ blockId }"]`
-		);
-
-		if ( ! block ) {
-			return;
+		if ( amount < 0 ) {
+			return false;
 		}
 
-		const submitButton = this.form.querySelector( '.srfm-submit-button' );
-
-		if ( loading ) {
-			block.classList.add( 'srfm-loading-block' );
-			submitButton.classList.add( 'srfm-loading-button' );
-		} else {
-			block.classList.remove( 'srfm-loading-block' );
-			submitButton.classList.remove( 'srfm-loading-button' );
+		if ( amount <= 0 ) {
+			return false;
 		}
+
+		// Additional validation using existing method
+		if ( ! StripePayment.validatePaymentAmount( amount ) ) {
+			return false;
+		}
+
+		return amount;
 	}
 
 	/**
@@ -592,18 +334,28 @@ class StripePayment {
 		const form = paymentInput.closest( 'form' );
 		const block = paymentInput.closest( '.srfm-block' );
 
-		// Get subscription plan data from block attributes
+		// Get subscription plan data from input attributes
 		const planName =
-			block.dataset.subscriptionPlanName || 'Subscription Plan';
-		const interval = block.dataset.subscriptionInterval || 'month';
+			paymentInput.dataset.subscriptionPlanName ||
+			PAYMENT_UTILITY.getStripeStrings(
+				'subscription_plan',
+				'Subscription Plan'
+			);
+		const interval = paymentInput.dataset.subscriptionInterval || 'month';
 
 		// Use static methods to extract customer data from mapped form fields
 		const customerName =
 			StripePayment.extractBillingName( form, block ) ||
-			'SureForms Customer';
+			PAYMENT_UTILITY.getStripeStrings(
+				'sureforms_customer',
+				'SureForms Customer'
+			);
 		const customerEmail =
 			StripePayment.extractBillingEmail( form, block ) ||
-			'customer@example.com';
+			PAYMENT_UTILITY.getStripeStrings(
+				'customer_example_email',
+				'customer@example.com'
+			);
 
 		return {
 			name: customerName,
@@ -622,33 +374,47 @@ class StripePayment {
 	 * @return {Promise<Object>} Resolves with payment intent or subscription intent data.
 	 */
 	static async createPaymentIntentsForForm( form, paymentBlock ) {
-		const blockId = paymentBlock.getAttribute( 'data-block-id' );
 		const paymentInput = paymentBlock.querySelector(
 			'input.srfm-payment-input'
 		);
 		const paymentType =
-			paymentBlock.getAttribute( 'data-payment-type' ) || 'one-time';
+			paymentInput.getAttribute( 'data-payment-type' ) || 'one-time';
 
 		if ( ! paymentInput ) {
 			return {
 				valid: false,
-				message: `Payment input not found for block ${ blockId }`,
+				message: PAYMENT_UTILITY.getStripeStrings(
+					'payment_unavailable',
+					'Payment is currently unavailable. Please contact the site administrator.'
+				),
 			};
 		}
 
 		// Get payment amount using helper method
 		const amount = StripePayment.getPaymentAmount( paymentInput );
 
-		if ( amount <= 0 ) {
+		if ( false === amount ) {
 			return {
 				valid: false,
-				message: `Invalid payment amount ${ amount } for block ${ blockId }`,
+				message: PAYMENT_UTILITY.getStripeStrings(
+					'payment_amount_not_configured',
+					'Payment is currently unavailable. Please contact the site administrator to configure the payment amount.'
+				),
+			};
+		} else if ( amount <= 0 ) {
+			return {
+				valid: false,
+				message: PAYMENT_UTILITY.getStripeStrings(
+					'payment_amount_not_configured',
+					'Payment is currently unavailable. Please contact the site administrator to configure the payment amount.'
+				),
 			};
 		}
 
 		try {
 			// Create a temporary instance to call the method
 			const tempInstance = new StripePayment( form );
+			const blockId = paymentBlock.getAttribute( 'data-block-id' );
 
 			// Use unified function for both payment types
 			const result = await tempInstance.createPaymentIntentOnSubmission(
@@ -667,74 +433,14 @@ class StripePayment {
 		} catch ( error ) {
 			return {
 				valid: false,
-				message: error.message || 'Failed to create payment intent',
+				message:
+					error.message ||
+					PAYMENT_UTILITY.getStripeStrings(
+						'payment_unavailable',
+						'Payment is currently unavailable. Please contact the site administrator.'
+					),
 			};
 		}
-	}
-
-	/**
-	 * Display an error message related to the Stripe payment element in the UI.
-	 *
-	 * @param {string} blockId - The unique identifier for the payment block.
-	 * @param {Object} error   - The error object returned from Stripe or validation.
-	 * @return {void} This function does not return a value.
-	 */
-	displayElementError( blockId, error ) {
-		const block = this.form.querySelector(
-			`.srfm-block[data-block-id="${ blockId }"]`
-		);
-
-		if ( ! block ) {
-			return;
-		}
-
-		// Remove any existing error messages first
-		this.clearElementError( blockId );
-
-		// Only show user-friendly errors, skip technical validation warnings
-		if (
-			error.type === 'validation_error' ||
-			error.code === 'incomplete_number' ||
-			error.code === 'incomplete_cvc'
-		) {
-			const errorContainer = document.createElement( 'div' );
-			errorContainer.className = 'srfm-stripe-error';
-			errorContainer.style.cssText =
-				'color: #df1b41; font-size: 14px; margin-top: 8px;';
-			errorContainer.textContent =
-				error.message || 'Please check your card information.';
-
-			const paymentElement = block.querySelector(
-				'.srfm-stripe-payment-element'
-			);
-			if ( paymentElement ) {
-				paymentElement.parentNode.insertBefore(
-					errorContainer,
-					paymentElement.nextSibling
-				);
-			}
-		}
-	}
-
-	/**
-	 * Clear element error messages.
-	 *
-	 * @param {string} blockId - Block ID.
-	 * @return {void} This function does not return a value.
-	 */
-	clearElementError( blockId ) {
-		const block = this.form.querySelector(
-			`.srfm-block[data-block-id="${ blockId }"]`
-		);
-
-		if ( ! block ) {
-			return;
-		}
-
-		const errorElements = block.querySelectorAll( '.srfm-stripe-error' );
-		errorElements.forEach( ( element ) => {
-			element.remove();
-		} );
 	}
 
 	/**
@@ -748,15 +454,9 @@ class StripePayment {
 		const maxAmount = 999999.99; // Reasonable maximum
 
 		if ( isNaN( amount ) || amount < minAmount ) {
-			console.error(
-				`SureForms: Payment amount must be at least $${ minAmount }`
-			);
 			return false;
 		}
 		if ( amount > maxAmount ) {
-			console.error(
-				`SureForms: Payment amount cannot exceed $${ maxAmount }`
-			);
 			return false;
 		}
 		return true;
@@ -769,13 +469,15 @@ class StripePayment {
 	 * @return {string} The extracted billing name or a default value.
 	 */
 	static extractBillingName( form, paymentBlock ) {
-		// Get the customer name field slug from payment block data attribute
-		const customerNameFieldSlug = paymentBlock.getAttribute(
-			'data-customer-name-field'
+		// Get the customer name field slug from payment input data attribute
+		const paymentInput = paymentBlock.querySelector(
+			'input.srfm-payment-input'
 		);
+		const customerNameFieldSlug = paymentInput
+			? paymentInput.getAttribute( 'data-customer-name-field' )
+			: null;
 
 		if ( ! customerNameFieldSlug || customerNameFieldSlug.trim() === '' ) {
-			console.warn( 'Customer name field slug not configured' );
 			return '';
 		}
 
@@ -785,9 +487,6 @@ class StripePayment {
 		);
 
 		if ( ! nameInput ) {
-			console.warn(
-				`Name input field not found for slug: ${ customerNameFieldSlug }`
-			);
 			return '';
 		}
 
@@ -802,16 +501,18 @@ class StripePayment {
 	 * @return {string} The extracted billing email or a default value.
 	 */
 	static extractBillingEmail( form, paymentBlock ) {
-		// Get the customer email field slug from payment block data attribute
-		const customerEmailFieldSlug = paymentBlock.getAttribute(
-			'data-customer-email-field'
+		// Get the customer email field slug from payment input data attribute
+		const paymentInput = paymentBlock.querySelector(
+			'input.srfm-payment-input'
 		);
+		const customerEmailFieldSlug = paymentInput
+			? paymentInput.getAttribute( 'data-customer-email-field' )
+			: null;
 
 		if (
 			! customerEmailFieldSlug ||
 			customerEmailFieldSlug.trim() === ''
 		) {
-			console.warn( 'Customer email field slug not configured' );
 			return '';
 		}
 
@@ -821,9 +522,6 @@ class StripePayment {
 		);
 
 		if ( ! emailInput ) {
-			console.warn(
-				`Email input field not found for slug: ${ customerEmailFieldSlug }`
-			);
 			return '';
 		}
 
@@ -839,28 +537,40 @@ class StripePayment {
 	 * @return {Promise<string>} The payment intent or setup intent ID if successful.
 	 */
 	static async srfmConfirmPayment( blockId, paymentData, form ) {
-		const { elements, paymentType } = paymentData;
-		console.log( 'start confirmPayment' );
+		const { elements } = paymentData;
 
 		// Validate card details AFTER payment intent is created but BEFORE confirmation
 		// This is the correct timing to avoid card data loss
 		const { error: submitError } = await elements.submit();
 
 		if ( submitError ) {
-			console.error( 'Card validation failed:', submitError );
-			throw new Error( submitError.message );
+			return {
+				valid: false,
+				error: submitError.message,
+				message: submitError.message,
+			};
 		}
 
-		console.log(
-			`Card validation successful for block ${ blockId } paymentType: ${ paymentType }`
-		);
-
 		// Handle payment confirmation via unified handler
-		return await StripePayment.confirmStripePayment(
-			blockId,
-			paymentData,
-			form
-		);
+		try {
+			return await StripePayment.confirmStripePayment(
+				blockId,
+				paymentData,
+				form
+			);
+		} catch ( error ) {
+			// Catch any errors thrown by confirmStripePayment and return consistent structure
+			return {
+				valid: false,
+				error: error.message || error,
+				message:
+					error.message ||
+					PAYMENT_UTILITY.getStripeStrings(
+						'payment_failed',
+						'Payment failed'
+					),
+			};
+		}
 	}
 
 	static async confirmStripePayment( blockId, paymentData, form ) {
@@ -875,7 +585,6 @@ class StripePayment {
 			'.srfm-payment-input'
 		);
 
-		const amount = StripePayment.getPaymentAmount( paymentInput );
 		const amountType =
 			paymentInput.getAttribute( 'data-amount-type' ) || 'fixed';
 
@@ -902,13 +611,22 @@ class StripePayment {
 			: stripe.confirmPayment( stripeArgs ) );
 
 		if ( paymentResult?.error ) {
-			StripePayment.addErrorValueInInput(
-				paymentInput,
-				paymentResult?.error
-			);
-			throw new Error(
-				paymentResult?.error?.message || paymentResult?.error
-			);
+			console.warn( { 'Payment Confirmation Error': paymentResult } );
+			StripePayment.addErrorValueInInput( paymentInput, paymentResult );
+
+			const getErrorCode =
+				paymentResult?.error?.decline_code ||
+				paymentResult?.error?.code;
+			// Get the user-friendly message for the decline code
+			const errorMessage =
+				PAYMENT_UTILITY.getStripeStrings( getErrorCode );
+
+			return {
+				valid: false,
+				error: paymentResult.error,
+				message: errorMessage,
+				...paymentResult,
+			};
 		}
 
 		if (
@@ -917,12 +635,23 @@ class StripePayment {
 				paymentResult?.paymentIntent?.status
 			)
 		) {
+			const errorMessage = PAYMENT_UTILITY.getStripeStrings(
+				'payment_could_not_be_completed',
+				'Payment could not be completed. Please try again or contact the site administrator.'
+			);
 			StripePayment.addErrorValueInInput(
 				paymentInput,
-				new Error( `Payment not completed for block ${ blockId }` )
+				new Error( errorMessage )
 			);
-			throw new Error( `Payment not completed for block ${ blockId }` );
+			return {
+				valid: false,
+				error: errorMessage,
+				message: errorMessage,
+				paymentResult,
+			};
 		}
+
+		const amount = StripePayment.getPaymentAmount( paymentInput );
 
 		const resultArgs = {
 			paymentResult,
@@ -936,7 +665,7 @@ class StripePayment {
 
 		StripePayment.prepareInputValueData( resultArgs );
 
-		return true;
+		return { valid: true };
 	}
 
 	/**
@@ -971,6 +700,18 @@ class StripePayment {
 		if ( 'subscription' === paymentType ) {
 			const subscriptionData =
 				StripePayment.subscriptionIntents[ blockId ];
+			const getSubscriptionName = paymentInput.getAttribute(
+				'data-subscription-plan-name'
+			);
+			const getSubscriptionBillingCycles = paymentInput.getAttribute(
+				'data-subscription-billing-cycles'
+			);
+			const getSubscriptionInterval = paymentInput.getAttribute(
+				'data-subscription-interval'
+			);
+			value.subscriptionPlanName = getSubscriptionName;
+			value.subscriptionBillingCycles = getSubscriptionBillingCycles;
+			value.subscriptionInterval = getSubscriptionInterval;
 
 			value.paymentId = paymentResult?.setupIntent?.payment_method;
 			value.setupIntent = paymentResult?.setupIntent?.id;
@@ -979,8 +720,11 @@ class StripePayment {
 			value.paymentType = 'stripe-subscription';
 			value.status = 'succeeded';
 		} else {
+			const paymentData = StripePayment.paymentIntents[ blockId ];
+			const customerId = paymentData?.customerId || null;
 			value.paymentId = paymentResult?.paymentIntent?.id;
 			value.paymentType = 'stripe';
+			value.customerId = customerId || null;
 		}
 
 		paymentInput.value = JSON.stringify( value );
@@ -992,7 +736,7 @@ class StripePayment {
 	 * @param {HTMLInputElement} paymentInput - The input field to store the error.
 	 * @param {Error|string}     error        - The error object or message to store.
 	 */
-	addErrorValueInInput( paymentInput, error ) {
+	static addErrorValueInInput( paymentInput, error ) {
 		paymentInput.value = JSON.stringify( {
 			errorType: 'stripe_payment_confirmation_error',
 			error: error?.message || error,
@@ -1002,6 +746,315 @@ class StripePayment {
 
 // Make StripePayment available globally for form submission
 window.StripePayment = StripePayment;
+
+const PAYMENT_UTILITY = {
+	currentForm: null,
+	amountPlaceHolder: '',
+	init: ( form ) => {
+		PAYMENT_UTILITY.currentForm = form;
+		PAYMENT_UTILITY.amountPlaceHolder = PAYMENT_UTILITY.getStripeStrings(
+			'amount_placeholder',
+			'Amount will appear here'
+		);
+		PAYMENT_UTILITY.listenAmountChanges();
+	},
+	/**
+	 * Format subscription message by replacing {amount} placeholder with formatted amount
+	 * @param {string} messageFormat  - The message format template (e.g., "{amount} per day for 8 payments")
+	 * @param {number} amount         - The payment amount
+	 * @param {string} currencySymbol - The currency symbol (e.g., "$")
+	 * @return {string} Formatted message
+	 */
+	formatSubscriptionMessage: ( messageFormat, amount, currencySymbol ) => {
+		if ( ! messageFormat ) {
+			return PAYMENT_UTILITY.amountPlaceHolder;
+		}
+
+		// Format amount with currency (e.g., "$340.00")
+		const formattedAmount =
+			! amount || amount <= 0
+				? ''
+				: currencySymbol + parseFloat( amount ).toFixed( 2 );
+
+		// Replace {amount} placeholder with formatted amount
+		return '' !== formattedAmount
+			? messageFormat.replace( '{amount}', formattedAmount )
+			: PAYMENT_UTILITY.amountPlaceHolder;
+	},
+	updatePaymentBlockAmount: ( paymentInput, amount ) => {
+		const getPlaceHolderElement = paymentInput
+			.closest( '.srfm-block' )
+			.querySelector( '.srfm-payment-value' );
+		if ( getPlaceHolderElement ) {
+			const getCurrencySymbol = getPlaceHolderElement.getAttribute(
+				'data-currency-symbol'
+			);
+			const messageFormat = getPlaceHolderElement.getAttribute(
+				'data-message-format'
+			);
+
+			if ( getCurrencySymbol ) {
+				// Check if message format exists (for subscription messages)
+				if ( messageFormat ) {
+					const formattedMessage =
+						PAYMENT_UTILITY.formatSubscriptionMessage(
+							messageFormat,
+							amount,
+							getCurrencySymbol
+						);
+					getPlaceHolderElement.innerHTML = formattedMessage;
+				} else {
+					// Fallback to simple amount display (backward compatible)
+					getPlaceHolderElement.innerHTML =
+						getCurrencySymbol + amount;
+				}
+			}
+		}
+
+		paymentInput.value = amount;
+	},
+	listenAmountChanges: () => {
+		const paymentInputs = PAYMENT_UTILITY.currentForm.querySelectorAll(
+			'.srfm-block.srfm-payment-block:not(.hide-element) input.srfm-payment-input[data-variable-amount-field]'
+		);
+
+		if ( paymentInputs.length > 0 ) {
+			for ( let i = 0; i < paymentInputs.length; i++ ) {
+				const paymentInput = paymentInputs[ i ];
+				const getBlockMappedSlug = paymentInput.getAttribute(
+					'data-variable-amount-field'
+				);
+
+				if ( getBlockMappedSlug ) {
+					const getMappedBlock =
+						PAYMENT_UTILITY.currentForm.querySelector(
+							`.srfm-block.srfm-slug-${ getBlockMappedSlug }`
+						);
+					if ( getMappedBlock ) {
+						// Check block type.
+						if (
+							getMappedBlock.classList.contains(
+								'srfm-number-block'
+							)
+						) {
+							const getMappedBlockInput =
+								getMappedBlock.querySelector(
+									'input.srfm-input-common'
+								);
+							if ( getMappedBlockInput ) {
+								getMappedBlockInput.addEventListener(
+									'input',
+									( event ) => {
+										const getMappedBlockInputValue =
+											event.target.value;
+										PAYMENT_UTILITY.updatePaymentBlockAmount(
+											paymentInput,
+											getMappedBlockInputValue
+										);
+									}
+								);
+								PAYMENT_UTILITY.updatePaymentBlockAmount(
+									paymentInput,
+									getMappedBlockInput.value
+								);
+							}
+						} else if (
+							getMappedBlock.classList.contains(
+								'srfm-dropdown-block'
+							)
+						) {
+							const hiddenInput = getMappedBlock.querySelector(
+								'.srfm-input-dropdown-hidden'
+							);
+							if ( hiddenInput ) {
+								hiddenInput.addEventListener( 'change', () => {
+									const amount =
+										PAYMENT_UTILITY.getDropdownAmount(
+											getMappedBlock,
+											hiddenInput
+										);
+									PAYMENT_UTILITY.updatePaymentBlockAmount(
+										paymentInput,
+										amount
+									);
+								} );
+								// Set initial value
+								const initialAmount =
+									PAYMENT_UTILITY.getDropdownAmount(
+										getMappedBlock,
+										hiddenInput
+									);
+								PAYMENT_UTILITY.updatePaymentBlockAmount(
+									paymentInput,
+									initialAmount
+								);
+							}
+						} else if (
+							getMappedBlock.classList.contains(
+								'srfm-multi-choice-block'
+							)
+						) {
+							const hiddenInput = getMappedBlock.querySelector(
+								'.srfm-input-multi-choice-hidden'
+							);
+							if ( hiddenInput ) {
+								hiddenInput.addEventListener( 'change', () => {
+									const amount =
+										PAYMENT_UTILITY.getMultiChoiceAmount(
+											getMappedBlock,
+											hiddenInput
+										);
+									PAYMENT_UTILITY.updatePaymentBlockAmount(
+										paymentInput,
+										amount
+									);
+								} );
+								// Set initial value
+								const initialAmount =
+									PAYMENT_UTILITY.getMultiChoiceAmount(
+										getMappedBlock,
+										hiddenInput
+									);
+								PAYMENT_UTILITY.updatePaymentBlockAmount(
+									paymentInput,
+									initialAmount
+								);
+							}
+						}
+					}
+				}
+			}
+		}
+	},
+	getCurrencySymbol: ( currencyCode ) => {
+		// Use localized currency data from PHP
+		const currenciesData = window.srfmStripe?.currenciesData || {};
+		const upperCurrencyCode = currencyCode?.toUpperCase();
+		const currencyData = currenciesData[ upperCurrencyCode ];
+
+		// Return symbol from localized data, or fallback to currency code
+		return currencyData?.symbol || currencyCode;
+	},
+	/**
+	 * Get amount from dropdown block based on selected option values
+	 * @param {HTMLElement} dropdownBlock - The dropdown block element
+	 * @param {HTMLElement} hiddenInput   - The hidden input containing selected values
+	 * @return {number} The total amount from selected options
+	 */
+	getDropdownAmount: ( dropdownBlock, hiddenInput ) => {
+		const selectedValues = [];
+		const hiddenInputValue = hiddenInput.value;
+
+		if ( ! hiddenInputValue ) {
+			return 0;
+		}
+
+		// Extract selected values from hidden input (format: "Option 1 | Option 2")
+		const selectedOptions = window.srfm?.srfmUtility?.extractValue
+			? window.srfm.srfmUtility.extractValue( hiddenInputValue )
+			: hiddenInputValue.split( '|' ).map( ( v ) => v.trim() );
+
+		// Get all dropdown options
+		const options = dropdownBlock.querySelectorAll(
+			'.srfm-dropdown-input option[option-value]'
+		);
+
+		selectedOptions.forEach( ( selectedOption ) => {
+			options.forEach( ( option ) => {
+				if ( option.innerText?.trim() === selectedOption?.trim() ) {
+					const optionValue = option.getAttribute( 'option-value' );
+					// Only add numeric values
+					if ( ! isNaN( optionValue ) ) {
+						selectedValues.push( parseFloat( optionValue ) );
+					} else if ( '' === optionValue ) {
+						selectedValues.push( 0 );
+					}
+				}
+			} );
+		} );
+
+		// Sum all selected option values
+		return selectedValues.length > 0
+			? selectedValues.reduce( ( sum, value ) => sum + value, 0 )
+			: 0;
+	},
+	/**
+	 * Get amount from multi-choice block based on selected option values
+	 * @param {HTMLElement} multiChoiceBlock - The multi-choice block element
+	 * @param {HTMLElement} hiddenInput      - The hidden input containing selected values
+	 * @return {number} The total amount from selected options
+	 */
+	getMultiChoiceAmount: ( multiChoiceBlock, hiddenInput ) => {
+		const selectedValues = [];
+		const hiddenInputValue = hiddenInput.value;
+
+		if ( ! hiddenInputValue ) {
+			return 0;
+		}
+
+		// Extract selected values from hidden input (format: "Option 1 | Option 2")
+		const selectedOptions = window.srfm?.srfmUtility?.extractValue
+			? window.srfm.srfmUtility.extractValue( hiddenInputValue )
+			: hiddenInputValue.split( '|' ).map( ( v ) => v.trim() );
+
+		// Get all multi-choice options
+		const choices = multiChoiceBlock.querySelectorAll(
+			'.srfm-multi-choice-single'
+		);
+
+		selectedOptions.forEach( ( selectedOption ) => {
+			choices.forEach( ( choice ) => {
+				const label = choice.querySelector(
+					'.srfm-option-container label'
+				);
+				if ( label?.innerText?.trim() === selectedOption?.trim() ) {
+					const input = choice.querySelector(
+						'.srfm-input-multi-choice-single'
+					);
+					const optionValue = input?.getAttribute( 'option-value' );
+					// Only add numeric values
+					if ( ! isNaN( optionValue ) ) {
+						selectedValues.push( parseFloat( optionValue ) );
+					} else if ( '' === optionValue ) {
+						selectedValues.push( 0 );
+					}
+				}
+			} );
+		} );
+
+		// Sum all selected option values
+		return selectedValues.length > 0
+			? selectedValues.reduce( ( sum, value ) => sum + value, 0 )
+			: 0;
+	},
+	getStripeStrings: ( code, defaultMessage = '' ) => {
+		// If no code provided
+		if ( ! code || code === null || code === undefined ) {
+			// Return default message if provided, otherwise unknown error
+			return defaultMessage && defaultMessage.trim() !== ''
+				? defaultMessage
+				: window.srfmStripe?.strings?.unknown_error ||
+						'An unknown error occurred. Please try again or contact the site administrator.';
+		}
+
+		// Check if code exists in localized strings
+		const localizedMessage = window.srfmStripe?.strings?.[ code ];
+
+		if ( localizedMessage ) {
+			// Code found in localized strings, return it
+			return localizedMessage;
+		}
+
+		// Code not found in localized strings
+		// Return default message if provided, otherwise unknown error
+		return defaultMessage && defaultMessage.trim() !== ''
+			? defaultMessage
+			: window.srfmStripe?.strings?.unknown_error ||
+					'An unknown error occurred. Please try again or contact the site administrator.';
+	},
+};
+
+window.srfmPaymentUtility = PAYMENT_UTILITY;
 
 /**
  * Initializes StripePayment for forms after SureForms initialization event.
@@ -1015,6 +1068,7 @@ document.addEventListener( 'srfm_form_after_initialization', ( event ) => {
 		);
 		if ( paymentBlocks.length > 0 ) {
 			new StripePayment( form );
+			PAYMENT_UTILITY.init( form );
 		}
 	}
 } );

@@ -117,10 +117,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 							/>
 							<div className="srfm-settings-separator" />
 							<ToggleControl
-								label={ __(
-									'Unique Entry',
-									'sureforms'
-								) }
+								label={ __( 'Unique Entry', 'sureforms' ) }
 								checked={ isUnique }
 								onChange={ ( checked ) =>
 									setAttributes( { isUnique: checked } )

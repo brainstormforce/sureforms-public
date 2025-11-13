@@ -1,11 +1,15 @@
-import { Container, Label, Text, Button, Tooltip } from '@bsf/force-ui';
-import { Trash2, ChevronLeft, ChevronRight } from 'lucide-react';
-import { __, sprintf } from '@wordpress/i18n';
+import { Text, Button } from '@bsf/force-ui';
+import { Trash2, ArrowLeft, ArrowRight } from 'lucide-react';
+import { __ } from '@wordpress/i18n';
 import { useState, useEffect } from '@wordpress/element';
 import { formatDateTime } from './utils';
 
-const PaymentLogs = ( { logs, handleDeleteLog, deleteLogMutation } ) => {
-	const [ showDeletePopup, setShowDeletePopup ] = useState( null );
+const PaymentLogs = ( {
+	logs,
+	handleDeleteLog,
+	deleteLogMutation,
+	onConfirmation,
+} ) => {
 	const [ currentPage, setCurrentPage ] = useState( 1 );
 	const itemsPerPage = 3;
 
@@ -40,23 +44,30 @@ const PaymentLogs = ( { logs, handleDeleteLog, deleteLogMutation } ) => {
 		setCurrentPage( ( prev ) => Math.min( prev + 1, totalPages ) );
 	};
 
+	const handleDeleteLogConfirmation = ( logIndex ) => {
+		onConfirmation( {
+			title: __( 'Delete Log?', 'sureforms' ),
+			description: __(
+				'This action cannot be undone. The log will be permanently deleted.',
+				'sureforms'
+			),
+			confirmLabel: __( 'Delete Log', 'sureforms' ),
+			onConfirm: () => handleDeleteLog( logIndex ),
+			isLoading: deleteLogMutation.isPending,
+			destructive: true,
+		} );
+	};
+
 	const isLogsAvailable = logs && logs.length > 0;
 
 	return (
-		<Container
-			className="w-full bg-background-primary border-0.5 border-solid rounded-xl border-border-subtle p-3 gap-2 shadow-sm"
-			direction="column"
-		>
-			<Container className="p-1 gap-2" align="center" justify="between">
-				<Label size="md" className="font-semibold">
+		<div className="bg-background-primary border-0.5 border-solid border-border-subtle rounded-lg shadow-sm">
+			<div className="pb-0 px-4 pt-4">
+				<h3 className="text-base font-semibold text-text-primary">
 					{ __( 'Payment Logs', 'sureforms' ) }
-				</Label>
-			</Container>
-			<Container
-				className={ `flex flex-col items-center justify-center bg-background-secondary gap-1 p-1 rounded-lg ${
-					! isLogsAvailable && 'min-h-[89px]'
-				}` }
-			>
+				</h3>
+			</div>
+			<div className="p-4 space-y-1 relative before:content-[''] before:block before:absolute before:inset-3 before:bg-background-secondary before:rounded-lg">
 				{ isLogsAvailable ? (
 					paginatedLogs.map( ( log, index ) => {
 						// Calculate the actual index in the original logs array
@@ -74,157 +85,89 @@ const PaymentLogs = ( { logs, handleDeleteLog, deleteLogMutation } ) => {
 							? log.messages
 							: [];
 
+						const deleteButton = (
+							<Button
+								variant="ghost"
+								size="xs"
+								icon={ <Trash2 className="!size-4" /> }
+								onClick={ () =>
+									handleDeleteLogConfirmation( actualIndex )
+								}
+								disabled={ deleteLogMutation.isPending }
+								className="text-icon-secondary hover:text-icon-primary"
+								aria-label={ __( 'Delete log', 'sureforms' ) }
+							/>
+						);
+
 						return (
 							<div
 								key={ index }
-								className="w-full flex flex-col gap-2 p-3 bg-background-primary rounded-lg border border-border-subtle"
+								className="bg-background-primary rounded-md p-3 relative shadow-sm flex items-start justify-between gap-3"
 							>
-								<div className="flex justify-between items-start gap-2">
-									<div className="flex-1">
-										<Text className="text-base font-semibold">
-											{ sprintf(
-												/* translators: 1: Log title, 2: Timestamp */
-												__(
-													'%1$s at %2$s',
-													'sureforms'
-												),
-												logTitle,
-												formatDateTime( log.timestamp )
-											) }
-										</Text>
-									</div>
-									<Tooltip
-										arrow
-										offset={ 20 }
-										content={
-											<Container
-												direction="column"
-												className="gap-2"
-											>
-												<p className="text-[13px] font-normal">
-													{ __(
-														'Are you sure to delete this?',
-														'sureforms'
-													) }
-												</p>
-												<Container className="gap-3">
-													<Button
-														variant="outline"
-														size="xs"
-														onClick={ () =>
-															setShowDeletePopup(
-																null
-															)
-														}
-														className="px-3"
+								<div className="flex-1 space-y-2">
+									<Text className="text-[12px] leading-[16px] text-text-secondary font-semibold">
+										{ logTitle }
+										{ log?.created_at &&
+											` at ${ formatDateTime(
+												log.created_at
+											) }` }
+									</Text>
+									{ logMessages.length > 0 && (
+										<div className="flex flex-col gap-2">
+											{ logMessages.map(
+												( message, msgIndex ) => (
+													<Text
+														key={ msgIndex }
+														size={ 14 }
+														weight={ 400 }
+														as="span"
+														className="[overflow-wrap:anywhere] leading-[20px] text-text-secondary"
 													>
-														{ __(
-															'Cancel',
-															'sureforms'
-														) }
-													</Button>
-													<Button
-														variant="primary"
-														size="xs"
-														onClick={ () => {
-															handleDeleteLog(
-																actualIndex
-															);
-															setShowDeletePopup(
-																null
-															);
-														} }
-														className="px-2 ml-2 bg-red-600 hover:bg-red-700 border-red-600 hover:border-red-700"
-													>
-														{ __(
-															'Confirm',
-															'sureforms'
-														) }
-													</Button>
-												</Container>
-											</Container>
-										}
-										placement="top"
-										triggers={ [ 'click', 'focus' ] }
-										tooltipPortalId="srfm-settings-container"
-										interactive
-										className="z-999999"
-										variant="light"
-										open={ showDeletePopup === actualIndex }
-										setOpen={ () =>
-											setShowDeletePopup( actualIndex )
-										}
-									>
-										<Button
-											variant="ghost"
-											size="xs"
-											icon={
-												<Trash2 className="!size-4" />
-											}
-											onClick={ () =>
-												setShowDeletePopup(
-													actualIndex
+														{ message || '' }
+													</Text>
 												)
-											}
-											disabled={
-												deleteLogMutation.isPending
-											}
-											className="text-icon-secondary hover:text-red-700"
-										/>
-									</Tooltip>
+											) }
+										</div>
+									) }
 								</div>
-								{ logMessages.length > 0 && (
-									<div className="flex flex-col gap-1 mt-1">
-										{ logMessages.map(
-											( message, msgIndex ) => (
-												<Text
-													key={ msgIndex }
-													className="text-xs text-text-secondary"
-												>
-													{ message || '' }
-												</Text>
-											)
-										) }
-									</div>
-								) }
+								{ deleteButton }
 							</div>
 						);
 					} )
 				) : (
-					<Text className="text-sm text-text-secondary p-3 text-center">
-						{ __( 'No payment logs available', 'sureforms' ) }
-					</Text>
+					<div className="relative text-center py-4 text-text-secondary">
+						{ __( 'No logs available.', 'sureforms' ) }
+					</div>
 				) }
-			</Container>
-
-			{ /* Pagination Controls - Show only if more than 3 logs */ }
+			</div>
+			{ /* Pagination */ }
 			{ isLogsAvailable && (
-				<Container className="flex items-center justify-between px-2 py-1">
-					<Text className="text-xs text-text-secondary">
-						{ __( 'Page', 'sureforms' ) } { currentPage }{ ' ' }
-						{ __( 'of', 'sureforms' ) } { totalPages }
-					</Text>
-					<Container className="gap-1">
+				<div className="w-full flex items-center justify-end pb-3 pr-3 pl-3">
+					<div className="flex items-center gap-2">
 						<Button
 							variant="ghost"
 							size="xs"
-							icon={ <ChevronLeft className="!size-4" /> }
+							icon={ <ArrowLeft /> }
+							iconPosition="left"
 							onClick={ handlePreviousPage }
 							disabled={ currentPage === 1 }
-							className="text-icon-secondary hover:text-icon-primary"
-						/>
+						>
+							{ __( 'Previous', 'sureforms' ) }
+						</Button>
 						<Button
 							variant="ghost"
 							size="xs"
-							icon={ <ChevronRight className="!size-4" /> }
+							icon={ <ArrowRight /> }
+							iconPosition="right"
 							onClick={ handleNextPage }
 							disabled={ currentPage === totalPages }
-							className="text-icon-secondary hover:text-icon-primary"
-						/>
-					</Container>
-				</Container>
+						>
+							{ __( 'Next', 'sureforms' ) }
+						</Button>
+					</div>
+				</div>
 			) }
-		</Container>
+		</div>
 	);
 };
 

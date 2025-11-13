@@ -3,7 +3,7 @@
  * SureForms Payments Main Class.
  *
  * @package sureforms
- * @since 1.0.0
+ * @since x.x.x
  */
 
 namespace SRFM\Inc\Payments;
@@ -14,7 +14,6 @@ use SRFM\Inc\Payments\Stripe\Payments_Settings;
 use SRFM\Inc\Payments\Stripe\Stripe_Webhook;
 use SRFM\Inc\Traits\Get_Instance;
 
-
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
@@ -22,7 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * SureForms Payments Main Class.
  *
- * @since 1.0.0
+ * @since x.x.x
  */
 class Payments {
 	use Get_Instance;
@@ -30,7 +29,7 @@ class Payments {
 	/**
 	 * Constructor
 	 *
-	 * @since 1.0.0
+	 * @since x.x.x
 	 */
 	public function __construct() {
 		if ( is_admin() ) {

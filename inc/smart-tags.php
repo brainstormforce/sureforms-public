@@ -305,7 +305,7 @@ class Smart_Tags {
 				}
 
 				if ( 0 === strpos( $tag, '{form-payment:' ) ) {
-					return self::parse_payment_smart_tag( $tag, $submission_data, $form_data );
+					return self::parse_payment_smart_tag( $tag, $submission_data );
 				}
 				break;
 		}
@@ -517,17 +517,15 @@ class Smart_Tags {
 	 *
 	 * @param string            $value tag.
 	 * @param array<mixed>|null $submission_data data from submission.
-	 * @param array<mixed>|null $form_data data from form.
 	 * @since  x.x.x
 	 * @return string
 	 */
 	public static function parse_payment_smart_tag( $value, $submission_data = null ) {
-
 		if ( ! $submission_data ) {
 			return '';
 		}
 
-		// Extract slug and property from tag: {form-payment:slug:property}
+		// Extract slug and property from tag: {form-payment:slug:property}.
 		if ( ! preg_match( '/\{form-payment:(.*?):(.*?)}/', $value, $matches ) ) {
 			return '';
 		}
@@ -602,10 +600,12 @@ class Smart_Tags {
 				return 'SF-#' . $order_id;
 
 			case 'amount':
-				// Return formatted amount with currency.
-				$amount   = ! empty( $payment_entry['total_amount'] ) ? floatval( $payment_entry['total_amount'] ) : 0;
-				$currency = ! empty( $payment_entry['currency'] ) ? strtoupper( $payment_entry['currency'] ) : 'USD';
-				return Helper::get_string_value( number_format( $amount, 2 ) ) . ' ' . $currency;
+				// Return formatted amount with currency symbol.
+				$amount           = ! empty( $payment_entry['total_amount'] ) ? floatval( $payment_entry['total_amount'] ) : 0;
+				$currency         = ! empty( $payment_entry['currency'] ) ? strtoupper( $payment_entry['currency'] ) : 'USD';
+				$currency_symbol  = \SRFM\Inc\Payments\Stripe\Stripe_Helper::get_currency_symbol( $currency );
+				$formatted_amount = Helper::get_string_value( number_format( $amount, 2 ) );
+				return ! empty( $currency_symbol ) ? $currency_symbol . $formatted_amount : $currency . ' ' . $formatted_amount;
 
 			case 'email':
 				// Return customer email.

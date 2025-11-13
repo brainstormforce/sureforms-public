@@ -1,7 +1,7 @@
 /**
  * WordPress dependencies
  */
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import { RichText } from '@wordpress/block-editor';
 import HelpText from '@Components/misc/HelpText';
 import { decodeHtmlEntities } from '@Blocks/util';
@@ -14,7 +14,7 @@ import { decodeHtmlEntities } from '@Blocks/util';
  */
 export const PaymentComponent = ( props ) => {
 	const { attributes, setAttributes, availableFormFields } = props;
-	const { label = 'Payment Details', help = '', block_id } = attributes;
+	const { label, help = '', block_id } = attributes;
 
 	// Get global stripe settings
 	const paymentSettings = window?.srfm_admin?.payments || {};
@@ -24,14 +24,23 @@ export const PaymentComponent = ( props ) => {
 	// Handle connect to Stripe
 	const handleConnectStripe = () => {
 		if ( stripeConnectUrl ) {
-			window.location.href = stripeConnectUrl;
+			window.open( stripeConnectUrl, '_blank', 'noopener,noreferrer' );
 		}
 	};
 
-	// Verify if the field is valid (check both name and email fields)
-	const verifyFieldIsValid = ( fieldSlug ) => {
+	// Verify if the field is valid (check name, email, and variableAmount fields)
+	const verifyFieldIsValid = ( fieldSlug, fieldType = 'default' ) => {
 		if ( '' === fieldSlug ) {
 			return false;
+		}
+
+		// For variable amount fields, check in variableAmountFields array
+		if ( fieldType === 'variableAmount' ) {
+			const variableAmountFieldExists =
+				availableFormFields?.variableAmountFields?.some( ( field ) => {
+					return field.slug === fieldSlug;
+				} );
+			return variableAmountFieldExists;
 		}
 
 		// Check in both nameFields and emailsFields arrays
@@ -54,9 +63,14 @@ export const PaymentComponent = ( props ) => {
 	const paymentType = attributes.paymentType || 'one-time';
 	const isSubscription = paymentType === 'subscription';
 
+	// Check amount type
+	const amountType = attributes.amountType || 'fixed';
+	const isVariableAmount = amountType === 'variable';
+
 	// Check if payment requires name and email fields
 	const customerName = attributes.customerNameField || '';
 	const customerEmail = attributes.customerEmailField || '';
+	const variableAmountField = attributes.variableAmountField || '';
 
 	// Name field validation: required only for subscriptions
 	const missingNameField =
@@ -67,7 +81,14 @@ export const PaymentComponent = ( props ) => {
 	const missingEmailField =
 		! customerEmail || ! verifyFieldIsValid( customerEmail );
 
-	const hasCustomerFieldsError = missingNameField || missingEmailField;
+	// Variable amount field validation: required when amount type is variable
+	const missingVariableAmountField =
+		isVariableAmount &&
+		( ! variableAmountField ||
+			! verifyFieldIsValid( variableAmountField, 'variableAmount' ) );
+
+	const hasCustomerFieldsError =
+		missingNameField || missingEmailField || missingVariableAmountField;
 
 	let stripeConnectedComponent = null;
 
@@ -75,30 +96,40 @@ export const PaymentComponent = ( props ) => {
 	if ( stripeConnected && hasCustomerFieldsError ) {
 		let errorMessage = '';
 
-		if ( isSubscription ) {
-			// For subscriptions: both name and email are required
-			if ( missingNameField && missingEmailField ) {
-				errorMessage = __(
-					'Name and Email fields are required for subscriptions. Please configure these fields in the block settings.',
-					'sureforms'
+		// Build error message based on missing fields
+		const missingFields = [];
+
+		if ( missingNameField ) {
+			missingFields.push( 'Name' );
+		}
+		if ( missingEmailField ) {
+			missingFields.push( 'Email' );
+		}
+		if ( missingVariableAmountField ) {
+			missingFields.push( 'Variable Amount' );
+		}
+
+		if ( missingFields.length > 0 ) {
+			const fieldsList = missingFields.join( ' and ' );
+			if ( isSubscription && missingFields.length > 1 ) {
+				errorMessage = sprintf(
+					/* translators: %1$s: a comma-separated list of missing field names */
+					__(
+						'%1$s fields are required. Please configure these fields in the block settings.',
+						'sureforms'
+					),
+					fieldsList
 				);
-			} else if ( missingNameField ) {
-				errorMessage = __(
-					'Name field is required for subscriptions. Please configure this field in the block settings.',
-					'sureforms'
-				);
-			} else if ( missingEmailField ) {
-				errorMessage = __(
-					'Email field is required for subscriptions. Please configure this field in the block settings.',
-					'sureforms'
+			} else {
+				errorMessage = sprintf(
+					/* translators: %1$s: the missing field name */
+					__(
+						'%1$s field is required. Please configure this field in the block settings.',
+						'sureforms'
+					),
+					fieldsList
 				);
 			}
-		} else {
-			// For one-time payments: only email is required
-			errorMessage = __(
-				'Email field is required to accept payments. Please configure the email field in the block settings.',
-				'sureforms'
-			);
 		}
 
 		stripeConnectedComponent = (
@@ -112,7 +143,7 @@ export const PaymentComponent = ( props ) => {
 			<>
 				<p className="srfm-stripe-payment-error-text">
 					{ __(
-						'You need to connect your Stripe account to collect payments from this form.',
+						'You need to configure a payment account to collect payments from this form. Please configure your payment provider to proceed.',
 						'sureforms'
 					) }
 				</p>
@@ -121,12 +152,11 @@ export const PaymentComponent = ( props ) => {
 					className="srfm-stripe-connect-button"
 					onClick={ handleConnectStripe }
 				>
-					{ __( 'Connect to Stripe', 'sureforms' ) }
+					{ __( 'Configure Payment Account', 'sureforms' ) }
 				</button>
 			</>
 		);
 	}
-	// const isRequired = required ? ' srfm-required' : '';
 
 	return (
 		<div className="srfm-block-single srfm-payment-block">
@@ -154,7 +184,7 @@ export const PaymentComponent = ( props ) => {
 					} }
 				>
 					{ __(
-						'This is a placeholder for the Stripe Payment block. The actual payment fields will only appear when you preview or publish the form.',
+						'This is a placeholder for the Payment block. The actual payment fields for your configured payment provider(s) will only appear when you preview or publish the form.',
 						'sureforms'
 					) }
 				</p>

@@ -303,9 +303,12 @@ const Header = ( { breadCrumb } ) => {
 						}
 					/>
 					<HeaderTooltipItem
-						title={ __( 'What\’s New', 'sureforms' ) }
+						title={ __( 'What’s New', 'sureforms' ) }
 					>
-						<div id="srfm_whats_new" className="[&>a]:p-0.5 [&>a]:pl-0" />
+						<div
+							id="srfm_whats_new"
+							className="[&>a]:p-0.5 [&>a]:pl-0"
+						/>
 					</HeaderTooltipItem>
 				</Topbar.Right>
 			</Topbar>

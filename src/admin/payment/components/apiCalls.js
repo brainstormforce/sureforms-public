@@ -9,6 +9,7 @@ export const fetchPayments = async ( args ) => {
 		itemsPerPage,
 		sortBy,
 		formFilter,
+		paymentMode,
 	} = args;
 	try {
 		// Prepare form data as URLSearchParams for better apiFetch compatibility
@@ -21,6 +22,7 @@ export const fetchPayments = async ( args ) => {
 		formData.append( 'search', searchTerm || '' );
 		formData.append( 'status', filter || '' );
 		formData.append( 'form_id', formFilter || '' );
+		formData.append( 'payment_mode', paymentMode || '' );
 		formData.append(
 			'date_from',
 			selectedDates?.from
@@ -46,8 +48,6 @@ export const fetchPayments = async ( args ) => {
 			},
 			body: formData.toString(),
 		} );
-
-		console.log( 'AJAX response:', data );
 
 		// Check WordPress AJAX response format
 		if ( ! data.success ) {
@@ -86,8 +86,6 @@ export const fetchSinglePayment = async ( paymentId ) => {
 			body: formData.toString(),
 		} );
 
-		console.log( 'Single payment AJAX response:', data );
-
 		// Check WordPress AJAX response format
 		if ( ! data.success ) {
 			const errorMessage =
@@ -109,8 +107,8 @@ export const refundPayment = async ( {
 	transactionId,
 	refundAmount,
 	refundType,
+	refundNotes = '',
 } ) => {
-	console.log( { paymentId, transactionId, refundAmount, refundType } );
 	try {
 		// Prepare form data for refund request
 		const formData = new URLSearchParams();
@@ -123,6 +121,7 @@ export const refundPayment = async ( {
 		formData.append( 'transaction_id', transactionId );
 		formData.append( 'refund_amount', refundAmount );
 		formData.append( 'refund_type', refundType );
+		formData.append( 'refund_notes', refundNotes );
 
 		// Use apiFetch with proper configuration for admin-ajax.php
 		const data = await apiFetch( {
@@ -133,8 +132,6 @@ export const refundPayment = async ( {
 			},
 			body: formData.toString(),
 		} );
-
-		console.log( 'Refund AJAX response:', data );
 
 		// Check WordPress AJAX response format
 		if ( ! data.success ) {
@@ -173,8 +170,6 @@ export const fetchSubscription = async ( subscriptionId ) => {
 			body: formData.toString(),
 		} );
 
-		console.log( 'Subscription AJAX response:', data );
-
 		// Check WordPress AJAX response format
 		if ( ! data.success ) {
 			const errorMessage =
@@ -210,8 +205,6 @@ export const fetchForms = async () => {
 			},
 			body: formData.toString(),
 		} );
-
-		console.log( 'Forms list AJAX response:', data );
 
 		// Check WordPress AJAX response format
 		if ( ! data.success ) {
@@ -250,8 +243,6 @@ export const cancelSubscription = async ( paymentId ) => {
 			body: formData.toString(),
 		} );
 
-		console.log( 'Cancel subscription AJAX response:', data );
-
 		// Check WordPress AJAX response format
 		if ( ! data.success ) {
 			const errorMessage =
@@ -288,8 +279,6 @@ export const pauseSubscription = async ( paymentId ) => {
 			},
 			body: formData.toString(),
 		} );
-
-		console.log( 'Pause subscription AJAX response:', data );
 
 		// Check WordPress AJAX response format
 		if ( ! data.success ) {
@@ -329,8 +318,6 @@ export const addPaymentNote = async ( paymentId, noteText ) => {
 			body: formData.toString(),
 		} );
 
-		console.log( 'Add note AJAX response:', data );
-
 		// Check WordPress AJAX response format
 		if ( ! data.success ) {
 			const errorMessage = data.data?.message || 'Failed to add note';
@@ -368,8 +355,6 @@ export const deletePaymentNote = async ( paymentId, noteIndex ) => {
 			body: formData.toString(),
 		} );
 
-		console.log( 'Delete note AJAX response:', data );
-
 		// Check WordPress AJAX response format
 		if ( ! data.success ) {
 			const errorMessage = data.data?.message || 'Failed to delete note';
@@ -406,8 +391,6 @@ export const deletePaymentLog = async ( paymentId, logIndex ) => {
 			},
 			body: formData.toString(),
 		} );
-
-		console.log( 'Delete log AJAX response:', data );
 
 		// Check WordPress AJAX response format
 		if ( ! data.success ) {
@@ -454,10 +437,6 @@ export const bulkDeletePayments = async ( paymentIds ) => {
 			},
 			body: formData.toString(),
 		} );
-
-		console.log( 'Bulk delete AJAX response:', data );
-		console.log( 'Response success:', data.success );
-		console.log( 'Response data:', data.data );
 
 		// Check WordPress AJAX response format
 		if ( ! data.success ) {

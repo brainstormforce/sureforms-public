@@ -130,112 +130,117 @@ class Payments extends Base {
 	public function get_schema() {
 		return [
 			// Payment ID.
-			'id'                  => [
+			'id'                     => [
 				'type' => 'number',
 			],
 			// Form ID.
-			'form_id'             => [
+			'form_id'                => [
 				'type' => 'number',
 			],
-			'block_id'            => [
+			'block_id'               => [
 				'type'    => 'string',
 				'default' => '',
 			],
 			// Payment status (Stripe).
-			'status'              => [
+			'status'                 => [
 				'type'    => 'string',
 				'default' => 'pending',
 			],
 			// Total amount after discount.
-			'total_amount'        => [
+			'total_amount'           => [
 				'type'    => 'string',
 				'default' => '0.00000000',
 			],
 			// Total refunded amount.
-			'refunded_amount'     => [
+			'refunded_amount'        => [
 				'type'    => 'string',
 				'default' => '0.00000000',
 			],
 			// Currency code.
-			'currency'            => [
+			'currency'               => [
 				'type'    => 'string',
 				'default' => '',
 			],
 			// Entry ID.
-			'entry_id'            => [
+			'entry_id'               => [
 				'type'    => 'number',
 				'default' => 0,
 			],
 			// Payment gateway.
-			'gateway'             => [
+			'gateway'                => [
 				'type'    => 'string',
 				'default' => '',
 			],
 			// Payment type.
-			'type'                => [
+			'type'                   => [
 				'type'    => 'string',
 				'default' => '',
 			],
 			// Payment mode (test/live).
-			'mode'                => [
+			'mode'                   => [
 				'type'    => 'string',
 				'default' => '',
 			],
 			// Transaction ID from gateway.
-			'transaction_id'      => [
+			'transaction_id'         => [
 				'type'    => 'string',
 				'default' => '',
 			],
 			// Customer ID from gateway.
-			'customer_id'         => [
+			'customer_id'            => [
 				'type'    => 'string',
 				'default' => '',
 			],
 			// Subscription ID (if recurring).
-			'subscription_id'     => [
+			'subscription_id'        => [
 				'type'    => 'string',
 				'default' => '',
 			],
 			// Subscription status.
-			'subscription_status' => [
+			'subscription_status'    => [
 				'type'    => 'string',
 				'default' => '',
 			],
+			// Parent subscription payment ID (for renewal payments).
+			'parent_subscription_id' => [
+				'type'    => 'number',
+				'default' => 0,
+			],
 			// Payment data.
-			'payment_data'        => [
+			'payment_data'           => [
 				'type'    => 'array',
 				'default' => [],
 			],
 			// Extra data (JSON).
-			'extra'               => [
+			'extra'                  => [
 				'type'    => 'array',
 				'default' => [],
 			],
 			// Payment log.
-			'log'                 => [
+			'log'                    => [
 				'type'    => 'array',
 				'default' => [],
 			],
 			// Created date.
-			'created_at'          => [
+			'created_at'             => [
 				'type' => 'datetime',
 			],
 			// Updated date.
-			'updated_at'          => [
+			'updated_at'             => [
 				'type' => 'datetime',
 			],
 			// Transaction ID (custom format).
-			'srfm_txn_id'         => [
+			'srfm_txn_id'            => [
 				'type'    => 'string',
 				'default' => '',
 			],
 			// Customer email.
-			'customer_email'      => [
+			'customer_email'         => [
 				'type'    => 'string',
 				'default' => '',
 			],
 			// Customer name.
-			'customer_name'       => [
+			'customer_name'          => [
 				'type'    => 'string',
 				'default' => '',
 			],
@@ -262,6 +267,7 @@ class Payments extends Base {
 			'customer_id VARCHAR(50) NOT NULL',
 			'subscription_id VARCHAR(50) NOT NULL',
 			'subscription_status VARCHAR(20) NOT NULL',
+			'parent_subscription_id BIGINT(20) UNSIGNED NOT NULL DEFAULT 0',
 			'payment_data LONGTEXT',
 			'extra LONGTEXT',
 			'log LONGTEXT',
@@ -621,6 +627,27 @@ class Payments extends Base {
 	}
 
 	/**
+	 * Get all distinct form IDs that have payments.
+	 *
+	 * @since x.x.x
+	 * @return array Array of unique form IDs that have at least one payment.
+	 */
+	public static function get_all_forms_with_payments() {
+		$instance = self::get_instance();
+
+		// Get distinct form IDs from the payments table.
+		$results = $instance->get_results(
+			[], // Empty where clause to get all records.
+			'DISTINCT form_id'
+		);
+
+		$form_ids = array_unique( array_column( $results, 'form_id' ) );
+
+		// Filter out any null or 0 form IDs and return as integers.
+		return array_filter( array_map( 'absint', $form_ids ) );
+	}
+
+	/**
 	 * Delete a payment.
 	 *
 	 * @param int $payment_id Payment ID.
@@ -933,6 +960,10 @@ class Payments extends Base {
 			return [];
 		}
 
+		// Get all payments with the subscription_id.
+		// This automatically includes.
+		// 1. The initial subscription payment (type='subscription').
+		// 2. All renewal payments (type='renewal') created by webhooks.
 		return self::get_all(
 			[
 				'where'   => [
@@ -941,11 +972,6 @@ class Payments extends Base {
 							'key'     => 'subscription_id',
 							'compare' => '=',
 							'value'   => sanitize_text_field( $subscription_id ),
-						],
-						[
-							'key'     => 'type',
-							'compare' => '=',
-							'value'   => 'renewal',
 						],
 					],
 				],
@@ -992,9 +1018,9 @@ class Payments extends Base {
 	}
 
 	/**
-	 * Get all payments for main payments table (excluding subscription-related payments).
-	 * Shows: subscription records OR one-time payments (payment type with no subscription_id)
-	 * Hides: payment records that have subscription_id (individual subscription transactions)
+	 * Get all payments for main payments table.
+	 * Shows: ALL payment records (subscription, renewal, payment)
+	 * No filtering applied by default - filters only come from frontend user selections
 	 *
 	 * @param array<mixed> $args Query arguments.
 	 * @param bool         $set_limit Whether to apply limit to query.
@@ -1019,12 +1045,9 @@ class Payments extends Base {
 		$instance   = self::get_instance();
 		$table_name = $instance->get_tablename();
 
-		// Build the main filter condition using raw SQL for OR logic.
-		// Show: type = 'subscription' OR (type = 'payment' AND subscription_id = '').
-		$main_condition = "(type = 'subscription' OR (type = 'payment' AND subscription_id = ''))";
-
-		// Start building the query.
-		$where_clause = "WHERE {$main_condition}";
+		// No default filtering - show ALL transactions.
+		// Filters are applied only from frontend user selections via 'where' conditions.
+		$where_clause = 'WHERE 1=1';
 		$params       = [];
 
 		// Handle additional where conditions if provided.
@@ -1050,9 +1073,17 @@ class Payments extends Base {
 		}
 
 		// Order by.
-		$order        = strtoupper( $_args['order'] ) === 'ASC' ? 'ASC' : 'DESC';
-		$orderby      = esc_sql( $_args['orderby'] );
-		$order_clause = "ORDER BY {$orderby} {$order}";
+		$order   = strtoupper( $_args['order'] ) === 'ASC' ? 'ASC' : 'DESC';
+		$orderby = esc_sql( $_args['orderby'] );
+		// Resolve phpstan: Only allow $orderby and $columns as string (not array), fallback to defaults if needed.
+		$order_clause = '';
+		if ( ! empty( $_args['orderby'] ) && is_string( $_args['orderby'] ) ) {
+			$orderby      = esc_sql( $_args['orderby'] );
+			$order_clause = "ORDER BY {$orderby} {$order}";
+		} else {
+			// Fallback to default order by created_at.
+			$order_clause = "ORDER BY created_at {$order}";
+		}
 
 		// Limit clause.
 		$limit_clause = '';
@@ -1061,14 +1092,19 @@ class Payments extends Base {
 		}
 
 		// Build final query.
-		$columns = '*' === $_args['columns'] ? '*' : esc_sql( $_args['columns'] );
-		$query   = "SELECT {$columns} FROM {$table_name} {$where_clause} {$order_clause} {$limit_clause}";
+		$columns = '*';
+		if ( ! empty( $_args['columns'] ) && is_string( $_args['columns'] ) ) {
+			$columns = '*' === $_args['columns'] ? '*' : esc_sql( $_args['columns'] );
+		}
+		$query = "SELECT {$columns} FROM {$table_name} {$where_clause} {$order_clause} {$limit_clause}";
 
 		// Execute query with parameters.
 		if ( ! empty( $params ) ) {
+			// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Query string is built dynamically above based on conditions.
 			$query = $wpdb->prepare( $query, $params );
 		}
 
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared -- Custom table query with dynamic preparation, caching not applicable for dynamic queries.
 		$results = $wpdb->get_results( $query, ARRAY_A );
 
 		return is_array( $results ) ? $results : [];
@@ -1076,8 +1112,8 @@ class Payments extends Base {
 
 	/**
 	 * Get total payments count by status for main payments table.
-	 * Counts: subscription records OR one-time payments (payment type with no subscription_id)
-	 * Excludes: payment records that have subscription_id (individual subscription transactions)
+	 * Counts: ALL payment records (no default filtering)
+	 * Filters are applied only from frontend user selections
 	 *
 	 * @param string       $status Status to filter by ('all', 'pending', 'succeeded', etc.).
 	 * @param int          $form_id Optional form ID to filter by.
@@ -1091,9 +1127,8 @@ class Payments extends Base {
 		$instance   = self::get_instance();
 		$table_name = $instance->get_tablename();
 
-		// Build the main filter condition using raw SQL for OR logic.
-		// Count: type = 'subscription' OR (type = 'payment' AND subscription_id = '').
-		$where_clause = "(type = 'subscription' OR (type = 'payment' AND subscription_id = ''))";
+		// No default filtering - count ALL transactions.
+		$where_clause = '1=1';
 		$params       = [];
 
 		// Add status condition.
@@ -1114,15 +1149,15 @@ class Payments extends Base {
 				if ( is_array( $where_group ) ) {
 					foreach ( $where_group as $condition ) {
 						if ( isset( $condition['key'], $condition['compare'], $condition['value'] ) ) {
-							// Special handling for IN/NOT IN with arrays
+							// Special handling for IN/NOT IN with arrays.
 							if ( in_array( strtoupper( trim( $condition['compare'] ) ), [ 'IN', 'NOT IN' ], true ) && is_array( $condition['value'] ) ) {
 								$ids = array_map( 'absint', $condition['value'] );
-								// Prevent empty IN ()
+								// Prevent empty IN ().
 								if ( empty( $ids ) ) {
 									$ids = [ 0 ];
 								}
 								$placeholders  = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
-								$where_clause .= " AND {$condition['key']} {$condition['compare']} ($placeholders)";
+								$where_clause .= " AND {$condition['key']} {$condition['compare']} ({$placeholders})";
 								foreach ( $ids as $id ) {
 									$params[] = $id;
 								}
@@ -1140,9 +1175,11 @@ class Payments extends Base {
 		$query = "SELECT COUNT(*) FROM {$table_name} WHERE {$where_clause}";
 
 		if ( ! empty( $params ) ) {
+			// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Query string is built dynamically above based on conditions.
 			$query = $wpdb->prepare( $query, $params );
 		}
 
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared -- Custom table query with dynamic preparation, caching not applicable for count operations.
 		$result = $wpdb->get_var( $query );
 
 		return absint( $result );

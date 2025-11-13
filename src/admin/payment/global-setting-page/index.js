@@ -9,11 +9,16 @@ import {
 	RadioButton,
 	Select,
 	toast,
-	Dialog,
-	Input,
+	Text,
 } from '@bsf/force-ui';
 import ContentSection from '@Admin/settings/components/ContentSection';
-import { currencies, AlertForFee } from '../components/utils';
+import ConfirmationDialog from '@Admin/components/ConfirmationDialog';
+import {
+	currencies,
+	AlertForFee,
+	WebhookAutoConnectManage,
+} from '../components/utils';
+import parse from 'html-react-parser';
 
 const Payments = ( {
 	loading,
@@ -24,13 +29,25 @@ const Payments = ( {
 	const [ isConnecting, setIsConnecting ] = useState( false );
 	const [ isDisconnecting, setIsDisconnecting ] = useState( false );
 	const [ isCreatingWebhook, setIsCreatingWebhook ] = useState( false );
-	const [ isDisconnectDialogOpen, setIsDisconnectDialogOpen ] =
-		useState( false );
-	const [ confirmationInput, setConfirmationInput ] = useState( '' );
+	const [ webhookTestConnected, setWebhookTestConnected ] = useState( false );
+	const [ webhookLiveConnected, setWebhookLiveConnected ] = useState( false );
+
+	// State for confirmation dialog
+	const [ confirmationDialog, setConfirmationDialog ] = useState( {
+		open: false,
+		title: '',
+		description: '',
+		confirmLabel: '',
+		onConfirm: null,
+		isLoading: false,
+		destructive: true,
+		enableVerification: false,
+		verificationText: '',
+	} );
 
 	// Load settings on mount
 	useEffect( () => {
-		// Check URL parameters for OAuth callback status
+		// Check URL parameters for OAuth callback status.
 		const urlParams = new URLSearchParams( window.location.search );
 
 		if ( urlParams.get( 'connected' ) === '1' ) {
@@ -56,6 +73,15 @@ const Payments = ( {
 				window.location.pathname +
 					'?page=sureforms_form_settings&tab=payments-settings'
 			);
+		}
+	}, [] );
+
+	// Initialize webhook connection states from localized data
+	useEffect( () => {
+		const payments = window.srfm_admin?.payments;
+		if ( payments ) {
+			setWebhookTestConnected( payments.webhook_test_connected || false );
+			setWebhookLiveConnected( payments.webhook_live_connected || false );
 		}
 	}, [] );
 
@@ -91,13 +117,20 @@ const Payments = ( {
 
 	// Handle Stripe Disconnect - Open confirmation dialog
 	const handleStripeDisconnect = () => {
-		setIsDisconnectDialogOpen( true );
-	};
-
-	// Handle dialog close - Reset confirmation input
-	const handleDialogClose = () => {
-		setIsDisconnectDialogOpen( false );
-		setConfirmationInput( '' );
+		setConfirmationDialog( {
+			open: true,
+			title: __( 'Disconnect Stripe Account', 'sureforms' ),
+			description: __(
+				'Are you sure you want to disconnect your Stripe account? This will stop all active payments, subscriptions, and form transactions connected to this account.',
+				'sureforms'
+			),
+			confirmLabel: __( 'Disconnect', 'sureforms' ),
+			onConfirm: confirmStripeDisconnect,
+			isLoading: isDisconnecting,
+			destructive: true,
+			enableVerification: true,
+			verificationText: 'confirm',
+		} );
 	};
 
 	// Confirm and process Stripe disconnect
@@ -153,10 +186,14 @@ const Payments = ( {
 			// Update local state after global settings
 			setPaymentsSettings( newSettings );
 
+			// Reset webhook connection states
+			setWebhookTestConnected( false );
+			setWebhookLiveConnected( false );
+
 			toast.success(
 				__( 'Stripe account disconnected successfully.', 'sureforms' )
 			);
-			handleDialogClose();
+			setConfirmationDialog( ( prev ) => ( { ...prev, open: false } ) );
 		} catch ( error ) {
 			const errorMessage =
 				error.message ||
@@ -174,6 +211,9 @@ const Payments = ( {
 			const response = await apiFetch( {
 				path: '/sureforms/v1/payments/create-payment-webhook',
 				method: 'POST',
+				data: {
+					mode: paymentsSettings.payment_mode, // Pass current mode (test/live)
+				},
 			} );
 
 			if ( response.success ) {
@@ -182,30 +222,47 @@ const Payments = ( {
 						__( 'Webhook created successfully!', 'sureforms' )
 				);
 
-				// Update local state with webhook details from API response
-				const testDetails = response.webhook_details?.test || {};
-				const liveDetails = response.webhook_details?.live || {};
+				// Get the current mode that was used for webhook creation
+				const currentMode = paymentsSettings.payment_mode;
 
-				setPaymentsSettings( {
-					...paymentsSettings,
-					webhook_test_secret:
-						testDetails.webhook_secret || 'created',
-					webhook_test_url:
-						testDetails.webhook_url ||
-						`${ window.location.origin }/wp-json/sureforms/webhook`,
-					webhook_test_id: testDetails.webhook_id || 'created',
-					webhook_live_secret:
-						liveDetails.webhook_secret || 'created',
-					webhook_live_url:
-						liveDetails.webhook_url ||
-						`${ window.location.origin }/wp-json/sureforms/webhook`,
-					webhook_live_id: liveDetails.webhook_id || 'created',
-				} );
+				// Get webhook details for the created mode
+				const webhookDetails =
+					response.webhook_details?.[ currentMode ] || {};
+
+				// Only update if webhook was actually created (has valid secret and ID)
+				if (
+					webhookDetails.webhook_secret &&
+					webhookDetails.webhook_id
+				) {
+					const updatedSettings = { ...paymentsSettings };
+
+					if ( currentMode === 'live' ) {
+						updatedSettings.webhook_live_secret =
+							webhookDetails.webhook_secret;
+						updatedSettings.webhook_live_url =
+							webhookDetails.webhook_url ||
+							`${ window.location.origin }/wp-json/sureforms/webhook`;
+						updatedSettings.webhook_live_id =
+							webhookDetails.webhook_id;
+						setWebhookLiveConnected( true ); // Update live state
+					} else {
+						updatedSettings.webhook_test_secret =
+							webhookDetails.webhook_secret;
+						updatedSettings.webhook_test_url =
+							webhookDetails.webhook_url ||
+							`${ window.location.origin }/wp-json/sureforms/webhook`;
+						updatedSettings.webhook_test_id =
+							webhookDetails.webhook_id;
+						setWebhookTestConnected( true ); // Update test state
+					}
+
+					setPaymentsSettings( updatedSettings );
+				}
 			} else {
-				toast.error(
-					response.message ||
-						__( 'Failed to create webhook.', 'sureforms' )
-				);
+				const errorMessage = response.message
+					? parse( response.message )
+					: __( 'Failed to create webhook.', 'sureforms' );
+				toast.error( errorMessage );
 			}
 		} catch ( error ) {
 			const errorMessage =
@@ -316,11 +373,16 @@ const Payments = ( {
 				<div className="flex items-center gap-2">
 					<CircleCheck className="text-support-success" />
 					<div>
-						<p className="text-sm text-text-tertiary">
+						<Text
+							size={ 16 }
+							weight={ 500 }
+							as="span"
+							className="text-text-secondary"
+						>
 							{ paymentsSettings?.account_data?.settings
 								?.dashboard?.display_name ||
 								paymentsSettings.stripe_account_id }
-						</p>
+						</Text>
 					</div>
 				</div>
 
@@ -330,8 +392,8 @@ const Payments = ( {
 					icon={ isDisconnecting && <Loader /> }
 					iconPosition="left"
 					variant="link"
-					size="xs"
-					className="text-red-600 hover:text-red-700 no-underline hover:no-underline"
+					size="md"
+					className="no-underline hover:no-underline"
 				>
 					{ isDisconnecting
 						? __( 'Disconnecting…', 'sureforms' )
@@ -342,9 +404,19 @@ const Payments = ( {
 	);
 
 	const isLiveMode = paymentsSettings.payment_mode === 'live';
-	const currentWebhookSecret = isLiveMode
-		? paymentsSettings.webhook_live_secret
-		: paymentsSettings.webhook_test_secret;
+	const isWebhookConnected = isLiveMode
+		? webhookLiveConnected
+		: webhookTestConnected;
+
+	// Construct Stripe webhook dashboard URL
+	const getStripeWebhookDashboardUrl = () => {
+		const accountId = paymentsSettings.stripe_account_id;
+		if ( ! accountId ) {
+			return '';
+		}
+		const modeSegment = isLiveMode ? '' : 'test/';
+		return `https://dashboard.stripe.com/${ accountId }/${ modeSegment }workbench/webhooks`;
+	};
 
 	const webhookManagement = (
 		<div className="flex flex-col gap-2">
@@ -352,113 +424,35 @@ const Payments = ( {
 				{ __( 'Webhook', 'sureforms' ) }
 			</Label>
 
-			{ currentWebhookSecret ? (
+			{ isWebhookConnected ? (
 				<div className="flex items-center p-4 rounded-lg border-0.5 border-border-subtle border-solid shadow-sm gap-2">
 					<CircleCheck className="text-support-success" />
 					<div>
-						<p className="text-sm text-text-secondary font-normal">
+						<Text
+							size={ 16 }
+							weight={ 500 }
+							as="span"
+							className="text-text-secondary"
+						>
 							{ __(
 								'Webhook successfully connected, all Stripe events are being tracked.',
 								'sureforms'
 							) }
-						</p>
+						</Text>
 					</div>
 				</div>
 			) : (
-				<div className="flex items-center justify-between gap-2">
-					<p className="text-sm text-text-secondary font-normal max-w-[70%]">
-						{ __(
-							'Webhooks let Stripe notify SureForms about payment events like successful charges or subscription updates, keeping your data in sync automatically.',
-							'sureforms'
-						) }
-					</p>
-					<Button
-						onClick={ handleWebhookCreation }
-						disabled={ isCreatingWebhook || loading }
-						icon={ isCreatingWebhook && <Loader /> }
-						iconPosition="left"
-						variant="outline"
-						size="xs"
-					>
-						{ isCreatingWebhook
-							? __( 'Creating…', 'sureforms' )
-							: __( 'Auto Create Webhook', 'sureforms' ) }
-					</Button>
-				</div>
+				<WebhookAutoConnectManage
+					getStripeWebhookDashboardUrl={
+						getStripeWebhookDashboardUrl
+					}
+					handleWebhookCreation={ handleWebhookCreation }
+					isCreatingWebhook={ isCreatingWebhook }
+					loading={ loading }
+					stripeAccountId={ paymentsSettings.stripe_account_id }
+				/>
 			) }
 		</div>
-	);
-
-	// Disconnect Confirmation Dialog
-	const disconnectDialog = (
-		<Dialog
-			open={ isDisconnectDialogOpen }
-			setOpen={ setIsDisconnectDialogOpen }
-			design="simple"
-			exitOnEsc
-			scrollLock
-		>
-			<Dialog.Backdrop />
-			<Dialog.Panel>
-				<Dialog.Header>
-					<div className="flex items-center justify-between">
-						<Dialog.Title>
-							{ __( 'Disconnect Stripe Account', 'sureforms' ) }
-						</Dialog.Title>
-						<Dialog.CloseButton onClick={ handleDialogClose } />
-					</div>
-					<Dialog.Description>
-						{ __(
-							'Are you sure you want to disconnect your Stripe account? This will stop all active payments, subscriptions, and form transactions connected to this account.',
-							'sureforms'
-						) }
-					</Dialog.Description>
-					<Dialog.Description>
-						{ __(
-							'To confirm, type "confirm" in the box below.',
-							'sureforms'
-						) }
-					</Dialog.Description>
-					<Input
-						type="text"
-						value={ confirmationInput }
-						onChange={ ( value ) => setConfirmationInput( value ) }
-						placeholder={ __( 'Type "confirm"', 'sureforms' ) }
-						disabled={ isDisconnecting }
-						size="sm"
-					/>
-				</Dialog.Header>
-				<Dialog.Footer className="flex justify-end gap-2">
-					<Button
-						variant="outline"
-						onClick={ handleDialogClose }
-						disabled={ isDisconnecting }
-					>
-						{ __( 'Cancel', 'sureforms' ) }
-					</Button>
-					<Button
-						variant="primary"
-						onClick={ () => {
-							if (
-								typeof confirmationInput === 'string' &&
-								confirmationInput.trim().toLowerCase() ===
-									'confirm'
-							) {
-								confirmStripeDisconnect();
-							}
-						} }
-						disabled={ isDisconnecting }
-						icon={ isDisconnecting && <Loader /> }
-						iconPosition="left"
-						className="bg-red-600 hover:bg-red-700"
-					>
-						{ isDisconnecting
-							? __( 'Disconnecting…', 'sureforms' )
-							: __( 'Disconnect', 'sureforms' ) }
-					</Button>
-				</Dialog.Footer>
-			</Dialog.Panel>
-		</Dialog>
 	);
 
 	// Content for Payment Settings section
@@ -477,38 +471,40 @@ const Payments = ( {
 	);
 
 	const stripeConnectContent = (
-		<div className="flex flex-col gap-[8px] px-2">
-			<Label size="sm" variant="neutral">
-				{ __(
-					'Connect your Stripe account to start accepting payments through your forms.',
-					'sureforms'
-				) }
-			</Label>
-			<Button
-				onClick={ handleStripeConnect }
-				disabled={ isConnecting || loading }
-				variant="primary"
-				size="sm"
-				className="w-fit"
-			>
-				{ isConnecting
-					? __( 'Connecting…', 'sureforms' )
-					: __( 'Connect to Stripe', 'sureforms' ) }
-			</Button>
-			<p className="text-field-helper text-sm">
-				{ __(
-					'Securely connect to Stripe with just a few clicks to begin accepting payments! ',
-					'sureforms'
-				) }
-				<a
-					href="https://sureforms.com/docs/stripe-connect"
-					target="_blank"
-					rel="noopener noreferrer"
-					className="text-link-primary no-underline"
+		<div className="flex flex-col gap-[24px] px-2">
+			<div className="flex flex-col gap-[12px]">
+				<Label size="sm" variant="neutral">
+					{ __(
+						'Connect your Stripe account to start accepting payments through your forms.',
+						'sureforms'
+					) }
+				</Label>
+				<Button
+					onClick={ handleStripeConnect }
+					disabled={ isConnecting || loading }
+					variant="primary"
+					size="sm"
+					className="w-fit"
 				>
-					{ __( 'Learn More', 'sureforms' ) }
-				</a>
-			</p>
+					{ isConnecting
+						? __( 'Connecting…', 'sureforms' )
+						: __( 'Connect to Stripe', 'sureforms' ) }
+				</Button>
+				<p className="text-field-helper text-sm">
+					{ __(
+						'Securely connect to Stripe with just a few clicks to begin accepting payments! ',
+						'sureforms'
+					) }
+					<a
+						href="https://sureforms.com/docs/stripe-connect"
+						target="_blank"
+						rel="noopener noreferrer"
+						className="text-link-primary no-underline"
+					>
+						{ __( 'Learn More', 'sureforms' ) }
+					</a>
+				</p>
+			</div>
 			<AlertForFee />
 		</div>
 	);
@@ -528,7 +524,22 @@ const Payments = ( {
 					content={ stripeConnectContent }
 				/>
 			) }
-			{ disconnectDialog }
+
+			<ConfirmationDialog
+				isOpen={ confirmationDialog.open }
+				onCancel={ () =>
+					setConfirmationDialog( ( prev ) => ( {
+						...prev,
+						open: false,
+					} ) )
+				}
+				onConfirm={ confirmationDialog.onConfirm }
+				title={ confirmationDialog.title }
+				description={ confirmationDialog.description }
+				confirmButtonText={ confirmationDialog.confirmLabel }
+				destructiveConfirmButton={ confirmationDialog.destructive }
+				requireConfirmation={ confirmationDialog.enableVerification }
+			/>
 		</div>
 	);
 };

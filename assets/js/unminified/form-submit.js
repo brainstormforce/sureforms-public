@@ -135,6 +135,14 @@ function initializeFormHandlers() {
 			// Set the login completion status to true after form submission.
 			form.__loginSuccess = true;
 		} );
+
+		// Add the event after the form initialization to ensure that all third party libraries are loaded and initialized.
+		// Dispatch a custom event *before* the form is submitted.
+		document.dispatchEvent(
+			new CustomEvent( 'srfm_form_after_initialization', {
+				detail: { form },
+			} )
+		);
 	}
 }
 
@@ -571,6 +579,7 @@ async function handleFormSubmission(
 			showErrorMessage( { form, message: paymentResult?.message } );
 			// Remove loading.
 			loader.classList.remove( 'srfm-active' );
+			enableSubmitButton( form );
 			return;
 		}
 

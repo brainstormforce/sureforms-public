@@ -25,7 +25,6 @@ class Payments_Settings {
 	/**
 	 * Option name for storing payment settings.
 	 *
-	 * @var string
 	 * @since x.x.x
 	 */
 	public const OPTION_NAME = 'srfm_payments_settings';
@@ -39,6 +38,53 @@ class Payments_Settings {
 		add_action( 'rest_api_init', [ $this, 'register_rest_routes' ] );
 		add_filter( 'srfm_global_settings_data', [ $this, 'add_payments_settings' ] );
 		add_action( 'admin_init', [ $this, 'intercept_stripe_callback' ] );
+		add_filter( 'srfm_entry_value', [ $this, 'filter_entry_value_for_payment' ], 10, 2 );
+	}
+
+	/**
+	 * Filter entry value for payment blocks to display clickable link to payment admin page.
+	 *
+	 * This filter checks if the field block is a payment block and converts the payment ID
+	 * into a clickable link that directs to the payment details page in admin.
+	 *
+	 * @param mixed        $value The current field value (payment ID).
+	 * @param array<mixed> $args  Arguments containing field_name, label, and field_block_name.
+	 * @since x.x.x
+	 * @return mixed The modified field value (clickable link) or original value if not a payment block.
+	 */
+	public function filter_entry_value_for_payment( $value, $args ) {
+		// Check if this is a payment block.
+		if ( ! isset( $args['field_block_name'] ) || 'srfm-payment' !== $args['field_block_name'] ) {
+			return $value;
+		}
+
+		// Get the payment ID from the field value.
+		$payment_id = is_numeric( $value ) ? intval( $value ) : 0;
+
+		// If payment ID is not valid, return original value.
+		if ( $payment_id <= 0 ) {
+			return $value;
+		}
+
+		/**
+		 * Generate the payment admin URL with hash-based routing.
+		 * Example: http://localhost:10008/wp-admin/admin.php?page=sureforms_payments#/payment/323
+		 */
+		$base_url = add_query_arg(
+			[
+				'page' => 'sureforms_payments',
+			],
+			admin_url( 'admin.php' )
+		);
+
+		// Append hash route for specific payment.
+		$url = $base_url . '#/payment/' . $payment_id;
+
+		return sprintf(
+			'<a type="button" href="%s" class="outline-1 border-none cursor-pointer transition-colors duration-300 ease-in-out font-semibold focus:ring-2 focus:ring-toggle-on focus:ring-offset-2 disabled:text-text-disabled rounded-md text-sm [&>svg]:size-5 gap-1 outline-none text-link-primary bg-transparent hover:text-link-primary-hover p-0 border-0 leading-none no-underline hover:underline" target="_blank">%s</a>',
+			esc_url( $url ),
+			esc_html__( 'View Payment', 'sureforms' )
+		);
 	}
 
 	/**
@@ -95,18 +141,6 @@ class Payments_Settings {
 				],
 			]
 		);
-
-		register_rest_route(
-			'sureforms/v1',
-			'/payments/delete-payment-webhook',
-			[
-				[
-					'methods'             => \WP_REST_Server::CREATABLE,
-					'callback'            => [ $this, 'handle_webhook_deletion_request' ],
-					'permission_callback' => [ $this, 'permission_check' ],
-				],
-			]
-		);
 	}
 
 	/**
@@ -136,6 +170,11 @@ class Payments_Settings {
 	public function add_payments_settings( array $settings ): array {
 		$payments_settings                  = get_option( self::OPTION_NAME, $this->get_default_settings() );
 		$settings['srfm_payments_settings'] = is_array( $payments_settings ) ? $payments_settings : $this->get_default_settings();
+
+		// Add centralized currency data to settings for frontend access via srfm_admin.payments.
+		$settings['srfm_payments_settings']['currencies_data']         = Stripe_Helper::get_all_currencies_data();
+		$settings['srfm_payments_settings']['zero_decimal_currencies'] = Stripe_Helper::get_zero_decimal_currencies();
+
 		return $settings;
 	}
 
@@ -285,8 +324,6 @@ class Payments_Settings {
 
 		$updated = update_option( self::OPTION_NAME, $settings );
 
-		// TODO: Handle proper error handling.
-
 		return rest_ensure_response(
 			[
 				'success' => true,
@@ -297,52 +334,152 @@ class Payments_Settings {
 	}
 
 	/**
-	 * Get available currencies
-	 *
-	 * @since x.x.x
-	 * @return array<string, string>
-	 */
-	public static function get_currencies(): array {
-		return [
-			'USD' => __( 'US Dollar', 'sureforms' ),
-			'EUR' => __( 'Euro', 'sureforms' ),
-			'GBP' => __( 'British Pound', 'sureforms' ),
-			'JPY' => __( 'Japanese Yen', 'sureforms' ),
-			'AUD' => __( 'Australian Dollar', 'sureforms' ),
-			'CAD' => __( 'Canadian Dollar', 'sureforms' ),
-			'CHF' => __( 'Swiss Franc', 'sureforms' ),
-			'CNY' => __( 'Chinese Yuan', 'sureforms' ),
-			'SEK' => __( 'Swedish Krona', 'sureforms' ),
-			'NZD' => __( 'New Zealand Dollar', 'sureforms' ),
-			'MXN' => __( 'Mexican Peso', 'sureforms' ),
-			'SGD' => __( 'Singapore Dollar', 'sureforms' ),
-			'HKD' => __( 'Hong Kong Dollar', 'sureforms' ),
-			'NOK' => __( 'Norwegian Krone', 'sureforms' ),
-			'KRW' => __( 'South Korean Won', 'sureforms' ),
-			'TRY' => __( 'Turkish Lira', 'sureforms' ),
-			'RUB' => __( 'Russian Ruble', 'sureforms' ),
-			'INR' => __( 'Indian Rupee', 'sureforms' ),
-			'BRL' => __( 'Brazilian Real', 'sureforms' ),
-			'ZAR' => __( 'South African Rand', 'sureforms' ),
-			'AED' => __( 'UAE Dirham', 'sureforms' ),
-			'PHP' => __( 'Philippine Peso', 'sureforms' ),
-			'IDR' => __( 'Indonesian Rupiah', 'sureforms' ),
-			'MYR' => __( 'Malaysian Ringgit', 'sureforms' ),
-			'THB' => __( 'Thai Baht', 'sureforms' ),
-		];
-	}
-
-	/**
 	 * Handle webhook creation request (REST API handler)
 	 *
+	 * @param \WP_REST_Request $request The REST request object.
 	 * @since x.x.x
 	 * @return \WP_REST_Response
 	 */
-	public function handle_webhook_creation_request() {
-		// Call the core webhook creation function.
-		$result = $this->setup_stripe_webhooks();
+	public function handle_webhook_creation_request( $request ) {
+		// Get mode parameter from request (defaults to current payment mode).
+		$mode = $request->get_param( 'mode' );
+
+		// Validate mode parameter.
+		if ( ! in_array( $mode, [ 'test', 'live' ], true ) ) {
+			$settings = get_option( self::OPTION_NAME, $this->get_default_settings() );
+			$mode     = is_array( $settings ) && isset( $settings['payment_mode'] ) ? $settings['payment_mode'] : 'test';
+		}
+
+		// Create webhook for the specified mode only.
+		$result = $this->create_webhook_for_mode( $mode );
 
 		return rest_ensure_response( $result );
+	}
+
+	/**
+	 * Create Stripe webhook for a specific mode (test or live)
+	 *
+	 * @param string $mode The payment mode ('test' or 'live').
+	 * @since x.x.x
+	 * @return array<mixed> Array containing webhook creation results and details
+	 * @throws \Exception When the Stripe API request fails for any mode.
+	 */
+	public function create_webhook_for_mode( $mode ): array {
+		$settings = get_option( self::OPTION_NAME, $this->get_default_settings() );
+		if ( ! is_array( $settings ) ) {
+			$settings = $this->get_default_settings();
+		}
+
+		if ( empty( $settings['stripe_connected'] ) ) {
+			return [
+				'success' => false,
+				'message' => __( 'Stripe is not connected.', 'sureforms' ),
+			];
+		}
+
+		// Validate mode.
+		if ( ! in_array( $mode, [ 'test', 'live' ], true ) ) {
+			return [
+				'success' => false,
+				'message' => __( 'Invalid payment mode.', 'sureforms' ),
+			];
+		}
+
+		// Get secret key for the mode.
+		$secret_key = 'live' === $mode
+			? ( $settings['stripe_live_secret_key'] ?? '' )
+			: ( $settings['stripe_test_secret_key'] ?? '' );
+
+		if ( empty( $secret_key ) ) {
+			return [
+				'success' => false,
+				'message' => sprintf(
+					/* translators: %s: payment mode (test/live) */
+					__( 'Stripe %s secret key is missing.', 'sureforms' ),
+					$mode
+				),
+			];
+		}
+
+		$webhook_url = Stripe_Helper::get_webhook_url( $mode );
+
+		try {
+			$webhook_data = [
+				'api_version'    => '2025-07-30.basil',
+				'url'            => $webhook_url,
+				'enabled_events' => [
+					'charge.failed',
+					'charge.succeeded',
+					'payment_intent.succeeded',
+					'charge.refund.updated',
+					'charge.dispute.created',
+					'charge.dispute.closed',
+					'invoice.payment_succeeded',
+					'customer.subscription.created',
+					'customer.subscription.updated',
+					'customer.subscription.deleted',
+				],
+			];
+
+			$api_response = Stripe_Helper::stripe_api_request( 'webhook_endpoints', 'POST', $webhook_data, '', [ 'mode' => $mode ] );
+
+			if ( ! isset( $api_response['success'] ) || ! $api_response['success'] ) {
+				$error_details = $api_response['error'] ?? [];
+				$error_message = $error_details['message'] ?? __( 'Failed to create webhook.', 'sureforms' );
+				throw new \Exception( $error_message );
+			}
+
+			$webhook = $api_response['data'] ?? [];
+
+			// Validate webhook response structure.
+			if ( ! is_array( $webhook ) ) {
+				throw new \Exception( __( 'Invalid webhook response format.', 'sureforms' ) );
+			}
+
+			if ( empty( $webhook['id'] ) ) {
+				throw new \Exception( __( 'Webhook created but no ID returned.', 'sureforms' ) );
+			}
+
+			if ( empty( $webhook['secret'] ) ) {
+				throw new \Exception( __( 'Webhook created but no secret returned.', 'sureforms' ) );
+			}
+
+			// Store webhook data in settings.
+			if ( 'live' === $mode ) {
+				$settings['webhook_live_secret'] = $webhook['secret'];
+				$settings['webhook_live_id']     = $webhook['id'];
+				$settings['webhook_live_url']    = $webhook_url;
+			} else {
+				$settings['webhook_test_secret'] = $webhook['secret'];
+				$settings['webhook_test_id']     = $webhook['id'];
+				$settings['webhook_test_url']    = $webhook_url;
+			}
+
+			update_option( self::OPTION_NAME, $settings );
+
+			// Prepare response with webhook details.
+			return [
+				'success'         => true,
+				'message'         => sprintf(
+					/* translators: %s: payment mode (test/live) */
+					__( 'Webhook created successfully for %s mode.', 'sureforms' ),
+					$mode
+				),
+				'webhook_details' => [
+					$mode => [
+						'webhook_secret' => $webhook['secret'],
+						'webhook_id'     => $webhook['id'],
+						'webhook_url'    => $webhook_url,
+					],
+				],
+			];
+
+		} catch ( \Exception $e ) {
+			return [
+				'success' => false,
+				'message' => $e->getMessage(),
+			];
+		}
 	}
 
 	/**
@@ -350,6 +487,7 @@ class Payments_Settings {
 	 *
 	 * @since x.x.x
 	 * @return array<mixed> Array containing webhook creation results and details
+	 * @throws \Exception When the Stripe API request fails for any mode.
 	 */
 	public function setup_stripe_webhooks(): array {
 		$settings = get_option( self::OPTION_NAME, $this->get_default_settings() );
@@ -366,7 +504,6 @@ class Payments_Settings {
 
 		$webhooks_created = 0;
 		$error_message    = '';
-		$webhook_url      = esc_url( get_home_url() . '/wp-json/sureforms/webhook' );
 		$modes            = [ 'test', 'live' ];
 
 		foreach ( $modes as $mode ) {
@@ -377,6 +514,8 @@ class Payments_Settings {
 			if ( empty( $secret_key ) ) {
 				continue;
 			}
+
+			$webhook_url = Stripe_Helper::get_webhook_url( $mode );
 
 			try {
 				$webhook_data = [
@@ -390,15 +529,17 @@ class Payments_Settings {
 						'charge.dispute.created',
 						'charge.dispute.closed',
 						'invoice.payment_succeeded',
+						'customer.subscription.created',
+						'customer.subscription.updated',
+						'customer.subscription.deleted',
 					],
 				];
 
-				$api_response = Stripe_Helper::stripe_api_request( 'webhook_endpoints', 'POST', $webhook_data );
+				$api_response = Stripe_Helper::stripe_api_request( 'webhook_endpoints', 'POST', $webhook_data, '', [ 'mode' => $mode ] );
 
 				if ( ! isset( $api_response['success'] ) || ! $api_response['success'] ) {
 					$error_details = $api_response['error'] ?? [];
-					$error_message = isset( $error_details['message'] ) ? $error_details['message'] : '';
-					// TODO: Handle proper error handling.
+					$error_message = $error_details['message'] ?? '';
 					throw new \Exception( $error_message );
 				}
 
@@ -432,7 +573,6 @@ class Payments_Settings {
 
 			} catch ( \Exception $e ) {
 				$error_message = $e->getMessage();
-				// TODO: Handle proper error handling.
 			}
 		}
 
@@ -448,16 +588,15 @@ class Payments_Settings {
 
 		if ( $webhooks_created > 0 ) {
 			$response_data['webhook_details'] = [
-				'webhook_url' => $webhook_url,
-				'test'        => [
+				'test' => [
 					'webhook_secret' => $settings['webhook_test_secret'] ?? '',
 					'webhook_id'     => $settings['webhook_test_id'] ?? '',
-					'webhook_url'    => $webhook_url,
+					'webhook_url'    => Stripe_Helper::get_webhook_url( 'test' ),
 				],
-				'live'        => [
+				'live' => [
 					'webhook_secret' => $settings['webhook_live_secret'] ?? '',
 					'webhook_id'     => $settings['webhook_live_id'] ?? '',
-					'webhook_url'    => $webhook_url,
+					'webhook_url'    => Stripe_Helper::get_webhook_url( 'live' ),
 				],
 			];
 		}
@@ -481,19 +620,6 @@ class Payments_Settings {
 		}
 
 		return $response_data;
-	}
-
-	/**
-	 * Handle webhook deletion request (REST API handler)
-	 *
-	 * @since x.x.x
-	 * @return \WP_REST_Response
-	 */
-	public function handle_webhook_deletion_request() {
-		// Call the core webhook deletion function.
-		$result = $this->delete_stripe_webhooks();
-
-		return rest_ensure_response( $result );
 	}
 
 	/**
@@ -535,12 +661,11 @@ class Payments_Settings {
 			}
 
 			try {
-				$api_response = Stripe_Helper::stripe_api_request( 'webhook_endpoints', 'DELETE', [], (string) $webhook_id );
+				$api_response = Stripe_Helper::stripe_api_request( 'webhook_endpoints', 'DELETE', [], (string) $webhook_id, [ 'mode' => $mode ] );
 
 				if ( ! isset( $api_response['success'] ) || ! $api_response['success'] ) {
-					$error_details = $api_response['error'] ?? [];
-					$error_message = isset( $error_details['message'] ) ? $error_details['message'] : '';
-					// TODO: Handle proper error handling.
+					$error_details     = $api_response['error'] ?? [];
+					$error_message     = $error_details['message'] ?? '';
 					$return_response[] = [
 						'success' => false,
 						'message' => $error_message,
@@ -585,8 +710,7 @@ class Payments_Settings {
 				];
 
 			} catch ( \Exception $e ) {
-				$error_message = $e->getMessage();
-				// TODO: Handle proper error handling.
+				$error_message     = $e->getMessage();
 				$return_response[] = [
 					'success' => false,
 					'message' => $error_message,
@@ -693,13 +817,11 @@ class Payments_Settings {
 			}
 
 			try {
-				$api_response = Stripe_Helper::stripe_api_request( 'webhook_endpoints', 'DELETE', [], (string) $webhook_id );
+				$api_response = Stripe_Helper::stripe_api_request( 'webhook_endpoints', 'DELETE', [], (string) $webhook_id, [ 'mode' => $mode ] );
 
 				if ( ! isset( $api_response['success'] ) || ! $api_response['success'] ) {
 					$error_details = $api_response['error'] ?? [];
-					$error_message = isset( $error_details['message'] ) ? $error_details['message'] : '';
-
-					// TODO: Handle proper error handling.
+					$error_message = $error_details['message'] ?? '';
 
 					return rest_ensure_response(
 						[
@@ -713,7 +835,6 @@ class Payments_Settings {
 
 				// Validate deletion response.
 				if ( ! is_array( $delete_result ) ) {
-					// TODO: Handle proper error handling.
 					return rest_ensure_response(
 						[
 							'success' => false,
@@ -746,7 +867,6 @@ class Payments_Settings {
 
 			} catch ( \Exception $e ) {
 				$error_message = $e->getMessage();
-				// TODO: Handle proper error handling.
 			}
 		}
 
@@ -898,7 +1018,7 @@ class Payments_Settings {
 
 		// Extract OAuth data following checkout-plugins-stripe-woo pattern.
 		$settings = get_option( self::OPTION_NAME, $this->get_default_settings() );
-		$settings = ( is_array( $settings ) && ! empty( $settings ) ) ? $settings : $this->get_default_settings();
+		$settings = is_array( $settings ) && ! empty( $settings ) ? $settings : $this->get_default_settings();
 
 		// Store live keys.
 		if ( isset( $response['live'] ) && is_array( $response['live'] ) ) {

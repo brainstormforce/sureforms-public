@@ -194,35 +194,44 @@ export const useTrashEntries = () => {
 			let message = '';
 			if ( count === 1 ) {
 				const entryId = variables.entry_ids[ 0 ];
-				message = action === 'trash' ? sprintf(
-					// translators: %s is the entry ID.
-					__( 'Entry#%s moved to trash.', 'sureforms' ),
-					entryId,
-				) : sprintf(
-					// translators: %s is the entry ID.
-					__( 'Entry#%s restored successfully.', 'sureforms' ),
-					entryId,
-				);
+				message =
+					action === 'trash'
+						? sprintf(
+							// translators: %s is the entry ID.
+							__( 'Entry#%s moved to trash.', 'sureforms' ),
+							entryId
+						  )
+						: sprintf(
+							// translators: %s is the entry ID.
+							__(
+								'Entry#%s restored successfully.',
+								'sureforms'
+							),
+							entryId
+						  );
 			} else {
-				message = action === 'trash' ? sprintf(
-					// translators: %s is the number of entries moved to trash.
-					_n(
-						'%1$s entry moved to trash.',
-						'%1$s entries moved to trash.',
-						count,
-						'sureforms'
-					),
-					count,
-				) : sprintf(
-					// translators: %s is the number of entries restored.
-					_n(
-						'%1$s entry restored successfully.',
-						'%1$s entries restored successfully.',
-						count,
-						'sureforms'
-					),
-					count
-				);
+				message =
+					action === 'trash'
+						? sprintf(
+							// translators: %s is the number of entries moved to trash.
+							_n(
+								'%1$s entry moved to trash.',
+								'%1$s entries moved to trash.',
+								count,
+								'sureforms'
+							),
+							count
+						  )
+						: sprintf(
+							// translators: %s is the number of entries restored.
+							_n(
+								'%1$s entry restored successfully.',
+								'%1$s entries restored successfully.',
+								count,
+								'sureforms'
+							),
+							count
+						  );
 			}
 			toast.success( message );
 		},

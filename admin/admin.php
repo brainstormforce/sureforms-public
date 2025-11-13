@@ -11,8 +11,8 @@ use SRFM\Inc\AI_Form_Builder\AI_Helper;
 use SRFM\Inc\Database\Tables\Entries;
 use SRFM\Inc\Helper;
 use SRFM\Inc\Onboarding;
-use SRFM\Inc\Traits\Get_Instance;
 use SRFM\Inc\Payments\Stripe\Stripe_Helper;
+use SRFM\Inc\Traits\Get_Instance;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -799,9 +799,14 @@ class Admin {
 			'pointer_nonce'              => wp_create_nonce( 'sureforms_pointer_action' ),
 			'general_settings_url'       => admin_url( '/options-general.php' ),
 			'payments'                   => [
-				'stripe_connected'   => Stripe_Helper::is_stripe_connected(),
-				'stripe_mode'        => Stripe_Helper::get_stripe_mode(),
-				'stripe_connect_url' => Stripe_Helper::get_stripe_settings_url(),
+				'stripe_connected'        => Stripe_Helper::is_stripe_connected(),
+				'stripe_mode'             => Stripe_Helper::get_stripe_mode(),
+				'stripe_connect_url'      => Stripe_Helper::get_stripe_settings_url(),
+				'currencies_data'         => Stripe_Helper::get_all_currencies_data(),
+				'zero_decimal_currencies' => Stripe_Helper::get_zero_decimal_currencies(),
+				'webhook_url'             => Stripe_Helper::get_webhook_url(),
+				'webhook_test_connected'  => Stripe_Helper::is_webhook_configured( 'test', true ),
+				'webhook_live_connected'  => Stripe_Helper::is_webhook_configured( 'live', true ),
 			],
 		];
 
@@ -809,7 +814,7 @@ class Admin {
 		$is_screen_add_new_form            = Helper::validate_request_context( 'add-new-form', 'page' );
 		$is_screen_sureforms_forms         = Helper::validate_request_context( 'sureforms_forms', 'page' );
 		$is_screen_sureforms_form_settings = Helper::validate_request_context( 'sureforms_form_settings', 'page' );
-		$is_screen_sureforms_payments = Helper::validate_request_context( 'sureforms_payments', 'page' );
+		$is_screen_sureforms_payments      = Helper::validate_request_context( 'sureforms_payments', 'page' );
 		$is_screen_sureforms_entries       = Helper::validate_request_context( SRFM_ENTRIES, 'page' );
 		$is_post_type_sureforms_form       = SRFM_FORMS_POST_TYPE === $current_screen->post_type;
 

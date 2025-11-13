@@ -6,8 +6,7 @@
  * @module PaymentContext
  */
 
-import { useState, createContext, useEffect } from '@wordpress/element';
-import { getUrlParam, updateUrlParams } from './urlUtils';
+import { useState, createContext } from '@wordpress/element';
 
 /**
  * React context for payment data management.
@@ -24,31 +23,10 @@ export const PaymentContext = createContext( null );
  * @return {JSX.Element} Provider component with context value
  */
 export const PaymentDataProvider = ( { children } ) => {
-	// Initialize from URL on mount
-	const urlPaymentId = getUrlParam( 'srfm_payment_id' );
-	const urlPaymentType = getUrlParam( 'srfm_payment_type' );
-
-	const [ viewSinglePayment, setViewSinglePayment ] = useState(
-		urlPaymentId ? parseInt( urlPaymentId ) : false
-	);
-	const [ singlePaymentType, setSinglePaymentType ] = useState(
-		urlPaymentType || false
-	);
-
-	// Sync URL when viewing payment changes
-	useEffect( () => {
-		if ( viewSinglePayment ) {
-			updateUrlParams( {
-				srfm_payment_id: viewSinglePayment,
-				srfm_payment_type: singlePaymentType || 'one-time',
-			} );
-		} else {
-			updateUrlParams( {
-				srfm_payment_id: undefined,
-				srfm_payment_type: undefined,
-			} );
-		}
-	}, [ viewSinglePayment, singlePaymentType ] );
+	// Note: With React Router hash routing, navigation is handled by useNavigate()
+	// These states are kept for backward compatibility during transition
+	const [ viewSinglePayment, setViewSinglePayment ] = useState( false );
+	const [ singlePaymentType, setSinglePaymentType ] = useState( false );
 
 	const contextValue = {
 		viewSinglePayment,

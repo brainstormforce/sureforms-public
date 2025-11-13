@@ -161,7 +161,11 @@ export const decodeHTMLEntities = ( html ) => {
 	let decoded = textarea.value;
 
 	// Check if still encoded and decode again if needed
-	if ( decoded.includes( '&lt;' ) || decoded.includes( '&gt;' ) || decoded.includes( '&amp;' ) ) {
+	if (
+		decoded.includes( '&lt;' ) ||
+		decoded.includes( '&gt;' ) ||
+		decoded.includes( '&amp;' )
+	) {
 		textarea.innerHTML = decoded;
 		decoded = textarea.value;
 	}

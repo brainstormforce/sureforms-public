@@ -247,9 +247,25 @@
 		gap: var( --srfm-column-gap-between-blocks );
 		margin-top: var( --srfm-column-gap-between-blocks );
 
-		.srfm-payment-amount {
+		.srfm-variable-amount-display {
 			display: flex;
-			justify-content: space-between;
+			flex-direction: column;
+			gap: calc( var( --srfm-column-gap-between-blocks ) / 2 );
+
+			.srfm-payment-amount-wrapper {
+				display: flex;
+				justify-content: space-between;
+			}
+		}
+
+		.srfm-test-mode-notice {
+			background-color: #fcf3d5;
+			border-radius: 8px;
+			padding: 12px;
+			color: #8a7946;
+			font-size: var( --srfm-description-font-size );
+			font-weight: var( --srfm-description-font-weight );
+			line-height: var( --srfm-description-line-height );
 		}
 	}
 

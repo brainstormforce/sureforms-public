@@ -2,7 +2,7 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { ToggleControl, SelectControl } from '@wordpress/components';
+import { SelectControl } from '@wordpress/components';
 import { InspectorControls } from '@wordpress/block-editor';
 import { useEffect, useState } from '@wordpress/element';
 import { useSelect } from '@wordpress/data';
@@ -17,20 +17,17 @@ import { PaymentComponent } from './components/default.js';
 import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
 import { FieldsPreview } from '../FieldsPreview.jsx';
-import { useErrMessage } from '@Blocks/util';
 import ConditionalLogic from '@Components/conditional-logic';
 import { attributeOptionsWithFilter } from '@Components/hooks';
 import Separator from '@Components/separator';
 import MultiButtonsControl from '@Components/multi-buttons-control';
+import BillingCyclesControl from './components/billing-cycles-control.js';
 
 const Edit = ( props ) => {
 	const { clientId, attributes, setAttributes, isSelected } = props;
 	const {
 		help,
-		required,
 		block_id,
-		// description,
-		errorMsg,
 		formId,
 		preview,
 		className,
@@ -41,15 +38,14 @@ const Edit = ( props ) => {
 		minimumAmount,
 		customerNameField,
 		customerEmailField,
-		// amountLabel,
+		variableAmountField,
 	} = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
 	const [ availableFormFields, setAvailableFormFields ] = useState( {
 		emailsFields: [],
 		nameFields: [],
+		variableAmountFields: [],
 	} );
-
-	console.log( 'availableFormFields', availableFormFields );
 
 	// Get all blocks from the current form
 	const { getBlocks } = useSelect(
@@ -60,13 +56,18 @@ const Edit = ( props ) => {
 	// Function to extract and filter form fields by type
 	const extractFormFields = () => {
 		if ( ! currentFormId ) {
-			return { emailsFields: [], nameFields: [] };
+			return {
+				emailsFields: [],
+				nameFields: [],
+				variableAmountFields: [],
+			};
 		}
 
 		try {
 			const blocks = getBlocks();
 			const emailsFields = [];
 			const nameFields = [];
+			const variableAmountFields = [];
 
 			blocks.forEach( ( block ) => {
 				// Check if block has a slug (is a form field)
@@ -85,31 +86,55 @@ const Edit = ( props ) => {
 							label: `${ label } (email)`,
 							type: 'email',
 						} );
-					}
-
-					// Filter name/input fields - only srfm/input
-					if ( blockName === 'srfm/input' ) {
+					} else if ( blockName === 'srfm/input' ) {
 						nameFields.push( {
 							slug,
 							label: `${ label } (input)`,
 							type: 'input',
 						} );
+					} else if ( blockName === 'srfm/number' ) {
+						variableAmountFields.push( {
+							slug,
+							label: `${ label } (number)`,
+							type: 'number',
+						} );
+					} else if ( blockName === 'srfm/dropdown' ) {
+						variableAmountFields.push( {
+							slug,
+							label: `${ label } (dropdown)`,
+							type: 'dropdown',
+						} );
+					} else if ( blockName === 'srfm/multi-choice' ) {
+						variableAmountFields.push( {
+							slug,
+							label: `${ label } (multi-choice)`,
+							type: 'multi-choice',
+						} );
 					}
 				}
 			} );
 
-			return { emailsFields, nameFields };
+			return { emailsFields, nameFields, variableAmountFields };
 		} catch ( error ) {
 			console.error( 'Error extracting form fields:', error );
-			return { emailsFields: [], nameFields: [] };
+			return {
+				emailsFields: [],
+				nameFields: [],
+				variableAmountFields: [],
+			};
 		}
 	};
 
 	// Update available fields when form changes
 	useEffect( () => {
 		if ( isSelected || ! availableFormFields?.emailsFields?.length ) {
-			const { emailsFields, nameFields } = extractFormFields();
-			setAvailableFormFields( { emailsFields, nameFields } );
+			const { emailsFields, nameFields, variableAmountFields } =
+				extractFormFields();
+			setAvailableFormFields( {
+				emailsFields,
+				nameFields,
+				variableAmountFields,
+			} );
 		}
 	}, [ isSelected ] );
 
@@ -119,14 +144,9 @@ const Edit = ( props ) => {
 		}
 	}, [ formId, setAttributes, currentFormId ] );
 
-	const {
-		currentMessage: currentErrorMsg,
-		setCurrentMessage: setCurrentErrorMsg,
-	} = useErrMessage( 'srfm_payment_block_required_text', errorMsg );
-
-	// Show the block preview on hover.
+	// show the block preview on hover
 	if ( preview ) {
-		const fieldName = __( 'Payment Field Preview', 'sureforms' );
+		const fieldName = srfm_fields_preview.payment_preview;
 		return <FieldsPreview fieldName={ fieldName } />;
 	}
 
@@ -162,7 +182,7 @@ const Edit = ( props ) => {
 					options={ [
 						{
 							value: 'one-time',
-							label: __( 'Checkout', 'sureforms' ),
+							label: __( 'One Time', 'sureforms' ),
 						},
 						{
 							value: 'subscription',
@@ -183,10 +203,7 @@ const Edit = ( props ) => {
 								'Subscription Plan Name',
 								'sureforms'
 							) }
-							value={
-								subscriptionPlan?.name ||
-									'Subscription Plan'
-							}
+							value={ subscriptionPlan?.name }
 							data={ {
 								value:
 										subscriptionPlan?.name ||
@@ -247,39 +264,9 @@ const Edit = ( props ) => {
 				{
 					id: 'billing-cycles',
 					component: (
-						<SelectControl
-							label={ __(
-								'Stop Subscription After',
-								'sureforms'
-							) }
-							value={
-								subscriptionPlan?.billingCycles || 'ongoing'
-							}
-							options={ [
-								{
-									label: __( 'Ongoing', 'sureforms' ),
-									value: 'ongoing',
-								},
-								...Array.from(
-									{ length: 23 },
-									( _, i ) => ( {
-										label: `${ i + 2 } cycles`,
-										value: i + 2,
-									} )
-								),
-							] }
-							onChange={ ( value ) => {
-								setAttributes( {
-									subscriptionPlan: {
-										...( subscriptionPlan || {} ),
-										billingCycles: value,
-									},
-								} );
-							} }
-							help={ __(
-								'Select the number of billing cycles or ongoing for unlimited',
-								'sureforms'
-							) }
+						<BillingCyclesControl
+							subscriptionPlan={ subscriptionPlan }
+							setAttributes={ setAttributes }
 						/>
 					),
 				},
@@ -305,54 +292,84 @@ const Edit = ( props ) => {
 							label: __( 'Fixed Amount', 'sureforms' ),
 						},
 						{
-							value: 'user-defined',
-							label: __( 'User-Defined', 'sureforms' ),
+							value: 'variable',
+							label: __( 'Dynamic Amount', 'sureforms' ),
 						},
 					] }
 					showIcons={ false }
 					help={ __(
-						'Choose whether to use a fixed amount or let users enter their own amount',
+						'Choose whether to charge a fixed amount or charge the amount based on user input in other form fields.',
 						'sureforms'
 					) }
 				/>
 			),
 		},
-		{
-			id: 'fixed-amount',
-			component: (
-				<SRFMTextControl
-					label={
-						amountType === 'fixed'
-							? __( 'Fixed Amount', 'sureforms' )
-							: __( 'Default Amount', 'sureforms' )
-					}
-					type="number"
-					value={ fixedAmount }
-					data={ {
-						value: fixedAmount,
-						label: 'fixedAmount',
-					} }
-					onChange={ ( value ) =>
-						setAttributes( {
-							fixedAmount: parseFloat( value ) || 0,
-						} )
-					}
-					help={
-						amountType === 'fixed'
-							? __(
-								'Enter the fixed payment amount',
-								'sureforms'
-							  )
-							: __(
-								'Enter the default amount (users can change this)',
-								'sureforms'
-							  )
-					}
-				/>
-			),
-		},
-		...( amountType === 'user-defined'
+		...( amountType === 'fixed'
 			? [
+				{
+					id: 'fixed-amount',
+					component: (
+						<SRFMTextControl
+							label={ __( 'Fixed Amount', 'sureforms' ) }
+							type="number"
+							value={ fixedAmount }
+							data={ {
+								value: fixedAmount,
+								label: 'fixedAmount',
+							} }
+							onChange={ ( value ) =>
+								setAttributes( {
+									fixedAmount: parseFloat( value ) || 0,
+								} )
+							}
+							help={ __(
+								'Set the exact amount you want to charge. Users won’t be able to change it',
+								'sureforms'
+							) }
+						/>
+					),
+				},
+			  ]
+			: [] ),
+		...( amountType === 'variable'
+			? [
+				{
+					id: 'variable-amount-field',
+					component: (
+						<SelectControl
+							label={ __(
+								'Choose Amount Field',
+								'sureforms'
+							) }
+							value={ variableAmountField || '' }
+							options={ [
+								{
+									label: __(
+										'Select a field…',
+										'sureforms'
+									),
+									value: '',
+								},
+								...(
+									availableFormFields?.variableAmountFields ||
+										[]
+								).map( ( field ) => ( {
+									label: field.label,
+									value: field.slug,
+								} ) ),
+							] }
+							onChange={ ( value ) => {
+								setAttributes( {
+									variableAmountField: value,
+								} );
+							} }
+							help={ __(
+								'Pick a field from your form like a number, dropdown, or multichoice whose value should decide the payment amount.',
+								'sureforms'
+							) }
+						/>
+					),
+				},
 				{
 					id: 'minimum-amount',
 					component: (
@@ -375,35 +392,6 @@ const Edit = ( props ) => {
 							) }
 						/>
 					),
-				},
-				{
-					id: 'required',
-					component: (
-						<ToggleControl
-							label={ __( 'Required', 'sureforms' ) }
-							checked={ required }
-							onChange={ ( checked ) =>
-								setAttributes( { required: checked } )
-							}
-						/>
-					),
-				},
-				{
-					id: 'error-message',
-					component: required ? (
-						<SRFMTextControl
-							label={ __( 'Error Message', 'sureforms' ) }
-							data={ {
-								value: errorMsg,
-								label: 'errorMsg',
-							} }
-							value={ currentErrorMsg }
-							onChange={ ( value ) => {
-								setCurrentErrorMsg( value );
-								setAttributes( { errorMsg: value } );
-							} }
-						/>
-					) : null,
 				},
 			  ]
 			: [] ),

@@ -10,6 +10,7 @@
 namespace SRFM\Inc;
 
 use SRFM\Inc\Traits\Get_Instance;
+use SRFM\Inc\Payments\Stripe\Stripe_Helper;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -102,11 +103,12 @@ class Frontend_Assets {
 		}
 
 		// Register Stripe.js library from CDN.
+		// phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion -- Stripe CDN ignores version; version param is included to keep linter happy.
 		wp_register_script(
 			'stripe-js',
 			'https://js.stripe.com/v3/',
 			[],
-			null, // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion. This is a third-party script, and specifying a version may lead to caching issues. Using null ensures the latest version is always loaded.
+			SRFM_VER,
 			true
 		);
 
@@ -164,6 +166,17 @@ class Frontend_Assets {
 			[
 				'ajax_url' => admin_url( 'admin-ajax.php' ),
 				'nonce'    => wp_create_nonce( 'srfm_stripe_payment_nonce' ),
+			]
+		);
+
+		// Localize Stripe payment data for frontend.
+		wp_localize_script(
+			SRFM_SLUG . '-stripe-payment',
+			'srfmStripe',
+			[
+				'zeroDecimalCurrencies' => Stripe_Helper::get_zero_decimal_currencies(),
+				'currenciesData'        => Stripe_Helper::get_all_currencies_data(),
+				'strings'               => Stripe_Helper::get_payment_strings(),
 			]
 		);
 

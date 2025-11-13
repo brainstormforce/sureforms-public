@@ -1,21 +1,15 @@
-import {
-	Container,
-	Label,
-	Button,
-	Text,
-	TextArea,
-	Tooltip,
-} from '@bsf/force-ui';
+import { Button, Text, TextArea } from '@bsf/force-ui';
 import {
 	Plus,
-	Trash2,
-	FileSearch2,
-	ChevronLeft,
-	ChevronRight,
+	X,
+	Trash,
+	FileSearch,
+	ArrowLeft,
+	ArrowRight,
 } from 'lucide-react';
-import { __ } from '@wordpress/i18n';
-import { useState, useEffect } from '@wordpress/element';
-import { formatDateTime } from './utils';
+import { __, sprintf } from '@wordpress/i18n';
+import { useState, useEffect, useCallback } from '@wordpress/element';
+import { formatDateTime2 } from './utils';
 
 const PaymentNotes = ( {
 	notes,
@@ -28,8 +22,8 @@ const PaymentNotes = ( {
 	handleDeleteNote,
 	addNoteMutation,
 	deleteNoteMutation,
+	onConfirmation,
 } ) => {
-	const [ showDeletePopup, setShowDeletePopup ] = useState( null );
 	const [ currentPage, setCurrentPage ] = useState( 1 );
 	const itemsPerPage = 3;
 
@@ -64,25 +58,50 @@ const PaymentNotes = ( {
 		setCurrentPage( ( prev ) => Math.min( prev + 1, totalPages ) );
 	};
 
+	const handleKeyDown = ( event ) => {
+		// Submit on Cmd+Enter (Mac) or Ctrl+Enter (Windows/Linux)
+		if ( ( event.metaKey || event.ctrlKey ) && event.key === 'Enter' ) {
+			event.preventDefault();
+			handleSaveNote( event );
+		}
+	};
+
+	const handleDeleteNoteConfirmation = ( noteIndex ) => {
+		onConfirmation( {
+			title: __( 'Delete Note?', 'sureforms' ),
+			description: __(
+				'This action cannot be undone. The note will be permanently deleted.',
+				'sureforms'
+			),
+			confirmLabel: __( 'Delete Note', 'sureforms' ),
+			onConfirm: () => handleDeleteNote( noteIndex ),
+			isLoading: deleteNoteMutation.isPending,
+			destructive: true,
+		} );
+	};
+
+	const selfFocus = useCallback( ( node ) => {
+		if ( ! node ) {
+			return;
+		}
+		node.focus();
+	}, [] );
+
 	const addNewComponent = () => {
 		return (
-			<div className="w-full p-3 bg-background-primary rounded-lg border border-border-subtle">
+			<div className="bg-background-primary rounded-md p-3 relative shadow-sm">
 				<TextArea
+					ref={ selfFocus }
 					value={ newNoteText }
 					onChange={ ( value ) => setNewNoteText( value ) }
 					placeholder={ __( 'Add an internal note…', 'sureforms' ) }
-					size="l"
-					className="w-full h-[158px]"
+					required
+					size="md"
+					rows={ 5 }
+					className="w-full"
+					onKeyDown={ handleKeyDown }
 				/>
 				<div className="flex gap-2 mt-2 justify-end">
-					<Button
-						variant="outline"
-						size="sm"
-						onClick={ handleCancelNote }
-						disabled={ addNoteMutation.isPending }
-					>
-						{ __( 'Cancel', 'sureforms' ) }
-					</Button>
 					<Button
 						variant="primary"
 						size="sm"
@@ -91,9 +110,7 @@ const PaymentNotes = ( {
 							addNoteMutation.isPending || ! newNoteText.trim()
 						}
 					>
-						{ addNoteMutation.isPending
-							? __( 'Adding…', 'sureforms' )
-							: __( 'Add Note', 'sureforms' ) }
+						{ __( 'Submit Note', 'sureforms' ) }
 					</Button>
 				</div>
 			</div>
@@ -103,31 +120,39 @@ const PaymentNotes = ( {
 	const isNotesAvailable = notes && notes.length > 0;
 
 	return (
-		<Container
-			className="w-full bg-background-primary border-0.5 border-solid rounded-xl border-border-subtle p-3 gap-2 shadow-sm"
-			direction="column"
-		>
-			<Container className="p-1 gap-2" align="center" justify="between">
-				<Label size="md" className="font-semibold">
-					{ __( 'Notes', 'sureforms' ) }
-				</Label>
-				<Button
-					icon={ <Plus className="!size-5" /> }
-					iconPosition="left"
-					variant="link"
-					size="xs"
-					className="h-full text-link-primary no-underline hover:no-underline hover:text-link-primary-hover px-1 content-center [box-shadow:none] focus:[box-shadow:none] focus:outline-none"
-					onClick={ handleAddNoteClick }
-					disabled={ isAddingNote }
-				>
-					{ __( 'Add Note', 'sureforms' ) }
-				</Button>
-			</Container>
-			<Container
-				className={ `flex flex-col items-center justify-center bg-background-secondary gap-1 p-1 rounded-lg ${
-					! isNotesAvailable && ! isAddingNote && 'min-h-[89px]'
-				}` }
-			>
+		<div className="bg-background-primary border-0.5 border-solid border-border-subtle rounded-lg shadow-sm">
+			<div className="pb-0 px-4 pt-4">
+				<div className="flex items-center justify-between">
+					<h3 className="text-base font-semibold text-text-primary">
+						{ __( 'Notes', 'sureforms' ) }
+					</h3>
+					<Button
+						variant="link"
+						size="xs"
+						icon={
+							isAddingNote ? (
+								<X className="w-4 h-4" />
+							) : (
+								<Plus className="w-4 h-4" />
+							)
+						}
+						iconPosition="left"
+						onClick={
+							isAddingNote ? handleCancelNote : handleAddNoteClick
+						}
+						disabled={
+							addNoteMutation.isPending ||
+							deleteNoteMutation.isPending
+						}
+						className="text-link-primary hover:text-link-primary-hover"
+					>
+						{ isAddingNote
+							? __( 'Cancel Note', 'sureforms' )
+							: __( 'Add Note', 'sureforms' ) }
+					</Button>
+				</div>
+			</div>
+			<div className="p-4 space-y-1 relative before:content-[''] before:block before:absolute before:inset-3 before:bg-background-secondary before:rounded-lg">
 				{ isAddingNote && addNewComponent() }
 				{ isNotesAvailable
 					? paginatedNotes.map( ( note, index ) => {
@@ -136,141 +161,91 @@ const PaymentNotes = ( {
 						return (
 							<div
 								key={ index }
-								className="w-full flex justify-between items-start gap-2 p-3 bg-background-primary rounded-lg border border-border-subtle"
+								className="bg-background-primary rounded-md p-2 relative shadow-sm flex items-start justify-between gap-3"
 							>
-								<div className="flex-1">
-									<Text className="text-sm text-text-primary">
-										{ note.text || note }
-									</Text>
-									{ note.created_at && (
-										<Text className="text-xs text-text-tertiary mt-1">
-											{ formatDateTime(
+								<div className="flex-1 flex flex-col gap-2">
+									<Text className="text-[12px] leading-[16px] text-text-secondary font-semibold">
+										{ sprintf(
+											// translators: %1$s - user name, %2$s - date.
+											__(
+												'Submitted by %1$s - %2$s',
+												'sureforms'
+											),
+											note.created_by_user_name,
+											formatDateTime2(
 												note.created_at
-											) }
-										</Text>
-									) }
-								</div>
-								<Tooltip
-									arrow
-									offset={ 20 }
-									content={
-										<Container
-											direction="column"
-											className="gap-2"
-										>
-											<p className="text-[13px] font-normal">
-												{ __(
-													'Are you sure to delete this?',
-													'sureforms'
-												) }
-											</p>
-											<Container className="gap-3">
-												<Button
-													variant="outline"
-													size="xs"
-													onClick={ () =>
-														setShowDeletePopup(
-															null
-														)
-													}
-													className="px-3"
-												>
-													{ __(
-														'Cancel',
-														'sureforms'
-													) }
-												</Button>
-												<Button
-													variant="primary"
-													size="xs"
-													onClick={ () => {
-														handleDeleteNote(
-															actualIndex
-														);
-														setShowDeletePopup(
-															null
-														);
-													} }
-													className="px-2 ml-2 bg-red-600 hover:bg-red-700 border-red-600 hover:border-red-700"
-												>
-													{ __(
-														'Confirm',
-														'sureforms'
-													) }
-												</Button>
-											</Container>
-										</Container>
-									}
-									placement="top"
-									triggers={ [ 'click', 'focus' ] }
-									tooltipPortalId="srfm-settings-container"
-									interactive
-									className="z-999999"
-									variant="light"
-									open={ showDeletePopup === actualIndex }
-									setOpen={ () =>
-										setShowDeletePopup( actualIndex )
-									}
-								>
-									<Button
-										variant="ghost"
-										size="xs"
-										icon={
-											<Trash2 className="!size-4" />
-										}
-										onClick={ () =>
-											setShowDeletePopup(
-												actualIndex
 											)
-										}
-										disabled={
-											deleteNoteMutation.isPending
-										}
-										className="text-icon-secondary hover:text-red-700"
-									/>
-								</Tooltip>
+										) }
+									</Text>
+									<Text className="text-[14px] leading-[20px] text-text-secondary">
+										{ note.text }
+									</Text>
+								</div>
+								<Button
+									variant="ghost"
+									size="xs"
+									icon={ <Trash className="w-4 h-4" /> }
+									onClick={ () =>
+										handleDeleteNoteConfirmation(
+											actualIndex
+										)
+									}
+									disabled={
+										deleteNoteMutation.isPending
+									}
+									className="text-icon-secondary hover:text-icon-primary flex-shrink-0"
+									aria-label={ __(
+										'Delete note',
+										'sureforms'
+									) }
+								/>
 							</div>
 						);
 					  } )
 					: ! isAddingNote && (
-						<Text className="text-sm text-text-secondary p-3 text-center flex items-center justify-center gap-2">
-							<FileSearch2 className="!size-5" />
-							{ __(
-								'Add an internal note about this transaction',
-								'sureforms'
-							) }
-						</Text>
+						<div className="relative flex items-center justify-center py-6 px-1 gap-2.5">
+							<FileSearch className="text-icon-secondary size-4" />
+							<Text
+								color="secondary"
+								size={ 12 }
+								weight={ 400 }
+							>
+								{ __(
+									'Add an internal note.',
+									'sureforms'
+								) }
+							</Text>
+						</div>
 					  ) }
-			</Container>
-
-			{ /* Pagination Controls - Show only if more than 3 notes */ }
-			{ isNotesAvailable && (
-				<Container className="flex items-center justify-between px-2 py-1">
-					<Text className="text-xs text-text-secondary">
-						{ __( 'Page', 'sureforms' ) } { currentPage }{ ' ' }
-						{ __( 'of', 'sureforms' ) } { totalPages }
-					</Text>
-					<Container className="gap-1">
+			</div>
+			{ /* Pagination */ }
+			{ isNotesAvailable && totalPages > 1 && (
+				<div className="w-full flex items-center justify-end pb-3 pr-3 pl-3">
+					<div className="flex items-center gap-2">
 						<Button
 							variant="ghost"
 							size="xs"
-							icon={ <ChevronLeft className="!size-4" /> }
+							icon={ <ArrowLeft /> }
+							iconPosition="left"
 							onClick={ handlePreviousPage }
 							disabled={ currentPage === 1 }
-							className="text-icon-secondary hover:text-icon-primary"
-						/>
+						>
+							{ __( 'Previous', 'sureforms' ) }
+						</Button>
 						<Button
 							variant="ghost"
 							size="xs"
-							icon={ <ChevronRight className="!size-4" /> }
+							icon={ <ArrowRight /> }
+							iconPosition="right"
 							onClick={ handleNextPage }
 							disabled={ currentPage === totalPages }
-							className="text-icon-secondary hover:text-icon-primary"
-						/>
-					</Container>
-				</Container>
+						>
+							{ __( 'Next', 'sureforms' ) }
+						</Button>
+					</div>
+				</div>
 			) }
-		</Container>
+		</div>
 	);
 };
 

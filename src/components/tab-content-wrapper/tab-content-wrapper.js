@@ -88,7 +88,6 @@ const TabContentWrapper = ( {
 							) }
 						</Container.Item>
 					) }
-
 				</Container>
 				<Container align="center" className="gap-3">
 					{ actionLeftContent }

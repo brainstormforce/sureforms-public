@@ -55,11 +55,20 @@ export const useEntriesFilters = () => {
 		}
 
 		if ( dateRange?.from ) {
-			params.set( 'date_from', dateRange.from.toISOString().split( 'T' )[ 0 ] );
+			params.set(
+				'date_from',
+				dateRange.from.toISOString().split( 'T' )[ 0 ]
+			);
 			if ( dateRange?.to ) {
-				params.set( 'date_to', dateRange.to.toISOString().split( 'T' )[ 0 ] );
+				params.set(
+					'date_to',
+					dateRange.to.toISOString().split( 'T' )[ 0 ]
+				);
 			} else {
-				params.set( 'date_to', dateRange.from.toISOString().split( 'T' )[ 0 ] );
+				params.set(
+					'date_to',
+					dateRange.from.toISOString().split( 'T' )[ 0 ]
+				);
 			}
 		} else {
 			params.delete( 'date_from' );
@@ -67,7 +76,14 @@ export const useEntriesFilters = () => {
 		}
 
 		setSearchParams( params, { replace: true } );
-	}, [ statusFilter, formFilter, searchQuery, dateRange, searchParams, setSearchParams ] );
+	}, [
+		statusFilter,
+		formFilter,
+		searchQuery,
+		dateRange,
+		searchParams,
+		setSearchParams,
+	] );
 
 	const setStatusFilter = useCallback( ( value ) => {
 		setStatusFilterState( value );

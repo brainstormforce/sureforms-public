@@ -1,4 +1,4 @@
-import { Container, Button, Title } from '@bsf/force-ui';
+import { Button, Text } from '@bsf/force-ui';
 import { ArrowLeft, ArrowUpRight } from 'lucide-react';
 import { __, sprintf } from '@wordpress/i18n';
 import { formatOrderId } from './utils';
@@ -10,46 +10,35 @@ const PaymentHeader = ( { title, onBack, paymentData, handleViewEntry } ) => {
 	const orderId = formatOrderId( paymentData );
 
 	return (
-		<Container
-			containerType="flex"
-			direction="row"
-			gap="xs"
-			className="w-full justify-between items-center"
-		>
-			<Title
-				icon={ null }
-				size="lg"
-				tag="h2"
-				title={ sprintf(
-					/* translators: 1: title, 2: Order ID */
-					__( '%1$s %2$s', 'sureforms' ),
-					title,
-					orderId
-				) }
-			/>
-			<div className="flex gap-2 items-center">
+		<div className="flex items-center justify-between gap-3">
+			<div className="flex items-center gap-3">
 				<Button
-					variant="outline"
-					size="s"
-					icon={ <ArrowLeft className="!size-4" /> }
 					onClick={ onBack }
-					className="text-text-primary rounded-[4px] p-2 gap-0.5"
-				>
-					{ __( 'Back', 'sureforms' ) }
-				</Button>
-				<Button
-					variant="outline"
-					size="s"
-					icon={ <ArrowUpRight className="!size-4" /> }
-					iconPosition="right"
-					onClick={ handleViewEntry }
-					disabled={ ! entry_id }
-					className="text-text-primary rounded-[4px] p-2 gap-0.5"
-				>
-					{ __( 'View Entry', 'sureforms' ) }
-				</Button>
+					variant="ghost"
+					size="md"
+					className="p-1"
+					icon={ <ArrowLeft /> }
+				/>
+				<Text size={ 24 } color="primary" weight={ 600 }>
+					{ sprintf(
+						/* translators: 1: title, 2: Order ID */
+						__( '%1$s %2$s', 'sureforms' ),
+						title,
+						orderId
+					) }
+				</Text>
 			</div>
-		</Container>
+			<Button
+				variant="primary"
+				size="md"
+				icon={ <ArrowUpRight className="!size-4" /> }
+				iconPosition="right"
+				onClick={ handleViewEntry }
+				disabled={ ! entry_id }
+			>
+				{ __( 'View Form Data', 'sureforms' ) }
+			</Button>
+		</div>
 	);
 };
 

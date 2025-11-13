@@ -21,6 +21,10 @@ import { ToolbarGroup, ToolbarButton } from '@wordpress/components';
 import { getBlockTypes } from '@Blocks/util';
 import { __, sprintf } from '@wordpress/i18n';
 import ConditionalLogic from '@Components/conditional-logic';
+import {
+	EnhancedMultiChoiceOptions,
+	EnhancedDropdownOptions,
+} from '@Admin/payment/enhanced-options';
 
 // Register store.
 import '../store/store.js';
@@ -215,4 +219,26 @@ addFilter(
 			},
 		];
 	}
+);
+
+/**
+ * Temporary filter hooks for enhancing MultiChoice and Dropdown block options to support "Show Value" functionality in free version.
+ *
+ * Note:
+ * - These filters were originally present only in the PRO version (SureForms PRO) to handle calculations.
+ * - Now, "Show Value" is needed in the free version as part of the payment feature, so these filters have been added to the free plugin.
+ * - Ideally, "Show Value" should be a part of the block implementation itself, not added via filters.
+ * - In the future, these filters should be removed from PRO, as this logic will reside directly in the blocks provided in the free plugin.
+ * - This is a temporary bridge for backwards compatibility and migration from PRO to free feature parity.
+ */
+addFilter(
+	'srfm.blocks.multichoice.options.enhance',
+	'srfm/multi-choice/options',
+	EnhancedMultiChoiceOptions
+);
+
+addFilter(
+	'srfm.blocks.dropdown.options.enhance',
+	'srfm/dropdown/options',
+	EnhancedDropdownOptions
 );
