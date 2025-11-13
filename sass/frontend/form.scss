@@ -217,6 +217,20 @@
 	.srfm-form-container {
 		.grecaptcha-badge {
 			visibility: revert !important;
+			width: 256px;
+			height: 60px;
+			display: block;
+			transition: right 0.3s;
+			position: fixed;
+			bottom: 14px;
+			right: -186px;
+			box-shadow: gray 0px 0px 5px;
+			border-radius: 2px;
+			overflow: hidden;
+
+			&:hover {
+				right: 0px;
+			}
 		}
 	}
 }
