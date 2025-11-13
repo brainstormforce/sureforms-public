@@ -222,7 +222,7 @@ class StripePayment {
 		const elementsConfig = {
 			mode: paymentType === 'subscription' ? 'subscription' : 'payment',
 			currency: paymentInput.dataset.currency || 'usd',
-			amount: 1200,
+			amount: 12000,
 			appearance: {
 				theme: 'stripe',
 				variables: {
