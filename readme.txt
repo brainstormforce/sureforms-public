@@ -368,7 +368,6 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 = x.x.x =
 * Fix: Resolved an issue where confirm email validation is missing on form submit.
 * Fix: Resolved an issue where block config is not updated consistently on form update.
-* Improvement: Added a message as fall for email failure for single entries page when SMTP plugin is not present.
 * Improvement: Added popup for getting started video in dashboard.
 = 1.13.2 - 7th November 2025 =
 * Improvement: Added a fallback message for email failures on the single entries page when the SMTP plugin is missing.
