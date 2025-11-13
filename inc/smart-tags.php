@@ -44,14 +44,25 @@ class Smart_Tags {
 		// Check if this block is a SureForms form block.
 		if ( strpos( $block_content, 'srfm-block' ) !== false ) {
 
-			if ( isset( $block['blockName'] ) && 'srfm/form' === $block['blockName'] && ! empty( $block['attrs']['id'] ) ) {
+			// Check if it's any SRFM block.
+			if ( isset( $block['blockName'] ) && is_string( $block['blockName'] ) && strpos( $block['blockName'], 'srfm' ) !== false ) {
 
-				$form_id   = absint( $block['attrs']['id'] );
-				$form_data = [ 'form-id' => $form_id ];
+				// Determine form ID based on block type.
+				$form_id = 0;
+				if ( 'srfm/form' === $block['blockName'] && ! empty( $block['attrs']['id'] ) ) {
+					$form_id = absint( $block['attrs']['id'] );
+				} elseif ( ! empty( $block['attrs']['formId'] ) ) {
+					$form_id = absint( $block['attrs']['formId'] );
+				}
 
-				return Helper::get_string_value(
-					self::process_smart_tags( $block_content, null, $form_data )
-				);
+				// If we found a form ID, process it.
+				if ( $form_id ) {
+					$form_data = [ 'form-id' => $form_id ];
+
+					return Helper::get_string_value(
+						self::process_smart_tags( $block_content, null, $form_data )
+					);
+				}
 			}
 
 			return $block_content;
