@@ -35,9 +35,6 @@ const PaymentListPlaceHolder = () => {
 				gap="xs"
 				className="w-full bg-background-primary border-0.5 border-solid rounded-xl border-border-subtle p-4 gap-2 shadow-sm"
 			>
-				<h1 className="text-xl font-semibold text-text-primary">
-					{ __( 'Payments', 'sureforms' ) }
-				</h1>
 				<Container
 					containerType="flex"
 					gap="xs"

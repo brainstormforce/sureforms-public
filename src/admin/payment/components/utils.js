@@ -543,6 +543,11 @@ export const WebhookConfigure = ( props ) => {
 		paymentMode === 'live'
 			? window?.srfm_admin?.payments?.webhook_live_connected
 			: window?.srfm_admin?.payments?.webhook_test_connected;
+	const isStripeConnected = window?.srfm_admin?.payments?.stripe_connected;
+
+	if ( ! isStripeConnected ) {
+		return null;
+	}
 
 	if ( isWebhookConnected ) {
 		return null;
