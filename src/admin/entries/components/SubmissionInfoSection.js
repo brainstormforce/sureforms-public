@@ -97,13 +97,17 @@ const SubmissionInfoSection = ( { entryData } ) => {
 			updateReadStatusMutation.mutate( {
 				entry_ids: [ entryData.id ],
 				action: 'unread',
-				onSuccess: () => setTimeout( () => {
-					if ( window.history.state && window.history.state.idx > 0 ) {
-						navigate( -1 );
-					} else {
-						navigate( '/' );
-					}
-				}, 100 ),
+				onSuccess: () =>
+					setTimeout( () => {
+						if (
+							window.history.state &&
+							window.history.state.idx > 0
+						) {
+							navigate( -1 );
+						} else {
+							navigate( '/' );
+						}
+					}, 100 ),
 			} );
 		}
 	};

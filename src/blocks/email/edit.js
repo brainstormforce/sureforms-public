@@ -129,10 +129,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 								/>
 							) }
 							<ToggleControl
-								label={ __(
-									'Unique Entry',
-									'sureforms'
-								) }
+								label={ __( 'Unique Entry', 'sureforms' ) }
 								checked={ isUnique }
 								onChange={ ( checked ) =>
 									setAttributes( { isUnique: checked } )

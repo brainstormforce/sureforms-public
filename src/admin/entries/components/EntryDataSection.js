@@ -115,7 +115,9 @@ export const RenderField = ( props ) => {
  */
 const EntryDataSection = ( { entryData } ) => {
 	// Extract and transform form data fields from entry data
-	const fields = ( entryData?.formData || [] ).map( formatField ).filter( Boolean );
+	const fields = ( entryData?.formData || [] )
+		.map( formatField )
+		.filter( Boolean );
 
 	return (
 		<div className="bg-background-primary border-0.5 border-solid border-border-subtle rounded-lg shadow-sm">
