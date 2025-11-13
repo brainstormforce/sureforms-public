@@ -56,6 +56,7 @@ const PaymentListingPage = () => {
 		isLoading: false,
 		destructive: true,
 		enableVerification: false,
+		afterInputContent: null,
 	} );
 
 	// Query parameters for API
@@ -131,6 +132,20 @@ const PaymentListingPage = () => {
 		}
 	};
 
+	const warningText = (
+		<Text
+			size={ 14 }
+			lineHeight={ 18 }
+			weight={ 400 }
+			className="m-0 text-sm font-normal bg-alert-background-danger text-[#DC2626] p-3 rounded-[8px]"
+		>
+			{ __(
+				'Warning: Deleting payments will permanently remove all associated data including notes, logs, and transaction information.',
+				'sureforms'
+			) }
+		</Text>
+	);
+
 	const handleDeleteSingle = ( id ) => {
 		setConfirmationDialog( {
 			open: true,
@@ -144,6 +159,7 @@ const PaymentListingPage = () => {
 			isLoading: bulkDeleteMutation.isPending,
 			destructive: true,
 			enableVerification: true,
+			beforeClosingBody: warningText,
 		} );
 	};
 
@@ -164,6 +180,7 @@ const PaymentListingPage = () => {
 			isLoading: bulkDeleteMutation.isPending,
 			destructive: true,
 			enableVerification: true,
+			beforeClosingBody: warningText,
 		} );
 	};
 
@@ -366,6 +383,7 @@ const PaymentListingPage = () => {
 				confirmButtonText={ confirmationDialog.confirmLabel }
 				destructiveConfirmButton={ confirmationDialog.destructive }
 				requireConfirmation={ confirmationDialog.enableVerification }
+				beforeClosingBody={ confirmationDialog.beforeClosingBody }
 			/>
 		</div>
 	);

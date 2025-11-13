@@ -18,7 +18,9 @@ const ConfirmationDialog = ( {
 	cancelButtonText = __( 'Cancel', 'sureforms' ),
 	destructiveConfirmButton = true,
 	requireConfirmation = false,
-	verificationText = __('delete', 'sureforms'),
+	verificationText = __( 'delete', 'sureforms' ),
+	afterOpenBody = null,
+	beforeClosingBody = null,
 } ) => {
 	// Use provided verificationText or default to 'delete'
 	const CONFIRMATION_TEXT = verificationText || __( 'delete', 'sureforms' );
@@ -121,6 +123,7 @@ const ConfirmationDialog = ( {
 				</Dialog.Header>
 				{ requireConfirmation ? (
 					<Dialog.Body className="mt-3 space-y-3">
+						{ afterOpenBody }
 						<Label
 							className="text-text-secondary font-normal"
 							tag="p"
@@ -158,6 +161,7 @@ const ConfirmationDialog = ( {
 								autoComplete="off"
 							/>
 						</div>
+						{ beforeClosingBody }
 					</Dialog.Body>
 				) : null }
 				<Dialog.Footer>

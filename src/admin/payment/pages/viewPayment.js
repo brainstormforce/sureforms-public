@@ -155,7 +155,22 @@ const ViewPayment = () => {
 			title: config.title,
 			description: config.description,
 			confirmLabel: config.confirmLabel,
-			onConfirm: config.onConfirm,
+			onConfirm: async () => {
+				try {
+					await config.onConfirm();
+					// Close the dialog after successful action
+					setConfirmationDialog( ( prev ) => ( {
+						...prev,
+						open: false,
+					} ) );
+				} catch ( confirmationError ) {
+					// Keep dialog open if there's an error
+					console.error(
+						'Confirmation action failed:',
+						confirmationError
+					);
+				}
+			},
 			isLoading: config.isLoading || false,
 			destructive: config.destructive !== false, // Default to true
 		} );
@@ -185,16 +200,40 @@ const ViewPayment = () => {
 	};
 
 	const handleDeleteNote = ( noteIndex ) => {
-		deleteNoteMutation.mutate( {
-			paymentId: paymentData.id,
-			noteIndex,
+		return new Promise( ( resolve, reject ) => {
+			deleteNoteMutation.mutate(
+				{
+					paymentId: paymentData.id,
+					noteIndex,
+				},
+				{
+					onSuccess: () => {
+						resolve();
+					},
+					onError: ( deletingNoteError ) => {
+						reject( deletingNoteError );
+					},
+				}
+			);
 		} );
 	};
 
 	const handleDeleteLog = ( logIndex ) => {
-		deleteLogMutation.mutate( {
-			paymentId: paymentData.id,
-			logIndex,
+		return new Promise( ( resolve, reject ) => {
+			deleteLogMutation.mutate(
+				{
+					paymentId: paymentData.id,
+					logIndex,
+				},
+				{
+					onSuccess: () => {
+						resolve();
+					},
+					onError: ( deletingError ) => {
+						reject( deletingError );
+					},
+				}
+			);
 		} );
 	};
 
