@@ -130,22 +130,15 @@ const PaymentFilters = ( {
 						placeholder={ __( 'Payment Mode', 'sureforms' ) }
 					>
 						{ ( { value: renderValue } ) => {
-							if ( ! renderValue ) {
-								return __( 'All Payments', 'sureforms' );
-							}
 							if ( renderValue === 'test' ) {
 								return __( 'Test Mode', 'sureforms' );
 							}
 							if ( renderValue === 'live' ) {
 								return __( 'Live Mode', 'sureforms' );
 							}
-							return __( 'All Payments', 'sureforms' );
 						} }
 					</Select.Button>
 					<Select.Options>
-						<Select.Option value="">
-							{ __( 'All Payments', 'sureforms' ) }
-						</Select.Option>
 						<Select.Option value="test">
 							{ __( 'Test Mode', 'sureforms' ) }
 						</Select.Option>

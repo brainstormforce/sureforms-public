@@ -1,4 +1,4 @@
-import { Container, Button } from '@bsf/force-ui';
+import { Container, Button, Text } from '@bsf/force-ui';
 import { __ } from '@wordpress/i18n';
 import { ArrowRight } from 'lucide-react';
 import paymentPlaceHolder from '@Image/payment-list-placeholder.svg';
@@ -6,10 +6,27 @@ import paymentPlaceHolder from '@Image/payment-list-placeholder.svg';
 /**
  * PaymentListPlaceHolder Component
  *
- * @param {Object} props
- * @param {string} props.paymentMode - Current payment mode ('live' or 'test')
  */
-const PaymentListPlaceHolder = ( { paymentMode = 'test' } ) => {
+const PaymentListPlaceHolder = () => {
+	const isConfigured = window.srfm_admin?.payments?.stripe_connected;
+	const subHeading = isConfigured
+		? __( 'No payments yet', 'sureforms' )
+		: __( 'Configure Payment', 'sureforms' );
+	const textDescription = isConfigured
+		? __(
+			"It's quiet here because no one has made a payment yet. Once you receive payments, this page will let you:",
+			'sureforms'
+		  )
+		: __(
+			'Configure your payment gateway to start accepting payments.',
+			'sureforms'
+		  );
+	const FEATURES = [
+		__( 'Track all transactions in real time', 'sureforms' ),
+		__( 'View details and statuses easily', 'sureforms' ),
+		__( 'Manage refunds or partial refunds', 'sureforms' ),
+	];
+
 	return (
 		<div className="srfm-single-payment-wrapper min-h-screen bg-background-secondary p-8">
 			<Container
@@ -35,58 +52,47 @@ const PaymentListPlaceHolder = ( { paymentMode = 'test' } ) => {
 							<img
 								src={ paymentPlaceHolder }
 								alt={ __( 'Payment Placeholder', 'sureforms' ) }
-								className="w-[240px] h-[240px]"
+								className="w-60 h-60"
 							/>
 						</div>
 						<div className="flex flex-col gap-2">
-							<p className="text-xl font-bold">
-								{ __( 'No payments yet', 'sureforms' ) }
-							</p>
-							<p className="text-sm text-text-secondary">
-								{ 'live' === paymentMode
-									? __(
-										'No live payments received yet.',
-										'sureforms'
-									  )
-									: __(
-										'No test payments received yet.',
-										'sureforms'
-									  ) }
-							</p>
-							<p className="text-sm text-text-secondary">
-								{ __(
-									"It's quiet here because no one has made a payment yet. Once you receive payments, this page will let you:",
-									'sureforms'
-								) }
-							</p>
-							<ul className="list-disc list-inside m-0">
-								<li>
-									{ __(
-										'Track all transactions in real time',
-										'sureforms'
-									) }
-								</li>
-								<li>
-									{ __(
-										'View details and statuses easily',
-										'sureforms'
-									) }
-								</li>
-								<li>
-									{ __(
-										'Manage refunds or partial refunds',
-										'sureforms'
-									) }
-								</li>
-								<li>
-									{ __(
-										'Download invoices for each transaction',
-										'sureforms'
-									) }
-								</li>
-							</ul>
-							{ ! window.srfm_admin?.payments
-								?.stripe_connected && (
+							<Text
+								size={ 20 }
+								lineHeight={ 30 }
+								weight={ 600 }
+								letterSpacing={ -0.5 }
+								color="primary"
+							>
+								{ subHeading }
+							</Text>
+							<div className="flex flex-col">
+								{ /* Description */ }
+								<Text
+									size={ 16 }
+									lineHeight={ 24 }
+									weight={ 400 }
+									color="secondary"
+								>
+									{ textDescription }
+								</Text>
+								{ /* Bullet Points */ }
+								<ul className="flex flex-col list-disc list-inside leading-7 ml-2.5 mt-2 mb-0 mr-0">
+									{ FEATURES.map( ( point, index ) => (
+										<li key={ index } className="m-0">
+											<Text
+												className="inline-block"
+												size={ 16 }
+												lineHeight={ 28 }
+												weight={ 400 }
+												color="secondary"
+											>
+												{ point }
+											</Text>
+										</li>
+									) ) }
+								</ul>
+							</div>
+							{ ! isConfigured && (
 								<Button
 									onClick={ () => {
 										const paymentSettingsUrl =

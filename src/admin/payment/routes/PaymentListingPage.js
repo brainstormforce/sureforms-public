@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from '@wordpress/element';
 import { __, sprintf } from '@wordpress/i18n';
-import { toast, Button, Text } from '@bsf/force-ui';
+import { toast, Button, Text, Container } from '@bsf/force-ui';
 import { useNavigate } from 'react-router-dom';
 import PaymentFilters from '../components/PaymentFilters';
 import PaymentTable from '../components/PaymentTable';
@@ -245,12 +245,16 @@ const PaymentListingPage = () => {
 		setCurrentPage( 1 );
 	};
 
-	// Show placeholder if no transactions exist at all
-	if (
-		! isLoading &&
-		( ! paymentsData ||
-			paymentsData?.transactions_is_empty === 'with_no_filter' )
-	) {
+	// Get global payment configuration
+	const isStripeConnected =
+		window.srfm_admin?.payments?.stripe_connected || false;
+	const isTransactionPresent =
+		window.srfm_admin?.payments?.is_transaction_present || false;
+
+	// Show placeholder if:
+	// 1. Stripe is not connected, OR
+	// 2. Stripe is connected but no transactions exist
+	if ( ! isLoading && ( ! isStripeConnected || ! isTransactionPresent ) ) {
 		return <PaymentListPlaceHolder paymentMode={ paymentMode } />;
 	}
 
@@ -288,31 +292,45 @@ const PaymentListingPage = () => {
 
 				{ /* Empty state when no results found */ }
 				{ payments.length === 0 && ! isLoading ? (
-					<div className="space-y-3 py-8 flex flex-col items-center justify-center mx-auto max-w-md">
-						<Text as="h3" color="primary" size={ 24 }>
-							{ __( 'No transactions found', 'sureforms' ) }
-						</Text>
-						<Text color="secondary" className="text-center">
-							{ hasActiveFilters()
-								? __(
-									'No transactions found. Try adjusting your search terms or clearing filters.',
-									'sureforms'
-								  )
-								: __(
-									'No transactions found for the selected mode.',
-									'sureforms'
-								  ) }
-						</Text>
-						{ hasActiveFilters() && (
-							<Button
-								size="sm"
-								variant="outline"
-								onClick={ handleClearFilters }
+					<Container className="flex items-center justify-center p-8 bg-background-primary rounded-lg">
+						<div className="text-center max-w-md">
+							<Text
+								size={ 18 }
+								lineHeight={ 28 }
+								weight={ 600 }
+								color="primary"
+								className="mb-2"
 							>
-								{ __( 'Clear Filters', 'sureforms' ) }
-							</Button>
-						) }
-					</div>
+								{ __( 'No transactions found', 'sureforms' ) }
+							</Text>
+							<Text
+								size={ 16 }
+								lineHeight={ 24 }
+								weight={ 400 }
+								color="secondary"
+								className="mb-4"
+							>
+								{ hasActiveFilters()
+									? __(
+										'No transactions found. Try adjusting your search terms or clearing filters.',
+										'sureforms'
+									  )
+									: __(
+										'No transactions found for the selected mode.',
+										'sureforms'
+									  ) }
+							</Text>
+							{ hasActiveFilters() && (
+								<Button
+									size="sm"
+									variant="outline"
+									onClick={ handleClearFilters }
+								>
+									{ __( 'Clear Filters', 'sureforms' ) }
+								</Button>
+							) }
+						</div>
+					</Container>
 				) : (
 					<div className="bg-background-primary mt-4">
 						<PaymentTable
