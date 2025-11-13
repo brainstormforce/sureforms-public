@@ -612,7 +612,6 @@ class StripePayment {
 
 		if ( paymentResult?.error ) {
 			console.warn( { 'Payment Confirmation Error': paymentResult } );
-			StripePayment.addErrorValueInInput( paymentInput, paymentResult );
 
 			const getErrorCode =
 				paymentResult?.error?.decline_code ||
@@ -639,10 +638,7 @@ class StripePayment {
 				'payment_could_not_be_completed',
 				'Payment could not be completed. Please try again or contact the site administrator.'
 			);
-			StripePayment.addErrorValueInInput(
-				paymentInput,
-				new Error( errorMessage )
-			);
+
 			return {
 				valid: false,
 				error: errorMessage,
@@ -728,19 +724,6 @@ class StripePayment {
 		}
 
 		paymentInput.value = JSON.stringify( value );
-	}
-
-	/**
-	 * Adds an error message to the payment input field in JSON format.
-	 *
-	 * @param {HTMLInputElement} paymentInput - The input field to store the error.
-	 * @param {Error|string}     error        - The error object or message to store.
-	 */
-	static addErrorValueInInput( paymentInput, error ) {
-		paymentInput.value = JSON.stringify( {
-			errorType: 'stripe_payment_confirmation_error',
-			error: error?.message || error,
-		} );
 	}
 }
 

@@ -8,8 +8,6 @@ import {
 } from '@wordpress/element';
 import { __, sprintf } from '@wordpress/i18n';
 
-const CONFIRMATION_TEXT = __( 'delete', 'sureforms' );
-
 const ConfirmationDialog = ( {
 	isOpen,
 	title,
@@ -20,7 +18,10 @@ const ConfirmationDialog = ( {
 	cancelButtonText = __( 'Cancel', 'sureforms' ),
 	destructiveConfirmButton = true,
 	requireConfirmation = false,
+	verificationText = __('delete', 'sureforms'),
 } ) => {
+	// Use provided verificationText or default to 'delete'
+	const CONFIRMATION_TEXT = verificationText || __( 'delete', 'sureforms' );
 	const [ confirmationText, setConfirmationText ] = useState( '' );
 	const [ errorMessage, setErrorMessage ] = useState( '' );
 	const [ loading, setLoading ] = useState( false );
@@ -195,6 +196,7 @@ ConfirmationDialog.propTypes = {
 	cancelButtonText: PropTypes.string,
 	destructiveConfirmButton: PropTypes.bool,
 	requireConfirmation: PropTypes.bool,
+	verificationText: PropTypes.string,
 };
 
 export default ConfirmationDialog;

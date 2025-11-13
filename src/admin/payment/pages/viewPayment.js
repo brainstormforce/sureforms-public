@@ -200,7 +200,10 @@ const ViewPayment = () => {
 
 	const handleViewEntry = () => {
 		if ( paymentData?.entry_id ) {
-			window.location.href = `${ window.location.origin }/wp-admin/admin.php?page=sureforms_entries&entry_id=${ paymentData.entry_id }&view=details`;
+			window.open(
+				`${ window.location.origin }/wp-admin/admin.php?page=sureforms_entries#/entry/${ paymentData.entry_id }`,
+				'_blank'
+			);
 		}
 	};
 
