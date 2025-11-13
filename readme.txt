@@ -367,7 +367,6 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 == Changelog ==
 = x.x.x =
 * Fix: Resolved an issue where shortcode value of smart tag {form_title} is incorrect when embedded in a page.
-* Improvement: Added popup for getting started video in dashboard.
 = 1.13.2 - 7th November 2025 =
 * Improvement: Added a fallback message for email failures on the single entries page when the SMTP plugin is missing.
 * Improvement: Added support for "Name <email\>" format in CC, BCC, and Reply-To fields.
