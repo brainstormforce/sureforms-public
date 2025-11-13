@@ -156,7 +156,19 @@ const EntryDetailPage = () => {
 			title: config.title,
 			description: config.description,
 			confirmLabel: config.confirmLabel,
-			onConfirm: config.onConfirm,
+			onConfirm: async () => {
+				try {
+					await config.onConfirm();
+					// Close the dialog after successful action
+					setConfirmationDialog( ( prev ) => ( {
+						...prev,
+						open: false,
+					} ) );
+				} catch ( error ) {
+					// Keep dialog open if there's an error
+					console.error( 'Confirmation action failed:', error );
+				}
+			},
 			isLoading: config.isLoading || false,
 			destructive: config.destructive !== false, // Default to true
 		} );
