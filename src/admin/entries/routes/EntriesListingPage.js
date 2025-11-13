@@ -484,7 +484,7 @@ const EntriesListingPage = () => {
 		return (
 			<div className="p-8 bg-background-secondary min-h-screen">
 				<div className="mx-auto">
-					<div className="bg-white rounded-xl border-0.5 border-solid border-border-subtle shadow-sm p-2 space-y-2">
+					<div className="bg-white rounded-lg border-0.5 border-solid border-border-subtle shadow-sm p-4 space-y-2">
 						<EmptyState />
 					</div>
 				</div>
