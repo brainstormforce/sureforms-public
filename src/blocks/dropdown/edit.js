@@ -385,6 +385,26 @@ const Edit = ( props ) => {
 			component: <div className="srfm-settings-separator" />,
 		},
 		{
+			id: 'dropDownOptions',
+			component: dropDownOptions,
+		},
+		{
+			id: 'addNewOption',
+			component: addNewOption,
+		},
+		{
+			id: 'searchable',
+			component: (
+				<ToggleControl
+					label={ __( 'Enable Dropdown Search', 'sureforms' ) }
+					checked={ searchable }
+					onChange={ ( checked ) =>
+						setAttributes( { searchable: checked } )
+					}
+				/>
+			),
+		},
+		{
 			id: 'multiSelect',
 			component: (
 				<ToggleControl
@@ -399,27 +419,6 @@ const Edit = ( props ) => {
 		{
 			id: 'minMaxComponent',
 			component: minMaxComponent,
-		},
-		{
-			id: 'searchable',
-			component: (
-				<ToggleControl
-					label={ __( 'Enable Dropdown Search', 'sureforms' ) }
-					checked={ searchable }
-					onChange={ ( checked ) =>
-						setAttributes( { searchable: checked } )
-					}
-				/>
-			),
-		},
-
-		{
-			id: 'dropDownOptions',
-			component: dropDownOptions,
-		},
-		{
-			id: 'addNewOption',
-			component: addNewOption,
 		},
 	];
 
