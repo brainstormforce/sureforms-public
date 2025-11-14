@@ -69,7 +69,7 @@
 	}
 }
 // Hide WP notices in entries screen
-#wpbody:has( #srfm-entries-root ) {
+#wpbody:has( #srfm-entries-root, #srfm-payments-react-container ) {
 	#wpbody-content > .notice {
 		display: none;
 	}
