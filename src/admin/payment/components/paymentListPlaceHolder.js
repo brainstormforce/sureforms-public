@@ -118,7 +118,7 @@ const PaymentListPlaceHolder = () => {
 							) : (
 								<Button
 									onClick={ () => {
-										const createFormUrl = `${ window.location.origin }/wp-admin/admin.php?page=add-new-form?form_type=payment`;
+										const createFormUrl = `${ window.location.origin }/wp-admin/admin.php?page=add-new-form&form_type=payment`;
 										window.open(
 											createFormUrl,
 											'_blank',
