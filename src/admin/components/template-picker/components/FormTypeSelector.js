@@ -156,13 +156,13 @@ const FormTypeSelector = ( {
 									'sureforms'
 								  )
 								: option.slug === 'conversational'
-								? __(
-									'Select this if you want your form to display one question at a time, like a chat.',
-									'sureforms'
+									? __(
+										'Select this if you want your form to display one question at a time, like a chat.',
+										'sureforms'
 								  )
-								: __(
-									'Select this if you want to collect payments through your form.',
-									'sureforms'
+									: __(
+										'Select this if you want to collect payments through your form.',
+										'sureforms'
 								  )
 						}
 						placement="bottom"
