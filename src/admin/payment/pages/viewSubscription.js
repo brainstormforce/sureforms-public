@@ -588,7 +588,7 @@ const ViewSubscription = () => {
 								/>
 							</Table.Cell>
 							<Table.Cell>
-								{ formatDateTime( row.created_at ) }
+								{ formatDateTime( row.created_at, true ) }
 							</Table.Cell>
 							<Table.Cell className="text-right flex justify-center">
 								<Button
@@ -644,14 +644,14 @@ const ViewSubscription = () => {
 					<Badge
 						className="w-fit"
 						variant="green"
-						size="md"
+						size="xs"
 						label={ __( 'Live Mode', 'sureforms' ) }
 					/>
 				) : (
 					<Badge
 						className="w-fit"
 						variant="yellow"
-						size="md"
+						size="xs"
 						label={ __( 'Test Mode', 'sureforms' ) }
 					/>
 				),
@@ -696,7 +696,7 @@ const ViewSubscription = () => {
 		},
 		{
 			title: __( 'Received On', 'sureforms' ),
-			value: formatDateTime( subscriptionData.created_at ),
+			value: formatDateTime( subscriptionData.created_at, true ),
 		},
 	];
 
@@ -738,7 +738,7 @@ const ViewSubscription = () => {
 								variant={ getStatusVariant(
 									subscriptionData.subscription_status
 								) }
-								size="sm"
+								size="xs"
 								className="max-w-fit"
 								disableHover
 							/>

@@ -105,7 +105,7 @@ const PaymentLogs = ( {
 								className="bg-background-primary rounded-md p-3 relative shadow-sm flex items-start justify-between gap-3"
 							>
 								<div className="flex-1 space-y-2">
-									<Text className="text-[12px] leading-[16px] text-text-secondary font-semibold">
+									<Text className="text-base font-semibold text-text-secondary">
 										{ logTitle }
 										{ log?.created_at &&
 											` at ${ formatDateTime(

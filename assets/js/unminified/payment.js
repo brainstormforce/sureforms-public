@@ -65,7 +65,7 @@ function validateThePaymentBlock( form ) {
 				slug: 'invalid-variable-amount',
 				message: window.srfmPaymentUtility?.getStripeStrings(
 					'invalid_variable_amount',
-					'Please enter a valid payment amount greater than zero.'
+					'Invalid payment amount'
 				),
 			};
 		}

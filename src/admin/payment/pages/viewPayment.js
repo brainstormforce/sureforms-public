@@ -386,7 +386,7 @@ const ViewPayment = () => {
 									/>
 								</Table.Cell>
 								<Table.Cell>
-									{ formatDateTime( row.date_time ) }
+									{ formatDateTime( row.date_time, true ) }
 								</Table.Cell>
 								<Table.Cell className="flex justify-end">
 									<Button
@@ -448,13 +448,13 @@ const ViewPayment = () => {
 					<Badge
 						className="w-fit"
 						variant="green"
-						size="md"
+						size="xs"
 						label={ __( 'Live Mode', 'sureforms' ) }
 					/>
 				) : (
 					<Badge
 						className="w-fit"
-						size="md"
+						size="xs"
 						variant="yellow"
 						label={ __( 'Test Mode', 'sureforms' ) }
 					/>
@@ -508,7 +508,7 @@ const ViewPayment = () => {
 		{
 			id: 'received-on',
 			title: __( 'Received On', 'sureforms' ),
-			value: formatDateTime( paymentData.created_at ),
+			value: formatDateTime( paymentData.created_at, true ),
 		},
 	];
 

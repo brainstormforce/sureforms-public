@@ -1,7 +1,6 @@
 import { __, sprintf } from '@wordpress/i18n';
-import { Label, Button, Loader, Alert } from '@bsf/force-ui';
+import { Text, Button, Loader, Alert } from '@bsf/force-ui';
 import { TriangleAlert } from 'lucide-react';
-import { addQueryParam } from '@Utils/Helpers';
 
 /**
  * Get currencies data from localized PHP data
@@ -72,11 +71,6 @@ export const AlertForFee = () => {
 		return null;
 	}
 
-	const pricingPageUrl = addQueryParam(
-		srfm_admin?.pricing_page_url || srfm_admin?.sureforms_pricing_page,
-		'payments_settings'
-	);
-
 	// Scenario 1: Starter Plan with Active License - 1% Fee
 	if (
 		isProActive &&
@@ -85,24 +79,9 @@ export const AlertForFee = () => {
 	) {
 		return (
 			<AlertWrapper>
-				<Label className="text-[14px] leading-[20px] font-semibold">
-					{ __( 'Starter Plan Active', 'sureforms' ) }
-				</Label>
-				<p className="text-sm leading-[20px] font-normal">
+				<p className="text-sm leading-[20px] font-normal m-0">
 					{ __(
-						"You're currently on the SureForms Starter plan. A 1% transaction fee plus standard Stripe fees applies to all payments.",
-						'sureforms'
-					) }
-					<a
-						href={ pricingPageUrl }
-						target="_blank"
-						rel="noopener noreferrer"
-						className="ml-1 mr-1 text-background-brand font-semibold no-underline"
-					>
-						{ __( 'Upgrade', 'sureforms' ) }
-					</a>
-					{ __(
-						'to further reduce transaction fees and unlock advanced features.',
+						'1% transaction and payment gateway fees apply.',
 						'sureforms'
 					) }
 				</p>
@@ -114,24 +93,9 @@ export const AlertForFee = () => {
 	if ( isProActive && ! isLicenseActive ) {
 		return (
 			<AlertWrapper>
-				<Label className="text-[14px] leading-[20px] font-semibold">
-					{ __( 'License Activation Required', 'sureforms' ) }
-				</Label>
-				<p className="text-sm font-normal mt-0.5">
-					{ sprintf(
-						/* translators: %s: Pro plugin name */
-						__(
-							"We've detected that the %s plugin is installed but the license isn't activated.",
-							'sureforms'
-						),
-						proPluginName
-					) }{ ' ' }
+				<p className="text-sm font-normal m-0">
 					{ __(
-						'Please activate your license to reduce transaction fees.',
-						'sureforms'
-					) }{ ' ' }
-					{ __(
-						"You'll pay a 2.9% transaction fee plus standard Stripe fees until activation.",
+						'2.9% transaction and payment gateway fees apply. Activate license to reduce transaction fees.',
 						'sureforms'
 					) }
 				</p>
@@ -142,24 +106,9 @@ export const AlertForFee = () => {
 	// Scenario 2: Plugin Not Available - 2.9% Fee
 	return (
 		<AlertWrapper>
-			<Label className="text-[14px] leading-[20px] font-semibold">
-				{ __( 'Pay-as-you-go Pricing', 'sureforms' ) }
-			</Label>
-			<p className="text-sm font-normal mt-0.5">
+			<p className="text-sm font-normal m-0">
 				{ __(
-					"You'll pay a 2.9% transaction fee plus standard Stripe fees.",
-					'sureforms'
-				) }
-				<a
-					href={ pricingPageUrl }
-					target="_blank"
-					rel="noopener noreferrer"
-					className="ml-1 mr-1 text-background-brand font-semibold no-underline"
-				>
-					{ __( 'Upgrade', 'sureforms' ) }
-				</a>
-				{ __(
-					'to skip these additional fees and access premium payment features.',
+					'2.9% transaction and payment gateway fees apply.',
 					'sureforms'
 				) }
 			</p>
@@ -482,7 +431,7 @@ export const WebhookAutoConnectManage = ( {
 	const translatedText = sprintf(
 		/* translators: %1$s: Stripe dashboard button */
 		__(
-			'Webhooks keep SureForms in sync with Stripe by automatically updating payment and subscription data. Free up a webhook from %1$s then retry to auto-create the webhook.',
+			'Please visit %1$s, delete an unused webhook, then click below to retry.',
 			'sureforms'
 		),
 		'%1$s'
@@ -490,7 +439,23 @@ export const WebhookAutoConnectManage = ( {
 	const parts = translatedText.split( '%1$s' );
 	const content = (
 		<span className="flex flex-col gap-3.5">
-			<span>
+			<Text
+				size={ 16 }
+				weight={ 400 }
+				as="span"
+				className="text-text-primary"
+			>
+				{ __(
+					'SureForms could not create a webhook because your Stripe account has run out of free slots. Webhooks are needed to receive updates about payments.',
+					'sureforms'
+				) }
+			</Text>
+			<Text
+				size={ 16 }
+				weight={ 400 }
+				as="span"
+				className="text-text-primary"
+			>
 				{ parts[ 0 ] }
 				<Button
 					onClick={ () =>
@@ -501,14 +466,13 @@ export const WebhookAutoConnectManage = ( {
 						)
 					}
 					variant="link"
-					size="xs"
 					disabled={ ! stripeAccountId }
-					className="inline-flex text-text-primary font-bold underline p-0 [&>span]:p-0"
+					className="inline-flex text-base font-normal text-text-primary underline p-0 [&>span]:p-0"
 				>
 					{ __( 'Stripe Dashboard', 'sureforms' ) }
 				</Button>
 				{ parts[ 1 ] }
-			</span>
+			</Text>
 			<Button
 				onClick={ handleWebhookCreation }
 				disabled={ isCreatingWebhook || loading }
@@ -516,11 +480,11 @@ export const WebhookAutoConnectManage = ( {
 				iconPosition="left"
 				variant="link"
 				size="xs"
-				className="w-fit flex text-link-primary"
+				className="w-fit flex text-link-primary [&>span]:p-0"
 			>
 				{ isCreatingWebhook
 					? __( 'Creating…', 'sureforms' )
-					: __( 'Auto Create Webhook', 'sureforms' ) }
+					: __( 'Create Webhook', 'sureforms' ) }
 			</Button>
 		</span>
 	);

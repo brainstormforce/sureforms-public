@@ -703,7 +703,7 @@ class Stripe_Helper {
 			// Payment validation messages.
 			'payment_unavailable'               => __( 'Payment is currently unavailable. Please contact the site administrator.', 'sureforms' ),
 			'payment_amount_not_configured'     => __( 'Payment is currently unavailable. Please contact the site administrator to configure the payment amount.', 'sureforms' ),
-			'invalid_variable_amount'           => __( 'Please enter a valid payment amount greater than zero.', 'sureforms' ),
+			'invalid_variable_amount'           => __( 'Invalid payment amount', 'sureforms' ),
 			'amount_below_minimum'              => __( 'Payment amount must be at least {symbol}{amount}.', 'sureforms' ),
 
 			// Field mapping validation.
@@ -757,7 +757,7 @@ class Stripe_Helper {
 			'transaction_not_allowed'           => __( 'This transaction is not allowed. Please contact your bank.', 'sureforms' ),
 			'try_again_later'                   => __( 'The transaction could not be processed. Please try again later.', 'sureforms' ),
 			'live_mode_test_card'               => __( 'Your card was declined. Your request was in live mode, but used a known test card.', 'sureforms' ),
-			'test_mode_live_card'				=> __( 'Your card was declined. Your request was in test mode, but used a non test card. For a list of valid test cards, visit: https://stripe.com/docs/testing.', 'sureforms' ),
+			'test_mode_live_card'               => __( 'Your card was declined. Your request was in test mode, but used a non test card. For a list of valid test cards, visit: https://stripe.com/docs/testing.', 'sureforms' ),
 
 			// Default values and placeholders.
 			'sureforms_subscription'            => __( 'SureForms Subscription', 'sureforms' ),
@@ -765,7 +765,7 @@ class Stripe_Helper {
 			'subscription_plan'                 => __( 'Subscription Plan', 'sureforms' ),
 			'sureforms_customer'                => __( 'SureForms Customer', 'sureforms' ),
 			'customer_example_email'            => 'customer@example.com', // Not translatable - example email.
-			'amount_placeholder'                => __( 'Amount will appear here', 'sureforms' ),
+			'amount_placeholder'                => __( 'Please complete the form to view the amount.', 'sureforms' ),
 		];
 	}
 

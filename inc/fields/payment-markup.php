@@ -325,13 +325,11 @@ class Payment_Markup extends Base {
 					</div>
 				<?php } ?>
 
-				<?php if ( 'test' === $this->payment_mode ) { ?>
-					<!-- Test Mode Notice -->
-					<div class="srfm-test-mode-notice" style="background-color: #fff3cd; border: 1px solid #ffc107; border-radius: 4px; padding: 12px; margin-bottom: 16px; color: #856404;">
-						<strong><?php esc_html_e( 'Test mode is enabled.', 'sureforms' ); ?></strong>
-						<?php esc_html_e( 'While in test mode no live transactions are processed.', 'sureforms' ); ?>
-					</div>
-				<?php } ?>
+				<?php
+				if ( 'test' === $this->payment_mode ) {
+					echo $this->get_test_mode_notice(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+				}
+				?>
 
 				<!-- Stripe Elements Container -->
 				<div id="srfm-payment-element-<?php echo esc_attr( $this->block_id ); ?>" class="srfm-stripe-payment-element">
@@ -425,5 +423,33 @@ class Payment_Markup extends Base {
 		];
 
 		return $interval_labels[ $interval_slug ] ?? $interval_slug;
+	}
+
+	/**
+	 * Render test mode notice for admin users.
+	 * Only shows if user has manage_options capability.
+	 *
+	 * @return string Test mode notice markup or empty string.
+	 * @since x.x.x
+	 */
+	private function get_test_mode_notice() {
+		// Only show to users with manage_options capability.
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return '';
+		}
+
+		// Build dynamic link to payment settings.
+		$settings_url = admin_url( 'admin.php?page=sureforms_form_settings&tab=payments-settings' );
+
+		ob_start();
+		?>
+		<div class="srfm-test-mode-notice" style="background-color: #fff3cd; border: 1px solid #ffc107; border-radius: 4px; padding: 12px; margin-bottom: 16px; color: #856404;">
+			<strong><?php esc_html_e( 'Test mode is enabled:', 'sureforms' ); ?></strong>
+			<a href="<?php echo esc_url( $settings_url ); ?>" style="color: #856404;" target="_blank" rel="noopener noreferrer">
+				<?php esc_html_e( 'Click here to enable live mode and accept payment', 'sureforms' ); ?>
+			</a>
+		</div>
+		<?php
+		return ob_get_clean();
 	}
 }
