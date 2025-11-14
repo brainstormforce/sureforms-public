@@ -169,7 +169,7 @@ const PaymentTable = ( {
 			<Badge
 				label={ getStatusLabel( paymentStatus ) }
 				variant={ getStatusVariant( paymentStatus ) }
-				size="md"
+				size="xs"
 				className="w-fit"
 				disableHover
 			/>
@@ -187,7 +187,7 @@ const PaymentTable = ( {
 			<Badge
 				label={ payment.payment_type }
 				variant={ badgeVariant }
-				size="md"
+				size="xs"
 				className="w-fit"
 				disableHover
 			/>

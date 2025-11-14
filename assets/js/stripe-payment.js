@@ -737,7 +737,7 @@ const PAYMENT_UTILITY = {
 		PAYMENT_UTILITY.currentForm = form;
 		PAYMENT_UTILITY.amountPlaceHolder = PAYMENT_UTILITY.getStripeStrings(
 			'amount_placeholder',
-			'Amount will appear here'
+			'Please complete the form to view the amount.'
 		);
 		PAYMENT_UTILITY.listenAmountChanges();
 	},

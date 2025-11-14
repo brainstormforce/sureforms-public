@@ -11,20 +11,23 @@ const PaymentListPlaceHolder = () => {
 	const isConfigured = window.srfm_admin?.payments?.stripe_connected;
 	const subHeading = isConfigured
 		? __( 'No payments yet', 'sureforms' )
-		: __( 'Configure Payment', 'sureforms' );
+		: __( 'Turn Your Forms Into Checkout 💰', 'sureforms' );
 	const textDescription = isConfigured
 		? __(
 			"It's quiet here because no one has made a payment yet. Once you receive payments, this page will let you:",
 			'sureforms'
 		  )
 		: __(
-			'Configure your payment gateway to start accepting payments.',
+			'Activate payments and start accepting money for services, donations, products, and more.',
 			'sureforms'
 		  );
 	const FEATURES = [
-		__( 'Track all transactions in real time', 'sureforms' ),
-		__( 'View details and statuses easily', 'sureforms' ),
-		__( 'Manage refunds or partial refunds', 'sureforms' ),
+		__(
+			'Collect simple payments without heavy eCommerce plugins',
+			'sureforms'
+		),
+		__( 'Accept one-time payments or subscriptions quickly', 'sureforms' ),
+		__( 'Free to start: no extra plugins needed!', 'sureforms' ),
 	];
 
 	return (
@@ -89,7 +92,7 @@ const PaymentListPlaceHolder = () => {
 									) ) }
 								</ul>
 							</div>
-							{ ! isConfigured && (
+							{ ! isConfigured ? (
 								<Button
 									onClick={ () => {
 										const paymentSettingsUrl =
@@ -107,7 +110,31 @@ const PaymentListPlaceHolder = () => {
 									icon={ <ArrowRight className="!size-4" /> }
 									iconPosition="right"
 								>
-									{ __( 'Configure Payment', 'sureforms' ) }
+									{ __(
+										'Connect Payment Gateway',
+										'sureforms'
+									) }
+								</Button>
+							) : (
+								<Button
+									onClick={ () => {
+										const createFormUrl = `${ window.location.origin }/wp-admin/admin.php?page=add-new-form?form_type=payment`;
+										window.open(
+											createFormUrl,
+											'_blank',
+											'noopener,noreferrer'
+										);
+									} }
+									variant="primary"
+									size="md"
+									className="w-fit flex"
+									icon={ <ArrowRight className="!size-4" /> }
+									iconPosition="right"
+								>
+									{ __(
+										'Create New Payment Form',
+										'sureforms'
+									) }
 								</Button>
 							) }
 						</div>
