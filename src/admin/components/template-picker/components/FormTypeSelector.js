@@ -1,8 +1,8 @@
 import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
 import { Container, Button, Tooltip } from '@bsf/force-ui';
-import { Calculator, MessagesSquare } from 'lucide-react';
-import { useState } from '@wordpress/element';
+import { Calculator, MessagesSquare, CreditCard } from 'lucide-react';
+import { useEffect, useState } from '@wordpress/element';
 import UpgradePopup from './UpgradePopup.js';
 import { addQueryParam, cn } from '@Utils/Helpers';
 
@@ -17,9 +17,29 @@ const FormTypeSelector = ( {
 	const [ selectedUpgradeOption, setSelectedUpgradeOption ] =
 		useState( null );
 
+	// Check URL for form_type parameter on mount
+	// and set form type accordingly
+	useEffect( () => {
+		const form_type = new URLSearchParams( window.location.search ).get(
+			'form_type'
+		);
+		if ( form_type ) {
+			setFormType( form_type );
+			setFormTypeObj( {
+				...formTypeObj,
+				isConversationalForm: form_type === 'conversational',
+			} );
+		}
+	}, [] );
+
 	const formTypeOptions = applyFilters(
 		'srfm.ai_form_builder.form_type_options',
 		[
+			{
+				label: __( 'Payment', 'sureforms' ),
+				slug: 'payment',
+				isAvailable: true,
+			},
 			{
 				label: __( 'Simple', 'sureforms' ),
 				slug: 'simple',
@@ -119,7 +139,8 @@ const FormTypeSelector = ( {
 
 		if (
 			option.slug === 'calculator' ||
-			option.slug === 'conversational'
+			option.slug === 'conversational' ||
+			option.slug === 'payment'
 		) {
 			setformLayout( {} );
 		}
@@ -149,9 +170,14 @@ const FormTypeSelector = ( {
 									'Select this if you need calculations in your form. For example: Loan interest calculator.',
 									'sureforms'
 								  )
-								: __(
-									'Select this if you want your form to display one question at a time, like a chat.',
-									'sureforms'
+								: option.slug === 'conversational'
+									? __(
+										'Select this if you want your form to display one question at a time, like a chat.',
+										'sureforms'
+								  )
+									: __(
+										'Select this if you want to collect payments through your form.',
+										'sureforms'
 								  )
 						}
 						placement="bottom"
@@ -170,8 +196,10 @@ const FormTypeSelector = ( {
 							icon={
 								option.slug === 'calculator' ? (
 									<Calculator className="size-4" />
-								) : (
+								) : option.slug === 'conversational' ? (
 									<MessagesSquare className="size-4" />
+								) : (
+									<CreditCard className="size-4" />
 								)
 							}
 							size="md"
