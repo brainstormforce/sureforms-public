@@ -119,11 +119,7 @@ const PaymentListPlaceHolder = () => {
 								<Button
 									onClick={ () => {
 										const createFormUrl = `${ window.location.origin }/wp-admin/admin.php?page=add-new-form&form_type=payment`;
-										window.open(
-											createFormUrl,
-											'_blank',
-											'noopener,noreferrer'
-										);
+										window.location.href = createFormUrl;
 									} }
 									variant="primary"
 									size="md"
