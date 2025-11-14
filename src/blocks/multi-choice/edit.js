@@ -457,13 +457,21 @@ const Edit = ( props ) => {
 			component: <div className="srfm-settings-separator" />,
 		},
 		{
-			id: 'verticalLayout',
+			id: 'choicesOptions',
+			component: choicesOptions,
+		},
+		{
+			id: 'addNewOption',
+			component: addNewOption,
+		},
+		{
+			id: 'show-option-value',
 			component: (
 				<ToggleControl
-					label={ __( 'Vertical Layout', 'sureforms' ) }
-					checked={ verticalLayout }
-					onChange={ ( checked ) =>
-						setAttributes( { verticalLayout: checked } )
+					label={ __( 'Add Numeric Values to Options', 'sureforms' ) }
+					checked={ showValues }
+					onChange={ ( value ) =>
+						setAttributes( { showValues: value } )
 					}
 				/>
 			),
@@ -479,10 +487,6 @@ const Edit = ( props ) => {
 					}
 				/>
 			),
-		},
-		{
-			id: 'min-max',
-			component: minMaxValue,
 		},
 		{
 			id: 'choiceWidth',
@@ -516,24 +520,20 @@ const Edit = ( props ) => {
 			),
 		},
 		{
-			id: 'choicesOptions',
-			component: choicesOptions,
-		},
-		{
-			id: 'addNewOption',
-			component: addNewOption,
-		},
-		{
-			id: 'show-option-value',
+			id: 'verticalLayout',
 			component: (
 				<ToggleControl
-					label={ __( 'Add Numeric Values to Options', 'sureforms' ) }
-					checked={ showValues }
-					onChange={ ( value ) =>
-						setAttributes( { showValues: value } )
+					label={ __( 'Vertical Layout', 'sureforms' ) }
+					checked={ verticalLayout }
+					onChange={ ( checked ) =>
+						setAttributes( { verticalLayout: checked } )
 					}
 				/>
 			),
+		},
+		{
+			id: 'min-max',
+			component: minMaxValue,
 		},
 		{
 			id: 'control-label-span',

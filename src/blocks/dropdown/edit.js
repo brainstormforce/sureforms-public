@@ -396,34 +396,6 @@ const Edit = ( props ) => {
 			component: <div className="srfm-settings-separator" />,
 		},
 		{
-			id: 'multiSelect',
-			component: (
-				<ToggleControl
-					label={ __( 'Allow Multiple', 'sureforms' ) }
-					checked={ multiSelect }
-					onChange={ ( checked ) =>
-						setAttributes( { multiSelect: checked } )
-					}
-				/>
-			),
-		},
-		{
-			id: 'minMaxComponent',
-			component: minMaxComponent,
-		},
-		{
-			id: 'searchable',
-			component: (
-				<ToggleControl
-					label={ __( 'Enable Dropdown Search', 'sureforms' ) }
-					checked={ searchable }
-					onChange={ ( checked ) =>
-						setAttributes( { searchable: checked } )
-					}
-				/>
-			),
-		},
-		{
 			id: 'dropDownOptions',
 			component: dropDownOptions,
 		},
@@ -443,8 +415,35 @@ const Edit = ( props ) => {
 				/>
 			),
 		},
+		{
+			id: 'searchable',
+			component: (
+				<ToggleControl
+					label={ __( 'Enable Dropdown Search', 'sureforms' ) }
+					checked={ searchable }
+					onChange={ ( checked ) =>
+						setAttributes( { searchable: checked } )
+					}
+				/>
+			),
+		},
+		{
+			id: 'multiSelect',
+			component: (
+				<ToggleControl
+					label={ __( 'Allow Multiple', 'sureforms' ) }
+					checked={ multiSelect }
+					onChange={ ( checked ) =>
+						setAttributes( { multiSelect: checked } )
+					}
+				/>
+			),
+		},
+		{
+			id: 'minMaxComponent',
+			component: minMaxComponent,
+		},
 	];
-
 	const filterOptions = attributeOptionsWithFilter( attributeOptions, props );
 
 	return (

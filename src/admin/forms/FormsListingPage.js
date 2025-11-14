@@ -443,7 +443,7 @@ const FormsListingPage = () => {
 				>
 					{ /* Content */ }
 					{ shouldShowInitialEmptyState ? (
-						<div className="bg-background-secondary rounded-lg">
+						<div className="bg-background-secondary rounded-lg shadow-sm border-0.5 border-solid border-border-subtle">
 							<EmptyState
 								onImportSuccess={ handleImportSuccess }
 							/>

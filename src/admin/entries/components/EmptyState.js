@@ -25,13 +25,13 @@ const handleClickViewAllForms = () => {
 const EmptyState = () => {
 	return (
 		<div className="flex items-center justify-center p-2 bg-background-secondary rounded-lg">
-			<div className="flex flex-col md:flex-row items-center gap-6 bg-background-primary rounded-md shadow-sm-blur-1 p-6 w-full">
+			<div className="flex flex-col md:flex-row items-center gap-6 bg-background-primary rounded-md shadow-sm-blur-1 p-6 w-full border-0.5 border-solid border-border-subtle">
 				{ /* Image Section */ }
-				<div className="flex-shrink-0 p-2">
+				<div className="flex gap-4">
 					<img
 						src={ EmptyStateImage }
 						alt={ __( 'No entries yet', 'sureforms' ) }
-						className="w-60 h-60"
+						className="w-[320px] h-[320px]"
 					/>
 				</div>
 

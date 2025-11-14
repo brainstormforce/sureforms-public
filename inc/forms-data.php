@@ -212,13 +212,6 @@ class Forms_Data {
 	private function prepare_form_for_listing( $post ) {
 		$form_id = $post->ID;
 
-		// Get author information.
-		$author      = get_userdata( Helper::get_integer_value( $post->post_author ) );
-		$author_data = $author ? [
-			'id'   => (int) $author->ID,
-			'name' => $author->display_name,
-		] : null;
-
 		// Get entries count.
 		$entries_count = Helper::get_integer_value( Entries::get_total_entries_by_status( 'all', $form_id ) );
 
@@ -228,7 +221,6 @@ class Forms_Data {
 			'status'        => $post->post_status,
 			'date_created'  => mysql_to_rfc3339( $post->post_date ),
 			'date_modified' => mysql_to_rfc3339( $post->post_modified ),
-			'author'        => $author_data,
 			'entries_count' => $entries_count,
 			'shortcode'     => "[sureforms id='{$form_id}']",
 			'edit_url'      => admin_url( "post.php?post={$form_id}&action=edit" ),
