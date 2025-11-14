@@ -38,6 +38,7 @@ if ( ! class_exists( 'Nps_Notice' ) ) {
 			'sureforms_page_sureforms_form_settings',
 			'sureforms_page_sureforms_entries',
 			'sureforms_page_sureforms_forms', // @since x.x.x - Added for forms list page and removed native forms page.
+			'sureforms_page_sureforms_payments', // @since x.x.x - Added for payments page.
 		];
 
 		/**
