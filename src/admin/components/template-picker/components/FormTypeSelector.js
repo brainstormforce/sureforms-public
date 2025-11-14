@@ -2,7 +2,7 @@ import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
 import { Container, Button, Tooltip } from '@bsf/force-ui';
 import { Calculator, MessagesSquare, CreditCard } from 'lucide-react';
-import { useState } from '@wordpress/element';
+import { useEffect, useState } from '@wordpress/element';
 import UpgradePopup from './UpgradePopup.js';
 import { addQueryParam, cn } from '@Utils/Helpers';
 
@@ -16,6 +16,21 @@ const FormTypeSelector = ( {
 	const [ showUpgradePopup, setShowUpgradePopup ] = useState( false );
 	const [ selectedUpgradeOption, setSelectedUpgradeOption ] =
 		useState( null );
+
+	// Check URL for form_type parameter on mount
+	// and set form type accordingly
+	useEffect( () => {
+		const form_type = new URLSearchParams( window.location.search ).get(
+			'form_type'
+		);
+		if ( form_type ) {
+			setFormType( form_type );
+			setFormTypeObj( {
+				...formTypeObj,
+				isConversationalForm: form_type === 'conversational',
+			} );
+		}
+	}, [] );
 
 	const formTypeOptions = applyFilters(
 		'srfm.ai_form_builder.form_type_options',
