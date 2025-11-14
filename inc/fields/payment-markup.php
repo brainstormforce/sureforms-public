@@ -429,7 +429,7 @@ class Payment_Markup extends Base {
 	 * Render test mode notice for admin users.
 	 * Only shows if user has manage_options capability.
 	 *
-	 * @return string Test mode notice markup or empty string.
+	 * @return string|bool Test mode notice markup or empty string.
 	 * @since x.x.x
 	 */
 	private function get_test_mode_notice() {
