@@ -509,7 +509,7 @@ class Stripe_Webhook {
 
 		// Extract cancellation details from subscription object.
 		$canceled_at           = isset( $subscription['canceled_at'] ) && is_numeric( $subscription['canceled_at'] ) ? intval( $subscription['canceled_at'] ) : time();
-		$cancellation_details = isset( $subscription['cancellation_details'] ) && is_array( $subscription['cancellation_details'] ) ? $subscription['cancellation_details'] : [];
+		$cancellation_details  = isset( $subscription['cancellation_details'] ) && is_array( $subscription['cancellation_details'] ) ? $subscription['cancellation_details'] : [];
 		$cancellation_reason   = ! empty( $cancellation_details['reason'] ) && is_string( $cancellation_details['reason'] ) ? sanitize_text_field( $cancellation_details['reason'] ) : '';
 		$cancellation_feedback = ! empty( $cancellation_details['feedback'] ) && is_string( $cancellation_details['feedback'] ) ? sanitize_text_field( $cancellation_details['feedback'] ) : '';
 		$status                = ! empty( $subscription['status'] ) && is_string( $subscription['status'] ) ? sanitize_text_field( $subscription['status'] ) : 'canceled';
