@@ -1159,7 +1159,7 @@ class Front_End {
 				return false;
 			}
 
-			$customer = $customer_response['data'];
+			$customer = isset( $customer_response['data'] ) ? $customer_response['data'] : [];
 			/**
 			 * Stripe API returns customer object with the following structure:
 			 * {

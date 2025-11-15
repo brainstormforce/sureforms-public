@@ -104,14 +104,15 @@ class Stripe_Webhook {
 			return false;
 		}
 
-		// Get payment settings.
-		$settings = get_option( Payments_Settings::OPTION_NAME, [] );
+		// Get payment settings using the new format.
+		$settings = Stripe_Helper::get_all_stripe_settings();
 		if ( ! is_array( $settings ) ) {
 			$settings = [];
 		}
 
 		// Determine mode: use parameter if provided, otherwise fall back to settings (backward compatibility).
-		$this->mode = $mode ?? ( $settings['payment_mode'] ?? 'test' );
+		$validate_mode = ! empty( $mode ) && in_array( $mode, [ 'test', 'live' ], true ) ? $mode : $settings['payment_mode'];
+		$this->mode    = ! empty( $validate_mode ) && is_string( $validate_mode ) ? $validate_mode : 'test';
 
 		// Get the appropriate webhook secret based on payment mode.
 		$webhook_secret = '';

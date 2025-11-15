@@ -2133,8 +2133,6 @@ class Helper {
 	 * If data is not valid, returns an empty string.
 	 * Otherwise, it attempts to JSON encode and then base64 encode the result.
 	 *
-	 * phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
-	 *
 	 * @param mixed $data The data to JSON encode and then base64 encode.
 	 * @return string The base64-encoded JSON string, or empty string on failure.
 	 */

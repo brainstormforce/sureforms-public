@@ -90,6 +90,9 @@ class Admin {
 		if ( $admin_notification_on ) {
 			add_action( 'admin_menu', [ $this, 'maybe_add_entries_badge' ], 99 );
 		}
+
+		add_action( 'admin_menu', [ $this, 'add_payments_badge' ], 99 );
+
 		add_filter( 'wpforms_current_user_can', [ $this, 'disable_wpforms_capabilities' ], 10, 3 );
 
 		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_admin_pointer' ] );
@@ -603,6 +606,33 @@ class Admin {
 					$badge_html = ob_get_clean();
 					// phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- Adding notifications for submenu item.
 					$submenu['sureforms_menu'][ $index ][0] .= $badge_html;
+					break;
+				}
+			}
+		}
+	}
+
+	/**
+	 * Summary of add_payments_badge
+	 *
+	 * @return void
+	 */
+	public function add_payments_badge() {
+		if ( ! Helper::current_user_can() ) {
+			return;
+		}
+
+		global $submenu;
+		if ( isset( $submenu['sureforms_menu'] ) ) {
+			foreach ( $submenu['sureforms_menu'] as $index => $sub_item ) {
+				if ( isset( $sub_item[2] ) && SRFM_PAYMENTS === $sub_item[2] ) {
+					ob_start();
+					?>
+					<span style="color: #4ADE80;font-size: 9px;font-weight: 600;"><?php echo esc_html__( 'New', 'sureforms' ); ?></span>
+					<?php
+					$new_badge_html = ob_get_clean();
+					// phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- Adding notifications for submenu item.
+					$submenu['sureforms_menu'][ $index ][0] .= $new_badge_html;
 					break;
 				}
 			}

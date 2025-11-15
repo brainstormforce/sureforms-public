@@ -1038,12 +1038,14 @@ const PAYMENT_UTILITY = {
 };
 
 window.srfmPaymentUtility = PAYMENT_UTILITY;
+console.log( 'payment form file:' );
 
 /**
  * Initializes StripePayment for forms after SureForms initialization event.
  */
 document.addEventListener( 'srfm_form_after_initialization', ( event ) => {
 	const form = event?.detail?.form;
+	console.log( 'payment form :', form );
 	if ( form ) {
 		// Check if form has payment blocks before initializing
 		const paymentBlocks = form.querySelectorAll(

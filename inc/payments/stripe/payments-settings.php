@@ -23,13 +23,6 @@ class Payments_Settings {
 	use Get_Instance;
 
 	/**
-	 * Option name for storing payment settings.
-	 *
-	 * @since x.x.x
-	 */
-	public const OPTION_NAME = 'srfm_payments_settings';
-
-	/**
 	 * Constructor
 	 *
 	 * @since x.x.x
@@ -168,12 +161,12 @@ class Payments_Settings {
 	 * @return array<mixed>
 	 */
 	public function add_payments_settings( array $settings ): array {
-		$payments_settings                  = get_option( self::OPTION_NAME, $this->get_default_settings() );
-		$settings['srfm_payments_settings'] = is_array( $payments_settings ) ? $payments_settings : $this->get_default_settings();
+		$payments_settings            = Stripe_Helper::get_all_stripe_settings();
+		$settings['payment_settings'] = is_array( $payments_settings ) ? $payments_settings : Stripe_Helper::get_all_stripe_settings();
 
-		// Add centralized currency data to settings for frontend access via srfm_admin.payments.
-		$settings['srfm_payments_settings']['currencies_data']         = Stripe_Helper::get_all_currencies_data();
-		$settings['srfm_payments_settings']['zero_decimal_currencies'] = Stripe_Helper::get_zero_decimal_currencies();
+		// Add centralized currency data to settings for frontend access.
+		$settings['payment_settings']['currencies_data']         = Stripe_Helper::get_all_currencies_data();
+		$settings['payment_settings']['zero_decimal_currencies'] = Stripe_Helper::get_zero_decimal_currencies();
 
 		return $settings;
 	}
@@ -302,9 +295,9 @@ class Payments_Settings {
 		// Delete Stripe webhook endpoints for both test and live modes.
 		$this->delete_stripe_webhooks();
 
-		$settings = get_option( self::OPTION_NAME, $this->get_default_settings() );
+		$settings = Stripe_Helper::get_all_stripe_settings();
 		if ( ! is_array( $settings ) ) {
-			$settings = $this->get_default_settings();
+			$settings = Stripe_Helper::get_all_stripe_settings();
 		}
 
 		$settings['stripe_connected']            = false;
@@ -322,7 +315,7 @@ class Payments_Settings {
 		$settings['webhook_live_id']             = '';
 		$settings['account_data']                = [];
 
-		$updated = update_option( self::OPTION_NAME, $settings );
+		$updated = Stripe_Helper::update_all_stripe_settings( $settings );
 
 		return rest_ensure_response(
 			[
@@ -346,9 +339,11 @@ class Payments_Settings {
 
 		// Validate mode parameter.
 		if ( ! in_array( $mode, [ 'test', 'live' ], true ) ) {
-			$settings = get_option( self::OPTION_NAME, $this->get_default_settings() );
+			$settings = Stripe_Helper::get_all_stripe_settings();
 			$mode     = is_array( $settings ) && isset( $settings['payment_mode'] ) ? $settings['payment_mode'] : 'test';
 		}
+
+		$mode = ! empty( $mode ) && is_string( $mode ) ? $mode : 'test';
 
 		// Create webhook for the specified mode only.
 		$result = $this->create_webhook_for_mode( $mode );
@@ -365,9 +360,9 @@ class Payments_Settings {
 	 * @throws \Exception When the Stripe API request fails for any mode.
 	 */
 	public function create_webhook_for_mode( $mode ): array {
-		$settings = get_option( self::OPTION_NAME, $this->get_default_settings() );
+		$settings = Stripe_Helper::get_all_stripe_settings();
 		if ( ! is_array( $settings ) ) {
-			$settings = $this->get_default_settings();
+			$settings = Stripe_Helper::get_all_stripe_settings();
 		}
 
 		if ( empty( $settings['stripe_connected'] ) ) {
@@ -455,7 +450,7 @@ class Payments_Settings {
 				$settings['webhook_test_url']    = $webhook_url;
 			}
 
-			update_option( self::OPTION_NAME, $settings );
+			Stripe_Helper::update_all_stripe_settings( $settings );
 
 			// Prepare response with webhook details.
 			return [
@@ -490,9 +485,9 @@ class Payments_Settings {
 	 * @throws \Exception When the Stripe API request fails for any mode.
 	 */
 	public function setup_stripe_webhooks(): array {
-		$settings = get_option( self::OPTION_NAME, $this->get_default_settings() );
+		$settings = Stripe_Helper::get_all_stripe_settings();
 		if ( ! is_array( $settings ) ) {
-			$settings = $this->get_default_settings();
+			$settings = Stripe_Helper::get_all_stripe_settings();
 		}
 
 		if ( empty( $settings['stripe_connected'] ) ) {
@@ -578,7 +573,7 @@ class Payments_Settings {
 
 		// Update settings if any webhooks were created.
 		if ( $webhooks_created > 0 ) {
-			update_option( self::OPTION_NAME, $settings );
+			Stripe_Helper::update_all_stripe_settings( $settings );
 		}
 
 		// Prepare response with webhook details.
@@ -629,9 +624,9 @@ class Payments_Settings {
 	 * @return array<mixed> Array containing deletion results
 	 */
 	public function delete_stripe_webhooks(): array {
-		$settings = get_option( self::OPTION_NAME, $this->get_default_settings() );
+		$settings = Stripe_Helper::get_all_stripe_settings();
 		if ( ! is_array( $settings ) ) {
-			$settings = $this->get_default_settings();
+			$settings = Stripe_Helper::get_all_stripe_settings();
 		}
 
 		if ( empty( $settings['stripe_connected'] ) ) {
@@ -656,7 +651,7 @@ class Payments_Settings {
 				? ( $settings['webhook_live_id'] ?? '' )
 				: ( $settings['webhook_test_id'] ?? '' );
 
-			if ( empty( $secret_key ) || empty( $webhook_id ) ) {
+			if ( empty( $secret_key ) || empty( $webhook_id ) || ! is_string( $webhook_id ) ) {
 				continue;
 			}
 
@@ -725,7 +720,7 @@ class Payments_Settings {
 
 		// Update settings if any webhooks were deleted.
 		if ( $webhooks_deleted > 0 ) {
-			update_option( self::OPTION_NAME, $settings );
+			Stripe_Helper::update_all_stripe_settings( $settings );
 			$response_data['message'] = sprintf(
 				/* translators: %d: number of webhooks deleted */
 				__( 'Webhooks deleted successfully for %d mode(s).', 'sureforms' ),
@@ -755,9 +750,9 @@ class Payments_Settings {
 	 * @return \WP_REST_Response
 	 */
 	public function delete_payment_webhooks( $request_or_modes = null ) {
-		$settings = get_option( self::OPTION_NAME, $this->get_default_settings() );
+		$settings = Stripe_Helper::get_all_stripe_settings();
 		if ( ! is_array( $settings ) ) {
-			$settings = $this->get_default_settings();
+			$settings = Stripe_Helper::get_all_stripe_settings();
 		}
 
 		if ( empty( $settings['stripe_connected'] ) ) {
@@ -812,7 +807,7 @@ class Payments_Settings {
 
 			$webhook_id = 'live' === $mode ? ( $settings['webhook_live_id'] ?? '' ) : ( $settings['webhook_test_id'] ?? '' );
 
-			if ( empty( $secret_key ) || empty( $webhook_id ) ) {
+			if ( empty( $secret_key ) || empty( $webhook_id ) || ! is_string( $webhook_id ) ) {
 				continue;
 			}
 
@@ -872,7 +867,7 @@ class Payments_Settings {
 
 		// Update settings if any webhooks were deleted.
 		if ( $webhooks_deleted > 0 ) {
-			update_option( self::OPTION_NAME, $settings );
+			Stripe_Helper::update_all_stripe_settings( $settings );
 		}
 
 		if ( $webhooks_deleted > 0 ) {
@@ -912,9 +907,9 @@ class Payments_Settings {
 	 * @return array<mixed> Array containing account information or error details
 	 */
 	public function get_account_info(): array {
-		$settings = get_option( self::OPTION_NAME, $this->get_default_settings() );
+		$settings = Stripe_Helper::get_all_stripe_settings();
 		if ( ! is_array( $settings ) ) {
-			$settings = $this->get_default_settings();
+			$settings = Stripe_Helper::get_all_stripe_settings();
 		}
 
 		// Check if Stripe is connected.
@@ -930,7 +925,7 @@ class Payments_Settings {
 
 		// Get account ID.
 		$account_id = $settings['stripe_account_id'] ?? '';
-		if ( empty( $account_id ) ) {
+		if ( empty( $account_id ) || ! is_string( $account_id ) ) {
 			return [
 				'success' => false,
 				'error'   => [
@@ -948,33 +943,6 @@ class Payments_Settings {
 		}
 
 		return $api_response;
-	}
-
-	/**
-	 * Get default settings
-	 *
-	 * @since x.x.x
-	 * @return array<mixed>
-	 */
-	private function get_default_settings(): array {
-		return [
-			'stripe_connected'            => false,
-			'stripe_account_id'           => '',
-			'stripe_account_email'        => '',
-			'stripe_live_publishable_key' => '',
-			'stripe_live_secret_key'      => '',
-			'stripe_test_publishable_key' => '',
-			'stripe_test_secret_key'      => '',
-			'currency'                    => 'USD',
-			'payment_mode'                => 'test',
-			'webhook_test_secret'         => '',
-			'webhook_test_url'            => '',
-			'webhook_test_id'             => '',
-			'webhook_live_secret'         => '',
-			'webhook_live_url'            => '',
-			'webhook_live_id'             => '',
-			'account_data'                => [],
-		];
 	}
 
 	/**
@@ -1017,8 +985,8 @@ class Payments_Settings {
 		}
 
 		// Extract OAuth data following checkout-plugins-stripe-woo pattern.
-		$settings = get_option( self::OPTION_NAME, $this->get_default_settings() );
-		$settings = is_array( $settings ) && ! empty( $settings ) ? $settings : $this->get_default_settings();
+		$settings = Stripe_Helper::get_all_stripe_settings();
+		$settings = is_array( $settings ) && ! empty( $settings ) ? $settings : Stripe_Helper::get_all_stripe_settings();
 
 		// Store live keys.
 		if ( isset( $response['live'] ) && is_array( $response['live'] ) ) {
@@ -1040,7 +1008,7 @@ class Payments_Settings {
 			: '';
 
 		// Save settings.
-		update_option( self::OPTION_NAME, $settings );
+		Stripe_Helper::update_all_stripe_settings( $settings );
 
 		$account_info = $this->get_account_info();
 
@@ -1051,7 +1019,7 @@ class Payments_Settings {
 			&& is_array( $account_info['data'] )
 		) {
 			$settings['account_data'] = $account_info['data'];
-			update_option( self::OPTION_NAME, $settings );
+			Stripe_Helper::update_all_stripe_settings( $settings );
 		}
 
 		// Clean up transients.

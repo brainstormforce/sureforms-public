@@ -31,9 +31,8 @@ class Frontend_Assets {
 	 * @var array<string>
 	 */
 	public static $js_assets = [
-		'form-submit'    => 'formSubmit',
-		'frontend'       => 'frontend',
-		'stripe-payment' => 'stripe-payment',
+		'form-submit' => 'formSubmit',
+		'frontend'    => 'frontend',
 	];
 
 	/**
@@ -102,16 +101,6 @@ class Frontend_Assets {
 			wp_register_style( SRFM_SLUG . '-' . $handle, $css_vendor . $path . '.css', [], SRFM_VER );
 		}
 
-		// Register Stripe.js library from CDN.
-		// phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion -- Stripe CDN ignores version; version param is included to keep linter happy.
-		wp_register_script(
-			'stripe-js',
-			'https://js.stripe.com/v3/',
-			[],
-			SRFM_VER,
-			true
-		);
-
 		// Scripts.
 		foreach ( self::$js_assets as $handle => $name ) {
 			if ( 'form-submit' === $handle ) {
@@ -119,14 +108,6 @@ class Frontend_Assets {
 					SRFM_SLUG . '-' . $handle,
 					SRFM_URL . 'assets/build/' . $name . '.js',
 					[ 'wp-api-fetch' ],
-					SRFM_VER,
-					true
-				);
-			} elseif ( 'stripe-payment' === $handle ) {
-				wp_register_script(
-					SRFM_SLUG . '-' . $handle,
-					SRFM_URL . 'assets/js/' . $name . '.js',
-					[ 'stripe-js' ],
 					SRFM_VER,
 					true
 				);
@@ -156,27 +137,6 @@ class Frontend_Assets {
 					]
 				),
 				'is_rtl'   => $is_rtl,
-			]
-		);
-
-		// Localize script for Stripe payment functionality.
-		wp_localize_script(
-			SRFM_SLUG . '-stripe-payment',
-			'srfm_ajax',
-			[
-				'ajax_url' => admin_url( 'admin-ajax.php' ),
-				'nonce'    => wp_create_nonce( 'srfm_stripe_payment_nonce' ),
-			]
-		);
-
-		// Localize Stripe payment data for frontend.
-		wp_localize_script(
-			SRFM_SLUG . '-stripe-payment',
-			'srfmStripe',
-			[
-				'zeroDecimalCurrencies' => Stripe_Helper::get_zero_decimal_currencies(),
-				'currenciesData'        => Stripe_Helper::get_all_currencies_data(),
-				'strings'               => Stripe_Helper::get_payment_strings(),
 			]
 		);
 
@@ -219,17 +179,7 @@ class Frontend_Assets {
 
 		// Load the scripts.
 		foreach ( self::$js_assets as $handle => $path ) {
-			// Only load stripe payment script if there are payment blocks.
-			if ( 'stripe-payment' === $handle ) {
-				$current_post      = get_post();
-				$has_payment_block = $current_post && ( false !== strpos( $current_post->post_content, 'wp:srfm/payment' ) );
-
-				if ( $has_payment_block ) {
-					wp_enqueue_script( SRFM_SLUG . '-' . $handle );
-				}
-			} else {
-				wp_enqueue_script( SRFM_SLUG . '-' . $handle );
-			}
+			wp_enqueue_script( SRFM_SLUG . '-' . $handle );
 		}
 	}
 
@@ -315,6 +265,47 @@ class Frontend_Assets {
 		if ( 'date-picker' === $block_name ) {
 			// Input mask JS.
 			wp_enqueue_script( SRFM_SLUG . '-inputmask', SRFM_URL . 'assets/js/minified/deps/inputmask.min.js', [], SRFM_VER, true );
+		}
+
+		if ( 'payment' === $block_name ) {
+			// Register Stripe.js library from CDN.
+			// phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion -- Stripe CDN ignores version; version param is included to keep linter happy.
+			wp_enqueue_script(
+				'stripe-js',
+				'https://js.stripe.com/v3/',
+				[],
+				SRFM_VER,
+				true
+			);
+
+			wp_enqueue_script(
+				SRFM_SLUG . '-stripe-payment',
+				SRFM_URL . 'assets/js/stripe-payment.js',
+				[ 'stripe-js' ],
+				SRFM_VER,
+				true
+			);
+
+			// Localize script for Stripe payment functionality.
+			wp_localize_script(
+				SRFM_SLUG . '-stripe-payment',
+				'srfm_ajax',
+				[
+					'ajax_url' => admin_url( 'admin-ajax.php' ),
+					'nonce'    => wp_create_nonce( 'srfm_stripe_payment_nonce' ),
+				]
+			);
+
+			// Localize Stripe payment data for frontend.
+			wp_localize_script(
+				SRFM_SLUG . '-stripe-payment',
+				'srfmStripe',
+				[
+					'zeroDecimalCurrencies' => Stripe_Helper::get_zero_decimal_currencies(),
+					'currenciesData'        => Stripe_Helper::get_all_currencies_data(),
+					'strings'               => Stripe_Helper::get_payment_strings(),
+				]
+			);
 		}
 	}
 

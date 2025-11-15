@@ -10,6 +10,7 @@ namespace SRFM\Inc;
 
 use SRFM\Inc\Lib\Browser\Browser;
 use SRFM\Inc\Traits\Get_Instance;
+use SRFM\Inc\Database\Tables\Payments;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -539,12 +540,12 @@ class Smart_Tags {
 			return '';
 		}
 
-		// Find payment entry ID from submission data.
-		$payment_entry_id = null;
-
 		if ( ! is_array( $submission_data ) ) {
 			return '';
 		}
+
+		// Find payment entry ID from submission data.
+		$payment_entry_id = null;
 
 		foreach ( $submission_data as $submission_item_key => $submission_item_value ) {
 			// Check if this is a payment field.
@@ -586,7 +587,7 @@ class Smart_Tags {
 		}
 
 		// Get payment entry from database.
-		$payment_entry = \SRFM\Inc\Database\Tables\Payments::get( $payment_entry_id );
+		$payment_entry = Payments::get( $payment_entry_id );
 
 		if ( ! $payment_entry || ! is_array( $payment_entry ) ) {
 			return '';
@@ -597,7 +598,8 @@ class Smart_Tags {
 			case 'order-id':
 				// Return formatted order ID: SF-#{srfm_txn_id} or SF-#{id}.
 				$order_id = ! empty( $payment_entry['srfm_txn_id'] ) ? $payment_entry['srfm_txn_id'] : $payment_entry['id'];
-				return 'SF-#' . $order_id;
+				$order_id = sanitize_text_field( $order_id );
+				return ! empty( $order_id ) ? 'SF-#' . $order_id : '';
 
 			case 'amount':
 				// Return formatted amount with currency symbol.

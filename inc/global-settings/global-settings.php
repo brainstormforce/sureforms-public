@@ -305,7 +305,7 @@ class Global_Settings {
 	 */
 	public static function srfm_save_payments_settings( $setting_options ) {
 		// Get current settings to preserve connection data.
-		$current_settings = get_option( 'srfm_payments_settings', [] );
+		$current_settings = \SRFM\Inc\Payments\Stripe\Stripe_Helper::get_all_stripe_settings();
 		$current_settings = is_array( $current_settings ) ? $current_settings : [];
 
 		// Only update the fields that can be changed via settings.
@@ -321,7 +321,7 @@ class Global_Settings {
 			]
 		);
 
-		return update_option( 'srfm_payments_settings', $updated_settings );
+		return \SRFM\Inc\Payments\Stripe\Stripe_Helper::update_all_stripe_settings( $updated_settings );
 	}
 
 	/**

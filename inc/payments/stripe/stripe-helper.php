@@ -36,7 +36,7 @@ class Stripe_Helper {
 	 * @return bool True if Stripe is connected, false otherwise.
 	 */
 	public static function is_stripe_connected() {
-		$payment_settings = get_option( 'srfm_payments_settings', [] );
+		$payment_settings = self::get_all_stripe_settings();
 		return is_array( $payment_settings ) && isset( $payment_settings['stripe_connected'] ) && is_bool( $payment_settings['stripe_connected'] ) ? $payment_settings['stripe_connected'] : false;
 	}
 
@@ -47,7 +47,7 @@ class Stripe_Helper {
 	 * @return string The current payment mode ('test' or 'live').
 	 */
 	public static function get_stripe_mode() {
-		$payment_settings = get_option( 'srfm_payments_settings', [] );
+		$payment_settings = self::get_all_stripe_settings();
 		return is_array( $payment_settings ) && isset( $payment_settings['payment_mode'] ) && is_string( $payment_settings['payment_mode'] ) ? $payment_settings['payment_mode'] : 'test';
 	}
 
@@ -67,7 +67,7 @@ class Stripe_Helper {
 		$payment_mode = is_string( $mode ) && in_array( $mode, [ 'test', 'live' ], true ) ? $mode : self::get_stripe_mode();
 
 		// Get webhook settings.
-		$payment_settings = get_option( 'srfm_payments_settings', [] );
+		$payment_settings = self::get_all_stripe_settings();
 
 		if ( ! is_array( $payment_settings ) ) {
 			return false;
@@ -99,7 +99,7 @@ class Stripe_Helper {
 	 * @return string The secret key for the specified mode, or empty string if not found.
 	 */
 	public static function get_stripe_secret_key( $mode = null ) {
-		$payment_settings = get_option( 'srfm_payments_settings', [] );
+		$payment_settings = self::get_all_stripe_settings();
 
 		if ( null === $mode ) {
 			$mode = self::get_stripe_mode();
@@ -120,7 +120,7 @@ class Stripe_Helper {
 			$mode = self::get_stripe_mode();
 		}
 
-		$payment_settings = get_option( 'srfm_payments_settings', [] );
+		$payment_settings = self::get_all_stripe_settings();
 
 		return is_array( $payment_settings ) && isset( $payment_settings[ 'stripe_' . $mode . '_publishable_key' ] ) && is_string( $payment_settings[ 'stripe_' . $mode . '_publishable_key' ] ) ? $payment_settings[ 'stripe_' . $mode . '_publishable_key' ] : '';
 	}
@@ -132,7 +132,7 @@ class Stripe_Helper {
 	 * @return string The currency code (e.g., 'USD').
 	 */
 	public static function get_currency() {
-		$payment_settings = get_option( 'srfm_payments_settings', [] );
+		$payment_settings = self::get_all_stripe_settings();
 		return is_array( $payment_settings ) && isset( $payment_settings['currency'] ) && is_string( $payment_settings['currency'] ) ? $payment_settings['currency'] : 'USD';
 	}
 
@@ -805,7 +805,7 @@ class Stripe_Helper {
 		}
 
 		// Get webhook settings.
-		$payment_settings = get_option( 'srfm_payments_settings', [] );
+		$payment_settings = self::get_all_stripe_settings();
 
 		if ( ! is_array( $payment_settings ) ) {
 			self::$webhook_verification_cache[ $cache_key ] = false;
@@ -881,6 +881,94 @@ class Stripe_Helper {
 	}
 
 	/**
+	 * Get all Stripe settings from srfm_options.
+	 *
+	 * Retrieves the complete Stripe settings array from the nested structure:
+	 * srfm_options -> payment_setting -> stripe
+	 *
+	 * @since x.x.x
+	 * @return array<string, mixed> The Stripe settings array, or default settings if not found.
+	 */
+	public static function get_all_stripe_settings() {
+		// Get from nested structure: srfm_options -> payment_setting -> stripe.
+		$payment_settings = \SRFM\Inc\Helper::get_srfm_option( 'payment_setting', [] );
+
+		if ( is_array( $payment_settings ) && isset( $payment_settings['stripe'] ) && is_array( $payment_settings['stripe'] ) ) {
+			return $payment_settings['stripe'];
+		}
+
+		// Return default settings if nothing found.
+		return self::get_default_stripe_settings();
+	}
+
+	/**
+	 * Update all Stripe settings in srfm_options.
+	 *
+	 * Stores the complete Stripe settings array in the nested structure:
+	 * srfm_options -> payment_setting -> stripe
+	 *
+	 * @param array<string, mixed> $settings The Stripe settings array to save.
+	 * @since x.x.x
+	 * @return bool True on success, false on failure.
+	 */
+	public static function update_all_stripe_settings( $settings ) {
+		if ( ! is_array( $settings ) ) {
+			return false;
+		}
+
+		// Get current payment_setting array.
+		$payment_setting = \SRFM\Inc\Helper::get_srfm_option( 'payment_setting', [] );
+		if ( ! is_array( $payment_setting ) ) {
+			$payment_setting = [];
+		}
+
+		// Update the stripe key within payment_setting.
+		$payment_setting['stripe'] = $settings;
+
+		// Save back to srfm_options.
+		\SRFM\Inc\Helper::update_srfm_option( 'payment_setting', $payment_setting );
+
+		return true;
+	}
+
+	/**
+	 * Get a specific Stripe setting value by key.
+	 *
+	 * @param string $key     The setting key to retrieve.
+	 * @param mixed  $default The default value to return if key doesn't exist.
+	 * @since x.x.x
+	 * @return mixed The setting value or default if not found.
+	 */
+	public static function get_stripe_setting( $key, $default = '' ) {
+		if ( ! is_string( $key ) || empty( $key ) ) {
+			return $default;
+		}
+
+		$settings = self::get_all_stripe_settings();
+
+		return $settings[ $key ] ?? $default;
+	}
+
+	/**
+	 * Update a specific Stripe setting value by key.
+	 *
+	 * @param string $key   The setting key to update.
+	 * @param mixed  $value The value to set.
+	 * @since x.x.x
+	 * @return bool True on success, false on failure.
+	 */
+	public static function update_stripe_setting( $key, $value ) {
+		if ( ! is_string( $key ) || empty( $key ) ) {
+			return false;
+		}
+
+		$settings         = self::get_all_stripe_settings();
+		$settings[ $key ] = $value;
+
+		return self::update_all_stripe_settings( $settings );
+	}
+
+	/**
 	 * Clear webhook data from settings for a specific mode.
 	 *
 	 * Removes webhook_secret, webhook_id, and webhook_url for the specified mode.
@@ -903,7 +991,7 @@ class Stripe_Helper {
 			$updated_settings['webhook_test_url']    = '';
 		}
 
-		update_option( 'srfm_payments_settings', $updated_settings );
+		self::update_all_stripe_settings( $updated_settings );
 	}
 
 	/**
@@ -960,5 +1048,32 @@ class Stripe_Helper {
 			return null;
 		}
 		return Licensing::get_instance();
+	}
+
+	/**
+	 * Get default Stripe settings structure.
+	 *
+	 * @since x.x.x
+	 * @return array<string, mixed> Default Stripe settings array.
+	 */
+	private static function get_default_stripe_settings() {
+		return [
+			'stripe_connected'            => false,
+			'stripe_account_id'           => '',
+			'stripe_account_email'        => '',
+			'stripe_live_publishable_key' => '',
+			'stripe_live_secret_key'      => '',
+			'stripe_test_publishable_key' => '',
+			'stripe_test_secret_key'      => '',
+			'currency'                    => 'USD',
+			'payment_mode'                => 'test',
+			'webhook_test_secret'         => '',
+			'webhook_test_url'            => '',
+			'webhook_test_id'             => '',
+			'webhook_live_secret'         => '',
+			'webhook_live_url'            => '',
+			'webhook_live_id'             => '',
+			'account_data'                => [],
+		];
 	}
 }

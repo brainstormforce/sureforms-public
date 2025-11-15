@@ -1,5 +1,5 @@
 import apiFetch from '@wordpress/api-fetch';
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import { Toaster, ToastBar } from 'react-hot-toast';
 import { store as editorStore } from '@wordpress/editor';
 import { select } from '@wordpress/data';
@@ -218,58 +218,6 @@ const pushSmartTagToArray = (
 			return;
 		}
 
-		// Special handling for payment blocks - generate payment-specific smart tags
-		if ( block?.name === 'srfm/payment' ) {
-			const fieldSlug = blockSlugs[ block.attributes.block_id ];
-
-			// Skip if no slug or already processed
-			if (
-				! fieldSlug ||
-				fieldSlug === '-1' ||
-				uniqueSlugs.includes( fieldSlug )
-			) {
-				return;
-			}
-
-			const blockLabel = trimTextToWords(
-				block.attributes.label || 'Payment',
-				5
-			);
-
-			// Generate payment smart tags
-			const paymentTags = [
-				[
-					`{form-payment:${ fieldSlug }:order-id}`,
-					`${ blockLabel } - Order ID`,
-				],
-				[
-					`{form-payment:${ fieldSlug }:amount}`,
-					`${ blockLabel } - Amount`,
-				],
-				[
-					`{form-payment:${ fieldSlug }:email}`,
-					`${ blockLabel } - Customer Email`,
-				],
-				[
-					`{form-payment:${ fieldSlug }:name}`,
-					`${ blockLabel } - Customer Name`,
-				],
-				[
-					`{form-payment:${ fieldSlug }:status}`,
-					`${ blockLabel } - Status`,
-				],
-			];
-
-			// Add all payment tags to the array
-			paymentTags.forEach( ( tag ) => {
-				tagsArray.push( tag );
-			} );
-
-			// Mark this slug as processed
-			uniqueSlugs.push( fieldSlug );
-			return;
-		}
-
 		const isInnerBlock =
 			Array.isArray( block?.innerBlocks ) &&
 			0 !== block?.innerBlocks.length;
@@ -290,6 +238,83 @@ const pushSmartTagToArray = (
 			: true;
 
 		if ( ! isAllowedBlock ) {
+			return;
+		}
+
+		// Special handling for payment blocks - generate payment-specific smart tags
+		if ( block?.name === 'srfm/payment' ) {
+			const fieldSlug = blockSlugs[ block.attributes.block_id ];
+
+			// Skip if no slug or already processed
+			if (
+				! fieldSlug ||
+				fieldSlug === '-1' ||
+				uniqueSlugs.includes( fieldSlug )
+			) {
+				return;
+			}
+
+			const blockLabel = trimTextToWords(
+				block.attributes.label || __( 'Payment', 'sureforms' ),
+				5
+			);
+
+			// Generate payment smart tags
+			const paymentTags = [
+				// Translators: %s is replaced by the Payment block label.
+				[
+					`{form-payment:${ fieldSlug }:order-id}`,
+					sprintf(
+						/* translators: %s is replaced by the Payment block label. */
+						__( '%s - Order ID', 'sureforms' ),
+						blockLabel
+					),
+				],
+				// Translators: %s is replaced by the Payment block label.
+				[
+					`{form-payment:${ fieldSlug }:amount}`,
+					sprintf(
+						/* translators: %s is replaced by the Payment block label. */
+						__( '%s - Amount', 'sureforms' ),
+						blockLabel
+					),
+				],
+				// Translators: %s is replaced by the Payment block label.
+				[
+					`{form-payment:${ fieldSlug }:email}`,
+					sprintf(
+						/* translators: %s is replaced by the Payment block label. */
+						__( '%s - Customer Email', 'sureforms' ),
+						blockLabel
+					),
+				],
+				// Translators: %s is replaced by the Payment block label.
+				[
+					`{form-payment:${ fieldSlug }:name}`,
+					sprintf(
+						/* translators: %s is replaced by the Payment block label. */
+						__( '%s - Customer Name', 'sureforms' ),
+						blockLabel
+					),
+				],
+				// Translators: %s is replaced by the Payment block label.
+				[
+					`{form-payment:${ fieldSlug }:status}`,
+					sprintf(
+						/* translators: %s is replaced by the Payment block label. */
+						__( '%s - Status', 'sureforms' ),
+						blockLabel
+					),
+				],
+			];
+
+			// Add all payment tags to the array
+			paymentTags.forEach( ( tag ) => {
+				tagsArray.push( tag );
+			} );
+
+			// Mark this slug as processed
+			uniqueSlugs.push( fieldSlug );
 			return;
 		}
 
