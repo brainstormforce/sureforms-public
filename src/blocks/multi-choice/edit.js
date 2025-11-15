@@ -465,6 +465,18 @@ const Edit = ( props ) => {
 			component: addNewOption,
 		},
 		{
+			id: 'show-option-value',
+			component: (
+				<ToggleControl
+					label={ __( 'Add Numeric Values to Options', 'sureforms' ) }
+					checked={ showValues }
+					onChange={ ( value ) =>
+						setAttributes( { showValues: value } )
+					}
+				/>
+			),
+		},
+		{
 			id: 'singleSelection',
 			component: (
 				<ToggleControl
@@ -522,18 +534,6 @@ const Edit = ( props ) => {
 		{
 			id: 'min-max',
 			component: minMaxValue,
-		},
-		{
-			id: 'show-option-value',
-			component: (
-				<ToggleControl
-					label={ __( 'Add Numeric Values to Options', 'sureforms' ) }
-					checked={ showValues }
-					onChange={ ( value ) =>
-						setAttributes( { showValues: value } )
-					}
-				/>
-			),
 		},
 		{
 			id: 'control-label-span',

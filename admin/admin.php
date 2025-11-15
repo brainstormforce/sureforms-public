@@ -493,7 +493,7 @@ class Admin {
 			'sureforms_menu',
 			__( 'Payments', 'sureforms' ),
 			__( 'Payments', 'sureforms' ),
-			'edit_others_posts',
+			self::$sureforms_page_default_capability,
 			SRFM_PAYMENTS,
 			[ $this, 'render_payments' ],
 			4

@@ -404,6 +404,18 @@ const Edit = ( props ) => {
 			component: addNewOption,
 		},
 		{
+			id: 'show-option-value',
+			component: (
+				<ToggleControl
+					label={ __( 'Add Numeric Values to Options', 'sureforms' ) }
+					checked={ showValues }
+					onChange={ ( value ) =>
+						setAttributes( { showValues: value } )
+					}
+				/>
+			),
+		},
+		{
 			id: 'searchable',
 			component: (
 				<ToggleControl
@@ -431,20 +443,7 @@ const Edit = ( props ) => {
 			id: 'minMaxComponent',
 			component: minMaxComponent,
 		},
-		{
-			id: 'show-option-value',
-			component: (
-				<ToggleControl
-					label={ __( 'Add Numeric Values to Options', 'sureforms' ) }
-					checked={ showValues }
-					onChange={ ( value ) =>
-						setAttributes( { showValues: value } )
-					}
-				/>
-			),
-		},
 	];
-
 	const filterOptions = attributeOptionsWithFilter( attributeOptions, props );
 
 	return (
