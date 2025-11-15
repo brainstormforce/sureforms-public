@@ -89,7 +89,7 @@ const EntriesTable = ( {
 				<Badge
 					className="w-fit"
 					variant={ getStatusBadgeVariant( entry.status ) }
-					size="md"
+					size="xs"
 					label={ entry.statusLabel }
 				/>
 			),

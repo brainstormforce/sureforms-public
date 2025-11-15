@@ -37,7 +37,7 @@ const EmptyState = ( {
 	return (
 		<Container className="flex bg-background-primary rounded-xl p-4 gap-2">
 			<Container className="p-2 rounded-lg bg-background-secondary gap-2 w-full">
-				<Container className="p-6 gap-6 rounded-md bg-background-primary w-full">
+				<Container className="p-6 gap-6 rounded-md bg-background-primary w-full border-0.5 border-solid border-border-subtle shadow-sm-blur-1">
 					<Container>
 						<img
 							src={ noFormsImage }

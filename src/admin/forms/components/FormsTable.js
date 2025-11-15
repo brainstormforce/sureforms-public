@@ -165,18 +165,6 @@ const FormsTable = ( {
 			),
 		},
 		{
-			label: __( 'Author', 'sureforms' ),
-			key: 'author',
-			headerClassName: 'w-[15%]',
-			render: ( form ) => (
-				<Text size={ 14 } color="secondary">
-					{ form.author
-						? form.author.name
-						: __( 'Unknown', 'sureforms' ) }
-				</Text>
-			),
-		},
-		{
 			label: __( 'Date & Time', 'sureforms' ),
 			key: 'date',
 			sortable: true,

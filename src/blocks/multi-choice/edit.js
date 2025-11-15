@@ -457,16 +457,12 @@ const Edit = ( props ) => {
 			component: <div className="srfm-settings-separator" />,
 		},
 		{
-			id: 'verticalLayout',
-			component: (
-				<ToggleControl
-					label={ __( 'Vertical Layout', 'sureforms' ) }
-					checked={ verticalLayout }
-					onChange={ ( checked ) =>
-						setAttributes( { verticalLayout: checked } )
-					}
-				/>
-			),
+			id: 'choicesOptions',
+			component: choicesOptions,
+		},
+		{
+			id: 'addNewOption',
+			component: addNewOption,
 		},
 		{
 			id: 'singleSelection',
@@ -479,10 +475,6 @@ const Edit = ( props ) => {
 					}
 				/>
 			),
-		},
-		{
-			id: 'min-max',
-			component: minMaxValue,
 		},
 		{
 			id: 'choiceWidth',
@@ -516,12 +508,20 @@ const Edit = ( props ) => {
 			),
 		},
 		{
-			id: 'choicesOptions',
-			component: choicesOptions,
+			id: 'verticalLayout',
+			component: (
+				<ToggleControl
+					label={ __( 'Vertical Layout', 'sureforms' ) }
+					checked={ verticalLayout }
+					onChange={ ( checked ) =>
+						setAttributes( { verticalLayout: checked } )
+					}
+				/>
+			),
 		},
 		{
-			id: 'addNewOption',
-			component: addNewOption,
+			id: 'min-max',
+			component: minMaxValue,
 		},
 		{
 			id: 'show-option-value',

@@ -184,7 +184,7 @@
 		justify-content: center;
 		flex-direction: column;
 		color: var( --srfm-body-input-color );
-		min-height: 40vh;
+		min-height: 20vh;
 		p {
 			margin: 0;
 		}
@@ -202,6 +202,9 @@
 			font-weight: 400;
 			line-height: 26px;
 			color: var( --srfm-body-input-color );
+			display: flex;
+			flex-direction: column;
+			gap: 8px;
 		}
 	}
 
