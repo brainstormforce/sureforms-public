@@ -232,8 +232,8 @@ class Payment_Markup extends Base {
 		ob_start();
 		?>
 		<div data-block-id="<?php echo esc_attr( $this->block_id ); ?>" class="<?php echo esc_attr( $field_classes ); ?>">
-			<?php echo $this->label_markup; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
-			<?php echo $this->help_markup; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+			<?php echo wp_kses_post( $this->label_markup ); ?>
+			<?php echo wp_kses_post( $this->help_markup ); ?>
 			<div class="srfm-payment-field-wrapper">
 				<?php if ( 'fixed' === $this->amount_type ) { ?>
 					<!-- Fixed Payment Amount Display. -->
@@ -353,8 +353,6 @@ class Payment_Markup extends Base {
 					</div>
 				</div>
 			</div>
-
-			<?php echo $this->error_msg_markup; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 		</div>
 		<?php
 		return ob_get_clean();

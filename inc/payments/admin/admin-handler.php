@@ -69,7 +69,6 @@ class Admin_Handler {
 				[
 					'ajax_url'                 => admin_url( 'admin-ajax.php' ),
 					'srfm_payment_admin_nonce' => wp_create_nonce( 'srfm_payment_admin_nonce' ),
-					'payment_test'             => 'payment test',
 					'zeroDecimalCurrencies'    => Stripe_Helper::get_zero_decimal_currencies(),
 					'currenciesData'           => Stripe_Helper::get_all_currencies_data(),
 				]

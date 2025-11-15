@@ -615,6 +615,7 @@ class Admin {
 	/**
 	 * Summary of add_payments_badge
 	 *
+	 * @since x.x.x
 	 * @return void
 	 */
 	public function add_payments_badge() {
