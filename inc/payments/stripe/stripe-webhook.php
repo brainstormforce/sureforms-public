@@ -238,6 +238,16 @@ class Stripe_Webhook {
 				$this->handle_invoice_payment_succeeded( $invoice );
 				break;
 
+			case 'customer.subscription.deleted':
+				$event_data = isset( $event['data'] ) && is_array( $event['data'] ) ? $event['data'] : [];
+				if ( ! isset( $event_data['object'] ) ) {
+					Helper::srfm_log( 'customer.subscription.deleted: Invalid webhook event - missing data object.' );
+					return;
+				}
+				$subscription = $event_data['object'] ?? [];
+				$this->handle_subscription_deleted( $subscription );
+				break;
+
 			default:
 				Helper::srfm_log( 'Unhandled event type: ' . $event['type'] . '.' );
 				break;
@@ -465,6 +475,101 @@ class Stripe_Webhook {
 				$subscription_id,
 				Stripe_Helper::amount_from_stripe_format( $amount_paid, $currency ),
 				$currency
+			)
+		);
+	}
+
+	/**
+	 * Handles customer.subscription.deleted webhook for subscription cancellations.
+	 *
+	 * @param array<string, mixed> $subscription Subscription object from Stripe.
+	 * @since x.x.x
+	 * @return void
+	 */
+	public function handle_subscription_deleted( array $subscription ): void {
+		$subscription_id = ! empty( $subscription['id'] ) && is_string( $subscription['id'] ) ? sanitize_text_field( $subscription['id'] ) : '';
+		Helper::srfm_log( 'Processing customer.subscription.deleted webhook. Subscription ID: ' . $subscription_id . '.' );
+
+		if ( empty( $subscription_id ) ) {
+			Helper::srfm_log( 'Subscription deleted - missing subscription ID.' );
+			return;
+		}
+
+		Helper::srfm_log( 'Subscription ID extracted successfully: ' . $subscription_id . '.' );
+
+		// Find subscription record in database.
+		$subscription_record = Payments::get_main_subscription_record( $subscription_id );
+		if ( ! $subscription_record ) {
+			Helper::srfm_log( 'Subscription deleted - subscription not found in database: ' . $subscription_id . '.' );
+			return;
+		}
+
+		$subscription_db_id = ! empty( $subscription_record['id'] ) && is_numeric( $subscription_record['id'] ) ? intval( $subscription_record['id'] ) : 0;
+		Helper::srfm_log( 'Subscription record found in database. Record ID: ' . $subscription_db_id . '.' );
+
+		// Extract cancellation details from subscription object.
+		$canceled_at           = isset( $subscription['canceled_at'] ) && is_numeric( $subscription['canceled_at'] ) ? intval( $subscription['canceled_at'] ) : time();
+		$cancellation_details = isset( $subscription['cancellation_details'] ) && is_array( $subscription['cancellation_details'] ) ? $subscription['cancellation_details'] : [];
+		$cancellation_reason   = ! empty( $cancellation_details['reason'] ) && is_string( $cancellation_details['reason'] ) ? sanitize_text_field( $cancellation_details['reason'] ) : '';
+		$cancellation_feedback = ! empty( $cancellation_details['feedback'] ) && is_string( $cancellation_details['feedback'] ) ? sanitize_text_field( $cancellation_details['feedback'] ) : '';
+		$status                = ! empty( $subscription['status'] ) && is_string( $subscription['status'] ) ? sanitize_text_field( $subscription['status'] ) : 'canceled';
+
+		// Prepare log entry for subscription cancellation.
+		$current_logs = isset( $subscription_record['log'] ) && is_array( $subscription_record['log'] ) ? $subscription_record['log'] : [];
+		$log_messages = [
+			/* translators: %s: Subscription ID */
+			sprintf( __( 'Subscription ID: %s', 'sureforms' ), $subscription_id ),
+			/* translators: %s: Payment Gateway */
+			sprintf( __( 'Payment Gateway: %s', 'sureforms' ), 'Stripe' ),
+			/* translators: %s: Status */
+			sprintf( __( 'Status: %s', 'sureforms' ), ucfirst( $status ) ),
+			/* translators: %s: Canceled date */
+			sprintf( __( 'Canceled at: %s', 'sureforms' ), gmdate( 'Y-m-d H:i:s', $canceled_at ) ),
+		];
+
+		if ( ! empty( $cancellation_reason ) ) {
+			$log_messages[] = sprintf(
+				/* translators: %s: Cancellation reason */
+				__( 'Cancellation Reason: %s', 'sureforms' ),
+				ucfirst( str_replace( '_', ' ', $cancellation_reason ) )
+			);
+		}
+
+		if ( ! empty( $cancellation_feedback ) ) {
+			$log_messages[] = sprintf(
+				/* translators: %s: Cancellation feedback */
+				__( 'Feedback: %s', 'sureforms' ),
+				ucfirst( str_replace( '_', ' ', $cancellation_feedback ) )
+			);
+		}
+
+		$new_log = [
+			'title'      => __( 'Subscription Canceled', 'sureforms' ),
+			'created_at' => current_time( 'mysql' ),
+			'messages'   => $log_messages,
+		];
+
+		$current_logs[] = $new_log;
+
+		// Update subscription record with canceled status.
+		$update_data = [
+			'status' => 'cancelled',
+			'log'    => $current_logs,
+		];
+
+		$result = Payments::update( $subscription_db_id, $update_data );
+
+		if ( false === $result ) {
+			Helper::srfm_log( 'Failed to update subscription record for cancellation. Subscription ID: ' . $subscription_id . ', DB ID: ' . $subscription_db_id . '.' );
+			return;
+		}
+
+		Helper::srfm_log(
+			sprintf(
+				'Subscription canceled successfully. Subscription ID: %s, DB ID: %d, Canceled at: %s.',
+				$subscription_id,
+				$subscription_db_id,
+				gmdate( 'Y-m-d H:i:s', $canceled_at )
 			)
 		);
 	}

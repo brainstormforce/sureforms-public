@@ -8,9 +8,9 @@
 
 namespace SRFM\Inc;
 
+use SRFM\Inc\Database\Tables\Payments;
 use SRFM\Inc\Lib\Browser\Browser;
 use SRFM\Inc\Traits\Get_Instance;
-use SRFM\Inc\Database\Tables\Payments;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
