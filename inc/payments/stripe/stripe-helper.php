@@ -604,6 +604,78 @@ class Stripe_Helper {
 	}
 
 	/**
+	 * Get default Stripe settings structure.
+	 *
+	 * Note: currency and payment_mode are now stored in global settings.
+	 *
+	 * @since x.x.x
+	 * @return array<string, mixed> Default Stripe settings array.
+	 */
+	public static function get_default_stripe_settings() {
+		return [
+			'stripe_connected'            => false,
+			'stripe_account_id'           => '',
+			'stripe_account_email'        => '',
+			'stripe_live_publishable_key' => '',
+			'stripe_live_secret_key'      => '',
+			'stripe_test_publishable_key' => '',
+			'stripe_test_secret_key'      => '',
+			'payment_mode'                => 'test',
+			'webhook_test_secret'         => '',
+			'webhook_test_url'            => '',
+			'webhook_test_id'             => '',
+			'webhook_live_secret'         => '',
+			'webhook_live_url'            => '',
+			'webhook_live_id'             => '',
+			'account_name'                => '',
+		];
+	}
+
+	/**
+	 * Get Stripe Connect URL
+	 *
+	 * @since x.x.x
+	 * @return \WP_REST_Response
+	 */
+	public static function get_stripe_connect_url() {
+		// Stripe client ID from checkout-plugins-stripe-woo.
+		$client_id = 'ca_KOXfLe7jv1m4L0iC4KNEMc5fT8AXWWuL';
+
+		// Use the same redirect URI pattern as checkout-plugins-stripe-woo.
+		$redirect_url        = admin_url( 'admin.php?page=sureforms_form_settings&tab=payments-settings' );
+		$nonce               = wp_create_nonce( 'stripe-connect' );
+		$redirect_with_nonce = add_query_arg( 'cpsw_connect_nonce', $nonce, $redirect_url );
+
+		// Store our own callback data.
+		set_transient( 'srfm_stripe_connect_nonce_' . get_current_user_id(), $nonce, HOUR_IN_SECONDS );
+
+		// Create state parameter exactly like checkout-plugins-stripe-woo.
+		$state_param = wp_json_encode(
+			[
+				'redirect' => $redirect_with_nonce,
+			]
+		);
+		$state       = '';
+		if ( is_string( $state_param ) ) {
+			$state = base64_encode( $state_param ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
+		}
+
+		$connect_url = add_query_arg(
+			[
+				'response_type'  => 'code',
+				'client_id'      => $client_id,
+				'stripe_landing' => 'login',
+				'always_prompt'  => 'true',
+				'scope'          => 'read_write',
+				'state'          => $state,
+			],
+			'https://connect.stripe.com/oauth/authorize'
+		);
+
+		return rest_ensure_response( [ 'url' => $connect_url ] );
+	}
+
+	/**
 	 * Clear webhook data from settings for a specific mode.
 	 *
 	 * Removes webhook_secret, webhook_id, and webhook_url for the specified mode.
@@ -683,77 +755,5 @@ class Stripe_Helper {
 			return null;
 		}
 		return Licensing::get_instance();
-	}
-
-	/**
-	 * Get default Stripe settings structure.
-	 *
-	 * Note: currency and payment_mode are now stored in global settings.
-	 *
-	 * @since x.x.x
-	 * @return array<string, mixed> Default Stripe settings array.
-	 */
-	public static function get_default_stripe_settings() {
-		return [
-			'stripe_connected'            => false,
-			'stripe_account_id'           => '',
-			'stripe_account_email'        => '',
-			'stripe_live_publishable_key' => '',
-			'stripe_live_secret_key'      => '',
-			'stripe_test_publishable_key' => '',
-			'stripe_test_secret_key'      => '',
-			'payment_mode'                => 'test',
-			'webhook_test_secret'         => '',
-			'webhook_test_url'            => '',
-			'webhook_test_id'             => '',
-			'webhook_live_secret'         => '',
-			'webhook_live_url'            => '',
-			'webhook_live_id'             => '',
-			'account_name'                => '',
-		];
-	}
-
-	/**
-	 * Get Stripe Connect URL
-	 *
-	 * @since x.x.x
-	 * @return \WP_REST_Response
-	 */
-	public static function get_stripe_connect_url() {
-		// Stripe client ID from checkout-plugins-stripe-woo.
-		$client_id = 'ca_KOXfLe7jv1m4L0iC4KNEMc5fT8AXWWuL';
-
-		// Use the same redirect URI pattern as checkout-plugins-stripe-woo.
-		$redirect_url        = admin_url( 'admin.php?page=sureforms_form_settings&tab=payments-settings' );
-		$nonce               = wp_create_nonce( 'stripe-connect' );
-		$redirect_with_nonce = add_query_arg( 'cpsw_connect_nonce', $nonce, $redirect_url );
-
-		// Store our own callback data.
-		set_transient( 'srfm_stripe_connect_nonce_' . get_current_user_id(), $nonce, HOUR_IN_SECONDS );
-
-		// Create state parameter exactly like checkout-plugins-stripe-woo.
-		$state_param = wp_json_encode(
-			[
-				'redirect' => $redirect_with_nonce,
-			]
-		);
-		$state       = '';
-		if ( is_string( $state_param ) ) {
-			$state = base64_encode( $state_param ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
-		}
-
-		$connect_url = add_query_arg(
-			[
-				'response_type'  => 'code',
-				'client_id'      => $client_id,
-				'stripe_landing' => 'login',
-				'always_prompt'  => 'true',
-				'scope'          => 'read_write',
-				'state'          => $state,
-			],
-			'https://connect.stripe.com/oauth/authorize'
-		);
-
-		return rest_ensure_response( [ 'url' => $connect_url ] );
 	}
 }

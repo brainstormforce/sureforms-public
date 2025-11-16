@@ -24,7 +24,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since x.x.x
  */
 class Payment_Helper {
-
 	/**
 	 * Get all payment settings (global settings + all gateways).
 	 *

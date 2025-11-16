@@ -10,7 +10,6 @@ namespace SRFM\Inc\Payments\Stripe;
 
 use SRFM\Inc\Payments\Payment_Helper;
 use SRFM\Inc\Traits\Get_Instance;
-use SRFM\Inc\Payments\Stripe\Stripe_Helper;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -880,9 +879,7 @@ class Payments_Settings {
 		$get_data         = isset( $api_response['data'] ) && is_array( $api_response['data'] ) ? $api_response['data'] : [];
 		$get_settings     = isset( $get_data['settings'] ) && is_array( $get_data['settings'] ) ? $get_data['settings'] : [];
 		$get_dashboard    = isset( $get_settings['dashboard'] ) && is_array( $get_settings['dashboard'] ) ? $get_settings['dashboard'] : [];
-		$get_display_name = isset( $get_dashboard['display_name'] ) && is_string( $get_dashboard['display_name'] ) ? $get_dashboard['display_name'] : '';
-
-		return $get_display_name;
+		return isset( $get_dashboard['display_name'] ) && is_string( $get_dashboard['display_name'] ) ? $get_dashboard['display_name'] : '';
 	}
 
 	/**

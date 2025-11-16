@@ -9,7 +9,6 @@ namespace SRFM\Inc\Payments\Admin;
 
 use SRFM\Inc\Database\Tables\Payments;
 use SRFM\Inc\Payments\Payment_Helper;
-use SRFM\Inc\Payments\Stripe\Stripe_Helper;
 use SRFM\Inc\Traits\Get_Instance;
 
 if ( ! defined( 'ABSPATH' ) ) {
