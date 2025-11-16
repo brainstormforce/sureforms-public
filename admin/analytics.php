@@ -279,7 +279,7 @@ class Analytics {
 		$global_data['boolean_values']['custom_validation_message'] = ! empty( $validation_messages ) && is_array( $validation_messages );
 
 		// Payment analytics - check if any payment method is enabled.
-		$global_data['boolean_values']['payment_enabled'] = $this->is_payment_enabled();
+		$global_data['boolean_values']['stripe_enabled'] = $this->is_stripe_enabled();
 
 		return $global_data;
 	}
@@ -451,7 +451,7 @@ class Analytics {
 	 * @since x.x.x
 	 * @return bool True if any payment method is enabled, false otherwise.
 	 */
-	private function is_payment_enabled() {
+	private function is_stripe_enabled() {
 		// Check if Stripe is connected.
 		return class_exists( 'SRFM\Inc\Payments\Stripe\Stripe_Helper' ) && \SRFM\Inc\Payments\Stripe\Stripe_Helper::is_stripe_connected();
 	}
