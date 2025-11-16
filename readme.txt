@@ -366,9 +366,8 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 
 == Changelog ==
 = 2.0.0 - 18th November 2025 =
-* Improvement: Revamped add new form screen.
-* Improvement: Added popup for getting started video in dashboard.
-* Fix: Resolved an issue where block config is not updated consistently on form update.
+* New: Introduced Payments.
+* Improvement: Revamped the SureForms UI.
 = 1.13.2 - 7th November 2025 =
 * Improvement: Added a fallback message for email failures on the single entries page when the SMTP plugin is missing.
 * Improvement: Added support for "Name <email\>" format in CC, BCC, and Reply-To fields.
