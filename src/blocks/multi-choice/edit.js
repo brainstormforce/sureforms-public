@@ -36,6 +36,7 @@ import {
 	attributeOptionsWithFilter,
 	enhanceMultiChoiceOptions,
 } from '@Components/hooks';
+import { Trash2 } from 'lucide-react';
 
 const Edit = ( props ) => {
 	const { attributes, setAttributes, isSelected, clientId } = props;
@@ -53,6 +54,7 @@ const Edit = ( props ) => {
 		optionType,
 		minValue,
 		maxValue,
+		showValues,
 	} = attributes;
 
 	const currentFormId = useGetCurrentFormId( clientId );
@@ -217,7 +219,7 @@ const Edit = ( props ) => {
 						} }
 					/>
 				</span>
-				<div>
+				<div className="srfm-option-outer-text-control">
 					<SRFMTextControl
 						showHeaderControls={ false }
 						key={ i }
@@ -255,7 +257,16 @@ const Edit = ( props ) => {
 						/>
 					</div>
 				) }
-				<Button icon="trash" onClick={ () => deleteOption( i ) } />
+				<div className="srfm-options-delete">
+					<Trash2
+						style={ {
+							width: '20px',
+							height: '20px',
+							color: '#6B7280',
+						} }
+						onClick={ () => deleteOption( i ) }
+					/>
+				</div>
 			</div>
 		</>
 	);
@@ -452,6 +463,18 @@ const Edit = ( props ) => {
 		{
 			id: 'addNewOption',
 			component: addNewOption,
+		},
+		{
+			id: 'show-option-value',
+			component: (
+				<ToggleControl
+					label={ __( 'Add Numeric Values to Options', 'sureforms' ) }
+					checked={ showValues }
+					onChange={ ( value ) =>
+						setAttributes( { showValues: value } )
+					}
+				/>
+			),
 		},
 		{
 			id: 'singleSelection',

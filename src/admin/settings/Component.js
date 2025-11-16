@@ -9,6 +9,7 @@ import GeneralPage from './pages/General';
 import ValidationsPage from './pages/Validations';
 import SecurityPage from './pages/Security';
 import IntegrationPage from './pages/Integrations';
+import PaymentsPage from '../payment/global-setting-page';
 import OttoKitPage from './pages/OttoKit';
 import { applyFilters } from '@wordpress/hooks';
 import PageTitleSection from '@Admin/components/PageTitleSection';
@@ -50,6 +51,7 @@ const Component = ( { path } ) => {
 	const [ preDynamicBlockOptions, setPreDynamicBlockOptions ] = useState(
 		{}
 	);
+	const [ paymentsSettings, setPaymentsSettings ] = useState( {} );
 
 	// Options to fetch from API.
 	const optionsToFetch = [
@@ -167,6 +169,11 @@ const Component = ( { path } ) => {
 						...data.srfm_default_dynamic_block_option,
 					} );
 				}
+
+				if ( data.payment_settings ) {
+					setPaymentsSettings( data.payment_settings );
+				}
+
 				setLoading( false );
 			} catch ( error ) {
 				console.error( 'Error fetching data:', error );
@@ -240,6 +247,13 @@ const Component = ( { path } ) => {
 				[ setting ]: value,
 			};
 			setDynamicBlockOptions( updatedTabOptions );
+		} else if ( tab === 'payments-settings' ) {
+			updatedTabOptions = {
+				...paymentsSettings,
+				srfm_tab: tab,
+				[ setting ]: value,
+			};
+			setPaymentsSettings( updatedTabOptions );
 		} else {
 			return;
 		}
@@ -294,6 +308,14 @@ const Component = ( { path } ) => {
 
 				{ 'integration-settings' === path && (
 					<IntegrationPage loading={ loading } />
+				) }
+				{ 'payments-settings' === path && (
+					<PaymentsPage
+						loading={ loading }
+						paymentsSettings={ paymentsSettings }
+						updateGlobalSettings={ updateGlobalSettings }
+						setPaymentsSettings={ setPaymentsSettings }
+					/>
 				) }
 				{ applyFilters(
 					'srfm.settings.page.content',

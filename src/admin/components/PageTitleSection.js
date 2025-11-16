@@ -23,6 +23,7 @@ const PageTitleSection = ( { title, hidePageTitle, helpText } ) => {
 		'validation-settings',
 		'security-settings',
 		'ottokit-settings',
+		'payments-settings',
 	] );
 
 	return (

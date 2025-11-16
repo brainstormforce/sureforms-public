@@ -573,6 +573,7 @@ const EntriesListingPage = () => {
 				confirmButtonText={ confirmationDialog.confirmLabel }
 				destructiveConfirmButton={ confirmationDialog?.destructive }
 				requireConfirmation={ confirmationDialog?.enableVerification }
+				verificationText={ confirmationDialog?.verificationText }
 			/>
 		</div>
 	);

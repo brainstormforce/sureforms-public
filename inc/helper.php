@@ -986,6 +986,7 @@ class Helper {
 				'srfm/radio',
 				'srfm/submit',
 				'srfm/url',
+				'srfm/payment',
 			]
 		);
 	}
@@ -2094,5 +2095,66 @@ class Helper {
 
 		// If conversion fails, return false.
 		return false;
+	}
+
+	/**
+	 * Log error messages to the error log.
+	 *
+	 * This function checks if error_log function exists, validates the message,
+	 * and logs it with the print_r second argument set to true.
+	 *
+	 * Logging is disabled by default. To enable logging, add this to wp-config.php:
+	 * define( 'SRFM_LOG', true );
+	 *
+	 * @param mixed  $message The error message to log. Can be string or any type.
+	 * @param string $prefix Optional prefix to add before the message. Default: 'Log :'.
+	 *
+	 * @since x.x.x
+	 * @return void
+	 */
+	public static function srfm_log( $message, $prefix = 'Log :' ) {
+		// Check if logging is enabled via SRFM_LOG constant.
+		if ( ! defined( 'SRFM_LOG' ) ) {
+			return;
+		}
+
+		// Check if error_log function exists.
+		if ( ! function_exists( 'error_log' ) ) {
+			return;
+		}
+
+		// If message is a string, log it directly without print_r.
+		if ( is_string( $message ) ) {
+			// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+			error_log( $prefix . $message );
+		} else {
+			// For non-string types, use print_r with second argument true to return the output.
+			// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log, WordPress.PHP.DevelopmentFunctions.error_log_print_r
+			error_log( $prefix . print_r( $message, true ) );
+		}
+	}
+
+	/**
+	 * Encodes data to base64 after JSON encoding with validation.
+	 *
+	 * This function checks if the data is non-empty and valid for JSON encoding.
+	 * If data is not valid, returns an empty string.
+	 * Otherwise, it attempts to JSON encode and then base64 encode the result.
+	 *
+	 * @param mixed $data The data to JSON encode and then base64 encode.
+	 * @return string The base64-encoded JSON string, or empty string on failure.
+	 */
+	public static function srfm_base64_json_encode( $data ) {
+		if ( empty( $data ) || ! is_array( $data ) ) {
+			return '';
+		}
+
+		$json = wp_json_encode( $data );
+		if ( false === $json || '' === $json ) {
+			return '';
+		}
+
+		// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
+		return base64_encode( $json );
 	}
 }

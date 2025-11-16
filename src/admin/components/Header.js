@@ -30,6 +30,11 @@ const NAV_ITEMS = [
 		link: `${ siteURL }/wp-admin/admin.php?page=sureforms_entries`,
 	},
 	{
+		slug: 'sureforms_payments',
+		text: __( 'Payments', 'sureforms' ),
+		link: `${ siteURL }/wp-admin/admin.php?page=sureforms_payments`,
+	},
+	{
 		slug: 'sureforms_form_settings',
 		text: __( 'Settings', 'sureforms' ),
 		link: `${ siteURL }/wp-admin/admin.php?page=sureforms_form_settings&tab=general-settings`,
