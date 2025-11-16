@@ -8,7 +8,7 @@
 namespace SRFM\Inc\Payments\Admin;
 
 use SRFM\Inc\Database\Tables\Payments;
-use SRFM\Inc\Payments\Stripe\Stripe_Helper;
+use SRFM\Inc\Payments\Payment_Helper;
 use SRFM\Inc\Traits\Get_Instance;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -69,8 +69,8 @@ class Admin_Handler {
 				[
 					'ajax_url'                 => admin_url( 'admin-ajax.php' ),
 					'srfm_payment_admin_nonce' => wp_create_nonce( 'srfm_payment_admin_nonce' ),
-					'zeroDecimalCurrencies'    => Stripe_Helper::get_zero_decimal_currencies(),
-					'currenciesData'           => Stripe_Helper::get_all_currencies_data(),
+					'zeroDecimalCurrencies'    => Payment_Helper::get_zero_decimal_currencies(),
+					'currenciesData'           => Payment_Helper::get_all_currencies_data(),
 				]
 			);
 
