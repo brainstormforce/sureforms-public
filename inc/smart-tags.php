@@ -518,7 +518,7 @@ class Smart_Tags {
 	 *
 	 * @param string            $value tag.
 	 * @param array<mixed>|null $submission_data data from submission.
-	 * @since  x.x.x
+	 * @since  2.0.0
 	 * @return string
 	 */
 	public static function parse_payment_smart_tag( $value, $submission_data = null ) {

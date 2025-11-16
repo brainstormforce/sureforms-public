@@ -49,7 +49,7 @@ class Post_Types {
 	 * Redirect the forms listing page to the updated forms page.
 	 *
 	 * @return void
-	 * @since x.x.x
+	 * @since 2.0.0
 	 */
 	public function redirect_forms_listing_page() {
 		global $pagenow;
@@ -64,7 +64,7 @@ class Post_Types {
 	 * Add "Edit Form" link to the admin bar menu.
 	 *
 	 * @param WP_Admin_Bar $wp_admin_bar WP_Admin_Bar instance.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return void
 	 */
 	public function add_edit_form_to_admin_bar_menu( $wp_admin_bar ) {

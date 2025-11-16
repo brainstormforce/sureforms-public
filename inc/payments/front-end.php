@@ -3,7 +3,7 @@
  * SureForms Payments Frontend Class.
  *
  * @package sureforms
- * @since x.x.x
+ * @since 2.0.0
  */
 
 namespace SRFM\Inc\Payments;
@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * SureForms Payments Frontend Class.
  *
- * @since x.x.x
+ * @since 2.0.0
  */
 class Front_End {
 	use Get_Instance;
@@ -28,14 +28,14 @@ class Front_End {
 	 * Stores payment entries for later linking with form submissions.
 	 *
 	 * @var array
-	 * @since x.x.x
+	 * @since 2.0.0
 	 */
 	private $stripe_payment_entries = [];
 
 	/**
 	 * Constructor.
 	 *
-	 * @since x.x.x
+	 * @since 2.0.0
 	 */
 	public function __construct() {
 		add_action( 'wp_ajax_srfm_create_payment_intent', [ $this, 'create_payment_intent' ] );
@@ -52,7 +52,7 @@ class Front_End {
 	 *
 	 * @param bool $default_value Default value.
 	 * @param bool $value Value.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return bool
 	 */
 	public function show_options_values( $default_value, $value ) {
@@ -62,7 +62,7 @@ class Front_End {
 	 * Create payment intent
 	 *
 	 * @throws \Exception When Stripe configuration is invalid.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return void
 	 */
 	public function create_payment_intent() {
@@ -186,7 +186,7 @@ class Front_End {
 	 * Create subscription intent with improved error handling from simple-stripe-subscriptions
 	 *
 	 * @throws \Exception When Stripe configuration is invalid.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return void
 	 */
 	public function create_subscription_intent() {
@@ -354,7 +354,7 @@ class Front_End {
 	 * Validate payment fields before form submission
 	 *
 	 * @param array<mixed> $form_data Form data.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return array<mixed>
 	 */
 	public function validate_payment_fields( $form_data ) {
@@ -444,7 +444,7 @@ class Front_End {
 	 * @param array<mixed> $subscription_value Subscription data from frontend.
 	 * @param string       $block_id Block ID.
 	 * @param array<mixed> $form_data Form data.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return void|array<mixed> True if subscription is verified and saved successfully.
 	 */
 	public function verify_stripe_subscription_intent_and_save( $subscription_value, $block_id, $form_data ) {
@@ -743,7 +743,7 @@ class Front_End {
 	 * Prepare cancel_at timestamp for subscription based on billing cycles and interval.
 	 *
 	 * @param array<string,mixed> $input_value Array containing subscriptionBillingCycles and subscriptionInterval.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return int|false|null Unix timestamp for cancel_at, or null if not applicable.
 	 */
 	public function prepare_cancel_at( $input_value ) {
@@ -810,7 +810,7 @@ class Front_End {
 	 * by form_id and updates them with the newly created entry_id.
 	 *
 	 * @param array<string,mixed> $form_submit_response The form submission response containing entry_id and form_id.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return void
 	 */
 	public function update_payment_entry_id_form_submit( $form_submit_response ) {
@@ -844,7 +844,7 @@ class Front_End {
 	 * @param string       $block_id Block ID.
 	 * @param array<mixed> $form_data Form data.
 	 *
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return void|array<mixed>
 	 */
 	private function verify_stripe_payment_intent_and_save( $payment_value, $payment_id, $block_id, $form_data ) {
@@ -1003,7 +1003,7 @@ class Front_End {
 	 * Get or create Stripe customer
 	 *
 	 * @param array<string,string> $customer_data Customer data containing 'email' and 'name' from POST.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return string|false Customer ID on success, false on failure.
 	 */
 	private function get_or_create_stripe_customer( $customer_data = [] ) {
@@ -1030,7 +1030,7 @@ class Front_End {
 	 *
 	 * @param \WP_User             $user WordPress user object.
 	 * @param array<string,string> $post_customer_data Customer data from POST containing 'email' and 'name'.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return string|false Customer ID on success, false on failure.
 	 * @throws \Exception When Stripe API request fails.
 	 */
@@ -1087,7 +1087,7 @@ class Front_End {
 	 * Create Stripe customer for guest user
 	 *
 	 * @param array<string,string> $post_customer_data Customer data from POST containing 'email' and 'name'.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return string|false Customer ID on success, false on failure.
 	 * @throws \Exception When Stripe API request fails.
 	 */
@@ -1148,7 +1148,7 @@ class Front_End {
 	 * Verify Stripe customer exists
 	 *
 	 * @param string $customer_id Stripe customer ID.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return bool True if customer exists, false otherwise.
 	 */
 	private function verify_stripe_customer( $customer_id ) {
@@ -1183,7 +1183,7 @@ class Front_End {
 	/**
 	 * Get user IP address
 	 *
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return string User IP address.
 	 */
 	private function get_user_ip() {
@@ -1211,7 +1211,7 @@ class Front_End {
 	 *
 	 * @param string $payment_id Payment intent ID.
 	 * @param int    $entry_id   Entry ID to update.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return bool True if payment entry updated, false otherwise.
 	 */
 	private function update_payment_entry_id( $payment_id, $entry_id ) {
@@ -1239,7 +1239,7 @@ class Front_End {
 	 * to find the corresponding field slugs, then extracts the values from form data.
 	 *
 	 * @param array<string,mixed> $input_value Input value.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return array{name: string, email: string, customer_id: string} Customer data array.
 	 */
 	private function extract_customer_data( $input_value ) {

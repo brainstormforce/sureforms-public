@@ -3,7 +3,7 @@
  * SureForms Payments Main Class.
  *
  * @package sureforms
- * @since x.x.x
+ * @since 2.0.0
  */
 
 namespace SRFM\Inc\Payments;
@@ -21,7 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * SureForms Payments Main Class.
  *
- * @since x.x.x
+ * @since 2.0.0
  */
 class Payments {
 	use Get_Instance;
@@ -29,7 +29,7 @@ class Payments {
 	/**
 	 * Constructor
 	 *
-	 * @since x.x.x
+	 * @since 2.0.0
 	 */
 	public function __construct() {
 		if ( is_admin() ) {
@@ -51,7 +51,7 @@ class Payments {
 	 *
 	 * @param array<mixed> $body   The body array for AI request.
 	 * @param array<mixed> $params The request parameters.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return array<mixed> Modified body array.
 	 */
 	public function add_payment_version_to_ai_body( $body, $params ) {

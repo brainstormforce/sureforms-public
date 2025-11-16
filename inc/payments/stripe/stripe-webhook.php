@@ -3,7 +3,7 @@
  * SureForms Webhook Class
  *
  * @package sureforms
- * @since x.x.x
+ * @since 2.0.0
  */
 
 namespace SRFM\Inc\Payments\Stripe;
@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Stripe Webhook handler class.
  *
- * @since x.x.x
+ * @since 2.0.0
  */
 class Stripe_Webhook {
 	use Get_Instance;
@@ -38,14 +38,14 @@ class Stripe_Webhook {
 	 * Payment mode.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 2.0.0
 	 */
 	private string $mode = 'test';
 
 	/**
 	 * Constructor function.
 	 *
-	 * @since x.x.x
+	 * @since 2.0.0
 	 */
 	public function __construct() {
 		add_action( 'rest_api_init', [ $this, 'register_endpoints' ] );
@@ -54,7 +54,7 @@ class Stripe_Webhook {
 	/**
 	 * Registers endpoint for webhook.
 	 *
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return void
 	 */
 	public function register_endpoints() {
@@ -89,7 +89,7 @@ class Stripe_Webhook {
 	 * Validates the Stripe signature for webhook requests through middleware.
 	 *
 	 * @param string|null $mode The payment mode ('test' or 'live'). If null, uses setting.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return array<string, mixed>|bool
 	 */
 	public function validate_stripe_signature( $mode = null ) {
@@ -173,7 +173,7 @@ class Stripe_Webhook {
 	 * Development version - skips signature validation for testing.
 	 * This function is intended for development purposes only and should not be used in production.
 	 *
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return array<string, mixed>|bool
 	 */
 	public function dev_validate_stripe_signature() {
@@ -202,7 +202,7 @@ class Stripe_Webhook {
 	 * This function listens webhook events.
 	 *
 	 * @param string|null $mode The payment mode ('test' or 'live'). If null, uses setting.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return void
 	 */
 	public function webhook_listener( $mode = null ) {
@@ -265,7 +265,7 @@ class Stripe_Webhook {
 	 * Handles refund record - both creation and cancellation via webhook call.
 	 *
 	 * @param array<string, mixed> $refund Refund object from Stripe webhook.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return void
 	 */
 	public function handle_refund_record( array $refund ) {
@@ -383,7 +383,7 @@ class Stripe_Webhook {
 	 * Handles invoice.payment_succeeded webhook for subscription payments.
 	 *
 	 * @param array<string, mixed> $invoice Invoice object from Stripe.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return void
 	 */
 	public function handle_invoice_payment_succeeded( array $invoice ) {
@@ -484,7 +484,7 @@ class Stripe_Webhook {
 	 * Handles customer.subscription.deleted webhook for subscription cancellations.
 	 *
 	 * @param array<string, mixed> $subscription Subscription object from Stripe.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return void
 	 */
 	public function handle_subscription_deleted( array $subscription ) {
@@ -583,7 +583,7 @@ class Stripe_Webhook {
 	 * @param int|float|string     $refund_amount Refund amount in cents.
 	 * @param string               $currency Currency code.
 	 * @param string|null          $payment Payment method.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return bool Whether the update was successful.
 	 */
 	public function update_refund_data( int $payment_id, array $refund_response, int|float|string $refund_amount, string $currency, ?string $payment = null ) {
@@ -726,7 +726,7 @@ class Stripe_Webhook {
 	 * @param array<string, mixed> $refund Refund object from Stripe webhook.
 	 * @param string               $currency Currency code.
 	 * @param string               $lookup_method How the payment was found.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return void
 	 */
 	private function process_refund_cancellation( int $payment_id, array $refund, string $currency, string $lookup_method ) {
@@ -881,7 +881,7 @@ class Stripe_Webhook {
 	 * Handles both old and new Stripe API structures.
 	 *
 	 * @param array<string, mixed> $invoice Invoice object from Stripe.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return string Subscription ID or empty string if not found.
 	 */
 	private function extract_subscription_id_from_invoice( array $invoice ) {
@@ -911,7 +911,7 @@ class Stripe_Webhook {
 	 * Falls back to payment_intent, fetching from API, or invoice ID if charge is not available.
 	 *
 	 * @param array<string, mixed> $invoice Invoice object from Stripe.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return string Charge ID, payment_intent, or invoice ID.
 	 */
 	private function extract_charge_id_from_invoice( array $invoice ) {
@@ -959,7 +959,7 @@ class Stripe_Webhook {
 	 * @param array<string, mixed> $subscription_record Subscription record from database.
 	 * @param array<string, mixed> $invoice Invoice object from Stripe.
 	 * @param string               $charge_id Charge ID from Stripe.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return void
 	 */
 	private function process_initial_subscription_payment( array $subscription_record, array $invoice, string $charge_id ) {
@@ -1027,7 +1027,7 @@ class Stripe_Webhook {
 	 * @param array<string, mixed> $invoice Invoice object from Stripe.
 	 * @param string               $charge_id Charge ID from Stripe.
 	 * @param string               $block_id Block ID from metadata.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return void
 	 */
 	private function process_subscription_renewal_payment( array $subscription_record, array $invoice, string $charge_id, string $block_id ) {
@@ -1128,7 +1128,7 @@ class Stripe_Webhook {
 	 * @param array<string, mixed> $payment Payment record data.
 	 * @param array<string, mixed> $refund Refund response from Stripe.
 	 * @return bool True if refund already exists, false otherwise.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 */
 	private function check_if_refund_already_exists( array $payment, array $refund ) {
 		$refund_id = $refund['id'] ?? '';

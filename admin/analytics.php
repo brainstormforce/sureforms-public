@@ -448,7 +448,7 @@ class Analytics {
 	 * This function checks if any payment gateway is connected and enabled.
 	 * Currently supports Stripe, but can be extended for other payment methods in the future.
 	 *
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return bool True if any payment method is enabled, false otherwise.
 	 */
 	private function is_stripe_enabled() {

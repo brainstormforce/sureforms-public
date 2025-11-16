@@ -55,7 +55,7 @@ class Create_New_Form {
 	 * Get default post metas for form when creating using template.
 	 *
 	 * @return array<string, int|string|bool> Default meta keys.
-	 * @since x.x.x updated the return type.
+	 * @since 2.0.0 updated the return type.
 	 * @since 0.0.2
 	 */
 	public static function get_default_meta_keys() {
@@ -77,7 +77,7 @@ class Create_New_Form {
 			'_srfm_additional_classes'       => '',
 			'_srfm_submit_type'              => 'message',
 			'_srfm_form_recaptcha'           => 'none',
-			'_srfm_is_inline_button'         => false, // @since x.x.x -- adding required default value.
+			'_srfm_is_inline_button'         => false, // @since 2.0.0 -- adding required default value.
 		];
 
 		return apply_filters( 'srfm_add_post_meta_defaults', $default_values );

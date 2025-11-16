@@ -1559,7 +1559,7 @@ class Helper {
 	/**
 	 * Return the first installed plugin from a list, or a default if none exist.
 	 *
-	 * @since x.x.x
+	 * @since 2.0.0
 	 *
 	 * @param array<string> $plugins_to_check Plugin file paths to check, in priority order.
 	 * @param string        $default          Optional fallback plugin file path. Default empty string.
@@ -1679,7 +1679,7 @@ class Helper {
 	 * Plugins rotate every 2 days. Only non-activated plugins are shown.
 	 * Returns false if all plugins are activated.
 	 *
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return array<string, mixed>|false The current plugin data or false if all plugins are activated.
 	 */
 	public static function get_rotating_plugin_banner() {
@@ -2109,7 +2109,7 @@ class Helper {
 	 * @param mixed  $message The error message to log. Can be string or any type.
 	 * @param string $prefix Optional prefix to add before the message. Default: 'Log :'.
 	 *
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return void
 	 */
 	public static function srfm_log( $message, $prefix = 'Log :' ) {

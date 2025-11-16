@@ -512,7 +512,7 @@ class Admin {
 	 * Payments page callback.
 	 *
 	 * @return void
-	 * @since x.x.x
+	 * @since 2.0.0
 	 */
 	public function render_payments() {
 		?>
@@ -536,7 +536,7 @@ class Admin {
 	 * Forms page callback.
 	 *
 	 * @return void
-	 * @since x.x.x
+	 * @since 2.0.0
 	 */
 	public function render_forms() {
 		?>
@@ -548,7 +548,7 @@ class Admin {
 	 * Entries page callback.
 	 *
 	 * @since 0.0.13
-	 * @since x.x.x - Updated the entries UI and the function definition.
+	 * @since 2.0.0 - Updated the entries UI and the function definition.
 	 * @return void
 	 */
 	public function render_entries() {
@@ -616,7 +616,7 @@ class Admin {
 	/**
 	 * Summary of add_payments_badge
 	 *
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return void
 	 */
 	public function add_payments_badge() {

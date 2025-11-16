@@ -7,7 +7,7 @@
  * be in their respective helper classes.
  *
  * @package sureforms
- * @since x.x.x
+ * @since 2.0.0
  */
 
 namespace SRFM\Inc\Payments;
@@ -21,7 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Global Payment Helper class for multi-gateway support.
  *
- * @since x.x.x
+ * @since 2.0.0
  */
 class Payment_Helper {
 	/**
@@ -30,7 +30,7 @@ class Payment_Helper {
 	 * Retrieves the complete payment settings structure:
 	 * payment_settings -> [currency, payment_mode, stripe, paypal, etc]
 	 *
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return array<string, mixed> The complete payment settings array.
 	 */
 	public static function get_all_payment_settings() {
@@ -63,7 +63,7 @@ class Payment_Helper {
 	 * srfm_options -> payment_settings
 	 *
 	 * @param array<string, mixed> $settings The complete payment settings array.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return bool True on success, false on failure.
 	 */
 	public static function update_payment_settings( $settings ) {
@@ -79,7 +79,7 @@ class Payment_Helper {
 	 * Get settings for a specific payment gateway.
 	 *
 	 * @param string $gateway Gateway identifier (e.g., 'stripe', 'paypal').
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return array<string, mixed> Gateway settings array, or empty array if not found.
 	 */
 	public static function get_gateway_settings( $gateway ) {
@@ -99,7 +99,7 @@ class Payment_Helper {
 	 *
 	 * @param string               $gateway  Gateway identifier (e.g., 'stripe', 'paypal').
 	 * @param array<string, mixed> $settings Gateway settings to save.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return bool True on success, false on failure.
 	 */
 	public static function update_gateway_settings( $gateway, $settings ) {
@@ -118,7 +118,7 @@ class Payment_Helper {
 	 *
 	 * @param string $key     Setting key (e.g., 'currency', 'payment_mode').
 	 * @param mixed  $default Default value if setting not found.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return mixed Setting value or default.
 	 */
 	public static function get_global_setting( $key, $default = '' ) {
@@ -136,7 +136,7 @@ class Payment_Helper {
 	 *
 	 * @param string $key   Setting key to update.
 	 * @param mixed  $value Value to set.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return bool True on success, false on failure.
 	 */
 	public static function update_global_setting( $key, $value ) {
@@ -153,7 +153,7 @@ class Payment_Helper {
 	/**
 	 * Get the default currency.
 	 *
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return string The currency code (e.g., 'USD').
 	 */
 	public static function get_currency() {
@@ -164,7 +164,7 @@ class Payment_Helper {
 	/**
 	 * Get the current payment mode (test or live).
 	 *
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return string The current payment mode ('test' or 'live').
 	 */
 	public static function get_payment_mode() {
@@ -178,7 +178,7 @@ class Payment_Helper {
 	 * This is the single source of truth for all currency-related data.
 	 * Contains currency name, symbol, and decimal places.
 	 *
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return array<string, array<string, mixed>> Array of currency data keyed by currency code.
 	 */
 	public static function get_all_currencies_data() {
@@ -384,7 +384,7 @@ class Payment_Helper {
 	/**
 	 * Get currency names for all supported currencies.
 	 *
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return array<string, mixed> Array of currency names keyed by currency code.
 	 */
 	public static function get_currency_names() {
@@ -402,7 +402,7 @@ class Payment_Helper {
 	 * Get currency symbol.
 	 *
 	 * @param string $currency Currency code.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return string Currency symbol or empty string.
 	 */
 	public static function get_currency_symbol( $currency ) {
@@ -424,7 +424,7 @@ class Payment_Helper {
 	 * Zero-decimal currencies don't use decimal points in payment APIs.
 	 * For these currencies, amounts are passed as-is without multiplying/dividing by 100.
 	 *
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return array<string> Array of zero-decimal currency codes.
 	 */
 	public static function get_zero_decimal_currencies() {
@@ -444,7 +444,7 @@ class Payment_Helper {
 	 * Check if currency is zero-decimal.
 	 *
 	 * @param string $currency Currency code.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return bool True if zero-decimal currency.
 	 */
 	public static function is_zero_decimal_currency( $currency ) {
@@ -465,7 +465,7 @@ class Payment_Helper {
 	 * This is the single source of truth for all payment UI strings.
 	 * Each string has a unique key (slug) for easy reference in JavaScript.
 	 *
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return array<string, string> Array of translatable strings keyed by slug.
 	 */
 	public static function get_payment_strings() {
@@ -543,7 +543,7 @@ class Payment_Helper {
 	/**
 	 * Get default payment settings (global + all gateways).
 	 *
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return array<string, mixed> Default payment settings structure.
 	 */
 	private static function get_default_payment_settings() {

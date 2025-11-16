@@ -3,7 +3,7 @@
  * Payments Settings Handler
  *
  * @package sureforms
- * @since x.x.x
+ * @since 2.0.0
  */
 
 namespace SRFM\Inc\Payments\Stripe;
@@ -18,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Payments Settings Class
  *
- * @since x.x.x
+ * @since 2.0.0
  */
 class Payments_Settings {
 	use Get_Instance;
@@ -26,7 +26,7 @@ class Payments_Settings {
 	/**
 	 * Constructor
 	 *
-	 * @since x.x.x
+	 * @since 2.0.0
 	 */
 	public function __construct() {
 		add_action( 'rest_api_init', [ $this, 'register_rest_routes' ] );
@@ -43,7 +43,7 @@ class Payments_Settings {
 	 *
 	 * @param mixed        $value The current field value (payment ID).
 	 * @param array<mixed> $args  Arguments containing field_name, label, and field_block_name.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return mixed The modified field value (clickable link) or original value if not a payment block.
 	 */
 	public function filter_entry_value_for_payment( $value, $args ) {
@@ -84,7 +84,7 @@ class Payments_Settings {
 	/**
 	 * Register REST routes
 	 *
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return void
 	 */
 	public function register_rest_routes() {
@@ -140,7 +140,7 @@ class Payments_Settings {
 	/**
 	 * Permission callback
 	 *
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return bool
 	 */
 	public function permission_check() {
@@ -153,7 +153,7 @@ class Payments_Settings {
 	 * Returns complete payment settings structure including global settings and all gateway settings.
 	 *
 	 * @param array<mixed> $settings Existing settings.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return array<mixed>
 	 */
 	public function add_payments_settings( array $settings ) {
@@ -168,7 +168,7 @@ class Payments_Settings {
 	/**
 	 * Intercept Stripe OAuth callback
 	 *
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return void
 	 */
 	public function intercept_stripe_callback() {
@@ -203,7 +203,7 @@ class Payments_Settings {
 	/**
 	 * Handle Stripe OAuth callback
 	 *
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return void
 	 */
 	public function handle_stripe_callback() {
@@ -238,7 +238,7 @@ class Payments_Settings {
 	/**
 	 * Disconnect Stripe account
 	 *
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return \WP_REST_Response
 	 */
 	public function disconnect_stripe() {
@@ -280,7 +280,7 @@ class Payments_Settings {
 	 * Handle webhook creation request (REST API handler)
 	 *
 	 * @param \WP_REST_Request $request The REST request object.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return \WP_REST_Response
 	 */
 	public function handle_webhook_creation_request( $request ) {
@@ -305,7 +305,7 @@ class Payments_Settings {
 	 * Create Stripe webhook for a specific mode (test or live)
 	 *
 	 * @param string $mode The payment mode ('test' or 'live').
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return array<mixed> Array containing webhook creation results and details
 	 * @throws \Exception When the Stripe API request fails for any mode.
 	 */
@@ -430,7 +430,7 @@ class Payments_Settings {
 	/**
 	 * Setup Stripe webhooks for both test and live modes
 	 *
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return array<mixed> Array containing webhook creation results and details
 	 * @throws \Exception When the Stripe API request fails for any mode.
 	 */
@@ -570,7 +570,7 @@ class Payments_Settings {
 	/**
 	 * Delete Stripe webhooks for both test and live modes
 	 *
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return array<mixed> Array containing deletion results
 	 */
 	public function delete_stripe_webhooks() {
@@ -696,7 +696,7 @@ class Payments_Settings {
 	 * Delete payment webhooks
 	 *
 	 * @param \WP_REST_Request|array<int, string>|null $request_or_modes Request object or array of modes to delete.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return \WP_REST_Response
 	 */
 	public function delete_payment_webhooks( $request_or_modes = null ) {
@@ -853,7 +853,7 @@ class Payments_Settings {
 	/**
 	 * Get Stripe account information using stored account ID
 	 *
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return string containing account name or empty string if not found
 	 */
 	public function get_account_name() {
@@ -885,7 +885,7 @@ class Payments_Settings {
 	/**
 	 * Process OAuth success response.
 	 *
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return \WP_REST_Response
 	 */
 	private function process_oauth_success() {
@@ -968,7 +968,7 @@ class Payments_Settings {
 	/**
 	 * Process OAuth error response
 	 *
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return void
 	 */
 	private function process_oauth_error() {

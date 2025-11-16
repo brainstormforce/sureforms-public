@@ -106,7 +106,7 @@ class Export {
 	 * Handle Export form via REST API
 	 *
 	 * @param \WP_REST_Request $request Full details about the request.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return \WP_REST_Response|\WP_Error
 	 */
 	public function handle_export_form_rest( $request ) {
@@ -164,7 +164,7 @@ class Export {
 	 * Handle Import form via REST API
 	 *
 	 * @param \WP_REST_Request $request Full details about the request.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return \WP_REST_Response|\WP_Error
 	 */
 	public function handle_import_form_rest( $request ) {

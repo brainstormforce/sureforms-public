@@ -5,7 +5,7 @@
  * Handles admin-related Stripe operations including refunds for payments and subscriptions.
  *
  * @package SureForms
- * @since x.x.x
+ * @since 2.0.0
  */
 
 namespace SRFM\Inc\Payments\Stripe;
@@ -25,7 +25,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Manages admin operations for Stripe payments including refunds, cancellations,
  * and payment management for both one-time and subscription payments.
  *
- * @since x.x.x
+ * @since 2.0.0
  */
 class Admin_Stripe_Handler {
 	use Get_Instance;
@@ -34,7 +34,7 @@ class Admin_Stripe_Handler {
 	 * Payment mode.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 2.0.0
 	 */
 	private string $payment_mode = 'test';
 
@@ -53,12 +53,12 @@ class Admin_Stripe_Handler {
 	/**
 	 * AJAX handler for subscription cancellation (following WPForms pattern)
 	 *
-	 * @since x.x.x
+	 * @since 2.0.0
 	 */
 	/**
 	 * AJAX handler for subscription cancellation (following WPForms pattern)
 	 *
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return void
 	 */
 	public function ajax_cancel_subscription() {
@@ -124,7 +124,7 @@ class Admin_Stripe_Handler {
 	/**
 	 * Process payment refund
 	 *
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return void
 	 * @throws \Exception If unable to process refund.
 	 */
@@ -241,7 +241,7 @@ class Admin_Stripe_Handler {
 	 * Cancel subscription (following WPForms pattern)
 	 *
 	 * @param string $subscription_id Subscription ID.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return bool Success status.
 	 */
 	public function cancel_subscription( string $subscription_id ) {
@@ -300,7 +300,7 @@ class Admin_Stripe_Handler {
 	/**
 	 * AJAX handler for subscription pause
 	 *
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return void
 	 */
 	public function ajax_pause_subscription() {
@@ -353,7 +353,7 @@ class Admin_Stripe_Handler {
 	 * Pause subscription
 	 *
 	 * @param string $subscription_id Subscription ID.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return bool Success status.
 	 */
 	public function pause_subscription( string $subscription_id ) {
@@ -408,7 +408,7 @@ class Admin_Stripe_Handler {
 	 * @param string                   $currency Currency code.
 	 * @param array<string,mixed>|null $payment Payment record data.
 	 * @param string                   $refund_notes Refund notes.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return bool True if successful, false otherwise.
 	 */
 	public function update_refund_data(
@@ -565,7 +565,7 @@ class Admin_Stripe_Handler {
 	 * Shows a warning notice when webhooks are not properly configured.
 	 * The notice will automatically disappear when a new Stripe request comes in.
 	 *
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return void
 	 */
 	public function webhook_configuration_notice() {
@@ -623,7 +623,7 @@ class Admin_Stripe_Handler {
 	 * @param array<string,mixed> $payment Payment record.
 	 * @param int                 $refund_amount Refund amount in cents.
 	 * @param string              $refund_notes Refund notes.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return void
 	 * @throws \Exception If unable to determine the appropriate refund method.
 	 */
@@ -700,7 +700,7 @@ class Admin_Stripe_Handler {
 	 * Check if payment is subscription-related
 	 *
 	 * @param array<string,mixed> $payment Payment record.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return bool True if payment is subscription-related, false otherwise.
 	 */
 	private function is_subscription_related_payment( array $payment ) {
@@ -722,7 +722,7 @@ class Admin_Stripe_Handler {
 	 *
 	 * @param array<string,mixed> $payment Payment record.
 	 * @param int                 $refund_amount Refund amount in cents.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return array{valid: bool, message: string} Validation result with 'valid' boolean and 'message' string.
 	 */
 	private function validate_subscription_refund_amount( array $payment, int $refund_amount ) {
@@ -780,7 +780,7 @@ class Admin_Stripe_Handler {
 	 * @param string              $transaction_id Transaction ID (charge ID from first payment for subscriptions).
 	 * @param int                 $refund_amount Refund amount in cents.
 	 * @param string              $refund_notes Refund notes.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return array<string,mixed>|false Refund data or false on failure.
 	 * @throws \Exception If unable to determine the appropriate refund method.
 	 */
@@ -812,7 +812,7 @@ class Admin_Stripe_Handler {
 	 * @param string              $charge_id Stripe charge ID.
 	 * @param int                 $refund_amount Refund amount in cents.
 	 * @param string              $refund_notes Refund notes.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return array<string,mixed>|false Refund data or false on failure.
 	 */
 	private function create_refund_by_charge( array $payment, string $charge_id, int $refund_amount, string $refund_notes = '' ) {
@@ -854,7 +854,7 @@ class Admin_Stripe_Handler {
 	 * @param string              $payment_intent_id Stripe payment intent ID.
 	 * @param int                 $refund_amount Refund amount in cents.
 	 * @param string              $refund_notes Refund notes.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return array<string,mixed>|false Refund data or false on failure.
 	 */
 	private function create_refund_by_payment_intent( array $payment, string $payment_intent_id, int $refund_amount, string $refund_notes = '' ) {
@@ -897,7 +897,7 @@ class Admin_Stripe_Handler {
 	 * @param int                 $refund_amount Refund amount in cents.
 	 * @param string              $currency Currency code.
 	 * @param string              $refund_notes Refund notes.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return bool True if successful, false otherwise.
 	 */
 	private function update_subscription_refund_data(
@@ -1047,7 +1047,7 @@ class Admin_Stripe_Handler {
 	 * Convert technical error messages to user-friendly ones
 	 *
 	 * @param string $technical_error Technical error message.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return string User-friendly error message.
 	 */
 	private function get_user_friendly_refund_error( string $technical_error ) {
@@ -1080,7 +1080,7 @@ class Admin_Stripe_Handler {
 	 *
 	 * @param array<string,mixed> $payment Payment record.
 	 * @param array<string,mixed> $refund_response Refund response from Stripe.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return bool True if refund already exists, false otherwise.
 	 */
 	private function check_if_refund_already_exists( array $payment, array $refund_response ) {
@@ -1103,7 +1103,7 @@ class Admin_Stripe_Handler {
 	 * Get charge ID from payment data
 	 *
 	 * @param array<string,mixed> $payment Payment record.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return string|null Charge ID or null if not found.
 	 */
 	private function get_charge_id_from_payment( array $payment ) {
@@ -1144,7 +1144,7 @@ class Admin_Stripe_Handler {
 	 *
 	 * @param array<string,mixed> $array Array to search.
 	 * @param string              $key Dot-separated key path.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return mixed Value or null if not found.
 	 */
 	private function get_nested_value( array $array, string $key ) {

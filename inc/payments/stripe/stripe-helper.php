@@ -3,7 +3,7 @@
  * Stripe Helper functions for SureForms Payments.
  *
  * @package sureforms
- * @since x.x.x
+ * @since 2.0.0
  */
 
 namespace SRFM\Inc\Payments\Stripe;
@@ -19,13 +19,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Stripe Helper functions for SureForms Payments.
  *
- * @since x.x.x
+ * @since 2.0.0
  */
 class Stripe_Helper {
 	/**
 	 * Static cache for webhook verification results during the same request.
 	 *
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @var array<string, bool>
 	 */
 	private static $webhook_verification_cache = [];
@@ -33,7 +33,7 @@ class Stripe_Helper {
 	/**
 	 * Check if Stripe is connected.
 	 *
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return bool True if Stripe is connected, false otherwise.
 	 */
 	public static function is_stripe_connected() {
@@ -44,7 +44,7 @@ class Stripe_Helper {
 	/**
 	 * Get the current Stripe mode (test or live).
 	 *
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return string The current payment mode ('test' or 'live').
 	 */
 	public static function get_stripe_mode() {
@@ -59,7 +59,7 @@ class Stripe_Helper {
 	 *
 	 * @param string|null $mode   The payment mode ('test' or 'live'). If null, uses current mode.
 	 * @param bool        $verify Whether to verify with Stripe API. Default false (checks local settings only).
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return bool True if webhook is configured, false otherwise.
 	 */
 	public static function is_webhook_configured( $mode = null, $verify = false ) {
@@ -95,7 +95,7 @@ class Stripe_Helper {
 	 * Get Stripe secret key for the specified mode.
 	 *
 	 * @param string|null $mode The payment mode ('test' or 'live'). If null, uses current mode.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return string The secret key for the specified mode, or empty string if not found.
 	 */
 	public static function get_stripe_secret_key( $mode = null ) {
@@ -112,7 +112,7 @@ class Stripe_Helper {
 	 * Get Stripe publishable key for the specified mode.
 	 *
 	 * @param string|null $mode The payment mode ('test' or 'live'). If null, uses current mode.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return string The publishable key for the specified mode, or empty string if not found.
 	 */
 	public static function get_stripe_publishable_key( $mode = null ) {
@@ -128,7 +128,7 @@ class Stripe_Helper {
 	/**
 	 * Get the default currency from payment settings.
 	 *
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return string The currency code (e.g., 'USD').
 	 */
 	public static function get_currency() {
@@ -143,7 +143,7 @@ class Stripe_Helper {
 	 * http://localhost:10008/wp-admin/admin.php?page=sureforms_form_settings&tab=payments-settings
 	 * The site URL is dynamic and will adapt to the current WordPress installation.
 	 *
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return string The URL to the Stripe settings page.
 	 */
 	public static function get_stripe_settings_url() {
@@ -158,7 +158,7 @@ class Stripe_Helper {
 	 * @param array<mixed> $data        The data to send with the request. Default empty array.
 	 * @param string       $resource_id The resource ID to append to the endpoint. Default empty string.
 	 * @param array<mixed> $extra_args        Additional arguments to pass to the request. Default empty array.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return array<mixed> Response array with 'success' boolean and either 'data' or 'error' key.
 	 */
 	public static function stripe_api_request( string $endpoint, string $method = 'POST', array $data = [], string $resource_id = '', $extra_args = [] ) {
@@ -293,7 +293,7 @@ class Stripe_Helper {
 	 * - Modify this return value temporarily or use a filter hook to override the URL
 	 * - This allows debugging, testing, and modifying payment flows in a local environment
 	 *
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return string The middleware base URL.
 	 */
 	public static function middle_ware_base_url() {
@@ -305,7 +305,7 @@ class Stripe_Helper {
 	 *
 	 * @param string $currency Currency code.
 	 * @return string
-	 * @since x.x.x
+	 * @since 2.0.0
 	 */
 	public static function get_currency_symbol( $currency ) {
 		return Payment_Helper::get_currency_symbol( $currency );
@@ -315,7 +315,7 @@ class Stripe_Helper {
 	 * Check if currency is zero-decimal.
 	 *
 	 * @param string $currency Currency code.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return bool True if zero-decimal currency.
 	 */
 	public static function is_zero_decimal_currency( $currency ) {
@@ -330,7 +330,7 @@ class Stripe_Helper {
 	 *
 	 * @param float|string|int $amount   Amount in major currency unit (can contain commas).
 	 * @param string           $currency Currency code.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return int Amount in smallest currency unit (cents for 2-decimal, whole for 0-decimal).
 	 */
 	public static function amount_to_stripe_format( $amount, $currency ) {
@@ -348,7 +348,7 @@ class Stripe_Helper {
 	 *
 	 * @param int|string|float $amount   Amount in smallest currency unit (can contain commas).
 	 * @param string           $currency Currency code.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return float Amount in major currency unit.
 	 */
 	public static function amount_from_stripe_format( $amount, $currency ) {
@@ -365,7 +365,7 @@ class Stripe_Helper {
 	 * Example: 3F7B9A1E4C7D2A (exactly 14 chars)
 	 *
 	 * @param int $auto_increment_id The database auto-increment ID.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return string Generated unique payment ID (always 14 characters).
 	 */
 	public static function generate_unique_payment_id( int $auto_increment_id ): string {
@@ -389,7 +389,7 @@ class Stripe_Helper {
 	/**
 	 * Get the SureForms Pro License Key.
 	 *
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return string The SureForms Pro License Key.
 	 */
 	public static function get_license_key() {
@@ -408,7 +408,7 @@ class Stripe_Helper {
 	/**
 	 * Check if the SureForms Pro license is active.
 	 *
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return bool|string True if the SureForms Pro license is active, false otherwise.
 	 */
 	public static function is_pro_license_active() {
@@ -429,7 +429,7 @@ class Stripe_Helper {
 	 *
 	 * @param string $mode The payment mode ('test' or 'live'). Default is 'test'.
 	 *
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return string The webhook URL.
 	 */
 	public static function get_webhook_url( $mode = 'test' ) {
@@ -443,7 +443,7 @@ class Stripe_Helper {
 	 * based on the current payment mode. Uses static cache for same request.
 	 *
 	 * @param string|null $mode The payment mode ('test' or 'live'). If null, uses current mode.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return bool True if webhook is enabled, false otherwise.
 	 */
 	public static function verify_webhook_connection( $mode = null ) {
@@ -509,7 +509,7 @@ class Stripe_Helper {
 	/**
 	 * Check if any transaction is present in the payments table.
 	 *
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return bool True if at least one transaction exists, false otherwise.
 	 */
 	public static function is_transaction_present() {
@@ -538,7 +538,7 @@ class Stripe_Helper {
 	 * Retrieves the complete Stripe settings array from the nested structure:
 	 * srfm_options -> payment_settings -> stripe
 	 *
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return array<string, mixed> The Stripe settings array, or default settings if not found.
 	 */
 	public static function get_all_stripe_settings() {
@@ -555,7 +555,7 @@ class Stripe_Helper {
 	 * srfm_options -> payment_settings -> stripe
 	 *
 	 * @param array<string, mixed> $settings The Stripe settings array to save.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return bool True on success, false on failure.
 	 */
 	public static function update_all_stripe_settings( $settings ) {
@@ -571,7 +571,7 @@ class Stripe_Helper {
 	 *
 	 * @param string $key     The setting key to retrieve.
 	 * @param mixed  $default The default value to return if key doesn't exist.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return mixed The setting value or default if not found.
 	 */
 	public static function get_stripe_setting( $key, $default = '' ) {
@@ -589,7 +589,7 @@ class Stripe_Helper {
 	 *
 	 * @param string $key   The setting key to update.
 	 * @param mixed  $value The value to set.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return bool True on success, false on failure.
 	 */
 	public static function update_stripe_setting( $key, $value ) {
@@ -608,7 +608,7 @@ class Stripe_Helper {
 	 *
 	 * Note: currency and payment_mode are now stored in global settings.
 	 *
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return array<string, mixed> Default Stripe settings array.
 	 */
 	public static function get_default_stripe_settings() {
@@ -634,7 +634,7 @@ class Stripe_Helper {
 	/**
 	 * Get Stripe Connect URL
 	 *
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return \WP_REST_Response
 	 */
 	public static function get_stripe_connect_url() {
@@ -682,7 +682,7 @@ class Stripe_Helper {
 	 *
 	 * @param string               $mode             The payment mode ('test' or 'live').
 	 * @param array<string, mixed> $payment_settings The payment settings array.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return void
 	 */
 	private static function clear_webhook_data( $mode, $payment_settings ) {
@@ -707,7 +707,7 @@ class Stripe_Helper {
 	 * Removes commas, spaces, and ensures a numeric float value.
 	 *
 	 * @param float|string|int $amount Amount to clean up.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return float Clean float value.
 	 */
 	private static function clean_amount( $amount ) {
@@ -725,7 +725,7 @@ class Stripe_Helper {
 	 *
 	 * @param array<mixed> $data   The multidimensional array to flatten.
 	 * @param string       $prefix (Optional) The prefix for nested keys. Default is an empty string.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return array<mixed> The flattened array with bracket notation keys.
 	 */
 	private static function flatten_stripe_data( array $data, string $prefix = '' ) {
@@ -747,7 +747,7 @@ class Stripe_Helper {
 	/**
 	 * Get the Licensing Instance.
 	 *
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return object|null The Licensing Instance.
 	 */
 	private static function get_licensing_instance() {
