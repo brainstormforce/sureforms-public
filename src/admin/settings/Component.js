@@ -59,7 +59,6 @@ const Component = ( { path } ) => {
 		'srfm_email_summary_settings_options',
 		'srfm_security_settings_options',
 		'srfm_default_dynamic_block_option',
-		'payment_settings',
 	];
 
 	// set page title and icon based on the path.
