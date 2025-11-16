@@ -156,7 +156,7 @@ class Payments_Settings {
 	 * @since x.x.x
 	 * @return array<mixed>
 	 */
-	public function add_payments_settings( array $settings ): array {
+	public function add_payments_settings( array $settings ) {
 		// Get all payment settings (includes global + all gateways).
 		$payment_settings = Payment_Helper::get_all_payment_settings();
 
@@ -171,7 +171,7 @@ class Payments_Settings {
 	 * @since x.x.x
 	 * @return void
 	 */
-	public function intercept_stripe_callback(): void {
+	public function intercept_stripe_callback() {
 		// Check if this is a Stripe callback for our flow.
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		if ( ! isset( $_GET['page'] ) || 'sureforms_form_settings' !== $_GET['page'] ) {
@@ -206,7 +206,7 @@ class Payments_Settings {
 	 * @since x.x.x
 	 * @return void
 	 */
-	public function handle_stripe_callback(): void {
+	public function handle_stripe_callback() {
 		// Check if we have OAuth response data.
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		if ( isset( $_GET['response'] ) ) {
@@ -309,7 +309,7 @@ class Payments_Settings {
 	 * @return array<mixed> Array containing webhook creation results and details
 	 * @throws \Exception When the Stripe API request fails for any mode.
 	 */
-	public function create_webhook_for_mode( $mode ): array {
+	public function create_webhook_for_mode( $mode ) {
 		$settings = Stripe_Helper::get_all_stripe_settings();
 		if ( ! is_array( $settings ) ) {
 			$settings = Stripe_Helper::get_all_stripe_settings();
@@ -434,7 +434,7 @@ class Payments_Settings {
 	 * @return array<mixed> Array containing webhook creation results and details
 	 * @throws \Exception When the Stripe API request fails for any mode.
 	 */
-	public function setup_stripe_webhooks(): array {
+	public function setup_stripe_webhooks() {
 		$settings = Stripe_Helper::get_all_stripe_settings();
 		if ( ! is_array( $settings ) ) {
 			$settings = Stripe_Helper::get_all_stripe_settings();
@@ -573,7 +573,7 @@ class Payments_Settings {
 	 * @since x.x.x
 	 * @return array<mixed> Array containing deletion results
 	 */
-	public function delete_stripe_webhooks(): array {
+	public function delete_stripe_webhooks() {
 		$settings = Stripe_Helper::get_all_stripe_settings();
 		if ( ! is_array( $settings ) ) {
 			$settings = Stripe_Helper::get_all_stripe_settings();
@@ -971,7 +971,7 @@ class Payments_Settings {
 	 * @since x.x.x
 	 * @return void
 	 */
-	private function process_oauth_error(): void {
+	private function process_oauth_error() {
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		if ( isset( $_GET['error'] ) ) {
 			$error_data = sanitize_text_field( wp_unslash( $_GET['error'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended

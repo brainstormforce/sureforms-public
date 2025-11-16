@@ -161,7 +161,7 @@ class Stripe_Helper {
 	 * @since x.x.x
 	 * @return array<mixed> Response array with 'success' boolean and either 'data' or 'error' key.
 	 */
-	public static function stripe_api_request( string $endpoint, string $method = 'POST', array $data = [], string $resource_id = '', $extra_args = [] ): array {
+	public static function stripe_api_request( string $endpoint, string $method = 'POST', array $data = [], string $resource_id = '', $extra_args = [] ) {
 		if ( ! self::is_stripe_connected() ) {
 			return [
 				'success' => false,
@@ -728,7 +728,7 @@ class Stripe_Helper {
 	 * @since x.x.x
 	 * @return array<mixed> The flattened array with bracket notation keys.
 	 */
-	private static function flatten_stripe_data( array $data, string $prefix = '' ): array {
+	private static function flatten_stripe_data( array $data, string $prefix = '' ) {
 		$result = [];
 
 		foreach ( $data as $key => $value ) {

@@ -2103,13 +2103,21 @@ class Helper {
 	 * This function checks if error_log function exists, validates the message,
 	 * and logs it with the print_r second argument set to true.
 	 *
+	 * Logging is disabled by default. To enable logging, add this to wp-config.php:
+	 * define( 'SRFM_LOG', true );
+	 *
 	 * @param mixed  $message The error message to log. Can be string or any type.
-	 * @param string $prefix Optional prefix to add before the message. Default: 'SureForms Error :-> '.
+	 * @param string $prefix Optional prefix to add before the message. Default: 'Log :'.
 	 *
 	 * @since x.x.x
 	 * @return void
 	 */
 	public static function srfm_log( $message, $prefix = 'Log :' ) {
+		// Check if logging is enabled via SRFM_LOG constant.
+		if ( ! defined( 'SRFM_LOG' ) ) {
+			return;
+		}
+
 		// Check if error_log function exists.
 		if ( ! function_exists( 'error_log' ) ) {
 			return;

@@ -61,7 +61,7 @@ class Admin_Stripe_Handler {
 	 * @since x.x.x
 	 * @return void
 	 */
-	public function ajax_cancel_subscription(): void {
+	public function ajax_cancel_subscription() {
 		// Security checks.
 		if ( ! isset( $_POST['payment_id'] ) ) {
 			wp_send_json_error( [ 'message' => esc_html__( 'Missing payment ID.', 'sureforms' ) ] );
@@ -128,7 +128,7 @@ class Admin_Stripe_Handler {
 	 * @return void
 	 * @throws \Exception If unable to process refund.
 	 */
-	public function refund_payment(): void {
+	public function refund_payment() {
 		// Verify nonce.
 		if (
 			! wp_verify_nonce(
@@ -244,7 +244,7 @@ class Admin_Stripe_Handler {
 	 * @since x.x.x
 	 * @return bool Success status.
 	 */
-	public function cancel_subscription( string $subscription_id ): bool {
+	public function cancel_subscription( string $subscription_id ) {
 		try {
 			// Retrieve the subscription using direct Stripe API.
 			$subscription_response = Stripe_Helper::stripe_api_request( 'subscriptions', 'GET', [], $subscription_id, [ 'mode' => $this->payment_mode ] );
@@ -303,7 +303,7 @@ class Admin_Stripe_Handler {
 	 * @since x.x.x
 	 * @return void
 	 */
-	public function ajax_pause_subscription(): void {
+	public function ajax_pause_subscription() {
 		// Security checks.
 		if ( ! isset( $_POST['payment_id'] ) ) {
 			wp_send_json_error( [ 'message' => esc_html__( 'Missing payment ID.', 'sureforms' ) ] );
@@ -356,7 +356,7 @@ class Admin_Stripe_Handler {
 	 * @since x.x.x
 	 * @return bool Success status.
 	 */
-	public function pause_subscription( string $subscription_id ): bool {
+	public function pause_subscription( string $subscription_id ) {
 		try {
 			// Retrieve subscription using direct Stripe API.
 			$subscription_response = Stripe_Helper::stripe_api_request( 'subscriptions', 'GET', [], $subscription_id, [ 'mode' => $this->payment_mode ] );
@@ -418,7 +418,7 @@ class Admin_Stripe_Handler {
 		string $currency,
 		?array $payment = null,
 		string $refund_notes = ''
-	): bool {
+	) {
 		if ( empty( $payment_id ) || empty( $refund_response ) ) {
 			return false;
 		}
@@ -568,7 +568,7 @@ class Admin_Stripe_Handler {
 	 * @since x.x.x
 	 * @return void
 	 */
-	public function webhook_configuration_notice(): void {
+	public function webhook_configuration_notice() {
 		// Only show on admin pages.
 		if ( ! is_admin() ) {
 			return;
@@ -627,7 +627,7 @@ class Admin_Stripe_Handler {
 	 * @return void
 	 * @throws \Exception If unable to determine the appropriate refund method.
 	 */
-	private function refund_subscription_payment( array $payment, int $refund_amount, string $refund_notes = '' ): void {
+	private function refund_subscription_payment( array $payment, int $refund_amount, string $refund_notes = '' ) {
 		try {
 			// Step 1: Validate input parameters.
 			if ( empty( $payment ) || ! is_array( $payment ) || $refund_amount <= 0 ) {
@@ -703,7 +703,7 @@ class Admin_Stripe_Handler {
 	 * @since x.x.x
 	 * @return bool True if payment is subscription-related, false otherwise.
 	 */
-	private function is_subscription_related_payment( array $payment ): bool {
+	private function is_subscription_related_payment( array $payment ) {
 		// Check if it's a main subscription record.
 		if ( ! empty( $payment['type'] ) && 'renewal' === $payment['type'] ) {
 			return true;
@@ -725,7 +725,7 @@ class Admin_Stripe_Handler {
 	 * @since x.x.x
 	 * @return array{valid: bool, message: string} Validation result with 'valid' boolean and 'message' string.
 	 */
-	private function validate_subscription_refund_amount( array $payment, int $refund_amount ): array {
+	private function validate_subscription_refund_amount( array $payment, int $refund_amount ) {
 		$currency = isset( $payment['currency'] ) && is_string( $payment['currency'] ) ? $payment['currency'] : 'USD';
 
 		$total_amount = isset( $payment['total_amount'] ) && is_string( $payment['total_amount'] ) ? floatval( $payment['total_amount'] ) : 0;
@@ -784,7 +784,7 @@ class Admin_Stripe_Handler {
 	 * @return array<string,mixed>|false Refund data or false on failure.
 	 * @throws \Exception If unable to determine the appropriate refund method.
 	 */
-	private function create_subscription_refund( array $payment, string $transaction_id, int $refund_amount, string $refund_notes = '' ): array|false {
+	private function create_subscription_refund( array $payment, string $transaction_id, int $refund_amount, string $refund_notes = '' ) {
 		// Method 1: Use charge ID directly (default for subscriptions - contains first payment charge).
 		// For subscription payments, transaction_id contains the charge ID from the initial payment.
 		if ( is_string( $transaction_id ) && strpos( $transaction_id, 'ch_' ) === 0 ) {
@@ -815,7 +815,7 @@ class Admin_Stripe_Handler {
 	 * @since x.x.x
 	 * @return array<string,mixed>|false Refund data or false on failure.
 	 */
-	private function create_refund_by_charge( array $payment, string $charge_id, int $refund_amount, string $refund_notes = '' ): array|false {
+	private function create_refund_by_charge( array $payment, string $charge_id, int $refund_amount, string $refund_notes = '' ) {
 		$metadata = [
 			'refunded_by'     => 'sureforms_dashboard',
 			'subscription_id' => $payment['subscription_id'] ?? '',
@@ -857,7 +857,7 @@ class Admin_Stripe_Handler {
 	 * @since x.x.x
 	 * @return array<string,mixed>|false Refund data or false on failure.
 	 */
-	private function create_refund_by_payment_intent( array $payment, string $payment_intent_id, int $refund_amount, string $refund_notes = '' ): array|false {
+	private function create_refund_by_payment_intent( array $payment, string $payment_intent_id, int $refund_amount, string $refund_notes = '' ) {
 		$metadata = [
 			'refunded_by'     => 'sureforms_dashboard',
 			'subscription_id' => $payment['subscription_id'] ?? '',
@@ -906,7 +906,7 @@ class Admin_Stripe_Handler {
 		int $refund_amount,
 		string $currency,
 		?string $refund_notes = null
-	): bool {
+	) {
 		if ( empty( $payment_id ) || empty( $refund_response ) ) {
 			return false;
 		}
@@ -1050,7 +1050,7 @@ class Admin_Stripe_Handler {
 	 * @since x.x.x
 	 * @return string User-friendly error message.
 	 */
-	private function get_user_friendly_refund_error( string $technical_error ): string {
+	private function get_user_friendly_refund_error( string $technical_error ) {
 		$error_patterns = [
 			'/charge.*already.*refunded/i'                 => __( 'This payment has already been fully refunded.', 'sureforms' ),
 			'/charge.*not.*found/i'                        => __( 'The payment could not be found in Stripe.', 'sureforms' ),
@@ -1083,7 +1083,7 @@ class Admin_Stripe_Handler {
 	 * @since x.x.x
 	 * @return bool True if refund already exists, false otherwise.
 	 */
-	private function check_if_refund_already_exists( array $payment, array $refund_response ): bool {
+	private function check_if_refund_already_exists( array $payment, array $refund_response ) {
 		if ( empty( $payment['payment_data'] ) || empty( $refund_response['id'] ) ) {
 			return false;
 		}
@@ -1106,7 +1106,7 @@ class Admin_Stripe_Handler {
 	 * @since x.x.x
 	 * @return string|null Charge ID or null if not found.
 	 */
-	private function get_charge_id_from_payment( array $payment ): ?string {
+	private function get_charge_id_from_payment( array $payment ) {
 		// Check if transaction_id is already a charge ID.
 		if ( ! empty( $payment['transaction_id'] ) && is_string( $payment['transaction_id'] ) && strpos( $payment['transaction_id'], 'ch_' ) === 0 ) {
 			return $payment['transaction_id'];
