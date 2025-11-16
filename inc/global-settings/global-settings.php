@@ -10,6 +10,7 @@ namespace SRFM\Inc\Global_Settings;
 
 use SRFM\Inc\Events_Scheduler;
 use SRFM\Inc\Helper;
+use SRFM\Inc\Payments\Payment_Helper;
 use SRFM\Inc\Traits\Get_Instance;
 use WP_Error;
 use WP_REST_Request;
@@ -299,29 +300,44 @@ class Global_Settings {
 	/**
 	 * Save Payments Settings
 	 *
+	 * Handles saving of both global payment settings (currency, payment_mode) and
+	 * gateway-specific settings based on the gateway parameter.
+	 *
 	 * @param array<mixed> $setting_options Setting options.
 	 * @return bool
 	 * @since x.x.x
 	 */
 	public static function srfm_save_payments_settings( $setting_options ) {
-		// Get current settings to preserve connection data.
-		$current_settings = \SRFM\Inc\Payments\Stripe\Stripe_Helper::get_all_stripe_settings();
-		$current_settings = is_array( $current_settings ) ? $current_settings : [];
+		$gateway = isset( $setting_options['gateway'] ) && is_string( $setting_options['gateway'] )
+			? sanitize_text_field( $setting_options['gateway'] )
+			: 'stripe';
 
-		// Only update the fields that can be changed via settings.
-		$currency     = isset( $setting_options['currency'] ) && ! empty( $setting_options['currency'] ) && is_string( $setting_options['currency'] ) ? sanitize_text_field( $setting_options['currency'] ) : 'USD';
-		$payment_mode = isset( $setting_options['payment_mode'] ) && ! empty( $setting_options['payment_mode'] ) && is_string( $setting_options['payment_mode'] ) ? sanitize_text_field( $setting_options['payment_mode'] ) : 'test';
+		// Handle global settings (currency, payment_mode).
+		if ( isset( $setting_options['currency'] ) && ! empty( $setting_options['currency'] ) && is_string( $setting_options['currency'] ) ) {
+			$currency = sanitize_text_field( $setting_options['currency'] );
+			Payment_Helper::update_global_setting( 'currency', $currency );
+		}
 
-		// Preserve existing connection data.
-		$updated_settings = array_merge(
-			$current_settings,
-			[
-				'currency'     => $currency,
-				'payment_mode' => $payment_mode,
-			]
-		);
+		$payment_mode = null;
+		if ( isset( $setting_options['payment_mode'] ) && ! empty( $setting_options['payment_mode'] ) && is_string( $setting_options['payment_mode'] ) ) {
+			$payment_mode = sanitize_text_field( $setting_options['payment_mode'] );
+			Payment_Helper::update_global_setting( 'payment_mode', $payment_mode );
+		}
 
-		return \SRFM\Inc\Payments\Stripe\Stripe_Helper::update_all_stripe_settings( $updated_settings );
+		// Handle gateway-specific settings.
+		if ( 'stripe' === $gateway ) {
+			$current_stripe_settings = Payment_Helper::get_gateway_settings( 'stripe' );
+
+			// Update payment_mode in stripe settings as well (if provided).
+			if ( null !== $payment_mode ) {
+				$current_stripe_settings['payment_mode'] = $payment_mode;
+			}
+
+			// Connection data (keys, account info) is managed separately via OAuth.
+			return Payment_Helper::update_gateway_settings( 'stripe', $current_stripe_settings );
+		}
+
+		return true;
 	}
 
 	/**

@@ -11,6 +11,7 @@ use SRFM\Inc\AI_Form_Builder\AI_Helper;
 use SRFM\Inc\Database\Tables\Entries;
 use SRFM\Inc\Helper;
 use SRFM\Inc\Onboarding;
+use SRFM\Inc\Payments\Payment_Helper;
 use SRFM\Inc\Payments\Stripe\Stripe_Helper;
 use SRFM\Inc\Traits\Get_Instance;
 
@@ -833,8 +834,8 @@ class Admin {
 				'stripe_connected'        => Stripe_Helper::is_stripe_connected(),
 				'stripe_mode'             => Stripe_Helper::get_stripe_mode(),
 				'stripe_connect_url'      => Stripe_Helper::get_stripe_settings_url(),
-				'currencies_data'         => Stripe_Helper::get_all_currencies_data(),
-				'zero_decimal_currencies' => Stripe_Helper::get_zero_decimal_currencies(),
+				'currencies_data'         => Payment_Helper::get_all_currencies_data(),
+				'zero_decimal_currencies' => Payment_Helper::get_zero_decimal_currencies(),
 				'webhook_url'             => Stripe_Helper::get_webhook_url(),
 				'webhook_test_connected'  => Stripe_Helper::is_webhook_configured( 'test', true ),
 				'webhook_live_connected'  => Stripe_Helper::is_webhook_configured( 'live', true ),

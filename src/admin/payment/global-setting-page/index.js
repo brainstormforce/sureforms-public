@@ -20,12 +20,13 @@ import {
 } from '../components/utils';
 import parse from 'html-react-parser';
 
-const Payments = ( {
-	loading,
-	paymentsSettings,
-	updateGlobalSettings,
-	setPaymentsSettings,
-} ) => {
+const Payments = ( props ) => {
+	const {
+		loading,
+		paymentsSettings,
+		updateGlobalSettings,
+		setPaymentsSettings,
+	} = props;
 	const [ isConnecting, setIsConnecting ] = useState( false );
 	const [ isDisconnecting, setIsDisconnecting ] = useState( false );
 	const [ isCreatingWebhook, setIsCreatingWebhook ] = useState( false );
@@ -153,31 +154,34 @@ const Payments = ( {
 				);
 			}
 
-			// Update local state
+			// Update local state with nested stripe object
 			const newSettings = {
 				...paymentsSettings,
-				stripe_connected: false,
-				stripe_account_id: '',
-				stripe_account_email: '',
-				stripe_live_publishable_key: '',
-				stripe_live_secret_key: '',
-				stripe_test_publishable_key: '',
-				stripe_test_secret_key: '',
-				webhook_test_secret: '',
-				webhook_test_url: '',
-				webhook_test_id: '',
-				webhook_live_secret: '',
-				webhook_live_url: '',
-				webhook_live_id: '',
+				stripe: {
+					stripe_connected: false,
+					stripe_account_id: '',
+					stripe_account_email: '',
+					stripe_live_publishable_key: '',
+					stripe_live_secret_key: '',
+					stripe_test_publishable_key: '',
+					stripe_test_secret_key: '',
+					webhook_test_secret: '',
+					webhook_test_url: '',
+					webhook_test_id: '',
+					webhook_live_secret: '',
+					webhook_live_url: '',
+					webhook_live_id: '',
+					payment_mode: paymentsSettings.payment_mode || 'test',
+				},
 			};
 
 			// Update global settings first to ensure parent component syncs
 			if ( updateGlobalSettings ) {
 				// Update each critical field in global settings
-				Object.keys( newSettings ).forEach( ( key ) => {
+				Object.keys( newSettings.stripe ).forEach( ( key ) => {
 					updateGlobalSettings(
-						key,
-						newSettings[ key ],
+						`stripe.${ key }`,
+						newSettings.stripe[ key ],
 						'payments-settings'
 					);
 				} );
@@ -234,29 +238,34 @@ const Payments = ( {
 					webhookDetails.webhook_secret &&
 					webhookDetails.webhook_id
 				) {
-					const updatedSettings = { ...paymentsSettings };
+					const updatedStripeSettings = {
+						...paymentsSettings.stripe,
+					};
 
 					if ( currentMode === 'live' ) {
-						updatedSettings.webhook_live_secret =
+						updatedStripeSettings.webhook_live_secret =
 							webhookDetails.webhook_secret;
-						updatedSettings.webhook_live_url =
+						updatedStripeSettings.webhook_live_url =
 							webhookDetails.webhook_url ||
 							`${ window.location.origin }/wp-json/sureforms/webhook`;
-						updatedSettings.webhook_live_id =
+						updatedStripeSettings.webhook_live_id =
 							webhookDetails.webhook_id;
 						setWebhookLiveConnected( true ); // Update live state
 					} else {
-						updatedSettings.webhook_test_secret =
+						updatedStripeSettings.webhook_test_secret =
 							webhookDetails.webhook_secret;
-						updatedSettings.webhook_test_url =
+						updatedStripeSettings.webhook_test_url =
 							webhookDetails.webhook_url ||
 							`${ window.location.origin }/wp-json/sureforms/webhook`;
-						updatedSettings.webhook_test_id =
+						updatedStripeSettings.webhook_test_id =
 							webhookDetails.webhook_id;
 						setWebhookTestConnected( true ); // Update test state
 					}
 
-					setPaymentsSettings( updatedSettings );
+					setPaymentsSettings( {
+						...paymentsSettings,
+						stripe: updatedStripeSettings,
+					} );
 				}
 			} else {
 				const errorMessage = response.message
@@ -379,9 +388,8 @@ const Payments = ( {
 							as="span"
 							className="text-text-secondary"
 						>
-							{ paymentsSettings?.account_data?.settings
-								?.dashboard?.display_name ||
-								paymentsSettings.stripe_account_id }
+							{ paymentsSettings?.stripe?.account_name ||
+								paymentsSettings?.stripe?.stripe_account_id }
 						</Text>
 					</div>
 				</div>
@@ -410,7 +418,7 @@ const Payments = ( {
 
 	// Construct Stripe webhook dashboard URL
 	const getStripeWebhookDashboardUrl = () => {
-		const accountId = paymentsSettings.stripe_account_id;
+		const accountId = paymentsSettings?.stripe?.stripe_account_id;
 		if ( ! accountId ) {
 			return '';
 		}
@@ -449,7 +457,9 @@ const Payments = ( {
 					handleWebhookCreation={ handleWebhookCreation }
 					isCreatingWebhook={ isCreatingWebhook }
 					loading={ loading }
-					stripeAccountId={ paymentsSettings.stripe_account_id }
+					stripeAccountId={
+						paymentsSettings?.stripe?.stripe_account_id
+					}
 				/>
 			) }
 		</div>
@@ -511,7 +521,7 @@ const Payments = ( {
 
 	return (
 		<div className="srfm-payment-wrapper">
-			{ paymentsSettings?.stripe_connected ? (
+			{ paymentsSettings?.stripe?.stripe_connected ? (
 				<ContentSection
 					loading={ loading }
 					title={ __( 'Payment Settings', 'sureforms' ) }

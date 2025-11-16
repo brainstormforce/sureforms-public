@@ -8,7 +8,9 @@
 
 namespace SRFM\Inc\Payments\Stripe;
 
+use SRFM\Inc\Payments\Payment_Helper;
 use SRFM\Inc\Traits\Get_Instance;
+use SRFM\Inc\Payments\Stripe\Stripe_Helper;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -93,7 +95,7 @@ class Payments_Settings {
 			[
 				[
 					'methods'             => \WP_REST_Server::READABLE,
-					'callback'            => [ $this, 'get_stripe_connect_url' ],
+					'callback'            => [ Stripe_Helper::class, 'get_stripe_connect_url' ],
 					'permission_callback' => [ $this, 'permission_check' ],
 				],
 			]
@@ -149,70 +151,19 @@ class Payments_Settings {
 	/**
 	 * Add payments settings to global settings
 	 *
-	 * @param array $settings Existing settings.
-	 * @since x.x.x
-	 * @return array
-	 */
-	/**
-	 * Add payments settings to global settings
+	 * Returns complete payment settings structure including global settings and all gateway settings.
 	 *
 	 * @param array<mixed> $settings Existing settings.
 	 * @since x.x.x
 	 * @return array<mixed>
 	 */
 	public function add_payments_settings( array $settings ): array {
-		$payments_settings            = Stripe_Helper::get_all_stripe_settings();
-		$settings['payment_settings'] = is_array( $payments_settings ) ? $payments_settings : Stripe_Helper::get_all_stripe_settings();
+		// Get all payment settings (includes global + all gateways).
+		$payment_settings = Payment_Helper::get_all_payment_settings();
 
-		// Add centralized currency data to settings for frontend access.
-		$settings['payment_settings']['currencies_data']         = Stripe_Helper::get_all_currencies_data();
-		$settings['payment_settings']['zero_decimal_currencies'] = Stripe_Helper::get_zero_decimal_currencies();
+		$settings['payment_settings'] = $payment_settings;
 
 		return $settings;
-	}
-
-	/**
-	 * Get Stripe Connect URL
-	 *
-	 * @since x.x.x
-	 * @return \WP_REST_Response
-	 */
-	public function get_stripe_connect_url() {
-		// Stripe client ID from checkout-plugins-stripe-woo.
-		$client_id = 'ca_KOXfLe7jv1m4L0iC4KNEMc5fT8AXWWuL';
-
-		// Use the same redirect URI pattern as checkout-plugins-stripe-woo.
-		$redirect_url        = admin_url( 'admin.php?page=sureforms_form_settings&tab=payments-settings' );
-		$nonce               = wp_create_nonce( 'stripe-connect' );
-		$redirect_with_nonce = add_query_arg( 'cpsw_connect_nonce', $nonce, $redirect_url );
-
-		// Store our own callback data.
-		set_transient( 'srfm_stripe_connect_nonce_' . get_current_user_id(), $nonce, HOUR_IN_SECONDS );
-
-		// Create state parameter exactly like checkout-plugins-stripe-woo.
-		$state_param = wp_json_encode(
-			[
-				'redirect' => $redirect_with_nonce,
-			]
-		);
-		$state       = '';
-		if ( is_string( $state_param ) ) {
-			$state = base64_encode( $state_param ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
-		}
-
-		$connect_url = add_query_arg(
-			[
-				'response_type'  => 'code',
-				'client_id'      => $client_id,
-				'stripe_landing' => 'login',
-				'always_prompt'  => 'true',
-				'scope'          => 'read_write',
-				'state'          => $state,
-			],
-			'https://connect.stripe.com/oauth/authorize'
-		);
-
-		return rest_ensure_response( [ 'url' => $connect_url ] );
 	}
 
 	/**
@@ -313,7 +264,7 @@ class Payments_Settings {
 		$settings['webhook_live_secret']         = '';
 		$settings['webhook_live_url']            = '';
 		$settings['webhook_live_id']             = '';
-		$settings['account_data']                = [];
+		$settings['account_name']                = '';
 
 		$updated = Stripe_Helper::update_all_stripe_settings( $settings );
 
@@ -904,9 +855,9 @@ class Payments_Settings {
 	 * Get Stripe account information using stored account ID
 	 *
 	 * @since x.x.x
-	 * @return array<mixed> Array containing account information or error details
+	 * @return string containing account name or empty string if not found
 	 */
-	public function get_account_info(): array {
+	public function get_account_name() {
 		$settings = Stripe_Helper::get_all_stripe_settings();
 		if ( ! is_array( $settings ) ) {
 			$settings = Stripe_Helper::get_all_stripe_settings();
@@ -914,35 +865,24 @@ class Payments_Settings {
 
 		// Check if Stripe is connected.
 		if ( empty( $settings['stripe_connected'] ) ) {
-			return [
-				'success' => false,
-				'error'   => [
-					'message' => __( 'Stripe is not connected.', 'sureforms' ),
-					'code'    => 'stripe_not_connected',
-				],
-			];
+			return '';
 		}
 
 		// Get account ID.
 		$account_id = $settings['stripe_account_id'] ?? '';
 		if ( empty( $account_id ) || ! is_string( $account_id ) ) {
-			return [
-				'success' => false,
-				'error'   => [
-					'message' => __( 'Stripe account ID not found.', 'sureforms' ),
-					'code'    => 'missing_account_id',
-				],
-			];
+			return '';
 		}
 
 		// Call Stripe API to get account information.
 		$api_response = Stripe_Helper::stripe_api_request( 'accounts', 'GET', [], (string) $account_id );
 
-		if ( ! isset( $api_response['success'] ) || ! $api_response['success'] ) {
-			return $api_response; // Return the error from API.
-		}
+		$get_data         = isset( $api_response['data'] ) && is_array( $api_response['data'] ) ? $api_response['data'] : [];
+		$get_settings     = isset( $get_data['settings'] ) && is_array( $get_data['settings'] ) ? $get_data['settings'] : [];
+		$get_dashboard    = isset( $get_settings['dashboard'] ) && is_array( $get_settings['dashboard'] ) ? $get_settings['dashboard'] : [];
+		$get_display_name = isset( $get_dashboard['display_name'] ) && is_string( $get_dashboard['display_name'] ) ? $get_dashboard['display_name'] : '';
 
-		return $api_response;
+		return $get_display_name;
 	}
 
 	/**
@@ -1010,15 +950,10 @@ class Payments_Settings {
 		// Save settings.
 		Stripe_Helper::update_all_stripe_settings( $settings );
 
-		$account_info = $this->get_account_info();
+		$account_name = $this->get_account_name();
 
-		if (
-			isset( $account_info['success'], $account_info['data'] )
-			&& $account_info['success']
-			&& ! empty( $account_info['data'] )
-			&& is_array( $account_info['data'] )
-		) {
-			$settings['account_data'] = $account_info['data'];
+		if ( ! empty( $account_name ) && is_string( $account_name ) ) {
+			$settings['account_name'] = $account_name;
 			Stripe_Helper::update_all_stripe_settings( $settings );
 		}
 

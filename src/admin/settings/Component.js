@@ -51,13 +51,7 @@ const Component = ( { path } ) => {
 	const [ preDynamicBlockOptions, setPreDynamicBlockOptions ] = useState(
 		{}
 	);
-	const [ paymentsSettings, setPaymentsSettings ] = useState( {
-		stripe_connected: false,
-		stripe_account_id: '',
-		stripe_account_email: '',
-		currency: 'USD',
-		payment_mode: 'test',
-	} );
+	const [ paymentsSettings, setPaymentsSettings ] = useState( {} );
 
 	// Options to fetch from API.
 	const optionsToFetch = [

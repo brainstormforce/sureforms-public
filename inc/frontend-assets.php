@@ -10,6 +10,7 @@
 namespace SRFM\Inc;
 
 use SRFM\Inc\Traits\Get_Instance;
+use SRFM\Inc\Payments\Payment_Helper;
 use SRFM\Inc\Payments\Stripe\Stripe_Helper;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -301,9 +302,9 @@ class Frontend_Assets {
 				SRFM_SLUG . '-stripe-payment',
 				'srfmStripe',
 				[
-					'zeroDecimalCurrencies' => Stripe_Helper::get_zero_decimal_currencies(),
-					'currenciesData'        => Stripe_Helper::get_all_currencies_data(),
-					'strings'               => Stripe_Helper::get_payment_strings(),
+					'zeroDecimalCurrencies' => Payment_Helper::get_zero_decimal_currencies(),
+					'currenciesData'        => Payment_Helper::get_all_currencies_data(),
+					'strings'               => Payment_Helper::get_payment_strings(),
 				]
 			);
 		}

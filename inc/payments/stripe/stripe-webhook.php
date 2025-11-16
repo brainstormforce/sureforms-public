@@ -10,6 +10,7 @@ namespace SRFM\Inc\Payments\Stripe;
 
 use SRFM\Inc\Database\Tables\Payments;
 use SRFM\Inc\Helper;
+use SRFM\Inc\Payments\Payment_Helper;
 use SRFM\Inc\Traits\Get_Instance;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -110,8 +111,8 @@ class Stripe_Webhook {
 			$settings = [];
 		}
 
-		// Determine mode: use parameter if provided, otherwise fall back to settings (backward compatibility).
-		$validate_mode = ! empty( $mode ) && in_array( $mode, [ 'test', 'live' ], true ) ? $mode : $settings['payment_mode'];
+		// Determine mode: use parameter if provided, otherwise fall back to global payment mode.
+		$validate_mode = ! empty( $mode ) && in_array( $mode, [ 'test', 'live' ], true ) ? $mode : Payment_Helper::get_payment_mode();
 		$this->mode    = ! empty( $validate_mode ) && is_string( $validate_mode ) ? $validate_mode : 'test';
 
 		// Get the appropriate webhook secret based on payment mode.
