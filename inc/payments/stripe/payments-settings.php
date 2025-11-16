@@ -876,9 +876,9 @@ class Payments_Settings {
 		// Call Stripe API to get account information.
 		$api_response = Stripe_Helper::stripe_api_request( 'accounts', 'GET', [], (string) $account_id );
 
-		$get_data         = isset( $api_response['data'] ) && is_array( $api_response['data'] ) ? $api_response['data'] : [];
-		$get_settings     = isset( $get_data['settings'] ) && is_array( $get_data['settings'] ) ? $get_data['settings'] : [];
-		$get_dashboard    = isset( $get_settings['dashboard'] ) && is_array( $get_settings['dashboard'] ) ? $get_settings['dashboard'] : [];
+		$get_data      = isset( $api_response['data'] ) && is_array( $api_response['data'] ) ? $api_response['data'] : [];
+		$get_settings  = isset( $get_data['settings'] ) && is_array( $get_data['settings'] ) ? $get_data['settings'] : [];
+		$get_dashboard = isset( $get_settings['dashboard'] ) && is_array( $get_settings['dashboard'] ) ? $get_settings['dashboard'] : [];
 		return isset( $get_dashboard['display_name'] ) && is_string( $get_dashboard['display_name'] ) ? $get_dashboard['display_name'] : '';
 	}
 
