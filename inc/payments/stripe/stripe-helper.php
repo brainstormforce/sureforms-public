@@ -297,7 +297,7 @@ class Stripe_Helper {
 	 * @return string The middleware base URL.
 	 */
 	public static function middle_ware_base_url() {
-		return 'https://payments.sureforms.com/';
+		return SRFM_MIDDLEWARE_BASE_URL . 'payments/stripe/';
 	}
 
 	/**

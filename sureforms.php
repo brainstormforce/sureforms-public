@@ -33,6 +33,7 @@ define( 'SRFM_ENTRIES', 'sureforms_entries' );
 define( 'SRFM_PAYMENTS', 'sureforms_payments' );
 define( 'SRFM_WEBSITE', 'https://sureforms.com/' );
 define( 'SRFM_AI_MIDDLEWARE', 'https://credits.startertemplates.com/sureforms/' );
+define( 'SRFM_MIDDLEWARE_BASE_URL', 'https://api.sureforms.com/' );
 define( 'SRFM_BILLING_PORTAL', 'https://billing.sureforms.com/' );
 define( 'SRFM_PRO_RECOMMENDED_VER', '2.0.0' );
 
