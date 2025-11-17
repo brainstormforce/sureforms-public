@@ -1,7 +1,7 @@
 /**
  * Empty State component for entries listing page.
  *
- * @since x.x.x
+ * @since 2.0.0
  */
 
 import { __ } from '@wordpress/i18n';

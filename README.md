@@ -4,7 +4,7 @@
 **Requires at least:** 6.4  
 **Tested up to:** 6.8.3  
 **Requires PHP:** 7.4  
-**Stable tag:** 1.13.2  
+**Stable tag:** 2.0.0  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -365,6 +365,10 @@ easy.
 You can report the issue through our [Bug Bounty Program](https://brainstormforce.com/bug-bounty-program/). We collaborate with Patchstack to provide opportunities for researchers to report vulnerabilities. The Patchstack team will help validate, triage, and handle any reported security issues.
 
 ## Changelog ##
+### 2.0.0 - 18th November 2025 ###
+* New: Introduced Payments.
+* Improvement: Revamped the SureForms UI.
+* Fix: Fixed missing confirm email validation on form submission.
 ### 1.13.2 - 7th November 2025 ###
 * Improvement: Added a fallback message for email failures on the single entries page when the SMTP plugin is missing.
 * Improvement: Added support for "Name <email\>" format in CC, BCC, and Reply-To fields.
@@ -376,9 +380,6 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 * Improvement: Preserved trailing zeros in number field after the decimal.
 * Fix: Fixed compatibility with Presto Player.
 * Fix: Resolved an issue where the phone field country list wasn’t visible in Spectra modal on mobile devices.
-### 1.13.0 - 14th October 2025 ###
-* New: Added support for Native Integrations in Pro Plan.
-* Fix: Prevented multiple entries from being recorded when the submit button is clicked repeatedly.
 
 The full changelog is available [here](https://sureforms.com/whats-new/).
 

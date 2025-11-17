@@ -3,7 +3,7 @@
  * PHP render form Payment Block.
  *
  * @package SureForms.
- * @since x.x.x
+ * @since 2.0.0
  */
 
 namespace SRFM\Inc\Blocks\Payment;
@@ -18,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Payment Block.
  *
- * @since x.x.x
+ * @since 2.0.0
  */
 class Block extends Base {
 	/**
@@ -27,7 +27,7 @@ class Block extends Base {
 	 * @param array<mixed> $attributes Block attributes.
 	 *
 	 * @return string|bool
-	 * @since x.x.x
+	 * @since 2.0.0
 	 */
 	public function render( $attributes ) {
 		if ( ! empty( $attributes ) ) {

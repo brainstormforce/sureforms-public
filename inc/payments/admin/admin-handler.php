@@ -18,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Admin Payment Operations handler class.
  *
- * @since x.x.x
+ * @since 2.0.0
  */
 class Admin_Handler {
 	use Get_Instance;
@@ -26,7 +26,7 @@ class Admin_Handler {
 	/**
 	 * Class constructor.
 	 *
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return void
 	 */
 	public function __construct() {
@@ -44,7 +44,7 @@ class Admin_Handler {
 	/**
 	 * Enqueue Admin Scripts for Payment Operations.
 	 *
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return void
 	 */
 	public function enqueue_scripts() {
@@ -90,7 +90,7 @@ class Admin_Handler {
 	/**
 	 * AJAX handler for fetching payments data.
 	 *
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return void
 	 */
 	public function fetch_payments() {
@@ -174,7 +174,7 @@ class Admin_Handler {
 	/**
 	 * AJAX handler for fetching single payment data.
 	 *
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return void
 	 */
 	public function fetch_single_payment() {
@@ -215,7 +215,7 @@ class Admin_Handler {
 	/**
 	 * AJAX handler for fetching subscription data with billing history.
 	 *
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return void
 	 */
 	public function fetch_subscription() {
@@ -292,7 +292,7 @@ class Admin_Handler {
 	/**
 	 * AJAX handler for fetching forms list.
 	 *
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return void
 	 */
 	public function fetch_forms_list() {
@@ -336,7 +336,7 @@ class Admin_Handler {
 	/**
 	 * AJAX handler for adding a note to payment.
 	 *
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return void
 	 */
 	public function ajax_add_note() {
@@ -380,7 +380,7 @@ class Admin_Handler {
 	/**
 	 * AJAX handler for deleting a note from payment.
 	 *
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return void
 	 */
 	public function ajax_delete_note() {
@@ -424,7 +424,7 @@ class Admin_Handler {
 	/**
 	 * AJAX handler for deleting a log entry from payment.
 	 *
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return void
 	 */
 	public function ajax_delete_log() {
@@ -468,7 +468,7 @@ class Admin_Handler {
 	/**
 	 * AJAX handler for bulk deleting payments.
 	 *
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return void
 	 */
 	public function ajax_bulk_delete_payments() {
@@ -617,7 +617,7 @@ class Admin_Handler {
 	 * @param int    $offset    Number of records to skip.
 	 * @param int    $form_id   Form ID filter.
 	 * @param string $payment_mode Payment mode filter (test/live).
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return array Filtered payments data.
 	 */
 	private function get_payments_data( $search = '', $status = '', $date_from = '', $date_to = '', $limit = 20, $offset = 0, $form_id = 0, $payment_mode = '' ) {
@@ -732,7 +732,7 @@ class Admin_Handler {
 	 * Get payment IDs that match search criteria.
 	 *
 	 * @param string $search_term Search term with wildcards.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return array Array of payment IDs.
 	 */
 	private function get_payment_ids_by_search( $search_term ) {
@@ -772,7 +772,7 @@ class Admin_Handler {
 	 * Map frontend status to database status.
 	 *
 	 * @param string $frontend_status Status from frontend.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return string|false Database status or false if invalid.
 	 */
 	private function map_frontend_status_to_db( $frontend_status ) {
@@ -792,7 +792,7 @@ class Admin_Handler {
 	 * Map database status to frontend status.
 	 *
 	 * @param string $db_status Status from database.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return string Frontend status.
 	 */
 	private function map_db_status_to_frontend( $db_status ) {
@@ -815,7 +815,7 @@ class Admin_Handler {
 	 * Transform database payment record to frontend format.
 	 *
 	 * @param array<mixed> $payment Database payment record.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return array Transformed payment data.
 	 */
 	private function transform_payment_for_frontend( $payment ) {
@@ -898,7 +898,7 @@ class Admin_Handler {
 	 * @param string $date_to   End date filter.
 	 * @param int    $form_id   Form ID filter.
 	 * @param string $payment_mode Payment mode filter (test/live).
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return int Total count.
 	 */
 	private function get_payments_count( $search = '', $status = '', $date_from = '', $date_to = '', $form_id = 0, $payment_mode = '' ) {
@@ -992,7 +992,7 @@ class Admin_Handler {
 	 * Get subscription billing interval from payment data.
 	 *
 	 * @param array<mixed> $subscription_record Main subscription payment record.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return string Billing interval.
 	 */
 	private function get_subscription_interval( $subscription_record ) {
@@ -1024,7 +1024,7 @@ class Admin_Handler {
 	 * Get next payment date from subscription data.
 	 *
 	 * @param array<mixed> $subscription_record Main subscription payment record.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return string|null Next payment date or null.
 	 */
 	private function get_next_payment_date( $subscription_record ) {
@@ -1056,7 +1056,7 @@ class Admin_Handler {
 	 *
 	 * @param array<mixed> $array Array to search.
 	 * @param string       $path Dot-separated path.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return mixed Value or null if not found.
 	 */
 	private function get_nested_array_value( $array, $path ) {
@@ -1077,7 +1077,7 @@ class Admin_Handler {
 	 * Validate date format (YYYY-MM-DD).
 	 *
 	 * @param string $date Date string to validate.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return bool True if valid, false otherwise.
 	 */
 	private function validate_date( $date ) {
@@ -1090,7 +1090,7 @@ class Admin_Handler {
 	 *
 	 * @param int    $payment_id Payment ID.
 	 * @param string $note_text  Note text to add.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return array|false Updated notes array or false on failure.
 	 */
 	private function add_payment_note( $payment_id, $note_text ) {
@@ -1137,7 +1137,7 @@ class Admin_Handler {
 	 *
 	 * @param int $payment_id Payment ID.
 	 * @param int $note_index Index of note to delete.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return array|false Updated notes array or false on failure.
 	 */
 	private function delete_payment_note( $payment_id, $note_index ) {
@@ -1185,7 +1185,7 @@ class Admin_Handler {
 	 *
 	 * @param int $payment_id Payment ID.
 	 * @param int $log_index  Index of log entry to delete.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return array|false Updated formatted logs array or false on failure.
 	 */
 	private function delete_payment_log( $payment_id, $log_index ) {
@@ -1242,7 +1242,7 @@ class Admin_Handler {
 	 * Get formatted logs from log data.
 	 *
 	 * @param string $log_data JSON encoded log data.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return array Formatted logs array.
 	 */
 	private function get_formatted_logs( $log_data ) {
@@ -1287,7 +1287,7 @@ class Admin_Handler {
 	 * Get formatted notes from notes data.
 	 *
 	 * @param array<mixed> $notes_data Notes array from extra data.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return array Formatted notes array.
 	 */
 	private function get_formatted_notes( $notes_data ) {
@@ -1328,7 +1328,7 @@ class Admin_Handler {
 	 * Get user detail by ID.
 	 *
 	 * @param mixed $user_id User ID.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return string User name or 'Guest User' if user not found.
 	 */
 	private function get_user_detail_by_id( $user_id ) {

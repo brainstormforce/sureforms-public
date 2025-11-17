@@ -305,7 +305,7 @@ class Global_Settings {
 	 *
 	 * @param array<mixed> $setting_options Setting options.
 	 * @return bool
-	 * @since x.x.x
+	 * @since 2.0.0
 	 */
 	public static function srfm_save_payments_settings( $setting_options ) {
 		$gateway = isset( $setting_options['gateway'] ) && is_string( $setting_options['gateway'] )

@@ -1,7 +1,7 @@
 /**
  * SureForms Stripe Payment Integration
  *
- * @since x.x.x
+ * @since 2.0.0
  */
 /* global Stripe, srfm_ajax */
 

@@ -3,7 +3,7 @@
  * SureForms Database Payment Table Class.
  *
  * @link       https://sureforms.com
- * @since      x.x.x
+ * @since      2.0.0
  * @package    SureForms
  * @author     SureForms <https://sureforms.com/>
  */
@@ -20,7 +20,7 @@ defined( 'ABSPATH' ) || exit;
 /**
  * SureForms Database Payment Table Class.
  *
- * @since x.x.x
+ * @since 2.0.0
  */
 class Payments extends Base {
 	use Get_Instance;
@@ -43,7 +43,7 @@ class Payments extends Base {
 	 * Valid payment statuses (Stripe-specific).
 	 *
 	 * @var array<string>
-	 * @since x.x.x
+	 * @since 2.0.0
 	 */
 	private static $valid_statuses = [
 		'pending',
@@ -61,7 +61,7 @@ class Payments extends Base {
 	 * Valid currencies (ISO 4217).
 	 *
 	 * @var array<string>
-	 * @since x.x.x
+	 * @since 2.0.0
 	 */
 	private static $valid_currencies = [
 		'USD',
@@ -90,7 +90,7 @@ class Payments extends Base {
 	 * Valid payment gateways.
 	 *
 	 * @var array<string>
-	 * @since x.x.x
+	 * @since 2.0.0
 	 */
 	private static $valid_gateways = [
 		'stripe',
@@ -100,7 +100,7 @@ class Payments extends Base {
 	 * Valid payment modes.
 	 *
 	 * @var array<string>
-	 * @since x.x.x
+	 * @since 2.0.0
 	 */
 	private static $valid_modes = [
 		'test',
@@ -111,7 +111,7 @@ class Payments extends Base {
 	 * Valid subscription statuses (Stripe-specific).
 	 *
 	 * @var array<string>
-	 * @since x.x.x
+	 * @since 2.0.0
 	 */
 	private static $valid_subscription_statuses = [
 		'active',
@@ -283,7 +283,7 @@ class Payments extends Base {
 	 * Add a new payment record.
 	 *
 	 * @param array<string,mixed> $data Payment data to insert.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return int|false The payment ID on success, false on error.
 	 */
 	public static function add( $data ) {
@@ -298,7 +298,7 @@ class Payments extends Base {
 	 *
 	 * @param int                 $payment_id Payment ID to update.
 	 * @param array<string,mixed> $data       Data to update.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return int|false Number of rows updated or false on error.
 	 */
 	public static function update( $payment_id, $data = [] ) {
@@ -313,7 +313,7 @@ class Payments extends Base {
 	 * Get extra data for a payment.
 	 *
 	 * @param int $payment_id Payment ID.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return array<string,mixed> Extra data array.
 	 */
 	public static function get_extra_data( $payment_id ) {
@@ -335,7 +335,7 @@ class Payments extends Base {
 	 * @param int    $payment_id Payment ID.
 	 * @param string $key        Key to update.
 	 * @param mixed  $value      Value to set.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return int|false Number of rows updated or false on error.
 	 */
 	public static function update_extra_key( $payment_id, $key, $value ) {
@@ -358,7 +358,7 @@ class Payments extends Base {
 	 *
 	 * @param int                 $payment_id Payment ID.
 	 * @param array<string,mixed> $data       Key-value pairs to add.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return int|false Number of rows updated or false on error.
 	 */
 	public static function add_extra_data( $payment_id, $data ) {
@@ -383,7 +383,7 @@ class Payments extends Base {
 	 *
 	 * @param int    $payment_id Payment ID.
 	 * @param string $key        Key to remove.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return int|false Number of rows updated or false on error.
 	 */
 	public static function remove_extra_key( $payment_id, $key ) {
@@ -412,7 +412,7 @@ class Payments extends Base {
 	 * @param int    $payment_id Payment ID.
 	 * @param string $key        Key to get.
 	 * @param mixed  $default    Default value if key not found.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return mixed Value from extra data or default.
 	 */
 	public static function get_extra_value( $payment_id, $key, $default = null ) {
@@ -430,7 +430,7 @@ class Payments extends Base {
 	 * Get a single payment by ID.
 	 *
 	 * @param int $payment_id Payment ID.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return array|null Payment data or null if not found.
 	 */
 	public static function get( $payment_id ) {
@@ -447,7 +447,7 @@ class Payments extends Base {
 	 *
 	 * @param array<mixed> $args Query arguments.
 	 * @param bool         $set_limit Whether to apply limit to query.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return array Array of payments.
 	 */
 	public static function get_all( $args = [], $set_limit = true ) {
@@ -484,7 +484,7 @@ class Payments extends Base {
 	 * @param string       $status Status to filter by ('all', 'pending', 'succeeded', etc.).
 	 * @param int          $form_id Optional form ID to filter by.
 	 * @param array<mixed> $where_conditions Optional additional where conditions.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return int Total count.
 	 */
 	public static function get_total_payments_by_status( $status = 'all', $form_id = 0, $where_conditions = [] ) {
@@ -525,7 +525,7 @@ class Payments extends Base {
 	 * Get payments count after specific timestamp.
 	 *
 	 * @param int $timestamp Unix timestamp.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return int Count of payments.
 	 */
 	public static function get_payments_count_after( $timestamp ) {
@@ -547,7 +547,7 @@ class Payments extends Base {
 	 * Get available months for payments.
 	 *
 	 * @param array<mixed> $where_conditions Optional where conditions.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return array Array of month values and labels.
 	 */
 	public static function get_available_months( $where_conditions = [] ) {
@@ -574,7 +574,7 @@ class Payments extends Base {
 	 * Get all payment IDs for a specific form.
 	 *
 	 * @param int $form_id Form ID.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return array Array of payment IDs.
 	 */
 	public static function get_all_payment_ids_for_form( $form_id ) {
@@ -601,7 +601,7 @@ class Payments extends Base {
 	 * Get form IDs by payment IDs.
 	 *
 	 * @param array<mixed> $payment_ids Array of payment IDs.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return array Array of unique form IDs.
 	 */
 	public static function get_form_ids_by_payments( $payment_ids ) {
@@ -629,7 +629,7 @@ class Payments extends Base {
 	/**
 	 * Get all distinct form IDs that have payments.
 	 *
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return array Array of unique form IDs that have at least one payment.
 	 */
 	public static function get_all_forms_with_payments() {
@@ -651,7 +651,7 @@ class Payments extends Base {
 	 * Delete a payment.
 	 *
 	 * @param int $payment_id Payment ID.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return int|false Number of rows deleted or false on error.
 	 */
 	public static function delete( $payment_id ) {
@@ -666,7 +666,7 @@ class Payments extends Base {
 	 * Get payments by entry ID.
 	 *
 	 * @param int $entry_id Entry ID.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return array Array of payments.
 	 */
 	public static function get_by_entry_id( $entry_id ) {
@@ -693,7 +693,7 @@ class Payments extends Base {
 	 * Get payments by transaction ID.
 	 *
 	 * @param string $transaction_id Transaction ID.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return array|null Payment data or null if not found.
 	 */
 	public static function get_by_transaction_id( $transaction_id ) {
@@ -723,7 +723,7 @@ class Payments extends Base {
 	 * Validate payment status.
 	 *
 	 * @param string $status Status to validate.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return bool True if valid, false otherwise.
 	 */
 	public static function is_valid_status( $status ) {
@@ -734,7 +734,7 @@ class Payments extends Base {
 	 * Validate currency.
 	 *
 	 * @param string $currency Currency to validate.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return bool True if valid, false otherwise.
 	 */
 	public static function is_valid_currency( $currency ) {
@@ -745,7 +745,7 @@ class Payments extends Base {
 	 * Validate gateway.
 	 *
 	 * @param string $gateway Gateway to validate.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return bool True if valid, false otherwise.
 	 */
 	public static function is_valid_gateway( $gateway ) {
@@ -756,7 +756,7 @@ class Payments extends Base {
 	 * Validate mode.
 	 *
 	 * @param string $mode Mode to validate.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return bool True if valid, false otherwise.
 	 */
 	public static function is_valid_mode( $mode ) {
@@ -767,7 +767,7 @@ class Payments extends Base {
 	 * Validate subscription status.
 	 *
 	 * @param string $status Subscription status to validate.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return bool True if valid, false otherwise.
 	 */
 	public static function is_valid_subscription_status( $status ) {
@@ -777,7 +777,7 @@ class Payments extends Base {
 	/**
 	 * Get all valid subscription statuses.
 	 *
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return array<string> Array of valid subscription statuses.
 	 */
 	public static function get_valid_subscription_statuses() {
@@ -788,7 +788,7 @@ class Payments extends Base {
 	 * Get payment data for a payment.
 	 *
 	 * @param int $payment_id Payment ID.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return array<string,mixed> Payment data array.
 	 */
 	public static function get_payment_data( $payment_id ) {
@@ -809,7 +809,7 @@ class Payments extends Base {
 	 *
 	 * @param int          $payment_id Payment ID.
 	 * @param array<mixed> $refund_data Refund data to add.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return int|false Number of rows updated or false on error.
 	 */
 	public static function add_refund_to_payment_data( $payment_id, $refund_data ) {
@@ -844,7 +844,7 @@ class Payments extends Base {
 	 *
 	 * @param int   $payment_id Payment ID.
 	 * @param float $refund_amount Refund amount to add (in dollars).
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return int|false Number of rows updated or false on error.
 	 */
 	public static function add_refund_amount( $payment_id, $refund_amount ) {
@@ -870,7 +870,7 @@ class Payments extends Base {
 	 * Get refunded amount for a payment.
 	 *
 	 * @param int $payment_id Payment ID.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return float Refunded amount in dollars.
 	 */
 	public static function get_refunded_amount( $payment_id ) {
@@ -890,7 +890,7 @@ class Payments extends Base {
 	 * Get refundable amount for a payment.
 	 *
 	 * @param int $payment_id Payment ID.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return float Remaining refundable amount in dollars.
 	 */
 	public static function get_refundable_amount( $payment_id ) {
@@ -913,7 +913,7 @@ class Payments extends Base {
 	 * Check if payment is fully refunded.
 	 *
 	 * @param int $payment_id Payment ID.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return bool True if fully refunded, false otherwise.
 	 */
 	public static function is_fully_refunded( $payment_id ) {
@@ -936,7 +936,7 @@ class Payments extends Base {
 	 * Check if payment is partially refunded.
 	 *
 	 * @param int $payment_id Payment ID.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return bool True if partially refunded, false otherwise.
 	 */
 	public static function is_partially_refunded( $payment_id ) {
@@ -952,7 +952,7 @@ class Payments extends Base {
 	 * Get all individual payment transactions related to a subscription.
 	 *
 	 * @param string $subscription_id Stripe subscription ID.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return array Array of payment records linked to the subscription.
 	 */
 	public static function get_subscription_related_payments( $subscription_id ) {
@@ -986,7 +986,7 @@ class Payments extends Base {
 	 * Get the main subscription record by subscription ID.
 	 *
 	 * @param string $subscription_id Stripe subscription ID.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return array|null Subscription payment record or null if not found.
 	 */
 	public static function get_main_subscription_record( $subscription_id ) {
@@ -1024,7 +1024,7 @@ class Payments extends Base {
 	 *
 	 * @param array<mixed> $args Query arguments.
 	 * @param bool         $set_limit Whether to apply limit to query.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return array Array of payments for main table display.
 	 */
 	public static function get_all_main_payments( $args = [], $set_limit = true ) {
@@ -1118,7 +1118,7 @@ class Payments extends Base {
 	 * @param string       $status Status to filter by ('all', 'pending', 'succeeded', etc.).
 	 * @param int          $form_id Optional form ID to filter by.
 	 * @param array<mixed> $where_conditions Optional additional where conditions.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return int Total count.
 	 */
 	public static function get_total_main_payments_by_status( $status = 'all', $form_id = 0, $where_conditions = [] ) {
@@ -1189,7 +1189,7 @@ class Payments extends Base {
 	 * Check if payment is a subscription record.
 	 *
 	 * @param int $payment_id Payment ID.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return bool True if it's a subscription record, false otherwise.
 	 */
 	public static function is_subscription_record( $payment_id ) {
@@ -1210,7 +1210,7 @@ class Payments extends Base {
 	 * These are payment records that have a subscription_id (part of a subscription billing cycle).
 	 *
 	 * @param int $payment_id Payment ID.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return bool True if it's a subscription-related payment transaction, false otherwise.
 	 */
 	public static function is_subscription_payment_transaction( $payment_id ) {

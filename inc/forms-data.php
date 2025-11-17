@@ -117,7 +117,7 @@ class Forms_Data {
 	 *
 	 * @param \WP_REST_Request $request Full details about the request.
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 */
 	public function get_forms_list( $request ) {
 		$nonce = sanitize_text_field( Helper::get_string_value( $request->get_header( 'X-WP-Nonce' ) ) );
@@ -207,7 +207,7 @@ class Forms_Data {
 	 *
 	 * @param \WP_Post $post Post object.
 	 * @return array<mixed> Prepared form data for listing.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 */
 	private function prepare_form_for_listing( $post ) {
 		$form_id = $post->ID;

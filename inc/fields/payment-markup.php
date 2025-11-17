@@ -3,7 +3,7 @@
  * SureForms Payment Markup Class file.
  *
  * @package sureforms.
- * @since x.x.x
+ * @since 2.0.0
  */
 
 namespace SRFM\Inc\Fields;
@@ -17,14 +17,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * SureForms Payment Markup Class.
  *
- * @since x.x.x
+ * @since 2.0.0
  */
 class Payment_Markup extends Base {
 	/**
 	 * Payment amount.
 	 *
 	 * @var float
-	 * @since x.x.x
+	 * @since 2.0.0
 	 */
 	protected $amount;
 
@@ -32,7 +32,7 @@ class Payment_Markup extends Base {
 	 * Payment currency.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 2.0.0
 	 */
 	protected $currency;
 
@@ -40,7 +40,7 @@ class Payment_Markup extends Base {
 	 * Stripe publishable key.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 2.0.0
 	 */
 	protected $stripe_publishable_key;
 
@@ -48,7 +48,7 @@ class Payment_Markup extends Base {
 	 * Whether Stripe is connected.
 	 *
 	 * @var bool
-	 * @since x.x.x
+	 * @since 2.0.0
 	 */
 	protected $stripe_connected;
 
@@ -56,7 +56,7 @@ class Payment_Markup extends Base {
 	 * Payment mode (live or test).
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 2.0.0
 	 */
 	protected $payment_mode;
 
@@ -64,7 +64,7 @@ class Payment_Markup extends Base {
 	 * Payment type.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 2.0.0
 	 */
 	protected $payment_type;
 
@@ -72,7 +72,7 @@ class Payment_Markup extends Base {
 	 * Subscription plans.
 	 *
 	 * @var array
-	 * @since x.x.x
+	 * @since 2.0.0
 	 */
 	protected $subscription_plan;
 
@@ -80,7 +80,7 @@ class Payment_Markup extends Base {
 	 * Amount type.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 2.0.0
 	 */
 	protected $amount_type;
 
@@ -88,7 +88,7 @@ class Payment_Markup extends Base {
 	 * Fixed amount.
 	 *
 	 * @var float
-	 * @since x.x.x
+	 * @since 2.0.0
 	 */
 	protected $fixed_amount;
 
@@ -96,7 +96,7 @@ class Payment_Markup extends Base {
 	 * Minimum amount.
 	 *
 	 * @var float
-	 * @since x.x.x
+	 * @since 2.0.0
 	 */
 	protected $minimum_amount;
 
@@ -104,7 +104,7 @@ class Payment_Markup extends Base {
 	 * Customer name field slug.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 2.0.0
 	 */
 	protected $customer_name_field;
 
@@ -112,7 +112,7 @@ class Payment_Markup extends Base {
 	 * Customer email field slug.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 2.0.0
 	 */
 	protected $customer_email_field;
 
@@ -120,7 +120,7 @@ class Payment_Markup extends Base {
 	 * Variable amount field slug.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 2.0.0
 	 */
 	protected $variable_amount_field;
 
@@ -128,7 +128,7 @@ class Payment_Markup extends Base {
 	 * Constructor for the Payment Markup class.
 	 *
 	 * @param array<mixed> $attributes Block attributes.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 */
 	public function __construct( $attributes ) {
 		// Get payment settings from Stripe Helper.
@@ -184,7 +184,7 @@ class Payment_Markup extends Base {
 	 * Render the payment field markup.
 	 *
 	 * @return string|bool
-	 * @since x.x.x
+	 * @since 2.0.0
 	 */
 	public function markup() {
 		// Check if Stripe is connected.
@@ -362,7 +362,7 @@ class Payment_Markup extends Base {
 	 * Validate payment field requirements.
 	 *
 	 * @return bool True if validation passes, false otherwise.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 */
 	private function validate_payment_requirements() {
 		// Check customer email field requirement (highest priority).
@@ -390,7 +390,7 @@ class Payment_Markup extends Base {
 	 * @param float  $amount   Amount to format.
 	 * @param string $currency Currency code.
 	 * @return string
-	 * @since x.x.x
+	 * @since 2.0.0
 	 */
 	private function format_currency( $amount, $currency ) {
 		$symbol = Stripe_Helper::get_currency_symbol( $currency );
@@ -409,7 +409,7 @@ class Payment_Markup extends Base {
 	 *
 	 * @param string $interval_slug The slug (e.g., 'day', 'week', 'month', 'quarter', 'yearly').
 	 * @return string The translated interval label, or the slug itself if not found.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 */
 	private function get_interval_label( $interval_slug ) {
 		$interval_labels = [
@@ -428,7 +428,7 @@ class Payment_Markup extends Base {
 	 * Only shows if user has manage_options capability.
 	 *
 	 * @return string|bool Test mode notice markup or empty string.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 */
 	private function get_test_mode_notice() {
 		// Only show to users with manage_options capability.

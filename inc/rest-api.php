@@ -252,7 +252,7 @@ class Rest_Api {
 	 * Sanitize entry IDs.
 	 *
 	 * @param mixed $value Value to sanitize.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return array<int>
 	 */
 	public function sanitize_entry_ids( $value ) {
@@ -274,7 +274,7 @@ class Rest_Api {
 	 * Validate read action parameter.
 	 *
 	 * @param string $param Action parameter value.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return bool
 	 */
 	public function validate_read_action( $param ) {
@@ -285,7 +285,7 @@ class Rest_Api {
 	 * Validate trash action parameter.
 	 *
 	 * @param string $param Action parameter value.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return bool
 	 */
 	public function validate_trash_action( $param ) {
@@ -296,7 +296,7 @@ class Rest_Api {
 	 * Get entries list with filters and pagination.
 	 *
 	 * @param \WP_REST_Request $request Full details about the request.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return \WP_REST_Response
 	 */
 	public function get_entries_list( $request ) {
@@ -341,7 +341,7 @@ class Rest_Api {
 	 * Update entries read status (read/unread).
 	 *
 	 * @param \WP_REST_Request $request Full details about the request.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return \WP_REST_Response
 	 */
 	public function update_entries_read_status( $request ) {
@@ -390,7 +390,7 @@ class Rest_Api {
 	 * Update entries trash status (trash/restore).
 	 *
 	 * @param \WP_REST_Request $request Full details about the request.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return \WP_REST_Response
 	 */
 	public function update_entries_trash_status( $request ) {
@@ -439,7 +439,7 @@ class Rest_Api {
 	 * Permanently delete entries.
 	 *
 	 * @param \WP_REST_Request $request Full details about the request.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return \WP_REST_Response
 	 */
 	public function delete_entries( $request ) {
@@ -472,7 +472,7 @@ class Rest_Api {
 	 * Get entry details with form data, submission info, and metadata.
 	 *
 	 * @param \WP_REST_Request $request Full details about the request.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return \WP_REST_Response
 	 */
 	public function get_entry_details( $request ) {
@@ -529,7 +529,7 @@ class Rest_Api {
 				 * the entry field value in the entry details REST API response, if required.
 				 * For example, you may want to decrypt, format, or mask sensitive data before output.
 				 *
-				 * @since x.x.x
+				 * @since 2.0.0
 				 *
 				 * @param mixed $value             The original value for the field.
 				 * @param array $context           An array of context, including:
@@ -600,7 +600,7 @@ class Rest_Api {
 	 * Get entry logs with pagination support.
 	 *
 	 * @param \WP_REST_Request $request Full details about the request.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return \WP_REST_Response
 	 */
 	public function get_entry_logs( $request ) {
@@ -673,7 +673,7 @@ class Rest_Api {
 	 * Export entries to CSV or ZIP.
 	 *
 	 * @param \WP_REST_Request $request Full details about the request.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return \WP_REST_Response
 	 */
 	public function export_entries( $request ) {
@@ -732,7 +732,7 @@ class Rest_Api {
 	 * Manage form lifecycle operations (trash, restore, delete).
 	 *
 	 * @param \WP_REST_Request $request Full details about the request.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return \WP_REST_Response|\WP_Error
 	 */
 	public function manage_form_lifecycle( $request ) {
@@ -852,7 +852,7 @@ class Rest_Api {
 	 * @param array<string, array<mixed>> &$form_fields Reference to form fields array.
 	 * @param array<mixed>                $entry_data The entry form data.
 	 * @param bool                        $is_special_block Whether the current block is a special block (like address).
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return void
 	 */
 	public function extract_form_fields( $blocks, $sureforms_blocks, &$form_fields, $entry_data = [], $is_special_block = false ) {
@@ -953,7 +953,7 @@ class Rest_Api {
 	 *
 	 * @param string       $form_content The form post content.
 	 * @param array<mixed> $entry_data The entry form data.
-	 * @since x.x.x
+	 * @since 2.0.0
 	 * @return array<string, array<mixed>>
 	 */
 	private function parse_form_fields( $form_content, $entry_data = [] ) {
