@@ -1983,8 +1983,7 @@ class Helper {
 
 		do {
 			$id = bin2hex( random_bytes( $length ) );
-			// phpcs:ignore Squiz.PHP.DisallowMultipleAssignments.Found
-		} while ( call_user_func( [ $class, 'get' ], $id ) ); // @phpstan-ignore-line
+		} while ( call_user_func( [ $class, 'get' ], $id ) );
 		return $id;
 	}
 }
