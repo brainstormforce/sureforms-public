@@ -1972,8 +1972,8 @@ class Helper {
 	 * Generate a unique ID for the saved form.
 	 * Also ensures that the generated ID does not already exist in the database table.
 	 *
-	 * @param string      $class  The class name where the get method is defined to check for existing IDs.
-	 * @param int<1, max> $length The length of the random bytes to generate. Default is 8.
+	 * @param class-string $class  The class name where the get method is defined to check for existing IDs.
+	 * @param int<1, max>  $length The length of the random bytes to generate. Default is 8.
 	 * @return string
 	 * @since x.x.x
 	 */
@@ -1983,7 +1983,7 @@ class Helper {
 
 		do {
 			$id = bin2hex( random_bytes( $length ) );
-		} while ( call_user_func( [ $class, 'get' ], $id ) );
+		} while ( is_callable( [ $class, 'get' ] ) && call_user_func( [ $class, 'get' ], $id ) );
 		return $id;
 	}
 }
