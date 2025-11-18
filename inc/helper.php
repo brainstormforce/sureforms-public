@@ -695,6 +695,33 @@ class Helper {
 			$label = explode( '-lbl-', $key )[1];
 			$slug  = implode( '-', array_slice( explode( '-', $label ), 1 ) );
 
+			/**
+			 * Filters whether a field should be skipped when mapping slugs to submission data.
+			 *
+			 * This filter allows plugins or custom code to determine if a field should be excluded
+			 * from the mapped submission data array (such as for internal fields or extraneous meta).
+			 *
+			 * @since 2.0.0
+			 *
+			 * @param bool  $skip_this_field Whether to skip this field from processing. Default false.
+			 * @param array $args {
+			 *     Arguments used for this field.
+			 *
+			 *     @type string $key   The original key of the field in the submission data array.
+			 *     @type string $slug  The mapped slug parsed from the field key.
+			 *     @type mixed  $value The value assigned to this field.
+			 * }
+			 */
+			$skip_this_field = apply_filters( 'srfm_map_slug_to_submission_data_should_skip', false, [
+				'key'   => $key,
+				'slug'  => $slug,
+				'value' => $value,
+			] );
+
+			if ( $skip_this_field ) {
+				continue;
+			}
+
 			// Check if value is array to handle external package field functionality.
 			// like repeater fields that need special processing.
 			if ( is_array( $value ) && ! empty( $value ) ) {
