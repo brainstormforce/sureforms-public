@@ -45,6 +45,7 @@ class Front_End {
 		add_filter( 'srfm_form_submit_data', [ $this, 'validate_payment_fields' ], 5, 1 );
 		add_action( 'srfm_form_submit', [ $this, 'update_payment_entry_id_form_submit' ], 10, 1 );
 		add_filter( 'srfm_show_options_values', [ $this, 'show_options_values' ], 10, 2 );
+		add_filter( 'srfm_all_data_field_row', [ $this, 'skip_payment_fields_from_all_data' ], 10, 2 );
 	}
 
 	/**
@@ -1249,5 +1250,27 @@ class Front_End {
 			'email'       => $email,
 			'customer_id' => ! empty( $input_value['customerId'] ) && is_string( $input_value['customerId'] ) ? sanitize_text_field( $input_value['customerId'] ) : '',
 		];
+	}
+
+	/**
+	 * Filter callback to determine if a payment field should be included in all data output.
+	 *
+	 * Excludes payment-related fields (like Stripe payment blocks) from being
+	 * rendered in submission summaries, emails, exports, etc., as these fields
+	 * serve as backend tracking data instead of user input.
+	 *
+	 * @since x.x.x
+	 *
+	 * @param bool                  $should_add_field_row Whether this row should be output.
+	 * @param array<string | mixed> $args Args describing the field row. Should contain 'block_name'.
+	 * @return bool False for payment blocks; otherwise, original filter value.
+	 */
+	public function skip_payment_fields_from_all_data( $should_add_field_row, $args ) {
+		// Check if the block is a payment block by inspecting the block name.
+		$block_name = isset( $args['block_name'] ) && is_string( $args['block_name'] ) ? $args['block_name'] : '';
+		if ( 'srfm-payment' === $block_name ) {
+			return false;
+		}
+		return $should_add_field_row;
 	}
 }

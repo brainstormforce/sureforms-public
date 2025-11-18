@@ -932,9 +932,12 @@ const PAYMENT_UTILITY = {
 			return 0;
 		}
 
+		const { extractValue, normalizeDashes } =
+			window.srfm?.srfmUtility || {};
+
 		// Extract selected values from hidden input (format: "Option 1 | Option 2")
-		const selectedOptions = window.srfm?.srfmUtility?.extractValue
-			? window.srfm.srfmUtility.extractValue( hiddenInputValue )
+		const selectedOptions = extractValue
+			? extractValue( hiddenInputValue )
 			: hiddenInputValue.split( '|' ).map( ( v ) => v.trim() );
 
 		// Get all dropdown options
@@ -944,7 +947,12 @@ const PAYMENT_UTILITY = {
 
 		selectedOptions.forEach( ( selectedOption ) => {
 			options.forEach( ( option ) => {
-				if ( option.innerText?.trim() === selectedOption?.trim() ) {
+				const optionText = normalizeDashes( option.innerText?.trim() );
+				const selectedOptionText = normalizeDashes(
+					selectedOption?.trim()
+				);
+
+				if ( optionText === selectedOptionText ) {
 					const optionValue = option.getAttribute( 'option-value' );
 					// Only add numeric values
 					if ( ! isNaN( optionValue ) ) {
@@ -975,10 +983,10 @@ const PAYMENT_UTILITY = {
 			return 0;
 		}
 
+		const { extractValue } = window.srfm?.srfmUtility || {};
+
 		// Extract selected values from hidden input (format: "Option 1 | Option 2")
-		const selectedOptions = window.srfm?.srfmUtility?.extractValue
-			? window.srfm.srfmUtility.extractValue( hiddenInputValue )
-			: hiddenInputValue.split( '|' ).map( ( v ) => v.trim() );
+		const selectedOptions = extractValue( hiddenInputValue );
 
 		// Get all multi-choice options
 		const choices = multiChoiceBlock.querySelectorAll(
@@ -1038,14 +1046,12 @@ const PAYMENT_UTILITY = {
 };
 
 window.srfmPaymentUtility = PAYMENT_UTILITY;
-console.log( 'payment form file:' );
 
 /**
  * Initializes StripePayment for forms after SureForms initialization event.
  */
 document.addEventListener( 'srfm_form_after_initialization', ( event ) => {
 	const form = event?.detail?.form;
-	console.log( 'payment form :', form );
 	if ( form ) {
 		// Check if form has payment blocks before initializing
 		const paymentBlocks = form.querySelectorAll(
