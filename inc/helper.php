@@ -712,11 +712,15 @@ class Helper {
 			 *     @type mixed  $value The value assigned to this field.
 			 * }
 			 */
-			$skip_this_field = apply_filters( 'srfm_map_slug_to_submission_data_should_skip', false, [
-				'key'   => $key,
-				'slug'  => $slug,
-				'value' => $value,
-			] );
+			$skip_this_field = apply_filters(
+				'srfm_map_slug_to_submission_data_should_skip',
+				false,
+				[
+					'key'   => $key,
+					'slug'  => $slug,
+					'value' => $value,
+				]
+			);
 
 			if ( $skip_this_field ) {
 				continue;
