@@ -49,3 +49,4 @@ coverage-report
 # playwright
 tests/play/test-results/*
 playwright-report/*
+config.bat
