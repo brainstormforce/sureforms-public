@@ -1022,7 +1022,7 @@ class Helper {
 	 * Parse and sanitize an email list string which may contain:
 	 *
 	 * @param string $input email addresses.
-	 * @since x.x.x
+	 * @since 1.13.2
 	 * @return string Sanitized email header string.
 	 */
 	public static function sanitize_email_header( $input ) {

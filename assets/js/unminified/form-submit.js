@@ -302,10 +302,13 @@ async function submitFormData( form ) {
 
 async function afterSubmit( formStatus ) {
 	const submissionId = formStatus.data.submission_id;
+	const afterSubmitNonce = formStatus.data.after_submit_nonce;
 
 	try {
 		await wp.apiFetch( {
-			path: `/sureforms/v1/after-submission/${ submissionId }`,
+			path: `/sureforms/v1/after-submission/${ submissionId }?after_submit_nonce=${ encodeURIComponent(
+				afterSubmitNonce
+			) }`,
 			method: 'GET',
 		} );
 	} catch ( error ) {
