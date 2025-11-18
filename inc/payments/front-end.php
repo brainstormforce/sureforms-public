@@ -161,7 +161,7 @@ class Front_End {
 			);
 
 			if ( is_wp_error( $payment_intent ) ) {
-				throw new \Exception( __( 'Failed to create payment. Please contact the site owner.', 'sureforms' ) );
+				throw new \Exception( Payment_Helper::get_error_message_by_key( 'failed_to_create_payment' ) );
 			}
 
 			$payment_intent = json_decode( wp_remote_retrieve_body( $payment_intent ), true );
@@ -191,11 +191,11 @@ class Front_End {
 				}
 
 				// Fallback if we have error code but no message.
-				throw new \Exception( __( 'Failed to create payment. Please contact the site owner.', 'sureforms' ) );
+				throw new \Exception( Payment_Helper::get_error_message_by_key( 'failed_to_create_payment' ) );
 			}
 
 			if ( ! isset( $payment_intent['client_secret'] ) || empty( $payment_intent['client_secret'] ) || ! isset( $payment_intent['id'] ) || empty( $payment_intent['id'] ) ) {
-				throw new \Exception( __( 'Failed to create payment. Please contact the site owner.', 'sureforms' ) );
+				throw new \Exception( Payment_Helper::get_error_message_by_key( 'failed_to_create_payment' ) );
 			}
 
 			wp_send_json_success(
@@ -207,7 +207,7 @@ class Front_End {
 			);
 		} catch ( \Exception $e ) {
 			$error_message = $e->getMessage();
-			$error_message = empty( $error_message ) ? __( 'Failed to create payment. Please contact the site owner.', 'sureforms' ) : $error_message;
+			$error_message = empty( $error_message ) ? Payment_Helper::get_error_message_by_key( 'failed_to_create_payment' ) : $error_message;
 			wp_send_json_error( $error_message );
 		}
 	}

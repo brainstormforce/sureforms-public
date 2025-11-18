@@ -537,7 +537,22 @@ class Payment_Helper {
 			'sureforms_customer'                => __( 'SureForms Customer', 'sureforms' ),
 			'customer_example_email'            => 'customer@example.com', // Not translatable - example email.
 			'amount_placeholder'                => __( 'Please complete the form to view the amount.', 'sureforms' ),
+			'failed_to_create_payment'          => __( 'Failed to create payment. Please contact the site owner', 'sureforms' ),
 		];
+	}
+
+	/**
+	 * Retrieve a user-friendly payment error message by error key.
+	 *
+	 * @param string $key Error key received from payment processing/Stripe.
+	 * @return string Localized error message or a generic "Unknown error" message if not found.
+	 */
+	public static function get_error_message_by_key( $key ) {
+		$messages = self::get_payment_strings();
+		if ( isset( $messages[ $key ] ) ) {
+			return $messages[ $key ];
+		}
+		return __( 'Unknown error', 'sureforms' );
 	}
 
 	/**
