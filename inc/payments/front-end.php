@@ -1261,7 +1261,7 @@ class Front_End {
 	 *
 	 * @since x.x.x
 	 *
-	 * @param bool $should_add_field_row Whether this row should be output.
+	 * @param bool                  $should_add_field_row Whether this row should be output.
 	 * @param array<string | mixed> $args Args describing the field row. Should contain 'block_name'.
 	 * @return bool False for payment blocks; otherwise, original filter value.
 	 */
