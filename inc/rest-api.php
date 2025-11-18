@@ -913,9 +913,9 @@ class Rest_Api {
 
 						// Handle special case for dropdown with instance counter.
 						if ( 'dropdown' === $block_type ) {
-							self::$dropdown_counter += 1;
-							$unique_slug            = $block_type . '-' . self::$dropdown_counter;
-							$field_name             = 'srfm-' . $unique_slug . '-' . $block_id . $base_field_name;
+							self::$dropdown_counter++;
+							$unique_slug = $block_type . '-' . self::$dropdown_counter;
+							$field_name  = 'srfm-' . $unique_slug . '-' . $block_id . $base_field_name;
 						} elseif ( 'multi-choice' === $block_type ) {
 							// Multi-choice uses standard pattern.
 							$field_name = 'srfm-input-' . $block_type . '-' . $block_id . $base_field_name;
