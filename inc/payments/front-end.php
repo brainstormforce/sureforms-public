@@ -179,7 +179,7 @@ class Front_End {
 					throw new \Exception(
 						sprintf(
 							/* translators: %s: formatted payment amount */
-							__( 'The payment amount of %s is too low to process. Please increase the amount.', 'sureforms' ),
+							__( 'The payment amount (%s) is below the minimum allowed. Stripe only processes amounts above 50¢.', 'sureforms' ),
 							$formatted_amount
 						)
 					);
