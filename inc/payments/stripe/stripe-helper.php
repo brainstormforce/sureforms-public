@@ -283,15 +283,17 @@ class Stripe_Helper {
 	}
 
 	/**
-	 * Get the middleware base URL.
+	 * Retrieve the middleware base URL for Stripe API communication.
 	 *
-	 * Returns the production middleware URL that handles secure Stripe API communication.
-	 * The middleware acts as a secure proxy between the plugin and Stripe's API.
+	 * By default, returns the production middleware URL that securely proxies requests
+	 * between the plugin and Stripe's API.
 	 *
-	 * For local development and debugging:
-	 * - Developers can set up the payments middleware app locally (e.g., http://sureforms-payments-middleware.test/)
-	 * - Modify this return value temporarily or use a filter hook to override the URL
-	 * - This allows debugging, testing, and modifying payment flows in a local environment
+	 * Developers working in local or staging environments can override the SRFM_MIDDLEWARE_BASE_URL
+	 * constant (for example, set it to "http://sureforms-payments-middleware.test") to point
+	 * to a locally running payments middleware app (e.g., http://sureforms-payments-middleware.test/payments/stripe/).
+	 *
+	 * You can also modify the return value or use a filter hook to customize the URL as needed
+	 * for testing, debugging, or customizing payment flows during development.
 	 *
 	 * @since 2.0.0
 	 * @return string The middleware base URL.

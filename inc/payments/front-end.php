@@ -161,14 +161,41 @@ class Front_End {
 			);
 
 			if ( is_wp_error( $payment_intent ) ) {
-				throw new \Exception( __( 'Failed to create payment intent.', 'sureforms' ) );
+				throw new \Exception( Payment_Helper::get_error_message_by_key( 'failed_to_create_payment' ) );
 			}
 
 			$payment_intent = json_decode( wp_remote_retrieve_body( $payment_intent ), true );
 			$payment_intent = is_array( $payment_intent ) ? $payment_intent : [];
 
+			// Check if we have an error from Stripe API (verify both status and code).
+			if ( isset( $payment_intent['status'] ) && 'error' === $payment_intent['status'] && isset( $payment_intent['code'] ) && ! empty( $payment_intent['code'] ) ) {
+				// Handle amount_too_small error with custom message.
+				if ( 'amount_too_small' === $payment_intent['code'] ) {
+					// Format the amount for display.
+					$currency_symbol  = Stripe_Helper::get_currency_symbol( $currency );
+					$display_amount   = Stripe_Helper::amount_from_stripe_format( $amount, $currency );
+					$formatted_amount = $currency_symbol . number_format( $display_amount, 2 );
+
+					throw new \Exception(
+						sprintf(
+							/* translators: %s: formatted payment amount */
+							__( 'The payment amount (%s) is below the minimum allowed. Stripe only processes amounts above 50¢.', 'sureforms' ),
+							$formatted_amount
+						)
+					);
+				}
+
+				// For other error codes, use the message from Stripe API if available.
+				if ( isset( $payment_intent['message'] ) && ! empty( $payment_intent['message'] ) ) {
+					throw new \Exception( $payment_intent['message'] );
+				}
+
+				// Fallback if we have error code but no message.
+				throw new \Exception( Payment_Helper::get_error_message_by_key( 'failed_to_create_payment' ) );
+			}
+
 			if ( ! isset( $payment_intent['client_secret'] ) || empty( $payment_intent['client_secret'] ) || ! isset( $payment_intent['id'] ) || empty( $payment_intent['id'] ) ) {
-				throw new \Exception( __( 'Failed to create payment intent.', 'sureforms' ) );
+				throw new \Exception( Payment_Helper::get_error_message_by_key( 'failed_to_create_payment' ) );
 			}
 
 			wp_send_json_success(
@@ -179,7 +206,9 @@ class Front_End {
 				]
 			);
 		} catch ( \Exception $e ) {
-			wp_send_json_error( __( 'Failed to create payment intent. Please try again.', 'sureforms' ) );
+			$error_message = $e->getMessage();
+			$error_message = empty( $error_message ) ? Payment_Helper::get_error_message_by_key( 'failed_to_create_payment' ) : $error_message;
+			wp_send_json_error( $error_message );
 		}
 	}
 
@@ -838,6 +867,28 @@ class Front_End {
 	}
 
 	/**
+	 * Filter callback to determine if a payment field should be included in all data output.
+	 *
+	 * Excludes payment-related fields (like Stripe payment blocks) from being
+	 * rendered in submission summaries, emails, exports, etc., as these fields
+	 * serve as backend tracking data instead of user input.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @param bool                  $should_add_field_row Whether this row should be output.
+	 * @param array<string | mixed> $args Args describing the field row. Should contain 'block_name'.
+	 * @return bool False for payment blocks; otherwise, original filter value.
+	 */
+	public function skip_payment_fields_from_all_data( $should_add_field_row, $args ) {
+		// Check if the block is a payment block by inspecting the block name.
+		$block_name = isset( $args['block_name'] ) && is_string( $args['block_name'] ) ? $args['block_name'] : '';
+		if ( 'srfm-payment' === $block_name ) {
+			return false;
+		}
+		return $should_add_field_row;
+	}
+
+	/**
 	 * Verify payment intent status
 	 *
 	 * @param array<mixed> $payment_value Payment value.
@@ -1250,27 +1301,5 @@ class Front_End {
 			'email'       => $email,
 			'customer_id' => ! empty( $input_value['customerId'] ) && is_string( $input_value['customerId'] ) ? sanitize_text_field( $input_value['customerId'] ) : '',
 		];
-	}
-
-	/**
-	 * Filter callback to determine if a payment field should be included in all data output.
-	 *
-	 * Excludes payment-related fields (like Stripe payment blocks) from being
-	 * rendered in submission summaries, emails, exports, etc., as these fields
-	 * serve as backend tracking data instead of user input.
-	 *
-	 * @since x.x.x
-	 *
-	 * @param bool                  $should_add_field_row Whether this row should be output.
-	 * @param array<string | mixed> $args Args describing the field row. Should contain 'block_name'.
-	 * @return bool False for payment blocks; otherwise, original filter value.
-	 */
-	public function skip_payment_fields_from_all_data( $should_add_field_row, $args ) {
-		// Check if the block is a payment block by inspecting the block name.
-		$block_name = isset( $args['block_name'] ) && is_string( $args['block_name'] ) ? $args['block_name'] : '';
-		if ( 'srfm-payment' === $block_name ) {
-			return false;
-		}
-		return $should_add_field_row;
 	}
 }
