@@ -545,7 +545,7 @@ class Payment_Helper {
 	 * Retrieve a user-friendly payment error message by error key.
 	 *
 	 * @param string $key Error key received from payment processing/Stripe.
-	 * 
+	 *
 	 * @since 2.0.0
 	 * @return string Localized error message or a generic "Unknown error" message if not found.
 	 */
