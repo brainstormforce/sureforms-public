@@ -488,6 +488,21 @@ class Analytics {
 	}
 
 	/**
+	 * Get the total number of forms that utilize payment blocks.
+	 *
+	 * This function searches for forms containing the payment block identifier
+	 * ('wp:srfm/payment') to determine how many forms include payment capabilities.
+	 *
+	 * @since 2.0.0
+	 * @return int The number of forms that contain payment blocks.
+	 */
+	public function get_payment_forms_count() {
+		$search = 'wp:srfm/payment';
+		// Runs a custom WP_Query to find the count of forms with payment block.
+		return $this->custom_wp_query_total_posts_with_search( [], $search );
+	}
+
+	/**
 	 * Check if any payment method is enabled.
 	 *
 	 * This function checks if any payment gateway is connected and enabled.
@@ -523,20 +538,5 @@ class Analytics {
 		wp_reset_postdata();
 
 		return $posts_count;
-	}
-
-	/**
-	 * Get the total number of forms that utilize payment blocks.
-	 *
-	 * This function searches for forms containing the payment block identifier
-	 * ('wp:srfm/payment') to determine how many forms include payment capabilities.
-	 *
-	 * @since 2.0.0
-	 * @return int The number of forms that contain payment blocks.
-	 */
-	public function get_payment_forms_count() {
-		$search = 'wp:srfm/payment';
-		// Runs a custom WP_Query to find the count of forms with payment block.
-		return $this->custom_wp_query_total_posts_with_search( [], $search );
 	}
 }
