@@ -106,12 +106,49 @@ class Admin_Stripe_Handler {
 			wp_send_json_error( [ 'message' => esc_html__( 'Subscription cancellation failed.', 'sureforms' ) ] );
 		}
 
+		// Get current logs and add cancel log entry.
+		$current_logs = Helper::get_array_value( $payment['log'] );
+
+		// Build log messages array.
+		$log_messages = [
+			sprintf(
+				/* translators: %s: Stripe subscription ID */
+				__( 'Subscription ID: %s', 'sureforms' ),
+				$payment['subscription_id']
+			),
+			sprintf(
+				/* translators: %s: payment gateway name */
+				__( 'Payment Gateway: %s', 'sureforms' ),
+				'Stripe'
+			),
+			sprintf(
+				/* translators: %s: subscription status */
+				__( 'Subscription Status: %s', 'sureforms' ),
+				__( 'Cancelled', 'sureforms' )
+			),
+			sprintf(
+				/* translators: %s: user display name */
+				__( 'Cancelled by: %s', 'sureforms' ),
+				wp_get_current_user()->display_name
+			),
+			__( 'Note: The subscription has been permanently cancelled. The customer will no longer be charged and will lose access to subscription benefits.', 'sureforms' ),
+		];
+
+		// Create new log entry.
+		$new_log        = [
+			'title'      => __( 'Subscription Cancelled', 'sureforms' ),
+			'created_at' => current_time( 'mysql' ),
+			'messages'   => $log_messages,
+		];
+		$current_logs[] = $new_log;
+
 		// Update database status to cancelled (following WPForms pattern).
 		$updated = Payments::update(
 			$payment_id,
 			[
 				'subscription_status' => 'cancelled',
 				'status'              => 'cancelled',
+				'log'                 => $current_logs,
 			]
 		);
 		if ( ! $updated ) {
@@ -348,8 +385,50 @@ class Admin_Stripe_Handler {
 			wp_send_json_error( [ 'message' => esc_html__( 'Subscription pause failed.', 'sureforms' ) ] );
 		}
 
-		// Update database status to paused.
-		$updated = Payments::update( $payment_id, [ 'subscription_status' => 'paused' ] );
+		// Get current logs and add pause log entry.
+		$current_logs = Helper::get_array_value( $payment['log'] );
+
+		// Build log messages array.
+		$log_messages = [
+			sprintf(
+				/* translators: %s: Stripe subscription ID */
+				__( 'Subscription ID: %s', 'sureforms' ),
+				$payment['subscription_id']
+			),
+			sprintf(
+				/* translators: %s: payment gateway name */
+				__( 'Payment Gateway: %s', 'sureforms' ),
+				'Stripe'
+			),
+			sprintf(
+				/* translators: %s: subscription status */
+				__( 'Subscription Status: %s', 'sureforms' ),
+				__( 'Paused', 'sureforms' )
+			),
+			sprintf(
+				/* translators: %s: user display name */
+				__( 'Paused by: %s', 'sureforms' ),
+				wp_get_current_user()->display_name
+			),
+			__( 'Note: The subscription billing has been paused. No charges will occur until the subscription is resumed.', 'sureforms' ),
+		];
+
+		// Create new log entry.
+		$new_log        = [
+			'title'      => __( 'Subscription Paused', 'sureforms' ),
+			'created_at' => current_time( 'mysql' ),
+			'messages'   => $log_messages,
+		];
+		$current_logs[] = $new_log;
+
+		// Update database status to paused with log.
+		$updated = Payments::update(
+			$payment_id,
+			[
+				'subscription_status' => 'paused',
+				'log'                 => $current_logs,
+			]
+		);
 		if ( ! $updated ) {
 			wp_send_json_error( [ 'message' => esc_html__( 'Failed to update subscription status in database.', 'sureforms' ) ] );
 		}
