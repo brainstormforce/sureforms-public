@@ -918,16 +918,7 @@ class Payments_Settings {
 	 * @return void
 	 */
 	private function process_oauth_success() {
-		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
-		if ( ! isset( $_GET['response'] ) ) {
-			wp_die(
-				esc_html__( 'Missing OAuth response data.', 'sureforms' ),
-				esc_html__( 'Stripe Connect Error', 'sureforms' ),
-				[ 'response' => 400 ]
-			);
-		}
-
-		$response_data = sanitize_text_field( wp_unslash( $_GET['response'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$response_data = isset( $_GET['response'] ) ? sanitize_text_field( wp_unslash( $_GET['response'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$decoded       = base64_decode( $response_data, true ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_decode
 		$response      = false;
 		if ( is_string( $decoded ) ) {
