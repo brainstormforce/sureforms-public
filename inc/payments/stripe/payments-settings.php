@@ -168,10 +168,21 @@ class Payments_Settings {
 	/**
 	 * Intercept Stripe OAuth callback
 	 *
+	 * This function validates the OAuth callback from Stripe Connect by:
+	 * 1. Verifying user has admin capabilities
+	 * 2. Checking for required page/tab parameters
+	 * 3. Validating the nonce using wp_verify_nonce()
+	 * 4. Comparing with stored transient for additional security
+	 *
 	 * @since 2.0.0
 	 * @return void
 	 */
 	public function intercept_stripe_callback() {
+		// Check if user has permission to connect Stripe.
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
+
 		// Check if this is a Stripe callback for our flow.
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		if ( ! isset( $_GET['page'] ) || 'sureforms_form_settings' !== $_GET['page'] ) {
@@ -184,16 +195,31 @@ class Payments_Settings {
 		}
 
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
-		if ( ! isset( $_GET['cpsw_connect_nonce'] ) ) {
+		if ( ! isset( $_GET['srfm_stripe_connect_nonce'] ) ) {
 			return;
 		}
 
-		// Verify this is our nonce.
-		$nonce       = sanitize_text_field( wp_unslash( $_GET['cpsw_connect_nonce'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		// Get and sanitize the nonce from URL.
+		$nonce = sanitize_text_field( wp_unslash( $_GET['srfm_stripe_connect_nonce'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+
+		// Verify the nonce using WordPress's built-in verification.
+		if ( ! wp_verify_nonce( $nonce, 'stripe-connect' ) ) {
+			wp_die(
+				esc_html__( 'Security verification failed. Invalid nonce.', 'sureforms' ),
+				esc_html__( 'Stripe Connect Error', 'sureforms' ),
+				[ 'response' => 403 ]
+			);
+		}
+
+		// Additional verification: Compare with stored transient.
 		$saved_nonce = get_transient( 'srfm_stripe_connect_nonce_' . get_current_user_id() );
 
 		if ( $nonce !== $saved_nonce ) {
-			return; // Not our callback.
+			wp_die(
+				esc_html__( 'Security verification failed. Nonce mismatch.', 'sureforms' ),
+				esc_html__( 'Stripe Connect Error', 'sureforms' ),
+				[ 'response' => 403 ]
+			);
 		}
 
 		// This is our callback, handle it.
@@ -885,24 +911,14 @@ class Payments_Settings {
 	/**
 	 * Process OAuth success response.
 	 *
+	 * This function processes the successful OAuth callback from Stripe and saves
+	 * the API keys. Security checks have already been performed in intercept_stripe_callback().
+	 *
 	 * @since 2.0.0
-	 * @return \WP_REST_Response
+	 * @return void
 	 */
 	private function process_oauth_success() {
-		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
-		if ( ! isset( $_GET['response'] ) ) {
-			return rest_ensure_response(
-				[
-					'success' => false,
-					'error'   => [
-						'message' => __( 'Missing OAuth response data.', 'sureforms' ),
-						'code'    => 'missing_response',
-					],
-				]
-			);
-		}
-
-		$response_data = sanitize_text_field( wp_unslash( $_GET['response'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$response_data = isset( $_GET['response'] ) ? sanitize_text_field( wp_unslash( $_GET['response'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$decoded       = base64_decode( $response_data, true ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_decode
 		$response      = false;
 		if ( is_string( $decoded ) ) {
@@ -910,14 +926,10 @@ class Payments_Settings {
 		}
 
 		if ( ! is_array( $response ) ) {
-			return rest_ensure_response(
-				[
-					'success' => false,
-					'error'   => [
-						'message' => __( 'Invalid OAuth response.', 'sureforms' ),
-						'code'    => 'invalid_response',
-					],
-				]
+			wp_die(
+				esc_html__( 'Invalid OAuth response format.', 'sureforms' ),
+				esc_html__( 'Stripe Connect Error', 'sureforms' ),
+				[ 'response' => 400 ]
 			);
 		}
 
@@ -968,10 +980,22 @@ class Payments_Settings {
 	/**
 	 * Process OAuth error response
 	 *
+	 * This function handles errors from the Stripe OAuth callback.
+	 * Security checks have already been performed in intercept_stripe_callback().
+	 *
 	 * @since 2.0.0
 	 * @return void
 	 */
 	private function process_oauth_error() {
+		// Additional security check: Verify user capabilities.
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die(
+				esc_html__( 'You do not have permission to connect Stripe.', 'sureforms' ),
+				esc_html__( 'Permission Denied', 'sureforms' ),
+				[ 'response' => 403 ]
+			);
+		}
+
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		if ( isset( $_GET['error'] ) ) {
 			$error_data = sanitize_text_field( wp_unslash( $_GET['error'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended

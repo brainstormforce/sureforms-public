@@ -281,6 +281,29 @@ class Admin_Ajax {
 
 		foreach ( $blocks as $block ) {
 			if ( ! empty( $block['blockName'] ) && 0 === strpos( $block['blockName'], 'srfm/' ) ) {
+
+				/**
+				 * Determine whether to skip this field from the sample data.
+				 *
+				 * @param bool  $should_skip           Default value indicating if field should be skipped.
+				 * @param array $block_details         Array containing block attributes, including 'block_name'.
+				 *
+				 * @since 2.0.0
+				 *
+				 * @hook srfm_should_skip_field_from_sample_data
+				 */
+				$should_skip_this_field = apply_filters(
+					'srfm_should_skip_field_from_sample_data',
+					false,
+					[
+						'block_name' => $block['blockName'],
+					]
+				);
+
+				if ( $should_skip_this_field ) {
+					continue;
+				}
+
 				if ( ! empty( $block['attrs']['slug'] ) ) {
 					$data[ $block['attrs']['slug'] ] = $this->get_sample_data( $block['blockName'] );
 				}

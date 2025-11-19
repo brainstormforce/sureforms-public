@@ -46,6 +46,8 @@ class Front_End {
 		add_action( 'srfm_form_submit', [ $this, 'update_payment_entry_id_form_submit' ], 10, 1 );
 		add_filter( 'srfm_show_options_values', [ $this, 'show_options_values' ], 10, 2 );
 		add_filter( 'srfm_all_data_field_row', [ $this, 'skip_payment_fields_from_all_data' ], 10, 2 );
+		add_filter( 'srfm_map_slug_to_submission_data_should_skip', [ $this, 'skip_payment_fields_from_submission_data' ], 10, 2 );
+		add_filter( 'srfm_should_skip_field_from_sample_data', [ $this, 'skip_payment_fields_from_sample_data' ], 10, 2 );
 	}
 
 	/**
@@ -886,6 +888,58 @@ class Front_End {
 			return false;
 		}
 		return $should_add_field_row;
+	}
+
+	/**
+	 * Skip payment fields from submission data.
+	 *
+	 * This function checks if a field is a payment field by validating its key prefix.
+	 * Payment fields have keys that start with 'srfm-payment-' and should be skipped
+	 * from certain data operations.
+	 *
+	 * @param bool         $default_value The default skip value.
+	 * @param array<mixed> $args          Field arguments containing 'key', 'slug', and 'value'.
+	 * @since 2.0.0
+	 * @return bool True if the field should be skipped (is a payment field), false otherwise.
+	 */
+	public function skip_payment_fields_from_submission_data( $default_value, $args ) {
+		// Validate that args is an array and has the 'key' parameter.
+		if ( ! is_array( $args ) || ! isset( $args['key'] ) || ! is_string( $args['key'] ) ) {
+			return $default_value;
+		}
+
+		// Check if the key starts with 'srfm-payment-' to identify payment fields.
+		if ( 0 === strpos( $args['key'], 'srfm-payment-' ) ) {
+			return true;
+		}
+
+		return $default_value;
+	}
+
+	/**
+	 * Skip payment fields from sample data.
+	 *
+	 * This function determines if a field associated with a "srfm/payment" block
+	 * should be skipped when processing sample data. If the provided arguments
+	 * specify a block with the name 'srfm/payment', the function returns true to
+	 * indicate that the field should be skipped. Otherwise, it returns the given
+	 * default value.
+	 *
+	 * @param bool         $default_value The default skip value.
+	 * @param array<mixed> $args          Field arguments containing at least 'block_name'.
+	 * @since 2.0.0
+	 * @return bool True if the field should be skipped (is a payment block), false otherwise.
+	 */
+	public function skip_payment_fields_from_sample_data( $default_value, $args ) {
+		if ( ! is_array( $args ) || ! isset( $args['block_name'] ) || ! is_string( $args['block_name'] ) ) {
+			return $default_value;
+		}
+
+		if ( 'srfm/payment' === $args['block_name'] ) {
+			return true;
+		}
+
+		return $default_value;
 	}
 
 	/**

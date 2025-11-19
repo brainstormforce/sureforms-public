@@ -646,7 +646,7 @@ class Stripe_Helper {
 		// Use the same redirect URI pattern as checkout-plugins-stripe-woo.
 		$redirect_url        = admin_url( 'admin.php?page=sureforms_form_settings&tab=payments-settings' );
 		$nonce               = wp_create_nonce( 'stripe-connect' );
-		$redirect_with_nonce = add_query_arg( 'cpsw_connect_nonce', $nonce, $redirect_url );
+		$redirect_with_nonce = add_query_arg( 'srfm_stripe_connect_nonce', $nonce, $redirect_url );
 
 		// Store our own callback data.
 		set_transient( 'srfm_stripe_connect_nonce_' . get_current_user_id(), $nonce, HOUR_IN_SECONDS );
