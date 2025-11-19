@@ -95,20 +95,19 @@ class Analytics {
 			'pointer_popup_clicked' => $this->pointer_popup_clicked(),
 		];
 		$stats_data['plugin_data']['sureforms']['numeric_values'] = [
-			'total_forms'            => wp_count_posts( SRFM_FORMS_POST_TYPE )->publish ?? 0,
-			'instant_forms_enabled'  => $this->instant_forms_enabled(),
-			'forms_using_custom_css' => $this->forms_using_custom_css(),
-			'ai_generated_forms'     => $this->ai_generated_forms(),
-			'ai_generated_payments'  => $this->ai_generated_forms( 'payments' ),
-			'total_entries'          => Entries::get_total_entries_by_status(),
-			'restricted_forms'       => $this->get_restricted_forms(),
+			'total_forms'                => wp_count_posts( SRFM_FORMS_POST_TYPE )->publish ?? 0,
+			'instant_forms_enabled'      => $this->instant_forms_enabled(),
+			'forms_using_custom_css'     => $this->forms_using_custom_css(),
+			'ai_generated_forms'         => $this->ai_generated_forms(),
+			'ai_generated_payment_forms' => $this->ai_generated_forms( 'payments' ),
+			'payment_forms'              => $this->get_payment_forms_count(),
+			'total_entries'              => Entries::get_total_entries_by_status(),
+			'restricted_forms'           => $this->get_restricted_forms(),
 		];
 
 		$stats_data['plugin_data']['sureforms'] = array_merge_recursive( $stats_data['plugin_data']['sureforms'], $this->global_settings_data() );
-
 		// Add onboarding analytics data.
 		$stats_data['plugin_data']['sureforms'] = array_merge_recursive( $stats_data['plugin_data']['sureforms'], $this->onboarding_analytics_data() );
-
 		return $stats_data;
 	}
 
@@ -524,5 +523,20 @@ class Analytics {
 		wp_reset_postdata();
 
 		return $posts_count;
+	}
+
+	/**
+	 * Get the total number of forms that utilize payment blocks.
+	 *
+	 * This function searches for forms containing the payment block identifier
+	 * ('wp:srfm/payment') to determine how many forms include payment capabilities.
+	 *
+	 * @since 2.0.0
+	 * @return int The number of forms that contain payment blocks.
+	 */
+	public function get_payment_forms_count() {
+		$search = 'wp:srfm/payment';
+		// Runs a custom WP_Query to find the count of forms with payment block.
+		return $this->custom_wp_query_total_posts_with_search( [], $search );
 	}
 }
