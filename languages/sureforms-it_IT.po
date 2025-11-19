@@ -325,7 +325,8 @@ msgstr "Non hai il permesso di accedere a questa pagina."
 #: inc/admin-ajax.php:166
 #: inc/payments/front-end.php:74
 #: inc/payments/stripe/admin-stripe-handler.php:77
-#: inc/payments/stripe/admin-stripe-handler.php:139
+#: inc/payments/stripe/admin-stripe-handler.php:176
+#: inc/payments/stripe/admin-stripe-handler.php:356
 msgid "Invalid nonce."
 msgstr "Nonce non valido."
 
@@ -3445,7 +3446,7 @@ msgstr "Faccia Risata Occhiolino"
 
 #: modules/gutenberg/icons/icons-v6-1.php:1853
 msgid "Face Meh"
-msgstr ""
+msgstr "Affronta Meh"
 
 #: modules/gutenberg/icons/icons-v6-1.php:1869
 msgid "Face Meh Blank"
@@ -4362,7 +4363,7 @@ msgstr "Cerchio del Cuore Controllo"
 
 #: modules/gutenberg/icons/icons-v6-1.php:4653
 msgid "Heart Circle Exclamation"
-msgstr ""
+msgstr "Cerchio del cuore con punto esclamativo"
 
 #: modules/gutenberg/icons/icons-v6-1.php:4664
 msgid "Heart Circle Minus"
@@ -5587,7 +5588,7 @@ msgstr "Corporazione page4"
 
 #: modules/gutenberg/icons/icons-v6-2.php:2682
 msgid "Pagelines"
-msgstr ""
+msgstr "Pagelines"
 
 #: modules/gutenberg/icons/icons-v6-2.php:2693
 msgid "Pager"
@@ -12157,7 +12158,7 @@ msgstr "Verifica di sicurezza fallita."
 #: inc/payments/admin/admin-handler.php:394
 #: inc/payments/admin/admin-handler.php:438
 #: inc/payments/admin/admin-handler.php:482
-#: inc/payments/stripe/admin-stripe-handler.php:144
+#: inc/payments/stripe/admin-stripe-handler.php:181
 msgid "Insufficient permissions."
 msgstr "Permessi insufficienti."
 
@@ -12181,7 +12182,7 @@ msgid "Payment ID is required."
 msgstr "È richiesto l'ID di pagamento."
 
 #: inc/payments/admin/admin-handler.php:202
-#: inc/payments/stripe/admin-stripe-handler.php:164
+#: inc/payments/stripe/admin-stripe-handler.php:201
 msgid "Payment not found."
 msgstr "Pagamento non trovato."
 
@@ -12345,7 +12346,7 @@ msgstr "È richiesta un'email cliente valida per i pagamenti."
 
 #: inc/payments/front-end.php:96
 #: inc/payments/front-end.php:273
-#: inc/payments/stripe/admin-stripe-handler.php:662
+#: inc/payments/stripe/admin-stripe-handler.php:749
 #: inc/payments/stripe/payments-settings.php:347
 #: inc/payments/stripe/payments-settings.php:472
 #: inc/payments/stripe/payments-settings.php:611
@@ -12420,7 +12421,7 @@ msgstr "Errore imprevisto: %s"
 
 #: inc/payments/front-end.php:487
 #: inc/payments/stripe/admin-stripe-handler.php:100
-#: inc/payments/stripe/admin-stripe-handler.php:334
+#: inc/payments/stripe/admin-stripe-handler.php:379
 msgid "Subscription ID not found."
 msgstr "ID di abbonamento non trovato."
 
@@ -12477,7 +12478,10 @@ msgid "Subscription Verification"
 msgstr "Verifica dell'abbonamento"
 
 #. translators: %s: Subscription ID
+#. translators: %s: Stripe subscription ID
 #: inc/payments/front-end.php:720
+#: inc/payments/stripe/admin-stripe-handler.php:116
+#: inc/payments/stripe/admin-stripe-handler.php:395
 #: inc/payments/stripe/stripe-webhook.php:522
 #: inc/payments/stripe/stripe-webhook.php:1068
 msgid "Subscription ID: %s"
@@ -12485,13 +12489,16 @@ msgstr "ID di abbonamento: %s"
 
 #. translators: %s: Payment Gateway
 #. translators: %s: Payment gateway name.
+#. translators: %s: payment gateway name
 #. translators: %s: payment gateway name (e.g., Stripe)
 #. translators: %s: payment gateway
 #. translators: %s: Payment gateway name (e.g., Stripe).
 #: inc/payments/front-end.php:722
 #: inc/payments/front-end.php:1070
-#: inc/payments/stripe/admin-stripe-handler.php:488
-#: inc/payments/stripe/admin-stripe-handler.php:977
+#: inc/payments/stripe/admin-stripe-handler.php:121
+#: inc/payments/stripe/admin-stripe-handler.php:400
+#: inc/payments/stripe/admin-stripe-handler.php:575
+#: inc/payments/stripe/admin-stripe-handler.php:1064
 #: inc/payments/stripe/stripe-webhook.php:524
 #: inc/payments/stripe/stripe-webhook.php:664
 #: inc/payments/stripe/stripe-webhook.php:828
@@ -12511,7 +12518,10 @@ msgid "Charge ID: %s"
 msgstr "ID di addebito: %s"
 
 #. translators: %s: Subscription Status
+#. translators: %s: subscription status
 #: inc/payments/front-end.php:728
+#: inc/payments/stripe/admin-stripe-handler.php:126
+#: inc/payments/stripe/admin-stripe-handler.php:405
 msgid "Subscription Status: %s"
 msgstr "Stato dell'abbonamento: %s"
 
@@ -12962,22 +12972,22 @@ msgid "Unknown error"
 msgstr "Errore sconosciuto"
 
 #: inc/payments/stripe/admin-stripe-handler.php:67
-#: inc/payments/stripe/admin-stripe-handler.php:309
+#: inc/payments/stripe/admin-stripe-handler.php:346
 msgid "Missing payment ID."
 msgstr "ID di pagamento mancante."
 
 #: inc/payments/stripe/admin-stripe-handler.php:81
-#: inc/payments/stripe/admin-stripe-handler.php:313
+#: inc/payments/stripe/admin-stripe-handler.php:360
 msgid "You are not allowed to perform this action."
 msgstr "Non sei autorizzato a eseguire questa azione."
 
 #: inc/payments/stripe/admin-stripe-handler.php:91
-#: inc/payments/stripe/admin-stripe-handler.php:323
+#: inc/payments/stripe/admin-stripe-handler.php:368
 msgid "Payment not found in the database."
 msgstr "Pagamento non trovato nel database."
 
 #: inc/payments/stripe/admin-stripe-handler.php:96
-#: inc/payments/stripe/admin-stripe-handler.php:330
+#: inc/payments/stripe/admin-stripe-handler.php:375
 msgid "This is not a subscription payment."
 msgstr "Questo non è un pagamento di abbonamento."
 
@@ -12985,75 +12995,71 @@ msgstr "Questo non è un pagamento di abbonamento."
 msgid "Subscription cancellation failed."
 msgstr "La cancellazione dell'abbonamento non è riuscita."
 
-#: inc/payments/stripe/admin-stripe-handler.php:118
-#: inc/payments/stripe/admin-stripe-handler.php:346
+#: inc/payments/stripe/admin-stripe-handler.php:155
+#: inc/payments/stripe/admin-stripe-handler.php:433
 msgid "Failed to update subscription status in database."
 msgstr "Impossibile aggiornare lo stato dell'abbonamento nel database."
 
-#: inc/payments/stripe/admin-stripe-handler.php:121
-msgid "Subscription cancelled successfully."
-msgstr "Abbonamento annullato con successo."
-
-#: inc/payments/stripe/admin-stripe-handler.php:153
+#: inc/payments/stripe/admin-stripe-handler.php:190
 msgid "Invalid refund amount."
 msgstr "Importo del rimborso non valido."
 
-#: inc/payments/stripe/admin-stripe-handler.php:157
+#: inc/payments/stripe/admin-stripe-handler.php:194
 msgid "Invalid payment data."
 msgstr "Dati di pagamento non validi."
 
-#: inc/payments/stripe/admin-stripe-handler.php:176
+#: inc/payments/stripe/admin-stripe-handler.php:213
 msgid "Only succeeded or partially refunded payments can be refunded."
 msgstr "Solo i pagamenti riusciti o parzialmente rimborsati possono essere rimborsati."
 
-#: inc/payments/stripe/admin-stripe-handler.php:181
+#: inc/payments/stripe/admin-stripe-handler.php:218
 msgid "Transaction ID mismatch."
 msgstr "ID transazione non corrispondente."
 
-#: inc/payments/stripe/admin-stripe-handler.php:209
+#: inc/payments/stripe/admin-stripe-handler.php:246
 msgid "Invalid transaction ID format for refund."
 msgstr "Formato ID transazione non valido per il rimborso."
 
-#: inc/payments/stripe/admin-stripe-handler.php:215
+#: inc/payments/stripe/admin-stripe-handler.php:252
 msgid "Failed to process refund through Stripe API."
 msgstr "Impossibile elaborare il rimborso tramite l'API di Stripe."
 
-#: inc/payments/stripe/admin-stripe-handler.php:224
+#: inc/payments/stripe/admin-stripe-handler.php:261
 msgid "Failed to update payment record after refund."
 msgstr "Impossibile aggiornare il record di pagamento dopo il rimborso."
 
-#: inc/payments/stripe/admin-stripe-handler.php:229
+#: inc/payments/stripe/admin-stripe-handler.php:266
 msgid "Payment refunded successfully."
 msgstr "Rimborso effettuato con successo."
 
-#: inc/payments/stripe/admin-stripe-handler.php:236
+#: inc/payments/stripe/admin-stripe-handler.php:273
 msgid "Failed to process refund. Please try again."
 msgstr "Impossibile elaborare il rimborso. Per favore riprova."
 
-#: inc/payments/stripe/admin-stripe-handler.php:340
+#: inc/payments/stripe/admin-stripe-handler.php:385
 msgid "Subscription pause failed."
 msgstr "La sospensione dell'abbonamento non è riuscita."
 
-#: inc/payments/stripe/admin-stripe-handler.php:349
+#: inc/payments/stripe/admin-stripe-handler.php:436
 msgid "Subscription paused successfully."
 msgstr "Abbonamento sospeso con successo."
 
-#: inc/payments/stripe/admin-stripe-handler.php:477
-#: inc/payments/stripe/admin-stripe-handler.php:966
+#: inc/payments/stripe/admin-stripe-handler.php:564
+#: inc/payments/stripe/admin-stripe-handler.php:1053
 #: inc/payments/stripe/stripe-webhook.php:655
 msgid "Full"
 msgstr "Pieno"
 
-#: inc/payments/stripe/admin-stripe-handler.php:477
-#: inc/payments/stripe/admin-stripe-handler.php:966
+#: inc/payments/stripe/admin-stripe-handler.php:564
+#: inc/payments/stripe/admin-stripe-handler.php:1053
 #: inc/payments/stripe/stripe-webhook.php:655
 msgid "Partial"
 msgstr "Parziale"
 
 #. translators: %s: refund ID
 #. translators: %s: Refund ID.
-#: inc/payments/stripe/admin-stripe-handler.php:483
-#: inc/payments/stripe/admin-stripe-handler.php:972
+#: inc/payments/stripe/admin-stripe-handler.php:570
+#: inc/payments/stripe/admin-stripe-handler.php:1059
 #: inc/payments/stripe/stripe-webhook.php:662
 #: inc/payments/stripe/stripe-webhook.php:826
 msgid "Refund ID: %s"
@@ -13062,8 +13068,8 @@ msgstr "ID rimborso: %s"
 #. translators: 1: refund amount, 2: currency
 #. translators: 1: refund amount, 2: currency code
 #. translators: 1: Refund amount, 2: Currency.
-#: inc/payments/stripe/admin-stripe-handler.php:493
-#: inc/payments/stripe/admin-stripe-handler.php:982
+#: inc/payments/stripe/admin-stripe-handler.php:580
+#: inc/payments/stripe/admin-stripe-handler.php:1069
 #: inc/payments/stripe/stripe-webhook.php:666
 msgid "Refund Amount: %1$s %2$s"
 msgstr "Importo del rimborso: %1$s %2$s"
@@ -13071,8 +13077,8 @@ msgstr "Importo del rimborso: %1$s %2$s"
 #. translators: 1: total refunded, 2: currency, 3: original total, 4: currency
 #. translators: 1: total refunded, 2: currency, 3: original amount, 4: currency
 #. translators: 1: Total refunded amount, 2: Currency, 3: Original amount, 4: Currency
-#: inc/payments/stripe/admin-stripe-handler.php:499
-#: inc/payments/stripe/admin-stripe-handler.php:988
+#: inc/payments/stripe/admin-stripe-handler.php:586
+#: inc/payments/stripe/admin-stripe-handler.php:1075
 #: inc/payments/stripe/stripe-webhook.php:669
 msgid "Total Refunded: %1$s %2$s of %3$s %4$s"
 msgstr "Totale rimborsato: %1$s %2$s di %3$s %4$s"
@@ -13080,8 +13086,8 @@ msgstr "Totale rimborsato: %1$s %2$s di %3$s %4$s"
 #. translators: %s: status (e.g., succeeded, processed)
 #. translators: %s: refund status
 #. translators: %s: Refund status (e.g., succeeded, failed).
-#: inc/payments/stripe/admin-stripe-handler.php:507
-#: inc/payments/stripe/admin-stripe-handler.php:996
+#: inc/payments/stripe/admin-stripe-handler.php:594
+#: inc/payments/stripe/admin-stripe-handler.php:1083
 #: inc/payments/stripe/stripe-webhook.php:676
 msgid "Refund Status: %s"
 msgstr "Stato del rimborso: %s"
@@ -13090,8 +13096,8 @@ msgstr "Stato del rimborso: %s"
 #. translators: %s: payment status
 #. translators: %s: Payment status (e.g., refunded, partially refunded).
 #. translators: %s: Payment status (e.g., succeeded, partially refunded).
-#: inc/payments/stripe/admin-stripe-handler.php:512
-#: inc/payments/stripe/admin-stripe-handler.php:1001
+#: inc/payments/stripe/admin-stripe-handler.php:599
+#: inc/payments/stripe/admin-stripe-handler.php:1088
 #: inc/payments/stripe/stripe-webhook.php:678
 #: inc/payments/stripe/stripe-webhook.php:842
 msgid "Payment Status: %s"
@@ -13100,126 +13106,126 @@ msgstr "Stato del pagamento: %s"
 #. translators: %s: user display name
 #. translators: %s: refunded by user
 #. translators: %s: Refunded by method (e.g., Webhook).
-#: inc/payments/stripe/admin-stripe-handler.php:517
-#: inc/payments/stripe/admin-stripe-handler.php:1006
+#: inc/payments/stripe/admin-stripe-handler.php:604
+#: inc/payments/stripe/admin-stripe-handler.php:1093
 #: inc/payments/stripe/stripe-webhook.php:680
 msgid "Refunded by: %s"
 msgstr "Rimborsato da: %s"
 
 #. translators: %s: refund notes
-#: inc/payments/stripe/admin-stripe-handler.php:526
-#: inc/payments/stripe/admin-stripe-handler.php:1015
+#: inc/payments/stripe/admin-stripe-handler.php:613
+#: inc/payments/stripe/admin-stripe-handler.php:1102
 msgid "Refund Notes: %s"
 msgstr "Note di rimborso: %s"
 
 #. translators: %s: refund type (Full or Partial)
 #. translators: %s: Refund type (e.g., Full, Partial).
-#: inc/payments/stripe/admin-stripe-handler.php:535
+#: inc/payments/stripe/admin-stripe-handler.php:622
 #: inc/payments/stripe/stripe-webhook.php:658
 msgid "%s Payment Refund"
 msgstr "Rimborso del pagamento %s"
 
 #. translators: %1$s: Payment settings link
-#: inc/payments/stripe/admin-stripe-handler.php:599
+#: inc/payments/stripe/admin-stripe-handler.php:686
 #: assets/build/payments.js:2
 msgid "Webhooks keep SureForms in sync with Stripe by automatically updating payment and subscription data. Please %1$s Webhook."
 msgstr "I webhook mantengono SureForms sincronizzato con Stripe aggiornando automaticamente i dati di pagamento e abbonamento. Si prega di %1$s Webhook."
 
-#: inc/payments/stripe/admin-stripe-handler.php:606
+#: inc/payments/stripe/admin-stripe-handler.php:693
 #: assets/build/payments.js:2
 msgid "configure"
 msgstr "configurare"
 
-#: inc/payments/stripe/admin-stripe-handler.php:634
+#: inc/payments/stripe/admin-stripe-handler.php:721
 msgid "Invalid refund parameters provided."
 msgstr "Parametri di rimborso non validi forniti."
 
-#: inc/payments/stripe/admin-stripe-handler.php:644
+#: inc/payments/stripe/admin-stripe-handler.php:731
 msgid "This payment is not related to a subscription."
 msgstr "Questo pagamento non è legato a un abbonamento."
 
-#: inc/payments/stripe/admin-stripe-handler.php:651
+#: inc/payments/stripe/admin-stripe-handler.php:738
 msgid "Only active, succeeded, or partially refunded subscription payments can be refunded."
 msgstr "Solo i pagamenti degli abbonamenti attivi, riusciti o parzialmente rimborsati possono essere rimborsati."
 
-#: inc/payments/stripe/admin-stripe-handler.php:669
+#: inc/payments/stripe/admin-stripe-handler.php:756
 msgid "Stripe refund creation failed. Please check your Stripe dashboard for more details."
 msgstr "La creazione del rimborso Stripe non è riuscita. Si prega di controllare il dashboard di Stripe per ulteriori dettagli."
 
-#: inc/payments/stripe/admin-stripe-handler.php:676
+#: inc/payments/stripe/admin-stripe-handler.php:763
 msgid "Refund was processed by Stripe but failed to update local records. Please check your payment records manually."
 msgstr "Il rimborso è stato elaborato da Stripe ma non è riuscito ad aggiornare i record locali. Si prega di controllare manualmente i record di pagamento."
 
-#: inc/payments/stripe/admin-stripe-handler.php:682
+#: inc/payments/stripe/admin-stripe-handler.php:769
 msgid "Subscription payment refunded successfully."
 msgstr "Pagamento dell'abbonamento rimborsato con successo."
 
 #. translators: 1: Maximum refundable amount (numeric), 2: Currency code (e.g. USD)
-#: inc/payments/stripe/admin-stripe-handler.php:744
+#: inc/payments/stripe/admin-stripe-handler.php:831
 msgid "Refund amount exceeds available amount. Maximum refundable: %1$s %2$s"
 msgstr "L'importo del rimborso supera l'importo disponibile. Importo massimo rimborsabile: %1$s %2$s"
 
-#: inc/payments/stripe/admin-stripe-handler.php:754
+#: inc/payments/stripe/admin-stripe-handler.php:841
 msgid "Refund amount must be greater than zero."
 msgstr "L'importo del rimborso deve essere maggiore di zero."
 
-#: inc/payments/stripe/admin-stripe-handler.php:762
+#: inc/payments/stripe/admin-stripe-handler.php:849
 msgid "Refund amount must be at least $0.50."
 msgstr "L'importo del rimborso deve essere di almeno $0,50."
 
-#: inc/payments/stripe/admin-stripe-handler.php:805
+#: inc/payments/stripe/admin-stripe-handler.php:892
 msgid "Unable to determine the appropriate refund method for this subscription payment."
 msgstr "Impossibile determinare il metodo di rimborso appropriato per questo pagamento dell'abbonamento."
 
 #. translators: %s: refund type (Full/Partial)
-#: inc/payments/stripe/admin-stripe-handler.php:1023
+#: inc/payments/stripe/admin-stripe-handler.php:1110
 msgid "%s Subscription Payment Refund"
 msgstr "Rimborso del pagamento dell'abbonamento %s"
 
-#: inc/payments/stripe/admin-stripe-handler.php:1055
+#: inc/payments/stripe/admin-stripe-handler.php:1142
 #: assets/build/payments.js:172
 msgid "This payment has already been fully refunded."
 msgstr "Questo pagamento è già stato completamente rimborsato."
 
-#: inc/payments/stripe/admin-stripe-handler.php:1056
+#: inc/payments/stripe/admin-stripe-handler.php:1143
 msgid "The payment could not be found in Stripe."
 msgstr "Il pagamento non è stato trovato in Stripe."
 
-#: inc/payments/stripe/admin-stripe-handler.php:1057
+#: inc/payments/stripe/admin-stripe-handler.php:1144
 msgid "The refund amount exceeds the available refundable amount."
 msgstr "L'importo del rimborso supera l'importo rimborsabile disponibile."
 
-#: inc/payments/stripe/admin-stripe-handler.php:1058
+#: inc/payments/stripe/admin-stripe-handler.php:1145
 msgid "The payment for this subscription could not be found."
 msgstr "Il pagamento per questo abbonamento non è stato trovato."
 
-#: inc/payments/stripe/admin-stripe-handler.php:1059
+#: inc/payments/stripe/admin-stripe-handler.php:1146
 msgid "The subscription could not be found in Stripe."
 msgstr "L'abbonamento non è stato trovato in Stripe."
 
-#: inc/payments/stripe/admin-stripe-handler.php:1060
+#: inc/payments/stripe/admin-stripe-handler.php:1147
 msgid "This subscription has no successful payments to refund."
 msgstr "Questo abbonamento non ha pagamenti riusciti da rimborsare."
 
-#: inc/payments/stripe/admin-stripe-handler.php:1061
+#: inc/payments/stripe/admin-stripe-handler.php:1148
 msgid "The payment method for this subscription is invalid."
 msgstr "Il metodo di pagamento per questo abbonamento non è valido."
 
-#: inc/payments/stripe/admin-stripe-handler.php:1062
+#: inc/payments/stripe/admin-stripe-handler.php:1149
 msgid "Insufficient permissions to process refunds."
 msgstr "Permessi insufficienti per elaborare i rimborsi."
 
-#: inc/payments/stripe/admin-stripe-handler.php:1063
+#: inc/payments/stripe/admin-stripe-handler.php:1150
 msgid "Too many requests. Please try again in a moment."
 msgstr "Troppe richieste. Per favore riprova tra un momento."
 
-#: inc/payments/stripe/admin-stripe-handler.php:1064
+#: inc/payments/stripe/admin-stripe-handler.php:1151
 #: assets/build/payments.js:172
 msgid "Network error. Please check your connection and try again."
 msgstr "Errore di rete. Controlla la tua connessione e riprova."
 
 #. translators: %s: technical error message returned from Stripe.
-#: inc/payments/stripe/admin-stripe-handler.php:1075
+#: inc/payments/stripe/admin-stripe-handler.php:1162
 msgid "Subscription refund failed: %s"
 msgstr "Rimborso dell'abbonamento fallito: %s"
 
@@ -13388,6 +13394,7 @@ msgstr "Motivo della cancellazione: %s"
 msgid "Feedback: %s"
 msgstr "Feedback: %s"
 
+#: inc/payments/stripe/admin-stripe-handler.php:139
 #: inc/payments/stripe/stripe-webhook.php:548
 msgid "Subscription Canceled"
 msgstr "Abbonamento annullato"
@@ -13414,7 +13421,9 @@ msgstr "Importo del rimborso annullato: %1$s %2$s"
 msgid "Remaining Refunded: %1$s %2$s of %3$s %4$s"
 msgstr "Rimborso rimanente: %1$s %2$s di %3$s %4$s"
 
+#. translators: %s: user display name
 #. translators: %s: Canceled by method (e.g., Webhook).
+#: inc/payments/stripe/admin-stripe-handler.php:131
 #: inc/payments/stripe/stripe-webhook.php:844
 msgid "Canceled by: %s"
 msgstr "Annullato da: %s"
@@ -14446,10 +14455,6 @@ msgid "Refunded"
 msgstr "Rimborsato"
 
 #: assets/build/payments.js:2
-msgid "Cancelled"
-msgstr "Annullato"
-
-#: assets/build/payments.js:2
 msgid "Active"
 msgstr "Attivo"
 
@@ -15146,6 +15151,37 @@ msgstr "Hai raggiunto il tuo limite gratuito."
 #: assets/build/templatePicker.js:172
 msgid "Connect to SureForms AI to Get 10 More."
 msgstr "Connettiti a SureForms AI per ottenere altri 10."
+
+#: inc/payments/stripe/admin-stripe-handler.php:127
+#: assets/build/payments.js:2
+msgid "Canceled"
+msgstr "Annullato"
+
+#: inc/payments/stripe/admin-stripe-handler.php:134
+msgid "Note: The subscription has been permanently canceled. The customer will no longer be charged and will lose access to subscription benefits."
+msgstr "Nota: L'abbonamento è stato annullato definitivamente. Il cliente non verrà più addebitato e perderà l'accesso ai benefici dell'abbonamento."
+
+#: inc/payments/stripe/admin-stripe-handler.php:158
+msgid "Subscription canceled successfully."
+msgstr "Abbonamento annullato con successo."
+
+#: inc/payments/stripe/admin-stripe-handler.php:406
+#: assets/build/payments.js:2
+msgid "Paused"
+msgstr "In pausa"
+
+#. translators: %s: user display name
+#: inc/payments/stripe/admin-stripe-handler.php:410
+msgid "Paused by: %s"
+msgstr "Messo in pausa da: %s"
+
+#: inc/payments/stripe/admin-stripe-handler.php:413
+msgid "Note: The subscription billing has been paused. No charges will occur until the subscription is resumed."
+msgstr "Nota: La fatturazione dell'abbonamento è stata sospesa. Non verranno addebitati costi fino a quando l'abbonamento non verrà ripreso."
+
+#: inc/payments/stripe/admin-stripe-handler.php:418
+msgid "Subscription Paused"
+msgstr "Abbonamento in pausa"
 
 #: inc/post-types.php:205
 msgctxt "post type general name"
