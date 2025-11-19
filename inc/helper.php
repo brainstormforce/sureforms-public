@@ -440,6 +440,9 @@ class Helper {
 			return '';
 		}
 
+		// Strip HTML tags to prevent them from being included in IDs and field names.
+		$input = wp_strip_all_tags( $input );
+
 		// Encrypt the input and return it.
 		$base_64 = base64_encode( $input ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
 		return rtrim( $base_64, '=' );
