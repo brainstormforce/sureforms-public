@@ -452,6 +452,43 @@ class Analytics {
 	}
 
 	/**
+	 * Runs a custom WP_Query to fetch the total number of posts matching the given meta query and optional search string.
+	 *
+	 * This function is used to count SureForms posts based on specific meta query conditions.
+	 * Optionally, a search string can be included to further filter results by keyword match.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @param array  $meta_query Meta query array for WP_Query.
+	 * @param string $search     Optional. Search string for WP_Query. Default empty.
+	 * @return int               The number of matching posts.
+	 */
+	public function custom_wp_query_total_posts_with_search( $meta_query = [], $search = '' ) {
+		$args = [
+			'post_type'      => SRFM_FORMS_POST_TYPE,
+			'post_status'    => 'publish',
+			'posts_per_page' => -1,
+		];
+
+		if ( ! empty( $meta_query ) && is_array( $meta_query ) ) {
+			// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Meta query required as we need to fetch count of nested data.
+			$args['meta_query'] = $meta_query;
+		}
+
+		// If search string is provided, add it to the query.
+		if ( ! empty( $search ) ) {
+			$args['s'] = sanitize_text_field( $search );
+		}
+
+		$query       = new \WP_Query( $args );
+		$posts_count = $query->found_posts;
+
+		wp_reset_postdata();
+
+		return $posts_count;
+	}
+
+	/**
 	 * Check if any payment method is enabled.
 	 *
 	 * This function checks if any payment gateway is connected and enabled.
@@ -480,43 +517,6 @@ class Analytics {
 			'posts_per_page' => -1,
 			'meta_query'     => $meta_query, //phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Meta query required as we need to fetch count of nested data.
 		];
-
-		$query       = new \WP_Query( $args );
-		$posts_count = $query->found_posts;
-
-		wp_reset_postdata();
-
-		return $posts_count;
-	}
-
-	/**
-	 * Runs a custom WP_Query to fetch the total number of posts matching the given meta query and optional search string.
-	 *
-	 * This function is used to count SureForms posts based on specific meta query conditions.
-	 * Optionally, a search string can be included to further filter results by keyword match.
-	 *
-	 * @since 2.0.0
-	 *
-	 * @param array  $meta_query Meta query array for WP_Query.
-	 * @param string $search     Optional. Search string for WP_Query. Default empty.
-	 * @return int               The number of matching posts.
-	 */
-	public function custom_wp_query_total_posts_with_search( $meta_query = [], $search = '' ) {
-		$args = [
-			'post_type'      => SRFM_FORMS_POST_TYPE,
-			'post_status'    => 'publish',
-			'posts_per_page' => -1,
-		];
-
-		if ( ! empty( $meta_query ) && is_array( $meta_query ) ) {
-			// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Meta query required as we need to fetch count of nested data.
-			$args['meta_query'] = $meta_query;
-		}
-
-		// If search string is provided, add it to the query.
-		if ( ! empty( $search ) ) {
-			$args['s'] = sanitize_text_field( $search );
-		}
 
 		$query       = new \WP_Query( $args );
 		$posts_count = $query->found_posts;
