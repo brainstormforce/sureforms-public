@@ -185,7 +185,7 @@ class Entries extends Base {
 		$log = [
 			'title'     => Helper::get_string_value( trim( $title ) ),
 			'messages'  => Helper::get_array_value( $messages ),
-			'timestamp' => current_time( 'timestamp' ), //phpcs:ignore WordPress.DateTime.CurrentTimeTimestamp -- Using current_time() to match the WordPress timezone.
+			'timestamp' => current_time( 'mysql' ), //phpcs:ignore WordPress.DateTime.CurrentTimeTimestamp -- Using current_time() to match the WordPress timezone.
 		];
 
 		$this->logs = array_merge( [ $log ], $this->logs );

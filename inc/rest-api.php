@@ -27,6 +27,14 @@ class Rest_Api {
 	use Get_Instance;
 
 	/**
+	 * Dropdown counter for field name generation.
+	 *
+	 * @var int
+	 * @since 2.0.0
+	 */
+	private static $dropdown_counter = 0;
+
+	/**
 	 * Constructor
 	 *
 	 * @since 0.0.7
@@ -563,7 +571,7 @@ class Rest_Api {
 		$user_info = 0 !== $user_id ? get_userdata( $user_id ) : null;
 
 		// Get form info.
-		$form_title = get_the_title( $entry['form_id'] );
+		$form_title = get_post_field( 'post_title', $entry['form_id'] );
 		// Translators: %d is the form ID.
 		$form_name = ! empty( $form_title ) ? $form_title : sprintf( __( 'SureForms Form #%d', 'sureforms' ), intval( $entry['form_id'] ) );
 
@@ -852,12 +860,15 @@ class Rest_Api {
 	 * @param array<string, array<mixed>> &$form_fields Reference to form fields array.
 	 * @param array<mixed>                $entry_data The entry form data.
 	 * @param bool                        $is_special_block Whether the current block is a special block (like address).
+	 * @param int|null                    $base_counter Base counter for unique field naming.
 	 * @since 2.0.0
 	 * @return void
 	 */
-	public function extract_form_fields( $blocks, $sureforms_blocks, &$form_fields, $entry_data = [], $is_special_block = false ) {
-		static $dropdown_counter = 0;
-		$block_type              = '';
+	public function extract_form_fields( $blocks, $sureforms_blocks, &$form_fields, $entry_data = [], $is_special_block = false, $base_counter = null ) {
+		if ( null !== $base_counter ) {
+			self::$dropdown_counter = $base_counter;
+		}
+		$block_type = '';
 
 		foreach ( $blocks as $block ) {
 			if ( ! is_array( $block ) || ! isset( $block['blockName'] ) || ! is_string( $block['blockName'] ) ) {
@@ -902,8 +913,8 @@ class Rest_Api {
 
 						// Handle special case for dropdown with instance counter.
 						if ( 'dropdown' === $block_type ) {
-							$dropdown_counter++;
-							$unique_slug = $block_type . '-' . $dropdown_counter;
+							self::$dropdown_counter++;
+							$unique_slug = $block_type . '-' . self::$dropdown_counter;
 							$field_name  = 'srfm-' . $unique_slug . '-' . $block_id . $base_field_name;
 						} elseif ( 'multi-choice' === $block_type ) {
 							// Multi-choice uses standard pattern.
@@ -940,12 +951,22 @@ class Rest_Api {
 			}
 
 			// Recursively process inner blocks but skip for address blocks.
-			if ( isset( $block['innerBlocks'] ) && is_array( $block['innerBlocks'] ) && 'address' !== $block_type ) {
+			if ( isset( $block['innerBlocks'] ) && is_array( $block['innerBlocks'] ) && ! empty( $block['innerBlocks'] ) && 'address' !== $block_type ) {
 				// Pass true if current block has inner blocks and it doesn't need to be duplicated in the main fields array.
-				$is_special_block = apply_filters( 'srfm_is_special_block', false, $block_type );
-				$this->extract_form_fields( $block['innerBlocks'], $sureforms_blocks, $form_fields, $entry_data, $is_special_block );
+				$inner_is_special_block = apply_filters( 'srfm_is_special_block', false, $block_type );
+				$this->extract_form_fields( $block['innerBlocks'], $sureforms_blocks, $form_fields, $entry_data, $inner_is_special_block );
 			}
 		}
+	}
+
+	/**
+	 * Get current dropdown counter value.
+	 *
+	 * @since 2.0.0
+	 * @return int Current dropdown counter value.
+	 */
+	public function get_dropdown_counter() {
+		return self::$dropdown_counter;
 	}
 
 	/**
