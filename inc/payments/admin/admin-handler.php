@@ -8,6 +8,7 @@
 namespace SRFM\Inc\Payments\Admin;
 
 use SRFM\Inc\Database\Tables\Payments;
+use SRFM\Inc\Helper;
 use SRFM\Inc\Payments\Payment_Helper;
 use SRFM\Inc\Traits\Get_Instance;
 
@@ -80,9 +81,7 @@ class Admin_Handler {
 		// Register script translations if needed.
 		if ( ! empty( $script_translations_handlers ) ) {
 			foreach ( $script_translations_handlers as $script_handle ) {
-				if ( function_exists( '\SRFM\Inc\Helper::register_script_translations' ) ) {
-					\SRFM\Inc\Helper::register_script_translations( $script_handle );
-				}
+				Helper::register_script_translations( $script_handle );
 			}
 		}
 	}
