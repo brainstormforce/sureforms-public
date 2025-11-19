@@ -309,11 +309,19 @@ class Admin_Stripe_Handler {
 			wp_send_json_error( [ 'message' => esc_html__( 'Missing payment ID.', 'sureforms' ) ] );
 		}
 
+		// Verify nonce.
+		if (
+			! wp_verify_nonce(
+				sanitize_text_field( wp_unslash( $_POST['nonce'] ?? '' ) ),
+				'srfm_payment_admin_nonce'
+			)
+		) {
+			wp_send_json_error( __( 'Invalid nonce.', 'sureforms' ) );
+		}
+
 		if ( ! current_user_can( 'manage_options' ) ) {
 			wp_send_json_error( [ 'message' => esc_html__( 'You are not allowed to perform this action.', 'sureforms' ) ] );
 		}
-
-		check_ajax_referer( 'sureforms_admin_nonce', 'nonce' );
 
 		$payment_id = absint( $_POST['payment_id'] );
 

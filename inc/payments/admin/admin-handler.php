@@ -825,7 +825,7 @@ class Admin_Handler {
 		$form_id = isset( $payment['form_id'] ) && ! empty( $payment['form_id'] ) && is_numeric( $payment['form_id'] ) ? intval( $payment['form_id'] ) : 0;
 		if ( is_numeric( $form_id ) && ! isset( $form_titles[ $form_id ] ) ) {
 			$form_title              = get_the_title( intval( $form_id ) );
-			$form_titles[ $form_id ] = ! empty( $form_title ) ? $form_title : __( 'Unknown Form', 'sureforms' );
+			$form_titles[ $form_id ] = ! empty( $form_title ) ? html_entity_decode( $form_title, ENT_QUOTES | ENT_HTML5, 'UTF-8' ) : __( 'Unknown Form', 'sureforms' );
 		}
 		$form_title     = isset( $form_titles[ $form_id ] ) && ! empty( $form_titles[ $form_id ] ) ? $form_titles[ $form_id ] : __( 'Unknown Form', 'sureforms' );
 		$form_permalink = isset( $form_titles[ $form_id ] ) && ! empty( $form_titles[ $form_id ] ) ? get_permalink( intval( $form_id ) ) : '';

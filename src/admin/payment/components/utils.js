@@ -191,6 +191,8 @@ export const getStatusVariant = ( status ) => {
 			return 'blue';
 		case 'cancelled':
 			return 'gray';
+		case 'paused':
+			return 'gray';
 		default:
 			return 'gray';
 	}
@@ -351,6 +353,7 @@ export const getStatusLabel = ( status ) => {
 		refunded: __( 'Refunded', 'sureforms' ),
 		cancelled: __( 'Cancelled', 'sureforms' ),
 		active: __( 'Active', 'sureforms' ),
+		paused: __( 'Paused', 'sureforms' ),
 	};
 	return statusMap[ status ] || status;
 };

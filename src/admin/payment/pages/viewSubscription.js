@@ -748,6 +748,12 @@ const ViewSubscription = () => {
 								onClick={ openCancelDialog }
 								size="xs"
 								variant="outline"
+								disabled={
+									subscriptionData.subscription_status ===
+										'cancelled' ||
+									subscriptionData.subscription_status ===
+										'canceled'
+								}
 							>
 								{ __( 'Cancel', 'sureforms' ) }
 							</Button>
@@ -755,6 +761,14 @@ const ViewSubscription = () => {
 								onClick={ openPauseDialog }
 								size="xs"
 								variant="outline"
+								disabled={
+									subscriptionData.subscription_status ===
+										'paused' ||
+									subscriptionData.subscription_status ===
+										'cancelled' ||
+									subscriptionData.subscription_status ===
+										'canceled'
+								}
 							>
 								{ __( 'Pause', 'sureforms' ) }
 							</Button>
