@@ -312,7 +312,10 @@ const ViewSubscription = () => {
 
 	const handleViewEntry = () => {
 		if ( subscriptionData?.entry_id ) {
-			window.location.href = `${ window.location.origin }/wp-admin/admin.php?page=sureforms_entries&entry_id=${ subscriptionData.entry_id }&view=details`;
+			window.open(
+				`${ window.location.origin }/wp-admin/admin.php?page=sureforms_entries#/entry/${ subscriptionData.entry_id }`,
+				'_blank'
+			);
 		}
 	};
 
