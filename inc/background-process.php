@@ -94,8 +94,8 @@ class Background_Process {
 	public function handle_after_submission( $request ) {
 		$this->submission_id = Helper::get_integer_value( $request->get_param( 'submission_id' ) );
 
-		$extras_decoded                        = $this->get_decoded_extras( $this->submission_id );
-		$is_after_submission_process_triggered = $extras_decoded['is_after_submission_process_triggered'] ?? false;
+		$extras                                = $this->get_extras_data( $this->submission_id );
+		$is_after_submission_process_triggered = $extras['is_after_submission_process_triggered'] ?? false;
 
 		if ( $is_after_submission_process_triggered ) {
 			return new \WP_Error(
@@ -160,18 +160,18 @@ class Background_Process {
 
 		// Update the extras column to track that the after submission process was triggered.
 		if ( 0 < $this->submission_id ) {
-			$extras_decoded = $this->get_decoded_extras( $this->submission_id );
+			$extras = $this->get_extras_data( $this->submission_id );
 
 			// Merge new data.
 			$updated_extras = array_merge(
-				$extras_decoded,
+				$extras,
 				[ 'is_after_submission_process_triggered' => true ]
 			);
 
 			// Update entry.
 			Entries::update(
 				$this->submission_id,
-				[ 'extras' => wp_json_encode( $updated_extras ) ]
+				[ 'extras' => $updated_extras ]
 			);
 		}
 
@@ -179,25 +179,14 @@ class Background_Process {
 	}
 
 	/**
-	 * Get and decode extras data from entry.
+	 * Get extras data from entry.
 	 *
 	 * @param int $submission_id Submission ID.
 	 * @since 1.13.2
-	 * @return array<mixed> Decoded extras array.
+	 * @return array<string|int,mixed> Extras array.
 	 */
-	protected function get_decoded_extras( $submission_id ) {
+	protected function get_extras_data( $submission_id ) {
 		$entry_data = Entries::get( $submission_id );
-		$extras     = Helper::get_array_value( $entry_data['extras'] )[0] ?? [];
-
-		// Decode existing extras (if any).
-		$extras_decoded = is_string( $extras )
-			? json_decode( Helper::get_string_value( $extras ), true )
-			: ( is_array( $extras ) ? $extras : [] );
-
-		if ( ! is_array( $extras_decoded ) ) {
-			$extras_decoded = [];
-		}
-
-		return $extras_decoded;
+		return Helper::get_array_value( $entry_data['extras'] ) ?? [];
 	}
 }
