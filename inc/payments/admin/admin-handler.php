@@ -802,7 +802,7 @@ class Admin_Handler {
 			'failed'                  => 'failed',
 			'refunded'                => 'refunded',
 			'partially_refunded'      => 'refunded',
-			'canceled'                => 'cancelled',
+			'canceled'                => 'canceled',
 			'requires_action'         => 'pending',
 			'requires_payment_method' => 'pending',
 			'processing'              => 'pending',

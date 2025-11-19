@@ -124,30 +124,30 @@ class Admin_Stripe_Handler {
 			sprintf(
 				/* translators: %s: subscription status */
 				__( 'Subscription Status: %s', 'sureforms' ),
-				__( 'Cancelled', 'sureforms' )
+				__( 'Canceled', 'sureforms' )
 			),
 			sprintf(
 				/* translators: %s: user display name */
-				__( 'Cancelled by: %s', 'sureforms' ),
+				__( 'Canceled by: %s', 'sureforms' ),
 				wp_get_current_user()->display_name
 			),
-			__( 'Note: The subscription has been permanently cancelled. The customer will no longer be charged and will lose access to subscription benefits.', 'sureforms' ),
+			__( 'Note: The subscription has been permanently canceled. The customer will no longer be charged and will lose access to subscription benefits.', 'sureforms' ),
 		];
 
 		// Create new log entry.
 		$new_log        = [
-			'title'      => __( 'Subscription Cancelled', 'sureforms' ),
+			'title'      => __( 'Subscription Canceled', 'sureforms' ),
 			'created_at' => current_time( 'mysql' ),
 			'messages'   => $log_messages,
 		];
 		$current_logs[] = $new_log;
 
-		// Update database status to cancelled (following WPForms pattern).
+		// Update database status to canceled (following WPForms pattern).
 		$updated = Payments::update(
 			$payment_id,
 			[
-				'subscription_status' => 'cancelled',
-				'status'              => 'cancelled',
+				'subscription_status' => 'canceled',
+				'status'              => 'canceled',
 				'log'                 => $current_logs,
 			]
 		);
@@ -155,7 +155,7 @@ class Admin_Stripe_Handler {
 			wp_send_json_error( [ 'message' => esc_html__( 'Failed to update subscription status in database.', 'sureforms' ) ] );
 		}
 
-		wp_send_json_success( [ 'message' => esc_html__( 'Subscription cancelled successfully.', 'sureforms' ) ] );
+		wp_send_json_success( [ 'message' => esc_html__( 'Subscription canceled successfully.', 'sureforms' ) ] );
 	}
 
 	/**

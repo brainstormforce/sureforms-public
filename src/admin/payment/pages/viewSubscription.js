@@ -750,9 +750,7 @@ const ViewSubscription = () => {
 								variant="outline"
 								disabled={
 									subscriptionData.subscription_status ===
-										'cancelled' ||
-									subscriptionData.subscription_status ===
-										'canceled'
+									'canceled'
 								}
 							>
 								{ __( 'Cancel', 'sureforms' ) }
@@ -764,8 +762,6 @@ const ViewSubscription = () => {
 								disabled={
 									subscriptionData.subscription_status ===
 										'paused' ||
-									subscriptionData.subscription_status ===
-										'cancelled' ||
 									subscriptionData.subscription_status ===
 										'canceled'
 								}

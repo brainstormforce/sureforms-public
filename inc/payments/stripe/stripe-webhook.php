@@ -554,7 +554,7 @@ class Stripe_Webhook {
 
 		// Update subscription record with canceled status.
 		$update_data = [
-			'status' => 'cancelled',
+			'status' => 'canceled',
 			'log'    => $current_logs,
 		];
 
