@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-11-16T17:50:26+00:00\n"
+"POT-Creation-Date: 2025-11-19T11:27:47+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: sureforms\n"
@@ -190,7 +190,7 @@ msgstr ""
 #: admin/admin.php:1341
 #: admin/admin.php:1362
 #: inc/admin-ajax.php:166
-#: inc/payments/front-end.php:71
+#: inc/payments/front-end.php:74
 #: inc/payments/stripe/admin-stripe-handler.php:77
 #: inc/payments/stripe/admin-stripe-handler.php:139
 msgid "Invalid nonce."
@@ -310,65 +310,65 @@ msgstr ""
 msgid "Runs when a form is submitted"
 msgstr ""
 
-#: inc/admin-ajax.php:306
-#: inc/admin-ajax.php:357
+#: inc/admin-ajax.php:329
+#: inc/admin-ajax.php:380
 msgid "Sample data"
 msgstr ""
 
-#: inc/admin-ajax.php:310
+#: inc/admin-ajax.php:333
 msgid "Sample input data"
 msgstr ""
 
-#: inc/admin-ajax.php:312
+#: inc/admin-ajax.php:335
 msgid "Sample textarea data"
 msgstr ""
 
-#: inc/admin-ajax.php:317
-#: inc/admin-ajax.php:318
+#: inc/admin-ajax.php:340
+#: inc/admin-ajax.php:341
 msgid "Address data"
 msgstr ""
 
-#: inc/admin-ajax.php:319
+#: inc/admin-ajax.php:342
 msgid "Selected dropdown option"
 msgstr ""
 
-#: inc/admin-ajax.php:320
+#: inc/admin-ajax.php:343
 msgid "Selected Multichoice option"
 msgstr ""
 
-#: inc/admin-ajax.php:321
+#: inc/admin-ajax.php:344
 msgid "Selected radio option"
 msgstr ""
 
-#: inc/admin-ajax.php:322
+#: inc/admin-ajax.php:345
 #: inc/create-new-form.php:63
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 msgid "Submit"
 msgstr ""
 
-#: inc/admin-ajax.php:325
+#: inc/admin-ajax.php:348
 msgid "Hidden Value"
 msgstr ""
 
-#: inc/admin-ajax.php:381
+#: inc/admin-ajax.php:404
 msgid "You do not have permission to access this file."
 msgstr ""
 
-#: inc/admin-ajax.php:386
-#: inc/payments/front-end.php:195
+#: inc/admin-ajax.php:409
+#: inc/payments/front-end.php:227
 msgid "Security check failed."
 msgstr ""
 
-#: inc/admin-ajax.php:393
+#: inc/admin-ajax.php:416
 msgid "Invalid file request."
 msgstr ""
 
-#: inc/admin-ajax.php:402
+#: inc/admin-ajax.php:425
 msgid "Invalid file path."
 msgstr ""
 
-#: inc/admin-ajax.php:407
+#: inc/admin-ajax.php:430
 msgid "File not found."
 msgstr ""
 
@@ -384,19 +384,19 @@ msgstr ""
 #: inc/forms-data.php:88
 #: inc/global-settings/global-settings.php:86
 #: inc/global-settings/global-settings.php:357
-#: inc/rest-api.php:83
-#: inc/rest-api.php:142
-#: inc/rest-api.php:162
-#: inc/rest-api.php:194
-#: inc/rest-api.php:216
-#: inc/rest-api.php:307
-#: inc/rest-api.php:352
-#: inc/rest-api.php:401
-#: inc/rest-api.php:450
-#: inc/rest-api.php:483
-#: inc/rest-api.php:611
-#: inc/rest-api.php:684
-#: inc/rest-api.php:744
+#: inc/rest-api.php:91
+#: inc/rest-api.php:150
+#: inc/rest-api.php:170
+#: inc/rest-api.php:202
+#: inc/rest-api.php:224
+#: inc/rest-api.php:315
+#: inc/rest-api.php:360
+#: inc/rest-api.php:409
+#: inc/rest-api.php:458
+#: inc/rest-api.php:491
+#: inc/rest-api.php:619
+#: inc/rest-api.php:692
+#: inc/rest-api.php:752
 msgid "Nonce verification failed."
 msgstr ""
 
@@ -1039,90 +1039,90 @@ msgid "Sorry, you are not allowed to perform this action."
 msgstr ""
 
 #. translators: %s: Provider name like HCaptcha, Google reCAPTCHA, Turnstile
-#: inc/helper.php:1012
+#: inc/helper.php:1043
 msgid "%s sitekey is missing. Please contact your site administrator."
 msgstr ""
 
-#: inc/helper.php:1618
+#: inc/helper.php:1649
 msgid "SureMail"
 msgstr ""
 
-#: inc/helper.php:1619
+#: inc/helper.php:1650
 msgid "Boost Your Email Deliverability Instantly!"
 msgstr ""
 
-#: inc/helper.php:1620
+#: inc/helper.php:1651
 msgid "Access a powerful, easy-to-use email delivery service that ensures your emails land in inboxes, not spam folders. Automate your WordPress email workflows confidently with SureMail."
 msgstr ""
 
-#: inc/helper.php:1627
+#: inc/helper.php:1658
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:172
 msgid "OttoKit"
 msgstr ""
 
-#: inc/helper.php:1628
+#: inc/helper.php:1659
 msgid "Automate your WordPress workflows effortlessly."
 msgstr ""
 
-#: inc/helper.php:1629
+#: inc/helper.php:1660
 msgid "Connect your WordPress plugins and favourite apps, automate tasks, and sync data effortlessly using OttoKit’s clean, visual workflow builder — no coding or complex setup required."
 msgstr ""
 
-#: inc/helper.php:1639
+#: inc/helper.php:1670
 msgid "Starter Templates"
 msgstr ""
 
-#: inc/helper.php:1640
+#: inc/helper.php:1671
 msgid "Launch Beautiful Websites in Minutes!"
 msgstr ""
 
-#: inc/helper.php:1641
+#: inc/helper.php:1672
 msgid "Choose from professionally designed templates, import with one click, and customize effortlessly to match your brand."
 msgstr ""
 
-#: inc/helper.php:1653
+#: inc/helper.php:1684
 msgid "Ultimate Addons for Elementor"
 msgstr ""
 
-#: inc/helper.php:1654
+#: inc/helper.php:1685
 msgid "Power Up Elementor to Build Stunning Websites Faster!"
 msgstr ""
 
-#: inc/helper.php:1655
+#: inc/helper.php:1686
 msgid "Enhance Elementor with powerful widgets and templates. Build stunning, high-performing websites faster with creative design elements and seamless customization."
 msgstr ""
 
-#: inc/helper.php:1663
+#: inc/helper.php:1694
 msgid "SureRank"
 msgstr ""
 
-#: inc/helper.php:1664
+#: inc/helper.php:1695
 msgid "Elevate Your SEO and Climb Search Rankings Effortlessly!"
 msgstr ""
 
-#: inc/helper.php:1665
+#: inc/helper.php:1696
 msgid "Boost your website's visibility with smart SEO automation. Optimize content, track keyword performance, and get actionable insights, all inside WordPress."
 msgstr ""
 
-#: inc/helper.php:1849
+#: inc/helper.php:1880
 msgid "Invalid nonce action or name."
 msgstr ""
 
-#: inc/helper.php:1859
-#: inc/helper.php:1867
+#: inc/helper.php:1890
+#: inc/helper.php:1898
 msgid "Invalid security token."
 msgstr ""
 
-#: inc/helper.php:1874
+#: inc/helper.php:1905
 msgid "Invalid request type."
 msgstr ""
 
-#: inc/helper.php:1882
+#: inc/helper.php:1913
 msgid "You do not have permission to perform this action."
 msgstr ""
 
-#: inc/helper.php:2007
+#: inc/helper.php:2038
 msgid "Blank Form"
 msgstr ""
 
@@ -1424,158 +1424,154 @@ msgstr ""
 #: inc/payments/admin/admin-handler.php:1336
 #: inc/payments/admin/admin-handler.php:1340
 #: inc/payments/admin/admin-handler.php:1344
-#: inc/payments/front-end.php:671
-#: inc/payments/front-end.php:953
+#: inc/payments/front-end.php:703
+#: inc/payments/front-end.php:1059
 msgid "Guest User"
 msgstr ""
 
-#: inc/payments/front-end.php:82
+#: inc/payments/front-end.php:85
 msgid "Invalid payment amount."
 msgstr ""
 
-#: inc/payments/front-end.php:87
+#: inc/payments/front-end.php:90
 msgid "Valid customer email is required for payments."
 msgstr ""
 
-#: inc/payments/front-end.php:93
-#: inc/payments/front-end.php:241
+#: inc/payments/front-end.php:96
+#: inc/payments/front-end.php:273
 #: inc/payments/stripe/admin-stripe-handler.php:662
-#: inc/payments/stripe/payments-settings.php:321
-#: inc/payments/stripe/payments-settings.php:446
-#: inc/payments/stripe/payments-settings.php:585
-#: inc/payments/stripe/payments-settings.php:712
+#: inc/payments/stripe/payments-settings.php:347
+#: inc/payments/stripe/payments-settings.php:472
+#: inc/payments/stripe/payments-settings.php:611
+#: inc/payments/stripe/payments-settings.php:738
 #: inc/payments/stripe/stripe-helper.php:170
 msgid "Stripe is not connected."
 msgstr ""
 
-#: inc/payments/front-end.php:99
-#: inc/payments/front-end.php:247
-#: inc/payments/front-end.php:475
-#: inc/payments/front-end.php:857
+#: inc/payments/front-end.php:102
+#: inc/payments/front-end.php:279
+#: inc/payments/front-end.php:507
+#: inc/payments/front-end.php:963
 msgid "Stripe secret key not found."
 msgstr ""
 
-#: inc/payments/front-end.php:163
-#: inc/payments/front-end.php:170
-msgid "Failed to create payment intent."
-msgstr ""
-
-#: inc/payments/front-end.php:181
-msgid "Failed to create payment intent. Please try again."
+#. translators: %s: formatted payment amount
+#: inc/payments/front-end.php:184
+msgid "The payment amount (%s) is below the minimum allowed. Stripe only processes amounts above 50¢."
 msgstr ""
 
 #. translators: %s: Field name
-#: inc/payments/front-end.php:203
+#: inc/payments/front-end.php:235
 msgid "Missing required field: %s"
 msgstr ""
 
-#: inc/payments/front-end.php:219
+#: inc/payments/front-end.php:251
 msgid "Valid customer email is required for subscriptions."
 msgstr ""
 
-#: inc/payments/front-end.php:224
+#: inc/payments/front-end.php:256
 msgid "Customer name is required for subscriptions."
 msgstr ""
 
-#: inc/payments/front-end.php:229
+#: inc/payments/front-end.php:261
 msgid "Amount must be greater than 0"
 msgstr ""
 
-#: inc/payments/front-end.php:235
+#: inc/payments/front-end.php:267
 msgid "Invalid billing interval"
 msgstr ""
 
-#: inc/payments/front-end.php:258
+#: inc/payments/front-end.php:290
 msgid "Failed to create customer for subscription."
 msgstr ""
 
-#: inc/payments/front-end.php:291
-#: inc/payments/front-end.php:307
+#: inc/payments/front-end.php:323
+#: inc/payments/front-end.php:339
 msgid "Failed to create subscription through middleware."
 msgstr ""
 
-#: inc/payments/front-end.php:312
+#: inc/payments/front-end.php:344
 msgid "Empty response from subscription creation."
 msgstr ""
 
-#: inc/payments/front-end.php:317
+#: inc/payments/front-end.php:349
 msgid "Invalid JSON response from subscription creation."
 msgstr ""
 
-#: inc/payments/front-end.php:321
-#: inc/payments/front-end.php:325
+#: inc/payments/front-end.php:353
+#: inc/payments/front-end.php:357
 msgid "Invalid subscription data."
 msgstr ""
 
-#: inc/payments/front-end.php:332
+#: inc/payments/front-end.php:364
 msgid "Failed to create subscription."
 msgstr ""
 
 #. translators: %s: Error message
-#: inc/payments/front-end.php:349
+#: inc/payments/front-end.php:381
 msgid "Unexpected error: %s"
 msgstr ""
 
-#: inc/payments/front-end.php:455
+#: inc/payments/front-end.php:487
 #: inc/payments/stripe/admin-stripe-handler.php:100
 #: inc/payments/stripe/admin-stripe-handler.php:334
 msgid "Subscription ID not found."
 msgstr ""
 
-#: inc/payments/front-end.php:464
+#: inc/payments/front-end.php:496
 msgid "Customer ID not found for the payment."
 msgstr ""
 
-#: inc/payments/front-end.php:492
+#: inc/payments/front-end.php:524
 msgid "Failed to retrieve setup intent."
 msgstr ""
 
-#: inc/payments/front-end.php:521
+#: inc/payments/front-end.php:553
 msgid "Failed to update subscription."
 msgstr ""
 
-#: inc/payments/front-end.php:529
+#: inc/payments/front-end.php:561
 msgid "Latest invoice not found on subscription."
 msgstr ""
 
-#: inc/payments/front-end.php:542
+#: inc/payments/front-end.php:574
 msgid "Failed to retrieve invoice."
 msgstr ""
 
-#: inc/payments/front-end.php:564
+#: inc/payments/front-end.php:596
 msgid "Payment intent not found on invoice."
 msgstr ""
 
-#: inc/payments/front-end.php:579
+#: inc/payments/front-end.php:611
 msgid "Failed to confirm payment."
 msgstr ""
 
-#: inc/payments/front-end.php:595
+#: inc/payments/front-end.php:627
 msgid "Failed to retrieve subscription."
 msgstr ""
 
-#: inc/payments/front-end.php:610
+#: inc/payments/front-end.php:642
 msgid "Subscription not found for the payment."
 msgstr ""
 
 #. translators: %d: User ID
-#: inc/payments/front-end.php:669
-#: inc/payments/front-end.php:953
+#: inc/payments/front-end.php:701
+#: inc/payments/front-end.php:1059
 msgid "User ID: %d"
 msgstr ""
 
 #. translators: %s: Invoice status
-#: inc/payments/front-end.php:677
+#: inc/payments/front-end.php:709
 msgid "Invoice Status: %s"
 msgstr ""
 
 #. translators: Title for subscription verification log
-#: inc/payments/front-end.php:684
+#: inc/payments/front-end.php:716
 msgid "Subscription Verification"
 msgstr ""
 
 #. translators: %s: Subscription ID
-#: inc/payments/front-end.php:688
+#: inc/payments/front-end.php:720
 #: inc/payments/stripe/stripe-webhook.php:522
 #: inc/payments/stripe/stripe-webhook.php:1068
 msgid "Subscription ID: %s"
@@ -1586,8 +1582,8 @@ msgstr ""
 #. translators: %s: payment gateway name (e.g., Stripe)
 #. translators: %s: payment gateway
 #. translators: %s: Payment gateway name (e.g., Stripe).
-#: inc/payments/front-end.php:690
-#: inc/payments/front-end.php:964
+#: inc/payments/front-end.php:722
+#: inc/payments/front-end.php:1070
 #: inc/payments/stripe/admin-stripe-handler.php:488
 #: inc/payments/stripe/admin-stripe-handler.php:977
 #: inc/payments/stripe/stripe-webhook.php:524
@@ -1598,31 +1594,31 @@ msgid "Payment Gateway: %s"
 msgstr ""
 
 #. translators: %s: Payment Intent ID
-#: inc/payments/front-end.php:692
+#: inc/payments/front-end.php:724
 msgid "Payment Intent ID: %s"
 msgstr ""
 
 #. translators: %s: Charge ID
-#: inc/payments/front-end.php:694
+#: inc/payments/front-end.php:726
 #: inc/payments/stripe/stripe-webhook.php:998
 msgid "Charge ID: %s"
 msgstr ""
 
 #. translators: %s: Subscription Status
-#: inc/payments/front-end.php:696
+#: inc/payments/front-end.php:728
 msgid "Subscription Status: %s"
 msgstr ""
 
 #. translators: %s: Customer ID
-#: inc/payments/front-end.php:698
+#: inc/payments/front-end.php:730
 #: inc/payments/stripe/stripe-webhook.php:1072
 msgid "Customer ID: %s"
 msgstr ""
 
 #. translators: 1: Amount, 2: Currency
 #. translators: %1$s: amount, %2$s: currency.
-#: inc/payments/front-end.php:700
-#: inc/payments/front-end.php:966
+#: inc/payments/front-end.php:732
+#: inc/payments/front-end.php:1072
 #: inc/payments/stripe/stripe-webhook.php:1003
 #: inc/payments/stripe/stripe-webhook.php:1064
 msgid "Amount: %1$s %2$s"
@@ -1630,50 +1626,50 @@ msgstr ""
 
 #. translators: %s: Payment mode (e.g. Live or Test)
 #. translators: %s: payment mode
-#: inc/payments/front-end.php:703
-#: inc/payments/front-end.php:971
+#: inc/payments/front-end.php:735
+#: inc/payments/front-end.php:1077
 msgid "Mode: %s"
 msgstr ""
 
-#: inc/payments/front-end.php:737
+#: inc/payments/front-end.php:769
 msgid "Failed to verify subscription."
 msgstr ""
 
-#: inc/payments/front-end.php:876
-#: inc/payments/front-end.php:893
-#: inc/payments/front-end.php:901
-#: inc/payments/front-end.php:908
+#: inc/payments/front-end.php:982
+#: inc/payments/front-end.php:999
+#: inc/payments/front-end.php:1007
+#: inc/payments/front-end.php:1014
 msgid "Failed to retrieve payment intent."
 msgstr ""
 
-#: inc/payments/front-end.php:916
+#: inc/payments/front-end.php:1022
 msgid "Payment was not confirmed successfully."
 msgstr ""
 
-#: inc/payments/front-end.php:958
+#: inc/payments/front-end.php:1064
 msgid "Payment Verification"
 msgstr ""
 
 #. translators: %s: Stripe transaction ID
 #. translators: %s: Charge ID
-#: inc/payments/front-end.php:962
+#: inc/payments/front-end.php:1068
 #: inc/payments/stripe/stripe-webhook.php:1060
 msgid "Transaction ID: %s"
 msgstr ""
 
 #. translators: %s: payment status
 #. translators: %s: Status
-#: inc/payments/front-end.php:968
+#: inc/payments/front-end.php:1074
 #: inc/payments/stripe/stripe-webhook.php:526
 #: inc/payments/stripe/stripe-webhook.php:1066
 msgid "Status: %s"
 msgstr ""
 
-#: inc/payments/front-end.php:1071
+#: inc/payments/front-end.php:1177
 msgid "Failed to create Stripe customer."
 msgstr ""
 
-#: inc/payments/front-end.php:1135
+#: inc/payments/front-end.php:1241
 msgid "Failed to create Stripe guest customer."
 msgstr ""
 
@@ -2051,6 +2047,14 @@ msgstr ""
 msgid "Please complete the form to view the amount."
 msgstr ""
 
+#: inc/payments/payment-helper.php:540
+msgid "Failed to create payment. Please contact the site owner"
+msgstr ""
+
+#: inc/payments/payment-helper.php:557
+msgid "Unknown error"
+msgstr ""
+
 #: inc/payments/stripe/admin-stripe-handler.php:67
 #: inc/payments/stripe/admin-stripe-handler.php:309
 msgid "Missing payment ID."
@@ -2317,119 +2321,137 @@ msgstr ""
 msgid "View Payment"
 msgstr ""
 
-#: inc/payments/stripe/payments-settings.php:229
+#: inc/payments/stripe/payments-settings.php:208
+msgid "Security verification failed. Invalid nonce."
+msgstr ""
+
+#: inc/payments/stripe/payments-settings.php:209
+#: inc/payments/stripe/payments-settings.php:220
+#: inc/payments/stripe/payments-settings.php:931
+msgid "Stripe Connect Error"
+msgstr ""
+
+#: inc/payments/stripe/payments-settings.php:219
+msgid "Security verification failed. Nonce mismatch."
+msgstr ""
+
+#: inc/payments/stripe/payments-settings.php:255
 msgid "OAuth callback missing response data."
 msgstr ""
 
-#: inc/payments/stripe/payments-settings.php:273
+#: inc/payments/stripe/payments-settings.php:299
 #: assets/build/settings.js:172
 msgid "Stripe account disconnected successfully."
 msgstr ""
 
-#: inc/payments/stripe/payments-settings.php:329
+#: inc/payments/stripe/payments-settings.php:355
 msgid "Invalid payment mode."
 msgstr ""
 
 #. translators: %s: payment mode (test/live)
-#: inc/payments/stripe/payments-settings.php:343
+#: inc/payments/stripe/payments-settings.php:369
 #: inc/payments/stripe/stripe-helper.php:192
 msgid "Stripe %s secret key is missing."
 msgstr ""
 
-#: inc/payments/stripe/payments-settings.php:373
+#: inc/payments/stripe/payments-settings.php:399
 #: assets/build/settings.js:172
 msgid "Failed to create webhook."
 msgstr ""
 
-#: inc/payments/stripe/payments-settings.php:381
-#: inc/payments/stripe/payments-settings.php:495
+#: inc/payments/stripe/payments-settings.php:407
+#: inc/payments/stripe/payments-settings.php:521
 msgid "Invalid webhook response format."
 msgstr ""
 
-#: inc/payments/stripe/payments-settings.php:385
-#: inc/payments/stripe/payments-settings.php:499
+#: inc/payments/stripe/payments-settings.php:411
+#: inc/payments/stripe/payments-settings.php:525
 msgid "Webhook created but no ID returned."
 msgstr ""
 
-#: inc/payments/stripe/payments-settings.php:389
-#: inc/payments/stripe/payments-settings.php:503
+#: inc/payments/stripe/payments-settings.php:415
+#: inc/payments/stripe/payments-settings.php:529
 msgid "Webhook created but no secret returned."
 msgstr ""
 
 #. translators: %s: payment mode (test/live)
-#: inc/payments/stripe/payments-settings.php:410
+#: inc/payments/stripe/payments-settings.php:436
 msgid "Webhook created successfully for %s mode."
 msgstr ""
 
 #. translators: %1$d: number of webhooks created
-#: inc/payments/stripe/payments-settings.php:553
+#: inc/payments/stripe/payments-settings.php:579
 msgid "Webhooks created successfully for %1$d mode(s)."
 msgstr ""
 
 #. translators: %1$d: number of webhooks created, %2$s: error message
-#: inc/payments/stripe/payments-settings.php:559
+#: inc/payments/stripe/payments-settings.php:585
 msgid "Webhooks created for %1$d mode(s). Some modes may have failed: %2$s"
 msgstr ""
 
-#: inc/payments/stripe/payments-settings.php:564
+#: inc/payments/stripe/payments-settings.php:590
 msgid "Failed to create webhooks."
 msgstr ""
 
-#: inc/payments/stripe/payments-settings.php:627
-#: inc/payments/stripe/payments-settings.php:786
+#: inc/payments/stripe/payments-settings.php:653
+#: inc/payments/stripe/payments-settings.php:812
 msgid "Invalid webhook deletion response format."
 msgstr ""
 
-#: inc/payments/stripe/payments-settings.php:635
-#: inc/payments/stripe/payments-settings.php:795
+#: inc/payments/stripe/payments-settings.php:661
+#: inc/payments/stripe/payments-settings.php:821
 msgid "Webhook deletion was not confirmed by Stripe."
 msgstr ""
 
-#: inc/payments/stripe/payments-settings.php:654
+#: inc/payments/stripe/payments-settings.php:680
 msgid "Webhook deleted successfully."
 msgstr ""
 
 #. translators: %d: number of webhooks deleted
 #. translators: %d: number of modes
-#: inc/payments/stripe/payments-settings.php:676
-#: inc/payments/stripe/payments-settings.php:834
+#: inc/payments/stripe/payments-settings.php:702
+#: inc/payments/stripe/payments-settings.php:860
 msgid "Webhooks deleted successfully for %d mode(s)."
 msgstr ""
 
-#: inc/payments/stripe/payments-settings.php:689
+#: inc/payments/stripe/payments-settings.php:715
 msgid "Failed to delete webhooks."
 msgstr ""
 
-#: inc/payments/stripe/payments-settings.php:744
+#: inc/payments/stripe/payments-settings.php:770
 msgid "Invalid payment mode specified."
 msgstr ""
 
-#: inc/payments/stripe/payments-settings.php:825
+#: inc/payments/stripe/payments-settings.php:851
 msgid "live"
 msgstr ""
 
-#: inc/payments/stripe/payments-settings.php:825
+#: inc/payments/stripe/payments-settings.php:851
 msgid "test"
 msgstr ""
 
 #. translators: %s: mode name (test/live)
-#: inc/payments/stripe/payments-settings.php:828
+#: inc/payments/stripe/payments-settings.php:854
 msgid "Webhook deleted successfully for %s mode."
 msgstr ""
 
-#: inc/payments/stripe/payments-settings.php:848
+#: inc/payments/stripe/payments-settings.php:874
 msgid "Failed to delete webhook."
 msgstr ""
 
-#: inc/payments/stripe/payments-settings.php:898
-msgid "Missing OAuth response data."
+#: inc/payments/stripe/payments-settings.php:930
+msgid "Invalid OAuth response format."
 msgstr ""
 
-#: inc/payments/stripe/payments-settings.php:917
-msgid "Invalid OAuth response."
+#: inc/payments/stripe/payments-settings.php:993
+msgid "You do not have permission to connect Stripe."
 msgstr ""
 
-#: inc/payments/stripe/payments-settings.php:987
+#: inc/payments/stripe/payments-settings.php:994
+msgid "Permission Denied"
+msgstr ""
+
+#: inc/payments/stripe/payments-settings.php:1011
 #: assets/build/settings.js:172
 msgid "Failed to connect to Stripe."
 msgstr ""
@@ -2620,78 +2642,78 @@ msgstr ""
 msgid "Your form has been submitted successfully. We'll review your details and get back to you soon."
 msgstr ""
 
-#: inc/rest-api.php:89
+#: inc/rest-api.php:97
 msgid "Request could not be processed."
 msgstr ""
 
-#: inc/rest-api.php:96
+#: inc/rest-api.php:104
 msgid "Invalid date."
 msgstr ""
 
-#: inc/rest-api.php:227
+#: inc/rest-api.php:235
 msgid "Plugin slug is required."
 msgstr ""
 
-#: inc/rest-api.php:236
+#: inc/rest-api.php:244
 msgid "Plugin not found."
 msgstr ""
 
-#: inc/rest-api.php:362
-#: inc/rest-api.php:411
-#: inc/rest-api.php:459
+#: inc/rest-api.php:370
+#: inc/rest-api.php:419
+#: inc/rest-api.php:467
 msgid "No entry IDs provided."
 msgstr ""
 
-#: inc/rest-api.php:369
-#: inc/rest-api.php:418
+#: inc/rest-api.php:377
+#: inc/rest-api.php:426
 msgid "No action provided."
 msgstr ""
 
-#: inc/rest-api.php:377
+#: inc/rest-api.php:385
 msgid "Invalid action. Must be \"read\" or \"unread\"."
 msgstr ""
 
-#: inc/rest-api.php:426
+#: inc/rest-api.php:434
 msgid "Invalid action. Must be \"trash\" or \"restore\"."
 msgstr ""
 
-#: inc/rest-api.php:492
-#: inc/rest-api.php:624
+#: inc/rest-api.php:500
+#: inc/rest-api.php:632
 msgid "Entry ID is required."
 msgstr ""
 
-#: inc/rest-api.php:501
-#: inc/rest-api.php:633
+#: inc/rest-api.php:509
+#: inc/rest-api.php:641
 msgid "Entry not found."
 msgstr ""
 
 #. Translators: %d is the form ID.
-#: inc/rest-api.php:568
+#: inc/rest-api.php:576
 msgid "SureForms Form #%d"
 msgstr ""
 
-#: inc/rest-api.php:758
+#: inc/rest-api.php:766
 msgid "Form IDs and action are required."
 msgstr ""
 
-#: inc/rest-api.php:773
+#: inc/rest-api.php:781
 msgid "Form not found or invalid post type."
 msgstr ""
 
-#: inc/rest-api.php:785
+#: inc/rest-api.php:793
 msgid "Form is already in trash."
 msgstr ""
 
-#: inc/rest-api.php:796
+#: inc/rest-api.php:804
 msgid "Form is not in trash."
 msgstr ""
 
-#: inc/rest-api.php:811
+#: inc/rest-api.php:819
 msgid "Invalid action specified."
 msgstr ""
 
 #. translators: %s: action name
-#: inc/rest-api.php:826
+#: inc/rest-api.php:834
 msgid "Failed to %s form."
 msgstr ""
 
