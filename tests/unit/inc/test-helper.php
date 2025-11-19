@@ -369,8 +369,14 @@ class Test_Helper extends TestCase {
      * @dataProvider provideEncryptTestCases
      */
     public function test_encrypt($input, $expected, $message = '') {
+        // Case 1: Input is null for sanitize_recursively.
         $result = Helper::encrypt($input);
         $this->assertSame($expected, $result, $message);
+
+        // Case 2: Input contains HTML tags for encrypt.
+        $input = '<b>hello</b>';
+        $expected = rtrim(base64_encode('hello'), '=');
+        $this->assertSame($expected, Helper::encrypt($input), 'Should strip HTML tags before encoding');
     }
 
     /**
