@@ -87,6 +87,20 @@
 	}
 }
 
+// RTL Support for phone input.
+[dir="rtl"] {
+	.srfm-form-container {
+		.srfm-form {
+			.srfm-phone-block {
+				.srfm-input-phone {
+					/* rtl:ignore */
+					text-align: right;
+				}
+			}
+		}
+	}
+}
+
 .iti {
 	.iti__dropdown-content {
 		margin-top: var( --srfm-dropdown-gap-between-input-menu ) !important;
