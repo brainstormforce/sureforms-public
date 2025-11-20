@@ -178,7 +178,6 @@ const PaymentNotes = ( {
 										) }
 									</Text>
 									<Text
-										key={ index }
 										size={ 14 }
 										weight={ 400 }
 										color="primary"
