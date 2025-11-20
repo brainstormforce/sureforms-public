@@ -87,6 +87,9 @@ const DateRangePicker = ( { selectedDates, onApply, onCancel } ) => {
 						onApply={ handleApply }
 						onCancel={ handleCancel }
 						selected={ selectedDates }
+						disabled={ {
+							after: new Date(),
+						} }
 					/>
 				</div>
 			) }
