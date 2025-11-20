@@ -61,7 +61,7 @@ if ( ! class_exists( 'Nps_Notice' ) ) {
 			$form_count    = wp_count_posts( SRFM_FORMS_POST_TYPE )->publish; // Get the number of published forms.
 			$entries_count = Entries::get_total_entries_by_status( '' ); // Get the number of form submissions.
 
-			$is_onboarding_completed = Helper::get_srfm_option('onboarding_completed', true);
+			$is_onboarding_completed = Helper::get_srfm_option( 'onboarding_completed', true );
 
 			// Show the NPS survey if there are at least 3 published forms or 3 form submissions.
 			if ( 'no' !== $is_onboarding_completed && ( $form_count >= 3 || $entries_count >= 3 ) ) {
