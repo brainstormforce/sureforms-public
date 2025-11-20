@@ -161,7 +161,7 @@ class Stripe_Helper {
 	 * @since 2.0.0
 	 * @return array<mixed> Response array with 'success' boolean and either 'data' or 'error' key.
 	 */
-	public static function stripe_api_request( string $endpoint, string $method = 'POST', array $data = [], string $resource_id = '', $extra_args = [] ) {
+	public static function stripe_api_request( $endpoint, $method = 'POST', $data = [], $resource_id = '', $extra_args = [] ) {
 		if ( ! self::is_stripe_connected() ) {
 			return [
 				'success' => false,
@@ -370,7 +370,7 @@ class Stripe_Helper {
 	 * @since 2.0.0
 	 * @return string Generated unique payment ID (always 14 characters).
 	 */
-	public static function generate_unique_payment_id( int $auto_increment_id ): string {
+	public static function generate_unique_payment_id( $auto_increment_id ) {
 		// Convert the auto-increment ID to base36.
 		$encoded_id = base_convert( (string) $auto_increment_id, 10, 36 );
 		// Calculate the length of random part needed to make the ID exactly 14 chars.
@@ -730,7 +730,7 @@ class Stripe_Helper {
 	 * @since 2.0.0
 	 * @return array<mixed> The flattened array with bracket notation keys.
 	 */
-	private static function flatten_stripe_data( array $data, string $prefix = '' ) {
+	private static function flatten_stripe_data( $data, $prefix = '' ) {
 		$result = [];
 
 		foreach ( $data as $key => $value ) {

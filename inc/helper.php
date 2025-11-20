@@ -1271,7 +1271,7 @@ class Helper {
 	 * @since 1.1.1
 	 * @return bool Returns true if all conditions are met or the single key-value pair is valid, otherwise false.
 	 */
-	public static function validate_request_context( $value, $key = 'post_type', array $conditions = [] ) {
+	public static function validate_request_context( $value, $key = 'post_type', $conditions = [] ) {
 		// If conditions are provided, validate all key-value pairs in the conditions array.
 		if ( ! empty( $conditions ) ) {
 			foreach ( $conditions as $condition_key => $condition_value ) {
