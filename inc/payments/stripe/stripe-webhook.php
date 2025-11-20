@@ -40,7 +40,7 @@ class Stripe_Webhook {
 	 * @var string
 	 * @since 2.0.0
 	 */
-	private string $mode = 'test';
+	private $mode = 'test';
 
 	/**
 	 * Constructor function.
@@ -268,7 +268,7 @@ class Stripe_Webhook {
 	 * @since 2.0.0
 	 * @return void
 	 */
-	public function handle_refund_record( array $refund ) {
+	public function handle_refund_record( $refund ) {
 		$refund_id = ! empty( $refund['id'] ) && is_string( $refund['id'] ) ? sanitize_text_field( $refund['id'] ) : '';
 		Helper::srfm_log( 'Processing refund: ' . $refund_id );
 
@@ -386,7 +386,7 @@ class Stripe_Webhook {
 	 * @since 2.0.0
 	 * @return void
 	 */
-	public function handle_invoice_payment_succeeded( array $invoice ) {
+	public function handle_invoice_payment_succeeded( $invoice ) {
 		$invoice_id = $invoice['id'] ?? 'unknown';
 		Helper::srfm_log( 'Processing invoice.payment_succeeded webhook. Invoice ID: ' . $invoice_id . '.' );
 
@@ -487,7 +487,7 @@ class Stripe_Webhook {
 	 * @since 2.0.0
 	 * @return void
 	 */
-	public function handle_subscription_deleted( array $subscription ) {
+	public function handle_subscription_deleted( $subscription ) {
 		$subscription_id = ! empty( $subscription['id'] ) && is_string( $subscription['id'] ) ? sanitize_text_field( $subscription['id'] ) : '';
 		Helper::srfm_log( 'Processing customer.subscription.deleted webhook. Subscription ID: ' . $subscription_id . '.' );
 
@@ -586,7 +586,7 @@ class Stripe_Webhook {
 	 * @since 2.0.0
 	 * @return bool Whether the update was successful.
 	 */
-	public function update_refund_data( int $payment_id, array $refund_response, int|float|string $refund_amount, string $currency, ?string $payment = null ) {
+	public function update_refund_data( $payment_id, $refund_response, $refund_amount, $currency, $payment = null ) {
 		if ( empty( $payment_id ) || empty( $refund_response ) ) {
 			return false;
 		}
@@ -729,7 +729,7 @@ class Stripe_Webhook {
 	 * @since 2.0.0
 	 * @return void
 	 */
-	private function process_refund_cancellation( int $payment_id, array $refund, string $currency, string $lookup_method ) {
+	private function process_refund_cancellation( $payment_id, $refund, $currency, $lookup_method ) {
 		$refund_id = ! empty( $refund['id'] ) && is_string( $refund['id'] ) ? sanitize_text_field( $refund['id'] ) : '';
 
 		Helper::srfm_log( 'Processing refund cancellation for refund ID: ' . $refund_id );
@@ -884,7 +884,7 @@ class Stripe_Webhook {
 	 * @since 2.0.0
 	 * @return string Subscription ID or empty string if not found.
 	 */
-	private function extract_subscription_id_from_invoice( array $invoice ) {
+	private function extract_subscription_id_from_invoice( $invoice ) {
 		// Method 1: Parent subscription_details (new API structure - 2025+).
 		$subscription_parent  = isset( $invoice['parent'] ) && is_array( $invoice['parent'] ) ? $invoice['parent'] : [];
 		$subscription_details = isset( $subscription_parent['subscription_details'] ) && is_array( $subscription_parent['subscription_details'] ) ? $subscription_parent['subscription_details'] : [];
@@ -914,7 +914,7 @@ class Stripe_Webhook {
 	 * @since 2.0.0
 	 * @return string Charge ID, payment_intent, or invoice ID.
 	 */
-	private function extract_charge_id_from_invoice( array $invoice ) {
+	private function extract_charge_id_from_invoice( $invoice ) {
 		// Method 1: Direct charge field (old API structure and most common).
 		if ( ! empty( $invoice['charge'] ) ) {
 			Helper::srfm_log( 'Charge ID found at: $invoice[\'charge\'].' );
@@ -962,7 +962,7 @@ class Stripe_Webhook {
 	 * @since 2.0.0
 	 * @return void
 	 */
-	private function process_initial_subscription_payment( array $subscription_record, array $invoice, string $charge_id ) {
+	private function process_initial_subscription_payment( $subscription_record, $invoice, $charge_id ) {
 		$subscription_id = ! empty( $subscription_record['id'] ) && is_numeric( $subscription_record['id'] ) ? intval( $subscription_record['id'] ) : 0;
 
 		if ( ! $subscription_id ) {
@@ -1030,7 +1030,7 @@ class Stripe_Webhook {
 	 * @since 2.0.0
 	 * @return void
 	 */
-	private function process_subscription_renewal_payment( array $subscription_record, array $invoice, string $charge_id, string $block_id ) {
+	private function process_subscription_renewal_payment( $subscription_record, $invoice, $charge_id, $block_id ) {
 		$customer_id    = ! empty( $subscription_record['customer_id'] ) && is_string( $subscription_record['customer_id'] ) ? sanitize_text_field( $subscription_record['customer_id'] ) : '';
 		$customer_email = ! empty( $subscription_record['customer_email'] ) && is_string( $subscription_record['customer_email'] ) ? sanitize_email( $subscription_record['customer_email'] ) : '';
 		$customer_name  = ! empty( $subscription_record['customer_name'] ) && is_string( $subscription_record['customer_name'] ) ? sanitize_text_field( $subscription_record['customer_name'] ) : '';
@@ -1130,7 +1130,7 @@ class Stripe_Webhook {
 	 * @return bool True if refund already exists, false otherwise.
 	 * @since 2.0.0
 	 */
-	private function check_if_refund_already_exists( array $payment, array $refund ) {
+	private function check_if_refund_already_exists( $payment, $refund ) {
 		$refund_id = $refund['id'] ?? '';
 
 		if ( empty( $refund_id ) ) {
