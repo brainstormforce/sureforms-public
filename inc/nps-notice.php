@@ -64,10 +64,9 @@ if ( ! class_exists( 'Nps_Notice' ) ) {
 			$is_onboarding_completed = Helper::get_srfm_option('onboarding_completed', true);
 
 			// Show the NPS survey if there are at least 3 published forms or 3 form submissions.
-			if ( $is_onboarding_completed !== 'no' && ( $form_count >= 3 || $entries_count >= 3 ) ) {
+			if ( 'no' !== $is_onboarding_completed && ( $form_count >= 3 || $entries_count >= 3 ) ) {
 				return true;
 			}
-			
 			return false;
 		}
 
