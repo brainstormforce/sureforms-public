@@ -768,7 +768,7 @@ const ViewSubscription = () => {
 									subscriptionData.subscription_status ===
 										'canceled'
 								}
-								className='!hidden'
+								className="!hidden"
 							>
 								{ __( 'Pause', 'sureforms' ) }
 							</Button>
