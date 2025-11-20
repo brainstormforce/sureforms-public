@@ -105,7 +105,7 @@ const PaymentLogs = ( {
 								className="bg-background-primary rounded-md p-3 relative shadow-sm flex items-start justify-between gap-3"
 							>
 								<div className="flex-1 space-y-2">
-									<Text className="text-base font-semibold text-text-secondary">
+									<Text className="text-sm font-semibold text-text-secondary">
 										{ logTitle }
 										{ log?.created_at &&
 											` at ${ formatDateTime(
@@ -120,8 +120,8 @@ const PaymentLogs = ( {
 														key={ msgIndex }
 														size={ 14 }
 														weight={ 400 }
-														as="span"
-														className="[overflow-wrap:anywhere] leading-[20px] text-text-secondary"
+														color="primary"
+														className="[overflow-wrap:anywhere]"
 													>
 														{ message || '' }
 													</Text>

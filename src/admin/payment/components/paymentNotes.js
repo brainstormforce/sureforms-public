@@ -164,7 +164,7 @@ const PaymentNotes = ( {
 								className="bg-background-primary rounded-md p-2 relative shadow-sm flex items-start justify-between gap-3"
 							>
 								<div className="flex-1 flex flex-col gap-2">
-									<Text className="text-base font-semibold text-text-secondary">
+									<Text className="text-sm font-semibold text-text-secondary">
 										{ sprintf(
 											// translators: %1$s - user name, %2$s - date.
 											__(
@@ -177,7 +177,12 @@ const PaymentNotes = ( {
 											)
 										) }
 									</Text>
-									<Text className="text-[14px] leading-[20px] text-text-secondary">
+									<Text
+										size={ 14 }
+										weight={ 400 }
+										color="primary"
+										className="[overflow-wrap:anywhere]"
+									>
 										{ note.text }
 									</Text>
 								</div>
