@@ -367,7 +367,6 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 == Changelog ==
 = x.x.x =
 * Improvement: Removed the visibility option from the pre-publish panel.
-* Fix: Resolved an issue where confirm email validation is missing on form submit.
 = 2.0.0 - 20th November 2025 =
 * New: Introduced Payments.
 * Improvement: Revamped the SureForms UI.
