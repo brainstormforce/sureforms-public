@@ -1,5 +1,5 @@
 import apiFetch from '@wordpress/api-fetch';
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import { Toaster, ToastBar } from 'react-hot-toast';
 import { store as editorStore } from '@wordpress/editor';
 import { select } from '@wordpress/data';
@@ -238,6 +238,83 @@ const pushSmartTagToArray = (
 			: true;
 
 		if ( ! isAllowedBlock ) {
+			return;
+		}
+
+		// Special handling for payment blocks - generate payment-specific smart tags
+		if ( block?.name === 'srfm/payment' ) {
+			const fieldSlug = blockSlugs[ block.attributes.block_id ];
+
+			// Skip if no slug or already processed
+			if (
+				! fieldSlug ||
+				fieldSlug === '-1' ||
+				uniqueSlugs.includes( fieldSlug )
+			) {
+				return;
+			}
+
+			const blockLabel = trimTextToWords(
+				block.attributes.label || __( 'Payment', 'sureforms' ),
+				5
+			);
+
+			// Generate payment smart tags
+			const paymentTags = [
+				// Translators: %s is replaced by the Payment block label.
+				[
+					`{form-payment:${ fieldSlug }:order-id}`,
+					sprintf(
+						/* translators: %s is replaced by the Payment block label. */
+						__( '%s - Order ID', 'sureforms' ),
+						blockLabel
+					),
+				],
+				// Translators: %s is replaced by the Payment block label.
+				[
+					`{form-payment:${ fieldSlug }:amount}`,
+					sprintf(
+						/* translators: %s is replaced by the Payment block label. */
+						__( '%s - Amount', 'sureforms' ),
+						blockLabel
+					),
+				],
+				// Translators: %s is replaced by the Payment block label.
+				[
+					`{form-payment:${ fieldSlug }:email}`,
+					sprintf(
+						/* translators: %s is replaced by the Payment block label. */
+						__( '%s - Customer Email', 'sureforms' ),
+						blockLabel
+					),
+				],
+				// Translators: %s is replaced by the Payment block label.
+				[
+					`{form-payment:${ fieldSlug }:name}`,
+					sprintf(
+						/* translators: %s is replaced by the Payment block label. */
+						__( '%s - Customer Name', 'sureforms' ),
+						blockLabel
+					),
+				],
+				// Translators: %s is replaced by the Payment block label.
+				[
+					`{form-payment:${ fieldSlug }:status}`,
+					sprintf(
+						/* translators: %s is replaced by the Payment block label. */
+						__( '%s - Status', 'sureforms' ),
+						blockLabel
+					),
+				],
+			];
+
+			// Add all payment tags to the array
+			paymentTags.forEach( ( tag ) => {
+				tagsArray.push( tag );
+			} );
+
+			// Mark this slug as processed
+			uniqueSlugs.push( fieldSlug );
 			return;
 		}
 
@@ -920,4 +997,48 @@ export const decodeJson = ( obj ) => {
  */
 export const deepCopy = ( arrayOrObject ) => {
 	return JSON.parse( JSON.stringify( arrayOrObject, null, 2 ) );
+};
+
+/**
+ * Formats date and time into short and full formats to display.
+ * @param {number | string} dateString     - The date string timestamp to format.
+ * @param {boolean}         submissionInfo - Whether to format for submission info.
+ * @return {Object} An object containing shortFormat and fullFormat strings.
+ */
+export const formatDateTime = ( dateString, submissionInfo = false ) => {
+	const options = {
+		month: 'short',
+		day: 'numeric',
+		hour: 'numeric',
+		minute: '2-digit',
+		hour12: true,
+	};
+	if ( submissionInfo ) {
+		if ( ! dateString ) {
+			return '-';
+		}
+
+		try {
+			const date = new Date( dateString.replace( ' ', 'T' ) );
+			return date.toLocaleString( 'en-US', options );
+		} catch ( error ) {
+			return dateString;
+		}
+	}
+	const date = new Date( dateString );
+
+	// Short format for display: Nov 7, 10:20 AM
+	const shortFormat = date.toLocaleString( 'en-US', options );
+
+	// Full format for tooltip: Nov 7, 2025, 10:20 AM
+	const fullFormat = date.toLocaleString( 'en-US', {
+		year: 'numeric',
+		month: 'short',
+		day: 'numeric',
+		hour: 'numeric',
+		minute: '2-digit',
+		hour12: true,
+	} );
+
+	return { shortFormat, fullFormat };
 };

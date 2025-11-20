@@ -10,6 +10,7 @@ import { store as editorStore } from '@wordpress/editor';
 import { applyFilters } from '@wordpress/hooks';
 import AdvancedPopColorControl from '@Components/color-control/advanced-pop-color-control.js';
 import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
+import SRFMTextControl from '@Components/text-control';
 import MultiButtonsControl from '@Components/multi-buttons-control';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -25,11 +26,10 @@ import {
 	getGradientCSS,
 	setDefaultFormAttributes,
 } from '@Utils/Helpers';
-import { chevronDown } from '@wordpress/icons';
-import EditorPremiumBadge from '@Admin/components/EditorPremiumBadge';
 import Background from '@Components/enhanced-background';
 import Spacing from '@Components/spacing';
 import { embedFormAttributes } from '@Attributes/getBlocksDefaultAttributes';
+import UpgradePrompt from '@Admin/single-form-settings/components/UpgradePrompt';
 
 function StyleSettings( props ) {
 	const { editPost } = useDispatch( editorStore );
@@ -736,6 +736,24 @@ function StyleSettings( props ) {
 			component: (
 				<div className="srfm-bg-component">
 					<Background
+						bgTextOptions={ [
+							{
+								value: 'color',
+								label: __( 'Solid', 'sureforms' ),
+								tooltip: __( 'Solid', 'sureforms' ),
+							},
+							{
+								value: 'gradient',
+								label: __( 'Gradient', 'sureforms' ),
+								tooltip: __( 'Gradient', 'sureforms' ),
+							},
+							{
+								value: 'image',
+								label: __( 'Image', 'sureforms' ),
+								tooltip: __( 'Image', 'sureforms' ),
+							},
+						] }
+						disableOverlay={ true }
 						// Background Properties
 						backgroundType={ {
 							value: bg_type || 'color',
@@ -1098,7 +1116,7 @@ function StyleSettings( props ) {
 				<>
 					<p className="components-base-control__help" />
 					<MultiButtonsControl
-						label={ __( 'Submit Button Alignment', 'sureforms' ) }
+						label={ __( 'Button Alignment', 'sureforms' ) }
 						data={ {
 							value: formStyling?.submit_button_alignment,
 							label: 'submit_button_alignment',
@@ -1151,6 +1169,34 @@ function StyleSettings( props ) {
 		},
 	];
 
+	const advanced = [
+		{
+			id: 'additional_css_classes',
+			component: (
+				<>
+					<SRFMTextControl
+						data={ {
+							value: sureformsKeys._srfm_additional_classes,
+							label: '_srfm_additional_classes',
+						} }
+						label={ __( 'Add Custom CSS Class(es)', 'sureforms' ) }
+						value={ sureformsKeys._srfm_additional_classes }
+						onChange={ ( value ) => {
+							updateMeta( '_srfm_additional_classes', value );
+						} }
+						isFormSpecific={ true }
+					/>
+					<p className="components-base-control__help">
+						{ __(
+							'Class names should be separated by spaces. Each class name must not start with a digit, hyphen, or underscore. They can only include letters (including Unicode characters), numbers, hyphens, and underscores.',
+							'sureforms'
+						) }
+					</p>
+				</>
+			),
+		},
+	];
+
 	const baseStylePanels = [
 		{
 			panelId: 'form',
@@ -1184,31 +1230,22 @@ function StyleSettings( props ) {
 		updateFormStyling,
 	} );
 
+	// Append the advanced panel at the end.
+	enhancedStylePanels.push( {
+		panelId: 'advanced',
+		title: __( 'Advanced', 'sureforms' ),
+		content: advanced,
+		initialOpen: false,
+	} );
+
 	const presetPreview = (
 		<>
-			<div className="srfm-panel-preview">
-				<div
-					className="components-panel__body"
-					style={ { 'border-bottom': 'unset' } }
-				>
-					<h2 className="components-panel__body-title">
-						{ __( 'Form Theme', 'sureforms' ) }
-					</h2>
-					<EditorPremiumBadge
-						tooltipHeading={ __(
-							'Unlock Form Theme',
-							'sureforms'
-						) }
-						tooltipContent={ __(
-							'With the SureForms Starter Plan, access essential form styling options to personalize the look and feel of your forms, ensuring a seamless and engaging user experience.',
-							'sureforms'
-						) }
-						tooltipPosition={ 'bottom' }
-						utmMedium={ 'editor_form_themes' }
-					/>
-					{ chevronDown }
-				</div>
-			</div>
+			<SRFMAdvancedPanelBody
+				title={ __( 'Form Theme', 'sureforms' ) }
+				initialOpen={ true }
+			>
+				<UpgradePrompt />
+			</SRFMAdvancedPanelBody>
 		</>
 	);
 
