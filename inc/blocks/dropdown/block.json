@@ -77,6 +77,10 @@
 		"slug":{
 			"type":"string",
 			"default":""
+		},
+		"showValues": {
+			"type": "boolean",
+			"default": false
 		}
 	}
 }

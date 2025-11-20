@@ -66,7 +66,14 @@ const FormCustomCssPanel = ( { formCustomCssData } ) => {
 	}, [ tabRef ] );
 
 	return (
-		<TabContentWrapper title={ __( 'Custom CSS', 'sureforms' ) }>
+		<TabContentWrapper
+			title={ __( 'Custom CSS', 'sureforms' ) }
+			showTitleHelpText={ true }
+			titleHelpText={ __(
+				'Add custom CSS rules to style this specific form independently of global styles.',
+				'sureforms'
+			) }
+		>
 			<Container direction="column" className="gap-2">
 				<Label
 					variant="neutral"
