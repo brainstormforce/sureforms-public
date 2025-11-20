@@ -10,7 +10,6 @@ const Breadcrumbs = () => {
 
 	const query = useQuery();
 	const page = query.get( 'page' );
-	const method = query.get( 'method' );
 
 	return (
 		<Breadcrumb>
@@ -29,26 +28,6 @@ const Breadcrumbs = () => {
 						<ChevronRight color="#bdc1c7" className="size-3" />
 						<Breadcrumb.Link
 							href={ `${ srfm_admin.site_url }/wp-admin/admin.php?page=add-new-form` }
-						>
-							{ method !== 'ai' ? (
-								<>
-									<Breadcrumb.Page>
-										{ __( 'Add New Form', 'sureforms' ) }
-									</Breadcrumb.Page>
-								</>
-							) : (
-								<span>
-									{ __( 'Add New Form', 'sureforms' ) }
-								</span>
-							) }
-						</Breadcrumb.Link>
-					</Breadcrumb.Item>
-				) }
-				{ method === 'ai' && (
-					<Breadcrumb.Item>
-						<ChevronRight color="#bdc1c7" className="size-3" />
-						<Breadcrumb.Link
-							href={ `${ srfm_admin.site_url }/wp-admin/admin.php?page=add-new-form&method=ai` }
 						>
 							<Breadcrumb.Page>
 								{ __( 'Generate with AI', 'sureforms' ) }

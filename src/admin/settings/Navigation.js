@@ -2,7 +2,13 @@ import { __ } from '@wordpress/i18n';
 import { Link, useLocation } from 'react-router-dom';
 import { applyFilters } from '@wordpress/hooks';
 import { cn } from '@Utils/Helpers';
-import { Cpu, Settings, ShieldCheck, TriangleAlert } from 'lucide-react';
+import {
+	Cpu,
+	CreditCard,
+	Settings,
+	ShieldCheck,
+	TriangleAlert,
+} from 'lucide-react';
 import { Accordion } from '@bsf/force-ui';
 import ottoKitIcon from '@Image/suretriggers-grayscale.svg';
 
@@ -12,14 +18,22 @@ function useQuery() {
 
 export const navigation = applyFilters( 'srfm.settings.navigation', [
 	{
-		name: __( 'General', 'sureforms' ),
+		name: __( 'General Settings', 'sureforms' ),
 		slug: 'general-settings',
 		icon: <Settings />,
+		helpText: __(
+			'Set up email summaries, admin alerts, and data preferences to manage your forms with ease.',
+			'sureforms'
+		),
 	},
 	{
 		name: __( 'Form Validation', 'sureforms' ),
 		slug: 'validation-settings',
 		icon: <ShieldCheck />,
+		helpText: __(
+			'Customize default error messages shown when users submit invalid or incomplete form entries.',
+			'sureforms'
+		),
 	},
 	{
 		name: __( 'Spam Protection', 'sureforms' ),
@@ -43,9 +57,13 @@ export const navigation = applyFilters( 'srfm.settings.navigation', [
 				slug: 'honeypot',
 			},
 		],
+		helpText: __(
+			'Enable spam protection for your forms using CAPTCHA services or honeypot security.',
+			'sureforms'
+		),
 	},
 	{
-		name: __( 'OttoKit', 'sureforms' ),
+		name: __( 'Automations', 'sureforms' ),
 		slug: 'ottokit-settings',
 		icon: (
 			<img
@@ -61,6 +79,15 @@ export const navigation = applyFilters( 'srfm.settings.navigation', [
 		slug: 'integration-settings',
 		icon: <Cpu />,
 		hidePageTitle: true, // Hide the page title for the Integrations tab.
+	},
+	{
+		name: __( 'Payments', 'sureforms' ),
+		slug: 'payments-settings',
+		icon: <CreditCard />,
+		helpText: __(
+			'Connect and manage your payment gateways to securely accept transactions through your forms.',
+			'sureforms'
+		),
 	},
 ] );
 
