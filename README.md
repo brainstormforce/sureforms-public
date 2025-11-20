@@ -365,7 +365,7 @@ easy.
 You can report the issue through our [Bug Bounty Program](https://brainstormforce.com/bug-bounty-program/). We collaborate with Patchstack to provide opportunities for researchers to report vulnerabilities. The Patchstack team will help validate, triage, and handle any reported security issues.
 
 ## Changelog ##
-### 2.0.0 - 19th November 2025 ###
+### 2.0.0 - 20th November 2025 ###
 * New: Introduced Payments.
 * Improvement: Revamped the SureForms UI.
 ### 1.13.2 - 7th November 2025 ###
