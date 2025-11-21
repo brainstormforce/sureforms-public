@@ -95,19 +95,19 @@ class Analytics {
 			'pointer_popup_clicked' => $this->pointer_popup_clicked(),
 		];
 		$stats_data['plugin_data']['sureforms']['numeric_values'] = [
-			'total_forms'            => wp_count_posts( SRFM_FORMS_POST_TYPE )->publish ?? 0,
-			'instant_forms_enabled'  => $this->instant_forms_enabled(),
-			'forms_using_custom_css' => $this->forms_using_custom_css(),
-			'ai_generated_forms'     => $this->ai_generated_forms(),
-			'total_entries'          => Entries::get_total_entries_by_status(),
-			'restricted_forms'       => $this->get_restricted_forms(),
+			'total_forms'                => wp_count_posts( SRFM_FORMS_POST_TYPE )->publish ?? 0,
+			'instant_forms_enabled'      => $this->instant_forms_enabled(),
+			'forms_using_custom_css'     => $this->forms_using_custom_css(),
+			'ai_generated_forms'         => $this->ai_generated_forms(),
+			'ai_generated_payment_forms' => $this->ai_generated_forms( 'payments' ),
+			'payment_forms'              => $this->get_payment_forms_count(),
+			'total_entries'              => Entries::get_total_entries_by_status(),
+			'restricted_forms'           => $this->get_restricted_forms(),
 		];
 
 		$stats_data['plugin_data']['sureforms'] = array_merge_recursive( $stats_data['plugin_data']['sureforms'], $this->global_settings_data() );
-
 		// Add onboarding analytics data.
 		$stats_data['plugin_data']['sureforms'] = array_merge_recursive( $stats_data['plugin_data']['sureforms'], $this->onboarding_analytics_data() );
-
 		return $stats_data;
 	}
 
@@ -132,10 +132,13 @@ class Analytics {
 	/**
 	 * Return total number of ai generated forms.
 	 *
+	 * @param string $form_type Form type to check.
+	 *
 	 * @since 1.4.0
 	 * @return int
 	 */
-	public function ai_generated_forms() {
+	public function ai_generated_forms( $form_type = '' ) {
+		$form_type  = empty( $form_type ) || ! is_string( $form_type ) ? '' : $form_type;
 		$meta_query = [
 			[
 				'key'     => '_srfm_is_ai_generated',
@@ -143,6 +146,11 @@ class Analytics {
 				'compare' => '!=', // Checks if the value is NOT empty.
 			],
 		];
+
+		if ( 'payments' === $form_type ) {
+			$search = 'wp:srfm/payment';
+			return $this->custom_wp_query_total_posts_with_search( $meta_query, $search );
+		}
 
 		return $this->custom_wp_query_total_posts( $meta_query );
 	}
@@ -277,6 +285,9 @@ class Analytics {
 
 		$validation_messages                                        = get_option( 'srfm_default_dynamic_block_option', [] );
 		$global_data['boolean_values']['custom_validation_message'] = ! empty( $validation_messages ) && is_array( $validation_messages );
+
+		// Payment analytics - check if any payment method is enabled.
+		$global_data['boolean_values']['stripe_enabled'] = $this->is_stripe_enabled();
 
 		return $global_data;
 	}
@@ -437,6 +448,72 @@ class Analytics {
 
 		// If only one is set, return it.
 		return $accepted ? 'accepted' : 'dismissed';
+	}
+
+	/**
+	 * Runs a custom WP_Query to fetch the total number of posts matching the given meta query and optional search string.
+	 *
+	 * This function is used to count SureForms posts based on specific meta query conditions.
+	 * Optionally, a search string can be included to further filter results by keyword match.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @param array  $meta_query Meta query array for WP_Query.
+	 * @param string $search     Optional. Search string for WP_Query. Default empty.
+	 * @return int               The number of matching posts.
+	 */
+	public function custom_wp_query_total_posts_with_search( $meta_query = [], $search = '' ) {
+		$args = [
+			'post_type'      => SRFM_FORMS_POST_TYPE,
+			'post_status'    => 'publish',
+			'posts_per_page' => -1,
+		];
+
+		if ( ! empty( $meta_query ) && is_array( $meta_query ) ) {
+			// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Meta query required as we need to fetch count of nested data.
+			$args['meta_query'] = $meta_query;
+		}
+
+		// If search string is provided, add it to the query.
+		if ( ! empty( $search ) ) {
+			$args['s'] = sanitize_text_field( $search );
+		}
+
+		$query       = new \WP_Query( $args );
+		$posts_count = $query->found_posts;
+
+		wp_reset_postdata();
+
+		return $posts_count;
+	}
+
+	/**
+	 * Get the total number of forms that utilize payment blocks.
+	 *
+	 * This function searches for forms containing the payment block identifier
+	 * ('wp:srfm/payment') to determine how many forms include payment capabilities.
+	 *
+	 * @since 2.0.0
+	 * @return int The number of forms that contain payment blocks.
+	 */
+	public function get_payment_forms_count() {
+		$search = 'wp:srfm/payment';
+		// Runs a custom WP_Query to find the count of forms with payment block.
+		return $this->custom_wp_query_total_posts_with_search( [], $search );
+	}
+
+	/**
+	 * Check if any payment method is enabled.
+	 *
+	 * This function checks if any payment gateway is connected and enabled.
+	 * Currently supports Stripe, but can be extended for other payment methods in the future.
+	 *
+	 * @since 2.0.0
+	 * @return bool True if any payment method is enabled, false otherwise.
+	 */
+	private function is_stripe_enabled() {
+		// Check if Stripe is connected.
+		return class_exists( 'SRFM\Inc\Payments\Stripe\Stripe_Helper' ) && \SRFM\Inc\Payments\Stripe\Stripe_Helper::is_stripe_connected();
 	}
 
 	/**
