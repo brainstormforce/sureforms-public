@@ -156,7 +156,7 @@ class Payments_Settings {
 	 * @since 2.0.0
 	 * @return array<mixed>
 	 */
-	public function add_payments_settings( array $settings ) {
+	public function add_payments_settings( $settings ) {
 		// Get all payment settings (includes global + all gateways).
 		$payment_settings = Payment_Helper::get_all_payment_settings();
 
