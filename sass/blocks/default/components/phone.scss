@@ -82,20 +82,7 @@
 			.srfm-input-phone {
 				@include srfm-input-margin-styles( true );
 				padding-right: var( --srfm-dropdown-padding-right );
-			}
-		}
-	}
-}
-
-// RTL Support for phone input.
-[dir="rtl"] {
-	.srfm-form-container {
-		.srfm-form {
-			.srfm-phone-block {
-				.srfm-input-phone {
-					/* rtl:ignore */
-					text-align: right;
-				}
+				text-align: left;
 			}
 		}
 	}
