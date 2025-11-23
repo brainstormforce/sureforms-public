@@ -10,6 +10,7 @@ import multiChoiceAttributes from '@IncBlocks/multichoice/block.json';
 import dropdownAttributes from '@IncBlocks/dropdown/block.json';
 import gdprAttributes from '@IncBlocks/gdpr/block.json';
 import inlineButton from '@IncBlocks/inlinebutton/block.json';
+import paymentAttributes from '@IncBlocks/payment/block.json';
 import { getDefaultMessage } from '@Blocks/util';
 import { __ } from '@wordpress/i18n';
 
@@ -138,6 +139,9 @@ export const blocksAttributes = {
 	},
 	'inline-button': {
 		...inlineButton.attributes,
+	},
+	payment: {
+		...paymentAttributes.attributes,
 	},
 	form_specific: defaultKeys,
 };
