@@ -515,7 +515,7 @@ class Generate_Form_Markup {
 					}
 					$srfm_button_classes = apply_filters( 'srfm_add_button_classes', [ '1' === $btn_from_theme ? 'wp-block-button__link' : 'srfm-btn-frontend srfm-button srfm-submit-button', 'v3-reCAPTCHA' === $recaptcha_version ? ' g-recaptcha' : '' ] );
 
-					// Build submit container HTML using ob_start
+					// Build submit container HTML using ob_start.
 					ob_start();
 					$container_class = $is_page_break ? 'srfm-hide' : '';
 					$container_style = ! $should_show_submit_button ? 'visibility:hidden;position:absolute;' : '';
