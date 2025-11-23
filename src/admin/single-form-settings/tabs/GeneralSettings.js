@@ -319,16 +319,11 @@ function GeneralSettings( props ) {
 				</SRFMAdvancedPanelBody>
 			) }
 
-			{ singleSettings.map( ( set ) => {
-				return (
-					<FormBehaviorPopupButton
-						key={ set.id }
-						settingName={ set.title }
-						popupId={ set.id }
-						openModal={ openModal }
-					/>
-				);
-			} ) }
+			<FormBehaviorPopupButton
+				settingName={ __( 'Single Form Settings', 'sureforms' ) }
+				popupId={ 'email_notification' }
+				openModal={ openModal }
+			/>
 
 			<FormRestrictionProvider>
 				<Dialog

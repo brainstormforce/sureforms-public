@@ -10,6 +10,7 @@ namespace SRFM\Inc\Global_Settings;
 
 use SRFM\Inc\Events_Scheduler;
 use SRFM\Inc\Helper;
+use SRFM\Inc\Payments\Payment_Helper;
 use SRFM\Inc\Traits\Get_Instance;
 use WP_Error;
 use WP_REST_Request;
@@ -105,6 +106,9 @@ class Global_Settings {
 				break;
 			case 'security-settings':
 				$is_option_saved = self::srfm_save_security_settings( $setting_options );
+				break;
+			case 'payments-settings':
+				$is_option_saved = self::srfm_save_payments_settings( $setting_options );
 				break;
 			default:
 				$is_option_saved = false;
@@ -294,6 +298,49 @@ class Global_Settings {
 	}
 
 	/**
+	 * Save Payments Settings
+	 *
+	 * Handles saving of both global payment settings (currency, payment_mode) and
+	 * gateway-specific settings based on the gateway parameter.
+	 *
+	 * @param array<mixed> $setting_options Setting options.
+	 * @return bool
+	 * @since 2.0.0
+	 */
+	public static function srfm_save_payments_settings( $setting_options ) {
+		$gateway = isset( $setting_options['gateway'] ) && is_string( $setting_options['gateway'] )
+			? sanitize_text_field( $setting_options['gateway'] )
+			: 'stripe';
+
+		// Handle global settings (currency, payment_mode).
+		if ( isset( $setting_options['currency'] ) && ! empty( $setting_options['currency'] ) && is_string( $setting_options['currency'] ) ) {
+			$currency = sanitize_text_field( $setting_options['currency'] );
+			Payment_Helper::update_global_setting( 'currency', $currency );
+		}
+
+		$payment_mode = null;
+		if ( isset( $setting_options['payment_mode'] ) && ! empty( $setting_options['payment_mode'] ) && is_string( $setting_options['payment_mode'] ) ) {
+			$payment_mode = sanitize_text_field( $setting_options['payment_mode'] );
+			Payment_Helper::update_global_setting( 'payment_mode', $payment_mode );
+		}
+
+		// Handle gateway-specific settings.
+		if ( 'stripe' === $gateway ) {
+			$current_stripe_settings = Payment_Helper::get_gateway_settings( 'stripe' );
+
+			// Update payment_mode in stripe settings as well (if provided).
+			if ( null !== $payment_mode ) {
+				$current_stripe_settings['payment_mode'] = $payment_mode;
+			}
+
+			// Connection data (keys, account info) is managed separately via OAuth.
+			return Payment_Helper::update_gateway_settings( 'stripe', $current_stripe_settings );
+		}
+
+		return true;
+	}
+
+	/**
 	 * Get Settings Form Data
 	 *
 	 * @param \WP_REST_Request $request Request object or array containing form data.
@@ -367,6 +414,9 @@ class Global_Settings {
 				'srfm_honeypot'                => false,
 			];
 		}
+
+		// Apply filter to allow other modules to add their settings.
+		$global_setting_options = apply_filters( 'srfm_global_settings_data', $global_setting_options );
 
 		wp_send_json( $global_setting_options );
 	}

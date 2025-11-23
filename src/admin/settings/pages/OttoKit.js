@@ -13,17 +13,14 @@ import { useState, useEffect } from '@wordpress/element';
 const OttoKitPage = ( { loading, isFormSettings = false, setSelectedTab } ) => {
 	const features = [
 		__(
-			'Instantly send form entries to Slack, Mailchimp, or other apps',
+			'Push entries to Slack, Mailchimp, Google Sheets, or hundreds of other apps.',
 			'sureforms'
 		),
 		__(
-			'Set up alerts, notifications, or actions based on form submissions',
+			'Create automatic workflows for every time someone submits a form.',
 			'sureforms'
 		),
-		__(
-			'Automate tasks like follow-ups, lead assignments, or data sync',
-			'sureforms'
-		),
+		__( 'Keep your tools updated, without lifting a finger.', 'sureforms' ),
 	];
 	const plugin = srfm_admin?.integrations?.sure_triggers;
 
@@ -128,6 +125,12 @@ const OttoKitPage = ( { loading, isFormSettings = false, setSelectedTab } ) => {
 	const handlePluginActionTrigger = ( event ) => {
 		// For global settings: always use external helper
 		if ( ! isFormSettings ) {
+			// if plugin is activated, go to its settings page
+			if ( plugin.status === 'Activated' ) {
+				window.location.href = plugin.connection_url;
+				return;
+			}
+
 			externalHandlePluginActionTrigger( { plugin, event } );
 			return;
 		}
@@ -241,7 +244,7 @@ const OttoKitPage = ( { loading, isFormSettings = false, setSelectedTab } ) => {
 				}
 				return __( 'Connect with OttoKit', 'sureforms' );
 			}
-			return __( 'Activated', 'sureforms' );
+			return __( 'Go to OttoKit Settings', 'sureforms' );
 		} else if ( status === 'Installed' ) {
 			return __( 'Activate', 'sureforms' );
 		}
@@ -294,19 +297,19 @@ const OttoKitPage = ( { loading, isFormSettings = false, setSelectedTab } ) => {
 				<Container className="flex bg-background-primary rounded-xl">
 					<Container className="p-2 rounded-lg bg-background-secondary gap-2 w-full">
 						<Container className="p-6 gap-6 rounded-md bg-background-primary w-full">
-							<Container>
+							<Container className="items-start">
 								<img
 									src={ ottoKitImage }
 									alt={ __( 'OttoKit', 'sureforms' ) }
-									className="w-[280px] h-[280px]"
+									className="w-[300px] h-300px]"
 								/>
 							</Container>
-							<Container className="gap-8">
+							<Container className="gap-8 items-start">
 								<div className="space-y-2">
 									<Title
 										tag="h3"
 										title={ __(
-											'Setup Integration via OttoKit',
+											'Automate What Happens After Someone Submits Your Form',
 											'sureforms'
 										) }
 										size="md"
@@ -317,14 +320,24 @@ const OttoKitPage = ( { loading, isFormSettings = false, setSelectedTab } ) => {
 										color="secondary"
 									>
 										{ __(
-											'OttoKit connects with SureForms to help you send form data to your favorite tools and trigger automated workflows, no code needed.',
+											'Every time someone fills out a form, something needs to happen next: a Slack alert for your team, a lead added to your CRM, a follow-up email, a new row in Google Sheets…',
+											'sureforms'
+										) }
+									</Text>
+									<Text
+										size={ 16 }
+										weight={ 400 }
+										color="secondary"
+									>
+										{ __(
+											"Doing all that manually? That's where OttoKit comes in. With OttoKit, you can:",
 											'sureforms'
 										) }
 									</Text>
 									{ features.map( ( feature, index ) => (
 										<Container
 											key={ index }
-											className="flex items-center gap-1.5"
+											className="flex items-start gap-1.5"
 										>
 											<Dot className="text-icon-secondary" />
 											<Text
@@ -336,21 +349,20 @@ const OttoKitPage = ( { loading, isFormSettings = false, setSelectedTab } ) => {
 											</Text>
 										</Container>
 									) ) }
+									<Text
+										size={ 16 }
+										weight={ 400 }
+										color="secondary"
+									>
+										{ __(
+											'OttoKit turns your forms into powerful workflows. Set it up once, and let automation do the rest.',
+											'sureforms'
+										) }
+									</Text>
 									<Container className="p-2 gap-3">
 										<Button
 											size="md"
-											className={
-												! isFormSettings &&
-												plugin?.status === 'Activated'
-													? 'bg-badge-background-green hover:bg-badge-background-green'
-													: ''
-											}
-											variant={
-												! isFormSettings &&
-												plugin?.status === 'Activated'
-													? 'outline'
-													: 'primary'
-											}
+											variant={ 'primary' }
 											onClick={
 												handlePluginActionTrigger
 											}
