@@ -72,28 +72,6 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 							title={ __( 'Attributes', 'sureforms' ) }
 							initialOpen={ true }
 						>
-							<SRFMTextControl
-								label={ __( 'Default Value', 'sureforms' ) }
-								className="srfm-with-dropdown"
-								value={ defaultValue }
-								withSmartTagDropdown={ true }
-								data={ {
-									value: defaultValue,
-									label: 'defaultValue',
-								} }
-								onChange={ ( value ) =>
-									setAttributes( { defaultValue: value } )
-								}
-							/>
-							{ defaultValue && (
-								<ToggleControl
-									label={ __( 'Read Only', 'sureforms' ) }
-									checked={ readOnly }
-									onChange={ ( checked ) =>
-										setAttributes( { readOnly: checked } )
-									}
-								/>
-							) }
 							<ToggleControl
 								label={ __( 'Required', 'sureforms' ) }
 								checked={ required }
@@ -115,11 +93,43 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 									} }
 								/>
 							) }
+							<SRFMTextControl
+								variant="textarea"
+								label={ __( 'Help Text', 'sureforms' ) }
+								value={ help }
+								data={ {
+									value: help,
+									label: 'help',
+								} }
+								onChange={ ( value ) =>
+									setAttributes( { help: value } )
+								}
+							/>
+							<SRFMTextControl
+								label={ __( 'Default Value', 'sureforms' ) }
+								className="srfm-with-dropdown"
+								value={ defaultValue }
+								withSmartTagDropdown={ true }
+								data={ {
+									value: defaultValue,
+									label: 'defaultValue',
+								} }
+								onChange={ ( value ) =>
+									setAttributes( { defaultValue: value } )
+								}
+							/>
+							<div className="srfm-settings-separator" />
+							{ defaultValue && (
+								<ToggleControl
+									label={ __( 'Read Only', 'sureforms' ) }
+									checked={ readOnly }
+									onChange={ ( checked ) =>
+										setAttributes( { readOnly: checked } )
+									}
+								/>
+							) }
 							<ToggleControl
-								label={ __(
-									'Validate as Unique',
-									'sureforms'
-								) }
+								label={ __( 'Unique Entry', 'sureforms' ) }
 								checked={ isUnique }
 								onChange={ ( checked ) =>
 									setAttributes( { isUnique: checked } )
@@ -152,17 +162,6 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 								checked={ isConfirmEmail }
 								onChange={ ( checked ) =>
 									setAttributes( { isConfirmEmail: checked } )
-								}
-							/>
-							<SRFMTextControl
-								label={ __( 'Help Text', 'sureforms' ) }
-								value={ help }
-								data={ {
-									value: help,
-									label: 'help',
-								} }
-								onChange={ ( value ) =>
-									setAttributes( { help: value } )
 								}
 							/>
 						</SRFMAdvancedPanelBody>

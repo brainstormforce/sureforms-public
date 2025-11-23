@@ -11,6 +11,7 @@
 namespace SRFM\Inc\Database;
 
 use SRFM\Inc\Database\Tables\Entries;
+use SRFM\Inc\Database\Tables\Payments;
 
 // Exit if accessed directly.
 defined( 'ABSPATH' ) || exit;
@@ -62,7 +63,8 @@ class Register {
 	 */
 	public static function get_db_tables() {
 		return [
-			'entries' => Entries::get_instance(),
+			'entries'  => Entries::get_instance(),
+			'payments' => Payments::get_instance(),
 		];
 	}
 }

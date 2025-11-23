@@ -9,6 +9,7 @@ import GeneralPage from './pages/General';
 import ValidationsPage from './pages/Validations';
 import SecurityPage from './pages/Security';
 import IntegrationPage from './pages/Integrations';
+import PaymentsPage from '../payment/global-setting-page';
 import OttoKitPage from './pages/OttoKit';
 import { applyFilters } from '@wordpress/hooks';
 import PageTitleSection from '@Admin/components/PageTitleSection';
@@ -18,6 +19,7 @@ const Component = ( { path } ) => {
 	// State to maintain whether to hide the page title.
 	const [ hidePageTitle, setHidePageTitle ] = useState( false );
 	const [ loading, setLoading ] = useState( false );
+	const [ helpText, setHelpText ] = useState( '' );
 
 	// Global settings states.
 	const [ generalTabOptions, setGeneralTabOptions ] = useState( {
@@ -49,6 +51,7 @@ const Component = ( { path } ) => {
 	const [ preDynamicBlockOptions, setPreDynamicBlockOptions ] = useState(
 		{}
 	);
+	const [ paymentsSettings, setPaymentsSettings ] = useState( {} );
 
 	// Options to fetch from API.
 	const optionsToFetch = [
@@ -64,12 +67,16 @@ const Component = ( { path } ) => {
 			navigation.forEach( ( single ) => {
 				const slug = single?.slug && single.slug ? single.slug : '';
 				const title = single?.name && single.name ? single.name : '';
+				// eslint-disable-next-line no-shadow
+				const helpText =
+					single?.helpText && single.helpText ? single.helpText : '';
 				// Check for the property to hide the page title.
 				const hideTitle = !! single?.hidePageTitle;
 				if ( slug ) {
 					if ( slug === path ) {
 						setPageTitle( title );
 						setHidePageTitle( hideTitle );
+						setHelpText( helpText );
 					}
 				}
 			} );
@@ -162,6 +169,11 @@ const Component = ( { path } ) => {
 						...data.srfm_default_dynamic_block_option,
 					} );
 				}
+
+				if ( data.payment_settings ) {
+					setPaymentsSettings( data.payment_settings );
+				}
+
 				setLoading( false );
 			} catch ( error ) {
 				console.error( 'Error fetching data:', error );
@@ -235,6 +247,13 @@ const Component = ( { path } ) => {
 				[ setting ]: value,
 			};
 			setDynamicBlockOptions( updatedTabOptions );
+		} else if ( tab === 'payments-settings' ) {
+			updatedTabOptions = {
+				...paymentsSettings,
+				srfm_tab: tab,
+				[ setting ]: value,
+			};
+			setPaymentsSettings( updatedTabOptions );
 		} else {
 			return;
 		}
@@ -249,6 +268,7 @@ const Component = ( { path } ) => {
 				<PageTitleSection
 					title={ pageTitle }
 					hidePageTitle={ hidePageTitle }
+					helpText={ helpText }
 				/>
 			) }
 			{ /* Added the below check to make the container full width for the OttoKit tab. */ }
@@ -288,6 +308,14 @@ const Component = ( { path } ) => {
 
 				{ 'integration-settings' === path && (
 					<IntegrationPage loading={ loading } />
+				) }
+				{ 'payments-settings' === path && (
+					<PaymentsPage
+						loading={ loading }
+						paymentsSettings={ paymentsSettings }
+						updateGlobalSettings={ updateGlobalSettings }
+						setPaymentsSettings={ setPaymentsSettings }
+					/>
 				) }
 				{ applyFilters(
 					'srfm.settings.page.content',

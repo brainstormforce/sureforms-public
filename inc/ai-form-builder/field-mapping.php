@@ -106,6 +106,28 @@ class Field_Mapping {
 				case 'multi-choice':
 				case 'url':
 				case 'phone':
+				case 'payment':
+					// if payment block then map payment specific attributes.
+					if ( 'payment' === $field_type ) {
+						$merged_attributes['customerNameField']   = isset( $question['customerNameField'] ) ? sanitize_text_field( $question['customerNameField'] ) : '';
+						$merged_attributes['customerEmailField']  = isset( $question['customerEmailField'] ) ? sanitize_text_field( $question['customerEmailField'] ) : '';
+						$merged_attributes['paymentType']         = isset( $question['paymentType'] ) && in_array( $question['paymentType'], [ 'one-time', 'subscription' ], true ) ? sanitize_text_field( $question['paymentType'] ) : 'one-time';
+						$merged_attributes['subscriptionPlan']    = isset( $question['subscriptionPlan'] ) && is_array( $question['subscriptionPlan'] ) ? [
+							'name'          => isset( $question['subscriptionPlan']['name'] ) ? sanitize_text_field( $question['subscriptionPlan']['name'] ) : 'Subscription Plan',
+							'interval'      => isset( $question['subscriptionPlan']['interval'] ) && in_array( $question['subscriptionPlan']['interval'], [ 'day', 'week', 'month', 'year' ], true ) ? sanitize_text_field( $question['subscriptionPlan']['interval'] ) : 'month',
+							'billingCycles' => isset( $question['subscriptionPlan']['billingCycles'] ) ? sanitize_text_field( $question['subscriptionPlan']['billingCycles'] ) : 'ongoing',
+						] : [
+							'name'          => 'Subscription Plan',
+							'interval'      => 'month',
+							'billingCycles' => 'ongoing',
+						];
+						$merged_attributes['amountType']          = isset( $question['amountType'] ) && in_array( $question['amountType'], [ 'fixed', 'variable', 'user-choice' ], true ) ? sanitize_text_field( $question['amountType'] ) : 'fixed';
+						$merged_attributes['fixedAmount']         = isset( $question['fixedAmount'] ) && is_numeric( $question['fixedAmount'] ) ? floatval( $question['fixedAmount'] ) : 10;
+						$merged_attributes['minimumAmount']       = isset( $question['minimumAmount'] ) && is_numeric( $question['minimumAmount'] ) ? floatval( $question['minimumAmount'] ) : 0;
+						$merged_attributes['amountLabel']         = isset( $question['amountLabel'] ) ? sanitize_text_field( $question['amountLabel'] ) : 'Enter Amount';
+						$merged_attributes['variableAmountField'] = isset( $question['variableAmountField'] ) ? sanitize_text_field( $question['variableAmountField'] ) : '';
+					}
+
 					// Handle specific attributes for certain fields.
 					if ( 'dropdown' === $field_type && ! empty( $question['fieldOptions'] ) && is_array( $question['fieldOptions'] ) &&
 					! empty( $question['fieldOptions'][0]['label'] )
