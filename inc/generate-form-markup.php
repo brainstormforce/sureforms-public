@@ -515,34 +515,34 @@ class Generate_Form_Markup {
 					}
 					$srfm_button_classes = apply_filters( 'srfm_add_button_classes', [ '1' === $btn_from_theme ? 'wp-block-button__link' : 'srfm-btn-frontend srfm-button srfm-submit-button', 'v3-reCAPTCHA' === $recaptcha_version ? ' g-recaptcha' : '' ] );
 
-					// Build submit container HTML using ob_start
+					// Build submit container HTML using ob_start.
 					ob_start();
-					$container_class   = $is_page_break ? 'srfm-hide' : '';
-					$container_style   = ! $should_show_submit_button ? 'visibility:hidden;position:absolute;' : '';
-					$width_style       = $full ? '100%' : '';
-					$button_style      = $full ? 'width: 100%;' : '';
-					$button_classes    = esc_attr( implode( ' ', array_filter( $srfm_button_classes ) ) );
+					$container_class = $is_page_break ? 'srfm-hide' : '';
+					$container_style = ! $should_show_submit_button ? 'visibility:hidden;position:absolute;' : '';
+					$width_style     = $full ? '100%' : '';
+					$button_style    = $full ? 'width: 100%;' : '';
+					$button_classes  = esc_attr( implode( ' ', array_filter( $srfm_button_classes ) ) );
 					?>
 					<div class="srfm-submit-container <?php echo esc_attr( $container_class ); ?>" style="<?php echo esc_attr( $container_style ); ?>">
 						<div style="width: <?php echo esc_attr( $width_style ); ?>; text-align: <?php echo esc_attr( $submit_button_alignment ); ?>" class="wp-block-button">
-							<?php if ( $should_show_submit_button ) : ?>
+							<?php if ( $should_show_submit_button ) { ?>
 								<button
 									style="<?php echo esc_attr( $button_style ); ?>"
 									id="srfm-submit-btn"
 									class="<?php echo esc_attr( $button_classes ); ?>"
-									<?php if ( 'v3-reCAPTCHA' === $recaptcha_version ) : ?>
+									<?php if ( 'v3-reCAPTCHA' === $recaptcha_version ) { ?>
 										data-callback="recaptchaCallback"
 										data-error-callback="onGCaptchaV3Error"
 										recaptcha-type="<?php echo esc_attr( $recaptcha_version ); ?>"
 										data-sitekey="<?php echo esc_attr( $google_captcha_site_key ); ?>"
-									<?php endif; ?>
+									<?php } ?>
 								>
 									<div class="srfm-submit-wrap">
 										<?php echo esc_html( $button_text ); ?>
 										<div class="srfm-loader"></div>
 									</div>
 								</button>
-							<?php endif; ?>
+							<?php } ?>
 						</div>
 					</div>
 					<?php
@@ -554,16 +554,16 @@ class Generate_Form_Markup {
 							'srfm_submit_container',
 							$submit_container_html,
 							[
-								'id'                        => $id,
+								'id'                      => $id,
 								'should_show_submit_button' => $should_show_submit_button,
-								'button_text'               => $button_text,
-								'submit_button_alignment'   => $submit_button_alignment,
-								'full'                      => $full,
-								'btn_from_theme'            => $btn_from_theme,
-								'is_page_break'             => $is_page_break,
-								'recaptcha_version'         => $recaptcha_version,
-								'google_captcha_site_key'   => $google_captcha_site_key,
-								'srfm_button_classes'       => $srfm_button_classes,
+								'button_text'             => $button_text,
+								'submit_button_alignment' => $submit_button_alignment,
+								'full'                    => $full,
+								'btn_from_theme'          => $btn_from_theme,
+								'is_page_break'           => $is_page_break,
+								'recaptcha_version'       => $recaptcha_version,
+								'google_captcha_site_key' => $google_captcha_site_key,
+								'srfm_button_classes'     => $srfm_button_classes,
 							]
 						)
 					);
