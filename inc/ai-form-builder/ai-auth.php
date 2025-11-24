@@ -55,7 +55,7 @@ class AI_Auth {
 				$redirect_back = site_url() . '/wp-admin/admin.php?page=sureforms_menu#/onboarding/email-delivery';
 				break;
 			default:
-				$redirect_back = site_url() . '/wp-admin/admin.php?page=add-new-form&method=ai';
+				$redirect_back = site_url() . '/wp-admin/admin.php?page=add-new-form';
 		}
 
 		// Prepare the token data.

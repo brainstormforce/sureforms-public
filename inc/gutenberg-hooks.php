@@ -81,6 +81,7 @@ class Gutenberg_Hooks {
 				'srfm/image',
 				'srfm/advanced-heading',
 				'srfm/inline-button',
+				'srfm/payment',
 			];
 			// Apply a filter to the $allow_block_types types array.
 			return apply_filters( 'srfm_allowed_block_types', $allow_block_types, $editor_context );
@@ -229,6 +230,7 @@ class Gutenberg_Hooks {
 					'dropdown_preview'     => SRFM_URL . 'images/field-previews/dropdown.svg',
 					'address_preview'      => SRFM_URL . 'images/field-previews/address.svg',
 					'sureforms_preview'    => SRFM_URL . 'images/field-previews/sureforms.svg',
+					'payment_preview'      => SRFM_URL . 'images/field-previews/payment.svg',
 				]
 			)
 		);

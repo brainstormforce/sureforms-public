@@ -34,6 +34,7 @@ import {
 	attributeOptionsWithFilter,
 	enhanceDropdownOptions,
 } from '@Components/hooks';
+import { Trash2 } from 'lucide-react';
 
 const Edit = ( props ) => {
 	const { attributes, setAttributes, clientId } = props;
@@ -50,6 +51,7 @@ const Edit = ( props ) => {
 		searchable,
 		minValue,
 		maxValue,
+		showValues,
 	} = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
 	const [ newOption, setNewOption ] = useState( '' );
@@ -118,7 +120,7 @@ const Edit = ( props ) => {
 	const minMaxComponent = multiSelect && options.length > 1 && (
 		<>
 			<SRFMNumberControl
-				label={ __( 'Minimum Value', 'sureforms' ) }
+				label={ __( 'Minimum Selections', 'sureforms' ) }
 				displayUnit={ false }
 				data={ {
 					value: minValue,
@@ -143,7 +145,7 @@ const Edit = ( props ) => {
 				showControlHeader={ false }
 			/>
 			<SRFMNumberControl
-				label={ __( 'Maximum Value', 'sureforms' ) }
+				label={ __( 'Maximum Selections', 'sureforms' ) }
 				displayUnit={ false }
 				data={ {
 					value: maxValue,
@@ -175,12 +177,6 @@ const Edit = ( props ) => {
 					) }
 				</p>
 			) }
-			<p className="components-base-control__help">
-				{ __(
-					'Note: Maximum value should always be greater than minimum value',
-					'sureforms'
-				) }
-			</p>
 		</>
 	);
 
@@ -196,7 +192,7 @@ const Edit = ( props ) => {
 							} }
 						/>
 					</span>
-					<div>
+					<div className="srfm-option-outer-text-control">
 						<SRFMTextControl
 							showHeaderControls={ false }
 							key={ i }
@@ -218,7 +214,16 @@ const Edit = ( props ) => {
 							addIcon={ parse( svgIcons.custom_plus_icon ) }
 						/>
 					</div>
-					<Button icon="trash" onClick={ () => handleDelete( i ) } />
+					<div className="srfm-options-delete">
+						<Trash2
+							style={ {
+								width: '20px',
+								height: '20px',
+								color: '#6B7280',
+							} }
+							onClick={ () => handleDelete( i ) }
+						/>
+					</div>
 				</div>
 			</>
 		);
@@ -355,34 +360,6 @@ const Edit = ( props ) => {
 			),
 		},
 		{
-			id: 'multiSelect',
-			component: (
-				<ToggleControl
-					label={ __( 'Enable Multiple Selections', 'sureforms' ) }
-					checked={ multiSelect }
-					onChange={ ( checked ) =>
-						setAttributes( { multiSelect: checked } )
-					}
-				/>
-			),
-		},
-		{
-			id: 'minMaxComponent',
-			component: minMaxComponent,
-		},
-		{
-			id: 'searchable',
-			component: (
-				<ToggleControl
-					label={ __( 'Enable Search', 'sureforms' ) }
-					checked={ searchable }
-					onChange={ ( checked ) =>
-						setAttributes( { searchable: checked } )
-					}
-				/>
-			),
-		},
-		{
 			id: 'errorMsg',
 			component: required ? (
 				<SRFMTextControl
@@ -400,17 +377,10 @@ const Edit = ( props ) => {
 			) : null,
 		},
 		{
-			id: 'dropDownOptions',
-			component: dropDownOptions,
-		},
-		{
-			id: 'addNewOption',
-			component: addNewOption,
-		},
-		{
 			id: 'help',
 			component: (
 				<SRFMTextControl
+					variant="textarea"
 					data={ {
 						value: help,
 						label: 'help',
@@ -421,8 +391,59 @@ const Edit = ( props ) => {
 				/>
 			),
 		},
+		{
+			id: 'separator-1',
+			component: <div className="srfm-settings-separator" />,
+		},
+		{
+			id: 'dropDownOptions',
+			component: dropDownOptions,
+		},
+		{
+			id: 'addNewOption',
+			component: addNewOption,
+		},
+		{
+			id: 'show-option-value',
+			component: (
+				<ToggleControl
+					label={ __( 'Add Numeric Values to Options', 'sureforms' ) }
+					checked={ showValues }
+					onChange={ ( value ) =>
+						setAttributes( { showValues: value } )
+					}
+				/>
+			),
+		},
+		{
+			id: 'searchable',
+			component: (
+				<ToggleControl
+					label={ __( 'Enable Dropdown Search', 'sureforms' ) }
+					checked={ searchable }
+					onChange={ ( checked ) =>
+						setAttributes( { searchable: checked } )
+					}
+				/>
+			),
+		},
+		{
+			id: 'multiSelect',
+			component: (
+				<ToggleControl
+					label={ __( 'Allow Multiple', 'sureforms' ) }
+					checked={ multiSelect }
+					onChange={ ( checked ) =>
+						setAttributes( { multiSelect: checked } )
+					}
+				/>
+			),
+		},
+		{
+			id: 'minMaxComponent',
+			component: minMaxComponent,
+		},
 	];
-
 	const filterOptions = attributeOptionsWithFilter( attributeOptions, props );
 
 	return (

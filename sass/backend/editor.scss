@@ -121,6 +121,10 @@ body.post-type-sureforms_form {
 			}
 		}
 
+		.srfm-option-outer-text-control {
+			flex: 1;
+		}
+
 		.srfm-option-value {
 			width: 75px;
 		}
@@ -634,7 +638,8 @@ body.post-type-sureforms_form {
 	/*
 	* Custom Styling Component Styles.
 	*/
-	.srfm-btn-bg {
+	.srfm-btn-bg,
+	.srfm-bg-component {
 		.srfm-bg-type-container {
 			.srfm-multi-buttons-control {
 				display: flex;
@@ -718,4 +723,65 @@ html[dir="rtl"] body.post-type-sureforms_form {
 		padding: 0;
 		color: #50575e;
 	}
+}
+
+.srfm-settings-separator {
+	width: auto;
+	margin: 0px -16px 20px;
+	height: 1px;
+	background-color: #e4e4e7;
+}
+
+/**
+ * Upgrade Prompt Styles.
+ */
+.srfm-upgrade-prompt__background {
+	width: 100%;
+	height: 156px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	background-repeat: no-repeat;
+	text-align: center;
+}
+
+.srfm-upgrade-prompt__content {
+	position: relative;
+	z-index: 20;
+	max-width: 36rem;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 4px;
+}
+
+.srfm-upgrade-prompt__heading {
+	font-weight: 600;
+	font-size: 12px;
+	margin: 0;
+}
+
+.srfm-upgrade-prompt__description {
+	font-size: 12px;
+	color: #4b5563;
+	margin: 0;
+	min-width: 218px;
+}
+
+.srfm-upgrade-prompt__link {
+	font-size: 12px;
+	font-weight: 600;
+	color: #d54407;
+	transition: color 0.2s;
+	text-decoration: none;
+	margin-top: 4px;
+}
+
+.srfm-upgrade-prompt__link:hover {
+	color: #d54407;
+}
+
+.srfm-upgrade-prompt__link:focus {
+	color: #d54407;
 }

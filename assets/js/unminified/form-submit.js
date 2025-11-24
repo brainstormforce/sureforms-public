@@ -6,6 +6,7 @@ import {
 	handleCaptchaValidation,
 	srfmFields,
 } from './validation';
+import { handleFormPayment } from './payment';
 import { applyFilters } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';
 
@@ -134,6 +135,14 @@ function initializeFormHandlers() {
 			// Set the login completion status to true after form submission.
 			form.__loginSuccess = true;
 		} );
+
+		// Add the event after the form initialization to ensure that all third party libraries are loaded and initialized.
+		// Dispatch a custom event *before* the form is submitted.
+		document.dispatchEvent(
+			new CustomEvent( 'srfm_form_after_initialization', {
+				detail: { form },
+			} )
+		);
 	}
 }
 
@@ -561,6 +570,17 @@ async function handleFormSubmission(
 			enableSubmitButton( form );
 
 			return; // Stop further execution if event.preventDefault() was called.
+		}
+
+		// Process payment submission
+		const paymentResult = await handleFormPayment( form );
+
+		if ( ! paymentResult?.valid ) {
+			showErrorMessage( { form, message: paymentResult?.message } );
+			// Remove loading.
+			loader.classList.remove( 'srfm-active' );
+			enableSubmitButton( form );
+			return;
 		}
 
 		const formStatus = await submitFormData( form );
