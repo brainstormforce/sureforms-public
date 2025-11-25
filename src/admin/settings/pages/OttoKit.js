@@ -30,6 +30,7 @@ const OttoKitPage = ( { loading, isFormSettings = false, setSelectedTab } ) => {
 	const [ pluginConnected, setPluginConnected ] = useState( null );
 	const [ action, setAction ] = useState( '' );
 	const [ CTA, setCTA ] = useState( '' );
+	const [ loadingData, setLoadingData ] = useState( false );
 
 	// Reuse the connection logic from integrations/index.js
 	const integrateWithSureTriggers = () => {
@@ -38,7 +39,7 @@ const OttoKitPage = ( { loading, isFormSettings = false, setSelectedTab } ) => {
 		formData.append( 'formId', srfm_admin.form_id );
 		formData.append( 'security', srfm_admin.suretriggers_nonce );
 
-		apiFetch( {
+		return apiFetch( {
 			url: srfm_admin.ajax_url,
 			method: 'POST',
 			body: formData,
@@ -51,10 +52,7 @@ const OttoKitPage = ( { loading, isFormSettings = false, setSelectedTab } ) => {
 			} else {
 				if ( response.data.code ) {
 					if ( 'invalid_secret_key' === response.data.code ) {
-						const windowDimension = {
-							width: 800,
-							height: 720,
-						};
+						const windowDimension = { width: 800, height: 720 };
 						const positioning = {
 							left: ( screen.width - windowDimension.width ) / 2,
 							top: ( screen.height - windowDimension.height ) / 2,
@@ -275,6 +273,14 @@ const OttoKitPage = ( { loading, isFormSettings = false, setSelectedTab } ) => {
 			setPluginConnected( plugin.connected );
 		}
 
+		// NEW: If plugin is already connected, fetch actual data immediately
+		if ( pluginConnected || plugin.connected ) {
+			setLoadingData( true );
+			integrateWithSureTriggers().finally( () =>
+				setLoadingData( false )
+			);
+		}
+
 		if ( ! action ) {
 			setAction( getAction( plugin.status ) );
 			setCTA( getCTA( plugin.status ) );
@@ -289,7 +295,7 @@ const OttoKitPage = ( { loading, isFormSettings = false, setSelectedTab } ) => {
 
 	return (
 		<>
-			{ loading ? (
+			{ loading || loadingData ? (
 				<div>
 					<LoadingSkeleton count={ 6 } className="h-6 rounded-sm" />
 				</div>
