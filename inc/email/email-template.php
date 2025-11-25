@@ -304,7 +304,7 @@ class Email_Template {
 							if ( strpos( $field_name, 'srfm-input-multi-choice' ) !== false && strpos( $value, '|' ) !== false ) {
 								$options = array_map( 'trim', explode( '|', $value ) );
 								foreach ( $options as $index => $option ) {
-									$border_style = ( $index < count( $options ) - 1 ) ? 'border-bottom:1px solid #E5E7EB;padding-bottom:4px;margin-bottom:4px;' : '';
+									$border_style = $index < count( $options ) - 1 ? 'border-bottom:1px solid #E5E7EB;padding-bottom:4px;margin-bottom:4px;' : '';
 									echo '<div style="' . esc_attr( $border_style ) . '">' . esc_html( $option ) . '</div>';
 								}
 								continue;
