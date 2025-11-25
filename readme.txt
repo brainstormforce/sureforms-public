@@ -366,6 +366,7 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 
 == Changelog ==
 = x.x.x =
+* Improvement: Skip vector placeholder once SureForms is connected to OttoKit in single form settings
 * Fix: Resolved an issue with phone block when site is in RTL mode.
 = 2.0.1 - 20th November 2025 =
 * Fix: Fixed compatibility issue with lower PHP version.
