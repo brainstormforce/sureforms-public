@@ -99,18 +99,29 @@ const FormsTable = ( {
 			headerClassName: 'w-auto',
 			render: ( form ) => (
 				<div>
-					<Text
-						size={ 14 }
-						color="secondary"
-						onClick={ () => onEdit( form ) }
-						className="cursor-pointer hover:text-link-primary hover:underline"
+					<a
+						href={ form.edit_url }
+						onClick={ ( e ) => {
+							if ( e.ctrlKey || e.metaKey || e.which === 2 ) {
+								return;
+							}
+							e.preventDefault();
+							onEdit( form );
+						} }
+						className="cursor-pointer no-underline hover:text-link-primary hover:underline focus:outline-none focus:ring-0"
 					>
-						{ form.title || __( '(no title)', 'sureforms' ) }{ ' ' }
-						<span className="font-semibold">
-							{ form.status === 'draft' &&
-								__( '- Draft', 'sureforms' ) }
-						</span>
-					</Text>
+						<Text
+							size={ 14 }
+							color="secondary"
+							className="cursor-pointer no-underline hover:text-link-primary hover:underline"
+						>
+							{ form.title || __( '(no title)', 'sureforms' ) }{ ' ' }
+							<span className="font-semibold">
+								{ form.status === 'draft' &&
+									__( '- Draft', 'sureforms' ) }
+							</span>
+						</Text>
+					</a>
 				</div>
 			),
 		},

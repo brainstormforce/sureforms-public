@@ -51,10 +51,20 @@ const EntriesTable = ( {
 			headerClassName: 'w-[13%]',
 			render: ( entry ) => (
 				<Button
+					tag="a"
 					variant="link"
 					size="md"
 					className="[&>span]:p-0 text-text-secondary font-normal hover:underline no-underline"
-					onClick={ () => onEdit?.( entry ) }
+					href={ `#/entry/${ entry.id }${
+						entry.status === 'unread' ? '?read=true' : ''
+					}` }
+					onClick={ ( e ) => {
+						if ( e.ctrlKey || e.metaKey || e.which === 2 ) {
+							return;
+						}
+						e.preventDefault();
+						onEdit?.( entry );
+					} }
 				>
 					{ entry.entryId }
 				</Button>
