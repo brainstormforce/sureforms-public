@@ -4,7 +4,7 @@ Tags: contact form, custom form, forms, WordPress form plugin, form builder
 Requires at least: 6.4
 Tested up to: 6.8.3
 Requires PHP: 7.4
-Stable tag: 2.0.0
+Stable tag: 2.0.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -367,6 +367,9 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 == Changelog ==
 = x.x.x =
 * Improvement: Updated Email Notifications to remove empty fields.
+* Fix: Resolved an issue with phone block when site is in RTL mode.
+= 2.0.1 - 20th November 2025 =
+* Fix: Fixed compatibility issue with lower PHP version.
 = 2.0.0 - 20th November 2025 =
 * New: Introduced Payments.
 * Improvement: Revamped the SureForms UI.

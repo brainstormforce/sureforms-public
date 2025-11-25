@@ -114,7 +114,7 @@ class Post_Types {
 	 * @return WP_REST_Response Modified REST response with normalized meta.
 	 * @since 1.7.3
 	 */
-	public function sureforms_normalize_meta_for_rest( WP_REST_Response $response, WP_Post $post ) {
+	public function sureforms_normalize_meta_for_rest( $response, $post ) {
 		$meta_raw          = get_post_meta( $post->ID, '_srfm_form_confirmation', true );
 		$form_confirmation = maybe_unserialize( is_string( $meta_raw ) ? $meta_raw : '' );
 
@@ -1170,7 +1170,7 @@ class Post_Types {
 	 * @return string|false. $content Post Content.
 	 * @since 0.0.1
 	 */
-	public function forms_shortcode( array $atts ) {
+	public function forms_shortcode( $atts ) {
 		$atts = shortcode_atts(
 			[
 				'id'         => '',
