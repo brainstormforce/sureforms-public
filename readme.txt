@@ -373,7 +373,6 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 = 2.0.0 - 20th November 2025 =
 * New: Introduced Payments.
 * Improvement: Revamped the SureForms UI.
-
 = 1.13.2 - 7th November 2025 =
 * Improvement: Added a fallback message for email failures on the single entries page when the SMTP plugin is missing.
 * Improvement: Added support for "Name <email\>" format in CC, BCC, and Reply-To fields.
