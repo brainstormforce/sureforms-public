@@ -584,6 +584,14 @@ function onHCaptchaError() {
 
 			return value.split( ' | ' );
 		},
+		normalizeDashes( str ) {
+			if ( typeof str !== 'string' || str.length === 0 ) {
+				return str; // Return original (empty or non-string)
+			}
+
+			// Replace dash variants with hyphen
+			return str.replace( /[–—−﹘﹣]/g, '-' );
+		},
 	};
 
 	// Adding the `UTILITY` object to the global `srfm` object.

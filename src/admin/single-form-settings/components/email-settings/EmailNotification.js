@@ -251,6 +251,11 @@ const EmailNotification = ( {
 			actionBtnText={ __( 'Add Notification', 'sureforms' ) }
 			onClickAction={ handleEdit }
 			className="gap-2"
+			showTitleHelpText={ true }
+			titleHelpText={ __(
+				'Control email alerts sent to admins or users after a form submission.',
+				'sureforms'
+			) }
 		>
 			<Toaster
 				position={ toasterPosition }

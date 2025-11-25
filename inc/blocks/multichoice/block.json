@@ -88,6 +88,10 @@
 		"optionType": {
 			"type": "string",
 			"default": "icon"
+		},
+		"showValues": {
+			"type": "boolean",
+			"default": false
 		}
 	}
 }
