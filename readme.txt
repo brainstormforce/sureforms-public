@@ -365,6 +365,8 @@ easy.
 You can report the issue through our [Bug Bounty Program](https://brainstormforce.com/bug-bounty-program/). We collaborate with Patchstack to provide opportunities for researchers to report vulnerabilities. The Patchstack team will help validate, triage, and handle any reported security issues.
 
 == Changelog ==
+= x.x.x =
+* Fix: Resolved an issue with phone block when site is in RTL mode.
 = 2.0.1 - 20th November 2025 =
 * Fix: Fixed compatibility issue with lower PHP version.
 = 2.0.0 - 20th November 2025 =
