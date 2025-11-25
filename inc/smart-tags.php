@@ -501,7 +501,7 @@ class Smart_Tags {
 						$replacement_data .= $view_link;
 					} else {
 						if ( 0 === strpos( $block_type, 'srfm-input-multi-choice' ) && is_string( $submission_item_value ) && strpos( $submission_item_value, '|' ) !== false ) {
-							$options = array_map( 'trim', explode( '|', $submission_item_value ) );
+							$options           = array_map( 'trim', explode( '|', $submission_item_value ) );
 							$replacement_data .= implode( '<br>', array_map( 'esc_html', $options ) );
 						} else {
 							$replacement_data .= $submission_item_value;
