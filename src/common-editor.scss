@@ -881,6 +881,22 @@ button.components-button.srfm-review-select-btn.is-secondary {
 	display: none;
 }
 
+.post-type-sureforms_form .interface-interface-skeleton__body {
+	.interface-complementary-area__fill {
+		width: 350px !important;
+		> .editor-sidebar {
+			width: 350px !important;
+		}
+	}
+
+	.interface-interface-skeleton__actions {
+		width: 350px !important;
+		.editor-post-publish-panel {
+			width: 350px !important;
+		}
+	}
+}
+
 @import "styles/gutenberg-override";
 @import "styles/control-responsive";
 @import "styles/control-header";

@@ -54,6 +54,8 @@ module.exports = withTW( {
 				'border-error': '#FECACA',
 				'border-transparent-subtle': '#37415114',
 				'border-white': '#FFFFFF',
+				'border-ai-button': '#EA580C',
+				'border-ai-banner': '#FB923C',
 				// text
 				'text-primary': '#111827',
 				'text-secondary': '#4B5563',
@@ -203,6 +205,7 @@ module.exports = withTW( {
 			boxShadow: {
 				'sm-blur-1': '0 1px 1px rgba(0, 0, 0, 0.05)',
 				'sm-blur-2': '0 1px 2px rgba(0, 0, 0, 0.05)',
+				'md-blur-32': '0px 10px 32px -12px rgba(149,160,178,0.2)',
 			},
 		},
 	},
@@ -215,5 +218,5 @@ module.exports = withTW( {
 		preflight: false,
 	},
 	important:
-		':is(#srfm-dashboard-container, #srfm-settings-container, #srfm-page-header, #srfm-dialog-root, #srfm-add-new-form-container, #srfm-suremail-container)',
+		':is(#srfm-dashboard-container, #srfm-settings-container, #srfm-page-header, #srfm-dialog-root, #srfm-add-new-form-container, #srfm-suremail-container, #srfm-entries-root, #srfm-forms-root, #srfm-payments-react-container)',
 } );

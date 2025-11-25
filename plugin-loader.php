@@ -36,6 +36,7 @@ use SRFM\Inc\Lib\SRFM_Nps_Survey;
 use SRFM\Inc\Nps_Notice;
 use SRFM\Inc\Onboarding;
 use SRFM\Inc\Page_Builders\Page_Builders;
+use SRFM\Inc\Payments\Payments;
 use SRFM\Inc\Post_Types;
 use SRFM\Inc\Rest_Api;
 use SRFM\Inc\Single_Form_Settings\Compliance_Settings;
@@ -208,6 +209,7 @@ class Plugin_Loader {
 		if ( is_admin() ) {
 			Admin::get_instance();
 		}
+		Payments::get_instance();
 	}
 
 	/**

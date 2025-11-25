@@ -1,17 +1,21 @@
 import { __ } from '@wordpress/i18n';
-import Header from './Header.js';
 import ICONS from './icons.js';
-import AiFormBuilder from './AiFormBuilder.js';
 import { Button, Container, Label } from '@bsf/force-ui';
 import { applyFilters } from '@wordpress/hooks';
+import { Zap, ChevronRight } from 'lucide-react';
+import { useEffect } from '@wordpress/element';
 
 const LimitReachedPopup = ( {
-	title = __( 'Limit Reached', 'sureforms' ),
-	paraOne,
-	paraTwo,
-	buttonText,
-	onclick,
+	title = '',
+	paraOne = '',
+	paraTwo = '',
+	buttonText = '',
+	onclick = () => {},
 	deactivatedLicense = false,
+	paraTitle = '',
+	features = [],
+	showFeatures = false,
+	setShowCreditDetailsPopup,
 } ) => {
 	// Get filter values
 	const {
@@ -19,11 +23,13 @@ const LimitReachedPopup = ( {
 		paraTwo: filteredParaTwo,
 		title: filteredTitle,
 		activateLicenseButton: ActivateLicenseButton,
+		paraTitle: filteredParaTitle,
 	} = applyFilters( 'srfm.aiFormScreen.freeCreds.expired', null ) || {};
 
 	const finalTitle = deactivatedLicense ? filteredTitle : title;
 	const finalParaOne = deactivatedLicense ? filteredParaOne : paraOne;
 	const finalParaTwo = deactivatedLicense ? filteredParaTwo : paraTwo;
+	const finalParaTitle = deactivatedLicense ? filteredParaTitle : paraTitle;
 	const FinalButton =
 		deactivatedLicense && ActivateLicenseButton ? (
 			<ActivateLicenseButton />
@@ -32,6 +38,16 @@ const LimitReachedPopup = ( {
 				{ buttonText ?? __( 'Connect Now', 'sureforms' ) }
 			</Button>
 		);
+
+	const is_pro_active =
+		srfm_admin?.is_pro_active && srfm_admin?.is_pro_license_active;
+
+	useEffect( () => {
+		if ( showFeatures ) {
+			localStorage.setItem( 'srfm_ai_banner_closed', 'true' );
+			setShowCreditDetailsPopup( false );
+		}
+	}, [ showFeatures ] );
 
 	const renderLimitReachedContent = () => (
 		<Container
@@ -42,23 +58,23 @@ const LimitReachedPopup = ( {
 		>
 			<Container
 				direction="column"
-				className="bg-background-primary gap-6 py-4 px-5 rounded-lg max-w-md shadow-lg"
+				className="bg-background-primary gap-4 p-5 rounded-lg max-w-md shadow-lg"
 			>
 				<Container.Item className="relative pt-2">
 					<Label
 						variant="neutral"
-						className="text-lg font-bold flex gap-3"
+						className="text-xs font-semibold flex gap-3 text-brand-800"
 					>
-						{ ! deactivatedLicense && (
-							<span className="pt-1">{ ICONS.warning }</span>
-						) }
+						<span className="pt-1">
+							{ <Zap className="size-4 text-brand-800" /> }
+						</span>
 						{ finalTitle }
 						<span
 							className="absolute top-[-10px] right-[-15px] cursor-pointer"
 							onClick={ () =>
 								( window.location.href =
 									srfm_admin.site_url +
-									'/wp-admin/admin.php?page=add-new-form' )
+									'/wp-admin/admin.php?page=sureforms_menu' )
 							}
 						>
 							{ ICONS.close }
@@ -66,35 +82,91 @@ const LimitReachedPopup = ( {
 					</Label>
 				</Container.Item>
 
-				<Container.Item className="flex flex-col gap-4">
+				<Container.Item className="flex flex-col gap-1">
 					<Label
 						size="md"
-						className="text-text-secondary font-normal"
+						className="text-text-primary font-semibold text-lg"
+					>
+						{ finalParaTitle }
+					</Label>
+					<Label
+						size="md"
+						className="text-text-secondary text-sm font-normal"
 					>
 						{ finalParaOne }
 					</Label>
-					<Label
-						size="md"
-						className="text-text-secondary font-normal"
-					>
-						{ finalParaTwo }
-					</Label>
+					{ showFeatures ? (
+						<Container className="flex flex-col gap-2">
+							{ features.map( ( item, index ) => (
+								<Container.Item
+									key={ index }
+									className="flex flex-row gap-1.5 text-sm text-text-primary items-center"
+								>
+									<ChevronRight className="w-3.5 h-3.5" />
+									<Label
+										size="sm"
+										className="font-normal break-words"
+									>
+										{ item }
+									</Label>
+								</Container.Item>
+							) ) }
+
+							<Container.Item className="flex flex-row gap-1.5 text-sm text-text-primary items-center">
+								<ChevronRight className="w-3.5 h-3.5" />
+								<Container.Item className="flex flex-row text-sm gap-1">
+									<span>{ __( 'and ', 'sureforms' ) }</span>
+									<Label
+										as="a"
+										size="sm"
+										className="font-normal break-words underline cursor-pointer text-brand-800 hover:text-brand-900"
+										onClick={ () =>
+											window.open(
+												'https://sureforms.com',
+												'_blank',
+												'noreferrer'
+											)
+										}
+									>
+										{ __( 'more…', 'sureforms' ) }
+									</Label>
+								</Container.Item>
+							</Container.Item>
+						</Container>
+					) : (
+						<Label
+							size="md"
+							className="text-text-secondary text-sm font-normal"
+						>
+							{ finalParaTwo }
+						</Label>
+					) }
 				</Container.Item>
 
-				<Container.Item className="flex flex-col w-full gap-4 pb-2">
+				{ ! is_pro_active && ! deactivatedLicense ? (
+					<hr className="border-b-5 border-x-0 border-t-0 w-full border-solid border-border-subtle" />
+				) : (
+					''
+				) }
+
+				<Container.Item className="flex flex-col w-full gap-3 pb-2">
 					{ FinalButton }
+
+					<Button
+						size="md"
+						variant="ghost"
+						onClick={ () => {
+							window.location.href = `${ srfm_admin.site_url }/wp-admin/post-new.php?post_type=sureforms_form`;
+						} }
+					>
+						{ __( 'Or Build It Yourself', 'sureforms' ) }
+					</Button>
 				</Container.Item>
 			</Container>
 		</Container>
 	);
 
-	return (
-		<>
-			<Header />
-			{ renderLimitReachedContent() }
-			<AiFormBuilder />
-		</>
-	);
+	return <>{ renderLimitReachedContent() }</>;
 };
 
 export default LimitReachedPopup;
