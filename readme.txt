@@ -1,4 +1,4 @@
-=== SureForms - Contact Form, Custom Form Builder, Calculator & More ===
+=== SureForms - Contact Form, Payment Form & Other Custom Form Builder ===
 Contributors: brainstormforce
 Tags: contact form, custom form, forms, WordPress form plugin, form builder
 Requires at least: 6.4
@@ -72,15 +72,25 @@ SureForms is the first AI-powered form builder for WordPress, which makes form c
 
 SureForms makes advanced features like conditional logic, multi-step forms, query parameters and etc. simple to use through a no-code interface. This empowers anyone to create powerful, interactive forms without writing a single line of code.
 
-#### Mobile-First Approach
+#### Payment Forms
 
-SureForms recognizes the importance of mobile friendly forms. The forms created with SureForms are designed with a mobile-first approach, ensuring they look and function flawlessly on various devices.
+SureForms supports a built-in Payment Forms feature. With SureForms, anyone can easily create full-fledged donation forms, event registrations, product checkouts, or any kind of form that needs to accept payments, all without relying on any extra add-on or third-party plugins. This makes collecting payments seamless, secure, and effortless directly through your forms.
+
+Here are a few examples of how the Payment Feature in SureForms can power your forms:
+-   [Donation Form](https://sureforms.com/form/donation-form/)
+-   [Photography Packages Booking Form](https://sureforms.com/form/photography-packages-payment-form/)
+-   [Monthly Membership Plan Form](https://sureforms.com/form/monthly-membership-plan/)
+-   [Web Design Packages Booking Form](https://sureforms.com/form/freelance-web-design-packages-payment/)
 
 #### Instant Forms
 
 [youtube https://www.youtube.com/watch?v=pMH129ZUxJ0]
 
 With SureForms' own Instant Form feature, you can publish forms with a unique shareable URL. No embedding needed. Share them anywhere and make your forms instantly accessible.
+
+#### Mobile-First Approach
+
+SureForms recognizes the importance of mobile friendly forms. The forms created with SureForms are designed with a mobile-first approach, ensuring they look and function flawlessly on various devices.
 
 #### Multi-Column Layouts
 
