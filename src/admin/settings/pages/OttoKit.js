@@ -10,7 +10,7 @@ import LoadingSkeleton from '@Admin/components/LoadingSkeleton';
 import apiFetch from '@wordpress/api-fetch';
 import { useState, useEffect } from '@wordpress/element';
 
-const OttoKitPage = ( { loading, isFormSettings = false, setSelectedTab } ) => {
+const OttoKitPage = ( { loading, isFormSettings = false, setSelectedTab, pluginConnected, setPluginConnected } ) => {
 	const features = [
 		__(
 			'Push entries to Slack, Mailchimp, Google Sheets, or hundreds of other apps.',
@@ -27,7 +27,6 @@ const OttoKitPage = ( { loading, isFormSettings = false, setSelectedTab } ) => {
 	// Add state management for connection functionality (reused from integrations/index.js)
 	const [ btnDisabled, setBtnDisabled ] = useState( false );
 	const [ buttonText, setButtonText ] = useState( '' );
-	const [ pluginConnected, setPluginConnected ] = useState( null );
 	const [ action, setAction ] = useState( '' );
 	const [ CTA, setCTA ] = useState( '' );
 	const [ loadingData, setLoadingData ] = useState( false );
