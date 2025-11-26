@@ -366,6 +366,7 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 
 == Changelog ==
 = x.x.x =
+* Improvement: Updated Email Notifications to remove empty fields.
 * Fix: Resolved an issue where reCAPTCHA badge is overlapping with submit button with Bricks theme.
 * Fix: Resolved an issue where labels are not escaped properly.
 * Fix: Resolved an issue with phone block when site is in RTL mode.
