@@ -223,20 +223,12 @@ const EntriesTable = ( {
 										  }
 										: {} ) }
 									onClick={ ( e ) => {
-										// Allow opening in new tab
 										if (
 											btn.isPreview &&
 											( e.ctrlKey ||
 												e.metaKey ||
 												e.which === 2 )
 										) {
-											const url = `#/entry/${ entry.id }${
-												entry.status === 'unread'
-													? '?read=true'
-													: ''
-											}`;
-
-											window.open( url, '_blank' );
 											return;
 										}
 										btn.onClick?.( e );

@@ -284,16 +284,12 @@ const FormsTable = ( {
 										  }
 										: {} ) }
 									onClick={ ( e ) => {
-										// Allow opening in new tab
 										if (
 											action.isPreview &&
 											( e.ctrlKey ||
 												e.metaKey ||
 												e.which === 2 )
 										) {
-											const url = form.edit_url;
-
-											window.open( url, '_blank' );
 											return;
 										}
 										action.onClick?.( e );
