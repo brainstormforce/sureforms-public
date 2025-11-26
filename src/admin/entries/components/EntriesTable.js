@@ -175,6 +175,7 @@ const EntriesTable = ( {
 						ariaLabel: __( 'Preview', 'sureforms' ),
 						icon: <Eye />,
 						onClick: () => onEdit?.( entry ),
+						isPreview: true,
 					} );
 				}
 				if ( entry.status === 'trash' ) {
@@ -211,7 +212,35 @@ const EntriesTable = ( {
 									aria-label={ btn.ariaLabel }
 									size="xs"
 									icon={ btn.icon }
-									onClick={ btn.onClick }
+									{ ...( btn.isPreview
+										? {
+											tag: 'a',
+											href: `#/entry/${ entry.id }${
+												entry.status === 'unread'
+													? '?read=true'
+													: ''
+											}`,
+										  }
+										: {} ) }
+									onClick={ ( e ) => {
+										// Allow opening in new tab
+										if (
+											btn.isPreview &&
+											( e.ctrlKey ||
+												e.metaKey ||
+												e.which === 2 )
+										) {
+											const url = `#/entry/${ entry.id }${
+												entry.status === 'unread'
+													? '?read=true'
+													: ''
+											}`;
+
+											window.open( url, '_blank' );
+											return;
+										}
+										btn.onClick?.( e );
+									} }
 								/>
 							</Tooltip>
 						) ) }

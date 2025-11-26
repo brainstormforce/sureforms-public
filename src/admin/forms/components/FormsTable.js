@@ -217,6 +217,7 @@ const FormsTable = ( {
 						label: __( 'Edit', 'sureforms' ),
 						icon: <Edit3 className="size-4" />,
 						onClick: () => onEdit?.( form ),
+						isEdit: true,
 					} );
 
 					// View action
@@ -275,8 +276,28 @@ const FormsTable = ( {
 									variant="ghost"
 									size="xs"
 									icon={ action.icon }
-									onClick={ action.onClick }
 									className="p-1.5 text-text-primary [&>svg]:size-4"
+									{ ...( action.isEdit
+										? {
+											tag: 'a',
+											href: form.edit_url,
+										  }
+										: {} ) }
+									onClick={ ( e ) => {
+										// Allow opening in new tab
+										if (
+											action.isPreview &&
+											( e.ctrlKey ||
+												e.metaKey ||
+												e.which === 2 )
+										) {
+											const url = form.edit_url;
+
+											window.open( url, '_blank' );
+											return;
+										}
+										action.onClick?.( e );
+									} }
 								/>
 							</Tooltip>
 						) ) }
