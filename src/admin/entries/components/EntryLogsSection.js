@@ -93,7 +93,7 @@ const EntryLogsSection = ( { entryId, onConfirmation } ) => {
 							{ __( 'Loading logs…', 'sureforms' ) }
 						</div>
 					) : logs.length === 0 ? (
-						<div className="relative text-center py-4 text-text-secondary">
+						<div className="relative text-center py-4 text-text-secondary text-xs font-normal">
 							{ __( 'No logs available.', 'sureforms' ) }
 						</div>
 					) : (
