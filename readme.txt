@@ -366,7 +366,7 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 
 == Changelog ==
 = x.x.x =
-* Improvement: Skip vector placeholder once SureForms is connected to OttoKit in single form settings
+* Improvement: Skip vector placeholder once SureForms is connected to OttoKit in single form settings.
 * Improvement: Updated Email Notifications to remove empty fields.
 * Fix: Resolved an issue where reCAPTCHA badge is overlapping with submit button with Bricks theme.
 * Fix: Resolved an issue where labels are not escaped properly.
