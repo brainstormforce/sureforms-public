@@ -210,7 +210,9 @@ class Email_Template {
 							continue;
 						}
 
-						if ( is_array( $value ) ) {
+						$is_array_value = is_array( $value );
+
+						if ( $is_array_value ) {
 							$values_array = array_filter(
 								$value,
 								static function( $input_value ) {
@@ -222,7 +224,7 @@ class Email_Template {
 						}
 
 						// Skip if both $value and $values_array are empty.
-						if ( empty( $value ) || ( is_array( $value ) && empty( $values_array ) ) ) {
+						if ( empty( $value ) || ( $is_array_value && empty( $values_array ) ) ) {
 							continue;
 						}
 
