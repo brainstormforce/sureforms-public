@@ -31,3 +31,5 @@
 -   [ ] I've included any necessary tests <!-- if applicable -->
 -   [ ] I've included developer documentation <!-- if applicable -->
 -   [ ] I've added proper labels to this pull request <!-- if applicable -->
+-   [ ] I've verified the suggestions from claude review
+-   [ ] I've verified the suggestions from claude security review <!-- if applicable -->
