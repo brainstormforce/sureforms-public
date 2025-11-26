@@ -285,7 +285,7 @@ const FormsTable = ( {
 										: {} ) }
 									onClick={ ( e ) => {
 										if (
-											action.isPreview &&
+											action.isEdit &&
 											( e.ctrlKey ||
 												e.metaKey ||
 												e.which === 2 )
