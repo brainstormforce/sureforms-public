@@ -42,18 +42,43 @@ class Smart_Tags {
 	 * @return string
 	 */
 	public function render_form( $block_content, $block ) {
-		$id = get_the_id();
+		// Check if this block is a SureForms form block.
+		if ( strpos( $block_content, 'srfm-block' ) !== false ) {
 
-		// Simulating $form_data required form some of the smart tags.
-		$form_data = [ 'form-id' => $id ];
+			// Check if it's any SRFM block.
+			if ( isset( $block['blockName'] ) && is_string( $block['blockName'] ) && strpos( $block['blockName'], 'srfm' ) !== false ) {
 
-		if ( self::check_form_by_id( $id ) ) {
-			return Helper::get_string_value( self::process_smart_tags( $block_content, null, $form_data ) );
+				// Determine form ID based on block type.
+				$form_id = 0;
+				if ( 'srfm/form' === $block['blockName'] && ! empty( $block['attrs']['id'] ) ) {
+					$form_id = absint( $block['attrs']['id'] );
+				} elseif ( ! empty( $block['attrs']['formId'] ) ) {
+					$form_id = absint( $block['attrs']['formId'] );
+				}
+
+				// If we found a form ID, process it.
+				if ( $form_id ) {
+					$form_data = [ 'form-id' => $form_id ];
+
+					return Helper::get_string_value(
+						self::process_smart_tags( $block_content, null, $form_data )
+					);
+				}
+			}
+
+			return $block_content;
 		}
 
-		if ( isset( $block['blockName'] ) && ( 'srfm/form' === $block['blockName'] ) ) {
-			if ( isset( $block['attrs']['id'] ) && $block['attrs']['id'] ) {
-				return Helper::get_string_value( self::process_smart_tags( $block_content, null, $form_data ) );
+		// Check if the block content contains any SureForms smart tags like {*}.
+		if ( preg_match( '/\{[^\}]+\}/', $block_content ) ) {
+
+			$id        = get_the_id();
+			$form_data = [ 'form-id' => $id ];
+
+			if ( self::check_form_by_id( $id ) ) {
+				return Helper::get_string_value(
+					self::process_smart_tags( $block_content, null, $form_data )
+				);
 			}
 		}
 

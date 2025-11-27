@@ -366,6 +366,7 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 
 == Changelog ==
 = x.x.x =
+* Fix: Resolved an issue where shortcode value of smart tag {form_title} is incorrect when embedded in a page.
 * Improvement: Updated payment detail buttons to behave like standard links, enabling open in a new tab.
 * Improvement: Updated Email Notifications to remove empty fields.
 * Fix: Resolved an issue where reCAPTCHA badge is overlapping with submit button with Bricks theme.
