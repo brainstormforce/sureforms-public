@@ -220,15 +220,29 @@ const PaymentTable = ( {
 		let orderId = formatOrderId( payment );
 		orderId = (
 			<Button
+				tag="a"
 				variant="ghost"
 				size="sm"
 				className="p-0 text-text-secondary text-sm weight-medium font-normal hover:text-link-primary hover:underline"
-				onClick={ () =>
+				href={
+					payment.type === 'subscription'
+						? `/payment/${ payment.id }?type=subscription`
+						: `/payment/${ payment.id }`
+				}
+				onClick={ ( e ) => {
+					// Allow browser default new-tab behavior
+					if ( e.ctrlKey || e.metaKey || e.which === 2 ) {
+						return;
+					}
+
+					// Prevent default navigation for normal clicks
+					e.preventDefault();
+
 					onView( {
 						id: payment.id,
 						type: payment.type,
-					} )
-				}
+					} );
+				} }
 			>
 				{ orderId }
 			</Button>
