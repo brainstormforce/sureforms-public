@@ -99,18 +99,29 @@ const FormsTable = ( {
 			headerClassName: 'w-auto',
 			render: ( form ) => (
 				<div>
-					<Text
-						size={ 14 }
-						color="secondary"
-						onClick={ () => onEdit( form ) }
-						className="cursor-pointer hover:text-link-primary hover:underline"
+					<a
+						href={ form.edit_url }
+						onClick={ ( e ) => {
+							if ( e.ctrlKey || e.metaKey || e.which === 2 ) {
+								return;
+							}
+							e.preventDefault();
+							onEdit( form );
+						} }
+						className="cursor-pointer no-underline hover:text-link-primary hover:underline focus:outline-none focus:ring-0"
 					>
-						{ form.title || __( '(no title)', 'sureforms' ) }{ ' ' }
-						<span className="font-semibold">
-							{ form.status === 'draft' &&
-								__( '- Draft', 'sureforms' ) }
-						</span>
-					</Text>
+						<Text
+							size={ 14 }
+							color="secondary"
+							className="cursor-pointer no-underline hover:text-link-primary hover:underline"
+						>
+							{ form.title || __( '(no title)', 'sureforms' ) }{ ' ' }
+							<span className="font-semibold">
+								{ form.status === 'draft' &&
+									__( '- Draft', 'sureforms' ) }
+							</span>
+						</Text>
+					</a>
 				</div>
 			),
 		},
@@ -206,6 +217,7 @@ const FormsTable = ( {
 						label: __( 'Edit', 'sureforms' ),
 						icon: <Edit3 className="size-4" />,
 						onClick: () => onEdit?.( form ),
+						isEdit: true,
 					} );
 
 					// View action
@@ -264,8 +276,24 @@ const FormsTable = ( {
 									variant="ghost"
 									size="xs"
 									icon={ action.icon }
-									onClick={ action.onClick }
 									className="p-1.5 text-text-primary [&>svg]:size-4"
+									{ ...( action.isEdit
+										? {
+											tag: 'a',
+											href: form.edit_url,
+										  }
+										: {} ) }
+									onClick={ ( e ) => {
+										if (
+											action.isEdit &&
+											( e.ctrlKey ||
+												e.metaKey ||
+												e.which === 2 )
+										) {
+											return;
+										}
+										action.onClick?.( e );
+									} }
 								/>
 							</Tooltip>
 						) ) }
