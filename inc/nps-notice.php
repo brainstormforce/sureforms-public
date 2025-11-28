@@ -65,7 +65,8 @@ if ( ! class_exists( 'Nps_Notice' ) ) {
 			$is_onboarding_completed = Helper::get_srfm_option( 'onboarding_completed', true );
 
 			// When user manually opens onboarding from dashboard, do not show NPS survey.
-			if ( isset( $_REQUEST[ 'srfm-activation-redirect' ] ) && '1' === sanitize_text_field( wp_unslash( $_REQUEST[ 'srfm-activation-redirect' ] ) ) ) {
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			if ( isset( $_REQUEST['srfm-activation-redirect'] ) && '1' === sanitize_text_field( wp_unslash( $_REQUEST['srfm-activation-redirect'] ) ) ) {
 				return false;
 			}
 
