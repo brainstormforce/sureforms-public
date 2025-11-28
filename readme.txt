@@ -366,6 +366,7 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 
 == Changelog ==
 = x.x.x =
+* Improvement: Updated email notification to display multi choice options in separate lines.
 * Fix: Resolved an issue where shortcode value of smart tag {form_title} is incorrect when embedded in a page.
 * Improvement: Updated payment detail buttons to behave like standard links, enabling open in a new tab.
 * Improvement: Updated Email Notifications to remove empty fields.
