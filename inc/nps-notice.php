@@ -64,6 +64,11 @@ if ( ! class_exists( 'Nps_Notice' ) ) {
 
 			$is_onboarding_completed = Helper::get_srfm_option( 'onboarding_completed', true );
 
+			// When user manually opens onboarding from dashboard, do not show NPS survey.
+			if ( isset( $_REQUEST['srfm-activation-redirect'] ) && '1' === sanitize_text_field( wp_unslash( $_REQUEST['srfm-activation-redirect'] ) ) ) {
+				return false;
+			}
+
 			// Show the NPS survey if there are at least 3 published forms or 3 form submissions.
 			if ( 'no' !== $is_onboarding_completed && ( $form_count >= 3 || $entries_count >= 3 ) ) {
 				return true;
