@@ -1,7 +1,8 @@
 import { Button, Tooltip } from '@wordpress/components';
 import { Inserter } from '@wordpress/block-editor';
 import { __ } from '@wordpress/i18n';
-import { useSelect } from '@wordpress/data';
+import { useSelect, useDispatch } from '@wordpress/data';
+import { useEffect } from '@wordpress/element';
 
 export function BlockInserter( { rootClientId = null } ) {
 	return (
@@ -42,6 +43,48 @@ export const BlockInserterWrapper = () => {
 	const selectedBlock = useSelect( ( select ) =>
 		select( 'core/block-editor' ).getSelectedBlock()
 	);
+
+	const { clearSelectedBlock } = useDispatch( 'core/block-editor' );
+
+	useEffect( () => {
+		const handleCanvasClick = ( event ) => {
+			// Check if a block is currently selected.
+			if ( ! selectedBlock ) {
+				return;
+			}
+
+			// Get the target element.
+			const target = event.target;
+
+			const isRootContainer =
+				target.classList.contains( 'is-root-container' ) ||
+				target.closest( '.is-root-container' );
+
+			// Elements that should NOT trigger deselection when clicked.
+			if ( isRootContainer ) {
+				return;
+			}
+
+			// Check if click is within the main editor area.
+			const editorWrapper = target.closest( '.editor-styles-wrapper' );
+
+			// Clear selection if clicking on:
+			if ( editorWrapper ) {
+				clearSelectedBlock();
+			}
+		};
+
+		// Add event listener to the document.
+		const timeoutId = setTimeout( () => {
+			document.addEventListener( 'click', handleCanvasClick, true );
+		}, 500 );
+
+		// Cleanup.
+		return () => {
+			clearTimeout( timeoutId );
+			document.removeEventListener( 'click', handleCanvasClick, true );
+		};
+	}, [ selectedBlock, clearSelectedBlock ] );
 
 	// This blockWrapper should be visible only when block is not selected.
 	return !! selectedBlock ? null : <BlockInserter />;
