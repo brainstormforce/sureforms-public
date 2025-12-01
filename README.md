@@ -2,9 +2,9 @@
 **Contributors:** [brainstormforce](https://profiles.wordpress.org/brainstormforce/)  
 **Tags:** contact form, custom form, forms, WordPress form plugin, form builder  
 **Requires at least:** 6.4  
-**Tested up to:** 6.8.3  
+**Tested up to:** 6.9  
 **Requires PHP:** 7.4  
-**Stable tag:** 2.0.1  
+**Stable tag:** 2.1.0  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -365,6 +365,14 @@ easy.
 You can report the issue through our [Bug Bounty Program](https://brainstormforce.com/bug-bounty-program/). We collaborate with Patchstack to provide opportunities for researchers to report vulnerabilities. The Patchstack team will help validate, triage, and handle any reported security issues.
 
 ## Changelog ##
+### 2.1.0 - 2nd December 2025 ###
+* Improvement: Updated email notification to display multi choice options in separate lines.
+* Fix: Resolved an issue where shortcode value of smart tag {form_title} is incorrect when embedded in a page.
+* Improvement: Updated payment detail buttons to behave like standard links, enabling open in a new tab.
+* Improvement: Updated Email Notifications to remove empty fields.
+* Fix: Resolved an issue where reCAPTCHA badge is overlapping with submit button with Bricks theme.
+* Fix: Resolved an issue where labels are not escaped properly.
+* Fix: Resolved an issue with phone block when site is in RTL mode.
 ### 2.0.1 - 20th November 2025 ###
 * Fix: Fixed compatibility issue with lower PHP version.
 ### 2.0.0 - 20th November 2025 ###
