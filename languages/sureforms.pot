@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: SureForms 2.0.0\n"
+"Project-Id-Version: SureForms 2.1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/sureforms\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-11-19T12:33:33+00:00\n"
+"POT-Creation-Date: 2025-12-01T13:25:13+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: sureforms\n"
@@ -1035,131 +1035,131 @@ msgstr ""
 msgid "Value needs to be unique."
 msgstr ""
 
-#: inc/helper.php:598
+#: inc/helper.php:601
 msgid "Sorry, you are not allowed to perform this action."
 msgstr ""
 
 #. translators: %s: Provider name like HCaptcha, Google reCAPTCHA, Turnstile
-#: inc/helper.php:1043
+#: inc/helper.php:1046
 msgid "%s sitekey is missing. Please contact your site administrator."
 msgstr ""
 
-#: inc/helper.php:1649
+#: inc/helper.php:1652
 msgid "SureMail"
 msgstr ""
 
-#: inc/helper.php:1650
+#: inc/helper.php:1653
 msgid "Boost Your Email Deliverability Instantly!"
 msgstr ""
 
-#: inc/helper.php:1651
+#: inc/helper.php:1654
 msgid "Access a powerful, easy-to-use email delivery service that ensures your emails land in inboxes, not spam folders. Automate your WordPress email workflows confidently with SureMail."
 msgstr ""
 
-#: inc/helper.php:1658
+#: inc/helper.php:1661
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:172
 msgid "OttoKit"
 msgstr ""
 
-#: inc/helper.php:1659
+#: inc/helper.php:1662
 msgid "Automate your WordPress workflows effortlessly."
 msgstr ""
 
-#: inc/helper.php:1660
+#: inc/helper.php:1663
 msgid "Connect your WordPress plugins and favourite apps, automate tasks, and sync data effortlessly using OttoKit’s clean, visual workflow builder — no coding or complex setup required."
 msgstr ""
 
-#: inc/helper.php:1670
+#: inc/helper.php:1673
 msgid "Starter Templates"
 msgstr ""
 
-#: inc/helper.php:1671
+#: inc/helper.php:1674
 msgid "Launch Beautiful Websites in Minutes!"
 msgstr ""
 
-#: inc/helper.php:1672
+#: inc/helper.php:1675
 msgid "Choose from professionally designed templates, import with one click, and customize effortlessly to match your brand."
 msgstr ""
 
-#: inc/helper.php:1684
+#: inc/helper.php:1687
 msgid "Ultimate Addons for Elementor"
 msgstr ""
 
-#: inc/helper.php:1685
+#: inc/helper.php:1688
 msgid "Power Up Elementor to Build Stunning Websites Faster!"
 msgstr ""
 
-#: inc/helper.php:1686
+#: inc/helper.php:1689
 msgid "Enhance Elementor with powerful widgets and templates. Build stunning, high-performing websites faster with creative design elements and seamless customization."
 msgstr ""
 
-#: inc/helper.php:1694
+#: inc/helper.php:1697
 msgid "SureRank"
 msgstr ""
 
-#: inc/helper.php:1695
+#: inc/helper.php:1698
 msgid "Elevate Your SEO and Climb Search Rankings Effortlessly!"
 msgstr ""
 
-#: inc/helper.php:1696
+#: inc/helper.php:1699
 msgid "Boost your website's visibility with smart SEO automation. Optimize content, track keyword performance, and get actionable insights, all inside WordPress."
 msgstr ""
 
-#: inc/helper.php:1880
+#: inc/helper.php:1883
 msgid "Invalid nonce action or name."
 msgstr ""
 
-#: inc/helper.php:1890
-#: inc/helper.php:1898
+#: inc/helper.php:1893
+#: inc/helper.php:1901
 msgid "Invalid security token."
 msgstr ""
 
-#: inc/helper.php:1905
+#: inc/helper.php:1908
 msgid "Invalid request type."
 msgstr ""
 
-#: inc/helper.php:1913
+#: inc/helper.php:1916
 msgid "You do not have permission to perform this action."
 msgstr ""
 
-#: inc/helper.php:2038
+#: inc/helper.php:2041
 msgid "Blank Form"
 msgstr ""
 
-#: inc/nps-notice.php:109
+#: inc/nps-notice.php:117
 msgid "Quick Question!"
 msgstr ""
 
-#: inc/nps-notice.php:110
+#: inc/nps-notice.php:118
 msgid "How would you rate SureForms? Love it, hate it, or somewhere in between? Your honest answer helps us understand how we're doing."
 msgstr ""
 
-#: inc/nps-notice.php:111
+#: inc/nps-notice.php:119
 msgid "Thanks a lot for your feedback! 😍"
 msgstr ""
 
-#: inc/nps-notice.php:112
+#: inc/nps-notice.php:120
 msgid "Thanks for being part of the SureForms community! Got feedback or suggestions? We'd love to hear it."
 msgstr ""
 
-#: inc/nps-notice.php:114
+#: inc/nps-notice.php:122
 msgid "Thank you for your feedback"
 msgstr ""
 
-#: inc/nps-notice.php:115
+#: inc/nps-notice.php:123
 msgid "We value your input. How can we improve your experience?"
 msgstr ""
 
-#: inc/nps-notice.php:116
+#: inc/nps-notice.php:124
 msgid "Rate SureForms"
 msgstr ""
 
-#: inc/nps-notice.php:117
+#: inc/nps-notice.php:125
 msgid "Hate it!"
 msgstr ""
 
-#: inc/nps-notice.php:118
+#: inc/nps-notice.php:126
 msgid "Love it!"
 msgstr ""
 
@@ -1195,7 +1195,7 @@ msgid "Select the form that you wish to add here."
 msgstr ""
 
 #: inc/page-builders/elementor/form-widget.php:160
-#: inc/smart-tags.php:88
+#: inc/smart-tags.php:113
 #: assets/build/blocks.js:2
 #: assets/build/formEditor.js:172
 msgid "Form Title"
@@ -1233,198 +1233,198 @@ msgstr ""
 msgid "Create"
 msgstr ""
 
-#: inc/payments/admin/admin-handler.php:99
-#: inc/payments/admin/admin-handler.php:183
-#: inc/payments/admin/admin-handler.php:224
-#: inc/payments/admin/admin-handler.php:301
-#: inc/payments/admin/admin-handler.php:345
-#: inc/payments/admin/admin-handler.php:389
-#: inc/payments/admin/admin-handler.php:433
-#: inc/payments/admin/admin-handler.php:477
+#: inc/payments/admin/admin-handler.php:98
+#: inc/payments/admin/admin-handler.php:182
+#: inc/payments/admin/admin-handler.php:223
+#: inc/payments/admin/admin-handler.php:300
+#: inc/payments/admin/admin-handler.php:344
+#: inc/payments/admin/admin-handler.php:388
+#: inc/payments/admin/admin-handler.php:432
+#: inc/payments/admin/admin-handler.php:476
 msgid "Security verification failed."
 msgstr ""
 
-#: inc/payments/admin/admin-handler.php:104
-#: inc/payments/admin/admin-handler.php:188
-#: inc/payments/admin/admin-handler.php:229
-#: inc/payments/admin/admin-handler.php:306
-#: inc/payments/admin/admin-handler.php:350
-#: inc/payments/admin/admin-handler.php:394
-#: inc/payments/admin/admin-handler.php:438
-#: inc/payments/admin/admin-handler.php:482
+#: inc/payments/admin/admin-handler.php:103
+#: inc/payments/admin/admin-handler.php:187
+#: inc/payments/admin/admin-handler.php:228
+#: inc/payments/admin/admin-handler.php:305
+#: inc/payments/admin/admin-handler.php:349
+#: inc/payments/admin/admin-handler.php:393
+#: inc/payments/admin/admin-handler.php:437
+#: inc/payments/admin/admin-handler.php:481
 #: inc/payments/stripe/admin-stripe-handler.php:181
 msgid "Insufficient permissions."
 msgstr ""
 
-#: inc/payments/admin/admin-handler.php:125
+#: inc/payments/admin/admin-handler.php:124
 msgid "Invalid date format for date_from."
 msgstr ""
 
-#: inc/payments/admin/admin-handler.php:129
+#: inc/payments/admin/admin-handler.php:128
 msgid "Invalid date format for date_to."
 msgstr ""
 
-#: inc/payments/admin/admin-handler.php:170
+#: inc/payments/admin/admin-handler.php:169
 msgid "An error occurred while fetching payments."
 msgstr ""
 
-#: inc/payments/admin/admin-handler.php:194
-#: inc/payments/admin/admin-handler.php:358
-#: inc/payments/admin/admin-handler.php:402
-#: inc/payments/admin/admin-handler.php:446
+#: inc/payments/admin/admin-handler.php:193
+#: inc/payments/admin/admin-handler.php:357
+#: inc/payments/admin/admin-handler.php:401
+#: inc/payments/admin/admin-handler.php:445
 msgid "Payment ID is required."
 msgstr ""
 
-#: inc/payments/admin/admin-handler.php:202
+#: inc/payments/admin/admin-handler.php:201
 #: inc/payments/stripe/admin-stripe-handler.php:201
 msgid "Payment not found."
 msgstr ""
 
-#: inc/payments/admin/admin-handler.php:211
+#: inc/payments/admin/admin-handler.php:210
 msgid "An error occurred while fetching payment details."
 msgstr ""
 
-#: inc/payments/admin/admin-handler.php:235
+#: inc/payments/admin/admin-handler.php:234
 msgid "Subscription ID is required."
 msgstr ""
 
-#: inc/payments/admin/admin-handler.php:246
+#: inc/payments/admin/admin-handler.php:245
 msgid "Stripe subscription ID not found in payment record."
 msgstr ""
 
-#: inc/payments/admin/admin-handler.php:250
+#: inc/payments/admin/admin-handler.php:249
 msgid "Invalid subscription record."
 msgstr ""
 
-#: inc/payments/admin/admin-handler.php:256
+#: inc/payments/admin/admin-handler.php:255
 msgid "Subscription not found."
 msgstr ""
 
-#: inc/payments/admin/admin-handler.php:288
+#: inc/payments/admin/admin-handler.php:287
 msgid "An error occurred while fetching subscription details."
 msgstr ""
 
 #. translators: %d: Form ID
-#: inc/payments/admin/admin-handler.php:324
+#: inc/payments/admin/admin-handler.php:323
 msgid "Form - #%d"
 msgstr ""
 
-#: inc/payments/admin/admin-handler.php:332
+#: inc/payments/admin/admin-handler.php:331
 msgid "An error occurred while fetching forms list."
 msgstr ""
 
-#: inc/payments/admin/admin-handler.php:362
+#: inc/payments/admin/admin-handler.php:361
 msgid "Note text cannot be empty."
 msgstr ""
 
-#: inc/payments/admin/admin-handler.php:370
+#: inc/payments/admin/admin-handler.php:369
 msgid "Failed to add note."
 msgstr ""
 
-#: inc/payments/admin/admin-handler.php:376
+#: inc/payments/admin/admin-handler.php:375
 msgid "An error occurred while adding the note."
 msgstr ""
 
-#: inc/payments/admin/admin-handler.php:406
+#: inc/payments/admin/admin-handler.php:405
 msgid "Invalid note index."
 msgstr ""
 
-#: inc/payments/admin/admin-handler.php:414
+#: inc/payments/admin/admin-handler.php:413
 msgid "Failed to delete note."
 msgstr ""
 
-#: inc/payments/admin/admin-handler.php:420
+#: inc/payments/admin/admin-handler.php:419
 msgid "An error occurred while deleting the note."
 msgstr ""
 
-#: inc/payments/admin/admin-handler.php:450
+#: inc/payments/admin/admin-handler.php:449
 msgid "Invalid log index."
 msgstr ""
 
-#: inc/payments/admin/admin-handler.php:458
+#: inc/payments/admin/admin-handler.php:457
 msgid "Failed to delete log entry."
 msgstr ""
 
-#: inc/payments/admin/admin-handler.php:464
+#: inc/payments/admin/admin-handler.php:463
 msgid "An error occurred while deleting the log entry."
 msgstr ""
 
-#: inc/payments/admin/admin-handler.php:496
+#: inc/payments/admin/admin-handler.php:495
 msgid "Invalid JSON format for payment IDs."
 msgstr ""
 
-#: inc/payments/admin/admin-handler.php:504
+#: inc/payments/admin/admin-handler.php:503
 msgid "Invalid payment IDs format."
 msgstr ""
 
-#: inc/payments/admin/admin-handler.php:522
+#: inc/payments/admin/admin-handler.php:521
 msgid "No valid payment IDs provided."
 msgstr ""
 
-#: inc/payments/admin/admin-handler.php:529
+#: inc/payments/admin/admin-handler.php:528
 msgid "Cannot delete more than 100 payments at once. Please select fewer payments."
 msgstr ""
 
 #. translators: %d: number of payments deleted
-#: inc/payments/admin/admin-handler.php:565
+#: inc/payments/admin/admin-handler.php:564
 msgid "%d payment deleted successfully."
 msgid_plural "%d payments deleted successfully."
 msgstr[0] ""
 msgstr[1] ""
 
 #. translators: 1: number deleted, 2: number failed
-#: inc/payments/admin/admin-handler.php:582
+#: inc/payments/admin/admin-handler.php:581
 msgid "%1$d payment(s) deleted successfully. %2$d failed."
 msgstr ""
 
-#: inc/payments/admin/admin-handler.php:595
+#: inc/payments/admin/admin-handler.php:594
 #: assets/build/payments.js:172
 msgid "Failed to delete payments. Please try again."
 msgstr ""
 
-#: inc/payments/admin/admin-handler.php:603
+#: inc/payments/admin/admin-handler.php:602
 msgid "An error occurred while deleting payments."
 msgstr ""
 
-#: inc/payments/admin/admin-handler.php:828
-#: inc/payments/admin/admin-handler.php:830
+#: inc/payments/admin/admin-handler.php:827
+#: inc/payments/admin/admin-handler.php:829
 #: assets/build/payments.js:172
 msgid "Unknown Form"
 msgstr ""
 
+#: inc/payments/admin/admin-handler.php:835
 #: inc/payments/admin/admin-handler.php:836
-#: inc/payments/admin/admin-handler.php:837
 #: assets/build/payments.js:172
 msgid "N/A"
 msgstr ""
 
-#: inc/payments/admin/admin-handler.php:843
+#: inc/payments/admin/admin-handler.php:842
 #: assets/build/blocks.js:172
 #: assets/build/payments.js:172
 msgid "Subscription"
 msgstr ""
 
-#: inc/payments/admin/admin-handler.php:845
+#: inc/payments/admin/admin-handler.php:844
 msgid "Renewal"
 msgstr ""
 
-#: inc/payments/admin/admin-handler.php:847
+#: inc/payments/admin/admin-handler.php:846
 #: assets/build/blocks.js:172
 #: assets/build/payments.js:172
 msgid "One Time"
 msgstr ""
 
-#: inc/payments/admin/admin-handler.php:1020
+#: inc/payments/admin/admin-handler.php:1019
 msgid "Unknown"
 msgstr ""
 
 #. translators: Message for guest user in payment logs
 #. translators: %d: User ID
-#: inc/payments/admin/admin-handler.php:1312
-#: inc/payments/admin/admin-handler.php:1319
-#: inc/payments/admin/admin-handler.php:1336
-#: inc/payments/admin/admin-handler.php:1340
-#: inc/payments/admin/admin-handler.php:1344
+#: inc/payments/admin/admin-handler.php:1311
+#: inc/payments/admin/admin-handler.php:1318
+#: inc/payments/admin/admin-handler.php:1335
+#: inc/payments/admin/admin-handler.php:1339
+#: inc/payments/admin/admin-handler.php:1343
 #: inc/payments/front-end.php:703
 #: inc/payments/front-end.php:1059
 msgid "Guest User"
@@ -2757,85 +2757,85 @@ msgstr ""
 msgid "Failed to %s form."
 msgstr ""
 
-#: inc/smart-tags.php:84
+#: inc/smart-tags.php:109
 msgid "Site URL"
 msgstr ""
 
-#: inc/smart-tags.php:85
+#: inc/smart-tags.php:110
 msgid "Current Page URL"
 msgstr ""
 
-#: inc/smart-tags.php:86
-#: inc/smart-tags.php:117
+#: inc/smart-tags.php:111
+#: inc/smart-tags.php:142
 msgid "Admin Email"
 msgstr ""
 
-#: inc/smart-tags.php:87
+#: inc/smart-tags.php:112
 msgid "Site Title"
 msgstr ""
 
-#: inc/smart-tags.php:89
+#: inc/smart-tags.php:114
 msgid "IP Address"
 msgstr ""
 
-#: inc/smart-tags.php:90
+#: inc/smart-tags.php:115
 msgid "HTTP Referer URL"
 msgstr ""
 
-#: inc/smart-tags.php:91
+#: inc/smart-tags.php:116
 msgid "Date (mm/dd/yyyy)"
 msgstr ""
 
-#: inc/smart-tags.php:92
+#: inc/smart-tags.php:117
 msgid "Date (dd/mm/yyyy)"
 msgstr ""
 
-#: inc/smart-tags.php:93
+#: inc/smart-tags.php:118
 msgid "User ID"
 msgstr ""
 
-#: inc/smart-tags.php:94
+#: inc/smart-tags.php:119
 msgid "User Display Name"
 msgstr ""
 
-#: inc/smart-tags.php:95
+#: inc/smart-tags.php:120
 msgid "User First Name"
 msgstr ""
 
-#: inc/smart-tags.php:96
+#: inc/smart-tags.php:121
 msgid "User Last Name"
 msgstr ""
 
-#: inc/smart-tags.php:97
-#: inc/smart-tags.php:118
+#: inc/smart-tags.php:122
+#: inc/smart-tags.php:143
 msgid "User Email"
 msgstr ""
 
-#: inc/smart-tags.php:98
+#: inc/smart-tags.php:123
 msgid "User Username"
 msgstr ""
 
-#: inc/smart-tags.php:99
+#: inc/smart-tags.php:124
 msgid "Browser Name"
 msgstr ""
 
-#: inc/smart-tags.php:100
+#: inc/smart-tags.php:125
 msgid "Browser Platform"
 msgstr ""
 
-#: inc/smart-tags.php:101
+#: inc/smart-tags.php:126
 msgid "Embedded Post/Page ID"
 msgstr ""
 
-#: inc/smart-tags.php:102
+#: inc/smart-tags.php:127
 msgid "Embedded Post/Page Title"
 msgstr ""
 
-#: inc/smart-tags.php:103
+#: inc/smart-tags.php:128
 msgid "Populate by GET Param"
 msgstr ""
 
-#: inc/smart-tags.php:104
+#: inc/smart-tags.php:129
 msgid "Cookie Value"
 msgstr ""
 
