@@ -70,7 +70,42 @@ export const BlockInserterWrapper = () => {
 
 			// Clear selection if clicking on:
 			if ( editorWrapper ) {
-				clearSelectedBlock();
+				// Check if there's a focused element ( contenteditable ).
+				const { ownerDocument } = target;
+				const activeElement = ownerDocument.activeElement;
+				const isFocusedElement =
+					activeElement &&
+					( activeElement.isContentEditable ||
+						activeElement.closest( '[contenteditable="true"]' ) );
+
+				// Check if there's selected/highlighted text.
+				const selection = ownerDocument.getSelection?.();
+				const hasTextSelection =
+					selection &&
+					! selection.isCollapsed &&
+					selection.rangeCount > 0;
+
+				// If an input/label is focused or text is selected, clear it first to break the focus cycle.
+				if ( isFocusedElement || hasTextSelection ) {
+					event.preventDefault();
+
+					// Clear any text selection.
+					if ( hasTextSelection ) {
+						selection.removeAllRanges();
+					}
+
+					// Blur the focused element.
+					if ( isFocusedElement ) {
+						activeElement.blur();
+					}
+
+					// Use requestAnimationFrame to ensure blur and selection clear complete before clearing block selection.
+					ownerDocument.defaultView.requestAnimationFrame( () => {
+						clearSelectedBlock();
+					} );
+				} else {
+					clearSelectedBlock();
+				}
 			}
 		};
 
