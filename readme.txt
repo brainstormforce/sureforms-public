@@ -367,9 +367,9 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 == Changelog ==
 = 2.1.0 - 2nd December 2025 =
 * Improvement: Updated email notifications to display multi-choice options on separate lines.
-* Fix: Resolved an issue where the value of the smart tag {form_title} was incorrect when embedded in a page.
 * Improvement: Updated links in new tables to behave like standard links, allowing them to open in a new tab.
 * Improvement: Updated email notifications to remove empty fields.
+* Fix: Resolved an issue where the value of the smart tag {form_title} was incorrect when embedded in a page.
 * Fix: Resolved an issue where the reCAPTCHA badge overlapped with the submit button when using the Bricks theme.
 * Fix: Resolved an issue where labels were not being escaped properly.
 * Fix: Resolved an issue with phone block when site is in RTL mode.
