@@ -210,10 +210,22 @@ class Email_Template {
 							continue;
 						}
 
-						if ( is_array( $value ) ) {
-							$values_array = $value;
+						$is_array_value = is_array( $value );
+
+						if ( $is_array_value ) {
+							$values_array = array_filter(
+								$value,
+								static function( $input_value ) {
+									return ! empty( Helper::get_string_value( $input_value ) );
+								}
+							);
 						} else {
 							$value = Helper::get_string_value( $value );
+						}
+
+						// Skip if both $value and $values_array are empty.
+						if ( empty( $value ) || ( $is_array_value && empty( $values_array ) ) ) {
+							continue;
 						}
 
 						?>
@@ -257,7 +269,7 @@ class Email_Template {
 								</ol>
 								<?php
 							}
-						} elseif ( ! empty( $value ) && is_string( $value ) && filter_var( $value, FILTER_VALIDATE_URL ) ) {
+						} elseif ( is_string( $value ) && filter_var( $value, FILTER_VALIDATE_URL ) ) {
 							ob_start();
 							?>
 								<a target="_blank" href="<?php echo esc_url( $value ); ?>">
@@ -301,6 +313,15 @@ class Email_Template {
 							);
 
 						} else {
+							if ( strpos( Helper::get_string_value( $field_name ), 'srfm-input-multi-choice' ) !== false && strpos( Helper::get_string_value( $value ), '|' ) !== false ) {
+								$options = array_map( 'trim', explode( '|', Helper::get_string_value( $value ) ) );
+								foreach ( $options as $index => $option ) {
+									$border_style = $index < count( $options ) - 1 ? 'border-bottom:1px solid #E5E7EB;padding-bottom:4px;margin-bottom:4px;' : '';
+									echo '<div style="' . esc_attr( $border_style ) . '">' . esc_html( $option ) . '</div>';
+								}
+								continue;
+							}
+
 							if ( is_string( $value ) ) {
 								if ( false !== strpos( $field_name, 'srfm-textarea' ) ) {
 									echo Helper::esc_textarea( html_entity_decode( $value ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- using a custom escaping function.
