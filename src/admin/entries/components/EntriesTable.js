@@ -51,10 +51,20 @@ const EntriesTable = ( {
 			headerClassName: 'w-[13%]',
 			render: ( entry ) => (
 				<Button
+					tag="a"
 					variant="link"
 					size="md"
 					className="[&>span]:p-0 text-text-secondary font-normal hover:underline no-underline"
-					onClick={ () => onEdit?.( entry ) }
+					href={ `#/entry/${ entry.id }${
+						entry.status === 'unread' ? '?read=true' : ''
+					}` }
+					onClick={ ( e ) => {
+						if ( e.ctrlKey || e.metaKey || e.which === 2 ) {
+							return;
+						}
+						e.preventDefault();
+						onEdit?.( entry );
+					} }
 				>
 					{ entry.entryId }
 				</Button>
@@ -165,6 +175,7 @@ const EntriesTable = ( {
 						ariaLabel: __( 'Preview', 'sureforms' ),
 						icon: <Eye />,
 						onClick: () => onEdit?.( entry ),
+						isPreview: true,
 					} );
 				}
 				if ( entry.status === 'trash' ) {
@@ -201,7 +212,27 @@ const EntriesTable = ( {
 									aria-label={ btn.ariaLabel }
 									size="xs"
 									icon={ btn.icon }
-									onClick={ btn.onClick }
+									{ ...( btn.isPreview
+										? {
+											tag: 'a',
+											href: `#/entry/${ entry.id }${
+												entry.status === 'unread'
+													? '?read=true'
+													: ''
+											}`,
+										  }
+										: {} ) }
+									onClick={ ( e ) => {
+										if (
+											btn.isPreview &&
+											( e.ctrlKey ||
+												e.metaKey ||
+												e.which === 2 )
+										) {
+											return;
+										}
+										btn.onClick?.( e );
+									} }
 								/>
 							</Tooltip>
 						) ) }
