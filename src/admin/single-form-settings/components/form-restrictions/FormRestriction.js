@@ -23,10 +23,10 @@ const FormRestriction = () => {
 
 	let additionalSettings = applyFilters(
 		'srfm_form_restriction_additional_settings',
-		[],
+		[]
 	);
 
-	if (!Array.isArray(additionalSettings)) {
+	if ( ! Array.isArray( additionalSettings ) ) {
 		additionalSettings = [];
 	}
 
@@ -188,22 +188,18 @@ const FormRestriction = () => {
 					</>
 				) }
 			</Container>
-			{
-				additionalSettings.map( ( setting, index ) => (
-					<div key={ index } className="mt-6">
-					{
-						setting.title && (
-							<Title
-								size="xs"
-								className="mb-4"
-								title={ setting.title }
-							/>
-						)
-					}
-						{ setting.component }
-					</div>
-				) )
-			}
+			{ additionalSettings.map( ( setting, index ) => (
+				<div key={ index } className="mt-6">
+					{ setting.title && (
+						<Title
+							size="xs"
+							className="mb-4"
+							title={ setting.title }
+						/>
+					) }
+					{ setting.component }
+				</div>
+			) ) }
 		</TabContentWrapper>
 	);
 };
