@@ -14,11 +14,21 @@ import { Info } from 'lucide-react';
 import TabContentWrapper from '@Components/tab-content-wrapper';
 import DatePickerModal from '@Components/force-ui-components/DatePickerModal';
 import TimePicker from '@Components/force-ui-components/TimePicker';
+import { applyFilters } from '@wordpress/hooks';
 
 const FormRestriction = () => {
 	const { updateMeta, preserveMetaData } = useContext(
 		FormRestrictionContext
 	);
+
+	let additionalSettings = applyFilters(
+		'srfm_form_restriction_additional_settings',
+		[],
+	);
+
+	if (!Array.isArray(additionalSettings)) {
+		additionalSettings = [];
+	}
 
 	return (
 		<TabContentWrapper
@@ -178,6 +188,22 @@ const FormRestriction = () => {
 					</>
 				) }
 			</Container>
+			{
+				additionalSettings.map( ( setting, index ) => (
+					<div key={ index } className="mt-6">
+					{
+						setting.title && (
+							<Title
+								size="xs"
+								className="mb-4"
+								title={ setting.title }
+							/>
+						)
+					}
+						{ setting.component }
+					</div>
+				) )
+			}
 		</TabContentWrapper>
 	);
 };

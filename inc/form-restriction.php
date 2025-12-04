@@ -80,7 +80,7 @@ class Form_Restriction {
 
 		// If the form restriction is empty or not an array, or if the status is not set, return false.
 		if ( empty( $form_restriction ) || ! is_array( $form_restriction ) || empty( $form_restriction['status'] ) ) {
-			return false; // No limit set.
+			return apply_filters( 'srfm_is_form_restricted', false, $form_id, $form_restriction, false, false );
 		}
 
 		$has_entries_limit_reached = self::has_entries_limit_reached( $form_id, $form_restriction );
@@ -174,6 +174,8 @@ class Form_Restriction {
 
 		// Get the description text.
 		$form_restriction_message = $form_restriction['message'] ?? Translatable::get_default_form_restriction_message();
+
+		$form_restriction_message = apply_filters( 'srfm_form_restriction_message', $form_restriction_message, $form_id, $form_restriction );
 
 		ob_start();
 		?>

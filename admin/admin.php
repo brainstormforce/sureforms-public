@@ -894,6 +894,11 @@ class Admin {
 
 			$localization_data['security_settings_url']    = admin_url( '/admin.php?page=sureforms_form_settings&tab=security-settings&subpage=recaptcha' );
 			$localization_data['integration_settings_url'] = admin_url( '/admin.php?page=sureforms_form_settings&tab=integration-settings' );
+
+			// check option ip loggin is enabled or not.
+			$srfm_options                     = get_option( 'srfm_general_settings_options', [] );
+			$localization_data['is_ip_logging'] = isset( $srfm_options['srfm_ip_log'] ) && true === $srfm_options['srfm_ip_log'];
+
 			wp_localize_script(
 				SRFM_SLUG . $asset_handle,
 				SRFM_SLUG . '_admin',
