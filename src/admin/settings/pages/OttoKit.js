@@ -10,7 +10,15 @@ import LoadingSkeleton from '@Admin/components/LoadingSkeleton';
 import apiFetch from '@wordpress/api-fetch';
 import { useState, useEffect } from '@wordpress/element';
 
-const OttoKitPage = ( { loading, isFormSettings = false, setSelectedTab, pluginConnected, setPluginConnected } ) => {
+const OttoKitPage = ( {
+	loading,
+	isFormSettings = false,
+	setSelectedTab,
+	pluginConnected,
+	setPluginConnected,
+	localPluginStatus,
+	setLocalPluginStatus,
+} ) => {
 	const features = [
 		__(
 			'Push entries to Slack, Mailchimp, Google Sheets, or hundreds of other apps.',
@@ -79,6 +87,7 @@ const OttoKitPage = ( { loading, isFormSettings = false, setSelectedTab, pluginC
 									sureTriggersAuthenticationWindow.close();
 									clearInterval( suretriggersAuthInterval );
 									setPluginConnected( true );
+									setLocalPluginStatus( 'Activated' );
 									if ( setSelectedTab ) {
 										setSelectedTab( 'suretriggers' );
 									}
@@ -123,7 +132,7 @@ const OttoKitPage = ( { loading, isFormSettings = false, setSelectedTab, pluginC
 		// For global settings: always use external helper
 		if ( ! isFormSettings ) {
 			// if plugin is activated, go to its settings page
-			if ( plugin.status === 'Activated' ) {
+			if ( ( localPluginStatus || plugin.status ) === 'Activated' ) {
 				window.location.href = plugin.connection_url;
 				return;
 			}
@@ -143,8 +152,10 @@ const OttoKitPage = ( { loading, isFormSettings = false, setSelectedTab, pluginC
 				break;
 
 			default:
-				// When action is empty (plugin activated), integrate with SureTriggers
-				integrateWithSureTriggers();
+				// Only integrate if plugin is activated AND not yet connected
+				if ( localPluginStatus === 'Activated' && ! pluginConnected ) {
+					integrateWithSureTriggers();
+				}
 				break;
 		}
 	};
@@ -198,6 +209,7 @@ const OttoKitPage = ( { loading, isFormSettings = false, setSelectedTab, pluginC
 				setCTA( srfm_admin.plugin_activated_text );
 				setButtonText( srfm_admin.plugin_activated_text );
 				setAction( '' );
+				setLocalPluginStatus( 'Activated' );
 				setTimeout( () => {
 					setAction( 'sureforms_integrate_with_suretriggers' );
 					setCTA( getCTA( 'Activated' ) );
@@ -207,9 +219,6 @@ const OttoKitPage = ( { loading, isFormSettings = false, setSelectedTab, pluginC
 							pluginConnected || plugin.connected
 						)
 					);
-					if ( pluginConnected ) {
-						integrateWithSureTriggers();
-					}
 				}, 2000 );
 			} else {
 				alert(
@@ -272,25 +281,26 @@ const OttoKitPage = ( { loading, isFormSettings = false, setSelectedTab, pluginC
 			setPluginConnected( plugin.connected );
 		}
 
-		// NEW: If plugin is already connected, fetch actual data immediately
-		if ( pluginConnected || plugin.connected ) {
+		// Only auto-fetch if plugin is already connected
+		if ( pluginConnected ) {
 			setLoadingData( true );
 			integrateWithSureTriggers().finally( () =>
 				setLoadingData( false )
 			);
 		}
 
+		const effectiveStatus = localPluginStatus || plugin.status;
+		const effectiveConnected = pluginConnected || plugin.connected;
+
 		if ( ! action ) {
-			setAction( getAction( plugin.status ) );
-			setCTA( getCTA( plugin.status ) );
-		} else if ( pluginConnected || plugin.connected ) {
-			setCTA( getCTA( plugin.status ) );
+			setAction( getAction( effectiveStatus ) );
+			setCTA( getCTA( effectiveStatus ) );
+		} else if ( effectiveConnected ) {
+			setCTA( getCTA( effectiveStatus ) );
 		}
 
-		setButtonText(
-			getButtonText( plugin?.status, pluginConnected || plugin.connected )
-		);
-	}, [ plugin, pluginConnected, action ] );
+		setButtonText( getButtonText( effectiveStatus, effectiveConnected ) );
+	}, [ plugin, pluginConnected, action, localPluginStatus ] );
 
 	return (
 		<>
