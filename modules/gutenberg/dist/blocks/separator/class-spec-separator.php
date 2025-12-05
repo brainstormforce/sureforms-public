@@ -432,7 +432,7 @@ if ( ! class_exists( 'Spec_Separator' ) ) {
 
 			ob_start();
 			?>
-			<div data-block-id="<?php echo esc_attr( $block_id ); ?>" class = "<?php echo esc_attr( implode( ' ', $main_classes ) ); ?>" style="--my-background-image: <?php echo esc_attr( $svg_pattern ); ?>;" >
+			<div class = "<?php echo esc_attr( implode( ' ', $main_classes ) ); ?>" style="--my-background-image: <?php echo esc_attr( $svg_pattern ); ?>;" >
 				<div class="wp-block-uagb-separator-wrapper">
 					<div class="wp-block-uagb-separator__inner">
 						<div class="wp-block-uagb-separator-element">
