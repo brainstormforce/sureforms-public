@@ -376,7 +376,7 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 
 == Changelog ==
 = x.x.x =
-* Fix: Resolved an issue where block id is missing for Image block in the frontend.
+* Fix: Resolved an issue where block id is missing for Image, Icon and Separator block in the frontend.
 = 2.1.0 - 2nd December 2025 =
 * Improvement: Updated email notifications to display multi-choice options on separate lines.
 * Improvement: Updated links in new tables to behave like standard links, allowing them to open in a new tab.
