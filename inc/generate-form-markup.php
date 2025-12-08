@@ -514,45 +514,35 @@ class Generate_Form_Markup {
 						do_action( 'srfm_page_break_btn', $id );
 					}
 					$srfm_button_classes = apply_filters( 'srfm_add_button_classes', [ '1' === $btn_from_theme ? 'wp-block-button__link' : 'srfm-btn-frontend srfm-button srfm-submit-button', 'v3-reCAPTCHA' === $recaptcha_version ? ' g-recaptcha' : '' ] );
-
-					// Build submit container HTML using ob_start.
-					ob_start();
-					$container_class = $is_page_break ? 'srfm-hide' : '';
-					$container_style = ! $should_show_submit_button ? 'visibility:hidden;position:absolute;' : '';
-					$width_style     = $full ? '100%' : '';
-					$button_style    = $full ? 'width: 100%;' : '';
-					$button_classes  = esc_attr( implode( ' ', array_filter( $srfm_button_classes ) ) );
 					?>
-					<div class="srfm-submit-container <?php echo esc_attr( $container_class ); ?>" style="<?php echo esc_attr( $container_style ); ?>">
-						<div style="width: <?php echo esc_attr( $width_style ); ?>; text-align: <?php echo esc_attr( $submit_button_alignment ); ?>" class="wp-block-button">
-							<?php if ( $should_show_submit_button ) { ?>
-								<button
-									style="<?php echo esc_attr( $button_style ); ?>"
-									id="srfm-submit-btn"
-									class="<?php echo esc_attr( $button_classes ); ?>"
-									<?php if ( 'v3-reCAPTCHA' === $recaptcha_version ) { ?>
-										data-callback="recaptchaCallback"
-										data-error-callback="onGCaptchaV3Error"
-										recaptcha-type="<?php echo esc_attr( $recaptcha_version ); ?>"
-										data-sitekey="<?php echo esc_attr( $google_captcha_site_key ); ?>"
-									<?php } ?>
-								>
-									<div class="srfm-submit-wrap">
-										<?php echo esc_html( $button_text ); ?>
-										<div class="srfm-loader"></div>
-									</div>
-								</button>
+
+					<div class="srfm-submit-container <?php echo esc_attr( $is_page_break ? 'srfm-hide' : '' ); ?>" style="<?php echo ! $should_show_submit_button ? 'visibility:hidden;position:absolute;' : ''; ?>">
+						<div style="width: <?php echo esc_attr( $full ? '100%' : '' ); ?>; text-align: <?php echo esc_attr( $submit_button_alignment ); ?>" class="wp-block-button">
+						<?php do_action( 'srfm_before_submit_button', $id ); ?>
+						<?php if ( $should_show_submit_button ) { ?>
+							<button style="<?php echo esc_attr( $full ? 'width: 100%;' : '' ); ?>" id="srfm-submit-btn" class="<?php echo esc_attr( implode( ' ', array_filter( $srfm_button_classes ) ) ); ?>"
+							<?php if ( 'v3-reCAPTCHA' === $recaptcha_version ) { ?>
+								data-callback="recaptchaCallback"
+								data-error-callback="onGCaptchaV3Error"
+								recaptcha-type="<?php echo esc_attr( $recaptcha_version ); ?>"
+								data-sitekey="<?php echo esc_attr( $google_captcha_site_key ); ?>"
 							<?php } ?>
+							>
+								<div class="srfm-submit-wrap">
+									<?php echo esc_html( $button_text ); ?>
+								<div class="srfm-loader"></div>
+								</div>
+							</button>
+						<?php } ?>
+						<?php do_action( 'srfm_after_submit_button', $id ); ?>
 						</div>
 					</div>
 					<?php
-					$submit_container_output = ob_get_clean();
-					$submit_container_html   = trim( false !== $submit_container_output ? $submit_container_output : '' );
 
 					echo wp_kses_post(
 						apply_filters(
-							'srfm_submit_container',
-							$submit_container_html,
+							'srfm_after_submit_button_content',
+							'',
 							[
 								'id'                      => $id,
 								'should_show_submit_button' => $should_show_submit_button,
