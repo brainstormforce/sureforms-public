@@ -180,7 +180,7 @@ const FormRestriction = () => {
 						</div>
 
 						<div>
-							<Label className="mb-1">
+							<Label className="mb-1.5">
 								{ __(
 									'Response Description After Maximum Entries',
 									'sureforms'
