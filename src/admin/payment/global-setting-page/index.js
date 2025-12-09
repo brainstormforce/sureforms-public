@@ -1,8 +1,7 @@
-import { __ } from '@wordpress/i18n';
 import GeneralSettings from './components/GeneralSettings';
 import PaymentMethods from './components/PaymentMethods';
 
-const Payments = (props) => {
+const Payments = ( props ) => {
 	const {
 		loading,
 		paymentsSettings,
@@ -12,16 +11,16 @@ const Payments = (props) => {
 	} = props;
 
 	// Handle settings change with auto-save
-	const handleSettingChange = (key, value) => {
+	const handleSettingChange = ( key, value ) => {
 		// Update local state immediately for UI responsiveness
-		setPaymentsSettings({
+		setPaymentsSettings( {
 			...paymentsSettings,
-			[key]: value,
-		});
+			[ key ]: value,
+		} );
 
 		// Trigger auto-save via global settings with debouncing
-		if (updateGlobalSettings) {
-			updateGlobalSettings(key, value, 'payments-settings');
+		if ( updateGlobalSettings ) {
+			updateGlobalSettings( key, value, 'payments-settings' );
 		}
 	};
 
@@ -31,22 +30,22 @@ const Payments = (props) => {
 
 	return (
 		<div className="srfm-payment-wrapper">
-			{currentSubpage === 'general' && (
+			{ currentSubpage === 'general' && (
 				<GeneralSettings
-					paymentsSettings={paymentsSettings}
-					onSettingChange={handleSettingChange}
-					loading={loading}
+					paymentsSettings={ paymentsSettings }
+					onSettingChange={ handleSettingChange }
+					loading={ loading }
 				/>
-			)}
+			) }
 
-			{currentSubpage === 'payment-methods' && (
+			{ currentSubpage === 'payment-methods' && (
 				<PaymentMethods
-					paymentsSettings={paymentsSettings}
-					setPaymentsSettings={setPaymentsSettings}
-					updateGlobalSettings={updateGlobalSettings}
-					loading={loading}
+					paymentsSettings={ paymentsSettings }
+					setPaymentsSettings={ setPaymentsSettings }
+					updateGlobalSettings={ updateGlobalSettings }
+					loading={ loading }
 				/>
-			)}
+			) }
 		</div>
 	);
 };
