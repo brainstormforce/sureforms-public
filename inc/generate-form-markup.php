@@ -487,6 +487,7 @@ class Generate_Form_Markup {
 						'name'  => true,
 						'class' => true,
 						'id'    => true,
+						'style' => true,
 					],
 					'div'    => [
 						'class' => true,
