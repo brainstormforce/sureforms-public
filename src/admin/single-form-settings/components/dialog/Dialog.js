@@ -262,24 +262,24 @@ const Dialog = ( {
 							'sureforms-pro'
 						) }
 						icon={
-							<FilePlus
+							<Save
 								className="text-orange-500"
 								size={ 40 }
 								strokeWidth={ 1 }
 							/>
 						}
 						title={ __(
-							'Enable Save & Resume Functionality',
+							'Save & Progress in SureForms',
 							'sureforms-pro'
 						) }
 						subtitle={ __(
-							'Enhance user experience by allowing form respondents to save their progress and return later to complete the form at their convenience.',
+							'Give your users the flexibility to complete forms at their own pace by allowing them to save progress and return anytime.',
 							'sureforms-pro'
 						) }
 						featureList={ [
-							__( 'Let users save their form progress and resume later.', 'sureforms-pro' ),
-							__( 'Reduce form abandonment and increase completion rates.', 'sureforms-pro' ),
-							__( 'Easily manage saved forms from the admin dashboard.', 'sureforms-pro' ),
+							__( 'Let users pause long or multi-step forms and continue later.', 'sureforms-pro' ),
+							__( 'Reduce form abandonment with convenient resume links and access their progress from anywhere.', 'sureforms-pro' ),
+							__( 'Improve user experience for lengthy, complex, or multi-page forms.', 'sureforms-pro' ),
 						] }
 						utmMedium="save-resume-preview-single-form-settings"
 					/>
