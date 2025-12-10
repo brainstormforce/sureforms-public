@@ -456,7 +456,7 @@ class Generate_Form_Markup {
 			}
 
 			// Password protected form check.
-			if ( post_password_required( $post ) ) {
+			if ( $post && post_password_required( $post ) ) {
 				// Define allowed HTML tags for password form output
 				$allowed_password_form_tags = [
 					'form'   => [
@@ -513,8 +513,7 @@ class Generate_Form_Markup {
 						'stroke-linejoin' => true,
 					],
 				];
-				echo wp_kses( get_the_password_form( $post ), $allowed_password_form_tags );
-				return;
+				return wp_kses( get_the_password_form( $post ), $allowed_password_form_tags );
 			}
 
 			?>
