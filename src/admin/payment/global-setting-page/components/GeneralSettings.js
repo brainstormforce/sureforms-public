@@ -21,9 +21,6 @@ const GeneralSettings = ( props ) => {
 
 	const currencySelection = (
 		<div className="flex flex-col gap-2">
-			<Label size="sm" variant="neutral">
-				{ __( 'Currency', 'sureforms' ) }
-			</Label>
 			<Select
 				value={ paymentsSettings.currency }
 				onChange={ ( value ) => onSettingChange( 'currency', value ) }
