@@ -457,7 +457,63 @@ class Generate_Form_Markup {
 
 			// Password protected form check.
 			if ( post_password_required( $post ) ) {
-				echo get_the_password_form( $post );
+				// Define allowed HTML tags for password form output
+				$allowed_password_form_tags = [
+					'form'   => [
+						'action' => true,
+						'method' => true,
+						'class'  => true,
+						'id'     => true,
+					],
+					'label'  => [
+						'for'   => true,
+						'class' => true,
+					],
+					'input'  => [
+						'type'        => true,
+						'name'        => true,
+						'id'          => true,
+						'class'       => true,
+						'value'       => true,
+						'size'        => true,
+						'placeholder' => true,
+						'required'    => true,
+					],
+					'p'      => [
+						'class' => true,
+					],
+					'button' => [
+						'type'  => true,
+						'name'  => true,
+						'class' => true,
+						'id'    => true,
+					],
+					'div'    => [
+						'class' => true,
+						'id'    => true,
+						'style' => true,
+					],
+					'span'   => [
+						'class'       => true,
+						'aria-hidden' => true,
+					],
+					'svg'    => [
+						'xmlns'   => true,
+						'width'   => true,
+						'height'  => true,
+						'viewBox' => true,
+						'fill'    => true,
+					],
+					'path'   => [
+						'd'               => true,
+						'stroke'          => true,
+						'stroke-opacity'  => true,
+						'stroke-width'    => true,
+						'stroke-linecap'  => true,
+						'stroke-linejoin' => true,
+					],
+				];
+				echo wp_kses( get_the_password_form( $post ), $allowed_password_form_tags );
 				return;
 			}
 
