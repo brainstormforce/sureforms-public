@@ -481,6 +481,7 @@ class Generate_Form_Markup {
 					],
 					'p'      => [
 						'class' => true,
+						'style' => true,
 					],
 					'button' => [
 						'type'  => true,
