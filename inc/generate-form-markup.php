@@ -457,7 +457,7 @@ class Generate_Form_Markup {
 
 			// Password protected form check.
 			if ( $post && post_password_required( $post ) ) {
-				// Define allowed HTML tags for password form output
+				// Define allowed HTML tags for password form output.
 				$allowed_password_form_tags = [
 					'form'   => [
 						'action' => true,
