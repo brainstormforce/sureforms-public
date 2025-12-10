@@ -25,7 +25,7 @@ const PaymentMethods = ( props ) => {
 	 * Allows adding payment gateway tab panels.
 	 * Business plan uses this filter to add PayPal panel.
 	 *
-	 * @param {Array}  panels - Array of panel objects with id and component
+	 * @param {Array}  panels - Array of panel objects with id and render function
 	 * @param {Object} props  - Component props to pass to panels
 	 *
 	 *                        Example usage in Business plan:
@@ -34,7 +34,7 @@ const PaymentMethods = ( props ) => {
 	 *                        ...panels,
 	 *                        {
 	 *                        id: 'paypal',
-	 *                        component: <PayPalSettings {...props} />
+	 *                        render: (renderProps) => <PayPalSettings {...renderProps} />
 	 *                        }
 	 *                        ];
 	 *                        });
@@ -44,12 +44,12 @@ const PaymentMethods = ( props ) => {
 		[
 			{
 				id: 'stripe',
-				component: (
+				render: ( renderProps ) => (
 					<StripeSettings
-						paymentsSettings={ paymentsSettings }
-						setPaymentsSettings={ setPaymentsSettings }
-						updateGlobalSettings={ updateGlobalSettings }
-						loading={ loading }
+						paymentsSettings={ renderProps.paymentsSettings }
+						setPaymentsSettings={ renderProps.setPaymentsSettings }
+						updateGlobalSettings={ renderProps.updateGlobalSettings }
+						loading={ renderProps.loading }
 					/>
 				),
 			},
@@ -61,6 +61,14 @@ const PaymentMethods = ( props ) => {
 			loading,
 		}
 	);
+
+	// Prepare the props object to pass to render functions
+	const panelProps = {
+		paymentsSettings,
+		setPaymentsSettings,
+		updateGlobalSettings,
+		loading,
+	};
 
 	return (
 		<div className="srfm-payment-methods-wrapper">
@@ -82,7 +90,8 @@ const PaymentMethods = ( props ) => {
 				{ /* Tab Panels - filtered to allow extensions */ }
 				{ tabPanels.map( ( panel ) => (
 					<Tabs.Panel key={ panel.id } slug={ panel.id }>
-						{ panel.component }
+						{ /* Support both legacy component prop and new render function */ }
+						{ panel.render ? panel.render( panelProps ) : panel.component }
 					</Tabs.Panel>
 				) ) }
 			</Tabs>
