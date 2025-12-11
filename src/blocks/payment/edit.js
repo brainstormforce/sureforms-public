@@ -491,8 +491,8 @@ const Edit = ( props ) => {
 							title={ __( 'Attributes', 'sureforms' ) }
 							initialOpen={ true }
 						>
-							{ filterOptions.map(
-								( option ) => option?.component ? option.component : null
+							{ filterOptions.map( ( option ) =>
+								option?.component ? option.component : null
 							) }
 						</SRFMAdvancedPanelBody>
 					</InspectorTab>
