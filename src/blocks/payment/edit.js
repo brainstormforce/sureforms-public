@@ -164,7 +164,7 @@ const Edit = ( props ) => {
 					onChange={ ( value ) => setAttributes( { help: value } ) }
 				/>
 			),
-		},,
+		},
 		{
 			id: 'separator-3',
 			component: <Separator />,
@@ -479,6 +479,8 @@ const Edit = ( props ) => {
 
 	const filterOptions = attributeOptionsWithFilter( attributeOptions, props );
 
+	console.log("filterOptions", filterOptions)
+
 	return (
 		<div className={ className }>
 			<InspectorControls>
@@ -492,7 +494,7 @@ const Edit = ( props ) => {
 							initialOpen={ true }
 						>
 							{ filterOptions.map(
-								( option ) => option.component
+								( option ) => option?.component ? option.component : null
 							) }
 						</SRFMAdvancedPanelBody>
 					</InspectorTab>
