@@ -252,14 +252,14 @@ const Dialog = ( {
 			},
 			{
 				id: 'save-resume-preview',
-				label: __( 'Save & Resume', 'sureforms-pro' ),
+				label: __( 'Save & Progress', 'sureforms' ),
 				icon: <Save />,
 				component: (
 					<FeaturePreview
-						featureName={ __( 'Save & Resume', 'sureforms-pro' ) }
+						featureName={ __( 'Save & Progress', 'sureforms' ) }
 						featureHelpText={ __(
 							'Allow users to save their progress and resume form completion later.',
-							'sureforms-pro'
+							'sureforms'
 						) }
 						icon={
 							<Save
@@ -270,16 +270,25 @@ const Dialog = ( {
 						}
 						title={ __(
 							'Save & Progress in SureForms',
-							'sureforms-pro'
+							'sureforms'
 						) }
 						subtitle={ __(
 							'Give your users the flexibility to complete forms at their own pace by allowing them to save progress and return anytime.',
-							'sureforms-pro'
+							'sureforms'
 						) }
 						featureList={ [
-							__( 'Let users pause long or multi-step forms and continue later.', 'sureforms-pro' ),
-							__( 'Reduce form abandonment with convenient resume links and access their progress from anywhere.', 'sureforms-pro' ),
-							__( 'Improve user experience for lengthy, complex, or multi-page forms.', 'sureforms-pro' ),
+							__(
+								'Let users pause long or multi-step forms and continue later.',
+								'sureforms'
+							),
+							__(
+								'Reduce form abandonment with convenient resume links and access their progress from anywhere.',
+								'sureforms'
+							),
+							__(
+								'Improve user experience for lengthy, complex, or multi-page forms.',
+								'sureforms'
+							),
 						] }
 						utmMedium="save-resume-preview-single-form-settings"
 					/>
