@@ -479,8 +479,6 @@ const Edit = ( props ) => {
 
 	const filterOptions = attributeOptionsWithFilter( attributeOptions, props );
 
-	console.log("filterOptions", filterOptions)
-
 	return (
 		<div className={ className }>
 			<InspectorControls>
