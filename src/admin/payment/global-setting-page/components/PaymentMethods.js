@@ -48,7 +48,9 @@ const PaymentMethods = ( props ) => {
 					<StripeSettings
 						paymentsSettings={ renderProps.paymentsSettings }
 						setPaymentsSettings={ renderProps.setPaymentsSettings }
-						updateGlobalSettings={ renderProps.updateGlobalSettings }
+						updateGlobalSettings={
+							renderProps.updateGlobalSettings
+						}
 						loading={ renderProps.loading }
 					/>
 				),
@@ -91,7 +93,9 @@ const PaymentMethods = ( props ) => {
 				{ tabPanels.map( ( panel ) => (
 					<Tabs.Panel key={ panel.id } slug={ panel.id }>
 						{ /* Support both legacy component prop and new render function */ }
-						{ panel.render ? panel.render( panelProps ) : panel.component }
+						{ panel.render
+							? panel.render( panelProps )
+							: panel.component }
 					</Tabs.Panel>
 				) ) }
 			</Tabs>
