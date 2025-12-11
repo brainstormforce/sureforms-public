@@ -106,6 +106,17 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 								}
 							/>
 							<SRFMTextControl
+								label={ __( 'Placeholder', 'sureforms' ) }
+								value={ attributes.placeholder }
+								data={ {
+									value: attributes.placeholder,
+									label: 'placeholder',
+								} }
+								onChange={ ( value ) =>
+									setAttributes( { placeholder: value } )
+								}
+							/>
+							<SRFMTextControl
 								label={ __( 'Default Value', 'sureforms' ) }
 								className="srfm-with-dropdown"
 								value={ defaultValue }
