@@ -376,6 +376,7 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 
 == Changelog ==
 = x.x.x =
+* Improvement: Added placeholder for blocks that use input field.
 * Fix: Resolved an issue where block id is missing for Image, Icon and Separator block in the frontend.
 * Improvement: Skip vector placeholder once SureForms is connected to OttoKit in single form settings.
 = 2.1.0 - 2nd December 2025 =
