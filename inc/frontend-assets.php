@@ -241,7 +241,10 @@ class Frontend_Assets {
 				);
 			}
 
-			if ( 'dropdown' !== $block_name ) {
+			$should_not_dropdown = 'dropdown' !== $block_name;
+			$should_not_input = 'textarea' !== $block_name;
+
+			if ( $should_not_dropdown && $should_not_input ) {
 				wp_enqueue_script( SRFM_SLUG . "-{$block_name}", $js_uri . $block_name . $file_prefix . '.js', [], SRFM_VER, true );
 			}
 
@@ -255,6 +258,8 @@ class Frontend_Assets {
 				wp_enqueue_script( SRFM_SLUG . '-quill-editor', $js_vendor_uri . '/quill.min.js', [], SRFM_VER, true );
 
 				wp_enqueue_style( SRFM_SLUG . '-quill-editor', $css_vendor_uri . 'quill/quill.snow.css', [], SRFM_VER );
+
+				wp_enqueue_script( SRFM_SLUG . '-textarea', $js_uri . 'textarea' . $file_prefix . '.js', [], SRFM_VER, true );
 			}
 		}
 		/**
