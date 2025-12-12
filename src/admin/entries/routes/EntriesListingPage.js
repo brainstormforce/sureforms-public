@@ -235,10 +235,20 @@ const EntriesListingPage = () => {
 				verificationText: 'delete',
 			} );
 		} else {
-			// Otherwise, move to trash
-			trashEntriesMutation( {
-				entry_ids: [ entry.id ],
-				action: 'trash',
+			// Otherwise, show confirmation dialog before moving to trash
+			setConfirmationDialog( {
+				open: true,
+				title: __( 'Move Entry to Trash?', 'sureforms' ),
+				description: __(
+					'This entry will be moved to trash and can be restored later.',
+					'sureforms'
+				),
+				confirmLabel: __( 'Move to Trash', 'sureforms' ),
+				onConfirm: () => handleTrashEntry( entry ),
+				isLoading: false,
+				destructive: true,
+				enableVerification: false,
+				verificationText: '',
 			} );
 		}
 	};
@@ -254,6 +264,14 @@ const EntriesListingPage = () => {
 	const handlePermanentDelete = ( entry ) => {
 		deleteEntriesMutation( {
 			entry_ids: [ entry.id ],
+		} );
+		setConfirmationDialog( ( prev ) => ( { ...prev, open: false } ) );
+	};
+
+	const handleTrashEntry = ( entry ) => {
+		trashEntriesMutation( {
+			entry_ids: [ entry.id ],
+			action: 'trash',
 		} );
 		setConfirmationDialog( ( prev ) => ( { ...prev, open: false } ) );
 	};
