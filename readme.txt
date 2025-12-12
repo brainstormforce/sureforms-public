@@ -4,7 +4,7 @@ Tags: contact form, custom form, forms, WordPress form plugin, form builder
 Requires at least: 6.4
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 2.1.0
+Stable tag: 2.2.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -375,7 +375,7 @@ easy.
 You can report the issue through our [Bug Bounty Program](https://brainstormforce.com/bug-bounty-program/). We collaborate with Patchstack to provide opportunities for researchers to report vulnerabilities. The Patchstack team will help validate, triage, and handle any reported security issues.
 
 == Changelog ==
-= x.x.x =
+= 2.2.0 - 16th December 2025 =
 * Improvement: Added confirmation step before trash in forms and entries listing page.
 * Fix: Resolved an issue where block id is missing for Image, Icon and Separator block in the frontend.
 * Improvement: Skip vector placeholder once SureForms is connected to OttoKit in single form settings.

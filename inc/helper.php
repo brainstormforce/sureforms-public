@@ -2138,7 +2138,7 @@ class Helper {
 	 * @param class-string $class  The class name where the get method is defined to check for existing IDs.
 	 * @param int<1, max>  $length The length of the random bytes to generate. Default is 8.
 	 * @return string
-	 * @since x.x.x
+	 * @since 2.2.0
 	 */
 	public static function generate_unique_id( $class, $length = 8 ) {
 		// Ensure length is at least 1.
