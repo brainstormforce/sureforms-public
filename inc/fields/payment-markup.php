@@ -192,117 +192,6 @@ class Payment_Markup extends Base {
 	}
 
 	/**
-	 * Get registered payment methods for display.
-	 *
-	 * @return array Array of payment method configurations.
-	 * @since x.x.x
-	 */
-	private function get_registered_payment_methods() {
-		$methods = [];
-
-		// Get enabled payment methods from block attributes.
-		$enabled_methods = $this->payment_methods;
-
-		// Filter to get method configurations - start with Stripe as default.
-		$available_methods = apply_filters(
-			'srfm_payment_methods_registry',
-			[
-				'stripe' => [
-					'id'              => 'stripe',
-					'label'           => __( 'Credit Card', 'sureforms' ),
-					'description'     => __( 'Pay with credit or debit card', 'sureforms' ),
-					'icon'            => 'credit-card',
-					'enabled'         => $this->stripe_connected,
-					'container_class' => 'srfm-stripe-payment-element',
-				],
-			]
-		);
-
-		// Filter enabled methods.
-		foreach ( $enabled_methods as $method_id ) {
-			if ( isset( $available_methods[ $method_id ] ) && $available_methods[ $method_id ]['enabled'] ) {
-				$methods[ $method_id ] = $available_methods[ $method_id ];
-			}
-		}
-
-		return $methods;
-	}
-
-	/**
-	 * Render payment methods as accordion.
-	 * Each payment method is an accordion item with header and collapsible content.
-	 *
-	 * @param array $methods Array of payment methods.
-	 * @return string Payment methods accordion markup.
-	 * @since x.x.x
-	 */
-	private function render_payment_methods_accordion( $methods ) {
-		$default_method = reset( $methods )['id'];
-		$is_single_method = count( $methods ) === 1;
-
-		ob_start();
-		?>
-		<div class="srfm-payment-methods-accordion <?php echo $is_single_method ? 'single-method' : ''; ?>">
-			<?php foreach ( $methods as $method ) : ?>
-				<?php $is_active = $method['id'] === $default_method; ?>
-				<div
-					class="srfm-accordion-item <?php echo $is_active ? 'active' : ''; ?>"
-					data-method="<?php echo esc_attr( $method['id'] ); ?>"
-				>
-					<div
-						class="srfm-accordion-header"
-						role="button"
-						tabindex="0"
-						aria-expanded="<?php echo $is_active ? 'true' : 'false'; ?>"
-						aria-controls="srfm-accordion-content-<?php echo esc_attr( $method['id'] ); ?>-<?php echo esc_attr( $this->block_id ); ?>"
-					>
-						<input
-							type="radio"
-							name="payment-method-<?php echo esc_attr( $this->block_id ); ?>"
-							value="<?php echo esc_attr( $method['id'] ); ?>"
-							class="srfm-payment-method-radio"
-							data-method="<?php echo esc_attr( $method['id'] ); ?>"
-							<?php checked( $is_active ); ?>
-							aria-label="<?php echo esc_attr( $method['label'] ); ?>"
-						/>
-						<span class="srfm-accordion-title">
-							<?php echo esc_html( $method['label'] ); ?>
-						</span>
-						<?php if ( ! empty( $method['description'] ) ) : ?>
-							<span class="srfm-accordion-desc">
-								<?php echo esc_html( $method['description'] ); ?>
-							</span>
-						<?php endif; ?>
-						<?php if ( ! $is_single_method ) : ?>
-							<span class="srfm-accordion-icon" aria-hidden="true"></span>
-						<?php endif; ?>
-					</div>
-					<div
-						id="srfm-accordion-content-<?php echo esc_attr( $method['id'] ); ?>-<?php echo esc_attr( $this->block_id ); ?>"
-						class="srfm-accordion-content"
-						role="region"
-						aria-labelledby="srfm-accordion-header-<?php echo esc_attr( $method['id'] ); ?>"
-					>
-						<div
-							class="srfm-payment-method-content"
-							data-method="<?php echo esc_attr( $method['id'] ); ?>"
-						>
-							<div
-								id="srfm-<?php echo esc_attr( $method['id'] ); ?>-<?php echo esc_attr( $this->block_id ); ?>"
-								class="<?php echo esc_attr( $method['container_class'] ); ?>"
-							>
-								<!-- Provider JS will render content here -->
-							</div>
-						</div>
-					</div>
-				</div>
-			<?php endforeach; ?>
-		</div>
-		<?php
-		return ob_get_clean();
-	}
-
-	/**
 	 * Render the payment field markup.
 	 *
 	 * @return string|bool
@@ -484,6 +373,123 @@ class Payment_Markup extends Base {
 		</div>
 		<?php
 		return ob_get_clean();
+	}
+
+	/**
+	 * Get registered payment methods for display.
+	 *
+	 * @return array Array of payment method configurations.
+	 * @since x.x.x
+	 */
+	private function get_registered_payment_methods() {
+		$methods = [];
+
+		// Get enabled payment methods from block attributes.
+		$enabled_methods = $this->payment_methods;
+
+		// Filter to get method configurations - start with Stripe as default.
+		$available_methods = apply_filters(
+			'srfm_payment_methods_registry',
+			[
+				'stripe' => [
+					'id'              => 'stripe',
+					'label'           => __( 'Credit Card', 'sureforms' ),
+					'description'     => __( 'Pay with credit or debit card', 'sureforms' ),
+					'icon'            => 'credit-card',
+					'enabled'         => $this->stripe_connected,
+					'container_class' => 'srfm-stripe-payment-element',
+				],
+			]
+		);
+
+		// Filter enabled methods.
+		foreach ( $enabled_methods as $method_id ) {
+			if ( isset( $available_methods[ $method_id ] ) && $available_methods[ $method_id ]['enabled'] ) {
+				$methods[ $method_id ] = $available_methods[ $method_id ];
+			}
+		}
+
+		return $methods;
+	}
+
+	/**
+	 * Render payment methods as accordion.
+	 * Each payment method is an accordion item with header and collapsible content.
+	 *
+	 * @param array<mixed> $methods Array of payment methods.
+	 * @return string Payment methods accordion markup.
+	 * @since x.x.x
+	 */
+	private function render_payment_methods_accordion( $methods ) {
+		if ( empty( $methods ) || ! is_array( $methods ) ) {
+			return '';
+		}
+
+		$default_method   = reset( $methods )['id'];
+		$is_single_method = count( $methods ) === 1;
+
+		ob_start();
+		?>
+		<div class="srfm-payment-methods-accordion <?php echo $is_single_method ? 'single-method' : ''; ?>">
+			<?php foreach ( $methods as $method ) { ?>
+				<?php $is_active = $method['id'] === $default_method; ?>
+				<div
+					class="srfm-accordion-item <?php echo $is_active ? 'active' : ''; ?>"
+					data-method="<?php echo esc_attr( $method['id'] ); ?>"
+				>
+					<div
+						class="srfm-accordion-header"
+						role="button"
+						tabindex="0"
+						aria-expanded="<?php echo $is_active ? 'true' : 'false'; ?>"
+						aria-controls="srfm-accordion-content-<?php echo esc_attr( $method['id'] ); ?>-<?php echo esc_attr( $this->block_id ); ?>"
+					>
+						<input
+							type="radio"
+							name="payment-method-<?php echo esc_attr( $this->block_id ); ?>"
+							value="<?php echo esc_attr( $method['id'] ); ?>"
+							class="srfm-payment-method-radio"
+							data-method="<?php echo esc_attr( $method['id'] ); ?>"
+							<?php checked( $is_active ); ?>
+							aria-label="<?php echo esc_attr( $method['label'] ); ?>"
+						/>
+						<span class="srfm-accordion-title">
+							<?php echo esc_html( $method['label'] ); ?>
+						</span>
+						<?php if ( ! empty( $method['description'] ) ) { ?>
+							<span class="srfm-accordion-desc">
+								<?php echo esc_html( $method['description'] ); ?>
+							</span>
+						<?php } ?>
+						<?php if ( ! $is_single_method ) { ?>
+							<span class="srfm-accordion-icon" aria-hidden="true"></span>
+						<?php } ?>
+					</div>
+					<div
+						id="srfm-accordion-content-<?php echo esc_attr( $method['id'] ); ?>-<?php echo esc_attr( $this->block_id ); ?>"
+						class="srfm-accordion-content"
+						role="region"
+						aria-labelledby="srfm-accordion-header-<?php echo esc_attr( $method['id'] ); ?>"
+					>
+						<div
+							class="srfm-payment-method-content"
+							data-method="<?php echo esc_attr( $method['id'] ); ?>"
+						>
+							<div
+								id="srfm-<?php echo esc_attr( $method['id'] ); ?>-<?php echo esc_attr( $this->block_id ); ?>"
+								class="<?php echo esc_attr( $method['container_class'] ); ?>"
+							>
+								<!-- Provider JS will render content here -->
+							</div>
+						</div>
+					</div>
+				</div>
+			<?php } ?>
+		</div>
+		<?php
+		$template = ob_get_clean();
+
+		return is_string( $template ) ? $template : '';
 	}
 
 	/**

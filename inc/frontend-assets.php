@@ -310,10 +310,13 @@ class Frontend_Assets {
 		}
 
 		// Add action to enqueue payment provider scripts.
-		do_action( 'srfm_enqueue_block_scripts', [
-			'block_name' => $block_name,
-			'attr' => $attr,
-		] );
+		do_action(
+			'srfm_enqueue_block_scripts',
+			[
+				'block_name' => $block_name,
+				'attr'       => $attr,
+			]
+		);
 	}
 
 	/**
