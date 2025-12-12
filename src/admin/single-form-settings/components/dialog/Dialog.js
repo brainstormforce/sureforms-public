@@ -258,7 +258,7 @@ const Dialog = ( {
 					<FeaturePreview
 						featureName={ __( 'Save & Progress', 'sureforms' ) }
 						featureHelpText={ __(
-							'Allow users to save their progress and resume form completion later.',
+							'Allow users to save their progress and continue form completion later.',
 							'sureforms'
 						) }
 						icon={
