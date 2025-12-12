@@ -123,6 +123,13 @@ const Dialog = ( {
 
 	const [ parentTab, setParentTab ] = useState( null );
 
+	const [ pluginConnected, setPluginConnected ] = useState(
+		srfm_admin?.integrations?.sure_triggers?.connected ?? null
+	);
+	const [ localPluginStatus, setLocalPluginStatus ] = useState(
+		srfm_admin?.integrations?.sure_triggers?.status
+	);
+
 	const tabs = applyFilters(
 		'srfm.formSettings.tabs',
 		[
@@ -390,7 +397,14 @@ const Dialog = ( {
 				),
 				component: (
 					<OttoKitPage
-						{ ...{ isFormSettings: true, setSelectedTab } }
+						{ ...{
+							isFormSettings: true,
+							setSelectedTab,
+							pluginConnected,
+							setPluginConnected,
+							localPluginStatus,
+							setLocalPluginStatus,
+						} }
 					/>
 				),
 			},
