@@ -245,8 +245,8 @@ class Frontend_Assets {
 				wp_enqueue_script( SRFM_SLUG . "-{$block_name}", $js_uri . $block_name . $file_prefix . '.js', [], SRFM_VER, true );
 			}
 
-			if ( 'input' === $block_name ) {
-				// Input mask JS.
+			if ( 'input' === $block_name && isset( $attr['inputMask'] ) && 'none' !== $attr['inputMask'] ) {
+				// Input mask JS - only load when inputMask is configured.
 				wp_enqueue_script( SRFM_SLUG . '-inputmask', $js_vendor_uri . 'inputmask.min.js', [], SRFM_VER, true );
 			}
 
