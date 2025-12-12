@@ -360,9 +360,8 @@ plans.
 
 = Does SureForms support Payment Forms? =
 
-Payment integrations are coming soon in SureForms. It's currently in
-development. Stripe and PayPal support will make collecting payments
-easy.
+Yes! SureForms has built-in Payment Form support. 
+You can collect payments securely without any add-ons or extra plugins.
 
 == Screenshot ==
 
