@@ -10,7 +10,15 @@ import LoadingSkeleton from '@Admin/components/LoadingSkeleton';
 import apiFetch from '@wordpress/api-fetch';
 import { useState, useEffect } from '@wordpress/element';
 
-const OttoKitPage = ( { loading, isFormSettings = false, setSelectedTab } ) => {
+const OttoKitPage = ( {
+	loading,
+	isFormSettings = false,
+	setSelectedTab,
+	pluginConnected,
+	setPluginConnected,
+	localPluginStatus,
+	setLocalPluginStatus,
+} ) => {
 	const features = [
 		__(
 			'Push entries to Slack, Mailchimp, Google Sheets, or hundreds of other apps.',
@@ -27,9 +35,9 @@ const OttoKitPage = ( { loading, isFormSettings = false, setSelectedTab } ) => {
 	// Add state management for connection functionality (reused from integrations/index.js)
 	const [ btnDisabled, setBtnDisabled ] = useState( false );
 	const [ buttonText, setButtonText ] = useState( '' );
-	const [ pluginConnected, setPluginConnected ] = useState( null );
 	const [ action, setAction ] = useState( '' );
 	const [ CTA, setCTA ] = useState( '' );
+	const [ loadingData, setLoadingData ] = useState( false );
 
 	// Reuse the connection logic from integrations/index.js
 	const integrateWithSureTriggers = () => {
@@ -38,7 +46,7 @@ const OttoKitPage = ( { loading, isFormSettings = false, setSelectedTab } ) => {
 		formData.append( 'formId', srfm_admin.form_id );
 		formData.append( 'security', srfm_admin.suretriggers_nonce );
 
-		apiFetch( {
+		return apiFetch( {
 			url: srfm_admin.ajax_url,
 			method: 'POST',
 			body: formData,
@@ -51,10 +59,7 @@ const OttoKitPage = ( { loading, isFormSettings = false, setSelectedTab } ) => {
 			} else {
 				if ( response.data.code ) {
 					if ( 'invalid_secret_key' === response.data.code ) {
-						const windowDimension = {
-							width: 800,
-							height: 720,
-						};
+						const windowDimension = { width: 800, height: 720 };
 						const positioning = {
 							left: ( screen.width - windowDimension.width ) / 2,
 							top: ( screen.height - windowDimension.height ) / 2,
@@ -82,6 +87,7 @@ const OttoKitPage = ( { loading, isFormSettings = false, setSelectedTab } ) => {
 									sureTriggersAuthenticationWindow.close();
 									clearInterval( suretriggersAuthInterval );
 									setPluginConnected( true );
+									setLocalPluginStatus( 'Activated' );
 									if ( setSelectedTab ) {
 										setSelectedTab( 'suretriggers' );
 									}
@@ -126,7 +132,7 @@ const OttoKitPage = ( { loading, isFormSettings = false, setSelectedTab } ) => {
 		// For global settings: always use external helper
 		if ( ! isFormSettings ) {
 			// if plugin is activated, go to its settings page
-			if ( plugin.status === 'Activated' ) {
+			if ( ( localPluginStatus || plugin.status ) === 'Activated' ) {
 				window.location.href = plugin.connection_url;
 				return;
 			}
@@ -146,8 +152,10 @@ const OttoKitPage = ( { loading, isFormSettings = false, setSelectedTab } ) => {
 				break;
 
 			default:
-				// When action is empty (plugin activated), integrate with SureTriggers
-				integrateWithSureTriggers();
+				// Only integrate if plugin is activated AND not yet connected
+				if ( localPluginStatus === 'Activated' && ! pluginConnected ) {
+					integrateWithSureTriggers();
+				}
 				break;
 		}
 	};
@@ -201,6 +209,7 @@ const OttoKitPage = ( { loading, isFormSettings = false, setSelectedTab } ) => {
 				setCTA( srfm_admin.plugin_activated_text );
 				setButtonText( srfm_admin.plugin_activated_text );
 				setAction( '' );
+				setLocalPluginStatus( 'Activated' );
 				setTimeout( () => {
 					setAction( 'sureforms_integrate_with_suretriggers' );
 					setCTA( getCTA( 'Activated' ) );
@@ -210,9 +219,6 @@ const OttoKitPage = ( { loading, isFormSettings = false, setSelectedTab } ) => {
 							pluginConnected || plugin.connected
 						)
 					);
-					if ( pluginConnected ) {
-						integrateWithSureTriggers();
-					}
 				}, 2000 );
 			} else {
 				alert(
@@ -275,21 +281,30 @@ const OttoKitPage = ( { loading, isFormSettings = false, setSelectedTab } ) => {
 			setPluginConnected( plugin.connected );
 		}
 
-		if ( ! action ) {
-			setAction( getAction( plugin.status ) );
-			setCTA( getCTA( plugin.status ) );
-		} else if ( pluginConnected || plugin.connected ) {
-			setCTA( getCTA( plugin.status ) );
+		// Only auto-fetch if plugin is already connected
+		if ( pluginConnected ) {
+			setLoadingData( true );
+			integrateWithSureTriggers().finally( () =>
+				setLoadingData( false )
+			);
 		}
 
-		setButtonText(
-			getButtonText( plugin?.status, pluginConnected || plugin.connected )
-		);
-	}, [ plugin, pluginConnected, action ] );
+		const effectiveStatus = localPluginStatus || plugin.status;
+		const effectiveConnected = pluginConnected || plugin.connected;
+
+		if ( ! action ) {
+			setAction( getAction( effectiveStatus ) );
+			setCTA( getCTA( effectiveStatus ) );
+		} else if ( effectiveConnected ) {
+			setCTA( getCTA( effectiveStatus ) );
+		}
+
+		setButtonText( getButtonText( effectiveStatus, effectiveConnected ) );
+	}, [ plugin, pluginConnected, action, localPluginStatus ] );
 
 	return (
 		<>
-			{ loading ? (
+			{ loading || loadingData ? (
 				<div>
 					<LoadingSkeleton count={ 6 } className="h-6 rounded-sm" />
 				</div>
