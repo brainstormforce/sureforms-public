@@ -242,9 +242,9 @@ class Frontend_Assets {
 			}
 
 			$should_not_dropdown = 'dropdown' !== $block_name;
-			$should_not_input = 'textarea' !== $block_name;
+			$should_not_textarea = 'textarea' !== $block_name;
 
-			if ( $should_not_dropdown && $should_not_input ) {
+			if ( $should_not_dropdown && $should_not_textarea ) {
 				wp_enqueue_script( SRFM_SLUG . "-{$block_name}", $js_uri . $block_name . $file_prefix . '.js', [], SRFM_VER, true );
 			}
 
