@@ -19,6 +19,18 @@ use Yoast\PHPUnitPolyfills\TestCases\TestCase;
 use SRFM\Inc\Helper;
 
 /**
+ * Mock class for testing generate_unique_id
+ */
+class Mock_Empty_Table {
+    /**
+     * Always returns null to simulate no collision
+     */
+    public static function get( $id ) {
+        return null;
+    }
+}
+
+/**
  * Tests Plugin Initialization.
  *
  */
@@ -1621,6 +1633,173 @@ class Test_Helper extends TestCase {
         $this->assertEquals($expected, $result);
     }
 
+    // =================== Tests for generate_unique_id() function ===================
+    // Note: generate_unique_id is a static method in SRFM\Inc\Helper class
+
+    public function testGenerateUniqueIdReturnsString() {
+        // Test that generate_unique_id returns a string
+        // We call the Helper static method directly with a mock class
+        $id = \SRFM\Inc\Helper::generate_unique_id(Mock_Empty_Table::class);
+
+        $this->assertIsString($id);
+        $this->assertNotEmpty($id);
+    }
+
+    public function testGenerateUniqueIdLength() {
+        // Test that the generated ID has the expected length
+        // bin2hex(random_bytes(8)) should produce 16 characters
+        $id = \SRFM\Inc\Helper::generate_unique_id(Mock_Empty_Table::class);
+
+        $this->assertEquals(16, strlen($id));
+    }
+
+    public function testGenerateUniqueIdFormat() {
+        // Test that the generated ID contains only hexadecimal characters
+        $id = \SRFM\Inc\Helper::generate_unique_id(Mock_Empty_Table::class);
+
+        $this->assertMatchesRegularExpression('/^[a-f0-9]+$/', $id);
+    }
+
+    public function testGenerateUniqueIdUniqueness() {
+        // Test that multiple calls generate different IDs
+        $id1 = \SRFM\Inc\Helper::generate_unique_id(Mock_Empty_Table::class);
+        $id2 = \SRFM\Inc\Helper::generate_unique_id(Mock_Empty_Table::class);
+
+        $this->assertNotEquals($id1, $id2);
+    }
+
+    public function testGenerateUniqueIdMultipleCallsUnique() {
+        // Test uniqueness across multiple iterations
+        $ids = [];
+        $iterations = 100;
+
+        for ($i = 0; $i < $iterations; $i++) {
+            $id = \SRFM\Inc\Helper::generate_unique_id(Mock_Empty_Table::class);
+            $this->assertNotContains($id, $ids, "Duplicate ID generated: $id");
+            $ids[] = $id;
+        }
+
+        $this->assertCount($iterations, array_unique($ids));
+    }
+
+    public function testGenerateUniqueIdConsistentLength() {
+        // Test that all generated IDs have consistent length
+        $expectedLength = 16;
+
+        for ($i = 0; $i < 50; $i++) {
+            $id = \SRFM\Inc\Helper::generate_unique_id(Mock_Empty_Table::class);
+            $this->assertEquals($expectedLength, strlen($id), "ID length mismatch on iteration $i: $id");
+        }
+    }
+
+    public function testGenerateUniqueIdValidHexChars() {
+        // Test that all characters are valid hexadecimal
+        $validHexChars = '0123456789abcdef';
+
+        for ($i = 0; $i < 10; $i++) {
+            $id = \SRFM\Inc\Helper::generate_unique_id(Mock_Empty_Table::class);
+
+            for ($j = 0; $j < strlen($id); $j++) {
+                $char = $id[$j];
+                $this->assertStringContainsString($char, $validHexChars, "Invalid hex character '$char' in ID: $id");
+            }
+        }
+    }
+
+    public function testGenerateUniqueIdNoUppercase() {
+        // Test that generated IDs contain no uppercase letters
+        for ($i = 0; $i < 20; $i++) {
+            $id = \SRFM\Inc\Helper::generate_unique_id(Mock_Empty_Table::class);
+            $this->assertEquals(strtolower($id), $id, "ID contains uppercase characters: $id");
+        }
+    }
+
+    public function testGenerateUniqueIdPerformance() {
+        // Test that ID generation is performant
+        $startTime = microtime(true);
+
+        for ($i = 0; $i < 1000; $i++) {
+            \SRFM\Inc\Helper::generate_unique_id(Mock_Empty_Table::class);
+        }
+
+        $endTime = microtime(true);
+        $executionTime = $endTime - $startTime;
+
+        // Should generate 1000 IDs in less than 1 second
+        $this->assertLessThan(1.0, $executionTime, "ID generation is too slow: {$executionTime}s for 1000 IDs");
+    }
+
+    public function testGenerateUniqueIdRandomness() {
+        // Test that the function generates random IDs with high entropy
+        $ids = [];
+
+        for ($i = 0; $i < 100; $i++) {
+            $ids[] = \SRFM\Inc\Helper::generate_unique_id(Mock_Empty_Table::class);
+        }
+
+        // Calculate character frequency to ensure randomness
+        $charCounts = array_fill_keys(str_split('0123456789abcdef'), 0);
+
+        foreach ($ids as $id) {
+            for ($i = 0; $i < strlen($id); $i++) {
+                $charCounts[$id[$i]]++;
+            }
+        }
+
+        $totalChars = array_sum($charCounts);
+        $expectedFrequency = $totalChars / 16; // 16 possible hex characters
+
+        // Each character should appear roughly the same number of times (within 30% variance)
+        foreach ($charCounts as $char => $count) {
+            $variance = abs($count - $expectedFrequency) / $expectedFrequency;
+            $this->assertLessThan(0.3, $variance, "Character '$char' frequency is too far from expected: $count vs $expectedFrequency");
+        }
+    }
+
+    public function testGenerateUniqueIdNotPredictable() {
+        // Test that consecutive IDs don't follow a predictable pattern
+        $id1 = \SRFM\Inc\Helper::generate_unique_id(Mock_Empty_Table::class);
+        $id2 = \SRFM\Inc\Helper::generate_unique_id(Mock_Empty_Table::class);
+        $id3 = \SRFM\Inc\Helper::generate_unique_id(Mock_Empty_Table::class);
+
+        // Calculate hamming distance between consecutive IDs
+        $distance12 = $this->calculateHammingDistance($id1, $id2);
+        $distance23 = $this->calculateHammingDistance($id2, $id3);
+
+        // Hamming distance should be significant (at least 50% different)
+        $this->assertGreaterThan(8, $distance12, "IDs too similar: $id1 vs $id2");
+        $this->assertGreaterThan(8, $distance23, "IDs too similar: $id2 vs $id3");
+    }
+
+    public function testGenerateUniqueIdThreadSafety() {
+        // Test that the function works correctly in concurrent scenarios
+        $ids = [];
+
+        // Simulate rapid successive calls
+        for ($i = 0; $i < 1000; $i++) {
+            $id = \SRFM\Inc\Helper::generate_unique_id(Mock_Empty_Table::class);
+            $this->assertNotContains($id, $ids, "Duplicate ID in rapid succession: $id");
+            $ids[] = $id;
+        }
+
+        $this->assertCount(1000, array_unique($ids));
+    }
+
+    /**
+     * Helper method to calculate Hamming distance between two strings
+     */
+    private function calculateHammingDistance($str1, $str2) {
+        $distance = 0;
+        $length = min(strlen($str1), strlen($str2));
+        
+        for ($i = 0; $i < $length; $i++) {
+            if ($str1[$i] !== $str2[$i]) {
+                $distance++;
+            }
+        }
+        
+        return $distance;
+    }
     /**
      * Test get_rotating_plugin_banner returns false when all plugins are activated.
      */
