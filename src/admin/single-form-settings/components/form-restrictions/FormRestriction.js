@@ -1,5 +1,9 @@
 import { __ } from '@wordpress/i18n';
-import { useContext, createInterpolateElement } from '@wordpress/element';
+import {
+	useContext,
+	createInterpolateElement,
+	isValidElement,
+} from '@wordpress/element';
 import { FormRestrictionContext } from './context';
 import {
 	Container,
@@ -14,11 +18,33 @@ import { Info } from 'lucide-react';
 import TabContentWrapper from '@Components/tab-content-wrapper';
 import DatePickerModal from '@Components/force-ui-components/DatePickerModal';
 import TimePicker from '@Components/force-ui-components/TimePicker';
+import { applyFilters } from '@wordpress/hooks';
 
 const FormRestriction = () => {
 	const { updateMeta, preserveMetaData } = useContext(
 		FormRestrictionContext
 	);
+
+	// Apply filter and sanitize for security
+	let additionalSettings = applyFilters(
+		'srfm_form_restriction_additional_settings',
+		[]
+	);
+
+	// Lightweight security validation for admin context
+	if ( ! Array.isArray( additionalSettings ) ) {
+		additionalSettings = [];
+	} else {
+		additionalSettings = additionalSettings.filter( ( setting ) => {
+			// Basic validation: must be object with valid component
+			return (
+				setting &&
+				typeof setting === 'object' &&
+				setting.component &&
+				isValidElement( setting.component )
+			);
+		} );
+	}
 
 	return (
 		<TabContentWrapper
@@ -154,7 +180,7 @@ const FormRestriction = () => {
 						</div>
 
 						<div>
-							<Label className="mb-1">
+							<Label className="mb-1.5">
 								{ __(
 									'Response Description After Maximum Entries',
 									'sureforms'
@@ -178,6 +204,36 @@ const FormRestriction = () => {
 					</>
 				) }
 			</Container>
+			{ additionalSettings.map( ( setting, index ) => {
+				// Generate safe key - prefer setting.id, fallback to title-based or index
+				const safeKey =
+					setting.id ||
+					( setting.title
+						? `title-${ setting.title.replace(
+							/[^a-zA-Z0-9]/g,
+							'-'
+						  ) }-${ index }`
+						: `setting-${ index }` );
+
+				// Basic title sanitization - remove HTML tags if present
+				const safeTitle =
+					setting.title && typeof setting.title === 'string'
+						? setting.title.replace( /<[^>]*>/g, '' ).trim()
+						: setting.title;
+
+				return (
+					<div key={ safeKey } className="mt-6">
+						{ safeTitle && (
+							<Title
+								size="xs"
+								className="mb-4"
+								title={ safeTitle }
+							/>
+						) }
+						{ setting.component }
+					</div>
+				);
+			} ) }
 		</TabContentWrapper>
 	);
 };
