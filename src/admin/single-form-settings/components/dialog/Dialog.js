@@ -28,6 +28,7 @@ import {
 	FileText,
 	Cpu,
 	Link2,
+	Save,
 } from 'lucide-react';
 
 import Suretriggers from '../integrations/suretriggers';
@@ -254,6 +255,50 @@ const Dialog = ( {
 						<FormRestriction />
 						<Compliance { ...{ complianceData } } />
 					</>
+				),
+			},
+			{
+				id: 'save-resume-preview',
+				label: __( 'Save & Progress', 'sureforms' ),
+				icon: <Save />,
+				component: (
+					<FeaturePreview
+						featureName={ __( 'Save & Progress', 'sureforms' ) }
+						featureHelpText={ __(
+							'Allow users to save their progress and continue form completion later.',
+							'sureforms'
+						) }
+						icon={
+							<Save
+								className="text-orange-500"
+								size={ 40 }
+								strokeWidth={ 1 }
+							/>
+						}
+						title={ __(
+							'Save & Progress in SureForms',
+							'sureforms'
+						) }
+						subtitle={ __(
+							'Give your users the flexibility to complete forms at their own pace by allowing them to save progress and return anytime.',
+							'sureforms'
+						) }
+						featureList={ [
+							__(
+								'Let users pause long or multi-step forms and continue later.',
+								'sureforms'
+							),
+							__(
+								'Reduce form abandonment with convenient resume links and access their progress from anywhere.',
+								'sureforms'
+							),
+							__(
+								'Improve user experience for lengthy, complex, or multi-page forms.',
+								'sureforms'
+							),
+						] }
+						utmMedium="save-resume-preview-single-form-settings"
+					/>
 				),
 			},
 			{
