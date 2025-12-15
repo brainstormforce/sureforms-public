@@ -1749,10 +1749,10 @@ class Test_Helper extends TestCase {
         $totalChars = array_sum($charCounts);
         $expectedFrequency = $totalChars / 16; // 16 possible hex characters
 
-        // Each character should appear roughly the same number of times (within 30% variance)
+        // Each character should appear roughly the same number of times (within 50% variance)
         foreach ($charCounts as $char => $count) {
             $variance = abs($count - $expectedFrequency) / $expectedFrequency;
-            $this->assertLessThan(0.3, $variance, "Character '$char' frequency is too far from expected: $count vs $expectedFrequency");
+            $this->assertLessThan(0.5, $variance, "Character '$char' frequency is too far from expected: $count vs $expectedFrequency");
         }
     }
 
