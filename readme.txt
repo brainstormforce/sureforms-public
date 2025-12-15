@@ -374,6 +374,10 @@ You can collect payments securely without any add-ons or extra plugins.
 You can report the issue through our [Bug Bounty Program](https://brainstormforce.com/bug-bounty-program/). We collaborate with Patchstack to provide opportunities for researchers to report vulnerabilities. The Patchstack team will help validate, triage, and handle any reported security issues.
 
 == Changelog ==
+= x.x.x =
+* Improvement: Added confirmation step before trash in forms and entries listing page.
+* Fix: Resolved an issue where block id is missing for Image, Icon and Separator block in the frontend.
+* Improvement: Skip vector placeholder once SureForms is connected to OttoKit in single form settings.
 = 2.1.0 - 2nd December 2025 =
 * Improvement: Updated email notifications to display multi-choice options on separate lines.
 * Improvement: Updated links in new tables to behave like standard links, allowing them to open in a new tab.

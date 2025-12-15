@@ -341,7 +341,24 @@ const FormsListingPage = () => {
 	};
 
 	const handleFormTrash = ( form ) => {
-		handleBulkAction( 'trash', [ form.id ] );
+		setConfirmDialog( {
+			open: true,
+			title: __( 'Move Form to Trash?', 'sureforms' ),
+			description: __(
+				'This form will be moved to trash and can be restored later.',
+				'sureforms'
+			),
+			action: async () => {
+				await new Promise( ( resolve ) => {
+					handleBulkAction( 'trash', [ form.id ] );
+					resolve();
+				} );
+				setConfirmDialog( ( prev ) => ( { ...prev, open: false } ) );
+			},
+			confirmButtonText: __( 'Move to Trash', 'sureforms' ),
+			destructive: true,
+			requireConfirmation: false,
+		} );
 	};
 
 	const handleFormRestore = ( form ) => {
