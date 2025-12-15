@@ -67,8 +67,8 @@ const FormRestriction = () => {
 					size="sm"
 					label={ {
 						heading: __( 'Maximum Number of Entries', 'sureforms' ),
-						message: __(
-							'Set the maximum number of entries allowed for this form. Once the limit is reached, the form will automatically be disabled.',
+						description: __(
+							'Set the total number of submissions allowed for this form.',
 							'sureforms'
 						),
 					} }
