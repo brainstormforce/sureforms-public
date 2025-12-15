@@ -241,10 +241,10 @@ class Frontend_Assets {
 				);
 			}
 
-			$is_not_dropdown     = 'dropdown' !== $block_name;
-			$should_not_textarea = 'textarea' !== $block_name;
+			$is_not_dropdown = 'dropdown' !== $block_name;
+			$is_not_textarea = 'textarea' !== $block_name;
 
-			if ( $is_not_dropdown && $should_not_textarea ) {
+			if ( $is_not_dropdown && $is_not_textarea ) {
 				wp_enqueue_script( SRFM_SLUG . "-{$block_name}", $js_uri . $block_name . $file_prefix . '.js', [], SRFM_VER, true );
 			}
 
