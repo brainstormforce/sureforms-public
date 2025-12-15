@@ -241,7 +241,7 @@ class Frontend_Assets {
 				);
 			}
 
-			$is_not_dropdown = 'dropdown' !== $block_name;
+			$is_not_dropdown     = 'dropdown' !== $block_name;
 			$should_not_textarea = 'textarea' !== $block_name;
 
 			if ( $is_not_dropdown && $should_not_textarea ) {
