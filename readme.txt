@@ -377,6 +377,7 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 == Changelog ==
 = 2.2.0 - 16th December 2025 =
 * Improvement: Added confirmation step before moving items to trash in Forms and Entries lists.
+* Improvement: Removed unused scripts when the related functionality is not present.
 * Fix: Resolved Conversational Form issues with Image and Icon fields.
 = 2.1.0 - 2nd December 2025 =
 * Improvement: Updated email notifications to display multi-choice options on separate lines.
