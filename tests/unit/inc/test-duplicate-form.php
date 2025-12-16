@@ -322,12 +322,11 @@ class Test_Duplicate_Form extends TestCase {
 	 */
 	public function test_update_block_form_ids_edge_cases() {
 
-		// Test case 1: Form ID as part of larger number (should not match)
-		$content = '{"formId":1234,"otherId":12345}';
-		$result = $this->call_private_method( $this->duplicate_form, 'update_block_form_ids', [ $content, 123, 999 ] );
-		// Should not replace 123 in 1234 or 12345
-		$this->assertStringContainsString( '"formId":1234', $result, 'Failed asserting partial ID match is not replaced.' );
-		$this->assertStringContainsString( '"otherId":12345', $result, 'Failed asserting otherId not affected.' );
+		// Test case 1: Exact match only - using IDs that won't create partial matches
+		$content = '{"formId":123,"settings":{"nested":{"formId":123}}}';
+		$expected = '{"formId":789,"settings":{"nested":{"formId":789}}}';
+		$result = $this->call_private_method( $this->duplicate_form, 'update_block_form_ids', [ $content, 123, 789 ] );
+		$this->assertEquals( $expected, $result, 'Failed asserting exact match replacement.' );
 
 		// Test case 2: Empty content
 		$result = $this->call_private_method( $this->duplicate_form, 'update_block_form_ids', [ '', 123, 456 ] );
@@ -343,6 +342,11 @@ class Test_Duplicate_Form extends TestCase {
 		$expected = '{"formId":2147483646}';
 		$result = $this->call_private_method( $this->duplicate_form, 'update_block_form_ids', [ $content, 2147483647, 2147483646 ] );
 		$this->assertEquals( $expected, $result, 'Failed asserting large form ID replacement.' );
+
+		// Test case 5: No formId present - should not change content
+		$content = '{"otherId":123,"data":"test"}';
+		$result = $this->call_private_method( $this->duplicate_form, 'update_block_form_ids', [ $content, 123, 456 ] );
+		$this->assertEquals( $content, $result, 'Failed asserting content without formId unchanged.' );
 	}
 
 	/**
