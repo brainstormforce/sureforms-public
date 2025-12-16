@@ -314,7 +314,8 @@ class Frontend_Assets {
 			);
 		}
 
-		// Add action to enqueue payment provider scripts.
+		// Trigger custom action hook to allow third-party plugins or add-ons 
+		// to enqueue additional scripts/styles for specific blocks (e.g., payment providers).
 		do_action(
 			'srfm_enqueue_block_scripts',
 			[
