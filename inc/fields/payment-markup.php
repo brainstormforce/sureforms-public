@@ -426,8 +426,6 @@ class Payment_Markup extends Base {
 			return '';
 		}
 
-		$angle_down_svg = Helper::fetch_svg( 'angle-down', '', 'aria-hidden="true"' );
-
 		$default_method   = reset( $methods )['id'];
 		$is_single_method = count( $methods ) === 1;
 
@@ -462,7 +460,12 @@ class Payment_Markup extends Base {
 							</span>
 						</div>
 						<?php if ( ! $is_single_method ) { ?>
-							<span class="srfm-accordion-icon" aria-hidden="true"><?php echo $angle_down_svg; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span>
+							<span class="srfm-accordion-icon" aria-hidden="true">
+								<?php
+								// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Internal function to get the icon.
+								echo Helper::fetch_svg( 'angle-down', '', 'aria-hidden="true"' );
+								?>
+							</span>
 						<?php } ?>
 					</div>
 					<div
