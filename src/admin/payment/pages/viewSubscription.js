@@ -18,6 +18,7 @@ import {
 	formatAmount,
 	formatDateTime,
 	PartialAmount,
+	getPaymentMethodLabel
 } from '../components/utils';
 import PaymentNotes from '../components/paymentNotes';
 import PaymentLogs from '../components/paymentLogs';
@@ -658,6 +659,11 @@ const ViewSubscription = () => {
 						label={ __( 'Test Mode', 'sureforms' ) }
 					/>
 				),
+		},
+		{
+			id: 'payment-method',
+			title: __( 'Payment Method', 'sureforms' ),
+			value: getPaymentMethodLabel( subscriptionData?.gateway ),
 		},
 		{
 			title: __( 'Payment Type', 'sureforms' ),

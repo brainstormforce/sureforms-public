@@ -79,6 +79,7 @@ const PaymentMethods = ( props ) => {
 				<Tabs.Group
 					onChange={ ( { value: { slug } } ) => changeTab( slug ) }
 					className="mb-6"
+					variant="rounded"
 				>
 					{ availableTabs.map( ( tab ) => (
 						<Tabs.Tab

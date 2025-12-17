@@ -562,3 +562,19 @@ export const WebhookConfigure = ( props ) => {
 		/>
 	);
 };
+
+/**
+ * Get human-readable label for payment method
+ * @param {string} method - Payment method code
+ * @return {string} Translated payment method label
+ */
+export const getPaymentMethodLabel = ( method ) => {
+	switch ( method ) {
+		case 'stripe':
+			return 'Stripe';
+		case 'paypal':
+			return 'PayPal';
+		default:
+			return method;
+	}
+}
