@@ -8,6 +8,7 @@
 
 namespace SRFM\Inc\Fields;
 
+use SRFM\Inc\Helper;
 use SRFM\Inc\Payments\Stripe\Stripe_Helper;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -393,7 +394,7 @@ class Payment_Markup extends Base {
 			[
 				'stripe' => [
 					'id'              => 'stripe',
-					'label'           => __( 'Credit Card', 'sureforms' ),
+					'label'           => __( 'Stripe', 'sureforms' ),
 					'description'     => __( 'Pay with credit or debit card', 'sureforms' ),
 					'icon'            => 'credit-card',
 					'enabled'         => $this->stripe_connected,
@@ -428,13 +429,15 @@ class Payment_Markup extends Base {
 		$default_method   = reset( $methods )['id'];
 		$is_single_method = count( $methods ) === 1;
 
+		$angle_down_svg = Helper::fetch_svg( 'angle-down', '', 'aria-hidden="true"' );
+
 		ob_start();
 		?>
 		<div class="srfm-payment-methods-accordion <?php echo $is_single_method ? 'single-method' : ''; ?>">
 			<?php foreach ( $methods as $method ) { ?>
 				<?php $is_active = $method['id'] === $default_method; ?>
 				<div
-					class="srfm-accordion-item <?php echo $is_active ? 'active' : ''; ?>"
+					class="srfm-accordion-item <?php echo $is_active ? 'srfm-payment-active' : ''; ?>"
 					data-method="<?php echo esc_attr( $method['id'] ); ?>"
 				>
 					<div
@@ -444,25 +447,27 @@ class Payment_Markup extends Base {
 						aria-expanded="<?php echo $is_active ? 'true' : 'false'; ?>"
 						aria-controls="srfm-accordion-content-<?php echo esc_attr( $method['id'] ); ?>-<?php echo esc_attr( $this->block_id ); ?>"
 					>
-						<input
-							type="radio"
-							name="payment-method-<?php echo esc_attr( $this->block_id ); ?>"
-							value="<?php echo esc_attr( $method['id'] ); ?>"
-							class="srfm-payment-method-radio"
-							data-method="<?php echo esc_attr( $method['id'] ); ?>"
-							<?php checked( $is_active ); ?>
-							aria-label="<?php echo esc_attr( $method['label'] ); ?>"
-						/>
-						<span class="srfm-accordion-title">
-							<?php echo esc_html( $method['label'] ); ?>
-						</span>
-						<?php if ( ! empty( $method['description'] ) ) { ?>
-							<span class="srfm-accordion-desc">
-								<?php echo esc_html( $method['description'] ); ?>
+						<div class="srfm-payment-input-wrapper">
+							<input
+								type="radio"
+								name="payment-method-<?php echo esc_attr( $this->block_id ); ?>"
+								value="<?php echo esc_attr( $method['id'] ); ?>"
+								class="srfm-payment-method-radio"
+								data-method="<?php echo esc_attr( $method['id'] ); ?>"
+								<?php checked( $is_active ); ?>
+								aria-label="<?php echo esc_attr( $method['label'] ); ?>"
+							/>
+							<span class="srfm-accordion-title srfm-block-label">
+								<?php echo esc_html( $method['label'] ); ?>
 							</span>
-						<?php } ?>
+						</div>
 						<?php if ( ! $is_single_method ) { ?>
-							<span class="srfm-accordion-icon" aria-hidden="true"></span>
+							<span class="srfm-accordion-icon" aria-hidden="true">
+								<?php
+								// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Internal function to get the icon.
+								echo $angle_down_svg;
+								?>
+							</span>
 						<?php } ?>
 					</div>
 					<div
@@ -479,7 +484,16 @@ class Payment_Markup extends Base {
 								id="srfm-<?php echo esc_attr( $method['id'] ); ?>-<?php echo esc_attr( $this->block_id ); ?>"
 								class="<?php echo esc_attr( $method['container_class'] ); ?>"
 							>
-								<!-- Provider JS will render content here -->
+								<?php
+								// Output provider's placeholder content if available, otherwise show a generic hint for JS rendering.
+								if ( ! empty( $method['place_holder_content'] ) ) {
+									echo $method['place_holder_content']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+								} else {
+									?>
+									<!-- Provider JS will render content here -->
+									<?php
+								}
+								?>
 							</div>
 						</div>
 					</div>

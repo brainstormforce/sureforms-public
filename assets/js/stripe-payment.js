@@ -300,7 +300,7 @@ class StripePayment {
 			// Get fixed amount from data attribute
 			amount = parseFloat( paymentInput.dataset.fixedAmount || 0 );
 		} else {
-			amount = parseFloat( paymentInput?.value || 0 );
+			amount = parseFloat( paymentInput.dataset.currentAmount || 0 );
 		}
 
 		// Validate the amount - must be valid, not negative, and greater than 0
@@ -794,7 +794,7 @@ const PAYMENT_UTILITY = {
 			}
 		}
 
-		paymentInput.value = amount;
+		paymentInput.setAttribute( 'data-current-amount', amount );
 	},
 	listenAmountChanges: () => {
 		const paymentInputs = PAYMENT_UTILITY.currentForm.querySelectorAll(
