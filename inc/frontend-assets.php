@@ -241,12 +241,15 @@ class Frontend_Assets {
 				);
 			}
 
-			if ( 'dropdown' !== $block_name ) {
+			$is_not_dropdown = 'dropdown' !== $block_name;
+			$is_not_textarea = 'textarea' !== $block_name;
+
+			if ( $is_not_dropdown && $is_not_textarea ) {
 				wp_enqueue_script( SRFM_SLUG . "-{$block_name}", $js_uri . $block_name . $file_prefix . '.js', [], SRFM_VER, true );
 			}
 
-			if ( 'input' === $block_name ) {
-				// Input mask JS.
+			if ( 'input' === $block_name && isset( $attr['inputMask'] ) && 'none' !== $attr['inputMask'] ) {
+				// Input mask JS - only load when inputMask is configured.
 				wp_enqueue_script( SRFM_SLUG . '-inputmask', $js_vendor_uri . 'inputmask.min.js', [], SRFM_VER, true );
 			}
 
@@ -255,6 +258,8 @@ class Frontend_Assets {
 				wp_enqueue_script( SRFM_SLUG . '-quill-editor', $js_vendor_uri . '/quill.min.js', [], SRFM_VER, true );
 
 				wp_enqueue_style( SRFM_SLUG . '-quill-editor', $css_vendor_uri . 'quill/quill.snow.css', [], SRFM_VER );
+
+				wp_enqueue_script( SRFM_SLUG . '-textarea', $js_uri . 'textarea' . $file_prefix . '.js', [], SRFM_VER, true );
 			}
 		}
 		/**
@@ -308,6 +313,16 @@ class Frontend_Assets {
 				]
 			);
 		}
+
+		// Trigger custom action hook to allow third-party plugins or add-ons
+		// to enqueue additional scripts/styles for specific blocks (e.g., payment providers).
+		do_action(
+			'srfm_enqueue_block_scripts',
+			[
+				'block_name' => $block_name,
+				'attr'       => $attr,
+			]
+		);
 	}
 
 	/**
