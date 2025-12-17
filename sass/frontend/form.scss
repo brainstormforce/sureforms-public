@@ -176,6 +176,16 @@
 				}
 			}
 		}
+
+		// Hide submit button when PayPal is the active payment method
+		.paypal-button-sibling.paypal-method-active {
+			display: none !important;
+		}
+
+		// Initially hide the paypal if not active
+		.srfm-paypal-button-container[data-submit-button-sibling="true"]:not( .paypal-method-active ) {
+			display: none !important;
+		}
 	}
 
 	.srfm-success-box {
@@ -269,6 +279,53 @@
 			font-size: var( --srfm-description-font-size );
 			font-weight: var( --srfm-description-font-weight );
 			line-height: var( --srfm-description-line-height );
+		}
+
+		.srfm-payment-methods-accordion {
+			display: flex;
+			flex-direction: column;
+			gap: calc( var( --srfm-column-gap-between-blocks ) / 2 );
+
+			.srfm-accordion-icon > .srfm-icon > svg {
+				width: 20px;
+				height: 20px;
+			}
+
+			.srfm-accordion-item {
+				border: 1px solid #1e1e1e40;
+				border-radius: 6px;
+				.srfm-accordion-header {
+					display: flex;
+					justify-content: space-between;
+					align-items: center;
+					padding: 16px;
+					cursor: pointer;
+					.srfm-payment-input-wrapper {
+						display: flex;
+						align-items: center;
+						gap: 8px;
+					}
+
+					.srfm-accordion-icon {
+						transition: transform 0.3s ease-in-out;
+						transform: rotate( 180deg );
+					}
+				}
+
+				.srfm-accordion-content {
+					display: none;
+				}
+
+				&.srfm-payment-active {
+					.srfm-accordion-content {
+						display: block;
+						padding: 16px;
+					}
+					.srfm-accordion-icon {
+						transform: rotate( 0deg );
+					}
+				}
+			}
 		}
 	}
 

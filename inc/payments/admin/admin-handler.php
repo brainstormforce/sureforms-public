@@ -40,6 +40,7 @@ class Admin_Handler {
 		add_action( 'wp_ajax_srfm_delete_payment_note', [ $this, 'ajax_delete_note' ] );
 		add_action( 'wp_ajax_srfm_delete_payment_log', [ $this, 'ajax_delete_log' ] );
 		add_action( 'wp_ajax_srfm_bulk_delete_payments', [ $this, 'ajax_bulk_delete_payments' ] );
+		add_action( 'wp_ajax_srfm_refund_payment', [ $this, 'ajax_refund_payment' ] );
 	}
 
 	/**
@@ -602,6 +603,126 @@ class Admin_Handler {
 					'message' => __( 'An error occurred while deleting payments.', 'sureforms' ),
 				]
 			);
+		}
+	}
+
+	/**
+	 * AJAX handler for payment refund.
+	 *
+	 * Gateway-agnostic refund handler that routes refund requests to the appropriate
+	 * payment gateway (Stripe, PayPal, etc.) using a filter system.
+	 *
+	 * @since 2.0.0
+	 * @return void
+	 */
+	public function ajax_refund_payment() {
+		// Verify nonce for security.
+		if (
+			! wp_verify_nonce(
+				sanitize_text_field( wp_unslash( $_POST['nonce'] ?? '' ) ),
+				'srfm_payment_admin_nonce'
+			)
+		) {
+			wp_send_json_error( __( 'Invalid nonce.', 'sureforms' ) );
+		}
+
+		// Check if user has permission to refund payments.
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( __( 'Insufficient permissions.', 'sureforms' ) );
+		}
+
+		// Get and validate input parameters.
+		$payment_id     = isset( $_POST['payment_id'] ) ? absint( $_POST['payment_id'] ) : 0;
+		$transaction_id = isset( $_POST['transaction_id'] ) ? sanitize_text_field( wp_unslash( $_POST['transaction_id'] ) ) : '';
+		$refund_amount  = isset( $_POST['refund_amount'] ) ? absint( $_POST['refund_amount'] ) : 0;
+		$refund_notes   = isset( $_POST['refund_notes'] ) ? sanitize_textarea_field( wp_unslash( $_POST['refund_notes'] ) ) : '';
+
+		// Validate required parameters.
+		if ( empty( $payment_id ) || empty( $transaction_id ) || $refund_amount <= 0 ) {
+			wp_send_json_error( __( 'Invalid payment data.', 'sureforms' ) );
+		}
+
+		try {
+			// Get payment from database.
+			$payment = Payments::get( $payment_id );
+			if ( ! $payment ) {
+				wp_send_json_error( __( 'Payment not found.', 'sureforms' ) );
+			}
+
+			// Get payment gateway (stripe, paypal, etc.).
+			$gateway = isset( $payment['gateway'] ) && is_string( $payment['gateway'] ) ? $payment['gateway'] : '';
+
+			if ( empty( $gateway ) ) {
+				wp_send_json_error( __( 'Payment gateway not found.', 'sureforms' ) );
+			}
+
+			/**
+			 * Filter: srfm_process_transaction_refund
+			 *
+			 * Allows payment gateways to process refunds for their transactions.
+			 * Gateway handlers should hook into this filter and check if the gateway matches theirs.
+			 *
+			 * @since 2.0.0
+			 *
+			 * @param array<string,mixed> $refund_result {
+			 *     Refund result array. Gateway handlers should return success/error status.
+			 *
+			 *     @type bool   $success Whether the refund was successful.
+			 *     @type string $message Success or error message.
+			 *     @type array  $data    Optional. Additional data like refund_id, status, etc.
+			 * }
+			 * @param array<string,mixed> $refund_args {
+			 *     Arguments passed to gateway refund handlers.
+			 *
+			 *     @type array  $payment        Full payment record from database.
+			 *     @type int    $payment_id     Payment record ID.
+			 *     @type string $transaction_id Transaction/charge ID from gateway.
+			 *     @type int    $refund_amount  Refund amount in smallest currency unit (cents for USD).
+			 *     @type string $refund_notes   Optional refund notes/reason.
+			 *     @type string $gateway        Payment gateway identifier (stripe, paypal, etc.).
+			 * }
+			 */
+			$refund_result = apply_filters(
+				'srfm_process_transaction_refund',
+				[
+					'success' => false,
+					'message' => sprintf(
+						/* translators: %s: payment gateway name */
+						__( 'Refund processing is not supported for %s gateway.', 'sureforms' ),
+						ucfirst( $gateway )
+					),
+					'data'    => [],
+				],
+				[
+					'payment'        => $payment,
+					'payment_id'     => $payment_id,
+					'transaction_id' => $transaction_id,
+					'refund_amount'  => $refund_amount,
+					'refund_notes'   => $refund_notes,
+					'gateway'        => $gateway,
+				]
+			);
+
+			// Check if refund was successful.
+			if ( ! empty( $refund_result['success'] ) && true === $refund_result['success'] ) {
+				$result_data = isset( $refund_result['data'] ) && is_array( $refund_result['data'] ) ? $refund_result['data'] : [];
+				wp_send_json_success(
+					[
+						'message'   => ! empty( $refund_result['message'] ) ? $refund_result['message'] : __( 'Payment refunded successfully.', 'sureforms' ),
+						'refund_id' => ! empty( $result_data['refund_id'] ) ? $result_data['refund_id'] : '',
+						'status'    => ! empty( $result_data['status'] ) ? $result_data['status'] : 'processed',
+					]
+				);
+			} else {
+				// Refund failed - return error message.
+				wp_send_json_error(
+					! empty( $refund_result['message'] )
+						? $refund_result['message']
+						: __( 'Failed to process refund. Please try again.', 'sureforms' )
+				);
+			}
+		} catch ( \Exception $e ) {
+			wp_send_json_error( __( 'An error occurred while processing the refund.', 'sureforms' ) );
 		}
 	}
 

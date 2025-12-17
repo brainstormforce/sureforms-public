@@ -429,32 +429,34 @@ class Front_End {
 			$payment_id   = ! empty( $payment_value['paymentId'] ) ? $payment_value['paymentId'] : '';
 			$setup_intent = ! empty( $payment_value['setupIntent'] ) ? $payment_value['setupIntent'] : '';
 
-			if ( empty( $payment_id ) && empty( $setup_intent ) ) {
+			// introduced during the paypal implementation and in the other payment methods, we use the transactionId to verify the payment.
+			$transaction_id = ! empty( $payment_value['transactionId'] ) ? $payment_value['transactionId'] : '';
+
+			if ( empty( $payment_id ) && empty( $setup_intent ) && empty( $transaction_id ) ) {
 				continue;
 			}
 
 			$block_id     = ! empty( $payment_value['blockId'] ) ? $payment_value['blockId'] : '';
 			$payment_type = ! empty( $payment_value['paymentType'] ) ? $payment_value['paymentType'] : '';
 
+			$payment_method = ! empty( $payment_value['paymentMethod'] ) ? $payment_value['paymentMethod'] : 'stripe';
+
 			if ( empty( $block_id ) || empty( $payment_type ) ) {
 				continue;
 			}
 
-			if ( 'stripe-subscription' === $payment_type ) {
-
-				/**
-				 * For subscription payments, we receive the following data structure:
-				 * - paymentMethod: Stripe payment method ID (e.g., "pm_1S82ZkHqS7N4oFQhruGV67u1")
-				 * - setupIntent: Stripe setup intent ID (e.g., "seti_1S82ZkHqS7N4oFQhPa4LYPYg")
-				 * - subscriptionId: Stripe subscription ID (e.g., "sub_1S82ZiHqS7N4oFQhPGhm2eNR")
-				 * - customerId: Stripe customer ID (e.g., "cus_T4Apjla33GlYAk")
-				 * - blockId: Form block identifier (e.g., "be920796")
-				 * - paymentType: Payment type identifier ("stripe-subscription")
-				 * - status: Payment status ("succeeded")
-				 */
-				$payment_response = $this->verify_stripe_subscription_intent_and_save( $payment_value, $block_id, $form_data );
+			if ( 'stripe' === $payment_method ) {
+				$payment_response = $this->verify_stripe_payment( $payment_value, $payment_id, $block_id, $form_data, $payment_type );
 			} else {
-				$payment_response = $this->verify_stripe_payment_intent_and_save( $payment_value, $payment_id, $block_id, $form_data );
+				$payment_response = apply_filters(
+					'srfm_verify_payment_value',
+					[
+						'payment_value' => $payment_value,
+						'class'         => $this,
+						'block_id'      => $block_id,
+						'form_data'     => $form_data,
+					]
+				);
 			}
 
 			if ( ! empty( $payment_response ) && isset( $payment_response['payment_id'] ) ) {
@@ -468,6 +470,38 @@ class Front_End {
 		}
 
 		return $form_data;
+	}
+
+	/**
+	 * Verify Stripe payment
+	 *
+	 * @param array<mixed> $payment_value Payment value.
+	 * @param string       $payment_id Payment ID.
+	 * @param string       $block_id Block ID.
+	 * @param array<mixed> $form_data Form data.
+	 * @param string       $payment_type Payment type.
+	 * @since 2.0.0
+	 * @return array<mixed> Payment response.
+	 */
+	public function verify_stripe_payment( $payment_value, $payment_id, $block_id, $form_data, $payment_type ) {
+		if ( 'stripe-subscription' === $payment_type ) {
+
+			/**
+			 * For subscription payments, we receive the following data structure:
+			 * - paymentMethod: Stripe payment method ID (e.g., "pm_1S82ZkHqS7N4oFQhruGV67u1")
+			 * - setupIntent: Stripe setup intent ID (e.g., "seti_1S82ZkHqS7N4oFQhPa4LYPYg")
+			 * - subscriptionId: Stripe subscription ID (e.g., "sub_1S82ZiHqS7N4oFQhPGhm2eNR")
+			 * - customerId: Stripe customer ID (e.g., "cus_T4Apjla33GlYAk")
+			 * - blockId: Form block identifier (e.g., "be920796")
+			 * - paymentType: Payment type identifier ("stripe-subscription")
+			 * - status: Payment status ("succeeded")
+			 */
+			$payment_response = $this->verify_stripe_subscription_intent_and_save( $payment_value, $block_id, $form_data );
+		} else {
+			$payment_response = $this->verify_stripe_payment_intent_and_save( $payment_value, $payment_id, $block_id, $form_data );
+		}
+
+		return ! empty( $payment_response ) && is_array( $payment_response ) ? $payment_response : [];
 	}
 
 	/**
@@ -865,6 +899,23 @@ class Front_End {
 					}
 				}
 			}
+		}
+	}
+
+	/**
+	 * Add payment entry for later linking with form submission.
+	 *
+	 * Allows payment gateways (Stripe, PayPal, etc.) to register their entries
+	 * for linking with form submissions. The entries are stored in memory and
+	 * linked when the form is successfully submitted.
+	 *
+	 * @param array<string,mixed> $entry Payment entry containing payment_id, block_id, and form_id.
+	 * @since 2.0.0
+	 * @return void
+	 */
+	public function add_payment_entry_for_linking( $entry ) {
+		if ( ! empty( $entry ) && is_array( $entry ) ) {
+			$this->stripe_payment_entries[] = $entry;
 		}
 	}
 
