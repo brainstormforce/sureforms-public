@@ -80,11 +80,17 @@ class Form_Restriction {
 
 		// If the form restriction is empty or not an array, or if the status is not set, return false.
 		if ( empty( $form_restriction ) || ! is_array( $form_restriction ) || empty( $form_restriction['status'] ) ) {
-			return false; // No limit set.
+			return apply_filters( 'srfm_is_form_restricted', false, $form_id, $form_restriction, false, false );
 		}
 
 		$has_entries_limit_reached = self::has_entries_limit_reached( $form_id, $form_restriction );
 		$has_time_limit_reached    = self::has_time_limit_reached( $form_restriction );
+
+		$conversational_form            = get_post_meta( $form_id, '_srfm_conversational_form', true );
+		$is_conversational_form_enabled = is_array( $conversational_form ) && isset( $conversational_form['is_cf_enabled'] ) ? $conversational_form['is_cf_enabled'] : false;
+		if ( ( $has_entries_limit_reached || $has_time_limit_reached ) && $is_conversational_form_enabled ) {
+			add_filter( 'srfm_show_conversational_form_footer', '__return_false' );
+		}
 
 		/**
 		 * If the form has reached the entries limit or the time limit, return true.
@@ -174,6 +180,8 @@ class Form_Restriction {
 
 		// Get the description text.
 		$form_restriction_message = $form_restriction['message'] ?? Translatable::get_default_form_restriction_message();
+
+		$form_restriction_message = apply_filters( 'srfm_form_restriction_message', $form_restriction_message, $form_id, $form_restriction );
 
 		ob_start();
 		?>

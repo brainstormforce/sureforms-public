@@ -98,7 +98,7 @@ msgstr "Bewerk %1$s"
 #: inc/export.php:118
 #: inc/export.php:176
 #: inc/form-submit.php:94
-#: inc/form-submit.php:917
+#: inc/form-submit.php:928
 #: inc/forms-data.php:88
 #: inc/global-settings/global-settings.php:86
 #: inc/global-settings/global-settings.php:357
@@ -325,7 +325,7 @@ msgid "Form ID is required."
 msgstr "Formulier-ID is vereist."
 
 #: inc/admin-ajax.php:186
-#: inc/form-submit.php:929
+#: inc/form-submit.php:940
 msgid "Invalid form ID."
 msgstr "Ongeldige formulier-ID."
 
@@ -600,8 +600,8 @@ msgid "hCaptcha response is missing."
 msgstr "hCaptcha-reactie ontbreekt."
 
 #: inc/form-submit.php:104
-#: inc/form-submit.php:465
-#: inc/form-submit.php:472
+#: inc/form-submit.php:476
+#: inc/form-submit.php:483
 msgid "Form data is not found."
 msgstr "Formuliergegevens zijn niet gevonden."
 
@@ -609,11 +609,11 @@ msgstr "Formuliergegevens zijn niet gevonden."
 msgid "Form Id is missing."
 msgstr "Formulier-ID ontbreekt."
 
-#: inc/form-submit.php:447
+#: inc/form-submit.php:458
 msgid "Spam Detected"
 msgstr "Spam gedetecteerd"
 
-#: inc/form-submit.php:635
+#: inc/form-submit.php:646
 msgid "Error submitting form"
 msgstr "Fout bij het indienen van het formulier"
 
@@ -621,7 +621,7 @@ msgstr "Fout bij het indienen van het formulier"
 msgid "Sorry, you are not allowed to view the form."
 msgstr "Sorry, je mag het formulier niet bekijken."
 
-#: inc/generate-form-markup.php:657
+#: inc/generate-form-markup.php:676
 #: assets/build/formSubmit.js:2
 #: assets/js/unminified/form-submit.js:412
 msgid "There was an error trying to submit your form. Please try again."
@@ -672,7 +672,7 @@ msgstr "Dit veld is verplicht."
 msgid "Value needs to be unique."
 msgstr "Waarde moet uniek zijn."
 
-#: inc/helper.php:598
+#: inc/helper.php:601
 msgid "Sorry, you are not allowed to perform this action."
 msgstr "Sorry, je mag deze actie niet uitvoeren."
 
@@ -701,7 +701,7 @@ msgid "Select the form that you wish to add here."
 msgstr "Selecteer het formulier dat u hier wilt toevoegen."
 
 #: inc/page-builders/elementor/form-widget.php:160
-#: inc/smart-tags.php:88
+#: inc/smart-tags.php:113
 #: assets/build/blocks.js:2
 #: assets/build/formEditor.js:172
 msgid "Form Title"
@@ -818,81 +818,81 @@ msgstr "Verzoek kon niet worden verwerkt."
 msgid "Invalid date."
 msgstr "Ongeldige datum."
 
-#: inc/smart-tags.php:84
+#: inc/smart-tags.php:109
 msgid "Site URL"
 msgstr "Site-URL"
 
-#: inc/smart-tags.php:86
-#: inc/smart-tags.php:117
+#: inc/smart-tags.php:111
+#: inc/smart-tags.php:142
 msgid "Admin Email"
 msgstr "Beheerder E-mail"
 
-#: inc/smart-tags.php:87
+#: inc/smart-tags.php:112
 msgid "Site Title"
 msgstr "Sitetitel"
 
-#: inc/smart-tags.php:89
+#: inc/smart-tags.php:114
 msgid "IP Address"
 msgstr "IP-adres"
 
-#: inc/smart-tags.php:90
+#: inc/smart-tags.php:115
 msgid "HTTP Referer URL"
 msgstr "HTTP-verwijzer-URL"
 
-#: inc/smart-tags.php:91
+#: inc/smart-tags.php:116
 msgid "Date (mm/dd/yyyy)"
 msgstr "Datum (mm/dd/jjjj)"
 
-#: inc/smart-tags.php:92
+#: inc/smart-tags.php:117
 msgid "Date (dd/mm/yyyy)"
 msgstr "Datum (dd/mm/jjjj)"
 
-#: inc/smart-tags.php:93
+#: inc/smart-tags.php:118
 msgid "User ID"
 msgstr "Gebruikers-ID"
 
-#: inc/smart-tags.php:94
+#: inc/smart-tags.php:119
 msgid "User Display Name"
 msgstr "Gebruikersweergavenaam"
 
-#: inc/smart-tags.php:95
+#: inc/smart-tags.php:120
 msgid "User First Name"
 msgstr "Voornaam gebruiker"
 
-#: inc/smart-tags.php:96
+#: inc/smart-tags.php:121
 msgid "User Last Name"
 msgstr "Achternaam gebruiker"
 
-#: inc/smart-tags.php:97
-#: inc/smart-tags.php:118
+#: inc/smart-tags.php:122
+#: inc/smart-tags.php:143
 msgid "User Email"
 msgstr "Gebruikers e-mail"
 
-#: inc/smart-tags.php:98
+#: inc/smart-tags.php:123
 msgid "User Username"
 msgstr "Gebruiker Gebruikersnaam"
 
-#: inc/smart-tags.php:99
+#: inc/smart-tags.php:124
 msgid "Browser Name"
 msgstr "Browsernaam"
 
-#: inc/smart-tags.php:100
+#: inc/smart-tags.php:125
 msgid "Browser Platform"
 msgstr "Browserplatform"
 
-#: inc/smart-tags.php:101
+#: inc/smart-tags.php:126
 msgid "Embedded Post/Page ID"
 msgstr "Ingesloten Post/Pagina-ID"
 
-#: inc/smart-tags.php:102
+#: inc/smart-tags.php:127
 msgid "Embedded Post/Page Title"
 msgstr "Ingesloten Bericht/Pagina Titel"
 
-#: inc/smart-tags.php:103
+#: inc/smart-tags.php:128
 msgid "Populate by GET Param"
 msgstr "Vullen via GET-parameter"
 
-#: inc/smart-tags.php:104
+#: inc/smart-tags.php:129
 msgid "Cookie Value"
 msgstr "Cookie Waarde"
 
@@ -8291,7 +8291,7 @@ msgstr "Sociaal"
 msgid "Travel"
 msgstr "Reizen"
 
-#: inc/helper.php:2038
+#: inc/helper.php:2041
 msgid "Blank Form"
 msgstr "Leeg formulier"
 
@@ -9248,7 +9248,7 @@ msgstr "Centrum"
 msgid "Right"
 msgstr "Rechts"
 
-#: inc/form-submit.php:1102
+#: inc/form-submit.php:1113
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:172
 msgid "Google reCAPTCHA"
@@ -9258,7 +9258,7 @@ msgstr "Google reCAPTCHA"
 msgid "CloudFlare Turnstile"
 msgstr "CloudFlare Turnstile"
 
-#: inc/form-submit.php:1106
+#: inc/form-submit.php:1117
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:172
 msgid "hCaptcha"
@@ -9521,7 +9521,7 @@ msgstr "Sitecode"
 msgid "Secret Key"
 msgstr "Geheime Sleutel"
 
-#: inc/form-submit.php:1110
+#: inc/form-submit.php:1121
 #: assets/build/settings.js:172
 msgid "Cloudflare Turnstile"
 msgstr "Cloudflare Turnstile"
@@ -10447,19 +10447,19 @@ msgstr "IP-logboek"
 msgid "Honeypot"
 msgstr "Honeypot"
 
-#: inc/nps-notice.php:111
+#: inc/nps-notice.php:119
 msgid "Thanks a lot for your feedback! 😍"
 msgstr "Heel erg bedankt voor je feedback! 😍"
 
-#: inc/nps-notice.php:114
+#: inc/nps-notice.php:122
 msgid "Thank you for your feedback"
 msgstr "Dank u voor uw feedback"
 
-#: inc/nps-notice.php:115
+#: inc/nps-notice.php:123
 msgid "We value your input. How can we improve your experience?"
 msgstr "We waarderen uw inbreng. Hoe kunnen we uw ervaring verbeteren?"
 
-#: inc/nps-notice.php:116
+#: inc/nps-notice.php:124
 msgid "Rate SureForms"
 msgstr "Beoordeel SureForms"
 
@@ -10516,21 +10516,21 @@ msgstr "Ontgrendel Notitie Toevoegen"
 msgid "With the SureForms Starter plan, enhance your submitted form entries by adding personalized notes for better clarity and tracking."
 msgstr "Met het SureForms Starter-plan kunt u uw ingediende formulierinzendingen verbeteren door gepersonaliseerde notities toe te voegen voor meer duidelijkheid en betere tracking."
 
-#: inc/form-submit.php:779
+#: inc/form-submit.php:790
 msgid "Email notification passed to the sending server"
 msgstr "E-mailmelding doorgestuurd naar de verzendserver"
 
 #. translators: Here, %s is the comma separated emails list.
-#: inc/form-submit.php:852
+#: inc/form-submit.php:863
 msgid "Email notification recipient: %s"
 msgstr "E-mail notificatie ontvanger: %s"
 
 #. translators: Here, %1$s is the comma separated emails list and %2$s is error report ( if any ).
-#: inc/form-submit.php:869
+#: inc/form-submit.php:880
 msgid "Email server was unable to send the email notification. Recipient: %1$s. Reason: %2$s"
 msgstr "E-mailserver kon de e-mailmelding niet verzenden. Ontvanger: %1$s. Reden: %2$s"
 
-#: inc/form-submit.php:899
+#: inc/form-submit.php:910
 msgid "No emails were sent"
 msgstr "Er zijn geen e-mails verzonden"
 
@@ -10646,7 +10646,7 @@ msgstr ""
 msgid "Button"
 msgstr "Knop"
 
-#: inc/helper.php:1658
+#: inc/helper.php:1661
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:172
 msgid "OttoKit"
@@ -10741,29 +10741,29 @@ msgstr "Selecteer verloop"
 msgid "reCAPTCHA"
 msgstr ""
 
-#: inc/form-submit.php:396
-#: inc/form-submit.php:431
+#: inc/form-submit.php:407
+#: inc/form-submit.php:442
 msgid "reCAPTCHA error: Submit nonce is not available."
 msgstr "reCAPTCHA-fout: Submit nonce is niet beschikbaar."
 
-#: inc/form-submit.php:1046
+#: inc/form-submit.php:1057
 msgid "Captcha validation failed. No error code provided."
 msgstr "Captcha-validatie mislukt. Geen foutcode opgegeven."
 
-#: inc/form-submit.php:1047
+#: inc/form-submit.php:1058
 msgid "Captcha validation failed."
 msgstr "Captcha-validatie mislukt."
 
-#: inc/form-submit.php:1114
+#: inc/form-submit.php:1125
 msgid "Unknown Captcha"
 msgstr "Onbekende Captcha"
 
-#: inc/form-submit.php:1115
+#: inc/form-submit.php:1126
 msgid "Invalid captcha type."
 msgstr "Ongeldig captcha-type."
 
 #. translators: %s is the captcha title.
-#: inc/form-submit.php:1128
+#: inc/form-submit.php:1139
 msgid "%s verification failed. Please contact your site administrator."
 msgstr "%s verificatie mislukt. Neem contact op met uw sitebeheerder."
 
@@ -10780,15 +10780,15 @@ msgid "HCaptcha sitekey verification failed. Please contact your site administra
 msgstr "HCaptcha sitekey-verificatie mislukt. Neem contact op met uw sitebeheerder."
 
 #. translators: %s: Provider name like HCaptcha, Google reCAPTCHA, Turnstile
-#: inc/helper.php:1043
+#: inc/helper.php:1046
 msgid "%s sitekey is missing. Please contact your site administrator."
 msgstr "%s sitekey ontbreekt. Neem contact op met uw sitebeheerder."
 
-#: inc/helper.php:1649
+#: inc/helper.php:1652
 msgid "SureMail"
 msgstr "SureMail"
 
-#: inc/helper.php:1670
+#: inc/helper.php:1673
 msgid "Starter Templates"
 msgstr "Starter Sjablonen"
 
@@ -11242,7 +11242,7 @@ msgstr "Rich Text Editor"
 msgid "All Forms"
 msgstr "Alle formulieren"
 
-#: inc/smart-tags.php:85
+#: inc/smart-tags.php:110
 msgid "Current Page URL"
 msgstr "Huidige pagina-URL"
 
@@ -11317,7 +11317,7 @@ msgstr "Inloggen"
 msgid "Register"
 msgstr "Registreren"
 
-#: inc/nps-notice.php:112
+#: inc/nps-notice.php:120
 msgid "Thanks for being part of the SureForms community! Got feedback or suggestions? We'd love to hear it."
 msgstr "Bedankt dat je deel uitmaakt van de SureForms-gemeenschap! Heb je feedback of suggesties? We horen het graag."
 
@@ -11369,7 +11369,7 @@ msgstr "Bouw formulieren die WordPress-gebruikersaccounts aanmaken"
 msgid "Add calculations to auto-total scores or prices"
 msgstr "Berekeningen toevoegen om scores of prijzen automatisch op te tellen"
 
-#: inc/form-submit.php:276
+#: inc/form-submit.php:287
 msgid "Form does not exist."
 msgstr "Formulier bestaat niet."
 
@@ -11638,20 +11638,20 @@ msgstr "Laatste details die het verschil maken:"
 msgid "Build Your First Form"
 msgstr "Bouw je eerste formulier"
 
-#: inc/helper.php:1880
+#: inc/helper.php:1883
 msgid "Invalid nonce action or name."
 msgstr "Ongeldige nonce-actie of naam."
 
-#: inc/helper.php:1890
-#: inc/helper.php:1898
+#: inc/helper.php:1893
+#: inc/helper.php:1901
 msgid "Invalid security token."
 msgstr "Ongeldig beveiligingstoken."
 
-#: inc/helper.php:1905
+#: inc/helper.php:1908
 msgid "Invalid request type."
 msgstr "Ongeldig verzoektype."
 
-#: inc/helper.php:1913
+#: inc/helper.php:1916
 msgid "You do not have permission to perform this action."
 msgstr "U heeft geen toestemming om deze actie uit te voeren."
 
@@ -11736,10 +11736,6 @@ msgid "Maximum Number of Entries"
 msgstr "Maximaal aantal vermeldingen"
 
 #: assets/build/formEditor.js:172
-msgid "Set the maximum number of entries allowed for this form. Once the limit is reached, the form will automatically be disabled."
-msgstr "Stel het maximale aantal toegestane invoer voor dit formulier in. Zodra de limiet is bereikt, wordt het formulier automatisch uitgeschakeld."
-
-#: assets/build/formEditor.js:172
 msgid "Maximum Entries"
 msgstr "Maximale invoer"
 
@@ -11770,23 +11766,23 @@ msgstr "Hoi daar,"
 msgid "Email Summary of your last week -  %1$s to %2$s"
 msgstr "E-mailoverzicht van uw afgelopen week -  %1$s tot %2$s"
 
-#: inc/helper.php:1684
+#: inc/helper.php:1687
 msgid "Ultimate Addons for Elementor"
 msgstr "Ultieme Add-ons voor Elementor"
 
-#: inc/nps-notice.php:109
+#: inc/nps-notice.php:117
 msgid "Quick Question!"
 msgstr "Snelle vraag!"
 
-#: inc/nps-notice.php:110
+#: inc/nps-notice.php:118
 msgid "How would you rate SureForms? Love it, hate it, or somewhere in between? Your honest answer helps us understand how we're doing."
 msgstr "Hoe zou je SureForms beoordelen? Vind je het geweldig, haat je het, of zit je ergens tussenin? Je eerlijke antwoord helpt ons te begrijpen hoe we het doen."
 
-#: inc/nps-notice.php:117
+#: inc/nps-notice.php:125
 msgid "Hate it!"
 msgstr "Haat het!"
 
-#: inc/nps-notice.php:118
+#: inc/nps-notice.php:126
 msgid "Love it!"
 msgstr "Geweldig!"
 
@@ -11851,7 +11847,7 @@ msgstr "Er is iets misgegaan. We hebben de fout geregistreerd voor verder onderz
 msgid "Field is not valid."
 msgstr "Veld is niet geldig."
 
-#: inc/form-submit.php:289
+#: inc/form-submit.php:300
 msgid "Form data is not valid."
 msgstr "Formuliergegevens zijn niet geldig."
 
@@ -11910,11 +11906,11 @@ msgstr "Toegang tot exclusieve native integraties voor snellere workflows"
 msgid "After submission process has already been triggered for this submission."
 msgstr "Nadat het indieningsproces al is gestart voor deze inzending."
 
-#: inc/form-submit.php:859
+#: inc/form-submit.php:870
 msgid "No SMTP plugin detected. Please configure one to enable email sending."
 msgstr "Er is geen SMTP-plug-in gedetecteerd. Configureer er een om het verzenden van e-mails mogelijk te maken."
 
-#: inc/form-submit.php:860
+#: inc/form-submit.php:871
 msgid "The failure occurred due to an undetermined cause."
 msgstr "De storing trad op als gevolg van een onbepaalde oorzaak."
 
@@ -12095,242 +12091,242 @@ msgstr "Testmodus is ingeschakeld:"
 msgid "Click here to enable live mode and accept payment"
 msgstr "Klik hier om de live modus in te schakelen en betaling te accepteren"
 
-#: inc/helper.php:1650
+#: inc/helper.php:1653
 msgid "Boost Your Email Deliverability Instantly!"
 msgstr "Verhoog direct de bezorgbaarheid van uw e-mails!"
 
-#: inc/helper.php:1651
+#: inc/helper.php:1654
 msgid "Access a powerful, easy-to-use email delivery service that ensures your emails land in inboxes, not spam folders. Automate your WordPress email workflows confidently with SureMail."
 msgstr "Toegang tot een krachtige, gebruiksvriendelijke e-mailbezorgservice die ervoor zorgt dat uw e-mails in inboxen terechtkomen, niet in spamfolders. Automatiseer uw WordPress e-mailworkflows met vertrouwen met SureMail."
 
-#: inc/helper.php:1659
+#: inc/helper.php:1662
 msgid "Automate your WordPress workflows effortlessly."
 msgstr "Automatiseer moeiteloos je WordPress-werkstromen."
 
-#: inc/helper.php:1660
+#: inc/helper.php:1663
 msgid "Connect your WordPress plugins and favourite apps, automate tasks, and sync data effortlessly using OttoKit’s clean, visual workflow builder — no coding or complex setup required."
 msgstr "Verbind je WordPress-plugins en favoriete apps, automatiseer taken en synchroniseer gegevens moeiteloos met behulp van OttoKit's overzichtelijke, visuele workflowbouwer — geen codering of complexe installatie vereist."
 
-#: inc/helper.php:1671
+#: inc/helper.php:1674
 msgid "Launch Beautiful Websites in Minutes!"
 msgstr "Start prachtige websites in enkele minuten!"
 
-#: inc/helper.php:1672
+#: inc/helper.php:1675
 msgid "Choose from professionally designed templates, import with one click, and customize effortlessly to match your brand."
 msgstr "Kies uit professioneel ontworpen sjablonen, importeer met één klik en pas moeiteloos aan om bij uw merk te passen."
 
-#: inc/helper.php:1685
+#: inc/helper.php:1688
 msgid "Power Up Elementor to Build Stunning Websites Faster!"
 msgstr "Geef Elementor een boost om sneller verbluffende websites te bouwen!"
 
-#: inc/helper.php:1686
+#: inc/helper.php:1689
 msgid "Enhance Elementor with powerful widgets and templates. Build stunning, high-performing websites faster with creative design elements and seamless customization."
 msgstr "Verbeter Elementor met krachtige widgets en sjablonen. Bouw verbluffende, hoog presterende websites sneller met creatieve designelementen en naadloze aanpassing."
 
-#: inc/helper.php:1694
+#: inc/helper.php:1697
 msgid "SureRank"
 msgstr "SureRank"
 
-#: inc/helper.php:1695
+#: inc/helper.php:1698
 msgid "Elevate Your SEO and Climb Search Rankings Effortlessly!"
 msgstr "Verhoog uw SEO en klim moeiteloos in de zoekresultaten!"
 
-#: inc/helper.php:1696
+#: inc/helper.php:1699
 msgid "Boost your website's visibility with smart SEO automation. Optimize content, track keyword performance, and get actionable insights, all inside WordPress."
 msgstr "Verhoog de zichtbaarheid van je website met slimme SEO-automatisering. Optimaliseer content, volg de prestaties van zoekwoorden en krijg bruikbare inzichten, allemaal binnen WordPress."
 
-#: inc/payments/admin/admin-handler.php:99
-#: inc/payments/admin/admin-handler.php:183
-#: inc/payments/admin/admin-handler.php:224
-#: inc/payments/admin/admin-handler.php:301
-#: inc/payments/admin/admin-handler.php:345
-#: inc/payments/admin/admin-handler.php:389
-#: inc/payments/admin/admin-handler.php:433
-#: inc/payments/admin/admin-handler.php:477
+#: inc/payments/admin/admin-handler.php:98
+#: inc/payments/admin/admin-handler.php:182
+#: inc/payments/admin/admin-handler.php:223
+#: inc/payments/admin/admin-handler.php:300
+#: inc/payments/admin/admin-handler.php:344
+#: inc/payments/admin/admin-handler.php:388
+#: inc/payments/admin/admin-handler.php:432
+#: inc/payments/admin/admin-handler.php:476
 msgid "Security verification failed."
 msgstr "Beveiligingsverificatie mislukt."
 
-#: inc/payments/admin/admin-handler.php:104
-#: inc/payments/admin/admin-handler.php:188
-#: inc/payments/admin/admin-handler.php:229
-#: inc/payments/admin/admin-handler.php:306
-#: inc/payments/admin/admin-handler.php:350
-#: inc/payments/admin/admin-handler.php:394
-#: inc/payments/admin/admin-handler.php:438
-#: inc/payments/admin/admin-handler.php:482
+#: inc/payments/admin/admin-handler.php:103
+#: inc/payments/admin/admin-handler.php:187
+#: inc/payments/admin/admin-handler.php:228
+#: inc/payments/admin/admin-handler.php:305
+#: inc/payments/admin/admin-handler.php:349
+#: inc/payments/admin/admin-handler.php:393
+#: inc/payments/admin/admin-handler.php:437
+#: inc/payments/admin/admin-handler.php:481
 #: inc/payments/stripe/admin-stripe-handler.php:181
 msgid "Insufficient permissions."
 msgstr "Onvoldoende rechten."
 
-#: inc/payments/admin/admin-handler.php:125
+#: inc/payments/admin/admin-handler.php:124
 msgid "Invalid date format for date_from."
 msgstr "Ongeldig datumnotatie voor date_from."
 
-#: inc/payments/admin/admin-handler.php:129
+#: inc/payments/admin/admin-handler.php:128
 msgid "Invalid date format for date_to."
 msgstr "Ongeldig datumnotatie voor date_to."
 
-#: inc/payments/admin/admin-handler.php:170
+#: inc/payments/admin/admin-handler.php:169
 msgid "An error occurred while fetching payments."
 msgstr "Er is een fout opgetreden bij het ophalen van betalingen."
 
-#: inc/payments/admin/admin-handler.php:194
-#: inc/payments/admin/admin-handler.php:358
-#: inc/payments/admin/admin-handler.php:402
-#: inc/payments/admin/admin-handler.php:446
+#: inc/payments/admin/admin-handler.php:193
+#: inc/payments/admin/admin-handler.php:357
+#: inc/payments/admin/admin-handler.php:401
+#: inc/payments/admin/admin-handler.php:445
 msgid "Payment ID is required."
 msgstr "Betalings-ID is vereist."
 
-#: inc/payments/admin/admin-handler.php:202
+#: inc/payments/admin/admin-handler.php:201
 #: inc/payments/stripe/admin-stripe-handler.php:201
 msgid "Payment not found."
 msgstr "Betaling niet gevonden."
 
-#: inc/payments/admin/admin-handler.php:211
+#: inc/payments/admin/admin-handler.php:210
 msgid "An error occurred while fetching payment details."
 msgstr "Er is een fout opgetreden bij het ophalen van betalingsgegevens."
 
-#: inc/payments/admin/admin-handler.php:235
+#: inc/payments/admin/admin-handler.php:234
 msgid "Subscription ID is required."
 msgstr "Abonnement-ID is vereist."
 
-#: inc/payments/admin/admin-handler.php:246
+#: inc/payments/admin/admin-handler.php:245
 msgid "Stripe subscription ID not found in payment record."
 msgstr "Stripe-abonnement-ID niet gevonden in betalingsrecord."
 
-#: inc/payments/admin/admin-handler.php:250
+#: inc/payments/admin/admin-handler.php:249
 msgid "Invalid subscription record."
 msgstr "Ongeldig abonnementsrecord."
 
-#: inc/payments/admin/admin-handler.php:256
+#: inc/payments/admin/admin-handler.php:255
 msgid "Subscription not found."
 msgstr "Abonnement niet gevonden."
 
-#: inc/payments/admin/admin-handler.php:288
+#: inc/payments/admin/admin-handler.php:287
 msgid "An error occurred while fetching subscription details."
 msgstr "Er is een fout opgetreden bij het ophalen van abonnementsgegevens."
 
 #. translators: %d: Form ID
-#: inc/payments/admin/admin-handler.php:324
+#: inc/payments/admin/admin-handler.php:323
 msgid "Form - #%d"
 msgstr "Formulier - #%d"
 
-#: inc/payments/admin/admin-handler.php:332
+#: inc/payments/admin/admin-handler.php:331
 msgid "An error occurred while fetching forms list."
 msgstr "Er is een fout opgetreden bij het ophalen van de formulierenlijst."
 
-#: inc/payments/admin/admin-handler.php:362
+#: inc/payments/admin/admin-handler.php:361
 msgid "Note text cannot be empty."
 msgstr "Notitietekst mag niet leeg zijn."
 
-#: inc/payments/admin/admin-handler.php:370
+#: inc/payments/admin/admin-handler.php:369
 msgid "Failed to add note."
 msgstr "Het toevoegen van de notitie is mislukt."
 
-#: inc/payments/admin/admin-handler.php:376
+#: inc/payments/admin/admin-handler.php:375
 msgid "An error occurred while adding the note."
 msgstr "Er is een fout opgetreden bij het toevoegen van de notitie."
 
-#: inc/payments/admin/admin-handler.php:406
+#: inc/payments/admin/admin-handler.php:405
 msgid "Invalid note index."
 msgstr "Ongeldige notitie-index."
 
-#: inc/payments/admin/admin-handler.php:414
+#: inc/payments/admin/admin-handler.php:413
 msgid "Failed to delete note."
 msgstr "Verwijderen van notitie mislukt."
 
-#: inc/payments/admin/admin-handler.php:420
+#: inc/payments/admin/admin-handler.php:419
 msgid "An error occurred while deleting the note."
 msgstr "Er is een fout opgetreden bij het verwijderen van de notitie."
 
-#: inc/payments/admin/admin-handler.php:450
+#: inc/payments/admin/admin-handler.php:449
 msgid "Invalid log index."
 msgstr "Ongeldige logindex."
 
-#: inc/payments/admin/admin-handler.php:458
+#: inc/payments/admin/admin-handler.php:457
 msgid "Failed to delete log entry."
 msgstr "Verwijderen van logboekvermelding mislukt."
 
-#: inc/payments/admin/admin-handler.php:464
+#: inc/payments/admin/admin-handler.php:463
 msgid "An error occurred while deleting the log entry."
 msgstr "Er is een fout opgetreden bij het verwijderen van het logboekitem."
 
-#: inc/payments/admin/admin-handler.php:496
+#: inc/payments/admin/admin-handler.php:495
 msgid "Invalid JSON format for payment IDs."
 msgstr "Ongeldig JSON-formaat voor betalings-ID's."
 
-#: inc/payments/admin/admin-handler.php:504
+#: inc/payments/admin/admin-handler.php:503
 msgid "Invalid payment IDs format."
 msgstr "Ongeldig formaat van betalings-ID's."
 
-#: inc/payments/admin/admin-handler.php:522
+#: inc/payments/admin/admin-handler.php:521
 msgid "No valid payment IDs provided."
 msgstr "Geen geldige betalings-ID's opgegeven."
 
-#: inc/payments/admin/admin-handler.php:529
+#: inc/payments/admin/admin-handler.php:528
 msgid "Cannot delete more than 100 payments at once. Please select fewer payments."
 msgstr "Kan niet meer dan 100 betalingen tegelijk verwijderen. Selecteer alstublieft minder betalingen."
 
 #. translators: %d: number of payments deleted
-#: inc/payments/admin/admin-handler.php:565
+#: inc/payments/admin/admin-handler.php:564
 msgid "%d payment deleted successfully."
 msgid_plural "%d payments deleted successfully."
 msgstr[0] "%d betaling succesvol verwijderd."
 msgstr[1] ""
 
 #. translators: 1: number deleted, 2: number failed
-#: inc/payments/admin/admin-handler.php:582
+#: inc/payments/admin/admin-handler.php:581
 msgid "%1$d payment(s) deleted successfully. %2$d failed."
 msgstr "%1$d betaling(en) succesvol verwijderd. %2$d mislukt."
 
-#: inc/payments/admin/admin-handler.php:595
+#: inc/payments/admin/admin-handler.php:594
 #: assets/build/payments.js:172
 msgid "Failed to delete payments. Please try again."
 msgstr "Verwijderen van betalingen mislukt. Probeer het opnieuw."
 
-#: inc/payments/admin/admin-handler.php:603
+#: inc/payments/admin/admin-handler.php:602
 msgid "An error occurred while deleting payments."
 msgstr "Er is een fout opgetreden bij het verwijderen van betalingen."
 
-#: inc/payments/admin/admin-handler.php:828
-#: inc/payments/admin/admin-handler.php:830
+#: inc/payments/admin/admin-handler.php:827
+#: inc/payments/admin/admin-handler.php:829
 #: assets/build/payments.js:172
 msgid "Unknown Form"
 msgstr "Onbekend formulier"
 
+#: inc/payments/admin/admin-handler.php:835
 #: inc/payments/admin/admin-handler.php:836
-#: inc/payments/admin/admin-handler.php:837
 #: assets/build/payments.js:172
 msgid "N/A"
 msgstr "N.v.t."
 
-#: inc/payments/admin/admin-handler.php:843
+#: inc/payments/admin/admin-handler.php:842
 #: assets/build/blocks.js:172
 #: assets/build/payments.js:172
 msgid "Subscription"
 msgstr "Abonnement"
 
-#: inc/payments/admin/admin-handler.php:845
+#: inc/payments/admin/admin-handler.php:844
 msgid "Renewal"
 msgstr "Vernieuwing"
 
-#: inc/payments/admin/admin-handler.php:847
+#: inc/payments/admin/admin-handler.php:846
 #: assets/build/blocks.js:172
 #: assets/build/payments.js:172
 msgid "One Time"
 msgstr "Eén keer"
 
-#: inc/payments/admin/admin-handler.php:1020
+#: inc/payments/admin/admin-handler.php:1019
 msgid "Unknown"
 msgstr "Onbekend"
 
 #. translators: Message for guest user in payment logs
 #. translators: %d: User ID
-#: inc/payments/admin/admin-handler.php:1312
-#: inc/payments/admin/admin-handler.php:1319
-#: inc/payments/admin/admin-handler.php:1336
-#: inc/payments/admin/admin-handler.php:1340
-#: inc/payments/admin/admin-handler.php:1344
+#: inc/payments/admin/admin-handler.php:1311
+#: inc/payments/admin/admin-handler.php:1318
+#: inc/payments/admin/admin-handler.php:1335
+#: inc/payments/admin/admin-handler.php:1339
+#: inc/payments/admin/admin-handler.php:1343
 #: inc/payments/front-end.php:703
 #: inc/payments/front-end.php:1059
 msgid "Guest User"
@@ -15182,6 +15178,50 @@ msgstr "Opmerking: De facturering van het abonnement is gepauzeerd. Er zullen ge
 #: inc/payments/stripe/admin-stripe-handler.php:418
 msgid "Subscription Paused"
 msgstr "Abonnement Gepauzeerd"
+
+#: inc/form-submit.php:277
+msgid "Form submission is restricted."
+msgstr "Het indienen van formulieren is beperkt."
+
+#: assets/build/entries.js:172
+msgid "This entry will be moved to trash and can be restored later."
+msgstr "Dit item wordt naar de prullenbak verplaatst en kan later worden hersteld."
+
+#: assets/build/formEditor.js:172
+msgid "Set the total number of submissions allowed for this form."
+msgstr "Stel het totale aantal toegestane inzendingen voor dit formulier in."
+
+#: assets/build/formEditor.js:172
+msgid "Save & Progress"
+msgstr "Opslaan & Voortgang"
+
+#: assets/build/formEditor.js:172
+msgid "Allow users to save their progress and continue form completion later."
+msgstr "Sta gebruikers toe hun voortgang op te slaan en later verder te gaan met het invullen van het formulier."
+
+#: assets/build/formEditor.js:172
+msgid "Save & Progress in SureForms"
+msgstr "Opslaan & Verdergaan in SureForms"
+
+#: assets/build/formEditor.js:172
+msgid "Give your users the flexibility to complete forms at their own pace by allowing them to save progress and return anytime."
+msgstr "Geef uw gebruikers de flexibiliteit om formulieren in hun eigen tempo in te vullen door hen toe te staan hun voortgang op te slaan en op elk moment terug te keren."
+
+#: assets/build/formEditor.js:172
+msgid "Let users pause long or multi-step forms and continue later."
+msgstr "Laat gebruikers lange of meerstapsformulieren pauzeren en later doorgaan."
+
+#: assets/build/formEditor.js:172
+msgid "Reduce form abandonment with convenient resume links and access their progress from anywhere."
+msgstr "Verminder het verlaten van formulieren met handige hervattingslinks en krijg overal toegang tot hun voortgang."
+
+#: assets/build/formEditor.js:172
+msgid "Improve user experience for lengthy, complex, or multi-page forms."
+msgstr "Verbeter de gebruikerservaring voor lange, complexe of meerpaginaformulieren."
+
+#: assets/build/forms.js:172
+msgid "This form will be moved to trash and can be restored later."
+msgstr "Dit formulier wordt naar de prullenbak verplaatst en kan later worden hersteld."
 
 #: inc/post-types.php:205
 msgctxt "post type general name"

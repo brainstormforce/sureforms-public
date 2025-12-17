@@ -28,6 +28,7 @@ import {
 	FileText,
 	Cpu,
 	Link2,
+	Save,
 } from 'lucide-react';
 
 import Suretriggers from '../integrations/suretriggers';
@@ -121,6 +122,13 @@ const Dialog = ( {
 	);
 
 	const [ parentTab, setParentTab ] = useState( null );
+
+	const [ pluginConnected, setPluginConnected ] = useState(
+		srfm_admin?.integrations?.sure_triggers?.connected ?? null
+	);
+	const [ localPluginStatus, setLocalPluginStatus ] = useState(
+		srfm_admin?.integrations?.sure_triggers?.status
+	);
 
 	const tabs = applyFilters(
 		'srfm.formSettings.tabs',
@@ -250,6 +258,50 @@ const Dialog = ( {
 				),
 			},
 			{
+				id: 'save-resume-preview',
+				label: __( 'Save & Progress', 'sureforms' ),
+				icon: <Save />,
+				component: (
+					<FeaturePreview
+						featureName={ __( 'Save & Progress', 'sureforms' ) }
+						featureHelpText={ __(
+							'Allow users to save their progress and continue form completion later.',
+							'sureforms'
+						) }
+						icon={
+							<Save
+								className="text-orange-500"
+								size={ 40 }
+								strokeWidth={ 1 }
+							/>
+						}
+						title={ __(
+							'Save & Progress in SureForms',
+							'sureforms'
+						) }
+						subtitle={ __(
+							'Give your users the flexibility to complete forms at their own pace by allowing them to save progress and return anytime.',
+							'sureforms'
+						) }
+						featureList={ [
+							__(
+								'Let users pause long or multi-step forms and continue later.',
+								'sureforms'
+							),
+							__(
+								'Reduce form abandonment with convenient resume links and access their progress from anywhere.',
+								'sureforms'
+							),
+							__(
+								'Improve user experience for lengthy, complex, or multi-page forms.',
+								'sureforms'
+							),
+						] }
+						utmMedium="save-resume-preview-single-form-settings"
+					/>
+				),
+			},
+			{
 				id: 'user-login-preview',
 				label: __( 'User Registration', 'sureforms' ),
 				icon: <UserPlus />,
@@ -345,7 +397,14 @@ const Dialog = ( {
 				),
 				component: (
 					<OttoKitPage
-						{ ...{ isFormSettings: true, setSelectedTab } }
+						{ ...{
+							isFormSettings: true,
+							setSelectedTab,
+							pluginConnected,
+							setPluginConnected,
+							localPluginStatus,
+							setLocalPluginStatus,
+						} }
 					/>
 				),
 			},

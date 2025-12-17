@@ -1,10 +1,10 @@
-# SureForms - Contact Form, Custom Form Builder, Calculator & More #
+# SureForms - Contact Form, Payment Form & Other Custom Form Builder #
 **Contributors:** [brainstormforce](https://profiles.wordpress.org/brainstormforce/)  
 **Tags:** contact form, custom form, forms, WordPress form plugin, form builder  
 **Requires at least:** 6.4  
 **Tested up to:** 6.9  
 **Requires PHP:** 7.4  
-**Stable tag:** 2.1.0  
+**Stable tag:** 2.2.0  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -72,15 +72,25 @@ SureForms is the first AI-powered form builder for WordPress, which makes form c
 
 SureForms makes advanced features like conditional logic, multi-step forms, query parameters and etc. simple to use through a no-code interface. This empowers anyone to create powerful, interactive forms without writing a single line of code.
 
-#### Mobile-First Approach
+#### Payment Forms
 
-SureForms recognizes the importance of mobile friendly forms. The forms created with SureForms are designed with a mobile-first approach, ensuring they look and function flawlessly on various devices.
+SureForms supports a built-in Payment Forms feature. With SureForms, anyone can easily create full-fledged donation forms, event registrations, product checkouts, or any kind of form that needs to accept payments, all without relying on any extra add-on or third-party plugins. This makes collecting payments seamless, secure, and effortless directly through your forms.
+
+Here are a few examples of how the Payment Feature in SureForms can power your forms:
+-   [Donation Form](https://sureforms.com/form/donation-form/)
+-   [Photography Packages Booking Form](https://sureforms.com/form/photography-packages-payment-form/)
+-   [Monthly Membership Plan Form](https://sureforms.com/form/monthly-membership-plan/)
+-   [Web Design Packages Booking Form](https://sureforms.com/form/freelance-web-design-packages-payment/)
 
 #### Instant Forms
 
 [youtube https://www.youtube.com/watch?v=pMH129ZUxJ0]
 
 With SureForms' own Instant Form feature, you can publish forms with a unique shareable URL. No embedding needed. Share them anywhere and make your forms instantly accessible.
+
+#### Mobile-First Approach
+
+SureForms recognizes the importance of mobile friendly forms. The forms created with SureForms are designed with a mobile-first approach, ensuring they look and function flawlessly on various devices.
 
 #### Multi-Column Layouts
 
@@ -350,9 +360,8 @@ plans.
 ###
 ### Does SureForms support Payment Forms? ###
 
-Payment integrations are coming soon in SureForms. It's currently in
-development. Stripe and PayPal support will make collecting payments
-easy.
+Yes! SureForms has built-in Payment Form support. 
+You can collect payments securely without any add-ons or extra plugins.
 
 ## Screenshot ##
 
@@ -365,6 +374,10 @@ easy.
 You can report the issue through our [Bug Bounty Program](https://brainstormforce.com/bug-bounty-program/). We collaborate with Patchstack to provide opportunities for researchers to report vulnerabilities. The Patchstack team will help validate, triage, and handle any reported security issues.
 
 ## Changelog ##
+### 2.2.0 - 16th December 2025 ###
+* Improvement: Added confirmation step before moving items to trash in Forms and Entries lists.
+* Improvement: Optimized script loading to improve speed and efficiency.
+* Fix: Resolved Conversational Form issues with Image and Icon fields.
 ### 2.1.0 - 2nd December 2025 ###
 * Improvement: Updated email notifications to display multi-choice options on separate lines.
 * Improvement: Updated links in new tables to behave like standard links, allowing them to open in a new tab.
@@ -375,20 +388,6 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 * Fix: Resolved an issue with phone block when site is in RTL mode.
 ### 2.0.1 - 20th November 2025 ###
 * Fix: Fixed compatibility issue with lower PHP version.
-### 2.0.0 - 20th November 2025 ###
-* New: Introduced Payments.
-* Improvement: Revamped the SureForms UI.
-### 1.13.2 - 7th November 2025 ###
-* Improvement: Added a fallback message for email failures on the single entries page when the SMTP plugin is missing.
-* Improvement: Added support for "Name <email\>" format in CC, BCC, and Reply-To fields.
-* Fix: Addressed a security bug. Props to Wordfence for reporting it responsibly.
-* Fix: Fixed redirection URL encoding issue after form submission.
-* Fix: Fixed the country list not being visible for the phone field inside the Spectra modal on mobile devices.
-* Fix: Fixed missing attribute key on the frontend, causing PHP warnings.
-### 1.13.1 - 22nd October 2025 ###
-* Improvement: Preserved trailing zeros in number field after the decimal.
-* Fix: Fixed compatibility with Presto Player.
-* Fix: Resolved an issue where the phone field country list wasn’t visible in Spectra modal on mobile devices.
 
 The full changelog is available [here](https://sureforms.com/whats-new/).
 

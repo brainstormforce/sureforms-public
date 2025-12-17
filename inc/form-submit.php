@@ -261,9 +261,20 @@ class Form_Submit {
 			$form_restriction = Form_Restriction::get_form_restriction_setting( $form_id );
 			// If the form is restricted, return an error response.
 			$form_restriction_message = $form_restriction['message'] ?? Translatable::get_default_form_restriction_message();
+
+			$form_restriction_message = apply_filters( 'srfm_form_restriction_message', $form_restriction_message, $form_id, $form_restriction );
+
 			wp_send_json_error(
 				[
 					'message' => $form_restriction_message,
+				]
+			);
+		}
+
+		if ( apply_filters( 'srfm_additional_restriction_check', false, $form_id, $form_data ) ) {
+			wp_send_json_error(
+				[
+					'message' => apply_filters( 'srfm_additional_restriction_message', __( 'Form submission is restricted.', 'sureforms' ), $form_id, $form_data ),
 				]
 			);
 		}

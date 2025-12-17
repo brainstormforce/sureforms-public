@@ -826,7 +826,7 @@ if ( ! class_exists( 'Advanced_Image' ) ) {
 
 			ob_start();
 			?>
-				<div class="<?php echo esc_attr( implode( ' ', $main_classes ) ); ?>">
+				<div data-block-id="<?php echo esc_attr( $block_id ); ?>" class="<?php echo esc_attr( implode( ' ', $main_classes ) ); ?>">
 					<figure class="wp-block-uagb-image__figure">
 						<?php echo wp_kses( $figure_image, 'post' ); ?>
 
