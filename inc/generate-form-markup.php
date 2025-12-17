@@ -515,7 +515,11 @@ class Generate_Form_Markup {
 						'stroke-linejoin' => true,
 					],
 				];
-				return wp_kses( get_the_password_form( $post ), $allowed_password_form_tags );
+				echo wp_kses( get_the_password_form( $post ), $allowed_password_form_tags );
+				?>
+				</div>
+				<?php
+				return ob_get_clean();
 			}
 
 			?>
