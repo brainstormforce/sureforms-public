@@ -125,6 +125,14 @@ class Payment_Markup extends Base {
 	protected $variable_amount_field;
 
 	/**
+	 * Payment methods enabled for this form.
+	 *
+	 * @var array
+	 * @since x.x.x
+	 */
+	protected $payment_methods;
+
+	/**
 	 * Constructor for the Payment Markup class.
 	 *
 	 * @param array<mixed> $attributes Block attributes.
@@ -170,6 +178,9 @@ class Payment_Markup extends Base {
 		// Set variable amount field mapping.
 		$this->variable_amount_field = $attributes['variableAmountField'] ?? '';
 
+		// Set payment methods from block attributes, default to 'stripe' for backward compatibility.
+		$this->payment_methods = $attributes['paymentMethods'] ?? [ 'stripe' ];
+
 		// BACKWARD COMPATIBILITY: Migrate customer fields from subscriptionPlan.
 		if ( empty( $this->customer_name_field ) && ! empty( $this->subscription_plan['customer_name'] ) ) {
 			$this->customer_name_field = $this->subscription_plan['customer_name'];
@@ -187,18 +198,24 @@ class Payment_Markup extends Base {
 	 * @since 2.0.0
 	 */
 	public function markup() {
-		// Check if Stripe is connected.
-		if ( ! $this->stripe_connected || empty( $this->stripe_publishable_key ) ) {
+		// Get registered payment methods.
+		$registered_methods = $this->get_registered_payment_methods();
+
+		// Check if any payment methods are available.
+		if ( empty( $registered_methods ) ) {
 			return '';
 		}
 
-		// Validate payment field requirements only if Stripe is connected.
+		// Validate payment field requirements.
 		$is_valid = $this->validate_payment_requirements();
 		if ( ! $is_valid ) {
 			return '';
 		}
 
 		$field_classes = $this->get_field_classes();
+
+		// Get the first registered method as default.
+		$default_method = reset( $registered_methods )['id'];
 
 		$data_input_attributes = [
 			'name'                      => $this->field_name,
@@ -212,6 +229,8 @@ class Payment_Markup extends Base {
 			'data-payment-type'         => $this->payment_type,
 			'data-customer-name-field'  => $this->customer_name_field,
 			'data-customer-email-field' => $this->customer_email_field,
+			'data-payment-methods'      => wp_json_encode( array_keys( $registered_methods ) ),
+			'data-selected-method'      => $default_method,
 		];
 
 		if ( 'subscription' === $this->payment_type && ! empty( $this->subscription_plan ) ) {
@@ -331,10 +350,8 @@ class Payment_Markup extends Base {
 				}
 				?>
 
-				<!-- Stripe Elements Container -->
-				<div id="srfm-payment-element-<?php echo esc_attr( $this->block_id ); ?>" class="srfm-stripe-payment-element">
-					<!-- Stripe Elements will be inserted here -->
-				</div>
+				<!-- Payment Methods Accordion -->
+				<?php echo $this->render_payment_methods_accordion( $registered_methods ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 
 				<!-- Hidden fields for payment data -->
 				<input type="hidden"
@@ -356,6 +373,123 @@ class Payment_Markup extends Base {
 		</div>
 		<?php
 		return ob_get_clean();
+	}
+
+	/**
+	 * Get registered payment methods for display.
+	 *
+	 * @return array Array of payment method configurations.
+	 * @since x.x.x
+	 */
+	private function get_registered_payment_methods() {
+		$methods = [];
+
+		// Get enabled payment methods from block attributes.
+		$enabled_methods = $this->payment_methods;
+
+		// Filter to get method configurations - start with Stripe as default.
+		$available_methods = apply_filters(
+			'srfm_payment_methods_registry',
+			[
+				'stripe' => [
+					'id'              => 'stripe',
+					'label'           => __( 'Credit Card', 'sureforms' ),
+					'description'     => __( 'Pay with credit or debit card', 'sureforms' ),
+					'icon'            => 'credit-card',
+					'enabled'         => $this->stripe_connected,
+					'container_class' => 'srfm-stripe-payment-element',
+				],
+			]
+		);
+
+		// Filter enabled methods.
+		foreach ( $enabled_methods as $method_id ) {
+			if ( isset( $available_methods[ $method_id ] ) && $available_methods[ $method_id ]['enabled'] ) {
+				$methods[ $method_id ] = $available_methods[ $method_id ];
+			}
+		}
+
+		return $methods;
+	}
+
+	/**
+	 * Render payment methods as accordion.
+	 * Each payment method is an accordion item with header and collapsible content.
+	 *
+	 * @param array<mixed> $methods Array of payment methods.
+	 * @return string Payment methods accordion markup.
+	 * @since x.x.x
+	 */
+	private function render_payment_methods_accordion( $methods ) {
+		if ( empty( $methods ) || ! is_array( $methods ) ) {
+			return '';
+		}
+
+		$default_method   = reset( $methods )['id'];
+		$is_single_method = count( $methods ) === 1;
+
+		ob_start();
+		?>
+		<div class="srfm-payment-methods-accordion <?php echo $is_single_method ? 'single-method' : ''; ?>">
+			<?php foreach ( $methods as $method ) { ?>
+				<?php $is_active = $method['id'] === $default_method; ?>
+				<div
+					class="srfm-accordion-item <?php echo $is_active ? 'active' : ''; ?>"
+					data-method="<?php echo esc_attr( $method['id'] ); ?>"
+				>
+					<div
+						class="srfm-accordion-header"
+						role="button"
+						tabindex="0"
+						aria-expanded="<?php echo $is_active ? 'true' : 'false'; ?>"
+						aria-controls="srfm-accordion-content-<?php echo esc_attr( $method['id'] ); ?>-<?php echo esc_attr( $this->block_id ); ?>"
+					>
+						<input
+							type="radio"
+							name="payment-method-<?php echo esc_attr( $this->block_id ); ?>"
+							value="<?php echo esc_attr( $method['id'] ); ?>"
+							class="srfm-payment-method-radio"
+							data-method="<?php echo esc_attr( $method['id'] ); ?>"
+							<?php checked( $is_active ); ?>
+							aria-label="<?php echo esc_attr( $method['label'] ); ?>"
+						/>
+						<span class="srfm-accordion-title">
+							<?php echo esc_html( $method['label'] ); ?>
+						</span>
+						<?php if ( ! empty( $method['description'] ) ) { ?>
+							<span class="srfm-accordion-desc">
+								<?php echo esc_html( $method['description'] ); ?>
+							</span>
+						<?php } ?>
+						<?php if ( ! $is_single_method ) { ?>
+							<span class="srfm-accordion-icon" aria-hidden="true"></span>
+						<?php } ?>
+					</div>
+					<div
+						id="srfm-accordion-content-<?php echo esc_attr( $method['id'] ); ?>-<?php echo esc_attr( $this->block_id ); ?>"
+						class="srfm-accordion-content"
+						role="region"
+						aria-labelledby="srfm-accordion-header-<?php echo esc_attr( $method['id'] ); ?>"
+					>
+						<div
+							class="srfm-payment-method-content"
+							data-method="<?php echo esc_attr( $method['id'] ); ?>"
+						>
+							<div
+								id="srfm-<?php echo esc_attr( $method['id'] ); ?>-<?php echo esc_attr( $this->block_id ); ?>"
+								class="<?php echo esc_attr( $method['container_class'] ); ?>"
+							>
+								<!-- Provider JS will render content here -->
+							</div>
+						</div>
+					</div>
+				</div>
+			<?php } ?>
+		</div>
+		<?php
+		$template = ob_get_clean();
+
+		return is_string( $template ) ? $template : '';
 	}
 
 	/**
