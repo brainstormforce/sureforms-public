@@ -325,6 +325,45 @@
 						transform: rotate( 0deg );
 					}
 				}
+
+				.srfm-payment-method-radio {
+					width: 14px;
+					height: 14px;
+					border-radius: 50%;
+					appearance: none;
+					-webkit-appearance: none;
+					-moz-appearance: none;
+					outline: none;
+					cursor: pointer;
+					margin: 0;
+					padding: 0;
+					flex-shrink: 0;
+
+					// Unselected/default state
+					border: 1.25px solid #1E1E1E80;
+					background-color: transparent;
+
+					// Selected/chosen state
+					&:checked {
+						border: 5px solid #0C78FB;
+						background-color: transparent;
+					}
+
+					// Focus state for accessibility
+					&:focus {
+						outline: 2px solid #0C78FB40;
+						outline-offset: 2px;
+					}
+				}
+
+				// PayPal css.
+				.srfm-paypal-placeholder-message{
+					font-size: 14px;
+					font-family: inherit;
+					line-height: 20px;
+					color: #1E1E1EA6;
+					font-weight: 400;
+				}
 			}
 		}
 	}
