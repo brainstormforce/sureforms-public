@@ -2,7 +2,7 @@ import { useState, useEffect } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { CircleCheck } from 'lucide-react';
 import apiFetch from '@wordpress/api-fetch';
-import { Button, Loader, Label, toast, Text } from '@bsf/force-ui';
+import { Button, Loader, Label, toast, Text, Badge } from '@bsf/force-ui';
 import ContentSection from '@Admin/settings/components/ContentSection';
 import ConfirmationDialog from '@Admin/components/ConfirmationDialog';
 import { AlertForFee, WebhookAutoConnectManage } from '../../components/utils';
@@ -276,11 +276,33 @@ const StripeSettings = ( props ) => {
 		}
 	};
 
+	const isLiveMode = paymentsSettings.payment_mode === 'live';
+	const isWebhookConnected = isLiveMode
+		? webhookLiveConnected
+		: webhookTestConnected;
+
 	const accountDetails = (
 		<div className="flex flex-col gap-2">
-			<Label size="sm" variant="neutral">
-				{ __( 'Connection Status', 'sureforms' ) }
-			</Label>
+			<div className="flex items-end justify-between gap-2">
+				<Label size="sm" variant="neutral">
+					{ __( 'Connection Status', 'sureforms' ) }
+				</Label>
+				{ isLiveMode ? (
+					<Badge
+						className="w-fit"
+						variant="green"
+						size="xs"
+						label={ __( 'Live Mode', 'sureforms' ) }
+					/>
+				) : (
+					<Badge
+						className="w-fit"
+						variant="yellow"
+						size="xs"
+						label={ __( 'Test Mode', 'sureforms' ) }
+					/>
+				) }
+			</div>
 			<div className="flex items-center justify-between p-4 rounded-lg border-0.5 border-border-subtle border-solid shadow-sm">
 				<div className="flex items-center gap-2">
 					<CircleCheck className="text-support-success" />
@@ -313,11 +335,6 @@ const StripeSettings = ( props ) => {
 			</div>
 		</div>
 	);
-
-	const isLiveMode = paymentsSettings.payment_mode === 'live';
-	const isWebhookConnected = isLiveMode
-		? webhookLiveConnected
-		: webhookTestConnected;
 
 	// Construct Stripe webhook dashboard URL
 	const getStripeWebhookDashboardUrl = () => {

@@ -480,6 +480,15 @@ function enableSubmitButton( form ) {
 		submitBtn.disabled = false;
 		submitBtn.style.pointerEvents = '';
 	}
+
+	// Dispatch a custom event stop form submission.
+	const stopSubmissionEvent = new CustomEvent( 'srfm_form_submission_stop', {
+		cancelable: true,
+		detail: {
+			form,
+		},
+	} );
+	document.dispatchEvent( stopSubmissionEvent );
 }
 
 async function handleFormSubmission(
@@ -500,6 +509,23 @@ async function handleFormSubmission(
 ) {
 	try {
 		loader.classList.add( 'srfm-active' );
+
+		// Dispatch a custom event before submission to indicate form submission is starting.
+		const startSubmissionEvent = new CustomEvent(
+			'srfm_form_submission_start',
+			{
+				cancelable: true,
+				detail: {
+					form,
+					loader,
+					formId,
+					submitType,
+					successElement,
+					successContainer,
+				},
+			}
+		);
+		document.dispatchEvent( startSubmissionEvent );
 
 		// Disable submit button to prevent multiple submissions.
 		const submitBtn = form.querySelector(
