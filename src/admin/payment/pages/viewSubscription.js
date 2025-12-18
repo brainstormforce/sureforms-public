@@ -4,6 +4,7 @@ import { ArrowUpRight, Eye } from 'lucide-react';
 import { __, sprintf } from '@wordpress/i18n';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { applyFilters } from '@wordpress/hooks';
 import {
 	fetchSubscription,
 	cancelSubscription,
@@ -402,6 +403,22 @@ const ViewSubscription = () => {
 				parseFloat( firstPaidEMI.refunded_amount || 0 ) ||
 		  firstPaidEMI.status === 'refunded'
 		: false;
+
+	const viewPaymentInPlateForm = applyFilters(
+		'srfm_view_subscription_payment_in_platform_button',
+		<Button
+			icon={ <ArrowUpRight className="!size-4" /> }
+			iconPosition="right"
+			variant="link"
+			size="xs"
+			className="text-link-primary hover:text-link-primary-hover"
+			onClick={ handleViewInStripe }
+			disabled={ ! subscriptionData?.stripe_subscription_id }
+		>
+			{ __( 'View In Stripe', 'sureforms' ) }
+		</Button>,
+		subscriptionData
+	);
 
 	// Cancel subscription dialog
 	const cancelDialog = (
@@ -802,19 +819,7 @@ const ViewSubscription = () => {
 						<h3 className="text-sm font-semibold text-text-primary">
 							{ __( 'Payment Information', 'sureforms' ) }
 						</h3>
-						<Button
-							icon={ <ArrowUpRight className="!size-4" /> }
-							iconPosition="right"
-							variant="link"
-							size="xs"
-							className="text-link-primary hover:text-link-primary-hover"
-							onClick={ handleViewInStripe }
-							disabled={
-								! subscriptionData?.stripe_subscription_id
-							}
-						>
-							{ __( 'View In Stripe', 'sureforms' ) }
-						</Button>
+						{ viewPaymentInPlateForm }
 					</div>
 				</div>
 				<div className="p-4">{ subscriptionDetails }</div>

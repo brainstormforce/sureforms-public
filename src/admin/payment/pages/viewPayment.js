@@ -4,6 +4,7 @@ import { ArrowUpRight, RotateCcw } from 'lucide-react';
 import { __ } from '@wordpress/i18n';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { applyFilters } from '@wordpress/hooks';
 import {
 	fetchSinglePayment,
 	addPaymentNote,
@@ -540,6 +541,22 @@ const ViewPayment = () => {
 		</div>
 	);
 
+	const viewPaymentInPlateForm = applyFilters(
+		'srfm_view_single_payment_in_plate_form',
+		<Button
+			icon={ <ArrowUpRight className="!size-4" /> }
+			iconPosition="right"
+			variant="link"
+			size="xs"
+			className="text-link-primary hover:text-link-primary-hover"
+			onClick={ handleViewInStripe }
+			disabled={ ! paymentData?.transaction_id }
+		>
+			{ __( 'View In Stripe', 'sureforms' ) }
+		</Button>,
+		paymentData
+	);
+
 	const PAYMENT_SECTION_COLUMN_1 = (
 		<>
 			<div className="bg-background-primary border-0.5 border-solid border-border-subtle rounded-lg shadow-sm">
@@ -559,17 +576,7 @@ const ViewPayment = () => {
 						<h3 className="text-sm font-semibold text-text-primary">
 							{ __( 'Payment Information', 'sureforms' ) }
 						</h3>
-						<Button
-							icon={ <ArrowUpRight className="!size-4" /> }
-							iconPosition="right"
-							variant="link"
-							size="xs"
-							className="text-link-primary hover:text-link-primary-hover"
-							onClick={ handleViewInStripe }
-							disabled={ ! paymentData?.transaction_id }
-						>
-							{ __( 'View In Stripe', 'sureforms' ) }
-						</Button>
+						{ viewPaymentInPlateForm }
 					</div>
 				</div>
 				<div className="p-4">{ paymentInfo }</div>
