@@ -18,7 +18,7 @@ import {
 	formatAmount,
 	formatDateTime,
 	PartialAmount,
-	getPaymentMethodLabel
+	getPaymentMethodLabel,
 } from '../components/utils';
 import PaymentNotes from '../components/paymentNotes';
 import PaymentLogs from '../components/paymentLogs';

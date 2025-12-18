@@ -271,7 +271,11 @@ const PaymentTable = ( {
 		);
 
 		const paymentMethodImage = (
-			<img src={stripeLogo} alt={__( "Stripe", "sureforms" )} className="w-[36px]" />
+			<img
+				src={ stripeLogo }
+				alt={ __( 'Stripe', 'sureforms' ) }
+				className="w-[36px]"
+			/>
 		);
 
 		const tableRowContent = applyFilters(
@@ -295,8 +299,6 @@ const PaymentTable = ( {
 			],
 			payment
 		);
-
-		console.log( {tableRowContent} );
 
 		return (
 			<Table.Row

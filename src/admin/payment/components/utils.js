@@ -577,4 +577,4 @@ export const getPaymentMethodLabel = ( method ) => {
 		default:
 			return method;
 	}
-}
+};

@@ -295,7 +295,12 @@ const StripeSettings = ( props ) => {
 						label={ __( 'Live Mode', 'sureforms' ) }
 					/>
 				) : (
-					<Badge className="w-fit" variant="yellow" size="xs" label={ __( 'Test Mode', 'sureforms' ) } />
+					<Badge
+						className="w-fit"
+						variant="yellow"
+						size="xs"
+						label={ __( 'Test Mode', 'sureforms' ) }
+					/>
 				) }
 			</div>
 			<div className="flex items-center justify-between p-4 rounded-lg border-0.5 border-border-subtle border-solid shadow-sm">

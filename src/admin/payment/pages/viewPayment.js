@@ -17,7 +17,7 @@ import {
 	getStatusLabel,
 	PartialAmount,
 	formatOrderId,
-	getPaymentMethodLabel
+	getPaymentMethodLabel,
 } from '../components/utils';
 import PaymentNotes from '../components/paymentNotes';
 import PaymentLogs from '../components/paymentLogs';
