@@ -63,8 +63,6 @@ const formatField = ( field ) => {
 export const RenderField = ( props ) => {
 	const { field } = props;
 
-	console.log( field );
-
 	if ( Array.isArray( field ) ) {
 		return field.map( ( item, idx ) => (
 			<RenderField key={ `${ field.label }-${ idx }` } field={ item } />
