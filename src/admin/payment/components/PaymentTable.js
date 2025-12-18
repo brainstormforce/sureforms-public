@@ -20,6 +20,7 @@ import {
 	getPaginationRange,
 } from './utils';
 import { cn } from '@Utils/Helpers';
+import stripeLogo from '@Image/stripe-logo.png';
 
 /**
  * PaymentTable Component - Displays the payments table
@@ -70,6 +71,10 @@ const PaymentTable = ( {
 				{
 					key: 'type',
 					title: __( 'Type', 'sureforms' ),
+				},
+				{
+					key: 'payment_method',
+					title: __( 'Payment Method', 'sureforms' ),
 				},
 				{
 					key: 'amountPaid',
@@ -265,6 +270,10 @@ const PaymentTable = ( {
 			</Tooltip>
 		);
 
+		const paymentMethodImage = (
+			<img src={stripeLogo} alt={__( "Stripe", "sureforms" )} className="w-[36px]" />
+		);
+
 		const tableRowContent = applyFilters(
 			'srfm_payment_admin_table_row_content',
 			[
@@ -275,6 +284,7 @@ const PaymentTable = ( {
 					className: 'text-wrap break-words',
 				},
 				{ key: 'type', content: paymentType },
+				{ key: 'payment_method', content: paymentMethodImage },
 				{ key: 'amountPaid', content: rowAmountPaid },
 				{ key: 'status', content: rowStatusBadge },
 				{
@@ -285,6 +295,8 @@ const PaymentTable = ( {
 			],
 			payment
 		);
+
+		console.log( {tableRowContent} );
 
 		return (
 			<Table.Row
@@ -309,7 +321,7 @@ const PaymentTable = ( {
 				key={ `skeleton-${ index }` }
 				className="[&_div:has(label)]:invisible"
 			>
-				{ Array.from( { length: 7 }, ( _2, colIndex ) => (
+				{ Array.from( { length: 8 }, ( _2, colIndex ) => (
 					<Table.Cell key={ colIndex }>
 						{ colIndex === 0 && (
 							<Skeleton className="absolute left-3.5 size-4 rounded-md" />
