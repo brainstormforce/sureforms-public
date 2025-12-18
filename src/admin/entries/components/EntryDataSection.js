@@ -3,6 +3,7 @@ import { sprintf, _n, __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
 import EntryEdit from './EntryEdit';
 import { decodeHTMLEntities } from '../utils/entryHelpers';
+import domPurify from 'dompurify';
 
 /**
  * Render field value - handles both regular and repeater fields
@@ -62,6 +63,8 @@ const formatField = ( field ) => {
 export const RenderField = ( props ) => {
 	const { field } = props;
 
+	console.log( field );
+
 	if ( Array.isArray( field ) ) {
 		return field.map( ( item, idx ) => (
 			<RenderField key={ `${ field.label }-${ idx }` } field={ item } />
@@ -93,7 +96,9 @@ export const RenderField = ( props ) => {
 									<span
 										className="text-sm font-medium text-text-secondary [overflow-wrap:anywhere]"
 										dangerouslySetInnerHTML={ {
-											__html: field.value,
+											__html: domPurify.sanitize(
+												field.value
+											),
 										} }
 									/>
 								) : (
