@@ -80,7 +80,6 @@ const EntryLogsSection = ( { entryId, onConfirmation } ) => {
 		'srfm-pro.entry-details.render-delete-log-button'
 	);
 
-
 	return (
 		<>
 			<div className="bg-background-primary border-0.5 border-solid border-border-subtle rounded-lg shadow-sm">
