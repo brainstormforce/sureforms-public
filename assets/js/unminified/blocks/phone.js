@@ -18,6 +18,66 @@ function initializePhoneField() {
 		const isAutoCountry = phoneNumber.getAttribute( 'auto-country' );
 		const defaultCountry = phoneNumber.getAttribute( 'default-country' );
 		const phoneFieldName = phoneNumber.getAttribute( 'name' );
+		const enableCountryFilter = phoneNumber.getAttribute(
+			'data-enable-country-filter'
+		);
+		const countryFilterType = phoneNumber.getAttribute(
+			'data-country-filter-type'
+		);
+		const includeCountriesAttr = phoneNumber.getAttribute(
+			'data-include-countries'
+		);
+		const excludeCountriesAttr = phoneNumber.getAttribute(
+			'data-exclude-countries'
+		);
+
+		// Parse country filter arrays
+		let includeCountries = [];
+		let excludeCountries = [];
+
+		if ( enableCountryFilter === 'true' ) {
+			try {
+				if ( countryFilterType === 'include' && includeCountriesAttr ) {
+					includeCountries = JSON.parse( includeCountriesAttr );
+				}
+				if ( countryFilterType === 'exclude' && excludeCountriesAttr ) {
+					excludeCountries = JSON.parse( excludeCountriesAttr );
+				}
+			} catch ( e ) {
+				console.error( 'Error parsing country filter data:', e );
+			}
+		}
+
+		// Determine initial country based on filter settings
+		let initialCountry = defaultCountry || 'us';
+
+		// If country filtering is enabled, validate the initial country
+		if ( enableCountryFilter === 'true' ) {
+			if (
+				countryFilterType === 'include' &&
+				includeCountries.length > 0
+			) {
+				// If include filter is active, check if initial country is in the list
+				const initialCountryLower = initialCountry.toLowerCase();
+				if ( ! includeCountries.includes( initialCountryLower ) ) {
+					// Initial country not in include list, use first country from the list
+					initialCountry = includeCountries[ 0 ];
+				}
+			} else if (
+				countryFilterType === 'exclude' &&
+				excludeCountries.length > 0
+			) {
+				// If exclude filter is active, check if initial country is excluded
+				const initialCountryLower = initialCountry.toLowerCase();
+				if ( excludeCountries.includes( initialCountryLower ) ) {
+					// Initial country is excluded, use 'us' or another fallback
+					initialCountry = excludeCountries.includes( 'us' )
+						? 'gb'
+						: 'us';
+				}
+			}
+		}
+
 		const itlOptions = {
 			autoPlaceholder: 'off',
 			separateDialCode: true,
@@ -25,7 +85,7 @@ function initializePhoneField() {
 				phone: phoneFieldName,
 			} ),
 			countrySearch: true,
-			initialCountry: defaultCountry || 'us',
+			initialCountry,
 		};
 
 		if ( isAutoCountry === 'true' ) {
@@ -36,12 +96,85 @@ function initializePhoneField() {
 						return res.json();
 					} )
 					.then( function ( data ) {
-						callback( data.country_code );
+						let detectedCountry = data.country_code
+							? data.country_code.toLowerCase()
+							: 'us';
+
+						// Validate detected country against filters
+						if ( enableCountryFilter === 'true' ) {
+							if (
+								countryFilterType === 'include' &&
+								includeCountries.length > 0
+							) {
+								// Check if detected country is in include list
+								if (
+									! includeCountries.includes(
+										detectedCountry
+									)
+								) {
+									// Use first country from include list
+									detectedCountry = includeCountries[ 0 ];
+								}
+							} else if (
+								countryFilterType === 'exclude' &&
+								excludeCountries.length > 0
+							) {
+								// Check if detected country is excluded
+								if (
+									excludeCountries.includes( detectedCountry )
+								) {
+									// Use fallback country that's not excluded
+									detectedCountry = excludeCountries.includes(
+										'us'
+									)
+										? 'gb'
+										: 'us';
+								}
+							}
+						}
+
+						callback( detectedCountry );
 					} )
 					.catch( function () {
-						callback( 'us' );
+						// On error, use validated fallback country
+						let fallbackCountry = 'us';
+						if ( enableCountryFilter === 'true' ) {
+							if (
+								countryFilterType === 'include' &&
+								includeCountries.length > 0
+							) {
+								fallbackCountry = includeCountries[ 0 ];
+							} else if (
+								countryFilterType === 'exclude' &&
+								excludeCountries.length > 0
+							) {
+								fallbackCountry = excludeCountries.includes(
+									'us'
+								)
+									? 'gb'
+									: 'us';
+							}
+						}
+						callback( fallbackCountry );
 					} );
 			};
+		}
+
+		// Apply country filtering if enabled
+		if ( enableCountryFilter === 'true' ) {
+			if (
+				countryFilterType === 'include' &&
+				includeCountries.length > 0
+			) {
+				// Use onlyCountries when filter type is include
+				itlOptions.onlyCountries = includeCountries;
+			} else if (
+				countryFilterType === 'exclude' &&
+				excludeCountries.length > 0
+			) {
+				// Use excludeCountries when filter type is exclude
+				itlOptions.excludeCountries = excludeCountries;
+			}
 		}
 
 		const iti = window.intlTelInput( phoneNumber, itlOptions );

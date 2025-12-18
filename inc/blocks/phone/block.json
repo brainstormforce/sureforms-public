@@ -64,6 +64,22 @@
 			"type": "string",
 			"default": ""
 		},
+		"enableCountryFilter": {
+			"type": "boolean",
+			"default": false
+		},
+		"countryFilterType": {
+			"type": "string",
+			"default": "include"
+		},
+		"includeCountries": {
+			"type": "array",
+			"default": []
+		},
+		"excludeCountries": {
+			"type": "array",
+			"default": []
+		},
 		"isConditionalLogic":{
 			"type":"boolean",
 			"default":false

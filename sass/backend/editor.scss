@@ -186,6 +186,146 @@ body.post-type-sureforms_form {
 			}
 		}
 	}
+
+	// Phone block country filter styles
+	.srfm-phone-country-filter-controls {
+		.srfm-control-label {
+			font-size: 12px;
+			font-weight: 500;
+			line-height: 16px;
+			color: #1e1e1e;
+			margin-bottom: 8px;
+			margin-top: 16px;
+			display: block;
+		}
+
+		.srfm-help-text {
+			color: #757575;
+			font-size: 12px;
+			font-style: normal;
+			line-height: 16px;
+			margin-top: 8px;
+			margin-bottom: 0;
+		}
+
+		// React-select styling for country multi-select
+		.srfm-select__control {
+			min-height: 40px;
+			border-radius: 4px;
+			border: 1px solid #949494;
+			box-shadow: none;
+			transition: all 0.2s;
+
+			&:hover {
+				border-color: #757575;
+			}
+
+			&--is-focused {
+				border-color: #007cba;
+				box-shadow: 0 0 0 1px #007cba;
+
+				&:hover {
+					border-color: #007cba;
+				}
+			}
+		}
+
+		.srfm-select__value-container {
+			padding: 4px 8px;
+		}
+
+		.srfm-select__placeholder {
+			color: #757575;
+			font-size: 13px;
+		}
+
+		.srfm-select__input-container {
+			color: #1e1e1e;
+			font-size: 13px;
+		}
+
+		.srfm-select__multi-value {
+			background-color: #f0f0f0;
+			border-radius: 4px;
+			margin: 2px;
+
+			&__label {
+				color: #1e1e1e;
+				font-size: 13px;
+				padding: 3px 6px;
+			}
+
+			&__remove {
+				color: #757575;
+				cursor: pointer;
+				transition: all 0.2s;
+
+				&:hover {
+					background-color: #dc2626;
+					color: #ffffff;
+				}
+			}
+		}
+
+		.srfm-select__menu {
+			border-radius: 4px;
+			box-shadow: 0 2px 8px rgba( 0, 0, 0, 0.15 );
+			border: 1px solid #e0e0e0;
+			margin-top: 4px;
+			z-index: 999;
+		}
+
+		.srfm-select__menu-list {
+			padding: 4px;
+			max-height: 200px;
+		}
+
+		.srfm-select__option {
+			font-size: 13px;
+			padding: 8px 12px;
+			cursor: pointer;
+			transition: background-color 0.15s;
+
+			&--is-focused {
+				background-color: #f0f0f0;
+			}
+
+			&--is-selected {
+				background-color: #007cba;
+				color: #ffffff;
+
+				&:hover {
+					background-color: #006ba1;
+				}
+			}
+
+			&:hover {
+				background-color: #f5f5f5;
+			}
+		}
+
+		.srfm-select__indicator-separator {
+			background-color: #e0e0e0;
+		}
+
+		.srfm-select__clear-indicator,
+		.srfm-select__dropdown-indicator {
+			color: #757575;
+			padding: 8px;
+			cursor: pointer;
+
+			&:hover {
+				color: #1e1e1e;
+			}
+		}
+
+		.srfm-select__indicator {
+			svg {
+				width: 16px;
+				height: 16px;
+			}
+		}
+	}
 	.edit-post-sidebar > .components-panel > .components-panel__body {
 		display: none;
 
