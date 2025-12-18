@@ -376,6 +376,49 @@
 			transform: rotate( 360deg );
 		}
 	}
+
+
+
+				// PayPal button container loading state
+				.srfm-paypal-button-container {
+					position: relative;
+
+					// Loading state
+					&.srfm-paypal-loading {
+						// Disable pointer events on buttons
+						pointer-events: none;
+
+						// Create overlay using ::before
+						&::before {
+							content: '';
+							position: absolute;
+							top: 0;
+							left: 0;
+							right: 0;
+							bottom: 0;
+							background-color: rgba(255, 255, 255, 0.8);
+							z-index: 999;
+							border-radius: 4px;
+						}
+
+						// Create spinner using ::after
+						&::after {
+							content: '';
+							position: absolute;
+							top: 50%;
+							left: 50%;
+							width: 24px;
+							height: 24px;
+							margin-top: -12px;
+							margin-left: -12px;
+							border: 3px solid #f3f3f3;
+							border-top: 3px solid #0C78FB;
+							border-radius: 50%;
+							animation: srfm-spin 1s linear infinite;
+							z-index: 1000;
+						}
+					}
+				}
 }
 
 /*
