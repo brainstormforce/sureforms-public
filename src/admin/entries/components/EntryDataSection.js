@@ -93,7 +93,9 @@ export const RenderField = ( props ) => {
 							field.value.match( /<[^>]+>/g ) ? (
 								// Render HTML content for fields that contain HTML tags
 									<span className="text-sm font-medium text-text-secondary [overflow-wrap:anywhere]">
-										{ parse( domPurify.sanitize( field.value ) ) }
+										{ parse(
+											domPurify.sanitize( field.value )
+										) }
 									</span>
 								) : (
 								// Render plain text for regular fields

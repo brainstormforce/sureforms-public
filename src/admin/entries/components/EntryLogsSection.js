@@ -80,8 +80,6 @@ const EntryLogsSection = ( { entryId, onConfirmation } ) => {
 		'srfm-pro.entry-details.render-delete-log-button'
 	);
 
-	console.log(logs);
-	
 
 	return (
 		<>
@@ -124,7 +122,11 @@ const EntryLogsSection = ( { entryId, onConfirmation } ) => {
 													color="primary"
 													className="[overflow-wrap:anywhere]"
 												>
-													{ parse( domPurify.sanitize( message ) ) }
+													{ parse(
+														domPurify.sanitize(
+															message
+														)
+													) }
 												</Text>
 											)
 										) }
