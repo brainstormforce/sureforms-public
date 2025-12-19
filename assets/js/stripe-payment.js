@@ -211,6 +211,10 @@ class StripePayment {
 			.closest( '.srfm-block' )
 			.querySelector( '.srfm-stripe-payment-element' );
 
+		if ( ! elementContainer ) {
+			return;
+		}
+
 		// Initialize Stripe
 		if ( ! StripePayment.stripeInstances[ blockId ] ) {
 			StripePayment.stripeInstances[ blockId ] = Stripe( stripeKey );
