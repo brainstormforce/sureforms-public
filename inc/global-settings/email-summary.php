@@ -373,7 +373,7 @@ class Email_Summary {
 	 *
 	 * @param string $plugin_path The plugin path (e.g., 'plugin-folder/plugin-file.php').
 	 * @return bool True if plugin is installed, false otherwise.
-	 * @since 1.12.1
+	 * @since x.x.x
 	 */
 	public static function is_plugin_installed( $plugin_path ) {
 		return '' !== Helper::get_plugin_if_installed( [ $plugin_path ] );
