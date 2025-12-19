@@ -374,6 +374,8 @@ You can collect payments securely without any add-ons or extra plugins.
 You can report the issue through our [Bug Bounty Program](https://brainstormforce.com/bug-bounty-program/). We collaborate with Patchstack to provide opportunities for researchers to report vulnerabilities. The Patchstack team will help validate, triage, and handle any reported security issues.
 
 == Changelog ==
+= x.x.x =
+* Addressed a security bug. Props to Wordfence for reporting it responsibly.
 = 2.2.0 - 16th December 2025 =
 * Improvement: Added confirmation step before moving items to trash in Forms and Entries lists.
 * Improvement: Optimized script loading to improve speed and efficiency.
