@@ -195,16 +195,13 @@ export const useDuplicateForm = () => {
 		mutationFn: duplicateFormApi,
 		onSuccess: ( data ) => {
 			if ( data.success ) {
-				const message = sprintf(
-					/* translators: %s: new form title */
-					__( 'Form duplicated successfully: %s', 'sureforms' ),
-					data.new_form_title
+				toast.success(
+					sprintf(
+						/* translators: %s: new form title */
+						__( 'Form duplicated successfully: %s', 'sureforms' ),
+						data.new_form_title
+					)
 				);
-				toast.success( sprintf(
-					/* translators: %s: new form title */
-					__( 'Form duplicated successfully: %s', 'sureforms' ),
-					data.new_form_title
-				) );
 
 				// Invalidate and refetch forms list
 				queryClient.invalidateQueries( {
