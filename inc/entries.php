@@ -634,14 +634,14 @@ class Entries {
 	 * Normalize field values for CSV export.
 	 *
 	 * @param mixed  $field_value Field value.
-	 * @param string $field_key   Field key for identifying field type.
+	 * @param string $field_key   Field key for field type.
 	 *
 	 * @since 2.0.0
 	 * @return string Normalized value.
 	 */
 	private static function normalize_field_values( $field_value, $field_key = '' ) {
 		/**
-		 * Filter field value before CSV normalization.
+		 * Filter field value for CSV normalization.
 		 *
 		 * Allows modification of field values during CSV export. This is particularly
 		 * useful for custom field types (like repeater fields in Pro) that need
