@@ -1372,21 +1372,7 @@ class Rest_Api {
 				'forms/duplicate'           => [
 					'methods'             => 'POST',
 					'callback'            => [ Duplicate_Form::get_instance(), 'handle_duplicate_form_rest' ],
-					'permission_callback' => static function( $request ) {
-						// Check global capability first.
-						if ( ! Helper::current_user_can( 'manage_options' ) ) {
-							return false;
-						}
-
-						// Check form-specific permission.
-						$form_id = absint( $request->get_param( 'form_id' ) );
-						if ( $form_id <= 0 ) {
-							return false;
-						}
-
-						// Verify user can edit this specific form.
-						return current_user_can( 'edit_post', $form_id );
-					},
+					'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
 					'args'                => [
 						'form_id'      => [
 							'required'          => true,

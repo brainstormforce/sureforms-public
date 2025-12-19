@@ -23,15 +23,6 @@ class Duplicate_Form {
 	use Get_Instance;
 
 	/**
-	 * Constructor
-	 *
-	 * @since  x.x.x
-	 */
-	public function __construct() {
-		// Endpoints are registered in rest-api.php.
-	}
-
-	/**
 	 * Duplicate a form with all its metadata
 	 *
 	 * @param int    $form_id Form ID to duplicate.
@@ -62,20 +53,11 @@ class Duplicate_Form {
 		}
 
 		// Verify it's a sureforms_form post type.
-		if ( 'sureforms_form' !== $source_form->post_type ) {
+		if ( SRFM_FORMS_POST_TYPE !== $source_form->post_type ) {
 			return new \WP_Error(
 				'invalid_post_type',
 				__( 'The specified post is not a SureForms form.', 'sureforms' ),
 				[ 'status' => 400 ]
-			);
-		}
-
-		// Check if user has permission to edit this specific form.
-		if ( ! current_user_can( 'edit_post', $form_id ) ) {
-			return new \WP_Error(
-				'insufficient_permissions',
-				__( 'You do not have permission to duplicate this form.', 'sureforms' ),
-				[ 'status' => 403 ]
 			);
 		}
 
@@ -90,7 +72,7 @@ class Duplicate_Form {
 			'post_title'   => $new_title,
 			'post_content' => $source_form->post_content,
 			'post_status'  => 'draft', // Always create as draft for safety.
-			'post_type'    => 'sureforms_form',
+			'post_type'    => SRFM_FORMS_POST_TYPE,
 			'post_author'  => get_current_user_id(), // Use current user as author.
 		];
 
@@ -98,8 +80,7 @@ class Duplicate_Form {
 		$new_form_id_or_error = wp_insert_post( $new_post_args );
 
 		// Check for WP_Error or invalid post ID.
-		// @phpstan-ignore-next-line.
-		if ( is_wp_error( $new_form_id_or_error ) || ! $new_form_id_or_error || $new_form_id_or_error <= 0 ) {
+		if ( ! is_int( $new_form_id_or_error ) || $new_form_id_or_error <= 0 ) {
 			return new \WP_Error(
 				'duplication_failed',
 				__( 'Failed to create duplicate form.', 'sureforms' ),
@@ -176,17 +157,25 @@ class Duplicate_Form {
 	/**
 	 * Handle duplicate form REST API request
 	 *
-	 * Note: Nonce and capability checks are handled by WordPress REST API
-	 * infrastructure through the permission_callback.
+	 * Infrastructure through the permission_callback.
 	 *
 	 * @param \WP_REST_Request $request Full details about the request.
 	 * @return \WP_REST_Response|\WP_Error Response object on success, or WP_Error object on failure.
 	 * @since x.x.x
 	 */
 	public function handle_duplicate_form_rest( $request ) {
-		// Parameters are already sanitized by REST API framework.
-		$form_id      = $request->get_param( 'form_id' );
-		$title_suffix = $request->get_param( 'title_suffix' );
+		$nonce = Helper::get_string_value( $request->get_header( 'X-WP-Nonce' ) );
+
+		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'wp_rest' ) ) {
+			return new \WP_Error(
+				'invalid_nonce',
+				__( 'Nonce verification failed.', 'sureforms' ),
+				[ 'status' => 403 ]
+			);
+		}
+
+		$form_id      = absint( $request->get_param( 'form_id' ) );
+		$title_suffix = sanitize_text_field( $request->get_param( 'title_suffix' ) );
 
 		// Duplicate the form.
 		$result = $this->duplicate_form( $form_id, $title_suffix );

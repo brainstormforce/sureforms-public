@@ -200,7 +200,11 @@ export const useDuplicateForm = () => {
 					__( 'Form duplicated successfully: %s', 'sureforms' ),
 					data.new_form_title
 				);
-				toast.success( message );
+				toast.success( sprintf(
+					/* translators: %s: new form title */
+					__( 'Form duplicated successfully: %s', 'sureforms' ),
+					data.new_form_title
+				) );
 
 				// Invalidate and refetch forms list
 				queryClient.invalidateQueries( {
