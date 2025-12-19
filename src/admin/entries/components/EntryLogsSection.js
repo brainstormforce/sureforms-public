@@ -5,6 +5,7 @@ import { __ } from '@wordpress/i18n';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { useEntryLogs } from '../hooks/useEntriesQuery';
 import domPurify from 'dompurify';
+import parse from 'html-react-parser';
 
 /**
  * EntryLogsSection Component
@@ -119,12 +120,13 @@ const EntryLogsSection = ( { entryId, onConfirmation } ) => {
 													weight={ 400 }
 													color="primary"
 													className="[overflow-wrap:anywhere]"
-													dangerouslySetInnerHTML={ {
-														__html: domPurify.sanitize(
+												>
+													{ parse(
+														domPurify.sanitize(
 															message
-														),
-													} }
-												/>
+														)
+													) }
+												</Text>
 											)
 										) }
 								</div>

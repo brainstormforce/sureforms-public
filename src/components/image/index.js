@@ -259,6 +259,7 @@ const SRFMMediaPicker = ( props ) => {
 							{ backgroundImage?.svg && (
 								<div
 									className="srfm-media-control__icon srfm-media-control__icon--stroke"
+									// eslint-disable-next-line react/no-danger
 									dangerouslySetInnerHTML={ {
 										__html: backgroundImage.svg,
 									} }
