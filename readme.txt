@@ -4,7 +4,7 @@ Tags: contact form, custom form, forms, WordPress form plugin, form builder
 Requires at least: 6.4
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 2.2.0
+Stable tag: 2.2.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -374,6 +374,9 @@ You can collect payments securely without any add-ons or extra plugins.
 You can report the issue through our [Bug Bounty Program](https://brainstormforce.com/bug-bounty-program/). We collaborate with Patchstack to provide opportunities for researchers to report vulnerabilities. The Patchstack team will help validate, triage, and handle any reported security issues.
 
 == Changelog ==
+= 2.2.1 - 19th December 2025 =
+* Fix: Addressed a security bug. Props to Wordfence for reporting it responsibly.
+* Fix: Resolved Bricks v2.2-beta conflict with SureForms.
 = 2.2.0 - 16th December 2025 =
 * Improvement: Added confirmation step before moving items to trash in Forms and Entries lists.
 * Improvement: Optimized script loading to improve speed and efficiency.

@@ -48,7 +48,7 @@ class Gutenberg_Hooks {
 		// Initializing hooks.
 		add_action( 'enqueue_block_editor_assets', [ $this, 'form_editor_screen_assets' ] );
 		add_action( 'enqueue_block_editor_assets', [ $this, 'block_editor_assets' ] );
-		add_filter( 'block_categories_all', [ $this, 'register_block_categories' ], 10, 1 );
+		add_filter( 'block_categories_all', [ $this, 'register_block_categories' ], 10, 2 );
 		add_filter( 'allowed_block_types_all', [ $this, 'disable_forms_wrapper_block' ], 10, 2 );
 		add_action( 'save_post_sureforms_form', [ $this, 'update_field_slug' ], 10, 2 );
 		add_action( 'load-post.php', [ $this, 'maybe_migrate_form_stylings' ] );
@@ -94,14 +94,16 @@ class Gutenberg_Hooks {
 	/**
 	 * Register our custom block category.
 	 *
-	 * @param array<mixed> $categories Array of categories.
+	 * @param array<mixed>             $categories Array of categories.
+	 * @param \WP_Block_Editor_Context $block_editor_context The current block editor context.
 	 * @return array<mixed>
 	 * @since 0.0.1
 	 */
-	public function register_block_categories( $categories ) {
-		$screen = get_current_screen();
+	public function register_block_categories( $categories, $block_editor_context ) {
 
-		if ( $screen && SRFM_FORMS_POST_TYPE === $screen->post_type ) {
+		$post_type = $block_editor_context->post->post_type ?? '';
+
+		if ( $post_type && SRFM_FORMS_POST_TYPE === $post_type ) {
 			$title = esc_html__( 'General Fields', 'sureforms' );
 		} else {
 			$title = esc_html__( 'SureForms', 'sureforms' );

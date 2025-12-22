@@ -249,6 +249,7 @@ const UAGMediaPicker = ( props ) => {
 							{ backgroundImage?.svg && (
 								<div
 									className="spectra-media-control__icon spectra-media-control__icon--stroke"
+									// eslint-disable-next-line react/no-danger
 									dangerouslySetInnerHTML={ {
 										__html: backgroundImage.svg,
 									} }

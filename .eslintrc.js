@@ -22,6 +22,7 @@ module.exports = {
 			{ allowedTextDomain: 'sureforms' },
 		],
 		'react/no-unknown-property': [ 'error', { ignore: [ 'css' ] } ],
+		'react/no-danger': 'error',
 	},
 	parserOptions: {
 		requireConfigFile: false,
