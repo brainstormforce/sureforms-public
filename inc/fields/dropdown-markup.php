@@ -86,13 +86,10 @@ class Dropdown_Markup extends Base {
 		// For dropdowns, use the appropriate placeholder text:
 		// 1. If label is being used as placeholder (label_markup is empty), use the label.
 		// 2. Otherwise, use the block's placeholder value.
-		// 3. If no placeholder is set, use the default "Select an option".
 		if ( empty( $this->label_markup ) ) {
 			$this->placeholder = $this->label;
 		} elseif ( ! empty( $original_placeholder ) ) {
 			$this->placeholder = $original_placeholder;
-		} else {
-			$this->placeholder = __( 'Select an option', 'sureforms' );
 		}
 		$this->show_values = apply_filters( 'srfm_show_options_values', false, $attributes['showValues'] ?? false );
 
