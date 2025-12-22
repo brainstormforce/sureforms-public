@@ -4,7 +4,7 @@ Tags: contact form, custom form, forms, WordPress form plugin, form builder
 Requires at least: 6.4
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 2.2.0
+Stable tag: 2.2.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -360,7 +360,7 @@ plans.
 
 = Does SureForms support Payment Forms? =
 
-Yes! SureForms has built-in Payment Form support. 
+Yes! SureForms has built-in Payment Form support.
 You can collect payments securely without any add-ons or extra plugins.
 
 == Screenshot ==
@@ -376,6 +376,7 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 == Changelog ==
 = x.x.x =
 * Improvement: Added action to duplicate a form.
+= 2.2.1 - 19th December 2025 =
 * Fix: Addressed a security bug. Props to Wordfence for reporting it responsibly.
 * Fix: Resolved Bricks v2.2-beta conflict with SureForms.
 = 2.2.0 - 16th December 2025 =
