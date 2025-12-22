@@ -282,6 +282,18 @@ class Admin_Handler {
 				'payments'     => $billing_data,
 			];
 
+			/**
+			 * Filter subscription details response data.
+			 *
+			 * Allows payment gateways (PayPal, Stripe, etc.) to add gateway-specific
+			 * subscription fields to the response data sent to the frontend.
+			 *
+			 * @since 2.0.0
+			 * @param array $response_data Response data containing subscription and payments.
+			 * @param array $args          Additional arguments including the main subscription record.
+			 */
+			$response_data = apply_filters( 'srfm_subscription_details_response', $response_data, [ 'subscription' => $main_subscription ] );
+
 			wp_send_json_success( $response_data );
 
 		} catch ( \Exception $e ) {

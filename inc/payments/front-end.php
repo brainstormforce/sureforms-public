@@ -897,6 +897,17 @@ class Front_End {
 						// Update the payment entry with the entry_id.
 						$this->update_payment_entry_id( $payment_id, $entry_id );
 					}
+				} elseif ( ! empty( $stripe_payment_entry['subscription_id'] ) && ! empty( $stripe_payment_entry['form_id'] ) ) {
+					// Check if form_id matches for subscription-based payment.
+					$stored_form_id   = isset( $stripe_payment_entry['form_id'] ) && ! empty( $stripe_payment_entry['form_id'] ) && is_numeric( $stripe_payment_entry['form_id'] ) ? intval( $stripe_payment_entry['form_id'] ) : 0;
+					$response_form_id = isset( $form_submit_response['form_id'] ) && ! empty( $form_submit_response['form_id'] ) && is_numeric( $form_submit_response['form_id'] ) ? intval( $form_submit_response['form_id'] ) : 0;
+
+					$subscription_id = is_string( $stripe_payment_entry['subscription_id'] ) ? sanitize_text_field( $stripe_payment_entry['subscription_id'] ) : '';
+
+					if ( ! empty( $stored_form_id ) && $stored_form_id === $response_form_id ) {
+						// Update the payment entry with the entry_id using subscription_id.
+						$this->update_payment_entry_id_by_subscription_id( $subscription_id, $entry_id );
+					}
 				}
 			}
 		}
@@ -1377,6 +1388,36 @@ class Front_End {
 				[ 'transaction_id' => $payment_id ],
 				'id'
 			);
+
+		if ( ! empty( $payment_entries ) && is_array( $payment_entries ) && isset( $payment_entries[0] ) && is_array( $payment_entries[0] ) && isset( $payment_entries[0]['id'] ) ) {
+			$payment_entry_id = intval( $payment_entries[0]['id'] );
+
+			// Update the payment entry with entry_id using Payments class.
+			$updated = Payments::update( $payment_entry_id, [ 'entry_id' => $entry_id ] );
+			return $updated ? true : false;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Update payment entry with entry_id by subscription_id.
+	 *
+	 * Similar to update_payment_entry_id but looks up payment records by subscription_id
+	 * instead of transaction_id. This is useful for subscription payments (PayPal, Stripe)
+	 * where the subscription_id is available before the transaction_id.
+	 *
+	 * @param string $subscription_id The subscription ID from payment gateway.
+	 * @param int    $entry_id        The form entry ID to link with payment.
+	 * @since x.x.x
+	 * @return bool True if payment entry updated, false otherwise.
+	 */
+	private function update_payment_entry_id_by_subscription_id( $subscription_id, $entry_id ) {
+		// Find the payment entry by subscription_id.
+		$payment_entries = Payments::get_instance()->get_results(
+			[ 'subscription_id' => $subscription_id ],
+			'id'
+		);
 
 		if ( ! empty( $payment_entries ) && is_array( $payment_entries ) && isset( $payment_entries[0] ) && is_array( $payment_entries[0] ) && isset( $payment_entries[0]['id'] ) ) {
 			$payment_entry_id = intval( $payment_entries[0]['id'] );
