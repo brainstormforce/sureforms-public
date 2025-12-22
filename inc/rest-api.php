@@ -1385,7 +1385,7 @@ class Rest_Api {
 						'title_suffix' => [
 							'required'          => false,
 							'type'              => 'string',
-							'default'           => ' (Copy)',
+							'default'           => __( ' (Copy)', 'sureforms' ),
 							'sanitize_callback' => 'sanitize_text_field',
 						],
 					],
