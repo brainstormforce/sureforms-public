@@ -207,7 +207,6 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 									options={ countryOptions }
 								/>
 							) }
-							<div className="srfm-settings-separator" />
 							<ToggleControl
 								label={ __(
 									'Include/Exclude Countries',

@@ -38,7 +38,7 @@ class Phone_Markup extends Base {
 	 * Enable country filter toggle.
 	 *
 	 * @var bool
-	 * @since 2.2.1
+	 * @since x.x.x
 	 */
 	protected $enable_country_filter;
 
@@ -46,7 +46,7 @@ class Phone_Markup extends Base {
 	 * Country filter type (include or exclude).
 	 *
 	 * @var string
-	 * @since 2.2.1
+	 * @since x.x.x
 	 */
 	protected $country_filter_type;
 
@@ -54,7 +54,7 @@ class Phone_Markup extends Base {
 	 * Array of country codes to include.
 	 *
 	 * @var array
-	 * @since 2.2.1
+	 * @since x.x.x
 	 */
 	protected $include_countries;
 
@@ -62,7 +62,7 @@ class Phone_Markup extends Base {
 	 * Array of country codes to exclude.
 	 *
 	 * @var array
-	 * @since 2.2.1
+	 * @since x.x.x
 	 */
 	protected $exclude_countries;
 
