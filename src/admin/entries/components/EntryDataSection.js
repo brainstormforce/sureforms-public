@@ -3,6 +3,8 @@ import { sprintf, _n, __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
 import EntryEdit from './EntryEdit';
 import { decodeHTMLEntities } from '../utils/entryHelpers';
+import domPurify from 'dompurify';
+import parse from 'html-react-parser';
 
 /**
  * Render field value - handles both regular and repeater fields
@@ -90,12 +92,11 @@ export const RenderField = ( props ) => {
 							{ typeof field?.value === 'string' &&
 							field.value.match( /<[^>]+>/g ) ? (
 								// Render HTML content for fields that contain HTML tags
-									<span
-										className="text-sm font-medium text-text-secondary [overflow-wrap:anywhere]"
-										dangerouslySetInnerHTML={ {
-											__html: field.value,
-										} }
-									/>
+									<span className="text-sm font-medium text-text-secondary [overflow-wrap:anywhere]">
+										{ parse(
+											domPurify.sanitize( field.value )
+										) }
+									</span>
 								) : (
 								// Render plain text for regular fields
 									<span className="text-sm font-medium text-text-secondary [overflow-wrap:anywhere]">
