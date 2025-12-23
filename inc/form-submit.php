@@ -647,7 +647,8 @@ class Form_Submit {
 			];
 		}
 
-		return $response;
+		// return $response;
+		return apply_filters( 'srfm_form_submission_response', $response, $form_data, $submission_data );
 	}
 
 	/**

@@ -29,6 +29,7 @@ import {
 	Cpu,
 	Link2,
 	Save,
+	MessageSquare
 } from 'lucide-react';
 
 import Suretriggers from '../integrations/suretriggers';
@@ -152,6 +153,50 @@ const Dialog = ( {
 					<FormConfirmSetting
 						setHasValidationErrors={ setHasValidationErrors }
 						toast={ toast }
+					/>
+				),
+			},
+			{
+				id: 'conditional-confirmations-preview',
+				label: __( 'Conditional Confirmations', 'sureforms' ),
+				icon: <MessageSquare />,
+				component: (
+					<FeaturePreview
+						featureName={ __( 'Conditional Confirmations', 'sureforms' ) }
+						featureHelpText={ __(
+							'Create dynamic confirmation messages based on user input.',
+							'sureforms'
+						) }
+						icon={
+							<MessageSquare
+								className="text-orange-500"
+								size={ 40 }
+								strokeWidth={ 1 }
+							/>
+						}
+						title={ __(
+							'Personalize User Experience with Conditional Confirmations',
+							'sureforms'
+						) }
+						subtitle={ __(
+							'Enhance user engagement by tailoring confirmation messages based on form responses. Deliver relevant feedback that resonates with each user\'s input.',
+							'sureforms'
+						) }
+						featureList={ [
+							__(
+								'Display custom confirmation messages based on user selections.',
+								'sureforms'
+							),
+							__(
+								'Redirect users to different URLs depending on their form answers.',
+								'sureforms'
+							),
+							__(
+								'Elevate user satisfaction with personalized feedback.',
+								'sureforms'
+							),
+						] }
+						utmMedium="conditional-confirmations-preview-single-form-settings"
 					/>
 				),
 			},

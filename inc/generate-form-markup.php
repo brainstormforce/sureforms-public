@@ -212,6 +212,17 @@ class Generate_Form_Markup {
 			$is_page_break            = ! empty( $page_break_settings ) ? $page_break_settings['is_page_break'] : false;
 			$page_break_progress_type = ! empty( $page_break_settings ) ? $page_break_settings['progress_indicator_type'] : 'none';
 			$form_confirmation        = get_post_meta( $id, '_srfm_form_confirmation' );
+
+			/**
+			 * Filter the form confirmation data.
+			 * Allows conditional confirmations to override the default confirmation settings.
+			 *
+			 * @param array $form_confirmation The form confirmation data from post meta.
+			 * @param int   $id The form ID.
+			 * @since 1.10.0
+			 */
+			$form_confirmation = apply_filters( 'srfm_form_confirmation_data', $form_confirmation, $id );
+
 			$confirmation_type        = '';
 			$submission_action        = '';
 			$success_url              = '';
@@ -693,8 +704,20 @@ class Generate_Form_Markup {
 			return $confirmation_message;
 		}
 
-		$form_confirmation = isset( $form_data['form-id'] ) ?
-			get_post_meta( Helper::get_integer_value( $form_data['form-id'] ), '_srfm_form_confirmation' ) : null;
+		$form_id           = isset( $form_data['form-id'] ) ? Helper::get_integer_value( $form_data['form-id'] ) : 0;
+		$form_confirmation = get_post_meta( $form_id, '_srfm_form_confirmation' );
+
+		/**
+		 * Filter the form confirmation data.
+		 * Allows conditional confirmations to override the default confirmation settings.
+		 *
+		 * @param array $form_confirmation The form confirmation data from post meta.
+		 * @param int   $form_id The form ID.
+		 * @param array $form_data The form data.
+		 * @param array $submission_data The submission data.
+		 * @since 1.10.0
+		 */
+		$form_confirmation = apply_filters( 'srfm_form_confirmation_data', $form_confirmation, $form_id, $form_data, $submission_data );
 
 		if ( ! is_array( $form_confirmation ) ) {
 			return $confirmation_message;
@@ -740,8 +763,20 @@ class Generate_Form_Markup {
 			return $redirect_url;
 		}
 
-		$form_confirmation = isset( $form_data['form-id'] ) ?
-			get_post_meta( Helper::get_integer_value( $form_data['form-id'] ), '_srfm_form_confirmation' ) : null;
+		$form_id           = isset( $form_data['form-id'] ) ? Helper::get_integer_value( $form_data['form-id'] ) : 0;
+		$form_confirmation = get_post_meta( $form_id, '_srfm_form_confirmation' );
+
+		/**
+		 * Filter the form confirmation data.
+		 * Allows conditional confirmations to override the default confirmation settings.
+		 *
+		 * @param array $form_confirmation The form confirmation data from post meta.
+		 * @param int   $form_id The form ID.
+		 * @param array $form_data The form data.
+		 * @param array $submission_data The submission data.
+		 * @since 1.10.0
+		 */
+		$form_confirmation = apply_filters( 'srfm_form_confirmation_data', $form_confirmation, $form_id, $form_data, $submission_data );
 
 		if ( ! is_array( $form_confirmation ) ) {
 			return $redirect_url;
