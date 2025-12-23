@@ -360,7 +360,7 @@ plans.
 
 = Does SureForms support Payment Forms? =
 
-Yes! SureForms has built-in Payment Form support. 
+Yes! SureForms has built-in Payment Form support.
 You can collect payments securely without any add-ons or extra plugins.
 
 == Screenshot ==
@@ -374,6 +374,8 @@ You can collect payments securely without any add-ons or extra plugins.
 You can report the issue through our [Bug Bounty Program](https://brainstormforce.com/bug-bounty-program/). We collaborate with Patchstack to provide opportunities for researchers to report vulnerabilities. The Patchstack team will help validate, triage, and handle any reported security issues.
 
 == Changelog ==
+= x.x.x =
+* Fix: Resolved an issue with email notifications where ids are getting duplicated.
 = 2.2.1 - 19th December 2025 =
 * Fix: Addressed a security bug. Props to Wordfence for reporting it responsibly.
 * Fix: Resolved Bricks v2.2-beta conflict with SureForms.
