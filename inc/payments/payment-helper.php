@@ -612,8 +612,11 @@ class Payment_Helper {
 		$amount_type = $payment_config['amount_type'] ?? 'fixed';
 
 		// Convert submitted amount from smallest unit to decimal for comparison.
-		// Stripe amounts are in cents, so divide by 100.
-		$submitted_amount_decimal = $amount / 100;
+		// For zero-decimal currencies (JPY, KRW, etc.), amount is already in major units.
+		// For two-decimal currencies (USD, EUR, etc.), divide by 100.
+		$submitted_amount_decimal = self::is_zero_decimal_currency( $currency )
+			? $amount
+			: $amount / 100;
 
 		// Validate based on amount type.
 		if ( 'fixed' === $amount_type ) {
