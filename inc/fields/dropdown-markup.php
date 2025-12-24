@@ -136,13 +136,13 @@ class Dropdown_Markup extends Base {
 						if ( ! empty( $this->preselected_options ) ) {
 							$preselected_labels = array_map(
 								function( $i ) {
-									$option = $this->options[ $i ] ?? array();
+									$option = $this->options[ $i ] ?? [];
 									return is_array( $option ) ? ( $option['label'] ?? '' ) : '';
 								},
 								$this->preselected_options
 							);
-							$json_encoded = wp_json_encode( $preselected_labels );
-							echo 'data-preselected="' . esc_attr( $json_encoded !== false ? $json_encoded : '' ) . '"';
+							$json_encoded       = wp_json_encode( $preselected_labels );
+							echo 'data-preselected="' . esc_attr( false !== $json_encoded ? $json_encoded : '' ) . '"';
 						}
 						?>
 						tabindex="0" aria-hidden="true">
