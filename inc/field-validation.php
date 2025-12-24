@@ -72,11 +72,6 @@ class Field_Validation {
 					$payment_config['minimum_amount'] = floatval( $block['attrs']['minimumAmount'] );
 				}
 
-				// Extract currency.
-				if ( isset( $block['attrs']['currency'] ) ) {
-					$payment_config['currency'] = strtolower( sanitize_text_field( $block['attrs']['currency'] ) );
-				}
-
 				// Store payment configuration.
 				$block_config[ $block_id ] = $payment_config;
 				continue;

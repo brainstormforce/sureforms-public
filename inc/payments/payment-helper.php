@@ -565,7 +565,7 @@ class Payment_Helper {
 	 * match the configured values in the form's payment block settings.
 	 * It handles both fixed and minimum amount validations for single and subscription payments.
 	 *
-	 * @since 2.0.0
+	 * @since x.x.x
 	 * @param int    $amount   Amount in smallest currency unit (e.g., cents for USD).
 	 * @param string $currency Currency code (e.g., 'usd', 'eur').
 	 * @param int    $form_id  WordPress post ID of the form.
@@ -597,20 +597,15 @@ class Payment_Helper {
 			];
 		}
 
-		$payment_config = $block_config[ $block_id ];
-
-		// Validate currency.
-		if ( isset( $payment_config['currency'] ) ) {
-			$configured_currency = strtolower( $payment_config['currency'] );
-			$submitted_currency  = strtolower( $currency );
-
-			if ( $configured_currency !== $submitted_currency ) {
-				return [
-					'valid'   => false,
-					/* translators: 1: expected currency, 2: received currency */
-					'message' => sprintf( __( 'Currency mismatch: expected %1$s, received %2$s.', 'sureforms' ), strtoupper( $configured_currency ), strtoupper( $submitted_currency ) ),
-				];
-			}
+		$payment_config     = $block_config[ $block_id ];
+		$global_currency    = strtolower( self::get_currency() );
+		$submitted_currency = strtolower( $currency );
+		if ( $global_currency !== $submitted_currency ) {
+			return [
+				'valid'   => false,
+				/* translators: 1: expected currency, 2: received currency */
+				'message' => sprintf( __( 'Currency mismatch: expected %1$s, received %2$s.', 'sureforms' ), strtoupper( $global_currency ), strtoupper( $submitted_currency ) ),
+			];
 		}
 
 		// Get amount type (fixed or minimum).
@@ -659,7 +654,7 @@ class Payment_Helper {
 	 * Stores payment intent details temporarily to verify that the payment intent
 	 * was created through our system and hasn't been tampered with.
 	 *
-	 * @since 2.0.0
+	 * @since x.x.x
 	 * @param string               $block_id          Block identifier.
 	 * @param string               $payment_intent_id Payment intent ID from Stripe.
 	 * @param array<string, mixed> $metadata          Payment metadata to store.
@@ -685,7 +680,7 @@ class Payment_Helper {
 	 *
 	 * Retrieves stored payment intent metadata to verify authenticity.
 	 *
-	 * @since 2.0.0
+	 * @since x.x.x
 	 * @param string $block_id          Block identifier.
 	 * @param string $payment_intent_id Payment intent ID from Stripe.
 	 * @return bool True if metadata exists, false if not found.
@@ -708,7 +703,7 @@ class Payment_Helper {
 	 *
 	 * Cleans up stored metadata after successful payment verification.
 	 *
-	 * @since 2.0.0
+	 * @since x.x.x
 	 * @param string $block_id          Block identifier.
 	 * @param string $payment_intent_id Payment intent ID from Stripe.
 	 * @return bool True on success, false on failure.
