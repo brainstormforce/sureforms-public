@@ -618,7 +618,7 @@ class Payment_Helper {
 		// Validate based on amount type.
 		if ( 'fixed' === $amount_type ) {
 			// Fixed amount validation - must match exactly.
-			$configured_amount = isset( $payment_config['fixed_amount'] ) ? floatval( $payment_config['fixed_amount'] ) : 0;
+			$configured_amount = isset( $payment_config['fixed_amount'] ) ? floatval( $payment_config['fixed_amount'] ) : 10.00;
 
 			// Allow small floating point difference (0.01) due to rounding.
 			if ( abs( $submitted_amount_decimal - $configured_amount ) > 0.01 ) {
@@ -628,7 +628,7 @@ class Payment_Helper {
 					'message' => sprintf( __( 'Payment amount must be exactly %1$s.', 'sureforms' ), $configured_amount . ' ' . strtoupper( $currency ) ),
 				];
 			}
-		} elseif ( 'minimum' === $amount_type ) {
+		} elseif ( 'variable' === $amount_type ) {
 			// Minimum amount validation - must be >= minimum.
 			$minimum_amount = isset( $payment_config['minimum_amount'] ) ? floatval( $payment_config['minimum_amount'] ) : 0;
 
