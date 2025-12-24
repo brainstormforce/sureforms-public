@@ -1,3 +1,48 @@
+/**
+ * Validates and returns a country code based on filter settings.
+ * If the country is not valid for current filters, returns the first valid country.
+ *
+ * @param {string} country             - The country code to validate
+ * @param {string} enableCountryFilter - Whether country filtering is enabled ('true' or 'false')
+ * @param {string} countryFilterType   - The filter type ('include' or 'exclude')
+ * @param {Array}  includeCountries    - Array of country codes to include
+ * @param {Array}  excludeCountries    - Array of country codes to exclude
+ * @return {string} A valid country code based on the filters
+ */
+function validateCountryWithFilters(
+	country,
+	enableCountryFilter,
+	countryFilterType,
+	includeCountries,
+	excludeCountries
+) {
+	if ( enableCountryFilter !== 'true' ) {
+		return country;
+	}
+
+	const countryLower = country.toLowerCase();
+
+	// Handle include filter
+	if ( countryFilterType === 'include' && includeCountries.length > 0 ) {
+		if ( ! includeCountries.includes( countryLower ) ) {
+			// Country not in include list, use first country from the list
+			return includeCountries[ 0 ];
+		}
+		return countryLower;
+	}
+
+	// Handle exclude filter
+	if ( countryFilterType === 'exclude' && excludeCountries.length > 0 ) {
+		if ( excludeCountries.includes( countryLower ) ) {
+			// Country is excluded, use 'us' or another fallback
+			return excludeCountries.includes( 'us' ) ? 'gb' : 'us';
+		}
+		return countryLower;
+	}
+
+	return country;
+}
+
 function initializePhoneField() {
 	const phone = document.querySelectorAll( '.srfm-phone-block' );
 
@@ -51,32 +96,14 @@ function initializePhoneField() {
 		// Determine initial country based on filter settings
 		let initialCountry = defaultCountry || 'us';
 
-		// If country filtering is enabled, validate the initial country
-		if ( enableCountryFilter === 'true' ) {
-			if (
-				countryFilterType === 'include' &&
-				includeCountries.length > 0
-			) {
-				// If include filter is active, check if initial country is in the list
-				const initialCountryLower = initialCountry.toLowerCase();
-				if ( ! includeCountries.includes( initialCountryLower ) ) {
-					// Initial country not in include list, use first country from the list
-					initialCountry = includeCountries[ 0 ];
-				}
-			} else if (
-				countryFilterType === 'exclude' &&
-				excludeCountries.length > 0
-			) {
-				// If exclude filter is active, check if initial country is excluded
-				const initialCountryLower = initialCountry.toLowerCase();
-				if ( excludeCountries.includes( initialCountryLower ) ) {
-					// Initial country is excluded, use 'us' or another fallback
-					initialCountry = excludeCountries.includes( 'us' )
-						? 'gb'
-						: 'us';
-				}
-			}
-		}
+		// Validate the initial country against filters
+		initialCountry = validateCountryWithFilters(
+			initialCountry,
+			enableCountryFilter,
+			countryFilterType,
+			includeCountries,
+			excludeCountries
+		);
 
 		const itlOptions = {
 			autoPlaceholder: 'off',
@@ -101,60 +128,29 @@ function initializePhoneField() {
 							: 'us';
 
 						// Validate detected country against filters
-						if ( enableCountryFilter === 'true' ) {
-							if (
-								countryFilterType === 'include' &&
-								includeCountries.length > 0
-							) {
-								// Check if detected country is in include list
-								if (
-									! includeCountries.includes(
-										detectedCountry
-									)
-								) {
-									// Use first country from include list
-									detectedCountry = includeCountries[ 0 ];
-								}
-							} else if (
-								countryFilterType === 'exclude' &&
-								excludeCountries.length > 0
-							) {
-								// Check if detected country is excluded
-								if (
-									excludeCountries.includes( detectedCountry )
-								) {
-									// Use fallback country that's not excluded
-									detectedCountry = excludeCountries.includes(
-										'us'
-									)
-										? 'gb'
-										: 'us';
-								}
-							}
-						}
+						detectedCountry = validateCountryWithFilters(
+							detectedCountry,
+							enableCountryFilter,
+							countryFilterType,
+							includeCountries,
+							excludeCountries
+						);
 
 						callback( detectedCountry );
 					} )
 					.catch( function () {
 						// On error, use validated fallback country
 						let fallbackCountry = 'us';
-						if ( enableCountryFilter === 'true' ) {
-							if (
-								countryFilterType === 'include' &&
-								includeCountries.length > 0
-							) {
-								fallbackCountry = includeCountries[ 0 ];
-							} else if (
-								countryFilterType === 'exclude' &&
-								excludeCountries.length > 0
-							) {
-								fallbackCountry = excludeCountries.includes(
-									'us'
-								)
-									? 'gb'
-									: 'us';
-							}
-						}
+
+						// Validate fallback country against filters
+						fallbackCountry = validateCountryWithFilters(
+							fallbackCountry,
+							enableCountryFilter,
+							countryFilterType,
+							includeCountries,
+							excludeCountries
+						);
+
 						callback( fallbackCountry );
 					} );
 			};
