@@ -375,6 +375,7 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 
 == Changelog ==
 = x.x.x =
+* Improvement: Added action to duplicate a form.
 * Improvement: Added placeholder for blocks that use input field.
 = 2.2.1 - 19th December 2025 =
 * Fix: Addressed a security bug. Props to Wordfence for reporting it responsibly.
