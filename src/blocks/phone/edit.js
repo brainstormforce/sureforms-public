@@ -115,6 +115,17 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 									setAttributes( { help: value } )
 								}
 							/>
+							<SRFMTextControl
+								label={ __( 'Placeholder', 'sureforms' ) }
+								value={ attributes.placeholder }
+								data={ {
+									value: attributes.placeholder,
+									label: 'placeholder',
+								} }
+								onChange={ ( value ) =>
+									setAttributes( { placeholder: value } )
+								}
+							/>
 							<div className="srfm-settings-separator" />
 							<ToggleControl
 								label={ __( 'Unique Entry', 'sureforms' ) }
