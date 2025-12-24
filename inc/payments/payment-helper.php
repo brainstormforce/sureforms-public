@@ -570,4 +570,99 @@ class Payment_Helper {
 			'stripe'       => Stripe_Helper::get_default_stripe_settings(),
 		];
 	}
+
+	/**
+	 * Validate payment amount against stored form configuration.
+	 *
+	 * This function verifies that the payment amount and currency submitted
+	 * match the configured values in the form's payment block settings.
+	 * It handles both fixed and minimum amount validations for single and subscription payments.
+	 *
+	 * @since 2.0.0
+	 * @param int    $amount   Amount in smallest currency unit (e.g., cents for USD).
+	 * @param string $currency Currency code (e.g., 'usd', 'eur').
+	 * @param int    $form_id  WordPress post ID of the form.
+	 * @param string $block_id Block identifier for the payment block.
+	 * @return array {
+	 *     Validation result.
+	 *
+	 *     @type bool   $valid   Whether the validation passed.
+	 *     @type string $message Error message if validation failed, empty if valid.
+	 * }
+	 */
+	public static function validate_payment_amount( $amount, $currency, $form_id, $block_id ) {
+		// Retrieve block configuration from post meta.
+		$block_config = \SRFM\Inc\Field_Validation::get_or_migrate_block_config_for_legacy_form( $form_id );
+
+		// Check if block config exists.
+		if ( empty( $block_config ) || ! is_array( $block_config ) ) {
+			return [
+				'valid'   => false,
+				'message' => __( 'Invalid form configuration.', 'sureforms' ),
+			];
+		}
+
+		// Check if payment block exists in configuration.
+		if ( ! isset( $block_config[ $block_id ] ) || ! is_array( $block_config[ $block_id ] ) ) {
+			return [
+				'valid'   => false,
+				'message' => __( 'Payment configuration not found for this form.', 'sureforms' ),
+			];
+		}
+
+		$payment_config = $block_config[ $block_id ];
+
+		// Validate currency.
+		if ( isset( $payment_config['currency'] ) ) {
+			$configured_currency = strtolower( $payment_config['currency'] );
+			$submitted_currency  = strtolower( $currency );
+
+			if ( $configured_currency !== $submitted_currency ) {
+				return [
+					'valid'   => false,
+					/* translators: 1: expected currency, 2: received currency */
+					'message' => sprintf( __( 'Currency mismatch: expected %1$s, received %2$s.', 'sureforms' ), strtoupper( $configured_currency ), strtoupper( $submitted_currency ) ),
+				];
+			}
+		}
+
+		// Get amount type (fixed or minimum).
+		$amount_type = isset( $payment_config['amount_type'] ) ? $payment_config['amount_type'] : 'fixed';
+
+		// Convert submitted amount from smallest unit to decimal for comparison.
+		// Stripe amounts are in cents, so divide by 100.
+		$submitted_amount_decimal = $amount / 100;
+
+		// Validate based on amount type.
+		if ( 'fixed' === $amount_type ) {
+			// Fixed amount validation - must match exactly.
+			$configured_amount = isset( $payment_config['fixed_amount'] ) ? floatval( $payment_config['fixed_amount'] ) : 0;
+
+			// Allow small floating point difference (0.01) due to rounding.
+			if ( abs( $submitted_amount_decimal - $configured_amount ) > 0.01 ) {
+				return [
+					'valid'   => false,
+					/* translators: 1: expected amount with currency */
+					'message' => sprintf( __( 'Payment amount must be exactly %1$s.', 'sureforms' ), $configured_amount . ' ' . strtoupper( $currency ) ),
+				];
+			}
+		} elseif ( 'minimum' === $amount_type ) {
+			// Minimum amount validation - must be >= minimum.
+			$minimum_amount = isset( $payment_config['minimum_amount'] ) ? floatval( $payment_config['minimum_amount'] ) : 0;
+
+			if ( $submitted_amount_decimal < $minimum_amount ) {
+				return [
+					'valid'   => false,
+					/* translators: 1: minimum amount with currency */
+					'message' => sprintf( __( 'Payment amount must be at least %1$s.', 'sureforms' ), $minimum_amount . ' ' . strtoupper( $currency ) ),
+				];
+			}
+		}
+
+		// Validation passed.
+		return [
+			'valid'   => true,
+			'message' => '',
+		];
+	}
 }

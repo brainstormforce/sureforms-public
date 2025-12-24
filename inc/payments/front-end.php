@@ -80,9 +80,18 @@ class Front_End {
 		$block_id       = sanitize_text_field( wp_unslash( $_POST['block_id'] ?? '' ) );
 		$customer_email = sanitize_email( wp_unslash( $_POST['customer_email'] ?? '' ) );
 		$customer_name  = sanitize_text_field( wp_unslash( $_POST['customer_name'] ?? '' ) );
+		$form_id        = intval( $_POST['form_id'] ?? 0 );
 
 		if ( $amount <= 0 ) {
 			wp_send_json_error( __( 'Invalid payment amount.', 'sureforms' ) );
+		}
+
+		// Validate payment amount against stored form configuration.
+		if ( $form_id > 0 && ! empty( $block_id ) ) {
+			$validation_result = Payment_Helper::validate_payment_amount( $amount, $currency, $form_id, $block_id );
+			if ( ! $validation_result['valid'] ) {
+				wp_send_json_error( $validation_result['message'] );
+			}
 		}
 
 		// Validate customer email (required for one-time payments).
@@ -245,6 +254,7 @@ class Front_End {
 		$plan_name             = sanitize_text_field( wp_unslash( $_POST['plan_name'] ?? 'Subscription Plan' ) );
 		$customer_email        = sanitize_email( wp_unslash( $_POST['customer_email'] ?? '' ) );
 		$customer_name         = sanitize_text_field( wp_unslash( $_POST['customer_name'] ?? '' ) );
+		$form_id               = intval( $_POST['form_id'] ?? 0 );
 
 		// Validate customer email (required for all subscriptions).
 		if ( empty( $customer_email ) || ! is_email( $customer_email ) ) {
@@ -254,6 +264,14 @@ class Front_End {
 		// Validate customer name (required for subscriptions).
 		if ( empty( $customer_name ) ) {
 			wp_send_json_error( __( 'Customer name is required for subscriptions.', 'sureforms' ) );
+		}
+
+		// Validate payment amount against stored form configuration.
+		if ( $form_id > 0 && ! empty( $block_id ) ) {
+			$validation_result = Payment_Helper::validate_payment_amount( $amount, $currency, $form_id, $block_id );
+			if ( ! $validation_result['valid'] ) {
+				wp_send_json_error( $validation_result['message'] );
+			}
 		}
 
 		// Validate amount like simple-stripe-subscriptions.
