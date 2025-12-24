@@ -522,6 +522,8 @@ class Base {
 		if ( ! empty( $placeholder ) ) {
 			$this->label_markup     = '';
 			$this->placeholder_attr = ' placeholder="' . esc_attr( $placeholder ) . '" ';
+		} elseif ( '' !== $this->placeholder ) {
+			$this->placeholder_attr = ' placeholder="' . esc_attr( $this->placeholder ) . '" ';
 		}
 	}
 
