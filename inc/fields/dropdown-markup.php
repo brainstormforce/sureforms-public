@@ -78,8 +78,19 @@ class Dropdown_Markup extends Base {
 		$this->search_attr       = ! empty( $attributes['searchable'] ) ? 'true' : 'false';
 		$this->set_markup_properties();
 		$this->set_aria_described_by();
+
+		// Store the original placeholder before set_label_as_placeholder modifies placeholder_attr.
+		$original_placeholder = $this->placeholder;
 		$this->set_label_as_placeholder( $this->input_label );
-		$this->placeholder = ! empty( $this->placeholder_attr ) ? $this->label : __( 'Select an option', 'sureforms' );
+
+		// For dropdowns, use the appropriate placeholder text:
+		// 1. If label is being used as placeholder (label_markup is empty), use the label.
+		// 2. Otherwise, use the block's placeholder value.
+		if ( empty( $this->label_markup ) ) {
+			$this->placeholder = $this->label;
+		} elseif ( ! empty( $original_placeholder ) ) {
+			$this->placeholder = $original_placeholder;
+		}
 		$this->show_values = apply_filters( 'srfm_show_options_values', false, $attributes['showValues'] ?? false );
 
 		// Generate unique instance identifier.
