@@ -394,6 +394,19 @@ class Front_End {
 				throw new \Exception( __( 'Failed to create subscription.', 'sureforms' ) );
 			}
 
+			// Store subscription metadata in transient for verification.
+			Payment_Helper::store_payment_intent_metadata(
+				$block_id,
+				$payment_intent_id,
+				[
+					'form_id'         => $form_id,
+					'block_id'        => $block_id,
+					'amount'          => $amount,
+					'currency'        => strtolower( $currency ),
+					'subscription_id' => $subscription_id,
+				]
+			);
+
 			$response = [
 				'type'              => 'subscription',
 				'client_secret'     => $client_secret,
@@ -520,6 +533,16 @@ class Front_End {
 
 		$customer_id     = ! empty( $subscription_value['customerId'] ) ? $subscription_value['customerId'] : '';
 		$setup_intent_id = ! empty( $subscription_value['setupIntent'] ) && is_string( $subscription_value['setupIntent'] ) ? $subscription_value['setupIntent'] : '';
+
+		// Verify payment intent was created through our system.
+		$stored_metadata = Payment_Helper::get_payment_intent_metadata( $block_id, $setup_intent_id );
+
+		if ( false === $stored_metadata ) {
+			// Payment intent not found - not created through our system.
+			return [
+				'error' => __( 'Payment verification failed. Invalid payment intent.', 'sureforms' ),
+			];
+		}
 
 		if ( empty( $customer_id ) ) {
 			return [

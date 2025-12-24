@@ -12,6 +12,7 @@
 
 namespace SRFM\Inc\Payments;
 
+use SRFM\Inc\Field_Validation;
 use SRFM\Inc\Payments\Stripe\Stripe_Helper;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -558,20 +559,6 @@ class Payment_Helper {
 	}
 
 	/**
-	 * Get default payment settings (global + all gateways).
-	 *
-	 * @since 2.0.0
-	 * @return array<string, mixed> Default payment settings structure.
-	 */
-	private static function get_default_payment_settings() {
-		return [
-			'currency'     => 'USD',
-			'payment_mode' => 'test',
-			'stripe'       => Stripe_Helper::get_default_stripe_settings(),
-		];
-	}
-
-	/**
 	 * Validate payment amount against stored form configuration.
 	 *
 	 * This function verifies that the payment amount and currency submitted
@@ -592,7 +579,7 @@ class Payment_Helper {
 	 */
 	public static function validate_payment_amount( $amount, $currency, $form_id, $block_id ) {
 		// Retrieve block configuration from post meta.
-		$block_config = \SRFM\Inc\Field_Validation::get_or_migrate_block_config_for_legacy_form( $form_id );
+		$block_config = Field_Validation::get_or_migrate_block_config_for_legacy_form( $form_id );
 
 		// Check if block config exists.
 		if ( empty( $block_config ) || ! is_array( $block_config ) ) {
@@ -627,7 +614,7 @@ class Payment_Helper {
 		}
 
 		// Get amount type (fixed or minimum).
-		$amount_type = isset( $payment_config['amount_type'] ) ? $payment_config['amount_type'] : 'fixed';
+		$amount_type = $payment_config['amount_type'] ?? 'fixed';
 
 		// Convert submitted amount from smallest unit to decimal for comparison.
 		// Stripe amounts are in cents, so divide by 100.
@@ -673,9 +660,9 @@ class Payment_Helper {
 	 * was created through our system and hasn't been tampered with.
 	 *
 	 * @since 2.0.0
-	 * @param string $block_id          Block identifier.
-	 * @param string $payment_intent_id Payment intent ID from Stripe.
-	 * @param array  $metadata          Payment metadata to store.
+	 * @param string               $block_id          Block identifier.
+	 * @param string               $payment_intent_id Payment intent ID from Stripe.
+	 * @param array<string, mixed> $metadata          Payment metadata to store.
 	 * @return bool True on success, false on failure.
 	 */
 	public static function store_payment_intent_metadata( $block_id, $payment_intent_id, $metadata ) {
@@ -701,7 +688,7 @@ class Payment_Helper {
 	 * @since 2.0.0
 	 * @param string $block_id          Block identifier.
 	 * @param string $payment_intent_id Payment intent ID from Stripe.
-	 * @return array|false Metadata array on success, false if not found.
+	 * @return bool True if metadata exists, false if not found.
 	 */
 	public static function get_payment_intent_metadata( $block_id, $payment_intent_id ) {
 		if ( empty( $block_id ) || empty( $payment_intent_id ) ) {
@@ -713,7 +700,7 @@ class Payment_Helper {
 
 		$metadata = get_transient( $transient_key );
 
-		return $metadata !== false ? $metadata : false;
+		return false !== $metadata ? true : false;
 	}
 
 	/**
@@ -735,5 +722,19 @@ class Payment_Helper {
 		$transient_key = 'srfm_pi_' . sanitize_key( $block_id ) . '_' . sanitize_key( $payment_intent_id );
 
 		return delete_transient( $transient_key );
+	}
+
+	/**
+	 * Get default payment settings (global + all gateways).
+	 *
+	 * @since 2.0.0
+	 * @return array<string, mixed> Default payment settings structure.
+	 */
+	private static function get_default_payment_settings() {
+		return [
+			'currency'     => 'USD',
+			'payment_mode' => 'test',
+			'stripe'       => Stripe_Helper::get_default_stripe_settings(),
+		];
 	}
 }
