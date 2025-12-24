@@ -1,3 +1,4 @@
+/* global requestAnimationFrame */
 function initializeDropdown() {
 	const dropDownSelector = document.querySelectorAll(
 		'.srfm-dropdown-common'
@@ -163,6 +164,47 @@ function initializeDropdown() {
 			 * @param {string}      inputName - The key under which the TomSelect instance is stored in the `window.srfm` object.
 			 */
 			const tomInputInstance = new TomSelect( element, config );
+
+			// Initialize preselected values for multi-select dropdowns
+			requestAnimationFrame( () => {
+				const preselectedAttr =
+					element.getAttribute( 'data-preselected' ); // Pass array of values as JSON string
+				if ( preselectedAttr ) {
+					try {
+						const preselectedValues = JSON.parse( preselectedAttr ); // Convert JSON string to array
+						if (
+							Array.isArray( preselectedValues ) &&
+							preselectedValues.length > 0
+						) {
+							tomInputInstance.setValue( preselectedValues ); // TomSelect API sets multiple values
+						}
+					} catch ( e ) {
+						console.warn(
+							'Failed to parse preselected values for dropdown',
+							e
+						);
+					}
+				}
+
+				// Update hidden input field with current items
+				const hiddenInputField = element
+					.closest( '.srfm-dropdown-block' )
+					.querySelector( '.srfm-input-dropdown-hidden' );
+				if ( hiddenInputField && tomInputInstance.items.length > 0 ) {
+					const value =
+						tomInputInstance.items.length > 1
+							? window.srfm.srfmUtility.prepareValue(
+								tomInputInstance.items
+							  )
+							: tomInputInstance.items[ 0 ];
+					hiddenInputField.setAttribute( 'value', value );
+
+					// Trigger change event for conditional logic
+					hiddenInputField.dispatchEvent(
+						new Event( 'change', { bubbles: true } )
+					);
+				}
+			} );
 
 			/**
 			 * Add the aria required attribute for the dropdown input element.

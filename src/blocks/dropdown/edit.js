@@ -4,7 +4,7 @@
 import { __ } from '@wordpress/i18n';
 import { ToggleControl, Button } from '@wordpress/components';
 import { InspectorControls } from '@wordpress/block-editor';
-import { useEffect, useState } from '@wordpress/element';
+import { useEffect, useState, useRef } from '@wordpress/element';
 import SRFMTextControl from '@Components/text-control';
 
 import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
@@ -52,10 +52,12 @@ const Edit = ( props ) => {
 		minValue,
 		maxValue,
 		showValues,
+		preselectedOptions = [],
 	} = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
 	const [ newOption, setNewOption ] = useState( '' );
 	const [ error, setError ] = useState( false );
+	const prevMultiSelect = useRef( multiSelect );
 
 	const changeOption = ( value, index ) => {
 		const updatedOptions = options.map( ( item, thisIndex ) => {
@@ -84,8 +86,34 @@ const Edit = ( props ) => {
 	function handleDelete( i ) {
 		const newOptions = [ ...options ];
 		newOptions.splice( i, 1 );
-		setAttributes( { options: newOptions } );
+
+		// Update preselected options when an option is deleted
+		const newPreselected = preselectedOptions
+			.filter( ( index ) => index !== i ) // Remove deleted option
+			.map( ( index ) => ( index > i ? index - 1 : index ) ); // Adjust indices
+
+		setAttributes( {
+			options: newOptions,
+			preselectedOptions: newPreselected,
+		} );
 	}
+
+	const togglePreselection = ( index ) => {
+		let newPreselected = [ ...preselectedOptions ];
+
+		if ( ! multiSelect ) {
+			// For single select, only allow one preselection
+			newPreselected = newPreselected.includes( index ) ? [] : [ index ];
+		} else if ( newPreselected.includes( index ) ) {
+			// For multi-select, remove if already selected
+			newPreselected = newPreselected.filter( ( i ) => i !== index );
+		} else {
+			// For multi-select, add to selection
+			newPreselected.push( index );
+		}
+
+		setAttributes( { preselectedOptions: newPreselected } );
+	};
 
 	const addOption = ( value ) => {
 		setAttributes( {
@@ -105,6 +133,17 @@ const Edit = ( props ) => {
 			setAttributes( { formId: currentFormId } );
 		}
 	}, [ formId, setAttributes, currentFormId ] );
+
+	// Reset preselected options when switching between single and multi-select mode
+	useEffect( () => {
+		// Only reset if multiSelect value actually changed (not on initial render)
+		if ( prevMultiSelect.current !== multiSelect ) {
+			prevMultiSelect.current = multiSelect;
+			if ( preselectedOptions.length > 0 ) {
+				setAttributes( { preselectedOptions: [] } );
+			}
+		}
+	}, [ multiSelect, preselectedOptions, setAttributes ] );
 
 	const {
 		currentMessage: currentErrorMsg,
@@ -184,6 +223,18 @@ const Edit = ( props ) => {
 		return (
 			<>
 				<div>
+					<div className="srfm-preselection-control">
+						<input
+							type={ multiSelect ? 'checkbox' : 'radio' }
+							checked={ preselectedOptions.includes( i ) }
+							onChange={ () => togglePreselection( i ) }
+							title={ __( 'Preselect this option', 'sureforms' ) }
+							aria-label={ __(
+								'Preselect this option',
+								'sureforms'
+							) }
+						/>
+					</div>
 					<span { ...param.dragHandleProps }>
 						<MdDragIndicator
 							style={ {
@@ -273,8 +324,32 @@ const Edit = ( props ) => {
 									0,
 									newOptions.splice( srcI, 1 )[ 0 ]
 								);
+
+								// Update preselected indices when options are reordered
+								const newPreselected = preselectedOptions.map(
+									( i ) => {
+										if ( i === srcI ) {
+											return destI;
+										} else if (
+											srcI < destI &&
+											i > srcI &&
+											i <= destI
+										) {
+											return i - 1;
+										} else if (
+											srcI > destI &&
+											i >= destI &&
+											i < srcI
+										) {
+											return i + 1;
+										}
+										return i;
+									}
+								);
+
 								setAttributes( {
 									options: newOptions,
+									preselectedOptions: newPreselected,
 								} );
 							}
 						} }
