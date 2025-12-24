@@ -222,6 +222,12 @@
 		}
 		.srfm-input-phone {
 			margin: 0 !important; // Adding !important to override the library styles for the input.
+			// Fix placeholder overlap with country code selector in the editor.
+			padding-left: 69px !important;
+
+			&::placeholder {
+				text-align: left;
+			}
 		}
 		.iti-flag {
 			margin-right: 4px; // Fixed gap between the flag and the country code.

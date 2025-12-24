@@ -69,3 +69,19 @@ export const importForms = async ( data ) => {
 		data,
 	} );
 };
+
+/**
+ * Duplicate a form
+ *
+ * @param {number} formId - Form ID to duplicate
+ * @return {Promise} API response
+ */
+export const duplicateForm = async ( formId ) => {
+	return await apiFetch( {
+		path: '/sureforms/v1/forms/duplicate',
+		method: 'POST',
+		data: {
+			form_id: formId,
+		},
+	} );
+};
