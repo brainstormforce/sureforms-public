@@ -665,4 +665,75 @@ class Payment_Helper {
 			'message' => '',
 		];
 	}
+
+	/**
+	 * Store payment intent metadata in transient for verification.
+	 *
+	 * Stores payment intent details temporarily to verify that the payment intent
+	 * was created through our system and hasn't been tampered with.
+	 *
+	 * @since 2.0.0
+	 * @param string $block_id          Block identifier.
+	 * @param string $payment_intent_id Payment intent ID from Stripe.
+	 * @param array  $metadata          Payment metadata to store.
+	 * @return bool True on success, false on failure.
+	 */
+	public static function store_payment_intent_metadata( $block_id, $payment_intent_id, $metadata ) {
+		if ( empty( $block_id ) || empty( $payment_intent_id ) ) {
+			return false;
+		}
+
+		// Create transient key: srfm_pi_{block_id}_{payment_intent_id}.
+		$transient_key = 'srfm_pi_' . sanitize_key( $block_id ) . '_' . sanitize_key( $payment_intent_id );
+
+		// Add timestamp to metadata.
+		$metadata['created_at'] = time();
+
+		// Store for 1 hour (3600 seconds).
+		return set_transient( $transient_key, $metadata, 3600 );
+	}
+
+	/**
+	 * Get payment intent metadata from transient.
+	 *
+	 * Retrieves stored payment intent metadata to verify authenticity.
+	 *
+	 * @since 2.0.0
+	 * @param string $block_id          Block identifier.
+	 * @param string $payment_intent_id Payment intent ID from Stripe.
+	 * @return array|false Metadata array on success, false if not found.
+	 */
+	public static function get_payment_intent_metadata( $block_id, $payment_intent_id ) {
+		if ( empty( $block_id ) || empty( $payment_intent_id ) ) {
+			return false;
+		}
+
+		// Create transient key: srfm_pi_{block_id}_{payment_intent_id}.
+		$transient_key = 'srfm_pi_' . sanitize_key( $block_id ) . '_' . sanitize_key( $payment_intent_id );
+
+		$metadata = get_transient( $transient_key );
+
+		return $metadata !== false ? $metadata : false;
+	}
+
+	/**
+	 * Delete payment intent metadata from transient.
+	 *
+	 * Cleans up stored metadata after successful payment verification.
+	 *
+	 * @since 2.0.0
+	 * @param string $block_id          Block identifier.
+	 * @param string $payment_intent_id Payment intent ID from Stripe.
+	 * @return bool True on success, false on failure.
+	 */
+	public static function delete_payment_intent_metadata( $block_id, $payment_intent_id ) {
+		if ( empty( $block_id ) || empty( $payment_intent_id ) ) {
+			return false;
+		}
+
+		// Create transient key: srfm_pi_{block_id}_{payment_intent_id}.
+		$transient_key = 'srfm_pi_' . sanitize_key( $block_id ) . '_' . sanitize_key( $payment_intent_id );
+
+		return delete_transient( $transient_key );
+	}
 }
