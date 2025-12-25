@@ -29,7 +29,7 @@ import {
 	Cpu,
 	Link2,
 	Save,
-	MessageSquare
+	Split
 } from 'lucide-react';
 
 import Suretriggers from '../integrations/suretriggers';
@@ -159,7 +159,7 @@ const Dialog = ( {
 			{
 				id: 'conditional-confirmations-preview',
 				label: __( 'Conditional Confirmations', 'sureforms' ),
-				icon: <MessageSquare />,
+				icon: <Split />,
 				component: (
 					<FeaturePreview
 						featureName={ __( 'Conditional Confirmations', 'sureforms' ) }
@@ -168,7 +168,7 @@ const Dialog = ( {
 							'sureforms'
 						) }
 						icon={
-							<MessageSquare
+							<Split
 								className="text-orange-500"
 								size={ 40 }
 								strokeWidth={ 1 }
