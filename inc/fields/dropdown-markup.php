@@ -59,7 +59,7 @@ class Dropdown_Markup extends Base {
 	 * Array of preselected option indices.
 	 *
 	 * @var array
-	 * @since 1.6.0
+	 * @since x.x.x
 	 */
 	protected $preselected_options;
 

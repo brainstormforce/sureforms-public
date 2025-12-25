@@ -134,6 +134,56 @@ function decodeHtmlEntities( str ) {
 
 const checkInvalidCharacter = ( value ) => value.includes( '|' );
 
+/**
+ * Updates an array of selected indices after an item has been reordered via drag-and-drop.
+ * When an item is moved from one position to another, this function recalculates
+ * which indices should remain selected to maintain the same logical selections.
+ *
+ * @param {Array}  selectedIndices - Array of currently selected item indices.
+ * @param {number} movedFromIndex  - Original index of the item that was moved.
+ * @param {number} movedToIndex    - New index where the item was moved to.
+ * @return {Array} Updated array of selected indices after the reorder.
+ *
+ * @example
+ * // Moving item from index 1 to index 3, with items at indices 0 and 2 selected
+ * updateSelectedIndicesAfterReorder([0, 2], 1, 3)
+ * // Returns [0, 1] because item at index 2 shifted left to index 1
+ */
+const updateSelectedIndicesAfterReorder = (
+	selectedIndices,
+	movedFromIndex,
+	movedToIndex
+) => {
+	return selectedIndices.map( ( currentIndex ) => {
+		// The moved item itself now has the new index
+		if ( currentIndex === movedFromIndex ) {
+			return movedToIndex;
+		}
+
+		// Items between source and destination need their indices adjusted
+		// Moving forward (left to right): items in between shift left by 1
+		if (
+			movedFromIndex < movedToIndex &&
+			currentIndex > movedFromIndex &&
+			currentIndex <= movedToIndex
+		) {
+			return currentIndex - 1;
+		}
+
+		// Moving backward (right to left): items in between shift right by 1
+		if (
+			movedFromIndex > movedToIndex &&
+			currentIndex >= movedToIndex &&
+			currentIndex < movedFromIndex
+		) {
+			return currentIndex + 1;
+		}
+
+		// Items outside the moved range remain unchanged
+		return currentIndex;
+	} );
+};
+
 export {
 	stripHTML,
 	getSpacingPresetCssVar,
@@ -143,4 +193,5 @@ export {
 	getDefaultMessage,
 	decodeHtmlEntities,
 	checkInvalidCharacter,
+	updateSelectedIndicesAfterReorder,
 };

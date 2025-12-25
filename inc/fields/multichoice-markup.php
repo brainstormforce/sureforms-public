@@ -97,7 +97,7 @@ class Multichoice_Markup extends Base {
 	 * Array of preselected option indices.
 	 *
 	 * @var array
-	 * @since 1.6.0
+	 * @since x.x.x
 	 */
 	protected $preselected_options;
 
@@ -172,8 +172,8 @@ class Multichoice_Markup extends Base {
 												<img src="<?php echo esc_url( $option['image'] ); ?>"/>
 											</span>
 											<?php } ?>
-											<!-- This label content is used in conditional logic and for storing values in a hidden input field as comma-separated values. 
-											The markup should remain unchanged. 
+											<!-- This label content is used in conditional logic and for storing values in a hidden input field as comma-separated values.
+											The markup should remain unchanged.
 											If you make any changes here, ensure the corresponding JavaScript value functionality and conditional logic are also updated. -->
 											<label for="srfm-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id . '-' . $i ); ?>"><?php echo isset( $option['optionTitle'] ) ? esc_html( $option['optionTitle'] ) : ''; ?></label>
 										</div>

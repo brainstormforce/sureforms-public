@@ -11,7 +11,11 @@ import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {
 	SRFMTabs,
 } from '@Components/inspector-tabs/InspectorTab.js';
-import { useErrMessage, checkInvalidCharacter } from '@Blocks/util';
+import {
+	useErrMessage,
+	checkInvalidCharacter,
+	updateSelectedIndicesAfterReorder,
+} from '@Blocks/util';
 import svgIcons from '@Svg/svgs.json';
 import parse from 'html-react-parser';
 import { MdDragIndicator } from 'react-icons/md';
@@ -386,30 +390,16 @@ const Edit = ( props ) => {
 								);
 
 								// Update preselected indices when options are reordered
-								const newPreselected = preselectedOptions.map(
-									( i ) => {
-										if ( i === srcI ) {
-											return destI;
-										} else if (
-											srcI < destI &&
-											i > srcI &&
-											i <= destI
-										) {
-											return i - 1;
-										} else if (
-											srcI > destI &&
-											i >= destI &&
-											i < srcI
-										) {
-											return i + 1;
-										}
-										return i;
-									}
-								);
+								const updatedPreselected =
+									updateSelectedIndicesAfterReorder(
+										preselectedOptions,
+										srcI,
+										destI
+									);
 
 								setAttributes( {
 									options: newOptions,
-									preselectedOptions: newPreselected,
+									preselectedOptions: updatedPreselected,
 								} );
 							}
 						} }
