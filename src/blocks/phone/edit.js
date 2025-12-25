@@ -220,7 +220,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 								}
 							/>
 							{ enableCountryFilter && (
-								<div className="srfm-phone-country-filter-controls">
+								<div>
 									<MultiButtonsControl
 										setAttributes={ setAttributes }
 										label={ __(
@@ -267,10 +267,6 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 												isMulti
 												isClearable
 												classNamePrefix="srfm-select"
-												placeholder={ __(
-													'Select countries to include (leave empty to include all)',
-													'sureforms'
-												) }
 												onChange={ ( values ) => {
 													const codes = values
 														? values.map(
@@ -283,9 +279,9 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 													} );
 												} }
 											/>
-											<p className="srfm-help-text">
+											<p className="components-base-control__help">
 												{ __(
-													'Only these countries will be available in the dropdown.',
+													'Only these countries will be available in the dropdown. Leave empty to include all.',
 													'sureforms'
 												) }
 											</p>
@@ -309,10 +305,6 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 												isMulti
 												isClearable
 												classNamePrefix="srfm-select"
-												placeholder={ __(
-													'Select countries to exclude',
-													'sureforms'
-												) }
 												onChange={ ( values ) => {
 													const codes = values
 														? values.map(
@@ -325,7 +317,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 													} );
 												} }
 											/>
-											<p className="srfm-help-text">
+											<p className="components-base-control__help">
 												{ __(
 													'These countries will be hidden from the dropdown.',
 													'sureforms'
