@@ -219,7 +219,7 @@ class Generate_Form_Markup {
 			 *
 			 * @param array $form_confirmation The form confirmation data from post meta.
 			 * @param int   $id The form ID.
-			 * @since 1.10.0
+			 * @since x.x.x
 			 */
 			$form_confirmation = apply_filters( 'srfm_form_confirmation_data', $form_confirmation, $id );
 
@@ -783,7 +783,7 @@ class Generate_Form_Markup {
 		 * @param int   $form_id The form ID.
 		 * @param array $form_data The form data.
 		 * @param array $submission_data The submission data.
-		 * @since 1.10.0
+		 * @since x.x.x
 		 */
 		$form_confirmation = apply_filters( 'srfm_form_confirmation_data', $form_confirmation, $form_id, $form_data, $submission_data );
 
@@ -842,7 +842,7 @@ class Generate_Form_Markup {
 		 * @param int   $form_id The form ID.
 		 * @param array $form_data The form data.
 		 * @param array $submission_data The submission data.
-		 * @since 1.10.0
+		 * @since x.x.x
 		 */
 		$form_confirmation = apply_filters( 'srfm_form_confirmation_data', $form_confirmation, $form_id, $form_data, $submission_data );
 

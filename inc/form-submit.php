@@ -647,7 +647,14 @@ class Form_Submit {
 			];
 		}
 
-		// return $response;
+		/**
+		 * Filter the form submission response.
+		 * 
+		 * @param array<mixed> $response The response data.
+		 * @param array<string> $form_data The original form data.
+		 * @param array<mixed> $submission_data The processed submission data.
+		 * @since x.x.x
+		 */
 		return apply_filters( 'srfm_form_submission_response', $response, $form_data, $submission_data );
 	}
 

@@ -590,17 +590,14 @@ async function handleFormSubmission(
 			 */
 			emitFormSubmitSuccess( { ...formStatus, formId } );
 
-			// get submitType from respone
-			const oldSubmitType = submitType;
+			/**
+			 * If there is a submit mode defined in the form submit response,
+			 * use that instead of the one defined in the form attribute.
+			 */
+			const submitTypeFormAttribute = submitType;
 			submitType =
 				formStatus?.data?.submission_settings?.submission_mode ||
-				oldSubmitType;
-
-				console.log({
-					submitType,
-					formStatus
-				});
-				
+				submitTypeFormAttribute;
 
 			if ( submitType === 'same page' ) {
 				showSuccessMessage(

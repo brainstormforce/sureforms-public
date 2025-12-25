@@ -29,7 +29,7 @@ import {
 	Cpu,
 	Link2,
 	Save,
-	Split
+	Split,
 } from 'lucide-react';
 
 import Suretriggers from '../integrations/suretriggers';
@@ -162,9 +162,12 @@ const Dialog = ( {
 				icon: <Split />,
 				component: (
 					<FeaturePreview
-						featureName={ __( 'Conditional Confirmations', 'sureforms' ) }
+						featureName={ __(
+							'Conditional Confirmations',
+							'sureforms'
+						) }
 						featureHelpText={ __(
-							'Create dynamic confirmation messages based on user input.',
+							'Set up the message or redirect users will see after submitting the form.',
 							'sureforms'
 						) }
 						icon={
@@ -174,25 +177,22 @@ const Dialog = ( {
 								strokeWidth={ 1 }
 							/>
 						}
-						title={ __(
-							'Personalize User Experience with Conditional Confirmations',
-							'sureforms'
-						) }
+						title={ __( 'Conditional Confirmations', 'sureforms' ) }
 						subtitle={ __(
-							'Enhance user engagement by tailoring confirmation messages based on form responses. Deliver relevant feedback that resonates with each user\'s input.',
+							'Show the right message to the right user based on how they respond. Personalize confirmations with smart conditions and guide users to the next best step automatically.',
 							'sureforms'
 						) }
 						featureList={ [
 							__(
-								'Display custom confirmation messages based on user selections.',
+								'Display different confirmation messages based on form responses.',
 								'sureforms'
 							),
 							__(
-								'Redirect users to different URLs depending on their form answers.',
+								'Redirect users to specific pages or URLs conditionally.',
 								'sureforms'
 							),
 							__(
-								'Elevate user satisfaction with personalized feedback.',
+								'Create personalized thank-you messages without extra forms.',
 								'sureforms'
 							),
 						] }
