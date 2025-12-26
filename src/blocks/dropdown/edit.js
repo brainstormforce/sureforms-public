@@ -227,18 +227,6 @@ const Edit = ( props ) => {
 		return (
 			<>
 				<div>
-					<div className="srfm-preselection-control">
-						<input
-							type={ multiSelect ? 'checkbox' : 'radio' }
-							checked={ preselectedOptions.includes( i ) }
-							onChange={ () => togglePreselection( i ) }
-							title={ __( 'Preselect this option', 'sureforms' ) }
-							aria-label={ __(
-								'Preselect this option',
-								'sureforms'
-							) }
-						/>
-					</div>
 					<span { ...param.dragHandleProps }>
 						<MdDragIndicator
 							style={ {
@@ -293,6 +281,21 @@ const Edit = ( props ) => {
 						className="srfm-option-outer-wrapper"
 						{ ...param.draggableProps }
 					>
+						<div className="srfm-preselection-control">
+							<input
+								type={ multiSelect ? 'checkbox' : 'radio' }
+								checked={ preselectedOptions.includes( i ) }
+								onChange={ () => togglePreselection( i ) }
+								title={ __(
+									'Preselect this option',
+									'sureforms'
+								) }
+								aria-label={ __(
+									'Preselect this option',
+									'sureforms'
+								) }
+							/>
+						</div>
 						{ enhanceDropdownOptions(
 							draggableItem( option, param, i ),
 							{
