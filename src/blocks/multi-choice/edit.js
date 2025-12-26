@@ -2,7 +2,7 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { ToggleControl, SelectControl, Button } from '@wordpress/components';
+import { ToggleControl, Button } from '@wordpress/components';
 import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
 import { useState, useEffect } from '@wordpress/element';
 import SRFMTextControl from '@Components/text-control';
@@ -367,31 +367,33 @@ const Edit = ( props ) => {
 					}
 				} }
 			>
-				<SRFMTextControl
-					showHeaderControls={ false }
-					label={ __( 'Add New Option', 'sureforms' ) }
-					value={ newOption }
-					onChange={ ( value ) => {
-						if ( checkInvalidCharacter( value ) ) {
-							return;
-						}
+				<div className="sureform-add-option-input-wrapper">
+					<SRFMTextControl
+						showHeaderControls={ false }
+						label={ __( 'Add New Option', 'sureforms' ) }
+						value={ newOption }
+						onChange={ ( value ) => {
+							if ( checkInvalidCharacter( value ) ) {
+								return;
+							}
 
-						setNewOption( value );
-					} }
-				/>
-				<Button
-					className="sureform-add-option-button"
-					variant="secondary"
-					onClick={ () => {
-						if ( newOption ) {
-							addOption( newOption );
-						} else {
-							// TODO: May be add a tooltip here
-						}
-					} }
-				>
-					{ __( 'ADD', 'sureforms' ) }
-				</Button>
+							setNewOption( value );
+						} }
+					/>
+					<Button
+						className="sureform-add-option-button"
+						variant="secondary"
+						onClick={ () => {
+							if ( newOption ) {
+								addOption( newOption );
+							} else {
+								// TODO: May be add a tooltip here
+							}
+						} }
+					>
+						{ __( 'ADD', 'sureforms' ) }
+					</Button>
+				</div>
 				<BulkInserterWithButton
 					options={ options }
 					titleKey="optionTitle"
@@ -491,43 +493,72 @@ const Edit = ( props ) => {
 		{
 			id: 'choiceWidth',
 			component: (
-				<SelectControl
-					label={ __( 'Choice Width', 'sureforms' ) }
-					value={ choiceWidth }
+				<MultiButtonsControl
+					setAttributes={ setAttributes }
+					label={ __( 'Number of Columns', 'sureforms' ) }
+					data={ {
+						value: choiceWidth,
+						label: 'choiceWidth',
+					} }
 					options={ [
 						{
-							label: __( 'Full Width', 'sureforms' ),
 							value: 100,
+							label: '1',
 						},
 						{
-							label: __( 'Two Columns', 'sureforms' ),
 							value: 50,
+							label: '2',
 						},
 						{
-							label: __( 'Three Columns', 'sureforms' ),
 							value: 33.33,
+							label: '3',
 						},
 						{
-							label: __( 'Four Columns', 'sureforms' ),
 							value: 25,
+							label: '4',
 						},
 					] }
-					onChange={ ( value ) =>
-						setAttributes( { choiceWidth: Number( value ) } )
-					}
-					__nextHasNoMarginBottom
+					showIcons={ false }
 				/>
 			),
 		},
 		{
 			id: 'verticalLayout',
 			component: (
-				<ToggleControl
-					label={ __( 'Vertical Layout', 'sureforms' ) }
-					checked={ verticalLayout }
-					onChange={ ( checked ) =>
-						setAttributes( { verticalLayout: checked } )
-					}
+				<MultiButtonsControl
+					setAttributes={ setAttributes }
+					label={ __( 'Select Layout', 'sureforms' ) }
+					data={ {
+						value: verticalLayout,
+						label: 'verticalLayout',
+					} }
+					options={ [
+						{
+							value: false,
+							label: __( 'Horizontal', 'sureforms' ),
+							icon: (
+								<span className="srfm-layout-icon">
+									{ parse( svgIcons.horizontal_layout_on ) }
+									<span className="srfm-layout-icon__label">
+										{ __( 'Horizontal', 'sureforms' ) }
+									</span>
+								</span>
+							),
+						},
+						{
+							value: true,
+							label: __( 'Vertical', 'sureforms' ),
+							icon: (
+								<span className="srfm-layout-icon">
+									{ parse( svgIcons.vertical_layout_on ) }
+									<span className="srfm-layout-icon__label">
+										{ __( 'Vertical', 'sureforms' ) }
+									</span>
+								</span>
+							),
+						},
+					] }
+					showIcons={ true }
 				/>
 			),
 		},
