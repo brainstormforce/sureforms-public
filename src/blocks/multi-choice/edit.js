@@ -455,38 +455,36 @@ const Edit = ( props ) => {
 			),
 		},
 		{
-			id: 'separator-1',
-			component: <div className="srfm-settings-separator" />,
-		},
-		{
-			id: 'choicesOptions',
-			component: choicesOptions,
-		},
-		{
-			id: 'addNewOption',
-			component: addNewOption,
-		},
-		{
-			id: 'show-option-value',
+			id: 'verticalLayout',
 			component: (
-				<ToggleControl
-					label={ __( 'Add Numeric Values to Options', 'sureforms' ) }
-					checked={ showValues }
-					onChange={ ( value ) =>
-						setAttributes( { showValues: value } )
-					}
-				/>
-			),
-		},
-		{
-			id: 'singleSelection',
-			component: (
-				<ToggleControl
-					label={ __( 'Single Choice Only', 'sureforms' ) }
-					checked={ singleSelection }
-					onChange={ ( checked ) =>
-						setAttributes( { singleSelection: checked } )
-					}
+				<MultiButtonsControl
+					setAttributes={ setAttributes }
+					label={ __( 'Select Layout', 'sureforms' ) }
+					data={ {
+						value: verticalLayout,
+						label: 'verticalLayout',
+					} }
+					options={ [
+						{
+							value: false,
+							label: __( 'Horizontal', 'sureforms' ),
+							icon: parse(
+								verticalLayout === false
+									? svgIcons.horizontal_layout_on
+									: svgIcons.horizontal_layout_faded
+							),
+						},
+						{
+							value: true,
+							label: __( 'Vertical', 'sureforms' ),
+							icon: parse(
+								verticalLayout === true
+									? svgIcons.vertical_layout_on
+									: svgIcons.vertical_layout_faded
+							),
+						},
+					] }
+					showIcons={ true }
 				/>
 			),
 		},
@@ -523,36 +521,38 @@ const Edit = ( props ) => {
 			),
 		},
 		{
-			id: 'verticalLayout',
+			id: 'separator-1',
+			component: <div className="srfm-settings-separator" />,
+		},
+		{
+			id: 'choicesOptions',
+			component: choicesOptions,
+		},
+		{
+			id: 'addNewOption',
+			component: addNewOption,
+		},
+		{
+			id: 'show-option-value',
 			component: (
-				<MultiButtonsControl
-					setAttributes={ setAttributes }
-					label={ __( 'Select Layout', 'sureforms' ) }
-					data={ {
-						value: verticalLayout,
-						label: 'verticalLayout',
-					} }
-					options={ [
-						{
-							value: false,
-							label: __( 'Horizontal', 'sureforms' ),
-							icon: parse(
-								verticalLayout === false
-									? svgIcons.horizontal_layout_on
-									: svgIcons.horizontal_layout_faded
-							),
-						},
-						{
-							value: true,
-							label: __( 'Vertical', 'sureforms' ),
-							icon: parse(
-								verticalLayout === true
-									? svgIcons.vertical_layout_on
-									: svgIcons.vertical_layout_faded
-							),
-						},
-					] }
-					showIcons={ true }
+				<ToggleControl
+					label={ __( 'Add Numeric Values to Options', 'sureforms' ) }
+					checked={ showValues }
+					onChange={ ( value ) =>
+						setAttributes( { showValues: value } )
+					}
+				/>
+			),
+		},
+		{
+			id: 'singleSelection',
+			component: (
+				<ToggleControl
+					label={ __( 'Single Choice Only', 'sureforms' ) }
+					checked={ singleSelection }
+					onChange={ ( checked ) =>
+						setAttributes( { singleSelection: checked } )
+					}
 				/>
 			),
 		},

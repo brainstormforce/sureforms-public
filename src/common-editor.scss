@@ -923,6 +923,24 @@ button.components-button.srfm-review-select-btn.is-secondary {
 	}
 }
 
+// Multi-button with label wrapper
+.srfm-multi-button-with-label {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 8px;
+}
+
+.srfm-multi-button-label-text {
+	font-size: 12px;
+	font-weight: 600;
+	line-height: 16px;
+	letter-spacing: 0;
+	color: #1e1e1e;
+	text-align: center;
+	margin-top: 4px;
+}
+
 // Override button styles for layout selection
 .srfm-multi-buttons-control {
 	.srfm-multi-button-button-group {
@@ -936,10 +954,14 @@ button.components-button.srfm-review-select-btn.is-secondary {
 		&:has(svg[viewBox="0 0 153 86"]) {
 			padding: 0 !important;
 			min-height: auto !important;
+			max-height: none !important;
 			background-color: transparent !important;
 			border: none !important;
 			display: block !important;
 			line-height: 0 !important;
+			width: 153px !important;
+			height: auto !important;
+			flex-shrink: 0 !important;
 
 			svg {
 				width: 100% !important;
@@ -956,6 +978,8 @@ button.components-button.srfm-review-select-btn.is-secondary {
 				border: none !important;
 				box-shadow: none !important;
 				outline: none !important;
+				width: 153px !important;
+				padding: 0 !important;
 			}
 		}
 	}
