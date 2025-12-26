@@ -80,9 +80,18 @@ class Front_End {
 		$block_id       = sanitize_text_field( wp_unslash( $_POST['block_id'] ?? '' ) );
 		$customer_email = sanitize_email( wp_unslash( $_POST['customer_email'] ?? '' ) );
 		$customer_name  = sanitize_text_field( wp_unslash( $_POST['customer_name'] ?? '' ) );
+		$form_id        = intval( $_POST['form_id'] ?? 0 );
 
 		if ( $amount <= 0 ) {
 			wp_send_json_error( __( 'Invalid payment amount.', 'sureforms' ) );
+		}
+
+		// Validate payment amount against stored form configuration.
+		if ( $form_id > 0 && ! empty( $block_id ) ) {
+			$validation_result = Payment_Helper::validate_payment_amount( $amount, $currency, $form_id, $block_id );
+			if ( ! $validation_result['valid'] ) {
+				wp_send_json_error( $validation_result['message'] );
+			}
 		}
 
 		// Validate customer email (required for one-time payments).
@@ -200,6 +209,18 @@ class Front_End {
 				throw new \Exception( Payment_Helper::get_error_message_by_key( 'failed_to_create_payment' ) );
 			}
 
+			// Store payment intent metadata in transient for verification.
+			Payment_Helper::store_payment_intent_metadata(
+				$block_id,
+				$payment_intent['id'],
+				[
+					'form_id'  => $form_id,
+					'block_id' => $block_id,
+					'amount'   => $amount,
+					'currency' => strtolower( $currency ),
+				]
+			);
+
 			wp_send_json_success(
 				[
 					'client_secret'     => $payment_intent['client_secret'],
@@ -245,6 +266,7 @@ class Front_End {
 		$plan_name             = sanitize_text_field( wp_unslash( $_POST['plan_name'] ?? 'Subscription Plan' ) );
 		$customer_email        = sanitize_email( wp_unslash( $_POST['customer_email'] ?? '' ) );
 		$customer_name         = sanitize_text_field( wp_unslash( $_POST['customer_name'] ?? '' ) );
+		$form_id               = intval( $_POST['form_id'] ?? 0 );
 
 		// Validate customer email (required for all subscriptions).
 		if ( empty( $customer_email ) || ! is_email( $customer_email ) ) {
@@ -254,6 +276,14 @@ class Front_End {
 		// Validate customer name (required for subscriptions).
 		if ( empty( $customer_name ) ) {
 			wp_send_json_error( __( 'Customer name is required for subscriptions.', 'sureforms' ) );
+		}
+
+		// Validate payment amount against stored form configuration.
+		if ( $form_id > 0 && ! empty( $block_id ) ) {
+			$validation_result = Payment_Helper::validate_payment_amount( $amount, $currency, $form_id, $block_id );
+			if ( ! $validation_result['valid'] ) {
+				wp_send_json_error( $validation_result['message'] );
+			}
 		}
 
 		// Validate amount like simple-stripe-subscriptions.
@@ -363,6 +393,19 @@ class Front_End {
 			if ( empty( $client_secret ) || empty( $subscription_id ) || empty( $payment_intent_id ) ) {
 				throw new \Exception( __( 'Failed to create subscription.', 'sureforms' ) );
 			}
+
+			// Store subscription metadata in transient for verification.
+			Payment_Helper::store_payment_intent_metadata(
+				$block_id,
+				$payment_intent_id,
+				[
+					'form_id'         => $form_id,
+					'block_id'        => $block_id,
+					'amount'          => $amount,
+					'currency'        => strtolower( $currency ),
+					'subscription_id' => $subscription_id,
+				]
+			);
 
 			$response = [
 				'type'              => 'subscription',
@@ -490,6 +533,16 @@ class Front_End {
 
 		$customer_id     = ! empty( $subscription_value['customerId'] ) ? $subscription_value['customerId'] : '';
 		$setup_intent_id = ! empty( $subscription_value['setupIntent'] ) && is_string( $subscription_value['setupIntent'] ) ? $subscription_value['setupIntent'] : '';
+
+		// Verify payment intent was created through our system.
+		$stored_metadata = Payment_Helper::get_payment_intent_metadata( $block_id, $setup_intent_id );
+
+		if ( false === $stored_metadata ) {
+			// Payment intent not found - not created through our system.
+			return [
+				'error' => __( 'Payment verification failed. Invalid payment intent.', 'sureforms' ),
+			];
+		}
 
 		if ( empty( $customer_id ) ) {
 			return [
@@ -964,6 +1017,16 @@ class Front_End {
 				];
 			}
 
+			// Verify payment intent was created through our system.
+			$stored_metadata = Payment_Helper::get_payment_intent_metadata( $block_id, $payment_id );
+
+			if ( false === $stored_metadata ) {
+				// Payment intent not found - not created through our system.
+				return [
+					'error' => __( 'Payment verification failed. Invalid payment intent.', 'sureforms' ),
+				];
+			}
+
 			// Retrieve confirmed payment intent status.
 			$retrieve_body = apply_filters(
 				'srfm_retrieve_payment_intent_data',
@@ -1093,6 +1156,9 @@ class Front_End {
 				];
 
 				$this->stripe_payment_entries[] = $add_in_static_value;
+
+				// Clean up transient after successful verification to prevent reuse.
+				Payment_Helper::delete_payment_intent_metadata( $block_id, $payment_id );
 
 				return [
 					'payment_id' => $get_payment_entry_id,
