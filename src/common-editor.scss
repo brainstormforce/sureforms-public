@@ -923,24 +923,41 @@ button.components-button.srfm-review-select-btn.is-secondary {
 	}
 }
 
-// Layout Icon Styles
-.srfm-layout-icon {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
-
-	svg {
-		width: 100px !important;
-		height: auto !important;
-		fill: none !important;
+// Override button styles for layout selection
+.srfm-multi-buttons-control {
+	.srfm-multi-button-button-group {
+		&:has(svg[viewBox="0 0 153 86"]) {
+			gap: 12px !important;
+			display: flex !important;
+		}
 	}
 
-	&__label {
-		display: block;
-		margin-top: 8px;
-		font-size: 13px;
-		text-align: center;
+	.srfm-multi-button {
+		&:has(svg[viewBox="0 0 153 86"]) {
+			padding: 0 !important;
+			min-height: auto !important;
+			background-color: transparent !important;
+			border: none !important;
+			display: block !important;
+			line-height: 0 !important;
+
+			svg {
+				width: 100% !important;
+				height: auto !important;
+				fill: none !important;
+				display: block !important;
+			}
+
+			&:hover,
+			&:focus,
+			&:active,
+			&.is-pressed {
+				background-color: transparent !important;
+				border: none !important;
+				box-shadow: none !important;
+				outline: none !important;
+			}
+		}
 	}
 }
 

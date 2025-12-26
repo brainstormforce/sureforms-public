@@ -536,25 +536,19 @@ const Edit = ( props ) => {
 						{
 							value: false,
 							label: __( 'Horizontal', 'sureforms' ),
-							icon: (
-								<span className="srfm-layout-icon">
-									{ parse( svgIcons.horizontal_layout_on ) }
-									<span className="srfm-layout-icon__label">
-										{ __( 'Horizontal', 'sureforms' ) }
-									</span>
-								</span>
+							icon: parse(
+								verticalLayout === false
+									? svgIcons.horizontal_layout_on
+									: svgIcons.horizontal_layout_faded
 							),
 						},
 						{
 							value: true,
 							label: __( 'Vertical', 'sureforms' ),
-							icon: (
-								<span className="srfm-layout-icon">
-									{ parse( svgIcons.vertical_layout_on ) }
-									<span className="srfm-layout-icon__label">
-										{ __( 'Vertical', 'sureforms' ) }
-									</span>
-								</span>
+							icon: parse(
+								verticalLayout === true
+									? svgIcons.vertical_layout_on
+									: svgIcons.vertical_layout_faded
 							),
 						},
 					] }
