@@ -5,6 +5,10 @@ function initializeMultichoice() {
 
 	if ( multiChoices ) {
 		multiChoices.forEach( ( single ) => {
+			// Initialize savedValues array to track checked options in checkbox mode
+			// Must be declared before initializeHiddenInput() to capture preselected values
+			let savedValues = [];
+
 			// Initialize hidden input value with preselected options on page load
 			const initializeHiddenInput = () => {
 				const hiddenInput = single.querySelector(
@@ -46,6 +50,8 @@ function initializeMultichoice() {
 							values.push( label.innerText );
 						}
 					} );
+					// Populate savedValues with preselected options so they persist when user adds more selections
+					savedValues = [ ...values ];
 					const setValue =
 						window.srfm.srfmUtility.prepareValue( values );
 					hiddenInput.setAttribute( 'value', setValue );
@@ -96,7 +102,6 @@ function initializeMultichoice() {
 			const choices = single.querySelectorAll(
 				'.srfm-input-multi-choice-single'
 			);
-			let savedValues = [];
 			let getValue = '';
 			choices?.forEach( ( element ) => {
 				element.addEventListener( 'click', ( e ) => {
