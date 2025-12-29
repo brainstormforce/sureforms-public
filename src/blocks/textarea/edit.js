@@ -144,13 +144,24 @@ const Edit = ( props ) => {
 		{
 			id: 'read-only',
 			component: (
-				<ToggleControl
-					label={ __( 'Read Only', 'sureforms' ) }
-					checked={ readOnly }
-					onChange={ ( checked ) =>
-						setAttributes( { readOnly: checked } )
-					}
-				/>
+				<>
+					<ToggleControl
+						label={ __( 'Read Only', 'sureforms' ) }
+						checked={ readOnly }
+						disabled={ ! defaultValue }
+						onChange={ ( checked ) =>
+							setAttributes( { readOnly: checked } )
+						}
+					/>
+					{ ! defaultValue && (
+						<p className="components-base-control__help">
+							{ __(
+								'Add a default value to enable this option.',
+								'sureforms'
+							) }
+						</p>
+					) }
+				</>
 			),
 		},
 		{
