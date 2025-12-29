@@ -944,14 +944,14 @@ button.components-button.srfm-review-select-btn.is-secondary {
 // Override button styles for layout selection
 .srfm-multi-buttons-control {
 	.srfm-multi-button-button-group {
-		&:has(svg[viewBox="0 0 153 86"]) {
+		&:has( svg[viewBox="0 0 153 86"] ) {
 			gap: 12px !important;
 			display: flex !important;
 		}
 	}
 
 	.srfm-multi-button {
-		&:has(svg[viewBox="0 0 153 86"]) {
+		&:has( svg[viewBox="0 0 153 86"] ) {
 			padding: 0 !important;
 			min-height: auto !important;
 			max-height: none !important;
