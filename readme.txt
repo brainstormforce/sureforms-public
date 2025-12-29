@@ -360,7 +360,7 @@ plans.
 
 = Does SureForms support Payment Forms? =
 
-Yes! SureForms has built-in Payment Form support. 
+Yes! SureForms has built-in Payment Form support.
 You can collect payments securely without any add-ons or extra plugins.
 
 == Screenshot ==
@@ -375,6 +375,7 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 
 == Changelog ==
 = x.x.x =
+* Improvement: Disabled the readonly option for textarea when default value is empty.
 * Improvement: Added action to duplicate a form.
 * Improvement: Added placeholder for blocks that use input field.
 = 2.2.2 - 26th December 2025 =
