@@ -205,6 +205,26 @@ function GeneralSettings( props ) {
 		} );
 	}
 
+	// Listen for form settings popup events to open the dialog
+	useEffect( () => {
+		const handleFormSettingsEvent = ( event ) => {
+			const tabId = event.detail?.tabId;
+			if ( tabId ) {
+				setPopupTab( tabId );
+				setOpen( true );
+				prevMetaHash = btoa( JSON.stringify( sureformsKeys ) );
+			}
+		};
+
+		// Add event listener
+		window.addEventListener( 'srfm-open-form-settings', handleFormSettingsEvent );
+
+		// Cleanup event listener on unmount
+		return () => {
+			window.removeEventListener( 'srfm-open-form-settings', handleFormSettingsEvent );
+		};
+	}, [ sureformsKeys ] );
+
 	return (
 		<>
 			<SRFMAdvancedPanelBody

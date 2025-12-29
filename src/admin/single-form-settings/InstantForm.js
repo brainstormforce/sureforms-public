@@ -18,6 +18,7 @@ import { getInstantFormAdditionalSettings } from '@Components/hooks';
 import Spacing from '@Components/spacing';
 import { instantFormAttributes } from '@Attributes/getBlocksDefaultAttributes';
 import { setDefaultFormAttributes } from '@Utils/Helpers';
+import FormSettingsPopup from './tabs/formSettingsPopup';
 
 let live_mode_prev_srfm_instant_form_settings = {};
 
@@ -101,6 +102,12 @@ const InstantFormComponent = () => {
 	const [ popoverAnchor, setPopoverAnchor ] = useState();
 	const [ openPopover, setOpenPopover ] = useState( false ); // Load / unload popover component from DOM.
 	const [ hidePopover, setHidePopover ] = useState( false ); // Just hide the popover using CSS instead of unloading it from DOM.
+
+	// Form Settings Popover state
+	const [ formSettingsPopoverAnchor, setFormSettingsPopoverAnchor ] = useState();
+	const [ openFormSettingsPopover, setOpenFormSettingsPopover ] = useState( false );
+	const [ hideFormSettingsPopover, setHideFormSettingsPopover ] = useState( false );
+
 	const [ isLinkCopied, setIsLinkCopied ] = useState( false );
 	const [ editPostSlug, setEditPostSlug ] = useState( {
 		edit: false,
@@ -385,21 +392,48 @@ const InstantFormComponent = () => {
 
 	return (
 		<>
-			<button
-				ref={ setPopoverAnchor }
-				onClick={ () => setOpenPopover( ! openPopover ) }
-				className="srfm-instant-form-button"
-			>
-				<div
-					className="srfm-instant-form-status"
-					style={
-						!! enable_instant_form
-							? { backgroundColor: '#22C55E' }
-							: {}
-					}
-				/>
-				<span>{ __( 'Instant Form', 'sureforms' ) }</span>
-			</button>
+			<div className="srfm-instant-form-button-wrapper" style={
+				{
+					display: 'flex',
+					gap: '10px'
+				}
+			}>
+				<button
+					ref={ setFormSettingsPopoverAnchor }
+					className="srfm-form-settings-button"
+					onClick={ () => setOpenFormSettingsPopover( ! openFormSettingsPopover ) }
+					style={{
+						cursor: 'pointer',
+						color: '#475467',
+						background: 'rgba(0, 0, 0, 0)',
+						border: '1px solid #d1d5db',
+						borderRadius: '4px',
+						padding: '10px 16px 10px 16px',
+						display: 'flex',
+						alignItems: 'center',
+						gap: '8px',
+						width: 'max-content',
+						justifyContent: 'center',
+					}}
+				>
+					{ __( 'Form Settings', 'sureforms' ) }
+				</button>
+				<button
+					ref={ setPopoverAnchor }
+					onClick={ () => setOpenPopover( ! openPopover ) }
+					className="srfm-instant-form-button"
+				>
+					<div
+						className="srfm-instant-form-status"
+						style={
+							!! enable_instant_form
+								? { backgroundColor: '#22C55E' }
+								: {}
+						}
+					/>
+					<span>{ __( 'Instant Form', 'sureforms' ) }</span>
+				</button>
+			</div>
 
 			{ openPopover && (
 				<Popover
@@ -852,6 +886,15 @@ const InstantFormComponent = () => {
 						</div>
 					</div>
 				</Popover>
+			) }
+
+			{ openFormSettingsPopover && (
+				<FormSettingsPopup
+					popoverAnchor={ formSettingsPopoverAnchor }
+					setOpenPopover={ setOpenFormSettingsPopover }
+					hidePopover={ hideFormSettingsPopover }
+					setHidePopover={ setHideFormSettingsPopover }
+				/>
 			) }
 		</>
 	);
