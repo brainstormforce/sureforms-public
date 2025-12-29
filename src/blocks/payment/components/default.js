@@ -3,6 +3,7 @@
  */
 import { __, sprintf } from '@wordpress/i18n';
 import { RichText } from '@wordpress/block-editor';
+import { applyFilters } from '@wordpress/hooks';
 import HelpText from '@Components/misc/HelpText';
 import { decodeHtmlEntities } from '@Blocks/util';
 
@@ -16,10 +17,27 @@ export const PaymentComponent = ( props ) => {
 	const { attributes, setAttributes, availableFormFields } = props;
 	const { label, help = '', block_id } = attributes;
 
-	// Get global stripe settings
+	// Get global payment settings
 	const paymentSettings = window?.srfm_admin?.payments || {};
 	const stripeConnected = paymentSettings.stripe_connected || false;
 	const stripeConnectUrl = paymentSettings.stripe_connect_url || '';
+
+	/**
+	 * Filter: srfm_payment_gateway_configured
+	 *
+	 * Check if any payment gateway is configured (Stripe, PayPal, etc.)
+	 * This filter allows payment gateways to extend the configuration check.
+	 *
+	 * @param {boolean} isConfigured    - Whether any payment gateway is configured
+	 * @param {Object}  paymentSettings - Payment settings from window.srfm_admin.payments
+	 *
+	 * @return {boolean} True if any payment gateway is configured, false otherwise
+	 */
+	const isPaymentConfigured = applyFilters(
+		'srfm_payment_gateway_configured',
+		stripeConnected,
+		paymentSettings
+	);
 
 	// Handle connect to Stripe
 	const handleConnectStripe = () => {
@@ -90,10 +108,10 @@ export const PaymentComponent = ( props ) => {
 	const hasCustomerFieldsError =
 		missingNameField || missingEmailField || missingVariableAmountField;
 
-	let stripeConnectedComponent = null;
+	let paymentConfigurationComponent = null;
 
 	// If missing required fields, show validation error
-	if ( stripeConnected && hasCustomerFieldsError ) {
+	if ( isPaymentConfigured && hasCustomerFieldsError ) {
 		let errorMessage = '';
 
 		// Build error message based on missing fields
@@ -132,14 +150,14 @@ export const PaymentComponent = ( props ) => {
 			}
 		}
 
-		stripeConnectedComponent = (
+		paymentConfigurationComponent = (
 			<p className="srfm-stripe-payment-error-text">{ errorMessage }</p>
 		);
 	}
 
-	// If stripe is not connected, show connect message.
-	if ( ! stripeConnected ) {
-		stripeConnectedComponent = (
+	// If no payment gateway is configured, show connect message.
+	if ( ! isPaymentConfigured ) {
+		paymentConfigurationComponent = (
 			<>
 				<p className="srfm-stripe-payment-error-text">
 					{ __(
@@ -188,7 +206,7 @@ export const PaymentComponent = ( props ) => {
 						'sureforms'
 					) }
 				</p>
-				{ stripeConnectedComponent }
+				{ paymentConfigurationComponent }
 			</div>
 		</div>
 	);
