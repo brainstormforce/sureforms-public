@@ -599,6 +599,14 @@ async function handleFormSubmission(
 				formStatus?.data?.submission_settings?.submission_mode ||
 				submitTypeFormAttribute;
 
+			const oldAfterSubmission = afterSubmission;
+			afterSubmission =
+				formStatus?.data?.submission_settings?.after_submission ||
+				oldAfterSubmission;
+
+				console.log(afterSubmission);
+				
+
 			if ( submitType === 'same page' ) {
 				showSuccessMessage(
 					successContainer,
