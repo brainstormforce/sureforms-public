@@ -209,7 +209,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 							) }
 							<ToggleControl
 								label={ __(
-									'Include/Exclude Countries',
+									'Restrict Country Codes',
 									'sureforms'
 								) }
 								checked={ enableCountryFilter }
@@ -224,7 +224,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 									<MultiButtonsControl
 										setAttributes={ setAttributes }
 										label={ __(
-											'Filter Type',
+											'Restriction Type',
 											'sureforms'
 										) }
 										data={ {
@@ -235,14 +235,14 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 											{
 												value: 'include',
 												label: __(
-													'Include',
+													'Allow',
 													'sureforms'
 												),
 											},
 											{
 												value: 'exclude',
 												label: __(
-													'Exclude',
+													'Block',
 													'sureforms'
 												),
 											},
@@ -253,7 +253,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 										<>
 											<div className="srfm-control-label">
 												{ __(
-													'Include Countries',
+													'Select Allowed Countries',
 													'sureforms'
 												) }
 											</div>
@@ -267,6 +267,10 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 												isMulti
 												isClearable
 												classNamePrefix="srfm-select"
+												placeholder={ __(
+													'Choose countries…',
+													'sureforms'
+												) }
 												onChange={ ( values ) => {
 													const codes = values
 														? values.map(
@@ -281,7 +285,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 											/>
 											<p className="components-base-control__help">
 												{ __(
-													'Only these countries will be available in the dropdown. Leave empty to include all.',
+													'Choose which country codes users can select in the phone number field. Leave empty to allow all country codes.',
 													'sureforms'
 												) }
 											</p>
@@ -291,7 +295,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 										<>
 											<div className="srfm-control-label">
 												{ __(
-													'Exclude Countries',
+													'Select Blocked Countries',
 													'sureforms'
 												) }
 											</div>
@@ -305,6 +309,10 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 												isMulti
 												isClearable
 												classNamePrefix="srfm-select"
+												placeholder={ __(
+													'Choose countries…',
+													'sureforms'
+												) }
 												onChange={ ( values ) => {
 													const codes = values
 														? values.map(
