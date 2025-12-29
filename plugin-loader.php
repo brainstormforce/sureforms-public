@@ -21,6 +21,7 @@ use SRFM\Inc\Blocks\Register;
 use SRFM\Inc\Compatibility\Themes\Astra;
 use SRFM\Inc\Create_New_Form;
 use SRFM\Inc\Database\Register as DatabaseRegister;
+use SRFM\Inc\Duplicate_Form;
 use SRFM\Inc\Events_Scheduler;
 use SRFM\Inc\Export;
 use SRFM\Inc\Form_Restriction;
@@ -210,6 +211,7 @@ class Plugin_Loader {
 			Admin::get_instance();
 		}
 		Payments::get_instance();
+		Duplicate_Form::get_instance();
 	}
 
 	/**

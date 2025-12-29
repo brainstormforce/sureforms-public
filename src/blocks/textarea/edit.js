@@ -104,6 +104,22 @@ const Edit = ( props ) => {
 			),
 		},
 		{
+			id: 'placeholder',
+			component: (
+				<SRFMTextControl
+					label={ __( 'Placeholder', 'sureforms' ) }
+					value={ attributes.placeholder }
+					data={ {
+						value: attributes.placeholder,
+						label: 'placeholder',
+					} }
+					onChange={ ( value ) =>
+						setAttributes( { placeholder: value } )
+					}
+				/>
+			),
+		},
+		{
 			id: 'default-value',
 			component: (
 				<SRFMTextControl

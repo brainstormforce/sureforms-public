@@ -1368,6 +1368,28 @@ class Rest_Api {
 						],
 					],
 				],
+				// Form duplication endpoint.
+				'forms/duplicate'           => [
+					'methods'             => 'POST',
+					'callback'            => [ Duplicate_Form::get_instance(), 'handle_duplicate_form_rest' ],
+					'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
+					'args'                => [
+						'form_id'      => [
+							'required'          => true,
+							'type'              => 'integer',
+							'sanitize_callback' => 'absint',
+							'validate_callback' => static function( $value ) {
+								return $value > 0;
+							},
+						],
+						'title_suffix' => [
+							'required'          => false,
+							'type'              => 'string',
+							'default'           => __( ' (Copy)', 'sureforms' ),
+							'sanitize_callback' => 'sanitize_text_field',
+						],
+					],
+				],
 			]
 		);
 	}

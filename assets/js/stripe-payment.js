@@ -91,6 +91,15 @@ class StripePayment {
 		data.append( 'customer_email', customerData.email );
 		data.append( 'customer_name', customerData.name );
 
+		// Add form_id for server-side validation
+		const formElement = paymentInput.closest( 'form' );
+		const formIdInput = formElement?.querySelector(
+			'input[name="form-id"]'
+		);
+		if ( formIdInput?.value ) {
+			data.append( 'form_id', formIdInput.value );
+		}
+
 		// Add subscription-specific data
 		if ( isSubscription ) {
 			data.append( 'interval', customerData.interval );
