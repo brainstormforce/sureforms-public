@@ -92,6 +92,10 @@
 		"showValues": {
 			"type": "boolean",
 			"default": false
+		},
+		"preselectedOptions": {
+			"type": "array",
+			"default": []
 		}
 	}
 }

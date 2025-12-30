@@ -375,9 +375,12 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 
 == Changelog ==
 = x.x.x =
+* Improvement: Added pre-select options for multi choice and dropdown block.
+* Improvement: Added ability to allow or block country codes in the phone number block.
 * Improvement: Added action to duplicate a form.
 * Improvement: Added placeholder for blocks that use input field.
 * Fix: Resolved an issue with weekly email summary where table UI is breaking when the form names are too long.
+* Fix: Resolved an issue with email notifications where ids are getting duplicated.
 = 2.2.2 - 26th December 2025 =
 * Fix: Addressed a security bug. Props to Wordfence for reporting it responsibly.
 = 2.2.1 - 19th December 2025 =
