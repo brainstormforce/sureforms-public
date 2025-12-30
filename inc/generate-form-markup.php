@@ -770,7 +770,6 @@ class Generate_Form_Markup {
 		 *
 		 * @param mixed $form_confirmation The form confirmation data from post meta.
 		 * @param int   $form_id The form ID.
-		 * @param array $form_data The form data.
 		 * @param array $submission_data The submission data.
 		 * @since x.x.x
 		 */
@@ -829,7 +828,6 @@ class Generate_Form_Markup {
 		 *
 		 * @param mixed $form_confirmation The form confirmation data from post meta.
 		 * @param int   $form_id The form ID.
-		 * @param array $form_data The form data.
 		 * @param array $submission_data The submission data.
 		 * @since x.x.x
 		 */
