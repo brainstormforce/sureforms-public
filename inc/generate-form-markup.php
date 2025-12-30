@@ -774,7 +774,7 @@ class Generate_Form_Markup {
 		 * @param array $submission_data The submission data.
 		 * @since x.x.x
 		 */
-		$form_confirmation = apply_filters( 'srfm_form_confirmation_data', $form_confirmation, $form_id, $form_data, $submission_data );
+		$form_confirmation = apply_filters( 'srfm_form_confirmation_data', $form_confirmation, $form_id, $submission_data );
 
 		if ( ! is_array( $form_confirmation ) ) {
 			return $confirmation_message;
@@ -833,7 +833,7 @@ class Generate_Form_Markup {
 		 * @param array $submission_data The submission data.
 		 * @since x.x.x
 		 */
-		$form_confirmation = apply_filters( 'srfm_form_confirmation_data', $form_confirmation, $form_id, $form_data, $submission_data );
+		$form_confirmation = apply_filters( 'srfm_form_confirmation_data', $form_confirmation, $form_id, $submission_data );
 
 		if ( ! is_array( $form_confirmation ) ) {
 			return $redirect_url;
