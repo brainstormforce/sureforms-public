@@ -105,6 +105,10 @@ body.post-type-sureforms_form {
 
 	// Adding multi choice repeater styles.
 	.srfm-option-outer-wrapper {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+
 		&:first-child {
 			> div {
 				padding-top: 0;
@@ -118,6 +122,18 @@ body.post-type-sureforms_form {
 			padding: 4px 0;
 			.components-base-control {
 				margin-bottom: 0 !important;
+			}
+		}
+
+		.srfm-preselection-control {
+			display: flex;
+			align-items: center;
+			padding: 4px 0;
+
+			input[type="checkbox"],
+			input[type="radio"] {
+				margin: 0;
+				cursor: pointer;
 			}
 		}
 
