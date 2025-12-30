@@ -4,7 +4,7 @@ Tags: contact form, custom form, forms, WordPress form plugin, form builder
 Requires at least: 6.4
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 2.2.0
+Stable tag: 2.2.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -374,20 +374,18 @@ You can collect payments securely without any add-ons or extra plugins.
 You can report the issue through our [Bug Bounty Program](https://brainstormforce.com/bug-bounty-program/). We collaborate with Patchstack to provide opportunities for researchers to report vulnerabilities. The Patchstack team will help validate, triage, and handle any reported security issues.
 
 == Changelog ==
+= x.x.x =
+* Improvement: Added action to duplicate a form.
+* Improvement: Added placeholder for blocks that use input field.
+= 2.2.2 - 26th December 2025 =
+* Fix: Addressed a security bug. Props to Wordfence for reporting it responsibly.
+= 2.2.1 - 19th December 2025 =
+* Fix: Addressed a security bug. Props to Wordfence for reporting it responsibly.
+* Fix: Resolved Bricks v2.2-beta conflict with SureForms.
 = 2.2.0 - 16th December 2025 =
 * Improvement: Added confirmation step before moving items to trash in Forms and Entries lists.
 * Improvement: Optimized script loading to improve speed and efficiency.
 * Fix: Resolved Conversational Form issues with Image and Icon fields.
-= 2.1.0 - 2nd December 2025 =
-* Improvement: Updated email notifications to display multi-choice options on separate lines.
-* Improvement: Updated links in new tables to behave like standard links, allowing them to open in a new tab.
-* Improvement: Updated email notifications to remove empty fields.
-* Fix: Resolved an issue where the value of the smart tag {form_title} was incorrect when embedded in a page.
-* Fix: Resolved an issue where the reCAPTCHA badge overlapped with the submit button when using the Bricks theme.
-* Fix: Resolved an issue where labels were not being escaped properly.
-* Fix: Resolved an issue with phone block when site is in RTL mode.
-= 2.0.1 - 20th November 2025 =
-* Fix: Fixed compatibility issue with lower PHP version.
 
 The full changelog is available [here](https://sureforms.com/whats-new/).
 

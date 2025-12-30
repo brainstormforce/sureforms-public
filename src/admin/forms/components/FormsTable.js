@@ -25,6 +25,7 @@ import { formatDateTime } from '@Utils/Helpers';
  * @param {Function} props.onTrash              - Handler for trash action
  * @param {Function} props.onRestore            - Handler for restore action
  * @param {Function} props.onDelete             - Handler for delete action
+ * @param {Function} props.onDuplicate          - Handler for duplicate action
  * @param {Object}   props.paginationProps      - Props for pagination component
  */
 
@@ -42,6 +43,7 @@ const FormsTable = ( {
 	onTrash,
 	onRestore,
 	onDelete,
+	onDuplicate,
 	paginationProps,
 } ) => {
 	// State to track which shortcode was recently copied
@@ -234,6 +236,14 @@ const FormsTable = ( {
 						label: __( 'Export', 'sureforms' ),
 						icon: <Share className="size-4" />,
 						onClick: () => handleExport( form ),
+					} );
+
+					// Duplicate action
+					actions.push( {
+						key: 'duplicate',
+						label: __( 'Duplicate', 'sureforms' ),
+						icon: <Copy className="size-4" />,
+						onClick: () => onDuplicate?.( form ),
 					} );
 
 					// Delete action

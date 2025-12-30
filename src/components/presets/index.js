@@ -218,6 +218,7 @@ const SRFMPresets = ( props ) => {
 				<label
 					htmlFor={ key }
 					className="srfm-presets-radio-input-label"
+					// eslint-disable-next-line react/no-danger
 					dangerouslySetInnerHTML={ {
 						__html: preset.icon,
 					} }
