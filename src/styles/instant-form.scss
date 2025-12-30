@@ -29,6 +29,36 @@
 			line-height: 20px;
 		}
 	}
+
+	.srfm-form-settings-button {
+		cursor: pointer;
+		color: #475467;
+		background: rgba( 0, 0, 0, 0 );
+		border: none;
+		border-radius: 4px;
+		padding: 10px 16px 10px 16px;
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		width: max-content;
+		justify-content: center;
+		font-weight: 600;
+		font-size: 14px;
+		line-height: 20px;
+		transition: background-color 0.2s;
+
+		.srfm-form-settings-button-icon {
+			display: flex;
+			width: 20px;
+			height: 20px;
+			align-items: center;
+			justify-content: center;
+		}
+
+		&:hover {
+			color: #1e1e1e;
+		}
+	}
 }
 
 .srfm-instant-form-popover {
@@ -158,6 +188,35 @@
 }
 
 .srfm-form-settings-container {
-	padding: 16px;
-    width: 302px;
+	padding: 8px;
+	width: 240px;
+
+	.srfm-form-settings-nav-item {
+		display: flex;
+		align-items: center;
+		gap: 4px;
+		padding: 4px;
+		width: 100%;
+		border: none;
+		background: transparent;
+		cursor: pointer;
+		font-size: 16px;
+		line-height: 24px;
+		font-weight: 400;
+		color: #4b5563;
+		text-align: left;
+		border-radius: 6px;
+		transition: background-color 0.2s;
+		&:hover {
+			background: #f9fafb;
+		}
+
+		.srfm-form-settings-nav-item-icon {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			width: 32px;
+			height: 32px;
+		}
+	}
 }

@@ -16,7 +16,12 @@ import {
 	Code,
 } from 'lucide-react';
 
-const FormSettingsPopup = ( { popoverAnchor, setOpenPopover, hidePopover, setHidePopover } ) => {
+const FormSettingsPopup = ( {
+	popoverAnchor,
+	setOpenPopover,
+	hidePopover,
+	setHidePopover,
+} ) => {
 	const handleTabClick = ( tabId ) => {
 		// Dispatch custom event to open the dialog
 		const event = new CustomEvent( 'srfm-open-form-settings', {
@@ -130,42 +135,15 @@ const FormSettingsPopup = ( { popoverAnchor, setOpenPopover, hidePopover, setHid
 								key={ tab.id }
 								className="srfm-form-settings-nav-item"
 								onClick={ () => handleTabClick( tab.id ) }
-								style={ {
-									display: 'flex',
-									alignItems: 'center',
-									gap: '12px',
-									padding: '12px 16px',
-									width: '100%',
-									border: 'none',
-									background: 'transparent',
-									cursor: 'pointer',
-									fontSize: '14px',
-									fontWeight: '400',
-									color: '#344054',
-									textAlign: 'left',
-									borderRadius: '6px',
-									transition: 'background-color 0.2s',
-								} }
-								onMouseEnter={ ( e ) => {
-									e.currentTarget.style.backgroundColor = '#F9FAFB';
-								} }
-								onMouseLeave={ ( e ) => {
-									e.currentTarget.style.backgroundColor = 'transparent';
-								} }
 							>
 								{ tab.icon && (
-									<span
-										style={ {
-											display: 'flex',
-											alignItems: 'center',
-											justifyContent: 'center',
-											color: '#667085',
-										} }
-									>
+									<span className="srfm-form-settings-nav-item-icon">
 										{ tab.icon }
 									</span>
 								) }
-								<span>{ tab.label }</span>
+								<span className="srfm-form-settings-nav-item-label">
+									{ tab.label }
+								</span>
 							</button>
 						) ) }
 					</div>

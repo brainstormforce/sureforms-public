@@ -19,6 +19,7 @@ import Spacing from '@Components/spacing';
 import { instantFormAttributes } from '@Attributes/getBlocksDefaultAttributes';
 import { setDefaultFormAttributes } from '@Utils/Helpers';
 import FormSettingsPopup from './tabs/formSettingsPopup';
+import { ChevronDown } from 'lucide-react';
 
 let live_mode_prev_srfm_instant_form_settings = {};
 
@@ -104,9 +105,12 @@ const InstantFormComponent = () => {
 	const [ hidePopover, setHidePopover ] = useState( false ); // Just hide the popover using CSS instead of unloading it from DOM.
 
 	// Form Settings Popover state
-	const [ formSettingsPopoverAnchor, setFormSettingsPopoverAnchor ] = useState();
-	const [ openFormSettingsPopover, setOpenFormSettingsPopover ] = useState( false );
-	const [ hideFormSettingsPopover, setHideFormSettingsPopover ] = useState( false );
+	const [ formSettingsPopoverAnchor, setFormSettingsPopoverAnchor ] =
+		useState();
+	const [ openFormSettingsPopover, setOpenFormSettingsPopover ] =
+		useState( false );
+	const [ hideFormSettingsPopover, setHideFormSettingsPopover ] =
+		useState( false );
 
 	const [ isLinkCopied, setIsLinkCopied ] = useState( false );
 	const [ editPostSlug, setEditPostSlug ] = useState( {
@@ -392,31 +396,24 @@ const InstantFormComponent = () => {
 
 	return (
 		<>
-			<div className="srfm-instant-form-button-wrapper" style={
-				{
+			<div
+				className="srfm-instant-form-button-wrapper"
+				style={ {
 					display: 'flex',
-					gap: '10px'
-				}
-			}>
+					gap: '8px',
+				} }
+			>
 				<button
 					ref={ setFormSettingsPopoverAnchor }
 					className="srfm-form-settings-button"
-					onClick={ () => setOpenFormSettingsPopover( ! openFormSettingsPopover ) }
-					style={{
-						cursor: 'pointer',
-						color: '#475467',
-						background: 'rgba(0, 0, 0, 0)',
-						border: '1px solid #d1d5db',
-						borderRadius: '4px',
-						padding: '10px 16px 10px 16px',
-						display: 'flex',
-						alignItems: 'center',
-						gap: '8px',
-						width: 'max-content',
-						justifyContent: 'center',
-					}}
+					onClick={ () =>
+						setOpenFormSettingsPopover( ! openFormSettingsPopover )
+					}
 				>
 					{ __( 'Form Settings', 'sureforms' ) }
+					<span className="srfm-form-settings-button-icon">
+						<ChevronDown />
+					</span>
 				</button>
 				<button
 					ref={ setPopoverAnchor }

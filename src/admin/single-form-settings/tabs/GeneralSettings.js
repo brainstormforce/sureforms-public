@@ -217,11 +217,17 @@ function GeneralSettings( props ) {
 		};
 
 		// Add event listener
-		window.addEventListener( 'srfm-open-form-settings', handleFormSettingsEvent );
+		window.addEventListener(
+			'srfm-open-form-settings',
+			handleFormSettingsEvent
+		);
 
 		// Cleanup event listener on unmount
 		return () => {
-			window.removeEventListener( 'srfm-open-form-settings', handleFormSettingsEvent );
+			window.removeEventListener(
+				'srfm-open-form-settings',
+				handleFormSettingsEvent
+			);
 		};
 	}, [ sureformsKeys ] );
 
