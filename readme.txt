@@ -378,6 +378,7 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 * Improvement: Added ability to allow or block country codes in the phone number block.
 * Improvement: Added action to duplicate a form.
 * Improvement: Added placeholder for blocks that use input field.
+* Fix: Resolved an issue with email notifications where ids are getting duplicated.
 = 2.2.2 - 26th December 2025 =
 * Fix: Addressed a security bug. Props to Wordfence for reporting it responsibly.
 = 2.2.1 - 19th December 2025 =
