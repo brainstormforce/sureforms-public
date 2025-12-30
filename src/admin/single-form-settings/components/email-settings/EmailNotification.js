@@ -55,6 +55,18 @@ const EmailNotification = ( {
 	const [ currData, setCurrData ] = useState( [] );
 	const [ isPopup, setIsPopup ] = useState( null );
 	const { editPost } = useDispatch( editorStore );
+
+	const getNextUniqueId = () => {
+		if ( ! emailNotificationData || emailNotificationData.length === 0 ) {
+			return 1;
+		}
+		const maxId = emailNotificationData.reduce( ( max, el ) => {
+			const currentId = parseInt( el?.id, 10 );
+			return ! isNaN( currentId ) && currentId > max ? currentId : max;
+		}, 0 );
+		return maxId + 1;
+	};
+
 	const handleEdit = ( data ) => {
 		setShowConfirmation( true );
 		setCurrData( data );
@@ -76,7 +88,7 @@ const EmailNotification = ( {
 	const handleDuplicate = ( data ) => {
 		const duplicateData = { ...data };
 		if ( duplicateData.id ) {
-			duplicateData.id = emailNotificationData.length + 1;
+			duplicateData.id = getNextUniqueId();
 		}
 		const allData = [ ...emailNotificationData, duplicateData ];
 		updateMeta( '_srfm_email_notification', allData );
@@ -129,8 +141,7 @@ const EmailNotification = ( {
 
 		let currEmailData = emailNotificationData;
 		if ( ! newData.id ) {
-			const currId = emailNotificationData.length + 1;
-			newData.id = currId;
+			newData.id = getNextUniqueId();
 			currEmailData = [ ...currEmailData, newData ];
 		} else {
 			currEmailData = currEmailData.map( ( el ) => {

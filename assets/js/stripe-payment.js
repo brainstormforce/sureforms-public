@@ -93,7 +93,9 @@ class StripePayment {
 
 		// Add form_id for server-side validation
 		const formElement = paymentInput.closest( 'form' );
-		const formIdInput = formElement?.querySelector( 'input[name="form-id"]' );
+		const formIdInput = formElement?.querySelector(
+			'input[name="form-id"]'
+		);
 		if ( formIdInput?.value ) {
 			data.append( 'form_id', formIdInput.value );
 		}
