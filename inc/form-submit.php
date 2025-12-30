@@ -649,7 +649,7 @@ class Form_Submit {
 
 		/**
 		 * Filter the form submission response.
-		 * 
+		 *
 		 * @param array<mixed> $response The response data.
 		 * @param array<string> $form_data The original form data.
 		 * @param array<mixed> $submission_data The processed submission data.

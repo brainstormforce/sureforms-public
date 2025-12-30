@@ -217,15 +217,15 @@ class Generate_Form_Markup {
 			 * Filter the form confirmation data.
 			 * Allows conditional confirmations to override the default confirmation settings.
 			 *
-			 * @param array $form_confirmation The form confirmation data from post meta.
+			 * @param mixed $form_confirmation The form confirmation data from post meta.
 			 * @param int   $id The form ID.
 			 * @since x.x.x
 			 */
 			$form_confirmation = apply_filters( 'srfm_form_confirmation_data', $form_confirmation, $id );
 
-			$confirmation_type        = '';
-			$submission_action        = '';
-			$success_url              = '';
+			$confirmation_type = '';
+			$submission_action = '';
+			$success_url       = '';
 			if ( is_array( $form_confirmation ) && isset( $form_confirmation[0][0] ) ) {
 				$confirmation_data = $form_confirmation[0][0];
 				$page_url          = $confirmation_data['page_url'] ?? '';
@@ -779,7 +779,7 @@ class Generate_Form_Markup {
 		 * Filter the form confirmation data.
 		 * Allows conditional confirmations to override the default confirmation settings.
 		 *
-		 * @param array $form_confirmation The form confirmation data from post meta.
+		 * @param mixed $form_confirmation The form confirmation data from post meta.
 		 * @param int   $form_id The form ID.
 		 * @param array $form_data The form data.
 		 * @param array $submission_data The submission data.
@@ -838,7 +838,7 @@ class Generate_Form_Markup {
 		 * Filter the form confirmation data.
 		 * Allows conditional confirmations to override the default confirmation settings.
 		 *
-		 * @param array $form_confirmation The form confirmation data from post meta.
+		 * @param mixed $form_confirmation The form confirmation data from post meta.
 		 * @param int   $form_id The form ID.
 		 * @param array $form_data The form data.
 		 * @param array $submission_data The submission data.
