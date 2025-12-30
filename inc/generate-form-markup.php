@@ -212,10 +212,9 @@ class Generate_Form_Markup {
 			$is_page_break            = ! empty( $page_break_settings ) ? $page_break_settings['is_page_break'] : false;
 			$page_break_progress_type = ! empty( $page_break_settings ) ? $page_break_settings['progress_indicator_type'] : 'none';
 			$form_confirmation        = get_post_meta( $id, '_srfm_form_confirmation' );
-
-			$confirmation_type = '';
-			$submission_action = '';
-			$success_url       = '';
+			$confirmation_type        = '';
+			$submission_action        = '';
+			$success_url              = '';
 			if ( is_array( $form_confirmation ) && isset( $form_confirmation[0][0] ) ) {
 				$confirmation_data = $form_confirmation[0][0];
 				$page_url          = $confirmation_data['page_url'] ?? '';
