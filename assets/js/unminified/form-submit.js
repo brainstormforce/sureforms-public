@@ -591,7 +591,7 @@ async function handleFormSubmission(
 			emitFormSubmitSuccess( { ...formStatus, formId } );
 
 			/**
-			 * If there is a submit mode defined in the form submit response,
+			 * If there is a submit mode or after submission defined in the form submit response,
 			 * use that instead of the one defined in the form attribute.
 			 */
 			const submitTypeFormAttribute = submitType;
@@ -603,9 +603,6 @@ async function handleFormSubmission(
 			afterSubmission =
 				formStatus?.data?.submission_settings?.after_submission ||
 				oldAfterSubmission;
-
-				console.log(afterSubmission);
-				
 
 			if ( submitType === 'same page' ) {
 				showSuccessMessage(
