@@ -213,16 +213,6 @@ class Generate_Form_Markup {
 			$page_break_progress_type = ! empty( $page_break_settings ) ? $page_break_settings['progress_indicator_type'] : 'none';
 			$form_confirmation        = get_post_meta( $id, '_srfm_form_confirmation' );
 
-			/**
-			 * Filter the form confirmation data.
-			 * Allows conditional confirmations to override the default confirmation settings.
-			 *
-			 * @param mixed $form_confirmation The form confirmation data from post meta.
-			 * @param int   $id The form ID.
-			 * @since x.x.x
-			 */
-			$form_confirmation = apply_filters( 'srfm_form_confirmation_data', $form_confirmation, $id );
-
 			$confirmation_type = '';
 			$submission_action = '';
 			$success_url       = '';
