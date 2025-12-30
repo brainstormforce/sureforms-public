@@ -1,3 +1,48 @@
+/**
+ * Validates and returns a country code based on filter settings.
+ * If the country is not valid for current filters, returns the first valid country.
+ *
+ * @param {string} country             - The country code to validate
+ * @param {string} enableCountryFilter - Whether country filtering is enabled ('true' or 'false')
+ * @param {string} countryFilterType   - The filter type ('include' or 'exclude')
+ * @param {Array}  includeCountries    - Array of country codes to include
+ * @param {Array}  excludeCountries    - Array of country codes to exclude
+ * @return {string} A valid country code based on the filters
+ */
+function validateCountryWithFilters(
+	country,
+	enableCountryFilter,
+	countryFilterType,
+	includeCountries,
+	excludeCountries
+) {
+	if ( enableCountryFilter !== 'true' ) {
+		return country;
+	}
+
+	const countryLower = country.toLowerCase();
+
+	// Handle include filter
+	if ( countryFilterType === 'include' && includeCountries.length > 0 ) {
+		if ( ! includeCountries.includes( countryLower ) ) {
+			// Country not in include list, use first country from the list
+			return includeCountries[ 0 ];
+		}
+		return countryLower;
+	}
+
+	// Handle exclude filter
+	if ( countryFilterType === 'exclude' && excludeCountries.length > 0 ) {
+		if ( excludeCountries.includes( countryLower ) ) {
+			// Country is excluded, use 'us' or another fallback
+			return excludeCountries.includes( 'us' ) ? 'gb' : 'us';
+		}
+		return countryLower;
+	}
+
+	return country;
+}
+
 function initializePhoneField() {
 	const phone = document.querySelectorAll( '.srfm-phone-block' );
 
@@ -18,6 +63,48 @@ function initializePhoneField() {
 		const isAutoCountry = phoneNumber.getAttribute( 'auto-country' );
 		const defaultCountry = phoneNumber.getAttribute( 'default-country' );
 		const phoneFieldName = phoneNumber.getAttribute( 'name' );
+		const enableCountryFilter = phoneNumber.getAttribute(
+			'data-enable-country-filter'
+		);
+		const countryFilterType = phoneNumber.getAttribute(
+			'data-country-filter-type'
+		);
+		const includeCountriesAttr = phoneNumber.getAttribute(
+			'data-include-countries'
+		);
+		const excludeCountriesAttr = phoneNumber.getAttribute(
+			'data-exclude-countries'
+		);
+
+		// Parse country filter arrays
+		let includeCountries = [];
+		let excludeCountries = [];
+
+		if ( enableCountryFilter === 'true' ) {
+			try {
+				if ( countryFilterType === 'include' && includeCountriesAttr ) {
+					includeCountries = JSON.parse( includeCountriesAttr );
+				}
+				if ( countryFilterType === 'exclude' && excludeCountriesAttr ) {
+					excludeCountries = JSON.parse( excludeCountriesAttr );
+				}
+			} catch ( e ) {
+				console.error( 'Error parsing country filter data:', e );
+			}
+		}
+
+		// Determine initial country based on filter settings
+		let initialCountry = defaultCountry || 'us';
+
+		// Validate the initial country against filters
+		initialCountry = validateCountryWithFilters(
+			initialCountry,
+			enableCountryFilter,
+			countryFilterType,
+			includeCountries,
+			excludeCountries
+		);
+
 		const itlOptions = {
 			autoPlaceholder: 'off',
 			separateDialCode: true,
@@ -25,7 +112,7 @@ function initializePhoneField() {
 				phone: phoneFieldName,
 			} ),
 			countrySearch: true,
-			initialCountry: defaultCountry || 'us',
+			initialCountry,
 		};
 
 		if ( isAutoCountry === 'true' ) {
@@ -36,12 +123,54 @@ function initializePhoneField() {
 						return res.json();
 					} )
 					.then( function ( data ) {
-						callback( data.country_code );
+						let detectedCountry = data.country_code
+							? data.country_code.toLowerCase()
+							: 'us';
+
+						// Validate detected country against filters
+						detectedCountry = validateCountryWithFilters(
+							detectedCountry,
+							enableCountryFilter,
+							countryFilterType,
+							includeCountries,
+							excludeCountries
+						);
+
+						callback( detectedCountry );
 					} )
 					.catch( function () {
-						callback( 'us' );
+						// On error, use validated fallback country
+						let fallbackCountry = 'us';
+
+						// Validate fallback country against filters
+						fallbackCountry = validateCountryWithFilters(
+							fallbackCountry,
+							enableCountryFilter,
+							countryFilterType,
+							includeCountries,
+							excludeCountries
+						);
+
+						callback( fallbackCountry );
 					} );
 			};
+		}
+
+		// Apply country filtering if enabled
+		if ( enableCountryFilter === 'true' ) {
+			if (
+				countryFilterType === 'include' &&
+				includeCountries.length > 0
+			) {
+				// Use onlyCountries when filter type is include
+				itlOptions.onlyCountries = includeCountries;
+			} else if (
+				countryFilterType === 'exclude' &&
+				excludeCountries.length > 0
+			) {
+				// Use excludeCountries when filter type is exclude
+				itlOptions.excludeCountries = excludeCountries;
+			}
 		}
 
 		const iti = window.intlTelInput( phoneNumber, itlOptions );
