@@ -12,6 +12,7 @@ import InspectorTab, {
 import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
 import SRFMTextControl from '@Components/text-control';
 import SRFMSelectControl from '@Components/select-control';
+import MultiButtonsControl from '@Components/multi-buttons-control';
 import { PhoneComponent } from './components/default';
 import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
 import AddInitialAttr from '@Controls/addInitialAttr';
@@ -20,6 +21,7 @@ import { FieldsPreview } from '../FieldsPreview.jsx';
 import { useErrMessage } from '@Blocks/util';
 import ConditionalLogic from '@Components/conditional-logic';
 import countries from './countries.json';
+import Select from 'react-select';
 
 const Edit = ( { attributes, setAttributes, clientId } ) => {
 	const {
@@ -34,6 +36,10 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 		autoCountry,
 		defaultCountry,
 		className,
+		enableCountryFilter,
+		countryFilterType,
+		includeCountries,
+		excludeCountries,
 	} = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
 	// Create translatable country options using useMemo
@@ -46,6 +52,41 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 			} ) ),
 		],
 		[]
+	);
+
+	// Create array of all countries for the multi-select
+	const allCountriesForSelect = useMemo(
+		() =>
+			Object.entries( countries ).map( ( [ code, name ] ) => ( {
+				value: code,
+				label: name,
+			} ) ),
+		[]
+	);
+
+	// Convert stored country codes to react-select format
+	const includeCountriesOptions = useMemo(
+		() =>
+			includeCountries
+				.map( ( code ) =>
+					allCountriesForSelect.find(
+						( country ) => country.value === code
+					)
+				)
+				.filter( Boolean ),
+		[ includeCountries, allCountriesForSelect ]
+	);
+
+	const excludeCountriesOptions = useMemo(
+		() =>
+			excludeCountries
+				.map( ( code ) =>
+					allCountriesForSelect.find(
+						( country ) => country.value === code
+					)
+				)
+				.filter( Boolean ),
+		[ excludeCountries, allCountriesForSelect ]
 	);
 
 	useEffect( () => {
@@ -176,6 +217,134 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 									setAttributes={ setAttributes }
 									options={ countryOptions }
 								/>
+							) }
+							<ToggleControl
+								label={ __(
+									'Restrict Country Codes',
+									'sureforms'
+								) }
+								checked={ enableCountryFilter }
+								onChange={ ( value ) =>
+									setAttributes( {
+										enableCountryFilter: value,
+									} )
+								}
+							/>
+							{ enableCountryFilter && (
+								<div>
+									<MultiButtonsControl
+										setAttributes={ setAttributes }
+										label={ __(
+											'Restriction Type',
+											'sureforms'
+										) }
+										data={ {
+											value: countryFilterType,
+											label: 'countryFilterType',
+										} }
+										options={ [
+											{
+												value: 'include',
+												label: __(
+													'Allow',
+													'sureforms'
+												),
+											},
+											{
+												value: 'exclude',
+												label: __(
+													'Block',
+													'sureforms'
+												),
+											},
+										] }
+										showIcons={ false }
+									/>
+									{ countryFilterType === 'include' && (
+										<>
+											<div className="srfm-control-label">
+												{ __(
+													'Select Allowed Countries',
+													'sureforms'
+												) }
+											</div>
+											<Select
+												options={
+													allCountriesForSelect
+												}
+												value={
+													includeCountriesOptions
+												}
+												isMulti
+												isClearable
+												classNamePrefix="srfm-select"
+												placeholder={ __(
+													'Choose countries…',
+													'sureforms'
+												) }
+												onChange={ ( values ) => {
+													const codes = values
+														? values.map(
+															( item ) =>
+																item.value
+														  )
+														: [];
+													setAttributes( {
+														includeCountries: codes,
+													} );
+												} }
+											/>
+											<p className="components-base-control__help">
+												{ __(
+													'Choose which country codes users can select in the phone number field. Leave empty to allow all country codes.',
+													'sureforms'
+												) }
+											</p>
+										</>
+									) }
+									{ countryFilterType === 'exclude' && (
+										<>
+											<div className="srfm-control-label">
+												{ __(
+													'Select Blocked Countries',
+													'sureforms'
+												) }
+											</div>
+											<Select
+												options={
+													allCountriesForSelect
+												}
+												value={
+													excludeCountriesOptions
+												}
+												isMulti
+												isClearable
+												classNamePrefix="srfm-select"
+												placeholder={ __(
+													'Choose countries…',
+													'sureforms'
+												) }
+												onChange={ ( values ) => {
+													const codes = values
+														? values.map(
+															( item ) =>
+																item.value
+														  )
+														: [];
+													setAttributes( {
+														excludeCountries: codes,
+													} );
+												} }
+											/>
+											<p className="components-base-control__help">
+												{ __(
+													'These countries will be hidden from the dropdown.',
+													'sureforms'
+												) }
+											</p>
+										</>
+									) }
+								</div>
 							) }
 						</SRFMAdvancedPanelBody>
 					</InspectorTab>
