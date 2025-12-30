@@ -375,6 +375,7 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 
 == Changelog ==
 = x.x.x =
+* Improvement: Updated UI for attributes for editor sidebar for multi choice block.
 * Improvement: Added ability to allow or block country codes in the phone number block.
 * Improvement: Added action to duplicate a form.
 * Improvement: Added placeholder for blocks that use input field.
