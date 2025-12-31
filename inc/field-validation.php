@@ -169,7 +169,7 @@ class Field_Validation {
 					// $get_form_config[ $index ]['name_with_id'] = str_replace( '/', '-', $block['blockName'] ) . '-' . $index;
 					$name_with_id = str_replace( '/', '-', $block['blockName'] ) . '-' . $index;
 
-					// Allow custom filter based on block type
+					// Allow custom filter based on block type.
 					$name_with_id = apply_filters(
 						'srfm_block_config_name_with_id',
 						$name_with_id,
