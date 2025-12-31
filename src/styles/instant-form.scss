@@ -194,21 +194,26 @@
 	.srfm-form-settings-nav-item {
 		display: flex;
 		align-items: center;
-		gap: 4px;
+		gap: 6px;
 		padding: 4px;
 		width: 100%;
 		border: none;
-		background: transparent;
+		background: rgba( 0, 0, 0, 0 );
 		cursor: pointer;
-		font-size: 16px;
-		line-height: 24px;
-		font-weight: 400;
-		color: #4b5563;
 		text-align: left;
 		border-radius: 6px;
 		transition: background-color 0.2s;
+		color: rgb( 107, 114, 128 );
+
 		&:hover {
 			background: #f9fafb;
+		}
+
+		.srfm-form-settings-nav-item-label {
+			color: #50575e;
+			font-weight: 500 !important;
+			font-size: 13px !important;
+			line-height: 16px !important;
 		}
 
 		.srfm-form-settings-nav-item-icon {
@@ -217,6 +222,19 @@
 			justify-content: center;
 			width: 32px;
 			height: 32px;
+
+			> svg {
+				height: 1.25rem;
+				width: 1.25rem;
+			}
 		}
 	}
+}
+
+.srfm-form-settings-popover {
+	margin-top: 5px;
+	background-color: #fff;
+	border: 1px solid #e5e7eb;
+	border-radius: 4px;
+	box-shadow: 0px 4px 6px -2px rgba( 0, 0, 0, 0.0509803922 );
 }
