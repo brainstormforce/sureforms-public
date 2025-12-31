@@ -166,7 +166,6 @@ class Field_Validation {
 				if ( isset( $block['blockName'] ) ) {
 					// 'name_with_id' is used as a unique field identifier for validation.
 					// Example: 'sureforms-input-abc123' for blockName 'sureforms/input' and block_id 'abc123'
-					// $get_form_config[ $index ]['name_with_id'] = str_replace( '/', '-', $block['blockName'] ) . '-' . $index;
 					$name_with_id = str_replace( '/', '-', $block['blockName'] ) . '-' . $index;
 
 					// Allow custom filter based on block type.
