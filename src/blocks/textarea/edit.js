@@ -143,7 +143,7 @@ const Edit = ( props ) => {
 		},
 		{
 			id: 'read-only',
-			component: (
+			component: defaultValue ? (
 				<ToggleControl
 					label={ __( 'Read Only', 'sureforms' ) }
 					checked={ readOnly }
@@ -151,7 +151,7 @@ const Edit = ( props ) => {
 						setAttributes( { readOnly: checked } )
 					}
 				/>
-			),
+			) : null,
 		},
 		{
 			id: 'rich-text',

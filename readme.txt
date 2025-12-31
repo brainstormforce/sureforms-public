@@ -375,6 +375,7 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 
 == Changelog ==
 = x.x.x =
+* Improvement: Disabled the readonly option for textarea when default value is empty.
 * Improvement: Added pre-select options for multi choice and dropdown block.
 * Improvement: Added ability to allow or block country codes in the phone number block.
 * Improvement: Added action to duplicate a form.
