@@ -4,7 +4,7 @@ Tags: contact form, custom form, forms, WordPress form plugin, form builder
 Requires at least: 6.4
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 2.2.2
+Stable tag: 2.3.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -374,7 +374,7 @@ You can collect payments securely without any add-ons or extra plugins.
 You can report the issue through our [Bug Bounty Program](https://brainstormforce.com/bug-bounty-program/). We collaborate with Patchstack to provide opportunities for researchers to report vulnerabilities. The Patchstack team will help validate, triage, and handle any reported security issues.
 
 == Changelog ==
-= x.x.x =
+= 2.3.0 - 1st January 2026 =
 * Improvement: Disabled the readonly option for textarea when default value is empty.
 * Improvement: Added pre-select options for multi choice and dropdown block.
 * Improvement: Added ability to allow or block country codes in the phone number block.
