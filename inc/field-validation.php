@@ -48,32 +48,27 @@ class Field_Validation {
 				continue;
 			}
 
-			$block_id = sanitize_text_field( $block['attrs']['block_id'] );
+			$block_id   = sanitize_text_field( $block['attrs']['block_id'] );
+			$block_name = $block['blockName'];
 
-			// Store payment block configuration for server-side validation.
-			if ( 'srfm/payment' === $block['blockName'] ) {
-				$payment_config = [];
+			// Process specific block types.
+			$processed_config = null;
 
-				// Extract payment type (single or subscription).
-				if ( isset( $block['attrs']['paymentType'] ) ) {
-					$payment_config['payment_type'] = sanitize_text_field( $block['attrs']['paymentType'] );
-				}
+			switch ( $block_name ) {
+				case 'srfm/payment':
+					$processed_config = self::process_payment_block( $block['attrs'] );
+					break;
+				case 'srfm/dropdown':
+					$processed_config = self::process_dropdown_block( $block['attrs'] );
+					break;
+				case 'srfm/multi-choice':
+					$processed_config = self::process_multichoice_block( $block['attrs'] );
+					break;
+			}
 
-				// Extract amount type (fixed or minimum).
-				if ( isset( $block['attrs']['amountType'] ) ) {
-					$payment_config['amount_type'] = sanitize_text_field( $block['attrs']['amountType'] );
-				}
-
-				// Extract configured amount.
-				if ( isset( $block['attrs']['fixedAmount'] ) ) {
-					$payment_config['fixed_amount'] = floatval( $block['attrs']['fixedAmount'] );
-				}
-				if ( isset( $block['attrs']['minimumAmount'] ) ) {
-					$payment_config['minimum_amount'] = floatval( $block['attrs']['minimumAmount'] );
-				}
-
-				// Store payment configuration.
-				$block_config[ $block_id ] = $payment_config;
+			// If block was processed, store its configuration.
+			if ( null !== $processed_config ) {
+				$block_config[ $block_id ] = $processed_config;
 				continue;
 			}
 
@@ -91,6 +86,128 @@ class Field_Validation {
 		if ( ! empty( $block_config ) ) {
 			update_post_meta( $form_id, '_srfm_block_config', $block_config );
 		}
+	}
+
+	/**
+	 * Process payment block configuration.
+	 *
+	 * @param array<mixed> $attrs Block attributes.
+	 * @return array Processed payment configuration.
+	 * @since x.x.x
+	 */
+	private static function process_payment_block( $attrs ) {
+		$payment_config = [];
+
+		// Extract payment type (single or subscription).
+		if ( isset( $attrs['paymentType'] ) ) {
+			$payment_config['payment_type'] = sanitize_text_field( $attrs['paymentType'] );
+		}
+
+		// Extract amount type (fixed or minimum).
+		if ( isset( $attrs['amountType'] ) ) {
+			$payment_config['amount_type'] = sanitize_text_field( $attrs['amountType'] );
+		}
+
+		// Extract configured amount.
+		if ( isset( $attrs['fixedAmount'] ) ) {
+			$payment_config['fixed_amount'] = floatval( $attrs['fixedAmount'] );
+		}
+		if ( isset( $attrs['minimumAmount'] ) ) {
+			$payment_config['minimum_amount'] = floatval( $attrs['minimumAmount'] );
+		}
+
+		// Extract variable amount field reference.
+		if ( isset( $attrs['variableAmountField'] ) ) {
+			$payment_config['variable_amount_field'] = sanitize_text_field( $attrs['variableAmountField'] );
+		}
+
+		return $payment_config;
+	}
+
+	/**
+	 * Process dropdown block configuration.
+	 *
+	 * @param array<mixed> $attrs Block attributes.
+	 * @return array Processed dropdown configuration.
+	 * @since x.x.x
+	 */
+	private static function process_dropdown_block( $attrs ) {
+		$dropdown_config = [];
+
+		// Extract required field.
+		if ( isset( $attrs['required'] ) ) {
+			$dropdown_config['required'] = rest_sanitize_boolean( $attrs['required'] );
+		}
+
+		// Extract options.
+		if ( isset( $attrs['options'] ) && is_array( $attrs['options'] ) ) {
+			$dropdown_config['options'] = array_map( 'sanitize_text_field', $attrs['options'] );
+		}
+
+		// Extract showValues flag.
+		if ( isset( $attrs['showValues'] ) ) {
+			$dropdown_config['show_values'] = rest_sanitize_boolean( $attrs['showValues'] );
+		}
+
+		// Extract multiSelect flag.
+		if ( isset( $attrs['multiSelect'] ) ) {
+			$dropdown_config['multi_select'] = rest_sanitize_boolean( $attrs['multiSelect'] );
+		}
+
+		// Extract minValue for multi-select validation.
+		if ( isset( $attrs['minValue'] ) ) {
+			$dropdown_config['min_value'] = absint( $attrs['minValue'] );
+		}
+
+		// Extract maxValue for multi-select validation.
+		if ( isset( $attrs['maxValue'] ) ) {
+			$dropdown_config['max_value'] = absint( $attrs['maxValue'] );
+		}
+
+		return $dropdown_config;
+	}
+
+	/**
+	 * Process multi-choice block configuration.
+	 *
+	 * @param array<mixed> $attrs Block attributes.
+	 * @return array Processed multi-choice configuration.
+	 * @since x.x.x
+	 */
+	private static function process_multichoice_block( $attrs ) {
+		$multichoice_config = [];
+
+		// Extract required field.
+		if ( isset( $attrs['required'] ) ) {
+			$multichoice_config['required'] = rest_sanitize_boolean( $attrs['required'] );
+		}
+
+		// Extract singleSelection flag.
+		if ( isset( $attrs['singleSelection'] ) ) {
+			$multichoice_config['single_selection'] = rest_sanitize_boolean( $attrs['singleSelection'] );
+		}
+
+		// Extract minValue for validation.
+		if ( isset( $attrs['minValue'] ) ) {
+			$multichoice_config['min_value'] = absint( $attrs['minValue'] );
+		}
+
+		// Extract maxValue for validation.
+		if ( isset( $attrs['maxValue'] ) ) {
+			$multichoice_config['max_value'] = absint( $attrs['maxValue'] );
+		}
+
+		// Extract options.
+		if ( isset( $attrs['options'] ) && is_array( $attrs['options'] ) ) {
+			$multichoice_config['options'] = array_map( 'sanitize_text_field', $attrs['options'] );
+		}
+
+		// Extract showValues flag.
+		if ( isset( $attrs['showValues'] ) ) {
+			$multichoice_config['show_values'] = rest_sanitize_boolean( $attrs['showValues'] );
+		}
+
+		return $multichoice_config;
 	}
 
 	/**
