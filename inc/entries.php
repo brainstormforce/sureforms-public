@@ -647,7 +647,7 @@ class Entries {
 		 * useful for custom field types (like repeater fields in Pro) that need
 		 * special formatting for CSV export.
 		 *
-		 * @since x.x.x
+		 * @since 2.3.0
 		 *
 		 * @param mixed  $field_value The field value to normalize.
 		 * @param string $field_key   The field key for identifying field type.

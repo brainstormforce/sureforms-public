@@ -4,7 +4,7 @@ Tags: contact form, custom form, forms, WordPress form plugin, form builder
 Requires at least: 6.4
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 2.2.2
+Stable tag: 2.3.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -374,14 +374,13 @@ You can collect payments securely without any add-ons or extra plugins.
 You can report the issue through our [Bug Bounty Program](https://brainstormforce.com/bug-bounty-program/). We collaborate with Patchstack to provide opportunities for researchers to report vulnerabilities. The Patchstack team will help validate, triage, and handle any reported security issues.
 
 == Changelog ==
-= x.x.x =
-* Improvement: Disabled the readonly option for textarea when default value is empty.
-* Improvement: Added pre-select options for multi choice and dropdown block.
-* Improvement: Added ability to allow or block country codes in the phone number block.
-* Improvement: Added action to duplicate a form.
-* Improvement: Added placeholder for blocks that use input field.
-* Fix: Resolved an issue with weekly email summary where table UI is breaking when the form names are too long.
-* Fix: Resolved an issue with email notifications where ids are getting duplicated.
+= 2.3.0 - 1st January 2026 =
+* New: Added option to duplicate forms.
+* New: Added preselect option for dropdown and multiple choice field.
+* Improvement: Improved visibility and accessibility of form settings.
+* Improvement: Added placeholder support for applicable fields. 
+* Improvement: Added ability to edit or delete the country list in the phone number field.
+* Fix: Fixed duplication of email notification IDs.
 = 2.2.2 - 26th December 2025 =
 * Fix: Addressed a security bug. Props to Wordfence for reporting it responsibly.
 = 2.2.1 - 19th December 2025 =
