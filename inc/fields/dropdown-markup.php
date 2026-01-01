@@ -56,6 +56,14 @@ class Dropdown_Markup extends Base {
 	protected $show_values;
 
 	/**
+	 * Array of preselected option indices.
+	 *
+	 * @var array
+	 * @since x.x.x
+	 */
+	protected $preselected_options;
+
+	/**
 	 * Static counter for generating unique dropdown instances.
 	 *
 	 * @var int
@@ -74,8 +82,9 @@ class Dropdown_Markup extends Base {
 		$this->set_properties( $attributes );
 		$this->set_input_label( __( 'Dropdown', 'sureforms' ) );
 		$this->set_error_msg( $attributes, 'srfm_dropdown_block_required_text' );
-		$this->multi_select_attr = ! empty( $attributes['multiSelect'] ) ? 'true' : 'false';
-		$this->search_attr       = ! empty( $attributes['searchable'] ) ? 'true' : 'false';
+		$this->multi_select_attr   = ! empty( $attributes['multiSelect'] ) ? 'true' : 'false';
+		$this->search_attr         = ! empty( $attributes['searchable'] ) ? 'true' : 'false';
+		$this->preselected_options = $attributes['preselectedOptions'] ?? [];
 		$this->set_markup_properties();
 		$this->set_aria_described_by();
 
@@ -122,14 +131,29 @@ class Dropdown_Markup extends Base {
 					<select
 						class="srfm-dropdown-common srfm-<?php echo esc_attr( $this->slug ); ?>-input"
 						<?php echo ! empty( $this->aria_described_by ) ? "aria-describedby='" . esc_attr( trim( $this->aria_described_by ) ) . "'" : ''; ?>
-				data-required="<?php echo esc_attr( $this->data_require_attr ); ?>" aria-required="<?php echo esc_attr( $this->data_require_attr ); ?>" <?php echo wp_kses_post( $this->data_attribute_markup() ); ?> name="srfm-<?php echo esc_attr( $this->unique_slug ); ?>-<?php echo esc_attr( $this->block_id ); ?><?php echo esc_attr( $this->field_name ); ?>" data-multiple="<?php echo esc_attr( $this->multi_select_attr ); ?>" data-searchable="<?php echo esc_attr( $this->search_attr ); ?>" tabindex="0" aria-hidden="true">
-					<option class="srfm-dropdown-placeholder" value="" disabled selected><?php echo esc_html( $this->placeholder ); ?></option>
-						<?php foreach ( $this->options as $option ) { ?>
+				data-required="<?php echo esc_attr( $this->data_require_attr ); ?>" aria-required="<?php echo esc_attr( $this->data_require_attr ); ?>" <?php echo wp_kses_post( $this->data_attribute_markup() ); ?> name="srfm-<?php echo esc_attr( $this->unique_slug ); ?>-<?php echo esc_attr( $this->block_id ); ?><?php echo esc_attr( $this->field_name ); ?>" data-multiple="<?php echo esc_attr( $this->multi_select_attr ); ?>" data-searchable="<?php echo esc_attr( $this->search_attr ); ?>"
+						<?php
+						if ( ! empty( $this->preselected_options ) ) {
+							$preselected_labels = array_map(
+								function( $i ) {
+									$option = $this->options[ $i ] ?? [];
+									return is_array( $option ) ? ( $option['label'] ?? '' ) : '';
+								},
+								$this->preselected_options
+							);
+							$json_encoded       = wp_json_encode( $preselected_labels );
+							echo 'data-preselected="' . esc_attr( false !== $json_encoded ? $json_encoded : '' ) . '"';
+						}
+						?>
+						tabindex="0" aria-hidden="true">
+					<option class="srfm-dropdown-placeholder" value="" disabled <?php echo empty( $this->preselected_options ) ? 'selected' : ''; ?>><?php echo esc_html( $this->placeholder ); ?></option>
+						<?php foreach ( $this->options as $i => $option ) { ?>
 							<?php
 								$icon_svg         = Spec_Gb_Helper::render_svg_html( $option['icon'] ?? '', true );
 								$escaped_icon_svg = htmlspecialchars( Helper::get_string_value( $icon_svg ), ENT_QUOTES, 'UTF-8' );
+								$is_preselected   = is_array( $this->preselected_options ) && in_array( $i, $this->preselected_options, true );
 							?>
-								<option value="<?php echo isset( $option['label'] ) ? esc_html( $option['label'] ) : ''; ?>" data-icon="<?php echo ! empty( $escaped_icon_svg ) ? esc_attr( $escaped_icon_svg ) : ''; ?>" <?php echo $this->show_values && isset( $option['value'] ) ? 'option-value="' . esc_attr( $option['value'] ) . '"' : ''; ?>><?php echo isset( $option['label'] ) ? esc_html( $option['label'] ) : ''; ?></option>
+								<option value="<?php echo isset( $option['label'] ) ? esc_html( $option['label'] ) : ''; ?>" data-icon="<?php echo ! empty( $escaped_icon_svg ) ? esc_attr( $escaped_icon_svg ) : ''; ?>" <?php echo $this->show_values && isset( $option['value'] ) ? 'option-value="' . esc_attr( $option['value'] ) . '"' : ''; ?> <?php echo $is_preselected ? 'selected' : ''; ?>><?php echo isset( $option['label'] ) ? esc_html( $option['label'] ) : ''; ?></option>
 								<?php
 						}
 						?>

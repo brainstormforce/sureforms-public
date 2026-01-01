@@ -5,6 +5,66 @@ function initializeMultichoice() {
 
 	if ( multiChoices ) {
 		multiChoices.forEach( ( single ) => {
+			// Initialize savedValues array to track checked options in checkbox mode
+			// Must be declared before initializeHiddenInput() to capture preselected values
+			let savedValues = [];
+
+			// Initialize hidden input value with preselected options on page load
+			const initializeHiddenInput = () => {
+				const hiddenInput = single.querySelector(
+					'.srfm-input-multi-choice-hidden'
+				);
+				const checkedInputs = single.querySelectorAll(
+					'.srfm-input-multi-choice-single:checked'
+				);
+
+				if ( ! hiddenInput || checkedInputs.length === 0 ) {
+					return;
+				}
+
+				// For Radio Mode / single select
+				if ( single.classList.contains( 'srfm-radio-mode' ) ) {
+					const checkedLabel = checkedInputs[ 0 ]
+						.closest( '.srfm-multi-choice-single' )
+						.querySelector( 'label' );
+					if ( checkedLabel ) {
+						hiddenInput.setAttribute(
+							'value',
+							checkedLabel.innerText
+						);
+						// Trigger change event for conditional logic
+						hiddenInput.dispatchEvent(
+							new Event( 'change', { bubbles: true } )
+						);
+					}
+				} else if (
+					// For checkbox mode / multi select
+					single.classList.contains( 'srfm-checkbox-mode' )
+				) {
+					const values = [];
+					checkedInputs.forEach( ( input ) => {
+						const label = input
+							.closest( '.srfm-multi-choice-single' )
+							.querySelector( 'label' );
+						if ( label ) {
+							values.push( label.innerText );
+						}
+					} );
+					// Populate savedValues with preselected options so they persist when user adds more selections
+					savedValues = [ ...values ];
+					const setValue =
+						window.srfm.srfmUtility.prepareValue( values );
+					hiddenInput.setAttribute( 'value', setValue );
+					// Trigger change event for conditional logic
+					hiddenInput.dispatchEvent(
+						new Event( 'change', { bubbles: true } )
+					);
+				}
+			};
+
+			// Initialize on page load
+			initializeHiddenInput();
+
 			const getInputWrappers = single.querySelectorAll(
 				'.srfm-multi-choice-single'
 			);
@@ -42,7 +102,6 @@ function initializeMultichoice() {
 			const choices = single.querySelectorAll(
 				'.srfm-input-multi-choice-single'
 			);
-			let savedValues = [];
 			let getValue = '';
 			choices?.forEach( ( element ) => {
 				element.addEventListener( 'click', ( e ) => {
