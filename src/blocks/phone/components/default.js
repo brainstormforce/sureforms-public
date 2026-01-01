@@ -1,6 +1,5 @@
 import { RichText } from '@wordpress/block-editor';
-import IntlTelInput from 'react-intl-tel-input';
-import 'react-intl-tel-input/dist/main.css';
+import IntlTelInput from 'intl-tel-input/reactWithUtils';
 import { useEffect, useState } from '@wordpress/element';
 import { decodeHtmlEntities } from '@Blocks/util';
 import HelpText from '@Components/misc/HelpText';
@@ -85,6 +84,24 @@ export const PhoneComponent = ( { setAttributes, attributes, blockID } ) => {
 		? country
 		: getValidCountry( defaultCountry || 'us' );
 
+	// Build initOptions with country filtering
+	const initOptions = {
+		initialCountry: displayCountry || 'us',
+		separateDialCode: true,
+		autoPlaceholder: 'off',
+		countrySearch: true,
+		formatOnDisplay: true,
+	};
+
+	// Apply country filtering if enabled
+	if ( enableCountryFilter ) {
+		if ( countryFilterType === 'include' && includeCountries?.length > 0 ) {
+			initOptions.onlyCountries = includeCountries;
+		} else if ( countryFilterType === 'exclude' && excludeCountries?.length > 0 ) {
+			initOptions.excludeCountries = excludeCountries;
+		}
+	}
+
 	return (
 		<>
 			<RichText
@@ -105,28 +122,12 @@ export const PhoneComponent = ( { setAttributes, attributes, blockID } ) => {
 			/>
 			<div className="srfm-block-wrap">
 				<IntlTelInput
-					containerClassName="intl-tel-input"
-					inputClassName={ `srfm-input-common srfm-input-${ slug }` }
-					fieldId={ `srfm-input-${ slug }-${ blockID }` }
-					placeholder={ placeholder }
-					autoPlaceholder={ false }
-					pattern="[0-9]{10}"
-					defaultCountry={ displayCountry }
-					separateDialCode={ true }
-					onlyCountries={
-						enableCountryFilter &&
-						countryFilterType === 'include' &&
-						includeCountries?.length > 0
-							? includeCountries
-							: undefined
-					}
-					excludeCountries={
-						enableCountryFilter &&
-						countryFilterType === 'exclude' &&
-						excludeCountries?.length > 0
-							? excludeCountries
-							: undefined
-					}
+					inputProps={ {
+						className: `srfm-input-common srfm-input-${ slug }`,
+						id: `srfm-input-${ slug }-${ blockID }`,
+						placeholder: placeholder || '',
+					} }
+					initOptions={ initOptions }
 				/>
 			</div>
 		</>
