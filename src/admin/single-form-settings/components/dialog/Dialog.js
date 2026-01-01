@@ -252,7 +252,9 @@ const Dialog = ( {
 				icon: <Settings />,
 				component: (
 					<>
-						<FormRestriction />
+						<FormRestriction 
+						setHasValidationErrors={ setHasValidationErrors }
+						/>
 						<Compliance { ...{ complianceData } } />
 					</>
 				),

@@ -259,8 +259,19 @@ class Form_Submit {
 		$form_id = Helper::get_integer_value( $current_form_id );
 		if ( Form_Restriction::is_form_restricted( $form_id ) ) {
 			$form_restriction = Form_Restriction::get_form_restriction_setting( $form_id );
-			// If the form is restricted, return an error response.
-			$form_restriction_message = $form_restriction['message'] ?? Translatable::get_default_form_restriction_message();
+
+			// Get the scheduling state to determine the appropriate message.
+			$scheduling_state = Form_Restriction::get_form_scheduling_state( $form_restriction );
+
+			// Determine which message to show based on scheduling state.
+			if ( 'not_started' === $scheduling_state ) {
+				$form_restriction_message = $form_restriction['schedulingNotStartedMessage'] ?? __( 'This form is not yet available. Please check back after the scheduled start time.', 'sureforms' );
+			} elseif ( 'ended' === $scheduling_state ) {
+				$form_restriction_message = $form_restriction['schedulingEndedMessage'] ?? __( 'This form is no longer accepting submissions. The submission period has ended.', 'sureforms' );
+			} else {
+				// Default to entry limit message.
+				$form_restriction_message = $form_restriction['message'] ?? Translatable::get_default_form_restriction_message();
+			}
 
 			$form_restriction_message = apply_filters( 'srfm_form_restriction_message', $form_restriction_message, $form_id, $form_restriction );
 
