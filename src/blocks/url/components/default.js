@@ -3,7 +3,8 @@ import { decodeHtmlEntities } from '@Blocks/util';
 import HelpText from '@Components/misc/HelpText';
 
 export const UrlComponent = ( { attributes, blockID, setAttributes } ) => {
-	const { label, required, defaultValue, help, readOnly, placeholder } = attributes;
+	const { label, required, defaultValue, help, readOnly, placeholder } =
+		attributes;
 	const isRequired = required ? ' srfm-required' : '';
 	const slug = 'url';
 
