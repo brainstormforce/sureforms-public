@@ -67,7 +67,13 @@ class Field_Validation {
 			}
 
 			// If block was processed, store its configuration.
-			if ( null !== $processed_config ) {
+			if ( null !== $processed_config && ! empty( $processed_config ) ) {
+				$processed_config['block_name'] = $block_name;
+				// Add the slug to the configuration.
+				if ( isset( $block['attrs']['slug'] ) && ! empty( $block['attrs']['slug'] ) ) {
+					$processed_config['slug'] = sanitize_text_field( $block['attrs']['slug'] );
+				}
+
 				$block_config[ $block_id ] = $processed_config;
 				continue;
 			}
