@@ -1,6 +1,7 @@
 import { Popover } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
+import { dispatch } from '@wordpress/data';
 
 // Lucide Icons
 import {
@@ -23,11 +24,26 @@ const FormSettingsPopup = ( {
 	setHidePopover,
 } ) => {
 	const handleTabClick = ( tabId ) => {
-		// Dispatch custom event to open the dialog
-		const event = new CustomEvent( 'srfm-open-form-settings', {
-			detail: { tabId },
-		} );
-		window.dispatchEvent( event );
+		// Deselect any selected block
+		dispatch( 'core/block-editor' ).clearSelectedBlock();
+		const getFormSettingTab = document.querySelector(
+			`[id="edit-post:block"].editor-sidebar [data-tab-id="edit-post/document"]`
+		);
+		if ( getFormSettingTab ) {
+			setTimeout( () => {
+				// Dispatch custom event to open the dialog
+				const event = new CustomEvent( 'srfm-open-form-settings', {
+					detail: { tabId },
+				} );
+				window.dispatchEvent( event );
+			}, 50 );
+		} else {
+			// Dispatch custom event to open the dialog
+			const event = new CustomEvent( 'srfm-open-form-settings', {
+				detail: { tabId },
+			} );
+			window.dispatchEvent( event );
+		}
 
 		// Close the popover
 		setOpenPopover( false );
