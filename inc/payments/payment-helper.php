@@ -566,10 +566,10 @@ class Payment_Helper {
 	 * It handles both fixed and minimum amount validations for single and subscription payments.
 	 *
 	 * @since 2.2.2
-	 * @param int    $amount   Amount in smallest currency unit (e.g., cents for USD).
-	 * @param string $currency Currency code (e.g., 'usd', 'eur').
-	 * @param int    $form_id  WordPress post ID of the form.
-	 * @param string $block_id Block identifier for the payment block.
+	 * @param int|float $amount   Amount in smallest currency unit (e.g., cents for USD).
+	 * @param string    $currency Currency code (e.g., 'usd', 'eur').
+	 * @param int       $form_id  WordPress post ID of the form.
+	 * @param string    $block_id Block identifier for the payment block.
 	 * @return array {
 	 *     Validation result.
 	 *
@@ -610,13 +610,6 @@ class Payment_Helper {
 
 		// Get amount type (fixed or minimum).
 		$amount_type = $payment_config['amount_type'] ?? 'fixed';
-
-		// Convert submitted amount from smallest unit to decimal for comparison.
-		// For zero-decimal currencies (JPY, KRW, etc.), amount is already in major units.
-		// For two-decimal currencies (USD, EUR, etc.), divide by 100.
-		// $submitted_amount_decimal = self::is_zero_decimal_currency( $currency )
-		// 	? $amount
-		// 	: $amount / 100;
 
 		// Validate based on amount type.
 		if ( 'fixed' === $amount_type ) {
@@ -664,6 +657,110 @@ class Payment_Helper {
 	}
 
 	/**
+	 * Store payment intent metadata in transient for verification.
+	 *
+	 * Stores payment intent details temporarily to verify that the payment intent
+	 * was created through our system and hasn't been tampered with.
+	 *
+	 * @since 2.2.2
+	 * @param string               $block_id          Block identifier.
+	 * @param string               $payment_intent_id Payment intent ID from Stripe.
+	 * @param array<string, mixed> $metadata          Payment metadata to store.
+	 * @return bool True on success, false on failure.
+	 */
+	public static function store_payment_intent_metadata( $block_id, $payment_intent_id, $metadata ) {
+		if ( empty( $block_id ) || empty( $payment_intent_id ) ) {
+			return false;
+		}
+
+		// Create transient key: srfm_pi_{block_id}_{payment_intent_id}.
+		$transient_key = 'srfm_pi_' . sanitize_key( $block_id ) . '_' . sanitize_key( $payment_intent_id );
+
+		// Add timestamp to metadata.
+		$metadata['created_at'] = time();
+
+		// Store for 1 hour (3600 seconds).
+		return set_transient( $transient_key, $metadata, 3600 );
+	}
+
+	/**
+	 * Verify payment intent and validate amount.
+	 *
+	 * Verifies that the payment intent was created through our system and validates
+	 * the payment amount matches the expected amount based on form configuration.
+	 *
+	 * @since x.x.x
+	 * @param string               $block_id          Block identifier.
+	 * @param string               $payment_intent_id Payment intent ID from Stripe.
+	 * @param array<string, mixed> $form_data         Submitted form data.
+	 * @return array {
+	 *     Verification result.
+	 *
+	 *     @type bool   $valid   Whether verification passed.
+	 *     @type string $message Error message if verification failed, empty if valid.
+	 * }
+	 */
+	public static function verify_payment_intent( $block_id, $payment_intent_id, $form_data ) {
+		// Get form ID from form data for verification.
+		$form_id = isset( $form_data['form-id'] ) && ! empty( $form_data['form-id'] ) && is_numeric( $form_data['form-id'] ) ? intval( $form_data['form-id'] ) : 0;
+
+		// Validate required parameters.
+		if ( empty( $block_id ) || empty( $payment_intent_id ) || empty( $form_id ) ) {
+			return [
+				'valid'   => false,
+				'message' => __( 'Invalid payment verification parameters.', 'sureforms' ),
+			];
+		}
+
+		// Verify payment intent was created through our system.
+		$transient_key = 'srfm_pi_' . sanitize_key( $block_id ) . '_' . sanitize_key( $payment_intent_id );
+		$metadata      = get_transient( $transient_key );
+
+		if ( empty( $metadata ) || ! is_array( $metadata ) ) {
+			return [
+				'valid'   => false,
+				'message' => __( 'Payment verification failed. Invalid payment intent.', 'sureforms' ),
+			];
+		}
+
+		$payment_amount = isset( $metadata['amount'] ) && ! empty( $metadata['amount'] ) && is_numeric( $metadata['amount'] ) ? floatval( $metadata['amount'] ) : 0;
+
+		// Validate payment amount matches configuration.
+		$amount_validation = self::validate_payment_intent_amount( $block_id, $form_id, $form_data, $payment_amount );
+
+		if ( false === $amount_validation['valid'] ) {
+			return $amount_validation;
+		}
+
+		// Verification passed.
+		return [
+			'valid'   => true,
+			'message' => '',
+		];
+	}
+
+	/**
+	 * Delete payment intent metadata from transient.
+	 *
+	 * Cleans up stored metadata after successful payment verification.
+	 *
+	 * @since 2.2.2
+	 * @param string $block_id          Block identifier.
+	 * @param string $payment_intent_id Payment intent ID from Stripe.
+	 * @return bool True on success, false on failure.
+	 */
+	public static function delete_payment_intent_metadata( $block_id, $payment_intent_id ) {
+		if ( empty( $block_id ) || empty( $payment_intent_id ) ) {
+			return false;
+		}
+
+		// Create transient key: srfm_pi_{block_id}_{payment_intent_id}.
+		$transient_key = 'srfm_pi_' . sanitize_key( $block_id ) . '_' . sanitize_key( $payment_intent_id );
+
+		return delete_transient( $transient_key );
+	}
+
+	/**
 	 * Validate dynamic amount field from dropdown or multi-choice.
 	 *
 	 * @param array<string, mixed> $payment_config Payment block configuration.
@@ -677,7 +774,7 @@ class Payment_Helper {
 		// Check if variable amount field is from dropdown or multi-choice block.
 		$dynamic_amount_field_block_name = $payment_config['variable_amount_field_block_name'] ?? '';
 
-		if( empty( $dynamic_amount_field_block_name ) ) {
+		if ( empty( $dynamic_amount_field_block_name ) ) {
 			// Return null because it can be old form configuration.
 			return null;
 		}
@@ -687,7 +784,7 @@ class Payment_Helper {
 		}
 
 		// Get the slug of the variable amount field.
-		$variable_amount_field_slug = $payment_config['variable_amount_field'] ?? '';
+		$variable_amount_field_slug = ! empty( $payment_config['variable_amount_field'] ) && is_string( $payment_config['variable_amount_field'] ) ? $payment_config['variable_amount_field'] : '';
 
 		// Find the block config for the variable amount field by matching slug and block name.
 		$variable_amount_block_config = self::get_block_config_by_name_and_slug( $block_config, $dynamic_amount_field_block_name, $variable_amount_field_slug );
@@ -753,92 +850,6 @@ class Payment_Helper {
 	}
 
 	/**
-	 * Store payment intent metadata in transient for verification.
-	 *
-	 * Stores payment intent details temporarily to verify that the payment intent
-	 * was created through our system and hasn't been tampered with.
-	 *
-	 * @since 2.2.2
-	 * @param string               $block_id          Block identifier.
-	 * @param string               $payment_intent_id Payment intent ID from Stripe.
-	 * @param array<string, mixed> $metadata          Payment metadata to store.
-	 * @return bool True on success, false on failure.
-	 */
-	public static function store_payment_intent_metadata( $block_id, $payment_intent_id, $metadata ) {
-		if ( empty( $block_id ) || empty( $payment_intent_id ) ) {
-			return false;
-		}
-
-		// Create transient key: srfm_pi_{block_id}_{payment_intent_id}.
-		$transient_key = 'srfm_pi_' . sanitize_key( $block_id ) . '_' . sanitize_key( $payment_intent_id );
-
-		// Add timestamp to metadata.
-		$metadata['created_at'] = time();
-
-		// Store for 1 hour (3600 seconds).
-		return set_transient( $transient_key, $metadata, 3600 );
-	}
-
-	/**
-	 * Verify payment intent and validate amount.
-	 *
-	 * Verifies that the payment intent was created through our system and validates
-	 * the payment amount matches the expected amount based on form configuration.
-	 *
-	 * @since x.x.x
-	 * @param string               $block_id          Block identifier.
-	 * @param string               $payment_intent_id Payment intent ID from Stripe.
-	 * @param int                  $form_id           Form post ID.
-	 * @param array<string, mixed> $form_data         Submitted form data.
-	 * @param int                  $payment_amount    Payment amount from Stripe (in smallest currency unit).
-	 * @param string               $currency          Currency code.
-	 * @return array {
-	 *     Verification result.
-	 *
-	 *     @type bool   $valid   Whether verification passed.
-	 *     @type string $message Error message if verification failed, empty if valid.
-	 * }
-	 */
-	public static function verify_payment_intent( $block_id, $payment_intent_id, $form_data ) {
-		// Get form ID from form data for verification.
-		$form_id = isset( $form_data['form-id'] ) && ! empty( $form_data['form-id'] ) && is_numeric( $form_data['form-id'] ) ? intval( $form_data['form-id'] ) : 0;
-
-		// Validate required parameters.
-		if ( empty( $block_id ) || empty( $payment_intent_id ) || empty( $form_id ) ) {
-			return [
-				'valid'   => false,
-				'message' => __( 'Invalid payment verification parameters.', 'sureforms' ),
-			];
-		}
-
-		// Verify payment intent was created through our system.
-		$transient_key = 'srfm_pi_' . sanitize_key( $block_id ) . '_' . sanitize_key( $payment_intent_id );
-		$metadata      = get_transient( $transient_key );
-
-		if ( false === $metadata ) {
-			return [
-				'valid'   => false,
-				'message' => __( 'Payment verification failed. Invalid payment intent.', 'sureforms' ),
-			];
-		}
-
-		$payment_amount = isset( $metadata['amount'] ) ? floatval( $metadata['amount'] ) : 0;
-
-		// Validate payment amount matches configuration.
-		$amount_validation = self::validate_payment_intent_amount( $block_id, $form_id, $form_data, $payment_amount );
-
-		if ( false === $amount_validation['valid'] ) {
-			return $amount_validation;
-		}
-
-		// Verification passed.
-		return [
-			'valid'   => true,
-			'message' => '',
-		];
-	}
-
-	/**
 	 * Validate payment intent amount matches form configuration.
 	 *
 	 * Validates that the payment amount from Stripe matches the expected amount
@@ -848,7 +859,7 @@ class Payment_Helper {
 	 * @param string               $block_id       Block identifier.
 	 * @param int                  $form_id        Form post ID.
 	 * @param array<string, mixed> $form_data      Submitted form data.
-	 * @param int                  $payment_amount Payment amount from Stripe (in smallest currency unit).
+	 * @param int|float            $payment_amount Payment amount from Stripe (in smallest currency unit).
 	 * @return array {
 	 *     Validation result.
 	 *
@@ -863,6 +874,7 @@ class Payment_Helper {
 		if ( empty( $block_config ) || ! isset( $block_config[ $block_id ] ) ) {
 			return [
 				'valid'   => false,
+				/* translators: %1$s: expected amount, %2$s: payment amount */
 				'message' => __( 'Payment configuration not found.', 'sureforms' ),
 			];
 		}
@@ -878,6 +890,7 @@ class Payment_Helper {
 			if ( abs( $payment_amount - $configured_amount ) > 0.01 ) {
 				return [
 					'valid'   => false,
+					/* translators: %1$s: expected amount, %2$s: payment amount */
 					'message' => sprintf( __( 'Payment amount mismatch. Expected %1$s, received %2$s.', 'sureforms' ), $configured_amount, $payment_amount ),
 				];
 			}
@@ -892,11 +905,14 @@ class Payment_Helper {
 		if ( 'variable' === $amount_type ) {
 			// Check if variable amount comes from dropdown/multi-choice.
 			$dynamic_amount_field_block_name = $payment_config['variable_amount_field_block_name'] ?? '';
-			$variable_amount_field_slug = $payment_config['variable_amount_field'] ?? '';
+			$variable_amount_field_slug      = $payment_config['variable_amount_field'] ?? '';
 
 			// Skipping if it is old form configuration.
-			if( empty( $dynamic_amount_field_block_name ) || empty( $variable_amount_field_slug ) ) {
-				return [ 'valid'   => true, 'message' => '' ];
+			if ( empty( $dynamic_amount_field_block_name ) || empty( $variable_amount_field_slug ) ) {
+				return [
+					'valid'   => true,
+					'message' => '',
+				];
 			}
 
 			$submitted_field_value = self::get_form_submitted_value_by_slug_and_block_name( $variable_amount_field_slug, $dynamic_amount_field_block_name, $form_data );
@@ -905,7 +921,7 @@ class Payment_Helper {
 				// Get the block config for the variable amount field by matching slug and block name.
 				$variable_amount_block_config = self::get_block_config_by_name_and_slug( $block_config, $dynamic_amount_field_block_name, $variable_amount_field_slug );
 
-				if ( empty( $variable_amount_block_config ) ) {
+				if ( empty( $variable_amount_block_config ) || ! is_string( $submitted_field_value ) ) {
 					return [
 						'valid'   => false,
 						'message' => __( 'Variable amount field configuration not found.', 'sureforms' ),
@@ -919,6 +935,7 @@ class Payment_Helper {
 				if ( abs( $payment_amount - $get_expected_amount ) > 0.01 ) {
 					return [
 						'valid'   => false,
+						/* translators: %1$s: expected amount, %2$s: payment amount */
 						'message' => sprintf( __( 'Payment amount mismatch. Expected %1$s, received %2$s.', 'sureforms' ), $get_expected_amount, $payment_amount ),
 					];
 				}
@@ -935,6 +952,7 @@ class Payment_Helper {
 			if ( $payment_amount < $minimum_amount ) {
 				return [
 					'valid'   => false,
+					/* translators: %1$s: minimum amount, %2$s: payment amount */
 					'message' => sprintf( __( 'Payment amount below minimum. Minimum: %1$s, received %2$s.', 'sureforms' ), $minimum_amount, $payment_amount ),
 				];
 			}
@@ -956,6 +974,10 @@ class Payment_Helper {
 	 * @since x.x.x
 	 */
 	private static function get_amount_by_the_config_options( $submitted_field_value, $block_config ) {
+		if ( empty( $submitted_field_value ) || ! is_string( $submitted_field_value ) ) {
+			return null;
+		}
+
 		// Get options from block config.
 		$options = $block_config['options'] ?? [];
 
@@ -987,7 +1009,7 @@ class Payment_Helper {
 				$option_label = isset( $option['label'] ) ? trim( $option['label'] ) : '';
 
 				foreach ( $submitted_values as $submitted_value ) {
-					if ( $option_label === trim( $submitted_value ) ) {
+					if ( trim( $submitted_value ) === $option_label ) {
 						$combine_amount += floatval( $option['value'] );
 						break;
 					}
@@ -1000,7 +1022,7 @@ class Payment_Helper {
 			// Handle single select case (submitted value is a simple string).
 			foreach ( $options as $option ) {
 				$option_label = isset( $option['label'] ) ? trim( $option['label'] ) : '';
-				if ( $option_label === trim( $submitted_field_value ) ) {
+				if ( trim( $submitted_field_value ) === $option_label ) {
 					$expected_amount = floatval( $option['value'] );
 					break;
 				}
@@ -1021,6 +1043,10 @@ class Payment_Helper {
 	 */
 	private static function get_block_config_by_name_and_slug( $block_config, $block_name, $slug ) {
 		foreach ( $block_config as $config ) {
+			if ( empty( $config ) || ! is_array( $config ) ) {
+				continue;
+			}
+
 			if ( isset( $config['slug'] ) && $config['slug'] === $slug && isset( $config['block_name'] ) && $config['block_name'] === $block_name ) {
 				return $config;
 			}
@@ -1039,11 +1065,11 @@ class Payment_Helper {
 	 */
 	private static function get_form_submitted_value_by_slug_and_block_name( $variable_amount_field_slug, $dynamic_amount_field_block_name, $form_data ) {
 		$block_name = null;
-		if( 'srfm/dropdown' === $dynamic_amount_field_block_name ) {
+		if ( 'srfm/dropdown' === $dynamic_amount_field_block_name ) {
 			$block_name = 'srfm-dropdown';
-		} elseif( 'srfm/multi-choice' === $dynamic_amount_field_block_name ) {
+		} elseif ( 'srfm/multi-choice' === $dynamic_amount_field_block_name ) {
 			$block_name = 'srfm-input-multi-choice';
-		} elseif( 'srfm/number' === $dynamic_amount_field_block_name ) {
+		} elseif ( 'srfm/number' === $dynamic_amount_field_block_name ) {
 			$block_name = 'srfm-number';
 		}
 
@@ -1064,48 +1090,6 @@ class Payment_Helper {
 		}
 
 		return $submitted_field_value;
-	}
-
-	// /**
-	//  * Get payment intent metadata from transient (deprecated - use verify_payment_intent).
-	//  *
-	//  * @deprecated x.x.x Use verify_payment_intent() instead.
-	//  * @param string $block_id          Block identifier.
-	//  * @param string $payment_intent_id Payment intent ID from Stripe.
-	//  * @return bool True if metadata exists, false if not found.
-	//  */
-	// public static function get_payment_intent_metadata( $block_id, $payment_intent_id ) {
-	// 	if ( empty( $block_id ) || empty( $payment_intent_id ) ) {
-	// 		return false;
-	// 	}
-
-	// 	// Create transient key: srfm_pi_{block_id}_{payment_intent_id}.
-	// 	$transient_key = 'srfm_pi_' . sanitize_key( $block_id ) . '_' . sanitize_key( $payment_intent_id );
-
-	// 	$metadata = get_transient( $transient_key );
-
-	// 	return false !== $metadata ? true : false;
-	// }
-
-	/**
-	 * Delete payment intent metadata from transient.
-	 *
-	 * Cleans up stored metadata after successful payment verification.
-	 *
-	 * @since 2.2.2
-	 * @param string $block_id          Block identifier.
-	 * @param string $payment_intent_id Payment intent ID from Stripe.
-	 * @return bool True on success, false on failure.
-	 */
-	public static function delete_payment_intent_metadata( $block_id, $payment_intent_id ) {
-		if ( empty( $block_id ) || empty( $payment_intent_id ) ) {
-			return false;
-		}
-
-		// Create transient key: srfm_pi_{block_id}_{payment_intent_id}.
-		$transient_key = 'srfm_pi_' . sanitize_key( $block_id ) . '_' . sanitize_key( $payment_intent_id );
-
-		return delete_transient( $transient_key );
 	}
 
 	/**
