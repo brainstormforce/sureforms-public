@@ -535,13 +535,12 @@ class Front_End {
 		$customer_id     = ! empty( $subscription_value['customerId'] ) ? $subscription_value['customerId'] : '';
 		$setup_intent_id = ! empty( $subscription_value['setupIntent'] ) && is_string( $subscription_value['setupIntent'] ) ? $subscription_value['setupIntent'] : '';
 
-		// Verify payment intent was created through our system.
-		$stored_metadata = Payment_Helper::get_payment_intent_metadata( $block_id, $setup_intent_id );
+		// Verify payment intent with comprehensive validation including form data.
+		$verification_result = Payment_Helper::verify_payment_intent( $block_id, $setup_intent_id, $form_data );
 
-		if ( false === $stored_metadata ) {
-			// Payment intent not found - not created through our system.
+		if ( false === $verification_result['valid'] ) {
 			return [
-				'error' => __( 'Payment verification failed. Invalid payment intent.', 'sureforms' ),
+				'error' => $verification_result['message'],
 			];
 		}
 
