@@ -414,7 +414,7 @@ class Field_Validation {
 			foreach ( $attrs['options'] as $option ) {
 				if ( is_array( $option ) ) {
 					$sanitized_options[] = [
-						'label' => isset( $option['label'] ) ? sanitize_text_field( $option['label'] ) : '',
+						'label' => isset( $option['optionTitle'] ) ? trim( sanitize_text_field( $option['optionTitle'] ) ) : '',
 						'icon'  => isset( $option['icon'] ) ? sanitize_text_field( $option['icon'] ) : '',
 						'value' => isset( $option['value'] ) ? sanitize_text_field( $option['value'] ) : '',
 					];
