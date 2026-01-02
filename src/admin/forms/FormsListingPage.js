@@ -8,7 +8,12 @@ import FormsHeader from './components/FormsHeader';
 import FormsTable from './components/FormsTable';
 import EmptyState from './components/EmptyState';
 import ConfirmationDialog from '@Admin/components/ConfirmationDialog';
-import { useForms, useBulkFormsAction, formsKeys } from './hooks/useFormsQuery';
+import {
+	useForms,
+	useBulkFormsAction,
+	useDuplicateForm,
+	formsKeys,
+} from './hooks/useFormsQuery';
 import { useFormsFilters } from './hooks/useFormsFilters';
 import { useFormsSort } from './hooks/useFormsSort';
 import { useFormsPagination } from './hooks/useFormsPagination';
@@ -144,6 +149,7 @@ const FormsListingPage = () => {
 
 	// Mutations
 	const { mutate: bulkActionMutation } = useBulkFormsAction();
+	const { mutateAsync: duplicateFormMutation } = useDuplicateForm();
 
 	// Event handlers
 	const handleSearch = ( searchTerm ) => {
@@ -386,6 +392,38 @@ const FormsListingPage = () => {
 		} );
 	};
 
+	const handleFormDuplicate = ( form ) => {
+		setConfirmDialog( {
+			open: true,
+			title: __( 'Duplicate Form?', 'sureforms' ),
+			description: sprintf(
+				/* translators: %s: form title */
+				__(
+					'This will create a copy of "%s" with all its settings.',
+					'sureforms'
+				),
+				form.title || __( '(no title)', 'sureforms' )
+			),
+			action: async () => {
+				try {
+					await duplicateFormMutation( form.id );
+					setConfirmDialog( ( prev ) => ( {
+						...prev,
+						open: false,
+					} ) );
+				} catch ( err ) {
+					setConfirmDialog( ( prev ) => ( {
+						...prev,
+						open: false,
+					} ) );
+				}
+			},
+			confirmButtonText: __( 'Duplicate', 'sureforms' ),
+			destructive: false,
+			requireConfirmation: false,
+		} );
+	};
+
 	const handleClearFilters = () => {
 		resetUrlFilters();
 		setCurrentPage( 1 );
@@ -509,6 +547,7 @@ const FormsListingPage = () => {
 										onTrash={ handleFormTrash }
 										onRestore={ handleFormRestore }
 										onDelete={ handleFormDelete }
+										onDuplicate={ handleFormDuplicate }
 										isLoading={ isLoading }
 										onSort={ handleSort }
 										getSortDirection={ getSortDirection }

@@ -353,7 +353,7 @@
 			height: 100%; // Keeping height to 100% for matching the input height with the input content container.
 			flex: 1; // Take up the available space in the block, for compatibility with prefix and suffix overflow hidden.
 			&::placeholder {
-				color: var( --srfm-dropdown-placeholder-color );
+				color: var( --srfm-color-input-placeholder );
 			}
 			&:focus {
 				outline: none !important;

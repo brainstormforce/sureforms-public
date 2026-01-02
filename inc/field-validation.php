@@ -50,6 +50,33 @@ class Field_Validation {
 
 			$block_id = sanitize_text_field( $block['attrs']['block_id'] );
 
+			// Store payment block configuration for server-side validation.
+			if ( 'srfm/payment' === $block['blockName'] ) {
+				$payment_config = [];
+
+				// Extract payment type (single or subscription).
+				if ( isset( $block['attrs']['paymentType'] ) ) {
+					$payment_config['payment_type'] = sanitize_text_field( $block['attrs']['paymentType'] );
+				}
+
+				// Extract amount type (fixed or minimum).
+				if ( isset( $block['attrs']['amountType'] ) ) {
+					$payment_config['amount_type'] = sanitize_text_field( $block['attrs']['amountType'] );
+				}
+
+				// Extract configured amount.
+				if ( isset( $block['attrs']['fixedAmount'] ) ) {
+					$payment_config['fixed_amount'] = floatval( $block['attrs']['fixedAmount'] );
+				}
+				if ( isset( $block['attrs']['minimumAmount'] ) ) {
+					$payment_config['minimum_amount'] = floatval( $block['attrs']['minimumAmount'] );
+				}
+
+				// Store payment configuration.
+				$block_config[ $block_id ] = $payment_config;
+				continue;
+			}
+
 			// Allow extensions to process and modify block config.
 			$config = apply_filters( 'srfm_block_config', [ 'block' => $block ] );
 
@@ -139,7 +166,16 @@ class Field_Validation {
 				if ( isset( $block['blockName'] ) ) {
 					// 'name_with_id' is used as a unique field identifier for validation.
 					// Example: 'sureforms-input-abc123' for blockName 'sureforms/input' and block_id 'abc123'
-					$get_form_config[ $index ]['name_with_id'] = str_replace( '/', '-', $block['blockName'] ) . '-' . $index;
+					$name_with_id = str_replace( '/', '-', $block['blockName'] ) . '-' . $index;
+
+					// Allow custom filter based on block type.
+					$name_with_id = apply_filters(
+						'srfm_block_config_name_with_id',
+						$name_with_id,
+						$block
+					);
+
+					$get_form_config[ $index ]['name_with_id'] = $name_with_id;
 				}
 			}
 		}

@@ -242,7 +242,7 @@ class Email_Summary {
 								ob_start();
 								?>
 								<tr style="background-color:#FFFFFF;">
-									<td style="padding:12px;font-size:14px;color:#4B5563;border-bottom:0.5px solid #E5E7EB;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"><?php echo esc_html( $form['title'] ); ?></td>
+									<td style="padding:12px;font-size:14px;color:#4B5563;border-bottom:0.5px solid #E5E7EB;overflow-wrap:anywhere;white-space:normal;word-break: break-word;"><?php echo esc_html( $form['title'] ); ?></td>
 									<td style="padding:12px;font-size:14px;color:#4B5563;text-align:right;border-bottom:0.5px solid #E5E7EB;white-space:nowrap;width:80px;"><?php echo esc_html( Helper::get_string_value( $form['count'] ) ); ?></td>
 								</tr>
 								<?php
@@ -281,8 +281,11 @@ class Email_Summary {
 
 					<!-- Promotion Section -->
 					<?php
+					if ( ! Helper::has_pro() ) {
 						$plugin_key = self::get_next_promo_plugin();
 						self::render_promo_banner( $plugin_key );
+						self::mark_promo_sent( $plugin_key );
+					}
 					?>
 
 					<p style="font-size:12px;color:#9CA3AF;text-align:center;margin:16px 16px;">
@@ -306,7 +309,6 @@ class Email_Summary {
 		</body>
 		</html>
 		<?php
-		self::mark_promo_sent( $plugin_key );
 		$content = ob_get_clean();
 		return false !== $content ? $content : '';
 	}
@@ -329,6 +331,7 @@ class Email_Summary {
 				'description' => __( 'Connect your apps and automate repetitive tasks with ease. Build workflows that save time, reduce errors, and keep your business running smoothly around the clock.', 'sureforms' ),
 				'link'        => 'https://ottokit.com?utm_medium=sureforms-email-summary',
 				'link_text'   => __( 'Explore OttoKit', 'sureforms' ),
+				'plugin_path' => 'suretriggers/suretriggers.php',
 			],
 			'surerank' => [
 				'logo'        => 'surerank.png',
@@ -336,6 +339,7 @@ class Email_Summary {
 				'description' => __( 'Fix common SEO issues and make your site search-friendly without the clutter. Check pages, add titles, meta, and schema — all in one simple plugin.', 'sureforms' ),
 				'link'        => 'https://surerank.com?utm_medium=sureforms-email-summary',
 				'link_text'   => __( 'Explore SureRank', 'sureforms' ),
+				'plugin_path' => 'surerank/surerank.php',
 			],
 			'suremail' => [
 				'logo'        => 'suremail.png',
@@ -343,6 +347,7 @@ class Email_Summary {
 				'description' => __( 'Make sure every WordPress email gets delivered. View logs, debug errors, and send with confidence using a lightweight SMTP solution.', 'sureforms' ),
 				'link'        => 'https://suremails.com?utm_medium=sureforms-email-summary',
 				'link_text'   => __( 'Explore SureMail', 'sureforms' ),
+				'plugin_path' => 'suremails/suremails.php',
 			],
 			'surecart' => [
 				'logo'        => 'surecart.png',
@@ -350,6 +355,7 @@ class Email_Summary {
 				'description' => __( 'Run your online store on WordPress with a modern checkout, subscriptions, and payments. Fast, flexible, and built for growth.', 'sureforms' ),
 				'link'        => 'https://surecart.com?utm_medium=sureforms-email-summary',
 				'link_text'   => __( 'Explore SureCart', 'sureforms' ),
+				'plugin_path' => 'surecart/surecart.php',
 			],
 			'suredash' => [
 				'logo'        => 'suredash.png',
@@ -357,8 +363,20 @@ class Email_Summary {
 				'description' => __( 'Create a central hub where members can connect, share, and grow together. Manage discussions, courses, and events — all from your own WordPress site.', 'sureforms' ),
 				'link'        => 'https://suredash.com?utm_medium=sureforms-email-summary',
 				'link_text'   => __( 'Explore SureDash', 'sureforms' ),
+				'plugin_path' => 'suredash/suredash.php',
 			],
 		];
+	}
+
+	/**
+	 * Check if a plugin is installed.
+	 *
+	 * @param string $plugin_path The plugin path (e.g., 'plugin-folder/plugin-file.php').
+	 * @return bool True if plugin is installed, false otherwise.
+	 * @since 2.3.0
+	 */
+	public static function is_plugin_installed( $plugin_path ) {
+		return '' !== Helper::get_plugin_if_installed( [ $plugin_path ] );
 	}
 
 	/**
@@ -381,6 +399,11 @@ class Email_Summary {
 		}
 
 		$args = $banners[ $plugin_key ];
+
+		if ( isset( $args['plugin_path'] ) && self::is_plugin_installed( $args['plugin_path'] ) ) {
+			return;
+		}
+
 		?>
 		<div class="margin-mob" style="margin:32px 24px;padding:16px;border:0.5px solid #E5E7EB;border-radius:8px;background:#FFFFFF;text-align:left;">
 			<div style="margin-bottom:4px;">
@@ -412,7 +435,8 @@ class Email_Summary {
 	 * @since 1.12.1
 	 */
 	public static function get_next_promo_plugin() {
-		$all_plugins = array_keys( self::get_promo_banners() );
+		$all_banners = self::get_promo_banners();
+		$all_plugins = array_keys( $all_banners );
 
 		$remaining = Helper::get_array_value( Helper::get_srfm_option( 'remaining_promos', [] ) );
 
@@ -420,7 +444,45 @@ class Email_Summary {
 			$remaining = $all_plugins;
 		}
 
-		return Helper::get_string_value( reset( $remaining ) );
+		foreach ( $remaining as $key ) {
+			if ( ! isset( $all_banners[ $key ] ) ) {
+				$remaining = array_diff( $remaining, [ $key ] );
+				continue;
+			}
+
+			$banner = $all_banners[ $key ];
+
+			if ( isset( $banner['plugin_path'] ) && self::is_plugin_installed( $banner['plugin_path'] ) ) {
+				$remaining = array_diff( $remaining, [ $key ] );
+				Helper::update_srfm_option( 'remaining_promos', $remaining );
+				continue;
+			}
+
+			return $key;
+		}
+
+		if ( empty( $remaining ) ) {
+			$remaining = $all_plugins;
+			Helper::update_srfm_option( 'remaining_promos', $remaining );
+
+			foreach ( $remaining as $key ) {
+				if ( ! isset( $all_banners[ $key ] ) ) {
+					continue;
+				}
+
+				$banner = $all_banners[ $key ];
+
+				if ( isset( $banner['plugin_path'] ) && self::is_plugin_installed( $banner['plugin_path'] ) ) {
+					$remaining = array_diff( $remaining, [ $key ] );
+					Helper::update_srfm_option( 'remaining_promos', $remaining );
+					continue;
+				}
+
+				return $key;
+			}
+		}
+
+		return '';
 	}
 
 	/**
@@ -431,6 +493,10 @@ class Email_Summary {
 	 * @since 1.12.1
 	 */
 	public static function mark_promo_sent( $plugin_key ) {
+		if ( '' === $plugin_key ) {
+			return;
+		}
+
 		$remaining = Helper::get_array_value( Helper::get_srfm_option( 'remaining_promos', [] ) );
 
 		if ( empty( $remaining ) ) {

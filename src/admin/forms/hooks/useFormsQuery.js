@@ -11,6 +11,7 @@ import {
 	bulkFormsAction,
 	exportForms as exportFormsApi,
 	importForms as importFormsApi,
+	duplicateForm as duplicateFormApi,
 } from '../api/formsApi';
 
 /**
@@ -177,6 +178,44 @@ export const useImportForms = () => {
 			const msg =
 				error?.message ||
 				__( 'An error occurred while importing forms.', 'sureforms' );
+			toast.error( msg );
+		},
+	} );
+};
+
+/**
+ * Hook for duplicating a form
+ *
+ * @return {Object} Mutation object
+ */
+export const useDuplicateForm = () => {
+	const queryClient = useQueryClient();
+
+	return useMutation( {
+		mutationFn: duplicateFormApi,
+		onSuccess: ( data ) => {
+			if ( data.success ) {
+				toast.success(
+					sprintf(
+						/* translators: %s: new form title */
+						__( 'Form duplicated successfully: %s', 'sureforms' ),
+						data.new_form_title
+					)
+				);
+
+				// Invalidate and refetch forms list
+				queryClient.invalidateQueries( {
+					queryKey: formsKeys.lists(),
+				} );
+			}
+		},
+		onError: ( error ) => {
+			const msg =
+				error?.message ||
+				__(
+					'An error occurred while duplicating the form.',
+					'sureforms'
+				);
 			toast.error( msg );
 		},
 	} );
