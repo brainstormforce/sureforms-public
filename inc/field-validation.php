@@ -56,7 +56,7 @@ class Field_Validation {
 
 			switch ( $block_name ) {
 				case 'srfm/payment':
-					$processed_config = self::process_payment_block( $block['attrs'] );
+					$processed_config = self::process_payment_block( $block['attrs'], $blocks );
 					break;
 				case 'srfm/dropdown':
 					$processed_config = self::process_dropdown_block( $block['attrs'] );
@@ -98,10 +98,11 @@ class Field_Validation {
 	 * Process payment block configuration.
 	 *
 	 * @param array<mixed> $attrs Block attributes.
+	 * @param array<mixed> $blocks All blocks.
 	 * @return array Processed payment configuration.
 	 * @since x.x.x
 	 */
-	private static function process_payment_block( $attrs ) {
+	private static function process_payment_block( $attrs, $blocks ) {
 		$payment_config = [];
 
 		// Extract payment type (single or subscription).
@@ -124,7 +125,18 @@ class Field_Validation {
 
 		// Extract variable amount field reference.
 		if ( isset( $attrs['variableAmountField'] ) ) {
-			$payment_config['variable_amount_field'] = sanitize_text_field( $attrs['variableAmountField'] );
+			$variable_amount_slug = sanitize_text_field( $attrs['variableAmountField'] );
+			$payment_config['variable_amount_field'] = $variable_amount_slug;
+
+			// Find and add the block name from which the variable amount field comes from.
+			if ( ! empty( $variable_amount_slug ) && is_array( $blocks ) ) {
+				foreach ( $blocks as $block ) {
+					if ( isset( $block['attrs']['slug'] ) && $block['attrs']['slug'] === $variable_amount_slug ) {
+						$payment_config['variable_amount_field_block_name'] = $block['blockName'];
+						break;
+					}
+				}
+			}
 		}
 
 		return $payment_config;
@@ -145,9 +157,19 @@ class Field_Validation {
 			$dropdown_config['required'] = rest_sanitize_boolean( $attrs['required'] );
 		}
 
-		// Extract options.
+		// Extract options with their full structure (label, icon, value).
 		if ( isset( $attrs['options'] ) && is_array( $attrs['options'] ) ) {
-			$dropdown_config['options'] = array_map( 'sanitize_text_field', $attrs['options'] );
+			$sanitized_options = [];
+			foreach ( $attrs['options'] as $option ) {
+				if ( is_array( $option ) ) {
+					$sanitized_options[] = [
+						'label' => isset( $option['label'] ) ? sanitize_text_field( $option['label'] ) : '',
+						'icon'  => isset( $option['icon'] ) ? sanitize_text_field( $option['icon'] ) : '',
+						'value' => isset( $option['value'] ) ? sanitize_text_field( $option['value'] ) : '',
+					];
+				}
+			}
+			$dropdown_config['options'] = $sanitized_options;
 		}
 
 		// Extract showValues flag.
@@ -203,9 +225,19 @@ class Field_Validation {
 			$multichoice_config['max_value'] = absint( $attrs['maxValue'] );
 		}
 
-		// Extract options.
+		// Extract options with their full structure (label, icon, value).
 		if ( isset( $attrs['options'] ) && is_array( $attrs['options'] ) ) {
-			$multichoice_config['options'] = array_map( 'sanitize_text_field', $attrs['options'] );
+			$sanitized_options = [];
+			foreach ( $attrs['options'] as $option ) {
+				if ( is_array( $option ) ) {
+					$sanitized_options[] = [
+						'label' => isset( $option['label'] ) ? sanitize_text_field( $option['label'] ) : '',
+						'icon'  => isset( $option['icon'] ) ? sanitize_text_field( $option['icon'] ) : '',
+						'value' => isset( $option['value'] ) ? sanitize_text_field( $option['value'] ) : '',
+					];
+				}
+			}
+			$multichoice_config['options'] = $sanitized_options;
 		}
 
 		// Extract showValues flag.
