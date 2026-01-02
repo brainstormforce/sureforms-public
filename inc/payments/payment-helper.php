@@ -917,6 +917,13 @@ class Payment_Helper {
 
 			$submitted_field_value = self::get_form_submitted_value_by_slug_and_block_name( $variable_amount_field_slug, $dynamic_amount_field_block_name, $form_data );
 
+			if ( empty( $submitted_field_value ) ) {
+				return [
+					'valid'   => false,
+					'message' => __( 'Variable amount field value is required.', 'sureforms' ),
+				];
+			}
+
 			if ( 'srfm/dropdown' === $dynamic_amount_field_block_name || 'srfm/multi-choice' === $dynamic_amount_field_block_name ) {
 				// Get the block config for the variable amount field by matching slug and block name.
 				$variable_amount_block_config = self::get_block_config_by_name_and_slug( $block_config, $dynamic_amount_field_block_name, $variable_amount_field_slug );
@@ -939,11 +946,26 @@ class Payment_Helper {
 						'message' => sprintf( __( 'Payment amount mismatch. Expected %1$s, received %2$s.', 'sureforms' ), $get_expected_amount, $payment_amount ),
 					];
 				}
+			} elseif ( 'srfm/number' === $dynamic_amount_field_block_name ) {
+				$is_valid_amount = is_numeric( $submitted_field_value ) ? true : false;
 
-				return [
-					'valid'   => true,
-					'message' => '',
-				];
+				if ( ! $is_valid_amount ) {
+					return [
+						'valid'   => false,
+						'message' => __( 'Variable amount field value is required.', 'sureforms' ),
+					];
+				}
+
+				$converted_payment_amount = floatval( $submitted_field_value );
+
+				// Validate payment amount matches expected amount.
+				if ( abs( $payment_amount - $converted_payment_amount ) > 0.01 ) {
+					return [
+						'valid'   => false,
+						/* translators: %1$s: expected amount, %2$s: payment amount */
+						'message' => sprintf( __( 'Payment amount mismatch. Expected %1$s, received %2$s.', 'sureforms' ), $converted_payment_amount, $payment_amount ),
+					];
+				}
 			}
 
 			// For other variable amount sources (e.g., number field), validate minimum amount.
