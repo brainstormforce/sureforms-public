@@ -299,6 +299,17 @@ const FormRestriction = ( { setHasValidationErrors } ) => {
 
 					{ preserveMetaData?.schedulingStatus && (
 						<>
+							{ dateTimeValidationError && (
+								<Container className="w-full p-3 gap-2 border border-solid border-alert-border-danger bg-alert-background-danger rounded-lg">
+									<span className="size-5">
+										<Info className="size-4 text-red-600 mt-0.5 flex-shrink-0" />
+									</span>
+									<span className="text-sm font-normal">
+										{ dateTimeValidationError }
+									</span>
+								</Container>
+							) }
+
 							<div className="flex gap-2 w-1/2">
 								<div className="w-2/3">
 									<DatePickerModal
@@ -481,15 +492,6 @@ const FormRestriction = ( { setHasValidationErrors } ) => {
 									</div>
 								) }
 							</div>
-
-							{ dateTimeValidationError && (
-								<div className="flex items-start gap-2 p-3 bg-red-50 border border-red-200 rounded-md">
-									<Info className="size-4 text-red-600 mt-0.5 flex-shrink-0" />
-									<p className="text-sm text-red-800 m-0">
-										{ dateTimeValidationError }
-									</p>
-								</div>
-							) }
 
 							<div>
 								<Label className="mb-1.5">
