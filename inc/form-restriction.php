@@ -158,78 +158,31 @@ class Form_Restriction {
 		// Convert the time period to a timestamp.
 		$date_timestamp = Helper::get_timestamp_from_string( $date, $hours, $minutes, $meridiem );
 
-		$has_time_limit_reached = false;
-
 		// If the timestamp is valid, check if the current time is greater than the time period timestamp.
-		// Ensure the timestamp is a valid integer and not false.
 		if ( false !== $date_timestamp && is_int( $date_timestamp ) ) {
-			$current_time_timestamp = strtotime( current_time( 'mysql' ) );
-			// Check if the current time is greater than the time period timestamp.
-			$has_time_limit_reached = $current_time_timestamp > $date_timestamp;
-		}
-
-		return $has_time_limit_reached;
-	}
-
-	/**
-	 * Check if the form is outside its scheduled time period.
-	 *
-	 * @param array<string, mixed> $form_restriction The form restriction settings.
-	 * @since 2.0.0
-	 * @return bool True if form is outside schedule, false otherwise.
-	 */
-	public static function is_form_outside_schedule( $form_restriction ) {
-		// Check if scheduling is enabled.
-		$scheduling_status = $form_restriction['schedulingStatus'] ?? false;
-
-		if ( ! $scheduling_status ) {
-			return false; // Scheduling not enabled.
-		}
-
-		$start_date     = $form_restriction['startDate'] ?? '';
-		$start_hours    = Helper::get_string_value( $form_restriction['startHours'] ?? '12' );
-		$start_minutes  = Helper::get_string_value( $form_restriction['startMinutes'] ?? '00' );
-		$start_meridiem = Helper::get_string_value( $form_restriction['startMeridiem'] ?? 'AM' );
-
-		$end_date     = $form_restriction['date'] ?? '';
-		$end_hours    = Helper::get_string_value( $form_restriction['hours'] ?? '12' );
-		$end_minutes  = Helper::get_string_value( $form_restriction['minutes'] ?? '00' );
-		$end_meridiem = Helper::get_string_value( $form_restriction['meridiem'] ?? 'PM' );
-
-		$current_timestamp = strtotime( current_time( 'mysql' ) );
-
-		// Check start date if provided.
-		if ( ! empty( $start_date ) && is_string( $start_date ) ) {
-			$start_timestamp = Helper::get_timestamp_from_string( $start_date, $start_hours, $start_minutes, $start_meridiem );
-
-			if ( false !== $start_timestamp && is_int( $start_timestamp ) ) {
-				// Current time is before start time.
-				if ( $current_timestamp < $start_timestamp ) {
-					return true;
-				}
-			}
-		}
-
-		// Check end date if provided.
-		if ( ! empty( $end_date ) && is_string( $end_date ) ) {
-			$end_timestamp = Helper::get_timestamp_from_string( $end_date, $end_hours, $end_minutes, $end_meridiem );
-
-			if ( false !== $end_timestamp && is_int( $end_timestamp ) ) {
-				// Current time is after end time.
-				if ( $current_timestamp > $end_timestamp ) {
-					return true;
-				}
-			}
+			return strtotime( current_time( 'mysql' ) ) > $date_timestamp;
 		}
 
 		return false;
 	}
 
 	/**
+	 * Check if the form is outside its scheduled time period.
+	 *
+	 * @param array<string, mixed> $form_restriction The form restriction settings.
+	 * @since x.x.x
+	 * @return bool True if form is outside schedule, false otherwise.
+	 */
+	public static function is_form_outside_schedule( $form_restriction ) {
+		$scheduling_state = self::get_form_scheduling_state( $form_restriction );
+		return 'not_started' === $scheduling_state || 'ended' === $scheduling_state;
+	}
+
+	/**
 	 * Get the scheduling state for a form.
 	 *
 	 * @param array<string, mixed> $form_restriction The form restriction settings.
-	 * @since 2.0.0
+	 * @since x.x.x
 	 * @return string 'not_started', 'ended', 'active', or 'disabled'.
 	 */
 	public static function get_form_scheduling_state( $form_restriction ) {
@@ -239,11 +192,13 @@ class Form_Restriction {
 			return 'disabled';
 		}
 
+		// Start date/time.
 		$start_date     = $form_restriction['startDate'] ?? '';
 		$start_hours    = Helper::get_string_value( $form_restriction['startHours'] ?? '12' );
 		$start_minutes  = Helper::get_string_value( $form_restriction['startMinutes'] ?? '00' );
 		$start_meridiem = Helper::get_string_value( $form_restriction['startMeridiem'] ?? 'AM' );
 
+		// End date/time.
 		$end_date     = $form_restriction['date'] ?? '';
 		$end_hours    = Helper::get_string_value( $form_restriction['hours'] ?? '12' );
 		$end_minutes  = Helper::get_string_value( $form_restriction['minutes'] ?? '00' );
