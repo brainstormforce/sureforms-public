@@ -1125,7 +1125,7 @@ class Post_Types {
 						'minutes'                       => '00',
 						'meridiem'                      => 'AM',
 						'message'                       => Translatable::get_default_form_restriction_message(),
-						// Form Scheduling fields.
+						// Form Scheduling meta.
 						'schedulingStatus'              => false,
 						'startDate'                     => '',
 						'startHours'                    => '12',
@@ -1165,7 +1165,7 @@ class Post_Types {
 			'minutes'                       => isset( $meta_value['minutes'] ) ? sanitize_text_field( $meta_value['minutes'] ) : '00',
 			'meridiem'                      => isset( $meta_value['meridiem'] ) ? sanitize_text_field( $meta_value['meridiem'] ) : 'AM',
 			'message'                       => isset( $meta_value['message'] ) ? sanitize_textarea_field( $meta_value['message'] ) : Translatable::get_default_form_restriction_message(),
-			// Form Scheduling fields.
+			// Form Scheduling meta.
 			'schedulingStatus'              => isset( $meta_value['schedulingStatus'] ) ? wp_validate_boolean( $meta_value['schedulingStatus'] ) : false,
 			'startDate'                     => isset( $meta_value['startDate'] ) ? sanitize_text_field( $meta_value['startDate'] ) : '',
 			'startHours'                    => isset( $meta_value['startHours'] ) ? sanitize_text_field( $meta_value['startHours'] ) : '12',
@@ -1209,6 +1209,7 @@ class Post_Types {
 	 * @param string $hours Hours in 12-hour format.
 	 * @param string $minutes Minutes.
 	 * @param string $meridiem AM or PM.
+	 * @since x.x.x
 	 * @return \DateTime|null DateTime object or null if invalid.
 	 */
 	private function create_datetime_object( $date_str, $hours, $minutes, $meridiem ) {
