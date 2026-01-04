@@ -6,7 +6,6 @@ import { useDispatch, useSelect } from '@wordpress/data';
 import { store as editorStore } from '@wordpress/editor';
 import { useEffect, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
-import FormBehaviorPopupButton from '../../components/FormBehaviorPopupButton';
 import { applyFilters } from '@wordpress/hooks';
 
 // Force-UI
@@ -35,12 +34,6 @@ function GeneralSettings( props ) {
 	const [ popupTab, setPopupTab ] = useState( false );
 	const [ hasValidationErrors, setHasValidationErrors ] = useState( false );
 
-	const openModal = ( e ) => {
-		const popupTabTarget = e.currentTarget.getAttribute( 'data-popup' );
-		setPopupTab( popupTabTarget );
-		setOpen( true );
-		prevMetaHash = btoa( JSON.stringify( sureformsKeys ) );
-	};
 	const closeModal = () => {
 		if (
 			hasValidationErrors &&
@@ -205,6 +198,32 @@ function GeneralSettings( props ) {
 		} );
 	}
 
+	// Listen for form settings popup events to open the dialog
+	useEffect( () => {
+		const handleFormSettingsEvent = ( event ) => {
+			const tabId = event.detail?.tabId;
+			if ( tabId ) {
+				setPopupTab( tabId );
+				setOpen( true );
+				prevMetaHash = btoa( JSON.stringify( sureformsKeys ) );
+			}
+		};
+
+		// Add event listener
+		window.addEventListener(
+			'srfm-open-form-settings',
+			handleFormSettingsEvent
+		);
+
+		// Cleanup event listener on unmount
+		return () => {
+			window.removeEventListener(
+				'srfm-open-form-settings',
+				handleFormSettingsEvent
+			);
+		};
+	}, [ sureformsKeys ] );
+
 	return (
 		<>
 			<SRFMAdvancedPanelBody
@@ -318,12 +337,6 @@ function GeneralSettings( props ) {
 					/>
 				</SRFMAdvancedPanelBody>
 			) }
-
-			<FormBehaviorPopupButton
-				settingName={ __( 'Single Form Settings', 'sureforms' ) }
-				popupId={ 'email_notification' }
-				openModal={ openModal }
-			/>
 
 			<FormRestrictionProvider>
 				<Dialog
