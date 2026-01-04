@@ -86,27 +86,27 @@ class Form_Restriction {
 		}
 
 		$has_entries_limit_reached = self::has_entries_limit_reached( $form_id, $form_restriction );
-		$has_time_limit_reached    = self::has_time_limit_reached( $form_restriction );
-		$is_outside_schedule       = self::is_form_outside_schedule( $form_restriction );
+		$scheduling_state          = self::get_form_scheduling_state( $form_restriction );
+		$is_outside_schedule       = 'not_started' === $scheduling_state || 'ended' === $scheduling_state;
 
 		$conversational_form            = get_post_meta( $form_id, '_srfm_conversational_form', true );
 		$is_conversational_form_enabled = is_array( $conversational_form ) && isset( $conversational_form['is_cf_enabled'] ) ? $conversational_form['is_cf_enabled'] : false;
-		if ( ( $has_entries_limit_reached || $has_time_limit_reached || $is_outside_schedule ) && $is_conversational_form_enabled ) {
+		if ( ( $has_entries_limit_reached || $is_outside_schedule ) && $is_conversational_form_enabled ) {
 			add_filter( 'srfm_show_conversational_form_footer', '__return_false' );
 		}
 
 		/**
-		 * If the form has reached the entries limit, the time limit, or is outside schedule, return true.
+		 * If the form has reached the entries limit or is outside schedule, return true.
 		 *
 		 * @since 1.10.1
 		 */
 		return apply_filters(
 			'srfm_is_form_restricted',
-			$has_entries_limit_reached || $has_time_limit_reached || $is_outside_schedule,
+			$has_entries_limit_reached || $is_outside_schedule,
 			$form_id,
 			$form_restriction,
 			$has_entries_limit_reached,
-			$has_time_limit_reached,
+			false, // Deprecated: $has_time_limit_reached - now handled by scheduling.
 			$is_outside_schedule
 		);
 	}
@@ -136,37 +136,6 @@ class Form_Restriction {
 	}
 
 	/**
-	 * Check if the time limit has been reached based on the provided time period.
-	 *
-	 * @param array<string, mixed> $form_restriction The form restriction settings containing date, hours, minutes, and meridiem.
-	 *
-	 * @since 1.10.1
-	 * @return bool True if the time limit has been reached, false otherwise.
-	 */
-	public static function has_time_limit_reached( $form_restriction ) {
-
-		// Get date, hours, minutes, meridiem from the form restriction settings.
-		$date     = $form_restriction['date'] ?? '';
-		$hours    = Helper::get_string_value( $form_restriction['hours'] ?? '12' );
-		$minutes  = Helper::get_string_value( $form_restriction['minutes'] ?? '00' );
-		$meridiem = Helper::get_string_value( $form_restriction['meridiem'] ?? 'AM' );
-
-		if ( empty( $date ) || ! is_string( $date ) ) {
-			return false; // No time limit set.
-		}
-
-		// Convert the time period to a timestamp.
-		$date_timestamp = Helper::get_timestamp_from_string( $date, $hours, $minutes, $meridiem );
-
-		// If the timestamp is valid, check if the current time is greater than the time period timestamp.
-		if ( false !== $date_timestamp && is_int( $date_timestamp ) ) {
-			return strtotime( current_time( 'mysql' ) ) > $date_timestamp;
-		}
-
-		return false;
-	}
-
-	/**
 	 * Check if the form is outside its scheduled time period.
 	 *
 	 * @param array<string, mixed> $form_restriction The form restriction settings.
@@ -188,10 +157,6 @@ class Form_Restriction {
 	public static function get_form_scheduling_state( $form_restriction ) {
 		$scheduling_status = $form_restriction['schedulingStatus'] ?? false;
 
-		if ( ! $scheduling_status ) {
-			return 'disabled';
-		}
-
 		// Start date/time.
 		$start_date     = $form_restriction['startDate'] ?? '';
 		$start_hours    = Helper::get_string_value( $form_restriction['startHours'] ?? '12' );
@@ -206,8 +171,8 @@ class Form_Restriction {
 
 		$current_timestamp = strtotime( current_time( 'mysql' ) );
 
-		// Check if before start time.
-		if ( ! empty( $start_date ) && is_string( $start_date ) ) {
+		// Check if before start time (only if scheduling is enabled).
+		if ( $scheduling_status && ! empty( $start_date ) && is_string( $start_date ) ) {
 			$start_timestamp = Helper::get_timestamp_from_string( $start_date, $start_hours, $start_minutes, $start_meridiem );
 
 			if ( false !== $start_timestamp && is_int( $start_timestamp ) && $current_timestamp < $start_timestamp ) {
@@ -215,7 +180,7 @@ class Form_Restriction {
 			}
 		}
 
-		// Check if after end time.
+		// Check if after end time (works for both scheduling and simple time limit).
 		if ( ! empty( $end_date ) && is_string( $end_date ) ) {
 			$end_timestamp = Helper::get_timestamp_from_string( $end_date, $end_hours, $end_minutes, $end_meridiem );
 
@@ -224,7 +189,9 @@ class Form_Restriction {
 			}
 		}
 
-		return 'active';
+		// If scheduling is disabled but we haven't passed the end date, return 'disabled'.
+		// If scheduling is enabled and we're within the window, return 'active'.
+		return $scheduling_status ? 'active' : 'disabled';
 	}
 
 	/**
