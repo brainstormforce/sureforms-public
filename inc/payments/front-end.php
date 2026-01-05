@@ -279,9 +279,10 @@ class Front_End {
 			wp_send_json_error( __( 'Customer name is required for subscriptions.', 'sureforms' ) );
 		}
 
+		$amount_processed_with_currency = Stripe_Helper::amount_from_stripe_format( $amount, $currency );
 		// Validate payment amount against stored form configuration.
 		if ( $form_id > 0 && ! empty( $block_id ) ) {
-			$validation_result = Payment_Helper::validate_payment_amount( $amount, $currency, $form_id, $block_id );
+			$validation_result = Payment_Helper::validate_payment_amount( $amount_processed_with_currency, $currency, $form_id, $block_id );
 			if ( ! $validation_result['valid'] ) {
 				wp_send_json_error( $validation_result['message'] );
 			}
@@ -402,7 +403,7 @@ class Front_End {
 				[
 					'form_id'         => $form_id,
 					'block_id'        => $block_id,
-					'amount'          => $amount,
+					'amount'          => $amount_processed_with_currency,
 					'currency'        => strtolower( $currency ),
 					'subscription_id' => $subscription_id,
 				]
