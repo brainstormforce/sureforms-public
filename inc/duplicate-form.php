@@ -3,7 +3,7 @@
  * Sureforms form duplication.
  *
  * @package sureforms.
- * @since x.x.x
+ * @since 2.3.0
  */
 
 namespace SRFM\Inc;
@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Duplicate Form Class.
  *
- * @since x.x.x
+ * @since 2.3.0
  */
 class Duplicate_Form {
 	use Get_Instance;
@@ -28,7 +28,7 @@ class Duplicate_Form {
 	 * @param int    $form_id Form ID to duplicate.
 	 * @param string $title_suffix Suffix to append to title. Default ' (Copy)'.
 	 * @return array<string, mixed>|\WP_Error Result with new form ID or error.
-	 * @since x.x.x
+	 * @since 2.3.0
 	 */
 	public function duplicate_form( $form_id, $title_suffix = ' (Copy)' ) {
 		// Validate form ID.
@@ -161,7 +161,7 @@ class Duplicate_Form {
 	 *
 	 * @param \WP_REST_Request $request Full details about the request.
 	 * @return \WP_REST_Response|\WP_Error Response object on success, or WP_Error object on failure.
-	 * @since x.x.x
+	 * @since 2.3.0
 	 */
 	public function handle_duplicate_form_rest( $request ) {
 		$nonce = Helper::get_string_value( $request->get_header( 'X-WP-Nonce' ) );
@@ -195,7 +195,7 @@ class Duplicate_Form {
 	 * @param string $base_title Original form title.
 	 * @param string $suffix Suffix to append. Default ' (Copy)'.
 	 * @return string Unique title.
-	 * @since x.x.x
+	 * @since 2.3.0
 	 */
 	private function generate_unique_title( $base_title, $suffix = ' (Copy)' ) {
 		$new_title = $base_title . $suffix;
@@ -215,7 +215,7 @@ class Duplicate_Form {
 	 *
 	 * @param string $title Title to check.
 	 * @return bool True if title exists, false otherwise.
-	 * @since x.x.x
+	 * @since 2.3.0
 	 */
 	private function title_exists( $title ) {
 		global $wpdb;
@@ -241,7 +241,7 @@ class Duplicate_Form {
 	 * @param int    $old_id Original form ID.
 	 * @param int    $new_id New form ID.
 	 * @return string Updated content with new form ID references.
-	 * @since x.x.x
+	 * @since 2.3.0
 	 */
 	private function update_block_form_ids( $content, $old_id, $new_id ) {
 		// Direct string replacement - no escaping needed for this operation.
@@ -258,7 +258,7 @@ class Duplicate_Form {
 	 * These meta keys are already arrays/objects and don't need double unserializing.
 	 *
 	 * @return array<string> Array of meta keys.
-	 * @since x.x.x
+	 * @since 2.3.0
 	 */
 	private function get_unserialized_post_metas() {
 		$export_instance = Export::get_instance();

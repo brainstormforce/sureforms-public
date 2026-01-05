@@ -242,7 +242,7 @@ class Email_Summary {
 								ob_start();
 								?>
 								<tr style="background-color:#FFFFFF;">
-									<td style="padding:12px;font-size:14px;color:#4B5563;border-bottom:0.5px solid #E5E7EB;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"><?php echo esc_html( $form['title'] ); ?></td>
+									<td style="padding:12px;font-size:14px;color:#4B5563;border-bottom:0.5px solid #E5E7EB;overflow-wrap:anywhere;white-space:normal;word-break: break-word;"><?php echo esc_html( $form['title'] ); ?></td>
 									<td style="padding:12px;font-size:14px;color:#4B5563;text-align:right;border-bottom:0.5px solid #E5E7EB;white-space:nowrap;width:80px;"><?php echo esc_html( Helper::get_string_value( $form['count'] ) ); ?></td>
 								</tr>
 								<?php
@@ -373,7 +373,7 @@ class Email_Summary {
 	 *
 	 * @param string $plugin_path The plugin path (e.g., 'plugin-folder/plugin-file.php').
 	 * @return bool True if plugin is installed, false otherwise.
-	 * @since x.x.x
+	 * @since 2.3.0
 	 */
 	public static function is_plugin_installed( $plugin_path ) {
 		return '' !== Helper::get_plugin_if_installed( [ $plugin_path ] );
