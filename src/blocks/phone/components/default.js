@@ -91,13 +91,17 @@ export const PhoneComponent = ( { setAttributes, attributes, blockID } ) => {
 		autoPlaceholder: 'off',
 		countrySearch: true,
 		formatOnDisplay: true,
+		allowPhonewords: true,
 	};
 
 	// Apply country filtering if enabled
 	if ( enableCountryFilter ) {
 		if ( countryFilterType === 'include' && includeCountries?.length > 0 ) {
 			initOptions.onlyCountries = includeCountries;
-		} else if ( countryFilterType === 'exclude' && excludeCountries?.length > 0 ) {
+		} else if (
+			countryFilterType === 'exclude' &&
+			excludeCountries?.length > 0
+		) {
 			initOptions.excludeCountries = excludeCountries;
 		}
 	}

@@ -113,6 +113,7 @@ function initializePhoneField() {
 			} ),
 			countrySearch: true,
 			initialCountry,
+			allowPhonewords: true,
 		};
 
 		if ( isAutoCountry === 'true' ) {
@@ -206,15 +207,16 @@ function initializePhoneField() {
 			const parentBlock = phoneNumber.closest( '.srfm-block' );
 
 			/**
-			 * Using the public isValidNumber() method from the intl-tel-input library to validate the phone number.
-			 * The public API properly handles phone number validation in v25+.
-			 * For alphanumeric inputs (like '+611800FLIGHT'), the validation will properly reject
-			 * such inputs as invalid.
+			 * Get the normalized phone number (converts phonewords like '+1 800 FLOWERS' to digits).
+			 * Then validate using intlTelInput.utils.isValidNumber() which properly handles
+			 * the normalized value. This approach supports phonewords when allowPhonewords is enabled.
 			 */
-			if (
-				phoneNumberValue &&
-				! iti.isValidNumber()
-			) {
+			const normalizedNumber = iti.getNumber();
+			const isValid =
+				normalizedNumber &&
+				window.intlTelInput?.utils?.isValidNumber( normalizedNumber );
+
+			if ( phoneNumberValue && ! isValid ) {
 				parentBlock.classList.add( 'srfm-phone-error' );
 				window?.srfm?.toggleErrorState( parentBlock, true );
 				errorMessage.textContent =
@@ -227,7 +229,8 @@ function initializePhoneField() {
 			} else {
 				parentBlock.classList.remove( 'srfm-phone-error' );
 				window?.srfm?.toggleErrorState( parentBlock, false );
-				iti.hiddenInput.value = iti.getNumber();
+				// Use normalized number (ensures phonewords are converted to digits)
+				iti.hiddenInput.value = normalizedNumber || '';
 			}
 		};
 		/**
