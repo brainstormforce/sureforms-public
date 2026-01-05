@@ -48,7 +48,6 @@ class Front_End {
 		add_filter( 'srfm_all_data_field_row', [ $this, 'skip_payment_fields_from_all_data' ], 10, 2 );
 		add_filter( 'srfm_map_slug_to_submission_data_should_skip', [ $this, 'skip_payment_fields_from_submission_data' ], 10, 2 );
 		add_filter( 'srfm_should_skip_field_from_sample_data', [ $this, 'skip_payment_fields_from_sample_data' ], 10, 2 );
-		add_filter( 'srfm_skip_conversational_block', [ $this, 'skip_payment_block_if_not_configured' ], 10, 2 );
 	}
 
 	/**
@@ -983,46 +982,6 @@ class Front_End {
 		if ( ! empty( $entry ) && is_array( $entry ) ) {
 			$this->stripe_payment_entries[] = $entry;
 		}
-	}
-
-	/**
-	 * Skip payment block from conversational form if no payment gateway is configured.
-	 *
-	 * @param bool         $skip_block Whether to skip rendering this block.
-	 * @param array<mixed> $block_data Block data including block_name and parsed_block.
-	 * @since x.x.x
-	 * @return bool True if the block should be skipped, false otherwise.
-	 */
-	public function skip_payment_block_if_not_configured( $skip_block, $block_data ) {
-		// Return early if already marked to skip.
-		if ( $skip_block ) {
-			return $skip_block;
-		}
-
-		// Validate block_data structure.
-		if ( ! is_array( $block_data ) || ! isset( $block_data['block_name'] ) || ! is_string( $block_data['block_name'] ) ) {
-			return $skip_block;
-		}
-
-		// Only process payment blocks.
-		if ( 'srfm/payment' !== $block_data['block_name'] ) {
-			return $skip_block;
-		}
-
-		// Check if Stripe is connected.
-		$stripe_connected = Stripe_Helper::is_stripe_connected();
-
-		// Apply filter to allow PayPal and other gateways to extend.
-		$is_payment_configured = apply_filters(
-			'srfm_payment_gateway_configured',
-			$stripe_connected,
-			[
-				'block_data' => $block_data,
-			]
-		);
-
-		// Skip payment block if no payment gateway is configured.
-		return ! $is_payment_configured;
 	}
 
 	/**
