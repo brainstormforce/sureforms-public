@@ -38,7 +38,7 @@ class Block extends Base {
 
 		$form = get_post( $id );
 
-		if ( ! $form || SRFM_FORMS_POST_TYPE !== $form->post_type || 'publish' !== $form->post_status || ! empty( $form->post_password ) ) {
+		if ( ! $form || SRFM_FORMS_POST_TYPE !== $form->post_type || 'publish' !== $form->post_status ) {
 			return esc_html__( 'This form has been deleted or is unavailable.', 'sureforms' );
 		}
 

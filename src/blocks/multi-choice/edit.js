@@ -4,14 +4,18 @@
 import { __ } from '@wordpress/i18n';
 import { ToggleControl, SelectControl, Button } from '@wordpress/components';
 import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
-import { useState, useEffect } from '@wordpress/element';
+import { useState, useEffect, useRef } from '@wordpress/element';
 import SRFMTextControl from '@Components/text-control';
 import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {
 	SRFMTabs,
 } from '@Components/inspector-tabs/InspectorTab.js';
-import { useErrMessage, checkInvalidCharacter } from '@Blocks/util';
+import {
+	useErrMessage,
+	checkInvalidCharacter,
+	updateSelectedIndicesAfterReorder,
+} from '@Blocks/util';
 import svgIcons from '@Svg/svgs.json';
 import parse from 'html-react-parser';
 import { MdDragIndicator } from 'react-icons/md';
@@ -55,12 +59,14 @@ const Edit = ( props ) => {
 		minValue,
 		maxValue,
 		showValues,
+		preselectedOptions = [],
 	} = attributes;
 
 	const currentFormId = useGetCurrentFormId( clientId );
 	const [ newOption, setNewOption ] = useState();
 	const [ error, setError ] = useState( false );
 	const blockProps = useBlockProps();
+	const prevSingleSelection = useRef( singleSelection );
 
 	const deleteOption = ( index ) => {
 		const deleteOptions = options.map( ( item, thisIndex ) => {
@@ -71,7 +77,15 @@ const Edit = ( props ) => {
 			return item;
 		} );
 
-		setAttributes( { deleteOptions } );
+		// Update preselected options when an option is deleted
+		const newPreselected = preselectedOptions
+			.filter( ( i ) => i !== index ) // Remove deleted option
+			.map( ( i ) => ( i > index ? i - 1 : i ) ); // Adjust indices
+
+		setAttributes( {
+			deleteOptions,
+			preselectedOptions: newPreselected,
+		} );
 	};
 
 	const changeOption = ( option, index ) => {
@@ -117,11 +131,39 @@ const Edit = ( props ) => {
 		setNewOption( '' );
 	};
 
+	const togglePreselection = ( index ) => {
+		let newPreselected = [ ...preselectedOptions ];
+
+		if ( singleSelection ) {
+			// For radio mode, only allow one preselection
+			newPreselected = newPreselected.includes( index ) ? [] : [ index ];
+		} else if ( newPreselected.includes( index ) ) {
+			// For checkbox mode, remove if already selected
+			newPreselected = newPreselected.filter( ( i ) => i !== index );
+		} else {
+			// For checkbox mode, add to selection
+			newPreselected.push( index );
+		}
+
+		setAttributes( { preselectedOptions: newPreselected } );
+	};
+
 	useEffect( () => {
 		if ( formId !== currentFormId ) {
 			setAttributes( { formId: currentFormId } );
 		}
 	}, [ formId, setAttributes, currentFormId ] );
+
+	// Reset preselected options when switching between radio and checkbox mode
+	useEffect( () => {
+		// Only reset if singleSelection value actually changed (not on initial render)
+		if ( prevSingleSelection.current !== singleSelection ) {
+			prevSingleSelection.current = singleSelection;
+			if ( preselectedOptions.length > 0 ) {
+				setAttributes( { preselectedOptions: [] } );
+			}
+		}
+	}, [ singleSelection, preselectedOptions, setAttributes ] );
 
 	const {
 		currentMessage: currentErrorMsg,
@@ -280,6 +322,21 @@ const Edit = ( props ) => {
 						className="srfm-option-outer-wrapper"
 						{ ...param.draggableProps }
 					>
+						<div className="srfm-preselection-control">
+							<input
+								type={ singleSelection ? 'radio' : 'checkbox' }
+								checked={ preselectedOptions.includes( i ) }
+								onChange={ () => togglePreselection( i ) }
+								title={ __(
+									'Preselect this option',
+									'sureforms'
+								) }
+								aria-label={ __(
+									'Preselect this option',
+									'sureforms'
+								) }
+							/>
+						</div>
 						{ enhanceMultiChoiceOptions(
 							draggableItem( option, param, i ),
 							{
@@ -334,8 +391,18 @@ const Edit = ( props ) => {
 									0,
 									newOptions.splice( srcI, 1 )[ 0 ]
 								);
+
+								// Update preselected indices when options are reordered
+								const updatedPreselected =
+									updateSelectedIndicesAfterReorder(
+										preselectedOptions,
+										srcI,
+										destI
+									);
+
 								setAttributes( {
 									options: newOptions,
+									preselectedOptions: updatedPreselected,
 								} );
 							}
 						} }

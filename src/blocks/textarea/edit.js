@@ -104,6 +104,22 @@ const Edit = ( props ) => {
 			),
 		},
 		{
+			id: 'placeholder',
+			component: (
+				<SRFMTextControl
+					label={ __( 'Placeholder', 'sureforms' ) }
+					value={ attributes.placeholder }
+					data={ {
+						value: attributes.placeholder,
+						label: 'placeholder',
+					} }
+					onChange={ ( value ) =>
+						setAttributes( { placeholder: value } )
+					}
+				/>
+			),
+		},
+		{
 			id: 'default-value',
 			component: (
 				<SRFMTextControl
@@ -127,7 +143,7 @@ const Edit = ( props ) => {
 		},
 		{
 			id: 'read-only',
-			component: (
+			component: defaultValue ? (
 				<ToggleControl
 					label={ __( 'Read Only', 'sureforms' ) }
 					checked={ readOnly }
@@ -135,7 +151,7 @@ const Edit = ( props ) => {
 						setAttributes( { readOnly: checked } )
 					}
 				/>
-			),
+			) : null,
 		},
 		{
 			id: 'rich-text',

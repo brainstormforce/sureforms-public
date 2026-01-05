@@ -623,7 +623,7 @@ class Entries {
 
 			foreach ( $block_key_map as $srfm_key ) {
 				$field_value = $form_data[ $srfm_key ] ?? '';
-				$row[]       = self::normalize_field_values( $field_value );
+				$row[]       = self::normalize_field_values( $field_value, $srfm_key );
 			}
 
 			fputcsv( $stream, $row ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fputcsv
@@ -633,12 +633,34 @@ class Entries {
 	/**
 	 * Normalize field values for CSV export.
 	 *
-	 * @param mixed $field_value Field value.
+	 * @param mixed  $field_value Field value.
+	 * @param string $field_key   Field key for field type.
 	 *
 	 * @since 2.0.0
 	 * @return string Normalized value.
 	 */
-	private static function normalize_field_values( $field_value ) {
+	private static function normalize_field_values( $field_value, $field_key = '' ) {
+		/**
+		 * Filter field value for CSV normalization.
+		 *
+		 * Allows modification of field values during CSV export. This is particularly
+		 * useful for custom field types (like repeater fields in Pro) that need
+		 * special formatting for CSV export.
+		 *
+		 * @since 2.3.0
+		 *
+		 * @param mixed  $field_value The field value to normalize.
+		 * @param string $field_key   The field key for identifying field type.
+		 *
+		 * @return mixed The filtered field value. Return a string to override default normalization.
+		 */
+		$filtered_value = apply_filters( 'srfm_normalize_csv_field_value', $field_value, $field_key );
+
+		// If filter returned a string, use it directly (custom handling was applied).
+		if ( is_string( $filtered_value ) && $filtered_value !== $field_value ) {
+			return $filtered_value;
+		}
+
 		// Handle arrays (multi-select, checkboxes, etc.).
 		if ( is_array( $field_value ) ) {
 			return implode( ', ', array_map( 'sanitize_text_field', $field_value ) );

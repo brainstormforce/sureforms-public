@@ -94,6 +94,14 @@ class Multichoice_Markup extends Base {
 	protected $show_values;
 
 	/**
+	 * Array of preselected option indices.
+	 *
+	 * @var array
+	 * @since 2.3.0
+	 */
+	protected $preselected_options;
+
+	/**
 	 * Initialize the properties based on block attributes.
 	 *
 	 * @param array<mixed> $attributes Block attributes.
@@ -104,15 +112,16 @@ class Multichoice_Markup extends Base {
 		$this->set_properties( $attributes );
 		$this->set_input_label( __( 'Multi Choice', 'sureforms' ) );
 		$this->set_error_msg( $attributes, 'srfm_multi_choice_block_required_text' );
-		$this->single_selection  = $attributes['singleSelection'] ?? false;
-		$this->choice_width      = $attributes['choiceWidth'] ?? '';
-		$this->vertical_layout   = $attributes['verticalLayout'] ?? false;
-		$this->option_type       = ! empty( $attributes['optionType'] ) && in_array( $attributes['optionType'], [ 'icon', 'image' ], true ) ? $attributes['optionType'] : 'icon';
-		$this->type_attr         = $this->single_selection ? 'radio' : 'checkbox';
-		$this->svg_type          = $this->single_selection ? 'circle' : 'square';
-		$this->name_attr         = $this->single_selection ? 'name="srfm-input-' . esc_attr( $this->slug ) . '-' . esc_attr( $this->block_id ) . '"' : '';
-		$this->choice_width_attr = $this->choice_width ? 'srfm-choice-width-' . str_replace( '.', '-', $this->choice_width ) : '';
-		$this->show_values       = apply_filters( 'srfm_show_options_values', false, $attributes['showValues'] ?? false );
+		$this->single_selection    = $attributes['singleSelection'] ?? false;
+		$this->choice_width        = $attributes['choiceWidth'] ?? '';
+		$this->vertical_layout     = $attributes['verticalLayout'] ?? false;
+		$this->option_type         = ! empty( $attributes['optionType'] ) && in_array( $attributes['optionType'], [ 'icon', 'image' ], true ) ? $attributes['optionType'] : 'icon';
+		$this->type_attr           = $this->single_selection ? 'radio' : 'checkbox';
+		$this->svg_type            = $this->single_selection ? 'circle' : 'square';
+		$this->name_attr           = $this->single_selection ? 'name="srfm-input-' . esc_attr( $this->slug ) . '-' . esc_attr( $this->block_id ) . '"' : '';
+		$this->choice_width_attr   = $this->choice_width ? 'srfm-choice-width-' . str_replace( '.', '-', $this->choice_width ) : '';
+		$this->show_values         = apply_filters( 'srfm_show_options_values', false, $attributes['showValues'] ?? false );
+		$this->preselected_options = $attributes['preselectedOptions'] ?? [];
 		$this->set_markup_properties();
 		$this->set_aria_described_by();
 	}
@@ -150,6 +159,7 @@ class Multichoice_Markup extends Base {
 										<?php echo 0 === $i ? 'aria-describedby="' . ( ! empty( $this->aria_described_by ) ? esc_attr( trim( $this->aria_described_by ) ) : '' ) . '"' : ''; ?>
 										<?php echo 0 === $i ? 'aria-required="' . ( ! empty( $this->data_require_attr ) ? esc_attr( $this->data_require_attr ) : '' ) . '"' : ''; ?>
 										<?php echo $this->show_values && isset( $option['value'] ) ? 'option-value="' . esc_attr( $option['value'] ) . '"' : ''; ?>
+										<?php echo is_array( $this->preselected_options ) && in_array( $i, $this->preselected_options, true ) ? 'checked' : ''; ?>
 									/>
 									<div class="srfm-block-content-wrap">
 										<div class="srfm-option-container">
@@ -162,8 +172,8 @@ class Multichoice_Markup extends Base {
 												<img src="<?php echo esc_url( $option['image'] ); ?>"/>
 											</span>
 											<?php } ?>
-											<!-- This label content is used in conditional logic and for storing values in a hidden input field as comma-separated values. 
-											The markup should remain unchanged. 
+											<!-- This label content is used in conditional logic and for storing values in a hidden input field as comma-separated values.
+											The markup should remain unchanged.
 											If you make any changes here, ensure the corresponding JavaScript value functionality and conditional logic are also updated. -->
 											<label for="srfm-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id . '-' . $i ); ?>"><?php echo isset( $option['optionTitle'] ) ? esc_html( $option['optionTitle'] ) : ''; ?></label>
 										</div>

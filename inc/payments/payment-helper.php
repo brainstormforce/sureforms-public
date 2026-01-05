@@ -566,10 +566,10 @@ class Payment_Helper {
 	 * It handles both fixed and minimum amount validations for single and subscription payments.
 	 *
 	 * @since 2.2.2
-	 * @param int    $amount   Amount in smallest currency unit (e.g., cents for USD).
-	 * @param string $currency Currency code (e.g., 'usd', 'eur').
-	 * @param int    $form_id  WordPress post ID of the form.
-	 * @param string $block_id Block identifier for the payment block.
+	 * @param int|float $amount   Amount in smallest currency unit (e.g., cents for USD).
+	 * @param string    $currency Currency code (e.g., 'usd', 'eur').
+	 * @param int       $form_id  WordPress post ID of the form.
+	 * @param string    $block_id Block identifier for the payment block.
 	 * @return array {
 	 *     Validation result.
 	 *
@@ -611,20 +611,13 @@ class Payment_Helper {
 		// Get amount type (fixed or minimum).
 		$amount_type = $payment_config['amount_type'] ?? 'fixed';
 
-		// Convert submitted amount from smallest unit to decimal for comparison.
-		// For zero-decimal currencies (JPY, KRW, etc.), amount is already in major units.
-		// For two-decimal currencies (USD, EUR, etc.), divide by 100.
-		$submitted_amount_decimal = self::is_zero_decimal_currency( $currency )
-			? $amount
-			: $amount / 100;
-
 		// Validate based on amount type.
 		if ( 'fixed' === $amount_type ) {
 			// Fixed amount validation - must match exactly.
 			$configured_amount = isset( $payment_config['fixed_amount'] ) ? floatval( $payment_config['fixed_amount'] ) : 10.00;
 
 			// Allow small floating point difference (0.01) due to rounding.
-			if ( abs( $submitted_amount_decimal - $configured_amount ) > 0.01 ) {
+			if ( abs( $amount - $configured_amount ) > 0.01 ) {
 				return [
 					'valid'   => false,
 					/* translators: 1: expected amount with currency */
@@ -635,12 +628,24 @@ class Payment_Helper {
 			// Minimum amount validation - must be >= minimum.
 			$minimum_amount = isset( $payment_config['minimum_amount'] ) ? floatval( $payment_config['minimum_amount'] ) : 0;
 
-			if ( $submitted_amount_decimal < $minimum_amount ) {
+			if ( $amount < $minimum_amount ) {
 				return [
 					'valid'   => false,
 					/* translators: 1: minimum amount with currency */
 					'message' => sprintf( __( 'Payment amount must be at least %1$s.', 'sureforms' ), $minimum_amount . ' ' . strtoupper( $currency ) ),
 				];
+			}
+
+			// Validate dynamic amount from dropdown/multi-choice field.
+			$dynamic_amount_validation = self::validate_dynamic_amount_field(
+				$payment_config,
+				$block_config,
+				$amount,
+				$currency
+			);
+
+			if ( null !== $dynamic_amount_validation ) {
+				return $dynamic_amount_validation;
 			}
 		}
 
@@ -679,26 +684,59 @@ class Payment_Helper {
 	}
 
 	/**
-	 * Get payment intent metadata from transient.
+	 * Verify payment intent and validate amount.
 	 *
-	 * Retrieves stored payment intent metadata to verify authenticity.
+	 * Verifies that the payment intent was created through our system and validates
+	 * the payment amount matches the expected amount based on form configuration.
 	 *
-	 * @since 2.2.2
-	 * @param string $block_id          Block identifier.
-	 * @param string $payment_intent_id Payment intent ID from Stripe.
-	 * @return bool True if metadata exists, false if not found.
+	 * @since 2.3.0
+	 * @param string               $block_id          Block identifier.
+	 * @param string               $payment_intent_id Payment intent ID from Stripe.
+	 * @param array<string, mixed> $form_data         Submitted form data.
+	 * @return array {
+	 *     Verification result.
+	 *
+	 *     @type bool   $valid   Whether verification passed.
+	 *     @type string $message Error message if verification failed, empty if valid.
+	 * }
 	 */
-	public static function get_payment_intent_metadata( $block_id, $payment_intent_id ) {
-		if ( empty( $block_id ) || empty( $payment_intent_id ) ) {
-			return false;
+	public static function verify_payment_intent( $block_id, $payment_intent_id, $form_data ) {
+		// Get form ID from form data for verification.
+		$form_id = isset( $form_data['form-id'] ) && ! empty( $form_data['form-id'] ) && is_numeric( $form_data['form-id'] ) ? intval( $form_data['form-id'] ) : 0;
+
+		// Validate required parameters.
+		if ( empty( $block_id ) || empty( $payment_intent_id ) || empty( $form_id ) ) {
+			return [
+				'valid'   => false,
+				'message' => __( 'Invalid payment verification parameters.', 'sureforms' ),
+			];
 		}
 
-		// Create transient key: srfm_pi_{block_id}_{payment_intent_id}.
+		// Verify payment intent was created through our system.
 		$transient_key = 'srfm_pi_' . sanitize_key( $block_id ) . '_' . sanitize_key( $payment_intent_id );
+		$metadata      = get_transient( $transient_key );
 
-		$metadata = get_transient( $transient_key );
+		if ( empty( $metadata ) || ! is_array( $metadata ) ) {
+			return [
+				'valid'   => false,
+				'message' => __( 'Payment verification failed. Invalid payment intent.', 'sureforms' ),
+			];
+		}
 
-		return false !== $metadata ? true : false;
+		$payment_amount = isset( $metadata['amount'] ) && ! empty( $metadata['amount'] ) && is_numeric( $metadata['amount'] ) ? floatval( $metadata['amount'] ) : 0;
+
+		// Validate payment amount matches configuration.
+		$amount_validation = self::validate_payment_intent_amount( $block_id, $form_id, $form_data, $payment_amount );
+
+		if ( false === $amount_validation['valid'] ) {
+			return $amount_validation;
+		}
+
+		// Verification passed.
+		return [
+			'valid'   => true,
+			'message' => '',
+		];
 	}
 
 	/**
@@ -720,6 +758,360 @@ class Payment_Helper {
 		$transient_key = 'srfm_pi_' . sanitize_key( $block_id ) . '_' . sanitize_key( $payment_intent_id );
 
 		return delete_transient( $transient_key );
+	}
+
+	/**
+	 * Validate dynamic amount field from dropdown or multi-choice.
+	 *
+	 * @param array<string, mixed> $payment_config Payment block configuration.
+	 * @param array<string, mixed> $block_config  All block configurations.
+	 * @param float                $submitted_amount_decimal Submitted amount in decimal.
+	 * @param string               $currency Currency code.
+	 * @return array|null Validation result array or null if validation passes.
+	 * @since 2.3.0
+	 */
+	private static function validate_dynamic_amount_field( $payment_config, $block_config, $submitted_amount_decimal, $currency ) {
+		// Check if variable amount field is from dropdown or multi-choice block.
+		$dynamic_amount_field_block_name = $payment_config['variable_amount_field_block_name'] ?? '';
+
+		if ( empty( $dynamic_amount_field_block_name ) ) {
+			// Return null because it can be old form configuration.
+			return null;
+		}
+
+		if ( 'srfm/dropdown' !== $dynamic_amount_field_block_name && 'srfm/multi-choice' !== $dynamic_amount_field_block_name ) {
+			return null; // Not a dropdown/multi-choice, skip validation.
+		}
+
+		// Get the slug of the variable amount field.
+		$variable_amount_field_slug = ! empty( $payment_config['variable_amount_field'] ) && is_string( $payment_config['variable_amount_field'] ) ? $payment_config['variable_amount_field'] : '';
+
+		// Find the block config for the variable amount field by matching slug and block name.
+		$variable_amount_block_config = self::get_block_config_by_name_and_slug( $block_config, $dynamic_amount_field_block_name, $variable_amount_field_slug );
+
+		// Verify the variable amount block config was found.
+		if ( empty( $variable_amount_block_config ) || ! is_array( $variable_amount_block_config ) ) {
+			return [
+				'valid'   => false,
+				'message' => __( 'Variable amount field configuration not found.', 'sureforms' ),
+			];
+		}
+
+		// Check if single selection is enabled (only validate for single selection).
+		$is_single_selection = false;
+		if ( 'srfm/dropdown' === $dynamic_amount_field_block_name ) {
+			// For dropdown, check if multi_select is disabled (single selection).
+			$is_single_selection = empty( $variable_amount_block_config['multi_select'] );
+		} elseif ( 'srfm/multi-choice' === $dynamic_amount_field_block_name ) {
+			// For multi-choice, check if single_selection is enabled.
+			$is_single_selection = ! empty( $variable_amount_block_config['single_selection'] );
+		}
+
+		// Only validate amount matches options if single selection is enabled.
+		if ( $is_single_selection ) {
+			// Validate that submitted amount matches one of the allowed option values.
+			$allowed_options = $variable_amount_block_config['options'] ?? [];
+			if ( empty( $allowed_options ) || ! is_array( $allowed_options ) ) {
+				return [
+					'valid'   => false,
+					'message' => __( 'No payment options are configured for this field.', 'sureforms' ),
+				];
+			}
+
+			// Extract allowed values from options.
+			$allowed_values = [];
+			foreach ( $allowed_options as $option ) {
+				if ( isset( $option['value'] ) && ! empty( $option['value'] ) ) {
+					$allowed_values[] = floatval( $option['value'] );
+				}
+			}
+
+			// Check if submitted amount matches any allowed value.
+			$amount_is_valid = false;
+			foreach ( $allowed_values as $allowed_value ) {
+				// Allow small floating point difference (0.01) due to rounding.
+				if ( abs( $submitted_amount_decimal - $allowed_value ) <= 0.01 ) {
+					$amount_is_valid = true;
+					break;
+				}
+			}
+
+			if ( ! $amount_is_valid ) {
+				return [
+					'valid'   => false,
+					/* translators: %s: currency code */
+					'message' => sprintf( __( 'Invalid payment amount. Please select a valid amount from the available options.', 'sureforms' ), strtoupper( $currency ) ),
+				];
+			}
+		}
+
+		// Validation passed for dynamic amount field.
+		return null;
+	}
+
+	/**
+	 * Validate payment intent amount matches form configuration.
+	 *
+	 * Validates that the payment amount from Stripe matches the expected amount
+	 * based on form configuration, including dynamic amounts from dropdown/multi-choice fields.
+	 *
+	 * @since 2.3.0
+	 * @param string               $block_id       Block identifier.
+	 * @param int                  $form_id        Form post ID.
+	 * @param array<string, mixed> $form_data      Submitted form data.
+	 * @param int|float            $payment_amount Payment amount from Stripe (in smallest currency unit).
+	 * @return array {
+	 *     Validation result.
+	 *
+	 *     @type bool   $valid   Whether validation passed.
+	 *     @type string $message Error message if validation failed, empty if valid.
+	 * }
+	 */
+	private static function validate_payment_intent_amount( $block_id, $form_id, $form_data, $payment_amount ) {
+		// Get block configuration.
+		$block_config = Field_Validation::get_or_migrate_block_config_for_legacy_form( $form_id );
+
+		if ( empty( $block_config ) || ! isset( $block_config[ $block_id ] ) ) {
+			return [
+				'valid'   => false,
+				/* translators: %1$s: expected amount, %2$s: payment amount */
+				'message' => __( 'Payment configuration not found.', 'sureforms' ),
+			];
+		}
+
+		$payment_config = $block_config[ $block_id ];
+		$amount_type    = $payment_config['amount_type'] ?? 'fixed';
+
+		// For fixed amounts, validate against configured amount.
+		if ( 'fixed' === $amount_type ) {
+			$configured_amount = isset( $payment_config['fixed_amount'] ) ? floatval( $payment_config['fixed_amount'] ) : 0;
+
+			// Allow small floating point difference (0.01) due to rounding.
+			if ( abs( $payment_amount - $configured_amount ) > 0.01 ) {
+				return [
+					'valid'   => false,
+					/* translators: %1$s: expected amount, %2$s: payment amount */
+					'message' => sprintf( __( 'Payment amount mismatch. Expected %1$s, received %2$s.', 'sureforms' ), $configured_amount, $payment_amount ),
+				];
+			}
+
+			return [
+				'valid'   => true,
+				'message' => '',
+			];
+		}
+
+		// For variable amounts, validate based on source field.
+		if ( 'variable' === $amount_type ) {
+			// Check if variable amount comes from dropdown/multi-choice.
+			$dynamic_amount_field_block_name = $payment_config['variable_amount_field_block_name'] ?? '';
+			$variable_amount_field_slug      = $payment_config['variable_amount_field'] ?? '';
+
+			// Skipping if it is old form configuration.
+			if ( empty( $dynamic_amount_field_block_name ) || empty( $variable_amount_field_slug ) ) {
+				return [
+					'valid'   => true,
+					'message' => '',
+				];
+			}
+
+			$submitted_field_value = self::get_form_submitted_value_by_slug_and_block_name( $variable_amount_field_slug, $dynamic_amount_field_block_name, $form_data );
+
+			if ( empty( $submitted_field_value ) ) {
+				return [
+					'valid'   => false,
+					'message' => __( 'Variable amount field value is required.', 'sureforms' ),
+				];
+			}
+
+			if ( 'srfm/dropdown' === $dynamic_amount_field_block_name || 'srfm/multi-choice' === $dynamic_amount_field_block_name ) {
+				// Get the block config for the variable amount field by matching slug and block name.
+				$variable_amount_block_config = self::get_block_config_by_name_and_slug( $block_config, $dynamic_amount_field_block_name, $variable_amount_field_slug );
+
+				if ( empty( $variable_amount_block_config ) || ! is_string( $submitted_field_value ) ) {
+					return [
+						'valid'   => false,
+						'message' => __( 'Variable amount field configuration not found.', 'sureforms' ),
+					];
+				}
+
+				// To get the expected amount we need to check by the value of the submitted field. we will have the values now we need to check the expected amount in the block config. because block config dropdown/multi-choice has the expected amount in the options.
+				$get_expected_amount = self::get_amount_by_the_config_options( $submitted_field_value, $variable_amount_block_config );
+
+				// Validate payment amount matches expected amount.
+				if ( abs( $payment_amount - $get_expected_amount ) > 0.01 ) {
+					return [
+						'valid'   => false,
+						/* translators: %1$s: expected amount, %2$s: payment amount */
+						'message' => sprintf( __( 'Payment amount mismatch. Expected %1$s, received %2$s.', 'sureforms' ), $get_expected_amount, $payment_amount ),
+					];
+				}
+			} elseif ( 'srfm/number' === $dynamic_amount_field_block_name ) {
+				$is_valid_amount = is_numeric( $submitted_field_value ) ? true : false;
+
+				if ( ! $is_valid_amount ) {
+					return [
+						'valid'   => false,
+						'message' => __( 'Variable amount field value is required.', 'sureforms' ),
+					];
+				}
+
+				$converted_payment_amount = floatval( $submitted_field_value );
+
+				// Validate payment amount matches expected amount.
+				if ( abs( $payment_amount - $converted_payment_amount ) > 0.01 ) {
+					return [
+						'valid'   => false,
+						/* translators: %1$s: expected amount, %2$s: payment amount */
+						'message' => sprintf( __( 'Payment amount mismatch. Expected %1$s, received %2$s.', 'sureforms' ), $converted_payment_amount, $payment_amount ),
+					];
+				}
+			}
+
+			// For other variable amount sources (e.g., number field), validate minimum amount.
+			$minimum_amount = isset( $payment_config['minimum_amount'] ) ? floatval( $payment_config['minimum_amount'] ) : 0;
+
+			if ( $payment_amount < $minimum_amount ) {
+				return [
+					'valid'   => false,
+					/* translators: %1$s: minimum amount, %2$s: payment amount */
+					'message' => sprintf( __( 'Payment amount below minimum. Minimum: %1$s, received %2$s.', 'sureforms' ), $minimum_amount, $payment_amount ),
+				];
+			}
+		}
+
+		// Validation passed.
+		return [
+			'valid'   => true,
+			'message' => '',
+		];
+	}
+
+	/**
+	 * Get amount by matching submitted value with config options.
+	 *
+	 * @param string       $submitted_field_value The submitted value (string, can be "value1 | value2" for multi-select).
+	 * @param array<mixed> $block_config          Block configuration containing options.
+	 * @return float|null Expected amount if found, null otherwise.
+	 * @since 2.3.0
+	 */
+	private static function get_amount_by_the_config_options( $submitted_field_value, $block_config ) {
+		if ( empty( $submitted_field_value ) || ! is_string( $submitted_field_value ) ) {
+			return null;
+		}
+
+		// Get options from block config.
+		$options = $block_config['options'] ?? [];
+
+		if ( empty( $options ) || ! is_array( $options ) ) {
+			return null;
+		}
+
+		// Check if multi-select is enabled.
+		$is_multi_select = false;
+		$block_name      = $block_config['block_name'] ?? '';
+
+		if ( 'srfm/dropdown' === $block_name ) {
+			$is_multi_select = ! empty( $block_config['multi_select'] );
+		} elseif ( 'srfm/multi-choice' === $block_name ) {
+			// For multi-choice, multi-select is when single_selection is disabled.
+			$is_multi_select = empty( $block_config['single_selection'] );
+		}
+
+		$expected_amount = null;
+
+		// Handle multi-select case (submitted value format: "value1 | value2").
+		if ( $is_multi_select && false !== strpos( $submitted_field_value, ' | ' ) ) {
+			// Explode the submitted value by " | " delimiter.
+			$submitted_values = explode( ' | ', $submitted_field_value );
+
+			$combine_amount = 0;
+
+			foreach ( $options as $option ) {
+				$option_label = isset( $option['label'] ) ? trim( $option['label'] ) : '';
+
+				foreach ( $submitted_values as $submitted_value ) {
+					if ( trim( $submitted_value ) === $option_label ) {
+						$combine_amount += floatval( $option['value'] );
+						break;
+					}
+				}
+			}
+
+			$expected_amount = $combine_amount;
+
+		} else {
+			// Handle single select case (submitted value is a simple string).
+			foreach ( $options as $option ) {
+				$option_label = isset( $option['label'] ) ? trim( $option['label'] ) : '';
+				if ( trim( $submitted_field_value ) === $option_label ) {
+					$expected_amount = floatval( $option['value'] );
+					break;
+				}
+			}
+		}
+
+		return $expected_amount;
+	}
+
+	/**
+	 * Get block configuration by block name and slug.
+	 *
+	 * @param array<mixed> $block_config All block configurations.
+	 * @param string       $block_name   Block name to search for.
+	 * @param string       $slug         Slug to match.
+	 * @return array|null Block configuration if found, null otherwise.
+	 * @since 2.3.0
+	 */
+	private static function get_block_config_by_name_and_slug( $block_config, $block_name, $slug ) {
+		foreach ( $block_config as $config ) {
+			if ( empty( $config ) || ! is_array( $config ) ) {
+				continue;
+			}
+
+			if ( isset( $config['slug'] ) && $config['slug'] === $slug && isset( $config['block_name'] ) && $config['block_name'] === $block_name ) {
+				return $config;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Get form submitted value for a specific field by slug and block name.
+	 *
+	 * @param string       $variable_amount_field_slug    Slug of the field to find.
+	 * @param string       $dynamic_amount_field_block_name Block name of the field.
+	 * @param array<mixed> $form_data                     Form submission data.
+	 * @return mixed|null Field value if found, null otherwise.
+	 * @since 2.3.0
+	 */
+	private static function get_form_submitted_value_by_slug_and_block_name( $variable_amount_field_slug, $dynamic_amount_field_block_name, $form_data ) {
+		$block_name = null;
+		if ( 'srfm/dropdown' === $dynamic_amount_field_block_name ) {
+			$block_name = 'srfm-dropdown';
+		} elseif ( 'srfm/multi-choice' === $dynamic_amount_field_block_name ) {
+			$block_name = 'srfm-input-multi-choice';
+		} elseif ( 'srfm/number' === $dynamic_amount_field_block_name ) {
+			$block_name = 'srfm-number';
+		}
+
+		// Now we need to get the submitted value.
+		// Here is the structure of the form data name.
+		// srfm-input-multi-choice-398dbcfe-lbl-UGxlYXNlIGNob29zZSBvcHRpb24-multi-choice
+		// {block_name}-{block_id}-lbl-{combined-id}-{slug}.
+		$submitted_field_value = null;
+		foreach ( $form_data as $field_key => $field_value ) {
+			// Check if field key starts with block_name- and ends with -slug.
+			$is_start_with_block_name = strpos( $field_key, $block_name . '-' ) === 0;
+			$is_last_with_slug        = substr( $field_key, -strlen( '-' . $variable_amount_field_slug ) ) === '-' . $variable_amount_field_slug;
+
+			if ( $is_start_with_block_name && $is_last_with_slug ) {
+				$submitted_field_value = $field_value;
+				break;
+			}
+		}
+
+		return $submitted_field_value;
 	}
 
 	/**

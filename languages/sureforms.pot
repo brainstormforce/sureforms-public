@@ -1,15 +1,15 @@
-# Copyright (C) 2025 SureForms
+# Copyright (C) 2026 SureForms
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: SureForms 2.2.2\n"
+"Project-Id-Version: SureForms 2.3.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/sureforms\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-12-26T09:20:27+00:00\n"
+"POT-Creation-Date: 2026-01-05T09:05:47+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: sureforms\n"
@@ -357,7 +357,7 @@ msgid "You do not have permission to access this file."
 msgstr ""
 
 #: inc/admin-ajax.php:409
-#: inc/payments/front-end.php:248
+#: inc/payments/front-end.php:249
 msgid "Security check failed."
 msgstr ""
 
@@ -378,6 +378,7 @@ msgstr ""
 #: inc/ai-form-builder/ai-auth.php:155
 #: inc/background-process.php:112
 #: inc/create-new-form.php:101
+#: inc/duplicate-form.php:172
 #: inc/export.php:118
 #: inc/export.php:176
 #: inc/form-submit.php:94
@@ -534,6 +535,22 @@ msgstr ""
 msgid "Error creating SureForms Form, "
 msgstr ""
 
+#: inc/duplicate-form.php:39
+msgid "Invalid form ID provided."
+msgstr ""
+
+#: inc/duplicate-form.php:50
+msgid "Source form not found."
+msgstr ""
+
+#: inc/duplicate-form.php:59
+msgid "The specified post is not a SureForms form."
+msgstr ""
+
+#: inc/duplicate-form.php:86
+msgid "Failed to create duplicate form."
+msgstr ""
+
 #: inc/email/email-template.php:46
 msgid "New form submission"
 msgstr ""
@@ -616,7 +633,7 @@ msgstr ""
 msgid "Failed to import form."
 msgstr ""
 
-#: inc/field-validation.php:260
+#: inc/field-validation.php:270
 msgid "Field is not valid."
 msgstr ""
 
@@ -628,13 +645,8 @@ msgstr ""
 msgid "Checkbox"
 msgstr ""
 
-#: inc/fields/dropdown-markup.php:75
+#: inc/fields/dropdown-markup.php:83
 msgid "Dropdown"
-msgstr ""
-
-#: inc/fields/dropdown-markup.php:82
-#: assets/build/blocks.js:172
-msgid "Select an option"
 msgstr ""
 
 #: inc/fields/email-markup.php:79
@@ -655,7 +667,7 @@ msgid "I consent to have this website store my submitted information so they can
 msgstr ""
 
 #: inc/fields/inlinebutton-markup.php:183
-#: inc/generate-form-markup.php:508
+#: inc/generate-form-markup.php:576
 msgid "Please verify that you are not a robot."
 msgstr ""
 
@@ -663,7 +675,7 @@ msgstr ""
 msgid "Text Field"
 msgstr ""
 
-#: inc/fields/multichoice-markup.php:105
+#: inc/fields/multichoice-markup.php:113
 msgid "Multi Choice"
 msgstr ""
 
@@ -743,7 +755,7 @@ msgstr ""
 msgid "Click here to enable live mode and accept payment"
 msgstr ""
 
-#: inc/fields/phone-markup.php:45
+#: inc/fields/phone-markup.php:79
 #: modules/gutenberg/icons/icons-v6-2.php:3665
 msgid "Phone"
 msgstr ""
@@ -891,7 +903,7 @@ msgstr ""
 msgid "HCaptcha sitekey verification failed. Please contact your site administrator."
 msgstr ""
 
-#: inc/generate-form-markup.php:676
+#: inc/generate-form-markup.php:744
 #: assets/build/formSubmit.js:2
 #: assets/js/unminified/form-submit.js:412
 msgid "There was an error trying to submit your form. Please try again."
@@ -910,7 +922,7 @@ msgid "Weekly Summary"
 msgstr ""
 
 #: inc/global-settings/email-summary.php:191
-#: inc/global-settings/email-summary.php:302
+#: inc/global-settings/email-summary.php:305
 msgid "SureForms Logo"
 msgstr ""
 
@@ -933,76 +945,76 @@ msgid "View Entries"
 msgstr ""
 
 #. translators: %s: opening and closing anchor tag for SureForms settings link
-#: inc/global-settings/email-summary.php:292
+#: inc/global-settings/email-summary.php:295
 msgid "Manage Email Summaries from your %1$sSureForms settings%2$s"
 msgstr ""
 
-#: inc/global-settings/email-summary.php:328
+#: inc/global-settings/email-summary.php:330
 msgid "Automate Workflows with OttoKit"
 msgstr ""
 
-#: inc/global-settings/email-summary.php:329
+#: inc/global-settings/email-summary.php:331
 msgid "Connect your apps and automate repetitive tasks with ease. Build workflows that save time, reduce errors, and keep your business running smoothly around the clock."
 msgstr ""
 
-#: inc/global-settings/email-summary.php:331
+#: inc/global-settings/email-summary.php:333
 msgid "Explore OttoKit"
 msgstr ""
 
-#: inc/global-settings/email-summary.php:335
+#: inc/global-settings/email-summary.php:338
 msgid "Optimize Your Site with SureRank"
 msgstr ""
 
-#: inc/global-settings/email-summary.php:336
+#: inc/global-settings/email-summary.php:339
 msgid "Fix common SEO issues and make your site search-friendly without the clutter. Check pages, add titles, meta, and schema — all in one simple plugin."
 msgstr ""
 
-#: inc/global-settings/email-summary.php:338
+#: inc/global-settings/email-summary.php:341
 msgid "Explore SureRank"
 msgstr ""
 
-#: inc/global-settings/email-summary.php:342
+#: inc/global-settings/email-summary.php:346
 msgid "Send Emails Reliably with SureMail"
 msgstr ""
 
-#: inc/global-settings/email-summary.php:343
+#: inc/global-settings/email-summary.php:347
 msgid "Make sure every WordPress email gets delivered. View logs, debug errors, and send with confidence using a lightweight SMTP solution."
 msgstr ""
 
-#: inc/global-settings/email-summary.php:345
+#: inc/global-settings/email-summary.php:349
 msgid "Explore SureMail"
 msgstr ""
 
-#: inc/global-settings/email-summary.php:349
+#: inc/global-settings/email-summary.php:354
 msgid "Sell with Ease using SureCart"
 msgstr ""
 
-#: inc/global-settings/email-summary.php:350
+#: inc/global-settings/email-summary.php:355
 msgid "Run your online store on WordPress with a modern checkout, subscriptions, and payments. Fast, flexible, and built for growth."
 msgstr ""
 
-#: inc/global-settings/email-summary.php:352
+#: inc/global-settings/email-summary.php:357
 msgid "Explore SureCart"
 msgstr ""
 
-#: inc/global-settings/email-summary.php:356
+#: inc/global-settings/email-summary.php:362
 msgid "Build Your Community with SureDash"
 msgstr ""
 
-#: inc/global-settings/email-summary.php:357
+#: inc/global-settings/email-summary.php:363
 msgid "Create a central hub where members can connect, share, and grow together. Manage discussions, courses, and events — all from your own WordPress site."
 msgstr ""
 
-#: inc/global-settings/email-summary.php:359
+#: inc/global-settings/email-summary.php:365
 msgid "Explore SureDash"
 msgstr ""
 
 #. Translators: %1$s: From Date, %2$s: To Date.
-#: inc/global-settings/email-summary.php:480
+#: inc/global-settings/email-summary.php:546
 msgid "Email Summary of your last week -  %1$s to %2$s"
 msgstr ""
 
-#: inc/global-settings/email-summary.php:505
+#: inc/global-settings/email-summary.php:571
 #: inc/global-settings/global-settings.php:241
 #: inc/global-settings/global-settings.php:398
 #: assets/build/settings.js:172
@@ -1429,7 +1441,7 @@ msgstr ""
 #: inc/payments/admin/admin-handler.php:1335
 #: inc/payments/admin/admin-handler.php:1339
 #: inc/payments/admin/admin-handler.php:1343
-#: inc/payments/front-end.php:756
+#: inc/payments/front-end.php:757
 #: inc/payments/front-end.php:1122
 msgid "Guest User"
 msgstr ""
@@ -1438,12 +1450,12 @@ msgstr ""
 msgid "Invalid payment amount."
 msgstr ""
 
-#: inc/payments/front-end.php:99
+#: inc/payments/front-end.php:100
 msgid "Valid customer email is required for payments."
 msgstr ""
 
-#: inc/payments/front-end.php:105
-#: inc/payments/front-end.php:303
+#: inc/payments/front-end.php:106
+#: inc/payments/front-end.php:305
 #: inc/payments/stripe/admin-stripe-handler.php:749
 #: inc/payments/stripe/payments-settings.php:347
 #: inc/payments/stripe/payments-settings.php:472
@@ -1453,136 +1465,131 @@ msgstr ""
 msgid "Stripe is not connected."
 msgstr ""
 
-#: inc/payments/front-end.php:111
-#: inc/payments/front-end.php:309
-#: inc/payments/front-end.php:560
-#: inc/payments/front-end.php:1016
+#: inc/payments/front-end.php:112
+#: inc/payments/front-end.php:311
+#: inc/payments/front-end.php:561
+#: inc/payments/front-end.php:1017
 msgid "Stripe secret key not found."
 msgstr ""
 
 #. translators: %s: formatted payment amount
-#: inc/payments/front-end.php:193
+#: inc/payments/front-end.php:194
 msgid "The payment amount (%s) is below the minimum allowed. Stripe only processes amounts above 50¢."
 msgstr ""
 
 #. translators: %s: Field name
-#: inc/payments/front-end.php:256
+#: inc/payments/front-end.php:257
 msgid "Missing required field: %s"
 msgstr ""
 
-#: inc/payments/front-end.php:273
+#: inc/payments/front-end.php:274
 msgid "Valid customer email is required for subscriptions."
 msgstr ""
 
-#: inc/payments/front-end.php:278
+#: inc/payments/front-end.php:279
 msgid "Customer name is required for subscriptions."
 msgstr ""
 
-#: inc/payments/front-end.php:291
+#: inc/payments/front-end.php:293
 msgid "Amount must be greater than 0"
 msgstr ""
 
-#: inc/payments/front-end.php:297
+#: inc/payments/front-end.php:299
 msgid "Invalid billing interval"
 msgstr ""
 
-#: inc/payments/front-end.php:320
+#: inc/payments/front-end.php:322
 msgid "Failed to create customer for subscription."
 msgstr ""
 
-#: inc/payments/front-end.php:353
-#: inc/payments/front-end.php:369
+#: inc/payments/front-end.php:355
+#: inc/payments/front-end.php:371
 msgid "Failed to create subscription through middleware."
 msgstr ""
 
-#: inc/payments/front-end.php:374
+#: inc/payments/front-end.php:376
 msgid "Empty response from subscription creation."
 msgstr ""
 
-#: inc/payments/front-end.php:379
+#: inc/payments/front-end.php:381
 msgid "Invalid JSON response from subscription creation."
 msgstr ""
 
-#: inc/payments/front-end.php:383
-#: inc/payments/front-end.php:387
+#: inc/payments/front-end.php:385
+#: inc/payments/front-end.php:389
 msgid "Invalid subscription data."
 msgstr ""
 
-#: inc/payments/front-end.php:394
+#: inc/payments/front-end.php:396
 msgid "Failed to create subscription."
 msgstr ""
 
 #. translators: %s: Error message
-#: inc/payments/front-end.php:424
+#: inc/payments/front-end.php:426
 msgid "Unexpected error: %s"
 msgstr ""
 
-#: inc/payments/front-end.php:530
+#: inc/payments/front-end.php:532
 #: inc/payments/stripe/admin-stripe-handler.php:100
 #: inc/payments/stripe/admin-stripe-handler.php:379
 msgid "Subscription ID not found."
 msgstr ""
 
-#: inc/payments/front-end.php:543
-#: inc/payments/front-end.php:1026
-msgid "Payment verification failed. Invalid payment intent."
-msgstr ""
-
-#: inc/payments/front-end.php:549
+#: inc/payments/front-end.php:550
 msgid "Customer ID not found for the payment."
 msgstr ""
 
-#: inc/payments/front-end.php:577
+#: inc/payments/front-end.php:578
 msgid "Failed to retrieve setup intent."
 msgstr ""
 
-#: inc/payments/front-end.php:606
+#: inc/payments/front-end.php:607
 msgid "Failed to update subscription."
 msgstr ""
 
-#: inc/payments/front-end.php:614
+#: inc/payments/front-end.php:615
 msgid "Latest invoice not found on subscription."
 msgstr ""
 
-#: inc/payments/front-end.php:627
+#: inc/payments/front-end.php:628
 msgid "Failed to retrieve invoice."
 msgstr ""
 
-#: inc/payments/front-end.php:649
+#: inc/payments/front-end.php:650
 msgid "Payment intent not found on invoice."
 msgstr ""
 
-#: inc/payments/front-end.php:664
+#: inc/payments/front-end.php:665
 msgid "Failed to confirm payment."
 msgstr ""
 
-#: inc/payments/front-end.php:680
+#: inc/payments/front-end.php:681
 msgid "Failed to retrieve subscription."
 msgstr ""
 
-#: inc/payments/front-end.php:695
+#: inc/payments/front-end.php:696
 msgid "Subscription not found for the payment."
 msgstr ""
 
 #. translators: %d: User ID
-#: inc/payments/front-end.php:754
+#: inc/payments/front-end.php:755
 #: inc/payments/front-end.php:1122
 msgid "User ID: %d"
 msgstr ""
 
 #. translators: %s: Invoice status
-#: inc/payments/front-end.php:762
+#: inc/payments/front-end.php:763
 msgid "Invoice Status: %s"
 msgstr ""
 
 #. translators: Title for subscription verification log
-#: inc/payments/front-end.php:769
+#: inc/payments/front-end.php:770
 msgid "Subscription Verification"
 msgstr ""
 
 #. translators: %s: Subscription ID
 #. translators: %s: Stripe subscription ID
-#: inc/payments/front-end.php:773
+#: inc/payments/front-end.php:774
 #: inc/payments/stripe/admin-stripe-handler.php:116
 #: inc/payments/stripe/admin-stripe-handler.php:395
 #: inc/payments/stripe/stripe-webhook.php:522
@@ -1596,7 +1603,7 @@ msgstr ""
 #. translators: %s: payment gateway name (e.g., Stripe)
 #. translators: %s: payment gateway
 #. translators: %s: Payment gateway name (e.g., Stripe).
-#: inc/payments/front-end.php:775
+#: inc/payments/front-end.php:776
 #: inc/payments/front-end.php:1133
 #: inc/payments/stripe/admin-stripe-handler.php:121
 #: inc/payments/stripe/admin-stripe-handler.php:400
@@ -1610,33 +1617,33 @@ msgid "Payment Gateway: %s"
 msgstr ""
 
 #. translators: %s: Payment Intent ID
-#: inc/payments/front-end.php:777
+#: inc/payments/front-end.php:778
 msgid "Payment Intent ID: %s"
 msgstr ""
 
 #. translators: %s: Charge ID
-#: inc/payments/front-end.php:779
+#: inc/payments/front-end.php:780
 #: inc/payments/stripe/stripe-webhook.php:998
 msgid "Charge ID: %s"
 msgstr ""
 
 #. translators: %s: Subscription Status
 #. translators: %s: subscription status
-#: inc/payments/front-end.php:781
+#: inc/payments/front-end.php:782
 #: inc/payments/stripe/admin-stripe-handler.php:126
 #: inc/payments/stripe/admin-stripe-handler.php:405
 msgid "Subscription Status: %s"
 msgstr ""
 
 #. translators: %s: Customer ID
-#: inc/payments/front-end.php:783
+#: inc/payments/front-end.php:784
 #: inc/payments/stripe/stripe-webhook.php:1072
 msgid "Customer ID: %s"
 msgstr ""
 
 #. translators: 1: Amount, 2: Currency
 #. translators: %1$s: amount, %2$s: currency.
-#: inc/payments/front-end.php:785
+#: inc/payments/front-end.php:786
 #: inc/payments/front-end.php:1135
 #: inc/payments/stripe/stripe-webhook.php:1003
 #: inc/payments/stripe/stripe-webhook.php:1064
@@ -1645,12 +1652,12 @@ msgstr ""
 
 #. translators: %s: Payment mode (e.g. Live or Test)
 #. translators: %s: payment mode
-#: inc/payments/front-end.php:788
+#: inc/payments/front-end.php:789
 #: inc/payments/front-end.php:1140
 msgid "Mode: %s"
 msgstr ""
 
-#: inc/payments/front-end.php:822
+#: inc/payments/front-end.php:823
 msgid "Failed to verify subscription."
 msgstr ""
 
@@ -2088,13 +2095,57 @@ msgid "Currency mismatch: expected %1$s, received %2$s."
 msgstr ""
 
 #. translators: 1: expected amount with currency
-#: inc/payments/payment-helper.php:631
+#: inc/payments/payment-helper.php:624
 msgid "Payment amount must be exactly %1$s."
 msgstr ""
 
 #. translators: 1: minimum amount with currency
-#: inc/payments/payment-helper.php:642
+#: inc/payments/payment-helper.php:635
 msgid "Payment amount must be at least %1$s."
+msgstr ""
+
+#: inc/payments/payment-helper.php:711
+msgid "Invalid payment verification parameters."
+msgstr ""
+
+#: inc/payments/payment-helper.php:722
+msgid "Payment verification failed. Invalid payment intent."
+msgstr ""
+
+#: inc/payments/payment-helper.php:796
+#: inc/payments/payment-helper.php:934
+msgid "Variable amount field configuration not found."
+msgstr ""
+
+#: inc/payments/payment-helper.php:817
+msgid "No payment options are configured for this field."
+msgstr ""
+
+#. translators: %s: currency code
+#: inc/payments/payment-helper.php:843
+msgid "Invalid payment amount. Please select a valid amount from the available options."
+msgstr ""
+
+#. translators: %1$s: expected amount, %2$s: payment amount
+#: inc/payments/payment-helper.php:878
+msgid "Payment configuration not found."
+msgstr ""
+
+#. translators: %1$s: expected amount, %2$s: payment amount
+#: inc/payments/payment-helper.php:894
+#: inc/payments/payment-helper.php:946
+#: inc/payments/payment-helper.php:966
+msgid "Payment amount mismatch. Expected %1$s, received %2$s."
+msgstr ""
+
+#: inc/payments/payment-helper.php:923
+#: inc/payments/payment-helper.php:955
+msgid "Variable amount field value is required."
+msgstr ""
+
+#. translators: %1$s: minimum amount, %2$s: payment amount
+#: inc/payments/payment-helper.php:978
+msgid "Payment amount below minimum. Minimum: %1$s, received %2$s."
 msgstr ""
 
 #: inc/payments/stripe/admin-stripe-handler.php:67
@@ -2787,6 +2838,10 @@ msgstr ""
 #. translators: %s: action name
 #: inc/rest-api.php:834
 msgid "Failed to %s form."
+msgstr ""
+
+#: inc/rest-api.php:1388
+msgid " (Copy)"
 msgstr ""
 
 #: inc/smart-tags.php:109
@@ -10331,6 +10386,7 @@ msgid "Change Form"
 msgstr ""
 
 #: assets/build/blocks.js:2
+#: assets/build/formEditor.js:172
 msgid "Form Settings"
 msgstr ""
 
@@ -10502,6 +10558,10 @@ msgstr ""
 
 #: assets/build/blocks.js:172
 msgid "Help Text"
+msgstr ""
+
+#: assets/build/blocks.js:172
+msgid "Placeholder"
 msgstr ""
 
 #: assets/build/blocks.js:172
@@ -10805,6 +10865,10 @@ msgid "Maximum Selections"
 msgstr ""
 
 #: assets/build/blocks.js:172
+msgid "Preselect this option"
+msgstr ""
+
+#: assets/build/blocks.js:172
 msgid "Option Type"
 msgstr ""
 
@@ -10863,6 +10927,46 @@ msgstr ""
 
 #: assets/build/blocks.js:172
 msgid "Default Country"
+msgstr ""
+
+#: assets/build/blocks.js:172
+msgid "Restrict Country Codes"
+msgstr ""
+
+#: assets/build/blocks.js:172
+msgid "Restriction Type"
+msgstr ""
+
+#: assets/build/blocks.js:172
+msgid "Allow"
+msgstr ""
+
+#: assets/build/blocks.js:172
+msgid "Block"
+msgstr ""
+
+#: assets/build/blocks.js:172
+msgid "Select Allowed Countries"
+msgstr ""
+
+#: assets/build/blocks.js:172
+msgid "Choose countries…"
+msgstr ""
+
+#: assets/build/blocks.js:172
+msgid "Choose which country codes users can select in the phone number field. Leave empty to allow all country codes."
+msgstr ""
+
+#: assets/build/blocks.js:172
+msgid "Select Blocked Countries"
+msgstr ""
+
+#: assets/build/blocks.js:172
+msgid "These countries will be hidden from the dropdown."
+msgstr ""
+
+#: assets/build/blocks.js:172
+msgid "Select an option"
 msgstr ""
 
 #: assets/build/blocks.js:172
@@ -12298,6 +12402,7 @@ msgid "Email Notification enabled successfully."
 msgstr ""
 
 #: assets/build/formEditor.js:172
+#: assets/build/forms.js:172
 msgid "Duplicate"
 msgstr ""
 
@@ -12702,10 +12807,6 @@ msgstr ""
 
 #: assets/build/formEditor.js:172
 msgid "Back Button Text"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-msgid "Single Form Settings"
 msgstr ""
 
 #: assets/build/formEditor.js:172
@@ -13323,6 +13424,14 @@ msgid "An error occurred while performing the action."
 msgstr ""
 
 #: assets/build/forms.js:172
+msgid "Form duplicated successfully: %s"
+msgstr ""
+
+#: assets/build/forms.js:172
+msgid "An error occurred while duplicating the form."
+msgstr ""
+
+#: assets/build/forms.js:172
 msgid "%d form imported successfully."
 msgid_plural "%d forms imported successfully."
 msgstr[0] ""
@@ -13374,6 +13483,14 @@ msgstr ""
 
 #: assets/build/forms.js:172
 msgid "Are you sure you want to permanently delete this form? This action cannot be undone."
+msgstr ""
+
+#: assets/build/forms.js:172
+msgid "Duplicate Form?"
+msgstr ""
+
+#: assets/build/forms.js:172
+msgid "This will create a copy of \"%s\" with all its settings."
 msgstr ""
 
 #: assets/build/payments.js:2
