@@ -9,13 +9,14 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-01-05T06:45:56+00:00\n"
+"POT-Creation-Date: 2026-01-05T09:05:47+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"X-Generator: WP-CLI 2.9.0\n"
+"X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: sureforms\n"
 
 #. Plugin Name of the plugin
 #. Author of the plugin
+#: sureforms.php
 #: admin/admin.php:302
 #: admin/admin.php:303
 #: admin/admin.php:1409
@@ -30,14 +31,17 @@ msgid "SureForms"
 msgstr ""
 
 #. Plugin URI of the plugin
+#: sureforms.php
 msgid "https://sureforms.com"
 msgstr ""
 
 #. Description of the plugin
+#: sureforms.php
 msgid "A simple yet powerful way to create modern forms for your website."
 msgstr ""
 
 #. Author URI of the plugin
+#: sureforms.php
 msgid "https://sureforms.com/"
 msgstr ""
 
@@ -1437,8 +1441,8 @@ msgstr ""
 #: inc/payments/admin/admin-handler.php:1335
 #: inc/payments/admin/admin-handler.php:1339
 #: inc/payments/admin/admin-handler.php:1343
-#: inc/payments/front-end.php:756
-#: inc/payments/front-end.php:1121
+#: inc/payments/front-end.php:757
+#: inc/payments/front-end.php:1122
 msgid "Guest User"
 msgstr ""
 
@@ -1451,7 +1455,7 @@ msgid "Valid customer email is required for payments."
 msgstr ""
 
 #: inc/payments/front-end.php:106
-#: inc/payments/front-end.php:304
+#: inc/payments/front-end.php:305
 #: inc/payments/stripe/admin-stripe-handler.php:749
 #: inc/payments/stripe/payments-settings.php:347
 #: inc/payments/stripe/payments-settings.php:472
@@ -1462,9 +1466,9 @@ msgid "Stripe is not connected."
 msgstr ""
 
 #: inc/payments/front-end.php:112
-#: inc/payments/front-end.php:310
-#: inc/payments/front-end.php:560
-#: inc/payments/front-end.php:1016
+#: inc/payments/front-end.php:311
+#: inc/payments/front-end.php:561
+#: inc/payments/front-end.php:1017
 msgid "Stripe secret key not found."
 msgstr ""
 
@@ -1486,106 +1490,106 @@ msgstr ""
 msgid "Customer name is required for subscriptions."
 msgstr ""
 
-#: inc/payments/front-end.php:292
+#: inc/payments/front-end.php:293
 msgid "Amount must be greater than 0"
 msgstr ""
 
-#: inc/payments/front-end.php:298
+#: inc/payments/front-end.php:299
 msgid "Invalid billing interval"
 msgstr ""
 
-#: inc/payments/front-end.php:321
+#: inc/payments/front-end.php:322
 msgid "Failed to create customer for subscription."
 msgstr ""
 
-#: inc/payments/front-end.php:354
-#: inc/payments/front-end.php:370
+#: inc/payments/front-end.php:355
+#: inc/payments/front-end.php:371
 msgid "Failed to create subscription through middleware."
 msgstr ""
 
-#: inc/payments/front-end.php:375
+#: inc/payments/front-end.php:376
 msgid "Empty response from subscription creation."
 msgstr ""
 
-#: inc/payments/front-end.php:380
+#: inc/payments/front-end.php:381
 msgid "Invalid JSON response from subscription creation."
 msgstr ""
 
-#: inc/payments/front-end.php:384
-#: inc/payments/front-end.php:388
+#: inc/payments/front-end.php:385
+#: inc/payments/front-end.php:389
 msgid "Invalid subscription data."
 msgstr ""
 
-#: inc/payments/front-end.php:395
+#: inc/payments/front-end.php:396
 msgid "Failed to create subscription."
 msgstr ""
 
 #. translators: %s: Error message
-#: inc/payments/front-end.php:425
+#: inc/payments/front-end.php:426
 msgid "Unexpected error: %s"
 msgstr ""
 
-#: inc/payments/front-end.php:531
+#: inc/payments/front-end.php:532
 #: inc/payments/stripe/admin-stripe-handler.php:100
 #: inc/payments/stripe/admin-stripe-handler.php:379
 msgid "Subscription ID not found."
 msgstr ""
 
-#: inc/payments/front-end.php:549
+#: inc/payments/front-end.php:550
 msgid "Customer ID not found for the payment."
 msgstr ""
 
-#: inc/payments/front-end.php:577
+#: inc/payments/front-end.php:578
 msgid "Failed to retrieve setup intent."
 msgstr ""
 
-#: inc/payments/front-end.php:606
+#: inc/payments/front-end.php:607
 msgid "Failed to update subscription."
 msgstr ""
 
-#: inc/payments/front-end.php:614
+#: inc/payments/front-end.php:615
 msgid "Latest invoice not found on subscription."
 msgstr ""
 
-#: inc/payments/front-end.php:627
+#: inc/payments/front-end.php:628
 msgid "Failed to retrieve invoice."
 msgstr ""
 
-#: inc/payments/front-end.php:649
+#: inc/payments/front-end.php:650
 msgid "Payment intent not found on invoice."
 msgstr ""
 
-#: inc/payments/front-end.php:664
+#: inc/payments/front-end.php:665
 msgid "Failed to confirm payment."
 msgstr ""
 
-#: inc/payments/front-end.php:680
+#: inc/payments/front-end.php:681
 msgid "Failed to retrieve subscription."
 msgstr ""
 
-#: inc/payments/front-end.php:695
+#: inc/payments/front-end.php:696
 msgid "Subscription not found for the payment."
 msgstr ""
 
 #. translators: %d: User ID
-#: inc/payments/front-end.php:754
-#: inc/payments/front-end.php:1121
+#: inc/payments/front-end.php:755
+#: inc/payments/front-end.php:1122
 msgid "User ID: %d"
 msgstr ""
 
 #. translators: %s: Invoice status
-#: inc/payments/front-end.php:762
+#: inc/payments/front-end.php:763
 msgid "Invoice Status: %s"
 msgstr ""
 
 #. translators: Title for subscription verification log
-#: inc/payments/front-end.php:769
+#: inc/payments/front-end.php:770
 msgid "Subscription Verification"
 msgstr ""
 
 #. translators: %s: Subscription ID
 #. translators: %s: Stripe subscription ID
-#: inc/payments/front-end.php:773
+#: inc/payments/front-end.php:774
 #: inc/payments/stripe/admin-stripe-handler.php:116
 #: inc/payments/stripe/admin-stripe-handler.php:395
 #: inc/payments/stripe/stripe-webhook.php:522
@@ -1599,8 +1603,8 @@ msgstr ""
 #. translators: %s: payment gateway name (e.g., Stripe)
 #. translators: %s: payment gateway
 #. translators: %s: Payment gateway name (e.g., Stripe).
-#: inc/payments/front-end.php:775
-#: inc/payments/front-end.php:1132
+#: inc/payments/front-end.php:776
+#: inc/payments/front-end.php:1133
 #: inc/payments/stripe/admin-stripe-handler.php:121
 #: inc/payments/stripe/admin-stripe-handler.php:400
 #: inc/payments/stripe/admin-stripe-handler.php:575
@@ -1613,34 +1617,34 @@ msgid "Payment Gateway: %s"
 msgstr ""
 
 #. translators: %s: Payment Intent ID
-#: inc/payments/front-end.php:777
+#: inc/payments/front-end.php:778
 msgid "Payment Intent ID: %s"
 msgstr ""
 
 #. translators: %s: Charge ID
-#: inc/payments/front-end.php:779
+#: inc/payments/front-end.php:780
 #: inc/payments/stripe/stripe-webhook.php:998
 msgid "Charge ID: %s"
 msgstr ""
 
 #. translators: %s: Subscription Status
 #. translators: %s: subscription status
-#: inc/payments/front-end.php:781
+#: inc/payments/front-end.php:782
 #: inc/payments/stripe/admin-stripe-handler.php:126
 #: inc/payments/stripe/admin-stripe-handler.php:405
 msgid "Subscription Status: %s"
 msgstr ""
 
 #. translators: %s: Customer ID
-#: inc/payments/front-end.php:783
+#: inc/payments/front-end.php:784
 #: inc/payments/stripe/stripe-webhook.php:1072
 msgid "Customer ID: %s"
 msgstr ""
 
 #. translators: 1: Amount, 2: Currency
 #. translators: %1$s: amount, %2$s: currency.
-#: inc/payments/front-end.php:785
-#: inc/payments/front-end.php:1134
+#: inc/payments/front-end.php:786
+#: inc/payments/front-end.php:1135
 #: inc/payments/stripe/stripe-webhook.php:1003
 #: inc/payments/stripe/stripe-webhook.php:1064
 msgid "Amount: %1$s %2$s"
@@ -1648,50 +1652,50 @@ msgstr ""
 
 #. translators: %s: Payment mode (e.g. Live or Test)
 #. translators: %s: payment mode
-#: inc/payments/front-end.php:788
-#: inc/payments/front-end.php:1139
+#: inc/payments/front-end.php:789
+#: inc/payments/front-end.php:1140
 msgid "Mode: %s"
 msgstr ""
 
-#: inc/payments/front-end.php:822
+#: inc/payments/front-end.php:823
 msgid "Failed to verify subscription."
 msgstr ""
 
-#: inc/payments/front-end.php:1044
-#: inc/payments/front-end.php:1061
-#: inc/payments/front-end.php:1069
-#: inc/payments/front-end.php:1076
+#: inc/payments/front-end.php:1045
+#: inc/payments/front-end.php:1062
+#: inc/payments/front-end.php:1070
+#: inc/payments/front-end.php:1077
 msgid "Failed to retrieve payment intent."
 msgstr ""
 
-#: inc/payments/front-end.php:1084
+#: inc/payments/front-end.php:1085
 msgid "Payment was not confirmed successfully."
 msgstr ""
 
-#: inc/payments/front-end.php:1126
+#: inc/payments/front-end.php:1127
 msgid "Payment Verification"
 msgstr ""
 
 #. translators: %s: Stripe transaction ID
 #. translators: %s: Charge ID
-#: inc/payments/front-end.php:1130
+#: inc/payments/front-end.php:1131
 #: inc/payments/stripe/stripe-webhook.php:1060
 msgid "Transaction ID: %s"
 msgstr ""
 
 #. translators: %s: payment status
 #. translators: %s: Status
-#: inc/payments/front-end.php:1136
+#: inc/payments/front-end.php:1137
 #: inc/payments/stripe/stripe-webhook.php:526
 #: inc/payments/stripe/stripe-webhook.php:1066
 msgid "Status: %s"
 msgstr ""
 
-#: inc/payments/front-end.php:1242
+#: inc/payments/front-end.php:1243
 msgid "Failed to create Stripe customer."
 msgstr ""
 
-#: inc/payments/front-end.php:1306
+#: inc/payments/front-end.php:1307
 msgid "Failed to create Stripe guest customer."
 msgstr ""
 
