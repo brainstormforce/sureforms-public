@@ -901,7 +901,7 @@ button.components-button.srfm-review-select-btn.is-secondary {
 .sureform-add-option-input-wrapper {
 	display: flex;
 	gap: 8px;
-	align-items: flex-start;
+	align-items: flex-end;
 
 	.components-base-control {
 		flex: 1;
@@ -909,17 +909,22 @@ button.components-button.srfm-review-select-btn.is-secondary {
 	}
 
 	.sureform-add-option-button {
-		margin-top: 26px; // Align with input field (accounting for label height)
 		flex-shrink: 0;
+		height: 30px;
+		line-height: 1;
 	}
 }
 
 .sureforms-add-bulk-option-button {
-	text-decoration: none;
-	padding-left: 0;
+	text-decoration: none !important;
+	margin-left: 0 !important;
+	margin-top: 8px;
+	display: inline-block;
 
-	&:hover {
-		text-decoration: none;
+	&:hover,
+	&:focus,
+	&:active {
+		text-decoration: none !important;
 	}
 }
 

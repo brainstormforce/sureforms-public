@@ -536,7 +536,7 @@ const Edit = ( props ) => {
 							value: false,
 							label: __( 'Horizontal', 'sureforms' ),
 							icon: parse(
-								verticalLayout === false
+								! verticalLayout
 									? svgIcons.horizontal_layout_on
 									: svgIcons.horizontal_layout_faded
 							),
@@ -545,7 +545,7 @@ const Edit = ( props ) => {
 							value: true,
 							label: __( 'Vertical', 'sureforms' ),
 							icon: parse(
-								verticalLayout === true
+								verticalLayout
 									? svgIcons.vertical_layout_on
 									: svgIcons.vertical_layout_faded
 							),
