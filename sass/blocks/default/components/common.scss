@@ -14,7 +14,8 @@
 	* @deprecated 1.6.4
 	*/
 
-	.srfm-form {
+	.srfm-form,
+	.srfm-password-protected-form {
 		display: flex;
 		flex-wrap: wrap;
 		@include srfm-gap-styles;
