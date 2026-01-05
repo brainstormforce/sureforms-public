@@ -86,9 +86,10 @@ class Front_End {
 			wp_send_json_error( __( 'Invalid payment amount.', 'sureforms' ) );
 		}
 
+		$amount_processed_with_currency = Stripe_Helper::amount_from_stripe_format( $amount, $currency );
 		// Validate payment amount against stored form configuration.
 		if ( $form_id > 0 && ! empty( $block_id ) ) {
-			$validation_result = Payment_Helper::validate_payment_amount( $amount, $currency, $form_id, $block_id );
+			$validation_result = Payment_Helper::validate_payment_amount( $amount_processed_with_currency, $currency, $form_id, $block_id );
 			if ( ! $validation_result['valid'] ) {
 				wp_send_json_error( $validation_result['message'] );
 			}
@@ -184,7 +185,7 @@ class Front_End {
 				if ( 'amount_too_small' === $payment_intent['code'] ) {
 					// Format the amount for display.
 					$currency_symbol  = Stripe_Helper::get_currency_symbol( $currency );
-					$display_amount   = Stripe_Helper::amount_from_stripe_format( $amount, $currency );
+					$display_amount   = $amount_processed_with_currency;
 					$formatted_amount = $currency_symbol . number_format( $display_amount, 2 );
 
 					throw new \Exception(
@@ -216,7 +217,7 @@ class Front_End {
 				[
 					'form_id'  => $form_id,
 					'block_id' => $block_id,
-					'amount'   => $amount,
+					'amount'   => $amount_processed_with_currency,
 					'currency' => strtolower( $currency ),
 				]
 			);
@@ -278,9 +279,10 @@ class Front_End {
 			wp_send_json_error( __( 'Customer name is required for subscriptions.', 'sureforms' ) );
 		}
 
+		$amount_processed_with_currency = Stripe_Helper::amount_from_stripe_format( $amount, $currency );
 		// Validate payment amount against stored form configuration.
 		if ( $form_id > 0 && ! empty( $block_id ) ) {
-			$validation_result = Payment_Helper::validate_payment_amount( $amount, $currency, $form_id, $block_id );
+			$validation_result = Payment_Helper::validate_payment_amount( $amount_processed_with_currency, $currency, $form_id, $block_id );
 			if ( ! $validation_result['valid'] ) {
 				wp_send_json_error( $validation_result['message'] );
 			}
@@ -401,7 +403,7 @@ class Front_End {
 				[
 					'form_id'         => $form_id,
 					'block_id'        => $block_id,
-					'amount'          => $amount,
+					'amount'          => $amount_processed_with_currency,
 					'currency'        => strtolower( $currency ),
 					'subscription_id' => $subscription_id,
 				]
@@ -534,13 +536,12 @@ class Front_End {
 		$customer_id     = ! empty( $subscription_value['customerId'] ) ? $subscription_value['customerId'] : '';
 		$setup_intent_id = ! empty( $subscription_value['setupIntent'] ) && is_string( $subscription_value['setupIntent'] ) ? $subscription_value['setupIntent'] : '';
 
-		// Verify payment intent was created through our system.
-		$stored_metadata = Payment_Helper::get_payment_intent_metadata( $block_id, $setup_intent_id );
+		// Verify payment intent with comprehensive validation including form data.
+		$verification_result = Payment_Helper::verify_payment_intent( $block_id, $setup_intent_id, $form_data );
 
-		if ( false === $stored_metadata ) {
-			// Payment intent not found - not created through our system.
+		if ( false === $verification_result['valid'] ) {
 			return [
-				'error' => __( 'Payment verification failed. Invalid payment intent.', 'sureforms' ),
+				'error' => $verification_result['message'],
 			];
 		}
 
@@ -1017,13 +1018,12 @@ class Front_End {
 				];
 			}
 
-			// Verify payment intent was created through our system.
-			$stored_metadata = Payment_Helper::get_payment_intent_metadata( $block_id, $payment_id );
+			// Verify payment intent with comprehensive validation including form data.
+			$verification_result = Payment_Helper::verify_payment_intent( $block_id, $payment_id, $form_data );
 
-			if ( false === $stored_metadata ) {
-				// Payment intent not found - not created through our system.
+			if ( false === $verification_result['valid'] ) {
 				return [
-					'error' => __( 'Payment verification failed. Invalid payment intent.', 'sureforms' ),
+					'error' => $verification_result['message'],
 				];
 			}
 
