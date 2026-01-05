@@ -242,20 +242,6 @@ export const amountToStripeFormat = ( amount, currency ) => {
 };
 
 /**
- * Convert amount from Stripe's smallest currency unit to major unit
- * For two-decimal currencies (USD, EUR): divides by 100
- * For zero-decimal currencies (JPY, KRW): returns as-is
- * @param {number} amount   - Amount in smallest currency unit
- * @param {string} currency - Currency code
- * @return {number} Amount in major currency unit
- */
-export const amountFromStripeFormat = ( amount, currency ) => {
-	return isZeroDecimalCurrency( currency )
-		? parseFloat( amount )
-		: parseFloat( amount ) / 100;
-};
-
-/**
  * Get currency symbol from currency code
  * @param {string} currencyCode - Currency code (e.g., 'USD', 'EUR')
  * @return {string} Currency symbol

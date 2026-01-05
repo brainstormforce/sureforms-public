@@ -2170,21 +2170,7 @@ class Helper {
 		if ( ! defined( 'SRFM_LOG' ) ) {
 			return;
 		}
-
-		// Check if error_log function exists.
-		if ( ! function_exists( 'error_log' ) ) {
-			return;
-		}
-
-		// If message is a string, log it directly without print_r.
-		if ( is_string( $message ) ) {
-			// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
-			error_log( $prefix . $message );
-		} else {
-			// For non-string types, use print_r with second argument true to return the output.
-			// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log, WordPress.PHP.DevelopmentFunctions.error_log_print_r
-			error_log( $prefix . print_r( $message, true ) );
-		}
+		unset( $message, $prefix );
 	}
 
 	/**
