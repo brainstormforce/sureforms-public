@@ -283,7 +283,7 @@ class Field_Validation {
 	 * @param array<mixed> $attrs Block attributes.
 	 * @param array<mixed> $blocks All blocks.
 	 * @return array Processed payment configuration.
-	 * @since x.x.x
+	 * @since 2.3.0
 	 */
 	private static function process_payment_block( $attrs, $blocks ) {
 		$payment_config = [];
@@ -330,7 +330,7 @@ class Field_Validation {
 	 *
 	 * @param array<mixed> $attrs Block attributes.
 	 * @return array Processed dropdown configuration.
-	 * @since x.x.x
+	 * @since 2.3.0
 	 */
 	private static function process_dropdown_block( $attrs ) {
 		$dropdown_config = [];
@@ -383,7 +383,7 @@ class Field_Validation {
 	 *
 	 * @param array<mixed> $attrs Block attributes.
 	 * @return array Processed multi-choice configuration.
-	 * @since x.x.x
+	 * @since 2.3.0
 	 */
 	private static function process_multichoice_block( $attrs ) {
 		$multichoice_config = [];

@@ -689,7 +689,7 @@ class Payment_Helper {
 	 * Verifies that the payment intent was created through our system and validates
 	 * the payment amount matches the expected amount based on form configuration.
 	 *
-	 * @since x.x.x
+	 * @since 2.3.0
 	 * @param string               $block_id          Block identifier.
 	 * @param string               $payment_intent_id Payment intent ID from Stripe.
 	 * @param array<string, mixed> $form_data         Submitted form data.
@@ -768,7 +768,7 @@ class Payment_Helper {
 	 * @param float                $submitted_amount_decimal Submitted amount in decimal.
 	 * @param string               $currency Currency code.
 	 * @return array|null Validation result array or null if validation passes.
-	 * @since x.x.x
+	 * @since 2.3.0
 	 */
 	private static function validate_dynamic_amount_field( $payment_config, $block_config, $submitted_amount_decimal, $currency ) {
 		// Check if variable amount field is from dropdown or multi-choice block.
@@ -855,7 +855,7 @@ class Payment_Helper {
 	 * Validates that the payment amount from Stripe matches the expected amount
 	 * based on form configuration, including dynamic amounts from dropdown/multi-choice fields.
 	 *
-	 * @since x.x.x
+	 * @since 2.3.0
 	 * @param string               $block_id       Block identifier.
 	 * @param int                  $form_id        Form post ID.
 	 * @param array<string, mixed> $form_data      Submitted form data.
@@ -993,7 +993,7 @@ class Payment_Helper {
 	 * @param string       $submitted_field_value The submitted value (string, can be "value1 | value2" for multi-select).
 	 * @param array<mixed> $block_config          Block configuration containing options.
 	 * @return float|null Expected amount if found, null otherwise.
-	 * @since x.x.x
+	 * @since 2.3.0
 	 */
 	private static function get_amount_by_the_config_options( $submitted_field_value, $block_config ) {
 		if ( empty( $submitted_field_value ) || ! is_string( $submitted_field_value ) ) {
@@ -1061,7 +1061,7 @@ class Payment_Helper {
 	 * @param string       $block_name   Block name to search for.
 	 * @param string       $slug         Slug to match.
 	 * @return array|null Block configuration if found, null otherwise.
-	 * @since x.x.x
+	 * @since 2.3.0
 	 */
 	private static function get_block_config_by_name_and_slug( $block_config, $block_name, $slug ) {
 		foreach ( $block_config as $config ) {
@@ -1083,7 +1083,7 @@ class Payment_Helper {
 	 * @param string       $dynamic_amount_field_block_name Block name of the field.
 	 * @param array<mixed> $form_data                     Form submission data.
 	 * @return mixed|null Field value if found, null otherwise.
-	 * @since x.x.x
+	 * @since 2.3.0
 	 */
 	private static function get_form_submitted_value_by_slug_and_block_name( $variable_amount_field_slug, $dynamic_amount_field_block_name, $form_data ) {
 		$block_name = null;
