@@ -18,6 +18,8 @@ import { getInstantFormAdditionalSettings } from '@Components/hooks';
 import Spacing from '@Components/spacing';
 import { instantFormAttributes } from '@Attributes/getBlocksDefaultAttributes';
 import { setDefaultFormAttributes } from '@Utils/Helpers';
+import FormSettingsPopup from './tabs/formSettingsPopup';
+import { ChevronDown } from 'lucide-react';
 
 let live_mode_prev_srfm_instant_form_settings = {};
 
@@ -101,6 +103,15 @@ const InstantFormComponent = () => {
 	const [ popoverAnchor, setPopoverAnchor ] = useState();
 	const [ openPopover, setOpenPopover ] = useState( false ); // Load / unload popover component from DOM.
 	const [ hidePopover, setHidePopover ] = useState( false ); // Just hide the popover using CSS instead of unloading it from DOM.
+
+	// Form Settings Popover state
+	const [ formSettingsPopoverAnchor, setFormSettingsPopoverAnchor ] =
+		useState();
+	const [ openFormSettingsPopover, setOpenFormSettingsPopover ] =
+		useState( false );
+	const [ hideFormSettingsPopover, setHideFormSettingsPopover ] =
+		useState( false );
+
 	const [ isLinkCopied, setIsLinkCopied ] = useState( false );
 	const [ editPostSlug, setEditPostSlug ] = useState( {
 		edit: false,
@@ -385,21 +396,41 @@ const InstantFormComponent = () => {
 
 	return (
 		<>
-			<button
-				ref={ setPopoverAnchor }
-				onClick={ () => setOpenPopover( ! openPopover ) }
-				className="srfm-instant-form-button"
+			<div
+				className="srfm-instant-form-button-wrapper"
+				style={ {
+					display: 'flex',
+					gap: '8px',
+				} }
 			>
-				<div
-					className="srfm-instant-form-status"
-					style={
-						!! enable_instant_form
-							? { backgroundColor: '#22C55E' }
-							: {}
+				<button
+					ref={ setFormSettingsPopoverAnchor }
+					className="srfm-form-settings-button"
+					onClick={ () =>
+						setOpenFormSettingsPopover( ! openFormSettingsPopover )
 					}
-				/>
-				<span>{ __( 'Instant Form', 'sureforms' ) }</span>
-			</button>
+				>
+					{ __( 'Form Settings', 'sureforms' ) }
+					<span className="srfm-form-settings-button-icon">
+						<ChevronDown />
+					</span>
+				</button>
+				<button
+					ref={ setPopoverAnchor }
+					onClick={ () => setOpenPopover( ! openPopover ) }
+					className="srfm-instant-form-button"
+				>
+					<div
+						className="srfm-instant-form-status"
+						style={
+							!! enable_instant_form
+								? { backgroundColor: '#22C55E' }
+								: {}
+						}
+					/>
+					<span>{ __( 'Instant Form', 'sureforms' ) }</span>
+				</button>
+			</div>
 
 			{ openPopover && (
 				<Popover
@@ -852,6 +883,15 @@ const InstantFormComponent = () => {
 						</div>
 					</div>
 				</Popover>
+			) }
+
+			{ openFormSettingsPopover && (
+				<FormSettingsPopup
+					popoverAnchor={ formSettingsPopoverAnchor }
+					setOpenPopover={ setOpenFormSettingsPopover }
+					hidePopover={ hideFormSettingsPopover }
+					setHidePopover={ setHideFormSettingsPopover }
+				/>
 			) }
 		</>
 	);
