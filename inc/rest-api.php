@@ -511,6 +511,21 @@ class Rest_Api {
 			);
 		}
 
+		// Get filter/sort context for navigation.
+		$params            = $request->get_params();
+		$navigation_params = [
+			'form_id'   => isset( $params['form_id'] ) ? absint( $params['form_id'] ) : 0,
+			'status'    => isset( $params['status'] ) ? sanitize_text_field( $params['status'] ) : 'all',
+			'search'    => isset( $params['search'] ) ? sanitize_text_field( $params['search'] ) : '',
+			'date_from' => isset( $params['date_from'] ) ? sanitize_text_field( $params['date_from'] ) : '',
+			'date_to'   => isset( $params['date_to'] ) ? sanitize_text_field( $params['date_to'] ) : '',
+			'orderby'   => isset( $params['orderby'] ) ? sanitize_text_field( $params['orderby'] ) : 'created_at',
+			'order'     => isset( $params['order'] ) ? sanitize_text_field( $params['order'] ) : 'DESC',
+		];
+
+		// Get adjacent entry IDs for navigation.
+		$adjacent_entries = Entries_Class::get_adjacent_entry_ids( $entry_id, $navigation_params );
+
 		// Process form data.
 		$form_data       = [];
 		$excluded_fields = [ 'srfm-honeypot-field', 'g-recaptcha-response', 'srfm-sender-email-field' ];
@@ -599,6 +614,10 @@ class Rest_Api {
 				'profile_url'  => get_author_posts_url( $user_id ),
 			] : null,
 			'extras'          => $entry['extras'] ?? [],
+			'navigation'      => [
+				'previous_entry_id' => $adjacent_entries['previous_id'] ?? null,
+				'next_entry_id'     => $adjacent_entries['next_id'] ?? null,
+			],
 		];
 
 		return new \WP_REST_Response( $response_data, 200 );
@@ -1208,9 +1227,37 @@ class Rest_Api {
 					'callback'            => [ $this, 'get_entry_details' ],
 					'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
 					'args'                => [
-						'id' => [
+						'id'        => [
 							'required'          => true,
 							'sanitize_callback' => 'absint',
+						],
+						'form_id'   => [
+							'sanitize_callback' => 'absint',
+							'default'           => 0,
+						],
+						'status'    => [
+							'sanitize_callback' => 'sanitize_text_field',
+							'default'           => 'all',
+						],
+						'search'    => [
+							'sanitize_callback' => 'sanitize_text_field',
+							'default'           => '',
+						],
+						'date_from' => [
+							'sanitize_callback' => 'sanitize_text_field',
+							'default'           => '',
+						],
+						'date_to'   => [
+							'sanitize_callback' => 'sanitize_text_field',
+							'default'           => '',
+						],
+						'orderby'   => [
+							'sanitize_callback' => 'sanitize_text_field',
+							'default'           => 'created_at',
+						],
+						'order'     => [
+							'sanitize_callback' => 'sanitize_text_field',
+							'default'           => 'DESC',
 						],
 					],
 				],

@@ -418,6 +418,86 @@ class Entries {
 	}
 
 	/**
+	 * Get adjacent entry IDs (previous and next) for navigation.
+	 * Navigation follows chronological order: Previous = older, Next = newer.
+	 *
+	 * @param int                 $current_entry_id Current entry ID.
+	 * @param array<string,mixed> $args {
+	 *     Optional. An array of arguments to filter the navigation context.
+	 *
+	 *     @type int    $form_id   Form ID to filter entries. Default 0 (all forms).
+	 *     @type string $status    Entry status: 'all', 'read', 'unread', 'trash'. Default 'all'.
+	 *     @type string $search    Search term to filter entries by entry ID. Default empty.
+	 *     @type string $date_from Start date for filtering entries (YYYY-MM-DD format). Default empty.
+	 *     @type string $date_to   End date for filtering entries (YYYY-MM-DD format). Default empty.
+	 *     @type string $orderby   Column to order by. Default 'created_at'.
+	 *     @type string $order     Sort direction: 'ASC' or 'DESC'. Default 'DESC'.
+	 * }
+	 *
+	 * @since x.x.x
+	 * @return array<string,int|null> {
+	 *     @type int|null $previous_id Previous entry ID (older entry) or null if at the oldest.
+	 *     @type int|null $next_id     Next entry ID (newer entry) or null if at the newest.
+	 * }
+	 */
+	public static function get_adjacent_entry_ids( $current_entry_id, $args = [] ) {
+		$defaults = [
+			'form_id'   => 0,
+			'status'    => 'all',
+			'search'    => '',
+			'date_from' => '',
+			'date_to'   => '',
+			'orderby'   => 'created_at',
+			'order'     => 'DESC',
+		];
+
+		$args = wp_parse_args( $args, $defaults );
+
+		// Build where conditions.
+		$where_conditions = self::build_where_conditions( $args );
+
+		// Get all entry IDs in chronological order (oldest to newest).
+		// This ensures Previous = older, Next = newer regardless of listing page sort.
+		$all_entries = EntriesTable::get_all(
+			[
+				'where'   => $where_conditions,
+				'columns' => 'ID',
+				'orderby' => 'created_at',
+				'order'   => 'ASC',
+			],
+			false
+		);
+
+		// Extract entry IDs into a simple array.
+		$entry_ids = array_map(
+			static function ( $entry ) {
+				return is_array( $entry ) ? Helper::get_integer_value( $entry['ID'] ) : 0;
+			},
+			$all_entries
+		);
+
+		// Find the position of the current entry.
+		$current_position = Helper::get_integer_value( array_search( absint( $current_entry_id ), $entry_ids, true ) );
+
+		if ( false === $current_position ) {
+			// Current entry not found in the filtered list.
+			return [
+				'previous_id' => null,
+				'next_id'     => null,
+			];
+		}
+
+		// Get previous and next entry IDs.
+		$previous_id = $current_position > 0 ? $entry_ids[ $current_position - 1 ] : null;
+		$next_id     = $current_position < count( $entry_ids ) - 1 ? $entry_ids[ $current_position + 1 ] : null;
+
+		return [
+			'previous_id' => $previous_id,
+			'next_id'     => $next_id,
+		];
+	}
+
+	/**
 	 * Build where conditions for entry queries.
 	 *
 	 * @param array<string, int|string|array<int>> $args Query arguments.

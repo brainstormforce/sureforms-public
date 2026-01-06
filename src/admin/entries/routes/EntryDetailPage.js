@@ -13,6 +13,7 @@ import NotesSection from '../components/NotesSection';
 import PdfFilesSection from '../components/PdfFilesSection';
 import EntryLogsSection from '../components/EntryLogsSection';
 import EntryDetailSkeleton from '../components/EntryDetailSkeleton';
+import EntryNavigation from '../components/EntryNavigation';
 import ConfirmationDialog from '@Admin/components/ConfirmationDialog';
 import { ArrowLeft } from 'lucide-react';
 import UpgradeTooltip from '../components/UpgradeTooltip';
@@ -84,8 +85,24 @@ const EntryDetailPage = () => {
 	const [ openResendNotificationModal, setOpenResendNotificationModal ] =
 		useState( false );
 
-	// Fetch entry details
-	const { data: rawEntryData, isLoading } = useEntryDetail( id );
+	// Extract navigation context from URL params
+	const navigationContext = useMemo( () => {
+		return {
+			form_id: parseInt( searchParams.get( 'form_id' ) ) || 0,
+			status: searchParams.get( 'status' ) || 'all',
+			search: searchParams.get( 'search' ) || '',
+			date_from: searchParams.get( 'date_from' ) || '',
+			date_to: searchParams.get( 'date_to' ) || '',
+			orderby: searchParams.get( 'orderby' ) || 'created_at',
+			order: searchParams.get( 'order' ) || 'DESC',
+		};
+	}, [ searchParams ] );
+
+	// Fetch entry details with navigation context
+	const { data: rawEntryData, isLoading } = useEntryDetail(
+		id,
+		navigationContext
+	);
 
 	// Transform entry data
 	const entryData = useMemo( () => {
@@ -212,26 +229,44 @@ const EntryDetailPage = () => {
 								</div>
 
 								{ /* Right Column */ }
-								<div className="space-y-4">
-									<NotesSection
-										entryId={ id }
-										onConfirmation={ handleConfirmation }
+								<div className="relative">
+									<EntryNavigation
+										previousEntryId={
+											entryData?.navigation
+												?.previousEntryId
+										}
+										nextEntryId={
+											entryData?.navigation?.nextEntryId
+										}
+										navigationContext={ navigationContext }
 									/>
-									<PdfFilesSection
-										pdfLinks={ entryData?.pdfLinks }
-									/>
-									<EntryLogsSection
-										entryId={ id }
-										onConfirmation={ handleConfirmation }
-									/>
-									{ /* Action buttons */ }
-									<div className="ml-0.5">
-										<SendDetailsButton
-											handleSendEmail={ handleSendEmail }
-											isDisabled={
-												! ResendNotificationModal
+									<div className="space-y-4">
+										<NotesSection
+											entryId={ id }
+											onConfirmation={
+												handleConfirmation
 											}
 										/>
+										<PdfFilesSection
+											pdfLinks={ entryData?.pdfLinks }
+										/>
+										<EntryLogsSection
+											entryId={ id }
+											onConfirmation={
+												handleConfirmation
+											}
+										/>
+										{ /* Action buttons */ }
+										<div className="ml-0.5">
+											<SendDetailsButton
+												handleSendEmail={
+													handleSendEmail
+												}
+												isDisabled={
+													! ResendNotificationModal
+												}
+											/>
+										</div>
 									</div>
 								</div>
 							</div>
