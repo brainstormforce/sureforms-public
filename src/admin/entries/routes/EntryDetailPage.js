@@ -85,24 +85,8 @@ const EntryDetailPage = () => {
 	const [ openResendNotificationModal, setOpenResendNotificationModal ] =
 		useState( false );
 
-	// Extract navigation context from URL params
-	const navigationContext = useMemo( () => {
-		return {
-			form_id: parseInt( searchParams.get( 'form_id' ) ) || 0,
-			status: searchParams.get( 'status' ) || 'all',
-			search: searchParams.get( 'search' ) || '',
-			date_from: searchParams.get( 'date_from' ) || '',
-			date_to: searchParams.get( 'date_to' ) || '',
-			orderby: searchParams.get( 'orderby' ) || 'created_at',
-			order: searchParams.get( 'order' ) || 'DESC',
-		};
-	}, [ searchParams ] );
-
-	// Fetch entry details with navigation context
-	const { data: rawEntryData, isLoading } = useEntryDetail(
-		id,
-		navigationContext
-	);
+	// Fetch entry details
+	const { data: rawEntryData, isLoading } = useEntryDetail( id );
 
 	// Transform entry data
 	const entryData = useMemo( () => {
@@ -238,7 +222,6 @@ const EntryDetailPage = () => {
 										nextEntryId={
 											entryData?.navigation?.nextEntryId
 										}
-										navigationContext={ navigationContext }
 									/>
 									<div className="space-y-4">
 										<NotesSection

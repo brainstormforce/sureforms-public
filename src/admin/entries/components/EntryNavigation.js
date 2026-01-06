@@ -8,62 +8,19 @@ import { useNavigate } from 'react-router-dom';
  * Provides Previous/Next navigation buttons for browsing entries
  *
  * @param {Object}      props
- * @param {number|null} props.previousEntryId   - ID of the previous entry (null if none)
- * @param {number|null} props.nextEntryId       - ID of the next entry (null if none)
- * @param {Object}      props.navigationContext - Filter/sort context to preserve during navigation
+ * @param {number|null} props.previousEntryId - ID of the previous entry (null if none)
+ * @param {number|null} props.nextEntryId     - ID of the next entry (null if none)
  * @return {JSX.Element} EntryNavigation component
  */
-const EntryNavigation = ( {
-	previousEntryId,
-	nextEntryId,
-	navigationContext,
-} ) => {
+const EntryNavigation = ( { previousEntryId, nextEntryId } ) => {
 	const navigate = useNavigate();
-
-	/**
-	 * Build URL with navigation context parameters
-	 *
-	 * @param {number} entryId - Entry ID to navigate to
-	 * @return {string} URL with query parameters
-	 */
-	const buildNavigationUrl = ( entryId ) => {
-		const params = new URLSearchParams();
-
-		// Add filter/sort context if provided
-		if ( navigationContext ) {
-			if ( navigationContext.form_id ) {
-				params.set( 'form_id', navigationContext.form_id );
-			}
-			if ( navigationContext.status ) {
-				params.set( 'status', navigationContext.status );
-			}
-			if ( navigationContext.search ) {
-				params.set( 'search', navigationContext.search );
-			}
-			if ( navigationContext.date_from ) {
-				params.set( 'date_from', navigationContext.date_from );
-			}
-			if ( navigationContext.date_to ) {
-				params.set( 'date_to', navigationContext.date_to );
-			}
-			if ( navigationContext.orderby ) {
-				params.set( 'orderby', navigationContext.orderby );
-			}
-			if ( navigationContext.order ) {
-				params.set( 'order', navigationContext.order );
-			}
-		}
-
-		const queryString = params.toString();
-		return `/entry/${ entryId }${ queryString ? `?${ queryString }` : '' }`;
-	};
 
 	/**
 	 * Handle navigation to previous entry
 	 */
 	const handlePrevious = () => {
 		if ( previousEntryId ) {
-			navigate( buildNavigationUrl( previousEntryId ) );
+			navigate( `/entry/${ previousEntryId }` );
 		}
 	};
 
@@ -72,7 +29,7 @@ const EntryNavigation = ( {
 	 */
 	const handleNext = () => {
 		if ( nextEntryId ) {
-			navigate( buildNavigationUrl( nextEntryId ) );
+			navigate( `/entry/${ nextEntryId }` );
 		}
 	};
 

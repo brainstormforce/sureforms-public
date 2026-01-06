@@ -73,53 +73,12 @@ export const fetchEntriesList = ( params = {} ) => {
 /**
  * Fetch single entry details
  *
- * @param {number} entryId                     - Entry ID to fetch
- * @param {Object} navigationContext           - Optional navigation context for prev/next
- * @param {number} navigationContext.form_id   - Form ID filter
- * @param {string} navigationContext.status    - Entry status filter
- * @param {string} navigationContext.search    - Search term filter
- * @param {string} navigationContext.date_from - Start date filter
- * @param {string} navigationContext.date_to   - End date filter
- * @param {string} navigationContext.orderby   - Column to order by
- * @param {string} navigationContext.order     - Sort direction
+ * @param {number} entryId - Entry ID to fetch
  * @return {Promise<Object>} Promise resolving to entry data
  */
-export const fetchEntryDetail = ( entryId, navigationContext = {} ) => {
-	const queryParams = {};
-
-	// Add navigation context if provided
-	if ( navigationContext.form_id ) {
-		queryParams.form_id = navigationContext.form_id;
-	}
-	if ( navigationContext.status ) {
-		queryParams.status = navigationContext.status;
-	}
-	if ( navigationContext.search ) {
-		queryParams.search = navigationContext.search;
-	}
-	if ( navigationContext.date_from ) {
-		queryParams.date_from = navigationContext.date_from;
-	}
-	if ( navigationContext.date_to ) {
-		queryParams.date_to = navigationContext.date_to;
-	}
-	if ( navigationContext.orderby ) {
-		queryParams.orderby = navigationContext.orderby;
-	}
-	if ( navigationContext.order ) {
-		queryParams.order = navigationContext.order;
-	}
-
-	const path =
-		Object.keys( queryParams ).length > 0
-			? addQueryArgs(
-				`/sureforms/v1/entry/${ entryId }/details`,
-				queryParams
-			  )
-			: `/sureforms/v1/entry/${ entryId }/details`;
-
+export const fetchEntryDetail = ( entryId ) => {
 	return apiFetch( {
-		path,
+		path: `/sureforms/v1/entry/${ entryId }/details`,
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json',

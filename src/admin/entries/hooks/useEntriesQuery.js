@@ -29,11 +29,7 @@ export const entriesKeys = {
 	lists: () => [ ...entriesKeys.all, 'list' ],
 	list: ( filters ) => [ ...entriesKeys.lists(), filters ],
 	details: () => [ ...entriesKeys.all, 'detail' ],
-	detail: ( id, navigationContext ) => [
-		...entriesKeys.details(),
-		+id,
-		navigationContext,
-	],
+	detail: ( id ) => [ ...entriesKeys.details(), +id ],
 };
 
 /**
@@ -94,14 +90,13 @@ export const useForms = () => {
 /**
  * Hook to fetch single entry details
  *
- * @param {number} entryId           - Entry ID to fetch
- * @param {Object} navigationContext - Optional navigation context for prev/next
+ * @param {number} entryId - Entry ID to fetch
  * @return {Object} Query result
  */
-export const useEntryDetail = ( entryId, navigationContext = {} ) => {
+export const useEntryDetail = ( entryId ) => {
 	return useQuery( {
-		queryKey: entriesKeys.detail( entryId, navigationContext ),
-		queryFn: () => fetchEntryDetail( entryId, navigationContext ),
+		queryKey: entriesKeys.detail( entryId ),
+		queryFn: () => fetchEntryDetail( entryId ),
 		enabled: !! entryId, // Only run query if entryId is provided
 		staleTime: 1000 * 60 * 5, // Consider data fresh for 5 minutes
 	} );
