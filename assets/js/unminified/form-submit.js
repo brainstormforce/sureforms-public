@@ -880,6 +880,9 @@ function emitFormSubmitSuccess( formStatus ) {
 // directly assign recaptchaCallback into the global space:
 window.recaptchaCallback = recaptchaCallback;
 
+// Export showErrorMessage for use in payment integrations (Stripe, PayPal, etc.)
+window.showErrorMessage = showErrorMessage;
+
 // Bricks Builder compatibility to disable form submission in the preview mode
 window.handleBricksPreviewFormSubmission = function () {
 	const forms = Array.from( document.querySelectorAll( '.srfm-form' ) );
