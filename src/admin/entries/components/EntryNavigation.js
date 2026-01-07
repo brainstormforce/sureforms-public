@@ -17,19 +17,21 @@ const EntryNavigation = ( { previousEntryId, nextEntryId } ) => {
 
 	/**
 	 * Handle navigation to previous entry
+	 * Uses replace: true to avoid polluting browser history
 	 */
 	const handlePrevious = () => {
 		if ( previousEntryId ) {
-			navigate( `/entry/${ previousEntryId }` );
+			navigate( `/entry/${ previousEntryId }`, { replace: true } );
 		}
 	};
 
 	/**
 	 * Handle navigation to next entry
+	 * Uses replace: true to avoid polluting browser history
 	 */
 	const handleNext = () => {
 		if ( nextEntryId ) {
-			navigate( `/entry/${ nextEntryId }` );
+			navigate( `/entry/${ nextEntryId }`, { replace: true } );
 		}
 	};
 

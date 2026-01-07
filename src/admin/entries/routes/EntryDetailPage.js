@@ -98,12 +98,18 @@ const EntryDetailPage = () => {
 		'srfm-pro.entry-details.render-resend-notification-modal'
 	);
 
-	// Mark entry as read if "read" query param is present
+	// Mark entry as read when viewed
 	useEffect( () => {
-		const readParam = searchParams.get( 'read' );
-		if ( ! readParam ) {
+		// If entry data is not loaded yet, wait
+		if ( ! entryData ) {
 			return;
 		}
+
+		// Only mark as read if the entry is currently unread
+		if ( entryData.status !== 'unread' ) {
+			return;
+		}
+
 		updateReadStatusMutation(
 			{
 				entry_ids: [ id ],
@@ -112,13 +118,22 @@ const EntryDetailPage = () => {
 			},
 			{
 				onSuccess: () => {
-					// Remove the read query param
-					searchParams.delete( 'read' );
-					setSearchParams( searchParams, { replace: true } );
+					// Remove the read query param if present
+					const readParam = searchParams.get( 'read' );
+					if ( readParam ) {
+						searchParams.delete( 'read' );
+						setSearchParams( searchParams, { replace: true } );
+					}
 				},
 			}
 		);
-	}, [ searchParams, id, updateReadStatusMutation, setSearchParams ] );
+	}, [
+		id,
+		entryData,
+		updateReadStatusMutation,
+		searchParams,
+		setSearchParams,
+	] );
 
 	const handleSendEmail = () => {
 		if ( ! ResendNotificationModal ) {
