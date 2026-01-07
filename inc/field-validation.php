@@ -64,6 +64,9 @@ class Field_Validation {
 				case 'srfm/multi-choice':
 					$processed_config = self::process_multichoice_block( $block['attrs'] );
 					break;
+				case 'srfm/number':
+					$processed_config = self::process_number_block( $block['attrs'] );
+					break;
 			}
 
 			// If block was processed, store its configuration.
@@ -429,5 +432,38 @@ class Field_Validation {
 		}
 
 		return $multichoice_config;
+	}
+
+	/**
+	 * Process number block configuration.
+	 *
+	 * @param array<mixed> $attrs Block attributes.
+	 * @return array Processed number configuration.
+	 * @since x.x.x
+	 */
+	private static function process_number_block( $attrs ) {
+		$number_config = [];
+
+		// Extract required field.
+		if ( isset( $attrs['required'] ) ) {
+			$number_config['required'] = ! empty( $attrs['required'] ) ? true : false;
+		}
+
+		// Extract format type (us-style or eu-style).
+		if ( isset( $attrs['formatType'] ) ) {
+			$number_config['format_type'] = is_string( $attrs['formatType'] ) ? sanitize_text_field( $attrs['formatType'] ) : 'us-style';
+		}
+
+		// Extract min value.
+		if ( isset( $attrs['min'] ) ) {
+			$number_config['min'] = floatval( $attrs['min'] );
+		}
+
+		// Extract max value.
+		if ( isset( $attrs['max'] ) ) {
+			$number_config['max'] = floatval( $attrs['max'] );
+		}
+
+		return $number_config;
 	}
 }
