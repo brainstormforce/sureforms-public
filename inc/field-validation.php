@@ -450,9 +450,7 @@ class Field_Validation {
 		}
 
 		// Extract format type (us-style or eu-style).
-		if ( isset( $attrs['formatType'] ) ) {
-			$number_config['format_type'] = is_string( $attrs['formatType'] ) ? sanitize_text_field( $attrs['formatType'] ) : 'us-style';
-		}
+		$number_config['format_type'] = isset( $attrs['formatType'] ) && is_string( $attrs['formatType'] ) ? sanitize_text_field( $attrs['formatType'] ) : 'us-style';
 
 		// Extract min value.
 		if ( isset( $attrs['min'] ) ) {
