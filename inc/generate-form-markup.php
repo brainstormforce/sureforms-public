@@ -454,6 +454,74 @@ class Generate_Form_Markup {
 				<h2 class="srfm-form-title"><?php echo esc_html( $title ); ?></h2>
 				<?php
 			}
+
+			// Password protected form check.
+			if ( $post && post_password_required( $post ) ) {
+				// Define allowed HTML tags for password form output.
+				$allowed_password_form_tags = [
+					'form'   => [
+						'action' => true,
+						'method' => true,
+						'class'  => true,
+						'id'     => true,
+					],
+					'label'  => [
+						'for'   => true,
+						'class' => true,
+					],
+					'input'  => [
+						'type'        => true,
+						'name'        => true,
+						'id'          => true,
+						'class'       => true,
+						'value'       => true,
+						'size'        => true,
+						'placeholder' => true,
+						'required'    => true,
+					],
+					'p'      => [
+						'class' => true,
+						'style' => true,
+					],
+					'button' => [
+						'type'  => true,
+						'name'  => true,
+						'class' => true,
+						'id'    => true,
+						'style' => true,
+					],
+					'div'    => [
+						'class' => true,
+						'id'    => true,
+						'style' => true,
+					],
+					'span'   => [
+						'class'       => true,
+						'aria-hidden' => true,
+					],
+					'svg'    => [
+						'xmlns'   => true,
+						'width'   => true,
+						'height'  => true,
+						'viewBox' => true,
+						'fill'    => true,
+					],
+					'path'   => [
+						'd'               => true,
+						'stroke'          => true,
+						'stroke-opacity'  => true,
+						'stroke-width'    => true,
+						'stroke-linecap'  => true,
+						'stroke-linejoin' => true,
+					],
+				];
+				echo wp_kses( get_the_password_form( $post ), $allowed_password_form_tags );
+				?>
+				</div>
+				<?php
+				return ob_get_clean();
+			}
+
 			?>
 				<form method="post" enctype="multipart/form-data" id="srfm-form-<?php echo esc_attr( Helper::get_string_value( $id ) ); ?>" class="srfm-form <?php echo esc_attr( 'sureforms_form' === $post_type ? 'srfm-single-form ' : '' ); ?>"
 				form-id="<?php echo esc_attr( Helper::get_string_value( $id ) ); ?>" after-submission="<?php echo esc_attr( $submission_action ); ?>" message-type="<?php echo esc_attr( $confirmation_type ? $confirmation_type : 'same page' ); ?>" success-url="<?php echo esc_attr( $success_url ? $success_url : '' ); ?>" ajaxurl="<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>" data-nonce="<?php echo esc_attr( wp_create_nonce( 'unique_validation_nonce' ) ); ?>"
