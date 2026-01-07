@@ -93,6 +93,15 @@ const EntryDetailPage = () => {
 		return transformEntryDetail( rawEntryData );
 	}, [ rawEntryData ] );
 
+	// Navigation component props (reused for mobile and desktop)
+	const navigationProps = useMemo(
+		() => ( {
+			previousEntryId: entryData?.navigation?.previousEntryId,
+			nextEntryId: entryData?.navigation?.nextEntryId,
+		} ),
+		[ entryData?.navigation ]
+	);
+
 	// Get ResendNotificationModal component from filter (pro feature)
 	const ResendNotificationModal = applyFilters(
 		'srfm-pro.entry-details.render-resend-notification-modal'
@@ -220,7 +229,11 @@ const EntryDetailPage = () => {
 							{ /* Main Content Grid */ }
 							<div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 								{ /* Left Column */ }
-								<div className="lg:col-span-2 space-y-6">
+								<div className="lg:col-span-2 space-y-6 relative">
+									{ /* Mobile Navigation - Shows on mobile, hidden on desktop */ }
+									<div className="lg:hidden">
+										<EntryNavigation { ...navigationProps } />
+									</div>
 									<EntryDataSection entryData={ entryData } />
 									<SubmissionInfoSection
 										entryData={ entryData }
@@ -229,15 +242,10 @@ const EntryDetailPage = () => {
 
 								{ /* Right Column */ }
 								<div className="relative">
-									<EntryNavigation
-										previousEntryId={
-											entryData?.navigation
-												?.previousEntryId
-										}
-										nextEntryId={
-											entryData?.navigation?.nextEntryId
-										}
-									/>
+									{ /* Desktop Navigation - Hidden on mobile, shows on desktop */ }
+									<div className="hidden lg:block">
+										<EntryNavigation { ...navigationProps } />
+									</div>
 									<div className="space-y-4">
 										<NotesSection
 											entryId={ id }
