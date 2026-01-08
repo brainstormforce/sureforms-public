@@ -2138,7 +2138,7 @@ class Helper {
 			if ( is_int( $timestamp ) && $timestamp > 0 ) {
 				return $timestamp;
 			}
-		} catch ( Exception $e ) {
+		} catch ( \Exception $e ) {
 			// If timezone conversion fails, return false.
 			return false;
 		}

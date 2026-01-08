@@ -157,15 +157,18 @@ class Form_Restriction {
 	 */
 	public static function get_restriction_message_by_state( $scheduling_state, $form_restriction ) {
 		if ( 'not_started' === $scheduling_state ) {
-			return $form_restriction['schedulingNotStartedMessage'] ?? __( 'This form is not yet available. Please check back after the scheduled start time.', 'sureforms' );
+			$message = $form_restriction['schedulingNotStartedMessage'] ?? __( 'This form is not yet available. Please check back after the scheduled start time.', 'sureforms' );
+			return is_string( $message ) ? $message : __( 'This form is not yet available. Please check back after the scheduled start time.', 'sureforms' );
 		}
 
 		if ( 'ended' === $scheduling_state ) {
-			return $form_restriction['schedulingEndedMessage'] ?? __( 'This form is no longer accepting submissions. The submission period has ended.', 'sureforms' );
+			$message = $form_restriction['schedulingEndedMessage'] ?? __( 'This form is no longer accepting submissions. The submission period has ended.', 'sureforms' );
+			return is_string( $message ) ? $message : __( 'This form is no longer accepting submissions. The submission period has ended.', 'sureforms' );
 		}
 
 		// Default to entry limit message.
-		return $form_restriction['message'] ?? Translatable::get_default_form_restriction_message();
+		$message = $form_restriction['message'] ?? Translatable::get_default_form_restriction_message();
+		return is_string( $message ) ? $message : Translatable::get_default_form_restriction_message();
 	}
 
 	/**
