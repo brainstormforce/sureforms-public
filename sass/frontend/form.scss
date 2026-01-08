@@ -287,11 +287,6 @@
 			flex-direction: column;
 			gap: calc( var( --srfm-column-gap-between-blocks ) / 2 );
 
-			.srfm-accordion-icon > .srfm-icon > svg {
-				width: 20px;
-				height: 20px;
-			}
-
 			.srfm-accordion-item {
 				border: 1px solid #1e1e1e40;
 				border-radius: 6px;
@@ -306,11 +301,6 @@
 						align-items: center;
 						gap: 8px;
 					}
-
-					.srfm-accordion-icon {
-						transition: transform 0.3s ease-in-out;
-						transform: rotate( 180deg );
-					}
 				}
 
 				.srfm-accordion-content {
@@ -320,10 +310,7 @@
 				&.srfm-payment-active {
 					.srfm-accordion-content {
 						display: block;
-						padding: 16px;
-					}
-					.srfm-accordion-icon {
-						transform: rotate( 0deg );
+						padding: 0 16px 16px 16px;
 					}
 				}
 
