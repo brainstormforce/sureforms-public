@@ -433,13 +433,14 @@ class Payment_Markup extends Base {
 
 		ob_start();
 		?>
-		<div class="srfm-payment-methods-accordion <?php echo $is_single_method ? 'single-method' : ''; ?>">
+		<div class="srfm-payment-methods-accordion <?php echo $is_single_method ? 'srfm-single-payment-method' : ''; ?>">
 			<?php foreach ( $methods as $method ) { ?>
 				<?php $is_active = $method['id'] === $default_method; ?>
 				<div
 					class="srfm-accordion-item <?php echo $is_active ? 'srfm-payment-active' : ''; ?>"
 					data-method="<?php echo esc_attr( $method['id'] ); ?>"
 				>
+				<?php if ( ! $is_single_method ) { ?>
 					<div
 						class="srfm-accordion-header"
 						role="button"
@@ -461,15 +462,14 @@ class Payment_Markup extends Base {
 								<?php echo esc_html( $method['label'] ); ?>
 							</span>
 						</div>
-						<?php if ( ! $is_single_method ) { ?>
-							<span class="srfm-accordion-icon" aria-hidden="true">
-								<?php
-								// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Internal function to get the icon.
-								echo $angle_down_svg;
-								?>
-							</span>
-						<?php } ?>
+						<span class="srfm-accordion-icon" aria-hidden="true">
+							<?php
+							// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Internal function to get the icon.
+							echo $angle_down_svg;
+							?>
+						</span>
 					</div>
+				<?php } ?>
 					<div
 						id="srfm-accordion-content-<?php echo esc_attr( $method['id'] ); ?>-<?php echo esc_attr( $this->block_id ); ?>"
 						class="srfm-accordion-content"
