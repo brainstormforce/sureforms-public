@@ -217,9 +217,24 @@ class Frontend_Assets {
 			$js_uri                            = SRFM_URL . 'assets/js/' . $dir_name . '/blocks/';
 			$js_vendor_uri                     = SRFM_URL . 'assets/js/minified/deps/';
 			$css_vendor_uri                    = SRFM_URL . 'assets/css/minified/deps/';
-			if ( 'phone' === $block_name
-			) {
+			if ( 'phone' === $block_name ) {
+				// Enqueue main intl-tel-input library
 				wp_enqueue_script( SRFM_SLUG . "-{$block_name}-intl-input-deps", $js_vendor_uri . 'intl/intTelInputWithUtils.min.js', [], SRFM_VER, true );
+
+				// Enqueue i18n translations if available for current locale
+				Helper::enqueue_intl_tel_input_i18n(
+					SRFM_SLUG . "-{$block_name}-intl-i18n",
+					SRFM_SLUG . "-{$block_name}-intl-input-deps"
+				);
+
+				// Pass locale data to JavaScript
+				wp_localize_script(
+					SRFM_SLUG . "-{$block_name}-intl-input-deps",
+					'srfmPhoneI18n',
+					[
+						'locale' => Helper::get_intl_tel_input_locale(),
+					]
+				);
 			}
 
 			if ( 'dropdown' === $block_name ) {
@@ -245,7 +260,13 @@ class Frontend_Assets {
 			$is_not_textarea = 'textarea' !== $block_name;
 
 			if ( $is_not_dropdown && $is_not_textarea ) {
-				wp_enqueue_script( SRFM_SLUG . "-{$block_name}", $js_uri . $block_name . $file_prefix . '.js', [], SRFM_VER, true );
+				// Set dependencies for phone block to ensure intl-tel-input loads first
+				$block_dependencies = [];
+				if ( 'phone' === $block_name ) {
+					// Phone.js depends on intl-tel-input library (and i18n if loaded)
+					$block_dependencies = [ SRFM_SLUG . "-{$block_name}-intl-input-deps" ];
+				}
+				wp_enqueue_script( SRFM_SLUG . "-{$block_name}", $js_uri . $block_name . $file_prefix . '.js', $block_dependencies, SRFM_VER, true );
 			}
 
 			if ( 'input' === $block_name && isset( $attr['inputMask'] ) && 'none' !== $attr['inputMask'] ) {

@@ -2196,4 +2196,111 @@ class Helper {
 		// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
 		return base64_encode( $json );
 	}
+
+	/**
+	 * Maps WordPress locale to intl-tel-input language code.
+	 *
+	 * Converts WordPress locale format (e.g., fr_FR, de_DE, pt_BR)
+	 * to intl-tel-input language codes (e.g., fr, de, pt).
+	 * Returns null if the language is not supported by intl-tel-input.
+	 *
+	 * @since 2.0.0
+	 * @param string|null $locale WordPress locale string. If null, uses get_locale().
+	 * @return string|null Language code if supported, null if not supported or English.
+	 */
+	public static function get_intl_tel_input_locale( $locale = null ) {
+		// Get WordPress locale if not provided
+		if ( null === $locale ) {
+			$locale = get_locale();
+		}
+
+		// Extract language code from WordPress locale (e.g., fr_FR -> fr, pt_BR -> pt)
+		$lang_code = substr( $locale, 0, 2 );
+
+		// List of supported languages - available translation files in /assets/js/minified/deps/intl/i18n/
+		// Reference: https://unpkg.com/browse/intl-tel-input@24.5.1/build/js/i18n/
+		$supported_languages = [
+			'ar', // Arabic
+			'bg', // Bulgarian
+			'bn', // Bengali
+			'bs', // Bosnian
+			'ca', // Catalan
+			'cs', // Czech
+			'de', // German - Deutsch
+			'el', // Greek
+			'es', // Spanish - Español
+			'fa', // Persian - فارسی
+			'fi', // Finnish - Suomi
+			'fr', // French - Français
+			'hi', // Hindi - हिन्दी
+			'hr', // Croatian - Hrvatski
+			'hu', // Hungarian - Magyar
+			'id', // Indonesian - Bahasa Indonesia
+			'it', // Italian - Italiano
+			'ja', // Japanese - 日本語
+			'ko', // Korean - 한국어
+			'mr', // Marathi - मराठी
+			'nl', // Dutch - Nederlands
+			'no', // Norwegian - Norsk
+			'pl', // Polish - Polski
+			'pt', // Portuguese - Português
+			'ro', // Romanian - Română
+			'ru', // Russian - Русский
+			'sk', // Slovak - Slovenčina
+			'sv', // Swedish - Svenska
+			'te', // Telugu - తెలుగు
+			'th', // Thai - ไทย
+			'tr', // Turkish - Türkçe
+			'ur', // Urdu - اردو
+			'vi', // Vietnamese - Tiếng Việt
+			'zh', // Chinese - 中文
+		];
+
+		// Return language code only if supported and not English (English is default)
+		if ( in_array( $lang_code, $supported_languages, true ) && 'en' !== $lang_code ) {
+			return $lang_code;
+		}
+
+		// Return null for unsupported languages or English (uses default English)
+		return null;
+	}
+
+	/**
+	 * Enqueues intl-tel-input i18n script for the phone field.
+	 *
+	 * This method handles conditional loading of language files based on WordPress locale.
+	 * Only enqueues if a supported non-English language is detected and the file exists.
+	 *
+	 * @since 2.0.0
+	 * @param string $handle       Script handle to enqueue.
+	 * @param string $dependencies Optional. Script handle that this i18n depends on. Default empty.
+	 * @return bool True if i18n was enqueued, false otherwise.
+	 */
+	public static function enqueue_intl_tel_input_i18n( $handle, $dependencies = '' ) {
+		$intl_locale = self::get_intl_tel_input_locale();
+
+		// Return early if no locale or English
+		if ( empty( $intl_locale ) ) {
+			return false;
+		}
+
+		$i18n_file_path = SRFM_DIR . "assets/js/minified/deps/intl/i18n/{$intl_locale}/index.min.js";
+
+		// Only enqueue if the language file exists
+		if ( ! file_exists( $i18n_file_path ) ) {
+			return false;
+		}
+
+		$deps = ! empty( $dependencies ) ? [ $dependencies ] : [];
+
+		wp_enqueue_script(
+			$handle,
+			SRFM_URL . "assets/js/minified/deps/intl/i18n/{$intl_locale}/index.min.js",
+			$deps,
+			SRFM_VER,
+			true
+		);
+
+		return true;
+	}
 }

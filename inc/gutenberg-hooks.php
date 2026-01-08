@@ -185,6 +185,14 @@ class Gutenberg_Hooks {
 				'dependencies' => [],
 				'version'      => SRFM_VER,
 			];
+
+		// Enqueue intl-tel-input i18n file for editor if available
+		$i18n_enqueued = Helper::enqueue_intl_tel_input_i18n( SRFM_SLUG . '-phone-intl-i18n-editor' );
+		if ( $i18n_enqueued ) {
+			// Add i18n as a dependency for blocks.js to ensure it loads first
+			$blocks_info['dependencies'][] = SRFM_SLUG . '-phone-intl-i18n-editor';
+		}
+
 		wp_enqueue_script( SRFM_SLUG . $all_screen_blocks, SRFM_URL . 'assets/build/blocks.js', $blocks_info['dependencies'], SRFM_VER, true );
 
 		Helper::register_script_translations( SRFM_SLUG . $all_screen_blocks );
