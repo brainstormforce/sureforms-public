@@ -302,7 +302,7 @@ const FormRestriction = ( { setHasValidationErrors } ) => {
 							{ dateTimeValidationError && (
 								<Container className="w-full p-3 gap-2 border border-solid border-alert-border-danger bg-alert-background-danger rounded-lg">
 									<span className="size-5">
-										<Info className="size-4 text-red-600 mt-0.5 flex-shrink-0" />
+										<Info size={20} className="text-red-600" />
 									</span>
 									<span className="text-sm font-normal">
 										{ dateTimeValidationError }

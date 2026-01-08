@@ -2099,10 +2099,13 @@ class Helper {
 	/**
 	 * Get the timestamp from a string.
 	 *
-	 * @param string $date The date in a specific format (e.g., '2025.10.01').
-	 * @param string $hours The hours in a specific format (e.g., '12').
-	 * @param string $minutes The minutes in a specific format (e.g., '00').
-	 * @param string $meridiem The meridiem in a specific format (e.g., 'AM' or 'PM').
+	 * This function uses WordPress's configured timezone (from Settings → General → Timezone)
+	 * to ensure consistent behavior regardless of the server's timezone settings.
+	 *
+	 * @param string $date The date in YYYY-MM-DD format (e.g., '2026-01-10').
+	 * @param string $hours The hours in 12-hour format (e.g., '12', '01'-'12').
+	 * @param string $minutes The minutes (e.g., '00', '00'-'59').
+	 * @param string $meridiem The meridiem (e.g., 'AM' or 'PM').
 	 *
 	 * @since 1.10.1
 	 * @return int|false The timestamp if successful, false otherwise.
@@ -2120,11 +2123,24 @@ class Helper {
 
 		$time_string = $date . ' ' . $hours . ':' . $minutes . ' ' . $meridiem;
 
-		// Convert to timestamp.
-		$timestamp = strtotime( $time_string );
+		// Convert to timestamp using WordPress timezone.
+		// This ensures the date/time is interpreted in the site's configured timezone,
+		// not the server's timezone or PHP's default timezone.
+		try {
+			$datetime = date_create( $time_string, wp_timezone() );
 
-		if ( false !== $timestamp && is_int( $timestamp ) && $timestamp > 0 ) {
-			return $timestamp;
+			if ( false === $datetime ) {
+				return false;
+			}
+
+			$timestamp = $datetime->getTimestamp();
+
+			if ( is_int( $timestamp ) && $timestamp > 0 ) {
+				return $timestamp;
+			}
+		} catch ( Exception $e ) {
+			// If timezone conversion fails, return false.
+			return false;
 		}
 
 		// If conversion fails, return false.
