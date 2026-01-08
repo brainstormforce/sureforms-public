@@ -823,10 +823,7 @@ const PAYMENT_UTILITY = {
 
 		// US-style (default): 1,234.56 (comma = thousands, period = decimal)
 		const parts = fixedAmount.split( '.' );
-		const integerPart = parts[ 0 ].replace(
-			/\B(?=(\d{3})+(?!\d))/g,
-			','
-		);
+		const integerPart = parts[ 0 ].replace( /\B(?=(\d{3})+(?!\d))/g, ',' );
 		const decimalPart = parts[ 1 ];
 		return integerPart + '.' + decimalPart;
 	},
@@ -891,11 +888,10 @@ const PAYMENT_UTILITY = {
 				} else {
 					// Fallback to simple amount display (backward compatible)
 					// Format the amount according to the number format type
-					const formattedAmount =
-						PAYMENT_UTILITY.formatNumberByType(
-							amount,
-							inputFormatType
-						);
+					const formattedAmount = PAYMENT_UTILITY.formatNumberByType(
+						amount,
+						inputFormatType
+					);
 					getPlaceHolderElement.innerHTML =
 						getCurrencySymbol + formattedAmount;
 				}

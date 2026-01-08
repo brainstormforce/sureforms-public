@@ -215,9 +215,6 @@ class Payment_Markup extends Base {
 
 		$field_classes = $this->get_field_classes();
 
-		// Get the first registered method as default.
-		$default_method = reset( $registered_methods )['id'];
-
 		$data_input_attributes = [
 			'name'                      => $this->field_name,
 			'class'                     => 'srfm-payment-input',
@@ -231,7 +228,7 @@ class Payment_Markup extends Base {
 			'data-customer-name-field'  => $this->customer_name_field,
 			'data-customer-email-field' => $this->customer_email_field,
 			'data-payment-methods'      => wp_json_encode( array_keys( $registered_methods ) ),
-			'data-selected-method'      => $default_method,
+			'data-selected-method'      => '',
 		];
 
 		if ( 'subscription' === $this->payment_type && ! empty( $this->subscription_plan ) ) {
@@ -426,7 +423,6 @@ class Payment_Markup extends Base {
 			return '';
 		}
 
-		$default_method   = reset( $methods )['id'];
 		$is_single_method = count( $methods ) === 1;
 
 		$angle_down_svg = Helper::fetch_svg( 'angle-down', '', 'aria-hidden="true"' );
@@ -435,17 +431,15 @@ class Payment_Markup extends Base {
 		?>
 		<div class="srfm-payment-methods-accordion <?php echo $is_single_method ? 'srfm-single-payment-method' : ''; ?>">
 			<?php foreach ( $methods as $method ) { ?>
-				<?php $is_active = $method['id'] === $default_method; ?>
 				<div
-					class="srfm-accordion-item <?php echo $is_active ? 'srfm-payment-active' : ''; ?>"
+					class="srfm-accordion-item"
 					data-method="<?php echo esc_attr( $method['id'] ); ?>"
 				>
-				<?php if ( ! $is_single_method ) { ?>
 					<div
 						class="srfm-accordion-header"
 						role="button"
 						tabindex="0"
-						aria-expanded="<?php echo $is_active ? 'true' : 'false'; ?>"
+						aria-expanded="<?php echo $is_single_method ? 'true' : 'false'; ?>"
 						aria-controls="srfm-accordion-content-<?php echo esc_attr( $method['id'] ); ?>-<?php echo esc_attr( $this->block_id ); ?>"
 					>
 						<div class="srfm-payment-input-wrapper">
@@ -455,21 +449,22 @@ class Payment_Markup extends Base {
 								value="<?php echo esc_attr( $method['id'] ); ?>"
 								class="srfm-payment-method-radio"
 								data-method="<?php echo esc_attr( $method['id'] ); ?>"
-								<?php checked( $is_active ); ?>
+								<?php checked( $is_single_method ); ?>
 								aria-label="<?php echo esc_attr( $method['label'] ); ?>"
 							/>
 							<span class="srfm-accordion-title srfm-block-label">
 								<?php echo esc_html( $method['label'] ); ?>
 							</span>
 						</div>
-						<span class="srfm-accordion-icon" aria-hidden="true">
-							<?php
-							// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Internal function to get the icon.
-							echo $angle_down_svg;
-							?>
-						</span>
+						<?php if ( ! $is_single_method ) { ?>
+							<span class="srfm-accordion-icon" aria-hidden="true">
+								<?php
+								// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Internal function to get the icon.
+								echo $angle_down_svg;
+								?>
+							</span>
+						<?php } ?>
 					</div>
-				<?php } ?>
 					<div
 						id="srfm-accordion-content-<?php echo esc_attr( $method['id'] ); ?>-<?php echo esc_attr( $this->block_id ); ?>"
 						class="srfm-accordion-content"

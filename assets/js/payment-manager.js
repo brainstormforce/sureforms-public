@@ -109,9 +109,7 @@ class PaymentManager {
 		}
 
 		// Fallback to data-selected-method attribute (default)
-		return (
-			this.paymentInput.getAttribute( 'data-selected-method' ) || 'stripe'
-		);
+		return this.paymentInput.getAttribute( 'data-selected-method' );
 	}
 
 	/**
