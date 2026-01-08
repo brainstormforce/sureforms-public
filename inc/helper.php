@@ -2209,59 +2209,59 @@ class Helper {
 	 * @return string|null Language code if supported, null if not supported or English.
 	 */
 	public static function get_intl_tel_input_locale( $locale = null ) {
-		// Get WordPress locale if not provided
+		// Get WordPress locale if not provided.
 		if ( null === $locale ) {
 			$locale = get_locale();
 		}
 
-		// Extract language code from WordPress locale (e.g., fr_FR -> fr, pt_BR -> pt)
+		// Extract language code from WordPress locale (e.g., fr_FR -> fr, pt_BR -> pt).
 		$lang_code = substr( $locale, 0, 2 );
 
-		// List of supported languages - available translation files in /assets/js/minified/deps/intl/i18n/
-		// Reference: https://unpkg.com/browse/intl-tel-input@24.5.1/build/js/i18n/
+		// List of supported languages - available translation files in /assets/js/minified/deps/intl/i18n/.
+		// Reference: https://unpkg.com/browse/intl-tel-input@24.5.1/build/js/i18n/.
 		$supported_languages = [
-			'ar', // Arabic
-			'bg', // Bulgarian
-			'bn', // Bengali
-			'bs', // Bosnian
-			'ca', // Catalan
-			'cs', // Czech
-			'de', // German - Deutsch
-			'el', // Greek
-			'es', // Spanish - Español
-			'fa', // Persian - فارسی
-			'fi', // Finnish - Suomi
-			'fr', // French - Français
-			'hi', // Hindi - हिन्दी
-			'hr', // Croatian - Hrvatski
-			'hu', // Hungarian - Magyar
-			'id', // Indonesian - Bahasa Indonesia
-			'it', // Italian - Italiano
-			'ja', // Japanese - 日本語
-			'ko', // Korean - 한국어
-			'mr', // Marathi - मराठी
-			'nl', // Dutch - Nederlands
-			'no', // Norwegian - Norsk
-			'pl', // Polish - Polski
-			'pt', // Portuguese - Português
-			'ro', // Romanian - Română
-			'ru', // Russian - Русский
-			'sk', // Slovak - Slovenčina
-			'sv', // Swedish - Svenska
-			'te', // Telugu - తెలుగు
-			'th', // Thai - ไทย
-			'tr', // Turkish - Türkçe
-			'ur', // Urdu - اردو
-			'vi', // Vietnamese - Tiếng Việt
-			'zh', // Chinese - 中文
+			'ar', // Arabic.
+			'bg', // Bulgarian.
+			'bn', // Bengali.
+			'bs', // Bosnian.
+			'ca', // Catalan.
+			'cs', // Czech.
+			'de', // German - Deutsch.
+			'el', // Greek.
+			'es', // Spanish - Español.
+			'fa', // Persian - فارسی.
+			'fi', // Finnish - Suomi.
+			'fr', // French - Français.
+			'hi', // Hindi - हिन्दी.
+			'hr', // Croatian - Hrvatski.
+			'hu', // Hungarian - Magyar.
+			'id', // Indonesian - Bahasa Indonesia.
+			'it', // Italian - Italiano.
+			'ja', // Japanese - 日本語.
+			'ko', // Korean - 한국어.
+			'mr', // Marathi - मराठी.
+			'nl', // Dutch - Nederlands.
+			'no', // Norwegian - Norsk.
+			'pl', // Polish - Polski.
+			'pt', // Portuguese - Português.
+			'ro', // Romanian - Română.
+			'ru', // Russian - Русский.
+			'sk', // Slovak - Slovenčina.
+			'sv', // Swedish - Svenska.
+			'te', // Telugu - తెలుగు.
+			'th', // Thai - ไทย.
+			'tr', // Turkish - Türkçe.
+			'ur', // Urdu - اردو.
+			'vi', // Vietnamese - Tiếng Việt.
+			'zh', // Chinese - 中文.
 		];
 
-		// Return language code only if supported and not English (English is default)
+		// Return language code only if supported and not English (English is default).
 		if ( in_array( $lang_code, $supported_languages, true ) && 'en' !== $lang_code ) {
 			return $lang_code;
 		}
 
-		// Return null for unsupported languages or English (uses default English)
+		// Return null for unsupported languages or English (uses default English).
 		return null;
 	}
 
@@ -2279,14 +2279,14 @@ class Helper {
 	public static function enqueue_intl_tel_input_i18n( $handle, $dependencies = '' ) {
 		$intl_locale = self::get_intl_tel_input_locale();
 
-		// Return early if no locale or English
+		// Return early if no locale or English.
 		if ( empty( $intl_locale ) ) {
 			return false;
 		}
 
 		$i18n_file_path = SRFM_DIR . "assets/js/minified/deps/intl/i18n/{$intl_locale}/index.min.js";
 
-		// Only enqueue if the language file exists
+		// Only enqueue if the language file exists.
 		if ( ! file_exists( $i18n_file_path ) ) {
 			return false;
 		}

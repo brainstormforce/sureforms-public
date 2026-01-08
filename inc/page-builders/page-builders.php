@@ -47,13 +47,13 @@ class Page_Builders {
 
 		wp_enqueue_script( SRFM_SLUG . '-phone-intl-input-deps', $js_vendor_uri . 'intl/intTelInputWithUtils.min.js', [], SRFM_VER, true );
 
-		// Enqueue i18n translations if available for current locale
+		// Enqueue i18n translations if available for current locale.
 		Helper::enqueue_intl_tel_input_i18n(
 			SRFM_SLUG . '-phone-intl-i18n',
 			SRFM_SLUG . '-phone-intl-input-deps'
 		);
 
-		// Pass locale data to JavaScript
+		// Pass locale data to JavaScript.
 		wp_localize_script(
 			SRFM_SLUG . '-phone-intl-input-deps',
 			'srfmPhoneI18n',
@@ -62,7 +62,7 @@ class Page_Builders {
 			]
 		);
 
-		// Enqueue phone.js with dependency on intl-tel-input library
+		// Enqueue phone.js with dependency on intl-tel-input library.
 		wp_enqueue_script( SRFM_SLUG . '-phone', $js_uri . 'phone' . $file_prefix . '.js', [ SRFM_SLUG . '-phone-intl-input-deps' ], SRFM_VER, true );
 
 		wp_enqueue_script( SRFM_SLUG . '-dropdown', $js_uri . 'dropdown' . $file_prefix . '.js', [ 'wp-a11y' ], SRFM_VER, true );
