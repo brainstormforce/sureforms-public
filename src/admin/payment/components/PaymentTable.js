@@ -228,7 +228,7 @@ const PaymentTable = ( {
 				tag="a"
 				variant="ghost"
 				size="sm"
-				className="p-0 text-text-secondary text-sm weight-medium font-normal hover:text-link-primary hover:underline"
+				className="p-0 text-text-secondary text-sm weight-medium font-normal no-underline hover:text-link-primary hover:underline"
 				href={
 					payment.type === 'subscription'
 						? `/payment/${ payment.id }?type=subscription`
