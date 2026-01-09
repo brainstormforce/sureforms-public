@@ -915,8 +915,7 @@ button.components-button.srfm-review-select-btn.is-secondary {
 	}
 }
 
-// Multi-choice specific: when bulk button is sibling of the input wrapper
-.sureform-add-option-input-wrapper ~ .sureforms-add-bulk-option-button {
+.sureforms-add-bulk-option-button {
 	text-decoration: none !important;
 	margin-left: 0 !important;
 	margin-top: 8px !important;
