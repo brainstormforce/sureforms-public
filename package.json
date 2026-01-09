@@ -113,7 +113,7 @@
 		"react-intl-tel-input": "^8.2.0",
 		"react-loading-skeleton": "^3.4.0",
 		"react-quill": "^2.0.0",
-		"react-router-dom": "^6.11.0",
+		"react-router-dom": "^6.30.3",
 		"react-select": "^5.7.2",
 		"react-virtualized": "^9.22.5",
 		"tailwind-merge": "^3.3.1",
