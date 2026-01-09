@@ -135,7 +135,7 @@
 	}
 }
 
-.block-editor-block-list__layout .block-editor-block-list__block.is-selected {
+.block-editor-block-list__layout .block-editor-block-list__block.is-selected:not( .wp-block-spectra-button ):not( .wp-block-spectra-buttons ) {
 	// Added CSS for better clarity to the users to indicates which block is selected & being edited.
 	box-shadow: 0 0 0 1.5px $srfm-color-primary;
 	border-radius: 2px;
