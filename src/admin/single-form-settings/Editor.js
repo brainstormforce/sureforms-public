@@ -59,13 +59,69 @@ const SureformsFormSpecificSettings = () => {
 
 	const { editPost } = useDispatch( editorStore );
 	const [ rootContainer, setRootContainer ] = useState( null );
-	const [ rootContainerDiv, setRootContainerDiv ] = useState( null );
+	const [ iframeBody, setIframeBody ] = useState( null );
+	console.log( { 'getRootContainer open': rootContainer } );
 
 	useEffect( () => {
-		setRootContainer( document.querySelector( '.is-root-container' ) );
-		setRootContainerDiv(
-			document.querySelector( '.edit-post-visual-editor__content-area' )
-		);
+		// const getRootContainer = document.querySelector( '.is-root-container' );
+
+		// setRootContainer( document.querySelector( '.is-root-container' ) );
+		// setRootContainerDiv(
+		// 	document.querySelector( '.edit-post-visual-editor__content-area' )
+		// );
+
+		let intervalId = null;
+		let timeoutId = null;
+
+		const tryResolveIframeBody = () => {
+			const iframe = document.querySelector(
+				'iframe[name="editor-canvas"]'
+			);
+			if ( ! iframe ) {
+				return false;
+			}
+
+			const iframeDoc =
+				iframe.contentDocument || iframe.contentWindow?.document;
+			if ( ! iframeDoc ) {
+				return false;
+			}
+
+			const getIframeBody = iframeDoc.querySelector(
+				'.block-editor-iframe__body'
+			);
+
+			// ❗ THIS is the real readiness check
+			if ( ! getIframeBody || ! getIframeBody.children.length ) {
+				return false;
+			}
+
+			// Add the class "srmf-hello" to the iframe body
+			setIframeBody( getIframeBody );
+
+			const getRootContainer =
+				getIframeBody.querySelector( '.is-root-container' );
+
+			// ✅ iframe body is fully ready
+			setRootContainer( getRootContainer );
+
+			clearInterval( intervalId );
+			clearTimeout( timeoutId );
+			return true;
+		};
+
+		// Poll every 100ms
+		intervalId = setInterval( tryResolveIframeBody, 100 );
+
+		// Safety timeout
+		timeoutId = setTimeout( () => {
+			clearInterval( intervalId );
+		}, 30000 );
+
+		return () => {
+			clearInterval( intervalId );
+			clearTimeout( timeoutId );
+		};
 	}, [] );
 
 	const isPageBreak = blocks.some(
@@ -86,20 +142,13 @@ const SureformsFormSpecificSettings = () => {
 
 	// Add styling class to main Editor Container
 	const addFormStylingClass = () => {
-		if ( rootContainer && 'Desktop' === deviceType ) {
+		if ( rootContainer ) {
 			rootContainer?.classList?.add( 'srfm-form-container' );
 			rootContainer.setAttribute( 'id', 'srfm-form-container' );
-		} else if ( rootContainerDiv ) {
-			rootContainerDiv?.classList?.add( 'srfm-form-container' );
-			rootContainerDiv.setAttribute( 'id', 'srfm-form-container' );
 		}
 	};
 
-	useEffect( addFormStylingClass, [
-		rootContainer,
-		rootContainerDiv,
-		deviceType,
-	] );
+	useEffect( addFormStylingClass, [ rootContainer, deviceType ] );
 
 	useContainerDynamicClass( sureformsKeys );
 
@@ -148,6 +197,7 @@ const SureformsFormSpecificSettings = () => {
 		isInlineButtonBlockPresent,
 		updateMeta,
 		editorMode,
+		iframeBody,
 	} );
 
 	useEffect( () => {
@@ -265,13 +315,16 @@ const SureformsFormSpecificSettings = () => {
 						/>
 					</InspectorTab>
 					<InspectorTab { ...SRFMTabs.style }>
-						<StyleSettings
-							defaultKeys={ defaultKeys }
-							isInlineButtonBlockPresent={
-								isInlineButtonBlockPresent
-							}
-							isPageBreak={ isPageBreak }
-						/>
+						{ iframeBody && (
+							<StyleSettings
+								defaultKeys={ defaultKeys }
+								isInlineButtonBlockPresent={
+									isInlineButtonBlockPresent
+								}
+								isPageBreak={ isPageBreak }
+								iframeBody={ iframeBody }
+							/>
+						) }
 					</InspectorTab>
 				</InspectorTabs>
 				<PluginPostPublishPanel>

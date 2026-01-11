@@ -1,11 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import { useSelect, useDispatch } from '@wordpress/data';
-import {
-	useState,
-	useEffect,
-	useRef,
-	useLayoutEffect,
-} from '@wordpress/element';
+import { useState, useEffect } from '@wordpress/element';
 import { store as editorStore } from '@wordpress/editor';
 import { applyFilters } from '@wordpress/hooks';
 import AdvancedPopColorControl from '@Components/color-control/advanced-pop-color-control.js';
@@ -33,7 +28,7 @@ import UpgradePrompt from '@Admin/single-form-settings/components/UpgradePrompt'
 
 function StyleSettings( props ) {
 	const { editPost } = useDispatch( editorStore );
-	const { defaultKeys, isInlineButtonBlockPresent } = props;
+	const { defaultKeys, isInlineButtonBlockPresent, iframeBody } = props;
 
 	let sureformsKeys = useSelect(
 		( select ) => {
@@ -44,15 +39,8 @@ function StyleSettings( props ) {
 		[ editorStore ]
 	);
 	const formStyling = sureformsKeys?._srfm_forms_styling || {};
-	const rootRef = useRef( null );
-	const editorRef = useRef( null );
+	const rootRef = iframeBody;
 
-	useLayoutEffect( () => {
-		rootRef.current = document.documentElement.querySelector( 'body' );
-		editorRef.current = rootRef.current?.querySelector(
-			'.editor-styles-wrapper'
-		);
-	}, [] );
 	const deviceType = useDeviceType();
 	const [ submitBtn, setSubmitBtn ] = useState(
 		document.querySelector( '.srfm-submit-richtext' )
@@ -144,7 +132,7 @@ function StyleSettings( props ) {
 	const onHandleChange = ( updatedSettings ) => {
 		const [ key, value ] = Object.entries( updatedSettings )[ 0 ];
 
-		addStyleInRoot( rootRef.current, getCSSProperties( key, value ) );
+		addStyleInRoot( rootRef, getCSSProperties( key, value ) );
 		const formStylingSettings = {
 			...formStyling,
 			...updatedSettings,
@@ -205,7 +193,7 @@ function StyleSettings( props ) {
 		}
 		key_id = key + '_id';
 
-		addStyleInRoot( rootRef.current, getCSSProperties( key, imageURL ) );
+		addStyleInRoot( rootRef, getCSSProperties( key, imageURL ) );
 
 		editPost( {
 			meta: {
@@ -388,7 +376,7 @@ function StyleSettings( props ) {
 						  ),
 			};
 
-			addStyleInRoot( rootRef.current, cssProperties );
+			addStyleInRoot( rootRef, cssProperties );
 		} else {
 			sureformsKeys = defaultKeys;
 			editPost( {
@@ -422,7 +410,7 @@ function StyleSettings( props ) {
 				break;
 		}
 
-		addStyleInRoot( rootRef.current, cssProperties );
+		addStyleInRoot( rootRef, cssProperties );
 
 		const option_array = {};
 
@@ -452,7 +440,7 @@ function StyleSettings( props ) {
 			srfm_admin?.field_spacing_vars[ sizingValue ] || {};
 		const finalSize = { ...baseSize, ...overrideSize };
 
-		addStyleInRoot( rootRef.current, finalSize );
+		addStyleInRoot( rootRef, finalSize );
 	}
 
 	/**
@@ -465,7 +453,7 @@ function StyleSettings( props ) {
 	 * @since 0.0.7
 	 */
 	function updateFormStyling( option, value ) {
-		addStyleInRoot( rootRef.current, getCSSProperties( option, value ) );
+		addStyleInRoot( rootRef, getCSSProperties( option, value ) );
 
 		editPost( {
 			meta: {
@@ -709,14 +697,10 @@ function StyleSettings( props ) {
 			color: 'srfm-overlay-color',
 		};
 
-		editorRef.current?.classList.remove(
-			...Object.values( backgroundClasses )
-		);
-		editorRef.current?.classList.remove(
-			...Object.values( overlayClasses )
-		);
+		rootRef?.classList.remove( ...Object.values( backgroundClasses ) );
+		rootRef?.classList.remove( ...Object.values( overlayClasses ) );
 
-		editorRef.current?.classList.add(
+		rootRef?.classList.add(
 			backgroundClasses[ backgroundType ] || backgroundClasses.default
 		);
 
@@ -726,7 +710,7 @@ function StyleSettings( props ) {
 			overlayType &&
 			overlayClasses[ overlayType ]
 		) {
-			editorRef.current?.classList.add( overlayClasses[ overlayType ] );
+			rootRef?.classList.add( overlayClasses[ overlayType ] );
 		}
 	};
 
