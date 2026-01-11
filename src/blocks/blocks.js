@@ -31,19 +31,19 @@ import '../store/store.js';
 
 const registerBlock = [
 	text,
-	email,
-	url,
-	textarea,
-	multiChoice,
-	checkbox,
-	gdpr,
-	number,
-	sfForm,
-	phone,
-	select,
-	address,
-	inlineButton,
-	payment,
+	// email,
+	// url,
+	// textarea,
+	// multiChoice,
+	// checkbox,
+	// gdpr,
+	// number,
+	// sfForm,
+	// phone,
+	// select,
+	// address,
+	// inlineButton,
+	// payment,
 ];
 
 if ( 'sureforms_form' === srfm_block_data?.current_screen?.id ) {
