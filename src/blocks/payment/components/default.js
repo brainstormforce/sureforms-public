@@ -6,6 +6,7 @@ import { RichText } from '@wordpress/block-editor';
 import { applyFilters } from '@wordpress/hooks';
 import HelpText from '@Components/misc/HelpText';
 import { decodeHtmlEntities } from '@Blocks/util';
+import { Fragment } from '@wordpress/element';
 
 /**
  * Payment Component
@@ -108,7 +109,7 @@ export const PaymentComponent = ( props ) => {
 	const hasCustomerFieldsError =
 		missingNameField || missingEmailField || missingVariableAmountField;
 
-	let paymentConfigurationComponent = null;
+	let paymentConfigurationComponent = [];
 
 	// If missing required fields, show validation error
 	if ( isPaymentConfigured && hasCustomerFieldsError ) {
@@ -150,14 +151,18 @@ export const PaymentComponent = ( props ) => {
 			}
 		}
 
-		paymentConfigurationComponent = (
-			<p className="srfm-stripe-payment-error-text">{ errorMessage }</p>
-		);
+		paymentConfigurationComponent = [
+			<>
+				<p className="srfm-stripe-payment-error-text">
+					{ errorMessage }
+				</p>
+			</>,
+		];
 	}
 
 	// If no payment gateway is configured, show connect message.
 	if ( ! isPaymentConfigured ) {
-		paymentConfigurationComponent = (
+		paymentConfigurationComponent = [
 			<>
 				<p className="srfm-stripe-payment-error-text">
 					{ __(
@@ -172,8 +177,20 @@ export const PaymentComponent = ( props ) => {
 				>
 					{ __( 'Configure Payment Account', 'sureforms' ) }
 				</button>
-			</>
-		);
+			</>,
+		];
+	}
+
+	const filteredPaymentWarning = applyFilters(
+		'srfm.payment.warning',
+		paymentConfigurationComponent,
+		{
+			props,
+		}
+	);
+
+	if ( filteredPaymentWarning.length > 0 ) {
+		paymentConfigurationComponent = filteredPaymentWarning;
 	}
 
 	return (
@@ -206,7 +223,9 @@ export const PaymentComponent = ( props ) => {
 						'sureforms'
 					) }
 				</p>
-				{ paymentConfigurationComponent }
+				{ paymentConfigurationComponent.map( ( component, index ) => {
+					return <Fragment key={ index }>{ component }</Fragment>;
+				} ) }
 			</div>
 		</div>
 	);

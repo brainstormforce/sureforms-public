@@ -842,6 +842,7 @@ class Admin {
 					'webhook_test_connected'  => Stripe_Helper::is_webhook_configured( 'test', true ),
 					'webhook_live_connected'  => Stripe_Helper::is_webhook_configured( 'live', true ),
 					'is_transaction_present'  => Stripe_Helper::is_transaction_present(),
+					'payment_currency'        => Payment_Helper::get_currency(),
 				]
 			),
 		];

@@ -8,7 +8,6 @@
 
 namespace SRFM\Inc\Fields;
 
-use SRFM\Inc\Helper;
 use SRFM\Inc\Payments\Stripe\Stripe_Helper;
 
 if ( ! defined( 'ABSPATH' ) ) {

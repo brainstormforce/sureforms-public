@@ -1,5 +1,6 @@
 import { Tabs } from '@bsf/force-ui';
 import { applyFilters } from '@wordpress/hooks';
+import { useNavigate } from 'react-router-dom';
 import usePaymentTabs from '../hooks/usePaymentTabs';
 import StripeSettings from './StripeSettings';
 
@@ -16,8 +17,11 @@ const PaymentMethods = ( props ) => {
 		setPaymentsSettings,
 	} = props;
 
+	// Get React Router's navigate function for programmatic navigation
+	const navigate = useNavigate();
+
 	// Use the custom hook for tab management
-	const { activeTab, availableTabs, changeTab } = usePaymentTabs();
+	const { activeTab, availableTabs, changeTab } = usePaymentTabs( navigate );
 
 	/**
 	 * Filter: srfm.payment.gateway.panels
