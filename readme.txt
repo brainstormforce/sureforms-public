@@ -375,7 +375,7 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 
 == Changelog ==
 = x.x.x =
-* Improvement: Added navigation for single entires page.
+* Improvement: Added navigation for single entries page.
 * Fixed: Resolved an issue where Spectra button styles are being affected from SureForms css.
 * Improvement: Updated the flag of Syria in phone number block.
 = 2.3.0 - 5th January 2026 =

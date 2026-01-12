@@ -477,7 +477,7 @@ class Entries {
 		);
 
 		// Find the position of the current entry.
-		$current_position = Helper::get_integer_value( array_search( absint( $current_entry_id ), $entry_ids, true ) );
+		$current_position = array_search( absint( $current_entry_id ), $entry_ids, true );
 
 		if ( false === $current_position ) {
 			// Current entry not found in the filtered list.
@@ -486,6 +486,9 @@ class Entries {
 				'next_id'     => null,
 			];
 		}
+
+		// Convert to integer after validation.
+		$current_position = Helper::get_integer_value( $current_position );
 
 		// Get previous and next entry IDs.
 		$previous_id = $current_position > 0 ? $entry_ids[ $current_position - 1 ] : null;
