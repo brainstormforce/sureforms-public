@@ -186,11 +186,17 @@ class Gutenberg_Hooks {
 				'version'      => SRFM_VER,
 			];
 
-		// Enqueue intl-tel-input i18n file for editor if available.
-		$i18n_enqueued = Helper::enqueue_intl_tel_input_i18n( SRFM_SLUG . '-phone-intl-i18n-editor' );
-		if ( $i18n_enqueued ) {
-			// Add i18n as a dependency for blocks.js to ensure it loads first.
-			$blocks_info['dependencies'][] = SRFM_SLUG . '-phone-intl-i18n-editor';
+		// Enqueue intl-tel-input i18n file for editor only when editing SureForms forms with phone block.
+		// First check if it's a SureForms form to avoid unnecessary checks on other post types.
+		if ( ! empty( $screen ) && SRFM_FORMS_POST_TYPE === $screen->post_type ) {
+			// Then check if the form contains a phone block.
+			if ( $this->current_post_has_phone_block() ) {
+				$i18n_enqueued = Helper::enqueue_intl_tel_input_i18n( SRFM_SLUG . '-phone-intl-i18n-editor' );
+				if ( $i18n_enqueued ) {
+					// Add i18n as a dependency for blocks.js to ensure it loads first.
+					$blocks_info['dependencies'][] = SRFM_SLUG . '-phone-intl-i18n-editor';
+				}
+			}
 		}
 
 		wp_enqueue_script( SRFM_SLUG . $all_screen_blocks, SRFM_URL . 'assets/build/blocks.js', $blocks_info['dependencies'], SRFM_VER, true );
@@ -254,6 +260,28 @@ class Gutenberg_Hooks {
 				'is_site_editor'          => $screen ? $screen->id : null,
 			]
 		);
+	}
+
+	/**
+	 * Check if the current post being edited has a phone block.
+	 *
+	 * @since x.x.x
+	 * @return bool True if phone block exists, false otherwise.
+	 */
+	private function current_post_has_phone_block() {
+		global $post;
+
+		// Return false if no post is being edited.
+		if ( ! $post || empty( $post->post_content ) ) {
+			return false;
+		}
+
+		// Check if post content contains phone block.
+		if ( has_block( 'srfm/phone', $post ) ) {
+			return true;
+		}
+
+		return false;
 	}
 
 	/**

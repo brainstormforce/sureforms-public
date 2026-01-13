@@ -2204,7 +2204,7 @@ class Helper {
 	 * to intl-tel-input language codes (e.g., fr, de, pt).
 	 * Returns null if the language is not supported by intl-tel-input.
 	 *
-	 * @since 2.0.0
+	 * @since x.x.x
 	 * @param string|null $locale WordPress locale string. If null, uses get_locale().
 	 * @return string|null Language code if supported, null if not supported or English.
 	 */
@@ -2220,40 +2220,13 @@ class Helper {
 		// List of supported languages - available translation files in /assets/js/minified/deps/intl/i18n/.
 		// Reference: https://unpkg.com/browse/intl-tel-input@24.5.1/build/js/i18n/.
 		$supported_languages = [
-			'ar', // Arabic.
-			'bg', // Bulgarian.
-			'bn', // Bengali.
-			'bs', // Bosnian.
-			'ca', // Catalan.
-			'cs', // Czech.
 			'de', // German - Deutsch.
-			'el', // Greek.
 			'es', // Spanish - Español.
-			'fa', // Persian - فارسی.
-			'fi', // Finnish - Suomi.
 			'fr', // French - Français.
-			'hi', // Hindi - हिन्दी.
-			'hr', // Croatian - Hrvatski.
-			'hu', // Hungarian - Magyar.
-			'id', // Indonesian - Bahasa Indonesia.
 			'it', // Italian - Italiano.
-			'ja', // Japanese - 日本語.
-			'ko', // Korean - 한국어.
-			'mr', // Marathi - मराठी.
 			'nl', // Dutch - Nederlands.
-			'no', // Norwegian - Norsk.
 			'pl', // Polish - Polski.
 			'pt', // Portuguese - Português.
-			'ro', // Romanian - Română.
-			'ru', // Russian - Русский.
-			'sk', // Slovak - Slovenčina.
-			'sv', // Swedish - Svenska.
-			'te', // Telugu - తెలుగు.
-			'th', // Thai - ไทย.
-			'tr', // Turkish - Türkçe.
-			'ur', // Urdu - اردو.
-			'vi', // Vietnamese - Tiếng Việt.
-			'zh', // Chinese - 中文.
 		];
 
 		// Return language code only if supported and not English (English is default).
@@ -2271,7 +2244,7 @@ class Helper {
 	 * This method handles conditional loading of language files based on WordPress locale.
 	 * Only enqueues if a supported non-English language is detected and the file exists.
 	 *
-	 * @since 2.0.0
+	 * @since x.x.x
 	 * @param string $handle       Script handle to enqueue.
 	 * @param string $dependencies Optional. Script handle that this i18n depends on. Default empty.
 	 * @return bool True if i18n was enqueued, false otherwise.
