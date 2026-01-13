@@ -54,7 +54,7 @@ const StripeSettings = ( props ) => {
 				{},
 				'',
 				window.location.pathname +
-					'?page=sureforms_form_settingstab=payments-settings&subpage=payment-methods&gateway=stripe'
+					'?page=sureforms_form_settings&tab=payments-settings&subpage=payment-methods&gateway=stripe'
 			);
 		}
 
