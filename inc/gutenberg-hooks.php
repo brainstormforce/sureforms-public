@@ -263,28 +263,6 @@ class Gutenberg_Hooks {
 	}
 
 	/**
-	 * Check if the current post being edited has a phone block.
-	 *
-	 * @since x.x.x
-	 * @return bool True if phone block exists, false otherwise.
-	 */
-	private function current_post_has_phone_block() {
-		global $post;
-
-		// Return false if no post is being edited.
-		if ( ! $post || empty( $post->post_content ) ) {
-			return false;
-		}
-
-		// Check if post content contains phone block.
-		if ( has_block( 'srfm/phone', $post ) ) {
-			return true;
-		}
-
-		return false;
-	}
-
-	/**
 	 * This function generates slug for sureforms blocks.
 	 * Generates slug only if slug attribute of block is empty.
 	 * Ensures that all sureforms blocks have unique slugs.
@@ -368,5 +346,27 @@ class Gutenberg_Hooks {
 		if ( $migrated ) {
 			update_post_meta( $post_id, '_srfm_forms_styling', $form_styling );
 		}
+	}
+
+	/**
+	 * Check if the current post being edited has a phone block.
+	 *
+	 * @since x.x.x
+	 * @return bool True if phone block exists, false otherwise.
+	 */
+	private function current_post_has_phone_block() {
+		global $post;
+
+		// Return false if no post is being edited or if it's not a WP_Post object.
+		if ( ! $post instanceof \WP_Post || empty( $post->post_content ) ) {
+			return false;
+		}
+
+		// Check if post content contains phone block.
+		if ( has_block( 'srfm/phone', $post ) ) {
+			return true;
+		}
+
+		return false;
 	}
 }
