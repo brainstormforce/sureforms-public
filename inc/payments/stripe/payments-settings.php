@@ -162,7 +162,7 @@ class Payments_Settings {
 
 		$settings['payment_settings'] = $payment_settings;
 
-		return $settings;
+		return apply_filters( 'srfm_get_payments_settings', $settings );
 	}
 
 	/**
