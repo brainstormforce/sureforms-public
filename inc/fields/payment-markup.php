@@ -569,7 +569,7 @@ class Payment_Markup extends Base {
 		}
 
 		// Build dynamic link to payment settings.
-		$settings_url = admin_url( 'admin.php?page=sureforms_form_settings&tab=payments-settings' );
+		$settings_url = admin_url( 'admin.php?page=sureforms_form_settings&tab=payments-settings&subpage=general' );
 
 		ob_start();
 		?>
