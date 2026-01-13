@@ -376,6 +376,7 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 == Changelog ==
 = x.x.x =
 * Improvement: Added translation support to country list in phone number block.
+* Fixed: Resolved an issue where Spectra button styles are being affected from SureForms css.
 * Improvement: Updated the flag of Syria in phone number block.
 = 2.3.0 - 5th January 2026 =
 * New: Added option to duplicate forms.
