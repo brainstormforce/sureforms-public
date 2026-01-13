@@ -507,10 +507,6 @@ class Payment_Markup extends Base {
 			if ( empty( $this->customer_name_field ) ) {
 				return false;
 			}
-
-			if ( empty( $this->subscription_plan ) || empty( $this->subscription_plan['name'] ) ) {
-				return false;
-			}
 		}
 
 		return true;
