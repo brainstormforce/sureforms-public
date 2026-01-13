@@ -9,7 +9,6 @@
 namespace SRFM\Inc\Page_Builders;
 
 use SRFM\Inc\Frontend_Assets;
-use SRFM\Inc\Helper;
 use SRFM\Inc\Page_Builders\Bricks\Service_Provider as Bricks_Service_Provider;
 use SRFM\Inc\Page_Builders\Elementor\Service_Provider as Elementor_Service_Provider;
 use SRFM\Inc\Traits\Get_Instance;
@@ -45,25 +44,8 @@ class Page_Builders {
 		$js_uri        = SRFM_URL . 'assets/js/' . $dir_name . '/blocks/';
 		$js_vendor_uri = SRFM_URL . 'assets/js/minified/deps/';
 
+		wp_enqueue_script( SRFM_SLUG . '-phone', $js_uri . 'phone' . $file_prefix . '.js', [], SRFM_VER, true );
 		wp_enqueue_script( SRFM_SLUG . '-phone-intl-input-deps', $js_vendor_uri . 'intl/intTelInputWithUtils.min.js', [], SRFM_VER, true );
-
-		// Enqueue i18n translations if available for current locale.
-		Helper::enqueue_intl_tel_input_i18n(
-			SRFM_SLUG . '-phone-intl-i18n',
-			SRFM_SLUG . '-phone-intl-input-deps'
-		);
-
-		// Pass locale data to JavaScript.
-		wp_localize_script(
-			SRFM_SLUG . '-phone-intl-input-deps',
-			'srfmPhoneI18n',
-			[
-				'locale' => Helper::get_intl_tel_input_locale(),
-			]
-		);
-
-		// Enqueue phone.js with dependency on intl-tel-input library.
-		wp_enqueue_script( SRFM_SLUG . '-phone', $js_uri . 'phone' . $file_prefix . '.js', [ SRFM_SLUG . '-phone-intl-input-deps' ], SRFM_VER, true );
 
 		wp_enqueue_script( SRFM_SLUG . '-dropdown', $js_uri . 'dropdown' . $file_prefix . '.js', [ 'wp-a11y' ], SRFM_VER, true );
 		wp_enqueue_script( SRFM_SLUG . '-tom-select', $js_vendor_uri . 'tom-select.min.js', [], SRFM_VER, true );
