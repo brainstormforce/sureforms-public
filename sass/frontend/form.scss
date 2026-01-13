@@ -380,6 +380,7 @@
 	// PayPal button container loading state
 	.srfm-paypal-button-container {
 		position: relative;
+		z-index: 1;
 
 		// Loading state
 		&.srfm-paypal-loading {
