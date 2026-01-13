@@ -106,12 +106,6 @@ export const PhoneComponent = ( { setAttributes, attributes, blockID } ) => {
 		}
 	}
 
-	// Add i18n translations if available (loaded via language file)
-	// The language file sets window.intlTelInputI18n with country names and UI translations
-	if ( window.intlTelInputI18n ) {
-		initOptions.i18n = window.intlTelInputI18n;
-	}
-
 	return (
 		<>
 			<RichText
