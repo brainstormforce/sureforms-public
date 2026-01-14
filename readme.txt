@@ -375,6 +375,7 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 
 == Changelog ==
 = x.x.x =
+* Fix: Resolved an issue where HTML block content is being corrupted while duplicating forms.
 * Fixed: Resolved an issue where Spectra button styles are being affected from SureForms css.
 * Improvement: Updated the flag of Syria in phone number block.
 = 2.3.0 - 5th January 2026 =
