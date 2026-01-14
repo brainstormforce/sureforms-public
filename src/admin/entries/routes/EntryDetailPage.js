@@ -207,74 +207,50 @@ const EntryDetailPage = () => {
 		<>
 			<div className="p-8 bg-background-secondary min-h-screen space-y-6">
 				{ /* Header */ }
-				<div className="flex items-center gap-3 mx-auto max-w-[1500px]">
-					<Button
-						onClick={ handleBackClick }
-						variant="ghost"
-						size="md"
-						className="p-1"
-						icon={ <ArrowLeft /> }
-					/>
-					<Text size={ 24 } color="primary" weight={ 600 }>
-						{ sprintf(
-							// translators: %s is the entry ID
-							__( 'Entry #%s', 'sureforms' ),
-							id
-						) }
-					</Text>
+				<div className="flex items-center justify-between mx-auto max-w-[1500px]">
+					<div className="flex items-center gap-3">
+						<Button
+							onClick={ handleBackClick }
+							variant="ghost"
+							size="md"
+							className="p-1"
+							icon={ <ArrowLeft /> }
+						/>
+						<Text size={ 24 } color="primary" weight={ 600 }>
+							{ sprintf(
+								// translators: %s is the entry ID
+								__( 'Entry #%s', 'sureforms' ),
+								id
+							) }
+						</Text>
+					</div>
+					<EntryNavigation { ...navigationProps } />
 				</div>
 				<div className="mx-auto max-w-[1500px]">
-					<div className="space-y-6">
-						<div className="space-y-6">
-							{ /* Main Content Grid */ }
-							<div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-								{ /* Left Column */ }
-								<div className="lg:col-span-2 space-y-6 relative">
-									{ /* Mobile Navigation - Shows on mobile, hidden on desktop */ }
-									<div className="lg:hidden">
-										<EntryNavigation { ...navigationProps } />
-									</div>
-									<EntryDataSection entryData={ entryData } />
-									<SubmissionInfoSection
-										entryData={ entryData }
-									/>
-								</div>
+					<div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+						{ /* Left Column */ }
+						<div className="lg:col-span-2 space-y-6">
+							<EntryDataSection entryData={ entryData } />
+							<SubmissionInfoSection entryData={ entryData } />
+						</div>
 
-								{ /* Right Column */ }
-								<div className="relative">
-									{ /* Desktop Navigation - Hidden on mobile, shows on desktop */ }
-									<div className="hidden lg:block">
-										<EntryNavigation { ...navigationProps } />
-									</div>
-									<div className="space-y-4">
-										<NotesSection
-											entryId={ id }
-											onConfirmation={
-												handleConfirmation
-											}
-										/>
-										<PdfFilesSection
-											pdfLinks={ entryData?.pdfLinks }
-										/>
-										<EntryLogsSection
-											entryId={ id }
-											onConfirmation={
-												handleConfirmation
-											}
-										/>
-										{ /* Action buttons */ }
-										<div className="ml-0.5">
-											<SendDetailsButton
-												handleSendEmail={
-													handleSendEmail
-												}
-												isDisabled={
-													! ResendNotificationModal
-												}
-											/>
-										</div>
-									</div>
-								</div>
+						{ /* Right Column */ }
+						<div className="space-y-4">
+							<NotesSection
+								entryId={ id }
+								onConfirmation={ handleConfirmation }
+							/>
+							<PdfFilesSection pdfLinks={ entryData?.pdfLinks } />
+							<EntryLogsSection
+								entryId={ id }
+								onConfirmation={ handleConfirmation }
+							/>
+							{ /* Action buttons */ }
+							<div className="ml-0.5">
+								<SendDetailsButton
+									handleSendEmail={ handleSendEmail }
+									isDisabled={ ! ResendNotificationModal }
+								/>
 							</div>
 						</div>
 					</div>

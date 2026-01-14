@@ -54,7 +54,7 @@ const EntryNavigation = ( { previousEntryId, nextEntryId } ) => {
 	}
 
 	return (
-		<div className="absolute -top-14 right-0 z-10 flex justify-end gap-2">
+		<div className="flex justify-end gap-2">
 			<Button
 				variant="outline"
 				size="sm"
@@ -65,7 +65,7 @@ const EntryNavigation = ( { previousEntryId, nextEntryId } ) => {
 				disabled={ ! previousEntryId }
 				aria-label={ __( 'Previous entry', 'sureforms' ) }
 				aria-disabled={ ! previousEntryId }
-				className="text-text-primary hover:text-text-primary disabled:opacity-50 disabled:cursor-not-allowed border border-solid border-badge-color-disabled shadow-sm"
+				className="text-text-primary hover:text-text-primary disabled:opacity-50 disabled:cursor-not-allowed border-0.5 border-solid border-badge-color-disabled shadow-sm"
 			>
 				{ __( 'Previous', 'sureforms' ) }
 			</Button>
@@ -79,7 +79,7 @@ const EntryNavigation = ( { previousEntryId, nextEntryId } ) => {
 				disabled={ ! nextEntryId }
 				aria-label={ __( 'Next entry', 'sureforms' ) }
 				aria-disabled={ ! nextEntryId }
-				className="text-text-primary hover:text-text-primary disabled:opacity-50 disabled:cursor-not-allowed border border-solid border-badge-color-disabled shadow-sm"
+				className="text-text-primary hover:text-text-primary disabled:opacity-50 disabled:cursor-not-allowed border-0.5 border-solid border-badge-color-disabled shadow-sm"
 			>
 				{ __( 'Next', 'sureforms' ) }
 			</Button>
