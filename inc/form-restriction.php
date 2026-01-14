@@ -193,7 +193,8 @@ class Form_Restriction {
 		$end_minutes  = Helper::get_string_value( $form_restriction['minutes'] ?? '00' );
 		$end_meridiem = Helper::get_string_value( $form_restriction['meridiem'] ?? 'PM' );
 
-		$current_timestamp = strtotime( current_time( 'mysql' ) );
+		$dt                = new \DateTime( 'now', wp_timezone() );
+		$current_timestamp = $dt->getTimestamp();
 
 		// Check if before start time (only if scheduling is enabled).
 		if ( $scheduling_status && ! empty( $start_date ) && is_string( $start_date ) ) {
@@ -205,7 +206,7 @@ class Form_Restriction {
 		}
 
 		// Check if after end time (works for both scheduling and simple time limit).
-		if ( ! empty( $end_date ) && is_string( $end_date ) ) {
+		if ( $scheduling_status && ! empty( $end_date ) && is_string( $end_date ) ) {
 			$end_timestamp = Helper::get_timestamp_from_string( $end_date, $end_hours, $end_minutes, $end_meridiem );
 
 			if ( false !== $end_timestamp && is_int( $end_timestamp ) && $current_timestamp > $end_timestamp ) {
