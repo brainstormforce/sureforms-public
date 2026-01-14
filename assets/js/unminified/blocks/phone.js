@@ -339,9 +339,6 @@ function cleanupPhoneFields( container = document ) {
 window.srfmInitializePhoneField = initializePhoneField;
 window.srfmCleanupPhoneFields = cleanupPhoneFields;
 
-// Initialize phone fields when DOM is ready
-document.addEventListener( 'DOMContentLoaded', initializePhoneField );
-
 document.addEventListener( 'srfm_form_before_submission', ( e ) => {
 	const form = e.detail?.form;
 	if ( ! form ) {
