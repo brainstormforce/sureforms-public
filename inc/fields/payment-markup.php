@@ -214,6 +214,9 @@ class Payment_Markup extends Base {
 
 		$field_classes = $this->get_field_classes();
 
+		// Get first payment method as default
+		$first_method_id = ! empty( $registered_methods ) ? array_key_first( $registered_methods ) : '';
+
 		$data_input_attributes = [
 			'name'                      => $this->field_name,
 			'class'                     => 'srfm-payment-input',
@@ -227,7 +230,7 @@ class Payment_Markup extends Base {
 			'data-customer-name-field'  => $this->customer_name_field,
 			'data-customer-email-field' => $this->customer_email_field,
 			'data-payment-methods'      => wp_json_encode( array_keys( $registered_methods ) ),
-			'data-selected-method'      => '',
+			'data-selected-method'      => $first_method_id,
 		];
 
 		if ( 'subscription' === $this->payment_type && ! empty( $this->subscription_plan ) ) {
@@ -423,6 +426,7 @@ class Payment_Markup extends Base {
 		}
 
 		$is_single_method = count( $methods ) === 1;
+		$is_first         = true; // Track the first payment method
 
 		ob_start();
 		?>
@@ -436,7 +440,7 @@ class Payment_Markup extends Base {
 						class="srfm-accordion-header"
 						role="button"
 						tabindex="0"
-						aria-expanded="<?php echo $is_single_method ? 'true' : 'false'; ?>"
+						aria-expanded="<?php echo $is_first ? 'true' : 'false'; ?>"
 						aria-controls="srfm-accordion-content-<?php echo esc_attr( $method['id'] ); ?>-<?php echo esc_attr( $this->block_id ); ?>"
 					>
 						<div class="srfm-payment-input-wrapper">
@@ -446,7 +450,7 @@ class Payment_Markup extends Base {
 								value="<?php echo esc_attr( $method['id'] ); ?>"
 								class="srfm-payment-method-radio"
 								data-method="<?php echo esc_attr( $method['id'] ); ?>"
-								<?php checked( $is_single_method ); ?>
+								<?php checked( $is_first ); ?>
 								aria-label="<?php echo esc_attr( $method['label'] ); ?>"
 							/>
 							<span class="srfm-accordion-title srfm-block-label">
@@ -482,6 +486,7 @@ class Payment_Markup extends Base {
 						</div>
 					</div>
 				</div>
+				<?php $is_first = false; // Set to false after first iteration ?>
 			<?php } ?>
 		</div>
 		<?php
