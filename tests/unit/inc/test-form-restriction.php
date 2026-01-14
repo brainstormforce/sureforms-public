@@ -44,13 +44,14 @@ class Test_Form_Restriction extends TestCase {
 	public function test_is_form_restricted_returns_true_when_time_limit_passed() {
 		// Override the meta with past date
 		update_post_meta(self::$form_id, '_srfm_form_restriction', wp_json_encode([
-			'status'     => true,
-			'maxEntries' => 9999,
-			'date'       => "2025-08-01", // Past date
-			'hours'      => '12',
-			'minutes'    => '00',
-			'meridiem'   => 'AM',
-			'message'    => 'Time limit reached.',
+			'status'           => true,
+			'schedulingStatus' => true,
+			'maxEntries'       => 9999,
+			'date'             => "2025-08-01", // Past date
+			'hours'            => '12',
+			'minutes'          => '00',
+			'meridiem'         => 'AM',
+			'message'          => 'Time limit reached.',
 		]));
 
 		$this->assertTrue(Form_Restriction::is_form_restricted(self::$form_id));
@@ -71,8 +72,9 @@ class Test_Form_Restriction extends TestCase {
 
 	/**
 	 * Test get_form_scheduling_state() when scheduling is disabled but end date passed.
+	 * When schedulingStatus is false, end date is not checked, so it returns 'disabled'.
 	 */
-	public function test_get_form_scheduling_state_returns_ended_when_scheduling_disabled_but_end_date_passed() {
+	public function test_get_form_scheduling_state_returns_disabled_when_scheduling_disabled_even_with_end_date_passed() {
 		$form_restriction = [
 			'schedulingStatus' => false,
 			'date'             => '2020-01-01', // Past date
@@ -83,7 +85,7 @@ class Test_Form_Restriction extends TestCase {
 
 		$result = Form_Restriction::get_form_scheduling_state( $form_restriction );
 
-		$this->assertEquals( 'ended', $result );
+		$this->assertEquals( 'disabled', $result );
 	}
 
 	/**
@@ -321,9 +323,10 @@ class Test_Form_Restriction extends TestCase {
 	}
 
 	/**
-	 * Test is_form_outside_schedule() returns true when end date passed (simple time limit).
+	 * Test is_form_outside_schedule() returns false when scheduling is disabled.
+	 * When schedulingStatus is false, end date is not checked for scheduling purposes.
 	 */
-	public function test_is_form_outside_schedule_returns_true_when_simple_time_limit_passed() {
+	public function test_is_form_outside_schedule_returns_false_when_scheduling_disabled_even_with_past_date() {
 		$form_restriction = [
 			'schedulingStatus' => false,
 			'date'             => '2020-01-01', // Past date
@@ -334,7 +337,7 @@ class Test_Form_Restriction extends TestCase {
 
 		$result = Form_Restriction::is_form_outside_schedule( $form_restriction );
 
-		$this->assertTrue( $result );
+		$this->assertFalse( $result );
 	}
 
 	/**
