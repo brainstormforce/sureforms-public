@@ -65,7 +65,7 @@ const EntryNavigation = ( { previousEntryId, nextEntryId } ) => {
 				disabled={ ! previousEntryId }
 				aria-label={ __( 'Previous entry', 'sureforms' ) }
 				aria-disabled={ ! previousEntryId }
-				className="text-text-primary hover:text-text-primary disabled:opacity-50 disabled:cursor-not-allowed border-0.5 border-solid border-badge-color-disabled shadow-sm"
+				className="text-text-primary hover:text-text-primary outline-0 disabled:opacity-50 disabled:cursor-not-allowed border-0.5 border-solid border-badge-color-disabled shadow-sm"
 			>
 				{ __( 'Previous', 'sureforms' ) }
 			</Button>
@@ -79,7 +79,7 @@ const EntryNavigation = ( { previousEntryId, nextEntryId } ) => {
 				disabled={ ! nextEntryId }
 				aria-label={ __( 'Next entry', 'sureforms' ) }
 				aria-disabled={ ! nextEntryId }
-				className="text-text-primary hover:text-text-primary disabled:opacity-50 disabled:cursor-not-allowed border-0.5 border-solid border-badge-color-disabled shadow-sm"
+				className="text-text-primary hover:text-text-primary outline-0 disabled:opacity-50 disabled:cursor-not-allowed border-0.5 border-solid border-badge-color-disabled shadow-sm"
 			>
 				{ __( 'Next', 'sureforms' ) }
 			</Button>
