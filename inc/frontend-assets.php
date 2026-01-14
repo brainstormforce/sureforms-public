@@ -226,15 +226,6 @@ class Frontend_Assets {
 					SRFM_SLUG . "-{$block_name}-intl-i18n",
 					SRFM_SLUG . "-{$block_name}-intl-input-deps"
 				);
-
-				// Pass locale data to JavaScript.
-				wp_localize_script(
-					SRFM_SLUG . "-{$block_name}-intl-input-deps",
-					'srfmPhoneI18n',
-					[
-						'locale' => self::get_intl_tel_input_locale(),
-					]
-				);
 			}
 
 			if ( 'dropdown' === $block_name ) {
