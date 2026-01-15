@@ -35,6 +35,12 @@ const NAV_ITEMS = [
 		link: `${ siteURL }/wp-admin/admin.php?page=sureforms_payments`,
 	},
 	{
+		slug: 'sureforms_learn',
+		text: __( 'Learn', 'sureforms' ),
+		link: `${ siteURL }/wp-admin/admin.php?page=sureforms_menu#/learn`,
+		isHashRoute: true,
+	},
+	{
 		slug: 'sureforms_form_settings',
 		text: __( 'Settings', 'sureforms' ),
 		link: `${ siteURL }/wp-admin/admin.php?page=sureforms_form_settings&tab=general-settings`,
@@ -82,16 +88,24 @@ const Header = ( { breadCrumb } ) => {
 	useEffect( () => {
 		const searchParams = new URLSearchParams( window.location.search );
 		let currentPage = searchParams.get( 'page' );
+		const hash = window.location.hash;
 
 		// If 'page' parameter is not present, check for 'post_type' parameter
 		if ( ! currentPage ) {
 			currentPage = searchParams.get( 'post_type' );
 		}
 
-		// Set the active page based on the current URL parameter
-		setActivePage(
-			NAV_ITEMS.find( ( item ) => item.slug === currentPage )
-		);
+		// Check if we're on a hash route (like /learn)
+		if ( hash === '#/learn' && currentPage === 'sureforms_menu' ) {
+			setActivePage(
+				NAV_ITEMS.find( ( item ) => item.slug === 'sureforms_learn' )
+			);
+		} else {
+			// Set the active page based on the current URL parameter
+			setActivePage(
+				NAV_ITEMS.find( ( item ) => item.slug === currentPage )
+			);
+		}
 	}, [] );
 
 	useWhatsNewRSS( {

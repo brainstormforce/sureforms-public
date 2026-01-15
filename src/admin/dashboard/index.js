@@ -6,6 +6,7 @@ import {
 	Navigate,
 } from 'react-router-dom';
 import Dashboard from './Dashboard';
+import Learn from './Learn';
 import {
 	OnboardingLayout,
 	Welcome,
@@ -56,6 +57,7 @@ const APP = () => {
 		<Router>
 			<Routes>
 				<Route path="/" element={ <Dashboard /> } />
+				<Route path="/learn" element={ <Learn /> } />
 				<Route path="/onboarding" element={ <OnboardingLayout /> }>
 					<Route path="welcome" element={ <Welcome /> } />
 					<Route path="connect" element={ <Connect /> } />
