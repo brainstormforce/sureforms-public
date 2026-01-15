@@ -177,12 +177,12 @@ export const BulkInserterWithButton = ( props ) => {
 		<>
 			<Button
 				className="sureforms-add-bulk-option-button"
-				variant="secondary"
+				variant="link"
 				onClick={ () => {
 					setIsModalOpen( true );
 				} }
 			>
-				{ __( 'Bulk Add', 'sureforms' ) }
+				{ __( 'Bulk Edit', 'sureforms' ) }
 			</Button>
 
 			{ isModalOpen && (
