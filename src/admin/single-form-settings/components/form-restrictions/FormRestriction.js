@@ -317,7 +317,7 @@ const FormRestriction = ( { setHasValidationErrors } ) => {
 								<div className="w-2/3">
 									<DatePickerModal
 										label={
-											<>
+											<Label className="mb-1.5 flex items-center gap-1">
 												{ __(
 													'Start Date & Time',
 													'sureforms'
@@ -363,7 +363,7 @@ const FormRestriction = ( { setHasValidationErrors } ) => {
 												>
 													<Info className="size-4 !text-icon-secondary" />
 												</Tooltip>
-											</>
+											</Label>
 										}
 										date={ preserveMetaData?.startDate }
 										onDateChange={ ( formattedDate ) => {
@@ -421,7 +421,7 @@ const FormRestriction = ( { setHasValidationErrors } ) => {
 								<div className="w-2/3">
 									<DatePickerModal
 										label={
-											<>
+											<Label className="mb-1.5 flex items-center gap-1">
 												{ __(
 													'End Date & Time',
 													'sureforms'
@@ -467,7 +467,7 @@ const FormRestriction = ( { setHasValidationErrors } ) => {
 												>
 													<Info className="size-4 !text-icon-secondary" />
 												</Tooltip>
-											</>
+											</Label>
 										}
 										date={ preserveMetaData?.date }
 										onDateChange={ ( formattedDate ) => {
