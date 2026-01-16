@@ -82,6 +82,31 @@ function initializeFormHandlers() {
 			!! hCaptchaDiv ||
 			!! turnstileDiv;
 
+		// Add click listener for v3-reCAPTCHA form tracking.
+		// Uses capture phase to run before Google's reCAPTCHA click handler.
+		// Only add once per form to prevent duplicate handlers when initializeFormHandlers is called multiple times.
+		if (
+			recaptchaType === 'v3-reCAPTCHA' &&
+			! form.hasAttribute( 'data-srfm-v3-click-handler' )
+		) {
+			form.setAttribute( 'data-srfm-v3-click-handler', 'true' );
+			form.addEventListener(
+				'click',
+				function ( e ) {
+					const submitBtn = e.target.closest(
+						'#srfm-submit-btn, .srfm-custom-button'
+					);
+					if (
+						submitBtn &&
+						submitBtn.classList.contains( 'g-recaptcha' )
+					) {
+						pendingRecaptchaForm = form;
+					}
+				},
+				true
+			);
+		}
+
 		form.addEventListener( 'submit', async ( e ) => {
 			e.preventDefault();
 
@@ -875,28 +900,6 @@ function emitFormSubmitSuccess( formStatus ) {
 	// Dispatch the custom event.
 	document.dispatchEvent( srfmFormSubmissionSuccessEvent );
 }
-
-// Capture which form initiated the reCAPTCHA v3 verification.
-// Uses capture phase to run before reCAPTCHA's click handler.
-document.addEventListener(
-	'click',
-	function ( e ) {
-		const submitBtn = e.target.closest(
-			'#srfm-submit-btn, .srfm-custom-button'
-		);
-		if ( submitBtn && submitBtn.classList.contains( 'g-recaptcha' ) ) {
-			const form = submitBtn.closest( '.srfm-form' );
-			if ( form ) {
-				const recaptchaType =
-					submitBtn.getAttribute( 'recaptcha-type' );
-				if ( recaptchaType === 'v3-reCAPTCHA' ) {
-					pendingRecaptchaForm = form;
-				}
-			}
-		}
-	},
-	true
-);
 
 // directly assign recaptchaCallback into the global space:
 window.recaptchaCallback = recaptchaCallback;
