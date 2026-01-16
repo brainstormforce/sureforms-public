@@ -13,6 +13,7 @@
 namespace SRFM\Inc\Payments;
 
 use SRFM\Inc\Field_Validation;
+use SRFM\Inc\Helper;
 use SRFM\Inc\Payments\Stripe\Stripe_Helper;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -35,7 +36,7 @@ class Payment_Helper {
 	 * @return array<string, mixed> The complete payment settings array.
 	 */
 	public static function get_all_payment_settings() {
-		$payment_settings = \SRFM\Inc\Helper::get_srfm_option( 'payment_settings', [] );
+		$payment_settings = Helper::get_srfm_option( 'payment_settings', [] );
 
 		if ( ! is_array( $payment_settings ) || empty( $payment_settings ) ) {
 			return self::get_default_payment_settings();
@@ -72,7 +73,7 @@ class Payment_Helper {
 			return false;
 		}
 
-		\SRFM\Inc\Helper::update_srfm_option( 'payment_settings', $settings );
+		Helper::update_srfm_option( 'payment_settings', $settings );
 		return true;
 	}
 
@@ -947,16 +948,32 @@ class Payment_Helper {
 					];
 				}
 			} elseif ( 'srfm/number' === $dynamic_amount_field_block_name ) {
-				$is_valid_amount = is_numeric( $submitted_field_value ) ? true : false;
+				// Get the block config for the number field to retrieve the format type.
+				$number_block_config = self::get_block_config_by_name_and_slug( $block_config, $dynamic_amount_field_block_name, $variable_amount_field_slug );
 
-				if ( ! $is_valid_amount ) {
+				if ( empty( $number_block_config ) ) {
+					return [
+						'valid'   => false,
+						'message' => __( 'Number field configuration not found.', 'sureforms' ),
+					];
+				}
+
+				// Get the number format type from the block config (default to 'us-style').
+				$number_format_type = isset( $number_block_config['format_type'] ) && ! empty( $number_block_config['format_type'] ) ? $number_block_config['format_type'] : 'us-style';
+
+				// If submitted_field_value is not string then convert the value to string.
+				$submitted_field_value = Helper::get_string_value( $submitted_field_value );
+
+				// Normalize the submitted amount based on the format type.
+				$converted_payment_amount = self::normalize_amount_by_format( $submitted_field_value, $number_format_type );
+
+				// Validate that the normalized amount is valid.
+				if ( ! is_numeric( $converted_payment_amount ) || $converted_payment_amount <= 0 ) {
 					return [
 						'valid'   => false,
 						'message' => __( 'Variable amount field value is required.', 'sureforms' ),
 					];
 				}
-
-				$converted_payment_amount = floatval( $submitted_field_value );
 
 				// Validate payment amount matches expected amount.
 				if ( abs( $payment_amount - $converted_payment_amount ) > 0.01 ) {
@@ -1074,6 +1091,37 @@ class Payment_Helper {
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * Normalize amount based on number format type (EU-style or US-style).
+	 *
+	 * @param string|float $amount      The amount to normalize.
+	 * @param string       $format_type The format type: 'eu-style' or 'us-style'.
+	 * @return float The normalized amount as a float.
+	 * @since x.x.x
+	 */
+	private static function normalize_amount_by_format( $amount, $format_type = 'us-style' ) {
+		// If already a number, return it.
+		if ( is_numeric( $amount ) && ! is_string( $amount ) ) {
+			return floatval( $amount );
+		}
+
+		// Convert to string and trim.
+		$amount_str = trim( strval( $amount ) );
+
+		if ( 'eu-style' === $format_type ) {
+			// EU-style: 1.234,56 (period = thousands, comma = decimal).
+			// Remove periods (thousands separator) and replace comma with period (decimal).
+			$amount_str = str_replace( '.', '', $amount_str );
+			$amount_str = str_replace( ',', '.', $amount_str );
+		} else {
+			// US-style (default): 1,234.56 (comma = thousands, period = decimal).
+			// Remove commas (thousands separator).
+			$amount_str = str_replace( ',', '', $amount_str );
+		}
+
+		return floatval( $amount_str );
 	}
 
 	/**

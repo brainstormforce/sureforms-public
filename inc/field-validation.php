@@ -64,6 +64,9 @@ class Field_Validation {
 				case 'srfm/multi-choice':
 					$processed_config = self::process_multichoice_block( $block['attrs'] );
 					break;
+				case 'srfm/number':
+					$processed_config = self::process_number_block( $block['attrs'] );
+					break;
 			}
 
 			// If block was processed, store its configuration.
@@ -289,22 +292,14 @@ class Field_Validation {
 		$payment_config = [];
 
 		// Extract payment type (single or subscription).
-		if ( isset( $attrs['paymentType'] ) ) {
-			$payment_config['payment_type'] = is_string( $attrs['paymentType'] ) ? sanitize_text_field( $attrs['paymentType'] ) : '';
-		}
+		$payment_config['payment_type'] = isset( $attrs['paymentType'] ) && is_string( $attrs['paymentType'] ) ? sanitize_text_field( $attrs['paymentType'] ) : 'one-time';
 
 		// Extract amount type (fixed or minimum).
-		if ( isset( $attrs['amountType'] ) ) {
-			$payment_config['amount_type'] = is_string( $attrs['amountType'] ) ? sanitize_text_field( $attrs['amountType'] ) : '';
-		}
+		$payment_config['amount_type'] = isset( $attrs['amountType'] ) && is_string( $attrs['amountType'] ) ? sanitize_text_field( $attrs['amountType'] ) : 'fixed';
 
-		// Extract configured amount.
-		if ( isset( $attrs['fixedAmount'] ) ) {
-			$payment_config['fixed_amount'] = floatval( $attrs['fixedAmount'] );
-		}
-		if ( isset( $attrs['minimumAmount'] ) ) {
-			$payment_config['minimum_amount'] = floatval( $attrs['minimumAmount'] );
-		}
+		$payment_config['fixed_amount'] = isset( $attrs['fixedAmount'] ) ? floatval( $attrs['fixedAmount'] ) : 10;
+
+		$payment_config['minimum_amount'] = isset( $attrs['minimumAmount'] ) ? floatval( $attrs['minimumAmount'] ) : 0;
 
 		// Extract variable amount field reference.
 		if ( isset( $attrs['variableAmountField'] ) ) {
@@ -336,9 +331,7 @@ class Field_Validation {
 		$dropdown_config = [];
 
 		// Extract required field.
-		if ( isset( $attrs['required'] ) ) {
-			$dropdown_config['required'] = ! empty( $attrs['required'] ) ? true : false;
-		}
+		$dropdown_config['required'] = isset( $attrs['required'] ) && ! empty( $attrs['required'] ) ? true : false;
 
 		// Extract options with their full structure (label, icon, value).
 		if ( isset( $attrs['options'] ) && is_array( $attrs['options'] ) ) {
@@ -356,9 +349,7 @@ class Field_Validation {
 		}
 
 		// Extract showValues flag.
-		if ( isset( $attrs['showValues'] ) ) {
-			$dropdown_config['show_values'] = rest_sanitize_boolean( $attrs['showValues'] );
-		}
+		$dropdown_config['show_values'] = isset( $attrs['showValues'] ) ? rest_sanitize_boolean( $attrs['showValues'] ) : false;
 
 		// Extract multiSelect flag.
 		if ( isset( $attrs['multiSelect'] ) ) {
@@ -389,9 +380,7 @@ class Field_Validation {
 		$multichoice_config = [];
 
 		// Extract required field.
-		if ( isset( $attrs['required'] ) ) {
-			$multichoice_config['required'] = ! empty( $attrs['required'] ) ? true : false;
-		}
+		$multichoice_config['required'] = isset( $attrs['required'] ) && ! empty( $attrs['required'] ) ? true : false;
 
 		// Extract singleSelection flag.
 		if ( isset( $attrs['singleSelection'] ) ) {
@@ -429,5 +418,36 @@ class Field_Validation {
 		}
 
 		return $multichoice_config;
+	}
+
+	/**
+	 * Process number block configuration.
+	 *
+	 * @param array<mixed> $attrs Block attributes.
+	 * @return array Processed number configuration.
+	 * @since x.x.x
+	 */
+	private static function process_number_block( $attrs ) {
+		$number_config = [];
+
+		// Extract required field.
+		if ( isset( $attrs['required'] ) ) {
+			$number_config['required'] = ! empty( $attrs['required'] ) ? true : false;
+		}
+
+		// Extract format type (us-style or eu-style).
+		$number_config['format_type'] = isset( $attrs['formatType'] ) && is_string( $attrs['formatType'] ) ? sanitize_text_field( $attrs['formatType'] ) : 'us-style';
+
+		// Extract min value.
+		if ( isset( $attrs['min'] ) ) {
+			$number_config['min'] = floatval( $attrs['min'] );
+		}
+
+		// Extract max value.
+		if ( isset( $attrs['max'] ) ) {
+			$number_config['max'] = floatval( $attrs['max'] );
+		}
+
+		return $number_config;
 	}
 }
