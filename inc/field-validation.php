@@ -425,7 +425,7 @@ class Field_Validation {
 	 *
 	 * @param array<mixed> $attrs Block attributes.
 	 * @return array Processed number configuration.
-	 * @since x.x.x
+	 * @since 2.4.0
 	 */
 	private static function process_number_block( $attrs ) {
 		$number_config = [];
