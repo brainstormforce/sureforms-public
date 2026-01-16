@@ -1,7 +1,7 @@
 import { Popover } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
-import { dispatch } from '@wordpress/data';
+import { dispatch, select } from '@wordpress/data';
 
 // Lucide Icons
 import {
@@ -24,7 +24,25 @@ const FormSettingsPopup = ( {
 	hidePopover,
 	setHidePopover,
 } ) => {
-	const handleTabClick = ( tabId ) => {
+	const handleTabClick = async ( tabId ) => {
+		// Check if editor sidebar is open
+		const store = select( 'core/edit-post' );
+		const isSidebarOpen = store?.isEditorSidebarOpened();
+
+		// If sidebar is closed, open it
+		if ( ! isSidebarOpen ) {
+			await dispatch( 'core/edit-post' ).openGeneralSidebar(
+				'edit-post/document'
+			);
+		}
+
+		const dispatchEventForFormSettings = () => {
+			const event = new CustomEvent( 'srfm-open-form-settings', {
+				detail: { tabId },
+			} );
+			window.dispatchEvent( event );
+		};
+
 		// Deselect any selected block
 		dispatch( 'core/block-editor' ).clearSelectedBlock();
 		const getFormSettingTab = document.querySelector(
@@ -32,18 +50,11 @@ const FormSettingsPopup = ( {
 		);
 		if ( getFormSettingTab ) {
 			setTimeout( () => {
-				// Dispatch custom event to open the dialog
-				const event = new CustomEvent( 'srfm-open-form-settings', {
-					detail: { tabId },
-				} );
-				window.dispatchEvent( event );
+				dispatchEventForFormSettings();
 			}, 50 );
 		} else {
 			// Dispatch custom event to open the dialog
-			const event = new CustomEvent( 'srfm-open-form-settings', {
-				detail: { tabId },
-			} );
-			window.dispatchEvent( event );
+			dispatchEventForFormSettings();
 		}
 
 		// Close the popover

@@ -10,6 +10,11 @@ import { handleFormPayment } from './payment';
 import { applyFilters } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';
 
+// Tracks the form that initiated the reCAPTCHA v3 verification.
+// This prevents multiple forms on the same page from all submitting
+// when only one form's submit button was clicked.
+let pendingRecaptchaForm = null;
+
 /**
  * Event listener for external validation initialization.
  *
@@ -76,6 +81,31 @@ function initializeFormHandlers() {
 			'v2-checkbox' === recaptchaType ||
 			!! hCaptchaDiv ||
 			!! turnstileDiv;
+
+		// Add click listener for v3-reCAPTCHA form tracking.
+		// Uses capture phase to run before Google's reCAPTCHA click handler.
+		// Only add once per form to prevent duplicate handlers when initializeFormHandlers is called multiple times.
+		if (
+			recaptchaType === 'v3-reCAPTCHA' &&
+			! form.hasAttribute( 'data-srfm-v3-click-handler' )
+		) {
+			form.setAttribute( 'data-srfm-v3-click-handler', 'true' );
+			form.addEventListener(
+				'click',
+				function ( e ) {
+					const submitBtn = e.target.closest(
+						'#srfm-submit-btn, .srfm-custom-button'
+					);
+					if (
+						submitBtn &&
+						submitBtn.classList.contains( 'g-recaptcha' )
+					) {
+						pendingRecaptchaForm = form;
+					}
+				},
+				true
+			);
+		}
 
 		form.addEventListener( 'submit', async ( e ) => {
 			e.preventDefault();
@@ -755,11 +785,48 @@ function extractFormAttributesAndElements( form ) {
 /**
  * Callback function to handle form submission.
  * Incase of v2-invisible reCAPTCHA, it will render the reCAPTCHA and handle form submission.
- * Incase of v3-reCAPTCHA, it will handle form submission directly.
+ * Incase of v3-reCAPTCHA, it will handle form submission directly for the specific form that was clicked.
  *
  * @param {string} token v3-reCAPTCHA token.
  */
 function recaptchaCallback( token = '' ) {
+	// For v3-reCAPTCHA: Only submit the form that was clicked, not all forms on the page
+	if ( token && pendingRecaptchaForm ) {
+		const form = pendingRecaptchaForm;
+		pendingRecaptchaForm = null; // Clear the reference immediately
+
+		const {
+			formId,
+			submitType,
+			ajaxUrl,
+			nonce,
+			loader,
+			successUrl,
+			successContainer,
+			successElement,
+			recaptchaType,
+			afterSubmission,
+		} = extractFormAttributesAndElements( form );
+
+		if ( recaptchaType === 'v3-reCAPTCHA' ) {
+			loader.classList.add( 'srfm-active' );
+			handleFormSubmission(
+				form,
+				formId,
+				ajaxUrl,
+				nonce,
+				loader,
+				successUrl,
+				successContainer,
+				successElement,
+				submitType,
+				afterSubmission
+			);
+			return;
+		}
+	}
+
+	// Handle v2-invisible reCAPTCHA (original behavior for initial render)
 	const forms = Array.from( document.querySelectorAll( '.srfm-form' ) );
 	forms.forEach( ( form ) => {
 		const {
@@ -823,23 +890,6 @@ function recaptchaCallback( token = '' ) {
 					);
 				}
 			} );
-		}
-
-		// v3-reCAPTCHA
-		if ( recaptchaType === 'v3-reCAPTCHA' && token ) {
-			loader.classList.add( 'srfm-active' );
-			handleFormSubmission(
-				form,
-				formId,
-				ajaxUrl,
-				nonce,
-				loader,
-				successUrl,
-				successContainer,
-				successElement,
-				submitType,
-				afterSubmission
-			);
 		}
 	} );
 }
