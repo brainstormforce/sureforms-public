@@ -30,7 +30,8 @@ function initializeMultichoice() {
 					if ( checkedLabel ) {
 						hiddenInput.setAttribute(
 							'value',
-							checkedLabel.innerText
+							checkedLabel.getAttribute( 'data-option-text' ) ||
+								checkedLabel.innerText
 						);
 						// Trigger change event for conditional logic
 						hiddenInput.dispatchEvent(
@@ -47,7 +48,10 @@ function initializeMultichoice() {
 							.closest( '.srfm-multi-choice-single' )
 							.querySelector( 'label' );
 						if ( label ) {
-							values.push( label.innerText );
+							values.push(
+								label.getAttribute( 'data-option-text' ) ||
+									label.innerText
+							);
 						}
 					} );
 					// Populate savedValues with preselected options so they persist when user adds more selections
@@ -107,9 +111,13 @@ function initializeMultichoice() {
 				element.addEventListener( 'click', ( e ) => {
 					e.stopPropagation();
 
-					getValue = e.target
+					const label = e.target
 						.closest( '.srfm-multi-choice-single' )
-						.querySelector( 'label' ).innerText;
+						.querySelector( 'label' );
+					getValue = label
+						? label.getAttribute( 'data-option-text' ) ||
+						  label.innerText
+						: '';
 
 					const hiddenInput = single.querySelector(
 						'.srfm-input-multi-choice-hidden'
