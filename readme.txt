@@ -376,6 +376,7 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 == Changelog ==
 = x.x.x =
 * Fix: Resolved an issue where multiple form validation are being triggered when both have v3 reCAPTCHA and embedded in a same page.
+* Improvement: Updated UI for attributes for editor sidebar for multi choice block.
 * Fixed: Resolved an issue where Spectra button styles are being affected from SureForms css.
 * Improvement: Updated the flag of Syria in phone number block.
 = 2.3.0 - 5th January 2026 =
