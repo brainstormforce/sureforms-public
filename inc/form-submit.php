@@ -259,8 +259,10 @@ class Form_Submit {
 		$form_id = Helper::get_integer_value( $current_form_id );
 		if ( Form_Restriction::is_form_restricted( $form_id ) ) {
 			$form_restriction = Form_Restriction::get_form_restriction_setting( $form_id );
-			// If the form is restricted, return an error response.
-			$form_restriction_message = $form_restriction['message'] ?? Translatable::get_default_form_restriction_message();
+
+			// Get the scheduling state and appropriate message.
+			$scheduling_state         = Form_Restriction::get_form_scheduling_state( $form_restriction );
+			$form_restriction_message = Form_Restriction::get_restriction_message_by_state( $scheduling_state, $form_restriction );
 
 			$form_restriction_message = apply_filters( 'srfm_form_restriction_message', $form_restriction_message, $form_id, $form_restriction );
 
