@@ -214,8 +214,8 @@ class Payment_Markup extends Base {
 
 		$field_classes = $this->get_field_classes();
 
-		// Get first payment method as default
-		$first_method_id = ! empty( $registered_methods ) ? array_key_first( $registered_methods ) : '';
+		// Get first payment method as default.
+		$first_method_id = array_key_first( $registered_methods );
 
 		$data_input_attributes = [
 			'name'                      => $this->field_name,
@@ -426,7 +426,7 @@ class Payment_Markup extends Base {
 		}
 
 		$is_single_method = count( $methods ) === 1;
-		$is_first         = true; // Track the first payment method
+		$is_first         = true; // Track the first payment method.
 
 		ob_start();
 		?>
@@ -486,7 +486,7 @@ class Payment_Markup extends Base {
 						</div>
 					</div>
 				</div>
-				<?php $is_first = false; // Set to false after first iteration ?>
+				<?php $is_first = false; // Set to false after first iteration. ?>
 			<?php } ?>
 		</div>
 		<?php
