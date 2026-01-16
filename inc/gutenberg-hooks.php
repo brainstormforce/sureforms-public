@@ -282,12 +282,14 @@ class Gutenberg_Hooks {
 			return;
 		}
 
-		$post_content = addslashes( serialize_blocks( $blocks ) );
+		$post_content = serialize_blocks( $blocks );
 
+		// Use wp_slash() to preserve unicode escapes (like \u003c for <) in block attributes.
+		// Without this, wp_update_post() calls wp_unslash() which corrupts these escapes.
 		wp_update_post(
 			[
 				'ID'           => $post_id,
-				'post_content' => $post_content,
+				'post_content' => wp_slash( $post_content ),
 			]
 		);
 	}

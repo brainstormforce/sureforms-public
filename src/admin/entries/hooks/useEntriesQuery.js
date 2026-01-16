@@ -98,7 +98,8 @@ export const useEntryDetail = ( entryId ) => {
 		queryKey: entriesKeys.detail( entryId ),
 		queryFn: () => fetchEntryDetail( entryId ),
 		enabled: !! entryId, // Only run query if entryId is provided
-		staleTime: 1000 * 60 * 5, // Consider data fresh for 5 minutes
+		staleTime: 0, // Always refetch to ensure navigation is up-to-date
+		refetchOnWindowFocus: true, // Refetch when user returns to the window
 	} );
 };
 
@@ -188,6 +189,9 @@ export const useTrashEntries = () => {
 			// Invalidate and refetch entries list
 			queryClient.invalidateQueries( { queryKey: entriesKeys.lists() } );
 
+			// Invalidate all entry details to refresh navigation and data
+			queryClient.invalidateQueries( { queryKey: entriesKeys.details() } );
+
 			// Show a toast depending on the action (trash or restore)
 			const action = variables?.action || '';
 			const count = variables?.entry_ids?.length || 1;
@@ -257,6 +261,10 @@ export const useDeleteEntries = () => {
 		onSuccess: ( data, variables ) => {
 			// Invalidate and refetch entries list
 			queryClient.invalidateQueries( { queryKey: entriesKeys.lists() } );
+
+			// Invalidate all entry details to refresh navigation and data
+			queryClient.invalidateQueries( { queryKey: entriesKeys.details() } );
+
 			const count = variables?.entry_ids?.length || 1;
 			let message = '';
 			if ( count === 1 ) {
