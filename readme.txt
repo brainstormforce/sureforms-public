@@ -376,6 +376,7 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 == Changelog ==
 = x.x.x =
 * Fix: Resolved an issue where multi choice options are translated to the end user language in entries.
+* Fix: Resolved an issue where HTML block content is being corrupted while duplicating forms.
 * Improvement: Updated UI for attributes for editor sidebar for multi choice block.
 * Fixed: Resolved an issue where Spectra button styles are being affected from SureForms css.
 * Improvement: Updated the flag of Syria in phone number block.
