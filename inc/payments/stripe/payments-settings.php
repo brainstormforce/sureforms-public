@@ -162,7 +162,7 @@ class Payments_Settings {
 
 		$settings['payment_settings'] = $payment_settings;
 
-		return $settings;
+		return apply_filters( 'srfm_get_payments_settings', $settings );
 	}
 
 	/**
@@ -250,9 +250,11 @@ class Payments_Settings {
 		// No response or error, redirect with generic error.
 		$redirect_url = add_query_arg(
 			[
-				'page'  => 'sureforms_form_settings',
-				'tab'   => 'payments-settings',
-				'error' => rawurlencode( __( 'OAuth callback missing response data.', 'sureforms' ) ),
+				'page'    => 'sureforms_form_settings',
+				'tab'     => 'payments-settings',
+				'subpage' => 'payment-methods',
+				'gateway' => 'stripe',
+				'error'   => rawurlencode( __( 'OAuth callback missing response data.', 'sureforms' ) ),
 			],
 			admin_url( 'admin.php' )
 		);
@@ -972,8 +974,19 @@ class Payments_Settings {
 		// Create webhooks for both live and test mode.
 		$this->setup_stripe_webhooks();
 
-		// Redirect to SureForms payments settings.
-		wp_safe_redirect( admin_url( 'admin.php?page=sureforms_form_settings&tab=payments-settings&connected=1' ) );
+		// Redirect to SureForms payments settings with proper subpage and gateway parameters.
+		$redirect_url = add_query_arg(
+			[
+				'page'      => 'sureforms_form_settings',
+				'tab'       => 'payments-settings',
+				'subpage'   => 'payment-methods',
+				'gateway'   => 'stripe',
+				'connected' => '1',
+			],
+			admin_url( 'admin.php' )
+		);
+
+		wp_safe_redirect( $redirect_url );
 		exit;
 	}
 
@@ -1016,12 +1029,14 @@ class Payments_Settings {
 		// Clean up transients.
 		delete_transient( 'srfm_stripe_connect_nonce_' . get_current_user_id() );
 
-		// Redirect with error.
+		// Redirect with error including proper subpage and gateway parameters.
 		$redirect_url = add_query_arg(
 			[
-				'page'  => 'sureforms_form_settings',
-				'tab'   => 'payments-settings',
-				'error' => rawurlencode( $error_message ),
+				'page'    => 'sureforms_form_settings',
+				'tab'     => 'payments-settings',
+				'subpage' => 'payment-methods',
+				'gateway' => 'stripe',
+				'error'   => rawurlencode( $error_message ),
 			],
 			admin_url( 'admin.php' )
 		);

@@ -1118,13 +1118,21 @@ class Post_Types {
 				},
 				'default'           => wp_json_encode(
 					[
-						'status'     => false,
-						'maxEntries' => 0,
-						'date'       => '',
-						'hours'      => '12',
-						'minutes'    => '00',
-						'meridiem'   => 'AM',
-						'message'    => Translatable::get_default_form_restriction_message(),
+						'status'                      => false,
+						'maxEntries'                  => 0,
+						'date'                        => '',
+						'hours'                       => '12',
+						'minutes'                     => '00',
+						'meridiem'                    => 'AM',
+						'message'                     => Translatable::get_default_form_restriction_message(),
+						// Form Scheduling meta.
+						'schedulingStatus'            => false,
+						'startDate'                   => '',
+						'startHours'                  => '12',
+						'startMinutes'                => '00',
+						'startMeridiem'               => 'AM',
+						'schedulingNotStartedMessage' => __( 'This form is not yet available. Please check back after the scheduled start time.', 'sureforms' ),
+						'schedulingEndedMessage'      => __( 'This form is no longer accepting submissions. The submission period has ended.', 'sureforms' ),
 					]
 				),
 			]
@@ -1150,14 +1158,45 @@ class Post_Types {
 		}
 
 		$sanitized = [
-			'status'     => isset( $meta_value['status'] ) ? wp_validate_boolean( $meta_value['status'] ) : false,
-			'maxEntries' => isset( $meta_value['maxEntries'] ) ? absint( $meta_value['maxEntries'] ) : 0,
-			'date'       => isset( $meta_value['date'] ) ? sanitize_text_field( $meta_value['date'] ) : '',
-			'hours'      => isset( $meta_value['hours'] ) ? sanitize_text_field( $meta_value['hours'] ) : '12',
-			'minutes'    => isset( $meta_value['minutes'] ) ? sanitize_text_field( $meta_value['minutes'] ) : '00',
-			'meridiem'   => isset( $meta_value['meridiem'] ) ? sanitize_text_field( $meta_value['meridiem'] ) : 'AM',
-			'message'    => isset( $meta_value['message'] ) ? sanitize_textarea_field( $meta_value['message'] ) : Translatable::get_default_form_restriction_message(),
+			'status'                      => isset( $meta_value['status'] ) ? wp_validate_boolean( $meta_value['status'] ) : false,
+			'maxEntries'                  => isset( $meta_value['maxEntries'] ) ? absint( $meta_value['maxEntries'] ) : 0,
+			'date'                        => isset( $meta_value['date'] ) ? sanitize_text_field( $meta_value['date'] ) : '',
+			'hours'                       => isset( $meta_value['hours'] ) ? sanitize_text_field( $meta_value['hours'] ) : '12',
+			'minutes'                     => isset( $meta_value['minutes'] ) ? sanitize_text_field( $meta_value['minutes'] ) : '00',
+			'meridiem'                    => isset( $meta_value['meridiem'] ) ? sanitize_text_field( $meta_value['meridiem'] ) : 'AM',
+			'message'                     => isset( $meta_value['message'] ) ? sanitize_textarea_field( $meta_value['message'] ) : Translatable::get_default_form_restriction_message(),
+			// Form Scheduling meta.
+			'schedulingStatus'            => isset( $meta_value['schedulingStatus'] ) ? wp_validate_boolean( $meta_value['schedulingStatus'] ) : false,
+			'startDate'                   => isset( $meta_value['startDate'] ) ? sanitize_text_field( $meta_value['startDate'] ) : '',
+			'startHours'                  => isset( $meta_value['startHours'] ) ? sanitize_text_field( $meta_value['startHours'] ) : '12',
+			'startMinutes'                => isset( $meta_value['startMinutes'] ) ? sanitize_text_field( $meta_value['startMinutes'] ) : '00',
+			'startMeridiem'               => isset( $meta_value['startMeridiem'] ) ? sanitize_text_field( $meta_value['startMeridiem'] ) : 'AM',
+			'schedulingNotStartedMessage' => isset( $meta_value['schedulingNotStartedMessage'] ) ? sanitize_textarea_field( $meta_value['schedulingNotStartedMessage'] ) : __( 'This form is not yet available. Please check back after the scheduled start time.', 'sureforms' ),
+			'schedulingEndedMessage'      => isset( $meta_value['schedulingEndedMessage'] ) ? sanitize_textarea_field( $meta_value['schedulingEndedMessage'] ) : __( 'This form is no longer accepting submissions. The submission period has ended.', 'sureforms' ),
 		];
+
+		// Validate scheduling: start date/time must be before end date/time.
+		if ( $sanitized['schedulingStatus'] && ! empty( $sanitized['startDate'] ) && ! empty( $sanitized['date'] ) ) {
+			$start_datetime = $this->create_datetime_object(
+				$sanitized['startDate'],
+				$sanitized['startHours'],
+				$sanitized['startMinutes'],
+				$sanitized['startMeridiem']
+			);
+
+			$end_datetime = $this->create_datetime_object(
+				$sanitized['date'],
+				$sanitized['hours'],
+				$sanitized['minutes'],
+				$sanitized['meridiem']
+			);
+
+			// If start date/time is not before end date/time, disable scheduling.
+			if ( $start_datetime && $end_datetime && $start_datetime >= $end_datetime ) {
+				// Disable scheduling status due to invalid date range.
+				$sanitized['schedulingStatus'] = false;
+			}
+		}
 
 		// Return the sanitized data as a JSON string.
 		return wp_json_encode( $sanitized );
@@ -1291,6 +1330,39 @@ class Post_Types {
 
 		// Exclude the SureForms post type from AIOSEO's public post types.
 		add_filter( 'aioseo_public_post_types', [ $this, 'unset_sureforms_post_type' ] );
+	}
+
+	/**
+	 * Creates a DateTime object from date string and time components.
+	 *
+	 * @param string $date_str Date string.
+	 * @param string $hours Hours in 12-hour format.
+	 * @param string $minutes Minutes.
+	 * @param string $meridiem AM or PM.
+	 * @since x.x.x
+	 * @return \DateTime|null DateTime object or null if invalid.
+	 */
+	private function create_datetime_object( $date_str, $hours, $minutes, $meridiem ) {
+		if ( empty( $date_str ) ) {
+			return null;
+		}
+
+		try {
+			$date = new \DateTime( $date_str );
+
+			// Convert 12-hour format to 24-hour format.
+			$hour_24 = intval( $hours );
+			if ( 'PM' === $meridiem && 12 !== $hour_24 ) {
+				$hour_24 += 12;
+			} elseif ( 'AM' === $meridiem && 12 === $hour_24 ) {
+				$hour_24 = 0;
+			}
+
+			$date->setTime( $hour_24, intval( $minutes ), 0 );
+			return $date;
+		} catch ( \Exception $e ) {
+			return null;
+		}
 	}
 
 	/**

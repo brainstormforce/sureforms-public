@@ -29,6 +29,7 @@ import {
 	Cpu,
 	Link2,
 	Save,
+	Split,
 } from 'lucide-react';
 
 import Suretriggers from '../integrations/suretriggers';
@@ -156,6 +157,50 @@ const Dialog = ( {
 				),
 			},
 			{
+				id: 'conditional-confirmations-preview',
+				label: __( 'Conditional Confirmations', 'sureforms' ),
+				icon: <Split />,
+				component: (
+					<FeaturePreview
+						featureName={ __(
+							'Conditional Confirmations',
+							'sureforms'
+						) }
+						featureHelpText={ __(
+							'Set up the message or redirect users will see after submitting the form.',
+							'sureforms'
+						) }
+						icon={
+							<Split
+								className="text-orange-500"
+								size={ 40 }
+								strokeWidth={ 1 }
+							/>
+						}
+						title={ __( 'Conditional Confirmations', 'sureforms' ) }
+						subtitle={ __(
+							'Show the right message to the right user based on how they respond. Personalize confirmations with smart conditions and guide users to the next best step automatically.',
+							'sureforms'
+						) }
+						featureList={ [
+							__(
+								'Display different confirmation messages based on form responses.',
+								'sureforms'
+							),
+							__(
+								'Redirect users to specific pages or URLs conditionally.',
+								'sureforms'
+							),
+							__(
+								'Create personalized thank-you messages without extra forms.',
+								'sureforms'
+							),
+						] }
+						utmMedium="conditional-confirmations-preview-single-form-settings"
+					/>
+				),
+			},
+			{
 				id: 'spam_protection',
 				label: __( 'Spam Protection', 'sureforms' ),
 				icon: <TriangleAlert />,
@@ -252,7 +297,9 @@ const Dialog = ( {
 				icon: <Settings />,
 				component: (
 					<>
-						<FormRestriction />
+						<FormRestriction
+							setHasValidationErrors={ setHasValidationErrors }
+						/>
 						<Compliance { ...{ complianceData } } />
 					</>
 				),
