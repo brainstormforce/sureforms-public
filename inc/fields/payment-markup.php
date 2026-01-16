@@ -128,7 +128,7 @@ class Payment_Markup extends Base {
 	 * Payment methods enabled for this form.
 	 *
 	 * @var array
-	 * @since x.x.x
+	 * @since 2.4.0
 	 */
 	protected $payment_methods;
 
@@ -379,7 +379,7 @@ class Payment_Markup extends Base {
 	 * Get registered payment methods for display.
 	 *
 	 * @return array Array of payment method configurations.
-	 * @since x.x.x
+	 * @since 2.4.0
 	 */
 	private function get_registered_payment_methods() {
 		$methods = [];
@@ -418,7 +418,7 @@ class Payment_Markup extends Base {
 	 *
 	 * @param array<mixed> $methods Array of payment methods.
 	 * @return string Payment methods accordion markup.
-	 * @since x.x.x
+	 * @since 2.4.0
 	 */
 	private function render_payment_methods_accordion( $methods ) {
 		if ( empty( $methods ) || ! is_array( $methods ) ) {

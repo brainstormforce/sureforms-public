@@ -1099,7 +1099,7 @@ class Payment_Helper {
 	 * @param string|float $amount      The amount to normalize.
 	 * @param string       $format_type The format type: 'eu-style' or 'us-style'.
 	 * @return float The normalized amount as a float.
-	 * @since x.x.x
+	 * @since 2.4.0
 	 */
 	private static function normalize_amount_by_format( $amount, $format_type = 'us-style' ) {
 		// If already a number, return it.

@@ -1339,7 +1339,7 @@ class Post_Types {
 	 * @param string $hours Hours in 12-hour format.
 	 * @param string $minutes Minutes.
 	 * @param string $meridiem AM or PM.
-	 * @since x.x.x
+	 * @since 2.4.0
 	 * @return \DateTime|null DateTime object or null if invalid.
 	 */
 	private function create_datetime_object( $date_str, $hours, $minutes, $meridiem ) {

@@ -7,7 +7,7 @@
  * - Providing unified interface for payment processing
  *
  * @package
- * @since x.x.x
+ * @since 2.4.0
  */
 
 class PaymentManager {

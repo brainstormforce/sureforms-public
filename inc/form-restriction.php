@@ -139,7 +139,7 @@ class Form_Restriction {
 	 * Check if the form is outside its scheduled time period.
 	 *
 	 * @param array<string, mixed> $form_restriction The form restriction settings.
-	 * @since x.x.x
+	 * @since 2.4.0
 	 * @return bool True if form is outside schedule, false otherwise.
 	 */
 	public static function is_form_outside_schedule( $form_restriction ) {
@@ -152,7 +152,7 @@ class Form_Restriction {
 	 *
 	 * @param string               $scheduling_state The scheduling state ('not_started', 'ended', 'active', or 'disabled').
 	 * @param array<string, mixed> $form_restriction The form restriction settings.
-	 * @since x.x.x
+	 * @since 2.4.0
 	 * @return string The appropriate restriction message.
 	 */
 	public static function get_restriction_message_by_state( $scheduling_state, $form_restriction ) {
@@ -175,7 +175,7 @@ class Form_Restriction {
 	 * Get the scheduling state for a form.
 	 *
 	 * @param array<string, mixed> $form_restriction The form restriction settings.
-	 * @since x.x.x
+	 * @since 2.4.0
 	 * @return string 'not_started', 'ended', 'active', or 'disabled'.
 	 */
 	public static function get_form_scheduling_state( $form_restriction ) {

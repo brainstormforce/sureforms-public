@@ -1475,7 +1475,7 @@ class Front_End {
 	 *
 	 * @param string $subscription_id The subscription ID from payment gateway.
 	 * @param int    $entry_id        The form entry ID to link with payment.
-	 * @since x.x.x
+	 * @since 2.4.0
 	 * @return bool True if payment entry updated, false otherwise.
 	 */
 	private function update_payment_entry_id_by_subscription_id( $subscription_id, $entry_id ) {

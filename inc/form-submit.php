@@ -655,7 +655,7 @@ class Form_Submit {
 		 * @param array<mixed> $response The response data.
 		 * @param array<string> $form_data The original form data.
 		 * @param array<mixed> $submission_data The processed submission data.
-		 * @since x.x.x
+		 * @since 2.4.0
 		 */
 		return apply_filters( 'srfm_form_submission_response', $response, $form_data, $submission_data );
 	}
