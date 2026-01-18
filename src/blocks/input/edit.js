@@ -7,7 +7,7 @@ import {
 	SelectControl,
 	ExternalLink,
 } from '@wordpress/components';
-import { InspectorControls } from '@wordpress/block-editor';
+import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
 import { useEffect } from '@wordpress/element';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {
@@ -294,8 +294,14 @@ const Edit = ( props ) => {
 
 	const filterOptions = attributeOptionsWithFilter( attributeOptions, props );
 
+	const blockProps = useBlockProps(
+		{
+			className: className,
+		}
+	);
+
 	return (
-		<div className={ className }>
+		<div { ...blockProps }>
 			<InspectorControls>
 				<InspectorTabs
 					tabs={ [ 'general', 'advance' ] }

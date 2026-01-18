@@ -63,12 +63,7 @@ const SureformsFormSpecificSettings = () => {
 	console.log( { 'getRootContainer open': rootContainer } );
 
 	useEffect( () => {
-		// const getRootContainer = document.querySelector( '.is-root-container' );
-
-		// setRootContainer( document.querySelector( '.is-root-container' ) );
-		// setRootContainerDiv(
-		// 	document.querySelector( '.edit-post-visual-editor__content-area' )
-		// );
+		const getRootContainer = document.querySelector( '.is-root-container' );
 
 		let intervalId = null;
 		let timeoutId = null;
