@@ -165,25 +165,38 @@ function initializeDropdown() {
 			 */
 			const tomInputInstance = new TomSelect( element, config );
 
-			// Initialize preselected values for multi-select dropdowns
+			// Initialize preselected or preserved values for dropdowns
 			requestAnimationFrame( () => {
+				// First check for preserved value (user-selected value that needs to be restored)
+				const preservedAttr = element.getAttribute(
+					'data-srfm-preserved-value'
+				);
 				const preselectedAttr =
 					element.getAttribute( 'data-preselected' ); // Pass array of values as JSON string
-				if ( preselectedAttr ) {
+
+				let valuesToSet = null;
+
+				// Preserved value takes precedence over preselected
+				if ( preservedAttr ) {
 					try {
-						const preselectedValues = JSON.parse( preselectedAttr ); // Convert JSON string to array
-						if (
-							Array.isArray( preselectedValues ) &&
-							preselectedValues.length > 0
-						) {
-							tomInputInstance.setValue( preselectedValues ); // TomSelect API sets multiple values
-						}
+						valuesToSet = JSON.parse( preservedAttr );
+					} catch ( e ) {
+						// If parsing fails, skip preserving values
+					}
+				} else if ( preselectedAttr ) {
+					try {
+						valuesToSet = JSON.parse( preselectedAttr );
 					} catch ( e ) {
 						console.warn(
 							'Failed to parse preselected values for dropdown',
 							e
 						);
 					}
+				}
+
+				// Set the values if we have any
+				if ( Array.isArray( valuesToSet ) && valuesToSet.length > 0 ) {
+					tomInputInstance.setValue( valuesToSet ); // TomSelect API sets multiple values
 				}
 
 				// Update hidden input field with current items
@@ -333,6 +346,34 @@ function destroyTomSelect( dropdown ) {
 	// Check if there's an instance in the global registry
 	if ( window?.srfm && window.srfm[ inputName ] ) {
 		try {
+			// Preserve current selected value before destroying
+			const currentValue = window.srfm[ inputName ].getValue();
+
+			// Always update preserved value based on current state
+			if ( currentValue ) {
+				// Store value as JSON to handle both single and multi-select uniformly
+				if (
+					Array.isArray( currentValue ) &&
+					currentValue.length > 0
+				) {
+					dropdown.setAttribute(
+						'data-srfm-preserved-value',
+						JSON.stringify( currentValue )
+					);
+				} else if (
+					typeof currentValue === 'string' &&
+					currentValue !== ''
+				) {
+					dropdown.setAttribute(
+						'data-srfm-preserved-value',
+						JSON.stringify( [ currentValue ] )
+					);
+				}
+			} else {
+				// If no value selected, remove preserved attribute so it doesn't restore old value
+				dropdown.removeAttribute( 'data-srfm-preserved-value' );
+			}
+
 			// Destroy the instance from the registry
 			window.srfm[ inputName ].destroy();
 			// Remove from registry
@@ -344,8 +385,10 @@ function destroyTomSelect( dropdown ) {
 
 	// Try to access TomSelect directly on the element as a fallback
 	try {
-		if ( dropdown.tomSelect ) {
-			dropdown.tomSelect.destroy();
+		// Check both .tomselect (standard) and .tomSelect (legacy) properties
+		const tomSelectInstance = dropdown.tomselect || dropdown.tomSelect;
+		if ( tomSelectInstance ) {
+			tomSelectInstance.destroy();
 		}
 	} catch ( e ) {
 		// Silent catch in case destroy fails

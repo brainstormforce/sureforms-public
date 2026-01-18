@@ -175,7 +175,7 @@ class Multichoice_Markup extends Base {
 											<!-- This label content is used in conditional logic and for storing values in a hidden input field as comma-separated values.
 											The markup should remain unchanged.
 											If you make any changes here, ensure the corresponding JavaScript value functionality and conditional logic are also updated. -->
-											<label for="srfm-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id . '-' . $i ); ?>"><?php echo isset( $option['optionTitle'] ) ? esc_html( $option['optionTitle'] ) : ''; ?></label>
+											<label for="srfm-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id . '-' . $i ); ?>" data-option-text="<?php echo isset( $option['optionTitle'] ) ? esc_attr( $option['optionTitle'] ) : ''; ?>"><?php echo isset( $option['optionTitle'] ) ? esc_html( $option['optionTitle'] ) : ''; ?></label>
 										</div>
 										<div class="srfm-icon-container"><?php echo wp_kses( $check_svg, $allowed_tags_svg ) . wp_kses( $unchecked_svg, $allowed_tags_svg ); ?></div>
 									</div>
