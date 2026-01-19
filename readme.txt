@@ -375,6 +375,7 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 
 == Changelog ==
 = x.x.x =
+* Fix: Resolved an issue where undefined string is being added with smart tag in textarea default value.
 * Fix: Resolved an issue where multiple form validation are being triggered when both have v3 reCAPTCHA and embedded in a same page.
 * New: Added navigation for single entries page.
 * Fix: Resolved an issue where multi choice options are translated to the end user language in entries.
