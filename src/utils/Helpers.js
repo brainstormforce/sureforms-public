@@ -1048,11 +1048,13 @@ export const formatDateTime = ( dateString, submissionInfo = false ) => {
  * Internal dependencies
  */
 export function useShouldIframe() {
-	const isGutenbergPlugin = globalThis.IS_GUTENBERG_PLUGIN ? true : false;
+	const isGutenbergPlugin = window.globalThis.IS_GUTENBERG_PLUGIN
+		? true
+		: false;
 
-	return useSelect( ( select ) => {
+	return useSelect( ( _select ) => {
 		const { getEditorSettings, getCurrentPostType, getDeviceType } =
-			select( editorStore );
+			_select( editorStore );
 		return (
 			// If the theme is block based and the Gutenberg plugin is active,
 			// we ALWAYS use the iframe for consistency across the post and site
@@ -1066,7 +1068,7 @@ export function useShouldIframe() {
 			[ 'wp_template', 'wp_block' ].includes( getCurrentPostType() ) ||
 			// Finally, still iframe the editor if all blocks are v3 (which means
 			// they are marked as iframe-compatible).
-			select( blocksStore )
+			_select( blocksStore )
 				.getBlockTypes()
 				.every( ( type ) => type.apiVersion >= 3 )
 		);

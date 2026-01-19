@@ -190,7 +190,9 @@ export const useTrashEntries = () => {
 			queryClient.invalidateQueries( { queryKey: entriesKeys.lists() } );
 
 			// Invalidate all entry details to refresh navigation and data
-			queryClient.invalidateQueries( { queryKey: entriesKeys.details() } );
+			queryClient.invalidateQueries( {
+				queryKey: entriesKeys.details(),
+			} );
 
 			// Show a toast depending on the action (trash or restore)
 			const action = variables?.action || '';
@@ -263,7 +265,9 @@ export const useDeleteEntries = () => {
 			queryClient.invalidateQueries( { queryKey: entriesKeys.lists() } );
 
 			// Invalidate all entry details to refresh navigation and data
-			queryClient.invalidateQueries( { queryKey: entriesKeys.details() } );
+			queryClient.invalidateQueries( {
+				queryKey: entriesKeys.details(),
+			} );
 
 			const count = variables?.entry_ids?.length || 1;
 			let message = '';

@@ -64,13 +64,29 @@ const SureformsFormSpecificSettings = () => {
 	const [ rootContainer, setRootContainer ] = useState( null );
 	const [ documentBody, setDocumentBody ] = useState( null );
 
-	console.log( { 'rootContainer open': rootContainer, documentBody, shouldIframe } );
+	console.log( {
+		'rootContainer open': rootContainer,
+		documentBody,
+		shouldIframe,
+	} );
 
 	useEffect( () => {
 		let intervalId = null;
 		let timeoutId = null;
 
 		const tryResolveIframeBody = () => {
+			// Case with "editor" element without iframe.
+			if ( ! shouldIframe ) {
+				setDocumentBody( document.getElementsByTagName( 'body' )[ 0 ] );
+				setRootContainer(
+					document.querySelector( '.is-root-container' )
+				);
+				clearInterval( intervalId );
+				clearTimeout( timeoutId );
+				return;
+			}
+
+			// Case with "editor-canvas" iframe.
 			const iframe = document.querySelector(
 				'iframe[name="editor-canvas"]'
 			);

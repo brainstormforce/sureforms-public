@@ -44,6 +44,9 @@ const Edit = ( props ) => {
 		readOnly,
 	} = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
+	const blockProps = useBlockProps( {
+		className,
+	} );
 
 	useEffect( () => {
 		if ( formId !== currentFormId ) {
@@ -293,12 +296,6 @@ const Edit = ( props ) => {
 	];
 
 	const filterOptions = attributeOptionsWithFilter( attributeOptions, props );
-
-	const blockProps = useBlockProps(
-		{
-			className: className,
-		}
-	);
 
 	return (
 		<div { ...blockProps }>
