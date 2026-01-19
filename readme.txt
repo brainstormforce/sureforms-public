@@ -375,14 +375,14 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 
 == Changelog ==
 = 2.4.0 - 19th January 2026 =
-* New: Added Form Scheduling restriction.
-* New: Added navigation for single entries page.
-* Improvement: Updated UI for attributes for editor sidebar for multi choice block.
-* Improvement: Updated the flag of Syria in phone number block.
-* Fix: Resolved an issue where multiple form validation are being triggered when both have v3 reCAPTCHA and embedded in a same page.
-* Fix: Resolved an issue where multi choice options are translated to the end user language in entries.
-* Fix: Resolved an issue where HTML block content is being corrupted while duplicating forms.
-* Fix: Resolved an issue where Spectra button styles are being affected from SureForms css.
+* New: Added form scheduling restrictions with start and end date/time.
+* New: Added Previous/Next navigation for single entry page.
+* Improvement: Improved multi-choice block settings UI.
+* Improvement: Updated Syria flag in the Phone field.
+* Fix: Fixed HTML block content corruption when duplicating forms.
+* Fix: Fixed multi-choice options being translated in entries.
+* Fix: Fixed reCAPTCHA v3 validation triggering multiple times on the same page.
+* Fix: Fixed Spectra button styles being affected by SureForms CSS.
 = 2.3.0 - 5th January 2026 =
 * New: Added option to duplicate forms.
 * New: Added preselect option for dropdown and multiple choice field.
@@ -392,13 +392,6 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 * Fix: Fixed duplication of email notification IDs.
 = 2.2.2 - 26th December 2025 =
 * Fix: Addressed a security bug. Props to Wordfence for reporting it responsibly.
-= 2.2.1 - 19th December 2025 =
-* Fix: Addressed a security bug. Props to Wordfence for reporting it responsibly.
-* Fix: Resolved Bricks v2.2-beta conflict with SureForms.
-= 2.2.0 - 16th December 2025 =
-* Improvement: Added confirmation step before moving items to trash in Forms and Entries lists.
-* Improvement: Optimized script loading to improve speed and efficiency.
-* Fix: Resolved Conversational Form issues with Image and Icon fields.
 
 The full changelog is available [here](https://sureforms.com/whats-new/).
 
