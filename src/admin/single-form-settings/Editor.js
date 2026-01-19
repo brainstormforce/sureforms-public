@@ -60,11 +60,8 @@ const SureformsFormSpecificSettings = () => {
 	const { editPost } = useDispatch( editorStore );
 	const [ rootContainer, setRootContainer ] = useState( null );
 	const [ iframeBody, setIframeBody ] = useState( null );
-	console.log( { 'getRootContainer open': rootContainer } );
 
 	useEffect( () => {
-		const getRootContainer = document.querySelector( '.is-root-container' );
-
 		let intervalId = null;
 		let timeoutId = null;
 
@@ -86,18 +83,17 @@ const SureformsFormSpecificSettings = () => {
 				'.block-editor-iframe__body'
 			);
 
-			// ❗ THIS is the real readiness check
+			// This is the real readiness check
 			if ( ! getIframeBody || ! getIframeBody.children.length ) {
 				return false;
 			}
 
-			// Add the class "srmf-hello" to the iframe body
 			setIframeBody( getIframeBody );
 
 			const getRootContainer =
 				getIframeBody.querySelector( '.is-root-container' );
 
-			// ✅ iframe body is fully ready
+			// Iframe body is fully ready
 			setRootContainer( getRootContainer );
 
 			clearInterval( intervalId );
