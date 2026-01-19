@@ -177,6 +177,16 @@
 				}
 			}
 		}
+
+		// Hide submit button when PayPal is the active payment method
+		.paypal-button-sibling.paypal-method-active {
+			display: none !important;
+		}
+
+		// Initially hide the paypal if not active
+		.srfm-paypal-button-container[data-submit-button-sibling="true"]:not( .paypal-method-active ) {
+			display: none !important;
+		}
 	}
 
 	.srfm-success-box {
@@ -271,6 +281,97 @@
 			font-weight: var( --srfm-description-font-weight );
 			line-height: var( --srfm-description-line-height );
 		}
+
+		.srfm-payment-methods-accordion {
+			display: flex;
+			flex-direction: column;
+			gap: calc( var( --srfm-column-gap-between-blocks ) / 2 );
+
+			.srfm-accordion-item {
+				border: 1px solid #1e1e1e40;
+				border-radius: 6px;
+				.srfm-accordion-header {
+					display: flex;
+					justify-content: space-between;
+					align-items: center;
+					padding: 16px;
+					cursor: pointer;
+					.srfm-payment-input-wrapper {
+						display: flex;
+						align-items: center;
+						gap: 8px;
+					}
+				}
+
+				.srfm-accordion-content {
+					display: none;
+				}
+
+				&.srfm-payment-active {
+					.srfm-accordion-content {
+						display: block;
+						padding: 0 16px 16px 16px;
+					}
+				}
+
+				.srfm-payment-method-radio {
+					width: 14px;
+					height: 14px;
+					border-radius: 50%;
+					appearance: none;
+					-webkit-appearance: none;
+					-moz-appearance: none;
+					outline: none;
+					cursor: pointer;
+					margin: 0;
+					padding: 0;
+					flex-shrink: 0;
+
+					// Unselected/default state
+					border: 1.25px solid #1e1e1e80;
+					background-color: transparent;
+
+					// Selected/chosen state
+					&:checked {
+						border: 5px solid #0c78fb;
+						background-color: transparent;
+					}
+
+					// Focus state for accessibility
+					&:focus {
+						outline: 2px solid #0c78fb40;
+						outline-offset: 2px;
+					}
+				}
+
+				// PayPal css.
+				.srfm-paypal-placeholder-message {
+					font-size: 14px;
+					font-family: inherit;
+					line-height: 20px;
+					color: #1e1e1ea6;
+					font-weight: 400;
+				}
+			}
+
+			&.srfm-single-payment-method {
+				.srfm-accordion-item[data-method="stripe"] {
+					.srfm-accordion-header {
+						display: none;
+					}
+				}
+
+				.srfm-payment-active {
+					.srfm-accordion-content {
+						padding: 16px 16px 16px 16px;
+					}
+				}
+
+				.srfm-payment-method-radio {
+					display: none;
+				}
+			}
+		}
 	}
 
 	@keyframes srfm-spin {
@@ -279,6 +380,48 @@
 		}
 		100% {
 			transform: rotate( 360deg );
+		}
+	}
+
+	// PayPal button container loading state
+	.srfm-paypal-button-container {
+		position: relative;
+		z-index: 1;
+
+		// Loading state
+		&.srfm-paypal-loading {
+			// Disable pointer events on buttons
+			pointer-events: none;
+
+			// Create overlay using ::before
+			&::before {
+				content: "";
+				position: absolute;
+				top: 0;
+				left: 0;
+				right: 0;
+				bottom: 0;
+				background-color: rgba( 255, 255, 255, 0.8 );
+				z-index: 999;
+				border-radius: 4px;
+			}
+
+			// Create spinner using ::after
+			&::after {
+				content: "";
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				width: 24px;
+				height: 24px;
+				margin-top: -12px;
+				margin-left: -12px;
+				border: 3px solid #f3f3f3;
+				border-top: 3px solid #0c78fb;
+				border-radius: 50%;
+				animation: srfm-spin 1s linear infinite;
+				z-index: 1000;
+			}
 		}
 	}
 }

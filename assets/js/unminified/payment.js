@@ -55,9 +55,11 @@ function validateThePaymentBlock( form ) {
 			};
 		}
 	} else if ( amountType === 'variable' ) {
-		// For variable amounts, the amount is stored in the paymentInput.value
+		// For variable amounts, the amount is stored in the paymentInput.dataset.currentAmount
 		// which is populated by the PAYMENT_UTILITY.updatePaymentBlockAmount function
-		const variableAmount = parseFloat( paymentInput.value || 0 );
+		const variableAmount = parseFloat(
+			paymentInput.dataset.currentAmount || 0
+		);
 
 		if ( isNaN( variableAmount ) || variableAmount <= 0 ) {
 			return {
@@ -243,53 +245,81 @@ export async function handleFormPayment( form ) {
  */
 async function processAllPayments( form, paymentBlock ) {
 	try {
-		// Step 1: Create payment intents for all payment blocks
-		const paymentResultOnCreateIntent =
-			await window.StripePayment.createPaymentIntentsForForm(
-				form,
-				paymentBlock
-			);
+		// Get the payment manager for this block
+		const blockId = paymentBlock.getAttribute( 'data-block-id' );
+		const paymentManager = window.srfmPaymentManagers?.[ blockId ];
 
-		if ( ! paymentResultOnCreateIntent?.valid ) {
+		if ( ! paymentManager ) {
+			// Fallback to Stripe if payment manager not found
+			return await processStripePayment( form, paymentBlock, blockId );
+		}
+
+		// Route to the correct payment gateway based on selected method
+		return await paymentManager.processPayment( form );
+	} catch ( error ) {
+		return {
+			valid: false,
+			message: window.srfmPaymentUtility?.getStripeStrings(
+				'payment_failed',
+				'Payment failed'
+			),
+		};
+	}
+}
+
+/**
+ * Fallback Stripe payment processing
+ * Used when payment manager is not available
+ * @param {HTMLElement} form         - The form element.
+ * @param {HTMLElement} paymentBlock - The payment block element.
+ * @param {string}      blockId      - The block ID.
+ * @return {Promise<Object>} Payment result object.
+ */
+async function processStripePayment( form, paymentBlock, blockId ) {
+	const paymentResultOnCreateIntent =
+		await window.StripePayment.createPaymentIntentsForForm(
+			form,
+			paymentBlock
+		);
+
+	if ( ! paymentResultOnCreateIntent?.valid ) {
+		return {
+			valid: false,
+			message: paymentResultOnCreateIntent.message,
+		};
+	}
+
+	const paymentData = window.srfmPaymentElements?.[ blockId ];
+
+	if ( paymentData && paymentData.clientSecret ) {
+		const paymentResult = await window.StripePayment.srfmConfirmPayment(
+			blockId,
+			paymentData,
+			form
+		).catch( () => {
+			return null;
+		} );
+
+		if ( ! paymentResult?.valid ) {
 			return {
 				valid: false,
-				message: paymentResultOnCreateIntent.message,
+				message: paymentResult.message,
+				paymentResult: null,
 			};
 		}
 
-		// Step 2: Confirm payment with error handling
-		const blockId = paymentBlock.getAttribute( 'data-block-id' );
-		const paymentData = window.srfmPaymentElements?.[ blockId ];
-
-		if ( paymentData && paymentData.clientSecret ) {
-			const paymentResult = await window.StripePayment.srfmConfirmPayment(
-				blockId,
-				paymentData,
-				form
-			).catch( () => {
-				return null;
-			} );
-
-			if ( ! paymentResult?.valid ) {
-				return {
-					valid: false,
-					message: paymentResult.message,
-					paymentResult: null,
-				};
-			}
-
-			// Return true if payment succeeded (result is truthy and not empty string)
-			return {
-				valid: true,
-				message: window.srfmPaymentUtility?.getStripeStrings(
-					'payment_successful',
-					'Payment successful'
-				),
-				paymentResult,
-			};
-		}
-		return false;
-	} catch ( error ) {
-		return false;
+		return {
+			valid: true,
+			message: window.srfmPaymentUtility?.getStripeStrings(
+				'payment_successful',
+				'Payment successful'
+			),
+			paymentResult,
+		};
 	}
+
+	return {
+		valid: false,
+		message: 'Payment data not found',
+	};
 }
