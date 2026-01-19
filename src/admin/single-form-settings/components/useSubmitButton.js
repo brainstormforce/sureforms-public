@@ -71,7 +71,7 @@ const SubmitButton = ( props ) => {
 };
 
 export default function useSubmitButton( args ) {
-	const { isInlineButtonBlockPresent, updateMeta, editorMode, iframeBody } =
+	const { isInlineButtonBlockPresent, updateMeta, editorMode, documentBody } =
 		args;
 
 	function addSubmitButton( elm ) {
@@ -110,18 +110,18 @@ export default function useSubmitButton( args ) {
 	}
 
 	useEffect( () => {
-		if ( ! iframeBody ) {
+		if ( ! documentBody ) {
 			return;
 		}
 
 		setTimeout( () => {
-			const elm = iframeBody.querySelector(
+			const elm = documentBody.querySelector(
 				'.block-editor-block-list__layout'
 			);
 
 			// If Custom Button is present, remove the default button.
 			if ( isInlineButtonBlockPresent ) {
-				const submitBtn = iframeBody.querySelectorAll(
+				const submitBtn = documentBody.querySelectorAll(
 					'.srfm-submit-btn-container'
 				);
 				if ( submitBtn.length > 0 ) {
@@ -136,7 +136,7 @@ export default function useSubmitButton( args ) {
 				}
 
 				// remove duplicated submit button from the view after inline button is removed
-				const submitBtn = iframeBody.querySelectorAll(
+				const submitBtn = documentBody.querySelectorAll(
 					'.srfm-submit-btn-container'
 				);
 				if ( submitBtn.length > 1 ) {
@@ -144,7 +144,7 @@ export default function useSubmitButton( args ) {
 				}
 
 				// remove duplicated inserter from the view after inline button is removed
-				const appender = iframeBody.querySelectorAll(
+				const appender = documentBody.querySelectorAll(
 					'.srfm-custom-block-inserter'
 				);
 				if ( appender.length > 1 ) {
@@ -152,5 +152,5 @@ export default function useSubmitButton( args ) {
 				}
 			}
 		}, 200 );
-	}, [ isInlineButtonBlockPresent, editorMode, iframeBody ] );
+	}, [ isInlineButtonBlockPresent, editorMode, documentBody ] );
 }

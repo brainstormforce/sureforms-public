@@ -37,6 +37,7 @@ import SureFormsDescription from './components/SureFormsDescription.js';
 import { defaultKeys, forcePanel } from './utils.js';
 import InstantForm from './InstantForm.js';
 import useContainerDynamicClass from './components/useContainerDynamicClass.js';
+import { useShouldIframe } from '@Utils/Helpers';
 
 const SureformsFormSpecificSettings = () => {
 	const [ hasCopied, setHasCopied ] = useState( false );
@@ -57,9 +58,13 @@ const SureformsFormSpecificSettings = () => {
 		}
 	);
 
+	const shouldIframe = useShouldIframe();
+
 	const { editPost } = useDispatch( editorStore );
 	const [ rootContainer, setRootContainer ] = useState( null );
-	const [ iframeBody, setIframeBody ] = useState( null );
+	const [ documentBody, setDocumentBody ] = useState( null );
+
+	console.log( { 'rootContainer open': rootContainer, documentBody, shouldIframe } );
 
 	useEffect( () => {
 		let intervalId = null;
@@ -88,7 +93,7 @@ const SureformsFormSpecificSettings = () => {
 				return false;
 			}
 
-			setIframeBody( getIframeBody );
+			setDocumentBody( getIframeBody );
 
 			const getRootContainer =
 				getIframeBody.querySelector( '.is-root-container' );
@@ -188,7 +193,7 @@ const SureformsFormSpecificSettings = () => {
 		isInlineButtonBlockPresent,
 		updateMeta,
 		editorMode,
-		iframeBody,
+		documentBody,
 	} );
 
 	useEffect( () => {
@@ -306,14 +311,14 @@ const SureformsFormSpecificSettings = () => {
 						/>
 					</InspectorTab>
 					<InspectorTab { ...SRFMTabs.style }>
-						{ iframeBody && (
+						{ documentBody && (
 							<StyleSettings
 								defaultKeys={ defaultKeys }
 								isInlineButtonBlockPresent={
 									isInlineButtonBlockPresent
 								}
 								isPageBreak={ isPageBreak }
-								iframeBody={ iframeBody }
+								iframeBody={ documentBody }
 							/>
 						) }
 					</InspectorTab>

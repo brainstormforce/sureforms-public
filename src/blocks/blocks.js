@@ -31,7 +31,7 @@ import '../store/store.js';
 
 const registerBlock = [
 	text,
-	// email,
+	email,
 	// url,
 	// textarea,
 	// multiChoice,
