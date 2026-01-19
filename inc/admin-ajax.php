@@ -40,7 +40,6 @@ class Admin_Ajax {
 		add_action( 'wp_ajax_srfm_download_export', [ $this, 'download_export_file' ] );
 
 		add_filter( SRFM_SLUG . '_admin_filter', [ $this, 'localize_script_integration' ] );
-
 	}
 
 	/**
