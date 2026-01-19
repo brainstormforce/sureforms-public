@@ -375,6 +375,7 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 
 == Changelog ==
 = x.x.x =
+* Fix: Resolved an issue where fields continued to appear read only even though the Read Only option is hidden.
 * Fix: Resolved an issue where multiple form validation are being triggered when both have v3 reCAPTCHA and embedded in a same page.
 * New: Added navigation for single entries page.
 * Fix: Resolved an issue where multi choice options are translated to the end user language in entries.
