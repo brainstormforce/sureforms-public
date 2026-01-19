@@ -1,19 +1,19 @@
 import { __, sprintf } from '@wordpress/i18n';
 import { Accordion, Badge, Text } from '@bsf/force-ui';
 import { Check, ChevronRight, ExternalLink } from 'lucide-react';
-import LearnStep from './LearnStep';
+import LearnLesson from './LearnLesson';
 
 /**
- * Component for rendering a learn chapter with steps
+ * Component for rendering learn modules with lessons
  *
- * @param {Object}   props                        - Component props
- * @param {Object}   props.chapters               - Chapters data object
- * @param {string}   props.defaultValue           - Default chapter ID to open
- * @param {Function} props.onStepCompletionChange - Callback when step completion status changes
- * @param {Function} props.onLearnHowClick        - Callback to open learn how dialog
- * @return {JSX.Element} - Rendered chapter component
+ * @param {Object}   props                          - Component props
+ * @param {Object}   props.modules                  - Modules data object
+ * @param {string}   props.defaultValue             - Default module ID to open
+ * @param {Function} props.onLessonCompletionChange - Callback when lesson completion status changes
+ * @param {Function} props.onLearnHowClick          - Callback to open learn how dialog
+ * @return {JSX.Element} - Rendered modules component
  */
-const LearnChapters = ( { chapters, defaultValue, onStepCompletionChange, onLearnHowClick } ) => {
+const LearnModules = ( { modules, defaultValue, onLessonCompletionChange, onLearnHowClick } ) => {
 	const handleLearnHowClick = ( event, url ) => {
 		event.stopPropagation();
 		if ( url ) {
@@ -30,24 +30,24 @@ const LearnChapters = ( { chapters, defaultValue, onStepCompletionChange, onLear
 			autoClose={ true }
 			defaultValue={ defaultValue }
 		>
-			{ chapters.map( ( chapter ) => {
+			{ modules.map( ( module ) => {
 				const {
 					id,
 					title,
 					description,
 					url,
-					steps,
-				} = chapter;
+					steps: lessons,
+				} = module;
 
-				const totalStepsCount = steps.length;
-				const completedStepsCount = steps.filter( ( step ) => step.completed ).length;
-				const isCompleted = totalStepsCount === completedStepsCount;
+				const totalLessonsCount = lessons.length;
+				const completedLessonsCount = lessons.filter( ( lesson ) => lesson.completed ).length;
+				const isCompleted = totalLessonsCount === completedLessonsCount;
 
 				const getBadgeColor = () => {
 					if ( isCompleted ) {
 						return 'green';
 					}
-					if ( completedStepsCount > 0 ) {
+					if ( completedLessonsCount > 0 ) {
 						return 'blue';
 					}
 					return 'gray';
@@ -97,24 +97,24 @@ const LearnChapters = ( { chapters, defaultValue, onStepCompletionChange, onLear
 										<>
 											<span className="sr-only">
 												{ sprintf(
-													// translators: %1$d is the number of completed steps, %2$d is the total number of steps.
-													__( '%1$d of %2$d steps completed', 'sureforms' ),
-													completedStepsCount,
-													totalStepsCount
+													// translators: %1$d is the number of completed lessons, %2$d is the total number of lessons.
+													__( '%1$d of %2$d lessons completed', 'sureforms' ),
+													completedLessonsCount,
+													totalLessonsCount
 												) }
 											</span>
 
 											<span className="flex items-center">
 												{ isCompleted && <Check size={ 12 } /> }
 												<span className="px-1 relative z-10">
-													{ completedStepsCount }/{ totalStepsCount }
+													{ completedLessonsCount }/{ totalLessonsCount }
 												</span>
 											</span>
 
 											<span
 												className="absolute h-full top-0 left-0 bg-[#BAE6FD]/40 transition-[width] duration-300 ease-in-out"
 												style={ {
-													width: `${ ( completedStepsCount / totalStepsCount ) * 100 }%`,
+													width: `${ ( completedLessonsCount / totalLessonsCount ) * 100 }%`,
 												} }
 											/>
 										</>
@@ -139,13 +139,13 @@ const LearnChapters = ( { chapters, defaultValue, onStepCompletionChange, onLear
 							<span className="block w-full h-[0.5px] bg-border-subtle" />
 
 							<div className="px-3 sm:px-4 flex flex-col bg-[#FCFCFD]">
-								{ steps.map( ( step, index ) => (
-									<LearnStep
-										key={ step.id }
-										step={ step }
-										chapterId={ id }
-										isLast={ index === steps.length - 1 }
-										onCompletionChange={ onStepCompletionChange }
+								{ lessons.map( ( lesson, index ) => (
+									<LearnLesson
+										key={ lesson.id }
+										lesson={ lesson }
+										moduleId={ id }
+										isLast={ index === lessons.length - 1 }
+										onCompletionChange={ onLessonCompletionChange }
 										onLearnHowClick={ onLearnHowClick }
 									/>
 								) ) }
@@ -158,4 +158,4 @@ const LearnChapters = ( { chapters, defaultValue, onStepCompletionChange, onLear
 	);
 };
 
-export default LearnChapters;
+export default LearnModules;

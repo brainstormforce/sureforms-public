@@ -4,48 +4,48 @@ import { toast } from '@bsf/force-ui';
 import { __ } from '@wordpress/i18n';
 
 /**
- * Custom hook for managing Learn chapters and steps
+ * Custom hook for managing Learn modules and lessons
  *
- * @param {Object} config                 - Configuration object
- * @param {Array}  config.initialChapters - Array of chapter objects with steps
- * @param {string} config.saveEndpoint    - API endpoint to save progress (optional)
- * @return {Object} - Object containing chapters state and utility functions
+ * @param {Object} config                - Configuration object
+ * @param {Array}  config.initialModules - Array of module objects with lessons
+ * @param {string} config.saveEndpoint   - API endpoint to save progress (optional)
+ * @return {Object} - Object containing modules state and utility functions
  */
 const useLearn = ( {
-	initialChapters = [],
+	initialModules = [],
 	saveEndpoint = null,
 } = {} ) => {
-	const [ chapters, setChapters ] = useState( initialChapters );
+	const [ modules, setModules ] = useState( initialModules );
 	const [ learnHowDialogOpen, setLearnHowDialogOpen ] = useState( false );
 	const [ currentLearnHowItem, setCurrentLearnHowItem ] = useState( null );
 
-	// Update chapters when initialChapters changes (e.g., when API data loads)
+	// Update modules when initialModules changes (e.g., when API data loads)
 	useEffect( () => {
-		if ( initialChapters.length > 0 ) {
-			setChapters( initialChapters );
+		if ( initialModules.length > 0 ) {
+			setModules( initialModules );
 		}
-	}, [ initialChapters ] );
+	}, [ initialModules ] );
 
 	/**
-	 * Update completion status of a specific step
+	 * Update completion status of a specific lesson
 	 *
-	 * @param {string}  chapterId - ID of the chapter containing the step
-	 * @param {string}  stepId    - ID of the step to update
+	 * @param {string}  moduleId  - ID of the module containing the lesson
+	 * @param {string}  lessonId  - ID of the lesson to update
 	 * @param {boolean} completed - New completion status
 	 */
-	const updateStepCompletion = useCallback(
-		( chapterId, stepId, completed ) => {
+	const updateLessonCompletion = useCallback(
+		( moduleId, lessonId, completed ) => {
 			// Optimistically update UI
-			setChapters( ( prevChapters ) =>
-				prevChapters.map( ( chapter ) =>
-					chapter.id === chapterId
+			setModules( ( prevModules ) =>
+				prevModules.map( ( module ) =>
+					module.id === moduleId
 						? {
-							...chapter,
-							steps: chapter.steps.map( ( step ) =>
-								step.id === stepId ? { ...step, completed } : step
+							...module,
+							steps: module.steps.map( ( lesson ) =>
+								lesson.id === lessonId ? { ...lesson, completed } : lesson
 							),
 						  }
-						: chapter
+						: module
 				)
 			);
 
@@ -55,22 +55,22 @@ const useLearn = ( {
 					path: saveEndpoint,
 					method: 'POST',
 					data: {
-						chapterId,
-						stepId,
+						chapterId: moduleId,
+						stepId: lessonId,
 						completed,
 					},
 				} ).catch( ( error ) => {
 					// Revert UI state on error
-					setChapters( ( prevChapters ) =>
-						prevChapters.map( ( chapter ) =>
-							chapter.id === chapterId
+					setModules( ( prevModules ) =>
+						prevModules.map( ( module ) =>
+							module.id === moduleId
 								? {
-									...chapter,
-									steps: chapter.steps.map( ( step ) =>
-										step.id === stepId ? { ...step, completed: ! completed } : step
+									...module,
+									steps: module.steps.map( ( lesson ) =>
+										lesson.id === lessonId ? { ...lesson, completed: ! completed } : lesson
 									),
 								  }
-								: chapter
+								: module
 						)
 					);
 
@@ -86,103 +86,103 @@ const useLearn = ( {
 	);
 
 	/**
-	 * Mark a step as completed
+	 * Mark a lesson as completed
 	 *
-	 * @param {string} chapterId - ID of the chapter containing the step
-	 * @param {string} stepId    - ID of the step to mark as completed
+	 * @param {string} moduleId - ID of the module containing the lesson
+	 * @param {string} lessonId - ID of the lesson to mark as completed
 	 */
-	const markStepCompleted = useCallback(
-		( chapterId, stepId ) => {
-			updateStepCompletion( chapterId, stepId, true );
+	const markLessonCompleted = useCallback(
+		( moduleId, lessonId ) => {
+			updateLessonCompletion( moduleId, lessonId, true );
 		},
-		[ updateStepCompletion ]
+		[ updateLessonCompletion ]
 	);
 
 	/**
-	 * Mark a step as incomplete
+	 * Mark a lesson as incomplete
 	 *
-	 * @param {string} chapterId - ID of the chapter containing the step
-	 * @param {string} stepId    - ID of the step to mark as incomplete
+	 * @param {string} moduleId - ID of the module containing the lesson
+	 * @param {string} lessonId - ID of the lesson to mark as incomplete
 	 */
-	const markStepIncomplete = useCallback(
-		( chapterId, stepId ) => {
-			updateStepCompletion( chapterId, stepId, false );
+	const markLessonIncomplete = useCallback(
+		( moduleId, lessonId ) => {
+			updateLessonCompletion( moduleId, lessonId, false );
 		},
-		[ updateStepCompletion ]
+		[ updateLessonCompletion ]
 	);
 
 	/**
 	 * Reset all progress
 	 */
 	const resetProgress = useCallback( () => {
-		setChapters( ( prevChapters ) =>
-			prevChapters.map( ( chapter ) => ( {
-				...chapter,
-				steps: chapter.steps.map( ( step ) => ( { ...step, completed: false } ) ),
+		setModules( ( prevModules ) =>
+			prevModules.map( ( module ) => ( {
+				...module,
+				steps: module.steps.map( ( lesson ) => ( { ...lesson, completed: false } ) ),
 			} ) )
 		);
 	}, [] );
 
 	/**
-	 * Get the first incomplete chapter ID
+	 * Get the first incomplete module ID
 	 * Used for default accordion open state
 	 */
-	const firstIncompleteChapterId = useMemo( () => {
-		const incompleteChapter = chapters.find(
-			( chapter ) =>
-				chapter.steps.length !==
-				chapter.steps.filter( ( step ) => step.completed ).length
+	const firstIncompleteModuleId = useMemo( () => {
+		const incompleteModule = modules.find(
+			( module ) =>
+				module.steps.length !==
+				module.steps.filter( ( lesson ) => lesson.completed ).length
 		);
-		return incompleteChapter?.id;
-	}, [ chapters ] );
+		return incompleteModule?.id;
+	}, [ modules ] );
 
 	/**
 	 * Get overall progress statistics
 	 */
 	const progressStats = useMemo( () => {
-		const totalSteps = chapters.reduce( ( sum, chapter ) => sum + chapter.steps.length, 0 );
-		const completedSteps = chapters.reduce(
-			( sum, chapter ) =>
-				sum + chapter.steps.filter( ( step ) => step.completed ).length,
+		const totalLessons = modules.reduce( ( sum, module ) => sum + module.steps.length, 0 );
+		const completedLessons = modules.reduce(
+			( sum, module ) =>
+				sum + module.steps.filter( ( lesson ) => lesson.completed ).length,
 			0
 		);
 		const completionPercentage =
-			totalSteps > 0 ? Math.round( ( completedSteps / totalSteps ) * 100 ) : 0;
+			totalLessons > 0 ? Math.round( ( completedLessons / totalLessons ) * 100 ) : 0;
 
 		return {
-			totalChapters: chapters.length,
-			totalSteps,
-			completedSteps,
+			totalModules: modules.length,
+			totalLessons,
+			completedLessons,
 			completionPercentage,
-			isFullyCompleted: totalSteps > 0 && completedSteps === totalSteps,
+			isFullyCompleted: totalLessons > 0 && completedLessons === totalLessons,
 		};
-	}, [ chapters ] );
+	}, [ modules ] );
 
 	/**
-	 * Get chapter-specific statistics
+	 * Get module-specific statistics
 	 *
-	 * @param {string} chapterId - ID of the chapter
-	 * @return {Object} - Chapter statistics
+	 * @param {string} moduleId - ID of the module
+	 * @return {Object} - Module statistics
 	 */
-	const getChapterStats = useCallback(
-		( chapterId ) => {
-			const chapter = chapters.find( ( c ) => c.id === chapterId );
-			if ( ! chapter ) {
+	const getModuleStats = useCallback(
+		( moduleId ) => {
+			const module = modules.find( ( m ) => m.id === moduleId );
+			if ( ! module ) {
 				return null;
 			}
 
-			const totalSteps = chapter.steps.length;
-			const completedSteps = chapter.steps.filter( ( step ) => step.completed ).length;
+			const totalLessons = module.steps.length;
+			const completedLessons = module.steps.filter( ( lesson ) => lesson.completed ).length;
 
 			return {
-				totalSteps,
-				completedSteps,
-				isCompleted: totalSteps > 0 && completedSteps === totalSteps,
+				totalLessons,
+				completedLessons,
+				isCompleted: totalLessons > 0 && completedLessons === totalLessons,
 				completionPercentage:
-					totalSteps > 0 ? Math.round( ( completedSteps / totalSteps ) * 100 ) : 0,
+					totalLessons > 0 ? Math.round( ( completedLessons / totalLessons ) * 100 ) : 0,
 			};
 		},
-		[ chapters ]
+		[ modules ]
 	);
 
 	/**
@@ -204,14 +204,14 @@ const useLearn = ( {
 	}, [] );
 
 	return {
-		chapters,
-		updateStepCompletion,
-		markStepCompleted,
-		markStepIncomplete,
+		modules,
+		updateLessonCompletion,
+		markLessonCompleted,
+		markLessonIncomplete,
 		resetProgress,
-		firstIncompleteChapterId,
+		firstIncompleteModuleId,
 		progressStats,
-		getChapterStats,
+		getModuleStats,
 		learnHowDialogOpen,
 		currentLearnHowItem,
 		openLearnHowDialog,

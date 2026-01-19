@@ -4,17 +4,17 @@ import { useState, useEffect } from '@wordpress/element';
 import { ArrowUpRight, Check, Info, Video } from 'lucide-react';
 
 /**
- * Component for rendering a single learn step within a chapter
+ * Component for rendering a single lesson within a module
  *
  * @param {Object}   props                    - Component props
- * @param {Object}   props.step               - Step data object
- * @param {string}   props.chapterId          - ID of the parent chapter
- * @param {boolean}  props.isLast             - Whether this is the last step in the chapter
- * @param {Function} props.onCompletionChange - Callback when step completion status changes
+ * @param {Object}   props.lesson             - Lesson data object
+ * @param {string}   props.moduleId           - ID of the parent module
+ * @param {boolean}  props.isLast             - Whether this is the last lesson in the module
+ * @param {Function} props.onCompletionChange - Callback when lesson completion status changes
  * @param {Function} props.onLearnHowClick    - Callback to open learn how dialog
- * @return {JSX.Element|null} - Rendered step component
+ * @return {JSX.Element|null} - Rendered lesson component
  */
-const LearnStep = ( { step, chapterId, isLast = false, onCompletionChange, onLearnHowClick } ) => {
+const LearnLesson = ( { lesson, moduleId, isLast = false, onCompletionChange, onLearnHowClick } ) => {
 	const {
 		id,
 		title,
@@ -23,7 +23,7 @@ const LearnStep = ( { step, chapterId, isLast = false, onCompletionChange, onLea
 		action,
 		completed = false,
 		isPro = false,
-	} = step;
+	} = lesson;
 
 	const [ isCompleted, setIsCompleted ] = useState( completed );
 
@@ -42,7 +42,7 @@ const LearnStep = ( { step, chapterId, isLast = false, onCompletionChange, onLea
 
 		// Call parent callback to update state
 		if ( onCompletionChange ) {
-			onCompletionChange( chapterId, id, newStatus );
+			onCompletionChange( moduleId, id, newStatus );
 		}
 	};
 
@@ -64,7 +64,7 @@ const LearnStep = ( { step, chapterId, isLast = false, onCompletionChange, onLea
 
 		// Open learn how dialog for other types (video, content, etc.)
 		if ( onLearnHowClick && learn ) {
-			onLearnHowClick( step );
+			onLearnHowClick( lesson );
 		}
 	};
 
@@ -88,7 +88,7 @@ const LearnStep = ( { step, chapterId, isLast = false, onCompletionChange, onLea
 
 	return (
 		<div className={ `py-4 sm:py-5 flex items-center gap-2 sm:gap-3 border-solid border-0 border-border-subtle ${ isLast ? '' : 'border-b-0.5' }` }>
-			<Tooltip arrow content={ statusText } placement="top" variant="dark">
+			<Tooltip arrow content={ statusText } placement="top" variant="dark" tooltipPortalId="srfm-dashboard-container">
 				<span
 					className={ `self-start mt-[1px] flex justify-center items-center w-5 h-5 rounded-full cursor-pointer border-[1.25px] border-solid ${
 						isCompleted
@@ -143,7 +143,7 @@ const LearnStep = ( { step, chapterId, isLast = false, onCompletionChange, onLea
 			</div>
 
 			{ learn && (
-				<Tooltip arrow content={ learn?.label || __( 'Learn how', 'sureforms' ) } placement="top" variant="dark">
+				<Tooltip arrow content={ learn?.label || __( 'Learn how', 'sureforms' ) } placement="top" variant="dark" tooltipPortalId="srfm-dashboard-container">
 					<Button
 						size="xs"
 						variant="ghost"
@@ -155,9 +155,9 @@ const LearnStep = ( { step, chapterId, isLast = false, onCompletionChange, onLea
 			) }
 
 			<Button
-				className="px-3 gap-0.5 min-w-40 text-button-primary hover:bg-background-button-hover hover:outline-button-secondary"
+				className="px-3 gap-0.5 min-w-40"
 				size="sm"
-				variant="secondary"
+				variant="primary"
 				icon={ <ArrowUpRight size={ 14 } /> }
 				iconPosition="right"
 				onClick={ handleActionClick }
@@ -168,4 +168,4 @@ const LearnStep = ( { step, chapterId, isLast = false, onCompletionChange, onLea
 	);
 };
 
-export default LearnStep;
+export default LearnLesson;

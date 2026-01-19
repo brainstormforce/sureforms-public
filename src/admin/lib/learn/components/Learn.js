@@ -2,19 +2,19 @@ import { useState, useEffect } from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
 import { Toaster } from '@bsf/force-ui';
 import useLearn from '../useLearn';
-import LearnChapters from './LearnChapters';
+import LearnModules from './LearnModules';
 import LearnSkeleton from './LearnSkeleton';
 import LearnHowDialog from './LearnHowDialog';
 
 /**
- * Complete Learn component that manages chapters and steps
+ * Complete Learn component that manages modules and lessons
  *
  * This is a complete wrapper component that handles all the logic internally.
- * Just pass your chapters data OR API endpoints to fetch and save the data.
+ * Just pass your modules data OR API endpoints to fetch and save the data.
  *
  * @param {Object}   props                  - Component props
- * @param {Array}    props.chapters         - Array of chapter objects with steps (optional if endpoints provided)
- * @param {Object}   props.endpoints        - API endpoints object (optional if chapters provided)
+ * @param {Array}    props.modules          - Array of module objects with lessons (optional if endpoints provided)
+ * @param {Object}   props.endpoints        - API endpoints object (optional if modules provided)
  * @param {string}   props.className        - Optional className for wrapper
  * @param {Function} props.onProgressChange - Optional callback when progress changes
  * @return {JSX.Element} - Rendered learn component
@@ -22,29 +22,29 @@ import LearnHowDialog from './LearnHowDialog';
  * @example
  * // With direct data
  * <Learn
- *   chapters={chaptersData}
+ *   modules={modulesData}
  * />
  *
  * @example
  * // With API endpoints
  * <Learn
  *   endpoints={{
- *     get: "/sureforms/v1/learn-chapters",
- *     set: "/sureforms/v1/learn-progress"
+ *     get: "/sureforms/v1/get-learn-chapters",
+ *     set: "/sureforms/v1/update-learn-progress"
  *   }}
  * />
  */
 const Learn = ( {
-	chapters: initialChapters = [],
+	modules: initialModules = [],
 	endpoints = null,
 	className = '',
 	onProgressChange,
 } ) => {
-	const [ apiChapters, setApiChapters ] = useState( [] );
+	const [ apiModules, setApiModules ] = useState( [] );
 	const [ isLoading, setIsLoading ] = useState( false );
 	const [ error, setError ] = useState( null );
 
-	// Fetch chapters from API if endpoint is provided
+	// Fetch modules from API if endpoint is provided
 	useEffect( () => {
 		if ( ! endpoints?.get ) {
 			return;
@@ -60,11 +60,11 @@ const Learn = ( {
 			signal: abortController.signal,
 		} )
 			.then( ( response ) => {
-				setApiChapters( response );
+				setApiModules( response );
 				setIsLoading( false );
 			} )
 			.catch( ( err ) => {
-				setError( err.message || 'Failed to load chapters' );
+				setError( err.message || 'Failed to load modules' );
 				setIsLoading( false );
 			} );
 
@@ -73,21 +73,21 @@ const Learn = ( {
 		};
 	}, [ endpoints?.get ] );
 
-	// Determine which chapters to use - API data or prop data
-	const chaptersToUse = endpoints?.get ? apiChapters : initialChapters;
+	// Determine which modules to use - API data or prop data
+	const modulesToUse = endpoints?.get ? apiModules : initialModules;
 
 	// Initialize the hook with provided data
 	const {
-		chapters,
-		updateStepCompletion,
-		firstIncompleteChapterId,
+		modules,
+		updateLessonCompletion,
+		firstIncompleteModuleId,
 		progressStats,
 		learnHowDialogOpen,
 		currentLearnHowItem,
 		openLearnHowDialog,
 		setLearnHowDialogOpen,
 	} = useLearn( {
-		initialChapters: chaptersToUse,
+		initialModules: modulesToUse,
 		saveEndpoint: endpoints?.set,
 	} );
 
@@ -116,17 +116,17 @@ const Learn = ( {
 		);
 	}
 
-	// If no chapters, return null
-	if ( ! chapters || chapters.length === 0 ) {
+	// If no modules, return null
+	if ( ! modules || modules.length === 0 ) {
 		return null;
 	}
 
 	return (
 		<div className={ className }>
-			<LearnChapters
-				chapters={ chapters }
-				defaultValue={ firstIncompleteChapterId }
-				onStepCompletionChange={ updateStepCompletion }
+			<LearnModules
+				modules={ modules }
+				defaultValue={ firstIncompleteModuleId }
+				onLessonCompletionChange={ updateLessonCompletion }
 				onLearnHowClick={ openLearnHowDialog }
 			/>
 

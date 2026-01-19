@@ -19,61 +19,121 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class Learn {
 	/**
-	 * Get default learn chapters structure.
+	 * Get default learn modules structure.
 	 *
-	 * Returns the complete structure of all available chapters and their steps.
-	 * This serves as the source of truth for chapter definitions used across
+	 * Returns the complete structure of all available modules and their lessons.
+	 * This serves as the source of truth for module definitions used across
 	 * the plugin for both frontend display and analytics validation.
 	 *
-	 * @return array Array of chapter objects with their steps.
+	 * @return array Array of module objects with their lessons.
 	 * @since 1.0.0
 	 */
 	public static function get_chapters_structure() {
 		$chapters = [
 			[
-				'id'          => 'brand-basics',
-				'title'       => __( 'Brand Basics', 'sureforms' ),
-				'description' => __( 'Make your website instantly recognizable and aligned with your brand identity.', 'sureforms' ),
-				'url'         => 'https://wpastra.com/docs/style-guide/',
+				'id'          => 'welcome-to-sureforms',
+				'title'       => __( 'Welcome to SureForms', 'sureforms' ),
+				'description' => __( 'Help users get familiar with SureForms, build their first form, and understand the basics of form creation, customization, and management.', 'sureforms' ),
+				'url'         => 'https://sureforms.com/docs/',
 				'steps'       => [
 					[
-						'id'          => 'logo-tagline',
-						'title'       => __( 'Add Logo, Tagline & Site Icon', 'sureforms' ),
-						'description' => __( 'Help visitors identify your brand quickly by personalizing your core brand elements.', 'sureforms' ),
+						'id'          => 'dashboard-tour',
+						'title'       => __( 'SureForms Dashboard Tour', 'sureforms' ),
+						'description' => __( 'Overview of dashboard layout and interface philosophy.', 'sureforms' ),
 						'learn'       => [
 							'type'    => 'dialog',
 							'content' => [
 								'type' => 'image',
 								'data' => [
-									'src' => 'https://wpastra.com/wp-content/uploads/2025/12/astra-learn-logo-tagline.png',
-									'alt' => __( 'Add Logo, Tagline & Site Icon in Astra', 'sureforms' ),
+									'src' => 'https://sureforms.com/wp-content/uploads/example-dashboard-tour.png',
+									'alt' => __( 'SureForms Dashboard Tour', 'sureforms' ),
 								],
 							],
 						],
 						'action'      => [
-							'label'      => __( 'Add Branding', 'sureforms' ),
-							'url'        => admin_url( 'customize.php?autofocus[section]=title_tagline' ),
+							'label'      => __( 'Explore Dashboard', 'sureforms' ),
+							'url'        => admin_url( 'admin.php?page=sureforms_menu' ),
+							'isExternal' => false,
+						],
+						'completed'   => false,
+					],
+					[
+						'id'          => 'creating-first-form',
+						'title'       => __( 'Creating Your First Form', 'sureforms' ),
+						'description' => __( 'Step-by-step guide using AI builder and WordPress editor.', 'sureforms' ),
+						'learn'       => [
+							'type'    => 'dialog',
+							'content' => [
+								'type' => 'video',
+								'data' => [
+									'url'   => 'https://www.youtube.com/embed/uDLF4dk3YHI',
+									'title' => __( 'Creating Your First Form', 'sureforms' ),
+								],
+							],
+						],
+						'action'      => [
+							'label'      => __( 'Create Form', 'sureforms' ),
+							'url'        => admin_url( 'post-new.php?post_type=sureforms_form' ),
+							'isExternal' => false,
+						],
+						'completed'   => false,
+					],
+					[
+						'id'          => 'form-customization-basics',
+						'title'       => __( 'Form Customization Basics', 'sureforms' ),
+						'description' => __( 'Design styling and branding for your forms.', 'sureforms' ),
+						'learn'       => [
+							'type' => 'link',
+							'url'  => 'https://sureforms.com/docs/advanced-style-options/',
+						],
+						'action'      => [
+							'label'      => __( 'Read Docs', 'sureforms' ),
+							'url'        => 'https://sureforms.com/docs/advanced-style-options/',
 							'isExternal' => true,
 						],
 						'completed'   => false,
 					],
 					[
-						'id'          => 'style-guide',
-						'title'       => __( 'Update Brand Style Guide', 'sureforms' ),
-						'description' => __( 'Bring consistency across your entire site by setting your brand colors, fonts, and design rules.', 'sureforms' ),
+						'id'          => 'form-confirmation-message',
+						'title'       => __( 'Form Confirmation Message', 'sureforms' ),
+						'description' => __( 'Set up confirmation messages after form submission.', 'sureforms' ),
 						'learn'       => [
-							'type'    => 'dialog',
-							'content' => [
-								'type' => 'image',
-								'data' => [
-									'src' => 'https://wpastra.com/wp-content/uploads/2025/12/astra-learn-style-guide.png',
-									'alt' => __( 'Update Brand Style Guide in Astra', 'sureforms' ),
-								],
-							],
+							'type' => 'link',
+							'url'  => 'https://sureforms.com/docs/form-confirmation/',
 						],
 						'action'      => [
-							'label'      => __( 'Update Style Guide', 'sureforms' ),
-							'url'        => admin_url( 'customize.php?autofocus=astra-tour' ),
+							'label'      => __( 'Read Docs', 'sureforms' ),
+							'url'        => 'https://sureforms.com/docs/form-confirmation/',
+							'isExternal' => true,
+						],
+						'completed'   => false,
+					],
+					[
+						'id'          => 'anti-spam-settings',
+						'title'       => __( 'Anti-Spam Settings', 'sureforms' ),
+						'description' => __( 'Protect your forms from spam submissions.', 'sureforms' ),
+						'learn'       => [
+							'type' => 'link',
+							'url'  => 'https://sureforms.com/docs-category/anti-spam-settings/',
+						],
+						'action'      => [
+							'label'      => __( 'Read Docs', 'sureforms' ),
+							'url'        => 'https://sureforms.com/docs-category/anti-spam-settings/',
+							'isExternal' => true,
+						],
+						'completed'   => false,
+					],
+					[
+						'id'          => 'email-notification',
+						'title'       => __( 'Setting Up Email Notification', 'sureforms' ),
+						'description' => __( 'Configure email notifications for form submissions.', 'sureforms' ),
+						'learn'       => [
+							'type' => 'link',
+							'url'  => 'https://sureforms.com/docs/adjust-form-notification-emails/',
+						],
+						'action'      => [
+							'label'      => __( 'Read Docs', 'sureforms' ),
+							'url'        => 'https://sureforms.com/docs/adjust-form-notification-emails/',
 							'isExternal' => true,
 						],
 						'completed'   => false,
@@ -81,172 +141,339 @@ class Learn {
 				],
 			],
 			[
-				'id'          => 'navigation-header',
-				'title'       => __( 'Navigation & Header', 'sureforms' ),
-				'description' => __( 'Guide visitors effortlessly with a clear, modern, and intuitive header experience.', 'sureforms' ),
-				'url'         => 'https://wpastra.com/docs/header-builder-options/',
+				'id'          => 'advanced-form-features',
+				'title'       => __( 'Advanced Form Features', 'sureforms' ),
+				'description' => __( 'Help users unlock SureForms\' full power with advanced features and creative use cases.', 'sureforms' ),
+				'url'         => 'https://sureforms.com/docs/',
 				'steps'       => [
 					[
-						'id'          => 'header-layout',
-						'title'       => __( 'Customize Header Layout', 'sureforms' ),
-						'description' => __( 'Adjust your header structure: placement of logo, site title, buttons, menu and other elements', 'sureforms' ),
+						'id'          => 'multi-step-forms',
+						'title'       => __( 'Multi-Step Forms', 'sureforms' ),
+						'description' => __( 'Learn how to split forms into multiple steps with progress indicators.', 'sureforms' ),
 						'learn'       => [
 							'type'    => 'dialog',
 							'content' => [
-								'type' => 'image',
+								'type' => 'video',
 								'data' => [
-									'src' => 'https://wpastra.com/wp-content/uploads/2025/12/astra-learn-navigation-header.png',
-									'alt' => __( 'Customize Header Layout in Astra', 'sureforms' ),
+									'url'   => 'https://www.youtube.com/embed/51q5a_Pk1XA',
+									'title' => __( 'Multi-Step Forms', 'sureforms' ),
 								],
 							],
 						],
 						'action'      => [
-							'label'      => __( 'Customize Header', 'sureforms' ),
-							'url'        => admin_url( 'customize.php?autofocus[panel]=panel-header-builder-group' ),
+							'label'      => __( 'Watch Video', 'sureforms' ),
+							'url'        => 'https://youtu.be/51q5a_Pk1XA',
 							'isExternal' => true,
 						],
 						'completed'   => false,
 					],
 					[
-						'id'          => 'organize-menu',
-						'title'       => __( 'Organize Your Menu', 'sureforms' ),
-						'description' => __( 'Create a simple, logical menu so visitors can find what they need without friction.', 'sureforms' ),
+						'id'          => 'conversational-forms',
+						'title'       => __( 'Conversational Forms', 'sureforms' ),
+						'description' => __( 'Create chat-style form interactions for better engagement.', 'sureforms' ),
 						'learn'       => [
 							'type'    => 'dialog',
 							'content' => [
-								'type' => 'image',
+								'type' => 'video',
 								'data' => [
-									'src' => 'https://wpastra.com/wp-content/uploads/2025/12/astra-learn-organize-menu.png',
-									'alt' => __( 'Organize Your Menu in Astra', 'sureforms' ),
+									'url'   => 'https://www.youtube.com/embed/9C5ePZ6VpoA',
+									'title' => __( 'Conversational Forms', 'sureforms' ),
 								],
 							],
 						],
 						'action'      => [
-							'label'      => __( 'Configure Menu', 'sureforms' ),
-							'url'        => admin_url( 'customize.php?autofocus[section]=section-hb-menu-1' ),
+							'label'      => __( 'Watch Video', 'sureforms' ),
+							'url'        => 'https://youtu.be/9C5ePZ6VpoA',
 							'isExternal' => true,
 						],
 						'completed'   => false,
 					],
 					[
-						'id'          => 'mobile-header',
-						'title'       => __( 'Set Up Your Mobile Header', 'sureforms' ),
-						'description' => __( 'Optimize the header experience for small screens to ensure a seamless mobile journey.', 'sureforms' ),
+						'id'          => 'pdf-generation',
+						'title'       => __( 'PDF Generation', 'sureforms' ),
+						'description' => __( 'Learn how to automatically generate downloadable PDFs from submissions by creating an invoice template using ChatGPT.', 'sureforms' ),
 						'learn'       => [
 							'type'    => 'dialog',
 							'content' => [
-								'type' => 'image',
+								'type' => 'video',
 								'data' => [
-									'src' => 'https://wpastra.com/wp-content/uploads/2025/12/astra-learn-mobile-header.png',
-									'alt' => __( 'Set Up Your Mobile Header in Astra', 'sureforms' ),
+									'url'   => 'https://www.youtube.com/embed/example-pdf-generation',
+									'title' => __( 'PDF Generation', 'sureforms' ),
 								],
 							],
 						],
 						'action'      => [
-							'label'      => __( 'Configure Mobile Menu', 'sureforms' ),
-							'url'        => admin_url( 'customize.php?autofocus[section]=section-header-mobile-menu&preview-device=mobile' ),
+							'label'      => __( 'Watch Video', 'sureforms' ),
+							'url'        => 'https://youtu.be/example-pdf-generation',
 							'isExternal' => true,
 						],
-						'isPro'       => false,
+						'completed'   => false,
+					],
+					[
+						'id'          => 'payment-forms',
+						'title'       => __( 'Payment Forms', 'sureforms' ),
+						'description' => __( 'Demonstrate setting up Stripe/PayPal payment integration.', 'sureforms' ),
+						'learn'       => [
+							'type'    => 'dialog',
+							'content' => [
+								'type' => 'video',
+								'data' => [
+									'url'   => 'https://www.youtube.com/embed/example-payment-forms',
+									'title' => __( 'Payment Forms', 'sureforms' ),
+								],
+							],
+						],
+						'action'      => [
+							'label'      => __( 'Watch Video', 'sureforms' ),
+							'url'        => 'https://youtu.be/example-payment-forms',
+							'isExternal' => true,
+						],
+						'completed'   => false,
+					],
+					[
+						'id'          => 'form-restrictions',
+						'title'       => __( 'Form Restrictions', 'sureforms' ),
+						'description' => __( 'Set entry limits and deadlines for your forms.', 'sureforms' ),
+						'learn'       => [
+							'type' => 'link',
+							'url'  => 'https://sureforms.com/docs/form-restriction-in-sureforms/',
+						],
+						'action'      => [
+							'label'      => __( 'Read Docs', 'sureforms' ),
+							'url'        => 'https://sureforms.com/docs/form-restriction-in-sureforms/',
+							'isExternal' => true,
+						],
+						'completed'   => false,
+					],
+					[
+						'id'          => 'conditional-logic',
+						'title'       => __( 'Conditional Logic & Smart Fields', 'sureforms' ),
+						'description' => __( 'Show/hide fields based on user input and conditions.', 'sureforms' ),
+						'learn'       => [
+							'type'    => 'dialog',
+							'content' => [
+								'type' => 'video',
+								'data' => [
+									'url'   => 'https://www.youtube.com/embed/AACFRtDjXHs',
+									'title' => __( 'Conditional Logic & Smart Fields', 'sureforms' ),
+								],
+							],
+						],
+						'action'      => [
+							'label'      => __( 'Watch Video', 'sureforms' ),
+							'url'        => 'https://youtu.be/AACFRtDjXHs',
+							'isExternal' => true,
+						],
+						'completed'   => false,
+					],
+					[
+						'id'          => 'calculator-forms',
+						'title'       => __( 'Calculator Forms', 'sureforms' ),
+						'description' => __( 'Build custom calculators like loan, price quote, ROI, and more.', 'sureforms' ),
+						'learn'       => [
+							'type'    => 'dialog',
+							'content' => [
+								'type' => 'video',
+								'data' => [
+									'url'   => 'https://www.youtube.com/embed/example-calculator-forms',
+									'title' => __( 'Calculator Forms', 'sureforms' ),
+								],
+							],
+						],
+						'action'      => [
+							'label'      => __( 'Watch Video', 'sureforms' ),
+							'url'        => 'https://youtu.be/example-calculator-forms',
+							'isExternal' => true,
+						],
+						'completed'   => false,
+					],
+					[
+						'id'          => 'login-forms',
+						'title'       => __( 'Login Forms', 'sureforms' ),
+						'description' => __( 'Create branded login pages for your users.', 'sureforms' ),
+						'learn'       => [
+							'type'    => 'dialog',
+							'content' => [
+								'type' => 'video',
+								'data' => [
+									'url'   => 'https://www.youtube.com/embed/H2DRn8A8LQI',
+									'title' => __( 'Login Forms', 'sureforms' ),
+								],
+							],
+						],
+						'action'      => [
+							'label'      => __( 'Watch Video', 'sureforms' ),
+							'url'        => 'https://youtu.be/H2DRn8A8LQI',
+							'isExternal' => true,
+						],
+						'completed'   => false,
+					],
+					[
+						'id'          => 'registration-forms',
+						'title'       => __( 'Registration Forms', 'sureforms' ),
+						'description' => __( 'Create branded registration pages for new users.', 'sureforms' ),
+						'learn'       => [
+							'type'    => 'dialog',
+							'content' => [
+								'type' => 'video',
+								'data' => [
+									'url'   => 'https://www.youtube.com/embed/H2DRn8A8LQI',
+									'title' => __( 'Registration Forms', 'sureforms' ),
+								],
+							],
+						],
+						'action'      => [
+							'label'      => __( 'Watch Video', 'sureforms' ),
+							'url'        => 'https://youtu.be/H2DRn8A8LQI',
+							'isExternal' => true,
+						],
 						'completed'   => false,
 					],
 				],
 			],
 			[
-				'id'          => 'footer-customization',
-				'title'       => __( 'Footer Customization', 'sureforms' ),
-				'description' => __( 'Create a clean, modern footer that builds trust and improves browsing.', 'sureforms' ),
-				'url'         => 'https://wpastra.com/docs/footer-builder/',
+				'id'          => 'integrations-automation',
+				'title'       => __( 'Native Integrations & Automation', 'sureforms' ),
+				'description' => __( 'Help users automate workflows and connect SureForms with their favorite apps.', 'sureforms' ),
+				'url'         => 'https://sureforms.com/docs/integrations/',
 				'steps'       => [
 					[
-						'id'          => 'footer-layout',
-						'title'       => __( 'Customize Footer Layout', 'sureforms' ),
-						'description' => __( 'Add your social handles, links, contact info, copyrights, or widgets to create a professional closing section.', 'sureforms' ),
+						'id'          => 'intro-integrations',
+						'title'       => __( 'Introduction to Native Integrations', 'sureforms' ),
+						'description' => __( 'Learn how to connect SureForms with 15+ popular tools and services.', 'sureforms' ),
 						'learn'       => [
 							'type'    => 'dialog',
 							'content' => [
-								'type' => 'image',
-								'data' => [
-									'src' => 'https://wpastra.com/wp-content/uploads/2025/12/astra-learn-footer-layout.png',
-									'alt' => __( 'Customize Footer Layout in Astra', 'sureforms' ),
+								[
+									'type' => 'paragraph',
+									'text' => __( 'SureForms integrates with a wide range of tools to help you automate your workflows. Click on any integration below to learn how to set it up:', 'sureforms' ),
+								],
+								[
+									'type' => 'link',
+									'data' => [
+										'text'   => __( 'How to Connect to Google Sheets', 'sureforms' ),
+										'url'    => 'https://sureforms.com/docs/sureforms-integration-with-google-sheets',
+										'target' => '_blank',
+									],
+								],
+								[
+									'type' => 'link',
+									'data' => [
+										'text'   => __( 'How to Connect to FluentCRM', 'sureforms' ),
+										'url'    => 'https://sureforms.com/docs/fluentcrm-integration/',
+										'target' => '_blank',
+									],
+								],
+								[
+									'type' => 'link',
+									'data' => [
+										'text'   => __( 'How to Connect to Telegram', 'sureforms' ),
+										'url'    => 'https://sureforms.com/docs/telegram-integration/',
+										'target' => '_blank',
+									],
+								],
+								[
+									'type' => 'link',
+									'data' => [
+										'text'   => __( 'How to Connect to MailerPress', 'sureforms' ),
+										'url'    => 'https://sureforms.com/docs/mailerpress-integration/',
+										'target' => '_blank',
+									],
+								],
+								[
+									'type' => 'link',
+									'data' => [
+										'text'   => __( 'How to Connect to Zoho CRM', 'sureforms' ),
+										'url'    => 'https://sureforms.com/docs/zoho-crm-integration/',
+										'target' => '_blank',
+									],
+								],
+								[
+									'type' => 'link',
+									'data' => [
+										'text'   => __( 'How to Connect to OttoKit', 'sureforms' ),
+										'url'    => 'https://sureforms.com/docs/ottokit-integration/',
+										'target' => '_blank',
+									],
+								],
+								[
+									'type' => 'link',
+									'data' => [
+										'text'   => __( 'How to Connect to Zapier', 'sureforms' ),
+										'url'    => 'https://sureforms.com/docs/zapier-integration/',
+										'target' => '_blank',
+									],
+								],
+								[
+									'type' => 'link',
+									'data' => [
+										'text'   => __( 'How to Connect to Webhooks', 'sureforms' ),
+										'url'    => 'https://sureforms.com/docs/webhooks-integration/',
+										'target' => '_blank',
+									],
+								],
+								[
+									'type' => 'link',
+									'data' => [
+										'text'   => __( 'How to Connect to MailChimp', 'sureforms' ),
+										'url'    => 'https://sureforms.com/docs/mailchimp-integration/',
+										'target' => '_blank',
+									],
+								],
+								[
+									'type' => 'link',
+									'data' => [
+										'text'   => __( 'How to Connect to Salesflare', 'sureforms' ),
+										'url'    => 'https://sureforms.com/docs/salesflare-integration/',
+										'target' => '_blank',
+									],
+								],
+								[
+									'type' => 'link',
+									'data' => [
+										'text'   => __( 'How to Connect to MailPoet', 'sureforms' ),
+										'url'    => 'https://sureforms.com/docs/mailpoet-integration/',
+										'target' => '_blank',
+									],
+								],
+								[
+									'type' => 'link',
+									'data' => [
+										'text'   => __( 'How to Connect to GetResponse', 'sureforms' ),
+										'url'    => 'https://sureforms.com/docs/getresponse-integration/',
+										'target' => '_blank',
+									],
+								],
+								[
+									'type' => 'link',
+									'data' => [
+										'text'   => __( 'How to Connect to Brevo', 'sureforms' ),
+										'url'    => 'https://sureforms.com/docs/brevo-integration/',
+										'target' => '_blank',
+									],
+								],
+								[
+									'type' => 'link',
+									'data' => [
+										'text'   => __( 'How to Connect to AgileCRM', 'sureforms' ),
+										'url'    => 'https://sureforms.com/docs/agilecrm-integration/',
+										'target' => '_blank',
+									],
+								],
+								[
+									'type' => 'link',
+									'data' => [
+										'text'   => __( 'How to Connect to ActiveCampaign', 'sureforms' ),
+										'url'    => 'https://sureforms.com/docs/activecampaign-integration/',
+										'target' => '_blank',
+									],
 								],
 							],
 						],
 						'action'      => [
-							'label'      => __( 'Customize Footer', 'sureforms' ),
-							'url'        => admin_url( 'customize.php?autofocus[panel]=panel-footer-builder-group' ),
-							'isExternal' => true,
-						],
-						'completed'   => false,
-					],
-				],
-			],
-			[
-				'id'          => 'page-layout-settings',
-				'title'       => __( 'Page & Layout Settings', 'sureforms' ),
-				'description' => __( 'Give your pages a clean, consistent visual flow that feels polished and professional.', 'sureforms' ),
-				'url'         => 'https://wpastra.com/docs/page-layout-settings-guide/',
-				'steps'       => [
-					[
-						'id'          => 'sidebar-layout',
-						'title'       => __( 'Choose default sidebar layout and style', 'sureforms' ),
-						'description' => __( 'Select left, right, or no sidebar depending on your content needs.', 'sureforms' ),
-						'learn'       => [
-							'type'    => 'dialog',
-							'content' => [
-								'type' => 'image',
-								'data' => [
-									'src' => 'https://wpastra.com/wp-content/uploads/2025/12/astra-learn-sidebar-layout.png',
-									'alt' => __( 'Customize Sidebar Layout in Astra', 'sureforms' ),
-								],
-							],
-						],
-						'action'      => [
-							'label'      => __( 'Configure Sidebar', 'sureforms' ),
-							'url'        => admin_url( 'customize.php?autofocus[section]=section-sidebars' ),
-							'isExternal' => true,
-						],
-						'completed'   => false,
-					],
-					[
-						'id'          => 'blog-layout',
-						'title'       => __( 'Customize Blog Layout', 'sureforms' ),
-						'description' => __( 'Choose how your posts appear - customize everything like layout, style, width and much more', 'sureforms' ),
-						'learn'       => [
-							'type'    => 'dialog',
-							'content' => [
-								'type' => 'image',
-								'data' => [
-									'src' => 'https://wpastra.com/wp-content/uploads/2025/12/astra-learn-blog-layout.png',
-									'alt' => __( 'Customize Blog Layout in Astra', 'sureforms' ),
-								],
-							],
-						],
-						'action'      => [
-							'label'      => __( 'Customize Blog', 'sureforms' ),
-							'url'        => admin_url( 'customize.php?autofocus[section]=section-blog' ),
-							'isExternal' => true,
-						],
-						'completed'   => false,
-					],
-					[
-						'id'          => 'single-page-layout',
-						'title'       => __( 'Customize Single Page Layout', 'sureforms' ),
-						'description' => __( 'Fine-tune individual pages for layout, style to suite your storytelling, SEO, and user experience', 'sureforms' ),
-						'learn'       => [
-							'type'    => 'dialog',
-							'content' => [
-								'type' => 'image',
-								'data' => [
-									'src' => 'https://wpastra.com/wp-content/uploads/2025/12/astra-learn-single-page-layout.png',
-									'alt' => __( 'Customize Single Page Layout in Astra', 'sureforms' ),
-								],
-							],
-						],
-						'action'      => [
-							'label'      => __( 'Customize Page', 'sureforms' ),
-							'url'        => admin_url( 'customize.php?autofocus[section]=section-single-page' ),
-							'isExternal' => true,
+							'label'      => __( 'View Integrations', 'sureforms' ),
+							'url'        => admin_url( 'admin.php?page=sureforms_form_settings&tab=integrations' ),
+							'isExternal' => false,
 						],
 						'completed'   => false,
 					],
@@ -320,8 +547,8 @@ class Learn {
 			'/get-learn-chapters',
 			[
 				'methods'             => 'GET',
-				'callback'            => [ __CLASS__, 'rest_get_learn_chapters' ],
-				'permission_callback' => function () {
+				'callback'            => [ self::class, 'rest_get_learn_chapters' ],
+				'permission_callback' => static function () {
 					return current_user_can( 'manage_options' );
 				},
 			]
@@ -332,8 +559,8 @@ class Learn {
 			'/update-learn-progress',
 			[
 				'methods'             => 'POST',
-				'callback'            => [ __CLASS__, 'rest_update_learn_progress' ],
-				'permission_callback' => function () {
+				'callback'            => [ self::class, 'rest_update_learn_progress' ],
+				'permission_callback' => static function () {
 					return current_user_can( 'manage_options' );
 				},
 				'args'                => [
@@ -360,11 +587,10 @@ class Learn {
 	/**
 	 * REST API callback to get learn chapters with user progress.
 	 *
-	 * @param \WP_REST_Request $request Request object.
 	 * @return \WP_REST_Response Response object.
 	 * @since 1.0.0
 	 */
-	public static function rest_get_learn_chapters( $request ) {
+	public static function rest_get_learn_chapters() {
 		$user_id  = get_current_user_id();
 		$chapters = self::get_learn_chapters( $user_id );
 
