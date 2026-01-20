@@ -1648,6 +1648,15 @@ class Helper {
 		$logo_sure_rank         = file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/surerank.svg' );
 
 		$integrations = [
+			'sure_contact'      => [
+				'title'                 => __( 'SureContact', 'sureforms' ),
+				'singleLineDescription' => __( 'Turn Emails Into Revenue with a CRM Built for Your Website!', 'sureforms' ),
+				'subtitle'              => __( 'Send newsletters, run campaigns, set up automations, manage contacts, and see exactly how much revenue your emails generate, all in one place.', 'sureforms' ),
+				'status'                => self::get_plugin_status( 'surecontact/surecontact.php' ),
+				'slug'                  => 'surecontact',
+				'path'                  => 'surecontact/surecontact.php',
+				'logo'                  => self::encode_svg( is_string( $logo_sure_mails ) ? $logo_sure_mails : '' ),
+			],
 			'sure_mails'        => [
 				'title'                 => __( 'SureMail', 'sureforms' ),
 				'singleLineDescription' => __( 'Boost Your Email Deliverability Instantly!', 'sureforms' ),
