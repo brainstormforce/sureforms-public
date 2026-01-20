@@ -555,14 +555,14 @@ class Analytics {
 	 */
 	private function get_kpi_tracking_data() {
 		$kpi_data = [];
-		$today = current_time( 'Y-m-d' );
+		$today    = current_time( 'Y-m-d' );
 
-		// Get data for yesterday and day before yesterday
+		// Get data for yesterday and day before yesterday.
 		for ( $i = 1; $i <= 2; $i++ ) {
-			$date = gmdate( 'Y-m-d', strtotime( $today . ' -' . $i . ' days' ) );
+			$date        = gmdate( 'Y-m-d', strtotime( $today . ' -' . $i . ' days' ) );
 			$submissions = $this->get_daily_submissions_count( $date );
 
-			// Always include data, even if submissions is 0
+			// Always include data, even if submissions is 0.
 			$kpi_data[ $date ] = [
 				'numeric_values' => [
 					'submissions' => $submissions,
@@ -582,9 +582,9 @@ class Analytics {
 	 */
 	private function get_daily_submissions_count( $date ) {
 		$start_date = $date . ' 00:00:00';
-		$end_date = $date . ' 23:59:59';
+		$end_date   = $date . ' 23:59:59';
 
-		// Use existing Entries class methods instead of direct database queries
+		// Use existing Entries class methods instead of direct database queries.
 		$where_conditions = [
 			[
 				[
