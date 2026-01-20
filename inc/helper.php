@@ -1646,6 +1646,7 @@ class Helper {
 		$logo_uae               = file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/uae.svg' );
 		$logo_starter_templates = file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/starterTemplates.svg' );
 		$logo_sure_rank         = file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/surerank.svg' );
+		$logo_sure_contact      = file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/surecontact.svg' );
 
 		$integrations = [
 			'sure_contact'      => [
@@ -1655,7 +1656,7 @@ class Helper {
 				'status'                => self::get_plugin_status( 'surecontact/surecontact.php' ),
 				'slug'                  => 'surecontact',
 				'path'                  => 'surecontact/surecontact.php',
-				'logo'                  => self::encode_svg( is_string( $logo_sure_mails ) ? $logo_sure_mails : '' ),
+				'logo'                  => self::encode_svg( is_string( $logo_sure_contact ) ? $logo_sure_contact : '' ),
 			],
 			'sure_mails'        => [
 				'title'                 => __( 'SureMail', 'sureforms' ),
