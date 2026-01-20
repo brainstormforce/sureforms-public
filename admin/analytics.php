@@ -108,6 +108,13 @@ class Analytics {
 		$stats_data['plugin_data']['sureforms'] = array_merge_recursive( $stats_data['plugin_data']['sureforms'], $this->global_settings_data() );
 		// Add onboarding analytics data.
 		$stats_data['plugin_data']['sureforms'] = array_merge_recursive( $stats_data['plugin_data']['sureforms'], $this->onboarding_analytics_data() );
+
+		// Add KPI tracking data.
+		$kpi_data = $this->get_kpi_tracking_data();
+		if ( ! empty( $kpi_data ) ) {
+			$stats_data['plugin_data']['sureforms']['kpi_records'] = $kpi_data;
+		}
+
 		return $stats_data;
 	}
 
@@ -539,4 +546,61 @@ class Analytics {
 
 		return $posts_count;
 	}
+
+	/**
+	 * Get KPI tracking data for the last 2 days (excluding today).
+	 *
+	 * @since 2.4.0
+	 * @return array KPI data organized by date
+	 */
+	private function get_kpi_tracking_data() {
+		$kip_data = [];
+		$today = current_time( 'Y-m-d' );
+
+		// Get data for yesterday and day before yesterday
+		for ( $i = 1; $i <= 2; $i++ ) {
+			$date = gmdate( 'Y-m-d', strtotime( $today . ' -' . $i . ' days' ) );
+			$submissions = $this->get_daily_submissions_count( $date );
+
+			// Always include data, even if submissions is 0
+			$kip_data[ $date ] = [
+				'numeric_values' => [
+					'submissions' => $submissions,
+				],
+			];
+		}
+
+		return $kip_data;
+	}
+
+	/**
+	 * Get daily submissions count for a specific date.
+	 *
+	 * @param string $date Date in Y-m-d format.
+	 * @since 2.4.0
+	 * @return int Daily submissions count
+	 */
+	private function get_daily_submissions_count( $date ) {
+		$start_date = $date . ' 00:00:00';
+		$end_date = $date . ' 23:59:59';
+
+		// Use existing Entries class methods instead of direct database queries
+		$where_conditions = [
+			[
+				[
+					'key'     => 'created_at',
+					'compare' => '>=',
+					'value'   => $start_date,
+				],
+				[
+					'key'     => 'created_at',
+					'compare' => '<=',
+					'value'   => $end_date,
+				],
+			],
+		];
+
+		return Entries::get_instance()->get_total_count( $where_conditions );
+	}
+
 }
