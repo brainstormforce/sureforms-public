@@ -142,6 +142,10 @@ export const transformEntryDetail = ( entryDetail ) => {
 			  }
 			: null,
 		pdfLinks: entryDetail.extras?.pdf_links || null,
+		navigation: {
+			previousEntryId: entryDetail.navigation?.previous_entry_id || null,
+			nextEntryId: entryDetail.navigation?.next_entry_id || null,
+		},
 		rawData: entryDetail, // Keep original data for reference
 	};
 };

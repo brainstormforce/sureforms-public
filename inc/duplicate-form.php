@@ -68,9 +68,12 @@ class Duplicate_Form {
 		$new_title = $this->generate_unique_title( $source_form->post_title, $title_suffix );
 
 		// Prepare new post data.
+		// Note: wp_insert_post() internally calls wp_unslash() which removes backslashes.
+		// This corrupts unicode escapes like \u003c (used for < in JSON block attributes).
+		// We must use wp_slash() to pre-escape the content so wp_unslash() results in correct content.
 		$new_post_args = [
 			'post_title'   => $new_title,
-			'post_content' => $source_form->post_content,
+			'post_content' => wp_slash( $source_form->post_content ),
 			'post_status'  => 'draft', // Always create as draft for safety.
 			'post_type'    => SRFM_FORMS_POST_TYPE,
 			'post_author'  => get_current_user_id(), // Use current user as author.
@@ -95,10 +98,11 @@ class Duplicate_Form {
 		$updated_content = $this->update_block_form_ids( $source_form->post_content, $form_id, $new_form_id );
 
 		// Update the post content with new formId.
+		// Use wp_slash() for the same reason as above - to preserve unicode escapes.
 		wp_update_post(
 			[
 				'ID'           => $new_form_id,
-				'post_content' => $updated_content,
+				'post_content' => wp_slash( $updated_content ),
 			]
 		);
 
