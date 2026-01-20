@@ -6,7 +6,7 @@ import {
 	InspectorControls,
 	RichText,
 	InnerBlocks,
-	useBlockProps
+	useBlockProps,
 } from '@wordpress/block-editor';
 import { useEffect } from '@wordpress/element';
 import SRFMTextControl from '@Components/text-control';
