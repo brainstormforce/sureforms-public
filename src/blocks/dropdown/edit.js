@@ -3,7 +3,7 @@
  */
 import { __ } from '@wordpress/i18n';
 import { ToggleControl, Button } from '@wordpress/components';
-import { InspectorControls } from '@wordpress/block-editor';
+import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
 import { useEffect, useState, useRef } from '@wordpress/element';
 import SRFMTextControl from '@Components/text-control';
 
@@ -62,6 +62,9 @@ const Edit = ( props ) => {
 	const [ newOption, setNewOption ] = useState( '' );
 	const [ error, setError ] = useState( false );
 	const prevMultiSelect = useRef( multiSelect );
+	const blockProps = useBlockProps( {
+		className,
+	} );
 
 	const changeOption = ( value, index ) => {
 		const updatedOptions = options.map( ( item, thisIndex ) => {
@@ -533,7 +536,7 @@ const Edit = ( props ) => {
 	const filterOptions = attributeOptionsWithFilter( attributeOptions, props );
 
 	return (
-		<div className={ className }>
+		<div { ...blockProps }>
 			<InspectorControls>
 				<InspectorTabs
 					tabs={ [ 'general', 'advance' ] }

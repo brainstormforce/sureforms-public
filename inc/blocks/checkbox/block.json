@@ -1,5 +1,6 @@
 {
-	"apiVersion": 2,
+  "$schema": "https://json.schemastore.org/block.json",
+	"apiVersion": 3,
 	"name": "srfm/checkbox",
 	"title": "Checkbox",
 	"description": "Displays a SureForms Checkbox Field",

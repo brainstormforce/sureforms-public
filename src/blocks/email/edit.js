@@ -1,7 +1,7 @@
 /**
  * WordPress dependencies
  */
-import { InspectorControls } from '@wordpress/block-editor';
+import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
 import { useEffect } from '@wordpress/element';
 import { ToggleControl } from '@wordpress/components';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
@@ -37,6 +37,9 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 		readOnly,
 	} = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
+	const blockProps = useBlockProps( {
+		className,
+	} );
 
 	useEffect( () => {
 		if ( formId !== currentFormId ) {
@@ -61,7 +64,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 	}
 
 	return (
-		<div className={ className }>
+		<div { ...blockProps }>
 			<InspectorControls>
 				<InspectorTabs
 					tabs={ [ 'general', 'advance' ] }
