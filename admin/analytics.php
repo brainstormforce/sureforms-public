@@ -554,7 +554,7 @@ class Analytics {
 	 * @return array KPI data organized by date
 	 */
 	private function get_kpi_tracking_data() {
-		$kip_data = [];
+		$kpi_data = [];
 		$today = current_time( 'Y-m-d' );
 
 		// Get data for yesterday and day before yesterday
@@ -563,14 +563,14 @@ class Analytics {
 			$submissions = $this->get_daily_submissions_count( $date );
 
 			// Always include data, even if submissions is 0
-			$kip_data[ $date ] = [
+			$kpi_data[ $date ] = [
 				'numeric_values' => [
 					'submissions' => $submissions,
 				],
 			];
 		}
 
-		return $kip_data;
+		return $kpi_data;
 	}
 
 	/**
