@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from '@wordpress/element';
 import { __, sprintf } from '@wordpress/i18n';
 import { toast, Button, Text, Container } from '@bsf/force-ui';
 import { useNavigate } from 'react-router-dom';
+import { applyFilters } from '@wordpress/hooks';
 import PaymentFilters from '../components/PaymentFilters';
 import PaymentTable from '../components/PaymentTable';
 import ConfirmationDialog from '@Admin/components/ConfirmationDialog';
@@ -263,15 +264,33 @@ const PaymentListingPage = () => {
 	};
 
 	// Get global payment configuration
-	const isStripeConnected =
-		window.srfm_admin?.payments?.stripe_connected || false;
+	const paymentSettings = window.srfm_admin?.payments || {};
+	const stripeConnected = paymentSettings.stripe_connected || false;
+
+	/**
+	 * Filter: srfm_payment_gateway_configured
+	 *
+	 * Check if any payment gateway is configured (Stripe, PayPal, etc.)
+	 * This filter allows payment gateways to extend the configuration check.
+	 *
+	 * @param {boolean} isConfigured    - Whether any payment gateway is configured
+	 * @param {Object}  paymentSettings - Payment settings from window.srfm_admin.payments
+	 *
+	 * @return {boolean} True if any payment gateway is configured, false otherwise
+	 */
+	const isPaymentConfigured = applyFilters(
+		'srfm_payment_gateway_configured',
+		stripeConnected,
+		paymentSettings
+	);
+
 	const isTransactionPresent =
 		window.srfm_admin?.payments?.is_transaction_present || false;
 
 	// Show placeholder if:
-	// 1. Stripe is not connected, OR
-	// 2. Stripe is connected but no transactions exist
-	if ( ! isLoading && ( ! isStripeConnected || ! isTransactionPresent ) ) {
+	// 1. No payment gateway is connected, OR
+	// 2. Payment gateway is connected but no transactions exist
+	if ( ! isLoading && ( ! isPaymentConfigured || ! isTransactionPresent ) ) {
 		return <PaymentListPlaceHolder paymentMode={ paymentMode } />;
 	}
 

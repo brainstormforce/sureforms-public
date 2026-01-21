@@ -830,17 +830,21 @@ class Admin {
 			'onboarding_redirect'        => isset( $_GET['srfm-activation-redirect'] ), // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce is not required for the activation redirection.
 			'pointer_nonce'              => wp_create_nonce( 'sureforms_pointer_action' ),
 			'general_settings_url'       => admin_url( '/options-general.php' ),
-			'payments'                   => [
-				'stripe_connected'        => Stripe_Helper::is_stripe_connected(),
-				'stripe_mode'             => Stripe_Helper::get_stripe_mode(),
-				'stripe_connect_url'      => Stripe_Helper::get_stripe_settings_url(),
-				'currencies_data'         => Payment_Helper::get_all_currencies_data(),
-				'zero_decimal_currencies' => Payment_Helper::get_zero_decimal_currencies(),
-				'webhook_url'             => Stripe_Helper::get_webhook_url(),
-				'webhook_test_connected'  => Stripe_Helper::is_webhook_configured( 'test', true ),
-				'webhook_live_connected'  => Stripe_Helper::is_webhook_configured( 'live', true ),
-				'is_transaction_present'  => Stripe_Helper::is_transaction_present(),
-			],
+			'payments'                   => apply_filters(
+				'srfm_admin_localize_payments_data',
+				[
+					'stripe_connected'        => Stripe_Helper::is_stripe_connected(),
+					'stripe_mode'             => Stripe_Helper::get_stripe_mode(),
+					'stripe_connect_url'      => Stripe_Helper::get_stripe_settings_url(),
+					'currencies_data'         => Payment_Helper::get_all_currencies_data(),
+					'zero_decimal_currencies' => Payment_Helper::get_zero_decimal_currencies(),
+					'webhook_url'             => Stripe_Helper::get_webhook_url(),
+					'webhook_test_connected'  => Stripe_Helper::is_webhook_configured( 'test', true ),
+					'webhook_live_connected'  => Stripe_Helper::is_webhook_configured( 'live', true ),
+					'is_transaction_present'  => Stripe_Helper::is_transaction_present(),
+					'payment_currency'        => Payment_Helper::get_currency(),
+				]
+			),
 		];
 
 		$is_screen_sureforms_menu          = Helper::validate_request_context( 'sureforms_menu', 'page' );

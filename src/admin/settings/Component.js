@@ -14,7 +14,7 @@ import OttoKitPage from './pages/OttoKit';
 import { applyFilters } from '@wordpress/hooks';
 import PageTitleSection from '@Admin/components/PageTitleSection';
 
-const Component = ( { path } ) => {
+const Component = ( { path, subpage } ) => {
 	const [ pageTitle, setPageTitle ] = useState( '' );
 	// State to maintain whether to hide the page title.
 	const [ hidePageTitle, setHidePageTitle ] = useState( false );
@@ -315,6 +315,7 @@ const Component = ( { path } ) => {
 						paymentsSettings={ paymentsSettings }
 						updateGlobalSettings={ updateGlobalSettings }
 						setPaymentsSettings={ setPaymentsSettings }
+						subpage={ subpage }
 					/>
 				) }
 				{ applyFilters(

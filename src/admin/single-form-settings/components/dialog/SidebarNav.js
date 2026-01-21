@@ -11,7 +11,7 @@ const SidebarNav = ( {
 	};
 
 	return (
-		<nav className="shrink-0 w-[16rem] p-2 h-full bg-background-primary overflow-y-auto">
+		<nav className="shrink-0 w-[17rem] p-2 h-full bg-background-primary overflow-y-auto">
 			<ul className="w-full h-full bg-background-primary p-2 space-y-1 m-0">
 				{ NAV_LINKS.map( ( link ) => {
 					const isActive =

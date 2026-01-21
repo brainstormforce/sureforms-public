@@ -511,6 +511,9 @@ class Rest_Api {
 			);
 		}
 
+		// Get adjacent entry IDs for navigation (all entries in chronological order).
+		$adjacent_entries = Entries_Class::get_adjacent_entry_ids( $entry_id );
+
 		// Process form data.
 		$form_data       = [];
 		$excluded_fields = [ 'srfm-honeypot-field', 'g-recaptcha-response', 'srfm-sender-email-field' ];
@@ -599,6 +602,10 @@ class Rest_Api {
 				'profile_url'  => get_author_posts_url( $user_id ),
 			] : null,
 			'extras'          => $entry['extras'] ?? [],
+			'navigation'      => [
+				'previous_entry_id' => $adjacent_entries['previous_id'] ?? null,
+				'next_entry_id'     => $adjacent_entries['next_id'] ?? null,
+			],
 		];
 
 		return new \WP_REST_Response( $response_data, 200 );

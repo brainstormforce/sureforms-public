@@ -1195,3 +1195,15 @@ export const handleCaptchaValidation = (
 
 	return isValid;
 };
+
+// Export validation functions globally for use by pro plugins
+// This allows PayPal and other payment gateways to validate forms before processing
+if ( typeof window !== 'undefined' ) {
+	if ( ! window.srfmValidation ) {
+		window.srfmValidation = {};
+	}
+
+	window.srfmValidation.fieldValidation = fieldValidation;
+	window.srfmValidation.handleScrollAndFocusOnError =
+		handleScrollAndFocusOnError;
+}
