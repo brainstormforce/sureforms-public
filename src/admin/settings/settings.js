@@ -13,7 +13,12 @@ function useQuery() {
 
 function QueryScreen() {
 	const query = useQuery();
-	return <Component path={ query.get( 'tab' ) } />;
+	return (
+		<Component
+			path={ query.get( 'tab' ) }
+			subpage={ query.get( 'subpage' ) }
+		/>
+	);
 }
 
 function useAdminMenuState() {

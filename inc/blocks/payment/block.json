@@ -94,6 +94,10 @@
 		"variableAmountField": {
 			"type": "string",
 			"default": ""
+		},
+    "paymentMethods": {
+			"type": "array",
+			"default": ["stripe"]
 		}
 	}
 }
