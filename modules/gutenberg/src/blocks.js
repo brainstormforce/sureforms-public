@@ -49,8 +49,8 @@ uagLocalStorage.setItem(
 import './editor.scss';
 import './blocks/separator/block.js';
 import './blocks/advanced-heading/block.js';
-// import './blocks/image/block.js';
-// import './blocks/icon/block.js';
+import './blocks/image/block.js';
+import './blocks/icon/block.js';
 
 // Keep category list in separate variable and remove category list from icons list.
 if ( srfm_spec_blocks_info.uagb_svg_icons?.uagb_category_list ) {

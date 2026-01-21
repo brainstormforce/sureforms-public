@@ -18,6 +18,7 @@ imageCommonData = applyFilters(
 );
 registerBlockType( 'srfm/image', {
 	...imageCommonData,
+	apiVersion: 3,
 	title: __( 'Image', 'sureforms' ),
 	description: __(
 		'Add images on your webpage with multiple customization options.',

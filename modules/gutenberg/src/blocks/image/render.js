@@ -15,7 +15,6 @@ import {
 	store as blockEditorStore,
 	BlockIcon,
 	MediaPlaceholder,
-	useBlockProps,
 	__experimentalImageURLInputUI as ImageURLInputUI,
 } from '@wordpress/block-editor';
 import { store as coreStore } from '@wordpress/core-data';
@@ -433,10 +432,6 @@ const Render = ( props ) => {
 		setAttributes( props );
 	}
 
-	const blockProps = useBlockProps( {
-		ref,
-	} );
-
 	return (
 		<>
 			<BlockControls group="block">
@@ -459,7 +454,7 @@ const Render = ( props ) => {
 				) }
 			</BlockControls>
 			<div
-				{ ...blockProps }
+				ref={ ref }
 				className={ classnames(
 					className,
 					`wp-block-uagb-image`,

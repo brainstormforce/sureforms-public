@@ -18,7 +18,7 @@ iconCommonData = applyFilters(
 );
 registerBlockType( 'srfm/icon', {
 	...iconCommonData,
-	apiVersion: 2,
+	apiVersion: 3,
 	title: __( 'Icon', 'sureforms' ),
 	description: __(
 		'Add stunning customizable icons to your website.',
