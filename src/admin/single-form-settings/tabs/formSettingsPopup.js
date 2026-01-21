@@ -15,6 +15,7 @@ import {
 	UserPlus,
 	FileText,
 	Code,
+	Split,
 } from 'lucide-react';
 
 const FormSettingsPopup = ( {
@@ -72,6 +73,11 @@ const FormSettingsPopup = ( {
 				id: 'form_confirmation',
 				label: __( 'Form Confirmation', 'sureforms' ),
 				icon: <CircleCheckBig size={ 18 } />,
+			},
+			{
+				id: 'conditional-confirmations-preview',
+				label: __( 'Conditional Confirmations', 'sureforms' ),
+				icon: <Split size={ 18 } />,
 			},
 			{
 				id: 'spam_protection',

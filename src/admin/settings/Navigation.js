@@ -84,6 +84,16 @@ export const navigation = applyFilters( 'srfm.settings.navigation', [
 		name: __( 'Payments', 'sureforms' ),
 		slug: 'payments-settings',
 		icon: <CreditCard />,
+		submenu: [
+			{
+				name: __( 'General', 'sureforms' ),
+				slug: 'general',
+			},
+			{
+				name: __( 'Payment Methods', 'sureforms' ),
+				slug: 'payment-methods',
+			},
+		],
 		helpText: __(
 			'Connect and manage your payment gateways to securely accept transactions through your forms.',
 			'sureforms'
