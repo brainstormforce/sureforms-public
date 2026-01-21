@@ -52,7 +52,6 @@ const UAGBAdvancedHeading = ( props ) => {
 		descriptionHasDynamicContent,
 	};
 
-
 	const blockProps = useBlockProps();
 
 	useEffect( () => {
