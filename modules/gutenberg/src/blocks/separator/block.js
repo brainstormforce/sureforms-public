@@ -16,7 +16,7 @@ const separatorCommonData = applyFilters(
 );
 registerBlockType( 'srfm/separator', {
 	...separatorCommonData,
-	apiVersion: 2,
+	apiVersion: 3,
 	title: __( 'Separator', 'sureforms' ),
 	description: __(
 		'Add a modern separator to divide your page content with icon/text.',

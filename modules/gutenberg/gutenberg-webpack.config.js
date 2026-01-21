@@ -1,6 +1,18 @@
 const defaultConfig = require( '@wordpress/scripts/config/webpack.config' );
 const path = require( 'path' );
 
+const wp_rules = defaultConfig.module.rules.filter( function ( item ) {
+	if ( String( item.test ) === String( /\.jsx?$/ ) ) {
+		return true;
+	}
+
+	if ( String( item.test ) === String( /\.(sc|sa)ss$/ ) ) {
+		item.exclude = [ /node_modules/, /editor/ ];
+		return true;
+	}
+	return false;
+} );
+
 module.exports = {
 	...defaultConfig,
 	entry: {
@@ -28,6 +40,7 @@ module.exports = {
 	},
 	module: {
 		rules: [
+			// ...wp_rules,
 			...defaultConfig.module.rules,
 			{
 				test: /\.(scss|css)$/,

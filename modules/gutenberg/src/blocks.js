@@ -47,7 +47,7 @@ uagLocalStorage.setItem(
 );
 
 import './editor.scss';
-// import './blocks/separator/block.js';
+import './blocks/separator/block.js';
 import './blocks/advanced-heading/block.js';
 // import './blocks/image/block.js';
 // import './blocks/icon/block.js';
