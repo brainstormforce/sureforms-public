@@ -1,4 +1,5 @@
 import { RichText } from '@wordpress/block-editor';
+import { applyFilters } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';
 import { decodeHtmlEntities } from '@Blocks/util';
 import HelpText from '@Components/misc/HelpText';
@@ -11,6 +12,37 @@ export const DropdownComponent = ( { attributes, setAttributes, blockID } ) => {
 			? __( 'Select an option', 'sureforms' )
 			: placeholder;
 	const slug = 'dropdown';
+
+	// Allow filtering the dropdown view (e.g., to show a notice when dynamic options are empty).
+	const filteredView = applyFilters(
+		'srfm.dropdown.block.view',
+		null,
+		attributes
+	);
+
+	if ( filteredView ) {
+		return (
+			<>
+				<RichText
+					tagName="label"
+					value={ label }
+					onChange={ ( value ) => {
+						setAttributes( { label: decodeHtmlEntities( value ) } );
+					} }
+					className={ `srfm-block-label${ isRequired }` }
+					multiline={ false }
+					id={ `srfm-listbox-label ${ blockID }` }
+					allowedFormats={ [] }
+				/>
+				<HelpText
+					help={ help }
+					setAttributes={ setAttributes }
+					block_id={ blockID }
+				/>
+				{ filteredView }
+			</>
+		);
+	}
 
 	return (
 		<>
