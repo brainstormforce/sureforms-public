@@ -140,14 +140,14 @@ class Stripe_Helper {
 	 *
 	 * This returns the URL to the SureForms Stripe settings page in the admin.
 	 * As of now, the URL is:
-	 * http://localhost:10008/wp-admin/admin.php?page=sureforms_form_settings&tab=payments-settings
+	 * http://localhost:10008/wp-admin/admin.php?page=sureforms_form_settings&tab=payments-settings&subpage=payment-methods&gateway=stripe
 	 * The site URL is dynamic and will adapt to the current WordPress installation.
 	 *
 	 * @since 2.0.0
 	 * @return string The URL to the Stripe settings page.
 	 */
 	public static function get_stripe_settings_url() {
-		return admin_url( 'admin.php?page=sureforms_form_settings&tab=payments-settings' );
+		return admin_url( 'admin.php?page=sureforms_form_settings&tab=payments-settings&subpage=payment-methods&gateway=stripe' );
 	}
 
 	/**
@@ -644,7 +644,7 @@ class Stripe_Helper {
 		$client_id = 'ca_KOXfLe7jv1m4L0iC4KNEMc5fT8AXWWuL';
 
 		// Use the same redirect URI pattern as checkout-plugins-stripe-woo.
-		$redirect_url        = admin_url( 'admin.php?page=sureforms_form_settings&tab=payments-settings' );
+		$redirect_url        = admin_url( 'admin.php?page=sureforms_form_settings&tab=payments-settings&subpage=payment-methods&gateway=stripe' );
 		$nonce               = wp_create_nonce( 'stripe-connect' );
 		$redirect_with_nonce = add_query_arg( 'srfm_stripe_connect_nonce', $nonce, $redirect_url );
 
