@@ -112,7 +112,7 @@ export const refundPayment = async ( {
 	try {
 		// Prepare form data for refund request
 		const formData = new URLSearchParams();
-		formData.append( 'action', 'srfm_stripe_refund_payment' );
+		formData.append( 'action', 'srfm_refund_payment' );
 		formData.append(
 			'nonce',
 			window.srfm_payment_admin.srfm_payment_admin_nonce || ''

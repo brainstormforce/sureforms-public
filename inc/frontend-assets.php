@@ -304,6 +304,15 @@ class Frontend_Assets {
 				true
 			);
 
+			// Enqueue Payment Manager for payment method switching.
+			wp_enqueue_script(
+				SRFM_SLUG . '-payment-manager',
+				SRFM_URL . 'assets/js/payment-manager.js',
+				[ SRFM_SLUG . '-stripe-payment' ],
+				SRFM_VER,
+				true
+			);
+
 			// Localize script for Stripe payment functionality.
 			wp_localize_script(
 				SRFM_SLUG . '-stripe-payment',
