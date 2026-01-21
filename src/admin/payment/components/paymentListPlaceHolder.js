@@ -1,5 +1,6 @@
 import { Container, Button, Text } from '@bsf/force-ui';
 import { __ } from '@wordpress/i18n';
+import { applyFilters } from '@wordpress/hooks';
 import { ArrowRight } from 'lucide-react';
 import paymentPlaceHolder from '@Image/payment-list-placeholder.svg';
 
@@ -8,7 +9,26 @@ import paymentPlaceHolder from '@Image/payment-list-placeholder.svg';
  *
  */
 const PaymentListPlaceHolder = () => {
-	const isConfigured = window.srfm_admin?.payments?.stripe_connected;
+	// Check if Stripe is connected
+	const stripeConnected =
+		window.srfm_admin?.payments?.stripe_connected || false;
+
+	/**
+	 * Filter: srfm_payment_gateway_configured
+	 *
+	 * Allows payment gateways to extend the configuration check.
+	 * Payment gateways can use this filter to indicate they are configured.
+	 *
+	 * @param {boolean} isConfigured    - Whether any payment gateway is configured
+	 * @param {Object}  paymentSettings - Payment settings from window.srfm_admin.payments
+	 *
+	 * @return {boolean} True if any payment gateway is configured, false otherwise
+	 */
+	const isConfigured = applyFilters(
+		'srfm_payment_gateway_configured',
+		stripeConnected,
+		window.srfm_admin?.payments || {}
+	);
 	const subHeading = isConfigured
 		? __( 'No payments yet', 'sureforms' )
 		: __( 'Turn Your Forms Into Checkout 💰', 'sureforms' );

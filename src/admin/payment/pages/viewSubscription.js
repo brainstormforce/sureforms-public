@@ -4,6 +4,7 @@ import { ArrowUpRight, Eye } from 'lucide-react';
 import { __, sprintf } from '@wordpress/i18n';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { applyFilters } from '@wordpress/hooks';
 import {
 	fetchSubscription,
 	cancelSubscription,
@@ -18,6 +19,7 @@ import {
 	formatAmount,
 	formatDateTime,
 	PartialAmount,
+	getPaymentMethodLabel,
 } from '../components/utils';
 import PaymentNotes from '../components/paymentNotes';
 import PaymentLogs from '../components/paymentLogs';
@@ -402,6 +404,22 @@ const ViewSubscription = () => {
 		  firstPaidEMI.status === 'refunded'
 		: false;
 
+	const viewPaymentInPlateForm = applyFilters(
+		'srfm_view_subscription_payment_in_platform_button',
+		<Button
+			icon={ <ArrowUpRight className="!size-4" /> }
+			iconPosition="right"
+			variant="link"
+			size="xs"
+			className="text-link-primary hover:text-link-primary-hover"
+			onClick={ handleViewInStripe }
+			disabled={ ! subscriptionData?.stripe_subscription_id }
+		>
+			{ __( 'View In Stripe', 'sureforms' ) }
+		</Button>,
+		subscriptionData
+	);
+
 	// Cancel subscription dialog
 	const cancelDialog = (
 		<Dialog
@@ -660,6 +678,11 @@ const ViewSubscription = () => {
 				),
 		},
 		{
+			id: 'payment-method',
+			title: __( 'Payment Method', 'sureforms' ),
+			value: getPaymentMethodLabel( subscriptionData?.gateway ),
+		},
+		{
 			title: __( 'Payment Type', 'sureforms' ),
 			value:
 				subscriptionData.payment_type ||
@@ -796,19 +819,7 @@ const ViewSubscription = () => {
 						<h3 className="text-sm font-semibold text-text-primary">
 							{ __( 'Payment Information', 'sureforms' ) }
 						</h3>
-						<Button
-							icon={ <ArrowUpRight className="!size-4" /> }
-							iconPosition="right"
-							variant="link"
-							size="xs"
-							className="text-link-primary hover:text-link-primary-hover"
-							onClick={ handleViewInStripe }
-							disabled={
-								! subscriptionData?.stripe_subscription_id
-							}
-						>
-							{ __( 'View In Stripe', 'sureforms' ) }
-						</Button>
+						{ viewPaymentInPlateForm }
 					</div>
 				</div>
 				<div className="p-4">{ subscriptionDetails }</div>
