@@ -434,7 +434,7 @@ class Entries {
 	 *     @type string $order     Sort direction: 'ASC' or 'DESC'. Default 'DESC'.
 	 * }
 	 *
-	 * @since x.x.x
+	 * @since 2.4.0
 	 * @return array<string,int|null> {
 	 *     @type int|null $previous_id Previous entry ID (older entry) or null if at the oldest.
 	 *     @type int|null $next_id     Next entry ID (newer entry) or null if at the newest.
