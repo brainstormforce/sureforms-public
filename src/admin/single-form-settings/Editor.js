@@ -64,12 +64,6 @@ const SureformsFormSpecificSettings = () => {
 	const [ rootContainer, setRootContainer ] = useState( null );
 	const [ documentBody, setDocumentBody ] = useState( null );
 
-	console.log( {
-		'rootContainer open': rootContainer,
-		documentBody,
-		shouldIframe,
-	} );
-
 	useEffect( () => {
 		let intervalId = null;
 		let timeoutId = null;

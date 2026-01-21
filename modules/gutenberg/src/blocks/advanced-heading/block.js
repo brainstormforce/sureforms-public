@@ -21,6 +21,7 @@ headingCommonData = applyFilters(
 );
 registerBlockType( 'srfm/advanced-heading', {
 	...headingCommonData,
+	apiVersion: 3,
 	title: __( 'Heading', 'sureforms' ),
 	description: __(
 		'Add heading, sub heading and a separator using one block.',
