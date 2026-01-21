@@ -36,7 +36,8 @@
 			"type": "number"
 		},
 		"verticalLayout": {
-			"type": "boolean"
+			"type": "boolean",
+			"default": false
 		},
 		"options": {
 			"type": "array",

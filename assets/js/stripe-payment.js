@@ -220,6 +220,10 @@ class StripePayment {
 			.closest( '.srfm-block' )
 			.querySelector( '.srfm-stripe-payment-element' );
 
+		if ( ! elementContainer ) {
+			return;
+		}
+
 		// Initialize Stripe
 		if ( ! StripePayment.stripeInstances[ blockId ] ) {
 			StripePayment.stripeInstances[ blockId ] = Stripe( stripeKey );
@@ -309,7 +313,15 @@ class StripePayment {
 			// Get fixed amount from data attribute
 			amount = parseFloat( paymentInput.dataset.fixedAmount || 0 );
 		} else {
-			amount = parseFloat( paymentInput?.value || 0 );
+			// Get the format type for dynamic amounts
+			const formatType =
+				paymentInput.getAttribute(
+					'data-dynamic-amount-format-type'
+				) || 'us-style';
+			const rawAmount = paymentInput.dataset.currentAmount || 0;
+
+			// Normalize the amount based on format type
+			amount = StripePayment.normalizeAmount( rawAmount, formatType );
 		}
 
 		// Validate the amount - must be valid, not negative, and greater than 0
@@ -469,6 +481,34 @@ class StripePayment {
 			return false;
 		}
 		return true;
+	}
+
+	/**
+	 * Normalize amount based on number format type (EU-style or US-style)
+	 * @param {string|number} amount     - The amount to normalize.
+	 * @param {string}        formatType - The format type: 'eu-style' or 'us-style'.
+	 * @return {number} The normalized amount as a number.
+	 */
+	static normalizeAmount( amount, formatType = 'us-style' ) {
+		// If already a number, return it
+		if ( typeof amount === 'number' ) {
+			return amount;
+		}
+
+		// Convert to string and trim
+		const amountStr = String( amount ).trim();
+
+		if ( formatType === 'eu-style' ) {
+			// EU-style: 1.234,56 (period = thousands, comma = decimal)
+			// Remove periods (thousands separator) and replace comma with period (decimal)
+			return parseFloat(
+				amountStr.replace( /\./g, '' ).replace( ',', '.' )
+			);
+		}
+
+		// US-style (default): 1,234.56 (comma = thousands, period = decimal)
+		// Remove commas (thousands separator)
+		return parseFloat( amountStr.replace( /,/g, '' ) );
 	}
 
 	/**
@@ -751,29 +791,78 @@ const PAYMENT_UTILITY = {
 		PAYMENT_UTILITY.listenAmountChanges();
 	},
 	/**
+	 * Format a number according to the format type (EU-style or US-style)
+	 * @param {number|string} amount     - The amount to format
+	 * @param {string}        formatType - The format type: 'eu-style' or 'us-style'
+	 * @return {string} The formatted number string
+	 */
+	formatNumberByType: ( amount, formatType = 'us-style' ) => {
+		// Normalize to a number first
+		const normalizedAmount = StripePayment.normalizeAmount(
+			amount,
+			formatType
+		);
+
+		if ( isNaN( normalizedAmount ) ) {
+			return '0.00';
+		}
+
+		// Format to 2 decimal places
+		const fixedAmount = normalizedAmount.toFixed( 2 );
+
+		if ( formatType === 'eu-style' ) {
+			// EU-style: 1.234,56 (period = thousands, comma = decimal)
+			const parts = fixedAmount.split( '.' );
+			const integerPart = parts[ 0 ].replace(
+				/\B(?=(\d{3})+(?!\d))/g,
+				'.'
+			);
+			const decimalPart = parts[ 1 ];
+			return integerPart + ',' + decimalPart;
+		}
+
+		// US-style (default): 1,234.56 (comma = thousands, period = decimal)
+		const parts = fixedAmount.split( '.' );
+		const integerPart = parts[ 0 ].replace( /\B(?=(\d{3})+(?!\d))/g, ',' );
+		const decimalPart = parts[ 1 ];
+		return integerPart + '.' + decimalPart;
+	},
+
+	/**
 	 * Format subscription message by replacing {amount} placeholder with formatted amount
-	 * @param {string} messageFormat  - The message format template (e.g., "{amount} per day for 8 payments")
-	 * @param {number} amount         - The payment amount
-	 * @param {string} currencySymbol - The currency symbol (e.g., "$")
+	 * @param {string} messageFormat   - The message format template (e.g., "{amount} per day for 8 payments")
+	 * @param {number} amount          - The payment amount
+	 * @param {string} currencySymbol  - The currency symbol (e.g., "$")
+	 * @param {string} inputFormatType - The format type: 'eu-style' or 'us-style'
 	 * @return {string} Formatted message
 	 */
-	formatSubscriptionMessage: ( messageFormat, amount, currencySymbol ) => {
+	formatSubscriptionMessage: (
+		messageFormat,
+		amount,
+		currencySymbol,
+		inputFormatType = 'us-style'
+	) => {
 		if ( ! messageFormat ) {
 			return PAYMENT_UTILITY.amountPlaceHolder;
 		}
 
-		// Format amount with currency (e.g., "$340.00")
+		// Format amount with currency using the appropriate number format
 		const formattedAmount =
 			! amount || amount <= 0
 				? ''
-				: currencySymbol + parseFloat( amount ).toFixed( 2 );
+				: currencySymbol +
+				  PAYMENT_UTILITY.formatNumberByType( amount, inputFormatType );
 
 		// Replace {amount} placeholder with formatted amount
 		return '' !== formattedAmount
 			? messageFormat.replace( '{amount}', formattedAmount )
 			: PAYMENT_UTILITY.amountPlaceHolder;
 	},
-	updatePaymentBlockAmount: ( paymentInput, amount ) => {
+	updatePaymentBlockAmount: (
+		paymentInput,
+		amount,
+		inputFormatType = 'us-style'
+	) => {
 		const getPlaceHolderElement = paymentInput
 			.closest( '.srfm-block' )
 			.querySelector( '.srfm-payment-value' );
@@ -792,18 +881,33 @@ const PAYMENT_UTILITY = {
 						PAYMENT_UTILITY.formatSubscriptionMessage(
 							messageFormat,
 							amount,
-							getCurrencySymbol
+							getCurrencySymbol,
+							inputFormatType
 						);
 					getPlaceHolderElement.innerHTML = formattedMessage;
 				} else {
 					// Fallback to simple amount display (backward compatible)
+					// Format the amount according to the number format type
+					const formattedAmount = PAYMENT_UTILITY.formatNumberByType(
+						amount,
+						inputFormatType
+					);
 					getPlaceHolderElement.innerHTML =
-						getCurrencySymbol + amount;
+						getCurrencySymbol + formattedAmount;
 				}
 			}
 		}
 
-		paymentInput.value = amount;
+		const normalizedAmount = StripePayment.normalizeAmount(
+			amount,
+			inputFormatType
+		);
+
+		paymentInput.setAttribute( 'data-current-amount', normalizedAmount );
+		paymentInput.setAttribute(
+			'data-dynamic-amount-format-type',
+			inputFormatType
+		);
 	},
 	listenAmountChanges: () => {
 		const paymentInputs = PAYMENT_UTILITY.currentForm.querySelectorAll(
@@ -839,15 +943,27 @@ const PAYMENT_UTILITY = {
 									( event ) => {
 										const getMappedBlockInputValue =
 											event.target.value;
+										// Get format type from the number input's data attribute
+										const inputFormatType =
+											getMappedBlockInput.getAttribute(
+												'format-type'
+											) || 'us-style';
 										PAYMENT_UTILITY.updatePaymentBlockAmount(
 											paymentInput,
-											getMappedBlockInputValue
+											getMappedBlockInputValue,
+											inputFormatType
 										);
 									}
 								);
+								// Get initial format type for the initial value
+								const inputFormatType =
+									getMappedBlockInput.getAttribute(
+										'format-type'
+									) || 'us-style';
 								PAYMENT_UTILITY.updatePaymentBlockAmount(
 									paymentInput,
-									getMappedBlockInput.value
+									getMappedBlockInput.value,
+									inputFormatType
 								);
 							}
 						} else if (

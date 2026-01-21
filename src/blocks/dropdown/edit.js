@@ -374,31 +374,33 @@ const Edit = ( props ) => {
 					}
 				} }
 			>
-				<SRFMTextControl
-					showHeaderControls={ false }
-					label={ __( 'Add New Option', 'sureforms' ) }
-					value={ newOption }
-					onChange={ ( value ) => {
-						if ( checkInvalidCharacter( value ) ) {
-							return;
-						}
+				<div className="sureform-add-option-input-wrapper">
+					<SRFMTextControl
+						showHeaderControls={ false }
+						label={ __( 'Add New Option', 'sureforms' ) }
+						value={ newOption }
+						onChange={ ( value ) => {
+							if ( checkInvalidCharacter( value ) ) {
+								return;
+							}
 
-						setNewOption( value );
-					} }
-				/>
-				<Button
-					className="sureform-add-option-button"
-					variant="secondary"
-					onClick={ () => {
-						if ( newOption ) {
-							addOption( newOption );
-						} else {
-							// TODO: May be add a tooltip here
-						}
-					} }
-				>
-					{ __( 'ADD', 'sureforms' ) }
-				</Button>
+							setNewOption( value );
+						} }
+					/>
+					<Button
+						className="sureform-add-option-button"
+						variant="secondary"
+						onClick={ () => {
+							if ( newOption ) {
+								addOption( newOption );
+							} else {
+								// TODO: May be add a tooltip here
+							}
+						} }
+					>
+						{ __( 'ADD', 'sureforms' ) }
+					</Button>
+				</div>
 				<BulkInserterWithButton
 					options={ options }
 					titleKey="label"
