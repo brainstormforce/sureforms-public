@@ -9,7 +9,7 @@
  */
 
 import { Alert, Button } from '@bsf/force-ui';
-import { TriangleAlert, Info, CheckCircle, XCircle } from 'lucide-react';
+import { TriangleAlert, Info, CheckCircle, CircleAlert } from 'lucide-react';
 
 /**
  * Get the appropriate icon for each notice variant.
@@ -20,7 +20,7 @@ import { TriangleAlert, Info, CheckCircle, XCircle } from 'lucide-react';
 const getNoticeIcon = ( variant ) => {
 	switch ( variant ) {
 		case 'error':
-			return <XCircle className="!size-6" />;
+			return <CircleAlert className="!size-6" />;
 		case 'warning':
 			return <TriangleAlert className="!size-6" />;
 		case 'success':

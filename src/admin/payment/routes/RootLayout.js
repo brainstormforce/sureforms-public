@@ -27,7 +27,7 @@ const RootLayout = () => {
 		<>
 			<PageHeader />
 			{ window.srfm_admin?.notices?.length > 0 && (
-				<div className="px-8 pt-4">
+				<div className="px-8 py-2">
 					<AdminNotice currentPage="sureforms_payments" />
 				</div>
 			) }
