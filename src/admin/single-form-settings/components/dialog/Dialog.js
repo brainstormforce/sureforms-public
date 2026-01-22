@@ -534,22 +534,18 @@ const Dialog = ( {
 					<Container
 						direction="column"
 						gap="none"
-						className="w-full h-full pt-3 divide-y divide-x-0 divide-solid divide-border-subtle"
+						className="w-full h-full divide-y divide-x-0 divide-solid divide-border-subtle"
 					>
-						<Container
-							className="py-2 px-4 align-start"
-							justify="between"
-						>
+						<Container className="py-3 px-4" justify="between">
 							<Title
 								tag="h6"
 								title={ __( 'Form Behavior', 'sureforms' ) }
 								size="xs"
-								className="leading-none m-0"
 							/>
 							<Button
 								variant="ghost"
 								size="sm"
-								className="p-1 self-start"
+								className="p-1"
 								onClick={ close }
 								icon={ <XIcon /> }
 							/>
