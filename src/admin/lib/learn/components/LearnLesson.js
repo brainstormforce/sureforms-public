@@ -6,6 +6,7 @@ import {
 	ChevronDown,
 	ChevronUp,
 	Circle,
+	ExternalLink,
 	Play,
 	Plus,
 } from 'lucide-react';
@@ -34,6 +35,7 @@ const LearnLesson = ( {
 		description,
 		learn,
 		action,
+		docsUrl,
 		completed = false,
 		timeEstimate,
 	} = lesson;
@@ -95,6 +97,14 @@ const LearnLesson = ( {
 	const handlePlayVideo = ( e ) => {
 		e?.stopPropagation();
 		setIsVideoPlaying( true );
+	};
+
+	// Handler for opening documentation - easily removable if not needed.
+	const handleDocsClick = ( e ) => {
+		e?.stopPropagation();
+		if ( docsUrl ) {
+			window.open( docsUrl, '_blank', 'noopener,noreferrer' );
+		}
 	};
 
 	const getStatusIcon = () => {
@@ -296,7 +306,24 @@ const LearnLesson = ( {
 								gap="md"
 								className="px-2"
 							>
-								{ action?.url && (
+								{ /* For video lessons, show Read Docs button if docsUrl exists - easily removable by removing this block or docsUrl from data */ }
+								{ hasVideo && docsUrl && (
+									<Container.Item>
+										<Button
+											variant="primary"
+											size="md"
+											icon={
+												<ExternalLink className="size-5" />
+											}
+											className="w-full shadow-sm"
+											onClick={ handleDocsClick }
+										>
+											{ __( 'Read Docs', 'sureforms' ) }
+										</Button>
+									</Container.Item>
+								) }
+								{ /* For non-video lessons, show the action button */ }
+								{ ! hasVideo && action?.url && (
 									<Container.Item>
 										<Button
 											variant="primary"

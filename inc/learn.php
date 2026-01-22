@@ -76,6 +76,7 @@ class Learn {
 							'url'        => admin_url( 'post-new.php?post_type=sureforms_form' ),
 							'isExternal' => false,
 						],
+						'docsUrl'     => 'https://sureforms.com/docs/create-your-first-form/',
 						'completed'   => false,
 					],
 					[
@@ -160,11 +161,7 @@ class Learn {
 								],
 							],
 						],
-						'action'      => [
-							'label'      => __( 'Watch Video', 'sureforms' ),
-							'url'        => 'https://youtu.be/51q5a_Pk1XA',
-							'isExternal' => true,
-						],
+						'docsUrl'     => 'https://sureforms.com/docs/multi-step-forms/',
 						'completed'   => false,
 					],
 					[
@@ -181,11 +178,7 @@ class Learn {
 								],
 							],
 						],
-						'action'      => [
-							'label'      => __( 'Watch Video', 'sureforms' ),
-							'url'        => 'https://youtu.be/9C5ePZ6VpoA',
-							'isExternal' => true,
-						],
+						'docsUrl'     => 'https://sureforms.com/docs/conversational-forms/',
 						'completed'   => false,
 					],
 					[
@@ -202,11 +195,7 @@ class Learn {
 								],
 							],
 						],
-						'action'      => [
-							'label'      => __( 'Watch Video', 'sureforms' ),
-							'url'        => 'https://youtu.be/example-pdf-generation',
-							'isExternal' => true,
-						],
+						'docsUrl'     => 'https://sureforms.com/docs/pdf-generation/',
 						'completed'   => false,
 					],
 					[
@@ -223,11 +212,7 @@ class Learn {
 								],
 							],
 						],
-						'action'      => [
-							'label'      => __( 'Watch Video', 'sureforms' ),
-							'url'        => 'https://youtu.be/example-payment-forms',
-							'isExternal' => true,
-						],
+						'docsUrl'     => 'https://sureforms.com/docs/payment-forms/',
 						'completed'   => false,
 					],
 					[
@@ -259,11 +244,7 @@ class Learn {
 								],
 							],
 						],
-						'action'      => [
-							'label'      => __( 'Watch Video', 'sureforms' ),
-							'url'        => 'https://youtu.be/AACFRtDjXHs',
-							'isExternal' => true,
-						],
+						'docsUrl'     => 'https://sureforms.com/docs/conditional-logic/',
 						'completed'   => false,
 					],
 					[
@@ -280,11 +261,7 @@ class Learn {
 								],
 							],
 						],
-						'action'      => [
-							'label'      => __( 'Watch Video', 'sureforms' ),
-							'url'        => 'https://youtu.be/example-calculator-forms',
-							'isExternal' => true,
-						],
+						'docsUrl'     => 'https://sureforms.com/docs/calculator-forms/',
 						'completed'   => false,
 					],
 					[
@@ -301,11 +278,7 @@ class Learn {
 								],
 							],
 						],
-						'action'      => [
-							'label'      => __( 'Watch Video', 'sureforms' ),
-							'url'        => 'https://youtu.be/H2DRn8A8LQI',
-							'isExternal' => true,
-						],
+						'docsUrl'     => 'https://sureforms.com/docs/login-forms/',
 						'completed'   => false,
 					],
 					[
@@ -322,11 +295,7 @@ class Learn {
 								],
 							],
 						],
-						'action'      => [
-							'label'      => __( 'Watch Video', 'sureforms' ),
-							'url'        => 'https://youtu.be/H2DRn8A8LQI',
-							'isExternal' => true,
-						],
+						'docsUrl'     => 'https://sureforms.com/docs/registration-forms/',
 						'completed'   => false,
 					],
 				],
