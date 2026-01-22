@@ -1,5 +1,9 @@
 @import "../blocks/default/utils/mixins.scss";
 
+body.post-type-sureforms_form:not(.block-editor-iframe__body) {
+	overflow-y: hidden;
+}
+
 body.post-type-sureforms_form {
 	/**
 	 * Hide the Patterns and Media tabs in the block editor.
@@ -101,7 +105,6 @@ body.post-type-sureforms_form {
 			display: none !important;
 		}
 	}
-	overflow-y: hidden;
 
 	// Adding multi choice repeater styles.
 	.srfm-option-outer-wrapper {
