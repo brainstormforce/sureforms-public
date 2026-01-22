@@ -68,6 +68,9 @@ class Admin {
 		add_action( 'uag_enable_quick_action_sidebar', [ $this, 'restrict_spectra_quick_action_bar' ] );
 
 		add_action( 'current_screen', [ $this, 'enable_gutenberg_for_sureforms' ], 100 );
+		// Register notices early for React pages (before admin_enqueue_scripts).
+		add_action( 'admin_init', [ $this, 'register_pro_compatibility_notices' ], 5 );
+		// Display notices on traditional WordPress admin pages.
 		add_action( 'admin_notices', [ $this, 'srfm_pro_version_compatibility' ] );
 
 		// This action enqueues translations for NPS Survey library.
@@ -918,6 +921,14 @@ class Admin {
 			$asset_handle = '-entries';
 			wp_enqueue_script( SRFM_SLUG . $asset_handle, SRFM_URL . 'assets/build/entries.js', $script_info['dependencies'], SRFM_VER, true );
 
+			wp_localize_script(
+				SRFM_SLUG . $asset_handle,
+				SRFM_SLUG . '_admin',
+				apply_filters(
+					SRFM_SLUG . '_admin_filter',
+					$localization_data
+				)
+			);
 			$script_translations_handlers[] = SRFM_SLUG . $asset_handle;
 		}
 
@@ -937,7 +948,10 @@ class Admin {
 			wp_localize_script(
 				SRFM_SLUG . $asset_handle,
 				SRFM_SLUG . '_admin',
-				$localization_data
+				apply_filters(
+					SRFM_SLUG . '_admin_filter',
+					$localization_data
+				)
 			);
 			wp_enqueue_style( SRFM_SLUG . $asset_handle, SRFM_URL . 'assets/build/forms.css', [], SRFM_VER, 'all' );
 
@@ -1156,6 +1170,90 @@ class Admin {
 		}
 
 		return $status;
+	}
+
+	/**
+	 * Register Pro compatibility notices early for React pages.
+	 *
+	 * This method runs on admin_init (priority 5) to ensure notices are
+	 * registered BEFORE admin_enqueue_scripts, so they're available when
+	 * wp_localize_script runs.
+	 *
+	 * Hooked - admin_init (priority 5)
+	 *
+	 * @return void
+	 * @since x.x.x
+	 */
+	public function register_pro_compatibility_notices() {
+		// Early exit if Pro is not active, user lacks permissions, or Notice_Manager is unavailable.
+		if ( ! Helper::has_pro() || ! Helper::current_user_can() || ! class_exists( 'SRFM\Admin\Notice_Manager' ) ) {
+			return;
+		}
+
+		$srfm_pro_license_status = get_option( 'srfm_pro_license_status', '' );
+		/**
+		 * If the license status is not set then get the license status and update the option accordingly.
+		 * This will be executed only once. Subsequently, the option status is updated by the licensing class on license activation or deactivation.
+		 */
+		if ( empty( $srfm_pro_license_status ) && class_exists( 'SRFM_PRO\Admin\Licensing' ) ) {
+			$srfm_pro_license_status = \SRFM_PRO\Admin\Licensing::is_license_active() ? 'licensed' : 'unlicensed';
+			update_option( 'srfm_pro_license_status', $srfm_pro_license_status );
+		}
+
+		$pro_plugin_name = defined( 'SRFM_PRO_PRODUCT' ) ? SRFM_PRO_PRODUCT : 'SureForms Pro';
+		$url             = admin_url( 'admin.php?page=sureforms_form_settings&tab=account-settings' );
+
+		// Register license inactive notice for React pages.
+		if ( 'unlicensed' === $srfm_pro_license_status ) {
+			$react_message = sprintf(
+				// translators: %s: SureForms Pro Plugin Name.
+				esc_html__( 'Please activate your copy of %s to get new features, access support, receive update notifications, and more.', 'sureforms' ),
+				esc_html( $pro_plugin_name )
+			);
+
+			\SRFM\Admin\Notice_Manager::register_notice(
+				[
+					'id'      => 'sureforms-pro-license-inactive',
+					'variant' => 'warning',
+					'message' => $react_message,
+					'actions' => [
+						[
+							'label'   => esc_html__( 'Activate License', 'sureforms' ),
+							'url'     => $url,
+							'variant' => 'primary',
+						],
+					],
+					'pages'   => [ 'all' ],
+				]
+			);
+		}
+
+		// Register version outdated notice for React pages.
+		if ( ! version_compare( SRFM_PRO_VER, SRFM_PRO_RECOMMENDED_VER, '>=' ) ) {
+			$react_outdated_message = sprintf(
+				// translators: %1$s: SureForms version, %2$s: SureForms Pro Plugin Name, %3$s: SureForms Pro Version.
+				esc_html__( 'SureForms %1$s requires minimum %2$s %3$s to work properly. Please update to the latest version.', 'sureforms' ),
+				esc_html( SRFM_VER ),
+				esc_html( $pro_plugin_name ),
+				esc_html( SRFM_PRO_RECOMMENDED_VER )
+			);
+
+			\SRFM\Admin\Notice_Manager::register_notice(
+				[
+					'id'      => 'sureforms-pro-version-outdated',
+					'variant' => 'warning',
+					'message' => $react_outdated_message,
+					'actions' => [
+						[
+							'label'   => esc_html__( 'Update Now', 'sureforms' ),
+							'url'     => admin_url( 'update-core.php' ),
+							'variant' => 'primary',
+						],
+					],
+					'pages'   => [ 'all' ],
+				]
+			);
+		}
 	}
 
 	/**

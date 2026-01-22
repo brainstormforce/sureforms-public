@@ -375,6 +375,7 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 
 == Changelog ==
 = x.x.x =
+* Improvement: Added notice on react pages.
 * Fix: Resolved an issue where undefined string is being added with smart tag in textarea default value.
 = 2.4.0 - 20th January 2026 =
 * New: Added form scheduling restrictions with start and end date/time.

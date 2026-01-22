@@ -8,6 +8,7 @@ import FormsHeader from './components/FormsHeader';
 import FormsTable from './components/FormsTable';
 import EmptyState from './components/EmptyState';
 import ConfirmationDialog from '@Admin/components/ConfirmationDialog';
+import AdminNotice from '@Admin/components/AdminNotice';
 import {
 	useForms,
 	useBulkFormsAction,
@@ -496,6 +497,11 @@ const FormsListingPage = () => {
 					direction="column"
 					gap="2xl"
 				>
+					{ /* Admin Notices - only render if notices exist */ }
+					{ window.srfm_admin?.notices?.length > 0 && (
+						<AdminNotice currentPage="sureforms_forms" />
+					) }
+
 					{ /* Content */ }
 					{ shouldShowInitialEmptyState ? (
 						<div className="bg-background-secondary rounded-lg shadow-sm border-0.5 border-solid border-border-subtle">

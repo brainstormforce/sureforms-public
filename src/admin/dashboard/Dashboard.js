@@ -7,6 +7,7 @@ import Header from '../components/Header';
 import QuickAccessTab from './QuickAccessTab';
 import UpgradeToPro from './UpgradeToPro';
 import FormsOverview from './FormsOverview';
+import AdminNotice from '../components/AdminNotice';
 
 export default () => {
 	const nav = <Header />;
@@ -42,6 +43,12 @@ export default () => {
 					cols={ 12 }
 					gap="2xl"
 				>
+					{ /* Admin Notices - only render wrapper if notices exist */ }
+					{ window.srfm_admin?.notices?.length > 0 && (
+						<Container.Item className="col-span-12">
+							<AdminNotice currentPage="sureforms_menu" />
+						</Container.Item>
+					) }
 					<Container.Item className="flex flex-col gap-8 col-span-12 xl:col-span-8">
 						{ leftSidebar }
 					</Container.Item>
