@@ -1190,46 +1190,9 @@ class Admin {
 			return;
 		}
 
-		$srfm_pro_license_status = get_option( 'srfm_pro_license_status', '' );
-		/**
-		 * If the license status is not set then get the license status and update the option accordingly.
-		 * This will be executed only once. Subsequently, the option status is updated by the licensing class on license activation or deactivation.
-		 */
-		if ( empty( $srfm_pro_license_status ) && class_exists( 'SRFM_PRO\Admin\Licensing' ) ) {
-			$srfm_pro_license_status = \SRFM_PRO\Admin\Licensing::is_license_active() ? 'licensed' : 'unlicensed';
-			update_option( 'srfm_pro_license_status', $srfm_pro_license_status );
-		}
-
-		$pro_plugin_name = defined( 'SRFM_PRO_PRODUCT' ) ? SRFM_PRO_PRODUCT : 'SureForms Pro';
-		$url             = admin_url( 'admin.php?page=sureforms_form_settings&tab=account-settings' );
-
-		// Register license inactive notice for React pages.
-		if ( 'unlicensed' === $srfm_pro_license_status ) {
-			$react_message = sprintf(
-				// translators: %s: SureForms Pro Plugin Name.
-				esc_html__( 'Please activate your copy of %s to get new features, access support, receive update notifications, and more.', 'sureforms' ),
-				esc_html( $pro_plugin_name )
-			);
-
-			\SRFM\Admin\Notice_Manager::register_notice(
-				[
-					'id'      => 'sureforms-pro-license-inactive',
-					'variant' => 'warning',
-					'message' => $react_message,
-					'actions' => [
-						[
-							'label'   => esc_html__( 'Activate License', 'sureforms' ),
-							'url'     => $url,
-							'variant' => 'primary',
-						],
-					],
-					'pages'   => [ 'all' ],
-				]
-			);
-		}
-
 		// Register version outdated notice for React pages.
 		if ( ! version_compare( SRFM_PRO_VER, SRFM_PRO_RECOMMENDED_VER, '>=' ) ) {
+			$pro_plugin_name        = defined( 'SRFM_PRO_PRODUCT' ) ? SRFM_PRO_PRODUCT : 'SureForms Pro';
 			$react_outdated_message = sprintf(
 				// translators: %1$s: SureForms version, %2$s: SureForms Pro Plugin Name, %3$s: SureForms Pro Version.
 				esc_html__( 'SureForms %1$s requires minimum %2$s %3$s to work properly. Please update to the latest version.', 'sureforms' ),

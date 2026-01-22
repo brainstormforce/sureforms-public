@@ -1,12 +1,18 @@
 import { Skeleton, Text, Button } from '@bsf/force-ui';
 import { __ } from '@wordpress/i18n';
+import { cn } from '@Utils/Helpers';
 
 const PaymentLoadingSkeleton = ( props ) => {
 	const { loading, error, notFound, setViewSinglePayment } = props;
 
 	if ( loading ) {
 		return (
-			<div className="p-8 bg-background-secondary min-h-screen space-y-6">
+			<div
+				className={ cn(
+					'px-8 pb-8 bg-background-secondary min-h-screen space-y-6',
+					! window.srfm_admin?.notices?.length && 'pt-8'
+				) }
+			>
 				{ /* Header Skeleton */ }
 				<div className="flex items-center gap-3 mx-auto">
 					<Skeleton className="w-8 h-8 rounded-md" />
@@ -118,7 +124,12 @@ const PaymentLoadingSkeleton = ( props ) => {
 		);
 	} else if ( error ) {
 		return (
-			<div className="p-8 bg-background-secondary min-h-screen">
+			<div
+				className={ cn(
+					'px-8 pb-8 bg-background-secondary min-h-screen',
+					! window.srfm_admin?.notices?.length && 'pt-8'
+				) }
+			>
 				<div className="flex items-center justify-center h-96">
 					<div className="text-center">
 						<Text className="text-red-600 mb-4">
@@ -139,7 +150,12 @@ const PaymentLoadingSkeleton = ( props ) => {
 		);
 	} else if ( notFound ) {
 		return (
-			<div className="p-8 bg-background-secondary min-h-screen">
+			<div
+				className={ cn(
+					'px-8 pb-8 bg-background-secondary min-h-screen',
+					! window.srfm_admin?.notices?.length && 'pt-8'
+				) }
+			>
 				<div className="flex items-center justify-center h-96">
 					<div className="text-center">
 						<Text className="mb-4">

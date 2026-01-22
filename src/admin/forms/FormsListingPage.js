@@ -495,7 +495,7 @@ const FormsListingPage = () => {
 			<Container.Item className="px-5 pb-8 xl:px-8 w-full bg-background-secondary">
 				{ /* Admin Notices - only render if notices exist */ }
 				{ window.srfm_admin?.notices?.length > 0 && (
-					<div className="py-2">
+					<div className="py-4">
 						<AdminNotice currentPage="sureforms_forms" />
 					</div>
 				) }
