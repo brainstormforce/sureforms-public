@@ -375,6 +375,7 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 
 == Changelog ==
 = x.x.x =
+* Improvement: Added translation support to country list in phone number block.
 * Fix: Resolved an issue where fields continued to appear read only even though the Read Only option is hidden.
 * Fix: Resolved an issue where undefined string is being added with smart tag in textarea default value.
 = 2.4.0 - 20th January 2026 =

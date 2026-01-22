@@ -174,6 +174,12 @@ function initializePhoneField() {
 			}
 		}
 
+		// Add i18n translations if available (loaded via language file)
+		// The language file sets window.intlTelInputI18n with country names and UI translations
+		if ( window.intlTelInputI18n ) {
+			itlOptions.i18n = window.intlTelInputI18n;
+		}
+
 		const iti = window.intlTelInput( phoneNumber, itlOptions );
 		const countriesData =
 			iti?.countryList.querySelectorAll( '.iti__country' );
