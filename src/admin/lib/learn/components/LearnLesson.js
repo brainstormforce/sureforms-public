@@ -1,20 +1,33 @@
 import { __ } from '@wordpress/i18n';
-import { Button, Text, Tooltip, Badge } from '@bsf/force-ui';
+import { Badge, Button, Container, Label } from '@bsf/force-ui';
 import { useState, useEffect } from '@wordpress/element';
-import { ArrowUpRight, Check, Info, Video } from 'lucide-react';
+import {
+	Check,
+	ChevronDown,
+	ChevronUp,
+	Circle,
+	Play,
+	Plus,
+} from 'lucide-react';
 
 /**
- * Component for rendering a single lesson within a module
+ * Component for rendering a single expandable lesson card
  *
  * @param {Object}   props                    - Component props
  * @param {Object}   props.lesson             - Lesson data object
  * @param {string}   props.moduleId           - ID of the parent module
- * @param {boolean}  props.isLast             - Whether this is the last lesson in the module
+ * @param {boolean}  props.isExpanded         - Whether this lesson is expanded
+ * @param {Function} props.onToggle           - Callback to toggle expansion
  * @param {Function} props.onCompletionChange - Callback when lesson completion status changes
- * @param {Function} props.onLearnHowClick    - Callback to open learn how dialog
  * @return {JSX.Element|null} - Rendered lesson component
  */
-const LearnLesson = ( { lesson, moduleId, isLast = false, onCompletionChange, onLearnHowClick } ) => {
+const LearnLesson = ( {
+	lesson,
+	moduleId,
+	isExpanded = false,
+	onToggle,
+	onCompletionChange,
+} ) => {
 	const {
 		id,
 		title,
@@ -22,21 +35,43 @@ const LearnLesson = ( { lesson, moduleId, isLast = false, onCompletionChange, on
 		learn,
 		action,
 		completed = false,
-		isPro = false,
+		timeEstimate,
 	} = lesson;
 
 	const [ isCompleted, setIsCompleted ] = useState( completed );
+	const [ isVideoPlaying, setIsVideoPlaying ] = useState( false );
 
 	// Update local state when completed prop changes
 	useEffect( () => {
 		setIsCompleted( completed );
 	}, [ completed ] );
 
+	// Reset video playing state when lesson is collapsed
+	useEffect( () => {
+		if ( ! isExpanded ) {
+			setIsVideoPlaying( false );
+		}
+	}, [ isExpanded ] );
+
 	if ( ! id || ! title ) {
 		return null;
 	}
 
-	const handleCompletion = () => {
+	// Determine status based on completion and expansion
+	const getStatus = () => {
+		if ( isCompleted ) {
+			return 'completed';
+		}
+		if ( isExpanded ) {
+			return 'in-progress';
+		}
+		return 'incomplete';
+	};
+
+	const status = getStatus();
+
+	const handleMarkAsCompleted = ( e ) => {
+		e?.stopPropagation();
 		const newStatus = ! isCompleted;
 		setIsCompleted( newStatus );
 
@@ -46,125 +81,260 @@ const LearnLesson = ( { lesson, moduleId, isLast = false, onCompletionChange, on
 		}
 	};
 
-	const LearnIcon = () => {
-		switch ( learn?.type ) {
-			case 'video':
-				return <Video size={ 14 } />;
-			case 'link':
-			default:
-				return <Info size={ 14 } />;
-		}
-	};
-
-	const handleLearnClick = () => {
-		if ( learn?.type === 'link' ) {
-			window.open( learn?.url, '_blank', 'noopener,noreferrer' );
-			return;
-		}
-
-		// Open learn how dialog for other types (video, content, etc.)
-		if ( onLearnHowClick && learn ) {
-			onLearnHowClick( lesson );
-		}
-	};
-
-	const handleActionClick = () => {
+	const handleActionClick = ( e ) => {
+		e?.stopPropagation();
 		if ( action?.url ) {
 			if ( action?.isExternal ) {
 				window.open( action?.url, '_blank', 'noopener,noreferrer' );
 			} else {
-				// Internal navigation
 				window.location.href = action?.url;
 			}
-			return;
 		}
-
-		console.info( 'Empty or missing URL!!!' );
 	};
 
-	const statusText = isCompleted
-		? __( 'Mark as incomplete', 'sureforms' )
-		: __( 'Mark as complete', 'sureforms' );
+	const handlePlayVideo = ( e ) => {
+		e?.stopPropagation();
+		setIsVideoPlaying( true );
+	};
+
+	const getStatusIcon = () => {
+		switch ( status ) {
+			case 'completed':
+				return <Check className="size-4 text-brand-primary-600" />;
+			case 'in-progress':
+				return <Circle className="size-4 text-brand-primary-600" />;
+			default:
+				return <Circle className="size-4 text-text-tertiary" />;
+		}
+	};
+
+	const getStatusText = () => {
+		switch ( status ) {
+			case 'completed':
+				return __( 'Completed', 'sureforms' );
+			case 'in-progress':
+				return __( 'In Progress', 'sureforms' );
+			default:
+				return __( 'Incomplete', 'sureforms' );
+		}
+	};
+
+	// Get video URL from learn content
+	const getVideoUrl = () => {
+		if ( learn?.type === 'dialog' && learn?.content?.type === 'video' ) {
+			return learn?.content?.data?.url || '';
+		}
+		return '';
+	};
+
+	// Get video thumbnail from learn content
+	const getVideoThumbnail = () => {
+		const videoUrl = getVideoUrl();
+		if ( videoUrl ) {
+			// Extract YouTube video ID and create thumbnail URL
+			const youtubeMatch = videoUrl.match(
+				/(?:youtube\.com\/embed\/|youtu\.be\/)([^?&]+)/
+			);
+			if ( youtubeMatch ) {
+				return `https://img.youtube.com/vi/${ youtubeMatch[ 1 ] }/maxresdefault.jpg`;
+			}
+		}
+		return null;
+	};
+
+	const videoUrl = getVideoUrl();
+	const videoThumbnail = getVideoThumbnail();
+	const hasVideo =
+		learn?.type === 'dialog' && learn?.content?.type === 'video';
 
 	return (
-		<div className={ `py-4 sm:py-5 flex items-center gap-2 sm:gap-3 border-solid border-0 border-border-subtle ${ isLast ? '' : 'border-b-0.5' }` }>
-			<Tooltip arrow content={ statusText } placement="top" variant="dark" tooltipPortalId="srfm-dashboard-container">
-				<span
-					className={ `self-start mt-[1px] flex justify-center items-center w-5 h-5 rounded-full cursor-pointer border-[1.25px] border-solid ${
-						isCompleted
-							? 'bg-support-success p-[3px] sm:p-[4px] border-support-success-inverse'
-							: 'border-border-strong [&:hover>svg]:text-border-strong'
-					}` }
-					tabIndex={ 0 }
-					aria-label={ statusText }
-					onClick={ handleCompletion }
+		<Container
+			containerType="flex"
+			direction="column"
+			className={ `border border-solid rounded-lg transition-all duration-200 ${
+				isExpanded
+					? 'bg-background-secondary border-text-tertiary'
+					: 'border-border-subtle'
+			}` }
+		>
+			{ /* Lesson Header - Clickable */ }
+			<Container.Item>
+				<div
+					className="p-4 cursor-pointer"
+					onClick={ onToggle }
 					onKeyDown={ ( e ) => {
 						if ( e.key === 'Enter' || e.key === ' ' ) {
 							e.preventDefault();
-							handleCompletion();
+							onToggle();
 						}
 					} }
+					role="button"
+					tabIndex={ 0 }
+					aria-expanded={ isExpanded }
 				>
-					<Check
-						className="text-icon-on-color sm:w-3.5 sm:h-3.5 transition-all duration-200"
-						size={ 12 }
-						strokeWidth={ 1.5 }
-					/>
-				</span>
-			</Tooltip>
+					<Container
+						containerType="flex"
+						direction="row"
+						align="center"
+						gap="md"
+					>
+						<Container.Item className="flex-1 min-w-0">
+							<Container
+								containerType="flex"
+								direction="row"
+								align="center"
+								gap="sm"
+							>
+								<Container.Item>
+									<div className="flex items-center justify-center w-6 h-6 rounded-full">
+										{ getStatusIcon() }
+									</div>
+								</Container.Item>
+								<Container.Item className="flex-1 min-w-0">
+									<Label className="text-base font-medium text-text-primary truncate block">
+										{ title }
+									</Label>
+								</Container.Item>
+							</Container>
+						</Container.Item>
 
-			<div className="flex-1 flex items-center gap-2">
-				<div className="flex flex-col gap-1.5">
-					<Text
-						className="flex-1"
-						size={ 14 }
-						weight={ 500 }
-						color="primary"
-					>
-						{ title }
-					</Text>
-					<Text
-						className="flex-1 hidden sm:block"
-						size={ 14 }
-						color="secondary"
-					>
-						{ description }
-					</Text>
+						{ timeEstimate && (
+							<Container.Item className="hidden sm:block">
+								<Badge
+									label={ timeEstimate }
+									size="sm"
+									variant="neutral"
+									type="pill"
+								/>
+							</Container.Item>
+						) }
+
+						<Container.Item className="hidden sm:block">
+							<Label className="text-sm text-text-tertiary whitespace-nowrap">
+								{ getStatusText() }
+							</Label>
+						</Container.Item>
+
+						<Container.Item>
+							<div className="flex items-center justify-center w-6 h-6">
+								{ isExpanded ? (
+									<ChevronUp className="size-4 text-text-tertiary" />
+								) : (
+									<ChevronDown className="size-4 text-text-tertiary" />
+								) }
+							</div>
+						</Container.Item>
+					</Container>
 				</div>
-				{ isPro && (
-					<Badge
-						label={ __( 'Pro', 'sureforms' ) }
-						size="xs"
-						type="pill"
-						variant="inverse"
-						className="uppercase"
-					/>
-				) }
-			</div>
+			</Container.Item>
 
-			{ learn && (
-				<Tooltip arrow content={ learn?.label || __( 'Learn how', 'sureforms' ) } placement="top" variant="dark" tooltipPortalId="srfm-dashboard-container">
-					<Button
-						size="xs"
-						variant="ghost"
-						icon={ <LearnIcon /> }
-						onClick={ handleLearnClick }
-						className="text-button-primary hover:bg-transparent outline-none"
-					/>
-				</Tooltip>
+			{ /* Expanded Content */ }
+			{ isExpanded && (
+				<Container.Item>
+					<Container
+						containerType="flex"
+						direction="column"
+						gap="md"
+						className="p-4 pt-0"
+					>
+						{ /* Video Section */ }
+						{ hasVideo && (
+							<Container.Item>
+								<div className="relative rounded-lg border border-solid border-border-subtle overflow-hidden aspect-video">
+									{ isVideoPlaying ? (
+										// Video Player
+										<iframe
+											src={ `${ videoUrl }?autoplay=1&rel=0` }
+											title={ title }
+											className="absolute inset-0 w-full h-full border-none"
+											allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+											allowFullScreen
+										/>
+									) : (
+										// Thumbnail with Play Button
+										<>
+											<img
+												src={ videoThumbnail }
+												alt={ title }
+												className="absolute inset-0 w-full h-full object-cover"
+											/>
+											<div className="absolute inset-0 flex items-center justify-center bg-black/20">
+												<Button
+													variant="primary"
+													size="lg"
+													icon={
+														<Play className="size-6" />
+													}
+													className="rounded-full px-6 py-6 shadow-2xl"
+													aria-label={ __(
+														'Play video',
+														'sureforms'
+													) }
+													onClick={ handlePlayVideo }
+												/>
+											</div>
+										</>
+									) }
+								</div>
+							</Container.Item>
+						) }
+
+						{ /* Description */ }
+						{ description && (
+							<Container.Item>
+								<Label className="text-sm text-text-secondary px-2 leading-relaxed">
+									{ description }
+								</Label>
+							</Container.Item>
+						) }
+
+						{ /* Action Buttons */ }
+						<Container.Item>
+							<Container
+								containerType="flex"
+								direction="column"
+								gap="md"
+								className="px-2"
+							>
+								{ action?.url && (
+									<Container.Item>
+										<Button
+											variant="primary"
+											size="md"
+											icon={ <Plus className="size-5" /> }
+											className="w-full shadow-sm"
+											onClick={ handleActionClick }
+										>
+											{ action?.label ||
+												__( 'Get Started', 'sureforms' ) }
+										</Button>
+									</Container.Item>
+								) }
+								<Container.Item>
+									<Button
+										variant="outline"
+										size="md"
+										icon={ <Check className="size-5" /> }
+										className="w-full shadow-sm"
+										onClick={ handleMarkAsCompleted }
+									>
+										{ isCompleted
+											? __(
+												'Mark as Incomplete',
+												'sureforms'
+											  )
+											: __(
+												'Mark as Completed',
+												'sureforms'
+											  ) }
+									</Button>
+								</Container.Item>
+							</Container>
+						</Container.Item>
+					</Container>
+				</Container.Item>
 			) }
-
-			<Button
-				className="px-3 gap-0.5 min-w-40"
-				size="sm"
-				variant="primary"
-				icon={ <ArrowUpRight size={ 14 } /> }
-				iconPosition="right"
-				onClick={ handleActionClick }
-			>
-				{ action?.label || __( 'Set Up', 'sureforms' ) }
-			</Button>
-		</div>
+		</Container>
 	);
 };
 

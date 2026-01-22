@@ -16,8 +16,6 @@ const useLearn = ( {
 	saveEndpoint = null,
 } = {} ) => {
 	const [ modules, setModules ] = useState( initialModules );
-	const [ learnHowDialogOpen, setLearnHowDialogOpen ] = useState( false );
-	const [ currentLearnHowItem, setCurrentLearnHowItem ] = useState( null );
 
 	// Update modules when initialModules changes (e.g., when API data loads)
 	useEffect( () => {
@@ -124,6 +122,68 @@ const useLearn = ( {
 	}, [] );
 
 	/**
+	 * Mark all lessons as complete for a specific module
+	 *
+	 * @param {string} moduleId - ID of the module to mark all lessons complete (optional, marks all if not provided)
+	 */
+	const markAllComplete = useCallback(
+		( moduleId = null ) => {
+			// Optimistically update UI
+			setModules( ( prevModules ) =>
+				prevModules.map( ( module ) => {
+					// If moduleId is provided, only update that module
+					if ( moduleId && module.id !== moduleId ) {
+						return module;
+					}
+					return {
+						...module,
+						steps: module.steps.map( ( lesson ) => ( {
+							...lesson,
+							completed: true,
+						} ) ),
+					};
+				} )
+			);
+
+			// Save each lesson to API if endpoint is provided
+			if ( saveEndpoint ) {
+				const modulesToUpdate = moduleId
+					? modules.filter( ( m ) => m.id === moduleId )
+					: modules;
+
+				const promises = modulesToUpdate.flatMap( ( module ) =>
+					module.steps
+						.filter( ( lesson ) => ! lesson.completed )
+						.map( ( lesson ) =>
+							apiFetch( {
+								path: saveEndpoint,
+								method: 'POST',
+								data: {
+									chapterId: module.id,
+									stepId: lesson.id,
+									completed: true,
+								},
+							} )
+						)
+				);
+
+				Promise.all( promises ).catch( ( error ) => {
+					// Show error toast
+					toast.error(
+						__(
+							'Failed to save progress. Please try again.',
+							'sureforms'
+						)
+					);
+					// eslint-disable-next-line no-console
+					console.error( 'Failed to mark all as complete:', error );
+				} );
+			}
+		},
+		[ modules, saveEndpoint ]
+	);
+
+	/**
 	 * Get the first incomplete module ID
 	 * Used for default accordion open state
 	 */
@@ -185,38 +245,16 @@ const useLearn = ( {
 		[ modules ]
 	);
 
-	/**
-	 * Open the learn how dialog with specific content
-	 *
-	 * @param {Object} item - Learn content item to display
-	 */
-	const openLearnHowDialog = useCallback( ( item ) => {
-		setCurrentLearnHowItem( item );
-		setLearnHowDialogOpen( true );
-	}, [] );
-
-	/**
-	 * Close the learn how dialog
-	 */
-	const closeLearnHowDialog = useCallback( () => {
-		setLearnHowDialogOpen( false );
-		setCurrentLearnHowItem( null );
-	}, [] );
-
 	return {
 		modules,
 		updateLessonCompletion,
 		markLessonCompleted,
 		markLessonIncomplete,
+		markAllComplete,
 		resetProgress,
 		firstIncompleteModuleId,
 		progressStats,
 		getModuleStats,
-		learnHowDialogOpen,
-		currentLearnHowItem,
-		openLearnHowDialog,
-		closeLearnHowDialog,
-		setLearnHowDialogOpen,
 	};
 };
 

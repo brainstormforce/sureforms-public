@@ -4,7 +4,6 @@ import { Toaster } from '@bsf/force-ui';
 import useLearn from '../useLearn';
 import LearnModules from './LearnModules';
 import LearnSkeleton from './LearnSkeleton';
-import LearnHowDialog from './LearnHowDialog';
 
 /**
  * Complete Learn component that manages modules and lessons
@@ -80,26 +79,25 @@ const Learn = ( {
 	const {
 		modules,
 		updateLessonCompletion,
+		markAllComplete,
 		firstIncompleteModuleId,
 		progressStats,
-		learnHowDialogOpen,
-		currentLearnHowItem,
-		openLearnHowDialog,
-		setLearnHowDialogOpen,
 	} = useLearn( {
 		initialModules: modulesToUse,
 		saveEndpoint: endpoints?.set,
 	} );
 
-	// Call progress change callback if provided
-	if ( onProgressChange && typeof onProgressChange === 'function' ) {
-		onProgressChange( progressStats );
-	}
+	// Call progress change callback when stats change
+	useEffect( () => {
+		if ( onProgressChange && typeof onProgressChange === 'function' ) {
+			onProgressChange( progressStats );
+		}
+	}, [ progressStats, onProgressChange ] );
 
 	// Show loading skeleton
 	if ( isLoading ) {
 		return (
-			<div className={ `flex flex-col gap-2 ${ className } !bg-transparent` }>
+			<div className={ className }>
 				<LearnSkeleton />
 			</div>
 		);
@@ -127,13 +125,7 @@ const Learn = ( {
 				modules={ modules }
 				defaultValue={ firstIncompleteModuleId }
 				onLessonCompletionChange={ updateLessonCompletion }
-				onLearnHowClick={ openLearnHowDialog }
-			/>
-
-			<LearnHowDialog
-				open={ learnHowDialogOpen }
-				setOpen={ setLearnHowDialogOpen }
-				item={ currentLearnHowItem }
+				onMarkAllComplete={ markAllComplete }
 			/>
 
 			<Toaster

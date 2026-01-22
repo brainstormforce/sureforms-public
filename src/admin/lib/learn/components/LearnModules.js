@@ -1,6 +1,7 @@
 import { __, sprintf } from '@wordpress/i18n';
-import { Accordion, Badge, Text } from '@bsf/force-ui';
-import { Check, ChevronRight, ExternalLink } from 'lucide-react';
+import { useState, useEffect } from '@wordpress/element';
+import { Button, Container, Label, ProgressBar, Title } from '@bsf/force-ui';
+import { CheckCheck, ChevronDown, ChevronUp } from 'lucide-react';
 import LearnLesson from './LearnLesson';
 
 /**
@@ -10,151 +11,243 @@ import LearnLesson from './LearnLesson';
  * @param {Object}   props.modules                  - Modules data object
  * @param {string}   props.defaultValue             - Default module ID to open
  * @param {Function} props.onLessonCompletionChange - Callback when lesson completion status changes
- * @param {Function} props.onLearnHowClick          - Callback to open learn how dialog
+ * @param {Function} props.onMarkAllComplete        - Callback when mark all as done is clicked for a module
  * @return {JSX.Element} - Rendered modules component
  */
-const LearnModules = ( { modules, defaultValue, onLessonCompletionChange, onLearnHowClick } ) => {
-	const handleLearnHowClick = ( event, url ) => {
-		event.stopPropagation();
-		if ( url ) {
-			window.open( url, '_blank', 'noopener,noreferrer' );
-			return;
-		}
+const LearnModules = ( {
+	modules,
+	defaultValue,
+	onLessonCompletionChange,
+	onMarkAllComplete,
+} ) => {
+	// Track which module is currently expanded
+	const [ expandedModuleId, setExpandedModuleId ] = useState( null );
+	// Track which lesson is currently expanded
+	const [ expandedLessonId, setExpandedLessonId ] = useState( null );
 
-		console.info( 'Empty or missing URL!!!' );
+	// Set default expanded module and lesson on mount
+	useEffect( () => {
+		if ( defaultValue && modules.length > 0 ) {
+			// Find the first incomplete module and lesson
+			for ( const module of modules ) {
+				const firstIncompleteLessonInModule = module.steps?.find(
+					( lesson ) => ! lesson.completed
+				);
+				if ( firstIncompleteLessonInModule ) {
+					setExpandedModuleId( module.id );
+					setExpandedLessonId( firstIncompleteLessonInModule.id );
+					break;
+				}
+			}
+		}
+	}, [ defaultValue, modules ] );
+
+	const toggleModule = ( moduleId ) => {
+		const isClosing = expandedModuleId === moduleId;
+
+		setExpandedModuleId( ( prevId ) =>
+			prevId === moduleId ? null : moduleId
+		);
+
+		if ( isClosing ) {
+			// Reset expanded lesson when closing module
+			setExpandedLessonId( null );
+		} else {
+			// When opening a module, expand the first incomplete lesson (or first lesson if all complete)
+			const module = modules.find( ( m ) => m.id === moduleId );
+			if ( module?.steps?.length > 0 ) {
+				const firstIncompleteLesson = module.steps.find(
+					( lesson ) => ! lesson.completed
+				);
+				setExpandedLessonId(
+					firstIncompleteLesson?.id || module.steps[ 0 ].id
+				);
+			}
+		}
+	};
+
+	const toggleLesson = ( lessonId ) => {
+		setExpandedLessonId( ( prevId ) =>
+			prevId === lessonId ? null : lessonId
+		);
+	};
+
+	const handleMarkModuleAsDone = ( e, moduleId ) => {
+		e.stopPropagation();
+		if ( onMarkAllComplete && typeof onMarkAllComplete === 'function' ) {
+			onMarkAllComplete( moduleId );
+		}
 	};
 
 	return (
-		<Accordion
-			type="boxed"
-			autoClose={ true }
-			defaultValue={ defaultValue }
-		>
+		<Container containerType="flex" direction="column" gap="md">
 			{ modules.map( ( module ) => {
 				const {
-					id,
+					id: moduleId,
 					title,
-					description,
-					url,
-					steps: lessons,
+					steps: lessons = [],
 				} = module;
 
 				const totalLessonsCount = lessons.length;
-				const completedLessonsCount = lessons.filter( ( lesson ) => lesson.completed ).length;
-				const isCompleted = totalLessonsCount === completedLessonsCount;
-
-				const getBadgeColor = () => {
-					if ( isCompleted ) {
-						return 'green';
-					}
-					if ( completedLessonsCount > 0 ) {
-						return 'blue';
-					}
-					return 'gray';
-				};
+				const completedLessonsCount = lessons.filter(
+					( lesson ) => lesson.completed
+				).length;
+				const progressPercentage =
+					totalLessonsCount > 0
+						? ( completedLessonsCount / totalLessonsCount ) * 100
+						: 0;
+				const isModuleComplete =
+					completedLessonsCount === totalLessonsCount;
+				const isModuleExpanded = expandedModuleId === moduleId;
 
 				return (
-					<Accordion.Item
-						key={ id }
-						className="bg-background-primary border-0.5 [&:hover>h3]:bg-transparent rounded-lg overflow-hidden [&:has([aria-expanded='true'])]:shadow-xs transition-all duration-200 ease-in-out"
-						value={ id }
-					>
-						<Accordion.Trigger className="group p-3 sm:p-4 hover:bg-transparent [&>svg]:hidden [&>div]:flex-grow [&[aria-expanded='true']_.learn-chevron-right]:rotate-90 [&[aria-expanded='true']_.learn-more-btn]:flex">
-							<div className="flex items-center gap-2 sm:gap-3 flex-1">
-								<ChevronRight
-									className="learn-chevron-right transition-transform duration-200 ease-in-out"
-									size={ 20 }
-								/>
-
-								<div className="flex-1 text-left">
-									<Text size={ 14 } className="sm:text-base" weight={ 600 }>
-										{ title }
-									</Text>
-								</div>
-
-								{ url && (
-									<span
-										className="hover:underline underline-offset-2 learn-more-btn hidden transition-all cursor-pointer text-link-primary outline-link-primary items-center gap-1 text-xs px-2 py-1"
-										onClick={ ( event ) => handleLearnHowClick( event, url ) }
-										role="link"
-										tabIndex={ 0 }
-										onKeyDown={ ( e ) => {
-											if ( e.key === 'Enter' || e.key === ' ' ) {
-												handleLearnHowClick( e, url );
-											}
-										} }
-									>
-										<span className="hidden sm:inline">
-											{ __( 'Learn how', 'sureforms' ) }
-										</span>
-										<ExternalLink size={ 16 } strokeWidth={ 1.25 } />
-									</span>
-								) }
-
-								<Badge
-									className="relative overflow-hidden w-14 sm:w-[62px] text-xs"
-									label={
-										<>
-											<span className="sr-only">
-												{ sprintf(
-													// translators: %1$d is the number of completed lessons, %2$d is the total number of lessons.
-													__( '%1$d of %2$d lessons completed', 'sureforms' ),
-													completedLessonsCount,
-													totalLessonsCount
-												) }
-											</span>
-
-											<span className="flex items-center">
-												{ isCompleted && <Check size={ 12 } /> }
-												<span className="px-1 relative z-10">
-													{ completedLessonsCount }/{ totalLessonsCount }
-												</span>
-											</span>
-
-											<span
-												className="absolute h-full top-0 left-0 bg-[#BAE6FD]/40 transition-[width] duration-300 ease-in-out"
-												style={ {
-													width: `${ ( completedLessonsCount / totalLessonsCount ) * 100 }%`,
-												} }
-											/>
-										</>
-									}
-									variant={ getBadgeColor() }
-								/>
-							</div>
-						</Accordion.Trigger>
-
-						<Accordion.Content className="overflow-visible [&>div]:p-0">
-							{ description && (
-								<Text
-									className="px-3 sm:px-4 ml-7 mr-0 sm:mx-8 -mt-2 pb-4 max-w-full sm:max-w-[72%]"
-									size={ 14 }
-									color="secondary"
-									weight={ 400 }
+					<Container.Item key={ moduleId }>
+						<Container
+							containerType="flex"
+							direction="column"
+							className={ `bg-background-primary rounded-xl shadow-sm border border-solid transition-all duration-200 ${
+								isModuleExpanded
+									? 'border-border-strong'
+									: 'border-border-subtle'
+							}` }
+						>
+							{ /* Module Header Section - Clickable */ }
+							<Container.Item>
+								<div
+									className="p-4 sm:p-6 cursor-pointer"
+									onClick={ () => toggleModule( moduleId ) }
+									onKeyDown={ ( e ) => {
+										if (
+											e.key === 'Enter' ||
+											e.key === ' '
+										) {
+											e.preventDefault();
+											toggleModule( moduleId );
+										}
+									} }
+									role="button"
+									tabIndex={ 0 }
+									aria-expanded={ isModuleExpanded }
 								>
-									{ description }
-								</Text>
+									<Container
+										containerType="flex"
+										direction="row"
+										align="center"
+										className="w-full gap-4 flex-wrap sm:flex-nowrap"
+									>
+										<Container.Item>
+											<div className="flex items-center justify-center w-6 h-6">
+												{ isModuleExpanded ? (
+													<ChevronUp className="size-5 text-text-secondary" />
+												) : (
+													<ChevronDown className="size-5 text-text-secondary" />
+												) }
+											</div>
+										</Container.Item>
+										<Container.Item className="flex-1 min-w-0">
+											<Title
+												size="sm"
+												title={ title }
+												className="truncate"
+											/>
+										</Container.Item>
+										<Container.Item>
+											<Container
+												containerType="flex"
+												direction="row"
+												align="center"
+												gap="sm"
+											>
+												<Container.Item>
+													<Label className="text-sm text-text-secondary whitespace-nowrap">
+														{ sprintf(
+															// translators: %1$d is completed count, %2$d is total count.
+															__(
+																'%1$d/%2$d completed',
+																'sureforms'
+															),
+															completedLessonsCount,
+															totalLessonsCount
+														) }
+													</Label>
+												</Container.Item>
+												<Container.Item className="w-24 sm:w-32">
+													<ProgressBar
+														progress={
+															progressPercentage
+														}
+														className="h-2"
+													/>
+												</Container.Item>
+											</Container>
+										</Container.Item>
+										<Container.Item>
+											<Button
+												variant="outline"
+												size="sm"
+												icon={
+													<CheckCheck className="size-4" />
+												}
+												onClick={ ( e ) =>
+													handleMarkModuleAsDone(
+														e,
+														moduleId
+													)
+												}
+												disabled={ isModuleComplete }
+											>
+												<span className="hidden sm:inline">
+													{ __(
+														'Mark All as Done',
+														'sureforms'
+													) }
+												</span>
+											</Button>
+										</Container.Item>
+									</Container>
+								</div>
+							</Container.Item>
+
+							{ /* Lessons Section - Collapsible */ }
+							{ isModuleExpanded && (
+								<Container.Item>
+									<div className="px-4 sm:px-6 pb-4 sm:pb-6 pt-0">
+										<Container
+											containerType="flex"
+											direction="column"
+											gap="sm"
+										>
+											{ lessons.map( ( lesson ) => (
+												<Container.Item
+													key={ lesson.id }
+												>
+													<LearnLesson
+														lesson={ lesson }
+														moduleId={ moduleId }
+														isExpanded={
+															expandedLessonId ===
+															lesson.id
+														}
+														onToggle={ () =>
+															toggleLesson(
+																lesson.id
+															)
+														}
+														onCompletionChange={
+															onLessonCompletionChange
+														}
+													/>
+												</Container.Item>
+											) ) }
+										</Container>
+									</div>
+								</Container.Item>
 							) }
-
-							<span className="block w-full h-[0.5px] bg-border-subtle" />
-
-							<div className="px-3 sm:px-4 flex flex-col bg-[#FCFCFD]">
-								{ lessons.map( ( lesson, index ) => (
-									<LearnLesson
-										key={ lesson.id }
-										lesson={ lesson }
-										moduleId={ id }
-										isLast={ index === lessons.length - 1 }
-										onCompletionChange={ onLessonCompletionChange }
-										onLearnHowClick={ onLearnHowClick }
-									/>
-								) ) }
-							</div>
-						</Accordion.Content>
-					</Accordion.Item>
+						</Container>
+					</Container.Item>
 				);
 			} ) }
-		</Accordion>
+		</Container>
 	);
 };
 
