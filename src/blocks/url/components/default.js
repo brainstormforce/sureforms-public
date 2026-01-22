@@ -28,7 +28,7 @@ export const UrlComponent = ( { attributes, blockID, setAttributes } ) => {
 			/>
 			<div
 				className={ `srfm-block-wrap${
-					readOnly ? ' srfm-read-only' : ''
+					readOnly && defaultValue ? ' srfm-read-only' : ''
 				}` }
 			>
 				<input
