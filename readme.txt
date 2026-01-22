@@ -374,6 +374,8 @@ You can collect payments securely without any add-ons or extra plugins.
 You can report the issue through our [Bug Bounty Program](https://brainstormforce.com/bug-bounty-program/). We collaborate with Patchstack to provide opportunities for researchers to report vulnerabilities. The Patchstack team will help validate, triage, and handle any reported security issues.
 
 == Changelog ==
+= x.x.x =
+* Fix: Resolved an issue where undefined string is being added with smart tag in textarea default value.
 = 2.4.0 - 20th January 2026 =
 * New: Added form scheduling restrictions with start and end date/time.
 * New: Added Previous/Next navigation for single entry page.
