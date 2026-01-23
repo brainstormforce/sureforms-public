@@ -3,6 +3,18 @@ import { RichText } from '@wordpress/block-editor';
 import { decodeHtmlEntities } from '@Blocks/util';
 import HelpText from '@Components/misc/HelpText';
 
+// Default GDPR consent text for translation matching.
+const DEFAULT_GDPR_LABEL =
+	'I consent to have this website store my submitted information so they can respond to my inquiry.';
+
+// Get translated default text from PHP (falls back to English if not available).
+const getTranslatedGdprLabel = () => {
+	return (
+		window.srfm_block_data?.default_translations?.gdpr_label ||
+		DEFAULT_GDPR_LABEL
+	);
+};
+
 export const CheckboxComponent = ( {
 	attributes,
 	setAttributes,
@@ -22,6 +34,12 @@ export const CheckboxComponent = ( {
 		isRequired = 'srfm-required';
 		inputClassname = 'srfm-input-gdpr';
 	}
+
+	// Translate the default GDPR consent text for editor display using PHP translation.
+	const displayLabel =
+		blockType === 'gdpr' && label === DEFAULT_GDPR_LABEL
+			? getTranslatedGdprLabel()
+			: label;
 
 	return (
 		<>
@@ -54,7 +72,7 @@ export const CheckboxComponent = ( {
 					>
 						<RichText
 							tagName="label"
-							value={ label }
+							value={ displayLabel }
 							onChange={ ( value ) => {
 								setAttributes( {
 									label: decodeHtmlEntities( value ),

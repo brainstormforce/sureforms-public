@@ -211,6 +211,10 @@ class Gutenberg_Hooks {
 				'is_admin_user'                     => Helper::current_user_can(),
 				'site_url'                          => $site_url,
 				'is_suremails_active'               => is_plugin_active( 'suremails/suremails.php' ),
+				'default_translations'              => [
+					'gdpr_label'           => __( 'I consent to have this website store my submitted information so they can respond to my inquiry.', 'sureforms' ),
+					'dropdown_placeholder' => __( 'Select an option', 'sureforms' ),
+				],
 			]
 		);
 

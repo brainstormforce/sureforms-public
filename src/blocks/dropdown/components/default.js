@@ -1,14 +1,24 @@
 import { RichText } from '@wordpress/block-editor';
-import { __ } from '@wordpress/i18n';
 import { decodeHtmlEntities } from '@Blocks/util';
 import HelpText from '@Components/misc/HelpText';
+
+// Default dropdown placeholder for translation matching.
+const DEFAULT_DROPDOWN_PLACEHOLDER = 'Select an option';
+
+// Get translated default text from PHP (falls back to English if not available).
+const getTranslatedDropdownPlaceholder = () => {
+	return (
+		window.srfm_block_data?.default_translations?.dropdown_placeholder ||
+		DEFAULT_DROPDOWN_PLACEHOLDER
+	);
+};
 
 export const DropdownComponent = ( { attributes, setAttributes, blockID } ) => {
 	const { required, label, placeholder, help } = attributes;
 	const isRequired = required ? ' srfm-required' : '';
 	const placeholderText =
-		placeholder === 'Select an option'
-			? __( 'Select an option', 'sureforms' )
+		placeholder === DEFAULT_DROPDOWN_PLACEHOLDER
+			? getTranslatedDropdownPlaceholder()
 			: placeholder;
 	const slug = 'dropdown';
 
