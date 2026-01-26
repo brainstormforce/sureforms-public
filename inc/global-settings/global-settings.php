@@ -151,7 +151,7 @@ class Global_Settings {
 		 * We are updating this independently.
 		 *
 		 * @since 1.7.0
-		 * 
+		 *
 		 * @since x.x.x - Renamed sureforms_analytics_optin to sureforms_usage_optin.
 		 */
 		$analytics_result = self::update_bsf_analytics( $srfm_bsf_analytics );
@@ -386,7 +386,7 @@ class Global_Settings {
 		 * Hence retrieving the option sureforms_analytics_optin to get current status.
 		 *
 		 * @since 1.7.0
-		 * 
+		 *
 		 * @since x.x.x - Renamed sureforms_analytics_optin to sureforms_usage_optin.
 		 */
 		$srfm_bsf_analytics = get_option( 'sureforms_usage_optin', false ) === 'yes' ? true : false;
