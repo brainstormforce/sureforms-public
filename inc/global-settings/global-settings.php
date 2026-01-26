@@ -178,6 +178,7 @@ class Global_Settings {
 			$enable_tracking = '';
 		}
 
+		update_option( 'sureforms_usage_optin', $enable_tracking );
 		return update_option( 'sureforms_analytics_optin', $enable_tracking );
 	}
 
