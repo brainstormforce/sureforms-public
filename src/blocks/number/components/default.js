@@ -39,7 +39,7 @@ export const NumberComponent = ( { attributes, blockID, setAttributes } ) => {
 			/>
 			<div
 				className={ `srfm-block-wrap${
-					readOnly ? ' srfm-read-only' : ''
+					readOnly && defaultValue ? ' srfm-read-only' : ''
 				}` }
 			>
 				<div className="srfm-input-content">
