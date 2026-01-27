@@ -1,4 +1,5 @@
 import { Skeleton } from '@bsf/force-ui';
+import { cn } from '@Utils/Helpers';
 
 /**
  * EntryDetailSkeleton Component
@@ -6,7 +7,12 @@ import { Skeleton } from '@bsf/force-ui';
  */
 const EntryDetailSkeleton = () => {
 	return (
-		<div className="p-8 bg-background-secondary min-h-screen space-y-6">
+		<div
+			className={ cn(
+				'px-8 pb-8 bg-background-secondary min-h-screen space-y-6',
+				! window.srfm_admin?.notices?.length && 'pt-8'
+			) }
+		>
 			{ /* Header Skeleton */ }
 			<div className="flex items-center gap-3 mx-auto max-w-[1500px]">
 				<Skeleton className="w-8 h-8 rounded-md" />
