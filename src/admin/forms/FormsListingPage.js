@@ -8,6 +8,8 @@ import FormsHeader from './components/FormsHeader';
 import FormsTable from './components/FormsTable';
 import EmptyState from './components/EmptyState';
 import ConfirmationDialog from '@Admin/components/ConfirmationDialog';
+import AdminNotice from '@Admin/components/AdminNotice';
+import { cn } from '@Utils/Helpers';
 import {
 	useForms,
 	useBulkFormsAction,
@@ -490,9 +492,17 @@ const FormsListingPage = () => {
 			{ /* Header */ }
 			<Header />
 
-			<Container.Item>
+			<Container.Item className="px-5 pb-8 xl:px-8 w-full bg-background-secondary">
+				{ /* Admin Notices - only render if notices exist */ }
+				{ window.srfm_admin?.notices?.length > 0 && (
+					<div className="py-4">
+						<AdminNotice currentPage="sureforms_forms" />
+					</div>
+				) }
 				<Container
-					className="p-5 pb-8 xl:p-8 w-full bg-background-secondary"
+					className={ cn(
+						! window.srfm_admin?.notices?.length && 'pt-5 xl:pt-8'
+					) }
 					direction="column"
 					gap="2xl"
 				>

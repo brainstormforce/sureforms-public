@@ -15,6 +15,7 @@ import {
 	useBulkDeletePayments,
 } from '../hooks/usePaymentQuery';
 import { WebhookConfigure } from '../components/utils';
+import { cn } from '@Utils/Helpers';
 
 const PaymentListingPage = () => {
 	// React Router navigation
@@ -295,7 +296,12 @@ const PaymentListingPage = () => {
 	}
 
 	return (
-		<div className="min-h-screen px-8 py-8 bg-background-secondary flex flex-col gap-[24px]">
+		<div
+			className={ cn(
+				'min-h-screen px-8 pb-8 bg-background-secondary flex flex-col gap-[24px]',
+				! window.srfm_admin?.notices?.length && 'pt-8'
+			) }
+		>
 			<WebhookConfigure mode={ paymentMode } />
 			<div className="p-4 border-0.5 border-solid shadow-sm bg-background-primary rounded-xl border-border-subtle">
 				<div>
