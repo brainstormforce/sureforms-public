@@ -112,24 +112,15 @@ const LearnLesson = ( {
 		switch ( status ) {
 			case 'completed':
 				return (
-					<CircleCheckBig
-						className="size-4"
-						style={ { color: '#16A34A' } }
-					/>
+					<CircleCheckBig className="size-4 text-support-success" />
 				);
 			case 'in-progress':
 				return (
-					<Circle
-						className="size-4"
-						style={ { color: '#0284C7' } }
-					/>
+					<Circle className="size-4 text-support-info" />
 				);
 			default:
 				return (
-					<Circle
-						className="size-4"
-						style={ { color: '#000000' } }
-					/>
+					<Circle className="size-4 text-text-primary" />
 				);
 		}
 	};
@@ -237,12 +228,11 @@ const LearnLesson = ( {
 								</Container.Item>
 								<Container.Item className="flex-1 min-w-0">
 									<Label
-										className="text-base font-medium truncate block"
-										style={
+										className={ `text-base font-normal truncate block ${
 											isCompleted
-												? { color: '#BDC1C7' }
-												: { color: 'var(--text-primary)' }
-										}
+												? 'text-misc-skeleton-element'
+												: 'text-text-primary'
+										}` }
 									>
 										{ title }
 									</Label>
@@ -264,12 +254,11 @@ const LearnLesson = ( {
 
 						<Container.Item className="hidden sm:block">
 							<Label
-								className="text-sm whitespace-nowrap"
-								style={
+								className={ `text-sm font-normal whitespace-nowrap ${
 									status === 'completed'
-										? { color: '#16A34A' }
-										: { color: 'var(--text-tertiary)' }
-								}
+										? 'text-support-success'
+										: 'text-text-tertiary'
+								}` }
 							>
 								{ getStatusText() }
 							</Label>
@@ -342,7 +331,7 @@ const LearnLesson = ( {
 						{ /* Description */ }
 						{ description && (
 							<Container.Item>
-								<Label className="text-sm text-text-secondary px-2 leading-relaxed">
+								<Label className="text-sm text-text-secondary font-normal px-2 leading-relaxed">
 									{ description }
 								</Label>
 							</Container.Item>
