@@ -31,110 +31,67 @@ class Learn {
 	public static function get_chapters_structure() {
 		$chapters = [
 			[
-				'id'          => 'welcome-to-sureforms',
-				'title'       => __( 'Welcome to SureForms', 'sureforms' ),
+				'id'          => 'sureforms-basics',
+				'title'       => __( 'SureForms Basics', 'sureforms' ),
 				'description' => __( 'Help users get familiar with SureForms, build their first form, and understand the basics of form creation, customization, and management.', 'sureforms' ),
 				'url'         => 'https://sureforms.com/docs/',
 				'steps'       => [
 					[
-						'id'          => 'dashboard-tour',
-						'title'       => __( 'SureForms Dashboard Tour', 'sureforms' ),
-						'description' => __( 'Overview of dashboard layout and interface philosophy.', 'sureforms' ),
-						'learn'       => [
-							'type'    => 'dialog',
-							'content' => [
-								'type' => 'image',
-								'data' => [
-									'src' => 'https://sureforms.com/wp-content/uploads/example-dashboard-tour.png',
-									'alt' => __( 'SureForms Dashboard Tour', 'sureforms' ),
-								],
-							],
-						],
-						'action'      => [
-							'label'      => __( 'Explore Dashboard', 'sureforms' ),
-							'url'        => admin_url( 'admin.php?page=sureforms_menu' ),
-							'isExternal' => false,
-						],
-						'completed'   => false,
-					],
-					[
 						'id'          => 'creating-first-form',
 						'title'       => __( 'Creating Your First Form', 'sureforms' ),
-						'description' => __( 'Step-by-step guide using AI builder and WordPress editor.', 'sureforms' ),
-						'learn'       => [
-							'type'    => 'dialog',
-							'content' => [
-								'type' => 'video',
-								'data' => [
-									'url'   => 'https://www.youtube.com/embed/uDLF4dk3YHI',
-									'title' => __( 'Creating Your First Form', 'sureforms' ),
-								],
-							],
-						],
-						'action'      => [
-							'label'      => __( 'Create Form', 'sureforms' ),
-							'url'        => admin_url( 'post-new.php?post_type=sureforms_form' ),
-							'isExternal' => false,
-						],
-						'docsUrl'     => 'https://sureforms.com/docs/create-your-first-form/',
-						'completed'   => false,
-					],
-					[
-						'id'          => 'form-customization-basics',
-						'title'       => __( 'Form Customization Basics', 'sureforms' ),
-						'description' => __( 'Design styling and branding for your forms.', 'sureforms' ),
+						'description' => __( 'Learn how to create and publish your first form with SureForms.', 'sureforms' ),
 						'learn'       => [
 							'type' => 'link',
-							'url'  => 'https://sureforms.com/docs/advanced-style-options/',
+							'url'  => 'https://sureforms.com/docs/creating-and-publishing-forms/',
 						],
 						'action'      => [
 							'label'      => __( 'Read Docs', 'sureforms' ),
-							'url'        => 'https://sureforms.com/docs/advanced-style-options/',
+							'url'        => 'https://sureforms.com/docs/creating-and-publishing-forms/',
 							'isExternal' => true,
 						],
 						'completed'   => false,
 					],
 					[
-						'id'          => 'form-confirmation-message',
-						'title'       => __( 'Form Confirmation Message', 'sureforms' ),
-						'description' => __( 'Set up confirmation messages after form submission.', 'sureforms' ),
+						'id'          => 'customize-forms',
+						'title'       => __( 'Customize Your Forms', 'sureforms' ),
+						'description' => __( 'Learn how to style and customize the appearance of your forms.', 'sureforms' ),
 						'learn'       => [
 							'type' => 'link',
-							'url'  => 'https://sureforms.com/docs/form-confirmation/',
+							'url'  => 'https://sureforms.com/docs/background-styling/',
 						],
 						'action'      => [
 							'label'      => __( 'Read Docs', 'sureforms' ),
-							'url'        => 'https://sureforms.com/docs/form-confirmation/',
+							'url'        => 'https://sureforms.com/docs/background-styling/',
 							'isExternal' => true,
 						],
 						'completed'   => false,
 					],
 					[
-						'id'          => 'anti-spam-settings',
-						'title'       => __( 'Anti-Spam Settings', 'sureforms' ),
-						'description' => __( 'Protect your forms from spam submissions.', 'sureforms' ),
+						'id'          => 'publish-forms',
+						'title'       => __( 'Publish Your Forms', 'sureforms' ),
+						'description' => __( 'Learn different ways to display and embed your forms on your website.', 'sureforms' ),
 						'learn'       => [
 							'type' => 'link',
-							'url'  => 'https://sureforms.com/docs-category/anti-spam-settings/',
+							'url'  => 'https://sureforms.com/docs/displaying-forms/',
 						],
 						'action'      => [
 							'label'      => __( 'Read Docs', 'sureforms' ),
-							'url'        => 'https://sureforms.com/docs-category/anti-spam-settings/',
+							'url'        => 'https://sureforms.com/docs/displaying-forms/',
 							'isExternal' => true,
 						],
 						'completed'   => false,
 					],
 					[
-						'id'          => 'email-notification',
-						'title'       => __( 'Setting Up Email Notification', 'sureforms' ),
-						'description' => __( 'Configure email notifications for form submissions.', 'sureforms' ),
+						'id'          => 'secure-forms',
+						'title'       => __( 'Secure Forms from Bots', 'sureforms' ),
+						'description' => __( 'Protect your forms from spam and bot submissions using Google reCAPTCHA.', 'sureforms' ),
 						'learn'       => [
 							'type' => 'link',
-							'url'  => 'https://sureforms.com/docs/adjust-form-notification-emails/',
+							'url'  => 'https://sureforms.com/docs/google-recaptcha/',
 						],
 						'action'      => [
 							'label'      => __( 'Read Docs', 'sureforms' ),
-							'url'        => 'https://sureforms.com/docs/adjust-form-notification-emails/',
+							'url'        => 'https://sureforms.com/docs/google-recaptcha/',
 							'isExternal' => true,
 						],
 						'completed'   => false,
@@ -142,8 +99,8 @@ class Learn {
 				],
 			],
 			[
-				'id'          => 'advanced-form-features',
-				'title'       => __( 'Advanced Form Features', 'sureforms' ),
+				'id'          => 'sureforms-advanced',
+				'title'       => __( 'SureForms Advanced', 'sureforms' ),
 				'description' => __( 'Help users unlock SureForms\' full power with advanced features and creative use cases.', 'sureforms' ),
 				'url'         => 'https://sureforms.com/docs/',
 				'steps'       => [
@@ -156,8 +113,9 @@ class Learn {
 							'content' => [
 								'type' => 'video',
 								'data' => [
-									'url'   => 'https://www.youtube.com/embed/51q5a_Pk1XA',
-									'title' => __( 'Multi-Step Forms', 'sureforms' ),
+									'url'      => 'https://www.youtube.com/embed/51q5a_Pk1XA',
+									'title'    => __( 'Multi-Step Forms', 'sureforms' ),
+									'duration' => 600, // 10 minutes.
 								],
 							],
 						],
@@ -173,8 +131,9 @@ class Learn {
 							'content' => [
 								'type' => 'video',
 								'data' => [
-									'url'   => 'https://www.youtube.com/embed/9C5ePZ6VpoA',
-									'title' => __( 'Conversational Forms', 'sureforms' ),
+									'url'      => 'https://www.youtube.com/embed/9C5ePZ6VpoA',
+									'title'    => __( 'Conversational Forms', 'sureforms' ),
+									'duration' => 300, // 5 minutes.
 								],
 							],
 						],
@@ -182,16 +141,35 @@ class Learn {
 						'completed'   => false,
 					],
 					[
-						'id'          => 'pdf-generation',
-						'title'       => __( 'PDF Generation', 'sureforms' ),
-						'description' => __( 'Learn how to automatically generate downloadable PDFs from submissions by creating an invoice template using ChatGPT.', 'sureforms' ),
+						'id'          => 'conditional-logic',
+						'title'       => __( 'Conditional Logic & Smart Fields', 'sureforms' ),
+						'description' => __( 'Show/hide fields based on user input and conditions.', 'sureforms' ),
 						'learn'       => [
 							'type'    => 'dialog',
 							'content' => [
 								'type' => 'video',
 								'data' => [
-									'url'   => 'https://www.youtube.com/embed/example-pdf-generation',
-									'title' => __( 'PDF Generation', 'sureforms' ),
+									'url'      => 'https://www.youtube.com/embed/AACFRtDjXHs',
+									'title'    => __( 'Conditional Logic & Smart Fields', 'sureforms' ),
+									'duration' => 480, // 8 minutes.
+								],
+							],
+						],
+						'docsUrl'     => 'https://sureforms.com/docs/conditional-logic/',
+						'completed'   => false,
+					],
+					[
+						'id'          => 'pdf-generation',
+						'title'       => __( 'PDF Generation', 'sureforms' ),
+						'description' => __( 'Learn how to automatically generate downloadable PDFs from form submissions.', 'sureforms' ),
+						'learn'       => [
+							'type'    => 'dialog',
+							'content' => [
+								'type' => 'video',
+								'data' => [
+									'url'      => 'https://www.youtube.com/embed/qdomuGwWTFA',
+									'title'    => __( 'PDF Generation', 'sureforms' ),
+									'duration' => 300, // 5 minutes.
 								],
 							],
 						],
@@ -201,14 +179,15 @@ class Learn {
 					[
 						'id'          => 'payment-forms',
 						'title'       => __( 'Payment Forms', 'sureforms' ),
-						'description' => __( 'Demonstrate setting up Stripe/PayPal payment integration.', 'sureforms' ),
+						'description' => __( 'Learn how to set up Stripe and PayPal payment integration.', 'sureforms' ),
 						'learn'       => [
 							'type'    => 'dialog',
 							'content' => [
 								'type' => 'video',
 								'data' => [
-									'url'   => 'https://www.youtube.com/embed/example-payment-forms',
-									'title' => __( 'Payment Forms', 'sureforms' ),
+									'url'      => 'https://www.youtube.com/embed/XnsBNXwoZe8',
+									'title'    => __( 'Payment Forms', 'sureforms' ),
+									'duration' => 420, // 7 minutes.
 								],
 							],
 						],
@@ -231,50 +210,17 @@ class Learn {
 						'completed'   => false,
 					],
 					[
-						'id'          => 'conditional-logic',
-						'title'       => __( 'Conditional Logic & Smart Fields', 'sureforms' ),
-						'description' => __( 'Show/hide fields based on user input and conditions.', 'sureforms' ),
-						'learn'       => [
-							'type'    => 'dialog',
-							'content' => [
-								'type' => 'video',
-								'data' => [
-									'url'   => 'https://www.youtube.com/embed/AACFRtDjXHs',
-									'title' => __( 'Conditional Logic & Smart Fields', 'sureforms' ),
-								],
-							],
-						],
-						'docsUrl'     => 'https://sureforms.com/docs/conditional-logic/',
-						'completed'   => false,
-					],
-					[
-						'id'          => 'calculator-forms',
-						'title'       => __( 'Calculator Forms', 'sureforms' ),
-						'description' => __( 'Build custom calculators like loan, price quote, ROI, and more.', 'sureforms' ),
-						'learn'       => [
-							'type'    => 'dialog',
-							'content' => [
-								'type' => 'video',
-								'data' => [
-									'url'   => 'https://www.youtube.com/embed/example-calculator-forms',
-									'title' => __( 'Calculator Forms', 'sureforms' ),
-								],
-							],
-						],
-						'docsUrl'     => 'https://sureforms.com/docs/calculator-forms/',
-						'completed'   => false,
-					],
-					[
 						'id'          => 'login-forms',
-						'title'       => __( 'Login Forms', 'sureforms' ),
+						'title'       => __( 'Custom Login Forms', 'sureforms' ),
 						'description' => __( 'Create branded login pages for your users.', 'sureforms' ),
 						'learn'       => [
 							'type'    => 'dialog',
 							'content' => [
 								'type' => 'video',
 								'data' => [
-									'url'   => 'https://www.youtube.com/embed/H2DRn8A8LQI',
-									'title' => __( 'Login Forms', 'sureforms' ),
+									'url'      => 'https://www.youtube.com/embed/H2DRn8A8LQI',
+									'title'    => __( 'Custom Login Forms', 'sureforms' ),
+									'duration' => 240, // 4 minutes.
 								],
 							],
 						],
@@ -283,15 +229,16 @@ class Learn {
 					],
 					[
 						'id'          => 'registration-forms',
-						'title'       => __( 'Registration Forms', 'sureforms' ),
+						'title'       => __( 'Custom Registration Forms', 'sureforms' ),
 						'description' => __( 'Create branded registration pages for new users.', 'sureforms' ),
 						'learn'       => [
 							'type'    => 'dialog',
 							'content' => [
 								'type' => 'video',
 								'data' => [
-									'url'   => 'https://www.youtube.com/embed/H2DRn8A8LQI',
-									'title' => __( 'Registration Forms', 'sureforms' ),
+									'url'      => 'https://www.youtube.com/embed/vhzgqLJgKrw',
+									'title'    => __( 'Custom Registration Forms', 'sureforms' ),
+									'duration' => 240, // 4 minutes.
 								],
 							],
 						],
@@ -302,148 +249,26 @@ class Learn {
 			],
 			[
 				'id'          => 'integrations-automation',
-				'title'       => __( 'Native Integrations & Automation', 'sureforms' ),
+				'title'       => __( 'SureForms Native Integrations & Automation', 'sureforms' ),
 				'description' => __( 'Help users automate workflows and connect SureForms with their favorite apps.', 'sureforms' ),
 				'url'         => 'https://sureforms.com/docs/integrations/',
 				'steps'       => [
 					[
 						'id'          => 'intro-integrations',
 						'title'       => __( 'Introduction to Native Integrations', 'sureforms' ),
-						'description' => __( 'Learn how to connect SureForms with 15+ popular tools and services.', 'sureforms' ),
+						'description' => __( 'Learn how to connect SureForms with popular tools and services.', 'sureforms' ),
 						'learn'       => [
 							'type'    => 'dialog',
 							'content' => [
-								[
-									'type' => 'paragraph',
-									'text' => __( 'SureForms integrates with a wide range of tools to help you automate your workflows. Click on any integration below to learn how to set it up:', 'sureforms' ),
-								],
-								[
-									'type' => 'link',
-									'data' => [
-										'text'   => __( 'How to Connect to Google Sheets', 'sureforms' ),
-										'url'    => 'https://sureforms.com/docs/sureforms-integration-with-google-sheets',
-										'target' => '_blank',
-									],
-								],
-								[
-									'type' => 'link',
-									'data' => [
-										'text'   => __( 'How to Connect to FluentCRM', 'sureforms' ),
-										'url'    => 'https://sureforms.com/docs/fluentcrm-integration/',
-										'target' => '_blank',
-									],
-								],
-								[
-									'type' => 'link',
-									'data' => [
-										'text'   => __( 'How to Connect to Telegram', 'sureforms' ),
-										'url'    => 'https://sureforms.com/docs/telegram-integration/',
-										'target' => '_blank',
-									],
-								],
-								[
-									'type' => 'link',
-									'data' => [
-										'text'   => __( 'How to Connect to MailerPress', 'sureforms' ),
-										'url'    => 'https://sureforms.com/docs/mailerpress-integration/',
-										'target' => '_blank',
-									],
-								],
-								[
-									'type' => 'link',
-									'data' => [
-										'text'   => __( 'How to Connect to Zoho CRM', 'sureforms' ),
-										'url'    => 'https://sureforms.com/docs/zoho-crm-integration/',
-										'target' => '_blank',
-									],
-								],
-								[
-									'type' => 'link',
-									'data' => [
-										'text'   => __( 'How to Connect to OttoKit', 'sureforms' ),
-										'url'    => 'https://sureforms.com/docs/ottokit-integration/',
-										'target' => '_blank',
-									],
-								],
-								[
-									'type' => 'link',
-									'data' => [
-										'text'   => __( 'How to Connect to Zapier', 'sureforms' ),
-										'url'    => 'https://sureforms.com/docs/zapier-integration/',
-										'target' => '_blank',
-									],
-								],
-								[
-									'type' => 'link',
-									'data' => [
-										'text'   => __( 'How to Connect to Webhooks', 'sureforms' ),
-										'url'    => 'https://sureforms.com/docs/webhooks-integration/',
-										'target' => '_blank',
-									],
-								],
-								[
-									'type' => 'link',
-									'data' => [
-										'text'   => __( 'How to Connect to MailChimp', 'sureforms' ),
-										'url'    => 'https://sureforms.com/docs/mailchimp-integration/',
-										'target' => '_blank',
-									],
-								],
-								[
-									'type' => 'link',
-									'data' => [
-										'text'   => __( 'How to Connect to Salesflare', 'sureforms' ),
-										'url'    => 'https://sureforms.com/docs/salesflare-integration/',
-										'target' => '_blank',
-									],
-								],
-								[
-									'type' => 'link',
-									'data' => [
-										'text'   => __( 'How to Connect to MailPoet', 'sureforms' ),
-										'url'    => 'https://sureforms.com/docs/mailpoet-integration/',
-										'target' => '_blank',
-									],
-								],
-								[
-									'type' => 'link',
-									'data' => [
-										'text'   => __( 'How to Connect to GetResponse', 'sureforms' ),
-										'url'    => 'https://sureforms.com/docs/getresponse-integration/',
-										'target' => '_blank',
-									],
-								],
-								[
-									'type' => 'link',
-									'data' => [
-										'text'   => __( 'How to Connect to Brevo', 'sureforms' ),
-										'url'    => 'https://sureforms.com/docs/brevo-integration/',
-										'target' => '_blank',
-									],
-								],
-								[
-									'type' => 'link',
-									'data' => [
-										'text'   => __( 'How to Connect to AgileCRM', 'sureforms' ),
-										'url'    => 'https://sureforms.com/docs/agilecrm-integration/',
-										'target' => '_blank',
-									],
-								],
-								[
-									'type' => 'link',
-									'data' => [
-										'text'   => __( 'How to Connect to ActiveCampaign', 'sureforms' ),
-										'url'    => 'https://sureforms.com/docs/activecampaign-integration/',
-										'target' => '_blank',
-									],
+								'type' => 'video',
+								'data' => [
+									'url'      => '', // Video content pending.
+									'title'    => __( 'Introduction to Native Integrations', 'sureforms' ),
+									'duration' => 0, // Duration pending.
 								],
 							],
 						],
-						'action'      => [
-							'label'      => __( 'View Integrations', 'sureforms' ),
-							'url'        => admin_url( 'admin.php?page=sureforms_form_settings&tab=integrations' ),
-							'isExternal' => false,
-						],
+						'docsUrl'     => 'https://sureforms.com/docs/integrations/',
 						'completed'   => false,
 					],
 				],

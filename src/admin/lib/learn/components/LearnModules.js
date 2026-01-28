@@ -85,6 +85,7 @@ const LearnModules = ( {
 				const {
 					id: moduleId,
 					title,
+					description,
 					steps: lessons = [],
 				} = module;
 
@@ -131,78 +132,102 @@ const LearnModules = ( {
 								>
 									<Container
 										containerType="flex"
-										direction="row"
-										align="center"
-										className="w-full gap-4 flex-wrap sm:flex-nowrap"
+										direction="column"
+										className="w-full gap-3"
 									>
-										<Container.Item>
-											<div className="flex items-center justify-center w-6 h-6">
-												{ isModuleExpanded ? (
-													<ChevronUp className="size-5 text-text-secondary" />
-												) : (
-													<ChevronDown className="size-5 text-text-secondary" />
-												) }
-											</div>
-										</Container.Item>
-										<Container.Item className="flex-1 min-w-0">
-											<Title
-												size="sm"
-												title={ title }
-												className="truncate"
-											/>
-										</Container.Item>
+										{ /* First Row: Title + Progress + Chevron */ }
 										<Container.Item>
 											<Container
 												containerType="flex"
 												direction="row"
 												align="center"
-												gap="sm"
+												className="w-full gap-4 flex-wrap sm:flex-nowrap"
 											>
-												<Container.Item>
-													<Label className="text-sm text-text-secondary whitespace-nowrap">
-														{ sprintf(
-															// translators: %1$d is completed count, %2$d is total count.
-															__(
-																'%1$d/%2$d completed',
-																'sureforms'
-															),
-															completedLessonsCount,
-															totalLessonsCount
-														) }
-													</Label>
-												</Container.Item>
-												<Container.Item className="w-24 sm:w-32">
-													<ProgressBar
-														progress={
-															progressPercentage
-														}
-														className="h-2"
+												<Container.Item className="flex-1 min-w-0">
+													<Title
+														size="sm"
+														title={ title }
+														className="truncate"
 													/>
+												</Container.Item>
+												<Container.Item>
+													<Container
+														containerType="flex"
+														direction="row"
+														align="center"
+														gap="sm"
+													>
+														<Container.Item>
+															<Label className="text-sm text-text-secondary whitespace-nowrap">
+																{ sprintf(
+																	// translators: %1$d is completed count, %2$d is total count.
+																	__(
+																		'%1$d/%2$d completed',
+																		'sureforms'
+																	),
+																	completedLessonsCount,
+																	totalLessonsCount
+																) }
+															</Label>
+														</Container.Item>
+														<Container.Item className="w-24 sm:w-32">
+															<ProgressBar
+																progress={
+																	progressPercentage
+																}
+																className="h-2"
+															/>
+														</Container.Item>
+													</Container>
+												</Container.Item>
+												<Container.Item>
+													<div className="flex items-center justify-center w-6 h-6">
+														{ isModuleExpanded ? (
+															<ChevronUp className="size-5 text-text-secondary" />
+														) : (
+															<ChevronDown className="size-5 text-text-secondary" />
+														) }
+													</div>
 												</Container.Item>
 											</Container>
 										</Container.Item>
+
+										{ /* Second Row: Description + Mark All as Done */ }
 										<Container.Item>
-											<Button
-												variant="outline"
-												size="sm"
-												icon={
-													<CheckCheck className="size-4" />
-												}
-												onClick={ ( e ) =>
-													handleMarkModuleAsDone(
-														e,
-														moduleId
-													)
-												}
-												disabled={ isModuleComplete }
+											<Container
+												containerType="flex"
+												direction="row"
+												align="center"
+												justify="between"
+												className="w-full gap-4"
 											>
-												<span className="hidden sm:inline">
-													{ __(
-														'Mark All as Done',
-														'sureforms'
-													) }
-												</span>
-											</Button>
+												<Container.Item className="flex-1 min-w-0">
+													<Label className="text-sm text-text-tertiary">
+														{ description }
+													</Label>
+												</Container.Item>
+												<Container.Item className="flex-shrink-0">
+													<Button
+														variant="outline"
+														size="sm"
+														icon={
+															<CheckCheck className="size-4" />
+														}
+														onClick={ ( e ) =>
+															handleMarkModuleAsDone(
+																e,
+																moduleId
+															)
+														}
+														disabled={ isModuleComplete }
+													>
+														{ __(
+															'Mark All as Done',
+															'sureforms'
+														) }
+													</Button>
+												</Container.Item>
+											</Container>
 										</Container.Item>
 									</Container>
 								</div>

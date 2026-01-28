@@ -1,4 +1,4 @@
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import { Badge, Button, Container, Label } from '@bsf/force-ui';
 import { useState, useEffect } from '@wordpress/element';
 import {
@@ -6,6 +6,7 @@ import {
 	ChevronDown,
 	ChevronUp,
 	Circle,
+	CircleCheckBig,
 	ExternalLink,
 	Play,
 	Plus,
@@ -110,11 +111,26 @@ const LearnLesson = ( {
 	const getStatusIcon = () => {
 		switch ( status ) {
 			case 'completed':
-				return <Check className="size-4 text-brand-primary-600" />;
+				return (
+					<CircleCheckBig
+						className="size-4"
+						style={ { color: '#16A34A' } }
+					/>
+				);
 			case 'in-progress':
-				return <Circle className="size-4 text-brand-primary-600" />;
+				return (
+					<Circle
+						className="size-4"
+						style={ { color: '#0284C7' } }
+					/>
+				);
 			default:
-				return <Circle className="size-4 text-text-tertiary" />;
+				return (
+					<Circle
+						className="size-4"
+						style={ { color: '#000000' } }
+					/>
+				);
 		}
 	};
 
@@ -152,8 +168,27 @@ const LearnLesson = ( {
 		return null;
 	};
 
+	// Get video duration from learn content (in seconds) and format as "X minutes"
+	const getVideoDuration = () => {
+		if ( learn?.type === 'dialog' && learn?.content?.type === 'video' ) {
+			const durationInSeconds = learn?.content?.data?.duration;
+			if ( durationInSeconds && typeof durationInSeconds === 'number' ) {
+				const minutes = Math.round( durationInSeconds / 60 );
+				return minutes === 1
+					? __( '1 minute', 'sureforms' )
+					: sprintf(
+						// translators: %d is the number of minutes.
+						__( '%d minutes', 'sureforms' ),
+						minutes
+					  );
+			}
+		}
+		return null;
+	};
+
 	const videoUrl = getVideoUrl();
 	const videoThumbnail = getVideoThumbnail();
+	const videoDuration = getVideoDuration();
 	const hasVideo =
 		learn?.type === 'dialog' && learn?.content?.type === 'video';
 
@@ -201,17 +236,25 @@ const LearnLesson = ( {
 									</div>
 								</Container.Item>
 								<Container.Item className="flex-1 min-w-0">
-									<Label className="text-base font-medium text-text-primary truncate block">
+									<Label
+										className="text-base font-medium truncate block"
+										style={
+											isCompleted
+												? { color: '#BDC1C7' }
+												: { color: 'var(--text-primary)' }
+										}
+									>
 										{ title }
 									</Label>
 								</Container.Item>
 							</Container>
 						</Container.Item>
 
-						{ timeEstimate && (
+						{ /* Time indicator - only show for non-completed lessons */ }
+						{ ! isCompleted && ( videoDuration || timeEstimate ) && (
 							<Container.Item className="hidden sm:block">
 								<Badge
-									label={ timeEstimate }
+									label={ videoDuration || timeEstimate }
 									size="sm"
 									variant="neutral"
 									type="pill"
@@ -220,7 +263,14 @@ const LearnLesson = ( {
 						) }
 
 						<Container.Item className="hidden sm:block">
-							<Label className="text-sm text-text-tertiary whitespace-nowrap">
+							<Label
+								className="text-sm whitespace-nowrap"
+								style={
+									status === 'completed'
+										? { color: '#16A34A' }
+										: { color: 'var(--text-tertiary)' }
+								}
+							>
 								{ getStatusText() }
 							</Label>
 						</Container.Item>
