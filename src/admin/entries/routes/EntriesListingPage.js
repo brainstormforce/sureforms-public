@@ -7,6 +7,7 @@ import EntriesFilters from '../components/EntriesFilters';
 import EntriesTable from '../components/EntriesTable';
 import EmptyState from '../components/EmptyState';
 import ConfirmationDialog from '@Admin/components/ConfirmationDialog';
+import { cn } from '@Utils/Helpers';
 import { useEntriesFilters } from '../hooks/useEntriesFilters';
 import { useEntriesSelection } from '../hooks/useEntriesSelection';
 import { usePagination } from '../hooks/usePagination';
@@ -500,7 +501,12 @@ const EntriesListingPage = () => {
 		!! entriesData?.emptyTrash
 	) {
 		return (
-			<div className="p-8 bg-background-secondary min-h-screen">
+			<div
+				className={ cn(
+					'px-8 pb-8 bg-background-secondary min-h-screen',
+					! window.srfm_admin?.notices?.length && 'pt-8'
+				) }
+			>
 				<div className="mx-auto">
 					<div className="bg-white rounded-lg border-0.5 border-solid border-border-subtle shadow-sm p-4 space-y-2">
 						<EmptyState />
@@ -511,7 +517,12 @@ const EntriesListingPage = () => {
 	}
 
 	return (
-		<div className="p-8 bg-background-secondary min-h-screen">
+		<div
+			className={ cn(
+				'px-8 pb-8 bg-background-secondary min-h-screen',
+				! window.srfm_admin?.notices?.length && 'pt-8'
+			) }
+		>
 			<div className="mx-auto">
 				<div className="bg-white rounded-xl border-0.5 border-solid border-border-subtle shadow-sm p-4 space-y-2">
 					<div className="p-1">
