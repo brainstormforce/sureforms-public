@@ -392,7 +392,7 @@ class Learn {
 	 * REST API callback to update learn progress.
 	 *
 	 * @param \WP_REST_Request $request Request object.
-	 * @return \WP_REST_Response Response object.
+	 * @return \WP_REST_Response|\WP_Error Response object or error.
 	 * @since 1.0.0
 	 */
 	public static function rest_update_learn_progress( $request ) {
@@ -402,8 +402,8 @@ class Learn {
 		$user_id    = get_current_user_id();
 
 		// Validate that chapterId and stepId exist in the defined structure.
-		$chapters    = self::get_chapters_structure();
-		$valid_step  = false;
+		$chapters   = self::get_chapters_structure();
+		$valid_step = false;
 
 		foreach ( $chapters as $chapter ) {
 			if ( $chapter['id'] !== $chapter_id ) {
