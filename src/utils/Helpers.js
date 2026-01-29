@@ -360,17 +360,17 @@ const pushSmartTagToArray = (
 	} );
 };
 
-export const withoutSlugBlocks = [
-	'srfm/inline-button',
-	'srfm/page-break',
-	'srfm/separator',
-	'srfm/advanced-heading',
-	'srfm/image',
-	'srfm/icon',
-	'srfm/link',
-	'srfm/login',
-	'srfm/html',
-];
+export const getWithoutSlugBlocks = () =>
+	applyFilters( 'srfm.withoutSlugBlocks', [
+		'srfm/inline-button',
+		'srfm/page-break',
+		'srfm/separator',
+		'srfm/advanced-heading',
+		'srfm/image',
+		'srfm/icon',
+		'srfm/link',
+		'srfm/html',
+	] );
 
 export const setFormSpecificSmartTags = ( updateBlockAttributes ) => {
 	const { getBlocks } = select( editorStore );
@@ -401,7 +401,7 @@ export const setFormSpecificSmartTags = ( updateBlockAttributes ) => {
 	}
 
 	savedBlocks = savedBlocks.filter(
-		( savedBlock ) => ! withoutSlugBlocks.includes( savedBlock?.name )
+		( savedBlock ) => ! getWithoutSlugBlocks().includes( savedBlock?.name )
 	);
 
 	pushSmartTagToArray(
