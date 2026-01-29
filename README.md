@@ -377,8 +377,6 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 ### 2.5.0 - 2nd February 2026 ###
 * Improvement: Added translation support for the country list in the phone number field.
 * Fix: Fixed dropdown placeholder and GDPR label translation on the frontend.
-* Fix: Fixed fields remaining read-only after the Read Only option was hidden.
-* Fix: Fixed “undefined” being added by smart tags in textarea default values.
 ### 2.4.0 - 20th January 2026 ###
 * New: Added form scheduling restrictions with start and end date/time.
 * New: Added Previous/Next navigation for single entry page.
