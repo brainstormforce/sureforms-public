@@ -150,7 +150,7 @@ function initializeFormHandlers() {
 			 * Filter to handle custom form submission interceptors (e.g., lost password, reset password).
 			 * Pro plugins can use this filter to intercept form submission and handle custom logic.
 			 *
-			 * @since x.x.x
+			 * @since 2.5.0
 			 * hook srfm.handleCustomFormSubmission
 			 *
 			 * @param {boolean} shouldContinue Whether to continue with normal form submission.

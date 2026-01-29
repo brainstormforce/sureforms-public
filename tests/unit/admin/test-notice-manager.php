@@ -12,7 +12,7 @@ use SRFM\Admin\Notice_Manager;
 /**
  * Tests Notice Manager class functionality.
  *
- * @since x.x.x
+ * @since 2.5.0
  */
 class Test_Notice_Manager extends TestCase {
 
