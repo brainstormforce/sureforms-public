@@ -35,15 +35,15 @@ const NAV_ITEMS = [
 		link: `${ siteURL }/wp-admin/admin.php?page=sureforms_payments`,
 	},
 	{
+		slug: 'sureforms_form_settings',
+		text: __( 'Settings', 'sureforms' ),
+		link: `${ siteURL }/wp-admin/admin.php?page=sureforms_form_settings&tab=general-settings`,
+	},
+	{
 		slug: 'sureforms_learn',
 		text: __( 'Learn', 'sureforms' ),
 		link: `${ siteURL }/wp-admin/admin.php?page=sureforms_menu#/learn`,
 		isHashRoute: true,
-	},
-	{
-		slug: 'sureforms_form_settings',
-		text: __( 'Settings', 'sureforms' ),
-		link: `${ siteURL }/wp-admin/admin.php?page=sureforms_form_settings&tab=general-settings`,
 	},
 ];
 
