@@ -7,7 +7,7 @@
  * and exports them to React via wp_localize_script.
  *
  * @package sureforms
- * @since x.x.x
+ * @since 2.5.0
  */
 
 namespace SRFM\Admin;
@@ -23,7 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * Handles collection and distribution of admin notices to both PHP and React contexts.
  *
- * @since x.x.x
+ * @since 2.5.0
  */
 class Notice_Manager {
 	use Get_Instance;
@@ -32,7 +32,7 @@ class Notice_Manager {
 	 * Registered notices.
 	 *
 	 * @var array
-	 * @since x.x.x
+	 * @since 2.5.0
 	 */
 	private static $notices = [];
 
@@ -40,7 +40,7 @@ class Notice_Manager {
 	 * Class constructor.
 	 *
 	 * @return void
-	 * @since x.x.x
+	 * @since 2.5.0
 	 */
 	public function __construct() {
 		// Hook to add notices to localized data.
@@ -76,7 +76,7 @@ class Notice_Manager {
 	 * }
 	 *
 	 * @return void
-	 * @since x.x.x
+	 * @since 2.5.0
 	 */
 	public static function register_notice( $notice_args ) {
 		// Validate required fields.
@@ -111,7 +111,7 @@ class Notice_Manager {
 	 * Get all registered notices.
 	 *
 	 * @return array Array of notice configurations.
-	 * @since x.x.x
+	 * @since 2.5.0
 	 */
 	public static function get_notices() {
 		return array_values( self::$notices );
@@ -122,7 +122,7 @@ class Notice_Manager {
 	 *
 	 * @param string $notice_id The notice ID to remove.
 	 * @return void
-	 * @since x.x.x
+	 * @since 2.5.0
 	 */
 	public static function remove_notice( $notice_id ) {
 		if ( isset( self::$notices[ $notice_id ] ) ) {
@@ -134,7 +134,7 @@ class Notice_Manager {
 	 * Clear all registered notices.
 	 *
 	 * @return void
-	 * @since x.x.x
+	 * @since 2.5.0
 	 */
 	public static function clear_notices() {
 		self::$notices = [];
@@ -148,7 +148,7 @@ class Notice_Manager {
 	 *
 	 * @param array $localization_data Existing localization data.
 	 * @return array Modified localization data with notices.
-	 * @since x.x.x
+	 * @since 2.5.0
 	 */
 	public function add_notices_to_localized_data( $localization_data ) {
 		$localization_data['notices'] = self::get_notices();
@@ -191,7 +191,7 @@ class Notice_Manager {
 	 * @param array  $actions Optional. Array of action button configurations.
 	 * @param array  $pages   Optional. Page slugs where notice should appear. Default ['all'].
 	 * @return void
-	 * @since x.x.x
+	 * @since 2.5.0
 	 */
 	public static function register_from_php_notice( $id, $variant, $message, $actions = [], $pages = [ 'all' ] ) {
 		self::register_notice(

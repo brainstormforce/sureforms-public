@@ -353,7 +353,7 @@ class Frontend_Assets {
 	 * to intl-tel-input language codes (e.g., fr, de, pt).
 	 * Returns null if the language is not supported by intl-tel-input.
 	 *
-	 * @since x.x.x
+	 * @since 2.5.0
 	 * @param string|null $locale WordPress locale string. If null, uses get_locale().
 	 * @return string|null Language code if supported, null if not supported or English.
 	 */
@@ -393,7 +393,7 @@ class Frontend_Assets {
 	 * This method handles conditional loading of language files based on WordPress locale.
 	 * Only enqueues if a supported non-English language is detected and the file exists.
 	 *
-	 * @since x.x.x
+	 * @since 2.5.0
 	 * @param string $handle       Script handle to enqueue.
 	 * @param string $dependencies Optional. Script handle that this i18n depends on. Default empty.
 	 * @return bool True if i18n was enqueued, false otherwise.
