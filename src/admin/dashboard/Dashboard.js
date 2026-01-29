@@ -7,6 +7,8 @@ import Header from '../components/Header';
 import QuickAccessTab from './QuickAccessTab';
 import UpgradeToPro from './UpgradeToPro';
 import FormsOverview from './FormsOverview';
+import AdminNotice from '../components/AdminNotice';
+import { cn } from '@Utils/Helpers';
 
 export default () => {
 	const nav = <Header />;
@@ -35,9 +37,17 @@ export default () => {
 			{ /* top banner */ }
 			{ /* nav */ }
 			{ nav }
-			<Container.Item>
+			<Container.Item className="px-5 pb-8 xl:px-8 w-full bg-background-secondary">
+				{ /* Admin Notices - only render if notices exist */ }
+				{ window.srfm_admin?.notices?.length > 0 && (
+					<div className="py-4">
+						<AdminNotice currentPage="sureforms_menu" />
+					</div>
+				) }
 				<Container
-					className="p-5 pb-8 xl:p-8 w-full bg-background-secondary"
+					className={ cn(
+						! window.srfm_admin?.notices?.length && 'pt-5 xl:pt-8'
+					) }
 					containerType="grid"
 					cols={ 12 }
 					gap="2xl"

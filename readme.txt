@@ -374,6 +374,12 @@ You can collect payments securely without any add-ons or extra plugins.
 You can report the issue through our [Bug Bounty Program](https://brainstormforce.com/bug-bounty-program/). We collaborate with Patchstack to provide opportunities for researchers to report vulnerabilities. The Patchstack team will help validate, triage, and handle any reported security issues.
 
 == Changelog ==
+= x.x.x =
+* Fix: Dropdown placeholder translation now works on the frontend by applying conditional translation logic in PHP.
+* Improvement: Added notice on react pages.
+* Improvement: Added translation support to country list in phone number block.
+* Fix: Resolved an issue where fields continued to appear read only even though the Read Only option is hidden.
+* Fix: Resolved an issue where undefined string is being added with smart tag in textarea default value.
 = 2.4.0 - 20th January 2026 =
 * New: Added form scheduling restrictions with start and end date/time.
 * New: Added Previous/Next navigation for single entry page.

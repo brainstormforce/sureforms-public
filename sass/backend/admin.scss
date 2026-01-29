@@ -13,11 +13,16 @@ $btn_text_color: #ffffff;
 $placeholder_color: #9ca3af;
 
 /* stylelint-disable selector-id-pattern */
-.toplevel_page_sureforms_menu {
+.toplevel_page_sureforms_menu,
+.sureforms_page_sureforms_entries,
+.sureforms_page_sureforms_forms,
+.sureforms_page_sureforms_payments {
 	#wpbody-content {
-		// Hide all admin notices on SureForms Dashboard page.
+		// Hide all WordPress default admin notices on SureForms React admin pages.
+		// Our custom AdminNotice component handles notices in React.
 		.notice,
-		.error {
+		.error,
+		.update-nag {
 			display: none !important;
 		}
 	}

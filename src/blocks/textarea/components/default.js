@@ -47,7 +47,7 @@ export const TextareaComponent = ( { attributes, blockID, setAttributes } ) => {
 			<div
 				className={ `srfm-block-wrap${
 					isRichText ? ' srfm-richtext' : ''
-				}${ readOnly ? ' srfm-read-only' : '' }` }
+				}${ readOnly && defaultValue ? ' srfm-read-only' : '' }` }
 			>
 				{ isRichText ? (
 					<div className="srfm-textarea-quill">
