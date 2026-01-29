@@ -128,6 +128,9 @@ const useLearn = ( {
 	 */
 	const markAllComplete = useCallback(
 		( moduleId = null ) => {
+			// Capture previous state for rollback
+			const previousModules = modules;
+
 			// Optimistically update UI
 			setModules( ( prevModules ) =>
 				prevModules.map( ( module ) => {
@@ -148,8 +151,8 @@ const useLearn = ( {
 			// Save each lesson to API if endpoint is provided
 			if ( saveEndpoint ) {
 				const modulesToUpdate = moduleId
-					? modules.filter( ( m ) => m.id === moduleId )
-					: modules;
+					? previousModules.filter( ( m ) => m.id === moduleId )
+					: previousModules;
 
 				const promises = modulesToUpdate.flatMap( ( module ) =>
 					module.steps
@@ -168,6 +171,9 @@ const useLearn = ( {
 				);
 
 				Promise.all( promises ).catch( ( error ) => {
+					// Revert UI state on error
+					setModules( previousModules );
+
 					// Show error toast
 					toast.error(
 						__(

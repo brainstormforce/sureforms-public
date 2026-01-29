@@ -3,7 +3,6 @@
  *
  * A reusable library for managing learning modules and lessons
  * with progress tracking. Supports both direct data and API endpoints.
- * Includes LearnHowDialog for rich educational content (videos, guides, etc).
  *
  * Usage (Simple - With API):
  * import Learn from '@Admin/lib/learn';
@@ -65,7 +64,3 @@ export { default as useLearn } from './useLearn';
 export { default as LearnModules } from './components/LearnModules';
 export { default as LearnLesson } from './components/LearnLesson';
 export { default as LearnSkeleton } from './components/LearnSkeleton';
-
-// LearnHow Dialog components
-export { default as LearnHowDialog } from './components/LearnHowDialog';
-export { default as RenderContent } from './components/learn-how/RenderContent';

@@ -98,7 +98,7 @@ const LearnLesson = ( {
 		setIsVideoPlaying( true );
 	};
 
-	// Handler for opening documentation - easily removable if not needed.
+	// Handler for opening documentation.
 	const handleDocsClick = ( e ) => {
 		e?.stopPropagation();
 		if ( docsUrl ) {
@@ -343,7 +343,7 @@ const LearnLesson = ( {
 								gap="md"
 								className="px-2"
 							>
-								{ /* For video lessons, show Read Docs button if docsUrl exists - easily removable by removing this block or docsUrl from data */ }
+								{ /* For video lessons, show View Documentation button if docsUrl exists */ }
 								{ hasVideo && docsUrl && (
 									<Container.Item>
 										<Button

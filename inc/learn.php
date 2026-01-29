@@ -401,6 +401,30 @@ class Learn {
 		$completed  = $request->get_param( 'completed' );
 		$user_id    = get_current_user_id();
 
+		// Validate that chapterId and stepId exist in the defined structure.
+		$chapters    = self::get_chapters_structure();
+		$valid_step  = false;
+
+		foreach ( $chapters as $chapter ) {
+			if ( $chapter['id'] !== $chapter_id ) {
+				continue;
+			}
+			foreach ( $chapter['steps'] as $step ) {
+				if ( $step['id'] === $step_id ) {
+					$valid_step = true;
+					break 2;
+				}
+			}
+		}
+
+		if ( ! $valid_step ) {
+			return new \WP_Error(
+				'invalid_step',
+				__( 'Invalid chapter or step ID.', 'sureforms' ),
+				[ 'status' => 400 ]
+			);
+		}
+
 		// Get current progress.
 		$saved_progress = get_user_meta( $user_id, 'srfm_learn_progress', true );
 		if ( ! is_array( $saved_progress ) ) {

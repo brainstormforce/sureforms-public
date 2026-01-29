@@ -199,7 +199,7 @@ const LearnModules = ( {
 												direction="row"
 												align="center"
 												justify="between"
-												className="w-full gap-4"
+												className="w-full gap-8"
 											>
 												<Container.Item className="flex-1 min-w-0">
 													<Label className="text-sm text-text-primary font-normal">
