@@ -7,9 +7,7 @@ import {
 	ChevronUp,
 	Circle,
 	CircleCheckBig,
-	ExternalLink,
 	Play,
-	Plus,
 } from 'lucide-react';
 
 /**
@@ -240,8 +238,8 @@ const LearnLesson = ( {
 							</Container>
 						</Container.Item>
 
-						{ /* Time indicator - only show for non-completed lessons */ }
-						{ ! isCompleted && ( videoDuration || timeEstimate ) && (
+						{ /* Time indicator - show for non-completed lessons, and for completed lessons only when expanded */ }
+						{ ( ! isCompleted || isExpanded ) && ( videoDuration || timeEstimate ) && (
 							<Container.Item className="hidden sm:block">
 								<Badge
 									label={ videoDuration || timeEstimate }
@@ -309,12 +307,12 @@ const LearnLesson = ( {
 											/>
 											<div className="absolute inset-0 flex items-center justify-center bg-black/20">
 												<Button
-													variant="primary"
+													variant="white"
 													size="lg"
 													icon={
-														<Play className="size-6" />
+														<Play className="size-5 text-black fill-black" />
 													}
-													className="rounded-full px-6 py-6 shadow-2xl"
+													className="rounded-full px-6 py-6 shadow-2xl border-0 outline-none"
 													aria-label={ __(
 														'Play video',
 														'sureforms'
@@ -351,13 +349,10 @@ const LearnLesson = ( {
 										<Button
 											variant="primary"
 											size="md"
-											icon={
-												<ExternalLink className="size-5" />
-											}
 											className="w-full shadow-sm"
 											onClick={ handleDocsClick }
 										>
-											{ __( 'Read Docs', 'sureforms' ) }
+											{ __( 'View Documentation', 'sureforms' ) }
 										</Button>
 									</Container.Item>
 								) }
@@ -367,7 +362,6 @@ const LearnLesson = ( {
 										<Button
 											variant="primary"
 											size="md"
-											icon={ <Plus className="size-5" /> }
 											className="w-full shadow-sm"
 											onClick={ handleActionClick }
 										>

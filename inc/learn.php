@@ -45,7 +45,7 @@ class Learn {
 							'url'  => 'https://sureforms.com/docs/creating-and-publishing-forms/',
 						],
 						'action'      => [
-							'label'      => __( 'Read Docs', 'sureforms' ),
+							'label'      => __( 'View Documentation', 'sureforms' ),
 							'url'        => 'https://sureforms.com/docs/creating-and-publishing-forms/',
 							'isExternal' => true,
 						],
@@ -60,7 +60,7 @@ class Learn {
 							'url'  => 'https://sureforms.com/docs/background-styling/',
 						],
 						'action'      => [
-							'label'      => __( 'Read Docs', 'sureforms' ),
+							'label'      => __( 'View Documentation', 'sureforms' ),
 							'url'        => 'https://sureforms.com/docs/background-styling/',
 							'isExternal' => true,
 						],
@@ -75,7 +75,7 @@ class Learn {
 							'url'  => 'https://sureforms.com/docs/displaying-forms/',
 						],
 						'action'      => [
-							'label'      => __( 'Read Docs', 'sureforms' ),
+							'label'      => __( 'View Documentation', 'sureforms' ),
 							'url'        => 'https://sureforms.com/docs/displaying-forms/',
 							'isExternal' => true,
 						],
@@ -90,7 +90,7 @@ class Learn {
 							'url'  => 'https://sureforms.com/docs/google-recaptcha/',
 						],
 						'action'      => [
-							'label'      => __( 'Read Docs', 'sureforms' ),
+							'label'      => __( 'View Documentation', 'sureforms' ),
 							'url'        => 'https://sureforms.com/docs/google-recaptcha/',
 							'isExternal' => true,
 						],
@@ -203,7 +203,7 @@ class Learn {
 							'url'  => 'https://sureforms.com/docs/form-restriction-in-sureforms/',
 						],
 						'action'      => [
-							'label'      => __( 'Read Docs', 'sureforms' ),
+							'label'      => __( 'View Documentation', 'sureforms' ),
 							'url'        => 'https://sureforms.com/docs/form-restriction-in-sureforms/',
 							'isExternal' => true,
 						],
@@ -258,17 +258,14 @@ class Learn {
 						'title'       => __( 'Introduction to Native Integrations', 'sureforms' ),
 						'description' => __( 'Learn how to connect SureForms with popular tools and services.', 'sureforms' ),
 						'learn'       => [
-							'type'    => 'dialog',
-							'content' => [
-								'type' => 'video',
-								'data' => [
-									'url'      => '', // Video content pending.
-									'title'    => __( 'Introduction to Native Integrations', 'sureforms' ),
-									'duration' => 0, // Duration pending.
-								],
-							],
+							'type' => 'link',
+							'url'  => 'https://sureforms.com/docs/integrations/',
 						],
-						'docsUrl'     => 'https://sureforms.com/docs/integrations/',
+						'action'      => [
+							'label'      => __( 'View Documentation', 'sureforms' ),
+							'url'        => 'https://sureforms.com/docs/integrations/',
+							'isExternal' => true,
+						],
 						'completed'   => false,
 					],
 				],
