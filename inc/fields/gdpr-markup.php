@@ -33,6 +33,11 @@ class GDPR_Markup extends Base {
 		$this->data_require_attr = 'true';
 		$this->set_markup_properties();
 		$this->set_aria_described_by();
+
+		// Translate the default GDPR consent text for frontend display.
+		if ( 'I consent to have this website store my submitted information so they can respond to my inquiry.' === $this->label ) {
+			$this->label = __( 'I consent to have this website store my submitted information so they can respond to my inquiry.', 'sureforms' );
+		}
 	}
 
 	/**

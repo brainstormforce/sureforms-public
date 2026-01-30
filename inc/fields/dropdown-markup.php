@@ -100,6 +100,12 @@ class Dropdown_Markup extends Base {
 		} elseif ( ! empty( $original_placeholder ) ) {
 			$this->placeholder = $original_placeholder;
 		}
+
+		// Translate the default placeholder text for frontend display.
+		if ( 'Select an option' === $this->placeholder ) {
+			$this->placeholder = __( 'Select an option', 'sureforms' );
+		}
+
 		$this->show_values = apply_filters( 'srfm_show_options_values', false, $attributes['showValues'] ?? false );
 
 		// Generate unique instance identifier.
