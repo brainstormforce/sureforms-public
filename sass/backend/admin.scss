@@ -85,10 +85,8 @@ $placeholder_color: #9ca3af;
 	width: 100%;
 }
 
-/* Adding margin button to the setting submenu item which will always be in the 7th position */
-#toplevel_page_sureforms_menu .wp-submenu li:nth-child( 7 ) {
-	margin-bottom: 4px;
-}
+/* Adding margin bottom to the last utility submenu item before the upgrade button */
+/* Settings is at 7th position, Learn at 8th, SMTP at 9th - no extra margin needed between them */
 
 /* The url used here as the selector is the url for the upgrade to pro submenu */
 /* If url is updated here then please make sure to update it for the submenu as well  */
