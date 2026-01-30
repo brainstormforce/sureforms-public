@@ -2,6 +2,8 @@ import { __ } from '@wordpress/i18n';
 import { Container, Label, Title } from '@bsf/force-ui';
 import { Learn as LearnComponent } from '@Admin/lib/learn';
 import Header from '../components/Header';
+import AdminNotice from '../components/AdminNotice';
+import { cn } from '@Utils/Helpers';
 
 const LearnPage = () => {
 	return (
@@ -9,8 +11,17 @@ const LearnPage = () => {
 			<Header />
 			<main className="bg-background-secondary min-h-[calc(100vh_-_8rem)]">
 				<h1 className="sr-only">{ __( 'Learn', 'sureforms' ) }</h1>
+				{ /* Admin Notices - only render if notices exist */ }
+				{ window.srfm_admin?.notices?.length > 0 && (
+					<div className="px-5 xl:px-8 py-4">
+						<AdminNotice currentPage="sureforms_menu" />
+					</div>
+				) }
 				<Container
-					className="md:p-8 sm:p-6 p-4"
+					className={ cn(
+						'md:p-8 sm:p-6 p-4',
+						window.srfm_admin?.notices?.length > 0 && '!pt-0'
+					) }
 					cols={ 12 }
 					containerType="grid"
 					gap="2xl"
