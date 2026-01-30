@@ -84,7 +84,7 @@ class Learn {
 					[
 						'id'          => 'secure-forms',
 						'title'       => __( 'Secure Forms from Bots', 'sureforms' ),
-						'description' => __( 'Protect your forms from spam and bot submissions using Google reCAPTCHA.', 'sureforms' ),
+						'description' => __( 'Protect your forms from spam and bot submissions using Google reCAPTCHA, hCaptcha, Cloudflare and Honeypot.', 'sureforms' ),
 						'learn'       => [
 							'type' => 'link',
 							'url'  => 'https://sureforms.com/docs/google-recaptcha/',
