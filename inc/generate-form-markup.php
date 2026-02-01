@@ -87,9 +87,9 @@ class Generate_Form_Markup {
 			$do_blocks = true;
 		}
 
-		$post_content = apply_filters( 'srfm_get_post_content', $post->post_content, $id );
+		if ( $post && ! empty( $post->post_content ) ) {
+			$post_content = apply_filters( 'srfm_get_post_content', $post->post_content, $id );
 
-		if ( $post && ! empty( $post_content ) ) {
 			if ( ! empty( $do_blocks ) ) {
 				$content = do_blocks( $post_content );
 			} else {
