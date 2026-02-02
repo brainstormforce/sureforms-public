@@ -3,6 +3,7 @@ import { __, sprintf } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
 import { useMemo, useEffect, useState } from '@wordpress/element';
 import { Button, Text } from '@bsf/force-ui';
+import { cn } from '@Utils/Helpers';
 import {
 	useEntryDetail,
 	useUpdateEntriesReadStatus,
@@ -205,7 +206,12 @@ const EntryDetailPage = () => {
 
 	return (
 		<>
-			<div className="p-8 bg-background-secondary min-h-screen space-y-6">
+			<div
+				className={ cn(
+					'px-8 pb-8 bg-background-secondary min-h-screen space-y-6',
+					! window.srfm_admin?.notices?.length && 'pt-8'
+				) }
+			>
 				{ /* Header */ }
 				<div className="flex items-center justify-between mx-auto max-w-[1500px]">
 					<div className="flex items-center gap-3">

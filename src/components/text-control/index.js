@@ -196,7 +196,9 @@ const SRFMTextControl = ( props ) => {
 										},
 									] }
 									setTargetData={ ( tag ) =>
-										handleOnChange( inputData + tag )
+										handleOnChange(
+											( inputData || '' ) + tag
+										)
 									}
 								/>
 							) }

@@ -3,6 +3,7 @@ import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
 import { ArrowRight } from 'lucide-react';
 import paymentPlaceHolder from '@Image/payment-list-placeholder.svg';
+import { cn } from '@Utils/Helpers';
 
 /**
  * PaymentListPlaceHolder Component
@@ -51,7 +52,12 @@ const PaymentListPlaceHolder = () => {
 	];
 
 	return (
-		<div className="srfm-single-payment-wrapper min-h-screen bg-background-secondary p-8">
+		<div
+			className={ cn(
+				'srfm-single-payment-wrapper min-h-screen bg-background-secondary px-8 pb-8',
+				! window.srfm_admin?.notices?.length && 'pt-8'
+			) }
+		>
 			<Container
 				containerType="flex"
 				direction="column"

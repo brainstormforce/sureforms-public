@@ -1,6 +1,6 @@
 import { useEffect } from '@wordpress/element';
 import { select } from '@wordpress/data';
-import { withoutSlugBlocks } from '@Utils/Helpers';
+import { getWithoutSlugBlocks } from '@Utils/Helpers';
 import { hasAction, doAction } from '@wordpress/hooks';
 
 const getUniqId = ( blocks ) =>
@@ -59,7 +59,7 @@ const addInitialAttr = ( ChildComponent ) => {
 
 			if ( isDuplicate ) {
 				if (
-					! withoutSlugBlocks.includes( name ) &&
+					! getWithoutSlugBlocks().includes( name ) &&
 					attributes?.slug
 				) {
 					attributeObject.slug = '';
