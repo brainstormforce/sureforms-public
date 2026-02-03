@@ -1229,7 +1229,7 @@ class Admin {
 	 * Hooked - admin_init (priority 5)
 	 *
 	 * @return void
-	 * @since x.x.x
+	 * @since 2.5.0
 	 */
 	public function register_pro_compatibility_notices() {
 		// Early exit if Pro is not active, user lacks permissions, or Notice_Manager is unavailable.
