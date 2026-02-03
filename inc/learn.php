@@ -3,10 +3,12 @@
  * SureForms Learn Helper Class
  *
  * @package sureforms
- * @since 1.0.0
+ * @since x.x.x
  */
 
 namespace SRFM\Inc;
+
+use SRFM\Inc\Traits\Get_Instance;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -15,9 +17,20 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Learn class.
  *
- * @since 1.0.0
+ * @since x.x.x
  */
 class Learn {
+	use Get_Instance;
+
+	/**
+	 * Constructor.
+	 *
+	 * @since x.x.x
+	 */
+	public function __construct() {
+		add_action( 'rest_api_init', [ $this, 'register_rest_routes' ] );
+	}
+
 	/**
 	 * Get default learn modules structure.
 	 *
@@ -26,7 +39,7 @@ class Learn {
 	 * the plugin for both frontend display and analytics validation.
 	 *
 	 * @return array Array of module objects with their lessons.
-	 * @since 1.0.0
+	 * @since x.x.x
 	 */
 	public static function get_chapters_structure() {
 		$chapters = [
@@ -276,7 +289,7 @@ class Learn {
 		 * Filter learn chapters structure.
 		 *
 		 * @param array $chapters Learn chapters data.
-		 * @since 1.0.0
+		 * @since x.x.x
 		 */
 		return apply_filters( 'srfm_learn_chapters', $chapters );
 	}
@@ -286,7 +299,7 @@ class Learn {
 	 *
 	 * @param int $user_id Optional. User ID to get progress for. Defaults to current user.
 	 * @return array Chapters array with progress data merged.
-	 * @since 1.0.0
+	 * @since x.x.x
 	 */
 	public static function get_learn_chapters( $user_id = 0 ) {
 		if ( ! $user_id ) {
@@ -329,16 +342,16 @@ class Learn {
 	/**
 	 * Register REST API endpoints for Learn functionality.
 	 *
-	 * @since 1.0.0
+	 * @since x.x.x
 	 * @return void
 	 */
-	public static function register_rest_routes() {
+	public function register_rest_routes() {
 		register_rest_route(
 			'sureforms/v1',
 			'/get-learn-chapters',
 			[
 				'methods'             => 'GET',
-				'callback'            => [ self::class, 'rest_get_learn_chapters' ],
+				'callback'            => [ $this, 'rest_get_learn_chapters' ],
 				'permission_callback' => static function () {
 					return current_user_can( 'manage_options' );
 				},
@@ -350,7 +363,7 @@ class Learn {
 			'/update-learn-progress',
 			[
 				'methods'             => 'POST',
-				'callback'            => [ self::class, 'rest_update_learn_progress' ],
+				'callback'            => [ $this, 'rest_update_learn_progress' ],
 				'permission_callback' => static function () {
 					return current_user_can( 'manage_options' );
 				},
@@ -379,9 +392,9 @@ class Learn {
 	 * REST API callback to get learn chapters with user progress.
 	 *
 	 * @return \WP_REST_Response Response object.
-	 * @since 1.0.0
+	 * @since x.x.x
 	 */
-	public static function rest_get_learn_chapters() {
+	public function rest_get_learn_chapters() {
 		$user_id  = get_current_user_id();
 		$chapters = self::get_learn_chapters( $user_id );
 
@@ -393,9 +406,9 @@ class Learn {
 	 *
 	 * @param \WP_REST_Request $request Request object.
 	 * @return \WP_REST_Response|\WP_Error Response object or error.
-	 * @since 1.0.0
+	 * @since x.x.x
 	 */
-	public static function rest_update_learn_progress( $request ) {
+	public function rest_update_learn_progress( $request ) {
 		$chapter_id = $request->get_param( 'chapterId' );
 		$step_id    = $request->get_param( 'stepId' );
 		$completed  = $request->get_param( 'completed' );

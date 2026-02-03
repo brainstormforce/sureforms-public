@@ -216,9 +216,7 @@ class Plugin_Loader {
 		}
 		Payments::get_instance();
 		Duplicate_Form::get_instance();
-
-		// Register Learn REST API routes.
-		add_action( 'rest_api_init', [ Learn::class, 'register_rest_routes' ] );
+		Learn::get_instance();
 	}
 
 	/**
