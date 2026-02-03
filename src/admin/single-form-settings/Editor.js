@@ -128,7 +128,7 @@ const SureformsFormSpecificSettings = () => {
 			clearInterval( intervalId );
 			clearTimeout( timeoutId );
 		};
-	}, [] );
+	}, [ editorMode ] );
 
 	const isPageBreak = blocks.some(
 		( block ) => block.name === 'srfm/page-break'
@@ -154,9 +154,14 @@ const SureformsFormSpecificSettings = () => {
 		}
 	};
 
-	useEffect( addFormStylingClass, [ rootContainer, deviceType ] );
+	useEffect( addFormStylingClass, [ rootContainer, deviceType, editorMode ] );
 
-	useContainerDynamicClass( sureformsKeys );
+	useContainerDynamicClass( {
+		sureformsKeys,
+		documentBody,
+		shouldIframe,
+		editorMode,
+	} );
 
 	// Update the custom CSS when the formCustomCssData prop changes. This will apply the custom CSS to the editor.
 	const formCustomCssData = sureformsKeys?._srfm_form_custom_css || '';
@@ -329,6 +334,7 @@ const SureformsFormSpecificSettings = () => {
 								}
 								isPageBreak={ isPageBreak }
 								iframeBody={ documentBody }
+								editorMode={ editorMode }
 							/>
 						) }
 					</InspectorTab>

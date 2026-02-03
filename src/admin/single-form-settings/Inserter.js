@@ -39,7 +39,9 @@ export function BlockInserter( { rootClientId = null } ) {
 	);
 }
 
-export const BlockInserterWrapper = () => {
+export const BlockInserterWrapper = ( props ) => {
+	const { documentBody } = props;
+
 	const selectedBlock = useSelect( ( select ) =>
 		select( 'core/block-editor' ).getSelectedBlock()
 	);
@@ -111,15 +113,19 @@ export const BlockInserterWrapper = () => {
 
 		// Add event listener to the document.
 		const timeoutId = setTimeout( () => {
-			document.addEventListener( 'click', handleCanvasClick, true );
+			documentBody.addEventListener( 'click', handleCanvasClick, true );
 		}, 500 );
 
 		// Cleanup.
 		return () => {
 			clearTimeout( timeoutId );
-			document.removeEventListener( 'click', handleCanvasClick, true );
+			documentBody.removeEventListener(
+				'click',
+				handleCanvasClick,
+				true
+			);
 		};
-	}, [ selectedBlock, clearSelectedBlock ] );
+	}, [ selectedBlock, clearSelectedBlock, documentBody ] );
 
 	// This blockWrapper should be visible only when block is not selected.
 	return !! selectedBlock ? null : <BlockInserter />;

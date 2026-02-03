@@ -62,7 +62,7 @@ class Spec_Init_Blocks {
 
 		// Hook: Editor assets.
 		add_action( 'enqueue_block_editor_assets', [ $this, 'editor_assets' ] );
-
+		add_action( 'enqueue_block_assets', [ $this, 'editor_assets' ] );
 	}
 
 	/**

@@ -28,7 +28,8 @@ import UpgradePrompt from '@Admin/single-form-settings/components/UpgradePrompt'
 
 function StyleSettings( props ) {
 	const { editPost } = useDispatch( editorStore );
-	const { defaultKeys, isInlineButtonBlockPresent, iframeBody } = props;
+	const { defaultKeys, isInlineButtonBlockPresent, iframeBody, editorMode } =
+		props;
 
 	let sureformsKeys = useSelect(
 		( select ) => {
@@ -42,12 +43,8 @@ function StyleSettings( props ) {
 	const rootRef = iframeBody;
 
 	const deviceType = useDeviceType();
-	const [ submitBtn, setSubmitBtn ] = useState(
-		document.querySelector( '.srfm-submit-richtext' )
-	);
-	const [ submitBtnCtn, setSubmitBtnCtn ] = useState(
-		document.querySelector( '.srfm-submit-btn-container' )
-	);
+	const [ submitBtn, setSubmitBtn ] = useState( null );
+	const [ submitBtnCtn, setSubmitBtnCtn ] = useState( null );
 	const [ fieldSpacing, setFieldSpacing ] = useState(
 		formStyling?.field_spacing || 'medium'
 	);
@@ -116,18 +113,23 @@ function StyleSettings( props ) {
 	// Apply the sizings when field spacing changes.
 	useEffect( () => {
 		applyFieldSpacing( fieldSpacing );
-	}, [ fieldSpacing ] );
+	}, [ fieldSpacing, editorMode, rootRef ] );
 
 	// if device type is desktop then change the submit button
 	useEffect( () => {
 		setTimeout( () => {
 			setSubmitBtnCtn(
-				document.querySelector( '.srfm-submit-btn-container' )
+				rootRef.querySelector( '.srfm-submit-btn-container' )
 			);
-			setSubmitBtn( document.querySelector( '.srfm-submit-richtext' ) );
+			setSubmitBtn( rootRef.querySelector( '.srfm-submit-richtext' ) );
 			submitButtonInherit();
 		}, 1000 );
-	}, [ deviceType, submitBtn, sureformsKeys._srfm_inherit_theme_button ] );
+	}, [
+		deviceType,
+		sureformsKeys._srfm_inherit_theme_button,
+		editorMode,
+		rootRef,
+	] );
 
 	const onHandleChange = ( updatedSettings ) => {
 		const [ key, value ] = Object.entries( updatedSettings )[ 0 ];
@@ -238,7 +240,7 @@ function StyleSettings( props ) {
 	useEffect( () => {
 		// Update the classes on the editor based on the background and overlay types.
 		updateEditorBackgroundClasses( bg_type, bg_gradient_overlay_type );
-	}, [ bg_type, bg_gradient_overlay_type, bg_image ] );
+	}, [ bg_type, bg_gradient_overlay_type, bg_image, rootRef, editorMode ] );
 
 	useEffect( () => {
 		if ( sureformsKeys ) {
@@ -389,6 +391,8 @@ function StyleSettings( props ) {
 		overlayGradientOptions,
 		bg_gradient,
 		bg_overlay_gradient,
+		rootRef,
+		editorMode,
 	] );
 
 	function updateMeta( option, value ) {
@@ -1212,6 +1216,7 @@ function StyleSettings( props ) {
 		editPost,
 		formStyling,
 		updateFormStyling,
+		editorMode,
 	} );
 
 	// Append the advanced panel at the end.

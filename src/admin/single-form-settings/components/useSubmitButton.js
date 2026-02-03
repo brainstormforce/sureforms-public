@@ -90,7 +90,7 @@ export default function useSubmitButton( args ) {
 
 			if ( getBlockInserterDiv ) {
 				createRoot( getBlockInserterDiv ).render(
-					<BlockInserterWrapper />
+					<BlockInserterWrapper documentBody={ documentBody } />
 				);
 			}
 		}
