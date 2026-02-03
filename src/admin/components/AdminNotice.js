@@ -5,7 +5,7 @@
  * PHP notices are localized via window.srfm_admin.notices and rendered
  * using the same Alert design pattern as existing notices (e.g., payment/utils.js).
  *
- * @since x.x.x
+ * @since 2.5.0
  */
 
 import { Alert, Button } from '@bsf/force-ui';

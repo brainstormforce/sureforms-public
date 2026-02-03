@@ -14,9 +14,9 @@ msgstr ""
 #. Plugin Name of the plugin
 #. Author of the plugin
 #: sureforms.php
-#: admin/admin.php:302
-#: admin/admin.php:303
-#: admin/admin.php:1413
+#: admin/admin.php:305
+#: admin/admin.php:306
+#: admin/admin.php:1474
 #: inc/gutenberg-hooks.php:109
 #: inc/page-builders/bricks/elements/form-widget.php:66
 #: inc/page-builders/bricks/service-provider.php:55
@@ -42,8 +42,8 @@ msgstr "Un modo semplice ma potente per creare moduli moderni per il tuo sito we
 msgid "https://sureforms.com/"
 msgstr ""
 
-#: admin/admin.php:315
-#: admin/admin.php:316
+#: admin/admin.php:318
+#: admin/admin.php:319
 #: assets/build/dashboard.js:172
 #: assets/build/entries.js:172
 #: assets/build/forms.js:172
@@ -54,9 +54,9 @@ msgstr ""
 msgid "Dashboard"
 msgstr "Cruscotto"
 
-#: admin/admin.php:333
-#: admin/admin.php:334
-#: admin/admin.php:671
+#: admin/admin.php:336
+#: admin/admin.php:337
+#: admin/admin.php:674
 #: assets/build/dashboard.js:172
 #: assets/build/entries.js:172
 #: assets/build/forms.js:172
@@ -66,15 +66,15 @@ msgstr "Cruscotto"
 msgid "Settings"
 msgstr "Impostazioni"
 
-#: admin/admin.php:479
-#: admin/admin.php:480
+#: admin/admin.php:482
+#: admin/admin.php:483
 #: inc/post-types.php:210
 msgid "New Form"
 msgstr "Nuovo modulo"
 
-#: admin/admin.php:488
-#: admin/admin.php:489
-#: admin/admin.php:1450
+#: admin/admin.php:491
+#: admin/admin.php:492
+#: admin/admin.php:1511
 #: inc/global-settings/email-summary.php:225
 #: assets/build/dashboard.js:172
 #: assets/build/entries.js:172
@@ -86,7 +86,7 @@ msgid "Entries"
 msgstr "Voci"
 
 #. Translators: Post Title.
-#: admin/admin.php:758
+#: admin/admin.php:761
 msgid "Edit %1$s"
 msgstr "Modifica %1$s"
 
@@ -120,16 +120,16 @@ msgid "Nonce verification failed."
 msgstr "Verifica del nonce fallita."
 
 #. translators: %1$s: Opening anchor tag with URL, %2$s: Closing anchor tag, %3$s: SureForms Pro Plugin Name.
-#: admin/admin.php:1202
+#: admin/admin.php:1263
 msgid "Please %1$sactivate%2$s your copy of %3$s to get new features, access support, receive update notifications, and more."
 msgstr "Per favore %1$sattiva%2$s la tua copia di %3$s per ottenere nuove funzionalità, accedere al supporto, ricevere notifiche di aggiornamento e altro ancora."
 
 #. translators: %1$s: SureForms version, %2$s: SureForms Pro Plugin Name, %3$s: SureForms Pro Version, %4$s: Anchor tag open, %5$s: Closing anchor tag.
-#: admin/admin.php:1220
+#: admin/admin.php:1281
 msgid "SureForms %1$s requires minimum %2$s %3$s to work properly. Please update to the latest version from %4$shere%5$s."
 msgstr "SureForms %1$s richiede almeno %2$s %3$s per funzionare correttamente. Si prega di aggiornare all'ultima versione da %4$squi%5$s."
 
-#: admin/admin.php:1449
+#: admin/admin.php:1510
 #: inc/global-settings/email-summary.php:224
 #: assets/build/entries.js:172
 #: assets/build/payments.js:172
@@ -195,7 +195,7 @@ msgstr "Spazzatura"
 msgid "Published"
 msgstr "Pubblicato"
 
-#: admin/admin.php:1441
+#: admin/admin.php:1502
 msgid "View"
 msgstr "Visualizza"
 
@@ -286,11 +286,11 @@ msgstr "Nessun plugin specificato"
 msgid "Plugin Successfully Activated"
 msgstr "Plugin attivato con successo"
 
-#: admin/admin.php:823
+#: admin/admin.php:826
 msgid "Activating..."
 msgstr "Attivazione in corso..."
 
-#: admin/admin.php:824
+#: admin/admin.php:827
 #: assets/build/dashboard.js:172
 #: assets/build/entries.js:172
 #: assets/build/formEditor.js:172
@@ -302,17 +302,17 @@ msgstr "Attivazione in corso..."
 msgid "Activated"
 msgstr "Attivato"
 
-#: admin/admin.php:825
+#: admin/admin.php:828
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:172
 msgid "Activate"
 msgstr "Attiva"
 
-#: admin/admin.php:826
+#: admin/admin.php:829
 msgid "Installing..."
 msgstr "Installazione in corso..."
 
-#: admin/admin.php:827
+#: admin/admin.php:830
 msgid "Installed"
 msgstr "Installato"
 
@@ -320,9 +320,9 @@ msgstr "Installato"
 msgid "You do not have permission to access this page."
 msgstr "Non hai il permesso di accedere a questa pagina."
 
-#: admin/admin.php:1307
-#: admin/admin.php:1345
-#: admin/admin.php:1366
+#: admin/admin.php:1368
+#: admin/admin.php:1406
+#: admin/admin.php:1427
 #: inc/admin-ajax.php:162
 #: inc/payments/admin/admin-handler.php:638
 #: inc/payments/front-end.php:74
@@ -538,7 +538,8 @@ msgstr "Richiesto"
 msgid "Dropdown"
 msgstr "Menu a tendina"
 
-#: assets/build/blocks.js:172
+#: inc/fields/dropdown-markup.php:106
+#: inc/gutenberg-hooks.php:216
 msgid "Select an option"
 msgstr "Seleziona un'opzione"
 
@@ -556,6 +557,8 @@ msgid "Confirm %s"
 msgstr "Conferma %s"
 
 #: inc/fields/gdpr-markup.php:29
+#: inc/fields/gdpr-markup.php:39
+#: inc/gutenberg-hooks.php:215
 msgid "I consent to have this website store my submitted information so they can respond to my inquiry."
 msgstr "Acconsento a che questo sito web memorizzi le informazioni che ho inviato in modo che possano rispondere alla mia richiesta."
 
@@ -633,7 +636,7 @@ msgstr "Spiacente, non sei autorizzato a visualizzare il modulo."
 
 #: inc/generate-form-markup.php:744
 #: assets/build/formSubmit.js:2
-#: assets/js/unminified/form-submit.js:442
+#: assets/js/unminified/form-submit.js:464
 msgid "There was an error trying to submit your form. Please try again."
 msgstr "C'è stato un errore nel tentativo di inviare il modulo. Per favore riprova."
 
@@ -791,8 +794,8 @@ msgstr "Visualizza modulo"
 msgid "View Forms"
 msgstr "Visualizza moduli"
 
-#: admin/admin.php:470
-#: admin/admin.php:471
+#: admin/admin.php:473
+#: admin/admin.php:474
 #: inc/post-types.php:214
 #: assets/build/dashboard.js:172
 #: assets/build/entries.js:172
@@ -8319,7 +8322,7 @@ msgstr "Sociale"
 msgid "Travel"
 msgstr "Viaggio"
 
-#: inc/helper.php:2041
+#: inc/helper.php:2051
 msgid "Blank Form"
 msgstr "Modulo Vuoto"
 
@@ -8906,9 +8909,9 @@ msgstr "Aggiungi blocchi alla barra delle azioni rapide"
 msgid "Re-arrange block inside Quick Action Bar"
 msgstr "Riorganizza il blocco all'interno della Barra delle Azioni Rapide"
 
-#: admin/admin.php:391
-#: admin/admin.php:392
-#: admin/admin.php:1544
+#: admin/admin.php:394
+#: admin/admin.php:395
+#: admin/admin.php:1605
 #: assets/build/blocks.js:172
 #: assets/build/dashboard.js:172
 #: assets/build/entries.js:172
@@ -10557,7 +10560,7 @@ msgstr "Sblocca moduli conversazionali"
 msgid "With the SureForms Pro Plan, you can transform your forms into engaging conversational layouts for a seamless user experience."
 msgstr "Con il piano SureForms Pro, puoi trasformare i tuoi moduli in layout conversazionali coinvolgenti per un'esperienza utente senza interruzioni."
 
-#: admin/admin.php:225
+#: admin/admin.php:228
 msgid "Get SureForms Pro"
 msgstr "Ottieni SureForms Pro"
 
@@ -10631,7 +10634,7 @@ msgstr ""
 msgid "Button"
 msgstr "Pulsante"
 
-#: inc/helper.php:1661
+#: inc/helper.php:1671
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:172
 msgid "OttoKit"
@@ -10769,11 +10772,11 @@ msgstr "La verifica del sitekey di HCaptcha non è riuscita. Si prega di contatt
 msgid "%s sitekey is missing. Please contact your site administrator."
 msgstr "Manca il sitekey %s. Si prega di contattare l'amministratore del sito."
 
-#: inc/helper.php:1652
+#: inc/helper.php:1662
 msgid "SureMail"
 msgstr "SureMail"
 
-#: inc/helper.php:1673
+#: inc/helper.php:1683
 msgid "Starter Templates"
 msgstr "Modelli di partenza"
 
@@ -11125,8 +11128,8 @@ msgstr "Descrivi il modulo che desideri creare"
 msgid "We are building your form…"
 msgstr "Stiamo creando il tuo modulo…"
 
-#: admin/admin.php:407
-#: admin/admin.php:408
+#: admin/admin.php:410
+#: admin/admin.php:411
 msgid "SMTP"
 msgstr "SMTP"
 
@@ -11264,26 +11267,26 @@ msgstr "Le notifiche dell'amministratore ti tengono informato sui nuovi invii di
 msgid "Contribute to SureForms"
 msgstr "Contribuisci a SureForms"
 
-#: admin/admin.php:1303
-#: admin/admin.php:1341
-#: admin/admin.php:1362
+#: admin/admin.php:1364
+#: admin/admin.php:1402
+#: admin/admin.php:1423
 msgid "Unauthorized user."
 msgstr "Utente non autorizzato."
 
 #. translators: 1: opening span, 2: opening strong (inline), 3: closing strong, 4: closing span, 5: opening strong (block), 6: closing strong
-#: admin/admin.php:1312
+#: admin/admin.php:1373
 msgid "%1$sGet started by %2$sbuilding your first form%3$s.%4$s%5$sExperience the power of our intuitive AI Form Builder%6$s"
 msgstr "%1$sInizia %2$scostruendo il tuo primo modulo%3$s.%4$s%5$sScopri la potenza del nostro intuitivo Costruttore di Moduli AI%6$s"
 
-#: admin/admin.php:1323
+#: admin/admin.php:1384
 msgid "SureForms is waiting for you!"
 msgstr "SureForms ti sta aspettando!"
 
-#: admin/admin.php:1325
+#: admin/admin.php:1386
 msgid "Build My First Form"
 msgstr "Crea il mio primo modulo"
 
-#: admin/admin.php:1326
+#: admin/admin.php:1387
 msgid "Dismiss"
 msgstr "Chiudi"
 
@@ -11307,51 +11310,51 @@ msgstr "Registrati"
 msgid "Thanks for being part of the SureForms community! Got feedback or suggestions? We'd love to hear it."
 msgstr "Grazie per far parte della comunità di SureForms! Hai feedback o suggerimenti? Ci piacerebbe sentirli."
 
-#: admin/admin.php:1437
+#: admin/admin.php:1498
 msgid "Recent Entries"
 msgstr "Voci recenti"
 
-#: admin/admin.php:1438
+#: admin/admin.php:1499
 msgid "( Last 7 days )"
 msgstr "( Ultimi 7 giorni )"
 
-#: admin/admin.php:1480
+#: admin/admin.php:1541
 msgid "Use Conditional Logic to show only what matters"
 msgstr "Usa la logica condizionale per mostrare solo ciò che conta"
 
-#: admin/admin.php:1481
+#: admin/admin.php:1542
 msgid "Split your form into steps to keep it easy"
 msgstr "Dividi il tuo modulo in passaggi per mantenerlo semplice"
 
-#: admin/admin.php:1482
+#: admin/admin.php:1543
 msgid "Let people upload files directly to your form"
 msgstr "Consenti alle persone di caricare file direttamente nel tuo modulo"
 
-#: admin/admin.php:1483
+#: admin/admin.php:1544
 msgid "Turn responses into downloadable PDFs automatically"
 msgstr "Trasforma automaticamente le risposte in PDF scaricabili"
 
-#: admin/admin.php:1484
+#: admin/admin.php:1545
 msgid "Let users sign with a simple signature field"
 msgstr "Consenti agli utenti di firmare con un semplice campo firma"
 
-#: admin/admin.php:1485
+#: admin/admin.php:1546
 msgid "Connect your form to other tools using webhooks"
 msgstr "Collega il tuo modulo ad altri strumenti utilizzando i webhook"
 
-#: admin/admin.php:1486
+#: admin/admin.php:1547
 msgid "Use Conversational Forms for a chat-like experience"
 msgstr "Usa moduli conversazionali per un'esperienza simile a una chat"
 
-#: admin/admin.php:1487
+#: admin/admin.php:1548
 msgid "Let users register or log in through your form"
 msgstr "Consenti agli utenti di registrarsi o accedere tramite il tuo modulo"
 
-#: admin/admin.php:1488
+#: admin/admin.php:1549
 msgid "Build forms that create WordPress user accounts"
 msgstr "Crea moduli che creano account utente WordPress"
 
-#: admin/admin.php:1489
+#: admin/admin.php:1550
 msgid "Add calculations to auto-total scores or prices"
 msgstr "Aggiungi calcoli per totalizzare automaticamente i punteggi o i prezzi"
 
@@ -11624,20 +11627,20 @@ msgstr "Ritocchi finali che fanno la differenza:"
 msgid "Build Your First Form"
 msgstr "Crea il tuo primo modulo"
 
-#: inc/helper.php:1883
+#: inc/helper.php:1893
 msgid "Invalid nonce action or name."
 msgstr "Azione o nome del nonce non valido."
 
-#: inc/helper.php:1893
-#: inc/helper.php:1901
+#: inc/helper.php:1903
+#: inc/helper.php:1911
 msgid "Invalid security token."
 msgstr "Token di sicurezza non valido."
 
-#: inc/helper.php:1908
+#: inc/helper.php:1918
 msgid "Invalid request type."
 msgstr "Tipo di richiesta non valido."
 
-#: inc/helper.php:1916
+#: inc/helper.php:1926
 msgid "You do not have permission to perform this action."
 msgstr "Non hai il permesso di eseguire questa azione."
 
@@ -11751,7 +11754,7 @@ msgstr "Ciao,"
 msgid "Email Summary of your last week -  %1$s to %2$s"
 msgstr "Riepilogo email della tua ultima settimana - %1$s a %2$s"
 
-#: inc/helper.php:1687
+#: inc/helper.php:1697
 msgid "Ultimate Addons for Elementor"
 msgstr "Componenti aggiuntivi avanzati per Elementor"
 
@@ -11907,8 +11910,8 @@ msgstr "Miniatura video di SureForms"
 msgid "Expected format for emails - email@sureforms.com or John Doe <email@sureforms.com>"
 msgstr "Formato previsto per le email - email@sureforms.com o John Doe <email@sureforms.com>"
 
-#: admin/admin.php:498
-#: admin/admin.php:499
+#: admin/admin.php:501
+#: admin/admin.php:502
 #: assets/build/dashboard.js:172
 #: assets/build/entries.js:172
 #: assets/build/forms.js:172
@@ -11919,7 +11922,7 @@ msgstr "Formato previsto per le email - email@sureforms.com o John Doe <email@su
 msgid "Payments"
 msgstr "Pagamenti"
 
-#: admin/admin.php:633
+#: admin/admin.php:636
 msgid "New"
 msgstr "Nuovo"
 
@@ -12076,47 +12079,47 @@ msgstr "La modalità di test è attivata:"
 msgid "Click here to enable live mode and accept payment"
 msgstr "Fai clic qui per abilitare la modalità live e accettare il pagamento"
 
-#: inc/helper.php:1653
+#: inc/helper.php:1663
 msgid "Boost Your Email Deliverability Instantly!"
 msgstr "Migliora immediatamente la tua deliverability delle email!"
 
-#: inc/helper.php:1654
+#: inc/helper.php:1664
 msgid "Access a powerful, easy-to-use email delivery service that ensures your emails land in inboxes, not spam folders. Automate your WordPress email workflows confidently with SureMail."
 msgstr "Accedi a un potente servizio di consegna email facile da usare che garantisce che le tue email arrivino nelle caselle di posta, non nelle cartelle di spam. Automatizza con sicurezza i tuoi flussi di lavoro email di WordPress con SureMail."
 
-#: inc/helper.php:1662
+#: inc/helper.php:1672
 msgid "Automate your WordPress workflows effortlessly."
 msgstr "Automatizza i tuoi flussi di lavoro WordPress senza sforzo."
 
-#: inc/helper.php:1663
+#: inc/helper.php:1673
 msgid "Connect your WordPress plugins and favourite apps, automate tasks, and sync data effortlessly using OttoKit’s clean, visual workflow builder — no coding or complex setup required."
 msgstr "Collega i tuoi plugin di WordPress e le app preferite, automatizza le attività e sincronizza i dati senza sforzo utilizzando il pulito e visivo builder di flussi di lavoro di OttoKit — senza bisogno di codifica o configurazioni complesse."
 
-#: inc/helper.php:1674
+#: inc/helper.php:1684
 msgid "Launch Beautiful Websites in Minutes!"
 msgstr "Lancia bellissimi siti web in pochi minuti!"
 
-#: inc/helper.php:1675
+#: inc/helper.php:1685
 msgid "Choose from professionally designed templates, import with one click, and customize effortlessly to match your brand."
 msgstr "Scegli tra modelli progettati professionalmente, importa con un clic e personalizza facilmente per adattarli al tuo marchio."
 
-#: inc/helper.php:1688
+#: inc/helper.php:1698
 msgid "Power Up Elementor to Build Stunning Websites Faster!"
 msgstr "Potenzia Elementor per creare siti web straordinari più velocemente!"
 
-#: inc/helper.php:1689
+#: inc/helper.php:1699
 msgid "Enhance Elementor with powerful widgets and templates. Build stunning, high-performing websites faster with creative design elements and seamless customization."
 msgstr "Migliora Elementor con potenti widget e template. Crea siti web straordinari e ad alte prestazioni più velocemente con elementi di design creativi e personalizzazione senza interruzioni."
 
-#: inc/helper.php:1697
+#: inc/helper.php:1707
 msgid "SureRank"
 msgstr ""
 
-#: inc/helper.php:1698
+#: inc/helper.php:1708
 msgid "Elevate Your SEO and Climb Search Rankings Effortlessly!"
 msgstr "Eleva il tuo SEO e scala le classifiche di ricerca senza sforzo!"
 
-#: inc/helper.php:1699
+#: inc/helper.php:1709
 msgid "Boost your website's visibility with smart SEO automation. Optimize content, track keyword performance, and get actionable insights, all inside WordPress."
 msgstr "Aumenta la visibilità del tuo sito web con l'automazione intelligente della SEO. Ottimizza i contenuti, monitora le prestazioni delle parole chiave e ottieni informazioni utili, tutto all'interno di WordPress."
 
@@ -15489,6 +15492,35 @@ msgstr "Queste impostazioni si applicano a tutti i gateway di pagamento."
 #: assets/build/settings.js:172
 msgid "Stripe Settings"
 msgstr "Impostazioni di Stripe"
+
+#. translators: %1$s: SureForms version, %2$s: SureForms Pro Plugin Name, %3$s: SureForms Pro Version.
+#: admin/admin.php:1198
+msgid "SureForms %1$s requires minimum %2$s %3$s to work properly. Please update to the latest version."
+msgstr "SureForms %1$s richiede almeno %2$s %3$s per funzionare correttamente. Si prega di aggiornare all'ultima versione."
+
+#: admin/admin.php:1211
+msgid "Update Now"
+msgstr "Aggiorna ora"
+
+#: inc/helper.php:1653
+msgid "SureContact"
+msgstr "SureContact"
+
+#: inc/helper.php:1654
+msgid "Turn Emails Into Revenue with a CRM Built for Your Website!"
+msgstr "Trasforma le email in entrate con un CRM creato per il tuo sito web!"
+
+#: inc/helper.php:1655
+msgid "Send newsletters, run campaigns, set up automations, manage contacts, and see exactly how much revenue your emails generate, all in one place."
+msgstr "Invia newsletter, gestisci campagne, imposta automazioni, gestisci contatti e vedi esattamente quanto reddito generano le tue email, tutto in un unico posto."
+
+#: assets/build/formEditor.js:172
+msgid "Lost Password"
+msgstr "Password persa"
+
+#: assets/build/formEditor.js:172
+msgid "Reset Password"
+msgstr "Reimposta la password"
 
 #: inc/post-types.php:205
 msgctxt "post type general name"
