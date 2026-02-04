@@ -1,58 +1,16 @@
 /**
  * Learn Library
  *
- * A reusable library for managing learning modules and lessons
- * with progress tracking. Supports both direct data and API endpoints.
+ * Reusable learning module system with progress tracking.
  *
- * Usage (Simple - With API):
- * import Learn from '@Admin/lib/learn';
+ * Exposes:
+ * - <Learn />            → Full learning UI (API or direct data)
+ * - useLearn()           → Headless state management hook
+ * - <LearnModules />     → Module accordion UI
+ * - <LearnLesson />      → Individual lesson UI
+ * - <LearnSkeleton />    → Loading state UI
  *
- * const MyComponent = () => {
- *   return (
- *     <Learn
- *       endpoints={{
- *         get: '/sureforms/v1/get-learn-chapters',
- *         set: '/sureforms/v1/update-learn-progress'
- *       }}
- *     />
- *   );
- * };
- *
- * Usage (With Direct Data):
- * import Learn from '@Admin/lib/learn';
- *
- * const MyComponent = () => {
- *   return (
- *     <Learn
- *       modules={myModulesData}
- *     />
- *   );
- * };
- *
- * Usage (Advanced - Custom Implementation):
- * import { useLearn, LearnModules, LearnLesson } from '@Admin/lib/learn';
- *
- * const MyComponent = () => {
- *   const {
- *     modules,
- *     updateLessonCompletion,
- *     firstIncompleteModuleId,
- *     progressStats
- *   } = useLearn({
- *     initialModules: myModulesData,
- *     saveEndpoint: '/sureforms/v1/update-learn-progress'
- *   });
- *
- *   return (
- *     <div>
- *       <LearnModules
- *         modules={modules}
- *         defaultValue={firstIncompleteModuleId}
- *         onLessonCompletionChange={updateLessonCompletion}
- *       />
- *     </div>
- *   );
- * };
+ * For detailed usage examples, see project documentation.
  */
 
 // Main component (recommended for most use cases)
