@@ -271,14 +271,17 @@ class Learn {
 						'title'       => __( 'Introduction to Native Integrations', 'sureforms' ),
 						'description' => __( 'Learn how to connect SureForms with popular tools and services.', 'sureforms' ),
 						'learn'       => [
-							'type' => 'link',
-							'url'  => 'https://sureforms.com/docs/integrations/',
+							'type'    => 'dialog',
+							'content' => [
+								'type' => 'video',
+								'data' => [
+									'url'      => 'https://www.youtube.com/embed/JHjrYAWuUdQ',
+									'title'    => __( 'Introduction to Native Integrations', 'sureforms' ),
+									'duration' => 240, // 4 minutes.
+								],
+							],
 						],
-						'action'      => [
-							'label'      => __( 'View Documentation', 'sureforms' ),
-							'url'        => 'https://sureforms.com/docs/integrations/',
-							'isExternal' => true,
-						],
+						'docsUrl'     => 'https://sureforms.com/docs-category/integrations/',
 						'completed'   => false,
 					],
 				],
