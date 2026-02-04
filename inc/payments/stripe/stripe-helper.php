@@ -758,4 +758,14 @@ class Stripe_Helper {
 		}
 		return Licensing::get_instance();
 	}
+
+	/**
+	 * Get the Stripe account ID.
+	 *
+	 * @since 2.0.0
+	 * @return string The Stripe account ID.
+	 */
+	public static function get_stripe_account_id() {
+		return self::get_stripe_setting( 'stripe_account_id' );
+	}
 }

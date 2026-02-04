@@ -1089,12 +1089,15 @@ class Front_End {
 				];
 			}
 
+			$get_stripe_account_id = Stripe_Helper::get_stripe_account_id();
+
 			// Retrieve confirmed payment intent status.
 			$retrieve_body = apply_filters(
 				'srfm_retrieve_payment_intent_data',
 				[
 					'secret_key'        => $secret_key,
 					'payment_intent_id' => $payment_id,
+					'stripe_account_id' => $get_stripe_account_id,
 				]
 			);
 
@@ -1112,6 +1115,7 @@ class Front_End {
 			$retrieve_response = wp_remote_post(
 				Stripe_Helper::middle_ware_base_url() . 'payment-intent/capture',
 				[
+					'timeout' => 60,
 					'body'    => $retrieve_body,
 					'headers' => [
 						'Content-Type' => 'application/json',
