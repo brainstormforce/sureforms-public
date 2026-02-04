@@ -138,7 +138,7 @@ class Learn {
 					[
 						'id'          => 'conversational-forms',
 						'title'       => __( 'Conversational Forms', 'sureforms' ),
-						'description' => __( 'Conversational form is another great way to keep your users engaged. In this lesson, learn how to create chat-style form interactions for better engagement.', 'sureforms' ),
+						'description' => __( 'Conversational Form is another great way to keep your users engaged. In this lesson, learn how to create chat-style form interactions for better engagement.', 'sureforms' ),
 						'learn'       => [
 							'type'    => 'dialog',
 							'content' => [
@@ -156,7 +156,7 @@ class Learn {
 					[
 						'id'          => 'conditional-logic',
 						'title'       => __( 'Conditional Logic & Smart Fields', 'sureforms' ),
-						'description' => __( 'Using Conditional Logic in forms makes your forms more relevant for a user and helps reduce drop-offs. Here, learn how to show or hide fields dynamically based on user input and conditions.', 'sureforms' ),
+						'description' => __( 'Using Conditional Logic, you can make your forms more relevant for a user and reduce drop-offs. Here, learn how to show or hide fields dynamically based on user input and conditions.', 'sureforms' ),
 						'learn'       => [
 							'type'    => 'dialog',
 							'content' => [
