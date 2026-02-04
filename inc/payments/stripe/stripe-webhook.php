@@ -1120,7 +1120,8 @@ class Stripe_Webhook {
 
 			// Send payment data to middleware for analytics.
 			if ( ! empty( $charge_id ) ) {
-				Stripe_Helper::intersect_payment( $charge_id, '', '', 'SureForms' );
+				$get_secret_key = Stripe_Helper::get_stripe_secret_key( $this->mode );
+				Stripe_Helper::intersect_payment( $charge_id, $get_secret_key, '', 'SureForms' );
 			}
 		} else {
 			Helper::srfm_log( 'Failed to create renewal payment record.' );

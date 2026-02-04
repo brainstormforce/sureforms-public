@@ -707,11 +707,6 @@ class Stripe_Helper {
 			return;
 		}
 
-		// Use current secret key if not provided.
-		if ( empty( $secret_key ) ) {
-			$secret_key = self::get_stripe_secret_key();
-		}
-
 		if ( empty( $secret_key ) ) {
 			return;
 		}
