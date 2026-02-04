@@ -678,6 +678,20 @@ class Stripe_Helper {
 	}
 
 	/**
+	 * Get the Stripe account ID.
+	 *
+	 * @since x.x.x
+	 * @return string The Stripe account ID.
+	 */
+	public static function get_stripe_account_id() {
+		$account = self::get_stripe_setting( 'stripe_account_id' );
+		if ( empty( $account ) || ! is_string( $account ) ) {
+			return '';
+		}
+		return $account;
+	}
+
+	/**
 	 * Clear webhook data from settings for a specific mode.
 	 *
 	 * Removes webhook_secret, webhook_id, and webhook_url for the specified mode.
@@ -757,15 +771,5 @@ class Stripe_Helper {
 			return null;
 		}
 		return Licensing::get_instance();
-	}
-
-	/**
-	 * Get the Stripe account ID.
-	 *
-	 * @since x.x.x
-	 * @return string The Stripe account ID.
-	 */
-	public static function get_stripe_account_id() {
-		return self::get_stripe_setting( 'stripe_account_id' );
 	}
 }
