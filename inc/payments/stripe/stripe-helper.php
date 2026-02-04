@@ -762,7 +762,7 @@ class Stripe_Helper {
 	/**
 	 * Get the Stripe account ID.
 	 *
-	 * @since 2.0.0
+	 * @since x.x.x
 	 * @return string The Stripe account ID.
 	 */
 	public static function get_stripe_account_id() {
