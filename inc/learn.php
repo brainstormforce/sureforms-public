@@ -52,7 +52,7 @@ class Learn {
 					[
 						'id'          => 'creating-first-form',
 						'title'       => __( 'Creating Your First Form', 'sureforms' ),
-						'description' => __( 'Learn how to create and publish your first form with SureForms.', 'sureforms' ),
+						'description' => __( 'Creating a form with SureForms takes just a few minutes. Check out the documentation to learn how to build your first form step by step.', 'sureforms' ),
 						'learn'       => [
 							'type' => 'link',
 							'url'  => 'https://sureforms.com/docs/creating-and-publishing-forms/',
@@ -67,7 +67,7 @@ class Learn {
 					[
 						'id'          => 'customize-forms',
 						'title'       => __( 'Customize Your Forms', 'sureforms' ),
-						'description' => __( 'Learn how to style and customize the appearance of your forms.', 'sureforms' ),
+						'description' => __( 'You can highly customize the look of your form with SureForms. Check out the documentation to learn how to style and customize the appearance of your forms.', 'sureforms' ),
 						'learn'       => [
 							'type' => 'link',
 							'url'  => 'https://sureforms.com/docs/background-styling/',
@@ -114,13 +114,13 @@ class Learn {
 			[
 				'id'          => 'sureforms-advanced',
 				'title'       => __( 'SureForms Advanced', 'sureforms' ),
-				'description' => __( 'Help users unlock SureForms\' full power with advanced features and creative use cases.', 'sureforms' ),
+				'description' => __( 'Help users unlock SureForms full power with advanced features and creative use cases.', 'sureforms' ),
 				'url'         => 'https://sureforms.com/docs/',
 				'steps'       => [
 					[
 						'id'          => 'multi-step-forms',
 						'title'       => __( 'Multi-Step Forms', 'sureforms' ),
-						'description' => __( 'Learn how to split forms into multiple steps with progress indicators.', 'sureforms' ),
+						'description' => __( 'Did you know? You can boost form conversions by up to 3 times just by breaking one long form into multiple, shorter steps. In this video, Learn how to split forms into multiple steps with progress indicators.', 'sureforms' ),
 						'learn'       => [
 							'type'    => 'dialog',
 							'content' => [
@@ -138,7 +138,7 @@ class Learn {
 					[
 						'id'          => 'conversational-forms',
 						'title'       => __( 'Conversational Forms', 'sureforms' ),
-						'description' => __( 'Create chat-style form interactions for better engagement.', 'sureforms' ),
+						'description' => __( 'Conversational form is another great way to keep your users engaged. In this lesson, learn how to create chat-style form interactions for better engagement.', 'sureforms' ),
 						'learn'       => [
 							'type'    => 'dialog',
 							'content' => [
@@ -150,13 +150,13 @@ class Learn {
 								],
 							],
 						],
-						'docsUrl'     => 'https://sureforms.com/docs/conversational-forms/',
+						'docsUrl'     => 'https://sureforms.com/docs/conversational-form/',
 						'completed'   => false,
 					],
 					[
 						'id'          => 'conditional-logic',
 						'title'       => __( 'Conditional Logic & Smart Fields', 'sureforms' ),
-						'description' => __( 'Show/hide fields based on user input and conditions.', 'sureforms' ),
+						'description' => __( 'Using Conditional Logic in forms makes your forms more relevant for a user and helps reduce drop-offs. Here, learn how to show or hide fields dynamically based on user input and conditions.', 'sureforms' ),
 						'learn'       => [
 							'type'    => 'dialog',
 							'content' => [
@@ -174,7 +174,7 @@ class Learn {
 					[
 						'id'          => 'pdf-generation',
 						'title'       => __( 'PDF Generation', 'sureforms' ),
-						'description' => __( 'Learn how to automatically generate downloadable PDFs from form submissions.', 'sureforms' ),
+						'description' => __( 'Sometimes you need a clean record of your form entries, right? PDF Generation in SureForms makes it easy. Learn how to automatically generate and download PDFs from form submissions.', 'sureforms' ),
 						'learn'       => [
 							'type'    => 'dialog',
 							'content' => [
@@ -186,13 +186,13 @@ class Learn {
 								],
 							],
 						],
-						'docsUrl'     => 'https://sureforms.com/docs/pdf-generation/',
+						'docsUrl'     => 'https://sureforms.com/docs/sureforms-pdf-generation-feature/',
 						'completed'   => false,
 					],
 					[
 						'id'          => 'payment-forms',
 						'title'       => __( 'Payment Forms', 'sureforms' ),
-						'description' => __( 'Learn how to set up Stripe and PayPal payment integration.', 'sureforms' ),
+						'description' => __( 'You no longer need to set up a full store just to accept payments. With SureForms, you can collect payments using a simple form. Learn how to set up a Payment Form with Stripe and PayPal integration and start accepting payments.', 'sureforms' ),
 						'learn'       => [
 							'type'    => 'dialog',
 							'content' => [
@@ -204,13 +204,13 @@ class Learn {
 								],
 							],
 						],
-						'docsUrl'     => 'https://sureforms.com/docs/payment-forms/',
+						'docsUrl'     => 'https://sureforms.com/docs/how-to-create-a-payment-form-in-sureforms/',
 						'completed'   => false,
 					],
 					[
 						'id'          => 'form-restrictions',
 						'title'       => __( 'Form Restrictions', 'sureforms' ),
-						'description' => __( 'Set entry limits and deadlines for your forms.', 'sureforms' ),
+						'description' => __( 'Not every form is for everyone. Check out the documentation to see how you can set limits and restrictions for your forms to reach a more targeted audience.', 'sureforms' ),
 						'learn'       => [
 							'type' => 'link',
 							'url'  => 'https://sureforms.com/docs/form-restriction-in-sureforms/',
@@ -225,7 +225,7 @@ class Learn {
 					[
 						'id'          => 'login-forms',
 						'title'       => __( 'Custom Login Forms', 'sureforms' ),
-						'description' => __( 'Create branded login pages for your users.', 'sureforms' ),
+						'description' => __( 'WordPress\'s default login page is boring, so we built a better one. This video shows how you can create a fully custom login page for your website in just a few seconds.', 'sureforms' ),
 						'learn'       => [
 							'type'    => 'dialog',
 							'content' => [
@@ -237,13 +237,13 @@ class Learn {
 								],
 							],
 						],
-						'docsUrl'     => 'https://sureforms.com/docs/login-forms/',
+						'docsUrl'     => 'https://sureforms.com/docs/sureforms-login-block-a-step-by-step-guide/',
 						'completed'   => false,
 					],
 					[
 						'id'          => 'registration-forms',
 						'title'       => __( 'Custom Registration Forms', 'sureforms' ),
-						'description' => __( 'Create branded registration pages for new users.', 'sureforms' ),
+						'description' => __( 'Your Custom Login Page also requires a Custom Registration Page, right? We have that too. Learn to create branded registration pages for new users.', 'sureforms' ),
 						'learn'       => [
 							'type'    => 'dialog',
 							'content' => [
@@ -255,7 +255,7 @@ class Learn {
 								],
 							],
 						],
-						'docsUrl'     => 'https://sureforms.com/docs/registration-forms/',
+						'docsUrl'     => 'https://sureforms.com/docs/sureforms-registration-block-step-by-step-guide/',
 						'completed'   => false,
 					],
 				],
@@ -269,7 +269,7 @@ class Learn {
 					[
 						'id'          => 'intro-integrations',
 						'title'       => __( 'Introduction to Native Integrations', 'sureforms' ),
-						'description' => __( 'Learn how to connect SureForms with popular tools and services.', 'sureforms' ),
+						'description' => __( 'SureForms lets you connect with 23+ tools natively. That means you can link your forms to your favorite apps and automate workflows, without relying on any third-party tools in between. Here, learn how to connect SureForms with popular tools and services.', 'sureforms' ),
 						'learn'       => [
 							'type'    => 'dialog',
 							'content' => [
