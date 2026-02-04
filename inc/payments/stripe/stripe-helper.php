@@ -692,6 +692,61 @@ class Stripe_Helper {
 	}
 
 	/**
+	 * Send payment data to middleware intersect endpoint.
+	 *
+	 * @param string $charge_id Stripe charge ID (ch_xxx format).
+	 * @param string $secret_key Stripe secret key.
+	 * @param string $stripe_account_id Stripe account ID (optional).
+	 * @param string $plugin_name Plugin name (default: 'SureForms').
+	 * @since 2.0.0
+	 * @return void
+	 */
+	public static function intersect_payment( $charge_id, $secret_key = '', $stripe_account_id = '', $plugin_name = 'SureForms' ) {
+		// Validate charge ID format (must be ch_xxx).
+		if ( empty( $charge_id ) || ! preg_match( '/^ch_[a-zA-Z0-9]+$/', $charge_id ) ) {
+			return;
+		}
+
+		// Use current secret key if not provided.
+		if ( empty( $secret_key ) ) {
+			$secret_key = self::get_stripe_secret_key();
+		}
+
+		if ( empty( $secret_key ) ) {
+			return;
+		}
+
+		// Prepare request data.
+		$request_data = [
+			'plugin_name'    => $plugin_name,
+			'secret_key'     => $secret_key,
+			'transaction_id' => $charge_id,
+			'account_id'     => $stripe_account_id,
+		];
+
+		// Encode and send to middleware.
+		$request_body = wp_json_encode( $request_data );
+		$request_body = is_string( $request_body ) ? $request_body : '';
+		$request_body = base64_encode( $request_body ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
+
+		if ( empty( $request_body ) ) {
+			return;
+		}
+
+		// Send to middleware intersect endpoint.
+		wp_remote_post(
+			self::middle_ware_base_url() . 'payment/intersect',
+			[
+				'timeout' => 30,
+				'body'    => $request_body,
+				'headers' => [
+					'Content-Type' => 'application/json',
+				],
+			]
+		);
+	}
+
+	/**
 	 * Clear webhook data from settings for a specific mode.
 	 *
 	 * Removes webhook_secret, webhook_id, and webhook_url for the specified mode.

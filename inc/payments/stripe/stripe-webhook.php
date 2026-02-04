@@ -1117,6 +1117,11 @@ class Stripe_Webhook {
 			$unique_payment_id = Stripe_Helper::generate_unique_payment_id( $payment_entry_id );
 			Payments::update( $payment_entry_id, [ 'srfm_txn_id' => $unique_payment_id ] );
 			Helper::srfm_log( 'Renewal payment record created with srfm_txn_id: ' . $unique_payment_id . ', Payment ID: ' . $payment_entry_id . '.' );
+
+			// Send payment data to middleware for analytics.
+			if ( ! empty( $charge_id ) ) {
+				Stripe_Helper::intersect_payment( $charge_id, '', '', 'SureForms' );
+			}
 		} else {
 			Helper::srfm_log( 'Failed to create renewal payment record.' );
 		}

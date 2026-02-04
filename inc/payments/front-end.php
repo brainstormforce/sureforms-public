@@ -757,6 +757,11 @@ class Front_End {
 			// Use charge ID as transaction_id if available, otherwise fall back to subscription ID.
 			$transaction_id = ! empty( $charge_id ) ? $charge_id : $subscription_id;
 
+			// Send payment data to middleware for analytics.
+			if ( ! empty( $charge_id ) ) {
+				Stripe_Helper::intersect_payment( $charge_id, $secret_key, '', 'SureForms' );
+			}
+
 			// Prepare minimal subscription data for database.
 			$entry_data = [
 				'form_id'             => $form_id,
@@ -1098,6 +1103,7 @@ class Front_End {
 					'secret_key'        => $secret_key,
 					'payment_intent_id' => $payment_id,
 					'stripe_account_id' => $get_stripe_account_id,
+					'plugin_name'       => 'SureForms',
 				]
 			);
 
