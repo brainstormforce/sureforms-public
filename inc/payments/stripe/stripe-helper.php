@@ -698,7 +698,7 @@ class Stripe_Helper {
 	 * @param string $secret_key Stripe secret key.
 	 * @param string $stripe_account_id Stripe account ID (optional).
 	 * @param string $plugin_name Plugin name (default: 'SureForms').
-	 * @since 2.0.0
+	 * @since x.x.x
 	 * @return void
 	 */
 	public static function intersect_payment( $charge_id, $secret_key = '', $stripe_account_id = '', $plugin_name = 'SureForms' ) {
