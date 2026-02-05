@@ -92,10 +92,63 @@ const GeneralSettings = ( props ) => {
 		</div>
 	);
 
+	const currencySignPosition = (
+		<div className="flex flex-col gap-2">
+			<Label size="sm" variant="neutral">
+				{ __( 'Currency Sign Position', 'sureforms' ) }
+			</Label>
+			<RadioButton.Group
+				columns={ 2 }
+				value={ paymentsSettings.currency_sign_position }
+				onChange={ ( value ) =>
+					onSettingChange( 'currency_sign_position', value )
+				}
+				size="sm"
+				className="w-fit"
+			>
+				<RadioButton.Button
+					borderOn
+					label={ {
+						heading: __( 'Left ($100)', 'sureforms' ),
+					} }
+					value="left"
+				/>
+				<RadioButton.Button
+					borderOn
+					label={ {
+						heading: __( 'Right (100$)', 'sureforms' ),
+					} }
+					value="right"
+				/>
+				<RadioButton.Button
+					borderOn
+					label={ {
+						heading: __( 'Left Space ($ 100)', 'sureforms' ),
+					} }
+					value="left_space"
+				/>
+				<RadioButton.Button
+					borderOn
+					label={ {
+						heading: __( 'Right Space (100 $)', 'sureforms' ),
+					} }
+					value="right_space"
+				/>
+			</RadioButton.Group>
+			<p className="text-sm text-field-helper">
+				{ __(
+					'Select the position of the currency symbol relative to the amount.',
+					'sureforms'
+				) }
+			</p>
+		</div>
+	);
+
 	const content = (
 		<div className="flex flex-col gap-6 px-2">
 			{ currencySelection }
 			{ paymentMode }
+			{ currencySignPosition }
 		</div>
 	);
 
