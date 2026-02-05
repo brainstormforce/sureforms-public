@@ -1172,7 +1172,18 @@ class Payment_Helper {
 		return [
 			'currency'     => 'USD',
 			'payment_mode' => 'test',
+			'currency_sign_position' => 'left',
 			'stripe'       => Stripe_Helper::get_default_stripe_settings(),
 		];
+	}
+
+	/**
+	 * Get currency sign position.
+	 *
+	 * @since x.x.x
+	 * @return string Currency sign position ('left', 'right', 'left_space', 'right_space').
+	 */
+	public static function get_currency_sign_position() {
+		return self::get_global_setting( 'currency_sign_position', 'left' );
 	}
 }

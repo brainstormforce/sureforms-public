@@ -324,6 +324,12 @@ class Global_Settings {
 			Payment_Helper::update_global_setting( 'payment_mode', $payment_mode );
 		}
 
+		// Save currency sign position.
+		if ( isset( $setting_options['currency_sign_position'] ) && ! empty( $setting_options['currency_sign_position'] ) && is_string( $setting_options['currency_sign_position'] ) ) {
+			$currency_sign_position = sanitize_text_field( $setting_options['currency_sign_position'] );
+			Payment_Helper::update_global_setting( 'currency_sign_position', $currency_sign_position );
+		}
+
 		// Handle gateway-specific settings.
 		if ( 'stripe' === $gateway ) {
 			$current_stripe_settings = Payment_Helper::get_gateway_settings( 'stripe' );
