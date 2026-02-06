@@ -257,10 +257,7 @@ export const getCurrencySymbol = ( currencyCode ) => {
  * @return {string} Currency sign position ('left', 'right', 'left_space', 'right_space')
  */
 export const getCurrencySignPosition = () => {
-	return (
-		window.srfm_admin?.payments?.currency_sign_position ||
-		'left'
-	);
+	return window.srfm_admin?.payments?.currency_sign_position || 'left';
 };
 
 /**

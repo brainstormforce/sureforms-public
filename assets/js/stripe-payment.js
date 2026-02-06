@@ -855,8 +855,8 @@ const PAYMENT_UTILITY = {
 		const formattedAmount =
 			'' !== formattedNumber
 				? PAYMENT_UTILITY.formatAmountWithCurrencyPosition(
-						currencySymbol,
-						formattedNumber
+					currencySymbol,
+					formattedNumber
 				  )
 				: '';
 
@@ -902,10 +902,13 @@ const PAYMENT_UTILITY = {
 						inputFormatType
 					);
 
-					console.log( 'formattedNumber--', PAYMENT_UTILITY.formatAmountWithCurrencyPosition(
-						getCurrencySymbol,
-						formattedNumber
-					) );
+					console.log(
+						'formattedNumber--',
+						PAYMENT_UTILITY.formatAmountWithCurrencyPosition(
+							getCurrencySymbol,
+							formattedNumber
+						)
+					);
 					getPlaceHolderElement.innerHTML =
 						PAYMENT_UTILITY.formatAmountWithCurrencyPosition(
 							getCurrencySymbol,
@@ -1069,7 +1072,7 @@ const PAYMENT_UTILITY = {
 	},
 	/**
 	 * Format amount with currency symbol based on position setting
-	 * @param {string}        currencySymbol - The currency symbol (e.g., "$")
+	 * @param {string}        currencySymbol  - The currency symbol (e.g., "$")
 	 * @param {string|number} formattedAmount - The formatted amount string
 	 * @param {string}        position        - Currency sign position (optional, defaults to setting)
 	 * @return {string} Formatted amount with currency symbol in correct position
