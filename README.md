@@ -275,7 +275,7 @@ To improve the user experience, SureForms may use the following 3rd party servic
 
 -   **ipapi** -- is used to auto detect the current user region Phone Field [TOS](https://ipapi.co/terms/) and [Privacy Policy](https://ipapi.co/privacy/)
 
--   **reCAPTCHA** -- is used for spam prevention and to ensure that the submissions made through the form are done by real human users.
+-   **reCAPTCHA** -- is used for spam prevention and to ensure that the submissions made through the form are done by real human users. [TOS](https://policies.google.com/terms) and [Privacy Policy](https://policies.google.com/privacy)
 
 ## Blocks ##
 
