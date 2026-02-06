@@ -187,7 +187,7 @@ class AI_Helper {
 				break;
 			case 'user_verification_failed':
 				$title   = __( 'User Verification Failed', 'sureforms' );
-				$message = __( 'An error occurred while trying to verify your email. Please check your email you have used to log in/ sign up on billing.sureforms.com.', 'sureforms' );
+				$message = __( 'An error occurred while trying to verify your email. Please check your email you have used to log in or sign up on billing.sureforms.com.', 'sureforms' );
 				break;
 			case 'referer_mismatch':
 				$title   = __( 'Referer Mismatch', 'sureforms' );
@@ -199,7 +199,7 @@ class AI_Helper {
 				break;
 			case 'domain_verification_failed':
 				$title   = __( 'Domain Verification Failed', 'sureforms' );
-				$message = __( 'Domain Verification Failed on current site. Please try again on any another website.', 'sureforms' );
+				$message = __( 'Domain Verification Failed on current site. Please try again on another website.', 'sureforms' );
 				break;
 			default:
 				$title   = __( 'Unknown Error', 'sureforms' );
