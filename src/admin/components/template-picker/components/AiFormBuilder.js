@@ -18,7 +18,7 @@ import AiFormProgressPage from '../ai-form-builder-components/AiFormProgressPage
 
 const AiFormBuilder = () => {
 	const [ message, setMessage ] = useState(
-		__( 'Connecting with AI…', 'sureforms' )
+		__( 'Connecting to AI service', 'sureforms' )
 	);
 	const [ isBuildingForm, setIsBuildingForm ] = useState( false );
 	const [ percentBuild, setPercentBuild ] = useState( 0 );
@@ -65,7 +65,7 @@ const AiFormBuilder = () => {
 
 		// add a pause of 2 seconds and set percentBuild to 25 without using setTimeout
 		setPercentBuild( 50 );
-		setMessage( __( 'Generating Fields…', 'sureforms' ) );
+		setMessage( __( 'Generating fields', 'sureforms' ) );
 
 		try {
 			const response = await apiFetch( {
@@ -83,9 +83,7 @@ const AiFormBuilder = () => {
 					setShowFormCreationErr( true );
 					return;
 				}
-				setMessage(
-					__( 'Just doing some final touches…', 'sureforms' )
-				);
+				setMessage( __( 'Finalizing your form', 'sureforms' ) );
 				setPercentBuild( 75 );
 
 				if ( response?.success === false ) {
@@ -110,7 +108,7 @@ const AiFormBuilder = () => {
 				} );
 
 				if ( postContent ) {
-					setMessage( __( 'Redirecting to Editor', 'sureforms' ) );
+					setMessage( __( 'Opening form editor', 'sureforms' ) );
 					setPercentBuild( 100 );
 					const formTitle = content?.form?.formTitle;
 					const metasToUpdate = applyFilters(
