@@ -42,7 +42,7 @@ const ErrorPopup = () => {
 							window.location.reload();
 						} }
 					>
-						{ __( 'Try Again!', 'sureforms' ) }
+						{ __( 'Try Again', 'sureforms' ) }
 					</Button>
 				</Container.Item>
 			</Container>

@@ -25,7 +25,7 @@ const allFeatures = [
 		id: 'entries',
 		title: __( 'View Entries', 'sureforms' ),
 		description: __(
-			'Track, view, and manage all form submissions in one place. Stay organized, informed, and never miss a response.',
+			'Track, view, and manage all form entries in one place. Stay organized, informed, and never miss a response.',
 			'sureforms'
 		),
 		type: 'free',
@@ -55,7 +55,7 @@ const allFeatures = [
 		id: 'webhooks',
 		title: __( 'Webhooks', 'sureforms' ),
 		description: __(
-			'Send form submissions instantly to any external system or endpoint to power advanced workflows.',
+			'Send form entries instantly to any external system or endpoint to power advanced workflows.',
 			'sureforms'
 		),
 		plan: 'starter',
@@ -113,7 +113,7 @@ const allFeatures = [
 		id: 'pdf_generation',
 		title: __( 'PDF Generation Made Simple', 'sureforms' ),
 		description: __(
-			'Automatically turn form submissions into clean, ready-to-download PDFs. Perfect for records, sharing, archiving, or keeping things organized.',
+			'Automatically turn form entries into clean, ready-to-download PDFs. Perfect for records, sharing, archiving, or keeping things organized.',
 			'sureforms'
 		),
 		plan: 'business',
