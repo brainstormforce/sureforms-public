@@ -198,7 +198,7 @@ export const useDuplicateForm = () => {
 				toast.success(
 					sprintf(
 						/* translators: %s: new form title */
-						__( 'Form duplicated successfully: %s', 'sureforms' ),
+						__( 'Form "%s" duplicated successfully.', 'sureforms' ),
 						data.new_form_title
 					)
 				);

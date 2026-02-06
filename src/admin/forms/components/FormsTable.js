@@ -120,7 +120,7 @@ const FormsTable = ( {
 							{ form.title || __( '(no title)', 'sureforms' ) }{ ' ' }
 							<span className="font-semibold">
 								{ form.status === 'draft' &&
-									__( '- Draft', 'sureforms' ) }
+									__( '(Draft)', 'sureforms' ) }
 							</span>
 						</Text>
 					</a>
@@ -225,7 +225,7 @@ const FormsTable = ( {
 					// View action
 					actions.push( {
 						key: 'view',
-						label: __( 'Preview', 'sureforms' ),
+						label: __( 'View Form', 'sureforms' ),
 						icon: <Eye className="size-4" />,
 						onClick: () => handleView( form ),
 					} );
@@ -265,7 +265,7 @@ const FormsTable = ( {
 					// Delete permanently action for trashed items
 					actions.push( {
 						key: 'delete-permanent',
-						label: __( 'Permanently Delete', 'sureforms' ),
+						label: __( 'Delete Permanently', 'sureforms' ),
 						icon: <Trash className="size-4" />,
 						onClick: () => onDelete?.( form ),
 					} );
