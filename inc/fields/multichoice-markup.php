@@ -110,7 +110,7 @@ class Multichoice_Markup extends Base {
 	public function __construct( $attributes ) {
 		$this->slug = 'multi-choice';
 		$this->set_properties( $attributes );
-		$this->set_input_label( __( 'Multi Choice', 'sureforms' ) );
+		$this->set_input_label( __( 'Multiple choice', 'sureforms' ) );
 		$this->set_error_msg( $attributes, 'srfm_multi_choice_block_required_text' );
 		$this->single_selection    = $attributes['singleSelection'] ?? false;
 		$this->choice_width        = $attributes['choiceWidth'] ?? '';
