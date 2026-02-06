@@ -139,7 +139,7 @@ export const useUpdateEntriesReadStatus = () => {
 				const entryId = variables.entry_ids[ 0 ];
 				message = sprintf(
 					// translators: %1$s is the entry ID, %2$s is the action (read/unread).
-					__( 'Entry#%1$s marked as %2$s.', 'sureforms' ),
+					__( 'Entry #%1$s marked as %2$s.', 'sureforms' ),
 					entryId,
 					action
 				);
@@ -190,7 +190,9 @@ export const useTrashEntries = () => {
 			queryClient.invalidateQueries( { queryKey: entriesKeys.lists() } );
 
 			// Invalidate all entry details to refresh navigation and data
-			queryClient.invalidateQueries( { queryKey: entriesKeys.details() } );
+			queryClient.invalidateQueries( {
+				queryKey: entriesKeys.details(),
+			} );
 
 			// Show a toast depending on the action (trash or restore)
 			const action = variables?.action || '';
@@ -202,13 +204,13 @@ export const useTrashEntries = () => {
 					action === 'trash'
 						? sprintf(
 							// translators: %s is the entry ID.
-							__( 'Entry#%s moved to trash.', 'sureforms' ),
+							__( 'Entry #%s moved to trash.', 'sureforms' ),
 							entryId
 						  )
 						: sprintf(
 							// translators: %s is the entry ID.
 							__(
-								'Entry#%s restored successfully.',
+								'Entry #%s restored successfully.',
 								'sureforms'
 							),
 							entryId
@@ -263,7 +265,9 @@ export const useDeleteEntries = () => {
 			queryClient.invalidateQueries( { queryKey: entriesKeys.lists() } );
 
 			// Invalidate all entry details to refresh navigation and data
-			queryClient.invalidateQueries( { queryKey: entriesKeys.details() } );
+			queryClient.invalidateQueries( {
+				queryKey: entriesKeys.details(),
+			} );
 
 			const count = variables?.entry_ids?.length || 1;
 			let message = '';
@@ -271,7 +275,7 @@ export const useDeleteEntries = () => {
 				const entryId = variables.entry_ids[ 0 ];
 				message = sprintf(
 					// translators: %s is the entry ID.
-					__( 'Entry#%s deleted permanently.', 'sureforms' ),
+					__( 'Entry #%s deleted permanently.', 'sureforms' ),
 					entryId
 				);
 			} else {
