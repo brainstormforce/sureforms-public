@@ -46,12 +46,12 @@ const PaymentLogs = ( {
 
 	const handleDeleteLogConfirmation = ( logIndex ) => {
 		onConfirmation( {
-			title: __( 'Delete Log?', 'sureforms' ),
+			title: __( 'Delete log?', 'sureforms' ),
 			description: __(
 				'This action cannot be undone. The log will be permanently deleted.',
 				'sureforms'
 			),
-			confirmLabel: __( 'Delete Log', 'sureforms' ),
+			confirmLabel: __( 'Delete Permanently', 'sureforms' ),
 			onConfirm: () => handleDeleteLog( logIndex ),
 			isLoading: deleteLogMutation.isPending,
 			destructive: true,

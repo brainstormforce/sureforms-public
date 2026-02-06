@@ -167,7 +167,7 @@ const RefundDialog = ( { isOpen, setIsOpen, payment, queryKey } ) => {
 				<Dialog.Header>
 					<div className="flex items-center justify-between">
 						<Dialog.Title>
-							{ __( 'Refund Payment', 'sureforms' ) }
+							{ __( 'Refund payment', 'sureforms' ) }
 						</Dialog.Title>
 						<Dialog.CloseButton onClick={ closeDialog } />
 					</div>
@@ -186,7 +186,7 @@ const RefundDialog = ( { isOpen, setIsOpen, payment, queryKey } ) => {
 					<div className="space-y-4">
 						<div>
 							<Label className="text-sm font-medium">
-								{ __( 'Refund Amount', 'sureforms' ) }
+								{ __( 'Refund amount', 'sureforms' ) }
 							</Label>
 							<Input
 								type="number"
@@ -219,7 +219,7 @@ const RefundDialog = ( { isOpen, setIsOpen, payment, queryKey } ) => {
 
 						<div>
 							<Label className="text-sm font-medium">
-								{ __( 'Refund Notes (Optional)', 'sureforms' ) }
+								{ __( 'Refund notes (optional)', 'sureforms' ) }
 							</Label>
 							<TextArea
 								value={ refundNotes }
