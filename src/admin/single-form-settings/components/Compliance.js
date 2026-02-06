@@ -37,7 +37,7 @@ const Compliance = ( { complianceData } ) => {
 			label: {
 				heading: __( 'Enable GDPR Compliance', 'sureforms' ),
 				description: __(
-					'When enabled this form will not store User IP, Browser Name and the Device Name in the Entries.',
+					'When enabled, this form will not store user IP, browser name, or device name in entries.',
 					'sureforms'
 				),
 			},

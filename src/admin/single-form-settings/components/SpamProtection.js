@@ -206,7 +206,7 @@ const SpamProtection = () => {
 					</div>
 					<Label size="sm" variant="help" className="font-normal">
 						{ __(
-							'Select a spam protection service from the list above. Make sure API keys are configured before enabling.',
+							'Select a spam protection service. Configure API keys in Global Settings before enabling.',
 							'sureforms'
 						) }
 					</Label>
