@@ -860,8 +860,6 @@ const PAYMENT_UTILITY = {
 				  )
 				: '';
 
-		console.log( 'formattedAmount', formattedAmount );
-
 		// Replace {amount} placeholder with formatted amount
 		return '' !== formattedAmount
 			? messageFormat.replace( '{amount}', formattedAmount )
@@ -901,14 +899,7 @@ const PAYMENT_UTILITY = {
 						amount,
 						inputFormatType
 					);
-
-					console.log(
-						'formattedNumber--',
-						PAYMENT_UTILITY.formatAmountWithCurrencyPosition(
-							getCurrencySymbol,
-							formattedNumber
-						)
-					);
+					
 					getPlaceHolderElement.innerHTML =
 						PAYMENT_UTILITY.formatAmountWithCurrencyPosition(
 							getCurrencySymbol,
