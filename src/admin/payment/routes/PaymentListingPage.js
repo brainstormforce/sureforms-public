@@ -168,7 +168,7 @@ const PaymentListingPage = () => {
 	const handleBulkDelete = () => {
 		setConfirmationDialog( {
 			open: true,
-			title: __( 'Delete payments', 'sureforms' ),
+			title: __( 'Delete Payments', 'sureforms' ),
 			description: sprintf(
 				/* translators: %d: number of payments */
 				__(

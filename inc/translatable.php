@@ -85,10 +85,10 @@ class Translatable {
 	 */
 	public static function dynamic_messages() {
 		return [
-			'srfm_valid_phone_number'          => __( 'Please enter a valid phone number.', 'sureforms' ),
-			'srfm_valid_url'                   => __( 'Please enter a valid URL.', 'sureforms' ),
+			'srfm_valid_phone_number'          => __( 'Enter a valid phone number.', 'sureforms' ),
+			'srfm_valid_url'                   => __( 'Enter a valid URL.', 'sureforms' ),
 			'srfm_confirm_email_same'          => __( 'Confirmation email does not match.', 'sureforms' ),
-			'srfm_valid_email'                 => __( 'Please enter a valid email address.', 'sureforms' ),
+			'srfm_valid_email'                 => __( 'Enter a valid email address.', 'sureforms' ),
 
 			/* translators: %s represents the minimum acceptable value */
 			'srfm_input_min_value'             => __( 'Minimum value is %s.', 'sureforms' ),
@@ -97,13 +97,13 @@ class Translatable {
 			'srfm_input_max_value'             => __( 'Maximum value is %s.', 'sureforms' ),
 
 			/* translators: %s represents the minimum number of options to select */
-			'srfm_dropdown_min_selections'     => __( 'Please select at least %s options.', 'sureforms' ),
+			'srfm_dropdown_min_selections'     => __( 'Select at least %s options.', 'sureforms' ),
 
 			/* translators: %s represents the maximum number of options that can be selected */
 			'srfm_dropdown_max_selections'     => __( 'You can select up to %s options.', 'sureforms' ),
 
 			/* translators: %s represents the minimum number of options to select */
-			'srfm_multi_choice_min_selections' => __( 'Please select at least %s options.', 'sureforms' ),
+			'srfm_multi_choice_min_selections' => __( 'Select at least %s options.', 'sureforms' ),
 
 			/* translators: %s represents the maximum number of options that can be selected */
 			'srfm_multi_choice_max_selections' => __( 'You can select up to %s options.', 'sureforms' ),

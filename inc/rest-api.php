@@ -367,7 +367,7 @@ class Rest_Api {
 
 		if ( empty( $entry_ids ) ) {
 			return new \WP_REST_Response(
-				[ 'error' => __( 'Please select at least one entry.', 'sureforms' ) ],
+				[ 'error' => __( 'Select at least one entry.', 'sureforms' ) ],
 				400
 			);
 		}
@@ -382,7 +382,7 @@ class Rest_Api {
 		// Validate action.
 		if ( ! $this->validate_read_action( $action ) ) {
 			return new \WP_REST_Response(
-				[ 'error' => __( 'Invalid action. Please use "read" or "unread".', 'sureforms' ) ],
+				[ 'error' => __( 'Invalid action. Use "read" or "unread".', 'sureforms' ) ],
 				400
 			);
 		}
@@ -416,7 +416,7 @@ class Rest_Api {
 
 		if ( empty( $entry_ids ) ) {
 			return new \WP_REST_Response(
-				[ 'error' => __( 'Please select at least one entry.', 'sureforms' ) ],
+				[ 'error' => __( 'Select at least one entry.', 'sureforms' ) ],
 				400
 			);
 		}
@@ -431,7 +431,7 @@ class Rest_Api {
 		// Validate action.
 		if ( ! $this->validate_trash_action( $action ) ) {
 			return new \WP_REST_Response(
-				[ 'error' => __( 'Invalid action. Please use "trash" or "restore".', 'sureforms' ) ],
+				[ 'error' => __( 'Invalid action. Use "trash" or "restore".', 'sureforms' ) ],
 				400
 			);
 		}
@@ -464,7 +464,7 @@ class Rest_Api {
 
 		if ( empty( $entry_ids ) ) {
 			return new \WP_REST_Response(
-				[ 'error' => __( 'Please select at least one entry.', 'sureforms' ) ],
+				[ 'error' => __( 'Select at least one entry.', 'sureforms' ) ],
 				400
 			);
 		}
@@ -506,7 +506,7 @@ class Rest_Api {
 
 		if ( ! $entry ) {
 			return new \WP_REST_Response(
-				[ 'error' => __( 'This entry could not be found.', 'sureforms' ) ],
+				[ 'error' => __( 'Entry not found.', 'sureforms' ) ],
 				404
 			);
 		}
@@ -645,7 +645,7 @@ class Rest_Api {
 
 		if ( ! $entry ) {
 			return new \WP_REST_Response(
-				[ 'error' => __( 'This entry could not be found.', 'sureforms' ) ],
+				[ 'error' => __( 'Entry not found.', 'sureforms' ) ],
 				404
 			);
 		}
@@ -770,7 +770,7 @@ class Rest_Api {
 		if ( empty( $form_ids ) || empty( $action ) ) {
 			return new \WP_Error(
 				'missing_parameters',
-				__( 'Please select at least one form and specify an action.', 'sureforms' ),
+				__( 'Select at least one form and specify an action.', 'sureforms' ),
 				[ 'status' => 400 ]
 			);
 		}
@@ -823,7 +823,7 @@ class Rest_Api {
 				default:
 					$errors[] = [
 						'form_id' => $form_id,
-						'error'   => __( 'Invalid action. Please use a valid action.', 'sureforms' ),
+						'error'   => __( 'Invalid action.', 'sureforms' ),
 					];
 					break;
 			}

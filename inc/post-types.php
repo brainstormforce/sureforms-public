@@ -1131,8 +1131,8 @@ class Post_Types {
 						'startHours'                  => '12',
 						'startMinutes'                => '00',
 						'startMeridiem'               => 'AM',
-						'schedulingNotStartedMessage' => __( 'This form is not yet available. Please check back after the scheduled start time.', 'sureforms' ),
-						'schedulingEndedMessage'      => __( 'This form is no longer accepting submissions. The submission period has ended.', 'sureforms' ),
+						'schedulingNotStartedMessage' => __( 'This form is not yet available. Check back after the scheduled start time.', 'sureforms' ),
+						'schedulingEndedMessage'      => __( 'This form is closed. The submission period has ended.', 'sureforms' ),
 					]
 				),
 			]
@@ -1171,8 +1171,8 @@ class Post_Types {
 			'startHours'                  => isset( $meta_value['startHours'] ) ? sanitize_text_field( $meta_value['startHours'] ) : '12',
 			'startMinutes'                => isset( $meta_value['startMinutes'] ) ? sanitize_text_field( $meta_value['startMinutes'] ) : '00',
 			'startMeridiem'               => isset( $meta_value['startMeridiem'] ) ? sanitize_text_field( $meta_value['startMeridiem'] ) : 'AM',
-			'schedulingNotStartedMessage' => isset( $meta_value['schedulingNotStartedMessage'] ) ? sanitize_textarea_field( $meta_value['schedulingNotStartedMessage'] ) : __( 'This form is not yet available. Please check back after the scheduled start time.', 'sureforms' ),
-			'schedulingEndedMessage'      => isset( $meta_value['schedulingEndedMessage'] ) ? sanitize_textarea_field( $meta_value['schedulingEndedMessage'] ) : __( 'This form is no longer accepting submissions. The submission period has ended.', 'sureforms' ),
+			'schedulingNotStartedMessage' => isset( $meta_value['schedulingNotStartedMessage'] ) ? sanitize_textarea_field( $meta_value['schedulingNotStartedMessage'] ) : __( 'This form is not yet available. Check back after the scheduled start time.', 'sureforms' ),
+			'schedulingEndedMessage'      => isset( $meta_value['schedulingEndedMessage'] ) ? sanitize_textarea_field( $meta_value['schedulingEndedMessage'] ) : __( 'This form is closed. The submission period has ended.', 'sureforms' ),
 		];
 
 		// Validate scheduling: start date/time must be before end date/time.

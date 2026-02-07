@@ -645,7 +645,7 @@ class Form_Submit {
 		} else {
 			$response = [
 				'success' => false,
-				'message' => __( 'An error occurred while submitting the form. Please try again.', 'sureforms' ),
+				'message' => __( 'Unable to submit form. Please try again.', 'sureforms' ),
 			];
 		}
 

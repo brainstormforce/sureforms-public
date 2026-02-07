@@ -80,7 +80,7 @@ const EmailNotification = ( {
 		doAction( 'srfm.emailNotification.deleted', data );
 
 		toast.dismiss();
-		toast.success( __( 'Email notification deleted.', 'sureforms' ), {
+		toast.success( __( 'Email notification deleted!', 'sureforms' ), {
 			duration: 500,
 		} );
 	};
@@ -95,7 +95,7 @@ const EmailNotification = ( {
 		doAction( 'srfm.emailNotification.duplicated', data, duplicateData );
 
 		toast.dismiss();
-		toast.success( __( 'Email notification duplicated.', 'sureforms' ), {
+		toast.success( __( 'Email notification duplicated!', 'sureforms' ), {
 			duration: 500,
 		} );
 	};

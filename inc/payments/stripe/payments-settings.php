@@ -298,7 +298,7 @@ class Payments_Settings {
 		return rest_ensure_response(
 			[
 				'success' => true,
-				'message' => __( 'Stripe account disconnected successfully.', 'sureforms' ),
+				'message' => __( 'Stripe account disconnected successfully!', 'sureforms' ),
 				'updated' => $updated,
 			]
 		);
@@ -398,7 +398,7 @@ class Payments_Settings {
 
 			if ( ! isset( $api_response['success'] ) || ! $api_response['success'] ) {
 				$error_details = $api_response['error'] ?? [];
-				$error_message = $error_details['message'] ?? __( 'Failed to create webhook.', 'sureforms' );
+				$error_message = $error_details['message'] ?? __( 'Unable to create webhook.', 'sureforms' );
 				throw new \Exception( $error_message );
 			}
 
@@ -589,7 +589,7 @@ class Payments_Settings {
 				$error_message
 			);
 		} else {
-			$response_data['message'] = $error_message ? $error_message : __( 'Failed to create webhooks.', 'sureforms' );
+			$response_data['message'] = $error_message ? $error_message : __( 'Unable to create webhooks.', 'sureforms' );
 		}
 
 		return $response_data;
@@ -679,7 +679,7 @@ class Payments_Settings {
 				$webhooks_deleted++;
 				$return_response[] = [
 					'success' => true,
-					'message' => __( 'Webhook deleted successfully.', 'sureforms' ),
+					'message' => __( 'Webhook deleted successfully!', 'sureforms' ),
 				];
 
 			} catch ( \Exception $e ) {
@@ -714,7 +714,7 @@ class Payments_Settings {
 				}
 			}
 
-			$response_data['message'] = $message ? $message : __( 'Failed to delete webhooks.', 'sureforms' );
+			$response_data['message'] = $message ? $message : __( 'Unable to delete webhooks.', 'sureforms' );
 		}
 
 		return $response_data;
@@ -873,7 +873,7 @@ class Payments_Settings {
 		return rest_ensure_response(
 			[
 				'success' => false,
-				'message' => $error_message ? $error_message : __( 'Failed to delete webhook.', 'sureforms' ),
+				'message' => $error_message ? $error_message : __( 'Unable to delete webhook.', 'sureforms' ),
 			]
 		);
 	}
@@ -1021,7 +1021,7 @@ class Payments_Settings {
 			$error = [];
 		}
 
-		$error_message = __( 'Failed to connect to Stripe.', 'sureforms' );
+		$error_message = __( 'Unable to connect to Stripe.', 'sureforms' );
 		if ( isset( $error['message'] ) && is_string( $error['message'] ) ) {
 			$error_message = sanitize_text_field( $error['message'] );
 		}

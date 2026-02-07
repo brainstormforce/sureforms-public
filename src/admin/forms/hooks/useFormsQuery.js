@@ -132,12 +132,12 @@ export const useExportForms = () => {
 	return useMutation( {
 		mutationFn: exportFormsApi,
 		onSuccess: () => {
-			toast.success( __( 'Forms exported successfully.', 'sureforms' ) );
+			toast.success( __( 'Forms exported successfully!', 'sureforms' ) );
 		},
 		onError: ( error ) => {
 			const msg =
 				error?.message ||
-				__( 'An error occurred while exporting forms.', 'sureforms' );
+				__( 'Unable to export forms. Please try again.', 'sureforms' );
 			toast.error( msg );
 		},
 	} );

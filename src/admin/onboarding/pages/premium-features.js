@@ -35,7 +35,7 @@ const allFeatures = [
 	// Starter features - 'premium' is now the default type when not specified
 	{
 		id: 'multi_step_form',
-		title: __( 'Multi-step Forms', 'sureforms' ),
+		title: __( 'Multistep Forms', 'sureforms' ),
 		description: __(
 			'Break complex forms into simple steps, reducing overwhelm and boosting completion rates. Guide users smoothly through the process',
 			'sureforms'

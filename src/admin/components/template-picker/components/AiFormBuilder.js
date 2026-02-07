@@ -183,7 +183,7 @@ const AiFormBuilder = () => {
 		__( 'Create Unlimited Forms with AI', 'sureforms' ),
 		__( 'Add Advanced Field Types', 'sureforms' ),
 		__( 'Create Calculators, Surveys, etc.', 'sureforms' ),
-		__( 'Design Multi-step Forms', 'sureforms' ),
+		__( 'Design Multistep Forms', 'sureforms' ),
 		__( 'Send Form Entries to Your CRM or Any App', 'sureforms' ),
 	];
 

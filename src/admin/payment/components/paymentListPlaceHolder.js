@@ -47,7 +47,7 @@ const PaymentListPlaceHolder = () => {
 			'Collect simple payments without heavy eCommerce plugins',
 			'sureforms'
 		),
-		__( 'Accept one-time payments or subscriptions quickly', 'sureforms' ),
+		__( 'Accept single payments or subscriptions quickly', 'sureforms' ),
 		__( 'Free to start: no extra plugins needed!', 'sureforms' ),
 	];
 

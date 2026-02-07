@@ -167,7 +167,7 @@ class Admin_Handler {
 			);
 
 		} catch ( \Exception $e ) {
-			wp_send_json_error( [ 'message' => __( 'An error occurred while fetching payments.', 'sureforms' ) ] );
+			wp_send_json_error( [ 'message' => __( 'Unable to load payments. Please refresh the page.', 'sureforms' ) ] );
 		}
 	}
 
@@ -208,7 +208,7 @@ class Admin_Handler {
 			wp_send_json_success( $payment_data );
 
 		} catch ( \Exception $e ) {
-			wp_send_json_error( [ 'message' => __( 'An error occurred while fetching payment details.', 'sureforms' ) ] );
+			wp_send_json_error( [ 'message' => __( 'Unable to load payment details. Please try again.', 'sureforms' ) ] );
 		}
 	}
 
@@ -297,7 +297,7 @@ class Admin_Handler {
 			wp_send_json_success( $response_data );
 
 		} catch ( \Exception $e ) {
-			wp_send_json_error( [ 'message' => __( 'An error occurred while fetching subscription details.', 'sureforms' ) ] );
+			wp_send_json_error( [ 'message' => __( 'Unable to load subscription details. Please try again.', 'sureforms' ) ] );
 		}
 	}
 
@@ -341,7 +341,7 @@ class Admin_Handler {
 			wp_send_json_success( [ 'forms' => $forms_list ] );
 
 		} catch ( \Exception $e ) {
-			wp_send_json_error( [ 'message' => __( 'An error occurred while fetching forms list.', 'sureforms' ) ] );
+			wp_send_json_error( [ 'message' => __( 'Unable to load forms. Please try again.', 'sureforms' ) ] );
 		}
 	}
 
@@ -385,7 +385,7 @@ class Admin_Handler {
 			wp_send_json_success( [ 'notes' => $this->get_formatted_notes( $updated_notes ) ] );
 
 		} catch ( \Exception $e ) {
-			wp_send_json_error( [ 'message' => __( 'An error occurred while adding the note.', 'sureforms' ) ] );
+			wp_send_json_error( [ 'message' => __( 'Unable to add note. Please try again.', 'sureforms' ) ] );
 		}
 	}
 
@@ -429,7 +429,7 @@ class Admin_Handler {
 			wp_send_json_success( [ 'notes' => $this->get_formatted_notes( $updated_notes ) ] );
 
 		} catch ( \Exception $e ) {
-			wp_send_json_error( [ 'message' => __( 'An error occurred while deleting the note.', 'sureforms' ) ] );
+			wp_send_json_error( [ 'message' => __( 'Unable to delete note. Please try again.', 'sureforms' ) ] );
 		}
 	}
 
@@ -473,7 +473,7 @@ class Admin_Handler {
 			wp_send_json_success( [ 'logs' => $updated_logs ] );
 
 		} catch ( \Exception $e ) {
-			wp_send_json_error( [ 'message' => __( 'An error occurred while deleting the log entry.', 'sureforms' ) ] );
+			wp_send_json_error( [ 'message' => __( 'Unable to delete log. Please try again.', 'sureforms' ) ] );
 		}
 	}
 
@@ -538,7 +538,7 @@ class Admin_Handler {
 		if ( count( $payment_ids ) > 100 ) {
 			wp_send_json_error(
 				[
-					'message' => __( 'Cannot delete more than 100 payments at once. Please select fewer payments.', 'sureforms' ),
+					'message' => __( 'Cannot delete more than 100 payments at once. Select fewer payments.', 'sureforms' ),
 				]
 			);
 		}
@@ -612,7 +612,7 @@ class Admin_Handler {
 		} catch ( \Exception $e ) {
 			wp_send_json_error(
 				[
-					'message' => __( 'An error occurred while deleting payments.', 'sureforms' ),
+					'message' => __( 'Unable to delete payments. Please try again.', 'sureforms' ),
 				]
 			);
 		}
@@ -734,7 +734,7 @@ class Admin_Handler {
 				);
 			}
 		} catch ( \Exception $e ) {
-			wp_send_json_error( __( 'An error occurred while processing the refund.', 'sureforms' ) );
+			wp_send_json_error( __( 'Unable to process refund. Please try again.', 'sureforms' ) );
 		}
 	}
 
