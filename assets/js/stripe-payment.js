@@ -899,7 +899,7 @@ const PAYMENT_UTILITY = {
 						amount,
 						inputFormatType
 					);
-					
+
 					getPlaceHolderElement.innerHTML =
 						PAYMENT_UTILITY.formatAmountWithCurrencyPosition(
 							getCurrencySymbol,
