@@ -133,6 +133,8 @@
 			container.classList.add( 'srfm-bg-image' );
 			if ( styling.bgImage ) {
 				container.style.setProperty( '--srfm-bg-image', 'url(' + styling.bgImage + ')' );
+			} else {
+				container.style.removeProperty( '--srfm-bg-image' );
 			}
 			if ( styling.bgImagePosition ) {
 				var posX = ( styling.bgImagePosition.x || 0.5 ) * 100;

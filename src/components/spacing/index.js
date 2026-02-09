@@ -29,6 +29,7 @@ const Spacing = ( props ) => {
 		help = false,
 		min = 0,
 		disableUnits = false,
+		isFormSpecific = true,
 	} = props;
 	const inputs = [ valueTop, valueRight, valueBottom, valueLeft ];
 
@@ -172,7 +173,7 @@ const Spacing = ( props ) => {
 									unit?.label,
 									link?.label,
 								] }
-								isFormSpecific={ true }
+								isFormSpecific={ isFormSpecific }
 								setAttributes={ setAttributes }
 								isValueArray={ true } // New: Added to compare array values.
 								value={ [

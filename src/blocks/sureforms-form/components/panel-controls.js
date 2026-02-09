@@ -196,6 +196,7 @@ export const getLayoutControls = ( { attributes, setAttributes } ) => {
 							label: 'formPaddingLink',
 						} }
 						setAttributes={ setAttributes }
+						isFormSpecific={ false }
 					/>
 				),
 			},
@@ -229,6 +230,7 @@ export const getLayoutControls = ( { attributes, setAttributes } ) => {
 							label: 'formBorderRadiusLink',
 						} }
 						setAttributes={ setAttributes }
+						isFormSpecific={ false }
 					/>
 				),
 			},
