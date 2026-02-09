@@ -731,7 +731,7 @@ class Generate_Form_Markup {
 			// Add preview script for real-time styling updates from block editor.
 			// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- This is a preview context, nonce not required.
 			if ( isset( $_GET['form_preview'] ) && 'true' === $_GET['form_preview'] ) {
-				self::output_preview_styling_script( $container_id );
+				self::enqueue_preview_styling_script( $container_id );
 			}
 			?>
 			</div>
@@ -968,169 +968,32 @@ class Generate_Form_Markup {
 	}
 
 	/**
-	 * Output JavaScript for handling PostMessage styling updates in preview mode.
+	 * Enqueue the preview styling script for real-time updates from block editor.
 	 *
 	 * @param string $container_id The form container ID selector.
-	 * @since 1.0.0
+	 * @since x.x.x
 	 * @return void
 	 */
-	public static function output_preview_styling_script( $container_id ) {
-		?>
-		<script type="text/javascript">
-		(function() {
-			var container = document.querySelector('.<?php echo esc_js( $container_id ); ?>');
-			if (!container) return;
+	public static function enqueue_preview_styling_script( $container_id ) {
+		$file_prefix = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? '' : '.min';
+		$dir_name    = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? 'unminified' : 'minified';
+		$js_uri      = SRFM_URL . 'assets/js/' . $dir_name . '/';
 
-			window.addEventListener('message', function(event) {
-				if (!event.data || event.data.type !== 'srfm-update-styling') return;
+		wp_enqueue_script(
+			SRFM_SLUG . '-preview-styling',
+			$js_uri . 'preview-styling' . $file_prefix . '.js',
+			[],
+			SRFM_VER,
+			true
+		);
 
-				var styling = event.data.styling;
-				if (!styling) return;
-
-				// Apply color variables
-				if (styling.primaryColor) {
-					container.style.setProperty('--srfm-color-scheme-primary', styling.primaryColor);
-					container.style.setProperty('--srfm-quill-editor-color', styling.primaryColor);
-					container.style.setProperty('--srfm-color-input-border-hover', 'hsl(from ' + styling.primaryColor + ' h s l / 0.65)');
-					container.style.setProperty('--srfm-color-input-border-focus-glow', 'hsl(from ' + styling.primaryColor + ' h s l / 0.15)');
-					container.style.setProperty('--srfm-color-input-selected', 'hsl(from ' + styling.primaryColor + ' h s l / 0.1)');
-					container.style.setProperty('--srfm-btn-color-hover', 'hsl(from ' + styling.primaryColor + ' h s l / 0.9)');
-					container.style.setProperty('--srfm-btn-color-disabled', 'hsl(from ' + styling.primaryColor + ' h s l / 0.25)');
-				}
-
-				if (styling.textColor) {
-					container.style.setProperty('--srfm-color-scheme-text', styling.textColor);
-					container.style.setProperty('--srfm-color-input-label', styling.textColor);
-					container.style.setProperty('--srfm-color-input-text', styling.textColor);
-					container.style.setProperty('--srfm-color-input-description', 'hsl(from ' + styling.textColor + ' h s l / 0.65)');
-					container.style.setProperty('--srfm-color-input-placeholder', 'hsl(from ' + styling.textColor + ' h s l / 0.5)');
-					container.style.setProperty('--srfm-color-input-prefix', 'hsl(from ' + styling.textColor + ' h s l / 0.65)');
-					container.style.setProperty('--srfm-color-input-background', 'hsl(from ' + styling.textColor + ' h s l / 0.02)');
-					container.style.setProperty('--srfm-color-input-background-hover', 'hsl(from ' + styling.textColor + ' h s l / 0.05)');
-					container.style.setProperty('--srfm-color-input-background-disabled', 'hsl(from ' + styling.textColor + ' h s l / 0.07)');
-					container.style.setProperty('--srfm-color-input-border', 'hsl(from ' + styling.textColor + ' h s l / 0.25)');
-					container.style.setProperty('--srfm-color-input-border-disabled', 'hsl(from ' + styling.textColor + ' h s l / 0.15)');
-					container.style.setProperty('--srfm-color-multi-choice-svg', 'hsl(from ' + styling.textColor + ' h s l / 0.7)');
-				}
-
-				if (styling.textOnPrimaryColor) {
-					container.style.setProperty('--srfm-color-scheme-text-on-primary', styling.textOnPrimaryColor);
-				}
-
-				// Apply padding
-				var paddingUnit = styling.formPaddingUnit || 'px';
-				if (styling.formPaddingTop !== undefined) {
-					container.style.setProperty('--srfm-form-padding-top', styling.formPaddingTop + paddingUnit);
-				}
-				if (styling.formPaddingRight !== undefined) {
-					container.style.setProperty('--srfm-form-padding-right', styling.formPaddingRight + paddingUnit);
-				}
-				if (styling.formPaddingBottom !== undefined) {
-					container.style.setProperty('--srfm-form-padding-bottom', styling.formPaddingBottom + paddingUnit);
-				}
-				if (styling.formPaddingLeft !== undefined) {
-					container.style.setProperty('--srfm-form-padding-left', styling.formPaddingLeft + paddingUnit);
-				}
-
-				// Apply border radius
-				var borderRadiusUnit = styling.formBorderRadiusUnit || 'px';
-				if (styling.formBorderRadiusTop !== undefined) {
-					container.style.setProperty('--srfm-form-border-radius-top', styling.formBorderRadiusTop + borderRadiusUnit);
-				}
-				if (styling.formBorderRadiusRight !== undefined) {
-					container.style.setProperty('--srfm-form-border-radius-right', styling.formBorderRadiusRight + borderRadiusUnit);
-				}
-				if (styling.formBorderRadiusBottom !== undefined) {
-					container.style.setProperty('--srfm-form-border-radius-bottom', styling.formBorderRadiusBottom + borderRadiusUnit);
-				}
-				if (styling.formBorderRadiusLeft !== undefined) {
-					container.style.setProperty('--srfm-form-border-radius-left', styling.formBorderRadiusLeft + borderRadiusUnit);
-				}
-
-				// Apply background
-				if (styling.bgType === 'color' && styling.bgColor) {
-					container.style.setProperty('--srfm-bg-color', styling.bgColor);
-					container.style.removeProperty('--srfm-bg-image');
-					container.style.removeProperty('--srfm-bg-gradient');
-				} else if (styling.bgType === 'gradient' && styling.bgGradient) {
-					container.style.setProperty('--srfm-bg-gradient', styling.bgGradient);
-					container.style.removeProperty('--srfm-bg-color');
-					container.style.removeProperty('--srfm-bg-image');
-				} else if (styling.bgType === 'image' && styling.bgImage) {
-					container.style.setProperty('--srfm-bg-image', 'url(' + styling.bgImage + ')');
-					container.style.removeProperty('--srfm-bg-color');
-					container.style.removeProperty('--srfm-bg-gradient');
-					if (styling.bgImagePosition) {
-						var posX = (styling.bgImagePosition.x || 0.5) * 100;
-						var posY = (styling.bgImagePosition.y || 0.5) * 100;
-						container.style.setProperty('--srfm-bg-position', posX + '% ' + posY + '%');
-					}
-					if (styling.bgImageSize) {
-						container.style.setProperty('--srfm-bg-size', styling.bgImageSize);
-					}
-					if (styling.bgImageRepeat) {
-						container.style.setProperty('--srfm-bg-repeat', styling.bgImageRepeat);
-					}
-					if (styling.bgImageAttachment) {
-						container.style.setProperty('--srfm-bg-attachment', styling.bgImageAttachment);
-					}
-				}
-
-				// Apply field size
-				if (styling.fieldSize) {
-					var sizeVars = {
-						'small': {
-							'--srfm-input-font-size': '14px',
-							'--srfm-input-padding-top': '8px',
-							'--srfm-input-padding-bottom': '8px',
-							'--srfm-input-padding-left': '12px',
-							'--srfm-input-padding-right': '12px',
-							'--srfm-input-gap': '16px'
-						},
-						'medium': {
-							'--srfm-input-font-size': '16px',
-							'--srfm-input-padding-top': '10px',
-							'--srfm-input-padding-bottom': '10px',
-							'--srfm-input-padding-left': '14px',
-							'--srfm-input-padding-right': '14px',
-							'--srfm-input-gap': '20px'
-						},
-						'large': {
-							'--srfm-input-font-size': '18px',
-							'--srfm-input-padding-top': '14px',
-							'--srfm-input-padding-bottom': '14px',
-							'--srfm-input-padding-left': '16px',
-							'--srfm-input-padding-right': '16px',
-							'--srfm-input-gap': '24px'
-						}
-					};
-					var vars = sizeVars[styling.fieldSize];
-					if (vars) {
-						for (var key in vars) {
-							container.style.setProperty(key, vars[key]);
-						}
-					}
-				}
-
-				// Apply button alignment
-				if (styling.buttonAlignment) {
-					var submitContainer = container.querySelector('.srfm-submit-container .wp-block-button');
-					if (submitContainer) {
-						submitContainer.style.textAlign = styling.buttonAlignment === 'full' ? 'center' : styling.buttonAlignment;
-						var btn = submitContainer.querySelector('button');
-						if (btn) {
-							btn.style.width = styling.buttonAlignment === 'full' ? '100%' : '';
-						}
-					}
-				}
-
-				// Allow Pro to extend styling via custom event
-				var customEvent = new CustomEvent('srfm-preview-styling-update', { detail: styling });
-				document.dispatchEvent(customEvent);
-			});
-		})();
-		</script>
-		<?php
+		wp_localize_script(
+			SRFM_SLUG . '-preview-styling',
+			'srfmPreviewStyling',
+			[
+				'containerId' => $container_id,
+			]
+		);
 	}
 
 	/**

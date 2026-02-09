@@ -176,7 +176,18 @@ export default ( { attributes, setAttributes } ) => {
 
 	// Send styling updates to iframe via PostMessage
 	const sendStylingToIframe = useCallback( () => {
-		if ( ! iframeRef.current?.contentWindow || attributes.inheritStyling ) {
+		if ( ! iframeRef.current?.contentWindow ) {
+			return;
+		}
+
+		// If inheriting styling, send reset message to reload iframe with original styles
+		if ( attributes.inheritStyling ) {
+			iframeRef.current.contentWindow.postMessage(
+				{
+					type: 'srfm-reset-styling',
+				},
+				'*'
+			);
 			return;
 		}
 
@@ -331,7 +342,7 @@ export default ( { attributes, setAttributes } ) => {
 						help={
 							inheritStyling
 								? __(
-									'Using styling from the form settings.',
+									'This form uses Instant Form styling.',
 									'sureforms'
 								  )
 								: __(
