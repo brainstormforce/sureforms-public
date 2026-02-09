@@ -374,6 +374,8 @@ You can collect payments securely without any add-ons or extra plugins.
 You can report the issue through our [Bug Bounty Program](https://brainstormforce.com/bug-bounty-program/). We collaborate with Patchstack to provide opportunities for researchers to report vulnerabilities. The Patchstack team will help validate, triage, and handle any reported security issues.
 
 == Changelog ==
+= x.x.x =
+* Fix: Payment block amount now updates correctly when conditional logic is applied.
 = 2.5.0 - 2nd February 2026 =
 * Improvement: Added translation support for the country list in the phone number field.
 * Fix: Fixed dropdown placeholder and GDPR label translation on the frontend.
