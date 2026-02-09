@@ -34,6 +34,7 @@ const LearnLesson = ( {
 		description,
 		learn,
 		action,
+		headerAction,
 		docsUrl,
 		completed = false,
 		timeEstimate,
@@ -90,6 +91,13 @@ const LearnLesson = ( {
 			} else {
 				window.location.href = action?.url;
 			}
+		}
+	};
+
+	const handleHeaderActionClick = ( e ) => {
+		e?.stopPropagation();
+		if ( headerAction?.url ) {
+			window.open( headerAction.url, '_blank', 'noopener,noreferrer' );
 		}
 	};
 
@@ -261,6 +269,18 @@ const LearnLesson = ( {
 								{ getStatusText() }
 							</Label>
 						</Container.Item>
+
+						{ headerAction?.url && (
+							<Container.Item className="hidden sm:block">
+								<Button
+									variant="outline"
+									size="xs"
+									onClick={ handleHeaderActionClick }
+								>
+									{ headerAction?.label }
+								</Button>
+							</Container.Item>
+						) }
 
 						<Container.Item>
 							<div className="flex items-center justify-center w-6 h-6">

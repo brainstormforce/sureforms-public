@@ -62,6 +62,10 @@ class Learn {
 							'url'        => 'https://sureforms.com/docs/creating-and-publishing-forms/',
 							'isExternal' => true,
 						],
+						'headerAction' => [
+							'label' => __( 'Create a Form', 'sureforms' ),
+							'url'   => 'admin.php?page=add-new-form&source=learn',
+						],
 						'completed'   => false,
 					],
 					[
