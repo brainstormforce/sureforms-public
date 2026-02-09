@@ -134,6 +134,10 @@ class Learn {
 							'url'        => 'https://sureforms.com/docs/google-recaptcha/',
 							'isExternal' => true,
 						],
+						'headerAction' => [
+							'label' => __( 'Protect Forms', 'sureforms' ),
+							'url'   => 'admin.php?page=sureforms_form_settings&tab=security-settings&subpage=recaptcha',
+						],
 						'completed'   => false,
 					],
 					[
@@ -149,6 +153,10 @@ class Learn {
 							'url'        => 'https://sureforms.com/docs/adjust-form-notification-emails/',
 							'isExternal' => true,
 						],
+						'headerAction' => [
+							'label' => __( 'SMTP', 'sureforms' ),
+							'url'   => 'admin.php?page=sureforms_smtp',
+						],
 						'completed'   => false,
 					],
 					[
@@ -163,6 +171,10 @@ class Learn {
 							'label'      => __( 'View Documentation', 'sureforms' ),
 							'url'        => 'https://sureforms.com/docs/sureforms-payments/',
 							'isExternal' => true,
+						],
+						'headerAction' => [
+							'label' => __( 'Accept Payment', 'sureforms' ),
+							'url'   => 'admin.php?page=sureforms_payments',
 						],
 						'completed'   => false,
 					],

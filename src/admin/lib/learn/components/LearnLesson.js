@@ -258,6 +258,18 @@ const LearnLesson = ( {
 							</Container.Item>
 						) }
 
+						{ isExpanded && headerAction?.url && (
+							<Container.Item className="hidden sm:block">
+								<Button
+									variant="outline"
+									size="xs"
+									onClick={ handleHeaderActionClick }
+								>
+									{ headerAction?.label }
+								</Button>
+							</Container.Item>
+						) }
+
 						<Container.Item className="hidden sm:block">
 							<Label
 								className={ `text-sm font-normal whitespace-nowrap ${
@@ -269,18 +281,6 @@ const LearnLesson = ( {
 								{ getStatusText() }
 							</Label>
 						</Container.Item>
-
-						{ headerAction?.url && (
-							<Container.Item className="hidden sm:block">
-								<Button
-									variant="outline"
-									size="xs"
-									onClick={ handleHeaderActionClick }
-								>
-									{ headerAction?.label }
-								</Button>
-							</Container.Item>
-						) }
 
 						<Container.Item>
 							<div className="flex items-center justify-center w-6 h-6">
