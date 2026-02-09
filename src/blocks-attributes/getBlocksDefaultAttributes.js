@@ -14,6 +14,7 @@ import paymentAttributes from '@IncBlocks/payment/block.json';
 import { getDefaultMessage } from '@Blocks/util';
 import { __ } from '@wordpress/i18n';
 
+// Form settings attributes (used in form editor settings panel).
 export const embedFormAttributes = {
 	// Form Properties.
 	// Padding.
@@ -30,6 +31,44 @@ export const embedFormAttributes = {
 	form_border_radius_left: { default: 0 },
 	form_border_radius_unit: { default: 'px' },
 	form_border_radius_link: { default: true },
+};
+
+// Embed block attributes (used in srfm/form block for per-embed styling).
+export const embedBlockAttributes = {
+	// Form Settings.
+	inheritStyling: { default: true },
+	formTheme: { default: 'default' },
+	// Colors.
+	primaryColor: { default: '#111C44' },
+	textColor: { default: '#1E1E1E' },
+	textOnPrimaryColor: { default: '#FFFFFF' },
+	// Background.
+	bgType: { default: 'color' },
+	bgColor: { default: '#FFFFFF' },
+	bgGradient: { default: 'linear-gradient(90deg, #FFC9B2 0%, #C7CBFF 100%)' },
+	bgImage: { default: '' },
+	bgImagePosition: { default: { x: 0.5, y: 0.5 } },
+	bgImageSize: { default: 'cover' },
+	bgImageRepeat: { default: 'no-repeat' },
+	bgImageAttachment: { default: 'scroll' },
+	// Padding.
+	formPaddingTop: { default: 0 },
+	formPaddingRight: { default: 0 },
+	formPaddingBottom: { default: 0 },
+	formPaddingLeft: { default: 0 },
+	formPaddingUnit: { default: 'px' },
+	formPaddingLink: { default: true },
+	// Border Radius.
+	formBorderRadiusTop: { default: 0 },
+	formBorderRadiusRight: { default: 0 },
+	formBorderRadiusBottom: { default: 0 },
+	formBorderRadiusLeft: { default: 0 },
+	formBorderRadiusUnit: { default: 'px' },
+	formBorderRadiusLink: { default: true },
+	// Fields.
+	fieldSize: { default: 'medium' },
+	// Button.
+	buttonAlignment: { default: 'left' },
 };
 
 export const instantFormAttributes = {
@@ -142,6 +181,9 @@ export const blocksAttributes = {
 	},
 	payment: {
 		...paymentAttributes.attributes,
+	},
+	form: {
+		...embedBlockAttributes,
 	},
 	form_specific: defaultKeys,
 };

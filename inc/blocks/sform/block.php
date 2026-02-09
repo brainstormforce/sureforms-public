@@ -42,7 +42,8 @@ class Block extends Base {
 			return esc_html__( 'This form has been deleted or is unavailable.', 'sureforms' );
 		}
 
-		return Generate_Form_Markup::get_form_markup( $id, $show_title_current_page, $sf_classname );
+		// Pass block attributes for per-embed styling support.
+		return Generate_Form_Markup::get_form_markup( $id, $show_title_current_page, $sf_classname, 'post', false, $attributes );
 	}
 
 }

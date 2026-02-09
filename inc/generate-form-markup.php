@@ -52,16 +52,17 @@ class Generate_Form_Markup {
 	/**
 	 * Handle Form status
 	 *
-	 * @param int|string $id Contains form ID.
-	 * @param bool       $show_title_current_page Boolean to srfm-show/srfm-hide form title.
-	 * @param string     $sf_classname additional class_name.
-	 * @param string     $post_type Contains post type.
-	 * @param bool       $do_blocks Boolean to enable/disable parsing dynamic blocks.
+	 * @param int|string   $id Contains form ID.
+	 * @param bool         $show_title_current_page Boolean to srfm-show/srfm-hide form title.
+	 * @param string       $sf_classname additional class_name.
+	 * @param string       $post_type Contains post type.
+	 * @param bool         $do_blocks Boolean to enable/disable parsing dynamic blocks.
+	 * @param array<mixed> $block_attrs Block attributes for per-embed styling.
 	 *
 	 * @return string|false
 	 * @since 0.0.1
 	 */
-	public static function get_form_markup( $id, $show_title_current_page = true, $sf_classname = '', $post_type = 'post', $do_blocks = false ) {
+	public static function get_form_markup( $id, $show_title_current_page = true, $sf_classname = '', $post_type = 'post', $do_blocks = false, $block_attrs = [] ) {
 		if ( isset( $_GET['id'] ) && isset( $_GET['srfm_form_markup_nonce'] ) ) {
 			$nonce = isset( $_GET['srfm_form_markup_nonce'] ) ? sanitize_text_field( wp_unslash( $_GET['srfm_form_markup_nonce'] ) ) : '';
 			$id    = wp_verify_nonce( $nonce, 'srfm_form_markup' ) && ! empty( $_GET['srfm_form_markup_nonce'] ) ? Helper::get_integer_value( sanitize_text_field( wp_unslash( $_GET['id'] ) ) ) : '';
@@ -108,6 +109,100 @@ class Generate_Form_Markup {
 			$container_id = 'srfm-form-container-' . Helper::get_string_value( $id );
 			$form_styling = get_post_meta( $id, '_srfm_forms_styling', true );
 			$form_styling = ! empty( $form_styling ) && is_array( $form_styling ) ? $form_styling : [];
+
+			// Check if we should use block attributes for styling (per-embed customization).
+			$inherit_styling = isset( $block_attrs['inheritStyling'] ) ? $block_attrs['inheritStyling'] : true;
+
+			// Override form styling with block attributes when inheritStyling is false.
+			if ( ! $inherit_styling && ! empty( $block_attrs ) ) {
+				// Map custom block attributes to form styling.
+				// Form Theme - allows Pro to add custom themes.
+				if ( ! empty( $block_attrs['formTheme'] ) ) {
+					$form_styling['form_theme'] = $block_attrs['formTheme'];
+				}
+
+				// Colors.
+				if ( ! empty( $block_attrs['primaryColor'] ) ) {
+					$form_styling['primary_color'] = $block_attrs['primaryColor'];
+				}
+				if ( ! empty( $block_attrs['textColor'] ) ) {
+					$form_styling['text_color'] = $block_attrs['textColor'];
+				}
+				if ( ! empty( $block_attrs['textOnPrimaryColor'] ) ) {
+					$form_styling['text_color_on_primary'] = $block_attrs['textOnPrimaryColor'];
+				}
+
+				// Padding.
+				if ( isset( $block_attrs['formPaddingTop'] ) ) {
+					$form_styling['form_padding_top'] = floatval( $block_attrs['formPaddingTop'] );
+				}
+				if ( isset( $block_attrs['formPaddingRight'] ) ) {
+					$form_styling['form_padding_right'] = floatval( $block_attrs['formPaddingRight'] );
+				}
+				if ( isset( $block_attrs['formPaddingBottom'] ) ) {
+					$form_styling['form_padding_bottom'] = floatval( $block_attrs['formPaddingBottom'] );
+				}
+				if ( isset( $block_attrs['formPaddingLeft'] ) ) {
+					$form_styling['form_padding_left'] = floatval( $block_attrs['formPaddingLeft'] );
+				}
+				if ( ! empty( $block_attrs['formPaddingUnit'] ) ) {
+					$form_styling['form_padding_unit'] = $block_attrs['formPaddingUnit'];
+				}
+
+				// Border Radius.
+				if ( isset( $block_attrs['formBorderRadiusTop'] ) ) {
+					$form_styling['form_border_radius_top'] = floatval( $block_attrs['formBorderRadiusTop'] );
+				}
+				if ( isset( $block_attrs['formBorderRadiusRight'] ) ) {
+					$form_styling['form_border_radius_right'] = floatval( $block_attrs['formBorderRadiusRight'] );
+				}
+				if ( isset( $block_attrs['formBorderRadiusBottom'] ) ) {
+					$form_styling['form_border_radius_bottom'] = floatval( $block_attrs['formBorderRadiusBottom'] );
+				}
+				if ( isset( $block_attrs['formBorderRadiusLeft'] ) ) {
+					$form_styling['form_border_radius_left'] = floatval( $block_attrs['formBorderRadiusLeft'] );
+				}
+				if ( ! empty( $block_attrs['formBorderRadiusUnit'] ) ) {
+					$form_styling['form_border_radius_unit'] = $block_attrs['formBorderRadiusUnit'];
+				}
+
+				// Background.
+				if ( ! empty( $block_attrs['bgType'] ) ) {
+					$form_styling['bg_type'] = $block_attrs['bgType'];
+				}
+				if ( ! empty( $block_attrs['bgColor'] ) ) {
+					$form_styling['bg_color'] = $block_attrs['bgColor'];
+				}
+				if ( ! empty( $block_attrs['bgGradient'] ) ) {
+					$form_styling['bg_gradient'] = $block_attrs['bgGradient'];
+				}
+				if ( ! empty( $block_attrs['bgImage'] ) ) {
+					$form_styling['bg_image'] = $block_attrs['bgImage'];
+				}
+				if ( ! empty( $block_attrs['bgImagePosition'] ) ) {
+					$form_styling['bg_image_position'] = $block_attrs['bgImagePosition'];
+				}
+				if ( ! empty( $block_attrs['bgImageSize'] ) ) {
+					$form_styling['bg_image_size'] = $block_attrs['bgImageSize'];
+				}
+				if ( ! empty( $block_attrs['bgImageRepeat'] ) ) {
+					$form_styling['bg_image_repeat'] = $block_attrs['bgImageRepeat'];
+				}
+				if ( ! empty( $block_attrs['bgImageAttachment'] ) ) {
+					$form_styling['bg_image_attachment'] = $block_attrs['bgImageAttachment'];
+				}
+
+				// Field Size and Button Alignment.
+				if ( ! empty( $block_attrs['fieldSize'] ) ) {
+					$form_styling['field_spacing'] = $block_attrs['fieldSize'];
+				}
+				if ( ! empty( $block_attrs['buttonAlignment'] ) ) {
+					$form_styling['submit_button_alignment'] = $block_attrs['buttonAlignment'];
+				}
+
+				// Allow Pro to extend block attribute mapping.
+				$form_styling = apply_filters( 'srfm_embed_block_attrs_to_styling', $form_styling, $block_attrs );
+			}
 			// Background Settings.
 			$bg_type                   = $form_styling['bg_type'] ?? 'color';
 			$bg_color                  = $form_styling['bg_color'] ?? '';
@@ -632,6 +727,13 @@ class Generate_Form_Markup {
 			<div class="srfm-single-form srfm-success-box in-page">
 				<div aria-live="polite" aria-atomic="true" role="alert" id="srfm-success-message-page-<?php echo esc_attr( Helper::get_string_value( $id ) ); ?>" class="srfm-success-box-description"></div>
 			</div>
+			<?php
+			// Add preview script for real-time styling updates from block editor.
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- This is a preview context, nonce not required.
+			if ( isset( $_GET['form_preview'] ) && 'true' === $_GET['form_preview'] ) {
+				self::output_preview_styling_script( $container_id );
+			}
+			?>
 			</div>
 		<?php
 		return ob_get_clean();
@@ -742,6 +844,292 @@ class Generate_Form_Markup {
 		$classes = "srfm-common-error-message srfm-error-message srfm-{$position}-error";
 		?>
 		<p id="srfm-error-message" class="<?php echo esc_attr( $classes ); ?>" hidden><?php echo wp_kses( $icon, Helper::$allowed_tags_svg ); ?><span class="srfm-error-content"><?php echo esc_html__( 'There was an error trying to submit your form. Please try again.', 'sureforms' ); ?></span></p>
+		<?php
+	}
+
+	/**
+	 * Get the combined color palette from theme and global settings.
+	 *
+	 * @since 1.0.0
+	 * @return array<mixed> The color palette array.
+	 */
+	public static function get_color_palette() {
+		$palette = [];
+
+		// Get global settings palette.
+		$global_settings = wp_get_global_settings();
+		if ( ! empty( $global_settings['color']['palette'] ) ) {
+			// Merge all palette sources (theme, default, custom).
+			if ( ! empty( $global_settings['color']['palette']['theme'] ) ) {
+				$palette = array_merge( $palette, $global_settings['color']['palette']['theme'] );
+			}
+			if ( ! empty( $global_settings['color']['palette']['default'] ) ) {
+				$palette = array_merge( $palette, $global_settings['color']['palette']['default'] );
+			}
+			if ( ! empty( $global_settings['color']['palette']['custom'] ) ) {
+				$palette = array_merge( $palette, $global_settings['color']['palette']['custom'] );
+			}
+		}
+
+		return $palette;
+	}
+
+	/**
+	 * Get the spacing sizes from theme settings.
+	 *
+	 * @since 1.0.0
+	 * @return array<mixed> The spacing sizes array.
+	 */
+	public static function get_spacing_sizes() {
+		$sizes = [];
+
+		// Get global settings spacing sizes.
+		$global_settings = wp_get_global_settings();
+		if ( ! empty( $global_settings['spacing']['spacingSizes'] ) ) {
+			// Merge all spacing size sources (theme, default, custom).
+			if ( ! empty( $global_settings['spacing']['spacingSizes']['theme'] ) ) {
+				$sizes = array_merge( $sizes, $global_settings['spacing']['spacingSizes']['theme'] );
+			}
+			if ( ! empty( $global_settings['spacing']['spacingSizes']['default'] ) ) {
+				$sizes = array_merge( $sizes, $global_settings['spacing']['spacingSizes']['default'] );
+			}
+			if ( ! empty( $global_settings['spacing']['spacingSizes']['custom'] ) ) {
+				$sizes = array_merge( $sizes, $global_settings['spacing']['spacingSizes']['custom'] );
+			}
+		}
+
+		return $sizes;
+	}
+
+	/**
+	 * Resolve a spacing value from preset slug or return direct value.
+	 * Handles both 'var:preset|spacing|slug' format and direct values like '20px'.
+	 *
+	 * @param string|null  $value         The spacing value (preset slug or direct value).
+	 * @param array<mixed> $spacing_sizes The spacing sizes array.
+	 * @since 1.0.0
+	 * @return string|null The resolved spacing value.
+	 */
+	public static function resolve_block_spacing( $value, $spacing_sizes ) {
+		if ( empty( $value ) ) {
+			return null;
+		}
+
+		// Handle var:preset|spacing|slug format.
+		if ( is_string( $value ) && strpos( $value, 'var:preset|spacing|' ) === 0 ) {
+			$slug = str_replace( 'var:preset|spacing|', '', $value );
+			foreach ( $spacing_sizes as $size ) {
+				if ( isset( $size['slug'] ) && $size['slug'] === $slug && isset( $size['size'] ) ) {
+					return $size['size'];
+				}
+			}
+			return null;
+		}
+
+		// Return direct value (e.g., '20px', '1rem').
+		return $value;
+	}
+
+	/**
+	 * Resolve a block color from preset slug or custom value.
+	 *
+	 * @param string|null  $preset_slug  The preset color slug (e.g., 'vivid-red').
+	 * @param string|null  $custom_color The custom color value (e.g., '#ff0000' or 'var:preset|color|slug').
+	 * @param array<mixed> $palette      The color palette array.
+	 * @since 1.0.0
+	 * @return string|null The resolved color value.
+	 */
+	public static function resolve_block_color( $preset_slug, $custom_color, $palette ) {
+		// If custom color is set, use it.
+		if ( ! empty( $custom_color ) ) {
+			// Handle var:preset|color|slug format.
+			if ( is_string( $custom_color ) && strpos( $custom_color, 'var:preset|color|' ) === 0 ) {
+				$slug = str_replace( 'var:preset|color|', '', $custom_color );
+				foreach ( $palette as $color ) {
+					if ( isset( $color['slug'] ) && $color['slug'] === $slug && isset( $color['color'] ) ) {
+						return $color['color'];
+					}
+				}
+				return null;
+			}
+			return $custom_color;
+		}
+
+		// If preset slug is set, find it in palette.
+		if ( ! empty( $preset_slug ) && is_array( $palette ) ) {
+			foreach ( $palette as $color ) {
+				if ( isset( $color['slug'] ) && $color['slug'] === $preset_slug && isset( $color['color'] ) ) {
+					return $color['color'];
+				}
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * Output JavaScript for handling PostMessage styling updates in preview mode.
+	 *
+	 * @param string $container_id The form container ID selector.
+	 * @since 1.0.0
+	 * @return void
+	 */
+	public static function output_preview_styling_script( $container_id ) {
+		?>
+		<script type="text/javascript">
+		(function() {
+			var container = document.querySelector('.<?php echo esc_js( $container_id ); ?>');
+			if (!container) return;
+
+			window.addEventListener('message', function(event) {
+				if (!event.data || event.data.type !== 'srfm-update-styling') return;
+
+				var styling = event.data.styling;
+				if (!styling) return;
+
+				// Apply color variables
+				if (styling.primaryColor) {
+					container.style.setProperty('--srfm-color-scheme-primary', styling.primaryColor);
+					container.style.setProperty('--srfm-quill-editor-color', styling.primaryColor);
+					container.style.setProperty('--srfm-color-input-border-hover', 'hsl(from ' + styling.primaryColor + ' h s l / 0.65)');
+					container.style.setProperty('--srfm-color-input-border-focus-glow', 'hsl(from ' + styling.primaryColor + ' h s l / 0.15)');
+					container.style.setProperty('--srfm-color-input-selected', 'hsl(from ' + styling.primaryColor + ' h s l / 0.1)');
+					container.style.setProperty('--srfm-btn-color-hover', 'hsl(from ' + styling.primaryColor + ' h s l / 0.9)');
+					container.style.setProperty('--srfm-btn-color-disabled', 'hsl(from ' + styling.primaryColor + ' h s l / 0.25)');
+				}
+
+				if (styling.textColor) {
+					container.style.setProperty('--srfm-color-scheme-text', styling.textColor);
+					container.style.setProperty('--srfm-color-input-label', styling.textColor);
+					container.style.setProperty('--srfm-color-input-text', styling.textColor);
+					container.style.setProperty('--srfm-color-input-description', 'hsl(from ' + styling.textColor + ' h s l / 0.65)');
+					container.style.setProperty('--srfm-color-input-placeholder', 'hsl(from ' + styling.textColor + ' h s l / 0.5)');
+					container.style.setProperty('--srfm-color-input-prefix', 'hsl(from ' + styling.textColor + ' h s l / 0.65)');
+					container.style.setProperty('--srfm-color-input-background', 'hsl(from ' + styling.textColor + ' h s l / 0.02)');
+					container.style.setProperty('--srfm-color-input-background-hover', 'hsl(from ' + styling.textColor + ' h s l / 0.05)');
+					container.style.setProperty('--srfm-color-input-background-disabled', 'hsl(from ' + styling.textColor + ' h s l / 0.07)');
+					container.style.setProperty('--srfm-color-input-border', 'hsl(from ' + styling.textColor + ' h s l / 0.25)');
+					container.style.setProperty('--srfm-color-input-border-disabled', 'hsl(from ' + styling.textColor + ' h s l / 0.15)');
+					container.style.setProperty('--srfm-color-multi-choice-svg', 'hsl(from ' + styling.textColor + ' h s l / 0.7)');
+				}
+
+				if (styling.textOnPrimaryColor) {
+					container.style.setProperty('--srfm-color-scheme-text-on-primary', styling.textOnPrimaryColor);
+				}
+
+				// Apply padding
+				var paddingUnit = styling.formPaddingUnit || 'px';
+				if (styling.formPaddingTop !== undefined) {
+					container.style.setProperty('--srfm-form-padding-top', styling.formPaddingTop + paddingUnit);
+				}
+				if (styling.formPaddingRight !== undefined) {
+					container.style.setProperty('--srfm-form-padding-right', styling.formPaddingRight + paddingUnit);
+				}
+				if (styling.formPaddingBottom !== undefined) {
+					container.style.setProperty('--srfm-form-padding-bottom', styling.formPaddingBottom + paddingUnit);
+				}
+				if (styling.formPaddingLeft !== undefined) {
+					container.style.setProperty('--srfm-form-padding-left', styling.formPaddingLeft + paddingUnit);
+				}
+
+				// Apply border radius
+				var borderRadiusUnit = styling.formBorderRadiusUnit || 'px';
+				if (styling.formBorderRadiusTop !== undefined) {
+					container.style.setProperty('--srfm-form-border-radius-top', styling.formBorderRadiusTop + borderRadiusUnit);
+				}
+				if (styling.formBorderRadiusRight !== undefined) {
+					container.style.setProperty('--srfm-form-border-radius-right', styling.formBorderRadiusRight + borderRadiusUnit);
+				}
+				if (styling.formBorderRadiusBottom !== undefined) {
+					container.style.setProperty('--srfm-form-border-radius-bottom', styling.formBorderRadiusBottom + borderRadiusUnit);
+				}
+				if (styling.formBorderRadiusLeft !== undefined) {
+					container.style.setProperty('--srfm-form-border-radius-left', styling.formBorderRadiusLeft + borderRadiusUnit);
+				}
+
+				// Apply background
+				if (styling.bgType === 'color' && styling.bgColor) {
+					container.style.setProperty('--srfm-bg-color', styling.bgColor);
+					container.style.removeProperty('--srfm-bg-image');
+					container.style.removeProperty('--srfm-bg-gradient');
+				} else if (styling.bgType === 'gradient' && styling.bgGradient) {
+					container.style.setProperty('--srfm-bg-gradient', styling.bgGradient);
+					container.style.removeProperty('--srfm-bg-color');
+					container.style.removeProperty('--srfm-bg-image');
+				} else if (styling.bgType === 'image' && styling.bgImage) {
+					container.style.setProperty('--srfm-bg-image', 'url(' + styling.bgImage + ')');
+					container.style.removeProperty('--srfm-bg-color');
+					container.style.removeProperty('--srfm-bg-gradient');
+					if (styling.bgImagePosition) {
+						var posX = (styling.bgImagePosition.x || 0.5) * 100;
+						var posY = (styling.bgImagePosition.y || 0.5) * 100;
+						container.style.setProperty('--srfm-bg-position', posX + '% ' + posY + '%');
+					}
+					if (styling.bgImageSize) {
+						container.style.setProperty('--srfm-bg-size', styling.bgImageSize);
+					}
+					if (styling.bgImageRepeat) {
+						container.style.setProperty('--srfm-bg-repeat', styling.bgImageRepeat);
+					}
+					if (styling.bgImageAttachment) {
+						container.style.setProperty('--srfm-bg-attachment', styling.bgImageAttachment);
+					}
+				}
+
+				// Apply field size
+				if (styling.fieldSize) {
+					var sizeVars = {
+						'small': {
+							'--srfm-input-font-size': '14px',
+							'--srfm-input-padding-top': '8px',
+							'--srfm-input-padding-bottom': '8px',
+							'--srfm-input-padding-left': '12px',
+							'--srfm-input-padding-right': '12px',
+							'--srfm-input-gap': '16px'
+						},
+						'medium': {
+							'--srfm-input-font-size': '16px',
+							'--srfm-input-padding-top': '10px',
+							'--srfm-input-padding-bottom': '10px',
+							'--srfm-input-padding-left': '14px',
+							'--srfm-input-padding-right': '14px',
+							'--srfm-input-gap': '20px'
+						},
+						'large': {
+							'--srfm-input-font-size': '18px',
+							'--srfm-input-padding-top': '14px',
+							'--srfm-input-padding-bottom': '14px',
+							'--srfm-input-padding-left': '16px',
+							'--srfm-input-padding-right': '16px',
+							'--srfm-input-gap': '24px'
+						}
+					};
+					var vars = sizeVars[styling.fieldSize];
+					if (vars) {
+						for (var key in vars) {
+							container.style.setProperty(key, vars[key]);
+						}
+					}
+				}
+
+				// Apply button alignment
+				if (styling.buttonAlignment) {
+					var submitContainer = container.querySelector('.srfm-submit-container .wp-block-button');
+					if (submitContainer) {
+						submitContainer.style.textAlign = styling.buttonAlignment === 'full' ? 'center' : styling.buttonAlignment;
+						var btn = submitContainer.querySelector('button');
+						if (btn) {
+							btn.style.width = styling.buttonAlignment === 'full' ? '100%' : '';
+						}
+					}
+				}
+
+				// Allow Pro to extend styling via custom event
+				var customEvent = new CustomEvent('srfm-preview-styling-update', { detail: styling });
+				document.dispatchEvent(customEvent);
+			});
+		})();
+		</script>
 		<?php
 	}
 

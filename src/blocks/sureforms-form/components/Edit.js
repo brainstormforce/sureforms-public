@@ -3,7 +3,7 @@
  */
 import { __ } from '@wordpress/i18n';
 import { useSelect } from '@wordpress/data';
-import { useRef, useEffect, useState } from '@wordpress/element';
+import { useRef, useEffect, useState, useCallback } from '@wordpress/element';
 import {
 	Placeholder,
 	TextControl,
@@ -12,6 +12,7 @@ import {
 	Spinner,
 	Button,
 	ToggleControl,
+	SelectControl,
 	ExternalLink,
 } from '@wordpress/components';
 import { useEntityProp, store as coreStore } from '@wordpress/core-data';
@@ -20,9 +21,21 @@ import {
 	useBlockProps,
 	Warning,
 } from '@wordpress/block-editor';
+import { applyFilters } from '@wordpress/hooks';
+
+/**
+ * Internal dependencies
+ */
+import {
+	getColorControls,
+	getLayoutControls,
+	getFieldControls,
+	getButtonControls,
+} from './panel-controls';
 
 export default ( { attributes, setAttributes } ) => {
-	const { id, showTitle } = attributes;
+	const { id, showTitle, inheritStyling, formTheme } = attributes;
+
 	const iframeRef = useRef( null );
 	const iframeContainerRef = useRef( null );
 	const [ loading, setLoading ] = useState( false );
@@ -161,6 +174,95 @@ export default ( { attributes, setAttributes } ) => {
 		}
 	}, [ id, iframeRef, hasResolved ] );
 
+	// Send styling updates to iframe via PostMessage
+	const sendStylingToIframe = useCallback( () => {
+		if ( ! iframeRef.current?.contentWindow || attributes.inheritStyling ) {
+			return;
+		}
+
+		// Base styling object for free version
+		const baseStyling = {
+			formTheme: attributes.formTheme,
+			// Colors
+			primaryColor: attributes.primaryColor,
+			textColor: attributes.textColor,
+			textOnPrimaryColor: attributes.textOnPrimaryColor,
+			// Background
+			bgType: attributes.bgType,
+			bgColor: attributes.bgColor,
+			bgGradient: attributes.bgGradient,
+			bgImage: attributes.bgImage,
+			bgImagePosition: attributes.bgImagePosition,
+			bgImageSize: attributes.bgImageSize,
+			bgImageRepeat: attributes.bgImageRepeat,
+			bgImageAttachment: attributes.bgImageAttachment,
+			// Layout
+			formPaddingTop: attributes.formPaddingTop,
+			formPaddingRight: attributes.formPaddingRight,
+			formPaddingBottom: attributes.formPaddingBottom,
+			formPaddingLeft: attributes.formPaddingLeft,
+			formPaddingUnit: attributes.formPaddingUnit,
+			formBorderRadiusTop: attributes.formBorderRadiusTop,
+			formBorderRadiusRight: attributes.formBorderRadiusRight,
+			formBorderRadiusBottom: attributes.formBorderRadiusBottom,
+			formBorderRadiusLeft: attributes.formBorderRadiusLeft,
+			formBorderRadiusUnit: attributes.formBorderRadiusUnit,
+			// Fields
+			fieldSize: attributes.fieldSize,
+			// Button
+			buttonAlignment: attributes.buttonAlignment,
+		};
+
+		// Allow Pro to extend the styling object
+		const styling = applyFilters(
+			'srfm.embed.previewStyling',
+			baseStyling,
+			attributes
+		);
+
+		iframeRef.current.contentWindow.postMessage(
+			{
+				type: 'srfm-update-styling',
+				styling,
+			},
+			'*'
+		);
+	}, [ attributes ] );
+
+	// Trigger styling update when attributes change
+	useEffect( () => {
+		sendStylingToIframe();
+	}, [ sendStylingToIframe ] );
+
+	// Re-send styling after iframe loads
+	useEffect( () => {
+		if ( ! loading && iframeRef.current?.contentWindow ) {
+			const timer = setTimeout( () => {
+				sendStylingToIframe();
+			}, 100 );
+			return () => clearTimeout( timer );
+		}
+	}, [ loading, sendStylingToIframe ] );
+
+	// Handle image selection for background
+	const onSelectImage = ( label, media ) => {
+		if ( ! media || ! media.url ) {
+			setAttributes( { [ label ]: '' } );
+			return;
+		}
+		setAttributes( {
+			[ label ]: media.url,
+			bgImageId: media.id,
+		} );
+	};
+
+	// Get panel controls from separate file
+	// Pro can filter these arrays to add, remove, or modify controls
+	const colorControls = getColorControls( { attributes, setAttributes, onSelectImage } );
+	const layoutControls = getLayoutControls( { attributes, setAttributes } );
+	const fieldControls = getFieldControls( { attributes, setAttributes } );
+	const buttonControls = getButtonControls( { attributes, setAttributes } );
+
 	// If the form is not published or is missing, show a warning and allow the user to change the form.
 	if ( isMissing || ( status && 'publish' !== status ) ) {
 		return (
@@ -194,6 +296,7 @@ export default ( { attributes, setAttributes } ) => {
 	return (
 		<>
 			<InspectorControls>
+				{ /* 1. Form Settings (General) */ }
 				<PanelBody title={ __( 'Form Settings', 'sureforms' ) }>
 					<PanelRow>
 						<ToggleControl
@@ -219,6 +322,50 @@ export default ( { attributes, setAttributes } ) => {
 								className="srfm-form-page-title-input-wrapper"
 							/>
 						</PanelRow>
+					) }
+					<ToggleControl
+						label={ __(
+							'Inherit Styling from Instant Form',
+							'sureforms'
+						) }
+						help={
+							inheritStyling
+								? __(
+									'Using styling from the form settings.',
+									'sureforms'
+								  )
+								: __(
+									'Custom styling for this embed.',
+									'sureforms'
+								  )
+						}
+						checked={ inheritStyling }
+						onChange={ ( value ) => {
+							setAttributes( { inheritStyling: value } );
+						} }
+						className="srfm-inherit-styling-toggle"
+					/>
+					{ ! inheritStyling && (
+						<SelectControl
+							label={ __( 'Form Theme', 'sureforms' ) }
+							value={ formTheme }
+							options={ applyFilters(
+								'srfm.embed.formThemeOptions',
+								[
+									{
+										label: __( 'Default', 'sureforms' ),
+										value: 'default',
+									},
+								]
+							) }
+							onChange={ ( value ) => {
+								setAttributes( { formTheme: value } );
+							} }
+							help={ __(
+								'Select a theme style for this form embed.',
+								'sureforms'
+							) }
+						/>
 					) }
 					{ srfm_block_data.is_admin_user && (
 						<PanelRow>
@@ -246,6 +393,65 @@ export default ( { attributes, setAttributes } ) => {
 						/>
 					</PanelRow>
 				</PanelBody>
+
+				{ /* Styling panels - only show when not inheriting */ }
+				{ ! inheritStyling && (
+					<>
+						{ /* 2. Colors */ }
+						<PanelBody
+							title={ __( 'Colors', 'sureforms' ) }
+							initialOpen={ false }
+						>
+							{ colorControls.map( ( control ) => (
+								<div className="components-base-control" key={ control.id }>
+									{ control.component }
+								</div>
+							) ) }
+						</PanelBody>
+
+						{ /* 3. Layout */ }
+						<PanelBody
+							title={ __( 'Layout', 'sureforms' ) }
+							initialOpen={ false }
+						>
+							{ layoutControls.map( ( control ) => (
+								<div className="components-base-control" key={ control.id }>
+									{ control.component }
+								</div>
+							) ) }
+						</PanelBody>
+
+						{ /* 4. Fields */ }
+						<PanelBody
+							title={ __( 'Fields', 'sureforms' ) }
+							initialOpen={ false }
+						>
+							{ fieldControls.map( ( control ) => (
+								<div className="components-base-control" key={ control.id }>
+									{ control.component }
+								</div>
+							) ) }
+						</PanelBody>
+
+						{ /* 5. Button */ }
+						<PanelBody
+							title={ __( 'Button', 'sureforms' ) }
+							initialOpen={ false }
+						>
+							{ buttonControls.map( ( control ) => (
+								<div className="components-base-control" key={ control.id }>
+									{ control.component }
+								</div>
+							) ) }
+						</PanelBody>
+
+						{ /* Pro can add additional panels via filter */ }
+						{ applyFilters( 'srfm.embed.additionalPanels', null, {
+							attributes,
+							setAttributes,
+						} ) }
+					</>
+				) }
 			</InspectorControls>
 			{ hasResolved ? (
 				<div { ...blockProps }>
