@@ -103,8 +103,27 @@ class Learn {
 						'completed'   => false,
 					],
 					[
+						'id'          => 'embed-forms',
+						'title'       => __( 'Embed Your Forms in a Page', 'sureforms' ),
+						'description' => __( 'Embed Your Forms in a Page', 'sureforms' ),
+						'learn'       => [
+							'type' => 'link',
+							'url'  => 'https://sureforms.com/docs/displaying-forms/',
+						],
+						'action'      => [
+							'label'      => __( 'View Documentation', 'sureforms' ),
+							'url'        => 'https://sureforms.com/docs/displaying-forms/',
+							'isExternal' => true,
+						],
+						'headerAction' => [
+							'label' => __( 'Embed Forms', 'sureforms' ),
+							'url'   => 'post-new.php?post_type=page&source=learn',
+						],
+						'completed'   => false,
+					],
+					[
 						'id'          => 'secure-forms',
-						'title'       => __( 'Secure Forms from Bots', 'sureforms' ),
+						'title'       => __( 'Protect Your Forms From Bots', 'sureforms' ),
 						'description' => __( 'Protect your forms from spam and bot submissions using Google reCAPTCHA, hCaptcha, Cloudflare and Honeypot.', 'sureforms' ),
 						'learn'       => [
 							'type' => 'link',
@@ -113,6 +132,36 @@ class Learn {
 						'action'      => [
 							'label'      => __( 'View Documentation', 'sureforms' ),
 							'url'        => 'https://sureforms.com/docs/google-recaptcha/',
+							'isExternal' => true,
+						],
+						'completed'   => false,
+					],
+					[
+						'id'          => 'email-notification',
+						'title'       => __( 'Configure Your Email Notification', 'sureforms' ),
+						'description' => __( 'Configure Your Email Notification', 'sureforms' ),
+						'learn'       => [
+							'type' => 'link',
+							'url'  => 'https://sureforms.com/docs/adjust-form-notification-emails/',
+						],
+						'action'      => [
+							'label'      => __( 'View Documentation', 'sureforms' ),
+							'url'        => 'https://sureforms.com/docs/adjust-form-notification-emails/',
+							'isExternal' => true,
+						],
+						'completed'   => false,
+					],
+					[
+						'id'          => 'accept-payments',
+						'title'       => __( 'Accept Payment Through Forms', 'sureforms' ),
+						'description' => __( 'Accept Payment Through Forms', 'sureforms' ),
+						'learn'       => [
+							'type' => 'link',
+							'url'  => 'https://sureforms.com/docs/sureforms-payments/',
+						],
+						'action'      => [
+							'label'      => __( 'View Documentation', 'sureforms' ),
+							'url'        => 'https://sureforms.com/docs/sureforms-payments/',
 							'isExternal' => true,
 						],
 						'completed'   => false,
