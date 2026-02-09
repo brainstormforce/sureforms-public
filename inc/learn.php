@@ -96,6 +96,10 @@ class Learn {
 							'url'        => 'https://sureforms.com/docs/displaying-forms/',
 							'isExternal' => true,
 						],
+						'headerAction' => [
+							'label' => __( 'Publish Form', 'sureforms' ),
+							'url'   => 'post-new.php?post_type=sureforms_form&source=learn',
+						],
 						'completed'   => false,
 					],
 					[
