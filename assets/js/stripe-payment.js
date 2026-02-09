@@ -911,7 +911,7 @@ const PAYMENT_UTILITY = {
 	},
 	listenAmountChanges: () => {
 		const paymentInputs = PAYMENT_UTILITY.currentForm.querySelectorAll(
-			'.srfm-block.srfm-payment-block:not(.hide-element) input.srfm-payment-input[data-variable-amount-field]'
+			'.srfm-block.srfm-payment-block input.srfm-payment-input[data-variable-amount-field]'
 		);
 
 		if ( paymentInputs.length > 0 ) {
