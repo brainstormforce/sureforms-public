@@ -152,38 +152,17 @@
 			}
 		}
 
-		// Apply field size.
-		if ( styling.fieldSize ) {
-			var sizeVars = {
-				small: {
-					'--srfm-input-font-size': '14px',
-					'--srfm-input-padding-top': '8px',
-					'--srfm-input-padding-bottom': '8px',
-					'--srfm-input-padding-left': '12px',
-					'--srfm-input-padding-right': '12px',
-					'--srfm-input-gap': '16px',
-				},
-				medium: {
-					'--srfm-input-font-size': '16px',
-					'--srfm-input-padding-top': '10px',
-					'--srfm-input-padding-bottom': '10px',
-					'--srfm-input-padding-left': '14px',
-					'--srfm-input-padding-right': '14px',
-					'--srfm-input-gap': '20px',
-				},
-				large: {
-					'--srfm-input-font-size': '18px',
-					'--srfm-input-padding-top': '14px',
-					'--srfm-input-padding-bottom': '14px',
-					'--srfm-input-padding-left': '16px',
-					'--srfm-input-padding-right': '16px',
-					'--srfm-input-gap': '24px',
-				},
-			};
-			var vars = sizeVars[ styling.fieldSize ];
-			if ( vars ) {
-				for ( var key in vars ) {
-					container.style.setProperty( key, vars[ key ] );
+		// Apply field spacing - uses CSS variables from Helper::get_css_vars() via localized data.
+		if ( styling.fieldSpacing ) {
+			var fieldSpacingVars = window.srfmPreviewStyling?.fieldSpacingVars;
+			if ( fieldSpacingVars ) {
+				// Merge base (small) with size-specific overrides, same approach as StyleSettings.js.
+				var baseSize = fieldSpacingVars.small || {};
+				var overrideSize = fieldSpacingVars[ styling.fieldSpacing ] || {};
+				var finalSize = Object.assign( {}, baseSize, overrideSize );
+
+				for ( var key in finalSize ) {
+					container.style.setProperty( key, finalSize[ key ] );
 				}
 			}
 		}

@@ -219,7 +219,7 @@ export default ( { attributes, setAttributes } ) => {
 			formBorderRadiusLeft: attributes.formBorderRadiusLeft,
 			formBorderRadiusUnit: attributes.formBorderRadiusUnit,
 			// Fields
-			fieldSize: attributes.fieldSize,
+			fieldSpacing: attributes.fieldSpacing,
 			// Button
 			buttonAlignment: attributes.buttonAlignment,
 		};

@@ -248,19 +248,19 @@ export const getLayoutControls = ( { attributes, setAttributes } ) => {
  * @return {Array} Array of control objects with id and component.
  */
 export const getFieldControls = ( { attributes, setAttributes } ) => {
-	const { fieldSize } = attributes;
+	const { fieldSpacing } = attributes;
 
 	return applyFilters(
 		'srfm.embed.fieldControls',
 		[
 			{
-				id: 'fieldSize',
+				id: 'fieldSpacing',
 				component: (
 					<MultiButtonsControl
 						label={ __( 'Field Spacing', 'sureforms' ) }
 						data={ {
-							value: fieldSize,
-							label: 'fieldSize',
+							value: fieldSpacing,
+							label: 'fieldSpacing',
 						} }
 						options={ [
 							{

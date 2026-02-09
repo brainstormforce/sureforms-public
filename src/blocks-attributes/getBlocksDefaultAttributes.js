@@ -66,7 +66,7 @@ export const embedBlockAttributes = {
 	formBorderRadiusUnit: { default: 'px' },
 	formBorderRadiusLink: { default: true },
 	// Fields.
-	fieldSize: { default: 'medium' },
+	fieldSpacing: { default: 'medium' },
 	// Button.
 	buttonAlignment: { default: 'left' },
 };

@@ -141,7 +141,7 @@
 			"type": "boolean",
 			"default": true
 		},
-		"fieldSize": {
+		"fieldSpacing": {
 			"type": "string",
 			"enum": [ "small", "medium", "large" ],
 			"default": "medium"

@@ -192,9 +192,9 @@ class Generate_Form_Markup {
 					$form_styling['bg_image_attachment'] = $block_attrs['bgImageAttachment'];
 				}
 
-				// Field Size and Button Alignment.
-				if ( ! empty( $block_attrs['fieldSize'] ) ) {
-					$form_styling['field_spacing'] = $block_attrs['fieldSize'];
+				// Field Spacing and Button Alignment.
+				if ( ! empty( $block_attrs['fieldSpacing'] ) ) {
+					$form_styling['field_spacing'] = $block_attrs['fieldSpacing'];
 				}
 				if ( ! empty( $block_attrs['buttonAlignment'] ) ) {
 					$form_styling['submit_button_alignment'] = $block_attrs['buttonAlignment'];
@@ -991,7 +991,8 @@ class Generate_Form_Markup {
 			SRFM_SLUG . '-preview-styling',
 			'srfmPreviewStyling',
 			[
-				'containerId' => $container_id,
+				'containerId'      => $container_id,
+				'fieldSpacingVars' => Helper::get_css_vars(),
 			]
 		);
 	}
