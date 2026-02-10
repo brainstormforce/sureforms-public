@@ -190,7 +190,7 @@ class Generate_Form_Markup {
 				$overlay_size                = $bg_overlay_custom_size . $bg_overlay_custom_size_unit;
 			}
 
-			$background_classes = apply_filters( 'srfm_add_background_classes', Helper::get_background_classes( $bg_type, $overlay_type, $bg_image ), $id );
+			$background_classes = apply_filters( 'srfm_add_background_classes', Helper::get_background_classes( $bg_type, $overlay_type, $bg_image ), $id, $block_attrs );
 
 			$neve_theme_margin_class_name = 'srfm-neve-theme-add-margin-bottom';
 			$theme_name                   = wp_get_theme()->get( 'Name' );
