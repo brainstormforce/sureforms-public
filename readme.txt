@@ -26,7 +26,7 @@ Our mission at SureForms is to empower you to build **beautiful forms without an
 
 We're taking a fresh approach with Gutenberg, WordPress's native drag-and-drop builder, to make creating forms seamless and intuitive with no new interface to learn.
 
-SureForms is a beginner-friendly form plugin that makes building contact forms and other high-converting custom forms fast and simple with advanced features like multi-step forms, conversational forms, payment forms, conditional logic, calculation, native integrations and etc.
+SureForms is a beginner-friendly form plugin that makes building contact forms and other high-converting custom forms fast and simple with advanced features like multi-step forms, conversational forms, payment forms, conditional logic, calculation, native integrations, etc.
 
 Good design and user experience are crucial for forms. Yet many website owners struggle to make their forms blend seamlessly with their site's look and feel, often leading to lower response rates.
 
@@ -169,11 +169,8 @@ Instantly create downloadable PDFs of form submissions for records or sharing.
 [**Custom Registration & Login Forms**](https://sureforms.com/features/login-and-registration/):
 Fully functional, branded Registration & Login form for your site using just a block.
 
-[**Custom Lost & Reset Password Forms**]:
-Custom Lost & Reset Password Forms to replace the default boring WordPress experience with a smoother, on-brand flow.
-
 [**Advanced Native Integration**](https://sureforms.com/integrations/):
-Connect your forms natively with 23+ top apps and services like to automate workflows and save time without any third-party add-ons or plugins.
+Connect your forms natively with top apps and services to automate workflows and save time without any third-party add-ons or plugins.
 SureForms connects natively with:
 -   Google Sheets
 -   Mailchimp
@@ -391,7 +388,7 @@ plans.
 = Does SureForms support Payment Forms? =
 
 Yes! SureForms has built-in Payment Form support.
-You can collect payments securely through Stipe & PayPal without any add-ons or extra plugins.
+You can collect payments securely through Stripe & PayPal without any add-ons or extra plugins.
 
 == Screenshot ==
 
