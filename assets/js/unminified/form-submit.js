@@ -52,8 +52,9 @@ document.addEventListener( 'srfm_initialize_validation', ( event ) => {
 async function refreshFormNonces( form ) {
 	// Check if nonce refresh is enabled for this form.
 	const shouldUpdate = form.getAttribute( 'data-update-nonce' );
+	const nonceUpdated = form.getAttribute( 'data-nonce-updated' );
 
-	if ( shouldUpdate !== '1' ) {
+	if ( shouldUpdate !== 'yes' || nonceUpdated === 'yes' ) {
 		return; // Skip refresh if not enabled.
 	}
 
@@ -80,6 +81,10 @@ async function refreshFormNonces( form ) {
 				);
 			}
 		}
+
+		// Add updated nonce attributes to the form.
+		form.setAttribute( 'data-nonce-updated', 'yes' );
+		console.log( 'Nonces updated:' );
 	} catch ( error ) {
 		console.warn( 'Failed to refresh form nonces:', error );
 	}
