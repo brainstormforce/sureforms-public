@@ -319,7 +319,7 @@ class Frontend_Assets {
 				'srfm_ajax',
 				[
 					'ajax_url' => admin_url( 'admin-ajax.php' ),
-					'nonce'    => wp_create_nonce( 'srfm_stripe_payment_nonce' ),
+					'stripe_payment_nonce'    => wp_create_nonce( 'srfm_stripe_payment_nonce' ),
 				]
 			);
 
