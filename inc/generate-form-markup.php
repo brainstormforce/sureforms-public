@@ -911,10 +911,23 @@ class Generate_Form_Markup {
 		/**
 		 * Action to allow Pro to enqueue additional preview styling scripts.
 		 *
-		 * @param string $container_id The form container ID selector.
+		 * @param array $args {
+		 *     Script enqueue arguments.
+		 *
+		 *     @type string $container_id The form container ID selector.
+		 *     @type string $file_prefix  File prefix ('.min' or '').
+		 *     @type string $dir_name     Directory name ('minified' or 'unminified').
+		 * }
 		 * @since x.x.x
 		 */
-		do_action( 'srfm_enqueue_preview_styling_scripts', $container_id );
+		do_action(
+			'srfm_enqueue_preview_styling_scripts',
+			[
+				'container_id' => $container_id,
+				'file_prefix'  => $file_prefix,
+				'dir_name'     => $dir_name,
+			]
+		);
 	}
 
 	/**
