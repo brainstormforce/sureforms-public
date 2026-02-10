@@ -375,8 +375,8 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 
 ## Changelog ##
 ### 2.5.1 - 12 February 2026 ###
-* New: Added an option to change currency position (e.g., $100, 100$, $ 100, 100 $).
-* Fix: Payment block amount now updates correctly when conditional logic is applied.
+* New: Added option to change currency position (e.g., $100, 100$, $ 100, 100 $).
+* Fix: Fixed the payment block amount not updating correctly with conditional logic.
 ### 2.5.0 - 2nd February 2026 ###
 * Improvement: Added translation support for the country list in the phone number field.
 * Fix: Fixed dropdown placeholder and GDPR label translation on the frontend.
