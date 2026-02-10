@@ -2236,6 +2236,12 @@ class Helper {
 		];
 	}
 
+	/**
+	 * Check if the form markup nonce should be updated.
+	 *
+	 * @since x.x.x
+	 * @return bool True if the form markup nonce should be updated, false otherwise.
+	 */
 	public static function should_update_form_markup_nonce() {
 		return apply_filters( 'srfm_should_update_form_markup_nonce', true );
 	}

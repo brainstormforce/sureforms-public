@@ -521,9 +521,9 @@ class Generate_Form_Markup {
 				<?php
 				return ob_get_clean();
 			}
-			$get_nonces = Helper::get_frontend_nonces();
-			$unique_validation_nonce = $get_nonces['unique_validation'];
-			$form_submit_nonce = $get_nonces['form_submit'];
+			$get_nonces                      = Helper::get_frontend_nonces();
+			$unique_validation_nonce         = $get_nonces['unique_validation'];
+			$form_submit_nonce               = $get_nonces['form_submit'];
 			$should_update_form_markup_nonce = Helper::should_update_form_markup_nonce();
 
 			?>

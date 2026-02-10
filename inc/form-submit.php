@@ -91,11 +91,10 @@ class Form_Submit {
 	/**
 	 * Refresh frontend nonces for form submission
 	 *
-	 * @param \WP_REST_Request $request Request object.
 	 * @return \WP_REST_Response Response with fresh nonces.
-	 * @since 0.0.1
+	 * @since x.x.x
 	 */
-	public function refresh_nonces( $request ) {
+	public function refresh_nonces() {
 		// Check if nonce refresh is allowed.
 		if ( ! Helper::should_update_form_markup_nonce() ) {
 			return rest_ensure_response(
