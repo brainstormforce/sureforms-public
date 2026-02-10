@@ -2230,10 +2230,19 @@ class Helper {
 	 * @return array<string> The nonces for the form submission.
 	 */
 	public static function get_frontend_nonces() {
-		return [
+		$nonces = [
 			'unique_validation' => wp_create_nonce( 'unique_validation_nonce' ),
 			'form_submit'       => wp_create_nonce( 'srfm_form_submit' ),
+			'stripe_payment'    => wp_create_nonce( 'srfm_stripe_payment_nonce' ),
 		];
+
+		/**
+		 * Filter to allow Pro and third-party plugins to add additional nonces.
+		 *
+		 * @since x.x.x
+		 * @param array<string> $nonces The nonces for the form submission.
+		 */
+		return apply_filters( 'srfm_frontend_nonces', $nonces );
 	}
 
 	/**

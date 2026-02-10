@@ -80,6 +80,12 @@ async function refreshFormNonces( form ) {
 					response.nonces.form_submit
 				);
 			}
+
+			// Update window.srfm_ajax global with refreshed payment nonce.
+			if ( response.nonces.stripe_payment && window.srfm_ajax ) {
+				window.srfm_ajax.stripe_payment_nonce =
+					response.nonces.stripe_payment;
+			}
 		}
 
 		// Add updated nonce attributes to the form.
