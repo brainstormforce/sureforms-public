@@ -128,7 +128,6 @@ class Form_Submit {
 	 */
 	public function submit_form_permissions_check( $request ) {
 		$nonce = Helper::get_string_value( $request->get_header( 'X-WP-Submit-Nonce' ) );
-		// srfm_form_submit
 		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'srfm_form_submit' ) ) {
 			wp_send_json_error(
 				[
