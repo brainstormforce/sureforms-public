@@ -331,6 +331,7 @@ class Frontend_Assets {
 					'zeroDecimalCurrencies' => Payment_Helper::get_zero_decimal_currencies(),
 					'currenciesData'        => Payment_Helper::get_all_currencies_data(),
 					'strings'               => Payment_Helper::get_payment_strings(),
+					'currencySignPosition'  => Payment_Helper::get_currency_sign_position(),
 				]
 			);
 		}
