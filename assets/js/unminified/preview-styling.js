@@ -180,7 +180,12 @@
 		}
 
 		// Allow Pro to extend styling via custom event.
-		var customEvent = new CustomEvent( 'srfm-preview-styling-update', { detail: styling } );
+		var customEvent = new CustomEvent( 'srfm-preview-styling-update', {
+			detail: {
+				styling: styling,
+				container: container,
+			},
+		} );
 		document.dispatchEvent( customEvent );
 	} );
 }() );

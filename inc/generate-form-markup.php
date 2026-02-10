@@ -444,6 +444,7 @@ class Generate_Form_Markup {
 							'primary_color' => $primary_color_var,
 							'help_color'    => $help_color_var,
 							'form_styling'  => $form_styling,
+							'block_attrs'   => $block_attrs,
 						]
 					);
 					// echo custom css on page/post.
@@ -906,6 +907,14 @@ class Generate_Form_Markup {
 				'fieldSpacingVars' => Helper::get_css_vars(),
 			]
 		);
+
+		/**
+		 * Action to allow Pro to enqueue additional preview styling scripts.
+		 *
+		 * @param string $container_id The form container ID selector.
+		 * @since x.x.x
+		 */
+		do_action( 'srfm_enqueue_preview_styling_scripts', $container_id );
 	}
 
 	/**
