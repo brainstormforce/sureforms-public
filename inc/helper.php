@@ -2222,4 +2222,21 @@ class Helper {
 		// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
 		return base64_encode( $json );
 	}
+
+	/**
+	 * Get the nonces for the form submission.
+	 *
+	 * @since x.x.x
+	 * @return array<string> The nonces for the form submission.
+	 */
+	public static function get_frontend_nonces() {
+		return [
+			'unique_validation' => wp_create_nonce( 'unique_validation_nonce' ),
+			'form_submit'       => wp_create_nonce( 'srfm_form_submit' ),
+		];
+	}
+
+	public static function should_update_form_markup_nonce() {
+		return apply_filters( 'srfm_should_update_form_markup_nonce', true );
+	}
 }

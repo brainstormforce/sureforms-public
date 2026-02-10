@@ -76,6 +76,48 @@ class Form_Submit {
 				'permission_callback' => [ $this, 'submit_form_permissions_check' ],
 			]
 		);
+
+		register_rest_route(
+			$this->namespace,
+			'/refresh-nonces',
+			[
+				'methods'             => 'GET',
+				'callback'            => [ $this, 'refresh_nonces' ],
+				'permission_callback' => '__return_true',
+			]
+		);
+	}
+
+	/**
+	 * Refresh frontend nonces for form submission
+	 *
+	 * @param \WP_REST_Request $request Request object.
+	 * @return \WP_REST_Response Response with fresh nonces.
+	 * @since 0.0.1
+	 */
+	public function refresh_nonces( $request ) {
+		// Check if nonce refresh is allowed.
+		if ( ! Helper::should_update_form_markup_nonce() ) {
+			return rest_ensure_response(
+				[
+					'success' => false,
+					'message' => __( 'Nonce refresh is disabled.', 'sureforms' ),
+				]
+			);
+		}
+
+		// Get fresh nonces from Helper.
+		$nonces = Helper::get_frontend_nonces();
+
+		return rest_ensure_response(
+			[
+				'success' => true,
+				'nonces'  => [
+					'unique_validation' => $nonces['unique_validation'],
+					'form_submit'       => $nonces['form_submit'],
+				],
+			]
+		);
 	}
 
 	/**
@@ -86,9 +128,9 @@ class Form_Submit {
 	 * @return WP_Error|bool
 	 */
 	public function submit_form_permissions_check( $request ) {
-		$nonce = Helper::get_string_value( $request->get_header( 'X-WP-Nonce' ) );
-
-		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'wp_rest' ) ) {
+		$nonce = Helper::get_string_value( $request->get_header( 'X-WP-Submit-Nonce' ) );
+		// srfm_form_submit
+		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'srfm_form_submit' ) ) {
 			wp_send_json_error(
 				[
 					'message' => __( 'Nonce verification failed.', 'sureforms' ),

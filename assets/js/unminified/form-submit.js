@@ -45,6 +45,47 @@ document.addEventListener( 'srfm_initialize_validation', ( event ) => {
 } );
 
 /**
+ * Refresh form nonces via AJAX
+ *
+ * @param {HTMLFormElement} form - The form element
+ */
+async function refreshFormNonces( form ) {
+	// Check if nonce refresh is enabled for this form.
+	const shouldUpdate = form.getAttribute( 'data-update-nonce' );
+
+	if ( shouldUpdate !== '1' ) {
+		return; // Skip refresh if not enabled.
+	}
+
+	try {
+		const response = await wp.apiFetch( {
+			path: 'sureforms/v1/refresh-nonces',
+			method: 'GET',
+		} );
+
+		if ( response?.success && response?.nonces ) {
+			// Update unique validation nonce (data-nonce).
+			if ( response.nonces.unique_validation ) {
+				form.setAttribute(
+					'data-nonce',
+					response.nonces.unique_validation
+				);
+			}
+
+			// Update form submit nonce (data-submit-nonce).
+			if ( response.nonces.form_submit ) {
+				form.setAttribute(
+					'data-submit-nonce',
+					response.nonces.form_submit
+				);
+			}
+		}
+	} catch ( error ) {
+		console.warn( 'Failed to refresh form nonces:', error );
+	}
+}
+
+/**
  * Initializes form handlers for all forms with the class `.srfm-form`.
  */
 function initializeFormHandlers() {
@@ -52,6 +93,9 @@ function initializeFormHandlers() {
 
 	const forms = Array.from( document.querySelectorAll( '.srfm-form' ) );
 	for ( const form of forms ) {
+		// Refresh nonces on page load.
+		refreshFormNonces( form );
+
 		// Add the event before the form initialization to ensure that the all third party libraries are loaded and initialized.
 		// Dispatch a custom event *before* the form is submitted.
 		document.dispatchEvent(
@@ -254,6 +298,7 @@ function prepareAddressesData( form ) {
 async function submitFormData( form ) {
 	const formData = new FormData( form );
 	const filteredFormData = new FormData();
+	const submitNonce = form.getAttribute( 'data-submit-nonce' );
 
 	// Define keys to exclude from filtered form data
 	const blockTheseKeys = [ 'srfm-email-confirm', 'srfm-password-confirm' ];
@@ -355,6 +400,9 @@ async function submitFormData( form ) {
 			path: 'sureforms/v1/submit-form',
 			method: 'POST',
 			body: filteredFormData,
+			headers: {
+				'X-WP-Submit-Nonce': submitNonce,
+			},
 		} );
 	} catch ( e ) {
 		console.log( e );
