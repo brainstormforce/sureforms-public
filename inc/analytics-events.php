@@ -34,13 +34,13 @@ class Analytics_Events {
 	 */
 	public static function track( $event_name, $event_value = '', $properties = [] ) {
 		// Check dedup flag — already sent in a previous cycle.
-		$tracked = Helper::get_srfm_option( 'newsage_events_tracked', [] );
-		if ( in_array( $event_name, $tracked, true ) ) {
+		$pushed = Helper::get_srfm_option( 'usage_events_pushed', [] );
+		if ( in_array( $event_name, $pushed, true ) ) {
 			return;
 		}
 
 		// Check if already queued in current cycle.
-		$pending = Helper::get_srfm_option( 'newsage_events_pending', [] );
+		$pending = Helper::get_srfm_option( 'usage_events_pending', [] );
 		if ( in_array( $event_name, array_column( $pending, 'event_name' ), true ) ) {
 			return;
 		}
@@ -52,34 +52,34 @@ class Analytics_Events {
 			'properties'  => wp_json_encode( $properties ),
 			'date'        => current_time( 'mysql' ),
 		];
-		Helper::update_srfm_option( 'newsage_events_pending', $pending );
+		Helper::update_srfm_option( 'usage_events_pending', $pending );
 	}
 
 	/**
 	 * Flush pending events: returns them for the payload, then cleans up.
 	 *
 	 * After this call:
-	 * - newsage_events_pending is EMPTY (full event data deleted).
-	 * - newsage_events_tracked has event_name strings added (minimal dedup).
+	 * - usage_events_pending is EMPTY (full event data deleted).
+	 * - usage_events_pushed has event_name strings added (minimal dedup).
 	 *
 	 * @since x.x.x
 	 * @return array Pending events to include in payload. Empty if none.
 	 */
 	public static function flush_pending() {
-		$pending = Helper::get_srfm_option( 'newsage_events_pending', [] );
+		$pending = Helper::get_srfm_option( 'usage_events_pending', [] );
 		if ( empty( $pending ) || ! is_array( $pending ) ) {
 			return [];
 		}
 
 		// Add event names to dedup flag (minimal — just strings).
-		$tracked = Helper::get_srfm_option( 'newsage_events_tracked', [] );
-		$tracked = array_unique(
-			array_merge( $tracked, array_column( $pending, 'event_name' ) )
+		$pushed = Helper::get_srfm_option( 'usage_events_pushed', [] );
+		$pushed = array_unique(
+			array_merge( $pushed, array_column( $pending, 'event_name' ) )
 		);
-		Helper::update_srfm_option( 'newsage_events_tracked', $tracked );
+		Helper::update_srfm_option( 'usage_events_pushed', $pushed );
 
 		// DELETE all temporary event data.
-		Helper::update_srfm_option( 'newsage_events_pending', [] );
+		Helper::update_srfm_option( 'usage_events_pending', [] );
 
 		return $pending;
 	}
@@ -92,12 +92,12 @@ class Analytics_Events {
 	 * @return bool
 	 */
 	public static function is_tracked( $event_name ) {
-		$tracked = Helper::get_srfm_option( 'newsage_events_tracked', [] );
-		if ( in_array( $event_name, $tracked, true ) ) {
+		$pushed = Helper::get_srfm_option( 'usage_events_pushed', [] );
+		if ( in_array( $event_name, $pushed, true ) ) {
 			return true;
 		}
 
-		$pending = Helper::get_srfm_option( 'newsage_events_pending', [] );
+		$pending = Helper::get_srfm_option( 'usage_events_pending', [] );
 		return in_array( $event_name, array_column( $pending, 'event_name' ), true );
 	}
 }
