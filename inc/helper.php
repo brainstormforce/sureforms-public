@@ -2233,7 +2233,7 @@ class Helper {
 		$nonces = [
 			'unique_validation' => wp_create_nonce( 'unique_validation_nonce' ),
 			'form_submit'       => wp_create_nonce( 'srfm_form_submit' ),
-			'stripe_payment'    => wp_create_nonce( 'srfm_stripe_payment_nonce' ),
+			'payment_nonce'     => wp_create_nonce( 'srfm_payment_nonce' ),
 		];
 
 		/**

@@ -319,8 +319,8 @@ class Frontend_Assets {
 				SRFM_SLUG . '-stripe-payment',
 				'srfm_ajax',
 				[
-					'ajax_url'             => admin_url( 'admin-ajax.php' ),
-					'stripe_payment_nonce' => $frontend_nonces['stripe_payment'],
+					'ajax_url'      => admin_url( 'admin-ajax.php' ),
+					'payment_nonce' => $frontend_nonces['payment_nonce'],
 				]
 			);
 

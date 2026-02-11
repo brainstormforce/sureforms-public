@@ -91,10 +91,11 @@ async function refreshFormNonces( forms ) {
 			}
 
 			// Update window.srfm_ajax global with refreshed payment nonce (once, not per form).
-			if ( response.nonces.stripe_payment && window.srfm_ajax ) {
-				window.srfm_ajax.stripe_payment_nonce =
-					response.nonces.stripe_payment;
+			if ( response.nonces.payment_nonce && window.srfm_ajax ) {
+				window.srfm_ajax.payment_nonce = response.nonces.payment_nonce;
 			}
+
+			console.warn( 'Nonces refreshed:' );
 		}
 	} catch ( error ) {
 		console.warn( 'Failed to refresh form nonces:', error );
