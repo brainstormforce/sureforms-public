@@ -642,7 +642,7 @@ class Generate_Form_Markup {
 			<?php
 			// Add preview script for real-time styling updates from block editor.
 			// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- This is a preview context, nonce not required.
-			if ( isset( $_GET['form_preview'] ) && 'true' === $_GET['form_preview'] ) {
+			if ( isset( $_GET['form_preview'] ) && 'true' === $_GET['form_preview'] && isset( $container_id ) ) {
 				self::enqueue_preview_styling_script( $container_id );
 			}
 			?>
@@ -757,126 +757,6 @@ class Generate_Form_Markup {
 		?>
 		<p id="srfm-error-message" class="<?php echo esc_attr( $classes ); ?>" hidden><?php echo wp_kses( $icon, Helper::$allowed_tags_svg ); ?><span class="srfm-error-content"><?php echo esc_html__( 'There was an error trying to submit your form. Please try again.', 'sureforms' ); ?></span></p>
 		<?php
-	}
-
-	/**
-	 * Get the combined color palette from theme and global settings.
-	 *
-	 * @since 1.0.0
-	 * @return array<mixed> The color palette array.
-	 */
-	public static function get_color_palette() {
-		$palette = [];
-
-		// Get global settings palette.
-		$global_settings = wp_get_global_settings();
-		if ( ! empty( $global_settings['color']['palette'] ) ) {
-			// Merge all palette sources (theme, default, custom).
-			if ( ! empty( $global_settings['color']['palette']['theme'] ) ) {
-				$palette = array_merge( $palette, $global_settings['color']['palette']['theme'] );
-			}
-			if ( ! empty( $global_settings['color']['palette']['default'] ) ) {
-				$palette = array_merge( $palette, $global_settings['color']['palette']['default'] );
-			}
-			if ( ! empty( $global_settings['color']['palette']['custom'] ) ) {
-				$palette = array_merge( $palette, $global_settings['color']['palette']['custom'] );
-			}
-		}
-
-		return $palette;
-	}
-
-	/**
-	 * Get the spacing sizes from theme settings.
-	 *
-	 * @since 1.0.0
-	 * @return array<mixed> The spacing sizes array.
-	 */
-	public static function get_spacing_sizes() {
-		$sizes = [];
-
-		// Get global settings spacing sizes.
-		$global_settings = wp_get_global_settings();
-		if ( ! empty( $global_settings['spacing']['spacingSizes'] ) ) {
-			// Merge all spacing size sources (theme, default, custom).
-			if ( ! empty( $global_settings['spacing']['spacingSizes']['theme'] ) ) {
-				$sizes = array_merge( $sizes, $global_settings['spacing']['spacingSizes']['theme'] );
-			}
-			if ( ! empty( $global_settings['spacing']['spacingSizes']['default'] ) ) {
-				$sizes = array_merge( $sizes, $global_settings['spacing']['spacingSizes']['default'] );
-			}
-			if ( ! empty( $global_settings['spacing']['spacingSizes']['custom'] ) ) {
-				$sizes = array_merge( $sizes, $global_settings['spacing']['spacingSizes']['custom'] );
-			}
-		}
-
-		return $sizes;
-	}
-
-	/**
-	 * Resolve a spacing value from preset slug or return direct value.
-	 * Handles both 'var:preset|spacing|slug' format and direct values like '20px'.
-	 *
-	 * @param string|null  $value         The spacing value (preset slug or direct value).
-	 * @param array<mixed> $spacing_sizes The spacing sizes array.
-	 * @since 1.0.0
-	 * @return string|null The resolved spacing value.
-	 */
-	public static function resolve_block_spacing( $value, $spacing_sizes ) {
-		if ( empty( $value ) ) {
-			return null;
-		}
-
-		// Handle var:preset|spacing|slug format.
-		if ( is_string( $value ) && strpos( $value, 'var:preset|spacing|' ) === 0 ) {
-			$slug = str_replace( 'var:preset|spacing|', '', $value );
-			foreach ( $spacing_sizes as $size ) {
-				if ( isset( $size['slug'] ) && $size['slug'] === $slug && isset( $size['size'] ) ) {
-					return $size['size'];
-				}
-			}
-			return null;
-		}
-
-		// Return direct value (e.g., '20px', '1rem').
-		return $value;
-	}
-
-	/**
-	 * Resolve a block color from preset slug or custom value.
-	 *
-	 * @param string|null  $preset_slug  The preset color slug (e.g., 'vivid-red').
-	 * @param string|null  $custom_color The custom color value (e.g., '#ff0000' or 'var:preset|color|slug').
-	 * @param array<mixed> $palette      The color palette array.
-	 * @since 1.0.0
-	 * @return string|null The resolved color value.
-	 */
-	public static function resolve_block_color( $preset_slug, $custom_color, $palette ) {
-		// If custom color is set, use it.
-		if ( ! empty( $custom_color ) ) {
-			// Handle var:preset|color|slug format.
-			if ( is_string( $custom_color ) && strpos( $custom_color, 'var:preset|color|' ) === 0 ) {
-				$slug = str_replace( 'var:preset|color|', '', $custom_color );
-				foreach ( $palette as $color ) {
-					if ( isset( $color['slug'] ) && $color['slug'] === $slug && isset( $color['color'] ) ) {
-						return $color['color'];
-					}
-				}
-				return null;
-			}
-			return $custom_color;
-		}
-
-		// If preset slug is set, find it in palette.
-		if ( ! empty( $preset_slug ) && is_array( $palette ) ) {
-			foreach ( $palette as $color ) {
-				if ( isset( $color['slug'] ) && $color['slug'] === $preset_slug && isset( $color['color'] ) ) {
-					return $color['color'];
-				}
-			}
-		}
-
-		return null;
 	}
 
 	/**

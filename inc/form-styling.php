@@ -22,7 +22,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since x.x.x
  */
 class Form_Styling {
-
 	/**
 	 * Map block attributes to form styling array.
 	 *
@@ -41,10 +40,10 @@ class Form_Styling {
 
 		// Form Theme - allows Pro to add custom themes.
 		if ( ! empty( $block_attrs['formTheme'] ) ) {
-			$form_styling['form_theme'] = $block_attrs['formTheme'];
+			$form_styling['form_theme'] = Helper::get_string_value( $block_attrs['formTheme'] );
 
 			// Apply theme styling if a theme is selected.
-			$form_styling = self::apply_theme_styling( $form_styling, $block_attrs['formTheme'] );
+			$form_styling = self::apply_theme_styling( $form_styling, Helper::get_string_value( $block_attrs['formTheme'] ) );
 		}
 
 		// Colors.
@@ -59,16 +58,16 @@ class Form_Styling {
 		}
 
 		// Padding.
-		if ( isset( $block_attrs['formPaddingTop'] ) ) {
+		if ( isset( $block_attrs['formPaddingTop'] ) && is_scalar( $block_attrs['formPaddingTop'] ) ) {
 			$form_styling['form_padding_top'] = floatval( $block_attrs['formPaddingTop'] );
 		}
-		if ( isset( $block_attrs['formPaddingRight'] ) ) {
+		if ( isset( $block_attrs['formPaddingRight'] ) && is_scalar( $block_attrs['formPaddingRight'] ) ) {
 			$form_styling['form_padding_right'] = floatval( $block_attrs['formPaddingRight'] );
 		}
-		if ( isset( $block_attrs['formPaddingBottom'] ) ) {
+		if ( isset( $block_attrs['formPaddingBottom'] ) && is_scalar( $block_attrs['formPaddingBottom'] ) ) {
 			$form_styling['form_padding_bottom'] = floatval( $block_attrs['formPaddingBottom'] );
 		}
-		if ( isset( $block_attrs['formPaddingLeft'] ) ) {
+		if ( isset( $block_attrs['formPaddingLeft'] ) && is_scalar( $block_attrs['formPaddingLeft'] ) ) {
 			$form_styling['form_padding_left'] = floatval( $block_attrs['formPaddingLeft'] );
 		}
 		if ( ! empty( $block_attrs['formPaddingUnit'] ) ) {
@@ -76,16 +75,16 @@ class Form_Styling {
 		}
 
 		// Border Radius.
-		if ( isset( $block_attrs['formBorderRadiusTop'] ) ) {
+		if ( isset( $block_attrs['formBorderRadiusTop'] ) && is_scalar( $block_attrs['formBorderRadiusTop'] ) ) {
 			$form_styling['form_border_radius_top'] = floatval( $block_attrs['formBorderRadiusTop'] );
 		}
-		if ( isset( $block_attrs['formBorderRadiusRight'] ) ) {
+		if ( isset( $block_attrs['formBorderRadiusRight'] ) && is_scalar( $block_attrs['formBorderRadiusRight'] ) ) {
 			$form_styling['form_border_radius_right'] = floatval( $block_attrs['formBorderRadiusRight'] );
 		}
-		if ( isset( $block_attrs['formBorderRadiusBottom'] ) ) {
+		if ( isset( $block_attrs['formBorderRadiusBottom'] ) && is_scalar( $block_attrs['formBorderRadiusBottom'] ) ) {
 			$form_styling['form_border_radius_bottom'] = floatval( $block_attrs['formBorderRadiusBottom'] );
 		}
-		if ( isset( $block_attrs['formBorderRadiusLeft'] ) ) {
+		if ( isset( $block_attrs['formBorderRadiusLeft'] ) && is_scalar( $block_attrs['formBorderRadiusLeft'] ) ) {
 			$form_styling['form_border_radius_left'] = floatval( $block_attrs['formBorderRadiusLeft'] );
 		}
 		if ( ! empty( $block_attrs['formBorderRadiusUnit'] ) ) {
