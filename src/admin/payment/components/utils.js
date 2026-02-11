@@ -253,14 +253,36 @@ export const getCurrencySymbol = ( currencyCode ) => {
 };
 
 /**
- * Format amount with currency symbol
+ * Get currency sign position from settings
+ * @return {string} Currency sign position ('left', 'right', 'left_space', 'right_space')
+ */
+export const getCurrencySignPosition = () => {
+	return window.srfm_admin?.payments?.currency_sign_position || 'left';
+};
+
+/**
+ * Format amount with currency symbol based on position setting
  * @param {number} amount   - Amount to format
  * @param {string} currency - Currency code (default: 'USD')
+ * @param {string} position - Currency sign position (optional, defaults to setting)
  * @return {string} Formatted amount with currency symbol
  */
-export const formatAmount = ( amount, currency = 'USD' ) => {
+export const formatAmount = ( amount, currency = 'USD', position = null ) => {
 	const symbol = getCurrencySymbol( currency );
-	return `${ symbol }${ parseFloat( amount ).toFixed( 2 ) }`;
+	const formattedAmount = parseFloat( amount ).toFixed( 2 );
+	const signPosition = position || getCurrencySignPosition();
+
+	switch ( signPosition ) {
+		case 'right':
+			return `${ formattedAmount }${ symbol }`;
+		case 'left_space':
+			return `${ symbol } ${ formattedAmount }`;
+		case 'right_space':
+			return `${ formattedAmount } ${ symbol }`;
+		case 'left':
+		default:
+			return `${ symbol }${ formattedAmount }`;
+	}
 };
 
 /**

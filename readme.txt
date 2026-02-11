@@ -2,9 +2,9 @@
 Contributors: brainstormforce
 Tags: forms, contact form, custom forms, payment form, form builder
 Requires at least: 6.4
-Tested up to: 6.9
+Tested up to: 6.9.1
 Requires PHP: 7.4
-Stable tag: 2.5.0
+Stable tag: 2.5.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -401,6 +401,9 @@ You can collect payments securely through Stripe & PayPal without any add-ons or
 You can report the issue through our [Bug Bounty Program](https://brainstormforce.com/bug-bounty-program/). We collaborate with Patchstack to provide opportunities for researchers to report vulnerabilities. The Patchstack team will help validate, triage, and handle any reported security issues.
 
 == Changelog ==
+= 2.5.1 - 12 February 2026 =
+* New: Added option to change currency position (e.g., $100, 100$, $ 100, 100 $).
+* Fix: Fixed the payment block amount not updating correctly with conditional logic.
 = 2.5.0 - 2nd February 2026 =
 * Improvement: Added translation support for the country list in the phone number field.
 * Fix: Fixed dropdown placeholder and GDPR label translation on the frontend.
@@ -413,13 +416,6 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 * Fix: Fixed multi-choice options being translated in entries.
 * Fix: Fixed reCAPTCHA v3 validation triggering multiple times on the same page.
 * Fix: Fixed Spectra button styles being affected by SureForms CSS.
-= 2.3.0 - 5th January 2026 =
-* New: Added option to duplicate forms.
-* New: Added preselect option for dropdown and multiple choice field.
-* Improvement: Improved visibility and accessibility of form settings.
-* Improvement: Added placeholder support for applicable fields.
-* Improvement: Added ability to edit or delete the country list in the phone number field.
-* Fix: Fixed duplication of email notification IDs.
 
 The full changelog is available [here](https://sureforms.com/whats-new/).
 
