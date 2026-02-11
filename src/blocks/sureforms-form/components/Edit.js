@@ -269,7 +269,11 @@ export default ( { attributes, setAttributes } ) => {
 
 	// Get panel controls from separate file
 	// Pro can filter these arrays to add, remove, or modify controls
-	const colorControls = getColorControls( { attributes, setAttributes, onSelectImage } );
+	const colorControls = getColorControls( {
+		attributes,
+		setAttributes,
+		onSelectImage,
+	} );
 	const layoutControls = getLayoutControls( { attributes, setAttributes } );
 	const fieldControls = getFieldControls( { attributes, setAttributes } );
 	const buttonControls = getButtonControls( { attributes, setAttributes } );
@@ -414,7 +418,10 @@ export default ( { attributes, setAttributes } ) => {
 							initialOpen={ false }
 						>
 							{ colorControls.map( ( control ) => (
-								<div className="components-base-control" key={ control.id }>
+								<div
+									className="components-base-control"
+									key={ control.id }
+								>
 									{ control.component }
 								</div>
 							) ) }
@@ -426,7 +433,10 @@ export default ( { attributes, setAttributes } ) => {
 							initialOpen={ false }
 						>
 							{ layoutControls.map( ( control ) => (
-								<div className="components-base-control" key={ control.id }>
+								<div
+									className="components-base-control"
+									key={ control.id }
+								>
 									{ control.component }
 								</div>
 							) ) }
@@ -438,7 +448,10 @@ export default ( { attributes, setAttributes } ) => {
 							initialOpen={ false }
 						>
 							{ fieldControls.map( ( control ) => (
-								<div className="components-base-control" key={ control.id }>
+								<div
+									className="components-base-control"
+									key={ control.id }
+								>
 									{ control.component }
 								</div>
 							) ) }
@@ -450,7 +463,10 @@ export default ( { attributes, setAttributes } ) => {
 							initialOpen={ false }
 						>
 							{ buttonControls.map( ( control ) => (
-								<div className="components-base-control" key={ control.id }>
+								<div
+									className="components-base-control"
+									key={ control.id }
+								>
 									{ control.component }
 								</div>
 							) ) }

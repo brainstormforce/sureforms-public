@@ -28,7 +28,11 @@ import MultiButtonsControl from '@Components/multi-buttons-control';
  * @param {Function} props.onSelectImage Function to handle image selection.
  * @return {Array} Array of control objects with id and component.
  */
-export const getColorControls = ( { attributes, setAttributes, onSelectImage } ) => {
+export const getColorControls = ( {
+	attributes,
+	setAttributes,
+	onSelectImage,
+} ) => {
 	const {
 		primaryColor,
 		textColor,
