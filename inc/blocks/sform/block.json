@@ -12,6 +12,9 @@
 		"html": false
 	},
 	"attributes": {
+		"blockId": {
+			"type": "string"
+		},
 		"isPreview": {
 			"type": "boolean",
 			"default": false

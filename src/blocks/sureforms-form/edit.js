@@ -6,7 +6,7 @@ import { Spinner, Placeholder } from '@wordpress/components';
 import Empty from './components/Empty';
 import Edit from './components/Edit';
 
-export default ( { attributes, setAttributes } ) => {
+export default ( { attributes, setAttributes, clientId } ) => {
 	const { id, loading } = attributes;
 
 	if ( loading ) {
@@ -23,5 +23,11 @@ export default ( { attributes, setAttributes } ) => {
 		);
 	}
 
-	return <Edit attributes={ attributes } setAttributes={ setAttributes } />;
+	return (
+		<Edit
+			attributes={ attributes }
+			setAttributes={ setAttributes }
+			clientId={ clientId }
+		/>
+	);
 };

@@ -106,9 +106,13 @@ class Generate_Form_Markup {
 		ob_start();
 		if ( '' !== $id && 0 !== $block_count ) {
 
-			$container_id = 'srfm-form-container-' . Helper::get_string_value( $id );
-			$form_styling = get_post_meta( $id, '_srfm_forms_styling', true );
-			$form_styling = ! empty( $form_styling ) && is_array( $form_styling ) ? $form_styling : [];
+			// Create unique container ID using blockId if available (for multiple embeds of same form).
+			// Base class (without blockId) is needed for JS compatibility - frontend.js and phone.js use form-id attribute to construct selectors.
+			$base_container_class = 'srfm-form-container-' . Helper::get_string_value( $id );
+			$block_id_suffix      = ! empty( $block_attrs['blockId'] ) ? '-' . Helper::get_string_value( $block_attrs['blockId'] ) : '';
+			$container_id         = $base_container_class . $block_id_suffix;
+			$form_styling         = get_post_meta( $id, '_srfm_forms_styling', true );
+			$form_styling         = ! empty( $form_styling ) && is_array( $form_styling ) ? $form_styling : [];
 
 			// Apply per-embed styling customization when inheritStyling is false.
 			if ( Form_Styling::has_custom_styling( $block_attrs ) ) {
@@ -197,7 +201,8 @@ class Generate_Form_Markup {
 
 			$form_classes = [
 				'srfm-form-container',
-				$container_id,
+				$base_container_class, // Base class for JS compatibility (frontend.js, phone.js).
+				! empty( $block_id_suffix ) ? $container_id : '', // Unique class for CSS scoping when blockId exists.
 				$sf_classname,
 				'Neve' === $theme_name ? $neve_theme_margin_class_name : '', // compatibility with Neve theme for margin between main content and footer.
 				$background_classes,
@@ -588,7 +593,7 @@ class Generate_Form_Markup {
 					if ( $is_page_break ) {
 						do_action( 'srfm_page_break_btn', $id );
 					}
-					$srfm_button_classes = apply_filters( 'srfm_add_button_classes', [ '1' === $btn_from_theme ? 'wp-block-button__link' : 'srfm-btn-frontend srfm-button srfm-submit-button', 'v3-reCAPTCHA' === $recaptcha_version ? ' g-recaptcha' : '' ] );
+					$srfm_button_classes = apply_filters( 'srfm_add_button_classes', [ '1' === $btn_from_theme ? 'wp-block-button__link' : 'srfm-btn-frontend srfm-button srfm-submit-button', 'v3-reCAPTCHA' === $recaptcha_version ? ' g-recaptcha' : '' ], $id, $block_attrs );
 					?>
 
 					<div class="srfm-submit-container <?php echo esc_attr( $is_page_break ? 'srfm-hide' : '' ); ?>" style="<?php echo ! $should_show_submit_button ? 'visibility:hidden;position:absolute;' : ''; ?>">

@@ -34,14 +34,21 @@ import {
 } from './panel-controls';
 import UpgradeModal from '@Components/upgrade-modal';
 
-export default ( { attributes, setAttributes } ) => {
-	const { id, showTitle, inheritStyling, formTheme } = attributes;
+export default ( { attributes, setAttributes, clientId } ) => {
+	const { id, showTitle, inheritStyling, formTheme, blockId } = attributes;
 
 	const iframeRef = useRef( null );
 	const iframeContainerRef = useRef( null );
 	const [ loading, setLoading ] = useState( false );
 	const [ formIframeHeight, setFormIframeHeight ] = useState( 0 );
 	const [ showUpgradeModal, setShowUpgradeModal ] = useState( false );
+
+	// Generate unique blockId if not set (first render).
+	useEffect( () => {
+		if ( ! blockId ) {
+			setAttributes( { blockId: clientId.substring( 0, 8 ) } );
+		}
+	}, [ blockId, clientId, setAttributes ] );
 
 	// Check if Pro is active by looking for Pro-specific localized data.
 	const isProActive = Boolean( window.srfm_block_data?.is_pro_active );
