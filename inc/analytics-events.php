@@ -25,8 +25,8 @@ class Analytics_Events {
 	 * Track a one-time event. Skips if already tracked or pending.
 	 * Only stores temporary data — cleaned up after analytics send.
 	 *
-	 * @param string $event_name  Event identifier.
-	 * @param string $event_value Primary value (version, form ID, mode, etc.).
+	 * @param string               $event_name  Event identifier.
+	 * @param string               $event_value Primary value (version, form ID, mode, etc.).
 	 * @param array<string, mixed> $properties Additional context as key-value pairs.
 	 * @since 2.5.1
 	 * @return void
