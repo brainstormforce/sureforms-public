@@ -32,6 +32,7 @@ import {
 	getFieldControls,
 	getButtonControls,
 } from './panel-controls';
+import UpgradeModal from '@Components/upgrade-modal';
 
 export default ( { attributes, setAttributes } ) => {
 	const { id, showTitle, inheritStyling, formTheme } = attributes;
@@ -40,6 +41,10 @@ export default ( { attributes, setAttributes } ) => {
 	const iframeContainerRef = useRef( null );
 	const [ loading, setLoading ] = useState( false );
 	const [ formIframeHeight, setFormIframeHeight ] = useState( 0 );
+	const [ showUpgradeModal, setShowUpgradeModal ] = useState( false );
+
+	// Check if Pro is active by looking for Pro-specific localized data.
+	const isProActive = Boolean( window.srfm_block_data?.is_pro_active );
 
 	// eslint-disable-next-line no-unused-vars
 	const [ formUrl, setFormUrl ] = useEntityProp(
@@ -371,9 +376,18 @@ export default ( { attributes, setAttributes } ) => {
 										label: __( 'Default', 'sureforms' ),
 										value: 'default',
 									},
+									{
+										label: __( 'Custom (Premium)', 'sureforms' ),
+										value: 'custom',
+									},
 								]
 							) }
 							onChange={ ( value ) => {
+								// If Custom is selected and Pro is not active, show upgrade modal.
+								if ( 'custom' === value && ! isProActive ) {
+									setShowUpgradeModal( true );
+									return;
+								}
 								setAttributes( { formTheme: value } );
 							} }
 							help={ __(
@@ -513,6 +527,22 @@ export default ( { attributes, setAttributes } ) => {
 					</Placeholder>
 				</div>
 			) }
+			<UpgradeModal
+				isOpen={ showUpgradeModal }
+				onClose={ () => setShowUpgradeModal( false ) }
+				title={ __( 'Advanced Styling', 'sureforms' ) }
+				heading={ __( 'Unlock Custom Styling', 'sureforms' ) }
+				description={ __(
+					'Switch to Custom Mode to take full control of your form\'s design and spacing.',
+					'sureforms'
+				) }
+				features={ [
+					__( 'Full color control (buttons, fields, text)', 'sureforms' ),
+					__( 'Row and column gap control', 'sureforms' ),
+					__( 'Field spacing and layout precision', 'sureforms' ),
+					__( 'Complete button styling', 'sureforms' ),
+				] }
+			/>
 		</>
 	);
 };
