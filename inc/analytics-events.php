@@ -27,19 +27,21 @@ class Analytics_Events {
 	 *
 	 * @param string $event_name  Event identifier.
 	 * @param string $event_value Primary value (version, form ID, mode, etc.).
-	 * @param array  $properties  Additional context as key-value pairs.
+	 * @param array<string, mixed> $properties Additional context as key-value pairs.
 	 * @since 2.5.1
 	 * @return void
 	 */
 	public static function track( $event_name, $event_value = '', $properties = [] ) {
 		// Check dedup flag — already sent in a previous cycle.
 		$pushed = Helper::get_srfm_option( 'usage_events_pushed', [] );
+		$pushed = is_array( $pushed ) ? $pushed : [];
 		if ( in_array( $event_name, $pushed, true ) ) {
 			return;
 		}
 
 		// Check if already queued in current cycle.
 		$pending = Helper::get_srfm_option( 'usage_events_pending', [] );
+		$pending = is_array( $pending ) ? $pending : [];
 		if ( in_array( $event_name, array_column( $pending, 'event_name' ), true ) ) {
 			return;
 		}
@@ -72,6 +74,7 @@ class Analytics_Events {
 
 		// Add event names to dedup flag (minimal — just strings).
 		$pushed = Helper::get_srfm_option( 'usage_events_pushed', [] );
+		$pushed = is_array( $pushed ) ? $pushed : [];
 		$pushed = array_unique(
 			array_merge( $pushed, array_column( $pending, 'event_name' ) )
 		);
@@ -92,11 +95,13 @@ class Analytics_Events {
 	 */
 	public static function is_tracked( $event_name ) {
 		$pushed = Helper::get_srfm_option( 'usage_events_pushed', [] );
+		$pushed = is_array( $pushed ) ? $pushed : [];
 		if ( in_array( $event_name, $pushed, true ) ) {
 			return true;
 		}
 
 		$pending = Helper::get_srfm_option( 'usage_events_pending', [] );
+		$pending = is_array( $pending ) ? $pending : [];
 		return in_array( $event_name, array_column( $pending, 'event_name' ), true );
 	}
 }
