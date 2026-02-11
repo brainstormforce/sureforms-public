@@ -23,12 +23,31 @@ class Generate_Form_Markup {
 	use Get_Instance;
 
 	/**
+	 * Current block attributes for the form being rendered.
+	 * Used by child blocks (like inline button) to access parent form's embed styling.
+	 *
+	 * @var array<string,mixed>
+	 * @since x.x.x
+	 */
+	private static $current_block_attrs = [];
+
+	/**
 	 * Constructor
 	 *
 	 * @since  0.0.1
 	 */
 	public function __construct() {
 		add_action( 'rest_api_init', [ $this, 'register_custom_endpoint' ] );
+	}
+
+	/**
+	 * Get the current block attributes.
+	 *
+	 * @return array<string,mixed>
+	 * @since x.x.x
+	 */
+	public static function get_current_block_attrs() {
+		return self::$current_block_attrs;
 	}
 
 	/**
@@ -75,6 +94,9 @@ class Generate_Form_Markup {
 		if ( Form_Restriction::is_form_restricted( $form_id ) ) {
 			return Form_Restriction::display_form_restriction_message( $form_id );
 		}
+
+		// Store block_attrs for child blocks (like inline button) to access.
+		self::$current_block_attrs = $block_attrs;
 
 		do_action( 'srfm_localize_conditional_logic_data', $id );
 		$post = get_post( Helper::get_integer_value( $id ) );

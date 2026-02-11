@@ -230,7 +230,7 @@
 			if ( styling.bgImage ) {
 				container.style.setProperty(
 					'--srfm-bg-image',
-					'url(' + styling.bgImage + ')'
+					'url("' + styling.bgImage + '")'
 				);
 			} else {
 				container.style.removeProperty( '--srfm-bg-image' );

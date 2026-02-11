@@ -34,7 +34,6 @@ export const embedFormAttributes = {
 	form_border_radius_link: { default: true },
 };
 
-
 export const instantFormAttributes = {
 	// Instant Form Properties.
 	// Padding.
