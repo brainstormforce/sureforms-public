@@ -634,7 +634,7 @@ class Analytics {
 		if ( class_exists( '\SRFM\Inc\Payments\Stripe\Stripe_Helper' )
 			&& \SRFM\Inc\Payments\Stripe\Stripe_Helper::is_stripe_connected() ) {
 			$mode = \SRFM\Inc\Payments\Stripe\Stripe_Helper::get_stripe_mode();
-			Analytics_Events::track( 'stripe_connected', $mode ?: 'live' );
+			Analytics_Events::track( 'stripe_connected', ! empty( $mode ) ? $mode : 'live' );
 		}
 	}
 
