@@ -6,7 +6,7 @@
  * then cleans up. Only a minimal dedup flag remains.
  *
  * @package sureforms.
- * @since x.x.x
+ * @since 2.5.1
  */
 
 namespace SRFM\Inc;
@@ -18,10 +18,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Analytics Events Class.
  *
- * @since x.x.x
+ * @since 2.5.1
  */
 class Analytics_Events {
-
 	/**
 	 * Track a one-time event. Skips if already tracked or pending.
 	 * Only stores temporary data — cleaned up after analytics send.
@@ -29,7 +28,7 @@ class Analytics_Events {
 	 * @param string $event_name  Event identifier.
 	 * @param string $event_value Primary value (version, form ID, mode, etc.).
 	 * @param array  $properties  Additional context as key-value pairs.
-	 * @since x.x.x
+	 * @since 2.5.1
 	 * @return void
 	 */
 	public static function track( $event_name, $event_value = '', $properties = [] ) {
@@ -62,7 +61,7 @@ class Analytics_Events {
 	 * - usage_events_pending is EMPTY (full event data deleted).
 	 * - usage_events_pushed has event_name strings added (minimal dedup).
 	 *
-	 * @since x.x.x
+	 * @since 2.5.1
 	 * @return array Pending events to include in payload. Empty if none.
 	 */
 	public static function flush_pending() {
@@ -88,7 +87,7 @@ class Analytics_Events {
 	 * Check if an event has already been tracked (sent or pending).
 	 *
 	 * @param string $event_name Event identifier.
-	 * @since x.x.x
+	 * @since 2.5.1
 	 * @return bool
 	 */
 	public static function is_tracked( $event_name ) {

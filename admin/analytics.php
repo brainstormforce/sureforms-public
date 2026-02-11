@@ -524,6 +524,46 @@ class Analytics {
 	}
 
 	/**
+	 * Track first time a user opens the form editor.
+	 *
+	 * @since 2.5.1
+	 * @return void
+	 */
+	public function track_first_editor_open() {
+		$screen = get_current_screen();
+		if ( $screen && 'sureforms_form' === $screen->id ) {
+			Analytics_Events::track( 'first_form_editor_opened' );
+		}
+	}
+
+	/**
+	 * Track first time a form is published.
+	 *
+	 * @param string   $new_status New post status.
+	 * @param string   $old_status Old post status.
+	 * @param \WP_Post $post       Post object.
+	 * @since 2.5.1
+	 * @return void
+	 */
+	public function track_first_form_published( $new_status, $old_status, $post ) {
+		if ( 'publish' !== $new_status || 'publish' === $old_status || SRFM_FORMS_POST_TYPE !== $post->post_type ) {
+			return;
+		}
+
+		$is_ai       = ! empty( get_post_meta( $post->ID, '_srfm_is_ai_generated', true ) );
+		$block_count = substr_count( $post->post_content, '<!-- wp:srfm/' );
+
+		Analytics_Events::track(
+			'first_form_published',
+			(string) $post->ID,
+			[
+				'is_ai_generated' => $is_ai,
+				'block_count'     => $block_count,
+			]
+		);
+	}
+
+	/**
 	 * Check if any payment method is enabled.
 	 *
 	 * This function checks if any payment gateway is connected and enabled.
@@ -564,7 +604,7 @@ class Analytics {
 	/**
 	 * Get KPI tracking data for the last 2 days (excluding today).
 	 *
-	 * @since x.x.x
+	 * @since 2.4.0
 	 * @return array KPI data organized by date.
 	 */
 	private function get_kpi_tracking_data() {
@@ -589,7 +629,7 @@ class Analytics {
 	 * Get daily submissions count for a specific date.
 	 *
 	 * @param string $date Date in Y-m-d format.
-	 * @since x.x.x
+	 * @since 2.4.0
 	 * @return int Daily submissions count.
 	 */
 	private function get_daily_submissions_count( $date ) {
@@ -618,7 +658,7 @@ class Analytics {
 	 * Detect state-based events that can't use direct hooks.
 	 * Uses dedup in Analytics_Events::track() — safe to call repeatedly.
 	 *
-	 * @since x.x.x
+	 * @since 2.5.1
 	 * @return void
 	 */
 	private function detect_state_events() {
@@ -636,46 +676,6 @@ class Analytics {
 			$mode = \SRFM\Inc\Payments\Stripe\Stripe_Helper::get_stripe_mode();
 			Analytics_Events::track( 'stripe_connected', ! empty( $mode ) ? $mode : 'live' );
 		}
-	}
-
-	/**
-	 * Track first time a user opens the form editor.
-	 *
-	 * @since x.x.x
-	 * @return void
-	 */
-	public function track_first_editor_open() {
-		$screen = get_current_screen();
-		if ( $screen && 'sureforms_form' === $screen->id ) {
-			Analytics_Events::track( 'first_form_editor_opened' );
-		}
-	}
-
-	/**
-	 * Track first time a form is published.
-	 *
-	 * @param string   $new_status New post status.
-	 * @param string   $old_status Old post status.
-	 * @param \WP_Post $post       Post object.
-	 * @since x.x.x
-	 * @return void
-	 */
-	public function track_first_form_published( $new_status, $old_status, $post ) {
-		if ( 'publish' !== $new_status || SRFM_FORMS_POST_TYPE !== $post->post_type ) {
-			return;
-		}
-
-		$is_ai       = ! empty( get_post_meta( $post->ID, '_srfm_is_ai_generated', true ) );
-		$block_count = substr_count( $post->post_content, '<!-- wp:srfm/' );
-
-		Analytics_Events::track(
-			'first_form_published',
-			(string) $post->ID,
-			[
-				'is_ai_generated' => $is_ai,
-				'block_count'     => $block_count,
-			]
-		);
 	}
 
 }
