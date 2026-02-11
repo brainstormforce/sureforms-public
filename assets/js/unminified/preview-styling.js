@@ -265,7 +265,8 @@
 
 		// Apply field spacing - uses CSS variables from Helper::get_css_vars() via localized data.
 		if ( styling.fieldSpacing ) {
-			const fieldSpacingVars = window.srfmPreviewStyling?.fieldSpacingVars;
+			const fieldSpacingVars =
+				window.srfmPreviewStyling?.fieldSpacingVars;
 			if ( fieldSpacingVars ) {
 				// Merge base (small) with size-specific overrides, same approach as StyleSettings.js.
 				const baseSize = fieldSpacingVars.small || {};

@@ -3,7 +3,7 @@
  *
  * A reusable modal for Pro feature upgrade prompts.
  *
- * @package sureforms
+ * @package
  * @since x.x.x
  */
 

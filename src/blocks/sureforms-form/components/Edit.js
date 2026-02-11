@@ -377,7 +377,10 @@ export default ( { attributes, setAttributes } ) => {
 										value: 'default',
 									},
 									{
-										label: __( 'Custom (Premium)', 'sureforms' ),
+										label: __(
+											'Custom (Premium)',
+											'sureforms'
+										),
 										value: 'custom',
 									},
 								]
@@ -533,11 +536,14 @@ export default ( { attributes, setAttributes } ) => {
 				title={ __( 'Advanced Styling', 'sureforms' ) }
 				heading={ __( 'Unlock Custom Styling', 'sureforms' ) }
 				description={ __(
-					'Switch to Custom Mode to take full control of your form\'s design and spacing.',
+					"Switch to Custom Mode to take full control of your form's design and spacing.",
 					'sureforms'
 				) }
 				features={ [
-					__( 'Full color control (buttons, fields, text)', 'sureforms' ),
+					__(
+						'Full color control (buttons, fields, text)',
+						'sureforms'
+					),
 					__( 'Row and column gap control', 'sureforms' ),
 					__( 'Field spacing and layout precision', 'sureforms' ),
 					__( 'Complete button styling', 'sureforms' ),

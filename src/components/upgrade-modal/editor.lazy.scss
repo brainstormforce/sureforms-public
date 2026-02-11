@@ -5,8 +5,8 @@
 	border-radius: 8px;
 	overflow: hidden;
 	box-shadow:
-		0 20px 25px -5px rgba(0, 0, 0, 0.1),
-		0 10px 10px -5px rgba(0, 0, 0, 0.04);
+		0 20px 25px -5px rgba( 0, 0, 0, 0.1 ),
+		0 10px 10px -5px rgba( 0, 0, 0, 0.04 );
 
 	.components-modal__content {
 		margin: 0;
@@ -54,7 +54,9 @@
 			border-radius: 4px;
 			cursor: pointer;
 			color: #6b7280;
-			transition: background-color 0.2s ease, color 0.2s ease;
+			transition:
+				background-color 0.2s ease,
+				color 0.2s ease;
 
 			&:hover {
 				background: #f3f4f6;
@@ -181,7 +183,9 @@
 			}
 
 			&:focus {
-				box-shadow: 0 0 0 2px #fff, 0 0 0 4px #d54407 !important;
+				box-shadow:
+					0 0 0 2px #fff,
+					0 0 0 4px #d54407 !important;
 				outline: none;
 			}
 		}
@@ -189,5 +193,5 @@
 }
 
 .srfm-upgrade-modal-overlay {
-	background-color: rgba(0, 0, 0, 0.5);
+	background-color: rgba( 0, 0, 0, 0.5 );
 }
