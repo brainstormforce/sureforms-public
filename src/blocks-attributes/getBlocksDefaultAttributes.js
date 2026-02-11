@@ -11,6 +11,7 @@ import dropdownAttributes from '@IncBlocks/dropdown/block.json';
 import gdprAttributes from '@IncBlocks/gdpr/block.json';
 import inlineButton from '@IncBlocks/inlinebutton/block.json';
 import paymentAttributes from '@IncBlocks/payment/block.json';
+import sformAttributes from '@IncBlocks/sform/block.json';
 import { getDefaultMessage } from '@Blocks/util';
 import { __ } from '@wordpress/i18n';
 
@@ -33,43 +34,6 @@ export const embedFormAttributes = {
 	form_border_radius_link: { default: true },
 };
 
-// Embed block attributes (used in srfm/form block for per-embed styling).
-export const embedBlockAttributes = {
-	// Form Settings.
-	inheritStyling: { default: true },
-	formTheme: { default: 'default' },
-	// Colors.
-	primaryColor: { default: '#111C44' },
-	textColor: { default: '#1E1E1E' },
-	textOnPrimaryColor: { default: '#FFFFFF' },
-	// Background.
-	bgType: { default: 'color' },
-	bgColor: { default: '#FFFFFF' },
-	bgGradient: { default: 'linear-gradient(90deg, #FFC9B2 0%, #C7CBFF 100%)' },
-	bgImage: { default: '' },
-	bgImagePosition: { default: { x: 0.5, y: 0.5 } },
-	bgImageSize: { default: 'cover' },
-	bgImageRepeat: { default: 'no-repeat' },
-	bgImageAttachment: { default: 'scroll' },
-	// Padding.
-	formPaddingTop: { default: 0 },
-	formPaddingRight: { default: 0 },
-	formPaddingBottom: { default: 0 },
-	formPaddingLeft: { default: 0 },
-	formPaddingUnit: { default: 'px' },
-	formPaddingLink: { default: true },
-	// Border Radius.
-	formBorderRadiusTop: { default: 0 },
-	formBorderRadiusRight: { default: 0 },
-	formBorderRadiusBottom: { default: 0 },
-	formBorderRadiusLeft: { default: 0 },
-	formBorderRadiusUnit: { default: 'px' },
-	formBorderRadiusLink: { default: true },
-	// Fields.
-	fieldSpacing: { default: 'medium' },
-	// Button.
-	buttonAlignment: { default: 'left' },
-};
 
 export const instantFormAttributes = {
 	// Instant Form Properties.
@@ -183,7 +147,7 @@ export const blocksAttributes = {
 		...paymentAttributes.attributes,
 	},
 	form: {
-		...embedBlockAttributes,
+		...sformAttributes.attributes,
 	},
 	form_specific: defaultKeys,
 };
