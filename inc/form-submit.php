@@ -752,8 +752,11 @@ class Form_Submit {
 		$to             = Helper::get_string_value( $smart_tags->process_smart_tags( $item['email_to'], $submission_data ) );
 		$subject        = Helper::get_string_value( $smart_tags->process_smart_tags( $item['subject'], $submission_data, $form_data ) );
 		$email_body     = Helper::get_string_value( $smart_tags->process_smart_tags( $item['email_body'], $submission_data, $form_data ) );
+		$is_raw_format  = isset( $item['is_raw_format'] ) && true === $item['is_raw_format'];
 		$email_template = new Email_Template();
-		$message        = $email_template->render( $submission_data, $email_body );
+		$message        = $is_raw_format
+			? $email_template->render_raw( $submission_data, $email_body )
+			: $email_template->render( $submission_data, $email_body );
 		$headers        = 'X-Mailer: PHP/' . phpversion() . "\r\n";
 		$headers       .= "Content-Type: text/html; charset=utf-8\r\n";
 
