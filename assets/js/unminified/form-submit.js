@@ -45,17 +45,20 @@ document.addEventListener( 'srfm_initialize_validation', ( event ) => {
 } );
 
 /**
- * Refresh form nonces via AJAX
+ * Make a single AJAX call to refresh nonces and update all forms on the page.
  *
- * @param {HTMLFormElement} form - The form element
+ * @param {HTMLFormElement[]} forms - Array of form elements.
  */
-async function refreshFormNonces( form ) {
-	// Check if nonce refresh is enabled for this form.
-	const shouldUpdate = form.getAttribute( 'data-update-nonce' );
-	const nonceUpdated = form.getAttribute( 'data-nonce-updated' );
+async function refreshFormNonces( forms ) {
+	// Check if at least one form needs a nonce refresh.
+	const needsRefresh = forms.some(
+		( form ) =>
+			form.getAttribute( 'data-update-nonce' ) === 'yes' &&
+			form.getAttribute( 'data-nonce-updated' ) !== 'yes'
+	);
 
-	if ( shouldUpdate !== 'yes' || nonceUpdated === 'yes' ) {
-		return; // Skip refresh if not enabled.
+	if ( ! needsRefresh ) {
+		return;
 	}
 
 	try {
@@ -65,32 +68,34 @@ async function refreshFormNonces( form ) {
 		} );
 
 		if ( response?.success && response?.nonces ) {
-			// Update unique validation nonce (data-nonce).
-			if ( response.nonces.unique_validation ) {
-				form.setAttribute(
-					'data-nonce',
-					response.nonces.unique_validation
-				);
+			// Loop through all forms and apply the fresh nonces.
+			for ( const form of forms ) {
+				// Update unique validation nonce (data-nonce).
+				if ( response.nonces.unique_validation ) {
+					form.setAttribute(
+						'data-nonce',
+						response.nonces.unique_validation
+					);
+				}
+
+				// Update form submit nonce (data-submit-nonce).
+				if ( response.nonces.form_submit ) {
+					form.setAttribute(
+						'data-submit-nonce',
+						response.nonces.form_submit
+					);
+				}
+
+				// Mark form as updated to prevent duplicate refresh calls.
+				form.setAttribute( 'data-nonce-updated', 'yes' );
 			}
 
-			// Update form submit nonce (data-submit-nonce).
-			if ( response.nonces.form_submit ) {
-				form.setAttribute(
-					'data-submit-nonce',
-					response.nonces.form_submit
-				);
-			}
-
-			// Update window.srfm_ajax global with refreshed payment nonce.
+			// Update window.srfm_ajax global with refreshed payment nonce (once, not per form).
 			if ( response.nonces.stripe_payment && window.srfm_ajax ) {
 				window.srfm_ajax.stripe_payment_nonce =
 					response.nonces.stripe_payment;
 			}
 		}
-
-		// Add updated nonce attributes to the form.
-		form.setAttribute( 'data-nonce-updated', 'yes' );
-		console.log( 'Nonces updated:' );
 	} catch ( error ) {
 		console.warn( 'Failed to refresh form nonces:', error );
 	}
@@ -103,10 +108,11 @@ function initializeFormHandlers() {
 	initializeInlineFieldValidation();
 
 	const forms = Array.from( document.querySelectorAll( '.srfm-form' ) );
-	for ( const form of forms ) {
-		// Refresh nonces on page load.
-		refreshFormNonces( form );
 
+	// Single AJAX call to refresh nonces for all forms at once.
+	refreshFormNonces( forms );
+
+	for ( const form of forms ) {
 		// Add the event before the form initialization to ensure that the all third party libraries are loaded and initialized.
 		// Dispatch a custom event *before* the form is submitted.
 		document.dispatchEvent(

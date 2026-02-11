@@ -111,10 +111,7 @@ class Form_Submit {
 		return rest_ensure_response(
 			[
 				'success' => true,
-				'nonces'  => [
-					'unique_validation' => $nonces['unique_validation'],
-					'form_submit'       => $nonces['form_submit'],
-				],
+				'nonces'  => $nonces,
 			]
 		);
 	}
