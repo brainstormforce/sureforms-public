@@ -375,6 +375,7 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 
 == Changelog ==
 = x.x.x =
+* New: Added “Send as Raw HTML” option in form email notifications to send fully structured HTML emails.
 * New: Added an option to change currency position (e.g., $100, 100$, $ 100, 100 $).
 * Fix: Payment block amount now updates correctly when conditional logic is applied.
 = 2.5.0 - 2nd February 2026 =
