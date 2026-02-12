@@ -662,8 +662,10 @@ class Analytics {
 	 * @return void
 	 */
 	private function detect_state_events() {
-		// plugin_activated: track on first admin load (dedup prevents repeat).
-		Analytics_Events::track( 'plugin_activated', SRFM_VER );
+		// plugin_activated: dedup in Analytics_Events::track() ensures this fires only once.
+		$bsf_referrers = get_option( 'bsf_product_referers', [] );
+		$source        = ! empty( $bsf_referrers['sureforms'] ) ? $bsf_referrers['sureforms'] : 'self';
+		Analytics_Events::track( 'plugin_activated', SRFM_VER, [ 'source' => $source ] );
 
 		// onboarding_completed: detect completed state.
 		if ( \SRFM\Inc\Onboarding::get_instance()->get_onboarding_status() ) {

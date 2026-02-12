@@ -50,7 +50,7 @@ class Analytics_Events {
 		$pending[] = [
 			'event_name'  => sanitize_text_field( $event_name ),
 			'event_value' => sanitize_text_field( (string) $event_value ),
-			'properties'  => wp_json_encode( $properties ),
+			'properties'  => wp_json_encode( ! empty( $properties ) ? $properties : (object) [] ),
 			'date'        => current_time( 'mysql' ),
 		];
 		Helper::update_srfm_option( 'usage_events_pending', $pending );
