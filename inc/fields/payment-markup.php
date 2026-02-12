@@ -8,6 +8,7 @@
 
 namespace SRFM\Inc\Fields;
 
+use SRFM\Inc\Payments\Payment_Helper;
 use SRFM\Inc\Payments\Stripe\Stripe_Helper;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -526,15 +527,29 @@ class Payment_Markup extends Base {
 	 * @since 2.0.0
 	 */
 	private function format_currency( $amount, $currency ) {
-		$symbol = Stripe_Helper::get_currency_symbol( $currency );
+		$symbol   = Stripe_Helper::get_currency_symbol( $currency );
+		$position = Payment_Helper::get_currency_sign_position();
 
 		// Format based on currency.
 		if ( in_array( $currency, [ 'JPY', 'KRW' ], true ) ) {
 			// No decimal places for these currencies.
-			return $symbol . number_format( $amount, 0 );
+			$formatted_amount = number_format( $amount, 0 );
+		} else {
+			$formatted_amount = number_format( $amount, 2 );
 		}
 
-		return $symbol . number_format( $amount, 2 );
+		// Apply currency sign position.
+		switch ( $position ) {
+			case 'right':
+				return $formatted_amount . $symbol;
+			case 'left_space':
+				return $symbol . ' ' . $formatted_amount;
+			case 'right_space':
+				return $formatted_amount . ' ' . $symbol;
+			case 'left':
+			default:
+				return $symbol . $formatted_amount;
+		}
 	}
 
 	/**
