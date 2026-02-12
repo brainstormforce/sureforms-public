@@ -1005,6 +1005,12 @@ button.components-button.srfm-review-select-btn.is-secondary {
 		margin-bottom: 25px; // Same as .components-base-control
 	}
 }
+// Hide the layout panel responsive icons added from spectra.
+.srfm-layout-panel {
+	.spectra-panel-responsive-icons {
+		display: none !important;
+	}
+}
 
 @import "styles/gutenberg-override";
 @import "styles/control-responsive";

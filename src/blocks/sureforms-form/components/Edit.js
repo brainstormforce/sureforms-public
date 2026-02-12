@@ -455,6 +455,7 @@ export default ( { attributes, setAttributes, clientId } ) => {
 						<PanelBody
 							title={ __( 'Layout', 'sureforms' ) }
 							initialOpen={ false }
+							className="srfm-layout-panel"
 						>
 							{ layoutControls.map( ( control ) => (
 								<div
