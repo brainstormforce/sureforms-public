@@ -2,10 +2,10 @@ import { __, sprintf } from '@wordpress/i18n';
 import { Badge, Button, Container, Label } from '@bsf/force-ui';
 import { useState, useEffect } from '@wordpress/element';
 import {
-	Check,
 	ChevronDown,
 	ChevronUp,
 	Circle,
+	CircleAlert,
 	CircleCheckBig,
 	Play,
 } from 'lucide-react';
@@ -258,29 +258,19 @@ const LearnLesson = ( {
 							</Container.Item>
 						) }
 
-						{ isExpanded && headerAction?.url && (
+						{ hasVideo && (
 							<Container.Item className="hidden sm:block">
-								<Button
-									variant="outline"
-									size="xs"
-									onClick={ handleHeaderActionClick }
+								<Label
+									className={ `text-sm font-normal whitespace-nowrap ${
+										status === 'completed'
+											? 'text-support-success'
+											: 'text-text-tertiary'
+									}` }
 								>
-									{ headerAction?.label }
-								</Button>
+									{ getStatusText() }
+								</Label>
 							</Container.Item>
 						) }
-
-						<Container.Item className="hidden sm:block">
-							<Label
-								className={ `text-sm font-normal whitespace-nowrap ${
-									status === 'completed'
-										? 'text-support-success'
-										: 'text-text-tertiary'
-								}` }
-							>
-								{ getStatusText() }
-							</Label>
-						</Container.Item>
 
 						<Container.Item>
 							<div className="flex items-center justify-center w-6 h-6">
@@ -349,9 +339,32 @@ const LearnLesson = ( {
 						{ /* Description */ }
 						{ description && (
 							<Container.Item>
-								<Label className="text-sm text-text-secondary font-normal px-2 leading-relaxed">
-									{ description }
-								</Label>
+								<div className="flex items-start justify-between gap-12 px-2">
+									<Label className="text-sm text-text-secondary font-normal leading-relaxed">
+										{ description }
+									</Label>
+									<div className="flex items-center gap-1 flex-shrink-0">
+										{ ! hasVideo && action?.url && (
+											<Button
+												variant="ghost"
+												size="xs"
+												icon={ <CircleAlert className="size-5" /> }
+												onClick={ handleActionClick }
+												aria-label={ action?.label || __( 'Documentation', 'sureforms' ) }
+											/>
+										) }
+										{ isExpanded && headerAction?.url && (
+											<Button
+												variant="outline"
+												size="sm"
+												className="text-link-primary"
+												onClick={ handleHeaderActionClick }
+											>
+												{ headerAction?.label }
+											</Button>
+										) }
+									</div>
+								</div>
 							</Container.Item>
 						) }
 
@@ -363,52 +376,38 @@ const LearnLesson = ( {
 								gap="md"
 								className="px-2"
 							>
-								{ /* For video lessons, show View Documentation button if docsUrl exists */ }
-								{ hasVideo && docsUrl && (
+								{ hasVideo && (
 									<Container.Item>
-										<Button
-											variant="primary"
-											size="md"
-											className="w-full shadow-sm"
-											onClick={ handleDocsClick }
-										>
-											{ __( 'View Documentation', 'sureforms' ) }
-										</Button>
+										<div className="flex gap-3">
+											{ docsUrl && (
+												<Button
+													variant="ghost"
+													size="md"
+													className="flex-1 shadow-sm text-link-primary bg-background-secondary outline-none shadow-none"
+													onClick={ handleDocsClick }
+												>
+													{ __( 'Documentation', 'sureforms' ) }
+												</Button>
+											) }
+											<Button
+												variant="ghost"
+												size="md"
+												className="flex-1 shadow-sm bg-background-secondary outline-none shadow-none"
+												onClick={ handleMarkAsCompleted }
+											>
+												{ isCompleted
+													? __(
+														'Mark as Incomplete',
+														'sureforms'
+													  )
+													: __(
+														'Mark as Completed',
+														'sureforms'
+													  ) }
+											</Button>
+										</div>
 									</Container.Item>
 								) }
-								{ /* For non-video lessons, show the action button */ }
-								{ ! hasVideo && action?.url && (
-									<Container.Item>
-										<Button
-											variant="primary"
-											size="md"
-											className="w-full shadow-sm"
-											onClick={ handleActionClick }
-										>
-											{ action?.label ||
-												__( 'Get Started', 'sureforms' ) }
-										</Button>
-									</Container.Item>
-								) }
-								<Container.Item>
-									<Button
-										variant="outline"
-										size="md"
-										icon={ <Check className="size-5" /> }
-										className="w-full shadow-sm"
-										onClick={ handleMarkAsCompleted }
-									>
-										{ isCompleted
-											? __(
-												'Mark as Incomplete',
-												'sureforms'
-											  )
-											: __(
-												'Mark as Completed',
-												'sureforms'
-											  ) }
-									</Button>
-								</Container.Item>
 							</Container>
 						</Container.Item>
 					</Container>

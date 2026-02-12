@@ -89,8 +89,12 @@ const LearnModules = ( {
 					steps: lessons = [],
 				} = module;
 
-				const totalLessonsCount = lessons.length;
-				const completedLessonsCount = lessons.filter(
+				const videoLessons = lessons.filter(
+					( lesson ) => lesson.learn?.type === 'dialog' && lesson.learn?.content?.type === 'video'
+				);
+				const hasVideoLessons = videoLessons.length > 0;
+				const totalLessonsCount = videoLessons.length;
+				const completedLessonsCount = videoLessons.filter(
 					( lesson ) => lesson.completed
 				).length;
 				const progressPercentage =
@@ -98,7 +102,7 @@ const LearnModules = ( {
 						? ( completedLessonsCount / totalLessonsCount ) * 100
 						: 0;
 				const isModuleComplete =
-					completedLessonsCount === totalLessonsCount;
+					totalLessonsCount > 0 && completedLessonsCount === totalLessonsCount;
 				const isModuleExpanded = expandedModuleId === moduleId;
 
 				return (
@@ -150,36 +154,38 @@ const LearnModules = ( {
 														className="truncate"
 													/>
 												</Container.Item>
-												<Container.Item>
-													<Container
-														containerType="flex"
-														direction="row"
-														align="center"
-														gap="sm"
-													>
-														<Container.Item>
-															<Label className="text-sm text-text-secondary whitespace-nowrap">
-																{ sprintf(
-																	// translators: %1$d is completed count, %2$d is total count.
-																	__(
-																		'%1$d/%2$d completed',
-																		'sureforms'
-																	),
-																	completedLessonsCount,
-																	totalLessonsCount
-																) }
-															</Label>
-														</Container.Item>
-														<Container.Item className="w-24 sm:w-32">
-															<ProgressBar
-																progress={
-																	progressPercentage
-																}
-																className="h-2"
-															/>
-														</Container.Item>
-													</Container>
-												</Container.Item>
+												{ hasVideoLessons && (
+													<Container.Item>
+														<Container
+															containerType="flex"
+															direction="row"
+															align="center"
+															gap="sm"
+														>
+															<Container.Item>
+																<Label className="text-sm text-text-secondary whitespace-nowrap">
+																	{ sprintf(
+																		// translators: %1$d is completed count, %2$d is total count.
+																		__(
+																			'%1$d/%2$d completed',
+																			'sureforms'
+																		),
+																		completedLessonsCount,
+																		totalLessonsCount
+																	) }
+																</Label>
+															</Container.Item>
+															<Container.Item className="w-24 sm:w-32">
+																<ProgressBar
+																	progress={
+																		progressPercentage
+																	}
+																	className="h-2"
+																/>
+															</Container.Item>
+														</Container>
+													</Container.Item>
+												) }
 												<Container.Item>
 													<div className="flex items-center justify-center w-6 h-6">
 														{ isModuleExpanded ? (
@@ -206,27 +212,29 @@ const LearnModules = ( {
 														{ description }
 													</Label>
 												</Container.Item>
-												<Container.Item className="flex-shrink-0">
-													<Button
-														variant="outline"
-														size="sm"
-														icon={
-															<CheckCheck className="size-4" />
-														}
-														onClick={ ( e ) =>
-															handleMarkModuleAsDone(
-																e,
-																moduleId
-															)
-														}
-														disabled={ isModuleComplete }
-													>
-														{ __(
-															'Mark All as Done',
-															'sureforms'
-														) }
-													</Button>
-												</Container.Item>
+												{ hasVideoLessons && (
+													<Container.Item className="flex-shrink-0">
+														<Button
+															variant="outline"
+															size="sm"
+															icon={
+																<CheckCheck className="size-4" />
+															}
+															onClick={ ( e ) =>
+																handleMarkModuleAsDone(
+																	e,
+																	moduleId
+																)
+															}
+															disabled={ isModuleComplete }
+														>
+															{ __(
+																'Mark All as Done',
+																'sureforms'
+															) }
+														</Button>
+													</Container.Item>
+												) }
 											</Container>
 										</Container.Item>
 									</Container>
