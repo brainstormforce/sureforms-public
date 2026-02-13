@@ -550,110 +550,40 @@ class Form_Widget extends Widget_Base {
 			]
 		);
 
-		// Form Padding Heading.
+		// Form Padding.
 		$this->add_control(
-			'formPaddingHeading',
+			'formPadding',
 			[
-				'label' => __( 'Form Padding', 'sureforms' ),
-				'type'  => \Elementor\Controls_Manager::HEADING,
+				'label'      => __( 'Form Padding', 'sureforms' ),
+				'type'       => \Elementor\Controls_Manager::DIMENSIONS,
+				'size_units' => [ 'px', '%', 'em', 'rem' ],
+				'default'    => [
+					'top'      => '0',
+					'right'    => '0',
+					'bottom'   => '0',
+					'left'     => '0',
+					'unit'     => 'px',
+					'isLinked' => true,
+				],
+				'separator'  => 'after',
 			]
 		);
 
-		// Form Padding Top.
+		// Form Border Radius.
 		$this->add_control(
-			'formPaddingTop',
+			'formBorderRadius',
 			[
-				'label'   => __( 'Top (px)', 'sureforms' ),
-				'type'    => \Elementor\Controls_Manager::NUMBER,
-				'default' => 0,
-				'min'     => 0,
-			]
-		);
-
-		// Form Padding Right.
-		$this->add_control(
-			'formPaddingRight',
-			[
-				'label'   => __( 'Right (px)', 'sureforms' ),
-				'type'    => \Elementor\Controls_Manager::NUMBER,
-				'default' => 0,
-				'min'     => 0,
-			]
-		);
-
-		// Form Padding Bottom.
-		$this->add_control(
-			'formPaddingBottom',
-			[
-				'label'   => __( 'Bottom (px)', 'sureforms' ),
-				'type'    => \Elementor\Controls_Manager::NUMBER,
-				'default' => 0,
-				'min'     => 0,
-			]
-		);
-
-		// Form Padding Left.
-		$this->add_control(
-			'formPaddingLeft',
-			[
-				'label'     => __( 'Left (px)', 'sureforms' ),
-				'type'      => \Elementor\Controls_Manager::NUMBER,
-				'default'   => 0,
-				'min'       => 0,
-				'separator' => 'after',
-			]
-		);
-
-		// Form Border Radius Heading.
-		$this->add_control(
-			'formBorderRadiusHeading',
-			[
-				'label' => __( 'Form Border Radius', 'sureforms' ),
-				'type'  => \Elementor\Controls_Manager::HEADING,
-			]
-		);
-
-		// Form Border Radius Top Left.
-		$this->add_control(
-			'formBorderRadiusTop',
-			[
-				'label'   => __( 'Top Left (px)', 'sureforms' ),
-				'type'    => \Elementor\Controls_Manager::NUMBER,
-				'default' => 0,
-				'min'     => 0,
-			]
-		);
-
-		// Form Border Radius Top Right.
-		$this->add_control(
-			'formBorderRadiusRight',
-			[
-				'label'   => __( 'Top Right (px)', 'sureforms' ),
-				'type'    => \Elementor\Controls_Manager::NUMBER,
-				'default' => 0,
-				'min'     => 0,
-			]
-		);
-
-		// Form Border Radius Bottom Right.
-		$this->add_control(
-			'formBorderRadiusBottom',
-			[
-				'label'   => __( 'Bottom Right (px)', 'sureforms' ),
-				'type'    => \Elementor\Controls_Manager::NUMBER,
-				'default' => 0,
-				'min'     => 0,
-			]
-		);
-
-		// Form Border Radius Bottom Left.
-		$this->add_control(
-			'formBorderRadiusLeft',
-			[
-				'label'   => __( 'Bottom Left (px)', 'sureforms' ),
-				'type'    => \Elementor\Controls_Manager::NUMBER,
-				'default' => 0,
-				'min'     => 0,
+				'label'      => __( 'Form Border Radius', 'sureforms' ),
+				'type'       => \Elementor\Controls_Manager::DIMENSIONS,
+				'size_units' => [ 'px', '%', 'em', 'rem' ],
+				'default'    => [
+					'top'      => '0',
+					'right'    => '0',
+					'bottom'   => '0',
+					'left'     => '0',
+					'unit'     => 'px',
+					'isLinked' => true,
+				],
 			]
 		);
 
@@ -756,16 +686,6 @@ class Form_Widget extends Widget_Base {
 			'textOnPrimaryColor',
 			'fieldSpacing',
 			'buttonAlignment',
-			// Form padding.
-			'formPaddingTop',
-			'formPaddingRight',
-			'formPaddingBottom',
-			'formPaddingLeft',
-			// Form border radius.
-			'formBorderRadiusTop',
-			'formBorderRadiusRight',
-			'formBorderRadiusBottom',
-			'formBorderRadiusLeft',
 			// Background.
 			'bgType',
 			'bgColor',
@@ -779,6 +699,43 @@ class Form_Widget extends Widget_Base {
 		foreach ( $styling_keys as $key ) {
 			if ( isset( $settings[ $key ] ) && '' !== $settings[ $key ] && 'default' !== $settings[ $key ] ) {
 				$block_attrs[ $key ] = $settings[ $key ];
+			}
+		}
+
+		// Handle DIMENSIONS controls - map to individual camelCase keys for Gutenberg compatibility.
+		// Form Padding.
+		if ( ! empty( $settings['formPadding'] ) && is_array( $settings['formPadding'] ) ) {
+			$padding = $settings['formPadding'];
+			$unit    = $padding['unit'] ?? 'px';
+			if ( ! empty( $padding['top'] ) || '0' === $padding['top'] ) {
+				$block_attrs['formPaddingTop'] = $padding['top'] . $unit;
+			}
+			if ( ! empty( $padding['right'] ) || '0' === $padding['right'] ) {
+				$block_attrs['formPaddingRight'] = $padding['right'] . $unit;
+			}
+			if ( ! empty( $padding['bottom'] ) || '0' === $padding['bottom'] ) {
+				$block_attrs['formPaddingBottom'] = $padding['bottom'] . $unit;
+			}
+			if ( ! empty( $padding['left'] ) || '0' === $padding['left'] ) {
+				$block_attrs['formPaddingLeft'] = $padding['left'] . $unit;
+			}
+		}
+
+		// Form Border Radius.
+		if ( ! empty( $settings['formBorderRadius'] ) && is_array( $settings['formBorderRadius'] ) ) {
+			$radius = $settings['formBorderRadius'];
+			$unit   = $radius['unit'] ?? 'px';
+			if ( ! empty( $radius['top'] ) || '0' === $radius['top'] ) {
+				$block_attrs['formBorderRadiusTop'] = $radius['top'] . $unit;
+			}
+			if ( ! empty( $radius['right'] ) || '0' === $radius['right'] ) {
+				$block_attrs['formBorderRadiusRight'] = $radius['right'] . $unit;
+			}
+			if ( ! empty( $radius['bottom'] ) || '0' === $radius['bottom'] ) {
+				$block_attrs['formBorderRadiusBottom'] = $radius['bottom'] . $unit;
+			}
+			if ( ! empty( $radius['left'] ) || '0' === $radius['left'] ) {
+				$block_attrs['formBorderRadiusLeft'] = $radius['left'] . $unit;
 			}
 		}
 

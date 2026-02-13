@@ -201,55 +201,67 @@
 					}
 				}
 			},
-			// Form Padding.
-			formPaddingTop: function ( val ) {
-				container.style.setProperty(
-					'--srfm-form-padding-top',
-					val + 'px'
-				);
+			// Form Padding (DIMENSIONS control).
+			formPadding: function ( val ) {
+				if ( typeof val !== 'object' ) {
+					return;
+				}
+				const unit = val.unit || 'px';
+				if ( val.top !== '' && val.top !== undefined ) {
+					container.style.setProperty(
+						'--srfm-form-padding-top',
+						val.top + unit
+					);
+				}
+				if ( val.right !== '' && val.right !== undefined ) {
+					container.style.setProperty(
+						'--srfm-form-padding-right',
+						val.right + unit
+					);
+				}
+				if ( val.bottom !== '' && val.bottom !== undefined ) {
+					container.style.setProperty(
+						'--srfm-form-padding-bottom',
+						val.bottom + unit
+					);
+				}
+				if ( val.left !== '' && val.left !== undefined ) {
+					container.style.setProperty(
+						'--srfm-form-padding-left',
+						val.left + unit
+					);
+				}
 			},
-			formPaddingRight: function ( val ) {
-				container.style.setProperty(
-					'--srfm-form-padding-right',
-					val + 'px'
-				);
-			},
-			formPaddingBottom: function ( val ) {
-				container.style.setProperty(
-					'--srfm-form-padding-bottom',
-					val + 'px'
-				);
-			},
-			formPaddingLeft: function ( val ) {
-				container.style.setProperty(
-					'--srfm-form-padding-left',
-					val + 'px'
-				);
-			},
-			// Form Border Radius.
-			formBorderRadiusTop: function ( val ) {
-				container.style.setProperty(
-					'--srfm-form-border-radius-top',
-					val + 'px'
-				);
-			},
-			formBorderRadiusRight: function ( val ) {
-				container.style.setProperty(
-					'--srfm-form-border-radius-right',
-					val + 'px'
-				);
-			},
-			formBorderRadiusBottom: function ( val ) {
-				container.style.setProperty(
-					'--srfm-form-border-radius-bottom',
-					val + 'px'
-				);
-			},
-			formBorderRadiusLeft: function ( val ) {
-				container.style.setProperty(
-					'--srfm-form-border-radius-left',
-					val + 'px'
-				);
+			// Form Border Radius (DIMENSIONS control).
+			formBorderRadius: function ( val ) {
+				if ( typeof val !== 'object' ) {
+					return;
+				}
+				const unit = val.unit || 'px';
+				if ( val.top !== '' && val.top !== undefined ) {
+					container.style.setProperty(
+						'--srfm-form-border-radius-top',
+						val.top + unit
+					);
+				}
+				if ( val.right !== '' && val.right !== undefined ) {
+					container.style.setProperty(
+						'--srfm-form-border-radius-right',
+						val.right + unit
+					);
+				}
+				if ( val.bottom !== '' && val.bottom !== undefined ) {
+					container.style.setProperty(
+						'--srfm-form-border-radius-bottom',
+						val.bottom + unit
+					);
+				}
+				if ( val.left !== '' && val.left !== undefined ) {
+					container.style.setProperty(
+						'--srfm-form-border-radius-left',
+						val.left + unit
+					);
+				}
 			},
 			// Background.
 			bgType: function ( val ) {
@@ -399,36 +411,24 @@
 					}
 				}
 			},
-			// Form Padding.
-			formPaddingTop: function () {
+			// Form Padding (DIMENSIONS control).
+			formPadding: function () {
 				container.style.removeProperty( '--srfm-form-padding-top' );
-			},
-			formPaddingRight: function () {
 				container.style.removeProperty( '--srfm-form-padding-right' );
-			},
-			formPaddingBottom: function () {
 				container.style.removeProperty( '--srfm-form-padding-bottom' );
-			},
-			formPaddingLeft: function () {
 				container.style.removeProperty( '--srfm-form-padding-left' );
 			},
-			// Form Border Radius.
-			formBorderRadiusTop: function () {
+			// Form Border Radius (DIMENSIONS control).
+			formBorderRadius: function () {
 				container.style.removeProperty(
 					'--srfm-form-border-radius-top'
 				);
-			},
-			formBorderRadiusRight: function () {
 				container.style.removeProperty(
 					'--srfm-form-border-radius-right'
 				);
-			},
-			formBorderRadiusBottom: function () {
 				container.style.removeProperty(
 					'--srfm-form-border-radius-bottom'
 				);
-			},
-			formBorderRadiusLeft: function () {
 				container.style.removeProperty(
 					'--srfm-form-border-radius-left'
 				);
@@ -485,16 +485,10 @@
 			'textOnPrimaryColor',
 			'fieldSpacing',
 			'buttonAlignment',
-			// Form Padding.
-			'formPaddingTop',
-			'formPaddingRight',
-			'formPaddingBottom',
-			'formPaddingLeft',
-			// Form Border Radius.
-			'formBorderRadiusTop',
-			'formBorderRadiusRight',
-			'formBorderRadiusBottom',
-			'formBorderRadiusLeft',
+			// Form Padding (DIMENSIONS control).
+			'formPadding',
+			// Form Border Radius (DIMENSIONS control).
+			'formBorderRadius',
 			// Background.
 			'bgType',
 			'bgColor',
