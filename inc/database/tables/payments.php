@@ -1050,20 +1050,31 @@ class Payments extends Base {
 		$where_clause = 'WHERE 1=1';
 		$params       = [];
 
+		// Define allowed SQL comparison operators to prevent SQL injection.
+		$allowed_operators = [ '=', '!=', '>', '<', '>=', '<=', 'IN', 'NOT IN', 'LIKE', 'NOT LIKE' ];
+
 		// Handle additional where conditions if provided.
 		if ( ! empty( $_args['where'] ) ) {
 			foreach ( $_args['where'] as $where_group ) {
 				if ( is_array( $where_group ) ) {
 					foreach ( $where_group as $condition ) {
 						if ( isset( $condition['key'], $condition['compare'], $condition['value'] ) ) {
-							if ( strtoupper( $condition['compare'] ) === 'IN' && is_array( $condition['value'] ) ) {
+							// Validate and normalize the comparison operator.
+							$operator = strtoupper( trim( $condition['compare'] ) );
+
+							// Skip this condition if operator is not in whitelist.
+							if ( ! in_array( $operator, $allowed_operators, true ) ) {
+								continue;
+							}
+
+							if ( 'IN' === $operator && is_array( $condition['value'] ) ) {
 								$placeholders  = implode( ',', array_fill( 0, count( $condition['value'] ), '%d' ) );
 								$where_clause .= " AND {$condition['key']} IN ({$placeholders})";
 								foreach ( $condition['value'] as $val ) {
 									$params[] = $val;
 								}
 							} else {
-								$where_clause .= " AND {$condition['key']} {$condition['compare']} %s";
+								$where_clause .= " AND {$condition['key']} {$operator} %s";
 								$params[]      = $condition['value'];
 							}
 						}
@@ -1131,6 +1142,9 @@ class Payments extends Base {
 		$where_clause = '1=1';
 		$params       = [];
 
+		// Define allowed SQL comparison operators to prevent SQL injection.
+		$allowed_operators = [ '=', '!=', '>', '<', '>=', '<=', 'IN', 'NOT IN', 'LIKE', 'NOT LIKE' ];
+
 		// Add status condition.
 		if ( 'all' !== $status ) {
 			$where_clause .= ' AND status = %s';
@@ -1149,20 +1163,28 @@ class Payments extends Base {
 				if ( is_array( $where_group ) ) {
 					foreach ( $where_group as $condition ) {
 						if ( isset( $condition['key'], $condition['compare'], $condition['value'] ) ) {
+							// Validate and normalize the comparison operator.
+							$operator = strtoupper( trim( $condition['compare'] ) );
+
+							// Skip this condition if operator is not in whitelist.
+							if ( ! in_array( $operator, $allowed_operators, true ) ) {
+								continue;
+							}
+
 							// Special handling for IN/NOT IN with arrays.
-							if ( in_array( strtoupper( trim( $condition['compare'] ) ), [ 'IN', 'NOT IN' ], true ) && is_array( $condition['value'] ) ) {
+							if ( in_array( $operator, [ 'IN', 'NOT IN' ], true ) && is_array( $condition['value'] ) ) {
 								$ids = array_map( 'absint', $condition['value'] );
 								// Prevent empty IN ().
 								if ( empty( $ids ) ) {
 									$ids = [ 0 ];
 								}
 								$placeholders  = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
-								$where_clause .= " AND {$condition['key']} {$condition['compare']} ({$placeholders})";
+								$where_clause .= " AND {$condition['key']} {$operator} ({$placeholders})";
 								foreach ( $ids as $id ) {
 									$params[] = $id;
 								}
 							} else {
-								$where_clause .= " AND {$condition['key']} {$condition['compare']} %s";
+								$where_clause .= " AND {$condition['key']} {$operator} %s";
 								$params[]      = $condition['value'];
 							}
 						}
