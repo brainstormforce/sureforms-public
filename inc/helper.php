@@ -2226,7 +2226,7 @@ class Helper {
 	/**
 	 * Get the nonces for the form submission.
 	 *
-	 * @since x.x.x
+	 * @since 2.5.1
 	 * @return array<string> The nonces for the form submission.
 	 */
 	public static function get_frontend_nonces() {
@@ -2239,7 +2239,7 @@ class Helper {
 		/**
 		 * Filter to allow Pro and third-party plugins to add additional nonces.
 		 *
-		 * @since x.x.x
+		 * @since 2.5.1
 		 * @param array<string> $nonces The nonces for the form submission.
 		 */
 		return apply_filters( 'srfm_frontend_nonces', $nonces );
@@ -2248,7 +2248,7 @@ class Helper {
 	/**
 	 * Check if the form markup nonce should be updated.
 	 *
-	 * @since x.x.x
+	 * @since 2.5.1
 	 * @return bool True if the form markup nonce should be updated, false otherwise.
 	 */
 	public static function should_update_form_markup_nonce() {

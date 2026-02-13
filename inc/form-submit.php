@@ -92,7 +92,7 @@ class Form_Submit {
 	 * Refresh frontend nonces for form submission
 	 *
 	 * @return \WP_REST_Response Response with fresh nonces.
-	 * @since x.x.x
+	 * @since 2.5.1
 	 */
 	public function refresh_nonces() {
 		// Check if nonce refresh is allowed.
