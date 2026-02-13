@@ -13,6 +13,7 @@ use Elementor\Widget_Base;
 use Spec_Gb_Helper;
 use SRFM\Inc\Helper;
 use SRFM\Inc\Page_Builders\Page_Builders;
+use SRFM\Inc\Generate_Form_Markup;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -56,6 +57,28 @@ class Form_Widget extends Widget_Base {
 				]
 			);
 
+			// Register styling preview script for live preview.
+			wp_register_script(
+				'srfm-elementor-styling-preview',
+				SRFM_URL . 'inc/page-builders/elementor/assets/elementor-styling-preview.js',
+				[ 'elementor-frontend' ],
+				SRFM_VER,
+				true
+			);
+			wp_localize_script(
+				'srfm-elementor-styling-preview',
+				'srfmElementorStyling',
+				[
+					'fieldSpacingVars' => Helper::get_css_vars(),
+				]
+			);
+
+			/**
+			 * Hook for Pro to register additional preview assets (scripts and styles).
+			 *
+			 * @since x.x.x
+			 */
+			do_action( 'srfm_elementor_register_preview_assets' );
 		}
 	}
 
@@ -67,10 +90,38 @@ class Form_Widget extends Widget_Base {
 	 */
 	public function get_script_depends() {
 		if ( $this->is_preview_mode ) {
-			return [ 'srfm-elementor-preview' ];
+			$scripts = [ 'srfm-elementor-preview', 'srfm-elementor-styling-preview' ];
+
+			/**
+			 * Filter the widget's script dependencies.
+			 * Pro uses this to add its preview scripts.
+			 *
+			 * @param array<string> $scripts Script handles.
+			 * @since x.x.x
+			 */
+			return apply_filters( 'srfm_elementor_widget_script_depends', $scripts );
 		}
 
 		return [];
+	}
+
+	/**
+	 * Get style depends.
+	 *
+	 * @since x.x.x
+	 * @return array<string> Style dependencies.
+	 */
+	public function get_style_depends() {
+		$styles = [];
+
+		/**
+		 * Filter the widget's style dependencies.
+		 * Pro uses this to add its custom-styles CSS.
+		 *
+		 * @param array<string> $styles Style handles.
+		 * @since x.x.x
+		 */
+		return apply_filters( 'srfm_elementor_widget_style_depends', $styles );
 	}
 
 	/**
@@ -204,6 +255,417 @@ class Form_Widget extends Widget_Base {
 		);
 
 		$this->end_controls_section();
+
+		// Style Tab - Form Styling Section.
+		$this->start_controls_section(
+			'srfm_style_section',
+			[
+				'label'     => __( 'Form Styling', 'sureforms' ),
+				'tab'       => \Elementor\Controls_Manager::TAB_STYLE,
+				'condition' => [
+					'srfm_form_block!' => '',
+				],
+			]
+		);
+
+		// Inherit Styling Toggle.
+		$this->add_control(
+			'inheritStyling',
+			[
+				'label'        => __( 'Inherit Styling from Instant Form', 'sureforms' ),
+				'description'  => __( 'When enabled, this form uses Instant Form styling. Disable to customize styling for this embed.', 'sureforms' ),
+				'type'         => \Elementor\Controls_Manager::SWITCHER,
+				'label_on'     => __( 'Yes', 'sureforms' ),
+				'label_off'    => __( 'No', 'sureforms' ),
+				'return_value' => 'yes',
+				'default'      => 'yes',
+				'separator'    => 'after',
+			]
+		);
+
+		// Primary Color.
+		$this->add_control(
+			'primaryColor',
+			[
+				'label'     => __( 'Primary Color', 'sureforms' ),
+				'type'      => \Elementor\Controls_Manager::COLOR,
+				'condition' => [
+					'inheritStyling!' => 'yes',
+				],
+			]
+		);
+
+		// Text Color.
+		$this->add_control(
+			'textColor',
+			[
+				'label'     => __( 'Text Color', 'sureforms' ),
+				'type'      => \Elementor\Controls_Manager::COLOR,
+				'condition' => [
+					'inheritStyling!' => 'yes',
+				],
+			]
+		);
+
+		// Text on Primary (button text color).
+		$this->add_control(
+			'textOnPrimaryColor',
+			[
+				'label'     => __( 'Text on Primary', 'sureforms' ),
+				'type'      => \Elementor\Controls_Manager::COLOR,
+				'condition' => [
+					'inheritStyling!' => 'yes',
+				],
+			]
+		);
+
+		// Field Spacing.
+		$this->add_control(
+			'fieldSpacing',
+			[
+				'label'     => __( 'Field Spacing', 'sureforms' ),
+				'type'      => \Elementor\Controls_Manager::SELECT,
+				'default'   => 'medium',
+				'options'   => [
+					'small'  => __( 'Small', 'sureforms' ),
+					'medium' => __( 'Medium', 'sureforms' ),
+					'large'  => __( 'Large', 'sureforms' ),
+				],
+				'condition' => [
+					'inheritStyling!' => 'yes',
+				],
+			]
+		);
+
+		// Button Alignment.
+		$this->add_control(
+			'buttonAlignment',
+			[
+				'label'     => __( 'Button Alignment', 'sureforms' ),
+				'type'      => \Elementor\Controls_Manager::CHOOSE,
+				'options'   => [
+					'left'    => [
+						'title' => __( 'Left', 'sureforms' ),
+						'icon'  => 'eicon-text-align-left',
+					],
+					'center'  => [
+						'title' => __( 'Center', 'sureforms' ),
+						'icon'  => 'eicon-text-align-center',
+					],
+					'right'   => [
+						'title' => __( 'Right', 'sureforms' ),
+						'icon'  => 'eicon-text-align-right',
+					],
+					'justify' => [
+						'title' => __( 'Full Width', 'sureforms' ),
+						'icon'  => 'eicon-text-align-justify',
+					],
+				],
+				'default'   => '',
+				'toggle'    => true,
+				'condition' => [
+					'inheritStyling!' => 'yes',
+				],
+			]
+		);
+
+		// Background Type Heading.
+		$this->add_control(
+			'bgHeading',
+			[
+				'label'     => __( 'Background', 'sureforms' ),
+				'type'      => \Elementor\Controls_Manager::HEADING,
+				'condition' => [
+					'inheritStyling!' => 'yes',
+				],
+			]
+		);
+
+		// Background Type.
+		$this->add_control(
+			'bgType',
+			[
+				'label'     => __( 'Type', 'sureforms' ),
+				'type'      => \Elementor\Controls_Manager::SELECT,
+				'default'   => 'color',
+				'options'   => [
+					'color'    => __( 'Color', 'sureforms' ),
+					'gradient' => __( 'Gradient', 'sureforms' ),
+					'image'    => __( 'Image', 'sureforms' ),
+				],
+				'condition' => [
+					'inheritStyling!' => 'yes',
+				],
+			]
+		);
+
+		// Background Color.
+		$this->add_control(
+			'bgColor',
+			[
+				'label'     => __( 'Color', 'sureforms' ),
+				'type'      => \Elementor\Controls_Manager::COLOR,
+				'default'   => '#FFFFFF',
+				'condition' => [
+					'inheritStyling!' => 'yes',
+					'bgType'          => 'color',
+				],
+			]
+		);
+
+		// Background Gradient.
+		$this->add_control(
+			'bgGradient',
+			[
+				'label'       => __( 'Gradient', 'sureforms' ),
+				'type'        => \Elementor\Controls_Manager::TEXT,
+				'default'     => 'linear-gradient(90deg, #FFC9B2 0%, #C7CBFF 100%)',
+				'placeholder' => 'linear-gradient(90deg, #color1, #color2)',
+				'label_block' => true,
+				'condition'   => [
+					'inheritStyling!' => 'yes',
+					'bgType'          => 'gradient',
+				],
+			]
+		);
+
+		// Background Image.
+		$this->add_control(
+			'bgImage',
+			[
+				'label'     => __( 'Image', 'sureforms' ),
+				'type'      => \Elementor\Controls_Manager::MEDIA,
+				'default'   => [
+					'url' => '',
+				],
+				'condition' => [
+					'inheritStyling!' => 'yes',
+					'bgType'          => 'image',
+				],
+			]
+		);
+
+		// Background Image Size.
+		$this->add_control(
+			'bgImageSize',
+			[
+				'label'     => __( 'Size', 'sureforms' ),
+				'type'      => \Elementor\Controls_Manager::SELECT,
+				'default'   => 'cover',
+				'options'   => [
+					'cover'   => __( 'Cover', 'sureforms' ),
+					'contain' => __( 'Contain', 'sureforms' ),
+					'auto'    => __( 'Auto', 'sureforms' ),
+				],
+				'condition' => [
+					'inheritStyling!' => 'yes',
+					'bgType'          => 'image',
+				],
+			]
+		);
+
+		// Background Image Position.
+		$this->add_control(
+			'bgImagePosition',
+			[
+				'label'     => __( 'Position', 'sureforms' ),
+				'type'      => \Elementor\Controls_Manager::SELECT,
+				'default'   => 'center center',
+				'options'   => [
+					'left top'      => __( 'Left Top', 'sureforms' ),
+					'left center'   => __( 'Left Center', 'sureforms' ),
+					'left bottom'   => __( 'Left Bottom', 'sureforms' ),
+					'center top'    => __( 'Center Top', 'sureforms' ),
+					'center center' => __( 'Center Center', 'sureforms' ),
+					'center bottom' => __( 'Center Bottom', 'sureforms' ),
+					'right top'     => __( 'Right Top', 'sureforms' ),
+					'right center'  => __( 'Right Center', 'sureforms' ),
+					'right bottom'  => __( 'Right Bottom', 'sureforms' ),
+				],
+				'condition' => [
+					'inheritStyling!' => 'yes',
+					'bgType'          => 'image',
+				],
+			]
+		);
+
+		// Background Image Repeat.
+		$this->add_control(
+			'bgImageRepeat',
+			[
+				'label'     => __( 'Repeat', 'sureforms' ),
+				'type'      => \Elementor\Controls_Manager::SELECT,
+				'default'   => 'no-repeat',
+				'options'   => [
+					'no-repeat' => __( 'No Repeat', 'sureforms' ),
+					'repeat'    => __( 'Repeat', 'sureforms' ),
+					'repeat-x'  => __( 'Repeat X', 'sureforms' ),
+					'repeat-y'  => __( 'Repeat Y', 'sureforms' ),
+				],
+				'condition' => [
+					'inheritStyling!' => 'yes',
+					'bgType'          => 'image',
+				],
+			]
+		);
+
+		// Background Image Attachment.
+		$this->add_control(
+			'bgImageAttachment',
+			[
+				'label'     => __( 'Attachment', 'sureforms' ),
+				'type'      => \Elementor\Controls_Manager::SELECT,
+				'default'   => 'scroll',
+				'options'   => [
+					'scroll' => __( 'Scroll', 'sureforms' ),
+					'fixed'  => __( 'Fixed', 'sureforms' ),
+				],
+				'condition' => [
+					'inheritStyling!' => 'yes',
+					'bgType'          => 'image',
+				],
+			]
+		);
+
+		/**
+		 * Hook for Pro to add advanced styling controls.
+		 *
+		 * @param \Elementor\Widget_Base $this The widget instance.
+		 * @since x.x.x
+		 */
+		do_action( 'srfm_elementor_after_basic_styling_controls', $this );
+
+		$this->end_controls_section();
+
+		// Style Tab - Layout Section.
+		$this->start_controls_section(
+			'srfm_layout_section',
+			[
+				'label'     => __( 'Layout', 'sureforms' ),
+				'tab'       => \Elementor\Controls_Manager::TAB_STYLE,
+				'condition' => [
+					'srfm_form_block!' => '',
+					'inheritStyling!'  => 'yes',
+				],
+			]
+		);
+
+		// Form Padding Heading.
+		$this->add_control(
+			'formPaddingHeading',
+			[
+				'label' => __( 'Form Padding', 'sureforms' ),
+				'type'  => \Elementor\Controls_Manager::HEADING,
+			]
+		);
+
+		// Form Padding Top.
+		$this->add_control(
+			'formPaddingTop',
+			[
+				'label'   => __( 'Top (px)', 'sureforms' ),
+				'type'    => \Elementor\Controls_Manager::NUMBER,
+				'default' => 0,
+				'min'     => 0,
+			]
+		);
+
+		// Form Padding Right.
+		$this->add_control(
+			'formPaddingRight',
+			[
+				'label'   => __( 'Right (px)', 'sureforms' ),
+				'type'    => \Elementor\Controls_Manager::NUMBER,
+				'default' => 0,
+				'min'     => 0,
+			]
+		);
+
+		// Form Padding Bottom.
+		$this->add_control(
+			'formPaddingBottom',
+			[
+				'label'   => __( 'Bottom (px)', 'sureforms' ),
+				'type'    => \Elementor\Controls_Manager::NUMBER,
+				'default' => 0,
+				'min'     => 0,
+			]
+		);
+
+		// Form Padding Left.
+		$this->add_control(
+			'formPaddingLeft',
+			[
+				'label'     => __( 'Left (px)', 'sureforms' ),
+				'type'      => \Elementor\Controls_Manager::NUMBER,
+				'default'   => 0,
+				'min'       => 0,
+				'separator' => 'after',
+			]
+		);
+
+		// Form Border Radius Heading.
+		$this->add_control(
+			'formBorderRadiusHeading',
+			[
+				'label' => __( 'Form Border Radius', 'sureforms' ),
+				'type'  => \Elementor\Controls_Manager::HEADING,
+			]
+		);
+
+		// Form Border Radius Top Left.
+		$this->add_control(
+			'formBorderRadiusTop',
+			[
+				'label'   => __( 'Top Left (px)', 'sureforms' ),
+				'type'    => \Elementor\Controls_Manager::NUMBER,
+				'default' => 0,
+				'min'     => 0,
+			]
+		);
+
+		// Form Border Radius Top Right.
+		$this->add_control(
+			'formBorderRadiusRight',
+			[
+				'label'   => __( 'Top Right (px)', 'sureforms' ),
+				'type'    => \Elementor\Controls_Manager::NUMBER,
+				'default' => 0,
+				'min'     => 0,
+			]
+		);
+
+		// Form Border Radius Bottom Right.
+		$this->add_control(
+			'formBorderRadiusBottom',
+			[
+				'label'   => __( 'Bottom Right (px)', 'sureforms' ),
+				'type'    => \Elementor\Controls_Manager::NUMBER,
+				'default' => 0,
+				'min'     => 0,
+			]
+		);
+
+		// Form Border Radius Bottom Left.
+		$this->add_control(
+			'formBorderRadiusLeft',
+			[
+				'label'   => __( 'Bottom Left (px)', 'sureforms' ),
+				'type'    => \Elementor\Controls_Manager::NUMBER,
+				'default' => 0,
+				'min'     => 0,
+			]
+		);
+
+		$this->end_controls_section();
+
+		/**
+		 * Hook for Pro to add additional style sections.
+		 *
+		 * @param \Elementor\Widget_Base $this The widget instance.
+		 * @since x.x.x
+		 */
+		do_action( 'srfm_elementor_after_styling_section', $this );
 	}
 
 	/**
@@ -220,8 +682,10 @@ class Form_Widget extends Widget_Base {
 		}
 
 		$is_editor = Plugin::instance()->editor->is_edit_mode();
+		$form_id   = intval( $settings['srfm_form_block'] ?? 0 );
 
-		if ( $is_editor && isset( $settings['srfm_form_block'] ) && '' === $settings['srfm_form_block'] ) {
+		// Show placeholder in editor when no form selected.
+		if ( $is_editor && empty( $form_id ) ) {
 			?>
 			<div style="background: #D9DEE1; color: #9DA5AE; padding: 10px; font-family: Roboto, sans-serif">
 				<?php echo esc_html__( 'Select the form that you wish to add here.', 'sureforms' ); ?>
@@ -230,21 +694,111 @@ class Form_Widget extends Widget_Base {
 			return;
 		}
 
-		if ( ! isset( $settings['srfm_show_form_title'] ) || ! isset( $settings['srfm_form_block'] ) ) {
+		// Validation: Same as shortcode for backward compatibility.
+		$form = get_post( $form_id );
+		if ( empty( $form_id ) || ! $form || ! in_array( $form->post_status, [ 'publish', 'protected' ], true ) ) {
+			echo esc_html__( 'This form has been deleted or is unavailable.', 'sureforms' );
 			return;
 		}
 
-		$show_form_title = 'true' === $settings['srfm_show_form_title'];
-		// get spectra blocks and add css and js.
-		$blocks = parse_blocks( get_post_field( 'post_content', $settings['srfm_form_block'] ) );
-		$styles = Spec_Gb_Helper::get_instance()->get_assets( $blocks );
+		$show_title = 'true' === ( $settings['srfm_show_form_title'] ?? '' );
 
-		// phpcs:ignore -- WordPress.Security.EscapeOutput.OutputNotEscaped - Escaping not required.
-		echo do_shortcode( '[sureforms id="' . $settings['srfm_form_block'] . '" show_title="' . ! $show_form_title . '"]' );
+		// Build block_attrs from widget settings.
+		$block_attrs = $this->get_block_attrs( $settings );
+
+		// Bypass shortcode - call get_form_markup() directly.
+		// $do_blocks = true to match current shortcode behavior.
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped in Generate_Form_Markup.
+		echo Generate_Form_Markup::get_form_markup(
+			$form_id,
+			! $show_title,
+			'',
+			'post',
+			true,
+			$block_attrs
+		);
+
+		// Get spectra blocks and add css and js.
+		$blocks = parse_blocks( get_post_field( 'post_content', $form_id ) );
+		$styles = Spec_Gb_Helper::get_instance()->get_assets( $blocks );
 		?>
 		<style><?php echo $styles['css']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></style>
 		<script><?php echo $styles['js']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></script>
 		<?php
+	}
+
+	/**
+	 * Convert widget settings to block_attrs array.
+	 * Uses same camelCase keys as Gutenberg for code reuse.
+	 *
+	 * @param array<string, mixed> $settings Widget settings.
+	 * @return array<string, mixed> Block attributes.
+	 * @since x.x.x
+	 */
+	protected function get_block_attrs( $settings ) {
+		$block_attrs = [
+			'blockId' => 'elementor-' . $this->get_id(),
+		];
+
+		// Check if inheriting styling from Instant Form.
+		$inherit_styling               = 'yes' === ( $settings['inheritStyling'] ?? 'yes' );
+		$block_attrs['inheritStyling'] = $inherit_styling;
+
+		// If inheriting styling, don't pass any custom styling attributes.
+		if ( $inherit_styling ) {
+			return $block_attrs;
+		}
+
+		// List of styling keys to pass through (camelCase).
+		$styling_keys = [
+			'primaryColor',
+			'textColor',
+			'textOnPrimaryColor',
+			'fieldSpacing',
+			'buttonAlignment',
+			// Form padding.
+			'formPaddingTop',
+			'formPaddingRight',
+			'formPaddingBottom',
+			'formPaddingLeft',
+			// Form border radius.
+			'formBorderRadiusTop',
+			'formBorderRadiusRight',
+			'formBorderRadiusBottom',
+			'formBorderRadiusLeft',
+			// Background.
+			'bgType',
+			'bgColor',
+			'bgGradient',
+			'bgImageSize',
+			'bgImagePosition',
+			'bgImageRepeat',
+			'bgImageAttachment',
+		];
+
+		foreach ( $styling_keys as $key ) {
+			if ( isset( $settings[ $key ] ) && '' !== $settings[ $key ] && 'default' !== $settings[ $key ] ) {
+				$block_attrs[ $key ] = $settings[ $key ];
+			}
+		}
+
+		// Handle bgImage separately as it returns an object from Elementor.
+		if ( ! empty( $settings['bgImage']['url'] ) ) {
+			$block_attrs['bgImage'] = $settings['bgImage']['url'];
+		}
+		if ( ! empty( $settings['bgImage']['id'] ) ) {
+			$block_attrs['bgImageId'] = $settings['bgImage']['id'];
+		}
+
+		/**
+		 * Filter the block attributes for Elementor widget.
+		 * Pro uses this to add additional styling attributes.
+		 *
+		 * @param array<string, mixed> $block_attrs Block attributes.
+		 * @param array<string, mixed> $settings    Widget settings.
+		 * @since x.x.x
+		 */
+		return apply_filters( 'srfm_elementor_block_attrs', $block_attrs, $settings );
 	}
 
 }
