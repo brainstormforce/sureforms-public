@@ -319,58 +319,6 @@ class Form_Widget extends Widget_Base {
 			]
 		);
 
-		// Field Spacing.
-		// Hidden when custom theme is selected (Pro provides Row Gap/Column Gap controls).
-		$this->add_control(
-			'fieldSpacing',
-			[
-				'label'     => __( 'Field Spacing', 'sureforms' ),
-				'type'      => \Elementor\Controls_Manager::SELECT,
-				'default'   => 'medium',
-				'options'   => [
-					'small'  => __( 'Small', 'sureforms' ),
-					'medium' => __( 'Medium', 'sureforms' ),
-					'large'  => __( 'Large', 'sureforms' ),
-				],
-				'condition' => [
-					'inheritStyling!' => 'yes',
-					'formTheme!'      => 'custom',
-				],
-			]
-		);
-
-		// Button Alignment.
-		$this->add_control(
-			'buttonAlignment',
-			[
-				'label'     => __( 'Button Alignment', 'sureforms' ),
-				'type'      => \Elementor\Controls_Manager::CHOOSE,
-				'options'   => [
-					'left'    => [
-						'title' => __( 'Left', 'sureforms' ),
-						'icon'  => 'eicon-text-align-left',
-					],
-					'center'  => [
-						'title' => __( 'Center', 'sureforms' ),
-						'icon'  => 'eicon-text-align-center',
-					],
-					'right'   => [
-						'title' => __( 'Right', 'sureforms' ),
-						'icon'  => 'eicon-text-align-right',
-					],
-					'justify' => [
-						'title' => __( 'Full Width', 'sureforms' ),
-						'icon'  => 'eicon-text-align-justify',
-					],
-				],
-				'default'   => '',
-				'toggle'    => true,
-				'condition' => [
-					'inheritStyling!' => 'yes',
-				],
-			]
-		);
-
 		// Background Type Heading.
 		$this->add_control(
 			'bgHeading',
@@ -558,7 +506,7 @@ class Form_Widget extends Widget_Base {
 			[
 				'label'      => __( 'Form Padding', 'sureforms' ),
 				'type'       => \Elementor\Controls_Manager::DIMENSIONS,
-				'size_units' => [ 'px', '%', 'em', 'rem' ],
+				'size_units' => [ 'px', '%', 'em' ],
 				'default'    => [
 					'top'      => '0',
 					'right'    => '0',
@@ -577,7 +525,7 @@ class Form_Widget extends Widget_Base {
 			[
 				'label'      => __( 'Form Border Radius', 'sureforms' ),
 				'type'       => \Elementor\Controls_Manager::DIMENSIONS,
-				'size_units' => [ 'px', '%', 'em', 'rem' ],
+				'size_units' => [ 'px', '%', 'em' ],
 				'default'    => [
 					'top'      => '0',
 					'right'    => '0',
@@ -588,6 +536,108 @@ class Form_Widget extends Widget_Base {
 				],
 			]
 		);
+
+		/**
+		 * Hook for Pro to add additional layout controls.
+		 *
+		 * @param \Elementor\Widget_Base $this The widget instance.
+		 * @since x.x.x
+		 */
+		do_action( 'srfm_elementor_layout_controls', $this );
+
+		$this->end_controls_section();
+
+		// Style Tab - Button Section.
+		$this->start_controls_section(
+			'srfm_button_section',
+			[
+				'label'     => __( 'Button', 'sureforms' ),
+				'tab'       => \Elementor\Controls_Manager::TAB_STYLE,
+				'condition' => [
+					'srfm_form_block!' => '',
+					'inheritStyling!'  => 'yes',
+				],
+			]
+		);
+
+		// Button Alignment.
+		$this->add_control(
+			'buttonAlignment',
+			[
+				'label'   => __( 'Alignment', 'sureforms' ),
+				'type'    => \Elementor\Controls_Manager::CHOOSE,
+				'options' => [
+					'left'    => [
+						'title' => __( 'Left', 'sureforms' ),
+						'icon'  => 'eicon-text-align-left',
+					],
+					'center'  => [
+						'title' => __( 'Center', 'sureforms' ),
+						'icon'  => 'eicon-text-align-center',
+					],
+					'right'   => [
+						'title' => __( 'Right', 'sureforms' ),
+						'icon'  => 'eicon-text-align-right',
+					],
+					'justify' => [
+						'title' => __( 'Full Width', 'sureforms' ),
+						'icon'  => 'eicon-text-align-justify',
+					],
+				],
+				'default' => '',
+				'toggle'  => true,
+			]
+		);
+
+		/**
+		 * Hook for Pro to add additional button controls.
+		 *
+		 * @param \Elementor\Widget_Base $this The widget instance.
+		 * @since x.x.x
+		 */
+		do_action( 'srfm_elementor_button_controls', $this );
+
+		$this->end_controls_section();
+
+		// Style Tab - Fields Section.
+		$this->start_controls_section(
+			'srfm_field_section',
+			[
+				'label'     => __( 'Fields', 'sureforms' ),
+				'tab'       => \Elementor\Controls_Manager::TAB_STYLE,
+				'condition' => [
+					'srfm_form_block!' => '',
+					'inheritStyling!'  => 'yes',
+				],
+			]
+		);
+
+		// Field Spacing.
+		// Hidden when custom theme is selected (Pro provides Row Gap/Column Gap controls).
+		$this->add_control(
+			'fieldSpacing',
+			[
+				'label'     => __( 'Field Spacing', 'sureforms' ),
+				'type'      => \Elementor\Controls_Manager::SELECT,
+				'default'   => 'medium',
+				'options'   => [
+					'small'  => __( 'Small', 'sureforms' ),
+					'medium' => __( 'Medium', 'sureforms' ),
+					'large'  => __( 'Large', 'sureforms' ),
+				],
+				'condition' => [
+					'formTheme!' => 'custom',
+				],
+			]
+		);
+
+		/**
+		 * Hook for Pro to add additional field controls.
+		 *
+		 * @param \Elementor\Widget_Base $this The widget instance.
+		 * @since x.x.x
+		 */
+		do_action( 'srfm_elementor_field_controls', $this );
 
 		$this->end_controls_section();
 
