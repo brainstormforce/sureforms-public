@@ -320,6 +320,7 @@ class Form_Widget extends Widget_Base {
 		);
 
 		// Field Spacing.
+		// Hidden when custom theme is selected (Pro provides Row Gap/Column Gap controls).
 		$this->add_control(
 			'fieldSpacing',
 			[
@@ -333,6 +334,7 @@ class Form_Widget extends Widget_Base {
 				],
 				'condition' => [
 					'inheritStyling!' => 'yes',
+					'formTheme!'      => 'custom',
 				],
 			]
 		);
