@@ -10,8 +10,11 @@ import LogoFull from '@Admin/dashboard/templates/LogoFull';
 import Breadcrumb from './Breadcrumb';
 import Tooltip from './Tooltip';
 
-const { site_url: siteURL = '', is_pro_active: isProActive = false } =
-	srfm_admin;
+const {
+	site_url: siteURL = '',
+	is_pro_active: isProActive = false,
+	additional_header_nav_items: additionalNavItems = [],
+} = srfm_admin;
 
 const NAV_ITEMS = [
 	{
@@ -34,6 +37,7 @@ const NAV_ITEMS = [
 		text: __( 'Payments', 'sureforms' ),
 		link: `${ siteURL }/wp-admin/admin.php?page=sureforms_payments`,
 	},
+	...additionalNavItems,
 	{
 		slug: 'sureforms_form_settings',
 		text: __( 'Settings', 'sureforms' ),

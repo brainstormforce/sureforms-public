@@ -833,6 +833,7 @@ class Admin {
 			'onboarding_redirect'        => isset( $_GET['srfm-activation-redirect'] ), // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce is not required for the activation redirection.
 			'pointer_nonce'              => wp_create_nonce( 'sureforms_pointer_action' ),
 			'general_settings_url'       => admin_url( '/options-general.php' ),
+			'additional_header_nav_items' => [],
 			'payments'                   => apply_filters(
 				'srfm_admin_localize_payments_data',
 				[
@@ -856,7 +857,6 @@ class Admin {
 		$is_screen_sureforms_form_settings = Helper::validate_request_context( 'sureforms_form_settings', 'page' );
 		$is_screen_sureforms_payments      = Helper::validate_request_context( 'sureforms_payments', 'page' );
 		$is_screen_sureforms_entries       = Helper::validate_request_context( SRFM_ENTRIES, 'page' );
-		$is_screen_sureforms_quiz_entries  = Helper::validate_request_context( 'sureforms_quiz_entries', 'page' );
 		$is_post_type_sureforms_form       = SRFM_FORMS_POST_TYPE === $current_screen->post_type;
 
 		/**
@@ -870,7 +870,18 @@ class Admin {
 			];
 		}
 
-		if ( $is_screen_sureforms_menu || $is_post_type_sureforms_form || $is_screen_add_new_form || $is_screen_sureforms_forms || $is_screen_sureforms_form_settings || $is_screen_sureforms_entries || $is_screen_sureforms_quiz_entries || $is_screen_sureforms_payments ) {
+		$is_sureforms_screen = $is_screen_sureforms_menu || $is_post_type_sureforms_form || $is_screen_add_new_form || $is_screen_sureforms_forms || $is_screen_sureforms_form_settings || $is_screen_sureforms_entries || $is_screen_sureforms_payments;
+
+		/**
+		 * Filter to allow extending the SureForms dashboard screen check.
+		 *
+		 * @since x.x.x
+		 *
+		 * @param bool $is_sureforms_screen Whether the current screen is a SureForms dashboard screen.
+		 */
+		$is_sureforms_screen = apply_filters( 'srfm_is_dashboard_screen', $is_sureforms_screen );
+
+		if ( $is_sureforms_screen ) {
 			$asset_handle = '-dashboard';
 
 			wp_enqueue_style( SRFM_SLUG . $asset_handle . '-font', 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap', [], SRFM_VER );
