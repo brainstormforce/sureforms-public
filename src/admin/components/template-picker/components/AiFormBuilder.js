@@ -119,9 +119,6 @@ const AiFormBuilder = () => {
 						formTypeObj,
 						content
 					);
-					// console.log(metasToUpdate);
-					// return
-					
 					handleAddNewPost(
 						postContent,
 						formTitle,

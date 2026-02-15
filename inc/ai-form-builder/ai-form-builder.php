@@ -58,7 +58,6 @@ class AI_Form_Builder {
 				'srfm_ai_form_generator_body',
 				[
 					'query' => $messages[0]['content'],
-					'version' => 'quiz-test'
 				],
 				$params
 			)
