@@ -30,6 +30,7 @@ import {
 	Link2,
 	Save,
 	Split,
+	ListTodo,
 } from 'lucide-react';
 
 import Suretriggers from '../integrations/suretriggers';
@@ -452,6 +453,47 @@ const Dialog = ( {
 							localPluginStatus,
 							setLocalPluginStatus,
 						} }
+					/>
+				),
+			},
+			{
+				id: 'quiz-preview',
+				label: __( 'Quizzes', 'sureforms' ),
+				icon: <ListTodo size={ 18 } />,
+				component: (
+					<FeaturePreview
+						featureName={ __( 'Quizzes', 'sureforms' ) }
+						featureHelpText={ __(
+							'Create interactive quizzes to engage your audience and gather insights.',
+							'sureforms'
+						) }
+						icon={
+							<ListTodo
+								className="text-orange-500"
+								size={ 40 }
+								strokeWidth={ 1 }
+							/>
+						}
+						title={ __( 'Quizzes', 'sureforms' ) }
+						subtitle={ __(
+							'Design engaging quizzes with various question types, personalized feedback, and automated scoring to captivate your audience and gain valuable insights.',
+							'sureforms'
+						) }
+						featureList={ [
+							__(
+								'Create interactive quizzes with multiple question types.',
+								'sureforms'
+							),
+							__(
+								'Provide personalized feedback based on user responses.',
+								'sureforms'
+							),
+							__(
+								'Automate scoring and lead segmentation for better insights.',
+								'sureforms'
+							),
+						] }
+						utmMedium="quiz-preview-single-form-settings"
 					/>
 				),
 			},
