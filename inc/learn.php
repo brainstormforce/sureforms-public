@@ -87,7 +87,7 @@ class Learn {
 						'docsUrl'      => 'https://sureforms.com/docs/displaying-forms/',
 						'headerAction' => [
 							'label' => __( 'Embed Forms', 'sureforms' ),
-							'url'   => 'post-new.php?post_type=page&source=learn',
+							'url'   => self::get_embed_forms_url(),
 						],
 						'completed'    => false,
 					],
@@ -322,6 +322,40 @@ class Learn {
 		 * @since x.x.x
 		 */
 		return apply_filters( 'srfm_learn_chapters', $chapters );
+	}
+
+	/**
+	 * Get the edit URL for an existing page to use for the "Embed Forms" lesson.
+	 *
+	 * Finds the "Sample Page" (default WordPress page) or falls back to the
+	 * most recent published page. If no pages exist, falls back to creating a new page.
+	 *
+	 * @return string The admin edit URL for the page.
+	 * @since x.x.x
+	 */
+	public static function get_embed_forms_url() {
+		// Try to find the default "Sample Page" by slug.
+		$sample_page = get_page_by_path( 'sample-page' );
+
+		if ( $sample_page ) {
+			return 'post.php?post=' . $sample_page->ID . '&action=edit&source=learn';
+		}
+
+		// Fallback: get the most recent published page.
+		$pages = get_pages(
+			[
+				'sort_column' => 'post_date',
+				'sort_order'  => 'DESC',
+				'number'      => 1,
+			]
+		);
+
+		if ( ! empty( $pages ) ) {
+			return 'post.php?post=' . $pages[0]->ID . '&action=edit&source=learn';
+		}
+
+		// Last fallback: create a new page.
+		return 'post-new.php?post_type=page&source=learn';
 	}
 
 	/**
