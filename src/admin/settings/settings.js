@@ -34,7 +34,16 @@ function useAdminMenuState() {
 
 			setIsMenuFolded( isFolded || ( isAutoFold && isSmallScreen ) );
 
-			if ( isFolded || ( isAutoFold && isSmallScreen ) ) {
+			// Get actual admin menu width from the DOM element to support plugins that modify it.
+			const adminMenu = document.getElementById( 'adminmenuback' );
+			const actualWidth = adminMenu
+				? adminMenu.getBoundingClientRect().width
+				: 0;
+
+			// Use measured width if valid, otherwise fall back to defaults.
+			if ( actualWidth > 0 ) {
+				setAdminMenuWidth( actualWidth );
+			} else if ( isFolded || ( isAutoFold && isSmallScreen ) ) {
 				setAdminMenuWidth( 36 );
 			} else {
 				setAdminMenuWidth( 160 );
@@ -49,10 +58,24 @@ function useAdminMenuState() {
 			attributeFilter: [ 'class' ],
 		} );
 
+		// Also observe the admin menu for style/width changes from plugins.
+		const adminMenu = document.getElementById( 'adminmenuback' );
+		let menuObserver;
+		if ( adminMenu ) {
+			menuObserver = new MutationObserver( checkMenuState );
+			menuObserver.observe( adminMenu, {
+				attributes: true,
+				attributeFilter: [ 'style', 'class' ],
+			} );
+		}
+
 		window.addEventListener( 'resize', checkMenuState );
 
 		return () => {
 			observer.disconnect();
+			if ( menuObserver ) {
+				menuObserver.disconnect();
+			}
 			window.removeEventListener( 'resize', checkMenuState );
 		};
 	}, [] );
