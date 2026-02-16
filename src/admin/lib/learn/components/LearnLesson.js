@@ -9,6 +9,7 @@ import {
 	CircleCheckBig,
 	Play,
 } from 'lucide-react';
+import { addQueryParam } from '@Utils/Helpers';
 
 /**
  * Component for rendering a single expandable lesson card
@@ -403,14 +404,35 @@ const LearnLesson = ( {
 								{ hasVideo && (
 									<Container.Item>
 										<div className="flex gap-3">
-											{ docsUrl && (
+											{ srfm_admin?.is_pro_active ? (
+												docsUrl && (
+													<Button
+														variant="ghost"
+														size="md"
+														className="flex-1 shadow-sm text-link-primary bg-background-secondary outline-none shadow-none"
+														onClick={ handleDocsClick }
+													>
+														{ __( 'Documentation', 'sureforms' ) }
+													</Button>
+												)
+											) : (
 												<Button
 													variant="ghost"
 													size="md"
 													className="flex-1 shadow-sm text-link-primary bg-background-secondary outline-none shadow-none"
-													onClick={ handleDocsClick }
+													onClick={ ( e ) => {
+														e?.stopPropagation();
+														window.open(
+															addQueryParam(
+																srfm_admin?.sureforms_pricing_page || 'https://sureforms.com/pricing/',
+																'learn-section-upgrade-cta'
+															),
+															'_blank',
+															'noopener,noreferrer'
+														);
+													} }
 												>
-													{ __( 'Documentation', 'sureforms' ) }
+													{ __( 'Upgrade to Pro', 'sureforms' ) }
 												</Button>
 											) }
 											<Button
@@ -446,7 +468,7 @@ const LearnLesson = ( {
 					exitOnClickOutside={ true }
 				>
 					<Dialog.Backdrop />
-					<Dialog.Panel className="max-w-3xl">
+					<Dialog.Panel className="!w-auto !max-w-4xl">
 						<Dialog.Header className="flex flex-row items-center justify-between">
 							<Dialog.Title>{ title }</Dialog.Title>
 							<Dialog.CloseButton />
