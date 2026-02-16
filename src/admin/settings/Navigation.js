@@ -5,6 +5,7 @@ import { cn } from '@Utils/Helpers';
 import {
 	Cpu,
 	CreditCard,
+	MapPin,
 	Settings,
 	ShieldCheck,
 	TriangleAlert,
@@ -79,6 +80,15 @@ export const navigation = applyFilters( 'srfm.settings.navigation', [
 		slug: 'integration-settings',
 		icon: <Cpu />,
 		hidePageTitle: true, // Hide the page title for the Integrations tab.
+	},
+	{
+		name: __( 'Google Maps', 'sureforms' ),
+		slug: 'google-maps-settings',
+		icon: <MapPin />,
+		helpText: __(
+			'Configure Google Maps API key for address autocomplete and map preview.',
+			'sureforms'
+		),
 	},
 	{
 		name: __( 'Payments', 'sureforms' ),

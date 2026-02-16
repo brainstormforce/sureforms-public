@@ -337,6 +337,28 @@ class Frontend_Assets {
 			);
 		}
 
+		if ( 'address' === $block_name && ! empty( $attr['enableAutocomplete'] ) ) {
+			$google_maps_settings = get_option( 'srfm_google_maps_settings', [] );
+			$google_maps_settings = is_array( $google_maps_settings ) ? $google_maps_settings : [];
+			$google_api_key       = isset( $google_maps_settings['srfm_google_maps_api_key'] )
+				? strval( $google_maps_settings['srfm_google_maps_api_key'] )
+				: '';
+
+			if ( ! empty( $google_api_key ) ) {
+				$file_prefix = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? '' : '.min';
+				$dir_name    = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? 'unminified' : 'minified';
+				$js_uri      = SRFM_URL . 'assets/js/' . $dir_name . '/blocks/';
+
+				wp_enqueue_script(
+					SRFM_SLUG . '-address-autocomplete',
+					$js_uri . 'address-autocomplete' . $file_prefix . '.js',
+					[],
+					SRFM_VER,
+					true
+				);
+			}
+		}
+
 		// Trigger custom action hook to allow third-party plugins or add-ons
 		// to enqueue additional scripts/styles for specific blocks (e.g., payment providers).
 		do_action(

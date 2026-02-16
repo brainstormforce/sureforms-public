@@ -8,6 +8,7 @@ import {
 	InnerBlocks,
 } from '@wordpress/block-editor';
 import { useEffect } from '@wordpress/element';
+import { ToggleControl, SelectControl } from '@wordpress/components';
 import SRFMTextControl from '@Components/text-control';
 import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
@@ -25,7 +26,18 @@ import ConditionalLogic from '@Components/conditional-logic';
 import HelpText from '@Components/misc/HelpText';
 
 const Edit = ( { clientId, attributes, setAttributes } ) => {
-	const { label, block_id, formId, preview, help, className } = attributes;
+	const {
+		label,
+		block_id,
+		formId,
+		preview,
+		help,
+		className,
+		enableAutocomplete,
+		showMap,
+		restrictCountry,
+		requirePlaceSelection,
+	} = attributes;
 
 	const currentFormId = useGetCurrentFormId( clientId );
 
@@ -43,6 +55,16 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 
 	const slug = 'address';
 	const blockID = `srfm-${ slug }-${ block_id }`;
+
+	const hasApiKey = !! srfm_block_data?.google_maps_api_key;
+
+	const countryOptions = [
+		{ label: __( 'No restriction', 'sureforms' ), value: '' },
+		...countries.map( ( country ) => ( {
+			label: country.name,
+			value: country.code,
+		} ) ),
+	];
 
 	const addressTemplate = [
 		[
@@ -119,6 +141,85 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 									setAttributes( { help: value } )
 								}
 							/>
+						</SRFMAdvancedPanelBody>
+						<SRFMAdvancedPanelBody
+							title={ __(
+								'Location Services',
+								'sureforms'
+							) }
+							initialOpen={ false }
+						>
+							<ToggleControl
+								label={ __(
+									'Enable Google Autocomplete',
+									'sureforms'
+								) }
+								checked={ enableAutocomplete }
+								onChange={ ( value ) =>
+									setAttributes( {
+										enableAutocomplete: value,
+									} )
+								}
+							/>
+							{ enableAutocomplete && (
+								<>
+									{ ! hasApiKey && (
+										<p
+											className="components-notice is-warning"
+											style={ {
+												padding: '8px 12px',
+												backgroundColor: '#fcf0e3',
+												borderLeft:
+													'4px solid #dba617',
+												margin: '0 0 16px',
+												fontSize: '13px',
+											} }
+										>
+											{ __(
+												'Google Maps API key is not configured. Go to Settings > Google Maps to add your API key.',
+												'sureforms'
+											) }
+										</p>
+									) }
+									<ToggleControl
+										label={ __(
+											'Show Interactive Map',
+											'sureforms'
+										) }
+										checked={ showMap }
+										onChange={ ( value ) =>
+											setAttributes( {
+												showMap: value,
+											} )
+										}
+									/>
+									<SelectControl
+										label={ __(
+											'Restrict to Country',
+											'sureforms'
+										) }
+										value={ restrictCountry }
+										options={ countryOptions }
+										onChange={ ( value ) =>
+											setAttributes( {
+												restrictCountry: value,
+											} )
+										}
+									/>
+									<ToggleControl
+										label={ __(
+											'Require Valid Place Selection',
+											'sureforms'
+										) }
+										checked={ requirePlaceSelection }
+										onChange={ ( value ) =>
+											setAttributes( {
+												requirePlaceSelection: value,
+											} )
+										}
+									/>
+								</>
+							) }
 						</SRFMAdvancedPanelBody>
 					</InspectorTab>
 					<InspectorTab { ...SRFMTabs.advance }>

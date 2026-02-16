@@ -45,6 +45,22 @@
 		"slug": {
 			"type": "string",
 			"default": ""
+		},
+		"enableAutocomplete": {
+			"type": "boolean",
+			"default": false
+		},
+		"showMap": {
+			"type": "boolean",
+			"default": false
+		},
+		"restrictCountry": {
+			"type": "string",
+			"default": ""
+		},
+		"requirePlaceSelection": {
+			"type": "boolean",
+			"default": false
 		}
 	}
 }
