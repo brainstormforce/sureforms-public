@@ -54,51 +54,19 @@ class Learn {
 						'title'        => __( 'Creating Your First Form', 'sureforms' ),
 						'description'  => __( 'Creating a form with SureForms takes just a few minutes. Check out the documentation to learn how to build your first form step by step.', 'sureforms' ),
 						'learn'        => [
-							'type' => 'link',
-							'url'  => 'https://sureforms.com/docs/creating-and-publishing-forms/',
+							'type'    => 'dialog',
+							'content' => [
+								'type' => 'image',
+								'data' => [
+									'src' => SRFM_URL . 'images/learn/creating-first-form.gif',
+									'alt' => __( 'Creating Your First Form', 'sureforms' ),
+								],
+							],
 						],
-						'action'       => [
-							'label'      => __( 'View Documentation', 'sureforms' ),
-							'url'        => 'https://sureforms.com/docs/creating-and-publishing-forms/',
-							'isExternal' => true,
-						],
+						'docsUrl'      => 'https://sureforms.com/docs/creating-and-publishing-forms/',
 						'headerAction' => [
 							'label' => __( 'Create a Form', 'sureforms' ),
 							'url'   => 'admin.php?page=add-new-form&source=learn',
-						],
-						'completed'    => false,
-					],
-					[
-						'id'          => 'customize-forms',
-						'title'       => __( 'Customize Your Forms', 'sureforms' ),
-						'description' => __( 'You can highly customize the look of your form with SureForms. Check out the documentation to learn how to style and customize the appearance of your forms.', 'sureforms' ),
-						'learn'       => [
-							'type' => 'link',
-							'url'  => 'https://sureforms.com/docs/background-styling/',
-						],
-						'action'      => [
-							'label'      => __( 'View Documentation', 'sureforms' ),
-							'url'        => 'https://sureforms.com/docs/background-styling/',
-							'isExternal' => true,
-						],
-						'completed'   => false,
-					],
-					[
-						'id'           => 'publish-forms',
-						'title'        => __( 'Publish Your Forms', 'sureforms' ),
-						'description'  => __( 'Learn different ways to display and embed your forms on your website.', 'sureforms' ),
-						'learn'        => [
-							'type' => 'link',
-							'url'  => 'https://sureforms.com/docs/displaying-forms/',
-						],
-						'action'       => [
-							'label'      => __( 'View Documentation', 'sureforms' ),
-							'url'        => 'https://sureforms.com/docs/displaying-forms/',
-							'isExternal' => true,
-						],
-						'headerAction' => [
-							'label' => __( 'Publish Form', 'sureforms' ),
-							'url'   => 'post-new.php?post_type=sureforms_form&source=learn',
 						],
 						'completed'    => false,
 					],
@@ -107,14 +75,16 @@ class Learn {
 						'title'        => __( 'Embed Your Forms in a Page', 'sureforms' ),
 						'description'  => __( 'Embed Your Forms in a Page', 'sureforms' ),
 						'learn'        => [
-							'type' => 'link',
-							'url'  => 'https://sureforms.com/docs/displaying-forms/',
+							'type'    => 'dialog',
+							'content' => [
+								'type' => 'image',
+								'data' => [
+									'src' => SRFM_URL . 'images/learn/embed-forms.gif',
+									'alt' => __( 'Embed Your Forms in a Page', 'sureforms' ),
+								],
+							],
 						],
-						'action'       => [
-							'label'      => __( 'View Documentation', 'sureforms' ),
-							'url'        => 'https://sureforms.com/docs/displaying-forms/',
-							'isExternal' => true,
-						],
+						'docsUrl'      => 'https://sureforms.com/docs/displaying-forms/',
 						'headerAction' => [
 							'label' => __( 'Embed Forms', 'sureforms' ),
 							'url'   => 'post-new.php?post_type=page&source=learn',
@@ -126,14 +96,16 @@ class Learn {
 						'title'        => __( 'Protect Your Forms From Bots', 'sureforms' ),
 						'description'  => __( 'Protect your forms from spam and bot submissions using Google reCAPTCHA, hCaptcha, Cloudflare and Honeypot.', 'sureforms' ),
 						'learn'        => [
-							'type' => 'link',
-							'url'  => 'https://sureforms.com/docs/google-recaptcha/',
+							'type'    => 'dialog',
+							'content' => [
+								'type' => 'image',
+								'data' => [
+									'src' => SRFM_URL . 'images/learn/secure-forms.gif',
+									'alt' => __( 'Protect Your Forms From Bots', 'sureforms' ),
+								],
+							],
 						],
-						'action'       => [
-							'label'      => __( 'View Documentation', 'sureforms' ),
-							'url'        => 'https://sureforms.com/docs/google-recaptcha/',
-							'isExternal' => true,
-						],
+						'docsUrl'      => 'https://sureforms.com/docs/google-recaptcha/',
 						'headerAction' => [
 							'label' => __( 'Protect Forms', 'sureforms' ),
 							'url'   => 'admin.php?page=sureforms_form_settings&tab=security-settings&subpage=recaptcha',
@@ -160,18 +132,21 @@ class Learn {
 						'completed'    => false,
 					],
 					[
-						'id'           => 'accept-payments',
-						'title'        => __( 'Accept Payment Through Forms', 'sureforms' ),
-						'description'  => __( 'Accept Payment Through Forms', 'sureforms' ),
+						'id'           => 'payment-forms',
+						'title'        => __( 'Payment Forms', 'sureforms' ),
+						'description'  => __( 'You no longer need to set up a full store just to accept payments. With SureForms, you can collect payments using a simple form. Learn how to set up a Payment Form with Stripe and PayPal integration and start accepting payments.', 'sureforms' ),
 						'learn'        => [
-							'type' => 'link',
-							'url'  => 'https://sureforms.com/docs/sureforms-payments/',
+							'type'    => 'dialog',
+							'content' => [
+								'type' => 'video',
+								'data' => [
+									'url'      => 'https://www.youtube.com/embed/XnsBNXwoZe8',
+									'title'    => __( 'Payment Forms', 'sureforms' ),
+									'duration' => 420, // 7 minutes.
+								],
+							],
 						],
-						'action'       => [
-							'label'      => __( 'View Documentation', 'sureforms' ),
-							'url'        => 'https://sureforms.com/docs/sureforms-payments/',
-							'isExternal' => true,
-						],
+						'docsUrl'      => 'https://sureforms.com/docs/how-to-create-a-payment-form-in-sureforms/',
 						'headerAction' => [
 							'label' => __( 'Accept Payment', 'sureforms' ),
 							'url'   => 'admin.php?page=sureforms_payments',
@@ -258,24 +233,7 @@ class Learn {
 						'docsUrl'     => 'https://sureforms.com/docs/sureforms-pdf-generation-feature/',
 						'completed'   => false,
 					],
-					[
-						'id'          => 'payment-forms',
-						'title'       => __( 'Payment Forms', 'sureforms' ),
-						'description' => __( 'You no longer need to set up a full store just to accept payments. With SureForms, you can collect payments using a simple form. Learn how to set up a Payment Form with Stripe and PayPal integration and start accepting payments.', 'sureforms' ),
-						'learn'       => [
-							'type'    => 'dialog',
-							'content' => [
-								'type' => 'video',
-								'data' => [
-									'url'      => 'https://www.youtube.com/embed/XnsBNXwoZe8',
-									'title'    => __( 'Payment Forms', 'sureforms' ),
-									'duration' => 420, // 7 minutes.
-								],
-							],
-						],
-						'docsUrl'     => 'https://sureforms.com/docs/how-to-create-a-payment-form-in-sureforms/',
-						'completed'   => false,
-					],
+
 					[
 						'id'          => 'form-restrictions',
 						'title'       => __( 'Form Restrictions', 'sureforms' ),

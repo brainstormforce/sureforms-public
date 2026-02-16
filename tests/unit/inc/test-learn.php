@@ -391,8 +391,6 @@ class Test_Learn extends TestCase {
 		$step_ids = array_column( $basics_chapter['steps'], 'id' );
 
 		$this->assertContains( 'creating-first-form', $step_ids, 'Should contain creating-first-form step.' );
-		$this->assertContains( 'customize-forms', $step_ids, 'Should contain customize-forms step.' );
-		$this->assertContains( 'publish-forms', $step_ids, 'Should contain publish-forms step.' );
 		$this->assertContains( 'secure-forms', $step_ids, 'Should contain secure-forms step.' );
 	}
 

@@ -1,5 +1,5 @@
 import { __, sprintf } from '@wordpress/i18n';
-import { Badge, Button, Container, Label } from '@bsf/force-ui';
+import { Badge, Button, Container, Dialog, Label, Skeleton, Tooltip } from '@bsf/force-ui';
 import { useState, useEffect } from '@wordpress/element';
 import {
 	ChevronDown,
@@ -42,6 +42,8 @@ const LearnLesson = ( {
 
 	const [ isCompleted, setIsCompleted ] = useState( completed );
 	const [ isVideoPlaying, setIsVideoPlaying ] = useState( false );
+	const [ isImageDialogOpen, setIsImageDialogOpen ] = useState( false );
+	const [ isImageLoaded, setIsImageLoaded ] = useState( false );
 
 	// Update local state when completed prop changes
 	useEffect( () => {
@@ -112,6 +114,13 @@ const LearnLesson = ( {
 		if ( docsUrl ) {
 			window.open( docsUrl, '_blank', 'noopener,noreferrer' );
 		}
+	};
+
+	// Handler for opening the image dialog.
+	const handleOpenImageDialog = ( e ) => {
+		e?.stopPropagation();
+		setIsImageLoaded( false );
+		setIsImageDialogOpen( true );
 	};
 
 	const getStatusIcon = () => {
@@ -188,6 +197,8 @@ const LearnLesson = ( {
 	const videoDuration = getVideoDuration();
 	const hasVideo =
 		learn?.type === 'dialog' && learn?.content?.type === 'video';
+	const hasImage =
+		learn?.type === 'dialog' && learn?.content?.type === 'image';
 
 	return (
 		<Container
@@ -344,14 +355,27 @@ const LearnLesson = ( {
 										{ description }
 									</Label>
 									<div className="flex items-center gap-1 flex-shrink-0">
-										{ ! hasVideo && action?.url && (
-											<Button
-												variant="ghost"
-												size="xs"
-												icon={ <CircleAlert className="size-5" /> }
-												onClick={ handleActionClick }
-												aria-label={ action?.label || __( 'Documentation', 'sureforms' ) }
-											/>
+										{ ! hasVideo && hasImage && (
+											<Tooltip content={ __( 'View Documentation', 'sureforms' ) } arrow={ true } tooltipPortalId="srfm-learn-root">
+												<Button
+													variant="ghost"
+													size="xs"
+													icon={ <CircleAlert className="size-5" /> }
+													onClick={ handleOpenImageDialog }
+													aria-label={ __( 'View Documentation', 'sureforms' ) }
+												/>
+											</Tooltip>
+										) }
+										{ ! hasVideo && ! hasImage && action?.url && (
+											<Tooltip content={ __( 'View Documentation', 'sureforms' ) } arrow={ true } tooltipPortalId="srfm-learn-root">
+												<Button
+													variant="ghost"
+													size="xs"
+													icon={ <CircleAlert className="size-5" /> }
+													onClick={ handleActionClick }
+													aria-label={ __( 'View Documentation', 'sureforms' ) }
+												/>
+											</Tooltip>
 										) }
 										{ isExpanded && headerAction?.url && (
 											<Button
@@ -412,6 +436,47 @@ const LearnLesson = ( {
 						</Container.Item>
 					</Container>
 				</Container.Item>
+			) }
+
+			{ /* Image Dialog */ }
+			{ hasImage && (
+				<Dialog
+					open={ isImageDialogOpen }
+					setOpen={ setIsImageDialogOpen }
+					exitOnClickOutside={ true }
+				>
+					<Dialog.Backdrop />
+					<Dialog.Panel className="max-w-3xl">
+						<Dialog.Header className="flex flex-row items-center justify-between">
+							<Dialog.Title>{ title }</Dialog.Title>
+							<Dialog.CloseButton />
+						</Dialog.Header>
+						<Dialog.Body>
+							<div className="relative w-full rounded-lg overflow-hidden">
+								{ ! isImageLoaded && (
+									<Skeleton className="w-full h-64" />
+								) }
+								<img
+									src={ learn?.content?.data?.src }
+									alt={ learn?.content?.data?.alt || title }
+									className={ `w-full h-auto border border-solid border-border-subtle rounded-lg ${ isImageLoaded ? 'block' : 'hidden' }` }
+									onLoad={ () => setIsImageLoaded( true ) }
+								/>
+							</div>
+						</Dialog.Body>
+						{ docsUrl && (
+							<Dialog.Footer>
+								<Button
+									variant="outline"
+									size="sm"
+									onClick={ () => window.open( docsUrl, '_blank', 'noopener,noreferrer' ) }
+								>
+									{ __( 'View Documentation', 'sureforms' ) }
+								</Button>
+							</Dialog.Footer>
+						) }
+					</Dialog.Panel>
+				</Dialog>
 			) }
 		</Container>
 	);
