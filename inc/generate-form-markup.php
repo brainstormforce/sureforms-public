@@ -521,10 +521,14 @@ class Generate_Form_Markup {
 				<?php
 				return ob_get_clean();
 			}
+			$get_nonces                      = Helper::get_frontend_nonces();
+			$unique_validation_nonce         = $get_nonces['unique_validation'];
+			$form_submit_nonce               = $get_nonces['form_submit'];
+			$should_update_form_markup_nonce = Helper::should_update_form_markup_nonce();
 
 			?>
 				<form method="post" enctype="multipart/form-data" id="srfm-form-<?php echo esc_attr( Helper::get_string_value( $id ) ); ?>" class="srfm-form <?php echo esc_attr( 'sureforms_form' === $post_type ? 'srfm-single-form ' : '' ); ?>"
-				form-id="<?php echo esc_attr( Helper::get_string_value( $id ) ); ?>" after-submission="<?php echo esc_attr( $submission_action ); ?>" message-type="<?php echo esc_attr( $confirmation_type ? $confirmation_type : 'same page' ); ?>" success-url="<?php echo esc_attr( $success_url ? $success_url : '' ); ?>" ajaxurl="<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>" data-nonce="<?php echo esc_attr( wp_create_nonce( 'unique_validation_nonce' ) ); ?>"
+				form-id="<?php echo esc_attr( Helper::get_string_value( $id ) ); ?>" after-submission="<?php echo esc_attr( $submission_action ); ?>" message-type="<?php echo esc_attr( $confirmation_type ? $confirmation_type : 'same page' ); ?>" success-url="<?php echo esc_attr( $success_url ? $success_url : '' ); ?>" ajaxurl="<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>" data-nonce="<?php echo esc_attr( $unique_validation_nonce ); ?>" data-submit-nonce="<?php echo esc_attr( $form_submit_nonce ); ?>" data-update-nonce="<?php echo esc_attr( $should_update_form_markup_nonce ? 'yes' : 'no' ); ?>"
 				>
 				<?php
 					wp_nonce_field( 'srfm-form-submit', 'sureforms_form_submit' );
