@@ -314,12 +314,13 @@ class Frontend_Assets {
 			);
 
 			// Localize script for Stripe payment functionality.
+			$frontend_nonces = Helper::get_frontend_nonces();
 			wp_localize_script(
 				SRFM_SLUG . '-stripe-payment',
 				'srfm_ajax',
 				[
-					'ajax_url' => admin_url( 'admin-ajax.php' ),
-					'nonce'    => wp_create_nonce( 'srfm_stripe_payment_nonce' ),
+					'ajax_url'      => admin_url( 'admin-ajax.php' ),
+					'payment_nonce' => $frontend_nonces['payment_nonce'],
 				]
 			);
 

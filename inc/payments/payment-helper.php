@@ -764,7 +764,7 @@ class Payment_Helper {
 	/**
 	 * Get currency sign position.
 	 *
-	 * @since x.x.x
+	 * @since 2.5.1
 	 * @return string Currency sign position ('left', 'right', 'left_space', 'right_space').
 	 */
 	public static function get_currency_sign_position() {

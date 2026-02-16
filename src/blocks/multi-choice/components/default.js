@@ -1,4 +1,5 @@
 import { RichText } from '@wordpress/block-editor';
+import { applyFilters } from '@wordpress/hooks';
 import { decodeHtmlEntities } from '@Blocks/util';
 import parse from 'html-react-parser';
 import svgIcons from '@Svg/svgs.json';
@@ -34,6 +35,18 @@ export const MultiChoiceComponent = ( {
 		const selectionSvg = singleSelection
 			? parse( svgIcons[ 'circle-unchecked' ] )
 			: parse( svgIcons[ 'square-unchecked' ] );
+
+		// Allow filtering the options view (e.g., to show a notice when dynamic options are empty).
+		const filteredView = applyFilters(
+			'srfm.multichoice.options.view',
+			null,
+			attributes
+		);
+
+		if ( filteredView ) {
+			return filteredView;
+		}
+
 		return (
 			<div
 				className={ `srfm-block-wrap srfm-choice-width-${ choiceWidthClass }${

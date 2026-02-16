@@ -152,7 +152,7 @@ class Global_Settings {
 		 *
 		 * @since 1.7.0
 		 *
-		 * @since x.x.x - Renamed sureforms_analytics_optin to sureforms_usage_optin.
+		 * @since 2.5.1 - Renamed sureforms_analytics_optin to sureforms_usage_optin.
 		 */
 		$analytics_result = self::update_bsf_analytics( $srfm_bsf_analytics );
 
@@ -393,7 +393,7 @@ class Global_Settings {
 		 *
 		 * @since 1.7.0
 		 *
-		 * @since x.x.x - Renamed sureforms_analytics_optin to sureforms_usage_optin.
+		 * @since 2.5.1 - Renamed sureforms_analytics_optin to sureforms_usage_optin.
 		 */
 		$srfm_bsf_analytics = get_option( 'sureforms_usage_optin', false ) === 'yes' ? true : false;
 		$global_setting_options['srfm_general_settings_options']['srfm_bsf_analytics'] = $srfm_bsf_analytics;

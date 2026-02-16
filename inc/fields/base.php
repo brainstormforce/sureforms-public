@@ -405,7 +405,7 @@ class Base {
 		$this->placeholder        = $attributes['placeholder'] ?? '';
 		$this->default            = $attributes['defaultValue'] ?? '';
 		$this->checked            = $attributes['checked'] ?? '';
-		$this->options            = $attributes['options'] ?? '';
+		$this->options            = apply_filters( 'srfm_field_options', $attributes['options'] ?? '', $attributes );
 		$this->is_unique          = $attributes['isUnique'] ?? false;
 		$this->conditional_class  = apply_filters( 'srfm_conditional_logic_classes', $this->form_id, $this->block_id );
 		$this->data_require_attr  = $this->required ? 'true' : 'false';

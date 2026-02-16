@@ -76,7 +76,7 @@ class StripePayment {
 				? 'srfm_create_subscription_intent'
 				: 'srfm_create_payment_intent'
 		);
-		data.append( 'nonce', srfm_ajax.nonce );
+		data.append( 'nonce', srfm_ajax.payment_nonce );
 		// Handle zero-decimal currencies (JPY, KRW, etc.) - don't multiply by 100
 		const formattedAmount =
 			window?.srfmStripe?.zeroDecimalCurrencies?.includes(
