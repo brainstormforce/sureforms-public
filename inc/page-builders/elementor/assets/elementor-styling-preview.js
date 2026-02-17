@@ -11,6 +11,67 @@
 ( function () {
 	'use strict';
 
+	/**
+	 * Resolve a global color key to its actual color value.
+	 *
+	 * When a user selects a global color in Elementor, the value is stored as
+	 * a reference like 'globals/colors?id=primary'. This function resolves
+	 * that reference to the actual color value.
+	 *
+	 * @param {string} globalKey The global color key (e.g., 'globals/colors?id=primary').
+	 * @return {string|null} The resolved color value or null if not found.
+	 */
+	function resolveGlobalColor( globalKey ) {
+		if ( ! globalKey || typeof globalKey !== 'string' ) {
+			return null;
+		}
+
+		// Parse the global key to extract the color ID.
+		// Format: 'globals/colors?id=primary' -> id: 'primary'
+		const match = globalKey.match( /id=([^&]+)/ );
+		if ( ! match ) {
+			return null;
+		}
+
+		const colorId = match[ 1 ];
+
+		try {
+			// Method 1: Get from CSS variable (most reliable).
+			// Elementor outputs global colors as CSS variables: --e-global-color-{id}
+			const cssVarName = '--e-global-color-' + colorId;
+			const cssValue = getComputedStyle( document.documentElement )
+				.getPropertyValue( cssVarName )
+				.trim();
+			if ( cssValue ) {
+				return cssValue;
+			}
+
+			// Method 2: Try to get from $e.data cache (fallback).
+			if (
+				typeof $e !== 'undefined' &&
+				$e.data &&
+				$e.components &&
+				$e.components.get
+			) {
+				const globalsComponent = $e.components.get( 'globals' );
+				if ( globalsComponent ) {
+					const data = $e.data.getCache(
+						globalsComponent,
+						'globals/colors',
+						{ id: colorId }
+					);
+					if ( data && data.value ) {
+						return data.value;
+					}
+				}
+			}
+		} catch ( e ) {
+			// Silently fail and return null.
+		}
+
+		return null;
+	}
+
 	window.addEventListener( 'elementor/frontend/init', function () {
 		if (
 			typeof elementorFrontend === 'undefined' ||
@@ -38,6 +99,9 @@
 					elementor.channels &&
 					elementor.channels.editor
 				) {
+					const widgetId = $scope.data( 'id' );
+
+					// Regular control change listener.
 					elementor.channels.editor.on(
 						'change',
 						function ( controlView ) {
@@ -48,14 +112,20 @@
 								return;
 							}
 
-							const widgetId = $scope.data( 'id' );
 							if ( controlView.container.id !== widgetId ) {
 								return;
 							}
 
 							const name = controlView.model.get( 'name' );
-							const value =
+							let value =
 								controlView.container.settings.get( name );
+
+							// Check for global color value and resolve it.
+							const globalKey =
+								controlView.container.globals.get( name );
+							if ( globalKey ) {
+								value = resolveGlobalColor( globalKey );
+							}
 
 							applyStyleUpdate(
 								container,
@@ -65,6 +135,45 @@
 							);
 						}
 					);
+
+					// Listen for global color changes.
+					// When a global color is selected, Elementor updates the globals model
+					// instead of firing the regular change event.
+					const widgetContainer = elementor.getContainer
+						? elementor.getContainer( widgetId )
+						: null;
+
+					if ( widgetContainer && widgetContainer.globals ) {
+						widgetContainer.globals.on(
+							'change',
+							function ( model ) {
+								// Get all changed attributes.
+								const changed = model.changed;
+								for ( const name in changed ) {
+									const globalKey = changed[ name ];
+									let value = null;
+
+									if ( globalKey ) {
+										// Global color selected - resolve it.
+										value = resolveGlobalColor( globalKey );
+									} else {
+										// Global color cleared - get direct value.
+										value =
+											widgetContainer.settings.get(
+												name
+											);
+									}
+
+									applyStyleUpdate(
+										container,
+										name,
+										value,
+										originalClasses
+									);
+								}
+							}
+						);
+					}
 				}
 			}
 		);

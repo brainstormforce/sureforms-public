@@ -480,7 +480,7 @@ class Form_Widget extends Widget_Base {
 		/**
 		 * Hook for Pro to add advanced styling controls.
 		 *
-		 * @param \Elementor\Widget_Base $this The widget instance.
+		 * @param \Elementor\Widget_Base $widget The widget instance.
 		 * @since x.x.x
 		 */
 		do_action( 'srfm_elementor_after_basic_styling_controls', $this );
@@ -540,7 +540,7 @@ class Form_Widget extends Widget_Base {
 		/**
 		 * Hook for Pro to add additional layout controls.
 		 *
-		 * @param \Elementor\Widget_Base $this The widget instance.
+		 * @param \Elementor\Widget_Base $widget The widget instance.
 		 * @since x.x.x
 		 */
 		do_action( 'srfm_elementor_layout_controls', $this );
@@ -592,7 +592,7 @@ class Form_Widget extends Widget_Base {
 		/**
 		 * Hook for Pro to add additional button controls.
 		 *
-		 * @param \Elementor\Widget_Base $this The widget instance.
+		 * @param \Elementor\Widget_Base $widget The widget instance.
 		 * @since x.x.x
 		 */
 		do_action( 'srfm_elementor_button_controls', $this );
@@ -634,7 +634,7 @@ class Form_Widget extends Widget_Base {
 		/**
 		 * Hook for Pro to add additional field controls.
 		 *
-		 * @param \Elementor\Widget_Base $this The widget instance.
+		 * @param \Elementor\Widget_Base $widget The widget instance.
 		 * @since x.x.x
 		 */
 		do_action( 'srfm_elementor_field_controls', $this );
@@ -644,7 +644,7 @@ class Form_Widget extends Widget_Base {
 		/**
 		 * Hook for Pro to add additional style sections.
 		 *
-		 * @param \Elementor\Widget_Base $this The widget instance.
+		 * @param \Elementor\Widget_Base $widget The widget instance.
 		 * @since x.x.x
 		 */
 		do_action( 'srfm_elementor_after_styling_section', $this );
@@ -731,16 +731,27 @@ class Form_Widget extends Widget_Base {
 			return $block_attrs;
 		}
 
-		// List of styling keys to pass through (camelCase).
-		$styling_keys = [
+		// Color controls that support Elementor Global Colors.
+		$color_keys = [
 			'primaryColor',
 			'textColor',
 			'textOnPrimaryColor',
+			'bgColor',
+		];
+
+		foreach ( $color_keys as $key ) {
+			$color_value = $this->get_color_value( $settings, $key );
+			if ( $color_value ) {
+				$block_attrs[ $key ] = $color_value;
+			}
+		}
+
+		// Non-color styling keys to pass through (camelCase).
+		$styling_keys = [
 			'fieldSpacing',
 			'buttonAlignment',
-			// Background.
+			// Background (non-color).
 			'bgType',
-			'bgColor',
 			'bgGradient',
 			'bgImageSize',
 			'bgImagePosition',
@@ -792,11 +803,12 @@ class Form_Widget extends Widget_Base {
 		}
 
 		// Handle bgImage separately as it returns an object from Elementor.
-		if ( ! empty( $settings['bgImage']['url'] ) ) {
-			$block_attrs['bgImage'] = $settings['bgImage']['url'];
+		$bg_image = isset( $settings['bgImage'] ) && is_array( $settings['bgImage'] ) ? $settings['bgImage'] : [];
+		if ( ! empty( $bg_image['url'] ) ) {
+			$block_attrs['bgImage'] = $bg_image['url'];
 		}
-		if ( ! empty( $settings['bgImage']['id'] ) ) {
-			$block_attrs['bgImageId'] = $settings['bgImage']['id'];
+		if ( ! empty( $bg_image['id'] ) ) {
+			$block_attrs['bgImageId'] = $bg_image['id'];
 		}
 
 		/**
@@ -808,6 +820,102 @@ class Form_Widget extends Widget_Base {
 		 * @since x.x.x
 		 */
 		return apply_filters( 'srfm_elementor_block_attrs', $block_attrs, $settings );
+	}
+
+	/**
+	 * Resolve a global color to its actual hex value.
+	 *
+	 * When a user selects a global color in Elementor, the value is stored in
+	 * __globals__ array as 'globals/colors?id=primary'. This method resolves
+	 * that reference to the actual color value.
+	 *
+	 * @param array<string, mixed> $settings    Widget settings.
+	 * @param string               $control_key The control key to resolve.
+	 * @return string|null The resolved color value or null if not found.
+	 * @since x.x.x
+	 */
+	protected function resolve_global_color( $settings, $control_key ) {
+		// Check if there's a global color reference.
+		$globals = isset( $settings['__globals__'] ) && is_array( $settings['__globals__'] ) ? $settings['__globals__'] : [];
+		if ( empty( $globals[ $control_key ] ) ) {
+			return null;
+		}
+
+		$global_key = is_string( $globals[ $control_key ] ) ? $globals[ $control_key ] : '';
+		if ( empty( $global_key ) ) {
+			return null;
+		}
+
+		// Use Elementor's data manager to resolve the global value.
+		if ( ! class_exists( '\Elementor\Plugin' ) || ! isset( Plugin::$instance->data_manager_v2 ) ) {
+			return null;
+		}
+
+		$data = Plugin::$instance->data_manager_v2->run( $global_key );
+
+		if ( ! is_array( $data ) || empty( $data['value'] ) ) {
+			return null;
+		}
+
+		return is_string( $data['value'] ) ? $data['value'] : null;
+	}
+
+	/**
+	 * Get color value from settings, checking both direct value and global color.
+	 *
+	 * @param array<string, mixed> $settings    Widget settings.
+	 * @param string               $control_key The control key.
+	 * @return string|null The color value or null if not set.
+	 * @since x.x.x
+	 */
+	protected function get_color_value( $settings, $control_key ) {
+		// First check for a global color reference.
+		$global_color = $this->resolve_global_color( $settings, $control_key );
+		if ( $global_color ) {
+			return $global_color;
+		}
+
+		// Fall back to direct value.
+		if ( isset( $settings[ $control_key ] ) && '' !== $settings[ $control_key ] && 'default' !== $settings[ $control_key ] ) {
+			$value = $settings[ $control_key ];
+			return is_string( $value ) ? $value : null;
+		}
+
+		return null;
+	}
+
+	/**
+	 * Static method to get color value from settings.
+	 * Can be used by Pro plugin to resolve global colors.
+	 *
+	 * @param array<string, mixed> $settings    Widget settings.
+	 * @param string               $control_key The control key.
+	 * @return string|null The color value or null if not set.
+	 * @since x.x.x
+	 */
+	public static function get_resolved_color( $settings, $control_key ) {
+		// First check for a global color reference.
+		$globals = isset( $settings['__globals__'] ) && is_array( $settings['__globals__'] ) ? $settings['__globals__'] : [];
+		if ( ! empty( $globals[ $control_key ] ) ) {
+			$global_key = is_string( $globals[ $control_key ] ) ? $globals[ $control_key ] : '';
+
+			// Use Elementor's data manager to resolve the global value.
+			if ( $global_key && class_exists( '\Elementor\Plugin' ) && isset( Plugin::$instance->data_manager_v2 ) ) {
+				$data = Plugin::$instance->data_manager_v2->run( $global_key );
+
+				if ( is_array( $data ) && ! empty( $data['value'] ) && is_string( $data['value'] ) ) {
+					return $data['value'];
+				}
+			}
+		}
+
+		// Fall back to direct value.
+		if ( isset( $settings[ $control_key ] ) && '' !== $settings[ $control_key ] && 'default' !== $settings[ $control_key ] ) {
+			$value = $settings[ $control_key ];
+			return is_string( $value ) ? $value : null;
+		}
+
+		return null;
 	}
 
 }
