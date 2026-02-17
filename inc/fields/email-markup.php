@@ -81,6 +81,7 @@ class Email_Markup extends Base {
 		$this->set_duplicate_msg( $attributes, 'srfm_email_block_unique_text' );
 		$this->slug                         = 'email';
 		$this->is_confirm_email             = $attributes['isConfirmEmail'] ?? false;
+		// Translators: %s is the field label.
 		$this->input_confirm_label_fallback = sprintf( __( 'Confirm %s', 'sureforms' ), $this->input_label_fallback );
 		$this->input_confirm_label          = '-lbl-' . Helper::encrypt( $this->input_confirm_label_fallback );
 		$this->unique_confirm_slug          = 'srfm-' . $this->slug . '-confirm-' . $this->block_id . $this->input_confirm_label;
