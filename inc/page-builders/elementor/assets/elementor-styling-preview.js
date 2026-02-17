@@ -4,7 +4,7 @@
  * Handles live preview of styling changes in the Elementor editor.
  * Listens for control value changes and applies CSS variables directly to the DOM.
  *
- * @package sureforms
+ * @package
  * @since x.x.x
  */
 
@@ -73,7 +73,12 @@
 	/**
 	 * Background-related controls that use dataset storage.
 	 */
-	const BACKGROUND_CONTROLS = [ 'bgType', 'bgColor', 'bgGradient', 'bgImage' ];
+	const BACKGROUND_CONTROLS = [
+		'bgType',
+		'bgColor',
+		'bgGradient',
+		'bgImage',
+	];
 
 	/**
 	 * All free plugin control names for reset functionality.
@@ -294,7 +299,10 @@
 
 					for ( const key in finalSize ) {
 						if ( Object.hasOwn( finalSize, key ) ) {
-							container.style.setProperty( key, finalSize[ key ] );
+							container.style.setProperty(
+								key,
+								finalSize[ key ]
+							);
 						}
 					}
 				}
@@ -457,9 +465,9 @@
 	/**
 	 * Apply style update based on control name and value.
 	 *
-	 * @param {HTMLElement} container      The form container element.
-	 * @param {string}      name           The control name.
-	 * @param {string}      value          The control value.
+	 * @param {HTMLElement} container       The form container element.
+	 * @param {string}      name            The control name.
+	 * @param {string}      value           The control value.
 	 * @param {string}      originalClasses Original container classes for reset.
 	 */
 	function applyStyleUpdate( container, name, value, originalClasses ) {
