@@ -19,6 +19,24 @@ const GeneralSettings = ( props ) => {
 		return currency ? currency.label : currencies[ 0 ].label;
 	};
 
+	const currencyPositionOptions = [
+		{ value: 'left', label: __( 'Left ($100)', 'sureforms' ) },
+		{ value: 'right', label: __( 'Right (100$)', 'sureforms' ) },
+		{ value: 'left_space', label: __( 'Left Space ($ 100)', 'sureforms' ) },
+		{
+			value: 'right_space',
+			label: __( 'Right Space (100 $)', 'sureforms' ),
+		},
+	];
+
+	// Get current currency sign position label
+	const getCurrentCurrencySignPositionLabel = () => {
+		const position = currencyPositionOptions.find(
+			( p ) => p.value === paymentsSettings.currency_sign_position
+		);
+		return position ? position.label : currencyPositionOptions[ 0 ].label;
+	};
+
 	const currencySelection = (
 		<div className="flex flex-col gap-2">
 			<Select
@@ -92,10 +110,48 @@ const GeneralSettings = ( props ) => {
 		</div>
 	);
 
+	const currencySignPosition = (
+		<div className="flex flex-col gap-2">
+			<Select
+				value={ paymentsSettings.currency_sign_position }
+				onChange={ ( value ) =>
+					onSettingChange( 'currency_sign_position', value )
+				}
+			>
+				<Select.Button
+					type="button"
+					label={ __( 'Currency Sign Position', 'sureforms' ) }
+					size="md"
+				>
+					{ getCurrentCurrencySignPositionLabel() }
+				</Select.Button>
+				<Select.Portal id="srfm-settings-container">
+					<Select.Options>
+						{ currencyPositionOptions.map( ( option ) => (
+							<Select.Option
+								key={ option.value }
+								value={ option.value }
+							>
+								{ option.label }
+							</Select.Option>
+						) ) }
+					</Select.Options>
+				</Select.Portal>
+			</Select>
+			<p className="text-sm text-field-helper">
+				{ __(
+					'Select the position of the currency symbol relative to the amount.',
+					'sureforms'
+				) }
+			</p>
+		</div>
+	);
+
 	const content = (
 		<div className="flex flex-col gap-6 px-2">
 			{ currencySelection }
 			{ paymentMode }
+			{ currencySignPosition }
 		</div>
 	);
 
