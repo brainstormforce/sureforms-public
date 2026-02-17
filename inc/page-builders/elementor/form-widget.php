@@ -11,9 +11,9 @@ namespace SRFM\Inc\Page_Builders\Elementor;
 use Elementor\Plugin;
 use Elementor\Widget_Base;
 use Spec_Gb_Helper;
+use SRFM\Inc\Generate_Form_Markup;
 use SRFM\Inc\Helper;
 use SRFM\Inc\Page_Builders\Page_Builders;
-use SRFM\Inc\Generate_Form_Markup;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -177,6 +177,40 @@ class Form_Widget extends Widget_Base {
 			'form',
 			'elementor form',
 		];
+	}
+
+	/**
+	 * Static method to get color value from settings.
+	 * Can be used by Pro plugin to resolve global colors.
+	 *
+	 * @param array<string, mixed> $settings    Widget settings.
+	 * @param string               $control_key The control key.
+	 * @return string|null The color value or null if not set.
+	 * @since x.x.x
+	 */
+	public static function get_resolved_color( $settings, $control_key ) {
+		// First check for a global color reference.
+		$globals = isset( $settings['__globals__'] ) && is_array( $settings['__globals__'] ) ? $settings['__globals__'] : [];
+		if ( ! empty( $globals[ $control_key ] ) ) {
+			$global_key = is_string( $globals[ $control_key ] ) ? $globals[ $control_key ] : '';
+
+			// Use Elementor's data manager to resolve the global value.
+			if ( $global_key && class_exists( '\Elementor\Plugin' ) && isset( Plugin::$instance->data_manager_v2 ) ) {
+				$data = Plugin::$instance->data_manager_v2->run( $global_key );
+
+				if ( is_array( $data ) && ! empty( $data['value'] ) && is_string( $data['value'] ) ) {
+					return $data['value'];
+				}
+			}
+		}
+
+		// Fall back to direct value.
+		if ( isset( $settings[ $control_key ] ) && '' !== $settings[ $control_key ] && 'default' !== $settings[ $control_key ] ) {
+			$value = $settings[ $control_key ];
+			return is_string( $value ) ? $value : null;
+		}
+
+		return null;
 	}
 
 	/**
@@ -873,40 +907,6 @@ class Form_Widget extends Widget_Base {
 		$global_color = $this->resolve_global_color( $settings, $control_key );
 		if ( $global_color ) {
 			return $global_color;
-		}
-
-		// Fall back to direct value.
-		if ( isset( $settings[ $control_key ] ) && '' !== $settings[ $control_key ] && 'default' !== $settings[ $control_key ] ) {
-			$value = $settings[ $control_key ];
-			return is_string( $value ) ? $value : null;
-		}
-
-		return null;
-	}
-
-	/**
-	 * Static method to get color value from settings.
-	 * Can be used by Pro plugin to resolve global colors.
-	 *
-	 * @param array<string, mixed> $settings    Widget settings.
-	 * @param string               $control_key The control key.
-	 * @return string|null The color value or null if not set.
-	 * @since x.x.x
-	 */
-	public static function get_resolved_color( $settings, $control_key ) {
-		// First check for a global color reference.
-		$globals = isset( $settings['__globals__'] ) && is_array( $settings['__globals__'] ) ? $settings['__globals__'] : [];
-		if ( ! empty( $globals[ $control_key ] ) ) {
-			$global_key = is_string( $globals[ $control_key ] ) ? $globals[ $control_key ] : '';
-
-			// Use Elementor's data manager to resolve the global value.
-			if ( $global_key && class_exists( '\Elementor\Plugin' ) && isset( Plugin::$instance->data_manager_v2 ) ) {
-				$data = Plugin::$instance->data_manager_v2->run( $global_key );
-
-				if ( is_array( $data ) && ! empty( $data['value'] ) && is_string( $data['value'] ) ) {
-					return $data['value'];
-				}
-			}
 		}
 
 		// Fall back to direct value.
