@@ -12,6 +12,83 @@
 	'use strict';
 
 	/**
+	 * Simple CSS variable mappings: controlName → cssVariable
+	 * For controls that just set a single CSS variable.
+	 */
+	const SIMPLE_CSS_MAP = {
+		textOnPrimaryColor: '--srfm-color-scheme-text-on-primary',
+		bgImageSize: '--srfm-bg-size',
+		bgImagePosition: '--srfm-bg-position',
+		bgImageRepeat: '--srfm-bg-repeat',
+		bgImageAttachment: '--srfm-bg-attachment',
+	};
+
+	/**
+	 * DIMENSIONS control mappings: controlName → cssVarPrefix
+	 * These controls have top/right/bottom/left values.
+	 */
+	const DIMENSIONS_CSS_MAP = {
+		formPadding: '--srfm-form-padding',
+		formBorderRadius: '--srfm-form-border-radius',
+	};
+
+	/**
+	 * Dimension sides for padding/border-radius controls.
+	 */
+	const SIDES = [ 'top', 'right', 'bottom', 'left' ];
+
+	/**
+	 * CSS variables set by primaryColor control.
+	 * Maps cssVariable → opacity (null = use raw value, number = HSL alpha).
+	 */
+	const PRIMARY_COLOR_MAP = {
+		'--srfm-color-scheme-primary': null,
+		'--srfm-quill-editor-color': null,
+		'--srfm-color-input-border-hover': 0.65,
+		'--srfm-color-input-border-focus-glow': 0.15,
+		'--srfm-color-input-selected': 0.1,
+		'--srfm-btn-color-hover': 0.9,
+		'--srfm-btn-color-disabled': 0.25,
+	};
+
+	/**
+	 * CSS variables set by textColor control.
+	 * Maps cssVariable → opacity (null = use raw value, number = HSL alpha).
+	 */
+	const TEXT_COLOR_MAP = {
+		'--srfm-color-scheme-text': null,
+		'--srfm-color-input-label': null,
+		'--srfm-color-input-text': null,
+		'--srfm-color-input-description': 0.65,
+		'--srfm-color-input-placeholder': 0.5,
+		'--srfm-color-input-prefix': 0.65,
+		'--srfm-color-input-background': 0.02,
+		'--srfm-color-input-background-hover': 0.05,
+		'--srfm-color-input-background-disabled': 0.07,
+		'--srfm-color-input-border': 0.25,
+		'--srfm-color-input-border-disabled': 0.15,
+		'--srfm-color-multi-choice-svg': 0.7,
+	};
+
+	/**
+	 * Background-related controls that use dataset storage.
+	 */
+	const BACKGROUND_CONTROLS = [ 'bgType', 'bgColor', 'bgGradient', 'bgImage' ];
+
+	/**
+	 * All free plugin control names for reset functionality.
+	 */
+	const ALL_FREE_CONTROLS = [
+		'primaryColor',
+		'textColor',
+		'fieldSpacing',
+		'buttonAlignment',
+		...Object.keys( SIMPLE_CSS_MAP ),
+		...Object.keys( DIMENSIONS_CSS_MAP ),
+		...BACKGROUND_CONTROLS,
+	];
+
+	/**
 	 * Resolve a global color key to its actual color value.
 	 *
 	 * When a user selects a global color in Elementor, the value is stored as
@@ -72,6 +149,344 @@
 		return null;
 	}
 
+	/**
+	 * Apply DIMENSIONS control value (top/right/bottom/left).
+	 *
+	 * @param {HTMLElement} container The form container element.
+	 * @param {string}      prefix    The CSS variable prefix.
+	 * @param {Object}      val       The dimensions value object.
+	 */
+	function applyDimensions( container, prefix, val ) {
+		if ( typeof val !== 'object' ) {
+			return;
+		}
+		const unit = val.unit || 'px';
+
+		SIDES.forEach( function ( side ) {
+			if ( val[ side ] !== '' && val[ side ] !== undefined ) {
+				container.style.setProperty(
+					prefix + '-' + side,
+					val[ side ] + unit
+				);
+			}
+		} );
+	}
+
+	/**
+	 * Reset DIMENSIONS control (remove all sides).
+	 *
+	 * @param {HTMLElement} container The form container element.
+	 * @param {string}      prefix    The CSS variable prefix.
+	 */
+	function resetDimensions( container, prefix ) {
+		SIDES.forEach( function ( side ) {
+			container.style.removeProperty( prefix + '-' + side );
+		} );
+	}
+
+	/**
+	 * Apply color with HSL transformations based on a color map.
+	 *
+	 * @param {HTMLElement} container The form container element.
+	 * @param {Object}      colorMap  Map of cssVariable → opacity (null = raw, number = HSL alpha).
+	 * @param {string}      val       The color value.
+	 */
+	function applyColorMap( container, colorMap, val ) {
+		for ( const cssVar in colorMap ) {
+			if ( ! Object.hasOwn( colorMap, cssVar ) ) {
+				continue;
+			}
+			const opacity = colorMap[ cssVar ];
+			if ( opacity === null ) {
+				container.style.setProperty( cssVar, val );
+			} else {
+				container.style.setProperty(
+					cssVar,
+					'hsl(from ' + val + ' h s l / ' + opacity + ')'
+				);
+			}
+		}
+	}
+
+	/**
+	 * Reset color map CSS variables.
+	 *
+	 * @param {HTMLElement} container The form container element.
+	 * @param {Object}      colorMap  Map of cssVariable → opacity.
+	 */
+	function resetColorMap( container, colorMap ) {
+		for ( const cssVar in colorMap ) {
+			if ( Object.hasOwn( colorMap, cssVar ) ) {
+				container.style.removeProperty( cssVar );
+			}
+		}
+	}
+
+	/**
+	 * Apply background based on type.
+	 *
+	 * @param {HTMLElement} container The form container element.
+	 */
+	function applyBackground( container ) {
+		const bgType = container.dataset.bgType || 'color';
+		const bgColor = container.dataset.bgColor || '#FFFFFF';
+		const bgGradient =
+			container.dataset.bgGradient ||
+			'linear-gradient(90deg, #FFC9B2 0%, #C7CBFF 100%)';
+		const bgImage = container.dataset.bgImage || '';
+
+		// Reset background.
+		container.style.removeProperty( 'background' );
+		container.style.removeProperty( 'background-color' );
+		container.style.removeProperty( 'background-image' );
+
+		if ( bgType === 'color' ) {
+			container.style.backgroundColor = bgColor;
+		} else if ( bgType === 'gradient' ) {
+			container.style.background = bgGradient;
+		} else if ( bgType === 'image' && bgImage ) {
+			container.style.backgroundImage = `url(${ bgImage })`;
+		}
+	}
+
+	/**
+	 * Apply a style update for a control.
+	 *
+	 * @param {HTMLElement} container The form container element.
+	 * @param {string}      name      The control name.
+	 * @param {*}           value     The control value.
+	 */
+	function applyStyle( container, name, value ) {
+		// Handle simple CSS variable mappings.
+		if ( SIMPLE_CSS_MAP[ name ] ) {
+			container.style.setProperty( SIMPLE_CSS_MAP[ name ], value );
+			return;
+		}
+
+		// Handle DIMENSIONS controls.
+		if ( DIMENSIONS_CSS_MAP[ name ] ) {
+			applyDimensions( container, DIMENSIONS_CSS_MAP[ name ], value );
+			return;
+		}
+
+		// Handle special controls.
+		switch ( name ) {
+			case 'primaryColor':
+				applyColorMap( container, PRIMARY_COLOR_MAP, value );
+				break;
+
+			case 'textColor':
+				applyColorMap( container, TEXT_COLOR_MAP, value );
+				break;
+
+			case 'fieldSpacing': {
+				const fieldSpacingVars =
+					window.srfmElementorStyling?.fieldSpacingVars;
+				if ( fieldSpacingVars ) {
+					// Merge base (small) with size-specific overrides.
+					const baseSize = fieldSpacingVars.small || {};
+					const overrideSize = fieldSpacingVars[ value ] || {};
+					const finalSize = Object.assign(
+						{},
+						baseSize,
+						overrideSize
+					);
+
+					for ( const key in finalSize ) {
+						if ( Object.hasOwn( finalSize, key ) ) {
+							container.style.setProperty( key, finalSize[ key ] );
+						}
+					}
+				}
+				break;
+			}
+
+			case 'buttonAlignment': {
+				const submitContainer = container.querySelector(
+					'.srfm-submit-container .wp-block-button'
+				);
+				if ( submitContainer ) {
+					submitContainer.style.textAlign =
+						value === 'justify' ? 'center' : value;
+					const btn = submitContainer.querySelector( 'button' );
+					if ( btn ) {
+						btn.style.width = value === 'justify' ? '100%' : '';
+					}
+				}
+				break;
+			}
+
+			// Background controls - store in dataset and apply.
+			case 'bgType':
+				container.dataset.bgType = value;
+				applyBackground( container );
+				break;
+
+			case 'bgColor':
+				container.dataset.bgColor = value;
+				applyBackground( container );
+				break;
+
+			case 'bgGradient':
+				container.dataset.bgGradient = value;
+				applyBackground( container );
+				break;
+
+			case 'bgImage': {
+				// val is an object with url property from Elementor.
+				const url = typeof value === 'object' ? value.url : value;
+				container.dataset.bgImage = url || '';
+				applyBackground( container );
+				break;
+			}
+		}
+	}
+
+	/**
+	 * Reset a control to its original state.
+	 *
+	 * @param {HTMLElement} container The form container element.
+	 * @param {string}      name      The control name.
+	 */
+	function resetControl( container, name ) {
+		// Handle simple CSS variable mappings.
+		if ( SIMPLE_CSS_MAP[ name ] ) {
+			container.style.removeProperty( SIMPLE_CSS_MAP[ name ] );
+			return;
+		}
+
+		// Handle DIMENSIONS controls.
+		if ( DIMENSIONS_CSS_MAP[ name ] ) {
+			resetDimensions( container, DIMENSIONS_CSS_MAP[ name ] );
+			return;
+		}
+
+		// Handle special controls.
+		switch ( name ) {
+			case 'primaryColor':
+				resetColorMap( container, PRIMARY_COLOR_MAP );
+				break;
+
+			case 'textColor':
+				resetColorMap( container, TEXT_COLOR_MAP );
+				break;
+
+			case 'fieldSpacing': {
+				// Reset field spacing by removing all related CSS variables.
+				const fieldSpacingVars =
+					window.srfmElementorStyling?.fieldSpacingVars;
+				if ( fieldSpacingVars && fieldSpacingVars.small ) {
+					for ( const key in fieldSpacingVars.small ) {
+						if ( Object.hasOwn( fieldSpacingVars.small, key ) ) {
+							container.style.removeProperty( key );
+						}
+					}
+				}
+				break;
+			}
+
+			case 'buttonAlignment': {
+				const submitContainer = container.querySelector(
+					'.srfm-submit-container .wp-block-button'
+				);
+				if ( submitContainer ) {
+					submitContainer.style.removeProperty( 'text-align' );
+					const btn = submitContainer.querySelector( 'button' );
+					if ( btn ) {
+						btn.style.removeProperty( 'width' );
+					}
+				}
+				break;
+			}
+
+			// Background controls.
+			case 'bgType':
+				delete container.dataset.bgType;
+				container.style.removeProperty( 'background' );
+				container.style.removeProperty( 'background-color' );
+				container.style.removeProperty( 'background-image' );
+				break;
+
+			case 'bgColor':
+				delete container.dataset.bgColor;
+				container.style.removeProperty( 'background-color' );
+				break;
+
+			case 'bgGradient':
+				delete container.dataset.bgGradient;
+				container.style.removeProperty( 'background' );
+				break;
+
+			case 'bgImage':
+				delete container.dataset.bgImage;
+				container.style.removeProperty( 'background-image' );
+				break;
+		}
+	}
+
+	/**
+	 * Reset all styles when inheritStyling is enabled.
+	 *
+	 * @param {HTMLElement} container       The form container element.
+	 * @param {string}      originalClasses Original container classes.
+	 */
+	function resetAllStyles( container, originalClasses ) {
+		ALL_FREE_CONTROLS.forEach( function ( controlName ) {
+			resetControl( container, controlName );
+		} );
+
+		// Reset container classes to original.
+		container.className = originalClasses;
+	}
+
+	/**
+	 * Dispatch event for Pro and other extensions to listen to.
+	 *
+	 * @param {string}      name      The control name.
+	 * @param {string}      value     The control value.
+	 * @param {HTMLElement} container The form container element.
+	 */
+	function dispatchUpdateEvent( name, value, container ) {
+		document.dispatchEvent(
+			new CustomEvent( 'srfm-elementor-styling-update', {
+				detail: { name, value, container },
+			} )
+		);
+	}
+
+	/**
+	 * Apply style update based on control name and value.
+	 *
+	 * @param {HTMLElement} container      The form container element.
+	 * @param {string}      name           The control name.
+	 * @param {string}      value          The control value.
+	 * @param {string}      originalClasses Original container classes for reset.
+	 */
+	function applyStyleUpdate( container, name, value, originalClasses ) {
+		// Handle inheritStyling toggle - reset all styles when enabled.
+		if ( name === 'inheritStyling' ) {
+			if ( value === 'yes' ) {
+				resetAllStyles( container, originalClasses );
+			}
+			dispatchUpdateEvent( name, value, container );
+			return;
+		}
+
+		// Handle empty/default values - reset to original.
+		if ( value === '' || value === 'default' ) {
+			resetControl( container, name );
+			dispatchUpdateEvent( name, value, container );
+			return;
+		}
+
+		// Apply the style update.
+		applyStyle( container, name, value );
+
+		// Dispatch event for Pro to extend.
+		dispatchUpdateEvent( name, value, container );
+	}
+
+	// Main initialization.
 	window.addEventListener( 'elementor/frontend/init', function () {
 		if (
 			typeof elementorFrontend === 'undefined' ||
@@ -150,6 +565,9 @@
 								// Get all changed attributes.
 								const changed = model.changed;
 								for ( const name in changed ) {
+									if ( ! Object.hasOwn( changed, name ) ) {
+										continue;
+									}
 									const globalKey = changed[ name ];
 									let value = null;
 
@@ -178,457 +596,4 @@
 			}
 		);
 	} );
-
-	/**
-	 * Apply style update based on control name and value.
-	 *
-	 * @param {HTMLElement} container      The form container element.
-	 * @param {string}      name           The control name.
-	 * @param {string}      value          The control value.
-	 * @param {string}      originalClasses Original container classes for reset.
-	 */
-	function applyStyleUpdate( container, name, value, originalClasses ) {
-		// Handle inheritStyling toggle - reset all styles when enabled.
-		if ( name === 'inheritStyling' ) {
-			if ( value === 'yes' ) {
-				resetAllStyles( container, originalClasses );
-			}
-			dispatchUpdateEvent( name, value, container );
-			return;
-		}
-
-		// Handle empty/default values - reset to original.
-		if ( value === '' || value === 'default' ) {
-			resetControl( container, name, originalClasses );
-			dispatchUpdateEvent( name, value, container );
-			return;
-		}
-
-		const styleMap = {
-			primaryColor: function ( val ) {
-				container.style.setProperty(
-					'--srfm-color-scheme-primary',
-					val
-				);
-				container.style.setProperty( '--srfm-quill-editor-color', val );
-				container.style.setProperty(
-					'--srfm-color-input-border-hover',
-					'hsl(from ' + val + ' h s l / 0.65)'
-				);
-				container.style.setProperty(
-					'--srfm-color-input-border-focus-glow',
-					'hsl(from ' + val + ' h s l / 0.15)'
-				);
-				container.style.setProperty(
-					'--srfm-color-input-selected',
-					'hsl(from ' + val + ' h s l / 0.1)'
-				);
-				container.style.setProperty(
-					'--srfm-btn-color-hover',
-					'hsl(from ' + val + ' h s l / 0.9)'
-				);
-				container.style.setProperty(
-					'--srfm-btn-color-disabled',
-					'hsl(from ' + val + ' h s l / 0.25)'
-				);
-			},
-			textColor: function ( val ) {
-				container.style.setProperty( '--srfm-color-scheme-text', val );
-				container.style.setProperty( '--srfm-color-input-label', val );
-				container.style.setProperty( '--srfm-color-input-text', val );
-				container.style.setProperty(
-					'--srfm-color-input-description',
-					'hsl(from ' + val + ' h s l / 0.65)'
-				);
-				container.style.setProperty(
-					'--srfm-color-input-placeholder',
-					'hsl(from ' + val + ' h s l / 0.5)'
-				);
-				container.style.setProperty(
-					'--srfm-color-input-prefix',
-					'hsl(from ' + val + ' h s l / 0.65)'
-				);
-				container.style.setProperty(
-					'--srfm-color-input-background',
-					'hsl(from ' + val + ' h s l / 0.02)'
-				);
-				container.style.setProperty(
-					'--srfm-color-input-background-hover',
-					'hsl(from ' + val + ' h s l / 0.05)'
-				);
-				container.style.setProperty(
-					'--srfm-color-input-background-disabled',
-					'hsl(from ' + val + ' h s l / 0.07)'
-				);
-				container.style.setProperty(
-					'--srfm-color-input-border',
-					'hsl(from ' + val + ' h s l / 0.25)'
-				);
-				container.style.setProperty(
-					'--srfm-color-input-border-disabled',
-					'hsl(from ' + val + ' h s l / 0.15)'
-				);
-				container.style.setProperty(
-					'--srfm-color-multi-choice-svg',
-					'hsl(from ' + val + ' h s l / 0.7)'
-				);
-			},
-			textOnPrimaryColor: function ( val ) {
-				container.style.setProperty(
-					'--srfm-color-scheme-text-on-primary',
-					val
-				);
-			},
-			fieldSpacing: function ( val ) {
-				const fieldSpacingVars =
-					window.srfmElementorStyling?.fieldSpacingVars;
-				if ( fieldSpacingVars ) {
-					// Merge base (small) with size-specific overrides.
-					const baseSize = fieldSpacingVars.small || {};
-					const overrideSize = fieldSpacingVars[ val ] || {};
-					const finalSize = Object.assign(
-						{},
-						baseSize,
-						overrideSize
-					);
-
-					for ( const key in finalSize ) {
-						container.style.setProperty( key, finalSize[ key ] );
-					}
-				}
-			},
-			buttonAlignment: function ( val ) {
-				const submitContainer = container.querySelector(
-					'.srfm-submit-container .wp-block-button'
-				);
-				if ( submitContainer ) {
-					submitContainer.style.textAlign =
-						val === 'justify' ? 'center' : val;
-					const btn = submitContainer.querySelector( 'button' );
-					if ( btn ) {
-						btn.style.width = val === 'justify' ? '100%' : '';
-					}
-				}
-			},
-			// Form Padding (DIMENSIONS control).
-			formPadding: function ( val ) {
-				if ( typeof val !== 'object' ) {
-					return;
-				}
-				const unit = val.unit || 'px';
-				if ( val.top !== '' && val.top !== undefined ) {
-					container.style.setProperty(
-						'--srfm-form-padding-top',
-						val.top + unit
-					);
-				}
-				if ( val.right !== '' && val.right !== undefined ) {
-					container.style.setProperty(
-						'--srfm-form-padding-right',
-						val.right + unit
-					);
-				}
-				if ( val.bottom !== '' && val.bottom !== undefined ) {
-					container.style.setProperty(
-						'--srfm-form-padding-bottom',
-						val.bottom + unit
-					);
-				}
-				if ( val.left !== '' && val.left !== undefined ) {
-					container.style.setProperty(
-						'--srfm-form-padding-left',
-						val.left + unit
-					);
-				}
-			},
-			// Form Border Radius (DIMENSIONS control).
-			formBorderRadius: function ( val ) {
-				if ( typeof val !== 'object' ) {
-					return;
-				}
-				const unit = val.unit || 'px';
-				if ( val.top !== '' && val.top !== undefined ) {
-					container.style.setProperty(
-						'--srfm-form-border-radius-top',
-						val.top + unit
-					);
-				}
-				if ( val.right !== '' && val.right !== undefined ) {
-					container.style.setProperty(
-						'--srfm-form-border-radius-right',
-						val.right + unit
-					);
-				}
-				if ( val.bottom !== '' && val.bottom !== undefined ) {
-					container.style.setProperty(
-						'--srfm-form-border-radius-bottom',
-						val.bottom + unit
-					);
-				}
-				if ( val.left !== '' && val.left !== undefined ) {
-					container.style.setProperty(
-						'--srfm-form-border-radius-left',
-						val.left + unit
-					);
-				}
-			},
-			// Background.
-			bgType: function ( val ) {
-				// Store the type for use by other background handlers.
-				container.dataset.bgType = val;
-				applyBackground( container );
-			},
-			bgColor: function ( val ) {
-				container.dataset.bgColor = val;
-				applyBackground( container );
-			},
-			bgGradient: function ( val ) {
-				container.dataset.bgGradient = val;
-				applyBackground( container );
-			},
-			bgImage: function ( val ) {
-				// val is an object with url property from Elementor.
-				const url = typeof val === 'object' ? val.url : val;
-				container.dataset.bgImage = url || '';
-				applyBackground( container );
-			},
-			bgImageSize: function ( val ) {
-				container.style.setProperty( '--srfm-bg-size', val );
-			},
-			bgImagePosition: function ( val ) {
-				container.style.setProperty( '--srfm-bg-position', val );
-			},
-			bgImageRepeat: function ( val ) {
-				container.style.setProperty( '--srfm-bg-repeat', val );
-			},
-			bgImageAttachment: function ( val ) {
-				container.style.setProperty( '--srfm-bg-attachment', val );
-			},
-		};
-
-		if ( styleMap[ name ] ) {
-			styleMap[ name ]( value );
-		}
-
-		// Dispatch event for Pro to extend.
-		dispatchUpdateEvent( name, value, container );
-	}
-
-	/**
-	 * Apply background based on type.
-	 *
-	 * @param {HTMLElement} container The form container element.
-	 */
-	function applyBackground( container ) {
-		const bgType = container.dataset.bgType || 'color';
-		const bgColor = container.dataset.bgColor || '#FFFFFF';
-		const bgGradient =
-			container.dataset.bgGradient ||
-			'linear-gradient(90deg, #FFC9B2 0%, #C7CBFF 100%)';
-		const bgImage = container.dataset.bgImage || '';
-
-		// Reset background.
-		container.style.removeProperty( 'background' );
-		container.style.removeProperty( 'background-color' );
-		container.style.removeProperty( 'background-image' );
-
-		if ( bgType === 'color' ) {
-			container.style.backgroundColor = bgColor;
-		} else if ( bgType === 'gradient' ) {
-			container.style.background = bgGradient;
-		} else if ( bgType === 'image' && bgImage ) {
-			container.style.backgroundImage = `url(${ bgImage })`;
-		}
-	}
-
-	/**
-	 * Reset a control to its original state.
-	 *
-	 * @param {HTMLElement} container      The form container element.
-	 * @param {string}      name           The control name.
-	 * @param {string}      originalClasses Original container classes.
-	 */
-	function resetControl( container, name, originalClasses ) {
-		const resetMap = {
-			primaryColor: function () {
-				container.style.removeProperty( '--srfm-color-scheme-primary' );
-				container.style.removeProperty( '--srfm-quill-editor-color' );
-				container.style.removeProperty(
-					'--srfm-color-input-border-hover'
-				);
-				container.style.removeProperty(
-					'--srfm-color-input-border-focus-glow'
-				);
-				container.style.removeProperty(
-					'--srfm-color-input-selected'
-				);
-				container.style.removeProperty( '--srfm-btn-color-hover' );
-				container.style.removeProperty( '--srfm-btn-color-disabled' );
-			},
-			textColor: function () {
-				container.style.removeProperty( '--srfm-color-scheme-text' );
-				container.style.removeProperty( '--srfm-color-input-label' );
-				container.style.removeProperty( '--srfm-color-input-text' );
-				container.style.removeProperty(
-					'--srfm-color-input-description'
-				);
-				container.style.removeProperty(
-					'--srfm-color-input-placeholder'
-				);
-				container.style.removeProperty( '--srfm-color-input-prefix' );
-				container.style.removeProperty(
-					'--srfm-color-input-background'
-				);
-				container.style.removeProperty(
-					'--srfm-color-input-background-hover'
-				);
-				container.style.removeProperty(
-					'--srfm-color-input-background-disabled'
-				);
-				container.style.removeProperty( '--srfm-color-input-border' );
-				container.style.removeProperty(
-					'--srfm-color-input-border-disabled'
-				);
-				container.style.removeProperty(
-					'--srfm-color-multi-choice-svg'
-				);
-			},
-			textOnPrimaryColor: function () {
-				container.style.removeProperty(
-					'--srfm-color-scheme-text-on-primary'
-				);
-			},
-			fieldSpacing: function () {
-				// Reset field spacing by removing all related CSS variables.
-				const fieldSpacingVars =
-					window.srfmElementorStyling?.fieldSpacingVars;
-				if ( fieldSpacingVars && fieldSpacingVars.small ) {
-					for ( const key in fieldSpacingVars.small ) {
-						container.style.removeProperty( key );
-					}
-				}
-			},
-			buttonAlignment: function () {
-				const submitContainer = container.querySelector(
-					'.srfm-submit-container .wp-block-button'
-				);
-				if ( submitContainer ) {
-					submitContainer.style.removeProperty( 'text-align' );
-					const btn = submitContainer.querySelector( 'button' );
-					if ( btn ) {
-						btn.style.removeProperty( 'width' );
-					}
-				}
-			},
-			// Form Padding (DIMENSIONS control).
-			formPadding: function () {
-				container.style.removeProperty( '--srfm-form-padding-top' );
-				container.style.removeProperty( '--srfm-form-padding-right' );
-				container.style.removeProperty( '--srfm-form-padding-bottom' );
-				container.style.removeProperty( '--srfm-form-padding-left' );
-			},
-			// Form Border Radius (DIMENSIONS control).
-			formBorderRadius: function () {
-				container.style.removeProperty(
-					'--srfm-form-border-radius-top'
-				);
-				container.style.removeProperty(
-					'--srfm-form-border-radius-right'
-				);
-				container.style.removeProperty(
-					'--srfm-form-border-radius-bottom'
-				);
-				container.style.removeProperty(
-					'--srfm-form-border-radius-left'
-				);
-			},
-			// Background.
-			bgType: function () {
-				delete container.dataset.bgType;
-				container.style.removeProperty( 'background' );
-				container.style.removeProperty( 'background-color' );
-				container.style.removeProperty( 'background-image' );
-			},
-			bgColor: function () {
-				delete container.dataset.bgColor;
-				container.style.removeProperty( 'background-color' );
-			},
-			bgGradient: function () {
-				delete container.dataset.bgGradient;
-				container.style.removeProperty( 'background' );
-			},
-			bgImage: function () {
-				delete container.dataset.bgImage;
-				container.style.removeProperty( 'background-image' );
-			},
-			bgImageSize: function () {
-				container.style.removeProperty( '--srfm-bg-size' );
-			},
-			bgImagePosition: function () {
-				container.style.removeProperty( '--srfm-bg-position' );
-			},
-			bgImageRepeat: function () {
-				container.style.removeProperty( '--srfm-bg-repeat' );
-			},
-			bgImageAttachment: function () {
-				container.style.removeProperty( '--srfm-bg-attachment' );
-			},
-		};
-
-		if ( resetMap[ name ] ) {
-			resetMap[ name ]();
-		}
-	}
-
-	/**
-	 * Reset all styles when inheritStyling is enabled.
-	 *
-	 * @param {HTMLElement} container       The form container element.
-	 * @param {string}      originalClasses Original container classes.
-	 */
-	function resetAllStyles( container, originalClasses ) {
-		// Reset all free plugin controls.
-		const controlsToReset = [
-			'primaryColor',
-			'textColor',
-			'textOnPrimaryColor',
-			'fieldSpacing',
-			'buttonAlignment',
-			// Form Padding (DIMENSIONS control).
-			'formPadding',
-			// Form Border Radius (DIMENSIONS control).
-			'formBorderRadius',
-			// Background.
-			'bgType',
-			'bgColor',
-			'bgGradient',
-			'bgImage',
-			'bgImageSize',
-			'bgImagePosition',
-			'bgImageRepeat',
-			'bgImageAttachment',
-		];
-
-		controlsToReset.forEach( function ( controlName ) {
-			resetControl( container, controlName, originalClasses );
-		} );
-
-		// Reset container classes to original.
-		container.className = originalClasses;
-	}
-
-	/**
-	 * Dispatch event for Pro and other extensions to listen to.
-	 *
-	 * @param {string}      name      The control name.
-	 * @param {string}      value     The control value.
-	 * @param {HTMLElement} container The form container element.
-	 */
-	function dispatchUpdateEvent( name, value, container ) {
-		document.dispatchEvent(
-			new CustomEvent( 'srfm-elementor-styling-update', {
-				detail: { name, value, container },
-			} )
-		);
-	}
 }() );
