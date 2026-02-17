@@ -79,8 +79,8 @@ class Email_Markup extends Base {
 		$this->set_input_label( __( 'Email', 'sureforms' ) );
 		$this->set_error_msg( $attributes, 'srfm_email_block_required_text' );
 		$this->set_duplicate_msg( $attributes, 'srfm_email_block_unique_text' );
-		$this->slug                         = 'email';
-		$this->is_confirm_email             = $attributes['isConfirmEmail'] ?? false;
+		$this->slug             = 'email';
+		$this->is_confirm_email = $attributes['isConfirmEmail'] ?? false;
 		// Translators: %s is the field label.
 		$this->input_confirm_label_fallback = sprintf( __( 'Confirm %s', 'sureforms' ), $this->input_label_fallback );
 		$this->input_confirm_label          = '-lbl-' . Helper::encrypt( $this->input_confirm_label_fallback );
