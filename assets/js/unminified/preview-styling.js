@@ -60,85 +60,94 @@
 
 		// Apply color variables.
 		if ( styling.primaryColor ) {
-			container.style.setProperty(
-				'--srfm-color-scheme-primary',
-				styling.primaryColor
-			);
-			container.style.setProperty(
-				'--srfm-quill-editor-color',
-				styling.primaryColor
-			);
-			container.style.setProperty(
-				'--srfm-color-input-border-hover',
-				'hsl(from ' + styling.primaryColor + ' h s l / 0.65)'
-			);
-			container.style.setProperty(
-				'--srfm-color-input-border-focus-glow',
-				'hsl(from ' + styling.primaryColor + ' h s l / 0.15)'
-			);
-			container.style.setProperty(
-				'--srfm-color-input-selected',
-				'hsl(from ' + styling.primaryColor + ' h s l / 0.1)'
-			);
-			container.style.setProperty(
-				'--srfm-btn-color-hover',
-				'hsl(from ' + styling.primaryColor + ' h s l / 0.9)'
-			);
-			container.style.setProperty(
-				'--srfm-btn-color-disabled',
-				'hsl(from ' + styling.primaryColor + ' h s l / 0.25)'
-			);
+			const primaryHsl = 'hsl(from ' + styling.primaryColor + ' h s l / ';
+			const primaryColorStyles = [
+				{
+					cssVar: '--srfm-color-scheme-primary',
+					value: styling.primaryColor,
+				},
+				{
+					cssVar: '--srfm-quill-editor-color',
+					value: styling.primaryColor,
+				},
+				{
+					cssVar: '--srfm-color-input-border-hover',
+					value: primaryHsl + '0.65)',
+				},
+				{
+					cssVar: '--srfm-color-input-border-focus-glow',
+					value: primaryHsl + '0.15)',
+				},
+				{
+					cssVar: '--srfm-color-input-selected',
+					value: primaryHsl + '0.1)',
+				},
+				{
+					cssVar: '--srfm-btn-color-hover',
+					value: primaryHsl + '0.9)',
+				},
+				{
+					cssVar: '--srfm-btn-color-disabled',
+					value: primaryHsl + '0.25)',
+				},
+			];
+			primaryColorStyles.forEach( ( { cssVar, value } ) => {
+				container.style.setProperty( cssVar, value );
+			} );
 		}
 
 		if ( styling.textColor ) {
-			container.style.setProperty(
-				'--srfm-color-scheme-text',
-				styling.textColor
-			);
-			container.style.setProperty(
-				'--srfm-color-input-label',
-				styling.textColor
-			);
-			container.style.setProperty(
-				'--srfm-color-input-text',
-				styling.textColor
-			);
-			container.style.setProperty(
-				'--srfm-color-input-description',
-				'hsl(from ' + styling.textColor + ' h s l / 0.65)'
-			);
-			container.style.setProperty(
-				'--srfm-color-input-placeholder',
-				'hsl(from ' + styling.textColor + ' h s l / 0.5)'
-			);
-			container.style.setProperty(
-				'--srfm-color-input-prefix',
-				'hsl(from ' + styling.textColor + ' h s l / 0.65)'
-			);
-			container.style.setProperty(
-				'--srfm-color-input-background',
-				'hsl(from ' + styling.textColor + ' h s l / 0.02)'
-			);
-			container.style.setProperty(
-				'--srfm-color-input-background-hover',
-				'hsl(from ' + styling.textColor + ' h s l / 0.05)'
-			);
-			container.style.setProperty(
-				'--srfm-color-input-background-disabled',
-				'hsl(from ' + styling.textColor + ' h s l / 0.07)'
-			);
-			container.style.setProperty(
-				'--srfm-color-input-border',
-				'hsl(from ' + styling.textColor + ' h s l / 0.25)'
-			);
-			container.style.setProperty(
-				'--srfm-color-input-border-disabled',
-				'hsl(from ' + styling.textColor + ' h s l / 0.15)'
-			);
-			container.style.setProperty(
-				'--srfm-color-multi-choice-svg',
-				'hsl(from ' + styling.textColor + ' h s l / 0.7)'
-			);
+			const textHsl = 'hsl(from ' + styling.textColor + ' h s l / ';
+			const textColorStyles = [
+				{
+					cssVar: '--srfm-color-scheme-text',
+					value: styling.textColor,
+				},
+				{
+					cssVar: '--srfm-color-input-label',
+					value: styling.textColor,
+				},
+				{ cssVar: '--srfm-color-input-text', value: styling.textColor },
+				{
+					cssVar: '--srfm-color-input-description',
+					value: textHsl + '0.65)',
+				},
+				{
+					cssVar: '--srfm-color-input-placeholder',
+					value: textHsl + '0.5)',
+				},
+				{
+					cssVar: '--srfm-color-input-prefix',
+					value: textHsl + '0.65)',
+				},
+				{
+					cssVar: '--srfm-color-input-background',
+					value: textHsl + '0.02)',
+				},
+				{
+					cssVar: '--srfm-color-input-background-hover',
+					value: textHsl + '0.05)',
+				},
+				{
+					cssVar: '--srfm-color-input-background-disabled',
+					value: textHsl + '0.07)',
+				},
+				{
+					cssVar: '--srfm-color-input-border',
+					value: textHsl + '0.25)',
+				},
+				{
+					cssVar: '--srfm-color-input-border-disabled',
+					value: textHsl + '0.15)',
+				},
+				{
+					cssVar: '--srfm-color-multi-choice-svg',
+					value: textHsl + '0.7)',
+				},
+			];
+			textColorStyles.forEach( ( { cssVar, value } ) => {
+				container.style.setProperty( cssVar, value );
+			} );
 		}
 
 		if ( styling.textOnPrimaryColor ) {
@@ -148,59 +157,57 @@
 			);
 		}
 
-		// Apply padding.
+		// Apply padding and border radius.
 		const paddingUnit = styling.formPaddingUnit || 'px';
-		if ( styling.formPaddingTop !== undefined ) {
-			container.style.setProperty(
-				'--srfm-form-padding-top',
-				styling.formPaddingTop + paddingUnit
-			);
-		}
-		if ( styling.formPaddingRight !== undefined ) {
-			container.style.setProperty(
-				'--srfm-form-padding-right',
-				styling.formPaddingRight + paddingUnit
-			);
-		}
-		if ( styling.formPaddingBottom !== undefined ) {
-			container.style.setProperty(
-				'--srfm-form-padding-bottom',
-				styling.formPaddingBottom + paddingUnit
-			);
-		}
-		if ( styling.formPaddingLeft !== undefined ) {
-			container.style.setProperty(
-				'--srfm-form-padding-left',
-				styling.formPaddingLeft + paddingUnit
-			);
-		}
-
-		// Apply border radius.
 		const borderRadiusUnit = styling.formBorderRadiusUnit || 'px';
-		if ( styling.formBorderRadiusTop !== undefined ) {
-			container.style.setProperty(
-				'--srfm-form-border-radius-top',
-				styling.formBorderRadiusTop + borderRadiusUnit
-			);
-		}
-		if ( styling.formBorderRadiusRight !== undefined ) {
-			container.style.setProperty(
-				'--srfm-form-border-radius-right',
-				styling.formBorderRadiusRight + borderRadiusUnit
-			);
-		}
-		if ( styling.formBorderRadiusBottom !== undefined ) {
-			container.style.setProperty(
-				'--srfm-form-border-radius-bottom',
-				styling.formBorderRadiusBottom + borderRadiusUnit
-			);
-		}
-		if ( styling.formBorderRadiusLeft !== undefined ) {
-			container.style.setProperty(
-				'--srfm-form-border-radius-left',
-				styling.formBorderRadiusLeft + borderRadiusUnit
-			);
-		}
+
+		const spacingStyles = [
+			{
+				value: styling.formPaddingTop,
+				unit: paddingUnit,
+				cssVar: '--srfm-form-padding-top',
+			},
+			{
+				value: styling.formPaddingRight,
+				unit: paddingUnit,
+				cssVar: '--srfm-form-padding-right',
+			},
+			{
+				value: styling.formPaddingBottom,
+				unit: paddingUnit,
+				cssVar: '--srfm-form-padding-bottom',
+			},
+			{
+				value: styling.formPaddingLeft,
+				unit: paddingUnit,
+				cssVar: '--srfm-form-padding-left',
+			},
+			{
+				value: styling.formBorderRadiusTop,
+				unit: borderRadiusUnit,
+				cssVar: '--srfm-form-border-radius-top',
+			},
+			{
+				value: styling.formBorderRadiusRight,
+				unit: borderRadiusUnit,
+				cssVar: '--srfm-form-border-radius-right',
+			},
+			{
+				value: styling.formBorderRadiusBottom,
+				unit: borderRadiusUnit,
+				cssVar: '--srfm-form-border-radius-bottom',
+			},
+			{
+				value: styling.formBorderRadiusLeft,
+				unit: borderRadiusUnit,
+				cssVar: '--srfm-form-border-radius-left',
+			},
+		];
+		spacingStyles.forEach( ( { value, unit, cssVar } ) => {
+			if ( value !== undefined ) {
+				container.style.setProperty( cssVar, value + unit );
+			}
+		} );
 
 		// Apply background - remove all background classes first.
 		container.classList.remove(
