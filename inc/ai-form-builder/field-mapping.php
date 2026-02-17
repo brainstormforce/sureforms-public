@@ -185,9 +185,6 @@ class Field_Mapping {
 							$merged_attributes['choiceWidth'] = 33.33;
 						}
 					}
-					if ( 'checkbox' === $field_type && ! empty( $question['fieldOptions'] ) && is_array( $question['fieldOptions'] ) ) {
-						$merged_attributes['options'] = $question['fieldOptions'];
-					}
 					if ( 'phone' === $field_type ) {
 						$merged_attributes['autoCountry'] = true;
 					}

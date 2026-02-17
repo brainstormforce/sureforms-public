@@ -16,7 +16,7 @@ import {
 	FileText,
 	Code,
 	Split,
-	ListTodo
+	ListTodo,
 } from 'lucide-react';
 
 const FormSettingsPopup = ( {

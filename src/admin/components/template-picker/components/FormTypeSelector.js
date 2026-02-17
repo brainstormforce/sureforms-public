@@ -1,7 +1,12 @@
 import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
 import { Container, Button, Tooltip } from '@bsf/force-ui';
-import { Calculator, MessagesSquare, CreditCard, ListChecks } from 'lucide-react';
+import {
+	Calculator,
+	MessagesSquare,
+	CreditCard,
+	ListChecks,
+} from 'lucide-react';
 import { useEffect, useState } from '@wordpress/element';
 import UpgradePopup from './UpgradePopup.js';
 import { addQueryParam, cn } from '@Utils/Helpers';
@@ -181,11 +186,11 @@ const FormTypeSelector = ( {
 										? __(
 											'Select this to create a quiz with scored questions and graded results.',
 											'sureforms'
-									  )
+								  )
 										: __(
 											'Select this if you want to collect payments through your form.',
 											'sureforms'
-									  ) )
+								  ) )
 						}
 						placement="bottom"
 						triggers={ [ 'hover' ] }
