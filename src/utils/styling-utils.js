@@ -166,3 +166,92 @@ export function applyDimensionsFromStyling(
 		}
 	} );
 }
+
+/**
+ * Build gradient CSS string from dataset values.
+ * Supports both linear and radial gradients. Radial uses 'center center' position.
+ *
+ * @param {HTMLElement} container The form container element.
+ * @param {string}      prefix    The dataset prefix (e.g., 'bgGradient' or 'buttonBgGradientNormal').
+ * @return {string|null} CSS gradient string or null if colors not set.
+ */
+export function buildGradientCSS( container, prefix ) {
+	const color1 = container.dataset[ prefix + 'Color' ];
+	const color2 = container.dataset[ prefix + 'ColorB' ];
+
+	// Both colors are required.
+	if ( ! color1 || ! color2 ) {
+		return null;
+	}
+
+	const type = container.dataset[ prefix + 'Type' ] || 'linear';
+	const angle = container.dataset[ prefix + 'Angle' ] || '180';
+	const angleUnit = container.dataset[ prefix + 'AngleUnit' ] || 'deg';
+	const stop1 = container.dataset[ prefix + 'ColorStop' ] || '0';
+	const stop1Unit = container.dataset[ prefix + 'ColorStopUnit' ] || '%';
+	const stop2 = container.dataset[ prefix + 'ColorBStop' ] || '100';
+	const stop2Unit = container.dataset[ prefix + 'ColorBStopUnit' ] || '%';
+
+	if ( type === 'radial' ) {
+		return `radial-gradient(at center center, ${ color1 } ${ stop1 }${ stop1Unit }, ${ color2 } ${ stop2 }${ stop2Unit })`;
+	}
+
+	return `linear-gradient(${ angle }${ angleUnit }, ${ color1 } ${ stop1 }${ stop1Unit }, ${ color2 } ${ stop2 }${ stop2Unit })`;
+}
+
+/**
+ * Initialize gradient values from widget settings into dataset.
+ * Fills in any missing gradient values from settings. Runs on every gradient
+ * control change to ensure dataset has all required values for gradient building.
+ *
+ * Only sets values that are MISSING from dataset (to avoid overwriting user changes)
+ * AND are available in widget settings.
+ *
+ * @param {HTMLElement} container      The form container element.
+ * @param {Object}      widgetSettings The Elementor widget settings object.
+ * @param {string}      prefix         The dataset prefix (e.g., 'bgGradient').
+ * @param {string}      settingsPrefix The settings key prefix (e.g., 'bgGradient_').
+ */
+export function initGradientFromSettings(
+	container,
+	widgetSettings,
+	prefix,
+	settingsPrefix
+) {
+	// Get color values - only set if missing from dataset.
+	const color1 = widgetSettings.get( settingsPrefix + 'color' );
+	const color2 = widgetSettings.get( settingsPrefix + 'color_b' );
+
+	if ( color1 && ! container.dataset[ prefix + 'Color' ] ) {
+		container.dataset[ prefix + 'Color' ] = color1;
+	}
+	if ( color2 && ! container.dataset[ prefix + 'ColorB' ] ) {
+		container.dataset[ prefix + 'ColorB' ] = color2;
+	}
+
+	// Get gradient type - only set if missing from dataset.
+	const type = widgetSettings.get( settingsPrefix + 'gradient_type' );
+	if ( type && ! container.dataset[ prefix + 'Type' ] ) {
+		container.dataset[ prefix + 'Type' ] = type;
+	}
+
+	// Get angle (slider returns object) - only set if missing from dataset.
+	const angle = widgetSettings.get( settingsPrefix + 'gradient_angle' );
+	if ( angle && typeof angle === 'object' && ! container.dataset[ prefix + 'Angle' ] ) {
+		container.dataset[ prefix + 'Angle' ] = angle.size;
+		container.dataset[ prefix + 'AngleUnit' ] = angle.unit || 'deg';
+	}
+
+	// Get color stops (sliders return objects) - only set if missing from dataset.
+	const stop1 = widgetSettings.get( settingsPrefix + 'color_stop' );
+	if ( stop1 && typeof stop1 === 'object' && ! container.dataset[ prefix + 'ColorStop' ] ) {
+		container.dataset[ prefix + 'ColorStop' ] = stop1.size;
+		container.dataset[ prefix + 'ColorStopUnit' ] = stop1.unit || '%';
+	}
+
+	const stop2 = widgetSettings.get( settingsPrefix + 'color_b_stop' );
+	if ( stop2 && typeof stop2 === 'object' && ! container.dataset[ prefix + 'ColorBStop' ] ) {
+		container.dataset[ prefix + 'ColorBStop' ] = stop2.size;
+		container.dataset[ prefix + 'ColorBStopUnit' ] = stop2.unit || '%';
+	}
+}

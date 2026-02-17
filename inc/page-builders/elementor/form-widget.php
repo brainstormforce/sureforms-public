@@ -214,6 +214,62 @@ class Form_Widget extends Widget_Base {
 	}
 
 	/**
+	 * Build CSS gradient string from Group_Control_Background settings.
+	 *
+	 * Constructs a CSS gradient value from Elementor's gradient control settings.
+	 * Supports both linear and radial gradients. Radial gradients use 'center center' position.
+	 *
+	 * @param array<string, mixed> $settings Widget settings containing gradient values.
+	 * @return string|null CSS gradient string or null if colors not set.
+	 * @since x.x.x
+	 */
+	public static function build_gradient_css( $settings ) {
+		// Get gradient colors - resolve global colors if used.
+		$color_1 = self::get_resolved_color( $settings, 'bgGradient_color' );
+		$color_2 = self::get_resolved_color( $settings, 'bgGradient_color_b' );
+
+		// Both colors are required.
+		if ( ! $color_1 || ! $color_2 ) {
+			return null;
+		}
+
+		// Get gradient settings with defaults.
+		$type         = isset( $settings['bgGradient_gradient_type'] ) && '' !== $settings['bgGradient_gradient_type'] ? $settings['bgGradient_gradient_type'] : 'linear';
+		$angle        = isset( $settings['bgGradient_gradient_angle']['size'] ) ? $settings['bgGradient_gradient_angle']['size'] : 180;
+		$angle_unit   = isset( $settings['bgGradient_gradient_angle']['unit'] ) ? $settings['bgGradient_gradient_angle']['unit'] : 'deg';
+		$color_1_stop = isset( $settings['bgGradient_color_stop']['size'] ) ? $settings['bgGradient_color_stop']['size'] : 0;
+		$color_1_unit = isset( $settings['bgGradient_color_stop']['unit'] ) ? $settings['bgGradient_color_stop']['unit'] : '%';
+		$color_2_stop = isset( $settings['bgGradient_color_b_stop']['size'] ) ? $settings['bgGradient_color_b_stop']['size'] : 100;
+		$color_2_unit = isset( $settings['bgGradient_color_b_stop']['unit'] ) ? $settings['bgGradient_color_b_stop']['unit'] : '%';
+
+		// Build radial gradient: radial-gradient(at center center, color1 stop1, color2 stop2).
+		if ( 'radial' === $type ) {
+			return sprintf(
+				'radial-gradient(at center center, %s %s%s, %s %s%s)',
+				esc_attr( $color_1 ),
+				esc_attr( $color_1_stop ),
+				esc_attr( $color_1_unit ),
+				esc_attr( $color_2 ),
+				esc_attr( $color_2_stop ),
+				esc_attr( $color_2_unit )
+			);
+		}
+
+		// Build linear gradient: linear-gradient(angle, color1 stop1, color2 stop2).
+		return sprintf(
+			'linear-gradient(%s%s, %s %s%s, %s %s%s)',
+			esc_attr( $angle ),
+			esc_attr( $angle_unit ),
+			esc_attr( $color_1 ),
+			esc_attr( $color_1_stop ),
+			esc_attr( $color_1_unit ),
+			esc_attr( $color_2 ),
+			esc_attr( $color_2_stop ),
+			esc_attr( $color_2_unit )
+		);
+	}
+
+	/**
 	 * Register form widget controls.
 	 * Adds different input fields to allow the user to change and customize the widget settings.
 	 *
@@ -397,16 +453,54 @@ class Form_Widget extends Widget_Base {
 			]
 		);
 
-		// Background Gradient.
-		$this->add_control(
-			'bgGradient',
+		// Background Gradient - using Group_Control_Background for visual gradient picker.
+		// Position control is hidden - radial gradients use 'center center' position by default.
+		$this->add_group_control(
+			\Elementor\Group_Control_Background::get_type(),
 			[
-				'label'       => __( 'Gradient', 'sureforms' ),
-				'type'        => \Elementor\Controls_Manager::TEXT,
-				'default'     => 'linear-gradient(90deg, #FFC9B2 0%, #C7CBFF 100%)',
-				'placeholder' => 'linear-gradient(90deg, #color1, #color2)',
-				'label_block' => true,
-				'condition'   => [
+				'name'           => 'bgGradient',
+				'types'          => [ 'gradient' ],
+				'exclude'        => [ 'image' ],
+				'fields_options' => [
+					'background'        => [
+						'label'   => __( 'Gradient', 'sureforms' ),
+						'default' => 'gradient',
+					],
+					'color'             => [
+						'label'   => __( 'Color 1', 'sureforms' ),
+						'default' => '#FFC9B2',
+					],
+					'color_stop'        => [
+						'label'       => __( 'Location 1', 'sureforms' ),
+						'size_units'  => [ '%' ],
+						'responsive'  => false,
+						'description' => '',
+					],
+					'color_b'           => [
+						'label'   => __( 'Color 2', 'sureforms' ),
+						'default' => '#C7CBFF',
+					],
+					'color_b_stop'      => [
+						'label'       => __( 'Location 2', 'sureforms' ),
+						'size_units'  => [ '%' ],
+						'responsive'  => false,
+						'description' => '',
+					],
+					'gradient_type'     => [],
+					'gradient_angle'    => [
+						'label'       => __( 'Angle', 'sureforms' ),
+						'size_units'  => [ 'deg' ],
+						'responsive'  => false,
+						'description' => '',
+					],
+					// Hide position control - use 'center center' as default for radial gradients.
+					'gradient_position' => [
+						'default' => 'center center',
+						'type'    => \Elementor\Controls_Manager::HIDDEN,
+					],
+				],
+				'selector'       => '{{WRAPPER}} .srfm-gradient-dummy-selector', // Dummy selector - we handle styling via CSS variables.
+				'condition'      => [
 					'inheritStyling!' => 'yes',
 					'bgType'          => 'gradient',
 				],
@@ -786,7 +880,6 @@ class Form_Widget extends Widget_Base {
 			'buttonAlignment',
 			// Background (non-color).
 			'bgType',
-			'bgGradient',
 			'bgImageSize',
 			'bgImagePosition',
 			'bgImageRepeat',
@@ -796,6 +889,14 @@ class Form_Widget extends Widget_Base {
 		foreach ( $styling_keys as $key ) {
 			if ( isset( $settings[ $key ] ) && '' !== $settings[ $key ] && 'default' !== $settings[ $key ] ) {
 				$block_attrs[ $key ] = $settings[ $key ];
+			}
+		}
+
+		// Build gradient CSS string from Group_Control_Background settings.
+		if ( 'gradient' === ( $settings['bgType'] ?? '' ) ) {
+			$gradient_css = self::build_gradient_css( $settings );
+			if ( $gradient_css ) {
+				$block_attrs['bgGradient'] = $gradient_css;
 			}
 		}
 

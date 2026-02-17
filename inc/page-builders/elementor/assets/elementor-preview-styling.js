@@ -17,6 +17,8 @@ import {
 	resetColorMap,
 	applyDimensions,
 	resetDimensions,
+	buildGradientCSS,
+	initGradientFromSettings,
 } from '@Utils/styling-utils';
 
 ( function () {
@@ -28,8 +30,21 @@ import {
 	const BACKGROUND_CONTROLS = [
 		'bgType',
 		'bgColor',
-		'bgGradient',
 		'bgImage',
+	];
+
+	/**
+	 * Gradient group control field names.
+	 * These come from Elementor's Group_Control_Background with name 'bgGradient'.
+	 * Position control is hidden - radial gradients use 'center center' position.
+	 */
+	const GRADIENT_CONTROLS = [
+		'bgGradient_color',
+		'bgGradient_color_b',
+		'bgGradient_gradient_type',
+		'bgGradient_gradient_angle',
+		'bgGradient_color_stop',
+		'bgGradient_color_b_stop',
 	];
 
 	/**
@@ -43,6 +58,7 @@ import {
 		...Object.keys( SIMPLE_CSS_MAP ),
 		...Object.keys( DIMENSIONS_CSS_MAP ),
 		...BACKGROUND_CONTROLS,
+		...GRADIENT_CONTROLS,
 	];
 
 	/**
@@ -114,9 +130,6 @@ import {
 	function applyBackground( container ) {
 		const bgType = container.dataset.bgType || 'color';
 		const bgColor = container.dataset.bgColor || '#FFFFFF';
-		const bgGradient =
-			container.dataset.bgGradient ||
-			'linear-gradient(90deg, #FFC9B2 0%, #C7CBFF 100%)';
 		const bgImage = container.dataset.bgImage || '';
 
 		// Reset background.
@@ -127,7 +140,10 @@ import {
 		if ( bgType === 'color' ) {
 			container.style.backgroundColor = bgColor;
 		} else if ( bgType === 'gradient' ) {
-			container.style.background = bgGradient;
+			const gradient = buildGradientCSS( container, 'bgGradient' );
+			if ( gradient ) {
+				container.style.background = gradient;
+			}
 		} else if ( bgType === 'image' && bgImage ) {
 			container.style.backgroundImage = `url(${ bgImage })`;
 		}
@@ -214,10 +230,51 @@ import {
 				applyBackground( container );
 				break;
 
-			case 'bgGradient':
-				container.dataset.bgGradient = value;
+			// Gradient group control fields - store in dataset and rebuild gradient.
+			case 'bgGradient_color':
+				container.dataset.bgGradientColor = value;
 				applyBackground( container );
 				break;
+
+			case 'bgGradient_color_b':
+				container.dataset.bgGradientColorB = value;
+				applyBackground( container );
+				break;
+
+			case 'bgGradient_gradient_type':
+				container.dataset.bgGradientType = value;
+				applyBackground( container );
+				break;
+
+			case 'bgGradient_gradient_angle': {
+				// Elementor slider returns object with size and unit.
+				const angleSize = typeof value === 'object' ? value.size : value;
+				const angleUnit = typeof value === 'object' ? value.unit : 'deg';
+				container.dataset.bgGradientAngle = angleSize;
+				container.dataset.bgGradientAngleUnit = angleUnit;
+				applyBackground( container );
+				break;
+			}
+
+			case 'bgGradient_color_stop': {
+				// Elementor slider returns object with size and unit.
+				const stopSize = typeof value === 'object' ? value.size : value;
+				const stopUnit = typeof value === 'object' ? value.unit : '%';
+				container.dataset.bgGradientColorStop = stopSize;
+				container.dataset.bgGradientColorStopUnit = stopUnit;
+				applyBackground( container );
+				break;
+			}
+
+			case 'bgGradient_color_b_stop': {
+				// Elementor slider returns object with size and unit.
+				const stopBSize = typeof value === 'object' ? value.size : value;
+				const stopBUnit = typeof value === 'object' ? value.unit : '%';
+				container.dataset.bgGradientColorBStop = stopBSize;
+				container.dataset.bgGradientColorBStopUnit = stopBUnit;
+				applyBackground( container );
+				break;
+			}
 
 			case 'bgImage': {
 				// val is an object with url property from Elementor.
@@ -299,8 +356,37 @@ import {
 				container.style.removeProperty( 'background-color' );
 				break;
 
-			case 'bgGradient':
-				delete container.dataset.bgGradient;
+			// Gradient group control fields.
+			case 'bgGradient_color':
+				delete container.dataset.bgGradientColor;
+				container.style.removeProperty( 'background' );
+				break;
+
+			case 'bgGradient_color_b':
+				delete container.dataset.bgGradientColorB;
+				container.style.removeProperty( 'background' );
+				break;
+
+			case 'bgGradient_gradient_type':
+				delete container.dataset.bgGradientType;
+				container.style.removeProperty( 'background' );
+				break;
+
+			case 'bgGradient_gradient_angle':
+				delete container.dataset.bgGradientAngle;
+				delete container.dataset.bgGradientAngleUnit;
+				container.style.removeProperty( 'background' );
+				break;
+
+			case 'bgGradient_color_stop':
+				delete container.dataset.bgGradientColorStop;
+				delete container.dataset.bgGradientColorStopUnit;
+				container.style.removeProperty( 'background' );
+				break;
+
+			case 'bgGradient_color_b_stop':
+				delete container.dataset.bgGradientColorBStop;
+				delete container.dataset.bgGradientColorBStopUnit;
 				container.style.removeProperty( 'background' );
 				break;
 
@@ -329,14 +415,15 @@ import {
 	/**
 	 * Dispatch event for Pro and other extensions to listen to.
 	 *
-	 * @param {string}      name      The control name.
-	 * @param {string}      value     The control value.
-	 * @param {HTMLElement} container The form container element.
+	 * @param {string}      name           The control name.
+	 * @param {string}      value          The control value.
+	 * @param {HTMLElement} container      The form container element.
+	 * @param {Object}      widgetSettings The Elementor widget settings object (optional).
 	 */
-	function dispatchUpdateEvent( name, value, container ) {
+	function dispatchUpdateEvent( name, value, container, widgetSettings = null ) {
 		document.dispatchEvent(
 			new CustomEvent( 'srfm-elementor-styling-update', {
-				detail: { name, value, container },
+				detail: { name, value, container, widgetSettings },
 			} )
 		);
 	}
@@ -348,21 +435,28 @@ import {
 	 * @param {string}      name            The control name.
 	 * @param {string}      value           The control value.
 	 * @param {string}      originalClasses Original container classes for reset.
+	 * @param {Object}      widgetSettings  The Elementor widget settings object (optional).
 	 */
-	function applyStyleUpdate( container, name, value, originalClasses ) {
+	function applyStyleUpdate(
+		container,
+		name,
+		value,
+		originalClasses,
+		widgetSettings = null
+	) {
 		// Handle inheritStyling toggle - reset all styles when enabled.
 		if ( name === 'inheritStyling' ) {
 			if ( value === 'yes' ) {
 				resetAllStyles( container, originalClasses );
 			}
-			dispatchUpdateEvent( name, value, container );
+			dispatchUpdateEvent( name, value, container, widgetSettings );
 			return;
 		}
 
 		// Handle empty/default values - reset to original.
 		if ( value === '' || value === 'default' ) {
 			resetControl( container, name );
-			dispatchUpdateEvent( name, value, container );
+			dispatchUpdateEvent( name, value, container, widgetSettings );
 			return;
 		}
 
@@ -370,7 +464,7 @@ import {
 		applyStyle( container, name, value );
 
 		// Dispatch event for Pro to extend.
-		dispatchUpdateEvent( name, value, container );
+		dispatchUpdateEvent( name, value, container, widgetSettings );
 	}
 
 	// Main initialization.
@@ -403,6 +497,39 @@ import {
 				) {
 					const widgetId = $scope.data( 'id' );
 
+					// Initialize dataset from current widget settings.
+					// This ensures values like bgType are available before any change events.
+					const widgetContainer = elementor.getContainer
+						? elementor.getContainer( widgetId )
+						: null;
+
+					if ( widgetContainer && widgetContainer.settings ) {
+						const settings = widgetContainer.settings;
+
+						// Initialize bgType from current settings.
+						const bgType = settings.get( 'bgType' );
+						if ( bgType ) {
+							container.dataset.bgType = bgType;
+						}
+
+						// Initialize gradient values if bgType is gradient.
+						if ( bgType === 'gradient' ) {
+							initGradientFromSettings(
+								container,
+								settings,
+								'bgGradient',
+								'bgGradient_'
+							);
+						}
+
+						// Dispatch init event for Pro plugin to initialize its controls.
+						document.dispatchEvent(
+							new CustomEvent( 'srfm-elementor-styling-init', {
+								detail: { container, widgetSettings: settings },
+							} )
+						);
+					}
+
 					// Regular control change listener.
 					elementor.channels.editor.on(
 						'change',
@@ -429,11 +556,23 @@ import {
 								value = resolveGlobalColor( globalKey );
 							}
 
+							// Initialize gradient values when any gradient control changes.
+							// This ensures colors are in dataset when location/angle sliders change.
+							if ( name.startsWith( 'bgGradient_' ) ) {
+								initGradientFromSettings(
+									container,
+									controlView.container.settings,
+									'bgGradient',
+									'bgGradient_'
+								);
+							}
+
 							applyStyleUpdate(
 								container,
 								name,
 								value,
-								originalClasses
+								originalClasses,
+								controlView.container.settings
 							);
 						}
 					);
@@ -441,10 +580,6 @@ import {
 					// Listen for global color changes.
 					// When a global color is selected, Elementor updates the globals model
 					// instead of firing the regular change event.
-					const widgetContainer = elementor.getContainer
-						? elementor.getContainer( widgetId )
-						: null;
-
 					if ( widgetContainer && widgetContainer.globals ) {
 						widgetContainer.globals.on(
 							'change',
@@ -473,7 +608,8 @@ import {
 										container,
 										name,
 										value,
-										originalClasses
+										originalClasses,
+										widgetContainer.settings
 									);
 								}
 							}
