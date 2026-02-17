@@ -8,6 +8,15 @@
  * @since x.x.x
  */
 
+import {
+	PRIMARY_COLOR_MAP,
+	TEXT_COLOR_MAP,
+	SIMPLE_CSS_MAP,
+	DIMENSIONS_CSS_MAP,
+	applyColorMap,
+	applyDimensionsFromStyling,
+} from '@Utils/styling-utils';
+
 ( function () {
 	'use strict';
 
@@ -58,156 +67,43 @@
 			return;
 		}
 
-		// Apply color variables.
+		// Apply color variables using shared utility functions.
 		if ( styling.primaryColor ) {
-			const primaryHsl = 'hsl(from ' + styling.primaryColor + ' h s l / ';
-			const primaryColorStyles = [
-				{
-					cssVar: '--srfm-color-scheme-primary',
-					value: styling.primaryColor,
-				},
-				{
-					cssVar: '--srfm-quill-editor-color',
-					value: styling.primaryColor,
-				},
-				{
-					cssVar: '--srfm-color-input-border-hover',
-					value: primaryHsl + '0.65)',
-				},
-				{
-					cssVar: '--srfm-color-input-border-focus-glow',
-					value: primaryHsl + '0.15)',
-				},
-				{
-					cssVar: '--srfm-color-input-selected',
-					value: primaryHsl + '0.1)',
-				},
-				{
-					cssVar: '--srfm-btn-color-hover',
-					value: primaryHsl + '0.9)',
-				},
-				{
-					cssVar: '--srfm-btn-color-disabled',
-					value: primaryHsl + '0.25)',
-				},
-			];
-			primaryColorStyles.forEach( ( { cssVar, value } ) => {
-				container.style.setProperty( cssVar, value );
-			} );
+			applyColorMap( container, PRIMARY_COLOR_MAP, styling.primaryColor );
 		}
 
 		if ( styling.textColor ) {
-			const textHsl = 'hsl(from ' + styling.textColor + ' h s l / ';
-			const textColorStyles = [
-				{
-					cssVar: '--srfm-color-scheme-text',
-					value: styling.textColor,
-				},
-				{
-					cssVar: '--srfm-color-input-label',
-					value: styling.textColor,
-				},
-				{ cssVar: '--srfm-color-input-text', value: styling.textColor },
-				{
-					cssVar: '--srfm-color-input-description',
-					value: textHsl + '0.65)',
-				},
-				{
-					cssVar: '--srfm-color-input-placeholder',
-					value: textHsl + '0.5)',
-				},
-				{
-					cssVar: '--srfm-color-input-prefix',
-					value: textHsl + '0.65)',
-				},
-				{
-					cssVar: '--srfm-color-input-background',
-					value: textHsl + '0.02)',
-				},
-				{
-					cssVar: '--srfm-color-input-background-hover',
-					value: textHsl + '0.05)',
-				},
-				{
-					cssVar: '--srfm-color-input-background-disabled',
-					value: textHsl + '0.07)',
-				},
-				{
-					cssVar: '--srfm-color-input-border',
-					value: textHsl + '0.25)',
-				},
-				{
-					cssVar: '--srfm-color-input-border-disabled',
-					value: textHsl + '0.15)',
-				},
-				{
-					cssVar: '--srfm-color-multi-choice-svg',
-					value: textHsl + '0.7)',
-				},
-			];
-			textColorStyles.forEach( ( { cssVar, value } ) => {
-				container.style.setProperty( cssVar, value );
-			} );
+			applyColorMap( container, TEXT_COLOR_MAP, styling.textColor );
 		}
 
-		if ( styling.textOnPrimaryColor ) {
-			container.style.setProperty(
-				'--srfm-color-scheme-text-on-primary',
-				styling.textOnPrimaryColor
-			);
-		}
-
-		// Apply padding and border radius.
-		const paddingUnit = styling.formPaddingUnit || 'px';
-		const borderRadiusUnit = styling.formBorderRadiusUnit || 'px';
-
-		const spacingStyles = [
-			{
-				value: styling.formPaddingTop,
-				unit: paddingUnit,
-				cssVar: '--srfm-form-padding-top',
-			},
-			{
-				value: styling.formPaddingRight,
-				unit: paddingUnit,
-				cssVar: '--srfm-form-padding-right',
-			},
-			{
-				value: styling.formPaddingBottom,
-				unit: paddingUnit,
-				cssVar: '--srfm-form-padding-bottom',
-			},
-			{
-				value: styling.formPaddingLeft,
-				unit: paddingUnit,
-				cssVar: '--srfm-form-padding-left',
-			},
-			{
-				value: styling.formBorderRadiusTop,
-				unit: borderRadiusUnit,
-				cssVar: '--srfm-form-border-radius-top',
-			},
-			{
-				value: styling.formBorderRadiusRight,
-				unit: borderRadiusUnit,
-				cssVar: '--srfm-form-border-radius-right',
-			},
-			{
-				value: styling.formBorderRadiusBottom,
-				unit: borderRadiusUnit,
-				cssVar: '--srfm-form-border-radius-bottom',
-			},
-			{
-				value: styling.formBorderRadiusLeft,
-				unit: borderRadiusUnit,
-				cssVar: '--srfm-form-border-radius-left',
-			},
-		];
-		spacingStyles.forEach( ( { value, unit, cssVar } ) => {
-			if ( value !== undefined ) {
-				container.style.setProperty( cssVar, value + unit );
+		// Apply simple CSS variables.
+		for ( const controlName in SIMPLE_CSS_MAP ) {
+			if (
+				Object.hasOwn( SIMPLE_CSS_MAP, controlName ) &&
+				styling[ controlName ]
+			) {
+				container.style.setProperty(
+					SIMPLE_CSS_MAP[ controlName ],
+					styling[ controlName ]
+				);
 			}
-		} );
+		}
+
+		// Apply dimensions from styling object.
+		for ( const controlName in DIMENSIONS_CSS_MAP ) {
+			if ( Object.hasOwn( DIMENSIONS_CSS_MAP, controlName ) ) {
+				const prefix = DIMENSIONS_CSS_MAP[ controlName ];
+				const unitKey = controlName + 'Unit';
+				const unit = styling[ unitKey ] || 'px';
+				applyDimensionsFromStyling(
+					container,
+					prefix,
+					styling,
+					controlName,
+					unit
+				);
+			}
+		}
 
 		// Apply background - remove all background classes first.
 		container.classList.remove(
@@ -250,24 +146,6 @@
 					posX + '% ' + posY + '%'
 				);
 			}
-			if ( styling.bgImageSize ) {
-				container.style.setProperty(
-					'--srfm-bg-size',
-					styling.bgImageSize
-				);
-			}
-			if ( styling.bgImageRepeat ) {
-				container.style.setProperty(
-					'--srfm-bg-repeat',
-					styling.bgImageRepeat
-				);
-			}
-			if ( styling.bgImageAttachment ) {
-				container.style.setProperty(
-					'--srfm-bg-attachment',
-					styling.bgImageAttachment
-				);
-			}
 		}
 
 		// Apply field spacing - uses CSS variables from Helper::get_css_vars() via localized data.
@@ -282,7 +160,9 @@
 				const finalSize = Object.assign( {}, baseSize, overrideSize );
 
 				for ( const key in finalSize ) {
-					container.style.setProperty( key, finalSize[ key ] );
+					if ( Object.hasOwn( finalSize, key ) ) {
+						container.style.setProperty( key, finalSize[ key ] );
+					}
 				}
 			}
 		}

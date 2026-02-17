@@ -59,14 +59,14 @@ class Form_Widget extends Widget_Base {
 
 			// Register styling preview script for live preview.
 			wp_register_script(
-				'srfm-elementor-styling-preview',
-				SRFM_URL . 'inc/page-builders/elementor/assets/elementor-styling-preview.js',
+				'srfm-elementor-preview-styling',
+				SRFM_URL . 'assets/build/elementorPreviewStyling.js',
 				[ 'elementor-frontend' ],
 				SRFM_VER,
 				true
 			);
 			wp_localize_script(
-				'srfm-elementor-styling-preview',
+				'srfm-elementor-preview-styling',
 				'srfmElementorStyling',
 				[
 					'fieldSpacingVars' => Helper::get_css_vars(),
@@ -90,7 +90,7 @@ class Form_Widget extends Widget_Base {
 	 */
 	public function get_script_depends() {
 		if ( $this->is_preview_mode ) {
-			$scripts = [ 'srfm-elementor-preview', 'srfm-elementor-styling-preview' ];
+			$scripts = [ 'srfm-elementor-preview', 'srfm-elementor-preview-styling' ];
 
 			/**
 			 * Filter the widget's script dependencies.
