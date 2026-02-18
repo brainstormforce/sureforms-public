@@ -357,24 +357,24 @@ const LearnLesson = ( {
 									</Label>
 									<div className="flex items-center gap-1 flex-shrink-0">
 										{ ! hasVideo && hasImage && (
-											<Tooltip content={ __( 'View Documentation', 'sureforms' ) } arrow={ true } tooltipPortalId="srfm-learn-root">
+											<Tooltip content={ __( 'View Steps', 'sureforms' ) } arrow={ true } tooltipPortalId="srfm-learn-root">
 												<Button
 													variant="ghost"
 													size="xs"
 													icon={ <CircleAlert className="size-5" /> }
 													onClick={ handleOpenImageDialog }
-													aria-label={ __( 'View Documentation', 'sureforms' ) }
+													aria-label={ __( 'View Steps', 'sureforms' ) }
 												/>
 											</Tooltip>
 										) }
 										{ ! hasVideo && ! hasImage && action?.url && (
-											<Tooltip content={ __( 'View Documentation', 'sureforms' ) } arrow={ true } tooltipPortalId="srfm-learn-root">
+											<Tooltip content={ __( 'View Steps', 'sureforms' ) } arrow={ true } tooltipPortalId="srfm-learn-root">
 												<Button
 													variant="ghost"
 													size="xs"
 													icon={ <CircleAlert className="size-5" /> }
 													onClick={ handleActionClick }
-													aria-label={ __( 'View Documentation', 'sureforms' ) }
+													aria-label={ __( 'View Steps', 'sureforms' ) }
 												/>
 											</Tooltip>
 										) }

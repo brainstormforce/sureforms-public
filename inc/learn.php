@@ -52,7 +52,7 @@ class Learn {
 					[
 						'id'           => 'creating-first-form',
 						'title'        => __( 'Creating Your First Form', 'sureforms' ),
-						'description'  => __( 'Creating a form with SureForms takes just a few minutes. Check out the documentation to learn how to build your first form step by step.', 'sureforms' ),
+						'description'  => __( 'Creating a form with SureForms takes just a few minutes. Just describe the kind of form you need in a simple prompt, and let SureForms AI handle the heavy lifting for you.', 'sureforms' ),
 						'learn'        => [
 							'type'    => 'dialog',
 							'content' => [
@@ -73,7 +73,7 @@ class Learn {
 					[
 						'id'           => 'embed-forms',
 						'title'        => __( 'Embed Your Forms in a Page', 'sureforms' ),
-						'description'  => __( 'Embed Your Forms in a Page', 'sureforms' ),
+						'description'  => __( 'Instantly publish your form using the Instant Form feature in SureForms, or easily embed it on any page with the SureForms block.', 'sureforms' ),
 						'learn'        => [
 							'type'    => 'dialog',
 							'content' => [
@@ -115,18 +115,20 @@ class Learn {
 					[
 						'id'           => 'email-notification',
 						'title'        => __( 'Configure Your Email Notification', 'sureforms' ),
-						'description'  => __( 'Configure Your Email Notification', 'sureforms' ),
+						'description'  => __( 'Get email notifications whenever someone fills out your form.', 'sureforms' ),
 						'learn'        => [
-							'type' => 'link',
-							'url'  => 'https://sureforms.com/docs/adjust-form-notification-emails/',
+							'type'    => 'dialog',
+							'content' => [
+								'type' => 'image',
+								'data' => [
+									'src' => SRFM_URL . 'images/learn/email-notification.gif',
+									'alt' => __( 'Configure Your Email Notification', 'sureforms' ),
+								],
+							],
 						],
-						'action'       => [
-							'label'      => __( 'View Documentation', 'sureforms' ),
-							'url'        => 'https://sureforms.com/docs/adjust-form-notification-emails/',
-							'isExternal' => true,
-						],
+						'docsUrl'      => 'https://sureforms.com/docs/adjust-form-notification-emails/',
 						'headerAction' => [
-							'label' => __( 'SMTP', 'sureforms' ),
+							'label' => __( 'SET UP SMTP', 'sureforms' ),
 							'url'   => 'admin.php?page=sureforms_smtp',
 						],
 						'completed'    => false,
