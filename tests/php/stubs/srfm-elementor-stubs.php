@@ -3128,4 +3128,27 @@ class Plugin {
 
 }
 
+/**
+ * Group Control Background.
+ *
+ * A base control for creating background control.
+ *
+ * @since 1.2.2
+ */
+class Group_Control_Background {
+	/**
+	 * Get type.
+	 *
+	 * Retrieve the group control type.
+	 *
+	 * @since 1.2.2
+	 * @access public
+	 * @static
+	 *
+	 * @return string Control type.
+	 */
+	public static function get_type() {
+	}
+}
+
 }

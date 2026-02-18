@@ -233,14 +233,31 @@ class Form_Widget extends Widget_Base {
 			return null;
 		}
 
-		// Get gradient settings with defaults.
-		$type         = isset( $settings['bgGradient_gradient_type'] ) && '' !== $settings['bgGradient_gradient_type'] ? $settings['bgGradient_gradient_type'] : 'linear';
-		$angle        = isset( $settings['bgGradient_gradient_angle']['size'] ) ? $settings['bgGradient_gradient_angle']['size'] : 180;
-		$angle_unit   = isset( $settings['bgGradient_gradient_angle']['unit'] ) ? $settings['bgGradient_gradient_angle']['unit'] : 'deg';
-		$color_1_stop = isset( $settings['bgGradient_color_stop']['size'] ) ? $settings['bgGradient_color_stop']['size'] : 0;
-		$color_1_unit = isset( $settings['bgGradient_color_stop']['unit'] ) ? $settings['bgGradient_color_stop']['unit'] : '%';
-		$color_2_stop = isset( $settings['bgGradient_color_b_stop']['size'] ) ? $settings['bgGradient_color_b_stop']['size'] : 100;
-		$color_2_unit = isset( $settings['bgGradient_color_b_stop']['unit'] ) ? $settings['bgGradient_color_b_stop']['unit'] : '%';
+		// Get gradient settings with defaults - use Helper::get_string_value for type safety.
+		$type = isset( $settings['bgGradient_gradient_type'] ) && '' !== $settings['bgGradient_gradient_type']
+			? Helper::get_string_value( $settings['bgGradient_gradient_type'] )
+			: 'linear';
+
+		// Get angle settings.
+		$angle_settings = isset( $settings['bgGradient_gradient_angle'] ) && is_array( $settings['bgGradient_gradient_angle'] )
+			? $settings['bgGradient_gradient_angle']
+			: [];
+		$angle          = isset( $angle_settings['size'] ) ? Helper::get_string_value( $angle_settings['size'] ) : '180';
+		$angle_unit     = isset( $angle_settings['unit'] ) ? Helper::get_string_value( $angle_settings['unit'] ) : 'deg';
+
+		// Get color 1 stop settings.
+		$color_1_settings = isset( $settings['bgGradient_color_stop'] ) && is_array( $settings['bgGradient_color_stop'] )
+			? $settings['bgGradient_color_stop']
+			: [];
+		$color_1_stop     = isset( $color_1_settings['size'] ) ? Helper::get_string_value( $color_1_settings['size'] ) : '0';
+		$color_1_unit     = isset( $color_1_settings['unit'] ) ? Helper::get_string_value( $color_1_settings['unit'] ) : '%';
+
+		// Get color 2 stop settings.
+		$color_2_settings = isset( $settings['bgGradient_color_b_stop'] ) && is_array( $settings['bgGradient_color_b_stop'] )
+			? $settings['bgGradient_color_b_stop']
+			: [];
+		$color_2_stop     = isset( $color_2_settings['size'] ) ? Helper::get_string_value( $color_2_settings['size'] ) : '100';
+		$color_2_unit     = isset( $color_2_settings['unit'] ) ? Helper::get_string_value( $color_2_settings['unit'] ) : '%';
 
 		// Build radial gradient: radial-gradient(at center center, color1 stop1, color2 stop2).
 		if ( 'radial' === $type ) {
