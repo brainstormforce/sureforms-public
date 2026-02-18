@@ -291,7 +291,7 @@ class Email_Template {
 	 *
 	 * @param string $content HTML content containing table structure.
 	 *
-	 * @since x.x.x
+	 * @since 1.11.0
 	 * @return string Modified HTML content with border removed from last row.
 	 */
 	public function remove_border_from_last_tr_td_table( $content ) {
