@@ -27,11 +27,7 @@ import {
 	/**
 	 * Background-related controls that use dataset storage.
 	 */
-	const BACKGROUND_CONTROLS = [
-		'bgType',
-		'bgColor',
-		'bgImage',
-	];
+	const BACKGROUND_CONTROLS = [ 'bgType', 'bgColor', 'bgImage' ];
 
 	/**
 	 * Gradient group control field names.
@@ -248,8 +244,10 @@ import {
 
 			case 'bgGradient_gradient_angle': {
 				// Elementor slider returns object with size and unit.
-				const angleSize = typeof value === 'object' ? value.size : value;
-				const angleUnit = typeof value === 'object' ? value.unit : 'deg';
+				const angleSize =
+					typeof value === 'object' ? value.size : value;
+				const angleUnit =
+					typeof value === 'object' ? value.unit : 'deg';
 				container.dataset.bgGradientAngle = angleSize;
 				container.dataset.bgGradientAngleUnit = angleUnit;
 				applyBackground( container );
@@ -268,7 +266,8 @@ import {
 
 			case 'bgGradient_color_b_stop': {
 				// Elementor slider returns object with size and unit.
-				const stopBSize = typeof value === 'object' ? value.size : value;
+				const stopBSize =
+					typeof value === 'object' ? value.size : value;
 				const stopBUnit = typeof value === 'object' ? value.unit : '%';
 				container.dataset.bgGradientColorBStop = stopBSize;
 				container.dataset.bgGradientColorBStopUnit = stopBUnit;
@@ -420,7 +419,12 @@ import {
 	 * @param {HTMLElement} container      The form container element.
 	 * @param {Object}      widgetSettings The Elementor widget settings object (optional).
 	 */
-	function dispatchUpdateEvent( name, value, container, widgetSettings = null ) {
+	function dispatchUpdateEvent(
+		name,
+		value,
+		container,
+		widgetSettings = null
+	) {
 		document.dispatchEvent(
 			new CustomEvent( 'srfm-elementor-styling-update', {
 				detail: { name, value, container, widgetSettings },

@@ -237,20 +237,32 @@ export function initGradientFromSettings(
 
 	// Get angle (slider returns object) - only set if missing from dataset.
 	const angle = widgetSettings.get( settingsPrefix + 'gradient_angle' );
-	if ( angle && typeof angle === 'object' && ! container.dataset[ prefix + 'Angle' ] ) {
+	if (
+		angle &&
+		typeof angle === 'object' &&
+		! container.dataset[ prefix + 'Angle' ]
+	) {
 		container.dataset[ prefix + 'Angle' ] = angle.size;
 		container.dataset[ prefix + 'AngleUnit' ] = angle.unit || 'deg';
 	}
 
 	// Get color stops (sliders return objects) - only set if missing from dataset.
 	const stop1 = widgetSettings.get( settingsPrefix + 'color_stop' );
-	if ( stop1 && typeof stop1 === 'object' && ! container.dataset[ prefix + 'ColorStop' ] ) {
+	if (
+		stop1 &&
+		typeof stop1 === 'object' &&
+		! container.dataset[ prefix + 'ColorStop' ]
+	) {
 		container.dataset[ prefix + 'ColorStop' ] = stop1.size;
 		container.dataset[ prefix + 'ColorStopUnit' ] = stop1.unit || '%';
 	}
 
 	const stop2 = widgetSettings.get( settingsPrefix + 'color_b_stop' );
-	if ( stop2 && typeof stop2 === 'object' && ! container.dataset[ prefix + 'ColorBStop' ] ) {
+	if (
+		stop2 &&
+		typeof stop2 === 'object' &&
+		! container.dataset[ prefix + 'ColorBStop' ]
+	) {
 		container.dataset[ prefix + 'ColorBStop' ] = stop2.size;
 		container.dataset[ prefix + 'ColorBStopUnit' ] = stop2.unit || '%';
 	}
