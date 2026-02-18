@@ -145,7 +145,7 @@ class Email_Template {
 	 * inline CSS, dark mode support, and table-based layout.
 	 *
 	 * @since x.x.x
-	 * @return string|false
+	 * @return string
 	 */
 	public function get_raw_header() {
 		$is_rtl      = is_rtl();
@@ -229,7 +229,8 @@ class Email_Template {
 													<td valign="top" style="padding: 32px;">
 														<div id="srfm_raw_body_content_inner" style="color: #384860; font-family: Roboto, -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 14px; line-height: 170%; text-align: <?php echo esc_attr( $text_align ); ?>;">
 		<?php
-		return ob_get_clean();
+		$output = ob_get_clean();
+		return $output ? $output : '';
 	}
 
 	/**
@@ -239,7 +240,7 @@ class Email_Template {
 	 * and proper closing tags.
 	 *
 	 * @since x.x.x
-	 * @return string|false
+	 * @return string
 	 */
 	public function get_raw_footer() {
 		$site_name = get_bloginfo( 'name', 'display' );
@@ -279,7 +280,8 @@ class Email_Template {
 </body>
 </html>
 		<?php
-		return ob_get_clean();
+		$output = ob_get_clean();
+		return $output ? $output : '';
 	}
 
 	/**
