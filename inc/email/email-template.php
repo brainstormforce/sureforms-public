@@ -343,7 +343,7 @@ class Email_Template {
 	 *
 	 * @param array<mixed> $fields Submission fields.
 	 * @param string       $email_body Email body content.
-	 * @since 0.0.1
+	 * @since x.x.x
 	 * @return string Email body with {all_data} replaced.
 	 */
 	private function process_all_data_tag( $fields, $email_body ) {
