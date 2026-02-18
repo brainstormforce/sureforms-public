@@ -58,7 +58,10 @@ This runs `bumpup` (updates `package.json`) and `replace` (updates version strin
 
 - Read `package.json` → confirm `"version"` equals `<version>`.
 - Read `package-lock.json` → confirm the top-level `"version"` and `packages[""].version` both equal `<version>`.
-- If `package-lock.json` is out of sync, run: `npm install --package-lock-only` to regenerate it.
+- If `package-lock.json` is out of sync, directly patch the two version fields in the file:
+  - Top-level: `"version": "<old-version>"` → `"version": "<version>"`
+  - Inside `"packages": { "": { ... } }`: `"version": "<old-version>"` → `"version": "<version>"`
+  - Do **not** run `npm install` — dependency conflicts can cause it to fail and it is not needed for this change.
 
 ---
 
