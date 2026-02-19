@@ -74,8 +74,14 @@ This runs `bumpup` (updates `package.json`) and `replace` (updates version strin
 
 ### Step 6 — Verify readme.txt — Tested up to
 
-- Read `readme.txt` and confirm `Tested up to:` is set to the latest WordPress version.
-- If it looks outdated (older than the known current WP release), warn the user and ask them to confirm the correct WordPress version before updating.
+- Fetch the latest WordPress version by running:
+  ```bash
+  curl -s "https://api.wordpress.org/core/version-check/1.7/" | grep -o '"version":"[^"]*"' | head -1 | cut -d'"' -f4
+  ```
+- Store the result as `<wp-latest>`.
+- Read `readme.txt` and check the current `Tested up to:` value.
+- If it does **not** match `<wp-latest>`, update the line to `Tested up to: <wp-latest>`.
+- Confirm the final value in the file after any edit.
 
 ---
 
@@ -123,7 +129,17 @@ This runs `bumpup` (updates `package.json`) and `replace` (updates version strin
 
 ---
 
-### Step 12 — Generate README.md
+### Step 12 — Trim Changelog to 3 Entries
+
+- Parse the `== Changelog ==` section of `readme.txt` to identify all version entries (lines matching `= X.X.X - ...=`).
+- Keep only the **3 most recent** entries (the new `<version>` entry plus the 2 entries immediately before it), including all their bullet lines.
+- Remove all older entries that follow the 3rd entry, up to but not including the next `==` section header.
+- Write the trimmed content back to `readme.txt`.
+- Report how many entries were removed (e.g., "Removed 4 old changelog entries").
+
+---
+
+### Step 14 — Generate README.md
 
 ```bash
 npx grunt readme
@@ -131,7 +147,7 @@ npx grunt readme
 
 ---
 
-### Step 13 — Generate POT File
+### Step 15 — Generate POT File
 
 ```bash
 npm run makepot
@@ -139,7 +155,7 @@ npm run makepot
 
 ---
 
-### Step 14 — Commit and Open PR
+### Step 16 — Commit and Open PR
 
 ```bash
 git add -A
@@ -149,26 +165,12 @@ gh pr create \
   --repo brainstormforce/sureforms \
   --title "Version Bump <version>" \
   --base <branch> \
-  --label "Release PR,skip-title-check" \
-  --body "$(cat <<'EOF'
-### Release Checklist:
-- [x] Run to update version number  : \`grunt version-bump --ver=<version>\`
-- [x] Verify the version number in \`package.json\` and \`package-lock.json\`
-- [x] Verify \`Stable tag\` is \`<version>\` in readme.txt
-- [x] Verify \`Tested upto\` is set to latest tested version of WordPress
-- [x] Update version in \`sureforms.php\` in plugin description
-- [x] Verify constant \`SRFM_VER\` in \`sureforms.php\` with latest version of SureForms
-- [x] Verify constant \`SRFM_PRO_RECOMMENDED_VER\` in \`sureforms.php\` with compatible version of SureForms Pro
-- [x] Verify changelog \`date\` and \`content\` as per SureForms standards
-- [x] Generate README.md : \`grunt readme\`
-- [x] Generate POT file : \`npm run makepot\`
-EOF
-)"
+  --label "Release PR,skip-title-check"
 ```
 
 ---
 
-### Step 15 — Final Report
+### Step 17 — Final Report
 
 Print a status summary for every step, then the PR URL:
 
@@ -180,12 +182,13 @@ Release Bump: <version>
 ✅ package.json: <version>
 ✅ package-lock.json: <version>
 ✅ readme.txt Stable tag: <version>
-✅ readme.txt Tested up to: <wp-version>
+✅ readme.txt Tested up to: <wp-latest>
 ✅ sureforms.php Version: <version>
 ✅ SRFM_VER: <version>
 ✅ SRFM_PRO_RECOMMENDED_VER: <pro-version>
 ✅ @since x.x.x: N file(s) updated
 ✅ Changelog entry found
+✅ Changelog trimmed to 3 entries (N removed)
 ✅ README.md generated
 ✅ POT file generated
 ✅ PR opened: <pr-url>
