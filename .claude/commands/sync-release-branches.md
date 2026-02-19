@@ -48,7 +48,7 @@ git pull origin master
 ```bash
 git checkout dev
 git pull origin dev
-git merge master
+git pull origin master
 ```
 
 If there are merge conflicts, STOP. Tell the user: "Merge conflicts while merging master into dev. Please resolve them manually." List the conflicting files.
@@ -63,7 +63,7 @@ git push origin dev
 ```bash
 git checkout next-release
 git pull origin next-release
-git merge dev
+git pull origin dev
 ```
 
 If there are merge conflicts, STOP. Tell the user: "Merge conflicts while merging dev into next-release. Please resolve them manually." List the conflicting files.
