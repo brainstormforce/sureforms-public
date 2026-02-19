@@ -352,7 +352,7 @@ const LearnLesson = ( {
 						{ description && (
 							<Container.Item>
 								<div className="flex items-start justify-between gap-12 px-2">
-									<Label className="text-sm text-text-secondary font-normal leading-relaxed">
+									<Label className="text-sm text-text-secondary font-normal leading-relaxed text-justify">
 										{ description }
 									</Label>
 									<div className="flex items-center gap-1 flex-shrink-0">
