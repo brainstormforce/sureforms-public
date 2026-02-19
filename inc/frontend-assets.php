@@ -314,12 +314,13 @@ class Frontend_Assets {
 			);
 
 			// Localize script for Stripe payment functionality.
+			$frontend_nonces = Helper::get_frontend_nonces();
 			wp_localize_script(
 				SRFM_SLUG . '-stripe-payment',
 				'srfm_ajax',
 				[
-					'ajax_url' => admin_url( 'admin-ajax.php' ),
-					'nonce'    => wp_create_nonce( 'srfm_stripe_payment_nonce' ),
+					'ajax_url'      => admin_url( 'admin-ajax.php' ),
+					'payment_nonce' => $frontend_nonces['payment_nonce'],
 				]
 			);
 
@@ -331,6 +332,7 @@ class Frontend_Assets {
 					'zeroDecimalCurrencies' => Payment_Helper::get_zero_decimal_currencies(),
 					'currenciesData'        => Payment_Helper::get_all_currencies_data(),
 					'strings'               => Payment_Helper::get_payment_strings(),
+					'currencySignPosition'  => Payment_Helper::get_currency_sign_position(),
 				]
 			);
 		}

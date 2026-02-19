@@ -76,7 +76,7 @@ class StripePayment {
 				? 'srfm_create_subscription_intent'
 				: 'srfm_create_payment_intent'
 		);
-		data.append( 'nonce', srfm_ajax.nonce );
+		data.append( 'nonce', srfm_ajax.payment_nonce );
 		// Handle zero-decimal currencies (JPY, KRW, etc.) - don't multiply by 100
 		const formattedAmount =
 			window?.srfmStripe?.zeroDecimalCurrencies?.includes(
@@ -846,12 +846,19 @@ const PAYMENT_UTILITY = {
 			return PAYMENT_UTILITY.amountPlaceHolder;
 		}
 
-		// Format amount with currency using the appropriate number format
-		const formattedAmount =
+		// Format amount with currency using the appropriate number format and position
+		const formattedNumber =
 			! amount || amount <= 0
 				? ''
-				: currencySymbol +
-				  PAYMENT_UTILITY.formatNumberByType( amount, inputFormatType );
+				: PAYMENT_UTILITY.formatNumberByType( amount, inputFormatType );
+
+		const formattedAmount =
+			'' !== formattedNumber
+				? PAYMENT_UTILITY.formatAmountWithCurrencyPosition(
+					currencySymbol,
+					formattedNumber
+				  )
+				: '';
 
 		// Replace {amount} placeholder with formatted amount
 		return '' !== formattedAmount
@@ -887,13 +894,17 @@ const PAYMENT_UTILITY = {
 					getPlaceHolderElement.innerHTML = formattedMessage;
 				} else {
 					// Fallback to simple amount display (backward compatible)
-					// Format the amount according to the number format type
-					const formattedAmount = PAYMENT_UTILITY.formatNumberByType(
+					// Format the amount according to the number format type and currency position
+					const formattedNumber = PAYMENT_UTILITY.formatNumberByType(
 						amount,
 						inputFormatType
 					);
+
 					getPlaceHolderElement.innerHTML =
-						getCurrencySymbol + formattedAmount;
+						PAYMENT_UTILITY.formatAmountWithCurrencyPosition(
+							getCurrencySymbol,
+							formattedNumber
+						);
 				}
 			}
 		}
@@ -911,7 +922,7 @@ const PAYMENT_UTILITY = {
 	},
 	listenAmountChanges: () => {
 		const paymentInputs = PAYMENT_UTILITY.currentForm.querySelectorAll(
-			'.srfm-block.srfm-payment-block:not(.hide-element) input.srfm-payment-input[data-variable-amount-field]'
+			'.srfm-block.srfm-payment-block input.srfm-payment-input[data-variable-amount-field]'
 		);
 
 		if ( paymentInputs.length > 0 ) {
@@ -1042,6 +1053,40 @@ const PAYMENT_UTILITY = {
 
 		// Return symbol from localized data, or fallback to currency code
 		return currencyData?.symbol || currencyCode;
+	},
+	/**
+	 * Get currency sign position from settings
+	 * @return {string} Currency sign position ('left', 'right', 'left_space', 'right_space')
+	 */
+	getCurrencySignPosition: () => {
+		return window.srfmStripe?.currencySignPosition || 'left';
+	},
+	/**
+	 * Format amount with currency symbol based on position setting
+	 * @param {string}        currencySymbol  - The currency symbol (e.g., "$")
+	 * @param {string|number} formattedAmount - The formatted amount string
+	 * @param {string}        position        - Currency sign position (optional, defaults to setting)
+	 * @return {string} Formatted amount with currency symbol in correct position
+	 */
+	formatAmountWithCurrencyPosition: (
+		currencySymbol,
+		formattedAmount,
+		position = null
+	) => {
+		const signPosition =
+			position || PAYMENT_UTILITY.getCurrencySignPosition();
+
+		switch ( signPosition ) {
+			case 'right':
+				return `${ formattedAmount }${ currencySymbol }`;
+			case 'left_space':
+				return `${ currencySymbol } ${ formattedAmount }`;
+			case 'right_space':
+				return `${ formattedAmount } ${ currencySymbol }`;
+			case 'left':
+			default:
+				return `${ currencySymbol }${ formattedAmount }`;
+		}
 	},
 	/**
 	 * Get amount from dropdown block based on selected option values

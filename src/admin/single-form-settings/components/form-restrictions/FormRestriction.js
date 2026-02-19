@@ -225,7 +225,7 @@ const FormRestriction = ( { setHasValidationErrors } ) => {
 									value={
 										preserveMetaData?.message ??
 										__(
-											"This form is now closed as we've received all the entries.",
+											'This form is now closed as the maximum number of entries has been received.',
 											'sureforms'
 										)
 									}
