@@ -92,7 +92,7 @@ class Analytics_Events {
 	 * Pass an array of event names to remove only those entries.
 	 * Pass an empty array (or omit) to clear all pushed events.
 	 *
-	 * @param string[] $event_names Event names to remove. Empty = clear all.
+	 * @param array<string> $event_names Event names to remove. Empty = clear all.
 	 * @since x.x.x
 	 * @return void
 	 */
