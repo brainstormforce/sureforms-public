@@ -123,9 +123,22 @@ This runs `bumpup` (updates `package.json`) and `replace` (updates version strin
   ```
   = <version> - DD Month YYYY =
   * New: ...
+  * Improvement: ...
   * Fix: ...
   ```
 - If **found**: confirm the date is present and the format matches SureForms standards.
+- **Polish each bullet line** of the `<version>` entry:
+  - Fix any grammatical or spelling errors.
+  - Rewrite passive or vague phrasing into clear, active, benefit-led language (e.g. "Fixed bug where X" → "Fix: Resolved an issue where X to ensure Y").
+  - Keep the improvements **subtle and factual** — do not invent features or exaggerate. The prefix (`New:`, `Improvement:`, `Fix:`) must stay unchanged.
+  - Show the user a before/after diff of any lines you changed and ask for confirmation before writing.
+- Then sort the bullet lines of the `<version>` entry so they follow this group order:
+  1. `* New:` lines
+  2. `* Improvement:` lines
+  3. `* Fix:` lines
+  4. Any other prefixes come last
+- Within each group, sort lines **alphabetically** (case-insensitive) by the text that follows the prefix.
+- Write the re-ordered lines back to `readme.txt` if any reordering was needed, and report whether changes were made.
 
 ---
 
@@ -187,7 +200,7 @@ Release Bump: <version>
 ✅ SRFM_VER: <version>
 ✅ SRFM_PRO_RECOMMENDED_VER: <pro-version>
 ✅ @since x.x.x: N file(s) updated
-✅ Changelog entry found
+✅ Changelog entry polished, confirmed, and sorted (New → Improvement → Fix, alphabetical within groups)
 ✅ Changelog trimmed to 3 entries (N removed)
 ✅ README.md generated
 ✅ POT file generated
