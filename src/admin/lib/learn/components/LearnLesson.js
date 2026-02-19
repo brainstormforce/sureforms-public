@@ -160,6 +160,25 @@ const LearnLesson = ( {
 		return '';
 	};
 
+	// Build a GIF-like YouTube iframe URL: autoplay, muted, looped, no controls/branding.
+	const getGifVideoUrl = () => {
+		const baseUrl = learn?.content?.data?.url || '';
+		const videoIdMatch = baseUrl.match( /embed\/([^?&]+)/ );
+		const videoId = videoIdMatch ? videoIdMatch[ 1 ] : '';
+		const params = new URLSearchParams( {
+			autoplay: 1,
+			mute: 1,
+			loop: 1,
+			playlist: videoId,
+			controls: 0,
+			modestbranding: 1,
+			rel: 0,
+			playsinline: 1,
+			disablekb: 1,
+		} );
+		return `${ baseUrl }?${ params.toString() }`;
+	};
+
 	// Get video thumbnail from learn content
 	const getVideoThumbnail = () => {
 		const videoUrl = getVideoUrl();
@@ -200,6 +219,8 @@ const LearnLesson = ( {
 		learn?.type === 'dialog' && learn?.content?.type === 'video';
 	const hasImage =
 		learn?.type === 'dialog' && learn?.content?.type === 'image';
+	const hasGifVideo =
+		learn?.type === 'dialog' && learn?.content?.type === 'gif-video';
 
 	return (
 		<Container
@@ -356,7 +377,7 @@ const LearnLesson = ( {
 										{ description }
 									</Label>
 									<div className="flex items-center gap-1 flex-shrink-0">
-										{ ! hasVideo && hasImage && (
+										{ ! hasVideo && ( hasImage || hasGifVideo ) && (
 											<Tooltip content={ __( 'View Steps', 'sureforms' ) } arrow={ true } tooltipPortalId="srfm-learn-root">
 												<Button
 													variant="ghost"
@@ -367,7 +388,7 @@ const LearnLesson = ( {
 												/>
 											</Tooltip>
 										) }
-										{ ! hasVideo && ! hasImage && action?.url && (
+										{ ! hasVideo && ! hasImage && ! hasGifVideo && action?.url && (
 											<Tooltip content={ __( 'View Steps', 'sureforms' ) } arrow={ true } tooltipPortalId="srfm-learn-root">
 												<Button
 													variant="ghost"
@@ -458,6 +479,45 @@ const LearnLesson = ( {
 						</Container.Item>
 					</Container>
 				</Container.Item>
+			) }
+
+			{ /* Gif Video Dialog - YouTube video playing muted, autoplayed, looped like a GIF */ }
+			{ hasGifVideo && (
+				<Dialog
+					open={ isImageDialogOpen }
+					setOpen={ setIsImageDialogOpen }
+					exitOnClickOutside={ true }
+				>
+					<Dialog.Backdrop />
+					<Dialog.Panel className="!w-full !max-w-4xl">
+						<Dialog.Header className="flex flex-row items-center justify-between">
+							<Dialog.Title>{ title }</Dialog.Title>
+							<Dialog.CloseButton />
+						</Dialog.Header>
+						<Dialog.Body>
+							<div className="relative w-full rounded-lg overflow-hidden aspect-video">
+								<iframe
+									src={ isImageDialogOpen ? getGifVideoUrl() : '' }
+									title={ learn?.content?.data?.alt || title }
+									className="absolute inset-0 w-full h-full border-none"
+									allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+									allowFullScreen
+								/>
+							</div>
+						</Dialog.Body>
+						{ docsUrl && (
+							<Dialog.Footer>
+								<Button
+									variant="outline"
+									size="sm"
+									onClick={ () => window.open( docsUrl, '_blank', 'noopener,noreferrer' ) }
+								>
+									{ __( 'View Documentation', 'sureforms' ) }
+								</Button>
+							</Dialog.Footer>
+						) }
+					</Dialog.Panel>
+				</Dialog>
 			) }
 
 			{ /* Image Dialog */ }

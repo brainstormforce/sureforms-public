@@ -355,7 +355,10 @@ export default ( props ) => {
 										<div className="absolute top-1/2 -translate-y-1/2 -right-2 translate-x-full z-[999999] pointer-events-none">
 											<div className="absolute top-1/2 -translate-y-1/2 -left-1 w-2 h-2 bg-tooltip-background-dark rotate-45" />
 											<div className="bg-tooltip-background-dark text-text-on-color text-sm px-3 py-2 rounded-md shadow-lg whitespace-nowrap">
-												{ __( 'Describe what kind of form you want', 'sureforms' ) }
+												{ __(
+													'Describe what kind of form you want',
+													'sureforms'
+												) }
 											</div>
 										</div>
 									) }
@@ -390,8 +393,12 @@ export default ( props ) => {
 												onFocus={ () => {
 													setIsFocused( true );
 													if ( showLearnTip ) {
-														setShowLearnTip( false );
-														setShowGenerateTip( true );
+														setShowLearnTip(
+															false
+														);
+														setShowGenerateTip(
+															true
+														);
 													}
 												} }
 												onBlur={ () =>
@@ -436,7 +443,10 @@ export default ( props ) => {
 															<div className="absolute top-1/2 -translate-y-1/2 -right-2 translate-x-full z-[999999] pointer-events-none">
 																<div className="absolute top-1/2 -translate-y-1/2 -left-1 w-2 h-2 bg-tooltip-background-dark rotate-45" />
 																<div className="bg-tooltip-background-dark text-text-on-color text-sm px-3 py-2 rounded-md shadow-lg whitespace-nowrap">
-																	{ __( 'Click to generate the form', 'sureforms' ) }
+																	{ __(
+																		'Click to generate the form',
+																		'sureforms'
+																	) }
 																</div>
 															</div>
 														) }

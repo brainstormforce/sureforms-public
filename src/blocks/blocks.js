@@ -58,11 +58,16 @@ if ( 'sureforms_form' === srfm_block_data?.current_screen?.id ) {
 	registerBlocks( [ sfForm ] );
 
 	// Open block inserter and show tooltip on Form block when redirected from Learn section.
-	if ( new URLSearchParams( window.location.search ).get( 'source' ) === 'learn' ) {
+	if (
+		new URLSearchParams( window.location.search ).get( 'source' ) ===
+		'learn'
+	) {
 		wp.domReady( () => {
 			// Give the editor time to fully initialize before opening the inserter.
 			setTimeout( () => {
-				wp.data.dispatch( 'core/edit-post' ).setIsInserterOpened( true );
+				wp.data
+					.dispatch( 'core/edit-post' )
+					.setIsInserterOpened( true );
 
 				// Poll for the SureForms Form block item in the inserter.
 				let attempts = 0;
@@ -70,12 +75,19 @@ if ( 'sureforms_form' === srfm_block_data?.current_screen?.id ) {
 				const interval = setInterval( () => {
 					attempts++;
 					// Find block items in the inserter and look for the SureForms Form block.
-					const blockItems = document.querySelectorAll( '.block-editor-block-types-list__item' );
+					const blockItems = document.querySelectorAll(
+						'.block-editor-block-types-list__item'
+					);
 					let formBlockItem = null;
 
 					blockItems.forEach( ( item ) => {
-						const titleEl = item.querySelector( '.block-editor-block-types-list__item-title' );
-						if ( titleEl && titleEl.textContent.trim() === 'Form' ) {
+						const titleEl = item.querySelector(
+							'.block-editor-block-types-list__item-title'
+						);
+						if (
+							titleEl &&
+							titleEl.textContent.trim() === 'Form'
+						) {
 							formBlockItem = item;
 						}
 					} );
@@ -88,7 +100,8 @@ if ( 'sureforms_form' === srfm_block_data?.current_screen?.id ) {
 
 							const tip = document.createElement( 'div' );
 							tip.id = 'srfm-form-block-learn-tip';
-							tip.style.cssText = 'position:absolute;top:50%;left:100%;transform:translateY(-50%);margin-left:10px;z-index:99999999;pointer-events:none;';
+							tip.style.cssText =
+								'position:absolute;top:50%;left:100%;transform:translateY(-50%);margin-left:10px;z-index:99999999;pointer-events:none;';
 							tip.innerHTML = `
 								<div style="position:absolute;top:50%;left:-4px;transform:translateY(-50%) rotate(45deg);width:8px;height:8px;background:#1e1e1e;"></div>
 								<div style="background:#1e1e1e;color:#fff;font-size:13px;padding:6px 12px;border-radius:6px;box-shadow:0 4px 12px rgba(0,0,0,0.15);white-space:nowrap;">

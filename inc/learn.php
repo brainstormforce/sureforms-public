@@ -56,9 +56,9 @@ class Learn {
 						'learn'        => [
 							'type'    => 'dialog',
 							'content' => [
-								'type' => 'image',
+								'type' => 'gif-video',
 								'data' => [
-									'src' => SRFM_URL . 'images/learn/creating-first-form.gif',
+									'url' => 'https://www.youtube.com/embed/pMWZ2ko3G1k',
 									'alt' => __( 'Creating Your First Form', 'sureforms' ),
 								],
 							],
@@ -77,9 +77,9 @@ class Learn {
 						'learn'        => [
 							'type'    => 'dialog',
 							'content' => [
-								'type' => 'image',
+								'type' => 'gif-video',
 								'data' => [
-									'src' => SRFM_URL . 'images/learn/embed-forms.gif',
+									'url' => 'https://www.youtube.com/embed/PzkdlJ5jbIA',
 									'alt' => __( 'Embed Your Forms in a Page', 'sureforms' ),
 								],
 							],
@@ -98,9 +98,9 @@ class Learn {
 						'learn'        => [
 							'type'    => 'dialog',
 							'content' => [
-								'type' => 'image',
+								'type' => 'gif-video',
 								'data' => [
-									'src' => SRFM_URL . 'images/learn/secure-forms.gif',
+									'url' => 'https://www.youtube.com/embed/HDf2sTt9dp4',
 									'alt' => __( 'Protect Your Forms From Bots', 'sureforms' ),
 								],
 							],
@@ -119,9 +119,9 @@ class Learn {
 						'learn'        => [
 							'type'    => 'dialog',
 							'content' => [
-								'type' => 'image',
+								'type' => 'gif-video',
 								'data' => [
-									'src' => SRFM_URL . 'images/learn/email-notification.gif',
+									'url' => 'https://www.youtube.com/embed/FkEEKP0VRaA',
 									'alt' => __( 'Configure Your Email Notification', 'sureforms' ),
 								],
 							],

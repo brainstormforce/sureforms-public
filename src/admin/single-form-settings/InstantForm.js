@@ -117,7 +117,9 @@ const InstantFormComponent = () => {
 
 	// Auto-open Instant Form popover when redirected from Learn section.
 	useEffect( () => {
-		const source = new URLSearchParams( window.location.search ).get( 'source' );
+		const source = new URLSearchParams( window.location.search ).get(
+			'source'
+		);
 		if ( source === 'learn' ) {
 			setOpenPopover( true );
 			setShowLearnTip( true );
@@ -140,14 +142,18 @@ const InstantFormComponent = () => {
 	// Render publish button tooltip via DOM when showPublishTip is true.
 	useEffect( () => {
 		if ( ! showPublishTip ) {
-			const existing = document.getElementById( 'srfm-publish-learn-tip' );
+			const existing = document.getElementById(
+				'srfm-publish-learn-tip'
+			);
 			if ( existing ) {
 				existing.remove();
 			}
 			return;
 		}
 
-		const publishBtn = document.querySelector( '.editor-post-publish-button, .editor-post-publish-button__button' );
+		const publishBtn = document.querySelector(
+			'.editor-post-publish-button, .editor-post-publish-button__button'
+		);
 		if ( ! publishBtn ) {
 			return;
 		}
@@ -157,7 +163,8 @@ const InstantFormComponent = () => {
 
 		const tip = document.createElement( 'div' );
 		tip.id = 'srfm-publish-learn-tip';
-		tip.style.cssText = 'position:absolute;top:50%;right:100%;transform:translateY(-50%);margin-right:10px;z-index:99999999;pointer-events:none;';
+		tip.style.cssText =
+			'position:absolute;top:50%;right:100%;transform:translateY(-50%);margin-right:10px;z-index:99999999;pointer-events:none;';
 
 		tip.innerHTML = `
 			<div style="position:absolute;top:50%;right:-4px;transform:translateY(-50%) rotate(45deg);width:8px;height:8px;background:#1e1e1e;"></div>
@@ -540,10 +547,43 @@ const InstantFormComponent = () => {
 									}
 								/>
 								{ showLearnTip && (
-									<div style={ { position: 'absolute', top: '0', left: '100%', marginLeft: '10px', zIndex: 999999, pointerEvents: 'none' } }>
-										<div style={ { position: 'absolute', top: '8px', left: '-4px', transform: 'rotate(45deg)', width: '8px', height: '8px', backgroundColor: '#1e1e1e' } } />
-										<div style={ { backgroundColor: '#1e1e1e', color: '#fff', fontSize: '13px', padding: '6px 12px', borderRadius: '6px', boxShadow: '0 4px 12px rgba(0,0,0,0.15)', whiteSpace: 'nowrap' } }>
-											{ __( 'Enable this to publish the form instantly', 'sureforms' ) }
+									<div
+										style={ {
+											position: 'absolute',
+											top: '0',
+											left: '100%',
+											marginLeft: '10px',
+											zIndex: 999999,
+											pointerEvents: 'none',
+										} }
+									>
+										<div
+											style={ {
+												position: 'absolute',
+												top: '8px',
+												left: '-4px',
+												transform: 'rotate(45deg)',
+												width: '8px',
+												height: '8px',
+												backgroundColor: '#1e1e1e',
+											} }
+										/>
+										<div
+											style={ {
+												backgroundColor: '#1e1e1e',
+												color: '#fff',
+												fontSize: '13px',
+												padding: '6px 12px',
+												borderRadius: '6px',
+												boxShadow:
+													'0 4px 12px rgba(0,0,0,0.15)',
+												whiteSpace: 'nowrap',
+											} }
+										>
+											{ __(
+												'Enable this to publish the form instantly',
+												'sureforms'
+											) }
 										</div>
 									</div>
 								) }
