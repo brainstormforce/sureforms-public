@@ -108,26 +108,20 @@ This runs `bumpup` (updates `package.json`) and `replace` (updates version strin
 
 ---
 
-### Step 10 — Replace @since x.x.x Placeholders
-
-- Search all `.php` files in the plugin for occurrences of `@since x.x.x`.
-- Replace every occurrence with `@since <version>`.
-- Report the count and list of files updated.
-
----
-
-### Step 11 — Verify Changelog Entry in readme.txt
+### Step 10 — Verify Changelog Entry in readme.txt
 
 - Read the `== Changelog ==` section of `readme.txt`.
-- Check for an entry matching `= <version> -`.
-- If **missing**: warn the user and **pause** — they must add a changelog entry for `<version>` before the process can continue. The expected format is:
-  ```
-  = <version> - DD Month YYYY =
-  * New: ...
-  * Improvement: ...
-  * Fix: ...
-  ```
-- If **found**: confirm the date is present and the format matches SureForms standards.
+- **Check for a placeholder entry** matching `= x.x.x =` (case-insensitive):
+  - If **found**: ask the user: `"What is the release date for <version>? (e.g. 19th February 2026)"`. Replace the placeholder header with `= <version> - <date> =`, matching the exact formatting of existing changelog entries (spaces around the `=`, date style matching what is already present).
+- **Check for an entry** matching `= <version> -`:
+  - If **missing** after the above: warn the user and **pause** — they must add a changelog entry for `<version>` before the process can continue. The expected format is:
+    ```
+    = <version> - DD Month YYYY =
+    * New: ...
+    * Improvement: ...
+    * Fix: ...
+    ```
+  - If **found**: confirm the date is present and the format matches SureForms standards.
 - **Polish each bullet line** of the `<version>` entry:
   - Fix any grammatical or spelling errors.
   - Rewrite passive or vague phrasing into clear, active, benefit-led language (e.g. "Fixed bug where X" → "Fix: Resolved an issue where X to ensure Y").
@@ -143,7 +137,7 @@ This runs `bumpup` (updates `package.json`) and `replace` (updates version strin
 
 ---
 
-### Step 12 — Trim Changelog to 3 Entries
+### Step 11 — Trim Changelog to 3 Entries
 
 - Parse the `== Changelog ==` section of `readme.txt` to identify all version entries (lines matching `= X.X.X - ...=`).
 - Keep only the **3 most recent** entries (the new `<version>` entry plus the 2 entries immediately before it), including all their bullet lines.
@@ -153,7 +147,7 @@ This runs `bumpup` (updates `package.json`) and `replace` (updates version strin
 
 ---
 
-### Step 14 — Generate README.md
+### Step 12 — Generate README.md
 
 ```bash
 npx grunt readme
@@ -161,7 +155,7 @@ npx grunt readme
 
 ---
 
-### Step 15 — Generate POT File
+### Step 13 — Generate POT File
 
 ```bash
 npm run makepot
@@ -169,7 +163,7 @@ npm run makepot
 
 ---
 
-### Step 16 — Commit and Open PR
+### Step 14 — Commit and Open PR
 
 ```bash
 git add -A
@@ -184,7 +178,7 @@ gh pr create \
 
 ---
 
-### Step 17 — Final Report
+### Step 15 — Final Report
 
 Print a status summary for every step, then the PR URL:
 
@@ -200,7 +194,6 @@ Release Bump: <version>
 ✅ sureforms.php Version: <version>
 ✅ SRFM_VER: <version>
 ✅ SRFM_PRO_RECOMMENDED_VER: <pro-version>
-✅ @since x.x.x: N file(s) updated
 ✅ Changelog entry polished, confirmed, and sorted (New → Improvement → Fix, alphabetical within groups)
 ✅ Changelog trimmed to 3 entries (N removed)
 ✅ README.md generated
