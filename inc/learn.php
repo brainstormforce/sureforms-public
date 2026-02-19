@@ -235,22 +235,6 @@ class Learn {
 						'docsUrl'     => 'https://sureforms.com/docs/sureforms-pdf-generation-feature/',
 						'completed'   => false,
 					],
-
-					[
-						'id'          => 'form-restrictions',
-						'title'       => __( 'Form Restrictions', 'sureforms' ),
-						'description' => __( 'Not every form is for everyone. Check out the documentation to see how you can set limits and restrictions for your forms to reach a more targeted audience.', 'sureforms' ),
-						'learn'       => [
-							'type' => 'link',
-							'url'  => 'https://sureforms.com/docs/form-restriction-in-sureforms/',
-						],
-						'action'      => [
-							'label'      => __( 'View Documentation', 'sureforms' ),
-							'url'        => 'https://sureforms.com/docs/form-restriction-in-sureforms/',
-							'isExternal' => true,
-						],
-						'completed'   => false,
-					],
 					[
 						'id'          => 'login-forms',
 						'title'       => __( 'Custom Login Forms', 'sureforms' ),
