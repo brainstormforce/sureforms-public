@@ -49,3 +49,7 @@ coverage-report
 # playwright
 tests/play/test-results/*
 playwright-report/*
+
+# Claude Code local settings
+.claude/settings.local.json
+.claude/agent-memory/
