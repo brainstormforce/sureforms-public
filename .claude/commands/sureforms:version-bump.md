@@ -8,7 +8,7 @@ Parse from: $ARGUMENTS
 
 Expected format: `<version> [pro-version] [branch]`
 
-- `version` — **required**. Version number to release (e.g., `2.5.2`). If not provided, stop immediately and tell the user: `"Version number is required. Usage: /release-bump <version> [pro-version] [branch]"`
+- `version` — **required**. Version number to release (e.g., `2.5.2`). If not provided, stop immediately and tell the user: `"Version number is required. Usage: /sureforms:version-bump <version> [pro-version] [branch]"`
 - `pro-version` — optional. Version to set for `SRFM_PRO_RECOMMENDED_VER`. If not provided, ask: `"What should SRFM_PRO_RECOMMENDED_VER be set to? (default: <version>)"` and default to the core version if the user presses Enter or skips.
 - `branch` — optional. Source branch to cut from — must be `dev` or `next-release`. Default: `next-release`.
 
