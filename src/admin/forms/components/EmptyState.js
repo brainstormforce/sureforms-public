@@ -85,7 +85,7 @@ const EmptyState = ( {
 											'sureforms'
 										),
 										__(
-											'Build instant forms and share them with a link-no embedding needed.',
+											'Build instant forms and share them with a link—no embedding needed.',
 											'sureforms'
 										),
 										__(

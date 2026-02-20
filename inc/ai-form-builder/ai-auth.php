@@ -173,7 +173,7 @@ class AI_Auth {
 			// Update the analytics option based on the preference.
 			// Set 'yes' if opted in, empty string if not.
 			$enable_contribution = $is_subscribed ? 'yes' : '';
-			update_option( 'sureforms_analytics_optin', $enable_contribution );
+			update_option( 'sureforms_usage_optin', $enable_contribution );
 
 			// Remove is_subscribed from the decrypted data.
 			unset( $decrypted_data_array['is_subscribed'] );

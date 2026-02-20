@@ -151,6 +151,8 @@ class Global_Settings {
 		 * We are updating this independently.
 		 *
 		 * @since 1.7.0
+		 *
+		 * @since 2.5.1 - Renamed sureforms_analytics_optin to sureforms_usage_optin.
 		 */
 		$analytics_result = self::update_bsf_analytics( $srfm_bsf_analytics );
 
@@ -178,7 +180,7 @@ class Global_Settings {
 			$enable_tracking = '';
 		}
 
-		return update_option( 'sureforms_analytics_optin', $enable_tracking );
+		return update_option( 'sureforms_usage_optin', $enable_tracking );
 	}
 
 	/**
@@ -324,6 +326,12 @@ class Global_Settings {
 			Payment_Helper::update_global_setting( 'payment_mode', $payment_mode );
 		}
 
+		// Save currency sign position.
+		if ( isset( $setting_options['currency_sign_position'] ) && ! empty( $setting_options['currency_sign_position'] ) && is_string( $setting_options['currency_sign_position'] ) ) {
+			$currency_sign_position = sanitize_text_field( $setting_options['currency_sign_position'] );
+			Payment_Helper::update_global_setting( 'currency_sign_position', $currency_sign_position );
+		}
+
 		// Handle gateway-specific settings.
 		if ( 'stripe' === $gateway ) {
 			$current_stripe_settings = Payment_Helper::get_gateway_settings( 'stripe' );
@@ -384,8 +392,10 @@ class Global_Settings {
 		 * Hence retrieving the option sureforms_analytics_optin to get current status.
 		 *
 		 * @since 1.7.0
+		 *
+		 * @since 2.5.1 - Renamed sureforms_analytics_optin to sureforms_usage_optin.
 		 */
-		$srfm_bsf_analytics = get_option( 'sureforms_analytics_optin', false ) === 'yes' ? true : false;
+		$srfm_bsf_analytics = get_option( 'sureforms_usage_optin', false ) === 'yes' ? true : false;
 		$global_setting_options['srfm_general_settings_options']['srfm_bsf_analytics'] = $srfm_bsf_analytics;
 
 		if ( empty( $global_setting_options['srfm_default_dynamic_block_option'] ) ) {

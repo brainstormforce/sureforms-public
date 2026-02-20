@@ -762,6 +762,18 @@ class Payment_Helper {
 	}
 
 	/**
+	 * Get currency sign position.
+	 *
+	 * @since 2.5.1
+	 * @return string Currency sign position ('left', 'right', 'left_space', 'right_space').
+	 */
+	public static function get_currency_sign_position() {
+		$result = self::get_global_setting( 'currency_sign_position', 'left' );
+
+		return ! empty( $result ) && is_string( $result ) ? $result : 'left';
+	}
+
+	/**
 	 * Validate dynamic amount field from dropdown or multi-choice.
 	 *
 	 * @param array<string, mixed> $payment_config Payment block configuration.
@@ -1170,9 +1182,10 @@ class Payment_Helper {
 	 */
 	private static function get_default_payment_settings() {
 		return [
-			'currency'     => 'USD',
-			'payment_mode' => 'test',
-			'stripe'       => Stripe_Helper::get_default_stripe_settings(),
+			'currency'               => 'USD',
+			'payment_mode'           => 'test',
+			'currency_sign_position' => 'left',
+			'stripe'                 => Stripe_Helper::get_default_stripe_settings(),
 		];
 	}
 }

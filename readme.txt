@@ -1,18 +1,18 @@
 === SureForms - Contact Form, Payment Form & Other Custom Form Builder ===
 Contributors: brainstormforce
-Tags: contact form, custom form, forms, WordPress form plugin, form builder
+Tags: forms, contact form, custom forms, payment form, form builder
 Requires at least: 6.4
-Tested up to: 6.9
+Tested up to: 6.9.1
 Requires PHP: 7.4
-Stable tag: 2.5.0
+Stable tag: 2.5.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-The most beginner-friendly, AI Form Builder for WordPress to create contact forms & other custom forms with advanced features, without any code.
+The most beginner-friendly, AI Form Builder for WordPress to create contact forms, payment forms & other custom forms with advanced features, within minutes.
 
 == Description ==
 
-#### SUREFORMS – THE BEST NO-CODE CUSTOM FORM BUILDER
+#### SUREFORMS – THE BEST AI-ASSISTED FORM BUILDER
 
 ★★★★★
 
@@ -26,7 +26,7 @@ Our mission at SureForms is to empower you to build **beautiful forms without an
 
 We're taking a fresh approach with Gutenberg, WordPress's native drag-and-drop builder, to make creating forms seamless and intuitive with no new interface to learn.
 
-SureForms is a beginner-friendly form plugin that makes building contact forms and other high-converting custom forms fast and simple with advanced features like multi-step forms, conversational forms, conditional logic, etc.
+SureForms is a beginner-friendly form plugin that makes building contact forms and other high-converting custom forms fast and simple with advanced features like multi-step forms, conversational forms, payment forms, conditional logic, calculation, native integrations, etc.
 
 Good design and user experience are crucial for forms. Yet many website owners struggle to make their forms blend seamlessly with their site's look and feel, often leading to lower response rates.
 
@@ -64,6 +64,7 @@ SureForms is the first AI-powered form builder for WordPress, which makes form c
 -   Job Application Form
 -   Newsletter Form
 -   Support Form
+-   Payment Forms
 -   Calorie Counter
 -   Calculators
 -   Conversational Forms
@@ -74,7 +75,7 @@ SureForms makes advanced features like conditional logic, multi-step forms, quer
 
 #### Payment Forms
 
-SureForms supports a built-in Payment Forms feature. With SureForms, anyone can easily create full-fledged donation forms, event registrations, product checkouts, or any kind of form that needs to accept payments, all without relying on any extra add-on or third-party plugins. This makes collecting payments seamless, secure, and effortless directly through your forms.
+SureForms supports a built-in Payment Forms feature. With SureForms, anyone can easily create full-fledged donation forms, event registrations, product checkouts, or any kind of form that needs to accept payments, all without relying on any extra add-on or third-party plugins. This makes collecting payments seamless, secure, and effortless directly through your forms using Stripe & PayPal.
 
 Here are a few examples of how the Payment Feature in SureForms can power your forms:
 -   [Donation Form](https://sureforms.com/form/donation-form/)
@@ -165,11 +166,37 @@ Personalized forms based on users' answers.
 [**PDF Generation**](https://sureforms.com/features/pdf-generator/):
 Instantly create downloadable PDFs of form submissions for records or sharing.
 
-[**Registration & Login Forms**](https://sureforms.com/features/login-and-registration/):
+[**Custom Registration & Login Forms**](https://sureforms.com/features/login-and-registration/):
 Fully functional, branded Registration & Login form for your site using just a block.
 
-[**Advanced Native Integration**](https://sureforms.com/features/integrations/):
-Connect your forms natively with top apps and services like Telegram, FluentCRM, Mailchimp, Brevo, and more to automate workflows and save time.
+[**Advanced Native Integration**](https://sureforms.com/integrations/):
+Connect your forms natively with top apps and services to automate workflows and save time without any third-party add-ons or plugins.
+SureForms connects natively with:
+-   Google Sheets
+-   Mailchimp
+-   FluentCRM
+-   Telegram
+-   HubSpot
+-   MailerLite
+-   Brevo (Sendinblue)
+-   ActiveCampaign
+-   Kit
+-   GetResponse
+-   Airtable
+-   MailJet
+-   Campaign Monitor
+-   Drip
+-   Salesflare
+-   Breeze
+-   Latepoint
+-   Hostinger Reach
+-   AgileCRM
+-   WPFusion
+-   MailPoet
+-   MailerPress
+-   Keep
+-   Zoho CRM
+And new integrations getting added almost every month.
 
 [**Calculators**](https://sureforms.com/features/calculator-form/):
 Provide instant quotes or results with interactive calculators in your site. Designed to bring more traffic to your site.
@@ -275,7 +302,7 @@ To improve the user experience, SureForms may use the following 3rd party servic
 
 -   **ipapi** -- is used to auto detect the current user region Phone Field [TOS](https://ipapi.co/terms/) and [Privacy Policy](https://ipapi.co/privacy/)
 
--   **reCAPTCHA** -- is used for spam prevention and to ensure that the submissions made through the form are done by real human users. [TOS](https://policies.google.com/terms) and [Privacy Policy](https://policies.google.com/privacy)
+-   **reCAPTCHA** -- is used for spam prevention and to ensure that the submissions made through the form are done by real human users.
 
 == Blocks ==
 
@@ -361,7 +388,7 @@ plans.
 = Does SureForms support Payment Forms? =
 
 Yes! SureForms has built-in Payment Form support.
-You can collect payments securely without any add-ons or extra plugins.
+You can collect payments securely through Stripe & PayPal without any add-ons or extra plugins.
 
 == Screenshot ==
 
@@ -374,6 +401,9 @@ You can collect payments securely without any add-ons or extra plugins.
 You can report the issue through our [Bug Bounty Program](https://brainstormforce.com/bug-bounty-program/). We collaborate with Patchstack to provide opportunities for researchers to report vulnerabilities. The Patchstack team will help validate, triage, and handle any reported security issues.
 
 == Changelog ==
+= 2.5.1 - 16th February 2026 =
+* New: Added option to change currency position (e.g., $100, 100$, $ 100, 100 $).
+* Fix: Fixed the payment block amount not updating correctly with conditional logic.
 = 2.5.0 - 2nd February 2026 =
 * Improvement: Added translation support for the country list in the phone number field.
 * Fix: Fixed dropdown placeholder and GDPR label translation on the frontend.
@@ -386,13 +416,6 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 * Fix: Fixed multi-choice options being translated in entries.
 * Fix: Fixed reCAPTCHA v3 validation triggering multiple times on the same page.
 * Fix: Fixed Spectra button styles being affected by SureForms CSS.
-= 2.3.0 - 5th January 2026 =
-* New: Added option to duplicate forms.
-* New: Added preselect option for dropdown and multiple choice field.
-* Improvement: Improved visibility and accessibility of form settings.
-* Improvement: Added placeholder support for applicable fields.
-* Improvement: Added ability to edit or delete the country list in the phone number field.
-* Fix: Fixed duplication of email notification IDs.
 
 The full changelog is available [here](https://sureforms.com/whats-new/).
 

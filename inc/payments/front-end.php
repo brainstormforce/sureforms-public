@@ -70,7 +70,7 @@ class Front_End {
 	 */
 	public function create_payment_intent() {
 		// Verify nonce.
-		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ?? '' ) ), 'srfm_stripe_payment_nonce' ) ) {
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ?? '' ) ), 'srfm_payment_nonce' ) ) {
 			wp_send_json_error( __( 'Invalid nonce.', 'sureforms' ) );
 		}
 
@@ -245,7 +245,7 @@ class Front_End {
 	 */
 	public function create_subscription_intent() {
 		// Verify nonce.
-		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ?? '' ) ), 'srfm_stripe_payment_nonce' ) ) {
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ?? '' ) ), 'srfm_payment_nonce' ) ) {
 			wp_send_json_error( __( 'Security check failed.', 'sureforms' ) );
 		}
 
@@ -757,6 +757,11 @@ class Front_End {
 			// Use charge ID as transaction_id if available, otherwise fall back to subscription ID.
 			$transaction_id = ! empty( $charge_id ) ? $charge_id : $subscription_id;
 
+			// Send payment data to middleware for analytics.
+			if ( ! empty( $charge_id ) ) {
+				Stripe_Helper::intersect_payment( $charge_id, $secret_key, '', 'SureForms' );
+			}
+
 			// Prepare minimal subscription data for database.
 			$entry_data = [
 				'form_id'             => $form_id,
@@ -1089,12 +1094,16 @@ class Front_End {
 				];
 			}
 
+			$get_stripe_account_id = Stripe_Helper::get_stripe_account_id();
+
 			// Retrieve confirmed payment intent status.
 			$retrieve_body = apply_filters(
 				'srfm_retrieve_payment_intent_data',
 				[
 					'secret_key'        => $secret_key,
 					'payment_intent_id' => $payment_id,
+					'stripe_account_id' => $get_stripe_account_id,
+					'plugin_name'       => 'SureForms',
 				]
 			);
 
@@ -1112,6 +1121,7 @@ class Front_End {
 			$retrieve_response = wp_remote_post(
 				Stripe_Helper::middle_ware_base_url() . 'payment-intent/capture',
 				[
+					'timeout' => 60,
 					'body'    => $retrieve_body,
 					'headers' => [
 						'Content-Type' => 'application/json',
