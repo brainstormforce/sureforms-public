@@ -47,8 +47,8 @@ class Address_Markup extends Base {
 		$this->set_markup_properties();
 
 		// Autocomplete attributes.
-		$this->enable_autocomplete     = ! empty( $attributes['enableAutocomplete'] );
-		$this->show_map                = ! empty( $attributes['showMap'] );
+		$this->enable_autocomplete = ! empty( $attributes['enableAutocomplete'] );
+		$this->show_map            = ! empty( $attributes['showMap'] );
 	}
 
 	/**
