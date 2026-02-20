@@ -63,11 +63,17 @@ class Address_Markup extends Base {
 		$google_api_key = '';
 
 		if ( $this->enable_autocomplete ) {
-			$google_maps_settings = get_option( 'srfm_google_maps_settings', [] );
-			$google_maps_settings = is_array( $google_maps_settings ) ? $google_maps_settings : [];
-			$google_api_key       = isset( $google_maps_settings['srfm_google_maps_api_key'] )
-				? strval( $google_maps_settings['srfm_google_maps_api_key'] )
-				: '';
+			// Static cache: get_option is already object-cached by WordPress per-request,
+			// but a static variable avoids repeated array lookups when multiple address blocks render.
+			static $cached_api_key = null;
+			if ( null === $cached_api_key ) {
+				$google_maps_settings = get_option( 'srfm_google_maps_settings', [] );
+				$google_maps_settings = is_array( $google_maps_settings ) ? $google_maps_settings : [];
+				$cached_api_key       = isset( $google_maps_settings['srfm_google_maps_api_key'] )
+					? strval( $google_maps_settings['srfm_google_maps_api_key'] )
+					: '';
+			}
+			$google_api_key = $cached_api_key;
 
 			if ( ! empty( $google_api_key ) ) {
 				$extra_classes[] = 'srfm-address-autocomplete-block';
@@ -82,7 +88,7 @@ class Address_Markup extends Base {
 			<?php
 			if ( $autocomplete_enabled ) {
 				?>
-				data-autocomplete="true" data-show-map="<?php echo $this->show_map ? 'true' : 'false'; ?>" data-api-key="<?php echo esc_attr( $google_api_key ); ?>"
+				data-autocomplete="true" data-show-map="<?php echo esc_attr( $this->show_map ? 'true' : 'false' ); ?>" data-api-key="<?php echo esc_attr( $google_api_key ); ?>"
 				<?php
 			}
 			?>

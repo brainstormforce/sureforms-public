@@ -356,6 +356,31 @@ class Frontend_Assets {
 					SRFM_VER,
 					true
 				);
+
+				/**
+				 * Filter the default map center and zoom shown before a place is selected.
+				 *
+				 * @param array $default_center {
+				 *     @type float $lat  Latitude. Default 40.7128 (New York City).
+				 *     @type float $lng  Longitude. Default -74.006 (New York City).
+				 *     @type int   $zoom Zoom level. Default 10.
+				 * }
+				 * @since x.x.x
+				 */
+				$default_center = apply_filters(
+					'srfm_maps_default_center',
+					[
+						'lat'  => 40.7128,
+						'lng'  => -74.006,
+						'zoom' => 10,
+					]
+				);
+
+				wp_localize_script(
+					SRFM_SLUG . '-address-autocomplete',
+					'srfmMapsConfig',
+					[ 'defaultCenter' => $default_center ]
+				);
 			}
 		}
 

@@ -183,7 +183,6 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 											} )
 										}
 									/>
-
 								</>
 							) }
 						</SRFMAdvancedPanelBody>

@@ -3,7 +3,7 @@
  *
  * Handles Google Places Autocomplete integration for address blocks.
  * Supports multiple address fields per page, map preview with draggable marker,
- * country restriction, and place selection validation.
+ * and marker drag with reverse geocoding to update all address sub-fields.
  *
  * @package
  * @since x.x.x
@@ -12,11 +12,12 @@
 	'use strict';
 
 	/**
-	 * Default map center shown on initial load before any address is selected.
-	 * Set to New York City. Adjust these coordinates to change the default location.
+	 * Default map center and zoom, populated from the PHP `srfm_maps_default_center` filter
+	 * via wp_localize_script. Falls back to New York City if not configured.
 	 */
-	const SRFM_DEFAULT_CENTER = { lat: 40.7128, lng: -74.006 };
-	const SRFM_DEFAULT_ZOOM = 10;
+	const srfmDefaultConfig = ( window.srfmMapsConfig && window.srfmMapsConfig.defaultCenter ) ? window.srfmMapsConfig.defaultCenter : {};
+	const SRFM_DEFAULT_CENTER = { lat: srfmDefaultConfig.lat || 40.7128, lng: srfmDefaultConfig.lng || -74.006 };
+	const SRFM_DEFAULT_ZOOM = srfmDefaultConfig.zoom || 10;
 
 	/**
 	 * Promise that resolves when Google Maps API is loaded.
@@ -397,22 +398,15 @@
 			}
 		} );
 
-		// Clear hidden fields when user types over autocomplete selection.
+		// Clear hidden fields when user types; reset map to default center when input is emptied.
 		input.addEventListener( 'input', function() {
 			clearHiddenFields( block );
-		} );
-
-		// Reset map to default center when input is emptied.
-		input.addEventListener( 'input', function() {
-			if ( input.value.trim() === '' ) {
-				clearHiddenFields( block );
-				if ( enableMap ) {
-					const mapDiv = block.querySelector( '.srfm-address-autocomplete-map-preview' );
-					if ( mapDiv && mapDiv._srfmMap && mapDiv._srfmMarker ) {
-						mapDiv._srfmMap.setCenter( SRFM_DEFAULT_CENTER );
-						mapDiv._srfmMap.setZoom( SRFM_DEFAULT_ZOOM );
-						mapDiv._srfmMarker.setPosition( SRFM_DEFAULT_CENTER );
-					}
+			if ( input.value.trim() === '' && enableMap ) {
+				const mapDiv = block.querySelector( '.srfm-address-autocomplete-map-preview' );
+				if ( mapDiv && mapDiv._srfmMap && mapDiv._srfmMarker ) {
+					mapDiv._srfmMap.setCenter( SRFM_DEFAULT_CENTER );
+					mapDiv._srfmMap.setZoom( SRFM_DEFAULT_ZOOM );
+					mapDiv._srfmMarker.setPosition( SRFM_DEFAULT_CENTER );
 				}
 			}
 		} );
