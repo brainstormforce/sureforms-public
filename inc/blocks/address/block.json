@@ -53,14 +53,6 @@
 		"showMap": {
 			"type": "boolean",
 			"default": false
-		},
-		"restrictCountry": {
-			"type": "string",
-			"default": ""
-		},
-		"requirePlaceSelection": {
-			"type": "boolean",
-			"default": false
 		}
 	}
 }

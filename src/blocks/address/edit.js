@@ -8,7 +8,7 @@ import {
 	InnerBlocks,
 } from '@wordpress/block-editor';
 import { useEffect } from '@wordpress/element';
-import { ToggleControl, SelectControl } from '@wordpress/components';
+import { ToggleControl } from '@wordpress/components';
 import SRFMTextControl from '@Components/text-control';
 import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
@@ -35,8 +35,6 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 		className,
 		enableAutocomplete,
 		showMap,
-		restrictCountry,
-		requirePlaceSelection,
 	} = attributes;
 
 	const currentFormId = useGetCurrentFormId( clientId );
@@ -57,14 +55,6 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 	const blockID = `srfm-${ slug }-${ block_id }`;
 
 	const hasApiKey = !! srfm_block_data?.google_maps_api_key;
-
-	const countryOptions = [
-		{ label: __( 'No restriction', 'sureforms' ), value: '' },
-		...countries.map( ( country ) => ( {
-			label: country.name,
-			value: country.code,
-		} ) ),
-	];
 
 	const addressTemplate = [
 		[
@@ -193,31 +183,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 											} )
 										}
 									/>
-									<SelectControl
-										label={ __(
-											'Restrict to Country',
-											'sureforms'
-										) }
-										value={ restrictCountry }
-										options={ countryOptions }
-										onChange={ ( value ) =>
-											setAttributes( {
-												restrictCountry: value,
-											} )
-										}
-									/>
-									<ToggleControl
-										label={ __(
-											'Require Valid Place Selection',
-											'sureforms'
-										) }
-										checked={ requirePlaceSelection }
-										onChange={ ( value ) =>
-											setAttributes( {
-												requirePlaceSelection: value,
-											} )
-										}
-									/>
+
 								</>
 							) }
 						</SRFMAdvancedPanelBody>

@@ -35,22 +35,6 @@ class Address_Markup extends Base {
 	protected $show_map = false;
 
 	/**
-	 * Country restriction for autocomplete (ISO 2-letter code).
-	 *
-	 * @var string
-	 * @since x.x.x
-	 */
-	protected $restrict_country = '';
-
-	/**
-	 * Whether a valid place selection is required.
-	 *
-	 * @var bool
-	 * @since x.x.x
-	 */
-	protected $require_place_selection = false;
-
-	/**
 	 * Initialize the properties based on block attributes.
 	 *
 	 * @param array<mixed> $attributes Block attributes.
@@ -65,8 +49,6 @@ class Address_Markup extends Base {
 		// Autocomplete attributes.
 		$this->enable_autocomplete     = ! empty( $attributes['enableAutocomplete'] );
 		$this->show_map                = ! empty( $attributes['showMap'] );
-		$this->restrict_country        = $attributes['restrictCountry'] ?? '';
-		$this->require_place_selection = ! empty( $attributes['requirePlaceSelection'] );
 	}
 
 	/**
@@ -100,7 +82,7 @@ class Address_Markup extends Base {
 			<?php
 			if ( $autocomplete_enabled ) {
 				?>
-				data-autocomplete="true" data-show-map="<?php echo $this->show_map ? 'true' : 'false'; ?>" data-country="<?php echo esc_attr( $this->restrict_country ); ?>" data-require-selection="<?php echo $this->require_place_selection ? 'true' : 'false'; ?>" data-api-key="<?php echo esc_attr( $google_api_key ); ?>"
+				data-autocomplete="true" data-show-map="<?php echo $this->show_map ? 'true' : 'false'; ?>" data-api-key="<?php echo esc_attr( $google_api_key ); ?>"
 				<?php
 			}
 			?>

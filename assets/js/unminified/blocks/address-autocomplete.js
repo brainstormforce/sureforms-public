@@ -280,7 +280,7 @@
 				draggable: true,
 			} );
 
-			// Update lat/lng hidden fields when marker is dragged.
+			// Reverse geocode new position and update all address fields when marker is dragged.
 			marker.addListener( 'dragend', function() {
 				const newPos = marker.getPosition();
 				const latField = container.querySelector( '.srfm-address-autocomplete-lat' );
@@ -295,19 +295,37 @@
 					lngField.dispatchEvent( new Event( 'change', { bubbles: true } ) );
 				}
 
-				// Update structured data with new coordinates.
-				const structuredField = container.querySelector( '.srfm-address-autocomplete-structured' );
-				if ( structuredField && structuredField.value ) {
-					try {
-						const structured = JSON.parse( structuredField.value );
-						structured.lat = newPos.lat().toString();
-						structured.lng = newPos.lng().toString();
-						structuredField.value = JSON.stringify( structured );
-						structuredField.dispatchEvent( new Event( 'change', { bubbles: true } ) );
-					} catch ( e ) {
-						// Silently ignore parse errors.
+				// Reverse geocode to update address fields with the new marker location.
+				const geocoder = new window.google.maps.Geocoder();
+				geocoder.geocode( { location: newPos }, function( results, status ) {
+					if ( status === 'OK' && results && results[ 0 ] ) {
+						const parsed = parsePlace( results[ 0 ] );
+						// Use actual marker position for lat/lng (geocoder may return slightly different coords).
+						parsed.lat = newPos.lat().toString();
+						parsed.lng = newPos.lng().toString();
+						updateHiddenFields( container, parsed );
+						populateSubFields( container, parsed );
+						const searchInput = container.querySelector( '.srfm-input-address-autocomplete' );
+						if ( searchInput ) {
+							searchInput.value = parsed.formatted_address;
+							searchInput.dispatchEvent( new Event( 'change', { bubbles: true } ) );
+						}
+					} else {
+						// Geocode failed: update only coordinates in the structured field.
+						const structuredField = container.querySelector( '.srfm-address-autocomplete-structured' );
+						if ( structuredField && structuredField.value ) {
+							try {
+								const structured = JSON.parse( structuredField.value );
+								structured.lat = newPos.lat().toString();
+								structured.lng = newPos.lng().toString();
+								structuredField.value = JSON.stringify( structured );
+								structuredField.dispatchEvent( new Event( 'change', { bubbles: true } ) );
+							} catch ( e ) {
+								// Silently ignore parse errors.
+							}
+						}
 					}
-				}
+				} );
 			} );
 
 			mapDiv._srfmMap = map;
@@ -317,8 +335,8 @@
 
 	/**
 	 * Initializes autocomplete on a single address block.
-	 * Attaches Google Places Autocomplete, sets up event listeners for
-	 * place selection, input changes, validation, and form submission prevention.
+	 * Attaches Google Places Autocomplete and sets up event listeners for
+	 * place selection, input changes, and Enter key prevention.
 	 *
 	 * @param {Element} block The `.srfm-address-autocomplete-block` container.
 	 */
@@ -334,30 +352,21 @@
 
 		input.setAttribute( 'data-srfm-autocomplete-initialized', 'true' );
 
-		const country = block.getAttribute( 'data-country' );
-		const requireSelection = block.getAttribute( 'data-require-selection' ) === 'true';
 		const enableMap = block.getAttribute( 'data-show-map' ) === 'true';
 
 		const autocompleteOptions = {
 			fields: [ 'address_components', 'formatted_address', 'geometry', 'place_id' ],
 		};
 
-		if ( country && country.length === 2 ) {
-			autocompleteOptions.componentRestrictions = { country: country };
-		}
-
 		const autocomplete = new window.google.maps.places.Autocomplete( input, autocompleteOptions );
-		let placeSelected = false;
 
 		// Handle place selection from autocomplete dropdown.
 		autocomplete.addListener( 'place_changed', function() {
 			const place = autocomplete.getPlace();
 			if ( ! place || ! place.place_id ) {
-				placeSelected = false;
 				return;
 			}
 
-			placeSelected = true;
 			const parsed = parsePlace( place );
 
 			input.value = parsed.formatted_address;
@@ -369,15 +378,10 @@
 				renderMap( block, parsed );
 			}
 
-			// Clear error state if present.
-			if ( window.srfm && window.srfm.toggleErrorState ) {
-				window.srfm.toggleErrorState( block, false );
-			}
 		} );
 
 		// Clear hidden fields when user types over autocomplete selection.
 		input.addEventListener( 'input', function() {
-			placeSelected = false;
 			clearHiddenFields( block );
 		} );
 
@@ -391,17 +395,6 @@
 				}
 			}
 		} );
-
-		// Validate on blur if require-selection is enabled.
-		if ( requireSelection ) {
-			input.addEventListener( 'blur', function() {
-				if ( input.value.trim() !== '' && ! placeSelected ) {
-					if ( window.srfm && window.srfm.toggleErrorState ) {
-						window.srfm.toggleErrorState( block, true );
-					}
-				}
-			} );
-		}
 
 		// Prevent form submission when pressing Enter in autocomplete input.
 		input.addEventListener( 'keydown', function( e ) {
@@ -457,23 +450,4 @@
 	} else {
 		document.addEventListener( 'DOMContentLoaded', initializeAll );
 	}
-
-	// Validate required place selection on form submission.
-	document.addEventListener( 'srfm_form_before_submission', function() {
-		const blocks = document.querySelectorAll( '.srfm-address-autocomplete-block' );
-		for ( let i = 0; i < blocks.length; i++ ) {
-			const input = blocks[ i ].querySelector( '.srfm-input-address-autocomplete' );
-			if ( ! input ) {
-				continue;
-			}
-			const requireSelection = blocks[ i ].getAttribute( 'data-require-selection' ) === 'true';
-			const placeIdField = blocks[ i ].querySelector( '.srfm-address-autocomplete-place-id' );
-
-			if ( requireSelection && input.value.trim() !== '' && ( ! placeIdField || ! placeIdField.value ) ) {
-				if ( window.srfm && window.srfm.toggleErrorState ) {
-					window.srfm.toggleErrorState( blocks[ i ], true );
-				}
-			}
-		}
-	} );
 } )();
