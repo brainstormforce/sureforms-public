@@ -43,6 +43,24 @@ const GoogleMapsPage = ( {
 					</a>
 					{ '.' }
 				</p>
+				<p className="text-sm text-field-helper mt-2">
+					{ __(
+						"For security, restrict this API key to your site's domain using HTTP referrer restrictions in your ",
+						'sureforms'
+					) }
+					<a
+						href="https://console.cloud.google.com/apis/credentials"
+						target="_blank"
+						rel="noopener noreferrer"
+						className="text-field-helper"
+					>
+						{ __( 'Google Cloud credentials settings', 'sureforms' ) }
+					</a>
+					{ __(
+						'. This prevents unauthorized use of your key from other origins.',
+						'sureforms'
+					) }
+				</p>
 			</>
 		);
 	};

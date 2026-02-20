@@ -376,6 +376,17 @@ class Frontend_Assets {
 					]
 				);
 
+				// Validate filter output: guard against non-numeric or out-of-range values from third-party hooks.
+				$map_lat  = isset( $default_center['lat'] ) && is_numeric( $default_center['lat'] ) ? (float) $default_center['lat'] : 40.7128;
+				$map_lng  = isset( $default_center['lng'] ) && is_numeric( $default_center['lng'] ) ? (float) $default_center['lng'] : -74.006;
+				$map_zoom = isset( $default_center['zoom'] ) && is_numeric( $default_center['zoom'] ) ? (int) $default_center['zoom'] : 10;
+
+				$default_center = [
+					'lat'  => max( -90.0, min( 90.0, $map_lat ) ),
+					'lng'  => max( -180.0, min( 180.0, $map_lng ) ),
+					'zoom' => max( 0, min( 21, $map_zoom ) ),
+				];
+
 				wp_localize_script(
 					SRFM_SLUG . '-address-autocomplete',
 					'srfmMapsConfig',
