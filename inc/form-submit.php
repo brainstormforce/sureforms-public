@@ -786,21 +786,21 @@ class Form_Submit {
 	public static function parse_email_notification_template( $submission_data, $item, $form_data = [] ) {
 		$smart_tags = Smart_Tags::get_instance();
 
-		$to             = Helper::get_string_value( $smart_tags->process_smart_tags( $item['email_to'], $submission_data ) );
-		$subject        = Helper::get_string_value( $smart_tags->process_smart_tags( $item['subject'], $submission_data, $form_data ) );
-		$email_body     = Helper::get_string_value( $smart_tags->process_smart_tags( $item['email_body'], $submission_data, $form_data ) );
-		$is_raw_format  = isset( $item['is_raw_format'] ) && true === $item['is_raw_format'];
+		$to            = Helper::get_string_value( $smart_tags->process_smart_tags( $item['email_to'], $submission_data ) );
+		$subject       = Helper::get_string_value( $smart_tags->process_smart_tags( $item['subject'], $submission_data, $form_data ) );
+		$email_body    = Helper::get_string_value( $smart_tags->process_smart_tags( $item['email_body'], $submission_data, $form_data ) );
+		$is_raw_format = isset( $item['is_raw_format'] ) && true === $item['is_raw_format'];
 
 		/**
 		 * Sanitize the email body after smart tag substitution to prevent XSS.
 		 *
-		 * process_smart_tags() substitutes {form:slug} placeholders with raw user-submitted
-		 * field values. Those values must not be rendered as executable HTML in email clients.
+		 * After process_smart_tags() resolves {form:slug} placeholders, the body may contain
+		 * raw user-submitted values that must not render as executable HTML in email clients.
 		 * wp_kses_post() strips dangerous markup (script, on* handlers, javascript: URIs)
 		 * while preserving all legitimate email formatting (tables, links, bold, etc.).
 		 *
-		 * Note: {all_data} is not a recognised smart tag and remains as a literal placeholder
-		 * at this point; it is substituted later inside process_all_data_tag() which applies
+		 * Note: {all_data} is not a recognised smart tag and remains a literal placeholder
+		 * at this point; it is substituted later by process_all_data_tag() which applies
 		 * its own per-field escaping, so this call does not interfere with that path.
 		 *
 		 * @since x.x.x
