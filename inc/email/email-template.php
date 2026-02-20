@@ -121,20 +121,21 @@ class Email_Template {
 	}
 
 	/**
-	 * Render email in raw HTML format.
+	 * Render email template in raw HTML format.
 	 *
-	 * Bypasses the SureForms email template entirely and returns only the
-	 * processed email body content. No wrapper, no container, no footer,
-	 * no structural markup is added. The output is exactly what the user
-	 * wrote in the email body editor.
+	 * Preserves the email body HTML exactly as written and wraps it in the
+	 * advanced SureForms email template with full DOCTYPE, inline CSS,
+	 * dark mode support, mobile responsiveness, and RTL language support.
 	 *
 	 * @param array<mixed> $fields Submission fields.
 	 * @param string       $email_body Email body content.
 	 * @since x.x.x
-	 * @return string The raw email body HTML.
+	 * @return string The rendered email HTML.
 	 */
 	public function render_raw( $fields, $email_body ) {
-		return $this->process_all_data_tag( $fields, $email_body );
+		$email_body = $this->process_all_data_tag( $fields, $email_body );
+
+		return $this->get_raw_header() . $email_body . $this->get_raw_footer();
 	}
 
 	/**

@@ -245,7 +245,7 @@ const EmailConfirmation = ( props ) => {
 					label={ {
 						heading: __( 'Send as Raw HTML', 'sureforms' ),
 						description: __(
-							'When enabled, the email body HTML will be sent exactly as written. No template, wrapper, or additional markup will be added.',
+							'When enabled, the email body HTML will be preserved exactly as written and wrapped in a professional email template.',
 							'sureforms'
 						),
 					} }
