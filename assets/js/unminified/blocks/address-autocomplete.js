@@ -12,6 +12,13 @@
 	'use strict';
 
 	/**
+	 * Default map center shown on initial load before any address is selected.
+	 * Set to New York City. Adjust these coordinates to change the default location.
+	 */
+	const SRFM_DEFAULT_CENTER = { lat: 40.7128, lng: -74.006 };
+	const SRFM_DEFAULT_ZOOM = 10;
+
+	/**
 	 * Promise that resolves when Google Maps API is loaded.
 	 * Uses singleton pattern to prevent duplicate loads.
 	 *
@@ -239,7 +246,7 @@
 	 */
 	function renderMap( container, data ) {
 		const mapDiv = container.querySelector( '.srfm-address-autocomplete-map-preview' );
-		if ( ! mapDiv ) {
+		if ( ! mapDiv || ! mapDiv._srfmMap ) {
 			return;
 		}
 
@@ -247,90 +254,101 @@
 		const lng = parseFloat( data.lng );
 
 		if ( isNaN( lat ) || isNaN( lng ) ) {
-			mapDiv.style.display = 'none';
+			return;
+		}
+
+		const position = { lat: lat, lng: lng };
+
+		// Zoom in to street level when a specific place is selected.
+		mapDiv._srfmMap.setCenter( position );
+		mapDiv._srfmMap.setZoom( 15 );
+		if ( mapDiv._srfmMarker ) {
+			mapDiv._srfmMarker.setPosition( position );
+		}
+	}
+
+	/**
+	 * Creates the initial map at the default center with a draggable marker.
+	 * Called once per block when the Google Maps API is ready.
+	 * The dragend handler reverse-geocodes the new position to update all address fields.
+	 *
+	 * @param {Element} block The `.srfm-address-autocomplete-block` container.
+	 */
+	function showDefaultMap( block ) {
+		const mapDiv = block.querySelector( '.srfm-address-autocomplete-map-preview' );
+		if ( ! mapDiv || mapDiv._srfmMap ) {
 			return;
 		}
 
 		mapDiv.style.display = 'block';
-		const position = { lat: lat, lng: lng };
 
-		if ( mapDiv._srfmMap ) {
-			// Update existing map.
-			mapDiv._srfmMap.setCenter( position );
-			if ( mapDiv._srfmMarker ) {
-				mapDiv._srfmMarker.setPosition( position );
+		const map = new window.google.maps.Map( mapDiv, {
+			center: SRFM_DEFAULT_CENTER,
+			zoom: SRFM_DEFAULT_ZOOM,
+			disableDefaultUI: true,
+			zoomControl: true,
+		} );
+
+		// Force map to recalculate its size after being revealed from display:none.
+		window.google.maps.event.trigger( map, 'resize' );
+		map.setCenter( SRFM_DEFAULT_CENTER );
+
+		const marker = new window.google.maps.Marker( {
+			position: SRFM_DEFAULT_CENTER,
+			map: map,
+			draggable: true,
+		} );
+
+		// Reverse geocode new position and update all address fields when marker is dragged.
+		marker.addListener( 'dragend', function() {
+			const newPos = marker.getPosition();
+			const latField = block.querySelector( '.srfm-address-autocomplete-lat' );
+			const lngField = block.querySelector( '.srfm-address-autocomplete-lng' );
+
+			if ( latField ) {
+				latField.value = newPos.lat().toString();
+				latField.dispatchEvent( new Event( 'change', { bubbles: true } ) );
 			}
-		} else {
-			// Create new map.
-			const map = new window.google.maps.Map( mapDiv, {
-				center: position,
-				zoom: 15,
-				disableDefaultUI: true,
-				zoomControl: true,
-			} );
+			if ( lngField ) {
+				lngField.value = newPos.lng().toString();
+				lngField.dispatchEvent( new Event( 'change', { bubbles: true } ) );
+			}
 
-			// Force map to recalculate its size after being revealed from display:none.
-			// Without this, the map tiles render blank because the container had 0 dimensions.
-			window.google.maps.event.trigger( map, 'resize' );
-			map.setCenter( position );
-
-			const marker = new window.google.maps.Marker( {
-				position: position,
-				map: map,
-				draggable: true,
-			} );
-
-			// Reverse geocode new position and update all address fields when marker is dragged.
-			marker.addListener( 'dragend', function() {
-				const newPos = marker.getPosition();
-				const latField = container.querySelector( '.srfm-address-autocomplete-lat' );
-				const lngField = container.querySelector( '.srfm-address-autocomplete-lng' );
-
-				if ( latField ) {
-					latField.value = newPos.lat().toString();
-					latField.dispatchEvent( new Event( 'change', { bubbles: true } ) );
-				}
-				if ( lngField ) {
-					lngField.value = newPos.lng().toString();
-					lngField.dispatchEvent( new Event( 'change', { bubbles: true } ) );
-				}
-
-				// Reverse geocode to update address fields with the new marker location.
-				const geocoder = new window.google.maps.Geocoder();
-				geocoder.geocode( { location: newPos }, function( results, status ) {
-					if ( status === 'OK' && results && results[ 0 ] ) {
-						const parsed = parsePlace( results[ 0 ] );
-						// Use actual marker position for lat/lng (geocoder may return slightly different coords).
-						parsed.lat = newPos.lat().toString();
-						parsed.lng = newPos.lng().toString();
-						updateHiddenFields( container, parsed );
-						populateSubFields( container, parsed );
-						const searchInput = container.querySelector( '.srfm-input-address-autocomplete' );
-						if ( searchInput ) {
-							searchInput.value = parsed.formatted_address;
-							searchInput.dispatchEvent( new Event( 'change', { bubbles: true } ) );
-						}
-					} else {
-						// Geocode failed: update only coordinates in the structured field.
-						const structuredField = container.querySelector( '.srfm-address-autocomplete-structured' );
-						if ( structuredField && structuredField.value ) {
-							try {
-								const structured = JSON.parse( structuredField.value );
-								structured.lat = newPos.lat().toString();
-								structured.lng = newPos.lng().toString();
-								structuredField.value = JSON.stringify( structured );
-								structuredField.dispatchEvent( new Event( 'change', { bubbles: true } ) );
-							} catch ( e ) {
-								// Silently ignore parse errors.
-							}
+			// Reverse geocode to update address fields with the new marker location.
+			const geocoder = new window.google.maps.Geocoder();
+			geocoder.geocode( { location: newPos }, function( results, status ) {
+				if ( status === 'OK' && results && results[ 0 ] ) {
+					const parsed = parsePlace( results[ 0 ] );
+					// Use actual marker position for lat/lng (geocoder may return slightly different coords).
+					parsed.lat = newPos.lat().toString();
+					parsed.lng = newPos.lng().toString();
+					updateHiddenFields( block, parsed );
+					populateSubFields( block, parsed );
+					const searchInput = block.querySelector( '.srfm-input-address-autocomplete' );
+					if ( searchInput ) {
+						searchInput.value = parsed.formatted_address;
+						searchInput.dispatchEvent( new Event( 'change', { bubbles: true } ) );
+					}
+				} else {
+					// Geocode failed: update only coordinates in the structured field.
+					const structuredField = block.querySelector( '.srfm-address-autocomplete-structured' );
+					if ( structuredField && structuredField.value ) {
+						try {
+							const structured = JSON.parse( structuredField.value );
+							structured.lat = newPos.lat().toString();
+							structured.lng = newPos.lng().toString();
+							structuredField.value = JSON.stringify( structured );
+							structuredField.dispatchEvent( new Event( 'change', { bubbles: true } ) );
+						} catch ( e ) {
+							// Silently ignore parse errors.
 						}
 					}
-				} );
+				}
 			} );
+		} );
 
-			mapDiv._srfmMap = map;
-			mapDiv._srfmMarker = marker;
-		}
+		mapDiv._srfmMap = map;
+		mapDiv._srfmMarker = marker;
 	}
 
 	/**
@@ -385,13 +403,17 @@
 			clearHiddenFields( block );
 		} );
 
-		// Hide map and clear fields when input is emptied.
+		// Reset map to default center when input is emptied.
 		input.addEventListener( 'input', function() {
 			if ( input.value.trim() === '' ) {
 				clearHiddenFields( block );
-				const mapDiv = block.querySelector( '.srfm-address-autocomplete-map-preview' );
-				if ( mapDiv ) {
-					mapDiv.style.display = 'none';
+				if ( enableMap ) {
+					const mapDiv = block.querySelector( '.srfm-address-autocomplete-map-preview' );
+					if ( mapDiv && mapDiv._srfmMap && mapDiv._srfmMarker ) {
+						mapDiv._srfmMap.setCenter( SRFM_DEFAULT_CENTER );
+						mapDiv._srfmMap.setZoom( SRFM_DEFAULT_ZOOM );
+						mapDiv._srfmMarker.setPosition( SRFM_DEFAULT_CENTER );
+					}
 				}
 			}
 		} );
@@ -402,6 +424,11 @@
 				e.preventDefault();
 			}
 		} );
+
+		// Show the map immediately with default center so it's visible from page load.
+		if ( enableMap ) {
+			showDefaultMap( block );
+		}
 	}
 
 	/**
