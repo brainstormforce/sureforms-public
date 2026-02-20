@@ -4,6 +4,7 @@ import { useState, useEffect } from '@wordpress/element';
 import { useDebouncedCallback } from 'use-debounce';
 import { Container, Switch } from '@bsf/force-ui';
 import ModalInputBox from '@Components/force-ui-components/ModalInputBox';
+import ModalWarning from '@Components/force-ui-components/ModalWarning';
 import TabContentWrapper from '@Components/tab-content-wrapper';
 import FromEmail from './FromEmail';
 import { singleFormEmailOptionsWithFilter } from '@Components/hooks';
@@ -240,23 +241,30 @@ const EmailConfirmation = ( props ) => {
 		{
 			id: 'is-raw-format',
 			component: (
-				<Switch
-					size="sm"
-					label={ {
-						heading: __( 'Send as Raw HTML', 'sureforms' ),
-						description: __(
-							'When enabled, the email body HTML will be preserved exactly as written and wrapped in a professional email template.',
-							'sureforms'
-						),
-					} }
-					checked={ formData.is_raw_format }
-					onChange={ ( checked ) =>
-						setFormData( {
-							...formData,
-							is_raw_format: checked,
-						} )
-					}
-				/>
+				<>
+					<Switch
+						size="sm"
+						label={ {
+							heading: __( 'Send as Raw HTML', 'sureforms' ),
+							description: __(
+								'When enabled, the email body HTML will be preserved exactly as written and wrapped in a professional email template.',
+								'sureforms'
+							),
+						} }
+						checked={ formData.is_raw_format }
+						onChange={ ( checked ) =>
+							setFormData( ( prev ) => ( { ...prev, is_raw_format: checked } ) )
+						}
+					/>
+					{ formData.is_raw_format && (
+						<ModalWarning
+							message={ __(
+								'Smart tags that reference user-submitted fields will not be escaped in raw HTML mode. Avoid inserting untrusted field values directly into the email body.',
+								'sureforms'
+							) }
+						/>
+					) }
+				</>
 			),
 		},
 		{
