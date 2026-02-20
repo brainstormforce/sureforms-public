@@ -269,6 +269,11 @@
 				zoomControl: true,
 			} );
 
+			// Force map to recalculate its size after being revealed from display:none.
+			// Without this, the map tiles render blank because the container had 0 dimensions.
+			window.google.maps.event.trigger( map, 'resize' );
+			map.setCenter( position );
+
 			const marker = new window.google.maps.Marker( {
 				position: position,
 				map: map,
