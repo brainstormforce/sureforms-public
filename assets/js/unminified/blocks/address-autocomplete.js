@@ -5,7 +5,7 @@
  * Supports multiple address fields per page, map preview with draggable marker,
  * country restriction, and place selection validation.
  *
- * @package SureForms
+ * @package
  * @since x.x.x
  */
 ( () => {
@@ -257,7 +257,7 @@
 			return;
 		}
 
-		const position = { lat: lat, lng: lng };
+		const position = { lat, lng };
 
 		// Zoom in to street level when a specific place is selected.
 		mapDiv._srfmMap.setCenter( position );
@@ -295,7 +295,7 @@
 
 		const marker = new window.google.maps.Marker( {
 			position: SRFM_DEFAULT_CENTER,
-			map: map,
+			map,
 			draggable: true,
 		} );
 
@@ -395,7 +395,6 @@
 			if ( enableMap ) {
 				renderMap( block, parsed );
 			}
-
 		} );
 
 		// Clear hidden fields when user types over autocomplete selection.
