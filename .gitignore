@@ -49,3 +49,7 @@ coverage-report
 # playwright
 tests/play/test-results/*
 playwright-report/*
+
+# Claude Code agent memory (local AI session data, not shared)
+.claude/agent-memory/
+.claude/settings.local.json

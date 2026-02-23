@@ -3,7 +3,7 @@
 	.srfm-form {
 		.srfm-address-block {
 			legend {
-				margin-bottom: var(--srfm-gap-below-address-label);
+				margin-bottom: var( --srfm-gap-below-address-label );
 			}
 			.srfm-block-wrap {
 				@include srfm-address-block-styles;
@@ -30,19 +30,19 @@
 			.srfm-block-wrap {
 				.srfm-block-legend,
 				.srfm-block-label {
-					font-size: var(--srfm-address-label-font-size);
-					line-height: var(--srfm-address-label-line-height);
+					font-size: var( --srfm-address-label-font-size );
+					line-height: var( --srfm-address-label-line-height );
 				}
 				.srfm-description {
-					font-size: var(--srfm-address-description-font-size);
-					line-height: var(--srfm-address-description-line-height);
+					font-size: var( --srfm-address-description-font-size );
+					line-height: var( --srfm-address-description-line-height );
 				}
 			}
 		}
 
 		.srfm-address-autocomplete-block {
 			.srfm-address-autocomplete-search-wrap {
-				margin-bottom: var(--srfm-gap-below-address-label);
+				margin-bottom: var( --srfm-gap-below-address-label );
 
 				.srfm-input-address-autocomplete {
 					width: 100%;
@@ -51,7 +51,7 @@
 
 			.srfm-address-autocomplete-map-preview {
 				width: 100%;
-				border-radius: var(--srfm-border-radius);
+				border-radius: var( --srfm-border-radius );
 				overflow: hidden;
 				margin-top: 10px;
 			}
@@ -60,6 +60,9 @@
 }
 
 // Google Places autocomplete dropdown z-index.
+// .pac-container is injected directly into <body> by the Google Maps JS API
+// and cannot be scoped inside .srfm-form-container. The global override is
+// required so the dropdown renders above modals and fixed headers (z-index > 9999).
 .pac-container {
 	z-index: 10000;
 }

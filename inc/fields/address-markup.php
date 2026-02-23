@@ -116,6 +116,24 @@ class Address_Markup extends Base {
 					?>
 					</div>
 					<?php if ( $autocomplete_enabled ) { ?>
+					<?php
+					/*
+					 * These hidden fields are populated client-side by address-autocomplete.js
+					 * when a user selects a place or drags the map marker.
+					 *
+					 * - srfm-address-structured-*: Full parsed address as JSON (street, city, state, postal, country, lat, lng, place_id).
+					 * - srfm-address-place-id-*:   Google Place ID of the selected location.
+					 * - srfm-address-lat-*:         Latitude in decimal degrees.
+					 * - srfm-address-lng-*:         Longitude in decimal degrees.
+					 *
+					 * These are intentionally not processed by process_form_fields() (which handles
+					 * labelled block fields). They are available as raw POST values for third-party
+					 * integrations via srfm_before_fields_processing or srfm_update_prepared_submission_data.
+					 *
+					 * @todo Extend prepare_submission_data() to sanitize and include lat/lng/place_id
+					 * when geocoding-aware integrations (CRMs, mapping tools) are needed.
+					 */
+					?>
 					<input type="hidden" class="srfm-address-autocomplete-structured" name="srfm-address-structured-<?php echo esc_attr( $this->block_id ); ?>" value="" />
 					<input type="hidden" class="srfm-address-autocomplete-place-id" name="srfm-address-place-id-<?php echo esc_attr( $this->block_id ); ?>" value="" />
 					<input type="hidden" class="srfm-address-autocomplete-lat" name="srfm-address-lat-<?php echo esc_attr( $this->block_id ); ?>" value="" />

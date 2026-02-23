@@ -294,6 +294,10 @@
 		window.google.maps.event.trigger( map, 'resize' );
 		map.setCenter( SRFM_DEFAULT_CENTER );
 
+		// TODO: Migrate to AdvancedMarkerElement when requiring a Map ID becomes viable.
+		// google.maps.Marker is deprecated as of Feb 2024 but still functional.
+		// AdvancedMarkerElement requires a mapId which is an additional configuration burden.
+		// Tracking: https://developers.google.com/maps/documentation/javascript/advanced-markers/migration
 		const marker = new window.google.maps.Marker( {
 			position: SRFM_DEFAULT_CENTER,
 			map,

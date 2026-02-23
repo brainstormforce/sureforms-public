@@ -8,7 +8,7 @@ import {
 	InnerBlocks,
 } from '@wordpress/block-editor';
 import { useEffect } from '@wordpress/element';
-import { ToggleControl } from '@wordpress/components';
+import { Notice, ToggleControl } from '@wordpress/components';
 import SRFMTextControl from '@Components/text-control';
 import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
@@ -154,22 +154,15 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 							{ enableAutocomplete && (
 								<>
 									{ ! hasApiKey && (
-										<p
-											className="components-notice is-warning"
-											style={ {
-												padding: '8px 12px',
-												backgroundColor: '#fcf0e3',
-												borderLeft:
-													'4px solid #dba617',
-												margin: '0 0 16px',
-												fontSize: '13px',
-											} }
+										<Notice
+											status="warning"
+											isDismissible={ false }
 										>
 											{ __(
 												'Google Maps API key is not configured. Go to Settings > Google Maps to add your API key.',
 												'sureforms'
 											) }
-										</p>
+										</Notice>
 									) }
 									<ToggleControl
 										label={ __(
