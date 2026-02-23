@@ -1,13 +1,11 @@
 # SureForms - CLAUDE.md
 
 ## Project Overview
-SureForms is a WordPress form builder plugin (v2.5.1) by Brainstorm Force. It provides a modern, AI-powered drag-and-drop form building experience using the Gutenberg block editor.
+SureForms is a WordPress form builder plugin (v2.5.1) by Brainstorm Force. AI-powered drag-and-drop form building using the Gutenberg block editor.
 
-- **Plugin slug:** `sureforms`
-- **Text domain:** `sureforms`
+- **Plugin slug:** `sureforms` | **Text domain:** `sureforms`
 - **Prefix:** `SRFM_` (constants), `srfm` (slug), `sureforms_` (post types/DB)
 - **Minimum PHP:** 7.4 | **Minimum WP:** 6.4
-- **License:** GPL-2.0+
 
 ## Tech Stack
 - **Backend:** PHP 7.4+ / WordPress Plugin API / Custom REST endpoints
@@ -16,28 +14,26 @@ SureForms is a WordPress form builder plugin (v2.5.1) by Brainstorm Force. It pr
 - **Build:** WordPress Scripts (Webpack 5) + Grunt
 - **Testing:** PHPUnit 9 (unit) + Playwright (E2E)
 - **Static Analysis:** PHPStan level 9 + PHPCS (WordPress-Extra)
-- **Node:** 18.15.0 (Volta)
-- **UI Library:** @bsf/force-ui (internal BSF admin UI)
+- **Node:** 18.15.0 (Volta) | **UI Library:** @bsf/force-ui
 
 ## Commands
 
 ### Build
 ```bash
-npm run start              # Dev server with watch mode
-npm run build              # Full production build (webpack + sass + grunt)
-npm run build:script       # Webpack build only
-npm run build:sass         # SASS compilation only
+npm run start              # Dev server with watch
+npm run build              # Full production build
+npm run build:script       # Webpack only
+npm run build:sass         # SASS only
 ```
 
 ### Lint & Format
 ```bash
-npm run lint-js            # ESLint via wp-scripts
-npm run lint-js:fix        # Auto-fix JS lint issues
-npm run lint-css           # Stylelint via wp-scripts
-npm run pretty:fix         # Prettier format
-composer lint              # PHPCS (WordPress coding standards)
+npm run lint-js            # ESLint
+npm run lint-js:fix        # ESLint auto-fix
+npm run lint-css           # Stylelint
+composer lint              # PHPCS
 composer format            # PHPCBF auto-fix
-composer phpstan           # PHPStan level 9 analysis
+composer phpstan           # PHPStan level 9
 composer insights          # PHP Insights
 ```
 
@@ -46,17 +42,17 @@ composer insights          # PHP Insights
 composer test              # PHPUnit
 composer test:coverage     # PHPUnit with coverage
 npm run test:unit          # JS unit tests
-npm run play:up            # Start WP test environment + setup
-npm run play:run           # Run Playwright E2E tests
-npm run play:stop          # Stop WP test environment
+npm run play:up            # Start WP test env
+npm run play:run           # Playwright E2E
+npm run play:stop          # Stop WP test env
 ```
 
 ### i18n
 ```bash
-npm run makepot            # Generate .pot file
+npm run makepot            # Generate .pot
 npm run i18n:po            # Update .po from .pot
-npm run i18n:mo            # Compile .mo files
-npm run i18n:json          # Generate JSON translations
+npm run i18n:mo            # Compile .mo
+npm run i18n:json          # JSON translations
 ```
 
 ## Architecture
@@ -64,91 +60,103 @@ npm run i18n:json          # Generate JSON translations
 ### Directory Structure
 ```
 sureforms/
-├── sureforms.php          # Plugin entry point, constants
-├── plugin-loader.php      # Bootstraps the plugin
+├── sureforms.php          # Entry point, constants
+├── plugin-loader.php      # Bootstrap
 ├── inc/                   # PHP backend
-│   ├── helper.php         # Core helper class (large, central utility)
-│   ├── rest-api.php       # REST API endpoints
-│   ├── form-submit.php    # Form submission handler
+│   ├── helper.php         # Central utility (large — minimize changes)
+│   ├── rest-api.php       # REST endpoints
+│   ├── form-submit.php    # Submission handler
 │   ├── entries.php        # Entry management
 │   ├── post-types.php     # CPT registration
 │   ├── blocks/            # PHP block rendering
 │   ├── fields/            # Field type handlers
 │   ├── database/          # Custom DB tables
-│   ├── payments/          # Stripe payment integration
+│   ├── payments/          # Stripe integration
 │   ├── ai-form-builder/   # AI form generation
 │   ├── global-settings/   # Plugin settings
 │   ├── page-builders/     # Elementor/Bricks compat
-│   └── lib/               # Third-party (action-scheduler, analytics)
+│   └── lib/               # Third-party (DO NOT modify)
 ├── src/                   # React/JS source
-│   ├── admin/             # Admin UI (dashboard, settings, entries)
+│   ├── admin/             # Admin UI
 │   ├── blocks/            # Gutenberg block JS
 │   ├── components/        # Shared React components
 │   ├── store/             # WordPress data store
 │   ├── utils/             # JS utilities
 │   └── srfm-controls/     # Custom block controls
-├── assets/                # Compiled output (build/, css/, js/)
-├── sass/                  # SASS source files
-├── modules/               # Feature modules (quick-action-sidebar)
+├── assets/                # Compiled output (gitignored)
+├── sass/                  # SASS source
+├── modules/               # Feature modules
 ├── templates/             # PHP templates
-├── tests/                 # Test suites
-│   ├── unit/              # PHPUnit tests
-│   ├── play/              # Playwright E2E tests
-│   └── docker/            # Docker setup for testing
+├── tests/                 # PHPUnit + Playwright + Docker
 └── languages/             # Translation files
 ```
 
 ### Webpack Aliases
 ```
-@Admin      → src/admin/
-@Blocks     → src/blocks/
-@Controls   → src/srfm-controls/
-@Components → src/components/
-@Utils      → src/utils/
-@Svg        → assets/svg/
-@Attributes → src/blocks-attributes/
-@Image      → images/
-@IncBlocks  → inc/blocks/
+@Admin → src/admin/    @Blocks → src/blocks/    @Controls → src/srfm-controls/
+@Components → src/components/    @Utils → src/utils/    @Svg → assets/svg/
+@Attributes → src/blocks-attributes/    @Image → images/    @IncBlocks → inc/blocks/
 ```
 
 ### Key Data Structures
-- **Post Type:** `sureforms_form` — Forms stored as CPT with block content
-- **Custom Tables:** `sureforms_entries`, `sureforms_payments` — Performance-optimized
+- **Post Type:** `sureforms_form` — Forms as CPT with block content
+- **Custom Tables:** `sureforms_entries`, `sureforms_payments`
 - **REST Namespace:** Custom endpoints in `inc/rest-api.php`
 
-## Code Standards
+## Code Rules
 
 ### PHP
-- Follow WordPress Coding Standards (WPCS)
-- Use `sureforms` text domain for all translatable strings
-- All new functions/classes require `@since x.x.x` tag (updated in release PRs)
-- Escape all output: `esc_html()`, `esc_attr()`, `wp_kses_post()`
-- Sanitize all input: `sanitize_text_field()`, `absint()`, etc.
-- Use nonce verification for all form handlers and AJAX
-- Capability checks on all privileged operations
+- Follow WPCS. Use `sureforms` text domain for all translatable strings
+- `@since x.x.x` on all new functions/classes (updated in release PRs)
+- NEVER `echo` without escaping — use `esc_html()`, `esc_attr()`, `wp_kses_post()`
+- NEVER use `$_GET/$_POST/$_REQUEST` directly — use `sanitize_text_field( wp_unslash( ... ) )`
+- NEVER skip nonce checks — use `wp_verify_nonce()` or `check_ajax_referer()`
+- NEVER skip capability checks — use `current_user_can()` before privileged operations
+- NEVER use `wp_die()` in REST callbacks — use `WP_Error` with proper response codes
+- NEVER hardcode table names — use `$wpdb->prefix . 'sureforms_entries'`
+- ALWAYS use `wp_json_encode()`, `wp_remote_get/post()`, `gmdate()`, `wp_safe_redirect()`
 
 ### JavaScript/React
 - Follow WordPress Scripts ESLint config
-- Use WordPress data stores for state management
-- Import from `@wordpress/*` packages for WP integration
-- Use TailwindCSS utility classes; avoid inline styles
-- Leverage `@bsf/force-ui` for admin UI components
+- Use WordPress data stores (`useSelect`/`useDispatch`) — never raw fetch in blocks
+- Import from `@wordpress/*` packages — never import React directly
+- Use `__()` from `@wordpress/i18n` — never hardcode user-facing strings
+- Use TailwindCSS utility classes; use `@bsf/force-ui` for admin UI
+- NEVER use `dangerouslySetInnerHTML` — use `RawHTML` from `@wordpress/element`
 
 ### General
 - NEVER create files unless absolutely necessary — prefer editing existing files
 - NEVER proactively create documentation files unless explicitly requested
-- All user-facing strings must be translatable via `__()` or `_e()`
-- Run `npm run lint-js:fix` and `composer format` before committing
-- Run `npm run build:sass` after any SASS changes
-- Keep `helper.php` changes minimal — it's already large
 
 ## Gotchas
-- **Custom DB tables** were introduced in v0.0.13 — migration is irreversible
+- **Custom DB tables** introduced in v0.0.13 — migration is irreversible
 - **PHPStan level 9** is strict; check baseline before adding new ignores
-- **Grunt is still used** alongside Webpack for CSS minification and release packaging
-- **`inc/lib/`** contains third-party code — do not lint or modify directly
-- **Node 18.15.0** is pinned via Volta — other versions may cause build issues
-- **Build output** goes to `assets/build/` — this directory is gitignored
+- **Grunt** still used alongside Webpack for CSS minification and release packaging
+- **`inc/lib/`** is third-party code — do not lint or modify
+- **Node 18.15.0** pinned via Volta — other versions may cause build issues
+
+## Verification Before Done
+After code changes, verify before reporting done:
+
+**PHP:** `composer lint` → `composer phpstan` → `composer insights`
+**JS:** `npm run lint-js` → `npm run build:script`
+**SASS:** `npm run build:sass` (if touched)
+
+Checklist:
+- Re-read the diff for obvious issues
+- No debug code left (`console.log`, `error_log`, `var_dump`)
+- All new functions have `@since x.x.x`
+- All user-facing strings use `__()` / `_e()`
+- Nonce + capability checks on new endpoints/handlers
+- For significant changes, suggest `npm run play:run`
+
+## Self-Improvement Loop
+- When corrected, add a rule to **Learned Rules** so the mistake never repeats
+- When a pattern causes a bug or CI failure, document it immediately
+- Periodically prune outdated rules
+
+## Learned Rules
+<!-- Format: "- NEVER/ALWAYS [action] — [reason]" -->
 
 ## Current Focus
-<!-- Update this section with current sprint/milestone priorities -->
+<!-- Update with current sprint/milestone priorities -->
