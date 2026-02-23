@@ -1,5 +1,16 @@
 {
   "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if echo \"$CLAUDE_BASH_COMMAND\" | grep -q '^git commit'; then echo '--- PreCommit: Running checks ---' && composer lint 2>&1 | tail -5 && composer phpstan 2>&1 | tail -5 && composer insights 2>&1 | tail -5; fi"
+          }
+        ]
+      }
+    ],
     "PostToolUse": [
       {
         "matcher": "Write|Edit",

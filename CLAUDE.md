@@ -138,7 +138,6 @@ sureforms/
 ## Verification Before Done
 After code changes, verify before reporting done:
 
-**PHP:** `composer lint` → `composer phpstan` → `composer insights`
 **JS:** `npm run lint-js` → `npm run build:script`
 **SASS:** `npm run build:sass` (if touched)
 
