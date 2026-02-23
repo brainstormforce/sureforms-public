@@ -128,6 +128,87 @@ class Test_Form_Submit extends TestCase {
     }
 
     /**
+     * Test process_form_fields with form-id handling.
+     * Tests the new logic for passing form-id through the filter.
+     */
+    public function test_process_form_fields_with_form_id() {
+        // Test case 1: Form data with form-id should pass it to filter and then remove it
+        $form_data = [
+            'form-id' => '19',
+            'text-lbl-field-name' => 'Test User'
+        ];
+
+        // Mock the filter to verify form-id is passed
+        $filter_called_with_form_id = false;
+        add_filter('srfm_before_prepare_submission_data', function($data) use (&$filter_called_with_form_id) {
+            if (isset($data['form-id']) && $data['form-id'] === 19) {
+                $filter_called_with_form_id = true;
+            }
+            return $data;
+        }, 10, 1);
+
+        $result = $this->call_private_method($this->form_submit, 'process_form_fields', [$form_data]);
+
+        // Verify form-id was passed to filter
+        $this->assertTrue($filter_called_with_form_id, 'form-id should be passed to the filter');
+
+        // Verify form-id is removed from final result
+        $this->assertArrayNotHasKey('form-id', $result);
+
+        // Verify other fields are present
+        $this->assertArrayHasKey('text-lbl-field-name', $result);
+        $this->assertEquals('Test User', $result['text-lbl-field-name']);
+
+        // Remove the filter
+        remove_all_filters('srfm_before_prepare_submission_data');
+    }
+
+    /**
+     * Test process_form_fields with non-numeric form-id.
+     */
+    public function test_process_form_fields_with_non_numeric_form_id() {
+        $form_data = [
+            'form-id' => 'invalid-id',
+            'text-lbl-field-name' => 'Test User'
+        ];
+
+        $result = $this->call_private_method($this->form_submit, 'process_form_fields', [$form_data]);
+
+        // Should not include form-id in result
+        $this->assertArrayNotHasKey('form-id', $result);
+    }
+
+    /**
+     * Test process_form_fields with missing form-id.
+     */
+    public function test_process_form_fields_without_form_id() {
+        $form_data = [
+            'text-lbl-field-name' => 'Test User'
+        ];
+
+        $result = $this->call_private_method($this->form_submit, 'process_form_fields', [$form_data]);
+
+        // Should process normally without errors
+        $this->assertArrayHasKey('text-lbl-field-name', $result);
+        $this->assertEquals('Test User', $result['text-lbl-field-name']);
+    }
+
+    /**
+     * Test process_form_fields with zero form-id.
+     */
+    public function test_process_form_fields_with_zero_form_id() {
+        $form_data = [
+            'form-id' => '0',
+            'text-lbl-field-name' => 'Test User'
+        ];
+
+        $result = $this->call_private_method($this->form_submit, 'process_form_fields', [$form_data]);
+
+        // form-id = 0 is valid but should be removed from result
+        $this->assertArrayNotHasKey('form-id', $result);
+    }
+
+    /**
      * Helper method to call private methods for testing.
      */
     private function call_private_method($object, $method_name, $parameters = []) {
