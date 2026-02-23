@@ -75,7 +75,7 @@ $placeholder_color: #9ca3af;
 /* This is done because when the upgrade to pro is added, which is at the bottom, the nth last child will be changed */
 /* This will cause the css to be applied after the settings submenu instead of the entires */
 /* But using nth child will always count from the top and entires will always be at position 6 */
-#toplevel_page_sureforms_menu .wp-submenu li:nth-child( 6 )::after {
+#toplevel_page_sureforms_menu .wp-submenu li:nth-child( 7 )::after {
 	content: "";
 	border-bottom: 1px solid rgb( 255 255 255 / 0.2 );
 	display: block;
@@ -365,7 +365,8 @@ $placeholder_color: #9ca3af;
 .sureforms_page_sureforms_forms,
 .toplevel_page_sureforms_menu,
 .sureforms_page_sureforms_entries,
-.sureforms_page_sureforms_payments {
+.sureforms_page_sureforms_payments,
+.sureforms_page_sureforms_quiz_entries {
 	#wpcontent {
 		padding: 0;
 	}

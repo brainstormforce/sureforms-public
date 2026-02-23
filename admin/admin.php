@@ -804,36 +804,37 @@ class Admin {
 		$onboarding_instance          = Onboarding::get_instance();
 
 		$localization_data = [
-			'site_url'                   => get_site_url(),
-			'breadcrumbs'                => $this->get_breadcrumbs_for_current_page(),
-			'sureforms_dashboard_url'    => admin_url( '/admin.php?page=sureforms_menu' ),
-			'plugin_version'             => SRFM_VER,
-			'global_settings_nonce'      => Helper::current_user_can() ? wp_create_nonce( 'wp_rest' ) : '',
-			'is_pro_active'              => Helper::has_pro(),
-			'is_first_form_created'      => self::is_first_form_created(),
-			'check_three_days_threshold' => self::check_first_form_creation_threshold(),
-			'check_eight_days_threshold' => self::check_first_form_creation_threshold( 8 ),
-			'pro_plugin_version'         => Helper::has_pro() ? SRFM_PRO_VER : '',
-			'pro_plugin_name'            => Helper::has_pro() && defined( 'SRFM_PRO_PRODUCT' ) ? SRFM_PRO_PRODUCT : 'SureForms Pro',
-			'sureforms_pricing_page'     => Helper::get_sureforms_website_url( 'pricing' ),
-			'field_spacing_vars'         => Helper::get_css_vars(),
-			'is_ver_lower_than_6_7'      => version_compare( $wp_version, '6.6.2', '<=' ),
-			'integrations'               => Helper::sureforms_get_integration(),
-			'rotating_plugin_banner'     => Helper::get_rotating_plugin_banner(),
-			'ajax_url'                   => admin_url( 'admin-ajax.php' ),
-			'sf_plugin_manager_nonce'    => wp_create_nonce( 'sf_plugin_manager_nonce' ),
-			'plugin_installer_nonce'     => wp_create_nonce( 'updates' ),
-			'plugin_activating_text'     => __( 'Activating...', 'sureforms' ),
-			'plugin_activated_text'      => __( 'Activated', 'sureforms' ),
-			'plugin_activate_text'       => __( 'Activate', 'sureforms' ),
-			'plugin_installing_text'     => __( 'Installing...', 'sureforms' ),
-			'plugin_installed_text'      => __( 'Installed', 'sureforms' ),
-			'is_rtl'                     => $is_rtl,
-			'onboarding_completed'       => method_exists( $onboarding_instance, 'get_onboarding_status' ) ? $onboarding_instance->get_onboarding_status() : false,
-			'onboarding_redirect'        => isset( $_GET['srfm-activation-redirect'] ), // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce is not required for the activation redirection.
-			'pointer_nonce'              => wp_create_nonce( 'sureforms_pointer_action' ),
-			'general_settings_url'       => admin_url( '/options-general.php' ),
-			'payments'                   => apply_filters(
+			'site_url'                    => get_site_url(),
+			'breadcrumbs'                 => $this->get_breadcrumbs_for_current_page(),
+			'sureforms_dashboard_url'     => admin_url( '/admin.php?page=sureforms_menu' ),
+			'plugin_version'              => SRFM_VER,
+			'global_settings_nonce'       => Helper::current_user_can() ? wp_create_nonce( 'wp_rest' ) : '',
+			'is_pro_active'               => Helper::has_pro(),
+			'is_first_form_created'       => self::is_first_form_created(),
+			'check_three_days_threshold'  => self::check_first_form_creation_threshold(),
+			'check_eight_days_threshold'  => self::check_first_form_creation_threshold( 8 ),
+			'pro_plugin_version'          => Helper::has_pro() ? SRFM_PRO_VER : '',
+			'pro_plugin_name'             => Helper::has_pro() && defined( 'SRFM_PRO_PRODUCT' ) ? SRFM_PRO_PRODUCT : 'SureForms Pro',
+			'sureforms_pricing_page'      => Helper::get_sureforms_website_url( 'pricing' ),
+			'field_spacing_vars'          => Helper::get_css_vars(),
+			'is_ver_lower_than_6_7'       => version_compare( $wp_version, '6.6.2', '<=' ),
+			'integrations'                => Helper::sureforms_get_integration(),
+			'rotating_plugin_banner'      => Helper::get_rotating_plugin_banner(),
+			'ajax_url'                    => admin_url( 'admin-ajax.php' ),
+			'sf_plugin_manager_nonce'     => wp_create_nonce( 'sf_plugin_manager_nonce' ),
+			'plugin_installer_nonce'      => wp_create_nonce( 'updates' ),
+			'plugin_activating_text'      => __( 'Activating...', 'sureforms' ),
+			'plugin_activated_text'       => __( 'Activated', 'sureforms' ),
+			'plugin_activate_text'        => __( 'Activate', 'sureforms' ),
+			'plugin_installing_text'      => __( 'Installing...', 'sureforms' ),
+			'plugin_installed_text'       => __( 'Installed', 'sureforms' ),
+			'is_rtl'                      => $is_rtl,
+			'onboarding_completed'        => method_exists( $onboarding_instance, 'get_onboarding_status' ) ? $onboarding_instance->get_onboarding_status() : false,
+			'onboarding_redirect'         => isset( $_GET['srfm-activation-redirect'] ), // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce is not required for the activation redirection.
+			'pointer_nonce'               => wp_create_nonce( 'sureforms_pointer_action' ),
+			'general_settings_url'        => admin_url( '/options-general.php' ),
+			'additional_header_nav_items' => [],
+			'payments'                    => apply_filters(
 				'srfm_admin_localize_payments_data',
 				[
 					'stripe_connected'        => Stripe_Helper::is_stripe_connected(),
@@ -870,7 +871,18 @@ class Admin {
 			];
 		}
 
-		if ( $is_screen_sureforms_menu || $is_post_type_sureforms_form || $is_screen_add_new_form || $is_screen_sureforms_forms || $is_screen_sureforms_form_settings || $is_screen_sureforms_entries || $is_screen_sureforms_payments ) {
+		$is_sureforms_screen = $is_screen_sureforms_menu || $is_post_type_sureforms_form || $is_screen_add_new_form || $is_screen_sureforms_forms || $is_screen_sureforms_form_settings || $is_screen_sureforms_entries || $is_screen_sureforms_payments;
+
+		/**
+		 * Filter to allow extending the SureForms dashboard screen check.
+		 *
+		 * @since x.x.x
+		 *
+		 * @param bool $is_sureforms_screen Whether the current screen is a SureForms dashboard screen.
+		 */
+		$is_sureforms_screen = apply_filters( 'srfm_is_dashboard_screen', $is_sureforms_screen );
+
+		if ( $is_sureforms_screen ) {
 			$asset_handle = '-dashboard';
 
 			wp_enqueue_style( SRFM_SLUG . $asset_handle . '-font', 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap', [], SRFM_VER );

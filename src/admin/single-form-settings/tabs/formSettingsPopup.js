@@ -16,6 +16,7 @@ import {
 	FileText,
 	Code,
 	Split,
+	ListTodo,
 } from 'lucide-react';
 
 const FormSettingsPopup = ( {
@@ -113,6 +114,11 @@ const FormSettingsPopup = ( {
 				id: 'post-feed-preview',
 				label: __( 'Post Feed', 'sureforms' ),
 				icon: <FileText size={ 18 } />,
+			},
+			{
+				id: 'quiz-preview',
+				label: __( 'Quizzes', 'sureforms' ),
+				icon: <ListTodo size={ 18 } />,
 			},
 			{
 				id: 'form_custom_css',
