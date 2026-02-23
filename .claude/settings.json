@@ -1,4 +1,17 @@
 {
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "case \"$CLAUDE_FILE_PATH\" in *.php) vendor/bin/phpcbf \"$CLAUDE_FILE_PATH\" 2>/dev/null || true;; *.js|*.jsx) npx wp-scripts lint-js --fix \"$CLAUDE_FILE_PATH\" 2>/dev/null || true;; *.scss|*.css) npx wp-scripts lint-style --fix \"$CLAUDE_FILE_PATH\" 2>/dev/null || true;; esac"
+          }
+        ]
+      }
+    ]
+  },
   "permissions": {
     "allow": [
       "Bash(npm run lint-js*)",
@@ -17,6 +30,10 @@
       "Bash(composer phpstan*)",
       "Bash(composer insights*)",
       "Bash(npx playwright test*)",
+      "Bash(npx grunt *)",
+      "Bash(composer install*)",
+      "Bash(npm install*)",
+      "Bash(curl *)",
       "Bash(git status*)",
       "Bash(git diff*)",
       "Bash(git log*)",
