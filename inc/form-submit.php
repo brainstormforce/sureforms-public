@@ -1202,7 +1202,7 @@ class Form_Submit {
 	 * @return array Processed and sanitized submission data.
 	 */
 	private function process_form_fields( $form_data ) {
-		$form_id = isset( $form_data['form-id'] ) ? absint( $form_data['form-id'] ) : 0;
+		$form_id = isset( $form_data['form-id'] ) && is_numeric( $form_data['form-id'] ) ? absint( $form_data['form-id'] ) : 0;
 
 		$submission_data = [];
 
@@ -1287,9 +1287,9 @@ class Form_Submit {
 			}
 		}
 
-		$form_data_with_form_id = array_merge( $form_data, [ 'form-id' => $form_id ] );
+		$submission_data_with_form_id = array_merge( $submission_data, [ 'form-id' => $form_id ] );
 
-		$filter_data_submission_data = apply_filters( 'srfm_before_prepare_submission_data', $form_data_with_form_id );
+		$filter_data_submission_data = apply_filters( 'srfm_before_prepare_submission_data', $submission_data_with_form_id );
 
 		// Unset the form-id from the form data.
 		unset( $filter_data_submission_data['form-id'] );
