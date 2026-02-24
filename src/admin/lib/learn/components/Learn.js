@@ -1,4 +1,4 @@
-import { useState, useEffect } from '@wordpress/element';
+import { useState, useEffect, useCallback } from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
 import { Toaster } from '@bsf/force-ui';
 import useLearn from '../useLearn';
@@ -42,6 +42,35 @@ const Learn = ( {
 	const [ apiModules, setApiModules ] = useState( [] );
 	const [ isLoading, setIsLoading ] = useState( false );
 	const [ error, setError ] = useState( null );
+	const [ latestFormId, setLatestFormId ] = useState( undefined );
+
+	const fetchLatestFormId = useCallback( () => {
+		apiFetch( {
+			path: '/wp/v2/sureforms_form?per_page=1&orderby=date&order=desc&status=any',
+		} )
+			.then( ( forms ) => {
+				setLatestFormId( forms?.length > 0 ? forms[ 0 ].id : null );
+			} )
+			.catch( () => {
+				// On error: leave as undefined so button stays enabled (safe fallback)
+			} );
+	}, [] );
+
+	useEffect( () => {
+		fetchLatestFormId();
+	}, [ fetchLatestFormId ] );
+
+	useEffect( () => {
+		const handleVisibilityChange = () => {
+			if ( document.visibilityState === 'visible' ) {
+				fetchLatestFormId();
+			}
+		};
+		document.addEventListener( 'visibilitychange', handleVisibilityChange );
+		return () => {
+			document.removeEventListener( 'visibilitychange', handleVisibilityChange );
+		};
+	}, [ fetchLatestFormId ] );
 
 	// Fetch modules from API if endpoint is provided
 	useEffect( () => {
@@ -126,6 +155,7 @@ const Learn = ( {
 				defaultValue={ firstIncompleteModuleId }
 				onLessonCompletionChange={ updateLessonCompletion }
 				onMarkAllComplete={ markAllComplete }
+				latestFormId={ latestFormId }
 			/>
 
 			<Toaster

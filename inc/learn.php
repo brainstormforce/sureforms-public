@@ -44,9 +44,9 @@ class Learn {
 	public static function get_chapters_structure() {
 		$chapters = [
 			[
-				'id'          => 'sureforms-basics',
-				'title'       => __( 'SureForms Basics', 'sureforms' ),
-				'description' => __( 'Help users get familiar with SureForms, build their first form, and understand the basics of form creation, customization, and management.', 'sureforms' ),
+				'id'          => 'setting-up-form',
+				'title'       => __( 'Setting Up Your Form', 'sureforms' ),
+				'description' => __( 'Get started with SureForms by building your first form, adding the right fields, and styling it to match your brand.', 'sureforms' ),
 				'url'         => 'https://sureforms.com/docs/',
 				'steps'       => [
 					[
@@ -71,6 +71,83 @@ class Learn {
 						'completed'    => false,
 					],
 					[
+						'id'           => 'set-up-form-fields',
+						'title'        => __( 'Set Up Your Form Fields', 'sureforms' ),
+						'description'  => __( 'Add and configure the right fields for your form. SureForms offers a wide range of field types to capture exactly the information you need.', 'sureforms' ),
+						'learn'        => [
+							'type'    => 'dialog',
+							'content' => [
+								'type' => 'gif-video',
+								'data' => [
+									'url' => 'https://www.youtube.com/embed/uQchuO6kMeY',
+									'alt' => __( 'Set Up Your Form Fields', 'sureforms' ),
+								],
+							],
+						],
+						'docsUrl'      => 'https://sureforms.com/docs/',
+						'headerAction' => [
+							'label'   => __( 'Set Up Fields', 'sureforms' ),
+							'url'     => 'post-new.php?post_type=sureforms_form',
+							'dynamic' => 'latest-form',
+							'source'  => 'learn-setup-fields',
+						],
+						'completed'    => false,
+					],
+					[
+						'id'           => 'style-your-forms',
+						'title'        => __( 'Style Your Forms', 'sureforms' ),
+						'description'  => __( 'Customize the look and feel of your form to match your brand. Adjust colors, fonts, and layout to create a seamless experience for your visitors.', 'sureforms' ),
+						'learn'        => [
+							'type'    => 'dialog',
+							'content' => [
+								'type' => 'gif-video',
+								'data' => [
+									'url' => 'https://www.youtube.com/embed/n8JnocyZ3i4',
+									'alt' => __( 'Style Your Forms', 'sureforms' ),
+								],
+							],
+						],
+						'docsUrl'      => 'https://sureforms.com/docs/',
+						'headerAction' => [
+							'label'   => __( 'Style Form', 'sureforms' ),
+							'url'     => 'post-new.php?post_type=sureforms_form&source=learn-style-form',
+							'dynamic' => 'latest-form',
+							'source'  => 'learn-style-form',
+						],
+						'completed'    => false,
+					],
+				],
+			],
+			[
+				'id'          => 'making-form-live',
+				'title'       => __( 'Making Your Form Live', 'sureforms' ),
+				'description' => __( 'Publish your form and make it accessible to your visitors using Instant Form or by embedding it on any page.', 'sureforms' ),
+				'url'         => 'https://sureforms.com/docs/',
+				'steps'       => [
+					[
+						'id'           => 'instant-form',
+						'title'        => __( 'Instant Form', 'sureforms' ),
+						'description'  => __( 'Publish your form instantly with a dedicated landing page — no need to create a separate page. Just enable Instant Form and share the link.', 'sureforms' ),
+						'learn'        => [
+							'type'    => 'dialog',
+							'content' => [
+								'type' => 'gif-video',
+								'data' => [
+									'url' => 'https://www.youtube.com/embed/g3mz5jPPeD8',
+									'alt' => __( 'Instant Form', 'sureforms' ),
+								],
+							],
+						],
+						'docsUrl'      => 'https://sureforms.com/docs/',
+						'headerAction' => [
+							'label'   => __( 'Instant Form', 'sureforms' ),
+							'url'     => 'post-new.php?post_type=sureforms_form&source=learn-instant-form',
+							'dynamic' => 'latest-form',
+							'source'  => 'learn-instant-form',
+						],
+						'completed'    => false,
+					],
+					[
 						'id'           => 'embed-forms',
 						'title'        => __( 'Embed Your Forms in a Page', 'sureforms' ),
 						'description'  => __( 'Instantly publish your form using the Instant Form feature in SureForms, or easily embed it on any page with the SureForms block.', 'sureforms' ),
@@ -79,7 +156,7 @@ class Learn {
 							'content' => [
 								'type' => 'gif-video',
 								'data' => [
-									'url' => 'https://www.youtube.com/embed/PzkdlJ5jbIA',
+									'url' => 'https://www.youtube.com/embed/vldMwp7rquM',
 									'alt' => __( 'Embed Your Forms in a Page', 'sureforms' ),
 								],
 							],
@@ -91,30 +168,17 @@ class Learn {
 						],
 						'completed'    => false,
 					],
-					[
-						'id'           => 'secure-forms',
-						'title'        => __( 'Protect Your Forms From Bots', 'sureforms' ),
-						'description'  => __( 'Protect your forms from spam and bot submissions using Google reCAPTCHA, hCaptcha, Cloudflare and Honeypot.', 'sureforms' ),
-						'learn'        => [
-							'type'    => 'dialog',
-							'content' => [
-								'type' => 'gif-video',
-								'data' => [
-									'url' => 'https://www.youtube.com/embed/HDf2sTt9dp4',
-									'alt' => __( 'Protect Your Forms From Bots', 'sureforms' ),
-								],
-							],
-						],
-						'docsUrl'      => 'https://sureforms.com/docs/google-recaptcha/',
-						'headerAction' => [
-							'label' => __( 'Protect Forms', 'sureforms' ),
-							'url'   => 'admin.php?page=sureforms_form_settings&tab=security-settings&subpage=recaptcha',
-						],
-						'completed'    => false,
-					],
+				],
+			],
+			[
+				'id'          => 'managing-entries',
+				'title'       => __( 'Managing Entries', 'sureforms' ),
+				'description' => __( 'Stay on top of your form submissions with email notifications and the built-in entries manager.', 'sureforms' ),
+				'url'         => 'https://sureforms.com/docs/',
+				'steps'       => [
 					[
 						'id'           => 'email-notification',
-						'title'        => __( 'Configure Your Email Notification', 'sureforms' ),
+						'title'        => __( 'Email Notifications', 'sureforms' ),
 						'description'  => __( 'Get email notifications whenever someone fills out your form.', 'sureforms' ),
 						'learn'        => [
 							'type'    => 'dialog',
@@ -134,168 +198,25 @@ class Learn {
 						'completed'    => false,
 					],
 					[
-						'id'           => 'payment-forms',
-						'title'        => __( 'Payment Forms', 'sureforms' ),
-						'description'  => __( 'You no longer need to set up a full store just to accept payments. With SureForms, you can collect payments using a simple form. Learn how to set up a Payment Form with Stripe and PayPal integration and start accepting payments.', 'sureforms' ),
+						'id'           => 'manage-entries',
+						'title'        => __( 'Manage Entries', 'sureforms' ),
+						'description'  => __( 'View, filter, and manage all form submissions from one place. Export entries, delete spam, and keep your data organized with the SureForms Entries manager.', 'sureforms' ),
 						'learn'        => [
 							'type'    => 'dialog',
 							'content' => [
-								'type' => 'video',
+								'type' => 'gif-video',
 								'data' => [
-									'url'      => 'https://www.youtube.com/embed/XnsBNXwoZe8',
-									'title'    => __( 'Payment Forms', 'sureforms' ),
-									'duration' => 420, // 7 minutes.
+									'url' => 'https://www.youtube.com/embed/8ycIcYvS--M',
+									'alt' => __( 'Manage Entries', 'sureforms' ),
 								],
 							],
 						],
-						'docsUrl'      => 'https://sureforms.com/docs/how-to-create-a-payment-form-in-sureforms/',
+						'docsUrl'      => 'https://sureforms.com/docs/',
 						'headerAction' => [
-							'label' => __( 'Accept Payment', 'sureforms' ),
-							'url'   => 'admin.php?page=sureforms_payments',
+							'label' => __( 'Go to Entries', 'sureforms' ),
+							'url'   => 'admin.php?page=sureforms_entries&source=learn',
 						],
 						'completed'    => false,
-					],
-				],
-			],
-			[
-				'id'          => 'sureforms-advanced',
-				'title'       => __( 'SureForms Advanced', 'sureforms' ),
-				'description' => __( 'Help users unlock SureForms full power with advanced features and creative use cases.', 'sureforms' ),
-				'url'         => 'https://sureforms.com/docs/',
-				'steps'       => [
-					[
-						'id'          => 'multi-step-forms',
-						'title'       => __( 'Multi-Step Forms', 'sureforms' ),
-						'description' => __( 'Did you know? You can boost form conversions by up to 3 times just by breaking one long form into multiple, shorter steps. In this video, Learn how to split forms into multiple steps with progress indicators.', 'sureforms' ),
-						'learn'       => [
-							'type'    => 'dialog',
-							'content' => [
-								'type' => 'video',
-								'data' => [
-									'url'      => 'https://www.youtube.com/embed/51q5a_Pk1XA',
-									'title'    => __( 'Multi-Step Forms', 'sureforms' ),
-									'duration' => 600, // 10 minutes.
-								],
-							],
-						],
-						'docsUrl'     => 'https://sureforms.com/docs/multi-step-forms/',
-						'completed'   => false,
-					],
-					[
-						'id'          => 'conversational-forms',
-						'title'       => __( 'Conversational Forms', 'sureforms' ),
-						'description' => __( 'Conversational Form is another great way to keep your users engaged. In this lesson, learn how to create chat-style form interactions for better engagement.', 'sureforms' ),
-						'learn'       => [
-							'type'    => 'dialog',
-							'content' => [
-								'type' => 'video',
-								'data' => [
-									'url'      => 'https://www.youtube.com/embed/9C5ePZ6VpoA',
-									'title'    => __( 'Conversational Forms', 'sureforms' ),
-									'duration' => 300, // 5 minutes.
-								],
-							],
-						],
-						'docsUrl'     => 'https://sureforms.com/docs/conversational-form/',
-						'completed'   => false,
-					],
-					[
-						'id'          => 'conditional-logic',
-						'title'       => __( 'Conditional Logic & Smart Fields', 'sureforms' ),
-						'description' => __( 'Using Conditional Logic, you can make your forms more relevant for a user and reduce drop-offs. Here, learn how to show or hide fields dynamically based on user input and conditions.', 'sureforms' ),
-						'learn'       => [
-							'type'    => 'dialog',
-							'content' => [
-								'type' => 'video',
-								'data' => [
-									'url'      => 'https://www.youtube.com/embed/AACFRtDjXHs',
-									'title'    => __( 'Conditional Logic & Smart Fields', 'sureforms' ),
-									'duration' => 480, // 8 minutes.
-								],
-							],
-						],
-						'docsUrl'     => 'https://sureforms.com/docs/conditional-logic/',
-						'completed'   => false,
-					],
-					[
-						'id'          => 'pdf-generation',
-						'title'       => __( 'PDF Generation', 'sureforms' ),
-						'description' => __( 'Sometimes you need a clean record of your form entries, right? PDF Generation in SureForms makes it easy. Learn how to automatically generate and download PDFs from form submissions.', 'sureforms' ),
-						'learn'       => [
-							'type'    => 'dialog',
-							'content' => [
-								'type' => 'video',
-								'data' => [
-									'url'      => 'https://www.youtube.com/embed/qdomuGwWTFA',
-									'title'    => __( 'PDF Generation', 'sureforms' ),
-									'duration' => 300, // 5 minutes.
-								],
-							],
-						],
-						'docsUrl'     => 'https://sureforms.com/docs/sureforms-pdf-generation-feature/',
-						'completed'   => false,
-					],
-					[
-						'id'          => 'login-forms',
-						'title'       => __( 'Custom Login Forms', 'sureforms' ),
-						'description' => __( 'WordPress\'s default login page is boring, so we built a better one. This video shows how you can create a fully custom login page for your website in just a few seconds.', 'sureforms' ),
-						'learn'       => [
-							'type'    => 'dialog',
-							'content' => [
-								'type' => 'video',
-								'data' => [
-									'url'      => 'https://www.youtube.com/embed/H2DRn8A8LQI',
-									'title'    => __( 'Custom Login Forms', 'sureforms' ),
-									'duration' => 240, // 4 minutes.
-								],
-							],
-						],
-						'docsUrl'     => 'https://sureforms.com/docs/sureforms-login-block-a-step-by-step-guide/',
-						'completed'   => false,
-					],
-					[
-						'id'          => 'registration-forms',
-						'title'       => __( 'Custom Registration Forms', 'sureforms' ),
-						'description' => __( 'Your Custom Login Page also requires a Custom Registration Page, right? We have that too. Learn to create branded registration pages for new users.', 'sureforms' ),
-						'learn'       => [
-							'type'    => 'dialog',
-							'content' => [
-								'type' => 'video',
-								'data' => [
-									'url'      => 'https://www.youtube.com/embed/vhzgqLJgKrw',
-									'title'    => __( 'Custom Registration Forms', 'sureforms' ),
-									'duration' => 240, // 4 minutes.
-								],
-							],
-						],
-						'docsUrl'     => 'https://sureforms.com/docs/sureforms-registration-block-step-by-step-guide/',
-						'completed'   => false,
-					],
-				],
-			],
-			[
-				'id'          => 'integrations-automation',
-				'title'       => __( 'SureForms Native Integrations & Automation', 'sureforms' ),
-				'description' => __( 'Help users automate workflows and connect SureForms with their favorite apps.', 'sureforms' ),
-				'url'         => 'https://sureforms.com/docs/integrations/',
-				'steps'       => [
-					[
-						'id'          => 'intro-integrations',
-						'title'       => __( 'Introduction to Native Integrations', 'sureforms' ),
-						'description' => __( 'SureForms lets you connect with 23+ tools natively. That means you can link your forms to your favorite apps and automate workflows, without relying on any third-party tools in between. Here, learn how to connect SureForms with popular tools and services.', 'sureforms' ),
-						'learn'       => [
-							'type'    => 'dialog',
-							'content' => [
-								'type' => 'video',
-								'data' => [
-									'url'      => 'https://www.youtube.com/embed/JHjrYAWuUdQ',
-									'title'    => __( 'Introduction to Native Integrations', 'sureforms' ),
-									'duration' => 240, // 4 minutes.
-								],
-							],
-						],
-						'docsUrl'     => 'https://sureforms.com/docs-category/integrations/',
-						'completed'   => false,
 					],
 				],
 			],

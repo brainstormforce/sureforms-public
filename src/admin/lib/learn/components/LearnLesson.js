@@ -14,12 +14,13 @@ import { addQueryParam } from '@Utils/Helpers';
 /**
  * Component for rendering a single expandable lesson card
  *
- * @param {Object}   props                    - Component props
- * @param {Object}   props.lesson             - Lesson data object
- * @param {string}   props.moduleId           - ID of the parent module
- * @param {boolean}  props.isExpanded         - Whether this lesson is expanded
- * @param {Function} props.onToggle           - Callback to toggle expansion
- * @param {Function} props.onCompletionChange - Callback when lesson completion status changes
+ * @param {Object}                props                    - Component props
+ * @param {Object}                props.lesson             - Lesson data object
+ * @param {string}                props.moduleId           - ID of the parent module
+ * @param {boolean}               props.isExpanded         - Whether this lesson is expanded
+ * @param {Function}              props.onToggle           - Callback to toggle expansion
+ * @param {Function}              props.onCompletionChange - Callback when lesson completion status changes
+ * @param {number|null|undefined} props.latestFormId
  * @return {JSX.Element|null} - Rendered lesson component
  */
 const LearnLesson = ( {
@@ -28,6 +29,7 @@ const LearnLesson = ( {
 	isExpanded = false,
 	onToggle,
 	onCompletionChange,
+	latestFormId,
 } ) => {
 	const {
 		id,
@@ -99,10 +101,31 @@ const LearnLesson = ( {
 
 	const handleHeaderActionClick = ( e ) => {
 		e?.stopPropagation();
-		if ( headerAction?.url ) {
-			window.open( headerAction.url, '_blank', 'noopener,noreferrer' );
+		if ( ! headerAction?.url ) {
+			return;
 		}
+
+		if ( headerAction.dynamic === 'latest-form' ) {
+			// Prefer REST-fetched ID; fall back to localStorage for resilience
+			const resolvedId =
+				latestFormId !== undefined && latestFormId !== null
+					? latestFormId
+					: localStorage.getItem( 'srfmLearnFormId' );
+			const adminBase = `${ srfm_admin?.site_url }/wp-admin/`;
+			const source = headerAction.source || 'learn-setup-fields';
+			const url = resolvedId
+				? `${ adminBase }post.php?post=${ resolvedId }&action=edit&source=${ source }`
+				: `${ adminBase }${ headerAction.url }`;
+			window.open( url, '_blank', 'noopener,noreferrer' );
+			return;
+		}
+
+		window.open( headerAction.url, '_blank', 'noopener,noreferrer' );
 	};
+
+	// Disabled when we've confirmed no forms exist on the site
+	const isHeaderActionDisabled =
+		headerAction?.dynamic === 'latest-form' && latestFormId === null;
 
 	const handlePlayVideo = ( e ) => {
 		e?.stopPropagation();
@@ -261,9 +284,43 @@ const LearnLesson = ( {
 								gap="sm"
 							>
 								<Container.Item>
-									<div className="flex items-center justify-center w-6 h-6 rounded-full">
-										{ getStatusIcon() }
-									</div>
+									<Tooltip
+										content={
+											isCompleted
+												? __( 'Mark as incomplete', 'sureforms' )
+												: __( 'Mark as complete', 'sureforms' )
+										}
+										arrow={ true }
+										placement="top"
+										tooltipPortalId="srfm-learn-root"
+									>
+										<button
+											type="button"
+											className={ `flex items-center justify-center w-6 h-6 rounded-full cursor-pointer bg-transparent border-0 p-0 transition-all duration-200 focus:outline-none ${ isCompleted ? 'hover:opacity-60' : 'hover:scale-110' }` }
+											onClick={ handleMarkAsCompleted }
+											onKeyDown={ ( e ) => {
+												if (
+													e.key === 'Enter' ||
+													e.key === ' '
+												) {
+													e.stopPropagation();
+												}
+											} }
+											aria-label={
+												isCompleted
+													? __(
+														'Mark as incomplete',
+														'sureforms'
+													  )
+													: __(
+														'Mark as complete',
+														'sureforms'
+													  )
+											}
+										>
+											{ getStatusIcon() }
+										</button>
+									</Tooltip>
 								</Container.Item>
 								<Container.Item className="flex-1 min-w-0">
 									<Label
@@ -400,14 +457,34 @@ const LearnLesson = ( {
 											</Tooltip>
 										) }
 										{ isExpanded && headerAction?.url && (
-											<Button
-												variant="outline"
-												size="sm"
-												className="text-link-primary"
-												onClick={ handleHeaderActionClick }
-											>
-												{ headerAction?.label }
-											</Button>
+											isHeaderActionDisabled ? (
+												<Tooltip
+													content={ __( 'Please create a form first', 'sureforms' ) }
+													arrow={ true }
+													placement="top"
+													tooltipPortalId="srfm-learn-root"
+												>
+													<span className="inline-block cursor-not-allowed">
+														<Button
+															variant="outline"
+															size="sm"
+															className="text-link-primary pointer-events-none opacity-50"
+															disabled={ true }
+														>
+															{ headerAction?.label }
+														</Button>
+													</span>
+												</Tooltip>
+											) : (
+												<Button
+													variant="outline"
+													size="sm"
+													className="text-link-primary"
+													onClick={ handleHeaderActionClick }
+												>
+													{ headerAction?.label }
+												</Button>
+											)
 										) }
 									</div>
 								</div>

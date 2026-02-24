@@ -7,11 +7,12 @@ import LearnLesson from './LearnLesson';
 /**
  * Component for rendering learn modules with lessons
  *
- * @param {Object}   props                          - Component props
- * @param {Object}   props.modules                  - Modules data object
- * @param {string}   props.defaultValue             - Default module ID to open
- * @param {Function} props.onLessonCompletionChange - Callback when lesson completion status changes
- * @param {Function} props.onMarkAllComplete        - Callback when mark all as done is clicked for a module
+ * @param {Object}                props                          - Component props
+ * @param {Object}                props.modules                  - Modules data object
+ * @param {string}                props.defaultValue             - Default module ID to open
+ * @param {Function}              props.onLessonCompletionChange - Callback when lesson completion status changes
+ * @param {Function}              props.onMarkAllComplete        - Callback when mark all as done is clicked for a module
+ * @param {number|null|undefined} props.latestFormId
  * @return {JSX.Element} - Rendered modules component
  */
 const LearnModules = ( {
@@ -19,6 +20,7 @@ const LearnModules = ( {
 	defaultValue,
 	onLessonCompletionChange,
 	onMarkAllComplete,
+	latestFormId,
 } ) => {
 	// Track which module is currently expanded
 	const [ expandedModuleId, setExpandedModuleId ] = useState( null );
@@ -268,6 +270,9 @@ const LearnModules = ( {
 														}
 														onCompletionChange={
 															onLessonCompletionChange
+														}
+														latestFormId={
+															latestFormId
 														}
 													/>
 												</Container.Item>

@@ -291,7 +291,7 @@ export default ( props ) => {
 			const hideTimer = setTimeout( () => {
 				setShowLearnTip( false );
 				setShowGenerateTip( true );
-			}, 5000 );
+			}, 4000 );
 			return () => clearTimeout( hideTimer );
 		}
 	}, [ source ] );
@@ -299,7 +299,7 @@ export default ( props ) => {
 	// Auto-dismiss generate tip after 5 seconds.
 	useEffect( () => {
 		if ( showGenerateTip ) {
-			const timer = setTimeout( () => setShowGenerateTip( false ), 5000 );
+			const timer = setTimeout( () => setShowGenerateTip( false ), 4000 );
 			return () => clearTimeout( timer );
 		}
 	}, [ showGenerateTip ] );
@@ -521,6 +521,14 @@ export default ( props ) => {
 							size="md"
 							variant="ghost"
 							onClick={ () => {
+								// If coming from the Learn section, set a relay flag so the
+								// editor can store the new post ID for Lesson 2's smart redirect.
+								if ( source === 'learn' ) {
+									localStorage.setItem(
+										'srfmLearnFlow',
+										'build-scratch'
+									);
+								}
 								window.location.href = `${ srfm_admin.site_url }/wp-admin/post-new.php?post_type=sureforms_form`;
 							} }
 						>
