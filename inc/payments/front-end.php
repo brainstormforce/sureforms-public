@@ -70,7 +70,7 @@ class Front_End {
 	 */
 	public function create_payment_intent() {
 		// Verify nonce.
-		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ?? '' ) ), 'srfm_stripe_payment_nonce' ) ) {
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ?? '' ) ), 'srfm_payment_nonce' ) ) {
 			wp_send_json_error( __( 'Invalid nonce.', 'sureforms' ) );
 		}
 
@@ -245,7 +245,7 @@ class Front_End {
 	 */
 	public function create_subscription_intent() {
 		// Verify nonce.
-		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ?? '' ) ), 'srfm_stripe_payment_nonce' ) ) {
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ?? '' ) ), 'srfm_payment_nonce' ) ) {
 			wp_send_json_error( __( 'Security check failed.', 'sureforms' ) );
 		}
 

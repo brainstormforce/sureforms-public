@@ -45,12 +45,74 @@ document.addEventListener( 'srfm_initialize_validation', ( event ) => {
 } );
 
 /**
+ * Make a single AJAX call to refresh nonces and update all forms on the page.
+ *
+ * @param {HTMLFormElement[]} forms - Array of form elements.
+ */
+async function refreshFormNonces( forms ) {
+	// Check if at least one form needs a nonce refresh.
+	const needsRefresh = forms.some(
+		( form ) =>
+			form.getAttribute( 'data-update-nonce' ) === 'yes' &&
+			form.getAttribute( 'data-nonce-updated' ) !== 'yes'
+	);
+
+	if ( ! needsRefresh ) {
+		return;
+	}
+
+	try {
+		const response = await wp.apiFetch( {
+			path: 'sureforms/v1/refresh-nonces',
+			method: 'GET',
+		} );
+
+		if ( response?.success && response?.nonces ) {
+			// Loop through all forms and apply the fresh nonces.
+			for ( const form of forms ) {
+				// Update unique validation nonce (data-nonce).
+				if ( response.nonces.unique_validation ) {
+					form.setAttribute(
+						'data-nonce',
+						response.nonces.unique_validation
+					);
+				}
+
+				// Update form submit nonce (data-submit-nonce).
+				if ( response.nonces.form_submit ) {
+					form.setAttribute(
+						'data-submit-nonce',
+						response.nonces.form_submit
+					);
+				}
+
+				// Mark form as updated to prevent duplicate refresh calls.
+				form.setAttribute( 'data-nonce-updated', 'yes' );
+			}
+
+			// Update window.srfm_ajax global with refreshed payment nonce (once, not per form).
+			if ( response.nonces.payment_nonce && window.srfm_ajax ) {
+				window.srfm_ajax.payment_nonce = response.nonces.payment_nonce;
+			}
+
+			console.warn( 'Nonces refreshed:' );
+		}
+	} catch ( error ) {
+		console.warn( 'Failed to refresh form nonces:', error );
+	}
+}
+
+/**
  * Initializes form handlers for all forms with the class `.srfm-form`.
  */
 function initializeFormHandlers() {
 	initializeInlineFieldValidation();
 
 	const forms = Array.from( document.querySelectorAll( '.srfm-form' ) );
+
+	// Single AJAX call to refresh nonces for all forms at once.
+	refreshFormNonces( forms );
+
 	for ( const form of forms ) {
 		// Add the event before the form initialization to ensure that the all third party libraries are loaded and initialized.
 		// Dispatch a custom event *before* the form is submitted.
@@ -254,6 +316,7 @@ function prepareAddressesData( form ) {
 async function submitFormData( form ) {
 	const formData = new FormData( form );
 	const filteredFormData = new FormData();
+	const submitNonce = form.getAttribute( 'data-submit-nonce' );
 
 	// Define keys to exclude from filtered form data
 	const blockTheseKeys = [ 'srfm-email-confirm', 'srfm-password-confirm' ];
@@ -355,6 +418,9 @@ async function submitFormData( form ) {
 			path: 'sureforms/v1/submit-form',
 			method: 'POST',
 			body: filteredFormData,
+			headers: {
+				'X-WP-Submit-Nonce': submitNonce,
+			},
 		} );
 	} catch ( e ) {
 		console.log( e );

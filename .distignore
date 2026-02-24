@@ -72,6 +72,7 @@ unminified
 coverage-report
 phpinsights.php
 playwright-report
+internal-docs
 
 auth.json
 .env

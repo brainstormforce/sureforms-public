@@ -48,3 +48,6 @@ package-lock.json   -diff
 composer.lock       -diff
 dist/**             -diff
 build/**            -diff
+
+# Exclude from releases
+/internal-docs/ export-ignore
