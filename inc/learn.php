@@ -8,6 +8,7 @@
 
 namespace SRFM\Inc;
 
+use SRFM\Inc\Helper;
 use SRFM\Inc\Traits\Get_Instance;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -192,7 +193,7 @@ class Learn {
 						],
 						'docsUrl'      => 'https://sureforms.com/docs/adjust-form-notification-emails/',
 						'headerAction' => [
-							'label' => __( 'SET UP SMTP', 'sureforms' ),
+							'label' => __( 'Set Up SMTP', 'sureforms' ),
 							'url'   => 'admin.php?page=sureforms_smtp',
 						],
 						'completed'    => false,
@@ -302,7 +303,7 @@ class Learn {
 
 				$step_id = $step['id'];
 				if ( isset( $saved_progress[ $chapter_id ][ $step_id ] ) ) {
-					$step['completed'] = $saved_progress[ $chapter_id ][ $step_id ];
+					$step['completed'] = Helper::get_boolean_value( $saved_progress[ $chapter_id ][ $step_id ] );
 				}
 			}
 		}
@@ -321,7 +322,7 @@ class Learn {
 			'sureforms/v1',
 			'/get-learn-chapters',
 			[
-				'methods'             => 'GET',
+				'methods'             => \WP_REST_Server::READABLE,
 				'callback'            => [ $this, 'rest_get_learn_chapters' ],
 				'permission_callback' => static function () {
 					return current_user_can( 'manage_options' );
@@ -333,7 +334,7 @@ class Learn {
 			'sureforms/v1',
 			'/update-learn-progress',
 			[
-				'methods'             => 'POST',
+				'methods'             => \WP_REST_Server::CREATABLE,
 				'callback'            => [ $this, 'rest_update_learn_progress' ],
 				'permission_callback' => static function () {
 					return current_user_can( 'manage_options' );

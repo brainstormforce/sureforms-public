@@ -92,6 +92,10 @@ const Learn = ( {
 				setIsLoading( false );
 			} )
 			.catch( ( err ) => {
+				// AbortError is expected when the component unmounts — not a real error.
+				if ( err.name === 'AbortError' ) {
+					return;
+				}
 				setError( err.message || 'Failed to load modules' );
 				setIsLoading( false );
 			} );
@@ -118,10 +122,15 @@ const Learn = ( {
 
 	// Call progress change callback when stats change
 	useEffect( () => {
-		if ( onProgressChange && typeof onProgressChange === 'function' ) {
+		// Only fire after data has loaded to avoid misleading zero-state callbacks.
+		if (
+			onProgressChange &&
+			typeof onProgressChange === 'function' &&
+			modules.length > 0
+		) {
 			onProgressChange( progressStats );
 		}
-	}, [ progressStats, onProgressChange ] );
+	}, [ progressStats, onProgressChange, modules ] );
 
 	// Show loading skeleton
 	if ( isLoading ) {

@@ -1045,10 +1045,14 @@ export default () => {
 	rootDiv.classList.add( 'srfm-instant-form-root' );
 	const root = createRoot( rootDiv );
 
+	// Subscribe to the data store to wait until the editor toolbar is ready,
+	// then mount once and immediately unsubscribe. Without unsubscribing,
+	// root.render() would fire on every Redux action for the editor lifetime.
 	const unsubscribe = wp.data.subscribe( function () {
 		setTimeout( function () {
-			root.render( <InstantFormComponent /> );
+			// Already mounted — stop listening.
 			if ( document.querySelector( '.srfm-instant-form-root' ) ) {
+				unsubscribe();
 				return;
 			}
 			const toolbarElement =
@@ -1056,11 +1060,9 @@ export default () => {
 				editorEl.querySelector( '.editor-header__settings' );
 			if ( !! toolbarElement ) {
 				toolbarElement.prepend( rootDiv );
+				root.render( <InstantFormComponent /> );
+				unsubscribe();
 			}
 		}, 1 );
 	} );
-	// unsubscribe
-	if ( document.querySelector( '.srfm-instant-form-root' ) ) {
-		unsubscribe();
-	}
 };

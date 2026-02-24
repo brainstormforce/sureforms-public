@@ -27,7 +27,12 @@ const LearnModules = ( {
 	// Track which lesson is currently expanded
 	const [ expandedLessonId, setExpandedLessonId ] = useState( null );
 
-	// Set default expanded module and lesson on mount
+	// Set default expanded module and lesson on initial load only.
+	// `modules` is intentionally omitted from deps: this effect must only run
+	// when `defaultValue` first becomes available. Re-running on every lesson
+	// toggle (which produces a new `modules` array reference) would collapse
+	// any module the user has manually opened back to the first incomplete one.
+	// eslint-disable-next-line react-hooks/exhaustive-deps
 	useEffect( () => {
 		if ( defaultValue && modules.length > 0 ) {
 			// Find the first incomplete module and lesson
@@ -42,7 +47,7 @@ const LearnModules = ( {
 				}
 			}
 		}
-	}, [ defaultValue, modules ] );
+	}, [ defaultValue ] );
 
 	const toggleModule = ( moduleId ) => {
 		const isClosing = expandedModuleId === moduleId;
@@ -229,6 +234,14 @@ const LearnModules = ( {
 																)
 															}
 															disabled={ isModuleComplete }
+															title={
+																isModuleComplete
+																	? __(
+																		'All lessons in this module are already complete',
+																		'sureforms'
+																  )
+																	: undefined
+															}
 														>
 															{ __(
 																'Mark All as Done',

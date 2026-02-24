@@ -164,10 +164,15 @@ const SureformsFormSpecificSettings = () => {
 		if ( '/wp-admin/site-editor.php' === currentUrl.pathname ) {
 			toggleSidebar( window.location.href );
 
-			// For FSE we are adding eventlistener to remove the sidebar when the user canvas is not editable.
-			window.navigation.addEventListener( 'navigate', ( e ) => {
+			// For FSE: add listener and clean it up on unmount to prevent
+			// duplicate listeners accumulating on each re-render.
+			const fseNavHandler = ( e ) => {
 				toggleSidebar( e.destination.url );
-			} );
+			};
+			window.navigation.addEventListener( 'navigate', fseNavHandler );
+			return () => {
+				window.navigation.removeEventListener( 'navigate', fseNavHandler );
+			};
 		} else if ( enableQuickActionSidebar !== undefined ) {
 			// Attach the sidebar to the DOM.
 			attachSidebar();

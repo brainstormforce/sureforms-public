@@ -106,11 +106,19 @@ const LearnLesson = ( {
 		}
 
 		if ( headerAction.dynamic === 'latest-form' ) {
-			// Prefer REST-fetched ID; fall back to localStorage for resilience
+			// Prefer REST-fetched ID; fall back to localStorage for resilience.
+			// Validate the localStorage value as a positive integer to prevent
+			// parameter injection if the value has been tampered with.
+			const rawLocalId = localStorage.getItem( 'srfmLearnFormId' );
+			const parsedLocalId = parseInt( rawLocalId, 10 );
+			const safeLocalId =
+				Number.isFinite( parsedLocalId ) && parsedLocalId > 0
+					? parsedLocalId
+					: null;
 			const resolvedId =
 				latestFormId !== undefined && latestFormId !== null
 					? latestFormId
-					: localStorage.getItem( 'srfmLearnFormId' );
+					: safeLocalId;
 			const adminBase = `${ srfm_admin?.site_url }/wp-admin/`;
 			const source = headerAction.source || 'learn-setup-fields';
 			const url = resolvedId

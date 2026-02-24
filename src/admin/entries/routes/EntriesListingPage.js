@@ -1,5 +1,5 @@
 import { __, _n, sprintf } from '@wordpress/i18n';
-import { useEffect, useMemo, useState } from '@wordpress/element';
+import { useEffect, useMemo, useRef, useState } from '@wordpress/element';
 import { useNavigate } from 'react-router-dom';
 import { toast } from '@bsf/force-ui';
 import EntriesHeader from '../components/EntriesHeader';
@@ -185,19 +185,22 @@ const EntriesListingPage = () => {
 			'learn'
 	);
 	const [ showLearnTip, setShowLearnTip ] = useState( false );
+	// Guard: show the learn tip only once, even if entries/isLoading re-fires this effect.
+	const learnTipShownRef = useRef( false );
 
 	// Show tooltip when redirected from Learn section, but only once entries have
 	// loaded and only if at least one entry actually exists.
 	useEffect( () => {
-		if ( ! isLearnSource || isLoading ) {
+		if ( ! isLearnSource || isLoading || learnTipShownRef.current ) {
 			return;
 		}
 		if ( entries.length > 0 ) {
+			learnTipShownRef.current = true;
 			setShowLearnTip( true );
 			const timer = setTimeout( () => setShowLearnTip( false ), 4000 );
 			return () => clearTimeout( timer );
 		}
-	}, [ isLearnSource, isLoading ] );
+	}, [ isLearnSource, isLoading, entries ] );
 
 	// Inject tooltip to the left of the Actions column header via DOM to escape table stacking context.
 	useEffect( () => {
@@ -278,7 +281,7 @@ const EntriesListingPage = () => {
 			error?.message ||
 				__( 'An error occurred while fetching entries.', 'sureforms' )
 		);
-	}, [ error ] );
+	}, [ error, isError ] );
 
 	// Action handlers
 	const handleEdit = ( entry ) => {
