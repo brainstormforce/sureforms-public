@@ -77,6 +77,12 @@ import {
 		}
 
 		// Apply simple CSS variables.
+		// Note: `bgImagePosition` is intentionally included in SIMPLE_CSS_MAP so it
+		// can be applied as a plain string value in non-Gutenberg contexts (e.g. Elementor).
+		// In Gutenberg, `bgImagePosition` is an {x, y} object, so this loop will
+		// temporarily set --srfm-bg-position to "[object Object]". The explicit
+		// bgImagePosition handler below (inside the bgType === 'image' branch)
+		// immediately overwrites it with the correctly formatted "X% Y%" string.
 		for ( const controlName in SIMPLE_CSS_MAP ) {
 			if (
 				Object.hasOwn( SIMPLE_CSS_MAP, controlName ) &&

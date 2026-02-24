@@ -3148,6 +3148,7 @@ class Group_Control_Background {
 	 * @return string Control type.
 	 */
 	public static function get_type() {
+		return 'background';
 	}
 }
 

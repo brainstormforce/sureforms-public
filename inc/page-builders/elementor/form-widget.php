@@ -920,8 +920,9 @@ class Form_Widget extends Widget_Base {
 		// Handle DIMENSIONS controls - map to individual camelCase keys for Gutenberg compatibility.
 		// Form Padding.
 		if ( ! empty( $settings['formPadding'] ) && is_array( $settings['formPadding'] ) ) {
-			$padding = $settings['formPadding'];
-			$unit    = $padding['unit'] ?? 'px';
+			$padding       = $settings['formPadding'];
+			$allowed_units = [ 'px', '%', 'em' ];
+			$unit          = in_array( $padding['unit'] ?? 'px', $allowed_units, true ) ? ( $padding['unit'] ?? 'px' ) : 'px';
 			if ( ! empty( $padding['top'] ) || '0' === $padding['top'] ) {
 				$block_attrs['formPaddingTop'] = $padding['top'] . $unit;
 			}
@@ -938,8 +939,9 @@ class Form_Widget extends Widget_Base {
 
 		// Form Border Radius.
 		if ( ! empty( $settings['formBorderRadius'] ) && is_array( $settings['formBorderRadius'] ) ) {
-			$radius = $settings['formBorderRadius'];
-			$unit   = $radius['unit'] ?? 'px';
+			$radius        = $settings['formBorderRadius'];
+			$allowed_units = [ 'px', '%', 'em' ];
+			$unit          = in_array( $radius['unit'] ?? 'px', $allowed_units, true ) ? ( $radius['unit'] ?? 'px' ) : 'px';
 			if ( ! empty( $radius['top'] ) || '0' === $radius['top'] ) {
 				$block_attrs['formBorderRadiusTop'] = $radius['top'] . $unit;
 			}
