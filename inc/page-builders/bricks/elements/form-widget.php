@@ -486,7 +486,7 @@ class Form_Widget extends \Bricks\Element {
 	 */
 	public function render() {
 		$settings = $this->settings;
-		$form_id  = intval( $settings['form-id'] ?? 0 );
+		$form_id  = absint( $settings['form-id'] ?? 0 );
 
 		if ( $form_id > 0 ) {
 			$form = get_post( $form_id );
@@ -629,13 +629,28 @@ class Form_Widget extends \Bricks\Element {
 			return null;
 		}
 
+		$raw = null;
+
 		if ( is_string( $color_value ) ) {
-			return $color_value;
+			$raw = $color_value;
+		} elseif ( is_array( $color_value ) ) {
+			// Bricks may return ['hex' => '#xxx', 'rgb' => '...', 'raw' => '#xxx'].
+			$raw = $color_value['hex'] ?? $color_value['raw'] ?? null;
 		}
 
-		if ( is_array( $color_value ) ) {
-			// Bricks may return ['hex' => '#xxx', 'rgb' => '...', 'raw' => '#xxx'].
-			return $color_value['hex'] ?? $color_value['raw'] ?? null;
+		if ( null === $raw || '' === $raw ) {
+			return null;
+		}
+
+		// Validate as a CSS-safe color value.
+		$hex = sanitize_hex_color( $raw );
+		if ( $hex ) {
+			return $hex;
+		}
+
+		// Allow rgb/rgba/hsl/hsla functional notation.
+		if ( preg_match( '/^(rgb|rgba|hsl|hsla)\s*\([^)]+\)$/i', $raw ) ) {
+			return $raw;
 		}
 
 		return null;
@@ -658,11 +673,12 @@ class Form_Widget extends \Bricks\Element {
 			return $attrs;
 		}
 
-		$dims = $settings[ $setting_key ];
-		$unit = $dims['unit'] ?? 'px';
+		$dims          = $settings[ $setting_key ];
+		$allowed_units = [ 'px', 'em', 'rem', '%', 'vw', 'vh' ];
+		$unit          = in_array( $dims['unit'] ?? 'px', $allowed_units, true ) ? $dims['unit'] : 'px';
 
 		foreach ( [ 'top', 'right', 'bottom', 'left' ] as $side ) {
-			if ( isset( $dims[ $side ] ) && ( '' !== $dims[ $side ] || '0' === ( $dims[ $side ] ?? null ) ) ) {
+			if ( isset( $dims[ $side ] ) && '' !== (string) $dims[ $side ] ) {
 				$attrs[ $attr_prefix . ucfirst( $side ) ] = $dims[ $side ] . $unit;
 			}
 		}
@@ -688,28 +704,28 @@ class Form_Widget extends \Bricks\Element {
 			return null;
 		}
 
-		$type        = $settings[ $prefix . 'GradientType' ] ?? 'linear';
-		$angle       = $settings[ $prefix . 'GradientAngle' ] ?? 180;
-		$color1_stop = $settings[ $prefix . 'GradientColor1Stop' ] ?? 0;
-		$color2_stop = $settings[ $prefix . 'GradientColor2Stop' ] ?? 100;
+		$type        = 'radial' === ( $settings[ $prefix . 'GradientType' ] ?? 'linear' ) ? 'radial' : 'linear';
+		$angle       = absint( $settings[ $prefix . 'GradientAngle' ] ?? 180 );
+		$color1_stop = absint( $settings[ $prefix . 'GradientColor1Stop' ] ?? 0 );
+		$color2_stop = absint( $settings[ $prefix . 'GradientColor2Stop' ] ?? 100 );
 
 		if ( 'radial' === $type ) {
 			return sprintf(
 				'radial-gradient(at center center, %s %s%%, %s %s%%)',
-				esc_attr( $color_1 ),
-				esc_attr( (string) $color1_stop ),
-				esc_attr( $color_2 ),
-				esc_attr( (string) $color2_stop )
+				$color_1,
+				$color1_stop,
+				$color_2,
+				$color2_stop
 			);
 		}
 
 		return sprintf(
 			'linear-gradient(%sdeg, %s %s%%, %s %s%%)',
-			esc_attr( (string) $angle ),
-			esc_attr( $color_1 ),
-			esc_attr( (string) $color1_stop ),
-			esc_attr( $color_2 ),
-			esc_attr( (string) $color2_stop )
+			$angle,
+			$color_1,
+			$color1_stop,
+			$color_2,
+			$color2_stop
 		);
 	}
 }
