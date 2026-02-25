@@ -9,6 +9,7 @@
 namespace SRFM\Inc\Page_Builders\Bricks\Elements;
 
 use Spec_Gb_Helper;
+use SRFM\Inc\Generate_Form_Markup;
 use SRFM\Inc\Helper;
 use SRFM\Inc\Page_Builders\Page_Builders;
 
@@ -82,12 +83,50 @@ class Form_Widget extends \Bricks\Element {
 	}
 
 	/**
+	 * Set control groups for the Style tab accordion sections.
+	 *
+	 * @since x.x.x
+	 * @return void
+	 */
+	public function set_control_groups() {
+		$this->control_groups['srfm_form_styling'] = [
+			'title' => __( 'Form Styling', 'sureforms' ),
+			'tab'   => 'style',
+		];
+
+		$styling_required = [
+			[ 'form-id', '!=', '' ],
+			[ 'inheritStyling', '=', '' ],
+		];
+
+		$this->control_groups['srfm_layout'] = [
+			'title'    => __( 'Layout', 'sureforms' ),
+			'tab'      => 'style',
+			'required' => $styling_required,
+		];
+
+		$this->control_groups['srfm_button'] = [
+			'title'    => __( 'Button', 'sureforms' ),
+			'tab'      => 'style',
+			'required' => $styling_required,
+		];
+
+		$this->control_groups['srfm_fields'] = [
+			'title'    => __( 'Fields', 'sureforms' ),
+			'tab'      => 'style',
+			'required' => $styling_required,
+		];
+	}
+
+	/**
 	 * Set element controls.
 	 *
 	 * @since 0.0.5
 	 * @return void
 	 */
 	public function set_controls() {
+
+		// === CONTENT TAB ===
 
 		// Select Form.
 		$this->controls['form-id'] = [
@@ -114,6 +153,314 @@ class Form_Widget extends \Bricks\Element {
 			'type'     => 'info',
 			'required' => [ 'form-id', '!=', '' ],
 		];
+
+		// === STYLE TAB — Form Styling Group ===
+
+		$form_required = [
+			[ 'form-id', '!=', '' ],
+			[ 'inheritStyling', '=', '' ],
+		];
+
+		// Inherit Styling Toggle.
+		$this->controls['inheritStyling'] = [
+			'group'   => 'srfm_form_styling',
+			'label'   => __( 'Inherit Styling from Instant Form', 'sureforms' ),
+			'type'    => 'checkbox',
+			'default' => true,
+			'info'    => __( 'When enabled, this form uses Instant Form styling. Disable to customize styling for this embed.', 'sureforms' ),
+		];
+
+		/**
+		 * Hook for Pro to add form theme control after inherit toggle.
+		 *
+		 * @param Form_Widget $element The element instance.
+		 * @since x.x.x
+		 */
+		do_action( 'srfm_bricks_after_basic_styling_controls', $this );
+
+		// Primary Color.
+		$this->controls['primaryColor'] = [
+			'group'    => 'srfm_form_styling',
+			'label'    => __( 'Primary Color', 'sureforms' ),
+			'type'     => 'color',
+			'required' => $form_required,
+		];
+
+		// Text Color.
+		$this->controls['textColor'] = [
+			'group'    => 'srfm_form_styling',
+			'label'    => __( 'Text Color', 'sureforms' ),
+			'type'     => 'color',
+			'required' => $form_required,
+		];
+
+		// Text on Primary Color.
+		$this->controls['textOnPrimaryColor'] = [
+			'group'    => 'srfm_form_styling',
+			'label'    => __( 'Text on Primary', 'sureforms' ),
+			'type'     => 'color',
+			'required' => $form_required,
+		];
+
+		// Background Separator.
+		$this->controls['bgSeparator'] = [
+			'group'    => 'srfm_form_styling',
+			'label'    => __( 'Background', 'sureforms' ),
+			'type'     => 'separator',
+			'required' => $form_required,
+		];
+
+		// Background Type.
+		$this->controls['bgType'] = [
+			'group'    => 'srfm_form_styling',
+			'label'    => __( 'Type', 'sureforms' ),
+			'type'     => 'select',
+			'options'  => [
+				'color'    => __( 'Color', 'sureforms' ),
+				'gradient' => __( 'Gradient', 'sureforms' ),
+				'image'    => __( 'Image', 'sureforms' ),
+			],
+			'default'  => 'color',
+			'required' => $form_required,
+		];
+
+		// Background Color (when bgType=color).
+		$this->controls['bgColor'] = [
+			'group'    => 'srfm_form_styling',
+			'label'    => __( 'Background Color', 'sureforms' ),
+			'type'     => 'color',
+			'required' => array_merge( $form_required, [ [ 'bgType', '=', 'color' ] ] ),
+		];
+
+		// --- Gradient Controls (when bgType=gradient) ---
+		$gradient_required = array_merge( $form_required, [ [ 'bgType', '=', 'gradient' ] ] );
+
+		$this->controls['bgGradientColor1'] = [
+			'group'    => 'srfm_form_styling',
+			'label'    => __( 'Gradient Color 1', 'sureforms' ),
+			'type'     => 'color',
+			'required' => $gradient_required,
+		];
+
+		$this->controls['bgGradientColor1Stop'] = [
+			'group'    => 'srfm_form_styling',
+			'label'    => __( 'Color 1 Location (%)', 'sureforms' ),
+			'type'     => 'number',
+			'default'  => 0,
+			'min'      => 0,
+			'max'      => 100,
+			'unit'     => '%',
+			'required' => $gradient_required,
+		];
+
+		$this->controls['bgGradientColor2'] = [
+			'group'    => 'srfm_form_styling',
+			'label'    => __( 'Gradient Color 2', 'sureforms' ),
+			'type'     => 'color',
+			'required' => $gradient_required,
+		];
+
+		$this->controls['bgGradientColor2Stop'] = [
+			'group'    => 'srfm_form_styling',
+			'label'    => __( 'Color 2 Location (%)', 'sureforms' ),
+			'type'     => 'number',
+			'default'  => 100,
+			'min'      => 0,
+			'max'      => 100,
+			'unit'     => '%',
+			'required' => $gradient_required,
+		];
+
+		$this->controls['bgGradientType'] = [
+			'group'    => 'srfm_form_styling',
+			'label'    => __( 'Gradient Type', 'sureforms' ),
+			'type'     => 'select',
+			'options'  => [
+				'linear' => __( 'Linear', 'sureforms' ),
+				'radial' => __( 'Radial', 'sureforms' ),
+			],
+			'default'  => 'linear',
+			'required' => $gradient_required,
+		];
+
+		$this->controls['bgGradientAngle'] = [
+			'group'    => 'srfm_form_styling',
+			'label'    => __( 'Angle', 'sureforms' ),
+			'type'     => 'number',
+			'default'  => 180,
+			'min'      => 0,
+			'max'      => 360,
+			'unit'     => 'deg',
+			'required' => array_merge( $gradient_required, [ [ 'bgGradientType', '=', 'linear' ] ] ),
+		];
+
+		// --- Background Image Controls (when bgType=image) ---
+		$image_required = array_merge( $form_required, [ [ 'bgType', '=', 'image' ] ] );
+
+		$this->controls['bgImage'] = [
+			'group'    => 'srfm_form_styling',
+			'label'    => __( 'Image', 'sureforms' ),
+			'type'     => 'image',
+			'required' => $image_required,
+		];
+
+		$this->controls['bgImageSize'] = [
+			'group'    => 'srfm_form_styling',
+			'label'    => __( 'Size', 'sureforms' ),
+			'type'     => 'select',
+			'options'  => [
+				'cover'   => __( 'Cover', 'sureforms' ),
+				'contain' => __( 'Contain', 'sureforms' ),
+				'auto'    => __( 'Auto', 'sureforms' ),
+			],
+			'default'  => 'cover',
+			'required' => $image_required,
+		];
+
+		$this->controls['bgImagePosition'] = [
+			'group'    => 'srfm_form_styling',
+			'label'    => __( 'Position', 'sureforms' ),
+			'type'     => 'select',
+			'options'  => [
+				'left top'      => __( 'Left Top', 'sureforms' ),
+				'left center'   => __( 'Left Center', 'sureforms' ),
+				'left bottom'   => __( 'Left Bottom', 'sureforms' ),
+				'center top'    => __( 'Center Top', 'sureforms' ),
+				'center center' => __( 'Center Center', 'sureforms' ),
+				'center bottom' => __( 'Center Bottom', 'sureforms' ),
+				'right top'     => __( 'Right Top', 'sureforms' ),
+				'right center'  => __( 'Right Center', 'sureforms' ),
+				'right bottom'  => __( 'Right Bottom', 'sureforms' ),
+			],
+			'default'  => 'center center',
+			'required' => $image_required,
+		];
+
+		$this->controls['bgImageRepeat'] = [
+			'group'    => 'srfm_form_styling',
+			'label'    => __( 'Repeat', 'sureforms' ),
+			'type'     => 'select',
+			'options'  => [
+				'no-repeat' => __( 'No Repeat', 'sureforms' ),
+				'repeat'    => __( 'Repeat', 'sureforms' ),
+				'repeat-x'  => __( 'Repeat X', 'sureforms' ),
+				'repeat-y'  => __( 'Repeat Y', 'sureforms' ),
+			],
+			'default'  => 'no-repeat',
+			'required' => $image_required,
+		];
+
+		$this->controls['bgImageAttachment'] = [
+			'group'    => 'srfm_form_styling',
+			'label'    => __( 'Attachment', 'sureforms' ),
+			'type'     => 'select',
+			'options'  => [
+				'scroll' => __( 'Scroll', 'sureforms' ),
+				'fixed'  => __( 'Fixed', 'sureforms' ),
+			],
+			'default'  => 'scroll',
+			'required' => $image_required,
+		];
+
+		// === STYLE TAB — Layout Group ===
+
+		// Form Padding.
+		$this->controls['formPadding'] = [
+			'group'    => 'srfm_layout',
+			'label'    => __( 'Form Padding', 'sureforms' ),
+			'type'     => 'spacing',
+			'css'      => [],
+			'default'  => [
+				'top'    => '0',
+				'right'  => '0',
+				'bottom' => '0',
+				'left'   => '0',
+				'unit'   => 'px',
+			],
+			'required' => $form_required,
+		];
+
+		// Form Border Radius.
+		$this->controls['formBorderRadius'] = [
+			'group'    => 'srfm_layout',
+			'label'    => __( 'Form Border Radius', 'sureforms' ),
+			'type'     => 'spacing',
+			'css'      => [],
+			'default'  => [
+				'top'    => '0',
+				'right'  => '0',
+				'bottom' => '0',
+				'left'   => '0',
+				'unit'   => 'px',
+			],
+			'required' => $form_required,
+		];
+
+		/**
+		 * Hook for Pro to add additional layout controls (e.g., row/column gap).
+		 *
+		 * @param Form_Widget $element The element instance.
+		 * @since x.x.x
+		 */
+		do_action( 'srfm_bricks_layout_controls', $this );
+
+		// === STYLE TAB — Button Group ===
+
+		// Button Alignment.
+		$this->controls['buttonAlignment'] = [
+			'group'    => 'srfm_button',
+			'label'    => __( 'Alignment', 'sureforms' ),
+			'type'     => 'select',
+			'options'  => [
+				'left'    => __( 'Left', 'sureforms' ),
+				'center'  => __( 'Center', 'sureforms' ),
+				'right'   => __( 'Right', 'sureforms' ),
+				'justify' => __( 'Full Width', 'sureforms' ),
+			],
+			'default'  => 'left',
+			'required' => $form_required,
+		];
+
+		/**
+		 * Hook for Pro to add additional button controls.
+		 *
+		 * @param Form_Widget $element The element instance.
+		 * @since x.x.x
+		 */
+		do_action( 'srfm_bricks_button_controls', $this );
+
+		// === STYLE TAB — Fields Group ===
+
+		// Field Spacing.
+		// Hidden when Pro's custom theme is selected (replaced by Row/Column Gap).
+		$this->controls['fieldSpacing'] = [
+			'group'    => 'srfm_fields',
+			'label'    => __( 'Field Spacing', 'sureforms' ),
+			'type'     => 'select',
+			'options'  => [
+				'small'  => __( 'Small', 'sureforms' ),
+				'medium' => __( 'Medium', 'sureforms' ),
+				'large'  => __( 'Large', 'sureforms' ),
+			],
+			'default'  => 'medium',
+			'required' => array_merge( $form_required, [ [ 'formTheme', '!=', 'custom' ] ] ),
+		];
+
+		/**
+		 * Hook for Pro to add additional field controls.
+		 *
+		 * @param Form_Widget $element The element instance.
+		 * @since x.x.x
+		 */
+		do_action( 'srfm_bricks_field_controls', $this );
+
+		/**
+		 * Hook for Pro to add additional style sections (e.g., Messages).
+		 *
+		 * @param Form_Widget $element The element instance.
+		 * @since x.x.x
+		 */
+		do_action( 'srfm_bricks_after_styling_section', $this );
 	}
 
 	/**
@@ -134,19 +481,35 @@ class Form_Widget extends \Bricks\Element {
 	 * @return void
 	 */
 	public function render() {
-		$settings   = $this->settings;
-		$form_id    = $settings['form-id'] ?? '';
-		$form_title = isset( $settings['form-title'] );
-		// get spectra blocks and add css and js.
-		$blocks = parse_blocks( get_post_field( 'post_content', $form_id ) );
-		$styles = Spec_Gb_Helper::get_instance()->get_assets( $blocks );
+		$settings = $this->settings;
+		$form_id  = intval( $settings['form-id'] ?? 0 );
 
 		if ( $form_id > 0 ) {
+			$form = get_post( $form_id );
+			if ( ! $form || ! in_array( $form->post_status, [ 'publish', 'protected' ], true ) ) {
+				echo esc_html__( 'This form has been deleted or is unavailable.', 'sureforms' );
+				return;
+			}
+
+			$form_title  = isset( $settings['form-title'] );
+			$block_attrs = $this->get_block_attrs( $settings );
+
+			// Get spectra blocks CSS/JS.
+			$blocks = parse_blocks( get_post_field( 'post_content', $form_id ) );
+			$styles = Spec_Gb_Helper::get_instance()->get_assets( $blocks );
 			?>
 			<div <?php echo $this->render_attributes( '_root' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
 				<?php
-				// phpcs:ignore -- WordPress.Security.EscapeOutput.OutputNotEscaped - Escaping not required.
-				echo do_shortcode( sprintf( '[sureforms id="%s" show_title="%s"]', (int) $form_id, ! $form_title ) );
+				// Bypass shortcode — call Generate_Form_Markup directly with block_attrs.
+				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped in Generate_Form_Markup.
+				echo Generate_Form_Markup::get_form_markup(
+					$form_id,
+					! $form_title,
+					'',
+					'post',
+					true,
+					$block_attrs
+				);
 				?>
 				<style><?php echo $styles['css']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></style>
 				<script><?php echo $styles['js']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></script>
@@ -163,5 +526,186 @@ class Form_Widget extends \Bricks\Element {
 			);
 			// phpcs:ignoreEnd
 		}
+	}
+
+	/**
+	 * Convert Bricks settings to block_attrs array.
+	 * Uses same camelCase keys as Gutenberg for code reuse with Form_Styling.
+	 *
+	 * @param array<string, mixed> $settings Bricks element settings.
+	 * @return array<string, mixed> Block attributes.
+	 * @since x.x.x
+	 */
+	protected function get_block_attrs( $settings ) {
+		$block_attrs = [
+			'blockId' => 'bricks-' . ( $this->id ?? uniqid() ),
+		];
+
+		// Check if inheriting styling from Instant Form.
+		$inherit_styling               = ! empty( $settings['inheritStyling'] );
+		$block_attrs['inheritStyling'] = $inherit_styling;
+
+		// If inheriting styling, don't pass any custom styling attributes.
+		if ( $inherit_styling ) {
+			return $block_attrs;
+		}
+
+		// Color controls.
+		$color_keys = [
+			'primaryColor',
+			'textColor',
+			'textOnPrimaryColor',
+			'bgColor',
+		];
+
+		foreach ( $color_keys as $key ) {
+			$color = self::resolve_bricks_color( $settings[ $key ] ?? null );
+			if ( $color ) {
+				$block_attrs[ $key ] = $color;
+			}
+		}
+
+		// Simple pass-through keys.
+		$passthrough_keys = [
+			'fieldSpacing',
+			'buttonAlignment',
+			'bgType',
+			'bgImageSize',
+			'bgImagePosition',
+			'bgImageRepeat',
+			'bgImageAttachment',
+		];
+
+		foreach ( $passthrough_keys as $key ) {
+			if ( isset( $settings[ $key ] ) && '' !== $settings[ $key ] ) {
+				$block_attrs[ $key ] = $settings[ $key ];
+			}
+		}
+
+		// Build gradient CSS string from individual Bricks controls.
+		if ( 'gradient' === ( $settings['bgType'] ?? '' ) ) {
+			$gradient_css = self::build_bricks_gradient_css( $settings, 'bg' );
+			if ( $gradient_css ) {
+				$block_attrs['bgGradient'] = $gradient_css;
+			}
+		}
+
+		// Handle spacing controls (4-sided) → individual camelCase keys with unit appended.
+		$block_attrs = array_merge( $block_attrs, self::map_bricks_spacing( $settings, 'formPadding', 'formPadding' ) );
+		$block_attrs = array_merge( $block_attrs, self::map_bricks_spacing( $settings, 'formBorderRadius', 'formBorderRadius' ) );
+
+		// Handle bgImage — Bricks image control returns ['url', 'id', ...].
+		if ( ! empty( $settings['bgImage'] ) && is_array( $settings['bgImage'] ) ) {
+			if ( ! empty( $settings['bgImage']['url'] ) ) {
+				$block_attrs['bgImage'] = $settings['bgImage']['url'];
+			}
+		}
+
+		/**
+		 * Filter the block attributes for Bricks widget.
+		 * Pro uses this to add additional styling attributes.
+		 *
+		 * @param array<string, mixed> $block_attrs Block attributes.
+		 * @param array<string, mixed> $settings    Bricks element settings.
+		 * @since x.x.x
+		 */
+		return apply_filters( 'srfm_bricks_block_attrs', $block_attrs, $settings );
+	}
+
+	/**
+	 * Resolve a Bricks color value to a hex string.
+	 * Bricks color controls may return a string or an array with 'hex'/'raw' keys.
+	 *
+	 * @param mixed $color_value Raw value from Bricks color control.
+	 * @return string|null Hex color string or null.
+	 * @since x.x.x
+	 */
+	public static function resolve_bricks_color( $color_value ) {
+		if ( empty( $color_value ) ) {
+			return null;
+		}
+
+		if ( is_string( $color_value ) ) {
+			return $color_value;
+		}
+
+		if ( is_array( $color_value ) ) {
+			// Bricks may return ['hex' => '#xxx', 'rgb' => '...', 'raw' => '#xxx'].
+			return $color_value['hex'] ?? $color_value['raw'] ?? null;
+		}
+
+		return null;
+	}
+
+	/**
+	 * Map Bricks 'spacing' control to individual camelCase block_attrs keys.
+	 * Bricks spacing returns: ['top' => '10', 'right' => '10', ..., 'unit' => 'px']
+	 *
+	 * @param array<string, mixed> $settings    Bricks settings.
+	 * @param string               $setting_key Key in settings for the spacing control.
+	 * @param string               $attr_prefix Prefix for output block_attrs keys.
+	 * @return array<string, string> Mapped attributes.
+	 * @since x.x.x
+	 */
+	public static function map_bricks_spacing( $settings, $setting_key, $attr_prefix ) {
+		$attrs = [];
+
+		if ( empty( $settings[ $setting_key ] ) || ! is_array( $settings[ $setting_key ] ) ) {
+			return $attrs;
+		}
+
+		$dims = $settings[ $setting_key ];
+		$unit = $dims['unit'] ?? 'px';
+
+		foreach ( [ 'top', 'right', 'bottom', 'left' ] as $side ) {
+			if ( isset( $dims[ $side ] ) && ( '' !== $dims[ $side ] || '0' === ( $dims[ $side ] ?? null ) ) ) {
+				$attrs[ $attr_prefix . ucfirst( $side ) ] = $dims[ $side ] . $unit;
+			}
+		}
+
+		return $attrs;
+	}
+
+	/**
+	 * Build CSS gradient string from individual Bricks controls.
+	 * Since Bricks has no built-in gradient group control, we use individual controls.
+	 *
+	 * @param array<string, mixed> $settings Bricks settings.
+	 * @param string               $prefix   Control name prefix (e.g., 'bg' for bgGradientColor1).
+	 * @return string|null CSS gradient string or null.
+	 * @since x.x.x
+	 */
+	public static function build_bricks_gradient_css( $settings, $prefix ) {
+		$color_1 = self::resolve_bricks_color( $settings[ $prefix . 'GradientColor1' ] ?? null );
+		$color_2 = self::resolve_bricks_color( $settings[ $prefix . 'GradientColor2' ] ?? null );
+
+		// Both colors are required.
+		if ( ! $color_1 || ! $color_2 ) {
+			return null;
+		}
+
+		$type        = $settings[ $prefix . 'GradientType' ] ?? 'linear';
+		$angle       = $settings[ $prefix . 'GradientAngle' ] ?? 180;
+		$color1_stop = $settings[ $prefix . 'GradientColor1Stop' ] ?? 0;
+		$color2_stop = $settings[ $prefix . 'GradientColor2Stop' ] ?? 100;
+
+		if ( 'radial' === $type ) {
+			return sprintf(
+				'radial-gradient(at center center, %s %s%%, %s %s%%)',
+				esc_attr( $color_1 ),
+				esc_attr( (string) $color1_stop ),
+				esc_attr( $color_2 ),
+				esc_attr( (string) $color2_stop )
+			);
+		}
+
+		return sprintf(
+			'linear-gradient(%sdeg, %s %s%%, %s %s%%)',
+			esc_attr( (string) $angle ),
+			esc_attr( $color_1 ),
+			esc_attr( (string) $color1_stop ),
+			esc_attr( $color_2 ),
+			esc_attr( (string) $color2_stop )
+		);
 	}
 }
