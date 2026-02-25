@@ -183,6 +183,7 @@ class Form_Widget extends \Bricks\Element {
 			'group'    => 'srfm_form_styling',
 			'label'    => __( 'Primary Color', 'sureforms' ),
 			'type'     => 'color',
+			'default'  => '#111C44',
 			'required' => $form_required,
 		];
 
@@ -191,6 +192,7 @@ class Form_Widget extends \Bricks\Element {
 			'group'    => 'srfm_form_styling',
 			'label'    => __( 'Text Color', 'sureforms' ),
 			'type'     => 'color',
+			'default'  => '#1E1E1E',
 			'required' => $form_required,
 		];
 
@@ -199,6 +201,7 @@ class Form_Widget extends \Bricks\Element {
 			'group'    => 'srfm_form_styling',
 			'label'    => __( 'Text on Primary', 'sureforms' ),
 			'type'     => 'color',
+			'default'  => '#FFFFFF',
 			'required' => $form_required,
 		];
 
@@ -229,6 +232,7 @@ class Form_Widget extends \Bricks\Element {
 			'group'    => 'srfm_form_styling',
 			'label'    => __( 'Background Color', 'sureforms' ),
 			'type'     => 'color',
+			'default'  => '#FFFFFF',
 			'required' => array_merge( $form_required, [ [ 'bgType', '=', 'color' ] ] ),
 		];
 
@@ -287,7 +291,7 @@ class Form_Widget extends \Bricks\Element {
 			'group'    => 'srfm_form_styling',
 			'label'    => __( 'Angle', 'sureforms' ),
 			'type'     => 'number',
-			'default'  => 180,
+			'default'  => 90,
 			'min'      => 0,
 			'max'      => 360,
 			'unit'     => 'deg',
