@@ -268,7 +268,7 @@ const SureformsFormSpecificSettings = () => {
 			const timer = setTimeout( () => {
 				setShowSetupFieldsTip( false );
 				setShowAttrTip( true );
-			}, 4000 );
+			}, 5000 );
 			return () => clearTimeout( timer );
 		}
 	}, [] );
@@ -350,7 +350,7 @@ const SureformsFormSpecificSettings = () => {
 	// Learn: second tooltip for Lesson 2 — beside the block inspector sidebar.
 	useEffect( () => {
 		if ( showAttrTip ) {
-			const timer = setTimeout( () => setShowAttrTip( false ), 4000 );
+			const timer = setTimeout( () => setShowAttrTip( false ), 5000 );
 			return () => clearTimeout( timer );
 		}
 	}, [ showAttrTip ] );
@@ -408,7 +408,7 @@ const SureformsFormSpecificSettings = () => {
 			setShowStyleLearnTip( true );
 			const timer = setTimeout(
 				() => setShowStyleLearnTip( false ),
-				4000
+				5000
 			);
 			return () => clearTimeout( timer );
 		}

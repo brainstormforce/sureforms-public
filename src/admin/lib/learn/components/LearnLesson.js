@@ -590,17 +590,6 @@ const LearnLesson = ( {
 								/>
 							</div>
 						</Dialog.Body>
-						{ docsUrl && (
-							<Dialog.Footer>
-								<Button
-									variant="outline"
-									size="sm"
-									onClick={ () => window.open( docsUrl, '_blank', 'noopener,noreferrer' ) }
-								>
-									{ __( 'View Documentation', 'sureforms' ) }
-								</Button>
-							</Dialog.Footer>
-						) }
 					</Dialog.Panel>
 				</Dialog>
 			) }
@@ -631,17 +620,6 @@ const LearnLesson = ( {
 								/>
 							</div>
 						</Dialog.Body>
-						{ docsUrl && (
-							<Dialog.Footer>
-								<Button
-									variant="outline"
-									size="sm"
-									onClick={ () => window.open( docsUrl, '_blank', 'noopener,noreferrer' ) }
-								>
-									{ __( 'View Documentation', 'sureforms' ) }
-								</Button>
-							</Dialog.Footer>
-						) }
 					</Dialog.Panel>
 				</Dialog>
 			) }

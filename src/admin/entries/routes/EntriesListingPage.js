@@ -197,7 +197,7 @@ const EntriesListingPage = () => {
 		if ( entries.length > 0 ) {
 			learnTipShownRef.current = true;
 			setShowLearnTip( true );
-			const timer = setTimeout( () => setShowLearnTip( false ), 4000 );
+			const timer = setTimeout( () => setShowLearnTip( false ), 5000 );
 			return () => clearTimeout( timer );
 		}
 	}, [ isLearnSource, isLoading, entries ] );

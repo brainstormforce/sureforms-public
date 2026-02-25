@@ -120,6 +120,7 @@ const InstantFormComponent = () => {
 
 	const [ showLearnTip, setShowLearnTip ] = useState( false );
 	const [ showColorTip, setShowColorTip ] = useState( false );
+	const [ showPublishTip, setShowPublishTip ] = useState( false );
 
 	// Auto-open Instant Form popover when redirected from Learn section.
 	useEffect( () => {
@@ -129,18 +130,70 @@ const InstantFormComponent = () => {
 			const timer = setTimeout( () => {
 				setShowLearnTip( false );
 				setShowColorTip( true );
-			}, 4000 );
+			}, 5000 );
 			return () => clearTimeout( timer );
 		}
 	}, [] );
 
-	// Auto-dismiss color tip after 5 seconds.
+	// Auto-dismiss color tip and chain into publish tip.
 	useEffect( () => {
 		if ( showColorTip ) {
-			const timer = setTimeout( () => setShowColorTip( false ), 4000 );
+			const timer = setTimeout( () => {
+				setShowColorTip( false );
+				setShowPublishTip( true );
+			}, 5000 );
 			return () => clearTimeout( timer );
 		}
 	}, [ showColorTip ] );
+
+	// Inject publish button tooltip via DOM when redirected from Learn section.
+	useEffect( () => {
+		const existing = document.getElementById( 'srfm-publish-learn-tip' );
+		if ( existing ) {
+			existing.remove();
+		}
+
+		if ( ! showPublishTip ) {
+			return;
+		}
+
+		const dismissTimer = setTimeout(
+			() => setShowPublishTip( false ),
+			5000
+		);
+
+		const interval = setInterval( () => {
+			const publishBtn = document.querySelector(
+				'.editor-post-publish-button'
+			);
+			if ( ! publishBtn ) {
+				return;
+			}
+
+			clearInterval( interval );
+			const rect = publishBtn.getBoundingClientRect();
+
+			const tip = document.createElement( 'div' );
+			tip.id = 'srfm-publish-learn-tip';
+			tip.style.cssText = `position:fixed;top:${ rect.bottom + 8 }px;left:${ rect.left + ( rect.width / 2 ) }px;transform:translateX(-50%);z-index:2147483647;pointer-events:none;`;
+
+			tip.innerHTML = `
+				<div style="position:absolute;top:-4px;left:50%;transform:translateX(-50%) rotate(45deg);width:8px;height:8px;background:#1e1e1e;"></div>
+				<div style="background:#1e1e1e;color:#fff;font-size:13px;padding:6px 12px;border-radius:6px;box-shadow:0 4px 12px rgba(0,0,0,0.15);white-space:nowrap;">${ __( 'Publish Your Form', 'sureforms' ) }</div>
+			`;
+
+			document.body.appendChild( tip );
+		}, 100 );
+
+		return () => {
+			clearInterval( interval );
+			clearTimeout( dismissTimer );
+			const tip = document.getElementById( 'srfm-publish-learn-tip' );
+			if ( tip ) {
+				tip.remove();
+			}
+		};
+	}, [ showPublishTip ] );
 
 	const [ isLinkCopied, setIsLinkCopied ] = useState( false );
 	const [ editPostSlug, setEditPostSlug ] = useState( {
@@ -722,7 +775,7 @@ const InstantFormComponent = () => {
 														} }
 													>
 														{ __(
-															'Style Your Instant Form Here',
+															'Style Your Instant Form Page Here',
 															'sureforms'
 														) }
 													</div>

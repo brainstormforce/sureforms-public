@@ -8,7 +8,6 @@
 
 namespace SRFM\Inc;
 
-use SRFM\Inc\Helper;
 use SRFM\Inc\Traits\Get_Instance;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -74,7 +73,7 @@ class Learn {
 					[
 						'id'           => 'set-up-form-fields',
 						'title'        => __( 'Set Up Your Form Fields', 'sureforms' ),
-						'description'  => __( 'Add and configure the right fields for your form. SureForms offers a wide range of field types to capture exactly the information you need.', 'sureforms' ),
+						'description'  => __( 'Adjust the field settings according to your requirements.', 'sureforms' ),
 						'learn'        => [
 							'type'    => 'dialog',
 							'content' => [
@@ -97,7 +96,7 @@ class Learn {
 					[
 						'id'           => 'style-your-forms',
 						'title'        => __( 'Style Your Forms', 'sureforms' ),
-						'description'  => __( 'Customize the look and feel of your form to match your brand. Adjust colors, fonts, and layout to create a seamless experience for your visitors.', 'sureforms' ),
+						'description'  => __( 'Customize the look and feel of your form to match your brand. Adjust background, colors, layout and etc. to create a seamless experience for your visitors.', 'sureforms' ),
 						'learn'        => [
 							'type'    => 'dialog',
 							'content' => [
@@ -128,13 +127,13 @@ class Learn {
 					[
 						'id'           => 'instant-form',
 						'title'        => __( 'Instant Form', 'sureforms' ),
-						'description'  => __( 'Publish your form instantly with a dedicated landing page — no need to create a separate page. Just enable Instant Form and share the link.', 'sureforms' ),
+						'description'  => __( 'No need to design a separate page just for the forms. Publish your form instantly on a dedicated landing page. Just enable Instant Form option and share the link.', 'sureforms' ),
 						'learn'        => [
 							'type'    => 'dialog',
 							'content' => [
 								'type' => 'gif-video',
 								'data' => [
-									'url' => 'https://www.youtube.com/embed/g3mz5jPPeD8',
+									'url' => 'https://www.youtube.com/embed/SyFYazEjJNA',
 									'alt' => __( 'Instant Form', 'sureforms' ),
 								],
 							],

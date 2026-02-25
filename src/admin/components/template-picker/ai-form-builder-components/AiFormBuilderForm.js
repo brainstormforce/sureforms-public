@@ -291,7 +291,7 @@ export default ( props ) => {
 			const hideTimer = setTimeout( () => {
 				setShowLearnTip( false );
 				setShowGenerateTip( true );
-			}, 4000 );
+			}, 5000 );
 			return () => clearTimeout( hideTimer );
 		}
 	}, [ source ] );
@@ -299,7 +299,7 @@ export default ( props ) => {
 	// Auto-dismiss generate tip after 5 seconds.
 	useEffect( () => {
 		if ( showGenerateTip ) {
-			const timer = setTimeout( () => setShowGenerateTip( false ), 4000 );
+			const timer = setTimeout( () => setShowGenerateTip( false ), 5000 );
 			return () => clearTimeout( timer );
 		}
 	}, [ showGenerateTip ] );

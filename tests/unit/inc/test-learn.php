@@ -79,9 +79,9 @@ class Test_Learn extends TestCase {
 
 		$chapter_ids = array_column( $chapters, 'id' );
 
-		$this->assertContains( 'sureforms-basics', $chapter_ids, 'Should contain sureforms-basics chapter.' );
-		$this->assertContains( 'sureforms-advanced', $chapter_ids, 'Should contain sureforms-advanced chapter.' );
-		$this->assertContains( 'integrations-automation', $chapter_ids, 'Should contain integrations-automation chapter.' );
+		$this->assertContains( 'setting-up-form', $chapter_ids, 'Should contain setting-up-form chapter.' );
+		$this->assertContains( 'making-form-live', $chapter_ids, 'Should contain making-form-live chapter.' );
+		$this->assertContains( 'managing-entries', $chapter_ids, 'Should contain managing-entries chapter.' );
 	}
 
 	/**
@@ -125,7 +125,7 @@ class Test_Learn extends TestCase {
 
 		// Set progress for the test user.
 		$progress = [
-			'sureforms-basics' => [
+			'setting-up-form' => [
 				'creating-first-form' => true,
 			],
 		];
@@ -133,16 +133,16 @@ class Test_Learn extends TestCase {
 
 		$chapters = Learn::get_learn_chapters( $this->test_user_id );
 
-		// Find the basics chapter.
+		// Find the setting-up-form chapter.
 		$basics_chapter = null;
 		foreach ( $chapters as $chapter ) {
-			if ( 'sureforms-basics' === $chapter['id'] ) {
+			if ( 'setting-up-form' === $chapter['id'] ) {
 				$basics_chapter = $chapter;
 				break;
 			}
 		}
 
-		$this->assertNotNull( $basics_chapter, 'Should find sureforms-basics chapter.' );
+		$this->assertNotNull( $basics_chapter, 'Should find setting-up-form chapter.' );
 
 		// Find the creating-first-form step.
 		$first_step = null;
@@ -237,7 +237,7 @@ class Test_Learn extends TestCase {
 
 		// Create a mock request with valid chapter but invalid step ID.
 		$request = new \WP_REST_Request( 'POST', '/sureforms/v1/update-learn-progress' );
-		$request->set_param( 'chapterId', 'sureforms-basics' );
+		$request->set_param( 'chapterId', 'setting-up-form' );
 		$request->set_param( 'stepId', 'invalid-step-id' );
 		$request->set_param( 'completed', true );
 
@@ -267,7 +267,7 @@ class Test_Learn extends TestCase {
 
 		// Create a valid request.
 		$request = new \WP_REST_Request( 'POST', '/sureforms/v1/update-learn-progress' );
-		$request->set_param( 'chapterId', 'sureforms-basics' );
+		$request->set_param( 'chapterId', 'setting-up-form' );
 		$request->set_param( 'stepId', 'creating-first-form' );
 		$request->set_param( 'completed', true );
 
@@ -279,14 +279,14 @@ class Test_Learn extends TestCase {
 
 		$response_data = $result->get_data();
 		$this->assertTrue( $response_data['success'], 'Response should indicate success.' );
-		$this->assertEquals( 'sureforms-basics', $response_data['chapterId'], 'Response should contain chapterId.' );
+		$this->assertEquals( 'setting-up-form', $response_data['chapterId'], 'Response should contain chapterId.' );
 		$this->assertEquals( 'creating-first-form', $response_data['stepId'], 'Response should contain stepId.' );
 		$this->assertTrue( $response_data['completed'], 'Response should contain completed status.' );
 
 		// Verify progress was saved.
 		$saved_progress = get_user_meta( $this->test_user_id, 'srfm_learn_progress', true );
 		$this->assertIsArray( $saved_progress, 'Saved progress should be an array.' );
-		$this->assertTrue( $saved_progress['sureforms-basics']['creating-first-form'], 'Progress should be saved.' );
+		$this->assertTrue( $saved_progress['setting-up-form']['creating-first-form'], 'Progress should be saved.' );
 
 		// Clean up.
 		delete_user_meta( $this->test_user_id, 'srfm_learn_progress' );
@@ -312,7 +312,7 @@ class Test_Learn extends TestCase {
 
 		// First, mark as complete.
 		$progress = [
-			'sureforms-basics' => [
+			'setting-up-form' => [
 				'creating-first-form' => true,
 			],
 		];
@@ -320,7 +320,7 @@ class Test_Learn extends TestCase {
 
 		// Now mark as incomplete.
 		$request = new \WP_REST_Request( 'POST', '/sureforms/v1/update-learn-progress' );
-		$request->set_param( 'chapterId', 'sureforms-basics' );
+		$request->set_param( 'chapterId', 'setting-up-form' );
 		$request->set_param( 'stepId', 'creating-first-form' );
 		$request->set_param( 'completed', false );
 
@@ -331,7 +331,7 @@ class Test_Learn extends TestCase {
 
 		// Verify progress was updated.
 		$saved_progress = get_user_meta( $this->test_user_id, 'srfm_learn_progress', true );
-		$this->assertFalse( $saved_progress['sureforms-basics']['creating-first-form'], 'Progress should be marked as incomplete.' );
+		$this->assertFalse( $saved_progress['setting-up-form']['creating-first-form'], 'Progress should be marked as incomplete.' );
 
 		// Clean up.
 		delete_user_meta( $this->test_user_id, 'srfm_learn_progress' );
@@ -377,21 +377,22 @@ class Test_Learn extends TestCase {
 	public function test_get_chapters_structure_contains_expected_steps() {
 		$chapters = Learn::get_chapters_structure();
 
-		// Find sureforms-basics chapter.
+		// Find setting-up-form chapter.
 		$basics_chapter = null;
 		foreach ( $chapters as $chapter ) {
-			if ( 'sureforms-basics' === $chapter['id'] ) {
+			if ( 'setting-up-form' === $chapter['id'] ) {
 				$basics_chapter = $chapter;
 				break;
 			}
 		}
 
-		$this->assertNotNull( $basics_chapter, 'Should find sureforms-basics chapter.' );
+		$this->assertNotNull( $basics_chapter, 'Should find setting-up-form chapter.' );
 
 		$step_ids = array_column( $basics_chapter['steps'], 'id' );
 
 		$this->assertContains( 'creating-first-form', $step_ids, 'Should contain creating-first-form step.' );
-		$this->assertContains( 'secure-forms', $step_ids, 'Should contain secure-forms step.' );
+		$this->assertContains( 'set-up-form-fields', $step_ids, 'Should contain set-up-form-fields step.' );
+		$this->assertContains( 'style-your-forms', $step_ids, 'Should contain style-your-forms step.' );
 	}
 
 	/**
