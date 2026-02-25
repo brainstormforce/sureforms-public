@@ -579,7 +579,7 @@ const LearnLesson = ( {
 							<Dialog.Title>{ title }</Dialog.Title>
 							<Dialog.CloseButton />
 						</Dialog.Header>
-						<Dialog.Body>
+						<Dialog.Body className="pb-6">
 							<div className="relative w-full rounded-lg overflow-hidden aspect-video">
 								<iframe
 									src={ isImageDialogOpen ? getGifVideoUrl() : '' }

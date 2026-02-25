@@ -163,15 +163,22 @@ const InstantFormComponent = () => {
 		);
 
 		const interval = setInterval( () => {
-			const publishBtn = document.querySelector(
-				'.editor-post-publish-button'
-			);
+			const publishBtn =
+				document.querySelector( '.editor-post-publish-button' ) ||
+				document.querySelector( '.editor-post-publish-button__button' );
+
 			if ( ! publishBtn ) {
 				return;
 			}
 
-			clearInterval( interval );
 			const rect = publishBtn.getBoundingClientRect();
+
+			// Button exists in DOM but isn't laid out yet — keep polling.
+			if ( ! rect.width || ! rect.height ) {
+				return;
+			}
+
+			clearInterval( interval );
 
 			const tip = document.createElement( 'div' );
 			tip.id = 'srfm-publish-learn-tip';
