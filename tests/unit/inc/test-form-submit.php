@@ -140,12 +140,13 @@ class Test_Form_Submit extends TestCase {
 
         // Mock the filter to verify form-id is passed
         $filter_called_with_form_id = false;
-        add_filter('srfm_before_prepare_submission_data', function($data) use (&$filter_called_with_form_id) {
-            if (isset($data['form-id']) && $data['form-id'] === 19) {
+        $callback = function( $data ) use ( &$filter_called_with_form_id ) {
+            if ( isset( $data['form-id'] ) && $data['form-id'] === 19 ) {
                 $filter_called_with_form_id = true;
             }
             return $data;
-        }, 10, 1);
+        };
+        add_filter( 'srfm_before_prepare_submission_data', $callback, 10, 1 );
 
         $result = $this->call_private_method($this->form_submit, 'process_form_fields', [$form_data]);
 
@@ -159,8 +160,37 @@ class Test_Form_Submit extends TestCase {
         $this->assertArrayHasKey('text-lbl-field-name', $result);
         $this->assertEquals('Test User', $result['text-lbl-field-name']);
 
-        // Remove the filter
-        remove_all_filters('srfm_before_prepare_submission_data');
+        // Remove only this specific callback, not all filters on the hook.
+        remove_filter( 'srfm_before_prepare_submission_data', $callback, 10 );
+    }
+
+    /**
+     * Test that unset() removes form-id even when a filter callback modifies it.
+     * Ensures the unset() in process_form_fields is not bypassed by filter consumers.
+     */
+    public function test_process_form_fields_filter_modifies_form_id() {
+        $form_data = [
+            'form-id'             => '19',
+            'text-lbl-field-name' => 'Test User',
+        ];
+
+        // Simulate a filter that changes form-id to a different value.
+        $callback = function( $data ) {
+            $data['form-id'] = 999;
+            return $data;
+        };
+        add_filter( 'srfm_before_prepare_submission_data', $callback, 10, 1 );
+
+        $result = $this->call_private_method($this->form_submit, 'process_form_fields', [$form_data]);
+
+        // form-id must be removed from the final result regardless of filter modifications.
+        $this->assertArrayNotHasKey( 'form-id', $result );
+
+        // Other fields should be unaffected.
+        $this->assertArrayHasKey( 'text-lbl-field-name', $result );
+        $this->assertEquals( 'Test User', $result['text-lbl-field-name'] );
+
+        remove_filter( 'srfm_before_prepare_submission_data', $callback, 10 );
     }
 
     /**

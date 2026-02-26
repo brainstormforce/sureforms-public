@@ -1287,12 +1287,19 @@ class Form_Submit {
 			}
 		}
 
-		$submission_data_with_form_id = array_merge( $submission_data, [ 'form-id' => $form_id ] );
+		/**
+		 * ...
+		 *
+		 * @since x.x.x Added `form-id` key to `$submission_data` (removed before return).
+		 */
+		$submission_data['form-id'] = $form_id;
 
-		$filter_data_submission_data = apply_filters( 'srfm_before_prepare_submission_data', $submission_data_with_form_id );
+		$filter_data_submission_data = apply_filters( 'srfm_before_prepare_submission_data', $submission_data );
 
 		// Unset the form-id from the form data.
-		unset( $filter_data_submission_data['form-id'] );
+		if ( isset( $filter_data_submission_data['form-id'] ) ) {
+			unset( $filter_data_submission_data['form-id'] );
+		}
 
 		return $filter_data_submission_data;
 	}
