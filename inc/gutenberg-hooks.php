@@ -48,10 +48,10 @@ class Gutenberg_Hooks {
 		// Initializing hooks.
 		add_action( 'enqueue_block_editor_assets', [ $this, 'form_editor_screen_assets' ] );
 		add_action( 'enqueue_block_editor_assets', [ $this, 'block_editor_assets' ] );
-		add_filter( 'block_categories_all', [ $this, 'register_block_categories' ], 10, 1 );
-		add_action( 'init', [ $this, 'register_block_patterns' ], 9 );
+		add_filter( 'block_categories_all', [ $this, 'register_block_categories' ], 10, 2 );
 		add_filter( 'allowed_block_types_all', [ $this, 'disable_forms_wrapper_block' ], 10, 2 );
 		add_action( 'save_post_sureforms_form', [ $this, 'update_field_slug' ], 10, 2 );
+		add_action( 'load-post.php', [ $this, 'maybe_migrate_form_stylings' ] );
 	}
 
 	/**
@@ -81,6 +81,7 @@ class Gutenberg_Hooks {
 				'srfm/image',
 				'srfm/advanced-heading',
 				'srfm/inline-button',
+				'srfm/payment',
 			];
 			// Apply a filter to the $allow_block_types types array.
 			return apply_filters( 'srfm_allowed_block_types', $allow_block_types, $editor_context );
@@ -93,14 +94,16 @@ class Gutenberg_Hooks {
 	/**
 	 * Register our custom block category.
 	 *
-	 * @param array<mixed> $categories Array of categories.
+	 * @param array<mixed>             $categories Array of categories.
+	 * @param \WP_Block_Editor_Context $block_editor_context The current block editor context.
 	 * @return array<mixed>
 	 * @since 0.0.1
 	 */
-	public function register_block_categories( $categories ) {
-		$screen = get_current_screen();
+	public function register_block_categories( $categories, $block_editor_context ) {
 
-		if ( $screen && SRFM_FORMS_POST_TYPE === $screen->post_type ) {
+		$post_type = $block_editor_context->post->post_type ?? '';
+
+		if ( $post_type && SRFM_FORMS_POST_TYPE === $post_type ) {
 			$title = esc_html__( 'General Fields', 'sureforms' );
 		} else {
 			$title = esc_html__( 'SureForms', 'sureforms' );
@@ -118,28 +121,6 @@ class Gutenberg_Hooks {
 		];
 
 		return array_merge( $custom_categories, $categories );
-	}
-
-	/**
-	 * Register our block patterns.
-	 *
-	 * @return void
-	 * @since 0.0.1
-	 */
-	public function register_block_patterns() {
-		// Apply filters to the patterns.
-		$this->patterns = apply_filters( 'srfm_block_patterns', $this->patterns );
-
-		// Iterate over each block pattern.
-		foreach ( $this->patterns as $block_pattern ) {
-			// Attempt to register block pattern from the main directory.
-			if ( ! $this->register_block_pattern_from_directory( $block_pattern, plugin_dir_path( SRFM_FILE ) . 'templates/forms/' ) ) {
-				// If unsuccessful, attempt to register block pattern from the pro directory.
-				if ( defined( 'SRFM_PRO_VER' ) && defined( 'SRFM_PRO_DIR' ) ) {
-					$this->register_block_pattern_from_directory( $block_pattern, SRFM_PRO_DIR . 'templates/forms/' );
-				}
-			}
-		}
 	}
 
 	/**
@@ -178,8 +159,9 @@ class Gutenberg_Hooks {
 			SRFM_SLUG . $form_editor_script,
 			SRFM_SLUG . '_block_data',
 			[
-				'plugin_url'  => SRFM_URL,
-				'admin_email' => get_option( 'admin_email' ),
+				'plugin_url'      => SRFM_URL,
+				'admin_email'     => get_option( 'admin_email' ),
+				'pro_plugin_name' => defined( 'SRFM_PRO_VER' ) && defined( 'SRFM_PRO_PRODUCT' ) ? SRFM_PRO_PRODUCT : 'free',
 			]
 		);
 
@@ -207,6 +189,9 @@ class Gutenberg_Hooks {
 
 		Helper::register_script_translations( SRFM_SLUG . $all_screen_blocks );
 
+		$site_url = Helper::get_string_value( wp_parse_url( esc_url( get_site_url() ), PHP_URL_HOST ) );
+		$site_url = preg_replace( '/^www\./', '', $site_url );
+
 		wp_localize_script(
 			SRFM_SLUG . $all_screen_blocks,
 			SRFM_SLUG . '_block_data',
@@ -220,10 +205,16 @@ class Gutenberg_Hooks {
 				'smart_tags_array_email'            => Smart_Tags::email_smart_tag_list(),
 				'srfm_form_markup_nonce'            => wp_create_nonce( 'srfm_form_markup' ),
 				'get_form_markup_url'               => 'sureforms/v1/generate-form-markup',
-				'is_pro_active'                     => defined( 'SRFM_PRO_VER' ),
+				'is_pro_active'                     => Helper::has_pro(),
 				'srfm_default_dynamic_block_option' => get_option( 'srfm_default_dynamic_block_option', Helper::default_dynamic_block_option() ),
-				'form_selector_nonce'               => current_user_can( 'edit_posts' ) ? wp_create_nonce( 'wp_rest' ) : '',
-				'is_admin_user'                     => current_user_can( 'manage_options' ),
+				'form_selector_nonce'               => Helper::current_user_can( 'edit_posts' ) ? wp_create_nonce( 'wp_rest' ) : '',
+				'is_admin_user'                     => Helper::current_user_can(),
+				'site_url'                          => $site_url,
+				'is_suremails_active'               => is_plugin_active( 'suremails/suremails.php' ),
+				'default_translations'              => [
+					'gdpr_label'           => __( 'I consent to have this website store my submitted information so they can respond to my inquiry.', 'sureforms' ),
+					'dropdown_placeholder' => __( 'Select an option', 'sureforms' ),
+				],
 			]
 		);
 
@@ -245,6 +236,7 @@ class Gutenberg_Hooks {
 					'dropdown_preview'     => SRFM_URL . 'images/field-previews/dropdown.svg',
 					'address_preview'      => SRFM_URL . 'images/field-previews/address.svg',
 					'sureforms_preview'    => SRFM_URL . 'images/field-previews/sureforms.svg',
+					'payment_preview'      => SRFM_URL . 'images/field-previews/payment.svg',
 				]
 			)
 		);
@@ -287,37 +279,64 @@ class Gutenberg_Hooks {
 
 		[ $blocks, $slugs, $updated ] = Helper::process_blocks( $blocks, $slugs, $updated );
 
+		// Process and store block configurations for form fields.
+		Field_Validation::add_block_config( $blocks, $post_id );
+
 		if ( ! $updated ) {
 			return;
 		}
 
-		$post_content = addslashes( serialize_blocks( $blocks ) );
+		$post_content = serialize_blocks( $blocks );
 
+		// Use wp_slash() to preserve unicode escapes (like \u003c for <) in block attributes.
+		// Without this, wp_update_post() calls wp_unslash() which corrupts these escapes.
 		wp_update_post(
 			[
 				'ID'           => $post_id,
-				'post_content' => $post_content,
+				'post_content' => wp_slash( $post_content ),
 			]
 		);
 	}
 
 	/**
-	 * Register block pattern from the specified directory.
+	 * Migrate the background type and associated values from
+	 * instant form settings to form styling meta.
 	 *
-	 * @param string|mixed $block_pattern The block pattern name.
-	 * @param string       $directory The directory path.
-	 * @since 0.0.2
-	 * @return bool True if the block pattern was registered, false otherwise.
+	 * @since 1.4.4
+	 * @return void
 	 */
-	private function register_block_pattern_from_directory( $block_pattern, $directory ) {
-		$pattern_file = $directory . $block_pattern . '.php';
-
-		if ( is_readable( $pattern_file ) ) {
-			register_block_pattern( 'srfm/' . $block_pattern, require $pattern_file );
-			return true;
+	public function maybe_migrate_form_stylings() {
+		$post_id = isset( $_GET['post'] ) ? Helper::get_integer_value( sanitize_text_field( wp_unslash( $_GET['post'] ) ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- $_GET['post'] does not provide nonce.
+		if ( empty( $post_id ) || ! Helper::current_user_can() ) {
+			return;
 		}
 
-		return false;
-	}
+		$post_type = get_post_type( $post_id );
+		if ( SRFM_FORMS_POST_TYPE !== $post_type ) {
+			return;
+		}
 
+		$instant_form_settings = get_post_meta( $post_id, '_srfm_instant_form_settings', true );
+		if ( ! is_array( $instant_form_settings ) ) {
+			return;
+		}
+
+		$form_styling = get_post_meta( $post_id, '_srfm_forms_styling', true );
+		if ( ! is_array( $form_styling ) ) {
+			$form_styling = [];
+		}
+
+		$migrated = false;
+		$keys     = [ 'bg_type', 'bg_color', 'bg_image', 'bg_image_id' ];
+
+		foreach ( $keys as $key ) {
+			if ( ! isset( $form_styling[ $key ] ) && isset( $instant_form_settings[ $key ] ) ) {
+				$form_styling[ $key ] = $instant_form_settings[ $key ];
+				$migrated             = true;
+			}
+		}
+		if ( $migrated ) {
+			update_post_meta( $post_id, '_srfm_forms_styling', $form_styling );
+		}
+	}
 }

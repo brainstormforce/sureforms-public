@@ -1,3 +1,4 @@
+/* global requestAnimationFrame */
 function initializeDropdown() {
 	const dropDownSelector = document.querySelectorAll(
 		'.srfm-dropdown-common'
@@ -5,8 +6,36 @@ function initializeDropdown() {
 
 	dropDownSelector.forEach( ( element ) => {
 		if ( element ) {
+			// Skip if element already has TomSelect initialized
+			if (
+				element.classList.contains( 'tomselected' ) ||
+				element.getAttribute( 'data-srfm-dropdown-initialized' ) ===
+					'true'
+			) {
+				destroyTomSelect( element );
+			}
+
+			element.setAttribute( 'data-srfm-dropdown-initialized', 'true' );
+
+			// Check for at least one valid option (skip placeholder)
+			const checkOptions = Array.from( element.options || [] );
+			const hasValidOption = checkOptions.some(
+				( opt ) =>
+					opt.value &&
+					typeof opt.text === 'string' &&
+					opt.text.trim() !== '' &&
+					! opt.disabled // skip disabled placeholder
+			);
+			if ( ! hasValidOption ) {
+				return; // Skip initialization if no valid options
+			}
+
 			let additionalConfig = {};
 			const inputName = element.getAttribute( 'name' );
+			const errorContainerID = element
+				?.closest( '.srfm-dropdown-block' )
+				?.querySelector( '.srfm-error-message' )
+				?.getAttribute( 'data-srfm-id' );
 
 			if ( element.getAttribute( 'data-multiple' ) === 'true' ) {
 				additionalConfig = {
@@ -24,6 +53,28 @@ function initializeDropdown() {
 				maxOptions: null,
 				hidePlaceholder: true, // Hide the placeholder text after an option is selected.
 				plugins: [ 'remove_button', 'clear_button' ], // Adding remove button to the selected options and clear button for the dropdown.
+				openOnFocus: false, // Stop the dropdown from opening on focus.
+				/**
+				 * If the error container is present, assign it to the aria-describedby attribute.
+				 * This will ensure that when there is a error, it will be announced by the screen reader
+				 * when the field is in focus state.
+				 *
+				 * If there are selected options, announce them on field focus.
+				 */
+				onFocus() {
+					if ( errorContainerID ) {
+						tomInputInstance.control_input.setAttribute(
+							'aria-describedby',
+							errorContainerID
+						);
+					}
+					if (
+						tomInputInstance.hasOptions &&
+						tomInputInstance.items
+					) {
+						wp.a11y.speak( tomInputInstance.items.toString() );
+					}
+				},
 				onChange( value ) {
 					// In case of multi-select dropdown, the value will be an array.
 					if ( Array.isArray( value ) ) {
@@ -41,7 +92,14 @@ function initializeDropdown() {
 					if ( hiddenInputField ) {
 						hiddenInputField.setAttribute(
 							'value',
-							Array.isArray( value ) ? value.join( ',' ) : value
+							Array.isArray( value )
+								? window.srfm.srfmUtility.prepareValue( value )
+								: value
+						);
+
+						// Dispatch the change event on the hidden input field.
+						hiddenInputField.dispatchEvent(
+							new Event( 'change', { bubbles: true } )
 						);
 					}
 				},
@@ -68,7 +126,31 @@ function initializeDropdown() {
 						) }</div>`;
 					},
 				},
+				/**
+				 * When dropdown is opened, set the role for the options to `menuitem`
+				 * for enhanced accessibility experience by proper announcement of the
+				 * dropdown options.
+				 *
+				 * Default role `option` is added to the options which was causing issues
+				 * with the announcement.
+				 */
+				onDropdownOpen() {
+					const options =
+						tomInputInstance.dropdown_content.querySelectorAll(
+							'.option'
+						);
+					options.forEach( ( option ) => {
+						if ( option.getAttribute( 'role' ) === 'option' ) {
+							option.setAttribute( 'role', 'menuitem' );
+						}
+					} );
+				},
 			};
+
+			// Check if TomSelect is already initialized on this element
+			if ( element.classList.contains( 'tomselected' ) ) {
+				destroyTomSelect( element );
+			}
 
 			/**
 			 * Creates a new TomSelect instance for the given input element and adds it to the global `window.srfm` object.
@@ -82,6 +164,102 @@ function initializeDropdown() {
 			 * @param {string}      inputName - The key under which the TomSelect instance is stored in the `window.srfm` object.
 			 */
 			const tomInputInstance = new TomSelect( element, config );
+
+			// Initialize preselected or preserved values for dropdowns
+			requestAnimationFrame( () => {
+				// First check for preserved value (user-selected value that needs to be restored)
+				const preservedAttr = element.getAttribute(
+					'data-srfm-preserved-value'
+				);
+				const preselectedAttr =
+					element.getAttribute( 'data-preselected' ); // Pass array of values as JSON string
+
+				let valuesToSet = null;
+
+				// Preserved value takes precedence over preselected
+				if ( preservedAttr ) {
+					try {
+						valuesToSet = JSON.parse( preservedAttr );
+					} catch ( e ) {
+						// If parsing fails, skip preserving values
+					}
+				} else if ( preselectedAttr ) {
+					try {
+						valuesToSet = JSON.parse( preselectedAttr );
+					} catch ( e ) {
+						console.warn(
+							'Failed to parse preselected values for dropdown',
+							e
+						);
+					}
+				}
+
+				// Set the values if we have any
+				if ( Array.isArray( valuesToSet ) && valuesToSet.length > 0 ) {
+					tomInputInstance.setValue( valuesToSet ); // TomSelect API sets multiple values
+				}
+
+				// Update hidden input field with current items
+				const hiddenInputField = element
+					.closest( '.srfm-dropdown-block' )
+					.querySelector( '.srfm-input-dropdown-hidden' );
+				if ( hiddenInputField && tomInputInstance.items.length > 0 ) {
+					const value =
+						tomInputInstance.items.length > 1
+							? window.srfm.srfmUtility.prepareValue(
+								tomInputInstance.items
+							  )
+							: tomInputInstance.items[ 0 ];
+					hiddenInputField.setAttribute( 'value', value );
+
+					// Trigger change event for conditional logic
+					hiddenInputField.dispatchEvent(
+						new Event( 'change', { bubbles: true } )
+					);
+				}
+			} );
+
+			/**
+			 * Add the aria required attribute for the dropdown input element.
+			 * This is to announce the required state of the field for screen readers.
+			 * If not correctly implemented, it can lead to a non-compliant experience for users relying on assistive technology.
+			 */
+			if ( tomInputInstance.control_input ) {
+				tomInputInstance.control_input.setAttribute(
+					'aria-required',
+					element.getAttribute( 'aria-required' )
+				);
+			}
+			/**
+			 * `keydown` & `click` event listeners to open the dropdown menu programmatically
+			 * since we set the `openOnFocus` option to false for the dropdown.
+			 *
+			 * `keydown` event listener - When user presses Space key then open the dropdown menu if
+			 * it is not active.
+			 *
+			 * `click` event listener - When the user clicks on the input, open the dropdown menu if
+			 * it is not active.
+			 */
+			tomInputInstance.control.addEventListener( 'keydown', ( e ) => {
+				if (
+					e.key === ' ' &&
+					! tomInputInstance.wrapper.classList.contains(
+						'dropdown-active'
+					)
+				) {
+					e.preventDefault();
+					tomInputInstance.open();
+				}
+			} );
+			tomInputInstance.control.addEventListener( 'click', () => {
+				if (
+					! tomInputInstance.wrapper.classList.contains(
+						'dropdown-active'
+					)
+				) {
+					tomInputInstance.open();
+				}
+			} );
 
 			// Add the TomSelect instance to the global window.srfm object for future reference
 			window?.addGlobalSrfmObject( inputName, tomInputInstance );
@@ -100,6 +278,7 @@ function initializeDropdown() {
 				clearButton.innerHTML = clearSVG;
 				// Adding the tabindex to the clear button for keyboard accessibility (tab navigation).
 				clearButton.setAttribute( 'tabindex', '0' );
+				clearButton.setAttribute( 'role', 'button' ); // Add role button to the clear button for proper announcement.
 				/**
 				 * Clear the selected options when the clear button is clicked using keyboard.
 				 * The clear() method removes all selected options from the control and is available in the TomSelect instance.
@@ -107,6 +286,7 @@ function initializeDropdown() {
 				clearButton.addEventListener( 'keydown', ( e ) => {
 					if ( e.key === ' ' || e.key === 'Enter' ) {
 						e.preventDefault();
+						e.stopPropagation(); // Stop the event from triggering the parent element event.
 						tomInputInstance.clear();
 					}
 				} );
@@ -150,7 +330,110 @@ function handleInputState( element ) {
 	}
 }
 
-// make dropdown initialization function available globally
-window.srfmInitializeDropdown = initializeDropdown;
+/**
+ * Destroys a TomSelect instance and cleans up related DOM elements.
+ *
+ * @param {HTMLElement} dropdown - The dropdown element with TomSelect initialized.
+ */
+function destroyTomSelect( dropdown ) {
+	if ( ! dropdown ) {
+		return;
+	}
 
-document.addEventListener( 'DOMContentLoaded', initializeDropdown );
+	// Get the input name to remove from global registry
+	const inputName = dropdown.getAttribute( 'name' );
+
+	// Check if there's an instance in the global registry
+	if ( window?.srfm && window.srfm[ inputName ] ) {
+		try {
+			// Preserve current selected value before destroying
+			const currentValue = window.srfm[ inputName ].getValue();
+
+			// Always update preserved value based on current state
+			if ( currentValue ) {
+				// Store value as JSON to handle both single and multi-select uniformly
+				if (
+					Array.isArray( currentValue ) &&
+					currentValue.length > 0
+				) {
+					dropdown.setAttribute(
+						'data-srfm-preserved-value',
+						JSON.stringify( currentValue )
+					);
+				} else if (
+					typeof currentValue === 'string' &&
+					currentValue !== ''
+				) {
+					dropdown.setAttribute(
+						'data-srfm-preserved-value',
+						JSON.stringify( [ currentValue ] )
+					);
+				}
+			} else {
+				// If no value selected, remove preserved attribute so it doesn't restore old value
+				dropdown.removeAttribute( 'data-srfm-preserved-value' );
+			}
+
+			// Destroy the instance from the registry
+			window.srfm[ inputName ].destroy();
+			// Remove from registry
+			delete window.srfm[ inputName ];
+		} catch ( e ) {
+			// Silent catch in case destroy fails
+		}
+	}
+
+	// Try to access TomSelect directly on the element as a fallback
+	try {
+		// Check both .tomselect (standard) and .tomSelect (legacy) properties
+		const tomSelectInstance = dropdown.tomselect || dropdown.tomSelect;
+		if ( tomSelectInstance ) {
+			tomSelectInstance.destroy();
+		}
+	} catch ( e ) {
+		// Silent catch in case destroy fails
+	}
+
+	// Reset the element state
+	dropdown.classList.remove( 'tomselected' );
+	dropdown.classList.remove( 'ts-hidden-accessible' );
+	dropdown.removeAttribute( 'tabindex' );
+	dropdown.removeAttribute( 'id' );
+	dropdown.disabled = false;
+
+	// Find and remove TomSelect wrapper elements
+	const getTheWrapper = dropdown.closest(
+		'.srfm-block-wrap.srfm-dropdown-common-wrap'
+	);
+	if ( getTheWrapper ) {
+		const tsWrappers = getTheWrapper.querySelectorAll( 'div.ts-wrapper' );
+		tsWrappers?.forEach( ( wrapper ) => wrapper.remove() );
+	}
+	dropdown.removeAttribute( 'data-srfm-dropdown-initialized' );
+}
+
+// Re-initialize dropdowns when the block is updated in the editor.
+// srfm_form_before_submission
+document.addEventListener( 'srfm_form_before_submission', ( e ) => {
+	const dropdowns = e.detail?.form.querySelectorAll(
+		'.srfm-dropdown-common'
+	);
+	if ( ! dropdowns ) {
+		return;
+	}
+
+	// Destroy the existing TomSelect instances before re-initializing.
+	dropdowns.forEach( ( dropdown ) => {
+		// Ensure we completely clean up before reinitializing
+		destroyTomSelect( dropdown );
+	} );
+
+	// Use a slightly longer timeout to ensure DOM is ready
+	setTimeout( () => {
+		initializeDropdown();
+	}, 150 );
+} );
+
+// Make dropdown initialization function available globally for repeater fields
+window.srfmInitializeDropdownField = initializeDropdown;
+window.srfmDestroyDropdownField = destroyTomSelect;

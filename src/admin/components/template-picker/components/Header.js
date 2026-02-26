@@ -1,22 +1,16 @@
-import { __ } from '@wordpress/i18n';
-import { useState, useEffect } from '@wordpress/element';
-import ICONS from './icons';
-import Breadcrumbs from './Breadcrumbs';
 import { useLocation } from 'react-router-dom';
-import { BsLightningCharge } from 'react-icons/bs';
-import CreditDetailsPopup from './CreditDetailsPopup.js';
-import { Button } from '@wordpress/components';
+import { X } from 'lucide-react';
+import { Topbar, Button } from '@bsf/force-ui';
+import Breadcrumbs from './Breadcrumbs';
+import ICONS from './icons';
+import { useEffect } from '@wordpress/element';
 
 const Header = () => {
-	const [ showRevokePopover, setShowRevokePopover ] = useState( true );
-
 	function useQuery() {
 		return new URLSearchParams( useLocation().search );
 	}
 
 	const query = useQuery();
-
-	const page = query.get( 'page' );
 	const method = query.get( 'method' );
 
 	// if the methods is ai then hide the the scrollbar from body
@@ -28,91 +22,42 @@ const Header = () => {
 		}
 	}, [ method ] );
 
-	const formCreationleft = srfm_admin?.srfm_ai_usage_details?.remaining ?? 0;
-	const isRegistered = srfm_admin?.srfm_ai_usage_details?.type === 'registered';
-	const finalFormCreationCountRemaining = isRegistered && formCreationleft > 20 ? 20 : formCreationleft;
-
 	return (
-		<div
-			className="srfm-tp-header-ctn"
-		>
-			<div
-				className="srfm-tp-header"
-
-			>
-				<div className="srfm-tp-header-items">
-					{ /** Logo & Breadcrumbs */ }
-					<div className="srfm-tp-main-title">
-						<Breadcrumbs />
-					</div>
-				</div>
-
-				{ /* if the page is add-new-form and the method is ai then show the credits left in the account only if the user is not pro user
-				 */ }
-				{ page === 'add-new-form' && method === 'ai' && ( ! srfm_admin?.is_pro_active || ! srfm_admin?.is_pro_license_active )
-				 ? (
-						<div className="srfm-tp-header-credits-ctn">
-							<Button
-								style={ {
-								// if popover is open, change background color
-									background: showRevokePopover
-										? '#F3F4F6'
-										: 'white',
-									width: '225px',
-								} }
-								className="srfm-tp-header-credits"
-								onClick={ () => {
-									setShowRevokePopover( ! showRevokePopover );
-								} }
-							>
-								<span className="srfm-tp-header-credits-left">
-									{ wp.i18n.sprintf(
-									/* translators: %s: number of AI form generations left */
-										__(
-											'%d AI form generations left',
-											'sureforms'
-										),
-										finalFormCreationCountRemaining
-									) }
-								</span>
-								<div className="srfm-tp-header-bolt-icon">
-									<BsLightningCharge />
-								</div>
-							</Button>
-							{ showRevokePopover && (
-								<CreditDetailsPopup
-									finalFormCreationCountRemaining={ finalFormCreationCountRemaining }
-									setShowRevokePopover={ setShowRevokePopover }
-								/>
-							) }
-							<div
-								className="srfm-tp-header-close"
-								onClick={ () => {
-									window.location.href =
-									'/wp-admin/admin.php?page=sureforms_menu';
-								} }
-							>
-								<div
-									className="srfm-tp-header-close-icon"
-								>
-									{ ICONS.close }
-								</div>
-							</div>
-						</div>
-					) : (
-						<div
-							className="srfm-tp-header-close"
+		<div>
+			<Topbar className="fixed inset-x-0 top-0 z-[1] py-0 px-0 pt-0 pb-0 min-h-0 h-14 gap-4 shadow-sm bg-background-primary/75 backdrop-blur-[5px]">
+				<Topbar.Left className="gap-3 pl-5">
+					<Topbar.Item>
+						<Button
+							variant="ghost"
 							onClick={ () => {
 								window.location.href =
-								'/wp-admin/admin.php?page=sureforms_menu';
+									'/wp-admin/admin.php?page=sureforms_menu';
 							} }
+							className="focus:[box-shadow:none] p-0 pt-1"
 						>
-							<div
-								className="srfm-tp-header-close-icon"
-							>{ ICONS.close }</div>
-						</div>
-					) }
-			</div>
+							{ ICONS.logo }
+						</Button>
+					</Topbar.Item>
+					<Topbar.Item>
+						<Breadcrumbs />
+					</Topbar.Item>
+				</Topbar.Left>
+				<Topbar.Right>
+					<Topbar.Item className="p-5">
+						<Button
+							variant="ghost"
+							className="p-1 hover:bg-background-secondary rounded-sm transition-colors [box-shadow:none] focus:[box-shadow:none]"
+							onClick={ () => {
+								window.location.href =
+									'/wp-admin/admin.php?page=sureforms_menu';
+							} }
+							icon={
+								<X className="size-4 text-text-secondary" />
+							}
+						/>
+					</Topbar.Item>
+				</Topbar.Right>
+			</Topbar>
 		</div>
 	);
 };

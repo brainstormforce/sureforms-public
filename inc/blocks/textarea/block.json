@@ -1,7 +1,7 @@
 {
 	"name": "srfm/textarea",
 	"title": "Textarea",
-	"description": "Displays a SureForm Textarea Field",
+	"description": "Displays a SureForms Textarea Field",
 	"category": "sureforms",
 	"keywords": [ "textarea", "input", "custom", "field" ],
 	"textdomain": "sureforms",
@@ -64,9 +64,17 @@
 			"type":"boolean",
 			"default":false
 		},
-    "slug":{
+    	"slug":{
 			"type":"string",
 			"default":""
+		},
+		"isRichText": {
+			"type": "boolean",
+			"default": false
+		},
+		"readOnly": {
+			"type": "boolean",
+			"default": false
 		}
 	}
 }

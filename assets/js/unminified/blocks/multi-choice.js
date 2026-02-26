@@ -2,56 +2,168 @@ function initializeMultichoice() {
 	const multiChoices = document.querySelectorAll(
 		'.srfm-multi-choice-block'
 	);
+
 	if ( multiChoices ) {
 		multiChoices.forEach( ( single ) => {
+			// Initialize savedValues array to track checked options in checkbox mode
+			// Must be declared before initializeHiddenInput() to capture preselected values
+			let savedValues = [];
+
+			// Initialize hidden input value with preselected options on page load
+			const initializeHiddenInput = () => {
+				const hiddenInput = single.querySelector(
+					'.srfm-input-multi-choice-hidden'
+				);
+				const checkedInputs = single.querySelectorAll(
+					'.srfm-input-multi-choice-single:checked'
+				);
+
+				if ( ! hiddenInput || checkedInputs.length === 0 ) {
+					return;
+				}
+
+				// For Radio Mode / single select
+				if ( single.classList.contains( 'srfm-radio-mode' ) ) {
+					const checkedLabel = checkedInputs[ 0 ]
+						.closest( '.srfm-multi-choice-single' )
+						.querySelector( 'label' );
+					if ( checkedLabel ) {
+						hiddenInput.setAttribute(
+							'value',
+							checkedLabel.getAttribute( 'data-option-text' ) ||
+								checkedLabel.innerText
+						);
+						// Trigger change event for conditional logic
+						hiddenInput.dispatchEvent(
+							new Event( 'change', { bubbles: true } )
+						);
+					}
+				} else if (
+					// For checkbox mode / multi select
+					single.classList.contains( 'srfm-checkbox-mode' )
+				) {
+					const values = [];
+					checkedInputs.forEach( ( input ) => {
+						const label = input
+							.closest( '.srfm-multi-choice-single' )
+							.querySelector( 'label' );
+						if ( label ) {
+							values.push(
+								label.getAttribute( 'data-option-text' ) ||
+									label.innerText
+							);
+						}
+					} );
+					// Populate savedValues with preselected options so they persist when user adds more selections
+					savedValues = [ ...values ];
+					const setValue =
+						window.srfm.srfmUtility.prepareValue( values );
+					hiddenInput.setAttribute( 'value', setValue );
+					// Trigger change event for conditional logic
+					hiddenInput.dispatchEvent(
+						new Event( 'change', { bubbles: true } )
+					);
+				}
+			};
+
+			// Initialize on page load
+			initializeHiddenInput();
+
+			const getInputWrappers = single.querySelectorAll(
+				'.srfm-multi-choice-single'
+			);
+
+			/**
+			 * Adds a click event listener to input wrappers to simulate input field clicks.
+			 *
+			 * This is required because the checkbox is wrapped inside a structured HTML element
+			 * (like a `div`) to maintain a specific layout. To make the entire wrapper act as
+			 * a clickable input, clicking anywhere inside the wrapper triggers the input field's
+			 * click event, ensuring proper functionality.
+			 *
+			 * The function avoids triggering the event if the target is a label within the wrapper,
+			 * ensuring labels behave as intended without additional interactions.
+			 *
+			 * @param {NodeList} getInputWrappers - A collection of wrapper elements containing inputs.
+			 */
+			getInputWrappers?.forEach( ( element ) => {
+				element.addEventListener( 'click', ( e ) => {
+					// Check if the target is NOT the label
+					if ( ! e.target.matches( 'label' ) ) {
+						const input = element.querySelector(
+							'.srfm-input-multi-choice-single'
+						);
+						if ( input ) {
+							// Trigger a click on the input field
+							input.click();
+							// Stop the event propagation
+							e.stopPropagation();
+						}
+					}
+				} );
+			} );
+
 			const choices = single.querySelectorAll(
 				'.srfm-input-multi-choice-single'
 			);
-			let savedValues = [];
 			let getValue = '';
-			choices.forEach( ( element ) => {
+			choices?.forEach( ( element ) => {
 				element.addEventListener( 'click', ( e ) => {
-					getValue = e.target
-						.closest( 'label' )
-						.querySelector( 'p' ).innerText;
-					if ( getValue ) {
-						// For Radio Mode / single select.
-						if ( single.classList.contains( 'srfm-radio-mode' ) ) {
-							if ( e.target.checked ) {
-								single
-									.querySelector(
-										'.srfm-input-multi-choice-hidden'
-									)
-									.setAttribute( 'value', getValue );
-							}
-						}
-						// For checkbox mode / multi select.
-						if (
-							single.classList.contains( 'srfm-checkbox-mode' )
-						) {
-							if ( e.target.checked ) {
-								savedValues = [ ...savedValues, getValue ];
-								single
-									.querySelector(
-										'.srfm-input-multi-choice-hidden'
-									)
-									.setAttribute( 'value', savedValues );
-							} else {
-								const arr = savedValues.filter(
-									( item ) => item !== getValue
-								);
-								savedValues = arr;
-								single
-									.querySelector(
-										'.srfm-input-multi-choice-hidden'
-									)
-									.setAttribute( 'value', savedValues );
-							}
-						}
+					e.stopPropagation();
+
+					const label = e.target
+						.closest( '.srfm-multi-choice-single' )
+						.querySelector( 'label' );
+					getValue = label
+						? label.getAttribute( 'data-option-text' ) ||
+						  label.innerText
+						: '';
+
+					const hiddenInput = single.querySelector(
+						'.srfm-input-multi-choice-hidden'
+					);
+
+					if ( ! hiddenInput || ! getValue ) {
+						return;
 					}
+
+					let setValue = null;
+
+					// For Radio Mode / single select.
+					if ( single.classList.contains( 'srfm-radio-mode' ) ) {
+						if ( e.target.checked ) {
+							setValue = getValue;
+						}
+					} else if (
+						// For checkbox mode / multi select.
+						single.classList.contains( 'srfm-checkbox-mode' )
+					) {
+						if ( e.target.checked ) {
+							savedValues = [ ...savedValues, getValue ];
+						} else {
+							const arr = savedValues.filter(
+								( item ) => item !== getValue
+							);
+							savedValues = arr;
+						}
+
+						setValue =
+							window.srfm.srfmUtility.prepareValue( savedValues );
+					}
+
+					// Set the value of the hidden input field.
+					if ( null !== setValue ) {
+						hiddenInput.setAttribute( 'value', setValue );
+					}
+
+					// Add event in the ".srfm-input-multi-choice-hidden" element.
+					hiddenInput.dispatchEvent(
+						new Event( 'change', { bubbles: true } )
+					);
 				} );
 			} );
 		} );
 	}
 }
+
 document.addEventListener( 'DOMContentLoaded', initializeMultichoice );

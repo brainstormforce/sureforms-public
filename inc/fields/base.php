@@ -25,6 +25,14 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class Base {
 	/**
+	 * Stores the attributes of the block.
+	 *
+	 * @var array<mixed> $attributes Block attributes.
+	 * @since 1.3.0
+	 */
+	protected $attributes;
+
+	/**
 	 * Flag indicating if the field is required.
 	 *
 	 * @var bool
@@ -274,14 +282,6 @@ class Base {
 	protected $label_markup;
 
 	/**
-	 * Stores the error icon to be used in HTML markup.
-	 *
-	 * @var string
-	 * @since 0.0.2
-	 */
-	protected $error_svg;
-
-	/**
 	 * Stores the duplicate message markup for a field.
 	 *
 	 * @var string
@@ -314,6 +314,37 @@ class Base {
 	protected $max_selection;
 
 	/**
+	 * Whether or not block is render in editing mode.
+	 * If it is true, then block is currently rendered in edit entry.
+	 *
+	 * @var bool
+	 * @since 1.3.0
+	 */
+	protected $is_editing = false;
+
+	/**
+	 * Currently rendered entry ID.
+	 *
+	 * @var int
+	 * @since 1.3.0
+	 */
+	protected $entry_id = 0;
+
+	/**
+	 * Configuration array for the field.
+	 *
+	 * This associative array contains configuration settings for the field,
+	 * which can be used for various JavaScript functionalities such as
+	 * calculation, validation, and conditional logic (in future).
+	 * The array data will be stored in the block field's "data-field-config"
+	 * attribute as a JSON string.
+	 *
+	 * @var string $field_config Configuration settings for the field.
+	 * @since 1.5.0
+	 */
+	protected $field_config;
+
+	/**
 	 * Render the sureforms default
 	 *
 	 * @since 0.0.2
@@ -324,6 +355,32 @@ class Base {
 	}
 
 	/**
+	 * Constructor for the Base class.
+	 *
+	 * @param array<mixed> $extra_classes Extra classes to be added to the field.
+	 * @since 1.5.0
+	 * @return string
+	 */
+	public function get_field_classes( $extra_classes = [] ) {
+		$common_classes = [
+			'srfm-block-single',
+			'srfm-block',
+			"srfm-{$this->slug}-block",
+			"srf-{$this->slug}-{$this->block_id}-block",
+			$this->block_width,
+			$this->class_name,
+			"srfm-slug-{$this->block_slug}",
+			$this->conditional_class,
+		];
+
+		if ( ! empty( $extra_classes ) && is_array( $extra_classes ) ) {
+			$common_classes = array_merge( $common_classes, $extra_classes );
+		}
+
+		return Helper::join_strings( $common_classes );
+	}
+
+	/**
 	 * Setter for the properties of class based on block attributes.
 	 *
 	 * @param array<mixed> $attributes Block attributes.
@@ -331,6 +388,12 @@ class Base {
 	 * @return void
 	 */
 	protected function set_properties( $attributes ) {
+		$default_classes = isset( $attributes['className'] ) ? ' ' . $attributes['className'] : '';
+		$filter_classes  = apply_filters( 'srfm_field_classes', $default_classes, [ 'attributes' => $attributes ] );
+		$field_config    = apply_filters( 'srfm_field_config', [], [ 'attributes' => $attributes ] );
+
+		$this->field_config       = $field_config ? htmlspecialchars( Helper::get_string_value( wp_json_encode( $field_config, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) ), ENT_QUOTES, 'UTF-8' ) : '';
+		$this->attributes         = $attributes;
 		$this->required           = $attributes['required'] ?? false;
 		$this->field_width        = $attributes['fieldWidth'] ?? '';
 		$this->label              = $attributes['label'] ?? '';
@@ -338,17 +401,17 @@ class Base {
 		$this->block_id           = isset( $attributes['block_id'] ) ? Helper::get_string_value( $attributes['block_id'] ) : '';
 		$this->form_id            = isset( $attributes['formId'] ) ? Helper::get_string_value( $attributes['formId'] ) : '';
 		$this->block_slug         = $attributes['slug'] ?? '';
-		$this->class_name         = isset( $attributes['className'] ) ? ' ' . $attributes['className'] : '';
+		$this->class_name         = $filter_classes;
 		$this->placeholder        = $attributes['placeholder'] ?? '';
 		$this->default            = $attributes['defaultValue'] ?? '';
 		$this->checked            = $attributes['checked'] ?? '';
-		$this->options            = $attributes['options'] ?? '';
+		$this->options            = apply_filters( 'srfm_field_options', $attributes['options'] ?? '', $attributes );
 		$this->is_unique          = $attributes['isUnique'] ?? false;
 		$this->conditional_class  = apply_filters( 'srfm_conditional_logic_classes', $this->form_id, $this->block_id );
 		$this->data_require_attr  = $this->required ? 'true' : 'false';
 		$this->block_width        = $this->field_width ? ' srfm-block-width-' . str_replace( '.', '-', $this->field_width ) : '';
-		$this->placeholder_attr   = $this->placeholder ? ' placeholder="' . $this->placeholder . '" ' : '';
-		$this->default_value_attr = $this->default ? ' value="' . $this->default . '" ' : '';
+		$this->placeholder_attr   = '' !== $this->placeholder ? ' placeholder="' . esc_attr( $this->placeholder ) . '" ' : '';
+		$this->default_value_attr = '' !== $this->default ? ' value="' . esc_attr( $this->default ) . '" ' : '';
 		$this->checked_attr       = $this->checked ? 'checked' : '';
 		$this->aria_unique        = $this->is_unique ? 'true' : 'false';
 		$this->allowed_tags       = [
@@ -359,6 +422,9 @@ class Base {
 		];
 		$this->min_selection      = $attributes['minValue'] ?? '';
 		$this->max_selection      = $attributes['maxValue'] ?? '';
+
+		$this->is_editing = isset( $attributes['isEditing'] ) ? true : false;
+		$this->entry_id   = $attributes['entryID'] ?? 0;
 	}
 
 	/**
@@ -434,10 +500,11 @@ class Base {
 	 * @return void
 	 */
 	protected function set_markup_properties( $input_label = '', $override = false ) {
-		$this->help_markup          = Helper::generate_common_form_markup( $this->form_id, 'help', '', '', $this->block_id, false, $this->help );
-		$this->error_msg_markup     = Helper::generate_common_form_markup( $this->form_id, 'error', '', '', $this->block_id, boolval( $this->required || $this->min_selection || $this->max_selection ), '', $this->error_msg, false, '', $override );
-		$this->label_markup         = Helper::generate_common_form_markup( $this->form_id, 'label', $this->label, $this->slug, $this->block_id . $input_label, boolval( $this->required ) );
-		$this->error_svg            = Helper::fetch_svg( 'error', 'srfm-error-icon' );
+		$this->help_markup      = Helper::generate_common_form_markup( $this->form_id, 'help', '', '', $this->block_id, false, $this->help );
+		$this->error_msg_markup = Helper::generate_common_form_markup( $this->form_id, 'error', '', '', $this->block_id, boolval( $this->required || $this->min_selection || $this->max_selection ), '', $this->error_msg, false, '', $override );
+		$type                   = in_array( $this->slug, [ 'multi-choice', 'dropdown', 'address' ], true ) ? 'label_text' : 'label';
+		$this->label_markup     = Helper::generate_common_form_markup( $this->form_id, $type, $this->label, $this->slug, $this->block_id . $input_label, boolval( $this->required ) );
+
 		$this->duplicate_msg_markup = Helper::generate_common_form_markup( $this->form_id, 'error', '', '', $this->block_id, boolval( $this->required ), '', $this->error_msg, false, $this->duplicate_msg, $override );
 	}
 
@@ -454,7 +521,9 @@ class Base {
 		$placeholder            = Helper::generate_common_form_markup( $this->form_id, 'placeholder', $this->label, $this->slug, $this->block_id . $input_label, boolval( $this->required ) );
 		if ( ! empty( $placeholder ) ) {
 			$this->label_markup     = '';
-			$this->placeholder_attr = ' placeholder="' . $placeholder . '" ';
+			$this->placeholder_attr = ' placeholder="' . esc_attr( $placeholder ) . '" ';
+		} elseif ( '' !== $this->placeholder ) {
+			$this->placeholder_attr = ' placeholder="' . esc_attr( $this->placeholder ) . '" ';
 		}
 	}
 
@@ -465,7 +534,7 @@ class Base {
 	 * @return void
 	 */
 	protected function set_aria_described_by() {
-		$this->aria_described_by .= ! empty( $this->help ) ? ' srfm-description-' . $this->block_id : '';
-		$this->aria_described_by .= ! empty( $this->required ) ? ' srfm-error-' . $this->block_id : '';
+		$this->aria_described_by .= ' srfm-error-' . esc_attr( $this->block_id );
+		$this->aria_described_by .= ! empty( $this->help ) ? ' srfm-description-' . esc_attr( $this->block_id ) : '';
 	}
 }

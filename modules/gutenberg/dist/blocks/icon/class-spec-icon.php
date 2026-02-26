@@ -499,7 +499,7 @@ if ( ! class_exists( 'Spec_Icon' ) ) {
 
 			ob_start();
 			?>
-				<div class="<?php echo esc_attr( implode( ' ', $main_classes ) ); ?>">
+				<div data-block-id="<?php echo esc_attr( $block_id ); ?>" class="<?php echo esc_attr( implode( ' ', $main_classes ) ); ?>">
 					<span class="uagb-svg-wrapper">
 					<?php
 					$link_condition = $disable_link && $link_url;

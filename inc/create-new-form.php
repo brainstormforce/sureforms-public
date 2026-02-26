@@ -10,7 +10,6 @@ namespace SRFM\Inc;
 
 use SRFM\Inc\Traits\Get_Instance;
 use WP_Error;
-use WP_Post_Type;
 use WP_REST_Response;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -47,65 +46,41 @@ class Create_New_Form {
 			[
 				'methods'             => 'POST',
 				'callback'            => [ $this, 'create_form' ],
-				'permission_callback' => [ $this, 'get_items_permissions_check' ],
+				'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
 			]
-		);
-	}
-
-	/**
-	 * Checks whether a given request has permission to create new forms.
-	 *
-	 * @return true|WP_Error True if the request has read access, WP_Error object otherwise.
-	 * @since 0.0.1
-	 */
-	public function get_items_permissions_check() {
-		if ( current_user_can( 'edit_posts' ) ) {
-			return true;
-		}
-		foreach ( get_post_types( [ 'show_in_rest' => true ], 'objects' ) as $post_type ) {
-			/**
-			 * The post type.
-			 *
-			 * @var WP_Post_Type $post_type
-			 */
-			if ( current_user_can( $post_type->cap->edit_posts ) ) {
-				return true;
-			}
-		}
-
-		return new \WP_Error(
-			'rest_cannot_view',
-			__( 'Sorry, you are not allowed to create forms.', 'sureforms' ),
-			[ 'status' => \rest_authorization_required_code() ]
 		);
 	}
 
 	/**
 	 * Get default post metas for form when creating using template.
 	 *
-	 * @return array<string, array<int, int|string>> Default meta keys.
+	 * @return array<string, int|string|bool> Default meta keys.
+	 * @since 2.0.0 updated the return type.
 	 * @since 0.0.2
 	 */
 	public static function get_default_meta_keys() {
-		return [
-			'_srfm_submit_button_text'       => [ 'Submit' ],
-			'_srfm_use_label_as_placeholder' => [ '' ],
-			'_srfm_single_page_form_title'   => [ 1 ],
-			'_srfm_instant_form'             => [ '' ],
-			'_srfm_form_container_width'     => [ 650 ],
-			'_srfm_bg_type'                  => [ 'image' ],
-			'_srfm_bg_image'                 => [ '' ],
-			'_srfm_cover_image'              => [ '' ],
-			'_srfm_bg_color'                 => [ '#ffffff' ],
-			'_srfm_submit_width_backend'     => [ 'max-content' ],
-			'_srfm_submit_alignment'         => [ 'left' ],
-			'_srfm_submit_alignment_backend' => [ '100%' ],
-			'_srfm_submit_width'             => [ '' ],
-			'_srfm_inherit_theme_button'     => [ '' ],
-			'_srfm_additional_classes'       => [ '' ],
-			'_srfm_submit_type'              => [ 'message' ],
-			'_srfm_form_recaptcha'           => [ 'none' ],
+		$default_values = [
+			'_srfm_submit_button_text'       => __( 'Submit', 'sureforms' ),
+			'_srfm_use_label_as_placeholder' => false,
+			'_srfm_single_page_form_title'   => 1,
+			'_srfm_instant_form'             => '',
+			'_srfm_form_container_width'     => 650,
+			'_srfm_bg_type'                  => 'image',
+			'_srfm_bg_image'                 => '',
+			'_srfm_cover_image'              => '',
+			'_srfm_bg_color'                 => '#ffffff',
+			'_srfm_submit_width_backend'     => 'max-content',
+			'_srfm_submit_alignment'         => 'left',
+			'_srfm_submit_alignment_backend' => '100%',
+			'_srfm_submit_width'             => '',
+			'_srfm_inherit_theme_button'     => false,
+			'_srfm_additional_classes'       => '',
+			'_srfm_submit_type'              => 'message',
+			'_srfm_form_recaptcha'           => 'none',
+			'_srfm_is_inline_button'         => false, // @since 2.0.0 -- adding required default value.
 		];
+
+		return apply_filters( 'srfm_add_post_meta_defaults', $default_values );
 	}
 
 	/**
@@ -153,33 +128,33 @@ class Create_New_Form {
 			}
 		}
 
-		$title          = $form_info_obj->template_name ?? '';
-		$content        = $form_info_obj->form_data ?? '';
-		$template_metas = isset( $form_info_obj->template_metas ) ? (array) $form_info_obj->template_metas : [];
+		$title   = $form_info_obj->template_name ?? '';
+		$content = $form_info_obj->form_data ?? '';
 
-		// if post content contains srfm/page-break block, then set _srfm_is_page_break meta to true.
-		if ( strpos( $content, 'srfm/page-break' ) !== false ) {
-			$template_metas['_srfm_is_page_break'] = [ 'true' ];
-		}
+		// Create post metas for the creating form.
+		$post_metas = apply_filters(
+			'srfm_modify_ai_post_metas',
+			[],
+			$form_info_obj,
+		);
 
 		$post_id = wp_insert_post(
 			[
 				'post_title'   => $title,
 				'post_content' => $content,
+				'meta_input'   => $post_metas,
 				'post_status'  => 'draft',
 				'post_type'    => 'sureforms_form',
 			]
 		);
 
 		if ( ! empty( $post_id ) ) {
-			if ( ! empty( $template_metas ) ) {
-				$default_post_metas = self::get_default_meta_keys();
-				$post_metas         = array_merge( $default_post_metas, $template_metas );
 
-				foreach ( $post_metas as $meta_key => $meta_value ) {
-					add_post_meta( $post_id, $meta_key, $meta_value[0] );
-				}
-			}
+			/**
+			 * Update _srfm_is_ai_generated meta to true.
+			 * If the request is coming here then the form is AI generated.
+			 */
+			update_post_meta( $post_id, '_srfm_is_ai_generated', true );
 
 			return new WP_REST_Response(
 				[

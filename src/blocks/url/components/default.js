@@ -3,7 +3,8 @@ import { decodeHtmlEntities } from '@Blocks/util';
 import HelpText from '@Components/misc/HelpText';
 
 export const UrlComponent = ( { attributes, blockID, setAttributes } ) => {
-	const { label, required, defaultValue, help } = attributes;
+	const { label, required, defaultValue, help, readOnly, placeholder } =
+		attributes;
 	const isRequired = required ? ' srfm-required' : '';
 	const slug = 'url';
 
@@ -25,12 +26,17 @@ export const UrlComponent = ( { attributes, blockID, setAttributes } ) => {
 				setAttributes={ setAttributes }
 				block_id={ blockID }
 			/>
-			<div className="srfm-block-wrap">
+			<div
+				className={ `srfm-block-wrap${
+					readOnly && defaultValue ? ' srfm-read-only' : ''
+				}` }
+			>
 				<input
 					id={ `srfm-${ slug }-${ blockID }` }
 					type="text"
 					value={ defaultValue }
 					className={ `srfm-input-common srfm-input-${ slug }` }
+					placeholder={ placeholder }
 					required={ required }
 				/>
 			</div>

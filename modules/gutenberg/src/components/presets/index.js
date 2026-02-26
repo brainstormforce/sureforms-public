@@ -218,6 +218,7 @@ const UAGPresets = ( props ) => {
 				<label
 					htmlFor={ key }
 					className="uag-presets-radio-input-label"
+					// eslint-disable-next-line react/no-danger
 					dangerouslySetInnerHTML={ {
 						__html: preset.icon,
 					} }

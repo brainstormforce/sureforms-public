@@ -16,8 +16,13 @@
 		}
 	}
 
-	.srfm-input-common {
+	.srfm-input-common:not( .srfm-input-number ) {
 		@include srfm-input-common-styles( true );
+	}
+
+	// Keeping input styles for number block not !important to avoid overriding stylings related to prefix and suffix.
+	.srfm-input-number {
+		@include srfm-input-common-styles();
 	}
 
 	// checkbox and gdpr
@@ -29,6 +34,15 @@
 					&:first-child {
 						margin-top: var( --srfm-checkbox-margin-top-editor ) !important;
 					}
+				}
+				// Need to add !important to override the existing styles.
+				.srfm-block-label {
+					font-size: var( --srfm-checkbox-label-font-size ) !important;
+					line-height: var( --srfm-checkbox-label-line-height ) !important;
+				}
+				.srfm-description {
+					font-size: var( --srfm-checkbox-description-font-size ) !important;
+					line-height: var( --srfm-checkbox-description-line-height ) !important;
 				}
 			}
 		}
@@ -53,8 +67,36 @@
 		}
 	}
 
-	.srfm-input-textarea {
-		height: unset !important;
+	.srfm-block-wrap {
+		.srfm-input-textarea {
+			height: unset !important;
+		}
+	}
+
+	.srfm-textarea-block-wrap {
+		.srfm-richtext {
+			@include srfm-input-margin-styles;
+			border-radius: var( --srfm-input-field-border-radius );
+			border: 1px solid var( --srfm-color-input-border );
+		}
+
+		.srfm-textarea-quill {
+			@include srfm-textarea-quill-styles;
+
+			// Add the background color for the quill textarea input.
+			.quill {
+				background-color: var( --srfm-color-input-background );
+				border-radius: 0 0 5px 5px;
+			}
+			margin: var( --srfm-input-field-margin );
+
+			.ql-container.ql-snow {
+				border: none;
+			}
+			.ql-editor {
+				min-height: 200px;
+			}
+		}
 	}
 
 	// Address block styles.
@@ -71,6 +113,15 @@
 
 				.block-editor-block-list__block {
 					@include srfm-no-margin-padding;
+					.srfm-block-legend,
+					.srfm-block-label {
+						font-size: var( --srfm-address-label-font-size );
+						line-height: var( --srfm-address-label-line-height );
+					}
+					.srfm-description {
+						font-size: var( --srfm-address-description-font-size );
+						line-height: var( --srfm-address-description-line-height );
+					}
 				}
 			}
 		}
@@ -87,6 +138,9 @@
 			&::-webkit-outer-spin-button {
 				appearance: none;
 			}
+		}
+		.srfm-block-wrap {
+			@include srfm-number-styles;
 		}
 	}
 
@@ -145,7 +199,7 @@
 					}
 				}
 
-				@media ( max-width: 430px ) {
+				@media ( max-width: 480px ) {
 					width: 100%;
 				}
 			}
@@ -164,7 +218,20 @@
 	.srfm-phone-block-wrap {
 		// Adding margin to srfm-block-wrap because the library styles are overriding the input styles.
 		.srfm-block-wrap {
-			margin: var( --srfm-input-field-margin ) !important;
+			@include srfm-input-margin-styles( true );
+		}
+		// Fix width for intl-tel-input v25+ wrapper
+		.iti {
+			width: 100%;
+		}
+		.srfm-input-phone {
+			margin: 0 !important; // Adding !important to override the library styles for the input.
+			// Fix placeholder overlap with country code selector in the editor.
+			padding-left: 69px !important;
+
+			&::placeholder {
+				text-align: left;
+			}
 		}
 		.iti-flag {
 			margin-right: 4px; // Fixed gap between the flag and the country code.
@@ -217,11 +284,66 @@
 				width: 100%;
 			}
 		}
+		/**
+		 * For the dropdown block, the margin is added to the srfm-block-wrap
+		 * instead of the input to maintain the icon layout.
+		 */
+		.srfm-block-wrap {
+			@include srfm-input-margin-styles( true );
+		}
+		.srfm-input-common {
+			margin: 0 !important;
+		}
 	}
+	@include srfm-read-only-styles;
 }
 
 .editor-styles-wrapper {
 	&::before {
 		background-color: red;
 	}
+}
+
+// Payment styles.
+.srfm-payment-block-wrap {
+	.srfm-payment-field-wrapper {
+		border: 1px dashed #1e1e1e40;
+		border-radius: 6px;
+		padding: 16px;
+		margin-top: var( --srfm-input-field-margin-top );
+		display: flex;
+		flex-direction: column;
+		gap: 12px;
+
+		> p {
+			font-weight: 400;
+			font-size: 14px;
+			line-height: 20px;
+			margin: 0 !important;
+			padding: 0 !important;
+			color: #1e1e1ea6;
+		}
+
+		p.srfm-stripe-payment-error-text {
+			color: #dc2626 !important;
+		}
+
+		button.srfm-stripe-connect-button {
+			background-color: transparent;
+			border-radius: 4px;
+			cursor: pointer;
+			font-size: 12px;
+			font-weight: 600;
+			color: #111827;
+			padding: 8px;
+			width: fit-content;
+			border: 1px solid #d1d5db;
+			box-shadow: 0px 1px 2px 0px #0000000d;
+		}
+	}
+}
+
+/* Hide only the third panel body (Visibility) */
+.editor-post-publish-panel__prepublish > .components-panel__body:nth-of-type( 3 ) {
+	display: none !important;
 }

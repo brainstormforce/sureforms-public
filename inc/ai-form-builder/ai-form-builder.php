@@ -8,7 +8,6 @@
 
 namespace SRFM\Inc\AI_Form_Builder;
 
-use SRFM\Inc\Helper;
 use SRFM\Inc\Traits\Get_Instance;
 
 // Exit if accessed directly.
@@ -55,11 +54,12 @@ class AI_Form_Builder {
 
 		// Get the response from the endpoint.
 		$response = AI_Helper::get_chat_completions_response(
-			array_merge(
+			apply_filters(
+				'srfm_ai_form_generator_body',
 				[
 					'query' => $messages[0]['content'],
 				],
-				defined( 'SRFM_AI_SYSTEM_PROMPT_ARGS' ) ? Helper::get_array_value( SRFM_AI_SYSTEM_PROMPT_ARGS ) : []
+				$params
 			)
 		);
 

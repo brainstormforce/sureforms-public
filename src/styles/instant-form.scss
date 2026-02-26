@@ -9,6 +9,8 @@
 		display: flex;
 		align-items: center;
 		gap: 8px;
+		width: max-content;
+		justify-content: center;
 
 		&:hover {
 			color: #1e1e1e;
@@ -27,6 +29,36 @@
 			line-height: 20px;
 		}
 	}
+
+	.srfm-form-settings-button {
+		cursor: pointer;
+		color: #475467;
+		background: rgba( 0, 0, 0, 0 );
+		border: 1px solid #d1d5db;
+		border-radius: 4px;
+		padding: 10px 16px 10px 16px;
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		width: max-content;
+		justify-content: center;
+		font-weight: 600;
+		font-size: 14px;
+		line-height: 20px;
+		transition: background-color 0.2s;
+
+		.srfm-form-settings-button-icon {
+			display: flex;
+			width: 20px;
+			height: 20px;
+			align-items: center;
+			justify-content: center;
+		}
+
+		&:hover {
+			color: #1e1e1e;
+		}
+	}
 }
 
 .srfm-instant-form-popover {
@@ -40,6 +72,25 @@
 .srfm-instant-form-settings-container {
 	padding: 16px;
 	width: 302px;
+
+	.srfm-conversational-form-layout-options {
+		.srfm-multi-button-button-group {
+			gap: 8px !important;
+		}
+
+		.srfm-multi-buttons__color-scheme--primary button.srfm-multi-button.is-primary.is-primary {
+			background-color: #7fb6fa;
+		}
+
+		.components-button-group.srfm-multi-button-button-group button {
+			box-shadow: none !important;
+			border-radius: 3px !important;
+		}
+
+		.srfm-multi-buttons-control.srfm-multibutton-icons .srfm-multi-button {
+			padding: 1.5px !important;
+		}
+	}
 
 	.srfm-instant-form-settings-group {
 		display: flex;
@@ -112,6 +163,11 @@
 					}
 				}
 			}
+
+			// Spacing Component font size in the instant form panel.
+			.srfm-spacing-control__number {
+				font-size: 14px;
+			}
 		}
 
 		label,
@@ -126,7 +182,59 @@
 	.srfm-instant-form-settings-separator {
 		height: 1px;
 		width: 100%;
-		border: 1px solid #e4e4e7;
+		border: 0.5px solid #e4e4e7;
 		margin: 20px 0;
 	}
+}
+
+.srfm-form-settings-container {
+	padding: 8px;
+	width: 240px;
+
+	.srfm-form-settings-nav-item {
+		display: flex;
+		align-items: center;
+		gap: 6px;
+		padding: 4px;
+		width: 100%;
+		border: none;
+		background: rgba( 0, 0, 0, 0 );
+		cursor: pointer;
+		text-align: left;
+		border-radius: 6px;
+		transition: background-color 0.2s;
+		color: rgb( 107, 114, 128 );
+
+		&:hover {
+			background: #f9fafb;
+		}
+
+		.srfm-form-settings-nav-item-label {
+			color: #50575e;
+			font-weight: 500 !important;
+			font-size: 13px !important;
+			line-height: 16px !important;
+		}
+
+		.srfm-form-settings-nav-item-icon {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			width: 32px;
+			height: 32px;
+
+			> svg {
+				height: 1.25rem;
+				width: 1.25rem;
+			}
+		}
+	}
+}
+
+.srfm-form-settings-popover {
+	margin-top: 5px;
+	background-color: #fff;
+	border: 1px solid #e5e7eb;
+	border-radius: 4px;
+	box-shadow: 0px 4px 6px -2px rgba( 0, 0, 0, 0.0509803922 );
 }

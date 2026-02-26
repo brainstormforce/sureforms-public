@@ -25,7 +25,10 @@ export default function PostURLPanel() {
 
 	return (
 		<PostURLCheck>
-			<PostPanelRow label={ __( 'URL', 'sureforms' ) } ref={ setPopoverAnchor }>
+			<PostPanelRow
+				label={ __( 'URL', 'sureforms' ) }
+				ref={ setPopoverAnchor }
+			>
 				<Dropdown
 					popoverProps={ popoverProps }
 					className="editor-post-url__panel-dropdown"

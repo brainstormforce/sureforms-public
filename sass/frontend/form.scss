@@ -1,8 +1,19 @@
+@import "../blocks/default/utils/mixins.scss";
+
 .srfm-form-container {
 	// This is the parent form class. Adds specificity so that there is no conflict.
 	position: relative;
 	padding: 0;
-	height: 100%;
+	// Form Container Padding.
+	@include srfm-form-padding-styles;
+	// Form Container Border Radius.
+	@include srfm-form-border-radius-styles;
+
+	@include srfm-background-control-styles;
+
+	&[class*="srfm-overlay"]::before {
+		@include srfm-form-border-radius-styles;
+	}
 
 	// styles for core paragraph block
 	.srfm-custom-wp-paragraph {
@@ -64,36 +75,30 @@
 		}
 	}
 
-	.srfm-form {
-		.srfm-block-single,
-		.srfm-submit-container,
-		.uagb-block
-		// .srfm-captcha-container:not( .srfm-submit-button, .srfm-custom-button )
-		{
-			padding: 0 0.5em;
-		}
-
+	.srfm-form,
+	.srfm-password-protected-form {
 		.srfm-captcha-container {
 			width: 100%;
-			padding: 0 var( --srfm-col-gap-between-blocks ) !important;
-			margin-bottom: var( --srfm-row-gap-between-blocks );
+
+			// Adding a default fixed height to the h-captcha container to manage the error spacing.
+			.h-captcha {
+				height: 78px;
+			}
 		}
 
 		.srfm-validation-error {
-			font-size: 0.7em;
-			margin-top: 0.571em;
-			font-weight: 400;
-			line-height: normal;
-			color: var( --srfm-error-color );
+			@include srfm-error-styles;
+			margin: var( --srfm-input-field-margin-top ) 0 0;
 		}
 
 		.uagb-block {
-			margin-bottom: 1.6em;
+			margin-bottom: 1em;
 			width: 100%;
 		}
 
 		.srfm-required {
-			color: var( --srfm-error-color );
+			// Keeping this color static to avoid changing with error message color.
+			color: #dc2626;
 		}
 
 		.srfm-block {
@@ -138,6 +143,50 @@
 				height: 100%;
 			}
 		}
+
+		p {
+			&:not( [hidden] ) {
+				&.srfm-error-message {
+					.srfm-icon {
+						line-height: 1;
+						display: flex;
+						color: #dc2626;
+					}
+
+					line-height: 20px;
+					color: #111827;
+					font-size: 14px;
+					font-weight: var( --srfm-error-font-weight );
+					margin: 0;
+					display: flex;
+					align-items: center;
+					border: 1px solid #fecaca;
+					width: 100%;
+					padding: 12px;
+					border-radius: 8px;
+					background-color: #fef2f2;
+					gap: 8px;
+				}
+
+				&.srfm-footer-error {
+					margin-top: var( --srfm-row-gap-between-blocks );
+				}
+
+				&.srfm-head-error {
+					margin-bottom: var( --srfm-row-gap-between-blocks );
+				}
+			}
+		}
+
+		// Hide submit button when PayPal is the active payment method
+		.paypal-button-sibling.paypal-method-active {
+			display: none !important;
+		}
+
+		// Initially hide the paypal if not active
+		.srfm-paypal-button-container[data-submit-button-sibling="true"]:not( .paypal-method-active ) {
+			display: none !important;
+		}
 	}
 
 	.srfm-success-box {
@@ -146,7 +195,7 @@
 		justify-content: center;
 		flex-direction: column;
 		color: var( --srfm-body-input-color );
-		min-height: 40vh;
+		min-height: 20vh;
 		p {
 			margin: 0;
 		}
@@ -164,10 +213,245 @@
 			font-weight: 400;
 			line-height: 26px;
 			color: var( --srfm-body-input-color );
+			display: flex;
+			flex-direction: column;
+			gap: 8px;
 		}
 	}
 
 	.srfm-display-none {
 		display: none;
 	}
+
+	.srfm-loading-block {
+		position: relative;
+		opacity: 0.5;
+		pointer-events: none;
+
+		&::before {
+			content: "";
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			background-color: rgba( 255, 255, 255, 0.7 );
+			z-index: 9999;
+		}
+
+		&::after {
+			content: "";
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			width: 40px;
+			height: 40px;
+			margin: -20px 0 0 -20px;
+			border: 3px solid #f3f3f3;
+			border-top: 3px solid #3498db;
+			border-radius: 50%;
+			animation: srfm-spin 1s linear infinite;
+			z-index: 10000;
+		}
+	}
+
+	.srfm-payment-field-wrapper {
+		display: flex;
+		flex-direction: column;
+		gap: var( --srfm-column-gap-between-blocks );
+		margin-top: var( --srfm-column-gap-between-blocks );
+
+		.srfm-variable-amount-display {
+			display: flex;
+			flex-direction: column;
+			gap: calc( var( --srfm-column-gap-between-blocks ) / 2 );
+
+			.srfm-payment-amount-wrapper {
+				display: flex;
+				justify-content: space-between;
+			}
+		}
+
+		.srfm-test-mode-notice {
+			background-color: #fcf3d5;
+			border-radius: 8px;
+			padding: 12px;
+			color: #8a7946;
+			font-size: var( --srfm-description-font-size );
+			font-weight: var( --srfm-description-font-weight );
+			line-height: var( --srfm-description-line-height );
+		}
+
+		.srfm-payment-methods-accordion {
+			display: flex;
+			flex-direction: column;
+			gap: calc( var( --srfm-column-gap-between-blocks ) / 2 );
+
+			.srfm-accordion-item {
+				border: 1px solid #1e1e1e40;
+				border-radius: 6px;
+				.srfm-accordion-header {
+					display: flex;
+					justify-content: space-between;
+					align-items: center;
+					padding: 16px;
+					cursor: pointer;
+					.srfm-payment-input-wrapper {
+						display: flex;
+						align-items: center;
+						gap: 8px;
+					}
+				}
+
+				.srfm-accordion-content {
+					display: none;
+				}
+
+				&.srfm-payment-active {
+					.srfm-accordion-content {
+						display: block;
+						padding: 0 16px 16px 16px;
+					}
+				}
+
+				.srfm-payment-method-radio {
+					width: 14px;
+					height: 14px;
+					border-radius: 50%;
+					appearance: none;
+					-webkit-appearance: none;
+					-moz-appearance: none;
+					outline: none;
+					cursor: pointer;
+					margin: 0;
+					padding: 0;
+					flex-shrink: 0;
+
+					// Unselected/default state
+					border: 1.25px solid #1e1e1e80;
+					background-color: transparent;
+
+					// Selected/chosen state
+					&:checked {
+						border: 5px solid #0c78fb;
+						background-color: transparent;
+					}
+
+					// Focus state for accessibility
+					&:focus {
+						outline: 2px solid #0c78fb40;
+						outline-offset: 2px;
+					}
+				}
+
+				// PayPal css.
+				.srfm-paypal-placeholder-message {
+					font-size: 14px;
+					font-family: inherit;
+					line-height: 20px;
+					color: #1e1e1ea6;
+					font-weight: 400;
+				}
+			}
+
+			&.srfm-single-payment-method {
+				.srfm-accordion-item[data-method="stripe"] {
+					.srfm-accordion-header {
+						display: none;
+					}
+				}
+
+				.srfm-payment-active {
+					.srfm-accordion-content {
+						padding: 16px 16px 16px 16px;
+					}
+				}
+
+				.srfm-payment-method-radio {
+					display: none;
+				}
+			}
+		}
+	}
+
+	@keyframes srfm-spin {
+		0% {
+			transform: rotate( 0deg );
+		}
+		100% {
+			transform: rotate( 360deg );
+		}
+	}
+
+	// PayPal button container loading state
+	.srfm-paypal-button-container {
+		position: relative;
+		z-index: 1;
+
+		// Loading state
+		&.srfm-paypal-loading {
+			// Disable pointer events on buttons
+			pointer-events: none;
+
+			// Create overlay using ::before
+			&::before {
+				content: "";
+				position: absolute;
+				top: 0;
+				left: 0;
+				right: 0;
+				bottom: 0;
+				background-color: rgba( 255, 255, 255, 0.8 );
+				z-index: 999;
+				border-radius: 4px;
+			}
+
+			// Create spinner using ::after
+			&::after {
+				content: "";
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				width: 24px;
+				height: 24px;
+				margin-top: -12px;
+				margin-left: -12px;
+				border: 3px solid #f3f3f3;
+				border-top: 3px solid #0c78fb;
+				border-radius: 50%;
+				animation: srfm-spin 1s linear infinite;
+				z-index: 1000;
+			}
+		}
+	}
+}
+
+/*
+ * To show reCAPTCHA v3 & v2 badge in bricks theme
+ */
+.brx-body {
+	.srfm-form-container {
+		.grecaptcha-badge {
+			visibility: revert !important;
+			width: 256px;
+			height: 60px;
+			display: block;
+			transition: right 0.3s;
+			position: fixed;
+			bottom: 14px;
+			right: -186px;
+			box-shadow: gray 0px 0px 5px;
+			border-radius: 2px;
+			overflow: hidden;
+
+			&:hover {
+				right: 0px;
+			}
+		}
+	}
+}
+
+// Compatibility with Kadence theme.
+.wp-theme-kadence .srfm-form-container {
+	height: auto;
 }

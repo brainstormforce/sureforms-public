@@ -1,43 +1,14 @@
+import { render } from '@wordpress/element';
+import { cn } from '@Utils/Helpers';
 import Header from './Header';
-import { css, Global } from '@emotion/react';
-import { Fragment, render } from '@wordpress/element';
 
-const FormPageHeader = () => {
+const FormPageHeader = ( { className } ) => {
 	return (
-		<Fragment>
-			<Global
-				styles={ css`
-					:root {
-						--sc-color-primary-500: var( --sc-color-brand-primary );
-						--sc-focus-ring-color-primary: var(
-							--sc-color-brand-primary
-						);
-						--sc-input-border-color-focus: var(
-							--sc-color-brand-primary
-						);
-						--dashboard-heading: #1e293b;
-						--dashboard-text: #64748b;
-						overflow-x: hidden;
-					}
-					@media screen and ( max-width: 782px ) {
-						#wpbody {
-							padding-top: 0;
-						}
-						.auto-fold #wpcontent {
-							padding-left: 0;
-						}
-						#srfm-form-page-header {
-							padding-top: 46px;
-						}
-					}
-				` }
-			/>
+		<div className={ cn( 'z-50 relative', className ) }>
 			<Header />
-		</Fragment>
+		</div>
 	);
 };
-
-export default FormPageHeader;
 
 ( function () {
 	const app = document.getElementById( 'srfm-page-header' );
@@ -50,3 +21,5 @@ export default FormPageHeader;
 
 	document.addEventListener( 'DOMContentLoaded', renderApp );
 }() );
+
+export default FormPageHeader;

@@ -1,19 +1,16 @@
 import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
 import SRFMTextControl from '@Components/text-control';
 import { useDeviceType } from '@Controls/getPreviewType';
-import svgIcons from '@Image/single-form-logo.json';
-import {
-	Modal,
-	SelectControl,
-	ToggleControl,
-} from '@wordpress/components';
+import { SelectControl, ToggleControl } from '@wordpress/components';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { store as editorStore } from '@wordpress/editor';
 import { useEffect, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
-import parse from 'html-react-parser';
-import FormBehaviorPopupButton from '../../components/FormBehaviorPopupButton';
-import SingleFormSettingsPopup from '../components/SingleFormSettingPopup';
+import { applyFilters } from '@wordpress/hooks';
+
+// Force-UI
+import Dialog from '../components/dialog/Dialog';
+import { FormRestrictionProvider } from '../components/form-restrictions/context';
 
 let prevMetaHash = '';
 
@@ -37,12 +34,6 @@ function GeneralSettings( props ) {
 	const [ popupTab, setPopupTab ] = useState( false );
 	const [ hasValidationErrors, setHasValidationErrors ] = useState( false );
 
-	const openModal = ( e ) => {
-		const popupTabTarget = e.currentTarget.getAttribute( 'data-popup' );
-		setPopupTab( popupTabTarget );
-		setOpen( true );
-		prevMetaHash = btoa( JSON.stringify( sureformsKeys ) );
-	};
 	const closeModal = () => {
 		if (
 			hasValidationErrors &&
@@ -61,7 +52,10 @@ function GeneralSettings( props ) {
 		if ( btoa( JSON.stringify( sureformsKeys ) ) !== prevMetaHash ) {
 			createNotice(
 				'warning',
-				__( 'There are few unsaved changes. Please save your changes to reflect the updates.', 'sureforms' ),
+				__(
+					'There are few unsaved changes. Please save your changes to reflect the updates.',
+					'sureforms'
+				),
 				{
 					id: 'srfm-unsaved-changes-warning',
 					isDismissible: true,
@@ -75,13 +69,17 @@ function GeneralSettings( props ) {
 			return;
 		}
 
-		if ( select( 'core/notices' ).getNotices()?.filter( ( notice ) => 'srfm-unsaved-changes-warning' === notice?.id ).length > 0 ) {
+		if (
+			select( 'core/notices' )
+				.getNotices()
+				?.filter(
+					( notice ) => 'srfm-unsaved-changes-warning' === notice?.id
+				).length > 0
+		) {
 			// Remove SRFM unsaved changes notice if user is saving the current form.
 			removeNotice( 'srfm-unsaved-changes-warning' );
 		}
 	}, [] );
-
-	const modalIcon = parse( svgIcons.modalLogo );
 
 	// if device type is desktop then
 	useEffect( () => {
@@ -164,7 +162,7 @@ function GeneralSettings( props ) {
 		} );
 	}
 
-	const singleSettings = [
+	const singleFormSettingsComponents = [
 		{
 			id: 'form_confirmation',
 			title: __( 'Form Confirmation', 'sureforms' ),
@@ -174,22 +172,57 @@ function GeneralSettings( props ) {
 			title: __( 'Email Notification', 'sureforms' ),
 		},
 		{
-			id: 'compliance_settings',
-			title: __( 'Compliance Settings', 'sureforms' ),
-		},
-		{
-			id: 'integrations',
-			title: __( 'Integrations', 'sureforms' ),
+			id: 'advanced-settings',
+			title: __( 'Advanced Settings', 'sureforms' ),
 		},
 	];
+
+	let singleSettings = applyFilters(
+		'srfm.formSettings.singleSettings',
+		singleFormSettingsComponents
+	);
+
+	// validate the singleSettings should only contain array of objects with id and title if it fails then reset to default singleSettings.
+	if ( ! Array.isArray( singleSettings ) ) {
+		singleSettings = singleFormSettingsComponents;
+	}
 
 	function updatePageBreakSettings( option, value ) {
 		editPost( {
 			meta: {
-				_srfm_page_break_settings: { ...pageBreakSettings, [ option ]: value },
+				_srfm_page_break_settings: {
+					...pageBreakSettings,
+					[ option ]: value,
+				},
 			},
 		} );
 	}
+
+	// Listen for form settings popup events to open the dialog
+	useEffect( () => {
+		const handleFormSettingsEvent = ( event ) => {
+			const tabId = event.detail?.tabId;
+			if ( tabId ) {
+				setPopupTab( tabId );
+				setOpen( true );
+				prevMetaHash = btoa( JSON.stringify( sureformsKeys ) );
+			}
+		};
+
+		// Add event listener
+		window.addEventListener(
+			'srfm-open-form-settings',
+			handleFormSettingsEvent
+		);
+
+		// Cleanup event listener on unmount
+		return () => {
+			window.removeEventListener(
+				'srfm-open-form-settings',
+				handleFormSettingsEvent
+			);
+		};
+	}, [ sureformsKeys ] );
 
 	return (
 		<>
@@ -222,7 +255,10 @@ function GeneralSettings( props ) {
 								label={ __( 'Show Labels', 'sureforms' ) }
 								checked={ pageBreakSettings?.toggle_label }
 								onChange={ ( value ) => {
-									updatePageBreakSettings( 'toggle_label', value );
+									updatePageBreakSettings(
+										'toggle_label',
+										value
+									);
 								} }
 							/>
 							<SRFMTextControl
@@ -233,16 +269,18 @@ function GeneralSettings( props ) {
 									label: 'first_page_label',
 								} }
 								onChange={ ( value ) =>
-									updatePageBreakSettings( 'first_page_label', value )
+									updatePageBreakSettings(
+										'first_page_label',
+										value
+									)
 								}
+								isFormSpecific={ true }
 							/>
 						</>
 					) }
 					<SelectControl
 						label={ __( 'Progress Indicator', 'sureforms' ) }
-						value={
-							pageBreakSettings?.progress_indicator_type
-						}
+						value={ pageBreakSettings?.progress_indicator_type }
 						className="srfm-progress-control"
 						options={ [
 							{ label: __( 'None', 'sureforms' ), value: 'none' },
@@ -260,7 +298,10 @@ function GeneralSettings( props ) {
 							},
 						] }
 						onChange={ ( value ) =>
-							updatePageBreakSettings( 'progress_indicator_type', value )
+							updatePageBreakSettings(
+								'progress_indicator_type',
+								value
+							)
 						}
 						__nextHasNoMarginBottom
 					/>
@@ -272,7 +313,10 @@ function GeneralSettings( props ) {
 						label={ __( 'Next Button Text', 'sureforms' ) }
 						value={ pageBreakSettings?.next_button_text }
 						onChange={ ( value ) => {
-							updatePageBreakSettings( 'next_button_text', value );
+							updatePageBreakSettings(
+								'next_button_text',
+								value
+							);
 						} }
 						isFormSpecific={ true }
 					/>
@@ -284,41 +328,26 @@ function GeneralSettings( props ) {
 						label={ __( 'Back Button Text', 'sureforms' ) }
 						value={ pageBreakSettings?.back_button_text }
 						onChange={ ( value ) => {
-							updatePageBreakSettings( 'back_button_text', value );
+							updatePageBreakSettings(
+								'back_button_text',
+								value
+							);
 						} }
 						isFormSpecific={ true }
 					/>
 				</SRFMAdvancedPanelBody>
 			) }
 
-			{
-				singleSettings.map( ( set ) => {
-					return (
-						<FormBehaviorPopupButton
-							key={ set.id }
-							settingName={ set.title }
-							popupId={ set.id }
-							openModal={ openModal }
-						/>
-					);
-				} )
-			}
-
-			{ isOpen && (
-				<Modal
-					onRequestClose={ closeModal }
-					title={ __( 'Form Behavior', 'sureforms' ) }
-					className="srfm-settings-modal"
-					icon={ modalIcon }
-					isFullScreen={ true }
-				>
-					<SingleFormSettingsPopup
-						sureformsKeys={ sureformsKeys }
-						targetTab={ popupTab }
-						setHasValidationErrors={ setHasValidationErrors }
-					/>
-				</Modal>
-			) }
+			<FormRestrictionProvider>
+				<Dialog
+					open={ isOpen }
+					setOpen={ setOpen }
+					close={ closeModal }
+					sureformsKeys={ sureformsKeys }
+					targetTab={ popupTab }
+					setHasValidationErrors={ setHasValidationErrors }
+				/>
+			</FormRestrictionProvider>
 		</>
 	);
 }

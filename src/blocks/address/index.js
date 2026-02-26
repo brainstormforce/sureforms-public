@@ -8,7 +8,7 @@ import { MdOutlineLocationOn as icon } from 'react-icons/md';
  */
 import edit from './edit';
 import save from './save';
-import metadata from './block.json';
+import metadata from '@IncBlocks/address/block.json';
 
 const { name } = metadata;
 

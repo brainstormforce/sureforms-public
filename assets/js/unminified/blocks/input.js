@@ -54,3 +54,6 @@ function inputFieldMasking() {
 }
 
 document.addEventListener( 'DOMContentLoaded', inputFieldMasking );
+
+// make input field initialization function available globally
+window.srfmInitializeInputField = inputFieldMasking;

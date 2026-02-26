@@ -8,9 +8,10 @@
 
 namespace SRFM\Inc;
 
-use SRFM\Inc\Database\Tables\Entries;
 use SRFM\Inc\Traits\Get_Instance;
 use WP_Admin_Bar;
+use WP_Post;
+use WP_REST_Response;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -33,16 +34,113 @@ class Post_Types {
 		$this->restrict_unwanted_insertions();
 		add_action( 'init', [ $this, 'register_post_types' ] );
 		add_action( 'init', [ $this, 'register_post_metas' ] );
-		add_filter( 'manage_sureforms_form_posts_columns', [ $this, 'custom_form_columns' ] );
-		add_action( 'manage_sureforms_form_posts_custom_column', [ $this, 'custom_form_column_data' ], 10, 2 );
 		add_shortcode( 'sureforms', [ $this, 'forms_shortcode' ] );
 		add_action( 'manage_posts_extra_tablenav', [ $this, 'maybe_render_blank_form_state' ] );
-		add_action( 'in_admin_header', [ $this, 'embed_page_header' ] );
-		add_filter( 'post_row_actions', [ $this, 'modify_entries_list_row_actions' ], 10, 2 );
-		add_filter( 'bulk_actions-edit-sureforms_form', [ $this, 'register_modify_bulk_actions' ], 99 );
-		add_action( 'admin_notices', [ $this, 'import_form_popup' ] );
 		add_action( 'admin_bar_menu', [ $this, 'remove_admin_bar_menu_item' ], 80, 1 );
 		add_action( 'template_redirect', [ $this, 'srfm_instant_form_redirect' ] );
+		add_action( 'template_redirect', [ $this, 'disable_sureforms_archive_page' ], 9 );
+		add_action( 'load-edit.php', [ $this, 'redirect_forms_listing_page' ] );
+
+		add_filter( 'rest_prepare_sureforms_form', [ $this, 'sureforms_normalize_meta_for_rest' ], 10, 2 );
+		add_action( 'admin_bar_menu', [ $this, 'add_edit_form_to_admin_bar_menu' ], 100 );
+	}
+
+	/**
+	 * Redirect the forms listing page to the updated forms page.
+	 *
+	 * @return void
+	 * @since 2.0.0
+	 */
+	public function redirect_forms_listing_page() {
+		global $pagenow;
+
+		if ( 'edit.php' === $pagenow && isset( $_GET['post_type'] ) && SRFM_FORMS_POST_TYPE === $_GET['post_type'] ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce is not required for the redirection.
+			wp_safe_redirect( admin_url( 'admin.php?page=sureforms_forms' ) );
+			exit;
+		}
+	}
+
+	/**
+	 * Add "Edit Form" link to the admin bar menu.
+	 *
+	 * @param WP_Admin_Bar $wp_admin_bar WP_Admin_Bar instance.
+	 * @since 2.0.0
+	 * @return void
+	 */
+	public function add_edit_form_to_admin_bar_menu( $wp_admin_bar ) {
+
+		// Bail early if admin bar or user isn’t available.
+		if ( ! is_user_logged_in() || ! is_admin_bar_showing() || ! $wp_admin_bar instanceof WP_Admin_Bar ) {
+			return;
+		}
+
+		global $post;
+
+		// Bail if no valid post or wrong post type.
+		if ( empty( $post ) || SRFM_FORMS_POST_TYPE !== $post->post_type ) {
+			return;
+		}
+
+		$edit_link = get_edit_post_link( $post->ID );
+		if ( ! $edit_link ) {
+			return;
+		}
+
+		$wp_admin_bar->add_node(
+			[
+				'id'    => 'edit-form',
+				'title' => sprintf(
+					'<span class="ab-icon dashicons dashicons-edit" style="line-height:1.2;margin-right:4px;"></span>
+				<span class="ab-label" style="position:relative;top:-1px;">%s</span>',
+					esc_html__( 'Edit Form', 'sureforms' )
+				),
+				'href'  => esc_url( $edit_link ),
+				'meta'  => [
+					'title' => esc_attr__( 'Edit this form', 'sureforms' ),
+				],
+				'html'  => true,
+			]
+		);
+	}
+
+	/**
+	 * Remove this method in the future once _srfm_form_confirmation meta is updated.
+	 * Normalize the _srfm_form_confirmation meta before it's sent to the REST API.
+	 * Ensures the meta data is type-safe and includes necessary defaults like `hide_copy`.
+	 *
+	 * @param WP_REST_Response $response The REST response object.
+	 * @param WP_Post          $post     The post object.
+	 *
+	 * @return WP_REST_Response Modified REST response with normalized meta.
+	 * @since 1.7.3
+	 */
+	public function sureforms_normalize_meta_for_rest( $response, $post ) {
+		$meta_raw          = get_post_meta( $post->ID, '_srfm_form_confirmation', true );
+		$form_confirmation = maybe_unserialize( is_string( $meta_raw ) ? $meta_raw : '' );
+
+		if ( ! is_array( $form_confirmation ) ) {
+			return $response;
+		}
+
+		foreach ( $form_confirmation as $index => $item ) {
+			if ( ! is_array( $item ) ) {
+				continue;
+			}
+
+			$form_confirmation[ $index ]['hide_copy']         = ! empty( $item['hide_copy'] );
+			$form_confirmation[ $index ]['hide_download_all'] = ! empty( $item['hide_download_all'] );
+		}
+
+		$response_data = $response->get_data();
+		if ( is_array( $response_data ) ) {
+			if ( ! isset( $response_data['meta'] ) || ! is_array( $response_data['meta'] ) ) {
+				$response_data['meta'] = [];
+			}
+
+			$response_data['meta']['_srfm_form_confirmation'] = $form_confirmation;
+			$response->set_data( $response_data );
+		}
+		return $response;
 	}
 
 	/**
@@ -58,18 +156,21 @@ class Post_Types {
 	 * @since 0.0.1
 	 */
 	public function get_blank_page_markup( $title, $subtitle, $image, $button_text = '', $button_url = '', $after_button = '' ) {
-		echo '<div class="sureform-add-new-form">';
-
-		echo '<p class="sureform-blank-page-title">' . esc_html( $title ) . '</p>';
-
-		echo '<p class="sureform-blank-page-subtitle">' . esc_html( $subtitle ) . '</p>';
-
-		echo '<img src="' . esc_url( SRFM_URL . '/images/' . $image . '.svg' ) . '">';
-
-		if ( ! empty( $button_text ) && ! empty( $button_url ) ) {
-			echo '<div class="sureforms-add-new-form-container"><a class="sf-add-new-form-button" href="' . esc_url( $button_url ) . '"><div class="button-secondary">' . esc_html( $button_text ) . '</div></a>' . wp_kses_post( $after_button ) . '</div>';
-		}
-		echo '</div>';
+		?>
+		<div class="sureform-add-new-form">
+			<p class="sureform-blank-page-title"><?php echo esc_html( $title ); ?></p>
+			<p class="sureform-blank-page-subtitle"><?php echo esc_html( $subtitle ); ?></p>
+			<img src="<?php echo esc_url( SRFM_URL . '/images/' . $image . '.svg' ); ?>" alt=""/>
+			<?php if ( ! empty( $button_text ) && ! empty( $button_url ) ) { ?>
+				<div class="sureforms-add-new-form-container">
+					<a class="sf-add-new-form-button" href="<?php echo esc_url( $button_url ); ?>">
+						<div class="button-secondary"><?php echo esc_html( $button_text ); ?></div>
+					</a>
+					<?php echo wp_kses_post( $after_button ); ?>
+				</div>
+			<?php } ?>
+		</div>
+		<?php
 	}
 
 	/**
@@ -80,25 +181,6 @@ class Post_Types {
 	 * @since  0.0.1
 	 */
 	public function sureforms_render_blank_state( $post_type ) {
-
-		if ( SRFM_FORMS_POST_TYPE === $post_type ) {
-			$page_name     = 'add-new-form';
-			$new_form_url  = admin_url( 'admin.php?page=' . $page_name );
-			$import_button = '<button class="button button-secondary srfm-import-btn">' . __( 'Import Form', 'sureforms' ) . '</button>';
-
-			$this->get_blank_page_markup(
-				esc_html__( 'Let’s build your first form', 'sureforms' ),
-				esc_html__(
-					'Craft beautiful and functional forms in minutes',
-					'sureforms'
-				),
-				'add-new-form',
-				esc_html__( 'Add New Form', 'sureforms' ),
-				$new_form_url,
-				$import_button
-			);
-		}
-
 		if ( SRFM_ENTRIES === $post_type ) {
 
 			$this->get_blank_page_markup(
@@ -144,11 +226,21 @@ class Post_Types {
 				'rewrite'           => [ 'slug' => 'form' ],
 				'public'            => true,
 				'show_in_rest'      => true,
-				'has_archive'       => false,
+				'has_archive'       => true,
 				'show_ui'           => true,
 				'supports'          => [ 'title', 'author', 'editor', 'custom-fields' ],
-				'show_in_menu'      => 'sureforms_menu',
+				'show_in_menu'      => false,
 				'show_in_nav_menus' => true,
+				'capabilities'      => [
+					'edit_post'          => 'manage_options',
+					'read_post'          => 'manage_options',
+					'delete_post'        => 'manage_options',
+					'edit_posts'         => 'manage_options',
+					'edit_others_posts'  => 'manage_options',
+					'publish_posts'      => 'manage_options',
+					'read_private_posts' => 'manage_options',
+					'create_posts'       => 'manage_options',
+				],
 			]
 		);
 		// will be used later.
@@ -167,6 +259,19 @@ class Post_Types {
 	}
 
 	/**
+	 * Redirects requests for SureForms archieve page to homeurl
+	 *
+	 * @since 1.4.0
+	 * @return void
+	 */
+	public function disable_sureforms_archive_page() {
+		if ( is_post_type_archive( SRFM_FORMS_POST_TYPE ) ) {
+			wp_safe_redirect( home_url(), 301 );
+			exit;
+		}
+	}
+
+	/**
 	 * Remove add new form menu item.
 	 *
 	 * @param WP_Admin_Bar $wp_admin_bar WP_Admin_Bar instance.
@@ -179,57 +284,55 @@ class Post_Types {
 	}
 
 	/**
-	 * Modify list row actions.
-	 *
-	 * @param array<mixed> $actions An array of row action links.
-	 * @param \WP_Post     $post  The current WP_Post object.
-	 *
-	 * @return array<mixed> $actions Modified row action links.
-	 * @since  0.0.1
-	 */
-	public function modify_entries_list_row_actions( $actions, $post ) {
-		if ( 'sureforms_form' === $post->post_type ) {
-			$actions['export'] = '<a href="#" onclick="exportForm(' . $post->ID . ')">' . __( 'Export', 'sureforms' ) . '</a>';
-		}
-
-		return $actions;
-	}
-
-	/**
-	 * Modify list bulk actions.
-	 *
-	 * @param array<mixed> $bulk_actions An array of bulk action links.
-	 * @since 0.0.1
-	 * @return array<mixed> $bulk_actions Modified action links.
-	 */
-	public function register_modify_bulk_actions( $bulk_actions ) {
-
-		$white_listed_actions = [
-			'edit',
-			'trash',
-			'delete',
-			'untrash',
-		];
-
-		// remove all actions except white listed actions.
-		$bulk_actions = array_intersect_key( $bulk_actions, array_flip( $white_listed_actions ) );
-
-		// Add export action only if edit and trash actions are present in bulk actions.
-		if ( isset( $bulk_actions['edit'] ) && isset( $bulk_actions['trash'] ) ) {
-			$bulk_actions['export'] = __( 'Export', 'sureforms' );
-		}
-
-		return $bulk_actions;
-	}
-
-	/**
 	 * Show blank slate styles.
 	 *
 	 * @return void
 	 * @since  0.0.1
 	 */
 	public function get_blank_state_styles() {
-		echo '<style type="text/css">.sf-add-new-form-button:focus { box-shadow:none !important; outline:none !important; } #posts-filter .wp-list-table, #posts-filter .tablenav.top, .tablenav.bottom .actions, .wrap .subsubsub  { display: none; } #posts-filter .tablenav.bottom { height: auto; } .sureform-add-new-form{ display: flex; flex-direction: column; gap: 8px; justify-content: center; align-items: center; padding: 24px 0 24px 0; } .sureform-blank-page-title { color: var(--dashboard-heading); font-family: Inter; font-size: 22px; font-style: normal; font-weight: 600; line-height: 28px; margin: 0; } .sureform-blank-page-subtitle { color: var(--dashboard-text); margin: 0; font-family: Inter; font-size: 14px; font-style: normal; font-weight: 400; line-height: 16px; }</style>';
+		?>
+		<style type="text/css">
+			.sf-add-new-form-button:focus { 
+				box-shadow: none !important; 
+				outline: none !important; 
+			} 
+			#posts-filter .wp-list-table, 
+			#posts-filter .tablenav.top, 
+			.tablenav.bottom .actions, 
+			.wrap .subsubsub { 
+				display: none; 
+			} 
+			#posts-filter .tablenav.bottom { 
+				height: auto; 
+			} 
+			.sureform-add-new-form { 
+				display: flex; 
+				flex-direction: column; 
+				gap: 8px; 
+				justify-content: center; 
+				align-items: center; 
+				padding: 24px 0 24px 0; 
+			} 
+			.sureform-blank-page-title { 
+				color: var(--dashboard-heading); 
+				font-family: Inter; 
+				font-size: 22px; 
+				font-style: normal; 
+				font-weight: 600; 
+				line-height: 28px; 
+				margin: 0; 
+			} 
+			.sureform-blank-page-subtitle { 
+				color: var(--dashboard-text); 
+				margin: 0; 
+				font-family: Inter; 
+				font-size: 14px; 
+				font-style: normal; 
+				font-weight: 400; 
+				line-height: 16px; 
+			}
+		</style>
+		<?php
 	}
 
 	/**
@@ -257,35 +360,6 @@ class Post_Types {
 
 			$this->get_blank_state_styles();
 
-		}
-	}
-
-	/**
-	 * Set up a div for the header to render into it.
-	 *
-	 * @return void
-	 * @since  0.0.1
-	 */
-	public static function embed_page_header() {
-		$screen    = get_current_screen();
-		$screen_id = $screen ? $screen->id : '';
-
-		$is_screen_sureforms_entries = Helper::validate_request_context( SRFM_ENTRIES, 'page' );
-
-		if ( 'edit-' . SRFM_FORMS_POST_TYPE === $screen_id || $is_screen_sureforms_entries ) {
-			?>
-		<style>
-			.srfm-page-header {
-				min-height: 65px;
-				@media screen and ( max-width: 600px ) {
-					padding-top: 46px;
-				}
-			}
-		</style>
-		<div id="srfm-page-header" class="srfm-page-header">
-			<div class="srfm-page-pre-nav-content"></div>
-		</div>
-			<?php
 		}
 	}
 
@@ -321,6 +395,8 @@ class Post_Types {
 				// Security.
 				'_srfm_captcha_security_type'    => 'string',
 				'_srfm_form_recaptcha'           => 'string',
+				// post meta to store if the form is AI generated.
+				'_srfm_is_ai_generated'          => 'boolean',
 			]
 		);
 
@@ -329,11 +405,16 @@ class Post_Types {
 			'sureforms_form',
 			'_srfm_form_custom_css',
 			[
-				'show_in_rest'      => true,
+				'show_in_rest'      => [
+					'schema' => [
+						'type'    => 'string',
+						'context' => [ 'edit' ],
+					],
+				],
 				'type'              => 'string',
 				'single'            => true,
 				'auth_callback'     => static function() {
-					return current_user_can( 'edit_posts' );
+					return Helper::current_user_can();
 				},
 				'sanitize_callback' => static function( $meta_value ) {
 					return wp_kses_post( $meta_value );
@@ -341,20 +422,37 @@ class Post_Types {
 			]
 		);
 
+		// Get default values for meta keys.
+		$default_meta_keys = Create_New_Form::get_default_meta_keys();
+
 		foreach ( $metas as $meta => $type ) {
-			register_meta(
-				'post',
+			// Get default value if exists.
+			$default_value = $default_meta_keys[ $meta ] ?? null;
+
+			$meta_args = [
+				'show_in_rest'      => [
+					'schema' => [
+						'type'    => $type,
+						'context' => [ 'edit' ],
+					],
+				],
+				'single'            => true,
+				'type'              => $type,
+				'sanitize_callback' => 'sanitize_text_field',
+				'auth_callback'     => static function() {
+					return Helper::current_user_can();
+				},
+			];
+
+			// Add default value if it exists.
+			if ( null !== $default_value ) {
+				$meta_args['default'] = $default_value;
+			}
+
+			register_post_meta(
+				SRFM_FORMS_POST_TYPE,
 				$meta,
-				[
-					'object_subtype'    => SRFM_FORMS_POST_TYPE,
-					'show_in_rest'      => true,
-					'single'            => true,
-					'type'              => $type,
-					'sanitize_callback' => 'sanitize_text_field',
-					'auth_callback'     => static function() {
-						return current_user_can( 'edit_posts' );
-					},
-				]
+				$meta_args
 			);
 		}
 
@@ -365,10 +463,13 @@ class Post_Types {
 			[
 				'single'        => true,
 				'type'          => 'object',
-				'auth_callback' => '__return_true',
+				'auth_callback' => static function() {
+					return Helper::current_user_can();
+				},
 				'show_in_rest'  => [
 					'schema' => [
 						'type'       => 'object',
+						'context'    => [ 'edit' ],
 						'properties' => [
 							'site_logo'              => [
 								'type' => 'string',
@@ -423,7 +524,7 @@ class Post_Types {
 					'bg_image'                      => '',
 					'site_logo'                     => '',
 					'cover_type'                    => 'color',
-					'cover_color'                   => '#0C78FB',
+					'cover_color'                   => '#111C44',
 					'cover_image'                   => '',
 					'enable_instant_form'           => false,
 					'form_container_width'          => 620,
@@ -439,35 +540,324 @@ class Post_Types {
 			[
 				'single'        => true,
 				'type'          => 'object',
-				'auth_callback' => '__return_true',
+				'auth_callback' => static function() {
+					return Helper::current_user_can();
+				},
 				'show_in_rest'  => [
 					'schema' => [
 						'type'       => 'object',
+						'context'    => [ 'edit' ],
 						'properties' => [
-							'primary_color'           => [
+							'primary_color'               => [
 								'type' => 'string',
 							],
-							'text_color'              => [
+							'text_color'                  => [
 								'type' => 'string',
 							],
-							'text_color_on_primary'   => [
+							'text_color_on_primary'       => [
 								'type' => 'string',
 							],
-							'field_spacing'           => [
+							'field_spacing'               => [
 								'type' => 'string',
 							],
-							'submit_button_alignment' => [
+							'submit_button_alignment'     => [
 								'type' => 'string',
+							],
+							'bg_type'                     => [
+								'type' => 'string',
+							],
+							'bg_color'                    => [
+								'type' => 'string',
+							],
+							'bg_image'                    => [
+								'type' => 'string',
+							],
+							'bg_image_id'                 => [
+								'type' => 'integer',
+							],
+							// Image Properties.
+							'bg_image_position'           => [
+								'type'       => 'object',
+								'properties' => [
+									'x' => [
+										'type'   => 'number',
+										'format' => 'float',
+									],
+									'y' => [
+										'type'   => 'number',
+										'format' => 'float',
+									],
+								],
+							],
+							'bg_image_attachment'         => [
+								'type' => 'string',
+							],
+							'bg_image_repeat'             => [
+								'type' => 'string',
+							],
+							'bg_image_size'               => [
+								'type' => 'string',
+							],
+							'bg_image_size_custom'        => [
+								'type' => 'integer',
+							],
+							'bg_image_size_custom_unit'   => [
+								'type' => 'string',
+							],
+							// Gradient Properties.
+							'bg_gradient'                 => [
+								'type' => 'string',
+							],
+							'gradient_type'               => [
+								'type' => 'string',
+							],
+							'bg_gradient_type'            => [
+								'type' => 'string',
+							],
+							'bg_gradient_color_1'         => [
+								'type' => 'string',
+							],
+							'bg_gradient_color_2'         => [
+								'type' => 'string',
+							],
+							'bg_gradient_angle'           => [
+								'type' => 'integer',
+							],
+							'bg_gradient_location_1'      => [
+								'type' => 'integer',
+							],
+							'bg_gradient_location_2'      => [
+								'type' => 'integer',
+							],
+							// Overlay Properties.
+							'bg_overlay_size'             => [
+								'type' => 'string',
+							],
+							'bg_gradient_overlay_type'    => [
+								'type' => 'string',
+							],
+							'bg_overlay_opacity'          => [
+								'type' => 'number',
+							],
+							'bg_overlay_image'            => [
+								'type' => 'string',
+							],
+							'bg_overlay_image_id'         => [
+								'type' => 'integer',
+							],
+							'bg_image_overlay_color'      => [
+								'type' => 'string',
+							],
+							'bg_overlay_custom_size_unit' => [
+								'type' => 'string',
+							],
+							'bg_overlay_custom_size'      => [
+								'type' => 'integer',
+							],
+							'bg_overlay_blend_mode'       => [
+								'type' => 'string',
+							],
+							'bg_overlay_position'         => [
+								'type'       => 'object',
+								'properties' => [
+									'x' => [
+										'type'   => 'number',
+										'format' => 'float',
+									],
+									'y' => [
+										'type'   => 'number',
+										'format' => 'float',
+									],
+								],
+							],
+							'bg_overlay_attachment'       => [
+								'type' => 'string',
+							],
+							'bg_overlay_repeat'           => [
+								'type' => 'string',
+							],
+							// Gradient Overlay Properties.
+							'bg_overlay_gradient'         => [
+								'type' => 'string',
+							],
+							'overlay_gradient_type'       => [
+								'type' => 'string',
+							],
+							'bg_overlay_gradient_type'    => [
+								'type' => 'string',
+							],
+							'bg_overlay_gradient_color_1' => [
+								'type' => 'string',
+							],
+							'bg_overlay_gradient_color_2' => [
+								'type' => 'string',
+							],
+							'bg_overlay_gradient_angle'   => [
+								'type' => 'integer',
+							],
+							'bg_overlay_gradient_location_1' => [
+								'type' => 'integer',
+							],
+							'bg_overlay_gradient_location_2' => [
+								'type' => 'integer',
+							],
+							// Form Padding.
+							'form_padding_top'            => [
+								'type' => 'number',
+							],
+							'form_padding_right'          => [
+								'type' => 'number',
+							],
+							'form_padding_bottom'         => [
+								'type' => 'number',
+							],
+							'form_padding_left'           => [
+								'type' => 'number',
+							],
+							'form_padding_unit'           => [
+								'type' => 'string',
+							],
+							'form_padding_link'           => [
+								'type' => 'boolean',
+							],
+							// Border Radius.
+							'form_border_radius_top'      => [
+								'type' => 'number',
+							],
+							'form_border_radius_right'    => [
+								'type' => 'number',
+							],
+							'form_border_radius_bottom'   => [
+								'type' => 'number',
+							],
+							'form_border_radius_left'     => [
+								'type' => 'number',
+							],
+							'form_border_radius_unit'     => [
+								'type' => 'string',
+							],
+							'form_border_radius_link'     => [
+								'type' => 'boolean',
+							],
+							// Form Padding and Border Radius.
+							// Form Padding.
+							'instant_form_padding_top'    => [
+								'type' => 'number',
+							],
+							'instant_form_padding_right'  => [
+								'type' => 'number',
+							],
+							'instant_form_padding_bottom' => [
+								'type' => 'number',
+							],
+							'instant_form_padding_left'   => [
+								'type' => 'number',
+							],
+							'instant_form_padding_unit'   => [
+								'type' => 'string',
+							],
+							'instant_form_padding_link'   => [
+								'type' => 'boolean',
+							],
+							// Border Radius.
+							'instant_form_border_radius_top' => [
+								'type' => 'number',
+							],
+							'instant_form_border_radius_right' => [
+								'type' => 'number',
+							],
+							'instant_form_border_radius_bottom' => [
+								'type' => 'number',
+							],
+							'instant_form_border_radius_left' => [
+								'type' => 'number',
+							],
+							'instant_form_border_radius_unit' => [
+								'type' => 'string',
+							],
+							'instant_form_border_radius_link' => [
+								'type' => 'boolean',
 							],
 						],
 					],
 				],
 				'default'       => [
-					'primary_color'           => '#0C78FB',
-					'text_color'              => '#1E1E1E',
-					'text_color_on_primary'   => '#FFFFFF',
-					'field_spacing'           => 'medium',
-					'submit_button_alignment' => 'left',
+					'primary_color'                     => '#111C44',
+					'text_color'                        => '#1E1E1E',
+					'text_color_on_primary'             => '#FFFFFF',
+					'field_spacing'                     => 'medium',
+					'submit_button_alignment'           => 'left',
+					'bg_type'                           => 'color',
+					'bg_color'                          => '#ffffff',
+					'bg_image'                          => '',
+					'bg_image_position'                 => [
+						'x' => 0.5,
+						'y' => 0.5,
+					],
+					'bg_image_attachment'               => 'scroll',
+					'bg_image_repeat'                   => 'no-repeat',
+					'bg_image_size'                     => 'cover',
+					'bg_image_size_custom'              => 100, // Image width when set to custom.
+					'bg_image_size_custom_unit'         => '%',
+					'gradient_type'                     => 'basic',
+					'bg_gradient_type'                  => 'linear',
+					'bg_gradient_color_1'               => '#FFC9B2',
+					'bg_gradient_color_2'               => '#C7CBFF',
+					'bg_gradient_angle'                 => 90,
+					'bg_gradient_location_1'            => 0,
+					'bg_gradient_location_2'            => 100,
+					'bg_overlay_size'                   => 'cover',
+					'bg_gradient_overlay_type'          => '',
+					'bg_overlay_opacity'                => 1,
+					'bg_overlay_image'                  => '',
+					'bg_image_overlay_color'            => '#FFFFFF75',
+					'bg_overlay_custom_size_unit'       => '%',
+					'bg_overlay_custom_size'            => 100,
+					'bg_overlay_position'               => [
+						'x' => 0.5,
+						'y' => 0.5,
+					],
+					'bg_overlay_attachment'             => 'scroll',
+					'bg_overlay_repeat'                 => 'no-repeat',
+					'bg_overlay_blend_mode'             => 'normal',
+					// Gradient Overlay Properties.
+					'overlay_gradient_type'             => 'basic',
+					'bg_overlay_gradient_type'          => 'linear',
+					'bg_overlay_gradient_color_1'       => '#FFC9B2',
+					'bg_overlay_gradient_color_2'       => '#C7CBFF',
+					'bg_overlay_gradient_angle'         => 90,
+					'bg_overlay_gradient_location_1'    => 0,
+					'bg_overlay_gradient_location_2'    => 100,
+					// Form Properties.
+					// Padding.
+					'form_padding_top'                  => 0,
+					'form_padding_right'                => 0,
+					'form_padding_bottom'               => 0,
+					'form_padding_left'                 => 0,
+					'form_padding_unit'                 => 'px',
+					'form_padding_link'                 => true,
+					// Border Radius.
+					'form_border_radius_top'            => 0,
+					'form_border_radius_right'          => 0,
+					'form_border_radius_bottom'         => 0,
+					'form_border_radius_left'           => 0,
+					'form_border_radius_unit'           => 'px',
+					'form_border_radius_link'           => true,
+					// Form Properties.
+					// Padding.
+					'instant_form_padding_top'          => 32,
+					'instant_form_padding_right'        => 32,
+					'instant_form_padding_bottom'       => 32,
+					'instant_form_padding_left'         => 32,
+					'instant_form_padding_unit'         => 'px',
+					'instant_form_padding_link'         => true,
+					// Border Radius.
+					'instant_form_border_radius_top'    => 12,
+					'instant_form_border_radius_right'  => 12,
+					'instant_form_border_radius_bottom' => 12,
+					'instant_form_border_radius_left'   => 12,
+					'instant_form_border_radius_unit'   => 'px',
+					'instant_form_border_radius_link'   => true,
 				],
 			]
 		);
@@ -479,11 +869,14 @@ class Post_Types {
 			[
 				'single'        => true,
 				'type'          => 'array',
-				'auth_callback' => '__return_true',
+				'auth_callback' => static function() {
+					return Helper::current_user_can();
+				},
 				'show_in_rest'  => [
 					'schema' => [
-						'type'  => 'array',
-						'items' => [
+						'type'    => 'array',
+						'context' => [ 'edit' ],
+						'items'   => [
 							'type'       => 'object',
 							'properties' => [
 								'id'             => [
@@ -502,6 +895,12 @@ class Post_Types {
 									'type' => 'string',
 								],
 								'email_reply_to' => [
+									'type' => 'string',
+								],
+								'from_name'      => [
+									'type' => 'string',
+								],
+								'from_email'     => [
 									'type' => 'string',
 								],
 								'email_cc'       => [
@@ -528,6 +927,8 @@ class Post_Types {
 						'name'           => __( 'Admin Notification Email', 'sureforms' ),
 						'email_to'       => '{admin_email}',
 						'email_reply_to' => '{admin_email}',
+						'from_name'      => '{site_title}',
+						'from_email'     => '{admin_email}',
 						'email_cc'       => '{admin_email}',
 						'email_bcc'      => '{admin_email}',
 						'subject'        => sprintf( /* translators: %s: Form title smart tag */ __( 'New Form Submission - %s', 'sureforms' ), '{form_title}' ),
@@ -544,11 +945,14 @@ class Post_Types {
 			[
 				'single'        => true,
 				'type'          => 'array',
-				'auth_callback' => '__return_true',
+				'auth_callback' => static function() {
+					return Helper::current_user_can();
+				},
 				'show_in_rest'  => [
 					'schema' => [
-						'type'  => 'array',
-						'items' => [
+						'type'    => 'array',
+						'context' => [ 'edit' ],
+						'items'   => [
 							'type'       => 'object',
 							'properties' => [
 								'id'                   => [
@@ -582,18 +986,68 @@ class Post_Types {
 			]
 		);
 
+		ob_start();
+		?>
+		<p style="text-align: center;"><img src="<?php echo esc_attr( $check_icon ); ?>" alt="" aria-hidden="true" /></p><h2 style="text-align: center;"><?php echo esc_html__( 'Thank you', 'sureforms' ); ?></h2><p style="text-align: center;"><?php echo esc_html__( 'Your form has been submitted successfully. We\'ll review your details and get back to you soon.', 'sureforms' ); ?></p>
+		<?php
+		$default_confirmation_message = ob_get_clean();
+
 		// form confirmation.
 		register_post_meta(
 			'sureforms_form',
 			'_srfm_form_confirmation',
 			[
-				'single'        => true,
-				'type'          => 'array',
-				'auth_callback' => '__return_true',
-				'show_in_rest'  => [
+				'single'            => true,
+				'type'              => 'array',
+				'auth_callback'     => static function() {
+					return Helper::current_user_can();
+				},
+				'sanitize_callback' => static function( $meta_value ) {
+					if ( ! is_array( $meta_value ) ) {
+						return [];
+					}
+					$sanitized = [];
+					foreach ( $meta_value as $item ) {
+						if ( ! is_array( $item ) ) {
+							continue;
+						}
+						$sanitized_item = [
+							'id'                  => isset( $item['id'] ) ? intval( $item['id'] ) : 0,
+							'confirmation_type'   => isset( $item['confirmation_type'] ) ? sanitize_text_field( $item['confirmation_type'] ) : '',
+							'page_url'            => isset( $item['page_url'] ) ? esc_url_raw( $item['page_url'] ) : '',
+							'custom_url'          => isset( $item['custom_url'] ) ? esc_url_raw( $item['custom_url'] ) : '',
+							'message'             => isset( $item['message'] ) ? Helper::strip_js_attributes( $item['message'] ) : '',
+							'submission_action'   => isset( $item['submission_action'] ) ? sanitize_text_field( $item['submission_action'] ) : '',
+							'enable_query_params' => isset( $item['enable_query_params'] ) ? filter_var( $item['enable_query_params'], FILTER_VALIDATE_BOOLEAN ) : false,
+							'query_params'        => isset( $item['query_params'] ) && is_array( $item['query_params'] )
+								? array_map(
+									static function ( $pair ) {
+										if ( ! is_array( $pair ) ) {
+											return [];
+										}
+										$key   = key( $pair );
+										$value = current( $pair );
+
+										return [
+											sanitize_text_field( Helper::get_string_value( $key ) ) => sanitize_text_field( Helper::get_string_value( $value ) ),
+										];
+									},
+									$item['query_params']
+								)
+								: [],
+						];
+
+						$sanitized_item = apply_filters( 'srfm_form_confirmation_params', $sanitized_item, $item );
+
+						$sanitized[] = $sanitized_item;
+					}
+					return $sanitized;
+				},
+				'show_in_rest'      => [
 					'schema' => [
-						'type'  => 'array',
-						'items' => [
+						'type'    => 'array',
+						'context' => [ 'edit' ],
+						'items'   => [
 							'type'       => 'object',
 							'properties' => [
 								'id'                  => [
@@ -624,13 +1078,13 @@ class Post_Types {
 						],
 					],
 				],
-				'default'       => [
+				'default'           => [
 					[
 						'id'                => 1,
 						'confirmation_type' => 'same page',
 						'page_url'          => '',
 						'custom_url'        => '',
-						'message'           => '<p style="text-align: center;"><img src="' . esc_attr( $check_icon ) . '" alt="" aria-hidden="true"></img></p><h2 style="text-align: center;">Thank you</h2><p style="text-align: center;">We have received your email. You\'ll hear from us as soon as possible.</p><p style="text-align: center;">Please be sure to whitelist our {admin_email} email address to ensure our replies reach your inbox safely.</p>',
+						'message'           => $default_confirmation_message,
 						'submission_action' => 'hide form',
 					],
 				],
@@ -643,6 +1097,109 @@ class Post_Types {
 		 * Hook for registering additional Post Meta
 		 */
 		do_action( 'srfm_register_additional_post_meta' );
+
+		register_meta(
+			'post',
+			'_srfm_form_restriction',
+			[
+				'type'              => 'string',  // Will store as JSON string.
+				'single'            => true,    // Store as single value.
+				'show_in_rest'      => [
+					'schema' => [
+						'type'    => 'string',
+						'context' => [ 'edit' ],
+					],
+				],
+				// Custom callback to sanitize the data.
+				'sanitize_callback' => [ $this, 'sanitize_form_restriction_data' ],
+				'object_subtype'    => SRFM_FORMS_POST_TYPE,
+				'auth_callback'     => static function () {
+					return Helper::current_user_can();
+				},
+				'default'           => wp_json_encode(
+					[
+						'status'                      => false,
+						'maxEntries'                  => 0,
+						'date'                        => '',
+						'hours'                       => '12',
+						'minutes'                     => '00',
+						'meridiem'                    => 'AM',
+						'message'                     => Translatable::get_default_form_restriction_message(),
+						// Form Scheduling meta.
+						'schedulingStatus'            => false,
+						'startDate'                   => '',
+						'startHours'                  => '12',
+						'startMinutes'                => '00',
+						'startMeridiem'               => 'AM',
+						'schedulingNotStartedMessage' => __( 'This form is not yet available. Please check back after the scheduled start time.', 'sureforms' ),
+						'schedulingEndedMessage'      => __( 'This form is no longer accepting submissions. The submission period has ended.', 'sureforms' ),
+					]
+				),
+			]
+		);
+	}
+
+	/**
+	 * Sanitizes the form restriction data.
+	 *
+	 * @param mixed $meta_value The meta value to sanitize.
+	 * @return string|false Sanitized JSON string.
+	 */
+	public function sanitize_form_restriction_data( $meta_value ) {
+		if ( empty( $meta_value ) || ! is_string( $meta_value ) ) {
+			return wp_json_encode( [] );
+		}
+
+		$meta_value = json_decode( $meta_value, true );
+
+		if ( ! is_array( $meta_value ) || json_last_error() !== JSON_ERROR_NONE ) {
+			// If the JSON is invalid, return an empty array as JSON.
+			return wp_json_encode( [] );
+		}
+
+		$sanitized = [
+			'status'                      => isset( $meta_value['status'] ) ? wp_validate_boolean( $meta_value['status'] ) : false,
+			'maxEntries'                  => isset( $meta_value['maxEntries'] ) ? absint( $meta_value['maxEntries'] ) : 0,
+			'date'                        => isset( $meta_value['date'] ) ? sanitize_text_field( $meta_value['date'] ) : '',
+			'hours'                       => isset( $meta_value['hours'] ) ? sanitize_text_field( $meta_value['hours'] ) : '12',
+			'minutes'                     => isset( $meta_value['minutes'] ) ? sanitize_text_field( $meta_value['minutes'] ) : '00',
+			'meridiem'                    => isset( $meta_value['meridiem'] ) ? sanitize_text_field( $meta_value['meridiem'] ) : 'AM',
+			'message'                     => isset( $meta_value['message'] ) ? sanitize_textarea_field( $meta_value['message'] ) : Translatable::get_default_form_restriction_message(),
+			// Form Scheduling meta.
+			'schedulingStatus'            => isset( $meta_value['schedulingStatus'] ) ? wp_validate_boolean( $meta_value['schedulingStatus'] ) : false,
+			'startDate'                   => isset( $meta_value['startDate'] ) ? sanitize_text_field( $meta_value['startDate'] ) : '',
+			'startHours'                  => isset( $meta_value['startHours'] ) ? sanitize_text_field( $meta_value['startHours'] ) : '12',
+			'startMinutes'                => isset( $meta_value['startMinutes'] ) ? sanitize_text_field( $meta_value['startMinutes'] ) : '00',
+			'startMeridiem'               => isset( $meta_value['startMeridiem'] ) ? sanitize_text_field( $meta_value['startMeridiem'] ) : 'AM',
+			'schedulingNotStartedMessage' => isset( $meta_value['schedulingNotStartedMessage'] ) ? sanitize_textarea_field( $meta_value['schedulingNotStartedMessage'] ) : __( 'This form is not yet available. Please check back after the scheduled start time.', 'sureforms' ),
+			'schedulingEndedMessage'      => isset( $meta_value['schedulingEndedMessage'] ) ? sanitize_textarea_field( $meta_value['schedulingEndedMessage'] ) : __( 'This form is no longer accepting submissions. The submission period has ended.', 'sureforms' ),
+		];
+
+		// Validate scheduling: start date/time must be before end date/time.
+		if ( $sanitized['schedulingStatus'] && ! empty( $sanitized['startDate'] ) && ! empty( $sanitized['date'] ) ) {
+			$start_datetime = $this->create_datetime_object(
+				$sanitized['startDate'],
+				$sanitized['startHours'],
+				$sanitized['startMinutes'],
+				$sanitized['startMeridiem']
+			);
+
+			$end_datetime = $this->create_datetime_object(
+				$sanitized['date'],
+				$sanitized['hours'],
+				$sanitized['minutes'],
+				$sanitized['meridiem']
+			);
+
+			// If start date/time is not before end date/time, disable scheduling.
+			if ( $start_datetime && $end_datetime && $start_datetime >= $end_datetime ) {
+				// Disable scheduling status due to invalid date range.
+				$sanitized['schedulingStatus'] = false;
+			}
+		}
+
+		// Return the sanitized data as a JSON string.
+		return wp_json_encode( $sanitized );
 	}
 
 	/**
@@ -652,7 +1209,7 @@ class Post_Types {
 	 * @return string|false. $content Post Content.
 	 * @since 0.0.1
 	 */
-	public function forms_shortcode( array $atts ) {
+	public function forms_shortcode( $atts ) {
 		$atts = shortcode_atts(
 			[
 				'id'         => '',
@@ -664,98 +1221,11 @@ class Post_Types {
 		$id   = intval( $atts['id'] );
 		$post = get_post( $id );
 
-		if ( ! empty( $id ) && $post ) {
+		if ( ! empty( $id ) && $post && ( 'publish' === $post->post_status || 'protected' === $post->post_status ) ) {
 			return Generate_Form_Markup::get_form_markup( $id, ! filter_var( $atts['show_title'], FILTER_VALIDATE_BOOLEAN ), '', 'post', true );
 		}
 
-		return '';
-	}
-
-	/**
-	 * Add custom column header.
-	 *
-	 * @param array<mixed> $columns Attributes.
-	 * @return array<mixed> $columns Post Content.
-	 * @since 0.0.1
-	 */
-	public function custom_form_columns( $columns ) {
-		return [
-			'cb'        => $columns['cb'],
-			'title'     => $columns['title'],
-			'sureforms' => __( 'Shortcode', 'sureforms' ),
-			'entries'   => __( 'Entries', 'sureforms' ),
-			'author'    => $columns['author'],
-			'date'      => $columns['date'],
-		];
-	}
-
-	/**
-	 * Populate custom column with data.
-	 *
-	 * @param string $column Attributes.
-	 * @param int    $post_id Attributes.
-	 * @return void
-	 * @since 0.0.1
-	 */
-	public function custom_form_column_data( $column, $post_id ) {
-		if ( 'sureforms' === $column ) {
-			ob_start();
-			?>
-			<div class="srfm-shortcode-container">
-				<input id="srfm-shortcode-input-<?php echo esc_attr( Helper::get_string_value( $post_id ) ); ?>" class="srfm-shortcode-input" type="text" readonly value="[sureforms id='<?php echo esc_attr( Helper::get_string_value( $post_id ) ); ?>']" />
-				<button type="button" class="components-button components-clipboard-button has-icon srfm-shortcode" onclick="handleFormShortcode(this)">
-					<span id="srfm-copy-icon" class="dashicon dashicons dashicons-admin-page"></span>
-				</button>
-			</div>
-			<?php
-			ob_end_flush();
-		}
-		if ( 'entries' === $column ) {
-			// Entries URL to redirect user based on the form ID.
-			$entries_url = wp_nonce_url(
-				add_query_arg(
-					[
-						'form_filter' => $post_id,
-					],
-					admin_url( 'admin.php?page=sureforms_entries' )
-				),
-				'srfm_entries_action'
-			);
-
-			// Get the entry count for the form.
-			$entries_count = Entries::get_total_entries_by_status( 'all', $post_id );
-
-			ob_start();
-			?>
-				<p class="srfm-entries-number"><a href="<?php echo esc_url( $entries_url ); ?>"><?php echo esc_html( Helper::get_string_value( $entries_count ) ); ?></a></p>
-			<?php
-			ob_end_flush();
-		}
-	}
-
-	/**
-	 * Show the import form popup
-	 *
-	 * @since 0.0.1
-	 * @return void
-	 */
-	public function import_form_popup() {
-		$screen = get_current_screen();
-		$id     = $screen ? $screen->id : '';
-		if ( 'edit-sureforms_form' === $id ) {
-			?>
-			<div class="srfm-import-plugin-wrap">
-				<div class="srfm-import-wrap">
-					<p class="srfm-import-help"><?php echo esc_html__( 'Please choose the SureForms export file (.json) that you wish to import.', 'sureforms' ); ?></p>
-					<form method="post" enctype="multipart/form-data" class="srfm-import-form">
-						<input type="file" id="srfm-import-file" onchange="handleFileChange(event)" name="import form" accept=".json">
-						<input type="submit" name="import-form-submit" id="import-form-submit" class="srfm-import-button" value="<?php esc_attr_e( 'Import Now', 'sureforms' ); ?>" disabled>
-					</form>
-					<p id="srfm-import-error"><?php echo esc_html__( 'There is some error in json file, please export the SureForms Forms again.', 'sureforms' ); ?></p>
-				</div>
-			</div>
-			<?php
-		}
+		return esc_html__( 'This form has been deleted or is unavailable.', 'sureforms' );
 	}
 
 	/**
@@ -783,7 +1253,7 @@ class Post_Types {
 			$form_preview = filter_var( $form_preview_attr, FILTER_VALIDATE_BOOLEAN );
 		}
 
-		if ( is_singular( 'sureforms_form' ) && ! $form_preview && ! current_user_can( 'manage_options' ) ) {
+		if ( is_singular( 'sureforms_form' ) && ! $form_preview && ! Helper::current_user_can() ) {
 			wp_safe_redirect( home_url() );
 			return;
 		}
@@ -819,6 +1289,83 @@ class Post_Types {
 	}
 
 	/**
+	 * Restrict unwanted insertions from the AIOSEO plugin.
+	 *
+	 * This method ensures that the SureForms post type is excluded from AIOSEO's
+	 * public post types unless the current page is related to AIOSEO settings.
+	 *
+	 * @return void
+	 * @since 1.6.0
+	 */
+	public function restrict_in_aioseo_plugin() {
+		/**
+		 * Checks if the AIOSEO plugin is installed and excludes the SureForms post type from AIOSEO's public post types.
+		 *
+		 * - Verifies the presence of the AIOSEO_DIR constant to ensure AIOSEO is installed.
+		 * - Allows AIOSEO functionality on its own settings pages by checking the `REQUEST_URI` and `page` query parameter.
+		 * - Excludes the SureForms post type from AIOSEO's public post types using the `aioseo_public_post_types` filter.
+		 *
+		 * Security Note:
+		 * - Nonce verification is intentionally skipped (`phpcs:ignore WordPress.Security.NonceVerification.Recommended`)
+		 *   because this code is only performing a read operation to check the current request URI and query parameters.
+		 *   It does not modify or process sensitive data, making nonce verification unnecessary in this context.
+		 */
+		// Check if AIOSEO is installed by verifying the AIOSEO_DIR constant.
+		if ( ! defined( 'AIOSEO_DIR' ) ) {
+			return;
+		}
+
+		// Allow AIOSEO functionality on its own settings pages.
+		if ( isset( $_SERVER['REQUEST_URI'] ) ) {
+			$request_uri = sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) );
+			if ( strpos( $request_uri, 'admin.php' ) !== false ) {
+				if ( isset( $_GET['page'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verification is not required here because Safe here as we're only reading the `page` parameter.
+					$page = sanitize_text_field( wp_unslash( $_GET['page'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verification is not required here because only we are reading the `page` parameter.
+					if ( strpos( $page, 'aioseo' ) !== false ) {
+						return;
+					}
+				}
+			}
+		}
+
+		// Exclude the SureForms post type from AIOSEO's public post types.
+		add_filter( 'aioseo_public_post_types', [ $this, 'unset_sureforms_post_type' ] );
+	}
+
+	/**
+	 * Creates a DateTime object from date string and time components.
+	 *
+	 * @param string $date_str Date string.
+	 * @param string $hours Hours in 12-hour format.
+	 * @param string $minutes Minutes.
+	 * @param string $meridiem AM or PM.
+	 * @since 2.4.0
+	 * @return \DateTime|null DateTime object or null if invalid.
+	 */
+	private function create_datetime_object( $date_str, $hours, $minutes, $meridiem ) {
+		if ( empty( $date_str ) ) {
+			return null;
+		}
+
+		try {
+			$date = new \DateTime( $date_str );
+
+			// Convert 12-hour format to 24-hour format.
+			$hour_24 = intval( $hours );
+			if ( 'PM' === $meridiem && 12 !== $hour_24 ) {
+				$hour_24 += 12;
+			} elseif ( 'AM' === $meridiem && 12 === $hour_24 ) {
+				$hour_24 = 0;
+			}
+
+			$date->setTime( $hour_24, intval( $minutes ), 0 );
+			return $date;
+		} catch ( \Exception $e ) {
+			return null;
+		}
+	}
+
+	/**
 	 * Restrict interference of other plugins with SureForms.
 	 *
 	 * @since 0.0.5
@@ -833,6 +1380,6 @@ class Post_Types {
 		add_filter( 'wpseo_metabox_prio', '__return_false' );
 
 		// Restrict AIOSEO columns.
-		add_filter( 'aioseo_public_post_types', [ $this, 'unset_sureforms_post_type' ] );
+		$this->restrict_in_aioseo_plugin();
 	}
 }

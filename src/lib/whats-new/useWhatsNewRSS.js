@@ -410,6 +410,7 @@ var WhatsNewRSS = /** @class */ (function () {
             _this.RSS_View_Instance.setIsLoading(true);
             flyout.classList.remove('closed');
             flyout.classList.add('open');
+            flyout.removeAttribute('style');
             document.body.classList.add('whats-new-rss-is-active');
             _this.getArgs().flyout.onOpen(_this);
             if (!_this.isMultiFeedRSS()) {
@@ -715,6 +716,7 @@ var WhatsNewRSSView = /** @class */ (function () {
         flyoutWrapper.setAttribute('id', this.getFlyoutID());
         flyoutWrapper.setAttribute('class', wrapperClasses.join(' '));
         flyoutWrapper.setAttribute('role', 'dialog');
+        flyoutWrapper.setAttribute('style', 'visibility: hidden;');
         flyoutWrapper.innerHTML = "\n\t\t<div class=\"whats-new-rss-flyout-contents\">\n\n\t\t\t<div class=\"whats-new-rss-flyout-inner-header\">\n\n\t\t\t\t<div class=\"whats-new-rss-flyout-inner-header__title-icon-wrapper\">\n\t\t\t\t\t<h3>".concat(this.RSS.getArgs().flyout.title, "</h3>\n\n\t\t\t\t\t<span class=\"whats-new-rss-flyout-inner-header__loading-icon\">\n\t\t\t\t\t").concat(this.RSS.getArgs().loaderIcon, "\n\t\t\t\t\t</span>\n\t\t\t\t</div>\n\n\t\t\t\t<button type=\"button\" id=\"").concat(this.getFlyoutCloseBtnID(), "\">").concat(this.RSS.getArgs().flyout.closeBtnIcon, "</button>\n\t\t\t</div>\n\n\t\t\t").concat(multiFeedNav.join(''), "\n\n\t\t\t<div class=\"whats-new-rss-flyout-inner-content\">\n\t\t\t\t<div class=\"skeleton-container\">\n\t\t\t\t\t<div class=\"skeleton-row whats-new-rss-flyout-inner-content-item\"></div>\n\t\t\t\t\t<div class=\"skeleton-row whats-new-rss-flyout-inner-content-item\"></div>\n\t\t\t\t\t<div class=\"skeleton-row whats-new-rss-flyout-inner-content-item\"></div>\n\t\t\t\t</div>\n\t\t\t</div>\n\n\t\t</div>\n\n\t\t<div class=\"whats-new-rss-flyout-overlay\"></div>\n\t\t");
         document.body.appendChild(flyoutWrapper);
     };

@@ -10,6 +10,7 @@ namespace SRFM\Inc\Global_Settings;
 
 use SRFM\Inc\Events_Scheduler;
 use SRFM\Inc\Helper;
+use SRFM\Inc\Payments\Payment_Helper;
 use SRFM\Inc\Traits\Get_Instance;
 use WP_Error;
 use WP_REST_Request;
@@ -47,14 +48,13 @@ class Global_Settings {
 	 * @since 0.0.1
 	 */
 	public function register_custom_endpoint() {
-		$sureforms_helper = new Helper();
 		register_rest_route(
 			$this->namespace,
 			'/srfm-global-settings',
 			[
 				'methods'             => WP_REST_Server::EDITABLE,
 				'callback'            => [ $this, 'srfm_save_global_settings' ],
-				'permission_callback' => [ $sureforms_helper, 'get_items_permissions_check' ],
+				'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
 			]
 		);
 		register_rest_route(
@@ -63,7 +63,7 @@ class Global_Settings {
 			[
 				'methods'             => WP_REST_Server::READABLE,
 				'callback'            => [ $this, 'srfm_get_general_settings' ],
-				'permission_callback' => [ $sureforms_helper, 'get_items_permissions_check' ],
+				'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
 			]
 		);
 	}
@@ -107,6 +107,9 @@ class Global_Settings {
 			case 'security-settings':
 				$is_option_saved = self::srfm_save_security_settings( $setting_options );
 				break;
+			case 'payments-settings':
+				$is_option_saved = self::srfm_save_payments_settings( $setting_options );
+				break;
 			default:
 				$is_option_saved = false;
 				break;
@@ -131,16 +134,53 @@ class Global_Settings {
 	 */
 	public static function srfm_save_general_settings( $setting_options ) {
 
-		$srfm_ip_log         = $setting_options['srfm_ip_log'] ?? false;
-		$srfm_form_analytics = $setting_options['srfm_form_analytics'] ?? false;
+		$srfm_ip_log             = $setting_options['srfm_ip_log'] ?? false;
+		$srfm_form_analytics     = $setting_options['srfm_form_analytics'] ?? false;
+		$srfm_bsf_analytics      = $setting_options['srfm_bsf_analytics'] ?? false;
+		$srfm_admin_notification = isset( $setting_options['srfm_admin_notification'] ) ? (bool) $setting_options['srfm_admin_notification'] : true;
 
-		return update_option(
-			'srfm_general_settings_options',
-			[
-				'srfm_ip_log'         => $srfm_ip_log,
-				'srfm_form_analytics' => $srfm_form_analytics,
-			]
-		);
+		$settings = [
+			'srfm_ip_log'             => $srfm_ip_log,
+			'srfm_form_analytics'     => $srfm_form_analytics,
+			'srfm_admin_notification' => $srfm_admin_notification,
+		];
+
+		/**
+		 * We are updating sureforms_analytics_optin option from the general settings as it has been introduced
+		 * as part of general settings. Since the option sureforms_analytics_optin is already available from BSF analytics library
+		 * We are updating this independently.
+		 *
+		 * @since 1.7.0
+		 *
+		 * @since 2.5.1 - Renamed sureforms_analytics_optin to sureforms_usage_optin.
+		 */
+		$analytics_result = self::update_bsf_analytics( $srfm_bsf_analytics );
+
+		$general_result = update_option( 'srfm_general_settings_options', $settings );
+
+		/**
+		 * Returns the output of update_bsf_analytics or srfm_general_settings_options option.
+		 *
+		 * @since 1.7.0
+		 */
+		return $analytics_result || $general_result;
+	}
+
+	/**
+	 * Toggle BSF analytics usage tracking in WP general settings.
+	 *
+	 * @param array<mixed> $settings general settings array.
+	 * @return bool
+	 * @since 1.7.0
+	 */
+	public static function update_bsf_analytics( $settings ) {
+		if ( true === $settings ) {
+			$enable_tracking = 'yes';
+		} else {
+			$enable_tracking = '';
+		}
+
+		return update_option( 'sureforms_usage_optin', $enable_tracking );
 	}
 
 	/**
@@ -151,23 +191,40 @@ class Global_Settings {
 	 * @since 0.0.1
 	 */
 	public static function srfm_save_general_settings_dynamic_opt( $setting_options ) {
-
-		$options_names = [
-			'srfm_url_block_required_text'          => $setting_options['srfm_url_block_required_text'],
-			'srfm_input_block_required_text'        => $setting_options['srfm_input_block_required_text'],
-			'srfm_input_block_unique_text'          => $setting_options['srfm_input_block_unique_text'],
-			'srfm_address_block_required_text'      => $setting_options['srfm_address_block_required_text'],
-			'srfm_phone_block_required_text'        => $setting_options['srfm_phone_block_required_text'],
-			'srfm_phone_block_unique_text'          => $setting_options['srfm_phone_block_unique_text'],
-			'srfm_number_block_required_text'       => $setting_options['srfm_number_block_required_text'],
-			'srfm_textarea_block_required_text'     => $setting_options['srfm_textarea_block_required_text'],
-			'srfm_multi_choice_block_required_text' => $setting_options['srfm_multi_choice_block_required_text'],
-			'srfm_checkbox_block_required_text'     => $setting_options['srfm_checkbox_block_required_text'],
-			'srfm_gdpr_block_required_text'         => $setting_options['srfm_gdpr_block_required_text'],
-			'srfm_email_block_required_text'        => $setting_options['srfm_email_block_required_text'],
-			'srfm_email_block_unique_text'          => $setting_options['srfm_email_block_unique_text'],
-			'srfm_dropdown_block_required_text'     => $setting_options['srfm_dropdown_block_required_text'],
+		$options_keys = [
+			'srfm_url_block_required_text',
+			'srfm_input_block_required_text',
+			'srfm_input_block_unique_text',
+			'srfm_address_block_required_text',
+			'srfm_phone_block_required_text',
+			'srfm_phone_block_unique_text',
+			'srfm_number_block_required_text',
+			'srfm_textarea_block_required_text',
+			'srfm_multi_choice_block_required_text',
+			'srfm_checkbox_block_required_text',
+			'srfm_gdpr_block_required_text',
+			'srfm_email_block_required_text',
+			'srfm_email_block_unique_text',
+			'srfm_dropdown_block_required_text',
+			'srfm_valid_phone_number',
+			'srfm_valid_url',
+			'srfm_confirm_email_same',
+			'srfm_valid_email',
+			'srfm_input_min_value',
+			'srfm_input_max_value',
+			'srfm_dropdown_min_selections',
+			'srfm_dropdown_max_selections',
+			'srfm_multi_choice_min_selections',
+			'srfm_multi_choice_max_selections',
 		];
+
+		$options_names = [];
+
+		foreach ( $options_keys as $key ) {
+			if ( isset( $setting_options[ $key ] ) ) {
+				$options_names[ $key ] = $setting_options[ $key ];
+			}
+		}
 
 		return update_option( 'srfm_default_dynamic_block_option', apply_filters( 'srfm_general_dynamic_options_to_save', $options_names, $setting_options ) );
 	}
@@ -243,6 +300,55 @@ class Global_Settings {
 	}
 
 	/**
+	 * Save Payments Settings
+	 *
+	 * Handles saving of both global payment settings (currency, payment_mode) and
+	 * gateway-specific settings based on the gateway parameter.
+	 *
+	 * @param array<mixed> $setting_options Setting options.
+	 * @return bool
+	 * @since 2.0.0
+	 */
+	public static function srfm_save_payments_settings( $setting_options ) {
+		$gateway = isset( $setting_options['gateway'] ) && is_string( $setting_options['gateway'] )
+			? sanitize_text_field( $setting_options['gateway'] )
+			: 'stripe';
+
+		// Handle global settings (currency, payment_mode).
+		if ( isset( $setting_options['currency'] ) && ! empty( $setting_options['currency'] ) && is_string( $setting_options['currency'] ) ) {
+			$currency = sanitize_text_field( $setting_options['currency'] );
+			Payment_Helper::update_global_setting( 'currency', $currency );
+		}
+
+		$payment_mode = null;
+		if ( isset( $setting_options['payment_mode'] ) && ! empty( $setting_options['payment_mode'] ) && is_string( $setting_options['payment_mode'] ) ) {
+			$payment_mode = sanitize_text_field( $setting_options['payment_mode'] );
+			Payment_Helper::update_global_setting( 'payment_mode', $payment_mode );
+		}
+
+		// Save currency sign position.
+		if ( isset( $setting_options['currency_sign_position'] ) && ! empty( $setting_options['currency_sign_position'] ) && is_string( $setting_options['currency_sign_position'] ) ) {
+			$currency_sign_position = sanitize_text_field( $setting_options['currency_sign_position'] );
+			Payment_Helper::update_global_setting( 'currency_sign_position', $currency_sign_position );
+		}
+
+		// Handle gateway-specific settings.
+		if ( 'stripe' === $gateway ) {
+			$current_stripe_settings = Payment_Helper::get_gateway_settings( 'stripe' );
+
+			// Update payment_mode in stripe settings as well (if provided).
+			if ( null !== $payment_mode ) {
+				$current_stripe_settings['payment_mode'] = $payment_mode;
+			}
+
+			// Connection data (keys, account info) is managed separately via OAuth.
+			return Payment_Helper::update_gateway_settings( 'stripe', $current_stripe_settings );
+		}
+
+		return true;
+	}
+
+	/**
 	 * Get Settings Form Data
 	 *
 	 * @param \WP_REST_Request $request Request object or array containing form data.
@@ -270,11 +376,28 @@ class Global_Settings {
 		$global_setting_options = get_options( $options_to_get );
 
 		if ( empty( $global_setting_options['srfm_general_settings_options'] ) ) {
-			$global_setting_options['srfm_general_settings_options'] = [
-				'srfm_ip_log'         => false,
-				'srfm_form_analytics' => false,
-			];
+				$global_setting_options['srfm_general_settings_options'] = [
+					'srfm_ip_log'             => false,
+					'srfm_form_analytics'     => false,
+					'srfm_admin_notification' => true,
+				];
 		}
+
+		if ( ! isset( $global_setting_options['srfm_general_settings_options']['srfm_admin_notification'] ) ) {
+				$global_setting_options['srfm_general_settings_options']['srfm_admin_notification'] = true;
+		}
+
+		/**
+		 * We have introduced toggle for analytics optin in the general settings.
+		 * Hence retrieving the option sureforms_analytics_optin to get current status.
+		 *
+		 * @since 1.7.0
+		 *
+		 * @since 2.5.1 - Renamed sureforms_analytics_optin to sureforms_usage_optin.
+		 */
+		$srfm_bsf_analytics = get_option( 'sureforms_usage_optin', false ) === 'yes' ? true : false;
+		$global_setting_options['srfm_general_settings_options']['srfm_bsf_analytics'] = $srfm_bsf_analytics;
+
 		if ( empty( $global_setting_options['srfm_default_dynamic_block_option'] ) ) {
 			$global_setting_options['srfm_default_dynamic_block_option'] = Helper::default_dynamic_block_option();
 		}
@@ -301,6 +424,9 @@ class Global_Settings {
 				'srfm_honeypot'                => false,
 			];
 		}
+
+		// Apply filter to allow other modules to add their settings.
+		$global_setting_options = apply_filters( 'srfm_global_settings_data', $global_setting_options );
 
 		wp_send_json( $global_setting_options );
 	}

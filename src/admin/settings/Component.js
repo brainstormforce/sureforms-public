@@ -2,25 +2,31 @@ import { useState, useEffect } from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
 import { __ } from '@wordpress/i18n';
 import { useDebouncedCallback } from 'use-debounce';
-import 'react-loading-skeleton/dist/skeleton.css';
-import toast, { Toaster, ToastBar } from 'react-hot-toast';
-
+import { toast } from '@bsf/force-ui';
+import { cn } from '@Utils/Helpers';
 import { navigation } from './Navigation';
 import GeneralPage from './pages/General';
 import ValidationsPage from './pages/Validations';
 import SecurityPage from './pages/Security';
 import IntegrationPage from './pages/Integrations';
+import PaymentsPage from '../payment/global-setting-page';
+import OttoKitPage from './pages/OttoKit';
 import { applyFilters } from '@wordpress/hooks';
+import PageTitleSection from '@Admin/components/PageTitleSection';
 
-const Component = ( { path } ) => {
+const Component = ( { path, subpage } ) => {
 	const [ pageTitle, setPageTitle ] = useState( '' );
-	const [ pageIcon, setPageIcon ] = useState( '' );
+	// State to maintain whether to hide the page title.
+	const [ hidePageTitle, setHidePageTitle ] = useState( false );
 	const [ loading, setLoading ] = useState( false );
+	const [ helpText, setHelpText ] = useState( '' );
 
 	// Global settings states.
 	const [ generalTabOptions, setGeneralTabOptions ] = useState( {
 		srfm_ip_log: false,
 		srfm_form_analytics: false,
+		srfm_bsf_analytics: false,
+		srfm_admin_notification: true,
 	} );
 	const [ emailTabOptions, setEmailTabOptions ] = useState( {
 		srfm_email_summary: false,
@@ -45,6 +51,7 @@ const Component = ( { path } ) => {
 	const [ preDynamicBlockOptions, setPreDynamicBlockOptions ] = useState(
 		{}
 	);
+	const [ paymentsSettings, setPaymentsSettings ] = useState( {} );
 
 	// Options to fetch from API.
 	const optionsToFetch = [
@@ -60,11 +67,16 @@ const Component = ( { path } ) => {
 			navigation.forEach( ( single ) => {
 				const slug = single?.slug && single.slug ? single.slug : '';
 				const title = single?.name && single.name ? single.name : '';
-				const icon = single?.icon && single.icon ? single.icon : '';
+				// eslint-disable-next-line no-shadow
+				const helpText =
+					single?.helpText && single.helpText ? single.helpText : '';
+				// Check for the property to hide the page title.
+				const hideTitle = !! single?.hidePageTitle;
 				if ( slug ) {
 					if ( slug === path ) {
 						setPageTitle( title );
-						setPageIcon( icon );
+						setHidePageTitle( hideTitle );
+						setHelpText( helpText );
 					}
 				}
 			} );
@@ -91,11 +103,17 @@ const Component = ( { path } ) => {
 				} = data;
 
 				if ( srfm_general_settings_options ) {
-					const { srfm_ip_log, srfm_form_analytics } =
-						srfm_general_settings_options;
+					const {
+						srfm_ip_log,
+						srfm_form_analytics,
+						srfm_bsf_analytics,
+						srfm_admin_notification,
+					} = srfm_general_settings_options;
 					setGeneralTabOptions( {
 						srfm_ip_log,
 						srfm_form_analytics,
+						srfm_bsf_analytics,
+						srfm_admin_notification,
 					} );
 				}
 
@@ -151,6 +169,11 @@ const Component = ( { path } ) => {
 						...data.srfm_default_dynamic_block_option,
 					} );
 				}
+
+				if ( data.payment_settings ) {
+					setPaymentsSettings( data.payment_settings );
+				}
+
 				setLoading( false );
 			} catch ( error ) {
 				console.error( 'Error fetching data:', error );
@@ -168,17 +191,10 @@ const Component = ( { path } ) => {
 					( value ) => value.trim() === ''
 				);
 				if ( hasEmptyValue ) {
-					toast.dismiss();
 					toast.error(
-						__( 'This field cannot be left blank.', 'sureforms' ),
-						{
-							duration: 0,
-						}
+						__( 'This field cannot be left blank.', 'sureforms' )
 					);
 					setDynamicBlockOptions( { ...preDynamicBlockOptions } );
-					setTimeout( () => {
-						toast.dismiss();
-					}, 1500 );
 					return;
 				}
 			}
@@ -191,14 +207,8 @@ const Component = ( { path } ) => {
 					'X-WP-Nonce': srfm_admin.global_settings_nonce,
 				},
 			} ).then( ( response ) => {
-				toast.dismiss();
-				toast.success( response?.data, {
-					duration: 1500,
-				} );
+				toast.success( response?.data );
 				setPreDynamicBlockOptions( newFormData );
-				setTimeout( () => {
-					toast.dismiss();
-				}, 1500 );
 			} );
 		} catch ( error ) {
 			console.error( error );
@@ -237,42 +247,37 @@ const Component = ( { path } ) => {
 				[ setting ]: value,
 			};
 			setDynamicBlockOptions( updatedTabOptions );
+		} else if ( tab === 'payments-settings' ) {
+			updatedTabOptions = {
+				...paymentsSettings,
+				srfm_tab: tab,
+				[ setting ]: value,
+			};
+			setPaymentsSettings( updatedTabOptions );
 		} else {
 			return;
 		}
 		debouncedSave( updatedTabOptions, tab );
 	}
+	const pathsForFullWidth = [ 'ottokit-settings', 'integration-settings' ];
+	const isFullWidth = pathsForFullWidth.includes( path );
 
 	return (
 		<>
-			<Toaster
-				containerClassName="srfm-toast-container"
-				position="top-right"
-			>
-				{ ( t ) => (
-					<ToastBar
-						toast={ t }
-						style={ {
-							...t.style,
-							animation: t.visible
-								? 'slide-in-left 0.5s ease'
-								: 'slide-out-right 0.5s ease',
-						} }
-					/>
+			{ pageTitle && (
+				<PageTitleSection
+					title={ pageTitle }
+					hidePageTitle={ hidePageTitle }
+					helpText={ helpText }
+				/>
+			) }
+			{ /* Added the below check to make the container full width for the OttoKit tab. */ }
+			<div
+				className={ cn(
+					'mx-auto p-4 rounded-xl bg-background-primary shadow-sm',
+					isFullWidth ? 'w-full' : 'max-w-content-container'
 				) }
-			</Toaster>
-			{ pageIcon && pageTitle && <div className="srfm-page-heading">
-				<div className="srfm-page-icon">{ pageIcon }</div>
-				<h4
-					style={ {
-						margin: '0',
-						color: '#0F172A',
-					} }
-				>
-					{ pageTitle }
-				</h4>
-			</div> }
-			<div className="srfm-page-content">
+			>
 				{ 'general-settings' === path && (
 					<GeneralPage
 						loading={ loading }
@@ -297,8 +302,21 @@ const Component = ( { path } ) => {
 					/>
 				) }
 
+				{ 'ottokit-settings' === path && (
+					<OttoKitPage loading={ loading } />
+				) }
+
 				{ 'integration-settings' === path && (
 					<IntegrationPage loading={ loading } />
+				) }
+				{ 'payments-settings' === path && (
+					<PaymentsPage
+						loading={ loading }
+						paymentsSettings={ paymentsSettings }
+						updateGlobalSettings={ updateGlobalSettings }
+						setPaymentsSettings={ setPaymentsSettings }
+						subpage={ subpage }
+					/>
 				) }
 				{ applyFilters(
 					'srfm.settings.page.content',

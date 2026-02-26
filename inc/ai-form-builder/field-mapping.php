@@ -58,6 +58,12 @@ class Field_Mapping {
 		// Initialize post content string.
 		$post_content = '';
 
+		$is_conversational = isset( $params['is_conversional'] ) ? filter_var( $params['is_conversional'], FILTER_VALIDATE_BOOLEAN ) : false;
+		$form_type         = isset( $params['form_type'] ) ? Helper::get_string_value( $params['form_type'] ) : 'simple';
+
+		// Filer to skip fields while mapping the fields.
+		$skip_fields = apply_filters( 'srfm_ai_field_map_skip_fields', [], $is_conversational, $form_type );
+
 		// Loop through questions.
 		foreach ( $form_fields as $question ) {
 
@@ -79,11 +85,15 @@ class Field_Mapping {
 					'label'    => sanitize_text_field( $question['label'] ),
 					'required' => filter_var( $question['required'], FILTER_VALIDATE_BOOLEAN ),
 					'help'     => sanitize_text_field( $question['helpText'] ),
+					'slug'     => isset( $question['slug'] ) ? sanitize_text_field( $question['slug'] ) : '',
 				]
 			);
 
-			// Determine field type based on fieldType.
-			switch ( $question['fieldType'] ) {
+			// Apply filter to modify field type.
+			$field_type = apply_filters( 'srfm_ai_field_modify_field_type', $question['fieldType'], $question, $is_conversational, $form_type );
+
+			// Determine field type based on field_type.
+			switch ( $field_type ) {
 				case 'input':
 				case 'email':
 				case 'number':
@@ -96,11 +106,37 @@ class Field_Mapping {
 				case 'multi-choice':
 				case 'url':
 				case 'phone':
+				case 'payment':
+					// if payment block then map payment specific attributes.
+					if ( 'payment' === $field_type ) {
+						$merged_attributes['customerNameField']   = isset( $question['customerNameField'] ) ? sanitize_text_field( $question['customerNameField'] ) : '';
+						$merged_attributes['customerEmailField']  = isset( $question['customerEmailField'] ) ? sanitize_text_field( $question['customerEmailField'] ) : '';
+						$merged_attributes['paymentType']         = isset( $question['paymentType'] ) && in_array( $question['paymentType'], [ 'one-time', 'subscription' ], true ) ? sanitize_text_field( $question['paymentType'] ) : 'one-time';
+						$merged_attributes['subscriptionPlan']    = isset( $question['subscriptionPlan'] ) && is_array( $question['subscriptionPlan'] ) ? [
+							'name'          => isset( $question['subscriptionPlan']['name'] ) ? sanitize_text_field( $question['subscriptionPlan']['name'] ) : 'Subscription Plan',
+							'interval'      => isset( $question['subscriptionPlan']['interval'] ) && in_array( $question['subscriptionPlan']['interval'], [ 'day', 'week', 'month', 'year' ], true ) ? sanitize_text_field( $question['subscriptionPlan']['interval'] ) : 'month',
+							'billingCycles' => isset( $question['subscriptionPlan']['billingCycles'] ) ? sanitize_text_field( $question['subscriptionPlan']['billingCycles'] ) : 'ongoing',
+						] : [
+							'name'          => 'Subscription Plan',
+							'interval'      => 'month',
+							'billingCycles' => 'ongoing',
+						];
+						$merged_attributes['amountType']          = isset( $question['amountType'] ) && in_array( $question['amountType'], [ 'fixed', 'variable', 'user-choice' ], true ) ? sanitize_text_field( $question['amountType'] ) : 'fixed';
+						$merged_attributes['fixedAmount']         = isset( $question['fixedAmount'] ) && is_numeric( $question['fixedAmount'] ) ? floatval( $question['fixedAmount'] ) : 10;
+						$merged_attributes['minimumAmount']       = isset( $question['minimumAmount'] ) && is_numeric( $question['minimumAmount'] ) ? floatval( $question['minimumAmount'] ) : 0;
+						$merged_attributes['amountLabel']         = isset( $question['amountLabel'] ) ? sanitize_text_field( $question['amountLabel'] ) : 'Enter Amount';
+						$merged_attributes['variableAmountField'] = isset( $question['variableAmountField'] ) ? sanitize_text_field( $question['variableAmountField'] ) : '';
+					}
+
 					// Handle specific attributes for certain fields.
-					if ( 'dropdown' === $question['fieldType'] && ! empty( $question['fieldOptions'] ) && is_array( $question['fieldOptions'] ) &&
+					if ( 'dropdown' === $field_type && ! empty( $question['fieldOptions'] ) && is_array( $question['fieldOptions'] ) &&
 					! empty( $question['fieldOptions'][0]['label'] )
 					) {
 						$merged_attributes['options'] = $question['fieldOptions'];
+
+						if ( isset( $question['showValues'] ) ) {
+							$merged_attributes['showValues'] = filter_var( $question['showValues'], FILTER_VALIDATE_BOOLEAN );
+						}
 
 						// remove icon from options for the dropdown field.
 						foreach ( $merged_attributes['options'] as $key => $option ) {
@@ -109,7 +145,7 @@ class Field_Mapping {
 							}
 						}
 					}
-					if ( 'multi-choice' === $question['fieldType'] ) {
+					if ( 'multi-choice' === $field_type ) {
 
 						// Remove duplicate icons and clear icons if all are the same.
 						$icons        = array_column( $question['fieldOptions'], 'icon' );
@@ -135,6 +171,10 @@ class Field_Mapping {
 							);
 						}
 
+						if ( isset( $question['showValues'] ) ) {
+							$merged_attributes['showValues'] = filter_var( $question['showValues'], FILTER_VALIDATE_BOOLEAN );
+						}
+
 						// Set single selection if provided.
 						if ( isset( $question['singleSelection'] ) ) {
 							$merged_attributes['singleSelection'] = filter_var( $question['singleSelection'], FILTER_VALIDATE_BOOLEAN );
@@ -145,11 +185,19 @@ class Field_Mapping {
 							$merged_attributes['choiceWidth'] = 33.33;
 						}
 					}
-					if ( 'phone' === $question['fieldType'] ) {
+					if ( 'phone' === $field_type ) {
 						$merged_attributes['autoCountry'] = true;
 					}
 
-					$post_content .= '<!-- wp:srfm/' . $question['fieldType'] . ' ' . Helper::encode_json( $merged_attributes ) . ' /-->' . PHP_EOL;
+					// Apply filter to modify merged attributes.
+					$merged_attributes = apply_filters( 'srfm_ai_form_builder_modify_merged_attributes', $merged_attributes, $question, $is_conversational, $form_type );
+
+					// if field type is needs to be skipped then skip that field.
+					if ( ! empty( $skip_fields ) && in_array( $field_type, $skip_fields, true ) ) {
+						break;
+					}
+
+					$post_content .= '<!-- wp:srfm/' . $field_type . ' ' . Helper::encode_json( $merged_attributes ) . ' /-->' . PHP_EOL;
 					break;
 				case 'slider':
 				case 'page-break':
@@ -158,24 +206,50 @@ class Field_Mapping {
 				case 'upload':
 				case 'hidden':
 				case 'rating':
+				case 'signature':
 					// If pro version is not active then do not add pro fields.
 					if ( ! defined( 'SRFM_PRO_VER' ) ) {
 						break;
 					}
 
+					if ( 'signature' === $field_type && defined( 'SRFM_PRO_PRODUCT' ) && SRFM_PRO_PRODUCT === 'SureForms Starter' ) {
+						// If the product is SureForms Starter then skip the signature field.
+						break;
+					}
+
 					// Handle specific attributes for certain pro fields.
-					if ( 'date-picker' === $question['fieldType'] ) {
+					if ( 'slider' === $field_type ) {
+						$merged_attributes['min']  = ! empty( $question['min'] ) ? filter_var( $question['min'], FILTER_VALIDATE_INT ) : 0;
+						$merged_attributes['max']  = ! empty( $question['max'] ) ? filter_var( $question['max'], FILTER_VALIDATE_INT ) : 100;
+						$merged_attributes['step'] = ! empty( $question['step'] ) ? filter_var( $question['step'], FILTER_VALIDATE_INT ) : 1;
+
+						$merged_attributes['prefixTooltip'] = ! empty( $question['prefixTooltip'] ) ? $question['prefixTooltip'] : '';
+						$merged_attributes['suffixTooltip'] = ! empty( $question['suffixTooltip'] ) ? $question['suffixTooltip'] : '';
+
+						// get min and max then diveide by 2 and round it.
+						$min = $merged_attributes['min'];
+						$max = $merged_attributes['max'];
+
+						if ( is_numeric( $min ) && is_numeric( $max ) ) {
+							$min = intval( $min );
+							$max = intval( $max );
+
+							// If min and max are same then set the value to 0.
+							$merged_attributes['numberDefaultValue'] = Helper::get_string_value( round( ( $min + $max ) / 2 ) );
+						}
+					}
+					if ( 'date-picker' === $field_type ) {
 						$merged_attributes['dateFormat'] = ! empty( $question['dateFormat'] ) ? sanitize_text_field( $question['dateFormat'] ) : 'mm/dd/yy';
 						$merged_attributes['min']        = ! empty( $question['minDate'] ) ? sanitize_text_field( $question['minDate'] ) : '';
 						$merged_attributes['max']        = ! empty( $question['maxDate'] ) ? sanitize_text_field( $question['maxDate'] ) : '';
 					}
-					if ( 'time-picker' === $question['fieldType'] ) {
+					if ( 'time-picker' === $field_type ) {
 						$merged_attributes['increment']            = ! empty( $question['increment'] ) ? filter_var( $question['increment'], FILTER_VALIDATE_INT ) : 30;
 						$merged_attributes['showTwelveHourFormat'] = ! empty( $question['showTwelveHourFormat'] ) ? filter_var( $question['useTwelveHourFormat'], FILTER_VALIDATE_BOOLEAN ) : false;
 						$merged_attributes['min']                  = ! empty( $question['minTime'] ) ? sanitize_text_field( $question['minTime'] ) : '';
 						$merged_attributes['max']                  = ! empty( $question['maxTime'] ) ? sanitize_text_field( $question['maxTime'] ) : '';
 					}
-					if ( 'rating' === $question['fieldType'] ) {
+					if ( 'rating' === $field_type ) {
 						$merged_attributes['iconShape']     = ! empty( $question['iconShape'] ) ? sanitize_text_field( $question['iconShape'] ) : 'star';
 						$merged_attributes['showText']      = ! empty( $question['showTooltip'] ) ? filter_var( $question['showTooltip'], FILTER_VALIDATE_BOOLEAN ) : false;
 						$merged_attributes['defaultRating'] = ! empty( $question['defaultRating'] ) ? filter_var( $question['defaultRating'], FILTER_VALIDATE_INT ) : 0;
@@ -190,7 +264,7 @@ class Field_Mapping {
 							}
 						}
 					}
-					if ( 'upload' === $question['fieldType'] ) {
+					if ( 'upload' === $field_type ) {
 						if ( ! empty( $question['allowedTypes'] ) ) {
 							$allowed_types = str_replace( '.', '', $question['allowedTypes'] );
 
@@ -240,7 +314,7 @@ class Field_Mapping {
 
 					}
 
-					$post_content .= '<!-- wp:srfm/' . $question['fieldType'] . ' ' . Helper::encode_json( $merged_attributes ) . ' /-->' . PHP_EOL;
+					$post_content .= '<!-- wp:srfm/' . $field_type . ' ' . Helper::encode_json( $merged_attributes ) . ' /-->' . PHP_EOL;
 					break;
 				default:
 					// Unsupported field type - fallback to input.
@@ -248,7 +322,7 @@ class Field_Mapping {
 			}
 		}
 
-		return $post_content;
+		return apply_filters( 'srfm_ai_form_builder_post_content', $post_content, $is_conversational, $form_type );
 	}
 
 }

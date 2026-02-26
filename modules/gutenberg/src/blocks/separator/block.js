@@ -22,6 +22,9 @@ registerBlockType( 'srfm/separator', {
 		'Add a modern separator to divide your page content with icon/text.',
 		'sureforms'
 	),
+	supports: {
+		html: false,
+	},
 	icon: UAGB_Block_Icons.separator,
 	category: srfm_spec_blocks_info.category,
 	keywords: [ __( 'divider', 'sureforms' ), __( 'separator', 'sureforms' ) ],

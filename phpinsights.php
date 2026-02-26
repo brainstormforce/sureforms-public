@@ -85,6 +85,11 @@ return [
 		NunoMaduro\PhpInsights\Domain\Insights\ForbiddenDefineFunctions::class,
 
 		/**
+		 * Forbidden functions (error_log, print_r for logging)
+		 */
+		PHP_CodeSniffer\Standards\Generic\Sniffs\PHP\ForbiddenFunctionsSniff::class,
+
+		/**
 		 * Return, Property, Parameter  type hint
 		 */
 		SlevomatCodingStandard\Sniffs\TypeHints\ReturnTypeHintSniff::class,

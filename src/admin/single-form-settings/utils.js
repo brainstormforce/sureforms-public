@@ -74,3 +74,11 @@ export const forcePanel = () => {
 		);
 	}
 };
+
+export const validateClassName = ( className ) => {
+	// Regular expression to validate a Unicode-aware CSS class name
+	const classNameRegex = /^[^\d\-_][\w\p{L}\p{N}\-_]*$/u;
+
+	// Check if the className matches the pattern
+	return classNameRegex.test( className );
+};

@@ -22,23 +22,7 @@ module.exports = {
 	optimization: {
 		usedExports: true,
 	},
-	plugins: [
-		...defaultConfig.plugins,
-		new CopyPlugin( {
-			patterns: [
-				{
-					from: path.resolve(
-						__dirname,
-						'node_modules/@surecart/components/dist/surecart/icon-assets'
-					),
-					to: path.resolve( __dirname, 'assets/build/icon-assets' ),
-				},
-			],
-		} ),
-		new webpack.optimize.LimitChunkCountPlugin( {
-			maxChunks: 1,
-		} ),
-	],
+	plugins: [ ...defaultConfig.plugins ],
 	entry: {
 		formEditor: path.resolve(
 			__dirname,
@@ -63,8 +47,11 @@ module.exports = {
 			'src/admin/components/PageHeader.js'
 		),
 		dashboard: path.resolve( __dirname, 'src/admin/dashboard/index.js' ),
+		suremail: path.resolve( __dirname, 'src/admin/SureMail.js' ),
 		blocks: path.resolve( __dirname, 'src/blocks/blocks.js' ),
 		entries: path.resolve( __dirname, 'src/admin/entries/index.js' ),
+		payments: path.resolve( __dirname, 'src/admin/payment/index.js' ),
+		forms: path.resolve( __dirname, 'src/admin/forms/index.js' ),
 	},
 	resolve: {
 		alias: {
@@ -77,6 +64,7 @@ module.exports = {
 			'@Svg': path.resolve( __dirname, 'assets/svg/' ),
 			'@Attributes': path.resolve( __dirname, 'src/blocks-attributes/' ),
 			'@Image': path.resolve( __dirname, 'images/' ),
+			'@IncBlocks': path.resolve( __dirname, 'inc/blocks/' ),
 		},
 	},
 	module: {
@@ -85,7 +73,12 @@ module.exports = {
 			...defaultConfig.module.rules,
 			{
 				test: /\.(scss|css)$/,
-				exclude: [ /node_modules/, /style/, /admin.scss/ ],
+				exclude: [
+					/node_modules/,
+					/style/,
+					/admin.scss/,
+					/tw-base.scss/,
+				],
 				use: [
 					{
 						loader: 'style-loader',

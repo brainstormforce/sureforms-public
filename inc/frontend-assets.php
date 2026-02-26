@@ -10,6 +10,8 @@
 namespace SRFM\Inc;
 
 use SRFM\Inc\Traits\Get_Instance;
+use SRFM\Inc\Payments\Payment_Helper;
+use SRFM\Inc\Payments\Stripe\Stripe_Helper;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -127,10 +129,30 @@ class Frontend_Assets {
 			[
 				'site_url' => site_url(),
 				'nonce'    => wp_create_nonce( 'wp_rest' ),
-				'messages' => Translatable::get_frontend_validation_messages(),
+				'messages' => array_merge(
+					Translatable::get_frontend_validation_messages(),
+					[
+						'srfm_turnstile_error_message' => __( 'Turnstile sitekey verification failed. Please contact your site administrator.', 'sureforms' ),
+						'srfm_google_captcha_error_message' => __( 'Google Captcha sitekey verification failed. Please contact your site administrator.', 'sureforms' ),
+						'srfm_captcha_h_error_message' => __( 'HCaptcha sitekey verification failed. Please contact your site administrator.', 'sureforms' ),
+					]
+				),
 				'is_rtl'   => $is_rtl,
 			]
 		);
+
+		$current_post = get_post();
+
+		// Let's conditionally load form assets if current requested page has our forms.
+		if ( $current_post instanceof \WP_Post ) {
+			// Handles condition for Instant Form, Block Embedded, and Shortcode Embedded forms.
+			$load_assets = ( SRFM_FORMS_POST_TYPE === $current_post->post_type || ( false !== strpos( $current_post->post_content, 'wp:srfm/form' ) || has_shortcode( $current_post->post_content, 'sureforms' ) ) );
+
+			if ( $load_assets ) {
+				// Load needed styles in head tag if current requested page has SureForms form.
+				self::enqueue_scripts_and_styles();
+			}
+		}
 	}
 
 	/**
@@ -165,11 +187,12 @@ class Frontend_Assets {
 	/**
 	 * Enqueue block scripts
 	 *
-	 * @param string $block_type block name.
+	 * @param string               $block_type block name.
+	 * @param array<string, mixed> $attr Array of block attributes.
 	 * @since 0.0.1
 	 * @return void
 	 */
-	public function enqueue_srfm_script( $block_type ) {
+	public function enqueue_srfm_script( $block_type, $attr ) {
 		$block_name = str_replace( 'srfm/', '', $block_type );
 		// associative array to keep the count of block that requires scripts to work.
 		$script_dep_blocks = [
@@ -193,10 +216,16 @@ class Frontend_Assets {
 			$script_dep_blocks[ $block_name ] += 1;
 			$js_uri                            = SRFM_URL . 'assets/js/' . $dir_name . '/blocks/';
 			$js_vendor_uri                     = SRFM_URL . 'assets/js/minified/deps/';
-
-			if ( 'phone' === $block_name
-			) {
+			$css_vendor_uri                    = SRFM_URL . 'assets/css/minified/deps/';
+			if ( 'phone' === $block_name ) {
+				// Enqueue main intl-tel-input library.
 				wp_enqueue_script( SRFM_SLUG . "-{$block_name}-intl-input-deps", $js_vendor_uri . 'intl/intTelInputWithUtils.min.js', [], SRFM_VER, true );
+
+				// Enqueue i18n translations if available for current locale.
+				self::enqueue_intl_tel_input_i18n(
+					SRFM_SLUG . "-{$block_name}-intl-i18n",
+					SRFM_SLUG . "-{$block_name}-intl-input-deps"
+				);
 			}
 
 			if ( 'dropdown' === $block_name ) {
@@ -211,21 +240,192 @@ class Frontend_Assets {
 					[
 						'srfm-tom-select',
 						'srfm-dropdown',
+						'wp-api-fetch',
 					],
 					SRFM_VER,
 					true
 				);
 			}
 
-			if ( 'dropdown' !== $block_name ) {
-				wp_enqueue_script( SRFM_SLUG . "-{$block_name}", $js_uri . $block_name . $file_prefix . '.js', [], SRFM_VER, true );
+			$is_not_dropdown = 'dropdown' !== $block_name;
+			$is_not_textarea = 'textarea' !== $block_name;
+
+			if ( $is_not_dropdown && $is_not_textarea ) {
+				// Set dependencies for phone block to ensure intl-tel-input loads first.
+				$block_dependencies = [];
+				if ( 'phone' === $block_name ) {
+					// Phone.js depends on intl-tel-input library (and i18n if loaded).
+					$block_dependencies = [ SRFM_SLUG . "-{$block_name}-intl-input-deps" ];
+				}
+				wp_enqueue_script( SRFM_SLUG . "-{$block_name}", $js_uri . $block_name . $file_prefix . '.js', $block_dependencies, SRFM_VER, true );
 			}
 
-			if ( 'input' === $block_name ) {
-				// Input mask JS.
+			if ( 'input' === $block_name && isset( $attr['inputMask'] ) && 'none' !== $attr['inputMask'] ) {
+				// Input mask JS - only load when inputMask is configured.
 				wp_enqueue_script( SRFM_SLUG . '-inputmask', $js_vendor_uri . 'inputmask.min.js', [], SRFM_VER, true );
 			}
+
+			// Adding js for the input textarea block.
+			if ( 'textarea' === $block_name && ! empty( $attr['isRichText'] ) ) {
+				wp_enqueue_script( SRFM_SLUG . '-quill-editor', $js_vendor_uri . '/quill.min.js', [], SRFM_VER, true );
+
+				wp_enqueue_style( SRFM_SLUG . '-quill-editor', $css_vendor_uri . 'quill/quill.snow.css', [], SRFM_VER );
+
+				wp_enqueue_script( SRFM_SLUG . '-textarea', $js_uri . 'textarea' . $file_prefix . '.js', [], SRFM_VER, true );
+			}
 		}
+		/**
+		 * Enqueueing the input mask JS for input and date-picker blocks.
+		 * This is a workaround for the input mask JS to work with the date-picker block.
+		 * Not adding in the above existing condition because code only runs when free block are added in the form.
+		 * Aim is to reduce redundant code and library file duplication.
+		 */
+		if ( 'date-picker' === $block_name ) {
+			// Input mask JS.
+			wp_enqueue_script( SRFM_SLUG . '-inputmask', SRFM_URL . 'assets/js/minified/deps/inputmask.min.js', [], SRFM_VER, true );
+		}
+
+		if ( 'payment' === $block_name ) {
+			// Register Stripe.js library from CDN.
+			// phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion -- Stripe CDN ignores version; version param is included to keep linter happy.
+			wp_enqueue_script(
+				'stripe-js',
+				'https://js.stripe.com/v3/',
+				[],
+				SRFM_VER,
+				true
+			);
+
+			wp_enqueue_script(
+				SRFM_SLUG . '-stripe-payment',
+				SRFM_URL . 'assets/js/stripe-payment.js',
+				[ 'stripe-js' ],
+				SRFM_VER,
+				true
+			);
+
+			// Enqueue Payment Manager for payment method switching.
+			wp_enqueue_script(
+				SRFM_SLUG . '-payment-manager',
+				SRFM_URL . 'assets/js/payment-manager.js',
+				[ SRFM_SLUG . '-stripe-payment' ],
+				SRFM_VER,
+				true
+			);
+
+			// Localize script for Stripe payment functionality.
+			$frontend_nonces = Helper::get_frontend_nonces();
+			wp_localize_script(
+				SRFM_SLUG . '-stripe-payment',
+				'srfm_ajax',
+				[
+					'ajax_url'      => admin_url( 'admin-ajax.php' ),
+					'payment_nonce' => $frontend_nonces['payment_nonce'],
+				]
+			);
+
+			// Localize Stripe payment data for frontend.
+			wp_localize_script(
+				SRFM_SLUG . '-stripe-payment',
+				'srfmStripe',
+				[
+					'zeroDecimalCurrencies' => Payment_Helper::get_zero_decimal_currencies(),
+					'currenciesData'        => Payment_Helper::get_all_currencies_data(),
+					'strings'               => Payment_Helper::get_payment_strings(),
+					'currencySignPosition'  => Payment_Helper::get_currency_sign_position(),
+				]
+			);
+		}
+
+		// Trigger custom action hook to allow third-party plugins or add-ons
+		// to enqueue additional scripts/styles for specific blocks (e.g., payment providers).
+		do_action(
+			'srfm_enqueue_block_scripts',
+			[
+				'block_name' => $block_name,
+				'attr'       => $attr,
+			]
+		);
+	}
+
+	/**
+	 * Maps WordPress locale to intl-tel-input language code.
+	 *
+	 * Converts WordPress locale format (e.g., fr_FR, de_DE, pt_BR)
+	 * to intl-tel-input language codes (e.g., fr, de, pt).
+	 * Returns null if the language is not supported by intl-tel-input.
+	 *
+	 * @since 2.5.0
+	 * @param string|null $locale WordPress locale string. If null, uses get_locale().
+	 * @return string|null Language code if supported, null if not supported or English.
+	 */
+	public static function get_intl_tel_input_locale( $locale = null ) {
+		// Get WordPress locale if not provided.
+		if ( null === $locale ) {
+			$locale = get_locale();
+		}
+
+		// Extract language code from WordPress locale (e.g., fr_FR -> fr, pt_BR -> pt).
+		$lang_code = substr( $locale, 0, 2 );
+
+		// List of supported languages - available translation files in /assets/js/minified/deps/intl/i18n/.
+		// Reference: https://unpkg.com/browse/intl-tel-input@24.5.1/build/js/i18n/.
+		$supported_languages = [
+			'de', // German - Deutsch.
+			'es', // Spanish - Español.
+			'fr', // French - Français.
+			'it', // Italian - Italiano.
+			'nl', // Dutch - Nederlands.
+			'pl', // Polish - Polski.
+			'pt', // Portuguese - Português.
+		];
+
+		// Return language code only if supported and not English (English is default).
+		if ( in_array( $lang_code, $supported_languages, true ) && 'en' !== $lang_code ) {
+			return $lang_code;
+		}
+
+		// Return null for unsupported languages or English (uses default English).
+		return null;
+	}
+
+	/**
+	 * Enqueues intl-tel-input i18n script for the phone field.
+	 *
+	 * This method handles conditional loading of language files based on WordPress locale.
+	 * Only enqueues if a supported non-English language is detected and the file exists.
+	 *
+	 * @since 2.5.0
+	 * @param string $handle       Script handle to enqueue.
+	 * @param string $dependencies Optional. Script handle that this i18n depends on. Default empty.
+	 * @return bool True if i18n was enqueued, false otherwise.
+	 */
+	public static function enqueue_intl_tel_input_i18n( $handle, $dependencies = '' ) {
+		$intl_locale = self::get_intl_tel_input_locale();
+
+		// Return early if no locale or English.
+		if ( empty( $intl_locale ) ) {
+			return false;
+		}
+
+		$i18n_file_path = SRFM_DIR . "assets/js/minified/deps/intl/i18n/{$intl_locale}/index.min.js";
+
+		// Only enqueue if the language file exists.
+		if ( ! file_exists( $i18n_file_path ) ) {
+			return false;
+		}
+
+		$deps = ! empty( $dependencies ) ? [ $dependencies ] : [];
+
+		wp_enqueue_script(
+			$handle,
+			SRFM_URL . "assets/js/minified/deps/intl/i18n/{$intl_locale}/index.min.js",
+			$deps,
+			SRFM_VER,
+			true
+		);
+
+		return true;
 	}
 
 	/**
@@ -237,8 +437,15 @@ class Frontend_Assets {
 	 */
 	public function generate_render_script( $block_content, $block ) {
 
+		if ( isset( $block['attrs']['isEditing'] ) ) {
+			// Only load block assets on the frontend.
+			return $block_content;
+		}
+
 		if ( isset( $block['blockName'] ) ) {
-			self::enqueue_srfm_script( $block['blockName'] );
+			$attr = isset( $block['attrs'] ) && is_array( $block['attrs'] ) ? $block['attrs'] : [];
+
+			self::enqueue_srfm_script( $block['blockName'], $attr );
 		}
 		return $block_content;
 	}

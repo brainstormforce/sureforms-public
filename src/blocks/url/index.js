@@ -7,7 +7,7 @@ import { MdOutlineLink as icon } from 'react-icons/md';
  * Internal dependencies
  */
 import edit from './edit';
-import metadata from './block.json';
+import metadata from '@IncBlocks/url/block.json';
 
 const { name } = metadata;
 

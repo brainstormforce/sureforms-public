@@ -9,7 +9,7 @@
 	--srfm-error-color-border-glow: #{rgba( $srfmColorErrorLight, 0.15 )};
 
 	// Gaps and Spacing variables.
-	--srfm-col-gap-between-blocks: 8px; // Vertical Gap will stay the same.
+	--srfm-column-gap-between-blocks: 16px; // Changing this to 16px from 8px.
 
 	// Dropdown Variables.
 	--srfm-dropdown-font-weight: 400;
@@ -18,7 +18,7 @@
 	--srfm-dropdown-menu-padding: 6px;
 	--srfm-dropdown-menu-icon-gap: 8px;
 	--srfm-dropdown-option-padding: 8px 12px;
-	--srfm-dropdown-badge-delete-icon: #{rgba( $srfmColorErrorLight, 0.65 )};
+	--srfm-dropdown-badge-delete-icon: var( --srfm-error-color-border, #dc2626 );
 	--srfm-expandable-menu-background: #ffffff;
 
 	// Input field variables.

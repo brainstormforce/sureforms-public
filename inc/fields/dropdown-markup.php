@@ -24,6 +24,14 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class Dropdown_Markup extends Base {
 	/**
+	 * Unique instance identifier for this dropdown.
+	 *
+	 * @var string
+	 * @since 1.10.0
+	 */
+	protected $unique_slug;
+
+	/**
 	 * Stores the multi select attribute value.
 	 *
 	 * @var string
@@ -40,22 +48,69 @@ class Dropdown_Markup extends Base {
 	protected $search_attr;
 
 	/**
+	 * Flag indicating if the value should be shown.
+	 *
+	 * @var bool
+	 * @since 1.5.0
+	 */
+	protected $show_values;
+
+	/**
+	 * Array of preselected option indices.
+	 *
+	 * @var array
+	 * @since 2.3.0
+	 */
+	protected $preselected_options;
+
+	/**
+	 * Static counter for generating unique dropdown instances.
+	 *
+	 * @var int
+	 * @since 1.10.0
+	 */
+	private static $instance_counter = 0;
+
+	/**
 	 * Initialize the properties based on block attributes.
 	 *
 	 * @param array<mixed> $attributes Block attributes.
 	 * @since 0.0.2
 	 */
 	public function __construct( $attributes ) {
+		$this->slug = 'dropdown';
 		$this->set_properties( $attributes );
 		$this->set_input_label( __( 'Dropdown', 'sureforms' ) );
 		$this->set_error_msg( $attributes, 'srfm_dropdown_block_required_text' );
-		$this->slug              = 'dropdown';
-		$this->multi_select_attr = ! empty( $attributes['multiSelect'] ) ? 'true' : 'false';
-		$this->search_attr       = ! empty( $attributes['searchable'] ) ? 'true' : 'false';
+		$this->multi_select_attr   = ! empty( $attributes['multiSelect'] ) ? 'true' : 'false';
+		$this->search_attr         = ! empty( $attributes['searchable'] ) ? 'true' : 'false';
+		$this->preselected_options = $attributes['preselectedOptions'] ?? [];
 		$this->set_markup_properties();
 		$this->set_aria_described_by();
+
+		// Store the original placeholder before set_label_as_placeholder modifies placeholder_attr.
+		$original_placeholder = $this->placeholder;
 		$this->set_label_as_placeholder( $this->input_label );
-		$this->placeholder = ! empty( $this->placeholder_attr ) ? $this->label : __( 'Select an option', 'sureforms' );
+
+		// For dropdowns, use the appropriate placeholder text:
+		// 1. If label is being used as placeholder (label_markup is empty), use the label.
+		// 2. Otherwise, use the block's placeholder value.
+		if ( empty( $this->label_markup ) ) {
+			$this->placeholder = $this->label;
+		} elseif ( ! empty( $original_placeholder ) ) {
+			$this->placeholder = $original_placeholder;
+		}
+
+		// Translate the default placeholder text for frontend display.
+		if ( 'Select an option' === $this->placeholder ) {
+			$this->placeholder = __( 'Select an option', 'sureforms' );
+		}
+
+		$this->show_values = apply_filters( 'srfm_show_options_values', false, $attributes['showValues'] ?? false );
+
+		// Generate unique instance identifier.
+		self::$instance_counter++;
+		$this->unique_slug = $this->slug . '-' . self::$instance_counter;
 	}
 
 	/**
@@ -65,11 +120,13 @@ class Dropdown_Markup extends Base {
 	 * @return string|bool
 	 */
 	public function markup() {
+		$this->class_name = $this->get_field_classes();
+
 		ob_start(); ?>
-			<div data-block-id="<?php echo esc_attr( $this->block_id ); ?>" class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $this->slug ); ?>-block srf-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?>-block<?php echo esc_attr( $this->block_width ); ?><?php echo esc_attr( $this->class_name ); ?> <?php echo esc_attr( $this->conditional_class ); ?>">
+			<div data-block-id="<?php echo esc_attr( $this->block_id ); ?>" class="<?php echo esc_attr( $this->class_name ); ?>">
 				<fieldset>
-					<input class="srfm-input-<?php echo esc_attr( $this->slug ); ?>-hidden" data-required="<?php echo esc_attr( $this->data_require_attr ); ?>" <?php echo wp_kses_post( $this->data_attribute_markup() ); ?> name="srfm-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?><?php echo esc_attr( $this->field_name ); ?>" type="hidden" value=""/>
-					<legend>
+					<input class="srfm-input-<?php echo esc_attr( $this->slug ); ?>-hidden" data-required="<?php echo esc_attr( $this->data_require_attr ); ?>" aria-required="<?php echo esc_attr( $this->data_require_attr ); ?>" <?php echo wp_kses_post( $this->data_attribute_markup() ); ?> name="srfm-<?php echo esc_attr( $this->unique_slug ); ?>-<?php echo esc_attr( $this->block_id ); ?><?php echo esc_attr( $this->field_name ); ?>" type="hidden" value=""/>
+					<legend class="srfm-block-legend">
 						<?php echo wp_kses_post( $this->label_markup ); ?>
 						<?php echo wp_kses_post( $this->help_markup ); ?>
 					</legend>
@@ -80,14 +137,29 @@ class Dropdown_Markup extends Base {
 					<select
 						class="srfm-dropdown-common srfm-<?php echo esc_attr( $this->slug ); ?>-input"
 						<?php echo ! empty( $this->aria_described_by ) ? "aria-describedby='" . esc_attr( trim( $this->aria_described_by ) ) . "'" : ''; ?>
-				data-required="<?php echo esc_attr( $this->data_require_attr ); ?>" <?php echo wp_kses_post( $this->data_attribute_markup() ); ?> name="srfm-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?><?php echo esc_attr( $this->field_name ); ?>" data-multiple="<?php echo esc_attr( $this->multi_select_attr ); ?>" data-searchable="<?php echo esc_attr( $this->search_attr ); ?>" tabindex="0" aria-hidden="true">
-					<option class="srfm-dropdown-placeholder" value="" disabled selected><?php echo esc_html( $this->placeholder ); ?></option>
-						<?php foreach ( $this->options as $option ) { ?>
+				data-required="<?php echo esc_attr( $this->data_require_attr ); ?>" aria-required="<?php echo esc_attr( $this->data_require_attr ); ?>" <?php echo wp_kses_post( $this->data_attribute_markup() ); ?> name="srfm-<?php echo esc_attr( $this->unique_slug ); ?>-<?php echo esc_attr( $this->block_id ); ?><?php echo esc_attr( $this->field_name ); ?>" data-multiple="<?php echo esc_attr( $this->multi_select_attr ); ?>" data-searchable="<?php echo esc_attr( $this->search_attr ); ?>"
+						<?php
+						if ( ! empty( $this->preselected_options ) ) {
+							$preselected_labels = array_map(
+								function( $i ) {
+									$option = $this->options[ $i ] ?? [];
+									return is_array( $option ) ? ( $option['label'] ?? '' ) : '';
+								},
+								$this->preselected_options
+							);
+							$json_encoded       = wp_json_encode( $preselected_labels );
+							echo 'data-preselected="' . esc_attr( false !== $json_encoded ? $json_encoded : '' ) . '"';
+						}
+						?>
+						tabindex="0" aria-hidden="true">
+					<option class="srfm-dropdown-placeholder" value="" disabled <?php echo empty( $this->preselected_options ) ? 'selected' : ''; ?>><?php echo esc_html( $this->placeholder ); ?></option>
+						<?php foreach ( $this->options as $i => $option ) { ?>
 							<?php
 								$icon_svg         = Spec_Gb_Helper::render_svg_html( $option['icon'] ?? '', true );
 								$escaped_icon_svg = htmlspecialchars( Helper::get_string_value( $icon_svg ), ENT_QUOTES, 'UTF-8' );
+								$is_preselected   = is_array( $this->preselected_options ) && in_array( $i, $this->preselected_options, true );
 							?>
-								<option value="<?php echo isset( $option['label'] ) ? esc_html( $option['label'] ) : ''; ?>" data-icon="<?php echo ! empty( $escaped_icon_svg ) ? esc_attr( $escaped_icon_svg ) : ''; ?>"><?php echo isset( $option['label'] ) ? esc_html( $option['label'] ) : ''; ?></option>
+								<option value="<?php echo isset( $option['label'] ) ? esc_html( $option['label'] ) : ''; ?>" data-icon="<?php echo ! empty( $escaped_icon_svg ) ? esc_attr( $escaped_icon_svg ) : ''; ?>" <?php echo $this->show_values && isset( $option['value'] ) ? 'option-value="' . esc_attr( $option['value'] ) . '"' : ''; ?> <?php echo $is_preselected ? 'selected' : ''; ?>><?php echo isset( $option['label'] ) ? esc_html( $option['label'] ) : ''; ?></option>
 								<?php
 						}
 						?>
@@ -100,7 +172,18 @@ class Dropdown_Markup extends Base {
 				</fieldset>
 			</div>
 		<?php
-		return ob_get_clean();
+		$markup = ob_get_clean();
+
+		return apply_filters(
+			'srfm_block_field_markup',
+			$markup,
+			[
+				'slug'       => $this->slug,
+				'field_name' => $this->field_name,
+				'is_editing' => $this->is_editing,
+				'attributes' => $this->attributes,
+			]
+		);
 	}
 
 	/**

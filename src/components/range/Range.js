@@ -75,25 +75,43 @@ const Range = ( props ) => {
 	};
 
 	const resetValues = ( defaultValues ) => {
+		const newAttributes = {
+			[ props.data.label ]: defaultValues[ props?.data?.label ],
+		};
 		if ( props?.onChange ) {
 			props?.onChange( defaultValues[ props?.data?.label ] );
 		}
 		if ( props.displayUnit ) {
-			onChangeUnits( defaultValues[ props?.unit?.label ] );
+			newAttributes[ props.unit.label ] =
+				defaultValues[ props?.unit?.label ];
+		}
+		if ( props?.setAttributes ) {
+			props.setAttributes( newAttributes );
 		}
 	};
 
 	const onChangeUnits = ( newValue ) => {
-		props.setAttributes( { [ props.unit.label ]: newValue } );
+		const newAttributes = {
+			[ props.unit.label ]: newValue,
+		};
 
-		max = limitMax( newValue, props );
-		min = limitMin( newValue, props );
+		max = parseFloat( limitMax( newValue, props ) );
+		min = parseFloat( limitMin( newValue, props ) );
 
 		if ( props.value > max ) {
-			handleOnChange( max );
+			newAttributes[ props.data.label ] = max;
+			if ( props?.onChange ) {
+				props.onChange( max );
+			}
+		} else if ( props.value < min ) {
+			newAttributes[ props.data.label ] = min;
+			if ( props?.onChange ) {
+				props.onChange( min );
+			}
 		}
-		if ( props.value < min ) {
-			handleOnChange( min );
+
+		if ( props?.setAttributes ) {
+			props.setAttributes( newAttributes );
 		}
 	};
 
@@ -144,6 +162,14 @@ const Range = ( props ) => {
 		blockNameForHook
 	);
 
+	const inputSteps = ( value ) => {
+		if ( isNaN( value ) ) {
+			return 1;
+		}
+
+		return Number( value ) % 1 === 0 ? 1 : 0.1;
+	};
+
 	return (
 		<div ref={ panelRef } className="components-base-control">
 			{ controlBeforeDomElement }
@@ -159,13 +185,19 @@ const Range = ( props ) => {
 								onReset={ resetValues }
 								attributeNames={ [
 									props.data.label,
-									props.displayUnit
-										? props.unit.label
-										: false,
-								] }
+									props.displayUnit ? props.unit.label : null,
+								].filter(
+									( val ) => val !== null && val !== undefined
+								) }
 								setAttributes={ props?.setAttributes }
 								isFormSpecific={ props?.isFormSpecific }
-								value={ props?.value }
+								isValueArray={ true }
+								value={ [
+									props?.value,
+									props.displayUnit ? props.unit.value : null,
+								].filter(
+									( val ) => val !== null && val !== undefined
+								) }
 							/>
 						) }
 						{ props.displayUnit && (
@@ -186,7 +218,7 @@ const Range = ( props ) => {
 						allowReset={ false }
 						max={ max }
 						min={ min }
-						step={ props?.step || 1 }
+						step={ props?.step || inputSteps( inputValue ) }
 						initialPosition={ inputValue }
 						marks={ props?.marks || false }
 					/>
@@ -198,7 +230,7 @@ const Range = ( props ) => {
 							min={ min }
 							onChange={ handleOnChange }
 							value={ inputValue }
-							step={ props?.step || 1 }
+							step={ props?.step || inputSteps( inputValue ) }
 						/>
 					) }
 				</div>

@@ -182,11 +182,13 @@ class Entries extends Base {
 	 * @return int|null The key of the newly added log entry, or null if the log could not be added.
 	 */
 	public function add_log( $title, $messages = [] ) {
-		$this->logs[] = [
+		$log = [
 			'title'     => Helper::get_string_value( trim( $title ) ),
 			'messages'  => Helper::get_array_value( $messages ),
-			'timestamp' => time(),
+			'timestamp' => current_time( 'mysql' ), //phpcs:ignore WordPress.DateTime.CurrentTimeTimestamp -- Using current_time() to match the WordPress timezone.
 		];
+
+		$this->logs = array_merge( [ $log ], $this->logs );
 
 		return $this->get_last_log_key();
 	}
@@ -194,7 +196,7 @@ class Entries extends Base {
 	/**
 	 * Update an existing log entry.
 	 *
-	 * @param int           $log_key The key of the log entry to update.
+	 * @param int|null      $log_key The key of the log entry to update.
 	 * @param string|null   $title Optional. The new title for the log entry. If null, the title will not be changed.
 	 * @param array<string> $messages Optional. An array of new messages to add to the log entry.
 	 * @since 0.0.10
@@ -212,6 +214,16 @@ class Entries extends Base {
 
 		$this->logs = $logs;
 		return $log_key;
+	}
+
+	/**
+	 * Resets logs to zero.
+	 *
+	 * @since 1.3.0
+	 * @return void
+	 */
+	public function reset_logs() {
+		$this->logs = [];
 	}
 
 	/**
@@ -264,6 +276,12 @@ class Entries extends Base {
 		if ( empty( $entry_id ) ) {
 			return false;
 		}
+
+		if ( isset( $data['logs'] ) ) {
+			// Add logs from the current cache at the very last moment so that we don't tax the performance.
+			$data['logs'] = array_merge( Helper::get_array_value( $data['logs'] ), Helper::get_array_value( self::get( $entry_id )['logs'] ) );
+		}
+
 		return self::get_instance()->use_update( $data, [ 'ID' => absint( $entry_id ) ] );
 	}
 
@@ -275,6 +293,10 @@ class Entries extends Base {
 	 * @return int|false The number of rows deleted, or false on error.
 	 */
 	public static function delete( $entry_id ) {
+		// Add action before deleting the entry.
+		do_action( 'srfm_before_delete_entry', $entry_id );
+
+		// Delete the entry.
 		return self::get_instance()->use_delete( [ 'ID' => absint( $entry_id ) ], [ '%d' ] );
 	}
 
@@ -316,37 +338,21 @@ class Entries extends Base {
 	 * @return array<mixed> The results of the query, typically an array of objects or associative arrays.
 	 */
 	public static function get_all( $args = [], $set_limit = true ) {
-		$_args         = wp_parse_args(
-			$args,
-			[
-				'where'   => [],
-				'columns' => '*',
-				'limit'   => 10,
-				'offset'  => 0,
-				'orderby' => 'created_at',
-				'order'   => 'DESC',
-			]
-		);
-		$extra_queries = [
-			sprintf( 'ORDER BY `%1$s` %2$s', Helper::get_string_value( esc_sql( $_args['orderby'] ) ), Helper::get_string_value( esc_sql( $_args['order'] ) ) ),
-		];
-
-		if ( $set_limit ) {
-			$extra_queries[] = sprintf( 'LIMIT %1$d, %2$d', absint( $_args['offset'] ), absint( $_args['limit'] ) );
-		}
-		return self::get_instance()->get_results(
-			$_args['where'],
-			$_args['columns'],
-			$extra_queries
-		);
+		/**
+		 * Refactored the get_all method to use the get_records_by_args method from the Base class.
+		 * Moved the common logic inside the Base class so it can be reused by other tables as well.
+		 *
+		 * @since 1.13.0
+		 */
+		return self::get_instance()->get_records_by_args( $args, $set_limit );
 	}
 
 	/**
 	 * Get the total count of entries by status.
 	 *
-	 * @param string              $status The status of the entries to count.
-	 * @param int|null            $form_id The ID of the form to count entries for.
-	 * @param array<string,mixed> $where_clause Additional where clause to add to the query.
+	 * @param string       $status The status of the entries to count.
+	 * @param int|null     $form_id The ID of the form to count entries for.
+	 * @param array<mixed> $where_clause Additional where clause to add to the query.
 	 * @since 0.0.13
 	 * @return int The total number of entries with the specified status.
 	 */
@@ -384,6 +390,48 @@ class Entries extends Base {
 			default:
 				return self::get_instance()->get_total_count();
 		}
+	}
+
+	/**
+	 * Get the total number of entries created after the given timestamp.
+	 *
+	 * @param int $timestamp Timestamp in seconds.
+	 * @param int $form_id   Optional. The ID of the form to count entries for. Default 0 for all forms.
+	 * @since 1.7.3
+	 * @return int Total number of entries created after the timestamp.
+	 */
+	public static function get_entries_count_after( $timestamp, $form_id = 0 ) {
+		$timestamp = absint( $timestamp );
+
+		if ( ! $timestamp ) {
+			return self::get_total_entries_by_status( 'all', $form_id );
+		}
+
+		global $wpdb;
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct DB access is required here to get the most accurate server time for menu badge logic. Caching is not suitable as this is used for real-time admin notifications.
+		$mysql_time = $wpdb->get_var( 'SELECT NOW()' );
+
+		// Convert to timestamps.
+		$mysql_timestamp = strtotime( $mysql_time );
+		$php_timestamp   = time();
+
+		// Offset between MySQL and PHP.
+		$offset_seconds = $mysql_timestamp - $php_timestamp;
+
+		$adjusted_timestamp = $timestamp + $offset_seconds;
+
+		$where_clause = [
+			[
+				[
+					'key'     => 'created_at',
+					'compare' => '>',
+					'value'   => gmdate( 'Y-m-d H:i:s', $adjusted_timestamp ),
+				],
+			],
+		];
+
+		return self::get_total_entries_by_status( 'all', $form_id, $where_clause );
 	}
 
 	/**
@@ -472,5 +520,20 @@ class Entries extends Base {
 			'form_data'
 		);
 		return isset( $result[0] ) && is_array( $result[0] ) ? Helper::get_array_value( $result[0]['form_data'] ) : [];
+	}
+
+	/**
+	 * Get the entry data for a specific entry.
+	 *
+	 * @param int $entry_id The ID of the entry to get the entry data for.
+	 * @since 1.8.0
+	 * @return array<string,mixed> An associative array representing the entry's data.
+	 */
+	public static function get_entry_data( $entry_id ) {
+		$result = self::get_instance()->get_results(
+			[ 'ID' => $entry_id ],
+			'form_data, extras'
+		);
+		return isset( $result[0] ) && is_array( $result[0] ) ? $result[0] : [];
 	}
 }

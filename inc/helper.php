@@ -12,7 +12,6 @@ use SRFM\Inc\Database\Tables\Entries;
 use SRFM\Inc\Traits\Get_Instance;
 use WP_Error;
 use WP_Post;
-use WP_Post_Type;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -25,6 +24,33 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class Helper {
 	use Get_Instance;
+
+	/**
+	 * Allowed HTML tags for SVG.
+	 *
+	 * @var array<string, array<string, bool>>
+	 */
+	public static $allowed_tags_svg = [
+		'span' => [
+			'class'       => true,
+			'aria-hidden' => true,
+		],
+		'svg'  => [
+			'xmlns'   => true,
+			'width'   => true,
+			'height'  => true,
+			'viewBox' => true,
+			'fill'    => true,
+		],
+		'path' => [
+			'd'               => true,
+			'stroke'          => true,
+			'stroke-opacity'  => true,
+			'stroke-width'    => true,
+			'stroke-linecap'  => true,
+			'stroke-linejoin' => true,
+		],
+	];
 
 	/**
 	 * Sureforms SVGs.
@@ -44,6 +70,23 @@ class Helper {
 			'required' => __( 'This field is required.', 'sureforms' ),
 			'unique'   => __( 'Value needs to be unique.', 'sureforms' ),
 		];
+	}
+
+	/**
+	 * Convert a file URL to a file path.
+	 *
+	 * @param string $file_url The URL of the file.
+	 *
+	 * @since 1.3.0
+	 * @return string The file path.
+	 */
+	public static function convert_fileurl_to_filepath( $file_url ) {
+		static $upload_dir = null;
+		if ( ! $upload_dir ) {
+			// Internally cache the upload directory.
+			$upload_dir = wp_get_upload_dir();
+		}
+		return wp_normalize_path( str_replace( $upload_dir['baseurl'], $upload_dir['basedir'], $file_url ) );
 	}
 
 	/**
@@ -92,7 +135,7 @@ class Helper {
 	 * @param mixed $data Data which needs to be checked if it is an array.
 	 *
 	 * @since 0.0.3
-	 * @return array<mixed>
+	 * @return array
 	 */
 	public static function get_array_value( $data ) {
 		if ( is_array( $data ) ) {
@@ -140,6 +183,29 @@ class Helper {
 	}
 
 	/**
+	 * Extracts the block ID from the dynamic field key ( or field slug ).
+	 *
+	 * @param string $field_key Dynamic field key.
+	 * @since 1.6.1
+	 * @return string Extracted block ID.
+	 */
+	public static function get_block_id_from_key( $field_key ) {
+		// Check if the key contains the block ID identifier.
+		if ( strpos( $field_key, 'srfm-' ) === 0 && strpos( $field_key, '-lbl-' ) === false ) {
+			return '';  // Return empty if the key format is invalid.
+		}
+
+		$parts = explode( '-lbl-', $field_key );
+		if ( isset( $parts[0] ) ) {
+			$block_id = explode( '-', $parts[0] );
+			if ( is_array( $block_id ) && ! empty( $block_id ) ) {
+				return end( $block_id );
+			}
+		}
+		return '';
+	}
+
+	/**
 	 * Returns the proper sanitize callback functions according to the field type.
 	 *
 	 * @param string $field_type HTML field type.
@@ -154,7 +220,7 @@ class Helper {
 				'input'    => 'sanitize_text_field',
 				'number'   => [ self::class, 'sanitize_number' ],
 				'email'    => 'sanitize_email',
-				'textarea' => 'sanitize_textarea_field',
+				'textarea' => [ self::class, 'sanitize_textarea' ],
 			]
 		);
 
@@ -254,27 +320,81 @@ class Helper {
 		$show_labels_as_placeholder = get_post_meta( self::get_integer_value( $form_id ), '_srfm_use_label_as_placeholder', true );
 		$show_labels_as_placeholder = $show_labels_as_placeholder ? self::get_string_value( $show_labels_as_placeholder ) : false;
 
+		$required_sign = apply_filters( 'srfm_value_after_label_placeholder', ' *' );
+
+		if ( ! is_string( $required_sign ) ) {
+			$required_sign = ' *';
+		}
+
 		switch ( $type ) {
 			case 'label':
-				$markup = $label ? '<label for="srfm-' . $slug . '-' . esc_attr( $block_id ) . '" class="srfm-block-label">' . htmlspecialchars_decode( esc_html( $label ) ) . ( $required ? '<span class="srfm-required" aria-label="' . esc_attr__( 'Required', 'sureforms' ) . '"><span aria-hidden="true"> *</span></span>' : '' ) . '</label>' : '';
+				if ( $label ) {
+					ob_start();
+					?>
+					<label id="srfm-label-<?php echo esc_attr( $block_id ); ?>" for="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>" class="srfm-block-label">
+						<?php echo wp_kses_post( $label ); ?>
+						<?php if ( $required ) { ?>
+							<span class="srfm-required" aria-hidden="true"> *</span>
+						<?php } ?>
+					</label>
+					<?php
+					$markup = ob_get_clean();
+				}
 				break;
 			case 'help':
-				$markup = $help ? '<div class="srfm-description" id="srfm-description-' . esc_attr( $block_id ) . '">' . wp_kses_post( htmlspecialchars_decode( $help ) ) . '</div>' : '';
+				if ( $help ) {
+					ob_start();
+					?>
+					<div class="srfm-description" id="srfm-description-<?php echo esc_attr( $block_id ); ?>">
+						<?php echo wp_kses_post( $help ); ?>
+					</div>
+					<?php
+					$markup = ob_get_clean();
+				}
 				break;
 			case 'error':
-				$markup = $required || $override ? '<div class="srfm-error-message" id="srfm-error-' . esc_attr( $block_id ) . '" data-error-msg="' . esc_attr( $error_msg ) . '"' . $duplicate_msg . '>' . esc_html( $error_msg ) . '</div>' : '';
+				if ( $required || $override ) {
+					ob_start();
+					?>
+					<div class="srfm-error-message" data-srfm-id="srfm-error-<?php echo esc_attr( $block_id ); ?>" data-error-msg="<?php echo esc_attr( $error_msg ); ?>"<?php echo $duplicate_msg; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
+						<?php echo esc_html( $error_msg ); ?>
+					</div>
+					<?php
+					$markup = ob_get_clean();
+				}
 				break;
 			case 'is_unique':
-				$markup = $is_unique ? '<div class="srfm-error">' . esc_html( $duplicate_msg ) . '</div>' : '';
+				if ( $is_unique ) {
+					ob_start();
+					?>
+					<div class="srfm-error">
+						<?php echo esc_html( $duplicate_msg ); ?>
+					</div>
+					<?php
+					$markup = ob_get_clean();
+				}
 				break;
 			case 'placeholder':
-				$markup = $label && '1' === $show_labels_as_placeholder ? $label . ( $required ? ' *' : '' ) : '';
+				$markup = $label && '1' === $show_labels_as_placeholder ? wp_kses_post( $label ) . ( $required ? esc_attr( $required_sign ) : '' ) : '';
+				break;
+			case 'label_text':
+				// This has been added for generating label text for the form markup instead of adding it in the label tag.
+				if ( $label ) {
+					ob_start();
+					?>
+					<?php echo wp_kses_post( $label ); ?>
+					<?php if ( $required ) { ?>
+						<span class="srfm-required" aria-hidden="true"> *</span>
+					<?php } ?>
+					<?php
+					$markup = ob_get_clean();
+				}
 				break;
 			default:
 				$markup = '';
 		}
 
-		return $markup;
+		return is_string( $markup ) ? $markup : '';
 	}
 
 	/**
@@ -289,7 +409,6 @@ class Helper {
 	public static function fetch_svg( $icon = '', $class = '', $html = '' ) {
 		$class = $class ? ' ' . $class : '';
 
-		$output = '<span class="srfm-icon' . $class . '" ' . $html . '>';
 		if ( ! self::$srfm_svgs ) {
 			ob_start();
 
@@ -298,10 +417,14 @@ class Helper {
 			self::$srfm_svgs = apply_filters( 'srfm_svg_icons', self::$srfm_svgs );
 		}
 
-		$output .= self::$srfm_svgs[ $icon ] ?? '';
-		$output .= '</span>';
-
-		return $output;
+		ob_start();
+		?>
+		<span class="srfm-icon<?php echo esc_attr( $class ); ?>" <?php echo $html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
+			<?php echo self::$srfm_svgs[ $icon ] ?? ''; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+		</span>
+		<?php
+		$output = ob_get_clean();
+		return is_string( $output ) ? $output : '';
 	}
 
 	/**
@@ -316,6 +439,9 @@ class Helper {
 		if ( empty( $input ) || ! is_string( $input ) ) {
 			return '';
 		}
+
+		// Strip HTML tags to prevent them from being included in IDs and field names.
+		$input = wp_strip_all_tags( $input );
 
 		// Encrypt the input and return it.
 		$base_64 = base64_encode( $input ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
@@ -398,7 +524,7 @@ class Helper {
 	 * @return array<mixed> Live preview data.
 	 */
 	public static function get_instant_form_live_data() {
-		$srfm_live_mode_data = isset( $_GET['live_mode'] ) && current_user_can( 'edit_posts' ) ? self::sanitize_recursively( 'sanitize_text_field', wp_unslash( $_GET ) ) : []; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$srfm_live_mode_data = isset( $_GET['live_mode'] ) && self::current_user_can() ? self::sanitize_recursively( 'sanitize_text_field', wp_unslash( $_GET ) ) : []; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verification is not needed here.
 
 		return $srfm_live_mode_data ? array_map(
 			// Normalize falsy values.
@@ -437,6 +563,8 @@ class Helper {
 			'srfm_rating_block_required_text'       => $common_err_msg['required'],
 		];
 
+		$default_values = array_merge( $default_values, Translatable::dynamic_validation_messages() );
+
 		return apply_filters( 'srfm_default_dynamic_block_option', $default_values, $common_err_msg );
 	}
 
@@ -464,19 +592,8 @@ class Helper {
 	 * @since 0.0.1
 	 */
 	public static function get_items_permissions_check() {
-		if ( current_user_can( 'edit_posts' ) ) {
+		if ( self::current_user_can() ) {
 			return true;
-		}
-
-		foreach ( get_post_types( [ 'show_in_rest' => true ], 'objects' ) as $post_type ) {
-			/**
-			 * The post type.
-			 *
-			 * @var WP_Post_Type $post_type
-			 */
-			if ( current_user_can( $post_type->cap->edit_posts ) ) {
-				return true;
-			}
 		}
 
 		return new WP_Error(
@@ -489,21 +606,24 @@ class Helper {
 	/**
 	 * Check if the current user has a given capability.
 	 *
-	 * @param string $capability The capability to check.
+	 * @param string       $capability The capability to check.
+	 * @param array<mixed> $args Optional. Additional arguments to pass to the capability check.
+	 *
 	 * @since 0.0.3
 	 * @return bool Whether the current user has the given capability or role.
 	 */
-	public static function current_user_can( $capability = '' ) {
-
+	public static function current_user_can( $capability = '', $args = [] ) {
 		if ( ! function_exists( 'current_user_can' ) ) {
 			return false;
 		}
 
 		if ( ! is_string( $capability ) || empty( $capability ) ) {
-			$capability = 'edit_posts';
+			$capability = 'manage_options';
 		}
 
-		return current_user_can( $capability );
+		return ! empty( $args ) && is_array( $args ) && count( $args ) > 0
+			? current_user_can( $capability, ...$args )
+			: current_user_can( $capability );
 	}
 
 	/**
@@ -575,9 +695,60 @@ class Helper {
 			if ( false === strpos( $key, '-lbl-' ) ) {
 				continue;
 			}
-			$label                = explode( '-lbl-', $key )[1];
-			$slug                 = implode( '-', array_slice( explode( '-', $label ), 1 ) );
-			$mapped_data[ $slug ] = $value;
+			$label = explode( '-lbl-', $key )[1];
+			$slug  = implode( '-', array_slice( explode( '-', $label ), 1 ) );
+
+			/**
+			 * Filters whether a field should be skipped when mapping slugs to submission data.
+			 *
+			 * This filter allows plugins or custom code to determine if a field should be excluded
+			 * from the mapped submission data array (such as for internal fields or extraneous meta).
+			 *
+			 * @since 2.0.0
+			 *
+			 * @param bool  $skip_this_field Whether to skip this field from processing. Default false.
+			 * @param array $args {
+			 *     Arguments used for this field.
+			 *
+			 *     @type string $key   The original key of the field in the submission data array.
+			 *     @type string $slug  The mapped slug parsed from the field key.
+			 *     @type mixed  $value The value assigned to this field.
+			 * }
+			 */
+			$skip_this_field = apply_filters(
+				'srfm_map_slug_to_submission_data_should_skip',
+				false,
+				[
+					'key'   => $key,
+					'slug'  => $slug,
+					'value' => $value,
+				]
+			);
+
+			if ( $skip_this_field ) {
+				continue;
+			}
+
+			// Check if value is array to handle external package field functionality.
+			// like repeater fields that need special processing.
+			if ( is_array( $value ) && ! empty( $value ) ) {
+				// Apply filter to allow external packages to process array values.
+				// Returns processed data with 'is_processed' flag if successfully handled.
+				$filtered_submission_data = apply_filters(
+					'srfm_map_slug_to_submission_data_array',
+					[
+						'value' => $value,
+						'key'   => $key,
+						'slug'  => $slug,
+					]
+				);
+				if ( isset( $filtered_submission_data['is_processed'] ) && true === $filtered_submission_data['is_processed'] ) {
+					$mapped_data[ $slug ] = $filtered_submission_data['value'];
+					continue;
+				}
+			}
+
+			$mapped_data[ $slug ] = is_string( $value ) ? html_entity_decode( esc_attr( $value ) ) : $value;
 		}
 		return $mapped_data;
 	}
@@ -656,6 +827,10 @@ class Helper {
 				'small'  => [
 					'--srfm-row-gap-between-blocks'        => '16px',
 					// Address block gap and spacing variables.
+					'--srfm-address-label-font-size'       => '14px',
+					'--srfm-address-label-line-height'     => '20px',
+					'--srfm-address-description-font-size' => '12px',
+					'--srfm-address-description-line-height' => '16px',
 					'--srfm-col-gap-between-fields'        => '12px',
 					'--srfm-row-gap-between-fields'        => '12px',
 					'--srfm-gap-below-address-label'       => '12px',
@@ -674,8 +849,13 @@ class Helper {
 					'--srfm-input-field-padding'           => '10px 12px',
 					'--srfm-input-field-font-size'         => '14px',
 					'--srfm-input-field-line-height'       => '20px',
-					'--srfm-input-field-margin'            => '4px 0',
+					'--srfm-input-field-margin-top'        => '4px',
+					'--srfm-input-field-margin-bottom'     => '4px',
 					// Checkbox and GDPR Variables.
+					'--srfm-checkbox-label-font-size'      => '14px',
+					'--srfm-checkbox-label-line-height'    => '20px',
+					'--srfm-checkbox-description-font-size' => '12px',
+					'--srfm-checkbox-description-line-height' => '16px',
 					'--srfm-check-ctn-width'               => '16px',
 					'--srfm-check-ctn-height'              => '16px',
 					'--srfm-check-svg-size'                => '10px',
@@ -708,6 +888,10 @@ class Helper {
 				'medium' => [
 					'--srfm-row-gap-between-blocks'        => '18px',
 					// Address block gap and spacing variables.
+					'--srfm-address-label-font-size'       => '16px',
+					'--srfm-address-label-line-height'     => '24px',
+					'--srfm-address-description-font-size' => '14px',
+					'--srfm-address-description-line-height' => '20px',
 					'--srfm-col-gap-between-fields'        => '16px',
 					'--srfm-row-gap-between-fields'        => '16px',
 					'--srfm-gap-below-address-label'       => '14px',
@@ -715,8 +899,13 @@ class Helper {
 					'--srfm-input-height'                  => '44px',
 					'--srfm-input-field-font-size'         => '16px',
 					'--srfm-input-field-line-height'       => '24px',
-					'--srfm-input-field-margin'            => '6px 0',
+					'--srfm-input-field-margin-top'        => '6px',
+					'--srfm-input-field-margin-bottom'     => '6px',
 					// Checkbox and GDPR Variables.
+					'--srfm-checkbox-label-font-size'      => '16px',
+					'--srfm-checkbox-label-line-height'    => '24px',
+					'--srfm-checkbox-description-font-size' => '14px',
+					'--srfm-checkbox-description-line-height' => '20px',
 					'--srfm-checkbox-margin-top-frontend'  => '4px',
 					'--srfm-checkbox-margin-top-editor'    => '6px',
 					'--srfm-checkbox-description-margin-left' => '24px',
@@ -741,6 +930,10 @@ class Helper {
 				'large'  => [
 					'--srfm-row-gap-between-blocks'        => '20px',
 					// Address Block Gap and Spacing Variables.
+					'--srfm-address-label-font-size'       => '18px',
+					'--srfm-address-label-line-height'     => '28px',
+					'--srfm-address-description-font-size' => '16px',
+					'--srfm-address-description-line-height' => '24px',
 					'--srfm-col-gap-between-fields'        => '16px',
 					'--srfm-row-gap-between-fields'        => '20px',
 					'--srfm-gap-below-address-label'       => '16px',
@@ -756,8 +949,13 @@ class Helper {
 					'--srfm-input-field-padding'           => '10px 14px',
 					'--srfm-input-field-font-size'         => '18px',
 					'--srfm-input-field-line-height'       => '28px',
-					'--srfm-input-field-margin'            => '8px 0',
+					'--srfm-input-field-margin-top'        => '8px',
+					'--srfm-input-field-margin-bottom'     => '8px',
 					// Checkbox and GDPR Variables.
+					'--srfm-checkbox-label-font-size'      => '18px',
+					'--srfm-checkbox-label-line-height'    => '28px',
+					'--srfm-checkbox-description-font-size' => '16px',
+					'--srfm-checkbox-description-line-height' => '24px',
 					'--srfm-check-ctn-width'               => '20px',
 					'--srfm-check-ctn-height'              => '20px',
 					'--srfm-check-svg-size'                => '14px',
@@ -822,20 +1020,88 @@ class Helper {
 				'srfm/radio',
 				'srfm/submit',
 				'srfm/url',
+				'srfm/payment',
 			]
 		);
 	}
 
 	/**
+	 * Render a site key missing error message.
+	 *
+	 * @param string $provider_name Name of the captcha provider (e.g., HCaptcha, Google reCAPTCHA, Turnstile).
+	 * @since 1.7.0
+	 * @since 1.7.1 moved to inc/helper.php from inc/generate-form-markup.php
+	 * @return void
+	 */
+	public static function render_missing_sitekey_error( $provider_name ) {
+		$icon = self::fetch_svg( 'info_circle', '', 'aria-hidden="true"' );
+		?>
+		<p id="sitekey-error" class="srfm-common-error-message srfm-error-message">
+			<?php echo wp_kses( $icon, self::$allowed_tags_svg ); ?>
+			<span class="srfm-error-content">
+				<?php
+				echo esc_html(
+					sprintf(
+					/* translators: %s: Provider name like HCaptcha, Google reCAPTCHA, Turnstile */
+						__( '%s sitekey is missing. Please contact your site administrator.', 'sureforms' ),
+						$provider_name
+					)
+				);
+				?>
+			</span>
+		</p>
+		<?php
+	}
+
+	/**
+	 * Parse and sanitize an email list string which may contain:
+	 *
+	 * @param string $input email addresses.
+	 * @since 1.13.2
+	 * @return string Sanitized email header string.
+	 */
+	public static function sanitize_email_header( $input ) {
+		if ( empty( $input ) ) {
+			return '';
+		}
+
+		$parts  = explode( ',', $input );
+		$output = [];
+
+		foreach ( $parts as $part ) {
+			$part = trim( $part );
+
+			// Match "Name <email>".
+			if ( preg_match( '/^(.*)<(.+)>$/', $part, $matches ) ) {
+				$name  = trim( $matches[1], "\" \t\n\r\0\x0B" ); // trim quotes.
+				$email = sanitize_email( trim( $matches[2] ) );
+
+				if ( is_email( $email ) ) {
+					$safe_name = sanitize_text_field( $name );
+					$output[]  = $safe_name . ' <' . $email . '>';
+				}
+			} else {
+				// Plain email case.
+				$email = sanitize_email( $part );
+				if ( is_email( $email ) ) {
+					$output[] = $email;
+				}
+			}
+		}
+
+		return ! empty( $output ) ? implode( ', ', $output ) : '';
+	}
+
+	/**
 	 * Process blocks and inner blocks.
 	 *
-	 * @param array<array<array<mixed>>> $blocks The block data.
-	 * @param array<string>              $slugs The array of existing slugs.
-	 * @param bool                       $updated The array of existing slugs.
-	 * @param string                     $prefix The array of existing slugs.
-	 * @param bool                       $skip_checking_existing_slug Skips the checking of existing slug if passed true. More information documented inside this function.
+	 * @param array<mixed>  $blocks The block data.
+	 * @param array<string> $slugs The array of existing slugs.
+	 * @param bool          $updated The array of existing slugs.
+	 * @param string        $prefix The array of existing slugs.
+	 * @param bool          $skip_checking_existing_slug Skips the checking of existing slug if passed true. More information documented inside this function.
 	 * @since 0.0.10
-	 * @return array{array<array<array<mixed>>>,array<string>,bool}
+	 * @return array
 	 */
 	public static function process_blocks( $blocks, &$slugs, &$updated, $prefix = '', $skip_checking_existing_slug = false ) {
 
@@ -861,6 +1127,10 @@ class Helper {
 
 				// Made it associative array, so that we can directly check it using block_id rather than mapping or using "in_array" for the checks.
 				$slugs[ $block['attrs']['block_id'] ] = self::get_string_value( $block['attrs']['slug'] );
+
+				if ( is_array( $block['innerBlocks'] ) && ! empty( $block['innerBlocks'] ) ) {
+					[ $blocks[ $index ]['innerBlocks'], $slugs, $updated ] = self::process_blocks( $block['innerBlocks'], $slugs, $updated, '' );
+				}
 				continue;
 			}
 
@@ -1004,7 +1274,7 @@ class Helper {
 	 * @since 1.1.1
 	 * @return bool Returns true if all conditions are met or the single key-value pair is valid, otherwise false.
 	 */
-	public static function validate_request_context( $value, $key = 'post_type', array $conditions = [] ) {
+	public static function validate_request_context( $value, $key = 'post_type', $conditions = [] ) {
 		// If conditions are provided, validate all key-value pairs in the conditions array.
 		if ( ! empty( $conditions ) ) {
 			foreach ( $conditions as $condition_key => $condition_value ) {
@@ -1023,7 +1293,7 @@ class Helper {
 		}
 
 		// Validate a single key-value pair when no conditions are provided.
-		return isset( $_REQUEST[ $key ] ) && $_REQUEST[ $key ] === $value; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Input is validated via strict comparison.
+		return isset( $_REQUEST[ $key ] ) && $_REQUEST[ $key ] === $value; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verification is not needed here. Input is validated via strict comparison.
 	}
 
 	/**
@@ -1039,5 +1309,949 @@ class Helper {
 		$excluded_fields = [ 'srfm-honeypot-field', 'g-recaptcha-response', 'srfm-sender-email-field', 'form-id' ];
 
 		return apply_filters( 'srfm_excluded_fields', $excluded_fields );
+	}
+
+	/**
+	 * Check whether the current page is a SureForms admin page.
+	 *
+	 * @since 1.2.2
+	 * @return bool Returns true if the current page is a SureForms admin page, otherwise false.
+	 */
+	public static function is_sureforms_admin_page() {
+		$current_screen                    = get_current_screen();
+		$is_screen_sureforms_menu          = self::validate_request_context( 'sureforms_menu', 'page' );
+		$is_screen_add_new_form            = self::validate_request_context( 'add-new-form', 'page' );
+		$is_screen_sureforms_form_settings = self::validate_request_context( 'sureforms_form_settings', 'page' );
+		$is_screen_sureforms_entries       = self::validate_request_context( SRFM_ENTRIES, 'page' );
+		$is_post_type_sureforms_form       = $current_screen && SRFM_FORMS_POST_TYPE === $current_screen->post_type;
+
+		return $is_screen_sureforms_menu || $is_screen_add_new_form || $is_screen_sureforms_form_settings || $is_screen_sureforms_entries || $is_post_type_sureforms_form;
+	}
+
+	/**
+	 * Filters and concatenates valid class names from an array.
+	 *
+	 * @param array<string> $class_names The array containing potential class names.
+	 * @since 1.4.0
+	 * @return string The concatenated string of valid class names separated by spaces.
+	 */
+	public static function join_strings( $class_names ) {
+		// Filter the array to include only valid class names.
+		$valid_class_names = array_filter(
+			$class_names,
+			static function ( $value ) {
+				return is_string( $value ) && '' !== $value && false !== $value;
+			}
+		);
+
+		// Concatenate the valid class names with spaces and return.
+		return implode( ' ', $valid_class_names );
+	}
+	/**
+	 * Get SureForms Website URL.
+	 *
+	 * @param string                $trail The URL trail to append to SureForms website URL. The parameter should not include a leading slash as the base URL already ends with a trailing slash.
+	 * @param array<string, string> $utm_args Optional. An associative array of UTM parameters to append to the URL. Default empty array. Example: [ 'utm_medium' => 'dashboard'].
+	 * @since 0.0.7
+	 * @return string
+	 */
+	public static function get_sureforms_website_url( $trail, $utm_args = [] ) {
+		$url = SRFM_WEBSITE;
+		if ( ! empty( $trail ) && is_string( $trail ) ) {
+			$url = SRFM_WEBSITE . $trail;
+		}
+
+		if ( ! is_array( $utm_args ) ) {
+			$utm_args = [];
+		}
+
+		if ( class_exists( 'BSF_UTM_Analytics' ) ) {
+			$url = \BSF_UTM_Analytics::get_utm_ready_link( $url, 'sureforms', $utm_args );
+		}
+
+		return esc_url( $url );
+	}
+
+	/**
+	 * Validates if the given string is a valid CSS class name.
+	 *
+	 * A valid CSS class name:
+	 * - Does not start with a digit, hyphen, or underscore.
+	 * - Can contain alphanumeric characters, underscores, hyphens, and Unicode letters.
+	 *
+	 * @param string $class_name The class name to validate.
+	 *
+	 * @since 1.3.1
+	 * @return bool True if the class name is valid, otherwise false.
+	 */
+	public static function is_valid_css_class_name( $class_name ) {
+		// Regular expression to validate a Unicode-aware CSS class name.
+		$class_name_regex = '/^[^\d\-_][\w\p{L}\p{N}\-_]*$/u';
+
+		// Check if the className matches the pattern.
+		return preg_match( $class_name_regex, $class_name ) === 1;
+	}
+
+	/**
+	 * Get the gradient css for given gradient parameters.
+	 *
+	 * @param string $type The type of gradient. Default 'linear'.
+	 * @param string $color1 The first color of the gradient. Default '#FFC9B2'.
+	 * @param string $color2 The second color of the gradient. Default '#C7CBFF'.
+	 * @param int    $loc1 The location of the first color. Default 0.
+	 * @param int    $loc2 The location of the second color. Default 100.
+	 * @param int    $angle The angle of the gradient. Default 90.
+	 *
+	 * @since 1.4.4
+	 * @return string The gradient css.
+	 */
+	public static function get_gradient_css( $type = 'linear', $color1 = '#FFC9B2', $color2 = '#C7CBFF', $loc1 = 0, $loc2 = 100, $angle = 90 ) {
+		if ( 'linear' === $type ) {
+			return "linear-gradient({$angle}deg, {$color1} {$loc1}%, {$color2} {$loc2}%)";
+		}
+			return "radial-gradient({$color1} {$loc1}%, {$color2} {$loc2}%)";
+	}
+
+	/**
+	 * Return the classes based on background and overlay type to add to the form container.
+	 *
+	 * @param string $background_type The background type.
+	 * @param string $overlay_type The overlay type.
+	 * @param string $bg_image The background image url.
+	 *
+	 * @since 1.4.4
+	 * @return string The classes to add to the form container.
+	 */
+	public static function get_background_classes( $background_type, $overlay_type, $bg_image = '' ) {
+		if ( empty( $background_type ) ) {
+			$background_type = 'color';
+		}
+
+		$background_type_class = '';
+		$overlay_class         = 'image' === $background_type && ! empty( $bg_image ) && $overlay_type ? "srfm-overlay-{$overlay_type}" : '';
+
+		// Set the class based on the background type.
+		switch ( $background_type ) {
+			case 'image':
+				$background_type_class = 'srfm-bg-image';
+				break;
+			case 'gradient':
+				$background_type_class = 'srfm-bg-gradient';
+				break;
+			default:
+				$background_type_class = 'srfm-bg-color';
+				break;
+		}
+
+		return self::join_strings( [ $background_type_class, $overlay_class ] );
+	}
+
+	/**
+	 * Custom escape function for the textarea with rich text support.
+	 *
+	 * @param string $content The content submitted by the user in the textarea block.
+	 * @since 1.7.1
+	 *
+	 * @return string Escaped content.
+	 */
+	public static function esc_textarea( $content ) {
+		$content = wpautop( self::sanitize_textarea( $content ) );
+
+		return trim( str_replace( [ "\r\n", "\r", "\n" ], '', $content ) );
+	}
+
+	/**
+	 * Custom sanitization function for the textarea with rich text support.
+	 *
+	 * @param string $content The content submitted by the user in the textarea block.
+	 * @since 1.7.1
+	 *
+	 * @return string Sanitized content.
+	 */
+	public static function sanitize_textarea( $content ) {
+		$count   = 1;
+		$content = convert_invalid_entities( $content );
+
+		// Remove the 'script' and 'style' tags recursively from the content.
+		while ( $count ) {
+			$content = preg_replace( '@<(script|style)[^>]*?>.*?</\\1>@si', '', self::get_string_value( $content ), - 1, $count );
+		}
+
+		// Disable the safe style attribute parsing for the textarea block.
+		add_filter( 'safe_style_css', [ self::class, 'disable_style_attr_parsing' ], 10, 1 );
+		$content = wp_kses_post( self::get_string_value( $content ) );
+
+		// Remove the filter after sanitization to avoid affecting other blocks.
+		remove_filter( 'safe_style_css', [ self::class, 'disable_style_attr_parsing' ], 10 );
+
+		// Ensure all tags are balanced.
+		return force_balance_tags( $content );
+	}
+
+	/**
+	 * Disable parsing of style attributes for the textarea block.
+	 *
+	 * @param array<string> $allowed_styles The allowed styles.
+	 * @since 1.7.1
+	 *
+	 * @return array An empty array to disable style attribute parsing.
+	 */
+	public static function disable_style_attr_parsing( $allowed_styles ) {
+		unset( $allowed_styles );
+		// Disable parsing of style attributes.
+		return [];
+	}
+	/**
+	 * Strips JavaScript attributes from HTML content.
+	 *
+	 * @param string $html The HTML content to process.
+	 * @since 1.7.1
+	 * @return string The cleaned HTML content without JavaScript attributes.
+	 */
+	public static function strip_js_attributes( $html ) {
+		$dom = new \DOMDocument();
+
+		// Suppress warnings due to malformed HTML.
+		libxml_use_internal_errors( true );
+		$loaded = $dom->loadHTML( '<?xml encoding="utf-8" ?>' . $html );
+		libxml_clear_errors();
+
+		if ( ! $loaded ) {
+			return $html; // Return original HTML if loading fails.
+		}
+
+		$xpath = new \DOMXPath( $dom );
+
+		// 1. Remove all <script> tags.
+		$script_nodes = $xpath->query( '//script' );
+		if ( $script_nodes instanceof \DOMNodeList ) {
+			foreach ( $script_nodes as $script ) {
+				// phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase -- This is a DOM element.
+				$parent_node = $script->parentNode;
+				if ( $parent_node instanceof \DOMNode ) {
+					$parent_node->removeChild( $script );
+				}
+			}
+		}
+
+		// 2. Remove all attributes that start with "on" (like onclick, onmouseover, etc.).
+		$elements_with_on_attrs = $xpath->query( '//*[@*[starts-with(name(), "on")]]' );
+		if ( $elements_with_on_attrs instanceof \DOMNodeList ) {
+			foreach ( $elements_with_on_attrs as $element ) {
+				if ( $element instanceof \DOMElement && $element->hasAttributes() ) {
+					foreach ( iterator_to_array( $element->attributes ) as $attr ) {
+						if ( $attr instanceof \DOMAttr && stripos( $attr->name, 'on' ) === 0 ) {
+							$element->removeAttribute( $attr->name );
+						}
+					}
+				}
+			}
+		}
+
+		// Return cleaned HTML.
+		$body = $dom->getElementsByTagName( 'body' )->item( 0 );
+		if ( $body instanceof \DOMNode ) {
+			$cleaned_html = $dom->saveHTML( $body );
+			return is_string( $cleaned_html ) ? $cleaned_html : '';
+		}
+		return '';
+	}
+
+	/**
+	 * Encodes the given string with base64.
+	 * Moved from admin class to here.
+	 *
+	 * @param  string $logo contains svg's.
+	 * @return string
+	 */
+	public static function encode_svg( $logo ) {
+		return 'data:image/svg+xml;base64,' . base64_encode( $logo ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
+	}
+
+	/**
+	 * Get plugin status
+	 *
+	 * @since 0.0.1
+	 * @since 1.7.0 moved to inc/helper.php from inc/admin-ajax.php
+	 *
+	 * @param  string $plugin_init_file Plugin init file.
+	 * @return string
+	 */
+	public static function get_plugin_status( $plugin_init_file ) {
+
+		$installed_plugins = get_plugins();
+
+		if ( ! isset( $installed_plugins[ $plugin_init_file ] ) ) {
+			return 'Install';
+		}
+		if ( is_plugin_active( $plugin_init_file ) ) {
+			return 'Activated';
+		}
+			return 'Installed';
+	}
+
+	/**
+	 * Return the first installed plugin from a list, or a default if none exist.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @param array<string> $plugins_to_check Plugin file paths to check, in priority order.
+	 * @param string        $default          Optional fallback plugin file path. Default empty string.
+	 *
+	 * @return string First installed plugin file path, or the default.
+	 */
+	public static function get_plugin_if_installed( $plugins_to_check, $default = '' ) {
+		if ( ! function_exists( 'get_plugins' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/plugin.php';
+		}
+
+		$plugins = get_plugins();
+
+		foreach ( self::get_array_value( $plugins_to_check ) as $plugin_file ) {
+			if ( isset( $plugins[ $plugin_file ] ) ) {
+				return $plugin_file;
+			}
+		}
+
+		return $default;
+	}
+
+	/**
+	 * Check which Starter Templates plugin is installed and return its main plugin file path.
+	 *
+	 * @since 1.7.3
+	 *
+	 * @return string The main plugin file path of the installed Starter Templates plugin.
+	 */
+	public static function check_starter_template_plugin() {
+		return self::get_plugin_if_installed(
+			[ 'astra-pro-sites/astra-pro-sites.php' ],
+			'astra-sites/astra-sites.php'
+		);
+	}
+
+	/**
+	 * Get sureforms recommended integrations.
+	 *
+	 * @since 0.0.1
+	 * @since 1.7.0 moved to inc/helper.php from inc/admin-ajax.php
+	 *
+	 * @return array<mixed>
+	 */
+	public static function sureforms_get_integration() {
+		$suretrigger_connected  = apply_filters( 'suretriggers_is_user_connected', '' );
+		$logo_sure_triggers     = file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/suretriggers.svg' );
+		$logo_full              = file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/suretriggers_full.svg' );
+		$logo_sure_mails        = file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/suremails.svg' );
+		$logo_uae               = file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/uae.svg' );
+		$logo_starter_templates = file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/starterTemplates.svg' );
+		$logo_sure_rank         = file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/surerank.svg' );
+		$logo_sure_contact      = file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/surecontact.svg' );
+
+		$integrations = [
+			'sure_contact'      => [
+				'title'                 => __( 'SureContact', 'sureforms' ),
+				'singleLineDescription' => __( 'Turn Emails Into Revenue with a CRM Built for Your Website!', 'sureforms' ),
+				'subtitle'              => __( 'Send newsletters, run campaigns, set up automations, manage contacts, and see exactly how much revenue your emails generate, all in one place.', 'sureforms' ),
+				'status'                => self::get_plugin_status( 'surecontact/surecontact.php' ),
+				'slug'                  => 'surecontact',
+				'path'                  => 'surecontact/surecontact.php',
+				'logo'                  => self::encode_svg( is_string( $logo_sure_contact ) ? $logo_sure_contact : '' ),
+			],
+			'sure_mails'        => [
+				'title'                 => __( 'SureMail', 'sureforms' ),
+				'singleLineDescription' => __( 'Boost Your Email Deliverability Instantly!', 'sureforms' ),
+				'subtitle'              => __( 'Access a powerful, easy-to-use email delivery service that ensures your emails land in inboxes, not spam folders. Automate your WordPress email workflows confidently with SureMail.', 'sureforms' ),
+				'status'                => self::get_plugin_status( 'suremails/suremails.php' ),
+				'slug'                  => 'suremails',
+				'path'                  => 'suremails/suremails.php',
+				'logo'                  => self::encode_svg( is_string( $logo_sure_mails ) ? $logo_sure_mails : '' ),
+			],
+			'sure_triggers'     => [
+				'title'                 => __( 'OttoKit', 'sureforms' ),
+				'singleLineDescription' => __( 'Automate your WordPress workflows effortlessly.', 'sureforms' ),
+				'subtitle'              => __( 'Connect your WordPress plugins and favourite apps, automate tasks, and sync data effortlessly using OttoKit’s clean, visual workflow builder — no coding or complex setup required.', 'sureforms' ),
+				'status'                => self::get_plugin_status( 'suretriggers/suretriggers.php' ),
+				'slug'                  => 'suretriggers',
+				'path'                  => 'suretriggers/suretriggers.php',
+				'logo'                  => self::encode_svg( is_string( $logo_sure_triggers ) ? $logo_sure_triggers : '' ),
+				'logo_full'             => self::encode_svg( is_string( $logo_full ) ? $logo_full : '' ),
+				'connected'             => $suretrigger_connected,
+				'connection_url'        => admin_url( 'admin.php?page=suretriggers' ),
+			],
+			'starter_templates' => [
+				'title'                 => __( 'Starter Templates', 'sureforms' ),
+				'singleLineDescription' => __( 'Launch Beautiful Websites in Minutes!', 'sureforms' ),
+				'subtitle'              => __( 'Choose from professionally designed templates, import with one click, and customize effortlessly to match your brand.', 'sureforms' ),
+				'status'                => self::get_plugin_status( self::check_starter_template_plugin() ),
+				'slug'                  => 'astra-sites',
+				'path'                  => self::check_starter_template_plugin(),
+				'logo'                  => self::encode_svg( is_string( $logo_starter_templates ) ? $logo_starter_templates : '' ),
+			],
+		];
+
+		$elementor_installed = self::get_plugin_if_installed( [ 'elementor/elementor.php' ] );
+
+		if ( $elementor_installed ) {
+			$integrations['uae'] = [
+				'title'                 => __( 'Ultimate Addons for Elementor', 'sureforms' ),
+				'singleLineDescription' => __( 'Power Up Elementor to Build Stunning Websites Faster!', 'sureforms' ),
+				'subtitle'              => __( 'Enhance Elementor with powerful widgets and templates. Build stunning, high-performing websites faster with creative design elements and seamless customization.', 'sureforms' ),
+				'status'                => self::get_plugin_status( 'header-footer-elementor/header-footer-elementor.php' ),
+				'slug'                  => 'header-footer-elementor',
+				'path'                  => 'header-footer-elementor/header-footer-elementor.php',
+				'logo'                  => self::encode_svg( is_string( $logo_uae ) ? $logo_uae : '' ),
+			];
+		} else {
+			$integrations['sure_rank'] = [
+				'title'                 => __( 'SureRank', 'sureforms' ),
+				'singleLineDescription' => __( 'Elevate Your SEO and Climb Search Rankings Effortlessly!', 'sureforms' ),
+				'subtitle'              => __( 'Boost your website\'s visibility with smart SEO automation. Optimize content, track keyword performance, and get actionable insights, all inside WordPress.', 'sureforms' ),
+				'status'                => self::get_plugin_status( 'surerank/surerank.php' ),
+				'slug'                  => 'surerank',
+				'path'                  => 'surerank/surerank.php',
+				'logo'                  => self::encode_svg( is_string( $logo_sure_rank ) ? $logo_sure_rank : '' ),
+			];
+		}
+
+		return apply_filters( 'srfm_integrated_plugins', $integrations );
+	}
+
+	/**
+	 * Get the current rotating plugin for the banner.
+	 *
+	 * Plugins rotate every 2 days. Only non-activated plugins are shown.
+	 * Returns false if all plugins are activated.
+	 *
+	 * @since 2.0.0
+	 * @return array<string, mixed>|false The current plugin data or false if all plugins are activated.
+	 */
+	public static function get_rotating_plugin_banner() {
+		$all_plugins = self::sureforms_get_integration();
+
+		if ( ! is_array( $all_plugins ) ) {
+			return false;
+		}
+
+		$available_plugins = [];
+
+		// Only include non-activated plugins.
+		foreach ( $all_plugins as $plugin ) {
+			if ( ! is_array( $plugin ) ) {
+				continue;
+			}
+			if ( isset( $plugin['status'] ) && is_string( $plugin['status'] ) && 'Activated' !== $plugin['status'] ) {
+				$available_plugins[] = $plugin;
+			}
+		}
+
+		// Re-index the array to have sequential numeric keys.
+		$available_plugins = array_values( $available_plugins );
+		$total_plugins     = count( $available_plugins );
+
+		// Hide section if all plugins are active.
+		if ( 0 === $total_plugins ) {
+			return false;
+		}
+
+		// Get stored rotation data.
+		$rotation_data = self::get_srfm_option( 'plugin_banner_rotation', [] );
+
+		if ( ! is_array( $rotation_data ) ) {
+			$rotation_data = [];
+		}
+
+		// Initialize rotation data if empty.
+		if ( empty( $rotation_data ) ) {
+			$current_time = time();
+			self::update_srfm_option(
+				'plugin_banner_rotation',
+				[
+					'last_rotation_date' => $current_time,
+					'plugin_index'       => 0,
+				]
+			);
+			return isset( $available_plugins[0] ) && is_array( $available_plugins[0] ) ? $available_plugins[0] : false;
+		}
+
+		$last_rotation_date = isset( $rotation_data['last_rotation_date'] ) && is_int( $rotation_data['last_rotation_date'] ) ? $rotation_data['last_rotation_date'] : 0;
+		$plugin_index       = isset( $rotation_data['plugin_index'] ) && is_numeric( $rotation_data['plugin_index'] ) ? intval( $rotation_data['plugin_index'] ) : 0;
+
+		$current_time        = time();
+		$days_since_rotation = ( $current_time - $last_rotation_date ) / DAY_IN_SECONDS;
+
+		// Rotate every 2 days.
+		if ( $days_since_rotation >= 2 ) {
+			// Rotate to next plugin.
+			++$plugin_index;
+			$plugin_index %= $total_plugins;
+
+			// Update the rotation data.
+			self::update_srfm_option(
+				'plugin_banner_rotation',
+				[
+					'last_rotation_date' => $current_time,
+					'plugin_index'       => $plugin_index,
+				]
+			);
+		}
+
+		// Ensure the index is within bounds.
+		if ( $plugin_index >= $total_plugins ) {
+			$plugin_index = 0;
+		}
+
+		return isset( $available_plugins[ $plugin_index ] ) && is_array( $available_plugins[ $plugin_index ] ) ? $available_plugins[ $plugin_index ] : false;
+	}
+
+	/**
+	 * Get a value from the srfm_options array.
+	 *
+	 * @param string $key The key to retrieve.
+	 * @param mixed  $default The default value to return if the key does not exist.
+	 * @since 1.8.0
+	 * @return mixed
+	 */
+	public static function get_srfm_option( $key, $default = null ) {
+		$options = get_option( 'srfm_options', [] );
+		if ( ! is_array( $options ) ) {
+			$options = [];
+		}
+		return array_key_exists( $key, $options ) ? $options[ $key ] : $default;
+	}
+
+	/**
+	 * Update a value in the srfm_options array.
+	 *
+	 * @param string $key   The key to update.
+	 * @param mixed  $value The value to set.
+	 * @since 1.8.0
+	 * @return void
+	 */
+	public static function update_srfm_option( $key, $value ) {
+		$options = get_option( 'srfm_options', [] );
+		if ( ! is_array( $options ) ) {
+			$options = [];
+		}
+		$options[ $key ] = $value;
+		update_option( 'srfm_options', $options );
+	}
+
+	/**
+	 * Get the WordPress file types.
+	 *
+	 * @since 1.7.4
+	 * @return array<string,mixed> An associative array representing the file types.
+	 */
+	public static function get_wp_file_types() {
+		$formats = [];
+		$mimes   = get_allowed_mime_types();
+		$maxsize = wp_max_upload_size() / 1048576;
+		if ( ! empty( $mimes ) ) {
+			foreach ( $mimes as $type => $mime ) {
+				$multiple = explode( '|', $type );
+				foreach ( $multiple as $single ) {
+					$formats[] = $single;
+				}
+			}
+		}
+
+		return [
+			'formats' => $formats,
+			'maxsize' => $maxsize,
+		];
+	}
+
+	/**
+	 * Determines if the SureForms Pro plugin is installed and active.
+	 *
+	 * Checks for the presence of the SRFM_PRO_VER constant.
+	 *
+	 * @since 1.8.0
+	 *
+	 * @return bool True if the Pro plugin is active; false otherwise.
+	 */
+	public static function has_pro() {
+		return defined( 'SRFM_PRO_VER' );
+	}
+
+	/**
+	 * Verifies the request by checking the nonce and user capabilities.
+	 *
+	 * @param string $request_type The type of request, either 'rest' or 'ajax'.
+	 * @param string $nonce_action The action name for the nonce.
+	 * @param string $nonce_name   The name of the nonce field.
+	 * @param string $capability   The capability required to perform the action. Default is 'manage_options'.
+	 *
+	 * @since 1.10.0
+	 * @return void
+	 */
+	public static function verify_nonce_and_capabilities( $request_type, $nonce_action, $nonce_name, $capability = 'manage_options' ) {
+
+		if ( ! is_string( $nonce_action ) || ! is_string( $nonce_name ) || empty( $nonce_action ) || empty( $nonce_name ) ) {
+			wp_send_json_error(
+				[ 'message' => __( 'Invalid nonce action or name.', 'sureforms' ) ],
+				400
+			);
+		}
+
+		// Verify nonce for security.
+		if ( 'rest' === $request_type ) {
+			// For REST API requests, use the WP_REST_Request object to verify the nonce.
+			if ( ! wp_verify_nonce( $nonce_action, $nonce_name ) ) {
+				wp_send_json_error(
+					[ 'message' => __( 'Invalid security token.', 'sureforms' ) ],
+					403
+				);
+			}
+		} elseif ( 'ajax' === $request_type ) {
+			// For non-REST requests, use the standard nonce verification.
+			if ( ! check_ajax_referer( $nonce_action, $nonce_name, false ) ) {
+				wp_send_json_error(
+					[ 'message' => __( 'Invalid security token.', 'sureforms' ) ],
+					403
+				);
+			}
+		} else {
+			// If the request type is not recognized, return an error.
+			wp_send_json_error(
+				[ 'message' => __( 'Invalid request type.', 'sureforms' ) ],
+				400
+			);
+		}
+
+		// Check user capabilities.
+		if ( ! current_user_can( $capability ) ) {
+			wp_send_json_error(
+				[ 'message' => esc_html__( 'You do not have permission to perform this action.', 'sureforms' ) ],
+				403
+			);
+		}
+	}
+
+	/**
+	 * Get the block name from a field name by extracting the first two parts.
+	 *
+	 * @param string $field_name The full field name (e.g., 'srfm-text-lbl-123').
+	 *
+	 * @since 1.11.0
+	 * @return string The block name (e.g., 'srfm-text').
+	 */
+	public static function get_block_name_from_field( $field_name ) {
+		return implode( '-', array_slice( explode( '-', explode( '-lbl-', $field_name )[0] ), 0, 2 ) );
+	}
+
+	/**
+	 * Check if any of the top 10 popular WordPress SMTP plugins is active using array_intersect.
+	 *
+	 * @since 1.9.1
+	 * @return bool True if any SMTP plugin is active, false otherwise.
+	 */
+	public static function is_any_smtp_plugin_active() {
+		$smtp_plugins = [
+			'wp-mail-smtp/wp_mail_smtp.php',
+			'post-smtp/postman-smtp.php',
+			'easy-wp-smtp/easy-wp-smtp.php',
+			'wp-smtp/wp-smtp.php',
+			'newsletter/plugin.php',
+			'fluent-smtp/fluent-smtp.php',
+			'pepipost-smtp/pepipost-smtp.php',
+			'mail-bank/wp-mail-bank.php',
+			'smtp-mailer/smtp-mailer.php',
+			'suremails/suremails.php',
+			'site-mailer/site-mailer.php',
+		];
+
+		$active_plugins = (array) get_option( 'active_plugins', [] );
+		// For multisite, merge sitewide active plugins.
+		if ( is_multisite() ) {
+			$network_plugins = (array) get_site_option( 'active_sitewide_plugins', [] );
+			$active_plugins  = array_merge( $active_plugins, array_keys( $network_plugins ) );
+		}
+
+		return (bool) array_intersect( $smtp_plugins, $active_plugins );
+	}
+
+	/**
+	 * Apply a filter and return the filtered value only if it's a non-empty array.
+	 * Otherwise, return the default array.
+	 *
+	 * @param string $filter_name The name of the filter to apply.
+	 * @param mixed  $default     The default array to return if the filtered result is invalid.
+	 * @param mixed  ...$args     Additional arguments to pass to the filter.
+	 *
+	 * @return array The filtered array if valid, otherwise the default.
+	 */
+	public static function apply_filters_as_array( $filter_name, $default, ...$args ) {
+		// Ensure $default is an array.
+		if ( ! is_array( $default ) ) {
+			$default = [];
+		}
+
+		// Validate the filter name.
+		if ( ! is_string( $filter_name ) || empty( $filter_name ) ) {
+			return $default;
+		}
+
+		// Apply the filter with additional arguments.
+		$filtered = apply_filters( $filter_name, $default, ...$args );
+
+		// Return filtered result if it's a non-empty array.
+		return is_array( $filtered ) && ! empty( $filtered ) ? $filtered : $default;
+	}
+
+	/**
+	 * Get forms with entry counts for a specific time period.
+	 *
+	 * @param int  $timestamp The timestamp to get entries after.
+	 * @param int  $limit     Maximum number of forms to return (0 for all).
+	 * @param bool $sort      Whether to sort by entry count descending.
+	 * @return array Array of form data with entry counts.
+	 * @since 1.9.1
+	 */
+	public static function get_forms_with_entry_counts( $timestamp, $limit = 0, $sort = true ) {
+		// Get all published forms with post objects for bulk title access.
+		$args = [
+			'post_type'              => SRFM_FORMS_POST_TYPE,
+			'posts_per_page'         => -1,
+			'post_status'            => 'publish',
+			'orderby'                => 'ID',
+			'order'                  => 'DESC',
+			'no_found_rows'          => true,
+			'update_post_term_cache' => false,
+			'update_post_meta_cache' => false,
+		];
+
+		$query = new \WP_Query( $args );
+
+		if ( ! $query->have_posts() ) {
+			return [];
+		}
+
+		$all_forms = [];
+
+		// Process posts directly from the query results without touching global $post.
+		foreach ( $query->posts as $form ) {
+			// Ensure we have a valid post object.
+			if ( ! $form instanceof \WP_Post ) {
+				continue;
+			}
+
+			$form_id = (int) $form->ID;
+			if ( $form_id <= 0 ) {
+				continue;
+			}
+
+			// Get entries count after the timestamp for this specific form.
+			$entry_count = Entries::get_entries_count_after( $timestamp, $form_id );
+
+			// Get form title directly from post object, use "Blank Form" if empty.
+			$form_title = $form->post_title;
+			if ( empty( trim( self::get_string_value( $form_title ) ) ) ) {
+				$form_title = __( 'Blank Form', 'sureforms' );
+			}
+
+			$all_forms[] = [
+				'form_id' => $form_id,
+				'title'   => $form_title,
+				'count'   => $entry_count,
+			];
+		}
+
+		// Sort by count descending, then by form_id descending for consistency.
+		if ( $sort ) {
+			usort(
+				$all_forms,
+				static function( $a, $b ) {
+					if ( $a['count'] === $b['count'] ) {
+						return $b['form_id'] - $a['form_id'];
+					}
+					return $b['count'] - $a['count'];
+				}
+			);
+		}
+
+		// Return limited results if specified.
+		if ( $limit > 0 ) {
+			return array_slice( $all_forms, 0, $limit );
+		}
+
+		return $all_forms;
+	}
+
+	/**
+	 * Check if the given form ID is valid SureForms form ID.
+	 * A valid form ID is a numeric value that corresponds to an existing SureForms form in the database.
+	 *
+	 * @since 1.9.1
+	 *
+	 * @param int|string|mixed $form_id The form ID to validate.
+	 * @return bool True if the form ID is valid, false otherwise.
+	 */
+	public static function is_valid_form( $form_id ) {
+
+		// Check for a valid form ID.
+		if ( empty( $form_id ) || ! is_numeric( $form_id ) ) {
+			return false;
+		}
+
+		// Check if the form ID exists in the database.
+		$form = get_post( self::get_integer_value( $form_id ) );
+
+		// If the form does not exist or is not of the correct post type, return false.
+		if ( ! $form || ! is_a( $form, 'WP_Post' ) || SRFM_FORMS_POST_TYPE !== $form->post_type ) {
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Get the timestamp from a string.
+	 *
+	 * This function uses WordPress's configured timezone (from Settings → General → Timezone)
+	 * to ensure consistent behavior regardless of the server's timezone settings.
+	 *
+	 * @param string $date The date in YYYY-MM-DD format (e.g., '2026-01-10').
+	 * @param string $hours The hours in 12-hour format (e.g., '12', '01'-'12').
+	 * @param string $minutes The minutes (e.g., '00', '00'-'59').
+	 * @param string $meridiem The meridiem (e.g., 'AM' or 'PM').
+	 *
+	 * @since 1.10.1
+	 * @return int|false The timestamp if successful, false otherwise.
+	 */
+	public static function get_timestamp_from_string( $date, $hours = '12', $minutes = '00', $meridiem = 'AM' ) {
+
+		if ( empty( $date ) || ! is_string( $date ) ) {
+			return false; // Invalid input.
+		}
+
+		// Ensure the date is in a valid format of YYYY-MM-DD.
+		if ( ! preg_match( '/^\d{4}-\d{2}-\d{2}$/', $date ) ) {
+			return false; // Invalid date format.
+		}
+
+		$time_string = $date . ' ' . $hours . ':' . $minutes . ' ' . $meridiem;
+
+		// Convert to timestamp using WordPress timezone.
+		// This ensures the date/time is interpreted in the site's configured timezone,
+		// not the server's timezone or PHP's default timezone.
+		try {
+			$datetime = date_create( $time_string, wp_timezone() );
+
+			if ( false === $datetime ) {
+				return false;
+			}
+
+			$timestamp = $datetime->getTimestamp();
+
+			if ( is_int( $timestamp ) && $timestamp > 0 ) {
+				return $timestamp;
+			}
+		} catch ( \Exception $e ) {
+			// If timezone conversion fails, return false.
+			return false;
+		}
+
+		// If conversion fails, return false.
+		return false;
+	}
+
+	/**
+	 * Generate a unique ID for the saved form.
+	 * Also ensures that the generated ID does not already exist in the database table.
+	 *
+	 * @param class-string $class  The class name where the get method is defined to check for existing IDs.
+	 * @param int<1, max>  $length The length of the random bytes to generate. Default is 8.
+	 * @return string
+	 * @since 2.2.0
+	 */
+	public static function generate_unique_id( $class, $length = 8 ) {
+		// Ensure length is at least 1.
+		$length = max( 1, $length );
+
+		do {
+			$id = bin2hex( random_bytes( $length ) );
+		} while ( is_callable( [ $class, 'get' ] ) && call_user_func( [ $class, 'get' ], $id ) );
+		return $id;
+	}
+
+	/**
+	 * Log error messages to the error log.
+	 *
+	 * This function checks if error_log function exists, validates the message,
+	 * and logs it with the print_r second argument set to true.
+	 *
+	 * Logging is disabled by default. To enable logging, add this to wp-config.php:
+	 * define( 'SRFM_LOG', true );
+	 *
+	 * @param mixed  $message The error message to log. Can be string or any type.
+	 * @param string $prefix Optional prefix to add before the message. Default: 'Log :'.
+	 *
+	 * @since 2.0.0
+	 * @return void
+	 */
+	public static function srfm_log( $message, $prefix = 'Log :' ) {
+		// Check if logging is enabled via SRFM_LOG constant.
+		if ( ! defined( 'SRFM_LOG' ) ) {
+			return;
+		}
+		unset( $message, $prefix );
+	}
+
+	/**
+	 * Encodes data to base64 after JSON encoding with validation.
+	 *
+	 * This function checks if the data is non-empty and valid for JSON encoding.
+	 * If data is not valid, returns an empty string.
+	 * Otherwise, it attempts to JSON encode and then base64 encode the result.
+	 *
+	 * @param mixed $data The data to JSON encode and then base64 encode.
+	 * @return string The base64-encoded JSON string, or empty string on failure.
+	 */
+	public static function srfm_base64_json_encode( $data ) {
+		if ( empty( $data ) || ! is_array( $data ) ) {
+			return '';
+		}
+
+		$json = wp_json_encode( $data );
+		if ( false === $json || '' === $json ) {
+			return '';
+		}
+
+		// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
+		return base64_encode( $json );
+	}
+
+	/**
+	 * Get the nonces for the form submission.
+	 *
+	 * @since 2.5.1
+	 * @return array<string> The nonces for the form submission.
+	 */
+	public static function get_frontend_nonces() {
+		$nonces = [
+			'unique_validation' => wp_create_nonce( 'unique_validation_nonce' ),
+			'form_submit'       => wp_create_nonce( 'srfm_form_submit' ),
+			'payment_nonce'     => wp_create_nonce( 'srfm_payment_nonce' ),
+		];
+
+		/**
+		 * Filter to allow Pro and third-party plugins to add additional nonces.
+		 *
+		 * @since 2.5.1
+		 * @param array<string> $nonces The nonces for the form submission.
+		 */
+		return apply_filters( 'srfm_frontend_nonces', $nonces );
+	}
+
+	/**
+	 * Check if the form markup nonce should be updated.
+	 *
+	 * @since 2.5.1
+	 * @return bool True if the form markup nonce should be updated, false otherwise.
+	 */
+	public static function should_update_form_markup_nonce() {
+		return apply_filters( 'srfm_should_update_form_markup_nonce', true );
 	}
 }

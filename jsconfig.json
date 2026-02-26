@@ -1,0 +1,22 @@
+{
+	"compilerOptions": {
+		"baseUrl": ".",
+		"paths": {
+			"@Admin/*": [ "src/admin/*" ],
+			"@Blocks/*": [ "src/blocks/*" ],
+			"@Controls/*": [ "src/srfm-controls/*" ],
+			"@Components/*": [ "src/components/*" ],
+			"@Utils/*": [ "src/utils/*" ],
+			"@Svg/*": [ "assets/svg/*" ],
+			"@Attributes/*": [ "src/blocks-attributes/*" ],
+			"@Image/*": [ "images/*" ],
+			"@IncBlocks/*": [ "inc/blocks/*" ]
+		}
+	},
+	"exclude": [
+		"node_modules",
+		"dist",
+		"build",
+		"assets"
+	]
+}

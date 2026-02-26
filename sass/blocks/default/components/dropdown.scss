@@ -1,3 +1,4 @@
+@import "../utils/mixins.scss";
 .srfm-form-container {
 	.srfm-form {
 		.srfm-block {
@@ -7,6 +8,21 @@
 				.srfm-dropdown-common {
 					border-radius: var( --srfm-input-field-border-radius ) !important;
 					transition: 0.2s ease-out;
+
+					&.single.full {
+						.ts-control {
+							gap: 0;
+							input[id^="tomselect-"] {
+								height: 0;
+							}
+						}
+					}
+
+					&.has-items .ts-control {
+						height: auto;
+						flex-wrap: wrap;
+						word-break: break-word;
+					}
 
 					&.input-active {
 						// Add the glow and border color to the dropdown when it is focused.
@@ -53,7 +69,6 @@
 						.item {
 							position: relative;
 							top: 50%;
-							transform: translateY( -50% );
 
 							// Hide the remove icon for individual option in single selection dropdown.
 							.remove {
@@ -69,6 +84,11 @@
 							padding: var( --srfm-dropdown-multiselect-padding ) !important; // Override the default padding.
 							line-height: var( --srfm-dropdown-multiselect-line-height );
 						}
+
+						&.has-items .item {
+							white-space: normal;
+						}
+
 						.item {
 							border-radius: 4px;
 							margin: 0;
@@ -104,7 +124,11 @@
 						padding-right: var( --srfm-dropdown-padding-right-icon ) !important; // Override the default right padding to include the spacing before dropdown arrow.
 						align-items: center;
 						// Adding the transition for specific properties to avoid unintended animations.
-						transition: border-color 0.2s ease-out, box-shadow 0.2s ease-out, background-color 0.2s ease-out !important;
+						transition:
+							border-color 0.2s ease-out,
+							box-shadow 0.2s ease-out,
+							background-color 0.2s ease-out !important;
+						flex-wrap: nowrap;
 
 						&:hover {
 							border-color: var( --srfm-color-input-border-hover );
@@ -155,6 +179,11 @@
 						@include srfm-dropdown-styles;
 						color: var( --srfm-dropdown-option-text-color );
 						.option {
+							// Add 4px gap between the options except the last one.
+							// This is to distinguish between the options when selected.
+							&:not( :last-child ) {
+								margin-bottom: 4px;
+							}
 							display: flex;
 							align-items: center;
 							border-radius: 4px;
@@ -207,7 +236,7 @@
 				select {
 					display: block;
 					padding: var( --srfm-input-field-padding );
-					margin: var( --srfm-input-field-margin );
+					@include srfm-input-margin-styles;
 					width: 100%;
 					font-size: 0.7em;
 				}

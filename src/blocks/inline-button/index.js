@@ -7,7 +7,7 @@ import { MdSmartButton as icon } from 'react-icons/md';
  */
 import edit from './edit';
 import save from './save';
-import metadata from './block.json';
+import metadata from '@IncBlocks/inlinebutton/block.json';
 
 const { name } = metadata;
 

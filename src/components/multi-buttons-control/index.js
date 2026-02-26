@@ -261,8 +261,8 @@ const MultiButtonsControl = ( props ) => {
 			if ( setAttributes ) {
 				setAttributes( {
 					[ data.label ]:
-						allBlocksAttributes[ selectedBlock ][ data.label ]
-							.default,
+						allBlocksAttributes[ selectedBlock ]?.[ data.label ]
+							?.default,
 				} );
 			}
 
@@ -304,27 +304,46 @@ const MultiButtonsControl = ( props ) => {
 					className={ `srfm-multi-button-button-group` }
 					aria-label={ label }
 				>
-					{ allOptions.map( ( option ) => (
-						<Button
-							key={ `option-${ option.value }` }
-							className={ `srfm-multi-button` }
-							isSecondary={
-								data.value !== option.value ||
-								! buttonPrimaryStateDesktop
-							}
-							isPrimary={
-								data.value === option.value &&
-								buttonPrimaryStateDesktop
-							}
-							aria-pressed={ data.value === option.value }
-							onClick={ () => onClickHandler( option.value ) }
-							aria-label={ option.tooltip }
-							label={ option.tooltip }
-							showTooltip={ option.tooltip ? true : false }
-						>
-							{ showIcons ? option.icon : option.label }
-						</Button>
-					) ) }
+					{ allOptions.map( ( option ) => {
+						const buttonElement = (
+							<Button
+								key={ `option-${ option.value }` }
+								className={ `srfm-multi-button` }
+								isSecondary={
+									data.value !== option.value ||
+									! buttonPrimaryStateDesktop
+								}
+								isPrimary={
+									data.value === option.value &&
+									buttonPrimaryStateDesktop
+								}
+								aria-pressed={ data.value === option.value }
+								onClick={ () => onClickHandler( option.value ) }
+								aria-label={ option.tooltip }
+								label={ option.tooltip }
+								showTooltip={ option.tooltip ? true : false }
+							>
+								{ showIcons ? option.icon : option.label }
+							</Button>
+						);
+
+						// If showing icons and label exists, wrap in container with label below
+						if ( showIcons && option.label ) {
+							return (
+								<div
+									key={ `option-wrapper-${ option.value }` }
+									className="srfm-multi-button-with-label"
+								>
+									{ buttonElement }
+									<span className="srfm-multi-button-label-text">
+										{ option.label }
+									</span>
+								</div>
+							);
+						}
+
+						return buttonElement;
+					} ) }
 				</ButtonGroup>
 				<SRFMHelpText text={ help } />
 			</div>

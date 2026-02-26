@@ -1,14 +1,21 @@
+import apiFetch from '@wordpress/api-fetch';
+import { __, sprintf } from '@wordpress/i18n';
+import { Toaster, ToastBar } from 'react-hot-toast';
+import { store as editorStore } from '@wordpress/editor';
+import { select } from '@wordpress/data';
+import { cleanForSlug } from '@wordpress/url';
+import clsx from 'clsx';
+import { twMerge } from 'tailwind-merge';
+import { format as format_date } from 'date-fns';
+import { toast } from '@bsf/force-ui';
+import { applyFilters } from '@wordpress/hooks';
+
 /**
  * Get Image Sizes and return an array of Size.
  *
  * @param {Object} sizes - The sizes object.
  * @return {Object} sizeArr - The sizeArr object.
  */
-
-import apiFetch from '@wordpress/api-fetch';
-import { __ } from '@wordpress/i18n';
-import { Toaster, ToastBar } from 'react-hot-toast';
-
 export function getImageSize( sizes ) {
 	const sizeArr = [];
 	for ( const size in sizes ) {
@@ -56,7 +63,9 @@ export const srfmDeepClone = ( arrayOrObject ) =>
 export const handleAddNewPost = async (
 	formData,
 	templateName,
-	templateMetas
+	templateMetas,
+	isConversational = false,
+	formType = ''
 ) => {
 	if ( '1' !== srfm_admin.capability ) {
 		console.error( 'User does not have permission to create posts' );
@@ -75,6 +84,8 @@ export const handleAddNewPost = async (
 				form_data: formData,
 				template_name: templateName,
 				template_metas: templateMetas,
+				is_conversational: isConversational,
+				form_type: formType,
 			},
 		} );
 
@@ -91,9 +102,9 @@ export const handleAddNewPost = async (
 	}
 };
 
-export const initiateAuth = async () => {
+export const initiateAuth = async ( source = 'default' ) => {
 	const response = await apiFetch( {
-		path: '/sureforms/v1/initiate-auth',
+		path: `/sureforms/v1/initiate-auth?source=${ source }`,
 		headers: {
 			'Content-Type': 'application/json',
 			'X-WP-Nonce': srfm_admin.template_picker_nonce,
@@ -115,15 +126,6 @@ export const randomNiceColor = () => {
 	const s = randomInt( 42, 98 );
 	const l = randomInt( 40, 90 );
 	return `hsla(${ h },${ s }%,${ l }%,${ 0.2 })`;
-};
-
-export const generateSmartTagsDropDown = ( setInputData ) => {
-	const smartTagList = srfm_block_data.smart_tags_array;
-	if ( ! smartTagList ) {
-		return;
-	}
-	const entries = Object.entries( smartTagList );
-	return generateDropDownOptions( setInputData, entries );
 };
 
 export const generateDropDownOptions = (
@@ -158,19 +160,6 @@ export const generateDropDownOptions = (
 	return data;
 };
 
-export async function getServerGeneratedBlockSlugs( formID, content ) {
-	const option = {
-		path: `/sureforms/v1/generate-block-slugs`,
-		method: 'POST',
-		data: {
-			formID,
-			content,
-		},
-	};
-
-	return await apiFetch( option );
-}
-
 // Creates excerpt.
 export function trimTextToWords( text, wordLimit, ending = '...' ) {
 	// Split the text into words
@@ -197,6 +186,38 @@ const pushSmartTagToArray = (
 	}
 
 	blocks.forEach( ( block ) => {
+		/**
+		 * Allows external packages to process smart tags for specific blocks before default processing.
+		 * For example, business blocks like repeater fields need custom smart tag handling.
+		 * If a block is processed externally, it will skip the default processing in this function.
+		 *
+		 * srfm.smartTags.isBlockProcessedExternally - filter to process smart tags for specific blocks before default processing.
+		 * @param {boolean}  isProcessedExternally Whether block was processed by external code
+		 * @param {Object}   args                  Arguments passed to the filter
+		 * @param {Object}   args.block            The block object being processed
+		 * @param {Object}   args.blockSlugs       Mapping of block IDs to their field slugs
+		 * @param {Array}    args.tagsArray        Array where smart tags are collected
+		 * @param {Array}    args.uniqueSlugs      Array of unique field slugs already processed
+		 * @param {Function} args.trimTextToWords  Function to trim text to words
+		 * @return {boolean} True if block was processed externally, false to use default processing
+		 */
+		const isBlockProcessedExternally = applyFilters(
+			'srfm.smartTags.isBlockProcessedExternally',
+			false,
+			{
+				block,
+				blockSlugs,
+				tagsArray,
+				uniqueSlugs,
+				trimTextToWords,
+			}
+		);
+
+		// Skip further processing if block was already handled externally
+		if ( isBlockProcessedExternally ) {
+			return;
+		}
+
 		const isInnerBlock =
 			Array.isArray( block?.innerBlocks ) &&
 			0 !== block?.innerBlocks.length;
@@ -220,9 +241,101 @@ const pushSmartTagToArray = (
 			return;
 		}
 
+		// Special handling for payment blocks - generate payment-specific smart tags
+		if ( block?.name === 'srfm/payment' ) {
+			const fieldSlug = blockSlugs[ block.attributes.block_id ];
+
+			// Skip if no slug or already processed
+			if (
+				! fieldSlug ||
+				fieldSlug === '-1' ||
+				uniqueSlugs.includes( fieldSlug )
+			) {
+				return;
+			}
+
+			const blockLabel = trimTextToWords(
+				block.attributes.label || __( 'Payment', 'sureforms' ),
+				5
+			);
+
+			// Generate payment smart tags
+			const paymentTags = [
+				// Translators: %s is replaced by the Payment block label.
+				[
+					`{form-payment:${ fieldSlug }:order-id}`,
+					sprintf(
+						/* translators: %s is replaced by the Payment block label. */
+						__( '%s - Order ID', 'sureforms' ),
+						blockLabel
+					),
+				],
+				// Translators: %s is replaced by the Payment block label.
+				[
+					`{form-payment:${ fieldSlug }:amount}`,
+					sprintf(
+						/* translators: %s is replaced by the Payment block label. */
+						__( '%s - Amount', 'sureforms' ),
+						blockLabel
+					),
+				],
+				// Translators: %s is replaced by the Payment block label.
+				[
+					`{form-payment:${ fieldSlug }:email}`,
+					sprintf(
+						/* translators: %s is replaced by the Payment block label. */
+						__( '%s - Customer Email', 'sureforms' ),
+						blockLabel
+					),
+				],
+				// Translators: %s is replaced by the Payment block label.
+				[
+					`{form-payment:${ fieldSlug }:name}`,
+					sprintf(
+						/* translators: %s is replaced by the Payment block label. */
+						__( '%s - Customer Name', 'sureforms' ),
+						blockLabel
+					),
+				],
+				// Translators: %s is replaced by the Payment block label.
+				[
+					`{form-payment:${ fieldSlug }:status}`,
+					sprintf(
+						/* translators: %s is replaced by the Payment block label. */
+						__( '%s - Status', 'sureforms' ),
+						blockLabel
+					),
+				],
+			];
+
+			// Add all payment tags to the array
+			paymentTags.forEach( ( tag ) => {
+				tagsArray.push( tag );
+			} );
+
+			// Mark this slug as processed
+			uniqueSlugs.push( fieldSlug );
+			return;
+		}
+
+		// Verify if `block.attributes.block_id` is defined and not empty.
+		if ( ! block?.attributes?.block_id ) {
+			return;
+		}
+
 		const fieldSlug = blockSlugs[ block.attributes.block_id ];
 
-		if ( 'undefined' === typeof fieldSlug ) {
+		/**
+		 * Added the '-1' === fieldSlug to avoid the error when login block is added in the form.
+		 * This is because the field slug gets set to -1 for the inline button in the login block.
+		 *
+		 * @since 1.8.0
+		 */
+		if (
+			'undefined' === typeof fieldSlug ||
+			! fieldSlug ||
+			'-1' === fieldSlug
+		) {
 			// If we are here, then field is invalid and we don't need to process it.
 			return;
 		}
@@ -247,25 +360,33 @@ const pushSmartTagToArray = (
 	} );
 };
 
-export const setFormSpecificSmartTags = ( savedBlocks, blockSlugs ) => {
-	if ( ! Object.keys( blockSlugs )?.length ) {
-		return;
-	}
-
-	const excludedBlocks = [
+export const getWithoutSlugBlocks = () =>
+	applyFilters( 'srfm.withoutSlugBlocks', [
 		'srfm/inline-button',
-		'srfm/hidden',
 		'srfm/page-break',
 		'srfm/separator',
 		'srfm/advanced-heading',
 		'srfm/image',
 		'srfm/icon',
-	];
+		'srfm/link',
+		'srfm/html',
+	] );
+
+export const setFormSpecificSmartTags = ( updateBlockAttributes ) => {
+	const { getBlocks } = select( editorStore );
+	let savedBlocks = getBlocks();
+	const blockSlugs = prepareBlockSlugs( updateBlockAttributes, savedBlocks );
+
+	if ( ! Object.keys( blockSlugs )?.length ) {
+		return;
+	}
 
 	const formSmartTags = [];
 	const formEmailSmartTags = [];
+	const formUploadSmartTags = [];
 	const formSmartTagsUniqueSlugs = [];
 	const formEmailSmartTagsUniqueSlugs = [];
+	const formUploadSmartTagsUniqueSlugs = [];
 
 	if ( typeof window.sureforms === 'undefined' ) {
 		window.sureforms = {};
@@ -273,13 +394,14 @@ export const setFormSpecificSmartTags = ( savedBlocks, blockSlugs ) => {
 
 	window.sureforms.formSpecificSmartTags = formSmartTags;
 	window.sureforms.formSpecificEmailSmartTags = formEmailSmartTags;
+	window.sureforms.formSpecificUploadSmartTags = formUploadSmartTags;
 
 	if ( ! savedBlocks?.length ) {
 		return;
 	}
 
 	savedBlocks = savedBlocks.filter(
-		( savedBlock ) => ! excludedBlocks.includes( savedBlock?.name )
+		( savedBlock ) => ! getWithoutSlugBlocks().includes( savedBlock?.name )
 	);
 
 	pushSmartTagToArray(
@@ -296,8 +418,17 @@ export const setFormSpecificSmartTags = ( savedBlocks, blockSlugs ) => {
 		[ 'srfm/email' ]
 	);
 
+	pushSmartTagToArray(
+		savedBlocks,
+		blockSlugs,
+		formUploadSmartTags,
+		formUploadSmartTagsUniqueSlugs,
+		[ 'srfm/upload' ]
+	);
+
 	window.sureforms.formSpecificSmartTags = formSmartTags;
 	window.sureforms.formSpecificEmailSmartTags = formEmailSmartTags;
+	window.sureforms.formSpecificUploadSmartTags = formUploadSmartTags;
 };
 
 /**
@@ -375,3 +506,538 @@ export const SRFMToaster = ( {
 // Using for the icon picker component.
 export const uagbClassNames = ( classes ) =>
 	classes.filter( Boolean ).join( ' ' );
+
+export const addQueryParam = ( url, paramValue, paramKey = 'utm_medium' ) => {
+	try {
+		const urlObj = new URL( url );
+		urlObj.searchParams.set( paramKey, paramValue );
+		return urlObj.toString();
+	} catch ( error ) {
+		console.error( 'Invalid URL:', error );
+		return url; // Return the original URL in case of error
+	}
+};
+
+/**
+ * Utility function to merge Tailwind CSS and conditional class names.
+ *
+ * @param {...any} args
+ * @return {string} - The concatenated class string.
+ */
+export const cn = ( ...args ) => twMerge( clsx( ...args ) );
+
+/**
+ * Formats a given date string based on the provided options.
+ *
+ * @param {string}  dateString       - The date string to format.
+ * @param {Object}  options          - Formatting options to customize the output.
+ * @param {boolean} [options.day]    - Whether to include the day in the output.
+ * @param {boolean} [options.month]  - Whether to include the month in the output.
+ * @param {boolean} [options.year]   - Whether to include the year in the output.
+ * @param {boolean} [options.hour]   - Whether to include the hour in the output.
+ * @param {boolean} [options.minute] - Whether to include the minute in the output.
+ * @param {boolean} [options.hour12] - Whether to use a 12-hour clock format.
+ * @return {string} - The formatted date string or a fallback if the input is invalid.
+ */
+export const formatDate = ( dateString, options = {} ) => {
+	if ( ! dateString || isNaN( new Date( dateString ).getTime() ) ) {
+		return __( 'No Date', 'sureforms' );
+	}
+
+	const optionMap = {
+		day: '2-digit',
+		month: 'short',
+		year: 'numeric',
+		hour: '2-digit',
+		minute: '2-digit',
+		hour12: true, // Note: hour12 is a boolean directly
+	};
+
+	const formattingOptions = Object.keys( optionMap ).reduce( ( acc, key ) => {
+		if ( options[ key ] === true ) {
+			acc[ key ] = optionMap[ key ];
+		} else if ( options[ key ] === false ) {
+		} else if ( options[ key ] !== undefined ) {
+			acc[ key ] = options[ key ];
+		}
+		return acc;
+	}, {} );
+
+	return new Intl.DateTimeFormat( 'en-US', formattingOptions ).format(
+		new Date( dateString )
+	);
+};
+
+/**
+ *
+ * @return {string} - The formatted date string.
+ */
+export const getDatePlaceholder = () => {
+	const currentDate = new Date();
+	const pastDate = new Date();
+	pastDate.setDate( currentDate.getDate() - 30 ); // Set to 30 days ago
+
+	const formattedPastDate = formatDate( pastDate, 'MM/dd/yyyy' );
+	const formattedCurrentDate = formatDate( currentDate, 'MM/dd/yyyy' );
+
+	return `${ formattedPastDate } - ${ formattedCurrentDate }`;
+};
+
+/**
+ * Formats a given date string based on the provided options.
+ * If no options are provided, it defaults to 'yyyy-MM-dd' format.
+ *
+ * @param {string|Date} date                      - The date string or Date object to format.
+ * @param {string}      [dateFormat='yyyy-MM-dd'] - The date format string for `date-fns`.
+ * @return {string} - The formatted date string or a fallback if the input is invalid.
+ */
+export const format = ( date, dateFormat = 'yyyy-MM-dd' ) => {
+	try {
+		if ( ! date || isNaN( new Date( date ).getTime() ) ) {
+			throw new Error( __( 'Invalid Date', 'sureforms' ) );
+		}
+		return format_date( new Date( date ), dateFormat );
+	} catch ( error ) {
+		return __( 'No Date', 'sureforms' );
+	}
+};
+
+/**
+ * Returns selected date in string format
+ *
+ * @param {*} selectedDates
+ * @return {string} - Formatted string.
+ */
+export const getSelectedDate = ( selectedDates ) => {
+	if ( ! selectedDates.from ) {
+		return '';
+	}
+	if ( ! selectedDates.to ) {
+		return `${ format( selectedDates.from, 'MM/dd/yyyy' ) }`;
+	}
+	return `${ format( selectedDates.from, 'MM/dd/yyyy' ) } - ${ format(
+		selectedDates.to,
+		'MM/dd/yyyy'
+	) }`;
+};
+
+/**
+ *
+ * @param {Object} dates - The date object.
+ * @return {string} - The formatted date string.
+ */
+export const getLastNDays = ( dates ) => {
+	const { from, to } = dates;
+
+	if ( ! from || ! to ) {
+		const currentDate = new Date();
+		const pastDate = new Date();
+		pastDate.setDate( currentDate.getDate() - 30 );
+
+		return {
+			from: pastDate,
+			to: currentDate,
+		};
+	}
+
+	return {
+		from: new Date( from ),
+		to: new Date( to ),
+	};
+};
+
+const generateSlug = ( label, existingSlugs ) => {
+	const baseSlug = cleanForSlug( label );
+
+	let slug = baseSlug;
+	let counter = 1;
+
+	while ( existingSlugs.has( slug ) ) {
+		slug = `${ baseSlug }-${ counter }`;
+		counter++;
+	}
+
+	return slug;
+};
+
+const prepareBlockSlugs = ( updateBlockAttributes, srfmBlocks ) => {
+	const blockSlugs = {};
+	const existingSlugs = new Set();
+
+	const processBlocks = ( blocks ) => {
+		for ( const block of blocks ) {
+			let { slug, label, block_id } = block.attributes;
+
+			if ( ! slug ) {
+				// Generate preview slug for smart tags display only.
+				// Actual slug is generated by backend on first save.
+				slug = generateSlug( label, existingSlugs );
+			}
+
+			blockSlugs[ block_id ] = slug;
+			existingSlugs.add( slug );
+
+			if (
+				Array.isArray( block.innerBlocks ) &&
+				block.innerBlocks.length > 0
+			) {
+				processBlocks( block.innerBlocks );
+			}
+		}
+	};
+
+	processBlocks( srfmBlocks );
+
+	return blockSlugs;
+};
+
+/**
+ * Check if the given element is a valid React element.
+ *
+ * @param {Object} element - The element to check.
+ * @return {boolean} Returns true if the element is a valid React element, otherwise returns false.
+ */
+export const isValidReactElement = ( element ) => {
+	if ( ! element || typeof element !== 'object' ) {
+		return false;
+	}
+	return Symbol.for( 'react.element' ) === element.$$typeof;
+};
+
+// Add the CSS properties to the root element.
+export const addStyleInRoot = ( root, cssProperties ) => {
+	if ( Object.keys( cssProperties ).length > 0 ) {
+		for ( const [ key, objValue ] of Object.entries( cssProperties ) ) {
+			root.style.setProperty( key, objValue );
+		}
+	}
+};
+
+// Constants for plugin action types
+export const PLUGIN_ACTIONS = {
+	ACTIVATE: 'sureforms_recommended_plugin_activate',
+	INSTALL: 'sureforms_recommended_plugin_install',
+};
+
+// Get plugin button text
+export const getPluginStatusText = ( plugin_data ) => {
+	const statusTextMap = {
+		Installed: srfm_admin.plugin_activate_text,
+		Install: __( 'Install & Activate', 'sureforms' ),
+		Activated: srfm_admin.plugin_activated_text,
+	};
+
+	return statusTextMap[ plugin_data.status ] || plugin_data.status;
+};
+
+// Get action type based on plugin status
+export const getAction = ( status ) => {
+	return status === 'Installed'
+		? PLUGIN_ACTIONS.ACTIVATE
+		: status === 'Activated'
+			? ''
+			: PLUGIN_ACTIONS.INSTALL;
+};
+
+// Helper function for API requests
+export const performApiAction = async ( {
+	url,
+	formData,
+	successCallback,
+	errorCallback,
+} ) => {
+	try {
+		const response = await apiFetch( {
+			url,
+			method: 'POST',
+			body: formData,
+		} );
+
+		if ( response.success ) {
+			successCallback( response );
+		} else {
+			errorCallback( response );
+		}
+	} catch ( error ) {
+		console.error( 'API Error:', error );
+		toast.error(
+			__( 'An error occurred. Please try again later.', 'sureforms' ),
+			{
+				duration: 5000,
+			}
+		);
+	}
+};
+
+// Function to activate a plugin
+export function activatePlugin( { plugin, event } ) {
+	const formData = new window.FormData();
+	formData.append( 'action', PLUGIN_ACTIONS.ACTIVATE );
+	formData.append(
+		'security',
+		srfm_admin.sfPluginManagerNonce ?? srfm_admin.sf_plugin_manager_nonce
+	);
+	formData.append( 'init', plugin.path );
+	formData.append( 'slug', plugin.slug );
+
+	event.target.innerText = srfm_admin.plugin_activating_text;
+
+	performApiAction( {
+		url: srfm_admin.ajax_url,
+		formData,
+		successCallback: () => {
+			if ( srfm_admin?.current_screen_id === 'sureforms_menu' ) {
+				const button = event.target.closest?.( 'button' );
+				if ( button ) {
+					button.style.backgroundColor = '#F0FDF4';
+				}
+			}
+			event.target.innerText = srfm_admin.plugin_activated_text;
+		},
+		errorCallback: () => {
+			toast.error(
+				__(
+					'Plugin activation failed, Please try again later.',
+					'sureforms'
+				),
+				{
+					duration: 5000,
+				}
+			);
+			event.target.innerText = srfm_admin.plugin_activate_text;
+		},
+	} );
+}
+
+export function handlePluginActionTrigger( { plugin, event } ) {
+	const action = getAction( plugin.status );
+	if ( ! action ) {
+		return;
+	}
+
+	const formData = new window.FormData();
+
+	if ( action === PLUGIN_ACTIONS.INSTALL ) {
+		formData.append( 'action', PLUGIN_ACTIONS.INSTALL );
+		formData.append( '_ajax_nonce', srfm_admin.plugin_installer_nonce );
+		formData.append( 'slug', plugin.slug );
+
+		event.target.innerText = srfm_admin.plugin_installing_text;
+
+		performApiAction( {
+			url: srfm_admin.ajax_url,
+			formData,
+			successCallback: () => {
+				event.target.innerText = srfm_admin.plugin_installed_text;
+				activatePlugin( { plugin, event } );
+			},
+			errorCallback: () => {
+				event.target.innerText = __( 'Install', 'sureforms' );
+				alert(
+					__(
+						'Plugin Installation failed, Please try again later.',
+						'sureforms'
+					)
+				);
+			},
+		} );
+	} else if ( action === PLUGIN_ACTIONS.ACTIVATE ) {
+		activatePlugin( { plugin, event } );
+	}
+}
+
+/**
+ * Sets a cookie with the specified name, value, and expiration days.
+ *
+ * @param {string} name  - The name of the cookie.
+ * @param {string} value - The value of the cookie.
+ * @param {number} days  - The number of days until the cookie expires.
+ */
+export function setCookie( name, value, days ) {
+	const date = new Date();
+	const additionalDuration = days * 24 * 60 * 60 * 1000;
+	date.setTime( date.getTime() + additionalDuration );
+	document.cookie = `${ name }=${ value }; expires=${ date.toUTCString() }; path=/`;
+}
+
+/**
+ * Retrieves the value of a cookie by its name.
+ *
+ * @param {string} name - The name of the cookie to retrieve.
+ * @return {string|null} - The value of the cookie, or null if not found.
+ */
+export function getCookie( name ) {
+	const value = `; ${ document.cookie }`;
+	const parts = value.split( `; ${ name }=` );
+	return parts.length === 2 ? parts.pop().split( ';' ).shift() : null;
+}
+
+// Remove the CSS properties from the root element.
+export const removeStylesFromRoot = ( root, cssProperties ) => {
+	if ( Object.keys( cssProperties ).length > 0 ) {
+		for ( const [ key ] of Object.entries( cssProperties ) ) {
+			root.style.removeProperty( key );
+		}
+	}
+};
+
+// Get the advanced gradient css styles.
+export const getGradientCSS = (
+	type = 'linear',
+	color1 = '#FFC9B2',
+	color2 = '#C7CBFF',
+	loc1 = 0,
+	loc2 = 100,
+	angle = 90
+) => {
+	if ( type === 'radial' ) {
+		return `radial-gradient(${ color1 } ${ loc1 }%, ${ color2 } ${ loc2 }% )`;
+	}
+	return `linear-gradient( ${ angle }deg, ${ color1 } ${ loc1 }%, ${ color2 } ${ loc2 }%)`;
+};
+
+/**
+ * Sets default values for form attributes in the post meta object.
+ *
+ * This helper function iterates over the provided `formAttributes` object and checks
+ * if each attribute key is present in the `postMeta` object. If a key is missing,
+ * it assigns the corresponding default value from `formAttributes` to `postMeta`.
+ *
+ * @param {Object} formAttributes - An object containing form attribute definitions,
+ *                                where each key maps to an object that includes a `default` property.
+ * @param {Object} postMeta       - The metadata object to be updated with default values
+ *                                for any missing attributes.
+ */
+export const setDefaultFormAttributes = ( formAttributes, postMeta ) => {
+	if ( ! formAttributes ) {
+		return;
+	}
+	Object.keys( formAttributes ).forEach( ( key ) => {
+		if ( ! ( key in postMeta ) ) {
+			postMeta[ key ] = formAttributes[ key ].default;
+		}
+	} );
+};
+
+/**
+ * Dispatches a custom event responsible for displaying the error message.
+ *
+ * @param {Object} args
+ */
+export const showErrorMessage = ( args ) => {
+	if ( ! args ) {
+		return;
+	}
+	const { form, message = '', position = 'footer' } = args;
+
+	const errorEvent = new CustomEvent( 'srfm_show_common_form_error', {
+		detail: {
+			form,
+			message,
+			position,
+		},
+	} );
+
+	document.dispatchEvent( errorEvent );
+};
+
+/**
+ * Fetch the wordpress pages.
+ *
+ * @param {Function} setPageOptions - The function to set the page options state.
+ */
+export const getWordPressPages = ( setPageOptions ) => {
+	apiFetch( { path: '/wp/v2/pages' } )
+		.then( ( pages ) => {
+			if ( pages ) {
+				const createFormat = pages.map( ( page ) => {
+					let label;
+					if ( page.title?.rendered ) {
+						label = page.title?.rendered;
+					} else {
+						label = page.id.toString();
+					}
+					const value = page.link;
+					return { label, value };
+				} );
+				setPageOptions( createFormat );
+			}
+		} )
+		.catch( ( error ) => console.error( 'Error:', error ) );
+};
+
+/**
+ * Converts a JSON-encoded string to an object if valid, otherwise returns null.
+ *
+ * @param {string} obj - The JSON-encoded string to decode.
+ * @return {Object|null} The decoded object value for the given key, or null if invalid JSON or key not found.
+ */
+export const decodeJson = ( obj ) => {
+	if ( ! obj ) {
+		return null;
+	}
+
+	try {
+		const decoded = JSON.parse( obj );
+		if ( decoded && typeof decoded === 'object' ) {
+			return decoded;
+		}
+	} catch ( e ) {
+		console.warn( 'SRFM message: Invalid JSON string:', obj, e );
+	}
+	return null;
+};
+
+/**
+ * * Creates a deep copy of an array or object using JSON serialization.
+ *
+ * @param {Array|Object} arrayOrObject - The array or object to copy.
+ * @return {Array|Object} - A deep copy of the input array or object.
+ */
+export const deepCopy = ( arrayOrObject ) => {
+	return JSON.parse( JSON.stringify( arrayOrObject, null, 2 ) );
+};
+
+/**
+ * Formats date and time into short and full formats to display.
+ * @param {number | string} dateString     - The date string timestamp to format.
+ * @param {boolean}         submissionInfo - Whether to format for submission info.
+ * @return {Object} An object containing shortFormat and fullFormat strings.
+ */
+export const formatDateTime = ( dateString, submissionInfo = false ) => {
+	const options = {
+		month: 'short',
+		day: 'numeric',
+		hour: 'numeric',
+		minute: '2-digit',
+		hour12: true,
+	};
+	if ( submissionInfo ) {
+		if ( ! dateString ) {
+			return '-';
+		}
+
+		try {
+			const date = new Date( dateString.replace( ' ', 'T' ) );
+			return date.toLocaleString( 'en-US', options );
+		} catch ( error ) {
+			return dateString;
+		}
+	}
+	const date = new Date( dateString );
+
+	// Short format for display: Nov 7, 10:20 AM
+	const shortFormat = date.toLocaleString( 'en-US', options );
+
+	// Full format for tooltip: Nov 7, 2025, 10:20 AM
+	const fullFormat = date.toLocaleString( 'en-US', {
+		year: 'numeric',
+		month: 'short',
+		day: 'numeric',
+		hour: 'numeric',
+		minute: '2-digit',
+		hour12: true,
+	} );
+
+	return { shortFormat, fullFormat };
+};

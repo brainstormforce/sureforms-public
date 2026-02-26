@@ -1,10 +1,53 @@
+@import "../utils/mixins.scss";
 .srfm-form-container {
 	.srfm-form {
+		/**
+		* Following are the styles used for calculations, it is for the disabled state for the result where calculation formula is added.
+		* The srfm-calculation-result class is added to the block when the calculation is enabled.
+		* The reason behind the nested structure is because of the existing specificity of the styles.
+		*
+		* Keeping this code in free as the pro files are not available until a pro block is present in the form,
+		* and there is no significant code to create a separate file for it.
+		*
+		* @since 1.5.0
+		*/
+		.srfm-block.srfm-calculation-result {
+			.srfm-block-wrap {
+				.srfm-input-content {
+					background-color: var( --srfm-color-input-background-disabled );
+					cursor: not-allowed;
+					input {
+						cursor: not-allowed;
+					}
+				}
+			}
+		}
 		.srfm-number-block {
 			.srfm-input-number {
 				&::-webkit-inner-spin-button,
 				&::-webkit-outer-spin-button {
 					appearance: none;
+				}
+			}
+			.srfm-block-wrap {
+				@include srfm-number-styles;
+			}
+		}
+		.srfm-number-block.srfm-error {
+			.srfm-block-wrap {
+				.srfm-input-content {
+					border-color: var( --srfm-error-color-border );
+					// Focus state for the number block in case of error.
+					&.srfm-input-focused {
+						box-shadow: 0px 0px 0px 3px var( --srfm-error-color-border-glow );
+					}
+				}
+			}
+
+			.srfm-error-wrap {
+				.srfm-error-message {
+					@include srfm-error-styles;
+					display: block;
 				}
 			}
 		}

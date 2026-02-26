@@ -8,6 +8,7 @@
 
 namespace SRFM\Inc;
 
+use SRFM\Inc\Database\Tables\Payments;
 use SRFM\Inc\Lib\Browser\Browser;
 use SRFM\Inc\Traits\Get_Instance;
 
@@ -41,18 +42,43 @@ class Smart_Tags {
 	 * @return string
 	 */
 	public function render_form( $block_content, $block ) {
-		$id = get_the_id();
+		// Check if this block is a SureForms form block.
+		if ( strpos( $block_content, 'srfm-block' ) !== false ) {
 
-		// Simulating $form_data required form some of the smart tags.
-		$form_data = [ 'form-id' => $id ];
+			// Check if it's any SRFM block.
+			if ( isset( $block['blockName'] ) && is_string( $block['blockName'] ) && strpos( $block['blockName'], 'srfm' ) !== false ) {
 
-		if ( self::check_form_by_id( $id ) ) {
-			return self::process_smart_tags( $block_content, null, $form_data );
+				// Determine form ID based on block type.
+				$form_id = 0;
+				if ( 'srfm/form' === $block['blockName'] && ! empty( $block['attrs']['id'] ) ) {
+					$form_id = absint( $block['attrs']['id'] );
+				} elseif ( ! empty( $block['attrs']['formId'] ) ) {
+					$form_id = absint( $block['attrs']['formId'] );
+				}
+
+				// If we found a form ID, process it.
+				if ( $form_id ) {
+					$form_data = [ 'form-id' => $form_id ];
+
+					return Helper::get_string_value(
+						self::process_smart_tags( $block_content, null, $form_data )
+					);
+				}
+			}
+
+			return $block_content;
 		}
 
-		if ( isset( $block['blockName'] ) && ( 'srfm/form' === $block['blockName'] ) ) {
-			if ( isset( $block['attrs']['id'] ) && $block['attrs']['id'] ) {
-				return self::process_smart_tags( $block_content, null, $form_data );
+		// Check if the block content contains any SureForms smart tags like {*}.
+		if ( preg_match( '/\{[^\}]+\}/', $block_content ) ) {
+
+			$id        = get_the_id();
+			$form_data = [ 'form-id' => $id ];
+
+			if ( self::check_form_by_id( $id ) ) {
+				return Helper::get_string_value(
+					self::process_smart_tags( $block_content, null, $form_data )
+				);
 			}
 		}
 
@@ -81,6 +107,7 @@ class Smart_Tags {
 			'srfm_smart_tag_list',
 			[
 				'{site_url}'               => __( 'Site URL', 'sureforms' ),
+				'{current_page_url}'       => __( 'Current Page URL', 'sureforms' ),
 				'{admin_email}'            => __( 'Admin Email', 'sureforms' ),
 				'{site_title}'             => __( 'Site Title', 'sureforms' ),
 				'{form_title}'             => __( 'Form Title', 'sureforms' ),
@@ -123,8 +150,9 @@ class Smart_Tags {
 	 * @param string            $content Form content.
 	 * @param array<mixed>|null $submission_data data from submission.
 	 * @param array<mixed>|null $form_data data from form.
-	 * @since 0.0.1
-	 * @return string
+	 * @since 0.0.1 - return string
+	 * @since 1.11.0 - return array<mixed>
+	 * @return string|array<mixed>
 	 */
 	public function process_smart_tags( $content, $submission_data = null, $form_data = null ) {
 
@@ -144,17 +172,77 @@ class Smart_Tags {
 			$is_valid_tag = isset( $get_smart_tag_list[ $tag ] ) ||
 			strpos( $tag, 'get_input:' ) ||
 			strpos( $tag, 'get_cookie:' ) ||
-			0 === strpos( $tag, '{form:' );
+			0 === strpos( $tag, '{form:' ) ||
+			0 === strpos( $tag, '{form-payment:' );
 
 			if ( ! $is_valid_tag ) {
 				continue;
 			}
 
-			$replace = Helper::get_string_value( self::smart_tags_callback( $tag, $submission_data, $form_data ) );
+			// Get the only smart tag value.
+			$smart_tag_value = self::smart_tags_callback( $tag, $submission_data, $form_data );
+
+			/**
+			 * Check if smart tag value is an array, which can happen for special field types
+			 * like repeater fields that need to preserve their array structure.
+			 */
+			if ( is_array( $smart_tag_value ) ) {
+				/**
+				 * Filters whether a smart tag value should be returned as an array.
+				 *
+				 * Default is false to maintain backwards compatibility.
+				 * Filter must explicitly return true to allow array values.
+				 *
+				 * @since 1.11.0
+				 *
+				 * @param bool  $is_verified_value Default false
+				 * @param array $args {
+				 *     Arguments passed to the filter.
+				 *
+				 *     @type string     $tag             The smart tag being processed
+				 *     @type array|null $submission_data The form submission data
+				 *     @type array|null $form_data       The form configuration data
+				 *     @type mixed      $value           The smart tag value
+				 * }
+				 */
+				$is_verified_value = apply_filters(
+					'srfm_is_smart_tag_value_verified_as_array',
+					false,
+					[
+						'tag'             => $tag,
+						'submission_data' => $submission_data,
+						'form_data'       => $form_data,
+						'value'           => $smart_tag_value,
+					]
+				);
+
+				/**
+				 * If filter verification passes, return the original array value.
+				 * This allows special field types to maintain their data structure.
+				 */
+				if ( true === $is_verified_value ) {
+					return $smart_tag_value;
+				}
+			}
+
+			$replace = Helper::get_string_value( $smart_tag_value );
 			$content = str_replace( $tag, $replace, $content );
 		}
 
-		return $content;
+		// Replace <p> around block-level elements with <div>.
+		$content = preg_replace(
+			'/<p\b([^>]*)>\s*(<(table|div|h[1-6]|ul|ol|style|script)\b)/i',
+			'<div$1>$2',
+			Helper::get_string_value( $content )
+		);
+
+		$content = preg_replace(
+			'/(<\/(table|div|h[1-6]|ul|ol|style|script)>)\s*<\/p\b[^>]*>/i',
+			'$1</div>',
+			Helper::get_string_value( $content )
+		);
+
+		return Helper::get_string_value( $content );
 	}
 
 	/**
@@ -221,6 +309,17 @@ class Smart_Tags {
 			case '{embed_post_title}':
 			case '{embed_post_url}':
 				return self::parse_post_props( $tag );
+			case '{current_page_url}':
+				if ( isset( $form_data['_wp_http_referer'] ) ) {
+					$request_uri = sanitize_text_field( Helper::get_string_value( wp_unslash( $form_data['_wp_http_referer'] ) ) );
+					return esc_url( site_url( $request_uri ) );
+				}
+
+				if ( isset( $_SERVER['REQUEST_URI'] ) ) {
+					$request_uri = sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) );
+					return esc_url( site_url( $request_uri ) );
+				}
+				return '';
 
 			default:
 				if ( strpos( $tag, 'get_input:' ) || strpos( $tag, 'get_cookie:' ) ) {
@@ -229,6 +328,10 @@ class Smart_Tags {
 
 				if ( 0 === strpos( $tag, '{form:' ) ) {
 					return self::parse_form_input( $tag, $submission_data, $form_data );
+				}
+
+				if ( 0 === strpos( $tag, '{form-payment:' ) ) {
+					return self::parse_payment_smart_tag( $tag, $submission_data );
 				}
 				break;
 		}
@@ -288,11 +391,11 @@ class Smart_Tags {
 				$var = Helper::get_string_value( filter_var( wp_unslash( $_SERVER['QUERY_STRING'] ), FILTER_SANITIZE_URL ) );
 			}
 			parse_str( $var, $parameters );
-			return isset( $parameters[ $param ] ) ? sanitize_text_field( Helper::get_string_value( $parameters[ $param ] ) ) : '';
+			return isset( $parameters[ $param ] ) ? esc_attr( sanitize_text_field( Helper::get_string_value( $parameters[ $param ] ) ) ) : '';
 		}
 
 		if ( $param && strpos( $value, 'get_cookie:' ) !== false ) {
-			return isset( $_COOKIE[ $param ] ) ? sanitize_text_field( wp_unslash( $_COOKIE[ $param ] ) ) : '';
+			return isset( $_COOKIE[ $param ] ) ? esc_attr( sanitize_text_field( wp_unslash( $_COOKIE[ $param ] ) ) ) : '';
 		}
 
 		return '';
@@ -323,10 +426,53 @@ class Smart_Tags {
 			return $replacement_data;
 		}
 		foreach ( $submission_data as $submission_item_key => $submission_item_value ) {
+			// If submission item key has not "-lbl-" then continue.
+			if ( strpos( $submission_item_key, '-lbl-' ) === false ) {
+				continue;
+			}
+
 			$label      = explode( '-lbl-', $submission_item_key )[1];
 			$slug       = implode( '-', array_slice( explode( '-', $label ), 1 ) );
 			$block_type = explode( '-lbl-', $submission_item_key )[0];
 			if ( $slug === $target_slug ) {
+
+				/**
+				 * Filter to allow external processing of specific block types.
+				 *
+				 * Allows other components to process certain block types differently by providing
+				 * their own processing logic. If a block is processed externally, the filter should
+				 * return an array containing 'processed_value'.
+				 *
+				 * @param array $args {
+				 *     Arguments passed to the filter.
+				 *
+				 *     @type string       $submission_item_key   The key of the current submission item
+				 *     @type mixed        $submission_item_value The value of the current submission item
+				 *     @type string       $target_slug          The target field slug being processed
+				 *     @type string       $block_type           The type of block being processed
+				 *     @type array        $form_data            The complete form configuration data
+				 *     @type array        $submission_data      The complete form submission data
+				 *     @type string       $value                The original smart tag value
+				 * }
+				 */
+				$is_processed_externally = Helper::apply_filters_as_array(
+					'srfm_smart_tags_is_block_processed_externally',
+					[
+						'submission_item_key'   => $submission_item_key,
+						'submission_item_value' => $submission_item_value,
+						'target_slug'           => $target_slug,
+						'block_type'            => $block_type,
+						'form_data'             => $form_data,
+						'submission_data'       => $submission_data,
+						'value'                 => $value,
+					]
+				);
+
+				if ( isset( $is_processed_externally['processed_value'] ) ) {
+					$replacement_data = $is_processed_externally['processed_value'];
+					break;
+				}
+
 					// if $submission_item_value is an array, make a tag for each item.
 				if ( 0 === strpos( $block_type, 'srfm-upload' ) && is_array( $submission_item_value ) ) {
 					// Implemented key upload_format_type to determine what to return for urls.
@@ -334,17 +480,183 @@ class Smart_Tags {
 					if ( ! empty( $form_data['upload_format_type'] ) && 'raw' === $form_data['upload_format_type'] ) {
 						$replacement_data = urldecode( implode( ', ', $submission_item_value ) );
 					} else {
-						foreach ( $submission_item_value as $value ) {
-							$replacement_data .= '<a href=' . urldecode( $value ) . ' target="_blank">' . __( 'View', 'sureforms' ) . '</a><br>';
+						if ( count( $submission_item_value ) === 1 ) {
+							$decoded_value    = urldecode( reset( $submission_item_value ) );
+							$replacement_data = '<a rel="noopener noreferrer" href="' . esc_url( $decoded_value ) . '" target="_blank">' . esc_html( $decoded_value ) . '</a>';
+						} else {
+							$replacement_data = '<ul style="margin: 0;">';
+							foreach ( $submission_item_value as $file_url ) {
+								$decoded_value     = urldecode( $file_url );
+								$replacement_data .= '<li><a rel="noopener noreferrer" href="' . esc_url( $decoded_value ) . '" target="_blank">' . esc_html( $decoded_value ) . '</a></li>';
+							}
+							$replacement_data .= '</ul>';
 						}
 					}
+				} elseif ( 0 === strpos( $block_type, 'srfm-textarea' ) ) {
+					// Special handling for textarea blocks to preserve HTML formatting.
+					// Step 1 - Sanitize raw input.
+					$sanitized_content = Helper::sanitize_textarea( Helper::get_string_value( $submission_item_value ) );
+					// Step 2 - Decode HTML entities to preserve formatting.
+					$decoded_content   = html_entity_decode( $sanitized_content );
+					$replacement_data .= $decoded_content;
 				} else {
-					$replacement_data .= $submission_item_value;
+					// if $submission_item_value is a url then add <a> tag. with view text.
+					if ( is_string( $submission_item_value ) && filter_var( $submission_item_value, FILTER_VALIDATE_URL ) ) {
+						ob_start();
+						?>
+						<a href="<?php echo esc_url( urldecode( $submission_item_value ) ); ?>" target="_blank"><?php echo esc_html( esc_url( $submission_item_value ) ); ?></a>
+						<?php
+						$view_link = ob_get_clean();
+
+						// Add filter to modify the view link.
+						$view_link = apply_filters(
+							'srfm_smart_tag_view_link',
+							$view_link,
+							[
+								'submission_item_key'   => $submission_item_key,
+								'submission_item_value' => $submission_item_value,
+								'target_slug'           => $target_slug,
+								'block_type'            => $block_type,
+								'form_data'             => $form_data,
+								'submission_data'       => $submission_data,
+								'value'                 => $value,
+							]
+						);
+
+						$replacement_data .= $view_link;
+					} else {
+						if ( 0 === strpos( $block_type, 'srfm-input-multi-choice' ) && is_string( $submission_item_value ) && strpos( $submission_item_value, '|' ) !== false ) {
+							$options           = array_map( 'trim', explode( '|', $submission_item_value ) );
+							$replacement_data .= implode( '<br>', array_map( 'esc_html', $options ) );
+						} else {
+							$replacement_data .= $submission_item_value;
+						}
+					}
 				}
+
 				break;
 			}
 		}
 		return $replacement_data;
+	}
+
+	/**
+	 * Parse Payment Smart Tag.
+	 *
+	 * Parses payment smart tags in the format: {form-payment:slug:property}
+	 * where property can be: order-id, amount, email, name, status
+	 *
+	 * @param string            $value tag.
+	 * @param array<mixed>|null $submission_data data from submission.
+	 * @since  2.0.0
+	 * @return string
+	 */
+	public static function parse_payment_smart_tag( $value, $submission_data = null ) {
+		if ( ! $submission_data ) {
+			return '';
+		}
+
+		// Extract slug and property from tag: {form-payment:slug:property}.
+		if ( ! preg_match( '/\{form-payment:(.*?):(.*?)}/', $value, $matches ) ) {
+			return '';
+		}
+
+		$target_slug = $matches[1];
+		$property    = $matches[2];
+
+		// Valid properties for payment smart tags.
+		$valid_properties = [ 'order-id', 'amount', 'email', 'name', 'status' ];
+		if ( ! in_array( $property, $valid_properties, true ) ) {
+			return '';
+		}
+
+		if ( ! is_array( $submission_data ) ) {
+			return '';
+		}
+
+		// Find payment entry ID from submission data.
+		$payment_entry_id = null;
+
+		foreach ( $submission_data as $submission_item_key => $submission_item_value ) {
+			// Check if this is a payment field.
+			if ( strpos( $submission_item_key, '-lbl-' ) === false ) {
+				continue;
+			}
+
+			// Split to get block type and label.
+			$name_parts = explode( '-lbl-', $submission_item_key );
+			if ( count( $name_parts ) < 2 ) {
+				continue;
+			}
+
+			// Check if it's a payment block.
+			if ( strpos( $name_parts[0], 'srfm-payment-' ) !== 0 ) {
+				continue;
+			}
+
+			// Get the slug from the label part.
+			$label = $name_parts[1];
+			$slug  = implode( '-', array_slice( explode( '-', $label ), 1 ) );
+
+			// Check if this is the payment block we're looking for.
+			if ( $slug === $target_slug ) {
+				// The submission value should be the payment entry ID.
+				$payment_entry_id = is_numeric( $submission_item_value ) ? intval( $submission_item_value ) : null;
+				break;
+			}
+		}
+
+		// If no payment entry found, return empty.
+		if ( ! $payment_entry_id ) {
+			return '';
+		}
+
+		// Load the Payments class if not already loaded.
+		if ( ! class_exists( 'SRFM\Inc\Database\Tables\Payments' ) ) {
+			return '';
+		}
+
+		// Get payment entry from database.
+		$payment_entry = Payments::get( $payment_entry_id );
+
+		if ( ! $payment_entry || ! is_array( $payment_entry ) ) {
+			return '';
+		}
+
+		// Return the requested property.
+		switch ( $property ) {
+			case 'order-id':
+				// Return formatted order ID: SF-#{srfm_txn_id} or SF-#{id}.
+				$order_id = ! empty( $payment_entry['srfm_txn_id'] ) ? $payment_entry['srfm_txn_id'] : $payment_entry['id'];
+				$order_id = sanitize_text_field( $order_id );
+				return ! empty( $order_id ) ? 'SF-#' . $order_id : '';
+
+			case 'amount':
+				// Return formatted amount with currency symbol.
+				$amount           = ! empty( $payment_entry['total_amount'] ) ? floatval( $payment_entry['total_amount'] ) : 0;
+				$currency         = ! empty( $payment_entry['currency'] ) ? strtoupper( $payment_entry['currency'] ) : 'USD';
+				$currency_symbol  = \SRFM\Inc\Payments\Stripe\Stripe_Helper::get_currency_symbol( $currency );
+				$formatted_amount = Helper::get_string_value( number_format( $amount, 2 ) );
+				return ! empty( $currency_symbol ) ? $currency_symbol . $formatted_amount : $currency . ' ' . $formatted_amount;
+
+			case 'email':
+				// Return customer email.
+				return ! empty( $payment_entry['customer_email'] ) ? sanitize_email( $payment_entry['customer_email'] ) : '';
+
+			case 'name':
+				// Return customer name.
+				return ! empty( $payment_entry['customer_name'] ) ? sanitize_text_field( $payment_entry['customer_name'] ) : '';
+
+			case 'status':
+				// Return payment status or subscription status based on type.
+				if ( 'subscription' === $payment_entry['type'] && ! empty( $payment_entry['subscription_status'] ) ) {
+					return sanitize_text_field( $payment_entry['subscription_status'] );
+				}
+				return ! empty( $payment_entry['status'] ) ? sanitize_text_field( $payment_entry['status'] ) : '';
+
+			default:
+				return '';
+		}
 	}
 
 	/**
@@ -391,15 +703,15 @@ class Smart_Tags {
 		}
 
 		if ( '{user_display_name}' === $value ) {
-			return $user->data->display_name ?? '';
+			return esc_attr( $user->data->display_name ?? '' );
 		}
 
 		if ( '{user_first_name}' === $value ) {
-			return is_array( $user_info ) && isset( $user_info['first_name'][0] ) ? $user_info['first_name'][0] : '';
+			return is_array( $user_info ) && isset( $user_info['first_name'][0] ) ? esc_attr( $user_info['first_name'][0] ) : '';
 		}
 
 		if ( '{user_last_name}' === $value ) {
-			return is_array( $user_info ) && isset( $user_info['last_name'][0] ) ? $user_info['last_name'][0] : '';
+			return is_array( $user_info ) && isset( $user_info['last_name'][0] ) ? esc_attr( $user_info['last_name'][0] ) : '';
 		}
 
 		if ( '{user_email}' === $value ) {

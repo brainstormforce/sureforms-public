@@ -1,0 +1,103 @@
+{
+	"name": "srfm/payment",
+	"title": "Payment",
+	"description": "Displays a SureForms Payment Field",
+	"category": "sureforms",
+	"keywords": [ "payment", "stripe", "money", "charge", "billing" ],
+	"textdomain": "sureforms",
+	"supports": {
+		"reusable": false,
+		"html": false,
+		"multiple": false
+	},
+	"example": {
+		"attributes": {
+			"preview": true
+		}
+	},
+	"attributes": {
+		"preview": {
+			"type": "boolean",
+			"default": false
+		},
+		"block_id": {
+			"type": "string"
+		},
+		"required": {
+			"type": "boolean",
+			"default": true
+		},
+		"fieldWidth": {
+			"type": "number",
+			"default": 100
+		},
+		"label": {
+			"type": "string",
+			"default": "Payment"
+		},
+		"help": {
+			"type": "string",
+			"default": ""
+		},
+		"errorMsg": {
+			"type": "string",
+			"default": ""
+		},
+		"formId": {
+			"type": "number",
+			"default": ""
+		},
+		"isConditionalLogic": {
+			"type": "boolean",
+			"default": false
+		},
+		"slug": {
+			"type": "string",
+			"default": ""
+		},
+		"paymentType": {
+			"type": "string",
+			"default": "one-time"
+		},
+		"subscriptionPlan": {
+			"type": "object",
+			"default": {
+				"name": "Subscription Plan",
+				"interval": "month",
+				"billingCycles": "ongoing"
+			}
+		},
+		"customerNameField": {
+			"type": "string",
+			"default": ""
+		},
+		"customerEmailField": {
+			"type": "string",
+			"default": ""
+		},
+		"amountType": {
+			"type": "string",
+			"default": "fixed"
+		},
+		"fixedAmount": {
+			"type": "number",
+			"default": 10
+		},
+		"minimumAmount": {
+			"type": "number",
+			"default": 0
+		},
+		"amountLabel": {
+			"type": "string",
+			"default": "Enter Amount"
+		},
+		"variableAmountField": {
+			"type": "string",
+			"default": ""
+		},
+    "paymentMethods": {
+			"type": "array",
+			"default": ["stripe"]
+		}
+	}
+}

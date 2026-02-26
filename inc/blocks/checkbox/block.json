@@ -2,7 +2,7 @@
 	"apiVersion": 2,
 	"name": "srfm/checkbox",
 	"title": "Checkbox",
-	"description": "Displays a SureForm Checkbox Field",
+	"description": "Displays a SureForms Checkbox Field",
 	"category": "sureforms",
 	"keywords": [ "checkbox", "toggle", "checkout", "engine" ],
 	"textdomain": "sureforms",

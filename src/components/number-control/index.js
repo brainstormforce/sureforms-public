@@ -201,6 +201,14 @@ const SRFMNumberControl = ( props ) => {
 		blockNameForHook
 	);
 
+	const inputSteps = ( value ) => {
+		if ( isNaN( value ) ) {
+			return 1;
+		}
+
+		return Number( value ) % 1 === 0 ? 1 : 0.1;
+	};
+
 	return (
 		<div
 			ref={ panelRef }
@@ -233,7 +241,7 @@ const SRFMNumberControl = ( props ) => {
 							min={ min }
 							onChange={ handleOnChange }
 							value={ inputValue }
-							step={ props?.step || 1 }
+							step={ props?.step || inputSteps( inputValue ) }
 							required={ props?.required }
 							readOnly={ isEnableDynamicContent() }
 						/>

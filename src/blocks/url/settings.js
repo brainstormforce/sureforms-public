@@ -14,7 +14,7 @@ import { useErrMessage } from '@Blocks/util';
 import ConditionalLogic from '@Components/conditional-logic';
 
 export default ( { attributes, setAttributes } ) => {
-	const { help, required, defaultValue, errorMsg } = attributes;
+	const { help, required, defaultValue, errorMsg, readOnly } = attributes;
 
 	const {
 		currentMessage: currentErrorMsg,
@@ -32,19 +32,6 @@ export default ( { attributes, setAttributes } ) => {
 						title={ __( 'Attributes', 'sureforms' ) }
 						initialOpen={ true }
 					>
-						<SRFMTextControl
-							label={ __( 'Default Value', 'sureforms' ) }
-							className="srfm-with-dropdown"
-							value={ defaultValue ? defaultValue : '' }
-							withSmartTagDropdown={ true }
-							data={ {
-								value: defaultValue,
-								label: 'defaultValue',
-							} }
-							onChange={ ( value ) =>
-								setAttributes( { defaultValue: value } )
-							}
-						/>
 						<ToggleControl
 							label={ __( 'Required', 'sureforms' ) }
 							checked={ required }
@@ -67,6 +54,7 @@ export default ( { attributes, setAttributes } ) => {
 							/>
 						) }
 						<SRFMTextControl
+							variant="textarea"
 							label={ __( 'Help Text', 'sureforms' ) }
 							value={ help }
 							data={ {
@@ -77,6 +65,39 @@ export default ( { attributes, setAttributes } ) => {
 								setAttributes( { help: value } )
 							}
 						/>
+						<SRFMTextControl
+							label={ __( 'Placeholder', 'sureforms' ) }
+							value={ attributes.placeholder }
+							data={ {
+								value: attributes.placeholder,
+								label: 'placeholder',
+							} }
+							onChange={ ( value ) =>
+								setAttributes( { placeholder: value } )
+							}
+						/>
+						<SRFMTextControl
+							label={ __( 'Default Value', 'sureforms' ) }
+							className="srfm-with-dropdown"
+							value={ defaultValue ? defaultValue : '' }
+							withSmartTagDropdown={ true }
+							data={ {
+								value: defaultValue,
+								label: 'defaultValue',
+							} }
+							onChange={ ( value ) =>
+								setAttributes( { defaultValue: value } )
+							}
+						/>
+						{ defaultValue && (
+							<ToggleControl
+								label={ __( 'Read Only', 'sureforms' ) }
+								checked={ readOnly }
+								onChange={ ( checked ) =>
+									setAttributes( { readOnly: checked } )
+								}
+							/>
+						) }
 					</SRFMAdvancedPanelBody>
 				</InspectorTab>
 				<InspectorTab { ...SRFMTabs.style }></InspectorTab>

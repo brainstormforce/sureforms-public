@@ -9,7 +9,8 @@
 namespace SRFM;
 
 use SRFM\Admin\Admin;
-use SRFM\API\Block_Patterns;
+use SRFM\Admin\Analytics;
+use SRFM\Admin\Notice_Manager;
 use SRFM\Inc\Activator;
 use SRFM\Inc\Admin_Ajax;
 use SRFM\Inc\AI_Form_Builder\AI_Auth;
@@ -18,10 +19,13 @@ use SRFM\Inc\AI_Form_Builder\AI_Helper;
 use SRFM\Inc\AI_Form_Builder\Field_Mapping;
 use SRFM\Inc\Background_Process;
 use SRFM\Inc\Blocks\Register;
+use SRFM\Inc\Compatibility\Themes\Astra;
 use SRFM\Inc\Create_New_Form;
 use SRFM\Inc\Database\Register as DatabaseRegister;
+use SRFM\Inc\Duplicate_Form;
 use SRFM\Inc\Events_Scheduler;
 use SRFM\Inc\Export;
+use SRFM\Inc\Form_Restriction;
 use SRFM\Inc\Form_Submit;
 use SRFM\Inc\Forms_Data;
 use SRFM\Inc\Frontend_Assets;
@@ -30,7 +34,11 @@ use SRFM\Inc\Global_Settings\Email_Summary;
 use SRFM\Inc\Global_Settings\Global_Settings;
 use SRFM\Inc\Gutenberg_Hooks;
 use SRFM\Inc\Helper;
+use SRFM\Inc\Lib\SRFM_Nps_Survey;
+use SRFM\Inc\Nps_Notice;
+use SRFM\Inc\Onboarding;
 use SRFM\Inc\Page_Builders\Page_Builders;
+use SRFM\Inc\Payments\Payments;
 use SRFM\Inc\Post_Types;
 use SRFM\Inc\Rest_Api;
 use SRFM\Inc\Single_Form_Settings\Compliance_Settings;
@@ -74,7 +82,7 @@ class Plugin_Loader {
 		add_action( 'plugins_loaded', [ $this, 'load_plugin' ], 99 );
 		add_action( 'init', [ $this, 'load_classes' ] );
 		add_action( 'admin_init', [ $this, 'activation_redirect' ] );
-
+		Analytics::get_instance();
 		/**
 		 * The code that runs during plugin activation
 		 */
@@ -134,16 +142,22 @@ class Plugin_Loader {
 			$class
 		);
 
-		if ( is_string( $filename ) ) {
+		if ( ! is_string( $filename ) ) {
+			return;
+		}
 
-			$filename = strtolower( $filename );
+		// Check for directory traversal.
+		if ( strpos( $filename, '..' ) !== false ) {
+			return;
+		}
 
-			$file = SRFM_DIR . $filename . '.php';
+		$filename = strtolower( $filename );
 
-			// if the file is readable, include it.
-			if ( is_readable( $file ) ) {
-				require_once $file;
-			}
+		$file = SRFM_DIR . $filename . '.php';
+
+		// if the file is readable, include it.
+		if ( is_readable( $file ) ) {
+			require_once $file;
 		}
 	}
 
@@ -196,7 +210,11 @@ class Plugin_Loader {
 		Register::get_instance();
 		if ( is_admin() ) {
 			Admin::get_instance();
+			// phpcs:ignore /** @phpstan-ignore-next-line */ -- Class is loaded dynamically in WordPress
+			Notice_Manager::get_instance();
 		}
+		Payments::get_instance();
+		Duplicate_Form::get_instance();
 	}
 
 	/**
@@ -263,7 +281,6 @@ class Plugin_Loader {
 	public function load_plugin() {
 		Post_Types::get_instance();
 		Form_Submit::get_instance();
-		Block_Patterns::get_instance();
 		Gutenberg_Hooks::get_instance();
 		Frontend_Assets::get_instance();
 		Helper::get_instance();
@@ -286,7 +303,20 @@ class Plugin_Loader {
 		AI_Helper::get_instance();
 		AI_Auth::get_instance();
 		Updater::get_instance();
+		Onboarding::get_instance();
 		DatabaseRegister::init();
+		Form_Restriction::get_instance();
+		// Initializing Compatibilities.
+		Astra::get_instance();
+		/**
+		 * Required to add the if check for the class existence to resolve phpstan error,
+		 * as the phpstan configuration ignores the inc/lib directory which gives error
+		 * unknown class.
+		 */
+		if ( class_exists( 'SRFM\Inc\Lib\SRFM_Nps_Survey' ) && ! apply_filters( 'srfm_disable_nps_survey', false ) ) {
+			SRFM_Nps_Survey::get_instance(); // Inits the NPS Survey class for which inits the NPS Survey plugin.
+			Nps_Notice::get_instance(); // Responsible for displaying the NPS Survey: keeping the line out of the check will also work.
+		}
 
 		/**
 		 * Load core files necessary for the Spectra block.

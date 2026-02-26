@@ -11,6 +11,7 @@ export const EmailComponent = ( { attributes, blockID, setAttributes } ) => {
 		isConfirmEmail,
 		confirmLabel,
 		help,
+		readOnly,
 	} = attributes;
 
 	const slug = 'email';
@@ -35,7 +36,11 @@ export const EmailComponent = ( { attributes, blockID, setAttributes } ) => {
 					setAttributes={ setAttributes }
 					block_id={ blockID }
 				/>
-				<div className="srfm-block-wrap">
+				<div
+					className={ `srfm-block-wrap${
+						readOnly && defaultValue ? ' srfm-read-only' : ''
+					}` }
+				>
 					<input
 						id={ `srfm-${ slug }-${ blockID }` }
 						type="email"
@@ -50,13 +55,24 @@ export const EmailComponent = ( { attributes, blockID, setAttributes } ) => {
 
 			{ isConfirmEmail && (
 				<div className={ `srfm-${ slug }-confirm-block` }>
-					<label
+					<RichText
+						tagName="label"
+						value={ confirmLabel }
+						onChange={ ( value ) => {
+							setAttributes( {
+								confirmLabel: decodeHtmlEntities( value ),
+							} );
+						} }
 						className={ `srfm-block-label${ isRequired }` }
-						htmlFor={ `srfm-${ slug }-confirm-${ blockID }` }
+						multiline={ false }
+						id={ blockID }
+						allowedFormats={ [] }
+					/>
+					<div
+						className={ `srfm-block-wrap${
+							readOnly && defaultValue ? ' srfm-read-only' : ''
+						}` }
 					>
-						{ confirmLabel }
-					</label>
-					<div className="srfm-block-wrap">
 						<input
 							id={ `srfm-${ slug }-confirm-${ blockID }` }
 							type="email"

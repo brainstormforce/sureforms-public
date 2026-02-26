@@ -1,5 +1,8 @@
 import { useEffect } from '@wordpress/element';
 import { select } from '@wordpress/data';
+import { getWithoutSlugBlocks } from '@Utils/Helpers';
+import { hasAction, doAction } from '@wordpress/hooks';
+
 const getUniqId = ( blocks ) =>
 	blocks.reduce(
 		( result, block ) => {
@@ -35,24 +38,44 @@ const addInitialAttr = ( ChildComponent ) => {
 		const {
 			setAttributes,
 			clientId,
+			name,
 			attributes: { block_id },
+			attributes,
 		} = props;
 
 		useEffect( () => {
-			const attributeObject = { block_id: clientId.substr( 0, 8 ) };
+			const newBlockId = clientId.substr( 0, 8 );
+			const attributeObject = { block_id: newBlockId };
 			const getAllBlocks = select( 'core/editor' )?.getBlocks();
 			const { blockIds, clientIds } = getAllBlocks
 				? getUniqId( getAllBlocks )
 				: { blockIds: [], clientIds: [] };
+
+			const isDuplicate = checkDuplicate(
+				blockIds,
+				block_id,
+				clientIds.indexOf( clientId )
+			);
+
+			if ( isDuplicate ) {
+				if (
+					! getWithoutSlugBlocks().includes( name ) &&
+					attributes?.slug
+				) {
+					attributeObject.slug = '';
+				}
+
+				// Only copy conditional logic if pro is active (action is registered).
+				if ( hasAction( 'srfm.duplicateBlock' ) ) {
+					doAction( 'srfm.duplicateBlock', block_id, newBlockId );
+				}
+			}
+
 			if (
 				'not_set' === block_id ||
 				'0' === block_id ||
 				! block_id ||
-				checkDuplicate(
-					blockIds,
-					block_id,
-					clientIds.indexOf( clientId )
-				)
+				isDuplicate
 			) {
 				setAttributes( attributeObject );
 			}
@@ -62,4 +85,5 @@ const addInitialAttr = ( ChildComponent ) => {
 	};
 	return WrappedComponent;
 };
+
 export default addInitialAttr;

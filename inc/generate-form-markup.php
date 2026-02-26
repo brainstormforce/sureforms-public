@@ -53,7 +53,7 @@ class Generate_Form_Markup {
 	 * Handle Form status
 	 *
 	 * @param int|string $id Contains form ID.
-	 * @param bool       $show_title_current_page Boolean to show/hide form title.
+	 * @param bool       $show_title_current_page Boolean to srfm-show/srfm-hide form title.
 	 * @param string     $sf_classname additional class_name.
 	 * @param string     $post_type Contains post type.
 	 * @param bool       $do_blocks Boolean to enable/disable parsing dynamic blocks.
@@ -68,10 +68,24 @@ class Generate_Form_Markup {
 		} else {
 			$id = Helper::get_integer_value( $id );
 		}
+
+		// Check for any form restrictions.
+		$form_id = Helper::get_integer_value( $id );
+		if ( Form_Restriction::is_form_restricted( $form_id ) ) {
+			return Form_Restriction::display_form_restriction_message( $form_id );
+		}
+
 		do_action( 'srfm_localize_conditional_logic_data', $id );
 		$post = get_post( Helper::get_integer_value( $id ) );
 
 		$content = '';
+
+		$active_plugins      = Helper::get_array_value( get_option( 'active_plugins', [] ) );
+		$is_learndash_active = in_array( 'sfwd-lms/sfwd_lms.php', $active_plugins, true );
+
+		if ( $is_learndash_active ) {
+			$do_blocks = true;
+		}
 
 		if ( $post && ! empty( $post->post_content ) ) {
 			if ( ! empty( $do_blocks ) ) {
@@ -92,18 +106,108 @@ class Generate_Form_Markup {
 		if ( '' !== $id && 0 !== $block_count ) {
 
 			$container_id = 'srfm-form-container-' . Helper::get_string_value( $id );
+			$form_styling = get_post_meta( $id, '_srfm_forms_styling', true );
+			$form_styling = ! empty( $form_styling ) && is_array( $form_styling ) ? $form_styling : [];
+			// Background Settings.
+			$bg_type                   = $form_styling['bg_type'] ?? 'color';
+			$bg_color                  = $form_styling['bg_color'] ?? '';
+			$bg_image                  = $form_styling['bg_image'] ?? '';
+			$bg_image_position         = $form_styling['bg_image_position'] ?? [];
+			$bg_image_attachment       = $form_styling['bg_image_attachment'] ?? 'scroll';
+			$bg_image_repeat           = $form_styling['bg_image_repeat'] ?? 'no-repeat';
+			$bg_image_size             = $form_styling['bg_image_size'] ?? 'cover';
+			$bg_image_size_custom      = $form_styling['bg_image_size_custom'] ?? 100;
+			$bg_image_size_custom_unit = $form_styling['bg_image_size_custom_unit'] ?? '%';
+			$bg_gradient               = $form_styling['bg_gradient'] ?? 'linear-gradient(90deg, #FFC9B2 0%, #C7CBFF 100%)';
+			$gradient_type             = $form_styling['gradient_type'] ?? 'basic'; // Basic or advanced.
+			$is_advanced_gradient      = 'advanced' === $gradient_type ? true : false;
+			$bg_gradient_type          = $is_advanced_gradient && isset( $form_styling['bg_gradient_type'] ) ? $form_styling['bg_gradient_type'] : 'linear'; // linear or radial gradient.
+			$bg_gradient_color_1       = $is_advanced_gradient && isset( $form_styling['bg_gradient_color_1'] ) ? $form_styling['bg_gradient_color_1'] : '';
+			$bg_gradient_color_2       = $is_advanced_gradient && isset( $form_styling['bg_gradient_color_2'] ) ? $form_styling['bg_gradient_color_2'] : '';
+			$bg_gradient_location_1    = $is_advanced_gradient && isset( $form_styling['bg_gradient_location_1'] ) ? $form_styling['bg_gradient_location_1'] : '';
+			$bg_gradient_location_2    = $is_advanced_gradient && isset( $form_styling['bg_gradient_location_2'] ) ? $form_styling['bg_gradient_location_2'] : '';
+			$bg_gradient_angle         = $is_advanced_gradient && isset( $form_styling['bg_gradient_angle'] ) ? $form_styling['bg_gradient_angle'] : '';
+			// Overlay Settings.
+			$overlay_type       = $form_styling['bg_gradient_overlay_type'] ?? '';
+			$overlay_size       = $form_styling['bg_overlay_size'] ?? 'cover';
+			$overlay_opacity    = $form_styling['bg_overlay_opacity'] ?? 1;
+			$overlay_color      = $form_styling['bg_image_overlay_color'] ?? '';
+			$overlay_image      = $form_styling['bg_overlay_image'] ?? '';
+			$overlay_position   = $form_styling['bg_overlay_position'] ?? [];
+			$overlay_attachment = $form_styling['bg_overlay_attachment'] ?? 'scroll';
+			$overlay_repeat     = $form_styling['bg_overlay_repeat'] ?? 'no-repeat';
+			$overlay_blend_mode = $form_styling['bg_overlay_blend_mode'] ?? 'normal';
+			// Gradient Overlay.
+			$bg_overlay_gradient            = $form_styling['bg_overlay_gradient'] ?? 'linear-gradient(90deg, #FFC9B2 0%, #C7CBFF 100%)';
+			$overlay_gradient_type          = $form_styling['overlay_gradient_type'] ?? 'basic'; // Basic or advanced.
+			$is_overlay_advanced_gradient   = 'advanced' === $overlay_gradient_type ? true : false;
+			$bg_overlay_gradient_type       = $is_overlay_advanced_gradient && isset( $form_styling['bg_overlay_gradient_type'] ) ? $form_styling['bg_overlay_gradient_type'] : 'linear';
+			$bg_overlay_gradient_color_1    = $is_overlay_advanced_gradient && isset( $form_styling['bg_overlay_gradient_color_1'] ) ? $form_styling['bg_overlay_gradient_color_1'] : '';
+			$bg_overlay_gradient_color_2    = $is_overlay_advanced_gradient && isset( $form_styling['bg_overlay_gradient_color_2'] ) ? $form_styling['bg_overlay_gradient_color_2'] : '';
+			$bg_overlay_gradient_location_1 = $is_overlay_advanced_gradient && isset( $form_styling['bg_overlay_gradient_location_1'] ) ? $form_styling['bg_overlay_gradient_location_1'] : '';
+			$bg_overlay_gradient_location_2 = $is_overlay_advanced_gradient && isset( $form_styling['bg_overlay_gradient_location_2'] ) ? $form_styling['bg_overlay_gradient_location_2'] : '';
+			$bg_overlay_gradient_angle      = $is_overlay_advanced_gradient && isset( $form_styling['bg_overlay_gradient_angle'] ) ? $form_styling['bg_overlay_gradient_angle'] : '';
+			// Embed Form Settings.
+			$form = [
+				// Padding.
+				'padding_top'          => isset( $form_styling['form_padding_top'] ) ? floatval( $form_styling['form_padding_top'] ) : 0,
+				'padding_right'        => isset( $form_styling['form_padding_right'] ) ? floatval( $form_styling['form_padding_right'] ) : 0,
+				'padding_bottom'       => isset( $form_styling['form_padding_bottom'] ) ? floatval( $form_styling['form_padding_bottom'] ) : 0,
+				'padding_left'         => isset( $form_styling['form_padding_left'] ) ? floatval( $form_styling['form_padding_left'] ) : 0,
+				'padding_unit'         => isset( $form_styling['form_padding_unit'] ) ? Helper::get_string_value( $form_styling['form_padding_unit'] ) : 'px',
+				// Border Radius.
+				'border_radius_top'    => isset( $form_styling['form_border_radius_top'] ) ? floatval( $form_styling['form_border_radius_top'] ) : 0,
+				'border_radius_right'  => isset( $form_styling['form_border_radius_right'] ) ? floatval( $form_styling['form_border_radius_right'] ) : 0,
+				'border_radius_bottom' => isset( $form_styling['form_border_radius_bottom'] ) ? floatval( $form_styling['form_border_radius_bottom'] ) : 0,
+				'border_radius_left'   => isset( $form_styling['form_border_radius_left'] ) ? floatval( $form_styling['form_border_radius_left'] ) : 0,
+				'border_radius_unit'   => isset( $form_styling['form_border_radius_unit'] ) ? Helper::get_string_value( $form_styling['form_border_radius_unit'] ) : 'px',
+			];
+			// Instant Form Settings.
+			$instant_form = [
+				// Padding.
+				'padding_top'          => isset( $form_styling['instant_form_padding_top'] ) ? floatval( $form_styling['instant_form_padding_top'] ) : 32,
+				'padding_right'        => isset( $form_styling['instant_form_padding_right'] ) ? floatval( $form_styling['instant_form_padding_right'] ) : 32,
+				'padding_bottom'       => isset( $form_styling['instant_form_padding_bottom'] ) ? floatval( $form_styling['instant_form_padding_bottom'] ) : 32,
+				'padding_left'         => isset( $form_styling['instant_form_padding_left'] ) ? floatval( $form_styling['instant_form_padding_left'] ) : 32,
+				'padding_unit'         => isset( $form_styling['instant_form_padding_unit'] ) ? Helper::get_string_value( $form_styling['instant_form_padding_unit'] ) : 'px',
+				// Border Radius.
+				'border_radius_top'    => isset( $form_styling['instant_form_border_radius_top'] ) ? floatval( $form_styling['instant_form_border_radius_top'] ) : 12,
+				'border_radius_right'  => isset( $form_styling['instant_form_border_radius_right'] ) ? floatval( $form_styling['instant_form_border_radius_right'] ) : 12,
+				'border_radius_bottom' => isset( $form_styling['instant_form_border_radius_bottom'] ) ? floatval( $form_styling['instant_form_border_radius_bottom'] ) : 12,
+				'border_radius_left'   => isset( $form_styling['instant_form_border_radius_left'] ) ? floatval( $form_styling['instant_form_border_radius_left'] ) : 12,
+				'border_radius_unit'   => isset( $form_styling['instant_form_border_radius_unit'] ) ? Helper::get_string_value( $form_styling['instant_form_border_radius_unit'] ) : 'px',
+			];
+
+			if ( 'custom' === $overlay_size ) {
+				$bg_overlay_custom_size      = $form_styling['bg_overlay_custom_size'] ?? 100;
+				$bg_overlay_custom_size_unit = $form_styling['bg_overlay_custom_size_unit'] ?? '%';
+				$overlay_size                = $bg_overlay_custom_size . $bg_overlay_custom_size_unit;
+			}
+
+			$background_classes = apply_filters( 'srfm_add_background_classes', Helper::get_background_classes( $bg_type, $overlay_type, $bg_image ), $id );
+
+			$neve_theme_margin_class_name = 'srfm-neve-theme-add-margin-bottom';
+			$theme_name                   = wp_get_theme()->get( 'Name' );
 
 			$form_classes = [
 				'srfm-form-container',
 				$container_id,
 				$sf_classname,
+				'Neve' === $theme_name ? $neve_theme_margin_class_name : '', // compatibility with Neve theme for margin between main content and footer.
+				$background_classes,
 			];
 
-			$form_classes[] = Helper::get_string_value( Helper::get_meta_value( $id, '_srfm_additional_classes' ) );
+			$custom_added_classes = Helper::get_meta_value( $id, '_srfm_additional_classes' );
+			if ( ! empty( $custom_added_classes ) && is_string( $custom_added_classes ) ) {
+				$custom_added_classes = explode( ' ', $custom_added_classes );
+				foreach ( $custom_added_classes as $class ) {
+					if ( Helper::is_valid_css_class_name( $class ) ) {
+						$form_classes[] = $class;
+					}
+				}
+			}
 
-			$form_styling             = get_post_meta( $id, '_srfm_forms_styling', true );
-			$form_styling             = ! empty( $form_styling ) && is_array( $form_styling ) ? $form_styling : [];
-			$page_break_settings      = defined( 'SRFM_PRO_VER' ) ? get_post_meta( $id, '_srfm_page_break_settings', true ) : [];
+			$page_break_settings      = defined( 'SRFM_PRO_VER' ) && apply_filters( 'srfm_use_page_break_layout', true ) ? get_post_meta( $id, '_srfm_page_break_settings', true ) : [];
 			$page_break_settings      = ! empty( $page_break_settings ) && is_array( $page_break_settings ) ? $page_break_settings : [];
 			$is_page_break            = ! empty( $page_break_settings ) ? $page_break_settings['is_page_break'] : false;
 			$page_break_progress_type = ! empty( $page_break_settings ) ? $page_break_settings['progress_indicator_type'] : 'none';
@@ -134,7 +238,7 @@ class Generate_Form_Markup {
 			}
 
 			$btn_from_theme       = Helper::get_meta_value( $id, '_srfm_inherit_theme_button' );
-			$is_inline_button     = Helper::get_meta_value( $id, '_srfm_is_inline_button' );
+			$is_inline_button     = apply_filters( 'srfm_is_inline_button', Helper::get_meta_value( $id, '_srfm_is_inline_button' ) );
 			$security_type        = Helper::get_meta_value( $id, '_srfm_captcha_security_type' );
 			$form_custom_css_meta = Helper::get_meta_value( $id, '_srfm_form_custom_css' );
 			$custom_css           = ! empty( $form_custom_css_meta ) && is_string( $form_custom_css_meta ) ? $form_custom_css_meta : '';
@@ -178,6 +282,9 @@ class Generate_Form_Markup {
 				}
 			}
 
+			// Ensure $google_captcha_site_key is not empty, and if not, trim any leading or trailing whitespace.
+			$google_captcha_site_key = is_string( $google_captcha_site_key ) && ! empty( $google_captcha_site_key ) ? trim( $google_captcha_site_key ) : '';
+
 			$primary_color    = $form_styling['primary_color'];
 			$help_color_var   = $form_styling['text_color'];
 			$label_text_color = $form_styling['text_color_on_primary'];
@@ -189,6 +296,17 @@ class Generate_Form_Markup {
 			$label_text_color_var = $label_text_color ? $label_text_color : '#111827';
 
 			$selected_size = Helper::get_css_vars( $field_spacing );
+
+			$should_show_submit_button = apply_filters(
+				'srfm_show_submit_button',
+				0 !== $block_count && ! $is_inline_button || $is_page_break,
+				$id
+			);
+
+			if ( ! $should_show_submit_button ) {
+				$form_classes[] = 'srfm-submit-button-hidden';
+			}
+
 			?>
 			<div class="<?php echo esc_attr( implode( ' ', array_filter( $form_classes ) ) ); ?>">
 			<style>
@@ -198,6 +316,7 @@ class Generate_Form_Markup {
 					--srfm-color-scheme-primary: <?php echo esc_html( $primary_color_var ); ?>;
 					--srfm-color-scheme-text-on-primary: <?php echo esc_html( $label_text_color_var ); ?>;
 					--srfm-color-scheme-text: <?php echo esc_html( $help_color_var ); ?>;
+					--srfm-quill-editor-color: <?php echo esc_html( $primary_color_var ); ?>;
 
 					--srfm-color-input-label: <?php echo esc_html( $help_color_var ); ?>;
 					--srfm-color-input-description: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.65 );
@@ -206,7 +325,7 @@ class Generate_Form_Markup {
 					--srfm-color-input-prefix: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.65 );
 					--srfm-color-input-background: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.02 );
 					--srfm-color-input-background-hover: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.05 );
-					--srfm-color-input-background-disabled: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.05 );
+					--srfm-color-input-background-disabled: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.07 );
 					--srfm-color-input-border: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.25 );
 					--srfm-color-input-border-disabled: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.15 );
 					--srfm-color-multi-choice-svg: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.7 );
@@ -229,6 +348,84 @@ class Generate_Form_Markup {
 					--srfm-dropdown-placeholder-color: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.50 );
 					--srfm-dropdown-icon-color: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.65 );
 					--srfm-dropdown-icon-disabled: hsl( from <?php echo esc_html( $help_color_var ); ?> h s l / 0.25 );
+
+					/* Background Control Variables */
+					<?php
+						// Form Styles.
+						$styling_vars = [
+							// Instant Form Padding.
+							'--srfm-instant-form-padding-top' => sanitize_text_field( "{$instant_form['padding_top']}{$instant_form['padding_unit']}" ),
+							'--srfm-instant-form-padding-right' => sanitize_text_field( "{$instant_form['padding_right']}{$instant_form['padding_unit']}" ),
+							'--srfm-instant-form-padding-bottom' => sanitize_text_field( "{$instant_form['padding_bottom']}{$instant_form['padding_unit']}" ),
+							'--srfm-instant-form-padding-left' => sanitize_text_field( "{$instant_form['padding_left']}{$instant_form['padding_unit']}" ),
+							// Instant Form Border Radius.
+							'--srfm-instant-form-border-radius-top' => sanitize_text_field( "{$instant_form['border_radius_top']}{$instant_form['border_radius_unit']}" ),
+							'--srfm-instant-form-border-radius-right' => sanitize_text_field( "{$instant_form['border_radius_right']}{$instant_form['border_radius_unit']}" ),
+							'--srfm-instant-form-border-radius-bottom' => sanitize_text_field( "{$instant_form['border_radius_bottom']}{$instant_form['border_radius_unit']}" ),
+							'--srfm-instant-form-border-radius-left' => sanitize_text_field( "{$instant_form['border_radius_left']}{$instant_form['border_radius_unit']}" ),
+							// Embed Form Padding.
+							'--srfm-form-padding-top'    => sanitize_text_field( "{$form['padding_top']}{$form['padding_unit']}" ),
+							'--srfm-form-padding-right'  => sanitize_text_field( "{$form['padding_right']}{$form['padding_unit']}" ),
+							'--srfm-form-padding-bottom' => sanitize_text_field( "{$form['padding_bottom']}{$form['padding_unit']}" ),
+							'--srfm-form-padding-left'   => sanitize_text_field( "{$form['padding_left']}{$form['padding_unit']}" ),
+							// Embed Form Border Radius.
+							'--srfm-form-border-radius-top' => sanitize_text_field( "{$form['border_radius_top']}{$form['border_radius_unit']}" ),
+							'--srfm-form-border-radius-right' => sanitize_text_field( "{$form['border_radius_right']}{$form['border_radius_unit']}" ),
+							'--srfm-form-border-radius-bottom' => sanitize_text_field( "{$form['border_radius_bottom']}{$form['border_radius_unit']}" ),
+							'--srfm-form-border-radius-left' => sanitize_text_field( "{$form['border_radius_left']}{$form['border_radius_unit']}" ),
+						];
+						// Background Styles.
+						if ( 'image' === $bg_type && ! empty( $bg_image ) ) {
+							$bg_size_merged = 'custom' === $bg_image_size ? "{$bg_image_size_custom}{$bg_image_size_custom_unit}" : $bg_image_size;
+							$styling_vars  += [
+								'--srfm-bg-image'      => 'url(' . esc_url_raw( $bg_image ) . ')',
+								'--srfm-bg-position'   => sanitize_text_field(
+									( ( ! empty( $bg_image_position['x'] ) ? $bg_image_position['x'] : 0.5 ) * 100 ) . '% ' .
+									( ( ! empty( $bg_image_position['y'] ) ? $bg_image_position['y'] : 0.5 ) * 100 ) . '% '
+								),
+								'--srfm-bg-attachment' => sanitize_text_field( $bg_image_attachment ),
+								'--srfm-bg-repeat'     => sanitize_text_field( $bg_image_repeat ),
+								'--srfm-bg-size'       => sanitize_text_field( $bg_size_merged ),
+							];
+						} elseif ( 'color' === $bg_type && ! empty( $bg_color ) ) {
+							$styling_vars['--srfm-bg-color'] = sanitize_text_field( $bg_color );
+						} elseif ( 'gradient' === $bg_type && ! empty( $bg_gradient ) ) {
+							if ( $is_advanced_gradient ) {
+								$bg_gradient = Helper::get_gradient_css( $bg_gradient_type, $bg_gradient_color_1, $bg_gradient_color_2, $bg_gradient_location_1, $bg_gradient_location_2, $bg_gradient_angle );
+							}
+							$styling_vars['--srfm-bg-gradient'] = sanitize_text_field( $bg_gradient );
+						}
+							// Overlay Variables.
+						if ( 'image' === $bg_type && 'image' === $overlay_type && ! empty( $overlay_image ) ) {
+							$styling_vars += [
+								'--srfm-bg-overlay-image'  => 'url(' . esc_url_raw( $overlay_image ) . ')',
+								'--srfm-bg-overlay-position' => sanitize_text_field(
+									( ( ! empty( $overlay_position['x'] ) ? $overlay_position['x'] : 0.5 ) * 100 ) . '% ' .
+									( ( ! empty( $overlay_position['y'] ) ? $overlay_position['y'] : 0.5 ) * 100 ) . '%'
+								),
+								'--srfm-bg-overlay-attachment' => sanitize_text_field( $overlay_attachment ),
+								'--srfm-bg-overlay-repeat' => sanitize_text_field( $overlay_repeat ),
+								'--srfm-bg-overlay-size'   => sanitize_text_field( $overlay_size ),
+								'--srfm-bg-overlay-blend-mode' => sanitize_text_field( $overlay_blend_mode ),
+							];
+						} elseif ( 'image' === $bg_type && 'color' === $overlay_type && ! empty( $overlay_color ) ) {
+							$styling_vars += [
+								'--srfm-bg-overlay-color' => sanitize_text_field( $overlay_color ),
+							];
+						} elseif ( 'image' === $bg_type && 'gradient' === $overlay_type && ! empty( $bg_overlay_gradient ) ) {
+							if ( $is_overlay_advanced_gradient ) {
+								$bg_overlay_gradient = Helper::get_gradient_css( $bg_overlay_gradient_type, $bg_overlay_gradient_color_1, $bg_overlay_gradient_color_2, $bg_overlay_gradient_location_1, $bg_overlay_gradient_location_2, $bg_overlay_gradient_angle );
+							}
+							$styling_vars += [
+								'--srfm-bg-overlay-gradient' => sanitize_text_field( $bg_overlay_gradient ),
+							];
+						}
+						$styling_vars['--srfm-bg-overlay-opacity'] = floatval( $overlay_opacity );
+						// Output the CSS variables.
+						foreach ( $styling_vars as $key => $value ) {
+							echo esc_html( Helper::get_string_value( $key ) ) . ': ' . esc_html( Helper::get_string_value( $value ) ) . ';';
+						}
+						?>
 					<?php
 					// Echo the CSS variables for the form according to the field spacing selected.
 					foreach ( $selected_size as $variable => $value ) {
@@ -240,6 +437,7 @@ class Generate_Form_Markup {
 							'id'            => $id,
 							'primary_color' => $primary_color_var,
 							'help_color'    => $help_color_var,
+							'form_styling'  => $form_styling,
 						]
 					);
 					// echo custom css on page/post.
@@ -256,9 +454,81 @@ class Generate_Form_Markup {
 				<h2 class="srfm-form-title"><?php echo esc_html( $title ); ?></h2>
 				<?php
 			}
+
+			// Password protected form check.
+			if ( $post && post_password_required( $post ) ) {
+				// Define allowed HTML tags for password form output.
+				$allowed_password_form_tags = [
+					'form'   => [
+						'action' => true,
+						'method' => true,
+						'class'  => true,
+						'id'     => true,
+					],
+					'label'  => [
+						'for'   => true,
+						'class' => true,
+					],
+					'input'  => [
+						'type'        => true,
+						'name'        => true,
+						'id'          => true,
+						'class'       => true,
+						'value'       => true,
+						'size'        => true,
+						'placeholder' => true,
+						'required'    => true,
+					],
+					'p'      => [
+						'class' => true,
+						'style' => true,
+					],
+					'button' => [
+						'type'  => true,
+						'name'  => true,
+						'class' => true,
+						'id'    => true,
+						'style' => true,
+					],
+					'div'    => [
+						'class' => true,
+						'id'    => true,
+						'style' => true,
+					],
+					'span'   => [
+						'class'       => true,
+						'aria-hidden' => true,
+					],
+					'svg'    => [
+						'xmlns'   => true,
+						'width'   => true,
+						'height'  => true,
+						'viewBox' => true,
+						'fill'    => true,
+					],
+					'path'   => [
+						'd'               => true,
+						'stroke'          => true,
+						'stroke-opacity'  => true,
+						'stroke-width'    => true,
+						'stroke-linecap'  => true,
+						'stroke-linejoin' => true,
+					],
+				];
+				echo wp_kses( get_the_password_form( $post ), $allowed_password_form_tags );
+				?>
+				</div>
+				<?php
+				return ob_get_clean();
+			}
+			$get_nonces                      = Helper::get_frontend_nonces();
+			$unique_validation_nonce         = $get_nonces['unique_validation'];
+			$form_submit_nonce               = $get_nonces['form_submit'];
+			$should_update_form_markup_nonce = Helper::should_update_form_markup_nonce();
+
 			?>
 				<form method="post" enctype="multipart/form-data" id="srfm-form-<?php echo esc_attr( Helper::get_string_value( $id ) ); ?>" class="srfm-form <?php echo esc_attr( 'sureforms_form' === $post_type ? 'srfm-single-form ' : '' ); ?>"
-				form-id="<?php echo esc_attr( Helper::get_string_value( $id ) ); ?>" after-submission="<?php echo esc_attr( $submission_action ); ?>" message-type="<?php echo esc_attr( $confirmation_type ? $confirmation_type : 'same page' ); ?>" success-url="<?php echo esc_attr( $success_url ? $success_url : '' ); ?>" ajaxurl="<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>" nonce="<?php echo esc_attr( wp_create_nonce( 'unique_validation_nonce' ) ); ?>"
+				form-id="<?php echo esc_attr( Helper::get_string_value( $id ) ); ?>" after-submission="<?php echo esc_attr( $submission_action ); ?>" message-type="<?php echo esc_attr( $confirmation_type ? $confirmation_type : 'same page' ); ?>" success-url="<?php echo esc_attr( $success_url ? $success_url : '' ); ?>" ajaxurl="<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>" data-nonce="<?php echo esc_attr( $unique_validation_nonce ); ?>" data-submit-nonce="<?php echo esc_attr( $form_submit_nonce ); ?>" data-update-nonce="<?php echo esc_attr( $should_update_form_markup_nonce ? 'yes' : 'no' ); ?>"
 				>
 				<?php
 					wp_nonce_field( 'srfm-form-submit', 'sureforms_form_submit' );
@@ -275,66 +545,36 @@ class Generate_Form_Markup {
 				<input type="hidden" value="<?php echo esc_attr( Helper::get_string_value( $is_page_break ) ); ?>" id="srfm-page-break">
 				<?php if ( $honeypot_spam ) { ?>
 					<input type="hidden" value="" name="srfm-honeypot-field">
-				<?php } ?>
-				<?php
-
+					<?php
+				}
+					self::common_error_message( 'head' );
 				if ( $is_page_break ) {
 					do_action( 'srfm_page_break_pagination', $post, $id );
-				} else {
-					// phpcs:ignore
+				} elseif ( ! apply_filters( 'srfm_use_custom_field_content', false ) ) {
+					// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Content is filtered and sanitized by WordPress core blocks and filters.
 					echo $content;
-					// phpcs:ignoreEnd
 				}
+
+				do_action( 'srfm_after_field_content', $post, $id );
+
+				$captcha_container_hidden_class = ! empty( $google_captcha_site_key ) && ( 'v3-reCAPTCHA' === $recaptcha_version || 'v2-invisible' === $recaptcha_version ) ? 'srfm-display-none' : '';
+
 				?>
-				<?php if ( 0 !== $block_count && ! $is_inline_button || $is_page_break ) { ?>
-					<?php if ( ! empty( $security_type ) && 'none' !== $security_type ) { ?>
-						<div class="srfm-captcha-container <?php echo esc_attr( 'v3-reCAPTCHA' === $recaptcha_version || 'v2-invisible' === $recaptcha_version ? 'srfm-display-none' : '' ); ?>">
-						<?php if ( is_string( $google_captcha_site_key ) && ! empty( $google_captcha_site_key ) && 'g-recaptcha' === $security_type ) { ?>
+					<?php if ( $should_show_submit_button && ! empty( $security_type ) && 'none' !== $security_type ) { ?>
+						<div class="srfm-captcha-container <?php echo esc_attr( $captcha_container_hidden_class ); ?>">
 
-							<?php if ( 'v2-checkbox' === $recaptcha_version ) { ?>
-								<?php
-								wp_enqueue_script( 'google-recaptcha', 'https://www.google.com/recaptcha/api.js', [], SRFM_VER, true );
-								?>
-							<div class='g-recaptcha' data-callback="onSuccess" recaptcha-type="<?php echo esc_attr( $recaptcha_version ); ?>" data-sitekey="<?php echo esc_attr( strval( $google_captcha_site_key ) ); ?>" ></div>
-							<?php } ?>
-
-							<?php if ( 'v2-invisible' === $recaptcha_version ) { ?>
-								<?php
-								wp_enqueue_script( 'google-recaptcha-invisible', 'https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit', [ SRFM_SLUG . '-form-submit' ], SRFM_VER, true );
-								?>
-							<div class='g-recaptcha' recaptcha-type="<?php echo esc_attr( $recaptcha_version ); ?>" data-sitekey="<?php echo esc_attr( $google_captcha_site_key ); ?>" data-size="invisible"></div>
-							<?php } ?>
-
-							<?php if ( 'v3-reCAPTCHA' === $recaptcha_version ) { ?>
-								<?php wp_enqueue_script( 'srfm-google-recaptchaV3', 'https://www.google.com/recaptcha/api.js?render=' . esc_js( $google_captcha_site_key ), [], SRFM_VER, true ); ?>
-							<?php } ?>
-
-						<?php } ?>
 						<?php
 
+						if ( 'g-recaptcha' === $security_type ) {
+							self::get_google_captcha_script( $recaptcha_version, $google_captcha_site_key );
+						}
+
 						if ( 'cf-turnstile' === $security_type ) {
-							// Cloudflare Turnstile script.
-							wp_enqueue_script( // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
-								SRFM_SLUG . '-cf-turnstile',
-								'https://challenges.cloudflare.com/turnstile/v0/api.js',
-								[],
-								null,
-								[
-									false,
-									'defer' => true,
-								]
-							);
-							?>
-						<div id="srfm-cf-sitekey" class="cf-turnstile" data-callback="onSuccess" data-theme="<?php echo esc_attr( $srfm_cf_appearance_mode ); ?>" data-sitekey="<?php echo esc_attr( $srfm_cf_turnstile_site_key ); ?>"></div>
-							<?php
+							self::get_cf_turnstile_script( $srfm_cf_appearance_mode, $srfm_cf_turnstile_site_key );
 						}
 
 						if ( 'hcaptcha' === $security_type ) {
-							// hCaptcha script.
-							wp_enqueue_script( 'hcaptcha', 'https://js.hcaptcha.com/1/api.js', [], null, [ 'strategy' => 'defer' ] ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
-							?>
-						<div id="srfm-hcaptcha-sitekey" data-callback="onSuccess" class="h-captcha" data-sitekey="<?php echo esc_attr( $srfm_hcaptcha_site_key ); ?>"></div>
-							<?php
+							self::get_h_captcha_script( $srfm_hcaptcha_site_key );
 						}
 						?>
 						<div class="srfm-validation-error" id="captcha-error" style="display: none;"><?php echo esc_attr__( 'Please verify that you are not a robot.', 'sureforms' ); ?></div>
@@ -345,35 +585,168 @@ class Generate_Form_Markup {
 					if ( $is_page_break ) {
 						do_action( 'srfm_page_break_btn', $id );
 					}
+					$srfm_button_classes = apply_filters( 'srfm_add_button_classes', [ '1' === $btn_from_theme ? 'wp-block-button__link' : 'srfm-btn-frontend srfm-button srfm-submit-button', 'v3-reCAPTCHA' === $recaptcha_version ? ' g-recaptcha' : '' ] );
 					?>
 
-					<div class="srfm-submit-container <?php echo esc_attr( $is_page_break ? 'hide' : '' ); ?>">
+					<div class="srfm-submit-container <?php echo esc_attr( $is_page_break ? 'srfm-hide' : '' ); ?>" style="<?php echo ! $should_show_submit_button ? 'visibility:hidden;position:absolute;' : ''; ?>">
 						<div style="width: <?php echo esc_attr( $full ? '100%' : '' ); ?>; text-align: <?php echo esc_attr( $submit_button_alignment ); ?>" class="wp-block-button">
-						<button style="width:<?php echo esc_attr( $full ? '100%;' : '' ); ?>" id="srfm-submit-btn"class="<?php echo esc_attr( '1' === $btn_from_theme ? 'wp-block-button__link' : 'srfm-btn-frontend srfm-button srfm-submit-button' ); ?><?php echo 'v3-reCAPTCHA' === $recaptcha_version ? ' g-recaptcha' : ''; ?>"
-						<?php if ( 'v3-reCAPTCHA' === $recaptcha_version ) { ?>
-							recaptcha-type="<?php echo esc_attr( $recaptcha_version ); ?>"
-							data-sitekey="<?php echo esc_attr( $google_captcha_site_key ); ?>"
+						<?php do_action( 'srfm_before_submit_button', $id ); ?>
+						<?php if ( $should_show_submit_button ) { ?>
+							<button style="<?php echo esc_attr( $full ? 'width: 100%;' : '' ); ?>" id="srfm-submit-btn" class="<?php echo esc_attr( implode( ' ', array_filter( $srfm_button_classes ) ) ); ?>"
+							<?php if ( 'v3-reCAPTCHA' === $recaptcha_version ) { ?>
+								data-callback="recaptchaCallback"
+								data-error-callback="onGCaptchaV3Error"
+								recaptcha-type="<?php echo esc_attr( $recaptcha_version ); ?>"
+								data-sitekey="<?php echo esc_attr( $google_captcha_site_key ); ?>"
+							<?php } ?>
+							>
+								<div class="srfm-submit-wrap">
+									<?php echo esc_html( $button_text ); ?>
+								<div class="srfm-loader"></div>
+								</div>
+							</button>
 						<?php } ?>
-						>
-							<div class="srfm-submit-wrap">
-								<?php echo esc_html( $button_text ); ?>
-							<div class="srfm-loader"></div>
-							</div>
-						</button>
+						<?php do_action( 'srfm_after_submit_button', $id ); ?>
 						</div>
 					</div>
-				<?php } ?>
-				<p id="srfm-error-message" class="srfm-error-message" hidden="true"><?php echo esc_html__( 'There was an error trying to submit your form. Please try again.', 'sureforms' ); ?></p>
+					<?php
+
+					echo wp_kses_post(
+						apply_filters(
+							'srfm_after_submit_button_content',
+							'',
+							[
+								'id'                      => $id,
+								'should_show_submit_button' => $should_show_submit_button,
+								'button_text'             => $button_text,
+								'submit_button_alignment' => $submit_button_alignment,
+								'full'                    => $full,
+								'btn_from_theme'          => $btn_from_theme,
+								'is_page_break'           => $is_page_break,
+								'recaptcha_version'       => $recaptcha_version,
+								'google_captcha_site_key' => $google_captcha_site_key,
+								'srfm_button_classes'     => $srfm_button_classes,
+							]
+						)
+					);
+		}
+				self::common_error_message( 'footer' );
+		?>
 			</form>
 			<div class="srfm-single-form srfm-success-box in-page">
 				<div aria-live="polite" aria-atomic="true" role="alert" id="srfm-success-message-page-<?php echo esc_attr( Helper::get_string_value( $id ) ); ?>" class="srfm-success-box-description"></div>
 			</div>
-			<?php
-		}
-		?>
 			</div>
 		<?php
 		return ob_get_clean();
+	}
+
+	/**
+	 * Generate HCaptcha script markup
+	 *
+	 * @param string $srfm_hcaptcha_site_key site key.
+	 * @since 1.7.0
+	 * @return void
+	 */
+	public static function get_h_captcha_script( $srfm_hcaptcha_site_key ) {
+		if ( ! empty( $srfm_hcaptcha_site_key ) ) {
+			// hCaptcha script.
+				wp_enqueue_script( 'hcaptcha', 'https://js.hcaptcha.com/1/api.js', [], null, [ 'strategy' => 'defer' ] ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
+			?>
+			<div id="srfm-hcaptcha-sitekey" data-callback="onSuccess" data-error-callback="onHCaptchaError" class="h-captcha" data-sitekey="<?php echo esc_attr( $srfm_hcaptcha_site_key ); ?>"></div>
+				<?php
+		} else {
+			Helper::render_missing_sitekey_error( 'HCaptcha' );
+		}
+	}
+
+	/**
+	 * Generate Google Recaptcha script markup
+	 *
+	 * @param string $recaptcha_version reCAPTCHA version.
+	 * @param string $google_captcha_site_key site key.
+	 * @since 1.7.0
+	 * @return void
+	 */
+	public static function get_google_captcha_script( $recaptcha_version, $google_captcha_site_key ) {
+
+		if ( empty( $google_captcha_site_key ) ) {
+			Helper::render_missing_sitekey_error( 'Google reCAPTCHA' );
+			return;
+		}
+
+		if ( 'v2-checkbox' === $recaptcha_version ) {
+			?>
+			<?php
+			wp_enqueue_script( 'google-recaptcha', 'https://www.google.com/recaptcha/api.js', [], SRFM_VER, true );
+			?>
+		<div class='g-recaptcha' data-callback="onSuccess" data-error-callback="onGCaptchaV2CheckBoxError" recaptcha-type="<?php echo esc_attr( $recaptcha_version ); ?>" data-sitekey="<?php echo esc_attr( strval( $google_captcha_site_key ) ); ?>" ></div>
+		<?php } ?>
+
+		<?php if ( 'v2-invisible' === $recaptcha_version ) { ?>
+			<?php
+			wp_enqueue_script( 'google-recaptcha-invisible', 'https://www.google.com/recaptcha/api.js?onload=recaptchaCallback&render=explicit', [ SRFM_SLUG . '-form-submit' ], SRFM_VER, true );
+			?>
+		<div class='g-recaptcha' recaptcha-type="<?php echo esc_attr( $recaptcha_version ); ?>" data-sitekey="<?php echo esc_attr( $google_captcha_site_key ); ?>" data-size="invisible"></div>
+		<?php } ?>
+
+		<?php if ( 'v3-reCAPTCHA' === $recaptcha_version ) { ?>
+			<?php
+				wp_enqueue_script( // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion -- This is a third-party script, and specifying a version may lead to caching issues. Using null ensures the latest version is always loaded.
+					'srfm-google-recaptchaV3',
+					'https://www.google.com/recaptcha/api.js?render=' . $google_captcha_site_key,
+					[],
+					null,
+					true
+				);
+			?>
+			<?php
+		}
+	}
+
+	/**
+	 * Generate Cloudflare Turnstile script markup
+	 *
+	 * @param string $srfm_cf_appearance_mode appearance mode.
+	 * @param string $srfm_cf_turnstile_site_key site key.
+	 * @since 1.7.0
+	 * @return void
+	 */
+	public static function get_cf_turnstile_script( $srfm_cf_appearance_mode, $srfm_cf_turnstile_site_key ) {
+		if ( ! empty( $srfm_cf_turnstile_site_key ) ) {
+			// Cloudflare Turnstile script.
+			wp_enqueue_script( // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion -- Third-party script; version not under our control.
+				SRFM_SLUG . '-cf-turnstile',
+				'https://challenges.cloudflare.com/turnstile/v0/api.js',
+				[],
+				null,
+				[
+					false,
+					'defer' => true,
+				]
+			);
+			?>
+			<!-- The callback methods below are available on frontend.js. onTurnstileError displays and error in place of recaptcha dialog.  -->
+		<div id="srfm-cf-sitekey" class="cf-turnstile" data-callback="onSuccess" data-error-callback="onTurnstileError" data-theme="<?php echo esc_attr( $srfm_cf_appearance_mode ); ?>" data-sitekey="<?php echo esc_attr( $srfm_cf_turnstile_site_key ); ?>"></div>
+			<?php
+		} else {
+			Helper::render_missing_sitekey_error( 'Turnstile' );
+		}
+	}
+
+	/**
+	 * Generate common error message markup
+	 *
+	 * @param string $position position of the error message.
+	 * @since 1.5.0
+	 * @return void
+	 */
+	public static function common_error_message( $position = 'footer' ) {
+		$icon    = Helper::fetch_svg( 'info_circle', '', 'aria-hidden="true"' );
+		$classes = "srfm-common-error-message srfm-error-message srfm-{$position}-error";
+		?>
+		<p id="srfm-error-message" class="<?php echo esc_attr( $classes ); ?>" hidden><?php echo wp_kses( $icon, Helper::$allowed_tags_svg ); ?><span class="srfm-error-content"><?php echo esc_html__( 'There was an error trying to submit your form. Please try again.', 'sureforms' ); ?></span></p>
+		<?php
 	}
 
 	/**
@@ -392,8 +765,19 @@ class Generate_Form_Markup {
 			return $confirmation_message;
 		}
 
-		$form_confirmation = isset( $form_data['form-id'] ) ?
-			get_post_meta( Helper::get_integer_value( $form_data['form-id'] ), '_srfm_form_confirmation' ) : null;
+		$form_id           = isset( $form_data['form-id'] ) ? Helper::get_integer_value( $form_data['form-id'] ) : 0;
+		$form_confirmation = get_post_meta( $form_id, '_srfm_form_confirmation' );
+
+		/**
+		 * Filter the form confirmation data.
+		 * Allows conditional confirmations to override the default confirmation settings.
+		 *
+		 * @param mixed $form_confirmation The form confirmation data from post meta.
+		 * @param int   $form_id The form ID.
+		 * @param array $submission_data The submission data.
+		 * @since 2.4.0
+		 */
+		$form_confirmation = apply_filters( 'srfm_form_confirmation_data', $form_confirmation, $form_id, $submission_data );
 
 		if ( ! is_array( $form_confirmation ) ) {
 			return $confirmation_message;
@@ -408,9 +792,20 @@ class Generate_Form_Markup {
 			return $confirmation_message;
 		}
 		$smart_tags           = new Smart_Tags();
-		$confirmation_message = $smart_tags->process_smart_tags( $confirmation_data['message'], $submission_data, $form_data );
+		$confirmation_message = $smart_tags->process_smart_tags( $confirmation_message, $submission_data, $form_data );
 
-		return apply_filters( 'srfm_after_submit_confirmation_message', $confirmation_message );
+		$markup = Helper::strip_js_attributes( apply_filters( 'srfm_after_submit_confirmation_message', $confirmation_message, $form_data, $submission_data ) );
+
+		if ( false !== strpos( $markup, 'src="image/svg+xml;base64' ) ) {
+			// Handle Form Confirmation SVGs separately. We have planned to improve it in the future replacing it with image URL.
+			$normalized_string = preg_replace( '/src="image\/svg\+xml;base64/', 'src="data:image/svg+xml;base64', $markup );
+
+			if ( is_string( $normalized_string ) ) {
+				$markup = $normalized_string;
+			}
+		}
+
+		return $markup;
 	}
 
 	/**
@@ -428,8 +823,19 @@ class Generate_Form_Markup {
 			return $redirect_url;
 		}
 
-		$form_confirmation = isset( $form_data['form-id'] ) ?
-			get_post_meta( Helper::get_integer_value( $form_data['form-id'] ), '_srfm_form_confirmation' ) : null;
+		$form_id           = isset( $form_data['form-id'] ) ? Helper::get_integer_value( $form_data['form-id'] ) : 0;
+		$form_confirmation = get_post_meta( $form_id, '_srfm_form_confirmation' );
+
+		/**
+		 * Filter the form confirmation data.
+		 * Allows conditional confirmations to override the default confirmation settings.
+		 *
+		 * @param mixed $form_confirmation The form confirmation data from post meta.
+		 * @param int   $form_id The form ID.
+		 * @param array $submission_data The submission data.
+		 * @since 2.4.0
+		 */
+		$form_confirmation = apply_filters( 'srfm_form_confirmation_data', $form_confirmation, $form_id, $submission_data );
 
 		if ( ! is_array( $form_confirmation ) ) {
 			return $redirect_url;
@@ -440,10 +846,11 @@ class Generate_Form_Markup {
 		$page_url          = $confirmation_data['page_url'] ?? '';
 		$custom_url        = $confirmation_data['custom_url'] ?? '';
 		$confirmation_type = $confirmation_data['confirmation_type'] ?? '';
+
 		if ( 'different page' === $confirmation_type ) {
-			$redirect_url = esc_url( $page_url );
+			$redirect_url = esc_url_raw( $page_url );
 		} elseif ( 'custom url' === $confirmation_type ) {
-			$redirect_url = esc_url( $custom_url );
+			$redirect_url = esc_url_raw( $custom_url );
 		}
 
 		if ( empty( $redirect_url ) ) {
@@ -461,7 +868,7 @@ class Generate_Form_Markup {
 		$query_params = [];
 		foreach ( $confirmation_data['query_params'] as $params ) {
 			if ( is_array( $params ) && ! empty( array_keys( $params ) ) && ! empty( array_values( $params ) ) ) {
-				$query_params[ esc_attr( array_keys( $params )[0] ) ] = esc_attr( array_values( $params )[0] );
+				$query_params[ sanitize_text_field( array_keys( $params )[0] ) ] = sanitize_text_field( array_values( $params )[0] );
 			}
 		}
 
@@ -471,9 +878,9 @@ class Generate_Form_Markup {
 			$smart_tags = new Smart_Tags();
 			// Adding upload_format_type = 'raw' to retrieve urls as comma separated values.
 			$form_data['upload_format_type'] = 'raw';
-			$redirect_url                    = html_entity_decode( $smart_tags->process_smart_tags( $redirect_url, $submission_data, $form_data ) );
+			$redirect_url                    = html_entity_decode( Helper::get_string_value( $smart_tags->process_smart_tags( $redirect_url, $submission_data, $form_data ) ) );
 		}
 
-		return apply_filters( 'srfm_after_submit_redirect_url', $redirect_url );
+		return esc_url_raw( apply_filters( 'srfm_after_submit_redirect_url', $redirect_url ) );
 	}
 }

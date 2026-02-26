@@ -2,7 +2,7 @@
 	"apiVersion": 2,
 	"name": "srfm/gdpr",
 	"title": "GDPR Agreement",
-	"description": "Displays a SureForm GDPR Agreement Field",
+	"description": "Displays a SureForms GDPR Agreement Field",
 	"category": "sureforms",
 	"keywords": [ "gdpr", "compliance", "checkbox", "agreement" ],
 	"textdomain": "sureforms",

@@ -21,7 +21,7 @@ import ResponsiveSlider from '@Components/responsive-slider';
 import UAGSelectControl from '@Components/select-control';
 // Extend component
 import UAGAdvancedPanelBody from '@Components/advanced-panel-body';
-import ConditionalLogic from '@SrfmComponents/conditional-logic';
+import { applyFilters } from '@wordpress/hooks';
 
 const Settings = ( props ) => {
 	const { attributes, deviceType, setAttributes } = props;
@@ -260,12 +260,11 @@ const Settings = ( props ) => {
 			},
 		];
 	}
-	const generalPanel = () => {
-		return (
-			<UAGAdvancedPanelBody
-				title={ __( 'Content', 'sureforms' ) }
-				initialOpen={ true }
-			>
+
+	const headingContent = [
+		{
+			id: 'alignment',
+			component: (
 				<MultiButtonsControl
 					setAttributes={ setAttributes }
 					label={ __( 'Alignment', 'sureforms' ) }
@@ -315,6 +314,11 @@ const Settings = ( props ) => {
 					showIcons={ true }
 					responsive={ true }
 				/>
+			),
+		},
+		{
+			id: 'heading',
+			component: (
 				<ToggleControl
 					label={ __( 'Heading', 'sureforms' ) }
 					checked={ headingTitleToggle }
@@ -324,70 +328,90 @@ const Settings = ( props ) => {
 						} )
 					}
 				/>
-				{ headingTitleToggle && (
-					<>
-						<MultiButtonsControl
-							setAttributes={ setAttributes }
-							label={ __( 'Heading Tag', 'sureforms' ) }
-							data={ {
-								value: headingTag,
-								label: 'headingTag',
-							} }
-							options={ [
-								{
-									value: 'h1',
-									label: __( 'H1', 'sureforms' ),
-								},
-								{
-									value: 'h2',
-									label: __( 'H2', 'sureforms' ),
-								},
-								{
-									value: 'h3',
-									label: __( 'H3', 'sureforms' ),
-								},
-								{
-									value: 'h4',
-									label: __( 'H4', 'sureforms' ),
-								},
-								{
-									value: 'h5',
-									label: __( 'H5', 'sureforms' ),
-								},
-								{
-									value: 'h6',
-									label: __( 'H6', 'sureforms' ),
-								},
-								{
-									value: 'p',
-									label: __( 'P', 'sureforms' ),
-								},
-								{
-									value: 'div',
-									label: __( 'Div', 'sureforms' ),
-								},
-							] }
-						/>
-						<MultiButtonsControl
-							setAttributes={ setAttributes }
-							label={ __( 'Heading Wrapper', 'sureforms' ) }
-							data={ {
-								value: headingWrapper,
-								label: 'headingWrapper',
-							} }
-							options={ [
-								{
-									value: 'div',
-									label: __( 'Div', 'sureforms' ),
-								},
-								{
-									value: 'header',
-									label: __( 'Header', 'sureforms' ),
-								},
-							] }
-						/>
-					</>
-				) }
+			),
+		},
+		{
+			id: 'heading-tag',
+			component: headingTitleToggle && (
+				<>
+					<MultiButtonsControl
+						setAttributes={ setAttributes }
+						label={ __( 'Heading Tag', 'sureforms' ) }
+						data={ {
+							value: headingTag,
+							label: 'headingTag',
+						} }
+						options={ [
+							{
+								value: 'h1',
+								label: __( 'H1', 'sureforms' ),
+							},
+							{
+								value: 'h2',
+								label: __( 'H2', 'sureforms' ),
+							},
+							{
+								value: 'h3',
+								label: __( 'H3', 'sureforms' ),
+							},
+							{
+								value: 'h4',
+								label: __( 'H4', 'sureforms' ),
+							},
+							{
+								value: 'h5',
+								label: __( 'H5', 'sureforms' ),
+							},
+							{
+								value: 'h6',
+								label: __( 'H6', 'sureforms' ),
+							},
+							{
+								value: 'p',
+								label: __( 'P', 'sureforms' ),
+							},
+							{
+								value: 'div',
+								label: __( 'Div', 'sureforms' ),
+							},
+						] }
+					/>
+					<MultiButtonsControl
+						setAttributes={ setAttributes }
+						label={ __( 'Heading Wrapper', 'sureforms' ) }
+						data={ {
+							value: headingWrapper,
+							label: 'headingWrapper',
+						} }
+						options={ [
+							{
+								value: 'div',
+								label: __( 'Div', 'sureforms' ),
+							},
+							{
+								value: 'header',
+								label: __( 'Header', 'sureforms' ),
+							},
+						] }
+					/>
+				</>
+			),
+		},
+	];
+
+	const filterComponent = applyFilters(
+		'srfm.block.heading.content',
+		headingContent,
+		props
+	);
+
+	const generalPanel = () => {
+		return (
+			<UAGAdvancedPanelBody
+				title={ __( 'Content', 'sureforms' ) }
+				initialOpen={ true }
+			>
+				{ filterComponent.map( ( option ) => option.component ) }
 			</UAGAdvancedPanelBody>
 		);
 	};
@@ -1313,6 +1337,22 @@ const Settings = ( props ) => {
 		);
 	};
 
+	/**
+	 * Apply filters to add advanced settings to the heading block.
+	 * It should return an array of objects with the following structure:
+	 * [
+	 * 	{
+	 * 		id: string,
+	 * 		content: React.Component,
+	 * 	},
+	 * ]
+	 */
+	const advancedPanel = applyFilters(
+		'srfm.advanced-heading.settings.advance',
+		[],
+		props
+	);
+
 	return (
 		<div>
 			<InspectorControls>
@@ -1332,9 +1372,7 @@ const Settings = ( props ) => {
 						{ spacingStylePanel() }
 					</InspectorTab>
 					<InspectorTab { ...UAGTabs.advance }>
-						<ConditionalLogic
-							{ ...{ setAttributes, attributes } }
-						/>
+						{ advancedPanel.map( ( item ) => item.content ) }
 					</InspectorTab>
 				</InspectorTabs>
 			</InspectorControls>

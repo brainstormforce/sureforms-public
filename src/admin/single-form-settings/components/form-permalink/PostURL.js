@@ -48,7 +48,10 @@ export default function PostURL( { onClose } ) {
 
 	return (
 		<div className="editor-post-url">
-			<InspectorPopoverHeader title={ __( 'URL', 'sureforms' ) } onClose={ onClose } />
+			<InspectorPopoverHeader
+				title={ __( 'URL', 'sureforms' ) }
+				onClose={ onClose }
+			/>
 			{ isEditable && (
 				<TextControl
 					__nextHasNoMarginBottom
@@ -61,7 +64,8 @@ export default function PostURL( { onClose } ) {
 							{ __( 'The last part of the URL.', 'sureforms' ) }{ ' ' }
 							<ExternalLink
 								href={ __(
-									'https://wordpress.org/documentation/article/page-post-settings-sidebar/#permalink', 'sureforms'
+									'https://wordpress.org/documentation/article/page-post-settings-sidebar/#permalink',
+									'sureforms'
 								) }
 							>
 								{ __( 'Learn more.', 'sureforms' ) }

@@ -9,6 +9,7 @@
 
 namespace SRFM\Inc;
 
+use BSF_UTM_Analytics;
 use SRFM\Inc\Traits\Get_Instance;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -36,6 +37,7 @@ class Admin_Ajax {
 		add_action( 'wp_ajax_sureforms_recommended_plugin_activate', [ $this, 'required_plugin_activate' ] );
 		add_action( 'wp_ajax_sureforms_recommended_plugin_install', 'wp_ajax_install_plugin' );
 		add_action( 'wp_ajax_sureforms_integration', [ $this, 'generate_data_for_suretriggers_integration' ] );
+		add_action( 'wp_ajax_srfm_download_export', [ $this, 'download_export_file' ] );
 
 		add_filter( SRFM_SLUG . '_admin_filter', [ $this, 'localize_script_integration' ] );
 	}
@@ -50,7 +52,7 @@ class Admin_Ajax {
 
 		$response_data = [ 'message' => $this->get_error_msg( 'permission' ) ];
 
-		if ( ! current_user_can( 'manage_options' ) ) {
+		if ( ! Helper::current_user_can() ) {
 			wp_send_json_error( $response_data );
 		}
 
@@ -67,7 +69,7 @@ class Admin_Ajax {
 			wp_send_json_error( $response_data );
 		}
 
-		if ( ! current_user_can( 'install_plugins' ) || ! isset( $_POST['init'] ) || ! sanitize_text_field( wp_unslash( $_POST['init'] ) ) ) {
+		if ( ! isset( $_POST['init'] ) || ! sanitize_text_field( wp_unslash( $_POST['init'] ) ) ) {
 			wp_send_json_error(
 				[
 					'success' => false,
@@ -78,6 +80,8 @@ class Admin_Ajax {
 
 		$plugin_init = isset( $_POST['init'] ) ? sanitize_text_field( wp_unslash( $_POST['init'] ) ) : '';
 
+		$plugin_slug = isset( $_POST['slug'] ) ? sanitize_text_field( wp_unslash( $_POST['slug'] ) ) : '';
+
 		$activate = activate_plugin( $plugin_init, '', false, true );
 
 		if ( is_wp_error( $activate ) ) {
@@ -87,6 +91,11 @@ class Admin_Ajax {
 					'message' => $activate->get_error_message(),
 				]
 			);
+		}
+
+		if ( class_exists( 'BSF_UTM_Analytics' ) && is_callable( 'BSF_UTM_Analytics::update_referer' ) ) {
+			$plugin_slug = pathinfo( $plugin_slug, PATHINFO_FILENAME );
+			BSF_UTM_Analytics::update_referer( 'sureforms', $plugin_slug );
 		}
 
 		wp_send_json_success(
@@ -130,12 +139,6 @@ class Admin_Ajax {
 				'ajax_url'               => admin_url( 'admin-ajax.php' ),
 				'sfPluginManagerNonce'   => wp_create_nonce( 'sf_plugin_manager_nonce' ),
 				'plugin_installer_nonce' => wp_create_nonce( 'updates' ),
-				'plugin_activating_text' => __( 'Activating...', 'sureforms' ),
-				'plugin_activated_text'  => __( 'Activated', 'sureforms' ),
-				'plugin_activate_text'   => __( 'Activate', 'sureforms' ),
-				'integrations'           => self::sureforms_get_integration(),
-				'plugin_installing_text' => __( 'Installing...', 'sureforms' ),
-				'plugin_installed_text'  => __( 'Installed', 'sureforms' ),
 				'isRTL'                  => is_rtl(),
 				'current_screen_id'      => $is_screen_sureforms_menu ? 'sureforms_menu' : '',
 				'form_id'                => get_post() ? get_post()->ID : '',
@@ -145,70 +148,13 @@ class Admin_Ajax {
 	}
 
 	/**
-	 *  Get sureforms recommended integrations.
-	 *
-	 * @since 0.0.1
-	 * @return array<mixed>
-	 */
-	public function sureforms_get_integration() {
-		$suretrigger_connected = apply_filters( 'suretriggers_is_user_connected', '' );
-		return apply_filters(
-			'srfm_integrated_plugins',
-			[
-				[
-					'title'       => __( 'SureTriggers', 'sureforms' ),
-					'subtitle'    => __( 'Connect SureForms to hundreds of apps, CRMs and tools such as Slack, Mailchimp, etc.', 'sureforms' ),
-					'description' => __( 'SureTriggers is a powerful automation platform that helps you connect your various plugins and apps together. It allows you to automate repetitive tasks, so you can focus on more important work.', 'sureforms' ),
-					'status'      => self::get_plugin_status( 'suretriggers/suretriggers.php' ),
-					'slug'        => 'suretriggers',
-					'path'        => 'suretriggers/suretriggers.php',
-					'redirection' => admin_url( 'admin.php?page=suretriggers' ),
-					'logo'        => self::encode_svg( is_string( file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/suretriggers.svg' ) ) ? file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/suretriggers.svg' ) : '' ),
-					'logo_full'   => self::encode_svg( is_string( file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/suretriggers_full.svg' ) ) ? file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/suretriggers_full.svg' ) : '' ),
-					'connected'   => $suretrigger_connected,
-				],
-			]
-		);
-	}
-
-	/**
-	 * Encodes the given string with base64.
-	 *
-	 * @param  string $logo contains svg's.
-	 * @return string
-	 */
-	public function encode_svg( $logo ) {
-		return 'data:image/svg+xml;base64,' . base64_encode( $logo ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
-	}
-	/**
-	 * Get plugin status
-	 *
-	 * @since 0.0.1
-	 *
-	 * @param  string $plugin_init_file Plugin init file.
-	 * @return string
-	 */
-	public static function get_plugin_status( $plugin_init_file ) {
-
-		$installed_plugins = get_plugins();
-
-		if ( ! isset( $installed_plugins[ $plugin_init_file ] ) ) {
-			return 'Install';
-		}
-		if ( is_plugin_active( $plugin_init_file ) ) {
-			return 'Activated';
-		}
-			return 'Installed';
-	}
-
-	/**
 	 * Generates data required for suretriggers integration
 	 *
 	 * @since 0.0.8
 	 * @return void
 	 */
 	public function generate_data_for_suretriggers_integration() {
-		if ( ! current_user_can( 'manage_options' ) ) {
+		if ( ! Helper::current_user_can() ) {
 			wp_send_json_error( [ 'message' => __( 'You do not have permission to access this page.', 'sureforms' ) ] );
 		}
 
@@ -224,7 +170,7 @@ class Admin_Ajax {
 			wp_send_json_error(
 				[
 					'code'    => 'invalid_secret_key',
-					'message' => __( 'SureTriggers is not configured properly.', 'sureforms' ),
+					'message' => __( 'OttoKit is not configured properly.', 'sureforms' ),
 				]
 			);
 		}
@@ -311,6 +257,18 @@ class Admin_Ajax {
 
 		$blocks = parse_blocks( $post->post_content );
 
+		$blocks = array_filter(
+			$blocks,
+			static function( $block ) {
+				if ( 'srfm/html' === $block['blockName'] ) {
+					return false;
+				}
+				return true;
+			}
+		);
+
+		$blocks = array_values( $blocks );
+
 		if ( empty( $blocks ) ) {
 			return [];
 		}
@@ -319,6 +277,29 @@ class Admin_Ajax {
 
 		foreach ( $blocks as $block ) {
 			if ( ! empty( $block['blockName'] ) && 0 === strpos( $block['blockName'], 'srfm/' ) ) {
+
+				/**
+				 * Determine whether to skip this field from the sample data.
+				 *
+				 * @param bool  $should_skip           Default value indicating if field should be skipped.
+				 * @param array $block_details         Array containing block attributes, including 'block_name'.
+				 *
+				 * @since 2.0.0
+				 *
+				 * @hook srfm_should_skip_field_from_sample_data
+				 */
+				$should_skip_this_field = apply_filters(
+					'srfm_should_skip_field_from_sample_data',
+					false,
+					[
+						'block_name' => $block['blockName'],
+					]
+				);
+
+				if ( $should_skip_this_field ) {
+					continue;
+				}
+
 				if ( ! empty( $block['attrs']['slug'] ) ) {
 					$data[ $block['attrs']['slug'] ] = $this->get_sample_data( $block['blockName'] );
 				}
@@ -367,9 +348,106 @@ class Admin_Ajax {
 			'srfm/upload'           => 'https://example.com/uploads/file.pdf',
 		];
 
+		/**
+		 * Filter the sample data for specific block types.
+		 *
+		 * Allows plugins and themes to add custom sample data for their block types
+		 * or modify existing sample data. This is particularly useful for dynamic
+		 * block types that require complex sample data structures.
+		 *
+		 * @since 0.0.8
+		 *
+		 * @param array $dummy_data {
+		 *     Array of sample data keyed by block name.
+		 *
+		 *     @type string|array $block_name Sample data for the block.
+		 * }
+		 * @param array $filter_args {
+		 *     Additional filter arguments.
+		 *
+		 *     @type string $block_name The name of the block being processed.
+		 * }
+		 */
+		$dummy_data = Helper::apply_filters_as_array( 'srfm_sample_data_filter', $dummy_data, [ 'block_name' => $block_name ] );
+
 		if ( ! empty( $dummy_data[ $block_name ] ) ) {
 			return $dummy_data[ $block_name ];
 		}
 			return __( 'Sample data', 'sureforms' );
+	}
+
+	/**
+	 * Download exported file.
+	 *
+	 * @since 2.0.0
+	 * @return void
+	 */
+	public function download_export_file() {
+		// Check user permissions.
+		if ( ! Helper::current_user_can() ) {
+			wp_die( esc_html__( 'You do not have permission to access this file.', 'sureforms' ) );
+		}
+
+		// Verify nonce for security.
+		if ( ! isset( $_GET['_wpnonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ), 'srfm_download_export' ) ) {
+			wp_die( esc_html__( 'Security check failed.', 'sureforms' ) );
+		}
+
+		// Get and sanitize the file parameter.
+		$file = isset( $_GET['file'] ) ? sanitize_file_name( wp_unslash( $_GET['file'] ) ) : '';
+
+		if ( empty( $file ) ) {
+			wp_die( esc_html__( 'Invalid file request.', 'sureforms' ) );
+		}
+
+		// Build the full file path.
+		$temp_dir = wp_normalize_path( trailingslashit( get_temp_dir() ) );
+		$filepath = $temp_dir . $file;
+
+		// Security check: ensure the file is in the temp directory.
+		if ( strpos( wp_normalize_path( $filepath ), $temp_dir ) !== 0 ) {
+			wp_die( esc_html__( 'Invalid file path.', 'sureforms' ) );
+		}
+
+		// Check if file exists.
+		if ( ! file_exists( $filepath ) ) {
+			wp_die( esc_html__( 'File not found.', 'sureforms' ) );
+		}
+
+		// Get file info.
+		$file_size = filesize( $filepath );
+		$file_info = pathinfo( $filepath );
+
+		// Determine content type and filename based on file extension.
+		$content_type = 'application/octet-stream';
+		$filename     = $file_info['basename'];
+		if ( isset( $file_info['extension'] ) ) {
+			if ( 'csv' === $file_info['extension'] ) {
+				$content_type = 'text/csv';
+			} elseif ( 'zip' === $file_info['extension'] ) {
+				$content_type = 'application/zip';
+				$filename     = 'SureForms Entries.zip';
+			}
+		}
+
+		// Set headers for download.
+		header( 'Content-Type: ' . $content_type );
+		header( 'Content-Disposition: attachment; filename="' . $filename . '"' );
+		header( 'Content-Length: ' . $file_size );
+		header( 'Cache-Control: private, max-age=0, must-revalidate' );
+		header( 'Pragma: public' );
+
+		// Clear output buffers.
+		if ( ob_get_level() ) {
+			ob_end_clean();
+		}
+
+		// Output the file.
+		readfile( $filepath ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_read_readfile -- Need direct file output for download.
+
+		// Clean up the temporary file.
+		unlink( $filepath );
+
+		exit;
 	}
 }

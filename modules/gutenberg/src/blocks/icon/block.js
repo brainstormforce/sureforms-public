@@ -32,6 +32,7 @@ registerBlockType( 'srfm/icon', {
 	],
 	supports: {
 		anchor: true,
+		html: false,
 	},
 	attributes,
 	category: srfm_spec_blocks_info.category,

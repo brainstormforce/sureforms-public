@@ -2,9 +2,9 @@
 	"apiVersion": 2,
 	"name": "srfm/multi-choice",
 	"title": "Multiple Choice",
-	"description": "Displays a SureForm Multi-Choice Field",
+	"description": "Displays a SureForms Multi-Choice Field",
 	"category": "sureforms",
-	"keywords": [ "multi-choice", "quiz", "multi", "sureforms" ],
+	"keywords": [ "multi-choice", "quiz", "multi", "sureforms", "radio" ],
 	"textdomain": "sureforms",
 	"supports": {
 		"reusable": false,
@@ -29,14 +29,15 @@
 		"singleSelection": {
 			"type": "boolean"
 		},
-    "minValue": {
-      "type": "number"
-    },
-    "maxValue": {
-      "type": "number"
-    },
-    "verticalLayout": {
-			"type": "boolean"
+		"minValue": {
+			"type": "number"
+		},
+		"maxValue": {
+			"type": "number"
+		},
+		"verticalLayout": {
+			"type": "boolean",
+			"default": false
 		},
 		"options": {
 			"type": "array",
@@ -44,7 +45,7 @@
 				{
 					"optionTitle": "Option 1",
 					"icon": "",
-          "image": ""
+					"image": ""
 				}
 			]
 		},
@@ -81,13 +82,21 @@
 			"type":"boolean",
 			"default":false
 		},
-    "slug":{
+		"slug":{
 			"type":"string",
 			"default":""
 		},
-    "optionType": {
-      "type": "string",
-      "default": "icon"
-    }
+		"optionType": {
+			"type": "string",
+			"default": "icon"
+		},
+		"showValues": {
+			"type": "boolean",
+			"default": false
+		},
+		"preselectedOptions": {
+			"type": "array",
+			"default": []
+		}
 	}
 }

@@ -20,18 +20,41 @@ import { compose } from '@wordpress/compose';
 import { FieldsPreview } from '../FieldsPreview.jsx';
 import { useErrMessage } from '@Blocks/util';
 import ConditionalLogic from '@Components/conditional-logic';
+import { attributeOptionsWithFilter } from '@Components/hooks';
 
 const formatNumber = ( number, formatType ) => {
 	if ( ! number ) {
 		return '';
 	}
 
-	// Convert all to empty strings except: Numbers, Dots, Commas.
-	number = number.replace( /[^0-9,.]+/g, '' );
+	// Convert all to empty strings except: Numbers, Dots, Commas, and a single leading Minus.
+	number = number.replace( /(?!^-)[^0-9,.-]+/g, '' );
+
+	if ( number.length === 1 && number.startsWith( '-' ) ) {
+		// It means, user has just started negative number. Eg: "-".
+		return number;
+	}
 
 	if ( number.endsWith( '.' ) || number.endsWith( ',' ) ) {
 		// It means, user has just started decimal point. Eg: "2." or "2,"
 		return number;
+	}
+
+	const decimalSeparator = formatType === 'eu-style' ? ',' : '.';
+
+	// Check if number has decimal part with trailing zeros
+	const preserveTrailingZeros = ( num ) => {
+		const parts = num.split( decimalSeparator );
+		if ( parts.length === 2 && parts[ 1 ].includes( '0' ) ) {
+			return true;
+		}
+		return false;
+	};
+
+	// Store original decimal part if it has trailing zeros
+	let originalDecimalPart = '';
+	if ( preserveTrailingZeros( number ) ) {
+		originalDecimalPart = number.split( decimalSeparator )[ 1 ];
 	}
 
 	let formattedNumber = '';
@@ -55,6 +78,14 @@ const formatNumber = ( number, formatType ) => {
 		).format( parseFloat( number.replace( /,/g, '' ) ) );
 	}
 
+	// Preserve trailing zeros if needed
+	if ( originalDecimalPart ) {
+		formattedNumber =
+			formattedNumber.split( decimalSeparator )[ 0 ] +
+			decimalSeparator +
+			originalDecimalPart;
+	}
+
 	if ( 'NaN' === formattedNumber ) {
 		// Bail, if NaN.
 		return '';
@@ -63,7 +94,8 @@ const formatNumber = ( number, formatType ) => {
 	return formattedNumber;
 };
 
-const SureformInput = ( { attributes, setAttributes, clientId } ) => {
+const SureformInput = ( props ) => {
+	const { attributes, setAttributes, clientId } = props;
 	const {
 		help,
 		required,
@@ -76,6 +108,9 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 		formatType,
 		formId,
 		className,
+		prefix,
+		suffix,
+		readOnly,
 	} = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
 	const [ error, setError ] = useState( false );
@@ -97,6 +132,238 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 		return <FieldsPreview fieldName={ fieldName } />;
 	}
 
+	const attributeOptions = [
+		{
+			id: 'required',
+			component: (
+				<ToggleControl
+					label={ __( 'Required', 'sureforms' ) }
+					checked={ required }
+					onChange={ ( newValue ) =>
+						setAttributes( { required: newValue } )
+					}
+				/>
+			),
+		},
+		{
+			id: 'error-message',
+			component: required && (
+				<SRFMTextControl
+					label={ __( 'Error Message', 'sureforms' ) }
+					data={ {
+						value: errorMsg,
+						label: 'errorMsg',
+					} }
+					value={ currentErrorMsg }
+					onChange={ ( value ) => {
+						setCurrentErrorMsg( value );
+						setAttributes( { errorMsg: value } );
+					} }
+				/>
+			),
+		},
+		{
+			id: 'help-text',
+			component: (
+				<SRFMTextControl
+					variant="textarea"
+					label={ __( 'Help Text', 'sureforms' ) }
+					value={ help }
+					data={ {
+						value: help,
+						label: 'help',
+					} }
+					onChange={ ( newValue ) =>
+						setAttributes( { help: newValue } )
+					}
+				/>
+			),
+		},
+		{
+			id: 'placeholder',
+			component: (
+				<SRFMTextControl
+					label={ __( 'Placeholder', 'sureforms' ) }
+					value={ attributes.placeholder }
+					data={ {
+						value: attributes.placeholder,
+						label: 'placeholder',
+					} }
+					onChange={ ( value ) =>
+						setAttributes( { placeholder: value } )
+					}
+				/>
+			),
+		},
+		{
+			id: 'default-value',
+			component: (
+				<SRFMTextControl
+					label={ __( 'Default Value', 'sureforms' ) }
+					displayUnit={ false }
+					data={ {
+						value: defaultValue,
+						label: 'defaultValue',
+					} }
+					value={ defaultValue }
+					setAttributes={ ( value ) => {
+						setAttributes( {
+							defaultValue: formatNumber(
+								value.defaultValue,
+								formatType
+							),
+						} );
+					} }
+					showControlHeader={ false }
+				/>
+			),
+		},
+		{
+			// separator
+			id: 'separator-1',
+			component: <div className="srfm-settings-separator" />,
+		},
+		{
+			id: 'read-only',
+			component: defaultValue ? (
+				<ToggleControl
+					label={ __( 'Read Only', 'sureforms' ) }
+					checked={ readOnly }
+					onChange={ ( checked ) =>
+						setAttributes( { readOnly: checked } )
+					}
+				/>
+			) : null,
+		},
+		{
+			id: 'prefix',
+			component: (
+				<SRFMTextControl
+					label={ __( 'Prefix Label', 'sureforms' ) }
+					value={ prefix }
+					data={ {
+						value: prefix,
+						label: 'prefix',
+					} }
+					onChange={ ( newValue ) =>
+						setAttributes( { prefix: newValue } )
+					}
+				/>
+			),
+		},
+		{
+			id: 'suffix',
+			component: (
+				<SRFMTextControl
+					label={ __( 'Suffix Label', 'sureforms' ) }
+					value={ suffix }
+					data={ {
+						value: suffix,
+						label: 'suffix',
+					} }
+					onChange={ ( newValue ) =>
+						setAttributes( { suffix: newValue } )
+					}
+				/>
+			),
+		},
+		{
+			id: 'number-format',
+			component: (
+				<SRFMSelectControl
+					label={ __( 'Number Format', 'sureforms' ) }
+					data={ {
+						value: formatType,
+						label: 'formatType',
+					} }
+					setAttributes={ ( value ) => {
+						setAttributes( value );
+						setAttributes( {
+							defaultValue: '',
+						} );
+					} }
+					options={ [
+						{
+							label: __( 'US Style (Eg: 9,999.99)', 'sureforms' ),
+							value: 'us-style',
+						},
+						{
+							label: __( 'EU Style (Eg: 9.999,99)', 'sureforms' ),
+							value: 'eu-style',
+						},
+					] }
+				/>
+			),
+		},
+		{
+			id: 'min-value',
+			component: (
+				<SRFMNumberControl
+					label={ __( 'Minimum Value', 'sureforms' ) }
+					displayUnit={ false }
+					data={ {
+						value: minValue,
+						label: 'minValue',
+					} }
+					value={ minValue }
+					onChange={ ( value ) => {
+						if ( value >= maxValue ) {
+							setError( true );
+							setAttributes( { minValue: 0 } );
+						} else {
+							setError( false );
+							setAttributes( { minValue: value } );
+						}
+					} }
+					showControlHeader={ false }
+				/>
+			),
+		},
+		{
+			id: 'max-value',
+			component: (
+				<SRFMNumberControl
+					label={ __( 'Maximum Value', 'sureforms' ) }
+					displayUnit={ false }
+					data={ {
+						value: maxValue,
+						label: 'maxValue',
+					} }
+					value={ maxValue }
+					onChange={ ( value ) => {
+						if ( value <= minValue ) {
+							setError( true );
+							setAttributes( {
+								maxValue: Number( minValue ) + 1,
+							} );
+						} else {
+							setError( false );
+							setAttributes( { maxValue: value } );
+						}
+					} }
+					showControlHeader={ false }
+				/>
+			),
+		},
+		{
+			id: 'help-text-note',
+			component: (
+				<>
+					{ error && (
+						<p className="srfm-min-max-error-styles">
+							{ __(
+								'Please check the Minimum and Maximum value',
+								'sureforms'
+							) }
+						</p>
+					) }
+				</>
+			),
+		},
+	];
+
+	const filterOptions = attributeOptionsWithFilter( attributeOptions, props );
+
 	return (
 		<div className={ className }>
 			<InspectorControls>
@@ -109,139 +376,9 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 							title={ __( 'Attributes', 'sureforms' ) }
 							initialOpen={ true }
 						>
-							<SRFMTextControl
-								label={ __( 'Default Value', 'sureforms' ) }
-								displayUnit={ false }
-								data={ {
-									value: defaultValue,
-									label: 'defaultValue',
-								} }
-								value={ defaultValue }
-								setAttributes={ ( value ) => {
-									setAttributes( {
-										defaultValue: formatNumber(
-											value.defaultValue,
-											formatType
-										),
-									} );
-								} }
-								showControlHeader={ false }
-							/>
-							<ToggleControl
-								label={ __( 'Required', 'sureforms' ) }
-								checked={ required }
-								onChange={ ( newValue ) =>
-									setAttributes( { required: newValue } )
-								}
-							/>
-							{ required && (
-								<SRFMTextControl
-									label={ __( 'Error Message', 'sureforms' ) }
-									data={ {
-										value: errorMsg,
-										label: 'errorMsg',
-									} }
-									value={ currentErrorMsg }
-									onChange={ ( value ) => {
-										setCurrentErrorMsg( value );
-										setAttributes( { errorMsg: value } );
-									} }
-								/>
+							{ filterOptions.map(
+								( option ) => option.component
 							) }
-							<SRFMSelectControl
-								label={ __( 'Number Format', 'sureforms' ) }
-								data={ {
-									value: formatType,
-									label: 'formatType',
-								} }
-								setAttributes={ ( value ) => {
-									setAttributes( value );
-									setAttributes( {
-										defaultValue: '',
-									} );
-								} }
-								options={ [
-									{
-										label: __(
-											'US Style (Eg: 9,999.99)',
-											'sureforms'
-										),
-										value: 'us-style',
-									},
-									{
-										label: __(
-											'EU Style (Eg: 9.999,99)',
-											'sureforms'
-										),
-										value: 'eu-style',
-									},
-								] }
-							/>
-							<SRFMNumberControl
-								label={ __( 'Minimum Value', 'sureforms' ) }
-								displayUnit={ false }
-								data={ {
-									value: minValue,
-									label: 'minValue',
-								} }
-								value={ minValue }
-								onChange={ ( value ) => {
-									if ( value >= maxValue ) {
-										setError( true );
-										setAttributes( { minValue: 0 } );
-									} else {
-										setError( false );
-										setAttributes( { minValue: value } );
-									}
-								} }
-								showControlHeader={ false }
-							/>
-							<SRFMNumberControl
-								label={ __( 'Maximum Value', 'sureforms' ) }
-								displayUnit={ false }
-								data={ {
-									value: maxValue,
-									label: 'maxValue',
-								} }
-								value={ maxValue }
-								onChange={ ( value ) => {
-									if ( value <= minValue ) {
-										setError( true );
-										setAttributes( {
-											maxValue: Number( minValue ) + 1,
-										} );
-									} else {
-										setError( false );
-										setAttributes( { maxValue: value } );
-									}
-								} }
-								showControlHeader={ false }
-							/>
-							{ error && (
-								<p className="srfm-min-max-error-styles">
-									{ __(
-										'Please check the Minimum and Maximum value',
-										'sureforms'
-									) }
-								</p>
-							) }
-							<p className="components-base-control__help">
-								{ __(
-									'Note: Maximum value should always be greater than minimum value',
-									'sureforms'
-								) }
-							</p>
-							<SRFMTextControl
-								label={ __( 'Help Text', 'sureforms' ) }
-								value={ help }
-								data={ {
-									value: help,
-									label: 'help',
-								} }
-								onChange={ ( newValue ) =>
-									setAttributes( { help: newValue } )
-								}
-							/>
 						</SRFMAdvancedPanelBody>
 					</InspectorTab>
 					<InspectorTab { ...SRFMTabs.style }></InspectorTab>

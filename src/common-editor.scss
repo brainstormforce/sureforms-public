@@ -135,7 +135,7 @@
 	}
 }
 
-.block-editor-block-list__layout .block-editor-block-list__block.is-selected {
+.block-editor-block-list__layout .block-editor-block-list__block.is-selected:not( .wp-block-spectra-button ):not( .wp-block-spectra-buttons ) {
 	// Added CSS for better clarity to the users to indicates which block is selected & being edited.
 	box-shadow: 0 0 0 1.5px $srfm-color-primary;
 	border-radius: 2px;
@@ -863,6 +863,131 @@ button.components-button.srfm-review-select-btn.is-secondary {
 .srfm-title {
 	display: flex;
 	flex: 1;
+}
+
+// Text Styles Popup Stylings.
+.components-base-control {
+	.srfm-text-style-options {
+		margin-bottom: 0;
+		.srfm-control-popup {
+			display: flex;
+			flex-direction: column;
+			gap: 15px;
+		}
+	}
+}
+
+.post-type-sureforms_form .block-editor-block-inspector .block-editor-block-card__description {
+	display: none;
+}
+
+.post-type-sureforms_form .interface-interface-skeleton__body {
+	.interface-complementary-area__fill {
+		width: 350px !important;
+		> .editor-sidebar {
+			width: 350px !important;
+		}
+	}
+
+	.interface-interface-skeleton__actions {
+		width: 350px !important;
+		.editor-post-publish-panel {
+			width: 350px !important;
+		}
+	}
+}
+
+// Add New Option Styles
+.sureform-add-option-input-wrapper {
+	display: flex;
+	gap: 8px;
+	align-items: flex-end;
+
+	.components-base-control {
+		flex: 1;
+		margin-bottom: 0;
+	}
+
+	.sureform-add-option-button {
+		flex-shrink: 0;
+		height: 30px;
+		line-height: 1;
+	}
+}
+
+.sureforms-add-bulk-option-button {
+	text-decoration: none !important;
+	margin-left: 0 !important;
+	margin-top: 8px !important;
+	display: inline-block;
+
+	&:hover,
+	&:focus,
+	&:active {
+		text-decoration: none !important;
+	}
+}
+
+// Multi-button with label wrapper
+.srfm-multi-button-with-label {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 8px;
+}
+
+.srfm-multi-button-label-text {
+	font-size: 12px;
+	font-weight: 600;
+	line-height: 16px;
+	letter-spacing: 0;
+	color: #1e1e1e;
+	text-align: center;
+	margin-top: 4px;
+}
+
+// Override button styles for layout selection
+.srfm-multi-buttons-control {
+	.srfm-multi-button-button-group {
+		&:has( svg[viewBox="0 0 153 86"] ) {
+			gap: 12px !important;
+			display: flex !important;
+		}
+	}
+
+	.srfm-multi-button {
+		&:has( svg[viewBox="0 0 153 86"] ) {
+			padding: 0 !important;
+			min-height: auto !important;
+			max-height: none !important;
+			background-color: transparent !important;
+			border: none !important;
+			display: block !important;
+			line-height: 0 !important;
+			width: 153px !important;
+			height: auto !important;
+			flex-shrink: 0 !important;
+
+			svg {
+				width: 100% !important;
+				height: auto !important;
+				fill: none !important;
+				display: block !important;
+			}
+
+			&:hover,
+			&:focus,
+			&:active,
+			&.is-pressed {
+				background-color: transparent !important;
+				border: none !important;
+				box-shadow: none !important;
+				outline: none !important;
+				width: 153px !important;
+				padding: 0 !important;
+			}
+		}
+	}
 }
 
 @import "styles/gutenberg-override";

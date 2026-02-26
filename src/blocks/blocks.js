@@ -11,6 +11,7 @@ import * as select from '@Blocks/dropdown';
 import * as address from '@Blocks/address';
 import * as url from '@Blocks/url';
 import * as inlineButton from '@Blocks/inline-button';
+import * as payment from '@Blocks/payment';
 import { registerBlocks } from '@Blocks/register-block';
 import { createHigherOrderComponent } from '@wordpress/compose';
 import { addFilter, applyFilters } from '@wordpress/hooks';
@@ -19,6 +20,14 @@ import { BlockControls } from '@wordpress/block-editor';
 import { ToolbarGroup, ToolbarButton } from '@wordpress/components';
 import { getBlockTypes } from '@Blocks/util';
 import { __, sprintf } from '@wordpress/i18n';
+import ConditionalLogic from '@Components/conditional-logic';
+import {
+	EnhancedMultiChoiceOptions,
+	EnhancedDropdownOptions,
+} from '@Admin/payment/enhanced-options';
+
+// Register store.
+import '../store/store.js';
 
 const registerBlock = [
 	text,
@@ -34,6 +43,7 @@ const registerBlock = [
 	select,
 	address,
 	inlineButton,
+	payment,
 ];
 
 if ( 'sureforms_form' === srfm_block_data?.current_screen?.id ) {
@@ -110,38 +120,46 @@ const withToolbarButton = createHigherOrderComponent( ( BlockEdit ) => {
 				<>
 					<BlockControls>
 						<ToolbarGroup>
-							{ [ 100, 75, 50, 33.33, 25 ].map( ( width ) => {
-								const labelText =
-									33.33 === width ? '33%' : `${ width }%`;
-								const labelWithText = sprintf(
-									// translators: %s: Width of the block
-									__( '%s Width', 'sureforms' ),
-									labelText
-								);
+							{ [ 100, 75, 66.66, 50, 33.33, 25 ].map(
+								( width ) => {
+									let labelText;
+									if ( width === 33.33 ) {
+										labelText = '33%';
+									} else if ( width === 66.66 ) {
+										labelText = '67%';
+									} else {
+										labelText = `${ width }%`;
+									}
+									const labelWithText = sprintf(
+										// translators: %s: Width of the block
+										__( '%s Width', 'sureforms' ),
+										labelText
+									);
 
-								const selectedClass =
-									attributes?.fieldWidth === width
-										? 'is-selected srfm-toolbar-width-setting-button'
-										: 'srfm-toolbar-width-setting-button';
+									const selectedClass =
+										attributes?.fieldWidth === width
+											? 'is-selected srfm-toolbar-width-setting-button'
+											: 'srfm-toolbar-width-setting-button';
 
-								return (
-									<ToolbarButton
-										key={ width }
-										className={ selectedClass }
-										icon={
-											<span className="srfm-toolbar-width-setting-icon">
-												{ labelText }
-											</span>
-										}
-										label={ labelWithText }
-										onClick={ () =>
-											setAttributes( {
-												fieldWidth: Number( width ),
-											} )
-										}
-									/>
-								);
-							} ) }
+									return (
+										<ToolbarButton
+											key={ width }
+											className={ selectedClass }
+											icon={
+												<span className="srfm-toolbar-width-setting-icon">
+													{ labelText }
+												</span>
+											}
+											label={ labelWithText }
+											onClick={ () =>
+												setAttributes( {
+													fieldWidth: Number( width ),
+												} )
+											}
+										/>
+									);
+								}
+							) }
 						</ToolbarGroup>
 					</BlockControls>
 					<BlockEdit { ...props } />
@@ -181,4 +199,46 @@ addFilter(
 	'srfm.enable.responsiveToggle',
 	'srfm/disable-responsive-toggle',
 	() => false
+);
+
+/**
+ * Add conditional logic to the advanced heading settings.
+ */
+addFilter(
+	'srfm.advanced-heading.settings.advance',
+	'srfm/advanced-heading-settings-advance',
+	( items, props ) => {
+		const { setAttributes, attributes } = props;
+		return [
+			...items,
+			{
+				id: 'conditional-logic',
+				content: (
+					<ConditionalLogic { ...{ setAttributes, attributes } } />
+				),
+			},
+		];
+	}
+);
+
+/**
+ * Temporary filter hooks for enhancing MultiChoice and Dropdown block options to support "Show Value" functionality in free version.
+ *
+ * Note:
+ * - These filters were originally present only in the PRO version (SureForms PRO) to handle calculations.
+ * - Now, "Show Value" is needed in the free version as part of the payment feature, so these filters have been added to the free plugin.
+ * - Ideally, "Show Value" should be a part of the block implementation itself, not added via filters.
+ * - In the future, these filters should be removed from PRO, as this logic will reside directly in the blocks provided in the free plugin.
+ * - This is a temporary bridge for backwards compatibility and migration from PRO to free feature parity.
+ */
+addFilter(
+	'srfm.blocks.multichoice.options.enhance',
+	'srfm/multi-choice/options',
+	EnhancedMultiChoiceOptions
+);
+
+addFilter(
+	'srfm.blocks.dropdown.options.enhance',
+	'srfm/dropdown/options',
+	EnhancedDropdownOptions
 );

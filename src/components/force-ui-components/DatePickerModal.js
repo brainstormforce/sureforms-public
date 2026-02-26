@@ -1,0 +1,108 @@
+import { __ } from '@wordpress/i18n';
+import { useEffect, useRef, useState } from '@wordpress/element';
+import { Input, DatePicker } from '@bsf/force-ui';
+
+/**
+ * Custom DatePicker Modal Component
+ * That opens on the click of an input field
+ * @param {Object}   props              1Code has alerts. Press enter to view.
+ * @param {string}   props.date         The date in a specific format (e.g., '2025.10.01').
+ * @param {Function} props.onDateChange Callback function to handle date changes
+ * @param {string}   props.label        The label for the date input field
+ * @param {string}   props.topValue     The top value for the date picker modal
+ * @return {JSX.Element} Rendered DatePicker Modal
+ */
+const DatePickerModal = ( {
+	label,
+	date,
+	onDateChange,
+	topValue = '4.5rem',
+} ) => {
+	const [ isOpen, setIsOpen ] = useState( false );
+	const ref = useRef( null );
+
+	useEffect( () => {
+		const handleClickOutside = ( event ) => {
+			if (
+				isOpen &&
+				ref.current &&
+				! ref.current.contains( event.target )
+			) {
+				setIsOpen( false );
+			}
+		};
+		document.addEventListener( 'mousedown', handleClickOutside );
+		return () => {
+			document.removeEventListener( 'mousedown', handleClickOutside );
+		};
+	}, [ isOpen ] );
+
+	const getFormattedDate = ( dateStr ) => {
+		if ( ! dateStr ) {
+			return '';
+		}
+		const dateObj = new Date( dateStr );
+		return dateObj.toLocaleDateString( undefined, {
+			year: 'numeric',
+			month: '2-digit',
+			day: '2-digit',
+		} );
+	};
+
+	const selectedDate = ( value ) => {
+		if ( value ) {
+			const year = value.getFullYear();
+			const month = String( value.getMonth() + 1 ).padStart( 2, '0' );
+			const day = String( value.getDate() ).padStart( 2, '0' );
+			const formattedDate = `${ year }-${ month }-${ day }`;
+			onDateChange( formattedDate );
+		}
+	};
+
+	return (
+		<>
+			<div className="relative w-full z-50" ref={ ref }>
+				{ isOpen && (
+					<div
+						className="absolute left-0 bg-white shadow-lg rounded z-999999 overflow-hidden"
+						style={ {
+							top: topValue,
+						} }
+					>
+						<DatePicker
+							selectionType="single"
+							variant="normal"
+							selected={ date ? new Date( date ) : null }
+							cancelButtonText={
+								// if the input is empty, show "Cancel" button
+								date
+									? __( 'Clear', 'sureforms' )
+									: __( 'Cancel', 'sureforms' )
+							}
+							onDateSelect={ selectedDate }
+							onApply={ ( value ) => {
+								selectedDate( value );
+								setIsOpen( false );
+							} }
+							onCancel={ () => {
+								onDateChange( '' );
+								setIsOpen( false );
+							} }
+						/>
+					</div>
+				) }
+			</div>
+			<Input
+				size="md"
+				className="w-full cursor-pointer"
+				label={ label || __( 'Date', 'sureforms' ) }
+				value={ getFormattedDate( date ) }
+				readOnly
+				onClick={ () => setIsOpen( true ) }
+				placeholder="dd/mm/yyyy"
+			/>
+		</>
+	);
+};
+
+export default DatePickerModal;

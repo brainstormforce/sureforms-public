@@ -10,15 +10,20 @@ import { __ } from '@wordpress/i18n';
 import { useState, useEffect, render } from '@wordpress/element';
 
 import { useSelect, useDispatch } from '@wordpress/data';
-import { store as editorStore, PluginDocumentSettingPanel, PluginPostPublishPanel } from '@wordpress/editor';
+import {
+	store as editorStore,
+	PluginDocumentSettingPanel,
+	PluginPostPublishPanel,
+} from '@wordpress/editor';
 import { store as blockEditorStore } from '@wordpress/block-editor';
+import { store as preferencesStore } from '@wordpress/preferences';
 
 import GeneralSettings from './tabs/GeneralSettings.js';
 import StyleSettings from './tabs/StyleSettings.js';
-import AdvancedSettings from './tabs/AdvancedSettings.js';
-
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
-import InspectorTab, { SRFMTabs } from '@Components/inspector-tabs/InspectorTab.js';
+import InspectorTab, {
+	SRFMTabs,
+} from '@Components/inspector-tabs/InspectorTab.js';
 import { addHeaderCenterContainer } from './components/SRFMEditorHeader.js';
 import {
 	attachSidebar,
@@ -31,25 +36,26 @@ import useSubmitButton from './components/useSubmitButton.js';
 import SureFormsDescription from './components/SureFormsDescription.js';
 import { defaultKeys, forcePanel } from './utils.js';
 import InstantForm from './InstantForm.js';
+import useContainerDynamicClass from './components/useContainerDynamicClass.js';
 
-const SureformsFormSpecificSettings = ( props ) => {
+const SureformsFormSpecificSettings = () => {
 	const [ hasCopied, setHasCopied ] = useState( false );
 	const [ enableQuickActionSidebar, setEnableQuickActionSidebar ] =
 		useState( 'enabled' );
 
-	const {
-		postId,
-		sureformsKeys,
-		blockCount,
-		blocks,
-	} = useSelect( ( select ) => {
-		return {
-			postId: select( 'core/editor' ).getCurrentPostId(),
-			sureformsKeys: select( editorStore ).getEditedPostAttribute( 'meta' ),
-			blockCount: select( blockEditorStore ).getBlockCount(),
-			blocks: select( 'core/block-editor' ).getBlocks(),
-		};
-	} );
+	const { postId, sureformsKeys, blockCount, blocks, editorMode } = useSelect(
+		( select ) => {
+			const { get } = select( preferencesStore );
+			return {
+				editorMode: get( 'core', 'editorMode' ) ?? 'visual',
+				postId: select( 'core/editor' ).getCurrentPostId(),
+				sureformsKeys:
+					select( editorStore ).getEditedPostAttribute( 'meta' ),
+				blockCount: select( blockEditorStore ).getBlockCount(),
+				blocks: select( 'core/block-editor' ).getBlocks(),
+			};
+		}
+	);
 
 	const { editPost } = useDispatch( editorStore );
 	const [ rootContainer, setRootContainer ] = useState( null );
@@ -57,7 +63,9 @@ const SureformsFormSpecificSettings = ( props ) => {
 
 	useEffect( () => {
 		setRootContainer( document.querySelector( '.is-root-container' ) );
-		setRootContainerDiv( document.querySelector( '.edit-post-visual-editor__content-area' ) );
+		setRootContainerDiv(
+			document.querySelector( '.edit-post-visual-editor__content-area' )
+		);
 	}, [] );
 
 	const isPageBreak = blocks.some(
@@ -87,34 +95,26 @@ const SureformsFormSpecificSettings = ( props ) => {
 		}
 	};
 
-	useEffect( addFormStylingClass, [ rootContainer, deviceType ] );
+	useEffect( addFormStylingClass, [
+		rootContainer,
+		rootContainerDiv,
+		deviceType,
+	] );
 
-	// Find the root container of the form
-	const formRootContainer = document.querySelector(
-		'.editor-styles-wrapper'
-	);
-
-	const addRootClass = () => {
-		if ( formRootContainer && sureformsKeys._srfm_additional_classes ) {
-			// Split the classes string by spaces
-			const classesArray =
-				sureformsKeys._srfm_additional_classes.split( ' ' );
-
-			// Add classes individually
-			classesArray.forEach( ( classname ) => {
-				formRootContainer?.classList.add( classname );
-			} );
-		}
-	};
-
-	useEffect( addRootClass, [ formRootContainer ] );
+	useContainerDynamicClass( sureformsKeys );
 
 	// Update the custom CSS when the formCustomCssData prop changes. This will apply the custom CSS to the editor.
-	const formCustomCssData = sureformsKeys._srfm_form_custom_css || [];
+	const formCustomCssData = sureformsKeys?._srfm_form_custom_css || '';
+
 	useEffect( () => {
+		if ( ! formCustomCssData ) {
+			return;
+		}
+
 		const isExistStyle = document.getElementById(
 			'srfm-blocks-editor-custom-css'
 		);
+
 		if ( ! isExistStyle ) {
 			const node = document.createElement( 'style' );
 			node.setAttribute( 'id', 'srfm-blocks-editor-custom-css' );
@@ -128,7 +128,10 @@ const SureformsFormSpecificSettings = ( props ) => {
 	}, [ formCustomCssData ] );
 
 	useEffect( () => {
-		if ( typeof sureformsKeys?._srfm_page_break_settings?.is_page_break === 'boolean' ) {
+		if (
+			typeof sureformsKeys?._srfm_page_break_settings?.is_page_break ===
+			'boolean'
+		) {
 			const updatedPageBreakSettings = {
 				...sureformsKeys._srfm_page_break_settings,
 				is_page_break: isPageBreak,
@@ -136,16 +139,15 @@ const SureformsFormSpecificSettings = ( props ) => {
 			updateMeta( '_srfm_page_break_settings', updatedPageBreakSettings );
 		}
 
-		if ( typeof sureformsKeys._srfm_is_inline_button === 'boolean' ) {
+		if ( typeof sureformsKeys?._srfm_is_inline_button === 'boolean' ) {
 			updateMeta( '_srfm_is_inline_button', isInlineButtonBlockPresent );
 		}
 	}, [ blockCount ] );
 
 	useSubmitButton( {
-		sureformsKeys,
-		blockCount,
 		isInlineButtonBlockPresent,
 		updateMeta,
+		editorMode,
 	} );
 
 	useEffect( () => {
@@ -196,7 +198,7 @@ const SureformsFormSpecificSettings = ( props ) => {
 				'.block-editor-inserter__block-list'
 			);
 
-			if ( targetElement && ! isPro ) {
+			if ( targetElement ) {
 				// Check if the custom component is already present
 				const customComponent = targetElement.querySelector(
 					'.upgrade-pro-container'
@@ -247,7 +249,7 @@ const SureformsFormSpecificSettings = ( props ) => {
 				title={ __( 'Form Options', 'sureforms' ) }
 			>
 				<InspectorTabs
-					tabs={ [ 'general', 'style', 'advance' ] }
+					tabs={ [ 'general', 'style' ] }
 					defaultTab={ 'general' }
 				>
 					<InspectorTab { ...SRFMTabs.general }>
@@ -270,9 +272,6 @@ const SureformsFormSpecificSettings = ( props ) => {
 							}
 							isPageBreak={ isPageBreak }
 						/>
-					</InspectorTab>
-					<InspectorTab { ...SRFMTabs.advance } parentProps={ props }>
-						<AdvancedSettings defaultKeys={ defaultKeys } />
 					</InspectorTab>
 				</InspectorTabs>
 				<PluginPostPublishPanel>

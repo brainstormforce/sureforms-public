@@ -47,7 +47,7 @@ class Page_Builders {
 		wp_enqueue_script( SRFM_SLUG . '-phone', $js_uri . 'phone' . $file_prefix . '.js', [], SRFM_VER, true );
 		wp_enqueue_script( SRFM_SLUG . '-phone-intl-input-deps', $js_vendor_uri . 'intl/intTelInputWithUtils.min.js', [], SRFM_VER, true );
 
-		wp_enqueue_script( SRFM_SLUG . '-dropdown', $js_uri . 'dropdown' . $file_prefix . '.js', [], SRFM_VER, true );
+		wp_enqueue_script( SRFM_SLUG . '-dropdown', $js_uri . 'dropdown' . $file_prefix . '.js', [ 'wp-a11y' ], SRFM_VER, true );
 		wp_enqueue_script( SRFM_SLUG . '-tom-select', $js_vendor_uri . 'tom-select.min.js', [], SRFM_VER, true );
 
 		if ( defined( 'SRFM_PRO_VER' ) && defined( 'SRFM_PRO_URL' ) && defined( 'SRFM_PRO_SLUG' ) ) {
@@ -57,6 +57,9 @@ class Page_Builders {
 		}
 
 		Frontend_Assets::enqueue_scripts_and_styles();
+
+		// Action to enqueue common field assets.
+		do_action( 'srfm_enqueue_common_field_assets' );
 	}
 
 }

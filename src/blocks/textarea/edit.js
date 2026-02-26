@@ -20,8 +20,10 @@ import { compose } from '@wordpress/compose';
 import { FieldsPreview } from '../FieldsPreview.jsx';
 import { useErrMessage } from '@Blocks/util';
 import ConditionalLogic from '@Components/conditional-logic';
+import { attributeOptionsWithFilter } from '@Components/hooks';
 
-const Edit = ( { clientId, attributes, setAttributes } ) => {
+const Edit = ( props ) => {
+	const { clientId, attributes, setAttributes } = props;
 	const {
 		help,
 		required,
@@ -33,6 +35,8 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 		formId,
 		preview,
 		className,
+		isRichText,
+		readOnly,
 	} = attributes;
 
 	const currentFormId = useGetCurrentFormId( clientId );
@@ -54,6 +58,156 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 		return <FieldsPreview fieldName={ fieldName } />;
 	}
 
+	const attributeOptions = [
+		{
+			id: 'required',
+			component: (
+				<ToggleControl
+					label={ __( 'Required', 'sureforms' ) }
+					checked={ required }
+					onChange={ ( checked ) =>
+						setAttributes( { required: checked } )
+					}
+				/>
+			),
+		},
+		{
+			id: 'error-message',
+			component: required && (
+				<SRFMTextControl
+					label={ __( 'Error Message', 'sureforms' ) }
+					data={ {
+						value: errorMsg,
+						label: 'errorMsg',
+					} }
+					value={ currentErrorMsg }
+					onChange={ ( value ) => {
+						setCurrentErrorMsg( value );
+						setAttributes( { errorMsg: value } );
+					} }
+				/>
+			),
+		},
+		{
+			id: 'help-text',
+			component: (
+				<SRFMTextControl
+					variant="textarea"
+					label={ __( 'Help Text', 'sureforms' ) }
+					value={ help }
+					data={ {
+						value: help,
+						label: 'help',
+					} }
+					onChange={ ( value ) => setAttributes( { help: value } ) }
+				/>
+			),
+		},
+		{
+			id: 'placeholder',
+			component: (
+				<SRFMTextControl
+					label={ __( 'Placeholder', 'sureforms' ) }
+					value={ attributes.placeholder }
+					data={ {
+						value: attributes.placeholder,
+						label: 'placeholder',
+					} }
+					onChange={ ( value ) =>
+						setAttributes( { placeholder: value } )
+					}
+				/>
+			),
+		},
+		{
+			id: 'default-value',
+			component: (
+				<SRFMTextControl
+					variant="textarea"
+					label={ __( 'Default Value', 'sureforms' ) }
+					value={ defaultValue }
+					withSmartTagDropdown={ true }
+					data={ {
+						value: defaultValue,
+						label: 'defaultValue',
+					} }
+					onChange={ ( value ) =>
+						setAttributes( { defaultValue: value } )
+					}
+				/>
+			),
+		},
+		{
+			id: 'separator-1',
+			component: <div className="srfm-settings-separator" />,
+		},
+		{
+			id: 'read-only',
+			component: defaultValue ? (
+				<ToggleControl
+					label={ __( 'Read Only', 'sureforms' ) }
+					checked={ readOnly }
+					onChange={ ( checked ) =>
+						setAttributes( { readOnly: checked } )
+					}
+				/>
+			) : null,
+		},
+		{
+			id: 'rich-text',
+			component: (
+				<ToggleControl
+					label={ __( 'Rich Text Editor', 'sureforms' ) }
+					checked={ isRichText }
+					onChange={ ( checked ) =>
+						setAttributes( { isRichText: checked } )
+					}
+				/>
+			),
+		},
+		{
+			id: 'max-length',
+			component: ! isRichText && (
+				<>
+					<SRFMNumberControl
+						label={ __( 'Maximum Characters', 'sureforms' ) }
+						value={ maxLength }
+						displayUnit={ false }
+						data={ {
+							value: maxLength,
+							label: 'maxLength',
+						} }
+						onChange={ ( value ) => {
+							setAttributes( {
+								maxLength: Number( value ),
+							} );
+						} }
+						min={ 0 }
+						showControlHeader={ false }
+					/>
+					<Range
+						label={ __( 'Textarea Height', 'sureforms' ) }
+						value={ rows }
+						displayUnit={ false }
+						min={ 1 }
+						max={ 100 }
+						data={ {
+							value: rows,
+							label: 'rows',
+						} }
+						onChange={ ( value ) => {
+							setAttributes( {
+								rows: Number( value ),
+							} );
+						} }
+					/>
+				</>
+			),
+		},
+	];
+
+	const filterOptions = attributeOptionsWithFilter( attributeOptions, props );
+
 	return (
 		<div className={ className }>
 			<InspectorControls>
@@ -66,84 +220,9 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 							title={ __( 'Attributes', 'sureforms' ) }
 							initialOpen={ true }
 						>
-							<SRFMTextControl
-								variant="textarea"
-								label={ __( 'Default Value', 'sureforms' ) }
-								value={ defaultValue }
-								withSmartTagDropdown={ true }
-								data={ {
-									value: defaultValue,
-									label: 'defaultValue',
-								} }
-								onChange={ ( value ) =>
-									setAttributes( { defaultValue: value } )
-								}
-							/>
-							<ToggleControl
-								label={ __( 'Required', 'sureforms' ) }
-								checked={ required }
-								onChange={ ( checked ) =>
-									setAttributes( { required: checked } )
-								}
-							/>
-							{ required && (
-								<SRFMTextControl
-									label={ __( 'Error Message', 'sureforms' ) }
-									data={ {
-										value: errorMsg,
-										label: 'errorMsg',
-									} }
-									value={ currentErrorMsg }
-									onChange={ ( value ) => {
-										setCurrentErrorMsg( value );
-										setAttributes( { errorMsg: value } );
-									} }
-								/>
+							{ filterOptions.map(
+								( option ) => option.component
 							) }
-							<SRFMNumberControl
-								label={ __(
-									'Text Maximum Length',
-									'sureforms'
-								) }
-								value={ maxLength }
-								displayUnit={ false }
-								data={ {
-									value: maxLength,
-									label: 'maxLength',
-								} }
-								onChange={ ( value ) => {
-									setAttributes( {
-										maxLength: Number( value ),
-									} );
-								} }
-								min={ 0 }
-								showControlHeader={ false }
-							/>
-							<Range
-								label={ __( 'Rows', 'sureforms' ) }
-								value={ rows }
-								displayUnit={ false }
-								min={ 1 }
-								max={ 100 }
-								data={ {
-									value: rows,
-									label: 'rows',
-								} }
-								onChange={ ( value ) => {
-									setAttributes( { rows: Number( value ) } );
-								} }
-							/>
-							<SRFMTextControl
-								label={ __( 'Help Text', 'sureforms' ) }
-								value={ help }
-								data={ {
-									value: help,
-									label: 'help',
-								} }
-								onChange={ ( value ) =>
-									setAttributes( { help: value } )
-								}
-							/>
 						</SRFMAdvancedPanelBody>
 					</InspectorTab>
 					<InspectorTab { ...SRFMTabs.style }></InspectorTab>

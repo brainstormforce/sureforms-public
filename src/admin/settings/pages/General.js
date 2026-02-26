@@ -1,15 +1,7 @@
 import { __ } from '@wordpress/i18n';
-import {
-	ToggleControl,
-	SelectControl,
-	TextControl,
-	Spinner,
-} from '@wordpress/components';
-
 import { useState } from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
-import toast from 'react-hot-toast';
-
+import { Button, Input, Loader, Select, Switch, toast } from '@bsf/force-ui';
 import ContentSection from '../components/ContentSection';
 
 const GeneralPage = ( {
@@ -31,11 +23,18 @@ const GeneralPage = ( {
 			{ label: __( 'Sunday', 'sureforms' ), value: 'Sunday' },
 		];
 
+		const getReportsLabel = ( value ) => {
+			const selectedDay = days.find( ( day ) => day.value === value );
+			return selectedDay ? selectedDay.label : '';
+		};
+
 		return (
 			<>
-				<ToggleControl
-					label={ __( 'Enable Email Summaries ', 'sureforms' ) }
-					checked={ emailTabOptions.srfm_email_summary }
+				<Switch
+					label={ {
+						heading: __( 'Enable Email Summaries ', 'sureforms' ),
+					} }
+					value={ emailTabOptions.srfm_email_summary }
 					onChange={ ( value ) =>
 						updateGlobalSettings(
 							'srfm_email_summary',
@@ -46,22 +45,29 @@ const GeneralPage = ( {
 				/>
 				{ emailTabOptions.srfm_email_summary && (
 					<>
-						<div className="srfm-email-input-wrapper">
-							<TextControl
-								label={ __( 'Send Email To', 'sureforms' ) }
-								type="text"
-								className="srfm-components-input-control"
-								value={ emailTabOptions.srfm_email_sent_to }
-								onChange={ ( value ) =>
-									updateGlobalSettings(
-										'srfm_email_sent_to',
-										value,
-										'email-settings'
-									)
-								}
-							/>
-							<button
-								className="srfm-button-secondary srfm-button-xs srfm-email-test-btn"
+						<div className="flex items-end gap-2">
+							<div className="flex-1">
+								<Input
+									size="md"
+									label={ __( 'Send Email To', 'sureforms' ) }
+									type="email"
+									value={ emailTabOptions.srfm_email_sent_to }
+									onChange={ ( value ) =>
+										updateGlobalSettings(
+											'srfm_email_sent_to',
+											value,
+											'email-settings'
+										)
+									}
+									required
+									autoComplete="off"
+								/>
+							</div>
+							<Button
+								variant="outline"
+								size="md"
+								icon={ sendingTestEmail && <Loader /> }
+								iconPosition="left"
 								onClick={ async () => {
 									if ( sendingTestEmail ) {
 										return;
@@ -78,37 +84,26 @@ const GeneralPage = ( {
 											},
 										} ).then( ( response ) => {
 											setSendingTestEmail( false );
-											toast.dismiss();
-											toast.success( response?.data, {
-												duration: 1500,
-											} );
-											setTimeout( () => {
-												toast.dismiss();
-											}, 1500 );
+											toast.success( response?.data );
 										} );
 									} catch ( error ) {
+										setSendingTestEmail( false );
+										toast.error( error?.data );
 										console.error(
 											'Error Sending Test Email Summary:',
 											error
 										);
 									}
 								} }
+								className="bg-background-secondary"
 							>
 								{ __( 'Test Email', 'sureforms' ) }
-								{ sendingTestEmail && (
-									<Spinner
-										style={ {
-											margin: '0',
-											color: '#d54407',
-										} }
-									/>
-								) }
-							</button>
+							</Button>
 						</div>
-						<SelectControl
-							label={ __( 'Schedule Reports', 'sureforms' ) }
-							value={ emailTabOptions.srfm_schedule_report }
-							className="srfm-components-select-control"
+						<Select
+							value={ getReportsLabel(
+								emailTabOptions.srfm_schedule_report
+							) }
 							onChange={ ( value ) =>
 								updateGlobalSettings(
 									'srfm_schedule_report',
@@ -116,8 +111,24 @@ const GeneralPage = ( {
 									'email-settings'
 								)
 							}
-							options={ days }
-						/>
+						>
+							<Select.Button
+								type="button"
+								label={ __( 'Schedule Reports', 'sureforms' ) }
+							/>
+							<Select.Portal id="srfm-settings-container">
+								<Select.Options>
+									{ days.map( ( day ) => (
+										<Select.Option
+											key={ day.value }
+											value={ day.value }
+										>
+											{ day.label }
+										</Select.Option>
+									) ) }
+								</Select.Options>
+							</Select.Portal>
+						</Select>
 					</>
 				) }
 			</>
@@ -127,13 +138,15 @@ const GeneralPage = ( {
 	const IPLoggingContent = () => {
 		return (
 			<>
-				<ToggleControl
-					label={ __( 'Enable IP Logging', 'sureforms' ) }
-					help={ __(
-						"If this option is turned on, the user's IP address will be saved with the form data",
-						'sureforms'
-					) }
-					checked={ generalTabOptions.srfm_ip_log }
+				<Switch
+					label={ {
+						heading: __( 'Enable IP Logging', 'sureforms' ),
+						description: __(
+							"If this option is turned on, the user's IP address will be saved with the form data",
+							'sureforms'
+						),
+					} }
+					value={ generalTabOptions.srfm_ip_log }
 					onChange={ ( value ) =>
 						updateGlobalSettings(
 							'srfm_ip_log',
@@ -142,28 +155,70 @@ const GeneralPage = ( {
 						)
 					}
 				/>
-				{ /* Will be implemented later */ }
-				{ /* <ToggleControl
-					label={ __( 'Enable Form Analytics', 'sureforms' ) }
-					help={ __(
-						'Enable this to prevent tracking unique views and submission counts.',
-						'sureforms'
-					) }
-					checked={ generalTabOptions.srfm_form_analytics }
-					onChange={ ( value ) =>
-						updateGlobalSettings(
-							'srfm_form_analytics',
-							value,
-							'general-settings'
-						)
-					}
-				/> */ }
 			</>
 		);
 	};
 
+	const AdminNotificationContent = () => {
+		return (
+			<Switch
+				label={ {
+					heading: __( 'Enable Admin Notification', 'sureforms' ),
+					description: __(
+						'Admin notifications keep you informed about new form entries since your last visit.',
+						'sureforms'
+					),
+				} }
+				value={ generalTabOptions.srfm_admin_notification }
+				onChange={ ( value ) =>
+					updateGlobalSettings(
+						'srfm_admin_notification',
+						value,
+						'general-settings'
+					)
+				}
+			/>
+		);
+	};
+
+	const UsageTrackingContent = () => {
+		return (
+			<Switch
+				label={ {
+					heading: __( 'Contribute to SureForms', 'sureforms' ),
+					description: (
+						<>
+							<p>
+								{ __(
+									'Collect non-sensitive information from your website, such as the PHP version and features used, to help us fix bugs faster, make smarter decisions, and build features that actually matter to you. ',
+									'sureforms'
+								) }
+								<a
+									href="https://sureforms.com/share-usage-data/"
+									target="_blank"
+									rel="noopener noreferrer"
+									className="text-field-helper"
+								>
+									{ __( 'Learn More', 'sureforms' ) }
+								</a>
+							</p>
+						</>
+					),
+				} }
+				value={ generalTabOptions.srfm_bsf_analytics }
+				onChange={ ( value ) =>
+					updateGlobalSettings(
+						'srfm_bsf_analytics',
+						value,
+						'general-settings'
+					)
+				}
+			/>
+		);
+	};
+
 	return (
-		<>
+		<div className="space-y-6">
 			<ContentSection
 				loading={ loading }
 				title={ __( 'Email Summaries', 'sureforms' ) }
@@ -174,7 +229,17 @@ const GeneralPage = ( {
 				title={ __( 'IP Logging', 'sureforms' ) }
 				content={ IPLoggingContent() }
 			/>
-		</>
+			<ContentSection
+				loading={ loading }
+				title={ __( 'Admin Notification', 'sureforms' ) }
+				content={ AdminNotificationContent() }
+			/>
+			<ContentSection
+				loading={ loading }
+				title={ __( 'Anonymous Analytics', 'sureforms' ) }
+				content={ UsageTrackingContent() }
+			/>
+		</div>
 	);
 };
 
