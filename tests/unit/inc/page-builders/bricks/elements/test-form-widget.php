@@ -297,7 +297,7 @@ namespace SRFM\Inc\Page_Builders\Bricks\Elements {
 
 			$result = Form_Widget::build_bricks_gradient_css( $settings, 'bg' );
 
-			$this->assertSame( 'linear-gradient(180deg, #FFFFFF 0%, #000000 100%)', $result );
+			$this->assertSame( 'linear-gradient(90deg, #FFFFFF 0%, #000000 100%)', $result );
 		}
 
 		public function test_build_gradient_includes_correct_angle() {

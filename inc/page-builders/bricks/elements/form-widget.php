@@ -490,6 +490,7 @@ class Form_Widget extends \Bricks\Element {
 
 		if ( $form_id > 0 ) {
 			$form = get_post( $form_id );
+			// 'protected' is a custom SureForms post status for password-protected forms.
 			if ( ! $form || ! in_array( $form->post_status, [ 'publish', 'protected' ], true ) ) {
 				echo esc_html__( 'This form has been deleted or is unavailable.', 'sureforms' );
 				return;
@@ -594,7 +595,7 @@ class Form_Widget extends \Bricks\Element {
 
 		foreach ( [ 'top', 'right', 'bottom', 'left' ] as $side ) {
 			if ( isset( $dims[ $side ] ) && '' !== (string) $dims[ $side ] ) {
-				$attrs[ $attr_prefix . ucfirst( $side ) ] = $dims[ $side ] . $unit;
+				$attrs[ $attr_prefix . ucfirst( $side ) ] = intval( $dims[ $side ] ) . $unit;
 			}
 		}
 
@@ -620,7 +621,7 @@ class Form_Widget extends \Bricks\Element {
 		}
 
 		$type        = 'radial' === ( $settings[ $prefix . 'GradientType' ] ?? 'linear' ) ? 'radial' : 'linear';
-		$angle       = absint( Helper::get_string_value( $settings[ $prefix . 'GradientAngle' ] ?? 180 ) );
+		$angle       = absint( Helper::get_string_value( $settings[ $prefix . 'GradientAngle' ] ?? 90 ) );
 		$color1_stop = absint( Helper::get_string_value( $settings[ $prefix . 'GradientColor1Stop' ] ?? 0 ) );
 		$color2_stop = absint( Helper::get_string_value( $settings[ $prefix . 'GradientColor2Stop' ] ?? 100 ) );
 
@@ -681,19 +682,19 @@ class Form_Widget extends \Bricks\Element {
 			}
 		}
 
-		// Simple pass-through keys.
+		// Pass-through keys with allowed values for server-side validation.
 		$passthrough_keys = [
-			'fieldSpacing',
-			'buttonAlignment',
-			'bgType',
-			'bgImageSize',
-			'bgImagePosition',
-			'bgImageRepeat',
-			'bgImageAttachment',
+			'fieldSpacing'      => [ 'small', 'medium', 'large' ],
+			'buttonAlignment'   => [ 'left', 'center', 'right', 'justify' ],
+			'bgType'            => [ 'color', 'gradient', 'image' ],
+			'bgImageSize'       => [ 'cover', 'contain', 'auto' ],
+			'bgImagePosition'   => [ 'left top', 'left center', 'left bottom', 'center top', 'center center', 'center bottom', 'right top', 'right center', 'right bottom' ],
+			'bgImageRepeat'     => [ 'no-repeat', 'repeat', 'repeat-x', 'repeat-y' ],
+			'bgImageAttachment' => [ 'scroll', 'fixed' ],
 		];
 
-		foreach ( $passthrough_keys as $key ) {
-			if ( isset( $settings[ $key ] ) && '' !== $settings[ $key ] ) {
+		foreach ( $passthrough_keys as $key => $allowed ) {
+			if ( isset( $settings[ $key ] ) && in_array( $settings[ $key ], $allowed, true ) ) {
 				$block_attrs[ $key ] = $settings[ $key ];
 			}
 		}
@@ -713,7 +714,7 @@ class Form_Widget extends \Bricks\Element {
 		// Handle bgImage — Bricks image control returns ['url', 'id', ...].
 		if ( ! empty( $settings['bgImage'] ) && is_array( $settings['bgImage'] ) ) {
 			if ( ! empty( $settings['bgImage']['url'] ) ) {
-				$block_attrs['bgImage'] = $settings['bgImage']['url'];
+				$block_attrs['bgImage'] = esc_url_raw( $settings['bgImage']['url'] );
 			}
 		}
 
