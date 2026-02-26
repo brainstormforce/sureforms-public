@@ -1,7 +1,7 @@
 import { __, sprintf } from '@wordpress/i18n';
 import { useState, useEffect } from '@wordpress/element';
 import { Badge, Button, Container, Label, Title } from '@bsf/force-ui';
-import { Check, CheckCheck, ChevronDown, ChevronUp } from 'lucide-react';
+import { Check, CheckCheck, ChevronDown, ChevronUp, ExternalLink } from 'lucide-react';
 import LearnLesson from './LearnLesson';
 
 /**
@@ -93,6 +93,7 @@ const LearnModules = ( {
 					id: moduleId,
 					title,
 					description,
+					url: moduleDocsUrl,
 					steps: lessons = [],
 				} = module;
 
@@ -157,10 +158,27 @@ const LearnModules = ( {
 														className="truncate"
 													/>
 												</Container.Item>
+												{ moduleDocsUrl && (
+													<Container.Item>
+														<Button
+															variant="ghost"
+															size="sm"
+															icon={ <ExternalLink className="size-3.5" /> }
+															iconPosition="right"
+															className="text-link-primary p-0 h-auto outline-none shadow-none hover:underline"
+															onClick={ ( e ) => {
+																e.stopPropagation();
+																window.open( moduleDocsUrl, '_blank', 'noopener,noreferrer' );
+															} }
+														>
+															{ __( 'Learn how', 'sureforms' ) }
+														</Button>
+													</Container.Item>
+												) }
 												{ totalLessonsCount > 0 && (
 													<Container.Item>
 														<Badge
-															className="relative overflow-hidden w-14 sm:w-[62px] text-xs"
+															className={ `relative overflow-hidden w-14 sm:w-[62px] text-xs${ completedLessonsCount > 0 ? ' !text-link-primary !border-brand-border-300' : '' }` }
 															label={
 																<>
 																	<span className="sr-only">
@@ -178,12 +196,12 @@ const LearnModules = ( {
 																		</span>
 																	</span>
 																	<span
-																		className="absolute h-full top-0 left-0 bg-[#BAE6FD]/40 transition-[width] duration-300 ease-in-out"
+																		className="absolute h-full top-0 left-0 bg-badge-background-orange-30 transition-[width] duration-300 ease-in-out"
 																		style={ { width: `${ ( completedLessonsCount / totalLessonsCount ) * 100 }%` } }
 																	/>
 																</>
 															}
-															variant={ isModuleComplete ? 'green' : completedLessonsCount > 0 ? 'blue' : 'neutral' }
+															variant="neutral"
 															size="sm"
 															type="pill"
 														/>
