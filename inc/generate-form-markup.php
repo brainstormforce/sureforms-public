@@ -553,6 +553,7 @@ class Generate_Form_Markup {
 				?>
 				</div>
 				<?php
+				self::$current_block_attrs = [];
 				return ob_get_clean();
 			}
 			$get_nonces                      = Helper::get_frontend_nonces();
@@ -679,6 +680,7 @@ class Generate_Form_Markup {
 			?>
 			</div>
 		<?php
+		self::$current_block_attrs = [];
 		return ob_get_clean();
 	}
 

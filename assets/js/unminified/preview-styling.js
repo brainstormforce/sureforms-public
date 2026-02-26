@@ -26,6 +26,10 @@
 	const originalClasses = container.className;
 
 	window.addEventListener( 'message', function ( event ) {
+		if ( event.origin !== window.location.origin ) {
+			return;
+		}
+
 		if ( ! event.data ) {
 			return;
 		}
