@@ -5,6 +5,15 @@
  * @package sureforms
  */
 
+// Stub bricks_is_builder() in the global namespace for Form_Widget constructor.
+namespace {
+	if ( ! function_exists( 'bricks_is_builder' ) ) {
+		function bricks_is_builder() { // phpcs:ignore
+			return false;
+		}
+	}
+}
+
 // Stub \Bricks\Element so Form_Widget can be autoloaded without Bricks Builder.
 namespace Bricks {
 	if ( ! class_exists( 'Bricks\Element' ) ) {
@@ -24,12 +33,28 @@ namespace SRFM\Inc\Page_Builders\Bricks\Elements {
 	use Yoast\PHPUnitPolyfills\TestCases\TestCase;
 
 	/**
+	 * Testable subclass that exposes the protected get_block_attrs method.
+	 */
+	class Testable_Form_Widget extends Form_Widget {
+		/**
+		 * Public wrapper around the protected get_block_attrs method.
+		 *
+		 * @param array<string, mixed> $settings Bricks element settings.
+		 * @return array<string, mixed>
+		 */
+		public function test_get_block_attrs( $settings ) {
+			return $this->get_block_attrs( $settings );
+		}
+	}
+
+	/**
 	 * Unit tests for Form_Widget static utility methods.
 	 *
 	 * Covers:
 	 *   - resolve_bricks_color()
 	 *   - map_bricks_spacing()
 	 *   - build_bricks_gradient_css()
+	 *   - get_block_attrs()
 	 */
 	class Test_Form_Widget extends TestCase {
 
@@ -350,6 +375,201 @@ namespace SRFM\Inc\Page_Builders\Bricks\Elements {
 			$result = Form_Widget::build_bricks_gradient_css( $settings, 'bg' );
 
 			$this->assertStringStartsWith( 'linear-gradient(', $result );
+		}
+
+		// -----------------------------------------------------------------------
+		// get_block_attrs (via Testable_Form_Widget)
+		// -----------------------------------------------------------------------
+
+		/**
+		 * Helper to create a Testable_Form_Widget instance with a fixed ID.
+		 *
+		 * @return Testable_Form_Widget
+		 */
+		private function create_widget() {
+			$widget     = new Testable_Form_Widget();
+			$widget->id = 'test123';
+			return $widget;
+		}
+
+		public function test_get_block_attrs_returns_blockId() {
+			$widget = $this->create_widget();
+			$attrs  = $widget->test_get_block_attrs( [] );
+
+			$this->assertSame( 'bricks-test123', $attrs['blockId'] );
+		}
+
+		public function test_get_block_attrs_returns_only_blockId_and_inheritStyling_when_inherit_is_on() {
+			$widget = $this->create_widget();
+			$attrs  = $widget->test_get_block_attrs( [
+				'inheritStyling' => true,
+				'primaryColor'   => '#FF0000',
+				'textColor'      => '#00FF00',
+			] );
+
+			$this->assertTrue( $attrs['inheritStyling'] );
+			$this->assertArrayHasKey( 'blockId', $attrs );
+			// Custom styling keys should NOT be present.
+			$this->assertArrayNotHasKey( 'primaryColor', $attrs );
+			$this->assertArrayNotHasKey( 'textColor', $attrs );
+		}
+
+		public function test_get_block_attrs_maps_color_controls() {
+			$widget = $this->create_widget();
+			$attrs  = $widget->test_get_block_attrs( [
+				'primaryColor'       => '#111C44',
+				'textColor'          => '#1E1E1E',
+				'textOnPrimaryColor' => '#FFFFFF',
+				'bgColor'            => '#F5F5F5',
+			] );
+
+			$this->assertSame( '#111C44', $attrs['primaryColor'] );
+			$this->assertSame( '#1E1E1E', $attrs['textColor'] );
+			$this->assertSame( '#FFFFFF', $attrs['textOnPrimaryColor'] );
+			$this->assertSame( '#F5F5F5', $attrs['bgColor'] );
+		}
+
+		public function test_get_block_attrs_resolves_bricks_array_color() {
+			$widget = $this->create_widget();
+			$attrs  = $widget->test_get_block_attrs( [
+				'primaryColor' => [ 'hex' => '#AABBCC', 'raw' => '#AABBCC' ],
+			] );
+
+			$this->assertSame( '#AABBCC', $attrs['primaryColor'] );
+		}
+
+		public function test_get_block_attrs_skips_empty_color() {
+			$widget = $this->create_widget();
+			$attrs  = $widget->test_get_block_attrs( [
+				'primaryColor' => '',
+				'textColor'    => null,
+			] );
+
+			$this->assertArrayNotHasKey( 'primaryColor', $attrs );
+			$this->assertArrayNotHasKey( 'textColor', $attrs );
+		}
+
+		public function test_get_block_attrs_maps_passthrough_keys() {
+			$widget = $this->create_widget();
+			$attrs  = $widget->test_get_block_attrs( [
+				'fieldSpacing'    => 'large',
+				'buttonAlignment' => 'center',
+				'bgType'          => 'color',
+			] );
+
+			$this->assertSame( 'large', $attrs['fieldSpacing'] );
+			$this->assertSame( 'center', $attrs['buttonAlignment'] );
+			$this->assertSame( 'color', $attrs['bgType'] );
+		}
+
+		public function test_get_block_attrs_skips_empty_passthrough_keys() {
+			$widget = $this->create_widget();
+			$attrs  = $widget->test_get_block_attrs( [
+				'fieldSpacing' => '',
+			] );
+
+			$this->assertArrayNotHasKey( 'fieldSpacing', $attrs );
+		}
+
+		public function test_get_block_attrs_maps_spacing_controls() {
+			$widget = $this->create_widget();
+			$attrs  = $widget->test_get_block_attrs( [
+				'formPadding' => [
+					'top'    => '10',
+					'right'  => '20',
+					'bottom' => '30',
+					'left'   => '40',
+					'unit'   => 'px',
+				],
+			] );
+
+			$this->assertSame( '10px', $attrs['formPaddingTop'] );
+			$this->assertSame( '20px', $attrs['formPaddingRight'] );
+			$this->assertSame( '30px', $attrs['formPaddingBottom'] );
+			$this->assertSame( '40px', $attrs['formPaddingLeft'] );
+		}
+
+		public function test_get_block_attrs_maps_form_border_radius() {
+			$widget = $this->create_widget();
+			$attrs  = $widget->test_get_block_attrs( [
+				'formBorderRadius' => [
+					'top'    => '8',
+					'right'  => '8',
+					'bottom' => '8',
+					'left'   => '8',
+					'unit'   => 'px',
+				],
+			] );
+
+			$this->assertSame( '8px', $attrs['formBorderRadiusTop'] );
+			$this->assertSame( '8px', $attrs['formBorderRadiusRight'] );
+		}
+
+		public function test_get_block_attrs_builds_gradient_when_bgtype_is_gradient() {
+			$widget = $this->create_widget();
+			$attrs  = $widget->test_get_block_attrs( [
+				'bgType'           => 'gradient',
+				'bgGradientColor1' => '#FF0000',
+				'bgGradientColor2' => '#0000FF',
+				'bgGradientType'   => 'linear',
+				'bgGradientAngle'  => 90,
+			] );
+
+			$this->assertArrayHasKey( 'bgGradient', $attrs );
+			$this->assertStringStartsWith( 'linear-gradient(', $attrs['bgGradient'] );
+		}
+
+		public function test_get_block_attrs_does_not_build_gradient_when_bgtype_is_color() {
+			$widget = $this->create_widget();
+			$attrs  = $widget->test_get_block_attrs( [
+				'bgType'           => 'color',
+				'bgGradientColor1' => '#FF0000',
+				'bgGradientColor2' => '#0000FF',
+			] );
+
+			$this->assertArrayNotHasKey( 'bgGradient', $attrs );
+		}
+
+		public function test_get_block_attrs_maps_bgimage_url() {
+			$widget = $this->create_widget();
+			$attrs  = $widget->test_get_block_attrs( [
+				'bgImage' => [
+					'url' => 'https://example.com/image.jpg',
+					'id'  => 42,
+				],
+			] );
+
+			$this->assertSame( 'https://example.com/image.jpg', $attrs['bgImage'] );
+		}
+
+		public function test_get_block_attrs_skips_bgimage_when_url_missing() {
+			$widget = $this->create_widget();
+			$attrs  = $widget->test_get_block_attrs( [
+				'bgImage' => [ 'id' => 42 ],
+			] );
+
+			$this->assertArrayNotHasKey( 'bgImage', $attrs );
+		}
+
+		public function test_get_block_attrs_rejects_invalid_color_values() {
+			$widget = $this->create_widget();
+			$attrs  = $widget->test_get_block_attrs( [
+				'primaryColor' => 'javascript:alert(1)',
+				'textColor'    => 'red',
+				'bgColor'      => '#fff; color: red',
+			] );
+
+			$this->assertArrayNotHasKey( 'primaryColor', $attrs );
+			$this->assertArrayNotHasKey( 'textColor', $attrs );
+			$this->assertArrayNotHasKey( 'bgColor', $attrs );
+		}
+
+		public function test_get_block_attrs_generates_blockid_when_id_is_null() {
+			$widget     = new Testable_Form_Widget();
+			$widget->id = null;
+			$attrs      = $widget->test_get_block_attrs( [] );
+
+			$this->assertStringStartsWith( 'bricks-', $attrs['blockId'] );
 		}
 	}
 }
