@@ -1303,7 +1303,7 @@ class Admin {
 	 * @since x.x.x
 	 * @return void
 	 */
-	public function display_srfm_rating_notice(): void {
+	public function display_srfm_rating_notice() {
 		// Only show to admins.
 		if ( ! current_user_can( 'manage_options' ) ) {
 			return;
@@ -1354,6 +1354,7 @@ class Admin {
 				),
 				'repeat-notice-after' => WEEK_IN_SECONDS,
 				'show_if'             => $this->maybe_display_rating_notice(),
+				'display-with-other-notices' => true,
 			]
 		);
 	}
@@ -1419,11 +1420,11 @@ class Admin {
 	 * @since x.x.x
 	 * @return bool
 	 */
-	private function maybe_display_rating_notice(): bool {
+	private function maybe_display_rating_notice() {
 		$entries_count = Entries::get_total_entries_by_status( 'all' );
 		$form_count    = wp_count_posts( SRFM_FORMS_POST_TYPE );
 
-		return $entries_count >= 3 || $form_count->publish >= 3;
+		return $entries_count >= 3 || Helper::get_integer_value( $form_count->publish ) >= 3;
 	}
 
 	/**
