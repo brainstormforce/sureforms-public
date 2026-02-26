@@ -550,7 +550,6 @@ class Form_Widget extends \Bricks\Element {
 		if ( is_string( $color_value ) ) {
 			$raw = $color_value;
 		} elseif ( is_array( $color_value ) ) {
-			// Bricks may return ['hex' => '#xxx', 'rgb' => '...', 'raw' => '#xxx'].
 			$raw = $color_value['hex'] ?? $color_value['raw'] ?? null;
 		}
 
