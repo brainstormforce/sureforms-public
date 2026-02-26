@@ -21,7 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! class_exists( 'Astra_Notices' ) ) {
-	require_once SRFM_DIR . 'inc/lib/astra-notices/astra-notices.php';
+	require_once SRFM_DIR . 'inc/lib/astra-notices/class-astra-notices.php';
 }
 /**
  * Admin handler class.
@@ -78,15 +78,6 @@ class Admin {
 		// Display notices on traditional WordPress admin pages.
 		add_action( 'admin_notices', [ $this, 'srfm_pro_version_compatibility' ] );
 
-		// This action enqueues translations for NPS Survey library.
-		// A better solution will be required from library to resolve plugin conflict.
-		add_action(
-			'admin_footer',
-			static function() {
-				Helper::register_script_translations( 'nps-survey-script' );
-			},
-			1000
-		);
 		// Enfold theme compatibility to enable block editor for SureForms post type.
 		add_filter( 'avf_use_block_editor_for_post', [ $this, 'enable_block_editor_in_enfold_theme' ] );
 
@@ -1312,17 +1303,18 @@ class Admin {
 	 * @since x.x.x
 	 * @return void
 	 */
-	public function display_srfm_rating_notice() {
-		// Allow the notice to be disabled and exit early if it is.
+	public function display_srfm_rating_notice(): void {
+		// Only show to admins.
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
+
+		// Allow the notice to be disabled.
 		if ( ! apply_filters( 'srfm_show_rating_notice', true ) ) {
 			return;
 		}
 
-		$image_path = plugin_dir_url( __FILE__ ) . 'assets/images/sureforms.png';
-
-		if ( ! defined( WEEK_IN_SECONDS ) ) {
-			define( 'WEEK_IN_SECONDS', 604800 );
-		}
+		$image_path = SRFM_URL . 'admin/assets/sureforms-logo.png';
 
 		Astra_Notices::add_notice(
 			[
@@ -1330,34 +1322,34 @@ class Admin {
 				'type'                => '',
 				'message'             => sprintf(
 					'<div class="notice-image">
-						<img src="%1$s" class="custom-logo" alt="SureForms" itemprop="logo">
-					</div>
-					<div class="notice-content">
-						<div class="notice-heading">
-							%2$s
-						</div>
-						%3$s<br />
-						<div class="astra-review-notice-container">
-							<a href="%4$s" class="astra-notice-close button-primary" target="_blank">
-							%5$s
-							</a>
-						<span class="dashicons dashicons-calendar"></span>
-							<a href="#" data-repeat-notice-after="%6$s" class="astra-notice-close">
-							%7$s
-							</a>
-						<span class="dashicons dashicons-smiley"></span>
-							<a href="#" class="astra-notice-close">
-							%8$s
-							</a>
-						</div>
-					</div>',
-					$image_path,
+                    <img src="%1$s" class="custom-logo" alt="SureForms" itemprop="logo">
+                </div>
+                <div class="notice-content">
+                    <div class="notice-heading">
+                        %2$s
+                    </div>
+                    %3$s<br />
+                    <div class="astra-review-notice-container">
+                        <a href="%4$s" class="astra-notice-close button-primary" target="_blank" rel="noopener noreferrer">
+                        %5$s
+                        </a>
+                    <span class="dashicons dashicons-clock" aria-hidden="true"></span>
+                        <a href="#" data-repeat-notice-after="%6$s" class="astra-notice-close">
+                        %7$s
+                        </a>
+                    <span class="dashicons dashicons-smiley" aria-hidden="true"></span>
+                        <a href="#" class="astra-notice-close">
+                        %8$s
+                        </a>
+                    </div>
+                </div>',
+					esc_url( $image_path ),
 					esc_html__( 'Amazing! SureForms is powering your forms and submissions - let\'s keep growing together!', 'sureforms' ),
-					esc_html__( 'Would you please mind sharing your views and give it a 5 star rating on the WordPress repository?', 'sureforms' ),
-					'https://wordpress.org/support/plugin/sureforms/reviews/?filter=5#new-post',
-					esc_html__( 'Ok, you deserve it', 'sureforms' ),
+					esc_html__( 'If SureForms has been helpful, would you mind taking a moment to leave a 5-star review on WordPress.org?', 'sureforms' ),
+					esc_url( 'https://wordpress.org/support/plugin/sureforms/reviews/?filter=5#new-post' ),
+					esc_html__( 'Rate SureForms', 'sureforms' ),
 					WEEK_IN_SECONDS,
-					esc_html__( 'Nope, maybe later', 'sureforms' ),
+					esc_html__( 'Maybe later', 'sureforms' ),
 					esc_html__( 'I already did', 'sureforms' )
 				),
 				'repeat-notice-after' => WEEK_IN_SECONDS,
@@ -1420,22 +1412,18 @@ class Admin {
 	}
 
 	/**
-	 * Callback for displaying the rating notice conditionally,
-	 * passed to the 'show_if' parameter of the add_notice method.
+	 * Callback for displaying the rating notice conditionally.
 	 *
-	 * If user has more than 3 published forms or entries then show the notice.
+	 * Returns true if the user has 3 or more published forms or 3 or more form entries.
 	 *
 	 * @since x.x.x
 	 * @return bool
 	 */
-	public function maybe_display_rating_notice() {
-		$entries_count = Entries::get_total_entries_by_status( '' );
+	private function maybe_display_rating_notice(): bool {
+		$entries_count = Entries::get_total_entries_by_status( 'all' );
 		$form_count    = wp_count_posts( SRFM_FORMS_POST_TYPE );
 
-		if ( $entries_count >= 3 || $form_count->publish >= 3 ) {
-			return true;
-		}
-		return false;
+		return $entries_count >= 3 || $form_count->publish >= 3;
 	}
 
 	/**
