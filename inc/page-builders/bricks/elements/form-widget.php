@@ -533,90 +533,6 @@ class Form_Widget extends \Bricks\Element {
 	}
 
 	/**
-	 * Convert Bricks settings to block_attrs array.
-	 * Uses same camelCase keys as Gutenberg for code reuse with Form_Styling.
-	 *
-	 * @param array<string, mixed> $settings Bricks element settings.
-	 * @return array<string, mixed> Block attributes.
-	 * @since x.x.x
-	 */
-	protected function get_block_attrs( $settings ) {
-		$block_attrs = [
-			'blockId' => 'bricks-' . ( $this->id ?? uniqid() ),
-		];
-
-		// Check if inheriting styling from Instant Form.
-		$inherit_styling               = ! empty( $settings['inheritStyling'] );
-		$block_attrs['inheritStyling'] = $inherit_styling;
-
-		// If inheriting styling, don't pass any custom styling attributes.
-		if ( $inherit_styling ) {
-			return $block_attrs;
-		}
-
-		// Color controls.
-		$color_keys = [
-			'primaryColor',
-			'textColor',
-			'textOnPrimaryColor',
-			'bgColor',
-		];
-
-		foreach ( $color_keys as $key ) {
-			$color = self::resolve_bricks_color( $settings[ $key ] ?? null );
-			if ( $color ) {
-				$block_attrs[ $key ] = $color;
-			}
-		}
-
-		// Simple pass-through keys.
-		$passthrough_keys = [
-			'fieldSpacing',
-			'buttonAlignment',
-			'bgType',
-			'bgImageSize',
-			'bgImagePosition',
-			'bgImageRepeat',
-			'bgImageAttachment',
-		];
-
-		foreach ( $passthrough_keys as $key ) {
-			if ( isset( $settings[ $key ] ) && '' !== $settings[ $key ] ) {
-				$block_attrs[ $key ] = $settings[ $key ];
-			}
-		}
-
-		// Build gradient CSS string from individual Bricks controls.
-		if ( 'gradient' === ( $settings['bgType'] ?? '' ) ) {
-			$gradient_css = self::build_bricks_gradient_css( $settings, 'bg' );
-			if ( $gradient_css ) {
-				$block_attrs['bgGradient'] = $gradient_css;
-			}
-		}
-
-		// Handle spacing controls (4-sided) → individual camelCase keys with unit appended.
-		$block_attrs = array_merge( $block_attrs, self::map_bricks_spacing( $settings, 'formPadding', 'formPadding' ) );
-		$block_attrs = array_merge( $block_attrs, self::map_bricks_spacing( $settings, 'formBorderRadius', 'formBorderRadius' ) );
-
-		// Handle bgImage — Bricks image control returns ['url', 'id', ...].
-		if ( ! empty( $settings['bgImage'] ) && is_array( $settings['bgImage'] ) ) {
-			if ( ! empty( $settings['bgImage']['url'] ) ) {
-				$block_attrs['bgImage'] = $settings['bgImage']['url'];
-			}
-		}
-
-		/**
-		 * Filter the block attributes for Bricks widget.
-		 * Pro uses this to add additional styling attributes.
-		 *
-		 * @param array<string, mixed> $block_attrs Block attributes.
-		 * @param array<string, mixed> $settings    Bricks element settings.
-		 * @since x.x.x
-		 */
-		return apply_filters( 'srfm_bricks_block_attrs', $block_attrs, $settings );
-	}
-
-	/**
 	 * Resolve a Bricks color value to a hex string.
 	 * Bricks color controls may return a string or an array with 'hex'/'raw' keys.
 	 *
@@ -705,9 +621,9 @@ class Form_Widget extends \Bricks\Element {
 		}
 
 		$type        = 'radial' === ( $settings[ $prefix . 'GradientType' ] ?? 'linear' ) ? 'radial' : 'linear';
-		$angle       = absint( $settings[ $prefix . 'GradientAngle' ] ?? 180 );
-		$color1_stop = absint( $settings[ $prefix . 'GradientColor1Stop' ] ?? 0 );
-		$color2_stop = absint( $settings[ $prefix . 'GradientColor2Stop' ] ?? 100 );
+		$angle       = absint( Helper::get_string_value( $settings[ $prefix . 'GradientAngle' ] ?? 180 ) );
+		$color1_stop = absint( Helper::get_string_value( $settings[ $prefix . 'GradientColor1Stop' ] ?? 0 ) );
+		$color2_stop = absint( Helper::get_string_value( $settings[ $prefix . 'GradientColor2Stop' ] ?? 100 ) );
 
 		if ( 'radial' === $type ) {
 			return sprintf(
@@ -727,5 +643,89 @@ class Form_Widget extends \Bricks\Element {
 			$color_2,
 			$color2_stop
 		);
+	}
+
+	/**
+	 * Convert Bricks settings to block_attrs array.
+	 * Uses same camelCase keys as Gutenberg for code reuse with Form_Styling.
+	 *
+	 * @param array<string, mixed> $settings Bricks element settings.
+	 * @return array<string, mixed> Block attributes.
+	 * @since x.x.x
+	 */
+	protected function get_block_attrs( $settings ) {
+		$block_attrs = [
+			'blockId' => 'bricks-' . ( $this->id ?? uniqid() ),
+		];
+
+		// Check if inheriting styling from Instant Form.
+		$inherit_styling               = ! empty( $settings['inheritStyling'] );
+		$block_attrs['inheritStyling'] = $inherit_styling;
+
+		// If inheriting styling, don't pass any custom styling attributes.
+		if ( $inherit_styling ) {
+			return $block_attrs;
+		}
+
+		// Color controls.
+		$color_keys = [
+			'primaryColor',
+			'textColor',
+			'textOnPrimaryColor',
+			'bgColor',
+		];
+
+		foreach ( $color_keys as $key ) {
+			$color = self::resolve_bricks_color( $settings[ $key ] ?? null );
+			if ( $color ) {
+				$block_attrs[ $key ] = $color;
+			}
+		}
+
+		// Simple pass-through keys.
+		$passthrough_keys = [
+			'fieldSpacing',
+			'buttonAlignment',
+			'bgType',
+			'bgImageSize',
+			'bgImagePosition',
+			'bgImageRepeat',
+			'bgImageAttachment',
+		];
+
+		foreach ( $passthrough_keys as $key ) {
+			if ( isset( $settings[ $key ] ) && '' !== $settings[ $key ] ) {
+				$block_attrs[ $key ] = $settings[ $key ];
+			}
+		}
+
+		// Build gradient CSS string from individual Bricks controls.
+		if ( 'gradient' === ( $settings['bgType'] ?? '' ) ) {
+			$gradient_css = self::build_bricks_gradient_css( $settings, 'bg' );
+			if ( $gradient_css ) {
+				$block_attrs['bgGradient'] = $gradient_css;
+			}
+		}
+
+		// Handle spacing controls (4-sided) → individual camelCase keys with unit appended.
+		$block_attrs = array_merge( $block_attrs, self::map_bricks_spacing( $settings, 'formPadding', 'formPadding' ) );
+		$block_attrs = array_merge( $block_attrs, self::map_bricks_spacing( $settings, 'formBorderRadius', 'formBorderRadius' ) );
+
+		// Handle bgImage — Bricks image control returns ['url', 'id', ...].
+		if ( ! empty( $settings['bgImage'] ) && is_array( $settings['bgImage'] ) ) {
+			if ( ! empty( $settings['bgImage']['url'] ) ) {
+				$block_attrs['bgImage'] = $settings['bgImage']['url'];
+			}
+		}
+
+		/**
+		 * Filter the block attributes for Bricks widget.
+		 * Pro uses this to add additional styling attributes.
+		 *
+		 * @param array<string, mixed> $block_attrs Block attributes.
+		 * @param array<string, mixed> $settings    Bricks element settings.
+		 * @since x.x.x
+		 */
+		return apply_filters( 'srfm_bricks_block_attrs', $block_attrs, $settings );
 	}
 }
