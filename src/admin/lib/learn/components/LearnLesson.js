@@ -474,9 +474,9 @@ const LearnLesson = ( {
 												>
 													<span className="inline-block cursor-not-allowed">
 														<Button
-															variant="outline"
+															variant="primary"
 															size="sm"
-															className="text-link-primary pointer-events-none opacity-50"
+															className="pointer-events-none opacity-50"
 															disabled={ true }
 														>
 															{ headerAction?.label }
@@ -485,9 +485,8 @@ const LearnLesson = ( {
 												</Tooltip>
 											) : (
 												<Button
-													variant="outline"
+													variant="primary"
 													size="sm"
-													className="text-link-primary"
 													onClick={ handleHeaderActionClick }
 												>
 													{ headerAction?.label }

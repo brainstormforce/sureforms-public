@@ -1,7 +1,7 @@
 import { __, sprintf } from '@wordpress/i18n';
 import { useState, useEffect } from '@wordpress/element';
-import { Button, Container, Label, ProgressBar, Title } from '@bsf/force-ui';
-import { CheckCheck, ChevronDown, ChevronUp } from 'lucide-react';
+import { Badge, Button, Container, Label, Title } from '@bsf/force-ui';
+import { Check, CheckCheck, ChevronDown, ChevronUp } from 'lucide-react';
 import LearnLesson from './LearnLesson';
 
 /**
@@ -100,14 +100,10 @@ const LearnModules = ( {
 					( lesson ) => lesson.learn?.type === 'dialog' && lesson.learn?.content?.type === 'video'
 				);
 				const hasVideoLessons = videoLessons.length > 0;
-				const totalLessonsCount = videoLessons.length;
-				const completedLessonsCount = videoLessons.filter(
+				const totalLessonsCount = lessons.length;
+				const completedLessonsCount = lessons.filter(
 					( lesson ) => lesson.completed
 				).length;
-				const progressPercentage =
-					totalLessonsCount > 0
-						? ( completedLessonsCount / totalLessonsCount ) * 100
-						: 0;
 				const isModuleComplete =
 					totalLessonsCount > 0 && completedLessonsCount === totalLessonsCount;
 				const isModuleExpanded = expandedModuleId === moduleId;
@@ -146,13 +142,13 @@ const LearnModules = ( {
 										direction="column"
 										className="w-full gap-3"
 									>
-										{ /* First Row: Title + Progress + Chevron */ }
+										{ /* First Row: Title + Completion Counter Badge + Chevron */ }
 										<Container.Item>
 											<Container
 												containerType="flex"
 												direction="row"
 												align="center"
-												className="w-full gap-4 flex-wrap sm:flex-nowrap"
+												className="w-full gap-3"
 											>
 												<Container.Item className="flex-1 min-w-0">
 													<Title
@@ -161,36 +157,36 @@ const LearnModules = ( {
 														className="truncate"
 													/>
 												</Container.Item>
-												{ hasVideoLessons && (
+												{ totalLessonsCount > 0 && (
 													<Container.Item>
-														<Container
-															containerType="flex"
-															direction="row"
-															align="center"
-															gap="sm"
-														>
-															<Container.Item>
-																<Label className="text-sm text-text-secondary whitespace-nowrap">
-																	{ sprintf(
-																		// translators: %1$d is completed count, %2$d is total count.
-																		__(
-																			'%1$d/%2$d completed',
-																			'sureforms'
-																		),
-																		completedLessonsCount,
-																		totalLessonsCount
-																	) }
-																</Label>
-															</Container.Item>
-															<Container.Item className="w-24 sm:w-32">
-																<ProgressBar
-																	progress={
-																		progressPercentage
-																	}
-																	className="h-2"
-																/>
-															</Container.Item>
-														</Container>
+														<Badge
+															className="relative overflow-hidden w-14 sm:w-[62px] text-xs"
+															label={
+																<>
+																	<span className="sr-only">
+																		{ sprintf(
+																			/* translators: %1$d is completed count, %2$d is total count. */
+																			__( '%1$d of %2$d steps completed', 'sureforms' ),
+																			completedLessonsCount,
+																			totalLessonsCount
+																		) }
+																	</span>
+																	<span className="flex items-center">
+																		{ isModuleComplete && <Check size={ 12 } /> }
+																		<span className="px-1 relative z-10">
+																			{ completedLessonsCount }/{ totalLessonsCount }
+																		</span>
+																	</span>
+																	<span
+																		className="absolute h-full top-0 left-0 bg-[#BAE6FD]/40 transition-[width] duration-300 ease-in-out"
+																		style={ { width: `${ ( completedLessonsCount / totalLessonsCount ) * 100 }%` } }
+																	/>
+																</>
+															}
+															variant={ isModuleComplete ? 'green' : completedLessonsCount > 0 ? 'blue' : 'neutral' }
+															size="sm"
+															type="pill"
+														/>
 													</Container.Item>
 												) }
 												<Container.Item>

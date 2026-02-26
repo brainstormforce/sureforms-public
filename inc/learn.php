@@ -193,7 +193,7 @@ class Learn {
 						'docsUrl'      => 'https://sureforms.com/docs/adjust-form-notification-emails/',
 						'headerAction' => [
 							'label' => __( 'Set Up SMTP', 'sureforms' ),
-							'url'   => 'admin.php?page=sureforms_smtp',
+							'url'   => 'admin.php?page=sureforms_form_settings&tab=general-settings',
 						],
 						'completed'    => false,
 					],
