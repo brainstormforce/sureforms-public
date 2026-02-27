@@ -399,24 +399,35 @@ namespace SRFM\Inc\Page_Builders\Bricks\Elements {
 			$this->assertSame( 'bricks-test123', $attrs['blockId'] );
 		}
 
-		public function test_get_block_attrs_returns_only_blockId_and_inheritStyling_when_inherit_is_on() {
+		public function test_get_block_attrs_returns_only_blockId_and_formTheme_when_inherit() {
 			$widget = $this->create_widget();
 			$attrs  = $widget->test_get_block_attrs( [
-				'inheritStyling' => true,
-				'primaryColor'   => '#FF0000',
-				'textColor'      => '#00FF00',
+				'formTheme'    => 'inherit',
+				'primaryColor' => '#FF0000',
+				'textColor'    => '#00FF00',
 			] );
 
-			$this->assertTrue( $attrs['inheritStyling'] );
+			$this->assertSame( 'inherit', $attrs['formTheme'] );
 			$this->assertArrayHasKey( 'blockId', $attrs );
 			// Custom styling keys should NOT be present.
 			$this->assertArrayNotHasKey( 'primaryColor', $attrs );
 			$this->assertArrayNotHasKey( 'textColor', $attrs );
 		}
 
+		public function test_get_block_attrs_defaults_to_inherit_when_formTheme_missing() {
+			$widget = $this->create_widget();
+			$attrs  = $widget->test_get_block_attrs( [
+				'primaryColor' => '#FF0000',
+			] );
+
+			$this->assertSame( 'inherit', $attrs['formTheme'] );
+			$this->assertArrayNotHasKey( 'primaryColor', $attrs );
+		}
+
 		public function test_get_block_attrs_maps_color_controls() {
 			$widget = $this->create_widget();
 			$attrs  = $widget->test_get_block_attrs( [
+				'formTheme'          => 'default',
 				'primaryColor'       => '#111C44',
 				'textColor'          => '#1E1E1E',
 				'textOnPrimaryColor' => '#FFFFFF',
@@ -432,6 +443,7 @@ namespace SRFM\Inc\Page_Builders\Bricks\Elements {
 		public function test_get_block_attrs_resolves_bricks_array_color() {
 			$widget = $this->create_widget();
 			$attrs  = $widget->test_get_block_attrs( [
+				'formTheme'    => 'default',
 				'primaryColor' => [ 'hex' => '#AABBCC', 'raw' => '#AABBCC' ],
 			] );
 
@@ -441,6 +453,7 @@ namespace SRFM\Inc\Page_Builders\Bricks\Elements {
 		public function test_get_block_attrs_skips_empty_color() {
 			$widget = $this->create_widget();
 			$attrs  = $widget->test_get_block_attrs( [
+				'formTheme'    => 'default',
 				'primaryColor' => '',
 				'textColor'    => null,
 			] );
@@ -452,6 +465,7 @@ namespace SRFM\Inc\Page_Builders\Bricks\Elements {
 		public function test_get_block_attrs_maps_passthrough_keys() {
 			$widget = $this->create_widget();
 			$attrs  = $widget->test_get_block_attrs( [
+				'formTheme'       => 'default',
 				'fieldSpacing'    => 'large',
 				'buttonAlignment' => 'center',
 				'bgType'          => 'color',
@@ -465,6 +479,7 @@ namespace SRFM\Inc\Page_Builders\Bricks\Elements {
 		public function test_get_block_attrs_skips_empty_passthrough_keys() {
 			$widget = $this->create_widget();
 			$attrs  = $widget->test_get_block_attrs( [
+				'formTheme'    => 'default',
 				'fieldSpacing' => '',
 			] );
 
@@ -474,6 +489,7 @@ namespace SRFM\Inc\Page_Builders\Bricks\Elements {
 		public function test_get_block_attrs_maps_spacing_controls() {
 			$widget = $this->create_widget();
 			$attrs  = $widget->test_get_block_attrs( [
+				'formTheme'   => 'default',
 				'formPadding' => [
 					'top'    => '10',
 					'right'  => '20',
@@ -492,6 +508,7 @@ namespace SRFM\Inc\Page_Builders\Bricks\Elements {
 		public function test_get_block_attrs_maps_form_border_radius() {
 			$widget = $this->create_widget();
 			$attrs  = $widget->test_get_block_attrs( [
+				'formTheme'        => 'default',
 				'formBorderRadius' => [
 					'top'    => '8',
 					'right'  => '8',
@@ -508,6 +525,7 @@ namespace SRFM\Inc\Page_Builders\Bricks\Elements {
 		public function test_get_block_attrs_builds_gradient_when_bgtype_is_gradient() {
 			$widget = $this->create_widget();
 			$attrs  = $widget->test_get_block_attrs( [
+				'formTheme'        => 'default',
 				'bgType'           => 'gradient',
 				'bgGradientColor1' => '#FF0000',
 				'bgGradientColor2' => '#0000FF',
@@ -522,6 +540,7 @@ namespace SRFM\Inc\Page_Builders\Bricks\Elements {
 		public function test_get_block_attrs_does_not_build_gradient_when_bgtype_is_color() {
 			$widget = $this->create_widget();
 			$attrs  = $widget->test_get_block_attrs( [
+				'formTheme'        => 'default',
 				'bgType'           => 'color',
 				'bgGradientColor1' => '#FF0000',
 				'bgGradientColor2' => '#0000FF',
@@ -533,7 +552,8 @@ namespace SRFM\Inc\Page_Builders\Bricks\Elements {
 		public function test_get_block_attrs_maps_bgimage_url() {
 			$widget = $this->create_widget();
 			$attrs  = $widget->test_get_block_attrs( [
-				'bgImage' => [
+				'formTheme' => 'default',
+				'bgImage'   => [
 					'url' => 'https://example.com/image.jpg',
 					'id'  => 42,
 				],
@@ -545,7 +565,8 @@ namespace SRFM\Inc\Page_Builders\Bricks\Elements {
 		public function test_get_block_attrs_skips_bgimage_when_url_missing() {
 			$widget = $this->create_widget();
 			$attrs  = $widget->test_get_block_attrs( [
-				'bgImage' => [ 'id' => 42 ],
+				'formTheme' => 'default',
+				'bgImage'   => [ 'id' => 42 ],
 			] );
 
 			$this->assertArrayNotHasKey( 'bgImage', $attrs );
@@ -554,6 +575,7 @@ namespace SRFM\Inc\Page_Builders\Bricks\Elements {
 		public function test_get_block_attrs_rejects_invalid_color_values() {
 			$widget = $this->create_widget();
 			$attrs  = $widget->test_get_block_attrs( [
+				'formTheme'    => 'default',
 				'primaryColor' => 'javascript:alert(1)',
 				'textColor'    => 'red',
 				'bgColor'      => '#fff; color: red',

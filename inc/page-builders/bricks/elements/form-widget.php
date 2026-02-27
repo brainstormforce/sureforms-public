@@ -96,7 +96,7 @@ class Form_Widget extends \Bricks\Element {
 
 		$styling_required = [
 			[ 'form-id', '!=', '' ],
-			[ 'inheritStyling', '=', '' ],
+			[ 'formTheme', '!=', 'inherit' ],
 		];
 
 		$this->control_groups['srfm_layout'] = [
@@ -158,16 +158,19 @@ class Form_Widget extends \Bricks\Element {
 
 		$form_required = [
 			[ 'form-id', '!=', '' ],
-			[ 'inheritStyling', '=', '' ],
+			[ 'formTheme', '!=', 'inherit' ],
 		];
 
-		// Inherit Styling Toggle.
-		$this->controls['inheritStyling'] = [
+		// Form Theme Select.
+		$this->controls['formTheme'] = [
 			'group'   => 'srfm_form_styling',
-			'label'   => __( 'Inherit Styling from Instant Form', 'sureforms' ),
-			'type'    => 'checkbox',
-			'default' => true,
-			'info'    => __( 'When enabled, this form uses Instant Form styling. Disable to customize styling for this embed.', 'sureforms' ),
+			'label'   => __( 'Form Theme', 'sureforms' ),
+			'type'    => 'select',
+			'options' => [
+				'inherit' => __( 'Inherit', 'sureforms' ),
+				'default' => __( 'Default', 'sureforms' ),
+			],
+			'default' => 'inherit',
 		];
 
 		/**
@@ -658,12 +661,11 @@ class Form_Widget extends \Bricks\Element {
 			'blockId' => 'bricks-' . ( $this->id ?? uniqid() ),
 		];
 
-		// Check if inheriting styling from Instant Form.
-		$inherit_styling               = ! empty( $settings['inheritStyling'] );
-		$block_attrs['inheritStyling'] = $inherit_styling;
+		// Check form theme — if inheriting, don't pass any custom styling attributes.
+		$form_theme               = $settings['formTheme'] ?? 'inherit';
+		$block_attrs['formTheme'] = $form_theme;
 
-		// If inheriting styling, don't pass any custom styling attributes.
-		if ( $inherit_styling ) {
+		if ( 'inherit' === $form_theme ) {
 			return $block_attrs;
 		}
 
