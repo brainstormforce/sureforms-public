@@ -100,7 +100,7 @@ export default ( { attributes, setAttributes, clientId } ) => {
 			hasResolved: hasResolvedValue,
 			form,
 		};
-	} );
+	}, [ id ] );
 
 	// Remove unwanted elements from the iframe and add styling for the form
 	const modifyIframeContent = () => {
@@ -174,7 +174,7 @@ export default ( { attributes, setAttributes, clientId } ) => {
 
 		// Clean up the observer when the component unmounts or dependencies change
 		return () => observer.disconnect();
-	}, [ iframeContainerRef?.current ] ); // Re-run if iframe container reference changes
+	}, [] );
 
 	useEffect( () => {
 		if ( iframeRef && iframeRef.current ) {
@@ -188,9 +188,11 @@ export default ( { attributes, setAttributes, clientId } ) => {
 
 	// Send styling updates to iframe via PostMessage
 	const sendStylingToIframe = useCallback( () => {
-		if ( ! iframeRef.current?.contentWindow ) {
+		if ( ! iframeRef.current?.contentWindow || ! formUrl ) {
 			return;
 		}
+
+		const iframeOrigin = new URL( formUrl ).origin;
 
 		// If inheriting styling, send reset message to reload iframe with original styles
 		if ( attributes.inheritStyling ) {
@@ -198,7 +200,7 @@ export default ( { attributes, setAttributes, clientId } ) => {
 				{
 					type: 'srfm-reset-styling',
 				},
-				'*'
+				iframeOrigin
 			);
 			return;
 		}
@@ -248,9 +250,9 @@ export default ( { attributes, setAttributes, clientId } ) => {
 				type: 'srfm-update-styling',
 				styling,
 			},
-			'*'
+			iframeOrigin
 		);
-	}, [ attributes ] );
+	}, [ attributes, formUrl ] );
 
 	// Trigger styling update when attributes change
 	useEffect( () => {
