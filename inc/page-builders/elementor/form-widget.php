@@ -375,18 +375,18 @@ class Form_Widget extends Widget_Base {
 			]
 		);
 
-		// Inherit Styling Toggle.
+		// Form Theme Select.
 		$this->add_control(
-			'inheritStyling',
+			'formTheme',
 			[
-				'label'        => __( 'Inherit Styling from Instant Form', 'sureforms' ),
-				'description'  => __( 'When enabled, this form uses Instant Form styling. Disable to customize styling for this embed.', 'sureforms' ),
-				'type'         => \Elementor\Controls_Manager::SWITCHER,
-				'label_on'     => __( 'Yes', 'sureforms' ),
-				'label_off'    => __( 'No', 'sureforms' ),
-				'return_value' => 'yes',
-				'default'      => 'yes',
-				'separator'    => 'after',
+				'label'     => __( 'Form Theme', 'sureforms' ),
+				'type'      => \Elementor\Controls_Manager::SELECT,
+				'default'   => 'inherit',
+				'options'   => [
+					'inherit' => __( "Inherit Form's Original Style", 'sureforms' ),
+					'default' => __( 'Default', 'sureforms' ),
+				],
+				'separator' => 'after',
 			]
 		);
 
@@ -397,7 +397,7 @@ class Form_Widget extends Widget_Base {
 				'label'     => __( 'Primary Color', 'sureforms' ),
 				'type'      => \Elementor\Controls_Manager::COLOR,
 				'condition' => [
-					'inheritStyling!' => 'yes',
+					'formTheme!' => 'inherit',
 				],
 			]
 		);
@@ -409,7 +409,7 @@ class Form_Widget extends Widget_Base {
 				'label'     => __( 'Text Color', 'sureforms' ),
 				'type'      => \Elementor\Controls_Manager::COLOR,
 				'condition' => [
-					'inheritStyling!' => 'yes',
+					'formTheme!' => 'inherit',
 				],
 			]
 		);
@@ -421,7 +421,7 @@ class Form_Widget extends Widget_Base {
 				'label'     => __( 'Text on Primary', 'sureforms' ),
 				'type'      => \Elementor\Controls_Manager::COLOR,
 				'condition' => [
-					'inheritStyling!' => 'yes',
+					'formTheme!' => 'inherit',
 				],
 			]
 		);
@@ -433,7 +433,7 @@ class Form_Widget extends Widget_Base {
 				'label'     => __( 'Background', 'sureforms' ),
 				'type'      => \Elementor\Controls_Manager::HEADING,
 				'condition' => [
-					'inheritStyling!' => 'yes',
+					'formTheme!' => 'inherit',
 				],
 			]
 		);
@@ -451,7 +451,7 @@ class Form_Widget extends Widget_Base {
 					'image'    => __( 'Image', 'sureforms' ),
 				],
 				'condition' => [
-					'inheritStyling!' => 'yes',
+					'formTheme!' => 'inherit',
 				],
 			]
 		);
@@ -464,8 +464,8 @@ class Form_Widget extends Widget_Base {
 				'type'      => \Elementor\Controls_Manager::COLOR,
 				'default'   => '#FFFFFF',
 				'condition' => [
-					'inheritStyling!' => 'yes',
-					'bgType'          => 'color',
+					'formTheme!' => 'inherit',
+					'bgType'     => 'color',
 				],
 			]
 		);
@@ -518,8 +518,8 @@ class Form_Widget extends Widget_Base {
 				],
 				'selector'       => '{{WRAPPER}} .srfm-gradient-dummy-selector', // Dummy selector - we handle styling via CSS variables.
 				'condition'      => [
-					'inheritStyling!' => 'yes',
-					'bgType'          => 'gradient',
+					'formTheme!' => 'inherit',
+					'bgType'     => 'gradient',
 				],
 			]
 		);
@@ -534,8 +534,8 @@ class Form_Widget extends Widget_Base {
 					'url' => '',
 				],
 				'condition' => [
-					'inheritStyling!' => 'yes',
-					'bgType'          => 'image',
+					'formTheme!' => 'inherit',
+					'bgType'     => 'image',
 				],
 			]
 		);
@@ -553,8 +553,8 @@ class Form_Widget extends Widget_Base {
 					'auto'    => __( 'Auto', 'sureforms' ),
 				],
 				'condition' => [
-					'inheritStyling!' => 'yes',
-					'bgType'          => 'image',
+					'formTheme!' => 'inherit',
+					'bgType'     => 'image',
 				],
 			]
 		);
@@ -578,8 +578,8 @@ class Form_Widget extends Widget_Base {
 					'right bottom'  => __( 'Right Bottom', 'sureforms' ),
 				],
 				'condition' => [
-					'inheritStyling!' => 'yes',
-					'bgType'          => 'image',
+					'formTheme!' => 'inherit',
+					'bgType'     => 'image',
 				],
 			]
 		);
@@ -598,8 +598,8 @@ class Form_Widget extends Widget_Base {
 					'repeat-y'  => __( 'Repeat Y', 'sureforms' ),
 				],
 				'condition' => [
-					'inheritStyling!' => 'yes',
-					'bgType'          => 'image',
+					'formTheme!' => 'inherit',
+					'bgType'     => 'image',
 				],
 			]
 		);
@@ -616,8 +616,8 @@ class Form_Widget extends Widget_Base {
 					'fixed'  => __( 'Fixed', 'sureforms' ),
 				],
 				'condition' => [
-					'inheritStyling!' => 'yes',
-					'bgType'          => 'image',
+					'formTheme!' => 'inherit',
+					'bgType'     => 'image',
 				],
 			]
 		);
@@ -640,7 +640,7 @@ class Form_Widget extends Widget_Base {
 				'tab'       => \Elementor\Controls_Manager::TAB_STYLE,
 				'condition' => [
 					'srfm_form_block!' => '',
-					'inheritStyling!'  => 'yes',
+					'formTheme!'       => 'inherit',
 				],
 			]
 		);
@@ -700,7 +700,7 @@ class Form_Widget extends Widget_Base {
 				'tab'       => \Elementor\Controls_Manager::TAB_STYLE,
 				'condition' => [
 					'srfm_form_block!' => '',
-					'inheritStyling!'  => 'yes',
+					'formTheme!'       => 'inherit',
 				],
 			]
 		);
@@ -752,7 +752,7 @@ class Form_Widget extends Widget_Base {
 				'tab'       => \Elementor\Controls_Manager::TAB_STYLE,
 				'condition' => [
 					'srfm_form_block!' => '',
-					'inheritStyling!'  => 'yes',
+					'formTheme!'       => 'inherit',
 				],
 			]
 		);
@@ -867,12 +867,11 @@ class Form_Widget extends Widget_Base {
 			'blockId' => 'elementor-' . $this->get_id(),
 		];
 
-		// Check if inheriting styling from Instant Form.
-		$inherit_styling               = 'yes' === ( $settings['inheritStyling'] ?? 'yes' );
-		$block_attrs['inheritStyling'] = $inherit_styling;
+		// Check form theme — if inheriting, don't pass any custom styling attributes.
+		$form_theme               = $settings['formTheme'] ?? 'inherit';
+		$block_attrs['formTheme'] = $form_theme;
 
-		// If inheriting styling, don't pass any custom styling attributes.
-		if ( $inherit_styling ) {
+		if ( 'inherit' === $form_theme ) {
 			return $block_attrs;
 		}
 
