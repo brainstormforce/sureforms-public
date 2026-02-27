@@ -1,0 +1,345 @@
+<?php
+/**
+ * Class Test_Rest_Api
+ *
+ * @package sureforms
+ */
+
+use Yoast\PHPUnitPolyfills\TestCases\TestCase;
+
+use SRFM\Inc\Rest_Api;
+
+class Test_Rest_Api extends TestCase {
+
+	protected $rest_api;
+
+	protected function setUp(): void {
+		parent::setUp();
+		$this->rest_api = new Rest_Api();
+	}
+
+	/**
+	 * Helper method to call private methods for testing.
+	 */
+	private function call_private_method( $object, $method_name, $parameters = [] ) {
+		$reflection = new \ReflectionClass( get_class( $object ) );
+		$method     = $reflection->getMethod( $method_name );
+		$method->setAccessible( true );
+		return $method->invokeArgs( $object, $parameters );
+	}
+
+	// ---------------------------------------------------------------
+	// sanitize_boolean_field()
+	// ---------------------------------------------------------------
+
+	public function test_sanitize_boolean_field_truthy_values() {
+		$this->assertTrue( $this->rest_api->sanitize_boolean_field( 'true' ) );
+		$this->assertTrue( $this->rest_api->sanitize_boolean_field( 1 ) );
+		$this->assertTrue( $this->rest_api->sanitize_boolean_field( 'yes' ) );
+	}
+
+	public function test_sanitize_boolean_field_falsy_values() {
+		$this->assertFalse( $this->rest_api->sanitize_boolean_field( 'false' ) );
+		$this->assertFalse( $this->rest_api->sanitize_boolean_field( 0 ) );
+		$this->assertFalse( $this->rest_api->sanitize_boolean_field( '' ) );
+		$this->assertFalse( $this->rest_api->sanitize_boolean_field( null ) );
+	}
+
+	// ---------------------------------------------------------------
+	// sanitize_entry_ids()
+	// ---------------------------------------------------------------
+
+	public function test_sanitize_entry_ids_with_array() {
+		$this->assertEquals( [ 1, 2, 3 ], $this->rest_api->sanitize_entry_ids( [ 1, 2, 3 ] ) );
+	}
+
+	public function test_sanitize_entry_ids_filters_zero_values() {
+		$result = $this->rest_api->sanitize_entry_ids( [ 1, 0, 3 ] );
+		$this->assertEquals( [ 1, 3 ], array_values( $result ) );
+	}
+
+	public function test_sanitize_entry_ids_with_single_numeric() {
+		$this->assertEquals( [ 42 ], $this->rest_api->sanitize_entry_ids( 42 ) );
+	}
+
+	public function test_sanitize_entry_ids_with_comma_separated_string() {
+		$this->assertEquals( [ 1, 2, 3 ], $this->rest_api->sanitize_entry_ids( '1,2,3' ) );
+	}
+
+	public function test_sanitize_entry_ids_with_object_returns_empty() {
+		$this->assertEquals( [], $this->rest_api->sanitize_entry_ids( new \stdClass() ) );
+	}
+
+	public function test_sanitize_entry_ids_converts_negative_to_absolute() {
+		$this->assertEquals( [ 5, 10 ], $this->rest_api->sanitize_entry_ids( [ -5, 10 ] ) );
+	}
+
+	public function test_sanitize_entry_ids_casts_strings_to_int() {
+		$this->assertEquals( [ 7, 8, 9 ], $this->rest_api->sanitize_entry_ids( [ '7', '8', '9' ] ) );
+	}
+
+	// ---------------------------------------------------------------
+	// validate_read_action()
+	// ---------------------------------------------------------------
+
+	public function test_validate_read_action_valid_values() {
+		$this->assertTrue( $this->rest_api->validate_read_action( 'read' ) );
+		$this->assertTrue( $this->rest_api->validate_read_action( 'unread' ) );
+	}
+
+	public function test_validate_read_action_invalid_values() {
+		$this->assertFalse( $this->rest_api->validate_read_action( 'delete' ) );
+		$this->assertFalse( $this->rest_api->validate_read_action( '' ) );
+	}
+
+	// ---------------------------------------------------------------
+	// validate_trash_action()
+	// ---------------------------------------------------------------
+
+	public function test_validate_trash_action_valid_values() {
+		$this->assertTrue( $this->rest_api->validate_trash_action( 'trash' ) );
+		$this->assertTrue( $this->rest_api->validate_trash_action( 'restore' ) );
+	}
+
+	public function test_validate_trash_action_invalid_values() {
+		$this->assertFalse( $this->rest_api->validate_trash_action( 'delete' ) );
+		$this->assertFalse( $this->rest_api->validate_trash_action( '' ) );
+	}
+
+	// ---------------------------------------------------------------
+	// get_endpoints() - route registration verification
+	// ---------------------------------------------------------------
+
+	public function test_get_endpoints_returns_array_with_expected_routes() {
+		$endpoints = $this->call_private_method( $this->rest_api, 'get_endpoints' );
+		$this->assertIsArray( $endpoints );
+
+		$expected_routes = [
+			'generate-form',
+			'map-fields',
+			'initiate-auth',
+			'handle-access-key',
+			'entries-chart-data',
+			'form-data',
+			'onboarding/set-status',
+			'onboarding/get-status',
+			'plugin-status',
+			'entries/list',
+			'entries/read-status',
+			'entries/trash',
+			'entries/delete',
+			'entries/export',
+			'forms',
+			'forms/export',
+			'forms/import',
+			'forms/manage',
+			'forms/duplicate',
+		];
+
+		foreach ( $expected_routes as $route ) {
+			$this->assertArrayHasKey( $route, $endpoints, "Route '{$route}' not found in endpoints." );
+		}
+	}
+
+	public function test_all_endpoints_have_required_keys() {
+		$endpoints = $this->call_private_method( $this->rest_api, 'get_endpoints' );
+		foreach ( $endpoints as $route => $args ) {
+			$this->assertArrayHasKey( 'permission_callback', $args, "Route '{$route}' missing permission_callback." );
+			$this->assertArrayHasKey( 'methods', $args, "Route '{$route}' missing methods." );
+			$this->assertArrayHasKey( 'callback', $args, "Route '{$route}' missing callback." );
+		}
+	}
+
+	public function test_endpoint_http_methods_are_correct() {
+		$endpoints = $this->call_private_method( $this->rest_api, 'get_endpoints' );
+
+		$this->assertEquals( 'POST', $endpoints['generate-form']['methods'] );
+		$this->assertEquals( 'POST', $endpoints['map-fields']['methods'] );
+		$this->assertEquals( 'GET', $endpoints['entries-chart-data']['methods'] );
+		$this->assertEquals( 'GET', $endpoints['entries/list']['methods'] );
+		$this->assertEquals( 'POST', $endpoints['entries/delete']['methods'] );
+		$this->assertEquals( 'POST', $endpoints['entries/read-status']['methods'] );
+		$this->assertEquals( 'POST', $endpoints['entries/trash']['methods'] );
+		$this->assertEquals( 'POST', $endpoints['forms/manage']['methods'] );
+		$this->assertEquals( 'GET', $endpoints['forms']['methods'] );
+	}
+
+	// ---------------------------------------------------------------
+	// Endpoint arg definitions / input validation
+	// ---------------------------------------------------------------
+
+	public function test_entries_read_status_args_required_fields() {
+		$endpoints = $this->call_private_method( $this->rest_api, 'get_endpoints' );
+		$args      = $endpoints['entries/read-status']['args'];
+		$this->assertTrue( $args['entry_ids']['required'] );
+		$this->assertTrue( $args['action']['required'] );
+	}
+
+	public function test_entries_trash_args_required_fields() {
+		$endpoints = $this->call_private_method( $this->rest_api, 'get_endpoints' );
+		$args      = $endpoints['entries/trash']['args'];
+		$this->assertTrue( $args['entry_ids']['required'] );
+		$this->assertTrue( $args['action']['required'] );
+	}
+
+	public function test_forms_manage_args_required_and_enum() {
+		$endpoints = $this->call_private_method( $this->rest_api, 'get_endpoints' );
+		$args      = $endpoints['forms/manage']['args'];
+		$this->assertTrue( $args['form_ids']['required'] );
+		$this->assertTrue( $args['action']['required'] );
+		$this->assertEquals( [ 'trash', 'restore', 'delete' ], $args['action']['enum'] );
+	}
+
+	public function test_forms_duplicate_requires_form_id() {
+		$endpoints = $this->call_private_method( $this->rest_api, 'get_endpoints' );
+		$this->assertTrue( $endpoints['forms/duplicate']['args']['form_id']['required'] );
+	}
+
+	public function test_plugin_status_requires_plugin_slug() {
+		$endpoints = $this->call_private_method( $this->rest_api, 'get_endpoints' );
+		$this->assertTrue( $endpoints['plugin-status']['args']['plugin']['required'] );
+	}
+
+	public function test_entries_list_default_values() {
+		$endpoints = $this->call_private_method( $this->rest_api, 'get_endpoints' );
+		$args      = $endpoints['entries/list']['args'];
+		$this->assertEquals( 20, $args['per_page']['default'] );
+		$this->assertEquals( 'DESC', $args['order']['default'] );
+		$this->assertEquals( 'created_at', $args['orderby']['default'] );
+		$this->assertEquals( 1, $args['page']['default'] );
+		$this->assertEquals( 'all', $args['status']['default'] );
+	}
+
+	public function test_forms_import_args() {
+		$endpoints = $this->call_private_method( $this->rest_api, 'get_endpoints' );
+		$args      = $endpoints['forms/import']['args'];
+		$this->assertTrue( $args['forms_data']['required'] );
+		$this->assertEquals( 'draft', $args['default_status']['default'] );
+		$this->assertEquals( [ 'draft', 'publish', 'private' ], $args['default_status']['enum'] );
+	}
+
+	// get_sample_data() and get_form_fields() are on Admin_Ajax, tested there.
+
+	// ---------------------------------------------------------------
+	// get_dropdown_counter()
+	// ---------------------------------------------------------------
+
+	public function test_get_dropdown_counter_returns_integer() {
+		$this->assertIsInt( $this->rest_api->get_dropdown_counter() );
+	}
+
+	// ---------------------------------------------------------------
+	// parse_form_fields() (private)
+	// ---------------------------------------------------------------
+
+	public function test_parse_form_fields_returns_empty_for_empty_or_plain_content() {
+		$this->assertEquals( [], $this->call_private_method( $this->rest_api, 'parse_form_fields', [ '' ] ) );
+		$this->assertEquals( [], $this->call_private_method( $this->rest_api, 'parse_form_fields', [ 'plain text' ] ) );
+	}
+
+	// ---------------------------------------------------------------
+	// extract_form_fields()
+	// ---------------------------------------------------------------
+
+	public function test_extract_form_fields_skips_non_srfm_and_invalid_blocks() {
+		$blocks = [
+			[ 'blockName' => 'core/paragraph', 'attrs' => [], 'innerBlocks' => [] ],
+			'not an array',
+			[ 'no_blockname_key' => true ],
+		];
+		$form_fields = [];
+		$this->rest_api->extract_form_fields( $blocks, [], $form_fields );
+		$this->assertEmpty( $form_fields );
+	}
+
+	public function test_extract_form_fields_skips_inline_button() {
+		$blocks = [
+			[
+				'blockName'   => 'srfm/inline-button',
+				'attrs'       => [],
+				'innerBlocks' => [],
+			],
+		];
+		$form_fields = [];
+		$this->rest_api->extract_form_fields( $blocks, [ 'inline-button' => [ 'label' => [ 'default' => 'Submit' ] ] ], $form_fields );
+		$this->assertEmpty( $form_fields );
+	}
+
+	public function test_extract_form_fields_sets_base_counter() {
+		$form_fields = [];
+		$this->rest_api->extract_form_fields( [], [], $form_fields, [], false, 5 );
+		$this->assertEquals( 5, $this->rest_api->get_dropdown_counter() );
+	}
+
+	// ---------------------------------------------------------------
+	// REST route registration via action hook
+	// ---------------------------------------------------------------
+
+	public function test_register_endpoints_hooks_into_rest_api_init() {
+		$rest_api = new Rest_Api();
+		$this->assertIsInt( has_action( 'rest_api_init', [ $rest_api, 'register_endpoints' ] ) );
+	}
+
+	public function test_sureforms_routes_registered_in_rest_server() {
+		do_action( 'rest_api_init' );
+		$routes    = rest_get_server()->get_routes();
+		$has_route = false;
+		foreach ( $routes as $route => $handlers ) {
+			if ( strpos( $route, '/sureforms/v1' ) === 0 ) {
+				$has_route = true;
+				break;
+			}
+		}
+		$this->assertTrue( $has_route, 'No sureforms/v1 routes found in the REST server.' );
+	}
+
+	// ---------------------------------------------------------------
+	// Unauthorized access (permission_callback rejects user 0)
+	// ---------------------------------------------------------------
+
+	public function test_unauthorized_access_entries_list() {
+		wp_set_current_user( 0 );
+		$request  = new WP_REST_Request( 'GET', '/sureforms/v1/entries/list' );
+		$response = rest_get_server()->dispatch( $request );
+		$this->assertEquals( 401, $response->get_status() );
+	}
+
+	public function test_unauthorized_access_entries_delete() {
+		wp_set_current_user( 0 );
+		$request = new WP_REST_Request( 'POST', '/sureforms/v1/entries/delete' );
+		$request->set_body_params( [ 'entry_ids' => [ 1 ] ] );
+		$response = rest_get_server()->dispatch( $request );
+		$this->assertEquals( 401, $response->get_status() );
+	}
+
+	public function test_unauthorized_access_forms_manage() {
+		wp_set_current_user( 0 );
+		$request = new WP_REST_Request( 'POST', '/sureforms/v1/forms/manage' );
+		$request->set_body_params( [ 'form_ids' => [ 1 ], 'action' => 'trash' ] );
+		$response = rest_get_server()->dispatch( $request );
+		$this->assertEquals( 401, $response->get_status() );
+	}
+
+	public function test_unauthorized_access_generate_form() {
+		wp_set_current_user( 0 );
+		$request  = new WP_REST_Request( 'POST', '/sureforms/v1/generate-form' );
+		$response = rest_get_server()->dispatch( $request );
+		$this->assertEquals( 401, $response->get_status() );
+	}
+
+	public function test_unauthorized_access_forms_export() {
+		wp_set_current_user( 0 );
+		$request = new WP_REST_Request( 'POST', '/sureforms/v1/forms/export' );
+		$request->set_body_params( [ 'post_ids' => [ 1 ] ] );
+		$response = rest_get_server()->dispatch( $request );
+		$this->assertEquals( 401, $response->get_status() );
+	}
+
+	public function test_unauthorized_access_forms_import() {
+		wp_set_current_user( 0 );
+		$request = new WP_REST_Request( 'POST', '/sureforms/v1/forms/import' );
+		$request->set_body_params( [ 'forms_data' => [ [ 'title' => 'test' ] ] ] );
+		$response = rest_get_server()->dispatch( $request );
+		$this->assertEquals( 401, $response->get_status() );
+	}
+}
