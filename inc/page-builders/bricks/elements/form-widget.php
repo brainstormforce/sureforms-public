@@ -167,7 +167,7 @@ class Form_Widget extends \Bricks\Element {
 			'label'   => __( 'Form Theme', 'sureforms' ),
 			'type'    => 'select',
 			'options' => [
-				'inherit' => __( 'Inherit', 'sureforms' ),
+				'inherit' => __( "Inherit Form's Original Style", 'sureforms' ),
 				'default' => __( 'Default', 'sureforms' ),
 			],
 			'default' => 'inherit',
