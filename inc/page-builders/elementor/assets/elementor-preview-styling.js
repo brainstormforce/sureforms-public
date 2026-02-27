@@ -397,7 +397,7 @@ import {
 	}
 
 	/**
-	 * Reset all styles when inheritStyling is enabled.
+	 * Reset all styles when formTheme is set to inherit.
 	 *
 	 * @param {HTMLElement} container       The form container element.
 	 * @param {string}      originalClasses Original container classes.
@@ -448,9 +448,9 @@ import {
 		originalClasses,
 		widgetSettings = null
 	) {
-		// Handle inheritStyling toggle - reset all styles when enabled.
-		if ( name === 'inheritStyling' ) {
-			if ( value === 'yes' ) {
+		// Handle formTheme change - reset all styles when set to inherit.
+		if ( name === 'formTheme' ) {
+			if ( value === 'inherit' ) {
 				resetAllStyles( container, originalClasses );
 			}
 			dispatchUpdateEvent( name, value, container, widgetSettings );

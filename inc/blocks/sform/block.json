@@ -114,6 +114,7 @@
 		},
 		"formPaddingUnit": {
 			"type": "string",
+			"enum": [ "px", "em", "rem", "%", "vw", "vh" ],
 			"default": "px"
 		},
 		"formPaddingLink": {
@@ -138,6 +139,7 @@
 		},
 		"formBorderRadiusUnit": {
 			"type": "string",
+			"enum": [ "px", "em", "rem", "%", "vw", "vh" ],
 			"default": "px"
 		},
 		"formBorderRadiusLink": {
