@@ -310,39 +310,36 @@ class Test_Form_Styling extends TestCase {
 	// ─── has_custom_styling ───────────────────────────────────────
 
 	/**
-	 * Test returns true when inheritStyling is false.
+	 * Test returns true when formTheme is 'default'.
 	 */
-	public function test_has_custom_styling_returns_true_when_inherit_false() {
-		$attrs = [ 'inheritStyling' => false ];
+	public function test_has_custom_styling_returns_true_when_form_theme_default() {
+		$attrs = [ 'formTheme' => 'default' ];
 
 		$this->assertTrue( Form_Styling::has_custom_styling( $attrs ) );
 	}
 
 	/**
-	 * Test returns false when inheritStyling is true.
+	 * Test returns true when formTheme is 'custom'.
 	 */
-	public function test_has_custom_styling_returns_false_when_inherit_true() {
-		$attrs = [ 'inheritStyling' => true ];
+	public function test_has_custom_styling_returns_true_when_form_theme_custom() {
+		$attrs = [ 'formTheme' => 'custom' ];
+
+		$this->assertTrue( Form_Styling::has_custom_styling( $attrs ) );
+	}
+
+	/**
+	 * Test returns false when formTheme is 'inherit'.
+	 */
+	public function test_has_custom_styling_returns_false_when_form_theme_inherit() {
+		$attrs = [ 'formTheme' => 'inherit' ];
 
 		$this->assertFalse( Form_Styling::has_custom_styling( $attrs ) );
 	}
 
 	/**
-	 * Test returns false when inheritStyling is not set.
+	 * Test returns false when formTheme is not set (defaults to 'inherit').
 	 */
 	public function test_has_custom_styling_returns_false_when_not_set() {
 		$this->assertFalse( Form_Styling::has_custom_styling( [] ) );
-	}
-
-	/**
-	 * Test returns false for falsy non-boolean values (strict comparison).
-	 */
-	public function test_has_custom_styling_strict_false_comparison() {
-		// 0 is falsy but not === false.
-		$this->assertFalse( Form_Styling::has_custom_styling( [ 'inheritStyling' => 0 ] ) );
-		// Empty string is falsy but not === false.
-		$this->assertFalse( Form_Styling::has_custom_styling( [ 'inheritStyling' => '' ] ) );
-		// null is falsy but not === false.
-		$this->assertFalse( Form_Styling::has_custom_styling( [ 'inheritStyling' => null ] ) );
 	}
 }

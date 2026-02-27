@@ -136,7 +136,7 @@ class Generate_Form_Markup {
 			$form_styling         = get_post_meta( $id, '_srfm_forms_styling', true );
 			$form_styling         = ! empty( $form_styling ) && is_array( $form_styling ) ? $form_styling : [];
 
-			// Apply per-embed styling customization when inheritStyling is false.
+			// Apply per-embed styling customization when formTheme is not 'inherit'.
 			if ( Form_Styling::has_custom_styling( $block_attrs ) ) {
 				$form_styling = Form_Styling::map_block_attrs_to_styling( $form_styling, $block_attrs );
 			}

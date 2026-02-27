@@ -26,7 +26,7 @@ class Form_Styling {
 	 * Map block attributes to form styling array.
 	 *
 	 * Converts camelCase block attributes to snake_case form styling keys.
-	 * This allows per-embed customization when inheritStyling is false.
+	 * This allows per-embed customization when formTheme is not 'inherit'.
 	 *
 	 * @param array<string,mixed> $form_styling Existing form styling from post meta.
 	 * @param array<string,mixed> $block_attrs  Block attributes from srfm/form block.
@@ -148,7 +148,7 @@ class Form_Styling {
 	 * @since x.x.x
 	 */
 	public static function apply_theme_styling( $form_styling, $theme_slug ) {
-		if ( empty( $theme_slug ) || 'default' === $theme_slug ) {
+		if ( empty( $theme_slug ) || 'default' === $theme_slug || 'inherit' === $theme_slug ) {
 			return $form_styling;
 		}
 
@@ -166,13 +166,13 @@ class Form_Styling {
 	}
 
 	/**
-	 * Check if embed has custom styling (inheritStyling is false).
+	 * Check if embed has custom styling (formTheme is not 'inherit').
 	 *
 	 * @param array<string,mixed> $block_attrs Block attributes.
 	 * @return bool True if using custom embed styling.
 	 * @since x.x.x
 	 */
 	public static function has_custom_styling( $block_attrs ) {
-		return isset( $block_attrs['inheritStyling'] ) && false === $block_attrs['inheritStyling'];
+		return 'inherit' !== ( $block_attrs['formTheme'] ?? 'inherit' );
 	}
 }

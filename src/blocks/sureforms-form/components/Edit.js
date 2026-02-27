@@ -35,7 +35,7 @@ import {
 import UpgradeModal from '@Components/upgrade-modal';
 
 export default ( { attributes, setAttributes, clientId } ) => {
-	const { id, showTitle, inheritStyling, formTheme, blockId } = attributes;
+	const { id, showTitle, formTheme, blockId } = attributes;
 
 	const iframeRef = useRef( null );
 	const iframeContainerRef = useRef( null );
@@ -195,7 +195,7 @@ export default ( { attributes, setAttributes, clientId } ) => {
 		const iframeOrigin = new URL( formUrl ).origin;
 
 		// If inheriting styling, send reset message to reload iframe with original styles
-		if ( attributes.inheritStyling ) {
+		if ( 'inherit' === attributes.formTheme ) {
 			iframeRef.current.contentWindow.postMessage(
 				{
 					type: 'srfm-reset-styling',
@@ -352,62 +352,45 @@ export default ( { attributes, setAttributes, clientId } ) => {
 							/>
 						</PanelRow>
 					) }
-					<ToggleControl
-						label={ __(
-							'Inherit Styling from Instant Form',
+					<SelectControl
+						label={ __( 'Form Theme', 'sureforms' ) }
+						value={ formTheme }
+						options={ applyFilters(
+							'srfm.embed.formThemeOptions',
+							[
+								{
+									label: __(
+										"Inherit Form's Original Style",
+										'sureforms'
+									),
+									value: 'inherit',
+								},
+								{
+									label: __( 'Default', 'sureforms' ),
+									value: 'default',
+								},
+								{
+									label: __(
+										'Custom (Premium)',
+										'sureforms'
+									),
+									value: 'custom',
+								},
+							]
+						) }
+						onChange={ ( value ) => {
+							// If Custom is selected and Pro is not active, show upgrade modal.
+							if ( 'custom' === value && ! isProActive ) {
+								setShowUpgradeModal( true );
+								return;
+							}
+							setAttributes( { formTheme: value } );
+						} }
+						help={ __(
+							'Select a theme style for this form embed.',
 							'sureforms'
 						) }
-						help={
-							inheritStyling
-								? __(
-									'This form uses Instant Form styling.',
-									'sureforms'
-								  )
-								: __(
-									'Custom styling for this embed.',
-									'sureforms'
-								  )
-						}
-						checked={ inheritStyling }
-						onChange={ ( value ) => {
-							setAttributes( { inheritStyling: value } );
-						} }
-						className="srfm-inherit-styling-toggle"
 					/>
-					{ ! inheritStyling && (
-						<SelectControl
-							label={ __( 'Form Theme', 'sureforms' ) }
-							value={ formTheme }
-							options={ applyFilters(
-								'srfm.embed.formThemeOptions',
-								[
-									{
-										label: __( 'Default', 'sureforms' ),
-										value: 'default',
-									},
-									{
-										label: __(
-											'Custom (Premium)',
-											'sureforms'
-										),
-										value: 'custom',
-									},
-								]
-							) }
-							onChange={ ( value ) => {
-								// If Custom is selected and Pro is not active, show upgrade modal.
-								if ( 'custom' === value && ! isProActive ) {
-									setShowUpgradeModal( true );
-									return;
-								}
-								setAttributes( { formTheme: value } );
-							} }
-							help={ __(
-								'Select a theme style for this form embed.',
-								'sureforms'
-							) }
-						/>
-					) }
 					{ srfm_block_data.is_admin_user && (
 						<PanelRow>
 							<p className="srfm-form-notice">
@@ -436,7 +419,7 @@ export default ( { attributes, setAttributes, clientId } ) => {
 				</PanelBody>
 
 				{ /* Styling panels - only show when not inheriting */ }
-				{ ! inheritStyling && (
+				{ 'inherit' !== formTheme && (
 					<>
 						{ /* 2. Colors */ }
 						<PanelBody
