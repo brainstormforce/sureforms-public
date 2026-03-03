@@ -2,6 +2,7 @@
 
 .distignore
 .editorconfig
+.claude
 .github
 .wordpress-org
 .git
