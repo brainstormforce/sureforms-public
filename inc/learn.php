@@ -47,7 +47,7 @@ class Learn {
 				'id'          => 'setting-up-form',
 				'title'       => __( 'Setting Up Your Form', 'sureforms' ),
 				'description' => __( 'Get started with SureForms by building your first form, adding the right fields, and styling it to match your brand.', 'sureforms' ),
-				'url'         => 'https://sureforms.com/docs/',
+				'url'         => 'https://sureforms.com/docs/creating-and-publishing-forms/',
 				'steps'       => [
 					[
 						'id'           => 'creating-first-form',
@@ -122,7 +122,7 @@ class Learn {
 				'id'          => 'making-form-live',
 				'title'       => __( 'Making Your Form Live', 'sureforms' ),
 				'description' => __( 'Publish your form and make it accessible to your visitors using Instant Form or by embedding it on any page.', 'sureforms' ),
-				'url'         => 'https://sureforms.com/docs/',
+				'url'         => 'https://sureforms.com/docs/instant-forms/',
 				'steps'       => [
 					[
 						'id'           => 'instant-form',
@@ -150,7 +150,7 @@ class Learn {
 					[
 						'id'           => 'embed-forms',
 						'title'        => __( 'Embed Your Forms in a Page', 'sureforms' ),
-						'description'  => __( 'Instantly publish your form using the Instant Form feature in SureForms, or easily embed it on any page with the SureForms block.', 'sureforms' ),
+						'description'  => __( 'Easily embed your form on any page using the built-in SureForms block.', 'sureforms' ),
 						'learn'        => [
 							'type'    => 'dialog',
 							'content' => [
@@ -174,7 +174,7 @@ class Learn {
 				'id'          => 'managing-entries',
 				'title'       => __( 'Managing Entries', 'sureforms' ),
 				'description' => __( 'Stay on top of your form submissions with email notifications and the built-in entries manager.', 'sureforms' ),
-				'url'         => 'https://sureforms.com/docs/',
+				'url'         => 'https://sureforms.com/docs/adjust-form-notification-emails/',
 				'steps'       => [
 					[
 						'id'           => 'email-notification',
@@ -184,15 +184,15 @@ class Learn {
 							'type'    => 'dialog',
 							'content' => [
 								'type' => 'gif-video',
-								'data' => [
-									'url' => 'https://www.youtube.com/embed/FkEEKP0VRaA',
+								'data' => [ 
+									'url' => 'https://www.youtube.com/embed/tvlGvgUZrhM',
 									'alt' => __( 'Configure Your Email Notification', 'sureforms' ),
 								],
 							],
 						],
 						'docsUrl'      => 'https://sureforms.com/docs/adjust-form-notification-emails/',
 						'headerAction' => [
-							'label' => __( 'Set Up SMTP', 'sureforms' ),
+							'label' => __( 'Configure', 'sureforms' ),
 							'url'   => 'admin.php?page=sureforms_form_settings&tab=general-settings',
 						],
 						'completed'    => false,
