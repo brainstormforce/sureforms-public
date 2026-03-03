@@ -184,7 +184,7 @@ class Learn {
 							'type'    => 'dialog',
 							'content' => [
 								'type' => 'gif-video',
-								'data' => [ 
+								'data' => [
 									'url' => 'https://www.youtube.com/embed/tvlGvgUZrhM',
 									'alt' => __( 'Configure Your Email Notification', 'sureforms' ),
 								],
