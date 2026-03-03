@@ -403,6 +403,7 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 == Changelog ==
 = x.x.x =
 * Fix: Fixed confirmation message links always opening in a new tab. A new filter `srfm_confirmation_links_open_in_new_tab` (default `true`) is available to control this behavior.
+* Fix: Preserve input formatting in Entries View.
 = 2.5.1 - 16th February 2026 =
 * New: Added option to change currency position (e.g., $100, 100$, $ 100, 100 $).
 * Fix: Fixed the payment block amount not updating correctly with conditional logic.
