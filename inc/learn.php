@@ -193,7 +193,7 @@ class Learn {
 						'docsUrl'      => 'https://sureforms.com/docs/adjust-form-notification-emails/',
 						'headerAction' => [
 							'label' => __( 'Configure', 'sureforms' ),
-							'url'   => 'admin.php?page=sureforms_form_settings&tab=general-settings',
+							'url'   => 'admin.php?page=sureforms_form_settings&tab=general-settings&source=learn',
 						],
 						'completed'    => false,
 					],
