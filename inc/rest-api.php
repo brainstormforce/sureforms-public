@@ -217,7 +217,18 @@ class Rest_Api {
 		$query = new \WP_Query( $args );
 		remove_filter( 'posts_search', [ $this, 'search_only_post_titles' ], 10 );
 
-		$post_ids = is_array( $query->posts ) ? array_map( 'absint', $query->posts ) : [];
+		$post_ids = is_array( $query->posts )
+			? array_map(
+				static function ( $post ): int {
+					if ( $post instanceof \WP_Post ) {
+						return absint( $post->ID );
+					}
+
+					return absint( $post );
+				},
+				$query->posts
+			)
+			: [];
 		$has_more = count( $post_ids ) > $per_page;
 		$post_ids = array_slice( $post_ids, 0, $per_page );
 
