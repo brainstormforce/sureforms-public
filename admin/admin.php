@@ -1318,9 +1318,9 @@ class Admin {
 
 		Astra_Notices::add_notice(
 			[
-				'id'                  => 'srfm-plugin-review-notice',
-				'type'                => '',
-				'message'             => sprintf(
+				'id'                         => 'srfm-plugin-review-notice',
+				'type'                       => '',
+				'message'                    => sprintf(
 					'<div class="notice-image">
                     <img src="%1$s" class="custom-logo" alt="SureForms" itemprop="logo">
                 </div>
@@ -1352,8 +1352,8 @@ class Admin {
 					esc_html__( 'Maybe later', 'sureforms' ),
 					esc_html__( 'I already did', 'sureforms' )
 				),
-				'repeat-notice-after' => WEEK_IN_SECONDS,
-				'show_if'             => $this->maybe_display_rating_notice(),
+				'repeat-notice-after'        => WEEK_IN_SECONDS,
+				'show_if'                    => $this->maybe_display_rating_notice(),
 				'display-with-other-notices' => true,
 			]
 		);
@@ -1410,21 +1410,6 @@ class Admin {
 				'pointer_nonce' => wp_create_nonce( 'sureforms_pointer_action' ),
 			]
 		);
-	}
-
-	/**
-	 * Callback for displaying the rating notice conditionally.
-	 *
-	 * Returns true if the user has 3 or more published forms or 3 or more form entries.
-	 *
-	 * @since x.x.x
-	 * @return bool
-	 */
-	private function maybe_display_rating_notice() {
-		$entries_count = Entries::get_total_entries_by_status( 'all' );
-		$form_count    = wp_count_posts( SRFM_FORMS_POST_TYPE );
-
-		return $entries_count >= 3 || Helper::get_integer_value( $form_count->publish ) >= 3;
 	}
 
 	/**
@@ -1603,6 +1588,21 @@ class Admin {
 			?>
 		</div>
 		<?php
+	}
+
+	/**
+	 * Callback for displaying the rating notice conditionally.
+	 *
+	 * Returns true if the user has 3 or more published forms or 3 or more form entries.
+	 *
+	 * @since x.x.x
+	 * @return bool
+	 */
+	private function maybe_display_rating_notice() {
+		$entries_count = Entries::get_total_entries_by_status( 'all' );
+		$form_count    = wp_count_posts( SRFM_FORMS_POST_TYPE );
+
+		return $entries_count >= 3 || Helper::get_integer_value( $form_count->publish ) >= 3;
 	}
 
 	/**
