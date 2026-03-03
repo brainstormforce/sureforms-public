@@ -944,13 +944,13 @@ export const showErrorMessage = ( args ) => {
 /**
  * Search WordPress pages for async dropdowns.
  *
- * @param {Object} [options={}] Search options.
- * @param {string} [options.search=''] Search keyword.
- * @param {number} [options.page=1] Current page.
- * @param {number} [options.perPage=20] Items per page.
- * @param {string} [options.selectedUrl=''] Selected page URL to ensure it's available in options.
+ * @param {Object}        [options={}]              Search options.
+ * @param {string}        [options.search='']       Search keyword.
+ * @param {number}        [options.page=1]          Current page.
+ * @param {number}        [options.perPage=20]      Items per page.
+ * @param {string}        [options.selectedUrl='']  Selected page URL to ensure it's available in options.
  * @param {Array<string>} [options.selectedUrls=[]] Multiple selected page URLs to ensure availability.
- * @return {Promise<{items:Array<{label:string,value:string}>, pagination:{page:number, per_page:number, has_more:boolean}}>}
+ * @return {Promise<{items:Array<{label:string,value:string}>, pagination:{page:number, per_page:number, has_more:boolean}}>} A page options result object with pagination metadata.
  */
 export const searchWordPressPages = async ( options = {} ) => {
 	const {
@@ -996,8 +996,8 @@ export const searchWordPressPages = async ( options = {} ) => {
  * Fetch WordPress pages and set dropdown options.
  *
  * @param {Function} setPageOptions Function to update page options state.
- * @param {Object}   [options={}] Search options.
- * @return {Promise<{items:Array<{label:string,value:string}>, pagination:{page:number, per_page:number, has_more:boolean}}>}
+ * @param {Object}   [options={}]   Search options.
+ * @return {Promise<{items:Array<{label:string,value:string}>, pagination:{page:number, per_page:number, has_more:boolean}}>} A page options result object with pagination metadata.
  */
 export const getWordPressPages = async ( setPageOptions, options = {} ) => {
 	try {
