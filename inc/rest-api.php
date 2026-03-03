@@ -156,6 +156,148 @@ class Rest_Api {
 	}
 
 	/**
+	 * Search WordPress pages for async dropdowns.
+	 *
+	 * @param \WP_REST_Request $request Full details about the request.
+	 * @since 2.6.0
+	 * @return \WP_REST_Response
+	 */
+	public function search_pages( $request ) {
+		$nonce = Helper::get_string_value( $request->get_header( 'X-WP-Nonce' ) );
+
+		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'wp_rest' ) ) {
+			return new \WP_REST_Response(
+				[ 'error' => __( 'Nonce verification failed.', 'sureforms' ) ],
+				403
+			);
+		}
+
+		$search          = sanitize_text_field( Helper::get_string_value( $request->get_param( 'search' ) ) );
+		$page            = max( 1, absint( $request->get_param( 'page' ) ) );
+		$per_page        = absint( $request->get_param( 'per_page' ) );
+		$per_page        = max( 1, min( 50, $per_page ) );
+		$query_per_page  = $per_page + 1;
+		$selected_urls   = $request->get_param( 'selected_urls' );
+		$selected_url    = Helper::get_string_value( $request->get_param( 'selected_url' ) );
+		$selected_values = [];
+
+		if ( ! empty( $selected_url ) ) {
+			$selected_values[] = esc_url_raw( $selected_url );
+		}
+
+		if ( is_array( $selected_urls ) ) {
+			$selected_values = array_merge( $selected_values, array_map( 'esc_url_raw', $selected_urls ) );
+		} elseif ( is_string( $selected_urls ) && '' !== trim( $selected_urls ) ) {
+			$selected_values = array_merge(
+				$selected_values,
+				array_map(
+					'esc_url_raw',
+					array_filter( array_map( 'trim', explode( ',', $selected_urls ) ) )
+				)
+			);
+		}
+
+		$selected_values = array_values( array_unique( array_filter( $selected_values ) ) );
+
+		$args = [
+			'post_type'              => 'page',
+			'post_status'            => 'publish',
+			's'                      => $search,
+			'orderby'                => 'title',
+			'order'                  => 'ASC',
+			'posts_per_page'         => $query_per_page,
+			'paged'                  => $page,
+			'fields'                 => 'ids',
+			'no_found_rows'          => true,
+			'update_post_meta_cache' => false,
+			'update_post_term_cache' => false,
+		];
+
+		add_filter( 'posts_search', [ $this, 'search_only_post_titles' ], 10, 2 );
+		$query = new \WP_Query( $args );
+		remove_filter( 'posts_search', [ $this, 'search_only_post_titles' ], 10 );
+
+		$post_ids = is_array( $query->posts ) ? array_map( 'absint', $query->posts ) : [];
+		$has_more = count( $post_ids ) > $per_page;
+		$post_ids = array_slice( $post_ids, 0, $per_page );
+
+		foreach ( $selected_values as $selected_value ) {
+			$selected_id = url_to_postid( $selected_value );
+
+			if ( ! $selected_id || in_array( $selected_id, $post_ids, true ) ) {
+				continue;
+			}
+
+			if ( 'page' !== get_post_type( $selected_id ) || 'publish' !== get_post_status( $selected_id ) ) {
+				continue;
+			}
+
+			array_unshift( $post_ids, $selected_id );
+		}
+
+		$items = [];
+		foreach ( $post_ids as $post_id ) {
+			$permalink = get_permalink( $post_id );
+
+			if ( ! $permalink ) {
+				continue;
+			}
+
+			$title = get_the_title( $post_id );
+			$items[] = [
+				'id'    => $post_id,
+				'label' => ! empty( $title ) ? $title : (string) $post_id,
+				'value' => $permalink,
+			];
+		}
+
+		return new \WP_REST_Response(
+			[
+				'items'      => $items,
+				'pagination' => [
+					'page'     => $page,
+					'per_page' => $per_page,
+					'has_more' => $has_more,
+				],
+			],
+			200
+		);
+	}
+
+	/**
+	 * Restrict search to post titles for dropdown lookups.
+	 *
+	 * @param string    $search   Search SQL fragment.
+	 * @param \WP_Query $wp_query Current WP_Query.
+	 * @since 2.6.0
+	 * @return string
+	 */
+	public function search_only_post_titles( $search, $wp_query ) {
+		global $wpdb;
+
+		if ( ! empty( $search ) && ! empty( $wp_query->query_vars['search_terms'] ) ) {
+			$query_vars = $wp_query->query_vars;
+			$wild       = ! empty( $query_vars['exact'] ) ? '' : '%';
+			$search_sql = [];
+
+			foreach ( (array) $query_vars['search_terms'] as $term ) {
+				$search_sql[] = $wpdb->prepare(
+					"{$wpdb->posts}.post_title LIKE %s",
+					$wild . $wpdb->esc_like( $term ) . $wild
+				);
+			}
+
+			if ( ! is_user_logged_in() ) {
+				$search_sql[] = "{$wpdb->posts}.post_password = ''";
+			}
+
+			$search = ' AND ' . implode( ' AND ', $search_sql );
+		}
+
+		return $search;
+	}
+
+	/**
 	 * Set onboarding completion status.
 	 *
 	 * @param \WP_REST_Request $request Full details about the request.
@@ -1067,6 +1209,49 @@ class Rest_Api {
 					'methods'             => 'GET',
 					'callback'            => [ $this, 'get_form_data' ],
 					'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
+				],
+				// Page search endpoint for async admin dropdowns.
+				'pages/search'             => [
+					'methods'             => 'GET',
+					'callback'            => [ $this, 'search_pages' ],
+					'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
+					'args'                => [
+						'search'        => [
+							'sanitize_callback' => 'sanitize_text_field',
+							'default'           => '',
+						],
+						'page'          => [
+							'sanitize_callback' => 'absint',
+							'default'           => 1,
+						],
+						'per_page'      => [
+							'sanitize_callback' => 'absint',
+							'default'           => 20,
+						],
+						'selected_url'  => [
+							'sanitize_callback' => 'esc_url_raw',
+							'default'           => '',
+						],
+						'selected_urls' => [
+							'default'           => [],
+							'sanitize_callback' => static function( $value ) {
+								if ( is_array( $value ) ) {
+									return array_values( array_filter( array_map( 'esc_url_raw', $value ) ) );
+								}
+								if ( is_string( $value ) ) {
+									return array_values(
+										array_filter(
+											array_map(
+												'esc_url_raw',
+												array_map( 'trim', explode( ',', $value ) )
+											)
+										)
+									);
+								}
+								return [];
+							},
+						],
+					],
 				],
 				// Onboarding endpoints.
 				'onboarding/set-status'     => [

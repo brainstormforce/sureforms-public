@@ -3,6 +3,8 @@ import { __ } from '@wordpress/i18n';
 import { useEffect, useState } from '@wordpress/element';
 import { Select, Label, Input } from '@bsf/force-ui';
 import RadioGroup from '@Admin/components/RadioGroup';
+import { useDebouncedCallback } from 'use-debounce';
+import { getWordPressPages } from '@Utils/Helpers';
 
 const AFTER_SUBMISSION_OPTIONS = [
 	{
@@ -19,18 +21,34 @@ const DefaultConfirmationTypes = ( {
 	data,
 	setData,
 	pageOptions,
+	setPageOptions,
 	setErrorMessage,
 	errorMessage,
 	keyValueComponent,
 } ) => {
 	const [ canDisplayError, setCanDisplayError ] = useState( false );
+	const handlePageSearch = useDebouncedCallback( ( keyword = '' ) => {
+		getWordPressPages( setPageOptions, {
+			search: keyword,
+			selectedUrl: data?.page_url || '',
+		} );
+	}, 300 );
+
 	const handleEditorChange = ( newContent ) => {
 		setData( { ...data, message: newContent } );
 	};
+
 	useEffect( () => {
 		// Do not display pre-validation message right after changing tabs or confirmation type.
 		setCanDisplayError( false );
 	}, [ data?.confirmation_type ] );
+
+	useEffect( () => {
+		return () => {
+			handlePageSearch.cancel();
+		};
+	}, [ handlePageSearch ] );
+
 	return (
 		<>
 			{ data?.confirmation_type === 'same page' && (
@@ -89,6 +107,9 @@ const DefaultConfirmationTypes = ( {
 									} );
 								} }
 								combobox
+								searchFn={ ( keyword ) =>
+									handlePageSearch( keyword )
+								}
 								searchPlaceholder={ __(
 									'Search for a page',
 									'sureforms'
