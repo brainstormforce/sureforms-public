@@ -243,7 +243,7 @@ class Rest_Api {
 				continue;
 			}
 
-			$title = get_the_title( $post_id );
+			$title   = get_the_title( $post_id );
 			$items[] = [
 				'id'    => $post_id,
 				'label' => ! empty( $title ) ? $title : (string) $post_id,
@@ -1211,7 +1211,7 @@ class Rest_Api {
 					'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
 				],
 				// Page search endpoint for async admin dropdowns.
-				'pages/search'             => [
+				'pages/search'              => [
 					'methods'             => 'GET',
 					'callback'            => [ $this, 'search_pages' ],
 					'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
