@@ -1505,7 +1505,7 @@ class Helper {
 	 * Strips JavaScript attributes from HTML content.
 	 *
 	 * @param string $html               The HTML content to process.
-	 * @param bool   $remove_link_target Optional. When true, also removes target and rel attributes from links. Default false.
+	 * @param bool   $remove_link_target Optional. When true, removes target and strips noopener/noreferrer from rel on links. Default false.
 	 * @since 1.7.1
 	 * @return string The cleaned HTML content without JavaScript attributes.
 	 */
@@ -1549,14 +1549,22 @@ class Helper {
 			}
 		}
 
-		// 3. Optionally remove target/rel from links.
+		// 3. Optionally remove target and target-related rel values (noopener, noreferrer) from links.
 		if ( $remove_link_target ) {
 			$links = $xpath->query( '//a[@target]' );
 			if ( $links instanceof \DOMNodeList ) {
 				foreach ( $links as $link ) {
 					if ( $link instanceof \DOMElement ) {
 						$link->removeAttribute( 'target' );
-						$link->removeAttribute( 'rel' );
+						$rel = $link->getAttribute( 'rel' );
+						if ( $rel ) {
+							$cleaned_rel = trim( (string) preg_replace( '/\b(noopener|noreferrer)\b/i', '', $rel ) );
+							if ( $cleaned_rel ) {
+								$link->setAttribute( 'rel', $cleaned_rel );
+							} else {
+								$link->removeAttribute( 'rel' );
+							}
+						}
 					}
 				}
 			}
