@@ -9,8 +9,10 @@
 namespace SRFM\Inc\Abilities\Forms;
 
 use SRFM\Inc\Abilities\Abstract_Ability;
+use SRFM\Inc\AI_Form_Builder\Field_Mapping;
 use SRFM\Inc\Create_New_Form;
 use SRFM\Inc\Helper;
+use WP_REST_Request;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -19,7 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Update_Form ability class.
  *
- * Updates an existing SureForms form's title, status, and/or metadata.
+ * Updates an existing SureForms form's title, status, fields, and/or metadata.
  *
  * @since x.x.x
  */
@@ -32,7 +34,7 @@ class Update_Form extends Abstract_Ability {
 	public function __construct() {
 		$this->id          = 'sureforms/update-form';
 		$this->label       = __( 'Update SureForms Form', 'sureforms' );
-		$this->description = __( 'Update an existing SureForms form title, status (publish/draft/private/trash), and/or metadata settings. Use status "trash" to trash a form, or change from "trash" to another status to restore it.', 'sureforms' );
+		$this->description = __( 'Update an existing SureForms form title, status (publish/draft/private/trash), fields, and/or metadata settings. Use status "trash" to trash a form, or change from "trash" to another status to restore it. Providing formFields replaces all existing fields.', 'sureforms' );
 		$this->capability  = 'edit_posts';
 	}
 
@@ -55,6 +57,95 @@ class Update_Form extends Abstract_Ability {
 	 * @since x.x.x
 	 */
 	public function get_input_schema() {
+		$field_types = [
+			'input',
+			'email',
+			'url',
+			'textarea',
+			'multi-choice',
+			'checkbox',
+			'gdpr',
+			'number',
+			'phone',
+			'dropdown',
+			'address',
+			'inline-button',
+			'payment',
+		];
+
+		/**
+		 * Filter the allowed field types for the update-form ability.
+		 *
+		 * Pro and third-party plugins can use this to add their own field types.
+		 *
+		 * @param array<string> $field_types Array of field type slugs.
+		 * @since x.x.x
+		 */
+		$field_types = apply_filters( 'srfm_ability_create_form_field_types', $field_types );
+
+		// Core field properties.
+		$field_properties = [
+			'label'           => [
+				'type'        => 'string',
+				'description' => __( 'Field label. e.g. First Name', 'sureforms' ),
+			],
+			'required'        => [
+				'type'        => 'boolean',
+				'description' => __( 'Whether the field is required.', 'sureforms' ),
+			],
+			'fieldType'       => [
+				'type'        => 'string',
+				'description' => __( 'The field type.', 'sureforms' ),
+				'enum'        => $field_types,
+			],
+			'helpText'        => [
+				'type'        => 'string',
+				'description' => __( 'Help text describing the field.', 'sureforms' ),
+			],
+			'defaultValue'    => [
+				'type'        => 'string',
+				'description' => __( 'Default value for the field.', 'sureforms' ),
+			],
+			'fieldOptions'    => [
+				'type'        => 'array',
+				'description' => __( 'Options for dropdown or multi-choice fields.', 'sureforms' ),
+				'items'       => [
+					'type'       => 'object',
+					'properties' => [
+						'optionTitle' => [ 'type' => 'string' ],
+						'label'       => [ 'type' => 'string' ],
+					],
+				],
+			],
+			'singleSelection' => [
+				'type'        => 'boolean',
+				'description' => __( 'Allow only single selection in multi-choice field.', 'sureforms' ),
+			],
+			'isUnique'        => [
+				'type'        => 'boolean',
+				'description' => __( 'Whether the field value must be unique.', 'sureforms' ),
+			],
+			'textLength'      => [
+				'type'        => 'integer',
+				'description' => __( 'Maximum character length.', 'sureforms' ),
+			],
+		];
+
+		/**
+		 * Filter additional field properties for the update-form ability schema.
+		 *
+		 * Pro and third-party plugins can use this to add field-specific
+		 * properties (e.g. upload, rating, date-picker, time-picker options).
+		 *
+		 * @param array<string,array<string,mixed>> $properties Additional field properties. Default empty array.
+		 * @since x.x.x
+		 */
+		$additional_properties = apply_filters( 'srfm_ability_create_form_field_properties', [] );
+
+		if ( ! empty( $additional_properties ) && is_array( $additional_properties ) ) {
+			$field_properties = array_merge( $field_properties, $additional_properties );
+		}
+
 		return [
 			'type'       => 'object',
 			'properties' => [
@@ -70,6 +161,15 @@ class Update_Form extends Abstract_Ability {
 					'type'        => 'string',
 					'description' => __( 'New status for the form.', 'sureforms' ),
 					'enum'        => [ 'publish', 'draft', 'private', 'trash' ],
+				],
+				'formFields'   => [
+					'type'        => 'array',
+					'description' => __( 'Array of form field definitions. Providing this replaces all existing fields.', 'sureforms' ),
+					'items'       => [
+						'type'       => 'object',
+						'properties' => $field_properties,
+						'required'   => [ 'label', 'fieldType' ],
+					],
 				],
 				'formMetaData' => [
 					'type'        => 'object',
@@ -246,6 +346,29 @@ class Update_Form extends Abstract_Ability {
 			}
 
 			$updated_fields[] = 'metadata';
+		}
+
+		// Handle field changes.
+		if ( ! empty( $input['formFields'] ) && is_array( $input['formFields'] ) ) {
+			$request = new WP_REST_Request( 'POST' );
+			$request->set_param(
+				'form_data',
+				[
+					'form' => [ 'formFields' => $input['formFields'] ],
+				]
+			);
+
+			$post_content = Field_Mapping::generate_gutenberg_fields_from_questions( $request );
+
+			if ( ! empty( $post_content ) ) {
+				wp_update_post(
+					[
+						'ID'           => $form_id,
+						'post_content' => $post_content,
+					]
+				);
+				$updated_fields[] = 'fields';
+			}
 		}
 
 		// Re-fetch post to get the current state.

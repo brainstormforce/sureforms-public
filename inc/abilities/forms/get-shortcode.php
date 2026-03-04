@@ -6,7 +6,7 @@
  * @since x.x.x
  */
 
-namespace SRFM\Inc\Abilities\Embedding;
+namespace SRFM\Inc\Abilities\Forms;
 
 use SRFM\Inc\Abilities\Abstract_Ability;
 use SRFM\Inc\Helper;
