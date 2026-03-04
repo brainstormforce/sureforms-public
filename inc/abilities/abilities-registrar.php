@@ -23,6 +23,12 @@ use SRFM\Inc\Abilities\Forms\Get_Form;
 use SRFM\Inc\Abilities\Forms\Get_Form_Stats;
 use SRFM\Inc\Abilities\Forms\List_Forms;
 use SRFM\Inc\Abilities\Forms\Update_Form;
+use SRFM\Inc\Abilities\Settings\Get_Global_Settings;
+use SRFM\Inc\Abilities\Settings\Update_Global_Settings;
+use SRFM\Inc\Abilities\Analytics\Get_Form_Analytics;
+use SRFM\Inc\Abilities\Export\Export_Entries;
+use SRFM\Inc\Abilities\Export\Export_Forms;
+use SRFM\Inc\Abilities\Export\Import_Forms;
 use SRFM\Inc\Traits\Get_Instance;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -101,6 +107,12 @@ class Abilities_Registrar {
 			new Get_Entry(),
 			new Update_Entry_Status(),
 			new Delete_Entry(),
+			new Get_Global_Settings(),
+			new Update_Global_Settings(),
+			new Get_Form_Analytics(),
+			new Export_Forms(),
+			new Import_Forms(),
+			new Export_Entries(),
 		];
 
 		/**
