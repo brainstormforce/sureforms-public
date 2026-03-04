@@ -580,19 +580,66 @@ class Entries {
 			}
 		}
 
-		// Filter by search (entry ID only).
+		// Filter by search (entry ID + form title).
 		if ( ! empty( $args['search'] ) ) {
-			$search_term        = Helper::get_integer_value( $args['search'] );
-			$where_conditions[] = [
-				[
+			$search_term  = Helper::get_string_value( $args['search'] );
+			$search_group = [ 'RELATION' => 'OR' ];
+
+			// If numeric, match entry ID.
+			if ( is_numeric( $search_term ) ) {
+				$search_group[] = [
 					'key'     => 'ID',
 					'compare' => '=',
-					'value'   => $search_term,
-				],
-			];
+					'value'   => absint( $search_term ),
+				];
+			}
+
+			// Match form titles.
+			$matching_form_ids = self::get_form_ids_by_title( $search_term );
+			if ( ! empty( $matching_form_ids ) ) {
+				$search_group[] = [
+					'key'     => 'form_id',
+					'compare' => 'IN',
+					'value'   => $matching_form_ids,
+				];
+			}
+
+			// Only add if we have search conditions, otherwise force empty result.
+			if ( count( $search_group ) > 1 ) {
+				$where_conditions[] = $search_group;
+			} else {
+				$where_conditions[] = [
+					[
+						'key'     => 'ID',
+						'compare' => '=',
+						'value'   => 0,
+					],
+				];
+			}
 		}
 
 		return $where_conditions;
+	}
+
+	/**
+	 * Get form IDs whose title matches the search term.
+	 *
+	 * @param string $search_term Search term to match against form titles.
+	 *
+	 * @since 2.0.0
+	 * @return array<int> Array of matching form IDs.
+	 */
+	private static function get_form_ids_by_title( $search_term ) {
+		global $wpdb;
+
+		$form_ids = $wpdb->get_col(
+			$wpdb->prepare(
+				"SELECT ID FROM {$wpdb->posts} WHERE post_type = 'sureforms_form' AND post_status = 'publish' AND post_title LIKE %s",
+				'%' . $wpdb->esc_like( $search_term ) . '%'
+			)
+		);
+
+		return ! empty( $form_ids ) ? array_map( 'absint', $form_ids ) : [];
 	}
 
 	/**
