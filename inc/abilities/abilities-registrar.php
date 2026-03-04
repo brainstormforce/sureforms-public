@@ -11,11 +11,15 @@
 
 namespace SRFM\Inc\Abilities;
 
+use SRFM\Inc\Abilities\Analytics\Get_Form_Analytics;
 use SRFM\Inc\Abilities\Embedding\Get_Shortcode;
 use SRFM\Inc\Abilities\Entries\Delete_Entry;
 use SRFM\Inc\Abilities\Entries\Get_Entry;
 use SRFM\Inc\Abilities\Entries\List_Entries;
 use SRFM\Inc\Abilities\Entries\Update_Entry_Status;
+use SRFM\Inc\Abilities\Export\Export_Entries;
+use SRFM\Inc\Abilities\Export\Export_Forms;
+use SRFM\Inc\Abilities\Export\Import_Forms;
 use SRFM\Inc\Abilities\Forms\Create_Form;
 use SRFM\Inc\Abilities\Forms\Delete_Form;
 use SRFM\Inc\Abilities\Forms\Duplicate_Form as Duplicate_Form_Ability;
@@ -25,10 +29,6 @@ use SRFM\Inc\Abilities\Forms\List_Forms;
 use SRFM\Inc\Abilities\Forms\Update_Form;
 use SRFM\Inc\Abilities\Settings\Get_Global_Settings;
 use SRFM\Inc\Abilities\Settings\Update_Global_Settings;
-use SRFM\Inc\Abilities\Analytics\Get_Form_Analytics;
-use SRFM\Inc\Abilities\Export\Export_Entries;
-use SRFM\Inc\Abilities\Export\Export_Forms;
-use SRFM\Inc\Abilities\Export\Import_Forms;
 use SRFM\Inc\Traits\Get_Instance;
 
 if ( ! defined( 'ABSPATH' ) ) {

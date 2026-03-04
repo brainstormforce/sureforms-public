@@ -23,7 +23,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since x.x.x
  */
 class Export_Forms extends Abstract_Ability {
-
 	/**
 	 * Constructor.
 	 *

@@ -24,7 +24,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since x.x.x
  */
 class Get_Form_Analytics extends Abstract_Ability {
-
 	/**
 	 * Constructor.
 	 *

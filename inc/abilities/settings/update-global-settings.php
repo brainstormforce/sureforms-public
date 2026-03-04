@@ -24,7 +24,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since x.x.x
  */
 class Update_Global_Settings extends Abstract_Ability {
-
 	/**
 	 * Constructor.
 	 *

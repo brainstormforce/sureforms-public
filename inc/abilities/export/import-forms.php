@@ -24,7 +24,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since x.x.x
  */
 class Import_Forms extends Abstract_Ability {
-
 	/**
 	 * Constructor.
 	 *

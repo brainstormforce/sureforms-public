@@ -24,7 +24,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since x.x.x
  */
 class Export_Entries extends Abstract_Ability {
-
 	/**
 	 * Constructor.
 	 *
@@ -176,7 +175,7 @@ class Export_Entries extends Abstract_Ability {
 
 		// Extract entry IDs from results.
 		$fetched_ids = array_map(
-			function ( $row ) {
+			static function ( $row ) {
 				if ( is_array( $row ) ) {
 					return absint( Helper::get_integer_value( $row['ID'] ?? 0 ) );
 				}
