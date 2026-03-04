@@ -180,7 +180,13 @@ class Forms_Data {
 			$id_args  = array_merge( $args, [ 'p' => absint( $search ) ] );
 			$id_query = new \WP_Query( $id_args );
 
-			$title_args  = array_merge( $args, [ 's' => $search, 'search_columns' => [ 'post_title' ] ] );
+			$title_args  = array_merge(
+				$args,
+				[
+					's'              => $search,
+					'search_columns' => [ 'post_title' ],
+				]
+			);
 			$title_query = new \WP_Query( $title_args );
 
 			// Merge and deduplicate by ID.
