@@ -1288,20 +1288,25 @@ class Form_Submit {
 		}
 
 		/**
-		 * ...
+		 * Filters the submission data before preparing it for storage.
 		 *
-		 * @since x.x.x Added `form-id` key to `$submission_data` (removed before return).
+		 * Note: A transient `form-id` key is injected into `$submission_data` before this filter
+		 * and removed after. Filter consumers can read it but should not rely on it persisting.
+		 *
+		 * @since x.x.x Added transient `form-id` key to `$submission_data` (removed before return).
+		 *
+		 * @param array $submission_data Processed form submission data.
 		 */
 		$submission_data['form-id'] = $form_id;
 
-		$filter_data_submission_data = apply_filters( 'srfm_before_prepare_submission_data', $submission_data );
+		$filtered_submission_data = apply_filters( 'srfm_before_prepare_submission_data', $submission_data );
 
 		// Unset the form-id from the form data.
-		if ( isset( $filter_data_submission_data['form-id'] ) ) {
-			unset( $filter_data_submission_data['form-id'] );
+		if ( isset( $filtered_submission_data['form-id'] ) ) {
+			unset( $filtered_submission_data['form-id'] );
 		}
 
-		return $filter_data_submission_data;
+		return $filtered_submission_data;
 	}
 
 	/**
