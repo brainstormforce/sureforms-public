@@ -11,8 +11,9 @@
 
 namespace SRFM\Inc\Abilities;
 
-use SRFM\Inc\Abilities\Embedding\Get_Shortcode;
+use SRFM\Inc\Abilities\Forms\Get_Shortcode;
 use SRFM\Inc\Abilities\Entries\Delete_Entry;
+use SRFM\Inc\Abilities\Entries\Bulk_Get_Entries;
 use SRFM\Inc\Abilities\Entries\Get_Entry;
 use SRFM\Inc\Abilities\Entries\List_Entries;
 use SRFM\Inc\Abilities\Entries\Update_Entry_Status;
@@ -99,6 +100,7 @@ class Abilities_Registrar {
 			new Get_Form_Stats(),
 			new List_Entries(),
 			new Get_Entry(),
+			new Bulk_Get_Entries(),
 			new Update_Entry_Status(),
 			new Delete_Entry(),
 		];
