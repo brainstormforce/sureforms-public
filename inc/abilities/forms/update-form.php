@@ -10,6 +10,7 @@ namespace SRFM\Inc\Abilities\Forms;
 
 use SRFM\Inc\Abilities\Abstract_Ability;
 use SRFM\Inc\Create_New_Form;
+use SRFM\Inc\Helper;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -23,7 +24,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since x.x.x
  */
 class Update_Form extends Abstract_Ability {
-
 	/**
 	 * Constructor.
 	 *
@@ -167,7 +167,7 @@ class Update_Form extends Abstract_Ability {
 	 * @return array<string,mixed>|\WP_Error
 	 */
 	public function execute( $input ) {
-		$form_id = absint( $input['form_id'] );
+		$form_id = Helper::get_integer_value( $input['form_id'] ?? 0 );
 		$post    = get_post( $form_id );
 
 		if ( ! $post || SRFM_FORMS_POST_TYPE !== $post->post_type ) {
@@ -183,7 +183,7 @@ class Update_Form extends Abstract_Ability {
 
 		// Handle status changes.
 		if ( ! empty( $input['status'] ) ) {
-			$new_status     = sanitize_text_field( $input['status'] );
+			$new_status     = sanitize_text_field( Helper::get_string_value( $input['status'] ) );
 			$allowed_status = [ 'publish', 'draft', 'private', 'trash' ];
 
 			if ( in_array( $new_status, $allowed_status, true ) ) {
@@ -214,7 +214,7 @@ class Update_Form extends Abstract_Ability {
 
 		// Handle title changes.
 		if ( ! empty( $input['title'] ) ) {
-			$new_title = sanitize_text_field( $input['title'] );
+			$new_title = sanitize_text_field( Helper::get_string_value( $input['title'] ) );
 
 			if ( $new_title !== $post->post_title ) {
 				wp_update_post(
@@ -277,11 +277,10 @@ class Update_Form extends Abstract_Ability {
 		}
 
 		// General settings.
-		if ( ! empty( $meta_data['general'] ) ) {
-			$general = $meta_data['general'];
-
+		$general = Helper::get_array_value( $meta_data['general'] ?? [] );
+		if ( ! empty( $general ) ) {
 			if ( isset( $general['submitText'] ) ) {
-				$post_metas['_srfm_submit_button_text'] = sanitize_text_field( $general['submitText'] );
+				$post_metas['_srfm_submit_button_text'] = sanitize_text_field( Helper::get_string_value( $general['submitText'] ) );
 			}
 			if ( isset( $general['useLabelAsPlaceholder'] ) ) {
 				$post_metas['_srfm_use_label_as_placeholder'] = (bool) $general['useLabelAsPlaceholder'];
@@ -289,14 +288,14 @@ class Update_Form extends Abstract_Ability {
 		}
 
 		// Confirmation message.
-		if ( ! empty( $meta_data['formConfirmation']['confirmationMessage'] ) ) {
-			$post_metas['_srfm_confirmation_message'] = wp_kses_post( $meta_data['formConfirmation']['confirmationMessage'] );
+		$form_confirmation = Helper::get_array_value( $meta_data['formConfirmation'] ?? [] );
+		if ( ! empty( $form_confirmation['confirmationMessage'] ) ) {
+			$post_metas['_srfm_confirmation_message'] = wp_kses_post( Helper::get_string_value( $form_confirmation['confirmationMessage'] ) );
 		}
 
 		// Instant form settings.
-		if ( ! empty( $meta_data['instantForm'] ) ) {
-			$instant = $meta_data['instantForm'];
-
+		$instant = Helper::get_array_value( $meta_data['instantForm'] ?? [] );
+		if ( ! empty( $instant ) ) {
 			if ( isset( $instant['instantForm'] ) && $instant['instantForm'] ) {
 				$post_metas['_srfm_instant_form'] = 'enabled';
 			}
@@ -304,24 +303,23 @@ class Update_Form extends Abstract_Ability {
 				$post_metas['_srfm_single_page_form_title'] = $instant['showTitle'] ? 1 : 0;
 			}
 			if ( ! empty( $instant['formWidth'] ) ) {
-				$width = absint( $instant['formWidth'] );
+				$width = Helper::get_integer_value( $instant['formWidth'] );
 				if ( $width >= 560 && $width <= 1000 ) {
 					$post_metas['_srfm_form_container_width'] = $width;
 				}
 			}
 			if ( ! empty( $instant['formBackgroundColor'] ) ) {
-				$post_metas['_srfm_bg_color'] = sanitize_hex_color( $instant['formBackgroundColor'] );
+				$post_metas['_srfm_bg_color'] = sanitize_hex_color( Helper::get_string_value( $instant['formBackgroundColor'] ) );
 			}
 		}
 
 		// Styling.
-		if ( ! empty( $meta_data['styling'] ) ) {
-			$styling = $meta_data['styling'];
-
+		$styling = Helper::get_array_value( $meta_data['styling'] ?? [] );
+		if ( ! empty( $styling ) ) {
 			if ( ! empty( $styling['submitAlignment'] ) ) {
 				$valid_alignments = [ 'left', 'center', 'right', 'full-width' ];
 				if ( in_array( $styling['submitAlignment'], $valid_alignments, true ) ) {
-					$post_metas['_srfm_submit_alignment'] = sanitize_text_field( $styling['submitAlignment'] );
+					$post_metas['_srfm_submit_alignment'] = sanitize_text_field( Helper::get_string_value( $styling['submitAlignment'] ) );
 				}
 			}
 
@@ -332,9 +330,8 @@ class Update_Form extends Abstract_Ability {
 		}
 
 		// Compliance settings.
-		if ( ! empty( $meta_data['compliance'] ) ) {
-			$compliance = $meta_data['compliance'];
-
+		$compliance = Helper::get_array_value( $meta_data['compliance'] ?? [] );
+		if ( ! empty( $compliance ) ) {
 			if ( ! empty( $compliance['enableCompliance'] ) ) {
 				$post_metas['_srfm_compliance'] = true;
 
@@ -342,7 +339,7 @@ class Update_Form extends Abstract_Ability {
 					$post_metas['_srfm_compliance_opt'] = 'do-not-store';
 				} elseif ( ! empty( $compliance['autoDeleteEntries'] ) && ! empty( $compliance['autoDeleteEntriesDays'] ) ) {
 					$post_metas['_srfm_compliance_opt']  = 'auto-delete';
-					$post_metas['_srfm_compliance_days'] = absint( $compliance['autoDeleteEntriesDays'] );
+					$post_metas['_srfm_compliance_days'] = Helper::get_integer_value( $compliance['autoDeleteEntriesDays'] );
 				}
 			}
 		}

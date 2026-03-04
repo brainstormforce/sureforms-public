@@ -25,7 +25,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since x.x.x
  */
 class Get_Entry extends Abstract_Ability {
-
 	/**
 	 * Constructor.
 	 *
@@ -108,7 +107,7 @@ class Get_Entry extends Abstract_Ability {
 	 * @return array<string,mixed>|\WP_Error
 	 */
 	public function execute( $input ) {
-		$entry_id = absint( $input['entry_id'] );
+		$entry_id = Helper::get_integer_value( $input['entry_id'] ?? 0 );
 		$entry    = EntriesTable::get( $entry_id );
 
 		if ( empty( $entry ) ) {

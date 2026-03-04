@@ -41,8 +41,8 @@ use SRFM\Inc\Page_Builders\Page_Builders;
 use SRFM\Inc\Payments\Payments;
 use SRFM\Inc\Post_Types;
 use SRFM\Inc\Rest_Api;
-use SRFM\Inc\Single_Form_Settings\Compliance_Settings;
 use SRFM\Inc\Abilities\Abilities_Registrar;
+use SRFM\Inc\Single_Form_Settings\Compliance_Settings;
 use SRFM\Inc\Smart_Tags;
 use SRFM\Inc\Updater;
 

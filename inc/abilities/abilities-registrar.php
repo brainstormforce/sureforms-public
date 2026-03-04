@@ -11,18 +11,18 @@
 
 namespace SRFM\Inc\Abilities;
 
-use SRFM\Inc\Abilities\Forms\List_Forms;
+use SRFM\Inc\Abilities\Embedding\Get_Shortcode;
+use SRFM\Inc\Abilities\Entries\Delete_Entry;
+use SRFM\Inc\Abilities\Entries\Get_Entry;
+use SRFM\Inc\Abilities\Entries\List_Entries;
+use SRFM\Inc\Abilities\Entries\Update_Entry_Status;
 use SRFM\Inc\Abilities\Forms\Create_Form;
-use SRFM\Inc\Abilities\Forms\Get_Form;
 use SRFM\Inc\Abilities\Forms\Delete_Form;
 use SRFM\Inc\Abilities\Forms\Duplicate_Form as Duplicate_Form_Ability;
-use SRFM\Inc\Abilities\Forms\Update_Form;
+use SRFM\Inc\Abilities\Forms\Get_Form;
 use SRFM\Inc\Abilities\Forms\Get_Form_Stats;
-use SRFM\Inc\Abilities\Entries\List_Entries;
-use SRFM\Inc\Abilities\Entries\Get_Entry;
-use SRFM\Inc\Abilities\Entries\Update_Entry_Status;
-use SRFM\Inc\Abilities\Entries\Delete_Entry;
-use SRFM\Inc\Abilities\Embedding\Get_Shortcode;
+use SRFM\Inc\Abilities\Forms\List_Forms;
+use SRFM\Inc\Abilities\Forms\Update_Form;
 use SRFM\Inc\Traits\Get_Instance;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -109,7 +109,7 @@ class Abilities_Registrar {
 		 * Third-party plugins can add their own abilities by hooking into this filter.
 		 * Each ability must extend SRFM\Inc\Abilities\Abstract_Ability.
 		 *
-		 * @param Abstract_Ability[] $abilities Array of ability instances.
+		 * @param array<Abstract_Ability> $abilities Array of ability instances.
 		 * @since x.x.x
 		 */
 		$abilities = apply_filters( 'srfm_register_abilities', $abilities );

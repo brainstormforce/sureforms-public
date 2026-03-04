@@ -10,6 +10,7 @@ namespace SRFM\Inc\Abilities\Entries;
 
 use SRFM\Inc\Abilities\Abstract_Ability;
 use SRFM\Inc\Entries;
+use SRFM\Inc\Helper;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -23,7 +24,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since x.x.x
  */
 class List_Entries extends Abstract_Ability {
-
 	/**
 	 * Constructor.
 	 *
@@ -145,19 +145,19 @@ class List_Entries extends Abstract_Ability {
 	 * @return array<string,mixed>|\WP_Error
 	 */
 	public function execute( $input ) {
-		$per_page = isset( $input['per_page'] ) ? absint( $input['per_page'] ) : 20;
+		$per_page = isset( $input['per_page'] ) ? Helper::get_integer_value( $input['per_page'] ) : 20;
 		$per_page = max( 1, min( 100, $per_page ) );
 
 		$args = [
-			'form_id'   => absint( $input['form_id'] ?? 0 ),
-			'status'    => ! empty( $input['status'] ) ? sanitize_text_field( $input['status'] ) : 'all',
-			'search'    => ! empty( $input['search'] ) ? sanitize_text_field( $input['search'] ) : '',
-			'date_from' => ! empty( $input['date_from'] ) ? sanitize_text_field( $input['date_from'] ) : '',
-			'date_to'   => ! empty( $input['date_to'] ) ? sanitize_text_field( $input['date_to'] ) : '',
+			'form_id'   => Helper::get_integer_value( $input['form_id'] ?? 0 ),
+			'status'    => ! empty( $input['status'] ) ? sanitize_text_field( Helper::get_string_value( $input['status'] ) ) : 'all',
+			'search'    => ! empty( $input['search'] ) ? sanitize_text_field( Helper::get_string_value( $input['search'] ) ) : '',
+			'date_from' => ! empty( $input['date_from'] ) ? sanitize_text_field( Helper::get_string_value( $input['date_from'] ) ) : '',
+			'date_to'   => ! empty( $input['date_to'] ) ? sanitize_text_field( Helper::get_string_value( $input['date_to'] ) ) : '',
 			'per_page'  => $per_page,
-			'page'      => isset( $input['page'] ) ? absint( $input['page'] ) : 1,
-			'orderby'   => ! empty( $input['orderby'] ) ? sanitize_text_field( $input['orderby'] ) : 'created_at',
-			'order'     => ! empty( $input['order'] ) ? sanitize_text_field( $input['order'] ) : 'DESC',
+			'page'      => isset( $input['page'] ) ? Helper::get_integer_value( $input['page'] ) : 1,
+			'orderby'   => ! empty( $input['orderby'] ) ? sanitize_text_field( Helper::get_string_value( $input['orderby'] ) ) : 'created_at',
+			'order'     => ! empty( $input['order'] ) ? sanitize_text_field( Helper::get_string_value( $input['order'] ) ) : 'DESC',
 		];
 
 		$result = Entries::get_entries( $args );
@@ -185,10 +185,10 @@ class List_Entries extends Abstract_Ability {
 
 		return [
 			'entries'      => $entries,
-			'total'        => (int) ( $result['total'] ?? 0 ),
-			'total_pages'  => (int) ( $result['total_pages'] ?? 0 ),
-			'current_page' => (int) ( $result['current_page'] ?? 1 ),
-			'per_page'     => (int) ( $result['per_page'] ?? $per_page ),
+			'total'        => Helper::get_integer_value( $result['total'] ?? 0 ),
+			'total_pages'  => Helper::get_integer_value( $result['total_pages'] ?? 0 ),
+			'current_page' => Helper::get_integer_value( $result['current_page'] ?? 1 ),
+			'per_page'     => Helper::get_integer_value( $result['per_page'] ?? $per_page ),
 		];
 	}
 }

@@ -24,7 +24,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since x.x.x
  */
 class Get_Form extends Abstract_Ability {
-
 	/**
 	 * Constructor.
 	 *
@@ -99,7 +98,7 @@ class Get_Form extends Abstract_Ability {
 	 * @return array<string,mixed>|\WP_Error
 	 */
 	public function execute( $input ) {
-		$form_id = absint( $input['form_id'] );
+		$form_id = Helper::get_integer_value( $input['form_id'] ?? 0 );
 		$post    = get_post( $form_id );
 
 		if ( ! $post || SRFM_FORMS_POST_TYPE !== $post->post_type ) {
@@ -145,31 +144,39 @@ class Get_Form extends Abstract_Ability {
 		$fields = [];
 
 		foreach ( $blocks as $block ) {
-			if ( empty( $block['blockName'] ) ) {
+			if ( ! is_array( $block ) ) {
 				continue;
 			}
 
+			$block_name = Helper::get_string_value( $block['blockName'] ?? '' );
+
+			if ( empty( $block_name ) ) {
+				continue;
+			}
+
+			$inner_blocks = Helper::get_array_value( $block['innerBlocks'] ?? [] );
+
 			// Only process srfm/* blocks.
-			if ( 0 !== strpos( $block['blockName'], 'srfm/' ) ) {
+			if ( 0 !== strpos( $block_name, 'srfm/' ) ) {
 				// Check inner blocks for nested structures.
-				if ( ! empty( $block['innerBlocks'] ) ) {
-					$fields = array_merge( $fields, $this->extract_fields_from_blocks( $block['innerBlocks'] ) );
+				if ( ! empty( $inner_blocks ) ) {
+					$fields = array_merge( $fields, $this->extract_fields_from_blocks( $inner_blocks ) );
 				}
 				continue;
 			}
 
 			// Skip the form wrapper block itself.
-			if ( 'srfm/form' === $block['blockName'] ) {
-				if ( ! empty( $block['innerBlocks'] ) ) {
-					$fields = array_merge( $fields, $this->extract_fields_from_blocks( $block['innerBlocks'] ) );
+			if ( 'srfm/form' === $block_name ) {
+				if ( ! empty( $inner_blocks ) ) {
+					$fields = array_merge( $fields, $this->extract_fields_from_blocks( $inner_blocks ) );
 				}
 				continue;
 			}
 
-			$attrs = $block['attrs'] ?? [];
+			$attrs = Helper::get_array_value( $block['attrs'] ?? [] );
 
 			$fields[] = [
-				'type'     => str_replace( 'srfm/', '', $block['blockName'] ),
+				'type'     => str_replace( 'srfm/', '', $block_name ),
 				'label'    => $attrs['label'] ?? '',
 				'slug'     => $attrs['slug'] ?? '',
 				'required' => ! empty( $attrs['required'] ),

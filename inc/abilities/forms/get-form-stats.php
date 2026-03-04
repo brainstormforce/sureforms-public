@@ -10,6 +10,7 @@ namespace SRFM\Inc\Abilities\Forms;
 
 use SRFM\Inc\Abilities\Abstract_Ability;
 use SRFM\Inc\Database\Tables\Entries as EntriesTable;
+use SRFM\Inc\Helper;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -23,7 +24,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since x.x.x
  */
 class Get_Form_Stats extends Abstract_Ability {
-
 	/**
 	 * Constructor.
 	 *
@@ -95,7 +95,7 @@ class Get_Form_Stats extends Abstract_Ability {
 	 * @return array<string,mixed>|\WP_Error
 	 */
 	public function execute( $input ) {
-		$form_id = absint( $input['form_id'] ?? 0 );
+		$form_id = Helper::get_integer_value( $input['form_id'] ?? 0 );
 
 		// If a specific form is requested, validate it exists.
 		$form_title  = '';
@@ -131,7 +131,7 @@ class Get_Form_Stats extends Abstract_Ability {
 		}
 
 		// Total entries (excluding trash).
-		$total_where = [];
+		$total_where   = [];
 		$total_where[] = [
 			[
 				'key'     => 'status',

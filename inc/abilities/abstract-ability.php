@@ -24,7 +24,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since x.x.x
  */
 abstract class Abstract_Ability {
-
 	/**
 	 * Unique ability identifier.
 	 *

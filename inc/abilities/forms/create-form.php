@@ -11,6 +11,7 @@ namespace SRFM\Inc\Abilities\Forms;
 use SRFM\Inc\Abilities\Abstract_Ability;
 use SRFM\Inc\AI_Form_Builder\Field_Mapping;
 use SRFM\Inc\Create_New_Form;
+use SRFM\Inc\Helper;
 use WP_REST_Request;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -25,15 +26,14 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since x.x.x
  */
 class Create_Form extends Abstract_Ability {
-
 	/**
 	 * Constructor.
 	 *
 	 * @since x.x.x
 	 */
 	public function __construct() {
-		$this->id          = 'sureforms/create-form';
-		$this->label       = __( 'Create SureForms Form', 'sureforms' );
+		$this->id    = 'sureforms/create-form';
+		$this->label = __( 'Create SureForms Form', 'sureforms' );
 		$description = __( 'Create a new SureForms form with specified title, fields, metadata, and status. Supports all standard field types (input, email, textarea, dropdown, checkbox, multi-choice, phone, number, url, address, gdpr, payment, inline-button).', 'sureforms' );
 
 		/**
@@ -84,7 +84,7 @@ class Create_Form extends Abstract_Ability {
 		 *
 		 * Pro and third-party plugins can use this to add their own field types.
 		 *
-		 * @param string[] $field_types Array of field type slugs.
+		 * @param array<string> $field_types Array of field type slugs.
 		 * @since x.x.x
 		 */
 		$field_types = apply_filters( 'srfm_ability_create_form_field_types', $field_types );
@@ -263,10 +263,10 @@ class Create_Form extends Abstract_Ability {
 	 * @return array<string,mixed>|\WP_Error
 	 */
 	public function execute( $input ) {
-		$form_title  = sanitize_text_field( $input['formTitle'] );
+		$form_title  = sanitize_text_field( Helper::get_string_value( $input['formTitle'] ?? '' ) );
 		$form_fields = $input['formFields'];
-		$form_status = ! empty( $input['formStatus'] ) ? sanitize_text_field( $input['formStatus'] ) : 'draft';
-		$meta_data   = ! empty( $input['formMetaData'] ) ? $input['formMetaData'] : [];
+		$form_status = ! empty( $input['formStatus'] ) ? sanitize_text_field( Helper::get_string_value( $input['formStatus'] ) ) : 'draft';
+		$meta_data   = ! empty( $input['formMetaData'] ) ? Helper::get_array_value( $input['formMetaData'] ) : [];
 
 		$allowed_statuses = [ 'publish', 'draft', 'private' ];
 		if ( ! in_array( $form_status, $allowed_statuses, true ) ) {
@@ -323,7 +323,8 @@ class Create_Form extends Abstract_Ability {
 				'post_status'  => $form_status,
 				'post_type'    => SRFM_FORMS_POST_TYPE,
 				'meta_input'   => $post_metas,
-			]
+			],
+			true
 		);
 
 		if ( is_wp_error( $post_id ) ) {
@@ -361,11 +362,10 @@ class Create_Form extends Abstract_Ability {
 		}
 
 		// General settings.
-		if ( ! empty( $meta_data['general'] ) ) {
-			$general = $meta_data['general'];
-
+		$general = Helper::get_array_value( $meta_data['general'] ?? [] );
+		if ( ! empty( $general ) ) {
 			if ( isset( $general['submitText'] ) ) {
-				$post_metas['_srfm_submit_button_text'] = sanitize_text_field( $general['submitText'] );
+				$post_metas['_srfm_submit_button_text'] = sanitize_text_field( Helper::get_string_value( $general['submitText'] ) );
 			}
 			if ( isset( $general['useLabelAsPlaceholder'] ) ) {
 				$post_metas['_srfm_use_label_as_placeholder'] = (bool) $general['useLabelAsPlaceholder'];
@@ -373,14 +373,14 @@ class Create_Form extends Abstract_Ability {
 		}
 
 		// Confirmation message.
-		if ( ! empty( $meta_data['formConfirmation']['confirmationMessage'] ) ) {
-			$post_metas['_srfm_confirmation_message'] = wp_kses_post( $meta_data['formConfirmation']['confirmationMessage'] );
+		$form_confirmation = Helper::get_array_value( $meta_data['formConfirmation'] ?? [] );
+		if ( ! empty( $form_confirmation['confirmationMessage'] ) ) {
+			$post_metas['_srfm_confirmation_message'] = wp_kses_post( Helper::get_string_value( $form_confirmation['confirmationMessage'] ) );
 		}
 
 		// Instant form settings.
-		if ( ! empty( $meta_data['instantForm'] ) ) {
-			$instant = $meta_data['instantForm'];
-
+		$instant = Helper::get_array_value( $meta_data['instantForm'] ?? [] );
+		if ( ! empty( $instant ) ) {
 			if ( isset( $instant['instantForm'] ) && $instant['instantForm'] ) {
 				$post_metas['_srfm_instant_form'] = 'enabled';
 			}
@@ -388,24 +388,23 @@ class Create_Form extends Abstract_Ability {
 				$post_metas['_srfm_single_page_form_title'] = $instant['showTitle'] ? 1 : 0;
 			}
 			if ( ! empty( $instant['formWidth'] ) ) {
-				$width = absint( $instant['formWidth'] );
+				$width = Helper::get_integer_value( $instant['formWidth'] );
 				if ( $width >= 560 && $width <= 1000 ) {
 					$post_metas['_srfm_form_container_width'] = $width;
 				}
 			}
 			if ( ! empty( $instant['formBackgroundColor'] ) ) {
-				$post_metas['_srfm_bg_color'] = sanitize_hex_color( $instant['formBackgroundColor'] );
+				$post_metas['_srfm_bg_color'] = sanitize_hex_color( Helper::get_string_value( $instant['formBackgroundColor'] ) );
 			}
 		}
 
 		// Styling.
-		if ( ! empty( $meta_data['styling'] ) ) {
-			$styling = $meta_data['styling'];
-
+		$styling = Helper::get_array_value( $meta_data['styling'] ?? [] );
+		if ( ! empty( $styling ) ) {
 			if ( ! empty( $styling['submitAlignment'] ) ) {
 				$valid_alignments = [ 'left', 'center', 'right', 'full-width' ];
 				if ( in_array( $styling['submitAlignment'], $valid_alignments, true ) ) {
-					$post_metas['_srfm_submit_alignment'] = sanitize_text_field( $styling['submitAlignment'] );
+					$post_metas['_srfm_submit_alignment'] = sanitize_text_field( Helper::get_string_value( $styling['submitAlignment'] ) );
 				}
 			}
 
@@ -416,9 +415,8 @@ class Create_Form extends Abstract_Ability {
 		}
 
 		// Compliance settings.
-		if ( ! empty( $meta_data['compliance'] ) ) {
-			$compliance = $meta_data['compliance'];
-
+		$compliance = Helper::get_array_value( $meta_data['compliance'] ?? [] );
+		if ( ! empty( $compliance ) ) {
 			if ( ! empty( $compliance['enableCompliance'] ) ) {
 				$post_metas['_srfm_compliance'] = true;
 
@@ -426,7 +424,7 @@ class Create_Form extends Abstract_Ability {
 					$post_metas['_srfm_compliance_opt'] = 'do-not-store';
 				} elseif ( ! empty( $compliance['autoDeleteEntries'] ) && ! empty( $compliance['autoDeleteEntriesDays'] ) ) {
 					$post_metas['_srfm_compliance_opt']  = 'auto-delete';
-					$post_metas['_srfm_compliance_days'] = absint( $compliance['autoDeleteEntriesDays'] );
+					$post_metas['_srfm_compliance_days'] = Helper::get_integer_value( $compliance['autoDeleteEntriesDays'] );
 				}
 			}
 		}

@@ -23,7 +23,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since x.x.x
  */
 class Delete_Entry extends Abstract_Ability {
-
 	/**
 	 * Constructor.
 	 *

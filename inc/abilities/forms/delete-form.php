@@ -9,6 +9,7 @@
 namespace SRFM\Inc\Abilities\Forms;
 
 use SRFM\Inc\Abilities\Abstract_Ability;
+use SRFM\Inc\Helper;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -22,7 +23,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since x.x.x
  */
 class Delete_Form extends Abstract_Ability {
-
 	/**
 	 * Constructor.
 	 *
@@ -88,7 +88,7 @@ class Delete_Form extends Abstract_Ability {
 	 * @return array<string,mixed>|\WP_Error
 	 */
 	public function execute( $input ) {
-		$form_id = absint( $input['form_id'] );
+		$form_id = Helper::get_integer_value( $input['form_id'] ?? 0 );
 		$force   = ! empty( $input['force'] );
 		$post    = get_post( $form_id );
 

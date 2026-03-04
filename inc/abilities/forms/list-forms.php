@@ -10,6 +10,7 @@ namespace SRFM\Inc\Abilities\Forms;
 
 use SRFM\Inc\Abilities\Abstract_Ability;
 use SRFM\Inc\Database\Tables\Entries;
+use SRFM\Inc\Helper;
 use WP_Query;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -24,7 +25,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since x.x.x
  */
 class List_Forms extends Abstract_Ability {
-
 	/**
 	 * Constructor.
 	 *
@@ -115,10 +115,10 @@ class List_Forms extends Abstract_Ability {
 	 * @return array<string,mixed>|\WP_Error
 	 */
 	public function execute( $input ) {
-		$status   = ! empty( $input['status'] ) ? sanitize_text_field( $input['status'] ) : 'any';
-		$search   = ! empty( $input['search'] ) ? sanitize_text_field( $input['search'] ) : '';
-		$per_page = ! empty( $input['per_page'] ) ? absint( $input['per_page'] ) : 10;
-		$page     = ! empty( $input['page'] ) ? absint( $input['page'] ) : 1;
+		$status   = ! empty( $input['status'] ) ? sanitize_text_field( Helper::get_string_value( $input['status'] ) ) : 'any';
+		$search   = ! empty( $input['search'] ) ? sanitize_text_field( Helper::get_string_value( $input['search'] ) ) : '';
+		$per_page = ! empty( $input['per_page'] ) ? Helper::get_integer_value( $input['per_page'] ) : 10;
+		$page     = ! empty( $input['page'] ) ? Helper::get_integer_value( $input['page'] ) : 1;
 
 		$query_args = [
 			'post_type'      => SRFM_FORMS_POST_TYPE,
@@ -138,6 +138,10 @@ class List_Forms extends Abstract_Ability {
 
 		if ( $query->have_posts() ) {
 			foreach ( $query->posts as $post ) {
+				if ( ! $post instanceof \WP_Post ) {
+					continue;
+				}
+
 				$entry_count = 0;
 				if ( class_exists( 'SRFM\Inc\Database\Tables\Entries' ) ) {
 					$entry_count = Entries::get_total_entries_by_status( 'all', $post->ID );

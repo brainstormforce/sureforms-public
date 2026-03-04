@@ -10,6 +10,7 @@ namespace SRFM\Inc\Abilities\Entries;
 
 use SRFM\Inc\Abilities\Abstract_Ability;
 use SRFM\Inc\Entries;
+use SRFM\Inc\Helper;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -23,7 +24,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since x.x.x
  */
 class Update_Entry_Status extends Abstract_Ability {
-
 	/**
 	 * Constructor.
 	 *
@@ -101,7 +101,7 @@ class Update_Entry_Status extends Abstract_Ability {
 	 */
 	public function execute( $input ) {
 		$entry_ids = $input['entry_ids'] ?? [];
-		$status    = sanitize_text_field( $input['status'] ?? '' );
+		$status    = sanitize_text_field( Helper::get_string_value( $input['status'] ?? '' ) );
 
 		if ( empty( $entry_ids ) || ! is_array( $entry_ids ) ) {
 			return new \WP_Error(

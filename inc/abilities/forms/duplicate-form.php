@@ -10,6 +10,7 @@ namespace SRFM\Inc\Abilities\Forms;
 
 use SRFM\Inc\Abilities\Abstract_Ability;
 use SRFM\Inc\Duplicate_Form as Duplicate_Form_Handler;
+use SRFM\Inc\Helper;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -23,7 +24,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since x.x.x
  */
 class Duplicate_Form extends Abstract_Ability {
-
 	/**
 	 * Constructor.
 	 *
@@ -98,8 +98,8 @@ class Duplicate_Form extends Abstract_Ability {
 	 * @return array<string,mixed>|\WP_Error
 	 */
 	public function execute( $input ) {
-		$form_id      = absint( $input['form_id'] );
-		$title_suffix = ! empty( $input['title_suffix'] ) ? sanitize_text_field( $input['title_suffix'] ) : ' (Copy)';
+		$form_id      = Helper::get_integer_value( $input['form_id'] ?? 0 );
+		$title_suffix = ! empty( $input['title_suffix'] ) ? sanitize_text_field( Helper::get_string_value( $input['title_suffix'] ) ) : ' (Copy)';
 
 		$result = Duplicate_Form_Handler::get_instance()->duplicate_form( $form_id, $title_suffix );
 
@@ -107,7 +107,7 @@ class Duplicate_Form extends Abstract_Ability {
 			return $result;
 		}
 
-		$result['shortcode'] = sprintf( '[sureforms id="%d"]', $result['new_form_id'] );
+		$result['shortcode'] = sprintf( '[sureforms id="%d"]', Helper::get_integer_value( $result['new_form_id'] ?? 0 ) );
 
 		return $result;
 	}

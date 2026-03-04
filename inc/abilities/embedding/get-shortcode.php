@@ -9,6 +9,7 @@
 namespace SRFM\Inc\Abilities\Embedding;
 
 use SRFM\Inc\Abilities\Abstract_Ability;
+use SRFM\Inc\Helper;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -22,7 +23,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since x.x.x
  */
 class Get_Shortcode extends Abstract_Ability {
-
 	/**
 	 * Constructor.
 	 *
@@ -83,7 +83,7 @@ class Get_Shortcode extends Abstract_Ability {
 	 * @return array<string,mixed>|\WP_Error
 	 */
 	public function execute( $input ) {
-		$form_id = absint( $input['form_id'] );
+		$form_id = Helper::get_integer_value( $input['form_id'] ?? 0 );
 		$post    = get_post( $form_id );
 
 		if ( ! $post || SRFM_FORMS_POST_TYPE !== $post->post_type ) {
