@@ -11,6 +11,7 @@ import { applyFilters } from '@wordpress/hooks';
 // Force-UI
 import Dialog from '../components/dialog/Dialog';
 import { FormRestrictionProvider } from '../components/form-restrictions/context';
+import { prepareBlockSlugs } from '@Utils/Helpers';
 
 let prevMetaHash = '';
 
@@ -197,6 +198,28 @@ function GeneralSettings( props ) {
 			},
 		} );
 	}
+
+	// Guarantee no empty slugs reach post_content on save.
+	useEffect( () => {
+		let wasSavingPost = false;
+
+		const unsubscribePreSave = wp.data.subscribe( () => {
+			const editorSelect = wp.data.select( 'core/editor' );
+			const isSaving = editorSelect.isSavingPost?.();
+			const isAutosave = editorSelect.isAutosavingPost?.();
+
+			// Fire only on the leading edge of a manual (non-autosave) save.
+			if ( isSaving && ! isAutosave && ! wasSavingPost ) {
+				const { getBlocks } = wp.data.select( 'core/block-editor' );
+				const { updateBlockAttributes } = wp.data.dispatch( 'core/block-editor' );
+				prepareBlockSlugs( updateBlockAttributes, getBlocks() );
+			}
+
+			wasSavingPost = !! isSaving;
+		} );
+
+		return unsubscribePreSave;
+	}, [] );
 
 	// Listen for form settings popup events to open the dialog
 	useEffect( () => {
