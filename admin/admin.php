@@ -9,6 +9,7 @@ namespace SRFM\Admin;
 
 use Astra_Notices;
 use SRFM\Inc\AI_Form_Builder\AI_Helper;
+use SRFM\Inc\Analytics_Events;
 use SRFM\Inc\Database\Tables\Entries;
 use SRFM\Inc\Helper;
 use SRFM\Inc\Onboarding;
@@ -100,6 +101,7 @@ class Admin {
 		add_action( 'wp_ajax_should_show_pointer', [ $this, 'pointer_should_show' ] );
 		add_action( 'wp_ajax_sureforms_dismiss_pointer', [ $this, 'pointer_dismissed' ] );
 		add_action( 'wp_ajax_sureforms_accept_cta', [ $this, 'pointer_accepted_cta' ] );
+		add_action( 'wp_ajax_srfm_notice_response', [ $this, 'handle_notice_response' ] );
 
 		// Register dashboard widget only if there are recent entries.
 		add_action( 'admin_init', [ $this, 'maybe_register_dashboard_widget' ] );
@@ -1358,6 +1360,8 @@ class Admin {
 				'display-with-other-notices' => true,
 			]
 		);
+
+		add_action( 'astra_notice_after_markup_srfm-plugin-review-notice', [ $this, 'enqueue_notice_response_script' ] );
 	}
 
 	/**
@@ -1425,6 +1429,84 @@ class Admin {
 				'display-with-other-notices' => true,
 			]
 		);
+
+		add_action( 'astra_notice_after_markup_srfm-getting-started-notice', [ $this, 'enqueue_notice_response_script' ] );
+	}
+
+	/**
+	 * Enqueue the notice response analytics script.
+	 *
+	 * Called via the astra_notice_after_markup_{id} hook so the script
+	 * only loads when a SureForms notice is actually rendered.
+	 *
+	 * @since x.x.x
+	 * @return void
+	 */
+	public function enqueue_notice_response_script() {
+		if ( wp_script_is( 'srfm-notice-response', 'enqueued' ) ) {
+			return;
+		}
+
+		wp_enqueue_script(
+			'srfm-notice-response',
+			SRFM_URL . 'admin/assets/js/notice-response.js',
+			[],
+			SRFM_VER,
+			true
+		);
+
+		wp_localize_script(
+			'srfm-notice-response',
+			'srfmNoticeResponse',
+			[
+				'ajaxurl' => admin_url( 'admin-ajax.php' ),
+				'nonce'   => wp_create_nonce( 'srfm_notice_response' ),
+			]
+		);
+	}
+
+	/**
+	 * Handle the notice response AJAX request.
+	 *
+	 * Validates the request and records the analytics event
+	 * for the notice button that was clicked.
+	 *
+	 * @since x.x.x
+	 * @return void
+	 */
+	public function handle_notice_response() {
+		if ( ! Helper::current_user_can() ) {
+			wp_send_json_error( [ 'message' => __( 'Unauthorized user.', 'sureforms' ) ], 403 );
+		}
+
+		if ( ! check_ajax_referer( 'srfm_notice_response', 'nonce', false ) ) {
+			wp_send_json_error( [ 'message' => __( 'Invalid nonce.', 'sureforms' ) ], 403 );
+		}
+
+		$notice_id = isset( $_POST['notice_id'] ) ? sanitize_text_field( wp_unslash( $_POST['notice_id'] ) ) : '';
+		$button    = isset( $_POST['button'] ) ? sanitize_text_field( wp_unslash( $_POST['button'] ) ) : '';
+
+		$valid = [
+			'srfm-getting-started-notice' => [
+				'go_to_dashboard' => 'getting_started_notice_cta',
+				'maybe_later'     => 'getting_started_notice_snooze',
+				'dismissed'       => 'getting_started_notice_dismiss',
+			],
+			'srfm-plugin-review-notice'   => [
+				'rate_sureforms' => 'rating_notice_cta',
+				'maybe_later'    => 'rating_notice_snooze',
+				'dismissed'      => 'rating_notice_dismiss',
+			],
+		];
+
+		if ( ! isset( $valid[ $notice_id ][ $button ] ) ) {
+			wp_send_json_error( [ 'message' => __( 'Invalid parameters.', 'sureforms' ) ], 400 );
+		}
+
+		$event_name = $valid[ $notice_id ][ $button ];
+		Analytics_Events::track( $event_name, $button );
+
+		wp_send_json_success();
 	}
 
 	/**
