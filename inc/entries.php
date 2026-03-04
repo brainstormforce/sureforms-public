@@ -630,16 +630,17 @@ class Entries {
 	 * @return array<int> Array of matching form IDs.
 	 */
 	private static function get_form_ids_by_title( $search_term ) {
-		global $wpdb;
-
-		$form_ids = $wpdb->get_col(
-			$wpdb->prepare(
-				"SELECT ID FROM {$wpdb->posts} WHERE post_type = 'sureforms_form' AND post_status = 'publish' AND post_title LIKE %s",
-				'%' . $wpdb->esc_like( $search_term ) . '%'
-			)
+		$forms = get_posts(
+			[
+				'post_type'      => SRFM_FORMS_POST_TYPE,
+				'post_status'    => 'publish',
+				's'              => $search_term,
+				'posts_per_page' => -1,
+				'fields'         => 'ids',
+			]
 		);
 
-		return ! empty( $form_ids ) ? array_map( 'absint', $form_ids ) : [];
+		return ! empty( $forms ) ? array_map( 'absint', $forms ) : [];
 	}
 
 	/**
