@@ -15,6 +15,13 @@ use SRFM\Inc\Abilities\Forms\List_Forms;
 use SRFM\Inc\Abilities\Forms\Create_Form;
 use SRFM\Inc\Abilities\Forms\Get_Form;
 use SRFM\Inc\Abilities\Forms\Delete_Form;
+use SRFM\Inc\Abilities\Forms\Duplicate_Form as Duplicate_Form_Ability;
+use SRFM\Inc\Abilities\Forms\Update_Form;
+use SRFM\Inc\Abilities\Forms\Get_Form_Stats;
+use SRFM\Inc\Abilities\Entries\List_Entries;
+use SRFM\Inc\Abilities\Entries\Get_Entry;
+use SRFM\Inc\Abilities\Entries\Update_Entry_Status;
+use SRFM\Inc\Abilities\Entries\Delete_Entry;
 use SRFM\Inc\Abilities\Embedding\Get_Shortcode;
 use SRFM\Inc\Traits\Get_Instance;
 
@@ -87,6 +94,13 @@ class Abilities_Registrar {
 			new Get_Form(),
 			new Get_Shortcode(),
 			new Delete_Form(),
+			new Duplicate_Form_Ability(),
+			new Update_Form(),
+			new Get_Form_Stats(),
+			new List_Entries(),
+			new Get_Entry(),
+			new Update_Entry_Status(),
+			new Delete_Entry(),
 		];
 
 		/**

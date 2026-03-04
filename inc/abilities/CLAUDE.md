@@ -4,6 +4,7 @@
 
 1. Create a class extending `Abstract_Ability` in the appropriate subdirectory:
    - `forms/` — form CRUD operations
+   - `entries/` — entry/submission operations
    - `embedding/` — shortcodes, block markup, rendering
 2. Register it in `Abilities_Registrar::register_abilities()`
 
@@ -36,7 +37,15 @@ inc/abilities/
 │   ├── list-forms.php          # readonly, idempotent
 │   ├── create-form.php         # uses Field_Mapping engine
 │   ├── get-form.php            # readonly, idempotent — parses Gutenberg blocks
-│   └── delete-form.php         # destructive
+│   ├── delete-form.php         # destructive
+│   ├── duplicate-form.php      # delegates to \SRFM\Inc\Duplicate_Form
+│   ├── update-form.php         # write, idempotent — title/status/metadata
+│   └── get-form-stats.php      # readonly, idempotent — entry counts
+├── entries/
+│   ├── list-entries.php        # readonly, idempotent — paginated listing
+│   ├── get-entry.php           # readonly, idempotent — decrypted form_data
+│   ├── update-entry-status.php # write, idempotent — read/unread/trash/restore
+│   └── delete-entry.php        # destructive — permanent delete
 └── embedding/
     └── get-shortcode.php       # readonly, idempotent
 ```

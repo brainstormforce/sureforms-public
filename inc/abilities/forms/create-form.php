@@ -11,7 +11,6 @@ namespace SRFM\Inc\Abilities\Forms;
 use SRFM\Inc\Abilities\Abstract_Ability;
 use SRFM\Inc\AI_Form_Builder\Field_Mapping;
 use SRFM\Inc\Create_New_Form;
-use SRFM\Inc\Helper;
 use WP_REST_Request;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -35,7 +34,17 @@ class Create_Form extends Abstract_Ability {
 	public function __construct() {
 		$this->id          = 'sureforms/create-form';
 		$this->label       = __( 'Create SureForms Form', 'sureforms' );
-		$this->description = __( 'Create a new SureForms form with specified title, fields, metadata, and status. Supports all standard field types (input, email, textarea, dropdown, checkbox, multi-choice, phone, number, url, address, gdpr, payment, inline-button) and pro field types when SureForms Pro is active (date-picker, time-picker, upload, hidden, rating, number-slider, signature, page-break).', 'sureforms' );
+		$description = __( 'Create a new SureForms form with specified title, fields, metadata, and status. Supports all standard field types (input, email, textarea, dropdown, checkbox, multi-choice, phone, number, url, address, gdpr, payment, inline-button).', 'sureforms' );
+
+		/**
+		 * Filter the description for the create-form ability.
+		 *
+		 * Pro and third-party plugins can append their supported field types.
+		 *
+		 * @param string $description The ability description.
+		 * @since x.x.x
+		 */
+		$this->description = apply_filters( 'srfm_ability_create_form_description', $description );
 		$this->capability  = 'edit_posts';
 	}
 
@@ -70,21 +79,77 @@ class Create_Form extends Abstract_Ability {
 			'payment',
 		];
 
-		// Add pro field types if SureForms Pro is active.
-		if ( defined( 'SRFM_PRO_VER' ) ) {
-			$field_types = array_merge(
-				$field_types,
-				[
-					'hidden',
-					'rating',
-					'upload',
-					'date-picker',
-					'time-picker',
-					'number-slider',
-					'signature',
-					'page-break',
-				]
-			);
+		/**
+		 * Filter the allowed field types for the create-form ability.
+		 *
+		 * Pro and third-party plugins can use this to add their own field types.
+		 *
+		 * @param string[] $field_types Array of field type slugs.
+		 * @since x.x.x
+		 */
+		$field_types = apply_filters( 'srfm_ability_create_form_field_types', $field_types );
+
+		// Core field properties.
+		$field_properties = [
+			'label'           => [
+				'type'        => 'string',
+				'description' => __( 'Field label. e.g. First Name', 'sureforms' ),
+			],
+			'required'        => [
+				'type'        => 'boolean',
+				'description' => __( 'Whether the field is required.', 'sureforms' ),
+			],
+			'fieldType'       => [
+				'type'        => 'string',
+				'description' => __( 'The field type.', 'sureforms' ),
+				'enum'        => $field_types,
+			],
+			'helpText'        => [
+				'type'        => 'string',
+				'description' => __( 'Help text describing the field.', 'sureforms' ),
+			],
+			'defaultValue'    => [
+				'type'        => 'string',
+				'description' => __( 'Default value for the field.', 'sureforms' ),
+			],
+			'fieldOptions'    => [
+				'type'        => 'array',
+				'description' => __( 'Options for dropdown or multi-choice fields.', 'sureforms' ),
+				'items'       => [
+					'type'       => 'object',
+					'properties' => [
+						'optionTitle' => [ 'type' => 'string' ],
+						'label'       => [ 'type' => 'string' ],
+					],
+				],
+			],
+			'singleSelection' => [
+				'type'        => 'boolean',
+				'description' => __( 'Allow only single selection in multi-choice field.', 'sureforms' ),
+			],
+			'isUnique'        => [
+				'type'        => 'boolean',
+				'description' => __( 'Whether the field value must be unique.', 'sureforms' ),
+			],
+			'textLength'      => [
+				'type'        => 'integer',
+				'description' => __( 'Maximum character length.', 'sureforms' ),
+			],
+		];
+
+		/**
+		 * Filter additional field properties for the create-form ability schema.
+		 *
+		 * Pro and third-party plugins can use this to add field-specific
+		 * properties (e.g. upload, rating, date-picker, time-picker options).
+		 *
+		 * @param array<string,array<string,mixed>> $properties Additional field properties. Default empty array.
+		 * @since x.x.x
+		 */
+		$additional_properties = apply_filters( 'srfm_ability_create_form_field_properties', [] );
+
+		if ( ! empty( $additional_properties ) && is_array( $additional_properties ) ) {
+			$field_properties = array_merge( $field_properties, $additional_properties );
 		}
 
 		return [
@@ -99,116 +164,7 @@ class Create_Form extends Abstract_Ability {
 					'description' => __( 'Array of form field definitions.', 'sureforms' ),
 					'items'       => [
 						'type'       => 'object',
-						'properties' => [
-							'label'               => [
-								'type'        => 'string',
-								'description' => __( 'Field label. e.g. First Name', 'sureforms' ),
-							],
-							'required'            => [
-								'type'        => 'boolean',
-								'description' => __( 'Whether the field is required.', 'sureforms' ),
-							],
-							'fieldType'           => [
-								'type'        => 'string',
-								'description' => __( 'The field type.', 'sureforms' ),
-								'enum'        => $field_types,
-							],
-							'helpText'            => [
-								'type'        => 'string',
-								'description' => __( 'Help text describing the field.', 'sureforms' ),
-							],
-							'defaultValue'        => [
-								'type'        => 'string',
-								'description' => __( 'Default value for the field.', 'sureforms' ),
-							],
-							'fieldOptions'        => [
-								'type'        => 'array',
-								'description' => __( 'Options for dropdown or multi-choice fields.', 'sureforms' ),
-								'items'       => [
-									'type'       => 'object',
-									'properties' => [
-										'optionTitle' => [ 'type' => 'string' ],
-										'label'       => [ 'type' => 'string' ],
-									],
-								],
-							],
-							'singleSelection'     => [
-								'type'        => 'boolean',
-								'description' => __( 'Allow only single selection in multi-choice field.', 'sureforms' ),
-							],
-							'isUnique'            => [
-								'type'        => 'boolean',
-								'description' => __( 'Whether the field value must be unique.', 'sureforms' ),
-							],
-							'textLength'          => [
-								'type'        => 'integer',
-								'description' => __( 'Maximum character length.', 'sureforms' ),
-							],
-							'uploadSize'          => [
-								'type'        => 'integer',
-								'description' => __( 'Max upload file size in MB (1-100).', 'sureforms' ),
-							],
-							'allowedTypes'        => [
-								'type'        => 'string',
-								'description' => __( 'Allowed file types for upload. e.g. jpg, jpeg, gif, png, pdf', 'sureforms' ),
-							],
-							'multiUpload'         => [
-								'type'        => 'boolean',
-								'description' => __( 'Allow multiple file uploads.', 'sureforms' ),
-							],
-							'multiFilesNumber'    => [
-								'type'        => 'integer',
-								'description' => __( 'Max number of files when multiUpload is true.', 'sureforms' ),
-							],
-							'iconShape'           => [
-								'type'        => 'string',
-								'description' => __( 'Icon shape for rating field: star, smiley, or thumb.', 'sureforms' ),
-								'enum'        => [ 'star', 'smiley', 'thumb' ],
-							],
-							'defaultRating'       => [
-								'type'        => 'integer',
-								'description' => __( 'Default rating value (1-5).', 'sureforms' ),
-							],
-							'showTooltip'         => [
-								'type'        => 'boolean',
-								'description' => __( 'Show tooltips for rating field.', 'sureforms' ),
-							],
-							'tooltipValues'       => [
-								'type'        => 'array',
-								'description' => __( 'Tooltip labels for each rating value.', 'sureforms' ),
-								'items'       => [
-									'type' => 'object',
-								],
-							],
-							'dateFormat'          => [
-								'type'        => 'string',
-								'description' => __( 'Date format: mm/dd/yyyy or dd/mm/yyyy.', 'sureforms' ),
-							],
-							'minDate'             => [
-								'type'        => 'string',
-								'description' => __( 'Minimum date in yyyy/mm/dd format.', 'sureforms' ),
-							],
-							'maxDate'             => [
-								'type'        => 'string',
-								'description' => __( 'Maximum date in yyyy/mm/dd format.', 'sureforms' ),
-							],
-							'useTwelveHourFormat' => [
-								'type'        => 'boolean',
-								'description' => __( 'Use 12-hour format in time picker.', 'sureforms' ),
-							],
-							'incrementInMinutes'  => [
-								'type'        => 'integer',
-								'description' => __( 'Time increment in minutes (1-60).', 'sureforms' ),
-							],
-							'minTime'             => [
-								'type'        => 'string',
-								'description' => __( 'Minimum time in 24-hour format.', 'sureforms' ),
-							],
-							'maxTime'             => [
-								'type'        => 'string',
-								'description' => __( 'Maximum time in 24-hour format.', 'sureforms' ),
-							],
-						],
+						'properties' => $field_properties,
 						'required'   => [ 'label', 'fieldType' ],
 					],
 				],
@@ -312,6 +268,11 @@ class Create_Form extends Abstract_Ability {
 		$form_status = ! empty( $input['formStatus'] ) ? sanitize_text_field( $input['formStatus'] ) : 'draft';
 		$meta_data   = ! empty( $input['formMetaData'] ) ? $input['formMetaData'] : [];
 
+		$allowed_statuses = [ 'publish', 'draft', 'private' ];
+		if ( ! in_array( $form_status, $allowed_statuses, true ) ) {
+			$form_status = 'draft';
+		}
+
 		if ( empty( $form_title ) ) {
 			return new \WP_Error(
 				'srfm_missing_title',
@@ -381,7 +342,7 @@ class Create_Form extends Abstract_Ability {
 			'form_id'   => $post_id,
 			'title'     => $form_title,
 			'status'    => $form_status,
-			'edit_url'  => get_edit_post_link( $post_id, 'raw' ),
+			'edit_url'  => admin_url( 'post.php?post=' . $post_id . '&action=edit' ),
 			'shortcode' => sprintf( '[sureforms id="%d"]', $post_id ),
 		];
 	}
