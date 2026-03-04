@@ -5,7 +5,10 @@
  * @since 2.6.0
  */
 
-/* Wrapper */
+/* ==========================================================================
+   Wrapper & Shared
+   ========================================================================== */
+
 .srfm-payment-history-wrap {
 	max-width: 100%;
 	margin: 0 auto;
@@ -25,13 +28,15 @@
 	color: #6b7280;
 }
 
-/* Table container - enables horizontal scroll on mobile */
+/* ==========================================================================
+   List View — Table
+   ========================================================================== */
+
 .srfm-payment-history-table-container {
 	overflow-x: auto;
 	-webkit-overflow-scrolling: touch;
 }
 
-/* Table */
 .srfm-payment-history-table {
 	width: 100%;
 	border-collapse: collapse;
@@ -68,7 +73,7 @@
 	background: #f9fafb;
 }
 
-/* Column-specific styles */
+/* Column styles */
 .srfm-payment-history-col-transaction_id {
 	font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
 	font-size: 13px;
@@ -80,7 +85,23 @@
 	white-space: nowrap;
 }
 
-/* Status badges */
+/* View Details link */
+.srfm-payment-history-view-link {
+	color: #2563eb;
+	text-decoration: none;
+	font-weight: 500;
+	font-size: 13px;
+}
+
+.srfm-payment-history-view-link:hover {
+	color: #1d4ed8;
+	text-decoration: underline;
+}
+
+/* ==========================================================================
+   Status Badges
+   ========================================================================== */
+
 .srfm-payment-history-status {
 	display: inline-block;
 	padding: 3px 10px;
@@ -92,7 +113,8 @@
 }
 
 .srfm-payment-history-status--succeeded,
-.srfm-payment-history-status--active {
+.srfm-payment-history-status--active,
+.srfm-payment-history-status--trialing {
 	background: #ecfdf5;
 	color: #065f46;
 }
@@ -100,7 +122,9 @@
 .srfm-payment-history-status--pending,
 .srfm-payment-history-status--processing,
 .srfm-payment-history-status--requires_action,
-.srfm-payment-history-status--requires_payment_method {
+.srfm-payment-history-status--requires_payment_method,
+.srfm-payment-history-status--past_due,
+.srfm-payment-history-status--incomplete {
 	background: #fffbeb;
 	color: #92400e;
 }
@@ -112,12 +136,21 @@
 }
 
 .srfm-payment-history-status--refunded,
-.srfm-payment-history-status--partially_refunded {
+.srfm-payment-history-status--partially_refunded,
+.srfm-payment-history-status--paused {
 	background: #eff6ff;
 	color: #1e40af;
 }
 
-/* Pagination */
+.srfm-payment-history-status--processed {
+	background: #ecfdf5;
+	color: #065f46;
+}
+
+/* ==========================================================================
+   Pagination
+   ========================================================================== */
+
 .srfm-payment-history-pagination {
 	display: flex;
 	align-items: center;
@@ -151,7 +184,375 @@
 	color: #6b7280;
 }
 
-/* Responsive */
+/* ==========================================================================
+   Detail View — Layout
+   ========================================================================== */
+
+.srfm-ph-detail-back {
+	display: inline-block;
+	margin-bottom: 16px;
+	color: #6b7280;
+	text-decoration: none;
+	font-size: 13px;
+}
+
+.srfm-ph-detail-back:hover {
+	color: #374151;
+}
+
+/* Header */
+.srfm-ph-detail-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	gap: 12px;
+	padding: 16px 20px;
+	background: #f9fafb;
+	border: 1px solid #e5e7eb;
+	border-radius: 8px;
+	margin-bottom: 20px;
+}
+
+.srfm-ph-detail-header-left {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+}
+
+.srfm-ph-detail-title {
+	margin: 0;
+	font-size: 18px;
+	font-weight: 600;
+	color: #111827;
+}
+
+.srfm-ph-detail-header-right .srfm-ph-detail-amount {
+	font-size: 22px;
+	font-weight: 700;
+	color: #111827;
+}
+
+/* Grid layout */
+.srfm-ph-detail-grid {
+	display: grid;
+	grid-template-columns: 1fr 320px;
+	gap: 20px;
+}
+
+/* Sections */
+.srfm-ph-detail-section {
+	background: #fff;
+	border: 1px solid #e5e7eb;
+	border-radius: 8px;
+	padding: 20px;
+	margin-bottom: 16px;
+}
+
+.srfm-ph-detail-section-title {
+	margin: 0 0 14px 0;
+	font-size: 15px;
+	font-weight: 600;
+	color: #111827;
+	padding-bottom: 10px;
+	border-bottom: 1px solid #f3f4f6;
+}
+
+/* ==========================================================================
+   Detail View — Info Table
+   ========================================================================== */
+
+.srfm-ph-detail-info-table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+.srfm-ph-detail-info-table th {
+	text-align: left;
+	padding: 8px 12px 8px 0;
+	font-weight: 500;
+	font-size: 13px;
+	color: #6b7280;
+	white-space: nowrap;
+	width: 140px;
+	vertical-align: top;
+}
+
+.srfm-ph-detail-info-table td {
+	padding: 8px 0;
+	font-size: 14px;
+	color: #111827;
+	word-break: break-word;
+}
+
+.srfm-ph-detail-info-table code {
+	display: inline-block;
+	padding: 2px 6px;
+	background: #f3f4f6;
+	border-radius: 4px;
+	font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+	font-size: 12px;
+	color: #374151;
+}
+
+/* Mode badge */
+.srfm-ph-detail-mode {
+	display: inline-block;
+	padding: 2px 8px;
+	border-radius: 4px;
+	font-size: 11px;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+}
+
+.srfm-ph-detail-mode--live {
+	background: #ecfdf5;
+	color: #065f46;
+}
+
+.srfm-ph-detail-mode--test {
+	background: #fffbeb;
+	color: #92400e;
+}
+
+/* Refunded amount note */
+.srfm-ph-detail-refunded-note {
+	display: inline-block;
+	margin-left: 6px;
+	font-size: 12px;
+	color: #dc2626;
+	font-weight: 400;
+}
+
+/* ==========================================================================
+   Detail View — Logs
+   ========================================================================== */
+
+.srfm-ph-detail-logs {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+}
+
+.srfm-ph-detail-log-entry {
+	padding: 12px;
+	background: #f9fafb;
+	border-radius: 6px;
+	border-left: 3px solid #d1d5db;
+}
+
+.srfm-ph-detail-log-title {
+	font-weight: 600;
+	font-size: 13px;
+	color: #374151;
+	margin-bottom: 6px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	gap: 6px;
+}
+
+.srfm-ph-detail-log-date {
+	font-weight: 400;
+	font-size: 12px;
+	color: #9ca3af;
+}
+
+.srfm-ph-detail-log-messages {
+	margin: 0;
+	padding-left: 18px;
+	font-size: 13px;
+	color: #6b7280;
+	line-height: 1.6;
+}
+
+.srfm-ph-detail-log-messages li {
+	margin-bottom: 2px;
+}
+
+/* ==========================================================================
+   Detail View — Actions Sidebar
+   ========================================================================== */
+
+.srfm-ph-action-block {
+	margin-bottom: 20px;
+	padding-bottom: 20px;
+	border-bottom: 1px solid #f3f4f6;
+}
+
+.srfm-ph-action-block:last-child {
+	margin-bottom: 0;
+	padding-bottom: 0;
+	border-bottom: none;
+}
+
+.srfm-ph-action-label {
+	display: flex;
+	align-items: baseline;
+	gap: 6px;
+	margin-bottom: 6px;
+	font-size: 13px;
+	font-weight: 500;
+	color: #374151;
+}
+
+.srfm-ph-action-hint {
+	font-weight: 400;
+	font-size: 12px;
+	color: #9ca3af;
+}
+
+.srfm-ph-action-input-group {
+	display: flex;
+	align-items: center;
+	border: 1px solid #d1d5db;
+	border-radius: 6px;
+	overflow: hidden;
+	background: #fff;
+}
+
+.srfm-ph-action-currency {
+	padding: 8px 10px;
+	background: #f9fafb;
+	color: #6b7280;
+	font-size: 14px;
+	font-weight: 500;
+	border-right: 1px solid #d1d5db;
+	line-height: 1;
+}
+
+.srfm-ph-action-input {
+	flex: 1;
+	padding: 8px 10px;
+	border: none;
+	outline: none;
+	font-size: 14px;
+	color: #111827;
+	background: transparent;
+	-moz-appearance: textfield;
+}
+
+.srfm-ph-action-input::-webkit-outer-spin-button,
+.srfm-ph-action-input::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}
+
+.srfm-ph-action-textarea {
+	width: 100%;
+	padding: 8px 10px;
+	border: 1px solid #d1d5db;
+	border-radius: 6px;
+	font-size: 13px;
+	font-family: inherit;
+	color: #111827;
+	resize: vertical;
+	background: #fff;
+	box-sizing: border-box;
+}
+
+.srfm-ph-action-textarea:focus,
+.srfm-ph-action-input-group:focus-within {
+	border-color: #2563eb;
+	box-shadow: 0 0 0 1px #2563eb;
+}
+
+/* Buttons */
+.srfm-ph-action-btn {
+	display: block;
+	width: 100%;
+	padding: 10px 16px;
+	margin-top: 12px;
+	border: none;
+	border-radius: 6px;
+	font-size: 14px;
+	font-weight: 500;
+	cursor: pointer;
+	text-align: center;
+	transition: background 0.15s ease, opacity 0.15s ease;
+}
+
+.srfm-ph-action-btn:disabled {
+	opacity: 0.6;
+	cursor: not-allowed;
+}
+
+.srfm-ph-action-btn--refund {
+	background: #2563eb;
+	color: #fff;
+}
+
+.srfm-ph-action-btn--refund:hover:not(:disabled) {
+	background: #1d4ed8;
+}
+
+.srfm-ph-action-btn--cancel {
+	background: #dc2626;
+	color: #fff;
+}
+
+.srfm-ph-action-btn--cancel:hover:not(:disabled) {
+	background: #b91c1c;
+}
+
+/* Action description */
+.srfm-ph-action-description {
+	margin: 0 0 8px 0;
+	font-size: 13px;
+	color: #6b7280;
+	line-height: 1.5;
+}
+
+.srfm-ph-action-none {
+	margin: 0;
+	font-size: 13px;
+	color: #9ca3af;
+	text-align: center;
+	padding: 8px 0;
+}
+
+/* Action messages */
+.srfm-ph-action-message {
+	margin-top: 10px;
+	padding: 8px 12px;
+	border-radius: 6px;
+	font-size: 13px;
+	line-height: 1.4;
+}
+
+.srfm-ph-action-message--success {
+	background: #ecfdf5;
+	color: #065f46;
+	border: 1px solid #a7f3d0;
+}
+
+.srfm-ph-action-message--error {
+	background: #fef2f2;
+	color: #991b1b;
+	border: 1px solid #fecaca;
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+
+@media screen and (max-width: 768px) {
+	.srfm-ph-detail-grid {
+		grid-template-columns: 1fr;
+	}
+
+	.srfm-ph-detail-header {
+		flex-direction: column;
+		align-items: flex-start;
+	}
+
+	.srfm-ph-detail-info-table th {
+		width: 120px;
+	}
+}
+
 @media screen and (max-width: 600px) {
 	.srfm-payment-history-table th,
 	.srfm-payment-history-table td {
@@ -161,5 +562,13 @@
 
 	.srfm-payment-history-pagination {
 		gap: 10px;
+	}
+
+	.srfm-ph-detail-section {
+		padding: 14px;
+	}
+
+	.srfm-ph-detail-title {
+		font-size: 16px;
 	}
 }

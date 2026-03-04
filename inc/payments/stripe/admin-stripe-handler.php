@@ -47,6 +47,8 @@ class Admin_Stripe_Handler {
 		add_action( 'wp_ajax_srfm_stripe_pause_subscription', [ $this, 'ajax_pause_subscription' ] );
 		// Hook into unified refund filter system.
 		add_filter( 'srfm_process_transaction_refund', [ $this, 'process_stripe_refund' ], 10, 2 );
+		// Hook into unified subscription cancellation filter system.
+		add_filter( 'srfm_process_subscription_cancellation', [ $this, 'process_stripe_subscription_cancellation' ], 10, 2 );
 		// Admin notices.
 		add_action( 'admin_notices', [ $this, 'webhook_configuration_notice' ] );
 	}
@@ -157,6 +159,87 @@ class Admin_Stripe_Handler {
 		}
 
 		wp_send_json_success( [ 'message' => esc_html__( 'Subscription canceled successfully.', 'sureforms' ) ] );
+	}
+
+	/**
+	 * Process Stripe subscription cancellation via filter system.
+	 *
+	 * Filter callback for 'srfm_process_subscription_cancellation'.
+	 * Used by both admin and frontend to cancel Stripe subscriptions.
+	 *
+	 * @since 2.6.0
+	 * @param array $result  Default result array.
+	 * @param array $payment Payment record from database.
+	 * @return array Result with success status and message.
+	 */
+	public function process_stripe_subscription_cancellation( $result, $payment ) {
+		// Only process Stripe payments.
+		if ( empty( $payment['gateway'] ) || 'stripe' !== $payment['gateway'] ) {
+			return $result;
+		}
+
+		if ( empty( $payment['subscription_id'] ) ) {
+			return [
+				'success' => false,
+				'message' => __( 'Subscription ID not found.', 'sureforms' ),
+			];
+		}
+
+		$this->payment_mode = $payment['payment_mode'] ?? 'test';
+
+		$cancel_result = $this->cancel_subscription( $payment['subscription_id'] );
+		if ( ! $cancel_result ) {
+			return [
+				'success' => false,
+				'message' => __( 'Subscription cancellation failed.', 'sureforms' ),
+			];
+		}
+
+		// Build log entry.
+		$current_logs = Helper::get_array_value( $payment['log'] );
+		$log_messages = [
+			sprintf(
+				/* translators: %s: Stripe subscription ID */
+				__( 'Subscription ID: %s', 'sureforms' ),
+				$payment['subscription_id']
+			),
+			sprintf(
+				/* translators: %s: payment gateway name */
+				__( 'Payment Gateway: %s', 'sureforms' ),
+				'Stripe'
+			),
+			sprintf(
+				/* translators: %s: subscription status */
+				__( 'Subscription Status: %s', 'sureforms' ),
+				__( 'Canceled', 'sureforms' )
+			),
+			sprintf(
+				/* translators: %s: user display name */
+				__( 'Canceled by: %s', 'sureforms' ),
+				wp_get_current_user()->display_name
+			),
+		];
+
+		$current_logs[] = [
+			'title'      => __( 'Subscription Canceled', 'sureforms' ),
+			'created_at' => current_time( 'mysql' ),
+			'messages'   => $log_messages,
+		];
+
+		$payment_id = isset( $payment['id'] ) ? absint( $payment['id'] ) : 0;
+		Payments::update(
+			$payment_id,
+			[
+				'subscription_status' => 'canceled',
+				'status'              => 'canceled',
+				'log'                 => $current_logs,
+			]
+		);
+
+		return [
+			'success' => true,
+			'message' => __( 'Subscription cancelled successfully.', 'sureforms' ),
+		];
 	}
 
 	/**
