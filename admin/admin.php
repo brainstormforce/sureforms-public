@@ -107,6 +107,7 @@ class Admin {
 		// Save first form creation time stamp.
 		add_action( 'admin_init', [ $this, 'save_first_form_creation_time_stamp' ] );
 		add_action( 'admin_notices', [ $this, 'display_srfm_rating_notice' ] );
+		add_action( 'admin_notices', [ $this, 'display_srfm_getting_started_notice' ] );
 	}
 
 	/**
@@ -1354,6 +1355,73 @@ class Admin {
 				),
 				'repeat-notice-after'        => WEEK_IN_SECONDS,
 				'show_if'                    => $this->maybe_display_rating_notice(),
+				'display-with-other-notices' => true,
+			]
+		);
+	}
+
+	/**
+	 * Display a "Getting Started" admin notice for new users who haven't yet
+	 * reached the rating-notice milestone (3+ forms or 3+ entries).
+	 *
+	 * The Astra Notices library handles the 7-day delay via the
+	 * `display-notice-after` parameter.
+	 *
+	 * @since x.x.x
+	 * @return void
+	 */
+	public function display_srfm_getting_started_notice() {
+		// Only show to admins.
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
+
+		// Allow the notice to be disabled programmatically.
+		if ( ! apply_filters( 'srfm_show_getting_started_notice', true ) ) {
+			return;
+		}
+
+		$image_path = SRFM_URL . 'admin/assets/sureforms-logo.png';
+
+		Astra_Notices::add_notice(
+			[
+				'id'                         => 'srfm-getting-started-notice',
+				'type'                       => '',
+				'message'                    => sprintf(
+					'<div class="notice-image">
+                    <img src="%1$s" class="custom-logo" alt="SureForms" itemprop="logo">
+                </div>
+                <div class="notice-content">
+                    <div class="notice-heading">
+                        %2$s
+                    </div>
+                    %3$s<br />
+                    <div class="astra-review-notice-container">
+                        <a href="%4$s" class="button-primary">
+                        %5$s
+                        </a>
+                    <span class="dashicons dashicons-clock" aria-hidden="true"></span>
+                        <a href="#" data-repeat-notice-after="%6$s" class="astra-notice-close">
+                        %7$s
+                        </a>
+                    <span class="dashicons dashicons-smiley" aria-hidden="true"></span>
+                        <a href="#" class="astra-notice-close">
+                        %8$s
+                        </a>
+                    </div>
+                </div>',
+					esc_url( $image_path ),
+					esc_html__( 'SureForms is ready to power your forms — explore what\'s possible!', 'sureforms' ),
+					esc_html__( 'Manage your forms, track submissions, and discover features like AI Form Builder, payment integrations, and more from the SureForms dashboard.', 'sureforms' ),
+					esc_url( admin_url( 'admin.php?page=sureforms_menu' ) ),
+					esc_html__( 'Go to Dashboard', 'sureforms' ),
+					WEEK_IN_SECONDS,
+					esc_html__( 'Maybe later', 'sureforms' ),
+					esc_html__( 'I already know', 'sureforms' )
+				),
+				'repeat-notice-after'        => WEEK_IN_SECONDS,
+				'show_if'                    => ! $this->maybe_display_rating_notice(),
+				'display-notice-after'       => 7 * DAY_IN_SECONDS,
 				'display-with-other-notices' => true,
 			]
 		);

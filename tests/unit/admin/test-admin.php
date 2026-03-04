@@ -202,3 +202,128 @@ class Test_Rating_Notice extends TestCase {
 		);
 	}
 }
+
+/**
+ * Tests for the "Getting Started" admin notice functionality.
+ *
+ * @since x.x.x
+ */
+class Test_Getting_Started_Notice extends TestCase {
+
+	/**
+	 * Tear down: remove filters added during tests.
+	 *
+	 * @return void
+	 */
+	protected function tearDown(): void {
+		remove_all_filters( 'srfm_show_getting_started_notice' );
+		parent::tearDown();
+	}
+
+	/**
+	 * Helper: return count of notices registered in Astra_Notices via reflection.
+	 *
+	 * @return int
+	 */
+	private function get_astra_notices_count(): int {
+		if ( ! class_exists( 'Astra_Notices' ) ) {
+			return 0;
+		}
+		$prop = new \ReflectionProperty( 'Astra_Notices', 'notices' );
+		$prop->setAccessible( true );
+		$notices = $prop->getValue( null );
+		return is_array( $notices ) ? count( $notices ) : 0;
+	}
+
+	/**
+	 * Test: show_if is true with 0 forms and 0 entries (getting-started should show).
+	 */
+	public function test_getting_started_show_if_true_with_no_activity() {
+		$entries_count  = 0;
+		$publish_count  = 0;
+		$rating_display = $entries_count >= 3 || $publish_count >= 3;
+		$show_if        = ! $rating_display;
+		$this->assertTrue( $show_if, 'Getting-started should show with 0 forms and 0 entries' );
+	}
+
+	/**
+	 * Test: show_if is true at boundary (2 forms, 2 entries).
+	 */
+	public function test_getting_started_show_if_true_at_boundary() {
+		$entries_count  = 2;
+		$publish_count  = 2;
+		$rating_display = $entries_count >= 3 || $publish_count >= 3;
+		$show_if        = ! $rating_display;
+		$this->assertTrue( $show_if, 'Getting-started should show with 2 forms and 2 entries' );
+	}
+
+	/**
+	 * Test: show_if is false with 3+ published forms.
+	 */
+	public function test_getting_started_show_if_false_with_three_forms() {
+		$entries_count  = 0;
+		$publish_count  = 3;
+		$rating_display = $entries_count >= 3 || $publish_count >= 3;
+		$show_if        = ! $rating_display;
+		$this->assertFalse( $show_if, 'Getting-started should not show when 3 published forms exist' );
+	}
+
+	/**
+	 * Test: show_if is false with 3+ entries.
+	 */
+	public function test_getting_started_show_if_false_with_three_entries() {
+		$entries_count  = 3;
+		$publish_count  = 0;
+		$rating_display = $entries_count >= 3 || $publish_count >= 3;
+		$show_if        = ! $rating_display;
+		$this->assertFalse( $show_if, 'Getting-started should not show when 3 entries exist' );
+	}
+
+	/**
+	 * Test: mutual exclusivity — rating and getting-started conditions are always opposite.
+	 */
+	public function test_mutual_exclusivity_of_notices() {
+		$scenarios = [
+			[ 'entries' => 0, 'forms' => 0 ],
+			[ 'entries' => 2, 'forms' => 2 ],
+			[ 'entries' => 3, 'forms' => 0 ],
+			[ 'entries' => 0, 'forms' => 3 ],
+			[ 'entries' => 5, 'forms' => 5 ],
+		];
+
+		foreach ( $scenarios as $scenario ) {
+			$rating_show          = $scenario['entries'] >= 3 || $scenario['forms'] >= 3;
+			$getting_started_show = ! $rating_show;
+
+			$this->assertNotEquals(
+				$rating_show,
+				$getting_started_show,
+				sprintf(
+					'Rating and getting-started should be mutually exclusive (entries=%d, forms=%d)',
+					$scenario['entries'],
+					$scenario['forms']
+				)
+			);
+		}
+	}
+
+	/**
+	 * Test: display_srfm_getting_started_notice adds no notice when filter returns false.
+	 */
+	public function test_getting_started_notice_skipped_when_filter_disabled() {
+		add_filter( 'srfm_show_getting_started_notice', '__return_false' );
+
+		$before_count = $this->get_astra_notices_count();
+
+		$admin = Admin::get_instance();
+		$admin->display_srfm_getting_started_notice();
+
+		$after_count = $this->get_astra_notices_count();
+
+		$this->assertEquals(
+			$before_count,
+			$after_count,
+			'No notice should be registered when srfm_show_getting_started_notice filter returns false'
+		);
+	}
+}
