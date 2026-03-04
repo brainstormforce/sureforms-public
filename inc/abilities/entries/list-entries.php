@@ -144,7 +144,7 @@ class List_Entries extends Abstract_Ability {
 	 * @since x.x.x
 	 * @return array<string,mixed>|\WP_Error
 	 */
-	public function execute( array $input ) {
+	public function execute( $input ) {
 		$per_page = isset( $input['per_page'] ) ? absint( $input['per_page'] ) : 20;
 		$per_page = max( 1, min( 100, $per_page ) );
 

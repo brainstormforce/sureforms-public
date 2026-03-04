@@ -94,7 +94,7 @@ class Delete_Entry extends Abstract_Ability {
 	 * @since x.x.x
 	 * @return array<string,mixed>|\WP_Error
 	 */
-	public function execute( array $input ) {
+	public function execute( $input ) {
 		$entry_ids = $input['entry_ids'] ?? [];
 
 		if ( empty( $entry_ids ) || ! is_array( $entry_ids ) ) {

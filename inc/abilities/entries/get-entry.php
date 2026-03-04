@@ -107,7 +107,7 @@ class Get_Entry extends Abstract_Ability {
 	 * @since x.x.x
 	 * @return array<string,mixed>|\WP_Error
 	 */
-	public function execute( array $input ) {
+	public function execute( $input ) {
 		$entry_id = absint( $input['entry_id'] );
 		$entry    = EntriesTable::get( $entry_id );
 

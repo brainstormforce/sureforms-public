@@ -97,7 +97,7 @@ class Duplicate_Form extends Abstract_Ability {
 	 * @since x.x.x
 	 * @return array<string,mixed>|\WP_Error
 	 */
-	public function execute( array $input ) {
+	public function execute( $input ) {
 		$form_id      = absint( $input['form_id'] );
 		$title_suffix = ! empty( $input['title_suffix'] ) ? sanitize_text_field( $input['title_suffix'] ) : ' (Copy)';
 

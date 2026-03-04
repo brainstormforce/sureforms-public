@@ -99,7 +99,7 @@ class Update_Entry_Status extends Abstract_Ability {
 	 * @since x.x.x
 	 * @return array<string,mixed>|\WP_Error
 	 */
-	public function execute( array $input ) {
+	public function execute( $input ) {
 		$entry_ids = $input['entry_ids'] ?? [];
 		$status    = sanitize_text_field( $input['status'] ?? '' );
 

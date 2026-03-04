@@ -166,7 +166,7 @@ class Update_Form extends Abstract_Ability {
 	 * @since x.x.x
 	 * @return array<string,mixed>|\WP_Error
 	 */
-	public function execute( array $input ) {
+	public function execute( $input ) {
 		$form_id = absint( $input['form_id'] );
 		$post    = get_post( $form_id );
 
