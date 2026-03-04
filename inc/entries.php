@@ -635,6 +635,7 @@ class Entries {
 				'post_type'      => SRFM_FORMS_POST_TYPE,
 				'post_status'    => 'publish',
 				's'              => $search_term,
+				'search_columns' => [ 'post_title' ],
 				'posts_per_page' => -1,
 				'fields'         => 'ids',
 			]

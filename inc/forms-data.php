@@ -154,11 +154,6 @@ class Forms_Data {
 			'order'          => $order,
 		];
 
-		// Add search parameter.
-		if ( ! empty( $search ) ) {
-			$args['s'] = $search;
-		}
-
 		// Add date range filtering.
 		if ( ! empty( $date_from ) || ! empty( $date_to ) ) {
 			$date_query = [];
@@ -176,6 +171,51 @@ class Forms_Data {
 
 			$date_query['inclusive'] = true;
 			$args['date_query']      = [ $date_query ];
+		}
+
+		// Add search parameter.
+		if ( ! empty( $search ) && is_numeric( $search ) ) {
+			// Numeric search: match by form ID and title (e.g., "2024 Survey").
+			// Run two queries and merge results to avoid raw SQL.
+			$id_args  = array_merge( $args, [ 'p' => absint( $search ) ] );
+			$id_query = new \WP_Query( $id_args );
+
+			$title_args  = array_merge( $args, [ 's' => $search, 'search_columns' => [ 'post_title' ] ] );
+			$title_query = new \WP_Query( $title_args );
+
+			// Merge and deduplicate by ID.
+			$seen_ids     = [];
+			$merged_posts = [];
+			foreach ( array_merge( $id_query->posts, $title_query->posts ) as $post ) {
+				if ( in_array( $post->ID, $seen_ids, true ) ) {
+					continue;
+				}
+				$merged_posts[] = $post;
+				$seen_ids[]     = $post->ID;
+			}
+
+			$forms = [];
+			foreach ( $merged_posts as $post ) {
+				$forms[] = $this->prepare_form_for_listing( $post );
+			}
+
+			$total = count( $forms );
+
+			$response_data = [
+				'forms'        => array_slice( $forms, ( $page - 1 ) * $per_page, $per_page ),
+				'total'        => $total,
+				'total_pages'  => Helper::get_integer_value( ceil( $total / $per_page ) ),
+				'current_page' => $page,
+				'per_page'     => $per_page,
+			];
+
+			return new WP_REST_Response( $response_data, 200 );
+		}
+
+		if ( ! empty( $search ) ) {
+			// Text search: match by title only.
+			$args['s']              = $search;
+			$args['search_columns'] = [ 'post_title' ];
 		}
 
 		// Execute query.
