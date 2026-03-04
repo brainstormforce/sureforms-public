@@ -6,7 +6,7 @@
  */
 
 use Yoast\PHPUnitPolyfills\TestCases\TestCase;
-use SRFM\Inc\Abilities\Embedding\Get_Shortcode;
+use SRFM\Inc\Abilities\Forms\Get_Shortcode;
 
 /**
  * Test_Get_Shortcode class.

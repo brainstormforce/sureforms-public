@@ -29,9 +29,8 @@ class Bulk_Get_Entries extends Abstract_Ability {
 	 * Maximum number of entries that can be fetched in a single call.
 	 *
 	 * @since x.x.x
-	 * @var int
 	 */
-	const MAX_ENTRIES = 50;
+	public const MAX_ENTRIES = 50;
 
 	/**
 	 * Constructor.

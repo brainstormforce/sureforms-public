@@ -141,10 +141,13 @@ class Test_Create_Form extends TestCase {
 						'label'     => 'Full Name',
 						'fieldType' => 'input',
 						'required'  => true,
+						'helpText'  => '',
 					],
 					[
 						'label'     => 'Email',
 						'fieldType' => 'email',
+						'required'  => false,
+						'helpText'  => '',
 					],
 				],
 			]
@@ -176,6 +179,8 @@ class Test_Create_Form extends TestCase {
 					[
 						'label'     => 'Name',
 						'fieldType' => 'input',
+						'required'  => false,
+						'helpText'  => '',
 					],
 				],
 				'formStatus' => 'publish',

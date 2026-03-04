@@ -11,9 +11,8 @@
 
 namespace SRFM\Inc\Abilities;
 
-use SRFM\Inc\Abilities\Forms\Get_Shortcode;
-use SRFM\Inc\Abilities\Entries\Delete_Entry;
 use SRFM\Inc\Abilities\Entries\Bulk_Get_Entries;
+use SRFM\Inc\Abilities\Entries\Delete_Entry;
 use SRFM\Inc\Abilities\Entries\Get_Entry;
 use SRFM\Inc\Abilities\Entries\List_Entries;
 use SRFM\Inc\Abilities\Entries\Update_Entry_Status;
@@ -22,6 +21,7 @@ use SRFM\Inc\Abilities\Forms\Delete_Form;
 use SRFM\Inc\Abilities\Forms\Duplicate_Form as Duplicate_Form_Ability;
 use SRFM\Inc\Abilities\Forms\Get_Form;
 use SRFM\Inc\Abilities\Forms\Get_Form_Stats;
+use SRFM\Inc\Abilities\Forms\Get_Shortcode;
 use SRFM\Inc\Abilities\Forms\List_Forms;
 use SRFM\Inc\Abilities\Forms\Update_Form;
 use SRFM\Inc\Traits\Get_Instance;
