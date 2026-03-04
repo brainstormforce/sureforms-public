@@ -97,7 +97,7 @@ class Get_Shortcode extends Abstract_Ability {
 		return [
 			'form_id'      => $form_id,
 			'shortcode'    => sprintf( '[sureforms id="%d"]', $form_id ),
-			'block_markup' => sprintf( '<!-- wp:sureforms/form {"formId":%d} /-->', $form_id ),
+			'block_markup' => sprintf( '<!-- wp:srfm/form {"id":%d} /-->', $form_id ),
 		];
 	}
 }
