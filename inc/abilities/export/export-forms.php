@@ -129,9 +129,41 @@ class Export_Forms extends Abstract_Ability {
 
 		$forms = Export::get_instance()->get_forms_with_meta( $validated_ids );
 
+		// Convert WP_Post objects to arrays and sanitize meta values for JSON encoding.
+		$forms = array_map( [ $this, 'sanitize_form_data' ], $forms );
+
 		return [
 			'forms' => $forms,
 			'count' => count( $forms ),
 		];
+	}
+
+	/**
+	 * Sanitize form data for safe JSON encoding.
+	 *
+	 * Converts WP_Post objects to arrays and ensures all meta values
+	 * are JSON-encodable by unserializing PHP-serialized strings.
+	 *
+	 * @param array<string,mixed> $form_data Single form data with post and post_meta keys.
+	 * @since x.x.x
+	 * @return array<string,mixed>
+	 */
+	private function sanitize_form_data( $form_data ) {
+		// Convert WP_Post object to array.
+		if ( isset( $form_data['post'] ) && $form_data['post'] instanceof \WP_Post ) {
+			$form_data['post'] = $form_data['post']->to_array();
+		}
+
+		// Sanitize meta values — unserialize remaining raw serialized strings
+		// and flatten single-element arrays for clean JSON output.
+		if ( isset( $form_data['post_meta'] ) && is_array( $form_data['post_meta'] ) ) {
+			foreach ( $form_data['post_meta'] as $key => $value ) {
+				if ( is_array( $value ) && 1 === count( $value ) && isset( $value[0] ) ) {
+					$form_data['post_meta'][ $key ] = maybe_unserialize( $value[0] );
+				}
+			}
+		}
+
+		return $form_data;
 	}
 }
