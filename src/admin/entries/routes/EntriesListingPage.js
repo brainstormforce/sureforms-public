@@ -223,7 +223,7 @@ const EntriesListingPage = () => {
 		if ( entry.status === 'trash' ) {
 			setConfirmationDialog( {
 				open: true,
-				title: __( 'Delete Entry', 'sureforms' ),
+				title: __( 'Delete entry permanently?', 'sureforms' ),
 				description: __(
 					'Are you sure you want to permanently delete this entry? This action cannot be undone.',
 					'sureforms'
@@ -239,7 +239,7 @@ const EntriesListingPage = () => {
 			// Otherwise, show confirmation dialog before moving to trash
 			setConfirmationDialog( {
 				open: true,
-				title: __( 'Move Entry to Trash?', 'sureforms' ),
+				title: __( 'Move entry to trash?', 'sureforms' ),
 				description: __(
 					'This entry will be moved to trash and can be restored later.',
 					'sureforms'
@@ -293,14 +293,14 @@ const EntriesListingPage = () => {
 			open: true,
 			title: allInTrash
 				? _n(
-					'Delete Entry',
-					'Delete Entries',
+					'Delete entry permanently?',
+					'Delete entries permanently?',
 					selectedEntries.length,
 					'sureforms'
 				  )
 				: _n(
-					'Move Entry to Trash?',
-					'Move Entries to Trash?',
+					'Move entry to trash?',
+					'Move entries to trash?',
 					selectedEntries.length,
 					'sureforms'
 				  ),
@@ -393,7 +393,7 @@ const EntriesListingPage = () => {
 				onSuccess: () => {
 					clearSelection();
 					toast.success(
-						__( 'Entries exported successfully.', 'sureforms' )
+						__( 'Entries exported successfully!', 'sureforms' )
 					);
 				},
 			}

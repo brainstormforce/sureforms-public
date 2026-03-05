@@ -33,7 +33,7 @@ const SendDetailsButton = ( { handleSendEmail, isDisabled = true } ) => {
 	if ( ! isDisabled ) {
 		return (
 			<Button variant="primary" size="md" onClick={ handleSendEmail }>
-				{ __( 'Resend Notification', 'sureforms' ) }
+				{ __( 'Resend Email Notification', 'sureforms' ) }
 			</Button>
 		);
 	}
@@ -55,7 +55,7 @@ const SendDetailsButton = ( { handleSendEmail, isDisabled = true } ) => {
 				onClick={ handleSendEmail }
 				disabled
 			>
-				{ __( 'Resend Notification', 'sureforms' ) }
+				{ __( 'Resend Email Notification', 'sureforms' ) }
 			</Button>
 		</UpgradeTooltip>
 	);

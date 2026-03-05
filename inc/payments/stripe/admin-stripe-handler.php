@@ -158,7 +158,7 @@ class Admin_Stripe_Handler {
 			wp_send_json_error( [ 'message' => esc_html__( 'Failed to update subscription status in database.', 'sureforms' ) ] );
 		}
 
-		wp_send_json_success( [ 'message' => esc_html__( 'Subscription canceled successfully.', 'sureforms' ) ] );
+		wp_send_json_success( [ 'message' => esc_html__( 'Subscription canceled successfully!', 'sureforms' ) ] );
 	}
 
 	/**
@@ -542,7 +542,7 @@ class Admin_Stripe_Handler {
 			wp_send_json_error( [ 'message' => esc_html__( 'Failed to update subscription status in database.', 'sureforms' ) ] );
 		}
 
-		wp_send_json_success( [ 'message' => esc_html__( 'Subscription paused successfully.', 'sureforms' ) ] );
+		wp_send_json_success( [ 'message' => esc_html__( 'Subscription paused successfully!', 'sureforms' ) ] );
 	}
 
 	/**

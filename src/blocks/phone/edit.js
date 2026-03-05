@@ -178,7 +178,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 							{ isUnique && (
 								<SRFMTextControl
 									label={ __(
-										'Validation Message for Duplicate ',
+										'Validation Message for Duplicate',
 										'sureforms'
 									) }
 									value={ currentUniqueMessage }
