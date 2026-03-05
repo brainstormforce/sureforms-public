@@ -60,9 +60,12 @@ class Payment_History_Shortcode {
 			return;
 		}
 
+		$file_prefix = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? '' : '.min';
+		$dir_name    = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? 'unminified' : 'minified';
+
 		wp_enqueue_style(
 			'srfm-payment-history',
-			SRFM_URL . 'assets/css/payment-history.css',
+			SRFM_URL . 'assets/css/' . $dir_name . '/payment-history' . $file_prefix . '.css',
 			[],
 			SRFM_VER
 		);
