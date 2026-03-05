@@ -40,6 +40,47 @@ class Payments extends Base {
 	protected $table_version = 1;
 
 	/**
+	 * Allowed SQL comparison operators for where conditions.
+	 *
+	 * @since x.x.x
+	 * @var string[]
+	 */
+	private const ALLOWED_OPERATORS = [ '=', '!=', '>', '<', '>=', '<=', 'IN', 'NOT IN', 'LIKE', 'NOT LIKE' ];
+
+	/**
+	 * Allowed column names for where conditions.
+	 *
+	 * @since x.x.x
+	 * @var string[]
+	 */
+	private const ALLOWED_COLUMNS = [
+		'id',
+		'form_id',
+		'block_id',
+		'status',
+		'total_amount',
+		'refunded_amount',
+		'currency',
+		'entry_id',
+		'gateway',
+		'type',
+		'mode',
+		'transaction_id',
+		'customer_id',
+		'subscription_id',
+		'subscription_status',
+		'parent_subscription_id',
+		'payment_data',
+		'extra',
+		'log',
+		'created_at',
+		'updated_at',
+		'srfm_txn_id',
+		'customer_email',
+		'customer_name',
+	];
+
+	/**
 	 * Valid payment statuses (Stripe-specific).
 	 *
 	 * @var array<string>
@@ -1050,31 +1091,39 @@ class Payments extends Base {
 		$where_clause = 'WHERE 1=1';
 		$params       = [];
 
-		// Define allowed SQL comparison operators to prevent SQL injection.
-		$allowed_operators = [ '=', '!=', '>', '<', '>=', '<=', 'IN', 'NOT IN', 'LIKE', 'NOT LIKE' ];
-
 		// Handle additional where conditions if provided.
 		if ( ! empty( $_args['where'] ) ) {
 			foreach ( $_args['where'] as $where_group ) {
 				if ( is_array( $where_group ) ) {
 					foreach ( $where_group as $condition ) {
 						if ( isset( $condition['key'], $condition['compare'], $condition['value'] ) ) {
+							// Validate column name against whitelist.
+							if ( ! in_array( $condition['key'], self::ALLOWED_COLUMNS, true ) ) {
+								continue;
+							}
+
 							// Validate and normalize the comparison operator.
 							$operator = strtoupper( trim( $condition['compare'] ) );
 
 							// Skip this condition if operator is not in whitelist.
-							if ( ! in_array( $operator, $allowed_operators, true ) ) {
+							if ( ! in_array( $operator, self::ALLOWED_OPERATORS, true ) ) {
 								continue;
 							}
 
-							if ( 'IN' === $operator && is_array( $condition['value'] ) ) {
-								$placeholders  = implode( ',', array_fill( 0, count( $condition['value'] ), '%d' ) );
-								$where_clause .= " AND {$condition['key']} IN ({$placeholders})";
-								foreach ( $condition['value'] as $val ) {
-									$params[] = $val;
+							$column = $condition['key'];
+
+							if ( in_array( $operator, [ 'IN', 'NOT IN' ], true ) && is_array( $condition['value'] ) ) {
+								$ids = array_map( 'absint', $condition['value'] );
+								if ( empty( $ids ) ) {
+									$ids = [ 0 ];
+								}
+								$placeholders  = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
+								$where_clause .= " AND {$column} {$operator} ({$placeholders})";
+								foreach ( $ids as $id ) {
+									$params[] = $id;
 								}
 							} else {
-								$where_clause .= " AND {$condition['key']} {$operator} %s";
+								$where_clause .= " AND {$column} {$operator} %s";
 								$params[]      = $condition['value'];
 							}
 						}
@@ -1142,9 +1191,6 @@ class Payments extends Base {
 		$where_clause = '1=1';
 		$params       = [];
 
-		// Define allowed SQL comparison operators to prevent SQL injection.
-		$allowed_operators = [ '=', '!=', '>', '<', '>=', '<=', 'IN', 'NOT IN', 'LIKE', 'NOT LIKE' ];
-
 		// Add status condition.
 		if ( 'all' !== $status ) {
 			$where_clause .= ' AND status = %s';
@@ -1163,13 +1209,20 @@ class Payments extends Base {
 				if ( is_array( $where_group ) ) {
 					foreach ( $where_group as $condition ) {
 						if ( isset( $condition['key'], $condition['compare'], $condition['value'] ) ) {
+							// Validate column name against whitelist.
+							if ( ! in_array( $condition['key'], self::ALLOWED_COLUMNS, true ) ) {
+								continue;
+							}
+
 							// Validate and normalize the comparison operator.
 							$operator = strtoupper( trim( $condition['compare'] ) );
 
 							// Skip this condition if operator is not in whitelist.
-							if ( ! in_array( $operator, $allowed_operators, true ) ) {
+							if ( ! in_array( $operator, self::ALLOWED_OPERATORS, true ) ) {
 								continue;
 							}
+
+							$column = $condition['key'];
 
 							// Special handling for IN/NOT IN with arrays.
 							if ( in_array( $operator, [ 'IN', 'NOT IN' ], true ) && is_array( $condition['value'] ) ) {
@@ -1179,12 +1232,12 @@ class Payments extends Base {
 									$ids = [ 0 ];
 								}
 								$placeholders  = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
-								$where_clause .= " AND {$condition['key']} {$operator} ({$placeholders})";
+								$where_clause .= " AND {$column} {$operator} ({$placeholders})";
 								foreach ( $ids as $id ) {
 									$params[] = $id;
 								}
 							} else {
-								$where_clause .= " AND {$condition['key']} {$operator} %s";
+								$where_clause .= " AND {$column} {$operator} %s";
 								$params[]      = $condition['value'];
 							}
 						}
