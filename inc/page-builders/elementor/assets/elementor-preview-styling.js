@@ -141,7 +141,13 @@ import {
 				container.style.background = gradient;
 			}
 		} else if ( bgType === 'image' && bgImage ) {
-			container.style.backgroundImage = `url(${ bgImage })`;
+			// Validate URL protocol to prevent CSS injection.
+			if (
+				bgImage.startsWith( 'https://' ) ||
+				bgImage.startsWith( 'http://' )
+			) {
+				container.style.backgroundImage = `url(${ bgImage })`;
+			}
 		}
 	}
 
@@ -189,7 +195,7 @@ import {
 					);
 
 					for ( const key in finalSize ) {
-						if ( Object.hasOwn( finalSize, key ) ) {
+						if ( Object.hasOwn( finalSize, key ) && key.startsWith( '--' ) ) {
 							container.style.setProperty(
 								key,
 								finalSize[ key ]
@@ -397,7 +403,7 @@ import {
 	}
 
 	/**
-	 * Reset all styles when inheritStyling is enabled.
+	 * Reset all styles when formTheme is set to inherit.
 	 *
 	 * @param {HTMLElement} container       The form container element.
 	 * @param {string}      originalClasses Original container classes.
@@ -448,9 +454,9 @@ import {
 		originalClasses,
 		widgetSettings = null
 	) {
-		// Handle inheritStyling toggle - reset all styles when enabled.
-		if ( name === 'inheritStyling' ) {
-			if ( value === 'yes' ) {
+		// Handle formTheme change - reset all styles when set to inherit.
+		if ( name === 'formTheme' ) {
+			if ( value === 'inherit' ) {
 				resetAllStyles( container, originalClasses );
 			}
 			dispatchUpdateEvent( name, value, container, widgetSettings );

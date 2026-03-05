@@ -30,6 +30,12 @@ class Test_Form_Styling extends TestCase {
 		];
 	}
 
+	protected function tearDown(): void {
+		remove_all_filters( 'srfm_embed_block_attrs_to_styling' );
+		remove_all_filters( 'srfm_apply_form_theme_styling' );
+		parent::tearDown();
+	}
+
 	// ─── map_block_attrs_to_styling ───────────────────────────────
 
 	/**
@@ -137,6 +143,85 @@ class Test_Form_Styling extends TestCase {
 		$result = Form_Styling::map_block_attrs_to_styling( [], $attrs );
 
 		$this->assertArrayNotHasKey( 'form_border_radius_top', $result );
+	}
+
+	/**
+	 * Test that invalid padding unit is rejected by in_array() validation.
+	 */
+	public function test_map_block_attrs_rejects_invalid_padding_unit() {
+		$attrs = [
+			'formPaddingTop'  => 10,
+			'formPaddingUnit' => 'evil-unit',
+		];
+
+		$result = Form_Styling::map_block_attrs_to_styling( [], $attrs );
+
+		$this->assertSame( 10.0, $result['form_padding_top'] );
+		$this->assertArrayNotHasKey( 'form_padding_unit', $result );
+	}
+
+	/**
+	 * Test that invalid border radius unit is rejected.
+	 */
+	public function test_map_block_attrs_rejects_invalid_border_radius_unit() {
+		$attrs = [
+			'formBorderRadiusTop'  => 5,
+			'formBorderRadiusUnit' => '<script>',
+		];
+
+		$result = Form_Styling::map_block_attrs_to_styling( [], $attrs );
+
+		$this->assertSame( 5.0, $result['form_border_radius_top'] );
+		$this->assertArrayNotHasKey( 'form_border_radius_unit', $result );
+	}
+
+	/**
+	 * Test all valid CSS units are accepted for padding.
+	 */
+	public function test_map_block_attrs_accepts_all_valid_units() {
+		$valid_units = [ 'px', 'em', 'rem', '%', 'vw', 'vh' ];
+
+		foreach ( $valid_units as $unit ) {
+			$attrs  = [ 'formPaddingUnit' => $unit ];
+			$result = Form_Styling::map_block_attrs_to_styling( [], $attrs );
+
+			$this->assertSame( $unit, $result['form_padding_unit'], "Unit '{$unit}' should be accepted" );
+		}
+	}
+
+	/**
+	 * Test partial dimension attributes — only provided sides are mapped.
+	 */
+	public function test_map_block_attrs_maps_partial_dimensions() {
+		$attrs = [
+			'formPaddingTop'  => 10,
+			'formPaddingLeft' => 20,
+		];
+
+		$result = Form_Styling::map_block_attrs_to_styling( [], $attrs );
+
+		$this->assertSame( 10.0, $result['form_padding_top'] );
+		$this->assertSame( 20.0, $result['form_padding_left'] );
+		$this->assertArrayNotHasKey( 'form_padding_right', $result );
+		$this->assertArrayNotHasKey( 'form_padding_bottom', $result );
+		$this->assertArrayNotHasKey( 'form_padding_unit', $result );
+	}
+
+	/**
+	 * Test that zero border radius is accepted alongside a valid unit.
+	 */
+	public function test_map_block_attrs_accepts_zero_border_radius_with_unit() {
+		$attrs = [
+			'formBorderRadiusTop'   => 0,
+			'formBorderRadiusRight' => 0,
+			'formBorderRadiusUnit'  => '%',
+		];
+
+		$result = Form_Styling::map_block_attrs_to_styling( [], $attrs );
+
+		$this->assertSame( 0.0, $result['form_border_radius_top'] );
+		$this->assertSame( 0.0, $result['form_border_radius_right'] );
+		$this->assertSame( '%', $result['form_border_radius_unit'] );
 	}
 
 	/**
@@ -251,8 +336,6 @@ class Test_Form_Styling extends TestCase {
 		$result = Form_Styling::map_block_attrs_to_styling( [], [ 'primaryColor' => '#FF0000' ] );
 
 		$this->assertTrue( $result['from_filter'] );
-
-		remove_all_filters( 'srfm_embed_block_attrs_to_styling' );
 	}
 
 	// ─── apply_theme_styling ──────────────────────────────────────
@@ -292,57 +375,58 @@ class Test_Form_Styling extends TestCase {
 		$this->assertSame( 'modern', $result['theme_applied'] );
 		// Original values are still present since the filter merges.
 		$this->assertSame( '#000000', $result['primary_color'] );
-
-		remove_all_filters( 'srfm_apply_form_theme_styling' );
 	}
 
 	/**
 	 * Test that without a filter, the styling is returned unchanged for non-default theme.
 	 */
 	public function test_apply_theme_styling_returns_unchanged_without_filter() {
-		remove_all_filters( 'srfm_apply_form_theme_styling' );
-
 		$result = Form_Styling::apply_theme_styling( $this->base_styling, 'modern' );
 
+		$this->assertSame( $this->base_styling, $result );
+	}
+
+	/**
+	 * Test 'inherit' theme slug returns original styling unchanged.
+	 */
+	public function test_apply_theme_styling_returns_original_for_inherit_slug() {
+		$result = Form_Styling::apply_theme_styling( $this->base_styling, 'inherit' );
 		$this->assertSame( $this->base_styling, $result );
 	}
 
 	// ─── has_custom_styling ───────────────────────────────────────
 
 	/**
-	 * Test returns true when inheritStyling is false.
+	 * Test returns true when formTheme is 'default'.
 	 */
-	public function test_has_custom_styling_returns_true_when_inherit_false() {
-		$attrs = [ 'inheritStyling' => false ];
+	public function test_has_custom_styling_returns_true_when_form_theme_default() {
+		$attrs = [ 'formTheme' => 'default' ];
 
 		$this->assertTrue( Form_Styling::has_custom_styling( $attrs ) );
 	}
 
 	/**
-	 * Test returns false when inheritStyling is true.
+	 * Test returns true when formTheme is 'custom'.
 	 */
-	public function test_has_custom_styling_returns_false_when_inherit_true() {
-		$attrs = [ 'inheritStyling' => true ];
+	public function test_has_custom_styling_returns_true_when_form_theme_custom() {
+		$attrs = [ 'formTheme' => 'custom' ];
+
+		$this->assertTrue( Form_Styling::has_custom_styling( $attrs ) );
+	}
+
+	/**
+	 * Test returns false when formTheme is 'inherit'.
+	 */
+	public function test_has_custom_styling_returns_false_when_form_theme_inherit() {
+		$attrs = [ 'formTheme' => 'inherit' ];
 
 		$this->assertFalse( Form_Styling::has_custom_styling( $attrs ) );
 	}
 
 	/**
-	 * Test returns false when inheritStyling is not set.
+	 * Test returns false when formTheme is not set (defaults to 'inherit').
 	 */
 	public function test_has_custom_styling_returns_false_when_not_set() {
 		$this->assertFalse( Form_Styling::has_custom_styling( [] ) );
-	}
-
-	/**
-	 * Test returns false for falsy non-boolean values (strict comparison).
-	 */
-	public function test_has_custom_styling_strict_false_comparison() {
-		// 0 is falsy but not === false.
-		$this->assertFalse( Form_Styling::has_custom_styling( [ 'inheritStyling' => 0 ] ) );
-		// Empty string is falsy but not === false.
-		$this->assertFalse( Form_Styling::has_custom_styling( [ 'inheritStyling' => '' ] ) );
-		// null is falsy but not === false.
-		$this->assertFalse( Form_Styling::has_custom_styling( [ 'inheritStyling' => null ] ) );
 	}
 }

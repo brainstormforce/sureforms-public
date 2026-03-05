@@ -40,13 +40,9 @@
 			"enum": [ "all", "checkbox", "radio" ],
 			"default": "all"
 		},
-		"inheritStyling": {
-			"type": "boolean",
-			"default": true
-		},
 		"formTheme": {
 			"type": "string",
-			"default": "default"
+			"default": "inherit"
 		},
 		"primaryColor": {
 			"type": "string",
