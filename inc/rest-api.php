@@ -214,8 +214,11 @@ class Rest_Api {
 		];
 
 		add_filter( 'posts_search', [ $this, 'search_only_post_titles' ], 10, 2 );
-		$query = new \WP_Query( $args );
-		remove_filter( 'posts_search', [ $this, 'search_only_post_titles' ], 10 );
+		try {
+			$query = new \WP_Query( $args );
+		} finally {
+			remove_filter( 'posts_search', [ $this, 'search_only_post_titles' ], 10 );
+		}
 
 		$post_ids = is_array( $query->posts )
 			? array_map(
@@ -232,6 +235,9 @@ class Rest_Api {
 		$has_more = count( $post_ids ) > $per_page;
 		$post_ids = array_slice( $post_ids, 0, $per_page );
 
+		// Note: url_to_postid() issues one DB query per URL. Currently only a single
+		// selected_url is used in practice; if multi-URL usage grows, consider a
+		// batched WHERE guid IN (...) query instead.
 		foreach ( $selected_values as $selected_value ) {
 			$selected_id = url_to_postid( $selected_value );
 

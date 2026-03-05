@@ -107,9 +107,7 @@ const DefaultConfirmationTypes = ( {
 									} );
 								} }
 								combobox
-								searchFn={ ( keyword ) =>
-									handlePageSearch( keyword )
-								}
+								searchFn={ handlePageSearch }
 								searchPlaceholder={ __(
 									'Search for a page',
 									'sureforms'

@@ -1009,7 +1009,6 @@ export const getWordPressPages = async ( setPageOptions, options = {} ) => {
 
 		return result;
 	} catch ( error ) {
-		console.error( 'Error:', error );
 		if ( 'function' === typeof setPageOptions ) {
 			setPageOptions( [] );
 		}
