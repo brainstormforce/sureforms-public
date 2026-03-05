@@ -33,12 +33,27 @@ class Admin {
 	use Get_Instance;
 
 	/**
+	 * Minimum number of forms or entries required to show the rating notice.
+	 *
+	 * @since x.x.x
+	 */
+	const RATING_NOTICE_THRESHOLD = 3;
+
+	/**
 	 * Dashboard widget entries data.
 	 *
 	 * @var array
 	 * @since 1.9.1
 	 */
 	private $dashboard_widget_data = [];
+
+	/**
+	 * Cached result for whether the rating notice should display.
+	 *
+	 * @var bool|null
+	 * @since x.x.x
+	 */
+	private $should_show_rating = null;
 
 	/**
 	 * SureForms Page Default permission.
@@ -1317,43 +1332,18 @@ class Admin {
 			return;
 		}
 
-		$image_path = SRFM_URL . 'admin/assets/sureforms-logo.png';
-
 		Astra_Notices::add_notice(
 			[
 				'id'                         => 'srfm-plugin-review-notice',
 				'type'                       => '',
-				'message'                    => sprintf(
-					'<div class="notice-image">
-                    <img src="%1$s" class="custom-logo" alt="SureForms" itemprop="logo">
-                </div>
-                <div class="notice-content">
-                    <div class="notice-heading">
-                        %2$s
-                    </div>
-                    %3$s<br />
-                    <div class="astra-review-notice-container">
-                        <a href="%4$s" class="astra-notice-close button-primary" target="_blank" rel="noopener noreferrer">
-                        %5$s
-                        </a>
-                    <span class="dashicons dashicons-clock" aria-hidden="true"></span>
-                        <a href="#" data-repeat-notice-after="%6$s" class="astra-notice-close">
-                        %7$s
-                        </a>
-                    <span class="dashicons dashicons-smiley" aria-hidden="true"></span>
-                        <a href="#" class="astra-notice-close">
-                        %8$s
-                        </a>
-                    </div>
-                </div>',
-					esc_url( $image_path ),
+				'message'                    => $this->build_notice_markup(
 					esc_html__( 'Amazing! SureForms is powering your forms and submissions - let\'s keep growing together!', 'sureforms' ),
 					esc_html__( 'If SureForms has been helpful, would you mind taking a moment to leave a 5-star review on WordPress.org?', 'sureforms' ),
 					esc_url( 'https://wordpress.org/support/plugin/sureforms/reviews/?filter=5#new-post' ),
 					esc_html__( 'Rate SureForms', 'sureforms' ),
-					WEEK_IN_SECONDS,
 					esc_html__( 'Maybe later', 'sureforms' ),
-					esc_html__( 'I already did', 'sureforms' )
+					esc_html__( 'I already did', 'sureforms' ),
+					true
 				),
 				'repeat-notice-after'        => WEEK_IN_SECONDS,
 				'show_if'                    => $this->maybe_display_rating_notice(),
@@ -1385,52 +1375,81 @@ class Admin {
 			return;
 		}
 
-		$image_path = SRFM_URL . 'admin/assets/sureforms-logo.png';
-
 		Astra_Notices::add_notice(
 			[
 				'id'                         => 'srfm-getting-started-notice',
 				'type'                       => '',
-				'message'                    => sprintf(
-					'<div class="notice-image">
-                    <img src="%1$s" class="custom-logo" alt="SureForms" itemprop="logo">
-                </div>
-                <div class="notice-content">
-                    <div class="notice-heading">
-                        %2$s
-                    </div>
-                    %3$s<br />
-                    <div class="astra-review-notice-container">
-                        <a href="%4$s" class="button-primary">
-                        %5$s
-                        </a>
-                    <span class="dashicons dashicons-clock" aria-hidden="true"></span>
-                        <a href="#" data-repeat-notice-after="%6$s" class="astra-notice-close">
-                        %7$s
-                        </a>
-                    <span class="dashicons dashicons-smiley" aria-hidden="true"></span>
-                        <a href="#" class="astra-notice-close">
-                        %8$s
-                        </a>
-                    </div>
-                </div>',
-					esc_url( $image_path ),
+				'message'                    => $this->build_notice_markup(
 					esc_html__( 'SureForms is ready to power your forms — explore what\'s possible!', 'sureforms' ),
 					esc_html__( 'Manage your forms, track submissions, and discover features like AI Form Builder, payment integrations, and more from the SureForms dashboard.', 'sureforms' ),
 					esc_url( admin_url( 'admin.php?page=sureforms_menu' ) ),
 					esc_html__( 'Go to Dashboard', 'sureforms' ),
-					WEEK_IN_SECONDS,
 					esc_html__( 'Maybe later', 'sureforms' ),
 					esc_html__( 'I already know', 'sureforms' )
 				),
 				'repeat-notice-after'        => WEEK_IN_SECONDS,
 				'show_if'                    => ! $this->maybe_display_rating_notice(),
-				'display-notice-after'       => 7 * DAY_IN_SECONDS,
+				'display-notice-after'       => WEEK_IN_SECONDS,
 				'display-with-other-notices' => true,
 			]
 		);
 
 		add_action( 'astra_notice_after_markup_srfm-getting-started-notice', [ $this, 'enqueue_notice_response_script' ] );
+	}
+
+	/**
+	 * Build the shared HTML markup for admin notices.
+	 *
+	 * @since x.x.x
+	 *
+	 * @param string $heading      The notice heading text.
+	 * @param string $message      The notice body text.
+	 * @param string $cta_url      The primary CTA URL.
+	 * @param string $cta_text     The primary CTA button text.
+	 * @param string $snooze_text  The snooze button text.
+	 * @param string $dismiss_text The dismiss button text.
+	 * @param bool   $external_cta Whether the CTA opens in a new tab and dismisses the notice. Default false.
+	 * @return string The notice HTML markup.
+	 */
+	private function build_notice_markup( $heading, $message, $cta_url, $cta_text, $snooze_text, $dismiss_text, $external_cta = false ) {
+		$image_path = esc_url( SRFM_URL . 'admin/assets/sureforms-logo.png' );
+		$cta_class  = $external_cta ? 'astra-notice-close button-primary' : 'button-primary';
+		$cta_attrs  = $external_cta ? ' target="_blank" rel="noopener noreferrer"' : '';
+
+		return sprintf(
+			'<div class="notice-image">
+                <img src="%1$s" class="custom-logo" alt="SureForms" itemprop="logo">
+            </div>
+            <div class="notice-content">
+                <div class="notice-heading">
+                    %2$s
+                </div>
+                %3$s<br />
+                <div class="astra-review-notice-container">
+                    <a href="%4$s" class="%5$s"%6$s>
+                    %7$s
+                    </a>
+                <span class="dashicons dashicons-clock" aria-hidden="true"></span>
+                    <a href="#" data-repeat-notice-after="%8$s" class="astra-notice-close">
+                    %9$s
+                    </a>
+                <span class="dashicons dashicons-smiley" aria-hidden="true"></span>
+                    <a href="#" class="astra-notice-close">
+                    %10$s
+                    </a>
+                </div>
+            </div>',
+			$image_path,
+			$heading,
+			$message,
+			$cta_url,
+			esc_attr( $cta_class ),
+			$cta_attrs,
+			$cta_text,
+			WEEK_IN_SECONDS,
+			$snooze_text,
+			$dismiss_text
+		);
 	}
 
 	/**
@@ -1475,12 +1494,12 @@ class Admin {
 	 * @return void
 	 */
 	public function handle_notice_response() {
-		if ( ! Helper::current_user_can() ) {
-			wp_send_json_error( [ 'message' => __( 'Unauthorized user.', 'sureforms' ) ], 403 );
-		}
-
 		if ( ! check_ajax_referer( 'srfm_notice_response', 'nonce', false ) ) {
 			wp_send_json_error( [ 'message' => __( 'Invalid nonce.', 'sureforms' ) ], 403 );
+		}
+
+		if ( ! Helper::current_user_can() ) {
+			wp_send_json_error( [ 'message' => __( 'Unauthorized user.', 'sureforms' ) ], 403 );
 		}
 
 		$notice_id = isset( $_POST['notice_id'] ) ? sanitize_text_field( wp_unslash( $_POST['notice_id'] ) ) : '';
@@ -1749,10 +1768,13 @@ class Admin {
 	 * @return bool
 	 */
 	private function maybe_display_rating_notice() {
-		$entries_count = Entries::get_total_entries_by_status( 'all' );
-		$form_count    = wp_count_posts( SRFM_FORMS_POST_TYPE );
+		if ( null === $this->should_show_rating ) {
+			$entries_count            = Entries::get_total_entries_by_status( 'all' );
+			$form_count               = wp_count_posts( SRFM_FORMS_POST_TYPE );
+			$this->should_show_rating = $entries_count >= self::RATING_NOTICE_THRESHOLD || Helper::get_integer_value( $form_count->publish ) >= self::RATING_NOTICE_THRESHOLD;
+		}
 
-		return $entries_count >= 3 || Helper::get_integer_value( $form_count->publish ) >= 3;
+		return $this->should_show_rating;
 	}
 
 	/**

@@ -9,6 +9,8 @@ use Yoast\PHPUnitPolyfills\TestCases\TestCase;
 
 use SRFM\Admin\Admin;
 
+require_once __DIR__ . '/trait-astra-notices-helper.php';
+
 /**
  * Tests first form creation timestamp logic.
  */
@@ -57,7 +59,7 @@ class Test_Admin extends TestCase {
         // Since we can't easily override WordPress functions in this test setup,
         // we'll test that the method exists and returns the expected type
         $result = Admin::get_first_form_creation_time_stamp();
-        
+
         // The method should return either an integer timestamp or false
         $this->assertTrue(is_int($result) || $result === false);
     }
@@ -89,7 +91,7 @@ class Test_Admin extends TestCase {
         $current_time = strtotime(gmdate('Y-m-d H:i:s'));
         $timestamp = $current_time - (DAY_IN_SECONDS * 1);
         $days_threshold = 3;
-        
+
         // Test the calculation logic directly
         $days_from_creation = ($current_time - $timestamp) / DAY_IN_SECONDS;
         $this->assertFalse($days_from_creation > $days_threshold);
@@ -116,6 +118,7 @@ class Test_Admin extends TestCase {
  * @since x.x.x
  */
 class Test_Rating_Notice extends TestCase {
+	use Astra_Notices_Helper;
 
 	/**
 	 * Tear down: remove filters added during tests.
@@ -123,63 +126,75 @@ class Test_Rating_Notice extends TestCase {
 	 * @return void
 	 */
 	protected function tearDown(): void {
+		// Reset the cached should_show_rating property.
+		$admin = Admin::get_instance();
+		$prop  = new \ReflectionProperty( $admin, 'should_show_rating' );
+		$prop->setAccessible( true );
+		$prop->setValue( $admin, null );
+
 		remove_all_filters( 'srfm_show_rating_notice' );
 		parent::tearDown();
 	}
 
 	/**
-	 * Helper: return count of notices registered in Astra_Notices via reflection.
+	 * Helper: invoke the private maybe_display_rating_notice() method via reflection,
+	 * after injecting a cached value into the should_show_rating property.
 	 *
-	 * @return int
+	 * @param bool $cached_value The value to inject into the cache.
+	 * @return bool The method's return value.
 	 */
-	private function get_astra_notices_count(): int {
-		if ( ! class_exists( 'Astra_Notices' ) ) {
-			return 0;
-		}
-		$prop = new \ReflectionProperty( 'Astra_Notices', 'notices' );
+	private function invoke_maybe_display_with_cache( bool $cached_value ): bool {
+		$admin = Admin::get_instance();
+
+		$prop = new \ReflectionProperty( $admin, 'should_show_rating' );
 		$prop->setAccessible( true );
-		$notices = $prop->getValue( null );
-		return is_array( $notices ) ? count( $notices ) : 0;
+		$prop->setValue( $admin, $cached_value );
+
+		$method = new \ReflectionMethod( $admin, 'maybe_display_rating_notice' );
+		$method->setAccessible( true );
+
+		return $method->invoke( $admin );
 	}
 
 	/**
-	 * Test: display condition is false with 0 forms and 0 entries.
+	 * Test: threshold constant is defined and is an integer.
 	 */
-	public function test_rating_notice_condition_false_with_no_activity() {
-		$entries_count  = 0;
-		$publish_count  = 0;
-		$should_display = $entries_count >= 3 || $publish_count >= 3;
-		$this->assertFalse( $should_display, 'Should not display with 0 forms and 0 entries' );
+	public function test_rating_notice_threshold_is_defined() {
+		$this->assertSame( 3, Admin::RATING_NOTICE_THRESHOLD );
 	}
 
 	/**
-	 * Test: display condition is false with 2 published forms and 0 entries (boundary).
+	 * Test: display condition is false when cached value is false.
 	 */
-	public function test_rating_notice_condition_false_at_two_forms_boundary() {
-		$entries_count  = 0;
-		$publish_count  = 2;
-		$should_display = $entries_count >= 3 || $publish_count >= 3;
-		$this->assertFalse( $should_display, 'Should not display with only 2 published forms' );
+	public function test_rating_notice_returns_false_when_cached_false() {
+		$this->assertFalse( $this->invoke_maybe_display_with_cache( false ) );
 	}
 
 	/**
-	 * Test: display condition is true with exactly 3 published forms.
+	 * Test: display condition is true when cached value is true.
 	 */
-	public function test_rating_notice_condition_true_with_three_forms() {
-		$entries_count  = 0;
-		$publish_count  = 3;
-		$should_display = $entries_count >= 3 || $publish_count >= 3;
-		$this->assertTrue( $should_display, 'Should display when 3 published forms exist' );
+	public function test_rating_notice_returns_true_when_cached_true() {
+		$this->assertTrue( $this->invoke_maybe_display_with_cache( true ) );
 	}
 
 	/**
-	 * Test: display condition is true with exactly 3 entries.
+	 * Test: condition logic — below threshold should not display.
 	 */
-	public function test_rating_notice_condition_true_with_three_entries() {
-		$entries_count  = 3;
-		$publish_count  = 0;
-		$should_display = $entries_count >= 3 || $publish_count >= 3;
-		$this->assertTrue( $should_display, 'Should display when 3 entries exist' );
+	public function test_rating_notice_condition_false_below_threshold() {
+		$threshold = Admin::RATING_NOTICE_THRESHOLD;
+
+		$this->assertFalse( 0 >= $threshold || 0 >= $threshold, 'Should not display with 0 forms and 0 entries' );
+		$this->assertFalse( 0 >= $threshold || ( $threshold - 1 ) >= $threshold, 'Should not display just below threshold' );
+	}
+
+	/**
+	 * Test: condition logic — at or above threshold should display.
+	 */
+	public function test_rating_notice_condition_true_at_threshold() {
+		$threshold = Admin::RATING_NOTICE_THRESHOLD;
+
+		$this->assertTrue( 0 >= $threshold || $threshold >= $threshold, 'Should display with exactly threshold forms' );
+		$this->assertTrue( $threshold >= $threshold || 0 >= $threshold, 'Should display with exactly threshold entries' );
 	}
 
 	/**
@@ -209,6 +224,7 @@ class Test_Rating_Notice extends TestCase {
  * @since x.x.x
  */
 class Test_Getting_Started_Notice extends TestCase {
+	use Astra_Notices_Helper;
 
 	/**
 	 * Tear down: remove filters added during tests.
@@ -216,83 +232,57 @@ class Test_Getting_Started_Notice extends TestCase {
 	 * @return void
 	 */
 	protected function tearDown(): void {
+		// Reset the cached should_show_rating property.
+		$admin = Admin::get_instance();
+		$prop  = new \ReflectionProperty( $admin, 'should_show_rating' );
+		$prop->setAccessible( true );
+		$prop->setValue( $admin, null );
+
 		remove_all_filters( 'srfm_show_getting_started_notice' );
 		parent::tearDown();
 	}
 
 	/**
-	 * Helper: return count of notices registered in Astra_Notices via reflection.
-	 *
-	 * @return int
+	 * Test: getting-started shows when rating condition is false (below threshold).
 	 */
-	private function get_astra_notices_count(): int {
-		if ( ! class_exists( 'Astra_Notices' ) ) {
-			return 0;
-		}
-		$prop = new \ReflectionProperty( 'Astra_Notices', 'notices' );
-		$prop->setAccessible( true );
-		$notices = $prop->getValue( null );
-		return is_array( $notices ) ? count( $notices ) : 0;
+	public function test_getting_started_show_if_true_below_threshold() {
+		$threshold = Admin::RATING_NOTICE_THRESHOLD;
+
+		$rating_display = 0 >= $threshold || 0 >= $threshold;
+		$this->assertTrue( ! $rating_display, 'Getting-started should show with 0 forms and 0 entries' );
+
+		$rating_display = ( $threshold - 1 ) >= $threshold || ( $threshold - 1 ) >= $threshold;
+		$this->assertTrue( ! $rating_display, 'Getting-started should show just below threshold' );
 	}
 
 	/**
-	 * Test: show_if is true with 0 forms and 0 entries (getting-started should show).
+	 * Test: getting-started hides when rating condition is true (at or above threshold).
 	 */
-	public function test_getting_started_show_if_true_with_no_activity() {
-		$entries_count  = 0;
-		$publish_count  = 0;
-		$rating_display = $entries_count >= 3 || $publish_count >= 3;
-		$show_if        = ! $rating_display;
-		$this->assertTrue( $show_if, 'Getting-started should show with 0 forms and 0 entries' );
-	}
+	public function test_getting_started_show_if_false_at_threshold() {
+		$threshold = Admin::RATING_NOTICE_THRESHOLD;
 
-	/**
-	 * Test: show_if is true at boundary (2 forms, 2 entries).
-	 */
-	public function test_getting_started_show_if_true_at_boundary() {
-		$entries_count  = 2;
-		$publish_count  = 2;
-		$rating_display = $entries_count >= 3 || $publish_count >= 3;
-		$show_if        = ! $rating_display;
-		$this->assertTrue( $show_if, 'Getting-started should show with 2 forms and 2 entries' );
-	}
+		$rating_display = $threshold >= $threshold || 0 >= $threshold;
+		$this->assertFalse( ! $rating_display, 'Getting-started should not show when forms reach threshold' );
 
-	/**
-	 * Test: show_if is false with 3+ published forms.
-	 */
-	public function test_getting_started_show_if_false_with_three_forms() {
-		$entries_count  = 0;
-		$publish_count  = 3;
-		$rating_display = $entries_count >= 3 || $publish_count >= 3;
-		$show_if        = ! $rating_display;
-		$this->assertFalse( $show_if, 'Getting-started should not show when 3 published forms exist' );
-	}
-
-	/**
-	 * Test: show_if is false with 3+ entries.
-	 */
-	public function test_getting_started_show_if_false_with_three_entries() {
-		$entries_count  = 3;
-		$publish_count  = 0;
-		$rating_display = $entries_count >= 3 || $publish_count >= 3;
-		$show_if        = ! $rating_display;
-		$this->assertFalse( $show_if, 'Getting-started should not show when 3 entries exist' );
+		$rating_display = 0 >= $threshold || $threshold >= $threshold;
+		$this->assertFalse( ! $rating_display, 'Getting-started should not show when entries reach threshold' );
 	}
 
 	/**
 	 * Test: mutual exclusivity — rating and getting-started conditions are always opposite.
 	 */
 	public function test_mutual_exclusivity_of_notices() {
+		$threshold = Admin::RATING_NOTICE_THRESHOLD;
 		$scenarios = [
 			[ 'entries' => 0, 'forms' => 0 ],
-			[ 'entries' => 2, 'forms' => 2 ],
-			[ 'entries' => 3, 'forms' => 0 ],
-			[ 'entries' => 0, 'forms' => 3 ],
-			[ 'entries' => 5, 'forms' => 5 ],
+			[ 'entries' => $threshold - 1, 'forms' => $threshold - 1 ],
+			[ 'entries' => $threshold, 'forms' => 0 ],
+			[ 'entries' => 0, 'forms' => $threshold ],
+			[ 'entries' => $threshold + 2, 'forms' => $threshold + 2 ],
 		];
 
 		foreach ( $scenarios as $scenario ) {
-			$rating_show          = $scenario['entries'] >= 3 || $scenario['forms'] >= 3;
+			$rating_show          = $scenario['entries'] >= $threshold || $scenario['forms'] >= $threshold;
 			$getting_started_show = ! $rating_show;
 
 			$this->assertNotEquals(
