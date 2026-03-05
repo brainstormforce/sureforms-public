@@ -95,6 +95,8 @@ class Form_Submit {
 	 * @since 2.5.1
 	 */
 	public function refresh_nonces() {
+		nocache_headers();
+
 		// Check if nonce refresh is allowed.
 		if ( ! Helper::should_update_form_markup_nonce() ) {
 			return rest_ensure_response(
