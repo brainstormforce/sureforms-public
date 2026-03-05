@@ -20,9 +20,9 @@ import {
 ( function () {
 	'use strict';
 
-	// Get container ID from localized data.
+	// Get container ID from localized data and validate it as a safe CSS class name.
 	const containerId = window.srfmPreviewStyling?.containerId;
-	if ( ! containerId ) {
+	if ( ! containerId || ! /^[a-zA-Z0-9_-]+$/.test( containerId ) ) {
 		return;
 	}
 
@@ -141,16 +141,23 @@ import {
 		} else if ( styling.bgType === 'image' ) {
 			container.classList.add( 'srfm-bg-image' );
 			if ( styling.bgImage ) {
-				container.style.setProperty(
-					'--srfm-bg-image',
-					'url("' + styling.bgImage + '")'
-				);
+				// Validate URL protocol and strip double-quotes to prevent CSS injection.
+				const bgImageUrl = styling.bgImage.replace( /"/g, '' );
+				if (
+					bgImageUrl.startsWith( 'https://' ) ||
+					bgImageUrl.startsWith( 'http://' )
+				) {
+					container.style.setProperty(
+						'--srfm-bg-image',
+						'url("' + bgImageUrl + '")'
+					);
+				}
 			} else {
 				container.style.removeProperty( '--srfm-bg-image' );
 			}
 			if ( styling.bgImagePosition ) {
-				const posX = ( styling.bgImagePosition.x || 0.5 ) * 100;
-				const posY = ( styling.bgImagePosition.y || 0.5 ) * 100;
+				const posX = ( styling.bgImagePosition.x ?? 0.5 ) * 100;
+				const posY = ( styling.bgImagePosition.y ?? 0.5 ) * 100;
 				container.style.setProperty(
 					'--srfm-bg-position',
 					posX + '% ' + posY + '%'
@@ -170,7 +177,7 @@ import {
 				const finalSize = Object.assign( {}, baseSize, overrideSize );
 
 				for ( const key in finalSize ) {
-					if ( Object.hasOwn( finalSize, key ) ) {
+					if ( Object.hasOwn( finalSize, key ) && key.startsWith( '--' ) ) {
 						container.style.setProperty( key, finalSize[ key ] );
 					}
 				}

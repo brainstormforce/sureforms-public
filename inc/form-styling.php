@@ -26,7 +26,7 @@ class Form_Styling {
 	 * Map block attributes to form styling array.
 	 *
 	 * Converts camelCase block attributes to snake_case form styling keys.
-	 * This allows per-embed customization when inheritStyling is false.
+	 * This allows per-embed customization when formTheme is not 'inherit'.
 	 *
 	 * @param array<string,mixed> $form_styling Existing form styling from post meta.
 	 * @param array<string,mixed> $block_attrs  Block attributes from srfm/form block.
@@ -48,80 +48,52 @@ class Form_Styling {
 
 		// Colors.
 		if ( ! empty( $block_attrs['primaryColor'] ) ) {
-			$form_styling['primary_color'] = $block_attrs['primaryColor'];
+			$form_styling['primary_color'] = Helper::sanitize_css_value( $block_attrs['primaryColor'] );
 		}
 		if ( ! empty( $block_attrs['textColor'] ) ) {
-			$form_styling['text_color'] = $block_attrs['textColor'];
+			$form_styling['text_color'] = Helper::sanitize_css_value( $block_attrs['textColor'] );
 		}
 		if ( ! empty( $block_attrs['textOnPrimaryColor'] ) ) {
-			$form_styling['text_color_on_primary'] = $block_attrs['textOnPrimaryColor'];
+			$form_styling['text_color_on_primary'] = Helper::sanitize_css_value( $block_attrs['textOnPrimaryColor'] );
 		}
 
 		// Padding.
-		if ( isset( $block_attrs['formPaddingTop'] ) && is_scalar( $block_attrs['formPaddingTop'] ) ) {
-			$form_styling['form_padding_top'] = floatval( $block_attrs['formPaddingTop'] );
-		}
-		if ( isset( $block_attrs['formPaddingRight'] ) && is_scalar( $block_attrs['formPaddingRight'] ) ) {
-			$form_styling['form_padding_right'] = floatval( $block_attrs['formPaddingRight'] );
-		}
-		if ( isset( $block_attrs['formPaddingBottom'] ) && is_scalar( $block_attrs['formPaddingBottom'] ) ) {
-			$form_styling['form_padding_bottom'] = floatval( $block_attrs['formPaddingBottom'] );
-		}
-		if ( isset( $block_attrs['formPaddingLeft'] ) && is_scalar( $block_attrs['formPaddingLeft'] ) ) {
-			$form_styling['form_padding_left'] = floatval( $block_attrs['formPaddingLeft'] );
-		}
-		if ( ! empty( $block_attrs['formPaddingUnit'] ) ) {
-			$form_styling['form_padding_unit'] = $block_attrs['formPaddingUnit'];
-		}
+		$form_styling = self::map_dimension_attrs( $form_styling, $block_attrs, 'formPadding', 'form_padding' );
 
 		// Border Radius.
-		if ( isset( $block_attrs['formBorderRadiusTop'] ) && is_scalar( $block_attrs['formBorderRadiusTop'] ) ) {
-			$form_styling['form_border_radius_top'] = floatval( $block_attrs['formBorderRadiusTop'] );
-		}
-		if ( isset( $block_attrs['formBorderRadiusRight'] ) && is_scalar( $block_attrs['formBorderRadiusRight'] ) ) {
-			$form_styling['form_border_radius_right'] = floatval( $block_attrs['formBorderRadiusRight'] );
-		}
-		if ( isset( $block_attrs['formBorderRadiusBottom'] ) && is_scalar( $block_attrs['formBorderRadiusBottom'] ) ) {
-			$form_styling['form_border_radius_bottom'] = floatval( $block_attrs['formBorderRadiusBottom'] );
-		}
-		if ( isset( $block_attrs['formBorderRadiusLeft'] ) && is_scalar( $block_attrs['formBorderRadiusLeft'] ) ) {
-			$form_styling['form_border_radius_left'] = floatval( $block_attrs['formBorderRadiusLeft'] );
-		}
-		if ( ! empty( $block_attrs['formBorderRadiusUnit'] ) ) {
-			$form_styling['form_border_radius_unit'] = $block_attrs['formBorderRadiusUnit'];
-		}
+		$form_styling = self::map_dimension_attrs( $form_styling, $block_attrs, 'formBorderRadius', 'form_border_radius' );
 
 		// Background.
-		if ( ! empty( $block_attrs['bgType'] ) ) {
+		if ( ! empty( $block_attrs['bgType'] ) && in_array( $block_attrs['bgType'], [ 'color', 'gradient', 'image' ], true ) ) {
 			$form_styling['bg_type'] = $block_attrs['bgType'];
 		}
 		if ( ! empty( $block_attrs['bgColor'] ) ) {
-			$form_styling['bg_color'] = $block_attrs['bgColor'];
+			$form_styling['bg_color'] = Helper::sanitize_css_value( $block_attrs['bgColor'] );
 		}
 		if ( ! empty( $block_attrs['bgGradient'] ) ) {
-			$form_styling['bg_gradient'] = $block_attrs['bgGradient'];
+			$form_styling['bg_gradient'] = Helper::sanitize_css_value( $block_attrs['bgGradient'] );
 		}
 		if ( ! empty( $block_attrs['bgImage'] ) ) {
-			$form_styling['bg_image'] = $block_attrs['bgImage'];
+			$form_styling['bg_image'] = esc_url_raw( Helper::get_string_value( $block_attrs['bgImage'] ) );
 		}
 		if ( ! empty( $block_attrs['bgImagePosition'] ) ) {
 			$form_styling['bg_image_position'] = $block_attrs['bgImagePosition'];
 		}
-		if ( ! empty( $block_attrs['bgImageSize'] ) ) {
+		if ( ! empty( $block_attrs['bgImageSize'] ) && in_array( $block_attrs['bgImageSize'], [ 'auto', 'cover', 'contain' ], true ) ) {
 			$form_styling['bg_image_size'] = $block_attrs['bgImageSize'];
 		}
-		if ( ! empty( $block_attrs['bgImageRepeat'] ) ) {
+		if ( ! empty( $block_attrs['bgImageRepeat'] ) && in_array( $block_attrs['bgImageRepeat'], [ 'repeat', 'no-repeat', 'repeat-x', 'repeat-y' ], true ) ) {
 			$form_styling['bg_image_repeat'] = $block_attrs['bgImageRepeat'];
 		}
-		if ( ! empty( $block_attrs['bgImageAttachment'] ) ) {
+		if ( ! empty( $block_attrs['bgImageAttachment'] ) && in_array( $block_attrs['bgImageAttachment'], [ 'scroll', 'fixed', 'local' ], true ) ) {
 			$form_styling['bg_image_attachment'] = $block_attrs['bgImageAttachment'];
 		}
 
 		// Field Spacing and Button Alignment.
-		if ( ! empty( $block_attrs['fieldSpacing'] ) ) {
+		if ( ! empty( $block_attrs['fieldSpacing'] ) && in_array( $block_attrs['fieldSpacing'], [ 'small', 'medium', 'large' ], true ) ) {
 			$form_styling['field_spacing'] = $block_attrs['fieldSpacing'];
 		}
-		if ( ! empty( $block_attrs['buttonAlignment'] ) ) {
+		if ( ! empty( $block_attrs['buttonAlignment'] ) && in_array( $block_attrs['buttonAlignment'], [ 'left', 'center', 'right', 'full' ], true ) ) {
 			$form_styling['submit_button_alignment'] = $block_attrs['buttonAlignment'];
 		}
 
@@ -148,7 +120,7 @@ class Form_Styling {
 	 * @since x.x.x
 	 */
 	public static function apply_theme_styling( $form_styling, $theme_slug ) {
-		if ( empty( $theme_slug ) || 'default' === $theme_slug ) {
+		if ( empty( $theme_slug ) || 'default' === $theme_slug || 'inherit' === $theme_slug ) {
 			return $form_styling;
 		}
 
@@ -166,13 +138,45 @@ class Form_Styling {
 	}
 
 	/**
-	 * Check if embed has custom styling (inheritStyling is false).
+	 * Check if embed has custom styling (formTheme is not 'inherit').
 	 *
 	 * @param array<string,mixed> $block_attrs Block attributes.
 	 * @return bool True if using custom embed styling.
 	 * @since x.x.x
 	 */
 	public static function has_custom_styling( $block_attrs ) {
-		return isset( $block_attrs['inheritStyling'] ) && false === $block_attrs['inheritStyling'];
+		return 'inherit' !== ( $block_attrs['formTheme'] ?? 'inherit' );
+	}
+
+	/**
+	 * Map dimension block attributes (Top/Right/Bottom/Left/Unit) to form styling.
+	 *
+	 * @param array<string,mixed> $form_styling Form styling array.
+	 * @param array<string,mixed> $block_attrs  Block attributes.
+	 * @param string              $attr_prefix  Block attribute prefix (e.g., 'formPadding').
+	 * @param string              $style_prefix Form styling key prefix (e.g., 'form_padding').
+	 * @return array<string,mixed> Modified form styling array.
+	 * @since x.x.x
+	 */
+	private static function map_dimension_attrs( $form_styling, $block_attrs, $attr_prefix, $style_prefix ) {
+		$sides = [ 'Top', 'Right', 'Bottom', 'Left' ];
+
+		foreach ( $sides as $side ) {
+			$attr_key  = $attr_prefix . $side;
+			$style_key = $style_prefix . '_' . strtolower( $side );
+
+			if ( isset( $block_attrs[ $attr_key ] ) && is_scalar( $block_attrs[ $attr_key ] ) ) {
+				$form_styling[ $style_key ] = floatval( $block_attrs[ $attr_key ] );
+			}
+		}
+
+		$unit_attr_key  = $attr_prefix . 'Unit';
+		$unit_style_key = $style_prefix . '_unit';
+
+		if ( ! empty( $block_attrs[ $unit_attr_key ] ) && in_array( $block_attrs[ $unit_attr_key ], [ 'px', 'em', 'rem', '%', 'vw', 'vh' ], true ) ) {
+			$form_styling[ $unit_style_key ] = $block_attrs[ $unit_attr_key ];
+		}
+
+		return $form_styling;
 	}
 }
