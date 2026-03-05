@@ -130,7 +130,7 @@ class Form_Submit {
 		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'srfm_form_submit' ) ) {
 			wp_send_json_error(
 				[
-					'message' => __( 'Nonce verification failed.', 'sureforms' ),
+					'message' => __( 'Security verification failed. Please refresh the page and try again.', 'sureforms' ),
 				]
 			);
 		}
@@ -140,7 +140,7 @@ class Form_Submit {
 		if ( empty( $form_data ) || ! is_array( $form_data ) ) {
 			wp_send_json_error(
 				[
-					'message' => __( 'Form data is not found.', 'sureforms' ),
+					'message' => __( 'Form data was not found.', 'sureforms' ),
 				]
 			);
 		}
@@ -148,7 +148,7 @@ class Form_Submit {
 		if ( ! $form_data['form-id'] ) {
 			wp_send_json_error(
 				[
-					'message'  => __( 'Form Id is missing.', 'sureforms' ),
+					'message'  => __( 'Form ID is missing.', 'sureforms' ),
 					'position' => 'header',
 				]
 			);
@@ -165,7 +165,7 @@ class Form_Submit {
 	 */
 	public function permissions_check() {
 		if ( ! Helper::current_user_can() ) {
-			return new WP_Error( 'rest_forbidden', __( 'Sorry, you cannot access this route', 'sureforms' ), [ 'status' => rest_authorization_required_code() ] );
+			return new WP_Error( 'rest_forbidden', __( 'Sorry, you do not have permission to access this resource.', 'sureforms' ), [ 'status' => rest_authorization_required_code() ] );
 		}
 		return true;
 	}
@@ -315,7 +315,7 @@ class Form_Submit {
 		if ( apply_filters( 'srfm_additional_restriction_check', false, $form_id, $form_data ) ) {
 			wp_send_json_error(
 				[
-					'message' => apply_filters( 'srfm_additional_restriction_message', __( 'Form submission is restricted.', 'sureforms' ), $form_id, $form_data ),
+					'message' => apply_filters( 'srfm_additional_restriction_message', __( 'You do not have permission to submit this form.', 'sureforms' ), $form_id, $form_data ),
 				]
 			);
 		}
@@ -325,7 +325,7 @@ class Form_Submit {
 			wp_send_json_error(
 				[
 					'code'    => 'srfm_invalid_form_id',
-					'message' => __( 'Form does not exist.', 'sureforms' ),
+					'message' => __( 'This form is no longer available.', 'sureforms' ),
 				]
 			);
 		}
@@ -338,7 +338,7 @@ class Form_Submit {
 
 			wp_send_json_error(
 				[
-					'message'      => $first_error ?? __( 'Form data is not valid.', 'sureforms' ),
+					'message'      => $first_error ?? __( 'Please check the form for errors.', 'sureforms' ),
 					'field_errors' => $validated_form_data,
 				]
 			);
@@ -445,7 +445,7 @@ class Form_Submit {
 				} else {
 					wp_send_json_error(
 						[
-							'message' => __( 'reCAPTCHA error: Submit nonce is not available.', 'sureforms' ),
+							'message' => __( 'Security verification failed. Please refresh the page and try again.', 'sureforms' ),
 						]
 					);
 				}
@@ -480,7 +480,7 @@ class Form_Submit {
 				} else {
 					wp_send_json_error(
 						[
-							'message' => __( 'reCAPTCHA error: Submit nonce is not available.', 'sureforms' ),
+							'message' => __( 'Security verification failed. Please refresh the page and try again.', 'sureforms' ),
 						]
 					);
 				}
@@ -496,7 +496,7 @@ class Form_Submit {
 
 		wp_send_json_error(
 			[
-				'message' => __( 'Spam Detected', 'sureforms' ),
+				'message' => __( 'Your submission was flagged as spam. Please try again.', 'sureforms' ),
 			]
 		);
 	}
@@ -514,7 +514,7 @@ class Form_Submit {
 		if ( empty( $form_data ) || ! is_array( $form_data ) ) {
 			wp_send_json_error(
 				[
-					'message'  => __( 'Form data is not found.', 'sureforms' ),
+					'message'  => __( 'Form data was not found.', 'sureforms' ),
 					'position' => 'header',
 				]
 			);
@@ -684,7 +684,7 @@ class Form_Submit {
 		} else {
 			$response = [
 				'success' => false,
-				'message' => __( 'Error submitting form', 'sureforms' ),
+				'message' => __( 'Unable to submit form. Please try again.', 'sureforms' ),
 			];
 		}
 
@@ -916,8 +916,8 @@ class Form_Submit {
 								$reason = ! empty( $email_report )
 									? esc_html( $email_report )
 									: ( ! Helper::is_any_smtp_plugin_active()
-									? esc_html__( 'No SMTP plugin detected. Please configure one to enable email sending.', 'sureforms' )
-									: esc_html__( 'The failure occurred due to an undetermined cause.', 'sureforms' )
+									? esc_html__( 'No SMTP plugin detected. Please configure an SMTP plugin to enable email sending.', 'sureforms' )
+									: esc_html__( 'Email sending failed for an unknown reason.', 'sureforms' )
 									);
 
 								$entries_db_instance->update_log(
@@ -956,7 +956,7 @@ class Form_Submit {
 
 			if ( empty( $emails ) ) {
 				$entries_db_instance->reset_logs();
-				$entries_db_instance->add_log( __( 'No emails were sent', 'sureforms' ) );
+				$entries_db_instance->add_log( __( 'No emails were sent.', 'sureforms' ) );
 			}
 		}
 
@@ -974,7 +974,7 @@ class Form_Submit {
 	 */
 	public function field_unique_validation() {
 		if ( empty( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['nonce'] ) ), 'unique_validation_nonce' ) ) {
-			$error_message = __( 'Nonce verification failed.', 'sureforms' );
+			$error_message = __( 'Security verification failed. Please refresh the page and try again.', 'sureforms' );
 			$error_data    = [
 				'error' => $error_message,
 			];

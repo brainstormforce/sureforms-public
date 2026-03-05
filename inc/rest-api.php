@@ -88,20 +88,20 @@ class Rest_Api {
 		$nonce = Helper::get_string_value( $request->get_header( 'X-WP-Nonce' ) );
 
 		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'wp_rest' ) ) {
-			wp_send_json_error( __( 'Nonce verification failed.', 'sureforms' ) );
+			wp_send_json_error( __( 'Security verification failed. Please refresh the page and try again.', 'sureforms' ) );
 		}
 
 		$params = $request->get_params();
 
 		if ( empty( $params ) ) {
-			wp_send_json_error( __( 'Request could not be processed.', 'sureforms' ) );
+			wp_send_json_error( __( 'Missing required parameters.', 'sureforms' ) );
 		}
 
 		$after  = is_array( $params ) && ! empty( $params['after'] ) ? sanitize_text_field( Helper::get_string_value( $params['after'] ) ) : '';
 		$before = is_array( $params ) && ! empty( $params['before'] ) ? sanitize_text_field( Helper::get_string_value( $params['before'] ) ) : '';
 
 		if ( empty( $after ) || empty( $before ) ) {
-			wp_send_json_error( __( 'Invalid date.', 'sureforms' ) );
+			wp_send_json_error( __( 'Invalid date range.', 'sureforms' ) );
 		}
 
 		$form = is_array( $params ) && ! empty( $params['form'] ) ? sanitize_text_field( Helper::get_string_value( $params['form'] ) ) : '';
@@ -147,7 +147,7 @@ class Rest_Api {
 		$nonce = Helper::get_string_value( $request->get_header( 'X-WP-Nonce' ) );
 
 		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'wp_rest' ) ) {
-			wp_send_json_error( __( 'Nonce verification failed.', 'sureforms' ) );
+			wp_send_json_error( __( 'Security verification failed. Please refresh the page and try again.', 'sureforms' ) );
 		}
 
 		$forms = Helper::get_instance()->get_sureforms();
@@ -167,7 +167,7 @@ class Rest_Api {
 
 		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'wp_rest' ) ) {
 			return new \WP_REST_Response(
-				[ 'error' => __( 'Nonce verification failed.', 'sureforms' ) ],
+				[ 'error' => __( 'Security verification failed. Please refresh the page and try again.', 'sureforms' ) ],
 				403
 			);
 		}
@@ -199,7 +199,7 @@ class Rest_Api {
 
 		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'wp_rest' ) ) {
 			return new \WP_REST_Response(
-				[ 'error' => __( 'Nonce verification failed.', 'sureforms' ) ],
+				[ 'error' => __( 'Security verification failed. Please refresh the page and try again.', 'sureforms' ) ],
 				403
 			);
 		}
@@ -221,7 +221,7 @@ class Rest_Api {
 
 		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'wp_rest' ) ) {
 			return new \WP_REST_Response(
-				[ 'error' => __( 'Nonce verification failed.', 'sureforms' ) ],
+				[ 'error' => __( 'Security verification failed. Please refresh the page and try again.', 'sureforms' ) ],
 				403
 			);
 		}
@@ -232,7 +232,7 @@ class Rest_Api {
 
 		if ( empty( $plugin_slug ) ) {
 			return new \WP_REST_Response(
-				[ 'error' => __( 'Plugin slug is required.', 'sureforms' ) ],
+				[ 'error' => __( 'Plugin identifier is required.', 'sureforms' ) ],
 				400
 			);
 		}
@@ -241,7 +241,7 @@ class Rest_Api {
 
 		if ( ! isset( $integrations[ $plugin_slug ] ) ) {
 			return new \WP_REST_Response(
-				[ 'error' => __( 'Plugin not found.', 'sureforms' ) ],
+				[ 'error' => __( 'Integration not found.', 'sureforms' ) ],
 				404
 			);
 		}
@@ -312,7 +312,7 @@ class Rest_Api {
 
 		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'wp_rest' ) ) {
 			return new \WP_REST_Response(
-				[ 'error' => __( 'Nonce verification failed.', 'sureforms' ) ],
+				[ 'error' => __( 'Security verification failed. Please refresh the page and try again.', 'sureforms' ) ],
 				403
 			);
 		}
@@ -357,7 +357,7 @@ class Rest_Api {
 
 		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'wp_rest' ) ) {
 			return new \WP_REST_Response(
-				[ 'error' => __( 'Nonce verification failed.', 'sureforms' ) ],
+				[ 'error' => __( 'Security verification failed. Please refresh the page and try again.', 'sureforms' ) ],
 				403
 			);
 		}
@@ -367,14 +367,14 @@ class Rest_Api {
 
 		if ( empty( $entry_ids ) ) {
 			return new \WP_REST_Response(
-				[ 'error' => __( 'No entry IDs provided.', 'sureforms' ) ],
+				[ 'error' => __( 'Select at least one entry.', 'sureforms' ) ],
 				400
 			);
 		}
 
 		if ( empty( $action ) ) {
 			return new \WP_REST_Response(
-				[ 'error' => __( 'No action provided.', 'sureforms' ) ],
+				[ 'error' => __( 'Action is required.', 'sureforms' ) ],
 				400
 			);
 		}
@@ -382,7 +382,7 @@ class Rest_Api {
 		// Validate action.
 		if ( ! $this->validate_read_action( $action ) ) {
 			return new \WP_REST_Response(
-				[ 'error' => __( 'Invalid action. Must be "read" or "unread".', 'sureforms' ) ],
+				[ 'error' => __( 'Invalid action. Use "read" or "unread".', 'sureforms' ) ],
 				400
 			);
 		}
@@ -406,7 +406,7 @@ class Rest_Api {
 
 		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'wp_rest' ) ) {
 			return new \WP_REST_Response(
-				[ 'error' => __( 'Nonce verification failed.', 'sureforms' ) ],
+				[ 'error' => __( 'Security verification failed. Please refresh the page and try again.', 'sureforms' ) ],
 				403
 			);
 		}
@@ -416,14 +416,14 @@ class Rest_Api {
 
 		if ( empty( $entry_ids ) ) {
 			return new \WP_REST_Response(
-				[ 'error' => __( 'No entry IDs provided.', 'sureforms' ) ],
+				[ 'error' => __( 'Select at least one entry.', 'sureforms' ) ],
 				400
 			);
 		}
 
 		if ( empty( $action ) ) {
 			return new \WP_REST_Response(
-				[ 'error' => __( 'No action provided.', 'sureforms' ) ],
+				[ 'error' => __( 'Action is required.', 'sureforms' ) ],
 				400
 			);
 		}
@@ -431,7 +431,7 @@ class Rest_Api {
 		// Validate action.
 		if ( ! $this->validate_trash_action( $action ) ) {
 			return new \WP_REST_Response(
-				[ 'error' => __( 'Invalid action. Must be "trash" or "restore".', 'sureforms' ) ],
+				[ 'error' => __( 'Invalid action. Use "trash" or "restore".', 'sureforms' ) ],
 				400
 			);
 		}
@@ -455,7 +455,7 @@ class Rest_Api {
 
 		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'wp_rest' ) ) {
 			return new \WP_REST_Response(
-				[ 'error' => __( 'Nonce verification failed.', 'sureforms' ) ],
+				[ 'error' => __( 'Security verification failed. Please refresh the page and try again.', 'sureforms' ) ],
 				403
 			);
 		}
@@ -464,7 +464,7 @@ class Rest_Api {
 
 		if ( empty( $entry_ids ) ) {
 			return new \WP_REST_Response(
-				[ 'error' => __( 'No entry IDs provided.', 'sureforms' ) ],
+				[ 'error' => __( 'Select at least one entry.', 'sureforms' ) ],
 				400
 			);
 		}
@@ -488,7 +488,7 @@ class Rest_Api {
 
 		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'wp_rest' ) ) {
 			return new \WP_REST_Response(
-				[ 'error' => __( 'Nonce verification failed.', 'sureforms' ) ],
+				[ 'error' => __( 'Security verification failed. Please refresh the page and try again.', 'sureforms' ) ],
 				403
 			);
 		}
@@ -623,7 +623,7 @@ class Rest_Api {
 
 		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'wp_rest' ) ) {
 			return new \WP_REST_Response(
-				[ 'error' => __( 'Nonce verification failed.', 'sureforms' ) ],
+				[ 'error' => __( 'Security verification failed. Please refresh the page and try again.', 'sureforms' ) ],
 				403
 			);
 		}
@@ -696,7 +696,7 @@ class Rest_Api {
 
 		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'wp_rest' ) ) {
 			return new \WP_REST_Response(
-				[ 'error' => __( 'Nonce verification failed.', 'sureforms' ) ],
+				[ 'error' => __( 'Security verification failed. Please refresh the page and try again.', 'sureforms' ) ],
 				403
 			);
 		}
@@ -756,7 +756,7 @@ class Rest_Api {
 		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'wp_rest' ) ) {
 			return new \WP_Error(
 				'invalid_nonce',
-				__( 'Nonce verification failed.', 'sureforms' ),
+				__( 'Security verification failed. Please refresh the page and try again.', 'sureforms' ),
 				[ 'status' => 403 ]
 			);
 		}
@@ -770,7 +770,7 @@ class Rest_Api {
 		if ( empty( $form_ids ) || empty( $action ) ) {
 			return new \WP_Error(
 				'missing_parameters',
-				__( 'Form IDs and action are required.', 'sureforms' ),
+				__( 'Select at least one form and specify an action.', 'sureforms' ),
 				[ 'status' => 400 ]
 			);
 		}
@@ -785,7 +785,7 @@ class Rest_Api {
 			if ( ! $post || 'sureforms_form' !== $post->post_type ) {
 				$errors[] = [
 					'form_id' => $form_id,
-					'error'   => __( 'Form not found or invalid post type.', 'sureforms' ),
+					'error'   => __( 'Form not found or is not a valid form type.', 'sureforms' ),
 				];
 				continue;
 			}
@@ -797,7 +797,7 @@ class Rest_Api {
 					if ( 'trash' === $post->post_status ) {
 						$errors[] = [
 							'form_id' => $form_id,
-							'error'   => __( 'Form is already in trash.', 'sureforms' ),
+							'error'   => __( 'This form is already in the trash.', 'sureforms' ),
 						];
 					} else {
 						$result = wp_trash_post( $form_id );
@@ -808,7 +808,7 @@ class Rest_Api {
 					if ( 'trash' !== $post->post_status ) {
 						$errors[] = [
 							'form_id' => $form_id,
-							'error'   => __( 'Form is not in trash.', 'sureforms' ),
+							'error'   => __( 'This form is not in the trash.', 'sureforms' ),
 						];
 					} else {
 						$result = wp_untrash_post( $form_id );
@@ -823,7 +823,7 @@ class Rest_Api {
 				default:
 					$errors[] = [
 						'form_id' => $form_id,
-						'error'   => __( 'Invalid action specified.', 'sureforms' ),
+						'error'   => __( 'Invalid action.', 'sureforms' ),
 					];
 					break;
 			}
@@ -838,7 +838,7 @@ class Rest_Api {
 				$errors[] = [
 					'form_id' => $form_id,
 					/* translators: %s: action name */
-					'error'   => sprintf( __( 'Failed to %s form.', 'sureforms' ), $action ),
+					'error'   => sprintf( __( 'Failed to %s this form. Please try again.', 'sureforms' ), $action ),
 				];
 			}
 		}
