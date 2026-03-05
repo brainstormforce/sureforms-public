@@ -24,6 +24,13 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since x.x.x
  */
 abstract class Abstract_Ability {
+
+	/**
+	 * Minimum required capability for registration policy enforcement.
+	 *
+	 * @since x.x.x
+	 */
+	private const MIN_CAPABILITY = 'manage_options';
 	/**
 	 * Unique ability identifier.
 	 *
@@ -88,13 +95,6 @@ abstract class Abstract_Ability {
 	 * @return array<string,mixed>|\WP_Error
 	 */
 	abstract public function execute( $input );
-
-	/**
-	 * Minimum required capability for registration policy enforcement.
-	 *
-	 * @since x.x.x
-	 */
-	private const MIN_CAPABILITY = 'manage_options';
 
 	/**
 	 * Permission callback.
