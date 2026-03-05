@@ -917,48 +917,13 @@ class Form_Widget extends Widget_Base {
 		}
 
 		// Handle DIMENSIONS controls - map to individual camelCase keys for Gutenberg compatibility.
-		// Form Padding.
-		if ( ! empty( $settings['formPadding'] ) && is_array( $settings['formPadding'] ) ) {
-			$padding       = $settings['formPadding'];
-			$allowed_units = [ 'px', '%', 'em' ];
-			$unit          = in_array( $padding['unit'] ?? 'px', $allowed_units, true ) ? ( $padding['unit'] ?? 'px' ) : 'px';
-			if ( ! empty( $padding['top'] ) || '0' === $padding['top'] ) {
-				$block_attrs['formPaddingTop'] = $padding['top'] . $unit;
-			}
-			if ( ! empty( $padding['right'] ) || '0' === $padding['right'] ) {
-				$block_attrs['formPaddingRight'] = $padding['right'] . $unit;
-			}
-			if ( ! empty( $padding['bottom'] ) || '0' === $padding['bottom'] ) {
-				$block_attrs['formPaddingBottom'] = $padding['bottom'] . $unit;
-			}
-			if ( ! empty( $padding['left'] ) || '0' === $padding['left'] ) {
-				$block_attrs['formPaddingLeft'] = $padding['left'] . $unit;
-			}
-		}
-
-		// Form Border Radius.
-		if ( ! empty( $settings['formBorderRadius'] ) && is_array( $settings['formBorderRadius'] ) ) {
-			$radius        = $settings['formBorderRadius'];
-			$allowed_units = [ 'px', '%', 'em' ];
-			$unit          = in_array( $radius['unit'] ?? 'px', $allowed_units, true ) ? ( $radius['unit'] ?? 'px' ) : 'px';
-			if ( ! empty( $radius['top'] ) || '0' === $radius['top'] ) {
-				$block_attrs['formBorderRadiusTop'] = $radius['top'] . $unit;
-			}
-			if ( ! empty( $radius['right'] ) || '0' === $radius['right'] ) {
-				$block_attrs['formBorderRadiusRight'] = $radius['right'] . $unit;
-			}
-			if ( ! empty( $radius['bottom'] ) || '0' === $radius['bottom'] ) {
-				$block_attrs['formBorderRadiusBottom'] = $radius['bottom'] . $unit;
-			}
-			if ( ! empty( $radius['left'] ) || '0' === $radius['left'] ) {
-				$block_attrs['formBorderRadiusLeft'] = $radius['left'] . $unit;
-			}
-		}
+		$block_attrs = self::map_elementor_dimensions( $block_attrs, $settings, 'formPadding' );
+		$block_attrs = self::map_elementor_dimensions( $block_attrs, $settings, 'formBorderRadius' );
 
 		// Handle bgImage separately as it returns an object from Elementor.
 		$bg_image = isset( $settings['bgImage'] ) && is_array( $settings['bgImage'] ) ? $settings['bgImage'] : [];
 		if ( ! empty( $bg_image['url'] ) ) {
-			$block_attrs['bgImage'] = $bg_image['url'];
+			$block_attrs['bgImage'] = esc_url_raw( $bg_image['url'] );
 		}
 		if ( ! empty( $bg_image['id'] ) ) {
 			$block_attrs['bgImageId'] = $bg_image['id'];
@@ -973,6 +938,37 @@ class Form_Widget extends Widget_Base {
 		 * @since x.x.x
 		 */
 		return apply_filters( 'srfm_elementor_block_attrs', $block_attrs, $settings );
+	}
+
+	/**
+	 * Map Elementor dimensions control to individual camelCase block attributes.
+	 *
+	 * Elementor returns dimensions as an array with top/right/bottom/left/unit keys.
+	 * This maps them to individual keys like formPaddingTop, formPaddingRight, etc.
+	 *
+	 * @param array<string, mixed> $block_attrs Block attributes.
+	 * @param array<string, mixed> $settings    Widget settings.
+	 * @param string               $control_key The Elementor dimensions control key (e.g., 'formPadding').
+	 * @return array<string, mixed> Updated block attributes.
+	 * @since x.x.x
+	 */
+	private static function map_elementor_dimensions( $block_attrs, $settings, $control_key ) {
+		if ( empty( $settings[ $control_key ] ) || ! is_array( $settings[ $control_key ] ) ) {
+			return $block_attrs;
+		}
+
+		$dimensions    = $settings[ $control_key ];
+		$allowed_units = [ 'px', '%', 'em' ];
+		$unit          = in_array( $dimensions['unit'] ?? 'px', $allowed_units, true ) ? ( $dimensions['unit'] ?? 'px' ) : 'px';
+		$sides         = [ 'top', 'right', 'bottom', 'left' ];
+
+		foreach ( $sides as $side ) {
+			if ( ! empty( $dimensions[ $side ] ) || '0' === $dimensions[ $side ] ) {
+				$block_attrs[ $control_key . ucfirst( $side ) ] = $dimensions[ $side ] . $unit;
+			}
+		}
+
+		return $block_attrs;
 	}
 
 }
