@@ -239,10 +239,17 @@
 		} else if ( styling.bgType === 'image' ) {
 			container.classList.add( 'srfm-bg-image' );
 			if ( styling.bgImage ) {
-				container.style.setProperty(
-					'--srfm-bg-image',
-					'url("' + styling.bgImage + '")'
-				);
+				// Validate URL protocol and strip double-quotes to prevent CSS injection.
+				const bgImageUrl = styling.bgImage.replace( /"/g, '' );
+				if (
+					bgImageUrl.startsWith( 'https://' ) ||
+					bgImageUrl.startsWith( 'http://' )
+				) {
+					container.style.setProperty(
+						'--srfm-bg-image',
+						'url("' + bgImageUrl + '")'
+					);
+				}
 			} else {
 				container.style.removeProperty( '--srfm-bg-image' );
 			}
@@ -286,7 +293,9 @@
 				const finalSize = Object.assign( {}, baseSize, overrideSize );
 
 				for ( const key in finalSize ) {
-					container.style.setProperty( key, finalSize[ key ] );
+					if ( key.startsWith( '--' ) ) {
+						container.style.setProperty( key, finalSize[ key ] );
+					}
 				}
 			}
 		}

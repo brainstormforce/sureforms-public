@@ -48,13 +48,13 @@ class Form_Styling {
 
 		// Colors.
 		if ( ! empty( $block_attrs['primaryColor'] ) ) {
-			$form_styling['primary_color'] = $block_attrs['primaryColor'];
+			$form_styling['primary_color'] = Helper::sanitize_css_value( $block_attrs['primaryColor'] );
 		}
 		if ( ! empty( $block_attrs['textColor'] ) ) {
-			$form_styling['text_color'] = $block_attrs['textColor'];
+			$form_styling['text_color'] = Helper::sanitize_css_value( $block_attrs['textColor'] );
 		}
 		if ( ! empty( $block_attrs['textOnPrimaryColor'] ) ) {
-			$form_styling['text_color_on_primary'] = $block_attrs['textOnPrimaryColor'];
+			$form_styling['text_color_on_primary'] = Helper::sanitize_css_value( $block_attrs['textOnPrimaryColor'] );
 		}
 
 		// Padding.
@@ -70,7 +70,7 @@ class Form_Styling {
 		if ( isset( $block_attrs['formPaddingLeft'] ) && is_scalar( $block_attrs['formPaddingLeft'] ) ) {
 			$form_styling['form_padding_left'] = floatval( $block_attrs['formPaddingLeft'] );
 		}
-		if ( ! empty( $block_attrs['formPaddingUnit'] ) ) {
+		if ( ! empty( $block_attrs['formPaddingUnit'] ) && in_array( $block_attrs['formPaddingUnit'], [ 'px', 'em', 'rem', '%', 'vw', 'vh' ], true ) ) {
 			$form_styling['form_padding_unit'] = $block_attrs['formPaddingUnit'];
 		}
 
@@ -87,41 +87,41 @@ class Form_Styling {
 		if ( isset( $block_attrs['formBorderRadiusLeft'] ) && is_scalar( $block_attrs['formBorderRadiusLeft'] ) ) {
 			$form_styling['form_border_radius_left'] = floatval( $block_attrs['formBorderRadiusLeft'] );
 		}
-		if ( ! empty( $block_attrs['formBorderRadiusUnit'] ) ) {
+		if ( ! empty( $block_attrs['formBorderRadiusUnit'] ) && in_array( $block_attrs['formBorderRadiusUnit'], [ 'px', 'em', 'rem', '%', 'vw', 'vh' ], true ) ) {
 			$form_styling['form_border_radius_unit'] = $block_attrs['formBorderRadiusUnit'];
 		}
 
 		// Background.
-		if ( ! empty( $block_attrs['bgType'] ) ) {
+		if ( ! empty( $block_attrs['bgType'] ) && in_array( $block_attrs['bgType'], [ 'color', 'gradient', 'image' ], true ) ) {
 			$form_styling['bg_type'] = $block_attrs['bgType'];
 		}
 		if ( ! empty( $block_attrs['bgColor'] ) ) {
-			$form_styling['bg_color'] = $block_attrs['bgColor'];
+			$form_styling['bg_color'] = Helper::sanitize_css_value( $block_attrs['bgColor'] );
 		}
 		if ( ! empty( $block_attrs['bgGradient'] ) ) {
-			$form_styling['bg_gradient'] = $block_attrs['bgGradient'];
+			$form_styling['bg_gradient'] = Helper::sanitize_css_value( $block_attrs['bgGradient'] );
 		}
 		if ( ! empty( $block_attrs['bgImage'] ) ) {
-			$form_styling['bg_image'] = $block_attrs['bgImage'];
+			$form_styling['bg_image'] = esc_url_raw( Helper::get_string_value( $block_attrs['bgImage'] ) );
 		}
 		if ( ! empty( $block_attrs['bgImagePosition'] ) ) {
 			$form_styling['bg_image_position'] = $block_attrs['bgImagePosition'];
 		}
-		if ( ! empty( $block_attrs['bgImageSize'] ) ) {
+		if ( ! empty( $block_attrs['bgImageSize'] ) && in_array( $block_attrs['bgImageSize'], [ 'auto', 'cover', 'contain' ], true ) ) {
 			$form_styling['bg_image_size'] = $block_attrs['bgImageSize'];
 		}
-		if ( ! empty( $block_attrs['bgImageRepeat'] ) ) {
+		if ( ! empty( $block_attrs['bgImageRepeat'] ) && in_array( $block_attrs['bgImageRepeat'], [ 'repeat', 'no-repeat', 'repeat-x', 'repeat-y' ], true ) ) {
 			$form_styling['bg_image_repeat'] = $block_attrs['bgImageRepeat'];
 		}
-		if ( ! empty( $block_attrs['bgImageAttachment'] ) ) {
+		if ( ! empty( $block_attrs['bgImageAttachment'] ) && in_array( $block_attrs['bgImageAttachment'], [ 'scroll', 'fixed', 'local' ], true ) ) {
 			$form_styling['bg_image_attachment'] = $block_attrs['bgImageAttachment'];
 		}
 
 		// Field Spacing and Button Alignment.
-		if ( ! empty( $block_attrs['fieldSpacing'] ) ) {
+		if ( ! empty( $block_attrs['fieldSpacing'] ) && in_array( $block_attrs['fieldSpacing'], [ 'small', 'medium', 'large' ], true ) ) {
 			$form_styling['field_spacing'] = $block_attrs['fieldSpacing'];
 		}
-		if ( ! empty( $block_attrs['buttonAlignment'] ) ) {
+		if ( ! empty( $block_attrs['buttonAlignment'] ) && in_array( $block_attrs['buttonAlignment'], [ 'left', 'center', 'right', 'full' ], true ) ) {
 			$form_styling['submit_button_alignment'] = $block_attrs['buttonAlignment'];
 		}
 
@@ -175,4 +175,5 @@ class Form_Styling {
 	public static function has_custom_styling( $block_attrs ) {
 		return 'inherit' !== ( $block_attrs['formTheme'] ?? 'inherit' );
 	}
+
 }

@@ -82,25 +82,28 @@ export default ( { attributes, setAttributes, clientId } ) => {
 		[ id ]
 	);
 
-	const { isMissing, hasResolved } = useSelect( ( select ) => {
-		const hasResolvedValue = select( coreStore ).hasFinishedResolution(
-			'getEntityRecord',
-			[ 'postType', 'sureforms_form', id ]
-		);
-		const form = select( coreStore ).getEntityRecord(
-			'postType',
-			'sureforms_form',
-			id
-		);
-		const canEdit =
-			select( coreStore ).canUserEditEntityRecord( 'sureforms_form' );
-		return {
-			canEdit,
-			isMissing: hasResolvedValue && ! form,
-			hasResolved: hasResolvedValue,
-			form,
-		};
-	}, [ id ] );
+	const { isMissing, hasResolved } = useSelect(
+		( select ) => {
+			const hasResolvedValue = select( coreStore ).hasFinishedResolution(
+				'getEntityRecord',
+				[ 'postType', 'sureforms_form', id ]
+			);
+			const form = select( coreStore ).getEntityRecord(
+				'postType',
+				'sureforms_form',
+				id
+			);
+			const canEdit =
+				select( coreStore ).canUserEditEntityRecord( 'sureforms_form' );
+			return {
+				canEdit,
+				isMissing: hasResolvedValue && ! form,
+				hasResolved: hasResolvedValue,
+				form,
+			};
+		},
+		[ id ]
+	);
 
 	// Remove unwanted elements from the iframe and add styling for the form
 	const modifyIframeContent = () => {
@@ -355,29 +358,23 @@ export default ( { attributes, setAttributes, clientId } ) => {
 					<SelectControl
 						label={ __( 'Form Theme', 'sureforms' ) }
 						value={ formTheme }
-						options={ applyFilters(
-							'srfm.embed.formThemeOptions',
-							[
-								{
-									label: __(
-										"Inherit Form's Original Style",
-										'sureforms'
-									),
-									value: 'inherit',
-								},
-								{
-									label: __( 'Default', 'sureforms' ),
-									value: 'default',
-								},
-								{
-									label: __(
-										'Custom (Premium)',
-										'sureforms'
-									),
-									value: 'custom',
-								},
-							]
-						) }
+						options={ applyFilters( 'srfm.embed.formThemeOptions', [
+							{
+								label: __(
+									"Inherit Form's Original Style",
+									'sureforms'
+								),
+								value: 'inherit',
+							},
+							{
+								label: __( 'Default', 'sureforms' ),
+								value: 'default',
+							},
+							{
+								label: __( 'Custom (Premium)', 'sureforms' ),
+								value: 'custom',
+							},
+						] ) }
 						onChange={ ( value ) => {
 							// If Custom is selected and Pro is not active, show upgrade modal.
 							if ( 'custom' === value && ! isProActive ) {
