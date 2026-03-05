@@ -121,6 +121,11 @@ class Abilities_Registrar {
 				continue;
 			}
 
+			// Enforce minimum capability policy — reject abilities with caps weaker than manage_options.
+			if ( ! $ability->meets_capability_policy() ) {
+				continue;
+			}
+
 			// Skip abilities already registered by zipwp-mcp.
 			if ( function_exists( 'wp_has_ability' ) && wp_has_ability( $ability->get_id() ) ) {
 				continue;

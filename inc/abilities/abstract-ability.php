@@ -90,6 +90,13 @@ abstract class Abstract_Ability {
 	abstract public function execute( $input );
 
 	/**
+	 * Minimum required capability for registration policy enforcement.
+	 *
+	 * @since x.x.x
+	 */
+	private const MIN_CAPABILITY = 'manage_options';
+
+	/**
 	 * Permission callback.
 	 *
 	 * Delegates to current_user_can() with the configured capability.
@@ -99,6 +106,19 @@ abstract class Abstract_Ability {
 	 */
 	public function permission_callback() {
 		return current_user_can( $this->capability );
+	}
+
+	/**
+	 * Check if this ability meets the minimum capability policy.
+	 *
+	 * Prevents third-party abilities registered via srfm_register_abilities
+	 * from downgrading the required capability below manage_options.
+	 *
+	 * @since x.x.x
+	 * @return bool
+	 */
+	public function meets_capability_policy() {
+		return self::MIN_CAPABILITY === $this->capability;
 	}
 
 	/**
