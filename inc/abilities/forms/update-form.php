@@ -26,6 +26,9 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since x.x.x
  */
 class Update_Form extends Abstract_Ability {
+	use Form_Field_Schema_Trait;
+	use Form_Metadata_Trait;
+
 	/**
 	 * Constructor.
 	 *
@@ -35,7 +38,7 @@ class Update_Form extends Abstract_Ability {
 		$this->id          = 'sureforms/update-form';
 		$this->label       = __( 'Update SureForms Form', 'sureforms' );
 		$this->description = __( 'Update an existing SureForms form title, status (publish/draft/private/trash), fields, and/or metadata settings. Use status "trash" to trash a form, or change from "trash" to another status to restore it. Providing formFields replaces all existing fields.', 'sureforms' );
-		$this->capability  = 'edit_posts';
+		$this->capability  = 'manage_options';
 	}
 
 	/**
@@ -57,94 +60,7 @@ class Update_Form extends Abstract_Ability {
 	 * @since x.x.x
 	 */
 	public function get_input_schema() {
-		$field_types = [
-			'input',
-			'email',
-			'url',
-			'textarea',
-			'multi-choice',
-			'checkbox',
-			'gdpr',
-			'number',
-			'phone',
-			'dropdown',
-			'address',
-			'inline-button',
-			'payment',
-		];
-
-		/**
-		 * Filter the allowed field types for the update-form ability.
-		 *
-		 * Pro and third-party plugins can use this to add their own field types.
-		 *
-		 * @param array<string> $field_types Array of field type slugs.
-		 * @since x.x.x
-		 */
-		$field_types = apply_filters( 'srfm_ability_create_form_field_types', $field_types );
-
-		// Core field properties.
-		$field_properties = [
-			'label'           => [
-				'type'        => 'string',
-				'description' => __( 'Field label. e.g. First Name', 'sureforms' ),
-			],
-			'required'        => [
-				'type'        => 'boolean',
-				'description' => __( 'Whether the field is required.', 'sureforms' ),
-			],
-			'fieldType'       => [
-				'type'        => 'string',
-				'description' => __( 'The field type.', 'sureforms' ),
-				'enum'        => $field_types,
-			],
-			'helpText'        => [
-				'type'        => 'string',
-				'description' => __( 'Help text describing the field.', 'sureforms' ),
-			],
-			'defaultValue'    => [
-				'type'        => 'string',
-				'description' => __( 'Default value for the field.', 'sureforms' ),
-			],
-			'fieldOptions'    => [
-				'type'        => 'array',
-				'description' => __( 'Options for dropdown or multi-choice fields.', 'sureforms' ),
-				'items'       => [
-					'type'       => 'object',
-					'properties' => [
-						'optionTitle' => [ 'type' => 'string' ],
-						'label'       => [ 'type' => 'string' ],
-					],
-				],
-			],
-			'singleSelection' => [
-				'type'        => 'boolean',
-				'description' => __( 'Allow only single selection in multi-choice field.', 'sureforms' ),
-			],
-			'isUnique'        => [
-				'type'        => 'boolean',
-				'description' => __( 'Whether the field value must be unique.', 'sureforms' ),
-			],
-			'textLength'      => [
-				'type'        => 'integer',
-				'description' => __( 'Maximum character length.', 'sureforms' ),
-			],
-		];
-
-		/**
-		 * Filter additional field properties for the update-form ability schema.
-		 *
-		 * Pro and third-party plugins can use this to add field-specific
-		 * properties (e.g. upload, rating, date-picker, time-picker options).
-		 *
-		 * @param array<string,array<string,mixed>> $properties Additional field properties. Default empty array.
-		 * @since x.x.x
-		 */
-		$additional_properties = apply_filters( 'srfm_ability_create_form_field_properties', [] );
-
-		if ( ! empty( $additional_properties ) && is_array( $additional_properties ) ) {
-			$field_properties = array_merge( $field_properties, $additional_properties );
-		}
+		$field_properties = $this->get_form_field_schema();
 
 		return [
 			'type'       => 'object',
@@ -173,9 +89,9 @@ class Update_Form extends Abstract_Ability {
 				],
 				'formMetaData' => [
 					'type'        => 'object',
-					'description' => __( 'Optional form metadata including confirmation, email, compliance, and styling settings. Same schema as create-form.', 'sureforms' ),
+					'description' => __( 'Optional form metadata including confirmation, compliance, and styling settings. Same schema as create-form.', 'sureforms' ),
 					'properties'  => [
-						'formConfirmation'  => [
+						'formConfirmation' => [
 							'type'       => 'object',
 							'properties' => [
 								'confirmationMessage' => [
@@ -184,15 +100,7 @@ class Update_Form extends Abstract_Ability {
 								],
 							],
 						],
-						'emailConfirmation' => [
-							'type'       => 'object',
-							'properties' => [
-								'name'      => [ 'type' => 'string' ],
-								'subject'   => [ 'type' => 'string' ],
-								'emailBody' => [ 'type' => 'string' ],
-							],
-						],
-						'compliance'        => [
+						'compliance'       => [
 							'type'       => 'object',
 							'properties' => [
 								'enableCompliance'      => [ 'type' => 'boolean' ],
@@ -201,33 +109,26 @@ class Update_Form extends Abstract_Ability {
 								'autoDeleteEntriesDays' => [ 'type' => 'string' ],
 							],
 						],
-						'instantForm'       => [
+						'instantForm'      => [
 							'type'       => 'object',
 							'properties' => [
 								'instantForm'         => [ 'type' => 'boolean' ],
 								'showTitle'           => [ 'type' => 'boolean' ],
-								'bannerColor'         => [ 'type' => 'string' ],
-								'useBannerColorAsBackground' => [ 'type' => 'boolean' ],
 								'formBackgroundColor' => [ 'type' => 'string' ],
 								'formWidth'           => [ 'type' => 'integer' ],
-								'formSlug'            => [ 'type' => 'string' ],
 							],
 						],
-						'general'           => [
+						'general'          => [
 							'type'       => 'object',
 							'properties' => [
 								'useLabelAsPlaceholder' => [ 'type' => 'boolean' ],
 								'submitText'            => [ 'type' => 'string' ],
 							],
 						],
-						'styling'           => [
+						'styling'          => [
 							'type'       => 'object',
 							'properties' => [
-								'primaryColor'       => [ 'type' => 'string' ],
-								'textColor'          => [ 'type' => 'string' ],
-								'textColorOnPrimary' => [ 'type' => 'string' ],
-								'fieldSpacing'       => [ 'type' => 'string' ],
-								'submitAlignment'    => [ 'type' => 'string' ],
+								'submitAlignment' => [ 'type' => 'string' ],
 							],
 						],
 					],
@@ -350,11 +251,14 @@ class Update_Form extends Abstract_Ability {
 
 		// Handle field changes.
 		if ( ! empty( $input['formFields'] ) && is_array( $input['formFields'] ) ) {
+			// Sanitize form fields before passing to Field_Mapping.
+			$form_fields = $this->sanitize_form_fields( $input['formFields'] );
+
 			$request = new WP_REST_Request( 'POST' );
 			$request->set_param(
 				'form_data',
 				[
-					'form' => [ 'formFields' => $input['formFields'] ],
+					'form' => [ 'formFields' => $form_fields ],
 				]
 			);
 
@@ -382,91 +286,5 @@ class Update_Form extends Abstract_Ability {
 			'edit_url'        => admin_url( 'post.php?post=' . $form_id . '&action=edit' ),
 			'updated_fields'  => $updated_fields,
 		];
-	}
-
-	/**
-	 * Apply metadata overrides from ability input to post meta.
-	 *
-	 * Reuses the same logic as Create_Form for consistency.
-	 *
-	 * @param array<string,mixed> $post_metas Current post meta values.
-	 * @param array<string,mixed> $meta_data  Metadata from ability input.
-	 * @since x.x.x
-	 * @return array<string,mixed>
-	 */
-	private function apply_metadata_overrides( $post_metas, $meta_data ) {
-		if ( empty( $meta_data ) ) {
-			return $post_metas;
-		}
-
-		// General settings.
-		$general = Helper::get_array_value( $meta_data['general'] ?? [] );
-		if ( ! empty( $general ) ) {
-			if ( isset( $general['submitText'] ) ) {
-				$post_metas['_srfm_submit_button_text'] = sanitize_text_field( Helper::get_string_value( $general['submitText'] ) );
-			}
-			if ( isset( $general['useLabelAsPlaceholder'] ) ) {
-				$post_metas['_srfm_use_label_as_placeholder'] = (bool) $general['useLabelAsPlaceholder'];
-			}
-		}
-
-		// Confirmation message.
-		$form_confirmation = Helper::get_array_value( $meta_data['formConfirmation'] ?? [] );
-		if ( ! empty( $form_confirmation['confirmationMessage'] ) ) {
-			$post_metas['_srfm_confirmation_message'] = wp_kses_post( Helper::get_string_value( $form_confirmation['confirmationMessage'] ) );
-		}
-
-		// Instant form settings.
-		$instant = Helper::get_array_value( $meta_data['instantForm'] ?? [] );
-		if ( ! empty( $instant ) ) {
-			if ( isset( $instant['instantForm'] ) && $instant['instantForm'] ) {
-				$post_metas['_srfm_instant_form'] = 'enabled';
-			}
-			if ( isset( $instant['showTitle'] ) ) {
-				$post_metas['_srfm_single_page_form_title'] = $instant['showTitle'] ? 1 : 0;
-			}
-			if ( ! empty( $instant['formWidth'] ) ) {
-				$width = Helper::get_integer_value( $instant['formWidth'] );
-				if ( $width >= 560 && $width <= 1000 ) {
-					$post_metas['_srfm_form_container_width'] = $width;
-				}
-			}
-			if ( ! empty( $instant['formBackgroundColor'] ) ) {
-				$post_metas['_srfm_bg_color'] = sanitize_hex_color( Helper::get_string_value( $instant['formBackgroundColor'] ) );
-			}
-		}
-
-		// Styling.
-		$styling = Helper::get_array_value( $meta_data['styling'] ?? [] );
-		if ( ! empty( $styling ) ) {
-			if ( ! empty( $styling['submitAlignment'] ) ) {
-				$valid_alignments = [ 'left', 'center', 'right', 'full-width' ];
-				if ( in_array( $styling['submitAlignment'], $valid_alignments, true ) ) {
-					$post_metas['_srfm_submit_alignment'] = sanitize_text_field( Helper::get_string_value( $styling['submitAlignment'] ) );
-				}
-			}
-
-			if ( 'full-width' === ( $styling['submitAlignment'] ?? '' ) ) {
-				$post_metas['_srfm_submit_width']         = '100%';
-				$post_metas['_srfm_submit_width_backend'] = '100%';
-			}
-		}
-
-		// Compliance settings.
-		$compliance = Helper::get_array_value( $meta_data['compliance'] ?? [] );
-		if ( ! empty( $compliance ) ) {
-			if ( ! empty( $compliance['enableCompliance'] ) ) {
-				$post_metas['_srfm_compliance'] = true;
-
-				if ( ! empty( $compliance['neverStoreEntries'] ) ) {
-					$post_metas['_srfm_compliance_opt'] = 'do-not-store';
-				} elseif ( ! empty( $compliance['autoDeleteEntries'] ) && ! empty( $compliance['autoDeleteEntriesDays'] ) ) {
-					$post_metas['_srfm_compliance_opt']  = 'auto-delete';
-					$post_metas['_srfm_compliance_days'] = Helper::get_integer_value( $compliance['autoDeleteEntriesDays'] );
-				}
-			}
-		}
-
-		return $post_metas;
 	}
 }

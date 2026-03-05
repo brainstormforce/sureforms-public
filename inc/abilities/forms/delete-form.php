@@ -32,7 +32,7 @@ class Delete_Form extends Abstract_Ability {
 		$this->id          = 'sureforms/delete-form';
 		$this->label       = __( 'Delete SureForms Form', 'sureforms' );
 		$this->description = __( 'Move a SureForms form to trash, or permanently delete it when force is set to true.', 'sureforms' );
-		$this->capability  = 'delete_posts';
+		$this->capability  = 'manage_options';
 	}
 
 	/**

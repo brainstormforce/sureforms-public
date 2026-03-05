@@ -33,7 +33,7 @@ class Duplicate_Form extends Abstract_Ability {
 		$this->id          = 'sureforms/duplicate-form';
 		$this->label       = __( 'Duplicate SureForms Form', 'sureforms' );
 		$this->description = __( 'Duplicate an existing SureForms form with all its fields, metadata, and settings. The new form is created as a draft.', 'sureforms' );
-		$this->capability  = 'edit_posts';
+		$this->capability  = 'manage_options';
 	}
 
 	/**

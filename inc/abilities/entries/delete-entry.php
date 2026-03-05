@@ -24,6 +24,13 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class Delete_Entry extends Abstract_Ability {
 	/**
+	 * Maximum number of entries that can be deleted in a single call.
+	 *
+	 * @since x.x.x
+	 */
+	public const MAX_ENTRIES = 50;
+
+	/**
 	 * Constructor.
 	 *
 	 * @since x.x.x
@@ -103,6 +110,17 @@ class Delete_Entry extends Abstract_Ability {
 				[ 'status' => 400 ]
 			);
 		}
+
+		if ( count( $entry_ids ) > self::MAX_ENTRIES ) {
+			return new \WP_Error(
+				'srfm_too_many_entry_ids',
+				/* translators: %d is the maximum number of entries allowed. */
+				sprintf( __( 'Maximum %d entry IDs allowed per request.', 'sureforms' ), self::MAX_ENTRIES ),
+				[ 'status' => 400 ]
+			);
+		}
+
+		$entry_ids = array_map( 'absint', $entry_ids );
 
 		return Entries::delete_entries( $entry_ids );
 	}

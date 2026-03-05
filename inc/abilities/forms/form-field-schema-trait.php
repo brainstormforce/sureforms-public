@@ -1,0 +1,157 @@
+<?php
+/**
+ * Form Field Schema Trait.
+ *
+ * Shared field-type schema and sanitization for form abilities.
+ *
+ * @package sureforms
+ * @since x.x.x
+ */
+
+namespace SRFM\Inc\Abilities\Forms;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
+
+/**
+ * Trait Form_Field_Schema_Trait
+ *
+ * Provides reusable form-field schema definition and field sanitization
+ * for Create_Form and Update_Form abilities.
+ *
+ * @since x.x.x
+ */
+trait Form_Field_Schema_Trait {
+
+	/**
+	 * Get the form field items schema (field types + properties).
+	 *
+	 * @since x.x.x
+	 * @return array<string,mixed>
+	 */
+	protected function get_form_field_schema() {
+		$field_types = [
+			'input',
+			'email',
+			'url',
+			'textarea',
+			'multi-choice',
+			'checkbox',
+			'gdpr',
+			'number',
+			'phone',
+			'dropdown',
+			'address',
+			'inline-button',
+			'payment',
+		];
+
+		/**
+		 * Filter the allowed field types for form abilities.
+		 *
+		 * Pro and third-party plugins can use this to add their own field types.
+		 *
+		 * @param array<string> $field_types Array of field type slugs.
+		 * @since x.x.x
+		 */
+		$field_types = apply_filters( 'srfm_ability_form_field_types', $field_types );
+
+		// Core field properties.
+		$field_properties = [
+			'label'           => [
+				'type'        => 'string',
+				'description' => __( 'Field label. e.g. First Name', 'sureforms' ),
+			],
+			'required'        => [
+				'type'        => 'boolean',
+				'description' => __( 'Whether the field is required.', 'sureforms' ),
+			],
+			'fieldType'       => [
+				'type'        => 'string',
+				'description' => __( 'The field type.', 'sureforms' ),
+				'enum'        => $field_types,
+			],
+			'helpText'        => [
+				'type'        => 'string',
+				'description' => __( 'Help text describing the field.', 'sureforms' ),
+			],
+			'defaultValue'    => [
+				'type'        => 'string',
+				'description' => __( 'Default value for the field.', 'sureforms' ),
+			],
+			'fieldOptions'    => [
+				'type'        => 'array',
+				'description' => __( 'Options for dropdown or multi-choice fields.', 'sureforms' ),
+				'items'       => [
+					'type'       => 'object',
+					'properties' => [
+						'optionTitle' => [ 'type' => 'string' ],
+						'label'       => [ 'type' => 'string' ],
+					],
+				],
+			],
+			'singleSelection' => [
+				'type'        => 'boolean',
+				'description' => __( 'Allow only single selection in multi-choice field.', 'sureforms' ),
+			],
+			'isUnique'        => [
+				'type'        => 'boolean',
+				'description' => __( 'Whether the field value must be unique.', 'sureforms' ),
+			],
+			'textLength'      => [
+				'type'        => 'integer',
+				'description' => __( 'Maximum character length.', 'sureforms' ),
+			],
+		];
+
+		/**
+		 * Filter additional field properties for form ability schemas.
+		 *
+		 * Pro and third-party plugins can use this to add field-specific
+		 * properties (e.g. upload, rating, date-picker, time-picker options).
+		 *
+		 * @param array<string,array<string,mixed>> $properties Additional field properties. Default empty array.
+		 * @since x.x.x
+		 */
+		$additional_properties = apply_filters( 'srfm_ability_form_field_properties', [] );
+
+		if ( ! empty( $additional_properties ) && is_array( $additional_properties ) ) {
+			$field_properties = array_merge( $field_properties, $additional_properties );
+		}
+
+		return $field_properties;
+	}
+
+	/**
+	 * Sanitize form field string properties before passing to Field_Mapping.
+	 *
+	 * @param array<int,array<string,mixed>> $fields Raw form fields from input.
+	 * @since x.x.x
+	 * @return array<int,array<string,mixed>> Sanitized form fields.
+	 */
+	protected function sanitize_form_fields( array $fields ) {
+		foreach ( $fields as $index => $field ) {
+			if ( isset( $field['label'] ) ) {
+				$fields[ $index ]['label'] = sanitize_text_field( $field['label'] );
+			}
+			if ( isset( $field['helpText'] ) ) {
+				$fields[ $index ]['helpText'] = sanitize_text_field( $field['helpText'] );
+			}
+			if ( isset( $field['defaultValue'] ) ) {
+				$fields[ $index ]['defaultValue'] = sanitize_text_field( $field['defaultValue'] );
+			}
+			if ( ! empty( $field['fieldOptions'] ) && is_array( $field['fieldOptions'] ) ) {
+				foreach ( $field['fieldOptions'] as $opt_index => $option ) {
+					if ( isset( $option['optionTitle'] ) ) {
+						$fields[ $index ]['fieldOptions'][ $opt_index ]['optionTitle'] = sanitize_text_field( $option['optionTitle'] );
+					}
+					if ( isset( $option['label'] ) ) {
+						$fields[ $index ]['fieldOptions'][ $opt_index ]['label'] = sanitize_text_field( $option['label'] );
+					}
+				}
+			}
+		}
+		return $fields;
+	}
+}

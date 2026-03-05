@@ -131,6 +131,43 @@ class Test_List_Forms extends TestCase {
 	}
 
 	/**
+	 * Test that capability is set to manage_options.
+	 */
+	public function test_capability_is_manage_options() {
+		$reflection = new \ReflectionProperty( $this->ability, 'capability' );
+		$reflection->setAccessible( true );
+		$this->assertEquals( 'manage_options', $reflection->getValue( $this->ability ) );
+	}
+
+	/**
+	 * Test per_page is clamped to maximum of 100.
+	 */
+	public function test_per_page_clamped_to_max_100() {
+		$result = $this->ability->execute( [ 'per_page' => 500 ] );
+		$this->assertIsArray( $result );
+		// Should not error — per_page is silently clamped.
+		$this->assertArrayHasKey( 'forms', $result );
+	}
+
+	/**
+	 * Test per_page is clamped to minimum of 1.
+	 */
+	public function test_per_page_clamped_to_min_1() {
+		$result = $this->ability->execute( [ 'per_page' => -5 ] );
+		$this->assertIsArray( $result );
+		$this->assertArrayHasKey( 'forms', $result );
+	}
+
+	/**
+	 * Test per_page of zero is clamped to 1.
+	 */
+	public function test_per_page_zero_clamped() {
+		$result = $this->ability->execute( [ 'per_page' => 0 ] );
+		$this->assertIsArray( $result );
+		$this->assertArrayHasKey( 'forms', $result );
+	}
+
+	/**
 	 * Test each form in results has expected keys.
 	 */
 	public function test_form_result_keys() {

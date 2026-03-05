@@ -80,4 +80,44 @@ class Test_Delete_Entry extends TestCase {
 		$result = $this->ability->execute( [ 'entry_ids' => [] ] );
 		$this->assertInstanceOf( WP_Error::class, $result );
 	}
+
+	/**
+	 * Test that MAX_ENTRIES constant is defined.
+	 */
+	public function test_max_entries_constant() {
+		$this->assertEquals( 50, Delete_Entry::MAX_ENTRIES );
+	}
+
+	/**
+	 * Test execute with more than MAX_ENTRIES IDs returns WP_Error.
+	 */
+	public function test_execute_too_many_ids() {
+		$ids    = range( 1, 51 );
+		$result = $this->ability->execute( [ 'entry_ids' => $ids ] );
+		$this->assertInstanceOf( WP_Error::class, $result );
+		$this->assertEquals( 'srfm_too_many_entry_ids', $result->get_error_code() );
+	}
+
+	/**
+	 * Test execute with exactly MAX_ENTRIES IDs does not return limit error.
+	 */
+	public function test_execute_at_max_entries_limit() {
+		$ids    = range( 1, 50 );
+		$result = $this->ability->execute( [ 'entry_ids' => $ids ] );
+		// Should not be the "too many" error — may be other errors since entries don't exist.
+		if ( $result instanceof WP_Error ) {
+			$this->assertNotEquals( 'srfm_too_many_entry_ids', $result->get_error_code() );
+		} else {
+			$this->assertIsArray( $result );
+		}
+	}
+
+	/**
+	 * Test that capability is set to manage_options.
+	 */
+	public function test_capability_is_manage_options() {
+		$reflection = new \ReflectionProperty( $this->ability, 'capability' );
+		$reflection->setAccessible( true );
+		$this->assertEquals( 'manage_options', $reflection->getValue( $this->ability ) );
+	}
 }

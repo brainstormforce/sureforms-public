@@ -88,6 +88,72 @@ class Test_Update_Form extends TestCase {
 	}
 
 	/**
+	 * Test that capability is set to manage_options.
+	 */
+	public function test_capability_is_manage_options() {
+		$reflection = new \ReflectionProperty( $this->ability, 'capability' );
+		$reflection->setAccessible( true );
+		$this->assertEquals( 'manage_options', $reflection->getValue( $this->ability ) );
+	}
+
+	/**
+	 * Test that field_types filter uses the renamed filter hook.
+	 */
+	public function test_field_types_filter() {
+		$filter_called = false;
+		add_filter(
+			'srfm_ability_form_field_types',
+			function ( $types ) use ( &$filter_called ) {
+				$filter_called = true;
+				return $types;
+			}
+		);
+		$this->ability->get_input_schema();
+		$this->assertTrue( $filter_called );
+	}
+
+	/**
+	 * Test that field_properties filter uses the renamed filter hook.
+	 */
+	public function test_field_properties_filter() {
+		$filter_called = false;
+		add_filter(
+			'srfm_ability_form_field_properties',
+			function ( $props ) use ( &$filter_called ) {
+				$filter_called = true;
+				return $props;
+			}
+		);
+		$this->ability->get_input_schema();
+		$this->assertTrue( $filter_called );
+	}
+
+	/**
+	 * Test that formMetaData schema excludes unprocessed fields.
+	 */
+	public function test_schema_excludes_unprocessed_fields() {
+		$schema     = $this->ability->get_input_schema();
+		$meta_props = $schema['properties']['formMetaData']['properties'];
+
+		// emailConfirmation should be removed entirely.
+		$this->assertArrayNotHasKey( 'emailConfirmation', $meta_props );
+
+		// styling should only have submitAlignment.
+		$styling_props = $meta_props['styling']['properties'];
+		$this->assertArrayHasKey( 'submitAlignment', $styling_props );
+		$this->assertArrayNotHasKey( 'primaryColor', $styling_props );
+		$this->assertArrayNotHasKey( 'textColor', $styling_props );
+		$this->assertArrayNotHasKey( 'textColorOnPrimary', $styling_props );
+		$this->assertArrayNotHasKey( 'fieldSpacing', $styling_props );
+
+		// instantForm should not have bannerColor, useBannerColorAsBackground, formSlug.
+		$instant_props = $meta_props['instantForm']['properties'];
+		$this->assertArrayNotHasKey( 'bannerColor', $instant_props );
+		$this->assertArrayNotHasKey( 'useBannerColorAsBackground', $instant_props );
+		$this->assertArrayNotHasKey( 'formSlug', $instant_props );
+	}
+
+	/**
 	 * Test execute with non-existent form returns WP_Error.
 	 */
 	public function test_execute_nonexistent_form() {

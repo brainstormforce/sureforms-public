@@ -32,7 +32,7 @@ class Get_Shortcode extends Abstract_Ability {
 		$this->id          = 'sureforms/get-shortcode';
 		$this->label       = __( 'Get Form Shortcode', 'sureforms' );
 		$this->description = __( 'Get the shortcode and block markup needed to embed a SureForms form on any page or post.', 'sureforms' );
-		$this->capability  = 'edit_posts';
+		$this->capability  = 'manage_options';
 	}
 
 	/**
