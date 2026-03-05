@@ -141,7 +141,13 @@ import {
 				container.style.background = gradient;
 			}
 		} else if ( bgType === 'image' && bgImage ) {
-			container.style.backgroundImage = `url(${ bgImage })`;
+			// Validate URL protocol to prevent CSS injection.
+			if (
+				bgImage.startsWith( 'https://' ) ||
+				bgImage.startsWith( 'http://' )
+			) {
+				container.style.backgroundImage = `url(${ bgImage })`;
+			}
 		}
 	}
 
@@ -189,7 +195,7 @@ import {
 					);
 
 					for ( const key in finalSize ) {
-						if ( Object.hasOwn( finalSize, key ) ) {
+						if ( Object.hasOwn( finalSize, key ) && key.startsWith( '--' ) ) {
 							container.style.setProperty(
 								key,
 								finalSize[ key ]
