@@ -11,9 +11,9 @@
 ( function () {
 	'use strict';
 
-	// Get container ID from localized data.
+	// Get container ID from localized data and validate it as a safe CSS class name.
 	const containerId = window.srfmPreviewStyling?.containerId;
-	if ( ! containerId ) {
+	if ( ! containerId || ! /^[a-zA-Z0-9_-]+$/.test( containerId ) ) {
 		return;
 	}
 
@@ -254,8 +254,8 @@
 				container.style.removeProperty( '--srfm-bg-image' );
 			}
 			if ( styling.bgImagePosition ) {
-				const posX = ( styling.bgImagePosition.x || 0.5 ) * 100;
-				const posY = ( styling.bgImagePosition.y || 0.5 ) * 100;
+				const posX = ( styling.bgImagePosition.x ?? 0.5 ) * 100;
+				const posY = ( styling.bgImagePosition.y ?? 0.5 ) * 100;
 				container.style.setProperty(
 					'--srfm-bg-position',
 					posX + '% ' + posY + '%'

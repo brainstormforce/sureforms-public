@@ -58,38 +58,10 @@ class Form_Styling {
 		}
 
 		// Padding.
-		if ( isset( $block_attrs['formPaddingTop'] ) && is_scalar( $block_attrs['formPaddingTop'] ) ) {
-			$form_styling['form_padding_top'] = floatval( $block_attrs['formPaddingTop'] );
-		}
-		if ( isset( $block_attrs['formPaddingRight'] ) && is_scalar( $block_attrs['formPaddingRight'] ) ) {
-			$form_styling['form_padding_right'] = floatval( $block_attrs['formPaddingRight'] );
-		}
-		if ( isset( $block_attrs['formPaddingBottom'] ) && is_scalar( $block_attrs['formPaddingBottom'] ) ) {
-			$form_styling['form_padding_bottom'] = floatval( $block_attrs['formPaddingBottom'] );
-		}
-		if ( isset( $block_attrs['formPaddingLeft'] ) && is_scalar( $block_attrs['formPaddingLeft'] ) ) {
-			$form_styling['form_padding_left'] = floatval( $block_attrs['formPaddingLeft'] );
-		}
-		if ( ! empty( $block_attrs['formPaddingUnit'] ) && in_array( $block_attrs['formPaddingUnit'], [ 'px', 'em', 'rem', '%', 'vw', 'vh' ], true ) ) {
-			$form_styling['form_padding_unit'] = $block_attrs['formPaddingUnit'];
-		}
+		$form_styling = self::map_dimension_attrs( $form_styling, $block_attrs, 'formPadding', 'form_padding' );
 
 		// Border Radius.
-		if ( isset( $block_attrs['formBorderRadiusTop'] ) && is_scalar( $block_attrs['formBorderRadiusTop'] ) ) {
-			$form_styling['form_border_radius_top'] = floatval( $block_attrs['formBorderRadiusTop'] );
-		}
-		if ( isset( $block_attrs['formBorderRadiusRight'] ) && is_scalar( $block_attrs['formBorderRadiusRight'] ) ) {
-			$form_styling['form_border_radius_right'] = floatval( $block_attrs['formBorderRadiusRight'] );
-		}
-		if ( isset( $block_attrs['formBorderRadiusBottom'] ) && is_scalar( $block_attrs['formBorderRadiusBottom'] ) ) {
-			$form_styling['form_border_radius_bottom'] = floatval( $block_attrs['formBorderRadiusBottom'] );
-		}
-		if ( isset( $block_attrs['formBorderRadiusLeft'] ) && is_scalar( $block_attrs['formBorderRadiusLeft'] ) ) {
-			$form_styling['form_border_radius_left'] = floatval( $block_attrs['formBorderRadiusLeft'] );
-		}
-		if ( ! empty( $block_attrs['formBorderRadiusUnit'] ) && in_array( $block_attrs['formBorderRadiusUnit'], [ 'px', 'em', 'rem', '%', 'vw', 'vh' ], true ) ) {
-			$form_styling['form_border_radius_unit'] = $block_attrs['formBorderRadiusUnit'];
-		}
+		$form_styling = self::map_dimension_attrs( $form_styling, $block_attrs, 'formBorderRadius', 'form_border_radius' );
 
 		// Background.
 		if ( ! empty( $block_attrs['bgType'] ) && in_array( $block_attrs['bgType'], [ 'color', 'gradient', 'image' ], true ) ) {
@@ -176,4 +148,35 @@ class Form_Styling {
 		return 'inherit' !== ( $block_attrs['formTheme'] ?? 'inherit' );
 	}
 
+	/**
+	 * Map dimension block attributes (Top/Right/Bottom/Left/Unit) to form styling.
+	 *
+	 * @param array<string,mixed> $form_styling Form styling array.
+	 * @param array<string,mixed> $block_attrs  Block attributes.
+	 * @param string              $attr_prefix  Block attribute prefix (e.g., 'formPadding').
+	 * @param string              $style_prefix Form styling key prefix (e.g., 'form_padding').
+	 * @return array<string,mixed> Modified form styling array.
+	 * @since x.x.x
+	 */
+	private static function map_dimension_attrs( $form_styling, $block_attrs, $attr_prefix, $style_prefix ) {
+		$sides = [ 'Top', 'Right', 'Bottom', 'Left' ];
+
+		foreach ( $sides as $side ) {
+			$attr_key  = $attr_prefix . $side;
+			$style_key = $style_prefix . '_' . strtolower( $side );
+
+			if ( isset( $block_attrs[ $attr_key ] ) && is_scalar( $block_attrs[ $attr_key ] ) ) {
+				$form_styling[ $style_key ] = floatval( $block_attrs[ $attr_key ] );
+			}
+		}
+
+		$unit_attr_key  = $attr_prefix . 'Unit';
+		$unit_style_key = $style_prefix . '_unit';
+
+		if ( ! empty( $block_attrs[ $unit_attr_key ] ) && in_array( $block_attrs[ $unit_attr_key ], [ 'px', 'em', 'rem', '%', 'vw', 'vh' ], true ) ) {
+			$form_styling[ $unit_style_key ] = $block_attrs[ $unit_attr_key ];
+		}
+
+		return $form_styling;
+	}
 }
