@@ -559,4 +559,125 @@ class Test_Form_Widget extends TestCase {
 		$this->assertArrayHasKey( 'bgImage', $result );
 		$this->assertStringNotContainsString( 'javascript', $result['bgImage'] );
 	}
+
+	/**
+	 * Test get_block_attrs populates bgGradient when bgType is 'gradient'.
+	 */
+	public function test_get_block_attrs_gradient_integration(): void {
+		$widget   = $this->create_widget_instance();
+		$settings = [
+			'formTheme'          => 'classic',
+			'bgType'             => 'gradient',
+			'bgGradient_color'   => '#FF0000',
+			'bgGradient_color_b' => '#0000FF',
+		];
+
+		$result = $this->invoke_get_block_attrs( $widget, $settings );
+
+		$this->assertArrayHasKey( 'bgGradient', $result );
+		$this->assertSame( 'linear-gradient(180deg, #FF0000 0%, #0000FF 100%)', $result['bgGradient'] );
+	}
+
+	/**
+	 * Test get_block_attrs does not set bgGradient when bgType is not 'gradient'.
+	 */
+	public function test_get_block_attrs_no_gradient_when_bg_type_is_color(): void {
+		$widget   = $this->create_widget_instance();
+		$settings = [
+			'formTheme'          => 'classic',
+			'bgType'             => 'color',
+			'bgGradient_color'   => '#FF0000',
+			'bgGradient_color_b' => '#0000FF',
+		];
+
+		$result = $this->invoke_get_block_attrs( $widget, $settings );
+
+		$this->assertArrayNotHasKey( 'bgGradient', $result );
+	}
+
+	/**
+	 * Test build_gradient_css with malicious stop values escapes them via esc_attr.
+	 */
+	public function test_build_gradient_css_malicious_stop_values(): void {
+		$settings = [
+			'bgGradient_color'        => '#FF0000',
+			'bgGradient_color_b'      => '#0000FF',
+			'bgGradient_color_stop'   => [
+				'size' => '10" onclick="alert(1)',
+				'unit' => '%',
+			],
+			'bgGradient_color_b_stop' => [
+				'size' => '90',
+				'unit' => '"><script>',
+			],
+		];
+
+		$result = Form_Widget::build_gradient_css( $settings );
+		$this->assertIsString( $result );
+		// esc_attr should escape dangerous characters.
+		$this->assertStringNotContainsString( '"', $result );
+		$this->assertStringNotContainsString( '<', $result );
+		$this->assertStringNotContainsString( '>', $result );
+	}
+
+	/**
+	 * Test build_gradient_css with malicious angle values escapes them via esc_attr.
+	 */
+	public function test_build_gradient_css_malicious_angle_values(): void {
+		$settings = [
+			'bgGradient_color'          => '#AAAAAA',
+			'bgGradient_color_b'        => '#BBBBBB',
+			'bgGradient_gradient_angle' => [
+				'size' => '45" style="background:url(evil)',
+				'unit' => 'deg',
+			],
+		];
+
+		$result = Form_Widget::build_gradient_css( $settings );
+		$this->assertIsString( $result );
+		$this->assertStringNotContainsString( '"', $result );
+		$this->assertStringContainsString( '&quot;', $result );
+	}
+
+	/**
+	 * Test build_gradient_css falls back to linear for unknown gradient type.
+	 */
+	public function test_build_gradient_css_unknown_type_falls_back_to_linear(): void {
+		$settings = [
+			'bgGradient_color'         => '#111111',
+			'bgGradient_color_b'       => '#222222',
+			'bgGradient_gradient_type' => 'conic',
+		];
+
+		$result = Form_Widget::build_gradient_css( $settings );
+		// 'conic' is not 'radial', so the code falls through to the linear branch.
+		$this->assertIsString( $result );
+		$this->assertStringContainsString( 'linear-gradient(', $result );
+		$this->assertStringNotContainsString( 'conic', $result );
+	}
+
+	/**
+	 * Test get_block_attrs applies the srfm_elementor_block_attrs filter.
+	 */
+	public function test_get_block_attrs_applies_filter(): void {
+		$widget   = $this->create_widget_instance();
+		$settings = [
+			'formTheme' => 'classic',
+		];
+
+		// Add a filter that injects a custom attribute.
+		$callback = function ( $block_attrs ) {
+			$block_attrs['customAttr'] = 'filtered';
+			return $block_attrs;
+		};
+		add_filter( 'srfm_elementor_block_attrs', $callback );
+
+		$result = $this->invoke_get_block_attrs( $widget, $settings );
+
+		$this->assertArrayHasKey( 'customAttr', $result );
+		$this->assertSame( 'filtered', $result['customAttr'] );
+
+		// Clean up.
+		remove_filter( 'srfm_elementor_block_attrs', $callback );
+	}
 }
