@@ -65,26 +65,6 @@ class Test_Admin extends TestCase {
     }
 
     /**
-     * Test is_first_form_created returns false when no timestamp.
-     */
-    public function test_is_first_form_created_false_when_no_timestamp() {
-        // Since we can't easily mock static calls in this setup, we'll test the expected behavior
-        // This test would need proper mocking framework integration for full isolation
-        $this->assertTrue(true); // Placeholder - would need proper Helper mock
-    }
-
-    /**
-     * Test is_first_form_created returns true for valid timestamp.
-     */
-    public function test_is_first_form_created_true_for_valid_timestamp() {
-        // Test the logic with a valid timestamp
-        // Since we can't easily mock static methods without a proper framework,
-        // we'll test that the validation logic works
-        $valid_timestamp = 1692000000;
-        $this->assertTrue(is_int($valid_timestamp) && $valid_timestamp > 0);
-    }
-
-    /**
      * Test check_first_form_creation_threshold returns false when not enough days passed.
      */
     public function test_check_first_form_creation_threshold_false() {

@@ -1323,7 +1323,7 @@ class Admin {
 	 */
 	public function display_srfm_rating_notice() {
 		// Only show to admins.
-		if ( ! current_user_can( 'manage_options' ) ) {
+		if ( ! Helper::current_user_can() ) {
 			return;
 		}
 
@@ -1343,6 +1343,7 @@ class Admin {
 					esc_html__( 'Rate SureForms', 'sureforms' ),
 					esc_html__( 'Maybe later', 'sureforms' ),
 					esc_html__( 'I already did', 'sureforms' ),
+					WEEK_IN_SECONDS,
 					true
 				),
 				'repeat-notice-after'        => WEEK_IN_SECONDS,
@@ -1366,7 +1367,7 @@ class Admin {
 	 */
 	public function display_srfm_getting_started_notice() {
 		// Only show to admins.
-		if ( ! current_user_can( 'manage_options' ) ) {
+		if ( ! Helper::current_user_can() ) {
 			return;
 		}
 
@@ -1385,7 +1386,8 @@ class Admin {
 					esc_url( admin_url( 'admin.php?page=sureforms_menu' ) ),
 					esc_html__( 'Go to Dashboard', 'sureforms' ),
 					esc_html__( 'Maybe later', 'sureforms' ),
-					esc_html__( 'I already know', 'sureforms' )
+					esc_html__( 'I already know', 'sureforms' ),
+					WEEK_IN_SECONDS
 				),
 				'repeat-notice-after'        => WEEK_IN_SECONDS,
 				'show_if'                    => ! $this->maybe_display_rating_notice(),
@@ -1402,16 +1404,21 @@ class Admin {
 	 *
 	 * @since x.x.x
 	 *
-	 * @param string $heading      The notice heading text.
-	 * @param string $message      The notice body text.
-	 * @param string $cta_url      The primary CTA URL.
-	 * @param string $cta_text     The primary CTA button text.
-	 * @param string $snooze_text  The snooze button text.
-	 * @param string $dismiss_text The dismiss button text.
-	 * @param bool   $external_cta Whether the CTA opens in a new tab and dismisses the notice. Default false.
+	 * All text parameters must be pre-escaped by the caller (e.g. via esc_html__()).
+	 * URL parameters must be pre-escaped via esc_url().
+	 *
+	 * @param string $heading      The notice heading text (pre-escaped).
+	 * @param string $message      The notice body text (pre-escaped).
+	 * @param string $cta_url      The primary CTA URL (pre-escaped).
+	 * @param string $cta_text     The primary CTA button text (pre-escaped).
+	 * @param string $snooze_text  The snooze button text (pre-escaped).
+	 * @param string $dismiss_text    The dismiss button text (pre-escaped).
+	 * @param int    $snooze_duration Snooze duration in seconds for the data-repeat-notice-after attribute.
+	 * @param bool   $external_cta   Whether the CTA opens in a new tab and also dismisses the notice
+	 *                               via the astra-notice-close class. Default false.
 	 * @return string The notice HTML markup.
 	 */
-	private function build_notice_markup( $heading, $message, $cta_url, $cta_text, $snooze_text, $dismiss_text, $external_cta = false ) {
+	private function build_notice_markup( $heading, $message, $cta_url, $cta_text, $snooze_text, $dismiss_text, $snooze_duration, $external_cta = false ) {
 		$image_path = esc_url( SRFM_URL . 'admin/assets/sureforms-logo.png' );
 		$cta_class  = $external_cta ? 'astra-notice-close button-primary' : 'button-primary';
 		$cta_attrs  = $external_cta ? ' target="_blank" rel="noopener noreferrer"' : '';
@@ -1446,7 +1453,7 @@ class Admin {
 			esc_attr( $cta_class ),
 			$cta_attrs,
 			$cta_text,
-			WEEK_IN_SECONDS,
+			$snooze_duration,
 			$snooze_text,
 			$dismiss_text
 		);
@@ -1771,7 +1778,7 @@ class Admin {
 		if ( null === $this->should_show_rating ) {
 			$entries_count            = Entries::get_total_entries_by_status( 'all' );
 			$form_count               = wp_count_posts( SRFM_FORMS_POST_TYPE );
-			$this->should_show_rating = $entries_count >= self::RATING_NOTICE_THRESHOLD || Helper::get_integer_value( $form_count->publish ) >= self::RATING_NOTICE_THRESHOLD;
+			$this->should_show_rating = $entries_count >= self::RATING_NOTICE_THRESHOLD || Helper::get_integer_value( $form_count->publish ?? 0 ) >= self::RATING_NOTICE_THRESHOLD;
 		}
 
 		return $this->should_show_rating;
