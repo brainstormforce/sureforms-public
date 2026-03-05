@@ -37,7 +37,7 @@ class Admin {
 	 *
 	 * @since x.x.x
 	 */
-	const RATING_NOTICE_THRESHOLD = 3;
+	public const RATING_NOTICE_THRESHOLD = 3;
 
 	/**
 	 * Dashboard widget entries data.
@@ -1400,66 +1400,6 @@ class Admin {
 	}
 
 	/**
-	 * Build the shared HTML markup for admin notices.
-	 *
-	 * @since x.x.x
-	 *
-	 * All text parameters must be pre-escaped by the caller (e.g. via esc_html__()).
-	 * URL parameters must be pre-escaped via esc_url().
-	 *
-	 * @param string $heading      The notice heading text (pre-escaped).
-	 * @param string $message      The notice body text (pre-escaped).
-	 * @param string $cta_url      The primary CTA URL (pre-escaped).
-	 * @param string $cta_text     The primary CTA button text (pre-escaped).
-	 * @param string $snooze_text  The snooze button text (pre-escaped).
-	 * @param string $dismiss_text    The dismiss button text (pre-escaped).
-	 * @param int    $snooze_duration Snooze duration in seconds for the data-repeat-notice-after attribute.
-	 * @param bool   $external_cta   Whether the CTA opens in a new tab and also dismisses the notice
-	 *                               via the astra-notice-close class. Default false.
-	 * @return string The notice HTML markup.
-	 */
-	private function build_notice_markup( $heading, $message, $cta_url, $cta_text, $snooze_text, $dismiss_text, $snooze_duration, $external_cta = false ) {
-		$image_path = esc_url( SRFM_URL . 'admin/assets/sureforms-logo.png' );
-		$cta_class  = $external_cta ? 'astra-notice-close button-primary' : 'button-primary';
-		$cta_attrs  = $external_cta ? ' target="_blank" rel="noopener noreferrer"' : '';
-
-		return sprintf(
-			'<div class="notice-image">
-                <img src="%1$s" class="custom-logo" alt="SureForms" itemprop="logo">
-            </div>
-            <div class="notice-content">
-                <div class="notice-heading">
-                    %2$s
-                </div>
-                %3$s<br />
-                <div class="astra-review-notice-container">
-                    <a href="%4$s" class="%5$s"%6$s>
-                    %7$s
-                    </a>
-                <span class="dashicons dashicons-clock" aria-hidden="true"></span>
-                    <a href="#" data-repeat-notice-after="%8$s" class="astra-notice-close">
-                    %9$s
-                    </a>
-                <span class="dashicons dashicons-smiley" aria-hidden="true"></span>
-                    <a href="#" class="astra-notice-close">
-                    %10$s
-                    </a>
-                </div>
-            </div>',
-			$image_path,
-			$heading,
-			$message,
-			$cta_url,
-			esc_attr( $cta_class ),
-			$cta_attrs,
-			$cta_text,
-			$snooze_duration,
-			$snooze_text,
-			$dismiss_text
-		);
-	}
-
-	/**
 	 * Enqueue the notice response analytics script.
 	 *
 	 * Called via the astra_notice_after_markup_{id} hook so the script
@@ -1764,6 +1704,66 @@ class Admin {
 			?>
 		</div>
 		<?php
+	}
+
+	/**
+	 * Build the shared HTML markup for admin notices.
+	 *
+	 * @since x.x.x
+	 *
+	 * All text parameters must be pre-escaped by the caller (e.g. via esc_html__()).
+	 * URL parameters must be pre-escaped via esc_url().
+	 *
+	 * @param string $heading      The notice heading text (pre-escaped).
+	 * @param string $message      The notice body text (pre-escaped).
+	 * @param string $cta_url      The primary CTA URL (pre-escaped).
+	 * @param string $cta_text     The primary CTA button text (pre-escaped).
+	 * @param string $snooze_text  The snooze button text (pre-escaped).
+	 * @param string $dismiss_text    The dismiss button text (pre-escaped).
+	 * @param int    $snooze_duration Snooze duration in seconds for the data-repeat-notice-after attribute.
+	 * @param bool   $external_cta   Whether the CTA opens in a new tab and also dismisses the notice
+	 *                               via the astra-notice-close class. Default false.
+	 * @return string The notice HTML markup.
+	 */
+	private function build_notice_markup( $heading, $message, $cta_url, $cta_text, $snooze_text, $dismiss_text, $snooze_duration, $external_cta = false ) {
+		$image_path = esc_url( SRFM_URL . 'admin/assets/sureforms-logo.png' );
+		$cta_class  = $external_cta ? 'astra-notice-close button-primary' : 'button-primary';
+		$cta_attrs  = $external_cta ? ' target="_blank" rel="noopener noreferrer"' : '';
+
+		return sprintf(
+			'<div class="notice-image">
+                <img src="%1$s" class="custom-logo" alt="SureForms" itemprop="logo">
+            </div>
+            <div class="notice-content">
+                <div class="notice-heading">
+                    %2$s
+                </div>
+                %3$s<br />
+                <div class="astra-review-notice-container">
+                    <a href="%4$s" class="%5$s"%6$s>
+                    %7$s
+                    </a>
+                <span class="dashicons dashicons-clock" aria-hidden="true"></span>
+                    <a href="#" data-repeat-notice-after="%8$s" class="astra-notice-close">
+                    %9$s
+                    </a>
+                <span class="dashicons dashicons-smiley" aria-hidden="true"></span>
+                    <a href="#" class="astra-notice-close">
+                    %10$s
+                    </a>
+                </div>
+            </div>',
+			$image_path,
+			$heading,
+			$message,
+			$cta_url,
+			esc_attr( $cta_class ),
+			$cta_attrs,
+			$cta_text,
+			$snooze_duration,
+			$snooze_text,
+			$dismiss_text
+		);
 	}
 
 	/**
