@@ -26,8 +26,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since x.x.x
  */
 class Update_Form extends Abstract_Ability {
-	use Form_Field_Schema_Trait;
-	use Form_Metadata_Trait;
+	use Form_Field_Schema;
+	use Form_Metadata;
 
 	/**
 	 * Constructor.

@@ -15,15 +15,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Trait Form_Field_Schema_Trait
+ * Trait Form_Field_Schema
  *
  * Provides reusable form-field schema definition and field sanitization
  * for Create_Form and Update_Form abilities.
  *
  * @since x.x.x
  */
-trait Form_Field_Schema_Trait {
-
+trait Form_Field_Schema {
 	/**
 	 * Get the form field items schema (field types + properties).
 	 *
@@ -132,24 +131,34 @@ trait Form_Field_Schema_Trait {
 	 */
 	protected function sanitize_form_fields( array $fields ) {
 		foreach ( $fields as $index => $field ) {
-			if ( isset( $field['label'] ) ) {
+			if ( ! is_array( $field ) ) {
+				continue;
+			}
+			if ( isset( $field['label'] ) && is_string( $field['label'] ) ) {
 				$fields[ $index ]['label'] = sanitize_text_field( $field['label'] );
 			}
-			if ( isset( $field['helpText'] ) ) {
+			if ( isset( $field['helpText'] ) && is_string( $field['helpText'] ) ) {
 				$fields[ $index ]['helpText'] = sanitize_text_field( $field['helpText'] );
 			}
-			if ( isset( $field['defaultValue'] ) ) {
+			if ( isset( $field['defaultValue'] ) && is_string( $field['defaultValue'] ) ) {
 				$fields[ $index ]['defaultValue'] = sanitize_text_field( $field['defaultValue'] );
 			}
 			if ( ! empty( $field['fieldOptions'] ) && is_array( $field['fieldOptions'] ) ) {
-				foreach ( $field['fieldOptions'] as $opt_index => $option ) {
-					if ( isset( $option['optionTitle'] ) ) {
-						$fields[ $index ]['fieldOptions'][ $opt_index ]['optionTitle'] = sanitize_text_field( $option['optionTitle'] );
+				// @phpstan-ignore-next-line -- $field['fieldOptions'] is validated as array above.
+				$field_options = $field['fieldOptions'];
+				foreach ( $field_options as $opt_index => $option ) {
+					if ( ! is_array( $option ) ) {
+						continue;
 					}
-					if ( isset( $option['label'] ) ) {
-						$fields[ $index ]['fieldOptions'][ $opt_index ]['label'] = sanitize_text_field( $option['label'] );
+					if ( isset( $option['optionTitle'] ) && is_string( $option['optionTitle'] ) ) {
+						$option['optionTitle'] = sanitize_text_field( $option['optionTitle'] );
 					}
+					if ( isset( $option['label'] ) && is_string( $option['label'] ) ) {
+						$option['label'] = sanitize_text_field( $option['label'] );
+					}
+					$field_options[ $opt_index ] = $option;
 				}
+				$fields[ $index ]['fieldOptions'] = $field_options;
 			}
 		}
 		return $fields;

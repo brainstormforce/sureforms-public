@@ -25,7 +25,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since x.x.x
  */
 class Get_Entry extends Abstract_Ability {
-	use Entry_Parser_Trait;
+	use Entry_Parser;
 
 	/**
 	 * Constructor.

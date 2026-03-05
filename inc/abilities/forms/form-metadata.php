@@ -17,15 +17,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Trait Form_Metadata_Trait
+ * Trait Form_Metadata
  *
  * Provides the shared apply_metadata_overrides() method used by
  * Create_Form and Update_Form abilities.
  *
  * @since x.x.x
  */
-trait Form_Metadata_Trait {
-
+trait Form_Metadata {
 	/**
 	 * Apply metadata overrides from ability input to post meta.
 	 *

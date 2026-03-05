@@ -25,7 +25,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since x.x.x
  */
 class Bulk_Get_Entries extends Abstract_Ability {
-	use Entry_Parser_Trait;
+	use Entry_Parser;
 
 	/**
 	 * Maximum number of entries that can be fetched in a single call.
