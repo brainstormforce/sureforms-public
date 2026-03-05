@@ -23,6 +23,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since x.x.x
  */
 class Get_Global_Settings extends Abstract_Ability {
+	use Settings_Secret_Keys;
+
 	/**
 	 * Constructor.
 	 *
@@ -209,15 +211,7 @@ class Get_Global_Settings extends Abstract_Ability {
 		}
 
 		// Mask all secret key fields.
-		$secret_keys = [
-			'srfm_v2_checkbox_secret_key',
-			'srfm_v2_invisible_secret_key',
-			'srfm_v3_secret_key',
-			'srfm_cf_turnstile_secret_key',
-			'srfm_hcaptcha_secret_key',
-		];
-
-		foreach ( $secret_keys as $key ) {
+		foreach ( self::$secret_keys as $key ) {
 			if ( ! empty( $settings[ $key ] ) ) {
 				$settings[ $key ] = '********';
 			}

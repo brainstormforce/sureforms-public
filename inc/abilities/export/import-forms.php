@@ -25,6 +25,13 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class Import_Forms extends Abstract_Ability {
 	/**
+	 * Maximum number of forms that can be imported at once.
+	 *
+	 * @since x.x.x
+	 */
+	public const MAX_IMPORT_FORMS = 50;
+
+	/**
 	 * Constructor.
 	 *
 	 * @since x.x.x
@@ -118,13 +125,52 @@ class Import_Forms extends Abstract_Ability {
 			);
 		}
 
-		// Validate data structure.
-		foreach ( $forms_data as $form_data ) {
+		// Enforce max import limit.
+		if ( count( $forms_data ) > self::MAX_IMPORT_FORMS ) {
+			return new \WP_Error(
+				'srfm_too_many_forms',
+				/* translators: %d: maximum number of forms allowed per import */
+				sprintf( __( 'Cannot import more than %d forms at once.', 'sureforms' ), self::MAX_IMPORT_FORMS ),
+				[ 'status' => 400 ]
+			);
+		}
+
+		// Get allowed meta keys from the Export class.
+		$allowed_meta_keys = Export::get_instance()->get_unserialized_post_metas();
+
+		// Validate and sanitize data structure.
+		foreach ( $forms_data as $index => $form_data ) {
 			if ( ! is_array( $form_data ) || ! isset( $form_data['post'] ) || ! isset( $form_data['post_meta'] ) ) {
 				return new \WP_Error(
 					'srfm_invalid_form_data',
 					__( 'Each form must have post and post_meta keys.', 'sureforms' ),
 					[ 'status' => 400 ]
+				);
+			}
+
+			// Validate post_type if provided.
+			if ( ! empty( $form_data['post']['post_type'] ) && SRFM_FORMS_POST_TYPE !== $form_data['post']['post_type'] ) {
+				return new \WP_Error(
+					'srfm_invalid_post_type',
+					__( 'Only SureForms form post type is allowed for import.', 'sureforms' ),
+					[ 'status' => 400 ]
+				);
+			}
+
+			// Defense-in-depth: sanitize post_title and post_content at the ability layer.
+			if ( isset( $form_data['post']['post_title'] ) ) {
+				$forms_data[ $index ]['post']['post_title'] = sanitize_text_field( $form_data['post']['post_title'] );
+			}
+
+			if ( isset( $form_data['post']['post_content'] ) ) {
+				$forms_data[ $index ]['post']['post_content'] = wp_kses_post( $form_data['post']['post_content'] );
+			}
+
+			// Whitelist meta keys — only allow known meta keys through.
+			if ( is_array( $form_data['post_meta'] ) ) {
+				$forms_data[ $index ]['post_meta'] = array_intersect_key(
+					$form_data['post_meta'],
+					array_flip( $allowed_meta_keys )
 				);
 			}
 		}

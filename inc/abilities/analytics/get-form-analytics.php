@@ -9,6 +9,7 @@
 namespace SRFM\Inc\Abilities\Analytics;
 
 use SRFM\Inc\Abilities\Abstract_Ability;
+use SRFM\Inc\Abilities\Traits\Date_Validation;
 use SRFM\Inc\Database\Tables\Entries;
 use SRFM\Inc\Helper;
 
@@ -24,6 +25,15 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since x.x.x
  */
 class Get_Form_Analytics extends Abstract_Ability {
+	use Date_Validation;
+
+	/**
+	 * Maximum number of analytics results to return.
+	 *
+	 * @since x.x.x
+	 */
+	public const MAX_RESULTS = 10000;
+
 	/**
 	 * Constructor.
 	 *
@@ -60,11 +70,11 @@ class Get_Form_Analytics extends Abstract_Ability {
 			'properties' => [
 				'date_from' => [
 					'type'        => 'string',
-					'description' => __( 'Start date for analytics range (Y-m-d or Y-m-d H:i:s).', 'sureforms' ),
+					'description' => __( 'Start date for analytics range (Y-m-d).', 'sureforms' ),
 				],
 				'date_to'   => [
 					'type'        => 'string',
-					'description' => __( 'End date for analytics range (Y-m-d or Y-m-d H:i:s).', 'sureforms' ),
+					'description' => __( 'End date for analytics range (Y-m-d).', 'sureforms' ),
 				],
 				'form_id'   => [
 					'type'        => 'integer',
@@ -94,6 +104,7 @@ class Get_Form_Analytics extends Abstract_Ability {
 					],
 				],
 				'total_count' => [ 'type' => 'integer' ],
+				'truncated'   => [ 'type' => 'boolean' ],
 				'form_id'     => [ 'type' => [ 'integer', 'null' ] ],
 				'date_from'   => [ 'type' => 'string' ],
 				'date_to'     => [ 'type' => 'string' ],
@@ -117,6 +128,14 @@ class Get_Form_Analytics extends Abstract_Ability {
 			return new \WP_Error(
 				'srfm_missing_dates',
 				__( 'Both date_from and date_to are required.', 'sureforms' ),
+				[ 'status' => 400 ]
+			);
+		}
+
+		if ( ! $this->validate_date( $date_from ) || ! $this->validate_date( $date_to ) ) {
+			return new \WP_Error(
+				'srfm_invalid_date_format',
+				__( 'Dates must be in Y-m-d format.', 'sureforms' ),
 				[ 'status' => 400 ]
 			);
 		}
@@ -147,12 +166,19 @@ class Get_Form_Analytics extends Abstract_Ability {
 		$submissions = Entries::get_instance()->get_results(
 			$where,
 			'created_at',
-			[ 'ORDER BY created_at DESC' ]
+			[ 'ORDER BY created_at DESC', 'LIMIT ' . ( self::MAX_RESULTS + 1 ) ]
 		);
+
+		$truncated = count( $submissions ) > self::MAX_RESULTS;
+
+		if ( $truncated ) {
+			$submissions = array_slice( $submissions, 0, self::MAX_RESULTS );
+		}
 
 		return [
 			'submissions' => $submissions,
 			'total_count' => count( $submissions ),
+			'truncated'   => $truncated,
 			'form_id'     => $form_id ? $form_id : null,
 			'date_from'   => $date_from,
 			'date_to'     => $date_to,

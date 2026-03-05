@@ -9,6 +9,7 @@
 namespace SRFM\Inc\Abilities\Export;
 
 use SRFM\Inc\Abilities\Abstract_Ability;
+use SRFM\Inc\Abilities\Traits\Date_Validation;
 use SRFM\Inc\Database\Tables\Entries;
 use SRFM\Inc\Helper;
 
@@ -24,6 +25,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since x.x.x
  */
 class Export_Entries extends Abstract_Ability {
+	use Date_Validation;
+
 	/**
 	 * Constructor.
 	 *
@@ -146,6 +149,23 @@ class Export_Entries extends Abstract_Ability {
 		$date_to   = ! empty( $input['date_to'] ) ? sanitize_text_field( Helper::get_string_value( $input['date_to'] ) ) : '';
 		$per_page  = ! empty( $input['per_page'] ) ? min( absint( Helper::get_integer_value( $input['per_page'] ) ), 500 ) : 100;
 
+		// Validate date formats when provided.
+		if ( ! empty( $date_from ) && ! $this->validate_date( $date_from ) ) {
+			return new \WP_Error(
+				'srfm_invalid_date_format',
+				__( 'date_from must be in Y-m-d format.', 'sureforms' ),
+				[ 'status' => 400 ]
+			);
+		}
+
+		if ( ! empty( $date_to ) && ! $this->validate_date( $date_to ) ) {
+			return new \WP_Error(
+				'srfm_invalid_date_format',
+				__( 'date_to must be in Y-m-d format.', 'sureforms' ),
+				[ 'status' => 400 ]
+			);
+		}
+
 		// Build where conditions.
 		$where = $this->build_where_conditions( $form_id, $entry_ids, $status, $date_from, $date_to );
 
@@ -199,10 +219,36 @@ class Export_Entries extends Abstract_Ability {
 			$form_titles[ $fid ] = $post ? $post->post_title : '';
 		}
 
-		// Fetch full entries and build structured output.
+		// Batch fetch all entries in a single query instead of N+1 individual calls.
+		$batch_args = [
+			'where' => [
+				[
+					[
+						'key'     => 'ID',
+						'compare' => 'IN',
+						'value'   => $fetched_ids,
+					],
+				],
+			],
+			'limit' => count( $fetched_ids ),
+		];
+
+		$batch_results = Entries::get_all( $batch_args, true );
+
+		// Build lookup map by entry ID.
+		$entries_by_id = [];
+		foreach ( $batch_results as $row ) {
+			$row = Helper::get_array_value( $row );
+			$id  = absint( $row['ID'] ?? 0 );
+			if ( $id ) {
+				$entries_by_id[ $id ] = $row;
+			}
+		}
+
+		// Build structured output from the batch-fetched entries.
 		$entries = [];
 		foreach ( $fetched_ids as $eid ) {
-			$entry_data = Entries::get( $eid );
+			$entry_data = $entries_by_id[ $eid ] ?? [];
 
 			if ( empty( $entry_data ) ) {
 				continue;
@@ -225,7 +271,7 @@ class Export_Entries extends Abstract_Ability {
 
 				$fields[] = [
 					'label' => $label,
-					'value' => $field_value,
+					'value' => is_string( $field_value ) ? wp_kses_post( $field_value ) : $field_value,
 				];
 			}
 

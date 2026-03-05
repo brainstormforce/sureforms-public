@@ -24,6 +24,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since x.x.x
  */
 class Update_Global_Settings extends Abstract_Ability {
+	use Settings_Secret_Keys;
+
 	/**
 	 * Constructor.
 	 *
@@ -114,6 +116,9 @@ class Update_Global_Settings extends Abstract_Ability {
 			);
 		}
 
+		// Sanitize settings per category before saving.
+		$settings = $this->sanitize_settings( $category, $settings );
+
 		$saved = false;
 
 		switch ( $category ) {
@@ -144,6 +149,124 @@ class Update_Global_Settings extends Abstract_Ability {
 	}
 
 	/**
+	 * Sanitize settings values based on category and known key types.
+	 *
+	 * @param string              $category Settings category.
+	 * @param array<string,mixed> $settings Raw settings values.
+	 * @since x.x.x
+	 * @return array<string,mixed> Sanitized settings.
+	 */
+	private function sanitize_settings( $category, $settings ) {
+		switch ( $category ) {
+			case 'general':
+				return $this->sanitize_general_settings( $settings );
+			case 'email-summary':
+				return $this->sanitize_email_summary_settings( $settings );
+			case 'security':
+				return $this->sanitize_security_settings( $settings );
+			case 'validation-messages':
+				return $this->sanitize_validation_messages( $settings );
+			default:
+				return $settings;
+		}
+	}
+
+	/**
+	 * Sanitize general settings.
+	 *
+	 * @param array<string,mixed> $settings Raw settings.
+	 * @since x.x.x
+	 * @return array<string,mixed>
+	 */
+	private function sanitize_general_settings( $settings ) {
+		$boolean_keys = [ 'srfm_ip_log', 'srfm_form_analytics', 'srfm_admin_notification' ];
+
+		foreach ( $boolean_keys as $key ) {
+			if ( isset( $settings[ $key ] ) ) {
+				$settings[ $key ] = rest_sanitize_boolean( Helper::get_string_value( $settings[ $key ] ) );
+			}
+		}
+
+		return $settings;
+	}
+
+	/**
+	 * Sanitize email summary settings.
+	 *
+	 * @param array<string,mixed> $settings Raw settings.
+	 * @since x.x.x
+	 * @return array<string,mixed>
+	 */
+	private function sanitize_email_summary_settings( $settings ) {
+		if ( isset( $settings['srfm_email_summary'] ) ) {
+			$settings['srfm_email_summary'] = rest_sanitize_boolean( Helper::get_string_value( $settings['srfm_email_summary'] ) );
+		}
+
+		if ( isset( $settings['srfm_email_sent_to'] ) ) {
+			$settings['srfm_email_sent_to'] = sanitize_email( Helper::get_string_value( $settings['srfm_email_sent_to'] ) );
+		}
+
+		if ( isset( $settings['srfm_schedule_report'] ) ) {
+			$settings['srfm_schedule_report'] = sanitize_text_field( Helper::get_string_value( $settings['srfm_schedule_report'] ) );
+		}
+
+		return $settings;
+	}
+
+	/**
+	 * Sanitize security settings (applied before sentinel check).
+	 *
+	 * @param array<string,mixed> $settings Raw settings.
+	 * @since x.x.x
+	 * @return array<string,mixed>
+	 */
+	private function sanitize_security_settings( $settings ) {
+		// Sanitize all site key and secret key values as text fields.
+		$text_keys = [
+			'srfm_v2_checkbox_site_key',
+			'srfm_v2_checkbox_secret_key',
+			'srfm_v2_invisible_site_key',
+			'srfm_v2_invisible_secret_key',
+			'srfm_v3_site_key',
+			'srfm_v3_secret_key',
+			'srfm_cf_turnstile_site_key',
+			'srfm_cf_turnstile_secret_key',
+			'srfm_hcaptcha_site_key',
+			'srfm_hcaptcha_secret_key',
+			'srfm_cf_appearance_mode',
+		];
+
+		foreach ( $text_keys as $key ) {
+			if ( isset( $settings[ $key ] ) ) {
+				$settings[ $key ] = sanitize_text_field( Helper::get_string_value( $settings[ $key ] ) );
+			}
+		}
+
+		if ( isset( $settings['srfm_honeypot'] ) ) {
+			$settings['srfm_honeypot'] = rest_sanitize_boolean( Helper::get_string_value( $settings['srfm_honeypot'] ) );
+		}
+
+		return $settings;
+	}
+
+	/**
+	 * Sanitize validation message settings.
+	 *
+	 * @param array<string,mixed> $settings Raw settings.
+	 * @since x.x.x
+	 * @return array<string,mixed>
+	 */
+	private function sanitize_validation_messages( $settings ) {
+		foreach ( $settings as $key => $value ) {
+			if ( is_string( $value ) ) {
+				$settings[ $key ] = sanitize_text_field( $value );
+			}
+		}
+
+		return $settings;
+	}
+
+	/**
 	 * Save security settings, preserving masked sentinel values.
 	 *
 	 * When the caller sends '********' for a secret key, the stored value
@@ -160,16 +283,8 @@ class Update_Global_Settings extends Abstract_Ability {
 			$existing = [];
 		}
 
-		$secret_keys = [
-			'srfm_v2_checkbox_secret_key',
-			'srfm_v2_invisible_secret_key',
-			'srfm_v3_secret_key',
-			'srfm_cf_turnstile_secret_key',
-			'srfm_hcaptcha_secret_key',
-		];
-
 		// Replace masked sentinel values with stored values.
-		foreach ( $secret_keys as $key ) {
+		foreach ( self::$secret_keys as $key ) {
 			if ( isset( $settings[ $key ] ) && '********' === $settings[ $key ] && isset( $existing[ $key ] ) ) {
 				$settings[ $key ] = $existing[ $key ];
 			}
