@@ -532,7 +532,6 @@ class Form_Widget extends \Bricks\Element {
 					'description' => esc_html__( 'Select the form that you wish to add here.', 'sureforms' ),
 				]
 			);
-			// phpcs:ignoreEnd
 		}
 	}
 
@@ -567,8 +566,8 @@ class Form_Widget extends \Bricks\Element {
 			return $hex;
 		}
 
-		// Allow rgb/rgba/hsl/hsla functional notation.
-		if ( preg_match( '/^(rgb|rgba|hsl|hsla)\s*\([^)]+\)$/i', $raw ) ) {
+		// Allow rgb/rgba/hsl/hsla functional notation — restrict to safe characters only.
+		if ( preg_match( '/^(rgb|rgba|hsl|hsla)\s*\([0-9.,\s\/%]+\)$/i', $raw ) ) {
 			return $raw;
 		}
 
@@ -598,7 +597,7 @@ class Form_Widget extends \Bricks\Element {
 
 		foreach ( [ 'top', 'right', 'bottom', 'left' ] as $side ) {
 			if ( isset( $dims[ $side ] ) && '' !== (string) $dims[ $side ] ) {
-				$attrs[ $attr_prefix . ucfirst( $side ) ] = intval( $dims[ $side ] ) . $unit;
+				$attrs[ $attr_prefix . ucfirst( $side ) ] = floatval( $dims[ $side ] ) . $unit;
 			}
 		}
 
@@ -658,7 +657,7 @@ class Form_Widget extends \Bricks\Element {
 	 */
 	protected function get_block_attrs( $settings ) {
 		$block_attrs = [
-			'blockId' => 'bricks-' . ( $this->id ?? uniqid() ),
+			'blockId' => 'bricks-' . ( $this->id ?? wp_unique_id() ),
 		];
 
 		// Check form theme — if inheriting, don't pass any custom styling attributes.
