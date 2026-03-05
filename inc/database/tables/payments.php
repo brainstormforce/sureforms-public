@@ -26,24 +26,9 @@ class Payments extends Base {
 	use Get_Instance;
 
 	/**
-	 * {@inheritDoc}
-	 *
-	 * @var string
-	 */
-	protected $table_suffix = 'payments';
-
-	/**
-	 * {@inheritDoc}
-	 *
-	 * @var int
-	 */
-	protected $table_version = 1;
-
-	/**
 	 * Allowed SQL comparison operators for where conditions.
 	 *
 	 * @since x.x.x
-	 * @var string[]
 	 */
 	private const ALLOWED_OPERATORS = [ '=', '!=', '>', '<', '>=', '<=', 'IN', 'NOT IN', 'LIKE', 'NOT LIKE' ];
 
@@ -51,7 +36,6 @@ class Payments extends Base {
 	 * Allowed column names for where conditions.
 	 *
 	 * @since x.x.x
-	 * @var string[]
 	 */
 	private const ALLOWED_COLUMNS = [
 		'id',
@@ -79,6 +63,20 @@ class Payments extends Base {
 		'customer_email',
 		'customer_name',
 	];
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * @var string
+	 */
+	protected $table_suffix = 'payments';
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * @var int
+	 */
+	protected $table_version = 1;
 
 	/**
 	 * Valid payment statuses (Stripe-specific).
