@@ -18,6 +18,11 @@ use SRFM\Inc\Page_Builders\Elementor\Form_Widget;
 
 /**
  * Tests for Form_Widget::get_resolved_color(), Form_Widget::build_gradient_css(), and Form_Widget::get_block_attrs().
+ *
+ * @covers \SRFM\Inc\Page_Builders\Elementor\Form_Widget::get_resolved_color
+ * @covers \SRFM\Inc\Page_Builders\Elementor\Form_Widget::build_gradient_css
+ * @covers \SRFM\Inc\Page_Builders\Elementor\Form_Widget::get_block_attrs
+ * @covers \SRFM\Inc\Page_Builders\Elementor\Form_Widget::map_elementor_dimensions
  */
 class Test_Form_Widget extends TestCase {
 
@@ -60,105 +65,69 @@ class Test_Form_Widget extends TestCase {
 	}
 
 	/**
-	 * Test get_resolved_color returns null for empty string value.
+	 * Data provider for get_resolved_color null-returning cases.
+	 *
+	 * @return array<string, array{0: array<string, mixed>, 1: string|null}>
 	 */
-	public function test_get_resolved_color_empty_string(): void {
-		$settings = [
-			'primaryColor' => '',
+	public function data_get_resolved_color_returns_null() {
+		return [
+			'empty string'       => [ [ 'primaryColor' => '' ], null ],
+			'default value'      => [ [ 'primaryColor' => 'default' ], null ],
+			'missing key'        => [ [], null ],
+			'non-string (int)'   => [ [ 'primaryColor' => 123 ], null ],
 		];
-
-		$result = Form_Widget::get_resolved_color( $settings, 'primaryColor' );
-		$this->assertNull( $result );
 	}
 
 	/**
-	 * Test get_resolved_color returns null for 'default' value.
+	 * Test get_resolved_color returns null for invalid/empty/missing values.
+	 *
+	 * @dataProvider data_get_resolved_color_returns_null
+	 *
+	 * @param array<string, mixed> $settings Widget settings.
+	 * @param string|null          $expected Expected result.
 	 */
-	public function test_get_resolved_color_default_value(): void {
-		$settings = [
-			'primaryColor' => 'default',
-		];
-
+	public function test_get_resolved_color_returns_null( array $settings, $expected ): void {
 		$result = Form_Widget::get_resolved_color( $settings, 'primaryColor' );
-		$this->assertNull( $result );
+		$this->assertSame( $expected, $result );
 	}
 
 	/**
-	 * Test get_resolved_color returns null when key is missing.
+	 * Data provider for get_resolved_color fallback-to-direct cases.
+	 *
+	 * @return array<string, array{0: array<string, mixed>, 1: string}>
 	 */
-	public function test_get_resolved_color_missing_key(): void {
-		$settings = [];
-
-		$result = Form_Widget::get_resolved_color( $settings, 'primaryColor' );
-		$this->assertNull( $result );
-	}
-
-	/**
-	 * Test get_resolved_color returns null for non-string value.
-	 */
-	public function test_get_resolved_color_non_string_value(): void {
-		$settings = [
-			'primaryColor' => 123,
-		];
-
-		$result = Form_Widget::get_resolved_color( $settings, 'primaryColor' );
-		$this->assertNull( $result );
-	}
-
-	/**
-	 * Test get_resolved_color with empty globals array.
-	 */
-	public function test_get_resolved_color_empty_globals(): void {
-		$settings = [
-			'__globals__'  => [],
-			'primaryColor' => '#00FF00',
-		];
-
-		$result = Form_Widget::get_resolved_color( $settings, 'primaryColor' );
-		$this->assertSame( '#00FF00', $result );
-	}
-
-	/**
-	 * Test get_resolved_color with non-array globals falls back to direct value.
-	 */
-	public function test_get_resolved_color_non_array_globals(): void {
-		$settings = [
-			'__globals__'  => 'not-an-array',
-			'primaryColor' => '#0000FF',
-		];
-
-		$result = Form_Widget::get_resolved_color( $settings, 'primaryColor' );
-		$this->assertSame( '#0000FF', $result );
-	}
-
-	/**
-	 * Test get_resolved_color with globals key but no matching global value falls back to direct.
-	 */
-	public function test_get_resolved_color_globals_key_empty_value(): void {
-		$settings = [
-			'__globals__'  => [
-				'primaryColor' => '',
+	public function data_get_resolved_color_falls_back_to_direct() {
+		return [
+			'empty globals array'           => [
+				[ '__globals__' => [], 'primaryColor' => '#00FF00' ],
+				'#00FF00',
 			],
-			'primaryColor' => '#AABBCC',
+			'non-array globals'             => [
+				[ '__globals__' => 'not-an-array', 'primaryColor' => '#0000FF' ],
+				'#0000FF',
+			],
+			'globals key with empty value'  => [
+				[ '__globals__' => [ 'primaryColor' => '' ], 'primaryColor' => '#AABBCC' ],
+				'#AABBCC',
+			],
+			'globals key with non-string'   => [
+				[ '__globals__' => [ 'primaryColor' => 123 ], 'primaryColor' => '#DDEEFF' ],
+				'#DDEEFF',
+			],
 		];
-
-		$result = Form_Widget::get_resolved_color( $settings, 'primaryColor' );
-		$this->assertSame( '#AABBCC', $result );
 	}
 
 	/**
-	 * Test get_resolved_color with globals key containing non-string value falls back to direct.
+	 * Test get_resolved_color falls back to direct value when globals can't resolve.
+	 *
+	 * @dataProvider data_get_resolved_color_falls_back_to_direct
+	 *
+	 * @param array<string, mixed> $settings Widget settings.
+	 * @param string               $expected Expected color value.
 	 */
-	public function test_get_resolved_color_globals_non_string_value(): void {
-		$settings = [
-			'__globals__'  => [
-				'primaryColor' => 123,
-			],
-			'primaryColor' => '#DDEEFF',
-		];
-
+	public function test_get_resolved_color_falls_back_to_direct( array $settings, string $expected ): void {
 		$result = Form_Widget::get_resolved_color( $settings, 'primaryColor' );
-		$this->assertSame( '#DDEEFF', $result );
+		$this->assertSame( $expected, $result );
 	}
 
 	/**
