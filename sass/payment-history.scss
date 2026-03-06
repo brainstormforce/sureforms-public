@@ -15,6 +15,10 @@
 	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
 	font-size: 14px;
 	color: #1e1e1e;
+
+	> .srfm-payment-history-container {
+		max-width: 880px;
+	}
 }
 
 /* Login / Empty messages */
@@ -240,7 +244,7 @@
 /* Grid layout */
 .srfm-ph-detail-grid {
 	display: grid;
-	grid-template-columns: 1fr 320px;
+	grid-template-columns: 1fr;
 	gap: 20px;
 }
 
@@ -379,6 +383,16 @@
 /* ==========================================================================
    Detail View — Actions Sidebar
    ========================================================================== */
+
+.srfm-ph-action-row {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 16px;
+}
+
+.srfm-ph-action-col {
+	min-width: 0;
+}
 
 .srfm-ph-action-block {
 	margin-bottom: 20px;
@@ -579,6 +593,11 @@
 
 @media screen and (max-width: 768px) {
 
+	.srfm-payment-history-wrap > .srfm-payment-history-container {
+		max-width: 100%;
+		padding: 0 16px;
+	}
+
 	.srfm-ph-detail-grid {
 		grid-template-columns: 1fr;
 	}
@@ -590,6 +609,10 @@
 
 	.srfm-ph-detail-info-table th {
 		width: 120px;
+	}
+
+	.srfm-ph-action-row {
+		grid-template-columns: 1fr;
 	}
 }
 

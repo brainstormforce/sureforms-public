@@ -301,6 +301,7 @@ class Payment_History_Shortcode {
 		);
 		?>
 		<div class="srfm-payment-history-wrap">
+			<div class="srfm-payment-history-container">
 			<div class="srfm-payment-history-table-container">
 				<table class="srfm-payment-history-table">
 					<thead>
@@ -324,6 +325,7 @@ class Payment_History_Shortcode {
 				$this->render_pagination( $current_page, $total_pages );
 			}
 			?>
+			</div>
 		</div>
 		<?php
 	}
@@ -428,7 +430,7 @@ class Payment_History_Shortcode {
 
 		if ( ! $payment || ! $this->user_owns_payment( $payment, $user_id ) ) {
 			return sprintf(
-				'<div class="srfm-payment-history-wrap"><p class="srfm-payment-history-empty">%s</p></div>',
+				'<div class="srfm-payment-history-wrap"><div class="srfm-payment-history-container"><p class="srfm-payment-history-empty">%s</p></div></div>',
 				esc_html__( 'Payment not found.', 'sureforms' )
 			);
 		}
@@ -469,6 +471,7 @@ class Payment_History_Shortcode {
 		ob_start();
 		?>
 		<div class="srfm-payment-history-wrap">
+			<div class="srfm-payment-history-container">
 			<!-- Back link -->
 			<a href="<?php echo esc_url( $back_url ); ?>" class="srfm-ph-detail-back">
 				&larr; <?php esc_html_e( 'Back to Payment History', 'sureforms' ); ?>
@@ -555,40 +558,6 @@ class Payment_History_Shortcode {
 						</table>
 					</div>
 
-					<!-- Billing Details -->
-					<div class="srfm-ph-detail-section">
-						<h4 class="srfm-ph-detail-section-title"><?php esc_html_e( 'Billing Details', 'sureforms' ); ?></h4>
-						<table class="srfm-ph-detail-info-table">
-							<tbody>
-								<tr>
-									<th><?php esc_html_e( 'Amount', 'sureforms' ); ?></th>
-									<td class="srfm-ph-detail-amount-cell">
-										<?php echo esc_html( $this->format_amount( $total_amount, $currency ) ); ?>
-										<?php if ( $refunded_amount > 0 ) : ?>
-											<span class="srfm-ph-detail-refunded-note">
-												<?php
-												printf(
-													/* translators: %s: refunded amount */
-													esc_html__( '(%s refunded)', 'sureforms' ),
-													esc_html( $this->format_amount( $refunded_amount, $currency ) )
-												);
-												?>
-											</span>
-										<?php endif; ?>
-									</td>
-								</tr>
-								<tr>
-									<th><?php esc_html_e( 'Currency', 'sureforms' ); ?></th>
-									<td><?php echo esc_html( $currency ); ?></td>
-								</tr>
-								<tr>
-									<th><?php esc_html_e( 'Status', 'sureforms' ); ?></th>
-									<td><?php echo wp_kses_post( $this->get_status_badge( $status ) ); ?></td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-
 					<?php if ( $is_subscription ) : ?>
 					<!-- Subscription Details -->
 					<div class="srfm-ph-detail-section">
@@ -668,32 +637,7 @@ class Payment_History_Shortcode {
 					</div>
 					<?php endif; ?>
 
-					<?php if ( ! empty( $logs ) ) : ?>
-					<!-- Payment Logs -->
-					<div class="srfm-ph-detail-section">
-						<h4 class="srfm-ph-detail-section-title"><?php esc_html_e( 'Payment Logs', 'sureforms' ); ?></h4>
-						<div class="srfm-ph-detail-logs">
-							<?php foreach ( array_reverse( $logs ) as $log ) : ?>
-							<div class="srfm-ph-detail-log-entry">
-								<div class="srfm-ph-detail-log-title">
-									<?php echo esc_html( $log['title'] ?? '' ); ?>
-									<span class="srfm-ph-detail-log-date">
-										<?php echo esc_html( ! empty( $log['created_at'] ) ? date_i18n( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), strtotime( $log['created_at'] ) ) : '' ); ?>
-									</span>
-								</div>
-								<?php if ( ! empty( $log['messages'] ) && is_array( $log['messages'] ) ) : ?>
-								<ul class="srfm-ph-detail-log-messages">
-									<?php foreach ( $log['messages'] as $msg ) : ?>
-										<li><?php echo esc_html( $msg ); ?></li>
-									<?php endforeach; ?>
-								</ul>
-								<?php endif; ?>
-							</div>
-							<?php endforeach; ?>
-						</div>
 					</div>
-					<?php endif; ?>
-				</div>
 
 				<!-- Right column: Actions -->
 				<div class="srfm-ph-detail-sidebar">
@@ -702,51 +646,57 @@ class Payment_History_Shortcode {
 						<h4 class="srfm-ph-detail-section-title"><?php esc_html_e( 'Actions', 'sureforms' ); ?></h4>
 
 						<?php if ( $can_refund && $refundable_amount > 0 ) : ?>
-						<!-- Refund Form -->
-						<div class="srfm-ph-action-block" id="srfm-refund-block">
-							<label class="srfm-ph-action-label" for="srfm-refund-amount">
-								<?php esc_html_e( 'Refund Amount', 'sureforms' ); ?>
-								<span class="srfm-ph-action-hint">
-									<?php
-									printf(
-										/* translators: %s: maximum refundable amount */
-										esc_html__( 'Max: %s', 'sureforms' ),
-										esc_html( $this->format_amount( $refundable_amount, $currency ) )
-									);
-									?>
-								</span>
-							</label>
-							<div class="srfm-ph-action-input-group">
-								<span class="srfm-ph-action-currency"><?php echo esc_html( Payment_Helper::get_currency_symbol( $currency ) ); ?></span>
-								<input
-									type="number"
-									id="srfm-refund-amount"
-									class="srfm-ph-action-input"
-									step="0.01"
-									min="0.01"
-									max="<?php echo esc_attr( number_format( $refundable_amount, 2, '.', '' ) ); ?>"
-									value="<?php echo esc_attr( number_format( $refundable_amount, 2, '.', '' ) ); ?>"
-									placeholder="0.00"
-								/>
+						<div class="srfm-ph-action-row" id="srfm-refund-block">
+							<!-- Refund Amount -->
+							<div class="srfm-ph-action-col">
+								<label class="srfm-ph-action-label" for="srfm-refund-amount">
+									<?php esc_html_e( 'Refund Amount', 'sureforms' ); ?>
+									<span class="srfm-ph-action-hint">
+										<?php
+										printf(
+											/* translators: %s: maximum refundable amount */
+											esc_html__( 'Max: %s', 'sureforms' ),
+											esc_html( $this->format_amount( $refundable_amount, $currency ) )
+										);
+										?>
+									</span>
+								</label>
+								<div class="srfm-ph-action-input-group">
+									<span class="srfm-ph-action-currency"><?php echo esc_html( Payment_Helper::get_currency_symbol( $currency ) ); ?></span>
+									<input
+										type="number"
+										id="srfm-refund-amount"
+										class="srfm-ph-action-input"
+										step="0.01"
+										min="0.01"
+										max="<?php echo esc_attr( number_format( $refundable_amount, 2, '.', '' ) ); ?>"
+										value="<?php echo esc_attr( number_format( $refundable_amount, 2, '.', '' ) ); ?>"
+										placeholder="0.00"
+									/>
+								</div>
 							</div>
-							<label class="srfm-ph-action-label" for="srfm-refund-notes" style="margin-top: 10px;">
-								<?php esc_html_e( 'Refund Notes', 'sureforms' ); ?>
-								<span class="srfm-ph-action-hint"><?php esc_html_e( '(Optional)', 'sureforms' ); ?></span>
-							</label>
-							<textarea id="srfm-refund-notes" class="srfm-ph-action-textarea" rows="2" placeholder="<?php esc_attr_e( 'Reason for refund...', 'sureforms' ); ?>"></textarea>
-							<button
-								type="button"
-								class="srfm-ph-action-btn srfm-ph-action-btn--refund"
-								data-payment-id="<?php echo esc_attr( $payment_id ); ?>"
-								data-transaction-id="<?php echo esc_attr( $payment['transaction_id'] ?? '' ); ?>"
-								data-currency="<?php echo esc_attr( $currency ); ?>"
-								data-max-refund="<?php echo esc_attr( number_format( $refundable_amount, 2, '.', '' ) ); ?>"
-								data-zero-decimal="<?php echo esc_attr( Payment_Helper::is_zero_decimal_currency( $currency ) ? '1' : '0' ); ?>"
-							>
-								<?php esc_html_e( 'Process Refund', 'sureforms' ); ?>
-							</button>
-							<div class="srfm-ph-action-message" id="srfm-refund-message" style="display:none;"></div>
+							<!-- Refund Notes -->
+							<div class="srfm-ph-action-col">
+								<label class="srfm-ph-action-label" for="srfm-refund-notes">
+									<?php esc_html_e( 'Refund Notes', 'sureforms' ); ?>
+									<span class="srfm-ph-action-hint"><?php esc_html_e( '(Optional)', 'sureforms' ); ?></span>
+								</label>
+								<textarea id="srfm-refund-notes" class="srfm-ph-action-textarea" rows="1" placeholder="<?php esc_attr_e( 'Reason for refund...', 'sureforms' ); ?>"></textarea>
+							</div>
 						</div>
+						<!-- Refund Button -->
+						<button
+							type="button"
+							class="srfm-ph-action-btn srfm-ph-action-btn--refund"
+							data-payment-id="<?php echo esc_attr( $payment_id ); ?>"
+							data-transaction-id="<?php echo esc_attr( $payment['transaction_id'] ?? '' ); ?>"
+							data-currency="<?php echo esc_attr( $currency ); ?>"
+							data-max-refund="<?php echo esc_attr( number_format( $refundable_amount, 2, '.', '' ) ); ?>"
+							data-zero-decimal="<?php echo esc_attr( Payment_Helper::is_zero_decimal_currency( $currency ) ? '1' : '0' ); ?>"
+						>
+							<?php esc_html_e( 'Process Refund', 'sureforms' ); ?>
+						</button>
+						<div class="srfm-ph-action-message" id="srfm-refund-message" style="display:none;"></div>
 						<?php endif; ?>
 
 						<?php if ( $can_cancel_subscription ) : ?>
@@ -773,6 +723,7 @@ class Payment_History_Shortcode {
 						<?php endif; ?>
 					</div>
 				</div>
+			</div>
 			</div>
 		</div>
 		<?php
@@ -1030,7 +981,7 @@ class Payment_History_Shortcode {
 	 */
 	private function get_login_message() {
 		$html = sprintf(
-			'<div class="srfm-payment-history-wrap"><p class="srfm-payment-history-login">%s</p></div>',
+			'<div class="srfm-payment-history-wrap"><div class="srfm-payment-history-container"><p class="srfm-payment-history-login">%s</p></div></div>',
 			esc_html__( 'Please log in to view your payment history.', 'sureforms' )
 		);
 
@@ -1046,7 +997,7 @@ class Payment_History_Shortcode {
 	 */
 	private function get_empty_message() {
 		$html = sprintf(
-			'<div class="srfm-payment-history-wrap"><p class="srfm-payment-history-empty">%s</p></div>',
+			'<div class="srfm-payment-history-wrap"><div class="srfm-payment-history-container"><p class="srfm-payment-history-empty">%s</p></div></div>',
 			esc_html__( 'No payments found.', 'sureforms' )
 		);
 
