@@ -177,7 +177,7 @@ const PaymentListingPage = () => {
 				),
 				selectedRows.length
 			),
-			confirmLabel: __( 'Delete Payments', 'sureforms' ),
+			confirmLabel: __( 'Delete Permanently', 'sureforms' ),
 			onConfirm: () => confirmDelete( selectedRows ),
 			isLoading: bulkDeleteMutation.isPending,
 			destructive: true,
@@ -195,7 +195,10 @@ const PaymentListingPage = () => {
 				if ( data.partial ) {
 					message =
 						data.message ||
-						__( 'Some payments could not be deleted', 'sureforms' );
+						__(
+							'Some payments could not be deleted.',
+							'sureforms'
+						);
 					toast.warning( message, {
 						duration: 5000,
 					} );
@@ -221,7 +224,10 @@ const PaymentListingPage = () => {
 				if ( mutationError.data?.message ) {
 					errorMessage = mutationError.data.message;
 				} else if ( mutationError.isValidationError ) {
-					errorMessage = __( 'No payment IDs provided', 'sureforms' );
+					errorMessage = __(
+						'No payment IDs provided.',
+						'sureforms'
+					);
 				} else if ( mutationError.isNetworkError ) {
 					errorMessage = __(
 						'Network error. Please check your connection and try again.',

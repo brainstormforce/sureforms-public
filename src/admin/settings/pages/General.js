@@ -52,7 +52,7 @@ const GeneralPage = ( {
 			<>
 				<Switch
 					label={ {
-						heading: __( 'Enable Email Summaries ', 'sureforms' ),
+						heading: __( 'Enable email summaries', 'sureforms' ),
 					} }
 					value={ emailTabOptions.srfm_email_summary }
 					onChange={ ( value ) =>
@@ -160,7 +160,7 @@ const GeneralPage = ( {
 			<>
 				<Switch
 					label={ {
-						heading: __( 'Enable IP Logging', 'sureforms' ),
+						heading: __( 'Enable IP logging', 'sureforms' ),
 						description: __(
 							"If this option is turned on, the user's IP address will be saved with the form data",
 							'sureforms'

@@ -488,7 +488,7 @@ class Payment_Helper {
 			// Payment processing messages.
 			'payment_failed'                    => __( 'Payment failed', 'sureforms' ),
 			'payment_successful'                => __( 'Payment successful', 'sureforms' ),
-			'payment_could_not_be_completed'    => __( 'Payment could not be completed. Please try again or contact the site administrator.', 'sureforms' ),
+			'payment_could_not_be_completed'    => __( 'Unable to complete payment. Please try again or contact support.', 'sureforms' ),
 
 			// Stripe decline codes - Card declined errors.
 			'generic_decline'                   => __( 'Your card was declined. Please try a different payment method or contact your bank.', 'sureforms' ),
@@ -510,14 +510,14 @@ class Payment_Helper {
 			'invalid_expiry_month'              => __( 'Your card\'s expiration month is invalid. Please check and try again.', 'sureforms' ),
 			'invalid_expiry_year'               => __( 'Your card\'s expiration year is invalid. Please check and try again.', 'sureforms' ),
 			'invalid_number'                    => __( 'Your card number is invalid. Please check and try again.', 'sureforms' ),
-			'processing_error'                  => __( 'An error occurred while processing your card. Please try again.', 'sureforms' ),
-			'reenter_transaction'               => __( 'The transaction could not be processed. Please try again.', 'sureforms' ),
+			'processing_error'                  => __( 'Unable to process card. Please try again.', 'sureforms' ),
+			'reenter_transaction'               => __( 'Unable to process transaction. Please try again.', 'sureforms' ),
 			'card_not_supported'                => __( 'Your card is not supported for this transaction. Please use a different payment method.', 'sureforms' ),
 			'currency_not_supported'            => __( 'Your card does not support the currency used for this transaction. Please use a different payment method.', 'sureforms' ),
 			'duplicate_transaction'             => __( 'A transaction with identical details was submitted recently. Please wait a moment and try again.', 'sureforms' ),
 			'invalid_account'                   => __( 'The account associated with your card is invalid. Please contact your bank.', 'sureforms' ),
 			'invalid_amount'                    => __( 'The payment amount is invalid. Please contact the site administrator.', 'sureforms' ),
-			'issuer_not_available'              => __( 'Your card issuer could not be reached. Please try again later.', 'sureforms' ),
+			'issuer_not_available'              => __( 'Unable to reach card issuer. Please try again later.', 'sureforms' ),
 			'merchant_blacklist'                => __( 'Your card was declined. Please contact your bank for more information.', 'sureforms' ),
 			'new_account_information_available' => __( 'Your card information needs to be updated. Please contact your bank.', 'sureforms' ),
 			'no_action_taken'                   => __( 'The card cannot be used for this transaction. Please contact your bank.', 'sureforms' ),
@@ -528,7 +528,7 @@ class Payment_Helper {
 			'revocation_of_all_authorizations'  => __( 'All authorizations for this card have been revoked. Please contact your bank.', 'sureforms' ),
 			'revocation_of_authorization'       => __( 'The authorization for this transaction has been revoked. Please try again.', 'sureforms' ),
 			'transaction_not_allowed'           => __( 'This transaction is not allowed. Please contact your bank.', 'sureforms' ),
-			'try_again_later'                   => __( 'The transaction could not be processed. Please try again later.', 'sureforms' ),
+			'try_again_later'                   => __( 'Unable to process transaction. Please try again later.', 'sureforms' ),
 			'live_mode_test_card'               => __( 'Your card was declined. Your request was in live mode, but used a known test card.', 'sureforms' ),
 			'test_mode_live_card'               => __( 'Your card was declined. Your request was in test mode, but used a non test card. For a list of valid test cards, visit: https://stripe.com/docs/testing.', 'sureforms' ),
 
@@ -538,8 +538,8 @@ class Payment_Helper {
 			'subscription_plan'                 => __( 'Subscription Plan', 'sureforms' ),
 			'sureforms_customer'                => __( 'SureForms Customer', 'sureforms' ),
 			'customer_example_email'            => 'customer@example.com', // Not translatable - example email.
-			'amount_placeholder'                => __( 'Please complete the form to view the amount.', 'sureforms' ),
-			'failed_to_create_payment'          => __( 'Failed to create payment. Please contact the site owner', 'sureforms' ),
+			'amount_placeholder'                => __( 'Complete the form to view the amount.', 'sureforms' ),
+			'failed_to_create_payment'          => __( 'Unable to create payment. Please contact support.', 'sureforms' ),
 		];
 	}
 

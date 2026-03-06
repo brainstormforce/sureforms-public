@@ -403,6 +403,7 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 == Changelog ==
 = x.x.x =
 * New: Added Learn section.
+* New: Added “Send as Raw HTML” option in form email notifications to send fully structured HTML emails.
 * Fix: Preserve input formatting in Entries View.
 = 2.5.1 - 16th February 2026 =
 * New: Added option to change currency position (e.g., $100, 100$, $ 100, 100 $).

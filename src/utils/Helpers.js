@@ -767,7 +767,7 @@ export const performApiAction = async ( {
 	} catch ( error ) {
 		console.error( 'API Error:', error );
 		toast.error(
-			__( 'An error occurred. Please try again later.', 'sureforms' ),
+			__( 'Unable to complete action. Please try again.', 'sureforms' ),
 			{
 				duration: 5000,
 			}

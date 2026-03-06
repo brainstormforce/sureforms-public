@@ -1,0 +1,73 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if echo \"$CLAUDE_BASH_COMMAND\" | grep -q '^git commit'; then echo '--- PreCommit: Running checks ---' && composer lint 2>&1 | tail -5 && composer phpstan 2>&1 | tail -5 && composer insights 2>&1 | tail -5; fi"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "case \"$CLAUDE_FILE_PATH\" in *.php) vendor/bin/phpcbf \"$CLAUDE_FILE_PATH\" 2>/dev/null || true;; *.js|*.jsx) npx wp-scripts lint-js --fix \"$CLAUDE_FILE_PATH\" 2>/dev/null || true;; *.scss|*.css) npx wp-scripts lint-style --fix \"$CLAUDE_FILE_PATH\" 2>/dev/null || true;; esac"
+          }
+        ]
+      }
+    ]
+  },
+  "permissions": {
+    "allow": [
+      "Bash(npm run lint-js*)",
+      "Bash(npm run lint-css*)",
+      "Bash(npm run pretty*)",
+      "Bash(npm run build*)",
+      "Bash(npm run start)",
+      "Bash(npm run test:unit)",
+      "Bash(npm run test:e2e)",
+      "Bash(npm run play:*)",
+      "Bash(npm run makepot)",
+      "Bash(npm run i18n:*)",
+      "Bash(composer lint*)",
+      "Bash(composer format*)",
+      "Bash(composer test*)",
+      "Bash(composer phpstan*)",
+      "Bash(composer insights*)",
+      "Bash(npx playwright test*)",
+      "Bash(npx grunt *)",
+      "Bash(composer install*)",
+      "Bash(npm install*)",
+      "Bash(curl *)",
+      "Bash(git status*)",
+      "Bash(git diff*)",
+      "Bash(git log*)",
+      "Bash(git branch*)",
+      "Bash(git show*)",
+      "Bash(git stash*)",
+      "Bash(git checkout*)",
+      "Bash(git add*)",
+      "Bash(git commit*)",
+      "Bash(git merge*)",
+      "Bash(git rebase*)",
+      "Bash(git fetch*)",
+      "Bash(git pull*)",
+      "Bash(gh pr *)",
+      "Bash(gh issue *)",
+      "Bash(gh api *)",
+      "Bash(ls *)",
+      "Bash(wc *)",
+      "Bash(which *)",
+      "Bash(node -e *)",
+      "Bash(php -r *)",
+      "Bash(wp *)"
+    ],
+    "deny": []
+  }
+}

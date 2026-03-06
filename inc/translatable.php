@@ -85,28 +85,28 @@ class Translatable {
 	 */
 	public static function dynamic_messages() {
 		return [
-			'srfm_valid_phone_number'          => __( 'Please enter a valid phone number.', 'sureforms' ),
-			'srfm_valid_url'                   => __( 'Please enter a valid URL.', 'sureforms' ),
+			'srfm_valid_phone_number'          => __( 'Enter a valid phone number.', 'sureforms' ),
+			'srfm_valid_url'                   => __( 'Enter a valid URL.', 'sureforms' ),
 			'srfm_confirm_email_same'          => __( 'Confirmation email does not match.', 'sureforms' ),
-			'srfm_valid_email'                 => __( 'Please enter a valid email address.', 'sureforms' ),
+			'srfm_valid_email'                 => __( 'Enter a valid email address.', 'sureforms' ),
 
 			/* translators: %s represents the minimum acceptable value */
-			'srfm_input_min_value'             => __( 'Minimum value is %s', 'sureforms' ),
+			'srfm_input_min_value'             => __( 'Minimum value is %s.', 'sureforms' ),
 
 			/* translators: %s represents the maximum acceptable value */
-			'srfm_input_max_value'             => __( 'Maximum value is %s', 'sureforms' ),
+			'srfm_input_max_value'             => __( 'Maximum value is %s.', 'sureforms' ),
 
-			/* translators: %s represents the minimum number of selections required */
-			'srfm_dropdown_min_selections'     => __( 'Minimum %s selections are required', 'sureforms' ),
+			/* translators: %s represents the minimum number of options to select */
+			'srfm_dropdown_min_selections'     => __( 'Select at least %s options.', 'sureforms' ),
 
-			/* translators: %s represents the maximum number of selections allowed */
-			'srfm_dropdown_max_selections'     => __( 'Maximum %s selections are allowed', 'sureforms' ),
+			/* translators: %s represents the maximum number of options that can be selected */
+			'srfm_dropdown_max_selections'     => __( 'You can select up to %s options.', 'sureforms' ),
 
-			/* translators: %s represents the minimum number of characters required */
-			'srfm_multi_choice_min_selections' => __( 'Minimum %s selections are required', 'sureforms' ),
+			/* translators: %s represents the minimum number of options to select */
+			'srfm_multi_choice_min_selections' => __( 'Select at least %s options.', 'sureforms' ),
 
-			/* translators: %s represents the maximum number of characters allowed */
-			'srfm_multi_choice_max_selections' => __( 'Maximum %s selections are allowed', 'sureforms' ),
+			/* translators: %s represents the maximum number of options that can be selected */
+			'srfm_multi_choice_max_selections' => __( 'You can select up to %s options.', 'sureforms' ),
 		];
 	}
 
@@ -117,6 +117,6 @@ class Translatable {
 	 * @return string Translated default form restriction message.
 	 */
 	public static function get_default_form_restriction_message() {
-		return __( 'This form is now closed as the maximum number of entries has been received.', 'sureforms' );
+		return __( 'This form is now closed as we have reached the maximum number of entries.', 'sureforms' );
 	}
 }

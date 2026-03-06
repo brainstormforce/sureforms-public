@@ -2,6 +2,7 @@
 
 .distignore
 .editorconfig
+.claude
 .github
 .wordpress-org
 .git
@@ -60,6 +61,10 @@ node_modules
 *.config.js
 *.md
 codesniffer.ruleset.xml
+
+# Internal documentation (excluded from WordPress.org releases)
+CLAUDE.md
+docs/
 jsconfig.json
 admin/assets/src
 artifact
