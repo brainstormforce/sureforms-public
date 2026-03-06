@@ -199,7 +199,11 @@ const OttoKitPage = ( {
 	const activatePlugin = () => {
 		const formData = new window.FormData();
 		formData.append( 'action', 'sureforms_recommended_plugin_activate' );
-		formData.append( 'security', srfm_admin.sfPluginManagerNonce ?? srfm_admin.sf_plugin_manager_nonce );
+		formData.append(
+			'security',
+			srfm_admin.sfPluginManagerNonce ??
+				srfm_admin.sf_plugin_manager_nonce
+		);
 		formData.append( 'init', plugin.path );
 		setCTA( srfm_admin.plugin_activating_text );
 		setButtonText( srfm_admin.plugin_activating_text );
@@ -341,7 +345,7 @@ const OttoKitPage = ( {
 											'sureforms'
 										) }
 									</Text>
-													{ features.map( ( feature, index ) => (
+									{ features.map( ( feature, index ) => (
 										<Container
 											key={ index }
 											className="flex items-start gap-1.5"
@@ -356,7 +360,7 @@ const OttoKitPage = ( {
 											</Text>
 										</Container>
 									) ) }
-																		<Container className="p-2 gap-3">
+									<Container className="p-2 gap-3">
 										{ CTA ===
 										__(
 											'Install & Activate',
@@ -385,7 +389,7 @@ const OttoKitPage = ( {
 														}
 														icon={
 															plugin?.status ===
-														'Install' &&
+															'Install' &&
 														( localPluginStatus ||
 															plugin?.status ) !==
 															'Activated' ? (
@@ -417,7 +421,7 @@ const OttoKitPage = ( {
 													}
 													icon={
 														plugin?.status ===
-													'Install' &&
+														'Install' &&
 													( localPluginStatus ||
 														plugin?.status ) !==
 														'Activated' ? (
