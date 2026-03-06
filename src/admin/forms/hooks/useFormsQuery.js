@@ -132,12 +132,12 @@ export const useExportForms = () => {
 	return useMutation( {
 		mutationFn: exportFormsApi,
 		onSuccess: () => {
-			toast.success( __( 'Forms exported successfully.', 'sureforms' ) );
+			toast.success( __( 'Forms exported successfully!', 'sureforms' ) );
 		},
 		onError: ( error ) => {
 			const msg =
 				error?.message ||
-				__( 'An error occurred while exporting forms.', 'sureforms' );
+				__( 'Unable to export forms. Please try again.', 'sureforms' );
 			toast.error( msg );
 		},
 	} );
@@ -198,7 +198,7 @@ export const useDuplicateForm = () => {
 				toast.success(
 					sprintf(
 						/* translators: %s: new form title */
-						__( 'Form duplicated successfully: %s', 'sureforms' ),
+						__( 'Form "%s" duplicated successfully.', 'sureforms' ),
 						data.new_form_title
 					)
 				);

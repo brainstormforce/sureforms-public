@@ -68,12 +68,12 @@ const PaymentNotes = ( {
 
 	const handleDeleteNoteConfirmation = ( noteIndex ) => {
 		onConfirmation( {
-			title: __( 'Delete Note?', 'sureforms' ),
+			title: __( 'Delete note?', 'sureforms' ),
 			description: __(
 				'This action cannot be undone. The note will be permanently deleted.',
 				'sureforms'
 			),
-			confirmLabel: __( 'Delete Note', 'sureforms' ),
+			confirmLabel: __( 'Delete Permanently', 'sureforms' ),
 			onConfirm: () => handleDeleteNote( noteIndex ),
 			isLoading: deleteNoteMutation.isPending,
 			destructive: true,
