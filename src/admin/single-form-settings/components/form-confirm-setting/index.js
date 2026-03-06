@@ -91,7 +91,7 @@ const FormConfirmSetting = ( { toast, setHasValidationErrors } ) => {
 		}
 		if ( 'custom url' === data?.confirmation_type ) {
 			if ( ! data?.custom_url ) {
-				validation = __( 'This field is required', 'sureforms' );
+				validation = __( 'This field is required.', 'sureforms' );
 			} else {
 				try {
 					const newURL = new URL( data?.custom_url );
@@ -108,14 +108,14 @@ const FormConfirmSetting = ( { toast, setHasValidationErrors } ) => {
 						)
 					) {
 						validation = __(
-							'URL is missing Top Level Domain (TLD)',
+							'URL is missing Top Level Domain (TLD).',
 							'sureforms'
 						);
 					} else {
 						validation = '';
 					}
 				} catch ( error ) {
-					validation = __( 'Please enter a valid URL', 'sureforms' );
+					validation = __( 'Please enter a valid URL.', 'sureforms' );
 				}
 			}
 		}

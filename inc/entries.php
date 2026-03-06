@@ -413,7 +413,7 @@ class Entries {
 
 		return [
 			'success' => false,
-			'error'   => __( 'Failed to generate export file.', 'sureforms' ),
+			'error'   => __( 'Unable to generate export file.', 'sureforms' ),
 		];
 	}
 
