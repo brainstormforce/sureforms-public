@@ -26,8 +26,6 @@ class Get_Global_Settings extends Abstract_Ability {
 	use Settings_Secret_Keys;
 
 	/**
-<<<<<<< Updated upstream
-=======
 	 * Sentinel value used to represent masked secret keys in output.
 	 *
 	 * Must match the sentinel in Update_Global_Settings for round-trip safety.
@@ -37,7 +35,6 @@ class Get_Global_Settings extends Abstract_Ability {
 	private const SECRET_SENTINEL = '@@SRFM_SECRET_UNCHANGED@@';
 
 	/**
->>>>>>> Stashed changes
 	 * Constructor.
 	 *
 	 * @since x.x.x
@@ -56,17 +53,11 @@ class Get_Global_Settings extends Abstract_Ability {
 	 */
 	public function get_annotations() {
 		return [
-<<<<<<< Updated upstream
-			'readonly'    => true,
-			'destructive' => false,
-			'idempotent'  => true,
-=======
 			'readonly'      => true,
 			'destructive'   => false,
 			'idempotent'    => true,
 			'priority'      => 1.0,
 			'openWorldHint' => false,
->>>>>>> Stashed changes
 		];
 	}
 
@@ -77,14 +68,9 @@ class Get_Global_Settings extends Abstract_Ability {
 	 */
 	public function get_input_schema() {
 		return [
-<<<<<<< Updated upstream
-			'type'       => 'object',
-			'properties' => [
-=======
 			'type'                 => 'object',
 			'additionalProperties' => false,
 			'properties'           => [
->>>>>>> Stashed changes
 				'categories' => [
 					'type'        => 'array',
 					'description' => __( 'Setting categories to retrieve. Omit for all categories.', 'sureforms' ),
@@ -236,17 +222,10 @@ class Get_Global_Settings extends Abstract_Ability {
 			];
 		}
 
-<<<<<<< Updated upstream
-		// Mask all secret key fields.
-		foreach ( self::$secret_keys as $key ) {
-			if ( ! empty( $settings[ $key ] ) ) {
-				$settings[ $key ] = '********';
-=======
 		// Mask all secret key fields with the sentinel value.
 		foreach ( self::$secret_keys as $key ) {
 			if ( ! empty( $settings[ $key ] ) ) {
 				$settings[ $key ] = self::SECRET_SENTINEL;
->>>>>>> Stashed changes
 			}
 		}
 

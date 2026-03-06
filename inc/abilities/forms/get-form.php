@@ -33,7 +33,7 @@ class Get_Form extends Abstract_Ability {
 		$this->id          = 'sureforms/get-form';
 		$this->label       = __( 'Get SureForms Form Details', 'sureforms' );
 		$this->description = __( 'Retrieve detailed information about a specific SureForms form including its fields, settings, and shortcode.', 'sureforms' );
-		$this->capability  = 'edit_posts';
+		$this->capability  = 'manage_options';
 	}
 
 	/**

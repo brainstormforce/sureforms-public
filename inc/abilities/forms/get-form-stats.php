@@ -33,7 +33,7 @@ class Get_Form_Stats extends Abstract_Ability {
 		$this->id          = 'sureforms/get-form-stats';
 		$this->label       = __( 'Get Form Statistics', 'sureforms' );
 		$this->description = __( 'Get submission statistics for a specific SureForms form or all forms. Returns total entries, unread, read, and trash counts.', 'sureforms' );
-		$this->capability  = 'edit_posts';
+		$this->capability  = 'manage_options';
 	}
 
 	/**

@@ -12,18 +12,12 @@
 namespace SRFM\Inc\Abilities;
 
 use SRFM\Inc\Abilities\Analytics\Get_Form_Analytics;
-<<<<<<< Updated upstream
 use SRFM\Inc\Abilities\Embedding\Get_Shortcode;
-=======
 use SRFM\Inc\Abilities\Entries\Bulk_Get_Entries;
->>>>>>> Stashed changes
 use SRFM\Inc\Abilities\Entries\Delete_Entry;
 use SRFM\Inc\Abilities\Entries\Get_Entry;
 use SRFM\Inc\Abilities\Entries\List_Entries;
 use SRFM\Inc\Abilities\Entries\Update_Entry_Status;
-use SRFM\Inc\Abilities\Export\Export_Entries;
-use SRFM\Inc\Abilities\Export\Export_Forms;
-use SRFM\Inc\Abilities\Export\Import_Forms;
 use SRFM\Inc\Abilities\Forms\Create_Form;
 use SRFM\Inc\Abilities\Forms\Delete_Form;
 use SRFM\Inc\Abilities\Forms\Duplicate_Form as Duplicate_Form_Ability;
@@ -168,15 +162,10 @@ class Abilities_Registrar {
 			new Get_Entry(),
 			new Update_Entry_Status(),
 			new Delete_Entry(),
+			new Bulk_Get_Entries(),
 			new Get_Global_Settings(),
 			new Update_Global_Settings(),
 			new Get_Form_Analytics(),
-<<<<<<< Updated upstream
-			new Export_Forms(),
-			new Import_Forms(),
-			new Export_Entries(),
-=======
->>>>>>> Stashed changes
 		];
 
 		/**

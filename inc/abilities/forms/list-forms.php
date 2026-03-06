@@ -34,7 +34,7 @@ class List_Forms extends Abstract_Ability {
 		$this->id          = 'sureforms/list-forms';
 		$this->label       = __( 'List SureForms Forms', 'sureforms' );
 		$this->description = __( 'Retrieve a list of SureForms forms with optional filtering by status, search query, and pagination.', 'sureforms' );
-		$this->capability  = 'edit_posts';
+		$this->capability  = 'manage_options';
 	}
 
 	/**
