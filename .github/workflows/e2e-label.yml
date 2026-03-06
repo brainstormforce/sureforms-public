@@ -13,38 +13,58 @@ jobs:
     name: Playwright E2E Suite
     if: github.event.label.name == 'run-e2e'
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    timeout-minutes: 60
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node
+      - name: Setup Node 18
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'npm'
+          node-version: '18.15.0'
+
+      - name: Restore npm cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: npm-${{ hashFiles('package-lock.json') }}
+          restore-keys: npm-
+
+      - name: Restore Playwright browser cache
+        uses: actions/cache@v4
+        id: pw-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-chromium-${{ hashFiles('package-lock.json') }}
+
+      - name: Restore build cache
+        uses: actions/cache@v4
+        id: build-cache
+        with:
+          path: assets/
+          key: build-${{ hashFiles('src/**', 'sass/**', 'webpack.config.js', 'package-lock.json') }}
 
       - name: Install dependencies
         run: npm install --force
 
       - name: Build plugin assets
+        if: steps.build-cache.outputs.cache-hit != 'true'
         run: npm run build
 
-      - name: Install Playwright browsers
+      - name: Install Playwright (full — no cache)
+        if: steps.pw-cache.outputs.cache-hit != 'true'
         run: npx playwright install chromium --with-deps
+
+      - name: Install Playwright system deps (cache hit)
+        if: steps.pw-cache.outputs.cache-hit == 'true'
+        run: npx playwright install-deps chromium
+
+      - name: Create .env for tests
+        run: printf 'WP_BASE_URL=http://localhost:8888\nWP_ADMIN_USER=admin\nWP_ADMIN_PASS=password\nSRFM_PRO_LICENSE_KEY=%s\n' '${{ secrets.SRFM_PRO_LICENSE_KEY }}' > .env
 
       - name: Start wp-env
         run: npm run play:up:gh
-
-      - name: Create .env for tests
-        run: |
-          cat > .env <<EOF
-          WP_BASE_URL=http://localhost:8888
-          WP_ADMIN_USER=admin
-          WP_ADMIN_PASS=password
-          SRFM_PRO_LICENSE_KEY=${{ secrets.SRFM_PRO_LICENSE_KEY }}
-          EOF
 
       - name: Run Playwright E2E tests
         run: npx playwright test --config=playwright.config.js --reporter=html,line
@@ -59,15 +79,7 @@ jobs:
           path: playwright-report/
           retention-days: 14
 
-      - name: Upload test results on failure
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: playwright-results-${{ github.event.pull_request.number }}
-          path: tests/play/test-results/
-          retention-days: 7
-
-      - name: Comment on PR with report link
+      - name: Comment on PR
         if: always()
         uses: actions/github-script@v7
         with:
@@ -75,14 +87,11 @@ jobs:
             const status = '${{ job.status }}';
             const emoji = status === 'success' ? '✅' : '❌';
             const runUrl = `https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}`;
-            const body = `${emoji} **E2E Test Suite — ${status.toUpperCase()}**\n\n` +
-              `[View full Playwright report](${runUrl})\n\n` +
-              `> Triggered by label \`run-e2e\` on commit \`${{ github.sha }}\``;
             github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: ${{ github.event.pull_request.number }},
-              body
+              body: `${emoji} **E2E Test Suite — ${status.toUpperCase()}**\n\n[View full Playwright report](${runUrl})\n\n> Triggered by \`run-e2e\` on \`${{ github.sha }}\``
             });
 
       - name: Stop wp-env
