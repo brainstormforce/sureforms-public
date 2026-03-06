@@ -1,9 +1,7 @@
 import { __ } from '@wordpress/i18n';
 import { Button, Container, Text, Title } from '@bsf/force-ui';
-import {
-	getPluginStatusText,
-	handlePluginActionTrigger as externalHandlePluginActionTrigger,
-} from '@Utils/Helpers';
+import Tooltip from '@Admin/components/Tooltip';
+import { getPluginStatusText } from '@Utils/Helpers';
 import { Dot, Plus } from 'lucide-react';
 import ottoKitImage from '@Image/ottokit-integration.svg';
 import LoadingSkeleton from '@Admin/components/LoadingSkeleton';
@@ -20,15 +18,13 @@ const OttoKitPage = ( {
 	setLocalPluginStatus,
 } ) => {
 	const features = [
+		__( 'Send entries to 100+ popular apps.', 'sureforms' ),
+		__( 'Build automated workflows that run instantly.', 'sureforms' ),
 		__(
-			'Push entries to Slack, Mailchimp, Google Sheets, or hundreds of other apps.',
+			'Create custom app integrations using our Custom App feature.',
 			'sureforms'
 		),
-		__(
-			'Create automatic workflows for every time someone submits a form.',
-			'sureforms'
-		),
-		__( 'Keep your tools updated, without lifting a finger.', 'sureforms' ),
+		__( 'Keep your tools in sync automatically.', 'sureforms' ),
 	];
 	const plugin = srfm_admin?.integrations?.sure_triggers;
 
@@ -128,16 +124,23 @@ const OttoKitPage = ( {
 	};
 
 	// Complete plugin lifecycle management from integrations/index.js
-	const handlePluginActionTrigger = ( event ) => {
-		// For global settings: always use external helper
+	const handlePluginActionTrigger = () => {
+		// For global settings: use internal methods so React state updates trigger re-render
 		if ( ! isFormSettings ) {
-			// if plugin is activated, go to its settings page
+			// if plugin is activated, navigate to its settings page
 			if ( ( localPluginStatus || plugin.status ) === 'Activated' ) {
 				window.location.href = plugin.connection_url;
 				return;
 			}
 
-			externalHandlePluginActionTrigger( { plugin, event } );
+			switch ( action ) {
+				case 'sureforms_recommended_plugin_activate':
+					activatePlugin();
+					break;
+				case 'sureforms_recommended_plugin_install':
+					installPlugin();
+					break;
+			}
 			return;
 		}
 
@@ -196,7 +199,7 @@ const OttoKitPage = ( {
 	const activatePlugin = () => {
 		const formData = new window.FormData();
 		formData.append( 'action', 'sureforms_recommended_plugin_activate' );
-		formData.append( 'security', srfm_admin.sfPluginManagerNonce );
+		formData.append( 'security', srfm_admin.sfPluginManagerNonce ?? srfm_admin.sf_plugin_manager_nonce );
 		formData.append( 'init', plugin.path );
 		setCTA( srfm_admin.plugin_activating_text );
 		setButtonText( srfm_admin.plugin_activating_text );
@@ -208,7 +211,6 @@ const OttoKitPage = ( {
 			if ( data.success ) {
 				setCTA( srfm_admin.plugin_activated_text );
 				setButtonText( srfm_admin.plugin_activated_text );
-				setAction( '' );
 				setLocalPluginStatus( 'Activated' );
 				setTimeout( () => {
 					setAction( 'sureforms_integrate_with_suretriggers' );
@@ -324,7 +326,7 @@ const OttoKitPage = ( {
 									<Title
 										tag="h3"
 										title={ __(
-											'Automate What Happens After Someone Submits Your Form',
+											'Automate Your Forms with OttoKit',
 											'sureforms'
 										) }
 										size="md"
@@ -335,21 +337,11 @@ const OttoKitPage = ( {
 										color="secondary"
 									>
 										{ __(
-											'Every time someone fills out a form, something needs to happen next: a Slack alert for your team, a lead added to your CRM, a follow-up email, a new row in Google Sheets…',
+											'Every form submission should trigger something — a Slack alert, a CRM lead, a follow-up email, or a new row in Google Sheets.',
 											'sureforms'
 										) }
 									</Text>
-									<Text
-										size={ 16 }
-										weight={ 400 }
-										color="secondary"
-									>
-										{ __(
-											"Doing all that manually? That's where OttoKit comes in. With OttoKit, you can:",
-											'sureforms'
-										) }
-									</Text>
-									{ features.map( ( feature, index ) => (
+													{ features.map( ( feature, index ) => (
 										<Container
 											key={ index }
 											className="flex items-start gap-1.5"
@@ -364,34 +356,82 @@ const OttoKitPage = ( {
 											</Text>
 										</Container>
 									) ) }
-									<Text
-										size={ 16 }
-										weight={ 400 }
-										color="secondary"
-									>
-										{ __(
-											'OttoKit turns your forms into powerful workflows. Set it up once, and let automation do the rest.',
+																		<Container className="p-2 gap-3">
+										{ CTA ===
+										__(
+											'Install & Activate',
 											'sureforms'
-										) }
-									</Text>
-									<Container className="p-2 gap-3">
-										<Button
-											size="md"
-											variant={ 'primary' }
-											onClick={
-												handlePluginActionTrigger
-											}
-											disabled={ btnDisabled }
-											icon={
-												plugin?.status === 'Install' ? (
-													<Plus className="size-5" />
-												) : null
-											}
-										>
-											{ CTA ||
-												buttonText ||
-												getPluginStatusText( plugin ) }
-										</Button>
+										) ? (
+												<Tooltip
+													content={ __(
+														'This will install and activate OttoKit on your WordPress site to enable automation features.',
+														'sureforms'
+													) }
+													placement="top"
+												>
+													<Button
+														size="md"
+														variant={ 'primary' }
+														onClick={
+															handlePluginActionTrigger
+														}
+														disabled={ btnDisabled }
+														className={
+															( localPluginStatus ||
+															plugin?.status ) ===
+														'Activated'
+																? '!bg-badge-background-green !border !border-[#E5E7EB] shadow-sm !text-text-primary !outline-[#E5E7EB]'
+																: ''
+														}
+														icon={
+															plugin?.status ===
+														'Install' &&
+														( localPluginStatus ||
+															plugin?.status ) !==
+															'Activated' ? (
+																	<Plus className="size-5" />
+																) : null
+														}
+													>
+														{ CTA ||
+														buttonText ||
+														getPluginStatusText(
+															plugin
+														) }
+													</Button>
+												</Tooltip>
+											) : (
+												<Button
+													size="md"
+													variant={ 'primary' }
+													onClick={
+														handlePluginActionTrigger
+													}
+													disabled={ btnDisabled }
+													className={
+														( localPluginStatus ||
+														plugin?.status ) ===
+													'Activated'
+															? '!bg-badge-background-green !border !border-[#E5E7EB] shadow-sm !text-text-primary !outline-[#E5E7EB]'
+															: ''
+													}
+													icon={
+														plugin?.status ===
+													'Install' &&
+													( localPluginStatus ||
+														plugin?.status ) !==
+														'Activated' ? (
+																<Plus className="size-5" />
+															) : null
+													}
+												>
+													{ CTA ||
+													buttonText ||
+													getPluginStatusText(
+														plugin
+													) }
+												</Button>
+											) }
 									</Container>
 								</div>
 							</Container>

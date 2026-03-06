@@ -52,6 +52,12 @@ const Component = ( { path, subpage } ) => {
 		{}
 	);
 	const [ paymentsSettings, setPaymentsSettings ] = useState( {} );
+	const [ pluginConnected, setPluginConnected ] = useState(
+		srfm_admin?.integrations?.sure_triggers?.connected ?? null
+	);
+	const [ localPluginStatus, setLocalPluginStatus ] = useState(
+		srfm_admin?.integrations?.sure_triggers?.status
+	);
 
 	// Options to fetch from API.
 	const optionsToFetch = [
@@ -303,7 +309,13 @@ const Component = ( { path, subpage } ) => {
 				) }
 
 				{ 'ottokit-settings' === path && (
-					<OttoKitPage loading={ loading } />
+					<OttoKitPage
+						loading={ loading }
+						pluginConnected={ pluginConnected }
+						setPluginConnected={ setPluginConnected }
+						localPluginStatus={ localPluginStatus }
+						setLocalPluginStatus={ setLocalPluginStatus }
+					/>
 				) }
 
 				{ 'integration-settings' === path && (
