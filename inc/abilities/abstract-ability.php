@@ -65,6 +65,18 @@ abstract class Abstract_Ability {
 	protected $capability = 'manage_options';
 
 	/**
+	 * Option gate key.
+	 *
+	 * When non-empty, the ability is disabled only if the option is explicitly set to '0'.
+	 * Abilities default to enabled — they are only gated off when an admin explicitly
+	 * disables them via the AI settings page.
+	 *
+	 * @var string
+	 * @since x.x.x
+	 */
+	protected $gated = '';
+
+	/**
 	 * Get the JSON Schema for ability input.
 	 *
 	 * @since x.x.x
@@ -98,23 +110,29 @@ abstract class Abstract_Ability {
 	 * @return bool
 	 */
 	public function permission_callback() {
+		if ( ! empty( $this->gated ) && '0' === get_option( $this->gated, '1' ) ) {
+			return false;
+		}
+
 		return current_user_can( $this->capability );
 	}
 
 	/**
 	 * Get ability annotations.
 	 *
-	 * Returns MCP-compatible annotations for readonly, destructive, and idempotent flags.
-	 * Subclasses should override to customize.
+	 * Returns MCP-compatible annotations for readonly, destructive, idempotent,
+	 * priority, and openWorldHint flags. Subclasses should override to customize.
 	 *
 	 * @since x.x.x
-	 * @return array<string,bool>
+	 * @return array<string,bool|float>
 	 */
 	public function get_annotations() {
 		return [
-			'readonly'    => false,
-			'destructive' => false,
-			'idempotent'  => false,
+			'readonly'      => false,
+			'destructive'   => false,
+			'idempotent'    => false,
+			'priority'      => 2.0,
+			'openWorldHint' => false,
 		];
 	}
 

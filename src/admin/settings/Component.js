@@ -10,6 +10,7 @@ import ValidationsPage from './pages/Validations';
 import SecurityPage from './pages/Security';
 import IntegrationPage from './pages/Integrations';
 import PaymentsPage from '../payment/global-setting-page';
+import AIPage from './pages/AI';
 import OttoKitPage from './pages/OttoKit';
 import { applyFilters } from '@wordpress/hooks';
 import PageTitleSection from '@Admin/components/PageTitleSection';
@@ -47,6 +48,11 @@ const Component = ( { path, subpage } ) => {
 		srfm_hcaptcha_secret_key: '',
 		srfm_honeypot: false,
 	} );
+	const [ aiTabOptions, setAiTabOptions ] = useState( {
+		srfm_abilities_api_edit: false,
+		srfm_abilities_api_delete: false,
+		srfm_mcp_server: false,
+	} );
 	const [ dynamicBlockOptions, setDynamicBlockOptions ] = useState( {} );
 	const [ preDynamicBlockOptions, setPreDynamicBlockOptions ] = useState(
 		{}
@@ -59,6 +65,7 @@ const Component = ( { path, subpage } ) => {
 		'srfm_email_summary_settings_options',
 		'srfm_security_settings_options',
 		'srfm_default_dynamic_block_option',
+		'srfm_ai_settings_options',
 	];
 
 	// set page title and icon based on the path.
@@ -161,6 +168,19 @@ const Component = ( { path, subpage } ) => {
 					} );
 				}
 
+				if ( data.srfm_ai_settings_options ) {
+					const {
+						srfm_abilities_api_edit,
+						srfm_abilities_api_delete,
+						srfm_mcp_server,
+					} = data.srfm_ai_settings_options;
+					setAiTabOptions( {
+						srfm_abilities_api_edit,
+						srfm_abilities_api_delete,
+						srfm_mcp_server,
+					} );
+				}
+
 				if ( data.srfm_default_dynamic_block_option ) {
 					setDynamicBlockOptions( {
 						...data.srfm_default_dynamic_block_option,
@@ -247,6 +267,13 @@ const Component = ( { path, subpage } ) => {
 				[ setting ]: value,
 			};
 			setDynamicBlockOptions( updatedTabOptions );
+		} else if ( tab === 'ai-settings' ) {
+			updatedTabOptions = {
+				...aiTabOptions,
+				srfm_tab: tab,
+				[ setting ]: value,
+			};
+			setAiTabOptions( updatedTabOptions );
 		} else if ( tab === 'payments-settings' ) {
 			updatedTabOptions = {
 				...paymentsSettings,
@@ -302,6 +329,13 @@ const Component = ( { path, subpage } ) => {
 					/>
 				) }
 
+				{ 'ai-settings' === path && (
+					<AIPage
+						loading={ loading }
+						aiTabOptions={ aiTabOptions }
+						updateGlobalSettings={ updateGlobalSettings }
+					/>
+				) }
 				{ 'ottokit-settings' === path && (
 					<OttoKitPage loading={ loading } />
 				) }

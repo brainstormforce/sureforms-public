@@ -43,9 +43,11 @@ class List_Entries extends Abstract_Ability {
 	 */
 	public function get_annotations() {
 		return [
-			'readonly'    => true,
-			'destructive' => false,
-			'idempotent'  => true,
+			'readonly'      => true,
+			'destructive'   => false,
+			'idempotent'    => true,
+			'priority'      => 1.0,
+			'openWorldHint' => false,
 		];
 	}
 
@@ -56,8 +58,9 @@ class List_Entries extends Abstract_Ability {
 	 */
 	public function get_input_schema() {
 		return [
-			'type'       => 'object',
-			'properties' => [
+			'type'                 => 'object',
+			'additionalProperties' => false,
+			'properties'           => [
 				'form_id'   => [
 					'type'        => 'integer',
 					'description' => __( 'Filter entries by form ID. Use 0 or omit for all forms.', 'sureforms' ),

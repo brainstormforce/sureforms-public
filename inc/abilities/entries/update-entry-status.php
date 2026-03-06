@@ -34,6 +34,7 @@ class Update_Entry_Status extends Abstract_Ability {
 		$this->label       = __( 'Update Entry Status', 'sureforms' );
 		$this->description = __( 'Update the status of one or more SureForms form submission entries. Supports read, unread, trash, and restore operations.', 'sureforms' );
 		$this->capability  = 'manage_options';
+		$this->gated       = 'srfm_abilities_api_edit';
 	}
 
 	/**
@@ -43,9 +44,11 @@ class Update_Entry_Status extends Abstract_Ability {
 	 */
 	public function get_annotations() {
 		return [
-			'readonly'    => false,
-			'destructive' => false,
-			'idempotent'  => true,
+			'readonly'      => false,
+			'destructive'   => true,
+			'idempotent'    => true,
+			'priority'      => 2.0,
+			'openWorldHint' => false,
 		];
 	}
 
@@ -56,8 +59,9 @@ class Update_Entry_Status extends Abstract_Ability {
 	 */
 	public function get_input_schema() {
 		return [
-			'type'       => 'object',
-			'properties' => [
+			'type'                 => 'object',
+			'additionalProperties' => false,
+			'properties'           => [
 				'entry_ids' => [
 					'type'        => 'array',
 					'description' => __( 'Array of entry IDs to update.', 'sureforms' ),
@@ -69,7 +73,7 @@ class Update_Entry_Status extends Abstract_Ability {
 					'enum'        => [ 'read', 'unread', 'trash', 'restore' ],
 				],
 			],
-			'required'   => [ 'entry_ids', 'status' ],
+			'required'             => [ 'entry_ids', 'status' ],
 		];
 	}
 

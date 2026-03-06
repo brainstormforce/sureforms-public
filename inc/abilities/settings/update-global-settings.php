@@ -27,6 +27,79 @@ class Update_Global_Settings extends Abstract_Ability {
 	use Settings_Secret_Keys;
 
 	/**
+<<<<<<< Updated upstream
+=======
+	 * Sentinel value used to represent masked secret keys.
+	 *
+	 * @since x.x.x
+	 */
+	private const SECRET_SENTINEL = '@@SRFM_SECRET_UNCHANGED@@';
+
+	/**
+	 * Allowed setting keys per category.
+	 *
+	 * Only keys in this whitelist will be passed to the save functions.
+	 * This prevents arbitrary option injection via crafted key names.
+	 *
+	 * @since x.x.x
+	 * @var array<string,array<string>>
+	 */
+	private const ALLOWED_KEYS = [
+		'general'             => [
+			'srfm_ip_log',
+			'srfm_form_analytics',
+			'srfm_bsf_analytics',
+			'srfm_admin_notification',
+		],
+		'validation-messages' => [
+			'srfm_url_block_required_text',
+			'srfm_input_block_required_text',
+			'srfm_input_block_unique_text',
+			'srfm_address_block_required_text',
+			'srfm_phone_block_required_text',
+			'srfm_phone_block_unique_text',
+			'srfm_number_block_required_text',
+			'srfm_textarea_block_required_text',
+			'srfm_multi_choice_block_required_text',
+			'srfm_checkbox_block_required_text',
+			'srfm_gdpr_block_required_text',
+			'srfm_email_block_required_text',
+			'srfm_email_block_unique_text',
+			'srfm_dropdown_block_required_text',
+			'srfm_valid_phone_number',
+			'srfm_valid_url',
+			'srfm_confirm_email_same',
+			'srfm_valid_email',
+			'srfm_input_min_value',
+			'srfm_input_max_value',
+			'srfm_dropdown_min_selections',
+			'srfm_dropdown_max_selections',
+			'srfm_multi_choice_min_selections',
+			'srfm_multi_choice_max_selections',
+		],
+		'email-summary'       => [
+			'srfm_email_summary',
+			'srfm_email_sent_to',
+			'srfm_schedule_report',
+		],
+		'security'            => [
+			'srfm_v2_checkbox_site_key',
+			'srfm_v2_checkbox_secret_key',
+			'srfm_v2_invisible_site_key',
+			'srfm_v2_invisible_secret_key',
+			'srfm_v3_site_key',
+			'srfm_v3_secret_key',
+			'srfm_cf_appearance_mode',
+			'srfm_cf_turnstile_site_key',
+			'srfm_cf_turnstile_secret_key',
+			'srfm_hcaptcha_site_key',
+			'srfm_hcaptcha_secret_key',
+			'srfm_honeypot',
+		],
+	];
+
+	/**
+>>>>>>> Stashed changes
 	 * Constructor.
 	 *
 	 * @since x.x.x
@@ -36,6 +109,10 @@ class Update_Global_Settings extends Abstract_Ability {
 		$this->label       = __( 'Update Global Settings', 'sureforms' );
 		$this->description = __( 'Update SureForms global settings for a specific category: general, validation-messages, email-summary, or security.', 'sureforms' );
 		$this->capability  = 'manage_options';
+<<<<<<< Updated upstream
+=======
+		$this->gated       = 'srfm_abilities_api_edit';
+>>>>>>> Stashed changes
 	}
 
 	/**
@@ -45,9 +122,17 @@ class Update_Global_Settings extends Abstract_Ability {
 	 */
 	public function get_annotations() {
 		return [
+<<<<<<< Updated upstream
 			'readonly'    => false,
 			'destructive' => false,
 			'idempotent'  => true,
+=======
+			'readonly'      => false,
+			'destructive'   => true,
+			'idempotent'    => true,
+			'priority'      => 2.0,
+			'openWorldHint' => false,
+>>>>>>> Stashed changes
 		];
 	}
 
@@ -58,8 +143,14 @@ class Update_Global_Settings extends Abstract_Ability {
 	 */
 	public function get_input_schema() {
 		return [
+<<<<<<< Updated upstream
 			'type'       => 'object',
 			'properties' => [
+=======
+			'type'                 => 'object',
+			'additionalProperties' => false,
+			'properties'           => [
+>>>>>>> Stashed changes
 				'category' => [
 					'type'        => 'string',
 					'description' => __( 'The settings category to update.', 'sureforms' ),
@@ -70,7 +161,11 @@ class Update_Global_Settings extends Abstract_Ability {
 					'description' => __( 'Key-value pairs of settings to update.', 'sureforms' ),
 				],
 			],
+<<<<<<< Updated upstream
 			'required'   => [ 'category', 'settings' ],
+=======
+			'required'             => [ 'category', 'settings' ],
+>>>>>>> Stashed changes
 		];
 	}
 
@@ -116,6 +211,20 @@ class Update_Global_Settings extends Abstract_Ability {
 			);
 		}
 
+<<<<<<< Updated upstream
+=======
+		// Filter to allowed keys only — prevents arbitrary option injection.
+		$settings = $this->filter_allowed_keys( $category, $settings );
+
+		if ( empty( $settings ) ) {
+			return new \WP_Error(
+				'srfm_no_valid_keys',
+				__( 'No valid settings keys provided for this category.', 'sureforms' ),
+				[ 'status' => 400 ]
+			);
+		}
+
+>>>>>>> Stashed changes
 		// Sanitize settings per category before saving.
 		$settings = $this->sanitize_settings( $category, $settings );
 
@@ -149,6 +258,25 @@ class Update_Global_Settings extends Abstract_Ability {
 	}
 
 	/**
+<<<<<<< Updated upstream
+=======
+	 * Filter settings to only include allowed keys for the given category.
+	 *
+	 * @param string              $category Settings category.
+	 * @param array<string,mixed> $settings Raw settings values.
+	 * @since x.x.x
+	 * @return array<string,mixed> Filtered settings containing only whitelisted keys.
+	 */
+	private function filter_allowed_keys( $category, $settings ) {
+		if ( ! isset( self::ALLOWED_KEYS[ $category ] ) ) {
+			return [];
+		}
+
+		return array_intersect_key( $settings, array_flip( self::ALLOWED_KEYS[ $category ] ) );
+	}
+
+	/**
+>>>>>>> Stashed changes
 	 * Sanitize settings values based on category and known key types.
 	 *
 	 * @param string              $category Settings category.
@@ -269,8 +397,13 @@ class Update_Global_Settings extends Abstract_Ability {
 	/**
 	 * Save security settings, preserving masked sentinel values.
 	 *
+<<<<<<< Updated upstream
 	 * When the caller sends '********' for a secret key, the stored value
 	 * is preserved instead of being overwritten with the sentinel.
+=======
+	 * When the caller sends the SECRET_SENTINEL for a secret key, the stored
+	 * value is preserved instead of being overwritten with the sentinel.
+>>>>>>> Stashed changes
 	 *
 	 * @param array<string,mixed> $settings Settings to save.
 	 * @since x.x.x
@@ -285,7 +418,11 @@ class Update_Global_Settings extends Abstract_Ability {
 
 		// Replace masked sentinel values with stored values.
 		foreach ( self::$secret_keys as $key ) {
+<<<<<<< Updated upstream
 			if ( isset( $settings[ $key ] ) && '********' === $settings[ $key ] && isset( $existing[ $key ] ) ) {
+=======
+			if ( isset( $settings[ $key ] ) && self::SECRET_SENTINEL === $settings[ $key ] && isset( $existing[ $key ] ) ) {
+>>>>>>> Stashed changes
 				$settings[ $key ] = $existing[ $key ];
 			}
 		}

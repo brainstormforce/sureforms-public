@@ -12,7 +12,11 @@
 namespace SRFM\Inc\Abilities;
 
 use SRFM\Inc\Abilities\Analytics\Get_Form_Analytics;
+<<<<<<< Updated upstream
 use SRFM\Inc\Abilities\Embedding\Get_Shortcode;
+=======
+use SRFM\Inc\Abilities\Entries\Bulk_Get_Entries;
+>>>>>>> Stashed changes
 use SRFM\Inc\Abilities\Entries\Delete_Entry;
 use SRFM\Inc\Abilities\Entries\Get_Entry;
 use SRFM\Inc\Abilities\Entries\List_Entries;
@@ -58,6 +62,63 @@ class Abilities_Registrar {
 
 		add_action( 'wp_abilities_api_categories_init', [ $this, 'register_category' ] );
 		add_action( 'wp_abilities_api_init', [ $this, 'register_abilities' ] );
+
+		if ( self::mcp_adapter_enabled() ) {
+			add_action( 'mcp_adapter_init', [ $this, 'register_mcp_server' ] );
+		}
+	}
+
+	/**
+	 * Check if the MCP adapter integration should be active.
+	 *
+	 * @since x.x.x
+	 * @return bool
+	 */
+	public static function mcp_adapter_enabled() {
+		return function_exists( 'wp_register_ability' ) &&
+			class_exists( 'WP\MCP\Plugin' ) &&
+			(bool) get_option( 'srfm_mcp_server', false )
+		;
+	}
+
+	/**
+	 * Register a dedicated SureForms MCP server with the MCP adapter.
+	 *
+	 * Creates endpoint: {site_url}/wp-json/sureforms/v1/mcp
+	 *
+	 * @param object $adapter The MCP adapter instance.
+	 * @since x.x.x
+	 * @return void
+	 */
+	public function register_mcp_server( $adapter ) {
+		$abilities = wp_get_abilities();
+		$tools     = [];
+
+		foreach ( $abilities as $ability ) {
+			$meta = $ability->get_meta();
+			if ( ! empty( $meta['mcp']['public'] ) && 0 === strpos( $ability->get_name(), 'sureforms/' ) ) {
+				$tools[] = $ability->get_name();
+			}
+		}
+
+		$transport_class = class_exists( '\WP\MCP\Transport\HttpTransport' )
+			? \WP\MCP\Transport\HttpTransport::class
+			: \WP\MCP\Transport\Http\RestTransport::class;
+
+		$adapter->create_server(
+			'sureforms',
+			'sureforms/v1',
+			'mcp',
+			__( 'SureForms MCP Server', 'sureforms' ),
+			__( 'SureForms MCP Server for form building and management.', 'sureforms' ),
+			SRFM_VER,
+			[ $transport_class ],
+			\WP\MCP\Infrastructure\ErrorHandling\ErrorLogMcpErrorHandler::class,
+			\WP\MCP\Infrastructure\Observability\NullMcpObservabilityHandler::class,
+			$tools,
+			[],
+			[]
+		);
 	}
 
 	/**
@@ -110,9 +171,12 @@ class Abilities_Registrar {
 			new Get_Global_Settings(),
 			new Update_Global_Settings(),
 			new Get_Form_Analytics(),
+<<<<<<< Updated upstream
 			new Export_Forms(),
 			new Import_Forms(),
 			new Export_Entries(),
+=======
+>>>>>>> Stashed changes
 		];
 
 		/**

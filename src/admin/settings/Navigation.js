@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { applyFilters } from '@wordpress/hooks';
 import { cn } from '@Utils/Helpers';
 import {
+	Bot,
 	Cpu,
 	CreditCard,
 	Settings,
@@ -79,6 +80,15 @@ export const navigation = applyFilters( 'srfm.settings.navigation', [
 		slug: 'integration-settings',
 		icon: <Cpu />,
 		hidePageTitle: true, // Hide the page title for the Integrations tab.
+	},
+	{
+		name: __( 'AI', 'sureforms' ),
+		slug: 'ai-settings',
+		icon: <Bot />,
+		helpText: __(
+			'Configure AI client permissions and MCP server settings.',
+			'sureforms'
+		),
 	},
 	{
 		name: __( 'Payments', 'sureforms' ),

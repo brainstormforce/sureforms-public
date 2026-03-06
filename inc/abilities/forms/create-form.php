@@ -45,7 +45,12 @@ class Create_Form extends Abstract_Ability {
 		 * @since x.x.x
 		 */
 		$this->description = apply_filters( 'srfm_ability_create_form_description', $description );
+<<<<<<< Updated upstream
 		$this->capability  = 'edit_posts';
+=======
+		$this->capability  = 'manage_options';
+		$this->gated       = 'srfm_abilities_api_edit';
+>>>>>>> Stashed changes
 	}
 
 	/**
@@ -53,9 +58,11 @@ class Create_Form extends Abstract_Ability {
 	 */
 	public function get_annotations() {
 		return [
-			'readonly'    => false,
-			'destructive' => false,
-			'idempotent'  => false,
+			'readonly'      => false,
+			'destructive'   => false,
+			'idempotent'    => false,
+			'priority'      => 2.0,
+			'openWorldHint' => false,
 		];
 	}
 
@@ -153,8 +160,9 @@ class Create_Form extends Abstract_Ability {
 		}
 
 		return [
-			'type'       => 'object',
-			'properties' => [
+			'type'                 => 'object',
+			'additionalProperties' => false,
+			'properties'           => [
 				'formTitle'    => [
 					'type'        => 'string',
 					'description' => __( 'Title of the form in 5-10 words.', 'sureforms' ),
@@ -236,7 +244,7 @@ class Create_Form extends Abstract_Ability {
 					'default'     => 'draft',
 				],
 			],
-			'required'   => [ 'formTitle', 'formFields' ],
+			'required'             => [ 'formTitle', 'formFields' ],
 		];
 	}
 

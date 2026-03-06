@@ -9,7 +9,6 @@
 namespace SRFM\Inc\Abilities\Analytics;
 
 use SRFM\Inc\Abilities\Abstract_Ability;
-use SRFM\Inc\Abilities\Traits\Date_Validation;
 use SRFM\Inc\Database\Tables\Entries;
 use SRFM\Inc\Helper;
 
@@ -25,7 +24,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since x.x.x
  */
 class Get_Form_Analytics extends Abstract_Ability {
-	use Date_Validation;
 
 	/**
 	 * Maximum number of analytics results to return.
@@ -53,9 +51,11 @@ class Get_Form_Analytics extends Abstract_Ability {
 	 */
 	public function get_annotations() {
 		return [
-			'readonly'    => true,
-			'destructive' => false,
-			'idempotent'  => true,
+			'readonly'      => true,
+			'destructive'   => false,
+			'idempotent'    => true,
+			'priority'      => 1.0,
+			'openWorldHint' => false,
 		];
 	}
 
@@ -66,8 +66,9 @@ class Get_Form_Analytics extends Abstract_Ability {
 	 */
 	public function get_input_schema() {
 		return [
-			'type'       => 'object',
-			'properties' => [
+			'type'                 => 'object',
+			'additionalProperties' => false,
+			'properties'           => [
 				'date_from' => [
 					'type'        => 'string',
 					'description' => __( 'Start date for analytics range (Y-m-d).', 'sureforms' ),
@@ -81,7 +82,7 @@ class Get_Form_Analytics extends Abstract_Ability {
 					'description' => __( 'Optional form ID to filter analytics by.', 'sureforms' ),
 				],
 			],
-			'required'   => [ 'date_from', 'date_to' ],
+			'required'             => [ 'date_from', 'date_to' ],
 		];
 	}
 
@@ -132,7 +133,7 @@ class Get_Form_Analytics extends Abstract_Ability {
 			);
 		}
 
-		if ( ! $this->validate_date( $date_from ) || ! $this->validate_date( $date_to ) ) {
+		if ( ! Helper::validate_date( $date_from ) || ! Helper::validate_date( $date_to ) ) {
 			return new \WP_Error(
 				'srfm_invalid_date_format',
 				__( 'Dates must be in Y-m-d format.', 'sureforms' ),
