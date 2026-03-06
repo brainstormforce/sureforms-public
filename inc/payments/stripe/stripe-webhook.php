@@ -67,7 +67,9 @@ class Stripe_Webhook {
 				'callback'            => function() {
 					$this->webhook_listener( 'test' );
 				},
-				'permission_callback' => '__return_true',
+				'permission_callback' => function() {
+					return $this->validate_webhook_permission( 'test' );
+				},
 			]
 		);
 
@@ -80,14 +82,108 @@ class Stripe_Webhook {
 				'callback'            => function() {
 					$this->webhook_listener( 'live' );
 				},
-				'permission_callback' => '__return_true',
+				'permission_callback' => function() {
+					return $this->validate_webhook_permission( 'live' );
+				},
 			]
 		);
 	}
 
 	/**
+	 * Validates webhook permission by verifying the Stripe signature locally.
+	 * Used as the permission_callback for webhook REST endpoints.
+	 *
+	 * @param string $mode The payment mode ('test' or 'live').
+	 * @since x.x.x
+	 * @return true|\WP_Error
+	 */
+	public function validate_webhook_permission( $mode ) {
+		$payload = file_get_contents( 'php://input' );
+		// phpcs:disable
+		$sig_header = ! empty( $_SERVER['HTTP_STRIPE_SIGNATURE'] ) && is_string( $_SERVER['HTTP_STRIPE_SIGNATURE'] ) ? sanitize_text_field( wp_unslash( $_SERVER['HTTP_STRIPE_SIGNATURE'] ) ) : '';
+		// phpcs:enable
+
+		if ( empty( $payload ) || empty( $sig_header ) ) {
+			return new \WP_Error( 'srfm_webhook_unauthorized', __( 'Missing webhook payload or signature.', 'sureforms' ), [ 'status' => 401 ] );
+		}
+
+		$settings = Stripe_Helper::get_all_stripe_settings();
+		if ( ! is_array( $settings ) ) {
+			$settings = [];
+		}
+
+		$this->mode = in_array( $mode, [ 'test', 'live' ], true ) ? $mode : 'test';
+
+		$secret_key     = 'live' === $this->mode ? 'webhook_live_secret' : 'webhook_test_secret';
+		$webhook_secret = isset( $settings[ $secret_key ] ) && is_string( $settings[ $secret_key ] ) ? (string) $settings[ $secret_key ] : '';
+
+		if ( empty( $webhook_secret ) ) {
+			return new \WP_Error( 'srfm_webhook_unauthorized', __( 'Webhook secret not configured.', 'sureforms' ), [ 'status' => 401 ] );
+		}
+
+		if ( ! $this->verify_stripe_signature_locally( $payload, $sig_header, $webhook_secret ) ) {
+			return new \WP_Error( 'srfm_webhook_unauthorized', __( 'Invalid webhook signature.', 'sureforms' ), [ 'status' => 401 ] );
+		}
+
+		return true;
+	}
+
+	/**
+	 * Verify Stripe webhook signature locally using HMAC-SHA256.
+	 * Implements the same algorithm as Stripe's SDK without external dependencies.
+	 *
+	 * @param string $payload    Raw request body.
+	 * @param string $sig_header Stripe-Signature header value.
+	 * @param string $secret     Webhook signing secret (whsec_...).
+	 * @param int    $tolerance  Maximum age in seconds for replay protection.
+	 * @since x.x.x
+	 * @return bool True if signature is valid, false otherwise.
+	 */
+	private function verify_stripe_signature_locally( $payload, $sig_header, $secret, $tolerance = 300 ) {
+		// Parse the Stripe-Signature header (format: t=timestamp,v1=signature,...).
+		$parts     = explode( ',', $sig_header );
+		$timestamp = '';
+		$signature = '';
+
+		foreach ( $parts as $part ) {
+			$pair = explode( '=', $part, 2 );
+			if ( 2 !== count( $pair ) ) {
+				continue;
+			}
+			if ( 't' === $pair[0] ) {
+				$timestamp = $pair[1];
+			} elseif ( 'v1' === $pair[0] ) {
+				$signature = $pair[1];
+			}
+		}
+
+		if ( empty( $timestamp ) || empty( $signature ) ) {
+			Helper::srfm_log( 'Webhook signature verification failed: missing timestamp or v1 signature.' );
+			return false;
+		}
+
+		// Replay protection: reject requests older than tolerance.
+		if ( absint( $timestamp ) < ( time() - $tolerance ) ) {
+			Helper::srfm_log( 'Webhook signature verification failed: timestamp too old.' );
+			return false;
+		}
+
+		// Compute expected signature: HMAC-SHA256 of "timestamp.payload" with the secret.
+		$signed_payload     = $timestamp . '.' . $payload;
+		$expected_signature = hash_hmac( 'sha256', $signed_payload, $secret );
+
+		if ( ! hash_equals( $expected_signature, $signature ) ) {
+			Helper::srfm_log( 'Webhook signature verification failed: signature mismatch.' );
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
 	 * Validates the Stripe signature for webhook requests through middleware.
 	 *
+	 * @deprecated x.x.x Use validate_webhook_permission() instead. Signature is now verified locally in the permission callback.
 	 * @param string|null $mode The payment mode ('test' or 'live'). If null, uses setting.
 	 * @since 2.0.0
 	 * @return array<string, mixed>|bool
@@ -206,12 +302,18 @@ class Stripe_Webhook {
 	 * @return void
 	 */
 	public function webhook_listener( $mode = null ) {
-		$event = $this->validate_stripe_signature( $mode );
+		// Signature already verified in permission callback (validate_webhook_permission).
+		// Parse the payload directly.
+		$payload = file_get_contents( 'php://input' );
+		$event   = ! empty( $payload ) ? json_decode( $payload, true ) : null;
 
-		if ( ! $event || ! isset( $event['type'] ) ) {
+		if ( ! is_array( $event ) || ! isset( $event['type'] ) ) {
 			Helper::srfm_log( 'Invalid webhook event.' );
 			return;
 		}
+
+		// Set mode for downstream usage.
+		$this->mode = ! empty( $mode ) && in_array( $mode, [ 'test', 'live' ], true ) ? $mode : 'test';
 
 		Helper::srfm_log( 'Processing event type: ' . $event['type'] . '.' );
 		Helper::srfm_log( $event, 'Processing ectual event : ' );
