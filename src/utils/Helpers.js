@@ -959,6 +959,7 @@ export const searchWordPressPages = async ( options = {} ) => {
 		perPage = 20,
 		selectedUrl = '',
 		selectedUrls = [],
+		signal = null,
 	} = options;
 
 	const queryArgs = {
@@ -976,7 +977,11 @@ export const searchWordPressPages = async ( options = {} ) => {
 	}
 
 	const path = addQueryArgs( '/sureforms/v1/pages/search', queryArgs );
-	const response = await apiFetch( { path, method: 'GET' } );
+	const fetchOptions = { path, method: 'GET' };
+	if ( signal ) {
+		fetchOptions.signal = signal;
+	}
+	const response = await apiFetch( fetchOptions );
 	const items = Array.isArray( response?.items ) ? response.items : [];
 
 	return {

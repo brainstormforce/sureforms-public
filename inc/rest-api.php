@@ -172,32 +172,23 @@ class Rest_Api {
 			);
 		}
 
-		$search          = sanitize_text_field( Helper::get_string_value( $request->get_param( 'search' ) ) );
-		$page            = max( 1, absint( $request->get_param( 'page' ) ) );
-		$per_page        = absint( $request->get_param( 'per_page' ) );
-		$per_page        = max( 1, min( 50, $per_page ) );
+		$search          = Helper::get_string_value( $request->get_param( 'search' ) );
+		$page            = max( 1, (int) $request->get_param( 'page' ) );
+		$per_page        = max( 1, min( 50, (int) $request->get_param( 'per_page' ) ) );
 		$query_per_page  = $per_page + 1;
 		$selected_urls   = $request->get_param( 'selected_urls' );
 		$selected_url    = Helper::get_string_value( $request->get_param( 'selected_url' ) );
 		$selected_values = [];
 
 		if ( ! empty( $selected_url ) ) {
-			$selected_values[] = esc_url_raw( $selected_url );
+			$selected_values[] = $selected_url;
 		}
 
 		if ( is_array( $selected_urls ) ) {
-			$selected_values = array_merge( $selected_values, array_map( 'esc_url_raw', $selected_urls ) );
-		} elseif ( is_string( $selected_urls ) && '' !== trim( $selected_urls ) ) {
-			$selected_values = array_merge(
-				$selected_values,
-				array_map(
-					'esc_url_raw',
-					array_filter( array_map( 'trim', explode( ',', $selected_urls ) ) )
-				)
-			);
+			$selected_values = array_merge( $selected_values, $selected_urls );
 		}
 
-		$selected_values = array_values( array_unique( array_filter( $selected_values ) ) );
+		$selected_values = array_slice( array_values( array_unique( array_filter( $selected_values ) ) ), 0, 5 );
 
 		$args = [
 			'post_type'              => 'page',
@@ -263,8 +254,8 @@ class Rest_Api {
 			$title   = get_the_title( $post_id );
 			$items[] = [
 				'id'    => $post_id,
-				'label' => ! empty( $title ) ? $title : (string) $post_id,
-				'value' => $permalink,
+				'label' => ! empty( $title ) ? esc_html( $title ) : (string) $post_id,
+				'value' => esc_url( $permalink ),
 			];
 		}
 
@@ -1240,14 +1231,23 @@ class Rest_Api {
 						'page'          => [
 							'sanitize_callback' => 'absint',
 							'default'           => 1,
+							'validate_callback' => static function ( $value ) {
+								return is_numeric( $value ) && (int) $value >= 1;
+							},
 						],
 						'per_page'      => [
 							'sanitize_callback' => 'absint',
 							'default'           => 20,
+							'validate_callback' => static function ( $value ) {
+								return is_numeric( $value ) && (int) $value >= 1 && (int) $value <= 50;
+							},
 						],
 						'selected_url'  => [
 							'sanitize_callback' => 'esc_url_raw',
 							'default'           => '',
+							'validate_callback' => static function ( $value ) {
+								return empty( $value ) || false !== filter_var( $value, FILTER_VALIDATE_URL );
+							},
 						],
 						'selected_urls' => [
 							'default'           => [],
