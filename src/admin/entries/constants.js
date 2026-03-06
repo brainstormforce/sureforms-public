@@ -1,7 +1,7 @@
 import { __ } from '@wordpress/i18n';
 
 export const STATUS_OPTIONS = [
-	{ value: '', label: __( 'All Status', 'sureforms' ) },
+	{ value: '', label: __( 'All Statuses', 'sureforms' ) },
 	{ value: 'read', label: __( 'Read', 'sureforms' ) },
 	{ value: 'unread', label: __( 'Unread', 'sureforms' ) },
 	{ value: 'trash', label: __( 'Trash', 'sureforms' ) },
@@ -48,7 +48,7 @@ export const TABLE_HEADERS = [
 		key: 'firstField',
 	},
 	{
-		label: __( 'Date & Time', 'sureforms' ),
+		label: __( 'Date and Time', 'sureforms' ),
 		key: 'dateTime',
 		sortable: true,
 	},

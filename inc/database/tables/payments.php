@@ -26,6 +26,45 @@ class Payments extends Base {
 	use Get_Instance;
 
 	/**
+	 * Allowed SQL comparison operators for where conditions.
+	 *
+	 * @since x.x.x
+	 */
+	private const ALLOWED_OPERATORS = [ '=', '!=', '>', '<', '>=', '<=', 'IN', 'NOT IN', 'LIKE', 'NOT LIKE' ];
+
+	/**
+	 * Allowed column names for where conditions.
+	 *
+	 * @since x.x.x
+	 */
+	private const ALLOWED_COLUMNS = [
+		'id',
+		'form_id',
+		'block_id',
+		'status',
+		'total_amount',
+		'refunded_amount',
+		'currency',
+		'entry_id',
+		'gateway',
+		'type',
+		'mode',
+		'transaction_id',
+		'customer_id',
+		'subscription_id',
+		'subscription_status',
+		'parent_subscription_id',
+		'payment_data',
+		'extra',
+		'log',
+		'created_at',
+		'updated_at',
+		'srfm_txn_id',
+		'customer_email',
+		'customer_name',
+	];
+
+	/**
 	 * {@inheritDoc}
 	 *
 	 * @var string
@@ -1056,14 +1095,33 @@ class Payments extends Base {
 				if ( is_array( $where_group ) ) {
 					foreach ( $where_group as $condition ) {
 						if ( isset( $condition['key'], $condition['compare'], $condition['value'] ) ) {
-							if ( strtoupper( $condition['compare'] ) === 'IN' && is_array( $condition['value'] ) ) {
-								$placeholders  = implode( ',', array_fill( 0, count( $condition['value'] ), '%d' ) );
-								$where_clause .= " AND {$condition['key']} IN ({$placeholders})";
-								foreach ( $condition['value'] as $val ) {
-									$params[] = $val;
+							// Validate column name against whitelist.
+							if ( ! in_array( $condition['key'], self::ALLOWED_COLUMNS, true ) ) {
+								continue;
+							}
+
+							// Validate and normalize the comparison operator.
+							$operator = strtoupper( trim( $condition['compare'] ) );
+
+							// Skip this condition if operator is not in whitelist.
+							if ( ! in_array( $operator, self::ALLOWED_OPERATORS, true ) ) {
+								continue;
+							}
+
+							$column = $condition['key'];
+
+							if ( in_array( $operator, [ 'IN', 'NOT IN' ], true ) && is_array( $condition['value'] ) ) {
+								$ids = array_map( 'absint', $condition['value'] );
+								if ( empty( $ids ) ) {
+									$ids = [ 0 ];
+								}
+								$placeholders  = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
+								$where_clause .= " AND {$column} {$operator} ({$placeholders})";
+								foreach ( $ids as $id ) {
+									$params[] = $id;
 								}
 							} else {
-								$where_clause .= " AND {$condition['key']} {$condition['compare']} %s";
+								$where_clause .= " AND {$column} {$operator} %s";
 								$params[]      = $condition['value'];
 							}
 						}
@@ -1149,20 +1207,35 @@ class Payments extends Base {
 				if ( is_array( $where_group ) ) {
 					foreach ( $where_group as $condition ) {
 						if ( isset( $condition['key'], $condition['compare'], $condition['value'] ) ) {
+							// Validate column name against whitelist.
+							if ( ! in_array( $condition['key'], self::ALLOWED_COLUMNS, true ) ) {
+								continue;
+							}
+
+							// Validate and normalize the comparison operator.
+							$operator = strtoupper( trim( $condition['compare'] ) );
+
+							// Skip this condition if operator is not in whitelist.
+							if ( ! in_array( $operator, self::ALLOWED_OPERATORS, true ) ) {
+								continue;
+							}
+
+							$column = $condition['key'];
+
 							// Special handling for IN/NOT IN with arrays.
-							if ( in_array( strtoupper( trim( $condition['compare'] ) ), [ 'IN', 'NOT IN' ], true ) && is_array( $condition['value'] ) ) {
+							if ( in_array( $operator, [ 'IN', 'NOT IN' ], true ) && is_array( $condition['value'] ) ) {
 								$ids = array_map( 'absint', $condition['value'] );
 								// Prevent empty IN ().
 								if ( empty( $ids ) ) {
 									$ids = [ 0 ];
 								}
 								$placeholders  = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
-								$where_clause .= " AND {$condition['key']} {$condition['compare']} ({$placeholders})";
+								$where_clause .= " AND {$column} {$operator} ({$placeholders})";
 								foreach ( $ids as $id ) {
 									$params[] = $id;
 								}
 							} else {
-								$where_clause .= " AND {$condition['key']} {$condition['compare']} %s";
+								$where_clause .= " AND {$column} {$operator} %s";
 								$params[]      = $condition['value'];
 							}
 						}
