@@ -27,8 +27,6 @@ class Update_Global_Settings extends Abstract_Ability {
 	use Settings_Secret_Keys;
 
 	/**
-<<<<<<< Updated upstream
-=======
 	 * Sentinel value used to represent masked secret keys.
 	 *
 	 * @since x.x.x
@@ -99,7 +97,6 @@ class Update_Global_Settings extends Abstract_Ability {
 	];
 
 	/**
->>>>>>> Stashed changes
 	 * Constructor.
 	 *
 	 * @since x.x.x
@@ -109,10 +106,7 @@ class Update_Global_Settings extends Abstract_Ability {
 		$this->label       = __( 'Update Global Settings', 'sureforms' );
 		$this->description = __( 'Update SureForms global settings for a specific category: general, validation-messages, email-summary, or security.', 'sureforms' );
 		$this->capability  = 'manage_options';
-<<<<<<< Updated upstream
-=======
 		$this->gated       = 'srfm_abilities_api_edit';
->>>>>>> Stashed changes
 	}
 
 	/**
@@ -122,17 +116,12 @@ class Update_Global_Settings extends Abstract_Ability {
 	 */
 	public function get_annotations() {
 		return [
-<<<<<<< Updated upstream
-			'readonly'    => false,
-			'destructive' => false,
-			'idempotent'  => true,
-=======
 			'readonly'      => false,
 			'destructive'   => true,
 			'idempotent'    => true,
 			'priority'      => 2.0,
 			'openWorldHint' => false,
->>>>>>> Stashed changes
+			'instructions'  => 'Confirm the settings category and the specific keys being changed with the user before executing. Security keys are sensitive — never display real secret values.',
 		];
 	}
 
@@ -143,14 +132,9 @@ class Update_Global_Settings extends Abstract_Ability {
 	 */
 	public function get_input_schema() {
 		return [
-<<<<<<< Updated upstream
-			'type'       => 'object',
-			'properties' => [
-=======
 			'type'                 => 'object',
 			'additionalProperties' => false,
 			'properties'           => [
->>>>>>> Stashed changes
 				'category' => [
 					'type'        => 'string',
 					'description' => __( 'The settings category to update.', 'sureforms' ),
@@ -161,11 +145,7 @@ class Update_Global_Settings extends Abstract_Ability {
 					'description' => __( 'Key-value pairs of settings to update.', 'sureforms' ),
 				],
 			],
-<<<<<<< Updated upstream
-			'required'   => [ 'category', 'settings' ],
-=======
 			'required'             => [ 'category', 'settings' ],
->>>>>>> Stashed changes
 		];
 	}
 
@@ -211,8 +191,6 @@ class Update_Global_Settings extends Abstract_Ability {
 			);
 		}
 
-<<<<<<< Updated upstream
-=======
 		// Filter to allowed keys only — prevents arbitrary option injection.
 		$settings = $this->filter_allowed_keys( $category, $settings );
 
@@ -224,7 +202,6 @@ class Update_Global_Settings extends Abstract_Ability {
 			);
 		}
 
->>>>>>> Stashed changes
 		// Sanitize settings per category before saving.
 		$settings = $this->sanitize_settings( $category, $settings );
 
@@ -258,8 +235,6 @@ class Update_Global_Settings extends Abstract_Ability {
 	}
 
 	/**
-<<<<<<< Updated upstream
-=======
 	 * Filter settings to only include allowed keys for the given category.
 	 *
 	 * @param string              $category Settings category.
@@ -276,7 +251,6 @@ class Update_Global_Settings extends Abstract_Ability {
 	}
 
 	/**
->>>>>>> Stashed changes
 	 * Sanitize settings values based on category and known key types.
 	 *
 	 * @param string              $category Settings category.
@@ -397,13 +371,8 @@ class Update_Global_Settings extends Abstract_Ability {
 	/**
 	 * Save security settings, preserving masked sentinel values.
 	 *
-<<<<<<< Updated upstream
-	 * When the caller sends '********' for a secret key, the stored value
-	 * is preserved instead of being overwritten with the sentinel.
-=======
 	 * When the caller sends the SECRET_SENTINEL for a secret key, the stored
 	 * value is preserved instead of being overwritten with the sentinel.
->>>>>>> Stashed changes
 	 *
 	 * @param array<string,mixed> $settings Settings to save.
 	 * @since x.x.x
@@ -418,11 +387,7 @@ class Update_Global_Settings extends Abstract_Ability {
 
 		// Replace masked sentinel values with stored values.
 		foreach ( self::$secret_keys as $key ) {
-<<<<<<< Updated upstream
-			if ( isset( $settings[ $key ] ) && '********' === $settings[ $key ] && isset( $existing[ $key ] ) ) {
-=======
 			if ( isset( $settings[ $key ] ) && self::SECRET_SENTINEL === $settings[ $key ] && isset( $existing[ $key ] ) ) {
->>>>>>> Stashed changes
 				$settings[ $key ] = $existing[ $key ];
 			}
 		}

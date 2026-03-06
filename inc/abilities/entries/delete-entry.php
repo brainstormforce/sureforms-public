@@ -48,6 +48,7 @@ class Delete_Entry extends Abstract_Ability {
 			'idempotent'    => false,
 			'priority'      => 3.0,
 			'openWorldHint' => false,
+			'instructions'  => 'Always confirm with the user before deleting. This permanently removes the entry and cannot be undone.',
 		];
 	}
 

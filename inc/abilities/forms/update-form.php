@@ -32,14 +32,9 @@ class Update_Form extends Abstract_Ability {
 	public function __construct() {
 		$this->id          = 'sureforms/update-form';
 		$this->label       = __( 'Update SureForms Form', 'sureforms' );
-<<<<<<< Updated upstream
-		$this->description = __( 'Update an existing SureForms form title, status (publish/draft/private/trash), and/or metadata settings. Use status "trash" to trash a form, or change from "trash" to another status to restore it.', 'sureforms' );
-		$this->capability  = 'edit_posts';
-=======
 		$this->description = __( 'Update an existing SureForms form title, status (publish/draft/private/trash), fields, and/or metadata settings. Use status "trash" to trash a form, or change from "trash" to another status to restore it. Providing formFields replaces all existing fields.', 'sureforms' );
 		$this->capability  = 'manage_options';
 		$this->gated       = 'srfm_abilities_api_edit';
->>>>>>> Stashed changes
 	}
 
 	/**
@@ -54,6 +49,7 @@ class Update_Form extends Abstract_Ability {
 			'idempotent'    => true,
 			'priority'      => 2.0,
 			'openWorldHint' => false,
+			'instructions'  => 'Confirm the changes with the user before executing. Setting status to trash moves the form out of production. Providing formFields replaces ALL existing fields.',
 		];
 	}
 

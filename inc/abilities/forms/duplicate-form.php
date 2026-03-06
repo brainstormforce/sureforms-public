@@ -33,12 +33,8 @@ class Duplicate_Form extends Abstract_Ability {
 		$this->id          = 'sureforms/duplicate-form';
 		$this->label       = __( 'Duplicate SureForms Form', 'sureforms' );
 		$this->description = __( 'Duplicate an existing SureForms form with all its fields, metadata, and settings. The new form is created as a draft.', 'sureforms' );
-<<<<<<< Updated upstream
-		$this->capability  = 'edit_posts';
-=======
 		$this->capability  = 'manage_options';
 		$this->gated       = 'srfm_abilities_api_edit';
->>>>>>> Stashed changes
 	}
 
 	/**
@@ -53,6 +49,7 @@ class Duplicate_Form extends Abstract_Ability {
 			'idempotent'    => false,
 			'priority'      => 2.0,
 			'openWorldHint' => false,
+			'instructions'  => 'Confirm which form is being duplicated and the intended title suffix with the user.',
 		];
 	}
 

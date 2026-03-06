@@ -49,6 +49,7 @@ class Update_Entry_Status extends Abstract_Ability {
 			'idempotent'    => true,
 			'priority'      => 2.0,
 			'openWorldHint' => false,
+			'instructions'  => 'Confirm the target status with the user before executing. Trashing entries moves them toward permanent deletion.',
 		];
 	}
 

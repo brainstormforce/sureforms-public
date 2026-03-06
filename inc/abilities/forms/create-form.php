@@ -45,12 +45,8 @@ class Create_Form extends Abstract_Ability {
 		 * @since x.x.x
 		 */
 		$this->description = apply_filters( 'srfm_ability_create_form_description', $description );
-<<<<<<< Updated upstream
-		$this->capability  = 'edit_posts';
-=======
 		$this->capability  = 'manage_options';
 		$this->gated       = 'srfm_abilities_api_edit';
->>>>>>> Stashed changes
 	}
 
 	/**
@@ -63,6 +59,7 @@ class Create_Form extends Abstract_Ability {
 			'idempotent'    => false,
 			'priority'      => 2.0,
 			'openWorldHint' => false,
+			'instructions'  => 'Confirm the form title, field list, and publish status with the user before creating.',
 		];
 	}
 
