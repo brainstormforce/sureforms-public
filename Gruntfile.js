@@ -106,6 +106,7 @@ module.exports = function ( grunt ) {
 				},
 				src: [
 					'**',
+					'!.claude/**',
 					'!.git/**',
 					'!.gitignore',
 					'!.gitattributes',

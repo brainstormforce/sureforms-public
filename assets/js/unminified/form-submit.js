@@ -528,7 +528,7 @@ function dispatchErrorEvent( event ) {
 	const errorMessage =
 		message ||
 		__(
-			'There was an error trying to submit your form. Please try again.',
+			'An error occurred while submitting your form. Please try again.',
 			'sureforms'
 		);
 

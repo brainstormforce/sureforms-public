@@ -9,7 +9,7 @@ import ICONS from '@Admin/components/template-picker/components/icons';
 const features = [
 	__( 'Build beautiful forms visually', 'sureforms' ),
 	__( 'Works perfectly on mobile', 'sureforms' ),
-	__( 'Spam protection built-in', 'sureforms' ),
+	__( 'Spam protection included', 'sureforms' ),
 	__( 'Easy to connect with automation tools', 'sureforms' ),
 ];
 
