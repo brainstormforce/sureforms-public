@@ -361,7 +361,7 @@ class Payment_History_Shortcode {
 		?>
 		<tr>
 			<?php foreach ( $columns as $key => $label ) : ?>
-				<td class="srfm-payment-history-col-<?php echo esc_attr( $key ); ?>">
+				<td class="srfm-payment-history-col-<?php echo esc_attr( $key ); ?>" data-label="<?php echo esc_attr( $label ); ?>">
 					<?php
 					if ( in_array( $key, [ 'status', 'action' ], true ) ) {
 						echo wp_kses_post( $row_data[ $key ] ?? '—' );
@@ -625,10 +625,10 @@ class Payment_History_Shortcode {
 								<tbody>
 									<?php foreach ( $refunds as $refund ) : ?>
 									<tr>
-										<td><?php echo esc_html( ! empty( $refund['refunded_at'] ) ? date_i18n( get_option( 'date_format' ), strtotime( $refund['refunded_at'] ) ) : '—' ); ?></td>
-										<td><?php echo esc_html( $this->format_amount( Stripe_Helper::amount_from_stripe_format( $refund['amount'] ?? 0, $currency ), $currency ) ); ?></td>
-										<td><?php echo wp_kses_post( $this->get_status_badge( $refund['status'] ?? 'processed' ) ); ?></td>
-										<td><code><?php echo esc_html( $refund['refund_id'] ?? '—' ); ?></code></td>
+										<td data-label="<?php esc_attr_e( 'Date', 'sureforms' ); ?>"><?php echo esc_html( ! empty( $refund['refunded_at'] ) ? date_i18n( get_option( 'date_format' ), strtotime( $refund['refunded_at'] ) ) : '—' ); ?></td>
+										<td data-label="<?php esc_attr_e( 'Amount', 'sureforms' ); ?>"><?php echo esc_html( $this->format_amount( Stripe_Helper::amount_from_stripe_format( $refund['amount'] ?? 0, $currency ), $currency ) ); ?></td>
+										<td data-label="<?php esc_attr_e( 'Status', 'sureforms' ); ?>"><?php echo wp_kses_post( $this->get_status_badge( $refund['status'] ?? 'processed' ) ); ?></td>
+										<td data-label="<?php esc_attr_e( 'Refund ID', 'sureforms' ); ?>"><code><?php echo esc_html( $refund['refund_id'] ?? '—' ); ?></code></td>
 									</tr>
 									<?php endforeach; ?>
 								</tbody>
