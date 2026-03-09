@@ -625,17 +625,6 @@ abstract class Base {
 	}
 
 	/**
-	 * Get the allowed column names for ORDER BY clauses.
-	 * Child classes may override this method to restrict orderable columns further.
-	 *
-	 * @since x.x.x
-	 * @return array<string>
-	 */
-	protected function get_allowed_orderby_columns() {
-		return array_merge( array_keys( $this->get_schema() ), [ 'updated_at' ] );
-	}
-
-	/**
 	 * Retrieves a list of records based on the provided arguments.
 	 *
 	 * This method fetches results from the database, allowing for various
@@ -682,6 +671,17 @@ abstract class Base {
 			$_args['columns'],
 			$extra_queries
 		);
+	}
+
+	/**
+	 * Get the allowed column names for ORDER BY clauses.
+	 * Child classes may override this method to restrict orderable columns further.
+	 *
+	 * @since x.x.x
+	 * @return array<string>
+	 */
+	public function get_allowed_orderby_columns() {
+		return array_merge( array_keys( $this->get_schema() ), [ 'updated_at' ] );
 	}
 
 	/**

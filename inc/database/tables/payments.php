@@ -502,8 +502,10 @@ class Payments extends Base {
 			]
 		);
 
+		$orderby       = ! empty( $_args['orderby'] ) && is_string( $_args['orderby'] ) && in_array( $_args['orderby'], self::ALLOWED_COLUMNS, true ) ? $_args['orderby'] : 'created_at';
+		$order         = 'ASC' === strtoupper( Helper::get_string_value( $_args['order'] ) ) ? 'ASC' : 'DESC';
 		$extra_queries = [
-			sprintf( 'ORDER BY `%1$s` %2$s', Helper::get_string_value( esc_sql( $_args['orderby'] ) ), Helper::get_string_value( esc_sql( $_args['order'] ) ) ),
+			sprintf( 'ORDER BY `%1$s` %2$s', $orderby, $order ),
 		];
 
 		if ( $set_limit ) {
@@ -1132,7 +1134,7 @@ class Payments extends Base {
 
 		// Order by.
 		$order        = 'ASC' === strtoupper( $_args['order'] ) ? 'ASC' : 'DESC';
-		$orderby      = ( ! empty( $_args['orderby'] ) && is_string( $_args['orderby'] ) && in_array( $_args['orderby'], self::ALLOWED_COLUMNS, true ) ) ? $_args['orderby'] : 'created_at';
+		$orderby      = ! empty( $_args['orderby'] ) && is_string( $_args['orderby'] ) && in_array( $_args['orderby'], self::ALLOWED_COLUMNS, true ) ? $_args['orderby'] : 'created_at';
 		$order_clause = "ORDER BY {$orderby} {$order}";
 
 		// Limit clause.
