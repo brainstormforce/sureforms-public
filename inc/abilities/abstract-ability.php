@@ -143,7 +143,7 @@ abstract class Abstract_Ability {
 	 * priority, and openWorldHint flags. Subclasses should override to customize.
 	 *
 	 * @since x.x.x
-	 * @return array<string,bool|float>
+	 * @return array<string,bool|float|string>
 	 */
 	public function get_annotations() {
 		return [

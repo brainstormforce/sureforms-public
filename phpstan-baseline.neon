@@ -1,0 +1,23 @@
+parameters:
+	ignoreErrors:
+		# WP 6.9 Abilities API — not available in phpstan-wordpress stubs yet.
+		-
+			message: '#^Function wp_get_abilities not found\.$#'
+			path: inc/abilities/abilities-registrar.php
+			count: 1
+		-
+			message: '#^Class WP\\MCP\\Transport\\Http\\RestTransport not found\.$#'
+			path: inc/abilities/abilities-registrar.php
+			count: 1
+		-
+			message: '#^Call to an undefined method object\:\:create_server\(\)\.$#'
+			path: inc/abilities/abilities-registrar.php
+			count: 1
+		-
+			message: '#^Class WP\\MCP\\Infrastructure\\ErrorHandling\\ErrorLogMcpErrorHandler not found\.$#'
+			path: inc/abilities/abilities-registrar.php
+			count: 1
+		-
+			message: '#^Class WP\\MCP\\Infrastructure\\Observability\\NullMcpObservabilityHandler not found\.$#'
+			path: inc/abilities/abilities-registrar.php
+			count: 1

@@ -71,8 +71,7 @@ class Abilities_Registrar {
 	public static function mcp_adapter_enabled() {
 		return function_exists( 'wp_register_ability' ) &&
 			class_exists( 'WP\MCP\Plugin' ) &&
-			(bool) get_option( 'srfm_mcp_server', false )
-		;
+			(bool) get_option( 'srfm_mcp_server', false );
 	}
 
 	/**
