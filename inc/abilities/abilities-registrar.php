@@ -79,7 +79,7 @@ class Abilities_Registrar {
 	 *
 	 * Creates endpoint: {site_url}/wp-json/sureforms/v1/mcp
 	 *
-	 * @param object $adapter The MCP adapter instance.
+	 * @param \WP\MCP\Adapter\Adapter $adapter The MCP adapter instance.
 	 * @since x.x.x
 	 * @return void
 	 */
@@ -89,7 +89,8 @@ class Abilities_Registrar {
 
 		foreach ( $abilities as $ability ) {
 			$meta = $ability->get_meta();
-			if ( ! empty( $meta['mcp']['public'] ) && 0 === strpos( $ability->get_name(), 'sureforms/' ) ) {
+			$mcp  = $meta['mcp'] ?? [];
+			if ( is_array( $mcp ) && ! empty( $mcp['public'] ) && 0 === strpos( $ability->get_name(), 'sureforms/' ) ) {
 				$tools[] = $ability->get_name();
 			}
 		}
