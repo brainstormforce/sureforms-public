@@ -254,8 +254,8 @@ class Rest_Api {
 			$title   = get_the_title( $post_id );
 			$items[] = [
 				'id'    => $post_id,
-				'label' => ! empty( $title ) ? esc_html( $title ) : (string) $post_id,
-				'value' => esc_url( $permalink ),
+				'label' => ! empty( $title ) ? wp_strip_all_tags( $title ) : (string) $post_id,
+				'value' => esc_url_raw( $permalink ),
 			];
 		}
 
@@ -293,10 +293,6 @@ class Rest_Api {
 					"{$wpdb->posts}.post_title LIKE %s",
 					$wild . $wpdb->esc_like( $term ) . $wild
 				);
-			}
-
-			if ( ! is_user_logged_in() ) {
-				$search_sql[] = "{$wpdb->posts}.post_password = ''";
 			}
 
 			$search = ' AND ' . implode( ' AND ', $search_sql );

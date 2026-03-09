@@ -1,6 +1,6 @@
 import Editor from '../QuillEditor';
 import { __ } from '@wordpress/i18n';
-import { useEffect, useState } from '@wordpress/element';
+import { useEffect, useRef, useState } from '@wordpress/element';
 import { Select, Label, Input } from '@bsf/force-ui';
 import RadioGroup from '@Admin/components/RadioGroup';
 import { useDebouncedCallback } from 'use-debounce';
@@ -27,10 +27,14 @@ const DefaultConfirmationTypes = ( {
 	keyValueComponent,
 } ) => {
 	const [ canDisplayError, setCanDisplayError ] = useState( false );
+	const controllerRef = useRef( null );
 	const handlePageSearch = useDebouncedCallback( ( keyword = '' ) => {
+		controllerRef.current?.abort();
+		controllerRef.current = new AbortController();
 		getWordPressPages( setPageOptions, {
 			search: keyword,
 			selectedUrl: data?.page_url || '',
+			signal: controllerRef.current.signal,
 		} );
 	}, 300 );
 
@@ -46,6 +50,7 @@ const DefaultConfirmationTypes = ( {
 	useEffect( () => {
 		return () => {
 			handlePageSearch.cancel();
+			controllerRef.current?.abort();
 		};
 	}, [ handlePageSearch ] );
 
@@ -108,6 +113,7 @@ const DefaultConfirmationTypes = ( {
 								} }
 								combobox
 								searchFn={ handlePageSearch }
+								debounceDelay={ 0 }
 								searchPlaceholder={ __(
 									'Search for a page',
 									'sureforms'
