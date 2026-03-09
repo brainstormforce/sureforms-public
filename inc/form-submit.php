@@ -1292,23 +1292,26 @@ class Form_Submit {
 		/**
 		 * Filters the submission data before preparing it for storage.
 		 *
-		 * Note: A transient `form-id` key is injected into `$submission_data` before this filter
-		 * and removed after. Filter consumers can read it but should not rely on it persisting.
+		 * The second parameter is a context array containing additional metadata
+		 * about the submission. This array is extensible — new keys may be added
+		 * in future versions without changing the filter signature.
 		 *
-		 * @since x.x.x Added transient `form-id` key to `$submission_data` (removed before return).
+		 * @since x.x.x
 		 *
-		 * @param array $submission_data Processed form submission data.
+		 * @param array<string,mixed> $submission_data Processed form submission data.
+		 * @param array<string,mixed> $context {
+		 *     Additional context for the submission.
+		 *
+		 *     @type int $form_id The ID of the form being submitted.
+		 * }
 		 */
-		$submission_data['form-id'] = $form_id;
-
-		$filtered_submission_data = apply_filters( 'srfm_before_prepare_submission_data', $submission_data );
-
-		// Unset the form-id from the form data.
-		if ( isset( $filtered_submission_data['form-id'] ) ) {
-			unset( $filtered_submission_data['form-id'] );
-		}
-
-		return $filtered_submission_data;
+		return apply_filters(
+			'srfm_before_prepare_submission_data',
+			$submission_data,
+			[
+				'form_id' => $form_id,
+			]
+		);
 	}
 
 	/**
