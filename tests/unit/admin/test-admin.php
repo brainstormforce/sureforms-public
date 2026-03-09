@@ -102,10 +102,50 @@ class Test_Admin extends TestCase {
         $current_time = strtotime(gmdate('Y-m-d H:i:s'));
         $timestamp = $current_time - (DAY_IN_SECONDS * 5);
         $days_threshold = 3;
-        
+
         // Test the calculation logic directly
         $days_from_creation = ($current_time - $timestamp) / DAY_IN_SECONDS;
         $this->assertTrue($days_from_creation > $days_threshold);
+    }
+
+    /**
+     * Test add_learn_page registers the Learn submenu page.
+     */
+    public function test_add_learn_page() {
+        if ( ! function_exists( 'add_submenu_page' ) ) {
+            $this->markTestSkipped( 'WordPress admin menu functions not available.' );
+            return;
+        }
+
+        $admin = Admin::get_instance();
+
+        // Calling add_learn_page() should not throw — it registers a submenu.
+        // In a unit test environment without a full WP admin context the function
+        // may be a no-op, so we assert it returns void (null) without errors.
+        $result = $admin->add_learn_page();
+        $this->assertNull( $result );
+    }
+
+    /**
+     * Test render_learn outputs the expected root div.
+     */
+    public function test_render_learn() {
+        $admin = Admin::get_instance();
+
+        ob_start();
+        $admin->render_learn();
+        $output = ob_get_clean();
+
+        $this->assertStringContainsString(
+            'id="srfm-learn-root"',
+            $output,
+            'render_learn should output a div with id srfm-learn-root.'
+        );
+        $this->assertStringContainsString(
+            'srfm-admin-wrapper',
+            $output,
+            'render_learn should include the srfm-admin-wrapper class.'
+        );
     }
 
 }

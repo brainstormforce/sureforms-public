@@ -403,6 +403,7 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 == Changelog ==
 = x.x.x =
 * Fix: Added `srfm_confirmation_links_open_in_new_tab` filter to allow confirmation message links to open in the same tab.
+* New: Added Learn section.
 * New: Added “Send as Raw HTML” option in form email notifications to send fully structured HTML emails.
 * Fix: Preserve input formatting in Entries View.
 = 2.5.1 - 16th February 2026 =
