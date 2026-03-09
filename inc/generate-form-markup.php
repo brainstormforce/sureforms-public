@@ -794,6 +794,13 @@ class Generate_Form_Markup {
 		$smart_tags           = new Smart_Tags();
 		$confirmation_message = $smart_tags->process_smart_tags( $confirmation_message, $submission_data, $form_data );
 
+		/**
+		 * Filter whether confirmation message links should open in a new tab.
+		 *
+		 * @since x.x.x
+		 *
+		 * @param bool $open_in_new_tab Whether links open in a new tab. Default true.
+		 */
 		$open_in_new_tab = (bool) apply_filters( 'srfm_confirmation_links_open_in_new_tab', true );
 
 		$markup = Helper::strip_js_attributes(

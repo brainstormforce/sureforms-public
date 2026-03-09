@@ -1507,6 +1507,7 @@ class Helper {
 	 * @param string $html               The HTML content to process.
 	 * @param bool   $remove_link_target Optional. When true, removes target and strips noopener/noreferrer from rel on links. Default false.
 	 * @since 1.7.1
+	 * @since x.x.x Added $remove_link_target parameter.
 	 * @return string The cleaned HTML content without JavaScript attributes.
 	 */
 	public static function strip_js_attributes( $html, $remove_link_target = false ) {
@@ -1558,7 +1559,7 @@ class Helper {
 						$link->removeAttribute( 'target' );
 						$rel = $link->getAttribute( 'rel' );
 						if ( $rel ) {
-							$cleaned_rel = trim( (string) preg_replace( '/\b(noopener|noreferrer)\b/i', '', $rel ) );
+							$cleaned_rel = trim( (string) preg_replace( '/\s+/', ' ', (string) preg_replace( '/\b(noopener|noreferrer)\b/i', '', $rel ) ) );
 							if ( $cleaned_rel ) {
 								$link->setAttribute( 'rel', $cleaned_rel );
 							} else {
