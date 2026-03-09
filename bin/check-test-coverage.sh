@@ -3,10 +3,11 @@
 # Exit if any command fails.
 set -e
 
-BASE_SHA="${1:?Usage: check-test-coverage.sh <base-sha>}"
+BASE_SHA="${1:?Usage: check-test-coverage.sh <base-sha> [<head-sha>]}"
+HEAD_SHA="${2:-HEAD}"
 
 # Step 1 — Extract diff for PHP files in source directories (skip third-party).
-DIFF=$(git diff "$BASE_SHA"...HEAD --unified=0 --diff-filter=AM -- 'inc/*.php' 'admin/*.php' 'modules/*.php' ':!inc/lib/')
+DIFF=$(git diff "$BASE_SHA"..."$HEAD_SHA" --unified=0 --diff-filter=AM -- 'inc/*.php' 'admin/*.php' 'modules/*.php' ':!inc/lib/')
 
 if [ -z "$DIFF" ]; then
 	echo "No PHP source changes detected. Skipping."
