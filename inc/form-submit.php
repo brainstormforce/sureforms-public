@@ -460,6 +460,15 @@ class Form_Submit {
 		}
 
 		if ( ! isset( $form_data['srfm-honeypot-field'] ) ) {
+			// If the companion flag is present, the honeypot field was rendered but stripped by a bot.
+			if ( ! empty( $form_data['srfm-honeypot-enabled'] ) ) {
+				wp_send_json_error(
+					[
+						'message' => __( 'Your submission was flagged as spam. Please try again.', 'sureforms' ),
+					]
+				);
+			}
+
 			if ( ! empty( $google_captcha_secret_key ) ) {
 				if ( isset( $form_data['sureforms_form_submit'] ) ) {
 					$secret_key       = $google_captcha_secret_key;

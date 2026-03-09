@@ -544,6 +544,7 @@ class Generate_Form_Markup {
 				<input type="hidden" value="" name="srfm-sender-email-field" id="srfm-sender-email">
 				<input type="hidden" value="<?php echo esc_attr( Helper::get_string_value( $is_page_break ) ); ?>" id="srfm-page-break">
 				<?php if ( $honeypot_spam ) { ?>
+					<input type="hidden" value="1" name="srfm-honeypot-enabled">
 					<input type="hidden" value="" name="srfm-honeypot-field">
 					<?php
 				}
