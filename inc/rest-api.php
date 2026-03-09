@@ -251,7 +251,7 @@ class Rest_Api {
 				continue;
 			}
 
-			$title   = get_the_title( $post_id );
+			$title   = get_post_field( 'post_title', $post_id );
 			$items[] = [
 				'id'    => $post_id,
 				'label' => ! empty( $title ) ? wp_strip_all_tags( $title ) : (string) $post_id,
