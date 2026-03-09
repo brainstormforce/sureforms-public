@@ -32,4 +32,33 @@ class Test_Email_Template extends TestCase {
 		$this->assertStringContainsString( '</body>', $result );
 		$this->assertStringContainsString( '</table>', $result );
 	}
+
+	public function test_get_raw_header() {
+		$result = $this->email_template->get_raw_header();
+		$this->assertIsString( $result );
+		$this->assertStringContainsString( '<!DOCTYPE html>', $result );
+		$this->assertStringContainsString( '<html dir=', $result );
+		$this->assertStringContainsString( '<head>', $result );
+		$this->assertStringContainsString( '<body', $result );
+		$this->assertStringContainsString( 'srfm_raw_wrapper', $result );
+		$this->assertStringContainsString( 'srfm_raw_body_content_inner', $result );
+	}
+
+	public function test_get_raw_footer() {
+		$result = $this->email_template->get_raw_footer();
+		$this->assertIsString( $result );
+		$this->assertStringContainsString( '</body>', $result );
+		$this->assertStringContainsString( '</html>', $result );
+		$this->assertStringContainsString( 'srfm_raw_footer_credit', $result );
+		$this->assertStringContainsString( gmdate( 'Y' ), $result );
+	}
+
+	public function test_render_raw() {
+		$email_body = '<p>Test submission content</p>';
+		$result     = $this->email_template->render_raw( [], $email_body );
+		$this->assertIsString( $result );
+		$this->assertStringContainsString( '<!DOCTYPE html>', $result );
+		$this->assertStringContainsString( $email_body, $result );
+		$this->assertStringContainsString( '</html>', $result );
+	}
 }
