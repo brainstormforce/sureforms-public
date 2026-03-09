@@ -10,7 +10,7 @@ import {
 	TriangleAlert,
 } from 'lucide-react';
 import { Accordion } from '@bsf/force-ui';
-import ottoKitIcon from '../../../admin/assets/ottokit.png';
+import ottoKitIcon from '@Image/ottokit.png';
 
 function useQuery() {
 	return new URLSearchParams( useLocation().search );

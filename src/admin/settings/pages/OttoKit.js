@@ -308,6 +308,47 @@ const OttoKitPage = ( {
 		setButtonText( getButtonText( effectiveStatus, effectiveConnected ) );
 	}, [ plugin, pluginConnected, action, localPluginStatus ] );
 
+	const isActivated =
+		( localPluginStatus || plugin?.status ) === 'Activated';
+
+	const showInstallTooltip =
+		action === 'sureforms_recommended_plugin_install' && ! isActivated;
+
+	const actionButton = (
+		<Button
+			size="md"
+			variant="primary"
+			onClick={ handlePluginActionTrigger }
+			disabled={ btnDisabled }
+			className={
+				isActivated
+					? '!bg-badge-background-green !border !border-border-subtle shadow-sm !text-text-primary !outline-border-subtle'
+					: ''
+			}
+			icon={
+				plugin?.status === 'Install' && ! isActivated ? (
+					<Plus className="size-5" />
+				) : null
+			}
+		>
+			{ CTA || buttonText || getPluginStatusText( plugin ) }
+		</Button>
+	);
+
+	const wrappedActionButton = showInstallTooltip ? (
+		<Tooltip
+			content={ __(
+				'This will install and activate OttoKit on your WordPress site to enable automation features.',
+				'sureforms'
+			) }
+			placement="top"
+		>
+			{ actionButton }
+		</Tooltip>
+	) : (
+		actionButton
+	);
+
 	return (
 		<>
 			{ loading || loadingData ? (
@@ -361,61 +402,7 @@ const OttoKitPage = ( {
 										</Container>
 									) ) }
 									<Container className="p-2 gap-3">
-										{ ( () => {
-											const showInstallTooltip =
-												action ===
-													'sureforms_recommended_plugin_install' &&
-												( localPluginStatus ||
-													plugin?.status ) !==
-													'Activated';
-
-											const actionButton = (
-												<Button
-													size="md"
-													variant="primary"
-													onClick={
-														handlePluginActionTrigger
-													}
-													disabled={ btnDisabled }
-													className={
-														( localPluginStatus ||
-															plugin?.status ) ===
-														'Activated'
-															? '!bg-badge-background-green !border !border-[#E5E7EB] shadow-sm !text-text-primary !outline-[#E5E7EB]'
-															: ''
-													}
-													icon={
-														plugin?.status ===
-															'Install' &&
-														( localPluginStatus ||
-															plugin?.status ) !==
-															'Activated' ? (
-																<Plus className="size-5" />
-															) : null
-													}
-												>
-													{ CTA ||
-														buttonText ||
-														getPluginStatusText(
-															plugin
-														) }
-												</Button>
-											);
-
-											return showInstallTooltip ? (
-												<Tooltip
-													content={ __(
-														'This will install and activate OttoKit on your WordPress site to enable automation features.',
-														'sureforms'
-													) }
-													placement="top"
-												>
-													{ actionButton }
-												</Tooltip>
-											) : (
-												actionButton
-											);
-										} )() }
+										{ wrappedActionButton }
 									</Container>
 								</div>
 							</Container>

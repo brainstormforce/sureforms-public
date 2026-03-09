@@ -48,7 +48,7 @@ import FormRestriction from '../form-restrictions/FormRestriction';
 import { FormRestrictionContext } from '../form-restrictions/context';
 import FeaturePreview from '../FeaturePreview';
 import OttoKitPage from '@Admin/settings/pages/OttoKit';
-import ottoKitIcon from '../../../../../admin/assets/ottokit.png';
+import ottoKitIcon from '@Image/ottokit.png';
 
 const Dialog = ( {
 	open,
