@@ -40,7 +40,6 @@ class Update_Global_Settings extends Abstract_Ability {
 	 * This prevents arbitrary option injection via crafted key names.
 	 *
 	 * @since x.x.x
-	 * @var array<string,array<string>>
 	 */
 	private const ALLOWED_KEYS = [
 		'general'             => [
