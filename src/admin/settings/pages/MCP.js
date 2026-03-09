@@ -26,7 +26,7 @@ const CopyButton = ( { textToCopy, isCopied, setIsCopied } ) => (
 	/>
 );
 
-const AIPage = ( { loading, aiTabOptions, updateGlobalSettings } ) => {
+const MCPPage = ( { loading, mcpTabOptions, updateGlobalSettings } ) => {
 	const [ isCopied, setIsCopied ] = useState( false );
 
 	const mcpEndpointUrl = `${ srfm_admin.site_url }/wp-json/sureforms/v1/mcp`;
@@ -41,12 +41,12 @@ const AIPage = ( { loading, aiTabOptions, updateGlobalSettings } ) => {
 						'sureforms'
 					),
 				} }
-				value={ aiTabOptions.srfm_abilities_api_edit }
+				value={ mcpTabOptions.srfm_abilities_api_edit }
 				onChange={ ( value ) =>
 					updateGlobalSettings(
 						'srfm_abilities_api_edit',
 						value,
-						'ai-settings'
+						'mcp-settings'
 					)
 				}
 			/>
@@ -63,12 +63,12 @@ const AIPage = ( { loading, aiTabOptions, updateGlobalSettings } ) => {
 						'sureforms'
 					),
 				} }
-				value={ aiTabOptions.srfm_abilities_api_delete }
+				value={ mcpTabOptions.srfm_abilities_api_delete }
 				onChange={ ( value ) =>
 					updateGlobalSettings(
 						'srfm_abilities_api_delete',
 						value,
-						'ai-settings'
+						'mcp-settings'
 					)
 				}
 			/>
@@ -100,16 +100,16 @@ const AIPage = ( { loading, aiTabOptions, updateGlobalSettings } ) => {
 							</>
 						),
 					} }
-					value={ aiTabOptions.srfm_mcp_server }
+					value={ mcpTabOptions.srfm_mcp_server }
 					onChange={ ( value ) =>
 						updateGlobalSettings(
 							'srfm_mcp_server',
 							value,
-							'ai-settings'
+							'mcp-settings'
 						)
 					}
 				/>
-				{ aiTabOptions.srfm_mcp_server && (
+				{ mcpTabOptions.srfm_mcp_server && (
 					<div className="flex items-end gap-2">
 						<div className="flex-1">
 							<Input
@@ -180,4 +180,4 @@ const AIPage = ( { loading, aiTabOptions, updateGlobalSettings } ) => {
 	);
 };
 
-export default AIPage;
+export default MCPPage;

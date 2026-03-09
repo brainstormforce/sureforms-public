@@ -24,7 +24,7 @@ const PageTitleSection = ( { title, hidePageTitle, helpText } ) => {
 		'security-settings',
 		'ottokit-settings',
 		'payments-settings',
-		'ai-settings',
+		'mcp-settings',
 	] );
 
 	return (

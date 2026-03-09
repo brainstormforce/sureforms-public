@@ -110,8 +110,8 @@ class Global_Settings {
 			case 'payments-settings':
 				$is_option_saved = self::srfm_save_payments_settings( $setting_options );
 				break;
-			case 'ai-settings':
-				$is_option_saved = self::srfm_save_ai_settings( $setting_options );
+			case 'mcp-settings':
+				$is_option_saved = self::srfm_save_mcp_settings( $setting_options );
 				break;
 			default:
 				$is_option_saved = false;
@@ -352,13 +352,13 @@ class Global_Settings {
 	}
 
 	/**
-	 * Save AI Settings
+	 * Save MCP Settings
 	 *
 	 * @param array<mixed> $setting_options Setting options.
 	 * @return bool
 	 * @since 2.6.0
 	 */
-	public static function srfm_save_ai_settings( $setting_options ) {
+	public static function srfm_save_mcp_settings( $setting_options ) {
 		$srfm_abilities_api_edit   = ! empty( $setting_options['srfm_abilities_api_edit'] );
 		$srfm_abilities_api_delete = ! empty( $setting_options['srfm_abilities_api_delete'] );
 		$srfm_mcp_server           = ! empty( $setting_options['srfm_mcp_server'] );
@@ -370,7 +370,7 @@ class Global_Settings {
 
 		// Save grouped option for the settings UI fetch.
 		return update_option(
-			'srfm_ai_settings_options',
+			'srfm_mcp_settings_options',
 			[
 				'srfm_abilities_api_edit'   => $srfm_abilities_api_edit,
 				'srfm_abilities_api_delete' => $srfm_abilities_api_delete,
@@ -456,8 +456,8 @@ class Global_Settings {
 			];
 		}
 
-		if ( empty( $global_setting_options['srfm_ai_settings_options'] ) ) {
-			$global_setting_options['srfm_ai_settings_options'] = [
+		if ( empty( $global_setting_options['srfm_mcp_settings_options'] ) ) {
+			$global_setting_options['srfm_mcp_settings_options'] = [
 				'srfm_abilities_api_edit'   => (bool) get_option( 'srfm_abilities_api_edit', false ),
 				'srfm_abilities_api_delete' => (bool) get_option( 'srfm_abilities_api_delete', false ),
 				'srfm_mcp_server'           => (bool) get_option( 'srfm_mcp_server', false ),

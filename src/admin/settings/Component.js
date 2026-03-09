@@ -10,7 +10,7 @@ import ValidationsPage from './pages/Validations';
 import SecurityPage from './pages/Security';
 import IntegrationPage from './pages/Integrations';
 import PaymentsPage from '../payment/global-setting-page';
-import AIPage from './pages/AI';
+import MCPPage from './pages/MCP';
 import OttoKitPage from './pages/OttoKit';
 import { applyFilters } from '@wordpress/hooks';
 import PageTitleSection from '@Admin/components/PageTitleSection';
@@ -48,7 +48,7 @@ const Component = ( { path, subpage } ) => {
 		srfm_hcaptcha_secret_key: '',
 		srfm_honeypot: false,
 	} );
-	const [ aiTabOptions, setAiTabOptions ] = useState( {
+	const [ mcpTabOptions, setMcpTabOptions ] = useState( {
 		srfm_abilities_api_edit: false,
 		srfm_abilities_api_delete: false,
 		srfm_mcp_server: false,
@@ -65,7 +65,7 @@ const Component = ( { path, subpage } ) => {
 		'srfm_email_summary_settings_options',
 		'srfm_security_settings_options',
 		'srfm_default_dynamic_block_option',
-		'srfm_ai_settings_options',
+		'srfm_mcp_settings_options',
 	];
 
 	// set page title and icon based on the path.
@@ -168,13 +168,13 @@ const Component = ( { path, subpage } ) => {
 					} );
 				}
 
-				if ( data.srfm_ai_settings_options ) {
+				if ( data.srfm_mcp_settings_options ) {
 					const {
 						srfm_abilities_api_edit,
 						srfm_abilities_api_delete,
 						srfm_mcp_server,
-					} = data.srfm_ai_settings_options;
-					setAiTabOptions( {
+					} = data.srfm_mcp_settings_options;
+					setMcpTabOptions( {
 						srfm_abilities_api_edit,
 						srfm_abilities_api_delete,
 						srfm_mcp_server,
@@ -267,13 +267,13 @@ const Component = ( { path, subpage } ) => {
 				[ setting ]: value,
 			};
 			setDynamicBlockOptions( updatedTabOptions );
-		} else if ( tab === 'ai-settings' ) {
+		} else if ( tab === 'mcp-settings' ) {
 			updatedTabOptions = {
-				...aiTabOptions,
+				...mcpTabOptions,
 				srfm_tab: tab,
 				[ setting ]: value,
 			};
-			setAiTabOptions( updatedTabOptions );
+			setMcpTabOptions( updatedTabOptions );
 		} else if ( tab === 'payments-settings' ) {
 			updatedTabOptions = {
 				...paymentsSettings,
@@ -329,10 +329,10 @@ const Component = ( { path, subpage } ) => {
 					/>
 				) }
 
-				{ 'ai-settings' === path && (
-					<AIPage
+				{ 'mcp-settings' === path && (
+					<MCPPage
 						loading={ loading }
-						aiTabOptions={ aiTabOptions }
+						mcpTabOptions={ mcpTabOptions }
 						updateGlobalSettings={ updateGlobalSettings }
 					/>
 				) }
