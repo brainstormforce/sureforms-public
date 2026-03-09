@@ -87,6 +87,9 @@ export default ( props ) => {
 	const query = useQuery();
 
 	const page = query.get( 'page' );
+	const source = query.get( 'source' );
+	const [ showLearnTip, setShowLearnTip ] = useState( false );
+	const [ showGenerateTip, setShowGenerateTip ] = useState( false );
 
 	const initSpeechRecognition = () => {
 		const SpeechRecognition =
@@ -281,6 +284,26 @@ export default ( props ) => {
 		return () => clearInterval( interval );
 	}, [ textAreaPlaceholder ] );
 
+	// Show learn tip tooltips sequentially when redirected from Learn section.
+	useEffect( () => {
+		if ( source === 'learn' ) {
+			setShowLearnTip( true );
+			const hideTimer = setTimeout( () => {
+				setShowLearnTip( false );
+				setShowGenerateTip( true );
+			}, 5000 );
+			return () => clearTimeout( hideTimer );
+		}
+	}, [ source ] );
+
+	// Auto-dismiss generate tip after 5 seconds.
+	useEffect( () => {
+		if ( showGenerateTip ) {
+			const timer = setTimeout( () => setShowGenerateTip( false ), 5000 );
+			return () => clearTimeout( timer );
+		}
+	}, [ showGenerateTip ] );
+
 	const formCreationleft = srfm_admin?.srfm_ai_usage_details?.remaining ?? 0;
 
 	const isRegistered =
@@ -328,6 +351,17 @@ export default ( props ) => {
 							</Container.Item>
 							<Container.Item>
 								<div className="w-full min-w-[750px] mx-auto p-2 relative">
+									{ showLearnTip && (
+										<div className="absolute top-1/2 -translate-y-1/2 -right-2 translate-x-full z-[999999] pointer-events-none">
+											<div className="absolute top-1/2 -translate-y-1/2 -left-1 w-2 h-2 bg-tooltip-background-dark rotate-45" />
+											<div className="bg-tooltip-background-dark text-text-on-color text-sm px-3 py-2 rounded-md shadow-lg whitespace-nowrap">
+												{ __(
+													'Describe what kind of form you want',
+													'sureforms'
+												) }
+											</div>
+										</div>
+									) }
 									<div
 										className="relative rounded-lg shadow-lg p-[2px]"
 										style={ {
@@ -356,9 +390,17 @@ export default ( props ) => {
 													handlePromptClick( e );
 												} }
 												onInput={ handleTyping }
-												onFocus={ () =>
-													setIsFocused( true )
-												}
+												onFocus={ () => {
+													setIsFocused( true );
+													if ( showLearnTip ) {
+														setShowLearnTip(
+															false
+														);
+														setShowGenerateTip(
+															true
+														);
+													}
+												} }
 												onBlur={ () =>
 													setIsFocused( false )
 												}
@@ -396,42 +438,55 @@ export default ( props ) => {
 															toggleListening
 														}
 													/>
-													<Button
-														className="gap-1"
-														icon={
-															<Sparkles className="w-4 h-4" />
-														}
-														iconPosition="left"
-														size="md"
-														variant="primary"
-														onClick={ () => {
-															if (
-																! text ||
-																! text.trim()
-															) {
-																const textArea =
-																	document.getElementById(
-																		'textarea'
-																	);
-																textArea.focus();
-																return;
-															}
-
-															handleCreateAiForm(
-																text,
-																[],
-																true
-															);
-															setIsBuildingForm(
-																true
-															);
-														} }
-													>
-														{ __(
-															'Generate',
-															'sureforms'
+													<div className="relative">
+														{ showGenerateTip && (
+															<div className="absolute top-1/2 -translate-y-1/2 -right-2 translate-x-full z-[999999] pointer-events-none">
+																<div className="absolute top-1/2 -translate-y-1/2 -left-1 w-2 h-2 bg-tooltip-background-dark rotate-45" />
+																<div className="bg-tooltip-background-dark text-text-on-color text-sm px-3 py-2 rounded-md shadow-lg whitespace-nowrap">
+																	{ __(
+																		'Click to generate the form',
+																		'sureforms'
+																	) }
+																</div>
+															</div>
 														) }
-													</Button>
+														<Button
+															className="gap-1"
+															icon={
+																<Sparkles className="w-4 h-4" />
+															}
+															iconPosition="left"
+															size="md"
+															variant="primary"
+															onClick={ () => {
+																if (
+																	! text ||
+																	! text.trim()
+																) {
+																	const textArea =
+																		document.getElementById(
+																			'textarea'
+																		);
+																	textArea.focus();
+																	return;
+																}
+
+																handleCreateAiForm(
+																	text,
+																	[],
+																	true
+																);
+																setIsBuildingForm(
+																	true
+																);
+															} }
+														>
+															{ __(
+																'Generate',
+																'sureforms'
+															) }
+														</Button>
+													</div>
 												</Container.Item>
 											</Container>
 										</div>
@@ -466,6 +521,14 @@ export default ( props ) => {
 							size="md"
 							variant="ghost"
 							onClick={ () => {
+								// If coming from the Learn section, set a relay flag so the
+								// editor can store the new post ID for Lesson 2's smart redirect.
+								if ( source === 'learn' ) {
+									localStorage.setItem(
+										'srfmLearnFlow',
+										'build-scratch'
+									);
+								}
 								window.location.href = `${ srfm_admin.site_url }/wp-admin/post-new.php?post_type=sureforms_form`;
 							} }
 						>
