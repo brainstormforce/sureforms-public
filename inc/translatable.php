@@ -117,6 +117,6 @@ class Translatable {
 	 * @return string Translated default form restriction message.
 	 */
 	public static function get_default_form_restriction_message() {
-		return __( 'This form is now closed as we\'ve received all the entries.', 'sureforms' );
+		return __( 'This form is now closed as the maximum number of entries has been received.', 'sureforms' );
 	}
 }

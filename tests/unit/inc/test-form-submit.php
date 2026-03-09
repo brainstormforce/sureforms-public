@@ -127,6 +127,170 @@ class Test_Form_Submit extends TestCase {
         $this->assertEquals($expected, $result);
     }
 
+	/**
+	 * Test validate_turnstile_token with empty secret key.
+	 */
+	public function test_validate_turnstile_token_empty_secret_key() {
+		$result = Form_Submit::validate_turnstile_token( '', 'some-response', '127.0.0.1' );
+		$this->assertIsArray( $result );
+		$this->assertFalse( $result['success'] );
+		$this->assertStringContainsString( 'secret key is invalid', $result['error'] );
+	}
+
+	/**
+	 * Test validate_turnstile_token with non-string secret key.
+	 */
+	public function test_validate_turnstile_token_non_string_secret() {
+		$result = Form_Submit::validate_turnstile_token( 123, 'some-response', '127.0.0.1' );
+		$this->assertIsArray( $result );
+		$this->assertFalse( $result['success'] );
+	}
+
+	/**
+	 * Test validate_turnstile_token with empty response.
+	 */
+	public function test_validate_turnstile_token_empty_response() {
+		$result = Form_Submit::validate_turnstile_token( 'valid-secret', '', '127.0.0.1' );
+		$this->assertIsArray( $result );
+		$this->assertFalse( $result['success'] );
+		$this->assertStringContainsString( 'response is missing', $result['error'] );
+	}
+
+	/**
+	 * Test validate_hcaptcha_token with empty secret key.
+	 */
+	public function test_validate_hcaptcha_token_empty_secret_key() {
+		$result = Form_Submit::validate_hcaptcha_token( '', 'some-response', '127.0.0.1' );
+		$this->assertIsArray( $result );
+		$this->assertFalse( $result['success'] );
+		$this->assertStringContainsString( 'secret key is invalid', $result['error'] );
+	}
+
+	/**
+	 * Test validate_hcaptcha_token with non-string secret key.
+	 */
+	public function test_validate_hcaptcha_token_non_string_secret() {
+		$result = Form_Submit::validate_hcaptcha_token( 456, 'some-response', '127.0.0.1' );
+		$this->assertIsArray( $result );
+		$this->assertFalse( $result['success'] );
+	}
+
+	/**
+	 * Test validate_hcaptcha_token with empty response.
+	 */
+	public function test_validate_hcaptcha_token_empty_response() {
+		$result = Form_Submit::validate_hcaptcha_token( 'valid-secret', '', '127.0.0.1' );
+		$this->assertIsArray( $result );
+		$this->assertFalse( $result['success'] );
+		$this->assertStringContainsString( 'response is missing', $result['error'] );
+	}
+
+	/**
+	 * Test validate_hcaptcha_token with false response.
+	 */
+	public function test_validate_hcaptcha_token_false_response() {
+		$result = Form_Submit::validate_hcaptcha_token( 'valid-secret', false, '127.0.0.1' );
+		$this->assertIsArray( $result );
+		$this->assertFalse( $result['success'] );
+	}
+
+	/**
+	 * Test validate_turnstile_token with false response.
+	 */
+	public function test_validate_turnstile_token_false_response() {
+		$result = Form_Submit::validate_turnstile_token( 'valid-secret', false, '127.0.0.1' );
+		$this->assertIsArray( $result );
+		$this->assertFalse( $result['success'] );
+	}
+
+	/**
+	 * Test recaptcha_error_message with multiple error codes returns first.
+	 */
+	public function test_recaptcha_error_message_multiple_error_codes() {
+		$api_response = [ 'error-codes' => [ 'bad-request', 'timeout-or-duplicate' ] ];
+		$result = $this->form_submit->recaptcha_error_message( 'g-recaptcha', $api_response );
+		$this->assertArrayHasKey( 'log_message', $result );
+		$this->assertStringContainsString( 'bad-request', $result['log_message'] );
+	}
+
+	/**
+	 * Test recaptcha_error_message with empty error-codes array.
+	 */
+	public function test_recaptcha_error_message_empty_error_codes_array() {
+		$api_response = [ 'error-codes' => [] ];
+		$result = $this->form_submit->recaptcha_error_message( 'g-recaptcha', $api_response );
+		$this->assertArrayHasKey( 'detail_message', $result );
+		$this->assertStringContainsString( 'No error code provided', $result['detail_message'] );
+	}
+
+	/**
+	 * Test recaptcha_error_message with non-array error-codes.
+	 */
+	public function test_recaptcha_error_message_non_array_error_codes() {
+		$api_response = [ 'error-codes' => 'string-value' ];
+		$result = $this->form_submit->recaptcha_error_message( 'g-recaptcha', $api_response );
+		$this->assertArrayHasKey( 'detail_message', $result );
+		$this->assertStringContainsString( 'No error code provided', $result['detail_message'] );
+	}
+
+	/**
+	 * Test process_form_fields with empty array.
+	 */
+	public function test_process_form_fields_empty_array() {
+		$result = $this->call_private_method( $this->form_submit, 'process_form_fields', [ [] ] );
+		$this->assertIsArray( $result );
+		$this->assertEmpty( $result );
+	}
+
+	/**
+	 * Test process_form_fields with mixed valid and invalid keys.
+	 */
+	public function test_process_form_fields_mixed_keys() {
+		$form_data = [
+			'text-lbl-field-name' => 'John',
+			'form-id'             => '123',
+			'email-lbl-field-email' => 'test@test.com',
+			'nonce'               => 'abc',
+		];
+		$result = $this->call_private_method( $this->form_submit, 'process_form_fields', [ $form_data ] );
+		$this->assertCount( 2, $result );
+	}
+
+	/**
+	 * Test prepare_submission_data with basic fields.
+	 */
+	public function test_prepare_submission_data_basic() {
+		$submission_data = [
+			'srfm-text-abc123-lbl-first-name' => 'John Doe',
+		];
+		$result = $this->form_submit->prepare_submission_data( $submission_data );
+		$this->assertIsArray( $result );
+		$this->assertArrayHasKey( 'name', $result );
+		$this->assertEquals( 'John Doe', $result['name'] );
+	}
+
+	/**
+	 * Test prepare_submission_data with upload field arrays.
+	 */
+	public function test_prepare_submission_data_upload_field() {
+		$submission_data = [
+			'srfm-upload-abc123-lbl-upload-resume' => [ 'https://example.com/file1.pdf', 'https://example.com/file2.pdf' ],
+		];
+		$result = $this->form_submit->prepare_submission_data( $submission_data );
+		$this->assertIsArray( $result );
+		$this->assertArrayHasKey( 'resume', $result );
+		$this->assertStringContainsString( ',', $result['resume'] );
+	}
+
+	/**
+	 * Test prepare_submission_data with empty submission data.
+	 */
+	public function test_prepare_submission_data_empty() {
+		$result = $this->form_submit->prepare_submission_data( [] );
+		$this->assertIsArray( $result );
+		$this->assertEmpty( $result );
+	}
+
     /**
      * Helper method to call private methods for testing.
      */
