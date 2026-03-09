@@ -12,7 +12,6 @@
 namespace SRFM\Inc\Abilities;
 
 use SRFM\Inc\Abilities\Analytics\Get_Form_Analytics;
-use SRFM\Inc\Abilities\Embedding\Get_Shortcode;
 use SRFM\Inc\Abilities\Entries\Bulk_Get_Entries;
 use SRFM\Inc\Abilities\Entries\Delete_Entry;
 use SRFM\Inc\Abilities\Entries\Get_Entry;
@@ -23,6 +22,7 @@ use SRFM\Inc\Abilities\Forms\Delete_Form;
 use SRFM\Inc\Abilities\Forms\Duplicate_Form as Duplicate_Form_Ability;
 use SRFM\Inc\Abilities\Forms\Get_Form;
 use SRFM\Inc\Abilities\Forms\Get_Form_Stats;
+use SRFM\Inc\Abilities\Forms\Get_Shortcode;
 use SRFM\Inc\Abilities\Forms\List_Forms;
 use SRFM\Inc\Abilities\Forms\Update_Form;
 use SRFM\Inc\Abilities\Settings\Get_Global_Settings;
@@ -160,9 +160,9 @@ class Abilities_Registrar {
 			new Get_Form_Stats(),
 			new List_Entries(),
 			new Get_Entry(),
+			new Bulk_Get_Entries(),
 			new Update_Entry_Status(),
 			new Delete_Entry(),
-			new Bulk_Get_Entries(),
 			new Get_Global_Settings(),
 			new Update_Global_Settings(),
 			new Get_Form_Analytics(),
@@ -181,6 +181,11 @@ class Abilities_Registrar {
 
 		foreach ( $abilities as $ability ) {
 			if ( ! $ability instanceof Abstract_Ability ) {
+				continue;
+			}
+
+			// Enforce minimum capability policy — reject abilities with caps weaker than manage_options.
+			if ( ! $ability->meets_capability_policy() ) {
 				continue;
 			}
 

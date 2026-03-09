@@ -20,17 +20,24 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Entry_Parser trait.
  *
+ * Provides the shared parse_entry() method used by
+ * Get_Entry and Bulk_Get_Entries abilities.
+ *
  * @since x.x.x
  */
 trait Entry_Parser {
 	/**
-	 * Parse a raw entry into structured output with decoded field labels.
+	 * Parse a raw entry array into the standard response shape.
 	 *
-	 * @param array<string,mixed> $entry Raw entry data from the database.
+	 * Handles form data decryption, form title lookup,
+	 * submission info building (with IP masking), and user info.
+	 *
+	 * @param array<string,mixed> $entry Raw entry from the database.
 	 * @since x.x.x
-	 * @return array<string,mixed> Parsed entry data.
+	 * @return array<string,mixed> Parsed entry data (without entry_id — caller prepends it).
 	 */
-	private function parse_entry( $entry ) {
+	protected function parse_entry( array $entry ) {
+		// Parse form data with decrypted labels.
 		$form_data       = [];
 		$excluded_fields = Helper::get_excluded_fields();
 		$entry_form_data = $entry['form_data'] ?? [];
@@ -58,16 +65,31 @@ trait Entry_Parser {
 		}
 
 		// Get form info.
-		$form_id    = absint( $entry['form_id'] ?? 0 );
-		$form_title = get_post_field( 'post_title', $form_id );
+		$raw_form_id = $entry['form_id'] ?? 0;
+		$form_id     = absint( is_numeric( $raw_form_id ) ? (int) $raw_form_id : 0 );
+		$form_title  = get_post_field( 'post_title', $form_id );
 		// Translators: %d is the form ID.
 		$form_name = ! empty( $form_title ) ? $form_title : sprintf( __( 'SureForms Form #%d', 'sureforms' ), $form_id );
 
-		// Build submission info.
+		// Build submission info with IP masking.
+		$submission_info_raw = is_array( $entry['submission_info'] ?? null ) ? $entry['submission_info'] : [];
+		$ip                  = (string) ( $submission_info_raw['user_ip'] ?? '' );
+		if ( ! empty( $ip ) ) {
+			if ( str_contains( $ip, ':' ) ) {
+				// IPv6: keep first segment, mask rest.
+				$parts = explode( ':', $ip );
+				$ip    = count( $parts ) > 1 ? $parts[0] . ':*:*:*:*:*:*:*' : '***';
+			} else {
+				// IPv4: keep first octet, mask rest.
+				$parts = explode( '.', $ip );
+				$ip    = count( $parts ) === 4 ? $parts[0] . '.*.*.*' : '***';
+			}
+		}
+
 		$submission_info = [
-			'user_ip'      => $entry['submission_info']['user_ip'] ?? '',
-			'browser_name' => $entry['submission_info']['browser_name'] ?? '',
-			'device_name'  => $entry['submission_info']['device_name'] ?? '',
+			'user_ip'      => $ip,
+			'browser_name' => (string) ( $submission_info_raw['browser_name'] ?? '' ),
+			'device_name'  => (string) ( $submission_info_raw['device_name'] ?? '' ),
 		];
 
 		// Build user info.
