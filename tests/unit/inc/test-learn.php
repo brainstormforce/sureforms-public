@@ -415,4 +415,93 @@ class Test_Learn extends TestCase {
 			}
 		}
 	}
+
+	/**
+	 * Test get_embed_forms_url returns a string URL.
+	 */
+	public function test_get_embed_forms_url() {
+		if ( ! function_exists( 'get_page_by_path' ) ) {
+			$this->markTestSkipped( 'WordPress page functions not available.' );
+			return;
+		}
+
+		$url = Learn::get_embed_forms_url();
+
+		$this->assertIsString( $url, 'get_embed_forms_url should return a string.' );
+		$this->assertNotEmpty( $url, 'get_embed_forms_url should return a non-empty string.' );
+
+		// The URL must end with one of the three known patterns.
+		$valid_endings = [
+			'action=edit&source=learn',
+			'post_type=page&source=learn',
+		];
+		$matches_pattern = false;
+		foreach ( $valid_endings as $ending ) {
+			if ( str_contains( $url, $ending ) ) {
+				$matches_pattern = true;
+				break;
+			}
+		}
+		$this->assertTrue( $matches_pattern, "get_embed_forms_url returned unexpected URL: $url" );
+	}
+
+	/**
+	 * Test register_rest_routes registers expected routes.
+	 */
+	public function test_register_rest_routes() {
+		if ( ! function_exists( 'rest_get_server' ) ) {
+			$this->markTestSkipped( 'WordPress REST server not available.' );
+			return;
+		}
+
+		$learn = Learn::get_instance();
+		$learn->register_rest_routes();
+
+		$server = rest_get_server();
+		$routes = $server->get_routes();
+
+		$this->assertArrayHasKey(
+			'/sureforms/v1/get-learn-chapters',
+			$routes,
+			'GET /sureforms/v1/get-learn-chapters route should be registered.'
+		);
+		$this->assertArrayHasKey(
+			'/sureforms/v1/update-learn-progress',
+			$routes,
+			'POST /sureforms/v1/update-learn-progress route should be registered.'
+		);
+	}
+
+	/**
+	 * Test rest_get_learn_chapters returns a REST response with chapters data.
+	 */
+	public function test_rest_get_learn_chapters() {
+		if ( ! function_exists( 'rest_ensure_response' ) || ! function_exists( 'wp_set_current_user' ) ) {
+			$this->markTestSkipped( 'WordPress REST API functions not available.' );
+			return;
+		}
+
+		if ( $this->test_user_id ) {
+			wp_set_current_user( $this->test_user_id );
+		}
+
+		$learn    = Learn::get_instance();
+		$response = $learn->rest_get_learn_chapters();
+
+		$this->assertNotInstanceOf( \WP_Error::class, $response, 'rest_get_learn_chapters should not return WP_Error.' );
+
+		$data = $response->get_data();
+
+		$this->assertIsArray( $data, 'Response data should be an array.' );
+		$this->assertNotEmpty( $data, 'Response data should not be empty.' );
+
+		// Each item should have the expected chapter keys.
+		$first = $data[0];
+		$this->assertArrayHasKey( 'id', $first, 'Chapter should have id key.' );
+		$this->assertArrayHasKey( 'steps', $first, 'Chapter should have steps key.' );
+
+		if ( $this->test_user_id ) {
+			wp_set_current_user( 0 );
+		}
+	}
 }
