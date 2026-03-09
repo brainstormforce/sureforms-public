@@ -34,6 +34,7 @@ use SRFM\Inc\Global_Settings\Email_Summary;
 use SRFM\Inc\Global_Settings\Global_Settings;
 use SRFM\Inc\Gutenberg_Hooks;
 use SRFM\Inc\Helper;
+use SRFM\Inc\Learn;
 use SRFM\Inc\Lib\SRFM_Nps_Survey;
 use SRFM\Inc\Nps_Notice;
 use SRFM\Inc\Onboarding;
@@ -215,6 +216,7 @@ class Plugin_Loader {
 		}
 		Payments::get_instance();
 		Duplicate_Form::get_instance();
+		Learn::get_instance();
 	}
 
 	/**
