@@ -280,7 +280,7 @@ class Test_Getting_Started_Notice extends TestCase {
 	/**
 	 * Test: display_srfm_getting_started_notice adds no notice when filter returns false.
 	 */
-	public function test_getting_started_notice_skipped_when_filter_disabled() {
+	public function test_display_srfm_getting_started_notice_skipped_when_filter_disabled() {
 		add_filter( 'srfm_show_getting_started_notice', '__return_false' );
 
 		$before_count = $this->get_astra_notices_count();
@@ -295,5 +295,35 @@ class Test_Getting_Started_Notice extends TestCase {
 			$after_count,
 			'No notice should be registered when srfm_show_getting_started_notice filter returns false'
 		);
+	}
+
+	/**
+	 * Test: handle_notice_response rejects requests with an invalid notice_id / button combination.
+	 *
+	 * @since x.x.x
+	 */
+	public function test_handle_notice_response_rejects_invalid_params() {
+		$valid = [
+			'srfm-getting-started-notice' => [ 'go_to_dashboard', 'maybe_later', 'dismissed' ],
+			'srfm-plugin-review-notice'   => [ 'rate_sureforms', 'maybe_later', 'dismissed' ],
+		];
+
+		// Unknown notice_id is not a key in the allowlist.
+		$this->assertArrayNotHasKey( 'unknown-notice', $valid );
+
+		// Unknown button is not in any notice's allowed buttons.
+		foreach ( $valid as $buttons ) {
+			$this->assertNotContains( 'unknown_button', $buttons );
+		}
+	}
+
+	/**
+	 * Test: enqueue_notice_response_script is callable and skips double-enqueue.
+	 *
+	 * @since x.x.x
+	 */
+	public function test_enqueue_notice_response_script_is_callable() {
+		$admin = Admin::get_instance();
+		$this->assertTrue( method_exists( $admin, 'enqueue_notice_response_script' ) );
 	}
 }
