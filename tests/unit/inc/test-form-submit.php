@@ -291,124 +291,129 @@ class Test_Form_Submit extends TestCase {
 		$this->assertEmpty( $result );
 	}
 
-    /**
-     * Test process_form_fields with form-id handling.
-     * Tests the new logic for passing form-id through the filter.
-     */
-    public function test_process_form_fields_with_form_id() {
-        // Test case 1: Form data with form-id should pass it to filter and then remove it
-        $form_data = [
-            'form-id' => '19',
-            'text-lbl-field-name' => 'Test User'
-        ];
+	/**
+	 * Test process_form_fields with form-id handling.
+	 * Tests the new logic for passing form-id through the filter.
+	 */
+	public function test_process_form_fields_with_form_id() {
+		// Test case 1: Form data with form-id should pass it to filter and then remove it
+		$form_data = [
+			'form-id'             => '19',
+			'text-lbl-field-name' => 'Test User',
+		];
 
-        // Mock the filter to verify form_id is passed via context array.
-        $received_context = null;
-        $callback = function( $data, $context ) use ( &$received_context ) {
-            $received_context = $context;
-            return $data;
-        };
-        add_filter( 'srfm_before_prepare_submission_data', $callback, 10, 2 );
+		// Mock the filter to verify form_id is passed via context array.
+		$received_context = null;
+		$callback         = function( $data, $context ) use ( &$received_context ) {
+			$received_context = $context;
+			return $data;
+		};
+		add_filter( 'srfm_before_prepare_submission_data', $callback, 10, 2 );
 
-        $result = $this->call_private_method($this->form_submit, 'process_form_fields', [$form_data]);
+		$result = $this->call_private_method( $this->form_submit, 'process_form_fields', [ $form_data ] );
 
-        // Verify form_id was passed via the context array.
-        $this->assertIsArray( $received_context, 'Context array should be passed to the filter' );
-        $this->assertArrayHasKey( 'form_id', $received_context, 'Context should contain form_id' );
-        $this->assertEquals( 19, $received_context['form_id'] );
+		// Verify form_id was passed via the context array.
+		$this->assertIsArray( $received_context, 'Context array should be passed to the filter' );
+		$this->assertArrayHasKey( 'form_id', $received_context, 'Context should contain form_id' );
+		$this->assertEquals( 19, $received_context['form_id'] );
 
-        // Verify form-id is not present in submission data (it should never be injected).
-        $this->assertArrayNotHasKey( 'form-id', $result );
+		// Verify form-id is not present in submission data (it should never be injected).
+		$this->assertArrayNotHasKey( 'form-id', $result );
 
-        // Verify other fields are present.
-        $this->assertArrayHasKey( 'text-lbl-field-name', $result );
-        $this->assertEquals( 'Test User', $result['text-lbl-field-name'] );
+		// Verify other fields are present.
+		$this->assertArrayHasKey( 'text-lbl-field-name', $result );
+		$this->assertEquals( 'Test User', $result['text-lbl-field-name'] );
 
-        // Remove only this specific callback, not all filters on the hook.
-        remove_filter( 'srfm_before_prepare_submission_data', $callback, 10 );
-    }
+		// Remove only this specific callback, not all filters on the hook.
+		remove_filter( 'srfm_before_prepare_submission_data', $callback, 10 );
+	}
 
-    /**
-     * Test that a filter callback can modify submission data without affecting the context array.
-     */
-    public function test_process_form_fields_filter_modifies_submission_data() {
-        $form_data = [
-            'form-id'             => '19',
-            'text-lbl-field-name' => 'Test User',
-        ];
+	/**
+	 * Test that a filter callback can modify submission data without affecting the context array.
+	 */
+	public function test_process_form_fields_filter_modifies_submission_data() {
+		$form_data = [
+			'form-id'             => '19',
+			'text-lbl-field-name' => 'Test User',
+		];
 
-        // Simulate a filter that adds a custom key to submission data.
-        $callback = function( $data ) {
-            $data['custom-key'] = 'custom-value';
-            return $data;
-        };
-        add_filter( 'srfm_before_prepare_submission_data', $callback, 10, 1 );
+		// Simulate a filter that adds a custom key to submission data.
+		$callback = function( $data ) {
+			$data['custom-key'] = 'custom-value';
+			return $data;
+		};
+		add_filter( 'srfm_before_prepare_submission_data', $callback, 10, 1 );
 
-        $result = $this->call_private_method($this->form_submit, 'process_form_fields', [$form_data]);
+		$result = $this->call_private_method( $this->form_submit, 'process_form_fields', [ $form_data ] );
 
-        // Custom key added by the filter should be present.
-        $this->assertArrayHasKey( 'custom-key', $result );
-        $this->assertEquals( 'custom-value', $result['custom-key'] );
+		// Custom key added by the filter should be present.
+		$this->assertArrayHasKey( 'custom-key', $result );
+		$this->assertEquals( 'custom-value', $result['custom-key'] );
 
-        // Other fields should be unaffected.
-        $this->assertArrayHasKey( 'text-lbl-field-name', $result );
-        $this->assertEquals( 'Test User', $result['text-lbl-field-name'] );
+		// Other fields should be unaffected.
+		$this->assertArrayHasKey( 'text-lbl-field-name', $result );
+		$this->assertEquals( 'Test User', $result['text-lbl-field-name'] );
 
-        remove_filter( 'srfm_before_prepare_submission_data', $callback, 10 );
-    }
+		remove_filter( 'srfm_before_prepare_submission_data', $callback, 10 );
+	}
 
-    /**
-     * Test process_form_fields with non-numeric form-id.
-     */
-    public function test_process_form_fields_with_non_numeric_form_id() {
-        $form_data = [
-            'form-id' => 'invalid-id',
-            'text-lbl-field-name' => 'Test User'
-        ];
+	/**
+	 * Test process_form_fields with non-numeric form-id.
+	 */
+	public function test_process_form_fields_with_non_numeric_form_id() {
+		$form_data = [
+			'form-id'             => 'invalid-id',
+			'text-lbl-field-name' => 'Test User',
+		];
 
-        $result = $this->call_private_method($this->form_submit, 'process_form_fields', [$form_data]);
+		$result = $this->call_private_method( $this->form_submit, 'process_form_fields', [ $form_data ] );
 
-        // Should not include form-id in result
-        $this->assertArrayNotHasKey('form-id', $result);
-    }
+		// Should not include form-id in result
+		$this->assertArrayNotHasKey( 'form-id', $result );
+	}
 
-    /**
-     * Test process_form_fields with missing form-id.
-     */
-    public function test_process_form_fields_without_form_id() {
-        $form_data = [
-            'text-lbl-field-name' => 'Test User'
-        ];
+	/**
+	 * Test process_form_fields with missing form-id.
+	 */
+	public function test_process_form_fields_without_form_id() {
+		$form_data = [
+			'text-lbl-field-name' => 'Test User',
+		];
 
-        $result = $this->call_private_method($this->form_submit, 'process_form_fields', [$form_data]);
+		$result = $this->call_private_method( $this->form_submit, 'process_form_fields', [ $form_data ] );
 
-        // Should process normally without errors
-        $this->assertArrayHasKey('text-lbl-field-name', $result);
-        $this->assertEquals('Test User', $result['text-lbl-field-name']);
-    }
+		// Should process normally without errors
+		$this->assertArrayHasKey( 'text-lbl-field-name', $result );
+		$this->assertEquals( 'Test User', $result['text-lbl-field-name'] );
+	}
 
-    /**
-     * Test process_form_fields with zero form-id.
-     */
-    public function test_process_form_fields_with_zero_form_id() {
-        $form_data = [
-            'form-id' => '0',
-            'text-lbl-field-name' => 'Test User'
-        ];
+	/**
+	 * Test process_form_fields with zero form-id.
+	 */
+	public function test_process_form_fields_with_zero_form_id() {
+		$form_data = [
+			'form-id'             => '0',
+			'text-lbl-field-name' => 'Test User',
+		];
 
-        $result = $this->call_private_method($this->form_submit, 'process_form_fields', [$form_data]);
+		$result = $this->call_private_method( $this->form_submit, 'process_form_fields', [ $form_data ] );
 
-        // form-id = 0 is valid but should be removed from result
-        $this->assertArrayNotHasKey('form-id', $result);
-    }
+		// form-id = 0 is valid but should be removed from result
+		$this->assertArrayNotHasKey( 'form-id', $result );
+	}
 
-    /**
-     * Helper method to call private methods for testing.
-     */
-    private function call_private_method($object, $method_name, $parameters = []) {
-        $reflection = new \ReflectionClass(get_class($object));
-        $method = $reflection->getMethod($method_name);
-        $method->setAccessible(true);
-        return $method->invokeArgs($object, $parameters);
-    }
+	/**
+	 * Helper method to call private methods for testing.
+	 *
+	 * @param object $object      The object containing the private method.
+	 * @param string $method_name The name of the private method.
+	 * @param array  $parameters  The parameters to pass to the method.
+	 * @return mixed
+	 */
+	private function call_private_method( $object, $method_name, $parameters = [] ) {
+		$reflection = new \ReflectionClass( get_class( $object ) );
+		$method     = $reflection->getMethod( $method_name );
+		$method->setAccessible( true );
+		return $method->invokeArgs( $object, $parameters );
+	}
 }
