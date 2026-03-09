@@ -575,7 +575,7 @@ class Entries {
 				];
 			}
 
-			if ( count( $date_conditions ) > 1 ) {
+			if ( ! empty( $date_conditions ) ) {
 				$where_conditions[] = $date_conditions;
 			}
 		}
@@ -626,7 +626,7 @@ class Entries {
 	 *
 	 * @param string $search_term Search term to match against form titles.
 	 *
-	 * @since 2.0.0
+	 * @since x.x.x
 	 * @return array<int> Array of matching form IDs.
 	 */
 	private static function get_form_ids_by_title( $search_term ) {
@@ -636,8 +636,9 @@ class Entries {
 				'post_status'    => 'publish',
 				's'              => $search_term,
 				'search_columns' => [ 'post_title' ],
-				'posts_per_page' => -1,
+				'posts_per_page' => 100,
 				'fields'         => 'ids',
+				'no_found_rows'  => true,
 			]
 		);
 
