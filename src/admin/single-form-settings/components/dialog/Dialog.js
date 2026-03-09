@@ -48,7 +48,7 @@ import FormRestriction from '../form-restrictions/FormRestriction';
 import { FormRestrictionContext } from '../form-restrictions/context';
 import FeaturePreview from '../FeaturePreview';
 import OttoKitPage from '@Admin/settings/pages/OttoKit';
-import ottoKitIcon from '@Image/suretriggers-grayscale.svg';
+import ottoKitIcon from '../../../../../admin/assets/ottokit.png';
 
 const Dialog = ( {
 	open,
@@ -435,7 +435,7 @@ const Dialog = ( {
 			},
 			{
 				id: 'ottokit',
-				label: __( 'Automations', 'sureforms' ),
+				label: __( 'OttoKit', 'sureforms' ),
 				icon: (
 					<img
 						src={ ottoKitIcon }

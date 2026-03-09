@@ -322,7 +322,7 @@ const OttoKitPage = ( {
 								<img
 									src={ ottoKitImage }
 									alt={ __( 'OttoKit', 'sureforms' ) }
-									className="w-[300px] h-300px]"
+									className="w-[300px] h-[300px]"
 								/>
 							</Container>
 							<Container className="gap-8 items-start">
@@ -361,11 +361,48 @@ const OttoKitPage = ( {
 										</Container>
 									) ) }
 									<Container className="p-2 gap-3">
-										{ CTA ===
-										__(
-											'Install & Activate',
-											'sureforms'
-										) ? (
+										{ ( () => {
+											const showInstallTooltip =
+												action ===
+													'sureforms_recommended_plugin_install' &&
+												( localPluginStatus ||
+													plugin?.status ) !==
+													'Activated';
+
+											const actionButton = (
+												<Button
+													size="md"
+													variant="primary"
+													onClick={
+														handlePluginActionTrigger
+													}
+													disabled={ btnDisabled }
+													className={
+														( localPluginStatus ||
+															plugin?.status ) ===
+														'Activated'
+															? '!bg-badge-background-green !border !border-[#E5E7EB] shadow-sm !text-text-primary !outline-[#E5E7EB]'
+															: ''
+													}
+													icon={
+														plugin?.status ===
+															'Install' &&
+														( localPluginStatus ||
+															plugin?.status ) !==
+															'Activated' ? (
+																<Plus className="size-5" />
+															) : null
+													}
+												>
+													{ CTA ||
+														buttonText ||
+														getPluginStatusText(
+															plugin
+														) }
+												</Button>
+											);
+
+											return showInstallTooltip ? (
 												<Tooltip
 													content={ __(
 														'This will install and activate OttoKit on your WordPress site to enable automation features.',
@@ -373,69 +410,12 @@ const OttoKitPage = ( {
 													) }
 													placement="top"
 												>
-													<Button
-														size="md"
-														variant={ 'primary' }
-														onClick={
-															handlePluginActionTrigger
-														}
-														disabled={ btnDisabled }
-														className={
-															( localPluginStatus ||
-															plugin?.status ) ===
-														'Activated'
-																? '!bg-badge-background-green !border !border-[#E5E7EB] shadow-sm !text-text-primary !outline-[#E5E7EB]'
-																: ''
-														}
-														icon={
-															plugin?.status ===
-															'Install' &&
-														( localPluginStatus ||
-															plugin?.status ) !==
-															'Activated' ? (
-																	<Plus className="size-5" />
-																) : null
-														}
-													>
-														{ CTA ||
-														buttonText ||
-														getPluginStatusText(
-															plugin
-														) }
-													</Button>
+													{ actionButton }
 												</Tooltip>
 											) : (
-												<Button
-													size="md"
-													variant={ 'primary' }
-													onClick={
-														handlePluginActionTrigger
-													}
-													disabled={ btnDisabled }
-													className={
-														( localPluginStatus ||
-														plugin?.status ) ===
-													'Activated'
-															? '!bg-badge-background-green !border !border-[#E5E7EB] shadow-sm !text-text-primary !outline-[#E5E7EB]'
-															: ''
-													}
-													icon={
-														plugin?.status ===
-														'Install' &&
-													( localPluginStatus ||
-														plugin?.status ) !==
-														'Activated' ? (
-																<Plus className="size-5" />
-															) : null
-													}
-												>
-													{ CTA ||
-													buttonText ||
-													getPluginStatusText(
-														plugin
-													) }
-												</Button>
-											) }
+												actionButton
+											);
+										} )() }
 									</Container>
 								</div>
 							</Container>
