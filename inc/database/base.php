@@ -625,6 +625,17 @@ abstract class Base {
 	}
 
 	/**
+	 * Get the allowed column names for ORDER BY clauses.
+	 * Child classes may override this method to restrict orderable columns further.
+	 *
+	 * @since x.x.x
+	 * @return array<string>
+	 */
+	protected function get_allowed_orderby_columns() {
+		return array_merge( array_keys( $this->get_schema() ), [ 'updated_at' ] );
+	}
+
+	/**
 	 * Retrieves a list of records based on the provided arguments.
 	 *
 	 * This method fetches results from the database, allowing for various
@@ -645,7 +656,7 @@ abstract class Base {
 	 * @return array<mixed> The results of the query, typically an array of objects or associative arrays.
 	 */
 	public function get_records_by_args( $args = [], $set_limit = true ) {
-		$_args         = wp_parse_args(
+		$_args           = wp_parse_args(
 			$args,
 			[
 				'where'   => [],
@@ -656,8 +667,11 @@ abstract class Base {
 				'order'   => 'DESC',
 			]
 		);
-		$extra_queries = [
-			sprintf( 'ORDER BY `%1$s` %2$s', Helper::get_string_value( esc_sql( $_args['orderby'] ) ), Helper::get_string_value( esc_sql( $_args['order'] ) ) ),
+		$allowed_orderby = $this->get_allowed_orderby_columns();
+		$orderby         = in_array( $_args['orderby'], $allowed_orderby, true ) ? $_args['orderby'] : 'created_at';
+		$order           = 'ASC' === strtoupper( Helper::get_string_value( $_args['order'] ) ) ? 'ASC' : 'DESC';
+		$extra_queries   = [
+			sprintf( 'ORDER BY `%1$s` %2$s', $orderby, $order ),
 		];
 
 		if ( $set_limit ) {
