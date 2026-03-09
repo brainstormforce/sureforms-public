@@ -137,12 +137,18 @@ class AI_Auth {
 			return false;
 		}
 
-		// Extract the encrypted data portion (billing portal sends KEY::ENCRYPTED_DATA format).
-		$parts     = explode( '::', $decoded_data, 2 );
-		$encrypted = $parts[1] ?? $decoded_data;
+		// Extract the IV and encrypted data (billing portal sends IV::ENCRYPTED_DATA format).
+		$parts = explode( '::', $decoded_data, 2 );
 
-		// Decrypt the data using the server-stored key.
-		$decrypted = openssl_decrypt( $encrypted, $method, $key, 0, $key );
+		if ( ! isset( $parts[1] ) ) {
+			wp_send_json_error( [ 'message' => __( 'Invalid access key format.', 'sureforms' ) ] );
+		}
+
+		$iv        = $parts[0];
+		$encrypted = $parts[1];
+
+		// Decrypt the data using the server-stored key and the billing-portal-supplied IV.
+		$decrypted = openssl_decrypt( $encrypted, $method, $key, 0, $iv );
 
 		// if the decryption returns false then send error.
 		if ( empty( $decrypted ) ) {
