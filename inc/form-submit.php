@@ -460,8 +460,9 @@ class Form_Submit {
 		}
 
 		if ( ! isset( $form_data['srfm-honeypot-field'] ) ) {
-			// If the companion flag is present, the honeypot field was rendered but stripped by a bot.
-			if ( ! empty( $form_data['srfm-honeypot-enabled'] ) ) {
+			// If honeypot is enabled globally, the missing field means a bot stripped it.
+			$srfm_security_options = get_option( 'srfm_security_settings_options' );
+			if ( is_array( $srfm_security_options ) && ! empty( $srfm_security_options['srfm_honeypot'] ) ) {
 				wp_send_json_error(
 					[
 						'message' => __( 'Your submission was flagged as spam. Please try again.', 'sureforms' ),
