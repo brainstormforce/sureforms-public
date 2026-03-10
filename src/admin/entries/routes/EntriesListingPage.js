@@ -1,5 +1,5 @@
 import { __, _n, sprintf } from '@wordpress/i18n';
-import { useEffect, useMemo, useState } from '@wordpress/element';
+import { useEffect, useMemo, useRef, useState } from '@wordpress/element';
 import { useNavigate } from 'react-router-dom';
 import { toast } from '@bsf/force-ui';
 import EntriesHeader from '../components/EntriesHeader';
@@ -178,6 +178,81 @@ const EntriesListingPage = () => {
 		indeterminate,
 	} = useEntriesSelection( entries );
 
+	// Capture source param once at mount (before any navigation changes the URL).
+	const [ isLearnSource ] = useState(
+		() =>
+			new URLSearchParams( window.location.search ).get( 'source' ) ===
+			'learn'
+	);
+	const [ showLearnTip, setShowLearnTip ] = useState( false );
+	// Guard: show the learn tip only once, even if entries/isLoading re-fires this effect.
+	const learnTipShownRef = useRef( false );
+
+	// Show tooltip when redirected from Learn section, but only once entries have
+	// loaded and only if at least one entry actually exists.
+	useEffect( () => {
+		if ( ! isLearnSource || isLoading || learnTipShownRef.current ) {
+			return;
+		}
+		if ( entries.length > 0 ) {
+			learnTipShownRef.current = true;
+			setShowLearnTip( true );
+			const timer = setTimeout( () => setShowLearnTip( false ), 5000 );
+			return () => clearTimeout( timer );
+		}
+	}, [ isLearnSource, isLoading, entries ] );
+
+	// Inject tooltip to the left of the Actions column header via DOM to escape table stacking context.
+	useEffect( () => {
+		const existing = document.getElementById( 'srfm-entries-learn-tip' );
+		if ( existing ) {
+			existing.remove();
+		}
+
+		if ( ! showLearnTip ) {
+			return;
+		}
+
+		// Poll for the Actions header since the table may not be rendered yet.
+		const interval = setInterval( () => {
+			const actionsHeader = Array.from(
+				document.querySelectorAll( 'th' )
+			).find( ( th ) => th.textContent.trim() === 'Actions' );
+
+			if ( ! actionsHeader ) {
+				return;
+			}
+
+			clearInterval( interval );
+			const rect = actionsHeader.getBoundingClientRect();
+
+			const tip = document.createElement( 'div' );
+			tip.id = 'srfm-entries-learn-tip';
+			tip.style.cssText = `position:fixed;top:${
+				rect.top + ( rect.height / 2 )
+			}px;left:${
+				rect.left - 10
+			}px;transform:translateY(-50%) translateX(-100%);z-index:2147483647;pointer-events:none;`;
+
+			tip.innerHTML = `
+				<div style="position:absolute;top:50%;right:-4px;transform:translateY(-50%) rotate(45deg);width:8px;height:8px;background:#1e1e1e;"></div>
+				<div style="background:#1e1e1e;color:#fff;font-size:13px;padding:6px 12px;border-radius:6px;box-shadow:0 4px 12px rgba(0,0,0,0.15);white-space:nowrap;">
+					Manage Your Entries From Here
+				</div>
+			`;
+
+			document.body.appendChild( tip );
+		}, 100 );
+
+		return () => {
+			clearInterval( interval );
+			const tip = document.getElementById( 'srfm-entries-learn-tip' );
+			if ( tip ) {
+				tip.remove();
+			}
+		};
+	}, [ showLearnTip ] );
+
 	// Compute if selected entries include unread or read entries
 	const hasUnreadSelected = useMemo( () => {
 		return selectedEntries?.some( ( entryId ) => {
@@ -206,7 +281,7 @@ const EntriesListingPage = () => {
 			error?.message ||
 				__( 'An error occurred while fetching entries.', 'sureforms' )
 		);
-	}, [ error ] );
+	}, [ error, isError ] );
 
 	// Action handlers
 	const handleEdit = ( entry ) => {

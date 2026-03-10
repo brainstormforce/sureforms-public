@@ -92,6 +92,12 @@ export const handleAddNewPost = async (
 		if ( response.id ) {
 			const postId = response.id;
 
+			// Store the post ID so the Learn section Lesson 2 can open this form directly.
+			const urlParams = new URLSearchParams( window.location.search );
+			if ( urlParams.get( 'source' ) === 'learn' ) {
+				localStorage.setItem( 'srfmLearnFormId', String( postId ) );
+			}
+
 			// Redirect to the newly created post
 			window.location.href = `${ srfm_admin.site_url }/wp-admin/post.php?post=${ postId }&action=edit`;
 		} else {
