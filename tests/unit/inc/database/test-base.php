@@ -22,10 +22,21 @@ class Test_Database_Base extends TestCase {
 	}
 
 	/**
+	 * Helper to invoke the protected get_allowed_orderby_columns method.
+	 *
+	 * @return array<string>
+	 */
+	private function get_allowed_columns() {
+		$method = new \ReflectionMethod( $this->base, 'get_allowed_orderby_columns' );
+		$method->setAccessible( true );
+		return $method->invoke( $this->base );
+	}
+
+	/**
 	 * Test get_allowed_orderby_columns returns an array.
 	 */
 	public function test_get_allowed_orderby_columns() {
-		$columns = $this->base->get_allowed_orderby_columns();
+		$columns = $this->get_allowed_columns();
 		$this->assertIsArray( $columns );
 		$this->assertNotEmpty( $columns );
 	}
@@ -34,7 +45,7 @@ class Test_Database_Base extends TestCase {
 	 * Test get_allowed_orderby_columns includes all schema keys.
 	 */
 	public function test_get_allowed_orderby_columns_includes_schema_keys() {
-		$columns = $this->base->get_allowed_orderby_columns();
+		$columns = $this->get_allowed_columns();
 		$schema  = $this->base->get_schema();
 		foreach ( array_keys( $schema ) as $key ) {
 			$this->assertContains( $key, $columns, "Expected schema key '{$key}' to be in the allowlist." );
@@ -45,7 +56,7 @@ class Test_Database_Base extends TestCase {
 	 * Test get_allowed_orderby_columns always includes updated_at.
 	 */
 	public function test_get_allowed_orderby_columns_includes_updated_at() {
-		$columns = $this->base->get_allowed_orderby_columns();
+		$columns = $this->get_allowed_columns();
 		$this->assertContains( 'updated_at', $columns );
 	}
 
@@ -53,7 +64,7 @@ class Test_Database_Base extends TestCase {
 	 * Test get_allowed_orderby_columns does not include invalid columns.
 	 */
 	public function test_get_allowed_orderby_columns_rejects_invalid_column() {
-		$columns = $this->base->get_allowed_orderby_columns();
+		$columns = $this->get_allowed_columns();
 		$this->assertNotContains( 'nonexistent_column', $columns );
 		$this->assertNotContains( 'SLEEP(5)', $columns );
 	}

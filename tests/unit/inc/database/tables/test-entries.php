@@ -62,12 +62,14 @@ class Test_Entries_Table extends TestCase {
 	 * Test get_allowed_orderby_columns returns only safe, indexed columns.
 	 */
 	public function test_get_allowed_orderby_columns() {
-		$columns = $this->entries_table->get_allowed_orderby_columns();
+		$method = new \ReflectionMethod( $this->entries_table, 'get_allowed_orderby_columns' );
+		$method->setAccessible( true );
+		$columns = $method->invoke( $this->entries_table );
 		$this->assertIsArray( $columns );
 		$this->assertNotEmpty( $columns );
 
-		// Must include the meaningful sort columns.
-		$expected = [ 'ID', 'form_id', 'user_id', 'status', 'type', 'created_at', 'updated_at' ];
+		// Must include the meaningful sort columns (lowercase 'id' for frontend compatibility).
+		$expected = [ 'ID', 'id', 'form_id', 'user_id', 'status', 'type', 'created_at', 'updated_at' ];
 		foreach ( $expected as $col ) {
 			$this->assertContains( $col, $columns, "Expected '{$col}' to be in entries orderby allowlist." );
 		}

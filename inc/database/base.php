@@ -680,7 +680,7 @@ abstract class Base {
 	 * @since x.x.x
 	 * @return array<string>
 	 */
-	public function get_allowed_orderby_columns() {
+	protected function get_allowed_orderby_columns() {
 		return array_merge( array_keys( $this->get_schema() ), [ 'updated_at' ] );
 	}
 

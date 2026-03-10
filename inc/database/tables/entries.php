@@ -123,8 +123,8 @@ class Entries extends Base {
 	 * @since x.x.x
 	 * @return array<string>
 	 */
-	public function get_allowed_orderby_columns() {
-		return [ 'ID', 'form_id', 'user_id', 'status', 'type', 'created_at', 'updated_at' ];
+	protected function get_allowed_orderby_columns() {
+		return [ 'ID', 'id', 'form_id', 'user_id', 'status', 'type', 'created_at', 'updated_at' ];
 	}
 
 	/**
