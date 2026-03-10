@@ -404,9 +404,16 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 ### 2.5.2 - 12th March 2026 ###
 * New: Added the “Send as Raw HTML” option in email notifications for fully structured HTML emails.
 * New: Added the Learn section.
+* New: Added a Getting Started guide notice for new users.
+* New: Added a rating notice to collect user feedback.
+* Improvement: Improved UX copy across validation messages, settings, and form management UI.
 * Fix: Added the `srfm_confirmation_links_open_in_new_tab` filter to allow confirmation message links to open in the same tab.
 * Fix: Fixed the page dropdown not loading all pages on large sites with 1,700+ pages by replacing the bulk page fetch with a paginated, searchable REST endpoint.
 * Fix: Preserved input formatting in the Entries view.
+* Fix: Fixed honeypot spam protection bypass when bots strip the honeypot field entirely.
+* Fix: Fixed slug generation not working for newly added blocks in the editor.
+* Fix: Fixed unique field validation applying across all forms on the page instead of the submitted form only.
+* Fix: Fixed multi-file uploads not saving to the SureForms custom upload directory.
 ### 2.5.1 - 16th February 2026 ###
 * New: Added option to change currency position (e.g., $100, 100$, $ 100, 100 $).
 * Fix: Fixed the payment block amount not updating correctly with conditional logic.
