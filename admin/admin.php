@@ -73,6 +73,7 @@ class Admin {
 		add_action( 'admin_menu', [ $this, 'add_menu_page' ], 9 );
 		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_scripts' ] );
 		add_action( 'admin_menu', [ $this, 'settings_page' ] );
+		add_action( 'admin_menu', [ $this, 'add_learn_page' ] );
 		add_action( 'admin_menu', [ $this, 'add_new_form' ] );
 		add_action( 'admin_menu', [ $this, 'add_suremail_page' ] );
 		if ( ! Helper::has_pro() ) {
@@ -477,6 +478,35 @@ class Admin {
 	}
 
 	/**
+	 * Add Learn submenu page.
+	 *
+	 * @return void
+	 * @since x.x.x
+	 */
+	public function add_learn_page() {
+		add_submenu_page(
+			'sureforms_menu',
+			__( 'Learn', 'sureforms' ),
+			__( 'Learn', 'sureforms' ),
+			self::$sureforms_page_default_capability,
+			'sureforms_learn',
+			[ $this, 'render_learn' ]
+		);
+	}
+
+	/**
+	 * Learn page callback.
+	 *
+	 * @return void
+	 * @since x.x.x
+	 */
+	public function render_learn() {
+		?>
+		<div id="srfm-learn-root" class="srfm-admin-wrapper"></div>
+		<?php
+	}
+
+	/**
 	 * Add new form menu item.
 	 *
 	 * @return void
@@ -872,6 +902,7 @@ class Admin {
 		$is_screen_sureforms_form_settings = Helper::validate_request_context( 'sureforms_form_settings', 'page' );
 		$is_screen_sureforms_payments      = Helper::validate_request_context( 'sureforms_payments', 'page' );
 		$is_screen_sureforms_entries       = Helper::validate_request_context( SRFM_ENTRIES, 'page' );
+		$is_screen_sureforms_learn         = Helper::validate_request_context( 'sureforms_learn', 'page' );
 		$is_post_type_sureforms_form       = SRFM_FORMS_POST_TYPE === $current_screen->post_type;
 
 		/**
@@ -885,7 +916,7 @@ class Admin {
 			];
 		}
 
-		if ( $is_screen_sureforms_menu || $is_post_type_sureforms_form || $is_screen_add_new_form || $is_screen_sureforms_forms || $is_screen_sureforms_form_settings || $is_screen_sureforms_entries || $is_screen_sureforms_payments ) {
+		if ( $is_screen_sureforms_menu || $is_post_type_sureforms_form || $is_screen_add_new_form || $is_screen_sureforms_forms || $is_screen_sureforms_form_settings || $is_screen_sureforms_entries || $is_screen_sureforms_payments || $is_screen_sureforms_learn ) {
 			$asset_handle = '-dashboard';
 
 			wp_enqueue_style( SRFM_SLUG . $asset_handle . '-font', 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap', [], SRFM_VER );
@@ -936,6 +967,22 @@ class Admin {
 		if ( $is_screen_sureforms_entries ) {
 			$asset_handle = '-entries';
 			wp_enqueue_script( SRFM_SLUG . $asset_handle, SRFM_URL . 'assets/build/entries.js', $script_info['dependencies'], SRFM_VER, true );
+
+			wp_localize_script(
+				SRFM_SLUG . $asset_handle,
+				SRFM_SLUG . '_admin',
+				apply_filters(
+					SRFM_SLUG . '_admin_filter',
+					$localization_data
+				)
+			);
+			$script_translations_handlers[] = SRFM_SLUG . $asset_handle;
+		}
+
+		// Enqueue scripts for the learn page.
+		if ( $is_screen_sureforms_learn ) {
+			$asset_handle = '-learn';
+			wp_enqueue_script( SRFM_SLUG . $asset_handle, SRFM_URL . 'assets/build/learn.js', $script_info['dependencies'], SRFM_VER, true );
 
 			wp_localize_script(
 				SRFM_SLUG . $asset_handle,

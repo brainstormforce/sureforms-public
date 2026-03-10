@@ -16,7 +16,8 @@ $placeholder_color: #9ca3af;
 .toplevel_page_sureforms_menu,
 .sureforms_page_sureforms_entries,
 .sureforms_page_sureforms_forms,
-.sureforms_page_sureforms_payments {
+.sureforms_page_sureforms_payments,
+.sureforms_page_sureforms_learn {
 	#wpbody-content {
 		// Hide all WordPress default admin notices on SureForms React admin pages.
 		// Our custom AdminNotice component handles notices in React.
@@ -54,11 +55,6 @@ $placeholder_color: #9ca3af;
 	float: left;
 	margin: 8px 0;
 	width: 100%;
-}
-
-/* Adding margin button to the setting submenu item which will always be in the 7th position */
-#toplevel_page_sureforms_menu .wp-submenu li:nth-child( 7 ) {
-	margin-bottom: 4px;
 }
 
 /* The url used here as the selector is the url for the upgrade to pro submenu */
@@ -337,7 +333,8 @@ $placeholder_color: #9ca3af;
 .sureforms_page_sureforms_forms,
 .toplevel_page_sureforms_menu,
 .sureforms_page_sureforms_entries,
-.sureforms_page_sureforms_payments {
+.sureforms_page_sureforms_payments,
+.sureforms_page_sureforms_learn {
 	#wpcontent {
 		padding: 0;
 	}

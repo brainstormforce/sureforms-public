@@ -2199,4 +2199,20 @@ class Test_Helper extends TestCase {
         $this->assertArrayNotHasKey( 'form-id', $result );
     }
 
+    /**
+     * Test get_boolean_value returns true for truthy values.
+     */
+    public function test_get_boolean_value() {
+        $this->assertTrue( Helper::get_boolean_value( true ) );
+        $this->assertTrue( Helper::get_boolean_value( 1 ) );
+        $this->assertTrue( Helper::get_boolean_value( 'yes' ) );
+        $this->assertTrue( Helper::get_boolean_value( [ 'item' ] ) );
+
+        $this->assertFalse( Helper::get_boolean_value( false ) );
+        $this->assertFalse( Helper::get_boolean_value( 0 ) );
+        $this->assertFalse( Helper::get_boolean_value( '' ) );
+        $this->assertFalse( Helper::get_boolean_value( [] ) );
+        $this->assertFalse( Helper::get_boolean_value( null ) );
+    }
+
 }
