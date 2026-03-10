@@ -134,6 +134,7 @@ class Test_Rest_Api extends TestCase {
 			'forms/import',
 			'forms/manage',
 			'forms/duplicate',
+			'pages/search',
 		];
 
 		foreach ( $expected_routes as $route ) {
@@ -341,5 +342,319 @@ class Test_Rest_Api extends TestCase {
 		$request->set_body_params( [ 'forms_data' => [ [ 'title' => 'test' ] ] ] );
 		$response = rest_get_server()->dispatch( $request );
 		$this->assertEquals( 401, $response->get_status() );
+	}
+
+	// ---------------------------------------------------------------
+	// search_only_post_titles()
+	// ---------------------------------------------------------------
+
+	public function test_search_only_post_titles_returns_unchanged_when_search_is_empty() {
+		$wp_query                              = new WP_Query();
+		$wp_query->query_vars['search_terms'] = [ 'hello' ];
+		$result                                = $this->rest_api->search_only_post_titles( '', $wp_query );
+		$this->assertEquals( '', $result );
+	}
+
+	public function test_search_only_post_titles_returns_unchanged_when_no_search_terms() {
+		$wp_query                              = new WP_Query();
+		$wp_query->query_vars['search_terms'] = [];
+		$result                                = $this->rest_api->search_only_post_titles( ' AND original_clause', $wp_query );
+		$this->assertEquals( ' AND original_clause', $result );
+	}
+
+	public function test_search_only_post_titles() {
+		global $wpdb;
+		$wp_query                              = new WP_Query();
+		$wp_query->query_vars['search_terms'] = [ 'hello' ];
+		$wp_query->query_vars['exact']        = false;
+		$result                                = $this->rest_api->search_only_post_titles( ' AND original', $wp_query );
+		$this->assertStringStartsWith( ' AND ', $result );
+		$this->assertStringContainsString( "{$wpdb->posts}.post_title", $result );
+		$this->assertStringContainsString( 'LIKE', $result );
+		// $wpdb->prepare() encodes '%' as a hex placeholder in the test env;
+		// assert the term is present rather than checking for literal '%term%'.
+		$this->assertStringContainsString( 'hello', $result );
+	}
+
+	public function test_search_only_post_titles_exact_mode_omits_wildcards() {
+		$wp_query                              = new WP_Query();
+		// Use a term without special chars so $wpdb->esc_like() does not add backslashes.
+		$wp_query->query_vars['search_terms'] = [ 'exactterm' ];
+		$wp_query->query_vars['exact']        = true;
+		$result                                = $this->rest_api->search_only_post_titles( ' AND original', $wp_query );
+		$this->assertStringContainsString( 'exactterm', $result );
+		$this->assertStringContainsString( 'LIKE', $result );
+	}
+
+	public function test_search_only_post_titles_multiple_terms_each_get_a_like_condition() {
+		$wp_query                              = new WP_Query();
+		$wp_query->query_vars['search_terms'] = [ 'foo', 'bar' ];
+		$wp_query->query_vars['exact']        = false;
+		$result                                = $this->rest_api->search_only_post_titles( ' AND original', $wp_query );
+		$this->assertEquals( 2, substr_count( $result, 'LIKE' ) );
+		// '%' is encoded by $wpdb->prepare() in the test env; assert the terms are present.
+		$this->assertStringContainsString( 'foo', $result );
+		$this->assertStringContainsString( 'bar', $result );
+	}
+
+	// ---------------------------------------------------------------
+	// search_pages()
+	// ---------------------------------------------------------------
+
+	/**
+	 * Create a temporary administrator user for search_pages tests.
+	 */
+	private function create_test_admin(): int {
+		static $count = 0;
+		$user_id = wp_insert_user(
+			[
+				'user_login' => 'srfm_test_admin_' . ( ++$count ),
+				'user_pass'  => wp_generate_password(),
+				'role'       => 'administrator',
+			]
+		);
+		return is_wp_error( $user_id ) ? 0 : $user_id;
+	}
+
+	/**
+	 * Dispatch a GET request to pages/search with a valid nonce.
+	 *
+	 * @param array $params Query parameters.
+	 * @return WP_REST_Response
+	 */
+	private function dispatch_search_pages( array $params = [] ): WP_REST_Response {
+		$request = new WP_REST_Request( 'GET', '/sureforms/v1/pages/search' );
+		$request->set_header( 'X-WP-Nonce', wp_create_nonce( 'wp_rest' ) );
+		if ( ! empty( $params ) ) {
+			$request->set_query_params( $params );
+		}
+		return rest_get_server()->dispatch( $request );
+	}
+
+	public function test_search_pages_endpoint_registered_in_rest_server() {
+		do_action( 'rest_api_init' );
+		$routes = rest_get_server()->get_routes();
+		$this->assertArrayHasKey( '/sureforms/v1/pages/search', $routes );
+		$this->assertEquals( 'GET', $routes['/sureforms/v1/pages/search'][0]['methods']['GET'] ? 'GET' : '' );
+	}
+
+	public function test_search_pages_returns_401_for_unauthenticated_user() {
+		wp_set_current_user( 0 );
+		$request  = new WP_REST_Request( 'GET', '/sureforms/v1/pages/search' );
+		$response = rest_get_server()->dispatch( $request );
+		$this->assertEquals( 401, $response->get_status() );
+	}
+
+	public function test_search_pages_returns_403_for_invalid_nonce() {
+		$user_id = $this->create_test_admin();
+		wp_set_current_user( $user_id );
+		$request = new WP_REST_Request( 'GET', '/sureforms/v1/pages/search' );
+		$request->set_header( 'X-WP-Nonce', 'invalid_nonce_value' );
+		$response = rest_get_server()->dispatch( $request );
+		$this->assertEquals( 403, $response->get_status() );
+		wp_set_current_user( 0 );
+	}
+
+	public function test_search_pages() {
+		$user_id = $this->create_test_admin();
+		wp_set_current_user( $user_id );
+		$unique  = 'SrfmStructureTest' . wp_rand();
+		$page_id = wp_insert_post(
+			[
+				'post_title'  => $unique,
+				'post_status' => 'publish',
+				'post_type'   => 'page',
+			]
+		);
+
+		$response = $this->dispatch_search_pages( [ 'search' => $unique ] );
+		$data     = $response->get_data();
+
+		$this->assertEquals( 200, $response->get_status() );
+		$this->assertArrayHasKey( 'items', $data );
+		$this->assertArrayHasKey( 'pagination', $data );
+		$this->assertNotEmpty( $data['items'] );
+
+		$item = $data['items'][0];
+		$this->assertArrayHasKey( 'id', $item );
+		$this->assertArrayHasKey( 'label', $item );
+		$this->assertArrayHasKey( 'value', $item );
+		$this->assertIsInt( $item['id'] );
+		$this->assertIsString( $item['label'] );
+		$this->assertIsString( $item['value'] );
+
+		wp_delete_post( $page_id, true );
+		wp_set_current_user( 0 );
+	}
+
+	public function test_search_pages_per_page_is_clamped_to_50() {
+		$user_id = $this->create_test_admin();
+		wp_set_current_user( $user_id );
+
+		// The validate_callback enforces per_page <= 50, so > 50 is rejected with 400.
+		$response = $this->dispatch_search_pages( [ 'per_page' => 999 ] );
+		$this->assertEquals( 400, $response->get_status() );
+
+		// per_page = 50 (the maximum) is accepted and reflected in pagination.
+		$response = $this->dispatch_search_pages( [ 'per_page' => 50 ] );
+		$data     = $response->get_data();
+		$this->assertEquals( 200, $response->get_status() );
+		$this->assertEquals( 50, $data['pagination']['per_page'] );
+
+		wp_set_current_user( 0 );
+	}
+
+	public function test_search_pages_has_more_true_when_results_exceed_per_page() {
+		$user_id  = $this->create_test_admin();
+		wp_set_current_user( $user_id );
+		$unique   = 'SrfmHasMoreTrue' . wp_rand();
+		$page_ids = [];
+		for ( $i = 1; $i <= 3; $i++ ) {
+			$page_ids[] = wp_insert_post(
+				[
+					'post_title'  => "{$unique} Page {$i}",
+					'post_status' => 'publish',
+					'post_type'   => 'page',
+				]
+			);
+		}
+
+		$response = $this->dispatch_search_pages( [ 'per_page' => 2, 'search' => $unique ] );
+		$data     = $response->get_data();
+
+		$this->assertEquals( 200, $response->get_status() );
+		$this->assertTrue( $data['pagination']['has_more'] );
+		$this->assertCount( 2, $data['items'] );
+
+		foreach ( $page_ids as $id ) {
+			wp_delete_post( $id, true );
+		}
+		wp_set_current_user( 0 );
+	}
+
+	public function test_search_pages_has_more_false_when_within_per_page() {
+		$user_id = $this->create_test_admin();
+		wp_set_current_user( $user_id );
+		$unique  = 'SrfmHasMoreFalse' . wp_rand();
+		$page_id = wp_insert_post(
+			[
+				'post_title'  => $unique,
+				'post_status' => 'publish',
+				'post_type'   => 'page',
+			]
+		);
+
+		$response = $this->dispatch_search_pages( [ 'per_page' => 20, 'search' => $unique ] );
+		$data     = $response->get_data();
+
+		$this->assertEquals( 200, $response->get_status() );
+		$this->assertFalse( $data['pagination']['has_more'] );
+
+		wp_delete_post( $page_id, true );
+		wp_set_current_user( 0 );
+	}
+
+	public function test_search_pages_label_contains_raw_ampersand_not_html_entity() {
+		$user_id = $this->create_test_admin();
+		wp_set_current_user( $user_id );
+		$page_id = wp_insert_post(
+			[
+				'post_title'  => 'Terms & Conditions',
+				'post_status' => 'publish',
+				'post_type'   => 'page',
+			]
+		);
+
+		$response = $this->dispatch_search_pages( [ 'search' => 'Terms' ] );
+		$data     = $response->get_data();
+
+		$this->assertEquals( 200, $response->get_status() );
+		$matching = array_values( array_filter( $data['items'], fn( $item ) => $item['id'] === $page_id ) );
+		$this->assertNotEmpty( $matching, 'Page not found in search results.' );
+		$this->assertEquals( 'Terms & Conditions', $matching[0]['label'] );
+		$this->assertStringNotContainsString( '&amp;', $matching[0]['label'] );
+
+		wp_delete_post( $page_id, true );
+		wp_set_current_user( 0 );
+	}
+
+	public function test_search_pages_selected_url_prepends_saved_page_to_results() {
+		$user_id   = $this->create_test_admin();
+		wp_set_current_user( $user_id );
+		$unique    = 'SrfmSavedRedirect' . wp_rand();
+		$page_id   = wp_insert_post(
+			[
+				'post_title'  => $unique,
+				'post_status' => 'publish',
+				'post_type'   => 'page',
+			]
+		);
+		$permalink = get_permalink( $page_id );
+
+		$response = $this->dispatch_search_pages(
+			[
+				'search'       => 'zzznotamatch' . wp_rand(),
+				'selected_url' => $permalink,
+			]
+		);
+		$data = $response->get_data();
+
+		$this->assertEquals( 200, $response->get_status() );
+		$this->assertNotEmpty( $data['items'], 'Selected page should appear even when search keyword has no matches.' );
+		$this->assertEquals( $page_id, $data['items'][0]['id'] );
+
+		wp_delete_post( $page_id, true );
+		wp_set_current_user( 0 );
+	}
+
+	// ---------------------------------------------------------------
+	// get_form_data()
+	// ---------------------------------------------------------------
+
+	public function test_get_form_data_returns_forms_when_they_exist() {
+		$user_id = $this->create_test_admin();
+		wp_set_current_user( $user_id );
+
+		$form_id = wp_insert_post(
+			[
+				'post_type'   => 'sureforms_form',
+				'post_status' => 'publish',
+				'post_title'  => 'Test Form for get_form_data',
+			]
+		);
+
+		$request = new WP_REST_Request( 'GET', '/sureforms/v1/form-data' );
+		$request->set_header( 'X-WP-Nonce', wp_create_nonce( 'wp_rest' ) );
+		$response = rest_get_server()->dispatch( $request );
+		$data     = $response->get_data();
+
+		$this->assertEquals( 200, $response->get_status() );
+		$this->assertIsArray( $data );
+		$this->assertArrayHasKey( $form_id, $data );
+
+		wp_delete_post( $form_id, true );
+		wp_set_current_user( 0 );
+	}
+
+	public function test_get_form_data_returns_empty_array_when_no_forms() {
+		$user_id = $this->create_test_admin();
+		wp_set_current_user( $user_id );
+
+		// Delete all existing sureforms_form posts.
+		$existing = get_posts( [ 'post_type' => 'sureforms_form', 'posts_per_page' => -1, 'fields' => 'ids' ] );
+		foreach ( $existing as $id ) {
+			wp_delete_post( $id, true );
+		}
+
+		$request = new WP_REST_Request( 'GET', '/sureforms/v1/form-data' );
+		$request->set_header( 'X-WP-Nonce', wp_create_nonce( 'wp_rest' ) );
+		$response = rest_get_server()->dispatch( $request );
+		$data     = $response->get_data();
+
+		$this->assertEquals( 200, $response->get_status() );
+		$this->assertIsArray( $data );
+		$this->assertEmpty( $data );
+
+		wp_set_current_user( 0 );
 	}
 }

@@ -577,7 +577,7 @@ class Generate_Form_Markup {
 							self::get_h_captcha_script( $srfm_hcaptcha_site_key );
 						}
 						?>
-						<div class="srfm-validation-error" id="captcha-error" style="display: none;"><?php echo esc_attr__( 'Please verify that you are not a robot.', 'sureforms' ); ?></div>
+						<div class="srfm-validation-error" id="captcha-error" style="display: none;"><?php echo esc_html__( 'Please verify that you are not a robot.', 'sureforms' ); ?></div>
 					</div>
 					<?php } ?>
 
