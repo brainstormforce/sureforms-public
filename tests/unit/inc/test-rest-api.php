@@ -606,4 +606,55 @@ class Test_Rest_Api extends TestCase {
 		wp_delete_post( $page_id, true );
 		wp_set_current_user( 0 );
 	}
+
+	// ---------------------------------------------------------------
+	// get_form_data()
+	// ---------------------------------------------------------------
+
+	public function test_get_form_data_returns_forms_when_they_exist() {
+		$user_id = $this->create_test_admin();
+		wp_set_current_user( $user_id );
+
+		$form_id = wp_insert_post(
+			[
+				'post_type'   => 'sureforms_form',
+				'post_status' => 'publish',
+				'post_title'  => 'Test Form for get_form_data',
+			]
+		);
+
+		$request = new WP_REST_Request( 'GET', '/sureforms/v1/form-data' );
+		$request->set_header( 'X-WP-Nonce', wp_create_nonce( 'wp_rest' ) );
+		$response = rest_get_server()->dispatch( $request );
+		$data     = $response->get_data();
+
+		$this->assertEquals( 200, $response->get_status() );
+		$this->assertIsArray( $data );
+		$this->assertArrayHasKey( $form_id, $data );
+
+		wp_delete_post( $form_id, true );
+		wp_set_current_user( 0 );
+	}
+
+	public function test_get_form_data_returns_empty_array_when_no_forms() {
+		$user_id = $this->create_test_admin();
+		wp_set_current_user( $user_id );
+
+		// Delete all existing sureforms_form posts.
+		$existing = get_posts( [ 'post_type' => 'sureforms_form', 'posts_per_page' => -1, 'fields' => 'ids' ] );
+		foreach ( $existing as $id ) {
+			wp_delete_post( $id, true );
+		}
+
+		$request = new WP_REST_Request( 'GET', '/sureforms/v1/form-data' );
+		$request->set_header( 'X-WP-Nonce', wp_create_nonce( 'wp_rest' ) );
+		$response = rest_get_server()->dispatch( $request );
+		$data     = $response->get_data();
+
+		$this->assertEquals( 200, $response->get_status() );
+		$this->assertIsArray( $data );
+		$this->assertEmpty( $data );
+
+		wp_set_current_user( 0 );
+	}
 }
