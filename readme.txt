@@ -402,6 +402,7 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 
 == Changelog ==
 = x.x.x =
+* Fix: Added `srfm_confirmation_links_open_in_new_tab` filter to allow confirmation message links to open in the same tab.
 * Fix: Fixed the page dropdown not loading all pages on large sites with 1,700+ pages by replacing bulk page fetch with a paginated, searchable REST endpoint.
 * New: Added Learn section.
 * New: Added “Send as Raw HTML” option in form email notifications to send fully structured HTML emails.
