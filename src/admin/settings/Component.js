@@ -49,6 +49,7 @@ const Component = ( { path, subpage } ) => {
 		srfm_honeypot: false,
 	} );
 	const [ mcpTabOptions, setMcpTabOptions ] = useState( {
+		srfm_abilities_api: false,
 		srfm_abilities_api_edit: false,
 		srfm_abilities_api_delete: false,
 		srfm_mcp_server: false,
@@ -170,11 +171,13 @@ const Component = ( { path, subpage } ) => {
 
 				if ( data.srfm_mcp_settings_options ) {
 					const {
+						srfm_abilities_api,
 						srfm_abilities_api_edit,
 						srfm_abilities_api_delete,
 						srfm_mcp_server,
 					} = data.srfm_mcp_settings_options;
 					setMcpTabOptions( {
+						srfm_abilities_api,
 						srfm_abilities_api_edit,
 						srfm_abilities_api_delete,
 						srfm_mcp_server,

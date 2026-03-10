@@ -108,6 +108,24 @@ abstract class Abstract_Ability {
 	abstract public function execute( $input );
 
 	/**
+	 * Check whether this ability is enabled based on its option gate.
+	 *
+	 * Returns false when the ability has a gate key and the corresponding
+	 * option is falsy. Used by the registrar to skip registration of
+	 * disabled abilities so they don't appear in MCP listings.
+	 *
+	 * @since x.x.x
+	 * @return bool
+	 */
+	public function is_enabled() {
+		if ( ! empty( $this->gated ) && ! get_option( $this->gated, true ) ) {
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
 	 * Permission callback.
 	 *
 	 * Delegates to current_user_can() with the configured capability.
@@ -116,7 +134,11 @@ abstract class Abstract_Ability {
 	 * @return bool
 	 */
 	public function permission_callback() {
-		if ( ! empty( $this->gated ) && '0' === get_option( $this->gated, '1' ) ) {
+		if ( ! get_option( 'srfm_abilities_api', false ) ) {
+			return false;
+		}
+
+		if ( ! $this->is_enabled() ) {
 			return false;
 		}
 
@@ -214,7 +236,7 @@ abstract class Abstract_Ability {
 					'show_in_rest' => true,
 					'annotations'  => $annotations,
 					'mcp'          => [
-						'public' => true,
+						'public' => false,
 					],
 				],
 			]

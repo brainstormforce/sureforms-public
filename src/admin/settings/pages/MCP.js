@@ -1,6 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import { useState } from '@wordpress/element';
-import { Badge, Button, Input, Switch } from '@bsf/force-ui';
+import { Badge, Button, Switch } from '@bsf/force-ui';
 import { CopyCheckIcon, CopyIcon } from 'lucide-react';
 import ContentSection from '../components/ContentSection';
 
@@ -26,9 +26,85 @@ const CopyButton = ( { textToCopy, isCopied, setIsCopied } ) => (
 	/>
 );
 
-const MCPPage = ( { loading, mcpTabOptions, updateGlobalSettings } ) => {
-	const [ isCopied, setIsCopied ] = useState( false );
+const SetupInstructions = ( { mcpEndpointUrl } ) => {
+	const [ isConfigCopied, setIsConfigCopied ] = useState( false );
 
+	const applicationPasswordsUrl = `${ srfm_admin.site_url }/wp-admin/profile.php#application-passwords-section`;
+
+	const mcpConfig = JSON.stringify(
+		{
+			mcpServers: {
+				sureforms: {
+					command: 'npx',
+					args: [ '-y', '@anthropic/mcp-wordpress-remote@latest' ],
+					env: {
+						WP_API_URL: mcpEndpointUrl,
+						WP_API_USERNAME: srfm_admin.current_user_login || '',
+						WP_API_PASSWORD: 'your-application-password',
+					},
+				},
+			},
+		},
+		null,
+		2
+	);
+
+	return (
+		<div className="space-y-4">
+			<h3 className="text-base font-semibold text-text-primary m-0">
+				{ __( 'Connect Your AI Client', 'sureforms' ) }
+			</h3>
+			<ol className="list-decimal space-y-2 text-sm text-text-secondary m-0 pl-4">
+				<li>
+					{ __( 'Create an Application Password — ', 'sureforms' ) }
+					<a
+						href={ applicationPasswordsUrl }
+						target="_blank"
+						rel="noopener noreferrer"
+						className="text-field-helper underline"
+					>
+						{ __(
+							'Open Application Passwords',
+							'sureforms'
+						) }
+					</a>
+				</li>
+				<li>
+					{ __(
+						"Copy the JSON config below into your AI client's MCP config file.",
+						'sureforms'
+					) }
+				</li>
+				<li>
+					{ __(
+						'Replace "your-application-password" with the password from Step 1.',
+						'sureforms'
+					) }
+				</li>
+				<li>
+					{ __(
+						"Add to .mcp.json (Claude Code), claude_desktop_config.json (Claude Desktop), or your client's MCP settings.",
+						'sureforms'
+					) }
+				</li>
+			</ol>
+			<div className="relative">
+				<pre className="bg-background-tertiary rounded-lg p-4 pr-12 overflow-x-auto text-[13px] leading-relaxed font-mono text-text-secondary m-0">
+					{ mcpConfig }
+				</pre>
+				<div className="absolute top-2 right-2">
+					<CopyButton
+						textToCopy={ mcpConfig }
+						isCopied={ isConfigCopied }
+						setIsCopied={ setIsConfigCopied }
+					/>
+				</div>
+			</div>
+		</div>
+	);
+};
+
+const MCPPage = ( { loading, mcpTabOptions, updateGlobalSettings } ) => {
 	const mcpEndpointUrl = `${ srfm_admin.site_url }/wp-json/sureforms/v1/mcp`;
 
 	const EditAbilitiesContent = () => {
@@ -37,7 +113,7 @@ const MCPPage = ( { loading, mcpTabOptions, updateGlobalSettings } ) => {
 				label={ {
 					heading: __( 'Enable Edit Abilities', 'sureforms' ),
 					description: __(
-						'If enabled, form updates can be made by AI clients. Use at your own risk!',
+						'When enabled, AI clients can create new forms, update form titles, fields, and settings, duplicate forms, and modify entry statuses. When disabled, these abilities are unregistered and AI clients can only read your data.',
 						'sureforms'
 					),
 				} }
@@ -59,7 +135,7 @@ const MCPPage = ( { loading, mcpTabOptions, updateGlobalSettings } ) => {
 				label={ {
 					heading: __( 'Enable Delete Abilities', 'sureforms' ),
 					description: __(
-						'If enabled, form deletions can be made by AI clients. Use at your own risk!',
+						'When enabled, AI clients can permanently delete forms and entries. Deleted data cannot be recovered. When disabled, delete abilities are unregistered and AI clients cannot remove any data.',
 						'sureforms'
 					),
 				} }
@@ -85,7 +161,7 @@ const MCPPage = ( { loading, mcpTabOptions, updateGlobalSettings } ) => {
 							<>
 								<p>
 									{ __(
-										'Enable the SureForms MCP (Model Context Protocol) server. Requires the WordPress Abilities API and MCP adapter.',
+										'Creates a dedicated SureForms MCP endpoint that AI clients like Claude can connect to. When disabled, the endpoint is removed and external AI clients cannot discover or call any SureForms abilities.',
 										'sureforms'
 									) }{ ' ' }
 									<a
@@ -109,29 +185,6 @@ const MCPPage = ( { loading, mcpTabOptions, updateGlobalSettings } ) => {
 						)
 					}
 				/>
-				{ mcpTabOptions.srfm_mcp_server && (
-					<div className="flex items-end gap-2">
-						<div className="flex-1">
-							<Input
-								label={ __(
-									'MCP Server URL',
-									'sureforms'
-								) }
-								size="md"
-								type="text"
-								className="[&>input]:text-text-tertiary"
-								value={ mcpEndpointUrl }
-								readOnly
-								disabled
-							/>
-						</div>
-						<CopyButton
-							textToCopy={ mcpEndpointUrl }
-							isCopied={ isCopied }
-							setIsCopied={ setIsCopied }
-						/>
-					</div>
-				) }
 			</>
 		);
 	};
@@ -144,38 +197,94 @@ const MCPPage = ( { loading, mcpTabOptions, updateGlobalSettings } ) => {
 		/>
 	);
 
+	const AbilitiesApiContent = () => {
+		return (
+			<Switch
+				label={ {
+					heading: __( 'Enable Abilities', 'sureforms' ),
+					description: __(
+						'Register SureForms abilities with the WordPress Abilities API. When enabled, AI clients can list, read, create, edit, and delete your forms and entries. When disabled, no abilities are registered and AI clients cannot perform any actions on your forms.',
+						'sureforms'
+					),
+				} }
+				value={ mcpTabOptions.srfm_abilities_api }
+				onChange={ ( value ) =>
+					updateGlobalSettings(
+						'srfm_abilities_api',
+						value,
+						'mcp-settings'
+					)
+				}
+			/>
+		);
+	};
+
 	return (
 		<div className="space-y-6">
 			<ContentSection
 				loading={ loading }
 				title={
 					<span className="flex items-center gap-2">
-						{ __( 'Abilities API — Edit', 'sureforms' ) }
+						{ __( 'Enable Abilities', 'sureforms' ) }
 						<ExperimentalBadge />
 					</span>
 				}
-				content={ EditAbilitiesContent() }
+				content={ AbilitiesApiContent() }
 			/>
-			<ContentSection
-				loading={ loading }
-				title={
-					<span className="flex items-center gap-2">
-						{ __( 'Abilities API — Delete', 'sureforms' ) }
-						<ExperimentalBadge />
-					</span>
-				}
-				content={ DeleteAbilitiesContent() }
-			/>
-			<ContentSection
-				loading={ loading }
-				title={
-					<span className="flex items-center gap-2">
-						{ __( 'MCP Server', 'sureforms' ) }
-						<ExperimentalBadge />
-					</span>
-				}
-				content={ MCPServerContent() }
-			/>
+			{ mcpTabOptions.srfm_abilities_api && (
+				<>
+					<ContentSection
+						loading={ loading }
+						title={
+							<span className="flex items-center gap-2">
+								{ __(
+									'Abilities API — Edit',
+									'sureforms'
+								) }
+								<ExperimentalBadge />
+							</span>
+						}
+						content={ EditAbilitiesContent() }
+					/>
+					<ContentSection
+						loading={ loading }
+						title={
+							<span className="flex items-center gap-2">
+								{ __(
+									'Abilities API — Delete',
+									'sureforms'
+								) }
+								<ExperimentalBadge />
+							</span>
+						}
+						content={ DeleteAbilitiesContent() }
+					/>
+					<ContentSection
+						loading={ loading }
+						title={
+							<span className="flex items-center gap-2">
+								{ __( 'MCP Server', 'sureforms' ) }
+								<ExperimentalBadge />
+							</span>
+						}
+						content={ MCPServerContent() }
+					/>
+					{ mcpTabOptions.srfm_mcp_server && (
+						<ContentSection
+							loading={ loading }
+							title={ __(
+								'Connect Your AI Client',
+								'sureforms'
+							) }
+							content={
+								<SetupInstructions
+									mcpEndpointUrl={ mcpEndpointUrl }
+								/>
+							}
+						/>
+					) }
+				</>
+			) }
 		</div>
 	);
 };

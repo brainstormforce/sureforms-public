@@ -88,9 +88,7 @@ class Abilities_Registrar {
 		$tools     = [];
 
 		foreach ( $abilities as $ability ) {
-			$meta = $ability->get_meta();
-			$mcp  = $meta['mcp'] ?? [];
-			if ( is_array( $mcp ) && ! empty( $mcp['public'] ) && 0 === strpos( $ability->get_name(), 'sureforms/' ) ) {
+			if ( 0 === strpos( $ability->get_name(), 'sureforms/' ) ) {
 				$tools[] = $ability->get_name();
 			}
 		}
@@ -149,6 +147,11 @@ class Abilities_Registrar {
 	 * @return void
 	 */
 	public function register_abilities() {
+		// Bail early if the master Abilities API toggle is off.
+		if ( ! get_option( 'srfm_abilities_api', false ) ) {
+			return;
+		}
+
 		$abilities = [
 			new List_Forms(),
 			new Create_Form(),
@@ -186,6 +189,11 @@ class Abilities_Registrar {
 
 			// Enforce minimum capability policy — reject abilities with caps weaker than manage_options.
 			if ( ! $ability->meets_capability_policy() ) {
+				continue;
+			}
+
+			// Skip disabled abilities so they don't appear in MCP listings.
+			if ( ! $ability->is_enabled() ) {
 				continue;
 			}
 

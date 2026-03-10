@@ -359,11 +359,13 @@ class Global_Settings {
 	 * @since 2.6.0
 	 */
 	public static function srfm_save_mcp_settings( $setting_options ) {
+		$srfm_abilities_api        = ! empty( $setting_options['srfm_abilities_api'] );
 		$srfm_abilities_api_edit   = ! empty( $setting_options['srfm_abilities_api_edit'] );
 		$srfm_abilities_api_delete = ! empty( $setting_options['srfm_abilities_api_delete'] );
 		$srfm_mcp_server           = ! empty( $setting_options['srfm_mcp_server'] );
 
 		// Save as individual options for the Abilities API permission_callback.
+		update_option( 'srfm_abilities_api', $srfm_abilities_api );
 		update_option( 'srfm_abilities_api_edit', $srfm_abilities_api_edit );
 		update_option( 'srfm_abilities_api_delete', $srfm_abilities_api_delete );
 		update_option( 'srfm_mcp_server', $srfm_mcp_server );
@@ -372,6 +374,7 @@ class Global_Settings {
 		return update_option(
 			'srfm_mcp_settings_options',
 			[
+				'srfm_abilities_api'        => $srfm_abilities_api,
 				'srfm_abilities_api_edit'   => $srfm_abilities_api_edit,
 				'srfm_abilities_api_delete' => $srfm_abilities_api_delete,
 				'srfm_mcp_server'           => $srfm_mcp_server,
@@ -458,6 +461,7 @@ class Global_Settings {
 
 		if ( empty( $global_setting_options['srfm_mcp_settings_options'] ) ) {
 			$global_setting_options['srfm_mcp_settings_options'] = [
+				'srfm_abilities_api'        => (bool) get_option( 'srfm_abilities_api', false ),
 				'srfm_abilities_api_edit'   => (bool) get_option( 'srfm_abilities_api_edit', false ),
 				'srfm_abilities_api_delete' => (bool) get_option( 'srfm_abilities_api_delete', false ),
 				'srfm_mcp_server'           => (bool) get_option( 'srfm_mcp_server', false ),
