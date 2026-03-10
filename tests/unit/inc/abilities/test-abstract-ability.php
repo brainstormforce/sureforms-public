@@ -71,6 +71,13 @@ class Test_Abstract_Ability extends TestCase {
 	}
 
 	/**
+	 * Test get_id returns the ability identifier.
+	 */
+	public function test_get_id() {
+		$this->assertIsString( $this->ability->get_id() );
+	}
+
+	/**
 	 * Test register method is callable.
 	 */
 	public function test_register() {

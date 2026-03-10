@@ -73,6 +73,15 @@ class Test_Email_Template extends TestCase {
 	}
 
 	/**
+	 * Test get_raw_footer returns closing HTML.
+	 */
+	public function test_get_raw_footer() {
+		$result = $this->email_template->get_raw_footer();
+		$this->assertIsString( $result );
+		$this->assertStringContainsString( '</html>', $result );
+	}
+
+	/**
 	 * Test remove_border_from_last_tr_td_table removes border from last row.
 	 */
 	public function test_remove_border_from_last_tr_td_table() {

@@ -11,7 +11,7 @@ use SRFM\Inc\Abilities\Forms\Get_Shortcode;
 /**
  * Test_Get_Shortcode class.
  */
-class Test_Get_Shortcode extends TestCase {
+class Test_Get_Shortcode_Embedding extends TestCase {
 
 	/**
 	 * Ability instance.
