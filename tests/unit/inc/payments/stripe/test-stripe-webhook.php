@@ -72,7 +72,149 @@ class Test_Stripe_Webhook extends TestCase {
 	}
 
 	// ──────────────────────────────────────────────
-	// validate_stripe_signature
+	// verify_stripe_signature_locally (private)
+	// ──────────────────────────────────────────────
+
+	public function test_verify_signature_locally_with_valid_signature() {
+		$secret    = 'whsec_test_secret_key';
+		$payload   = '{"type":"checkout.session.completed"}';
+		$timestamp = (string) time();
+		$signature = hash_hmac( 'sha256', $timestamp . '.' . $payload, $secret );
+		$header    = 't=' . $timestamp . ',v1=' . $signature;
+
+		$result = $this->call_private_method( $this->webhook, 'verify_stripe_signature_locally', [ $payload, $header, $secret ] );
+		$this->assertTrue( $result );
+	}
+
+	public function test_verify_signature_locally_rejects_invalid_signature() {
+		$secret    = 'whsec_test_secret_key';
+		$payload   = '{"type":"checkout.session.completed"}';
+		$timestamp = (string) time();
+		$header    = 't=' . $timestamp . ',v1=invalidsignaturevalue';
+
+		$result = $this->call_private_method( $this->webhook, 'verify_stripe_signature_locally', [ $payload, $header, $secret ] );
+		$this->assertFalse( $result );
+	}
+
+	public function test_verify_signature_locally_rejects_expired_timestamp() {
+		$secret    = 'whsec_test_secret_key';
+		$payload   = '{"type":"checkout.session.completed"}';
+		$timestamp = (string) ( time() - 400 ); // 400 seconds ago, beyond 300s tolerance.
+		$signature = hash_hmac( 'sha256', $timestamp . '.' . $payload, $secret );
+		$header    = 't=' . $timestamp . ',v1=' . $signature;
+
+		$result = $this->call_private_method( $this->webhook, 'verify_stripe_signature_locally', [ $payload, $header, $secret ] );
+		$this->assertFalse( $result );
+	}
+
+	public function test_verify_signature_locally_accepts_within_custom_tolerance() {
+		$secret    = 'whsec_test_secret_key';
+		$payload   = '{"type":"checkout.session.completed"}';
+		$timestamp = (string) ( time() - 500 ); // 500 seconds ago.
+		$signature = hash_hmac( 'sha256', $timestamp . '.' . $payload, $secret );
+		$header    = 't=' . $timestamp . ',v1=' . $signature;
+
+		// With 600s tolerance, this should pass.
+		$result = $this->call_private_method( $this->webhook, 'verify_stripe_signature_locally', [ $payload, $header, $secret, 600 ] );
+		$this->assertTrue( $result );
+	}
+
+	public function test_verify_signature_locally_rejects_missing_timestamp() {
+		$header = 'v1=somesignature';
+
+		$result = $this->call_private_method( $this->webhook, 'verify_stripe_signature_locally', [ 'payload', $header, 'secret' ] );
+		$this->assertFalse( $result );
+	}
+
+	public function test_verify_signature_locally_rejects_missing_v1_signature() {
+		$header = 't=' . time();
+
+		$result = $this->call_private_method( $this->webhook, 'verify_stripe_signature_locally', [ 'payload', $header, 'secret' ] );
+		$this->assertFalse( $result );
+	}
+
+	public function test_verify_signature_locally_rejects_empty_header() {
+		$result = $this->call_private_method( $this->webhook, 'verify_stripe_signature_locally', [ 'payload', '', 'secret' ] );
+		$this->assertFalse( $result );
+	}
+
+	public function test_verify_signature_locally_rejects_tampered_payload() {
+		$secret           = 'whsec_test_secret_key';
+		$original_payload = '{"amount":1000}';
+		$timestamp        = (string) time();
+		$signature        = hash_hmac( 'sha256', $timestamp . '.' . $original_payload, $secret );
+		$header           = 't=' . $timestamp . ',v1=' . $signature;
+
+		// Tamper with the payload.
+		$tampered_payload = '{"amount":9999}';
+
+		$result = $this->call_private_method( $this->webhook, 'verify_stripe_signature_locally', [ $tampered_payload, $header, $secret ] );
+		$this->assertFalse( $result );
+	}
+
+	public function test_verify_signature_locally_rejects_wrong_secret() {
+		$secret    = 'whsec_correct_secret';
+		$payload   = '{"type":"checkout.session.completed"}';
+		$timestamp = (string) time();
+		$signature = hash_hmac( 'sha256', $timestamp . '.' . $payload, $secret );
+		$header    = 't=' . $timestamp . ',v1=' . $signature;
+
+		$result = $this->call_private_method( $this->webhook, 'verify_stripe_signature_locally', [ $payload, $header, 'whsec_wrong_secret' ] );
+		$this->assertFalse( $result );
+	}
+
+	public function test_verify_signature_locally_handles_malformed_header_parts() {
+		// Header with parts that have no '=' delimiter.
+		$header = 'garbage,more_garbage,t=' . time();
+
+		$result = $this->call_private_method( $this->webhook, 'verify_stripe_signature_locally', [ 'payload', $header, 'secret' ] );
+		$this->assertFalse( $result ); // Missing v1.
+	}
+
+	public function test_verify_signature_locally_handles_multiple_v1_uses_first() {
+		$secret     = 'whsec_test_secret_key';
+		$payload    = '{"type":"test"}';
+		$timestamp  = (string) time();
+		$signature  = hash_hmac( 'sha256', $timestamp . '.' . $payload, $secret );
+		// First v1 is correct, second is wrong — method uses last v1 encountered.
+		$header     = 't=' . $timestamp . ',v1=' . $signature . ',v1=invalidsig';
+
+		// The foreach overwrites, so the last v1 wins — should fail.
+		$result = $this->call_private_method( $this->webhook, 'verify_stripe_signature_locally', [ $payload, $header, $secret ] );
+		$this->assertFalse( $result );
+	}
+
+	// ──────────────────────────────────────────────
+	// validate_webhook_permission (public)
+	// ──────────────────────────────────────────────
+
+	public function test_validate_webhook_permission_returns_wp_error_with_empty_payload() {
+		// php://input is empty in test context and no signature header.
+		$result = $this->webhook->validate_webhook_permission( 'test' );
+
+		$this->assertInstanceOf( \WP_Error::class, $result );
+		$this->assertSame( 'srfm_webhook_unauthorized', $result->get_error_code() );
+		$this->assertSame( 401, $result->get_error_data()['status'] );
+	}
+
+	public function test_validate_webhook_permission_returns_wp_error_with_missing_signature() {
+		// Even with no payload (php://input empty), the first check catches it.
+		$result = $this->webhook->validate_webhook_permission( 'live' );
+
+		$this->assertInstanceOf( \WP_Error::class, $result );
+		$this->assertSame( 'srfm_webhook_unauthorized', $result->get_error_code() );
+	}
+
+	public function test_validate_webhook_permission_defaults_invalid_mode_to_test() {
+		$result = $this->webhook->validate_webhook_permission( 'invalid_mode' );
+
+		// Returns WP_Error because php://input is empty — early return before mode assignment.
+		$this->assertInstanceOf( \WP_Error::class, $result );
+		$this->assertSame( 'srfm_webhook_unauthorized', $result->get_error_code() );
+	}
+
+	// ──────────────────────────────────────────────
+	// validate_stripe_signature (deprecated)
 	// ──────────────────────────────────────────────
 
 	public function test_validate_stripe_signature_returns_false_with_empty_payload() {
