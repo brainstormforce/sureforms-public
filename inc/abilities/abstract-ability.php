@@ -6,7 +6,7 @@
  * with the WordPress Abilities API (WP 6.9+).
  *
  * @package sureforms
- * @since x.x.x
+ * @since 2.5.2
  */
 
 namespace SRFM\Inc\Abilities;
@@ -21,20 +21,20 @@ if ( ! defined( 'ABSPATH' ) ) {
  * All SureForms abilities must extend this class and implement
  * the abstract methods: get_input_schema(), get_output_schema(), and execute().
  *
- * @since x.x.x
+ * @since 2.5.2
  */
 abstract class Abstract_Ability {
 	/**
 	 * Minimum required capability for registration policy enforcement.
 	 *
-	 * @since x.x.x
+	 * @since 2.5.2
 	 */
 	private const MIN_CAPABILITY = 'manage_options';
 	/**
 	 * Unique ability identifier.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 2.5.2
 	 */
 	protected $id = '';
 
@@ -42,7 +42,7 @@ abstract class Abstract_Ability {
 	 * Human-readable label.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 2.5.2
 	 */
 	protected $label = '';
 
@@ -50,7 +50,7 @@ abstract class Abstract_Ability {
 	 * Ability description.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 2.5.2
 	 */
 	protected $description = '';
 
@@ -58,7 +58,7 @@ abstract class Abstract_Ability {
 	 * Ability category.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 2.5.2
 	 */
 	protected $category = 'sureforms';
 
@@ -66,14 +66,14 @@ abstract class Abstract_Ability {
 	 * Required WordPress capability.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 2.5.2
 	 */
 	protected $capability = 'manage_options';
 
 	/**
 	 * Get the JSON Schema for ability input.
 	 *
-	 * @since x.x.x
+	 * @since 2.5.2
 	 * @return array<string,mixed>
 	 */
 	abstract public function get_input_schema();
@@ -81,7 +81,7 @@ abstract class Abstract_Ability {
 	/**
 	 * Get the JSON Schema for ability output.
 	 *
-	 * @since x.x.x
+	 * @since 2.5.2
 	 * @return array<string,mixed>
 	 */
 	abstract public function get_output_schema();
@@ -90,7 +90,7 @@ abstract class Abstract_Ability {
 	 * Execute the ability.
 	 *
 	 * @param array<string,mixed> $input Validated input data.
-	 * @since x.x.x
+	 * @since 2.5.2
 	 * @return array<string,mixed>|\WP_Error
 	 */
 	abstract public function execute( $input );
@@ -100,7 +100,7 @@ abstract class Abstract_Ability {
 	 *
 	 * Delegates to current_user_can() with the configured capability.
 	 *
-	 * @since x.x.x
+	 * @since 2.5.2
 	 * @return bool
 	 */
 	public function permission_callback() {
@@ -113,7 +113,7 @@ abstract class Abstract_Ability {
 	 * Prevents third-party abilities registered via srfm_register_abilities
 	 * from downgrading the required capability below manage_options.
 	 *
-	 * @since x.x.x
+	 * @since 2.5.2
 	 * @return bool
 	 */
 	public function meets_capability_policy() {
@@ -126,7 +126,7 @@ abstract class Abstract_Ability {
 	 * Returns MCP-compatible annotations for readonly, destructive, and idempotent flags.
 	 * Subclasses should override to customize.
 	 *
-	 * @since x.x.x
+	 * @since 2.5.2
 	 * @return array<string,bool>
 	 */
 	public function get_annotations() {
@@ -141,7 +141,7 @@ abstract class Abstract_Ability {
 	 * Execution wrapper with pre/post hooks.
 	 *
 	 * @param array<string,mixed> $input Validated input data.
-	 * @since x.x.x
+	 * @since 2.5.2
 	 * @return array<string,mixed>|\WP_Error
 	 */
 	public function execute_wrapper( $input ) {
@@ -150,7 +150,7 @@ abstract class Abstract_Ability {
 		 *
 		 * @param string              $id    Ability ID.
 		 * @param array<string,mixed> $input Input data.
-		 * @since x.x.x
+		 * @since 2.5.2
 		 */
 		do_action( 'srfm_before_ability_execute', $this->id, $input );
 
@@ -162,7 +162,7 @@ abstract class Abstract_Ability {
 		 * @param string                        $id     Ability ID.
 		 * @param array<string,mixed>           $input  Input data.
 		 * @param array<string,mixed>|\WP_Error $output Output data.
-		 * @since x.x.x
+		 * @since 2.5.2
 		 */
 		do_action( 'srfm_after_ability_execute', $this->id, $input, $output );
 
@@ -172,7 +172,7 @@ abstract class Abstract_Ability {
 	/**
 	 * Register this ability with the WordPress Abilities API.
 	 *
-	 * @since x.x.x
+	 * @since 2.5.2
 	 * @return void
 	 */
 	public function register() {
@@ -206,7 +206,7 @@ abstract class Abstract_Ability {
 	/**
 	 * Get the ability ID.
 	 *
-	 * @since x.x.x
+	 * @since 2.5.2
 	 * @return string
 	 */
 	public function get_id() {

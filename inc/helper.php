@@ -134,7 +134,7 @@ class Helper {
 	 *
 	 * @param mixed $data Data which needs to be converted to boolean.
 	 *
-	 * @since x.x.x
+	 * @since 2.5.2
 	 * @return bool
 	 */
 	public static function get_boolean_value( $data ) {

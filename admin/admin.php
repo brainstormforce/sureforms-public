@@ -35,7 +35,7 @@ class Admin {
 	/**
 	 * Minimum number of forms or entries required to show the rating notice.
 	 *
-	 * @since x.x.x
+	 * @since 2.5.2
 	 */
 	public const RATING_NOTICE_THRESHOLD = 3;
 
@@ -51,7 +51,7 @@ class Admin {
 	 * Cached result for whether the rating notice should display.
 	 *
 	 * @var bool|null
-	 * @since x.x.x
+	 * @since 2.5.2
 	 */
 	private $should_show_rating = null;
 
@@ -481,7 +481,7 @@ class Admin {
 	 * Add Learn submenu page.
 	 *
 	 * @return void
-	 * @since x.x.x
+	 * @since 2.5.2
 	 */
 	public function add_learn_page() {
 		add_submenu_page(
@@ -498,7 +498,7 @@ class Admin {
 	 * Learn page callback.
 	 *
 	 * @return void
-	 * @since x.x.x
+	 * @since 2.5.2
 	 */
 	public function render_learn() {
 		?>
@@ -1365,7 +1365,7 @@ class Admin {
 	/**
 	 * Display a notice to the user about providing a review.
 	 *
-	 * @since x.x.x
+	 * @since 2.5.2
 	 * @return void
 	 */
 	public function display_srfm_rating_notice() {
@@ -1409,7 +1409,7 @@ class Admin {
 	 * The Astra Notices library handles the 7-day delay via the
 	 * `display-notice-after` parameter.
 	 *
-	 * @since x.x.x
+	 * @since 2.5.2
 	 * @return void
 	 */
 	public function display_srfm_getting_started_notice() {
@@ -1452,7 +1452,7 @@ class Admin {
 	 * Called via the astra_notice_after_markup_{id} hook so the script
 	 * only loads when a SureForms notice is actually rendered.
 	 *
-	 * @since x.x.x
+	 * @since 2.5.2
 	 * @return void
 	 */
 	public function enqueue_notice_response_script() {
@@ -1484,7 +1484,7 @@ class Admin {
 	 * Validates the request and records the analytics event
 	 * for the notice button that was clicked.
 	 *
-	 * @since x.x.x
+	 * @since 2.5.2
 	 * @return void
 	 */
 	public function handle_notice_response() {
@@ -1756,7 +1756,7 @@ class Admin {
 	/**
 	 * Build the shared HTML markup for admin notices.
 	 *
-	 * @since x.x.x
+	 * @since 2.5.2
 	 *
 	 * All text parameters must be pre-escaped by the caller (e.g. via esc_html__()).
 	 * URL parameters must be pre-escaped via esc_url().
@@ -1818,7 +1818,7 @@ class Admin {
 	 *
 	 * Returns true if the user has 3 or more published forms or 3 or more form entries.
 	 *
-	 * @since x.x.x
+	 * @since 2.5.2
 	 * @return bool
 	 */
 	private function maybe_display_rating_notice() {

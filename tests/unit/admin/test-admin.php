@@ -135,7 +135,7 @@ class Test_Admin extends TestCase {
 /**
  * Tests for the 5-star rating notice functionality.
  *
- * @since x.x.x
+ * @since 2.5.2
  */
 class Test_Rating_Notice extends TestCase {
 	use Astra_Notices_Helper;
@@ -241,7 +241,7 @@ class Test_Rating_Notice extends TestCase {
 /**
  * Tests for the "Getting Started" admin notice functionality.
  *
- * @since x.x.x
+ * @since 2.5.2
  */
 class Test_Getting_Started_Notice extends TestCase {
 	use Astra_Notices_Helper;
@@ -340,7 +340,7 @@ class Test_Getting_Started_Notice extends TestCase {
 	/**
 	 * Test: handle_notice_response rejects requests with an invalid notice_id / button combination.
 	 *
-	 * @since x.x.x
+	 * @since 2.5.2
 	 */
 	public function test_handle_notice_response_rejects_invalid_params() {
 		$valid = [
@@ -360,7 +360,7 @@ class Test_Getting_Started_Notice extends TestCase {
 	/**
 	 * Test: enqueue_notice_response_script is callable and skips double-enqueue.
 	 *
-	 * @since x.x.x
+	 * @since 2.5.2
 	 */
 	public function test_enqueue_notice_response_script_is_callable() {
 		$admin = Admin::get_instance();

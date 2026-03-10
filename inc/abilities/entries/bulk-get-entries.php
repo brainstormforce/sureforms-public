@@ -3,7 +3,7 @@
  * Bulk Get Entries Ability.
  *
  * @package sureforms
- * @since x.x.x
+ * @since 2.5.2
  */
 
 namespace SRFM\Inc\Abilities\Entries;
@@ -22,7 +22,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Retrieves detailed information about multiple form submission entries
  * in a single call, including parsed form data with decrypted labels.
  *
- * @since x.x.x
+ * @since 2.5.2
  */
 class Bulk_Get_Entries extends Abstract_Ability {
 	use Entry_Parser;
@@ -30,14 +30,14 @@ class Bulk_Get_Entries extends Abstract_Ability {
 	/**
 	 * Maximum number of entries that can be fetched in a single call.
 	 *
-	 * @since x.x.x
+	 * @since 2.5.2
 	 */
 	public const MAX_ENTRIES = 50;
 
 	/**
 	 * Constructor.
 	 *
-	 * @since x.x.x
+	 * @since 2.5.2
 	 */
 	public function __construct() {
 		$this->id          = 'sureforms/bulk-get-entries';
@@ -49,7 +49,7 @@ class Bulk_Get_Entries extends Abstract_Ability {
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @since x.x.x
+	 * @since 2.5.2
 	 */
 	public function get_annotations() {
 		return [
@@ -62,7 +62,7 @@ class Bulk_Get_Entries extends Abstract_Ability {
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @since x.x.x
+	 * @since 2.5.2
 	 */
 	public function get_input_schema() {
 		return [
@@ -81,7 +81,7 @@ class Bulk_Get_Entries extends Abstract_Ability {
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @since x.x.x
+	 * @since 2.5.2
 	 */
 	public function get_output_schema() {
 		return [
@@ -131,7 +131,7 @@ class Bulk_Get_Entries extends Abstract_Ability {
 	 * Execute the bulk-get-entries ability.
 	 *
 	 * @param array<string,mixed> $input Validated input data.
-	 * @since x.x.x
+	 * @since 2.5.2
 	 * @return array<string,mixed>|\WP_Error
 	 */
 	public function execute( $input ) {

@@ -129,7 +129,7 @@ class Email_Template {
 	 *
 	 * @param array<mixed> $fields Submission fields.
 	 * @param string       $email_body Email body content.
-	 * @since x.x.x
+	 * @since 2.5.2
 	 * @return string The rendered email HTML.
 	 */
 	public function render_raw( $fields, $email_body ) {
@@ -144,7 +144,7 @@ class Email_Template {
 	 * Returns a professional HTML email header with DOCTYPE, meta tags,
 	 * inline CSS, dark mode support, and table-based layout.
 	 *
-	 * @since x.x.x
+	 * @since 2.5.2
 	 * @return string
 	 */
 	public function get_raw_header() {
@@ -239,7 +239,7 @@ class Email_Template {
 	 * Returns a professional HTML email footer with site credits
 	 * and proper closing tags.
 	 *
-	 * @since x.x.x
+	 * @since 2.5.2
 	 * @return string
 	 */
 	public function get_raw_footer() {
@@ -345,7 +345,7 @@ class Email_Template {
 	 *
 	 * @param array<mixed> $fields Submission fields.
 	 * @param string       $email_body Email body content.
-	 * @since x.x.x
+	 * @since 2.5.2
 	 * @return string Email body with {all_data} replaced.
 	 */
 	private function process_all_data_tag( $fields, $email_body ) {
