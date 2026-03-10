@@ -797,7 +797,7 @@ class Generate_Form_Markup {
 		/**
 		 * Filter whether confirmation message links should open in a new tab.
 		 *
-		 * @since x.x.x
+		 * @since 2.5.2
 		 *
 		 * @param bool $open_in_new_tab Whether links open in a new tab. Default true.
 		 */
