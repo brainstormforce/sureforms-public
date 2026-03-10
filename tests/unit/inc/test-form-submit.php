@@ -417,6 +417,49 @@ class Test_Form_Submit extends TestCase {
 	}
 
     /**
+     * Test refresh_nonces is callable.
+     */
+    public function test_refresh_nonces() {
+        $this->assertTrue( method_exists( $this->form_submit, 'refresh_nonces' ) );
+    }
+
+    /**
+     * Test submit_form_permissions_check is callable.
+     */
+    public function test_submit_form_permissions_check() {
+        $this->assertTrue( method_exists( $this->form_submit, 'submit_form_permissions_check' ) );
+    }
+
+    /**
+     * Test permissions_check is callable.
+     */
+    public function test_permissions_check() {
+        $result = $this->form_submit->permissions_check();
+        $this->assertIsBool( $result );
+    }
+
+    /**
+     * Test handle_form_entry is callable.
+     */
+    public function test_handle_form_entry() {
+        $this->assertTrue( method_exists( $this->form_submit, 'handle_form_entry' ) );
+    }
+
+    /**
+     * Test send_email is callable.
+     */
+    public function test_send_email() {
+        $this->assertTrue( method_exists( Form_Submit::class, 'send_email' ) );
+    }
+
+    /**
+     * Test field_unique_validation is callable.
+     */
+    public function test_field_unique_validation() {
+        $this->assertTrue( method_exists( $this->form_submit, 'field_unique_validation' ) );
+    }
+
+    /**
      * Helper method to call private methods for testing.
      */
     private function call_private_method($object, $method_name, $parameters = []) {

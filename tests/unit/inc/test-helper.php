@@ -2243,4 +2243,12 @@ class Test_Helper extends TestCase {
         $this->assertFalse( Helper::get_boolean_value( null ) );
     }
 
+    /**
+     * Test disable_style_attr_parsing returns array.
+     */
+    public function test_disable_style_attr_parsing() {
+        $result = Helper::disable_style_attr_parsing( [ 'color', 'background' ] );
+        $this->assertIsArray( $result );
+    }
+
 }

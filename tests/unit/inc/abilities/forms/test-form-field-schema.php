@@ -31,6 +31,16 @@ class Test_Form_Field_Schema extends TestCase {
 	}
 
 	/**
+	 * Test sanitize_form_fields sanitizes field data.
+	 */
+	public function test_sanitize_form_fields() {
+		$reflection = new \ReflectionMethod( $this->ability, 'sanitize_form_fields' );
+		$reflection->setAccessible( true );
+		$result = $reflection->invoke( $this->ability, [] );
+		$this->assertIsArray( $result );
+	}
+
+	/**
 	 * Test get_form_field_schema returns array with expected field types.
 	 */
 	public function test_get_form_field_schema() {

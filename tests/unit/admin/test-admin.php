@@ -145,6 +145,14 @@ class Test_Admin extends TestCase {
 	}
 
 	/**
+	 * Test enqueue_scripts is callable.
+	 */
+	public function test_enqueue_scripts() {
+		$admin = Admin::get_instance();
+		$this->assertTrue( method_exists( $admin, 'enqueue_scripts' ) );
+	}
+
+	/**
 	 * Test srfm_pro_version_compatibility returns early when Pro is not active.
 	 */
 	public function test_srfm_pro_version_compatibility() {

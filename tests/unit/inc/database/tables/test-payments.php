@@ -576,4 +576,20 @@ class Test_Payments_Table extends TestCase {
 	public function test_is_subscription_payment_transaction_nonexistent_returns_false() {
 		$this->assertFalse( Payments::is_subscription_payment_transaction( 999999 ) );
 	}
+
+	/**
+	 * Test get_all_main_payments returns array.
+	 */
+	public function test_get_all_main_payments() {
+		$result = Payments::get_all_main_payments();
+		$this->assertIsArray( $result );
+	}
+
+	/**
+	 * Test get_total_main_payments_by_status returns integer.
+	 */
+	public function test_get_total_main_payments_by_status() {
+		$result = Payments::get_total_main_payments_by_status();
+		$this->assertIsInt( $result );
+	}
 }
