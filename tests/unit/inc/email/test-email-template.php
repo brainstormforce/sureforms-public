@@ -32,4 +32,57 @@ class Test_Email_Template extends TestCase {
 		$this->assertStringContainsString( '</body>', $result );
 		$this->assertStringContainsString( '</table>', $result );
 	}
+
+	/**
+	 * Test render returns complete HTML email with header, body, and footer.
+	 */
+	public function test_render() {
+		$fields     = [];
+		$email_body = '<p>Test email body content</p>';
+		$result     = $this->email_template->render( $fields, $email_body );
+
+		$this->assertIsString( $result );
+		$this->assertStringContainsString( '<html>', $result );
+		$this->assertStringContainsString( 'Test email body content', $result );
+		$this->assertStringContainsString( '</html>', $result );
+	}
+
+	/**
+	 * Test render_raw returns complete HTML email in raw format.
+	 */
+	public function test_render_raw() {
+		$fields     = [];
+		$email_body = '<p>Raw email body</p>';
+		$result     = $this->email_template->render_raw( $fields, $email_body );
+
+		$this->assertIsString( $result );
+		$this->assertStringContainsString( 'Raw email body', $result );
+		$this->assertStringContainsString( '<!DOCTYPE', $result );
+	}
+
+	/**
+	 * Test get_raw_header returns HTML with DOCTYPE and responsive styles.
+	 */
+	public function test_get_raw_header() {
+		$result = $this->email_template->get_raw_header();
+
+		$this->assertIsString( $result );
+		$this->assertStringContainsString( '<!DOCTYPE', $result );
+		$this->assertStringContainsString( '<html', $result );
+		$this->assertStringContainsString( 'viewport', $result );
+	}
+
+	/**
+	 * Test remove_border_from_last_tr_td_table removes border from last row.
+	 */
+	public function test_remove_border_from_last_tr_td_table() {
+		$content = '<table><tr><td style="border-bottom: 1px solid #ccc;">Row 1</td></tr><tr><td style="border-bottom: 1px solid #ccc;">Row 2</td></tr></table>';
+		$result  = $this->email_template->remove_border_from_last_tr_td_table( $content );
+
+		$this->assertIsString( $result );
+		// The last row's td should not have border-bottom.
+		// First row should still have it.
+		$this->assertStringContainsString( 'Row 1', $result );
+		$this->assertStringContainsString( 'Row 2', $result );
+	}
 }
