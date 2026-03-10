@@ -306,7 +306,7 @@ async function processStripePayment( form, paymentBlock, compositeKey ) {
 		if ( ! paymentResult?.valid ) {
 			return {
 				valid: false,
-				message: paymentResult.message,
+				message: paymentResult?.message || '',
 				paymentResult: null,
 			};
 		}

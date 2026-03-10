@@ -256,7 +256,10 @@ class PaymentManager {
 		// PayPal uses a different flow - it's handled by PayPal buttons
 		// which call the backend directly and store completion status
 
-		// Check if PayPal payment completion data exists for this block
+		// Check if PayPal payment completion data exists for this block.
+		// No blockId fallback needed here — sureforms-pro (which writes to srfmPayPalPayments)
+		// is always updated alongside sureforms (core) since we enforce minimum core version
+		// via SRFM_PRO_CORE_RQD_VER, so both plugins will use compositeKey simultaneously.
 		const paypalPaymentData = window.srfmPayPalPayments?.[ this.compositeKey ];
 
 		// Verify that PayPal payment was completed

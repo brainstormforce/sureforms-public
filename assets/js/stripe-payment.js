@@ -646,8 +646,10 @@ class StripePayment {
 		const { stripe, elements, clientSecret, paymentType } = paymentData;
 
 		// Extract original blockId from compositeKey for DOM queries
-		const blockId = compositeKey.includes( '-' )
-			? compositeKey.substring( compositeKey.indexOf( '-' ) + 1 )
+		// compositeKey format is always "numericInstanceId-blockId"
+		const separatorIndex = compositeKey.indexOf( '-' );
+		const blockId = separatorIndex > -1
+			? compositeKey.substring( separatorIndex + 1 )
 			: compositeKey;
 
 		// Get the payment block element
