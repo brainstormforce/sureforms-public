@@ -3,7 +3,7 @@
  * Get Entry Ability.
  *
  * @package sureforms
- * @since x.x.x
+ * @since 2.5.2
  */
 
 namespace SRFM\Inc\Abilities\Entries;
@@ -22,7 +22,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Retrieves detailed information about a specific form submission entry,
  * including parsed form data with decrypted labels.
  *
- * @since x.x.x
+ * @since 2.5.2
  */
 class Get_Entry extends Abstract_Ability {
 	use Entry_Parser;
@@ -30,7 +30,7 @@ class Get_Entry extends Abstract_Ability {
 	/**
 	 * Constructor.
 	 *
-	 * @since x.x.x
+	 * @since 2.5.2
 	 */
 	public function __construct() {
 		$this->id          = 'sureforms/get-entry';
@@ -42,7 +42,7 @@ class Get_Entry extends Abstract_Ability {
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @since x.x.x
+	 * @since 2.5.2
 	 */
 	public function get_annotations() {
 		return [
@@ -55,7 +55,7 @@ class Get_Entry extends Abstract_Ability {
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @since x.x.x
+	 * @since 2.5.2
 	 */
 	public function get_input_schema() {
 		return [
@@ -73,7 +73,7 @@ class Get_Entry extends Abstract_Ability {
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @since x.x.x
+	 * @since 2.5.2
 	 */
 	public function get_output_schema() {
 		return [
@@ -105,7 +105,7 @@ class Get_Entry extends Abstract_Ability {
 	 * Execute the get-entry ability.
 	 *
 	 * @param array<string,mixed> $input Validated input data.
-	 * @since x.x.x
+	 * @since 2.5.2
 	 * @return array<string,mixed>|\WP_Error
 	 */
 	public function execute( $input ) {

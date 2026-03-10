@@ -3,7 +3,7 @@
  * Duplicate Form Ability.
  *
  * @package sureforms
- * @since x.x.x
+ * @since 2.5.2
  */
 
 namespace SRFM\Inc\Abilities\Forms;
@@ -21,13 +21,13 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * Duplicates an existing SureForms form with all its fields and metadata.
  *
- * @since x.x.x
+ * @since 2.5.2
  */
 class Duplicate_Form extends Abstract_Ability {
 	/**
 	 * Constructor.
 	 *
-	 * @since x.x.x
+	 * @since 2.5.2
 	 */
 	public function __construct() {
 		$this->id          = 'sureforms/duplicate-form';
@@ -39,7 +39,7 @@ class Duplicate_Form extends Abstract_Ability {
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @since x.x.x
+	 * @since 2.5.2
 	 */
 	public function get_annotations() {
 		return [
@@ -52,7 +52,7 @@ class Duplicate_Form extends Abstract_Ability {
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @since x.x.x
+	 * @since 2.5.2
 	 */
 	public function get_input_schema() {
 		return [
@@ -75,7 +75,7 @@ class Duplicate_Form extends Abstract_Ability {
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @since x.x.x
+	 * @since 2.5.2
 	 */
 	public function get_output_schema() {
 		return [
@@ -94,7 +94,7 @@ class Duplicate_Form extends Abstract_Ability {
 	 * Execute the duplicate-form ability.
 	 *
 	 * @param array<string,mixed> $input Validated input data.
-	 * @since x.x.x
+	 * @since 2.5.2
 	 * @return array<string,mixed>|\WP_Error
 	 */
 	public function execute( $input ) {

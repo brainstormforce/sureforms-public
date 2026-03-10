@@ -6,7 +6,7 @@
  * with the WordPress Abilities API (WP 6.9+).
  *
  * @package sureforms
- * @since x.x.x
+ * @since 2.5.2
  */
 
 namespace SRFM\Inc\Abilities;
@@ -33,7 +33,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Abilities_Registrar class.
  *
- * @since x.x.x
+ * @since 2.5.2
  */
 class Abilities_Registrar {
 	use Get_Instance;
@@ -43,7 +43,7 @@ class Abilities_Registrar {
 	 *
 	 * Bails early if wp_register_ability() is not available (WP < 6.9).
 	 *
-	 * @since x.x.x
+	 * @since 2.5.2
 	 */
 	public function __construct() {
 		// Graceful degradation for WP < 6.9.
@@ -60,7 +60,7 @@ class Abilities_Registrar {
 	 *
 	 * Uses wp_has_ability_category() guard to avoid collision with zipwp-mcp.
 	 *
-	 * @since x.x.x
+	 * @since 2.5.2
 	 * @return void
 	 */
 	public function register_category() {
@@ -85,7 +85,7 @@ class Abilities_Registrar {
 	 * Uses the srfm_register_abilities filter to allow third-party plugins
 	 * to add their own abilities that extend Abstract_Ability.
 	 *
-	 * @since x.x.x
+	 * @since 2.5.2
 	 * @return void
 	 */
 	public function register_abilities() {
@@ -112,7 +112,7 @@ class Abilities_Registrar {
 		 * Each ability must extend SRFM\Inc\Abilities\Abstract_Ability.
 		 *
 		 * @param array<Abstract_Ability> $abilities Array of ability instances.
-		 * @since x.x.x
+		 * @since 2.5.2
 		 */
 		$abilities = apply_filters( 'srfm_register_abilities', $abilities );
 

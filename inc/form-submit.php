@@ -815,7 +815,7 @@ class Form_Submit {
 		 * at this point; it is substituted later by process_all_data_tag() which applies
 		 * its own per-field escaping, so this call does not interfere with that path.
 		 *
-		 * @since x.x.x
+		 * @since 2.5.2
 		 */
 		$email_body = wp_kses_post( $email_body );
 

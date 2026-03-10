@@ -3,7 +3,7 @@
  * Get Shortcode Ability.
  *
  * @package sureforms
- * @since x.x.x
+ * @since 2.5.2
  */
 
 namespace SRFM\Inc\Abilities\Forms;
@@ -20,13 +20,13 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * Returns the shortcode and block markup for embedding a SureForms form.
  *
- * @since x.x.x
+ * @since 2.5.2
  */
 class Get_Shortcode extends Abstract_Ability {
 	/**
 	 * Constructor.
 	 *
-	 * @since x.x.x
+	 * @since 2.5.2
 	 */
 	public function __construct() {
 		$this->id          = 'sureforms/get-shortcode';
