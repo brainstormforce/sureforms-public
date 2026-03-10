@@ -129,58 +129,6 @@ class Stripe_Webhook {
 	}
 
 	/**
-	 * Verify Stripe webhook signature locally using HMAC-SHA256.
-	 * Implements the same algorithm as Stripe's SDK without external dependencies.
-	 *
-	 * @param string $payload    Raw request body.
-	 * @param string $sig_header Stripe-Signature header value.
-	 * @param string $secret     Webhook signing secret (whsec_...).
-	 * @param int    $tolerance  Maximum age in seconds for replay protection.
-	 * @since x.x.x
-	 * @return bool True if signature is valid, false otherwise.
-	 */
-	private function verify_stripe_signature_locally( $payload, $sig_header, $secret, $tolerance = 300 ) {
-		// Parse the Stripe-Signature header (format: t=timestamp,v1=signature,...).
-		$parts     = explode( ',', $sig_header );
-		$timestamp = '';
-		$signature = '';
-
-		foreach ( $parts as $part ) {
-			$pair = explode( '=', $part, 2 );
-			if ( 2 !== count( $pair ) ) {
-				continue;
-			}
-			if ( 't' === $pair[0] ) {
-				$timestamp = $pair[1];
-			} elseif ( 'v1' === $pair[0] ) {
-				$signature = $pair[1];
-			}
-		}
-
-		if ( empty( $timestamp ) || empty( $signature ) ) {
-			Helper::srfm_log( 'Webhook signature verification failed: missing timestamp or v1 signature.' );
-			return false;
-		}
-
-		// Replay protection: reject requests older than tolerance.
-		if ( absint( $timestamp ) < ( time() - $tolerance ) ) {
-			Helper::srfm_log( 'Webhook signature verification failed: timestamp too old.' );
-			return false;
-		}
-
-		// Compute expected signature: HMAC-SHA256 of "timestamp.payload" with the secret.
-		$signed_payload     = $timestamp . '.' . $payload;
-		$expected_signature = hash_hmac( 'sha256', $signed_payload, $secret );
-
-		if ( ! hash_equals( $expected_signature, $signature ) ) {
-			Helper::srfm_log( 'Webhook signature verification failed: signature mismatch.' );
-			return false;
-		}
-
-		return true;
-	}
-
-	/**
 	 * Validates the Stripe signature for webhook requests through middleware.
 	 *
 	 * @deprecated x.x.x Use validate_webhook_permission() instead. Signature is now verified locally in the permission callback.
@@ -1254,5 +1202,57 @@ class Stripe_Webhook {
 
 		// O(1) lookup using refund ID as array key.
 		return isset( $payment_data['refunds'][ $refund_id ] );
+	}
+
+	/**
+	 * Verify Stripe webhook signature locally using HMAC-SHA256.
+	 * Implements the same algorithm as Stripe's SDK without external dependencies.
+	 *
+	 * @param string $payload    Raw request body.
+	 * @param string $sig_header Stripe-Signature header value.
+	 * @param string $secret     Webhook signing secret (whsec_...).
+	 * @param int    $tolerance  Maximum age in seconds for replay protection.
+	 * @since x.x.x
+	 * @return bool True if signature is valid, false otherwise.
+	 */
+	private function verify_stripe_signature_locally( $payload, $sig_header, $secret, $tolerance = 300 ) {
+		// Parse the Stripe-Signature header (format: t=timestamp,v1=signature,...).
+		$parts     = explode( ',', $sig_header );
+		$timestamp = '';
+		$signature = '';
+
+		foreach ( $parts as $part ) {
+			$pair = explode( '=', $part, 2 );
+			if ( 2 !== count( $pair ) ) {
+				continue;
+			}
+			if ( 't' === $pair[0] ) {
+				$timestamp = $pair[1];
+			} elseif ( 'v1' === $pair[0] ) {
+				$signature = $pair[1];
+			}
+		}
+
+		if ( empty( $timestamp ) || empty( $signature ) ) {
+			Helper::srfm_log( 'Webhook signature verification failed: missing timestamp or v1 signature.' );
+			return false;
+		}
+
+		// Replay protection: reject requests older than tolerance.
+		if ( absint( $timestamp ) < time() - $tolerance ) {
+			Helper::srfm_log( 'Webhook signature verification failed: timestamp too old.' );
+			return false;
+		}
+
+		// Compute expected signature: HMAC-SHA256 of "timestamp.payload" with the secret.
+		$signed_payload     = $timestamp . '.' . $payload;
+		$expected_signature = hash_hmac( 'sha256', $signed_payload, $secret );
+
+		if ( ! hash_equals( $expected_signature, $signature ) ) {
+			Helper::srfm_log( 'Webhook signature verification failed: signature mismatch.' );
+			return false;
+		}
+
+		return true;
 	}
 }
