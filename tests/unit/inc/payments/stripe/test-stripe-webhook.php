@@ -320,4 +320,88 @@ class Test_Stripe_Webhook extends TestCase {
 		$this->webhook->handle_subscription_deleted( $subscription );
 		$this->assertTrue( true );
 	}
+
+	// ──────────────────────────────────────────────
+	// register_endpoints
+	// ──────────────────────────────────────────────
+
+	public function test_register_endpoints_registers_test_webhook_route() {
+		$this->webhook->register_endpoints();
+		$routes = rest_get_server()->get_routes();
+		$this->assertArrayHasKey( '/sureforms/webhook_test', $routes );
+	}
+
+	public function test_register_endpoints_registers_live_webhook_route() {
+		$this->webhook->register_endpoints();
+		$routes = rest_get_server()->get_routes();
+		$this->assertArrayHasKey( '/sureforms/webhook_live', $routes );
+	}
+
+	public function test_register_endpoints_test_route_accepts_post_method() {
+		$this->webhook->register_endpoints();
+		$routes     = rest_get_server()->get_routes();
+		$test_route = $routes['/sureforms/webhook_test'];
+		$methods    = array_keys( $test_route[0]['methods'] ?? [] );
+		$this->assertContains( 'POST', $methods );
+	}
+
+	public function test_register_endpoints_live_route_accepts_post_method() {
+		$this->webhook->register_endpoints();
+		$routes     = rest_get_server()->get_routes();
+		$live_route = $routes['/sureforms/webhook_live'];
+		$methods    = array_keys( $live_route[0]['methods'] ?? [] );
+		$this->assertContains( 'POST', $methods );
+	}
+
+	public function test_register_endpoints_routes_have_callable_callbacks() {
+		$this->webhook->register_endpoints();
+		$routes = rest_get_server()->get_routes();
+		$this->assertIsCallable( $routes['/sureforms/webhook_test'][0]['callback'] );
+		$this->assertIsCallable( $routes['/sureforms/webhook_live'][0]['callback'] );
+	}
+
+	public function test_register_endpoints_routes_have_callable_permission_callbacks() {
+		$this->webhook->register_endpoints();
+		$routes = rest_get_server()->get_routes();
+		$this->assertIsCallable( $routes['/sureforms/webhook_test'][0]['permission_callback'] );
+		$this->assertIsCallable( $routes['/sureforms/webhook_live'][0]['permission_callback'] );
+	}
+
+	// ──────────────────────────────────────────────
+	// update_refund_data
+	// ──────────────────────────────────────────────
+
+	public function test_update_refund_data_returns_false_with_zero_payment_id() {
+		$refund_response = [ 'id' => 're_test123', 'status' => 'succeeded' ];
+		$result          = $this->webhook->update_refund_data( 0, $refund_response, 1000, 'usd' );
+		$this->assertFalse( $result );
+	}
+
+	public function test_update_refund_data_returns_false_with_null_payment_id() {
+		$refund_response = [ 'id' => 're_test123', 'status' => 'succeeded' ];
+		$result          = $this->webhook->update_refund_data( null, $refund_response, 1000, 'usd' );
+		$this->assertFalse( $result );
+	}
+
+	public function test_update_refund_data_returns_false_with_empty_string_payment_id() {
+		$refund_response = [ 'id' => 're_test123', 'status' => 'succeeded' ];
+		$result          = $this->webhook->update_refund_data( '', $refund_response, 1000, 'usd' );
+		$this->assertFalse( $result );
+	}
+
+	public function test_update_refund_data_returns_false_with_empty_refund_response() {
+		$result = $this->webhook->update_refund_data( 1, [], 1000, 'usd' );
+		$this->assertFalse( $result );
+	}
+
+	public function test_update_refund_data_returns_false_with_nonexistent_payment_id() {
+		$refund_response = [
+			'id'     => 're_test123',
+			'status' => 'succeeded',
+			'amount' => 1000,
+		];
+		// Payment ID 999999 won't exist in the test database.
+		$result = $this->webhook->update_refund_data( 999999, $refund_response, 1000, 'usd' );
+		$this->assertFalse( $result );
+	}
 }
