@@ -390,6 +390,32 @@ class Test_Form_Submit extends TestCase {
 		delete_option( 'srfm_security_settings_options' );
 	}
 
+	/**
+	 * Test parse_email_notification_template returns expected structure.
+	 */
+	public function test_parse_email_notification_template() {
+		$submission_data = [
+			'srfm-text-abc123-lbl-first-name' => 'John Doe',
+		];
+		$item = [
+			'email_to'   => 'admin@example.com',
+			'subject'    => 'New Submission',
+			'email_body' => '<p>Hello World</p>',
+		];
+
+		$result = Form_Submit::parse_email_notification_template( $submission_data, $item );
+
+		$this->assertIsArray( $result );
+		$this->assertArrayHasKey( 'to', $result );
+		$this->assertArrayHasKey( 'subject', $result );
+		$this->assertArrayHasKey( 'message', $result );
+		$this->assertArrayHasKey( 'headers', $result );
+		$this->assertEquals( 'admin@example.com', $result['to'] );
+		$this->assertEquals( 'New Submission', $result['subject'] );
+		$this->assertStringContainsString( 'Hello World', $result['message'] );
+		$this->assertStringContainsString( 'Content-Type: text/html', $result['headers'] );
+	}
+
     /**
      * Helper method to call private methods for testing.
      */

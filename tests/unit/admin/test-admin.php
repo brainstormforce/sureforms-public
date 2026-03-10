@@ -130,6 +130,62 @@ class Test_Admin extends TestCase {
         );
     }
 
+	/**
+	 * Test settings_page_callback outputs the settings container div.
+	 */
+	public function test_settings_page_callback() {
+		$admin = Admin::get_instance();
+
+		ob_start();
+		$admin->settings_page_callback();
+		$output = ob_get_clean();
+
+		$this->assertStringContainsString( 'id="srfm-settings-container"', $output );
+		$this->assertStringContainsString( 'srfm-admin-wrapper', $output );
+	}
+
+	/**
+	 * Test srfm_pro_version_compatibility returns early when Pro is not active.
+	 */
+	public function test_srfm_pro_version_compatibility() {
+		$admin = Admin::get_instance();
+
+		// When Pro is not active, method should return without output.
+		ob_start();
+		$admin->srfm_pro_version_compatibility();
+		$output = ob_get_clean();
+
+		// Without Pro active, no notice should be rendered.
+		$this->assertEmpty( $output );
+	}
+
+	/**
+	 * Test render_dashboard_widget outputs the widget HTML.
+	 */
+	public function test_render_dashboard_widget() {
+		$admin = Admin::get_instance();
+
+		// Set up dashboard_widget_data via reflection.
+		$prop = new \ReflectionProperty( $admin, 'dashboard_widget_data' );
+		$prop->setAccessible( true );
+		$prop->setValue(
+			$admin,
+			[
+				[
+					'title' => 'Contact Form',
+					'count' => 5,
+				],
+			]
+		);
+
+		ob_start();
+		$admin->render_dashboard_widget();
+		$output = ob_get_clean();
+
+		$this->assertStringContainsString( 'srfm-dashboard-widget', $output );
+		$this->assertStringContainsString( 'Recent Entries', $output );
+		$this->assertStringContainsString( 'Contact Form', $output );
+	}
 }
 
 /**

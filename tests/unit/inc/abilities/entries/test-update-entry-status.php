@@ -38,7 +38,7 @@ class Test_Update_Entry_Status extends TestCase {
 	/**
 	 * Test annotations indicate write and idempotent.
 	 */
-	public function test_annotations() {
+	public function test_get_annotations() {
 		$annotations = $this->ability->get_annotations();
 		$this->assertFalse( $annotations['readonly'] );
 		$this->assertFalse( $annotations['destructive'] );
@@ -48,7 +48,7 @@ class Test_Update_Entry_Status extends TestCase {
 	/**
 	 * Test input schema requires entry_ids and status.
 	 */
-	public function test_input_schema() {
+	public function test_get_input_schema() {
 		$schema = $this->ability->get_input_schema();
 		$this->assertArrayHasKey( 'entry_ids', $schema['properties'] );
 		$this->assertArrayHasKey( 'status', $schema['properties'] );
@@ -66,6 +66,16 @@ class Test_Update_Entry_Status extends TestCase {
 		$this->assertContains( 'unread', $enum );
 		$this->assertContains( 'trash', $enum );
 		$this->assertContains( 'restore', $enum );
+	}
+
+	/**
+	 * Test output schema has expected keys.
+	 */
+	public function test_get_output_schema() {
+		$schema = $this->ability->get_output_schema();
+		$this->assertArrayHasKey( 'success', $schema['properties'] );
+		$this->assertArrayHasKey( 'updated', $schema['properties'] );
+		$this->assertArrayHasKey( 'errors', $schema['properties'] );
 	}
 
 	/**

@@ -69,7 +69,7 @@ class Test_Update_Form extends TestCase {
 	/**
 	 * Test annotations indicate write and idempotent.
 	 */
-	public function test_annotations() {
+	public function test_get_annotations() {
 		$annotations = $this->ability->get_annotations();
 		$this->assertFalse( $annotations['readonly'] );
 		$this->assertFalse( $annotations['destructive'] );
@@ -79,12 +79,23 @@ class Test_Update_Form extends TestCase {
 	/**
 	 * Test input schema requires form_id.
 	 */
-	public function test_input_schema() {
+	public function test_get_input_schema() {
 		$schema = $this->ability->get_input_schema();
 		$this->assertArrayHasKey( 'form_id', $schema['properties'] );
 		$this->assertArrayHasKey( 'title', $schema['properties'] );
 		$this->assertArrayHasKey( 'status', $schema['properties'] );
 		$this->assertContains( 'form_id', $schema['required'] );
+	}
+
+	/**
+	 * Test output schema has expected keys.
+	 */
+	public function test_get_output_schema() {
+		$schema = $this->ability->get_output_schema();
+		$this->assertArrayHasKey( 'form_id', $schema['properties'] );
+		$this->assertArrayHasKey( 'title', $schema['properties'] );
+		$this->assertArrayHasKey( 'status', $schema['properties'] );
+		$this->assertArrayHasKey( 'updated_fields', $schema['properties'] );
 	}
 
 	/**
