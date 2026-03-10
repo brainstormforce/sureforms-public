@@ -1,8 +1,10 @@
 import Editor from '../QuillEditor';
 import { __ } from '@wordpress/i18n';
-import { useEffect, useState } from '@wordpress/element';
+import { useEffect, useRef, useState } from '@wordpress/element';
 import { Select, Label, Input } from '@bsf/force-ui';
 import RadioGroup from '@Admin/components/RadioGroup';
+import { useDebouncedCallback } from 'use-debounce';
+import { getWordPressPages } from '@Utils/Helpers';
 
 const AFTER_SUBMISSION_OPTIONS = [
 	{
@@ -19,18 +21,39 @@ const DefaultConfirmationTypes = ( {
 	data,
 	setData,
 	pageOptions,
+	setPageOptions,
 	setErrorMessage,
 	errorMessage,
 	keyValueComponent,
 } ) => {
 	const [ canDisplayError, setCanDisplayError ] = useState( false );
+	const controllerRef = useRef( null );
+	const handlePageSearch = useDebouncedCallback( ( keyword = '' ) => {
+		controllerRef.current?.abort();
+		controllerRef.current = new AbortController();
+		getWordPressPages( setPageOptions, {
+			search: keyword,
+			selectedUrl: data?.page_url || '',
+			signal: controllerRef.current.signal,
+		} );
+	}, 300 );
+
 	const handleEditorChange = ( newContent ) => {
 		setData( { ...data, message: newContent } );
 	};
+
 	useEffect( () => {
 		// Do not display pre-validation message right after changing tabs or confirmation type.
 		setCanDisplayError( false );
 	}, [ data?.confirmation_type ] );
+
+	useEffect( () => {
+		return () => {
+			handlePageSearch.cancel();
+			controllerRef.current?.abort();
+		};
+	}, [ handlePageSearch ] );
+
 	return (
 		<>
 			{ data?.confirmation_type === 'same page' && (
@@ -89,6 +112,8 @@ const DefaultConfirmationTypes = ( {
 									} );
 								} }
 								combobox
+								searchFn={ handlePageSearch }
+								debounceDelay={ 0 }
 								searchPlaceholder={ __(
 									'Search for a page',
 									'sureforms'
