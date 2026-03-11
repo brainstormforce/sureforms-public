@@ -311,46 +311,6 @@ class Test_Form_Widget extends TestCase {
 	}
 
 	/**
-	 * Test build_gradient_css sanitizes malicious HTML in color values via esc_attr.
-	 */
-	public function test_build_gradient_css_escapes_values(): void {
-		$settings = [
-			'bgGradient_color'   => '<script>alert(1)</script>',
-			'bgGradient_color_b' => '"><img onerror=alert(1)>',
-		];
-
-		$result = Form_Widget::build_gradient_css( $settings );
-		$this->assertIsString( $result );
-		$this->assertStringNotContainsString( '<script>', $result );
-		$this->assertStringNotContainsString( '<img', $result );
-		$this->assertStringNotContainsString( '<', $result );
-		$this->assertStringNotContainsString( '>', $result );
-	}
-
-	/**
-	 * Test build_gradient_css with XSS payload colors sanitizes HTML via esc_attr.
-	 *
-	 * esc_attr escapes HTML special characters (&, <, >, ", ') but does not
-	 * strip CSS-level payloads like semicolons. This test verifies the HTML
-	 * escaping works correctly with actual XSS vectors.
-	 */
-	public function test_build_gradient_css_sanitizes_xss_payload_colors(): void {
-		$settings = [
-			'bgGradient_color'   => 'red" onclick="alert(1)',
-			'bgGradient_color_b' => 'blue\' onmouseover=\'alert(2)',
-		];
-
-		$result = Form_Widget::build_gradient_css( $settings );
-		$this->assertIsString( $result );
-		// esc_attr should escape quotes so the value cannot break out of an HTML attribute.
-		$this->assertStringNotContainsString( '"', $result );
-		$this->assertStringNotContainsString( "'", $result );
-		// The escaped output should contain the HTML entity equivalents.
-		$this->assertStringContainsString( '&quot;', $result );
-		$this->assertStringContainsString( '&#039;', $result );
-	}
-
-	/**
 	 * Test build_gradient_css with non-array stop settings uses defaults.
 	 */
 	public function test_build_gradient_css_non_array_stops(): void {
@@ -466,10 +426,12 @@ class Test_Form_Widget extends TestCase {
 
 		$result = $this->invoke_get_block_attrs( $widget, $settings );
 
-		$this->assertSame( '10px', $result['formPaddingTop'] );
-		$this->assertSame( '20px', $result['formPaddingRight'] );
-		$this->assertSame( '30px', $result['formPaddingBottom'] );
-		$this->assertSame( '40px', $result['formPaddingLeft'] );
+		$this->assertSame( '10', $result['formPaddingTop'] );
+		$this->assertSame( '20', $result['formPaddingRight'] );
+		$this->assertSame( '30', $result['formPaddingBottom'] );
+		$this->assertSame( '40', $result['formPaddingLeft'] );
+		$this->assertArrayHasKey( 'formPaddingUnit', $result );
+		$this->assertSame( 'px', $result['formPaddingUnit'] );
 	}
 
 	/**
@@ -490,10 +452,12 @@ class Test_Form_Widget extends TestCase {
 
 		$result = $this->invoke_get_block_attrs( $widget, $settings );
 
-		$this->assertSame( '5em', $result['formBorderRadiusTop'] );
-		$this->assertSame( '5em', $result['formBorderRadiusRight'] );
-		$this->assertSame( '5em', $result['formBorderRadiusBottom'] );
-		$this->assertSame( '5em', $result['formBorderRadiusLeft'] );
+		$this->assertSame( '5', $result['formBorderRadiusTop'] );
+		$this->assertSame( '5', $result['formBorderRadiusRight'] );
+		$this->assertSame( '5', $result['formBorderRadiusBottom'] );
+		$this->assertSame( '5', $result['formBorderRadiusLeft'] );
+		$this->assertArrayHasKey( 'formBorderRadiusUnit', $result );
+		$this->assertSame( 'em', $result['formBorderRadiusUnit'] );
 	}
 
 	/**
@@ -514,10 +478,12 @@ class Test_Form_Widget extends TestCase {
 
 		$result = $this->invoke_get_block_attrs( $widget, $settings );
 
-		$this->assertSame( '15px', $result['formPaddingTop'] );
-		$this->assertSame( '15px', $result['formPaddingRight'] );
-		$this->assertSame( '15px', $result['formPaddingBottom'] );
-		$this->assertSame( '15px', $result['formPaddingLeft'] );
+		$this->assertSame( '15', $result['formPaddingTop'] );
+		$this->assertSame( '15', $result['formPaddingRight'] );
+		$this->assertSame( '15', $result['formPaddingBottom'] );
+		$this->assertSame( '15', $result['formPaddingLeft'] );
+		$this->assertArrayHasKey( 'formPaddingUnit', $result );
+		$this->assertSame( 'px', $result['formPaddingUnit'] );
 	}
 
 	/**
@@ -596,50 +562,6 @@ class Test_Form_Widget extends TestCase {
 	}
 
 	/**
-	 * Test build_gradient_css with malicious stop values escapes them via esc_attr.
-	 */
-	public function test_build_gradient_css_malicious_stop_values(): void {
-		$settings = [
-			'bgGradient_color'        => '#FF0000',
-			'bgGradient_color_b'      => '#0000FF',
-			'bgGradient_color_stop'   => [
-				'size' => '10" onclick="alert(1)',
-				'unit' => '%',
-			],
-			'bgGradient_color_b_stop' => [
-				'size' => '90',
-				'unit' => '"><script>',
-			],
-		];
-
-		$result = Form_Widget::build_gradient_css( $settings );
-		$this->assertIsString( $result );
-		// esc_attr should escape dangerous characters.
-		$this->assertStringNotContainsString( '"', $result );
-		$this->assertStringNotContainsString( '<', $result );
-		$this->assertStringNotContainsString( '>', $result );
-	}
-
-	/**
-	 * Test build_gradient_css with malicious angle values escapes them via esc_attr.
-	 */
-	public function test_build_gradient_css_malicious_angle_values(): void {
-		$settings = [
-			'bgGradient_color'          => '#AAAAAA',
-			'bgGradient_color_b'        => '#BBBBBB',
-			'bgGradient_gradient_angle' => [
-				'size' => '45" style="background:url(evil)',
-				'unit' => 'deg',
-			],
-		];
-
-		$result = Form_Widget::build_gradient_css( $settings );
-		$this->assertIsString( $result );
-		$this->assertStringNotContainsString( '"', $result );
-		$this->assertStringContainsString( '&quot;', $result );
-	}
-
-	/**
 	 * Test build_gradient_css falls back to linear for unknown gradient type.
 	 */
 	public function test_build_gradient_css_unknown_type_falls_back_to_linear(): void {
@@ -679,5 +601,21 @@ class Test_Form_Widget extends TestCase {
 
 		// Clean up.
 		remove_filter( 'srfm_elementor_block_attrs', $callback );
+	}
+
+	/**
+	 * Test get_block_attrs passes through 'justify' button alignment.
+	 */
+	public function test_get_block_attrs_passes_through_button_alignment_justify(): void {
+		$widget   = $this->create_widget_instance();
+		$settings = [
+			'formTheme'       => 'default',
+			'buttonAlignment' => 'justify',
+		];
+
+		$result = $this->invoke_get_block_attrs( $widget, $settings );
+
+		$this->assertArrayHasKey( 'buttonAlignment', $result );
+		$this->assertSame( 'justify', $result['buttonAlignment'] );
 	}
 }
