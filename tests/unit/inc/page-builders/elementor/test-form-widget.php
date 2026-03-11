@@ -345,9 +345,9 @@ class Test_Form_Widget extends TestCase {
 		// esc_attr should escape quotes so the value cannot break out of an HTML attribute.
 		$this->assertStringNotContainsString( '"', $result );
 		$this->assertStringNotContainsString( "'", $result );
-		// The escaped output should contain the HTML entity equivalents.
-		$this->assertStringContainsString( '&quot;', $result );
-		$this->assertStringContainsString( '&#039;', $result );
+		// CSS output should not contain HTML entities — they are invalid in CSS context.
+		$this->assertStringNotContainsString( '&quot;', $result );
+		$this->assertStringNotContainsString( '&#039;', $result );
 	}
 
 	/**
@@ -466,10 +466,12 @@ class Test_Form_Widget extends TestCase {
 
 		$result = $this->invoke_get_block_attrs( $widget, $settings );
 
-		$this->assertSame( '10px', $result['formPaddingTop'] );
-		$this->assertSame( '20px', $result['formPaddingRight'] );
-		$this->assertSame( '30px', $result['formPaddingBottom'] );
-		$this->assertSame( '40px', $result['formPaddingLeft'] );
+		$this->assertSame( '10', $result['formPaddingTop'] );
+		$this->assertSame( '20', $result['formPaddingRight'] );
+		$this->assertSame( '30', $result['formPaddingBottom'] );
+		$this->assertSame( '40', $result['formPaddingLeft'] );
+		$this->assertArrayHasKey( 'formPaddingUnit', $result );
+		$this->assertSame( 'px', $result['formPaddingUnit'] );
 	}
 
 	/**
@@ -490,10 +492,12 @@ class Test_Form_Widget extends TestCase {
 
 		$result = $this->invoke_get_block_attrs( $widget, $settings );
 
-		$this->assertSame( '5em', $result['formBorderRadiusTop'] );
-		$this->assertSame( '5em', $result['formBorderRadiusRight'] );
-		$this->assertSame( '5em', $result['formBorderRadiusBottom'] );
-		$this->assertSame( '5em', $result['formBorderRadiusLeft'] );
+		$this->assertSame( '5', $result['formBorderRadiusTop'] );
+		$this->assertSame( '5', $result['formBorderRadiusRight'] );
+		$this->assertSame( '5', $result['formBorderRadiusBottom'] );
+		$this->assertSame( '5', $result['formBorderRadiusLeft'] );
+		$this->assertArrayHasKey( 'formBorderRadiusUnit', $result );
+		$this->assertSame( 'em', $result['formBorderRadiusUnit'] );
 	}
 
 	/**
@@ -514,10 +518,12 @@ class Test_Form_Widget extends TestCase {
 
 		$result = $this->invoke_get_block_attrs( $widget, $settings );
 
-		$this->assertSame( '15px', $result['formPaddingTop'] );
-		$this->assertSame( '15px', $result['formPaddingRight'] );
-		$this->assertSame( '15px', $result['formPaddingBottom'] );
-		$this->assertSame( '15px', $result['formPaddingLeft'] );
+		$this->assertSame( '15', $result['formPaddingTop'] );
+		$this->assertSame( '15', $result['formPaddingRight'] );
+		$this->assertSame( '15', $result['formPaddingBottom'] );
+		$this->assertSame( '15', $result['formPaddingLeft'] );
+		$this->assertArrayHasKey( 'formPaddingUnit', $result );
+		$this->assertSame( 'px', $result['formPaddingUnit'] );
 	}
 
 	/**
@@ -636,7 +642,8 @@ class Test_Form_Widget extends TestCase {
 		$result = Form_Widget::build_gradient_css( $settings );
 		$this->assertIsString( $result );
 		$this->assertStringNotContainsString( '"', $result );
-		$this->assertStringContainsString( '&quot;', $result );
+		// CSS output should not contain HTML entities — they are invalid in CSS context.
+		$this->assertStringNotContainsString( '&quot;', $result );
 	}
 
 	/**
@@ -679,5 +686,21 @@ class Test_Form_Widget extends TestCase {
 
 		// Clean up.
 		remove_filter( 'srfm_elementor_block_attrs', $callback );
+	}
+
+	/**
+	 * Test get_block_attrs passes through 'justify' button alignment.
+	 */
+	public function test_get_block_attrs_passes_through_button_alignment_justify(): void {
+		$widget   = $this->create_widget_instance();
+		$settings = [
+			'formTheme'       => 'default',
+			'buttonAlignment' => 'justify',
+		];
+
+		$result = $this->invoke_get_block_attrs( $widget, $settings );
+
+		$this->assertArrayHasKey( 'buttonAlignment', $result );
+		$this->assertSame( 'justify', $result['buttonAlignment'] );
 	}
 }
