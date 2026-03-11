@@ -964,9 +964,11 @@ class Form_Widget extends Widget_Base {
 
 		foreach ( $sides as $side ) {
 			if ( ! empty( $dimensions[ $side ] ) || '0' === $dimensions[ $side ] ) {
-				$block_attrs[ $control_key . ucfirst( $side ) ] = $dimensions[ $side ] . $unit;
+				$block_attrs[ $control_key . ucfirst( $side ) ] = $dimensions[ $side ];
 			}
 		}
+
+		$block_attrs[ $control_key . 'Unit' ] = $unit;
 
 		return $block_attrs;
 	}
