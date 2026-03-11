@@ -70,7 +70,7 @@ export async function fieldValidation(
 	};
 
 	let uniqueEntryData = null;
-	const uniqueFields = document.querySelectorAll(
+	const uniqueFields = formContainer.querySelectorAll(
 		'input[data-unique="true"]'
 	);
 	if ( uniqueFields.length !== 0 ) {

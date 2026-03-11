@@ -91,7 +91,7 @@ const FormConfirmSetting = ( { toast, setHasValidationErrors } ) => {
 		}
 		if ( 'custom url' === data?.confirmation_type ) {
 			if ( ! data?.custom_url ) {
-				validation = __( 'This field is required', 'sureforms' );
+				validation = __( 'This field is required.', 'sureforms' );
 			} else {
 				try {
 					const newURL = new URL( data?.custom_url );
@@ -108,14 +108,14 @@ const FormConfirmSetting = ( { toast, setHasValidationErrors } ) => {
 						)
 					) {
 						validation = __(
-							'URL is missing Top Level Domain (TLD)',
+							'URL is missing Top Level Domain (TLD).',
 							'sureforms'
 						);
 					} else {
 						validation = '';
 					}
 				} catch ( error ) {
-					validation = __( 'Please enter a valid URL', 'sureforms' );
+					validation = __( 'Please enter a valid URL.', 'sureforms' );
 				}
 			}
 		}
@@ -131,9 +131,13 @@ const FormConfirmSetting = ( { toast, setHasValidationErrors } ) => {
 	}
 
 	useEffect( () => {
-		// Fetch the page options.
-		getWordPressPages( setPageOptions );
 		const formConfirmationData = sureforms_keys._srfm_form_confirmation;
+
+		// Fetch the first page of options and include saved value for label hydration.
+		getWordPressPages( setPageOptions, {
+			selectedUrl: formConfirmationData?.[ 0 ]?.page_url || '',
+		} );
+
 		if ( formConfirmationData ) {
 			setData( formConfirmationData[ 0 ] );
 		}
@@ -151,6 +155,7 @@ const FormConfirmSetting = ( { toast, setHasValidationErrors } ) => {
 						data={ data }
 						setData={ setData }
 						pageOptions={ pageOptions }
+						setPageOptions={ setPageOptions }
 						errorMessage={ errorMessage }
 						setErrorMessage={ setErrorMessage }
 						keyValueComponent={ keyValueComponent }
@@ -176,6 +181,7 @@ const FormConfirmSetting = ( { toast, setHasValidationErrors } ) => {
 						data={ data }
 						setData={ setData }
 						pageOptions={ pageOptions }
+						setPageOptions={ setPageOptions }
 						errorMessage={ errorMessage }
 						setErrorMessage={ setErrorMessage }
 						keyValueComponent={ keyValueComponent }

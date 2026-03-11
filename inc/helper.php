@@ -130,6 +130,18 @@ class Helper {
 	}
 
 	/**
+	 * Returns a boolean representation of the given value.
+	 *
+	 * @param mixed $data Data which needs to be converted to boolean.
+	 *
+	 * @since x.x.x
+	 * @return bool
+	 */
+	public static function get_boolean_value( $data ) {
+		return (bool) $data;
+	}
+
+	/**
 	 * Checks if current value is an array or else returns default value
 	 *
 	 * @param mixed $data Data which needs to be checked if it is an array.

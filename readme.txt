@@ -401,6 +401,11 @@ You can collect payments securely through Stripe & PayPal without any add-ons or
 You can report the issue through our [Bug Bounty Program](https://brainstormforce.com/bug-bounty-program/). We collaborate with Patchstack to provide opportunities for researchers to report vulnerabilities. The Patchstack team will help validate, triage, and handle any reported security issues.
 
 == Changelog ==
+= x.x.x =
+* Fix: Fixed the page dropdown not loading all pages on large sites with 1,700+ pages by replacing bulk page fetch with a paginated, searchable REST endpoint.
+* New: Added Learn section.
+* New: Added “Send as Raw HTML” option in form email notifications to send fully structured HTML emails.
+* Fix: Preserve input formatting in Entries View.
 = 2.5.1 - 16th February 2026 =
 * New: Added option to change currency position (e.g., $100, 100$, $ 100, 100 $).
 * Fix: Fixed the payment block amount not updating correctly with conditional logic.

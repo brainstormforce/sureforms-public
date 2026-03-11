@@ -36,7 +36,7 @@ export default () => {
 			/>
 			<Container.Item>
 				<Label size="sm" className="font-semibold p-1">
-					{ __( 'Super Charge Your Workflow', 'sureforms' ) }
+					{ __( 'Supercharge Your Workflow', 'sureforms' ) }
 				</Label>
 			</Container.Item>
 			<Container.Item>
