@@ -282,31 +282,16 @@ class Export {
 						continue;
 					}
 
-					// Check once whether a sanitize_callback is registered for this key.
-					$has_callback = has_filter( "sanitize_post_meta_{$meta_key}_for_sureforms_form" );
-
 					if ( in_array( $meta_key, $unserialized_meta_keys, true ) ) {
-						// Unserialized (complex array) metas.
-						// Apply registered sanitize_callback via sanitize_meta() if one exists.
-						$meta_value = sanitize_meta( $meta_key, $meta_value, 'post', 'sureforms_form' );
-						// Fallback only for keys with no registered callback — avoids stripping
-						// HTML/CSS content that a registered callback intentionally preserved.
-						if ( ! $has_callback && is_array( $meta_value ) ) {
-							$meta_value = Helper::sanitize_recursively( 'sanitize_text_field', $meta_value );
-						}
+						// Complex array metas — sanitize_callback registered via register_post_meta()
+						// is automatically invoked by add_post_meta() → update_metadata() pipeline.
 						add_post_meta( $post_id, $meta_key, $meta_value );
 					} else {
 						// Scalar metas — unwrap single-element arrays produced by get_post_meta().
 						$raw_value = is_array( $meta_value ) && isset( $meta_value[0] ) ? $meta_value[0] : $meta_value;
-						// Apply registered sanitize_callback via sanitize_meta() if one exists.
-						$raw_value = sanitize_meta( $meta_key, $raw_value, 'post', 'sureforms_form' );
-						// Fallback only for keys with no registered callback.
-						if ( ! $has_callback ) {
-							if ( is_array( $raw_value ) ) {
-								$raw_value = Helper::sanitize_recursively( 'sanitize_text_field', $raw_value );
-							} elseif ( is_string( $raw_value ) ) {
-								$raw_value = sanitize_text_field( $raw_value );
-							}
+						// Fallback sanitization for scalar metas that may not have a registered callback.
+						if ( is_string( $raw_value ) ) {
+							$raw_value = sanitize_text_field( $raw_value );
 						}
 						add_post_meta( $post_id, $meta_key, $raw_value );
 					}
@@ -356,6 +341,17 @@ class Export {
 			'_srfm_submit_width_backend',
 			'_srfm_use_label_as_placeholder',
 		];
+
+		/**
+		 * Filter the list of scalar meta keys allowed during import.
+		 *
+		 * Pro and other extensions can hook into this to add their own scalar meta keys.
+		 *
+		 * @since x.x.x
+		 * @param array<string> $scalar_metas List of scalar meta keys.
+		 */
+		$scalar_metas = apply_filters( 'srfm_import_scalar_meta_keys', $scalar_metas );
+
 		return array_merge( $this->get_unserialized_post_metas(), $scalar_metas );
 	}
 

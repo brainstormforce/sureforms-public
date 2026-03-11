@@ -298,6 +298,39 @@ class Helper {
 	}
 
 	/**
+	 * Sanitize a value based on its PHP type.
+	 *
+	 * Recursively sanitizes arrays while preserving native PHP types (bool, int, float).
+	 * Use this for complex object metas with many properties where per-field callbacks are impractical.
+	 *
+	 * @param mixed $value The value to sanitize.
+	 * @since x.x.x
+	 * @return mixed The sanitized value.
+	 */
+	public static function sanitize_by_type( $value ) {
+		if ( is_array( $value ) ) {
+			$sanitized = [];
+			foreach ( $value as $key => $val ) {
+				$sanitized[ sanitize_text_field( (string) $key ) ] = self::sanitize_by_type( $val );
+			}
+			return $sanitized;
+		}
+		if ( is_bool( $value ) ) {
+			return $value;
+		}
+		if ( is_int( $value ) ) {
+			return intval( $value );
+		}
+		if ( is_float( $value ) ) {
+			return floatval( $value );
+		}
+		if ( is_string( $value ) ) {
+			return sanitize_text_field( $value );
+		}
+		return '';
+	}
+
+	/**
 	 * This function performs array_map for multi dimensional array
 	 *
 	 * @param string       $function function name to be applied on each element on array.
