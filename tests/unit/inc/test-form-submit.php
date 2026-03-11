@@ -292,9 +292,118 @@ class Test_Form_Submit extends TestCase {
 	}
 
 	/**
-	 * Test process_form_fields with form-id handling.
-	 * Tests the new logic for passing form-id through the filter.
+	 * Test handle_form_submission rejects when honeypot is enabled but field is missing.
 	 */
+	public function test_handle_form_submission_rejects_missing_honeypot_when_enabled() {
+		$form_id = wp_insert_post(
+			[
+				'post_type'   => 'sureforms_form',
+				'post_status' => 'publish',
+				'post_title'  => 'Honeypot Test Form',
+			]
+		);
+
+		update_post_meta( $form_id, '_srfm_captcha_security_type', 'none' );
+		update_option(
+			'srfm_security_settings_options',
+			[ 'srfm_honeypot' => true ]
+		);
+
+		$request = new \WP_REST_Request( 'POST', '/sureforms/v1/submit-form' );
+		$request->set_body_params(
+			[
+				'form-id' => (string) $form_id,
+				// Intentionally omitting srfm-honeypot-field to simulate bot stripping it.
+			]
+		);
+
+		ob_start();
+		try {
+			$this->form_submit->handle_form_submission( $request );
+		} catch ( \WPDieException $e ) {
+			$output = ob_get_clean();
+			$data   = json_decode( $output, true );
+			$this->assertIsArray( $data );
+			$this->assertFalse( $data['success'] );
+			$this->assertStringContainsString( 'spam', $data['data']['message'] );
+
+			// Cleanup.
+			wp_delete_post( $form_id, true );
+			delete_option( 'srfm_security_settings_options' );
+			return;
+		}
+		ob_end_clean();
+
+		// Cleanup.
+		wp_delete_post( $form_id, true );
+		delete_option( 'srfm_security_settings_options' );
+		$this->fail( 'Expected WPDieException was not thrown for missing honeypot field.' );
+	}
+
+	/**
+	 * Test handle_form_submission allows submission when honeypot is disabled and field is absent.
+	 */
+	public function test_handle_form_submission_allows_missing_honeypot_when_disabled() {
+		$form_id = wp_insert_post(
+			[
+				'post_type'   => 'sureforms_form',
+				'post_status' => 'publish',
+				'post_title'  => 'Honeypot Disabled Test Form',
+			]
+		);
+
+		update_post_meta( $form_id, '_srfm_captcha_security_type', 'none' );
+		update_option(
+			'srfm_security_settings_options',
+			[ 'srfm_honeypot' => false ]
+		);
+
+		$request = new \WP_REST_Request( 'POST', '/sureforms/v1/submit-form' );
+		$request->set_body_params(
+			[
+				'form-id' => (string) $form_id,
+				// No honeypot field — should be allowed since honeypot is disabled.
+			]
+		);
+
+		ob_start();
+		try {
+			$result = $this->form_submit->handle_form_submission( $request );
+		} catch ( \WPDieException $e ) {
+			$output = ob_get_clean();
+			$data   = json_decode( $output, true );
+
+			// If it dies, it should NOT be the spam message — it could be a captcha or entry processing error.
+			if ( is_array( $data ) && isset( $data['data']['message'] ) ) {
+				$this->assertStringNotContainsString( 'spam', $data['data']['message'], 'Should not reject as spam when honeypot is disabled.' );
+			}
+
+			// Cleanup.
+			wp_delete_post( $form_id, true );
+			delete_option( 'srfm_security_settings_options' );
+			return;
+		}
+		ob_end_clean();
+
+		// If we reach here, form processed successfully (no die) — that's the expected behavior.
+		wp_delete_post( $form_id, true );
+		delete_option( 'srfm_security_settings_options' );
+	}
+
+    /**
+     * Helper method to call private methods for testing.
+     */
+    private function call_private_method($object, $method_name, $parameters = []) {
+        $reflection = new \ReflectionClass(get_class($object));
+        $method = $reflection->getMethod($method_name);
+        $method->setAccessible(true);
+        return $method->invokeArgs($object, $parameters);
+    }
+
+	/**
+	* Test process_form_fields with form-id handling.
+	* Tests the new logic for passing form-id through the filter.
+	*/
 	public function test_process_form_fields_with_form_id() {
 		// Test case 1: Form data with form-id should pass it to filter and then remove it
 		$form_data = [
@@ -400,20 +509,5 @@ class Test_Form_Submit extends TestCase {
 
 		// form-id = 0 is valid but should be removed from result
 		$this->assertArrayNotHasKey( 'form-id', $result );
-	}
-
-	/**
-	 * Helper method to call private methods for testing.
-	 *
-	 * @param object $object      The object containing the private method.
-	 * @param string $method_name The name of the private method.
-	 * @param array  $parameters  The parameters to pass to the method.
-	 * @return mixed
-	 */
-	private function call_private_method( $object, $method_name, $parameters = [] ) {
-		$reflection = new \ReflectionClass( get_class( $object ) );
-		$method     = $reflection->getMethod( $method_name );
-		$method->setAccessible( true );
-		return $method->invokeArgs( $object, $parameters );
 	}
 }
