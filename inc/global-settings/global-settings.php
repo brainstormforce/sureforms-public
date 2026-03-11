@@ -223,11 +223,14 @@ class Global_Settings {
 		foreach ( $options_keys as $key ) {
 			if ( isset( $setting_options[ $key ] ) ) {
 				$value                 = $setting_options[ $key ];
-			$options_names[ $key ] = sanitize_text_field( is_scalar( $value ) ? (string) $value : '' );
+				$options_names[ $key ] = sanitize_text_field( is_scalar( $value ) ? (string) $value : '' );
 			}
 		}
 
-		return update_option( 'srfm_default_dynamic_block_option', apply_filters( 'srfm_general_dynamic_options_to_save', $options_names, $setting_options ) );
+		// Re-sanitize after filter so Pro-injected keys are also covered.
+		$options_to_save = apply_filters( 'srfm_general_dynamic_options_to_save', $options_names, $setting_options );
+		$options_to_save = array_map( 'sanitize_text_field', $options_to_save );
+		return update_option( 'srfm_default_dynamic_block_option', $options_to_save );
 	}
 
 	/**
