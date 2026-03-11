@@ -36,7 +36,7 @@ const SetupInstructions = ( { mcpEndpointUrl } ) => {
 			mcpServers: {
 				sureforms: {
 					command: 'npx',
-					args: [ '-y', '@anthropic/mcp-wordpress-remote@latest' ],
+					args: [ '-y', '@automattic/mcp-wordpress-remote@latest' ],
 					env: {
 						WP_API_URL: mcpEndpointUrl,
 						WP_API_USERNAME: srfm_admin.current_user_login || '',
