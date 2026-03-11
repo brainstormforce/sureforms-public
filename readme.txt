@@ -2,7 +2,7 @@
 Contributors: brainstormforce
 Tags: forms, contact form, custom forms, payment form, form builder
 Requires at least: 6.4
-Tested up to: 6.9.1
+Tested up to: 6.9.3
 Requires PHP: 7.4
 Stable tag: 2.5.2
 License: GPLv2 or later
@@ -404,8 +404,6 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 = 2.5.2 - 12th March 2026 =
 * New: Added the “Send as Raw HTML” option in email notifications for fully structured HTML emails.
 * New: Added the Learn section.
-* New: Added a Getting Started guide notice for new users.
-* New: Added a rating notice to collect user feedback.
 * Improvement: Improved UX copy across validation messages, settings, and form management UI.
 * Fix: Added the `srfm_confirmation_links_open_in_new_tab` filter to allow confirmation message links to open in the same tab.
 * Fix: Fixed the page dropdown not loading all pages on large sites with 1,700+ pages by replacing the bulk page fetch with a paginated, searchable REST endpoint.
