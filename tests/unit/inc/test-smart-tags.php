@@ -87,6 +87,75 @@ class Test_Smart_Tags extends TestCase {
 		$this->assertFalse( $result );
 	}
 
+	/**
+	 * Test parse_form_input returns value when no submission data.
+	 *
+	 * @since x.x.x
+	 */
+	public function test_parse_form_input_no_data() {
+		$result = Smart_Tags::parse_form_input( '{form:name}' );
+		$this->assertEquals( '{form:name}', $result );
+	}
+
+	/**
+	 * Test parse_form_input returns value when no form tag match.
+	 *
+	 * @since x.x.x
+	 */
+	public function test_parse_form_input_no_tag() {
+		$result = Smart_Tags::parse_form_input( 'plain text', [ 'key' => 'val' ] );
+		$this->assertEquals( 'plain text', $result );
+	}
+
+	/**
+	 * Test parse_form_input resolves a text field smart tag.
+	 *
+	 * @since x.x.x
+	 */
+	public function test_parse_form_input_text_field() {
+		$submission_data = [
+			'srfm-input-abc123-lbl-input-name' => 'John Doe',
+		];
+		$result = Smart_Tags::parse_form_input( '{form:name}', $submission_data );
+		$this->assertStringContainsString( 'John Doe', $result );
+	}
+
+	/**
+	 * Test parse_form_input decodes rawurlencode'd upload URLs.
+	 *
+	 * @since x.x.x
+	 */
+	public function test_parse_form_input_upload_decodes_urls() {
+		$submission_data = [
+			'srfm-upload-abc123-lbl-upload-resume' => [
+				rawurlencode( 'https://example.com/uploads/my file.pdf' ),
+				rawurlencode( 'https://example.com/uploads/doc (2).pdf' ),
+			],
+		];
+		// With raw format type, should return comma-separated decoded URLs.
+		$form_data = [ 'upload_format_type' => 'raw' ];
+		$result    = Smart_Tags::parse_form_input( '{form:resume}', $submission_data, $form_data );
+		$this->assertStringContainsString( 'https://example.com/uploads/my file.pdf', $result );
+		$this->assertStringContainsString( 'https://example.com/uploads/doc (2).pdf', $result );
+		$this->assertStringNotContainsString( '%20', $result );
+	}
+
+	/**
+	 * Test parse_form_input with single upload file returns anchor tag with decoded URL.
+	 *
+	 * @since x.x.x
+	 */
+	public function test_parse_form_input_single_upload_returns_link() {
+		$submission_data = [
+			'srfm-upload-abc123-lbl-upload-resume' => [
+				rawurlencode( 'https://example.com/uploads/my file.pdf' ),
+			],
+		];
+		$result = Smart_Tags::parse_form_input( '{form:resume}', $submission_data );
+		$this->assertStringContainsString( '<a ', $result );
+		$this->assertStringContainsString( 'my file.pdf', $result );
+	}
+
 	public function test_parse_payment_smart_tag_no_submission_data() {
 		$result = Smart_Tags::parse_payment_smart_tag( '{form-payment:slug:amount}', null );
 		$this->assertEquals( '', $result );
