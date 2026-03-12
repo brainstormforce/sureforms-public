@@ -764,7 +764,7 @@ class Form_Submit {
 
 				// Since the upload field returns an array of file URLs, we need to implode them with a comma.
 				if ( 'upload' === $fields[1] && ! empty( $value ) && is_array( $value ) ) {
-					$modified_message[ $label ] = urldecode( implode( ', ', $value ) );
+					$modified_message[ $label ] = implode( ', ', array_map( 'rawurldecode', $value ) );
 				} else {
 					$modified_message[ $label ] = html_entity_decode( esc_attr( Helper::get_string_value( $value ) ) );
 				}
