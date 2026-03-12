@@ -59,7 +59,8 @@
 	}
 }
 
-.sureforms_page_sureforms_payments {
+.sureforms_page_sureforms_payments,
+.sureforms_page_sureforms_learn {
 	.update-nag,
 	.updated,
 	.error,
@@ -69,7 +70,7 @@
 	}
 }
 // Hide WP notices in entries screen
-#wpbody:has( #srfm-entries-root, #srfm-quiz-entries-root, #srfm-payments-react-container ) {
+#wpbody:has( #srfm-entries-root, #srfm-quiz-entries-root, #srfm-payments-react-container, #srfm-learn-root ) {
 	#wpbody-content > .notice {
 		display: none;
 	}

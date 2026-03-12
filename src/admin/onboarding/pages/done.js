@@ -11,7 +11,7 @@ import apiFetch from '@wordpress/api-fetch';
 const features = [
 	__( "Style your form to better match your site's design", 'sureforms' ),
 	__(
-		'Set up confirmation messages and email notifications for each submission',
+		'Set up confirmation messages and email notifications for each entry',
 		'sureforms'
 	),
 	__( 'Add spam protection to block common bot submissions', 'sureforms' ),
