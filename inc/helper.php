@@ -760,6 +760,17 @@ class Helper {
 				}
 			}
 
+			// If the value is an array (e.g. multi-upload field), decode each URL value.
+			if ( is_array( $value ) ) {
+				$mapped_data[ $slug ] = array_map(
+					static function ( $val ) {
+						return is_string( $val ) ? rawurldecode( $val ) : $val;
+					},
+					$value
+				);
+				continue;
+			}
+
 			$mapped_data[ $slug ] = is_string( $value ) ? html_entity_decode( esc_attr( $value ) ) : $value;
 		}
 		return $mapped_data;

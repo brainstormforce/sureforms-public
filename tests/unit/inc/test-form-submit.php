@@ -292,6 +292,21 @@ class Test_Form_Submit extends TestCase {
 	}
 
 	/**
+	 * Test prepare_submission_data properly decodes rawurlencode'd upload URLs.
+	 */
+	public function test_prepare_submission_data_upload_field_decodes_encoded_urls() {
+		$submission_data = [
+			'srfm-upload-abc123-lbl-upload-resume' => [
+				rawurlencode( 'https://example.com/uploads/my file.pdf' ),
+				rawurlencode( 'https://example.com/uploads/doc (2).pdf' ),
+			],
+		];
+		$result = $this->form_submit->prepare_submission_data( $submission_data );
+		$this->assertArrayHasKey( 'resume', $result );
+		$this->assertSame( 'https://example.com/uploads/my file.pdf, https://example.com/uploads/doc (2).pdf', $result['resume'] );
+	}
+
+	/**
 	 * Test handle_form_submission rejects when honeypot is enabled but field is missing.
 	 */
 	public function test_handle_form_submission_rejects_missing_honeypot_when_enabled() {

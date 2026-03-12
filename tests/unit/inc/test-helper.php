@@ -2228,6 +2228,23 @@ class Test_Helper extends TestCase {
     }
 
     /**
+     * Test map_slug_to_submission_data decodes rawurlencode'd array values.
+     */
+    public function test_map_slug_to_submission_data_decodes_upload_urls() {
+        $data = [
+            'srfm-upload-abc123-lbl-upload-files' => [
+                rawurlencode( 'https://example.com/uploads/my file.jpg' ),
+                rawurlencode( 'https://example.com/uploads/image (1).png' ),
+            ],
+        ];
+        $result = Helper::map_slug_to_submission_data( $data );
+        $this->assertArrayHasKey( 'files', $result );
+        $this->assertIsArray( $result['files'] );
+        $this->assertSame( 'https://example.com/uploads/my file.jpg', $result['files'][0] );
+        $this->assertSame( 'https://example.com/uploads/image (1).png', $result['files'][1] );
+    }
+
+    /**
      * Test get_boolean_value returns true for truthy values.
      */
     public function test_get_boolean_value() {
