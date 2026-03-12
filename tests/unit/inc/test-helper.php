@@ -2229,8 +2229,6 @@ class Test_Helper extends TestCase {
 
     /**
      * Test map_slug_to_submission_data decodes rawurlencode'd array values.
-     *
-     * @since x.x.x
      */
     public function test_map_slug_to_submission_data_decodes_upload_urls() {
         $data = [

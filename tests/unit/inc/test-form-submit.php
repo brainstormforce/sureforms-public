@@ -293,8 +293,6 @@ class Test_Form_Submit extends TestCase {
 
 	/**
 	 * Test prepare_submission_data properly decodes rawurlencode'd upload URLs.
-	 *
-	 * @since x.x.x
 	 */
 	public function test_prepare_submission_data_upload_field_decodes_encoded_urls() {
 		$submission_data = [

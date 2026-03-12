@@ -99,8 +99,6 @@ class Test_Smart_Tags extends TestCase {
 
 	/**
 	 * Test parse_form_input returns value when no form tag match.
-	 *
-	 * @since x.x.x
 	 */
 	public function test_parse_form_input_no_tag() {
 		$result = Smart_Tags::parse_form_input( 'plain text', [ 'key' => 'val' ] );
