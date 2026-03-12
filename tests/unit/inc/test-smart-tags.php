@@ -89,8 +89,6 @@ class Test_Smart_Tags extends TestCase {
 
 	/**
 	 * Test parse_form_input returns value when no submission data.
-	 *
-	 * @since x.x.x
 	 */
 	public function test_parse_form_input_no_data() {
 		$result = Smart_Tags::parse_form_input( '{form:name}' );
@@ -107,8 +105,6 @@ class Test_Smart_Tags extends TestCase {
 
 	/**
 	 * Test parse_form_input resolves a text field smart tag.
-	 *
-	 * @since x.x.x
 	 */
 	public function test_parse_form_input_text_field() {
 		$submission_data = [
@@ -120,8 +116,6 @@ class Test_Smart_Tags extends TestCase {
 
 	/**
 	 * Test parse_form_input decodes rawurlencode'd upload URLs.
-	 *
-	 * @since x.x.x
 	 */
 	public function test_parse_form_input_upload_decodes_urls() {
 		$submission_data = [
@@ -140,8 +134,6 @@ class Test_Smart_Tags extends TestCase {
 
 	/**
 	 * Test parse_form_input with single upload file returns anchor tag with decoded URL.
-	 *
-	 * @since x.x.x
 	 */
 	public function test_parse_form_input_single_upload_returns_link() {
 		$submission_data = [
