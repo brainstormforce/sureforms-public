@@ -69,6 +69,7 @@ const SureformsFormSpecificSettings = () => {
 	const { editPost } = useDispatch( editorStore );
 	const { selectBlock } = useDispatch( blockEditorStore );
 	const [ rootContainer, setRootContainer ] = useState( null );
+	const [ rootHtmlTag, setRootHtmlTag ] = useState( null );
 	const [ documentBody, setDocumentBody ] = useState( null );
 
 	useEffect( () => {
@@ -82,6 +83,7 @@ const SureformsFormSpecificSettings = () => {
 				setRootContainer(
 					document.querySelector( '.is-root-container' )
 				);
+				setRootHtmlTag( document.getElementsByTagName( 'html' )[ 0 ] );
 				clearInterval( intervalId );
 				clearTimeout( timeoutId );
 				return;
@@ -117,7 +119,7 @@ const SureformsFormSpecificSettings = () => {
 
 			// Iframe body is fully ready
 			setRootContainer( getRootContainer );
-
+			setRootHtmlTag( iframeDoc.querySelector( 'html' ) );
 			clearInterval( intervalId );
 			clearTimeout( timeoutId );
 			return true;
@@ -605,6 +607,7 @@ const SureformsFormSpecificSettings = () => {
 								}
 								isPageBreak={ isPageBreak }
 								iframeBody={ documentBody }
+								rootHtmlTag={ rootHtmlTag }
 								editorMode={ editorMode }
 							/>
 						) }
