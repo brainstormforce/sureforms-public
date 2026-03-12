@@ -159,7 +159,7 @@ class Rest_Api {
 	 * Search WordPress pages for async dropdowns.
 	 *
 	 * @param \WP_REST_Request $request Full details about the request.
-	 * @since x.x.x
+	 * @since 2.5.2
 	 * @return \WP_REST_Response
 	 */
 	public function search_pages( $request ) {
@@ -277,7 +277,7 @@ class Rest_Api {
 	 *
 	 * @param string    $search   Search SQL fragment.
 	 * @param \WP_Query $wp_query Current WP_Query.
-	 * @since x.x.x
+	 * @since 2.5.2
 	 * @return string
 	 */
 	public function search_only_post_titles( $search, $wp_query ) {

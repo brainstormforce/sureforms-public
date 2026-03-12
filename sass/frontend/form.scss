@@ -198,6 +198,9 @@
 		min-height: 20vh;
 		p {
 			margin: 0;
+			img {
+				display: inline; // follow editor set alignment for images; Compatibility with Kadence.
+			}
 		}
 
 		&.srfm-active {

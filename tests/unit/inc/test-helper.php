@@ -929,6 +929,34 @@ class Test_Helper extends TestCase {
     }
 
     /**
+     * Test strip_js_attributes() with the $remove_link_target parameter.
+     */
+    public function test_strip_js_attributes_remove_link_target() {
+        $html = '<p><a href="https://example.com" target="_blank" rel="noopener noreferrer">Visit</a></p>';
+
+        // target="_blank" is preserved when $remove_link_target = false (default).
+        $this->assertSame(
+            '<body><p><a href="https://example.com" target="_blank" rel="noopener noreferrer">Visit</a></p></body>',
+            Helper::strip_js_attributes($html, false),
+            'target="_blank" should be preserved when $remove_link_target is false'
+        );
+
+        // target="_blank" is removed when $remove_link_target = true.
+        $result = Helper::strip_js_attributes($html, true);
+        $this->assertStringNotContainsString('target="_blank"', $result, 'target should be removed when $remove_link_target is true');
+        $this->assertStringNotContainsString('noopener', $result, 'noopener should be stripped from rel when $remove_link_target is true');
+        $this->assertStringNotContainsString('noreferrer', $result, 'noreferrer should be stripped from rel when $remove_link_target is true');
+
+        // rel="nofollow noopener noreferrer" retains nofollow when target is stripped, with no extra whitespace.
+        $html_with_nofollow = '<a href="https://example.com" target="_blank" rel="nofollow noopener noreferrer">Link</a>';
+        $result_nofollow    = Helper::strip_js_attributes($html_with_nofollow, true);
+        $this->assertStringNotContainsString('target', $result_nofollow, 'target should be removed');
+        $this->assertStringContainsString('rel="nofollow"', $result_nofollow, 'rel should be exactly "nofollow" with no extra whitespace');
+        $this->assertStringNotContainsString('noopener', $result_nofollow, 'noopener should be stripped');
+        $this->assertStringNotContainsString('noreferrer', $result_nofollow, 'noreferrer should be stripped');
+    }
+
+    /**
      * Test the has_pro method to check if SureForms Pro plugin is installed.
      */
     public function test_has_pro() {
@@ -2200,6 +2228,23 @@ class Test_Helper extends TestCase {
     }
 
     /**
+     * Test map_slug_to_submission_data decodes rawurlencode'd array values.
+     */
+    public function test_map_slug_to_submission_data_decodes_upload_urls() {
+        $data = [
+            'srfm-upload-abc123-lbl-upload-files' => [
+                rawurlencode( 'https://example.com/uploads/my file.jpg' ),
+                rawurlencode( 'https://example.com/uploads/image (1).png' ),
+            ],
+        ];
+        $result = Helper::map_slug_to_submission_data( $data );
+        $this->assertArrayHasKey( 'files', $result );
+        $this->assertIsArray( $result['files'] );
+        $this->assertSame( 'https://example.com/uploads/my file.jpg', $result['files'][0] );
+        $this->assertSame( 'https://example.com/uploads/image (1).png', $result['files'][1] );
+    }
+
+    /**
      * Test get_boolean_value returns true for truthy values.
      */
     public function test_get_boolean_value() {
@@ -2213,6 +2258,14 @@ class Test_Helper extends TestCase {
         $this->assertFalse( Helper::get_boolean_value( '' ) );
         $this->assertFalse( Helper::get_boolean_value( [] ) );
         $this->assertFalse( Helper::get_boolean_value( null ) );
+    }
+
+    /**
+     * Test disable_style_attr_parsing returns array.
+     */
+    public function test_disable_style_attr_parsing() {
+        $result = Helper::disable_style_attr_parsing( [ 'color', 'background' ] );
+        $this->assertIsArray( $result );
     }
 
 }
