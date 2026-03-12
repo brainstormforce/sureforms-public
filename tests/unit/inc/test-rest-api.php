@@ -611,6 +611,90 @@ class Test_Rest_Api extends TestCase {
 	// get_form_data()
 	// ---------------------------------------------------------------
 
+	/**
+	 * Test get_entries_chart_data is callable.
+	 */
+	public function test_get_entries_chart_data() {
+		$this->assertTrue( method_exists( $this->rest_api, 'get_entries_chart_data' ) );
+	}
+
+	/**
+	 * Test set_onboarding_status is callable.
+	 */
+	public function test_set_onboarding_status() {
+		$this->assertTrue( method_exists( $this->rest_api, 'set_onboarding_status' ) );
+	}
+
+	/**
+	 * Test get_onboarding_status is callable.
+	 */
+	public function test_get_onboarding_status() {
+		$this->assertTrue( method_exists( $this->rest_api, 'get_onboarding_status' ) );
+	}
+
+	/**
+	 * Test get_plugin_status is callable.
+	 */
+	public function test_get_plugin_status() {
+		$this->assertTrue( method_exists( $this->rest_api, 'get_plugin_status' ) );
+	}
+
+	/**
+	 * Test get_entries_list is callable.
+	 */
+	public function test_get_entries_list() {
+		$this->assertTrue( method_exists( $this->rest_api, 'get_entries_list' ) );
+	}
+
+	/**
+	 * Test update_entries_read_status is callable.
+	 */
+	public function test_update_entries_read_status() {
+		$this->assertTrue( method_exists( $this->rest_api, 'update_entries_read_status' ) );
+	}
+
+	/**
+	 * Test update_entries_trash_status is callable.
+	 */
+	public function test_update_entries_trash_status() {
+		$this->assertTrue( method_exists( $this->rest_api, 'update_entries_trash_status' ) );
+	}
+
+	/**
+	 * Test delete_entries is callable.
+	 */
+	public function test_delete_entries() {
+		$this->assertTrue( method_exists( $this->rest_api, 'delete_entries' ) );
+	}
+
+	/**
+	 * Test get_entry_details is callable.
+	 */
+	public function test_get_entry_details() {
+		$this->assertTrue( method_exists( $this->rest_api, 'get_entry_details' ) );
+	}
+
+	/**
+	 * Test get_entry_logs is callable.
+	 */
+	public function test_get_entry_logs() {
+		$this->assertTrue( method_exists( $this->rest_api, 'get_entry_logs' ) );
+	}
+
+	/**
+	 * Test export_entries is callable.
+	 */
+	public function test_export_entries() {
+		$this->assertTrue( method_exists( $this->rest_api, 'export_entries' ) );
+	}
+
+	/**
+	 * Test manage_form_lifecycle is callable.
+	 */
+	public function test_manage_form_lifecycle() {
+		$this->assertTrue( method_exists( $this->rest_api, 'manage_form_lifecycle' ) );
+	}
+
 	public function test_get_form_data_returns_forms_when_they_exist() {
 		$user_id = $this->create_test_admin();
 		wp_set_current_user( $user_id );

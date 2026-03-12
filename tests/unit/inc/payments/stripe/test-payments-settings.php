@@ -237,4 +237,20 @@ class Test_Payments_Settings extends TestCase {
 		$this->assertFalse( $result['success'] );
 		$this->assertStringContainsString( 'not connected', $result['message'] );
 	}
+
+	/**
+	 * Test delete_payment_webhooks returns result.
+	 */
+	public function test_delete_payment_webhooks() {
+		$result = $this->payments_settings->delete_payment_webhooks();
+		$this->assertIsArray( $result );
+	}
+
+	/**
+	 * Test get_account_name returns REST response.
+	 */
+	public function test_get_account_name() {
+		$result = $this->payments_settings->get_account_name();
+		$this->assertInstanceOf( \WP_REST_Response::class, $result );
+	}
 }

@@ -3,7 +3,7 @@
  * SureForms Learn Helper Class
  *
  * @package sureforms
- * @since x.x.x
+ * @since 2.5.2
  */
 
 namespace SRFM\Inc;
@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Learn class.
  *
- * @since x.x.x
+ * @since 2.5.2
  */
 class Learn {
 	use Get_Instance;
@@ -25,7 +25,7 @@ class Learn {
 	/**
 	 * Constructor.
 	 *
-	 * @since x.x.x
+	 * @since 2.5.2
 	 */
 	public function __construct() {
 		add_action( 'rest_api_init', [ $this, 'register_rest_routes' ] );
@@ -39,7 +39,7 @@ class Learn {
 	 * the plugin for both frontend display and analytics validation.
 	 *
 	 * @return array Array of module objects with their lessons.
-	 * @since x.x.x
+	 * @since 2.5.2
 	 */
 	public static function get_chapters_structure() {
 		$chapters = [
@@ -226,7 +226,7 @@ class Learn {
 		 * Filter learn chapters structure.
 		 *
 		 * @param array $chapters Learn chapters data.
-		 * @since x.x.x
+		 * @since 2.5.2
 		 */
 		return apply_filters( 'srfm_learn_chapters', $chapters );
 	}
@@ -238,7 +238,7 @@ class Learn {
 	 * most recent published page. If no pages exist, falls back to creating a new page.
 	 *
 	 * @return string The admin edit URL for the page.
-	 * @since x.x.x
+	 * @since 2.5.2
 	 */
 	public static function get_embed_forms_url() {
 		// Try to find the default "Sample Page" by slug.
@@ -270,7 +270,7 @@ class Learn {
 	 *
 	 * @param int $user_id Optional. User ID to get progress for. Defaults to current user.
 	 * @return array Chapters array with progress data merged.
-	 * @since x.x.x
+	 * @since 2.5.2
 	 */
 	public static function get_learn_chapters( $user_id = 0 ) {
 		if ( ! $user_id ) {
@@ -313,7 +313,7 @@ class Learn {
 	/**
 	 * Register REST API endpoints for Learn functionality.
 	 *
-	 * @since x.x.x
+	 * @since 2.5.2
 	 * @return void
 	 */
 	public function register_rest_routes() {
@@ -363,7 +363,7 @@ class Learn {
 	 * REST API callback to get learn chapters with user progress.
 	 *
 	 * @return \WP_REST_Response Response object.
-	 * @since x.x.x
+	 * @since 2.5.2
 	 */
 	public function rest_get_learn_chapters() {
 		$user_id  = get_current_user_id();
@@ -377,7 +377,7 @@ class Learn {
 	 *
 	 * @param \WP_REST_Request $request Request object.
 	 * @return \WP_REST_Response|\WP_Error Response object or error.
-	 * @since x.x.x
+	 * @since 2.5.2
 	 */
 	public function rest_update_learn_progress( $request ) {
 		$chapter_id = $request->get_param( 'chapterId' );

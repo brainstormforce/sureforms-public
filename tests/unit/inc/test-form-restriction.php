@@ -244,6 +244,18 @@ class Test_Form_Restriction extends TestCase {
 	}
 
 	/**
+	 * Test get_restriction_message_by_state returns a message string.
+	 */
+	public function test_get_restriction_message_by_state() {
+		$form_restriction = [
+			'message'         => 'Custom message.',
+			'notStartMessage' => 'Not started yet.',
+		];
+		$result = Form_Restriction::get_restriction_message_by_state( 'ended', $form_restriction );
+		$this->assertIsString( $result );
+	}
+
+	/**
 	 * Test is_form_outside_schedule() returns false when scheduling is disabled.
 	 */
 	public function test_is_form_outside_schedule_returns_false_when_disabled() {
