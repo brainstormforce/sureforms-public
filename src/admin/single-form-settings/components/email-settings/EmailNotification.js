@@ -80,10 +80,9 @@ const EmailNotification = ( {
 		doAction( 'srfm.emailNotification.deleted', data );
 
 		toast.dismiss();
-		toast.success(
-			__( 'Email Notification deleted successfully.', 'sureforms' ),
-			{ duration: 500 }
-		);
+		toast.success( __( 'Email notification deleted!', 'sureforms' ), {
+			duration: 500,
+		} );
 	};
 	const handleDuplicate = ( data ) => {
 		const duplicateData = { ...data };
@@ -96,10 +95,9 @@ const EmailNotification = ( {
 		doAction( 'srfm.emailNotification.duplicated', data, duplicateData );
 
 		toast.dismiss();
-		toast.success(
-			__( 'Email Notification duplicated successfully.', 'sureforms' ),
-			{ duration: 500 }
-		);
+		toast.success( __( 'Email notification duplicated!', 'sureforms' ), {
+			duration: 500,
+		} );
 	};
 	const handleUpdateEmailData = ( newData ) => {
 		let { email_to, subject } = newData;
@@ -132,7 +130,10 @@ const EmailNotification = ( {
 		if ( hasError ) {
 			toast.dismiss();
 			toast.error(
-				__( 'Please fill out the required field.', 'sureforms' ),
+				__(
+					'Please provide a recipient email address and subject line.',
+					'sureforms'
+				),
 				{ duration: 500 }
 			);
 			setHasValidationErrors( true );
@@ -359,7 +360,7 @@ const EmailNotification = ( {
 													>
 														<p className="text-[13px] font-normal">
 															{ __(
-																'Are you sure to delete this?',
+																'Are you sure you want to delete this email notification?',
 																'sureforms'
 															) }
 														</p>

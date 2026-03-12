@@ -138,7 +138,7 @@ const FormsFilters = ( {
 							onClick={ onBulkDelete }
 							destructive
 						>
-							{ __( 'Delete', 'sureforms' ) }
+							{ __( 'Delete Permanently', 'sureforms' ) }
 						</Button>
 					</Container.Item>
 				) : (

@@ -224,7 +224,7 @@ export const useAddPaymentNote = () => {
 		mutationFn: ( { paymentId, noteText } ) =>
 			addPaymentNote( paymentId, noteText ),
 		onSuccess: ( _data, variables ) => {
-			toast.success( __( 'Note added successfully.', 'sureforms' ) );
+			toast.success( __( 'Note added successfully!', 'sureforms' ) );
 			// Invalidate payment details
 			queryClient.invalidateQueries( {
 				queryKey: paymentKeys.detail( variables.paymentId ),
@@ -250,7 +250,7 @@ export const useDeletePaymentNote = () => {
 		mutationFn: ( { paymentId, noteIndex } ) =>
 			deletePaymentNote( paymentId, noteIndex ),
 		onSuccess: ( _data, variables ) => {
-			toast.success( __( 'Note deleted successfully.', 'sureforms' ) );
+			toast.success( __( 'Note deleted successfully!', 'sureforms' ) );
 			// Invalidate payment details
 			queryClient.invalidateQueries( {
 				queryKey: paymentKeys.detail( variables.paymentId ),
@@ -276,7 +276,7 @@ export const useDeletePaymentLog = () => {
 		mutationFn: ( { paymentId, logIndex } ) =>
 			deletePaymentLog( paymentId, logIndex ),
 		onSuccess: ( _data, variables ) => {
-			toast.success( __( 'Log deleted successfully.', 'sureforms' ) );
+			toast.success( __( 'Log deleted successfully!', 'sureforms' ) );
 			// Invalidate payment details
 			queryClient.invalidateQueries( {
 				queryKey: paymentKeys.detail( variables.paymentId ),
