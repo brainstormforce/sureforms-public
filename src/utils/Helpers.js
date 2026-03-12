@@ -3,7 +3,7 @@ import { __, sprintf } from '@wordpress/i18n';
 import { Toaster, ToastBar } from 'react-hot-toast';
 import { store as editorStore } from '@wordpress/editor';
 import { select } from '@wordpress/data';
-import { cleanForSlug } from '@wordpress/url';
+import { addQueryArgs, cleanForSlug } from '@wordpress/url';
 import clsx from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { format as format_date } from 'date-fns';
@@ -91,6 +91,12 @@ export const handleAddNewPost = async (
 
 		if ( response.id ) {
 			const postId = response.id;
+
+			// Store the post ID so the Learn section Lesson 2 can open this form directly.
+			const urlParams = new URLSearchParams( window.location.search );
+			if ( urlParams.get( 'source' ) === 'learn' ) {
+				localStorage.setItem( 'srfmLearnFormId', String( postId ) );
+			}
 
 			// Redirect to the newly created post
 			window.location.href = `${ srfm_admin.site_url }/wp-admin/post.php?post=${ postId }&action=edit`;
@@ -942,28 +948,90 @@ export const showErrorMessage = ( args ) => {
 };
 
 /**
- * Fetch the wordpress pages.
+ * Search WordPress pages for async dropdowns.
  *
- * @param {Function} setPageOptions - The function to set the page options state.
+ * @param {Object}        [options={}]              Search options.
+ * @param {string}        [options.search='']       Search keyword.
+ * @param {number}        [options.page=1]          Current page.
+ * @param {number}        [options.perPage=20]      Items per page.
+ * @param {string}        [options.selectedUrl='']  Selected page URL to ensure it's available in options.
+ * @param {Array<string>} [options.selectedUrls=[]] Multiple selected page URLs to ensure availability.
+ * @return {Promise<{items:Array<{label:string,value:string}>, pagination:{page:number, per_page:number, has_more:boolean}}>} A page options result object with pagination metadata.
  */
-export const getWordPressPages = ( setPageOptions ) => {
-	apiFetch( { path: '/wp/v2/pages' } )
-		.then( ( pages ) => {
-			if ( pages ) {
-				const createFormat = pages.map( ( page ) => {
-					let label;
-					if ( page.title?.rendered ) {
-						label = page.title?.rendered;
-					} else {
-						label = page.id.toString();
-					}
-					const value = page.link;
-					return { label, value };
-				} );
-				setPageOptions( createFormat );
-			}
-		} )
-		.catch( ( error ) => console.error( 'Error:', error ) );
+export const searchWordPressPages = async ( options = {} ) => {
+	const {
+		search = '',
+		page = 1,
+		perPage = 20,
+		selectedUrl = '',
+		selectedUrls = [],
+		signal = null,
+	} = options;
+
+	const queryArgs = {
+		search,
+		page,
+		per_page: perPage,
+	};
+
+	if ( selectedUrl ) {
+		queryArgs.selected_url = selectedUrl;
+	}
+
+	if ( Array.isArray( selectedUrls ) && selectedUrls.length > 0 ) {
+		queryArgs.selected_urls = selectedUrls.join( ',' );
+	}
+
+	const path = addQueryArgs( '/sureforms/v1/pages/search', queryArgs );
+	const fetchOptions = { path, method: 'GET' };
+	if ( signal ) {
+		fetchOptions.signal = signal;
+	}
+	const response = await apiFetch( fetchOptions );
+	const items = Array.isArray( response?.items ) ? response.items : [];
+
+	return {
+		items: items.map( ( item ) => ( {
+			label: item?.label || '',
+			value: item?.value || '',
+		} ) ),
+		pagination: {
+			page: response?.pagination?.page || page,
+			per_page: response?.pagination?.per_page || perPage,
+			has_more: !! response?.pagination?.has_more,
+		},
+	};
+};
+
+/**
+ * Fetch WordPress pages and set dropdown options.
+ *
+ * @param {Function} setPageOptions Function to update page options state.
+ * @param {Object}   [options={}]   Search options.
+ * @return {Promise<{items:Array<{label:string,value:string}>, pagination:{page:number, per_page:number, has_more:boolean}}>} A page options result object with pagination metadata.
+ */
+export const getWordPressPages = async ( setPageOptions, options = {} ) => {
+	try {
+		const result = await searchWordPressPages( options );
+
+		if ( 'function' === typeof setPageOptions ) {
+			setPageOptions( result.items );
+		}
+
+		return result;
+	} catch ( error ) {
+		if ( 'function' === typeof setPageOptions ) {
+			setPageOptions( [] );
+		}
+		return {
+			items: [],
+			pagination: {
+				page: options?.page || 1,
+				per_page: options?.perPage || 20,
+				has_more: false,
+			},
+		};
+	}
 };
 
 /**

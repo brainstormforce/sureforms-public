@@ -6,4 +6,3 @@ node_modules
 vendor
 *-rtl*
 *.min.css
-inc/lib/nps-survey/*
