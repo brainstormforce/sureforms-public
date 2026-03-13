@@ -78,14 +78,6 @@ async function refreshFormNonces( forms ) {
 					);
 				}
 
-				// Update form submit nonce (data-submit-nonce).
-				if ( response.nonces.form_submit ) {
-					form.setAttribute(
-						'data-submit-nonce',
-						response.nonces.form_submit
-					);
-				}
-
 				// Mark form as updated to prevent duplicate refresh calls.
 				form.setAttribute( 'data-nonce-updated', 'yes' );
 			}
@@ -328,7 +320,7 @@ function prepareAddressesData( form ) {
 async function submitFormData( form ) {
 	const formData = new FormData( form );
 	const filteredFormData = new FormData();
-	const submitNonce = form.getAttribute( 'data-submit-nonce' );
+	const submitToken = form.getAttribute( 'data-submit-token' );
 
 	// Define keys to exclude from filtered form data
 	const blockTheseKeys = [ 'srfm-email-confirm', 'srfm-password-confirm' ];
@@ -431,7 +423,7 @@ async function submitFormData( form ) {
 			method: 'POST',
 			body: filteredFormData,
 			headers: {
-				'X-WP-Submit-Nonce': submitNonce,
+				'X-WP-Submit-Token': submitToken,
 			},
 		} );
 	} catch ( e ) {

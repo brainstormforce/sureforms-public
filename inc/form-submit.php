@@ -11,6 +11,7 @@ namespace SRFM\Inc;
 use SRFM\Inc\Database\Tables\Entries;
 use SRFM\Inc\Email\Email_Template;
 use SRFM\Inc\Lib\Browser\Browser;
+use SRFM\Inc\Submit_Token;
 use SRFM\Inc\Traits\Get_Instance;
 use WP_Error;
 use WP_REST_Server;
@@ -120,45 +121,25 @@ class Form_Submit {
 	}
 
 	/**
-	 * Check whether a given request has permission access route.
+	 * Check whether a given request has permission to submit the form.
 	 *
-	 * Nonce verification is only enforced for logged-in users. Logged-out users are
-	 * typically served cached pages where nonces may be stale (12–24 h expiry). Security
-	 * for public form submissions relies on honeypot and CAPTCHA checks instead.
-	 * This matches the approach used by WPForms and Gravity Forms.
+	 * Validates the HMAC-based submission token embedded in the page at render
+	 * time. Tokens remain valid for up to 48 hours (four 12-hour windows), so
+	 * they survive cached-page scenarios without any browser-side refresh call.
 	 *
-	 * @param \WP_REST_Request $request Request object or array containing form data.
-	 * @since 1.8.0
+	 * @param \WP_REST_Request $request Incoming REST request.
+	 * @since x.x.x
 	 * @return WP_Error|bool
 	 */
 	public function submit_form_permissions_check( $request ) {
-		if ( is_user_logged_in() ) {
-			$nonce = Helper::get_string_value( $request->get_header( 'X-WP-Submit-Nonce' ) );
-			if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'srfm_form_submit' ) ) {
-				wp_send_json_error(
-					[
-						'message' => __( 'Security verification failed. Please refresh the page and try again.', 'sureforms' ),
-					]
-				);
-			}
-		}
+		$token   = Helper::get_string_value( $request->get_header( 'X-WP-Submit-Token' ) );
+		$form_id = absint( $request->get_param( 'form-id' ) );
 
-		$form_data = Helper::sanitize_by_field_type( $request->get_params() );
-
-		if ( empty( $form_data ) || ! is_array( $form_data ) ) {
-			wp_send_json_error(
-				[
-					'message' => __( 'Form data was not found.', 'sureforms' ),
-				]
-			);
-		}
-
-		if ( ! $form_data['form-id'] ) {
-			wp_send_json_error(
-				[
-					'message'  => __( 'Form ID is missing.', 'sureforms' ),
-					'position' => 'header',
-				]
+		if ( ! Submit_Token::verify( $token, $form_id ) ) {
+			return new \WP_Error(
+				'srfm_token_invalid',
+				__( 'Security verification failed. Please refresh the page and try again.', 'sureforms' ),
+				[ 'status' => 403 ]
 			);
 		}
 
@@ -287,15 +268,20 @@ class Form_Submit {
 	 * @return \WP_REST_Response|\WP_Error Response object on success, or WP_Error object on failure.
 	 */
 	public function handle_form_submission( $request ) {
-		/**
-		 * All checks are done in submit_form_permissions_check method:
-		 * - Nonce verification
-		 * - Form data validation
-		 * - Form ID validation
-		 *
-		 * @since 1.8.0
-		 */
 		$form_data = Helper::sanitize_by_field_type( $request->get_params() );
+
+		if ( empty( $form_data ) || ! is_array( $form_data ) ) {
+			wp_send_json_error( [ 'message' => __( 'Form data is not found.', 'sureforms' ) ] );
+		}
+
+		if ( empty( $form_data['form-id'] ) ) {
+			wp_send_json_error(
+				[
+					'message'  => __( 'Form ID is missing.', 'sureforms' ),
+					'position' => 'header',
+				]
+			);
+		}
 
 		$current_form_id = $form_data['form-id'];
 
@@ -434,7 +420,7 @@ class Form_Submit {
 
 		if ( isset( $form_data['srfm-honeypot-field'] ) && empty( $form_data['srfm-honeypot-field'] ) ) {
 			if ( ! empty( $google_captcha_secret_key ) ) {
-				if ( isset( $form_data['sureforms_form_submit'] ) ) {
+				if ( ! empty( $form_data['form-id'] ) ) {
 					$secret_key       = $google_captcha_secret_key;
 					$ipaddress        = isset( $_SERVER['REMOTE_ADDR'] ) ? filter_var( wp_unslash( $_SERVER['REMOTE_ADDR'] ), FILTER_VALIDATE_IP ) : '';
 					$captcha_response = $form_data['g-recaptcha-response'];
@@ -479,7 +465,7 @@ class Form_Submit {
 			}
 
 			if ( ! empty( $google_captcha_secret_key ) ) {
-				if ( isset( $form_data['sureforms_form_submit'] ) ) {
+				if ( ! empty( $form_data['form-id'] ) ) {
 					$secret_key       = $google_captcha_secret_key;
 					$ipaddress        = isset( $_SERVER['REMOTE_ADDR'] ) ? filter_var( wp_unslash( $_SERVER['REMOTE_ADDR'] ), FILTER_VALIDATE_IP ) : '';
 					$captcha_response = $form_data['g-recaptcha-response'];
