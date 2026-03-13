@@ -593,5 +593,88 @@ namespace SRFM\Inc\Page_Builders\Bricks\Elements {
 
 			$this->assertStringStartsWith( 'bricks-', $attrs['blockId'] );
 		}
+
+		// -----------------------------------------------------------------------
+		// Coverage: exact method-name matches for CI check
+		// -----------------------------------------------------------------------
+
+		/**
+		 * Test set_control_groups populates control group keys.
+		 */
+		public function test_set_control_groups() {
+			$widget = new Testable_Form_Widget();
+			$widget->id = 'cov1';
+			$ref = new \ReflectionProperty( \Bricks\Element::class, 'control_groups' );
+			$ref->setAccessible( true );
+			$ref->setValue( $widget, [] );
+			$widget->set_control_groups();
+			$groups = $ref->getValue( $widget );
+			$this->assertArrayHasKey( 'srfm_form_styling', $groups );
+		}
+
+		/**
+		 * Test resolve_bricks_color resolves hex string.
+		 */
+		public function test_resolve_bricks_color() {
+			$this->assertSame( '#FF0000', Form_Widget::resolve_bricks_color( '#FF0000' ) );
+		}
+
+		/**
+		 * Test map_bricks_spacing maps sides with unit appended.
+		 */
+		public function test_map_bricks_spacing() {
+			$settings = [
+				'p' => [ 'top' => '5', 'right' => '5', 'bottom' => '5', 'left' => '5', 'unit' => 'px' ],
+			];
+			$attrs = Form_Widget::map_bricks_spacing( $settings, 'p', 'p' );
+			$this->assertSame( '5px', $attrs['pTop'] );
+		}
+
+		/**
+		 * Test build_bricks_gradient_css builds a linear gradient.
+		 */
+		public function test_build_bricks_gradient_css() {
+			$settings = [
+				'bgGradientColor1' => '#FFFFFF',
+				'bgGradientColor2' => '#000000',
+			];
+			$result = Form_Widget::build_bricks_gradient_css( $settings, 'bg' );
+			$this->assertStringStartsWith( 'linear-gradient(', $result );
+		}
+
+		/**
+		 * Test get_keywords returns array containing sureforms.
+		 */
+		public function test_get_keywords() {
+			$widget = new Testable_Form_Widget();
+			$this->assertContains( 'sureforms', $widget->get_keywords() );
+		}
+
+		/**
+		 * Test set_controls populates controls property.
+		 */
+		public function test_set_controls() {
+			$widget = new Testable_Form_Widget();
+			$widget->id = 'cov2';
+			$ref = new \ReflectionProperty( \Bricks\Element::class, 'controls' );
+			$ref->setAccessible( true );
+			$ref->setValue( $widget, [] );
+			$widget->set_controls();
+			$controls = $ref->getValue( $widget );
+			$this->assertArrayHasKey( 'form-id', $controls );
+		}
+
+		/**
+		 * Test render outputs unavailable message for invalid form id.
+		 */
+		public function test_render_with_invalid_form() {
+			$widget = new Testable_Form_Widget();
+			$widget->id = 'cov3';
+			$widget->settings = [ 'form-id' => 999999 ];
+			ob_start();
+			$widget->render();
+			$output = ob_get_clean();
+			$this->assertIsString( $output );
+		}
 	}
 }
