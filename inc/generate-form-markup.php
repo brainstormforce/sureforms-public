@@ -612,7 +612,7 @@ class Generate_Form_Markup {
 							self::get_h_captcha_script( $srfm_hcaptcha_site_key );
 						}
 						?>
-						<div class="srfm-validation-error" id="captcha-error" style="display: none;"><?php echo esc_attr__( 'Please verify that you are not a robot.', 'sureforms' ); ?></div>
+						<div class="srfm-validation-error" id="captcha-error" style="display: none;"><?php echo esc_html__( 'Please verify that you are not a robot.', 'sureforms' ); ?></div>
 					</div>
 					<?php } ?>
 
@@ -874,7 +874,19 @@ class Generate_Form_Markup {
 		$smart_tags           = new Smart_Tags();
 		$confirmation_message = $smart_tags->process_smart_tags( $confirmation_message, $submission_data, $form_data );
 
-		$markup = Helper::strip_js_attributes( apply_filters( 'srfm_after_submit_confirmation_message', $confirmation_message, $form_data, $submission_data ) );
+		/**
+		 * Filter whether confirmation message links should open in a new tab.
+		 *
+		 * @since 2.5.2
+		 *
+		 * @param bool $open_in_new_tab Whether links open in a new tab. Default true.
+		 */
+		$open_in_new_tab = (bool) apply_filters( 'srfm_confirmation_links_open_in_new_tab', true );
+
+		$markup = Helper::strip_js_attributes(
+			apply_filters( 'srfm_after_submit_confirmation_message', $confirmation_message, $form_data, $submission_data ),
+			! $open_in_new_tab
+		);
 
 		if ( false !== strpos( $markup, 'src="image/svg+xml;base64' ) ) {
 			// Handle Form Confirmation SVGs separately. We have planned to improve it in the future replacing it with image URL.

@@ -45,7 +45,7 @@ export const exportForms = async ( formIds, filename = null ) => {
 			window.URL.revokeObjectURL( url );
 		} else {
 			throw new Error(
-				__( 'Export failed - No data received', 'sureforms' )
+				__( 'Export failed: no data received.', 'sureforms' )
 			);
 		}
 	} catch ( error ) {

@@ -1,0 +1,127 @@
+<?php
+/**
+ * Delete Entry Ability.
+ *
+ * @package sureforms
+ * @since 2.5.2
+ */
+
+namespace SRFM\Inc\Abilities\Entries;
+
+use SRFM\Inc\Abilities\Abstract_Ability;
+use SRFM\Inc\Entries;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
+
+/**
+ * Delete_Entry ability class.
+ *
+ * Permanently deletes one or more form submission entries.
+ *
+ * @since 2.5.2
+ */
+class Delete_Entry extends Abstract_Ability {
+	/**
+	 * Maximum number of entries that can be deleted in a single call.
+	 *
+	 * @since 2.5.2
+	 */
+	public const MAX_ENTRIES = 50;
+
+	/**
+	 * Constructor.
+	 *
+	 * @since 2.5.2
+	 */
+	public function __construct() {
+		$this->id          = 'sureforms/delete-entry';
+		$this->label       = __( 'Delete Entry', 'sureforms' );
+		$this->description = __( 'Permanently delete one or more SureForms form submission entries. This action cannot be undone.', 'sureforms' );
+		$this->capability  = 'manage_options';
+	}
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * @since 2.5.2
+	 */
+	public function get_annotations() {
+		return [
+			'readonly'    => false,
+			'destructive' => true,
+			'idempotent'  => false,
+		];
+	}
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * @since 2.5.2
+	 */
+	public function get_input_schema() {
+		return [
+			'type'       => 'object',
+			'properties' => [
+				'entry_ids' => [
+					'type'        => 'array',
+					'description' => __( 'Array of entry IDs to permanently delete.', 'sureforms' ),
+					'items'       => [ 'type' => 'integer' ],
+				],
+			],
+			'required'   => [ 'entry_ids' ],
+		];
+	}
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * @since 2.5.2
+	 */
+	public function get_output_schema() {
+		return [
+			'type'       => 'object',
+			'properties' => [
+				'success' => [ 'type' => 'boolean' ],
+				'deleted' => [ 'type' => 'integer' ],
+				'errors'  => [
+					'type'  => 'array',
+					'items' => [ 'type' => 'string' ],
+				],
+			],
+		];
+	}
+
+	/**
+	 * Execute the delete-entry ability.
+	 *
+	 * @param array<string,mixed> $input Validated input data.
+	 * @since 2.5.2
+	 * @return array<string,mixed>|\WP_Error
+	 */
+	public function execute( $input ) {
+		$entry_ids = $input['entry_ids'] ?? [];
+
+		if ( empty( $entry_ids ) || ! is_array( $entry_ids ) ) {
+			return new \WP_Error(
+				'srfm_missing_entry_ids',
+				__( 'At least one entry ID is required.', 'sureforms' ),
+				[ 'status' => 400 ]
+			);
+		}
+
+		if ( count( $entry_ids ) > self::MAX_ENTRIES ) {
+			return new \WP_Error(
+				'srfm_too_many_entry_ids',
+				/* translators: %d is the maximum number of entries allowed. */
+				sprintf( __( 'Maximum %d entry IDs allowed per request.', 'sureforms' ), self::MAX_ENTRIES ),
+				[ 'status' => 400 ]
+			);
+		}
+
+		$entry_ids = array_map( 'absint', $entry_ids );
+
+		return Entries::delete_entries( $entry_ids );
+	}
+}
