@@ -17,6 +17,7 @@ import {
 	Code,
 	Split,
 } from 'lucide-react';
+import ottoKitIcon from '@Image/suretriggers-grayscale.svg';
 
 const FormSettingsPopup = ( {
 	popoverAnchor,
@@ -113,6 +114,16 @@ const FormSettingsPopup = ( {
 				id: 'post-feed-preview',
 				label: __( 'Post Feed', 'sureforms' ),
 				icon: <FileText size={ 18 } />,
+			},
+			{
+				id: 'ottokit',
+				label: __( 'Automations', 'sureforms' ),
+				icon: (
+					<img
+						src={ ottoKitIcon }
+						alt={ __( 'OttoKit', 'sureforms' ) }
+					/>
+				),
 			},
 			{
 				id: 'form_custom_css',
