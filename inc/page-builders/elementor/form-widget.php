@@ -923,18 +923,23 @@ class Form_Widget extends Widget_Base {
 		// Handle bgImage separately as it returns an object from Elementor.
 		$bg_image = isset( $settings['bgImage'] ) && is_array( $settings['bgImage'] ) ? $settings['bgImage'] : [];
 		if ( ! empty( $bg_image['url'] ) ) {
-			$block_attrs['bgImage'] = esc_url_raw( $bg_image['url'] );
+			$raw_url = esc_url_raw( $bg_image['url'] );
+			// Encode parentheses to prevent CSS injection in url() context.
+			$block_attrs['bgImage'] = str_replace( [ '(', ')' ], [ '%28', '%29' ], $raw_url );
 		}
 		if ( ! empty( $bg_image['id'] ) ) {
 			$block_attrs['bgImageId'] = $bg_image['id'];
 		}
 
 		/**
-		 * Filter the block attributes for Elementor widget.
-		 * Pro uses this to add additional styling attributes.
+		 * Filters the Elementor block attributes after sanitization.
 		 *
-		 * @param array<string, mixed> $block_attrs Block attributes.
-		 * @param array<string, mixed> $settings    Widget settings.
+		 * Third-party code hooking this filter is responsible for sanitizing
+		 * any values it adds or modifies. Unsanitized values may be output
+		 * directly into CSS custom properties.
+		 *
+		 * @param array<string, mixed> $block_attrs Sanitized block attributes.
+		 * @param array<string, mixed> $settings    Raw widget settings.
 		 * @since x.x.x
 		 */
 		return apply_filters( 'srfm_elementor_block_attrs', $block_attrs, $settings );

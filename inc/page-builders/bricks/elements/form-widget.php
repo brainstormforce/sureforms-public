@@ -715,16 +715,21 @@ class Form_Widget extends \Bricks\Element {
 		// Handle bgImage — Bricks image control returns ['url', 'id', ...].
 		if ( ! empty( $settings['bgImage'] ) && is_array( $settings['bgImage'] ) ) {
 			if ( ! empty( $settings['bgImage']['url'] ) ) {
-				$block_attrs['bgImage'] = esc_url_raw( $settings['bgImage']['url'] );
+				$raw_url = esc_url_raw( $settings['bgImage']['url'] );
+				// Encode parentheses to prevent CSS injection in url() context.
+				$block_attrs['bgImage'] = str_replace( [ '(', ')' ], [ '%28', '%29' ], $raw_url );
 			}
 		}
 
 		/**
-		 * Filter the block attributes for Bricks widget.
-		 * Pro uses this to add additional styling attributes.
+		 * Filters the Bricks block attributes after sanitization.
 		 *
-		 * @param array<string, mixed> $block_attrs Block attributes.
-		 * @param array<string, mixed> $settings    Bricks element settings.
+		 * Third-party code hooking this filter is responsible for sanitizing
+		 * any values it adds or modifies. Unsanitized values may be output
+		 * directly into CSS custom properties.
+		 *
+		 * @param array<string, mixed> $block_attrs Sanitized block attributes.
+		 * @param array<string, mixed> $settings    Raw Bricks element settings.
 		 * @since x.x.x
 		 */
 		return apply_filters( 'srfm_bricks_block_attrs', $block_attrs, $settings );
