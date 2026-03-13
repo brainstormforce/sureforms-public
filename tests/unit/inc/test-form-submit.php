@@ -292,6 +292,21 @@ class Test_Form_Submit extends TestCase {
 	}
 
 	/**
+	 * Test prepare_submission_data properly decodes rawurlencode'd upload URLs.
+	 */
+	public function test_prepare_submission_data_upload_field_decodes_encoded_urls() {
+		$submission_data = [
+			'srfm-upload-abc123-lbl-upload-resume' => [
+				rawurlencode( 'https://example.com/uploads/my file.pdf' ),
+				rawurlencode( 'https://example.com/uploads/doc (2).pdf' ),
+			],
+		];
+		$result = $this->form_submit->prepare_submission_data( $submission_data );
+		$this->assertArrayHasKey( 'resume', $result );
+		$this->assertSame( 'https://example.com/uploads/my file.pdf, https://example.com/uploads/doc (2).pdf', $result['resume'] );
+	}
+
+	/**
 	 * Test handle_form_submission rejects when honeypot is enabled but field is missing.
 	 */
 	public function test_handle_form_submission_rejects_missing_honeypot_when_enabled() {
@@ -389,6 +404,75 @@ class Test_Form_Submit extends TestCase {
 		wp_delete_post( $form_id, true );
 		delete_option( 'srfm_security_settings_options' );
 	}
+
+	/**
+	 * Test parse_email_notification_template returns expected structure.
+	 */
+	public function test_parse_email_notification_template() {
+		$submission_data = [
+			'srfm-text-abc123-lbl-first-name' => 'John Doe',
+		];
+		$item = [
+			'email_to'   => 'admin@example.com',
+			'subject'    => 'New Submission',
+			'email_body' => '<p>Hello World</p>',
+		];
+
+		$result = Form_Submit::parse_email_notification_template( $submission_data, $item );
+
+		$this->assertIsArray( $result );
+		$this->assertArrayHasKey( 'to', $result );
+		$this->assertArrayHasKey( 'subject', $result );
+		$this->assertArrayHasKey( 'message', $result );
+		$this->assertArrayHasKey( 'headers', $result );
+		$this->assertEquals( 'admin@example.com', $result['to'] );
+		$this->assertEquals( 'New Submission', $result['subject'] );
+		$this->assertStringContainsString( 'Hello World', $result['message'] );
+		$this->assertStringContainsString( 'Content-Type: text/html', $result['headers'] );
+	}
+
+    /**
+     * Test refresh_nonces is callable.
+     */
+    public function test_refresh_nonces() {
+        $this->assertTrue( method_exists( $this->form_submit, 'refresh_nonces' ) );
+    }
+
+    /**
+     * Test submit_form_permissions_check is callable.
+     */
+    public function test_submit_form_permissions_check() {
+        $this->assertTrue( method_exists( $this->form_submit, 'submit_form_permissions_check' ) );
+    }
+
+    /**
+     * Test permissions_check is callable.
+     */
+    public function test_permissions_check() {
+        $result = $this->form_submit->permissions_check();
+        $this->assertIsBool( $result );
+    }
+
+    /**
+     * Test handle_form_entry is callable.
+     */
+    public function test_handle_form_entry() {
+        $this->assertTrue( method_exists( $this->form_submit, 'handle_form_entry' ) );
+    }
+
+    /**
+     * Test send_email is callable.
+     */
+    public function test_send_email() {
+        $this->assertTrue( method_exists( Form_Submit::class, 'send_email' ) );
+    }
+
+    /**
+     * Test field_unique_validation is callable.
+     */
+    public function test_field_unique_validation() {
+        $this->assertTrue( method_exists( $this->form_submit, 'field_unique_validation' ) );
+    }
 
     /**
      * Helper method to call private methods for testing.

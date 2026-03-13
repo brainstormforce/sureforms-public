@@ -764,7 +764,7 @@ class Form_Submit {
 
 				// Since the upload field returns an array of file URLs, we need to implode them with a comma.
 				if ( 'upload' === $fields[1] && ! empty( $value ) && is_array( $value ) ) {
-					$modified_message[ $label ] = urldecode( implode( ', ', $value ) );
+					$modified_message[ $label ] = implode( ', ', array_map( 'rawurldecode', $value ) );
 				} else {
 					$modified_message[ $label ] = html_entity_decode( esc_attr( Helper::get_string_value( $value ) ) );
 				}
@@ -815,7 +815,7 @@ class Form_Submit {
 		 * at this point; it is substituted later by process_all_data_tag() which applies
 		 * its own per-field escaping, so this call does not interfere with that path.
 		 *
-		 * @since x.x.x
+		 * @since 2.5.2
 		 */
 		$email_body = wp_kses_post( $email_body );
 

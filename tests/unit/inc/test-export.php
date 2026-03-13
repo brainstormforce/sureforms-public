@@ -102,6 +102,13 @@ class Test_Export extends TestCase {
 		$this->assertInstanceOf( WP_Error::class, $result );
 	}
 
+	/**
+	 * Test handle_import_form_rest is callable.
+	 */
+	public function test_handle_import_form_rest() {
+		$this->assertTrue( method_exists( $this->export, 'handle_import_form_rest' ) );
+	}
+
 	public function test_import_forms_preserves_meta() {
 		$data = [
 			[
