@@ -179,11 +179,11 @@ class AI_Helper {
 		switch ( $error_key ) {
 			case 'http_request_failed':
 				$title   = __( 'HTTP Request Failed', 'sureforms' );
-				$message = __( 'An error occurred while trying to connect to the SureForms API server. Please check your connection', 'sureforms' );
+				$message = __( 'Unable to connect to SureForms API. Please check your connection.', 'sureforms' );
 				break;
 			case 'license_verification_failed':
 				$title   = __( 'License Verification Failed', 'sureforms' );
-				$message = __( 'An error occurred while trying to verify your license. Please check your license key', 'sureforms' );
+				$message = __( 'Unable to verify license. Please check your license key.', 'sureforms' );
 				break;
 			case 'user_verification_failed':
 				$title   = __( 'User Verification Failed', 'sureforms' );
@@ -191,7 +191,7 @@ class AI_Helper {
 				break;
 			case 'referer_mismatch':
 				$title   = __( 'Referer Mismatch', 'sureforms' );
-				$message = __( 'An error occurred while trying to verify your referer. Please check your referer.', 'sureforms' );
+				$message = __( 'Unable to verify referer. Please check your referer.', 'sureforms' );
 				break;
 			case 'invalid_token':
 				$title   = __( 'Invalid Website URL', 'sureforms' );

@@ -413,7 +413,7 @@ class Entries {
 
 		return [
 			'success' => false,
-			'error'   => __( 'Failed to generate export file.', 'sureforms' ),
+			'error'   => __( 'Unable to generate export file.', 'sureforms' ),
 		];
 	}
 
@@ -794,8 +794,18 @@ class Entries {
 			return $filtered_value;
 		}
 
-		// Handle arrays (multi-select, checkboxes, etc.).
+		// Handle arrays (multi-select, checkboxes, upload fields, etc.).
 		if ( is_array( $field_value ) ) {
+			// Upload field URLs are stored rawurlencode'd — decode before export.
+			if ( str_contains( $field_key, 'srfm-upload' ) ) {
+				$decoded_values = array_map(
+					static function ( $val ) {
+						return sanitize_text_field( rawurldecode( Helper::get_string_value( $val ) ) );
+					},
+					$field_value
+				);
+				return implode( ', ', $decoded_values );
+			}
 			return implode( ', ', array_map( 'sanitize_text_field', $field_value ) );
 		}
 

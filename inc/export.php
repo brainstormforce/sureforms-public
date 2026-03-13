@@ -212,7 +212,7 @@ class Export {
 		return new \WP_REST_Response(
 			[
 				'success'        => true,
-				'message'        => __( 'Forms imported successfully.', 'sureforms' ),
+				'message'        => __( 'Forms imported successfully!', 'sureforms' ),
 				'forms_mapping'  => $result,
 				'imported_count' => count( $result ),
 			]
@@ -268,7 +268,7 @@ class Export {
 				);
 
 				if ( ! $post_id ) {
-					return new \WP_Error( 'import_forms_failed', __( 'Failed to import form.', 'sureforms' ) );
+					return new \WP_Error( 'import_forms_failed', __( 'Unable to import form.', 'sureforms' ) );
 				}
 
 				$forms_mapping[ $old_id ] = $post_id;
@@ -287,7 +287,7 @@ class Export {
 					}
 				}
 			} else {
-				return new \WP_Error( 'import_forms_invalid_post_type', __( 'Failed to import form.', 'sureforms' ) );
+				return new \WP_Error( 'import_forms_invalid_post_type', __( 'Unable to import form.', 'sureforms' ) );
 			}
 		}
 

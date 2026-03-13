@@ -478,15 +478,15 @@ class Smart_Tags {
 					// Implemented key upload_format_type to determine what to return for urls.
 					// for raw urls are return as comma separated strings.
 					if ( ! empty( $form_data['upload_format_type'] ) && 'raw' === $form_data['upload_format_type'] ) {
-						$replacement_data = urldecode( implode( ', ', $submission_item_value ) );
+						$replacement_data = implode( ', ', array_map( 'rawurldecode', $submission_item_value ) );
 					} else {
 						if ( count( $submission_item_value ) === 1 ) {
-							$decoded_value    = urldecode( reset( $submission_item_value ) );
+							$decoded_value    = rawurldecode( reset( $submission_item_value ) );
 							$replacement_data = '<a rel="noopener noreferrer" href="' . esc_url( $decoded_value ) . '" target="_blank">' . esc_html( $decoded_value ) . '</a>';
 						} else {
 							$replacement_data = '<ul style="margin: 0;">';
 							foreach ( $submission_item_value as $file_url ) {
-								$decoded_value     = urldecode( $file_url );
+								$decoded_value     = rawurldecode( $file_url );
 								$replacement_data .= '<li><a rel="noopener noreferrer" href="' . esc_url( $decoded_value ) . '" target="_blank">' . esc_html( $decoded_value ) . '</a></li>';
 							}
 							$replacement_data .= '</ul>';
