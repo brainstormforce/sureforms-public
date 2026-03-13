@@ -95,7 +95,10 @@ async function refreshFormNonces( forms ) {
 				window.srfm_ajax.payment_nonce = response.nonces.payment_nonce;
 			}
 
-			console.warn( 'Nonces refreshed:' );
+			// Update the wp_rest nonce used by wp.apiFetch middleware.
+			if ( response.nonces.wp_rest && window.srfm_submit ) {
+				window.srfm_submit.nonce = response.nonces.wp_rest;
+			}
 		}
 	} catch ( error ) {
 		console.warn( 'Failed to refresh form nonces:', error );

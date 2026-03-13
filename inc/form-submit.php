@@ -107,8 +107,9 @@ class Form_Submit {
 			);
 		}
 
-		// Get fresh nonces from Helper.
-		$nonces = Helper::get_frontend_nonces();
+		// Get fresh nonces from Helper plus a refreshed wp_rest nonce for wp.apiFetch.
+		$nonces            = Helper::get_frontend_nonces();
+		$nonces['wp_rest'] = wp_create_nonce( 'wp_rest' );
 
 		return rest_ensure_response(
 			[
@@ -121,18 +122,25 @@ class Form_Submit {
 	/**
 	 * Check whether a given request has permission access route.
 	 *
+	 * Nonce verification is only enforced for logged-in users. Logged-out users are
+	 * typically served cached pages where nonces may be stale (12–24 h expiry). Security
+	 * for public form submissions relies on honeypot and CAPTCHA checks instead.
+	 * This matches the approach used by WPForms and Gravity Forms.
+	 *
 	 * @param \WP_REST_Request $request Request object or array containing form data.
 	 * @since 1.8.0
 	 * @return WP_Error|bool
 	 */
 	public function submit_form_permissions_check( $request ) {
-		$nonce = Helper::get_string_value( $request->get_header( 'X-WP-Submit-Nonce' ) );
-		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'srfm_form_submit' ) ) {
-			wp_send_json_error(
-				[
-					'message' => __( 'Security verification failed. Please refresh the page and try again.', 'sureforms' ),
-				]
-			);
+		if ( is_user_logged_in() ) {
+			$nonce = Helper::get_string_value( $request->get_header( 'X-WP-Submit-Nonce' ) );
+			if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'srfm_form_submit' ) ) {
+				wp_send_json_error(
+					[
+						'message' => __( 'Security verification failed. Please refresh the page and try again.', 'sureforms' ),
+					]
+				);
+			}
 		}
 
 		$form_data = Helper::sanitize_by_field_type( $request->get_params() );
