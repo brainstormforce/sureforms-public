@@ -67,6 +67,34 @@ class Test_Generate_Form_Markup extends TestCase {
 		$this->assertIsString( $result );
 	}
 
+	/**
+	 * Test get_current_block_attrs returns an array.
+	 */
+	public function test_get_current_block_attrs_returns_array() {
+		$result = Generate_Form_Markup::get_current_block_attrs();
+		$this->assertIsArray( $result );
+	}
+
+	/**
+	 * Test enqueue_preview_styling_script enqueues the script.
+	 */
+	public function test_enqueue_preview_styling_script_enqueues_script() {
+		Generate_Form_Markup::enqueue_preview_styling_script( '#srfm-container-1' );
+		$this->assertTrue( wp_script_is( 'srfm-preview-styling', 'enqueued' ) );
+		wp_dequeue_script( 'srfm-preview-styling' );
+	}
+
+	/**
+	 * Test common_error_message outputs error markup.
+	 */
+	public function test_common_error_message_outputs_markup() {
+		ob_start();
+		Generate_Form_Markup::common_error_message();
+		$output = ob_get_clean();
+		$this->assertStringContainsString( 'srfm-error-message', $output );
+		$this->assertStringContainsString( 'srfm-footer-error', $output );
+	}
+
 	public function test_get_form_markup_returns_string() {
 		remove_all_actions( 'wp_insert_post_data' );
 

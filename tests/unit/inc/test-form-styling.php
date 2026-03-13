@@ -338,6 +338,35 @@ class Test_Form_Styling extends TestCase {
 		$this->assertTrue( $result['from_filter'] );
 	}
 
+	/**
+	 * Test map_block_attrs_to_styling maps all supported attributes.
+	 */
+	public function test_map_block_attrs_to_styling_with_all_supported_attrs() {
+		$attrs = [
+			'primaryColor'       => '#FF0000',
+			'textColor'          => '#00FF00',
+			'textOnPrimaryColor' => '#0000FF',
+			'formPaddingTop'     => 10,
+			'formPaddingUnit'    => 'px',
+			'bgType'             => 'color',
+			'bgColor'            => '#FFFFFF',
+			'fieldSpacing'       => 'medium',
+			'buttonAlignment'    => 'center',
+		];
+
+		$result = Form_Styling::map_block_attrs_to_styling( [], $attrs );
+
+		$this->assertSame( '#FF0000', $result['primary_color'] );
+		$this->assertSame( '#00FF00', $result['text_color'] );
+		$this->assertSame( '#0000FF', $result['text_color_on_primary'] );
+		$this->assertSame( 10.0, $result['form_padding_top'] );
+		$this->assertSame( 'px', $result['form_padding_unit'] );
+		$this->assertSame( 'color', $result['bg_type'] );
+		$this->assertSame( '#FFFFFF', $result['bg_color'] );
+		$this->assertSame( 'medium', $result['field_spacing'] );
+		$this->assertSame( 'center', $result['submit_button_alignment'] );
+	}
+
 	// ─── apply_theme_styling ──────────────────────────────────────
 
 	/**
