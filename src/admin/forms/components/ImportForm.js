@@ -178,7 +178,7 @@ const ImportForm = ( { open, setOpen, onImportSuccess } ) => {
 					</div>
 					<Dialog.Description>
 						{ __(
-							'Select the SureForms export file (.json) that you wish to import.',
+							'Select a SureForms export file (.json) to import.',
 							'sureforms'
 						) }
 					</Dialog.Description>
@@ -218,7 +218,7 @@ const ImportForm = ( { open, setOpen, onImportSuccess } ) => {
 										className="text-field-helper"
 									>
 										{ __(
-											'Drop the form (.json) file here',
+											'Drop a form file (.json) here',
 											'sureforms'
 										) }
 									</Text>

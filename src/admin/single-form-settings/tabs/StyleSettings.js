@@ -28,7 +28,7 @@ import UpgradePrompt from '@Admin/single-form-settings/components/UpgradePrompt'
 
 function StyleSettings( props ) {
 	const { editPost } = useDispatch( editorStore );
-	const { defaultKeys, isInlineButtonBlockPresent, iframeBody, editorMode } =
+	const { defaultKeys, isInlineButtonBlockPresent, iframeBody, editorMode, rootHtmlTag } =
 		props;
 
 	let sureformsKeys = useSelect(
@@ -113,7 +113,7 @@ function StyleSettings( props ) {
 	// Apply the sizings when field spacing changes.
 	useEffect( () => {
 		applyFieldSpacing( fieldSpacing );
-	}, [ fieldSpacing, editorMode, rootRef ] );
+	}, [ fieldSpacing, editorMode, rootHtmlTag ] );
 
 	// if device type is desktop then change the submit button
 	useEffect( () => {
@@ -134,7 +134,7 @@ function StyleSettings( props ) {
 	const onHandleChange = ( updatedSettings ) => {
 		const [ key, value ] = Object.entries( updatedSettings )[ 0 ];
 
-		addStyleInRoot( rootRef, getCSSProperties( key, value ) );
+		addStyleInRoot( rootHtmlTag, getCSSProperties( key, value ) );
 		const formStylingSettings = {
 			...formStyling,
 			...updatedSettings,
@@ -195,7 +195,7 @@ function StyleSettings( props ) {
 		}
 		key_id = key + '_id';
 
-		addStyleInRoot( rootRef, getCSSProperties( key, imageURL ) );
+		addStyleInRoot( rootHtmlTag, getCSSProperties( key, imageURL ) );
 
 		editPost( {
 			meta: {
@@ -378,7 +378,7 @@ function StyleSettings( props ) {
 						  ),
 			};
 
-			addStyleInRoot( rootRef, cssProperties );
+			addStyleInRoot( rootHtmlTag, cssProperties );
 		} else {
 			sureformsKeys = defaultKeys;
 			editPost( {
@@ -391,7 +391,7 @@ function StyleSettings( props ) {
 		overlayGradientOptions,
 		bg_gradient,
 		bg_overlay_gradient,
-		rootRef,
+		rootHtmlTag,
 		editorMode,
 	] );
 
@@ -414,7 +414,7 @@ function StyleSettings( props ) {
 				break;
 		}
 
-		addStyleInRoot( rootRef, cssProperties );
+		addStyleInRoot( rootHtmlTag, cssProperties );
 
 		const option_array = {};
 
@@ -444,7 +444,7 @@ function StyleSettings( props ) {
 			srfm_admin?.field_spacing_vars[ sizingValue ] || {};
 		const finalSize = { ...baseSize, ...overrideSize };
 
-		addStyleInRoot( rootRef, finalSize );
+		addStyleInRoot( rootHtmlTag, finalSize );
 	}
 
 	/**
@@ -457,7 +457,7 @@ function StyleSettings( props ) {
 	 * @since 0.0.7
 	 */
 	function updateFormStyling( option, value ) {
-		addStyleInRoot( rootRef, getCSSProperties( option, value ) );
+		addStyleInRoot( rootHtmlTag, getCSSProperties( option, value ) );
 
 		editPost( {
 			meta: {

@@ -11,6 +11,7 @@ namespace SRFM;
 use SRFM\Admin\Admin;
 use SRFM\Admin\Analytics;
 use SRFM\Admin\Notice_Manager;
+use SRFM\Inc\Abilities\Abilities_Registrar;
 use SRFM\Inc\Activator;
 use SRFM\Inc\Admin_Ajax;
 use SRFM\Inc\AI_Form_Builder\AI_Auth;
@@ -34,8 +35,7 @@ use SRFM\Inc\Global_Settings\Email_Summary;
 use SRFM\Inc\Global_Settings\Global_Settings;
 use SRFM\Inc\Gutenberg_Hooks;
 use SRFM\Inc\Helper;
-use SRFM\Inc\Lib\SRFM_Nps_Survey;
-use SRFM\Inc\Nps_Notice;
+use SRFM\Inc\Learn;
 use SRFM\Inc\Onboarding;
 use SRFM\Inc\Page_Builders\Page_Builders;
 use SRFM\Inc\Payments\Payments;
@@ -215,6 +215,7 @@ class Plugin_Loader {
 		}
 		Payments::get_instance();
 		Duplicate_Form::get_instance();
+		Learn::get_instance();
 	}
 
 	/**
@@ -306,17 +307,9 @@ class Plugin_Loader {
 		Onboarding::get_instance();
 		DatabaseRegister::init();
 		Form_Restriction::get_instance();
+		Abilities_Registrar::get_instance();
 		// Initializing Compatibilities.
 		Astra::get_instance();
-		/**
-		 * Required to add the if check for the class existence to resolve phpstan error,
-		 * as the phpstan configuration ignores the inc/lib directory which gives error
-		 * unknown class.
-		 */
-		if ( class_exists( 'SRFM\Inc\Lib\SRFM_Nps_Survey' ) && ! apply_filters( 'srfm_disable_nps_survey', false ) ) {
-			SRFM_Nps_Survey::get_instance(); // Inits the NPS Survey class for which inits the NPS Survey plugin.
-			Nps_Notice::get_instance(); // Responsible for displaying the NPS Survey: keeping the line out of the check will also work.
-		}
 
 		/**
 		 * Load core files necessary for the Spectra block.

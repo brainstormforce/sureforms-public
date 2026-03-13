@@ -102,9 +102,9 @@ class Number_Markup extends Base {
 		$this->min_value      = $attributes['minValue'] ?? '';
 		$this->max_value      = $attributes['maxValue'] ?? '';
 		$this->format_type    = $attributes['formatType'] ?? '';
-		$this->format_attr    = $this->format_type ? ' format-type="' . $this->format_type . '" ' : '';
-		$this->min_value_attr = $this->min_value ? ' min="' . $this->min_value . '" ' : '';
-		$this->max_value_attr = $this->max_value ? ' max="' . $this->max_value . '" ' : '';
+		$this->format_attr    = $this->format_type ? ' format-type="' . esc_attr( $this->format_type ) . '" ' : '';
+		$this->min_value_attr = $this->min_value ? ' min="' . esc_attr( $this->min_value ) . '" ' : '';
+		$this->max_value_attr = $this->max_value ? ' max="' . esc_attr( $this->max_value ) . '" ' : '';
 		$this->prefix         = $attributes['prefix'] ?? '';
 		$this->suffix         = $attributes['suffix'] ?? '';
 		$this->read_only      = ! empty( trim( $this->default ) ) && $attributes['readOnly'];

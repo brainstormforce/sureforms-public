@@ -159,7 +159,7 @@ const LimitReachedPopup = ( {
 							window.location.href = `${ srfm_admin.site_url }/wp-admin/post-new.php?post_type=sureforms_form`;
 						} }
 					>
-						{ __( 'Or Build It Yourself', 'sureforms' ) }
+						{ __( 'Or create it yourself', 'sureforms' ) }
 					</Button>
 				</Container.Item>
 			</Container>

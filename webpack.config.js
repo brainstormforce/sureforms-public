@@ -60,6 +60,7 @@ module.exports = {
 		entries: path.resolve( __dirname, 'src/admin/entries/index.js' ),
 		payments: path.resolve( __dirname, 'src/admin/payment/index.js' ),
 		forms: path.resolve( __dirname, 'src/admin/forms/index.js' ),
+		learn: path.resolve( __dirname, 'src/admin/learn/index.js' ),
 	},
 	resolve: {
 		alias: {

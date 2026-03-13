@@ -18,7 +18,7 @@ import AiFormProgressPage from '../ai-form-builder-components/AiFormProgressPage
 
 const AiFormBuilder = () => {
 	const [ message, setMessage ] = useState(
-		__( 'Connecting with AI…', 'sureforms' )
+		__( 'Connecting to AI service', 'sureforms' )
 	);
 	const [ isBuildingForm, setIsBuildingForm ] = useState( false );
 	const [ percentBuild, setPercentBuild ] = useState( 0 );
@@ -65,7 +65,7 @@ const AiFormBuilder = () => {
 
 		// add a pause of 2 seconds and set percentBuild to 25 without using setTimeout
 		setPercentBuild( 50 );
-		setMessage( __( 'Generating Fields…', 'sureforms' ) );
+		setMessage( __( 'Generating fields', 'sureforms' ) );
 
 		try {
 			const response = await apiFetch( {
@@ -83,9 +83,7 @@ const AiFormBuilder = () => {
 					setShowFormCreationErr( true );
 					return;
 				}
-				setMessage(
-					__( 'Just doing some final touches…', 'sureforms' )
-				);
+				setMessage( __( 'Finalizing your form', 'sureforms' ) );
 				setPercentBuild( 75 );
 
 				if ( response?.success === false ) {
@@ -110,7 +108,7 @@ const AiFormBuilder = () => {
 				} );
 
 				if ( postContent ) {
-					setMessage( __( 'Redirecting to Editor', 'sureforms' ) );
+					setMessage( __( 'Opening form editor', 'sureforms' ) );
 					setPercentBuild( 100 );
 					const formTitle = content?.form?.formTitle;
 					const metasToUpdate = applyFilters(
@@ -185,8 +183,8 @@ const AiFormBuilder = () => {
 		__( 'Create Unlimited Forms with AI', 'sureforms' ),
 		__( 'Add Advanced Field Types', 'sureforms' ),
 		__( 'Create Calculators, Surveys, etc.', 'sureforms' ),
-		__( 'Design Multi-step Forms', 'sureforms' ),
-		__( 'Send Forms Submissions to Your CRM or Any App', 'sureforms' ),
+		__( 'Design Multistep Forms', 'sureforms' ),
+		__( 'Send Form Entries to Your CRM or Any App', 'sureforms' ),
 	];
 
 	const getLimitReachedPopup = () => {
@@ -234,11 +232,11 @@ const AiFormBuilder = () => {
 				<LimitReachedPopup
 					title={ __( 'Form Generation Limit Reached', 'sureforms' ) }
 					paraTitle={ __(
-						'You Have Hit Your FUP Limit.',
+						"You've reached your daily generation limit.",
 						'sureforms'
 					) }
 					paraOne={ __(
-						'You have reached the FUP limit of AI form generations for the day.',
+						"You've reached your daily limit for AI form generations.",
 						'sureforms'
 					) }
 					paraTwo={ sprintf(

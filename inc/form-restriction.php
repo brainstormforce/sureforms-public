@@ -157,8 +157,8 @@ class Form_Restriction {
 	 */
 	public static function get_restriction_message_by_state( $scheduling_state, $form_restriction ) {
 		if ( 'not_started' === $scheduling_state ) {
-			$message = $form_restriction['schedulingNotStartedMessage'] ?? __( 'This form is not yet available. Please check back after the scheduled start time.', 'sureforms' );
-			return is_string( $message ) ? $message : __( 'This form is not yet available. Please check back after the scheduled start time.', 'sureforms' );
+			$message = $form_restriction['schedulingNotStartedMessage'] ?? __( 'This form is not yet available. Check back after the scheduled start time.', 'sureforms' );
+			return is_string( $message ) ? $message : __( 'This form is not yet available. Check back after the scheduled start time.', 'sureforms' );
 		}
 
 		if ( 'ended' === $scheduling_state ) {
