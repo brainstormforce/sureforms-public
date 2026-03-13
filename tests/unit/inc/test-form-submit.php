@@ -291,6 +291,189 @@ class Test_Form_Submit extends TestCase {
 		$this->assertEmpty( $result );
 	}
 
+	/**
+	 * Test prepare_submission_data properly decodes rawurlencode'd upload URLs.
+	 */
+	public function test_prepare_submission_data_upload_field_decodes_encoded_urls() {
+		$submission_data = [
+			'srfm-upload-abc123-lbl-upload-resume' => [
+				rawurlencode( 'https://example.com/uploads/my file.pdf' ),
+				rawurlencode( 'https://example.com/uploads/doc (2).pdf' ),
+			],
+		];
+		$result = $this->form_submit->prepare_submission_data( $submission_data );
+		$this->assertArrayHasKey( 'resume', $result );
+		$this->assertSame( 'https://example.com/uploads/my file.pdf, https://example.com/uploads/doc (2).pdf', $result['resume'] );
+	}
+
+	/**
+	 * Test handle_form_submission rejects when honeypot is enabled but field is missing.
+	 */
+	public function test_handle_form_submission_rejects_missing_honeypot_when_enabled() {
+		$form_id = wp_insert_post(
+			[
+				'post_type'   => 'sureforms_form',
+				'post_status' => 'publish',
+				'post_title'  => 'Honeypot Test Form',
+			]
+		);
+
+		update_post_meta( $form_id, '_srfm_captcha_security_type', 'none' );
+		update_option(
+			'srfm_security_settings_options',
+			[ 'srfm_honeypot' => true ]
+		);
+
+		$request = new \WP_REST_Request( 'POST', '/sureforms/v1/submit-form' );
+		$request->set_body_params(
+			[
+				'form-id' => (string) $form_id,
+				// Intentionally omitting srfm-honeypot-field to simulate bot stripping it.
+			]
+		);
+
+		ob_start();
+		try {
+			$this->form_submit->handle_form_submission( $request );
+		} catch ( \WPDieException $e ) {
+			$output = ob_get_clean();
+			$data   = json_decode( $output, true );
+			$this->assertIsArray( $data );
+			$this->assertFalse( $data['success'] );
+			$this->assertStringContainsString( 'spam', $data['data']['message'] );
+
+			// Cleanup.
+			wp_delete_post( $form_id, true );
+			delete_option( 'srfm_security_settings_options' );
+			return;
+		}
+		ob_end_clean();
+
+		// Cleanup.
+		wp_delete_post( $form_id, true );
+		delete_option( 'srfm_security_settings_options' );
+		$this->fail( 'Expected WPDieException was not thrown for missing honeypot field.' );
+	}
+
+	/**
+	 * Test handle_form_submission allows submission when honeypot is disabled and field is absent.
+	 */
+	public function test_handle_form_submission_allows_missing_honeypot_when_disabled() {
+		$form_id = wp_insert_post(
+			[
+				'post_type'   => 'sureforms_form',
+				'post_status' => 'publish',
+				'post_title'  => 'Honeypot Disabled Test Form',
+			]
+		);
+
+		update_post_meta( $form_id, '_srfm_captcha_security_type', 'none' );
+		update_option(
+			'srfm_security_settings_options',
+			[ 'srfm_honeypot' => false ]
+		);
+
+		$request = new \WP_REST_Request( 'POST', '/sureforms/v1/submit-form' );
+		$request->set_body_params(
+			[
+				'form-id' => (string) $form_id,
+				// No honeypot field — should be allowed since honeypot is disabled.
+			]
+		);
+
+		ob_start();
+		try {
+			$result = $this->form_submit->handle_form_submission( $request );
+		} catch ( \WPDieException $e ) {
+			$output = ob_get_clean();
+			$data   = json_decode( $output, true );
+
+			// If it dies, it should NOT be the spam message — it could be a captcha or entry processing error.
+			if ( is_array( $data ) && isset( $data['data']['message'] ) ) {
+				$this->assertStringNotContainsString( 'spam', $data['data']['message'], 'Should not reject as spam when honeypot is disabled.' );
+			}
+
+			// Cleanup.
+			wp_delete_post( $form_id, true );
+			delete_option( 'srfm_security_settings_options' );
+			return;
+		}
+		ob_end_clean();
+
+		// If we reach here, form processed successfully (no die) — that's the expected behavior.
+		wp_delete_post( $form_id, true );
+		delete_option( 'srfm_security_settings_options' );
+	}
+
+	/**
+	 * Test parse_email_notification_template returns expected structure.
+	 */
+	public function test_parse_email_notification_template() {
+		$submission_data = [
+			'srfm-text-abc123-lbl-first-name' => 'John Doe',
+		];
+		$item = [
+			'email_to'   => 'admin@example.com',
+			'subject'    => 'New Submission',
+			'email_body' => '<p>Hello World</p>',
+		];
+
+		$result = Form_Submit::parse_email_notification_template( $submission_data, $item );
+
+		$this->assertIsArray( $result );
+		$this->assertArrayHasKey( 'to', $result );
+		$this->assertArrayHasKey( 'subject', $result );
+		$this->assertArrayHasKey( 'message', $result );
+		$this->assertArrayHasKey( 'headers', $result );
+		$this->assertEquals( 'admin@example.com', $result['to'] );
+		$this->assertEquals( 'New Submission', $result['subject'] );
+		$this->assertStringContainsString( 'Hello World', $result['message'] );
+		$this->assertStringContainsString( 'Content-Type: text/html', $result['headers'] );
+	}
+
+    /**
+     * Test refresh_nonces is callable.
+     */
+    public function test_refresh_nonces() {
+        $this->assertTrue( method_exists( $this->form_submit, 'refresh_nonces' ) );
+    }
+
+    /**
+     * Test submit_form_permissions_check is callable.
+     */
+    public function test_submit_form_permissions_check() {
+        $this->assertTrue( method_exists( $this->form_submit, 'submit_form_permissions_check' ) );
+    }
+
+    /**
+     * Test permissions_check is callable.
+     */
+    public function test_permissions_check() {
+        $result = $this->form_submit->permissions_check();
+        $this->assertIsBool( $result );
+    }
+
+    /**
+     * Test handle_form_entry is callable.
+     */
+    public function test_handle_form_entry() {
+        $this->assertTrue( method_exists( $this->form_submit, 'handle_form_entry' ) );
+    }
+
+    /**
+     * Test send_email is callable.
+     */
+    public function test_send_email() {
+        $this->assertTrue( method_exists( Form_Submit::class, 'send_email' ) );
+    }
+
+    /**
+     * Test field_unique_validation is callable.
+     */
+    public function test_field_unique_validation() {
+        $this->assertTrue( method_exists( $this->form_submit, 'field_unique_validation' ) );
+    }
+
     /**
      * Helper method to call private methods for testing.
      */

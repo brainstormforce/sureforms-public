@@ -2,9 +2,9 @@
 Contributors: brainstormforce
 Tags: forms, contact form, custom forms, payment form, form builder
 Requires at least: 6.4
-Tested up to: 6.9.1
+Tested up to: 6.9.3
 Requires PHP: 7.4
-Stable tag: 2.5.1
+Stable tag: 2.5.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -401,24 +401,23 @@ You can collect payments securely through Stripe & PayPal without any add-ons or
 You can report the issue through our [Bug Bounty Program](https://brainstormforce.com/bug-bounty-program/). We collaborate with Patchstack to provide opportunities for researchers to report vulnerabilities. The Patchstack team will help validate, triage, and handle any reported security issues.
 
 == Changelog ==
-= x.x.x =
-* Fix: Preserve input formatting in Entries View.
+= 2.5.2 - 12th March 2026 =
+* New: Added the “Send as Raw HTML” option in email notifications for fully structured HTML emails.
+* New: Added the Learn section.
+* Improvement: Improved UX copy across validation messages, settings, and form management UI.
+* Fix: Added the `srfm_confirmation_links_open_in_new_tab` filter to allow confirmation message links to open in the same tab.
+* Fix: Fixed the page dropdown not loading all pages on large sites with 1,700+ pages by replacing the bulk page fetch with a paginated, searchable REST endpoint.
+* Fix: Preserved input formatting in the Entries view.
+* Fix: Fixed honeypot spam protection bypass when bots strip the honeypot field entirely.
+* Fix: Fixed slug generation not working for newly added blocks in the editor.
+* Fix: Fixed unique field validation applying across all forms on the page instead of the submitted form only.
+* Fix: Fixed multi-file uploads not saving to the SureForms custom upload directory.
 = 2.5.1 - 16th February 2026 =
 * New: Added option to change currency position (e.g., $100, 100$, $ 100, 100 $).
 * Fix: Fixed the payment block amount not updating correctly with conditional logic.
 = 2.5.0 - 2nd February 2026 =
 * Improvement: Added translation support for the country list in the phone number field.
 * Fix: Fixed dropdown placeholder and GDPR label translation on the frontend.
-= 2.4.0 - 20th January 2026 =
-* New: Added form scheduling restrictions with start and end date/time.
-* New: Added Previous/Next navigation for single entry page.
-* Improvement: Improved multi-choice block settings UI.
-* Improvement: Updated Syria flag in the Phone field.
-* Fix: Fixed HTML block content corruption when duplicating forms.
-* Fix: Fixed multi-choice options being translated in entries.
-* Fix: Fixed reCAPTCHA v3 validation triggering multiple times on the same page.
-* Fix: Fixed Spectra button styles being affected by SureForms CSS.
-
 The full changelog is available [here](https://sureforms.com/whats-new/).
 
 == Upgrade Notice ==
