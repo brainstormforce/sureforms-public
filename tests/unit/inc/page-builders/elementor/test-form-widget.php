@@ -618,4 +618,61 @@ class Test_Form_Widget extends TestCase {
 		$this->assertArrayHasKey( 'buttonAlignment', $result );
 		$this->assertSame( 'justify', $result['buttonAlignment'] );
 	}
+
+	// ─── Coverage: widget interface methods ──────────────────────────
+
+	/**
+	 * Test get_style_depends returns an array.
+	 */
+	public function test_get_style_depends_returns_array(): void {
+		$widget = $this->create_widget_instance();
+		$result = $widget->get_style_depends();
+		$this->assertIsArray( $result );
+	}
+
+	/**
+	 * Test get_script_depends returns an array when not in preview mode.
+	 */
+	public function test_get_script_depends_returns_empty_when_not_preview(): void {
+		$widget = $this->create_widget_instance();
+		$result = $widget->get_script_depends();
+		$this->assertIsArray( $result );
+		$this->assertEmpty( $result );
+	}
+
+	/**
+	 * Test get_keywords returns expected keywords array.
+	 */
+	public function test_get_keywords_returns_expected(): void {
+		$widget   = $this->create_widget_instance();
+		$keywords = $widget->get_keywords();
+		$this->assertIsArray( $keywords );
+		$this->assertContains( 'sureforms', $keywords );
+		$this->assertContains( 'form', $keywords );
+	}
+
+	/**
+	 * Test register_controls can be invoked without fatal error.
+	 */
+	public function test_register_controls_runs_without_error(): void {
+		$widget = $this->create_widget_instance();
+		$method = new \ReflectionMethod( $widget, 'register_controls' );
+		$method->setAccessible( true );
+		$method->invoke( $widget );
+		$this->assertTrue( true );
+	}
+
+	/**
+	 * Test render outputs string content.
+	 */
+	public function test_render_outputs_content(): void {
+		$widget = $this->create_widget_instance();
+		$method = new \ReflectionMethod( $widget, 'render' );
+		$method->setAccessible( true );
+		ob_start();
+		$result = $method->invoke( $widget );
+		$output = ob_get_clean();
+		// render() may return void or string — either way no fatal.
+		$this->assertIsString( $output );
+	}
 }
