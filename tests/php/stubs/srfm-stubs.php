@@ -1217,7 +1217,7 @@ namespace {
         }
         /**
          * @param string         $action_id
-         * @param Exception|NULL $exception The exception which occured when fetching the action. NULL by default for backward compatibility.
+         * @param Exception|NULL $exception The exception which occurred when fetching the action. NULL by default for backward compatibility.
          *
          * @return ActionScheduler_LogEntry[]
          */
