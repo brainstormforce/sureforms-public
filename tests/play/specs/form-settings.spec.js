@@ -5,6 +5,9 @@
  *   3.1 Redirect on submission — user lands on configured URL
  *   3.2 Custom success message — configured text shown after submit
  *   3.5 Store entries enabled (default) — entry appears in admin after submit
+ *
+ * Form Confirmation settings live inside the "Form Behavior" dialog opened via:
+ *   Editor header → "Form Settings" button → "Form Confirmation" nav item
  */
 
 const { test, expect } = require( '@playwright/test' );
@@ -13,6 +16,7 @@ const {
 	createBlankForm,
 	addFieldBlock,
 	publishFormAndGetURL,
+	openFormSettingsDialog,
 } = require( '../utils/formHelpers' );
 
 test.describe( 'Form settings', () => {
@@ -25,38 +29,23 @@ test.describe( 'Form settings', () => {
 		await createBlankForm( page );
 		await addFieldBlock( page, 'input' );
 
-		// Open the "Form Confirmation" document settings panel.
-		// It lives in the editor sidebar under the Form/Document tab.
-		const sidebarToggle = page.getByRole( 'button', { name: /settings/i } );
-		if ( await sidebarToggle.isVisible( { timeout: 3000 } ).catch( () => false ) ) {
-			const isOpen = await page.locator( '.interface-interface-skeleton__sidebar' ).isVisible().catch( () => false );
-			if ( ! isOpen ) {
-				await sidebarToggle.click();
-			}
-		}
+		// Open Form Behavior dialog → Form Confirmation tab.
+		await openFormSettingsDialog( page, 'Form Confirmation' );
 
-		// Switch to the "Post" (document) tab.
-		const postTab = page.getByRole( 'tab', { name: /post|form|document/i } ).first();
-		if ( await postTab.isVisible( { timeout: 3000 } ).catch( () => false ) ) {
-			await postTab.click();
-		}
+		// "Success Message" type should already be selected by default.
+		// Edit the success message in the Quill rich-text editor.
+		const quillEditor = page.locator( '.ql-editor' ).first();
+		await expect( quillEditor ).toBeVisible( { timeout: 10000 } );
+		await quillEditor.click();
+		await page.keyboard.press( 'Control+a' );
+		await page.keyboard.type( 'Your submission was received!' );
 
-		// Expand the "Form Confirmation" panel if it's collapsed.
-		const confirmationPanel = page.getByRole( 'button', { name: /form confirmation/i } );
-		if ( await confirmationPanel.isVisible( { timeout: 5000 } ).catch( () => false ) ) {
-			const isExpanded = await confirmationPanel.getAttribute( 'aria-expanded' );
-			if ( isExpanded === 'false' ) {
-				await confirmationPanel.click();
-			}
-		}
+		// Wait for the debounced auto-save (500 ms) to update the editor store.
+		await page.waitForTimeout( 1000 );
 
-		// The "Success Message" option should already be selected by default.
-		// Find the success message text area and change it.
-		const messageTextarea = page.locator( 'textarea[placeholder*="message" i], textarea[aria-label*="message" i]' ).first();
-		if ( await messageTextarea.isVisible( { timeout: 5000 } ).catch( () => false ) ) {
-			await messageTextarea.clear();
-			await messageTextarea.fill( 'Your submission was received!' );
-		}
+		// Close the dialog — the dialog has exitOnEsc so pressing Escape works
+		// reliably without hitting the WP admin bar click-intercept issue.
+		await page.keyboard.press( 'Escape' );
 
 		const formURL = await publishFormAndGetURL( page );
 		await page.goto( formURL );
@@ -74,50 +63,22 @@ test.describe( 'Form settings', () => {
 		await createBlankForm( page );
 		await addFieldBlock( page, 'input' );
 
-		// Open the "Form Confirmation" panel and set it to Redirect → Custom URL.
-		const sidebarToggle = page.getByRole( 'button', { name: /settings/i } );
-		if ( await sidebarToggle.isVisible( { timeout: 3000 } ).catch( () => false ) ) {
-			const isOpen = await page.locator( '.interface-interface-skeleton__sidebar' ).isVisible().catch( () => false );
-			if ( ! isOpen ) {
-				await sidebarToggle.click();
-			}
-		}
-
-		const postTab = page.getByRole( 'tab', { name: /post|form|document/i } ).first();
-		if ( await postTab.isVisible( { timeout: 3000 } ).catch( () => false ) ) {
-			await postTab.click();
-		}
-
-		const confirmationPanel = page.getByRole( 'button', { name: /form confirmation/i } );
-		if ( await confirmationPanel.isVisible( { timeout: 5000 } ).catch( () => false ) ) {
-			const isExpanded = await confirmationPanel.getAttribute( 'aria-expanded' );
-			if ( isExpanded === 'false' ) {
-				await confirmationPanel.click();
-			}
-		}
-
-		// Select the "Redirect" option.
-		const redirectOption = page.getByLabel( /^Redirect$/i ).first();
-		if ( await redirectOption.isVisible( { timeout: 5000 } ).catch( () => false ) ) {
-			await redirectOption.click();
-		} else {
-			// Try clicking the radio or button labeled "Redirect".
-			await page.getByRole( 'radio', { name: /redirect/i } ).first().click();
-		}
-
-		// Select "Custom URL" sub-option.
-		const customUrlOption = page.getByLabel( /custom url/i ).first();
-		if ( await customUrlOption.isVisible( { timeout: 3000 } ).catch( () => false ) ) {
-			await customUrlOption.click();
-		}
-
-		// Enter the redirect URL — use the WP home page so the redirect lands somewhere real.
-		const urlInput = page.locator( 'input[placeholder*="http" i], input[type="url"], input[aria-label*="url" i]' )
-			.filter( { hasNot: page.locator( '#draggable-box__srfm--url' ) } )
-			.first();
-		if ( await urlInput.isVisible( { timeout: 3000 } ).catch( () => false ) ) {
-			await urlInput.fill( 'http://localhost:8888/' );
-		}
+		// Set the confirmation meta directly via the editor store.
+		// The dialog UI rejects http:// URLs with an HTTPS validation error,
+		// so we bypass it and call editPost — the same function the dialog uses internally.
+		await page.evaluate( () => {
+			const { dispatch } = window.wp.data;
+			dispatch( 'core/editor' ).editPost( {
+				meta: {
+					_srfm_form_confirmation: [
+						{
+							confirmation_type: 'custom url',
+							custom_url: 'http://localhost:8888/wp-admin/',
+						},
+					],
+				},
+			} );
+		} );
 
 		const formURL = await publishFormAndGetURL( page );
 		await page.goto( formURL );
@@ -126,12 +87,11 @@ test.describe( 'Form settings', () => {
 		await page.locator( 'input.srfm-input-input' ).first().fill( 'Redirect test' );
 
 		await Promise.all( [
-			page.waitForURL( '**/localhost:8888/**', { timeout: 15000 } ),
+			page.waitForURL( '**/wp-admin/**', { timeout: 15000 } ),
 			page.locator( '#srfm-submit-btn' ).click(),
 		] );
 
-		// After redirect, success box is no longer on the page.
-		expect( page.url() ).toMatch( /localhost:8888/ );
+		expect( page.url() ).toContain( '/wp-admin/' );
 	} );
 
 	// ── 3.5 Store entries — entry appears in admin after submission ───────────
@@ -161,8 +121,6 @@ test.describe( 'Form settings', () => {
 			: '/wp-admin/admin.php?page=sureforms_entries';
 		await page.goto( entriesURL );
 		await page.waitForLoadState( 'load' );
-		// Wait for the React entries app to render.
-		await page.waitForTimeout( 2000 );
 
 		// The entry row should be present somewhere on the entries page.
 		await expect(

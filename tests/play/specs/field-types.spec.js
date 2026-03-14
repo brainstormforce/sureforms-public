@@ -156,13 +156,14 @@ test.describe( 'Field types — basic submit', () => {
 		await page.goto( formURL );
 		await page.waitForLoadState( 'load' );
 
-		// SureForms renders a custom React-based dropdown with class srfm-dropdown-input.
-		// Click to open, then pick the first available option.
-		const dropdown = page.locator( '.srfm-dropdown-block .srfm-dropdown-input' ).first();
-		await dropdown.click();
+		// SureForms enhances the native <select> with TomSelect.
+		// The TomSelect control area has class .ts-control; options appear in
+		// .ts-dropdown-content .option when the control is clicked.
+		const tsControl = page.locator( '.srfm-dropdown-block .ts-control' ).first();
+		await tsControl.click();
 
 		const firstOption = page
-			.locator( '.srfm-dropdown-block .srfm-dropdown-option' )
+			.locator( '.srfm-dropdown-block .ts-dropdown-content .option' )
 			.first();
 		await expect( firstOption ).toBeVisible( { timeout: 5000 } );
 		await firstOption.click();

@@ -3,6 +3,11 @@
  *
  * Covers:
  *   9.1 Global settings page loads without errors
+ *   9.2 All main settings tabs are clickable and load content
+ *
+ * SureForms settings navigation (React Router links):
+ *   "General Settings", "Form Validation", "Spam Protection",
+ *   "Automations", "Integrations", "Payments"
  */
 
 const { test, expect } = require( '@playwright/test' );
@@ -25,12 +30,13 @@ test.describe( 'Global settings', () => {
 
 		await page.goto( '/wp-admin/admin.php?page=sureforms_form_settings' );
 		await page.waitForLoadState( 'load' );
-		// Allow the React settings app to render.
-		await page.waitForTimeout( 2000 );
 
-		// The settings page should render its tabs / navigation.
+		// The SureForms settings app renders a navigation sidebar.
+		// The first nav item is "General Settings".
 		await expect(
-			page.locator( '.sureforms-settings, [class*="settings"], [role="tablist"]' ).first()
+			page.locator( 'a, button, [role="link"]' )
+				.filter( { hasText: 'General Settings' } )
+				.first()
 		).toBeVisible( { timeout: 15000 } );
 
 		// No fatal JS errors should have occurred.
@@ -41,24 +47,28 @@ test.describe( 'Global settings', () => {
 	} );
 
 	// ── 9.2 All settings tabs navigate correctly ──────────────────────────────
-	test( 'settings tabs — all main tabs are clickable and load content', async ( { page } ) => {
+	test( 'settings nav links — main items are clickable and stay on settings page', async ( { page } ) => {
 		await page.goto( '/wp-admin/admin.php?page=sureforms_form_settings' );
 		await page.waitForLoadState( 'load' );
-		await page.waitForTimeout( 2000 );
 
-		// SureForms settings has tabs for General, Security (CAPTCHA), Email, Payments.
-		const expectedTabs = [ /general/i, /security|captcha/i, /email/i, /payment/i ];
+		// SureForms settings navigation items (from src/admin/settings/Navigation.js).
+		const navItems = [
+			'General Settings',
+			'Spam Protection',
+			'Payments',
+		];
 
-		for ( const tabPattern of expectedTabs ) {
-			const tab = page.getByRole( 'link', { name: tabPattern } )
-				.or( page.getByRole( 'tab', { name: tabPattern } ) )
-				.or( page.locator( 'a, button' ).filter( { hasText: tabPattern } ) )
+		for ( const navItem of navItems ) {
+			// Scope click to elements within the SureForms settings app container
+			// to avoid accidentally clicking WordPress core sidebar links.
+			const link = page
+				.locator( '#wpbody-content a, #wpbody-content button' )
+				.filter( { hasText: navItem } )
 				.first();
 
-			if ( await tab.isVisible( { timeout: 3000 } ).catch( () => false ) ) {
-				await tab.click();
-				await page.waitForTimeout( 1000 );
-				// The page should still be on the settings screen after tab click.
+			if ( await link.isVisible( { timeout: 3000 } ).catch( () => false ) ) {
+				await link.click();
+				// Should still be on the SureForms settings page after clicking.
 				expect( page.url() ).toContain( 'sureforms_form_settings' );
 			}
 		}

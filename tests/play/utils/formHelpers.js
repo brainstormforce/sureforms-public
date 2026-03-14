@@ -6,6 +6,29 @@
 
 const { expect } = require( '@playwright/test' );
 
+// ─── Blocks available in the quick-action sidebar (default list) ──────────────
+// Source: admin/admin.php srfm_quick_sidebar_allowed_blocks filter default.
+const SIDEBAR_BLOCKS = [
+	'input',
+	'email',
+	'textarea',
+	'checkbox',
+	'number',
+	'inline-button',
+	'advanced-heading',
+	'payment',
+];
+
+// Block titles used to search in the Gutenberg inserter for non-sidebar blocks.
+const INSERTER_BLOCK_TITLES = {
+	phone: 'Phone Number',
+	url: 'URL',
+	'multi-choice': 'Multiple Choice',
+	dropdown: 'Dropdown',
+	gdpr: 'GDPR Agreement',
+	address: 'Address',
+};
+
 // ─── Editor helpers ──────────────────────────────────────────────────────────
 
 /**
@@ -19,11 +42,17 @@ async function createBlankForm( page ) {
 	await page.waitForLoadState( 'load' );
 
 	// Wait for the quick-action sidebar (draggable block panel) to appear.
-	await page.locator( '#draggable-box__srfm--input' ).waitFor( { state: 'visible', timeout: 30000 } );
+	await page
+		.locator( '#draggable-box__srfm--input' )
+		.waitFor( { state: 'visible', timeout: 30000 } );
 
 	// Dismiss the Gutenberg welcome guide if it appears.
-	const welcomeGuide = page.getByRole( 'button', { name: /close/i } ).filter( { hasText: /close/i } );
-	if ( await welcomeGuide.isVisible( { timeout: 3000 } ).catch( () => false ) ) {
+	const welcomeGuide = page
+		.getByRole( 'button', { name: /close/i } )
+		.filter( { hasText: /close/i } );
+	if (
+		await welcomeGuide.isVisible( { timeout: 3000 } ).catch( () => false )
+	) {
 		await welcomeGuide.click();
 	}
 }
@@ -35,14 +64,20 @@ async function createBlankForm( page ) {
  * @returns {Promise<string>} Frontend URL of the published form.
  */
 async function publishFormAndGetURL( page ) {
-	await page.getByRole( 'button', { name: 'Publish', exact: true } ).click();
+	await page
+		.getByRole( 'button', { name: 'Publish', exact: true } )
+		.click();
 
 	// Gutenberg may show a pre-publish confirmation panel.
 	const confirmPublish = page
 		.getByLabel( 'Editor publish' )
 		.getByRole( 'button', { name: 'Publish', exact: true } );
 
-	if ( await confirmPublish.isVisible( { timeout: 3000 } ).catch( () => false ) ) {
+	if (
+		await confirmPublish
+			.isVisible( { timeout: 3000 } )
+			.catch( () => false )
+	) {
 		await confirmPublish.click();
 	}
 
@@ -53,17 +88,78 @@ async function publishFormAndGetURL( page ) {
 }
 
 /**
- * Add a field block to the current form by clicking its draggable box in the
- * quick-action sidebar, then wait for it to appear in the editor canvas.
+ * Add a field block to the current form.
+ *
+ * For blocks in the quick-action sidebar the draggable box is clicked directly.
+ * For other blocks the Gutenberg block inserter is used.
  *
  * @param {import('@playwright/test').Page} page
- * @param {string} blockSlug  The part after `srfm/` — e.g. 'textarea', 'number', 'multi-choice'.
+ * @param {string} blockSlug  The part after `srfm/` — e.g. 'textarea', 'phone', 'multi-choice'.
  */
 async function addFieldBlock( page, blockSlug ) {
-	await page.locator( `#draggable-box__srfm--${ blockSlug }` ).click();
+	if ( SIDEBAR_BLOCKS.includes( blockSlug ) ) {
+		await page.locator( `#draggable-box__srfm--${ blockSlug }` ).click();
+	} else {
+		await addFieldBlockViaInserter(
+			page,
+			blockSlug,
+			INSERTER_BLOCK_TITLES[ blockSlug ] || blockSlug
+		);
+	}
 	await expect(
 		page.locator( `.wp-block[data-type="srfm/${ blockSlug }"]` )
 	).toBeVisible( { timeout: 15000 } );
+}
+
+/**
+ * Add a field block programmatically via the WordPress block-editor data store.
+ * Used for blocks that are not in the quick-action sidebar.
+ *
+ * This approach bypasses UI flakiness and directly calls Gutenberg's
+ * `insertBlock` dispatch, which is the same underlying operation the
+ * quick-action sidebar draggable blocks use.
+ *
+ * @param {import('@playwright/test').Page} page
+ * @param {string} blockSlug   The part after `srfm/`.
+ */
+async function addFieldBlockViaInserter( page, blockSlug ) {
+	await page.evaluate( async ( slug ) => {
+		const { dispatch, select } = window.wp.data;
+		const { createBlock } = window.wp.blocks;
+
+		// Find the SureForms form block's clientId so we insert inside it.
+		const allBlocks = select( 'core/block-editor' ).getBlocks();
+		const findFormClientId = ( blocks ) => {
+			for ( const b of blocks ) {
+				if ( b.name === 'srfm/sureforms-form' ) {
+					return b.clientId;
+				}
+				if ( b.innerBlocks?.length ) {
+					const found = findFormClientId( b.innerBlocks );
+					if ( found ) {
+						return found;
+					}
+				}
+			}
+			return null;
+		};
+
+		const formClientId = findFormClientId( allBlocks );
+		const newBlock = createBlock( `srfm/${ slug }`, {} );
+
+		if ( formClientId ) {
+			const inner =
+				select( 'core/block-editor' ).getBlock( formClientId )
+					?.innerBlocks ?? [];
+			dispatch( 'core/block-editor' ).insertBlock(
+				newBlock,
+				inner.length,
+				formClientId
+			);
+		} else {
+			dispatch( 'core/block-editor' ).insertBlock( newBlock );
+		}
+	}, blockSlug );
 }
 
 /**
@@ -89,10 +185,37 @@ async function enableRequiredField( page ) {
 		.first();
 	await expect( requiredToggle ).toBeVisible( { timeout: 5000 } );
 
-	const isChecked = await requiredToggle.locator( 'input[type="checkbox"]' ).isChecked();
+	const isChecked = await requiredToggle
+		.locator( 'input[type="checkbox"]' )
+		.isChecked();
 	if ( ! isChecked ) {
 		await requiredToggle.locator( 'input[type="checkbox"]' ).click();
 	}
+}
+
+/**
+ * Open the "Form Settings" popover in the editor header, then click the
+ * specified settings item to open the Form Behavior dialog.
+ *
+ * @param {import('@playwright/test').Page} page
+ * @param {string} itemLabel  Label of the settings item, e.g. 'Form Confirmation'.
+ */
+async function openFormSettingsDialog( page, itemLabel ) {
+	// Click the "Form Settings" button in the SureForms editor header.
+	await page.locator( '.srfm-form-settings-button' ).click();
+
+	// Wait for the popover to appear and click the desired item.
+	const item = page
+		.locator( '.srfm-form-settings-nav-item-label' )
+		.filter( { hasText: itemLabel } )
+		.first();
+	await expect( item ).toBeVisible( { timeout: 5000 } );
+	await item.click();
+
+	// Wait for the dialog to open (indicated by "Form Behavior" title).
+	await expect(
+		page.locator( '.srfm-dialog-panel' )
+	).toBeVisible( { timeout: 10000 } );
 }
 
 // ─── REST API helpers (run in page context while logged-in) ──────────────────
@@ -144,5 +267,6 @@ module.exports = {
 	addFieldBlock,
 	openBlockSettingsTab,
 	enableRequiredField,
+	openFormSettingsDialog,
 	createWPPage,
 };

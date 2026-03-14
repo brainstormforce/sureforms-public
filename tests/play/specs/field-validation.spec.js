@@ -55,7 +55,7 @@ test.describe( 'Field validation', () => {
 
 		const confirmToggle = page
 			.locator( '.components-toggle-control' )
-			.filter( { hasText: /confirm email/i } )
+			.filter( { hasText: /Enable Email Confirmation/i } )
 			.first();
 		await expect( confirmToggle ).toBeVisible( { timeout: 5000 } );
 		const isChecked = await confirmToggle.locator( 'input[type="checkbox"]' ).isChecked();
@@ -67,9 +67,8 @@ test.describe( 'Field validation', () => {
 		await page.goto( formURL );
 		await page.waitForLoadState( 'load' );
 
-		const emailInputs = page.locator( 'input.srfm-input-email' );
-		await emailInputs.nth( 0 ).fill( 'user@example.com' );
-		await emailInputs.nth( 1 ).fill( 'different@example.com' );
+		await page.locator( 'input.srfm-input-email' ).first().fill( 'user@example.com' );
+		await page.locator( 'input.srfm-input-email-confirm' ).first().fill( 'different@example.com' );
 		await page.locator( '#srfm-submit-btn' ).click();
 
 		await expect( page.locator( '.srfm-email-block .srfm-error-wrap' ).first() )
@@ -87,7 +86,7 @@ test.describe( 'Field validation', () => {
 
 		const confirmToggle = page
 			.locator( '.components-toggle-control' )
-			.filter( { hasText: /confirm email/i } )
+			.filter( { hasText: /Enable Email Confirmation/i } )
 			.first();
 		await expect( confirmToggle ).toBeVisible( { timeout: 5000 } );
 		const isChecked = await confirmToggle.locator( 'input[type="checkbox"]' ).isChecked();
@@ -99,9 +98,8 @@ test.describe( 'Field validation', () => {
 		await page.goto( formURL );
 		await page.waitForLoadState( 'load' );
 
-		const emailInputs = page.locator( 'input.srfm-input-email' );
-		await emailInputs.nth( 0 ).fill( 'user@example.com' );
-		await emailInputs.nth( 1 ).fill( 'user@example.com' );
+		await page.locator( 'input.srfm-input-email' ).first().fill( 'user@example.com' );
+		await page.locator( 'input.srfm-input-email-confirm' ).first().fill( 'user@example.com' );
 		await page.locator( '#srfm-submit-btn' ).click();
 
 		await expect( page.locator( '.srfm-success-box' ) ).toBeVisible( { timeout: 15000 } );
@@ -207,11 +205,7 @@ test.describe( 'Field validation', () => {
 		await createBlankForm( page );
 		await addFieldBlock( page, 'gdpr' );
 
-		// GDPR is required by default; verify or enable it.
-		await page.locator( '.wp-block[data-type="srfm/gdpr"]' ).click();
-		await openBlockSettingsTab( page );
-		await enableRequiredField( page );
-
+		// GDPR is always required (hardcoded in GDPR_Markup constructor — no toggle).
 		const formURL = await publishFormAndGetURL( page );
 		await page.goto( formURL );
 		await page.waitForLoadState( 'load' );

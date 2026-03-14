@@ -46,8 +46,6 @@ test.describe( 'Entries management', () => {
 			: '/wp-admin/admin.php?page=sureforms_entries';
 		await page.goto( entriesURL );
 		await page.waitForLoadState( 'load' );
-		// Allow the React app to fetch and render the entries list.
-		await page.waitForTimeout( 2500 );
 
 		// The unique value should appear somewhere in the entries table.
 		await expect(
@@ -85,17 +83,16 @@ test.describe( 'Entries management', () => {
 			: '/wp-admin/admin.php?page=sureforms_entries';
 		await page.goto( entriesURL );
 		await page.waitForLoadState( 'load' );
-		await page.waitForTimeout( 2500 );
 
-		// Click the first (most recent) entry row to open its detail view.
+		// Click the entry ID link in the row that contains our submitted text.
+		// The entries table renders clickable "#ID" links: href="#/entry/{id}".
 		const entryRow = page.locator( 'tr, [role="row"]' )
 			.filter( { hasText: textValue } )
 			.first();
 		await expect( entryRow ).toBeVisible( { timeout: 10000 } );
-		await entryRow.click();
-
-		// Wait for the detail page / panel to load.
-		await page.waitForTimeout( 1500 );
+		// Click the entry link (the "#ID" cell) to open the detail view.
+		const entryLink = entryRow.locator( 'a[href*="#/entry/"]' ).first();
+		await entryLink.click();
 
 		// Both submitted values should be visible in the entry detail.
 		await expect(

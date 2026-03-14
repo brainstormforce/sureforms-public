@@ -12,6 +12,8 @@ const { defineConfig, devices } = require( '@playwright/test' );
  */
 module.exports = defineConfig( {
 	testDir: './tests/play/specs',
+	// Log in once before any worker starts; all workers reuse the saved cookies.
+	globalSetup: './tests/play/global-setup.js',
 	/* Fail the build on CI if you accidentally left test.only in the source code. */
 	forbidOnly: !! process.env.CI,
 	// Each test creates its own isolated form — safe to run in parallel.
@@ -48,6 +50,8 @@ module.exports = defineConfig( {
 		headless: true,
 		ignoreHTTPSErrors: true,
 		browserName: 'chromium',
+		// Restore the shared auth state logged in during globalSetup.
+		storageState: 'tests/play/storageState.json',
 	},
 	/* Configure projects for major browsers */
 	projects: [

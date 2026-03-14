@@ -48,6 +48,7 @@ coverage-report
 
 # playwright
 tests/play/test-results/*
+tests/play/storageState.json
 playwright-report/*
 
 # Claude Code local settings
