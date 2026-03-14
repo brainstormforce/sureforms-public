@@ -21,7 +21,7 @@ module.exports = defineConfig( {
 	/* Maximum time one test can run for. */
 	timeout: 170 * 1000,
 	/* Reporter to use. See https://playwright.dev/docs/test-reporters */
-	reporter: [ [ 'html', { open: 'never' } ] ],
+	reporter: [ [ 'html', { open: 'never' } ], [ 'line' ] ],
 	/* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
 	expect: {
 		/**

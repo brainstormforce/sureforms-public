@@ -88,7 +88,7 @@ jobs:
           fi
 
       - name: Run Playwright E2E tests
-        run: npx playwright test --config=playwright.config.js --reporter=html,line
+        run: npx playwright test --config=playwright.config.js
         env:
           CI: true
           WP_ADMIN_USER: admin
@@ -101,6 +101,7 @@ jobs:
           name: playwright-report-${{ github.event.pull_request.number }}
           path: playwright-report/
           retention-days: 14
+          if-no-files-found: ignore
 
       - name: Comment on PR
         if: always()
