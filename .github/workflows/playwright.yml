@@ -78,17 +78,14 @@ jobs:
           echo "WordPress did not become ready in time"
           exit 1
 
-      - name: Fix Apache AllowOverride (required for WordPress REST API / pretty permalinks)
+      - name: Verify WordPress REST API is reachable
         run: |
-          CONTAINER=$(docker ps --format '{{.Names}}' | grep -E 'wordpress-1$' | grep -v 'tests-' | head -1)
-          echo "WordPress container: $CONTAINER"
-          docker exec "$CONTAINER" bash -c "
-            printf '<Directory /var/www/html>\n  AllowOverride All\n</Directory>\n' > /etc/apache2/conf-enabled/wp-override.conf
-            kill -HUP \$(cat /var/run/apache2/apache2.pid 2>/dev/null || echo 1) 2>/dev/null || true
-          "
-          sleep 2
           STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8888/wp-json/)
-          echo "REST API status after Apache fix: $STATUS"
+          echo "REST API status: $STATUS"
+          if [ "$STATUS" != "200" ]; then
+            echo "REST API not reachable — check .htaccess and Apache config"
+            exit 1
+          fi
 
       - name: Run Playwright E2E tests
         run: npx playwright test --config=playwright.config.js --reporter=html,line
