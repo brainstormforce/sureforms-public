@@ -14,9 +14,8 @@ module.exports = defineConfig( {
 	testDir: './tests/play/specs',
 	/* Fail the build on CI if you accidentally left test.only in the source code. */
 	forbidOnly: !! process.env.CI,
-	fullyParallel: true,
-	/* Opt out of parallel tests on CI. */
-	workers: process.env.CI ? 1 : undefined,
+	fullyParallel: false,
+	workers: 1,
 	/* Retry on CI only */
 	retries: process.env.CI ? 2 : 0,
 	/* Maximum time one test can run for. */
@@ -41,6 +40,7 @@ module.exports = defineConfig( {
 
 		/* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
 		trace: 'retain-on-failure',
+		screenshot: 'only-on-failure',
 		baseURL: 'http://localhost:8888/',
 		headless: true,
 		ignoreHTTPSErrors: true,
