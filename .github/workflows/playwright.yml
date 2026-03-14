@@ -46,7 +46,7 @@ jobs:
           key: build-${{ hashFiles('src/**', 'sass/**', 'webpack.config.js', 'package-lock.json') }}
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --legacy-peer-deps
 
       - name: Build plugin assets
         if: steps.build-cache.outputs.cache-hit != 'true'
