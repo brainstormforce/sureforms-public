@@ -50,6 +50,7 @@ coverage-report
 tests/play/test-results/*
 tests/play/storageState.json
 playwright-report/*
+blob-report/*
 
 # Claude Code local settings
 .claude/settings.local.json

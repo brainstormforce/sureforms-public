@@ -17,16 +17,20 @@ module.exports = defineConfig( {
 	/* Fail the build on CI if you accidentally left test.only in the source code. */
 	forbidOnly: !! process.env.CI,
 	// Each test creates its own isolated form — safe to run in parallel.
-	// CI: 2 workers (constrained by Docker resources on ubuntu-latest).
+	// CI: 1 worker per shard (parallelism comes from the 4-shard matrix).
 	// Local: 4 workers for faster feedback.
 	fullyParallel: true,
-	workers: process.env.CI ? 2 : 4,
+	workers: process.env.CI ? 1 : 4,
 	/* Retry on CI only */
 	retries: process.env.CI ? 2 : 0,
 	/* Maximum time one test can run for. */
 	timeout: 170 * 1000,
 	/* Reporter to use. See https://playwright.dev/docs/test-reporters */
-	reporter: [ [ 'html', { open: 'never' } ], [ 'line' ] ],
+	// CI: blob reporter per shard — merged into one HTML report by merge-reports job.
+	// Local: HTML + line for immediate feedback.
+	reporter: process.env.CI
+		? [ [ 'blob' ], [ 'line' ] ]
+		: [ [ 'html', { open: 'never' } ], [ 'line' ] ],
 	/* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
 	expect: {
 		/**
