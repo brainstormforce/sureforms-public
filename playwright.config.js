@@ -14,8 +14,11 @@ module.exports = defineConfig( {
 	testDir: './tests/play/specs',
 	/* Fail the build on CI if you accidentally left test.only in the source code. */
 	forbidOnly: !! process.env.CI,
-	fullyParallel: false,
-	workers: 1,
+	// Each test creates its own isolated form — safe to run in parallel.
+	// CI: 2 workers (constrained by Docker resources on ubuntu-latest).
+	// Local: 4 workers for faster feedback.
+	fullyParallel: true,
+	workers: process.env.CI ? 2 : 4,
 	/* Retry on CI only */
 	retries: process.env.CI ? 2 : 0,
 	/* Maximum time one test can run for. */
