@@ -3,6 +3,12 @@ name: Playwright E2E Tests
 on:
   pull_request:
     types: [ labeled ]
+  workflow_dispatch:
+    inputs:
+      clean_env:
+        description: 'Run env:clean before starting (full DB wipe — use when env is broken)'
+        type: boolean
+        default: false
 
 concurrency:
   group: playwright-${{ github.head_ref }}
@@ -11,7 +17,7 @@ concurrency:
 jobs:
   playwright:
     name: Playwright E2E Suite
-    if: github.event.label.name == 'e2e'
+    if: github.event_name == 'workflow_dispatch' || github.event.label.name == 'e2e'
     runs-on: ubuntu-latest
     timeout-minutes: 60
 
@@ -24,28 +30,31 @@ jobs:
         with:
           node-version: '18.15.0'
 
-      - name: Restore npm cache
+      - name: Restore node_modules cache
+        id: npm-cache
         uses: actions/cache@v4
         with:
-          path: ~/.npm
-          key: npm-${{ hashFiles('package-lock.json') }}
-          restore-keys: npm-
+          path: node_modules
+          key: node-modules-${{ hashFiles('package-lock.json') }}
 
       - name: Restore Playwright browser cache
-        uses: actions/cache@v4
         id: pw-cache
+        uses: actions/cache@v4
         with:
           path: ~/.cache/ms-playwright
-          key: playwright-chromium-${{ hashFiles('package-lock.json') }}
+          key: playwright-chromium-${{ hashFiles('node_modules/@playwright/test/package.json') }}
+          restore-keys: playwright-chromium-
 
       - name: Restore build cache
-        uses: actions/cache@v4
         id: build-cache
+        uses: actions/cache@v4
         with:
           path: assets/
-          key: build-${{ hashFiles('src/**', 'sass/**', 'webpack.config.js', 'package-lock.json') }}
+          key: build-${{ hashFiles('src/blocks/**', 'src/components/**', 'sass/**', 'webpack.config.js') }}
+          restore-keys: build-
 
       - name: Install dependencies
+        if: steps.npm-cache.outputs.cache-hit != 'true'
         run: npm ci --legacy-peer-deps
 
       - name: Build plugin assets
@@ -59,6 +68,10 @@ jobs:
       - name: Install Playwright system deps (cache hit)
         if: steps.pw-cache.outputs.cache-hit == 'true'
         run: npx playwright install-deps chromium
+
+      - name: Clean wp-env (on-demand only)
+        if: ${{ inputs.clean_env == true }}
+        run: npm run env:clean
 
       - name: Start wp-env
         run: npm run play:up:gh
@@ -98,13 +111,13 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-report-${{ github.event.pull_request.number }}
+          name: playwright-report-${{ github.event.pull_request.number || github.run_id }}
           path: playwright-report/
-          retention-days: 14
+          retention-days: 7
           if-no-files-found: ignore
 
       - name: Comment on PR
-        if: always()
+        if: always() && github.event_name == 'pull_request'
         uses: actions/github-script@v7
         with:
           script: |

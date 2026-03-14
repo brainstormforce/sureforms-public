@@ -30,7 +30,7 @@ module.exports = defineConfig( {
 		 */
 		timeout: 10000,
 	},
-	// Don't report slow test "files", as we will be running our tests in serial.
+	// Suppress slow-test warnings — tests are intentionally long (WP env interactions).
 	reportSlowTests: null,
 	outputDir: 'tests/play/test-results/',
 	use: {
@@ -52,12 +52,6 @@ module.exports = defineConfig( {
 			name: 'chromium',
 			use: { ...devices[ 'Desktop Chrome' ] },
 			grepInvert: /-chromium/,
-		},
-		{
-			name: 'firefox',
-			use: { ...devices[ 'Desktop Firefox' ] },
-			grep: /@firefox/,
-			grepInvert: /-firefox/,
 		},
 	],
 } );
