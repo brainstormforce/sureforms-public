@@ -2,9 +2,10 @@
  * E2E tests — Form lifecycle (P0).
  *
  * Covers:
- *   8.1 Duplicate form  — copy appears in the forms list with "(Copy)" suffix
- *   8.2 Trash form      — form disappears from the All Forms view
- *   8.3 Restore form    — form reappears in All Forms after restore from Trash
+ *   12.1 Duplicate form         — copy appears in the forms list with "(Copy)" suffix
+ *   12.2 Trash form             — form disappears from the All Forms view
+ *   12.3 Restore form           — form reappears in All Forms after restore from Trash
+ *   12.4 Delete permanently     — form is fully removed from Trash and All Forms
  *
  * ── Forms list UI architecture ────────────────────────────────────────────────
  *
@@ -165,7 +166,7 @@ test.describe( 'Form lifecycle', () => {
 		await loginAsAdmin( page );
 	} );
 
-	// ── 8.1 Duplicate form ────────────────────────────────────────────────────
+	// ── 12.1 Duplicate form ───────────────────────────────────────────────────
 	test( 'duplicate form — copy appears in forms list with "(Copy)" suffix', async ( { page } ) => {
 		await createBlankForm( page );
 
@@ -192,7 +193,7 @@ test.describe( 'Form lifecycle', () => {
 		await expect( getFormRow( page, copyTitle ) ).toBeVisible( { timeout: 15000 } );
 	} );
 
-	// ── 8.2 Trash form ────────────────────────────────────────────────────────
+	// ── 12.2 Trash form ───────────────────────────────────────────────────────
 	test( 'trash form — form disappears from All Forms view', async ( { page } ) => {
 		await createBlankForm( page );
 
@@ -216,7 +217,7 @@ test.describe( 'Form lifecycle', () => {
 		await expect( getFormRow( page, title ) ).not.toBeVisible( { timeout: 15000 } );
 	} );
 
-	// ── 8.3 Restore form ─────────────────────────────────────────────────────
+	// ── 12.3 Restore form ────────────────────────────────────────────────────
 	test( 'restore form — form reappears in All Forms view after restore from Trash', async ( { page } ) => {
 		await createBlankForm( page );
 
@@ -260,5 +261,62 @@ test.describe( 'Form lifecycle', () => {
 		// Switch back to All Forms and confirm the form is visible again.
 		await setStatusFilter( page, 'All Forms' );
 		await expect( getFormRow( page, title ) ).toBeVisible( { timeout: 15000 } );
+	} );
+
+	// ── 12.4 Delete permanently ───────────────────────────────────────────────
+	test( 'delete permanently — form is fully removed from Trash and All Forms', async ( { page } ) => {
+		await createBlankForm( page );
+
+		const title = `Lifecycle Delete ${ Date.now() }`;
+		await setFormTitle( page, title );
+		await addFieldBlock( page, 'input' );
+		await publishFormAndGetURL( page );
+
+		// Extract form ID from the editor URL so we can trash via REST API.
+		const formId = page.url().match( /[?&]post=(\d+)/ )?.[ 1 ];
+		if ( ! formId ) {
+			throw new Error( 'Could not extract form ID from editor URL: ' + page.url() );
+		}
+
+		// Trash the form via REST API — same pattern as the restore test.
+		// WP REST DELETE without ?force=true moves to trash.
+		await page.evaluate( async ( id ) => {
+			const nonce = window.wpApiSettings?.nonce ?? '';
+			await fetch( `/wp-json/wp/v2/sureforms_form/${ id }`, {
+				method: 'DELETE',
+				headers: { 'X-WP-Nonce': nonce },
+			} );
+		}, formId );
+
+		// Navigate to forms list and switch to the Trash filter.
+		await goToFormsList( page );
+		await setStatusFilter( page, 'Trash' );
+
+		// Confirm the trashed form appears.
+		await expect( getFormRow( page, title ) ).toBeVisible( { timeout: 15000 } );
+
+		// Click Delete Permanently (TRASH_ACTION.DELETE_PERMANENTLY = button index 2).
+		await clickRowAction( page, title, TRASH_ACTION.DELETE_PERMANENTLY );
+
+		// The "Delete Permanently" dialog requires typing "delete" as a text
+		// confirmation before the action fires — unlike Duplicate / Move to Trash
+		// which only need a single button click.
+		const deleteInput = page
+			.locator( '[role="dialog"]' )
+			.filter( { has: page.getByRole( 'button', { name: 'Delete Permanently', exact: true } ) } )
+			.getByRole( 'textbox' );
+		await expect( deleteInput ).toBeVisible( { timeout: 10000 } );
+		await deleteInput.fill( 'delete' );
+
+		const deleteBtn = page.getByRole( 'button', { name: 'Delete Permanently', exact: true } );
+		await deleteBtn.click();
+		await expect( deleteBtn ).not.toBeVisible( { timeout: 15000 } );
+
+		// The row must disappear from the Trash view.
+		await expect( getFormRow( page, title ) ).not.toBeVisible( { timeout: 15000 } );
+
+		// Switch to All Forms — the permanently deleted form must not appear there.
+		await setStatusFilter( page, 'All Forms' );
+		await expect( getFormRow( page, title ) ).not.toBeVisible( { timeout: 10000 } );
 	} );
 } );

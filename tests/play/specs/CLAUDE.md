@@ -231,6 +231,14 @@ Local runs use 4 workers with a single `globalSetup`.
   - Active form button order: EntriesCount(0) · View(1) · Export(2) · Duplicate(3) · Trash(4)
   - Trashed form button order: EntriesCount(0) · Restore(1) · Delete Permanently(2)
 - Duplicate and Trash open a `[role="dialog"]` ConfirmationDialog. Restore fires immediately (no dialog).
+- **Delete Permanently** opens a special dialog that requires typing `"delete"` in a textbox before the button fires — unlike Duplicate/Trash which only need a button click:
+  ```js
+  const input = page.locator('[role="dialog"]')
+    .filter({ has: page.getByRole('button', { name: 'Delete Permanently', exact: true }) })
+    .getByRole('textbox');
+  await input.fill('delete');
+  await page.getByRole('button', { name: 'Delete Permanently', exact: true }).click();
+  ```
 - Status filter is a `@bsf/force-ui` Select. Click the button showing the current label → options appear as `[role="option"]` or `<li>` in a portal.
 - Confirmation dialog confirm button text matches the action: `"Duplicate"`, `"Move to Trash"`, `"Delete Permanently"`.
 
