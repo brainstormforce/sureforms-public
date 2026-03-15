@@ -95,6 +95,16 @@ class Generate_Form_Markup {
 			return Form_Restriction::display_form_restriction_message( $form_id );
 		}
 
+		// In form preview context (editor iframe), read formTheme from URL so downstream,
+		// hooks can skip post-meta CSS output for non-inherit themes.
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Preview context, nonce not required.
+		if ( empty( $block_attrs['formTheme'] ) && isset( $_GET['form_preview'] ) && 'true' === $_GET['form_preview'] && isset( $_GET['formTheme'] ) ) {
+			$preview_theme = sanitize_text_field( wp_unslash( $_GET['formTheme'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			if ( in_array( $preview_theme, [ 'inherit', 'default', 'modern', 'classic', 'custom' ], true ) ) {
+				$block_attrs['formTheme'] = $preview_theme;
+			}
+		}
+
 		// Store block_attrs for child blocks (like inline button) to access.
 		self::$current_block_attrs = $block_attrs;
 
@@ -800,15 +810,17 @@ class Generate_Form_Markup {
 	 * @return void
 	 */
 	public static function enqueue_preview_styling_script( $container_id ) {
-		$file_prefix = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? '' : '.min';
-		$dir_name    = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? 'unminified' : 'minified';
-		$js_uri      = SRFM_URL . 'assets/js/' . $dir_name . '/';
+		$script_asset_path = SRFM_DIR . 'assets/build/previewStyling.asset.php';
+		$script_asset      = file_exists( $script_asset_path ) ? require $script_asset_path : [
+			'dependencies' => [],
+			'version'      => SRFM_VER,
+		];
 
 		wp_enqueue_script(
 			SRFM_SLUG . '-preview-styling',
-			$js_uri . 'preview-styling' . $file_prefix . '.js',
-			[],
-			SRFM_VER,
+			SRFM_URL . 'assets/build/previewStyling.js',
+			$script_asset['dependencies'],
+			$script_asset['version'],
 			true
 		);
 

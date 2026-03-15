@@ -187,7 +187,7 @@ export default ( { attributes, setAttributes, clientId } ) => {
 				modifyIframeContent();
 			};
 		}
-	}, [ id, iframeRef, hasResolved ] );
+	}, [ id, iframeRef, hasResolved, attributes.formTheme ] );
 
 	// Send styling updates to iframe via PostMessage
 	const sendStylingToIframe = useCallback( () => {
@@ -507,7 +507,7 @@ export default ( { attributes, setAttributes, clientId } ) => {
 							title="srfm-iframe"
 							src={
 								formUrl +
-								`?preview_id=${ id }&preview=true&form_preview=true`
+								`?preview_id=${ id }&preview=true&form_preview=true&formTheme=${ encodeURIComponent( attributes.formTheme || 'inherit' ) }`
 							}
 							width={ '100%' }
 						/>
