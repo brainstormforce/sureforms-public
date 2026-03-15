@@ -6,6 +6,7 @@
  *   4.2 Entry detail contains the correct submitted field values
  *   4.3 Bulk delete removes selected entries
  *   4.4 CSV export downloads a file
+ *   4.5 Entry read/unread — clicking entry detail marks the entry as read
  */
 
 const { test, expect } = require( '@playwright/test' );
@@ -221,5 +222,69 @@ test.describe( 'Entries management', () => {
 		] );
 
 		expect( download.suggestedFilename() ).toMatch( /\.(csv|zip)$/i );
+	} );
+
+	// ── 4.5 Entry read/unread status ──────────────────────────────────────────
+	test( 'entry read/unread — clicking entry detail marks the entry as read', async ( { page } ) => {
+		await createBlankForm( page );
+		await addFieldBlock( page, 'input' );
+
+		const formURL = await publishFormAndGetURL( page );
+
+		const editorURL = page.url();
+		const formIdMatch = editorURL.match( /[?&]post=(\d+)/ );
+		const formId = formIdMatch ? formIdMatch[ 1 ] : null;
+
+		// Submit the form — entries are created with 'unread' status by default.
+		await page.goto( formURL );
+		await page.waitForLoadState( 'load' );
+
+		const uniqueValue = `ReadTest-${ Date.now() }`;
+		await page.locator( 'input.srfm-input-input' ).first().fill( uniqueValue );
+		await page.locator( '#srfm-submit-btn' ).click();
+		await expect( page.locator( '.srfm-success-box' ) ).toBeVisible( { timeout: 15000 } );
+
+		// Go to the entries list filtered by this form.
+		const entriesURL = formId
+			? `/wp-admin/admin.php?page=sureforms_entries#/?form=${ formId }`
+			: '/wp-admin/admin.php?page=sureforms_entries';
+		await page.goto( entriesURL );
+		await page.waitForLoadState( 'load' );
+
+		// Wait for real data rows (not skeleton rows).
+		await expect(
+			page.locator( 'tbody tr a[href*="#/entry/"]' ).first()
+		).toBeVisible( { timeout: 10000 } );
+
+		// The entry row should display an "Unread" status badge.
+		const entryRow = page.locator( 'tr, [role="row"]' )
+			.filter( { hasText: uniqueValue } )
+			.first();
+		await expect( entryRow ).toBeVisible( { timeout: 10000 } );
+		await expect( entryRow.getByText( 'Unread' ) ).toBeVisible( { timeout: 5000 } );
+
+		// Click the entry ID link. When the entry is unread, SureForms appends
+		// ?read=true to the href, which triggers the read-status API call when
+		// the entry detail component mounts.
+		await entryRow.locator( 'a[href*="#/entry/"]' ).first().click();
+
+		// Wait for all network requests to settle — this ensures the read-status
+		// PATCH request completes before we navigate away to reload the list.
+		await page.waitForLoadState( 'networkidle', { timeout: 15000 } );
+
+		// Navigate back to the entries list (full page reload to get fresh data).
+		await page.goto( entriesURL );
+		await page.waitForLoadState( 'load' );
+		await expect(
+			page.locator( 'tbody tr a[href*="#/entry/"]' ).first()
+		).toBeVisible( { timeout: 10000 } );
+
+		// The entry should now show "Read" status.
+		// Use exact: true to avoid matching "Unread" (which contains "Read").
+		const updatedRow = page.locator( 'tr, [role="row"]' )
+			.filter( { hasText: uniqueValue } )
+			.first();
+		await expect( updatedRow ).toBeVisible( { timeout: 10000 } );
+		await expect( updatedRow.getByText( 'Read', { exact: true } ) ).toBeVisible( { timeout: 10000 } );
 	} );
 } );

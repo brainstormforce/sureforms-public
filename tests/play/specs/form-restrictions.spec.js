@@ -139,4 +139,51 @@ test.describe( 'Form restrictions', () => {
 			page.locator( '.srfm-form-restriction-text' )
 		).toContainText( 'The submission period has ended' );
 	} );
+
+	// ── 11.3 Scheduling — restriction message when schedule has not started ───
+	test( 'scheduling — form shows restriction message when schedule has not started yet', async ( { page } ) => {
+		await createBlankForm( page );
+		await addFieldBlock( page, 'input' );
+
+		// Set a scheduling window with a start date far in the future.
+		// The restriction check is performed at render time — the form loads
+		// already closed with the "not started" message.
+		await page.evaluate( () => {
+			window.wp.data.dispatch( 'core/editor' ).editPost( {
+				meta: {
+					_srfm_form_restriction: JSON.stringify( {
+						status: false,
+						maxEntries: 0,
+						message: '',
+						date: '2099-12-31',
+						hours: '11',
+						minutes: '59',
+						meridiem: 'PM',
+						schedulingStatus: true,
+						startDate: '2099-12-30',
+						startHours: '12',
+						startMinutes: '00',
+						startMeridiem: 'AM',
+						schedulingNotStartedMessage: 'This form is not yet available.',
+						schedulingEndedMessage: 'This form is closed.',
+					} ),
+				},
+			} );
+		} );
+
+		const formURL = await publishFormAndGetURL( page );
+
+		// Navigate to the form — it should immediately show the "not started"
+		// restriction message because the start date is in the future.
+		await page.goto( formURL );
+		await page.waitForLoadState( 'load' );
+
+		await expect(
+			page.locator( '.srfm-form-restriction-message' )
+		).toBeVisible( { timeout: 10000 } );
+
+		await expect(
+			page.locator( '.srfm-form-restriction-text' )
+		).toContainText( 'not yet available' );
+	} );
 } );

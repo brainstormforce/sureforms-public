@@ -9,6 +9,7 @@
  *   - Email confirmation mismatch / match
  *   - URL format validation
  *   - Number min / max bounds
+ *   - Required: single-line input, email, phone, textarea
  *   - Required: checkbox, GDPR, dropdown, multi-choice
  */
 
@@ -175,6 +176,94 @@ test.describe( 'Field validation', () => {
 
 		await expect( page.locator( '.srfm-number-block .srfm-error-wrap' ).first() )
 			.toBeVisible( { timeout: 10000 } );
+		await expect( page.locator( '.srfm-success-box' ) ).not.toBeVisible();
+	} );
+
+	// ── 2.7 Required single-line input — submit empty ────────────────────────
+	test( 'required input — submit empty shows error', async ( { page } ) => {
+		await createBlankForm( page );
+		await addFieldBlock( page, 'input' );
+
+		await page.locator( '.wp-block[data-type="srfm/input"]' ).click();
+		await openBlockSettingsTab( page );
+		await enableRequiredField( page );
+
+		const formURL = await publishFormAndGetURL( page );
+		await page.goto( formURL );
+		await page.waitForLoadState( 'load' );
+
+		// Submit without filling the field.
+		await page.locator( '#srfm-submit-btn' ).click();
+
+		await expect(
+			page.locator( '.srfm-input-block .srfm-error-wrap' ).first()
+		).toBeVisible( { timeout: 10000 } );
+		await expect( page.locator( '.srfm-success-box' ) ).not.toBeVisible();
+	} );
+
+	// ── 2.8 Required email — submit empty ────────────────────────────────────
+	test( 'required email — submit empty shows error', async ( { page } ) => {
+		await createBlankForm( page );
+		await addFieldBlock( page, 'email' );
+
+		await page.locator( '.wp-block[data-type="srfm/email"]' ).click();
+		await openBlockSettingsTab( page );
+		await enableRequiredField( page );
+
+		const formURL = await publishFormAndGetURL( page );
+		await page.goto( formURL );
+		await page.waitForLoadState( 'load' );
+
+		// Submit without filling the field.
+		await page.locator( '#srfm-submit-btn' ).click();
+
+		await expect(
+			page.locator( '.srfm-email-block .srfm-error-wrap' ).first()
+		).toBeVisible( { timeout: 10000 } );
+		await expect( page.locator( '.srfm-success-box' ) ).not.toBeVisible();
+	} );
+
+	// ── 2.9 Required phone — submit empty ────────────────────────────────────
+	test( 'required phone — submit empty shows error', async ( { page } ) => {
+		await createBlankForm( page );
+		await addFieldBlock( page, 'phone' );
+
+		await page.locator( '.wp-block[data-type="srfm/phone"]' ).click();
+		await openBlockSettingsTab( page );
+		await enableRequiredField( page );
+
+		const formURL = await publishFormAndGetURL( page );
+		await page.goto( formURL );
+		await page.waitForLoadState( 'load' );
+
+		// Submit without filling the field.
+		await page.locator( '#srfm-submit-btn' ).click();
+
+		await expect(
+			page.locator( '.srfm-phone-block .srfm-error-wrap' ).first()
+		).toBeVisible( { timeout: 10000 } );
+		await expect( page.locator( '.srfm-success-box' ) ).not.toBeVisible();
+	} );
+
+	// ── 2.10 Required textarea — submit empty ─────────────────────────────────
+	test( 'required textarea — submit empty shows error', async ( { page } ) => {
+		await createBlankForm( page );
+		await addFieldBlock( page, 'textarea' );
+
+		await page.locator( '.wp-block[data-type="srfm/textarea"]' ).click();
+		await openBlockSettingsTab( page );
+		await enableRequiredField( page );
+
+		const formURL = await publishFormAndGetURL( page );
+		await page.goto( formURL );
+		await page.waitForLoadState( 'load' );
+
+		// Submit without filling the field.
+		await page.locator( '#srfm-submit-btn' ).click();
+
+		await expect(
+			page.locator( '.srfm-textarea-block .srfm-error-wrap' ).first()
+		).toBeVisible( { timeout: 10000 } );
 		await expect( page.locator( '.srfm-success-box' ) ).not.toBeVisible();
 	} );
 

@@ -3,7 +3,7 @@
 Track progress for all Playwright test cases.
 **Update this file every time a test is added or a test ID changes.**
 
-Last updated: 2026-03-15
+Last updated: 2026-03-16
 Branch convention: `test/e2e-p{N}-test-cases`
 
 ---
@@ -59,10 +59,10 @@ All tests live in `field-validation.spec.js`.
 | 2.4  | URL — invalid format shows error | ✅ | field-validation.spec.js |
 | 2.5  | Number — value below minimum shows error | ✅ | field-validation.spec.js |
 | 2.6  | Number — value above maximum shows error | ✅ | field-validation.spec.js |
-| 2.7  | Required single-line input — submit empty shows error | ❌ | — |
-| 2.8  | Required email — submit empty shows error | ❌ | — |
-| 2.9  | Required phone — submit empty shows error | ❌ | — |
-| 2.10 | Required textarea — submit empty shows error | ❌ | — |
+| 2.7  | Required single-line input — submit empty shows error | ✅ | field-validation.spec.js |
+| 2.8  | Required email — submit empty shows error | ✅ | field-validation.spec.js |
+| 2.9  | Required phone — submit empty shows error | ✅ | field-validation.spec.js |
+| 2.10 | Required textarea — submit empty shows error | ✅ | field-validation.spec.js |
 | 2.11 | Required checkbox — submit unchecked shows error | ✅ | field-validation.spec.js |
 | 2.12 | Required GDPR — submit without consent shows error | ✅ | field-validation.spec.js |
 | 2.13 | Required dropdown — submit without selection shows error | ✅ | field-validation.spec.js |
@@ -82,7 +82,7 @@ All tests live in `form-settings.spec.js`.
 | 3.3 | Store entries disabled — submission succeeds but no entry stored | ✅ | form-settings.spec.js |
 | 3.4 | Page confirmation type — redirect to a configured WordPress page | ✅ | form-settings.spec.js |
 | 3.5 | Store entries enabled (default) — entry appears in admin after submit | ✅ | form-settings.spec.js |
-| 3.6 | Per-form GDPR compliance: do-not-store-entries enabled → no entry created | ❌ | — |
+| 3.6 | Per-form GDPR compliance: do-not-store-entries enabled → no entry created | ✅ | form-settings.spec.js (covered by 3.3) |
 | 3.7 | Per-form compliance: auto-delete setting saves and is visible in editor | ❌ | — |
 
 ---
@@ -97,7 +97,7 @@ All tests live in `entries.spec.js`.
 | 4.2 | Entry detail contains the correct submitted field values | ✅ | entries.spec.js |
 | 4.3 | Bulk delete removes selected entries | ✅ | entries.spec.js |
 | 4.4 | CSV export downloads a file | ✅ | entries.spec.js |
-| 4.5 | Mark entry as read / unread — status updates in the admin list | ❌ | — |
+| 4.5 | Mark entry as read / unread — status updates in the admin list | ✅ | entries.spec.js |
 
 ---
 
@@ -187,7 +187,7 @@ All tests live in `form-restrictions.spec.js`.
 |------|-----------|--------|-----------|
 | 11.1 | Entry limit — form shows restriction message after limit reached | ✅ | form-restrictions.spec.js |
 | 11.2 | Scheduling — restriction message shown when schedule has ended | ✅ | form-restrictions.spec.js |
-| 11.3 | Scheduling — restriction message shown when schedule has not started yet | ❌ | — |
+| 11.3 | Scheduling — restriction message shown when schedule has not started yet | ✅ | form-restrictions.spec.js |
 
 ---
 
@@ -195,16 +195,14 @@ All tests live in `form-restrictions.spec.js`.
 
 All tests live in `form-lifecycle.spec.js`.
 
-> **⚠️ Renaming note:** The current spec uses IDs `8.1–8.3` which conflicts with
-> payments (also `8.x`). Update the comments in `form-lifecycle.spec.js` to use
-> `12.x` when convenient.
+> **✅ Renaming done:** Comments in `form-lifecycle.spec.js` updated from `8.x` to `12.x`.
 
 | ID   | Test case | Status | Spec file |
 |------|-----------|--------|-----------|
-| 12.1 | Duplicate form — copy appears in forms list with "(Copy)" suffix | ✅ 🔢 | form-lifecycle.spec.js |
-| 12.2 | Trash form — form disappears from All Forms view | ✅ 🔢 | form-lifecycle.spec.js |
-| 12.3 | Restore form — form reappears in All Forms view after restore from Trash | ✅ 🔢 | form-lifecycle.spec.js |
-| 12.4 | Delete permanently — form is fully removed and not restorable | ❌ | — |
+| 12.1 | Duplicate form — copy appears in forms list with "(Copy)" suffix | ✅ | form-lifecycle.spec.js |
+| 12.2 | Trash form — form disappears from All Forms view | ✅ | form-lifecycle.spec.js |
+| 12.3 | Restore form — form reappears in All Forms view after restore from Trash | ✅ | form-lifecycle.spec.js |
+| 12.4 | Delete permanently — form is fully removed and not restorable | ✅ | form-lifecycle.spec.js |
 
 ---
 
@@ -226,12 +224,12 @@ Work these in priority order — top of each section first:
 
 ### Next up (P1 — no external dependencies)
 
-- [ ] **11.3** Scheduling not-started-yet (mirrors 11.2, swap dates)
-- [ ] **12.4** Delete permanently from trash (button constant already defined)
-- [ ] **2.7–2.10** Required validation for remaining field types
-- [ ] **2.15** Character limit validation
-- [ ] **4.5** Entry read/unread status toggle
-- [ ] **3.6** Per-form do-not-store-entries compliance
+- [x] **11.3** Scheduling not-started-yet *(done — form-restrictions.spec.js)*
+- [x] **12.4** Delete permanently from trash *(done — form-lifecycle.spec.js)*
+- [x] **2.7–2.10** Required validation for remaining field types *(done — field-validation.spec.js)*
+- [x] **4.5** Entry read/unread status toggle *(done — entries.spec.js)*
+- [x] **3.6** Per-form do-not-store-entries compliance *(already covered by test 3.3)*
+- [ ] **2.15** Character limit — low E2E value (browser `maxlength` attribute, no server-side check); defer unless a custom error message is confirmed
 
 ### Later (P2 — needs infra or API keys, use skip pattern)
 
