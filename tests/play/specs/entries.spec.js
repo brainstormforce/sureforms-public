@@ -4,6 +4,8 @@
  * Covers:
  *   4.1 Entry is created after a form submission and appears in the entries list
  *   4.2 Entry detail contains the correct submitted field values
+ *   4.3 Bulk delete removes selected entries
+ *   4.4 CSV export downloads a file
  */
 
 const { test, expect } = require( '@playwright/test' );
@@ -102,5 +104,122 @@ test.describe( 'Entries management', () => {
 		await expect(
 			page.locator( 'body' ).getByText( emailValue ).first()
 		).toBeVisible( { timeout: 10000 } );
+	} );
+
+	// ── 4.3 Bulk delete removes entries from the list ─────────────────────────
+	test( 'bulk delete removes entries from the list', async ( { page } ) => {
+		await createBlankForm( page );
+		await addFieldBlock( page, 'input' );
+
+		const formURL = await publishFormAndGetURL( page );
+
+		const editorURL = page.url();
+		const formIdMatch = editorURL.match( /[?&]post=(\d+)/ );
+		const formId = formIdMatch ? formIdMatch[ 1 ] : null;
+
+		// Submit the form twice so there are multiple entries to bulk-delete.
+		const ts = Date.now();
+		for ( let i = 0; i < 2; i++ ) {
+			await page.goto( formURL );
+			await page.waitForLoadState( 'load' );
+			await page.locator( 'input.srfm-input-input' ).first().fill( `BulkDel-${ i }-${ ts }` );
+			await page.locator( '#srfm-submit-btn' ).click();
+			await expect( page.locator( '.srfm-success-box' ) ).toBeVisible( { timeout: 15000 } );
+		}
+
+		// Navigate to the entries page filtered by this form.
+		const entriesURL = formId
+			? `/wp-admin/admin.php?page=sureforms_entries#/?form=${ formId }`
+			: '/wp-admin/admin.php?page=sureforms_entries';
+		await page.goto( entriesURL );
+		await page.waitForLoadState( 'load' );
+
+		// Wait for a real data row to appear (not just skeleton rows).
+		// Skeleton rows are also <tr> elements, so we wait for an actual entry link.
+		await expect( page.locator( 'tbody tr a[href*="#/entry/"]' ).first() ).toBeVisible( { timeout: 10000 } );
+
+		// Select all entries using the thead checkbox.
+		await page.locator( 'thead input[type="checkbox"]' ).first().click();
+
+		// Wait for the bulk action bar to appear, then click Delete.
+		await expect(
+			page.getByRole( 'button', { name: /^Delete$/i } ).first()
+		).toBeVisible( { timeout: 10000 } );
+		await page.getByRole( 'button', { name: /^Delete$/i } ).first().click();
+
+		// Confirm in the confirmation dialog.
+		// Non-trashed entries show "Move to Trash" as the confirm label.
+		// There are multiple [role="dialog"] elements on the page so we target
+		// the confirm button directly to avoid strict-mode violations.
+		const confirmBtn = page.getByRole( 'button', { name: /Move to Trash/i } );
+		await expect( confirmBtn ).toBeVisible( { timeout: 5000 } );
+		await confirmBtn.click();
+
+		// Wait for the dialog to close.
+		await expect( confirmBtn ).not.toBeVisible( { timeout: 10000 } );
+
+		// All entry rows should be gone (moved to trash, hidden from default "all" view).
+		await expect( page.locator( 'tbody tr' ) ).toHaveCount( 0, { timeout: 10000 } );
+	} );
+
+	// ── 4.4 CSV export downloads a file ───────────────────────────────────────
+	test( 'CSV export downloads a file', async ( { page } ) => {
+		await createBlankForm( page );
+		await addFieldBlock( page, 'input' );
+
+		const formURL = await publishFormAndGetURL( page );
+
+		const editorURL = page.url();
+		const formIdMatch = editorURL.match( /[?&]post=(\d+)/ );
+		const formId = formIdMatch ? formIdMatch[ 1 ] : null;
+
+		// Submit once so there is an entry to export.
+		await page.goto( formURL );
+		await page.waitForLoadState( 'load' );
+		const uniqueVal = `CsvExport-${ Date.now() }`;
+		await page.locator( 'input.srfm-input-input' ).first().fill( uniqueVal );
+		await page.locator( '#srfm-submit-btn' ).click();
+		await expect( page.locator( '.srfm-success-box' ) ).toBeVisible( { timeout: 15000 } );
+
+		// Navigate to the entries page.
+		const entriesURL = formId
+			? `/wp-admin/admin.php?page=sureforms_entries#/?form=${ formId }`
+			: '/wp-admin/admin.php?page=sureforms_entries';
+		await page.goto( entriesURL );
+		await page.waitForLoadState( 'load' );
+
+		// Wait for a real data row to appear (not just skeleton rows).
+		// Skeleton rows are also <tr> elements, so we wait for an actual entry link.
+		await expect( page.locator( 'tbody tr a[href*="#/entry/"]' ).first() ).toBeVisible( { timeout: 10000 } );
+
+		// Select all entries using the "Select all" aria-labeled checkbox in the header.
+		// Using getByRole is more reliable than the raw input selector for controlled checkboxes.
+		await page.getByRole( 'checkbox', { name: 'Select all' } ).click();
+
+		// The Export action lives inside a DropdownMenu (three-dot / MoreVertical icon
+		// button).  Wait for the Delete button to confirm the bulk-action bar is shown,
+		// then open the dropdown by clicking the aria-haspopup="menu" trigger button.
+		await expect(
+			page.getByRole( 'button', { name: /^Delete$/i } ).first()
+		).toBeVisible( { timeout: 10000 } );
+
+		// Click the MoreVertical ("...") icon button that triggers the dropdown.
+		// The DropdownMenu from @bsf/force-ui uses floating-ui's useRole({ role: "menu" })
+		// which sets aria-haspopup="menu" on the trigger button — the most stable selector.
+		await page.locator( 'button[aria-haspopup="menu"]' ).first().click();
+
+		// "Export Selected" appears in the dropdown when entries are selected.
+		await expect(
+			page.getByText( /Export Selected|Export All/i ).first()
+		).toBeVisible( { timeout: 5000 } );
+
+		// The export fires window.location.href → admin-ajax.php with
+		// Content-Disposition: attachment — Playwright fires the download event.
+		const [ download ] = await Promise.all( [
+			page.waitForEvent( 'download' ),
+			page.getByText( /Export Selected|Export All/i ).first().click(),
+		] );
+
+		expect( download.suggestedFilename() ).toMatch( /\.(csv|zip)$/i );
 	} );
 } );

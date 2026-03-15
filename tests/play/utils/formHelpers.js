@@ -261,6 +261,23 @@ async function createWPPage( page, title, content ) {
 	return result;
 }
 
+/**
+ * Set the Gutenberg post title via the editor data store.
+ *
+ * Using the UI title input is fragile because Gutenberg re-renders it on
+ * every keystroke and the caret can jump.  Dispatching `editPost` directly
+ * is the same operation the title input uses internally and is fully
+ * synchronous from Playwright's perspective.
+ *
+ * @param {import('@playwright/test').Page} page
+ * @param {string} title  The title to set on the current post.
+ */
+async function setFormTitle( page, title ) {
+	await page.evaluate( ( t ) => {
+		window.wp.data.dispatch( 'core/editor' ).editPost( { title: t } );
+	}, title );
+}
+
 module.exports = {
 	createBlankForm,
 	publishFormAndGetURL,
@@ -269,4 +286,5 @@ module.exports = {
 	enableRequiredField,
 	openFormSettingsDialog,
 	createWPPage,
+	setFormTitle,
 };
