@@ -2268,4 +2268,66 @@ class Test_Helper extends TestCase {
         $this->assertIsArray( $result );
     }
 
+    /**
+     * Test generate_unique_block_slug with a Latin label uses the label.
+     */
+    public function test_generate_unique_block_slug_latin_label() {
+        $block = [
+            'blockName' => 'srfm/input',
+            'attrs'     => [ 'label' => 'Full Name' ],
+        ];
+        $slug = Helper::generate_unique_block_slug( $block, [], '' );
+        $this->assertEquals( 'full-name', $slug );
+    }
+
+    /**
+     * Test generate_unique_block_slug with non-Latin label falls back to block name.
+     */
+    public function test_generate_unique_block_slug_non_latin_label() {
+        $block = [
+            'blockName' => 'srfm/input',
+            'attrs'     => [ 'label' => 'フリガナ' ],
+        ];
+        $slug = Helper::generate_unique_block_slug( $block, [], '' );
+        // Non-Latin label produces percent-encoded slug, so it should fall back to block name.
+        $this->assertStringNotContainsString( '%', $slug );
+        $this->assertEquals( 'input', $slug );
+    }
+
+    /**
+     * Test generate_unique_block_slug with non-Latin label and existing slugs appends counter.
+     */
+    public function test_generate_unique_block_slug_non_latin_duplicate() {
+        $block = [
+            'blockName' => 'srfm/input',
+            'attrs'     => [ 'label' => '名前' ],
+        ];
+        $slug = Helper::generate_unique_block_slug( $block, [ 'input' ], '' );
+        $this->assertEquals( 'input-1', $slug );
+    }
+
+    /**
+     * Test generate_unique_block_slug with empty label uses block name.
+     */
+    public function test_generate_unique_block_slug_empty_label() {
+        $block = [
+            'blockName' => 'srfm/email',
+            'attrs'     => [ 'label' => '' ],
+        ];
+        $slug = Helper::generate_unique_block_slug( $block, [], '' );
+        $this->assertEquals( 'srfmemail', $slug );
+    }
+
+    /**
+     * Test generate_unique_block_slug with prefix prepends it.
+     */
+    public function test_generate_unique_block_slug_with_prefix() {
+        $block = [
+            'blockName' => 'srfm/input',
+            'attrs'     => [ 'label' => 'City' ],
+        ];
+        $slug = Helper::generate_unique_block_slug( $block, [], 'address' );
+        $this->assertEquals( 'address-city', $slug );
+    }
+
 }
