@@ -3,7 +3,7 @@
  * Delete Form Ability.
  *
  * @package sureforms
- * @since x.x.x
+ * @since 2.5.2
  */
 
 namespace SRFM\Inc\Abilities\Forms;
@@ -20,13 +20,13 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * Trashes or permanently deletes a SureForms form.
  *
- * @since x.x.x
+ * @since 2.5.2
  */
 class Delete_Form extends Abstract_Ability {
 	/**
 	 * Constructor.
 	 *
-	 * @since x.x.x
+	 * @since 2.5.2
 	 */
 	public function __construct() {
 		$this->id          = 'sureforms/delete-form';

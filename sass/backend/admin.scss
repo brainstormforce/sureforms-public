@@ -16,7 +16,8 @@ $placeholder_color: #9ca3af;
 .toplevel_page_sureforms_menu,
 .sureforms_page_sureforms_entries,
 .sureforms_page_sureforms_forms,
-.sureforms_page_sureforms_payments {
+.sureforms_page_sureforms_payments,
+.sureforms_page_sureforms_learn {
 	#wpbody-content {
 		// Hide all WordPress default admin notices on SureForms React admin pages.
 		// Our custom AdminNotice component handles notices in React.
@@ -26,34 +27,6 @@ $placeholder_color: #9ca3af;
 			display: none !important;
 		}
 	}
-}
-.toplevel_page_sureforms_menu,
-.sureforms_page_sureforms_form_settings,
-.sureforms_page_sureforms_entries,
-.sureforms_page_sureforms_form_entries,
-.sureforms_page_add-new-form,
-.post-type-sureforms_form {
-	// NPS Survey styles start.
-	// Set the button background to the primary color in dashboard.
-	[data-id="nps-survey-sureforms"] > .nps-survey-wrapper > div button[type="submit"],
-	[data-id="nps-survey-sureforms"] > .nps-survey-wrapper > div .bg-nps-button-background {
-		background-color: #d54407;
-		border: none;
-	}
-	// Change the text color for the Back button in the NPS survey.
-	[data-id="nps-survey-sureforms"] > .nps-survey-wrapper > div button.bg-transparent.text-nps-button-background {
-		color: #d54407;
-	}
-
-	// Hide Spectra, Astra, and Starter Templates NPS Survey on SureForms Pages.
-	// Once NPS Team works on the task where the popup will be visible only on individual dashboard pages, we can remove the below styles.
-	// The below styles can be removed once the specific plugins update their NPS survey implementation.
-	[data-id="nps-survey-ultimate-addons-for-gutenberg"],
-	[data-id="nps-survey-astra"],
-	[data-id="nps-survey-astra-sites"] {
-		display: none !important;
-	}
-	// NPS Survey styles end.
 }
 /* Clear to evenly position the next list items after the separator */
 #toplevel_page_sureforms_menu .wp-submenu li {
@@ -82,11 +55,6 @@ $placeholder_color: #9ca3af;
 	float: left;
 	margin: 8px 0;
 	width: 100%;
-}
-
-/* Adding margin button to the setting submenu item which will always be in the 7th position */
-#toplevel_page_sureforms_menu .wp-submenu li:nth-child( 7 ) {
-	margin-bottom: 4px;
 }
 
 /* The url used here as the selector is the url for the upgrade to pro submenu */
@@ -365,7 +333,8 @@ $placeholder_color: #9ca3af;
 .sureforms_page_sureforms_forms,
 .toplevel_page_sureforms_menu,
 .sureforms_page_sureforms_entries,
-.sureforms_page_sureforms_payments {
+.sureforms_page_sureforms_payments,
+.sureforms_page_sureforms_learn {
 	#wpcontent {
 		padding: 0;
 	}

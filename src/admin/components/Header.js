@@ -39,6 +39,11 @@ const NAV_ITEMS = [
 		text: __( 'Settings', 'sureforms' ),
 		link: `${ siteURL }/wp-admin/admin.php?page=sureforms_form_settings&tab=general-settings`,
 	},
+	{
+		slug: 'sureforms_learn',
+		text: __( 'Learn', 'sureforms' ),
+		link: `${ siteURL }/wp-admin/admin.php?page=sureforms_learn`,
+	},
 ];
 
 const HeaderTooltipItem = ( { title, icon, onClick, children } ) => (

@@ -3,7 +3,7 @@
  * Create Form Ability.
  *
  * @package sureforms
- * @since x.x.x
+ * @since 2.5.2
  */
 
 namespace SRFM\Inc\Abilities\Forms;
@@ -23,7 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * Creates a new SureForms form using the existing Field_Mapping engine.
  *
- * @since x.x.x
+ * @since 2.5.2
  */
 class Create_Form extends Abstract_Ability {
 	use Form_Field_Schema;
@@ -32,7 +32,7 @@ class Create_Form extends Abstract_Ability {
 	/**
 	 * Constructor.
 	 *
-	 * @since x.x.x
+	 * @since 2.5.2
 	 */
 	public function __construct() {
 		$this->id    = 'sureforms/create-form';
@@ -45,7 +45,7 @@ class Create_Form extends Abstract_Ability {
 		 * Pro and third-party plugins can append their supported field types.
 		 *
 		 * @param string $description The ability description.
-		 * @since x.x.x
+		 * @since 2.5.2
 		 */
 		$this->description = apply_filters( 'srfm_ability_create_form_description', $description );
 		$this->capability  = 'manage_options';

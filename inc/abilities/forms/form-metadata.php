@@ -5,7 +5,7 @@
  * Shared metadata override logic for form abilities.
  *
  * @package sureforms
- * @since x.x.x
+ * @since 2.5.2
  */
 
 namespace SRFM\Inc\Abilities\Forms;
@@ -22,7 +22,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Provides the shared apply_metadata_overrides() method used by
  * Create_Form and Update_Form abilities.
  *
- * @since x.x.x
+ * @since 2.5.2
  */
 trait Form_Metadata {
 	/**
@@ -30,7 +30,7 @@ trait Form_Metadata {
 	 *
 	 * @param array<string,mixed> $post_metas Default or current post meta values.
 	 * @param array<string,mixed> $meta_data  Metadata from ability input.
-	 * @since x.x.x
+	 * @since 2.5.2
 	 * @return array<string,mixed>
 	 */
 	protected function apply_metadata_overrides( $post_metas, $meta_data ) {

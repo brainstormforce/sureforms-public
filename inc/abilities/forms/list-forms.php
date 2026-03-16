@@ -3,7 +3,7 @@
  * List Forms Ability.
  *
  * @package sureforms
- * @since x.x.x
+ * @since 2.5.2
  */
 
 namespace SRFM\Inc\Abilities\Forms;
@@ -21,13 +21,13 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * Lists all SureForms forms with optional filtering.
  *
- * @since x.x.x
+ * @since 2.5.2
  */
 class List_Forms extends Abstract_Ability {
 	/**
 	 * Constructor.
 	 *
-	 * @since x.x.x
+	 * @since 2.5.2
 	 */
 	public function __construct() {
 		$this->id          = 'sureforms/list-forms';
@@ -170,7 +170,7 @@ class List_Forms extends Abstract_Ability {
 	 * Get entry counts for multiple forms in a single query.
 	 *
 	 * @param array<int> $form_ids Array of form IDs.
-	 * @since x.x.x
+	 * @since 2.5.2
 	 * @return array<int,int> Map of form_id => entry count.
 	 */
 	private function get_entry_counts( array $form_ids ) {

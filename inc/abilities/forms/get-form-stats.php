@@ -3,7 +3,7 @@
  * Get Form Stats Ability.
  *
  * @package sureforms
- * @since x.x.x
+ * @since 2.5.2
  */
 
 namespace SRFM\Inc\Abilities\Forms;
@@ -21,13 +21,13 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * Retrieves submission statistics for a specific form or all forms.
  *
- * @since x.x.x
+ * @since 2.5.2
  */
 class Get_Form_Stats extends Abstract_Ability {
 	/**
 	 * Constructor.
 	 *
-	 * @since x.x.x
+	 * @since 2.5.2
 	 */
 	public function __construct() {
 		$this->id          = 'sureforms/get-form-stats';
@@ -39,7 +39,7 @@ class Get_Form_Stats extends Abstract_Ability {
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @since x.x.x
+	 * @since 2.5.2
 	 */
 	public function get_annotations() {
 		return [
@@ -54,7 +54,7 @@ class Get_Form_Stats extends Abstract_Ability {
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @since x.x.x
+	 * @since 2.5.2
 	 */
 	public function get_input_schema() {
 		return [
@@ -73,7 +73,7 @@ class Get_Form_Stats extends Abstract_Ability {
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @since x.x.x
+	 * @since 2.5.2
 	 */
 	public function get_output_schema() {
 		return [
@@ -94,7 +94,7 @@ class Get_Form_Stats extends Abstract_Ability {
 	 * Execute the get-form-stats ability.
 	 *
 	 * @param array<string,mixed> $input Validated input data.
-	 * @since x.x.x
+	 * @since 2.5.2
 	 * @return array<string,mixed>|\WP_Error
 	 */
 	public function execute( $input ) {

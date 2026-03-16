@@ -38,7 +38,7 @@ class Test_Get_Entry extends TestCase {
 	/**
 	 * Test annotations indicate readonly and idempotent.
 	 */
-	public function test_annotations() {
+	public function test_get_annotations() {
 		$annotations = $this->ability->get_annotations();
 		$this->assertTrue( $annotations['readonly'] );
 		$this->assertFalse( $annotations['destructive'] );
@@ -50,7 +50,7 @@ class Test_Get_Entry extends TestCase {
 	/**
 	 * Test input schema requires entry_id.
 	 */
-	public function test_input_schema() {
+	public function test_get_input_schema() {
 		$schema = $this->ability->get_input_schema();
 		$this->assertEquals( 'object', $schema['type'] );
 		$this->assertArrayHasKey( 'entry_id', $schema['properties'] );
@@ -61,7 +61,7 @@ class Test_Get_Entry extends TestCase {
 	/**
 	 * Test output schema has expected keys.
 	 */
-	public function test_output_schema() {
+	public function test_get_output_schema() {
 		$schema = $this->ability->get_output_schema();
 		$this->assertArrayHasKey( 'id', $schema['properties'] );
 		$this->assertArrayHasKey( 'form_id', $schema['properties'] );
@@ -93,17 +93,5 @@ class Test_Get_Entry extends TestCase {
 		$this->assertInstanceOf( WP_Error::class, $result );
 	}
 
-	/**
-	 * Alias for test_annotations — satisfies method-name coverage check.
-	 */
-	public function test_get_annotations() {
-		$this->test_annotations();
-	}
 
-	/**
-	 * Alias for test_input_schema — satisfies method-name coverage check.
-	 */
-	public function test_get_input_schema() {
-		$this->test_input_schema();
-	}
 }

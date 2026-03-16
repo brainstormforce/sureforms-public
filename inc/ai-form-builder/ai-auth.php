@@ -47,6 +47,8 @@ class AI_Auth {
 
 		// Generate a random key of 16 characters.
 		$this->key = wp_generate_password( 16, false );
+		// Persist key for decryption in handle_access_key (10 min TTL).
+		set_transient( 'srfm_ai_auth_key_' . get_current_user_id(), $this->key, 10 * MINUTE_IN_SECONDS );
 
 		// Get the source parameter from the query.
 		$source = sanitize_text_field( Helper::get_string_value( $request->get_param( 'source' ) ?? '' ) );
@@ -103,12 +105,15 @@ class AI_Auth {
 			$body['accessKey']
 		) ? Helper::get_string_value( $body['accessKey'] ) : '';
 
+		$stored_key = Helper::get_string_value( get_transient( 'srfm_ai_auth_key_' . get_current_user_id() ) );
+
+		if ( empty( $stored_key ) ) {
+			wp_send_json_error( [ 'message' => __( 'Authentication session expired. Please try again.', 'sureforms' ) ] );
+		}
+
 		// decrypt the access key.
 		if ( ! empty( $access_key ) ) {
-			$this->decrypt_access_key(
-				$access_key,
-				$this->key
-			);
+			$this->decrypt_access_key( $access_key, $stored_key );
 		} else {
 			wp_send_json_error( [ 'message' => __( 'No access key provided.', 'sureforms' ) ] );
 		}
@@ -132,11 +137,18 @@ class AI_Auth {
 			return false;
 		}
 
-		// split the key and encrypted data.
-		[$key, $encrypted] = explode( '::', $decoded_data, 2 );
+		// Extract the IV and encrypted data (billing portal sends IV::ENCRYPTED_DATA format).
+		$parts = explode( '::', $decoded_data, 2 );
 
-		// Decrypt the data using the key.
-		$decrypted = openssl_decrypt( $encrypted, $method, $key, 0, $key );
+		if ( ! isset( $parts[1] ) ) {
+			wp_send_json_error( [ 'message' => __( 'Invalid access key format.', 'sureforms' ) ] );
+		}
+
+		$iv        = $parts[0];
+		$encrypted = $parts[1];
+
+		// Decrypt the data using the server-stored key and the billing-portal-supplied IV.
+		$decrypted = openssl_decrypt( $encrypted, $method, $key, 0, $iv );
 
 		// if the decryption returns false then send error.
 		if ( empty( $decrypted ) ) {
@@ -151,7 +163,7 @@ class AI_Auth {
 		}
 
 		// verify the nonce that comes in $encrypted_email_array.
-		if ( ! empty( $decrypted_data_array['nonce'] ) && ! wp_verify_nonce( $decrypted_data_array['nonce'], 'ai_auth_nonce' ) ) {
+		if ( empty( $decrypted_data_array['nonce'] ) || ! wp_verify_nonce( $decrypted_data_array['nonce'], 'ai_auth_nonce' ) ) {
 			wp_send_json_error( [ 'message' => __( 'Nonce verification failed.', 'sureforms' ) ] );
 		}
 
@@ -181,6 +193,9 @@ class AI_Auth {
 
 		// remove the nonce from the decrypted data before saving it to the options.
 		unset( $decrypted_data_array['nonce'] );
+
+		// Clean up the auth key transient.
+		delete_transient( 'srfm_ai_auth_key_' . get_current_user_id() );
 
 		// save the user email to the options.
 		update_option( 'srfm_ai_auth_user_email', $decrypted_data_array );

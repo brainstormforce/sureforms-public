@@ -222,6 +222,33 @@ class Test_Create_Form extends TestCase {
 	}
 
 	/**
+	 * Test get_annotations returns array with annotation keys.
+	 */
+	public function test_get_annotations() {
+		$annotations = $this->ability->get_annotations();
+		$this->assertIsArray( $annotations );
+		$this->assertArrayHasKey( 'readonly', $annotations );
+	}
+
+	/**
+	 * Test get_input_schema returns valid schema.
+	 */
+	public function test_get_input_schema() {
+		$schema = $this->ability->get_input_schema();
+		$this->assertIsArray( $schema );
+		$this->assertArrayHasKey( 'type', $schema );
+	}
+
+	/**
+	 * Test get_output_schema returns valid schema.
+	 */
+	public function test_get_output_schema() {
+		$schema = $this->ability->get_output_schema();
+		$this->assertIsArray( $schema );
+		$this->assertArrayHasKey( 'properties', $schema );
+	}
+
+	/**
 	 * Test execute with custom status.
 	 */
 	public function test_execute_with_publish_status() {
@@ -248,17 +275,5 @@ class Test_Create_Form extends TestCase {
 		$this->created_forms[] = $result['form_id'];
 	}
 
-	/**
-	 * Alias for test_annotations — satisfies method-name coverage check.
-	 */
-	public function test_get_annotations() {
-		$this->test_annotations();
-	}
 
-	/**
-	 * Alias for test_input_schema — satisfies method-name coverage check.
-	 */
-	public function test_get_input_schema() {
-		$this->test_input_schema();
-	}
 }

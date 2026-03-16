@@ -14,6 +14,30 @@ use SRFM\Inc\Abilities\Abilities_Registrar;
 class Test_Abilities_Registrar extends TestCase {
 
 	/**
+	 * All SureForms ability IDs used for registry cleanup between tests.
+	 *
+	 * @var string[]
+	 */
+	private const ABILITY_IDS = [
+		'sureforms/list-forms',
+		'sureforms/create-form',
+		'sureforms/get-form',
+		'sureforms/get-shortcode',
+		'sureforms/delete-form',
+		'sureforms/duplicate-form',
+		'sureforms/update-form',
+		'sureforms/get-form-stats',
+		'sureforms/list-entries',
+		'sureforms/get-entry',
+		'sureforms/bulk-get-entries',
+		'sureforms/update-entry-status',
+		'sureforms/delete-entry',
+		'sureforms/get-global-settings',
+		'sureforms/update-global-settings',
+		'sureforms/get-form-analytics',
+	];
+
+	/**
 	 * Registrar instance.
 	 *
 	 * @var Abilities_Registrar
@@ -29,16 +53,57 @@ class Test_Abilities_Registrar extends TestCase {
 
 		// Enable master toggle by default so registration tests can run.
 		update_option( 'srfm_abilities_api', true );
+
+		// Ensure a clean abilities registry so tests don't leak state.
+		// The first wp_unregister_ability() call may lazily initialize the
+		// WP_Abilities_Registry singleton, which fires wp_abilities_api_init
+		// and registers all abilities via the registrar's hook — that's expected;
+		// we immediately unregister them to start each test with a clean slate.
+		$this->clean_abilities_registry();
 	}
 
 	/**
 	 * Tear down test fixtures.
 	 */
 	protected function tearDown(): void {
+		$this->clean_abilities_registry();
 		delete_option( 'srfm_abilities_api' );
 		delete_option( 'srfm_abilities_api_edit' );
 		delete_option( 'srfm_abilities_api_delete' );
 		parent::tearDown();
+	}
+
+	/**
+	 * Unregister all SureForms abilities to isolate tests.
+	 *
+	 * @since x.x.x
+	 * @return void
+	 */
+	private function clean_abilities_registry(): void {
+		if ( ! function_exists( 'wp_unregister_ability' ) ) {
+			return;
+		}
+
+		foreach ( self::ABILITY_IDS as $id ) {
+			wp_unregister_ability( $id );
+		}
+	}
+
+	/**
+	 * Call register_abilities() within the wp_abilities_api_init action context.
+	 *
+	 * WP 6.9's wp_register_ability() requires doing_action( 'wp_abilities_api_init' )
+	 * to return true. This helper simulates that context for test purposes.
+	 *
+	 * @since x.x.x
+	 * @return void
+	 */
+	private function register_abilities_in_action_context(): void {
+		// phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+		global $wp_current_filter;
+		$wp_current_filter[] = 'wp_abilities_api_init';
+		$this->registrar->register_abilities();
+		array_pop( $wp_current_filter );
 	}
 
 	/**
@@ -58,28 +123,9 @@ class Test_Abilities_Registrar extends TestCase {
 			$this->markTestSkipped( 'Abilities API not available (requires WP 6.9+).' );
 		}
 
-		$this->registrar->register_abilities();
+		$this->register_abilities_in_action_context();
 
-		$expected_ids = [
-			'sureforms/list-forms',
-			'sureforms/create-form',
-			'sureforms/get-form',
-			'sureforms/get-shortcode',
-			'sureforms/delete-form',
-			'sureforms/duplicate-form',
-			'sureforms/update-form',
-			'sureforms/get-form-stats',
-			'sureforms/list-entries',
-			'sureforms/get-entry',
-			'sureforms/bulk-get-entries',
-			'sureforms/update-entry-status',
-			'sureforms/delete-entry',
-			'sureforms/get-global-settings',
-			'sureforms/update-global-settings',
-			'sureforms/get-form-analytics',
-		];
-
-		foreach ( $expected_ids as $id ) {
+		foreach ( self::ABILITY_IDS as $id ) {
 			$this->assertTrue( wp_has_ability( $id ), "Ability '{$id}' should be registered." );
 		}
 	}
@@ -103,7 +149,7 @@ class Test_Abilities_Registrar extends TestCase {
 			}
 		);
 
-		$this->registrar->register_abilities();
+		$this->register_abilities_in_action_context();
 		$this->assertTrue( $filter_called, 'srfm_register_abilities filter should be called.' );
 	}
 
@@ -157,10 +203,11 @@ class Test_Abilities_Registrar extends TestCase {
 			$this->markTestSkipped( 'Abilities API not available (requires WP 6.9+).' );
 		}
 
-		// Disable edit abilities.
-		update_option( 'srfm_abilities_api_edit', false );
+		// Disable edit abilities — use '0' because update_option( ..., false )
+		// is a no-op when the option does not yet exist in the database.
+		update_option( 'srfm_abilities_api_edit', '0' );
 
-		$this->registrar->register_abilities();
+		$this->register_abilities_in_action_context();
 
 		// Edit-gated abilities should not be registered.
 		$this->assertFalse(
@@ -187,10 +234,11 @@ class Test_Abilities_Registrar extends TestCase {
 			$this->markTestSkipped( 'Abilities API not available (requires WP 6.9+).' );
 		}
 
-		// Disable delete abilities.
-		update_option( 'srfm_abilities_api_delete', false );
+		// Disable delete abilities — use '0' because update_option( ..., false )
+		// is a no-op when the option does not yet exist in the database.
+		update_option( 'srfm_abilities_api_delete', '0' );
 
-		$this->registrar->register_abilities();
+		$this->register_abilities_in_action_context();
 
 		$this->assertFalse(
 			wp_has_ability( 'sureforms/delete-form' ),

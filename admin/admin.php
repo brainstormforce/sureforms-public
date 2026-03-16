@@ -7,7 +7,9 @@
 
 namespace SRFM\Admin;
 
+use Astra_Notices;
 use SRFM\Inc\AI_Form_Builder\AI_Helper;
+use SRFM\Inc\Analytics_Events;
 use SRFM\Inc\Database\Tables\Entries;
 use SRFM\Inc\Helper;
 use SRFM\Inc\Onboarding;
@@ -18,6 +20,10 @@ use SRFM\Inc\Traits\Get_Instance;
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
+
+if ( ! class_exists( 'Astra_Notices' ) ) {
+	require_once SRFM_DIR . 'inc/lib/astra-notices/class-astra-notices.php';
+}
 /**
  * Admin handler class.
  *
@@ -27,12 +33,27 @@ class Admin {
 	use Get_Instance;
 
 	/**
+	 * Minimum number of forms or entries required to show the rating notice.
+	 *
+	 * @since 2.5.2
+	 */
+	public const RATING_NOTICE_THRESHOLD = 3;
+
+	/**
 	 * Dashboard widget entries data.
 	 *
 	 * @var array
 	 * @since 1.9.1
 	 */
 	private $dashboard_widget_data = [];
+
+	/**
+	 * Cached result for whether the rating notice should display.
+	 *
+	 * @var bool|null
+	 * @since 2.5.2
+	 */
+	private $should_show_rating = null;
 
 	/**
 	 * SureForms Page Default permission.
@@ -52,6 +73,7 @@ class Admin {
 		add_action( 'admin_menu', [ $this, 'add_menu_page' ], 9 );
 		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_scripts' ] );
 		add_action( 'admin_menu', [ $this, 'settings_page' ] );
+		add_action( 'admin_menu', [ $this, 'add_learn_page' ] );
 		add_action( 'admin_menu', [ $this, 'add_new_form' ] );
 		add_action( 'admin_menu', [ $this, 'add_suremail_page' ] );
 		if ( ! Helper::has_pro() ) {
@@ -73,15 +95,6 @@ class Admin {
 		// Display notices on traditional WordPress admin pages.
 		add_action( 'admin_notices', [ $this, 'srfm_pro_version_compatibility' ] );
 
-		// This action enqueues translations for NPS Survey library.
-		// A better solution will be required from library to resolve plugin conflict.
-		add_action(
-			'admin_footer',
-			static function() {
-				Helper::register_script_translations( 'nps-survey-script' );
-			},
-			1000
-		);
 		// Enfold theme compatibility to enable block editor for SureForms post type.
 		add_filter( 'avf_use_block_editor_for_post', [ $this, 'enable_block_editor_in_enfold_theme' ] );
 
@@ -104,12 +117,15 @@ class Admin {
 		add_action( 'wp_ajax_should_show_pointer', [ $this, 'pointer_should_show' ] );
 		add_action( 'wp_ajax_sureforms_dismiss_pointer', [ $this, 'pointer_dismissed' ] );
 		add_action( 'wp_ajax_sureforms_accept_cta', [ $this, 'pointer_accepted_cta' ] );
+		add_action( 'wp_ajax_srfm_notice_response', [ $this, 'handle_notice_response' ] );
 
 		// Register dashboard widget only if there are recent entries.
 		add_action( 'admin_init', [ $this, 'maybe_register_dashboard_widget' ] );
 
 		// Save first form creation time stamp.
 		add_action( 'admin_init', [ $this, 'save_first_form_creation_time_stamp' ] );
+		add_action( 'admin_notices', [ $this, 'display_srfm_rating_notice' ] );
+		add_action( 'admin_notices', [ $this, 'display_srfm_getting_started_notice' ] );
 	}
 
 	/**
@@ -458,6 +474,35 @@ class Admin {
 	public function settings_page_callback() {
 		?>
 		<div id="srfm-settings-container" class="srfm-admin-wrapper"></div>
+		<?php
+	}
+
+	/**
+	 * Add Learn submenu page.
+	 *
+	 * @return void
+	 * @since 2.5.2
+	 */
+	public function add_learn_page() {
+		add_submenu_page(
+			'sureforms_menu',
+			__( 'Learn', 'sureforms' ),
+			__( 'Learn', 'sureforms' ),
+			self::$sureforms_page_default_capability,
+			'sureforms_learn',
+			[ $this, 'render_learn' ]
+		);
+	}
+
+	/**
+	 * Learn page callback.
+	 *
+	 * @return void
+	 * @since 2.5.2
+	 */
+	public function render_learn() {
+		?>
+		<div id="srfm-learn-root" class="srfm-admin-wrapper"></div>
 		<?php
 	}
 
@@ -858,6 +903,7 @@ class Admin {
 		$is_screen_sureforms_form_settings = Helper::validate_request_context( 'sureforms_form_settings', 'page' );
 		$is_screen_sureforms_payments      = Helper::validate_request_context( 'sureforms_payments', 'page' );
 		$is_screen_sureforms_entries       = Helper::validate_request_context( SRFM_ENTRIES, 'page' );
+		$is_screen_sureforms_learn         = Helper::validate_request_context( 'sureforms_learn', 'page' );
 		$is_post_type_sureforms_form       = SRFM_FORMS_POST_TYPE === $current_screen->post_type;
 
 		/**
@@ -871,7 +917,7 @@ class Admin {
 			];
 		}
 
-		if ( $is_screen_sureforms_menu || $is_post_type_sureforms_form || $is_screen_add_new_form || $is_screen_sureforms_forms || $is_screen_sureforms_form_settings || $is_screen_sureforms_entries || $is_screen_sureforms_payments ) {
+		if ( $is_screen_sureforms_menu || $is_post_type_sureforms_form || $is_screen_add_new_form || $is_screen_sureforms_forms || $is_screen_sureforms_form_settings || $is_screen_sureforms_entries || $is_screen_sureforms_payments || $is_screen_sureforms_learn ) {
 			$asset_handle = '-dashboard';
 
 			wp_enqueue_style( SRFM_SLUG . $asset_handle . '-font', 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap', [], SRFM_VER );
@@ -922,6 +968,22 @@ class Admin {
 		if ( $is_screen_sureforms_entries ) {
 			$asset_handle = '-entries';
 			wp_enqueue_script( SRFM_SLUG . $asset_handle, SRFM_URL . 'assets/build/entries.js', $script_info['dependencies'], SRFM_VER, true );
+
+			wp_localize_script(
+				SRFM_SLUG . $asset_handle,
+				SRFM_SLUG . '_admin',
+				apply_filters(
+					SRFM_SLUG . '_admin_filter',
+					$localization_data
+				)
+			);
+			$script_translations_handlers[] = SRFM_SLUG . $asset_handle;
+		}
+
+		// Enqueue scripts for the learn page.
+		if ( $is_screen_sureforms_learn ) {
+			$asset_handle = '-learn';
+			wp_enqueue_script( SRFM_SLUG . $asset_handle, SRFM_URL . 'assets/build/learn.js', $script_info['dependencies'], SRFM_VER, true );
 
 			wp_localize_script(
 				SRFM_SLUG . $asset_handle,
@@ -1302,6 +1364,166 @@ class Admin {
 	}
 
 	/**
+	 * Display a notice to the user about providing a review.
+	 *
+	 * @since 2.5.2
+	 * @return void
+	 */
+	public function display_srfm_rating_notice() {
+		// Only show to admins.
+		if ( ! Helper::current_user_can() ) {
+			return;
+		}
+
+		// Allow the notice to be disabled.
+		if ( ! apply_filters( 'srfm_show_rating_notice', true ) ) {
+			return;
+		}
+
+		Astra_Notices::add_notice(
+			[
+				'id'                         => 'srfm-plugin-review-notice',
+				'type'                       => '',
+				'message'                    => $this->build_notice_markup(
+					esc_html__( 'Amazing! SureForms is powering your forms and submissions - let\'s keep growing together!', 'sureforms' ),
+					esc_html__( 'If SureForms has been helpful, would you mind taking a moment to leave a 5-star review on WordPress.org?', 'sureforms' ),
+					esc_url( 'https://wordpress.org/support/plugin/sureforms/reviews/?filter=5#new-post' ),
+					esc_html__( 'Rate SureForms', 'sureforms' ),
+					esc_html__( 'Maybe later', 'sureforms' ),
+					esc_html__( 'I already did', 'sureforms' ),
+					WEEK_IN_SECONDS,
+					true
+				),
+				'repeat-notice-after'        => WEEK_IN_SECONDS,
+				'show_if'                    => $this->maybe_display_rating_notice(),
+				'display-with-other-notices' => true,
+			]
+		);
+
+		add_action( 'astra_notice_after_markup_srfm-plugin-review-notice', [ $this, 'enqueue_notice_response_script' ] );
+	}
+
+	/**
+	 * Display a "Getting Started" admin notice for new users who haven't yet
+	 * reached the rating-notice milestone (3+ forms or 3+ entries).
+	 *
+	 * The Astra Notices library handles the 7-day delay via the
+	 * `display-notice-after` parameter.
+	 *
+	 * @since 2.5.2
+	 * @return void
+	 */
+	public function display_srfm_getting_started_notice() {
+		// Only show to admins.
+		if ( ! Helper::current_user_can() ) {
+			return;
+		}
+
+		// Allow the notice to be disabled programmatically.
+		if ( ! apply_filters( 'srfm_show_getting_started_notice', true ) ) {
+			return;
+		}
+
+		Astra_Notices::add_notice(
+			[
+				'id'                         => 'srfm-getting-started-notice',
+				'type'                       => '',
+				'message'                    => $this->build_notice_markup(
+					esc_html__( 'SureForms is ready to power your forms — explore what\'s possible!', 'sureforms' ),
+					esc_html__( 'Manage your forms, track submissions, and discover features like AI Form Builder, payment integrations, and more from the SureForms dashboard.', 'sureforms' ),
+					esc_url( admin_url( 'admin.php?page=sureforms_menu' ) ),
+					esc_html__( 'Go to Dashboard', 'sureforms' ),
+					esc_html__( 'Maybe later', 'sureforms' ),
+					esc_html__( 'I already know', 'sureforms' ),
+					WEEK_IN_SECONDS
+				),
+				'repeat-notice-after'        => WEEK_IN_SECONDS,
+				'show_if'                    => ! $this->maybe_display_rating_notice(),
+				'display-notice-after'       => WEEK_IN_SECONDS,
+				'display-with-other-notices' => true,
+			]
+		);
+
+		add_action( 'astra_notice_after_markup_srfm-getting-started-notice', [ $this, 'enqueue_notice_response_script' ] );
+	}
+
+	/**
+	 * Enqueue the notice response analytics script.
+	 *
+	 * Called via the astra_notice_after_markup_{id} hook so the script
+	 * only loads when a SureForms notice is actually rendered.
+	 *
+	 * @since 2.5.2
+	 * @return void
+	 */
+	public function enqueue_notice_response_script() {
+		if ( wp_script_is( 'srfm-notice-response', 'enqueued' ) ) {
+			return;
+		}
+
+		wp_enqueue_script(
+			'srfm-notice-response',
+			SRFM_URL . 'admin/assets/js/notice-response.js',
+			[],
+			SRFM_VER,
+			true
+		);
+
+		wp_localize_script(
+			'srfm-notice-response',
+			'srfmNoticeResponse',
+			[
+				'ajaxurl' => admin_url( 'admin-ajax.php' ),
+				'nonce'   => wp_create_nonce( 'srfm_notice_response' ),
+			]
+		);
+	}
+
+	/**
+	 * Handle the notice response AJAX request.
+	 *
+	 * Validates the request and records the analytics event
+	 * for the notice button that was clicked.
+	 *
+	 * @since 2.5.2
+	 * @return void
+	 */
+	public function handle_notice_response() {
+		if ( ! check_ajax_referer( 'srfm_notice_response', 'nonce', false ) ) {
+			wp_send_json_error( [ 'message' => __( 'Invalid nonce.', 'sureforms' ) ], 403 );
+		}
+
+		if ( ! Helper::current_user_can() ) {
+			wp_send_json_error( [ 'message' => __( 'Unauthorized user.', 'sureforms' ) ], 403 );
+		}
+
+		$notice_id = isset( $_POST['notice_id'] ) ? sanitize_text_field( wp_unslash( $_POST['notice_id'] ) ) : '';
+		$button    = isset( $_POST['button'] ) ? sanitize_text_field( wp_unslash( $_POST['button'] ) ) : '';
+
+		$valid = [
+			'srfm-getting-started-notice' => [
+				'go_to_dashboard' => 'getting_started_notice_cta',
+				'maybe_later'     => 'getting_started_notice_snooze',
+				'dismissed'       => 'getting_started_notice_dismiss',
+			],
+			'srfm-plugin-review-notice'   => [
+				'rate_sureforms' => 'rating_notice_cta',
+				'maybe_later'    => 'rating_notice_snooze',
+				'dismissed'      => 'rating_notice_dismiss',
+			],
+		];
+
+		if ( ! isset( $valid[ $notice_id ][ $button ] ) ) {
+			wp_send_json_error( [ 'message' => __( 'Invalid parameters.', 'sureforms' ) ], 400 );
+		}
+
+		$event_name = $valid[ $notice_id ][ $button ];
+		Analytics_Events::track( $event_name, $button );
+
+		wp_send_json_success();
+	}
+
+	/**
 	 * Disables the capabilities for WPForms to avoid conflicts when enqueueing
 	 * scripts and styles for WPForms.
 	 *
@@ -1530,6 +1752,84 @@ class Admin {
 			?>
 		</div>
 		<?php
+	}
+
+	/**
+	 * Build the shared HTML markup for admin notices.
+	 *
+	 * @since 2.5.2
+	 *
+	 * All text parameters must be pre-escaped by the caller (e.g. via esc_html__()).
+	 * URL parameters must be pre-escaped via esc_url().
+	 *
+	 * @param string $heading      The notice heading text (pre-escaped).
+	 * @param string $message      The notice body text (pre-escaped).
+	 * @param string $cta_url      The primary CTA URL (pre-escaped).
+	 * @param string $cta_text     The primary CTA button text (pre-escaped).
+	 * @param string $snooze_text  The snooze button text (pre-escaped).
+	 * @param string $dismiss_text    The dismiss button text (pre-escaped).
+	 * @param int    $snooze_duration Snooze duration in seconds for the data-repeat-notice-after attribute.
+	 * @param bool   $external_cta   Whether the CTA opens in a new tab and also dismisses the notice
+	 *                               via the astra-notice-close class. Default false.
+	 * @return string The notice HTML markup.
+	 */
+	private function build_notice_markup( $heading, $message, $cta_url, $cta_text, $snooze_text, $dismiss_text, $snooze_duration, $external_cta = false ) {
+		$image_path = esc_url( SRFM_URL . 'admin/assets/sureforms-logo.png' );
+		$cta_class  = $external_cta ? 'astra-notice-close button-primary' : 'button-primary';
+		$cta_attrs  = $external_cta ? ' target="_blank" rel="noopener noreferrer"' : '';
+
+		return sprintf(
+			'<div class="notice-image">
+                <img src="%1$s" class="custom-logo" alt="SureForms" itemprop="logo">
+            </div>
+            <div class="notice-content">
+                <div class="notice-heading">
+                    %2$s
+                </div>
+                %3$s<br />
+                <div class="astra-review-notice-container">
+                    <a href="%4$s" class="%5$s"%6$s>
+                    %7$s
+                    </a>
+                <span class="dashicons dashicons-clock" aria-hidden="true"></span>
+                    <a href="#" data-repeat-notice-after="%8$s" class="astra-notice-close">
+                    %9$s
+                    </a>
+                <span class="dashicons dashicons-smiley" aria-hidden="true"></span>
+                    <a href="#" class="astra-notice-close">
+                    %10$s
+                    </a>
+                </div>
+            </div>',
+			$image_path,
+			$heading,
+			$message,
+			$cta_url,
+			esc_attr( $cta_class ),
+			$cta_attrs,
+			$cta_text,
+			$snooze_duration,
+			$snooze_text,
+			$dismiss_text
+		);
+	}
+
+	/**
+	 * Callback for displaying the rating notice conditionally.
+	 *
+	 * Returns true if the user has 3 or more published forms or 3 or more form entries.
+	 *
+	 * @since 2.5.2
+	 * @return bool
+	 */
+	private function maybe_display_rating_notice() {
+		if ( null === $this->should_show_rating ) {
+			$entries_count            = Entries::get_total_entries_by_status( 'all' );
+			$form_count               = wp_count_posts( SRFM_FORMS_POST_TYPE );
+			$this->should_show_rating = $entries_count >= self::RATING_NOTICE_THRESHOLD || Helper::get_integer_value( $form_count->publish ?? 0 ) >= self::RATING_NOTICE_THRESHOLD;
+		}
+
+		return $this->should_show_rating;
 	}
 
 	/**

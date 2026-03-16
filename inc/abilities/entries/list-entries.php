@@ -3,7 +3,7 @@
  * List Entries Ability.
  *
  * @package sureforms
- * @since x.x.x
+ * @since 2.5.2
  */
 
 namespace SRFM\Inc\Abilities\Entries;
@@ -21,13 +21,13 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * Lists form submission entries with filtering, sorting, and pagination.
  *
- * @since x.x.x
+ * @since 2.5.2
  */
 class List_Entries extends Abstract_Ability {
 	/**
 	 * Constructor.
 	 *
-	 * @since x.x.x
+	 * @since 2.5.2
 	 */
 	public function __construct() {
 		$this->id          = 'sureforms/list-entries';
@@ -39,7 +39,7 @@ class List_Entries extends Abstract_Ability {
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @since x.x.x
+	 * @since 2.5.2
 	 */
 	public function get_annotations() {
 		return [
@@ -54,7 +54,7 @@ class List_Entries extends Abstract_Ability {
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @since x.x.x
+	 * @since 2.5.2
 	 */
 	public function get_input_schema() {
 		return [
@@ -113,7 +113,7 @@ class List_Entries extends Abstract_Ability {
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @since x.x.x
+	 * @since 2.5.2
 	 */
 	public function get_output_schema() {
 		return [
@@ -144,7 +144,7 @@ class List_Entries extends Abstract_Ability {
 	 * Execute the list-entries ability.
 	 *
 	 * @param array<string,mixed> $input Validated input data.
-	 * @since x.x.x
+	 * @since 2.5.2
 	 * @return array<string,mixed>|\WP_Error
 	 */
 	public function execute( $input ) {
