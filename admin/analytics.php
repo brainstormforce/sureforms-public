@@ -82,6 +82,7 @@ class Analytics {
 		// Event tracking hooks.
 		add_action( 'current_screen', [ $this, 'track_first_editor_open' ] );
 		add_action( 'transition_post_status', [ $this, 'track_first_form_published' ], 10, 3 );
+		add_action( 'save_post', [ $this, 'track_embed_styling_configured' ], 10, 2 );
 
 		// Detect state-based events on admin load (dedup prevents repeat tracking).
 		$this->detect_state_events();
@@ -111,6 +112,7 @@ class Analytics {
 			'payment_forms'              => $this->get_payment_forms_count(),
 			'total_entries'              => Entries::get_total_entries_by_status(),
 			'restricted_forms'           => $this->get_restricted_forms(),
+			'embed_styling_gb_default'   => self::embed_styling_gutenberg_count( 'default' ),
 		];
 
 		$stats_data['plugin_data']['sureforms'] = array_merge_recursive( $stats_data['plugin_data']['sureforms'], $this->global_settings_data() );
@@ -257,6 +259,52 @@ class Analytics {
 		];
 
 		return $this->custom_wp_query_total_posts( $meta_query );
+	}
+
+	/**
+	 * Count Gutenberg srfm/form embed blocks using a specific formTheme.
+	 *
+	 * When formTheme is 'inherit' (the block.json default), WordPress does not
+	 * serialize it in the block comment. So only 'default' and 'custom' appear.
+	 *
+	 * Counts individual embed blocks (not pages), since a single page can
+	 * contain multiple form embeds each with different styling.
+	 *
+	 * @param string $theme Theme slug to count ('default' or 'custom').
+	 * @since x.x.x
+	 * @return int
+	 */
+	public static function embed_styling_gutenberg_count( $theme ) {
+		global $wpdb;
+
+		$cache_key     = 'embed_styling_gb_' . $theme;
+		$cached_result = wp_cache_get( $cache_key, 'sureforms' );
+
+		if ( false !== $cached_result ) {
+			return (int) $cached_result;
+		}
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- No WP_Query alternative for cross-post-type content search with multiple LIKE conditions.
+		$posts = $wpdb->get_col(
+			$wpdb->prepare(
+				"SELECT post_content FROM {$wpdb->posts}
+				WHERE post_status = 'publish'
+				AND post_content LIKE %s
+				AND post_content LIKE %s",
+				'%' . $wpdb->esc_like( 'wp:srfm/form' ) . '%',
+				'%' . $wpdb->esc_like( '"formTheme":"' . $theme . '"' ) . '%'
+			)
+		);
+
+		$count         = 0;
+		$escaped_theme = preg_quote( $theme, '/' );
+		foreach ( $posts as $content ) {
+			$count += preg_match_all( '/<!--\s*wp:srfm\/form\s+\{[^}]*"formTheme"\s*:\s*"' . $escaped_theme . '"/', $content );
+		}
+
+		wp_cache_set( $cache_key, $count, 'sureforms', HOUR_IN_SECONDS );
+
+		return $count;
 	}
 
 	/**
@@ -559,6 +607,48 @@ class Analytics {
 			[
 				'is_ai_generated' => $is_ai,
 				'block_count'     => $block_count,
+			]
+		);
+	}
+
+	/**
+	 * Track embed styling configuration when a post/page with srfm/form blocks is saved.
+	 *
+	 * Fires on save_post for any post type since srfm/form embed blocks can
+	 * live on pages, posts, or custom post types. Re-tracks on each save by
+	 * flushing the dedup flag.
+	 *
+	 * @param int      $post_id Post ID.
+	 * @param \WP_Post $post    Post object.
+	 * @since x.x.x
+	 * @return void
+	 */
+	public function track_embed_styling_configured( $post_id, $post ) {
+		if ( wp_is_post_revision( $post_id ) || wp_is_post_autosave( $post_id ) ) {
+			return;
+		}
+
+		if ( 'publish' !== $post->post_status ) {
+			return;
+		}
+
+		// Only process posts containing srfm/form blocks with custom formTheme.
+		if ( ! preg_match_all( '/<!--\s*wp:srfm\/form\s+\{[^}]*"formTheme"\s*:\s*"(?!inherit")([^"]*)"/', $post->post_content, $matches ) ) {
+			return;
+		}
+
+		$themes = array_count_values( $matches[1] );
+
+		// Flush dedup so event is re-tracked on each meaningful save.
+		Analytics_Events::flush_pushed( [ 'embed_styling_configured' ] );
+
+		Analytics_Events::track(
+			'embed_styling_configured',
+			(string) $post_id,
+			[
+				'themes'      => $themes,
+				'block_count' => count( $matches[1] ),
+				'source'      => 'gutenberg',
 			]
 		);
 	}
