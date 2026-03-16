@@ -70,7 +70,7 @@
 	}
 }
 // Hide WP notices in entries screen
-#wpbody:has( #srfm-entries-root, #srfm-payments-react-container, #srfm-learn-root ) {
+#wpbody:has( #srfm-entries-root, #srfm-survey-reports-root, #srfm-payments-react-container, #srfm-learn-root ) {
 	#wpbody-content > .notice {
 		display: none;
 	}
