@@ -310,6 +310,13 @@ class Analytics {
 		// Payment analytics - check if any payment method is enabled.
 		$global_data['boolean_values']['stripe_enabled'] = $this->is_stripe_enabled();
 
+		// MCP / Abilities API settings.
+		$mcp_settings = get_option( 'srfm_mcp_settings_options', [] );
+		$global_data['boolean_values']['abilities_api_enabled']        = ! empty( $mcp_settings['srfm_abilities_api'] );
+		$global_data['boolean_values']['abilities_api_edit_enabled']   = ! empty( $mcp_settings['srfm_abilities_api_edit'] );
+		$global_data['boolean_values']['abilities_api_delete_enabled'] = ! empty( $mcp_settings['srfm_abilities_api_delete'] );
+		$global_data['boolean_values']['mcp_server_enabled']           = ! empty( $mcp_settings['srfm_mcp_server'] );
+
 		return $global_data;
 	}
 
@@ -677,6 +684,25 @@ class Analytics {
 			&& \SRFM\Inc\Payments\Stripe\Stripe_Helper::is_stripe_connected() ) {
 			$mode = \SRFM\Inc\Payments\Stripe\Stripe_Helper::get_stripe_mode();
 			Analytics_Events::track( 'stripe_connected', ! empty( $mode ) ? $mode : 'live' );
+		}
+
+		// MCP / Abilities API first-enable events.
+		$mcp_settings = get_option( 'srfm_mcp_settings_options', [] );
+
+		if ( ! empty( $mcp_settings['srfm_abilities_api'] ) ) {
+			Analytics_Events::track( 'abilities_api_enabled' );
+		}
+
+		if ( ! empty( $mcp_settings['srfm_abilities_api_edit'] ) ) {
+			Analytics_Events::track( 'abilities_api_edit_enabled' );
+		}
+
+		if ( ! empty( $mcp_settings['srfm_abilities_api_delete'] ) ) {
+			Analytics_Events::track( 'abilities_api_delete_enabled' );
+		}
+
+		if ( ! empty( $mcp_settings['srfm_mcp_server'] ) ) {
+			Analytics_Events::track( 'mcp_server_enabled' );
 		}
 	}
 
