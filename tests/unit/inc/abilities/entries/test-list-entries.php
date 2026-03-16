@@ -103,17 +103,5 @@ class Test_List_Entries extends TestCase {
 		$this->assertContains( 'trash', $schema['properties']['status']['enum'] );
 	}
 
-	/**
-	 * Alias for test_annotations — satisfies method-name coverage check.
-	 */
-	public function test_get_annotations() {
-		$this->test_annotations();
-	}
 
-	/**
-	 * Alias for test_input_schema — satisfies method-name coverage check.
-	 */
-	public function test_get_input_schema() {
-		$this->test_input_schema();
-	}
 }
