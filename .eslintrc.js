@@ -23,7 +23,7 @@ module.exports = {
 		],
 		'react/no-unknown-property': [ 'error', { ignore: [ 'css' ] } ],
 		'react/no-danger': 'error',
-		'no-unused-vars': [ 'error', { args: 'all', argsIgnorePattern: '^_', ignoreRestSiblings: true } ],
+		'no-unused-vars': [ 'error', { args: 'all', argsIgnorePattern: '^_', caughtErrorsIgnorePattern: '^_', ignoreRestSiblings: true } ],
 	},
 	overrides: [
 		{
