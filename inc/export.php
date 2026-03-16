@@ -244,7 +244,7 @@ class Export {
 			// Non-Latin labels produce broken slugs like %e3%83%95%e3%83%aa
 			// via sanitize_title(). Clearing them lets process_blocks()
 			// regenerate clean block-name-based slugs on save.
-			$post_content = preg_replace(
+			$post_content = (string) preg_replace(
 				'/"slug":"(%[a-fA-F0-9]{2}[^"]*)"/',
 				'"slug":""',
 				$post_content

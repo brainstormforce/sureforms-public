@@ -1209,7 +1209,7 @@ class Helper {
 			if ( false !== strpos( $slug, '%' ) ) {
 				$block_name = is_string( $block['blockName'] ) ? $block['blockName'] : '';
 				// Strip the 'srfm/' namespace to match JS-side cleanForSlug() output.
-				$block_name = preg_replace( '/^srfm\//', '', $block_name );
+				$block_name = (string) preg_replace( '/^srfm\//', '', $block_name );
 				$slug       = sanitize_title( $block_name );
 			}
 		}
