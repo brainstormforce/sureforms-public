@@ -11,6 +11,7 @@
 
 namespace SRFM\Inc\Abilities;
 
+use SRFM\Inc\Abilities\Analytics\Get_Form_Analytics;
 use SRFM\Inc\Abilities\Entries\Bulk_Get_Entries;
 use SRFM\Inc\Abilities\Entries\Delete_Entry;
 use SRFM\Inc\Abilities\Entries\Get_Entry;
@@ -24,6 +25,8 @@ use SRFM\Inc\Abilities\Forms\Get_Form_Stats;
 use SRFM\Inc\Abilities\Forms\Get_Shortcode;
 use SRFM\Inc\Abilities\Forms\List_Forms;
 use SRFM\Inc\Abilities\Forms\Update_Form;
+use SRFM\Inc\Abilities\Settings\Get_Global_Settings;
+use SRFM\Inc\Abilities\Settings\Update_Global_Settings;
 use SRFM\Inc\Traits\Get_Instance;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -53,6 +56,61 @@ class Abilities_Registrar {
 
 		add_action( 'wp_abilities_api_categories_init', [ $this, 'register_category' ] );
 		add_action( 'wp_abilities_api_init', [ $this, 'register_abilities' ] );
+
+		if ( self::mcp_adapter_enabled() ) {
+			add_action( 'mcp_adapter_init', [ $this, 'register_mcp_server' ] );
+		}
+	}
+
+	/**
+	 * Check if the MCP adapter integration should be active.
+	 *
+	 * @since x.x.x
+	 * @return bool
+	 */
+	public static function mcp_adapter_enabled() {
+		return function_exists( 'wp_register_ability' ) &&
+			class_exists( 'WP\MCP\Plugin' ) &&
+			(bool) get_option( 'srfm_mcp_server', false );
+	}
+
+	/**
+	 * Register a dedicated SureForms MCP server with the MCP adapter.
+	 *
+	 * Creates endpoint: {site_url}/wp-json/sureforms/v1/mcp
+	 *
+	 * @param \WP\MCP\Adapter\Adapter $adapter The MCP adapter instance.
+	 * @since x.x.x
+	 * @return void
+	 */
+	public function register_mcp_server( $adapter ) {
+		$abilities = wp_get_abilities();
+		$tools     = [];
+
+		foreach ( $abilities as $ability ) {
+			if ( 0 === strpos( $ability->get_name(), 'sureforms/' ) ) {
+				$tools[] = $ability->get_name();
+			}
+		}
+
+		$transport_class = class_exists( '\WP\MCP\Transport\HttpTransport' )
+			? \WP\MCP\Transport\HttpTransport::class
+			: \WP\MCP\Transport\Http\RestTransport::class;
+
+		$adapter->create_server(
+			'sureforms',
+			'sureforms/v1',
+			'mcp',
+			__( 'SureForms MCP Server', 'sureforms' ),
+			__( 'SureForms MCP Server for form building and management.', 'sureforms' ),
+			SRFM_VER,
+			[ $transport_class ],
+			\WP\MCP\Infrastructure\ErrorHandling\ErrorLogMcpErrorHandler::class,
+			\WP\MCP\Infrastructure\Observability\NullMcpObservabilityHandler::class,
+			$tools,
+			[],
+			[]
+		);
 	}
 
 	/**
@@ -89,6 +147,11 @@ class Abilities_Registrar {
 	 * @return void
 	 */
 	public function register_abilities() {
+		// Bail early if the master Abilities API toggle is off.
+		if ( ! get_option( 'srfm_abilities_api', false ) ) {
+			return;
+		}
+
 		$abilities = [
 			new List_Forms(),
 			new Create_Form(),
@@ -103,6 +166,9 @@ class Abilities_Registrar {
 			new Bulk_Get_Entries(),
 			new Update_Entry_Status(),
 			new Delete_Entry(),
+			new Get_Global_Settings(),
+			new Update_Global_Settings(),
+			new Get_Form_Analytics(),
 		];
 
 		/**
@@ -123,6 +189,11 @@ class Abilities_Registrar {
 
 			// Enforce minimum capability policy — reject abilities with caps weaker than manage_options.
 			if ( ! $ability->meets_capability_policy() ) {
+				continue;
+			}
+
+			// Skip disabled abilities so they don't appear in MCP listings.
+			if ( ! $ability->is_enabled() ) {
 				continue;
 			}
 

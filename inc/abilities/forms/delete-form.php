@@ -31,8 +31,9 @@ class Delete_Form extends Abstract_Ability {
 	public function __construct() {
 		$this->id          = 'sureforms/delete-form';
 		$this->label       = __( 'Delete SureForms Form', 'sureforms' );
-		$this->description = __( 'Move a SureForms form to trash, or permanently delete it when force is set to true.', 'sureforms' );
+		$this->description = __( 'Move a SureForms form to trash. When force is true, the form and all its metadata are permanently deleted — this cannot be undone.', 'sureforms' );
 		$this->capability  = 'manage_options';
+		$this->gated       = 'srfm_abilities_api_delete';
 	}
 
 	/**
@@ -40,9 +41,12 @@ class Delete_Form extends Abstract_Ability {
 	 */
 	public function get_annotations() {
 		return [
-			'readonly'    => false,
-			'destructive' => true,
-			'idempotent'  => false,
+			'readonly'      => false,
+			'destructive'   => true,
+			'idempotent'    => false,
+			'priority'      => 3.0,
+			'openWorldHint' => false,
+			'instructions'  => 'Always confirm with the user before deleting. When force is true, the form and all its data are permanently destroyed and cannot be recovered.',
 		];
 	}
 
@@ -51,8 +55,9 @@ class Delete_Form extends Abstract_Ability {
 	 */
 	public function get_input_schema() {
 		return [
-			'type'       => 'object',
-			'properties' => [
+			'type'                 => 'object',
+			'additionalProperties' => false,
+			'properties'           => [
 				'form_id' => [
 					'type'        => 'integer',
 					'description' => __( 'The ID of the form to delete.', 'sureforms' ),
@@ -63,7 +68,7 @@ class Delete_Form extends Abstract_Ability {
 					'default'     => false,
 				],
 			],
-			'required'   => [ 'form_id' ],
+			'required'             => [ 'form_id' ],
 		];
 	}
 

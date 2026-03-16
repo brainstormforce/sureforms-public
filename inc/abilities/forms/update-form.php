@@ -39,6 +39,7 @@ class Update_Form extends Abstract_Ability {
 		$this->label       = __( 'Update SureForms Form', 'sureforms' );
 		$this->description = __( 'Update an existing SureForms form title, status (publish/draft/private/trash), fields, and/or metadata settings. Use status "trash" to trash a form, or change from "trash" to another status to restore it. Providing formFields replaces all existing fields.', 'sureforms' );
 		$this->capability  = 'manage_options';
+		$this->gated       = 'srfm_abilities_api_edit';
 	}
 
 	/**
@@ -48,9 +49,12 @@ class Update_Form extends Abstract_Ability {
 	 */
 	public function get_annotations() {
 		return [
-			'readonly'    => false,
-			'destructive' => false,
-			'idempotent'  => true,
+			'readonly'      => false,
+			'destructive'   => true,
+			'idempotent'    => true,
+			'priority'      => 2.0,
+			'openWorldHint' => false,
+			'instructions'  => 'Confirm the changes with the user before executing. Setting status to trash moves the form out of production. Providing formFields replaces ALL existing fields.',
 		];
 	}
 
@@ -63,8 +67,9 @@ class Update_Form extends Abstract_Ability {
 		$field_properties = $this->get_form_field_schema();
 
 		return [
-			'type'       => 'object',
-			'properties' => [
+			'type'                 => 'object',
+			'additionalProperties' => false,
+			'properties'           => [
 				'form_id'      => [
 					'type'        => 'integer',
 					'description' => __( 'The ID of the form to update.', 'sureforms' ),
@@ -134,7 +139,7 @@ class Update_Form extends Abstract_Ability {
 					],
 				],
 			],
-			'required'   => [ 'form_id' ],
+			'required'             => [ 'form_id' ],
 		];
 	}
 
@@ -236,6 +241,13 @@ class Update_Form extends Abstract_Ability {
 			foreach ( array_keys( $meta_keys ) as $meta_key ) {
 				$current_metas[ $meta_key ] = get_post_meta( $form_id, $meta_key, true );
 			}
+
+			// Load instant form settings separately — not in default meta keys but needed for updates.
+			$instant_form_settings = get_post_meta( $form_id, '_srfm_instant_form_settings', true );
+
+			$current_metas['_srfm_instant_form_settings'] = ! empty( $instant_form_settings ) && is_array( $instant_form_settings )
+				? $instant_form_settings
+				: [];
 
 			$updated_metas = $this->apply_metadata_overrides( $current_metas, $input['formMetaData'] );
 

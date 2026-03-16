@@ -43,6 +43,8 @@ class Test_Delete_Entry extends TestCase {
 		$this->assertFalse( $annotations['readonly'] );
 		$this->assertTrue( $annotations['destructive'] );
 		$this->assertFalse( $annotations['idempotent'] );
+		$this->assertEquals( 3.0, $annotations['priority'] );
+		$this->assertFalse( $annotations['openWorldHint'] );
 	}
 
 	/**
@@ -53,6 +55,7 @@ class Test_Delete_Entry extends TestCase {
 		$this->assertArrayHasKey( 'entry_ids', $schema['properties'] );
 		$this->assertContains( 'entry_ids', $schema['required'] );
 		$this->assertEquals( 'array', $schema['properties']['entry_ids']['type'] );
+		$this->assertFalse( $schema['additionalProperties'] );
 	}
 
 	/**
@@ -120,4 +123,6 @@ class Test_Delete_Entry extends TestCase {
 		$reflection->setAccessible( true );
 		$this->assertEquals( 'manage_options', $reflection->getValue( $this->ability ) );
 	}
+
+
 }
