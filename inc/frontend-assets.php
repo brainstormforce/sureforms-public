@@ -272,6 +272,25 @@ class Frontend_Assets {
 				wp_enqueue_style( SRFM_SLUG . '-quill-editor', $css_vendor_uri . 'quill/quill.snow.css', [], SRFM_VER );
 
 				wp_enqueue_script( SRFM_SLUG . '-textarea', $js_uri . 'textarea' . $file_prefix . '.js', [], SRFM_VER, true );
+
+				wp_localize_script(
+					SRFM_SLUG . '-textarea',
+					'srfm_quill_i18n',
+					[
+						'normal'     => __( 'Normal', 'sureforms' ),
+						'heading_1'  => __( 'Heading 1', 'sureforms' ),
+						'heading_2'  => __( 'Heading 2', 'sureforms' ),
+						'heading_3'  => __( 'Heading 3', 'sureforms' ),
+						'heading_4'  => __( 'Heading 4', 'sureforms' ),
+						'heading_5'  => __( 'Heading 5', 'sureforms' ),
+						'heading_6'  => __( 'Heading 6', 'sureforms' ),
+						'visit_url'  => __( 'Visit URL:', 'sureforms' ),
+						'enter_link' => __( 'Enter link:', 'sureforms' ),
+						'edit'       => __( 'Edit', 'sureforms' ),
+						'save'       => __( 'Save', 'sureforms' ),
+						'remove'     => __( 'Remove', 'sureforms' ),
+					]
+				);
 			}
 		}
 		/**

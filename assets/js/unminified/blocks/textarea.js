@@ -36,6 +36,7 @@ function initializeTextarea() {
 				if ( isRichText === 'true' ) {
 					// Initialize Quill editor on the textarea
 					addQuillEditor( areaField );
+					localizeQuillToolbar( areaField );
 					// Handle the screen readraccessibility of the Quill editor for screen reader.
 					handleQuillEditorA11Y( areaField );
 
@@ -215,6 +216,67 @@ function handleQuillEditorA11Y( areaField ) {
 	const labelID = label?.getAttribute( 'id' );
 	qlContainer?.setAttribute( 'aria-labelledby', labelID );
 	quillEditorContainer?.setAttribute( 'aria-labelledby', labelID );
+}
+
+/**
+ * Localizes the Quill editor toolbar labels using WordPress translations.
+ *
+ * @param {HTMLElement} areaField - The textarea element enhanced by Quill editor.
+ * @since x.x.x
+ */
+function localizeQuillToolbar( areaField ) {
+	if ( typeof srfm_quill_i18n === 'undefined' ) {
+		return;
+	}
+
+	const block = areaField.closest( '.srfm-textarea-block' );
+	if ( ! block ) {
+		return;
+	}
+
+	// Translate the header picker dropdown labels using Quill's data-label mechanism.
+	const headerPicker = block.querySelector( '.ql-header.ql-picker' );
+	if ( headerPicker ) {
+		const labelMap = {
+			'1': srfm_quill_i18n.heading_1,
+			'2': srfm_quill_i18n.heading_2,
+			'3': srfm_quill_i18n.heading_3,
+			'4': srfm_quill_i18n.heading_4,
+			'5': srfm_quill_i18n.heading_5,
+			'6': srfm_quill_i18n.heading_6,
+		};
+
+		const pickerItems = headerPicker.querySelectorAll( '.ql-picker-item' );
+		pickerItems.forEach( function( item ) {
+			const value = item.getAttribute( 'data-value' );
+			if ( value && labelMap[ value ] ) {
+				item.setAttribute( 'data-label', labelMap[ value ] );
+			} else {
+				item.setAttribute( 'data-label', srfm_quill_i18n.normal );
+			}
+		} );
+
+		// Set on the visible picker label (shows currently selected format).
+		const pickerLabel = headerPicker.querySelector( '.ql-picker-label' );
+		if ( pickerLabel ) {
+			pickerLabel.setAttribute( 'data-label', srfm_quill_i18n.normal );
+		}
+	}
+
+	// Translate the link tooltip strings via CSS override.
+	// These are rendered by Quill CSS `content` properties on .ql-tooltip pseudo-elements.
+	// We inject a scoped <style> block with translated strings to override them.
+	if ( ! document.getElementById( 'srfm-quill-i18n-css' ) ) {
+		const style = document.createElement( 'style' );
+		style.id = 'srfm-quill-i18n-css';
+		style.textContent =
+			'.ql-snow .ql-tooltip::before { content: "' + srfm_quill_i18n.visit_url + '" !important; }' +
+			'.ql-snow .ql-tooltip a.ql-action::after { content: "' + srfm_quill_i18n.edit + '" !important; }' +
+			'.ql-snow .ql-tooltip a.ql-remove::before { content: "' + srfm_quill_i18n.remove + '" !important; }' +
+			'.ql-snow .ql-tooltip.ql-editing a.ql-action::after { content: "' + srfm_quill_i18n.save + '" !important; }' +
+			'.ql-snow .ql-tooltip[data-mode=link]::before { content: "' + srfm_quill_i18n.enter_link + '" !important; }';
+		document.head.appendChild( style );
+	}
 }
 
 document.addEventListener( 'DOMContentLoaded', initializeTextarea );
