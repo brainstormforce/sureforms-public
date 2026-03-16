@@ -12,16 +12,25 @@ const { defineConfig, devices } = require( '@playwright/test' );
  */
 module.exports = defineConfig( {
 	testDir: './tests/play/specs',
+	// Log in once before any worker starts; all workers reuse the saved cookies.
+	globalSetup: './tests/play/global-setup.js',
 	/* Fail the build on CI if you accidentally left test.only in the source code. */
 	forbidOnly: !! process.env.CI,
-	fullyParallel: false,
-	workers: 1,
+	// Each test creates its own isolated form — safe to run in parallel.
+	// CI: 1 worker per shard (parallelism comes from the 4-shard matrix).
+	// Local: 4 workers for faster feedback.
+	fullyParallel: true,
+	workers: process.env.CI ? 1 : 4,
 	/* Retry on CI only */
 	retries: process.env.CI ? 2 : 0,
 	/* Maximum time one test can run for. */
 	timeout: 170 * 1000,
 	/* Reporter to use. See https://playwright.dev/docs/test-reporters */
-	reporter: [ [ 'html', { open: 'never' } ], [ 'line' ] ],
+	// CI: blob reporter per shard — merged into one HTML report by merge-reports job.
+	// Local: HTML + line for immediate feedback.
+	reporter: process.env.CI
+		? [ [ 'blob' ], [ 'line' ] ]
+		: [ [ 'html', { open: 'never' } ], [ 'line' ] ],
 	/* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
 	expect: {
 		/**
@@ -45,6 +54,8 @@ module.exports = defineConfig( {
 		headless: true,
 		ignoreHTTPSErrors: true,
 		browserName: 'chromium',
+		// Restore the shared auth state logged in during globalSetup.
+		storageState: 'tests/play/storageState.json',
 	},
 	/* Configure projects for major browsers */
 	projects: [

@@ -9,57 +9,7 @@
 
 const { test, expect } = require( '@playwright/test' );
 const { loginAsAdmin } = require( '../utils/loginAsAdmin' );
-
-// ─── Helpers ──────────────────────────────────────────────────────────────────
-
-/**
- * Navigate to the SureForms dashboard and open a blank form in the editor.
- * Returns the page still on the editor URL.
- *
- * @param {import('@playwright/test').Page} page
- */
-async function createBlankForm( page ) {
-	// Navigate directly to the Gutenberg form editor — bypasses the React
-	// dashboard and the AI builder (which fails on localhost).
-	// Use 'load' not 'networkidle' — Gutenberg polls the REST API continuously.
-	await page.goto( '/wp-admin/post-new.php?post_type=sureforms_form' );
-	await page.waitForLoadState( 'load' );
-
-	// Wait for the draggable block panel to appear (signals JS is ready).
-	await page.locator( '#draggable-box__srfm--input' ).waitFor( { state: 'visible', timeout: 30000 } );
-
-	// Dismiss the Gutenberg welcome guide if it appears.
-	const welcomeGuide = page.getByRole( 'button', { name: /close/i } ).filter( { hasText: /close/i } );
-	if ( await welcomeGuide.isVisible( { timeout: 3000 } ).catch( () => false ) ) {
-		await welcomeGuide.click();
-	}
-}
-
-/**
- * Publish the form currently open in the editor and return the frontend URL.
- *
- * @param {import('@playwright/test').Page} page
- * @returns {Promise<string>} Frontend URL of the published form.
- */
-async function publishFormAndGetURL( page ) {
-	await page.getByRole( 'button', { name: 'Publish', exact: true } ).click();
-
-	// WordPress may show a pre-publish confirmation panel (depends on user preferences).
-	// If it appears, click the confirm "Publish" button inside it.
-	const confirmPublish = page
-		.getByLabel( 'Editor publish' )
-		.getByRole( 'button', { name: 'Publish', exact: true } );
-
-	if ( await confirmPublish.isVisible( { timeout: 3000 } ).catch( () => false ) ) {
-		await confirmPublish.click();
-	}
-
-	// After publishing, a "View Form" link appears in the editor (top bar or panel).
-	const viewFormLink = page.getByRole( 'link', { name: 'View Form' } ).first();
-	await expect( viewFormLink ).toBeVisible( { timeout: 15000 } );
-
-	return await viewFormLink.getAttribute( 'href' );
-}
+const { createBlankForm, publishFormAndGetURL } = require( '../utils/formHelpers' );
 
 // ─── Tests ────────────────────────────────────────────────────────────────────
 

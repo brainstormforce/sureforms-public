@@ -4,22 +4,34 @@ const WP_ADMIN_USER = process.env.WP_ADMIN_USER || 'admin';
 const WP_ADMIN_PASS = process.env.WP_ADMIN_PASS || 'password';
 
 /**
- * Log in to WordPress as admin and wait until the dashboard is ready.
+ * Ensure the page is authenticated as admin.
+ *
+ * storageState (set in playwright.config.js) restores auth cookies before
+ * each test, so this is normally a no-op navigation.  If cookies are stale
+ * or absent the function falls back to a full form-based login.
  *
  * @param {import('@playwright/test').Page} page
  */
 async function loginAsAdmin( page ) {
-	await page.goto( '/wp-login.php' );
-	await page.fill( '#user_login', WP_ADMIN_USER );
-	await page.fill( '#user_pass', WP_ADMIN_PASS );
+	// Navigate to admin only if we're not already there.
+	if ( ! page.url().includes( '/wp-admin' ) ) {
+		await page.goto( '/wp-admin/' );
+		await page.waitForLoadState( 'load' );
+	}
 
-	// Wait for navigation triggered by the login form submit.
-	await Promise.all( [
-		page.waitForURL( '**/wp-admin/**', { waitUntil: 'domcontentloaded' } ),
-		page.click( '#wp-submit' ),
-	] );
+	// If WordPress redirected us to the login page the stored session has
+	// expired — perform a fresh form-based login as a safety net.
+	if ( page.url().includes( 'wp-login.php' ) ) {
+		await page.fill( '#user_login', WP_ADMIN_USER );
+		await page.fill( '#user_pass', WP_ADMIN_PASS );
+		await Promise.all( [
+			page.waitForURL( '**/wp-admin/**', {
+				waitUntil: 'domcontentloaded',
+			} ),
+			page.click( '#wp-submit' ),
+		] );
+	}
 
-	// Confirm we actually landed in the dashboard (catches wrong-password failures).
 	await expect(
 		page.locator( '#wpadminbar' ),
 		'Login failed — check WP_ADMIN_USER / WP_ADMIN_PASS'
