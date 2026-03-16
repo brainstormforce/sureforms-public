@@ -93,7 +93,7 @@ class Create_Form extends Abstract_Ability {
 					'type'        => 'object',
 					'description' => __( 'Optional form metadata including confirmation, compliance, and styling settings.', 'sureforms' ),
 					'properties'  => [
-						'formConfirmation' => [
+						'formConfirmation'  => [
 							'type'       => 'object',
 							'properties' => [
 								'confirmationMessage' => [
@@ -102,7 +102,7 @@ class Create_Form extends Abstract_Ability {
 								],
 							],
 						],
-						'compliance'       => [
+						'compliance'        => [
 							'type'       => 'object',
 							'properties' => [
 								'enableCompliance'      => [ 'type' => 'boolean' ],
@@ -111,7 +111,7 @@ class Create_Form extends Abstract_Ability {
 								'autoDeleteEntriesDays' => [ 'type' => 'string' ],
 							],
 						],
-						'instantForm'      => [
+						'instantForm'       => [
 							'type'       => 'object',
 							'properties' => [
 								'instantForm'         => [ 'type' => 'boolean' ],
@@ -120,18 +120,123 @@ class Create_Form extends Abstract_Ability {
 								'formWidth'           => [ 'type' => 'integer' ],
 							],
 						],
-						'general'          => [
+						'general'           => [
 							'type'       => 'object',
 							'properties' => [
 								'useLabelAsPlaceholder' => [ 'type' => 'boolean' ],
 								'submitText'            => [ 'type' => 'string' ],
 							],
 						],
-						'styling'          => [
+						'styling'           => [
 							'type'       => 'object',
 							'properties' => [
 								'submitAlignment' => [ 'type' => 'string' ],
 							],
+						],
+						'formStyling'       => [
+							'type'        => 'object',
+							'description' => __( 'Form styling settings including colors and spacing.', 'sureforms' ),
+							'properties'  => [
+								'primaryColor'       => [
+									'type'        => 'string',
+									'description' => __( 'Primary/accent color as hex (e.g. #111C44).', 'sureforms' ),
+								],
+								'textColor'          => [
+									'type'        => 'string',
+									'description' => __( 'Text color as hex (e.g. #1E1E1E).', 'sureforms' ),
+								],
+								'textColorOnPrimary' => [
+									'type'        => 'string',
+									'description' => __( 'Text color on primary backgrounds as hex (e.g. #FFFFFF).', 'sureforms' ),
+								],
+								'fieldSpacing'       => [
+									'type'        => 'string',
+									'description' => __( 'Spacing between fields.', 'sureforms' ),
+									'enum'        => [ 'small', 'medium', 'large' ],
+								],
+							],
+						],
+						'emailNotification' => [
+							'type'        => 'object',
+							'description' => __( 'Email notification settings for the first notification. Merges with existing.', 'sureforms' ),
+							'properties'  => [
+								'status'       => [
+									'type'        => 'boolean',
+									'description' => __( 'Enable or disable the notification.', 'sureforms' ),
+								],
+								'name'         => [
+									'type'        => 'string',
+									'description' => __( 'Notification name.', 'sureforms' ),
+								],
+								'emailTo'      => [
+									'type'        => 'string',
+									'description' => __( 'Recipient email. Supports smart tags like {admin_email}.', 'sureforms' ),
+								],
+								'emailReplyTo' => [ 'type' => 'string' ],
+								'fromName'     => [
+									'type'        => 'string',
+									'description' => __( 'Sender name. Supports smart tags like {site_title}.', 'sureforms' ),
+								],
+								'fromEmail'    => [ 'type' => 'string' ],
+								'emailCc'      => [ 'type' => 'string' ],
+								'emailBcc'     => [ 'type' => 'string' ],
+								'subject'      => [
+									'type'        => 'string',
+									'description' => __( 'Email subject. Supports smart tags like {form_title}.', 'sureforms' ),
+								],
+								'emailBody'    => [
+									'type'        => 'string',
+									'description' => __( 'Email body. Supports smart tags like {all_data}.', 'sureforms' ),
+								],
+							],
+						],
+						'formRestriction'   => [
+							'type'        => 'object',
+							'description' => __( 'Form submission restrictions and scheduling.', 'sureforms' ),
+							'properties'  => [
+								'status'                 => [
+									'type'        => 'boolean',
+									'description' => __( 'Enable entry limit restriction.', 'sureforms' ),
+								],
+								'maxEntries'             => [
+									'type'        => 'integer',
+									'description' => __( 'Maximum number of entries allowed (0 = unlimited).', 'sureforms' ),
+								],
+								'date'                   => [
+									'type'        => 'string',
+									'description' => __( 'Expiry date (YYYY-MM-DD).', 'sureforms' ),
+								],
+								'hours'                  => [ 'type' => 'string' ],
+								'minutes'                => [ 'type' => 'string' ],
+								'meridiem'               => [
+									'type' => 'string',
+									'enum' => [ 'AM', 'PM' ],
+								],
+								'message'                => [
+									'type'        => 'string',
+									'description' => __( 'Message shown when form is closed.', 'sureforms' ),
+								],
+								'schedulingStatus'       => [
+									'type'        => 'boolean',
+									'description' => __( 'Enable form scheduling.', 'sureforms' ),
+								],
+								'startDate'              => [
+									'type'        => 'string',
+									'description' => __( 'Schedule start date (YYYY-MM-DD).', 'sureforms' ),
+								],
+								'startHours'             => [ 'type' => 'string' ],
+								'startMinutes'           => [ 'type' => 'string' ],
+								'startMeridiem'          => [
+									'type' => 'string',
+									'enum' => [ 'AM', 'PM' ],
+								],
+								'schedulingNotStartedMessage' => [ 'type' => 'string' ],
+								'schedulingEndedMessage' => [ 'type' => 'string' ],
+							],
+						],
+						'formCustomCss'     => [
+							'type'        => 'string',
+							'description' => __( 'Custom CSS for the form.', 'sureforms' ),
 						],
 					],
 				],
@@ -221,6 +326,27 @@ class Create_Form extends Abstract_Ability {
 
 		// Get default post meta.
 		$post_metas = Create_New_Form::get_default_meta_keys();
+
+		// Add serialized meta defaults for metadata overrides.
+		$post_metas['_srfm_instant_form_settings'] = [
+			'bg_type'                       => 'color',
+			'bg_color'                      => '#ffffff',
+			'bg_image'                      => '',
+			'site_logo'                     => '',
+			'cover_type'                    => 'color',
+			'cover_color'                   => '#111C44',
+			'cover_image'                   => '',
+			'enable_instant_form'           => false,
+			'form_container_width'          => 620,
+			'single_page_form_title'        => true,
+			'use_banner_as_page_background' => false,
+		];
+		$post_metas['_srfm_form_confirmation']     = [];
+		$post_metas['_srfm_compliance']            = [];
+		$post_metas['_srfm_forms_styling']         = [];
+		$post_metas['_srfm_email_notification']    = [];
+		$post_metas['_srfm_form_restriction']      = '';
+		$post_metas['_srfm_form_custom_css']       = '';
 
 		// Apply metadata overrides from input.
 		$post_metas = $this->apply_metadata_overrides( $post_metas, $meta_data );

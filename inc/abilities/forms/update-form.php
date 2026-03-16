@@ -96,7 +96,7 @@ class Update_Form extends Abstract_Ability {
 					'type'        => 'object',
 					'description' => __( 'Optional form metadata including confirmation, compliance, and styling settings. Same schema as create-form.', 'sureforms' ),
 					'properties'  => [
-						'formConfirmation' => [
+						'formConfirmation'  => [
 							'type'       => 'object',
 							'properties' => [
 								'confirmationMessage' => [
@@ -105,7 +105,7 @@ class Update_Form extends Abstract_Ability {
 								],
 							],
 						],
-						'compliance'       => [
+						'compliance'        => [
 							'type'       => 'object',
 							'properties' => [
 								'enableCompliance'      => [ 'type' => 'boolean' ],
@@ -114,7 +114,7 @@ class Update_Form extends Abstract_Ability {
 								'autoDeleteEntriesDays' => [ 'type' => 'string' ],
 							],
 						],
-						'instantForm'      => [
+						'instantForm'       => [
 							'type'       => 'object',
 							'properties' => [
 								'instantForm'         => [ 'type' => 'boolean' ],
@@ -123,18 +123,123 @@ class Update_Form extends Abstract_Ability {
 								'formWidth'           => [ 'type' => 'integer' ],
 							],
 						],
-						'general'          => [
+						'general'           => [
 							'type'       => 'object',
 							'properties' => [
 								'useLabelAsPlaceholder' => [ 'type' => 'boolean' ],
 								'submitText'            => [ 'type' => 'string' ],
 							],
 						],
-						'styling'          => [
+						'styling'           => [
 							'type'       => 'object',
 							'properties' => [
 								'submitAlignment' => [ 'type' => 'string' ],
 							],
+						],
+						'formStyling'       => [
+							'type'        => 'object',
+							'description' => __( 'Form styling settings including colors and spacing.', 'sureforms' ),
+							'properties'  => [
+								'primaryColor'       => [
+									'type'        => 'string',
+									'description' => __( 'Primary/accent color as hex (e.g. #111C44).', 'sureforms' ),
+								],
+								'textColor'          => [
+									'type'        => 'string',
+									'description' => __( 'Text color as hex (e.g. #1E1E1E).', 'sureforms' ),
+								],
+								'textColorOnPrimary' => [
+									'type'        => 'string',
+									'description' => __( 'Text color on primary backgrounds as hex (e.g. #FFFFFF).', 'sureforms' ),
+								],
+								'fieldSpacing'       => [
+									'type'        => 'string',
+									'description' => __( 'Spacing between fields.', 'sureforms' ),
+									'enum'        => [ 'small', 'medium', 'large' ],
+								],
+							],
+						],
+						'emailNotification' => [
+							'type'        => 'object',
+							'description' => __( 'Email notification settings for the first notification. Merges with existing.', 'sureforms' ),
+							'properties'  => [
+								'status'       => [
+									'type'        => 'boolean',
+									'description' => __( 'Enable or disable the notification.', 'sureforms' ),
+								],
+								'name'         => [
+									'type'        => 'string',
+									'description' => __( 'Notification name.', 'sureforms' ),
+								],
+								'emailTo'      => [
+									'type'        => 'string',
+									'description' => __( 'Recipient email. Supports smart tags like {admin_email}.', 'sureforms' ),
+								],
+								'emailReplyTo' => [ 'type' => 'string' ],
+								'fromName'     => [
+									'type'        => 'string',
+									'description' => __( 'Sender name. Supports smart tags like {site_title}.', 'sureforms' ),
+								],
+								'fromEmail'    => [ 'type' => 'string' ],
+								'emailCc'      => [ 'type' => 'string' ],
+								'emailBcc'     => [ 'type' => 'string' ],
+								'subject'      => [
+									'type'        => 'string',
+									'description' => __( 'Email subject. Supports smart tags like {form_title}.', 'sureforms' ),
+								],
+								'emailBody'    => [
+									'type'        => 'string',
+									'description' => __( 'Email body. Supports smart tags like {all_data}.', 'sureforms' ),
+								],
+							],
+						],
+						'formRestriction'   => [
+							'type'        => 'object',
+							'description' => __( 'Form submission restrictions and scheduling.', 'sureforms' ),
+							'properties'  => [
+								'status'                 => [
+									'type'        => 'boolean',
+									'description' => __( 'Enable entry limit restriction.', 'sureforms' ),
+								],
+								'maxEntries'             => [
+									'type'        => 'integer',
+									'description' => __( 'Maximum number of entries allowed (0 = unlimited).', 'sureforms' ),
+								],
+								'date'                   => [
+									'type'        => 'string',
+									'description' => __( 'Expiry date (YYYY-MM-DD).', 'sureforms' ),
+								],
+								'hours'                  => [ 'type' => 'string' ],
+								'minutes'                => [ 'type' => 'string' ],
+								'meridiem'               => [
+									'type' => 'string',
+									'enum' => [ 'AM', 'PM' ],
+								],
+								'message'                => [
+									'type'        => 'string',
+									'description' => __( 'Message shown when form is closed.', 'sureforms' ),
+								],
+								'schedulingStatus'       => [
+									'type'        => 'boolean',
+									'description' => __( 'Enable form scheduling.', 'sureforms' ),
+								],
+								'startDate'              => [
+									'type'        => 'string',
+									'description' => __( 'Schedule start date (YYYY-MM-DD).', 'sureforms' ),
+								],
+								'startHours'             => [ 'type' => 'string' ],
+								'startMinutes'           => [ 'type' => 'string' ],
+								'startMeridiem'          => [
+									'type' => 'string',
+									'enum' => [ 'AM', 'PM' ],
+								],
+								'schedulingNotStartedMessage' => [ 'type' => 'string' ],
+								'schedulingEndedMessage' => [ 'type' => 'string' ],
+							],
+						],
+						'formCustomCss'     => [
+							'type'        => 'string',
+							'description' => __( 'Custom CSS for the form.', 'sureforms' ),
 						],
 					],
 				],
@@ -242,12 +347,23 @@ class Update_Form extends Abstract_Ability {
 				$current_metas[ $meta_key ] = get_post_meta( $form_id, $meta_key, true );
 			}
 
-			// Load instant form settings separately — not in default meta keys but needed for updates.
-			$instant_form_settings = get_post_meta( $form_id, '_srfm_instant_form_settings', true );
+			// Load serialized object metas needed for metadata overrides.
+			$instant_raw      = get_post_meta( $form_id, '_srfm_instant_form_settings', true );
+			$confirmation_raw = get_post_meta( $form_id, '_srfm_form_confirmation', true );
+			$compliance_raw   = get_post_meta( $form_id, '_srfm_compliance', true );
 
-			$current_metas['_srfm_instant_form_settings'] = ! empty( $instant_form_settings ) && is_array( $instant_form_settings )
-				? $instant_form_settings
-				: [];
+			$current_metas['_srfm_instant_form_settings'] = Helper::get_array_value( is_array( $instant_raw ) ? $instant_raw : [] );
+			$current_metas['_srfm_form_confirmation']     = Helper::get_array_value( is_array( $confirmation_raw ) ? $confirmation_raw : [] );
+			$current_metas['_srfm_compliance']            = Helper::get_array_value( is_array( $compliance_raw ) ? $compliance_raw : [] );
+
+			// Load additional serialized metas.
+			$styling_raw = get_post_meta( $form_id, '_srfm_forms_styling', true );
+			$notif_raw   = get_post_meta( $form_id, '_srfm_email_notification', true );
+
+			$current_metas['_srfm_forms_styling']      = Helper::get_array_value( is_array( $styling_raw ) ? $styling_raw : [] );
+			$current_metas['_srfm_email_notification'] = Helper::get_array_value( is_array( $notif_raw ) ? $notif_raw : [] );
+			$current_metas['_srfm_form_restriction']   = Helper::get_string_value( get_post_meta( $form_id, '_srfm_form_restriction', true ) );
+			$current_metas['_srfm_form_custom_css']    = Helper::get_string_value( get_post_meta( $form_id, '_srfm_form_custom_css', true ) );
 
 			$updated_metas = $this->apply_metadata_overrides( $current_metas, $input['formMetaData'] );
 

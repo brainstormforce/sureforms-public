@@ -850,6 +850,7 @@ class Admin {
 
 		$localization_data = [
 			'site_url'                   => get_site_url(),
+			'current_user_login'         => wp_get_current_user()->user_login,
 			'breadcrumbs'                => $this->get_breadcrumbs_for_current_page(),
 			'sureforms_dashboard_url'    => admin_url( '/admin.php?page=sureforms_menu' ),
 			'plugin_version'             => SRFM_VER,
