@@ -120,7 +120,10 @@ function initializeFormHandlers() {
 	for ( const form of forms ) {
 		// Assign a unique instance ID to each form to support multiple embeds of the same form on one page.
 		if ( ! form.hasAttribute( 'data-srfm-instance' ) ) {
-			form.setAttribute( 'data-srfm-instance', String( ++srfmFormInstanceCounter ) );
+			form.setAttribute(
+				'data-srfm-instance',
+				String( ++srfmFormInstanceCounter )
+			);
 		}
 
 		// Add the event before the form initialization to ensure that the all third party libraries are loaded and initialized.
@@ -624,7 +627,7 @@ async function handleFormSubmission(
 	ajaxUrl,
 	nonce,
 	loader,
-	successUrl,
+	_successUrl, // Unused but required positionally to access subsequent params.
 	successContainer,
 	successElement,
 	submitType,

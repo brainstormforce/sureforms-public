@@ -1075,11 +1075,11 @@ function addEmailBlurListener( areaInput, blockClass ) {
  * Add blur listeners to slider fields
  * That shows validation errors on blur.
  *
- * @param {HTMLElement} areaField
+ * @param {HTMLElement} _areaField - Unused but required positionally to access `areaInput` and `blockClass`.
  * @param {HTMLElement} areaInput
  * @param {string}      blockClass
  */
-function addSliderBlurListener( areaField, areaInput, blockClass ) {
+function addSliderBlurListener( _areaField, areaInput, blockClass ) {
 	const sliderInput = areaInput.querySelector( '.srfm-input-slider' );
 	const textSliderElement = areaInput.querySelector( '.srfm-text-slider' );
 	// Number slider
