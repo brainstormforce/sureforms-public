@@ -1,6 +1,6 @@
 # SureForms Abilities API Reference
 
-Complete reference for all 18 abilities registered with the WordPress Abilities API.
+Complete reference for all 15 abilities registered with the WordPress Abilities API.
 
 **Category:** `sureforms`
 **Requires:** WordPress 6.9+ (Abilities API)
@@ -27,10 +27,6 @@ Complete reference for all 18 abilities registered with the WordPress Abilities 
 | 13 | `sureforms/get-global-settings` | `manage_options` | readonly, idempotent | Settings |
 | 14 | `sureforms/update-global-settings` | `manage_options` | write, idempotent | Settings |
 | 15 | `sureforms/get-form-analytics` | `manage_options` | readonly, idempotent | Analytics |
-| 16 | `sureforms/export-forms` | `manage_options` | readonly, idempotent | Export |
-| 17 | `sureforms/import-forms` | `manage_options` | write, not idempotent | Export |
-| 18 | `sureforms/export-entries` | `manage_options` | readonly, idempotent | Export |
-
 ---
 
 ## Forms Module
@@ -502,95 +498,6 @@ Complete reference for all 18 abilities registered with the WordPress Abilities 
   "form_id": null,
   "date_from": "2025-01-01",
   "date_to": "2025-01-31"
-}
-```
-
----
-
-## Export Module
-
-### 16. `sureforms/export-forms`
-
-**Export Forms** — Export one or more forms with post data and metadata as structured JSON.
-
-**File:** `inc/abilities/export/export-forms.php`
-
-**Input:**
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `form_ids` | array\<integer\> | **Yes** | Form IDs to export (min 1) |
-
-**Output:**
-```json
-{
-  "forms": [
-    {
-      "post": { "ID": 123, "post_title": "Contact Form", "post_content": "...", "post_type": "sureforms_form" },
-      "post_meta": { "_srfm_submit_button_text": ["Submit"], "_srfm_email_notification": {...} }
-    }
-  ],
-  "count": 1
-}
-```
-
----
-
-### 17. `sureforms/import-forms`
-
-**Import Forms** — Import forms from exported JSON data. Creates new posts each call (not idempotent).
-
-**File:** `inc/abilities/export/import-forms.php`
-
-**Input:**
-| Parameter | Type | Required | Default | Description |
-|-----------|------|----------|---------|-------------|
-| `forms_data` | array | **Yes** | — | Array of `{post, post_meta}` objects (same format as export output) |
-| `default_status` | string | No | `draft` | Enum: `draft`, `publish`, `private` |
-
-**Output:**
-```json
-{
-  "forms_mapping": { "123": 789, "456": 790 },
-  "imported_count": 2
-}
-```
-
----
-
-### 18. `sureforms/export-entries`
-
-**Export Entries** — Export form submission entries as structured JSON with decoded field labels.
-
-**File:** `inc/abilities/export/export-entries.php`
-
-**Input:**
-| Parameter | Type | Required | Default | Description |
-|-----------|------|----------|---------|-------------|
-| `form_id` | integer | No | `0` | Filter by form (0 = all) |
-| `entry_ids` | array\<integer\> | No | — | Specific entry IDs |
-| `status` | string | No | `all` | Enum: `all`, `read`, `unread`, `trash` |
-| `date_from` | string | No | — | Start date (YYYY-MM-DD) |
-| `date_to` | string | No | — | End date (YYYY-MM-DD) |
-| `per_page` | integer | No | `100` | Max entries (1-500) |
-
-**Output:**
-```json
-{
-  "entries": [
-    {
-      "id": 1,
-      "form_id": 123,
-      "form_title": "Contact Form",
-      "status": "read",
-      "created_at": "2025-01-15 10:30:00",
-      "fields": [
-        { "label": "Full Name", "value": "John Doe" },
-        { "label": "Email", "value": "john@example.com" }
-      ]
-    }
-  ],
-  "total_count": 1,
-  "truncated": false
 }
 ```
 

@@ -280,7 +280,7 @@ class Update_Global_Settings extends Abstract_Ability {
 	 * @return array<string,mixed>
 	 */
 	private function sanitize_general_settings( $settings ) {
-		$boolean_keys = [ 'srfm_ip_log', 'srfm_form_analytics', 'srfm_admin_notification' ];
+		$boolean_keys = [ 'srfm_ip_log', 'srfm_form_analytics', 'srfm_bsf_analytics', 'srfm_admin_notification' ];
 
 		foreach ( $boolean_keys as $key ) {
 			if ( isset( $settings[ $key ] ) ) {

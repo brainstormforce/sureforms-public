@@ -54,12 +54,8 @@ inc/abilities/
 ├── settings/
 │   ├── get-global-settings.php    # readonly, idempotent — all setting categories
 │   └── update-global-settings.php # write, idempotent — delegates to Global_Settings
-├── analytics/
-│   └── get-form-analytics.php     # readonly, idempotent — submission date queries
-└── export/
-    ├── export-forms.php           # readonly, idempotent — JSON export with meta
-    ├── import-forms.php           # write, not idempotent — creates new posts
-    └── export-entries.php         # readonly, idempotent — entries with decoded labels
+└── analytics/
+    └── get-form-analytics.php     # readonly, idempotent — submission date queries
 ```
 
 ## Extensibility
