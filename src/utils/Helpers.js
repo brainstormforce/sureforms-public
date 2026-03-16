@@ -653,8 +653,15 @@ export const getLastNDays = ( dates ) => {
 	};
 };
 
-const generateSlug = ( label, existingSlugs ) => {
-	const baseSlug = cleanForSlug( label );
+const generateSlug = ( label, existingSlugs, blockName = '' ) => {
+	let baseSlug = cleanForSlug( label );
+
+	// If the label contains non-Latin characters (e.g. Japanese, Chinese),
+	// cleanForSlug() preserves them but PHP sanitize_title() will percent-encode them,
+	// causing slug mismatch. Fall back to block name for a stable ASCII slug.
+	if ( /[^\x00-\x7F]/.test( baseSlug ) ) {
+		baseSlug = blockName ? cleanForSlug( blockName.replace( /^srfm\//, '' ) ) : '';
+	}
 
 	let slug = baseSlug;
 	let counter = 1;
@@ -676,7 +683,7 @@ const prepareBlockSlugs = ( updateBlockAttributes, srfmBlocks ) => {
 			let { slug, label, block_id } = block.attributes;
 
 			if ( ! slug ) {
-				slug = generateSlug( label, existingSlugs );
+				slug = generateSlug( label, existingSlugs, block.name );
 				// Update the block attributes with the generated slug.
 				updateBlockAttributes( block.clientId, { slug } );
 			}
