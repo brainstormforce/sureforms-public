@@ -1,4 +1,6 @@
 {
+  "$schema": "https://json.schemastore.org/block.json",
+	"apiVersion": 3,
 	"name": "srfm/email",
 	"title": "Email",
 	"description": "Displays a SureForms Email Field",

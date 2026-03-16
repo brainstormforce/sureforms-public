@@ -222,11 +222,15 @@ class Global_Settings {
 
 		foreach ( $options_keys as $key ) {
 			if ( isset( $setting_options[ $key ] ) ) {
-				$options_names[ $key ] = $setting_options[ $key ];
+				$value                 = $setting_options[ $key ];
+				$options_names[ $key ] = sanitize_text_field( is_scalar( $value ) ? (string) $value : '' );
 			}
 		}
 
-		return update_option( 'srfm_default_dynamic_block_option', apply_filters( 'srfm_general_dynamic_options_to_save', $options_names, $setting_options ) );
+		// Re-sanitize after filter so Pro-injected keys are also covered.
+		$options_to_save = apply_filters( 'srfm_general_dynamic_options_to_save', $options_names, $setting_options );
+		$options_to_save = array_map( 'sanitize_text_field', $options_to_save );
+		return update_option( 'srfm_default_dynamic_block_option', $options_to_save );
 	}
 
 	/**
@@ -239,7 +243,7 @@ class Global_Settings {
 	public static function srfm_save_email_summary_settings( $setting_options ) {
 
 		$srfm_email_summary   = $setting_options['srfm_email_summary'] ?? false;
-		$srfm_email_sent_to   = $setting_options['srfm_email_sent_to'] ?? get_option( 'admin_email' );
+		$srfm_email_sent_to   = sanitize_email( $setting_options['srfm_email_sent_to'] ?? get_option( 'admin_email' ) );
 		$srfm_schedule_report = $setting_options['srfm_schedule_report'] ?? __( 'Monday', 'sureforms' );
 
 		Events_Scheduler::unschedule_events( 'srfm_weekly_scheduled_events' );
@@ -372,6 +376,15 @@ class Global_Settings {
 		$options_to_get = Helper::get_string_value( $options_to_get );
 
 		$options_to_get = explode( ',', $options_to_get );
+
+		// Restrict to known SureForms options to prevent arbitrary option disclosure.
+		$allowed_options = [
+			'srfm_general_settings_options',
+			'srfm_email_summary_settings_options',
+			'srfm_security_settings_options',
+			'srfm_default_dynamic_block_option',
+		];
+		$options_to_get  = array_values( array_intersect( array_map( 'sanitize_text_field', $options_to_get ), $allowed_options ) );
 
 		$global_setting_options = get_options( $options_to_get );
 

@@ -44,4 +44,54 @@ class Test_Global_Settings extends TestCase {
 		$result = $method->invoke( null, $setting_options );
 		$this->assertTrue( $result );
 	}
+
+	public function test_srfm_save_general_settings_dynamic_opt() {
+		$setting_options = [
+			'srfm_email_block_required_text' => '<script>alert(1)</script>',
+			'srfm_url_block_required_text'   => 'Please enter a valid URL',
+			'srfm_valid_email'               => "<img src=x onerror=alert('xss')>",
+		];
+
+		Global_Settings::srfm_save_general_settings_dynamic_opt( $setting_options );
+
+		$saved = get_option( 'srfm_default_dynamic_block_option' );
+
+		$this->assertIsArray( $saved );
+		// sanitize_text_field strips <script> tags AND their inner content entirely.
+		$this->assertSame( '', $saved['srfm_email_block_required_text'] );
+		// Verifies plain text is preserved.
+		$this->assertSame( 'Please enter a valid URL', $saved['srfm_url_block_required_text'] );
+		// Verifies img-based XSS is stripped — no HTML tags remain.
+		$this->assertStringNotContainsString( '<', $saved['srfm_valid_email'] );
+		$this->assertStringNotContainsString( 'onerror', $saved['srfm_valid_email'] );
+	}
+
+	public function test_srfm_save_email_summary_settings() {
+		// Valid email is preserved.
+		Global_Settings::srfm_save_email_summary_settings(
+			[
+				'srfm_email_summary'   => false,
+				'srfm_email_sent_to'   => 'admin@example.com',
+				'srfm_schedule_report' => 'Monday',
+			]
+		);
+		$saved = get_option( 'srfm_email_summary_settings_options' );
+		$this->assertSame( 'admin@example.com', $saved['srfm_email_sent_to'] );
+
+		// Header injection newlines are stripped by sanitize_email().
+		Global_Settings::srfm_save_email_summary_settings(
+			[
+				'srfm_email_summary'   => false,
+				'srfm_email_sent_to'   => "admin@example.com\r\nBcc: evil@hacker.com",
+				'srfm_schedule_report' => 'Monday',
+			]
+		);
+		$saved = get_option( 'srfm_email_summary_settings_options' );
+		$this->assertStringNotContainsString( "\r", $saved['srfm_email_sent_to'] );
+		$this->assertStringNotContainsString( "\n", $saved['srfm_email_sent_to'] );
+	}
+
+	public function test_srfm_get_general_settings() {
+		$this->assertTrue( method_exists( Global_Settings::class, 'srfm_get_general_settings' ) );
+	}
 }
