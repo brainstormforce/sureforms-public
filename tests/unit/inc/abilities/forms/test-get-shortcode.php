@@ -69,7 +69,7 @@ class Test_Get_Shortcode extends TestCase {
 	/**
 	 * Test annotations indicate readonly and idempotent.
 	 */
-	public function test_annotations() {
+	public function test_get_annotations() {
 		$annotations = $this->ability->get_annotations();
 		$this->assertTrue( $annotations['readonly'] );
 		$this->assertFalse( $annotations['destructive'] );
@@ -81,7 +81,7 @@ class Test_Get_Shortcode extends TestCase {
 	/**
 	 * Test input schema requires form_id.
 	 */
-	public function test_input_schema() {
+	public function test_get_input_schema() {
 		$schema = $this->ability->get_input_schema();
 		$this->assertArrayHasKey( 'form_id', $schema['properties'] );
 		$this->assertContains( 'form_id', $schema['required'] );
@@ -91,7 +91,7 @@ class Test_Get_Shortcode extends TestCase {
 	/**
 	 * Test output schema has expected keys.
 	 */
-	public function test_output_schema() {
+	public function test_get_output_schema() {
 		$schema = $this->ability->get_output_schema();
 		$this->assertArrayHasKey( 'form_id', $schema['properties'] );
 		$this->assertArrayHasKey( 'shortcode', $schema['properties'] );
@@ -142,18 +142,6 @@ class Test_Get_Shortcode extends TestCase {
 		$this->assertInstanceOf( WP_Error::class, $result );
 		wp_delete_post( $page_id, true );
 	}
-
-
-
-	/**
-	 * Test get_output_schema returns valid schema.
-	 */
-	public function test_get_output_schema() {
-		$schema = $this->ability->get_output_schema();
-		$this->assertIsArray( $schema );
-		$this->assertArrayHasKey( 'properties', $schema );
-	}
-
 	/**
 	 * Test execute returns result.
 	 */

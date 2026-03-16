@@ -38,7 +38,7 @@ class Test_Get_Global_Settings extends TestCase {
 	/**
 	 * Test annotations indicate readonly and idempotent.
 	 */
-	public function test_annotations() {
+	public function test_get_annotations() {
 		$annotations = $this->ability->get_annotations();
 		$this->assertTrue( $annotations['readonly'] );
 		$this->assertFalse( $annotations['destructive'] );
@@ -50,7 +50,7 @@ class Test_Get_Global_Settings extends TestCase {
 	/**
 	 * Test input schema has categories property.
 	 */
-	public function test_input_schema() {
+	public function test_get_input_schema() {
 		$schema = $this->ability->get_input_schema();
 		$this->assertArrayHasKey( 'categories', $schema['properties'] );
 		$this->assertFalse( $schema['additionalProperties'] );
@@ -59,7 +59,7 @@ class Test_Get_Global_Settings extends TestCase {
 	/**
 	 * Test output schema has expected category keys.
 	 */
-	public function test_output_schema() {
+	public function test_get_output_schema() {
 		$schema = $this->ability->get_output_schema();
 		$this->assertArrayHasKey( 'general', $schema['properties'] );
 		$this->assertArrayHasKey( 'validation-messages', $schema['properties'] );

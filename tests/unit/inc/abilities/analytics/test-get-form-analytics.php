@@ -38,7 +38,7 @@ class Test_Get_Form_Analytics extends TestCase {
 	/**
 	 * Test annotations indicate readonly and idempotent.
 	 */
-	public function test_annotations() {
+	public function test_get_annotations() {
 		$annotations = $this->ability->get_annotations();
 		$this->assertTrue( $annotations['readonly'] );
 		$this->assertFalse( $annotations['destructive'] );
@@ -50,7 +50,7 @@ class Test_Get_Form_Analytics extends TestCase {
 	/**
 	 * Test input schema requires date_from and date_to, has optional form_id.
 	 */
-	public function test_input_schema() {
+	public function test_get_input_schema() {
 		$schema = $this->ability->get_input_schema();
 		$this->assertArrayHasKey( 'date_from', $schema['properties'] );
 		$this->assertArrayHasKey( 'date_to', $schema['properties'] );
@@ -63,7 +63,7 @@ class Test_Get_Form_Analytics extends TestCase {
 	/**
 	 * Test output schema has expected keys.
 	 */
-	public function test_output_schema() {
+	public function test_get_output_schema() {
 		$schema = $this->ability->get_output_schema();
 		$this->assertArrayHasKey( 'submissions', $schema['properties'] );
 		$this->assertArrayHasKey( 'total_count', $schema['properties'] );
