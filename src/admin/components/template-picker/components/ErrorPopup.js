@@ -20,7 +20,7 @@ const ErrorPopup = () => {
 						className="text-lg font-bold flex gap-3"
 					>
 						<span className="pt-1">{ ICONS.warning }</span>
-						{ __( 'Error Creating Form', 'sureforms' ) }
+						{ __( 'Unable to create form', 'sureforms' ) }
 					</Label>
 				</Container.Item>
 				<Container.Item className="flex flex-col gap-4">
@@ -29,7 +29,7 @@ const ErrorPopup = () => {
 						className="text-text-secondary font-normal"
 					>
 						{ __(
-							'There was an error mapping the AI response to Fields. Please try again.',
+							'Something went wrong. Please try again.',
 							'sureforms'
 						) }
 					</Label>
@@ -42,7 +42,7 @@ const ErrorPopup = () => {
 							window.location.reload();
 						} }
 					>
-						{ __( 'Try Again!', 'sureforms' ) }
+						{ __( 'Try Again', 'sureforms' ) }
 					</Button>
 				</Container.Item>
 			</Container>
