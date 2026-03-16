@@ -159,7 +159,7 @@ class Test_Abstract_Ability extends TestCase {
 
 		// Admin with gated ability disabled.
 		wp_set_current_user( $this->admin_id );
-		update_option( 'srfm_abilities_api_edit', false );
+		update_option( 'srfm_abilities_api_edit', '0' );
 		$this->assertFalse(
 			$this->gated_ability->permission_callback(),
 			'Admin should be denied when gated ability option is false.'
@@ -243,6 +243,12 @@ class Test_Abstract_Ability extends TestCase {
 			$this->markTestSkipped( 'Abilities API not available (requires WP 6.9+).' );
 		}
 
+		// wp_register_ability() requires doing_action( 'wp_abilities_api_init' ) in WP 6.9+.
+		// Simulate the action context so registration is accepted.
+		// phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+		global $wp_current_filter;
+		$wp_current_filter[] = 'wp_abilities_api_init';
+
 		// Register the non-gated ability and verify it exists.
 		$this->ungated_ability->register();
 		$this->assertTrue(
@@ -256,5 +262,7 @@ class Test_Abstract_Ability extends TestCase {
 			wp_has_ability( 'sureforms/create-form' ),
 			'create-form should be registered after calling register().'
 		);
+
+		array_pop( $wp_current_filter );
 	}
 }

@@ -221,6 +221,10 @@ class Test_Abstract_Ability_Gating extends TestCase {
 	 * Test is_enabled returns false when gated option is boolean false.
 	 */
 	public function test_is_enabled_returns_false_when_option_is_false() {
+		// WordPress's update_option() is a no-op when setting a non-existent option
+		// to false (old default === new value). Seed a truthy value first so the
+		// subsequent update to false actually persists an empty string in the DB.
+		update_option( 'srfm_abilities_api_edit', '1' );
 		update_option( 'srfm_abilities_api_edit', false );
 
 		$this->assertFalse(
@@ -256,6 +260,8 @@ class Test_Abstract_Ability_Gating extends TestCase {
 	 */
 	public function test_permission_callback_returns_false_when_gated_option_is_boolean_false() {
 		wp_set_current_user( $this->admin_id );
+		// Seed a truthy value first so update_option( ..., false ) actually writes to the DB.
+		update_option( 'srfm_abilities_api_edit', '1' );
 		update_option( 'srfm_abilities_api_edit', false );
 
 		$this->assertFalse(
