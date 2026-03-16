@@ -1,3 +1,4 @@
+/* global srfm_quill_i18n */
 function initializeTextarea() {
 	const textAreaContainer = Array.from(
 		document.getElementsByClassName( 'srfm-textarea-block' )
@@ -238,12 +239,12 @@ function localizeQuillToolbar( areaField ) {
 	const headerPicker = block.querySelector( '.ql-header.ql-picker' );
 	if ( headerPicker ) {
 		const labelMap = {
-			'1': srfm_quill_i18n.heading_1,
-			'2': srfm_quill_i18n.heading_2,
-			'3': srfm_quill_i18n.heading_3,
-			'4': srfm_quill_i18n.heading_4,
-			'5': srfm_quill_i18n.heading_5,
-			'6': srfm_quill_i18n.heading_6,
+			1: srfm_quill_i18n.heading_1,
+			2: srfm_quill_i18n.heading_2,
+			3: srfm_quill_i18n.heading_3,
+			4: srfm_quill_i18n.heading_4,
+			5: srfm_quill_i18n.heading_5,
+			6: srfm_quill_i18n.heading_6,
 		};
 
 		const pickerItems = headerPicker.querySelectorAll( '.ql-picker-item' );
