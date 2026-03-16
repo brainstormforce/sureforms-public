@@ -3,7 +3,7 @@
  * Get Form Ability.
  *
  * @package sureforms
- * @since x.x.x
+ * @since 2.5.2
  */
 
 namespace SRFM\Inc\Abilities\Forms;
@@ -21,13 +21,13 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Retrieves detailed information about a specific SureForms form,
  * including its field structure parsed from Gutenberg blocks.
  *
- * @since x.x.x
+ * @since 2.5.2
  */
 class Get_Form extends Abstract_Ability {
 	/**
 	 * Constructor.
 	 *
-	 * @since x.x.x
+	 * @since 2.5.2
 	 */
 	public function __construct() {
 		$this->id          = 'sureforms/get-form';
@@ -140,7 +140,7 @@ class Get_Form extends Abstract_Ability {
 	 * Extract field information from parsed Gutenberg blocks.
 	 *
 	 * @param array<mixed> $blocks Parsed blocks array.
-	 * @since x.x.x
+	 * @since 2.5.2
 	 * @return array<array<string,mixed>>
 	 */
 	private function extract_fields_from_blocks( $blocks ) {

@@ -131,9 +131,13 @@ const FormConfirmSetting = ( { toast, setHasValidationErrors } ) => {
 	}
 
 	useEffect( () => {
-		// Fetch the page options.
-		getWordPressPages( setPageOptions );
 		const formConfirmationData = sureforms_keys._srfm_form_confirmation;
+
+		// Fetch the first page of options and include saved value for label hydration.
+		getWordPressPages( setPageOptions, {
+			selectedUrl: formConfirmationData?.[ 0 ]?.page_url || '',
+		} );
+
 		if ( formConfirmationData ) {
 			setData( formConfirmationData[ 0 ] );
 		}
@@ -151,6 +155,7 @@ const FormConfirmSetting = ( { toast, setHasValidationErrors } ) => {
 						data={ data }
 						setData={ setData }
 						pageOptions={ pageOptions }
+						setPageOptions={ setPageOptions }
 						errorMessage={ errorMessage }
 						setErrorMessage={ setErrorMessage }
 						keyValueComponent={ keyValueComponent }
@@ -176,6 +181,7 @@ const FormConfirmSetting = ( { toast, setHasValidationErrors } ) => {
 						data={ data }
 						setData={ setData }
 						pageOptions={ pageOptions }
+						setPageOptions={ setPageOptions }
 						errorMessage={ errorMessage }
 						setErrorMessage={ setErrorMessage }
 						keyValueComponent={ keyValueComponent }

@@ -8,7 +8,6 @@
 	"extra": {
 		"installer-paths": {
 			"inc/lib/{$name}": [
-        "brainstormforce/nps-survey",
         "brainstormforce/bsf-analytics",
 		"brainstormforce/astra-notices"
       ]
@@ -54,16 +53,10 @@
 	"require": {
 		"wp-cli/wp-cli-bundle": "^2.10",
 		"composer/installers": "^2.3",
-		"brainstormforce/nps-survey": "^1.0",
     "brainstormforce/bsf-analytics": "^1.0",
 		"brainstormforce/astra-notices": "^1.1"
 	},
 	"repositories": [
-		{
-			"name": "brainstormforce/nps-survey",
-			"type": "vcs",
-			"url": "git@github.com:brainstormforce/nps-survey.git"
-		},
     {
 			"name": "brainstormforce/bsf-analytics",
 			"type": "vcs",

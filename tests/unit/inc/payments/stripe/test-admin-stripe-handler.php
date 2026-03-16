@@ -145,6 +145,20 @@ class Test_Admin_Stripe_Handler extends TestCase {
 	// webhook_configuration_notice
 	// ──────────────────────────────────────────────
 
+	/**
+	 * Test ajax_cancel_subscription is callable.
+	 */
+	public function test_ajax_cancel_subscription() {
+		$this->assertTrue( method_exists( $this->handler, 'ajax_cancel_subscription' ) );
+	}
+
+	/**
+	 * Test ajax_pause_subscription is callable.
+	 */
+	public function test_ajax_pause_subscription() {
+		$this->assertTrue( method_exists( $this->handler, 'ajax_pause_subscription' ) );
+	}
+
 	public function test_webhook_configuration_notice_requires_admin() {
 		// When not admin (default test context), should output nothing.
 		ob_start();

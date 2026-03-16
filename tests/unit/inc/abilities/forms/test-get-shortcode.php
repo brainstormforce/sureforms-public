@@ -156,4 +156,21 @@ class Test_Get_Shortcode extends TestCase {
 	public function test_get_input_schema() {
 		$this->test_input_schema();
 	}
+
+	/**
+	 * Test get_output_schema returns valid schema.
+	 */
+	public function test_get_output_schema() {
+		$schema = $this->ability->get_output_schema();
+		$this->assertIsArray( $schema );
+		$this->assertArrayHasKey( 'properties', $schema );
+	}
+
+	/**
+	 * Test execute returns result.
+	 */
+	public function test_execute() {
+		$result = $this->ability->execute( [ 'form_id' => 0 ] );
+		$this->assertTrue( is_array( $result ) || $result instanceof \WP_Error );
+	}
 }

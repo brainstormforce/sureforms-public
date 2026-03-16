@@ -3,7 +3,7 @@
  * Update Entry Status Ability.
  *
  * @package sureforms
- * @since x.x.x
+ * @since 2.5.2
  */
 
 namespace SRFM\Inc\Abilities\Entries;
@@ -21,20 +21,20 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * Updates the status of one or more form submission entries.
  *
- * @since x.x.x
+ * @since 2.5.2
  */
 class Update_Entry_Status extends Abstract_Ability {
 	/**
 	 * Maximum number of entries that can be updated in a single call.
 	 *
-	 * @since x.x.x
+	 * @since 2.5.2
 	 */
 	public const MAX_ENTRIES = 50;
 
 	/**
 	 * Constructor.
 	 *
-	 * @since x.x.x
+	 * @since 2.5.2
 	 */
 	public function __construct() {
 		$this->id          = 'sureforms/update-entry-status';
@@ -47,7 +47,7 @@ class Update_Entry_Status extends Abstract_Ability {
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @since x.x.x
+	 * @since 2.5.2
 	 */
 	public function get_annotations() {
 		return [
@@ -63,7 +63,7 @@ class Update_Entry_Status extends Abstract_Ability {
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @since x.x.x
+	 * @since 2.5.2
 	 */
 	public function get_input_schema() {
 		return [
@@ -88,7 +88,7 @@ class Update_Entry_Status extends Abstract_Ability {
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @since x.x.x
+	 * @since 2.5.2
 	 */
 	public function get_output_schema() {
 		return [
@@ -108,7 +108,7 @@ class Update_Entry_Status extends Abstract_Ability {
 	 * Execute the update-entry-status ability.
 	 *
 	 * @param array<string,mixed> $input Validated input data.
-	 * @since x.x.x
+	 * @since 2.5.2
 	 * @return array<string,mixed>|\WP_Error
 	 */
 	public function execute( $input ) {

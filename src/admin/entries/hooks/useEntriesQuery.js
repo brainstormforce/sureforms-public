@@ -139,7 +139,7 @@ export const useUpdateEntriesReadStatus = () => {
 				const entryId = variables.entry_ids[ 0 ];
 				message = sprintf(
 					// translators: %1$s is the entry ID, %2$s is the action (read/unread).
-					__( 'Entry#%1$s marked as %2$s.', 'sureforms' ),
+					__( 'Entry #%1$s marked as %2$s.', 'sureforms' ),
 					entryId,
 					action
 				);
@@ -204,13 +204,13 @@ export const useTrashEntries = () => {
 					action === 'trash'
 						? sprintf(
 							// translators: %s is the entry ID.
-							__( 'Entry#%s moved to trash.', 'sureforms' ),
+							__( 'Entry #%s moved to trash.', 'sureforms' ),
 							entryId
 						  )
 						: sprintf(
 							// translators: %s is the entry ID.
 							__(
-								'Entry#%s restored successfully.',
+								'Entry #%s restored successfully.',
 								'sureforms'
 							),
 							entryId
@@ -275,7 +275,7 @@ export const useDeleteEntries = () => {
 				const entryId = variables.entry_ids[ 0 ];
 				message = sprintf(
 					// translators: %s is the entry ID.
-					__( 'Entry#%s deleted permanently.', 'sureforms' ),
+					__( 'Entry #%s deleted permanently.', 'sureforms' ),
 					entryId
 				);
 			} else {

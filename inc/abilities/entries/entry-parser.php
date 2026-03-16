@@ -6,7 +6,7 @@
  * raw entry data into structured output with decoded field labels.
  *
  * @package sureforms
- * @since x.x.x
+ * @since 2.5.2
  */
 
 namespace SRFM\Inc\Abilities\Entries;
@@ -23,7 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Provides the shared parse_entry() method used by
  * Get_Entry and Bulk_Get_Entries abilities.
  *
- * @since x.x.x
+ * @since 2.5.2
  */
 trait Entry_Parser {
 	/**
@@ -33,7 +33,7 @@ trait Entry_Parser {
 	 * submission info building (with IP masking), and user info.
 	 *
 	 * @param array<string,mixed> $entry Raw entry from the database.
-	 * @since x.x.x
+	 * @since 2.5.2
 	 * @return array<string,mixed> Parsed entry data (without entry_id — caller prepends it).
 	 */
 	protected function parse_entry( array $entry ) {

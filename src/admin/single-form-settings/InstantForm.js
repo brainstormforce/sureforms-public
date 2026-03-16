@@ -23,6 +23,12 @@ import { ChevronDown } from 'lucide-react';
 
 let live_mode_prev_srfm_instant_form_settings = {};
 
+// Capture URL source param at module-load time, before Gutenberg's BrowserURL
+// component can call history.replaceState and strip unknown query parameters.
+const _instantFormLearnSource = new URLSearchParams(
+	window.location.search
+).get( 'source' );
+
 // Extract the key from obj1 if the obj1 key value is different from obj2 key value.
 function findDifferentKeyValue( obj1, obj2 ) {
 	let differentKey = '';
@@ -111,6 +117,90 @@ const InstantFormComponent = () => {
 		useState( false );
 	const [ hideFormSettingsPopover, setHideFormSettingsPopover ] =
 		useState( false );
+
+	const [ showLearnTip, setShowLearnTip ] = useState( false );
+	const [ showColorTip, setShowColorTip ] = useState( false );
+	const [ showPublishTip, setShowPublishTip ] = useState( false );
+
+	// Auto-open Instant Form popover when redirected from Learn section.
+	useEffect( () => {
+		if ( _instantFormLearnSource === 'learn-instant-form' ) {
+			setOpenPopover( true );
+			setShowLearnTip( true );
+			const timer = setTimeout( () => {
+				setShowLearnTip( false );
+				setShowColorTip( true );
+			}, 5000 );
+			return () => clearTimeout( timer );
+		}
+	}, [] );
+
+	// Auto-dismiss color tip and chain into publish tip.
+	useEffect( () => {
+		if ( showColorTip ) {
+			const timer = setTimeout( () => {
+				setShowColorTip( false );
+				setShowPublishTip( true );
+			}, 5000 );
+			return () => clearTimeout( timer );
+		}
+	}, [ showColorTip ] );
+
+	// Inject publish button tooltip via DOM when redirected from Learn section.
+	useEffect( () => {
+		const existing = document.getElementById( 'srfm-publish-learn-tip' );
+		if ( existing ) {
+			existing.remove();
+		}
+
+		if ( ! showPublishTip ) {
+			return;
+		}
+
+		const dismissTimer = setTimeout(
+			() => setShowPublishTip( false ),
+			5000
+		);
+
+		const interval = setInterval( () => {
+			const publishBtn =
+				document.querySelector( '.editor-post-publish-button' ) ||
+				document.querySelector( '.editor-post-publish-button__button' );
+
+			if ( ! publishBtn ) {
+				return;
+			}
+
+			const rect = publishBtn.getBoundingClientRect();
+
+			// Button exists in DOM but isn't laid out yet — keep polling.
+			if ( ! rect.width || ! rect.height ) {
+				return;
+			}
+
+			clearInterval( interval );
+
+			const tip = document.createElement( 'div' );
+			tip.id = 'srfm-publish-learn-tip';
+			tip.style.cssText = `position:fixed;top:${ rect.bottom + 8 }px;left:${ rect.left + ( rect.width / 2 ) }px;transform:translateX(-50%);z-index:2147483647;pointer-events:none;`;
+
+			tip.innerHTML = `
+				<div style="position:absolute;top:-4px;left:50%;transform:translateX(-50%) rotate(45deg);width:8px;height:8px;background:#1e1e1e;"></div>
+				<div style="background:#1e1e1e;color:#fff;font-size:13px;padding:6px 12px;border-radius:6px;box-shadow:0 4px 12px rgba(0,0,0,0.15);white-space:nowrap;">${ __( 'Publish Your Form', 'sureforms' ) }</div>
+			`;
+
+			document.body.appendChild( tip );
+		}, 100 );
+
+		return () => {
+			clearInterval( interval );
+			clearTimeout( dismissTimer );
+			const tip = document.getElementById( 'srfm-publish-learn-tip' );
+			if ( tip ) {
+				tip.remove();
+			}
+		};
+	}, [ showPublishTip ] );
 
 	const [ isLinkCopied, setIsLinkCopied ] = useState( false );
 	const [ editPostSlug, setEditPostSlug ] = useState( {
@@ -464,19 +554,62 @@ const InstantFormComponent = () => {
 				>
 					<div className="srfm-instant-form-settings-container">
 						<div className="srfm-instant-form-settings-group">
-							<InstantFormToggle
-								label={ __(
-									'Enable Instant Form',
-									'sureforms'
+							<div className="relative">
+								<InstantFormToggle
+									label={ __(
+										'Enable Instant Form',
+										'sureforms'
+									) }
+									checked={ true === enable_instant_form }
+									onChange={ () =>
+										onHandleChange(
+											'enable_instant_form',
+											! enable_instant_form
+										)
+									}
+								/>
+								{ showLearnTip && (
+									<div
+										style={ {
+											position: 'absolute',
+											top: '0',
+											right: '100%',
+											marginRight: '10px',
+											zIndex: 999999,
+											pointerEvents: 'none',
+										} }
+									>
+										<div
+											style={ {
+												position: 'absolute',
+												top: '8px',
+												right: '-4px',
+												transform: 'rotate(45deg)',
+												width: '8px',
+												height: '8px',
+												backgroundColor: '#1e1e1e',
+											} }
+										/>
+										<div
+											style={ {
+												backgroundColor: '#1e1e1e',
+												color: '#fff',
+												fontSize: '13px',
+												padding: '6px 12px',
+												borderRadius: '6px',
+												boxShadow:
+													'0 4px 12px rgba(0,0,0,0.15)',
+												whiteSpace: 'nowrap',
+											} }
+										>
+											{ __(
+												'Enable This to Instantly Publish the Form',
+												'sureforms'
+											) }
+										</div>
+									</div>
 								) }
-								checked={ true === enable_instant_form }
-								onChange={ () =>
-									onHandleChange(
-										'enable_instant_form',
-										! enable_instant_form
-									)
-								}
-							/>
+							</div>
 
 							<InstantFormToggle
 								label={ __( 'Enable Preview', 'sureforms' ) }
@@ -606,30 +739,80 @@ const InstantFormComponent = () => {
 											/>
 										</div>
 									) : (
-										<div className="srfm-instant-form-settings srfm-instant-form-settings-inline">
-											<label>
-												{ __(
-													'Background Color',
-													'sureforms'
-												) }
-											</label>
-											<AdvancedPopColorControl
-												colorValue={ cover_color }
-												data={ {
-													value: cover_color,
-													label: 'cover_color',
-												} }
-												onColorChange={ (
-													colorValue
-												) =>
-													onHandleChange(
-														'cover_color',
+										<div className="relative">
+											{ showColorTip && (
+												<div
+													style={ {
+														position: 'absolute',
+														top: '50%',
+														transform:
+															'translateY(-50%)',
+														right: '100%',
+														marginRight: '10px',
+														zIndex: 999999,
+														pointerEvents: 'none',
+													} }
+												>
+													<div
+														style={ {
+															position:
+																'absolute',
+															top: '50%',
+															transform:
+																'translateY(-50%) rotate(45deg)',
+															right: '-4px',
+															width: '8px',
+															height: '8px',
+															backgroundColor:
+																'#1e1e1e',
+														} }
+													/>
+													<div
+														style={ {
+															backgroundColor:
+																'#1e1e1e',
+															color: '#fff',
+															fontSize: '13px',
+															padding: '6px 12px',
+															borderRadius: '6px',
+															boxShadow:
+																'0 4px 12px rgba(0,0,0,0.15)',
+															whiteSpace:
+																'nowrap',
+														} }
+													>
+														{ __(
+															'Style Your Instant Form Page Here',
+															'sureforms'
+														) }
+													</div>
+												</div>
+											) }
+											<div className="srfm-instant-form-settings srfm-instant-form-settings-inline">
+												<label>
+													{ __(
+														'Background Color',
+														'sureforms'
+													) }
+												</label>
+												<AdvancedPopColorControl
+													colorValue={ cover_color }
+													data={ {
+														value: cover_color,
+														label: 'cover_color',
+													} }
+													onColorChange={ (
 														colorValue
-													)
-												}
-												value={ cover_color }
-												isFormSpecific={ true }
-											/>
+													) =>
+														onHandleChange(
+															'cover_color',
+															colorValue
+														)
+													}
+													value={ cover_color }
+													isFormSpecific={ true }
+												/>
+											</div>
 										</div>
 									) }
 								</div>
@@ -922,10 +1105,14 @@ export default () => {
 	rootDiv.classList.add( 'srfm-instant-form-root' );
 	const root = createRoot( rootDiv );
 
+	// Subscribe to the data store to wait until the editor toolbar is ready,
+	// then mount once and immediately unsubscribe. Without unsubscribing,
+	// root.render() would fire on every Redux action for the editor lifetime.
 	const unsubscribe = wp.data.subscribe( function () {
 		setTimeout( function () {
-			root.render( <InstantFormComponent /> );
+			// Already mounted — stop listening.
 			if ( document.querySelector( '.srfm-instant-form-root' ) ) {
+				unsubscribe();
 				return;
 			}
 			const toolbarElement =
@@ -933,11 +1120,9 @@ export default () => {
 				editorEl.querySelector( '.editor-header__settings' );
 			if ( !! toolbarElement ) {
 				toolbarElement.prepend( rootDiv );
+				root.render( <InstantFormComponent /> );
+				unsubscribe();
 			}
 		}, 1 );
 	} );
-	// unsubscribe
-	if ( document.querySelector( '.srfm-instant-form-root' ) ) {
-		unsubscribe();
-	}
 };

@@ -3,7 +3,7 @@
  * Delete Entry Ability.
  *
  * @package sureforms
- * @since x.x.x
+ * @since 2.5.2
  */
 
 namespace SRFM\Inc\Abilities\Entries;
@@ -20,20 +20,20 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * Permanently deletes one or more form submission entries.
  *
- * @since x.x.x
+ * @since 2.5.2
  */
 class Delete_Entry extends Abstract_Ability {
 	/**
 	 * Maximum number of entries that can be deleted in a single call.
 	 *
-	 * @since x.x.x
+	 * @since 2.5.2
 	 */
 	public const MAX_ENTRIES = 50;
 
 	/**
 	 * Constructor.
 	 *
-	 * @since x.x.x
+	 * @since 2.5.2
 	 */
 	public function __construct() {
 		$this->id          = 'sureforms/delete-entry';
@@ -46,7 +46,7 @@ class Delete_Entry extends Abstract_Ability {
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @since x.x.x
+	 * @since 2.5.2
 	 */
 	public function get_annotations() {
 		return [
@@ -62,7 +62,7 @@ class Delete_Entry extends Abstract_Ability {
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @since x.x.x
+	 * @since 2.5.2
 	 */
 	public function get_input_schema() {
 		return [
@@ -82,7 +82,7 @@ class Delete_Entry extends Abstract_Ability {
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @since x.x.x
+	 * @since 2.5.2
 	 */
 	public function get_output_schema() {
 		return [
@@ -102,7 +102,7 @@ class Delete_Entry extends Abstract_Ability {
 	 * Execute the delete-entry ability.
 	 *
 	 * @param array<string,mixed> $input Validated input data.
-	 * @since x.x.x
+	 * @since 2.5.2
 	 * @return array<string,mixed>|\WP_Error
 	 */
 	public function execute( $input ) {

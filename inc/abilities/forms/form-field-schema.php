@@ -5,7 +5,7 @@
  * Shared field-type schema and sanitization for form abilities.
  *
  * @package sureforms
- * @since x.x.x
+ * @since 2.5.2
  */
 
 namespace SRFM\Inc\Abilities\Forms;
@@ -20,13 +20,13 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Provides reusable form-field schema definition and field sanitization
  * for Create_Form and Update_Form abilities.
  *
- * @since x.x.x
+ * @since 2.5.2
  */
 trait Form_Field_Schema {
 	/**
 	 * Get the form field items schema (field types + properties).
 	 *
-	 * @since x.x.x
+	 * @since 2.5.2
 	 * @return array<string,mixed>
 	 */
 	protected function get_form_field_schema() {
@@ -52,7 +52,7 @@ trait Form_Field_Schema {
 		 * Pro and third-party plugins can use this to add their own field types.
 		 *
 		 * @param array<string> $field_types Array of field type slugs.
-		 * @since x.x.x
+		 * @since 2.5.2
 		 */
 		$field_types = apply_filters( 'srfm_ability_form_field_types', $field_types );
 
@@ -111,7 +111,7 @@ trait Form_Field_Schema {
 		 * properties (e.g. upload, rating, date-picker, time-picker options).
 		 *
 		 * @param array<string,array<string,mixed>> $properties Additional field properties. Default empty array.
-		 * @since x.x.x
+		 * @since 2.5.2
 		 */
 		$additional_properties = apply_filters( 'srfm_ability_form_field_properties', [] );
 
@@ -126,7 +126,7 @@ trait Form_Field_Schema {
 	 * Sanitize form field string properties before passing to Field_Mapping.
 	 *
 	 * @param array<int,array<string,mixed>> $fields Raw form fields from input.
-	 * @since x.x.x
+	 * @since 2.5.2
 	 * @return array<int,array<string,mixed>> Sanitized form fields.
 	 */
 	protected function sanitize_form_fields( array $fields ) {

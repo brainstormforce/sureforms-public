@@ -251,8 +251,8 @@ const FormsListingPage = () => {
 		setConfirmDialog( {
 			open: true,
 			title: _n(
-				'Move Form to Trash?',
-				'Move Forms to Trash?',
+				'Move form to trash?',
+				'Move forms to trash?',
 				selectedForms.length,
 				'sureforms'
 			),
@@ -351,7 +351,7 @@ const FormsListingPage = () => {
 	const handleFormTrash = ( form ) => {
 		setConfirmDialog( {
 			open: true,
-			title: __( 'Move Form to Trash?', 'sureforms' ),
+			title: __( 'Move form to trash?', 'sureforms' ),
 			description: __(
 				'This form will be moved to trash and can be restored later.',
 				'sureforms'
@@ -376,7 +376,7 @@ const FormsListingPage = () => {
 	const handleFormDelete = ( form ) => {
 		setConfirmDialog( {
 			open: true,
-			title: __( 'Delete Form', 'sureforms' ),
+			title: __( 'Delete form?', 'sureforms' ),
 			description: __(
 				'Are you sure you want to permanently delete this form? This action cannot be undone.',
 				'sureforms'
@@ -397,7 +397,7 @@ const FormsListingPage = () => {
 	const handleFormDuplicate = ( form ) => {
 		setConfirmDialog( {
 			open: true,
-			title: __( 'Duplicate Form?', 'sureforms' ),
+			title: __( 'Duplicate form?', 'sureforms' ),
 			description: sprintf(
 				/* translators: %s: form title */
 				__(
@@ -480,8 +480,8 @@ const FormsListingPage = () => {
 			<Container className="p-6 bg-background-secondary rounded-lg">
 				<FormsHeader />
 				<div className="mt-6 text-text-error">
-					{ __( 'Error loading forms: ', 'sureforms' ) }
-					{ error?.message }
+					{ __( 'Error loading forms', 'sureforms' ) }
+					{ error?.message && `: ${ error.message }` }
 				</div>
 			</Container>
 		);

@@ -14,9 +14,10 @@ msgstr ""
 #. Plugin Name of the plugin
 #. Author of the plugin
 #: sureforms.php
-#: admin/admin.php:305
-#: admin/admin.php:306
-#: admin/admin.php:1475
+#: admin/admin.php:321
+#: admin/admin.php:322
+#: admin/admin.php:1697
+#: inc/abilities/abilities-registrar.php:75
 #: inc/gutenberg-hooks.php:109
 #: inc/page-builders/bricks/elements/form-widget.php:66
 #: inc/page-builders/bricks/service-provider.php:55
@@ -30,7 +31,7 @@ msgstr "SureForms"
 #. Plugin URI of the plugin
 #: sureforms.php
 msgid "https://sureforms.com"
-msgstr ""
+msgstr "https://sureforms.com"
 
 #. Description of the plugin
 #: sureforms.php
@@ -40,13 +41,14 @@ msgstr "Un moyen simple mais puissant de créer des formulaires modernes pour vo
 #. Author URI of the plugin
 #: sureforms.php
 msgid "https://sureforms.com/"
-msgstr ""
+msgstr "https://sureforms.com/"
 
-#: admin/admin.php:318
-#: admin/admin.php:319
+#: admin/admin.php:334
+#: admin/admin.php:335
 #: assets/build/dashboard.js:172
 #: assets/build/entries.js:172
 #: assets/build/forms.js:172
+#: assets/build/learn.js:172
 #: assets/build/page_header.js:172
 #: assets/build/payments.js:172
 #: assets/build/settings.js:2
@@ -54,31 +56,33 @@ msgstr ""
 msgid "Dashboard"
 msgstr "Tableau de bord"
 
-#: admin/admin.php:336
-#: admin/admin.php:337
-#: admin/admin.php:674
+#: admin/admin.php:352
+#: admin/admin.php:353
+#: admin/admin.php:719
 #: assets/build/dashboard.js:172
 #: assets/build/entries.js:172
 #: assets/build/forms.js:172
+#: assets/build/learn.js:172
 #: assets/build/page_header.js:172
 #: assets/build/payments.js:172
 #: assets/build/settings.js:2
 msgid "Settings"
 msgstr "Paramètres"
 
-#: admin/admin.php:482
-#: admin/admin.php:483
+#: admin/admin.php:527
+#: admin/admin.php:528
 #: inc/post-types.php:210
 msgid "New Form"
 msgstr "Nouveau formulaire"
 
-#: admin/admin.php:491
-#: admin/admin.php:492
-#: admin/admin.php:1512
+#: admin/admin.php:536
+#: admin/admin.php:537
+#: admin/admin.php:1734
 #: inc/global-settings/email-summary.php:225
 #: assets/build/dashboard.js:172
 #: assets/build/entries.js:172
 #: assets/build/forms.js:172
+#: assets/build/learn.js:172
 #: assets/build/page_header.js:172
 #: assets/build/payments.js:172
 #: assets/build/settings.js:2
@@ -86,45 +90,33 @@ msgid "Entries"
 msgstr "Entrées"
 
 #. Translators: Post Title.
-#: admin/admin.php:761
+#: admin/admin.php:806
+#, php-format
 msgid "Edit %1$s"
 msgstr "Modifier %1$s"
 
 #: inc/ai-form-builder/ai-auth.php:45
-#: inc/ai-form-builder/ai-auth.php:91
-#: inc/ai-form-builder/ai-auth.php:155
+#: inc/ai-form-builder/ai-auth.php:93
+#: inc/ai-form-builder/ai-auth.php:167
 #: inc/background-process.php:112
 #: inc/create-new-form.php:101
 #: inc/duplicate-form.php:176
 #: inc/export.php:118
 #: inc/export.php:176
-#: inc/form-submit.php:131
-#: inc/form-submit.php:975
 #: inc/forms-data.php:88
 #: inc/global-settings/global-settings.php:86
 #: inc/global-settings/global-settings.php:365
-#: inc/rest-api.php:91
-#: inc/rest-api.php:150
 #: inc/rest-api.php:170
-#: inc/rest-api.php:202
-#: inc/rest-api.php:224
-#: inc/rest-api.php:315
-#: inc/rest-api.php:360
-#: inc/rest-api.php:409
-#: inc/rest-api.php:458
-#: inc/rest-api.php:491
-#: inc/rest-api.php:626
-#: inc/rest-api.php:699
-#: inc/rest-api.php:759
 msgid "Nonce verification failed."
 msgstr "La vérification du nonce a échoué."
 
 #. translators: %1$s: Opening anchor tag with URL, %2$s: Closing anchor tag, %3$s: SureForms Pro Plugin Name.
-#: admin/admin.php:1264
+#: admin/admin.php:1326
+#, php-format
 msgid "Please %1$sactivate%2$s your copy of %3$s to get new features, access support, receive update notifications, and more."
 msgstr "Veuillez %1$sactiver%2$s votre copie de %3$s pour obtenir de nouvelles fonctionnalités, accéder au support, recevoir des notifications de mise à jour, et plus encore."
 
-#: admin/admin.php:1511
+#: admin/admin.php:1733
 #: inc/global-settings/email-summary.php:224
 #: assets/build/entries.js:172
 #: assets/build/payments.js:172
@@ -190,7 +182,7 @@ msgstr "Poubelle"
 msgid "Published"
 msgstr "Publié"
 
-#: admin/admin.php:1503
+#: admin/admin.php:1725
 msgid "View"
 msgstr "Voir"
 
@@ -201,6 +193,7 @@ msgstr "Restaurer"
 
 #: assets/build/entries.js:172
 #: assets/build/forms.js:172
+#: assets/build/payments.js:172
 msgid "Delete Permanently"
 msgstr "Supprimer définitivement"
 
@@ -209,21 +202,15 @@ msgid "All Form Entries"
 msgstr "Toutes les entrées de formulaire"
 
 #. Translators: %d is the form ID.
-#: inc/rest-api.php:579
+#: inc/abilities/entries/entry-parser.php:71
+#: inc/rest-api.php:725
+#, php-format
 msgid "SureForms Form #%d"
 msgstr "Formulaire SureForms n°%d"
 
 #: assets/build/entries.js:172
-msgid "Submission Info"
-msgstr "Informations de soumission"
-
-#: assets/build/entries.js:172
 msgid "Entry:"
 msgstr "Entrée :"
-
-#: assets/build/entries.js:172
-msgid "Form Name:"
-msgstr "Nom du formulaire :"
 
 #: assets/build/entries.js:172
 msgid "User IP:"
@@ -244,10 +231,6 @@ msgstr "Utilisateur :"
 #: assets/build/entries.js:172
 msgid "Status:"
 msgstr "Statut :"
-
-#: assets/build/entries.js:172
-msgid "Submitted On:"
-msgstr "Soumis le :"
 
 #: assets/build/formEditor.js:172
 msgid "Fields"
@@ -276,15 +259,16 @@ msgstr "Aucun plugin spécifié"
 msgid "Plugin Successfully Activated"
 msgstr "Plugin activé avec succès"
 
-#: admin/admin.php:826
+#: admin/admin.php:871
 msgid "Activating..."
 msgstr "Activation..."
 
-#: admin/admin.php:827
+#: admin/admin.php:872
 #: assets/build/dashboard.js:172
 #: assets/build/entries.js:172
 #: assets/build/formEditor.js:172
 #: assets/build/forms.js:172
+#: assets/build/learn.js:172
 #: assets/build/page_header.js:172
 #: assets/build/payments.js:172
 #: assets/build/settings.js:2
@@ -292,17 +276,17 @@ msgstr "Activation..."
 msgid "Activated"
 msgstr "Activé"
 
-#: admin/admin.php:828
+#: admin/admin.php:873
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:172
 msgid "Activate"
 msgstr "Activer"
 
-#: admin/admin.php:829
+#: admin/admin.php:874
 msgid "Installing..."
 msgstr "Installation en cours..."
 
-#: admin/admin.php:830
+#: admin/admin.php:875
 msgid "Installed"
 msgstr "Installé"
 
@@ -310,9 +294,10 @@ msgstr "Installé"
 msgid "You do not have permission to access this page."
 msgstr "Vous n'avez pas la permission d'accéder à cette page."
 
-#: admin/admin.php:1369
-#: admin/admin.php:1407
-#: admin/admin.php:1428
+#: admin/admin.php:1492
+#: admin/admin.php:1591
+#: admin/admin.php:1629
+#: admin/admin.php:1650
 #: inc/admin-ajax.php:162
 #: inc/payments/admin/admin-handler.php:638
 #: inc/payments/front-end.php:74
@@ -326,12 +311,13 @@ msgid "Form ID is required."
 msgstr "L'identifiant du formulaire est requis."
 
 #: inc/admin-ajax.php:182
-#: inc/form-submit.php:987
+#: inc/form-submit.php:1019
 msgid "Invalid form ID."
 msgstr "ID de formulaire invalide."
 
 #. Translators: %s: Form ID.
 #: inc/admin-ajax.php:186
+#, php-format
 msgid "SureForms id: %s"
 msgstr "Identifiant SureForms : %s"
 
@@ -384,27 +370,27 @@ msgstr "Soumettre"
 msgid "Hidden Value"
 msgstr "Valeur cachée"
 
-#: inc/ai-form-builder/ai-auth.php:72
+#: inc/ai-form-builder/ai-auth.php:74
 msgid "Failed to encode the token data."
 msgstr "Échec de l'encodage des données du jeton."
 
-#: inc/ai-form-builder/ai-auth.php:98
+#: inc/ai-form-builder/ai-auth.php:100
 msgid "Error processing Access Key."
 msgstr "Erreur lors du traitement de la clé d'accès."
 
-#: inc/ai-form-builder/ai-auth.php:113
+#: inc/ai-form-builder/ai-auth.php:118
 msgid "No access key provided."
 msgstr "Aucune clé d'accès fournie."
 
-#: inc/ai-form-builder/ai-auth.php:143
+#: inc/ai-form-builder/ai-auth.php:155
 msgid "Failed to decrypt the access key."
 msgstr "Échec du déchiffrement de la clé d'accès."
 
-#: inc/ai-form-builder/ai-auth.php:150
+#: inc/ai-form-builder/ai-auth.php:162
 msgid "Failed to json decode the decrypted data."
 msgstr "Échec du décodage JSON des données décryptées."
 
-#: inc/ai-form-builder/ai-auth.php:160
+#: inc/ai-form-builder/ai-auth.php:172
 msgid "No user email found in the decrypted data."
 msgstr "Aucun e-mail utilisateur trouvé dans les données décryptées."
 
@@ -435,33 +421,17 @@ msgstr "Une erreur inconnue s'est produite."
 msgid "HTTP Request Failed"
 msgstr "Échec de la requête HTTP"
 
-#: inc/ai-form-builder/ai-helper.php:182
-msgid "An error occurred while trying to connect to the SureForms API server. Please check your connection"
-msgstr "Une erreur s'est produite lors de la tentative de connexion au serveur API de SureForms. Veuillez vérifier votre connexion"
-
 #: inc/ai-form-builder/ai-helper.php:185
 msgid "License Verification Failed"
 msgstr "Échec de la vérification de la licence"
-
-#: inc/ai-form-builder/ai-helper.php:186
-msgid "An error occurred while trying to verify your license. Please check your license key"
-msgstr "Une erreur s'est produite lors de la vérification de votre licence. Veuillez vérifier votre clé de licence"
 
 #: inc/ai-form-builder/ai-helper.php:189
 msgid "User Verification Failed"
 msgstr "Échec de la vérification de l'utilisateur"
 
-#: inc/ai-form-builder/ai-helper.php:190
-msgid "An error occurred while trying to verify your email. Please check your email you have used to log in/ sign up on billing.sureforms.com."
-msgstr "Une erreur s'est produite lors de la tentative de vérification de votre e-mail. Veuillez vérifier l'e-mail que vous avez utilisé pour vous connecter ou vous inscrire sur billing.sureforms.com."
-
 #: inc/ai-form-builder/ai-helper.php:193
 msgid "Referer Mismatch"
 msgstr "Incohérence du référent"
-
-#: inc/ai-form-builder/ai-helper.php:194
-msgid "An error occurred while trying to verify your referer. Please check your referer."
-msgstr "Une erreur s'est produite lors de la vérification de votre référent. Veuillez vérifier votre référent."
 
 #: inc/ai-form-builder/ai-helper.php:197
 msgid "Invalid Website URL"
@@ -474,10 +444,6 @@ msgstr "Le générateur de formulaires AI ne fonctionne pas sur localhost. Veuil
 #: inc/ai-form-builder/ai-helper.php:201
 msgid "Domain Verification Failed"
 msgstr "Échec de la vérification du domaine"
-
-#: inc/ai-form-builder/ai-helper.php:202
-msgid "Domain Verification Failed on current site. Please try again on any another website."
-msgstr "La vérification de domaine a échoué sur le site actuel. Veuillez réessayer sur un autre site web."
 
 #: inc/ai-form-builder/ai-helper.php:205
 msgid "Unknown Error"
@@ -506,11 +472,6 @@ msgstr "Erreur lors de la création du formulaire SureForms,"
 #: inc/email/email-template.php:46
 msgid "New form submission"
 msgstr "Nouvelle soumission de formulaire"
-
-#: inc/export.php:271
-#: inc/export.php:290
-msgid "Failed to import form."
-msgstr "Échec de l'importation du formulaire."
 
 #: inc/fields/address-markup.php:29
 msgid "Address"
@@ -543,11 +504,10 @@ msgstr "Confirmer"
 
 #. Translators: %s is label of block.
 #: inc/fields/email-markup.php:93
+#, php-format
 msgid "Confirm %s"
 msgstr "Confirmer %s"
 
-#: inc/fields/gdpr-markup.php:29
-#: inc/fields/gdpr-markup.php:39
 #: inc/gutenberg-hooks.php:215
 msgid "I consent to have this website store my submitted information so they can respond to my inquiry."
 msgstr "Je consens à ce que ce site web stocke les informations que j'ai soumises afin qu'ils puissent répondre à ma demande."
@@ -556,10 +516,6 @@ msgstr "Je consens à ce que ce site web stocke les informations que j'ai soumis
 #: inc/generate-form-markup.php:580
 msgid "Please verify that you are not a robot."
 msgstr "Veuillez vérifier que vous n'êtes pas un robot."
-
-#: inc/fields/input-markup.php:65
-msgid "Text Field"
-msgstr "Champ de texte"
 
 #: inc/fields/multichoice-markup.php:113
 msgid "Multi Choice"
@@ -578,55 +534,31 @@ msgstr "Téléphone"
 msgid "Textarea"
 msgstr "Zone de texte"
 
-#: inc/fields/url-markup.php:38
-msgid "Url"
-msgstr "URL"
-
-#: inc/form-submit.php:166
-msgid "Sorry, you cannot access this route"
-msgstr "Désolé, vous ne pouvez pas accéder à cet itinéraire"
-
-#: inc/form-submit.php:184
+#: inc/form-submit.php:186
 msgid "Cloudflare Turnstile secret key is invalid."
 msgstr "La clé secrète de Cloudflare Turnstile est invalide."
 
-#: inc/form-submit.php:191
+#: inc/form-submit.php:193
 msgid "Cloudflare Turnstile response is missing."
 msgstr "La réponse de Cloudflare Turnstile est manquante."
 
-#: inc/form-submit.php:235
+#: inc/form-submit.php:237
 msgid "hCaptcha secret key is invalid."
 msgstr "La clé secrète hCaptcha est invalide."
 
-#: inc/form-submit.php:242
+#: inc/form-submit.php:244
 msgid "hCaptcha response is missing."
 msgstr "La réponse hCaptcha est manquante."
 
-#: inc/form-submit.php:141
-#: inc/form-submit.php:515
-#: inc/form-submit.php:522
+#: inc/form-submit.php:534
 msgid "Form data is not found."
 msgstr "Les données du formulaire sont introuvables."
-
-#: inc/form-submit.php:149
-msgid "Form Id is missing."
-msgstr "L'identifiant du formulaire est manquant."
-
-#: inc/form-submit.php:497
-msgid "Spam Detected"
-msgstr "Spam détecté"
-
-#: inc/form-submit.php:685
-msgid "Error submitting form"
-msgstr "Erreur lors de la soumission du formulaire"
 
 #: inc/forms-data.php:68
 msgid "Sorry, you are not allowed to view the form."
 msgstr "Désolé, vous n'êtes pas autorisé à voir le formulaire."
 
 #: inc/generate-form-markup.php:748
-#: assets/build/formSubmit.js:2
-#: assets/js/unminified/form-submit.js:530
 msgid "There was an error trying to submit your form. Please try again."
 msgstr "Une erreur s'est produite lors de la soumission de votre formulaire. Veuillez réessayer."
 
@@ -668,6 +600,7 @@ msgid "Advanced Fields"
 msgstr "Champs avancés"
 
 #: inc/helper.php:70
+#: assets/build/formEditor.js:172
 msgid "This field is required."
 msgstr "Ce champ est requis."
 
@@ -675,7 +608,7 @@ msgstr "Ce champ est requis."
 msgid "Value needs to be unique."
 msgstr "La valeur doit être unique."
 
-#: inc/helper.php:601
+#: inc/helper.php:613
 msgid "Sorry, you are not allowed to perform this action."
 msgstr "Désolé, vous n'êtes pas autorisé à effectuer cette action."
 
@@ -760,6 +693,7 @@ msgid "This is where your form entries will appear"
 msgstr "C'est ici que vos entrées de formulaire apparaîtront"
 
 #: inc/post-types.php:212
+#: assets/build/forms.js:172
 #: assets/build/payments.js:172
 msgid "View Form"
 msgstr "Voir le formulaire"
@@ -768,12 +702,13 @@ msgstr "Voir le formulaire"
 msgid "View Forms"
 msgstr "Afficher les formulaires"
 
-#: admin/admin.php:473
-#: admin/admin.php:474
+#: admin/admin.php:518
+#: admin/admin.php:519
 #: inc/post-types.php:214
 #: assets/build/dashboard.js:172
 #: assets/build/entries.js:172
 #: assets/build/forms.js:172
+#: assets/build/learn.js:172
 #: assets/build/page_header.js:172
 #: assets/build/payments.js:172
 #: assets/build/settings.js:2
@@ -806,20 +741,13 @@ msgstr "Email de notification d'administration"
 
 #. translators: %s: Form title smart tag
 #: inc/post-types.php:934
+#, php-format
 msgid "New Form Submission - %s"
 msgstr "Nouvelle soumission de formulaire - %s"
 
 #: assets/build/forms.js:172
 msgid "Shortcode"
 msgstr "Code court"
-
-#: inc/rest-api.php:97
-msgid "Request could not be processed."
-msgstr "La demande n'a pas pu être traitée."
-
-#: inc/rest-api.php:104
-msgid "Invalid date."
-msgstr "Date invalide."
 
 #: inc/smart-tags.php:109
 msgid "Site URL"
@@ -899,45 +827,13 @@ msgstr "Remplir par paramètre GET"
 msgid "Cookie Value"
 msgstr "Valeur du cookie"
 
-#: inc/translatable.php:88
-msgid "Please enter a valid phone number."
-msgstr "Veuillez entrer un numéro de téléphone valide."
-
-#: inc/translatable.php:89
+#: assets/build/formEditor.js:172
 msgid "Please enter a valid URL."
 msgstr "Veuillez entrer une URL valide."
 
 #: inc/translatable.php:90
 msgid "Confirmation email does not match."
 msgstr "L'e-mail de confirmation ne correspond pas."
-
-#: inc/translatable.php:91
-msgid "Please enter a valid email address."
-msgstr "Veuillez entrer une adresse e-mail valide."
-
-#. translators: %s represents the minimum acceptable value
-#: inc/translatable.php:94
-msgid "Minimum value is %s"
-msgstr "La valeur minimale est %s"
-
-#. translators: %s represents the maximum acceptable value
-#: inc/translatable.php:97
-msgid "Maximum value is %s"
-msgstr "La valeur maximale est %s"
-
-#. translators: %s represents the minimum number of selections required
-#. translators: %s represents the minimum number of characters required
-#: inc/translatable.php:100
-#: inc/translatable.php:106
-msgid "Minimum %s selections are required"
-msgstr "Un minimum de %s sélections est requis"
-
-#. translators: %s represents the maximum number of selections allowed
-#. translators: %s represents the maximum number of characters allowed
-#: inc/translatable.php:103
-#: inc/translatable.php:109
-msgid "Maximum %s selections are allowed"
-msgstr "Un maximum de %s sélections est autorisé"
 
 #: inc/updater.php:137
 msgid "Heads up!"
@@ -1015,7 +911,7 @@ msgstr "Adversal"
 
 #: modules/gutenberg/icons/icons-v6-0.php:245
 msgid "affiliatetheme"
-msgstr ""
+msgstr "affiliatetheme"
 
 #: modules/gutenberg/icons/icons-v6-0.php:256
 msgid "Airbnb"
@@ -1127,7 +1023,7 @@ msgstr "Angular"
 
 #: modules/gutenberg/icons/icons-v6-0.php:553
 msgid "Ankh"
-msgstr ""
+msgstr "Ankh"
 
 #: modules/gutenberg/icons/icons-v6-0.php:564
 msgid "App Store"
@@ -1407,11 +1303,11 @@ msgstr "Signe Austral"
 
 #: modules/gutenberg/icons/icons-v6-0.php:1323
 msgid "Autoprefixer"
-msgstr ""
+msgstr "Autoprefixer"
 
 #: modules/gutenberg/icons/icons-v6-0.php:1334
 msgid "avianex"
-msgstr ""
+msgstr "avianex"
 
 #: modules/gutenberg/icons/icons-v6-0.php:1345
 msgid "Aviato"
@@ -1467,7 +1363,7 @@ msgstr "Achat de sac"
 
 #: modules/gutenberg/icons/icons-v6-0.php:1488
 msgid "Bahai"
-msgstr ""
+msgstr "Bahai"
 
 #: modules/gutenberg/icons/icons-v6-0.php:1499
 msgid "Baht Sign"
@@ -1591,7 +1487,7 @@ msgstr "Vélo"
 
 #: modules/gutenberg/icons/icons-v6-0.php:1839
 msgid "Bilibili"
-msgstr ""
+msgstr "Bilibili"
 
 #: modules/gutenberg/icons/icons-v6-0.php:1850
 msgid "BIMobject"
@@ -1619,7 +1515,7 @@ msgstr "Signe Bitcoin"
 
 #: modules/gutenberg/icons/icons-v6-0.php:1916
 msgid "Bity"
-msgstr ""
+msgstr "Bity"
 
 #: modules/gutenberg/icons/icons-v6-0.php:1927
 msgid "Font Awesome Black Tie"
@@ -2557,7 +2453,7 @@ msgstr "Cloudsmith"
 
 #: modules/gutenberg/icons/icons-v6-0.php:4661
 msgid "cloudversify"
-msgstr ""
+msgstr "cloudversify"
 
 #: modules/gutenberg/icons/icons-v6-0.php:4672
 msgid "Clover"
@@ -2565,7 +2461,7 @@ msgstr "Trèfle"
 
 #: modules/gutenberg/icons/icons-v6-0.php:4683
 msgid "Cmplid"
-msgstr ""
+msgstr "Cmplid"
 
 #: modules/gutenberg/icons/icons-v6-0.php:4694
 msgid "Code"
@@ -2894,11 +2790,11 @@ msgstr "DEV"
 
 #: modules/gutenberg/icons/icons-v6-1.php:312
 msgid "deviantART"
-msgstr ""
+msgstr "deviantART"
 
 #: modules/gutenberg/icons/icons-v6-1.php:323
 msgid "Dharmachakra"
-msgstr ""
+msgstr "Dharmachakra"
 
 #: modules/gutenberg/icons/icons-v6-1.php:334
 msgid "DHL"
@@ -3259,7 +3155,7 @@ msgstr "Gomme"
 
 #: modules/gutenberg/icons/icons-v6-1.php:1257
 msgid "Erlang"
-msgstr ""
+msgstr "Erlang"
 
 #: modules/gutenberg/icons/icons-v6-1.php:1268
 msgid "Ethereum"
@@ -3363,7 +3259,7 @@ msgstr "Visage Grinçant Plissé"
 
 #: modules/gutenberg/icons/icons-v6-1.php:1613
 msgid "Face Grin Squint Tears"
-msgstr ""
+msgstr "Visage Rire Plissant Larmes"
 
 #: modules/gutenberg/icons/icons-v6-1.php:1629
 msgid "Face Grin Stars"
@@ -3427,7 +3323,7 @@ msgstr "Fais-moi face"
 
 #: modules/gutenberg/icons/icons-v6-1.php:1869
 msgid "Face Meh Blank"
-msgstr ""
+msgstr "Visage Meh Vide"
 
 #: modules/gutenberg/icons/icons-v6-1.php:1885
 msgid "Face Rolling Eyes"
@@ -3740,7 +3636,7 @@ msgstr "Flacon Vial"
 
 #: modules/gutenberg/icons/icons-v6-1.php:2838
 msgid "Flickr"
-msgstr ""
+msgstr "Flickr"
 
 #: modules/gutenberg/icons/icons-v6-1.php:2849
 msgid "Flipboard"
@@ -4036,7 +3932,7 @@ msgstr "Google Wallet"
 
 #: modules/gutenberg/icons/icons-v6-1.php:3725
 msgid "Gopuram"
-msgstr ""
+msgstr "Gopuram"
 
 #: modules/gutenberg/icons/icons-v6-1.php:3736
 msgid "Graduation Cap"
@@ -4564,7 +4460,7 @@ msgstr "Utilisateur de la maison"
 
 #: modules/gutenberg/icons/icons-v6-1.php:5290
 msgid "Houzz"
-msgstr ""
+msgstr "Houzz"
 
 #: modules/gutenberg/icons/icons-v6-1.php:5301
 msgid "Hryvnia Sign"
@@ -4632,7 +4528,7 @@ msgstr "Images"
 
 #: modules/gutenberg/icons/icons-v6-2.php:26
 msgid "IMDB"
-msgstr ""
+msgstr "IMDB"
 
 #: modules/gutenberg/icons/icons-v6-2.php:37
 msgid "Inbox"
@@ -4676,7 +4572,7 @@ msgstr "InVision"
 
 #: modules/gutenberg/icons/icons-v6-2.php:169
 msgid "ioxhost"
-msgstr ""
+msgstr "ioxhost"
 
 #: modules/gutenberg/icons/icons-v6-2.php:180
 #: modules/gutenberg/build/blocks.js:7
@@ -4685,7 +4581,7 @@ msgstr "Italique"
 
 #: modules/gutenberg/icons/icons-v6-2.php:191
 msgid "itch.io"
-msgstr ""
+msgstr "itch.io"
 
 #: modules/gutenberg/icons/icons-v6-2.php:202
 msgid "iTunes"
@@ -4721,7 +4617,7 @@ msgstr "Ordre Jedi"
 
 #: modules/gutenberg/icons/icons-v6-2.php:290
 msgid "Jenkis"
-msgstr ""
+msgstr "Jenkis"
 
 #: modules/gutenberg/icons/icons-v6-2.php:301
 msgid "Jet Fighter"
@@ -4753,7 +4649,7 @@ msgstr "JavaScript (JS)"
 
 #: modules/gutenberg/icons/icons-v6-2.php:389
 msgid "jsFiddle"
-msgstr ""
+msgstr "jsFiddle"
 
 #: modules/gutenberg/icons/icons-v6-2.php:400
 msgid "Jug Detergent"
@@ -4769,7 +4665,7 @@ msgstr "Kaaba"
 
 #: modules/gutenberg/icons/icons-v6-2.php:433
 msgid "Kaggle"
-msgstr ""
+msgstr "Kaggle"
 
 #: modules/gutenberg/icons/icons-v6-2.php:444
 msgid "Key"
@@ -4785,11 +4681,11 @@ msgstr "Clavier"
 
 #: modules/gutenberg/icons/icons-v6-2.php:482
 msgid "KeyCDN"
-msgstr ""
+msgstr "KeyCDN"
 
 #: modules/gutenberg/icons/icons-v6-2.php:493
 msgid "Khanda"
-msgstr ""
+msgstr "Khanda"
 
 #: modules/gutenberg/icons/icons-v6-2.php:504
 msgid "Kickstarter"
@@ -4817,7 +4713,7 @@ msgstr "Oiseau Kiwi"
 
 #: modules/gutenberg/icons/icons-v6-2.php:570
 msgid "KORVUE"
-msgstr ""
+msgstr "KORVUE"
 
 #: modules/gutenberg/icons/icons-v6-2.php:581
 msgid "L"
@@ -5015,7 +4911,7 @@ msgstr "Virus pulmonaire"
 
 #: modules/gutenberg/icons/icons-v6-2.php:1135
 msgid "lyft"
-msgstr ""
+msgstr "lyft"
 
 #: modules/gutenberg/icons/icons-v6-2.php:1146
 msgid "M"
@@ -5201,7 +5097,7 @@ msgstr "Mémoire"
 
 #: modules/gutenberg/icons/icons-v6-2.php:1646
 msgid "Mendeley"
-msgstr ""
+msgstr "Mendeley"
 
 #: modules/gutenberg/icons/icons-v6-2.php:1657
 msgid "Menorah"
@@ -5281,7 +5177,7 @@ msgstr "Mixeur"
 
 #: modules/gutenberg/icons/icons-v6-2.php:1871
 msgid "Mizuni"
-msgstr ""
+msgstr "Mizuni"
 
 #: modules/gutenberg/icons/icons-v6-2.php:1882
 #: assets/build/blocks.js:172
@@ -5308,11 +5204,11 @@ msgstr "Bouton d'écran mobile"
 
 #: modules/gutenberg/icons/icons-v6-2.php:1937
 msgid "MODX"
-msgstr ""
+msgstr "MODX"
 
 #: modules/gutenberg/icons/icons-v6-2.php:1948
 msgid "Monero"
-msgstr ""
+msgstr "Monero"
 
 #: modules/gutenberg/icons/icons-v6-2.php:1959
 msgid "Money Bill"
@@ -5472,7 +5368,7 @@ msgstr "Notes médicales"
 
 #: modules/gutenberg/icons/icons-v6-2.php:2408
 msgid "npm"
-msgstr ""
+msgstr "npm"
 
 #: modules/gutenberg/icons/icons-v6-2.php:2419
 msgid "NS8"
@@ -5500,7 +5396,7 @@ msgstr "Octopus Deploy"
 
 #: modules/gutenberg/icons/icons-v6-2.php:2495
 msgid "Odnoklassniki"
-msgstr ""
+msgstr "Odnoklassniki"
 
 #: modules/gutenberg/icons/icons-v6-2.php:2517
 msgid "Oil Can"
@@ -5520,11 +5416,11 @@ msgstr "Om"
 
 #: modules/gutenberg/icons/icons-v6-2.php:2561
 msgid "OpenCart"
-msgstr ""
+msgstr "OpenCart"
 
 #: modules/gutenberg/icons/icons-v6-2.php:2572
 msgid "OpenID"
-msgstr ""
+msgstr "OpenID"
 
 #: modules/gutenberg/icons/icons-v6-2.php:2583
 msgid "Opera"
@@ -5585,7 +5481,7 @@ msgstr "Palette"
 
 #: modules/gutenberg/icons/icons-v6-2.php:2737
 msgid "Palfed"
-msgstr ""
+msgstr "Palfed"
 
 #: modules/gutenberg/icons/icons-v6-2.php:2748
 msgid "Pallet"
@@ -6054,7 +5950,7 @@ msgstr "Prise Cercle Plus"
 
 #: modules/gutenberg/icons/icons-v6-2.php:4083
 msgid "Plug Circle Xmark"
-msgstr ""
+msgstr "Brancher Cercle Croix"
 
 #: modules/gutenberg/icons/icons-v6-2.php:4094
 msgid "Plus"
@@ -6268,7 +6164,7 @@ msgstr "Répondre à tous"
 
 #: modules/gutenberg/icons/icons-v6-2.php:4692
 msgid "replyd"
-msgstr ""
+msgstr "répondu"
 
 #: modules/gutenberg/icons/icons-v6-2.php:4703
 msgid "Republican"
@@ -6364,7 +6260,7 @@ msgstr "Rocket.Chat"
 
 #: modules/gutenberg/icons/icons-v6-2.php:4956
 msgid "Rockrms"
-msgstr ""
+msgstr "Rockrms"
 
 #: modules/gutenberg/icons/icons-v6-2.php:4967
 msgid "Rotate"
@@ -6384,7 +6280,7 @@ msgstr "Itinéraire"
 
 #: modules/gutenberg/icons/icons-v6-2.php:5011
 msgid "Rss"
-msgstr ""
+msgstr "Rss"
 
 #: modules/gutenberg/icons/icons-v6-2.php:5022
 msgid "Ruble Sign"
@@ -6549,7 +6445,7 @@ msgstr "Sellcast"
 
 #: modules/gutenberg/icons/icons-v6-3.php:290
 msgid "Sellsy"
-msgstr ""
+msgstr "Sellsy"
 
 #: modules/gutenberg/icons/icons-v6-3.php:301
 msgid "Server"
@@ -6702,7 +6598,7 @@ msgstr "Sith"
 
 #: modules/gutenberg/icons/icons-v6-3.php:713
 msgid "Sitrox"
-msgstr ""
+msgstr "Sitrox"
 
 #: modules/gutenberg/icons/icons-v6-3.php:724
 msgid "Sketch"
@@ -6718,7 +6614,7 @@ msgstr "Tête de mort"
 
 #: modules/gutenberg/icons/icons-v6-3.php:757
 msgid "skyatlas"
-msgstr ""
+msgstr "skyatlas"
 
 #: modules/gutenberg/icons/icons-v6-3.php:768
 msgid "Skype"
@@ -6799,7 +6695,7 @@ msgstr "SoundCloud"
 
 #: modules/gutenberg/icons/icons-v6-3.php:993
 msgid "Sourcetree"
-msgstr ""
+msgstr "Sourcetree"
 
 #: modules/gutenberg/icons/icons-v6-3.php:1004
 msgid "Spa"
@@ -7560,7 +7456,7 @@ msgstr "Boîte de rampe de camion"
 
 #: modules/gutenberg/icons/icons-v6-3.php:3185
 msgid "Tty"
-msgstr ""
+msgstr "Tty"
 
 #: modules/gutenberg/icons/icons-v6-3.php:3196
 msgid "Tumblr"
@@ -7609,11 +7505,11 @@ msgstr "Ubuntu"
 
 #: modules/gutenberg/icons/icons-v6-3.php:3350
 msgid "UIkit"
-msgstr ""
+msgstr "UIkit"
 
 #: modules/gutenberg/icons/icons-v6-3.php:3361
 msgid "Umbraco"
-msgstr ""
+msgstr "Umbraco"
 
 #: modules/gutenberg/icons/icons-v6-3.php:3372
 msgid "Umbrella"
@@ -7654,7 +7550,7 @@ msgstr "Déverrouiller le trou de serrure"
 
 #: modules/gutenberg/icons/icons-v6-3.php:3471
 msgid "Unsplash"
-msgstr ""
+msgstr "Unsplash"
 
 #: modules/gutenberg/icons/icons-v6-3.php:3482
 msgid "Untappd"
@@ -7908,7 +7804,7 @@ msgstr "Vidéo Slash"
 
 #: modules/gutenberg/icons/icons-v6-3.php:4180
 msgid "Vihara"
-msgstr ""
+msgstr "Vihara"
 
 #: modules/gutenberg/icons/icons-v6-3.php:4191
 #: modules/gutenberg/icons/icons-v6-3.php:4213
@@ -7945,7 +7841,7 @@ msgstr "VK"
 
 #: modules/gutenberg/icons/icons-v6-3.php:4301
 msgid "VNV"
-msgstr ""
+msgstr "VNV"
 
 #: modules/gutenberg/icons/icons-v6-3.php:4312
 msgid "Voicemail"
@@ -8121,7 +8017,7 @@ msgstr "Verre à vin vide"
 
 #: modules/gutenberg/icons/icons-v6-3.php:4811
 msgid "wirsindhandwerk"
-msgstr ""
+msgstr "wirsindhandwerk"
 
 #: modules/gutenberg/icons/icons-v6-3.php:4822
 msgid "Wix"
@@ -8133,7 +8029,7 @@ msgstr "Sorciers de la Côte"
 
 #: modules/gutenberg/icons/icons-v6-3.php:4844
 msgid "Wodu"
-msgstr ""
+msgstr "Wodu"
 
 #: modules/gutenberg/icons/icons-v6-3.php:4855
 msgid "Wolf Pack Battalion"
@@ -8169,7 +8065,7 @@ msgstr "WPForms"
 
 #: modules/gutenberg/icons/icons-v6-3.php:4943
 msgid "wpressr"
-msgstr ""
+msgstr "wpressr"
 
 #: modules/gutenberg/icons/icons-v6-3.php:4954
 msgid "Wrench"
@@ -8189,7 +8085,7 @@ msgstr "Xbox"
 
 #: modules/gutenberg/icons/icons-v6-3.php:4998
 msgid "Xing"
-msgstr ""
+msgstr "Xing"
 
 #: modules/gutenberg/icons/icons-v6-3.php:5020
 msgid "Xmark"
@@ -8241,7 +8137,7 @@ msgstr "Yin Yang"
 
 #: modules/gutenberg/icons/icons-v6-3.php:5152
 msgid "Yoast"
-msgstr ""
+msgstr "Yoast"
 
 #: modules/gutenberg/icons/icons-v6-3.php:5163
 msgid "YouTube"
@@ -8253,7 +8149,7 @@ msgstr "Z"
 
 #: modules/gutenberg/icons/icons-v6-3.php:5196
 msgid "Zhihu"
-msgstr ""
+msgstr "Zhihu"
 
 #: modules/gutenberg/icons/icons-v6-3.php:5202
 msgid "Brands"
@@ -8296,7 +8192,7 @@ msgstr "Social"
 msgid "Travel"
 msgstr "Voyage"
 
-#: inc/helper.php:2051
+#: inc/helper.php:2086
 msgid "Blank Form"
 msgstr "Formulaire vierge"
 
@@ -8319,6 +8215,7 @@ msgstr "Formulaire instantané désactivé"
 
 #. translators: Here %s is the plugin's name.
 #: templates/single-form.php:179
+#, php-format
 msgid "Crafted with ♡ %s"
 msgstr "Conçu avec ♡ %s"
 
@@ -8474,6 +8371,7 @@ msgstr "Sélectionner les unités"
 #: modules/gutenberg/build/blocks.js:11
 #: modules/gutenberg/build/blocks.js:13
 #: modules/gutenberg/build/blocks.js:15
+#, js-format
 msgid "%s units"
 msgstr "%s unités"
 
@@ -8512,7 +8410,7 @@ msgstr "(##) ####-####"
 
 #: assets/build/blocks.js:172
 msgid "27/08/2024"
-msgstr ""
+msgstr "27/08/2024"
 
 #: assets/build/blocks.js:172
 msgid "23:59:59"
@@ -8547,10 +8445,6 @@ msgstr "Valeur par défaut"
 #: assets/build/blocks.js:172
 msgid "Error Message"
 msgstr "Message d'erreur"
-
-#: assets/build/blocks.js:172
-msgid "Validation Message for Duplicate "
-msgstr "Message de validation pour doublon"
 
 #: assets/build/blocks.js:172
 msgid "Help Text"
@@ -8778,6 +8672,7 @@ msgid "Enable Auto Country Detection"
 msgstr "Activer la détection automatique du pays"
 
 #: assets/build/blocks.js:172
+#, js-format
 msgid "%s Width"
 msgstr "Largeur %s"
 
@@ -8817,6 +8712,7 @@ msgstr "Intégrations"
 #: assets/build/dashboard.js:172
 #: assets/build/entries.js:172
 #: assets/build/forms.js:172
+#: assets/build/learn.js:172
 #: assets/build/page_header.js:172
 #: assets/build/payments.js:172
 #: assets/build/settings.js:2
@@ -8826,6 +8722,7 @@ msgstr "Quoi de neuf ?"
 #: assets/build/dashboard.js:172
 #: assets/build/entries.js:172
 #: assets/build/forms.js:172
+#: assets/build/learn.js:172
 #: assets/build/page_header.js:172
 #: assets/build/payments.js:172
 #: assets/build/settings.js:2
@@ -8835,6 +8732,7 @@ msgstr "Cœur"
 #: assets/build/dashboard.js:172
 #: assets/build/entries.js:172
 #: assets/build/forms.js:172
+#: assets/build/learn.js:172
 #: assets/build/page_header.js:172
 #: assets/build/payments.js:172
 #: assets/build/settings.js:2
@@ -8844,6 +8742,7 @@ msgstr "Sans licence"
 #. translators: abbreviation for units
 #: assets/build/formEditor.js:172
 #: modules/quick-action-sidebar/components/draggable-block.js:83
+#, js-format
 msgid "%s Removed from Quick Action Bar."
 msgstr "%s retiré de la barre d'action rapide."
 
@@ -8855,6 +8754,7 @@ msgstr "Ajouter à la barre d'action rapide"
 #. translators: abbreviation for units
 #: assets/build/formEditor.js:172
 #: modules/quick-action-sidebar/components/Modal.js:42
+#, js-format
 msgid "%s Added to Quick Action Bar."
 msgstr "%s ajouté à la barre d'action rapide."
 
@@ -8883,9 +8783,9 @@ msgstr "Ajouter des blocs à la barre d'action rapide"
 msgid "Re-arrange block inside Quick Action Bar"
 msgstr "Réorganiser le bloc dans la barre d'action rapide"
 
-#: admin/admin.php:394
-#: admin/admin.php:395
-#: admin/admin.php:1606
+#: admin/admin.php:410
+#: admin/admin.php:411
+#: admin/admin.php:1906
 #: assets/build/blocks.js:172
 #: assets/build/dashboard.js:172
 #: assets/build/entries.js:172
@@ -8917,10 +8817,6 @@ msgstr "Paramètres de conformité"
 #: assets/build/formEditor.js:172
 msgid "Enable GDPR Compliance"
 msgstr "Activer la conformité RGPD"
-
-#: assets/build/formEditor.js:172
-msgid "When enabled this form will not store User IP, Browser Name and the Device Name in the Entries."
-msgstr "Lorsque cette option est activée, ce formulaire ne stockera pas l'IP de l'utilisateur, le nom du navigateur et le nom de l'appareil dans les entrées."
 
 #: assets/build/formEditor.js:172
 msgid "Never store entry data after form submission"
@@ -9004,10 +8900,6 @@ msgid "Reply To"
 msgstr "Répondre à"
 
 #: assets/build/formEditor.js:172
-msgid "Please fill out the required field."
-msgstr "Veuillez remplir le champ requis."
-
-#: assets/build/formEditor.js:172
 msgid "Add Notification"
 msgstr "Ajouter une notification"
 
@@ -9018,18 +8910,6 @@ msgstr "Notification par e-mail désactivée avec succès."
 #: assets/build/formEditor.js:172
 msgid "Email Notification enabled successfully."
 msgstr "Notification par e-mail activée avec succès."
-
-#: assets/build/formEditor.js:172
-msgid "Email Notification duplicated successfully."
-msgstr "Notification par e-mail dupliquée avec succès."
-
-#: assets/build/formEditor.js:172
-msgid "Are you sure to delete this?"
-msgstr "Êtes-vous sûr de vouloir supprimer ceci ?"
-
-#: assets/build/formEditor.js:172
-msgid "Email Notification deleted successfully."
-msgstr "Notification par e-mail supprimée avec succès."
 
 #: assets/build/formEditor.js:172
 msgid "Add Key"
@@ -9082,18 +8962,6 @@ msgstr "Veuillez sélectionner une page."
 #: assets/build/formEditor.js:172
 msgid "Suggestion: URL should use HTTPS"
 msgstr "Suggestion : l'URL devrait utiliser HTTPS"
-
-#: assets/build/formEditor.js:172
-msgid "URL is missing Top Level Domain (TLD)"
-msgstr "L'URL manque de domaine de premier niveau (TLD)"
-
-#: assets/build/formEditor.js:172
-msgid "Please enter a valid URL"
-msgstr "Veuillez entrer une URL valide"
-
-#: assets/build/formEditor.js:172
-msgid "This field is required"
-msgstr "Ce champ est requis"
 
 #: assets/build/formEditor.js:172
 msgid "Success Message"
@@ -9234,7 +9102,7 @@ msgstr "Centre"
 msgid "Right"
 msgstr "D'accord"
 
-#: inc/form-submit.php:1160
+#: inc/form-submit.php:1192
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:172
 msgid "Google reCAPTCHA"
@@ -9244,7 +9112,7 @@ msgstr "Google reCAPTCHA"
 msgid "CloudFlare Turnstile"
 msgstr "Tourniquet CloudFlare"
 
-#: inc/form-submit.php:1164
+#: inc/form-submit.php:1196
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:172
 msgid "hCaptcha"
@@ -9311,6 +9179,9 @@ msgstr "Merci"
 msgid "Form submitted successfully!"
 msgstr "Formulaire soumis avec succès !"
 
+#: inc/learn.php:129
+#: inc/learn.php:137
+#: inc/learn.php:143
 #: assets/build/formEditor.js:172
 msgid "Instant Form"
 msgstr "Formulaire instantané"
@@ -9359,6 +9230,7 @@ msgstr "Utiliser la bannière comme arrière-plan de page"
 msgid "Form Width"
 msgstr "Largeur du formulaire"
 
+#: inc/fields/url-markup.php:38
 #: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:17
 msgid "URL"
@@ -9402,10 +9274,6 @@ msgid "Spam Protection"
 msgstr "Protection contre le spam"
 
 #: assets/build/settings.js:172
-msgid "Enable IP Logging"
-msgstr "Activer la journalisation IP"
-
-#: assets/build/settings.js:172
 msgid "If this option is turned on, the user's IP address will be saved with the form data"
 msgstr "Si cette option est activée, l'adresse IP de l'utilisateur sera enregistrée avec les données du formulaire"
 
@@ -9418,18 +9286,22 @@ msgid "Enable Honeypot Security for better spam protection"
 msgstr "Activez la sécurité Honeypot pour une meilleure protection contre le spam"
 
 #: assets/build/settings.js:172
+#, js-format
 msgid "%s represents the minimum selections needed. For example: “Minimum 2 selections are required.”"
 msgstr "%s représente le nombre minimum de sélections nécessaires. Par exemple : « Un minimum de 2 sélections est requis. »"
 
 #: assets/build/settings.js:172
+#, js-format
 msgid "%s represents the maximum selections allowed. For example: “Maximum 4 selections are allowed.”"
 msgstr "%s représente le nombre maximum de sélections autorisées. Par exemple : « Maximum 4 sélections autorisées. »"
 
 #: assets/build/settings.js:172
+#, js-format
 msgid "%s represents the minimum choices needed. For example: “Minimum 1 selection is required.”"
 msgstr "%s représente le nombre minimum de choix nécessaires. Par exemple : « Au moins 1 sélection est requise. »"
 
 #: assets/build/settings.js:172
+#, js-format
 msgid "%s represents the maximum choices allowed. For example: “Maximum 3 selections are allowed.”"
 msgstr "%s représente le nombre maximum de choix autorisés. Par exemple : « Maximum de 3 sélections autorisées. »"
 
@@ -9466,10 +9338,6 @@ msgid "Sunday"
 msgstr "Dimanche"
 
 #: assets/build/settings.js:172
-msgid "Enable Email Summaries "
-msgstr "Activer les résumés par e-mail"
-
-#: assets/build/settings.js:172
 msgid "Schedule Reports"
 msgstr "Programmer les rapports"
 
@@ -9495,6 +9363,7 @@ msgstr "Tourniquet"
 msgid "Get Keys"
 msgstr "Obtenir les clés"
 
+#: assets/build/learn.js:172
 #: assets/build/settings.js:172
 msgid "Documentation"
 msgstr "Documentation"
@@ -9507,7 +9376,7 @@ msgstr "Clé du site"
 msgid "Secret Key"
 msgstr "Clé secrète"
 
-#: inc/form-submit.php:1168
+#: inc/form-submit.php:1200
 #: assets/build/settings.js:172
 msgid "Cloudflare Turnstile"
 msgstr "Tourniquet Cloudflare"
@@ -9525,18 +9394,6 @@ msgid "Connect Now"
 msgstr "Connectez-vous maintenant"
 
 #: assets/build/templatePicker.js:172
-msgid "Error Creating Form"
-msgstr "Erreur lors de la création du formulaire"
-
-#: assets/build/templatePicker.js:172
-msgid "There was an error mapping the AI response to Fields. Please try again."
-msgstr "Il y a eu une erreur lors de la correspondance de la réponse de l'IA aux champs. Veuillez réessayer."
-
-#: assets/build/templatePicker.js:172
-msgid "Try Again!"
-msgstr "Réessayez !"
-
-#: assets/build/templatePicker.js:172
 msgid "Authentication Failed"
 msgstr "Échec de l'authentification"
 
@@ -9551,22 +9408,6 @@ msgstr "Cliquez ici pour réessayer"
 #: assets/build/templatePicker.js:172
 msgid "Exit to Dashboard"
 msgstr "Quitter vers le tableau de bord"
-
-#: assets/build/templatePicker.js:172
-msgid "Connecting with AI…"
-msgstr "Connexion avec l'IA…"
-
-#: assets/build/templatePicker.js:172
-msgid "Generating Fields…"
-msgstr "Génération des champs…"
-
-#: assets/build/templatePicker.js:172
-msgid "Just doing some final touches…"
-msgstr "Je fais juste quelques retouches finales…"
-
-#: assets/build/templatePicker.js:172
-msgid "Redirecting to Editor"
-msgstr "Redirection vers l'éditeur"
 
 #: assets/build/templatePicker.js:172
 msgid "AI Form Builder"
@@ -9589,10 +9430,7 @@ msgid "Try Again"
 msgstr "Réessayez"
 
 #: assets/build/templatePicker.js:172
-msgid "You have reached the FUP limit of AI form generations for the day."
-msgstr "Vous avez atteint la limite FUP de générations de formulaires AI pour la journée."
-
-#: assets/build/templatePicker.js:172
+#, js-format
 msgid "Please try again after %s."
 msgstr "Veuillez réessayer après %s."
 
@@ -10298,6 +10136,7 @@ msgstr "Opacité de survol de superposition"
 
 #. translators: %s: file name
 #: modules/gutenberg/build/blocks.js:17
+#, js-format
 msgid "This image has an empty alt attribute; its file name is %s"
 msgstr "Cette image a un attribut alt vide ; son nom de fichier est %s"
 
@@ -10414,7 +10253,8 @@ msgid "icon"
 msgstr "icône"
 
 #. translators: %1$s: SureForms version, %2$s: SureForms Pro Plugin Name, %3$s: SureForms Pro Version, %4$s: Anchor tag open, %5$s: Closing anchor tag.
-#: admin/admin.php:1282
+#: admin/admin.php:1344
+#, php-format
 msgid "SureForms %1$s requires minimum %2$s %3$s to work properly. Please update to the latest version from %4$shere%5$s."
 msgstr "SureForms %1$s nécessite au minimum %2$s %3$s pour fonctionner correctement. Veuillez mettre à jour vers la dernière version depuis %4$scet endroit%5$s."
 
@@ -10435,19 +10275,7 @@ msgstr "Journalisation IP"
 msgid "Honeypot"
 msgstr "Pot de miel"
 
-#: inc/nps-notice.php:119
-msgid "Thanks a lot for your feedback! 😍"
-msgstr "Merci beaucoup pour votre retour ! 😍"
-
-#: inc/nps-notice.php:122
-msgid "Thank you for your feedback"
-msgstr "Merci pour votre retour"
-
-#: inc/nps-notice.php:123
-msgid "We value your input. How can we improve your experience?"
-msgstr "Nous apprécions votre avis. Comment pouvons-nous améliorer votre expérience ?"
-
-#: inc/nps-notice.php:124
+#: admin/admin.php:1390
 msgid "Rate SureForms"
 msgstr "Évaluez SureForms"
 
@@ -10456,14 +10284,17 @@ msgid "Confirmation Email Mismatch Message"
 msgstr "Message de non-correspondance de l'email de confirmation"
 
 #: assets/build/settings.js:172
+#, js-format
 msgid "%s represents the minimum input value. For example: \"Minimum value is 10.\""
 msgstr "%s représente la valeur d'entrée minimale. Par exemple : \"La valeur minimale est 10.\""
 
 #: assets/build/settings.js:172
+#, js-format
 msgid "%s represents the maximum input value. For example: \"Maximum value is 100.\""
 msgstr "%s représente la valeur d'entrée maximale. Par exemple : \"La valeur maximale est 100.\""
 
 #: assets/build/entries.js:172
+#, js-format
 msgid "Entry #%s"
 msgstr "Entrée n°%s"
 
@@ -10474,10 +10305,6 @@ msgstr "Déverrouiller les entrées du formulaire d'édition"
 #: assets/build/entries.js:172
 msgid "With the SureForms Starter plan, you can easily edit your entries to suit your needs."
 msgstr "Avec le plan de démarrage SureForms, vous pouvez facilement modifier vos entrées pour répondre à vos besoins."
-
-#: assets/build/entries.js:172
-msgid "Resend Notification"
-msgstr "Renvoyer la notification"
 
 #: assets/build/entries.js:172
 msgid "Unlock Resend Email Notification"
@@ -10504,23 +10331,21 @@ msgstr "Déverrouiller Ajouter une note"
 msgid "With the SureForms Starter plan, enhance your submitted form entries by adding personalized notes for better clarity and tracking."
 msgstr "Avec le plan SureForms Starter, améliorez vos entrées de formulaire soumises en ajoutant des notes personnalisées pour une meilleure clarté et un suivi amélioré."
 
-#: inc/form-submit.php:837
+#: inc/form-submit.php:869
 msgid "Email notification passed to the sending server"
 msgstr "Notification par e-mail transmise au serveur d'envoi"
 
 #. translators: Here, %s is the comma separated emails list.
-#: inc/form-submit.php:910
+#: inc/form-submit.php:942
+#, php-format
 msgid "Email notification recipient: %s"
 msgstr "Destinataire de la notification par e-mail : %s"
 
 #. translators: Here, %1$s is the comma separated emails list and %2$s is error report ( if any ).
-#: inc/form-submit.php:927
+#: inc/form-submit.php:959
+#, php-format
 msgid "Email server was unable to send the email notification. Recipient: %1$s. Reason: %2$s"
 msgstr "Le serveur de messagerie n'a pas pu envoyer la notification par e-mail. Destinataire : %1$s. Raison : %2$s"
-
-#: inc/form-submit.php:957
-msgid "No emails were sent"
-msgstr "Aucun e-mail n'a été envoyé"
 
 #: assets/build/blocks.js:172
 #: assets/build/dashboard.js:172
@@ -10560,7 +10385,7 @@ msgstr "Déverrouiller les formulaires conversationnels"
 msgid "With the SureForms Pro Plan, you can transform your forms into engaging conversational layouts for a seamless user experience."
 msgstr "Avec le plan SureForms Pro, vous pouvez transformer vos formulaires en mises en page conversationnelles engageantes pour une expérience utilisateur fluide."
 
-#: admin/admin.php:228
+#: admin/admin.php:244
 msgid "Get SureForms Pro"
 msgstr "Obtenez SureForms Pro"
 
@@ -10634,7 +10459,7 @@ msgstr "PX"
 msgid "Button"
 msgstr "Bouton"
 
-#: inc/helper.php:1671
+#: inc/helper.php:1706
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:172
 msgid "OttoKit"
@@ -10666,10 +10491,12 @@ msgid "SUREFORMS PREMIUM FIELDS"
 msgstr "CHAMPS PREMIUM SUREFORMS"
 
 #: assets/build/formEditor.js:172
+#, js-format
 msgid "The current 'From Email' address does not match your website domain name (%1$s). This can cause your notification emails to be blocked or marked as spam. Alternately, try using a From Address that matches your website domain (admin@%2$s)."
 msgstr "L'adresse e-mail 'De' actuelle ne correspond pas au nom de domaine de votre site web (%1$s). Cela peut entraîner le blocage ou le marquage de vos e-mails de notification comme spam. Alternativement, essayez d'utiliser une adresse De qui correspond au nom de domaine de votre site web (admin@%2$s)."
 
 #: assets/build/formEditor.js:172
+#, js-format
 msgid "The current 'From Email' address does not match your website domain name (%s). This can cause your notification emails to be blocked or marked as spam. "
 msgstr "L'adresse e-mail 'De' actuelle ne correspond pas au nom de domaine de votre site web (%s). Cela peut entraîner le blocage de vos e-mails de notification ou leur classement en tant que spam."
 
@@ -10682,6 +10509,7 @@ msgid " plugin! The Setup Wizard makes it easy to fix your emails. "
 msgstr "plugin ! L'assistant de configuration facilite la correction de vos e-mails."
 
 #: assets/build/formEditor.js:172
+#, js-format
 msgid " Alternately, try using a From Address that matches your website domain (admin@%s)."
 msgstr "Alternativement, essayez d'utiliser une adresse d'expéditeur qui correspond au domaine de votre site web (admin@%s)."
 
@@ -10698,10 +10526,12 @@ msgid "From Email"
 msgstr "De l'email"
 
 #: assets/build/formEditor.js:172
+#, js-format
 msgid "The current 'From Email' address may not match your website domain name (%1$s). This can cause your notification emails to be blocked or marked as spam. Alternately, try using a From Address that matches your website domain (admin@%2$s)."
 msgstr "L'adresse e-mail actuelle de l'expéditeur peut ne pas correspondre au nom de domaine de votre site web (%1$s). Cela peut entraîner le blocage ou le marquage comme spam de vos e-mails de notification. Alternativement, essayez d'utiliser une adresse de l'expéditeur qui correspond au nom de domaine de votre site web (admin@%2$s)."
 
 #: assets/build/formEditor.js:172
+#, js-format
 msgid "The current 'From Email' address may not match your website domain name (%s). This can cause your notification emails to be blocked or marked as spam. "
 msgstr "L'adresse e-mail actuelle 'De' peut ne pas correspondre au nom de domaine de votre site web (%s). Cela peut entraîner le blocage de vos e-mails de notification ou leur marquage comme spam."
 
@@ -10727,31 +10557,27 @@ msgstr "Sélectionner le dégradé"
 
 #: assets/build/settings.js:172
 msgid "reCAPTCHA"
-msgstr ""
+msgstr "reCAPTCHA"
 
-#: inc/form-submit.php:446
-#: inc/form-submit.php:481
-msgid "reCAPTCHA error: Submit nonce is not available."
-msgstr "Erreur reCAPTCHA : le nonce de soumission n'est pas disponible."
-
-#: inc/form-submit.php:1104
+#: inc/form-submit.php:1136
 msgid "Captcha validation failed. No error code provided."
 msgstr "La validation du captcha a échoué. Aucun code d'erreur fourni."
 
-#: inc/form-submit.php:1105
+#: inc/form-submit.php:1137
 msgid "Captcha validation failed."
 msgstr "La validation du captcha a échoué."
 
-#: inc/form-submit.php:1172
+#: inc/form-submit.php:1204
 msgid "Unknown Captcha"
 msgstr "Captcha inconnu"
 
-#: inc/form-submit.php:1173
+#: inc/form-submit.php:1205
 msgid "Invalid captcha type."
 msgstr "Type de captcha invalide."
 
 #. translators: %s is the captcha title.
-#: inc/form-submit.php:1186
+#: inc/form-submit.php:1218
+#, php-format
 msgid "%s verification failed. Please contact your site administrator."
 msgstr "La vérification de %s a échoué. Veuillez contacter votre administrateur de site."
 
@@ -10768,15 +10594,16 @@ msgid "HCaptcha sitekey verification failed. Please contact your site administra
 msgstr "La vérification de la clé de site HCaptcha a échoué. Veuillez contacter votre administrateur de site."
 
 #. translators: %s: Provider name like HCaptcha, Google reCAPTCHA, Turnstile
-#: inc/helper.php:1046
+#: inc/helper.php:1058
+#, php-format
 msgid "%s sitekey is missing. Please contact your site administrator."
 msgstr "La clé de site %s est manquante. Veuillez contacter votre administrateur de site."
 
-#: inc/helper.php:1662
+#: inc/helper.php:1697
 msgid "SureMail"
 msgstr "SureMail"
 
-#: inc/helper.php:1683
+#: inc/helper.php:1718
 msgid "Starter Templates"
 msgstr "Modèles de démarrage"
 
@@ -10813,14 +10640,9 @@ msgid "Invalid Date"
 msgstr "Date invalide"
 
 #: assets/build/dashboard.js:172
-#: assets/build/formEditor.js:2
-#: assets/build/settings.js:2
-msgid "An error occurred. Please try again later."
-msgstr "Une erreur s'est produite. Veuillez réessayer plus tard."
-
-#: assets/build/dashboard.js:172
 #: assets/build/entries.js:172
 #: assets/build/forms.js:172
+#: assets/build/learn.js:172
 #: assets/build/page_header.js:172
 #: assets/build/payments.js:172
 #: assets/build/settings.js:2
@@ -10830,6 +10652,7 @@ msgstr "Prêt à aller au-delà du plan gratuit ?"
 #: assets/build/dashboard.js:172
 #: assets/build/entries.js:172
 #: assets/build/forms.js:172
+#: assets/build/learn.js:172
 #: assets/build/page_header.js:172
 #: assets/build/payments.js:172
 #: assets/build/settings.js:2
@@ -10839,6 +10662,7 @@ msgstr "Mettez à niveau maintenant"
 #: assets/build/dashboard.js:172
 #: assets/build/entries.js:172
 #: assets/build/forms.js:172
+#: assets/build/learn.js:172
 #: assets/build/page_header.js:172
 #: assets/build/payments.js:172
 #: assets/build/settings.js:2
@@ -10848,6 +10672,7 @@ msgstr "et débloquez toute la puissance de SureForms !"
 #: assets/build/dashboard.js:172
 #: assets/build/entries.js:172
 #: assets/build/forms.js:172
+#: assets/build/learn.js:172
 #: assets/build/page_header.js:172
 #: assets/build/payments.js:172
 #: assets/build/settings.js:2
@@ -10952,6 +10777,7 @@ msgstr "Panneau CSS personnalisé"
 msgid "Notifications can use only one From Email so please enter a single address."
 msgstr "Les notifications ne peuvent utiliser qu'une seule adresse e-mail d'expéditeur, veuillez donc entrer une seule adresse."
 
+#: inc/learn.php:181
 #: assets/build/formEditor.js:172
 msgid "Email Notifications"
 msgstr "Notifications par e-mail"
@@ -10970,7 +10796,6 @@ msgstr "Dupliquer"
 
 #: assets/build/entries.js:172
 #: assets/build/formEditor.js:172
-#: assets/build/forms.js:172
 #: assets/build/payments.js:2
 msgid "Delete"
 msgstr "Supprimer"
@@ -11097,6 +10922,7 @@ msgid "To enable reCAPTCHA feature on your SureForms Please enable reCAPTCHA opt
 msgstr "Pour activer la fonctionnalité reCAPTCHA sur vos SureForms, veuillez activer l'option reCAPTCHA dans les paramètres de vos blocs et sélectionner la version. Ajoutez ici la clé secrète et la clé de site de Google reCAPTCHA. reCAPTCHA sera ajouté à votre page sur le front-end."
 
 #: assets/build/settings.js:172
+#, js-format
 msgid "Enter your %s here"
 msgstr "Entrez votre %s ici"
 
@@ -11128,8 +10954,8 @@ msgstr "Décrivez le formulaire que vous souhaitez créer"
 msgid "We are building your form…"
 msgstr "Nous construisons votre formulaire…"
 
-#: admin/admin.php:410
-#: admin/admin.php:411
+#: admin/admin.php:426
+#: admin/admin.php:427
 msgid "SMTP"
 msgstr "SMTP"
 
@@ -11267,26 +11093,28 @@ msgstr "Les notifications administratives vous informent des nouvelles entrées 
 msgid "Contribute to SureForms"
 msgstr "Contribuez à SureForms"
 
-#: admin/admin.php:1365
-#: admin/admin.php:1403
-#: admin/admin.php:1424
+#: admin/admin.php:1496
+#: admin/admin.php:1587
+#: admin/admin.php:1625
+#: admin/admin.php:1646
 msgid "Unauthorized user."
 msgstr "Utilisateur non autorisé."
 
 #. translators: 1: opening span, 2: opening strong (inline), 3: closing strong, 4: closing span, 5: opening strong (block), 6: closing strong
-#: admin/admin.php:1374
+#: admin/admin.php:1596
+#, php-format
 msgid "%1$sGet started by %2$sbuilding your first form%3$s.%4$s%5$sExperience the power of our intuitive AI Form Builder%6$s"
 msgstr "%1$sCommencez par %2$scréer votre premier formulaire%3$s.%4$s%5$sDécouvrez la puissance de notre créateur de formulaires intuitif alimenté par l'IA%6$s"
 
-#: admin/admin.php:1385
+#: admin/admin.php:1607
 msgid "SureForms is waiting for you!"
 msgstr "SureForms vous attend !"
 
-#: admin/admin.php:1387
+#: admin/admin.php:1609
 msgid "Build My First Form"
 msgstr "Construire mon premier formulaire"
 
-#: admin/admin.php:1388
+#: admin/admin.php:1610
 msgid "Dismiss"
 msgstr "Rejeter"
 
@@ -11306,69 +11134,53 @@ msgstr "Connexion"
 msgid "Register"
 msgstr "Inscrire"
 
-#: inc/nps-notice.php:120
-msgid "Thanks for being part of the SureForms community! Got feedback or suggestions? We'd love to hear it."
-msgstr "Merci de faire partie de la communauté SureForms ! Vous avez des commentaires ou des suggestions ? Nous serions ravis de les entendre."
-
-#: admin/admin.php:1499
+#: admin/admin.php:1721
 msgid "Recent Entries"
 msgstr "Entrées récentes"
 
-#: admin/admin.php:1500
+#: admin/admin.php:1722
 msgid "( Last 7 days )"
 msgstr "( 7 derniers jours )"
 
-#: admin/admin.php:1542
+#: admin/admin.php:1842
 msgid "Use Conditional Logic to show only what matters"
 msgstr "Utilisez la logique conditionnelle pour montrer uniquement ce qui compte"
 
-#: admin/admin.php:1543
+#: admin/admin.php:1843
 msgid "Split your form into steps to keep it easy"
 msgstr "Divisez votre formulaire en étapes pour le rendre facile."
 
-#: admin/admin.php:1544
+#: admin/admin.php:1844
 msgid "Let people upload files directly to your form"
 msgstr "Permettez aux gens de télécharger des fichiers directement sur votre formulaire"
 
-#: admin/admin.php:1545
+#: admin/admin.php:1845
 msgid "Turn responses into downloadable PDFs automatically"
 msgstr "Transformez les réponses en PDF téléchargeables automatiquement"
 
-#: admin/admin.php:1546
+#: admin/admin.php:1846
 msgid "Let users sign with a simple signature field"
 msgstr "Permettez aux utilisateurs de signer avec un simple champ de signature"
 
-#: admin/admin.php:1547
+#: admin/admin.php:1847
 msgid "Connect your form to other tools using webhooks"
 msgstr "Connectez votre formulaire à d'autres outils en utilisant des webhooks"
 
-#: admin/admin.php:1548
+#: admin/admin.php:1848
 msgid "Use Conversational Forms for a chat-like experience"
 msgstr "Utilisez des formulaires conversationnels pour une expérience de type chat"
 
-#: admin/admin.php:1549
+#: admin/admin.php:1849
 msgid "Let users register or log in through your form"
 msgstr "Permettez aux utilisateurs de s'inscrire ou de se connecter via votre formulaire"
 
-#: admin/admin.php:1550
+#: admin/admin.php:1850
 msgid "Build forms that create WordPress user accounts"
 msgstr "Créez des formulaires qui génèrent des comptes utilisateurs WordPress"
 
-#: admin/admin.php:1551
+#: admin/admin.php:1851
 msgid "Add calculations to auto-total scores or prices"
 msgstr "Ajoutez des calculs pour totaliser automatiquement les scores ou les prix"
-
-#: inc/form-submit.php:326
-msgid "Form does not exist."
-msgstr "Le formulaire n'existe pas."
-
-#: inc/rest-api.php:235
-msgid "Plugin slug is required."
-msgstr "Le slug du plugin est requis."
-
-#: inc/rest-api.php:244
-msgid "Plugin not found."
-msgstr "Plugin introuvable."
 
 #: assets/build/dashboard.js:172
 msgid "Guided Setup"
@@ -11389,10 +11201,6 @@ msgstr "Créez de beaux formulaires visuellement"
 #: assets/build/dashboard.js:172
 msgid "Works perfectly on mobile"
 msgstr "Fonctionne parfaitement sur mobile"
-
-#: assets/build/dashboard.js:172
-msgid "Spam protection built-in"
-msgstr "Protection anti-spam intégrée"
 
 #: assets/build/dashboard.js:172
 msgid "Easy to connect with automation tools"
@@ -11496,14 +11304,6 @@ msgid "View Entries"
 msgstr "Voir les entrées"
 
 #: assets/build/dashboard.js:172
-msgid "Track, view, and manage all form submissions in one place. Stay organized, informed, and never miss a response."
-msgstr "Suivez, visualisez et gérez toutes les soumissions de formulaires en un seul endroit. Restez organisé, informé et ne manquez jamais une réponse."
-
-#: assets/build/dashboard.js:172
-msgid "Multi-step Forms"
-msgstr "Formulaires à étapes multiples"
-
-#: assets/build/dashboard.js:172
 msgid "Break complex forms into simple steps, reducing overwhelm and boosting completion rates. Guide users smoothly through the process"
 msgstr "Décomposez les formulaires complexes en étapes simples, réduisant ainsi la surcharge et augmentant les taux de complétion. Guidez les utilisateurs en douceur tout au long du processus"
 
@@ -11514,10 +11314,6 @@ msgstr "Champs conditionnels"
 #: assets/build/dashboard.js:172
 msgid "Show or hide fields based on user answers. Ask the right questions and display only what's needed to keep forms clean and relevant."
 msgstr "Afficher ou masquer les champs en fonction des réponses des utilisateurs. Posez les bonnes questions et affichez uniquement ce qui est nécessaire pour garder les formulaires clairs et pertinents."
-
-#: assets/build/dashboard.js:172
-msgid "Send form submissions instantly to any external system or endpoint to power advanced workflows."
-msgstr "Envoyez instantanément les soumissions de formulaires à tout système ou point de terminaison externe pour alimenter des flux de travail avancés."
 
 #: assets/build/dashboard.js:172
 msgid "Enhance your forms with advanced fields like multi-file upload, rating fields, and date & time pickers to collect richer, flexible data."
@@ -11560,10 +11356,6 @@ msgid "PDF Generation Made Simple"
 msgstr "Génération de PDF simplifiée"
 
 #: assets/build/dashboard.js:172
-msgid "Automatically turn form submissions into clean, ready-to-download PDFs. Perfect for records, sharing, archiving, or keeping things organized."
-msgstr "Transformez automatiquement les soumissions de formulaires en PDF propres et prêts à télécharger. Parfait pour les archives, le partage, l'archivage ou pour garder les choses organisées."
-
-#: assets/build/dashboard.js:172
 msgid "Custom App"
 msgstr "Application personnalisée"
 
@@ -11580,6 +11372,7 @@ msgid "Get more control, faster workflows, and deeper customization — all desi
 msgstr "Obtenez plus de contrôle, des flux de travail plus rapides et une personnalisation plus poussée — tout est conçu pour vous aider à créer de meilleurs sites web avec moins d'effort."
 
 #: assets/build/dashboard.js:172
+#, js-format
 msgid "Selected features require %1$s - use code %2$s to get 10% off on any plan."
 msgstr "Les fonctionnalités sélectionnées nécessitent %1$s - utilisez le code %2$s pour obtenir 10 % de réduction sur n'importe quel plan."
 
@@ -11598,10 +11391,6 @@ msgstr "Copié"
 #: assets/build/dashboard.js:172
 msgid "Style your form to better match your site's design"
 msgstr "Adaptez le style de votre formulaire pour mieux correspondre au design de votre site"
-
-#: assets/build/dashboard.js:172
-msgid "Set up confirmation messages and email notifications for each submission"
-msgstr "Configurez les messages de confirmation et les notifications par e-mail pour chaque soumission"
 
 #: assets/build/dashboard.js:172
 msgid "Add spam protection to block common bot submissions"
@@ -11627,20 +11416,20 @@ msgstr "Touches finales qui font la différence :"
 msgid "Build Your First Form"
 msgstr "Créez votre premier formulaire"
 
-#: inc/helper.php:1893
+#: inc/helper.php:1928
 msgid "Invalid nonce action or name."
 msgstr "Action ou nom de nonce invalide."
 
-#: inc/helper.php:1903
-#: inc/helper.php:1911
+#: inc/helper.php:1938
+#: inc/helper.php:1946
 msgid "Invalid security token."
 msgstr "Jeton de sécurité invalide."
 
-#: inc/helper.php:1918
+#: inc/helper.php:1953
 msgid "Invalid request type."
 msgstr "Type de demande invalide."
 
-#: inc/helper.php:1926
+#: inc/helper.php:1961
 msgid "You do not have permission to perform this action."
 msgstr "Vous n'avez pas la permission d'effectuer cette action."
 
@@ -11667,13 +11456,9 @@ msgstr "Explorez OttoKit"
 
 #. translators: %s: opening and closing anchor tag for SureForms settings link
 #: inc/global-settings/email-summary.php:295
+#, php-format
 msgid "Manage Email Summaries from your %1$sSureForms settings%2$s"
 msgstr "Gérez les résumés d'e-mails depuis vos %1$sparamètres SureForms%2$s"
-
-#: inc/translatable.php:120
-#: assets/build/formEditor.js:172
-msgid "This form is now closed as we've received all the entries."
-msgstr "Ce formulaire est maintenant fermé car nous avons reçu toutes les inscriptions."
 
 #: assets/build/dashboard.js:172
 msgid "File Uploads"
@@ -11692,6 +11477,7 @@ msgid "And Much More…"
 msgstr "Et bien plus encore…"
 
 #: assets/build/dashboard.js:172
+#: assets/build/learn.js:172
 msgid "Upgrade to Pro"
 msgstr "Passer à Pro"
 
@@ -11751,31 +11537,17 @@ msgstr "Salut,"
 
 #. Translators: %1$s: From Date, %2$s: To Date.
 #: inc/global-settings/email-summary.php:546
+#, php-format
 msgid "Email Summary of your last week -  %1$s to %2$s"
 msgstr "Résumé des e-mails de votre dernière semaine -  %1$s à %2$s"
 
-#: inc/helper.php:1697
+#: inc/helper.php:1732
 msgid "Ultimate Addons for Elementor"
 msgstr "Modules Ultimes pour Elementor"
 
-#: inc/nps-notice.php:117
-msgid "Quick Question!"
-msgstr "Question rapide !"
-
-#: inc/nps-notice.php:118
-msgid "How would you rate SureForms? Love it, hate it, or somewhere in between? Your honest answer helps us understand how we're doing."
-msgstr "Comment évalueriez-vous SureForms ? Vous l'adorez, vous le détestez, ou vous êtes quelque part entre les deux ? Votre réponse honnête nous aide à comprendre comment nous nous en sortons."
-
-#: inc/nps-notice.php:125
-msgid "Hate it!"
-msgstr "Je déteste ça !"
-
-#: inc/nps-notice.php:126
-msgid "Love it!"
-msgstr "J'adore !"
-
 #. translators: 1: site URL, 2: site name
 #: inc/global-settings/email-summary.php:208
+#, php-format
 msgid "Here's your SureForms report for the last 7 days of %s."
 msgstr "Voici votre rapport SureForms pour les 7 derniers jours de %s."
 
@@ -11835,10 +11607,6 @@ msgstr "Un problème est survenu. Nous avons enregistré l'erreur pour une enqu�
 msgid "Field is not valid."
 msgstr "Le champ n'est pas valide."
 
-#: inc/form-submit.php:339
-msgid "Form data is not valid."
-msgstr "Les données du formulaire ne sont pas valides."
-
 #: assets/build/blocks.js:172
 msgid "Select Country"
 msgstr "Sélectionner le pays"
@@ -11894,14 +11662,6 @@ msgstr "Accédez à des intégrations natives exclusives pour des flux de travai
 msgid "After submission process has already been triggered for this submission."
 msgstr "Après que le processus de soumission a déjà été déclenché pour cette soumission."
 
-#: inc/form-submit.php:917
-msgid "No SMTP plugin detected. Please configure one to enable email sending."
-msgstr "Aucun plugin SMTP détecté. Veuillez en configurer un pour activer l'envoi d'e-mails."
-
-#: inc/form-submit.php:918
-msgid "The failure occurred due to an undetermined cause."
-msgstr "L'échec s'est produit en raison d'une cause indéterminée."
-
 #: assets/build/dashboard.js:2
 msgid "SureForms Video Thumbnail"
 msgstr "Miniature vidéo SureForms"
@@ -11910,11 +11670,12 @@ msgstr "Miniature vidéo SureForms"
 msgid "Expected format for emails - email@sureforms.com or John Doe <email@sureforms.com>"
 msgstr "Format attendu pour les e-mails - email@sureforms.com ou John Doe <email@sureforms.com>"
 
-#: admin/admin.php:501
-#: admin/admin.php:502
+#: admin/admin.php:546
+#: admin/admin.php:547
 #: assets/build/dashboard.js:172
 #: assets/build/entries.js:172
 #: assets/build/forms.js:172
+#: assets/build/learn.js:172
 #: assets/build/page_header.js:172
 #: assets/build/payments.js:172
 #: assets/build/settings.js:2
@@ -11922,7 +11683,7 @@ msgstr "Format attendu pour les e-mails - email@sureforms.com ou John Doe <email
 msgid "Payments"
 msgstr "Paiements"
 
-#: admin/admin.php:636
+#: admin/admin.php:681
 msgid "New"
 msgstr "Nouveau"
 
@@ -11958,11 +11719,13 @@ msgstr "Statut invalide fourni."
 
 #. translators: %d is the entry ID.
 #: inc/entries.php:175
+#, php-format
 msgid "Failed to update entry #%d."
 msgstr "Échec de la mise à jour de l'entrée n°%d."
 
 #. translators: %d is the entry ID.
 #: inc/entries.php:223
+#, php-format
 msgid "Failed to delete entry #%d."
 msgstr "Échec de la suppression de l'entrée n°%d."
 
@@ -11982,10 +11745,6 @@ msgstr "La classe ZipArchive n'est pas disponible."
 msgid "Unable to create ZIP file."
 msgstr "Impossible de créer le fichier ZIP."
 
-#: inc/entries.php:416
-msgid "Failed to generate export file."
-msgstr "Échec de la génération du fichier d'exportation."
-
 #: inc/entries.php:679
 #: assets/build/entries.js:172
 msgid "Entry ID"
@@ -12003,10 +11762,6 @@ msgstr "Aucune donnée de formulaire fournie pour l'importation."
 msgid "Invalid form data structure provided."
 msgstr "Structure de données de formulaire invalide fournie."
 
-#: inc/export.php:215
-msgid "Forms imported successfully."
-msgstr "Formulaires importés avec succès."
-
 #: inc/fields/payment-markup.php:238
 #: inc/payments/payment-helper.php:538
 msgid "Subscription Plan"
@@ -12014,36 +11769,43 @@ msgstr "Plan d'abonnement"
 
 #. translators: 1: Amount with currency, 2: Interval (day/week/month/quarter/year)
 #: inc/fields/payment-markup.php:273
+#, php-format
 msgid "%1$s per %2$s (until cancelled)"
 msgstr "%1$s par %2$s (jusqu'à annulation)"
 
 #. translators: 1: Amount with currency, 2: Interval (day/week/month/quarter/year), 3: Number of billing cycles
 #: inc/fields/payment-markup.php:282
+#, php-format
 msgid "%1$s per %2$s (%3$s payments)"
 msgstr "%1$s par %2$s (%3$s paiements)"
 
 #. translators: 1: Amount with currency, 2: Interval (day/week/month/quarter/year)
 #: inc/fields/payment-markup.php:292
+#, php-format
 msgid "%1$s per %2$s"
 msgstr "%1$s par %2$s"
 
 #. translators: 1: Amount with currency placeholder, 2: Interval (day/week/month/quarter/year)
 #: inc/fields/payment-markup.php:319
+#, php-format
 msgid "{amount} per %s (until cancelled)"
 msgstr "{amount} par %s (jusqu'à annulation)"
 
 #. translators: 1: Amount with currency placeholder, 2: Interval (day/week/month/quarter/year), 3: Number of billing cycles
 #: inc/fields/payment-markup.php:322
+#, php-format
 msgid "{amount} per %1$s (%2$s payments)"
 msgstr "{amount} par %1$s (%2$s paiements)"
 
 #. translators: 1: Amount with currency placeholder, 2: Interval (day/week/month/quarter/year)
 #: inc/fields/payment-markup.php:325
+#, php-format
 msgid "{amount} per %s"
 msgstr "{amount} par %s"
 
 #. translators: %s: Minimum amount with currency
 #: inc/fields/payment-markup.php:338
+#, php-format
 msgid "Minimum amount: %s"
 msgstr "Montant minimum : %s"
 
@@ -12079,50 +11841,50 @@ msgstr "Le mode test est activé :"
 msgid "Click here to enable live mode and accept payment"
 msgstr "Cliquez ici pour activer le mode en direct et accepter le paiement"
 
-#: inc/helper.php:1663
+#: inc/helper.php:1698
 msgid "Boost Your Email Deliverability Instantly!"
 msgstr "Améliorez instantanément la délivrabilité de vos e-mails !"
 
-#: inc/helper.php:1664
+#: inc/helper.php:1699
 msgid "Access a powerful, easy-to-use email delivery service that ensures your emails land in inboxes, not spam folders. Automate your WordPress email workflows confidently with SureMail."
 msgstr "Accédez à un service de livraison d'e-mails puissant et facile à utiliser qui garantit que vos e-mails arrivent dans les boîtes de réception, et non dans les dossiers de spam. Automatisez vos flux de travail d'e-mails WordPress en toute confiance avec SureMail."
 
-#: inc/helper.php:1672
+#: inc/helper.php:1707
 msgid "Automate your WordPress workflows effortlessly."
 msgstr "Automatisez vos flux de travail WordPress sans effort."
 
-#: inc/helper.php:1673
+#: inc/helper.php:1708
 msgid "Connect your WordPress plugins and favourite apps, automate tasks, and sync data effortlessly using OttoKit’s clean, visual workflow builder — no coding or complex setup required."
 msgstr "Connectez vos plugins WordPress et vos applications préférées, automatisez les tâches et synchronisez les données sans effort grâce au créateur de flux de travail visuel et épuré d'OttoKit — aucun codage ou configuration complexe requis."
 
-#: inc/helper.php:1684
+#: inc/helper.php:1719
 msgid "Launch Beautiful Websites in Minutes!"
 msgstr "Lancez de magnifiques sites web en quelques minutes !"
 
-#: inc/helper.php:1685
+#: inc/helper.php:1720
 msgid "Choose from professionally designed templates, import with one click, and customize effortlessly to match your brand."
 msgstr "Choisissez parmi des modèles conçus professionnellement, importez en un clic et personnalisez facilement pour correspondre à votre marque."
 
-#: inc/helper.php:1698
+#: inc/helper.php:1733
 msgid "Power Up Elementor to Build Stunning Websites Faster!"
 msgstr "Boostez Elementor pour créer des sites web époustouflants plus rapidement !"
 
-#: inc/helper.php:1699
+#: inc/helper.php:1734
 msgid "Enhance Elementor with powerful widgets and templates. Build stunning, high-performing websites faster with creative design elements and seamless customization."
 msgstr "Améliorez Elementor avec des widgets puissants et des modèles. Créez des sites web époustouflants et performants plus rapidement grâce à des éléments de design créatifs et une personnalisation fluide."
 
-#: inc/helper.php:1707
+#: inc/helper.php:1742
 msgid "SureRank"
 msgstr ""
 "The term \"SureRank\" appears to be a proper noun or brand name, which typically should not be translated. Therefore, it remains the same in French. \n"
 "\n"
 "SureRank"
 
-#: inc/helper.php:1708
+#: inc/helper.php:1743
 msgid "Elevate Your SEO and Climb Search Rankings Effortlessly!"
 msgstr "Élevez votre SEO et grimpez dans les classements de recherche sans effort !"
 
-#: inc/helper.php:1709
+#: inc/helper.php:1744
 msgid "Boost your website's visibility with smart SEO automation. Optimize content, track keyword performance, and get actionable insights, all inside WordPress."
 msgstr "Boostez la visibilité de votre site web avec une automatisation SEO intelligente. Optimisez le contenu, suivez la performance des mots-clés et obtenez des insights exploitables, le tout dans WordPress."
 
@@ -12157,10 +11919,6 @@ msgstr "Format de date invalide pour date_from."
 msgid "Invalid date format for date_to."
 msgstr "Format de date invalide pour date_to."
 
-#: inc/payments/admin/admin-handler.php:170
-msgid "An error occurred while fetching payments."
-msgstr "Une erreur s'est produite lors de la récupération des paiements."
-
 #: inc/payments/admin/admin-handler.php:194
 #: inc/payments/admin/admin-handler.php:370
 #: inc/payments/admin/admin-handler.php:414
@@ -12172,10 +11930,6 @@ msgstr "L'identifiant de paiement est requis."
 #: inc/payments/admin/admin-handler.php:661
 msgid "Payment not found."
 msgstr "Paiement non trouvé."
-
-#: inc/payments/admin/admin-handler.php:211
-msgid "An error occurred while fetching payment details."
-msgstr "Une erreur s'est produite lors de la récupération des détails de paiement."
 
 #: inc/payments/admin/admin-handler.php:235
 msgid "Subscription ID is required."
@@ -12193,18 +11947,11 @@ msgstr "Enregistrement d'abonnement invalide."
 msgid "Subscription not found."
 msgstr "Abonnement non trouvé."
 
-#: inc/payments/admin/admin-handler.php:300
-msgid "An error occurred while fetching subscription details."
-msgstr "Une erreur s'est produite lors de la récupération des détails de l'abonnement."
-
 #. translators: %d: Form ID
 #: inc/payments/admin/admin-handler.php:336
+#, php-format
 msgid "Form - #%d"
 msgstr "Formulaire - #%d"
-
-#: inc/payments/admin/admin-handler.php:344
-msgid "An error occurred while fetching forms list."
-msgstr "Une erreur s'est produite lors de la récupération de la liste des formulaires."
 
 #: inc/payments/admin/admin-handler.php:374
 msgid "Note text cannot be empty."
@@ -12214,10 +11961,6 @@ msgstr "Le texte de la note ne peut pas être vide."
 msgid "Failed to add note."
 msgstr "Échec de l'ajout de la note."
 
-#: inc/payments/admin/admin-handler.php:388
-msgid "An error occurred while adding the note."
-msgstr "Une erreur s'est produite lors de l'ajout de la note."
-
 #: inc/payments/admin/admin-handler.php:418
 msgid "Invalid note index."
 msgstr "Indice de note invalide."
@@ -12226,10 +11969,6 @@ msgstr "Indice de note invalide."
 msgid "Failed to delete note."
 msgstr "Échec de la suppression de la note."
 
-#: inc/payments/admin/admin-handler.php:432
-msgid "An error occurred while deleting the note."
-msgstr "Une erreur s'est produite lors de la suppression de la note."
-
 #: inc/payments/admin/admin-handler.php:462
 msgid "Invalid log index."
 msgstr "Index de journal invalide."
@@ -12237,10 +11976,6 @@ msgstr "Index de journal invalide."
 #: inc/payments/admin/admin-handler.php:470
 msgid "Failed to delete log entry."
 msgstr "Échec de la suppression de l'entrée de journal."
-
-#: inc/payments/admin/admin-handler.php:476
-msgid "An error occurred while deleting the log entry."
-msgstr "Une erreur s'est produite lors de la suppression de l'entrée du journal."
 
 #: inc/payments/admin/admin-handler.php:508
 msgid "Invalid JSON format for payment IDs."
@@ -12254,12 +11989,9 @@ msgstr "Format des identifiants de paiement invalide."
 msgid "No valid payment IDs provided."
 msgstr "Aucun identifiant de paiement valide fourni."
 
-#: inc/payments/admin/admin-handler.php:541
-msgid "Cannot delete more than 100 payments at once. Please select fewer payments."
-msgstr "Impossible de supprimer plus de 100 paiements à la fois. Veuillez sélectionner moins de paiements."
-
 #. translators: %d: number of payments deleted
 #: inc/payments/admin/admin-handler.php:577
+#, php-format
 msgid "%d payment deleted successfully."
 msgid_plural "%d payments deleted successfully."
 msgstr[0] "%d paiement supprimé avec succès."
@@ -12267,6 +11999,7 @@ msgstr[1] ""
 
 #. translators: 1: number deleted, 2: number failed
 #: inc/payments/admin/admin-handler.php:594
+#, php-format
 msgid "%1$d payment(s) deleted successfully. %2$d failed."
 msgstr "%1$d paiement(s) supprimé(s) avec succès. %2$d échoué(s)."
 
@@ -12274,10 +12007,6 @@ msgstr "%1$d paiement(s) supprimé(s) avec succès. %2$d échoué(s)."
 #: assets/build/payments.js:172
 msgid "Failed to delete payments. Please try again."
 msgstr "Échec de la suppression des paiements. Veuillez réessayer."
-
-#: inc/payments/admin/admin-handler.php:615
-msgid "An error occurred while deleting payments."
-msgstr "Une erreur s'est produite lors de la suppression des paiements."
 
 #: inc/payments/admin/admin-handler.php:960
 #: inc/payments/admin/admin-handler.php:962
@@ -12351,11 +12080,13 @@ msgstr "Clé secrète Stripe introuvable."
 
 #. translators: %s: formatted payment amount
 #: inc/payments/front-end.php:194
+#, php-format
 msgid "The payment amount (%s) is below the minimum allowed. Stripe only processes amounts above 50¢."
 msgstr "Le montant du paiement (%s) est inférieur au minimum autorisé. Stripe ne traite que les montants supérieurs à 50¢."
 
 #. translators: %s: Field name
 #: inc/payments/front-end.php:257
+#, php-format
 msgid "Missing required field: %s"
 msgstr "Champ requis manquant : %s"
 
@@ -12403,6 +12134,7 @@ msgstr "Échec de la création de l'abonnement."
 
 #. translators: %s: Error message
 #: inc/payments/front-end.php:426
+#, php-format
 msgid "Unexpected error: %s"
 msgstr "Erreur inattendue : %s"
 
@@ -12451,11 +12183,13 @@ msgstr "Abonnement non trouvé pour le paiement."
 #. translators: %d: User ID
 #: inc/payments/front-end.php:794
 #: inc/payments/front-end.php:1194
+#, php-format
 msgid "User ID: %d"
 msgstr "ID utilisateur : %d"
 
 #. translators: %s: Invoice status
 #: inc/payments/front-end.php:802
+#, php-format
 msgid "Invoice Status: %s"
 msgstr "Statut de la facture : %s"
 
@@ -12471,6 +12205,7 @@ msgstr "Vérification de l'abonnement"
 #: inc/payments/stripe/admin-stripe-handler.php:421
 #: inc/payments/stripe/stripe-webhook.php:522
 #: inc/payments/stripe/stripe-webhook.php:1068
+#, php-format
 msgid "Subscription ID: %s"
 msgstr "ID d'abonnement : %s"
 
@@ -12490,17 +12225,20 @@ msgstr "ID d'abonnement : %s"
 #: inc/payments/stripe/stripe-webhook.php:664
 #: inc/payments/stripe/stripe-webhook.php:828
 #: inc/payments/stripe/stripe-webhook.php:1062
+#, php-format
 msgid "Payment Gateway: %s"
 msgstr "Passerelle de paiement : %s"
 
 #. translators: %s: Payment Intent ID
 #: inc/payments/front-end.php:817
+#, php-format
 msgid "Payment Intent ID: %s"
 msgstr "ID d'intention de paiement : %s"
 
 #. translators: %s: Charge ID
 #: inc/payments/front-end.php:819
 #: inc/payments/stripe/stripe-webhook.php:998
+#, php-format
 msgid "Charge ID: %s"
 msgstr "ID de charge : %s"
 
@@ -12509,12 +12247,14 @@ msgstr "ID de charge : %s"
 #: inc/payments/front-end.php:821
 #: inc/payments/stripe/admin-stripe-handler.php:127
 #: inc/payments/stripe/admin-stripe-handler.php:431
+#, php-format
 msgid "Subscription Status: %s"
 msgstr "Statut de l'abonnement : %s"
 
 #. translators: %s: Customer ID
 #: inc/payments/front-end.php:823
 #: inc/payments/stripe/stripe-webhook.php:1072
+#, php-format
 msgid "Customer ID: %s"
 msgstr "ID client : %s"
 
@@ -12524,6 +12264,7 @@ msgstr "ID client : %s"
 #: inc/payments/front-end.php:1207
 #: inc/payments/stripe/stripe-webhook.php:1003
 #: inc/payments/stripe/stripe-webhook.php:1064
+#, php-format
 msgid "Amount: %1$s %2$s"
 msgstr "Montant : %1$s %2$s"
 
@@ -12531,6 +12272,7 @@ msgstr "Montant : %1$s %2$s"
 #. translators: %s: payment mode
 #: inc/payments/front-end.php:828
 #: inc/payments/front-end.php:1212
+#, php-format
 msgid "Mode: %s"
 msgstr "Mode : %s"
 
@@ -12557,6 +12299,7 @@ msgstr "Vérification de paiement"
 #. translators: %s: Charge ID
 #: inc/payments/front-end.php:1203
 #: inc/payments/stripe/stripe-webhook.php:1060
+#, php-format
 msgid "Transaction ID: %s"
 msgstr "ID de transaction : %s"
 
@@ -12565,6 +12308,7 @@ msgstr "ID de transaction : %s"
 #: inc/payments/front-end.php:1209
 #: inc/payments/stripe/stripe-webhook.php:526
 #: inc/payments/stripe/stripe-webhook.php:1066
+#, php-format
 msgid "Status: %s"
 msgstr "Statut : %s"
 
@@ -12776,10 +12520,6 @@ msgstr "Échec du paiement"
 msgid "Payment successful"
 msgstr "Paiement réussi"
 
-#: inc/payments/payment-helper.php:491
-msgid "Payment could not be completed. Please try again or contact the site administrator."
-msgstr "Le paiement n'a pas pu être effectué. Veuillez réessayer ou contacter l'administrateur du site."
-
 #: inc/payments/payment-helper.php:494
 #: inc/payments/payment-helper.php:495
 msgid "Your card was declined. Please try a different payment method or contact your bank."
@@ -12854,14 +12594,6 @@ msgstr "L'année d'expiration de votre carte est invalide. Veuillez vérifier et
 msgid "Your card number is invalid. Please check and try again."
 msgstr "Votre numéro de carte est invalide. Veuillez vérifier et réessayer."
 
-#: inc/payments/payment-helper.php:513
-msgid "An error occurred while processing your card. Please try again."
-msgstr "Une erreur s'est produite lors du traitement de votre carte. Veuillez réessayer."
-
-#: inc/payments/payment-helper.php:514
-msgid "The transaction could not be processed. Please try again."
-msgstr "La transaction n'a pas pu être traitée. Veuillez réessayer."
-
 #: inc/payments/payment-helper.php:515
 msgid "Your card is not supported for this transaction. Please use a different payment method."
 msgstr "Votre carte n'est pas prise en charge pour cette transaction. Veuillez utiliser un autre moyen de paiement."
@@ -12881,10 +12613,6 @@ msgstr "Le compte associé à votre carte est invalide. Veuillez contacter votre
 #: inc/payments/payment-helper.php:519
 msgid "The payment amount is invalid. Please contact the site administrator."
 msgstr "Le montant du paiement est invalide. Veuillez contacter l'administrateur du site."
-
-#: inc/payments/payment-helper.php:520
-msgid "Your card issuer could not be reached. Please try again later."
-msgstr "Votre émetteur de carte n'a pas pu être joint. Veuillez réessayer plus tard."
 
 #: inc/payments/payment-helper.php:522
 msgid "Your card information needs to be updated. Please contact your bank."
@@ -12922,10 +12650,6 @@ msgstr "L'autorisation pour cette transaction a été révoquée. Veuillez rées
 msgid "This transaction is not allowed. Please contact your bank."
 msgstr "Cette transaction n'est pas autorisée. Veuillez contacter votre banque."
 
-#: inc/payments/payment-helper.php:531
-msgid "The transaction could not be processed. Please try again later."
-msgstr "La transaction n'a pas pu être traitée. Veuillez réessayer plus tard."
-
 #: inc/payments/payment-helper.php:532
 msgid "Your card was declined. Your request was in live mode, but used a known test card."
 msgstr "Votre carte a été refusée. Votre demande était en mode réel, mais vous avez utilisé une carte de test connue."
@@ -12945,14 +12669,6 @@ msgstr "Paiement SureForms"
 #: inc/payments/payment-helper.php:539
 msgid "SureForms Customer"
 msgstr "Client SureForms"
-
-#: inc/payments/payment-helper.php:541
-msgid "Please complete the form to view the amount."
-msgstr "Veuillez remplir le formulaire pour voir le montant."
-
-#: inc/payments/payment-helper.php:542
-msgid "Failed to create payment. Please contact the site owner"
-msgstr "Échec de la création du paiement. Veuillez contacter le propriétaire du site"
 
 #: inc/payments/payment-helper.php:559
 msgid "Unknown error"
@@ -13025,10 +12741,6 @@ msgstr "Échec du traitement du remboursement. Veuillez réessayer."
 msgid "Subscription pause failed."
 msgstr "La suspension de l'abonnement a échoué."
 
-#: inc/payments/stripe/admin-stripe-handler.php:462
-msgid "Subscription paused successfully."
-msgstr "Abonnement suspendu avec succès."
-
 #: inc/payments/stripe/admin-stripe-handler.php:590
 #: inc/payments/stripe/admin-stripe-handler.php:1112
 #: inc/payments/stripe/stripe-webhook.php:655
@@ -13047,6 +12759,7 @@ msgstr "Partiel"
 #: inc/payments/stripe/admin-stripe-handler.php:1118
 #: inc/payments/stripe/stripe-webhook.php:662
 #: inc/payments/stripe/stripe-webhook.php:826
+#, php-format
 msgid "Refund ID: %s"
 msgstr "ID de remboursement : %s"
 
@@ -13056,6 +12769,7 @@ msgstr "ID de remboursement : %s"
 #: inc/payments/stripe/admin-stripe-handler.php:606
 #: inc/payments/stripe/admin-stripe-handler.php:1128
 #: inc/payments/stripe/stripe-webhook.php:666
+#, php-format
 msgid "Refund Amount: %1$s %2$s"
 msgstr "Montant du remboursement : %1$s %2$s"
 
@@ -13065,6 +12779,7 @@ msgstr "Montant du remboursement : %1$s %2$s"
 #: inc/payments/stripe/admin-stripe-handler.php:612
 #: inc/payments/stripe/admin-stripe-handler.php:1134
 #: inc/payments/stripe/stripe-webhook.php:669
+#, php-format
 msgid "Total Refunded: %1$s %2$s of %3$s %4$s"
 msgstr "Montant total remboursé : %1$s %2$s de %3$s %4$s"
 
@@ -13074,6 +12789,7 @@ msgstr "Montant total remboursé : %1$s %2$s de %3$s %4$s"
 #: inc/payments/stripe/admin-stripe-handler.php:620
 #: inc/payments/stripe/admin-stripe-handler.php:1142
 #: inc/payments/stripe/stripe-webhook.php:676
+#, php-format
 msgid "Refund Status: %s"
 msgstr "Statut du remboursement : %s"
 
@@ -13085,6 +12801,7 @@ msgstr "Statut du remboursement : %s"
 #: inc/payments/stripe/admin-stripe-handler.php:1147
 #: inc/payments/stripe/stripe-webhook.php:678
 #: inc/payments/stripe/stripe-webhook.php:842
+#, php-format
 msgid "Payment Status: %s"
 msgstr "Statut du paiement : %s"
 
@@ -13094,12 +12811,14 @@ msgstr "Statut du paiement : %s"
 #: inc/payments/stripe/admin-stripe-handler.php:630
 #: inc/payments/stripe/admin-stripe-handler.php:1152
 #: inc/payments/stripe/stripe-webhook.php:680
+#, php-format
 msgid "Refunded by: %s"
 msgstr "Remboursé par : %s"
 
 #. translators: %s: refund notes
 #: inc/payments/stripe/admin-stripe-handler.php:639
 #: inc/payments/stripe/admin-stripe-handler.php:1161
+#, php-format
 msgid "Refund Notes: %s"
 msgstr "Notes de remboursement : %s"
 
@@ -13107,12 +12826,14 @@ msgstr "Notes de remboursement : %s"
 #. translators: %s: Refund type (e.g., Full, Partial).
 #: inc/payments/stripe/admin-stripe-handler.php:648
 #: inc/payments/stripe/stripe-webhook.php:658
+#, php-format
 msgid "%s Payment Refund"
 msgstr "Remboursement de paiement %s"
 
 #. translators: %1$s: Payment settings link
 #: inc/payments/stripe/admin-stripe-handler.php:712
 #: assets/build/payments.js:2
+#, php-format,js-format
 msgid "Webhooks keep SureForms in sync with Stripe by automatically updating payment and subscription data. Please %1$s Webhook."
 msgstr "Les webhooks maintiennent SureForms synchronisé avec Stripe en mettant automatiquement à jour les données de paiement et d'abonnement. Veuillez %1$s Webhook."
 
@@ -13147,6 +12868,7 @@ msgstr "Remboursement de l'abonnement effectué avec succès."
 
 #. translators: 1: Maximum refundable amount (numeric), 2: Currency code (e.g. USD)
 #: inc/payments/stripe/admin-stripe-handler.php:890
+#, php-format
 msgid "Refund amount exceeds available amount. Maximum refundable: %1$s %2$s"
 msgstr "Le montant du remboursement dépasse le montant disponible. Montant maximum remboursable : %1$s %2$s"
 
@@ -13164,6 +12886,7 @@ msgstr "Impossible de déterminer la méthode de remboursement appropriée pour 
 
 #. translators: %s: refund type (Full/Partial)
 #: inc/payments/stripe/admin-stripe-handler.php:1169
+#, php-format
 msgid "%s Subscription Payment Refund"
 msgstr "Remboursement du paiement de l'abonnement %s"
 
@@ -13211,6 +12934,7 @@ msgstr "Erreur réseau. Veuillez vérifier votre connexion et réessayer."
 
 #. translators: %s: technical error message returned from Stripe.
 #: inc/payments/stripe/admin-stripe-handler.php:1221
+#, php-format
 msgid "Subscription refund failed: %s"
 msgstr "Échec du remboursement de l'abonnement : %s"
 
@@ -13236,7 +12960,6 @@ msgstr "Échec de la vérification de sécurité. Non-concordance du nonce."
 msgid "OAuth callback missing response data."
 msgstr "Les données de réponse de rappel OAuth sont manquantes."
 
-#: inc/payments/stripe/payments-settings.php:301
 #: assets/build/settings.js:172
 msgid "Stripe account disconnected successfully."
 msgstr "Compte Stripe déconnecté avec succès."
@@ -13248,10 +12971,10 @@ msgstr "Mode de paiement invalide."
 #. translators: %s: payment mode (test/live)
 #: inc/payments/stripe/payments-settings.php:371
 #: inc/payments/stripe/stripe-helper.php:192
+#, php-format
 msgid "Stripe %s secret key is missing."
 msgstr "La clé secrète Stripe %s est manquante."
 
-#: inc/payments/stripe/payments-settings.php:401
 #: assets/build/settings.js:172
 msgid "Failed to create webhook."
 msgstr "Échec de la création du webhook."
@@ -13273,22 +12996,21 @@ msgstr "Webhook créé mais aucun secret n'a été retourné."
 
 #. translators: %s: payment mode (test/live)
 #: inc/payments/stripe/payments-settings.php:438
+#, php-format
 msgid "Webhook created successfully for %s mode."
 msgstr "Webhook créé avec succès pour le mode %s."
 
 #. translators: %1$d: number of webhooks created
 #: inc/payments/stripe/payments-settings.php:581
+#, php-format
 msgid "Webhooks created successfully for %1$d mode(s)."
 msgstr "Webhooks créés avec succès pour %1$d mode(s)."
 
 #. translators: %1$d: number of webhooks created, %2$s: error message
 #: inc/payments/stripe/payments-settings.php:587
+#, php-format
 msgid "Webhooks created for %1$d mode(s). Some modes may have failed: %2$s"
 msgstr "Webhooks créés pour %1$d mode(s). Certains modes ont peut-être échoué : %2$s"
-
-#: inc/payments/stripe/payments-settings.php:592
-msgid "Failed to create webhooks."
-msgstr "Échec de la création des webhooks."
 
 #: inc/payments/stripe/payments-settings.php:655
 #: inc/payments/stripe/payments-settings.php:814
@@ -13300,20 +13022,13 @@ msgstr "Format de réponse de suppression de webhook invalide."
 msgid "Webhook deletion was not confirmed by Stripe."
 msgstr "La suppression du webhook n'a pas été confirmée par Stripe."
 
-#: inc/payments/stripe/payments-settings.php:682
-msgid "Webhook deleted successfully."
-msgstr "Webhook supprimé avec succès."
-
 #. translators: %d: number of webhooks deleted
 #. translators: %d: number of modes
 #: inc/payments/stripe/payments-settings.php:704
 #: inc/payments/stripe/payments-settings.php:862
+#, php-format
 msgid "Webhooks deleted successfully for %d mode(s)."
 msgstr "Webhooks supprimés avec succès pour %d mode(s)."
-
-#: inc/payments/stripe/payments-settings.php:717
-msgid "Failed to delete webhooks."
-msgstr "Échec de la suppression des webhooks."
 
 #: inc/payments/stripe/payments-settings.php:772
 msgid "Invalid payment mode specified."
@@ -13329,12 +13044,9 @@ msgstr "test"
 
 #. translators: %s: mode name (test/live)
 #: inc/payments/stripe/payments-settings.php:856
+#, php-format
 msgid "Webhook deleted successfully for %s mode."
 msgstr "Webhook supprimé avec succès pour le mode %s."
-
-#: inc/payments/stripe/payments-settings.php:876
-msgid "Failed to delete webhook."
-msgstr "Échec de la suppression du webhook."
 
 #: inc/payments/stripe/payments-settings.php:932
 msgid "Invalid OAuth response format."
@@ -13348,13 +13060,13 @@ msgstr "Vous n'avez pas la permission de connecter Stripe."
 msgid "Permission Denied"
 msgstr "Permission refusée"
 
-#: inc/payments/stripe/payments-settings.php:1024
 #: assets/build/settings.js:172
 msgid "Failed to connect to Stripe."
 msgstr "Échec de la connexion à Stripe."
 
 #. translators: %s: network error message
 #: inc/payments/stripe/stripe-helper.php:233
+#, php-format
 msgid "Network error: %s"
 msgstr "Erreur réseau : %s"
 
@@ -13364,6 +13076,7 @@ msgstr "Format de réponse invalide de l'API Stripe."
 
 #. translators: %s: Canceled date
 #: inc/payments/stripe/stripe-webhook.php:528
+#, php-format
 msgid "Canceled at: %s"
 msgstr "Annulé à : %s"
 
@@ -13371,11 +13084,13 @@ msgstr "Annulé à : %s"
 #. translators: %s: Failure reason.
 #: inc/payments/stripe/stripe-webhook.php:534
 #: inc/payments/stripe/stripe-webhook.php:840
+#, php-format
 msgid "Cancellation Reason: %s"
 msgstr "Raison de l'annulation : %s"
 
 #. translators: %s: Cancellation feedback
 #: inc/payments/stripe/stripe-webhook.php:542
+#, php-format
 msgid "Feedback: %s"
 msgstr "Retour d'information : %s"
 
@@ -13398,11 +13113,13 @@ msgstr "Remboursement annulé"
 
 #. translators: 1: Canceled amount, 2: Currency.
 #: inc/payments/stripe/stripe-webhook.php:830
+#, php-format
 msgid "Canceled Refund Amount: %1$s %2$s"
 msgstr "Montant du remboursement annulé : %1$s %2$s"
 
 #. translators: 1: Remaining refunded amount, 2: Currency, 3: Original amount, 4: Currency
 #: inc/payments/stripe/stripe-webhook.php:833
+#, php-format
 msgid "Remaining Refunded: %1$s %2$s of %3$s %4$s"
 msgstr "Remboursement restant : %1$s %2$s de %3$s %4$s"
 
@@ -13410,6 +13127,7 @@ msgstr "Remboursement restant : %1$s %2$s de %3$s %4$s"
 #. translators: %s: Canceled by method (e.g., Webhook).
 #: inc/payments/stripe/admin-stripe-handler.php:132
 #: inc/payments/stripe/stripe-webhook.php:844
+#, php-format
 msgid "Canceled by: %s"
 msgstr "Annulé par : %s"
 
@@ -13420,6 +13138,7 @@ msgstr "Le paiement initial de l'abonnement a réussi"
 #. translators: %s: Invoice ID
 #: inc/payments/stripe/stripe-webhook.php:1000
 #: inc/payments/stripe/stripe-webhook.php:1070
+#, php-format
 msgid "Invoice ID: %s"
 msgstr "ID de facture : %s"
 
@@ -13442,11 +13161,13 @@ msgstr "Réussi"
 
 #. translators: %s: Customer Email
 #: inc/payments/stripe/stripe-webhook.php:1074
+#, php-format
 msgid "Customer Email: %s"
 msgstr "Email du client : %s"
 
 #. translators: %s: Customer Name
 #: inc/payments/stripe/stripe-webhook.php:1076
+#, php-format
 msgid "Customer Name: %s"
 msgstr "Nom du client : %s"
 
@@ -13462,59 +13183,17 @@ msgstr "Modifier ce formulaire"
 msgid "Your form has been submitted successfully. We'll review your details and get back to you soon."
 msgstr "Votre formulaire a été soumis avec succès. Nous examinerons vos informations et vous répondrons bientôt."
 
-#: inc/rest-api.php:370
-#: inc/rest-api.php:419
-#: inc/rest-api.php:467
-msgid "No entry IDs provided."
-msgstr "Aucun identifiant d'entrée fourni."
-
-#: inc/rest-api.php:377
-#: inc/rest-api.php:426
-msgid "No action provided."
-msgstr "Aucune action fournie."
-
-#: inc/rest-api.php:385
-msgid "Invalid action. Must be \"read\" or \"unread\"."
-msgstr "Action invalide. Doit être \"lu\" ou \"non lu\"."
-
-#: inc/rest-api.php:434
-msgid "Invalid action. Must be \"trash\" or \"restore\"."
-msgstr "Action invalide. Doit être \"trash\" ou \"restore\"."
-
-#: inc/rest-api.php:500
-#: inc/rest-api.php:639
+#: inc/rest-api.php:646
+#: inc/rest-api.php:785
 msgid "Entry ID is required."
 msgstr "L'identifiant d'entrée est requis."
 
-#: inc/rest-api.php:509
-#: inc/rest-api.php:648
+#: inc/abilities/entries/bulk-get-entries.php:169
+#: inc/abilities/entries/get-entry.php:118
+#: inc/rest-api.php:655
+#: inc/rest-api.php:794
 msgid "Entry not found."
 msgstr "Entrée non trouvée."
-
-#: inc/rest-api.php:773
-msgid "Form IDs and action are required."
-msgstr "Les identifiants de formulaire et l'action sont requis."
-
-#: inc/rest-api.php:788
-msgid "Form not found or invalid post type."
-msgstr "Formulaire introuvable ou type de publication invalide."
-
-#: inc/rest-api.php:800
-msgid "Form is already in trash."
-msgstr "Le formulaire est déjà dans la corbeille."
-
-#: inc/rest-api.php:811
-msgid "Form is not in trash."
-msgstr "Le formulaire n'est pas dans la corbeille."
-
-#: inc/rest-api.php:826
-msgid "Invalid action specified."
-msgstr "Action invalide spécifiée."
-
-#. translators: %s: action name
-#: inc/rest-api.php:841
-msgid "Failed to %s form."
-msgstr "Échec de %s formulaire."
 
 #: assets/build/blocks.js:172
 msgid "Unique Entry"
@@ -13553,10 +13232,12 @@ msgid "Allow Multiple"
 msgstr "Autoriser plusieurs"
 
 #: assets/build/blocks.js:172
+#, js-format
 msgid "%1$s fields are required. Please configure these fields in the block settings."
 msgstr "Les champs %1$s sont obligatoires. Veuillez configurer ces champs dans les paramètres du bloc."
 
 #: assets/build/blocks.js:172
+#, js-format
 msgid "%1$s field is required. Please configure this field in the block settings."
 msgstr "Le champ %1$s est requis. Veuillez configurer ce champ dans les paramètres du bloc."
 
@@ -13710,12 +13391,9 @@ msgid "Select the email field that contains the customer email"
 msgstr "Sélectionnez le champ de courriel qui contient l'email du client"
 
 #: assets/build/dashboard.js:172
-msgid "Super Charge Your Workflow"
-msgstr "Boostez votre flux de travail"
-
-#: assets/build/dashboard.js:172
 #: assets/build/entries.js:172
 #: assets/build/forms.js:172
+#: assets/build/learn.js:172
 #: assets/build/page_header.js:172
 #: assets/build/payments.js:172
 #: assets/build/settings.js:2
@@ -13725,6 +13403,7 @@ msgstr "Base de connaissances"
 #: assets/build/dashboard.js:172
 #: assets/build/entries.js:172
 #: assets/build/forms.js:172
+#: assets/build/learn.js:172
 #: assets/build/page_header.js:172
 #: assets/build/payments.js:172
 #: assets/build/settings.js:2
@@ -13736,10 +13415,6 @@ msgstr "Quoi de neuf"
 #: assets/build/payments.js:2
 msgid "mm/dd/yyyy - mm/dd/yyyy"
 msgstr "jj/mm/aaaa - jj/mm/aaaa"
-
-#: assets/build/entries.js:172
-msgid "All Status"
-msgstr "Tous les statuts"
 
 #: assets/build/entries.js:172
 msgid "Export Selected"
@@ -13773,7 +13448,6 @@ msgid "No entries found"
 msgstr "Aucune entrée trouvée"
 
 #: assets/build/entries.js:172
-#: assets/build/forms.js:172
 msgid "Preview"
 msgstr "Aperçu"
 
@@ -13820,6 +13494,7 @@ msgstr "supprimer"
 #: assets/build/forms.js:172
 #: assets/build/payments.js:172
 #: assets/build/settings.js:172
+#, js-format
 msgid "Please type \"%s\" in the input box"
 msgstr "Veuillez taper \"%s\" dans la boîte de saisie"
 
@@ -13827,6 +13502,7 @@ msgstr "Veuillez taper \"%s\" dans la boîte de saisie"
 #: assets/build/forms.js:172
 #: assets/build/payments.js:172
 #: assets/build/settings.js:172
+#, js-format
 msgid "To confirm, type \"%s\" in the box below:"
 msgstr "Pour confirmer, tapez \"%s\" dans la case ci-dessous :"
 
@@ -13834,14 +13510,12 @@ msgstr "Pour confirmer, tapez \"%s\" dans la case ci-dessous :"
 #: assets/build/forms.js:172
 #: assets/build/payments.js:172
 #: assets/build/settings.js:172
+#, js-format
 msgid "Type \"%s\""
 msgstr "Tapez \"%s\""
 
 #: assets/build/entries.js:172
-msgid "Entry#%1$s marked as %2$s."
-msgstr "Entrée#%1$s marquée comme %2$s."
-
-#: assets/build/entries.js:172
+#, js-format
 msgid "%1$s entry marked as %2$s."
 msgid_plural "%1$s entries marked as %2$s."
 msgstr[0] "Entrée %1$s marquée comme %2$s."
@@ -13866,10 +13540,7 @@ msgid "Entry"
 msgstr "Entrée"
 
 #: assets/build/entries.js:172
-msgid "Entry#%s deleted permanently."
-msgstr "Entrée#%s supprimée définitivement."
-
-#: assets/build/entries.js:172
+#, js-format
 msgid "%s entry deleted permanently."
 msgid_plural "%s entries deleted permanently."
 msgstr[0] "Entrée %s supprimée définitivement."
@@ -13880,20 +13551,14 @@ msgid "An error occurred. Please try again."
 msgstr "Une erreur s'est produite. Veuillez réessayer."
 
 #: assets/build/entries.js:172
-msgid "Entry#%s moved to trash."
-msgstr "Entrée#%s déplacée dans la corbeille."
-
-#: assets/build/entries.js:172
-msgid "Entry#%s restored successfully."
-msgstr "Entrée#%s restaurée avec succès."
-
-#: assets/build/entries.js:172
+#, js-format
 msgid "%1$s entry moved to trash."
 msgid_plural "%1$s entries moved to trash."
 msgstr[0] "%1$s entrée déplacée à la corbeille."
 msgstr[1] ""
 
 #: assets/build/entries.js:172
+#, js-format
 msgid "%1$s entry restored successfully."
 msgid_plural "%1$s entries restored successfully."
 msgstr[0] "%1$s entrée restaurée avec succès."
@@ -13907,33 +13572,25 @@ msgstr "Une erreur s'est produite lors de l'exportation. Veuillez réessayer."
 msgid "An error occurred while fetching entries."
 msgstr "Une erreur s'est produite lors de la récupération des entrées."
 
-#: assets/build/entries.js:172
+#: inc/abilities/entries/delete-entry.php:40
 msgid "Delete Entry"
 msgid_plural "Delete Entries"
 msgstr[0] "Supprimer l'entrée"
 msgstr[1] ""
 
 #: assets/build/entries.js:172
-msgid "Move Entry to Trash?"
-msgid_plural "Move Entries to Trash?"
-msgstr[0] "Déplacer l'entrée à la corbeille ?"
-msgstr[1] ""
-
-#: assets/build/entries.js:172
+#, js-format
 msgid "Are you sure you want to permanently delete %s entry? This action cannot be undone."
 msgid_plural "Are you sure you want to permanently delete %s entries? This action cannot be undone."
 msgstr[0] "Êtes-vous sûr de vouloir supprimer définitivement l'entrée %s ? Cette action ne peut pas être annulée."
 msgstr[1] ""
 
 #: assets/build/entries.js:172
+#, js-format
 msgid "%s entry will be moved to trash and can be restored later."
 msgid_plural "%s entries will be moved to trash and can be restored later."
 msgstr[0] "L'entrée %s sera déplacée vers la corbeille et pourra être restaurée plus tard."
 msgstr[1] ""
-
-#: assets/build/entries.js:172
-msgid "Entries exported successfully."
-msgstr "Entrées exportées avec succès."
 
 #: assets/build/entries.js:172
 msgid "Restore Entry"
@@ -13942,6 +13599,7 @@ msgstr[0] "Restaurer l'entrée"
 msgstr[1] ""
 
 #: assets/build/entries.js:172
+#, js-format
 msgid "%s entry will be restored from trash."
 msgid_plural "%s entries will be restored from trash."
 msgstr[0] "L'entrée %s sera restaurée de la corbeille."
@@ -13956,6 +13614,7 @@ msgid "Edit Entry"
 msgstr "Modifier l'entrée"
 
 #: assets/build/entries.js:172
+#, js-format
 msgid "%d item"
 msgid_plural "%d items"
 msgstr[0] "%d article"
@@ -13998,22 +13657,27 @@ msgid "Payment"
 msgstr "Paiement"
 
 #: assets/build/formEditor.js:2
+#, js-format
 msgid "%s - Order ID"
 msgstr "%s - ID de commande"
 
 #: assets/build/formEditor.js:2
+#, js-format
 msgid "%s - Amount"
 msgstr "%s - Montant"
 
 #: assets/build/formEditor.js:2
+#, js-format
 msgid "%s - Customer Email"
 msgstr "%s - Email du client"
 
 #: assets/build/formEditor.js:2
+#, js-format
 msgid "%s - Customer Name"
 msgstr "%s - Nom du client"
 
 #: assets/build/formEditor.js:2
+#, js-format
 msgid "%s - Status"
 msgstr "%s - Statut"
 
@@ -14022,20 +13686,12 @@ msgid "Add custom CSS rules to style this specific form independently of global 
 msgstr "Ajoutez des règles CSS personnalisées pour styliser ce formulaire spécifique indépendamment des styles globaux."
 
 #: assets/build/formEditor.js:172
-msgid "Enable reCAPTCHA, hCaptcha, Turnstile, or Honeypot to block spam submissions."
-msgstr "Activez reCAPTCHA, hCaptcha, Turnstile ou Honeypot pour bloquer les soumissions de spam."
-
-#: assets/build/formEditor.js:172
 msgid "Spam Protection Type"
 msgstr "Type de protection contre le spam"
 
 #: assets/build/formEditor.js:172
 msgid "Select Security Type"
 msgstr "Sélectionner le type de sécurité"
-
-#: assets/build/formEditor.js:172
-msgid "Select a spam protection service from the list above. Make sure API keys are configured before enabling."
-msgstr "Sélectionnez un service de protection contre le spam dans la liste ci-dessus. Assurez-vous que les clés API sont configurées avant de l'activer."
 
 #: assets/build/formEditor.js:172
 msgid "Note: Using different reCAPTCHA versions (V2 checkbox and V3) on the same page will create conflicts between the versions. Kindly avoid using different versions on the same page."
@@ -14222,10 +13878,6 @@ msgstr "Alignement du bouton"
 msgid "Add Custom CSS Class(es)"
 msgstr "Ajouter une ou plusieurs classes CSS personnalisées"
 
-#: assets/build/forms.js:2
-msgid "Export failed - No data received"
-msgstr "Échec de l'exportation - Aucune donnée reçue"
-
 #: assets/build/forms.js:172
 msgid "Please select a file to import."
 msgstr "Veuillez sélectionner un fichier à importer."
@@ -14251,20 +13903,12 @@ msgid "Import Forms"
 msgstr "Importer des formulaires"
 
 #: assets/build/forms.js:172
-msgid "Select the SureForms export file (.json) that you wish to import."
-msgstr "Sélectionnez le fichier d'exportation SureForms (.json) que vous souhaitez importer."
-
-#: assets/build/forms.js:172
 msgid "Please select a valid JSON file."
 msgstr "Veuillez sélectionner un fichier JSON valide."
 
 #: assets/build/forms.js:172
 msgid "Drag and drop or browse files"
 msgstr "Faites glisser et déposez ou parcourez les fichiers"
-
-#: assets/build/forms.js:172
-msgid "Drop the form (.json) file here"
-msgstr "Déposez le fichier de formulaire (.json) ici"
 
 #: assets/build/forms.js:172
 msgid "Importing…"
@@ -14287,20 +13931,12 @@ msgid "Title"
 msgstr "Titre"
 
 #: assets/build/forms.js:172
-msgid "- Draft"
-msgstr "- Brouillon"
-
-#: assets/build/forms.js:172
 msgid "Copied!"
 msgstr "Copié !"
 
 #: assets/build/forms.js:172
 msgid "Copy Shortcode"
 msgstr "Copier le shortcode"
-
-#: assets/build/forms.js:172
-msgid "Permanently Delete"
-msgstr "Supprimer définitivement"
 
 #: assets/build/forms.js:172
 msgid "No Forms"
@@ -14323,10 +13959,6 @@ msgid "Use AI to generate forms instantly from a simple prompt."
 msgstr "Utilisez l'IA pour générer des formulaires instantanément à partir d'une simple invite."
 
 #: assets/build/forms.js:172
-msgid "Build instant forms and share them with a link-no embedding needed."
-msgstr "Créez des formulaires instantanés et partagez-les avec un lien, sans besoin d'intégration."
-
-#: assets/build/forms.js:172
 msgid "Build engaging conversational, calculation, and multi-step forms."
 msgstr "Créez des formulaires engageants de conversation, de calcul et à étapes multiples."
 
@@ -14339,18 +13971,21 @@ msgid "An error occurred while fetching forms."
 msgstr "Une erreur s'est produite lors de la récupération des formulaires."
 
 #: assets/build/forms.js:172
+#, js-format
 msgid "%d form moved to trash."
 msgid_plural "%d forms moved to trash."
 msgstr[0] "%d formulaire déplacé dans la corbeille."
 msgstr[1] ""
 
 #: assets/build/forms.js:172
+#, js-format
 msgid "%d form restored."
 msgid_plural "%d forms restored."
 msgstr[0] "%d formulaire restauré."
 msgstr[1] ""
 
 #: assets/build/forms.js:172
+#, js-format
 msgid "%d form permanently deleted."
 msgid_plural "%d forms permanently deleted."
 msgstr[0] "%d formulaire supprimé définitivement."
@@ -14361,22 +13996,14 @@ msgid "An error occurred while performing the action."
 msgstr "Une erreur s'est produite lors de l'exécution de l'action."
 
 #: assets/build/forms.js:172
+#, js-format
 msgid "%d form imported successfully."
 msgid_plural "%d forms imported successfully."
 msgstr[0] "%d formulaire importé avec succès."
 msgstr[1] ""
 
 #: assets/build/forms.js:172
-msgid "Error loading forms: "
-msgstr "Erreur lors du chargement des formulaires :"
-
-#: assets/build/forms.js:172
-msgid "Move Form to Trash?"
-msgid_plural "Move Forms to Trash?"
-msgstr[0] "Déplacer le formulaire vers la corbeille ?"
-msgstr[1] ""
-
-#: assets/build/forms.js:172
+#, js-format
 msgid "%d form will be moved to trash and can be restored later."
 msgid_plural "%d forms will be moved to trash and can be restored later."
 msgstr[0] "%d formulaire sera déplacé dans la corbeille et pourra être restauré plus tard."
@@ -14389,6 +14016,7 @@ msgstr[0] "Supprimer le formulaire"
 msgstr[1] ""
 
 #: assets/build/forms.js:172
+#, js-format
 msgid "Are you sure you want to permanently delete %d form? This action cannot be undone."
 msgid_plural "Are you sure you want to permanently delete %d forms? This action cannot be undone."
 msgstr[0] "Êtes-vous sûr de vouloir supprimer définitivement le formulaire %d ? Cette action ne peut pas être annulée."
@@ -14401,6 +14029,7 @@ msgstr[0] "Restaurer le formulaire"
 msgstr[1] ""
 
 #: assets/build/forms.js:172
+#, js-format
 msgid "%d form will be restored from trash."
 msgid_plural "%d forms will be restored from trash."
 msgstr[0] "%d formulaire sera restauré de la corbeille."
@@ -14506,10 +14135,6 @@ msgid "Collect simple payments without heavy eCommerce plugins"
 msgstr "Collectez des paiements simples sans plugins eCommerce lourds"
 
 #: assets/build/payments.js:172
-msgid "Accept one-time payments or subscriptions quickly"
-msgstr "Acceptez des paiements uniques ou des abonnements rapidement"
-
-#: assets/build/payments.js:172
 msgid "Free to start: no extra plugins needed!"
 msgstr "Libre pour commencer : aucun plugin supplémentaire nécessaire !"
 
@@ -14530,22 +14155,15 @@ msgid "Warning: Deleting payments will permanently remove all associated data in
 msgstr "Avertissement : La suppression des paiements supprimera définitivement toutes les données associées, y compris les notes, les journaux et les informations de transaction."
 
 #: assets/build/payments.js:172
-msgid "Some payments could not be deleted"
-msgstr "Certains paiements n'ont pas pu être supprimés"
-
-#: assets/build/payments.js:172
 msgid "Payments deleted successfully"
 msgstr "Paiements supprimés avec succès"
-
-#: assets/build/payments.js:172
-msgid "No payment IDs provided"
-msgstr "Aucun identifiant de paiement fourni"
 
 #: assets/build/payments.js:172
 msgid "Delete Payments"
 msgstr "Supprimer les paiements"
 
 #: assets/build/payments.js:172
+#, js-format
 msgid "Are you sure you want to delete %d payments? This action cannot be undone and will permanently remove all associated data including notes, logs, and transaction information."
 msgstr "Êtes-vous sûr de vouloir supprimer %d paiements ? Cette action est irréversible et supprimera définitivement toutes les données associées, y compris les notes, les journaux et les informations de transaction."
 
@@ -14578,20 +14196,13 @@ msgid "Add an internal note…"
 msgstr "Ajoutez une note interne…"
 
 #: assets/build/payments.js:172
+#, js-format
 msgid "Submitted by %1$s - %2$s"
 msgstr "Soumis par %1$s - %2$s"
 
 #: assets/build/payments.js:172
-msgid "Delete Note?"
-msgstr "Supprimer la note ?"
-
-#: assets/build/payments.js:172
 msgid "This action cannot be undone. The note will be permanently deleted."
 msgstr "Cette action ne peut pas être annulée. La note sera supprimée définitivement."
-
-#: assets/build/payments.js:172
-msgid "Delete Note"
-msgstr "Supprimer la note"
 
 #: assets/build/payments.js:172
 msgid "Delete note"
@@ -14606,22 +14217,15 @@ msgid "Untitled Log"
 msgstr "Journal sans titre"
 
 #: assets/build/payments.js:172
-msgid "Delete Log?"
-msgstr "Supprimer le journal ?"
-
-#: assets/build/payments.js:172
 msgid "This action cannot be undone. The log will be permanently deleted."
 msgstr "Cette action ne peut pas être annulée. Le journal sera supprimé définitivement."
-
-#: assets/build/payments.js:172
-msgid "Delete Log"
-msgstr "Supprimer le journal"
 
 #: assets/build/payments.js:172
 msgid "Delete log"
 msgstr "Supprimer le journal"
 
 #: assets/build/payments.js:172
+#, js-format
 msgid "%1$s %2$s"
 msgstr "%1$s %2$s"
 
@@ -14650,40 +14254,34 @@ msgid "Please enter a valid refund amount."
 msgstr "Veuillez entrer un montant de remboursement valide."
 
 #: assets/build/payments.js:172
+#, js-format
 msgid "Amount cannot exceed %s."
 msgstr "Le montant ne peut pas dépasser %s."
 
 #: assets/build/payments.js:172
+#, js-format
 msgid "This will issue a complete refund of %s. The entire payment will be refunded."
 msgstr "Cela entraînera un remboursement complet de %s. L'intégralité du paiement sera remboursée."
 
 #: assets/build/payments.js:172
+#, js-format
 msgid "This will issue a partial refund of %1$s. Remaining balance of %2$s will still be valid."
 msgstr "Cela émettra un remboursement partiel de %1$s. Le solde restant de %2$s sera toujours valide."
 
 #: assets/build/payments.js:172
-msgid "Refund Payment"
-msgstr "Remboursement du paiement"
-
-#: assets/build/payments.js:172
+#, js-format
 msgid "Process refund for payment #%s. The refunded amount will be sent to the customer's original payment method."
 msgstr "Traitez le remboursement pour le paiement #%s. Le montant remboursé sera envoyé au mode de paiement original du client."
 
 #: assets/build/payments.js:172
-msgid "Refund Amount"
-msgstr "Montant du remboursement"
-
-#: assets/build/payments.js:172
+#, js-format
 msgid "Max: %s"
 msgstr "Max : %s"
 
 #: assets/build/payments.js:172
+#, js-format
 msgid "Maximum refundable amount: %s"
 msgstr "Montant maximum remboursable : %s"
-
-#: assets/build/payments.js:172
-msgid "Refund Notes (Optional)"
-msgstr "Notes de remboursement (facultatif)"
 
 #: assets/build/payments.js:172
 msgid "Add a reason or note for this refund…"
@@ -14694,6 +14292,7 @@ msgid "This note will be stored with the refund record for future reference."
 msgstr "Cette note sera conservée avec l'enregistrement du remboursement pour référence future."
 
 #: assets/build/payments.js:172
+#, js-format
 msgid "Already refunded: %s"
 msgstr "Déjà remboursé : %s"
 
@@ -14774,6 +14373,7 @@ msgid "Cancel Subscription"
 msgstr "Annuler l'abonnement"
 
 #: assets/build/payments.js:172
+#, js-format
 msgid "Are you sure you want to cancel subscription #%s? This action cannot be undone and the customer will lose access to their subscription benefits."
 msgstr "Êtes-vous sûr de vouloir annuler l'abonnement n°%s ? Cette action est irréversible et le client perdra l'accès à ses avantages d'abonnement."
 
@@ -14794,6 +14394,7 @@ msgid "Pause Subscription"
 msgstr "Mettre l'abonnement en pause"
 
 #: assets/build/payments.js:172
+#, js-format
 msgid "Are you sure you want to pause subscription #%s? The customer will not be charged until you resume the subscription."
 msgstr "Êtes-vous sûr de vouloir suspendre l'abonnement n°%s ? Le client ne sera pas facturé jusqu'à ce que vous repreniez l'abonnement."
 
@@ -14866,6 +14467,7 @@ msgid "2.9% transaction and payment gateway fees apply."
 msgstr "Des frais de transaction et de passerelle de paiement de 2,9 % s'appliquent."
 
 #: assets/build/settings.js:172
+#, js-format
 msgid "Please visit %1$s, delete an unused webhook, then click below to retry."
 msgstr "Veuillez visiter %1$s, supprimer un webhook inutilisé, puis cliquer ci-dessous pour réessayer."
 
@@ -14954,10 +14556,6 @@ msgid "more…"
 msgstr "plus…"
 
 #: assets/build/templatePicker.js:172
-msgid "Or Build It Yourself"
-msgstr "Ou construisez-le vous-même"
-
-#: assets/build/templatePicker.js:172
 msgid "Calculations"
 msgstr "Calculs"
 
@@ -15022,14 +14620,17 @@ msgid "Select this if you want to collect payments through your form."
 msgstr "Sélectionnez ceci si vous souhaitez collecter des paiements via votre formulaire."
 
 #: assets/build/templatePicker.js:172
+#, js-format
 msgid "%d AI Generations Left. SureForms Premium allows:"
 msgstr "Il reste %d générations d'IA. SureForms Premium permet :"
 
 #: assets/build/templatePicker.js:172
+#, js-format
 msgid "%d AI Generations Left, Connect to SureForms AI to Get 10 More"
 msgstr "%d générations d'IA restantes, connectez-vous à SureForms AI pour en obtenir 10 de plus"
 
 #: assets/build/templatePicker.js:172
+#, js-format
 msgid "%d AI Generations Left. Upgrade to SureForms Premium"
 msgstr "Il reste %d générations d'IA. Passez à SureForms Premium"
 
@@ -15086,26 +14687,15 @@ msgid "Create Calculators, Surveys, etc."
 msgstr "Créez des calculatrices, des sondages, etc."
 
 #: assets/build/templatePicker.js:172
-msgid "Design Multi-step Forms"
-msgstr "Concevoir des formulaires à plusieurs étapes"
-
-#: assets/build/templatePicker.js:172
-msgid "Send Forms Submissions to Your CRM or Any App"
-msgstr "Envoyez les soumissions de formulaires à votre CRM ou à toute application"
-
-#: assets/build/templatePicker.js:172
 msgid "Form Generation Limit Reached"
 msgstr "Limite de génération de formulaire atteinte"
-
-#: assets/build/templatePicker.js:172
-msgid "You Have Hit Your FUP Limit."
-msgstr "Vous avez atteint votre limite FUP."
 
 #: assets/build/templatePicker.js:172
 msgid "You have reached the maximum number of form generations in your Free Plan. SureForms Premium allows:"
 msgstr "Vous avez atteint le nombre maximum de générations de formulaires dans votre plan gratuit. SureForms Premium permet :"
 
 #: assets/build/templatePicker.js:172
+#, js-format
 msgid "%s AI Generations Left."
 msgstr "Il reste %s générations d'IA."
 
@@ -15134,10 +14724,6 @@ msgstr "Annulé"
 msgid "Note: The subscription has been permanently canceled. The customer will no longer be charged and will lose access to subscription benefits."
 msgstr "Remarque : L'abonnement a été définitivement annulé. Le client ne sera plus facturé et perdra l'accès aux avantages de l'abonnement."
 
-#: inc/payments/stripe/admin-stripe-handler.php:159
-msgid "Subscription canceled successfully."
-msgstr "Abonnement annulé avec succès."
-
 #: inc/payments/stripe/admin-stripe-handler.php:432
 #: assets/build/payments.js:2
 msgid "Paused"
@@ -15145,6 +14731,7 @@ msgstr "En pause"
 
 #. translators: %s: user display name
 #: inc/payments/stripe/admin-stripe-handler.php:436
+#, php-format
 msgid "Paused by: %s"
 msgstr "Mis en pause par : %s"
 
@@ -15155,10 +14742,6 @@ msgstr "Remarque : La facturation de l'abonnement a été suspendue. Aucun frais
 #: inc/payments/stripe/admin-stripe-handler.php:444
 msgid "Subscription Paused"
 msgstr "Abonnement en pause"
-
-#: inc/form-submit.php:316
-msgid "Form submission is restricted."
-msgstr "La soumission de formulaire est restreinte."
 
 #: assets/build/entries.js:172
 msgid "This entry will be moved to trash and can be restored later."
@@ -15226,16 +14809,19 @@ msgstr "Configuration de paiement introuvable pour ce formulaire."
 
 #. translators: 1: expected currency, 2: received currency
 #: inc/payments/payment-helper.php:608
+#, php-format
 msgid "Currency mismatch: expected %1$s, received %2$s."
 msgstr "Incohérence de devise : attendu %1$s, reçu %2$s."
 
 #. translators: 1: expected amount with currency
 #: inc/payments/payment-helper.php:625
+#, php-format
 msgid "Payment amount must be exactly %1$s."
 msgstr "Le montant du paiement doit être exactement %1$s."
 
 #. translators: 1: minimum amount with currency
 #: inc/payments/payment-helper.php:636
+#, php-format
 msgid "Payment amount must be at least %1$s."
 msgstr "Le montant du paiement doit être d'au moins %1$s."
 
@@ -15270,6 +14856,7 @@ msgstr "Configuration de paiement introuvable."
 #: inc/payments/payment-helper.php:907
 #: inc/payments/payment-helper.php:959
 #: inc/payments/payment-helper.php:995
+#, php-format
 msgid "Payment amount mismatch. Expected %1$s, received %2$s."
 msgstr "Incohérence du montant du paiement. Montant attendu %1$s, reçu %2$s."
 
@@ -15280,10 +14867,11 @@ msgstr "La valeur du champ de montant variable est requise."
 
 #. translators: %1$s: minimum amount, %2$s: payment amount
 #: inc/payments/payment-helper.php:1007
+#, php-format
 msgid "Payment amount below minimum. Minimum: %1$s, received %2$s."
 msgstr "Montant du paiement inférieur au minimum. Minimum : %1$s, reçu %2$s."
 
-#: inc/rest-api.php:1395
+#: inc/rest-api.php:1593
 msgid " (Copy)"
 msgstr "(Copie)"
 
@@ -15332,18 +14920,11 @@ msgid "These countries will be hidden from the dropdown."
 msgstr "Ces pays seront masqués dans le menu déroulant."
 
 #: assets/build/forms.js:172
-msgid "Form duplicated successfully: %s"
-msgstr "Formulaire dupliqué avec succès : %s"
-
-#: assets/build/forms.js:172
 msgid "An error occurred while duplicating the form."
 msgstr "Une erreur s'est produite lors de la duplication du formulaire."
 
 #: assets/build/forms.js:172
-msgid "Duplicate Form?"
-msgstr "Dupliquer le formulaire ?"
-
-#: assets/build/forms.js:172
+#, js-format
 msgid "This will create a copy of \"%s\" with all its settings."
 msgstr "Cela créera une copie de \"%s\" avec tous ses paramètres."
 
@@ -15351,18 +14932,12 @@ msgstr "Cela créera une copie de \"%s\" avec tous ses paramètres."
 msgid "Pay with credit or debit card"
 msgstr "Payer par carte de crédit ou de débit"
 
-#: inc/form-restriction.php:160
-#: inc/form-restriction.php:161
-#: inc/post-types.php:1134
-#: inc/post-types.php:1174
 #: assets/build/formEditor.js:172
 msgid "This form is not yet available. Please check back after the scheduled start time."
 msgstr "Ce formulaire n'est pas encore disponible. Veuillez revenir après l'heure de début prévue."
 
 #: inc/form-restriction.php:165
 #: inc/form-restriction.php:166
-#: inc/post-types.php:1135
-#: inc/post-types.php:1175
 #: assets/build/formEditor.js:172
 msgid "This form is no longer accepting submissions. The submission period has ended."
 msgstr "Ce formulaire n'accepte plus les soumissions. La période de soumission est terminée."
@@ -15373,12 +14948,9 @@ msgstr "Passerelle de paiement introuvable."
 
 #. translators: %s: payment gateway name
 #: inc/payments/admin/admin-handler.php:703
+#, php-format
 msgid "Refund processing is not supported for %s gateway."
 msgstr "Le traitement des remboursements n'est pas pris en charge pour la passerelle %s."
-
-#: inc/payments/admin/admin-handler.php:737
-msgid "An error occurred while processing the refund."
-msgstr "Une erreur s'est produite lors du traitement du remboursement."
 
 #: inc/payments/payment-helper.php:969
 msgid "Number field configuration not found."
@@ -15469,10 +15041,12 @@ msgid "Payment Method"
 msgstr "Méthode de paiement"
 
 #: assets/build/payments.js:172
+#, js-format
 msgid "Subscription #%s"
 msgstr "Abonnement n°%s"
 
 #: assets/build/payments.js:172
+#, js-format
 msgid "Payment #%s"
 msgstr "Paiement n°%s"
 
@@ -15497,23 +15071,24 @@ msgid "Stripe Settings"
 msgstr "Paramètres Stripe"
 
 #. translators: %1$s: SureForms version, %2$s: SureForms Pro Plugin Name, %3$s: SureForms Pro Version.
-#: admin/admin.php:1199
+#: admin/admin.php:1261
+#, php-format
 msgid "SureForms %1$s requires minimum %2$s %3$s to work properly. Please update to the latest version."
 msgstr "SureForms %1$s nécessite au minimum %2$s %3$s pour fonctionner correctement. Veuillez mettre à jour vers la dernière version."
 
-#: admin/admin.php:1212
+#: admin/admin.php:1274
 msgid "Update Now"
 msgstr "Mettez à jour maintenant"
 
-#: inc/helper.php:1653
+#: inc/helper.php:1688
 msgid "SureContact"
 msgstr "SureContact"
 
-#: inc/helper.php:1654
+#: inc/helper.php:1689
 msgid "Turn Emails Into Revenue with a CRM Built for Your Website!"
 msgstr "Transformez les e-mails en revenus avec un CRM conçu pour votre site web !"
 
-#: inc/helper.php:1655
+#: inc/helper.php:1690
 msgid "Send newsletters, run campaigns, set up automations, manage contacts, and see exactly how much revenue your emails generate, all in one place."
 msgstr "Envoyez des newsletters, lancez des campagnes, configurez des automatisations, gérez les contacts et voyez exactement combien de revenus vos e-mails génèrent, le tout en un seul endroit."
 
@@ -15525,7 +15100,7 @@ msgstr "Mot de passe perdu"
 msgid "Reset Password"
 msgstr "Réinitialiser le mot de passe"
 
-#: inc/form-submit.php:103
+#: inc/form-submit.php:105
 msgid "Nonce refresh is disabled."
 msgstr "Le rafraîchissement du nonce est désactivé."
 
@@ -15552,6 +15127,1217 @@ msgstr "Position du signe monétaire"
 #: assets/build/settings.js:172
 msgid "Select the position of the currency symbol relative to the amount."
 msgstr "Sélectionnez la position du symbole monétaire par rapport au montant."
+
+#: admin/admin.php:489
+#: admin/admin.php:490
+#: assets/build/dashboard.js:172
+#: assets/build/entries.js:172
+#: assets/build/forms.js:172
+#: assets/build/learn.js:172
+#: assets/build/page_header.js:172
+#: assets/build/payments.js:172
+#: assets/build/settings.js:2
+msgid "Learn"
+msgstr "Apprendre"
+
+#: admin/admin.php:1387
+msgid "Amazing! SureForms is powering your forms and submissions - let's keep growing together!"
+msgstr "Incroyable ! SureForms alimente vos formulaires et soumissions - continuons à grandir ensemble !"
+
+#: admin/admin.php:1388
+msgid "If SureForms has been helpful, would you mind taking a moment to leave a 5-star review on WordPress.org?"
+msgstr "Si SureForms vous a été utile, pourriez-vous prendre un moment pour laisser un avis 5 étoiles sur WordPress.org ?"
+
+#: admin/admin.php:1391
+#: admin/admin.php:1435
+msgid "Maybe later"
+msgstr "Peut-être plus tard"
+
+#: admin/admin.php:1392
+msgid "I already did"
+msgstr "Je l'ai déjà fait"
+
+#: admin/admin.php:1431
+msgid "SureForms is ready to power your forms — explore what's possible!"
+msgstr "SureForms est prêt à dynamiser vos formulaires — explorez ce qui est possible !"
+
+#: admin/admin.php:1432
+msgid "Manage your forms, track submissions, and discover features like AI Form Builder, payment integrations, and more from the SureForms dashboard."
+msgstr "Gérez vos formulaires, suivez les soumissions et découvrez des fonctionnalités telles que le constructeur de formulaires IA, les intégrations de paiement et bien plus encore depuis le tableau de bord SureForms."
+
+#: admin/admin.php:1434
+msgid "Go to Dashboard"
+msgstr "Aller au tableau de bord"
+
+#: admin/admin.php:1436
+msgid "I already know"
+msgstr "Je sais déjà"
+
+#: admin/admin.php:1516
+msgid "Invalid parameters."
+msgstr "Paramètres invalides."
+
+#: inc/abilities/abilities-registrar.php:76
+msgid "Form building and management abilities powered by SureForms."
+msgstr "Capacités de création et de gestion de formulaires propulsées par SureForms."
+
+#: inc/abilities/entries/bulk-get-entries.php:44
+msgid "Bulk Get Entry Details"
+msgstr "Obtenir les détails des entrées en vrac"
+
+#: inc/abilities/entries/bulk-get-entries.php:45
+msgid "Retrieve detailed information about multiple SureForms form submission entries in a single call, including all submitted field data with labels."
+msgstr "Récupérez des informations détaillées sur plusieurs entrées de soumission de formulaire SureForms en un seul appel, y compris toutes les données de champ soumises avec les étiquettes."
+
+#: inc/abilities/entries/bulk-get-entries.php:74
+msgid "Array of entry IDs to retrieve (max 50)."
+msgstr "Tableau d'ID d'entrée à récupérer (max 50)."
+
+#: inc/abilities/entries/bulk-get-entries.php:143
+msgid "entry_ids must be a non-empty array."
+msgstr "entry_ids doit être un tableau non vide."
+
+#. translators: %d is the maximum number of entries allowed.
+#: inc/abilities/entries/bulk-get-entries.php:152
+#: inc/abilities/entries/delete-entry.php:118
+#: inc/abilities/entries/update-entry-status.php:125
+#, php-format
+msgid "Maximum %d entry IDs allowed per request."
+msgstr "Un maximum de %d identifiants d'entrée est autorisé par demande."
+
+#: inc/abilities/entries/delete-entry.php:41
+msgid "Permanently delete one or more SureForms form submission entries. This action cannot be undone."
+msgstr "Supprimer définitivement une ou plusieurs entrées de soumission de formulaire SureForms. Cette action ne peut pas être annulée."
+
+#: inc/abilities/entries/delete-entry.php:69
+msgid "Array of entry IDs to permanently delete."
+msgstr "Tableau d'ID d'entrée à supprimer définitivement."
+
+#: inc/abilities/entries/delete-entry.php:109
+#: inc/abilities/entries/update-entry-status.php:116
+msgid "At least one entry ID is required."
+msgstr "Au moins un identifiant d'entrée est requis."
+
+#: inc/abilities/entries/get-entry.php:37
+msgid "Get Entry Details"
+msgstr "Obtenir les détails de l'entrée"
+
+#: inc/abilities/entries/get-entry.php:38
+msgid "Retrieve detailed information about a specific SureForms form submission entry, including all submitted field data with labels."
+msgstr "Récupérer des informations détaillées sur une entrée de soumission de formulaire SureForms spécifique, y compris toutes les données de champ soumises avec les étiquettes."
+
+#: inc/abilities/entries/get-entry.php:66
+msgid "The ID of the entry to retrieve."
+msgstr "L'ID de l'entrée à récupérer."
+
+#: inc/abilities/entries/list-entries.php:34
+msgid "List Form Entries"
+msgstr "Lister les entrées du formulaire"
+
+#: inc/abilities/entries/list-entries.php:35
+msgid "List SureForms form submission entries with optional filtering by form, status, date range, and search. Supports pagination and sorting."
+msgstr "Répertorier les entrées de soumission de formulaire SureForms avec un filtrage optionnel par formulaire, statut, plage de dates et recherche. Prend en charge la pagination et le tri."
+
+#: inc/abilities/entries/list-entries.php:63
+msgid "Filter entries by form ID. Use 0 or omit for all forms."
+msgstr "Filtrer les entrées par ID de formulaire. Utilisez 0 ou omettez pour tous les formulaires."
+
+#: inc/abilities/entries/list-entries.php:68
+msgid "Filter entries by status."
+msgstr "Filtrer les entrées par statut."
+
+#: inc/abilities/entries/list-entries.php:74
+msgid "Search entries by entry ID."
+msgstr "Rechercher des entrées par ID d'entrée."
+
+#: inc/abilities/entries/list-entries.php:78
+msgid "Start date for filtering entries (YYYY-MM-DD format)."
+msgstr "Date de début pour filtrer les entrées (format AAAA-MM-JJ)."
+
+#: inc/abilities/entries/list-entries.php:82
+msgid "End date for filtering entries (YYYY-MM-DD format)."
+msgstr "Date de fin pour filtrer les entrées (format AAAA-MM-JJ)."
+
+#: inc/abilities/entries/list-entries.php:86
+msgid "Number of entries per page (1-100)."
+msgstr "Nombre d'entrées par page (1-100)."
+
+#: inc/abilities/entries/list-entries.php:91
+msgid "Page number for pagination."
+msgstr "Numéro de page pour la pagination."
+
+#: inc/abilities/entries/list-entries.php:96
+msgid "Column to order results by."
+msgstr "Colonne pour trier les résultats."
+
+#: inc/abilities/entries/list-entries.php:102
+msgid "Sort direction."
+msgstr "Ordre de tri."
+
+#: inc/abilities/entries/update-entry-status.php:41
+msgid "Update Entry Status"
+msgstr "Mettre à jour le statut de l'entrée"
+
+#: inc/abilities/entries/update-entry-status.php:42
+msgid "Update the status of one or more SureForms form submission entries. Supports read, unread, trash, and restore operations."
+msgstr "Mettre à jour le statut d'une ou plusieurs entrées de soumission de formulaire SureForms. Prend en charge les opérations de lecture, non lu, corbeille et restauration."
+
+#: inc/abilities/entries/update-entry-status.php:70
+msgid "Array of entry IDs to update."
+msgstr "Tableau d'ID d'entrée à mettre à jour."
+
+#: inc/abilities/entries/update-entry-status.php:75
+msgid "New status for the entries."
+msgstr "Nouveau statut pour les entrées."
+
+#: inc/abilities/entries/update-entry-status.php:135
+msgid "Status is required."
+msgstr "Le statut est requis."
+
+#: inc/abilities/forms/create-form.php:39
+msgid "Create SureForms Form"
+msgstr "Créer un formulaire SureForms"
+
+#: inc/abilities/forms/create-form.php:40
+msgid "Create a new SureForms form with specified title, fields, metadata, and status. Supports all standard field types (input, email, textarea, dropdown, checkbox, multi-choice, phone, number, url, address, gdpr, payment, inline-button)."
+msgstr "Créer un nouveau formulaire SureForms avec le titre, les champs, les métadonnées et le statut spécifiés. Prend en charge tous les types de champs standard (saisie, email, zone de texte, liste déroulante, case à cocher, choix multiple, téléphone, nombre, url, adresse, rgpd, paiement, bouton en ligne)."
+
+#: inc/abilities/forms/create-form.php:76
+msgid "Title of the form in 5-10 words."
+msgstr "Titre du formulaire en 5 à 10 mots."
+
+#: inc/abilities/forms/create-form.php:80
+msgid "Array of form field definitions."
+msgstr "Tableau de définitions de champs de formulaire."
+
+#: inc/abilities/forms/create-form.php:89
+msgid "Optional form metadata including confirmation, compliance, and styling settings."
+msgstr "Métadonnées de formulaire optionnelles, y compris les paramètres de confirmation, de conformité et de style."
+
+#: inc/abilities/forms/create-form.php:96
+#: inc/abilities/forms/update-form.php:99
+msgid "Message displayed after successful submission."
+msgstr "Message affichée après soumission réussie."
+
+#: inc/abilities/forms/create-form.php:135
+msgid "Form publish status."
+msgstr "Statut de publication du formulaire."
+
+#: inc/abilities/forms/create-form.php:180
+msgid "Form title is required."
+msgstr "Le titre du formulaire est requis."
+
+#: inc/abilities/forms/create-form.php:188
+msgid "At least one form field is required."
+msgstr "Au moins un champ de formulaire est requis."
+
+#: inc/abilities/forms/create-form.php:212
+msgid "Failed to generate form fields from the provided data."
+msgstr "Échec de la génération des champs de formulaire à partir des données fournies."
+
+#: inc/abilities/forms/create-form.php:241
+msgid "Failed to create the form."
+msgstr "Échec de la création du formulaire."
+
+#: inc/abilities/forms/delete-form.php:33
+msgid "Delete SureForms Form"
+msgstr "Supprimer le formulaire SureForms"
+
+#: inc/abilities/forms/delete-form.php:34
+msgid "Move a SureForms form to trash, or permanently delete it when force is set to true."
+msgstr "Déplacer un formulaire SureForms à la corbeille, ou le supprimer définitivement lorsque l'option force est activée."
+
+#: inc/abilities/forms/delete-form.php:58
+msgid "The ID of the form to delete."
+msgstr "L'ID du formulaire à supprimer."
+
+#: inc/abilities/forms/delete-form.php:62
+msgid "If true, permanently deletes the form. Otherwise moves to trash."
+msgstr "Si vrai, supprime définitivement le formulaire. Sinon, le déplace dans la corbeille."
+
+#: inc/abilities/forms/delete-form.php:98
+#: inc/abilities/forms/get-form-stats.php:110
+#: inc/abilities/forms/get-form.php:107
+#: inc/abilities/forms/get-shortcode.php:92
+#: inc/abilities/forms/update-form.php:177
+msgid "Form not found."
+msgstr "Formulaire non trouvé."
+
+#: inc/abilities/forms/delete-form.php:114
+msgid "Failed to delete the form."
+msgstr "Échec de la suppression du formulaire."
+
+#: inc/abilities/forms/duplicate-form.php:34
+msgid "Duplicate SureForms Form"
+msgstr "Dupliquer le formulaire SureForms"
+
+#: inc/abilities/forms/duplicate-form.php:35
+msgid "Duplicate an existing SureForms form with all its fields, metadata, and settings. The new form is created as a draft."
+msgstr "Dupliquez un formulaire SureForms existant avec tous ses champs, métadonnées et paramètres. Le nouveau formulaire est créé en tant que brouillon."
+
+#: inc/abilities/forms/duplicate-form.php:63
+msgid "The ID of the form to duplicate."
+msgstr "L'ID du formulaire à dupliquer."
+
+#: inc/abilities/forms/duplicate-form.php:67
+msgid "Suffix to append to the duplicated form title."
+msgstr "Suffixe à ajouter au titre du formulaire dupliqué."
+
+#: inc/abilities/forms/form-field-schema.php:63
+msgid "Field label. e.g. First Name"
+msgstr "Étiquette de champ. par exemple, Prénom"
+
+#: inc/abilities/forms/form-field-schema.php:67
+msgid "Whether the field is required."
+msgstr "Si le champ est requis."
+
+#: inc/abilities/forms/form-field-schema.php:71
+msgid "The field type."
+msgstr "Le type de champ."
+
+#: inc/abilities/forms/form-field-schema.php:76
+msgid "Help text describing the field."
+msgstr "Texte d'aide décrivant le champ."
+
+#: inc/abilities/forms/form-field-schema.php:80
+msgid "Default value for the field."
+msgstr "Valeur par défaut pour le champ."
+
+#: inc/abilities/forms/form-field-schema.php:84
+msgid "Options for dropdown or multi-choice fields."
+msgstr "Options pour les champs déroulants ou à choix multiples."
+
+#: inc/abilities/forms/form-field-schema.php:95
+msgid "Allow only single selection in multi-choice field."
+msgstr "Autoriser uniquement une sélection unique dans le champ à choix multiple."
+
+#: inc/abilities/forms/form-field-schema.php:99
+msgid "Whether the field value must be unique."
+msgstr "Si la valeur du champ doit être unique."
+
+#: inc/abilities/forms/form-field-schema.php:103
+msgid "Maximum character length."
+msgstr "Longueur maximale des caractères."
+
+#: inc/abilities/forms/get-form-stats.php:34
+msgid "Get Form Statistics"
+msgstr "Obtenir les statistiques du formulaire"
+
+#: inc/abilities/forms/get-form-stats.php:35
+msgid "Get submission statistics for a specific SureForms form or all forms. Returns total entries, unread, read, and trash counts."
+msgstr "Obtenez les statistiques de soumission pour un formulaire SureForms spécifique ou pour tous les formulaires. Renvoie le nombre total d'entrées, non lues, lues et dans la corbeille."
+
+#: inc/abilities/forms/get-form-stats.php:63
+msgid "The ID of the form to get stats for. Use 0 or omit for all forms."
+msgstr "L'ID du formulaire pour obtenir des statistiques. Utilisez 0 ou omettez pour tous les formulaires."
+
+#: inc/abilities/forms/get-form.php:34
+msgid "Get SureForms Form Details"
+msgstr "Obtenez les détails du formulaire SureForms"
+
+#: inc/abilities/forms/get-form.php:35
+msgid "Retrieve detailed information about a specific SureForms form including its fields, settings, and shortcode."
+msgstr "Récupérez des informations détaillées sur un formulaire SureForms spécifique, y compris ses champs, ses paramètres et son shortcode."
+
+#: inc/abilities/forms/get-form.php:59
+msgid "The ID of the form to retrieve."
+msgstr "L'ID du formulaire à récupérer."
+
+#: inc/abilities/forms/get-shortcode.php:33
+msgid "Get Form Shortcode"
+msgstr "Obtenir le shortcode du formulaire"
+
+#: inc/abilities/forms/get-shortcode.php:34
+msgid "Get the shortcode and block markup needed to embed a SureForms form on any page or post."
+msgstr "Obtenez le shortcode et le balisage nécessaire pour intégrer un formulaire SureForms sur n'importe quelle page ou publication."
+
+#: inc/abilities/forms/get-shortcode.php:58
+msgid "The ID of the form to get the shortcode for."
+msgstr "L'ID du formulaire pour obtenir le shortcode."
+
+#: inc/abilities/forms/list-forms.php:34
+msgid "List SureForms Forms"
+msgstr "Lister les formulaires SureForms"
+
+#: inc/abilities/forms/list-forms.php:35
+msgid "Retrieve a list of SureForms forms with optional filtering by status, search query, and pagination."
+msgstr "Récupérez une liste de formulaires SureForms avec un filtrage optionnel par statut, requête de recherche et pagination."
+
+#: inc/abilities/forms/list-forms.php:59
+msgid "Filter by form status. Defaults to \"publish\"."
+msgstr "Filtrer par statut de formulaire. Par défaut, \"publier\"."
+
+#: inc/abilities/forms/list-forms.php:65
+msgid "Search forms by title."
+msgstr "Rechercher des formulaires par titre."
+
+#: inc/abilities/forms/list-forms.php:69
+msgid "Number of forms per page. Defaults to 10."
+msgstr "Nombre de formulaires par page. Par défaut, 10."
+
+#: inc/abilities/forms/list-forms.php:76
+msgid "Page number for pagination. Defaults to 1."
+msgstr "Numéro de page pour la pagination. Par défaut, 1."
+
+#: inc/abilities/forms/update-form.php:39
+msgid "Update SureForms Form"
+msgstr "Mettre à jour le formulaire SureForms"
+
+#: inc/abilities/forms/update-form.php:40
+msgid "Update an existing SureForms form title, status (publish/draft/private/trash), fields, and/or metadata settings. Use status \"trash\" to trash a form, or change from \"trash\" to another status to restore it. Providing formFields replaces all existing fields."
+msgstr "Mettre à jour le titre, le statut (publié/brouillon/privé/corbeille), les champs et/ou les paramètres de métadonnées d'un formulaire SureForms existant. Utilisez le statut \"corbeille\" pour mettre un formulaire à la corbeille, ou changez de \"corbeille\" à un autre statut pour le restaurer. Fournir formFields remplace tous les champs existants."
+
+#: inc/abilities/forms/update-form.php:70
+msgid "The ID of the form to update."
+msgstr "L'ID du formulaire à mettre à jour."
+
+#: inc/abilities/forms/update-form.php:74
+msgid "New title for the form."
+msgstr "Nouveau titre pour le formulaire."
+
+#: inc/abilities/forms/update-form.php:78
+msgid "New status for the form."
+msgstr "Nouveau statut pour le formulaire."
+
+#: inc/abilities/forms/update-form.php:83
+msgid "Array of form field definitions. Providing this replaces all existing fields."
+msgstr "Tableau de définitions de champs de formulaire. Fournir cela remplace tous les champs existants."
+
+#: inc/abilities/forms/update-form.php:92
+msgid "Optional form metadata including confirmation, compliance, and styling settings. Same schema as create-form."
+msgstr "Métadonnées de formulaire optionnelles incluant les paramètres de confirmation, de conformité et de style. Même schéma que create-form."
+
+#: inc/ai-form-builder/ai-auth.php:111
+msgid "Authentication session expired. Please try again."
+msgstr "La session d'authentification a expiré. Veuillez réessayer."
+
+#: inc/ai-form-builder/ai-auth.php:144
+msgid "Invalid access key format."
+msgstr "Format de clé d'accès invalide."
+
+#: inc/ai-form-builder/ai-helper.php:182
+msgid "Unable to connect to SureForms API. Please check your connection."
+msgstr "Impossible de se connecter à l'API SureForms. Veuillez vérifier votre connexion."
+
+#: inc/ai-form-builder/ai-helper.php:186
+msgid "Unable to verify license. Please check your license key."
+msgstr "Impossible de vérifier la licence. Veuillez vérifier votre clé de licence."
+
+#: inc/ai-form-builder/ai-helper.php:190
+msgid "An error occurred while trying to verify your email. Please check your email you have used to log in or sign up on billing.sureforms.com."
+msgstr "Une erreur s'est produite lors de la tentative de vérification de votre e-mail. Veuillez vérifier l'e-mail que vous avez utilisé pour vous connecter ou vous inscrire sur billing.sureforms.com."
+
+#: inc/ai-form-builder/ai-helper.php:194
+msgid "Unable to verify referer. Please check your referer."
+msgstr "Impossible de vérifier le référent. Veuillez vérifier votre référent."
+
+#: inc/ai-form-builder/ai-helper.php:202
+msgid "Domain Verification Failed on current site. Please try again on another website."
+msgstr "La vérification de domaine a échoué sur le site actuel. Veuillez réessayer sur un autre site web."
+
+#: inc/entries.php:416
+msgid "Unable to generate export file."
+msgstr "Impossible de générer le fichier d'exportation."
+
+#: inc/export.php:215
+msgid "Forms imported successfully!"
+msgstr "Formulaires importés avec succès !"
+
+#: inc/export.php:271
+#: inc/export.php:290
+msgid "Unable to import form."
+msgstr "Impossible d'importer le formulaire."
+
+#: inc/fields/gdpr-markup.php:29
+#: inc/fields/gdpr-markup.php:42
+msgid "I consent to have this website store my information so they can respond to my inquiry."
+msgstr "Je consens à ce que ce site web stocke mes informations afin qu'ils puissent répondre à ma demande."
+
+#: inc/fields/input-markup.php:65
+msgid "Text field"
+msgstr "Champ de texte"
+
+#: inc/form-restriction.php:160
+#: inc/form-restriction.php:161
+#: inc/post-types.php:1134
+#: inc/post-types.php:1174
+msgid "This form is not yet available. Check back after the scheduled start time."
+msgstr "Ce formulaire n'est pas encore disponible. Revenez après l'heure de début prévue."
+
+#: inc/form-submit.php:133
+#: inc/form-submit.php:448
+#: inc/form-submit.php:493
+#: inc/form-submit.php:1007
+#: inc/rest-api.php:91
+#: inc/rest-api.php:150
+#: inc/rest-api.php:316
+#: inc/rest-api.php:348
+#: inc/rest-api.php:370
+#: inc/rest-api.php:461
+#: inc/rest-api.php:506
+#: inc/rest-api.php:555
+#: inc/rest-api.php:604
+#: inc/rest-api.php:637
+#: inc/rest-api.php:772
+#: inc/rest-api.php:845
+#: inc/rest-api.php:905
+msgid "Security verification failed. Please refresh the page and try again."
+msgstr "La vérification de sécurité a échoué. Veuillez actualiser la page et réessayer."
+
+#: inc/form-submit.php:143
+#: inc/form-submit.php:527
+msgid "Form data was not found."
+msgstr "Les données du formulaire n'ont pas été trouvées."
+
+#: inc/form-submit.php:151
+msgid "Form ID is missing."
+msgstr "L'identifiant du formulaire est manquant."
+
+#: inc/form-submit.php:168
+msgid "Sorry, you do not have permission to access this resource."
+msgstr "Désolé, vous n'avez pas la permission d'accéder à cette ressource."
+
+#: inc/form-submit.php:318
+msgid "You do not have permission to submit this form."
+msgstr "Vous n'avez pas la permission de soumettre ce formulaire."
+
+#: inc/form-submit.php:328
+msgid "This form is no longer available."
+msgstr "Ce formulaire n'est plus disponible."
+
+#: inc/form-submit.php:341
+msgid "Please check the form for errors."
+msgstr "Veuillez vérifier le formulaire pour les erreurs."
+
+#: inc/form-submit.php:468
+#: inc/form-submit.php:509
+msgid "Your submission was flagged as spam. Please try again."
+msgstr "Votre soumission a été signalée comme spam. Veuillez réessayer."
+
+#: inc/form-submit.php:697
+msgid "Unable to submit form. Please try again."
+msgstr "Impossible de soumettre le formulaire. Veuillez réessayer."
+
+#: inc/form-submit.php:949
+msgid "No SMTP plugin detected. Please configure an SMTP plugin to enable email sending."
+msgstr "Aucun plugin SMTP détecté. Veuillez configurer un plugin SMTP pour activer l'envoi d'e-mails."
+
+#: inc/form-submit.php:950
+msgid "Email sending failed for an unknown reason."
+msgstr "L'envoi de l'email a échoué pour une raison inconnue."
+
+#: inc/form-submit.php:989
+msgid "No emails were sent."
+msgstr "Aucun e-mail n'a été envoyé."
+
+#: inc/learn.php:48
+msgid "Setting Up Your Form"
+msgstr "Configuration de votre formulaire"
+
+#: inc/learn.php:49
+msgid "Get started with SureForms by building your first form, adding the right fields, and styling it to match your brand."
+msgstr "Commencez avec SureForms en créant votre premier formulaire, en ajoutant les bons champs et en le stylisant pour correspondre à votre marque."
+
+#: inc/learn.php:54
+#: inc/learn.php:62
+msgid "Creating Your First Form"
+msgstr "Création de votre premier formulaire"
+
+#: inc/learn.php:55
+msgid "Creating a form with SureForms takes just a few minutes. Just describe the kind of form you need in a simple prompt, and let SureForms AI handle the heavy lifting for you."
+msgstr "Créer un formulaire avec SureForms ne prend que quelques minutes. Il vous suffit de décrire le type de formulaire dont vous avez besoin dans une simple invite, et laissez l'IA de SureForms s'occuper du gros du travail pour vous."
+
+#: inc/learn.php:68
+msgid "Create a Form"
+msgstr "Créer un formulaire"
+
+#: inc/learn.php:75
+#: inc/learn.php:83
+msgid "Set Up Your Form Fields"
+msgstr "Configurez vos champs de formulaire"
+
+#: inc/learn.php:76
+msgid "Adjust the field settings according to your requirements."
+msgstr "Ajustez les paramètres du champ selon vos besoins."
+
+#: inc/learn.php:89
+msgid "Set Up Fields"
+msgstr "Configurer les champs"
+
+#: inc/learn.php:98
+#: inc/learn.php:106
+msgid "Style Your Forms"
+msgstr "Stylisez vos formulaires"
+
+#: inc/learn.php:99
+msgid "Customize the look and feel of your form to match your brand. Adjust background, colors, layout and etc. to create a seamless experience for your visitors."
+msgstr "Personnalisez l'apparence de votre formulaire pour qu'il corresponde à votre marque. Ajustez l'arrière-plan, les couleurs, la mise en page, etc. pour créer une expérience fluide pour vos visiteurs."
+
+#: inc/learn.php:112
+msgid "Style Form"
+msgstr "Formulaire de style"
+
+#: inc/learn.php:123
+msgid "Making Your Form Live"
+msgstr "Mettre votre formulaire en ligne"
+
+#: inc/learn.php:124
+msgid "Publish your form and make it accessible to your visitors using Instant Form or by embedding it on any page."
+msgstr "Publiez votre formulaire et rendez-le accessible à vos visiteurs en utilisant Instant Form ou en l'intégrant sur n'importe quelle page."
+
+#: inc/learn.php:130
+msgid "No need to design a separate page just for the forms. Publish your form instantly on a dedicated landing page. Just enable Instant Form option and share the link."
+msgstr "Inutile de concevoir une page distincte juste pour les formulaires. Publiez votre formulaire instantanément sur une page de destination dédiée. Activez simplement l'option Formulaire Instantané et partagez le lien."
+
+#: inc/learn.php:152
+#: inc/learn.php:160
+msgid "Embed Your Forms in a Page"
+msgstr "Intégrez vos formulaires dans une page"
+
+#: inc/learn.php:153
+msgid "Easily embed your form on any page using the built-in SureForms block."
+msgstr "Intégrez facilement votre formulaire sur n'importe quelle page en utilisant le bloc SureForms intégré."
+
+#: inc/learn.php:166
+msgid "Embed Forms"
+msgstr "Intégrer des formulaires"
+
+#: inc/learn.php:175
+msgid "Managing Entries"
+msgstr "Gestion des entrées"
+
+#: inc/learn.php:176
+msgid "Stay on top of your form submissions with email notifications and the built-in entries manager."
+msgstr "Restez au courant de vos soumissions de formulaires grâce aux notifications par e-mail et au gestionnaire d'entrées intégré."
+
+#: inc/learn.php:182
+msgid "Get email notifications whenever someone fills out your form."
+msgstr "Recevez des notifications par e-mail chaque fois que quelqu'un remplit votre formulaire."
+
+#: inc/learn.php:189
+msgid "Configure Your Email Notification"
+msgstr "Configurez votre notification par e-mail"
+
+#: inc/learn.php:195
+msgid "Configure"
+msgstr "Configurer"
+
+#: inc/learn.php:202
+#: inc/learn.php:210
+msgid "Manage Entries"
+msgstr "Gérer les entrées"
+
+#: inc/learn.php:203
+msgid "View, filter, and manage all form submissions from one place. Export entries, delete spam, and keep your data organized with the SureForms Entries manager."
+msgstr "Affichez, filtrez et gérez toutes les soumissions de formulaires depuis un seul endroit. Exportez les entrées, supprimez les spams et gardez vos données organisées avec le gestionnaire d'entrées SureForms."
+
+#: inc/learn.php:216
+msgid "Go to Entries"
+msgstr "Aller aux entrées"
+
+#: inc/learn.php:407
+msgid "Invalid chapter or step ID."
+msgstr "ID de chapitre ou d'étape invalide."
+
+#: inc/payments/admin/admin-handler.php:170
+msgid "Unable to load payments. Please refresh the page."
+msgstr "Impossible de charger les paiements. Veuillez actualiser la page."
+
+#: inc/payments/admin/admin-handler.php:211
+msgid "Unable to load payment details. Please try again."
+msgstr "Impossible de charger les détails de paiement. Veuillez réessayer."
+
+#: inc/payments/admin/admin-handler.php:300
+msgid "Unable to load subscription details. Please try again."
+msgstr "Impossible de charger les détails de l'abonnement. Veuillez réessayer."
+
+#: inc/payments/admin/admin-handler.php:344
+msgid "Unable to load forms. Please try again."
+msgstr "Impossible de charger les formulaires. Veuillez réessayer."
+
+#: inc/payments/admin/admin-handler.php:388
+msgid "Unable to add note. Please try again."
+msgstr "Impossible d'ajouter une note. Veuillez réessayer."
+
+#: inc/payments/admin/admin-handler.php:432
+msgid "Unable to delete note. Please try again."
+msgstr "Impossible de supprimer la note. Veuillez réessayer."
+
+#: inc/payments/admin/admin-handler.php:476
+msgid "Unable to delete log. Please try again."
+msgstr "Impossible de supprimer le journal. Veuillez réessayer."
+
+#: inc/payments/admin/admin-handler.php:541
+msgid "Cannot delete more than 100 payments at once. Select fewer payments."
+msgstr "Impossible de supprimer plus de 100 paiements à la fois. Sélectionnez moins de paiements."
+
+#: inc/payments/admin/admin-handler.php:615
+msgid "Unable to delete payments. Please try again."
+msgstr "Impossible de supprimer les paiements. Veuillez réessayer."
+
+#: inc/payments/admin/admin-handler.php:737
+msgid "Unable to process refund. Please try again."
+msgstr "Impossible de traiter le remboursement. Veuillez réessayer."
+
+#: inc/payments/payment-helper.php:491
+msgid "Unable to complete payment. Please try again or contact support."
+msgstr "Impossible de terminer le paiement. Veuillez réessayer ou contacter le support."
+
+#: inc/payments/payment-helper.php:513
+msgid "Unable to process card. Please try again."
+msgstr "Impossible de traiter la carte. Veuillez réessayer."
+
+#: inc/payments/payment-helper.php:514
+msgid "Unable to process transaction. Please try again."
+msgstr "Impossible de traiter la transaction. Veuillez réessayer."
+
+#: inc/payments/payment-helper.php:520
+msgid "Unable to reach card issuer. Please try again later."
+msgstr "Impossible de joindre l'émetteur de la carte. Veuillez réessayer plus tard."
+
+#: inc/payments/payment-helper.php:531
+msgid "Unable to process transaction. Please try again later."
+msgstr "Impossible de traiter la transaction. Veuillez réessayer plus tard."
+
+#: inc/payments/payment-helper.php:541
+msgid "Complete the form to view the amount."
+msgstr "Complétez le formulaire pour voir le montant."
+
+#: inc/payments/payment-helper.php:542
+msgid "Unable to create payment. Please contact support."
+msgstr "Impossible de créer le paiement. Veuillez contacter le support."
+
+#: inc/payments/stripe/admin-stripe-handler.php:159
+msgid "Subscription canceled successfully!"
+msgstr "Abonnement annulé avec succès !"
+
+#: inc/payments/stripe/admin-stripe-handler.php:462
+msgid "Subscription paused successfully!"
+msgstr "Abonnement mis en pause avec succès !"
+
+#: inc/payments/stripe/payments-settings.php:301
+msgid "Stripe account disconnected successfully!"
+msgstr "Compte Stripe déconnecté avec succès !"
+
+#: inc/payments/stripe/payments-settings.php:401
+msgid "Unable to create webhook."
+msgstr "Impossible de créer le webhook."
+
+#: inc/payments/stripe/payments-settings.php:592
+msgid "Unable to create webhooks."
+msgstr "Impossible de créer des webhooks."
+
+#: inc/payments/stripe/payments-settings.php:682
+msgid "Webhook deleted successfully!"
+msgstr "Webhook supprimé avec succès !"
+
+#: inc/payments/stripe/payments-settings.php:717
+msgid "Unable to delete webhooks."
+msgstr "Impossible de supprimer les webhooks."
+
+#: inc/payments/stripe/payments-settings.php:876
+msgid "Unable to delete webhook."
+msgstr "Impossible de supprimer le webhook."
+
+#: inc/payments/stripe/payments-settings.php:1024
+msgid "Unable to connect to Stripe."
+msgstr "Impossible de se connecter à Stripe."
+
+#: inc/post-types.php:1135
+#: inc/post-types.php:1175
+msgid "This form is closed. The submission period has ended."
+msgstr "Ce formulaire est fermé. La période de soumission est terminée."
+
+#: inc/rest-api.php:97
+msgid "Missing required parameters."
+msgstr "Paramètres requis manquants."
+
+#: inc/rest-api.php:104
+msgid "Invalid date range."
+msgstr "Période de dates invalide."
+
+#: inc/rest-api.php:381
+msgid "Plugin identifier is required."
+msgstr "L'identifiant du plugin est requis."
+
+#: inc/rest-api.php:390
+msgid "Integration not found."
+msgstr "Intégration non trouvée."
+
+#: inc/rest-api.php:516
+#: inc/rest-api.php:565
+#: inc/rest-api.php:613
+msgid "Select at least one entry."
+msgstr "Sélectionnez au moins une entrée."
+
+#: inc/rest-api.php:523
+#: inc/rest-api.php:572
+msgid "Action is required."
+msgstr "Une action est requise."
+
+#: inc/rest-api.php:531
+msgid "Invalid action. Use \"read\" or \"unread\"."
+msgstr "Action invalide. Utilisez \"lu\" ou \"non lu\"."
+
+#: inc/rest-api.php:580
+msgid "Invalid action. Use \"trash\" or \"restore\"."
+msgstr "Action invalide. Utilisez \"trash\" ou \"restore\"."
+
+#: inc/rest-api.php:919
+msgid "Select at least one form and specify an action."
+msgstr "Sélectionnez au moins un formulaire et spécifiez une action."
+
+#: inc/rest-api.php:934
+msgid "Form not found or is not a valid form type."
+msgstr "Formulaire introuvable ou type de formulaire non valide."
+
+#: inc/rest-api.php:946
+msgid "This form is already in the trash."
+msgstr "Ce formulaire est déjà dans la corbeille."
+
+#: inc/rest-api.php:957
+msgid "This form is not in the trash."
+msgstr "Ce formulaire n'est pas dans la corbeille."
+
+#: inc/rest-api.php:972
+msgid "Invalid action."
+msgstr "Action invalide."
+
+#. translators: %s: action name
+#: inc/rest-api.php:987
+#, php-format
+msgid "Failed to %s this form. Please try again."
+msgstr "Échec de %s ce formulaire. Veuillez réessayer."
+
+#: inc/translatable.php:88
+msgid "Enter a valid phone number."
+msgstr "Entrez un numéro de téléphone valide."
+
+#: inc/translatable.php:89
+msgid "Enter a valid URL."
+msgstr "Entrez une URL valide."
+
+#: inc/translatable.php:91
+msgid "Enter a valid email address."
+msgstr "Entrez une adresse e-mail valide."
+
+#. translators: %s represents the minimum acceptable value
+#: inc/translatable.php:94
+#, php-format
+msgid "Minimum value is %s."
+msgstr "La valeur minimale est %s."
+
+#. translators: %s represents the maximum acceptable value
+#: inc/translatable.php:97
+#, php-format
+msgid "Maximum value is %s."
+msgstr "La valeur maximale est %s."
+
+#. translators: %s represents the minimum number of options to select
+#: inc/translatable.php:100
+#: inc/translatable.php:106
+#, php-format
+msgid "Select at least %s options."
+msgstr "Sélectionnez au moins %s options."
+
+#. translators: %s represents the maximum number of options that can be selected
+#: inc/translatable.php:103
+#: inc/translatable.php:109
+#, php-format
+msgid "You can select up to %s options."
+msgstr "Vous pouvez sélectionner jusqu'à %s options."
+
+#: inc/translatable.php:120
+msgid "This form is now closed as we have reached the maximum number of entries."
+msgstr "Ce formulaire est maintenant fermé car nous avons atteint le nombre maximum d'entrées."
+
+#: assets/build/blocks.js:172
+msgid "Validation Message for Duplicate"
+msgstr "Message de validation pour doublon"
+
+#: assets/build/blocks.js:172
+msgid "Click here to insert a form"
+msgstr "Cliquez ici pour insérer un formulaire"
+
+#: assets/build/dashboard.js:172
+#: assets/build/formEditor.js:2
+#: assets/build/settings.js:2
+msgid "Unable to complete action. Please try again."
+msgstr "Impossible de terminer l'action. Veuillez réessayer."
+
+#: assets/build/dashboard.js:172
+msgid "Supercharge Your Workflow"
+msgstr "Boostez votre flux de travail"
+
+#: assets/build/dashboard.js:172
+msgid "Spam protection included"
+msgstr "Protection contre le spam incluse"
+
+#: assets/build/dashboard.js:172
+msgid "Track, view, and manage all form entries in one place. Stay organized, informed, and never miss a response."
+msgstr "Suivez, visualisez et gérez toutes les entrées de formulaire en un seul endroit. Restez organisé, informé et ne manquez jamais une réponse."
+
+#: assets/build/dashboard.js:172
+msgid "Multistep Forms"
+msgstr "Formulaires à étapes multiples"
+
+#: assets/build/dashboard.js:172
+msgid "Send form entries instantly to any external system or endpoint to power advanced workflows."
+msgstr "Envoyez instantanément les entrées de formulaire à tout système ou point de terminaison externe pour alimenter des flux de travail avancés."
+
+#: assets/build/dashboard.js:172
+msgid "Automatically turn form entries into clean, ready-to-download PDFs. Perfect for records, sharing, archiving, or keeping things organized."
+msgstr "Transformez automatiquement les entrées de formulaire en PDF propres et prêts à télécharger. Parfait pour les archives, le partage, l'archivage ou pour garder les choses organisées."
+
+#: assets/build/dashboard.js:172
+msgid "Set up confirmation messages and email notifications for each entry"
+msgstr "Configurer les messages de confirmation et les notifications par e-mail pour chaque entrée"
+
+#: assets/build/entries.js:172
+msgid "All Statuses"
+msgstr "Tous les statuts"
+
+#: assets/build/entries.js:172
+msgid "Date and Time"
+msgstr "Date et heure"
+
+#: assets/build/entries.js:172
+#, js-format
+msgid "Entry #%1$s marked as %2$s."
+msgstr "Entrée n°%1$s marquée comme %2$s."
+
+#: assets/build/entries.js:172
+#, js-format
+msgid "Entry #%s deleted permanently."
+msgstr "Entrée n°%s supprimée définitivement."
+
+#: assets/build/entries.js:172
+#, js-format
+msgid "Entry #%s moved to trash."
+msgstr "L'entrée n°%s a été déplacée vers la corbeille."
+
+#: assets/build/entries.js:172
+#, js-format
+msgid "Entry #%s restored successfully."
+msgstr "Entrée n°%s restaurée avec succès."
+
+#: assets/build/entries.js:172
+msgid "Delete entry permanently?"
+msgid_plural "Delete entries permanently?"
+msgstr[0] "Supprimer l'entrée définitivement ?"
+msgstr[1] ""
+
+#: assets/build/entries.js:172
+msgid "Move entry to trash?"
+msgid_plural "Move entries to trash?"
+msgstr[0] "Déplacer l'entrée à la corbeille ?"
+msgstr[1] ""
+
+#: assets/build/entries.js:172
+msgid "Entries exported successfully!"
+msgstr "Entrées exportées avec succès !"
+
+#: assets/build/entries.js:172
+msgid "Form name:"
+msgstr "Nom du formulaire :"
+
+#: assets/build/entries.js:172
+msgid "Submitted on:"
+msgstr "Soumis le :"
+
+#: assets/build/entries.js:172
+msgid "Entry info"
+msgstr "Informations d'entrée"
+
+#: assets/build/entries.js:172
+msgid "Resend Email Notification"
+msgstr "Renvoyer la notification par e-mail"
+
+#: assets/build/formEditor.js:172
+msgid "When enabled, this form will not store user IP, browser name, or device name in entries."
+msgstr "Lorsqu'elle est activée, ce formulaire ne stockera pas l'IP de l'utilisateur, le nom du navigateur ou le nom de l'appareil dans les entrées."
+
+#: assets/build/formEditor.js:172
+msgid "Enable reCAPTCHA, hCaptcha, or Turnstile to block spam submissions."
+msgstr "Activez reCAPTCHA, hCaptcha ou Turnstile pour bloquer les soumissions de spam."
+
+#: assets/build/formEditor.js:172
+msgid "Select a spam protection service. Configure API keys in Global Settings before enabling."
+msgstr "Sélectionnez un service de protection contre le spam. Configurez les clés API dans les Paramètres Globaux avant de l'activer."
+
+#: assets/build/formEditor.js:172
+msgid "Send as Raw HTML"
+msgstr "Envoyer en HTML brut"
+
+#: assets/build/formEditor.js:172
+msgid "When enabled, the email body HTML will be preserved exactly as written and wrapped in a professional email template."
+msgstr "Lorsqu'elle est activée, le corps de l'email en HTML sera conservé exactement tel qu'il est écrit et intégré dans un modèle d'email professionnel."
+
+#: assets/build/formEditor.js:172
+msgid "Smart tags that reference user-submitted fields will not be escaped in raw HTML mode. Avoid inserting untrusted field values directly into the email body."
+msgstr "Les balises intelligentes qui font référence à des champs soumis par l'utilisateur ne seront pas échappées en mode HTML brut. Évitez d'insérer directement des valeurs de champs non fiables dans le corps de l'e-mail."
+
+#: assets/build/formEditor.js:172
+msgid "Attach Uploaded Files"
+msgstr "Joindre les fichiers téléchargés"
+
+#: assets/build/formEditor.js:172
+msgid "When enabled, files uploaded via upload fields will be attached to this email notification."
+msgstr "Lorsqu'elle est activée, les fichiers téléchargés via les champs de téléchargement seront joints à cette notification par e-mail."
+
+#: assets/build/formEditor.js:172
+msgid "Please provide a recipient email address and subject line."
+msgstr "Veuillez fournir une adresse e-mail du destinataire et une ligne d'objet."
+
+#: assets/build/formEditor.js:172
+msgid "Email notification duplicated!"
+msgstr "Notification par e-mail dupliquée !"
+
+#: assets/build/formEditor.js:172
+msgid "Are you sure you want to delete this email notification?"
+msgstr "Êtes-vous sûr de vouloir supprimer cette notification par e-mail ?"
+
+#: assets/build/formEditor.js:172
+msgid "Email notification deleted!"
+msgstr "Notification par e-mail supprimée !"
+
+#: assets/build/formEditor.js:172
+msgid "URL is missing Top Level Domain (TLD)."
+msgstr "L'URL manque de domaine de premier niveau (TLD)."
+
+#: assets/build/formEditor.js:172
+msgid "This form is now closed as the maximum number of entries has been received."
+msgstr "Ce formulaire est maintenant fermé car le nombre maximum d'entrées a été atteint."
+
+#: assets/build/formEditor.js:172
+msgid "Publish Your Form"
+msgstr "Publiez votre formulaire"
+
+#: assets/build/formEditor.js:172
+msgid "Enable This to Instantly Publish the Form"
+msgstr "Activez ceci pour publier instantanément le formulaire"
+
+#: assets/build/formEditor.js:172
+msgid "Style Your Instant Form Page Here"
+msgstr "Stylisez votre page de formulaire instantané ici"
+
+#: assets/build/forms.js:2
+msgid "Export failed: no data received."
+msgstr "Échec de l'exportation : aucune donnée reçue."
+
+#: assets/build/forms.js:172
+msgid "Select a SureForms export file (.json) to import."
+msgstr "Sélectionnez un fichier d'exportation SureForms (.json) à importer."
+
+#: assets/build/forms.js:172
+msgid "Drop a form file (.json) here"
+msgstr "Déposez un fichier de formulaire (.json) ici"
+
+#: assets/build/forms.js:172
+msgid "(Draft)"
+msgstr "(Brouillon)"
+
+#: assets/build/forms.js:172
+msgid "Build instant forms and share them with a link—no embedding needed."
+msgstr "Créez des formulaires instantanés et partagez-les avec un lien, sans besoin d'intégration."
+
+#: assets/build/forms.js:172
+#, js-format
+msgid "Form \"%s\" duplicated successfully."
+msgstr "Le formulaire \"%s\" a été dupliqué avec succès."
+
+#: assets/build/forms.js:172
+msgid "Error loading forms"
+msgstr "Erreur de chargement des formulaires"
+
+#: assets/build/forms.js:172
+msgid "Move form to trash?"
+msgid_plural "Move forms to trash?"
+msgstr[0] "Déplacer le formulaire vers la corbeille ?"
+msgstr[1] ""
+
+#: assets/build/forms.js:172
+msgid "Delete form?"
+msgstr "Supprimer le formulaire ?"
+
+#: assets/build/forms.js:172
+msgid "Duplicate form?"
+msgstr "Dupliquer le formulaire ?"
+
+#: assets/build/formSubmit.js:2
+#: assets/js/unminified/form-submit.js:530
+msgid "An error occurred while submitting your form. Please try again."
+msgstr "Une erreur s'est produite lors de la soumission de votre formulaire. Veuillez réessayer."
+
+#: assets/build/learn.js:2
+msgid "Failed to save progress. Please try again."
+msgstr "Échec de l'enregistrement de la progression. Veuillez réessayer."
+
+#: assets/build/learn.js:172
+msgid "1 minute"
+msgstr "1 minute"
+
+#: assets/build/learn.js:172
+#, js-format
+msgid "%d minutes"
+msgstr "%d minutes"
+
+#: assets/build/learn.js:172
+msgid "Mark as incomplete"
+msgstr "Marquer comme incomplet"
+
+#: assets/build/learn.js:172
+msgid "Mark as complete"
+msgstr "Marquer comme terminé"
+
+#: assets/build/learn.js:172
+msgid "Completed"
+msgstr "Terminé"
+
+#: assets/build/learn.js:172
+msgid "In Progress"
+msgstr "En cours"
+
+#: assets/build/learn.js:172
+msgid "Incomplete"
+msgstr "Incomplet"
+
+#: assets/build/learn.js:172
+msgid "Play video"
+msgstr "Lire la vidéo"
+
+#: assets/build/learn.js:172
+msgid "View Steps"
+msgstr "Voir les étapes"
+
+#: assets/build/learn.js:172
+msgid "Please create a form first"
+msgstr "Veuillez d'abord créer un formulaire"
+
+#: assets/build/learn.js:172
+msgid "Mark as Incomplete"
+msgstr "Marquer comme incomplet"
+
+#: assets/build/learn.js:172
+msgid "Mark as Completed"
+msgstr "Marquer comme terminé"
+
+#: assets/build/learn.js:172
+msgid "Learn how"
+msgstr "Apprenez comment"
+
+#: assets/build/learn.js:172
+#, js-format
+msgid "%1$d of %2$d steps completed"
+msgstr "%1$d sur %2$d étapes terminées"
+
+#: assets/build/learn.js:172
+msgid "All lessons in this module are already complete"
+msgstr "Toutes les leçons de ce module sont déjà terminées"
+
+#: assets/build/learn.js:172
+msgid "Mark All as Done"
+msgstr "Tout marquer comme terminé"
+
+#: assets/build/learn.js:172
+msgid "To help you take full control and ensure success of your forms, we have outlined a few tasks and prepared a set of instructional videos. These will help you learn how to setup, customize and grow your forms."
+msgstr "Pour vous aider à prendre le contrôle total et à assurer le succès de vos formulaires, nous avons décrit quelques tâches et préparé un ensemble de vidéos pédagogiques. Celles-ci vous aideront à apprendre comment configurer, personnaliser et développer vos formulaires."
+
+#: assets/build/payments.js:172
+msgid "Accept single payments or subscriptions quickly"
+msgstr "Acceptez rapidement des paiements uniques ou des abonnements"
+
+#: assets/build/payments.js:172
+msgid "Some payments could not be deleted."
+msgstr "Certains paiements n'ont pas pu être supprimés."
+
+#: assets/build/payments.js:172
+msgid "No payment IDs provided."
+msgstr "Aucun identifiant de paiement fourni."
+
+#: assets/build/payments.js:172
+msgid "Delete note?"
+msgstr "Supprimer la note ?"
+
+#: assets/build/payments.js:172
+msgid "Delete log?"
+msgstr "Supprimer le journal ?"
+
+#: assets/build/payments.js:172
+msgid "Refund payment"
+msgstr "Remboursement du paiement"
+
+#: assets/build/payments.js:172
+msgid "Refund amount"
+msgstr "Montant du remboursement"
+
+#: assets/build/payments.js:172
+msgid "Refund notes (optional)"
+msgstr "Notes de remboursement (facultatif)"
+
+#: assets/build/settings.js:172
+msgid "Enable email summaries"
+msgstr "Activer les résumés par e-mail"
+
+#: assets/build/settings.js:172
+msgid "Enable IP logging"
+msgstr "Activer la journalisation IP"
+
+#: assets/build/settings.js:172
+msgid "Turn on Admin Notification from here."
+msgstr "Activez la notification d'administration à partir d'ici."
+
+#: assets/build/templatePicker.js:172
+msgid "Or create it yourself"
+msgstr "Ou créez-le vous-même"
+
+#: assets/build/templatePicker.js:172
+msgid "Unable to create form"
+msgstr "Impossible de créer le formulaire"
+
+#: assets/build/templatePicker.js:172
+msgid "Something went wrong. Please try again."
+msgstr "Un problème est survenu. Veuillez réessayer."
+
+#: assets/build/templatePicker.js:172
+msgid "Describe what kind of form you want"
+msgstr "Décrivez le type de formulaire que vous souhaitez"
+
+#: assets/build/templatePicker.js:172
+msgid "Click to generate the form"
+msgstr "Cliquez pour générer le formulaire"
+
+#: assets/build/templatePicker.js:172
+msgid "Connecting to AI service"
+msgstr "Connexion au service d'IA"
+
+#: assets/build/templatePicker.js:172
+msgid "Generating fields"
+msgstr "Génération des champs"
+
+#: assets/build/templatePicker.js:172
+msgid "Finalizing your form"
+msgstr "Finalisation de votre formulaire"
+
+#: assets/build/templatePicker.js:172
+msgid "Opening form editor"
+msgstr "Ouverture de l'éditeur de formulaire"
+
+#: assets/build/templatePicker.js:172
+msgid "Design Multistep Forms"
+msgstr "Concevoir des formulaires à plusieurs étapes"
+
+#: assets/build/templatePicker.js:172
+msgid "Send Form Entries to Your CRM or Any App"
+msgstr "Envoyez les entrées de formulaire à votre CRM ou à n'importe quelle application"
+
+#: assets/build/templatePicker.js:172
+msgid "You've reached your daily generation limit."
+msgstr "Vous avez atteint votre limite quotidienne de génération."
+
+#: assets/build/templatePicker.js:172
+msgid "You've reached your daily limit for AI form generations."
+msgstr "Vous avez atteint votre limite quotidienne pour les générations de formulaires d'IA."
 
 #: inc/post-types.php:205
 msgctxt "post type general name"
@@ -15787,7 +16573,7 @@ msgstr "courrier"
 #: inc/blocks/gdpr/block.json
 msgctxt "block keyword"
 msgid "gdpr"
-msgstr ""
+msgstr "rgpd"
 
 #: inc/blocks/gdpr/block.json
 msgctxt "block keyword"
@@ -15868,7 +16654,7 @@ msgstr "multi"
 #: inc/blocks/sform/block.json
 msgctxt "block keyword"
 msgid "sureforms"
-msgstr ""
+msgstr "sureforms"
 
 #: inc/blocks/number/block.json
 msgctxt "block keyword"

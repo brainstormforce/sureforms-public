@@ -38,7 +38,7 @@ class Test_Bulk_Get_Entries extends TestCase {
 	/**
 	 * Test annotations indicate readonly and idempotent.
 	 */
-	public function test_annotations() {
+	public function test_get_annotations() {
 		$annotations = $this->ability->get_annotations();
 		$this->assertTrue( $annotations['readonly'] );
 		$this->assertFalse( $annotations['destructive'] );
@@ -50,7 +50,7 @@ class Test_Bulk_Get_Entries extends TestCase {
 	/**
 	 * Test input schema requires entry_ids.
 	 */
-	public function test_input_schema() {
+	public function test_get_input_schema() {
 		$schema = $this->ability->get_input_schema();
 		$this->assertEquals( 'object', $schema['type'] );
 		$this->assertArrayHasKey( 'entry_ids', $schema['properties'] );
@@ -61,7 +61,7 @@ class Test_Bulk_Get_Entries extends TestCase {
 	/**
 	 * Test output schema has expected keys.
 	 */
-	public function test_output_schema() {
+	public function test_get_output_schema() {
 		$schema = $this->ability->get_output_schema();
 		$this->assertArrayHasKey( 'entries', $schema['properties'] );
 		$this->assertArrayHasKey( 'errors', $schema['properties'] );
