@@ -675,6 +675,11 @@ if ( typeof window._srfmSlugAutoLabels === 'undefined' ) {
 }
 const _slugAutoLabels = window._srfmSlugAutoLabels;
 
+// Returns true when the block carries a slug attribute and is not excluded.
+const isSlugEligible = ( block, withoutSlugBlocks ) =>
+	! withoutSlugBlocks.includes( block.name ) &&
+	Object.prototype.hasOwnProperty.call( block.attributes, 'slug' );
+
 export const prepareBlockSlugs = ( updateBlockAttributes, srfmBlocks ) => {
 	const blockSlugs = {};
 	const existingSlugs = new Set();
@@ -683,10 +688,7 @@ export const prepareBlockSlugs = ( updateBlockAttributes, srfmBlocks ) => {
 	// Pre-pass: seed existingSlugs with all slugs that will NOT be regenerated.
 	const seedExisting = ( blocks ) => {
 		for ( const block of blocks ) {
-			if ( withoutSlugBlocks.includes( block.name ) ) {
-				continue;
-			}
-			if ( ! Object.prototype.hasOwnProperty.call( block.attributes, 'slug' ) ) {
+			if ( ! isSlugEligible( block, withoutSlugBlocks ) ) {
 				continue;
 			}
 			const { slug, label, block_id } = block.attributes;
@@ -707,10 +709,7 @@ export const prepareBlockSlugs = ( updateBlockAttributes, srfmBlocks ) => {
 
 	const processBlocks = ( blocks ) => {
 		for ( const block of blocks ) {
-			if ( withoutSlugBlocks.includes( block.name ) ) {
-				continue;
-			}
-			if ( ! Object.prototype.hasOwnProperty.call( block.attributes, 'slug' ) ) {
+			if ( ! isSlugEligible( block, withoutSlugBlocks ) ) {
 				continue;
 			}
 			let { slug, label, block_id } = block.attributes;

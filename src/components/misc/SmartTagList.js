@@ -18,8 +18,8 @@ export default function SmartTagList( {
 	const controls = [];
 
 	const handleTagInsert = ( key ) => {
-		// Lock the slug if this is a form-field shortcode.
-		const match = /^\{form:([^}]+)\}$/.exec( key );
+		// Lock the slug for both {form:slug} and {form-payment:slug:*} shortcodes.
+		const match = /^\{form(?:-payment)?:([^:}]+)/.exec( key );
 		if ( match ) {
 			lockBlockSlugBySlug( match[ 1 ] );
 		}
