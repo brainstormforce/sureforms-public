@@ -276,6 +276,7 @@ class Export {
 				// Update post meta.
 				$allowed_keys           = $this->get_allowed_import_meta_keys();
 				$unserialized_meta_keys = $this->get_unserialized_post_metas();
+				$registered             = get_registered_meta_keys( 'post', SRFM_FORMS_POST_TYPE );
 				foreach ( $post_meta as $meta_key => $meta_value ) {
 					// 1. Whitelist check — skip unknown keys from crafted import files.
 					if ( ! in_array( $meta_key, $allowed_keys, true ) ) {
@@ -285,12 +286,16 @@ class Export {
 					if ( in_array( $meta_key, $unserialized_meta_keys, true ) ) {
 						// Complex array metas — sanitize_callback registered via register_post_meta()
 						// is automatically invoked by add_post_meta() → update_metadata() pipeline.
+						// When Pro is inactive, some keys may lack a registered callback — apply fallback.
+						if ( empty( $registered[ $meta_key ]['sanitize_callback'] ) ) {
+							$meta_value = Helper::sanitize_by_type( $meta_value );
+						}
 						add_post_meta( $post_id, $meta_key, $meta_value );
 					} else {
 						// Scalar metas — unwrap single-element arrays produced by get_post_meta().
 						$raw_value = is_array( $meta_value ) && isset( $meta_value[0] ) ? $meta_value[0] : $meta_value;
-						// Fallback sanitization for scalar metas that may not have a registered callback.
-						if ( is_string( $raw_value ) ) {
+						// Fallback sanitization — skip when a registered callback already handles it.
+						if ( is_string( $raw_value ) && empty( $registered[ $meta_key ]['sanitize_callback'] ) ) {
 							$raw_value = sanitize_text_field( $raw_value );
 						}
 						add_post_meta( $post_id, $meta_key, $raw_value );
@@ -330,8 +335,6 @@ class Export {
 			'_srfm_instant_form',
 			'_srfm_is_ai_generated',
 			'_srfm_is_inline_button',
-			'_srfm_seo_description',
-			'_srfm_seo_title',
 			'_srfm_single_page_form_title',
 			'_srfm_submit_alignment',
 			'_srfm_submit_alignment_backend',
@@ -351,6 +354,14 @@ class Export {
 		 * @param array<string> $scalar_metas List of scalar meta keys.
 		 */
 		$scalar_metas = apply_filters( 'srfm_import_scalar_meta_keys', $scalar_metas );
+
+		// Ensure filter consumers cannot inject non-SureForms meta keys.
+		$scalar_metas = array_filter(
+			$scalar_metas,
+			static function ( $key ) {
+				return str_starts_with( $key, '_srfm_' );
+			}
+		);
 
 		return array_merge( $this->get_unserialized_post_metas(), $scalar_metas );
 	}

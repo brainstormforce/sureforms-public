@@ -2386,4 +2386,27 @@ class Test_Helper extends TestCase {
         $this->assertSame( 'value', $result['key'] );
     }
 
+    /**
+     * M1: Test sanitize_by_type truncates deeply nested arrays at depth 10.
+     */
+    public function test_sanitize_by_type_depth_limit() {
+        // Build a 15-level deep nested array.
+        $value = 'deep_value';
+        for ( $i = 0; $i < 15; $i++ ) {
+            $value = [ 'nested' => $value ];
+        }
+
+        $result = Helper::sanitize_by_type( $value );
+
+        // Traverse 10 levels — should still be an array.
+        $current = $result;
+        for ( $i = 0; $i < 10; $i++ ) {
+            $this->assertIsArray( $current, "Expected array at depth {$i}" );
+            $current = $current['nested'];
+        }
+
+        // At depth 11+, the value should be truncated to empty string.
+        $this->assertSame( '', $current );
+    }
+
 }

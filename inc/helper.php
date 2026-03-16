@@ -304,14 +304,18 @@ class Helper {
 	 * Use this for complex object metas with many properties where per-field callbacks are impractical.
 	 *
 	 * @param mixed $value The value to sanitize.
+	 * @param int   $depth Current recursion depth. Values nested beyond 10 levels are discarded.
 	 * @since x.x.x
 	 * @return mixed The sanitized value.
 	 */
-	public static function sanitize_by_type( $value ) {
+	public static function sanitize_by_type( $value, int $depth = 0 ) {
+		if ( $depth > 10 ) {
+			return '';
+		}
 		if ( is_array( $value ) ) {
 			$sanitized = [];
 			foreach ( $value as $key => $val ) {
-				$sanitized[ sanitize_text_field( (string) $key ) ] = self::sanitize_by_type( $val );
+				$sanitized[ sanitize_text_field( (string) $key ) ] = self::sanitize_by_type( $val, $depth + 1 );
 			}
 			return $sanitized;
 		}
