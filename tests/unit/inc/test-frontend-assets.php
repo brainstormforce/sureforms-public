@@ -61,4 +61,55 @@ class Test_Frontend_Assets extends TestCase {
 			'enqueue_srfm_script method should exist on Frontend_Assets.'
 		);
 	}
+
+	/**
+	 * Test enqueue_srfm_script localizes Quill i18n strings for rich text textarea.
+	 */
+	public function test_enqueue_srfm_script_localizes_quill_i18n_for_richtext_textarea() {
+		// Enqueue the textarea block with isRichText enabled.
+		$this->frontend_assets->enqueue_srfm_script( 'srfm/textarea', [ 'isRichText' => true ] );
+
+		// Retrieve the localized data for the textarea script.
+		$localized_data = wp_scripts()->get_data( SRFM_SLUG . '-textarea', 'data' );
+
+		$this->assertNotEmpty( $localized_data, 'Localized script data should not be empty for rich text textarea.' );
+		$this->assertStringContainsString( 'srfm_quill_i18n', $localized_data, 'Localized data should contain srfm_quill_i18n object.' );
+
+		// Verify all expected i18n keys are present in the localized data.
+		$expected_keys = [
+			'normal',
+			'heading_1',
+			'heading_2',
+			'heading_3',
+			'heading_4',
+			'heading_5',
+			'heading_6',
+			'visit_url',
+			'enter_link',
+			'edit',
+			'save',
+			'remove',
+		];
+
+		foreach ( $expected_keys as $key ) {
+			$this->assertStringContainsString( '"' . $key . '"', $localized_data, "Localized data should contain the '{$key}' key." );
+		}
+	}
+
+	/**
+	 * Test enqueue_srfm_script does not localize Quill i18n for non-richtext textarea.
+	 */
+	public function test_enqueue_srfm_script_does_not_localize_quill_i18n_for_plain_textarea() {
+		// Reset scripts registry to start clean.
+		wp_scripts()->registered = [];
+		wp_scripts()->queue      = [];
+
+		// Enqueue the textarea block without isRichText.
+		$this->frontend_assets->enqueue_srfm_script( 'srfm/textarea', [] );
+
+		// The textarea script should not be enqueued at all for non-richtext.
+		$localized_data = wp_scripts()->get_data( SRFM_SLUG . '-textarea', 'data' );
+
+		$this->assertFalse( $localized_data, 'Localized data should not exist for non-richtext textarea.' );
+	}
 }
