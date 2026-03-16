@@ -415,6 +415,140 @@ class Test_Analytics extends TestCase {
 		$this->assertFalse( Analytics_Events::is_tracked( 'embed_styling_configured' ) );
 	}
 
+	// ─── embed_styling_bricks_count ───────────────────────────────
+
+	/**
+	 * Test returns 0 when no Bricks pages have embed styling.
+	 */
+	public function test_embed_styling_bricks_count_returns_zero_when_no_elements() {
+		$count = Analytics::embed_styling_bricks_count( 'default' );
+		$this->assertSame( 0, $count );
+	}
+
+	/**
+	 * Test counts a single Bricks element with 'default' formTheme.
+	 */
+	public function test_embed_styling_bricks_count_single_default() {
+		$this->create_post_with_bricks_data(
+			[ $this->build_bricks_element( 'default' ) ]
+		);
+
+		$count = Analytics::embed_styling_bricks_count( 'default' );
+		$this->assertSame( 1, $count );
+	}
+
+	/**
+	 * Test counts a single Bricks element with 'custom' formTheme.
+	 */
+	public function test_embed_styling_bricks_count_single_custom() {
+		$this->create_post_with_bricks_data(
+			[ $this->build_bricks_element( 'custom' ) ]
+		);
+
+		$count = Analytics::embed_styling_bricks_count( 'custom' );
+		$this->assertSame( 1, $count );
+	}
+
+	/**
+	 * Test 'default' count does not include 'custom' Bricks elements.
+	 */
+	public function test_embed_styling_bricks_count_default_excludes_custom() {
+		$this->create_post_with_bricks_data(
+			[ $this->build_bricks_element( 'custom' ) ]
+		);
+
+		$count = Analytics::embed_styling_bricks_count( 'default' );
+		$this->assertSame( 0, $count );
+	}
+
+	/**
+	 * Test multiple Bricks elements on a single page are counted individually.
+	 */
+	public function test_embed_styling_bricks_count_multiple_on_same_page() {
+		$this->create_post_with_bricks_data(
+			[
+				$this->build_bricks_element( 'default' ),
+				$this->build_bricks_element( 'default' ),
+				$this->build_bricks_element( 'custom' ),
+			]
+		);
+
+		$default_count = Analytics::embed_styling_bricks_count( 'default' );
+		$custom_count  = Analytics::embed_styling_bricks_count( 'custom' );
+
+		$this->assertSame( 2, $default_count );
+		$this->assertSame( 1, $custom_count );
+	}
+
+	/**
+	 * Test draft Bricks pages are not counted.
+	 */
+	public function test_embed_styling_bricks_count_excludes_drafts() {
+		$this->create_post_with_bricks_data(
+			[ $this->build_bricks_element( 'default' ) ],
+			'post',
+			'draft'
+		);
+
+		$count = Analytics::embed_styling_bricks_count( 'default' );
+		$this->assertSame( 0, $count );
+	}
+
+	// ─── track_embed_styling_configured (Bricks) ──────────────────
+
+	/**
+	 * Test event is tracked for Bricks pages with styled elements.
+	 */
+	public function test_track_embed_styling_configured_bricks_fires_event() {
+		$analytics = Analytics::get_instance();
+		$post_id   = $this->create_post_with_bricks_data(
+			[ $this->build_bricks_element( 'default' ) ]
+		);
+
+		$analytics->track_embed_styling_configured( $post_id, get_post( $post_id ) );
+
+		$this->assertTrue( Analytics_Events::is_tracked( 'embed_styling_configured' ) );
+	}
+
+	/**
+	 * Test event properties contain 'bricks' source for Bricks pages.
+	 */
+	public function test_track_embed_styling_configured_bricks_source() {
+		$analytics = Analytics::get_instance();
+		$post_id   = $this->create_post_with_bricks_data(
+			[
+				$this->build_bricks_element( 'default' ),
+				$this->build_bricks_element( 'custom' ),
+			]
+		);
+
+		$analytics->track_embed_styling_configured( $post_id, get_post( $post_id ) );
+
+		$pending = get_option( 'srfm_options', [] );
+		$events  = $pending['usage_events_pending'] ?? [];
+		$event   = end( $events );
+
+		$this->assertSame( 'embed_styling_configured', $event['event_name'] );
+		$this->assertSame( 'bricks', $event['properties']['source'] );
+		$this->assertSame( 2, $event['properties']['block_count'] );
+		$this->assertArrayHasKey( 'default', $event['properties']['themes'] );
+		$this->assertArrayHasKey( 'custom', $event['properties']['themes'] );
+	}
+
+	/**
+	 * Test Bricks event is not tracked when formTheme is inherit.
+	 */
+	public function test_track_embed_styling_configured_bricks_skips_inherit() {
+		$analytics = Analytics::get_instance();
+		$post_id   = $this->create_post_with_bricks_data(
+			[ $this->build_bricks_element( 'inherit' ) ]
+		);
+
+		$analytics->track_embed_styling_configured( $post_id, get_post( $post_id ) );
+
+		$this->assertFalse( Analytics_Events::is_tracked( 'embed_styling_configured' ) );
+	}
+
 	// ─── flush_pushed ─────────────────────────────────────────────
 
 	/**
@@ -523,5 +657,46 @@ class Test_Analytics extends TestCase {
 		}
 
 		return wp_json_encode( $elements );
+	}
+
+	/**
+	 * Create a test post with Bricks data in post meta.
+	 *
+	 * @param array<mixed> $elements   Bricks elements array.
+	 * @param string       $post_type   Post type. Default 'post'.
+	 * @param string       $post_status Post status. Default 'publish'.
+	 * @return int Post ID.
+	 */
+	private function create_post_with_bricks_data( $elements, $post_type = 'post', $post_status = 'publish' ) {
+		$post_id = wp_insert_post(
+			[
+				'post_type'    => $post_type,
+				'post_status'  => $post_status,
+				'post_title'   => 'Bricks Analytics Test ' . wp_rand(),
+				'post_content' => '',
+			]
+		);
+
+		update_post_meta( $post_id, '_bricks_page_content_2', $elements );
+		update_post_meta( $post_id, '_srfm_test_post', true );
+
+		return $post_id;
+	}
+
+	/**
+	 * Build a single Bricks sureforms element.
+	 *
+	 * @param string $form_theme The formTheme value.
+	 * @return array<string, mixed> Bricks element array.
+	 */
+	private function build_bricks_element( $form_theme ) {
+		return [
+			'id'       => wp_unique_id( 'brx' ),
+			'name'     => 'sureforms',
+			'settings' => [
+				'form-id'   => '1',
+				'formTheme' => $form_theme,
+			],
+		];
 	}
 }
