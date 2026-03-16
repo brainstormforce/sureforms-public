@@ -11,9 +11,9 @@ use SRFM\Inc\Post_Types;
 class Test_Post_Types extends TestCase {
 
 	/**
-	 * Test register_post_metas registers expected meta fields.
+	 * Test register_post_metas is callable.
 	 */
-	public function test_register_post_metas() {
+	public function test_register_post_metas_callable() {
 		$post_types = new Post_Types();
 		$post_types->register_post_metas();
 		$this->assertTrue( true );
