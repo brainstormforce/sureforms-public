@@ -581,7 +581,7 @@ class Entries {
 		}
 
 		// Filter by search (entry ID + form title).
-		if ( ! empty( $args['search'] ) ) {
+		if ( ! empty( $args['search'] ) && is_string( $args['search'] ) ) {
 			$search_term  = sanitize_text_field( $args['search'] );
 			$search_group = [ 'RELATION' => 'OR' ];
 
