@@ -657,8 +657,9 @@ class Rest_Api {
 			);
 		}
 
-		// Get adjacent entry IDs for navigation (all entries in chronological order).
-		$adjacent_entries = Entries_Class::get_adjacent_entry_ids( $entry_id );
+		// Get adjacent entry IDs for navigation scoped to the same form.
+		$form_id_raw      = $entry['form_id'] ?? 0;
+		$adjacent_entries = Entries_Class::get_adjacent_entry_ids( $entry_id, [ 'form_id' => is_scalar( $form_id_raw ) ? absint( $form_id_raw ) : 0 ] );
 
 		// Process form data.
 		$form_data       = [];

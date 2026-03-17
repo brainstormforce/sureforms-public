@@ -401,6 +401,9 @@ You can collect payments securely through Stripe & PayPal without any add-ons or
 You can report the issue through our [Bug Bounty Program](https://brainstormforce.com/bug-bounty-program/). We collaborate with Patchstack to provide opportunities for researchers to report vulnerabilities. The Patchstack team will help validate, triage, and handle any reported security issues.
 
 == Changelog ==
+= x.x.x =
+* Fix: Fixed entry Previous/Next navigation returning entries from other forms instead of staying scoped to the current form.
+* Fix: Stripe payment block not displaying correctly when the same form is embedded multiple times on a page.
 = 2.5.2 - 12th March 2026 =
 * New: Added the “Send as Raw HTML” option in email notifications for fully structured HTML emails.
 * New: Added the Learn section.

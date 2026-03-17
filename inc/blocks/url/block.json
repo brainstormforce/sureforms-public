@@ -1,4 +1,6 @@
 {
+  "$schema": "https://json.schemastore.org/block.json",
+	"apiVersion": 3,
 	"name": "srfm/url",
 	"title": "URL",
 	"description": "Displays a SureForms URL Field",
