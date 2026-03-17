@@ -130,6 +130,18 @@ class Helper {
 	}
 
 	/**
+	 * Returns a boolean representation of the given value.
+	 *
+	 * @param mixed $data Data which needs to be converted to boolean.
+	 *
+	 * @since 2.5.2
+	 * @return bool
+	 */
+	public static function get_boolean_value( $data ) {
+		return (bool) $data;
+	}
+
+	/**
 	 * Checks if current value is an array or else returns default value
 	 *
 	 * @param mixed $data Data which needs to be checked if it is an array.
@@ -746,6 +758,17 @@ class Helper {
 					$mapped_data[ $slug ] = $filtered_submission_data['value'];
 					continue;
 				}
+			}
+
+			// If the value is an array (e.g. multi-upload field), decode each URL value.
+			if ( is_array( $value ) ) {
+				$mapped_data[ $slug ] = array_map(
+					static function ( $val ) {
+						return is_string( $val ) ? rawurldecode( $val ) : $val;
+					},
+					$value
+				);
+				continue;
 			}
 
 			$mapped_data[ $slug ] = is_string( $value ) ? html_entity_decode( esc_attr( $value ) ) : $value;
@@ -1504,11 +1527,13 @@ class Helper {
 	/**
 	 * Strips JavaScript attributes from HTML content.
 	 *
-	 * @param string $html The HTML content to process.
+	 * @param string $html               The HTML content to process.
+	 * @param bool   $remove_link_target Optional. When true, removes target and strips noopener/noreferrer from rel on links. Default false.
 	 * @since 1.7.1
+	 * @since 2.5.2 Added $remove_link_target parameter.
 	 * @return string The cleaned HTML content without JavaScript attributes.
 	 */
-	public static function strip_js_attributes( $html ) {
+	public static function strip_js_attributes( $html, $remove_link_target = false ) {
 		$dom = new \DOMDocument();
 
 		// Suppress warnings due to malformed HTML.
@@ -1542,6 +1567,27 @@ class Helper {
 					foreach ( iterator_to_array( $element->attributes ) as $attr ) {
 						if ( $attr instanceof \DOMAttr && stripos( $attr->name, 'on' ) === 0 ) {
 							$element->removeAttribute( $attr->name );
+						}
+					}
+				}
+			}
+		}
+
+		// 3. Optionally remove target and target-related rel values (noopener, noreferrer) from links.
+		if ( $remove_link_target ) {
+			$links = $xpath->query( '//a[@target]' );
+			if ( $links instanceof \DOMNodeList ) {
+				foreach ( $links as $link ) {
+					if ( $link instanceof \DOMElement ) {
+						$link->removeAttribute( 'target' );
+						$rel = $link->getAttribute( 'rel' );
+						if ( $rel ) {
+							$cleaned_rel = trim( (string) preg_replace( '/\s+/', ' ', (string) preg_replace( '/\b(noopener|noreferrer)\b/i', '', $rel ) ) );
+							if ( $cleaned_rel ) {
+								$link->setAttribute( 'rel', $cleaned_rel );
+							} else {
+								$link->removeAttribute( 'rel' );
+							}
 						}
 					}
 				}

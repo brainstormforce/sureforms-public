@@ -18,4 +18,4 @@ jobs:
                   fetch-depth: 0
 
             - name: Check test coverage for new functions
-              run: bash bin/check-test-coverage.sh "${{ github.event.pull_request.base.sha }}"
+              run: bash bin/check-test-coverage.sh "${{ github.event.pull_request.base.sha }}" "${{ github.event.pull_request.head.sha }}"

@@ -6,6 +6,7 @@ import {
 	InspectorControls,
 	RichText,
 	InnerBlocks,
+	useBlockProps,
 } from '@wordpress/block-editor';
 import { useEffect } from '@wordpress/element';
 import SRFMTextControl from '@Components/text-control';
@@ -28,6 +29,9 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 	const { label, block_id, formId, preview, help, className } = attributes;
 
 	const currentFormId = useGetCurrentFormId( clientId );
+	const blockProps = useBlockProps( {
+		className,
+	} );
 
 	useEffect( () => {
 		if ( formId !== currentFormId ) {
@@ -97,7 +101,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 	const allowedBlocks = [ 'srfm/input', 'srfm/dropdown' ];
 
 	return (
-		<div className={ className }>
+		<div { ...blockProps }>
 			<InspectorControls>
 				<InspectorTabs
 					tabs={ [ 'general', 'advance' ] }

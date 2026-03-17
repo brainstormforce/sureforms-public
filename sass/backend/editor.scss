@@ -1,5 +1,9 @@
 @import "../blocks/default/utils/mixins.scss";
 
+body.post-type-sureforms_form:not( .block-editor-iframe__body ) {
+	overflow-y: hidden;
+}
+
 body.post-type-sureforms_form {
 	/**
 	 * Hide the Patterns and Media tabs in the block editor.
@@ -50,6 +54,7 @@ body.post-type-sureforms_form {
 		}
 	}
 
+	&.editor-styles-wrapper,
 	.editor-styles-wrapper {
 		@include srfm-background-control-styles( true );
 	}
@@ -101,7 +106,6 @@ body.post-type-sureforms_form {
 			display: none !important;
 		}
 	}
-	overflow-y: hidden;
 
 	// Adding multi choice repeater styles.
 	.srfm-option-outer-wrapper {
@@ -344,10 +348,6 @@ body.post-type-sureforms_form {
 		}
 	}
 
-	.edit-post-visual-editor .edit-post-visual-editor__content-area {
-		padding: 0 !important;
-	}
-
 	> .block-editor-block-list__layout .block-editor-block-list__block:not( .editor-post-title__input ) {
 		transition: 0.3s;
 
@@ -371,11 +371,10 @@ body.post-type-sureforms_form {
 		}
 	}
 
-	&.block-editor-iframe__body,
-	.editor-styles-wrapper {
+	&.editor-styles-wrapper:not( .block-editor-iframe__body ),
+	.editor-styles-wrapper:not( .block-editor-iframe__body ) {
 		position: relative;
 		width: 100%;
-		font-family: inherit;
 		.block-editor-block-list__layout {
 			// font-size: var( --srfm-font-size ); will be used in the future.
 			font-size: 16px;

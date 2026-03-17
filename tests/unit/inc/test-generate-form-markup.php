@@ -59,6 +59,14 @@ class Test_Generate_Form_Markup extends TestCase {
 		$this->assertTrue( $found, 'The generate-form-markup endpoint should be registered' );
 	}
 
+	/**
+	 * Test get_confirmation_markup returns string.
+	 */
+	public function test_get_confirmation_markup() {
+		$result = Generate_Form_Markup::get_confirmation_markup();
+		$this->assertIsString( $result );
+	}
+
 	public function test_get_form_markup_returns_string() {
 		remove_all_actions( 'wp_insert_post_data' );
 

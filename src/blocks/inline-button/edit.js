@@ -1,7 +1,11 @@
 /**
  * WordPress dependencies
  */
-import { InspectorControls, RichText } from '@wordpress/block-editor';
+import {
+	InspectorControls,
+	RichText,
+	useBlockProps,
+} from '@wordpress/block-editor';
 import { useEffect } from '@wordpress/element';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {
@@ -19,6 +23,10 @@ import { store as editorStore } from '@wordpress/editor';
 const Edit = ( { clientId, attributes, setAttributes } ) => {
 	const { buttonText, block_id, formId, preview, className } = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
+	const blockProps = useBlockProps( {
+		className:
+			'srfm-custom-button-ctn' + ( className ? ` ${ className }` : '' ),
+	} );
 	useEffect( () => {
 		if ( formId !== currentFormId ) {
 			setAttributes( { formId: currentFormId } );
@@ -38,12 +46,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 	}
 
 	return (
-		<div
-			className={
-				'srfm-custom-button-ctn' +
-				( className ? ` ${ className }` : '' )
-			}
-		>
+		<div { ...blockProps }>
 			<InspectorControls>
 				<InspectorTabs tabs={ [ 'advance' ] }>
 					<InspectorTab { ...SRFMTabs.advance } initialOpen={ true }>

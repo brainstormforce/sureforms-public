@@ -460,6 +460,16 @@ class Form_Submit {
 		}
 
 		if ( ! isset( $form_data['srfm-honeypot-field'] ) ) {
+			// If honeypot is enabled globally, the missing field means a bot stripped it.
+			$srfm_security_options = get_option( 'srfm_security_settings_options' );
+			if ( is_array( $srfm_security_options ) && ! empty( $srfm_security_options['srfm_honeypot'] ) ) {
+				wp_send_json_error(
+					[
+						'message' => __( 'Your submission was flagged as spam. Please try again.', 'sureforms' ),
+					]
+				);
+			}
+
 			if ( ! empty( $google_captcha_secret_key ) ) {
 				if ( isset( $form_data['sureforms_form_submit'] ) ) {
 					$secret_key       = $google_captcha_secret_key;
@@ -754,7 +764,7 @@ class Form_Submit {
 
 				// Since the upload field returns an array of file URLs, we need to implode them with a comma.
 				if ( 'upload' === $fields[1] && ! empty( $value ) && is_array( $value ) ) {
-					$modified_message[ $label ] = urldecode( implode( ', ', $value ) );
+					$modified_message[ $label ] = implode( ', ', array_map( 'rawurldecode', $value ) );
 				} else {
 					$modified_message[ $label ] = html_entity_decode( esc_attr( Helper::get_string_value( $value ) ) );
 				}
@@ -805,7 +815,7 @@ class Form_Submit {
 		 * at this point; it is substituted later by process_all_data_tag() which applies
 		 * its own per-field escaping, so this call does not interfere with that path.
 		 *
-		 * @since x.x.x
+		 * @since 2.5.2
 		 */
 		$email_body = wp_kses_post( $email_body );
 
@@ -1224,6 +1234,8 @@ class Form_Submit {
 	 * @return array Processed and sanitized submission data.
 	 */
 	private function process_form_fields( $form_data ) {
+		$form_id = isset( $form_data['form-id'] ) && is_numeric( $form_data['form-id'] ) ? absint( $form_data['form-id'] ) : 0;
+
 		$submission_data = [];
 
 		$form_data_keys  = array_keys( $form_data );
@@ -1307,7 +1319,29 @@ class Form_Submit {
 			}
 		}
 
-		return apply_filters( 'srfm_before_prepare_submission_data', $submission_data );
+		/**
+		 * Filters the submission data before preparing it for storage.
+		 *
+		 * The second parameter is a context array containing additional metadata
+		 * about the submission. This array is extensible — new keys may be added
+		 * in future versions without changing the filter signature.
+		 *
+		 * @since x.x.x
+		 *
+		 * @param array<string,mixed> $submission_data Processed form submission data.
+		 * @param array<string,mixed> $context {
+		 *     Additional context for the submission.
+		 *
+		 *     @type int $form_id The ID of the form being submitted.
+		 * }
+		 */
+		return apply_filters(
+			'srfm_before_prepare_submission_data',
+			$submission_data,
+			[
+				'form_id' => $form_id,
+			]
+		);
 	}
 
 	/**
