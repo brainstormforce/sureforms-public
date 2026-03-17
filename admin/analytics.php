@@ -693,14 +693,6 @@ class Analytics {
 			Analytics_Events::track( 'abilities_api_enabled' );
 		}
 
-		if ( ! empty( $mcp_settings['srfm_abilities_api_edit'] ) ) {
-			Analytics_Events::track( 'abilities_api_edit_enabled' );
-		}
-
-		if ( ! empty( $mcp_settings['srfm_abilities_api_delete'] ) ) {
-			Analytics_Events::track( 'abilities_api_delete_enabled' );
-		}
-
 		if ( ! empty( $mcp_settings['srfm_mcp_server'] ) ) {
 			Analytics_Events::track( 'mcp_server_enabled' );
 		}

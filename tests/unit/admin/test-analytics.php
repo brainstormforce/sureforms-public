@@ -140,8 +140,6 @@ class Test_Analytics extends TestCase {
 		new Analytics();
 
 		$this->assertTrue( Analytics_Events::is_tracked( 'abilities_api_enabled' ) );
-		$this->assertTrue( Analytics_Events::is_tracked( 'abilities_api_edit_enabled' ) );
-		$this->assertTrue( Analytics_Events::is_tracked( 'abilities_api_delete_enabled' ) );
 		$this->assertTrue( Analytics_Events::is_tracked( 'mcp_server_enabled' ) );
 	}
 
@@ -155,8 +153,6 @@ class Test_Analytics extends TestCase {
 		new Analytics();
 
 		$this->assertFalse( Analytics_Events::is_tracked( 'abilities_api_enabled' ) );
-		$this->assertFalse( Analytics_Events::is_tracked( 'abilities_api_edit_enabled' ) );
-		$this->assertFalse( Analytics_Events::is_tracked( 'abilities_api_delete_enabled' ) );
 		$this->assertFalse( Analytics_Events::is_tracked( 'mcp_server_enabled' ) );
 	}
 
@@ -169,19 +165,15 @@ class Test_Analytics extends TestCase {
 		update_option(
 			'srfm_mcp_settings_options',
 			[
-				'srfm_abilities_api'        => true,
-				'srfm_abilities_api_edit'   => false,
-				'srfm_abilities_api_delete' => false,
-				'srfm_mcp_server'           => true,
+				'srfm_abilities_api' => true,
+				'srfm_mcp_server'    => false,
 			]
 		);
 
 		new Analytics();
 
 		$this->assertTrue( Analytics_Events::is_tracked( 'abilities_api_enabled' ) );
-		$this->assertFalse( Analytics_Events::is_tracked( 'abilities_api_edit_enabled' ) );
-		$this->assertFalse( Analytics_Events::is_tracked( 'abilities_api_delete_enabled' ) );
-		$this->assertTrue( Analytics_Events::is_tracked( 'mcp_server_enabled' ) );
+		$this->assertFalse( Analytics_Events::is_tracked( 'mcp_server_enabled' ) );
 	}
 
 	/**
