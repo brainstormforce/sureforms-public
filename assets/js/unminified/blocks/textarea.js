@@ -268,14 +268,18 @@ function localizeQuillToolbar( areaField ) {
 	// These are rendered by Quill CSS `content` properties on .ql-tooltip pseudo-elements.
 	// We inject a scoped <style> block with translated strings to override them.
 	if ( ! document.getElementById( 'srfm-quill-i18n-css' ) ) {
+		// Escape strings for safe use inside CSS content: "..." values.
+		const escapeCSSString = ( str ) =>
+			str.replace( /\\/g, '\\\\' ).replace( /"/g, '\\"' ).replace( /\n/g, '\\n' );
+
 		const style = document.createElement( 'style' );
 		style.id = 'srfm-quill-i18n-css';
 		style.textContent =
-			'.ql-snow .ql-tooltip::before { content: "' + srfm_quill_i18n.visit_url + '" !important; }' +
-			'.ql-snow .ql-tooltip a.ql-action::after { content: "' + srfm_quill_i18n.edit + '" !important; }' +
-			'.ql-snow .ql-tooltip a.ql-remove::before { content: "' + srfm_quill_i18n.remove + '" !important; }' +
-			'.ql-snow .ql-tooltip.ql-editing a.ql-action::after { content: "' + srfm_quill_i18n.save + '" !important; }' +
-			'.ql-snow .ql-tooltip[data-mode=link]::before { content: "' + srfm_quill_i18n.enter_link + '" !important; }';
+			'.ql-snow .ql-tooltip::before { content: "' + escapeCSSString( srfm_quill_i18n.visit_url ) + '" !important; }' +
+			'.ql-snow .ql-tooltip a.ql-action::after { content: "' + escapeCSSString( srfm_quill_i18n.edit ) + '" !important; }' +
+			'.ql-snow .ql-tooltip a.ql-remove::before { content: "' + escapeCSSString( srfm_quill_i18n.remove ) + '" !important; }' +
+			'.ql-snow .ql-tooltip.ql-editing a.ql-action::after { content: "' + escapeCSSString( srfm_quill_i18n.save ) + '" !important; }' +
+			'.ql-snow .ql-tooltip[data-mode=link]::before { content: "' + escapeCSSString( srfm_quill_i18n.enter_link ) + '" !important; }';
 		document.head.appendChild( style );
 	}
 }

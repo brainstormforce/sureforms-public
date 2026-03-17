@@ -277,18 +277,18 @@ class Frontend_Assets {
 					SRFM_SLUG . '-textarea',
 					'srfm_quill_i18n',
 					[
-						'normal'     => __( 'Normal', 'sureforms' ),
+						'normal'     => _x( 'Normal', 'Quill heading picker: default paragraph style', 'sureforms' ),
 						'heading_1'  => __( 'Heading 1', 'sureforms' ),
 						'heading_2'  => __( 'Heading 2', 'sureforms' ),
 						'heading_3'  => __( 'Heading 3', 'sureforms' ),
 						'heading_4'  => __( 'Heading 4', 'sureforms' ),
 						'heading_5'  => __( 'Heading 5', 'sureforms' ),
 						'heading_6'  => __( 'Heading 6', 'sureforms' ),
-						'visit_url'  => __( 'Visit URL:', 'sureforms' ),
-						'enter_link' => __( 'Enter link:', 'sureforms' ),
-						'edit'       => __( 'Edit', 'sureforms' ),
-						'save'       => __( 'Save', 'sureforms' ),
-						'remove'     => __( 'Remove', 'sureforms' ),
+						'visit_url'  => _x( 'Visit URL:', 'Quill link tooltip label', 'sureforms' ),
+						'enter_link' => _x( 'Enter link:', 'Quill link tooltip label', 'sureforms' ),
+						'edit'       => _x( 'Edit', 'Quill link tooltip action', 'sureforms' ),
+						'save'       => _x( 'Save', 'Quill link tooltip action', 'sureforms' ),
+						'remove'     => _x( 'Remove', 'Quill link tooltip action', 'sureforms' ),
 					]
 				);
 			}
