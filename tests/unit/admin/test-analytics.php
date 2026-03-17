@@ -226,4 +226,84 @@ class Test_Analytics extends TestCase {
 
 		$this->assertSame( $mcp_count_before, $mcp_count_after, 'MCP events should not be duplicated on second instantiation.' );
 	}
+
+	/**
+	 * Create a mock WP_Post object for testing.
+	 *
+	 * @param array $args Post arguments.
+	 * @return \WP_Post
+	 */
+	private function create_mock_post( $args = [] ) {
+		$defaults = [
+			'ID'           => 1,
+			'post_type'    => SRFM_FORMS_POST_TYPE,
+			'post_status'  => 'draft',
+			'post_content' => '',
+		];
+
+		$args = array_merge( $defaults, $args );
+		$post = new \WP_Post( (object) $args );
+
+		return $post;
+	}
+
+	/**
+	 * Test track_first_form_published tracks event when a form transitions to publish.
+	 *
+	 * @return void
+	 */
+	public function test_track_first_form_published_tracks_event() {
+		$post = $this->create_mock_post(
+			[
+				'post_content' => '<!-- wp:srfm/input --><!-- /wp:srfm/input --><!-- wp:srfm/email --><!-- /wp:srfm/email -->',
+			]
+		);
+
+		$analytics = new Analytics();
+		$analytics->track_first_form_published( 'publish', 'draft', $post );
+
+		$this->assertTrue( Analytics_Events::is_tracked( 'first_form_published' ) );
+	}
+
+	/**
+	 * Test track_first_form_published skips when status is not changing to publish.
+	 *
+	 * @return void
+	 */
+	public function test_track_first_form_published_skips_non_publish() {
+		$post = $this->create_mock_post();
+
+		$analytics = new Analytics();
+		$analytics->track_first_form_published( 'draft', 'draft', $post );
+
+		$this->assertFalse( Analytics_Events::is_tracked( 'first_form_published' ) );
+	}
+
+	/**
+	 * Test track_first_form_published skips when already published.
+	 *
+	 * @return void
+	 */
+	public function test_track_first_form_published_skips_already_published() {
+		$post = $this->create_mock_post( [ 'post_status' => 'publish' ] );
+
+		$analytics = new Analytics();
+		$analytics->track_first_form_published( 'publish', 'publish', $post );
+
+		$this->assertFalse( Analytics_Events::is_tracked( 'first_form_published' ) );
+	}
+
+	/**
+	 * Test track_first_form_published skips for non-sureforms post type.
+	 *
+	 * @return void
+	 */
+	public function test_track_first_form_published_skips_wrong_post_type() {
+		$post = $this->create_mock_post( [ 'post_type' => 'post' ] );
+
+		$analytics = new Analytics();
+		$analytics->track_first_form_published( 'publish', 'draft', $post );
+
+		$this->assertFalse( Analytics_Events::is_tracked( 'first_form_published' ) );
+	}
 }
