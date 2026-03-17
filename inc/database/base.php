@@ -784,6 +784,7 @@ abstract class Base {
 			foreach ( $where_clauses as $key => $value ) {
 
 				$relation = ! empty( $value['RELATION'] ) ? trim( $value['RELATION'] ) : 'AND';
+				$relation = in_array( strtoupper( $relation ), [ 'AND', 'OR' ], true ) ? strtoupper( $relation ) : 'AND';
 
 				if ( is_int( $key ) ) {
 					$clause_parts = [];

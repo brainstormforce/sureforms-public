@@ -200,12 +200,13 @@ class Forms_Data {
 			}
 		}
 
-		// Execute query.
-		$query = new \WP_Query( $args );
-
-		// Remove the numeric search filter if it was added.
-		if ( ! empty( $search ) && is_numeric( $search ) && isset( $where_filter ) ) {
-			remove_filter( 'posts_where', $where_filter, 10 );
+		// Execute query — use try/finally to guarantee filter cleanup.
+		try {
+			$query = new \WP_Query( $args );
+		} finally {
+			if ( ! empty( $search ) && is_numeric( $search ) && isset( $where_filter ) ) {
+				remove_filter( 'posts_where', $where_filter, 10 );
+			}
 		}
 
 		$forms = [];

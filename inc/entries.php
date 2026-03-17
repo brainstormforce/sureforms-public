@@ -582,7 +582,7 @@ class Entries {
 
 		// Filter by search (entry ID + form title).
 		if ( ! empty( $args['search'] ) ) {
-			$search_term  = Helper::get_string_value( $args['search'] );
+			$search_term  = sanitize_text_field( $args['search'] );
 			$search_group = [ 'RELATION' => 'OR' ];
 
 			// If numeric, match entry ID.
@@ -633,7 +633,7 @@ class Entries {
 		$forms = get_posts(
 			[
 				'post_type'      => SRFM_FORMS_POST_TYPE,
-				'post_status'    => 'publish',
+				'post_status'    => 'any',
 				's'              => $search_term,
 				'search_columns' => [ 'post_title' ],
 				'posts_per_page' => 100,
