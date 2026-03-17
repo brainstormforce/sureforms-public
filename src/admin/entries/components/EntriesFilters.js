@@ -141,13 +141,12 @@ const EntriesFilters = ( {
 	return (
 		<Fragment>
 			<div className="flex flex-wrap lg:flex-nowrap items-center justify-end gap-2 sm:gap-3 lg:gap-4 mt-4 lg:!mt-0">
-				{ /* Additional action buttons injected by extensions */ }
-				{ ! hasSelectedEntries &&
-					applyFilters(
-						'srfm.entries_filters.extra_actions',
-						null,
-						{ formFilter, statusFilter }
-					) }
+				{ /* Additional action buttons injected by pro plugin. */ }
+				{ applyFilters( 'srfm.entries_filters.extra_actions', null, {
+					formFilter,
+					statusFilter,
+					hasSelectedEntries,
+				} ) }
 
 				{ /* Clear Filters button - shown when filters are active */ }
 				{ hasActiveFilters && ! hasSelectedEntries && (
@@ -265,20 +264,20 @@ const EntriesFilters = ( {
 						{ !! ResendNotificationModal &&
 							formFilter !== 'all' &&
 							formFilter !== '' && (
-							<Button
-								variant="outline"
-								size="sm"
-								onClick={ handleResendEmailNotifications }
-								icon={ <Send className="w-4 h-4" /> }
-								iconPosition="left"
-								className="min-w-fit"
-							>
-								{ __(
-									'Resend Notifications',
-									'sureforms'
-								) }
-							</Button>
-						) }
+								<Button
+									variant="outline"
+									size="sm"
+									onClick={ handleResendEmailNotifications }
+									icon={ <Send className="w-4 h-4" /> }
+									iconPosition="left"
+									className="min-w-fit"
+								>
+									{ __(
+										'Resend Notifications',
+										'sureforms'
+									) }
+								</Button>
+							) }
 						{ /* Show restore button when trash filter is active */ }
 						{ statusFilter === 'trash' && (
 							<Button
@@ -341,13 +340,13 @@ const EntriesFilters = ( {
 			{ !! ResendNotificationModal &&
 				formFilter !== 'all' &&
 				formFilter !== '' && (
-				<ResendNotificationModal
-					open={ openSendNotificationModal }
-					setOpen={ setOpenSendNotificationModal }
-					entryIds={ selectedEntries }
-					formId={ parseInt( formFilter, 10 ) }
-				/>
-			) }
+					<ResendNotificationModal
+						open={ openSendNotificationModal }
+						setOpen={ setOpenSendNotificationModal }
+						entryIds={ selectedEntries }
+						formId={ parseInt( formFilter, 10 ) }
+					/>
+				) }
 		</Fragment>
 	);
 };
