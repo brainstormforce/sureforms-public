@@ -56,7 +56,14 @@ class Payment_History_Shortcode {
 	public function enqueue_assets() {
 		global $post;
 
-		if ( ! $post instanceof \WP_Post || ! has_shortcode( $post->post_content, self::SHORTCODE_TAG ) ) {
+		if ( ! $post instanceof \WP_Post ) {
+			return;
+		}
+
+		$has_shortcode = has_shortcode( $post->post_content, self::SHORTCODE_TAG );
+		$has_block     = has_block( 'srfm/payment-history', $post );
+
+		if ( ! $has_shortcode && ! $has_block ) {
 			return;
 		}
 
