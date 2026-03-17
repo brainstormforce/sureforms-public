@@ -310,13 +310,6 @@ class Analytics {
 		// Payment analytics - check if any payment method is enabled.
 		$global_data['boolean_values']['stripe_enabled'] = $this->is_stripe_enabled();
 
-		// MCP / Abilities API settings.
-		$mcp_settings = get_option( 'srfm_mcp_settings_options', [] );
-		$global_data['boolean_values']['abilities_api_enabled']        = ! empty( $mcp_settings['srfm_abilities_api'] );
-		$global_data['boolean_values']['abilities_api_edit_enabled']   = ! empty( $mcp_settings['srfm_abilities_api_edit'] );
-		$global_data['boolean_values']['abilities_api_delete_enabled'] = ! empty( $mcp_settings['srfm_abilities_api_delete'] );
-		$global_data['boolean_values']['mcp_server_enabled']           = ! empty( $mcp_settings['srfm_mcp_server'] );
-
 		return $global_data;
 	}
 
