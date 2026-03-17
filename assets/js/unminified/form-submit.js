@@ -102,6 +102,10 @@ async function refreshFormNonces( forms ) {
 	}
 }
 
+// Counter for assigning unique instance IDs to forms.
+// Declared at module scope so it persists across multiple initializeFormHandlers() calls.
+let srfmFormInstanceCounter = 0;
+
 /**
  * Initializes form handlers for all forms with the class `.srfm-form`.
  */
@@ -114,6 +118,11 @@ function initializeFormHandlers() {
 	refreshFormNonces( forms );
 
 	for ( const form of forms ) {
+		// Assign a unique instance ID to each form to support multiple embeds of the same form on one page.
+		if ( ! form.hasAttribute( 'data-srfm-instance' ) ) {
+			form.setAttribute( 'data-srfm-instance', String( ++srfmFormInstanceCounter ) );
+		}
+
 		// Add the event before the form initialization to ensure that the all third party libraries are loaded and initialized.
 		// Dispatch a custom event *before* the form is submitted.
 		document.dispatchEvent(

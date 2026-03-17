@@ -8,11 +8,14 @@ import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
 import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
 import { FieldsPreview } from '../FieldsPreview.jsx';
+import { useBlockProps } from '@wordpress/block-editor';
 
 const Edit = ( { attributes, setAttributes, clientId } ) => {
 	const { block_id, formId, preview, className } = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
-
+	const blockProps = useBlockProps( {
+		className,
+	} );
 	useEffect( () => {
 		if ( formId !== currentFormId ) {
 			setAttributes( { formId: currentFormId } );
@@ -26,7 +29,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 	}
 
 	return (
-		<div className={ className }>
+		<div { ...blockProps }>
 			<Settings
 				attributes={ attributes }
 				setAttributes={ setAttributes }
