@@ -48,7 +48,7 @@ class Test_Email_Template extends TestCase {
 	}
 
 	/**
-	 * Test render_raw returns complete HTML email in raw format.
+	 * Test render_raw returns email body as-is with no template wrapping.
 	 */
 	public function test_render_raw() {
 		$fields     = [];
@@ -56,29 +56,10 @@ class Test_Email_Template extends TestCase {
 		$result     = $this->email_template->render_raw( $fields, $email_body );
 
 		$this->assertIsString( $result );
-		$this->assertStringContainsString( 'Raw email body', $result );
-		$this->assertStringContainsString( '<!DOCTYPE', $result );
-	}
-
-	/**
-	 * Test get_raw_header returns HTML with DOCTYPE and responsive styles.
-	 */
-	public function test_get_raw_header() {
-		$result = $this->email_template->get_raw_header();
-
-		$this->assertIsString( $result );
-		$this->assertStringContainsString( '<!DOCTYPE', $result );
-		$this->assertStringContainsString( '<html', $result );
-		$this->assertStringContainsString( 'viewport', $result );
-	}
-
-	/**
-	 * Test get_raw_footer returns closing HTML.
-	 */
-	public function test_get_raw_footer() {
-		$result = $this->email_template->get_raw_footer();
-		$this->assertIsString( $result );
-		$this->assertStringContainsString( '</html>', $result );
+		$this->assertSame( $email_body, $result );
+		$this->assertStringNotContainsString( '<!DOCTYPE', $result );
+		$this->assertStringNotContainsString( 'srfm_wrapper', $result );
+		$this->assertStringNotContainsString( 'srfm_raw_wrapper', $result );
 	}
 
 	/**
