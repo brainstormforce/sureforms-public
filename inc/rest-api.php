@@ -1317,12 +1317,16 @@ class Rest_Api {
 							'default'           => '',
 						],
 						'orderby'   => [
+							'type'              => 'string',
 							'sanitize_callback' => 'sanitize_text_field',
 							'default'           => 'created_at',
+							'enum'              => [ 'ID', 'id', 'form_id', 'user_id', 'status', 'type', 'created_at', 'updated_at' ],
 						],
 						'order'     => [
+							'type'              => 'string',
 							'sanitize_callback' => 'sanitize_text_field',
 							'default'           => 'DESC',
+							'enum'              => [ 'ASC', 'DESC' ],
 						],
 						'per_page'  => [
 							'sanitize_callback' => 'absint',
