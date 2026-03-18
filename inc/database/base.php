@@ -777,15 +777,17 @@ abstract class Base {
 
 		// If there are WHERE clauses, prepare and append them to the query.
 		if ( is_array( $where_clauses ) ) {
-			$where  = '';
+			$groups = [];
 			$values = [];
 			$schema = $this->get_schema();
 
 			foreach ( $where_clauses as $key => $value ) {
 
 				$relation = ! empty( $value['RELATION'] ) ? trim( $value['RELATION'] ) : 'AND';
+				$relation = in_array( strtoupper( $relation ), [ 'AND', 'OR' ], true ) ? strtoupper( $relation ) : 'AND';
 
 				if ( is_int( $key ) ) {
+					$clause_parts = [];
 					foreach ( $value as $_key => $_value ) {
 						if ( is_int( $_key ) ) {
 							// Check if the operator is allowed.
@@ -793,25 +795,34 @@ abstract class Base {
 								continue;
 							}
 
+							// Skip if key is not in schema.
+							if ( ! isset( $schema[ $_value['key'] ] ) ) {
+								continue;
+							}
+
 							switch ( $_value['compare'] ) {
 								case 'LIKE':
-									$where   .= ' ' . $_value['key'] . ' ' . $_value['compare'] . ' "%%' . $this->get_format_by_datatype( Helper::get_string_value( $schema[ $_value['key'] ]['type'] ) ) . '%%" ' . $relation;
-									$values[] = $_value['value'];
+									$clause_parts[] = $_value['key'] . ' ' . $_value['compare'] . ' "%%' . $this->get_format_by_datatype( Helper::get_string_value( $schema[ $_value['key'] ]['type'] ) ) . '%%"';
+									$values[]       = $_value['value'];
 									break;
 
 								case 'IN':
 									// Based on the number of values and datatype, it will create WHERE clause for $wpdb::prepare method. Eg: for ID with three values column: ID IN (%d, %d, %d).
-									$datatype = $this->get_format_by_datatype( Helper::get_string_value( $schema[ $_value['key'] ]['type'] ) );
-									$where   .= ' ' . $_value['key'] . ' ' . $_value['compare'] . ' (' . implode( ', ', array_fill( 0, count( $_value['value'] ), $datatype ) ) . ') ' . $relation;
-									$values   = array_merge( $values, $_value['value'] );
+									$datatype       = $this->get_format_by_datatype( Helper::get_string_value( $schema[ $_value['key'] ]['type'] ) );
+									$clause_parts[] = $_value['key'] . ' ' . $_value['compare'] . ' (' . implode( ', ', array_fill( 0, count( $_value['value'] ), $datatype ) ) . ')';
+									$values         = array_merge( $values, $_value['value'] );
 									break;
 
 								default:
-									$where   .= ' ' . $_value['key'] . ' ' . $_value['compare'] . ' ' . $this->get_format_by_datatype( Helper::get_string_value( $schema[ $_value['key'] ]['type'] ) ) . ' ' . $relation;
-									$values[] = $_value['value'];
+									$clause_parts[] = $_value['key'] . ' ' . $_value['compare'] . ' ' . $this->get_format_by_datatype( Helper::get_string_value( $schema[ $_value['key'] ]['type'] ) );
+									$values[]       = $_value['value'];
 									break;
 							}
 						}
+					}
+
+					if ( ! empty( $clause_parts ) ) {
+						$groups[] = '(' . implode( ' ' . $relation . ' ', $clause_parts ) . ')';
 					}
 					continue;
 				}
@@ -821,15 +832,15 @@ abstract class Base {
 					continue;
 				}
 
-				$where   .= ' ' . $key . ' = ' . $this->get_format_by_datatype( Helper::get_string_value( $schema[ $key ]['type'] ) ) . ' ' . $relation;
+				$groups[] = '(' . $key . ' = ' . $this->get_format_by_datatype( Helper::get_string_value( $schema[ $key ]['type'] ) ) . ')';
 				$values[] = $value;
 			}
 
-			if ( ! $where ) {
+			if ( empty( $groups ) ) {
 				return '';
 			}
 
-			$where = ' WHERE ' . trim( trim( $where, $relation ) );
+			$where = ' WHERE ' . implode( ' AND ', $groups );
 
 			// Prepare the query with placeholders.
 			// @phpstan-ignore-next-line -- We are already assigning non-literal string above using "get_format_by_datatype" methods.
