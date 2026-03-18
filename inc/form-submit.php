@@ -96,7 +96,7 @@ class Form_Submit {
 		$form_id = absint( $request->get_param( 'form-id' ) );
 
 		if ( ! Submit_Token::verify( $token, $form_id ) ) {
-			return new \WP_Error(
+			return new WP_Error(
 				'srfm_token_invalid',
 				__( 'Security verification failed. Please refresh the page and try again.', 'sureforms' ),
 				[ 'status' => 403 ]

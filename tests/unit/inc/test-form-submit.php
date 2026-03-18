@@ -15,7 +15,7 @@ use SRFM\Inc\Form_Submit;
  */
 class Test_Form_Submit extends TestCase {
 
-    protected $form_submit;
+	protected $form_submit;
 
 	protected function setUp(): void {
 		$this->form_submit = new Form_Submit();
@@ -23,109 +23,109 @@ class Test_Form_Submit extends TestCase {
 
 	/**
 	 * Test recaptcha_error_message method.
-     * This function tests various scenarios for the recaptcha_error_message method.
-     * It includes cases where:
-     * 1. No error code provided.
-     * 2. Error code provided and captcha type is g-recaptcha.
-     * 3. Error code provided and captcha type is hcaptcha.
-     * 4. Error code provided and captcha type is cf-turnstile.
-     * 5. Error code provided and captcha type is unknown.
-     *
+	 * This function tests various scenarios for the recaptcha_error_message method.
+	 * It includes cases where:
+	 * 1. No error code provided.
+	 * 2. Error code provided and captcha type is g-recaptcha.
+	 * 3. Error code provided and captcha type is hcaptcha.
+	 * 4. Error code provided and captcha type is cf-turnstile.
+	 * 5. Error code provided and captcha type is unknown.
+	 *
 	 */
-    public function test_recaptcha_error_message() {
+	public function test_recaptcha_error_message() {
 
-        // Test case 1: No error code provided
-        $api_response = [];
-        $expected = [
-            'detail_message' => 'Captcha validation failed. No error code provided.',
-            'message'        => 'Captcha validation failed.',
-        ];
-        $result = $this->form_submit->recaptcha_error_message('g-recaptcha', $api_response);
-        $this->assertEquals($expected, $result, 'Failed asserting when no error code provided.');
+		// Test case 1: No error code provided
+		$api_response = [];
+		$expected = [
+			'detail_message' => 'Captcha validation failed. No error code provided.',
+			'message'        => 'Captcha validation failed.',
+		];
+		$result = $this->form_submit->recaptcha_error_message('g-recaptcha', $api_response);
+		$this->assertEquals($expected, $result, 'Failed asserting when no error code provided.');
 
-        // Test case 2: g-recaptcha
-        $api_response = [ 'error-codes' => [ 'missing-input-secret' ] ];
-        $expected = [
-            'log_message' => 'Google reCAPTCHA: The secret parameter is missing. <br> Error Code: missing-input-secret',
-            'message'     => 'Google reCAPTCHA verification failed. Please contact your site administrator.',
-        ];
-        $result = $this->form_submit->recaptcha_error_message('g-recaptcha', $api_response);
-        $this->assertEquals($expected, $result, 'Failed asserting for g-recaptcha error.');
+		// Test case 2: g-recaptcha
+		$api_response = [ 'error-codes' => [ 'missing-input-secret' ] ];
+		$expected = [
+			'log_message' => 'Google reCAPTCHA: The secret parameter is missing. <br> Error Code: missing-input-secret',
+			'message'     => 'Google reCAPTCHA verification failed. Please contact your site administrator.',
+		];
+		$result = $this->form_submit->recaptcha_error_message('g-recaptcha', $api_response);
+		$this->assertEquals($expected, $result, 'Failed asserting for g-recaptcha error.');
 
-        // Test case 3: hcaptcha
-        $api_response = [ 'error-codes' => [ 'invalid-input-secret' ] ];
-        $expected = [
-            'log_message' => 'hCaptcha: Your secret key is invalid or malformed. <br> Error Code: invalid-input-secret',
-            'message'     => 'hCaptcha verification failed. Please contact your site administrator.',
-        ];
-        $result = $this->form_submit->recaptcha_error_message('hcaptcha', $api_response);
-        $this->assertEquals($expected, $result, 'Failed asserting for hcaptcha error.');
+		// Test case 3: hcaptcha
+		$api_response = [ 'error-codes' => [ 'invalid-input-secret' ] ];
+		$expected = [
+			'log_message' => 'hCaptcha: Your secret key is invalid or malformed. <br> Error Code: invalid-input-secret',
+			'message'     => 'hCaptcha verification failed. Please contact your site administrator.',
+		];
+		$result = $this->form_submit->recaptcha_error_message('hcaptcha', $api_response);
+		$this->assertEquals($expected, $result, 'Failed asserting for hcaptcha error.');
 
-        // Test case 4: cf-turnstile
-        $api_response = [ 'error-codes' => [ 'timeout-or-duplicate' ] ];
-        $expected = [
-            'log_message' => 'Cloudflare Turnstile: The response parameter (token) has already been validated before. This means that the token was issued five minutes ago and is no longer valid, or it was already redeemed. <br> Error Code: timeout-or-duplicate',
-            'message'     => 'Cloudflare Turnstile verification failed. Please contact your site administrator.',
-        ];
-        $result = $this->form_submit->recaptcha_error_message('cf-turnstile', $api_response);
-        $this->assertEquals($expected, $result, 'Failed asserting for cf-turnstile error.');
+		// Test case 4: cf-turnstile
+		$api_response = [ 'error-codes' => [ 'timeout-or-duplicate' ] ];
+		$expected = [
+			'log_message' => 'Cloudflare Turnstile: The response parameter (token) has already been validated before. This means that the token was issued five minutes ago and is no longer valid, or it was already redeemed. <br> Error Code: timeout-or-duplicate',
+			'message'     => 'Cloudflare Turnstile verification failed. Please contact your site administrator.',
+		];
+		$result = $this->form_submit->recaptcha_error_message('cf-turnstile', $api_response);
+		$this->assertEquals($expected, $result, 'Failed asserting for cf-turnstile error.');
 
-        // Test case 5: Unknown captcha type
-        $api_response = [ 'error-codes' => [ 'missing-input-response' ] ];
-        $expected = [
-            'log_message' => 'Unknown Captcha: Invalid captcha type. <br> Error Code: missing-input-response',
-            'message'     => 'Unknown Captcha verification failed. Please contact your site administrator.',
-        ];
-        $result = $this->form_submit->recaptcha_error_message('unknown-captcha', $api_response);
-        $this->assertEquals($expected, $result, 'Failed asserting for unknown captcha type.');
-    }
+		// Test case 5: Unknown captcha type
+		$api_response = [ 'error-codes' => [ 'missing-input-response' ] ];
+		$expected = [
+			'log_message' => 'Unknown Captcha: Invalid captcha type. <br> Error Code: missing-input-response',
+			'message'     => 'Unknown Captcha verification failed. Please contact your site administrator.',
+		];
+		$result = $this->form_submit->recaptcha_error_message('unknown-captcha', $api_response);
+		$this->assertEquals($expected, $result, 'Failed asserting for unknown captcha type.');
+	}
 
-    /**
-     * Test process_form_fields method.
-     */
-    public function test_process_form_fields() {
+	/**
+	 * Test process_form_fields method.
+	 */
+	public function test_process_form_fields() {
 
-        // Test case 1: Valid sureforms fields with -lbl-
-        $form_data = [
-            'text-lbl-field-name' => 'John Doe',
-            'email-lbl-field-email' => 'john@example.com'
-        ];
-        $expected = [
-            'text-lbl-field-name' => 'John Doe',
-            'email-lbl-field-email' => 'john@example.com'
-        ];
-        $result = $this->call_private_method($this->form_submit, 'process_form_fields', [$form_data]);
-        $this->assertEquals($expected, $result);
+		// Test case 1: Valid sureforms fields with -lbl-
+		$form_data = [
+			'text-lbl-field-name' => 'John Doe',
+			'email-lbl-field-email' => 'john@example.com'
+		];
+		$expected = [
+			'text-lbl-field-name' => 'John Doe',
+			'email-lbl-field-email' => 'john@example.com'
+		];
+		$result = $this->call_private_method($this->form_submit, 'process_form_fields', [$form_data]);
+		$this->assertEquals($expected, $result);
 
-        // Test case 2: Form data without -lbl- fields (should be filtered out)
-        $form_data = [
-            'form-id' => '123',
-            'nonce' => 'test_nonce',
-            'regular_field' => 'value'
-        ];
-        $result = $this->call_private_method($this->form_submit, 'process_form_fields', [$form_data]);
-        $this->assertEquals([], $result);
+		// Test case 2: Form data without -lbl- fields (should be filtered out)
+		$form_data = [
+			'form-id' => '123',
+			'nonce' => 'test_nonce',
+			'regular_field' => 'value'
+		];
+		$result = $this->call_private_method($this->form_submit, 'process_form_fields', [$form_data]);
+		$this->assertEquals([], $result);
 
-        // Test case 3: Array values (like file uploads)
-        $form_data = [
-            'upload-lbl-field-files' => ['file1.jpg', 'file2.pdf']
-        ];
-        $expected = [
-            'upload-lbl-field-files' => ['file1.jpg', 'file2.pdf']
-        ];
-        $result = $this->call_private_method($this->form_submit, 'process_form_fields', [$form_data]);
-        $this->assertEquals($expected, $result);
+		// Test case 3: Array values (like file uploads)
+		$form_data = [
+			'upload-lbl-field-files' => ['file1.jpg', 'file2.pdf']
+		];
+		$expected = [
+			'upload-lbl-field-files' => ['file1.jpg', 'file2.pdf']
+		];
+		$result = $this->call_private_method($this->form_submit, 'process_form_fields', [$form_data]);
+		$this->assertEquals($expected, $result);
 
-        // Test case 4: HTML special characters sanitization
-        $form_data = [
-            'text-lbl-field-content' => '<script>alert("xss")</script>'
-        ];
-        $expected = [
-            'text-lbl-field-content' => '&lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt;'
-        ];
-        $result = $this->call_private_method($this->form_submit, 'process_form_fields', [$form_data]);
-        $this->assertEquals($expected, $result);
-    }
+		// Test case 4: HTML special characters sanitization
+		$form_data = [
+			'text-lbl-field-content' => '<script>alert("xss")</script>'
+		];
+		$expected = [
+			'text-lbl-field-content' => '&lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt;'
+		];
+		$result = $this->call_private_method($this->form_submit, 'process_form_fields', [$form_data]);
+		$this->assertEquals($expected, $result);
+	}
 
 	/**
 	 * Test validate_turnstile_token with empty secret key.
@@ -431,176 +431,176 @@ class Test_Form_Submit extends TestCase {
 		$this->assertStringContainsString( 'Content-Type: text/html', $result['headers'] );
 	}
 
-    /**
-     * Test submit_form_permissions_check rejects request with missing token.
-     */
-    public function test_submit_form_permissions_check_rejects_missing_token() {
-        $form_id = wp_insert_post(
-            [
-                'post_type'   => 'sureforms_form',
-                'post_status' => 'publish',
-                'post_title'  => 'Token Test Form',
-            ]
-        );
+	/**
+	 * Test submit_form_permissions_check rejects request with missing token.
+	 */
+	public function test_submit_form_permissions_check_rejects_missing_token() {
+		$form_id = wp_insert_post(
+			[
+				'post_type'   => 'sureforms_form',
+				'post_status' => 'publish',
+				'post_title'  => 'Token Test Form',
+			]
+		);
 
-        $request = new \WP_REST_Request( 'POST', '/sureforms/v1/submit-form' );
-        $request->set_body_params( [ 'form-id' => (string) $form_id ] );
+		$request = new \WP_REST_Request( 'POST', '/sureforms/v1/submit-form' );
+		$request->set_body_params( [ 'form-id' => (string) $form_id ] );
 
-        $result = $this->form_submit->submit_form_permissions_check( $request );
-        $this->assertInstanceOf( \WP_Error::class, $result, 'Missing token should return WP_Error.' );
-        $this->assertSame( 'srfm_token_invalid', $result->get_error_code() );
+		$result = $this->form_submit->submit_form_permissions_check( $request );
+		$this->assertInstanceOf( \WP_Error::class, $result, 'Missing token should return WP_Error.' );
+		$this->assertSame( 'srfm_token_invalid', $result->get_error_code() );
 
-        wp_delete_post( $form_id, true );
-    }
+		wp_delete_post( $form_id, true );
+	}
 
-    /**
-     * Test submit_form_permissions_check rejects request with invalid token.
-     */
-    public function test_submit_form_permissions_check_rejects_invalid_token() {
-        $form_id = wp_insert_post(
-            [
-                'post_type'   => 'sureforms_form',
-                'post_status' => 'publish',
-                'post_title'  => 'Token Test Form',
-            ]
-        );
+	/**
+	 * Test submit_form_permissions_check rejects request with invalid token.
+	 */
+	public function test_submit_form_permissions_check_rejects_invalid_token() {
+		$form_id = wp_insert_post(
+			[
+				'post_type'   => 'sureforms_form',
+				'post_status' => 'publish',
+				'post_title'  => 'Token Test Form',
+			]
+		);
 
-        $request = new \WP_REST_Request( 'POST', '/sureforms/v1/submit-form' );
-        $request->set_body_params( [ 'form-id' => (string) $form_id ] );
-        $request->set_header( 'X-WP-Submit-Token', 'invalid-token-value' );
+		$request = new \WP_REST_Request( 'POST', '/sureforms/v1/submit-form' );
+		$request->set_body_params( [ 'form-id' => (string) $form_id ] );
+		$request->set_header( 'X-WP-Submit-Token', 'invalid-token-value' );
 
-        $result = $this->form_submit->submit_form_permissions_check( $request );
-        $this->assertInstanceOf( \WP_Error::class, $result, 'Invalid token should return WP_Error.' );
-        $this->assertSame( 'srfm_token_invalid', $result->get_error_code() );
+		$result = $this->form_submit->submit_form_permissions_check( $request );
+		$this->assertInstanceOf( \WP_Error::class, $result, 'Invalid token should return WP_Error.' );
+		$this->assertSame( 'srfm_token_invalid', $result->get_error_code() );
 
-        wp_delete_post( $form_id, true );
-    }
+		wp_delete_post( $form_id, true );
+	}
 
-    /**
-     * Test submit_form_permissions_check accepts a valid HMAC token.
-     */
-    public function test_submit_form_permissions_check_accepts_valid_token() {
-        $form_id = wp_insert_post(
-            [
-                'post_type'   => 'sureforms_form',
-                'post_status' => 'publish',
-                'post_title'  => 'Token Test Form',
-            ]
-        );
+	/**
+	 * Test submit_form_permissions_check accepts a valid HMAC token.
+	 */
+	public function test_submit_form_permissions_check_accepts_valid_token() {
+		$form_id = wp_insert_post(
+			[
+				'post_type'   => 'sureforms_form',
+				'post_status' => 'publish',
+				'post_title'  => 'Token Test Form',
+			]
+		);
 
-        $token   = \SRFM\Inc\Submit_Token::generate( $form_id );
-        $request = new \WP_REST_Request( 'POST', '/sureforms/v1/submit-form' );
-        $request->set_body_params( [ 'form-id' => (string) $form_id ] );
-        $request->set_header( 'X-WP-Submit-Token', $token );
+		$token   = \SRFM\Inc\Submit_Token::generate( $form_id );
+		$request = new \WP_REST_Request( 'POST', '/sureforms/v1/submit-form' );
+		$request->set_body_params( [ 'form-id' => (string) $form_id ] );
+		$request->set_header( 'X-WP-Submit-Token', $token );
 
-        $result = $this->form_submit->submit_form_permissions_check( $request );
-        $this->assertTrue( $result, 'Valid HMAC token should pass permissions check.' );
+		$result = $this->form_submit->submit_form_permissions_check( $request );
+		$this->assertTrue( $result, 'Valid HMAC token should pass permissions check.' );
 
-        wp_delete_post( $form_id, true );
-    }
+		wp_delete_post( $form_id, true );
+	}
 
-    /**
-     * Test submit_form_permissions_check rejects token for wrong form.
-     */
-    public function test_submit_form_permissions_check_rejects_wrong_form_token() {
-        $form_id_a = wp_insert_post(
-            [
-                'post_type'   => 'sureforms_form',
-                'post_status' => 'publish',
-                'post_title'  => 'Form A',
-            ]
-        );
-        $form_id_b = wp_insert_post(
-            [
-                'post_type'   => 'sureforms_form',
-                'post_status' => 'publish',
-                'post_title'  => 'Form B',
-            ]
-        );
+	/**
+	 * Test submit_form_permissions_check rejects token for wrong form.
+	 */
+	public function test_submit_form_permissions_check_rejects_wrong_form_token() {
+		$form_id_a = wp_insert_post(
+			[
+				'post_type'   => 'sureforms_form',
+				'post_status' => 'publish',
+				'post_title'  => 'Form A',
+			]
+		);
+		$form_id_b = wp_insert_post(
+			[
+				'post_type'   => 'sureforms_form',
+				'post_status' => 'publish',
+				'post_title'  => 'Form B',
+			]
+		);
 
-        // Generate token for form A but submit to form B.
-        $token   = \SRFM\Inc\Submit_Token::generate( $form_id_a );
-        $request = new \WP_REST_Request( 'POST', '/sureforms/v1/submit-form' );
-        $request->set_body_params( [ 'form-id' => (string) $form_id_b ] );
-        $request->set_header( 'X-WP-Submit-Token', $token );
+		// Generate token for form A but submit to form B.
+		$token   = \SRFM\Inc\Submit_Token::generate( $form_id_a );
+		$request = new \WP_REST_Request( 'POST', '/sureforms/v1/submit-form' );
+		$request->set_body_params( [ 'form-id' => (string) $form_id_b ] );
+		$request->set_header( 'X-WP-Submit-Token', $token );
 
-        $result = $this->form_submit->submit_form_permissions_check( $request );
-        $this->assertInstanceOf( \WP_Error::class, $result, 'Token for form A should not work for form B.' );
+		$result = $this->form_submit->submit_form_permissions_check( $request );
+		$this->assertInstanceOf( \WP_Error::class, $result, 'Token for form A should not work for form B.' );
 
-        wp_delete_post( $form_id_a, true );
-        wp_delete_post( $form_id_b, true );
-    }
+		wp_delete_post( $form_id_a, true );
+		wp_delete_post( $form_id_b, true );
+	}
 
-    /**
-     * Test register_custom_endpoint registers the submit-form REST route.
-     */
-    public function test_register_custom_endpoint() {
-        do_action( 'rest_api_init' );
-        $routes = rest_get_server()->get_routes();
-        $found  = false;
-        foreach ( array_keys( $routes ) as $route ) {
-            if ( strpos( $route, 'sureforms/v1/submit-form' ) !== false ) {
-                $found = true;
-                break;
-            }
-        }
-        $this->assertTrue( $found, 'The submit-form REST endpoint should be registered.' );
-    }
+	/**
+	 * Test register_custom_endpoint registers the submit-form REST route.
+	 */
+	public function test_register_custom_endpoint() {
+		do_action( 'rest_api_init' );
+		$routes = rest_get_server()->get_routes();
+		$found  = false;
+		foreach ( array_keys( $routes ) as $route ) {
+			if ( strpos( $route, 'sureforms/v1/submit-form' ) !== false ) {
+				$found = true;
+				break;
+			}
+		}
+		$this->assertTrue( $found, 'The submit-form REST endpoint should be registered.' );
+	}
 
-    /**
-     * Test register_custom_endpoint no longer registers the refresh-nonces route.
-     */
-    public function test_register_custom_endpoint_no_refresh_nonces() {
-        do_action( 'rest_api_init' );
-        $routes = rest_get_server()->get_routes();
-        $found  = false;
-        foreach ( array_keys( $routes ) as $route ) {
-            if ( strpos( $route, 'sureforms/v1/refresh-nonces' ) !== false ) {
-                $found = true;
-                break;
-            }
-        }
-        $this->assertFalse( $found, 'The refresh-nonces REST endpoint should no longer be registered.' );
-    }
+	/**
+	 * Test register_custom_endpoint no longer registers the refresh-nonces route.
+	 */
+	public function test_register_custom_endpoint_no_refresh_nonces() {
+		do_action( 'rest_api_init' );
+		$routes = rest_get_server()->get_routes();
+		$found  = false;
+		foreach ( array_keys( $routes ) as $route ) {
+			if ( strpos( $route, 'sureforms/v1/refresh-nonces' ) !== false ) {
+				$found = true;
+				break;
+			}
+		}
+		$this->assertFalse( $found, 'The refresh-nonces REST endpoint should no longer be registered.' );
+	}
 
-    /**
-     * Test permissions_check is callable.
-     */
-    public function test_permissions_check() {
-        $result = $this->form_submit->permissions_check();
-        $this->assertIsBool( $result );
-    }
+	/**
+	 * Test permissions_check is callable.
+	 */
+	public function test_permissions_check() {
+		$result = $this->form_submit->permissions_check();
+		$this->assertIsBool( $result );
+	}
 
-    /**
-     * Test handle_form_entry is callable.
-     */
-    public function test_handle_form_entry() {
-        $this->assertTrue( method_exists( $this->form_submit, 'handle_form_entry' ) );
-    }
+	/**
+	 * Test handle_form_entry is callable.
+	 */
+	public function test_handle_form_entry() {
+		$this->assertTrue( method_exists( $this->form_submit, 'handle_form_entry' ) );
+	}
 
-    /**
-     * Test send_email is callable.
-     */
-    public function test_send_email() {
-        $this->assertTrue( method_exists( Form_Submit::class, 'send_email' ) );
-    }
+	/**
+	 * Test send_email is callable.
+	 */
+	public function test_send_email() {
+		$this->assertTrue( method_exists( Form_Submit::class, 'send_email' ) );
+	}
 
-    /**
-     * Test field_unique_validation is callable.
-     */
-    public function test_field_unique_validation() {
-        $this->assertTrue( method_exists( $this->form_submit, 'field_unique_validation' ) );
-    }
+	/**
+	 * Test field_unique_validation is callable.
+	 */
+	public function test_field_unique_validation() {
+		$this->assertTrue( method_exists( $this->form_submit, 'field_unique_validation' ) );
+	}
 
-    /**
-     * Helper method to call private methods for testing.
-     */
-    private function call_private_method($object, $method_name, $parameters = []) {
-        $reflection = new \ReflectionClass(get_class($object));
-        $method = $reflection->getMethod($method_name);
-        $method->setAccessible(true);
-        return $method->invokeArgs($object, $parameters);
-    }
+	/**
+	 * Helper method to call private methods for testing.
+	 */
+	private function call_private_method($object, $method_name, $parameters = []) {
+		$reflection = new \ReflectionClass(get_class($object));
+		$method = $reflection->getMethod($method_name);
+		$method->setAccessible(true);
+		return $method->invokeArgs($object, $parameters);
+	}
 
 	/**
 	* Test process_form_fields with form-id handling.

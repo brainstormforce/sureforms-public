@@ -371,7 +371,8 @@ async function submitFormData( form ) {
 			},
 		} );
 	} catch ( e ) {
-		console.log( e );
+		// Intentional: Log form submission errors to aid debugging in production.
+		console.error( e );
 	}
 }
 

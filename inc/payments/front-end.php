@@ -72,7 +72,7 @@ class Front_End {
 	public function create_payment_intent() {
 		// Verify submit token.
 		$token   = isset( $_POST['token'] ) ? sanitize_text_field( wp_unslash( $_POST['token'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- HMAC token verification replaces nonce.
-		$form_id = intval( $_POST['form_id'] ?? 0 ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
+		$form_id = isset( $_POST['form_id'] ) && is_numeric( $_POST['form_id'] ) ? absint( $_POST['form_id'] ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Missing
 		if ( ! Submit_Token::verify( $token, $form_id ) ) {
 			wp_send_json_error( __( 'Security verification failed. Please refresh the page and try again.', 'sureforms' ) );
 		}
@@ -84,7 +84,7 @@ class Front_End {
 		$block_id       = sanitize_text_field( wp_unslash( $_POST['block_id'] ?? '' ) );
 		$customer_email = sanitize_email( wp_unslash( $_POST['customer_email'] ?? '' ) );
 		$customer_name  = sanitize_text_field( wp_unslash( $_POST['customer_name'] ?? '' ) );
-		$form_id        = intval( $_POST['form_id'] ?? 0 );
+		$form_id        = isset( $_POST['form_id'] ) && is_numeric( $_POST['form_id'] ) ? absint( $_POST['form_id'] ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Missing
 		// phpcs:enable WordPress.Security.NonceVerification.Missing
 
 		if ( $amount <= 0 ) {
@@ -253,7 +253,7 @@ class Front_End {
 	public function create_subscription_intent() {
 		// Verify submit token.
 		$token   = isset( $_POST['token'] ) ? sanitize_text_field( wp_unslash( $_POST['token'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- HMAC token verification replaces nonce.
-		$form_id = intval( $_POST['form_id'] ?? 0 ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
+		$form_id = isset( $_POST['form_id'] ) && is_numeric( $_POST['form_id'] ) ? absint( $_POST['form_id'] ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Missing
 		if ( ! Submit_Token::verify( $token, $form_id ) ) {
 			wp_send_json_error( __( 'Security verification failed. Please refresh the page and try again.', 'sureforms' ) );
 		}
@@ -278,7 +278,7 @@ class Front_End {
 		$plan_name             = sanitize_text_field( wp_unslash( $_POST['plan_name'] ?? 'Subscription Plan' ) );
 		$customer_email        = sanitize_email( wp_unslash( $_POST['customer_email'] ?? '' ) );
 		$customer_name         = sanitize_text_field( wp_unslash( $_POST['customer_name'] ?? '' ) );
-		$form_id               = intval( $_POST['form_id'] ?? 0 );
+		$form_id               = isset( $_POST['form_id'] ) && is_numeric( $_POST['form_id'] ) ? absint( $_POST['form_id'] ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Missing
 
 		// phpcs:enable WordPress.Security.NonceVerification.Missing
 
