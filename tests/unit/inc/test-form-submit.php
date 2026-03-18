@@ -432,17 +432,103 @@ class Test_Form_Submit extends TestCase {
 	}
 
     /**
-     * Test refresh_nonces is callable.
+     * Test submit_form_permissions_check rejects request with missing token.
      */
-    public function test_refresh_nonces() {
-        $this->assertTrue( method_exists( $this->form_submit, 'refresh_nonces' ) );
+    public function test_submit_form_permissions_check_rejects_missing_token() {
+        $form_id = wp_insert_post(
+            [
+                'post_type'   => 'sureforms_form',
+                'post_status' => 'publish',
+                'post_title'  => 'Token Test Form',
+            ]
+        );
+
+        $request = new \WP_REST_Request( 'POST', '/sureforms/v1/submit-form' );
+        $request->set_body_params( [ 'form-id' => (string) $form_id ] );
+
+        $result = $this->form_submit->submit_form_permissions_check( $request );
+        $this->assertInstanceOf( \WP_Error::class, $result, 'Missing token should return WP_Error.' );
+        $this->assertSame( 'srfm_token_invalid', $result->get_error_code() );
+
+        wp_delete_post( $form_id, true );
     }
 
     /**
-     * Test submit_form_permissions_check is callable.
+     * Test submit_form_permissions_check rejects request with invalid token.
      */
-    public function test_submit_form_permissions_check() {
-        $this->assertTrue( method_exists( $this->form_submit, 'submit_form_permissions_check' ) );
+    public function test_submit_form_permissions_check_rejects_invalid_token() {
+        $form_id = wp_insert_post(
+            [
+                'post_type'   => 'sureforms_form',
+                'post_status' => 'publish',
+                'post_title'  => 'Token Test Form',
+            ]
+        );
+
+        $request = new \WP_REST_Request( 'POST', '/sureforms/v1/submit-form' );
+        $request->set_body_params( [ 'form-id' => (string) $form_id ] );
+        $request->set_header( 'X-WP-Submit-Token', 'invalid-token-value' );
+
+        $result = $this->form_submit->submit_form_permissions_check( $request );
+        $this->assertInstanceOf( \WP_Error::class, $result, 'Invalid token should return WP_Error.' );
+        $this->assertSame( 'srfm_token_invalid', $result->get_error_code() );
+
+        wp_delete_post( $form_id, true );
+    }
+
+    /**
+     * Test submit_form_permissions_check accepts a valid HMAC token.
+     */
+    public function test_submit_form_permissions_check_accepts_valid_token() {
+        $form_id = wp_insert_post(
+            [
+                'post_type'   => 'sureforms_form',
+                'post_status' => 'publish',
+                'post_title'  => 'Token Test Form',
+            ]
+        );
+
+        $token   = \SRFM\Inc\Submit_Token::generate( $form_id );
+        $request = new \WP_REST_Request( 'POST', '/sureforms/v1/submit-form' );
+        $request->set_body_params( [ 'form-id' => (string) $form_id ] );
+        $request->set_header( 'X-WP-Submit-Token', $token );
+
+        $result = $this->form_submit->submit_form_permissions_check( $request );
+        $this->assertTrue( $result, 'Valid HMAC token should pass permissions check.' );
+
+        wp_delete_post( $form_id, true );
+    }
+
+    /**
+     * Test submit_form_permissions_check rejects token for wrong form.
+     */
+    public function test_submit_form_permissions_check_rejects_wrong_form_token() {
+        $form_id_a = wp_insert_post(
+            [
+                'post_type'   => 'sureforms_form',
+                'post_status' => 'publish',
+                'post_title'  => 'Form A',
+            ]
+        );
+        $form_id_b = wp_insert_post(
+            [
+                'post_type'   => 'sureforms_form',
+                'post_status' => 'publish',
+                'post_title'  => 'Form B',
+            ]
+        );
+
+        // Generate token for form A but submit to form B.
+        $token   = \SRFM\Inc\Submit_Token::generate( $form_id_a );
+        $request = new \WP_REST_Request( 'POST', '/sureforms/v1/submit-form' );
+        $request->set_body_params( [ 'form-id' => (string) $form_id_b ] );
+        $request->set_header( 'X-WP-Submit-Token', $token );
+
+        $result = $this->form_submit->submit_form_permissions_check( $request );
+        $this->assertInstanceOf( \WP_Error::class, $result, 'Token for form A should not work for form B.' );
+
+        wp_delete_post( $form_id_a, true );
+        wp_delete_post( $form_id_b, true );
     }
 
     /**

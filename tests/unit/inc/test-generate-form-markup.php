@@ -82,4 +82,43 @@ class Test_Generate_Form_Markup extends TestCase {
 
 		wp_delete_post( $form_id, true );
 	}
+
+	/**
+	 * Test form markup contains the HMAC submit token attribute.
+	 */
+	public function test_form_markup_contains_submit_token() {
+		remove_all_actions( 'wp_insert_post_data' );
+
+		$form_id = wp_insert_post( [
+			'post_title'   => 'Token Markup Test',
+			'post_type'    => 'sureforms_form',
+			'post_status'  => 'publish',
+			'post_content' => '',
+		] );
+
+		$markup = Generate_Form_Markup::get_form_markup( $form_id );
+		$this->assertStringContainsString( 'data-submit-token=', $markup, 'Form markup should contain data-submit-token attribute.' );
+
+		wp_delete_post( $form_id, true );
+	}
+
+	/**
+	 * Test form markup does not contain old nonce attributes.
+	 */
+	public function test_form_markup_does_not_contain_old_nonce_attributes() {
+		remove_all_actions( 'wp_insert_post_data' );
+
+		$form_id = wp_insert_post( [
+			'post_title'   => 'No Nonce Markup Test',
+			'post_type'    => 'sureforms_form',
+			'post_status'  => 'publish',
+			'post_content' => '',
+		] );
+
+		$markup = Generate_Form_Markup::get_form_markup( $form_id );
+		$this->assertStringNotContainsString( 'data-nonce=', $markup, 'Form markup should not contain old data-nonce attribute.' );
+		$this->assertStringNotContainsString( 'data-update-nonce=', $markup, 'Form markup should not contain old data-update-nonce attribute.' );
+
+		wp_delete_post( $form_id, true );
+	}
 }

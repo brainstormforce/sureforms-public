@@ -78,46 +78,6 @@ class Form_Submit {
 			]
 		);
 
-		register_rest_route(
-			$this->namespace,
-			'/refresh-nonces',
-			[
-				'methods'             => 'GET',
-				'callback'            => [ $this, 'refresh_nonces' ],
-				'permission_callback' => '__return_true',
-			]
-		);
-	}
-
-	/**
-	 * Refresh frontend nonces for form submission
-	 *
-	 * @return \WP_REST_Response Response with fresh nonces.
-	 * @since 2.5.1
-	 */
-	public function refresh_nonces() {
-		nocache_headers();
-
-		// Check if nonce refresh is allowed.
-		if ( ! Helper::should_update_form_markup_nonce() ) {
-			return rest_ensure_response(
-				[
-					'success' => false,
-					'message' => __( 'Nonce refresh is disabled.', 'sureforms' ),
-				]
-			);
-		}
-
-		// Get fresh nonces from Helper plus a refreshed wp_rest nonce for wp.apiFetch.
-		$nonces            = Helper::get_frontend_nonces();
-		$nonces['wp_rest'] = wp_create_nonce( 'wp_rest' );
-
-		return rest_ensure_response(
-			[
-				'success' => true,
-				'nonces'  => $nonces,
-			]
-		);
 	}
 
 	/**
@@ -997,7 +957,9 @@ class Form_Submit {
 	 * @return void
 	 */
 	public function field_unique_validation() {
-		if ( empty( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['nonce'] ) ), 'unique_validation_nonce' ) ) {
+		$token   = isset( $_POST['token'] ) ? sanitize_text_field( wp_unslash( $_POST['token'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- HMAC token verification replaces nonce.
+		$form_id = isset( $_POST['id'] ) ? absint( wp_unslash( $_POST['id'] ) ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Missing
+		if ( ! Submit_Token::verify( $token, $form_id ) ) {
 			$error_message = __( 'Security verification failed. Please refresh the page and try again.', 'sureforms' );
 			$error_data    = [
 				'error' => $error_message,

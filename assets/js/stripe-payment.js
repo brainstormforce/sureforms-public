@@ -92,7 +92,9 @@ class StripePayment {
 				? 'srfm_create_subscription_intent'
 				: 'srfm_create_payment_intent'
 		);
-		data.append( 'nonce', srfm_ajax.payment_nonce );
+		// Read submit token from form element for server-side verification.
+		const formElement = paymentInput.closest( 'form' );
+		data.append( 'token', formElement?.getAttribute( 'data-submit-token' ) || '' );
 		// Handle zero-decimal currencies (JPY, KRW, etc.) - don't multiply by 100
 		const formattedAmount =
 			window?.srfmStripe?.zeroDecimalCurrencies?.includes(
@@ -106,9 +108,6 @@ class StripePayment {
 		data.append( 'block_id', blockId );
 		data.append( 'customer_email', customerData.email );
 		data.append( 'customer_name', customerData.name );
-
-		// Add form_id for server-side validation
-		const formElement = paymentInput.closest( 'form' );
 		const formIdInput = formElement?.querySelector(
 			'input[name="form-id"]'
 		);
