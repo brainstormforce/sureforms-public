@@ -251,6 +251,28 @@ const Dialog = ( {
 				),
 			},
 			{
+				id: 'ottokit',
+				label: __( 'Automations', 'sureforms' ),
+				icon: (
+					<img
+						src={ ottoKitIcon }
+						alt={ __( 'OttoKit', 'sureforms' ) }
+					/>
+				),
+				component: (
+					<OttoKitPage
+						{ ...{
+							isFormSettings: true,
+							setSelectedTab,
+							pluginConnected,
+							setPluginConnected,
+							localPluginStatus,
+							setLocalPluginStatus,
+						} }
+					/>
+				),
+			},
+			{
 				id: 'pdf-generation-preview',
 				label: __( 'PDF Generation', 'sureforms' ),
 				icon: <File />,
@@ -289,19 +311,6 @@ const Dialog = ( {
 						] }
 						utmMedium="pdf-preview-single-form-settings"
 					/>
-				),
-			},
-			{
-				id: 'advanced-settings',
-				label: __( 'Advanced Settings', 'sureforms' ),
-				icon: <Settings />,
-				component: (
-					<>
-						<FormRestriction
-							setHasValidationErrors={ setHasValidationErrors }
-						/>
-						<Compliance { ...{ complianceData } } />
-					</>
 				),
 			},
 			{
@@ -434,25 +443,16 @@ const Dialog = ( {
 				),
 			},
 			{
-				id: 'ottokit',
-				label: __( 'Automations', 'sureforms' ),
-				icon: (
-					<img
-						src={ ottoKitIcon }
-						alt={ __( 'OttoKit', 'sureforms' ) }
-					/>
-				),
+				id: 'advanced-settings',
+				label: __( 'Advanced Settings', 'sureforms' ),
+				icon: <Settings />,
 				component: (
-					<OttoKitPage
-						{ ...{
-							isFormSettings: true,
-							setSelectedTab,
-							pluginConnected,
-							setPluginConnected,
-							localPluginStatus,
-							setLocalPluginStatus,
-						} }
-					/>
+					<>
+						<FormRestriction
+							setHasValidationErrors={ setHasValidationErrors }
+						/>
+						<Compliance { ...{ complianceData } } />
+					</>
 				),
 			},
 			{
