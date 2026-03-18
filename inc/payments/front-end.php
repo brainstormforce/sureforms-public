@@ -10,6 +10,7 @@ namespace SRFM\Inc\Payments;
 
 use SRFM\Inc\Database\Tables\Payments;
 use SRFM\Inc\Payments\Stripe\Stripe_Helper;
+use SRFM\Inc\Submit_Token;
 use SRFM\Inc\Traits\Get_Instance;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -69,9 +70,11 @@ class Front_End {
 	 * @return void
 	 */
 	public function create_payment_intent() {
-		// Verify nonce.
-		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ?? '' ) ), 'srfm_payment_nonce' ) ) {
-			wp_send_json_error( __( 'Invalid nonce.', 'sureforms' ) );
+		// Verify submit token.
+		$token   = isset( $_POST['token'] ) ? sanitize_text_field( wp_unslash( $_POST['token'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- HMAC token verification replaces nonce.
+		$form_id = intval( $_POST['form_id'] ?? 0 ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
+		if ( ! Submit_Token::verify( $token, $form_id ) ) {
+			wp_send_json_error( __( 'Security verification failed. Please refresh the page and try again.', 'sureforms' ) );
 		}
 
 		$amount         = intval( $_POST['amount'] ?? 0 );
@@ -246,9 +249,11 @@ class Front_End {
 	 * @return void
 	 */
 	public function create_subscription_intent() {
-		// Verify nonce.
-		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ?? '' ) ), 'srfm_payment_nonce' ) ) {
-			wp_send_json_error( __( 'Security check failed.', 'sureforms' ) );
+		// Verify submit token.
+		$token   = isset( $_POST['token'] ) ? sanitize_text_field( wp_unslash( $_POST['token'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- HMAC token verification replaces nonce.
+		$form_id = intval( $_POST['form_id'] ?? 0 ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
+		if ( ! Submit_Token::verify( $token, $form_id ) ) {
+			wp_send_json_error( __( 'Security verification failed. Please refresh the page and try again.', 'sureforms' ) );
 		}
 
 		// Validate required fields like simple-stripe-subscriptions.

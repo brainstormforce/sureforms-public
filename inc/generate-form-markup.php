@@ -522,14 +522,11 @@ class Generate_Form_Markup {
 				<?php
 				return ob_get_clean();
 			}
-			$get_nonces                      = Helper::get_frontend_nonces();
-			$unique_validation_nonce         = $get_nonces['unique_validation'];
-			$submit_token                    = Submit_Token::generate( (int) $id );
-			$should_update_form_markup_nonce = Helper::should_update_form_markup_nonce();
+			$submit_token = Submit_Token::generate( (int) $id );
 
 			?>
 				<form method="post" enctype="multipart/form-data" id="srfm-form-<?php echo esc_attr( Helper::get_string_value( $id ) ); ?>" class="srfm-form <?php echo esc_attr( 'sureforms_form' === $post_type ? 'srfm-single-form ' : '' ); ?>"
-				form-id="<?php echo esc_attr( Helper::get_string_value( $id ) ); ?>" after-submission="<?php echo esc_attr( $submission_action ); ?>" message-type="<?php echo esc_attr( $confirmation_type ? $confirmation_type : 'same page' ); ?>" success-url="<?php echo esc_attr( $success_url ? $success_url : '' ); ?>" ajaxurl="<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>" data-nonce="<?php echo esc_attr( $unique_validation_nonce ); ?>" data-submit-token="<?php echo esc_attr( $submit_token ); ?>" data-update-nonce="<?php echo esc_attr( $should_update_form_markup_nonce ? 'yes' : 'no' ); ?>"
+				form-id="<?php echo esc_attr( Helper::get_string_value( $id ) ); ?>" after-submission="<?php echo esc_attr( $submission_action ); ?>" message-type="<?php echo esc_attr( $confirmation_type ? $confirmation_type : 'same page' ); ?>" success-url="<?php echo esc_attr( $success_url ? $success_url : '' ); ?>" ajaxurl="<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>" data-submit-token="<?php echo esc_attr( $submit_token ); ?>"
 				>
 				<?php
 					// Submission security is handled via the HMAC token in data-submit-token.

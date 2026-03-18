@@ -44,59 +44,6 @@ document.addEventListener( 'srfm_initialize_validation', ( event ) => {
 	initializeInlineFieldValidation( validFields );
 } );
 
-/**
- * Make a single AJAX call to refresh nonces and update all forms on the page.
- *
- * @param {HTMLFormElement[]} forms - Array of form elements.
- */
-async function refreshFormNonces( forms ) {
-	// Check if at least one form needs a nonce refresh.
-	const needsRefresh = forms.some(
-		( form ) =>
-			form.getAttribute( 'data-update-nonce' ) === 'yes' &&
-			form.getAttribute( 'data-nonce-updated' ) !== 'yes'
-	);
-
-	if ( ! needsRefresh ) {
-		return;
-	}
-
-	try {
-		const response = await wp.apiFetch( {
-			path: 'sureforms/v1/refresh-nonces',
-			method: 'GET',
-		} );
-
-		if ( response?.success && response?.nonces ) {
-			// Loop through all forms and apply the fresh nonces.
-			for ( const form of forms ) {
-				// Update unique validation nonce (data-nonce).
-				if ( response.nonces.unique_validation ) {
-					form.setAttribute(
-						'data-nonce',
-						response.nonces.unique_validation
-					);
-				}
-
-				// Mark form as updated to prevent duplicate refresh calls.
-				form.setAttribute( 'data-nonce-updated', 'yes' );
-			}
-
-			// Update window.srfm_ajax global with refreshed payment nonce (once, not per form).
-			if ( response.nonces.payment_nonce && window.srfm_ajax ) {
-				window.srfm_ajax.payment_nonce = response.nonces.payment_nonce;
-			}
-
-			// Update the wp_rest nonce used by wp.apiFetch middleware.
-			if ( response.nonces.wp_rest && window.srfm_submit ) {
-				window.srfm_submit.nonce = response.nonces.wp_rest;
-			}
-		}
-	} catch ( error ) {
-		console.warn( 'Failed to refresh form nonces:', error );
-	}
-}
-
 // Counter for assigning unique instance IDs to forms.
 // Declared at module scope so it persists across multiple initializeFormHandlers() calls.
 let srfmFormInstanceCounter = 0;
@@ -108,9 +55,6 @@ function initializeFormHandlers() {
 	initializeInlineFieldValidation();
 
 	const forms = Array.from( document.querySelectorAll( '.srfm-form' ) );
-
-	// Single AJAX call to refresh nonces for all forms at once.
-	refreshFormNonces( forms );
 
 	for ( const form of forms ) {
 		// Assign a unique instance ID to each form to support multiple embeds of the same form on one page.
@@ -131,7 +75,7 @@ function initializeFormHandlers() {
 			submitType,
 			successUrl,
 			ajaxUrl,
-			nonce,
+			submitToken,
 			loader,
 			successContainer,
 			successElement,
@@ -238,7 +182,7 @@ function initializeFormHandlers() {
 				form,
 				formId,
 				ajaxUrl,
-				nonce,
+				submitToken,
 				loader,
 				successUrl,
 				successContainer,
@@ -617,7 +561,7 @@ async function handleFormSubmission(
 	form,
 	formId,
 	ajaxUrl,
-	nonce,
+	submitToken,
 	loader,
 	successUrl,
 	successContainer,
@@ -664,7 +608,7 @@ async function handleFormSubmission(
 		const isValidate = await fieldValidation(
 			formId,
 			ajaxUrl,
-			nonce,
+			submitToken,
 			form
 		);
 
@@ -836,7 +780,7 @@ function extractFormAttributesAndElements( form ) {
 	const submitType = form.getAttribute( 'message-type' );
 	const successUrl = form.getAttribute( 'success-url' );
 	const ajaxUrl = form.getAttribute( 'ajaxurl' );
-	const nonce = form.getAttribute( 'data-nonce' );
+	const submitToken = form.getAttribute( 'data-submit-token' );
 	const loader = form.querySelector( '.srfm-loader' );
 	const successContainer = form.parentElement.querySelector(
 		'.srfm-single-form.srfm-success-box'
@@ -859,7 +803,7 @@ function extractFormAttributesAndElements( form ) {
 		submitType,
 		successUrl,
 		ajaxUrl,
-		nonce,
+		submitToken,
 		loader,
 		successContainer,
 		successElement,
@@ -891,7 +835,7 @@ function recaptchaCallback( token = '' ) {
 			formId,
 			submitType,
 			ajaxUrl,
-			nonce,
+			submitToken,
 			loader,
 			successUrl,
 			successContainer,
@@ -906,7 +850,7 @@ function recaptchaCallback( token = '' ) {
 				form,
 				formId,
 				ajaxUrl,
-				nonce,
+				submitToken,
 				loader,
 				successUrl,
 				successContainer,
@@ -926,7 +870,7 @@ function recaptchaCallback( token = '' ) {
 			submitType,
 			successUrl,
 			ajaxUrl,
-			nonce,
+			submitToken,
 			loader,
 			successContainer,
 			successElement,
@@ -944,7 +888,7 @@ function recaptchaCallback( token = '' ) {
 						form,
 						formId,
 						ajaxUrl,
-						nonce,
+						submitToken,
 						loader,
 						successUrl,
 						successContainer,
@@ -972,7 +916,7 @@ function recaptchaCallback( token = '' ) {
 						form,
 						formId,
 						ajaxUrl,
-						nonce,
+						submitToken,
 						loader,
 						successUrl,
 						successContainer,
