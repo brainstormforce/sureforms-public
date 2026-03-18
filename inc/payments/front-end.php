@@ -77,6 +77,7 @@ class Front_End {
 			wp_send_json_error( __( 'Security verification failed. Please refresh the page and try again.', 'sureforms' ) );
 		}
 
+		// phpcs:disable WordPress.Security.NonceVerification.Missing -- Verified via Submit_Token::verify() above.
 		$amount         = intval( $_POST['amount'] ?? 0 );
 		$currency       = sanitize_text_field( wp_unslash( $_POST['currency'] ?? 'usd' ) );
 		$description    = sanitize_text_field( wp_unslash( $_POST['description'] ?? 'SureForms Payment' ) );
@@ -84,6 +85,7 @@ class Front_End {
 		$customer_email = sanitize_email( wp_unslash( $_POST['customer_email'] ?? '' ) );
 		$customer_name  = sanitize_text_field( wp_unslash( $_POST['customer_name'] ?? '' ) );
 		$form_id        = intval( $_POST['form_id'] ?? 0 );
+		// phpcs:enable WordPress.Security.NonceVerification.Missing
 
 		if ( $amount <= 0 ) {
 			wp_send_json_error( __( 'Invalid payment amount.', 'sureforms' ) );
@@ -256,6 +258,8 @@ class Front_End {
 			wp_send_json_error( __( 'Security verification failed. Please refresh the page and try again.', 'sureforms' ) );
 		}
 
+		// phpcs:disable WordPress.Security.NonceVerification.Missing -- Verified via Submit_Token::verify() above.
+
 		// Validate required fields like simple-stripe-subscriptions.
 		$required_fields = [ 'amount', 'currency', 'description', 'block_id', 'interval', 'plan_name' ];
 		foreach ( $required_fields as $field ) {
@@ -275,6 +279,8 @@ class Front_End {
 		$customer_email        = sanitize_email( wp_unslash( $_POST['customer_email'] ?? '' ) );
 		$customer_name         = sanitize_text_field( wp_unslash( $_POST['customer_name'] ?? '' ) );
 		$form_id               = intval( $_POST['form_id'] ?? 0 );
+
+		// phpcs:enable WordPress.Security.NonceVerification.Missing
 
 		// Validate customer email (required for all subscriptions).
 		if ( empty( $customer_email ) || ! is_email( $customer_email ) ) {
