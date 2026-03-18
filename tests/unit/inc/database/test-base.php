@@ -105,6 +105,19 @@ class Test_Database_Base extends TestCase {
 	}
 
 	// ---------------------------------------------------------------
+	// get_total_count
+	// ---------------------------------------------------------------
+
+	/**
+	 * Test get_total_count returns an integer.
+	 */
+	public function test_get_total_count() {
+		$result = $this->base->get_total_count();
+		$this->assertIsInt( $result );
+		$this->assertGreaterThanOrEqual( 0, $result );
+	}
+
+	// ---------------------------------------------------------------
 	// get_records_by_args ORDER BY security
 	// ---------------------------------------------------------------
 

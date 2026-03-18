@@ -276,6 +276,15 @@ class Test_Entries_Table extends TestCase {
 	}
 
 	/**
+	 * Test get_entry_data returns empty array for non-existent entry.
+	 */
+	public function test_get_entry_data() {
+		$result = Entries::get_entry_data( 999999 );
+		$this->assertIsArray( $result );
+		$this->assertEmpty( $result );
+	}
+
+	/**
 	 * Test get_columns_to_rename has expected structure.
 	 */
 	public function test_get_columns_to_rename() {
