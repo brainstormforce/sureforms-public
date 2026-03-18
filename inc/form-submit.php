@@ -968,7 +968,7 @@ class Form_Submit {
 		}
 
 		global $wpdb;
-		$id         = isset( $_POST['id'] ) ? absint( wp_unslash( $_POST['id'] ) ) : 0;
+		$id         = isset( $_POST['id'] ) ? absint( wp_unslash( $_POST['id'] ) ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Verified via Submit_Token::verify() above.
 		$meta_value = $id;
 
 		if ( ! $meta_value ) {
@@ -979,18 +979,18 @@ class Form_Submit {
 			wp_send_json_error( $error_data );
 		}
 
-		$_POST = array_map( 'wp_unslash', $_POST );
+		$_POST = array_map( 'wp_unslash', $_POST ); // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Verified via Submit_Token::verify() above.
 
 		// Get the entry IDs for the particualr form to perform unique field validation.
 		$entry_ids = Entries::get_all_entry_ids_for_form( $id );
 
 		$all_form_entries = [];
-		$keys             = array_keys( $_POST );
+		$keys             = array_keys( $_POST ); // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Verified via Submit_Token::verify() above.
 		$length           = count( $keys );
 
 		for ( $i = 3; $i < $length; $i++ ) {
 			$key   = $keys[ $i ];
-			$value = isset( $_POST[ $key ] ) ? sanitize_text_field( wp_unslash( $_POST[ $key ] ) ) : '';
+			$value = isset( $_POST[ $key ] ) ? sanitize_text_field( wp_unslash( $_POST[ $key ] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Verified via Submit_Token::verify() above.
 			$key   = str_replace( '_', ' ', $keys[ $i ] );
 
 			foreach ( $entry_ids as $entry_id ) {
