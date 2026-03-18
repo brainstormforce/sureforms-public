@@ -28,14 +28,14 @@ class Payments extends Base {
 	/**
 	 * Allowed SQL comparison operators for where conditions.
 	 *
-	 * @since x.x.x
+	 * @since 2.5.2
 	 */
 	private const ALLOWED_OPERATORS = [ '=', '!=', '>', '<', '>=', '<=', 'IN', 'NOT IN', 'LIKE', 'NOT LIKE' ];
 
 	/**
 	 * Allowed column names for where conditions.
 	 *
-	 * @since x.x.x
+	 * @since 2.5.2
 	 */
 	private const ALLOWED_COLUMNS = [
 		'id',

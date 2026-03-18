@@ -1,5 +1,5 @@
 import { __ } from '@wordpress/i18n';
-import { useState } from '@wordpress/element';
+import { useState, useEffect } from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
 import { Button, Input, Loader, Select, Switch, toast } from '@bsf/force-ui';
 import ContentSection from '../components/ContentSection';
@@ -10,6 +10,26 @@ const GeneralPage = ( {
 	emailTabOptions,
 	updateGlobalSettings,
 } ) => {
+	// Detect if user arrived from the Learn section (email-notification lesson).
+	const [ isLearnSource ] = useState(
+		() =>
+			new URLSearchParams( window.location.search ).get( 'source' ) ===
+			'learn'
+	);
+	const [ showLearnTip, setShowLearnTip ] = useState( false );
+
+	useEffect( () => {
+		if ( ! isLearnSource ) {
+			return;
+		}
+		const showTimer = setTimeout( () => setShowLearnTip( true ), 300 );
+		const hideTimer = setTimeout( () => setShowLearnTip( false ), 5300 );
+		return () => {
+			clearTimeout( showTimer );
+			clearTimeout( hideTimer );
+		};
+	}, [ isLearnSource ] );
+
 	const EmailSummariesContent = () => {
 		const [ sendingTestEmail, setSendingTestEmail ] = useState( false );
 
@@ -161,23 +181,36 @@ const GeneralPage = ( {
 
 	const AdminNotificationContent = () => {
 		return (
-			<Switch
-				label={ {
-					heading: __( 'Enable admin notification', 'sureforms' ),
-					description: __(
-						'Admin notifications keep you informed about new form entries since your last visit.',
-						'sureforms'
-					),
-				} }
-				value={ generalTabOptions.srfm_admin_notification }
-				onChange={ ( value ) =>
-					updateGlobalSettings(
-						'srfm_admin_notification',
-						value,
-						'general-settings'
-					)
-				}
-			/>
+			<div className="relative">
+				<Switch
+					label={ {
+						heading: __( 'Enable Admin Notification', 'sureforms' ),
+						description: __(
+							'Admin notifications keep you informed about new form entries since your last visit.',
+							'sureforms'
+						),
+					} }
+					value={ generalTabOptions.srfm_admin_notification }
+					onChange={ ( value ) =>
+						updateGlobalSettings(
+							'srfm_admin_notification',
+							value,
+							'general-settings'
+						)
+					}
+				/>
+				{ showLearnTip && (
+					<div className="absolute top-full left-1/3 -translate-x-1/2 mt-2 z-[999999] pointer-events-none">
+						<div className="absolute -top-[5px] left-1/2 -translate-x-1/2 w-2.5 h-2.5 bg-[#1e1e1e] rotate-45" />
+						<div className="bg-[#1e1e1e] text-white text-sm px-3 py-1.5 rounded-md shadow-md whitespace-nowrap">
+							{ __(
+								'Turn on Admin Notification from here.',
+								'sureforms'
+							) }
+						</div>
+					</div>
+				) }
+			</div>
 		);
 	};
 

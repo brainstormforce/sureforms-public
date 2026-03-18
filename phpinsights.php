@@ -236,6 +236,11 @@ return [
 		 * As we use traits.
 		 */
 		NunoMaduro\PhpInsights\Domain\Insights\ForbiddenTraits::class,
+
+		/**
+		 * WordPress convention uses Abstract_ prefix for abstract classes.
+		 */
+		SlevomatCodingStandard\Sniffs\Classes\SuperfluousAbstractClassNamingSniff::class,
 	],
 
 	'config'       => [

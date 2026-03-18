@@ -99,8 +99,8 @@ class Textarea_Markup extends Base {
 		$this->rows       = $attributes['rows'] ?? '';
 		$this->read_only  = ! empty( trim( $this->default ) ) && $attributes['readOnly'];
 		// html attributes.
-		$this->max_length_attr = $this->max_length ? ' maxLength="' . $this->max_length . '" ' : '';
-		$this->rows_attr       = $this->rows ? ' rows="' . $this->rows . '" ' : '';
+		$this->max_length_attr = $this->max_length ? ' maxLength="' . esc_attr( $this->max_length ) . '" ' : '';
+		$this->rows_attr       = $this->rows ? ' rows="' . esc_attr( $this->rows ) . '" ' : '';
 		$this->max_length_html = '' !== $this->max_length ? '0/' . $this->max_length : '';
 		$this->random_id       = wp_rand( 1000, 9999 );
 		$this->set_unique_slug();

@@ -4,7 +4,7 @@
 import { __ } from '@wordpress/i18n';
 import { useEffect, useMemo } from '@wordpress/element';
 import { ToggleControl } from '@wordpress/components';
-import { InspectorControls } from '@wordpress/block-editor';
+import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {
 	SRFMTabs,
@@ -42,6 +42,9 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 		excludeCountries,
 	} = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
+	const blockProps = useBlockProps( {
+		className,
+	} );
 	// Create translatable country options using useMemo
 	const countryOptions = useMemo(
 		() => [
@@ -112,7 +115,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 	}
 
 	return (
-		<div className={ className }>
+		<div { ...blockProps }>
 			<InspectorControls>
 				<InspectorTabs
 					tabs={ [ 'general', 'advance' ] }
