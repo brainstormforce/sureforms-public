@@ -532,6 +532,38 @@ class Test_Form_Submit extends TestCase {
     }
 
     /**
+     * Test register_custom_endpoint registers the submit-form REST route.
+     */
+    public function test_register_custom_endpoint() {
+        do_action( 'rest_api_init' );
+        $routes = rest_get_server()->get_routes();
+        $found  = false;
+        foreach ( array_keys( $routes ) as $route ) {
+            if ( strpos( $route, 'sureforms/v1/submit-form' ) !== false ) {
+                $found = true;
+                break;
+            }
+        }
+        $this->assertTrue( $found, 'The submit-form REST endpoint should be registered.' );
+    }
+
+    /**
+     * Test register_custom_endpoint no longer registers the refresh-nonces route.
+     */
+    public function test_register_custom_endpoint_no_refresh_nonces() {
+        do_action( 'rest_api_init' );
+        $routes = rest_get_server()->get_routes();
+        $found  = false;
+        foreach ( array_keys( $routes ) as $route ) {
+            if ( strpos( $route, 'sureforms/v1/refresh-nonces' ) !== false ) {
+                $found = true;
+                break;
+            }
+        }
+        $this->assertFalse( $found, 'The refresh-nonces REST endpoint should no longer be registered.' );
+    }
+
+    /**
      * Test permissions_check is callable.
      */
     public function test_permissions_check() {
