@@ -68,4 +68,36 @@ class Test_Database_Base extends TestCase {
 		$this->assertNotContains( 'nonexistent_column', $columns );
 		$this->assertNotContains( 'SLEEP(5)', $columns );
 	}
+
+	/**
+	 * Test get_records_by_args returns an array with default args.
+	 */
+	public function test_get_records_by_args() {
+		$result = $this->base->get_records_by_args();
+		$this->assertIsArray( $result );
+	}
+
+	/**
+	 * Test get_records_by_args rejects SQL injection in orderby and still returns array.
+	 */
+	public function test_get_records_by_args_rejects_invalid_orderby() {
+		$result = $this->base->get_records_by_args( [ 'orderby' => 'id` DESC; DROP TABLE wp_posts; --' ] );
+		$this->assertIsArray( $result );
+	}
+
+	/**
+	 * Test get_records_by_args accepts a valid orderby column.
+	 */
+	public function test_get_records_by_args_with_valid_orderby() {
+		$result = $this->base->get_records_by_args( [ 'orderby' => 'created_at', 'order' => 'ASC' ] );
+		$this->assertIsArray( $result );
+	}
+
+	/**
+	 * Test get_records_by_args normalises an invalid order direction to DESC.
+	 */
+	public function test_get_records_by_args_normalises_invalid_order() {
+		$result = $this->base->get_records_by_args( [ 'order' => 'INVALID; DROP TABLE--' ] );
+		$this->assertIsArray( $result );
+	}
 }

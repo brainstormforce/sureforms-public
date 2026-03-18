@@ -674,17 +674,6 @@ abstract class Base {
 	}
 
 	/**
-	 * Get the allowed column names for ORDER BY clauses.
-	 * Child classes may override this method to restrict orderable columns further.
-	 *
-	 * @since x.x.x
-	 * @return array<string>
-	 */
-	protected function get_allowed_orderby_columns() {
-		return array_merge( array_keys( $this->get_schema() ), [ 'updated_at' ] );
-	}
-
-	/**
 	 * Get the total number of rows in the table.
 	 *
 	 * @param array<mixed> $where_clauses Optional. An associative array of WHERE clauses for the SQL query.
@@ -716,6 +705,17 @@ abstract class Base {
 
 		// Execute the query and return the integer count.
 		return Helper::get_integer_value( $this->cache_set( $query, $results ) );
+	}
+
+	/**
+	 * Get the allowed column names for ORDER BY clauses.
+	 * Child classes may override this method to restrict orderable columns further.
+	 *
+	 * @since x.x.x
+	 * @return array<string>
+	 */
+	protected function get_allowed_orderby_columns() {
+		return array_merge( array_keys( $this->get_schema() ), [ 'updated_at' ] );
 	}
 
 	/**

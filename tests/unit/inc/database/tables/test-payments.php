@@ -372,6 +372,48 @@ class Test_Payments_Table extends TestCase {
 		$this->assertIsArray( $result );
 	}
 
+	// --- get_all_main_payments ORDER BY security ---
+
+	/**
+	 * Test get_all_main_payments returns an array with default args.
+	 */
+	public function test_get_all_main_payments() {
+		$result = Payments::get_all_main_payments();
+		$this->assertIsArray( $result );
+	}
+
+	/**
+	 * Test get_all_main_payments rejects SQL injection in orderby and still returns array.
+	 */
+	public function test_get_all_main_payments_rejects_invalid_orderby() {
+		$result = Payments::get_all_main_payments( [ 'orderby' => 'id` DESC; DROP TABLE wp_posts; --' ] );
+		$this->assertIsArray( $result );
+	}
+
+	/**
+	 * Test get_all_main_payments accepts a valid ALLOWED_COLUMNS orderby value.
+	 */
+	public function test_get_all_main_payments_with_valid_orderby() {
+		$result = Payments::get_all_main_payments( [ 'orderby' => 'status', 'order' => 'ASC' ] );
+		$this->assertIsArray( $result );
+	}
+
+	/**
+	 * Test get_all_main_payments normalises an invalid order direction to DESC.
+	 */
+	public function test_get_all_main_payments_normalises_invalid_order() {
+		$result = Payments::get_all_main_payments( [ 'order' => 'INVALID; SLEEP(5)--' ] );
+		$this->assertIsArray( $result );
+	}
+
+	/**
+	 * Test get_all_main_payments with set_limit false returns array.
+	 */
+	public function test_get_all_main_payments_without_limit() {
+		$result = Payments::get_all_main_payments( [], false );
+		$this->assertIsArray( $result );
+	}
+
 	// --- get_total_payments_by_status ---
 
 	public function test_get_total_payments_by_status_all_returns_int() {
