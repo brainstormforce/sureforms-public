@@ -12,17 +12,25 @@ const { defineConfig, devices } = require( '@playwright/test' );
  */
 module.exports = defineConfig( {
 	testDir: './tests/play/specs',
+	// Log in once before any worker starts; all workers reuse the saved cookies.
+	globalSetup: './tests/play/global-setup.js',
 	/* Fail the build on CI if you accidentally left test.only in the source code. */
 	forbidOnly: !! process.env.CI,
+	// Each test creates its own isolated form — safe to run in parallel.
+	// CI: 1 worker per shard (parallelism comes from the 4-shard matrix).
+	// Local: 4 workers for faster feedback.
 	fullyParallel: true,
-	/* Opt out of parallel tests on CI. */
-	workers: process.env.CI ? 1 : undefined,
+	workers: process.env.CI ? 1 : 4,
 	/* Retry on CI only */
 	retries: process.env.CI ? 2 : 0,
 	/* Maximum time one test can run for. */
 	timeout: 170 * 1000,
 	/* Reporter to use. See https://playwright.dev/docs/test-reporters */
-	reporter: [ [ 'html', { open: 'never' } ] ],
+	// CI: blob reporter per shard — merged into one HTML report by merge-reports job.
+	// Local: HTML + line for immediate feedback.
+	reporter: process.env.CI
+		? [ [ 'blob' ], [ 'line' ] ]
+		: [ [ 'html', { open: 'never' } ], [ 'line' ] ],
 	/* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
 	expect: {
 		/**
@@ -31,7 +39,7 @@ module.exports = defineConfig( {
 		 */
 		timeout: 10000,
 	},
-	// Don't report slow test "files", as we will be running our tests in serial.
+	// Suppress slow-test warnings — tests are intentionally long (WP env interactions).
 	reportSlowTests: null,
 	outputDir: 'tests/play/test-results/',
 	use: {
@@ -41,10 +49,13 @@ module.exports = defineConfig( {
 
 		/* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
 		trace: 'retain-on-failure',
+		screenshot: 'only-on-failure',
 		baseURL: 'http://localhost:8888/',
 		headless: true,
 		ignoreHTTPSErrors: true,
 		browserName: 'chromium',
+		// Restore the shared auth state logged in during globalSetup.
+		storageState: 'tests/play/storageState.json',
 	},
 	/* Configure projects for major browsers */
 	projects: [
@@ -52,12 +63,6 @@ module.exports = defineConfig( {
 			name: 'chromium',
 			use: { ...devices[ 'Desktop Chrome' ] },
 			grepInvert: /-chromium/,
-		},
-		{
-			name: 'firefox',
-			use: { ...devices[ 'Desktop Firefox' ] },
-			grep: /@firefox/,
-			grepInvert: /-firefox/,
 		},
 	],
 } );

@@ -1,51 +1,193 @@
-
-name: Playwright tests
+name: Playwright E2E Tests
 
 on:
   pull_request:
     types: [ labeled ]
+  workflow_dispatch:
+    inputs:
+      clean_env:
+        description: 'Run env:clean before starting (full DB wipe — use when env is broken)'
+        type: boolean
+        default: false
 
-# Cancels all previous workflow runs for pull requests that have not completed.
 concurrency:
-  # The concurrency group contains the workflow name and the branch name for pull requests
-  # or the commit hash for any other events.
   group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && github.head_ref || github.sha }}
   cancel-in-progress: true
 
 jobs:
-  Playwright:
-    name: Test mandatory workflows
-    if: ${{ github.event.label.name == 'e2e' }}
-    timeout-minutes: 60
+  playwright:
+    name: E2E Shard ${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
+    if: github.event_name == 'workflow_dispatch' || github.event.label.name == 'e2e'
     runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        shardIndex: [ 1, 2, 3, 4 ]
+        shardTotal: [ 4 ]
+
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node 18
+        uses: actions/setup-node@v4
         with:
-          node-version: '18.15'
+          node-version: '18.15.0'
+
+      - name: Restore node_modules cache
+        id: npm-cache
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: node-modules-${{ hashFiles('package-lock.json') }}
+
+      - name: Restore Playwright browser cache
+        id: pw-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-chromium-${{ hashFiles('node_modules/@playwright/test/package.json') }}
+          restore-keys: playwright-chromium-
+
+      - name: Restore build cache
+        id: build-cache
+        uses: actions/cache@v4
+        with:
+          path: assets/
+          key: build-${{ hashFiles('src/blocks/**', 'src/components/**', 'sass/**', 'webpack.config.js') }}
+          restore-keys: build-
 
       - name: Install dependencies
-        run: npm install --force
+        if: steps.npm-cache.outputs.cache-hit != 'true'
+        run: npm ci --legacy-peer-deps
 
-      - name: Generate build
+      - name: Build plugin assets
+        if: steps.build-cache.outputs.cache-hit != 'true'
         run: npm run build
 
-      - name: Start Docker environment
+      - name: Install Playwright browsers (no cache)
+        if: steps.pw-cache.outputs.cache-hit != 'true'
+        run: npx playwright install chromium --with-deps
+
+      - name: Install Playwright system deps (cache hit)
+        if: steps.pw-cache.outputs.cache-hit == 'true'
+        run: npx playwright install-deps chromium
+
+      - name: Clean wp-env (on-demand only)
+        if: ${{ inputs.clean_env == true }}
+        run: npm run env:clean
+
+      - name: Start wp-env
         run: npm run play:up:gh
 
-      - name: Install Playwright
-        run: npx playwright install --with-deps
+      - name: Wait for WordPress to be ready
+        run: |
+          echo "Waiting for WordPress at http://localhost:8888..."
+          for i in $(seq 1 30); do
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8888/wp-login.php)
+            if [ "$STATUS" = "200" ]; then
+              echo "WordPress is ready (attempt $i)"
+              exit 0
+            fi
+            echo "Attempt $i: got HTTP $STATUS, retrying in 5s..."
+            sleep 5
+          done
+          echo "WordPress did not become ready in time"
+          exit 1
 
-      - name: Run Playwright tests
-        run: npx playwright test --reporter=line
+      - name: Verify WordPress REST API is reachable
+        run: |
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8888/wp-json/)
+          echo "REST API status: $STATUS"
+          if [ "$STATUS" != "200" ]; then
+            echo "REST API not reachable — check .htaccess and Apache config"
+            exit 1
+          fi
 
-      - uses: actions/upload-artifact@v4
+      - name: Run Playwright E2E tests (shard ${{ matrix.shardIndex }}/${{ matrix.shardTotal }})
+        timeout-minutes: 15
+        run: npx playwright test --config=playwright.config.js --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
+        env:
+          CI: true
+          WP_ADMIN_USER: admin
+          WP_ADMIN_PASS: password
+
+      - name: Dump wp-env logs on failure
+        if: failure()
+        timeout-minutes: 3
+        run: |
+          npx wp-env logs tests --no-watch || true
+          npx wp-env logs development --no-watch || true
+          docker ps -a || true
+
+      - name: Upload blob report
         if: always()
+        uses: actions/upload-artifact@v4
         with:
-          name: playwright-report
-          path: playwright-report/
-          retention-days: 30
+          name: blob-report-${{ matrix.shardIndex }}
+          path: blob-report/
+          retention-days: 1
+          if-no-files-found: ignore
 
-      - name: Stop Docker environment
-        run: npm run play:stop
+      - name: Stop wp-env
         if: always()
+        run: npm run play:stop
+
+  merge-reports:
+    name: Playwright E2E Suite
+    if: always() && (github.event_name == 'workflow_dispatch' || github.event.label.name == 'e2e')
+    needs: playwright
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node 18
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18.15.0'
+
+      - name: Restore node_modules cache
+        id: npm-cache
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: node-modules-${{ hashFiles('package-lock.json') }}
+
+      - name: Install dependencies
+        if: steps.npm-cache.outputs.cache-hit != 'true'
+        run: npm ci --legacy-peer-deps
+
+      - name: Download blob reports from all shards
+        uses: actions/download-artifact@v4
+        with:
+          path: all-blob-reports
+          pattern: blob-report-*
+          merge-multiple: true
+
+      - name: Merge shard reports into one HTML report
+        run: npx playwright merge-reports --reporter=html ./all-blob-reports
+
+      - name: Upload merged HTML report
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-${{ github.event.pull_request.number || github.run_id }}
+          path: playwright-report/
+          retention-days: 14
+          if-no-files-found: ignore
+
+      - name: Comment on PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const result = '${{ needs.playwright.result }}';
+            const emoji = result === 'success' ? '✅' : '❌';
+            const runUrl = `https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}`;
+            github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: ${{ github.event.pull_request.number }},
+              body: `${emoji} **Playwright E2E — ${result.toUpperCase()}** (4 shards in parallel)\n\n[View full merged report](${runUrl})\n\n> Triggered by \`e2e\` label on \`${{ github.sha }}\``
+            });
