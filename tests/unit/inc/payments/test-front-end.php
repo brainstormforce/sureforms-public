@@ -289,6 +289,66 @@ class Test_Front_End_Payments extends TestCase {
 		$this->assertArrayHasKey( 'error', $result );
 	}
 
+	// --- create_payment_intent ---
+
+	public function test_create_payment_intent() {
+		// AJAX handler — test nonce rejection path.
+		$_POST = [];
+
+		add_filter( 'wp_doing_ajax', '__return_true' );
+		add_filter(
+			'wp_die_ajax_handler',
+			function () {
+				return function () {
+					throw new \WPDieException( 'wp_die' );
+				};
+			}
+		);
+
+		ob_start();
+		try {
+			$this->front_end->create_payment_intent();
+		} catch ( \WPDieException $e ) {
+			$output = ob_get_clean();
+			$data   = json_decode( $output, true );
+			$this->assertIsArray( $data );
+			$this->assertFalse( $data['success'] );
+			return;
+		}
+		ob_end_clean();
+		$this->fail( 'Expected WPDieException for invalid nonce.' );
+	}
+
+	// --- create_subscription_intent ---
+
+	public function test_create_subscription_intent() {
+		// AJAX handler — test nonce rejection path.
+		$_POST = [];
+
+		add_filter( 'wp_doing_ajax', '__return_true' );
+		add_filter(
+			'wp_die_ajax_handler',
+			function () {
+				return function () {
+					throw new \WPDieException( 'wp_die' );
+				};
+			}
+		);
+
+		ob_start();
+		try {
+			$this->front_end->create_subscription_intent();
+		} catch ( \WPDieException $e ) {
+			$output = ob_get_clean();
+			$data   = json_decode( $output, true );
+			$this->assertIsArray( $data );
+			$this->assertFalse( $data['success'] );
+			return;
+		}
+		ob_end_clean();
+		$this->fail( 'Expected WPDieException for invalid nonce.' );
+	}
+
 	private function call_private_method( $object, $method_name, $parameters = [] ) {
 		$reflection = new \ReflectionClass( get_class( $object ) );
 		$method     = $reflection->getMethod( $method_name );
