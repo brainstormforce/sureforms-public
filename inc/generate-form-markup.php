@@ -89,10 +89,13 @@ class Generate_Form_Markup {
 		}
 
 		if ( $post && ! empty( $post->post_content ) ) {
+			// Filter to get the post content for the form.
+			$post_content = apply_filters( 'srfm_get_form_post_content', $post->post_content, $id );
+
 			if ( ! empty( $do_blocks ) ) {
-				$content = do_blocks( $post->post_content );
+				$content = do_blocks( $post_content );
 			} else {
-				$content = apply_filters( 'the_content', $post->post_content ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- wordpress hook
+				$content = apply_filters( 'the_content', $post_content ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- wordpress hook
 			}
 		}
 

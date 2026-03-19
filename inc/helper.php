@@ -130,6 +130,18 @@ class Helper {
 	}
 
 	/**
+	 * Validate a date string in Y-m-d format.
+	 *
+	 * @param string $date The date string to validate.
+	 * @since 2.6.0
+	 * @return bool
+	 */
+	public static function validate_date( string $date ): bool {
+		$d = \DateTime::createFromFormat( 'Y-m-d', $date );
+		return $d && $d->format( 'Y-m-d' ) === $date;
+	}
+
+	/**
 	 * Returns a boolean representation of the given value.
 	 *
 	 * @param mixed $data Data which needs to be converted to boolean.

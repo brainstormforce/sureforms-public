@@ -94,7 +94,7 @@ class Stripe_Webhook {
 	 * Used as the permission_callback for webhook REST endpoints.
 	 *
 	 * @param string $mode The payment mode ('test' or 'live').
-	 * @since x.x.x
+	 * @since 2.6.0
 	 * @return true|\WP_Error
 	 */
 	public function validate_webhook_permission( $mode ) {
@@ -131,7 +131,7 @@ class Stripe_Webhook {
 	/**
 	 * Validates the Stripe signature for webhook requests through middleware.
 	 *
-	 * @deprecated x.x.x Use validate_webhook_permission() instead. Signature is now verified locally in the permission callback.
+	 * @deprecated 2.6.0 Use validate_webhook_permission() instead. Signature is now verified locally in the permission callback.
 	 * @param string|null $mode The payment mode ('test' or 'live'). If null, uses setting.
 	 * @since 2.0.0
 	 * @return array<string, mixed>|bool
@@ -1212,7 +1212,7 @@ class Stripe_Webhook {
 	 * @param string $sig_header Stripe-Signature header value.
 	 * @param string $secret     Webhook signing secret (whsec_...).
 	 * @param int    $tolerance  Maximum age in seconds for replay protection.
-	 * @since x.x.x
+	 * @since 2.6.0
 	 * @return bool True if signature is valid, false otherwise.
 	 */
 	private function verify_stripe_signature_locally( $payload, $sig_header, $secret, $tolerance = 300 ) {
