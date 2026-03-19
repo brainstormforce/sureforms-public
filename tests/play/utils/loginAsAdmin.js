@@ -24,12 +24,15 @@ async function loginAsAdmin( page ) {
 	if ( page.url().includes( 'wp-login.php' ) ) {
 		await page.fill( '#user_login', WP_ADMIN_USER );
 		await page.fill( '#user_pass', WP_ADMIN_PASS );
-		await Promise.all( [
-			page.waitForURL( '**/wp-admin/**', {
-				waitUntil: 'domcontentloaded',
-			} ),
-			page.click( '#wp-submit' ),
-		] );
+		await page.click( '#wp-submit' );
+		await page.waitForLoadState( 'domcontentloaded' );
+
+		// Handle WordPress interstitial screens that can appear after login
+		// (e.g. "Database Update Required", "Confirm admin email").
+		if ( ! page.url().includes( '/wp-admin' ) ) {
+			await page.goto( '/wp-admin/' );
+			await page.waitForLoadState( 'domcontentloaded' );
+		}
 	}
 
 	await expect(
