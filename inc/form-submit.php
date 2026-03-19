@@ -1326,7 +1326,7 @@ class Form_Submit {
 		 * about the submission. This array is extensible — new keys may be added
 		 * in future versions without changing the filter signature.
 		 *
-		 * @since x.x.x
+		 * @since 2.6.0
 		 *
 		 * @param array<string,mixed> $submission_data Processed form submission data.
 		 * @param array<string,mixed> $context {

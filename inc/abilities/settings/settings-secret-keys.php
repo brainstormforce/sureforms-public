@@ -6,7 +6,7 @@
  * get-global-settings and update-global-settings abilities.
  *
  * @package sureforms
- * @since x.x.x
+ * @since 2.6.0
  */
 
 namespace SRFM\Inc\Abilities\Settings;
@@ -18,14 +18,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Settings_Secret_Keys trait.
  *
- * @since x.x.x
+ * @since 2.6.0
  */
 trait Settings_Secret_Keys {
 	/**
 	 * Secret key option names that should be masked in output
 	 * and preserved (sentinel check) on update.
 	 *
-	 * @since x.x.x
+	 * @since 2.6.0
 	 * @var array<string>
 	 */
 	private static $secret_keys = [

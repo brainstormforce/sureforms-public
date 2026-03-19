@@ -626,7 +626,7 @@ class Entries {
 	 *
 	 * @param string $search_term Search term to match against form titles.
 	 *
-	 * @since x.x.x
+	 * @since 2.6.0
 	 * @return array<int> Array of matching form IDs.
 	 */
 	private static function get_form_ids_by_title( $search_term ) {
