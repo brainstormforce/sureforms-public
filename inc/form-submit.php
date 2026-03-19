@@ -1234,6 +1234,8 @@ class Form_Submit {
 	 * @return array Processed and sanitized submission data.
 	 */
 	private function process_form_fields( $form_data ) {
+		$form_id = isset( $form_data['form-id'] ) && is_numeric( $form_data['form-id'] ) ? absint( $form_data['form-id'] ) : 0;
+
 		$submission_data = [];
 
 		$form_data_keys  = array_keys( $form_data );
@@ -1317,7 +1319,29 @@ class Form_Submit {
 			}
 		}
 
-		return apply_filters( 'srfm_before_prepare_submission_data', $submission_data );
+		/**
+		 * Filters the submission data before preparing it for storage.
+		 *
+		 * The second parameter is a context array containing additional metadata
+		 * about the submission. This array is extensible — new keys may be added
+		 * in future versions without changing the filter signature.
+		 *
+		 * @since x.x.x
+		 *
+		 * @param array<string,mixed> $submission_data Processed form submission data.
+		 * @param array<string,mixed> $context {
+		 *     Additional context for the submission.
+		 *
+		 *     @type int $form_id The ID of the form being submitted.
+		 * }
+		 */
+		return apply_filters(
+			'srfm_before_prepare_submission_data',
+			$submission_data,
+			[
+				'form_id' => $form_id,
+			]
+		);
 	}
 
 	/**

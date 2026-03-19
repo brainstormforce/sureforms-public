@@ -59,6 +59,29 @@ class Test_Entries_Table extends TestCase {
 	}
 
 	/**
+	 * Test get_allowed_orderby_columns returns only safe, indexed columns.
+	 */
+	public function test_get_allowed_orderby_columns() {
+		$method = new \ReflectionMethod( $this->entries_table, 'get_allowed_orderby_columns' );
+		$method->setAccessible( true );
+		$columns = $method->invoke( $this->entries_table );
+		$this->assertIsArray( $columns );
+		$this->assertNotEmpty( $columns );
+
+		// Must include the meaningful sort columns (lowercase 'id' for frontend compatibility).
+		$expected = [ 'ID', 'id', 'form_id', 'user_id', 'status', 'type', 'created_at', 'updated_at' ];
+		foreach ( $expected as $col ) {
+			$this->assertContains( $col, $columns, "Expected '{$col}' to be in entries orderby allowlist." );
+		}
+
+		// Must NOT include LONGTEXT blob columns (DoS surface, not indexable).
+		$forbidden = [ 'form_data', 'submission_info', 'notes', 'logs', 'extras' ];
+		foreach ( $forbidden as $col ) {
+			$this->assertNotContains( $col, $columns, "Column '{$col}' should not be orderable." );
+		}
+	}
+
+	/**
 	 * Test get_columns_definition returns non-empty array.
 	 */
 	public function test_get_columns_definition() {
@@ -248,6 +271,15 @@ class Test_Entries_Table extends TestCase {
 	 */
 	public function test_get_form_ids_by_entries_nonexistent() {
 		$result = Entries::get_form_ids_by_entries( [ 999999 ] );
+		$this->assertIsArray( $result );
+		$this->assertEmpty( $result );
+	}
+
+	/**
+	 * Test get_entry_data returns empty array for non-existent entry.
+	 */
+	public function test_get_entry_data() {
+		$result = Entries::get_entry_data( 999999 );
 		$this->assertIsArray( $result );
 		$this->assertEmpty( $result );
 	}
