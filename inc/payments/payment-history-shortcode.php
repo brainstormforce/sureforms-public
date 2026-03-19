@@ -2,7 +2,8 @@
 /**
  * Payment History Shortcode.
  *
- * Renders a payment history table for logged-in users with detail view and actions.
+ * Renders a modern payment dashboard with subscriptions section, payment history,
+ * and overlay detail panels for logged-in users.
  *
  * @package sureforms
  * @since 2.6.0
@@ -11,7 +12,6 @@
 namespace SRFM\Inc\Payments;
 
 use SRFM\Inc\Database\Tables\Payments;
-use SRFM\Inc\Payments\Stripe\Stripe_Helper;
 use SRFM\Inc\Traits\Get_Instance;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -43,7 +43,6 @@ class Payment_History_Shortcode {
 		add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_assets' ] );
 
 		// Frontend AJAX handlers.
-		add_action( 'wp_ajax_srfm_frontend_refund_payment', [ $this, 'ajax_refund_payment' ] );
 		add_action( 'wp_ajax_srfm_frontend_cancel_subscription', [ $this, 'ajax_cancel_subscription' ] );
 	}
 
@@ -91,18 +90,55 @@ class Payment_History_Shortcode {
 			[
 				'ajax_url' => admin_url( 'admin-ajax.php' ),
 				'nonce'    => wp_create_nonce( 'srfm_frontend_payment_nonce' ),
-				'i18n'     => [
-					'confirm_refund'            => __( 'Are you sure you want to refund this payment?', 'sureforms' ),
-					'confirm_cancel'            => __( 'Are you sure you want to cancel this subscription? This action cannot be undone.', 'sureforms' ),
-					'refund_success'            => __( 'Refund processed successfully.', 'sureforms' ),
-					'cancel_success'            => __( 'Subscription cancelled successfully.', 'sureforms' ),
-					'error'                     => __( 'Something went wrong. Please try again.', 'sureforms' ),
-					'invalid_amount'            => __( 'Please enter a valid refund amount.', 'sureforms' ),
-					'amount_exceeds_refundable' => __( 'Amount exceeds the refundable amount.', 'sureforms' ),
-					'processing'                => __( 'Processing...', 'sureforms' ),
-				],
+				'i18n'     => $this->get_i18n_strings(),
 			]
 		);
+	}
+
+	/**
+	 * Get all translatable strings for the JS frontend.
+	 *
+	 * @since 2.6.0
+	 * @return array<string,string>
+	 */
+	private function get_i18n_strings() {
+		return [
+			'cancel_at_eop'           => __( 'Cancel at end of billing period', 'sureforms' ),
+			'cancel_at_eop_desc'      => __( 'Keep access until %s. No more charges.', 'sureforms' ),
+			'cancel_immediately'      => __( 'Cancel immediately', 'sureforms' ),
+			'cancel_immediately_desc' => __( 'Lose access right away. No refund for remaining time.', 'sureforms' ),
+			'cancel_confirm_eop'      => __( 'Your "%1$s" will remain active until %2$s, then be cancelled. No further charges.', 'sureforms' ),
+			'cancel_confirm_now'      => __( 'Your "%s" will be cancelled immediately. You will lose access right away.', 'sureforms' ),
+			'are_you_sure'            => __( 'Are you sure?', 'sureforms' ),
+			'keep_subscription'       => __( 'Keep Subscription', 'sureforms' ),
+			'continue'                => __( 'Continue', 'sureforms' ),
+			'go_back'                 => __( 'Go Back', 'sureforms' ),
+			'yes_cancel'              => __( 'Yes, Cancel', 'sureforms' ),
+			'done'                    => __( 'Done', 'sureforms' ),
+			'subscription_cancelled'  => __( 'Subscription Cancelled', 'sureforms' ),
+			'cancel_subscription'     => __( 'Cancel Subscription', 'sureforms' ),
+			'back'                    => __( 'Back', 'sureforms' ),
+			'subscription'            => __( 'Subscription', 'sureforms' ),
+			'amount'                  => __( 'Amount', 'sureforms' ),
+			'next_payment'            => __( 'Next Payment', 'sureforms' ),
+			'cancelled_on'            => __( 'Cancelled On', 'sureforms' ),
+			'access_until'            => __( 'Access Until', 'sureforms' ),
+			'payment_method'          => __( 'Payment Method', 'sureforms' ),
+			'started'                 => __( 'Started', 'sureforms' ),
+			'form'                    => __( 'Form', 'sureforms' ),
+			'type'                    => __( 'Type', 'sureforms' ),
+			'gateway'                 => __( 'Gateway', 'sureforms' ),
+			'transaction_id'          => __( 'Transaction ID', 'sureforms' ),
+			'parent_subscription'     => __( 'Parent Subscription', 'sureforms' ),
+			'plan'                    => __( 'Plan', 'sureforms' ),
+			'status'                  => __( 'Status', 'sureforms' ),
+			'one_time_note'           => __( 'One-time payment. No recurring subscription associated.', 'sureforms' ),
+			'subscription_payment'    => __( 'Subscription Payment', 'sureforms' ),
+			'one_time_payment'        => __( 'One-time Payment', 'sureforms' ),
+			'processing'              => __( 'Processing...', 'sureforms' ),
+			'error'                   => __( 'Something went wrong. Please try again.', 'sureforms' ),
+			'choose_how_to_cancel'    => __( 'Choose how to cancel "%s"', 'sureforms' ),
+		];
 	}
 
 	/**
@@ -129,32 +165,27 @@ class Payment_History_Shortcode {
 			$per_page = 10;
 		}
 
-		// Check if user is logged in.
 		if ( ! is_user_logged_in() ) {
 			return $this->get_login_message();
 		}
 
-		$current_user = wp_get_current_user();
-		$user_id      = $current_user->ID;
-		$user_email   = '';
+		$user_id = get_current_user_id();
+		$where   = $this->build_where_conditions( $user_id, $atts );
 
-		// Check if viewing a single payment detail.
-		$view_payment_id = isset( $_GET['srfm_view'] ) ? absint( $_GET['srfm_view'] ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-		if ( $view_payment_id > 0 ) {
-			return $this->render_detail_view( $view_payment_id, $user_id );
+		// Fetch subscriptions (deduplicated by subscription_id).
+		$subscriptions = [];
+		if ( 'true' === $atts['show_subscription'] ) {
+			$subscriptions = $this->get_user_subscriptions( $where );
 		}
 
-		// Build WHERE conditions for the query.
-		$where = $this->build_where_conditions( $user_id, $user_email, $atts );
-
-		// Pagination.
+		// Fetch all payments for history section.
 		$current_page = isset( $_GET['srfm_page'] ) ? absint( $_GET['srfm_page'] ) : 1; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		if ( $current_page < 1 ) {
 			$current_page = 1;
 		}
 		$offset = ( $current_page - 1 ) * $per_page;
 
-		// Build query args.
+		/** @var array<string,mixed> $query_args */
 		$query_args = [
 			'where'   => $where,
 			'limit'   => $per_page,
@@ -167,52 +198,664 @@ class Payment_History_Shortcode {
 		 * Filter the query arguments before fetching payments.
 		 *
 		 * @since 2.6.0
-		 * @param array $query_args Query arguments for Payments::get_all().
-		 * @param int   $user_id    Current user ID.
+		 * @param array<string,mixed> $query_args Query arguments for Payments::get_all().
+		 * @param int                 $user_id    Current user ID.
 		 */
 		$query_args = apply_filters( 'srfm_payment_history_query_args', $query_args, $user_id );
 
-		// Fetch payments.
-		$payments = Payments::get_all( $query_args );
-
-		// Get total count for pagination.
+		$payments    = Payments::get_all( $query_args );
 		$total_count = Payments::get_instance()->get_total_count( $where );
 		$total_pages = $per_page > 0 ? (int) ceil( $total_count / $per_page ) : 1;
 
-		// Build HTML output.
-		if ( empty( $payments ) ) {
+		if ( empty( $subscriptions ) && empty( $payments ) ) {
 			return $this->get_empty_message();
 		}
 
 		ob_start();
-		$this->render_table( $payments, $current_page, $total_pages, $atts );
-		$html = ob_get_clean();
+		?>
+		<div class="srfm-pd-widget">
+			<?php
+			if ( ! empty( $subscriptions ) ) {
+				$this->render_subscriptions_section( $subscriptions );
+			}
+
+			if ( ! empty( $payments ) ) {
+				$this->render_payments_section( $payments, $current_page, $total_pages, $total_count );
+			}
+			?>
+			<!-- Overlay containers for JS panels -->
+			<div class="srfm-pd-overlay" id="srfm-pd-sub-overlay">
+				<div class="srfm-pd-panel" id="srfm-pd-sub-panel"></div>
+			</div>
+			<div class="srfm-pd-overlay" id="srfm-pd-tx-overlay">
+				<div class="srfm-pd-panel" id="srfm-pd-tx-panel"></div>
+			</div>
+			<div class="srfm-pd-overlay" id="srfm-pd-cancel-overlay">
+				<div class="srfm-pd-panel" id="srfm-pd-cancel-panel"></div>
+			</div>
+		</div>
+		<?php
+		$this->output_js_data( $subscriptions, $payments );
+
+		$output = ob_get_clean();
 
 		/**
 		 * Filter the final payment history HTML output.
 		 *
 		 * @since 2.6.0
-		 * @param string $html     The HTML output.
-		 * @param array  $payments The payment records.
-		 * @param array  $atts     The shortcode attributes.
+		 * @param string               $output   The HTML output.
+		 * @param array<string,mixed>[] $payments The payment records.
+		 * @param array<string,string>  $atts     The shortcode attributes.
 		 */
-		return apply_filters( 'srfm_payment_history_output', $html, $payments, $atts );
+		return apply_filters( 'srfm_payment_history_output', is_string( $output ) ? $output : '', $payments, $atts );
 	}
+
+	// =========================================================================
+	// Subscriptions Section
+	// =========================================================================
+
+	/**
+	 * Get user subscriptions, deduplicated by subscription_id.
+	 *
+	 * @param array<int,array<int,array<string,string>>> $where WHERE conditions.
+	 * @since 2.6.0
+	 * @return array<int,array<string,mixed>>
+	 */
+	private function get_user_subscriptions( $where ) {
+		$sub_where   = $where;
+		$sub_where[] = [
+			[
+				'key'     => 'type',
+				'compare' => '=',
+				'value'   => 'subscription',
+			],
+		];
+
+		$all_subs = Payments::get_all(
+			[
+				'where'   => $sub_where,
+				'orderby' => 'created_at',
+				'order'   => 'DESC',
+				'limit'   => 100,
+			]
+		);
+
+		$unique_subs = [];
+		$seen_ids    = [];
+		foreach ( $all_subs as $sub ) {
+			$sub_id = isset( $sub['subscription_id'] ) ? strval( $sub['subscription_id'] ) : '';
+			if ( empty( $sub_id ) || in_array( $sub_id, $seen_ids, true ) ) {
+				continue;
+			}
+			$seen_ids[]    = $sub_id;
+			$unique_subs[] = $sub;
+		}
+
+		return $unique_subs;
+	}
+
+	/**
+	 * Render the subscriptions section.
+	 *
+	 * @param array<int,array<string,mixed>> $subscriptions Subscription records.
+	 * @since 2.6.0
+	 * @return void
+	 */
+	private function render_subscriptions_section( $subscriptions ) {
+		$active_count    = 0;
+		$cancelled_count = 0;
+
+		foreach ( $subscriptions as $sub ) {
+			$status = isset( $sub['subscription_status'] ) ? strval( $sub['subscription_status'] ) : '';
+			if ( in_array( $status, [ 'active', 'trialing' ], true ) ) {
+				++$active_count;
+			} elseif ( 'canceled' === $status ) {
+				++$cancelled_count;
+			}
+		}
+
+		$count_parts = [];
+		if ( $active_count > 0 ) {
+			/* translators: %d: number of active subscriptions */
+			$count_parts[] = sprintf( _n( '%d active', '%d active', $active_count, 'sureforms' ), $active_count );
+		}
+		if ( $cancelled_count > 0 ) {
+			/* translators: %d: number of cancelled subscriptions */
+			$count_parts[] = sprintf( _n( '%d cancelled', '%d cancelled', $cancelled_count, 'sureforms' ), $cancelled_count );
+		}
+		$count_text = implode( ' · ', $count_parts );
+		?>
+		<div class="srfm-pd-section">
+			<div class="srfm-pd-section-header">
+				<span class="srfm-pd-section-title"><?php esc_html_e( 'Subscriptions', 'sureforms' ); ?></span>
+				<?php if ( ! empty( $count_text ) ) : ?>
+					<span class="srfm-pd-section-count"><?php echo esc_html( $count_text ); ?></span>
+				<?php endif; ?>
+			</div>
+			<?php foreach ( $subscriptions as $index => $sub ) : ?>
+				<?php $this->render_subscription_row( $sub, $index ); ?>
+			<?php endforeach; ?>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Render a single subscription row.
+	 *
+	 * @param array<string,mixed> $sub   Subscription record.
+	 * @param int                 $index Row index.
+	 * @since 2.6.0
+	 * @return void
+	 */
+	private function render_subscription_row( $sub, $index ) {
+		$status       = isset( $sub['subscription_status'] ) ? strval( $sub['subscription_status'] ) : '';
+		$is_active    = in_array( $status, [ 'active', 'trialing' ], true );
+		$is_cancelled = 'canceled' === $status;
+		$currency     = isset( $sub['currency'] ) && is_string( $sub['currency'] ) ? strtoupper( $sub['currency'] ) : 'USD';
+		$form_title   = $this->get_form_title( isset( $sub['form_id'] ) ? absint( $sub['form_id'] ) : 0 );
+		$sub_data     = $this->extract_subscription_data( $sub );
+		$amount_text  = $this->format_amount( isset( $sub['total_amount'] ) ? floatval( $sub['total_amount'] ) : 0.0, $currency );
+
+		if ( ! empty( $sub_data['interval_label'] ) ) {
+			$amount_text .= ' / ' . $sub_data['interval_label'];
+		}
+
+		$meta_text = esc_html( $amount_text );
+		if ( $is_active && ! empty( $sub_data['next_payment'] ) ) {
+			/* translators: %s: next payment date */
+			$meta_text .= ' · ' . sprintf( esc_html__( 'Next: %s', 'sureforms' ), esc_html( $sub_data['next_payment'] ) );
+		} elseif ( $is_cancelled && ! empty( $sub_data['cancelled_on'] ) ) {
+			/* translators: %s: cancellation date */
+			$meta_text = '<span class="srfm-pd-strike">' . esc_html( $amount_text ) . '</span> · ' . sprintf( esc_html__( 'Cancelled %s', 'sureforms' ), esc_html( $sub_data['cancelled_on'] ) );
+		}
+
+		$badge_class = $is_active ? 'srfm-pd-badge--active' : ( $is_cancelled ? 'srfm-pd-badge--cancelled' : 'srfm-pd-badge--pending' );
+		$badge_label = $this->get_subscription_status_label( $status );
+		$row_class   = 'srfm-pd-sub-row' . ( $is_cancelled ? ' srfm-pd-sub-row--cancelled' : '' );
+		$plan_name   = ! empty( $sub_data['plan_name'] ) ? $sub_data['plan_name'] : $form_title;
+		?>
+		<div class="<?php echo esc_attr( $row_class ); ?>" data-index="<?php echo esc_attr( strval( $index ) ); ?>" role="button" tabindex="0">
+			<div class="srfm-pd-sub-row-left">
+				<div class="srfm-pd-sub-row-name"><?php echo esc_html( $plan_name ); ?></div>
+				<div class="srfm-pd-sub-row-meta"><?php echo wp_kses_post( $meta_text ); ?></div>
+			</div>
+			<div class="srfm-pd-sub-row-right">
+				<span class="srfm-pd-badge <?php echo esc_attr( $badge_class ); ?>">
+					<span class="srfm-pd-badge-dot"></span><?php echo esc_html( $badge_label ); ?>
+				</span>
+				<span class="srfm-pd-chevron" aria-hidden="true">›</span>
+			</div>
+		</div>
+		<?php
+	}
+
+	// =========================================================================
+	// Payments Section
+	// =========================================================================
+
+	/**
+	 * Render the payment history section.
+	 *
+	 * @param array<int,array<string,mixed>> $payments      Payment records.
+	 * @param int                            $current_page  Current page.
+	 * @param int                            $total_pages   Total pages.
+	 * @param int                            $total_count   Total payment count.
+	 * @since 2.6.0
+	 * @return void
+	 */
+	private function render_payments_section( $payments, $current_page, $total_pages, $total_count ) {
+		?>
+		<div class="srfm-pd-section">
+			<div class="srfm-pd-section-header">
+				<span class="srfm-pd-section-title"><?php esc_html_e( 'Payment History', 'sureforms' ); ?></span>
+				<span class="srfm-pd-section-count">
+					<?php
+					/* translators: %d: total number of transactions */
+					printf( esc_html( _n( '%d transaction', '%d transactions', $total_count, 'sureforms' ) ), intval( $total_count ) );
+					?>
+				</span>
+			</div>
+			<?php foreach ( $payments as $index => $payment ) : ?>
+				<?php $this->render_payment_row( $payment, $index ); ?>
+			<?php endforeach; ?>
+
+			<?php if ( $total_pages > 1 ) : ?>
+			<div class="srfm-pd-pagination">
+				<span class="srfm-pd-pagination-info">
+					<?php
+					$start = ( ( $current_page - 1 ) * count( $payments ) ) + 1;
+					$end   = $start + count( $payments ) - 1;
+					printf(
+						/* translators: 1: start number, 2: end number, 3: total number */
+						esc_html__( 'Showing %1$d–%2$d of %3$d transactions', 'sureforms' ),
+						intval( $start ),
+						intval( $end ),
+						intval( $total_count )
+					);
+					?>
+				</span>
+				<div class="srfm-pd-pagination-links">
+					<?php if ( $current_page > 1 ) : ?>
+						<a href="<?php echo esc_url( add_query_arg( 'srfm_page', $current_page - 1 ) ); ?>" class="srfm-pd-pagination-link">
+							&laquo; <?php esc_html_e( 'Previous', 'sureforms' ); ?>
+						</a>
+					<?php endif; ?>
+					<?php if ( $current_page < $total_pages ) : ?>
+						<a href="<?php echo esc_url( add_query_arg( 'srfm_page', $current_page + 1 ) ); ?>" class="srfm-pd-pagination-link">
+							<?php esc_html_e( 'Next', 'sureforms' ); ?> &raquo;
+						</a>
+					<?php endif; ?>
+				</div>
+			</div>
+			<?php endif; ?>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Render a single payment row.
+	 *
+	 * @param array<string,mixed> $payment Payment record.
+	 * @param int                 $index   Row index.
+	 * @since 2.6.0
+	 * @return void
+	 */
+	private function render_payment_row( $payment, $index ) {
+		$currency    = isset( $payment['currency'] ) && is_string( $payment['currency'] ) ? strtoupper( $payment['currency'] ) : 'USD';
+		$status      = isset( $payment['status'] ) ? strval( $payment['status'] ) : 'pending';
+		$txn_id      = ! empty( $payment['srfm_txn_id'] ) ? strval( $payment['srfm_txn_id'] ) : '';
+		$form_title  = $this->get_form_title( isset( $payment['form_id'] ) ? absint( $payment['form_id'] ) : 0 );
+		$date_format = strval( get_option( 'date_format' ) );
+		$date        = isset( $payment['created_at'] ) && is_string( $payment['created_at'] )
+			? date_i18n( $date_format, strtotime( $payment['created_at'] ) )
+			: '—';
+
+		$badge_class = $this->get_payment_badge_class( $status );
+		$badge_label = $this->get_payment_status_label( $status );
+		?>
+		<div class="srfm-pd-pay-row" data-index="<?php echo esc_attr( strval( $index ) ); ?>" role="button" tabindex="0">
+			<div class="srfm-pd-pay-row-left">
+				<div class="srfm-pd-pay-row-form"><?php echo esc_html( $form_title ); ?></div>
+				<div class="srfm-pd-pay-row-id"><?php echo esc_html( $txn_id . ( $txn_id ? ' · ' : '' ) . $date ); ?></div>
+			</div>
+			<div class="srfm-pd-pay-row-right">
+				<span class="srfm-pd-badge <?php echo esc_attr( $badge_class ); ?>">
+					<span class="srfm-pd-badge-dot"></span><?php echo esc_html( $badge_label ); ?>
+				</span>
+				<span class="srfm-pd-pay-row-amount"><?php echo esc_html( $this->format_amount( isset( $payment['total_amount'] ) ? floatval( $payment['total_amount'] ) : 0.0, $currency ) ); ?></span>
+				<span class="srfm-pd-chevron" aria-hidden="true">›</span>
+			</div>
+		</div>
+		<?php
+	}
+
+	// =========================================================================
+	// JS Data Output
+	// =========================================================================
+
+	/**
+	 * Output subscription and payment data as inline JSON for JS overlays.
+	 *
+	 * @param array<int,array<string,mixed>> $subscriptions Subscription records.
+	 * @param array<int,array<string,mixed>> $payments      Payment records.
+	 * @since 2.6.0
+	 * @return void
+	 */
+	private function output_js_data( $subscriptions, $payments ) {
+		$date_format = strval( get_option( 'date_format' ) );
+		$subs_data   = [];
+
+		foreach ( $subscriptions as $sub ) {
+			$currency   = isset( $sub['currency'] ) && is_string( $sub['currency'] ) ? strtoupper( $sub['currency'] ) : 'USD';
+			$form_title = $this->get_form_title( isset( $sub['form_id'] ) ? absint( $sub['form_id'] ) : 0 );
+			$sub_info   = $this->extract_subscription_data( $sub );
+			$status     = isset( $sub['subscription_status'] ) ? strval( $sub['subscription_status'] ) : '';
+			$is_active  = in_array( $status, [ 'active', 'trialing' ], true );
+
+			$amount_display = $this->format_amount( isset( $sub['total_amount'] ) ? floatval( $sub['total_amount'] ) : 0.0, $currency );
+			if ( ! empty( $sub_info['interval_label'] ) ) {
+				$amount_display .= ' / ' . $sub_info['interval_label'];
+			}
+
+			$subs_data[] = [
+				'id'             => absint( $sub['id'] ?? 0 ),
+				'name'           => ! empty( $sub_info['plan_name'] ) ? $sub_info['plan_name'] : $form_title,
+				'form'           => $form_title,
+				'amount'         => $amount_display,
+				'next'           => $sub_info['next_payment'],
+				'method'         => $sub_info['payment_method'],
+				'started'        => isset( $sub['created_at'] ) && is_string( $sub['created_at'] )
+					? date_i18n( $date_format, strtotime( $sub['created_at'] ) ) : '—',
+				'status'         => $status,
+				'cancelledOn'    => $sub_info['cancelled_on'],
+				'accessUntil'    => $sub_info['access_until'],
+				'canCancel'      => $is_active,
+				'subscriptionId' => isset( $sub['subscription_id'] ) ? strval( $sub['subscription_id'] ) : '',
+				'paymentId'      => absint( $sub['id'] ?? 0 ),
+			];
+		}
+
+		$txs_data = [];
+		foreach ( $payments as $payment ) {
+			$currency   = isset( $payment['currency'] ) && is_string( $payment['currency'] ) ? strtoupper( $payment['currency'] ) : 'USD';
+			$status     = isset( $payment['status'] ) ? strval( $payment['status'] ) : 'pending';
+			$type       = isset( $payment['type'] ) ? strval( $payment['type'] ) : 'payment';
+			$form_title = $this->get_form_title( isset( $payment['form_id'] ) ? absint( $payment['form_id'] ) : 0 );
+
+			$tx_item = [
+				'id'        => ! empty( $payment['srfm_txn_id'] ) ? strval( $payment['srfm_txn_id'] ) : ( 'SF-' . absint( $payment['id'] ?? 0 ) ),
+				'paymentId' => absint( $payment['id'] ?? 0 ),
+				'form'      => $form_title,
+				'date'      => isset( $payment['created_at'] ) && is_string( $payment['created_at'] )
+					? date_i18n( $date_format, strtotime( $payment['created_at'] ) ) : '—',
+				'amount'    => $this->format_amount( isset( $payment['total_amount'] ) ? floatval( $payment['total_amount'] ) : 0.0, $currency ),
+				'status'    => $status,
+				'type'      => in_array( $type, [ 'subscription', 'renewal' ], true ) ? 'subscription' : 'single',
+				'gateway'   => ucfirst( isset( $payment['gateway'] ) ? strval( $payment['gateway'] ) : '' ),
+				'method'    => $this->get_payment_method_label( $payment ),
+				'txn'       => isset( $payment['transaction_id'] ) ? strval( $payment['transaction_id'] ) : '',
+			];
+
+			if ( in_array( $type, [ 'subscription', 'renewal' ], true ) && ! empty( $payment['subscription_id'] ) ) {
+				$sub_info       = $this->extract_subscription_data( $payment );
+				$amount_display = $this->format_amount( isset( $payment['total_amount'] ) ? floatval( $payment['total_amount'] ) : 0.0, $currency );
+				if ( ! empty( $sub_info['interval_label'] ) ) {
+					$amount_display .= ' / ' . $sub_info['interval_label'];
+				}
+
+				$tx_item['sub'] = [
+					'name'     => ! empty( $sub_info['plan_name'] ) ? $sub_info['plan_name'] : $form_title,
+					'interval' => $amount_display,
+					'next'     => $sub_info['next_payment'],
+					'status'   => $this->get_subscription_status_label( isset( $payment['subscription_status'] ) ? strval( $payment['subscription_status'] ) : '' ),
+				];
+			}
+
+			$txs_data[] = $tx_item;
+		}
+		?>
+		<script type="text/javascript">
+			window.srfmDashboardSubs = <?php echo wp_json_encode( $subs_data ); ?>;
+			window.srfmDashboardTxs = <?php echo wp_json_encode( $txs_data ); ?>;
+		</script>
+		<?php
+	}
+
+	// =========================================================================
+	// Data Extraction Helpers
+	// =========================================================================
+
+	/**
+	 * Extract subscription-specific data from a payment record.
+	 *
+	 * @param array<string,mixed> $payment Payment record.
+	 * @since 2.6.0
+	 * @return array{plan_name:string,interval_label:string,next_payment:string,payment_method:string,cancelled_on:string,access_until:string}
+	 */
+	private function extract_subscription_data( $payment ) {
+		$data = [
+			'plan_name'      => '',
+			'interval_label' => '',
+			'next_payment'   => '',
+			'payment_method' => '—',
+			'cancelled_on'   => '',
+			'access_until'   => '',
+		];
+
+		$payment_data = $this->parse_json_field( $payment['payment_data'] ?? '' );
+		$extra        = $this->parse_json_field( $payment['extra'] ?? '' );
+
+		$data['plan_name'] = $this->get_string_from_sources( 'plan_name', $payment_data, $extra );
+
+		$interval       = $this->get_string_from_sources( 'interval', $payment_data, $extra );
+		$interval_count = $this->get_string_from_sources( 'interval_count', $payment_data, $extra );
+		if ( ! empty( $interval ) ) {
+			$data['interval_label'] = $this->format_interval( $interval, intval( $interval_count ?: '1' ) );
+		}
+
+		$next_date = $this->get_string_from_sources( 'current_period_end', $payment_data, $extra );
+		if ( ! empty( $next_date ) ) {
+			$data['next_payment'] = $this->format_timestamp( $next_date );
+		}
+
+		$card_brand = $this->get_string_from_sources( 'card_brand', $payment_data, $extra );
+		$card_last4 = $this->get_string_from_sources( 'card_last4', $payment_data, $extra );
+		if ( ! empty( $card_brand ) && ! empty( $card_last4 ) ) {
+			$data['payment_method'] = ucfirst( $card_brand ) . ' ****' . $card_last4;
+		} elseif ( ! empty( $payment_data['payment_method_type'] ) ) {
+			$data['payment_method'] = ucfirst( strval( $payment_data['payment_method_type'] ) );
+		}
+
+		$cancelled_at = $this->get_string_from_sources( 'canceled_at', $payment_data, $extra );
+		if ( ! empty( $cancelled_at ) ) {
+			$data['cancelled_on'] = $this->format_timestamp( $cancelled_at );
+		} elseif ( isset( $payment['updated_at'] ) && is_string( $payment['updated_at'] ) && 'canceled' === ( $payment['subscription_status'] ?? '' ) ) {
+			$data['cancelled_on'] = date_i18n( strval( get_option( 'date_format' ) ), strtotime( $payment['updated_at'] ) );
+		}
+
+		if ( ! empty( $next_date ) && 'canceled' === ( $payment['subscription_status'] ?? '' ) ) {
+			$data['access_until'] = $this->format_timestamp( $next_date );
+		}
+
+		return $data;
+	}
+
+	/**
+	 * Parse a JSON field that may be a string or already an array.
+	 *
+	 * @param mixed $value Field value.
+	 * @since 2.6.0
+	 * @return array<string,mixed>
+	 */
+	private function parse_json_field( $value ) {
+		if ( is_array( $value ) ) {
+			return $value;
+		}
+		if ( is_string( $value ) && ! empty( $value ) ) {
+			$decoded = json_decode( $value, true );
+			return is_array( $decoded ) ? $decoded : [];
+		}
+		return [];
+	}
+
+	/**
+	 * Get a string value from two data source arrays.
+	 *
+	 * @param string              $key   Key to look for.
+	 * @param array<string,mixed> $data1 Primary data source.
+	 * @param array<string,mixed> $data2 Fallback data source.
+	 * @since 2.6.0
+	 * @return string
+	 */
+	private function get_string_from_sources( $key, $data1, $data2 ) {
+		if ( ! empty( $data1[ $key ] ) ) {
+			return strval( $data1[ $key ] );
+		}
+		if ( ! empty( $data2[ $key ] ) ) {
+			return strval( $data2[ $key ] );
+		}
+		return '';
+	}
+
+	/**
+	 * Format a timestamp (numeric or date string) to a localized date.
+	 *
+	 * @param string $value Timestamp or date string.
+	 * @since 2.6.0
+	 * @return string Formatted date.
+	 */
+	private function format_timestamp( $value ) {
+		$format = strval( get_option( 'date_format' ) );
+		return is_numeric( $value )
+			? date_i18n( $format, intval( $value ) )
+			: date_i18n( $format, strtotime( $value ) );
+	}
+
+	/**
+	 * Get the form title from form_id.
+	 *
+	 * @param int $form_id Form post ID.
+	 * @since 2.6.0
+	 * @return string Form title.
+	 */
+	private function get_form_title( $form_id ) {
+		if ( $form_id <= 0 ) {
+			return __( 'Unknown Form', 'sureforms' );
+		}
+		$title = get_the_title( $form_id );
+		return ! empty( $title ) ? $title : __( 'Unknown Form', 'sureforms' );
+	}
+
+	/**
+	 * Get payment method label from payment record.
+	 *
+	 * @param array<string,mixed> $payment Payment record.
+	 * @since 2.6.0
+	 * @return string Payment method label.
+	 */
+	private function get_payment_method_label( $payment ) {
+		$payment_data = $this->parse_json_field( $payment['payment_data'] ?? '' );
+		$extra        = $this->parse_json_field( $payment['extra'] ?? '' );
+
+		$card_brand = $this->get_string_from_sources( 'card_brand', $payment_data, $extra );
+		$card_last4 = $this->get_string_from_sources( 'card_last4', $payment_data, $extra );
+
+		if ( ! empty( $card_brand ) && ! empty( $card_last4 ) ) {
+			return ucfirst( $card_brand ) . ' ****' . $card_last4;
+		}
+
+		$gateway = isset( $payment['gateway'] ) ? strval( $payment['gateway'] ) : '';
+		return ! empty( $gateway ) ? ucfirst( $gateway ) : '—';
+	}
+
+	// =========================================================================
+	// Formatting Helpers
+	// =========================================================================
+
+	/**
+	 * Format a payment amount with currency symbol.
+	 *
+	 * @param float  $amount   Payment amount.
+	 * @param string $currency Currency code.
+	 * @since 2.6.0
+	 * @return string Formatted amount.
+	 */
+	private function format_amount( $amount, $currency ) {
+		$symbol   = Payment_Helper::get_currency_symbol( $currency );
+		$position = Payment_Helper::get_currency_sign_position();
+
+		$formatted = Payment_Helper::is_zero_decimal_currency( $currency )
+			? number_format( $amount, 0 )
+			: number_format( $amount, 2 );
+
+		switch ( $position ) {
+			case 'right':
+				return $formatted . $symbol;
+			case 'left_space':
+				return $symbol . ' ' . $formatted;
+			case 'right_space':
+				return $formatted . ' ' . $symbol;
+			case 'left':
+			default:
+				return $symbol . $formatted;
+		}
+	}
+
+	/**
+	 * Format subscription interval to human-readable label.
+	 *
+	 * @param string $interval       Interval type (day, week, month, year).
+	 * @param int    $interval_count Interval count.
+	 * @since 2.6.0
+	 * @return string
+	 */
+	private function format_interval( $interval, $interval_count = 1 ) {
+		$labels = [
+			'day'   => _x( 'day', 'billing interval', 'sureforms' ),
+			'week'  => _x( 'wk', 'billing interval', 'sureforms' ),
+			'month' => _x( 'mo', 'billing interval', 'sureforms' ),
+			'year'  => _x( 'yr', 'billing interval', 'sureforms' ),
+		];
+
+		$label = isset( $labels[ $interval ] ) ? $labels[ $interval ] : $interval;
+		return $interval_count > 1 ? $interval_count . ' ' . $label : $label;
+	}
+
+	/**
+	 * Get subscription status label.
+	 *
+	 * @param string $status Subscription status.
+	 * @since 2.6.0
+	 * @return string
+	 */
+	private function get_subscription_status_label( $status ) {
+		$labels = [
+			'active'   => __( 'Active', 'sureforms' ),
+			'trialing' => __( 'Trialing', 'sureforms' ),
+			'canceled' => __( 'Cancelled', 'sureforms' ),
+			'past_due' => __( 'Past Due', 'sureforms' ),
+			'paused'   => __( 'Paused', 'sureforms' ),
+		];
+		return isset( $labels[ $status ] ) ? $labels[ $status ] : ucfirst( str_replace( '_', ' ', $status ) );
+	}
+
+	/**
+	 * Get payment status label.
+	 *
+	 * @param string $status Payment status.
+	 * @since 2.6.0
+	 * @return string
+	 */
+	private function get_payment_status_label( $status ) {
+		$labels = [
+			'succeeded'          => __( 'Paid', 'sureforms' ),
+			'pending'            => __( 'Pending', 'sureforms' ),
+			'failed'             => __( 'Failed', 'sureforms' ),
+			'canceled'           => __( 'Cancelled', 'sureforms' ),
+			'refunded'           => __( 'Refunded', 'sureforms' ),
+			'partially_refunded' => __( 'Partially Refunded', 'sureforms' ),
+			'processing'         => __( 'Processing', 'sureforms' ),
+			'active'             => __( 'Active', 'sureforms' ),
+		];
+		return isset( $labels[ $status ] ) ? $labels[ $status ] : ucfirst( str_replace( '_', ' ', $status ) );
+	}
+
+	/**
+	 * Get payment status badge CSS class.
+	 *
+	 * @param string $status Payment status.
+	 * @since 2.6.0
+	 * @return string
+	 */
+	private function get_payment_badge_class( $status ) {
+		$map = [
+			'succeeded'          => 'srfm-pd-badge--paid',
+			'active'             => 'srfm-pd-badge--paid',
+			'pending'            => 'srfm-pd-badge--pending',
+			'processing'         => 'srfm-pd-badge--pending',
+			'failed'             => 'srfm-pd-badge--cancelled',
+			'canceled'           => 'srfm-pd-badge--cancelled',
+			'refunded'           => 'srfm-pd-badge--refunded',
+			'partially_refunded' => 'srfm-pd-badge--refunded',
+		];
+		return isset( $map[ $status ] ) ? $map[ $status ] : 'srfm-pd-badge--pending';
+	}
+
+	// =========================================================================
+	// Query Helpers
+	// =========================================================================
 
 	/**
 	 * Build WHERE conditions for the payment query.
 	 *
-	 * @param int                  $user_id    WordPress user ID.
-	 * @param string               $user_email User email address.
-	 * @param array<string,string> $atts       Shortcode attributes.
+	 * @param int                  $user_id WordPress user ID.
+	 * @param array<string,string> $atts    Shortcode attributes.
 	 * @since 2.6.0
-	 * @return array WHERE conditions array for Payments::get_all().
+	 * @return array<int,array<int,array<string,string>>> WHERE conditions.
 	 */
-	private function build_where_conditions( $user_id, $user_email, $atts ) {
+	private function build_where_conditions( $user_id, $atts ) {
 		$stripe_customer_id = get_user_meta( $user_id, 'srfm_stripe_customer_id', true );
-
-		// OR group: match by customer_id or customer_email.
-		$or_conditions = [];
+		$or_conditions      = [];
 
 		if ( ! empty( $stripe_customer_id ) && is_string( $stripe_customer_id ) ) {
 			$or_conditions[] = [
@@ -222,22 +865,11 @@ class Payment_History_Shortcode {
 			];
 		}
 
-		if ( ! empty( $user_email ) ) {
-			$or_conditions[] = [
-				'key'     => 'customer_email',
-				'compare' => '=',
-				'value'   => $user_email,
-			];
-		}
-
 		$where = [];
-
-		// Add OR group for customer matching.
 		if ( ! empty( $or_conditions ) ) {
 			$where[] = $or_conditions;
 		}
 
-		// Gateway filter.
 		$gateway = ! empty( $atts['gateway'] ) ? sanitize_text_field( $atts['gateway'] ) : '';
 		if ( ! empty( $gateway ) ) {
 			$where[] = [
@@ -249,500 +881,22 @@ class Payment_History_Shortcode {
 			];
 		}
 
-		// Type filter: exclude subscription/renewal if attributes say so.
-		$excluded_types = [];
-		if ( 'false' === $atts['show_subscription'] ) {
-			$excluded_types[] = 'subscription';
-		}
-		if ( 'false' === $atts['show_renewal'] ) {
-			$excluded_types[] = 'renewal';
-		}
-		if ( ! empty( $excluded_types ) ) {
-			foreach ( $excluded_types as $type ) {
-				$where[] = [
-					[
-						'key'     => 'type',
-						'compare' => '!=',
-						'value'   => $type,
-					],
-				];
-			}
-		}
-
 		/**
 		 * Filter the WHERE conditions for the payment history query.
 		 *
 		 * @since 2.6.0
-		 * @param array                $where   WHERE conditions array.
-		 * @param int                  $user_id WordPress user ID.
-		 * @param array<string,string> $atts    Shortcode attributes.
+		 * @param array<int,array<int,array<string,string>>> $where   WHERE conditions array.
+		 * @param int                                        $user_id WordPress user ID.
+		 * @param array<string,string>                       $atts    Shortcode attributes.
 		 */
 		return apply_filters( 'srfm_payment_history_where_conditions', $where, $user_id, $atts );
-	}
-
-	// =========================================================================
-	// List View
-	// =========================================================================
-
-	/**
-	 * Render the payment history table.
-	 *
-	 * @param array $payments     Payment records.
-	 * @param int   $current_page Current page number.
-	 * @param int   $total_pages  Total number of pages.
-	 * @param array $atts         Shortcode attributes.
-	 * @since 2.6.0
-	 * @return void
-	 */
-	private function render_table( $payments, $current_page, $total_pages, $atts ) {
-		$columns = apply_filters(
-			'srfm_payment_history_columns',
-			[
-				'date'           => __( 'Date', 'sureforms' ),
-				'transaction_id' => __( 'Transaction ID', 'sureforms' ),
-				'amount'         => __( 'Amount', 'sureforms' ),
-				'status'         => __( 'Status', 'sureforms' ),
-				'type'           => __( 'Type', 'sureforms' ),
-				'action'         => __( 'Action', 'sureforms' ),
-			]
-		);
-		?>
-		<div class="srfm-payment-history-wrap">
-			<div class="srfm-payment-history-container">
-			<div class="srfm-payment-history-table-container">
-				<table class="srfm-payment-history-table">
-					<thead>
-						<tr>
-							<?php foreach ( $columns as $key => $label ) : ?>
-								<th class="srfm-payment-history-col-<?php echo esc_attr( $key ); ?>">
-									<?php echo esc_html( $label ); ?>
-								</th>
-							<?php endforeach; ?>
-						</tr>
-					</thead>
-					<tbody>
-						<?php foreach ( $payments as $payment ) : ?>
-							<?php $this->render_row( $payment, $columns ); ?>
-						<?php endforeach; ?>
-					</tbody>
-				</table>
-			</div>
-			<?php
-			if ( $total_pages > 1 ) {
-				$this->render_pagination( $current_page, $total_pages );
-			}
-			?>
-			</div>
-		</div>
-		<?php
-	}
-
-	/**
-	 * Render a single payment row.
-	 *
-	 * @param array $payment Payment record.
-	 * @param array $columns Column definitions.
-	 * @since 2.6.0
-	 * @return void
-	 */
-	private function render_row( $payment, $columns ) {
-		$currency   = isset( $payment['currency'] ) && is_string( $payment['currency'] ) ? strtoupper( $payment['currency'] ) : 'USD';
-		$payment_id = isset( $payment['id'] ) ? absint( $payment['id'] ) : 0;
-		$view_url   = add_query_arg( 'srfm_view', $payment_id );
-
-		$row_data = [
-			'date'           => isset( $payment['created_at'] ) ? date_i18n( get_option( 'date_format' ), strtotime( $payment['created_at'] ) ) : '—',
-			'transaction_id' => isset( $payment['srfm_txn_id'] ) && ! empty( $payment['srfm_txn_id'] ) ? $payment['srfm_txn_id'] : ( isset( $payment['transaction_id'] ) ? $payment['transaction_id'] : '—' ),
-			'amount'         => $this->format_amount( $payment['total_amount'] ?? 0, $currency ),
-			'status'         => $this->get_status_badge( $payment['status'] ?? 'pending' ),
-			'type'           => $this->get_payment_type_label( $payment['type'] ?? 'payment' ),
-			'action'         => sprintf(
-				'<a href="%s" class="srfm-payment-history-view-link">%s</a>',
-				esc_url( $view_url ),
-				esc_html__( 'View Details', 'sureforms' )
-			),
-		];
-
-		/** @since 2.6.0 */
-		$row_data = apply_filters( 'srfm_payment_history_row_data', $row_data, $payment );
-		?>
-		<tr>
-			<?php foreach ( $columns as $key => $label ) : ?>
-				<td class="srfm-payment-history-col-<?php echo esc_attr( $key ); ?>" data-label="<?php echo esc_attr( $label ); ?>">
-					<?php
-					if ( in_array( $key, [ 'status', 'action' ], true ) ) {
-						echo wp_kses_post( $row_data[ $key ] ?? '—' );
-					} else {
-						echo esc_html( $row_data[ $key ] ?? '—' );
-					}
-					?>
-				</td>
-			<?php endforeach; ?>
-		</tr>
-		<?php
-	}
-
-	/**
-	 * Render pagination links.
-	 *
-	 * @param int $current_page Current page number.
-	 * @param int $total_pages  Total number of pages.
-	 * @since 2.6.0
-	 * @return void
-	 */
-	private function render_pagination( $current_page, $total_pages ) {
-		$base_url = remove_query_arg( 'srfm_page' );
-		?>
-		<nav class="srfm-payment-history-pagination" aria-label="<?php esc_attr_e( 'Payment history navigation', 'sureforms' ); ?>">
-			<?php if ( $current_page > 1 ) : ?>
-				<a href="<?php echo esc_url( add_query_arg( 'srfm_page', $current_page - 1, $base_url ) ); ?>" class="srfm-payment-history-page-link srfm-payment-history-prev">
-					&laquo; <?php esc_html_e( 'Previous', 'sureforms' ); ?>
-				</a>
-			<?php endif; ?>
-
-			<span class="srfm-payment-history-page-info">
-				<?php
-				printf(
-					/* translators: 1: current page, 2: total pages */
-					esc_html__( 'Page %1$d of %2$d', 'sureforms' ),
-					$current_page,
-					$total_pages
-				);
-				?>
-			</span>
-
-			<?php if ( $current_page < $total_pages ) : ?>
-				<a href="<?php echo esc_url( add_query_arg( 'srfm_page', $current_page + 1, $base_url ) ); ?>" class="srfm-payment-history-page-link srfm-payment-history-next">
-					<?php esc_html_e( 'Next', 'sureforms' ); ?> &raquo;
-				</a>
-			<?php endif; ?>
-		</nav>
-		<?php
-	}
-
-	// =========================================================================
-	// Detail View
-	// =========================================================================
-
-	/**
-	 * Render the single payment detail view.
-	 *
-	 * @param int $payment_id Payment ID from the database.
-	 * @param int $user_id    Current logged-in user ID.
-	 * @since 2.6.0
-	 * @return string HTML output.
-	 */
-	private function render_detail_view( $payment_id, $user_id ) {
-		$payment = Payments::get( $payment_id );
-
-		if ( ! $payment || ! $this->user_owns_payment( $payment, $user_id ) ) {
-			return sprintf(
-				'<div class="srfm-payment-history-wrap"><div class="srfm-payment-history-container"><p class="srfm-payment-history-empty">%s</p></div></div>',
-				esc_html__( 'Payment not found.', 'sureforms' )
-			);
-		}
-
-		$currency        = isset( $payment['currency'] ) && is_string( $payment['currency'] ) ? strtoupper( $payment['currency'] ) : 'USD';
-		$total_amount    = floatval( $payment['total_amount'] ?? 0 );
-		$refunded_amount = floatval( $payment['refunded_amount'] ?? 0 );
-		$status          = $payment['status'] ?? 'pending';
-		$type            = $payment['type'] ?? 'payment';
-		$gateway         = $payment['gateway'] ?? '';
-		$is_subscription = in_array( $type, [ 'subscription' ], true );
-		$back_url        = remove_query_arg( 'srfm_view' );
-
-		// Determine if refund is possible.
-		$refundable_statuses = [ 'succeeded', 'partially_refunded', 'active' ];
-		$can_refund          = in_array( $status, $refundable_statuses, true ) && ! empty( $payment['transaction_id'] );
-		$refundable_amount   = $total_amount - $refunded_amount;
-
-		// Subscription-specific data.
-		$can_cancel_subscription = $is_subscription && in_array( $payment['subscription_status'] ?? '', [ 'active', 'trialing' ], true );
-
-		// Billing history for subscriptions.
-		$billing_payments = [];
-		if ( $is_subscription && ! empty( $payment['subscription_id'] ) ) {
-			$billing_payments = Payments::get_subscription_related_payments( $payment['subscription_id'] );
-		}
-
-		// Refund history from payment_data.
-		$payment_data = $payment['payment_data'] ?? [];
-		$refunds      = [];
-		if ( is_array( $payment_data ) && ! empty( $payment_data['refunds'] ) && is_array( $payment_data['refunds'] ) ) {
-			$refunds = $payment_data['refunds'];
-		}
-
-		// Payment logs.
-		$logs = isset( $payment['log'] ) && is_array( $payment['log'] ) ? $payment['log'] : [];
-
-		ob_start();
-		?>
-		<div class="srfm-payment-history-wrap">
-			<div class="srfm-payment-history-container">
-			<!-- Back link -->
-			<a href="<?php echo esc_url( $back_url ); ?>" class="srfm-ph-detail-back">
-				&larr; <?php esc_html_e( 'Back to Payment History', 'sureforms' ); ?>
-			</a>
-
-			<!-- Header -->
-			<div class="srfm-ph-detail-header">
-				<div class="srfm-ph-detail-header-left">
-					<h3 class="srfm-ph-detail-title">
-						<?php
-						if ( $is_subscription ) {
-							printf(
-								/* translators: %d: payment ID */
-								esc_html__( 'Subscription #%d', 'sureforms' ),
-								$payment_id
-							);
-						} else {
-							printf(
-								/* translators: %d: payment ID */
-								esc_html__( 'Payment #%d', 'sureforms' ),
-								$payment_id
-							);
-						}
-						?>
-					</h3>
-					<?php echo wp_kses_post( $this->get_status_badge( $status ) ); ?>
-				</div>
-				<div class="srfm-ph-detail-header-right">
-					<span class="srfm-ph-detail-amount"><?php echo esc_html( $this->format_amount( $total_amount, $currency ) ); ?></span>
-				</div>
-			</div>
-
-			<div class="srfm-ph-detail-grid">
-				<!-- Left column: Payment Info -->
-				<div class="srfm-ph-detail-main">
-					<!-- Payment Information -->
-					<div class="srfm-ph-detail-section">
-						<h4 class="srfm-ph-detail-section-title"><?php esc_html_e( 'Payment Information', 'sureforms' ); ?></h4>
-						<table class="srfm-ph-detail-info-table">
-							<tbody>
-								<tr>
-									<th><?php esc_html_e( 'Payment ID', 'sureforms' ); ?></th>
-									<td><?php echo esc_html( $payment_id ); ?></td>
-								</tr>
-								<?php if ( ! empty( $payment['srfm_txn_id'] ) ) : ?>
-								<tr>
-									<th><?php esc_html_e( 'Transaction ID', 'sureforms' ); ?></th>
-									<td><code><?php echo esc_html( $payment['srfm_txn_id'] ); ?></code></td>
-								</tr>
-								<?php endif; ?>
-								<tr>
-									<th><?php esc_html_e( 'Gateway', 'sureforms' ); ?></th>
-									<td><?php echo esc_html( ucfirst( $gateway ) ); ?></td>
-								</tr>
-								<tr>
-									<th><?php esc_html_e( 'Type', 'sureforms' ); ?></th>
-									<td><?php echo esc_html( $this->get_payment_type_label( $type ) ); ?></td>
-								</tr>
-								<tr>
-									<th><?php esc_html_e( 'Mode', 'sureforms' ); ?></th>
-									<td>
-										<span class="srfm-ph-detail-mode srfm-ph-detail-mode--<?php echo esc_attr( $payment['mode'] ?? 'test' ); ?>">
-											<?php echo esc_html( ucfirst( $payment['mode'] ?? 'test' ) ); ?>
-										</span>
-									</td>
-								</tr>
-								<tr>
-									<th><?php esc_html_e( 'Date', 'sureforms' ); ?></th>
-									<td><?php echo esc_html( isset( $payment['created_at'] ) ? date_i18n( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), strtotime( $payment['created_at'] ) ) : '—' ); ?></td>
-								</tr>
-								<?php if ( ! empty( $payment['customer_name'] ) ) : ?>
-								<tr>
-									<th><?php esc_html_e( 'Customer', 'sureforms' ); ?></th>
-									<td><?php echo esc_html( $payment['customer_name'] ); ?></td>
-								</tr>
-								<?php endif; ?>
-								<?php if ( ! empty( $payment['customer_email'] ) ) : ?>
-								<tr>
-									<th><?php esc_html_e( 'Email', 'sureforms' ); ?></th>
-									<td><?php echo esc_html( $payment['customer_email'] ); ?></td>
-								</tr>
-								<?php endif; ?>
-							</tbody>
-						</table>
-					</div>
-
-					<?php if ( $is_subscription ) : ?>
-					<!-- Subscription Details -->
-					<div class="srfm-ph-detail-section">
-						<h4 class="srfm-ph-detail-section-title"><?php esc_html_e( 'Subscription Details', 'sureforms' ); ?></h4>
-						<table class="srfm-ph-detail-info-table">
-							<tbody>
-								<?php if ( ! empty( $payment['subscription_id'] ) ) : ?>
-								<tr>
-									<th><?php esc_html_e( 'Subscription ID', 'sureforms' ); ?></th>
-									<td><code><?php echo esc_html( $payment['subscription_id'] ); ?></code></td>
-								</tr>
-								<?php endif; ?>
-								<tr>
-									<th><?php esc_html_e( 'Subscription Status', 'sureforms' ); ?></th>
-									<td><?php echo wp_kses_post( $this->get_status_badge( $payment['subscription_status'] ?? 'unknown' ) ); ?></td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-
-					<?php if ( ! empty( $billing_payments ) ) : ?>
-					<!-- Billing History -->
-					<div class="srfm-ph-detail-section">
-						<h4 class="srfm-ph-detail-section-title"><?php esc_html_e( 'Billing History', 'sureforms' ); ?></h4>
-						<div class="srfm-payment-history-table-container">
-							<table class="srfm-payment-history-table">
-								<thead>
-									<tr>
-										<th><?php esc_html_e( 'Date', 'sureforms' ); ?></th>
-										<th><?php esc_html_e( 'Amount', 'sureforms' ); ?></th>
-										<th><?php esc_html_e( 'Status', 'sureforms' ); ?></th>
-										<th><?php esc_html_e( 'Type', 'sureforms' ); ?></th>
-									</tr>
-								</thead>
-								<tbody>
-									<?php foreach ( $billing_payments as $bp ) : ?>
-									<tr>
-										<td><?php echo esc_html( isset( $bp['created_at'] ) ? date_i18n( get_option( 'date_format' ), strtotime( $bp['created_at'] ) ) : '—' ); ?></td>
-										<td><?php echo esc_html( $this->format_amount( $bp['total_amount'] ?? 0, strtoupper( $bp['currency'] ?? $currency ) ) ); ?></td>
-										<td><?php echo wp_kses_post( $this->get_status_badge( $bp['status'] ?? 'pending' ) ); ?></td>
-										<td><?php echo esc_html( $this->get_payment_type_label( $bp['type'] ?? 'renewal' ) ); ?></td>
-									</tr>
-									<?php endforeach; ?>
-								</tbody>
-							</table>
-						</div>
-					</div>
-					<?php endif; ?>
-					<?php endif; ?>
-
-					<?php if ( ! empty( $refunds ) ) : ?>
-					<!-- Refund History -->
-					<div class="srfm-ph-detail-section">
-						<h4 class="srfm-ph-detail-section-title"><?php esc_html_e( 'Refund History', 'sureforms' ); ?></h4>
-						<div class="srfm-payment-history-table-container">
-							<table class="srfm-payment-history-table">
-								<thead>
-									<tr>
-										<th><?php esc_html_e( 'Date', 'sureforms' ); ?></th>
-										<th><?php esc_html_e( 'Amount', 'sureforms' ); ?></th>
-										<th><?php esc_html_e( 'Status', 'sureforms' ); ?></th>
-										<th><?php esc_html_e( 'Refund ID', 'sureforms' ); ?></th>
-									</tr>
-								</thead>
-								<tbody>
-									<?php foreach ( $refunds as $refund ) : ?>
-									<tr>
-										<td data-label="<?php esc_attr_e( 'Date', 'sureforms' ); ?>"><?php echo esc_html( ! empty( $refund['refunded_at'] ) ? date_i18n( get_option( 'date_format' ), strtotime( $refund['refunded_at'] ) ) : '—' ); ?></td>
-										<td data-label="<?php esc_attr_e( 'Amount', 'sureforms' ); ?>"><?php echo esc_html( $this->format_amount( Stripe_Helper::amount_from_stripe_format( $refund['amount'] ?? 0, $currency ), $currency ) ); ?></td>
-										<td data-label="<?php esc_attr_e( 'Status', 'sureforms' ); ?>"><?php echo wp_kses_post( $this->get_status_badge( $refund['status'] ?? 'processed' ) ); ?></td>
-										<td data-label="<?php esc_attr_e( 'Refund ID', 'sureforms' ); ?>"><code><?php echo esc_html( $refund['refund_id'] ?? '—' ); ?></code></td>
-									</tr>
-									<?php endforeach; ?>
-								</tbody>
-							</table>
-						</div>
-					</div>
-					<?php endif; ?>
-
-					</div>
-
-				<!-- Right column: Actions -->
-				<div class="srfm-ph-detail-sidebar">
-					<!-- Actions -->
-					<div class="srfm-ph-detail-section">
-						<h4 class="srfm-ph-detail-section-title"><?php esc_html_e( 'Actions', 'sureforms' ); ?></h4>
-
-						<?php if ( $can_refund && $refundable_amount > 0 ) : ?>
-						<div class="srfm-ph-action-row" id="srfm-refund-block">
-							<!-- Refund Amount -->
-							<div class="srfm-ph-action-col">
-								<label class="srfm-ph-action-label" for="srfm-refund-amount">
-									<?php esc_html_e( 'Refund Amount', 'sureforms' ); ?>
-									<span class="srfm-ph-action-hint">
-										<?php
-										printf(
-											/* translators: %s: maximum refundable amount */
-											esc_html__( 'Max: %s', 'sureforms' ),
-											esc_html( $this->format_amount( $refundable_amount, $currency ) )
-										);
-										?>
-									</span>
-								</label>
-								<div class="srfm-ph-action-input-group">
-									<span class="srfm-ph-action-currency"><?php echo esc_html( Payment_Helper::get_currency_symbol( $currency ) ); ?></span>
-									<input
-										type="number"
-										id="srfm-refund-amount"
-										class="srfm-ph-action-input"
-										step="0.01"
-										min="0.01"
-										max="<?php echo esc_attr( number_format( $refundable_amount, 2, '.', '' ) ); ?>"
-										value="<?php echo esc_attr( number_format( $refundable_amount, 2, '.', '' ) ); ?>"
-										placeholder="0.00"
-									/>
-								</div>
-							</div>
-							<!-- Refund Notes -->
-							<div class="srfm-ph-action-col">
-								<label class="srfm-ph-action-label" for="srfm-refund-notes">
-									<?php esc_html_e( 'Refund Notes', 'sureforms' ); ?>
-									<span class="srfm-ph-action-hint"><?php esc_html_e( '(Optional)', 'sureforms' ); ?></span>
-								</label>
-								<textarea id="srfm-refund-notes" class="srfm-ph-action-textarea" rows="1" placeholder="<?php esc_attr_e( 'Reason for refund...', 'sureforms' ); ?>"></textarea>
-							</div>
-						</div>
-						<!-- Refund Button -->
-						<button
-							type="button"
-							class="srfm-ph-action-btn srfm-ph-action-btn--refund"
-							data-payment-id="<?php echo esc_attr( $payment_id ); ?>"
-							data-transaction-id="<?php echo esc_attr( $payment['transaction_id'] ?? '' ); ?>"
-							data-currency="<?php echo esc_attr( $currency ); ?>"
-							data-max-refund="<?php echo esc_attr( number_format( $refundable_amount, 2, '.', '' ) ); ?>"
-							data-zero-decimal="<?php echo esc_attr( Payment_Helper::is_zero_decimal_currency( $currency ) ? '1' : '0' ); ?>"
-						>
-							<?php esc_html_e( 'Process Refund', 'sureforms' ); ?>
-						</button>
-						<div class="srfm-ph-action-message" id="srfm-refund-message" style="display:none;"></div>
-						<?php endif; ?>
-
-						<?php if ( $can_cancel_subscription ) : ?>
-						<!-- Cancel Subscription -->
-						<div class="srfm-ph-action-block">
-							<p class="srfm-ph-action-description">
-								<?php esc_html_e( 'Cancelling the subscription will stop all future billing. This action cannot be undone.', 'sureforms' ); ?>
-							</p>
-							<button
-								type="button"
-								class="srfm-ph-action-btn srfm-ph-action-btn--cancel"
-								data-payment-id="<?php echo esc_attr( $payment_id ); ?>"
-							>
-								<?php esc_html_e( 'Cancel Subscription', 'sureforms' ); ?>
-							</button>
-							<div class="srfm-ph-action-message" id="srfm-cancel-message" style="display:none;"></div>
-						</div>
-						<?php endif; ?>
-
-						<?php if ( ! $can_refund && ! $can_cancel_subscription ) : ?>
-						<p class="srfm-ph-action-none">
-							<?php esc_html_e( 'No actions available for this payment.', 'sureforms' ); ?>
-						</p>
-						<?php endif; ?>
-					</div>
-				</div>
-			</div>
-			</div>
-		</div>
-		<?php
-
-		return ob_get_clean();
 	}
 
 	/**
 	 * Check if the current user owns the payment record.
 	 *
-	 * @param array $payment Payment record.
-	 * @param int   $user_id WordPress user ID.
+	 * @param array<string,mixed> $payment Payment record.
+	 * @param int                 $user_id WordPress user ID.
 	 * @since 2.6.0
 	 * @return bool
 	 */
@@ -750,96 +904,27 @@ class Payment_History_Shortcode {
 		$stripe_customer_id = get_user_meta( $user_id, 'srfm_stripe_customer_id', true );
 		$user_email         = wp_get_current_user()->user_email;
 
-		// Match by customer_id.
 		if ( ! empty( $stripe_customer_id ) && ! empty( $payment['customer_id'] ) && $stripe_customer_id === $payment['customer_id'] ) {
 			return true;
 		}
-
-		// Match by customer_email.
 		if ( ! empty( $user_email ) && ! empty( $payment['customer_email'] ) && $user_email === $payment['customer_email'] ) {
 			return true;
 		}
 
 		/**
-		 * Filter whether the user owns the payment. Allows other gateways to add ownership checks.
+		 * Filter whether the user owns the payment.
 		 *
 		 * @since 2.6.0
-		 * @param bool  $owns    Whether the user owns the payment.
-		 * @param array $payment Payment record.
-		 * @param int   $user_id WordPress user ID.
+		 * @param bool                $owns    Whether the user owns the payment.
+		 * @param array<string,mixed> $payment Payment record.
+		 * @param int                 $user_id WordPress user ID.
 		 */
-		return apply_filters( 'srfm_payment_history_user_owns_payment', false, $payment, $user_id );
+		return (bool) apply_filters( 'srfm_payment_history_user_owns_payment', false, $payment, $user_id );
 	}
 
 	// =========================================================================
 	// AJAX Handlers
 	// =========================================================================
-
-	/**
-	 * AJAX handler for frontend refund requests.
-	 *
-	 * @since 2.6.0
-	 * @return void
-	 */
-	public function ajax_refund_payment() {
-		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ?? '' ) ), 'srfm_frontend_payment_nonce' ) ) {
-			wp_send_json_error( __( 'Security check failed.', 'sureforms' ) );
-		}
-
-		if ( ! is_user_logged_in() ) {
-			wp_send_json_error( __( 'You must be logged in.', 'sureforms' ) );
-		}
-
-		$payment_id     = isset( $_POST['payment_id'] ) ? absint( $_POST['payment_id'] ) : 0;
-		$refund_amount  = isset( $_POST['refund_amount'] ) ? absint( $_POST['refund_amount'] ) : 0;
-		$refund_notes   = isset( $_POST['refund_notes'] ) ? sanitize_textarea_field( wp_unslash( $_POST['refund_notes'] ) ) : '';
-		$transaction_id = isset( $_POST['transaction_id'] ) ? sanitize_text_field( wp_unslash( $_POST['transaction_id'] ) ) : '';
-
-		if ( empty( $payment_id ) || empty( $transaction_id ) || $refund_amount <= 0 ) {
-			wp_send_json_error( __( 'Invalid payment data.', 'sureforms' ) );
-		}
-
-		// Verify ownership.
-		$payment = Payments::get( $payment_id );
-		if ( ! $payment || ! $this->user_owns_payment( $payment, get_current_user_id() ) ) {
-			wp_send_json_error( __( 'Payment not found.', 'sureforms' ) );
-		}
-
-		$gateway = isset( $payment['gateway'] ) && is_string( $payment['gateway'] ) ? $payment['gateway'] : '';
-		if ( empty( $gateway ) ) {
-			wp_send_json_error( __( 'Payment gateway not found.', 'sureforms' ) );
-		}
-
-		/**
-		 * Delegate to the same gateway-agnostic filter system used by the admin.
-		 *
-		 * @since 2.6.0
-		 */
-		$refund_result = apply_filters(
-			'srfm_process_transaction_refund',
-			[
-				'success' => false,
-				'message' => __( 'Refund processing is not supported for this gateway.', 'sureforms' ),
-				'data'    => [],
-			],
-			[
-				'payment'        => $payment,
-				'payment_id'     => $payment_id,
-				'transaction_id' => $transaction_id,
-				'refund_amount'  => $refund_amount,
-				'refund_notes'   => $refund_notes,
-				'gateway'        => $gateway,
-			]
-		);
-
-		if ( ! empty( $refund_result['success'] ) && true === $refund_result['success'] ) {
-			wp_send_json_success( [
-				'message' => $refund_result['message'] ?? __( 'Refund processed successfully.', 'sureforms' ),
-			] );
-		} else {
-			wp_send_json_error( $refund_result['message'] ?? __( 'Failed to process refund.', 'sureforms' ) );
-		}
-	}
 
 	/**
 	 * AJAX handler for frontend subscription cancellation.
@@ -856,19 +941,19 @@ class Payment_History_Shortcode {
 			wp_send_json_error( __( 'You must be logged in.', 'sureforms' ) );
 		}
 
-		$payment_id = isset( $_POST['payment_id'] ) ? absint( $_POST['payment_id'] ) : 0;
+		$payment_id  = isset( $_POST['payment_id'] ) ? absint( $_POST['payment_id'] ) : 0;
+		$cancel_type = isset( $_POST['cancel_type'] ) ? sanitize_text_field( wp_unslash( $_POST['cancel_type'] ) ) : 'eop';
+
 		if ( empty( $payment_id ) ) {
 			wp_send_json_error( __( 'Invalid payment data.', 'sureforms' ) );
 		}
 
-		// Verify ownership.
 		$payment = Payments::get( $payment_id );
 		if ( ! $payment || ! $this->user_owns_payment( $payment, get_current_user_id() ) ) {
 			wp_send_json_error( __( 'Payment not found.', 'sureforms' ) );
 		}
 
-		// Verify it's a subscription.
-		$type = $payment['type'] ?? '';
+		$type = isset( $payment['type'] ) ? strval( $payment['type'] ) : '';
 		if ( 'subscription' !== $type || empty( $payment['subscription_id'] ) ) {
 			wp_send_json_error( __( 'This payment is not a subscription.', 'sureforms' ) );
 		}
@@ -877,108 +962,30 @@ class Payment_History_Shortcode {
 		 * Filter to process subscription cancellation. Gateways hook into this.
 		 *
 		 * @since 2.6.0
-		 * @param array $result  Default result.
-		 * @param array $payment Payment record.
+		 * @param array<string,mixed> $result      Default result.
+		 * @param array<string,mixed> $payment     Payment record.
+		 * @param string              $cancel_type Cancel type: 'eop' or 'now'.
 		 */
 		$result = apply_filters(
 			'srfm_process_subscription_cancellation',
-			[ 'success' => false, 'message' => __( 'Cancellation not supported for this gateway.', 'sureforms' ) ],
-			$payment
+			[
+				'success' => false,
+				'message' => __( 'Cancellation not supported for this gateway.', 'sureforms' ),
+			],
+			$payment,
+			$cancel_type
 		);
 
 		if ( ! empty( $result['success'] ) ) {
-			wp_send_json_success( [ 'message' => $result['message'] ?? __( 'Subscription cancelled successfully.', 'sureforms' ) ] );
+			wp_send_json_success( [ 'message' => isset( $result['message'] ) ? strval( $result['message'] ) : __( 'Subscription cancelled successfully.', 'sureforms' ) ] );
 		} else {
-			wp_send_json_error( $result['message'] ?? __( 'Failed to cancel subscription.', 'sureforms' ) );
+			wp_send_json_error( isset( $result['message'] ) ? strval( $result['message'] ) : __( 'Failed to cancel subscription.', 'sureforms' ) );
 		}
 	}
 
 	// =========================================================================
-	// Helpers
+	// Messages
 	// =========================================================================
-
-	/**
-	 * Format a payment amount with currency symbol.
-	 *
-	 * @param mixed  $amount   Payment amount.
-	 * @param string $currency Currency code (e.g., 'USD').
-	 * @since 2.6.0
-	 * @return string Formatted amount string.
-	 */
-	private function format_amount( $amount, $currency ) {
-		$amount   = floatval( $amount );
-		$symbol   = Payment_Helper::get_currency_symbol( $currency );
-		$position = Payment_Helper::get_currency_sign_position();
-
-		if ( Payment_Helper::is_zero_decimal_currency( $currency ) ) {
-			$formatted = number_format( $amount, 0 );
-		} else {
-			$formatted = number_format( $amount, 2 );
-		}
-
-		switch ( $position ) {
-			case 'right':
-				return $formatted . $symbol;
-			case 'left_space':
-				return $symbol . ' ' . $formatted;
-			case 'right_space':
-				return $formatted . ' ' . $symbol;
-			case 'left':
-			default:
-				return $symbol . $formatted;
-		}
-	}
-
-	/**
-	 * Get a status badge HTML element.
-	 *
-	 * @param string $status Payment status.
-	 * @since 2.6.0
-	 * @return string HTML status badge.
-	 */
-	private function get_status_badge( $status ) {
-		$labels = [
-			'pending'                  => __( 'Pending', 'sureforms' ),
-			'succeeded'                => __( 'Succeeded', 'sureforms' ),
-			'failed'                   => __( 'Failed', 'sureforms' ),
-			'canceled'                 => __( 'Canceled', 'sureforms' ),
-			'requires_action'          => __( 'Requires Action', 'sureforms' ),
-			'requires_payment_method'  => __( 'Requires Payment', 'sureforms' ),
-			'processing'               => __( 'Processing', 'sureforms' ),
-			'refunded'                 => __( 'Refunded', 'sureforms' ),
-			'partially_refunded'       => __( 'Partially Refunded', 'sureforms' ),
-			'active'                   => __( 'Active', 'sureforms' ),
-			'trialing'                 => __( 'Trialing', 'sureforms' ),
-			'past_due'                 => __( 'Past Due', 'sureforms' ),
-			'paused'                   => __( 'Paused', 'sureforms' ),
-			'incomplete'               => __( 'Incomplete', 'sureforms' ),
-		];
-
-		$label = isset( $labels[ $status ] ) ? $labels[ $status ] : ucfirst( str_replace( '_', ' ', $status ) );
-
-		return sprintf(
-			'<span class="srfm-payment-history-status srfm-payment-history-status--%s">%s</span>',
-			esc_attr( $status ),
-			esc_html( $label )
-		);
-	}
-
-	/**
-	 * Get human-readable payment type label.
-	 *
-	 * @param string $type Payment type.
-	 * @since 2.6.0
-	 * @return string Payment type label.
-	 */
-	private function get_payment_type_label( $type ) {
-		$labels = [
-			'payment'      => __( 'One-time', 'sureforms' ),
-			'subscription' => __( 'Subscription', 'sureforms' ),
-			'renewal'      => __( 'Renewal', 'sureforms' ),
-		];
-
-		return isset( $labels[ $type ] ) ? $labels[ $type ] : ucfirst( $type );
-	}
 
 	/**
 	 * Get the login required message.
@@ -988,7 +995,7 @@ class Payment_History_Shortcode {
 	 */
 	private function get_login_message() {
 		$html = sprintf(
-			'<div class="srfm-payment-history-wrap"><div class="srfm-payment-history-container"><p class="srfm-payment-history-login">%s</p></div></div>',
+			'<div class="srfm-pd-widget"><div class="srfm-pd-message">%s</div></div>',
 			esc_html__( 'Please log in to view your payment history.', 'sureforms' )
 		);
 
@@ -1004,7 +1011,7 @@ class Payment_History_Shortcode {
 	 */
 	private function get_empty_message() {
 		$html = sprintf(
-			'<div class="srfm-payment-history-wrap"><div class="srfm-payment-history-container"><p class="srfm-payment-history-empty">%s</p></div></div>',
+			'<div class="srfm-pd-widget"><div class="srfm-pd-message">%s</div></div>',
 			esc_html__( 'No payments found.', 'sureforms' )
 		);
 

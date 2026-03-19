@@ -14,7 +14,7 @@ import {
 } from '@wordpress/components';
 
 export default function Edit( { attributes, setAttributes } ) {
-	const { perPage, showSubscription, showRenewal, gateway } = attributes;
+	const { perPage, showSubscription, gateway } = attributes;
 
 	const blockProps = useBlockProps( {
 		className: 'srfm-payment-history-block-preview',
@@ -38,20 +38,17 @@ export default function Edit( { attributes, setAttributes } ) {
 					/>
 					<ToggleControl
 						label={ __(
-							'Show Subscriptions',
+							'Show Subscriptions Section',
 							'sureforms'
 						) }
 						checked={ showSubscription }
 						onChange={ ( value ) =>
 							setAttributes( { showSubscription: value } )
 						}
-					/>
-					<ToggleControl
-						label={ __( 'Show Renewals', 'sureforms' ) }
-						checked={ showRenewal }
-						onChange={ ( value ) =>
-							setAttributes( { showRenewal: value } )
-						}
+						help={ __(
+							'Show a dedicated subscriptions section above payment history.',
+							'sureforms'
+						) }
 					/>
 					<SelectControl
 						label={ __( 'Payment Gateway', 'sureforms' ) }
@@ -120,7 +117,7 @@ export default function Edit( { attributes, setAttributes } ) {
 					</span>
 					<span style={ { fontSize: '13px' } }>
 						{ __(
-							'Displays a payment history table for logged-in users. Configure options in the block settings panel.',
+							'Displays subscriptions and payment history for logged-in users with detail overlays and subscription management.',
 							'sureforms'
 						) }
 					</span>

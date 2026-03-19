@@ -3,7 +3,7 @@
 	"apiVersion": 3,
 	"name": "srfm/payment-history",
 	"title": "Payment History",
-	"description": "Display payment history for logged-in users with transaction details, refund and subscription management.",
+	"description": "Display subscriptions and payment history for logged-in users with detail overlays and subscription management.",
 	"category": "sureforms",
 	"keywords": [ "payment", "history", "transactions", "account", "billing" ],
 	"textdomain": "sureforms",
