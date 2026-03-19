@@ -1,6 +1,9 @@
 #!/bin/bash
 echo "Setting up E2E test environment..."
 
+echo "Running WordPress database upgrade..."
+wp core update-db
+
 echo "Rewrite permalinks..."
 wp rewrite structure /%postname%/
 
@@ -25,5 +28,8 @@ wp option patch insert srfm_options onboarding_completed yes 2>/dev/null || wp o
 
 echo "Disabling onboarding redirect flag..."
 wp option delete __srfm_do_redirect --quiet || true
+
+echo "Dismissing admin email confirmation nag..."
+wp option update admin_email_lifespan 2147483647
 
 echo "Success! Your E2E Test Environment is now ready."
