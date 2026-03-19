@@ -2,13 +2,14 @@ import apiFetch from '@wordpress/api-fetch';
 import { __, sprintf } from '@wordpress/i18n';
 import { Toaster, ToastBar } from 'react-hot-toast';
 import { store as editorStore } from '@wordpress/editor';
-import { select } from '@wordpress/data';
+import { select, useSelect } from '@wordpress/data';
 import { addQueryArgs, cleanForSlug } from '@wordpress/url';
 import clsx from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { format as format_date } from 'date-fns';
 import { toast } from '@bsf/force-ui';
 import { applyFilters } from '@wordpress/hooks';
+import { store as blocksStore } from '@wordpress/blocks';
 
 /**
  * Get Image Sizes and return an array of Size.
@@ -1109,3 +1110,34 @@ export const formatDateTime = ( dateString, submissionInfo = false ) => {
 
 	return { shortFormat, fullFormat };
 };
+
+/**
+ * Internal dependencies
+ */
+export function useShouldIframe() {
+	const isGutenbergPlugin = window.globalThis.IS_GUTENBERG_PLUGIN
+		? true
+		: false;
+
+	return useSelect( ( _select ) => {
+		const { getEditorSettings, getCurrentPostType, getDeviceType } =
+			_select( editorStore );
+		return (
+			// If the theme is block based and the Gutenberg plugin is active,
+			// we ALWAYS use the iframe for consistency across the post and site
+			// editor.
+			( isGutenbergPlugin &&
+				getEditorSettings().__unstableIsBlockBasedTheme ) ||
+			// We also still want to iframe all the special
+			// editor features and modes such as device previews, zoom out, and
+			// template/pattern editing.
+			getDeviceType() !== 'Desktop' ||
+			[ 'wp_template', 'wp_block' ].includes( getCurrentPostType() ) ||
+			// Finally, still iframe the editor if all blocks are v3 (which means
+			// they are marked as iframe-compatible).
+			_select( blocksStore )
+				.getBlockTypes()
+				.every( ( type ) => type.apiVersion >= 3 )
+		);
+	}, [] );
+}

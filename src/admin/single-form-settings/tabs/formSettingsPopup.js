@@ -18,6 +18,7 @@ import {
 	Split,
 	ListTodo,
 } from 'lucide-react';
+import ottoKitIcon from '@Image/suretriggers-grayscale.svg';
 
 const FormSettingsPopup = ( {
 	popoverAnchor,
@@ -119,6 +120,16 @@ const FormSettingsPopup = ( {
 				id: 'quiz-preview',
 				label: __( 'Quizzes', 'sureforms' ),
 				icon: <ListTodo size={ 18 } />,
+			},
+			{
+				id: 'ottokit',
+				label: __( 'Automations', 'sureforms' ),
+				icon: (
+					<img
+						src={ ottoKitIcon }
+						alt={ __( 'OttoKit', 'sureforms' ) }
+					/>
+				),
 			},
 			{
 				id: 'form_custom_css',

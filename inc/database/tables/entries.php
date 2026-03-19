@@ -536,4 +536,18 @@ class Entries extends Base {
 		);
 		return isset( $result[0] ) && is_array( $result[0] ) ? $result[0] : [];
 	}
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * Restricts orderable columns to indexed, semantically meaningful fields.
+	 * Excludes LONGTEXT blob columns (form_data, submission_info, notes, logs, extras)
+	 * to prevent full-table sorts on un-indexed columns.
+	 *
+	 * @since x.x.x
+	 * @return array<string>
+	 */
+	protected function get_allowed_orderby_columns() {
+		return [ 'ID', 'id', 'form_id', 'user_id', 'status', 'type', 'created_at', 'updated_at' ];
+	}
 }
