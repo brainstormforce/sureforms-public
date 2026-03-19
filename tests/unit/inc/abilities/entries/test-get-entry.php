@@ -43,6 +43,8 @@ class Test_Get_Entry extends TestCase {
 		$this->assertTrue( $annotations['readonly'] );
 		$this->assertFalse( $annotations['destructive'] );
 		$this->assertTrue( $annotations['idempotent'] );
+		$this->assertEquals( 1.0, $annotations['priority'] );
+		$this->assertFalse( $annotations['openWorldHint'] );
 	}
 
 	/**
@@ -53,6 +55,7 @@ class Test_Get_Entry extends TestCase {
 		$this->assertEquals( 'object', $schema['type'] );
 		$this->assertArrayHasKey( 'entry_id', $schema['properties'] );
 		$this->assertContains( 'entry_id', $schema['required'] );
+		$this->assertFalse( $schema['additionalProperties'] );
 	}
 
 	/**
@@ -89,4 +92,6 @@ class Test_Get_Entry extends TestCase {
 		$result = $this->ability->execute( [] );
 		$this->assertInstanceOf( WP_Error::class, $result );
 	}
+
+
 }

@@ -40,6 +40,7 @@ class Delete_Entry extends Abstract_Ability {
 		$this->label       = __( 'Delete Entry', 'sureforms' );
 		$this->description = __( 'Permanently delete one or more SureForms form submission entries. This action cannot be undone.', 'sureforms' );
 		$this->capability  = 'manage_options';
+		$this->gated       = 'srfm_abilities_api_delete';
 	}
 
 	/**
@@ -49,9 +50,12 @@ class Delete_Entry extends Abstract_Ability {
 	 */
 	public function get_annotations() {
 		return [
-			'readonly'    => false,
-			'destructive' => true,
-			'idempotent'  => false,
+			'readonly'      => false,
+			'destructive'   => true,
+			'idempotent'    => false,
+			'priority'      => 3.0,
+			'openWorldHint' => false,
+			'instructions'  => 'Always confirm with the user before deleting. This permanently removes the entry and cannot be undone.',
 		];
 	}
 
@@ -62,15 +66,16 @@ class Delete_Entry extends Abstract_Ability {
 	 */
 	public function get_input_schema() {
 		return [
-			'type'       => 'object',
-			'properties' => [
+			'type'                 => 'object',
+			'additionalProperties' => false,
+			'properties'           => [
 				'entry_ids' => [
 					'type'        => 'array',
 					'description' => __( 'Array of entry IDs to permanently delete.', 'sureforms' ),
 					'items'       => [ 'type' => 'integer' ],
 				],
 			],
-			'required'   => [ 'entry_ids' ],
+			'required'             => [ 'entry_ids' ],
 		];
 	}
 

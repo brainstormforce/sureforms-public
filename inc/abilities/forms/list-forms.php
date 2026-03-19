@@ -41,9 +41,11 @@ class List_Forms extends Abstract_Ability {
 	 */
 	public function get_annotations() {
 		return [
-			'readonly'    => true,
-			'destructive' => false,
-			'idempotent'  => true,
+			'readonly'      => true,
+			'destructive'   => false,
+			'idempotent'    => true,
+			'priority'      => 1.0,
+			'openWorldHint' => false,
 		];
 	}
 
@@ -52,8 +54,9 @@ class List_Forms extends Abstract_Ability {
 	 */
 	public function get_input_schema() {
 		return [
-			'type'       => 'object',
-			'properties' => [
+			'type'                 => 'object',
+			'additionalProperties' => false,
+			'properties'           => [
 				'status'   => [
 					'type'        => 'string',
 					'description' => __( 'Filter by form status. Defaults to "publish".', 'sureforms' ),

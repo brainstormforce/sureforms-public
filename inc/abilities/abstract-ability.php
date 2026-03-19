@@ -71,6 +71,18 @@ abstract class Abstract_Ability {
 	protected $capability = 'manage_options';
 
 	/**
+	 * Option gate key.
+	 *
+	 * When non-empty, the ability is disabled only if the option is explicitly set to '0'.
+	 * Abilities default to enabled — they are only gated off when an admin explicitly
+	 * disables them via the AI settings page.
+	 *
+	 * @var string
+	 * @since x.x.x
+	 */
+	protected $gated = '';
+
+	/**
 	 * Get the JSON Schema for ability input.
 	 *
 	 * @since 2.5.2
@@ -96,6 +108,24 @@ abstract class Abstract_Ability {
 	abstract public function execute( $input );
 
 	/**
+	 * Check whether this ability is enabled based on its option gate.
+	 *
+	 * Returns false when the ability has a gate key and the corresponding
+	 * option is falsy. Used by the registrar to skip registration of
+	 * disabled abilities so they don't appear in MCP listings.
+	 *
+	 * @since x.x.x
+	 * @return bool
+	 */
+	public function is_enabled() {
+		if ( ! empty( $this->gated ) && ! get_option( $this->gated, true ) ) {
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
 	 * Permission callback.
 	 *
 	 * Delegates to current_user_can() with the configured capability.
@@ -104,6 +134,14 @@ abstract class Abstract_Ability {
 	 * @return bool
 	 */
 	public function permission_callback() {
+		if ( ! get_option( 'srfm_abilities_api', false ) ) {
+			return false;
+		}
+
+		if ( ! $this->is_enabled() ) {
+			return false;
+		}
+
 		return current_user_can( $this->capability );
 	}
 
@@ -123,17 +161,19 @@ abstract class Abstract_Ability {
 	/**
 	 * Get ability annotations.
 	 *
-	 * Returns MCP-compatible annotations for readonly, destructive, and idempotent flags.
-	 * Subclasses should override to customize.
+	 * Returns MCP-compatible annotations for readonly, destructive, idempotent,
+	 * priority, and openWorldHint flags. Subclasses should override to customize.
 	 *
 	 * @since 2.5.2
-	 * @return array<string,bool>
+	 * @return array<string,bool|float|string>
 	 */
 	public function get_annotations() {
 		return [
-			'readonly'    => false,
-			'destructive' => false,
-			'idempotent'  => false,
+			'readonly'      => false,
+			'destructive'   => false,
+			'idempotent'    => false,
+			'priority'      => 2.0,
+			'openWorldHint' => false,
 		];
 	}
 
@@ -196,7 +236,7 @@ abstract class Abstract_Ability {
 					'show_in_rest' => true,
 					'annotations'  => $annotations,
 					'mcp'          => [
-						'public' => true,
+						'public' => false,
 					],
 				],
 			]
