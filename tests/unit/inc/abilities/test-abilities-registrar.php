@@ -76,7 +76,7 @@ class Test_Abilities_Registrar extends TestCase {
 	/**
 	 * Unregister all SureForms abilities to isolate tests.
 	 *
-	 * @since x.x.x
+	 * @since 2.6.0
 	 * @return void
 	 */
 	private function clean_abilities_registry(): void {
@@ -95,7 +95,7 @@ class Test_Abilities_Registrar extends TestCase {
 	 * WP 6.9's wp_register_ability() requires doing_action( 'wp_abilities_api_init' )
 	 * to return true. This helper simulates that context for test purposes.
 	 *
-	 * @since x.x.x
+	 * @since 2.6.0
 	 * @return void
 	 */
 	private function register_abilities_in_action_context(): void {

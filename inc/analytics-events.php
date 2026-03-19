@@ -93,7 +93,7 @@ class Analytics_Events {
 	 * Pass an empty array (or omit) to clear all pushed events.
 	 *
 	 * @param array<string> $event_names Event names to remove. Empty = clear all.
-	 * @since x.x.x
+	 * @since 2.6.0
 	 * @return void
 	 */
 	public static function flush_pushed( $event_names = [] ) {

@@ -133,7 +133,7 @@ class Helper {
 	 * Validate a date string in Y-m-d format.
 	 *
 	 * @param string $date The date string to validate.
-	 * @since x.x.x
+	 * @since 2.6.0
 	 * @return bool
 	 */
 	public static function validate_date( string $date ): bool {

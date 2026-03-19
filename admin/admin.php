@@ -893,7 +893,7 @@ class Admin {
 		/**
 		 * Filter to allow extending the SureForms dashboard screen check.
 		 *
-		 * @since x.x.x
+		 * @since 2.6.0
 		 *
 		 * @param bool $is_sureforms_screen Whether the current screen is a SureForms dashboard screen.
 		 */

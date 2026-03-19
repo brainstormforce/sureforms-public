@@ -711,7 +711,7 @@ abstract class Base {
 	 * Get the allowed column names for ORDER BY clauses.
 	 * Child classes may override this method to restrict orderable columns further.
 	 *
-	 * @since x.x.x
+	 * @since 2.6.0
 	 * @return array<string>
 	 */
 	protected function get_allowed_orderby_columns() {

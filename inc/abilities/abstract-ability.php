@@ -78,7 +78,7 @@ abstract class Abstract_Ability {
 	 * disables them via the AI settings page.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 2.6.0
 	 */
 	protected $gated = '';
 
@@ -114,7 +114,7 @@ abstract class Abstract_Ability {
 	 * option is falsy. Used by the registrar to skip registration of
 	 * disabled abilities so they don't appear in MCP listings.
 	 *
-	 * @since x.x.x
+	 * @since 2.6.0
 	 * @return bool
 	 */
 	public function is_enabled() {
