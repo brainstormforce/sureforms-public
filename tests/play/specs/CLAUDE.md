@@ -45,6 +45,26 @@ await addFieldBlock(page, 'dropdown');   // programmatic
 
 ---
 
+## WP 6.9+ iframe editor: no `data-type`, use data store
+
+WP 6.9 renders the block editor inside an `iframe[name="editor-canvas"]` and **removed the `data-type` attribute** from block wrapper elements.
+
+**Never** use `page.locator('.wp-block[data-type="srfm/..."]')` — it will find nothing.
+
+To **select a block** (e.g. to open its settings panel), use `selectBlock(page, 'slug')` from `formHelpers.js`. It dispatches `selectBlock` via the Gutenberg data store:
+
+```js
+const { selectBlock } = require('../utils/formHelpers');
+
+await addFieldBlock(page, 'email');
+await selectBlock(page, 'email');     // selects the block via data store
+await openBlockSettingsTab(page);     // now the sidebar shows this block's settings
+```
+
+To **verify a block exists**, `addFieldBlock` already checks via `wp.data.select('core/block-editor').getBlocks()` — no need for a separate DOM assertion.
+
+---
+
 ## Field CSS selectors
 
 Always use the most specific class. Do not rely on element order (`.nth(N)`) unless you are certain only N elements exist.
@@ -295,6 +315,7 @@ All utilities live in `tests/play/utils/`.
 | `loginAsAdmin(page)` | Navigates to `/wp-admin`, restores auth from storageState |
 | `createBlankForm(page)` | Creates a new blank SureForms form in the editor |
 | `addFieldBlock(page, slug)` | Adds a field block (sidebar or programmatic) |
+| `selectBlock(page, slug)` | Selects a block in the editor via the data store (iframe-safe) |
 | `publishFormAndGetURL(page)` | Publishes the current form and returns its front-end URL |
 | `openFormSettingsDialog(page, navItem)` | Opens Form Behavior dialog to a specific nav item |
 | `setFormTitle(page, title)` | Sets the editor post title via `editPost` (avoids fragile UI title input) |
