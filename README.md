@@ -402,7 +402,6 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 
 ## Changelog ##
 ### 2.6.0 - 19th March 2026 ###
-* New: Added Automations (OttoKit) to form settings popover.
 * New: Added MCP (Model Context Protocol) settings and Abilities API for AI-powered form management.
 * New: Added Blocks API v3 compatibility.
 * Improvement: Improved search for form and entry listing.
