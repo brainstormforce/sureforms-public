@@ -30,7 +30,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *    or full-page-cache TTLs without any refresh round-trip from the browser.
  *  - Constant-time comparison (`hash_equals`) prevents timing-based oracle attacks.
  *
- * @since x.x.x
+ * @since 2.6.0
  */
 class Submit_Token {
 
@@ -40,7 +40,7 @@ class Submit_Token {
 	 * Rotating every 12 hours keeps the attack window short while staying
 	 * far below typical cache TTLs.
 	 *
-	 * @since x.x.x
+	 * @since 2.6.0
 	 * @var int
 	 */
 	const WINDOW_SECONDS = 43200;
@@ -52,7 +52,7 @@ class Submit_Token {
 	 * Raise via the `srfm_submit_token_accepted_windows` filter if your
 	 * deployment uses unusually long cache TTLs.
 	 *
-	 * @since x.x.x
+	 * @since 2.6.0
 	 * @var int
 	 */
 	const DEFAULT_ACCEPTED_WINDOWS = 4;
