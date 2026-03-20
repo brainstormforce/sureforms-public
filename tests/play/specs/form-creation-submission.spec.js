@@ -9,7 +9,12 @@
 
 const { test, expect } = require( '@playwright/test' );
 const { loginAsAdmin } = require( '../utils/loginAsAdmin' );
-const { createBlankForm, publishFormAndGetURL } = require( '../utils/formHelpers' );
+const {
+	createBlankForm,
+	publishFormAndGetURL,
+	addFieldBlock,
+	selectBlock,
+} = require( '../utils/formHelpers' );
 
 // ─── Tests ────────────────────────────────────────────────────────────────────
 
@@ -23,11 +28,7 @@ test.describe( 'Form creation and submission', () => {
 		await createBlankForm( page );
 
 		// Add Text Field block via the quick-action sidebar.
-		// The draggable block id pattern is: draggable-box__srfm--{blockName}
-		await page.locator( '#draggable-box__srfm--input' ).click();
-		await expect(
-			page.locator( '.wp-block[data-type="srfm/input"]' )
-		).toBeVisible( { timeout: 15000 } );
+		await addFieldBlock( page, 'input' );
 
 		const formURL = await publishFormAndGetURL( page );
 
@@ -53,10 +54,7 @@ test.describe( 'Form creation and submission', () => {
 		await createBlankForm( page );
 
 		// Add Email Field block.
-		await page.locator( '#draggable-box__srfm--email' ).click();
-		await expect(
-			page.locator( '.wp-block[data-type="srfm/email"]' )
-		).toBeVisible( { timeout: 15000 } );
+		await addFieldBlock( page, 'email' );
 
 		const formURL = await publishFormAndGetURL( page );
 
@@ -79,13 +77,10 @@ test.describe( 'Form creation and submission', () => {
 		await createBlankForm( page );
 
 		// Add Text Field block and make it required via the block settings panel.
-		await page.locator( '#draggable-box__srfm--input' ).click();
-		await expect(
-			page.locator( '.wp-block[data-type="srfm/input"]' )
-		).toBeVisible( { timeout: 15000 } );
+		await addFieldBlock( page, 'input' );
 
-		// Click the block to select it, then switch to the Block settings tab.
-		await page.locator( '.wp-block[data-type="srfm/input"]' ).click();
+		// Select the block, then switch to the Block settings tab.
+		await selectBlock( page, 'input' );
 		await page.getByRole( 'tab', { name: 'Block' } ).click();
 
 		// Enable Required via the toggle in the Block settings panel.
