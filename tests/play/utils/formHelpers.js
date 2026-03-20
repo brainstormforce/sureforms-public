@@ -29,6 +29,20 @@ const INSERTER_BLOCK_TITLES = {
 	address: 'Address',
 };
 
+// ─── Editor canvas helper ───────────────────────────────────────────────────
+// WP 6.5+ renders the block editor content inside an iframe (name="editor-canvas").
+// This helper returns a locator scope that works for both iframe and non-iframe editors.
+
+/**
+ * Get the editor canvas scope.
+ *
+ * @param {import('@playwright/test').Page} page
+ * @returns {import('@playwright/test').FrameLocator|import('@playwright/test').Page}
+ */
+function getEditorCanvas( page ) {
+	return page.frameLocator( '[aria-label="Editor content"] iframe, iframe[name="editor-canvas"]' );
+}
+
 // ─── Editor helpers ──────────────────────────────────────────────────────────
 
 /**
@@ -106,9 +120,21 @@ async function addFieldBlock( page, blockSlug ) {
 			INSERTER_BLOCK_TITLES[ blockSlug ] || blockSlug
 		);
 	}
-	await expect(
-		page.locator( `.wp-block[data-type="srfm/${ blockSlug }"]` )
-	).toBeVisible( { timeout: 15000 } );
+	// Verify the block was inserted via the editor data store.
+	// WP 6.9+ removed data-type from block wrappers, so DOM selectors are unreliable.
+	await expect( async () => {
+		const hasBlock = await page.evaluate( ( slug ) => {
+			const blocks = window.wp.data.select( 'core/block-editor' ).getBlocks();
+			const find = ( list ) => list.some( ( b ) =>
+				b.name === `srfm/${ slug }` ||
+				( b.innerBlocks?.length && find( b.innerBlocks ) )
+			);
+			return find( blocks );
+		}, blockSlug );
+		if ( ! hasBlock ) {
+			throw new Error( `Block srfm/${ blockSlug } not found in editor` );
+		}
+	} ).toPass( { timeout: 15000 } );
 }
 
 /**
@@ -218,6 +244,40 @@ async function openFormSettingsDialog( page, itemLabel ) {
 	).toBeVisible( { timeout: 10000 } );
 }
 
+/**
+ * Select a SureForms block in the editor by its slug via the data store.
+ *
+ * Works regardless of iframe embedding or `data-type` attribute presence
+ * (both changed in WP 6.9+).
+ *
+ * @param {import('@playwright/test').Page} page
+ * @param {string} blockSlug  The part after `srfm/` — e.g. 'input', 'email'.
+ */
+async function selectBlock( page, blockSlug ) {
+	await page.evaluate( ( slug ) => {
+		const { dispatch, select } = window.wp.data;
+		const blocks = select( 'core/block-editor' ).getBlocks();
+		const findClientId = ( list ) => {
+			for ( const b of list ) {
+				if ( b.name === `srfm/${ slug }` ) {
+					return b.clientId;
+				}
+				if ( b.innerBlocks?.length ) {
+					const found = findClientId( b.innerBlocks );
+					if ( found ) {
+						return found;
+					}
+				}
+			}
+			return null;
+		};
+		const clientId = findClientId( blocks );
+		if ( clientId ) {
+			dispatch( 'core/block-editor' ).selectBlock( clientId );
+		}
+	}, blockSlug );
+}
+
 // ─── REST API helpers (run in page context while logged-in) ──────────────────
 
 /**
@@ -279,9 +339,11 @@ async function setFormTitle( page, title ) {
 }
 
 module.exports = {
+	getEditorCanvas,
 	createBlankForm,
 	publishFormAndGetURL,
 	addFieldBlock,
+	selectBlock,
 	openBlockSettingsTab,
 	enableRequiredField,
 	openFormSettingsDialog,

@@ -19,6 +19,7 @@ const {
 	createBlankForm,
 	publishFormAndGetURL,
 	addFieldBlock,
+	selectBlock,
 	openBlockSettingsTab,
 	enableRequiredField,
 } = require( '../utils/formHelpers' );
@@ -50,8 +51,8 @@ test.describe( 'Field validation', () => {
 		await createBlankForm( page );
 		await addFieldBlock( page, 'email' );
 
-		// Enable the "Confirm Email" option in the Block settings panel.
-		await page.locator( '.wp-block[data-type="srfm/email"]' ).click();
+		// Select the email block to open its settings panel.
+		await selectBlock( page, 'email' );
 		await openBlockSettingsTab( page );
 
 		const confirmToggle = page
@@ -82,7 +83,7 @@ test.describe( 'Field validation', () => {
 		await createBlankForm( page );
 		await addFieldBlock( page, 'email' );
 
-		await page.locator( '.wp-block[data-type="srfm/email"]' ).click();
+		await selectBlock( page, 'email' );
 		await openBlockSettingsTab( page );
 
 		const confirmToggle = page
@@ -112,7 +113,7 @@ test.describe( 'Field validation', () => {
 		await addFieldBlock( page, 'url' );
 
 		// Make the field required so submission is blocked (validation fires on submit).
-		await page.locator( '.wp-block[data-type="srfm/url"]' ).click();
+		await selectBlock( page, 'url' );
 		await openBlockSettingsTab( page );
 		await enableRequiredField( page );
 
@@ -134,7 +135,7 @@ test.describe( 'Field validation', () => {
 		await addFieldBlock( page, 'number' );
 
 		// Set minValue = 10 in Block settings.
-		await page.locator( '.wp-block[data-type="srfm/number"]' ).click();
+		await selectBlock( page, 'number' );
 		await openBlockSettingsTab( page );
 
 		const minInput = page.locator( 'input[aria-label*="min" i], input[placeholder*="min" i]' ).first();
@@ -159,7 +160,7 @@ test.describe( 'Field validation', () => {
 		await createBlankForm( page );
 		await addFieldBlock( page, 'number' );
 
-		await page.locator( '.wp-block[data-type="srfm/number"]' ).click();
+		await selectBlock( page, 'number' );
 		await openBlockSettingsTab( page );
 
 		const maxInput = page.locator( 'input[aria-label*="max" i], input[placeholder*="max" i]' ).first();
@@ -184,7 +185,7 @@ test.describe( 'Field validation', () => {
 		await createBlankForm( page );
 		await addFieldBlock( page, 'input' );
 
-		await page.locator( '.wp-block[data-type="srfm/input"]' ).click();
+		await selectBlock( page, 'input' );
 		await openBlockSettingsTab( page );
 		await enableRequiredField( page );
 
@@ -206,7 +207,7 @@ test.describe( 'Field validation', () => {
 		await createBlankForm( page );
 		await addFieldBlock( page, 'email' );
 
-		await page.locator( '.wp-block[data-type="srfm/email"]' ).click();
+		await selectBlock( page, 'email' );
 		await openBlockSettingsTab( page );
 		await enableRequiredField( page );
 
@@ -228,7 +229,7 @@ test.describe( 'Field validation', () => {
 		await createBlankForm( page );
 		await addFieldBlock( page, 'phone' );
 
-		await page.locator( '.wp-block[data-type="srfm/phone"]' ).click();
+		await selectBlock( page, 'phone' );
 		await openBlockSettingsTab( page );
 		await enableRequiredField( page );
 
@@ -250,7 +251,7 @@ test.describe( 'Field validation', () => {
 		await createBlankForm( page );
 		await addFieldBlock( page, 'textarea' );
 
-		await page.locator( '.wp-block[data-type="srfm/textarea"]' ).click();
+		await selectBlock( page, 'textarea' );
 		await openBlockSettingsTab( page );
 		await enableRequiredField( page );
 
@@ -272,7 +273,7 @@ test.describe( 'Field validation', () => {
 		await createBlankForm( page );
 		await addFieldBlock( page, 'checkbox' );
 
-		await page.locator( '.wp-block[data-type="srfm/checkbox"]' ).click();
+		await selectBlock( page, 'checkbox' );
 		await openBlockSettingsTab( page );
 		await enableRequiredField( page );
 
@@ -313,7 +314,7 @@ test.describe( 'Field validation', () => {
 		await createBlankForm( page );
 		await addFieldBlock( page, 'dropdown' );
 
-		await page.locator( '.wp-block[data-type="srfm/dropdown"]' ).click();
+		await selectBlock( page, 'dropdown' );
 		await openBlockSettingsTab( page );
 		await enableRequiredField( page );
 
@@ -335,7 +336,7 @@ test.describe( 'Field validation', () => {
 		await createBlankForm( page );
 		await addFieldBlock( page, 'multi-choice' );
 
-		await page.locator( '.wp-block[data-type="srfm/multi-choice"]' ).click();
+		await selectBlock( page, 'multi-choice' );
 		await openBlockSettingsTab( page );
 		await enableRequiredField( page );
 

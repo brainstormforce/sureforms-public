@@ -35,24 +35,34 @@ const {
 
 /**
  * Enable or disable the global SureForms honeypot setting via the REST API.
- * Must be called while the page is already on a WP admin URL (so wp.apiFetch
- * and wpApiSettings.nonce are available in the page context).
+ * Must be called while the page is already on a WP admin URL (so
+ * wpApiSettings.nonce is available in the page context).
  *
  * @param {import('@playwright/test').Page} page
  * @param {boolean} enabled
  */
 async function setHoneypotEnabled( page, enabled ) {
+	// Navigate to a form editor page where wp.apiFetch is guaranteed to be
+	// loaded — the WP dashboard may not enqueue it in WP 6.9+.
+	await page.goto( '/wp-admin/post-new.php?post_type=sureforms_form' );
+	await page.waitForLoadState( 'load' );
+
+	// The REST endpoint returns WP_Error when update_option returns false,
+	// which happens when the value is already the same — that's fine, the
+	// setting is already in the desired state. Catch and ignore.
 	await page.evaluate( async ( honeypotValue ) => {
-		const nonce = window.wpApiSettings?.nonce || '';
-		await window.wp.apiFetch( {
-			path: '/sureforms/v1/srfm-global-settings',
-			method: 'POST',
-			data: {
-				srfm_tab: 'security-settings',
-				srfm_honeypot: honeypotValue,
-			},
-			headers: { 'X-WP-Nonce': nonce },
-		} );
+		try {
+			await window.wp.apiFetch( {
+				path: '/sureforms/v1/srfm-global-settings',
+				method: 'POST',
+				data: {
+					srfm_tab: 'security-settings',
+					srfm_honeypot: honeypotValue,
+				},
+			} );
+		} catch ( _err ) {
+			// Ignored — update_option returns false when value is unchanged.
+		}
 	}, enabled );
 }
 
@@ -92,9 +102,6 @@ test.describe( 'Spam protection', () => {
 		await expect( page.locator( '.srfm-success-box' ) ).not.toBeVisible( { timeout: 10000 } );
 
 		// Disable honeypot again for test isolation.
-		// Navigate back to WP admin first so wp.apiFetch is available.
-		await page.goto( '/wp-admin' );
-		await page.waitForLoadState( 'load' );
 		await setHoneypotEnabled( page, false );
 	} );
 
