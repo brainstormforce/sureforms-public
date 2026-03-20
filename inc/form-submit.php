@@ -1028,7 +1028,7 @@ class Form_Submit {
 		}
 
 		// Extract and validate field values from POST data.
-		$skip_keys = [ 'action', 'nonce', 'id' ];
+		$skip_keys  = [ 'action', 'nonce', 'id' ];
 		$duplicates = [];
 
 		foreach ( $_POST as $raw_key => $raw_value ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verified above.
@@ -1082,11 +1082,13 @@ class Form_Submit {
 			return false;
 		}
 
-		if ( (int) $attempts >= 10 ) {
+		$attempts_count = intval( $attempts );
+
+		if ( $attempts_count >= 10 ) {
 			return true;
 		}
 
-		set_transient( $transient_key, (int) $attempts + 1, MINUTE_IN_SECONDS );
+		set_transient( $transient_key, $attempts_count + 1, MINUTE_IN_SECONDS );
 		return false;
 	}
 
