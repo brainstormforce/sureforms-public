@@ -289,64 +289,67 @@ class Test_Front_End_Payments extends TestCase {
 		$this->assertArrayHasKey( 'error', $result );
 	}
 
-	// --- create_payment_intent ---
+	// --- create_payment_intent token verification ---
 
-	public function test_create_payment_intent() {
-		// AJAX handler — test nonce rejection path.
-		$_POST = [];
+	/**
+	 * Test create_payment_intent rejects request without a valid HMAC token.
+	 */
+	public function test_create_payment_intent_rejects_without_token() {
+		// Simulate AJAX POST without token.
+		$_POST = [
+			'amount'   => 1000,
+			'currency' => 'usd',
+			'form_id'  => 1,
+			'block_id' => 'block-1',
+		];
 
-		add_filter( 'wp_doing_ajax', '__return_true' );
-		add_filter(
-			'wp_die_ajax_handler',
-			function () {
-				return function () {
-					throw new \WPDieException( 'wp_die' );
-				};
-			}
-		);
-
-		ob_start();
+		// Expect wp_send_json_error to terminate via wp_die.
 		try {
+			ob_start();
 			$this->front_end->create_payment_intent();
+			ob_end_clean();
 		} catch ( \WPDieException $e ) {
 			$output = ob_get_clean();
 			$data   = json_decode( $output, true );
 			$this->assertIsArray( $data );
 			$this->assertFalse( $data['success'] );
+			$_POST = []; // phpcs:ignore WordPress.Security.NonceVerification.Missing
 			return;
 		}
-		ob_end_clean();
-		$this->fail( 'Expected WPDieException for invalid nonce.' );
+
+		$_POST = []; // phpcs:ignore WordPress.Security.NonceVerification.Missing
+		$this->fail( 'Expected WPDieException for missing token in create_payment_intent.' );
 	}
 
-	// --- create_subscription_intent ---
+	/**
+	 * Test create_subscription_intent rejects request without a valid HMAC token.
+	 */
+	public function test_create_subscription_intent_rejects_without_token() {
+		// Simulate AJAX POST without token.
+		$_POST = [
+			'amount'    => 1000,
+			'currency'  => 'usd',
+			'form_id'   => 1,
+			'block_id'  => 'block-1',
+			'interval'  => 'month',
+			'plan_name' => 'Test Plan',
+		];
 
-	public function test_create_subscription_intent() {
-		// AJAX handler — test nonce rejection path.
-		$_POST = [];
-
-		add_filter( 'wp_doing_ajax', '__return_true' );
-		add_filter(
-			'wp_die_ajax_handler',
-			function () {
-				return function () {
-					throw new \WPDieException( 'wp_die' );
-				};
-			}
-		);
-
-		ob_start();
 		try {
+			ob_start();
 			$this->front_end->create_subscription_intent();
+			ob_end_clean();
 		} catch ( \WPDieException $e ) {
 			$output = ob_get_clean();
 			$data   = json_decode( $output, true );
 			$this->assertIsArray( $data );
 			$this->assertFalse( $data['success'] );
+			$_POST = []; // phpcs:ignore WordPress.Security.NonceVerification.Missing
 			return;
 		}
-		ob_end_clean();
-		$this->fail( 'Expected WPDieException for invalid nonce.' );
+
+		$_POST = []; // phpcs:ignore WordPress.Security.NonceVerification.Missing
+		$this->fail( 'Expected WPDieException for missing token in create_subscription_intent.' );
 	}
 
 	private function call_private_method( $object, $method_name, $parameters = [] ) {
