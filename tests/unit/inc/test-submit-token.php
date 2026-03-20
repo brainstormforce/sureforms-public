@@ -11,7 +11,7 @@ use SRFM\Inc\Submit_Token;
 /**
  * Tests for the HMAC-based Submit_Token class.
  *
- * @since x.x.x
+ * @since 2.6.0
  */
 class Test_Submit_Token extends TestCase {
 

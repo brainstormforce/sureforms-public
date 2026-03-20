@@ -407,7 +407,7 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 * Improvement: Improved search for form and entry listing.
 * Fix: Fixed Stripe payment block not displaying correctly when the same form is embedded multiple times on a page.
 * Fix: Fixed entry Previous/Next navigation returning entries from other forms instead of the current form.
-* Fix: Form submissions failing intermittently on sites with page caching plugins due to expired security tokens.
+* Fix: Resolved intermittent form submission failures on sites with page caching plugins due to expired security tokens.
 = 2.5.2 - 12th March 2026 =
 * New: Added the “Send as Raw HTML” option in email notifications for fully structured HTML emails.
 * New: Added the Learn section.
