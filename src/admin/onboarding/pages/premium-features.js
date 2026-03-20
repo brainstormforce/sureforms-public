@@ -22,7 +22,7 @@ const allFeatures = [
 		plan: 'free',
 	},
 	{
-		id: 'entries',
+		id: 'payment_forms',
 		title: __( 'Payment Forms', 'sureforms' ),
 		description: __(
 			'Collect payments directly through your forms. Accept one-time and recurring payments seamlessly.',
