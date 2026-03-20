@@ -9,7 +9,7 @@
  * refresh logic.
  *
  * @package SureForms
- * @since   x.x.x
+ * @since   2.6.0
  */
 
 namespace SRFM\Inc;
@@ -64,7 +64,7 @@ class Submit_Token {
 	 * with the site's auth salt. It is safe to embed in cached HTML because
 	 * `verify()` accepts several consecutive past windows.
 	 *
-	 * @since  x.x.x
+	 * @since  2.6.0
 	 * @param  int $form_id The form post ID.
 	 * @return string 64-character lowercase hex HMAC-SHA256 token.
 	 */
@@ -78,7 +78,7 @@ class Submit_Token {
 	 * Checks the token against every accepted window, from newest to oldest,
 	 * using constant-time comparison throughout.
 	 *
-	 * @since  x.x.x
+	 * @since  2.6.0
 	 * @param  string $token   Token value received from the client.
 	 * @param  int    $form_id Form post ID extracted from the request body.
 	 * @return bool True if the token is valid for the given form, false otherwise.
@@ -108,7 +108,7 @@ class Submit_Token {
 	 * Dividing Unix time by WINDOW_SECONDS yields an integer that increments
 	 * once every 12 hours, regardless of the server's local timezone.
 	 *
-	 * @since  x.x.x
+	 * @since  2.6.0
 	 * @return int
 	 */
 	private static function current_window(): int {
@@ -122,7 +122,7 @@ class Submit_Token {
 	 * the window index so that tokens cannot be repurposed across forms or
 	 * replayed across time windows.
 	 *
-	 * @since  x.x.x
+	 * @since  2.6.0
 	 * @param  int $form_id Post ID of the form.
 	 * @param  int $window  Half-day window index.
 	 * @return string 64-character lowercase hex digest.
