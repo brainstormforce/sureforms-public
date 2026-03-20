@@ -88,7 +88,7 @@ class Form_Submit {
 	 * they survive cached-page scenarios without any browser-side refresh call.
 	 *
 	 * @param \WP_REST_Request $request Incoming REST request.
-	 * @since x.x.x
+	 * @since 2.6.0
 	 * @return WP_Error|bool
 	 */
 	public function submit_form_permissions_check( $request ) {
