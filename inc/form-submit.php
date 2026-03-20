@@ -1082,7 +1082,7 @@ class Form_Submit {
 			return false;
 		}
 
-		$attempts_count = intval( $attempts );
+		$attempts_count = Helper::get_integer_value( $attempts );
 
 		if ( $attempts_count >= 10 ) {
 			return true;
