@@ -25,10 +25,15 @@ module.exports = async function globalSetup() {
 	await page.fill( '#user_login', WP_ADMIN_USER );
 	await page.fill( '#user_pass', WP_ADMIN_PASS );
 
-	await Promise.all( [
-		page.waitForURL( '**/wp-admin/**', { waitUntil: 'domcontentloaded' } ),
-		page.click( '#wp-submit' ),
-	] );
+	await page.click( '#wp-submit' );
+	await page.waitForLoadState( 'domcontentloaded' );
+
+	// Handle WordPress interstitial screens that can appear after login
+	// (e.g. "Database Update Required", "Confirm admin email").
+	if ( ! page.url().includes( '/wp-admin' ) ) {
+		await page.goto( BASE_URL + '/wp-admin/' );
+		await page.waitForLoadState( 'domcontentloaded' );
+	}
 
 	// Save cookies + localStorage so every worker starts authenticated.
 	await context.storageState( { path: 'tests/play/storageState.json' } );
