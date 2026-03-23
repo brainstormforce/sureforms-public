@@ -149,7 +149,7 @@
 		},
 		"buttonAlignment": {
 			"type": "string",
-			"enum": [ "left", "center", "right", "full" ],
+			"enum": [ "left", "center", "right", "justify" ],
 			"default": "left"
 		}
 	}
