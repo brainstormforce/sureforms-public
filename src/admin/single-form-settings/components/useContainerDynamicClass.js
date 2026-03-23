@@ -1,11 +1,19 @@
 import { useEffect } from '@wordpress/element';
 import { validateClassName } from '../utils';
-const useContainerDynamicClass = ( sureformsKeys ) => {
+const useContainerDynamicClass = ( props ) => {
+	const { sureformsKeys, documentBody, shouldIframe, editorMode } = props;
+
+	const getStyleWrapper = () => {
+		if ( shouldIframe ) {
+			return documentBody;
+		}
+
+		return documentBody?.querySelector( '.editor-styles-wrapper' );
+	};
+
 	const addRootClass = () => {
 		// Find the root container of the form
-		const formRootContainer = document.querySelector(
-			'.editor-styles-wrapper'
-		);
+		const formRootContainer = getStyleWrapper();
 
 		if ( formRootContainer && sureformsKeys?._srfm_additional_classes ) {
 			if ( ! formRootContainer.hasAttribute( 'data-existing-classes' ) ) {
@@ -52,7 +60,12 @@ const useContainerDynamicClass = ( sureformsKeys ) => {
 
 	useEffect( () => {
 		addRootClass();
-	}, [ sureformsKeys?._srfm_additional_classes ] );
+	}, [
+		sureformsKeys?._srfm_additional_classes,
+		editorMode,
+		documentBody,
+		shouldIframe,
+	] );
 };
 
 export default useContainerDynamicClass;

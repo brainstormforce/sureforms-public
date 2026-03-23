@@ -1,4 +1,6 @@
 {
+  "$schema": "https://json.schemastore.org/block.json",
+	"apiVersion": 3,
 	"name": "srfm/payment",
 	"title": "Payment",
 	"description": "Displays a SureForms Payment Field",
