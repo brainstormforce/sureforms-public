@@ -517,7 +517,7 @@ export default ( { attributes, setAttributes, clientId } ) => {
 							title="srfm-iframe"
 							src={
 								formUrl +
-								`?preview_id=${ id }&preview=true&form_preview=true`
+								`?preview_id=${ id }&preview=true&form_preview=true&formTheme=${ encodeURIComponent( attributes.formTheme || 'inherit' ) }${ attributes.textColor ? '&textColor=' + encodeURIComponent( attributes.textColor ) : '' }`
 							}
 							width={ '100%' }
 						/>

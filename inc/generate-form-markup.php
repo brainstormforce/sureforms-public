@@ -96,6 +96,23 @@ class Generate_Form_Markup {
 			return Form_Restriction::display_form_restriction_message( $form_id );
 		}
 
+		// In form preview context (editor iframe), read formTheme from URL so the
+		// server-side render and downstream hooks respect the embed's theme choice.
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Preview context, nonce not required.
+		if ( empty( $block_attrs['formTheme'] ) && isset( $_GET['form_preview'] ) && 'true' === $_GET['form_preview'] ) {
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			if ( isset( $_GET['formTheme'] ) ) {
+				$preview_theme = sanitize_text_field( wp_unslash( $_GET['formTheme'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+				if ( in_array( $preview_theme, [ 'inherit', 'default', 'modern', 'classic', 'custom' ], true ) ) {
+					$block_attrs['formTheme'] = $preview_theme;
+				}
+			}
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			if ( isset( $_GET['textColor'] ) ) {
+				$block_attrs['textColor'] = Helper::sanitize_css_value( sanitize_text_field( wp_unslash( $_GET['textColor'] ) ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			}
+		}
+
 		// Store block_attrs for child blocks (like inline button) to access.
 		self::$current_block_attrs = $block_attrs;
 
