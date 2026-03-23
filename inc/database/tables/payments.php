@@ -502,8 +502,10 @@ class Payments extends Base {
 			]
 		);
 
+		$orderby       = ! empty( $_args['orderby'] ) && is_string( $_args['orderby'] ) && in_array( $_args['orderby'], self::ALLOWED_COLUMNS, true ) ? $_args['orderby'] : 'created_at';
+		$order         = 'ASC' === strtoupper( Helper::get_string_value( $_args['order'] ) ) ? 'ASC' : 'DESC';
 		$extra_queries = [
-			sprintf( 'ORDER BY `%1$s` %2$s', Helper::get_string_value( esc_sql( $_args['orderby'] ) ), Helper::get_string_value( esc_sql( $_args['order'] ) ) ),
+			sprintf( 'ORDER BY `%1$s` %2$s', $orderby, $order ),
 		];
 
 		if ( $set_limit ) {
@@ -1131,17 +1133,9 @@ class Payments extends Base {
 		}
 
 		// Order by.
-		$order   = strtoupper( $_args['order'] ) === 'ASC' ? 'ASC' : 'DESC';
-		$orderby = esc_sql( $_args['orderby'] );
-		// Resolve phpstan: Only allow $orderby and $columns as string (not array), fallback to defaults if needed.
-		$order_clause = '';
-		if ( ! empty( $_args['orderby'] ) && is_string( $_args['orderby'] ) ) {
-			$orderby      = esc_sql( $_args['orderby'] );
-			$order_clause = "ORDER BY {$orderby} {$order}";
-		} else {
-			// Fallback to default order by created_at.
-			$order_clause = "ORDER BY created_at {$order}";
-		}
+		$order        = 'ASC' === strtoupper( $_args['order'] ) ? 'ASC' : 'DESC';
+		$orderby      = ! empty( $_args['orderby'] ) && is_string( $_args['orderby'] ) && in_array( $_args['orderby'], self::ALLOWED_COLUMNS, true ) ? $_args['orderby'] : 'created_at';
+		$order_clause = "ORDER BY {$orderby} {$order}";
 
 		// Limit clause.
 		$limit_clause = '';

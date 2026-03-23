@@ -55,3 +55,6 @@ blob-report/*
 # Claude Code local settings
 .claude/settings.local.json
 .claude/agent-memory/
+
+# Abilities audit artifacts
+.abilities-audit/

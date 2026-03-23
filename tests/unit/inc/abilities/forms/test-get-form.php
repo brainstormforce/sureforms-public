@@ -75,6 +75,8 @@ class Test_Get_Form extends TestCase {
 		$this->assertTrue( $annotations['readonly'] );
 		$this->assertFalse( $annotations['destructive'] );
 		$this->assertTrue( $annotations['idempotent'] );
+		$this->assertEquals( 1.0, $annotations['priority'] );
+		$this->assertFalse( $annotations['openWorldHint'] );
 	}
 
 	/**
@@ -85,6 +87,7 @@ class Test_Get_Form extends TestCase {
 		$this->assertEquals( 'object', $schema['type'] );
 		$this->assertArrayHasKey( 'form_id', $schema['properties'] );
 		$this->assertContains( 'form_id', $schema['required'] );
+		$this->assertFalse( $schema['additionalProperties'] );
 	}
 
 	/**
@@ -171,4 +174,6 @@ class Test_Get_Form extends TestCase {
 		$this->assertInstanceOf( WP_Error::class, $result );
 		wp_delete_post( $page_id, true );
 	}
+
+
 }

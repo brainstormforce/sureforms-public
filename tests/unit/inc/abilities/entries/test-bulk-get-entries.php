@@ -43,6 +43,8 @@ class Test_Bulk_Get_Entries extends TestCase {
 		$this->assertTrue( $annotations['readonly'] );
 		$this->assertFalse( $annotations['destructive'] );
 		$this->assertTrue( $annotations['idempotent'] );
+		$this->assertEquals( 1.0, $annotations['priority'] );
+		$this->assertFalse( $annotations['openWorldHint'] );
 	}
 
 	/**
@@ -53,6 +55,7 @@ class Test_Bulk_Get_Entries extends TestCase {
 		$this->assertEquals( 'object', $schema['type'] );
 		$this->assertArrayHasKey( 'entry_ids', $schema['properties'] );
 		$this->assertContains( 'entry_ids', $schema['required'] );
+		$this->assertFalse( $schema['additionalProperties'] );
 	}
 
 	/**
@@ -100,4 +103,6 @@ class Test_Bulk_Get_Entries extends TestCase {
 		$result = $this->ability->execute( [ 'entry_ids' => $ids ] );
 		$this->assertInstanceOf( WP_Error::class, $result );
 	}
+
+
 }

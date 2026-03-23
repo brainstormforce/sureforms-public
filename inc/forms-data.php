@@ -154,11 +154,6 @@ class Forms_Data {
 			'order'          => $order,
 		];
 
-		// Add search parameter.
-		if ( ! empty( $search ) ) {
-			$args['s'] = $search;
-		}
-
 		// Add date range filtering.
 		if ( ! empty( $date_from ) || ! empty( $date_to ) ) {
 			$date_query = [];
@@ -178,8 +173,41 @@ class Forms_Data {
 			$args['date_query']      = [ $date_query ];
 		}
 
-		// Execute query.
-		$query = new \WP_Query( $args );
+		// Add search parameter.
+		if ( ! empty( $search ) ) {
+			if ( is_numeric( $search ) ) {
+				// Numeric search: match by form ID and title (e.g., "2024 Survey").
+				$numeric_search = $search;
+				$where_filter   = static function ( $where, $query ) use ( $numeric_search ) {
+					if ( ! $query->get( 'srfm_numeric_search' ) ) {
+						return $where;
+					}
+					global $wpdb;
+					$where .= $wpdb->prepare(
+						" AND ({$wpdb->posts}.ID = %d OR {$wpdb->posts}.post_title LIKE %s)",
+						absint( $numeric_search ),
+						'%' . $wpdb->esc_like( $numeric_search ) . '%'
+					);
+					return $where;
+				};
+
+				add_filter( 'posts_where', $where_filter, 10, 2 );
+				$args['srfm_numeric_search'] = true;
+			} else {
+				// Text search: match by title only.
+				$args['s']              = $search;
+				$args['search_columns'] = [ 'post_title' ];
+			}
+		}
+
+		// Execute query — use try/finally to guarantee filter cleanup.
+		try {
+			$query = new \WP_Query( $args );
+		} finally {
+			if ( ! empty( $search ) && is_numeric( $search ) && isset( $where_filter ) ) {
+				remove_filter( 'posts_where', $where_filter, 10 );
+			}
+		}
 
 		$forms = [];
 		/**

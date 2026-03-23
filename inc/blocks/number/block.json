@@ -1,4 +1,6 @@
 {
+  "$schema": "https://json.schemastore.org/block.json",
+	"apiVersion": 3,
 	"name": "srfm/number",
 	"title": "Number",
 	"description": "Displays a SureForms Number Field",
