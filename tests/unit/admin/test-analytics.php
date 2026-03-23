@@ -479,6 +479,86 @@ class Test_Analytics extends TestCase {
 		$this->assertFalse( Analytics_Events::is_tracked( 'first_form_published' ) );
 	}
 
+	// ─── add_srfm_analytics_data ─────────────────────────────────
+
+	/**
+	 * Test add_srfm_analytics_data returns expected structure.
+	 */
+	public function test_add_srfm_analytics_data_returns_sureforms_key() {
+		$analytics = Analytics::get_instance();
+		$result    = $analytics->add_srfm_analytics_data( [ 'plugin_data' => [] ] );
+
+		$this->assertArrayHasKey( 'sureforms', $result['plugin_data'] );
+		$this->assertArrayHasKey( 'free_version', $result['plugin_data']['sureforms'] );
+		$this->assertArrayHasKey( 'numeric_values', $result['plugin_data']['sureforms'] );
+		$this->assertArrayHasKey( 'total_forms', $result['plugin_data']['sureforms']['numeric_values'] );
+		$this->assertArrayHasKey( 'forms_using_custom_css', $result['plugin_data']['sureforms']['numeric_values'] );
+		$this->assertArrayHasKey( 'embed_styling_gb_default', $result['plugin_data']['sureforms']['numeric_values'] );
+	}
+
+	/**
+	 * Test add_srfm_analytics_data preserves existing stats data.
+	 */
+	public function test_add_srfm_analytics_data_preserves_existing_data() {
+		$analytics  = Analytics::get_instance();
+		$stats_data = [
+			'plugin_data' => [
+				'other_plugin' => [ 'version' => '1.0' ],
+			],
+		];
+		$result     = $analytics->add_srfm_analytics_data( $stats_data );
+
+		$this->assertArrayHasKey( 'other_plugin', $result['plugin_data'] );
+		$this->assertArrayHasKey( 'sureforms', $result['plugin_data'] );
+	}
+
+	// ─── forms_using_custom_css ──────────────────────────────────
+
+	/**
+	 * Test forms_using_custom_css returns 0 when no forms have custom CSS.
+	 */
+	public function test_forms_using_custom_css_returns_zero_with_no_custom_css() {
+		$analytics = Analytics::get_instance();
+		$this->assertSame( 0, $analytics->forms_using_custom_css() );
+	}
+
+	/**
+	 * Test forms_using_custom_css counts forms with custom CSS meta.
+	 */
+	public function test_forms_using_custom_css_counts_forms() {
+		// Create a published form with custom CSS.
+		$form_id = wp_insert_post(
+			[
+				'post_type'   => SRFM_FORMS_POST_TYPE,
+				'post_status' => 'publish',
+				'post_title'  => 'CSS Test Form ' . wp_rand(),
+			]
+		);
+		update_post_meta( $form_id, '_srfm_test_post', true );
+		update_post_meta( $form_id, '_srfm_form_custom_css', '.my-form { color: red; }' );
+
+		$analytics = Analytics::get_instance();
+		$this->assertSame( 1, $analytics->forms_using_custom_css() );
+	}
+
+	/**
+	 * Test forms_using_custom_css excludes forms with empty CSS.
+	 */
+	public function test_forms_using_custom_css_excludes_empty_css() {
+		$form_id = wp_insert_post(
+			[
+				'post_type'   => SRFM_FORMS_POST_TYPE,
+				'post_status' => 'publish',
+				'post_title'  => 'Empty CSS Form ' . wp_rand(),
+			]
+		);
+		update_post_meta( $form_id, '_srfm_test_post', true );
+		update_post_meta( $form_id, '_srfm_form_custom_css', '' );
+
+		$analytics = Analytics::get_instance();
+		$this->assertSame( 0, $analytics->forms_using_custom_css() );
+	}
+
 	// ─── Helpers ─────────────────────────────────────────────────
 
 	/**
