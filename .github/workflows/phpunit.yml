@@ -1,6 +1,18 @@
 name: PHPUnit
 
-on: pull_request
+on:
+  pull_request:
+    paths:
+      - '**.php'
+      - 'composer.json'
+      - 'composer.lock'
+      - 'phpunit.xml'
+      - 'bin/install-wp-tests.sh'
+      - '.github/workflows/phpunit.yml'
+
+concurrency:
+    group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && github.head_ref || github.sha }}
+    cancel-in-progress: true
 
 jobs:
   phpunit:
@@ -46,11 +58,10 @@ jobs:
 
       - name: Get Composer cache directory
         id: composer-cache
-        run: |
-          echo "::set-output name=dir::$(composer config cache-files-dir)"
+        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
 
       - name: Setup cache
-        uses: pat-s/always-upload-cache@v1.1.4
+        uses: actions/cache@v4
         with:
           path: ${{ steps.composer-cache.outputs.dir }}
           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
@@ -60,7 +71,7 @@ jobs:
       - name: Install dependencies
         env:
             COMPOSER_AUTH: '{"github-oauth": {"github.com": "${{ secrets.BSF_PRODUCTS_REPO_TOKEN }}"}}'
-        run: composer install --prefer-dist --no-progress --prefer-dist --optimize-autoloader
+        run: composer install --prefer-dist --no-progress --optimize-autoloader
 
       - name: Setup problem matchers for PHPUnit
         run: echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"

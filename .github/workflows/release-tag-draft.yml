@@ -16,7 +16,7 @@ jobs:
       current_version: ${{ steps.get_version.outputs.current_version }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@master
+        uses: actions/checkout@v4
         with:
           ref: master
 
@@ -29,18 +29,16 @@ jobs:
         id: get_version
         run: |
           CURRENT_VERSION=$(jq --raw-output '.version' package.json)
-          echo "::set-output name=current_version::$(echo $CURRENT_VERSION)"
-
-      - name: Clear npm cache
-        run: npm cache clean --force
+          echo "current_version=${CURRENT_VERSION}" >> $GITHUB_OUTPUT
 
       - name: Install Node.js and npm
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v4
         with:
           node-version: '18.15.0'
+          cache: 'npm'
 
       - name: Install dependencies
-        run: npm install --force
+        run: npm ci --legacy-peer-deps
 
       - name: Build
         run: npm run build
@@ -63,7 +61,7 @@ jobs:
         id: get_release_version
         env:
           VERSION: ${{ needs.build-artifact.outputs.current_version }}
-        run: echo ::set-output name=version::$(echo $VERSION | cut -d / -f 3 | sed 's/-rc./ RC/' )
+        run: echo "version=$(echo $VERSION | cut -d / -f 3 | sed 's/-rc./ RC/' )" >> $GITHUB_OUTPUT
 
       - name: Download Plugin Zip Artifact
         uses: actions/download-artifact@v4
@@ -72,7 +70,7 @@ jobs:
 
       - name: Create Release Draft
         id: create_release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
