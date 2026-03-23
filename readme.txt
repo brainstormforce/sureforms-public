@@ -2,9 +2,9 @@
 Contributors: brainstormforce
 Tags: forms, contact form, custom forms, payment form, form builder
 Requires at least: 6.4
-Tested up to: 6.9.3
+Tested up to: 6.9.4
 Requires PHP: 7.4
-Stable tag: 2.5.2
+Stable tag: 2.6.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -403,7 +403,13 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 == Changelog ==
 = x.x.x =
 * New: Added styling options for Gutenberg SureForms Form Block.
-* Fix: Stripe payment block not displaying correctly when the same form is embedded multiple times on a page.
+= 2.6.0 - 23rd March 2026 =
+* New: Added MCP (Model Context Protocol) settings and Abilities API for AI-powered form management.
+* Improvement: Added Blocks API v3 compatibility.
+* Improvement: Improved search for form and entry listing.
+* Fix: Fixed Stripe payment block not displaying correctly when the same form is embedded multiple times on a page.
+* Fix: Fixed entry Previous/Next navigation returning entries from other forms instead of the current form.
+* Fix: Resolved intermittent form submission failures on sites with page caching plugins due to expired security tokens.
 = 2.5.2 - 12th March 2026 =
 * New: Added the “Send as Raw HTML” option in email notifications for fully structured HTML emails.
 * New: Added the Learn section.
@@ -418,9 +424,6 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 = 2.5.1 - 16th February 2026 =
 * New: Added option to change currency position (e.g., $100, 100$, $ 100, 100 $).
 * Fix: Fixed the payment block amount not updating correctly with conditional logic.
-= 2.5.0 - 2nd February 2026 =
-* Improvement: Added translation support for the country list in the phone number field.
-* Fix: Fixed dropdown placeholder and GDPR label translation on the frontend.
 The full changelog is available [here](https://sureforms.com/whats-new/).
 
 == Upgrade Notice ==

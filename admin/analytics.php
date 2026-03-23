@@ -768,6 +768,17 @@ class Analytics {
 			$mode = \SRFM\Inc\Payments\Stripe\Stripe_Helper::get_stripe_mode();
 			Analytics_Events::track( 'stripe_connected', ! empty( $mode ) ? $mode : 'live' );
 		}
+
+		// MCP / Abilities API first-enable events.
+		$mcp_settings = get_option( 'srfm_mcp_settings_options', [] );
+
+		if ( ! empty( $mcp_settings['srfm_abilities_api'] ) ) {
+			Analytics_Events::track( 'abilities_api_enabled' );
+		}
+
+		if ( ! empty( $mcp_settings['srfm_mcp_server'] ) ) {
+			Analytics_Events::track( 'mcp_server_enabled' );
+		}
 	}
 
 }

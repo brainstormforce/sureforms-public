@@ -2,7 +2,8 @@
 /**
  * Entry Parser Trait.
  *
- * Shared entry parsing logic for entry abilities.
+ * Shared entry parsing logic for abilities that need to transform
+ * raw entry data into structured output with decoded field labels.
  *
  * @package sureforms
  * @since 2.5.2
@@ -17,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Trait Entry_Parser
+ * Entry_Parser trait.
  *
  * Provides the shared parse_entry() method used by
  * Get_Entry and Bulk_Get_Entries abilities.

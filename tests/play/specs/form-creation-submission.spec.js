@@ -1,0 +1,115 @@
+/**
+ * E2E tests — Basic form creation and submission.
+ *
+ * Covers:
+ *  1. Create a form from scratch with a Text field → publish → submit → success
+ *  2. Create a form with an Email field → submit valid email → success
+ *  3. Required field validation — submit empty required field → error shown
+ */
+
+const { test, expect } = require( '@playwright/test' );
+const { loginAsAdmin } = require( '../utils/loginAsAdmin' );
+const {
+	createBlankForm,
+	publishFormAndGetURL,
+	addFieldBlock,
+	selectBlock,
+} = require( '../utils/formHelpers' );
+
+// ─── Tests ────────────────────────────────────────────────────────────────────
+
+test.describe( 'Form creation and submission', () => {
+	test.beforeEach( async ( { page } ) => {
+		await loginAsAdmin( page );
+	} );
+
+	// ── Test 1 ──────────────────────────────────────────────────────────────
+	test( 'can create a form with a text field and submit it', async ( { page } ) => {
+		await createBlankForm( page );
+
+		// Add Text Field block via the quick-action sidebar.
+		await addFieldBlock( page, 'input' );
+
+		const formURL = await publishFormAndGetURL( page );
+
+		// Open form on the frontend.
+		await page.goto( formURL );
+		await page.waitForLoadState( 'load' );
+
+		// Fill in the text field and submit.
+		await page.locator( 'input.srfm-input-input' ).first().fill( 'Hello World' );
+		await page.locator( '#srfm-submit-btn' ).click();
+
+		// Confirm the success / thank-you message appears.
+		await expect(
+			page.locator( '.srfm-success-box' )
+		).toBeVisible( { timeout: 15000 } );
+		await expect(
+			page.locator( '.srfm-success-box' )
+		).toContainText( /Thank you/i );
+	} );
+
+	// ── Test 2 ──────────────────────────────────────────────────────────────
+	test( 'can create a form with an email field and submit a valid email', async ( { page } ) => {
+		await createBlankForm( page );
+
+		// Add Email Field block.
+		await addFieldBlock( page, 'email' );
+
+		const formURL = await publishFormAndGetURL( page );
+
+		await page.goto( formURL );
+		await page.waitForLoadState( 'load' );
+
+		await page.locator( 'input.srfm-input-email' ).first().fill( 'test@example.com' );
+		await page.locator( '#srfm-submit-btn' ).click();
+
+		await expect(
+			page.locator( '.srfm-success-box' )
+		).toBeVisible( { timeout: 15000 } );
+		await expect(
+			page.locator( '.srfm-success-box' )
+		).toContainText( /Thank you/i );
+	} );
+
+	// ── Test 3 ──────────────────────────────────────────────────────────────
+	test( 'shows validation error when required text field is left empty', async ( { page } ) => {
+		await createBlankForm( page );
+
+		// Add Text Field block and make it required via the block settings panel.
+		await addFieldBlock( page, 'input' );
+
+		// Select the block, then switch to the Block settings tab.
+		await selectBlock( page, 'input' );
+		await page.getByRole( 'tab', { name: 'Block' } ).click();
+
+		// Enable Required via the toggle in the Block settings panel.
+		const requiredToggle = page.locator(
+			'.components-toggle-control'
+		).filter( { hasText: /^Required$/i } ).first();
+		await expect( requiredToggle ).toBeVisible( { timeout: 5000 } );
+
+		const isChecked = await requiredToggle.locator( 'input[type="checkbox"]' ).isChecked();
+		if ( ! isChecked ) {
+			await requiredToggle.locator( 'input[type="checkbox"]' ).click();
+		}
+
+		const formURL = await publishFormAndGetURL( page );
+
+		await page.goto( formURL );
+		await page.waitForLoadState( 'load' );
+
+		// Submit without filling the required field.
+		await page.locator( '#srfm-submit-btn' ).click();
+
+		// Validation error should appear — SureForms renders it inside .srfm-error-wrap.
+		await expect(
+			page.locator( '.srfm-error-wrap' ).filter( { hasText: /required|field is required/i } ).first()
+		).toBeVisible( { timeout: 10000 } );
+
+		// Success box must NOT appear.
+		await expect(
+			page.locator( '.srfm-success-box' )
+		).not.toBeVisible();
+	} );
+} );
