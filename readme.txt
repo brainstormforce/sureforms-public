@@ -401,9 +401,9 @@ You can collect payments securely through Stripe & PayPal without any add-ons or
 You can report the issue through our [Bug Bounty Program](https://brainstormforce.com/bug-bounty-program/). We collaborate with Patchstack to provide opportunities for researchers to report vulnerabilities. The Patchstack team will help validate, triage, and handle any reported security issues.
 
 == Changelog ==
-= 2.6.0 - 19th March 2026 =
+= 2.6.0 - 23rd March 2026 =
 * New: Added MCP (Model Context Protocol) settings and Abilities API for AI-powered form management.
-* New: Added Blocks API v3 compatibility.
+* Improvement: Added Blocks API v3 compatibility.
 * Improvement: Improved search for form and entry listing.
 * Fix: Fixed Stripe payment block not displaying correctly when the same form is embedded multiple times on a page.
 * Fix: Fixed entry Previous/Next navigation returning entries from other forms instead of the current form.
