@@ -1,6 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import { useState } from '@wordpress/element';
-import { Badge, Button, Switch } from '@bsf/force-ui';
+import { Badge, Button, Select, Switch } from '@bsf/force-ui';
 import { CopyCheckIcon, CopyIcon } from 'lucide-react';
 import ContentSection from '../components/ContentSection';
 
@@ -26,25 +26,104 @@ const CopyButton = ( { textToCopy, isCopied, setIsCopied } ) => (
 	/>
 );
 
+const MCP_CLIENTS = [
+	{
+		value: 'claude-desktop',
+		label: __( 'Claude Desktop', 'sureforms' ),
+		configFile: __(
+			'~/Library/Application Support/Claude/claude_desktop_config.json (macOS) or %APPDATA%\\Claude\\claude_desktop_config.json (Windows)',
+			'sureforms'
+		),
+		docsUrl: 'https://docs.claude.com/en/docs/mcp',
+		rootKey: 'mcpServers',
+	},
+	{
+		value: 'claude-code',
+		label: __( 'Claude Code', 'sureforms' ),
+		configFile: __(
+			'.mcp.json (project) or ~/.claude.json (global)',
+			'sureforms'
+		),
+		docsUrl: 'https://code.claude.com/docs/en/mcp',
+		rootKey: 'mcpServers',
+		cliCommand:
+			'claude mcp add sureforms -- npx -y @automattic/mcp-wordpress-remote@latest',
+	},
+	{
+		value: 'cursor',
+		label: __( 'Cursor', 'sureforms' ),
+		configFile: __( '~/.cursor/mcp.json', 'sureforms' ),
+		docsUrl: 'https://docs.cursor.com/en/context/mcp',
+		rootKey: 'mcpServers',
+	},
+	{
+		value: 'vscode',
+		label: __( 'VS Code (Copilot)', 'sureforms' ),
+		configFile: __(
+			'.vscode/mcp.json (project) or settings.json > mcp.servers (global)',
+			'sureforms'
+		),
+		docsUrl:
+			'https://code.visualstudio.com/docs/copilot/customization/mcp-servers',
+		rootKey: 'servers',
+	},
+	{
+		value: 'continue',
+		label: __( 'Continue', 'sureforms' ),
+		configFile: __( '~/.continue/config.yaml or config.json', 'sureforms' ),
+		docsUrl: 'https://docs.continue.dev/customize/deep-dives/mcp',
+		rootKey: 'mcpServers',
+		arrayFormat: true,
+	},
+	{
+		value: 'other',
+		label: __( 'Other', 'sureforms' ),
+		configFile: __( "Your client's MCP configuration file", 'sureforms' ),
+		docsUrl:
+			'https://modelcontextprotocol.io/docs/develop/connect-local-servers',
+		rootKey: 'mcpServers',
+	},
+];
+
+const getClientConfig = ( client, mcpEndpointUrl ) => {
+	const baseServer = {
+		command: 'npx',
+		args: [ '-y', '@automattic/mcp-wordpress-remote@latest' ],
+		env: {
+			WP_API_URL: mcpEndpointUrl,
+			WP_API_USERNAME: srfm_admin.current_user_login || '',
+			WP_API_PASSWORD: 'your-application-password',
+		},
+	};
+
+	if ( client.arrayFormat ) {
+		return {
+			mcpServers: [
+				{
+					name: 'sureforms',
+					...baseServer,
+				},
+			],
+		};
+	}
+
+	return {
+		[ client.rootKey ]: {
+			sureforms: baseServer,
+		},
+	};
+};
+
 const SetupInstructions = ( { mcpEndpointUrl } ) => {
 	const [ isConfigCopied, setIsConfigCopied ] = useState( false );
+	const [ isCliCopied, setIsCliCopied ] = useState( false );
+	const [ selectedClient, setSelectedClient ] = useState( 'claude-desktop' );
 
 	const applicationPasswordsUrl = `${ srfm_admin.site_url }/wp-admin/profile.php#application-passwords-section`;
 
+	const client = MCP_CLIENTS.find( ( c ) => c.value === selectedClient );
 	const mcpConfig = JSON.stringify(
-		{
-			mcpServers: {
-				sureforms: {
-					command: 'npx',
-					args: [ '-y', '@automattic/mcp-wordpress-remote@latest' ],
-					env: {
-						WP_API_URL: mcpEndpointUrl,
-						WP_API_USERNAME: srfm_admin.current_user_login || '',
-						WP_API_PASSWORD: 'your-application-password',
-					},
-				},
-			},
-		},
+		getClientConfig( client, mcpEndpointUrl ),
 		null,
 		2
 	);
@@ -54,6 +133,28 @@ const SetupInstructions = ( { mcpEndpointUrl } ) => {
 			<h3 className="text-base font-semibold text-text-primary m-0">
 				{ __( 'Connect Your AI Client', 'sureforms' ) }
 			</h3>
+			<Select
+				value={ selectedClient }
+				onChange={ ( value ) => setSelectedClient( value ) }
+			>
+				<Select.Button
+					type="button"
+					label={ __( 'AI Client', 'sureforms' ) }
+					render={ ( value ) =>
+						MCP_CLIENTS.find( ( c ) => c.value === value )?.label ||
+						value
+					}
+				/>
+				<Select.Portal id="srfm-settings-container">
+					<Select.Options>
+						{ MCP_CLIENTS.map( ( c ) => (
+							<Select.Option key={ c.value } value={ c.value }>
+								{ c.label }
+							</Select.Option>
+						) ) }
+					</Select.Options>
+				</Select.Portal>
+			</Select>
 			<ol className="list-decimal space-y-2 text-sm text-text-secondary m-0 pl-4">
 				<li>
 					{ __( 'Create an Application Password — ', 'sureforms' ) }
@@ -63,27 +164,38 @@ const SetupInstructions = ( { mcpEndpointUrl } ) => {
 						rel="noopener noreferrer"
 						className="text-field-helper underline"
 					>
-						{ __(
-							'Open Application Passwords',
-							'sureforms'
-						) }
+						{ __( 'Open Application Passwords', 'sureforms' ) }
 					</a>
 				</li>
+				{ client.cliCommand && (
+					<li>
+						{ __(
+							'Or use this CLI command to add the server quickly (you will still need to set the environment variables):',
+							'sureforms'
+						) }
+						<div className="relative mt-2">
+							<pre className="bg-background-tertiary rounded-lg p-4 pr-12 overflow-x-auto text-[13px] leading-relaxed font-mono text-text-secondary m-0">
+								{ client.cliCommand }
+							</pre>
+							<div className="absolute top-2 right-2">
+								<CopyButton
+									textToCopy={ client.cliCommand }
+									isCopied={ isCliCopied }
+									setIsCopied={ setIsCliCopied }
+								/>
+							</div>
+						</div>
+					</li>
+				) }
 				<li>
-					{ __(
-						"Copy the JSON config below into your AI client's MCP config file.",
-						'sureforms'
-					) }
+					{ __( 'Copy the JSON config below into: ', 'sureforms' ) }
+					<code className="text-[13px] bg-background-tertiary px-1.5 py-0.5 rounded">
+						{ client.configFile }
+					</code>
 				</li>
 				<li>
 					{ __(
 						'Replace "your-application-password" with the password from Step 1.',
-						'sureforms'
-					) }
-				</li>
-				<li>
-					{ __(
-						"Add to .mcp.json (Claude Code), claude_desktop_config.json (Claude Desktop), or your client's MCP settings.",
 						'sureforms'
 					) }
 				</li>
@@ -100,6 +212,20 @@ const SetupInstructions = ( { mcpEndpointUrl } ) => {
 					/>
 				</div>
 			</div>
+			<p className="text-xs text-text-tertiary m-0">
+				{ __(
+					"WP_API_URL — your site's MCP endpoint. WP_API_USERNAME — your WordPress username. WP_API_PASSWORD — the application password you generated.",
+					'sureforms'
+				) }{ ' ' }
+				<a
+					href={ client.docsUrl }
+					target="_blank"
+					rel="noopener noreferrer"
+					className="text-field-helper underline"
+				>
+					{ __( 'View setup docs', 'sureforms' ) }
+				</a>
+			</p>
 		</div>
 	);
 };
@@ -237,10 +363,7 @@ const MCPPage = ( { loading, mcpTabOptions, updateGlobalSettings } ) => {
 						loading={ loading }
 						title={
 							<span className="flex items-center gap-2">
-								{ __(
-									'Abilities API — Edit',
-									'sureforms'
-								) }
+								{ __( 'Abilities API — Edit', 'sureforms' ) }
 								<ExperimentalBadge />
 							</span>
 						}
@@ -250,10 +373,7 @@ const MCPPage = ( { loading, mcpTabOptions, updateGlobalSettings } ) => {
 						loading={ loading }
 						title={
 							<span className="flex items-center gap-2">
-								{ __(
-									'Abilities API — Delete',
-									'sureforms'
-								) }
+								{ __( 'Abilities API — Delete', 'sureforms' ) }
 								<ExperimentalBadge />
 							</span>
 						}
