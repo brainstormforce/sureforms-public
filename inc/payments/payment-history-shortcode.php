@@ -28,10 +28,8 @@ class Payment_History_Shortcode {
 
 	/**
 	 * Shortcode tag.
-	 *
-	 * @var string
 	 */
-	const SHORTCODE_TAG = 'srfm_payment_history';
+	public const SHORTCODE_TAG = 'srfm_payment_history';
 
 	/**
 	 * Constructor.
@@ -93,52 +91,6 @@ class Payment_History_Shortcode {
 				'i18n'     => $this->get_i18n_strings(),
 			]
 		);
-	}
-
-	/**
-	 * Get all translatable strings for the JS frontend.
-	 *
-	 * @since 2.6.0
-	 * @return array<string,string>
-	 */
-	private function get_i18n_strings() {
-		return [
-			'cancel_at_eop'           => __( 'Cancel at end of billing period', 'sureforms' ),
-			'cancel_at_eop_desc'      => __( 'Keep access until %s. No more charges.', 'sureforms' ),
-			'cancel_immediately'      => __( 'Cancel immediately', 'sureforms' ),
-			'cancel_immediately_desc' => __( 'Lose access right away. No refund for remaining time.', 'sureforms' ),
-			'cancel_confirm_eop'      => __( 'Your "%1$s" will remain active until %2$s, then be cancelled. No further charges.', 'sureforms' ),
-			'cancel_confirm_now'      => __( 'Your "%s" will be cancelled immediately. You will lose access right away.', 'sureforms' ),
-			'are_you_sure'            => __( 'Are you sure?', 'sureforms' ),
-			'keep_subscription'       => __( 'Keep Subscription', 'sureforms' ),
-			'continue'                => __( 'Continue', 'sureforms' ),
-			'go_back'                 => __( 'Go Back', 'sureforms' ),
-			'yes_cancel'              => __( 'Yes, Cancel', 'sureforms' ),
-			'done'                    => __( 'Done', 'sureforms' ),
-			'subscription_cancelled'  => __( 'Subscription Cancelled', 'sureforms' ),
-			'cancel_subscription'     => __( 'Cancel Subscription', 'sureforms' ),
-			'back'                    => __( 'Back', 'sureforms' ),
-			'subscription'            => __( 'Subscription', 'sureforms' ),
-			'amount'                  => __( 'Amount', 'sureforms' ),
-			'next_payment'            => __( 'Next Payment', 'sureforms' ),
-			'cancelled_on'            => __( 'Cancelled On', 'sureforms' ),
-			'access_until'            => __( 'Access Until', 'sureforms' ),
-			'payment_method'          => __( 'Payment Method', 'sureforms' ),
-			'started'                 => __( 'Started', 'sureforms' ),
-			'form'                    => __( 'Form', 'sureforms' ),
-			'type'                    => __( 'Type', 'sureforms' ),
-			'gateway'                 => __( 'Gateway', 'sureforms' ),
-			'transaction_id'          => __( 'Transaction ID', 'sureforms' ),
-			'parent_subscription'     => __( 'Parent Subscription', 'sureforms' ),
-			'plan'                    => __( 'Plan', 'sureforms' ),
-			'status'                  => __( 'Status', 'sureforms' ),
-			'one_time_note'           => __( 'One-time payment. No recurring subscription associated.', 'sureforms' ),
-			'subscription_payment'    => __( 'Subscription Payment', 'sureforms' ),
-			'one_time_payment'        => __( 'One-time Payment', 'sureforms' ),
-			'processing'              => __( 'Processing...', 'sureforms' ),
-			'error'                   => __( 'Something went wrong. Please try again.', 'sureforms' ),
-			'choose_how_to_cancel'    => __( 'Choose how to cancel "%s"', 'sureforms' ),
-		];
 	}
 
 	/**
@@ -244,10 +196,117 @@ class Payment_History_Shortcode {
 		 *
 		 * @since 2.6.0
 		 * @param string               $output   The HTML output.
-		 * @param array<string,mixed>[] $payments The payment records.
+		 * @param array<array<string, mixed>> $payments The payment records.
 		 * @param array<string,string>  $atts     The shortcode attributes.
 		 */
 		return apply_filters( 'srfm_payment_history_output', is_string( $output ) ? $output : '', $payments, $atts );
+	}
+
+	// =========================================================================
+	// AJAX Handlers
+	// =========================================================================
+
+	/**
+	 * AJAX handler for frontend subscription cancellation.
+	 *
+	 * @since 2.6.0
+	 * @return void
+	 */
+	public function ajax_cancel_subscription() {
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ?? '' ) ), 'srfm_frontend_payment_nonce' ) ) {
+			wp_send_json_error( __( 'Security check failed.', 'sureforms' ) );
+		}
+
+		if ( ! is_user_logged_in() ) {
+			wp_send_json_error( __( 'You must be logged in.', 'sureforms' ) );
+		}
+
+		$payment_id  = isset( $_POST['payment_id'] ) ? absint( $_POST['payment_id'] ) : 0;
+		$cancel_type = isset( $_POST['cancel_type'] ) ? sanitize_text_field( wp_unslash( $_POST['cancel_type'] ) ) : 'eop';
+
+		if ( empty( $payment_id ) ) {
+			wp_send_json_error( __( 'Invalid payment data.', 'sureforms' ) );
+		}
+
+		$payment = Payments::get( $payment_id );
+		if ( ! $payment || ! $this->user_owns_payment( $payment, get_current_user_id() ) ) {
+			wp_send_json_error( __( 'Payment not found.', 'sureforms' ) );
+		}
+
+		$type = isset( $payment['type'] ) ? strval( $payment['type'] ) : '';
+		if ( 'subscription' !== $type || empty( $payment['subscription_id'] ) ) {
+			wp_send_json_error( __( 'This payment is not a subscription.', 'sureforms' ) );
+		}
+
+		/**
+		 * Filter to process subscription cancellation. Gateways hook into this.
+		 *
+		 * @since 2.6.0
+		 * @param array<string,mixed> $result      Default result.
+		 * @param array<string,mixed> $payment     Payment record.
+		 * @param string              $cancel_type Cancel type: 'eop' or 'now'.
+		 */
+		$result = apply_filters(
+			'srfm_process_subscription_cancellation',
+			[
+				'success' => false,
+				'message' => __( 'Cancellation not supported for this gateway.', 'sureforms' ),
+			],
+			$payment,
+			$cancel_type
+		);
+
+		if ( ! empty( $result['success'] ) ) {
+			wp_send_json_success( [ 'message' => isset( $result['message'] ) ? strval( $result['message'] ) : __( 'Subscription cancelled successfully.', 'sureforms' ) ] );
+		} else {
+			wp_send_json_error( isset( $result['message'] ) ? strval( $result['message'] ) : __( 'Failed to cancel subscription.', 'sureforms' ) );
+		}
+	}
+
+	/**
+	 * Get all translatable strings for the JS frontend.
+	 *
+	 * @since 2.6.0
+	 * @return array<string,string>
+	 */
+	private function get_i18n_strings() {
+		return [
+			'cancel_at_eop'           => __( 'Cancel at end of billing period', 'sureforms' ),
+			'cancel_at_eop_desc'      => __( 'Keep access until %s. No more charges.', 'sureforms' ),
+			'cancel_immediately'      => __( 'Cancel immediately', 'sureforms' ),
+			'cancel_immediately_desc' => __( 'Lose access right away. No refund for remaining time.', 'sureforms' ),
+			'cancel_confirm_eop'      => __( 'Your "%1$s" will remain active until %2$s, then be cancelled. No further charges.', 'sureforms' ),
+			'cancel_confirm_now'      => __( 'Your "%s" will be cancelled immediately. You will lose access right away.', 'sureforms' ),
+			'are_you_sure'            => __( 'Are you sure?', 'sureforms' ),
+			'keep_subscription'       => __( 'Keep Subscription', 'sureforms' ),
+			'continue'                => __( 'Continue', 'sureforms' ),
+			'go_back'                 => __( 'Go Back', 'sureforms' ),
+			'yes_cancel'              => __( 'Yes, Cancel', 'sureforms' ),
+			'done'                    => __( 'Done', 'sureforms' ),
+			'subscription_cancelled'  => __( 'Subscription Cancelled', 'sureforms' ),
+			'cancel_subscription'     => __( 'Cancel Subscription', 'sureforms' ),
+			'back'                    => __( 'Back', 'sureforms' ),
+			'subscription'            => __( 'Subscription', 'sureforms' ),
+			'amount'                  => __( 'Amount', 'sureforms' ),
+			'next_payment'            => __( 'Next Payment', 'sureforms' ),
+			'cancelled_on'            => __( 'Cancelled On', 'sureforms' ),
+			'access_until'            => __( 'Access Until', 'sureforms' ),
+			'payment_method'          => __( 'Payment Method', 'sureforms' ),
+			'started'                 => __( 'Started', 'sureforms' ),
+			'form'                    => __( 'Form', 'sureforms' ),
+			'type'                    => __( 'Type', 'sureforms' ),
+			'gateway'                 => __( 'Gateway', 'sureforms' ),
+			'transaction_id'          => __( 'Transaction ID', 'sureforms' ),
+			'parent_subscription'     => __( 'Parent Subscription', 'sureforms' ),
+			'plan'                    => __( 'Plan', 'sureforms' ),
+			'status'                  => __( 'Status', 'sureforms' ),
+			'one_time_note'           => __( 'One-time payment. No recurring subscription associated.', 'sureforms' ),
+			'subscription_payment'    => __( 'Subscription Payment', 'sureforms' ),
+			'one_time_payment'        => __( 'One-time Payment', 'sureforms' ),
+			'processing'              => __( 'Processing...', 'sureforms' ),
+			'error'                   => __( 'Something went wrong. Please try again.', 'sureforms' ),
+			'choose_how_to_cancel'    => __( 'Choose how to cancel "%s"', 'sureforms' ),
+		];
 	}
 
 	// =========================================================================
@@ -328,13 +387,13 @@ class Payment_History_Shortcode {
 		<div class="srfm-pd-section">
 			<div class="srfm-pd-section-header">
 				<span class="srfm-pd-section-title"><?php esc_html_e( 'Subscriptions', 'sureforms' ); ?></span>
-				<?php if ( ! empty( $count_text ) ) : ?>
+				<?php if ( ! empty( $count_text ) ) { ?>
 					<span class="srfm-pd-section-count"><?php echo esc_html( $count_text ); ?></span>
-				<?php endif; ?>
+				<?php } ?>
 			</div>
-			<?php foreach ( $subscriptions as $index => $sub ) : ?>
+			<?php foreach ( $subscriptions as $index => $sub ) { ?>
 				<?php $this->render_subscription_row( $sub, $index ); ?>
-			<?php endforeach; ?>
+			<?php } ?>
 		</div>
 		<?php
 	}
@@ -415,11 +474,11 @@ class Payment_History_Shortcode {
 					?>
 				</span>
 			</div>
-			<?php foreach ( $payments as $index => $payment ) : ?>
+			<?php foreach ( $payments as $index => $payment ) { ?>
 				<?php $this->render_payment_row( $payment, $index ); ?>
-			<?php endforeach; ?>
+			<?php } ?>
 
-			<?php if ( $total_pages > 1 ) : ?>
+			<?php if ( $total_pages > 1 ) { ?>
 			<div class="srfm-pd-pagination">
 				<span class="srfm-pd-pagination-info">
 					<?php
@@ -435,19 +494,19 @@ class Payment_History_Shortcode {
 					?>
 				</span>
 				<div class="srfm-pd-pagination-links">
-					<?php if ( $current_page > 1 ) : ?>
+					<?php if ( $current_page > 1 ) { ?>
 						<a href="<?php echo esc_url( add_query_arg( 'srfm_page', $current_page - 1 ) ); ?>" class="srfm-pd-pagination-link">
 							&laquo; <?php esc_html_e( 'Previous', 'sureforms' ); ?>
 						</a>
-					<?php endif; ?>
-					<?php if ( $current_page < $total_pages ) : ?>
+					<?php } ?>
+					<?php if ( $current_page < $total_pages ) { ?>
 						<a href="<?php echo esc_url( add_query_arg( 'srfm_page', $current_page + 1 ) ); ?>" class="srfm-pd-pagination-link">
 							<?php esc_html_e( 'Next', 'sureforms' ); ?> &raquo;
 						</a>
-					<?php endif; ?>
+					<?php } ?>
 				</div>
 			</div>
-			<?php endif; ?>
+			<?php } ?>
 		</div>
 		<?php
 	}
@@ -543,7 +602,7 @@ class Payment_History_Shortcode {
 			$form_title = $this->get_form_title( isset( $payment['form_id'] ) ? absint( $payment['form_id'] ) : 0 );
 
 			$tx_item = [
-				'id'        => ! empty( $payment['srfm_txn_id'] ) ? strval( $payment['srfm_txn_id'] ) : ( 'SF-' . absint( $payment['id'] ?? 0 ) ),
+				'id'        => ! empty( $payment['srfm_txn_id'] ) ? strval( $payment['srfm_txn_id'] ) : 'SF-' . absint( $payment['id'] ?? 0 ),
 				'paymentId' => absint( $payment['id'] ?? 0 ),
 				'form'      => $form_title,
 				'date'      => isset( $payment['created_at'] ) && is_string( $payment['created_at'] )
@@ -610,7 +669,7 @@ class Payment_History_Shortcode {
 		$interval       = $this->get_string_from_sources( 'interval', $payment_data, $extra );
 		$interval_count = $this->get_string_from_sources( 'interval_count', $payment_data, $extra );
 		if ( ! empty( $interval ) ) {
-			$data['interval_label'] = $this->format_interval( $interval, intval( $interval_count ?: '1' ) );
+			$data['interval_label'] = $this->format_interval( $interval, intval( $interval_count ? $interval_count : '1' ) );
 		}
 
 		$next_date = $this->get_string_from_sources( 'current_period_end', $payment_data, $extra );
@@ -777,7 +836,7 @@ class Payment_History_Shortcode {
 			'year'  => _x( 'yr', 'billing interval', 'sureforms' ),
 		];
 
-		$label = isset( $labels[ $interval ] ) ? $labels[ $interval ] : $interval;
+		$label = $labels[ $interval ] ?? $interval;
 		return $interval_count > 1 ? $interval_count . ' ' . $label : $label;
 	}
 
@@ -796,7 +855,7 @@ class Payment_History_Shortcode {
 			'past_due' => __( 'Past Due', 'sureforms' ),
 			'paused'   => __( 'Paused', 'sureforms' ),
 		];
-		return isset( $labels[ $status ] ) ? $labels[ $status ] : ucfirst( str_replace( '_', ' ', $status ) );
+		return $labels[ $status ] ?? ucfirst( str_replace( '_', ' ', $status ) );
 	}
 
 	/**
@@ -817,7 +876,7 @@ class Payment_History_Shortcode {
 			'processing'         => __( 'Processing', 'sureforms' ),
 			'active'             => __( 'Active', 'sureforms' ),
 		];
-		return isset( $labels[ $status ] ) ? $labels[ $status ] : ucfirst( str_replace( '_', ' ', $status ) );
+		return $labels[ $status ] ?? ucfirst( str_replace( '_', ' ', $status ) );
 	}
 
 	/**
@@ -838,7 +897,7 @@ class Payment_History_Shortcode {
 			'refunded'           => 'srfm-pd-badge--refunded',
 			'partially_refunded' => 'srfm-pd-badge--refunded',
 		];
-		return isset( $map[ $status ] ) ? $map[ $status ] : 'srfm-pd-badge--pending';
+		return $map[ $status ] ?? 'srfm-pd-badge--pending';
 	}
 
 	// =========================================================================
@@ -920,67 +979,6 @@ class Payment_History_Shortcode {
 		 * @param int                 $user_id WordPress user ID.
 		 */
 		return (bool) apply_filters( 'srfm_payment_history_user_owns_payment', false, $payment, $user_id );
-	}
-
-	// =========================================================================
-	// AJAX Handlers
-	// =========================================================================
-
-	/**
-	 * AJAX handler for frontend subscription cancellation.
-	 *
-	 * @since 2.6.0
-	 * @return void
-	 */
-	public function ajax_cancel_subscription() {
-		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ?? '' ) ), 'srfm_frontend_payment_nonce' ) ) {
-			wp_send_json_error( __( 'Security check failed.', 'sureforms' ) );
-		}
-
-		if ( ! is_user_logged_in() ) {
-			wp_send_json_error( __( 'You must be logged in.', 'sureforms' ) );
-		}
-
-		$payment_id  = isset( $_POST['payment_id'] ) ? absint( $_POST['payment_id'] ) : 0;
-		$cancel_type = isset( $_POST['cancel_type'] ) ? sanitize_text_field( wp_unslash( $_POST['cancel_type'] ) ) : 'eop';
-
-		if ( empty( $payment_id ) ) {
-			wp_send_json_error( __( 'Invalid payment data.', 'sureforms' ) );
-		}
-
-		$payment = Payments::get( $payment_id );
-		if ( ! $payment || ! $this->user_owns_payment( $payment, get_current_user_id() ) ) {
-			wp_send_json_error( __( 'Payment not found.', 'sureforms' ) );
-		}
-
-		$type = isset( $payment['type'] ) ? strval( $payment['type'] ) : '';
-		if ( 'subscription' !== $type || empty( $payment['subscription_id'] ) ) {
-			wp_send_json_error( __( 'This payment is not a subscription.', 'sureforms' ) );
-		}
-
-		/**
-		 * Filter to process subscription cancellation. Gateways hook into this.
-		 *
-		 * @since 2.6.0
-		 * @param array<string,mixed> $result      Default result.
-		 * @param array<string,mixed> $payment     Payment record.
-		 * @param string              $cancel_type Cancel type: 'eop' or 'now'.
-		 */
-		$result = apply_filters(
-			'srfm_process_subscription_cancellation',
-			[
-				'success' => false,
-				'message' => __( 'Cancellation not supported for this gateway.', 'sureforms' ),
-			],
-			$payment,
-			$cancel_type
-		);
-
-		if ( ! empty( $result['success'] ) ) {
-			wp_send_json_success( [ 'message' => isset( $result['message'] ) ? strval( $result['message'] ) : __( 'Subscription cancelled successfully.', 'sureforms' ) ] );
-		} else {
-			wp_send_json_error( isset( $result['message'] ) ? strval( $result['message'] ) : __( 'Failed to cancel subscription.', 'sureforms' ) );
-		}
 	}
 
 	// =========================================================================
