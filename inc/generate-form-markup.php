@@ -8,6 +8,7 @@
 
 namespace SRFM\Inc;
 
+use SRFM\Inc\Submit_Token;
 use SRFM\Inc\Traits\Get_Instance;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -95,13 +96,20 @@ class Generate_Form_Markup {
 			return Form_Restriction::display_form_restriction_message( $form_id );
 		}
 
-		// In form preview context (editor iframe), read formTheme from URL so downstream,
-		// hooks can skip post-meta CSS output for non-inherit themes.
+		// In form preview context (editor iframe), read formTheme from URL so the
+		// server-side render and downstream hooks respect the embed's theme choice.
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Preview context, nonce not required.
-		if ( empty( $block_attrs['formTheme'] ) && isset( $_GET['form_preview'] ) && 'true' === $_GET['form_preview'] && isset( $_GET['formTheme'] ) ) {
-			$preview_theme = sanitize_text_field( wp_unslash( $_GET['formTheme'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-			if ( in_array( $preview_theme, [ 'inherit', 'default', 'modern', 'classic', 'custom' ], true ) ) {
-				$block_attrs['formTheme'] = $preview_theme;
+		if ( empty( $block_attrs['formTheme'] ) && isset( $_GET['form_preview'] ) && 'true' === $_GET['form_preview'] ) {
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			if ( isset( $_GET['formTheme'] ) ) {
+				$preview_theme = sanitize_text_field( wp_unslash( $_GET['formTheme'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+				if ( in_array( $preview_theme, [ 'inherit', 'default', 'modern', 'classic', 'custom' ], true ) ) {
+					$block_attrs['formTheme'] = $preview_theme;
+				}
+			}
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			if ( isset( $_GET['textColor'] ) ) {
+				$block_attrs['textColor'] = Helper::sanitize_css_value( sanitize_text_field( wp_unslash( $_GET['textColor'] ) ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			}
 		}
 
@@ -121,10 +129,13 @@ class Generate_Form_Markup {
 		}
 
 		if ( $post && ! empty( $post->post_content ) ) {
+			// Filter to get the post content for the form.
+			$post_content = apply_filters( 'srfm_get_form_post_content', $post->post_content, $id );
+
 			if ( ! empty( $do_blocks ) ) {
-				$content = do_blocks( $post->post_content );
+				$content = do_blocks( $post_content );
 			} else {
-				$content = apply_filters( 'the_content', $post->post_content ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- wordpress hook
+				$content = apply_filters( 'the_content', $post_content ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- wordpress hook
 			}
 		}
 
@@ -566,17 +577,14 @@ class Generate_Form_Markup {
 				self::$current_block_attrs = [];
 				return ob_get_clean();
 			}
-			$get_nonces                      = Helper::get_frontend_nonces();
-			$unique_validation_nonce         = $get_nonces['unique_validation'];
-			$form_submit_nonce               = $get_nonces['form_submit'];
-			$should_update_form_markup_nonce = Helper::should_update_form_markup_nonce();
+			$submit_token = Submit_Token::generate( (int) $id );
 
 			?>
 				<form method="post" enctype="multipart/form-data" id="srfm-form-<?php echo esc_attr( Helper::get_string_value( $id ) ); ?>" class="srfm-form <?php echo esc_attr( 'sureforms_form' === $post_type ? 'srfm-single-form ' : '' ); ?>"
-				form-id="<?php echo esc_attr( Helper::get_string_value( $id ) ); ?>" after-submission="<?php echo esc_attr( $submission_action ); ?>" message-type="<?php echo esc_attr( $confirmation_type ? $confirmation_type : 'same page' ); ?>" success-url="<?php echo esc_attr( $success_url ? $success_url : '' ); ?>" ajaxurl="<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>" data-nonce="<?php echo esc_attr( $unique_validation_nonce ); ?>" data-submit-nonce="<?php echo esc_attr( $form_submit_nonce ); ?>" data-update-nonce="<?php echo esc_attr( $should_update_form_markup_nonce ? 'yes' : 'no' ); ?>"
+				form-id="<?php echo esc_attr( Helper::get_string_value( $id ) ); ?>" after-submission="<?php echo esc_attr( $submission_action ); ?>" message-type="<?php echo esc_attr( $confirmation_type ? $confirmation_type : 'same page' ); ?>" success-url="<?php echo esc_attr( $success_url ? $success_url : '' ); ?>" ajaxurl="<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>" data-submit-token="<?php echo esc_attr( $submit_token ); ?>"
 				>
 				<?php
-					wp_nonce_field( 'srfm-form-submit', 'sureforms_form_submit' );
+					// Submission security is handled via the HMAC token in data-submit-token.
 					$global_setting_options = get_option( 'srfm_security_settings_options' );
 					$honeypot_spam          = is_array( $global_setting_options ) && isset( $global_setting_options['srfm_honeypot'] ) ? $global_setting_options['srfm_honeypot'] : '';
 

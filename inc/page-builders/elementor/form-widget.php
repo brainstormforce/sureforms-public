@@ -909,8 +909,16 @@ class Form_Widget extends Widget_Base {
 		}
 
 		// Build gradient CSS string from Group_Control_Background settings.
+		// Use get_settings() (raw) instead of get_settings_for_display() because Elementor
+		// nullifies group control child fields when the parent 'background' type field
+		// is not explicitly saved (it uses our default 'gradient' but doesn't persist it).
 		if ( 'gradient' === ( $settings['bgType'] ?? '' ) ) {
-			$gradient_css = self::build_gradient_css( $settings );
+			/** Raw widget settings.
+			 *
+			 * @var array<string, mixed> $raw_settings
+			 */
+			$raw_settings = $this->get_settings();
+			$gradient_css = self::build_gradient_css( $raw_settings );
 			if ( $gradient_css ) {
 				$block_attrs['bgGradient'] = $gradient_css;
 			}
@@ -938,11 +946,20 @@ class Form_Widget extends Widget_Base {
 		 * any values it adds or modifies. Unsanitized values may be output
 		 * directly into CSS custom properties.
 		 *
-		 * @param array<string, mixed> $block_attrs Sanitized block attributes.
+		 * Uses get_settings() (raw) instead of get_settings_for_display() because Elementor
+		 * nullifies Group_Control_Background child fields when the parent 'background' type
+		 * field is not explicitly saved (defaults aren't persisted to the database).
+		 *
+		 * @param array<string, mixed> $block_attrs Block attributes.
 		 * @param array<string, mixed> $settings    Raw widget settings.
 		 * @since x.x.x
 		 */
-		return apply_filters( 'srfm_elementor_block_attrs', $block_attrs, $settings );
+		/** Raw widget settings for filter.
+		 *
+		 * @var array<string, mixed> $raw_settings_for_filter
+		 */
+		$raw_settings_for_filter = $this->get_settings();
+		return apply_filters( 'srfm_elementor_block_attrs', $block_attrs, $raw_settings_for_filter );
 	}
 
 	/**

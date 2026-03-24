@@ -43,18 +43,20 @@ $placeholder_color: #9ca3af;
 	width: 100%;
 }
 
-/* Add the separator after the second last item in the SureForms Settings Submenu */
-/* This css has been modified form nth-last child to nth-child */
-/* This is done because when the upgrade to pro is added, which is at the bottom, the nth last child will be changed */
-/* This will cause the css to be applied after the settings submenu instead of the entires */
-/* But using nth child will always count from the top and entires will always be at position 6 */
-#toplevel_page_sureforms_menu .wp-submenu li:nth-child( 6 )::after {
+/* Add a separator line before the Settings submenu item */
+/* Uses :has() to dynamically target the li right before Settings, so it works regardless of whether Quizzes or other items are added by Pro */
+#toplevel_page_sureforms_menu .wp-submenu li:has( + li > a[href*="sureforms_form_settings"] )::after {
 	content: "";
 	border-bottom: 1px solid rgb( 255 255 255 / 0.2 );
 	display: block;
 	float: left;
 	margin: 8px 0;
 	width: 100%;
+}
+
+/* Adding margin bottom to the Settings submenu item */
+#toplevel_page_sureforms_menu .wp-submenu li:has( > a[href*="sureforms_form_settings"] ) {
+	margin-bottom: 4px;
 }
 
 /* The url used here as the selector is the url for the upgrade to pro submenu */
@@ -334,6 +336,7 @@ $placeholder_color: #9ca3af;
 .toplevel_page_sureforms_menu,
 .sureforms_page_sureforms_entries,
 .sureforms_page_sureforms_payments,
+.sureforms_page_sureforms_quiz_entries,
 .sureforms_page_sureforms_learn {
 	#wpcontent {
 		padding: 0;

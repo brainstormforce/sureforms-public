@@ -334,7 +334,7 @@ export const getButtonControls = ( { attributes, setAttributes } ) => {
 								tooltip: __( 'Right', 'sureforms' ),
 							},
 							{
-								value: 'full',
+								value: 'justify',
 								icon: (
 									<FontAwesomeIcon icon={ faAlignJustify } />
 								),

@@ -191,13 +191,13 @@ import {
 			);
 			if ( submitContainer ) {
 				submitContainer.style.textAlign =
-					styling.buttonAlignment === 'full'
+					styling.buttonAlignment === 'justify'
 						? 'center'
 						: styling.buttonAlignment;
 				const btn = submitContainer.querySelector( 'button' );
 				if ( btn ) {
 					btn.style.width =
-						styling.buttonAlignment === 'full' ? '100%' : '';
+						styling.buttonAlignment === 'justify' ? '100%' : '';
 				}
 			}
 		}

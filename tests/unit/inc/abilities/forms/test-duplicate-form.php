@@ -74,6 +74,8 @@ class Test_Duplicate_Form_Ability extends TestCase {
 		$this->assertFalse( $annotations['readonly'] );
 		$this->assertFalse( $annotations['destructive'] );
 		$this->assertFalse( $annotations['idempotent'] );
+		$this->assertEquals( 2.0, $annotations['priority'] );
+		$this->assertFalse( $annotations['openWorldHint'] );
 	}
 
 	/**
@@ -84,6 +86,7 @@ class Test_Duplicate_Form_Ability extends TestCase {
 		$this->assertArrayHasKey( 'form_id', $schema['properties'] );
 		$this->assertArrayHasKey( 'title_suffix', $schema['properties'] );
 		$this->assertContains( 'form_id', $schema['required'] );
+		$this->assertFalse( $schema['additionalProperties'] );
 	}
 
 	/**
@@ -123,4 +126,6 @@ class Test_Duplicate_Form_Ability extends TestCase {
 
 		wp_delete_post( $result['new_form_id'], true );
 	}
+
+
 }

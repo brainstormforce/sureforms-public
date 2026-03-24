@@ -82,7 +82,7 @@ export default ( { attributes, setAttributes, clientId } ) => {
 		[ id ]
 	);
 
-	const { isMissing, hasResolved } = useSelect(
+	const { isMissing, hasResolved, isInlineButton } = useSelect(
 		( select ) => {
 			const hasResolvedValue = select( coreStore ).hasFinishedResolution(
 				'getEntityRecord',
@@ -99,6 +99,7 @@ export default ( { attributes, setAttributes, clientId } ) => {
 				canEdit,
 				isMissing: hasResolvedValue && ! form,
 				hasResolved: hasResolvedValue,
+				isInlineButton: Boolean( form?.meta?._srfm_is_inline_button ),
 				form,
 			};
 		},
@@ -293,7 +294,14 @@ export default ( { attributes, setAttributes, clientId } ) => {
 	} );
 	const layoutControls = getLayoutControls( { attributes, setAttributes } );
 	const fieldControls = getFieldControls( { attributes, setAttributes } );
-	const buttonControls = getButtonControls( { attributes, setAttributes } );
+	const allButtonControls = getButtonControls( { attributes, setAttributes } );
+
+	// Hide button alignment when the form uses a custom (inline) button —
+	// the inline button manages its own layout. Keep other button styling
+	// controls (added by Pro) so they still apply in custom theme mode.
+	const buttonControls = isInlineButton
+		? allButtonControls.filter( ( control ) => control.id !== 'buttonAlignment' )
+		: allButtonControls;
 
 	// If the form is not published or is missing, show a warning and allow the user to change the form.
 	if ( isMissing || ( status && 'publish' !== status ) ) {
@@ -464,20 +472,22 @@ export default ( { attributes, setAttributes, clientId } ) => {
 							) ) }
 						</PanelBody>
 
-						{ /* 5. Button */ }
-						<PanelBody
-							title={ __( 'Button', 'sureforms' ) }
-							initialOpen={ false }
-						>
-							{ buttonControls.map( ( control ) => (
-								<div
-									className="components-base-control"
-									key={ control.id }
-								>
-									{ control.component }
-								</div>
-							) ) }
-						</PanelBody>
+						{ /* 5. Button — hidden when no controls remain (e.g. default theme + inline button) */ }
+						{ buttonControls.length > 0 && (
+							<PanelBody
+								title={ __( 'Button', 'sureforms' ) }
+								initialOpen={ false }
+							>
+								{ buttonControls.map( ( control ) => (
+									<div
+										className="components-base-control"
+										key={ control.id }
+									>
+										{ control.component }
+									</div>
+								) ) }
+							</PanelBody>
+						) }
 
 						{ /* Pro can add additional panels via filter */ }
 						{ applyFilters( 'srfm.embed.additionalPanels', null, {
@@ -507,7 +517,7 @@ export default ( { attributes, setAttributes, clientId } ) => {
 							title="srfm-iframe"
 							src={
 								formUrl +
-								`?preview_id=${ id }&preview=true&form_preview=true&formTheme=${ encodeURIComponent( attributes.formTheme || 'inherit' ) }`
+								`?preview_id=${ id }&preview=true&form_preview=true&formTheme=${ encodeURIComponent( attributes.formTheme || 'inherit' ) }${ attributes.textColor ? '&textColor=' + encodeURIComponent( attributes.textColor ) : '' }`
 							}
 							width={ '100%' }
 						/>

@@ -568,6 +568,23 @@ abstract class Controls_Stack
     {
     }
     /**
+     * Get settings.
+     *
+     * Retrieve all the settings or a specific setting from the element's raw data
+     * without processing dynamic tags or filtering by active conditions.
+     *
+     * @since 1.4.0
+     * @access public
+     *
+     * @param string $setting Optional. The key of the requested setting.
+     *                        Default is null.
+     *
+     * @return mixed The settings.
+     */
+    public function get_settings($setting = null)
+    {
+    }
+    /**
      * Parse dynamic settings.
      *
      * Retrieve the settings with rendered dynamic tags.

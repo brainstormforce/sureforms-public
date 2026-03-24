@@ -6,6 +6,9 @@
    - `forms/` — form CRUD operations
    - `entries/` — entry/submission operations
    - `embedding/` — shortcodes, block markup, rendering
+   - `settings/` — global settings read/write
+   - `analytics/` — form analytics and reporting
+   - `export/` — form and entry import/export
 2. Register it in `Abilities_Registrar::register_abilities()`
 
 ## Abstract_Ability Contract
@@ -46,8 +49,13 @@ inc/abilities/
 │   ├── get-entry.php           # readonly, idempotent — decrypted form_data
 │   ├── update-entry-status.php # write, idempotent — read/unread/trash/restore
 │   └── delete-entry.php        # destructive — permanent delete
-└── embedding/
-    └── get-shortcode.php       # readonly, idempotent
+├── embedding/
+│   └── get-shortcode.php       # readonly, idempotent
+├── settings/
+│   ├── get-global-settings.php    # readonly, idempotent — all setting categories
+│   └── update-global-settings.php # write, idempotent — delegates to Global_Settings
+└── analytics/
+    └── get-form-analytics.php     # readonly, idempotent — submission date queries
 ```
 
 ## Extensibility
