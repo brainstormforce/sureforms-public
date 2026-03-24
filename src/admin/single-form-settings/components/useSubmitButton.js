@@ -71,7 +71,8 @@ const SubmitButton = ( props ) => {
 };
 
 export default function useSubmitButton( args ) {
-	const { isInlineButtonBlockPresent, updateMeta, editorMode } = args;
+	const { isInlineButtonBlockPresent, updateMeta, editorMode, documentBody } =
+		args;
 
 	function addSubmitButton( elm ) {
 		if (
@@ -89,7 +90,7 @@ export default function useSubmitButton( args ) {
 
 			if ( getBlockInserterDiv ) {
 				createRoot( getBlockInserterDiv ).render(
-					<BlockInserterWrapper />
+					<BlockInserterWrapper documentBody={ documentBody } />
 				);
 			}
 		}
@@ -109,14 +110,18 @@ export default function useSubmitButton( args ) {
 	}
 
 	useEffect( () => {
+		if ( ! documentBody ) {
+			return;
+		}
+
 		setTimeout( () => {
-			const elm = document.querySelector(
+			const elm = documentBody.querySelector(
 				'.block-editor-block-list__layout'
 			);
 
 			// If Custom Button is present, remove the default button.
 			if ( isInlineButtonBlockPresent ) {
-				const submitBtn = document.querySelectorAll(
+				const submitBtn = documentBody.querySelectorAll(
 					'.srfm-submit-btn-container'
 				);
 				if ( submitBtn.length > 0 ) {
@@ -131,7 +136,7 @@ export default function useSubmitButton( args ) {
 				}
 
 				// remove duplicated submit button from the view after inline button is removed
-				const submitBtn = document.querySelectorAll(
+				const submitBtn = documentBody.querySelectorAll(
 					'.srfm-submit-btn-container'
 				);
 				if ( submitBtn.length > 1 ) {
@@ -139,7 +144,7 @@ export default function useSubmitButton( args ) {
 				}
 
 				// remove duplicated inserter from the view after inline button is removed
-				const appender = document.querySelectorAll(
+				const appender = documentBody.querySelectorAll(
 					'.srfm-custom-block-inserter'
 				);
 				if ( appender.length > 1 ) {
@@ -147,5 +152,5 @@ export default function useSubmitButton( args ) {
 				}
 			}
 		}, 200 );
-	}, [ isInlineButtonBlockPresent, editorMode ] );
+	}, [ isInlineButtonBlockPresent, editorMode, documentBody ] );
 }

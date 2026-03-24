@@ -16,6 +16,7 @@ import { compose } from '@wordpress/compose';
 import AddStaticStyles from '@Controls/AddStaticStyles';
 import AddInitialAttr from '@Controls/addInitialAttr';
 import { useGetCurrentFormId } from '@SrfmAttributes/getFormId';
+import { useBlockProps } from '@wordpress/block-editor';
 
 const UAGBAdvancedHeading = ( props ) => {
 	const {
@@ -51,6 +52,8 @@ const UAGBAdvancedHeading = ( props ) => {
 		descriptionHasDynamicContent,
 	};
 
+	const blockProps = useBlockProps();
+
 	useEffect( () => {
 		responsiveConditionPreview( props );
 	}, [ UAGHideDesktop, UAGHideTab, UAGHideMob, deviceType ] );
@@ -81,12 +84,12 @@ const UAGBAdvancedHeading = ( props ) => {
 	);
 
 	return (
-		<>
+		<div { ...blockProps }>
 			<DynamicCSSLoader { ...{ blockStyling } } />
 			<DynamicFontLoader { ...{ attributes } } />
 			{ isSelected && <Settings { ...props } /> }
 			<Render { ...props } />
-		</>
+		</div>
 	);
 };
 

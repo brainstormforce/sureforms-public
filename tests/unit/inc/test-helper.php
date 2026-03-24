@@ -2228,6 +2228,28 @@ class Test_Helper extends TestCase {
     }
 
     /**
+     * Test validate_date with valid and invalid date strings.
+     */
+    public function test_validate_date() {
+        // Valid dates.
+        $this->assertTrue( Helper::validate_date( '2025-01-01' ) );
+        $this->assertTrue( Helper::validate_date( '2024-02-29' ) ); // Leap year.
+        $this->assertTrue( Helper::validate_date( '2000-12-31' ) );
+        $this->assertTrue( Helper::validate_date( '1999-06-15' ) );
+
+        // Invalid dates.
+        $this->assertFalse( Helper::validate_date( '2025-13-01' ) ); // Invalid month.
+        $this->assertFalse( Helper::validate_date( '2025-00-01' ) ); // Zero month.
+        $this->assertFalse( Helper::validate_date( '2023-02-29' ) ); // Non-leap year.
+        $this->assertFalse( Helper::validate_date( '2025-04-31' ) ); // April has 30 days.
+        $this->assertFalse( Helper::validate_date( 'not-a-date' ) );
+        $this->assertFalse( Helper::validate_date( '' ) );
+        $this->assertFalse( Helper::validate_date( '01-01-2025' ) ); // Wrong format (d-m-Y).
+        $this->assertFalse( Helper::validate_date( '2025/01/01' ) ); // Wrong separator.
+        $this->assertFalse( Helper::validate_date( '2025-1-1' ) );   // Missing leading zeros.
+    }
+
+    /**
      * Test map_slug_to_submission_data decodes rawurlencode'd array values.
      */
     public function test_map_slug_to_submission_data_decodes_upload_urls() {

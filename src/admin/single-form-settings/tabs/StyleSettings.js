@@ -1,11 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import { useSelect, useDispatch } from '@wordpress/data';
-import {
-	useState,
-	useEffect,
-	useRef,
-	useLayoutEffect,
-} from '@wordpress/element';
+import { useState, useEffect } from '@wordpress/element';
 import { store as editorStore } from '@wordpress/editor';
 import { applyFilters } from '@wordpress/hooks';
 import AdvancedPopColorControl from '@Components/color-control/advanced-pop-color-control.js';
@@ -33,7 +28,8 @@ import UpgradePrompt from '@Admin/single-form-settings/components/UpgradePrompt'
 
 function StyleSettings( props ) {
 	const { editPost } = useDispatch( editorStore );
-	const { defaultKeys, isInlineButtonBlockPresent } = props;
+	const { defaultKeys, isInlineButtonBlockPresent, iframeBody, editorMode, rootHtmlTag } =
+		props;
 
 	let sureformsKeys = useSelect(
 		( select ) => {
@@ -44,22 +40,11 @@ function StyleSettings( props ) {
 		[ editorStore ]
 	);
 	const formStyling = sureformsKeys?._srfm_forms_styling || {};
-	const rootRef = useRef( null );
-	const editorRef = useRef( null );
+	const rootRef = iframeBody;
 
-	useLayoutEffect( () => {
-		rootRef.current = document.documentElement.querySelector( 'body' );
-		editorRef.current = rootRef.current?.querySelector(
-			'.editor-styles-wrapper'
-		);
-	}, [] );
 	const deviceType = useDeviceType();
-	const [ submitBtn, setSubmitBtn ] = useState(
-		document.querySelector( '.srfm-submit-richtext' )
-	);
-	const [ submitBtnCtn, setSubmitBtnCtn ] = useState(
-		document.querySelector( '.srfm-submit-btn-container' )
-	);
+	const [ submitBtn, setSubmitBtn ] = useState( null );
+	const [ submitBtnCtn, setSubmitBtnCtn ] = useState( null );
 	const [ fieldSpacing, setFieldSpacing ] = useState(
 		formStyling?.field_spacing || 'medium'
 	);
@@ -128,23 +113,28 @@ function StyleSettings( props ) {
 	// Apply the sizings when field spacing changes.
 	useEffect( () => {
 		applyFieldSpacing( fieldSpacing );
-	}, [ fieldSpacing ] );
+	}, [ fieldSpacing, editorMode, rootHtmlTag ] );
 
 	// if device type is desktop then change the submit button
 	useEffect( () => {
 		setTimeout( () => {
 			setSubmitBtnCtn(
-				document.querySelector( '.srfm-submit-btn-container' )
+				rootRef.querySelector( '.srfm-submit-btn-container' )
 			);
-			setSubmitBtn( document.querySelector( '.srfm-submit-richtext' ) );
+			setSubmitBtn( rootRef.querySelector( '.srfm-submit-richtext' ) );
 			submitButtonInherit();
 		}, 1000 );
-	}, [ deviceType, submitBtn, sureformsKeys._srfm_inherit_theme_button ] );
+	}, [
+		deviceType,
+		sureformsKeys._srfm_inherit_theme_button,
+		editorMode,
+		rootRef,
+	] );
 
 	const onHandleChange = ( updatedSettings ) => {
 		const [ key, value ] = Object.entries( updatedSettings )[ 0 ];
 
-		addStyleInRoot( rootRef.current, getCSSProperties( key, value ) );
+		addStyleInRoot( rootHtmlTag, getCSSProperties( key, value ) );
 		const formStylingSettings = {
 			...formStyling,
 			...updatedSettings,
@@ -205,7 +195,7 @@ function StyleSettings( props ) {
 		}
 		key_id = key + '_id';
 
-		addStyleInRoot( rootRef.current, getCSSProperties( key, imageURL ) );
+		addStyleInRoot( rootHtmlTag, getCSSProperties( key, imageURL ) );
 
 		editPost( {
 			meta: {
@@ -250,7 +240,7 @@ function StyleSettings( props ) {
 	useEffect( () => {
 		// Update the classes on the editor based on the background and overlay types.
 		updateEditorBackgroundClasses( bg_type, bg_gradient_overlay_type );
-	}, [ bg_type, bg_gradient_overlay_type, bg_image ] );
+	}, [ bg_type, bg_gradient_overlay_type, bg_image, rootRef, editorMode ] );
 
 	useEffect( () => {
 		if ( sureformsKeys ) {
@@ -388,7 +378,7 @@ function StyleSettings( props ) {
 						  ),
 			};
 
-			addStyleInRoot( rootRef.current, cssProperties );
+			addStyleInRoot( rootHtmlTag, cssProperties );
 		} else {
 			sureformsKeys = defaultKeys;
 			editPost( {
@@ -401,6 +391,8 @@ function StyleSettings( props ) {
 		overlayGradientOptions,
 		bg_gradient,
 		bg_overlay_gradient,
+		rootHtmlTag,
+		editorMode,
 	] );
 
 	function updateMeta( option, value ) {
@@ -422,7 +414,7 @@ function StyleSettings( props ) {
 				break;
 		}
 
-		addStyleInRoot( rootRef.current, cssProperties );
+		addStyleInRoot( rootHtmlTag, cssProperties );
 
 		const option_array = {};
 
@@ -452,7 +444,7 @@ function StyleSettings( props ) {
 			srfm_admin?.field_spacing_vars[ sizingValue ] || {};
 		const finalSize = { ...baseSize, ...overrideSize };
 
-		addStyleInRoot( rootRef.current, finalSize );
+		addStyleInRoot( rootHtmlTag, finalSize );
 	}
 
 	/**
@@ -465,7 +457,7 @@ function StyleSettings( props ) {
 	 * @since 0.0.7
 	 */
 	function updateFormStyling( option, value ) {
-		addStyleInRoot( rootRef.current, getCSSProperties( option, value ) );
+		addStyleInRoot( rootHtmlTag, getCSSProperties( option, value ) );
 
 		editPost( {
 			meta: {
@@ -709,14 +701,10 @@ function StyleSettings( props ) {
 			color: 'srfm-overlay-color',
 		};
 
-		editorRef.current?.classList.remove(
-			...Object.values( backgroundClasses )
-		);
-		editorRef.current?.classList.remove(
-			...Object.values( overlayClasses )
-		);
+		rootRef?.classList.remove( ...Object.values( backgroundClasses ) );
+		rootRef?.classList.remove( ...Object.values( overlayClasses ) );
 
-		editorRef.current?.classList.add(
+		rootRef?.classList.add(
 			backgroundClasses[ backgroundType ] || backgroundClasses.default
 		);
 
@@ -726,7 +714,7 @@ function StyleSettings( props ) {
 			overlayType &&
 			overlayClasses[ overlayType ]
 		) {
-			editorRef.current?.classList.add( overlayClasses[ overlayType ] );
+			rootRef?.classList.add( overlayClasses[ overlayType ] );
 		}
 	};
 
@@ -1228,6 +1216,7 @@ function StyleSettings( props ) {
 		editPost,
 		formStyling,
 		updateFormStyling,
+		editorMode,
 	} );
 
 	// Append the advanced panel at the end.
