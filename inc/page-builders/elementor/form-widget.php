@@ -981,10 +981,14 @@ class Form_Widget extends Widget_Base {
 
 		$dimensions    = $settings[ $control_key ];
 		$allowed_units = [ 'px', '%', 'em' ];
-		$unit          = in_array( $dimensions['unit'] ?? 'px', $allowed_units, true ) ? ( $dimensions['unit'] ?? 'px' ) : 'px';
+		$raw_unit      = $dimensions['unit'] ?? 'px';
+		$unit          = in_array( $raw_unit, $allowed_units, true ) ? $raw_unit : 'px';
 		$sides         = [ 'top', 'right', 'bottom', 'left' ];
 
 		foreach ( $sides as $side ) {
+			if ( ! isset( $dimensions[ $side ] ) ) {
+				continue;
+			}
 			if ( ! empty( $dimensions[ $side ] ) || '0' === $dimensions[ $side ] ) {
 				$block_attrs[ $control_key . ucfirst( $side ) ] = $dimensions[ $side ];
 			}

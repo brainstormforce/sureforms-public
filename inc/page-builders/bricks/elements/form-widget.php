@@ -593,7 +593,8 @@ class Form_Widget extends \Bricks\Element {
 
 		$dims          = $settings[ $setting_key ];
 		$allowed_units = [ 'px', 'em', 'rem', '%', 'vw', 'vh' ];
-		$unit          = in_array( $dims['unit'] ?? 'px', $allowed_units, true ) ? $dims['unit'] : 'px';
+		$raw_unit      = $dims['unit'] ?? 'px';
+		$unit          = in_array( $raw_unit, $allowed_units, true ) ? $raw_unit : 'px';
 
 		foreach ( [ 'top', 'right', 'bottom', 'left' ] as $side ) {
 			if ( isset( $dims[ $side ] ) && '' !== (string) $dims[ $side ] ) {

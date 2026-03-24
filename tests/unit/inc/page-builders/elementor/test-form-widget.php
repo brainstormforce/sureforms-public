@@ -487,6 +487,27 @@ class Test_Form_Widget extends TestCase {
 	}
 
 	/**
+	 * Test get_block_attrs defaults to px when dimension unit key is missing.
+	 */
+	public function test_get_block_attrs_missing_unit_defaults_to_px(): void {
+		$widget   = $this->create_widget_instance();
+		$settings = [
+			'formTheme'   => 'classic',
+			'formPadding' => [
+				'top'   => '10',
+				'right' => '20',
+			],
+		];
+
+		$result = $this->invoke_get_block_attrs( $widget, $settings );
+
+		$this->assertSame( '10', $result['formPaddingTop'] );
+		$this->assertSame( '20', $result['formPaddingRight'] );
+		$this->assertArrayHasKey( 'formPaddingUnit', $result );
+		$this->assertSame( 'px', $result['formPaddingUnit'] );
+	}
+
+	/**
 	 * Test get_block_attrs sanitizes background image URL with esc_url_raw.
 	 */
 	public function test_get_block_attrs_bg_image_url_sanitized(): void {
