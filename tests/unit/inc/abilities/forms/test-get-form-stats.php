@@ -74,6 +74,8 @@ class Test_Get_Form_Stats extends TestCase {
 		$this->assertTrue( $annotations['readonly'] );
 		$this->assertFalse( $annotations['destructive'] );
 		$this->assertTrue( $annotations['idempotent'] );
+		$this->assertEquals( 1.0, $annotations['priority'] );
+		$this->assertFalse( $annotations['openWorldHint'] );
 	}
 
 	/**
@@ -86,6 +88,7 @@ class Test_Get_Form_Stats extends TestCase {
 		if ( isset( $schema['required'] ) ) {
 			$this->assertNotContains( 'form_id', $schema['required'] );
 		}
+		$this->assertFalse( $schema['additionalProperties'] );
 	}
 
 	/**
@@ -138,4 +141,6 @@ class Test_Get_Form_Stats extends TestCase {
 		$this->assertIsArray( $result );
 		$this->assertArrayHasKey( 'total_entries', $result );
 	}
+
+
 }

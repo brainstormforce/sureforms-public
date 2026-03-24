@@ -72,8 +72,10 @@ class Test_Update_Form extends TestCase {
 	public function test_get_annotations() {
 		$annotations = $this->ability->get_annotations();
 		$this->assertFalse( $annotations['readonly'] );
-		$this->assertFalse( $annotations['destructive'] );
+		$this->assertTrue( $annotations['destructive'] );
 		$this->assertTrue( $annotations['idempotent'] );
+		$this->assertEquals( 2.0, $annotations['priority'] );
+		$this->assertFalse( $annotations['openWorldHint'] );
 	}
 
 	/**
@@ -85,6 +87,7 @@ class Test_Update_Form extends TestCase {
 		$this->assertArrayHasKey( 'title', $schema['properties'] );
 		$this->assertArrayHasKey( 'status', $schema['properties'] );
 		$this->assertContains( 'form_id', $schema['required'] );
+		$this->assertFalse( $schema['additionalProperties'] );
 	}
 
 	/**
@@ -235,4 +238,6 @@ class Test_Update_Form extends TestCase {
 
 		$this->assertNotContains( 'title', $result['updated_fields'] );
 	}
+
+
 }
