@@ -1,7 +1,7 @@
 /**
  * Payment History Block — Edit.
  *
- * @since 2.6.0
+ * @since x.x.x
  */
 
 import { __ } from '@wordpress/i18n';
@@ -10,11 +10,10 @@ import {
 	PanelBody,
 	RangeControl,
 	ToggleControl,
-	SelectControl,
 } from '@wordpress/components';
 
 export default function Edit( { attributes, setAttributes } ) {
-	const { perPage, showSubscription, gateway } = attributes;
+	const { perPage, showSubscription } = attributes;
 
 	const blockProps = useBlockProps( {
 		className: 'srfm-payment-history-block-preview',
@@ -47,27 +46,6 @@ export default function Edit( { attributes, setAttributes } ) {
 						}
 						help={ __(
 							'Show a dedicated subscriptions section above payment history.',
-							'sureforms'
-						) }
-					/>
-					<SelectControl
-						label={ __( 'Payment Gateway', 'sureforms' ) }
-						value={ gateway }
-						options={ [
-							{
-								label: __( 'All Gateways', 'sureforms' ),
-								value: '',
-							},
-							{
-								label: __( 'Stripe', 'sureforms' ),
-								value: 'stripe',
-							},
-						] }
-						onChange={ ( value ) =>
-							setAttributes( { gateway: value } )
-						}
-						help={ __(
-							'Filter to show payments from a specific gateway only.',
 							'sureforms'
 						) }
 					/>

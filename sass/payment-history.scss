@@ -2,7 +2,7 @@
  * Payment History Shortcode Styles.
  *
  * @package sureforms
- * @since 2.6.0
+ * @since x.x.x
  */
 
 /* ==========================================================================
@@ -47,7 +47,7 @@
 	border: 1px solid #e5e7eb;
 	border-radius: 12px;
 	overflow: hidden;
-	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+	box-shadow: 0 1px 3px rgba( 0, 0, 0, 0.06 );
 }
 
 .srfm-pd-section-header {
@@ -296,7 +296,7 @@
 .srfm-pd-overlay {
 	position: fixed;
 	inset: 0;
-	background: rgba(0, 0, 0, 0.4);
+	background: rgba( 0, 0, 0, 0.4 );
 	display: none;
 	align-items: center;
 	justify-content: center;
@@ -313,18 +313,18 @@
 	width: 480px;
 	max-height: 90vh;
 	overflow-y: auto;
-	box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+	box-shadow: 0 20px 60px rgba( 0, 0, 0, 0.2 );
 	animation: srfmPdSlideUp 0.2s ease;
 }
 
 @keyframes srfmPdSlideUp {
 	from {
 		opacity: 0;
-		transform: translateY(16px);
+		transform: translateY( 16px );
 	}
 	to {
 		opacity: 1;
-		transform: translateY(0);
+		transform: translateY( 0 );
 	}
 }
 
@@ -625,7 +625,7 @@
    Responsive
    ========================================================================== */
 
-@media (max-width: 600px) {
+@media ( max-width: 600px ) {
 	.srfm-pd-sub-row {
 		flex-wrap: wrap;
 		gap: 8px;

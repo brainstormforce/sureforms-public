@@ -6,7 +6,7 @@
  * and overlay detail panels for logged-in users.
  *
  * @package sureforms
- * @since 2.6.0
+ * @since x.x.x
  */
 
 namespace SRFM\Inc\Payments;
@@ -21,7 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Payment History Shortcode class.
  *
- * @since 2.6.0
+ * @since x.x.x
  */
 class Payment_History_Shortcode {
 	use Get_Instance;
@@ -34,7 +34,7 @@ class Payment_History_Shortcode {
 	/**
 	 * Constructor.
 	 *
-	 * @since 2.6.0
+	 * @since x.x.x
 	 */
 	public function __construct() {
 		add_shortcode( self::SHORTCODE_TAG, [ $this, 'render' ] );
@@ -47,7 +47,7 @@ class Payment_History_Shortcode {
 	/**
 	 * Conditionally enqueue assets when the shortcode is present on the page.
 	 *
-	 * @since 2.6.0
+	 * @since x.x.x
 	 * @return void
 	 */
 	public function enqueue_assets() {
@@ -97,7 +97,7 @@ class Payment_History_Shortcode {
 	 * Render the payment history shortcode.
 	 *
 	 * @param array<string,string>|string $atts Shortcode attributes.
-	 * @since 2.6.0
+	 * @since x.x.x
 	 * @return string HTML output.
 	 */
 	public function render( $atts ) {
@@ -106,7 +106,6 @@ class Payment_History_Shortcode {
 				'per_page'          => '10',
 				'show_subscription' => 'true',
 				'show_renewal'      => 'true',
-				'gateway'           => '',
 			],
 			$atts,
 			self::SHORTCODE_TAG
@@ -137,7 +136,7 @@ class Payment_History_Shortcode {
 		}
 		$offset = ( $current_page - 1 ) * $per_page;
 
-		/** @var array<string,mixed> $query_args */
+		/** Query arguments for fetching payments. @var array<string,mixed> $query_args */
 		$query_args = [
 			'where'   => $where,
 			'limit'   => $per_page,
@@ -149,7 +148,7 @@ class Payment_History_Shortcode {
 		/**
 		 * Filter the query arguments before fetching payments.
 		 *
-		 * @since 2.6.0
+		 * @since x.x.x
 		 * @param array<string,mixed> $query_args Query arguments for Payments::get_all().
 		 * @param int                 $user_id    Current user ID.
 		 */
@@ -194,7 +193,7 @@ class Payment_History_Shortcode {
 		/**
 		 * Filter the final payment history HTML output.
 		 *
-		 * @since 2.6.0
+		 * @since x.x.x
 		 * @param string               $output   The HTML output.
 		 * @param array<array<string, mixed>> $payments The payment records.
 		 * @param array<string,string>  $atts     The shortcode attributes.
@@ -209,7 +208,7 @@ class Payment_History_Shortcode {
 	/**
 	 * AJAX handler for frontend subscription cancellation.
 	 *
-	 * @since 2.6.0
+	 * @since x.x.x
 	 * @return void
 	 */
 	public function ajax_cancel_subscription() {
@@ -241,7 +240,7 @@ class Payment_History_Shortcode {
 		/**
 		 * Filter to process subscription cancellation. Gateways hook into this.
 		 *
-		 * @since 2.6.0
+		 * @since x.x.x
 		 * @param array<string,mixed> $result      Default result.
 		 * @param array<string,mixed> $payment     Payment record.
 		 * @param string              $cancel_type Cancel type: 'eop' or 'now'.
@@ -266,16 +265,19 @@ class Payment_History_Shortcode {
 	/**
 	 * Get all translatable strings for the JS frontend.
 	 *
-	 * @since 2.6.0
+	 * @since x.x.x
 	 * @return array<string,string>
 	 */
 	private function get_i18n_strings() {
 		return [
 			'cancel_at_eop'           => __( 'Cancel at end of billing period', 'sureforms' ),
+			/* translators: %s: date until which access remains */
 			'cancel_at_eop_desc'      => __( 'Keep access until %s. No more charges.', 'sureforms' ),
 			'cancel_immediately'      => __( 'Cancel immediately', 'sureforms' ),
 			'cancel_immediately_desc' => __( 'Lose access right away. No refund for remaining time.', 'sureforms' ),
+			/* translators: %1$s: subscription name, %2$s: date until which access remains */
 			'cancel_confirm_eop'      => __( 'Your "%1$s" will remain active until %2$s, then be cancelled. No further charges.', 'sureforms' ),
+			/* translators: %s: subscription name */
 			'cancel_confirm_now'      => __( 'Your "%s" will be cancelled immediately. You will lose access right away.', 'sureforms' ),
 			'are_you_sure'            => __( 'Are you sure?', 'sureforms' ),
 			'keep_subscription'       => __( 'Keep Subscription', 'sureforms' ),
@@ -305,6 +307,7 @@ class Payment_History_Shortcode {
 			'one_time_payment'        => __( 'One-time Payment', 'sureforms' ),
 			'processing'              => __( 'Processing...', 'sureforms' ),
 			'error'                   => __( 'Something went wrong. Please try again.', 'sureforms' ),
+			/* translators: %s: subscription name */
 			'choose_how_to_cancel'    => __( 'Choose how to cancel "%s"', 'sureforms' ),
 		];
 	}
@@ -317,7 +320,7 @@ class Payment_History_Shortcode {
 	 * Get user subscriptions, deduplicated by subscription_id.
 	 *
 	 * @param array<int,array<int,array<string,string>>> $where WHERE conditions.
-	 * @since 2.6.0
+	 * @since x.x.x
 	 * @return array<int,array<string,mixed>>
 	 */
 	private function get_user_subscriptions( $where ) {
@@ -357,7 +360,7 @@ class Payment_History_Shortcode {
 	 * Render the subscriptions section.
 	 *
 	 * @param array<int,array<string,mixed>> $subscriptions Subscription records.
-	 * @since 2.6.0
+	 * @since x.x.x
 	 * @return void
 	 */
 	private function render_subscriptions_section( $subscriptions ) {
@@ -403,7 +406,7 @@ class Payment_History_Shortcode {
 	 *
 	 * @param array<string,mixed> $sub   Subscription record.
 	 * @param int                 $index Row index.
-	 * @since 2.6.0
+	 * @since x.x.x
 	 * @return void
 	 */
 	private function render_subscription_row( $sub, $index ) {
@@ -459,7 +462,7 @@ class Payment_History_Shortcode {
 	 * @param int                            $current_page  Current page.
 	 * @param int                            $total_pages   Total pages.
 	 * @param int                            $total_count   Total payment count.
-	 * @since 2.6.0
+	 * @since x.x.x
 	 * @return void
 	 */
 	private function render_payments_section( $payments, $current_page, $total_pages, $total_count ) {
@@ -516,7 +519,7 @@ class Payment_History_Shortcode {
 	 *
 	 * @param array<string,mixed> $payment Payment record.
 	 * @param int                 $index   Row index.
-	 * @since 2.6.0
+	 * @since x.x.x
 	 * @return void
 	 */
 	private function render_payment_row( $payment, $index ) {
@@ -557,7 +560,7 @@ class Payment_History_Shortcode {
 	 *
 	 * @param array<int,array<string,mixed>> $subscriptions Subscription records.
 	 * @param array<int,array<string,mixed>> $payments      Payment records.
-	 * @since 2.6.0
+	 * @since x.x.x
 	 * @return void
 	 */
 	private function output_js_data( $subscriptions, $payments ) {
@@ -648,7 +651,7 @@ class Payment_History_Shortcode {
 	 * Extract subscription-specific data from a payment record.
 	 *
 	 * @param array<string,mixed> $payment Payment record.
-	 * @since 2.6.0
+	 * @since x.x.x
 	 * @return array{plan_name:string,interval_label:string,next_payment:string,payment_method:string,cancelled_on:string,access_until:string}
 	 */
 	private function extract_subscription_data( $payment ) {
@@ -703,7 +706,7 @@ class Payment_History_Shortcode {
 	 * Parse a JSON field that may be a string or already an array.
 	 *
 	 * @param mixed $value Field value.
-	 * @since 2.6.0
+	 * @since x.x.x
 	 * @return array<string,mixed>
 	 */
 	private function parse_json_field( $value ) {
@@ -723,7 +726,7 @@ class Payment_History_Shortcode {
 	 * @param string              $key   Key to look for.
 	 * @param array<string,mixed> $data1 Primary data source.
 	 * @param array<string,mixed> $data2 Fallback data source.
-	 * @since 2.6.0
+	 * @since x.x.x
 	 * @return string
 	 */
 	private function get_string_from_sources( $key, $data1, $data2 ) {
@@ -740,7 +743,7 @@ class Payment_History_Shortcode {
 	 * Format a timestamp (numeric or date string) to a localized date.
 	 *
 	 * @param string $value Timestamp or date string.
-	 * @since 2.6.0
+	 * @since x.x.x
 	 * @return string Formatted date.
 	 */
 	private function format_timestamp( $value ) {
@@ -754,7 +757,7 @@ class Payment_History_Shortcode {
 	 * Get the form title from form_id.
 	 *
 	 * @param int $form_id Form post ID.
-	 * @since 2.6.0
+	 * @since x.x.x
 	 * @return string Form title.
 	 */
 	private function get_form_title( $form_id ) {
@@ -769,7 +772,7 @@ class Payment_History_Shortcode {
 	 * Get payment method label from payment record.
 	 *
 	 * @param array<string,mixed> $payment Payment record.
-	 * @since 2.6.0
+	 * @since x.x.x
 	 * @return string Payment method label.
 	 */
 	private function get_payment_method_label( $payment ) {
@@ -796,7 +799,7 @@ class Payment_History_Shortcode {
 	 *
 	 * @param float  $amount   Payment amount.
 	 * @param string $currency Currency code.
-	 * @since 2.6.0
+	 * @since x.x.x
 	 * @return string Formatted amount.
 	 */
 	private function format_amount( $amount, $currency ) {
@@ -825,7 +828,7 @@ class Payment_History_Shortcode {
 	 *
 	 * @param string $interval       Interval type (day, week, month, year).
 	 * @param int    $interval_count Interval count.
-	 * @since 2.6.0
+	 * @since x.x.x
 	 * @return string
 	 */
 	private function format_interval( $interval, $interval_count = 1 ) {
@@ -844,7 +847,7 @@ class Payment_History_Shortcode {
 	 * Get subscription status label.
 	 *
 	 * @param string $status Subscription status.
-	 * @since 2.6.0
+	 * @since x.x.x
 	 * @return string
 	 */
 	private function get_subscription_status_label( $status ) {
@@ -862,7 +865,7 @@ class Payment_History_Shortcode {
 	 * Get payment status label.
 	 *
 	 * @param string $status Payment status.
-	 * @since 2.6.0
+	 * @since x.x.x
 	 * @return string
 	 */
 	private function get_payment_status_label( $status ) {
@@ -883,7 +886,7 @@ class Payment_History_Shortcode {
 	 * Get payment status badge CSS class.
 	 *
 	 * @param string $status Payment status.
-	 * @since 2.6.0
+	 * @since x.x.x
 	 * @return string
 	 */
 	private function get_payment_badge_class( $status ) {
@@ -909,7 +912,7 @@ class Payment_History_Shortcode {
 	 *
 	 * @param int                  $user_id WordPress user ID.
 	 * @param array<string,string> $atts    Shortcode attributes.
-	 * @since 2.6.0
+	 * @since x.x.x
 	 * @return array<int,array<int,array<string,string>>> WHERE conditions.
 	 */
 	private function build_where_conditions( $user_id, $atts ) {
@@ -929,21 +932,43 @@ class Payment_History_Shortcode {
 			$where[] = $or_conditions;
 		}
 
-		$gateway = ! empty( $atts['gateway'] ) ? sanitize_text_field( $atts['gateway'] ) : '';
-		if ( ! empty( $gateway ) ) {
-			$where[] = [
-				[
-					'key'     => 'gateway',
-					'compare' => '=',
-					'value'   => $gateway,
-				],
-			];
+		/**
+		 * Filter the supported payment gateways for payment history.
+		 *
+		 * Free plugin defaults to ['stripe']. Pro can add additional gateways
+		 * (e.g., 'paypal') by hooking into this filter.
+		 *
+		 * @since x.x.x
+		 * @param array<string> $gateways Array of supported gateway identifiers.
+		 */
+		$supported_gateways = apply_filters( 'srfm_payment_history_supported_gateways', [ 'stripe' ] );
+		$supported_gateways = array_map( 'sanitize_text_field', $supported_gateways );
+		$supported_gateways = array_filter( $supported_gateways );
+
+		if ( ! empty( $supported_gateways ) ) {
+			if ( 1 === count( $supported_gateways ) ) {
+				$where[] = [
+					[
+						'key'     => 'gateway',
+						'compare' => '=',
+						'value'   => reset( $supported_gateways ),
+					],
+				];
+			} else {
+				$where[] = [
+					[
+						'key'     => 'gateway',
+						'compare' => 'IN',
+						'value'   => array_values( $supported_gateways ),
+					],
+				];
+			}
 		}
 
 		/**
 		 * Filter the WHERE conditions for the payment history query.
 		 *
-		 * @since 2.6.0
+		 * @since x.x.x
 		 * @param array<int,array<int,array<string,string>>> $where   WHERE conditions array.
 		 * @param int                                        $user_id WordPress user ID.
 		 * @param array<string,string>                       $atts    Shortcode attributes.
@@ -956,7 +981,7 @@ class Payment_History_Shortcode {
 	 *
 	 * @param array<string,mixed> $payment Payment record.
 	 * @param int                 $user_id WordPress user ID.
-	 * @since 2.6.0
+	 * @since x.x.x
 	 * @return bool
 	 */
 	private function user_owns_payment( $payment, $user_id ) {
@@ -973,7 +998,7 @@ class Payment_History_Shortcode {
 		/**
 		 * Filter whether the user owns the payment.
 		 *
-		 * @since 2.6.0
+		 * @since x.x.x
 		 * @param bool                $owns    Whether the user owns the payment.
 		 * @param array<string,mixed> $payment Payment record.
 		 * @param int                 $user_id WordPress user ID.
@@ -988,7 +1013,7 @@ class Payment_History_Shortcode {
 	/**
 	 * Get the login required message.
 	 *
-	 * @since 2.6.0
+	 * @since x.x.x
 	 * @return string HTML login message.
 	 */
 	private function get_login_message() {
@@ -997,14 +1022,18 @@ class Payment_History_Shortcode {
 			esc_html__( 'Please log in to view your payment history.', 'sureforms' )
 		);
 
-		/** @since 2.6.0 */
+		/**
+		 * Filter the login required message HTML.
+		 *
+		 * @since x.x.x
+		 */
 		return apply_filters( 'srfm_payment_history_login_message', $html );
 	}
 
 	/**
 	 * Get the no payments found message.
 	 *
-	 * @since 2.6.0
+	 * @since x.x.x
 	 * @return string HTML empty message.
 	 */
 	private function get_empty_message() {
@@ -1013,7 +1042,11 @@ class Payment_History_Shortcode {
 			esc_html__( 'No payments found.', 'sureforms' )
 		);
 
-		/** @since 2.6.0 */
+		/**
+		 * Filter the no payments found message HTML.
+		 *
+		 * @since x.x.x
+		 */
 		return apply_filters( 'srfm_payment_history_empty_message', $html );
 	}
 }

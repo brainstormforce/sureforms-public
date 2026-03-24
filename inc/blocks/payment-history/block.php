@@ -6,7 +6,7 @@
  * Delegates to the Payment_History_Shortcode class for output.
  *
  * @package sureforms
- * @since 2.6.0
+ * @since x.x.x
  */
 
 namespace SRFM\Inc\Blocks\Payment_History;
@@ -21,14 +21,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Payment History Block.
  *
- * @since 2.6.0
+ * @since x.x.x
  */
 class Block extends Base {
 	/**
 	 * Render the block.
 	 *
 	 * @param array<mixed> $attributes Block attributes.
-	 * @since 2.6.0
+	 * @since x.x.x
 	 * @return string
 	 */
 	public function render( $attributes ) {
@@ -36,7 +36,6 @@ class Block extends Base {
 			'per_page'          => isset( $attributes['perPage'] ) ? absint( $attributes['perPage'] ) : 10,
 			'show_subscription' => ! empty( $attributes['showSubscription'] ) ? 'true' : 'false',
 			'show_renewal'      => ! empty( $attributes['showRenewal'] ) ? 'true' : 'false',
-			'gateway'           => isset( $attributes['gateway'] ) ? sanitize_text_field( $attributes['gateway'] ) : '',
 		];
 
 		$shortcode_instance = Payment_History_Shortcode::get_instance();

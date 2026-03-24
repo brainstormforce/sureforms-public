@@ -3,7 +3,7 @@
  *
  * Returns null because this block is server-side rendered.
  *
- * @since 2.6.0
+ * @since x.x.x
  */
 export default function save() {
 	return null;

@@ -33,10 +33,6 @@
 		"showRenewal": {
 			"type": "boolean",
 			"default": true
-		},
-		"gateway": {
-			"type": "string",
-			"default": ""
 		}
 	}
 }
