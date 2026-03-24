@@ -913,7 +913,10 @@ class Form_Widget extends Widget_Base {
 		// nullifies group control child fields when the parent 'background' type field
 		// is not explicitly saved (it uses our default 'gradient' but doesn't persist it).
 		if ( 'gradient' === ( $settings['bgType'] ?? '' ) ) {
-			/** @var array<string, mixed> $raw_settings */
+			/** Raw widget settings.
+			 *
+			 * @var array<string, mixed> $raw_settings
+			 */
 			$raw_settings = $this->get_settings();
 			$gradient_css = self::build_gradient_css( $raw_settings );
 			if ( $gradient_css ) {
@@ -946,7 +949,10 @@ class Form_Widget extends Widget_Base {
 		 * @param array<string, mixed> $settings    Raw widget settings.
 		 * @since x.x.x
 		 */
-		/** @var array<string, mixed> $raw_settings_for_filter */
+		/** Raw widget settings for filter.
+		 *
+		 * @var array<string, mixed> $raw_settings_for_filter
+		 */
 		$raw_settings_for_filter = $this->get_settings();
 		return apply_filters( 'srfm_elementor_block_attrs', $block_attrs, $raw_settings_for_filter );
 	}
