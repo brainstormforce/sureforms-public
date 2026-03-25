@@ -77,6 +77,7 @@ class Admin {
 		add_action( 'admin_menu', [ $this, 'add_new_form' ] );
 		add_action( 'admin_menu', [ $this, 'add_suremail_page' ] );
 		if ( ! Helper::has_pro() ) {
+			add_action( 'admin_menu', [ $this, 'add_quiz_page' ] );
 			add_action( 'admin_menu', [ $this, 'add_upgrade_to_pro' ] );
 			add_action( 'admin_footer', [ $this, 'add_upgrade_to_pro_target_attr' ] );
 		}
@@ -410,6 +411,39 @@ class Admin {
 			self::$sureforms_page_default_capability,
 			$upgrade_url
 		);
+	}
+
+	/**
+	 * Add Quiz empty state submenu page for free users.
+	 *
+	 * @return void
+	 * @since x.x.x
+	 */
+	public function add_quiz_page() {
+		add_submenu_page(
+			'sureforms_menu',
+			__( 'Quiz Entries', 'sureforms' ),
+			__( 'Quizzes', 'sureforms' ) .
+				' <span style="color:#4ADE80;font-size:9px;font-weight:600;">' .
+				esc_html__( 'New', 'sureforms' ) .
+				'</span>',
+			self::$sureforms_page_default_capability,
+			'sureforms_quiz_entries',
+			[ $this, 'render_quiz_empty_state' ],
+			5
+		);
+	}
+
+	/**
+	 * Quiz empty state page callback.
+	 *
+	 * @return void
+	 * @since x.x.x
+	 */
+	public function render_quiz_empty_state() {
+		?>
+		<div id="srfm-quiz-entries-root" class="srfm-admin-wrapper"></div>
+		<?php
 	}
 
 	/**
@@ -875,6 +909,7 @@ class Admin {
 		$is_screen_sureforms_payments      = Helper::validate_request_context( 'sureforms_payments', 'page' );
 		$is_screen_sureforms_entries       = Helper::validate_request_context( SRFM_ENTRIES, 'page' );
 		$is_screen_sureforms_learn         = Helper::validate_request_context( 'sureforms_learn', 'page' );
+		$is_screen_quiz_empty_state        = Helper::validate_request_context( 'sureforms_quiz_entries', 'page' );
 		$is_post_type_sureforms_form       = SRFM_FORMS_POST_TYPE === $current_screen->post_type;
 
 		/**
@@ -888,7 +923,16 @@ class Admin {
 			];
 		}
 
-		$is_sureforms_screen = $is_screen_sureforms_menu || $is_post_type_sureforms_form || $is_screen_add_new_form || $is_screen_sureforms_forms || $is_screen_sureforms_form_settings || $is_screen_sureforms_entries || $is_screen_sureforms_payments || $is_screen_sureforms_learn;
+		// Add the Quizzes nav item to the header when pro is not active.
+		if ( ! Helper::has_pro() ) {
+			$localization_data['additional_header_nav_items'][] = [
+				'slug' => 'sureforms_quiz_entries',
+				'text' => __( 'Quizzes', 'sureforms' ),
+				'link' => admin_url( 'admin.php?page=sureforms_quiz_entries' ),
+			];
+		}
+
+		$is_sureforms_screen = $is_screen_sureforms_menu || $is_post_type_sureforms_form || $is_screen_add_new_form || $is_screen_sureforms_forms || $is_screen_sureforms_form_settings || $is_screen_sureforms_entries || $is_screen_sureforms_payments || $is_screen_sureforms_learn || $is_screen_quiz_empty_state;
 
 		/**
 		 * Filter to allow extending the SureForms dashboard screen check.
@@ -1042,6 +1086,24 @@ class Admin {
 			);
 
 			$script_translations_handlers[] = SRFM_SLUG . '-suremail';
+		}
+
+		// Enqueue scripts for the Quiz empty state page (free users only).
+		if ( $is_screen_quiz_empty_state && ! Helper::has_pro() ) {
+			$asset_handle = 'quizEmptyState';
+
+			$script_asset_path = SRFM_DIR . 'assets/build/' . $asset_handle . '.asset.php';
+			$script_info       = file_exists( $script_asset_path )
+				? include $script_asset_path
+				: [
+					'dependencies' => [],
+					'version'      => SRFM_VER,
+				];
+
+			wp_enqueue_script( SRFM_SLUG . '-quiz-empty-state', SRFM_URL . 'assets/build/' . $asset_handle . '.js', $script_info['dependencies'], SRFM_VER, true );
+			wp_enqueue_style( SRFM_SLUG . '-quiz-empty-state', SRFM_URL . 'assets/build/' . $asset_handle . '.css', [], SRFM_VER, 'all' );
+
+			$script_translations_handlers[] = SRFM_SLUG . '-quiz-empty-state';
 		}
 
 		// Admin Submenu Styles.
