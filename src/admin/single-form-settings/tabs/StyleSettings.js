@@ -28,8 +28,13 @@ import UpgradePrompt from '@Admin/single-form-settings/components/UpgradePrompt'
 
 function StyleSettings( props ) {
 	const { editPost } = useDispatch( editorStore );
-	const { defaultKeys, isInlineButtonBlockPresent, iframeBody, editorMode, rootHtmlTag } =
-		props;
+	const {
+		defaultKeys,
+		isInlineButtonBlockPresent,
+		iframeBody,
+		editorMode,
+		rootHtmlTag,
+	} = props;
 
 	let sureformsKeys = useSelect(
 		( select ) => {

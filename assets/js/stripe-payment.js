@@ -155,7 +155,8 @@ class StripePayment {
 				}
 
 				// Update elements with client secret
-				const elementData = StripePayment.paymentElements[ compositeKey ];
+				const elementData =
+					StripePayment.paymentElements[ compositeKey ];
 				if ( elementData ) {
 					// CRITICAL: Store client secret WITHOUT calling elements.update()
 					// This preserves user-entered card data
@@ -203,7 +204,11 @@ class StripePayment {
 			paymentInput.getAttribute( 'data-payment-type' ) || 'one-time';
 
 		// Initialize Stripe elements using unified function
-		this.initializePaymentElements( compositeKey, paymentInput, paymentType );
+		this.initializePaymentElements(
+			compositeKey,
+			paymentInput,
+			paymentType
+		);
 	}
 
 	/**
@@ -647,9 +652,10 @@ class StripePayment {
 		// Extract original blockId from compositeKey for DOM queries
 		// compositeKey format is always "numericInstanceId-blockId"
 		const separatorIndex = compositeKey.indexOf( '-' );
-		const blockId = separatorIndex > -1
-			? compositeKey.substring( separatorIndex + 1 )
-			: compositeKey;
+		const blockId =
+			separatorIndex > -1
+				? compositeKey.substring( separatorIndex + 1 )
+				: compositeKey;
 
 		// Get the payment block element
 		const paymentBlock = form.querySelector(

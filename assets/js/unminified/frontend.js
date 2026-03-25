@@ -79,7 +79,8 @@ function toggleErrorState( container, hasError ) {
 function srfmSprintfString( str, ...args ) {
 	// If more than one argument is passed, handle numbered and regular placeholders
 	if ( args.length > 1 ) {
-		return str.replace( /%(\d*)\$s|%s/g, ( match, index ) => {
+		// `_match` is unused but required positionally to access `index`.
+		return str.replace( /%(\d*)\$s|%s/g, ( _match, index ) => {
 			if ( index ) {
 				// Handle numbered placeholders like %1$s, %2$s
 				const argIndex = parseInt( index, 10 ) - 1;
