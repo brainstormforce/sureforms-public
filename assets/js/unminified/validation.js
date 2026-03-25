@@ -1,9 +1,9 @@
 import { applyFilters } from '@wordpress/hooks';
 
-async function getUniqueValidationData( checkData, formId, ajaxUrl, nonce ) {
+async function getUniqueValidationData( checkData, formId, ajaxUrl, token ) {
 	let queryString =
-		'action=validation_ajax_action&nonce=' +
-		encodeURIComponent( nonce ) +
+		'action=validation_ajax_action&token=' +
+		encodeURIComponent( token ) +
 		'&id=' +
 		encodeURIComponent( formId );
 
@@ -37,7 +37,7 @@ async function getUniqueValidationData( checkData, formId, ajaxUrl, nonce ) {
 export async function fieldValidation(
 	formId,
 	ajaxUrl,
-	nonce,
+	token,
 	formContainer,
 	singleField = false
 ) {
@@ -70,7 +70,7 @@ export async function fieldValidation(
 	};
 
 	let uniqueEntryData = null;
-	const uniqueFields = document.querySelectorAll(
+	const uniqueFields = formContainer.querySelectorAll(
 		'input[data-unique="true"]'
 	);
 	if ( uniqueFields.length !== 0 ) {
@@ -85,7 +85,7 @@ export async function fieldValidation(
 			uniqueValue,
 			formId,
 			ajaxUrl,
-			nonce
+			token
 		);
 	}
 
@@ -1112,10 +1112,10 @@ const fieldValidationInit = async ( areaField, blockClass ) => {
 	const form = formTextarea.closest( 'form' );
 	const formId = form.getAttribute( 'form-id' );
 	const ajaxUrl = form.getAttribute( 'ajaxurl' );
-	const nonce = form.getAttribute( 'data-nonce' );
+	const token = form.getAttribute( 'data-submit-token' );
 	const singleField = true;
 
-	await fieldValidation( formId, ajaxUrl, nonce, formTextarea, singleField );
+	await fieldValidation( formId, ajaxUrl, token, formTextarea, singleField );
 };
 
 /**

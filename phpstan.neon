@@ -12,7 +12,6 @@ parameters:
 	level: 9
 	treatPhpDocTypesAsCertain: false
 	inferPrivatePropertyTypeFromConstructor: true
-	checkGenericClassInNonGenericObjectType: false
 	stubFiles:
 		#- tests/php/stubs/wordpress-override.php
 	scanFiles:
@@ -22,6 +21,7 @@ parameters:
 		- tests/php/stubs/srfm-stubs.php
 		- tests/php/stubs/srfm-elementor-stubs.php
 		- tests/php/stubs/srfm-bricks-stubs.php
+		- tests/php/stubs/srfm-wp-abilities-stubs.php
 	paths:
 		- sureforms.php
 		- plugin-loader.php
@@ -42,6 +42,7 @@ parameters:
 #    autoload_directories:
 #        - %currentWorkingDirectory%/inc/
 	ignoreErrors:
+		- identifier: missingType.generics
 		# Uses func_get_args()
 		# - '#^Function apply_filters invoked with [34567] parameters, 2 required\.$#'
 		# - '#^Function do_action invoked with [3456] parameters, 1-2 required\.$#'

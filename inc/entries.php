@@ -413,7 +413,7 @@ class Entries {
 
 		return [
 			'success' => false,
-			'error'   => __( 'Failed to generate export file.', 'sureforms' ),
+			'error'   => __( 'Unable to generate export file.', 'sureforms' ),
 		];
 	}
 
@@ -575,24 +575,74 @@ class Entries {
 				];
 			}
 
-			if ( count( $date_conditions ) > 1 ) {
+			if ( ! empty( $date_conditions ) ) {
 				$where_conditions[] = $date_conditions;
 			}
 		}
 
-		// Filter by search (entry ID only).
-		if ( ! empty( $args['search'] ) ) {
-			$search_term        = Helper::get_integer_value( $args['search'] );
-			$where_conditions[] = [
-				[
+		// Filter by search (entry ID + form title).
+		if ( ! empty( $args['search'] ) && is_string( $args['search'] ) ) {
+			$search_term  = sanitize_text_field( $args['search'] );
+			$search_group = [ 'RELATION' => 'OR' ];
+
+			// If numeric, match entry ID.
+			if ( is_numeric( $search_term ) ) {
+				$search_group[] = [
 					'key'     => 'ID',
 					'compare' => '=',
-					'value'   => $search_term,
-				],
-			];
+					'value'   => absint( $search_term ),
+				];
+			}
+
+			// Match form titles.
+			$matching_form_ids = self::get_form_ids_by_title( $search_term );
+			if ( ! empty( $matching_form_ids ) ) {
+				$search_group[] = [
+					'key'     => 'form_id',
+					'compare' => 'IN',
+					'value'   => $matching_form_ids,
+				];
+			}
+
+			// Only add if we have search conditions, otherwise force empty result.
+			if ( count( $search_group ) > 1 ) {
+				$where_conditions[] = $search_group;
+			} else {
+				$where_conditions[] = [
+					[
+						'key'     => 'ID',
+						'compare' => '=',
+						'value'   => 0,
+					],
+				];
+			}
 		}
 
 		return $where_conditions;
+	}
+
+	/**
+	 * Get form IDs whose title matches the search term.
+	 *
+	 * @param string $search_term Search term to match against form titles.
+	 *
+	 * @since 2.6.0
+	 * @return array<int> Array of matching form IDs.
+	 */
+	private static function get_form_ids_by_title( $search_term ) {
+		$forms = get_posts(
+			[
+				'post_type'      => SRFM_FORMS_POST_TYPE,
+				'post_status'    => 'any',
+				's'              => $search_term,
+				'search_columns' => [ 'post_title' ],
+				'posts_per_page' => 100,
+				'fields'         => 'ids',
+				'no_found_rows'  => true,
+			]
+		);
+
+		return ! empty( $forms ) ? array_map( 'absint', $forms ) : [];
 	}
 
 	/**
@@ -744,8 +794,18 @@ class Entries {
 			return $filtered_value;
 		}
 
-		// Handle arrays (multi-select, checkboxes, etc.).
+		// Handle arrays (multi-select, checkboxes, upload fields, etc.).
 		if ( is_array( $field_value ) ) {
+			// Upload field URLs are stored rawurlencode'd — decode before export.
+			if ( str_contains( $field_key, 'srfm-upload' ) ) {
+				$decoded_values = array_map(
+					static function ( $val ) {
+						return sanitize_text_field( rawurldecode( Helper::get_string_value( $val ) ) );
+					},
+					$field_value
+				);
+				return implode( ', ', $decoded_values );
+			}
 			return implode( ', ', array_map( 'sanitize_text_field', $field_value ) );
 		}
 

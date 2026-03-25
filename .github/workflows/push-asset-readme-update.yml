@@ -2,7 +2,10 @@ name: Plugin asset/readme update
 on:
   push:
     branches:
-    - master
+      - master
+    paths:
+      - 'readme.txt'
+      - '.wordpress-org/**'
 jobs:
   master:
     name: Push to main

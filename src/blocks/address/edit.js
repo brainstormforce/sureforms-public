@@ -6,6 +6,7 @@ import {
 	InspectorControls,
 	RichText,
 	InnerBlocks,
+	useBlockProps,
 } from '@wordpress/block-editor';
 import { useEffect } from '@wordpress/element';
 import { Notice, ToggleControl } from '@wordpress/components';
@@ -38,6 +39,9 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 	} = attributes;
 
 	const currentFormId = useGetCurrentFormId( clientId );
+	const blockProps = useBlockProps( {
+		className,
+	} );
 
 	useEffect( () => {
 		if ( formId !== currentFormId ) {
@@ -109,7 +113,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 	const allowedBlocks = [ 'srfm/input', 'srfm/dropdown' ];
 
 	return (
-		<div className={ className }>
+		<div { ...blockProps }>
 			<InspectorControls>
 				<InspectorTabs
 					tabs={ [ 'general', 'advance' ] }

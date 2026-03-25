@@ -24,7 +24,7 @@ const SubmissionInfoSection = ( { entryData } ) => {
 		},
 		{
 			id: 'form-name',
-			label: __( 'Form Name:', 'sureforms' ),
+			label: __( 'Form name:', 'sureforms' ),
 			value: entryData?.formName || '-',
 		},
 		{
@@ -87,7 +87,7 @@ const SubmissionInfoSection = ( { entryData } ) => {
 		},
 		{
 			id: 'created_at',
-			label: __( 'Submitted On:', 'sureforms' ),
+			label: __( 'Submitted on:', 'sureforms' ),
 			value: formatDateTime( entryData?.createdAt, true ) || '-',
 		},
 	];
@@ -116,7 +116,7 @@ const SubmissionInfoSection = ( { entryData } ) => {
 		<div className="bg-background-primary border-0.5 border-solid border-border-subtle rounded-lg shadow-sm">
 			<div className="pb-0 px-4 pt-4">
 				<h3 className="text-sm font-semibold text-text-primary">
-					{ __( 'Submission Info', 'sureforms' ) }
+					{ __( 'Entry info', 'sureforms' ) }
 				</h3>
 			</div>
 			<div className="p-4 space-y-1 relative before:content-[''] before:block before:absolute before:inset-3 before:bg-background-secondary before:rounded-lg">

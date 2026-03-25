@@ -7,7 +7,7 @@ import {
 	SelectControl,
 	ExternalLink,
 } from '@wordpress/components';
-import { InspectorControls } from '@wordpress/block-editor';
+import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
 import { useEffect } from '@wordpress/element';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {
@@ -44,6 +44,9 @@ const Edit = ( props ) => {
 		readOnly,
 	} = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
+	const blockProps = useBlockProps( {
+		className,
+	} );
 
 	useEffect( () => {
 		if ( formId !== currentFormId ) {
@@ -256,7 +259,7 @@ const Edit = ( props ) => {
 			component: isUnique ? (
 				<SRFMTextControl
 					label={ __(
-						'Validation Message for Duplicate ',
+						'Validation Message for Duplicate',
 						'sureforms'
 					) }
 					value={ currentUniqueMessage }
@@ -295,7 +298,7 @@ const Edit = ( props ) => {
 	const filterOptions = attributeOptionsWithFilter( attributeOptions, props );
 
 	return (
-		<div className={ className }>
+		<div { ...blockProps }>
 			<InspectorControls>
 				<InspectorTabs
 					tabs={ [ 'general', 'advance' ] }

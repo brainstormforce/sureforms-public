@@ -1,4 +1,6 @@
 {
+  "$schema": "https://json.schemastore.org/block.json",
+	"apiVersion": 3,
 	"name": "srfm/address",
 	"title": "Address",
 	"description": "Displays a SureForms Address Field",

@@ -11,6 +11,7 @@ namespace SRFM\Inc;
 use SRFM\Inc\Database\Tables\Entries;
 use SRFM\Inc\Email\Email_Template;
 use SRFM\Inc\Lib\Browser\Browser;
+use SRFM\Inc\Submit_Token;
 use SRFM\Inc\Traits\Get_Instance;
 use WP_Error;
 use WP_REST_Server;
@@ -77,78 +78,28 @@ class Form_Submit {
 			]
 		);
 
-		register_rest_route(
-			$this->namespace,
-			'/refresh-nonces',
-			[
-				'methods'             => 'GET',
-				'callback'            => [ $this, 'refresh_nonces' ],
-				'permission_callback' => '__return_true',
-			]
-		);
 	}
 
 	/**
-	 * Refresh frontend nonces for form submission
+	 * Check whether a given request has permission to submit the form.
 	 *
-	 * @return \WP_REST_Response Response with fresh nonces.
-	 * @since 2.5.1
-	 */
-	public function refresh_nonces() {
-		// Check if nonce refresh is allowed.
-		if ( ! Helper::should_update_form_markup_nonce() ) {
-			return rest_ensure_response(
-				[
-					'success' => false,
-					'message' => __( 'Nonce refresh is disabled.', 'sureforms' ),
-				]
-			);
-		}
-
-		// Get fresh nonces from Helper.
-		$nonces = Helper::get_frontend_nonces();
-
-		return rest_ensure_response(
-			[
-				'success' => true,
-				'nonces'  => $nonces,
-			]
-		);
-	}
-
-	/**
-	 * Check whether a given request has permission access route.
+	 * Validates the HMAC-based submission token embedded in the page at render
+	 * time. Tokens remain valid for up to 48 hours (four 12-hour windows), so
+	 * they survive cached-page scenarios without any browser-side refresh call.
 	 *
-	 * @param \WP_REST_Request $request Request object or array containing form data.
-	 * @since 1.8.0
+	 * @param \WP_REST_Request $request Incoming REST request.
+	 * @since 2.6.0
 	 * @return WP_Error|bool
 	 */
 	public function submit_form_permissions_check( $request ) {
-		$nonce = Helper::get_string_value( $request->get_header( 'X-WP-Submit-Nonce' ) );
-		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'srfm_form_submit' ) ) {
-			wp_send_json_error(
-				[
-					'message' => __( 'Nonce verification failed.', 'sureforms' ),
-				]
-			);
-		}
+		$token   = Helper::get_string_value( $request->get_header( 'X-WP-Submit-Token' ) );
+		$form_id = absint( $request->get_param( 'form-id' ) );
 
-		$form_data = Helper::sanitize_by_field_type( $request->get_params() );
-
-		if ( empty( $form_data ) || ! is_array( $form_data ) ) {
-			wp_send_json_error(
-				[
-					'message' => __( 'Form data is not found.', 'sureforms' ),
-				]
-			);
-		}
-
-		if ( ! $form_data['form-id'] ) {
-			wp_send_json_error(
-				[
-					'message'  => __( 'Form Id is missing.', 'sureforms' ),
-					'position' => 'header',
-				]
+		if ( ! Submit_Token::verify( $token, $form_id ) ) {
+			return new WP_Error(
+				'srfm_token_invalid',
+				__( 'Security verification failed. Please refresh the page and try again.', 'sureforms' ),
+				[ 'status' => 403 ]
 			);
 		}
 
@@ -163,7 +114,7 @@ class Form_Submit {
 	 */
 	public function permissions_check() {
 		if ( ! Helper::current_user_can() ) {
-			return new WP_Error( 'rest_forbidden', __( 'Sorry, you cannot access this route', 'sureforms' ), [ 'status' => rest_authorization_required_code() ] );
+			return new WP_Error( 'rest_forbidden', __( 'Sorry, you do not have permission to access this resource.', 'sureforms' ), [ 'status' => rest_authorization_required_code() ] );
 		}
 		return true;
 	}
@@ -277,15 +228,20 @@ class Form_Submit {
 	 * @return \WP_REST_Response|\WP_Error Response object on success, or WP_Error object on failure.
 	 */
 	public function handle_form_submission( $request ) {
-		/**
-		 * All checks are done in submit_form_permissions_check method:
-		 * - Nonce verification
-		 * - Form data validation
-		 * - Form ID validation
-		 *
-		 * @since 1.8.0
-		 */
 		$form_data = Helper::sanitize_by_field_type( $request->get_params() );
+
+		if ( empty( $form_data ) || ! is_array( $form_data ) ) {
+			wp_send_json_error( [ 'message' => __( 'Form data is not found.', 'sureforms' ) ] );
+		}
+
+		if ( empty( $form_data['form-id'] ) ) {
+			wp_send_json_error(
+				[
+					'message'  => __( 'Form ID is missing.', 'sureforms' ),
+					'position' => 'header',
+				]
+			);
+		}
 
 		$current_form_id = $form_data['form-id'];
 
@@ -313,7 +269,7 @@ class Form_Submit {
 		if ( apply_filters( 'srfm_additional_restriction_check', false, $form_id, $form_data ) ) {
 			wp_send_json_error(
 				[
-					'message' => apply_filters( 'srfm_additional_restriction_message', __( 'Form submission is restricted.', 'sureforms' ), $form_id, $form_data ),
+					'message' => apply_filters( 'srfm_additional_restriction_message', __( 'You do not have permission to submit this form.', 'sureforms' ), $form_id, $form_data ),
 				]
 			);
 		}
@@ -323,7 +279,7 @@ class Form_Submit {
 			wp_send_json_error(
 				[
 					'code'    => 'srfm_invalid_form_id',
-					'message' => __( 'Form does not exist.', 'sureforms' ),
+					'message' => __( 'This form is no longer available.', 'sureforms' ),
 				]
 			);
 		}
@@ -336,7 +292,7 @@ class Form_Submit {
 
 			wp_send_json_error(
 				[
-					'message'      => $first_error ?? __( 'Form data is not valid.', 'sureforms' ),
+					'message'      => $first_error ?? __( 'Please check the form for errors.', 'sureforms' ),
 					'field_errors' => $validated_form_data,
 				]
 			);
@@ -424,7 +380,7 @@ class Form_Submit {
 
 		if ( isset( $form_data['srfm-honeypot-field'] ) && empty( $form_data['srfm-honeypot-field'] ) ) {
 			if ( ! empty( $google_captcha_secret_key ) ) {
-				if ( isset( $form_data['sureforms_form_submit'] ) ) {
+				if ( ! empty( $form_data['form-id'] ) ) {
 					$secret_key       = $google_captcha_secret_key;
 					$ipaddress        = isset( $_SERVER['REMOTE_ADDR'] ) ? filter_var( wp_unslash( $_SERVER['REMOTE_ADDR'] ), FILTER_VALIDATE_IP ) : '';
 					$captcha_response = $form_data['g-recaptcha-response'];
@@ -443,7 +399,7 @@ class Form_Submit {
 				} else {
 					wp_send_json_error(
 						[
-							'message' => __( 'reCAPTCHA error: Submit nonce is not available.', 'sureforms' ),
+							'message' => __( 'Security verification failed. Please refresh the page and try again.', 'sureforms' ),
 						]
 					);
 				}
@@ -458,8 +414,18 @@ class Form_Submit {
 		}
 
 		if ( ! isset( $form_data['srfm-honeypot-field'] ) ) {
+			// If honeypot is enabled globally, the missing field means a bot stripped it.
+			$srfm_security_options = get_option( 'srfm_security_settings_options' );
+			if ( is_array( $srfm_security_options ) && ! empty( $srfm_security_options['srfm_honeypot'] ) ) {
+				wp_send_json_error(
+					[
+						'message' => __( 'Your submission was flagged as spam. Please try again.', 'sureforms' ),
+					]
+				);
+			}
+
 			if ( ! empty( $google_captcha_secret_key ) ) {
-				if ( isset( $form_data['sureforms_form_submit'] ) ) {
+				if ( ! empty( $form_data['form-id'] ) ) {
 					$secret_key       = $google_captcha_secret_key;
 					$ipaddress        = isset( $_SERVER['REMOTE_ADDR'] ) ? filter_var( wp_unslash( $_SERVER['REMOTE_ADDR'] ), FILTER_VALIDATE_IP ) : '';
 					$captcha_response = $form_data['g-recaptcha-response'];
@@ -478,7 +444,7 @@ class Form_Submit {
 				} else {
 					wp_send_json_error(
 						[
-							'message' => __( 'reCAPTCHA error: Submit nonce is not available.', 'sureforms' ),
+							'message' => __( 'Security verification failed. Please refresh the page and try again.', 'sureforms' ),
 						]
 					);
 				}
@@ -494,7 +460,7 @@ class Form_Submit {
 
 		wp_send_json_error(
 			[
-				'message' => __( 'Spam Detected', 'sureforms' ),
+				'message' => __( 'Your submission was flagged as spam. Please try again.', 'sureforms' ),
 			]
 		);
 	}
@@ -512,7 +478,7 @@ class Form_Submit {
 		if ( empty( $form_data ) || ! is_array( $form_data ) ) {
 			wp_send_json_error(
 				[
-					'message'  => __( 'Form data is not found.', 'sureforms' ),
+					'message'  => __( 'Form data was not found.', 'sureforms' ),
 					'position' => 'header',
 				]
 			);
@@ -682,7 +648,7 @@ class Form_Submit {
 		} else {
 			$response = [
 				'success' => false,
-				'message' => __( 'Error submitting form', 'sureforms' ),
+				'message' => __( 'Unable to submit form. Please try again.', 'sureforms' ),
 			];
 		}
 
@@ -752,7 +718,7 @@ class Form_Submit {
 
 				// Since the upload field returns an array of file URLs, we need to implode them with a comma.
 				if ( 'upload' === $fields[1] && ! empty( $value ) && is_array( $value ) ) {
-					$modified_message[ $label ] = urldecode( implode( ', ', $value ) );
+					$modified_message[ $label ] = implode( ', ', array_map( 'rawurldecode', $value ) );
 				} else {
 					$modified_message[ $label ] = html_entity_decode( esc_attr( Helper::get_string_value( $value ) ) );
 				}
@@ -786,11 +752,31 @@ class Form_Submit {
 	public static function parse_email_notification_template( $submission_data, $item, $form_data = [] ) {
 		$smart_tags = Smart_Tags::get_instance();
 
-		$to             = Helper::get_string_value( $smart_tags->process_smart_tags( $item['email_to'], $submission_data ) );
-		$subject        = Helper::get_string_value( $smart_tags->process_smart_tags( $item['subject'], $submission_data, $form_data ) );
-		$email_body     = Helper::get_string_value( $smart_tags->process_smart_tags( $item['email_body'], $submission_data, $form_data ) );
+		$to            = Helper::get_string_value( $smart_tags->process_smart_tags( $item['email_to'], $submission_data ) );
+		$subject       = Helper::get_string_value( $smart_tags->process_smart_tags( $item['subject'], $submission_data, $form_data ) );
+		$email_body    = Helper::get_string_value( $smart_tags->process_smart_tags( $item['email_body'], $submission_data, $form_data ) );
+		$is_raw_format = isset( $item['is_raw_format'] ) && true === $item['is_raw_format'];
+
+		/**
+		 * Sanitize the email body after smart tag substitution to prevent XSS.
+		 *
+		 * After process_smart_tags() resolves {form:slug} placeholders, the body may contain
+		 * raw user-submitted values that must not render as executable HTML in email clients.
+		 * wp_kses_post() strips dangerous markup (script, on* handlers, javascript: URIs)
+		 * while preserving all legitimate email formatting (tables, links, bold, etc.).
+		 *
+		 * Note: {all_data} is not a recognised smart tag and remains a literal placeholder
+		 * at this point; it is substituted later by process_all_data_tag() which applies
+		 * its own per-field escaping, so this call does not interfere with that path.
+		 *
+		 * @since 2.5.2
+		 */
+		$email_body = wp_kses_post( $email_body );
+
 		$email_template = new Email_Template();
-		$message        = $email_template->render( $submission_data, $email_body );
+		$message        = $is_raw_format
+			? $email_template->render_raw( $submission_data, $email_body )
+			: $email_template->render( $submission_data, $email_body );
 		$headers        = 'X-Mailer: PHP/' . phpversion() . "\r\n";
 		$headers       .= "Content-Type: text/html; charset=utf-8\r\n";
 
@@ -914,8 +900,8 @@ class Form_Submit {
 								$reason = ! empty( $email_report )
 									? esc_html( $email_report )
 									: ( ! Helper::is_any_smtp_plugin_active()
-									? esc_html__( 'No SMTP plugin detected. Please configure one to enable email sending.', 'sureforms' )
-									: esc_html__( 'The failure occurred due to an undetermined cause.', 'sureforms' )
+									? esc_html__( 'No SMTP plugin detected. Please configure an SMTP plugin to enable email sending.', 'sureforms' )
+									: esc_html__( 'Email sending failed for an unknown reason.', 'sureforms' )
 									);
 
 								$entries_db_instance->update_log(
@@ -954,7 +940,7 @@ class Form_Submit {
 
 			if ( empty( $emails ) ) {
 				$entries_db_instance->reset_logs();
-				$entries_db_instance->add_log( __( 'No emails were sent', 'sureforms' ) );
+				$entries_db_instance->add_log( __( 'No emails were sent.', 'sureforms' ) );
 			}
 		}
 
@@ -971,8 +957,10 @@ class Form_Submit {
 	 * @return void
 	 */
 	public function field_unique_validation() {
-		if ( empty( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['nonce'] ) ), 'unique_validation_nonce' ) ) {
-			$error_message = __( 'Nonce verification failed.', 'sureforms' );
+		$token   = isset( $_POST['token'] ) ? sanitize_text_field( wp_unslash( $_POST['token'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- HMAC token verification replaces nonce.
+		$form_id = isset( $_POST['id'] ) ? absint( wp_unslash( $_POST['id'] ) ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Missing
+		if ( ! Submit_Token::verify( $token, $form_id ) ) {
+			$error_message = __( 'Security verification failed. Please refresh the page and try again.', 'sureforms' );
 			$error_data    = [
 				'error' => $error_message,
 			];
@@ -980,7 +968,7 @@ class Form_Submit {
 		}
 
 		global $wpdb;
-		$id         = isset( $_POST['id'] ) ? absint( wp_unslash( $_POST['id'] ) ) : 0;
+		$id         = isset( $_POST['id'] ) ? absint( wp_unslash( $_POST['id'] ) ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Verified via Submit_Token::verify() above.
 		$meta_value = $id;
 
 		if ( ! $meta_value ) {
@@ -991,18 +979,18 @@ class Form_Submit {
 			wp_send_json_error( $error_data );
 		}
 
-		$_POST = array_map( 'wp_unslash', $_POST );
+		$_POST = array_map( 'wp_unslash', $_POST ); // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Verified via Submit_Token::verify() above.
 
 		// Get the entry IDs for the particualr form to perform unique field validation.
 		$entry_ids = Entries::get_all_entry_ids_for_form( $id );
 
 		$all_form_entries = [];
-		$keys             = array_keys( $_POST );
+		$keys             = array_keys( $_POST ); // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Verified via Submit_Token::verify() above.
 		$length           = count( $keys );
 
 		for ( $i = 3; $i < $length; $i++ ) {
 			$key   = $keys[ $i ];
-			$value = isset( $_POST[ $key ] ) ? sanitize_text_field( wp_unslash( $_POST[ $key ] ) ) : '';
+			$value = isset( $_POST[ $key ] ) ? sanitize_text_field( wp_unslash( $_POST[ $key ] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Verified via Submit_Token::verify() above.
 			$key   = str_replace( '_', ' ', $keys[ $i ] );
 
 			foreach ( $entry_ids as $entry_id ) {
@@ -1202,6 +1190,8 @@ class Form_Submit {
 	 * @return array Processed and sanitized submission data.
 	 */
 	private function process_form_fields( $form_data ) {
+		$form_id = isset( $form_data['form-id'] ) && is_numeric( $form_data['form-id'] ) ? absint( $form_data['form-id'] ) : 0;
+
 		$submission_data = [];
 
 		$form_data_keys  = array_keys( $form_data );
@@ -1285,7 +1275,29 @@ class Form_Submit {
 			}
 		}
 
-		return apply_filters( 'srfm_before_prepare_submission_data', $submission_data );
+		/**
+		 * Filters the submission data before preparing it for storage.
+		 *
+		 * The second parameter is a context array containing additional metadata
+		 * about the submission. This array is extensible — new keys may be added
+		 * in future versions without changing the filter signature.
+		 *
+		 * @since 2.6.0
+		 *
+		 * @param array<string,mixed> $submission_data Processed form submission data.
+		 * @param array<string,mixed> $context {
+		 *     Additional context for the submission.
+		 *
+		 *     @type int $form_id The ID of the form being submitted.
+		 * }
+		 */
+		return apply_filters(
+			'srfm_before_prepare_submission_data',
+			$submission_data,
+			[
+				'form_id' => $form_id,
+			]
+		);
 	}
 
 	/**

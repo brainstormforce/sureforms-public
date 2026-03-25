@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { applyFilters } from '@wordpress/hooks';
 import { cn } from '@Utils/Helpers';
 import {
+	Bot,
 	Cpu,
 	CreditCard,
 	MapPin,
@@ -87,6 +88,15 @@ export const navigation = applyFilters( 'srfm.settings.navigation', [
 		icon: <MapPin />,
 		helpText: __(
 			'Configure Google Maps API key for address autocomplete and map preview.',
+			'sureforms'
+		),
+	},
+	{
+		name: __( 'MCP', 'sureforms' ),
+		slug: 'mcp-settings',
+		icon: <Bot />,
+		helpText: __(
+			'Configure AI client permissions and MCP server settings.',
 			'sureforms'
 		),
 	},

@@ -25,6 +25,7 @@ const PageTitleSection = ( { title, hidePageTitle, helpText } ) => {
 		'ottokit-settings',
 		'payments-settings',
 		'google-maps-settings',
+		'mcp-settings',
 	] );
 
 	return (

@@ -106,6 +106,8 @@ module.exports = function ( grunt ) {
 				},
 				src: [
 					'**',
+					'!.claude/**',
+					'!.abilities-audit/**',
 					'!.git/**',
 					'!.gitignore',
 					'!.gitattributes',

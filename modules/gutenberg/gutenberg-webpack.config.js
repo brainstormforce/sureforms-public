@@ -1,5 +1,6 @@
 const defaultConfig = require( '@wordpress/scripts/config/webpack.config' );
 const path = require( 'path' );
+/* eslint-disable no-unused-vars */
 
 const wp_rules = defaultConfig.module.rules.filter( function ( item ) {
 	if ( String( item.test ) === String( /\.jsx?$/ ) ) {
@@ -40,7 +41,8 @@ module.exports = {
 	},
 	module: {
 		rules: [
-			...wp_rules,
+			// ...wp_rules,
+			...defaultConfig.module.rules,
 			{
 				test: /\.(scss|css)$/,
 				exclude: [ /node_modules/, /style/ ],

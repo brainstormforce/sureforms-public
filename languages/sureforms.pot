@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: SureForms 2.5.1\n"
+"Project-Id-Version: SureForms 2.6.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/sureforms\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-02-13T10:17:03+00:00\n"
+"POT-Creation-Date: 2026-03-20T18:28:09+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: sureforms\n"
@@ -17,9 +17,10 @@ msgstr ""
 #. Plugin Name of the plugin
 #. Author of the plugin
 #: sureforms.php
-#: admin/admin.php:305
-#: admin/admin.php:306
-#: admin/admin.php:1475
+#: admin/admin.php:319
+#: admin/admin.php:320
+#: admin/admin.php:1680
+#: inc/abilities/abilities-registrar.php:133
 #: inc/gutenberg-hooks.php:109
 #: inc/page-builders/bricks/elements/form-widget.php:66
 #: inc/page-builders/bricks/service-provider.php:55
@@ -45,15 +46,16 @@ msgstr ""
 msgid "https://sureforms.com/"
 msgstr ""
 
-#: admin/admin.php:228
+#: admin/admin.php:242
 msgid "Get SureForms Pro"
 msgstr ""
 
-#: admin/admin.php:318
-#: admin/admin.php:319
+#: admin/admin.php:332
+#: admin/admin.php:333
 #: assets/build/dashboard.js:172
 #: assets/build/entries.js:172
 #: assets/build/forms.js:172
+#: assets/build/learn.js:172
 #: assets/build/page_header.js:172
 #: assets/build/payments.js:172
 #: assets/build/settings.js:2
@@ -61,21 +63,22 @@ msgstr ""
 msgid "Dashboard"
 msgstr ""
 
-#: admin/admin.php:336
-#: admin/admin.php:337
-#: admin/admin.php:674
+#: admin/admin.php:350
+#: admin/admin.php:351
+#: admin/admin.php:689
 #: assets/build/dashboard.js:172
 #: assets/build/entries.js:172
 #: assets/build/forms.js:172
+#: assets/build/learn.js:172
 #: assets/build/page_header.js:172
 #: assets/build/payments.js:172
 #: assets/build/settings.js:2
 msgid "Settings"
 msgstr ""
 
-#: admin/admin.php:394
-#: admin/admin.php:395
-#: admin/admin.php:1606
+#: admin/admin.php:408
+#: admin/admin.php:409
+#: admin/admin.php:1889
 #: assets/build/blocks.js:172
 #: assets/build/dashboard.js:172
 #: assets/build/entries.js:172
@@ -83,47 +86,62 @@ msgstr ""
 msgid "Upgrade"
 msgstr ""
 
-#: admin/admin.php:410
-#: admin/admin.php:411
+#: admin/admin.php:424
+#: admin/admin.php:425
 msgid "SMTP"
 msgstr ""
 
-#: admin/admin.php:473
-#: admin/admin.php:474
+#: admin/admin.php:487
+#: admin/admin.php:488
+#: assets/build/dashboard.js:172
+#: assets/build/entries.js:172
+#: assets/build/forms.js:172
+#: assets/build/learn.js:172
+#: assets/build/page_header.js:172
+#: assets/build/payments.js:172
+#: assets/build/settings.js:2
+msgid "Learn"
+msgstr ""
+
+#: admin/admin.php:516
+#: admin/admin.php:517
 #: inc/post-types.php:214
 #: assets/build/dashboard.js:172
 #: assets/build/entries.js:172
 #: assets/build/forms.js:172
+#: assets/build/learn.js:172
 #: assets/build/page_header.js:172
 #: assets/build/payments.js:172
 #: assets/build/settings.js:2
 msgid "Forms"
 msgstr ""
 
-#: admin/admin.php:482
-#: admin/admin.php:483
+#: admin/admin.php:525
+#: admin/admin.php:526
 #: inc/post-types.php:210
 msgid "New Form"
 msgstr ""
 
-#: admin/admin.php:491
-#: admin/admin.php:492
-#: admin/admin.php:1512
+#: admin/admin.php:534
+#: admin/admin.php:535
+#: admin/admin.php:1717
 #: inc/global-settings/email-summary.php:225
 #: assets/build/dashboard.js:172
 #: assets/build/entries.js:172
 #: assets/build/forms.js:172
+#: assets/build/learn.js:172
 #: assets/build/page_header.js:172
 #: assets/build/payments.js:172
 #: assets/build/settings.js:2
 msgid "Entries"
 msgstr ""
 
-#: admin/admin.php:501
-#: admin/admin.php:502
+#: admin/admin.php:544
+#: admin/admin.php:545
 #: assets/build/dashboard.js:172
 #: assets/build/entries.js:172
 #: assets/build/forms.js:172
+#: assets/build/learn.js:172
 #: assets/build/page_header.js:172
 #: assets/build/payments.js:172
 #: assets/build/settings.js:2
@@ -131,24 +149,21 @@ msgstr ""
 msgid "Payments"
 msgstr ""
 
-#: admin/admin.php:636
-msgid "New"
-msgstr ""
-
 #. Translators: Post Title.
-#: admin/admin.php:761
+#: admin/admin.php:776
 msgid "Edit %1$s"
 msgstr ""
 
-#: admin/admin.php:826
+#: admin/admin.php:842
 msgid "Activating..."
 msgstr ""
 
-#: admin/admin.php:827
+#: admin/admin.php:843
 #: assets/build/dashboard.js:172
 #: assets/build/entries.js:172
 #: assets/build/formEditor.js:172
 #: assets/build/forms.js:172
+#: assets/build/learn.js:172
 #: assets/build/page_header.js:172
 #: assets/build/payments.js:172
 #: assets/build/settings.js:2
@@ -156,130 +171,706 @@ msgstr ""
 msgid "Activated"
 msgstr ""
 
-#: admin/admin.php:828
+#: admin/admin.php:844
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:172
 msgid "Activate"
 msgstr ""
 
-#: admin/admin.php:829
+#: admin/admin.php:845
 msgid "Installing..."
 msgstr ""
 
-#: admin/admin.php:830
+#: admin/admin.php:846
 msgid "Installed"
 msgstr ""
 
 #. translators: %1$s: SureForms version, %2$s: SureForms Pro Plugin Name, %3$s: SureForms Pro Version.
-#: admin/admin.php:1199
+#: admin/admin.php:1244
 msgid "SureForms %1$s requires minimum %2$s %3$s to work properly. Please update to the latest version."
 msgstr ""
 
-#: admin/admin.php:1212
+#: admin/admin.php:1257
 msgid "Update Now"
 msgstr ""
 
 #. translators: %1$s: Opening anchor tag with URL, %2$s: Closing anchor tag, %3$s: SureForms Pro Plugin Name.
-#: admin/admin.php:1264
+#: admin/admin.php:1309
 msgid "Please %1$sactivate%2$s your copy of %3$s to get new features, access support, receive update notifications, and more."
 msgstr ""
 
 #. translators: %1$s: SureForms version, %2$s: SureForms Pro Plugin Name, %3$s: SureForms Pro Version, %4$s: Anchor tag open, %5$s: Closing anchor tag.
-#: admin/admin.php:1282
+#: admin/admin.php:1327
 msgid "SureForms %1$s requires minimum %2$s %3$s to work properly. Please update to the latest version from %4$shere%5$s."
 msgstr ""
 
-#: admin/admin.php:1365
-#: admin/admin.php:1403
-#: admin/admin.php:1424
-msgid "Unauthorized user."
+#: admin/admin.php:1370
+msgid "Amazing! SureForms is powering your forms and submissions - let's keep growing together!"
 msgstr ""
 
-#: admin/admin.php:1369
-#: admin/admin.php:1407
-#: admin/admin.php:1428
+#: admin/admin.php:1371
+msgid "If SureForms has been helpful, would you mind taking a moment to leave a 5-star review on WordPress.org?"
+msgstr ""
+
+#: admin/admin.php:1373
+msgid "Rate SureForms"
+msgstr ""
+
+#: admin/admin.php:1374
+#: admin/admin.php:1418
+msgid "Maybe later"
+msgstr ""
+
+#: admin/admin.php:1375
+msgid "I already did"
+msgstr ""
+
+#: admin/admin.php:1414
+msgid "SureForms is ready to power your forms — explore what's possible!"
+msgstr ""
+
+#: admin/admin.php:1415
+msgid "Manage your forms, track submissions, and discover features like AI Form Builder, payment integrations, and more from the SureForms dashboard."
+msgstr ""
+
+#: admin/admin.php:1417
+msgid "Go to Dashboard"
+msgstr ""
+
+#: admin/admin.php:1419
+msgid "I already know"
+msgstr ""
+
+#: admin/admin.php:1475
+#: admin/admin.php:1574
+#: admin/admin.php:1612
+#: admin/admin.php:1633
 #: inc/admin-ajax.php:162
 #: inc/payments/admin/admin-handler.php:638
-#: inc/payments/front-end.php:74
 #: inc/payments/stripe/admin-stripe-handler.php:78
 #: inc/payments/stripe/admin-stripe-handler.php:382
 msgid "Invalid nonce."
 msgstr ""
 
-#. translators: 1: opening span, 2: opening strong (inline), 3: closing strong, 4: closing span, 5: opening strong (block), 6: closing strong
-#: admin/admin.php:1374
-msgid "%1$sGet started by %2$sbuilding your first form%3$s.%4$s%5$sExperience the power of our intuitive AI Form Builder%6$s"
-msgstr ""
-
-#: admin/admin.php:1385
-msgid "SureForms is waiting for you!"
-msgstr ""
-
-#: admin/admin.php:1387
-msgid "Build My First Form"
-msgstr ""
-
-#: admin/admin.php:1388
-msgid "Dismiss"
+#: admin/admin.php:1479
+#: admin/admin.php:1570
+#: admin/admin.php:1608
+#: admin/admin.php:1629
+msgid "Unauthorized user."
 msgstr ""
 
 #: admin/admin.php:1499
+msgid "Invalid parameters."
+msgstr ""
+
+#. translators: 1: opening span, 2: opening strong (inline), 3: closing strong, 4: closing span, 5: opening strong (block), 6: closing strong
+#: admin/admin.php:1579
+msgid "%1$sGet started by %2$sbuilding your first form%3$s.%4$s%5$sExperience the power of our intuitive AI Form Builder%6$s"
+msgstr ""
+
+#: admin/admin.php:1590
+msgid "SureForms is waiting for you!"
+msgstr ""
+
+#: admin/admin.php:1592
+msgid "Build My First Form"
+msgstr ""
+
+#: admin/admin.php:1593
+msgid "Dismiss"
+msgstr ""
+
+#: admin/admin.php:1704
 msgid "Recent Entries"
 msgstr ""
 
-#: admin/admin.php:1500
+#: admin/admin.php:1705
 msgid "( Last 7 days )"
 msgstr ""
 
-#: admin/admin.php:1503
+#: admin/admin.php:1708
 msgid "View"
 msgstr ""
 
-#: admin/admin.php:1511
+#: admin/admin.php:1716
 #: inc/global-settings/email-summary.php:224
 #: assets/build/entries.js:172
 #: assets/build/payments.js:172
 msgid "Form Name"
 msgstr ""
 
-#: admin/admin.php:1542
+#: admin/admin.php:1825
 msgid "Use Conditional Logic to show only what matters"
 msgstr ""
 
-#: admin/admin.php:1543
+#: admin/admin.php:1826
 msgid "Split your form into steps to keep it easy"
 msgstr ""
 
-#: admin/admin.php:1544
+#: admin/admin.php:1827
 msgid "Let people upload files directly to your form"
 msgstr ""
 
-#: admin/admin.php:1545
+#: admin/admin.php:1828
 msgid "Turn responses into downloadable PDFs automatically"
 msgstr ""
 
-#: admin/admin.php:1546
+#: admin/admin.php:1829
 msgid "Let users sign with a simple signature field"
 msgstr ""
 
-#: admin/admin.php:1547
+#: admin/admin.php:1830
 msgid "Connect your form to other tools using webhooks"
 msgstr ""
 
-#: admin/admin.php:1548
+#: admin/admin.php:1831
 msgid "Use Conversational Forms for a chat-like experience"
 msgstr ""
 
-#: admin/admin.php:1549
+#: admin/admin.php:1832
 msgid "Let users register or log in through your form"
 msgstr ""
 
-#: admin/admin.php:1550
+#: admin/admin.php:1833
 msgid "Build forms that create WordPress user accounts"
 msgstr ""
 
-#: admin/admin.php:1551
+#: admin/admin.php:1834
 msgid "Add calculations to auto-total scores or prices"
+msgstr ""
+
+#: inc/abilities/abilities-registrar.php:104
+msgid "SureForms MCP Server"
+msgstr ""
+
+#: inc/abilities/abilities-registrar.php:105
+msgid "SureForms MCP Server for form building and management."
+msgstr ""
+
+#: inc/abilities/abilities-registrar.php:134
+msgid "Form building and management abilities powered by SureForms."
+msgstr ""
+
+#: inc/abilities/analytics/get-form-analytics.php:41
+msgid "Get Form Analytics"
+msgstr ""
+
+#: inc/abilities/analytics/get-form-analytics.php:42
+msgid "Retrieve form submission analytics data for a specified date range, optionally filtered by form ID."
+msgstr ""
+
+#: inc/abilities/analytics/get-form-analytics.php:73
+msgid "Start date for analytics range (Y-m-d)."
+msgstr ""
+
+#: inc/abilities/analytics/get-form-analytics.php:77
+msgid "End date for analytics range (Y-m-d)."
+msgstr ""
+
+#: inc/abilities/analytics/get-form-analytics.php:81
+msgid "Optional form ID to filter analytics by."
+msgstr ""
+
+#: inc/abilities/analytics/get-form-analytics.php:130
+msgid "Both date_from and date_to are required."
+msgstr ""
+
+#: inc/abilities/analytics/get-form-analytics.php:138
+msgid "Dates must be in Y-m-d format."
+msgstr ""
+
+#: inc/abilities/entries/bulk-get-entries.php:44
+msgid "Bulk Get Entry Details"
+msgstr ""
+
+#: inc/abilities/entries/bulk-get-entries.php:45
+msgid "Retrieve detailed information about multiple SureForms form submission entries in a single call, including all submitted field data with labels."
+msgstr ""
+
+#: inc/abilities/entries/bulk-get-entries.php:77
+msgid "Array of entry IDs to retrieve (max 50)."
+msgstr ""
+
+#: inc/abilities/entries/bulk-get-entries.php:146
+msgid "entry_ids must be a non-empty array."
+msgstr ""
+
+#. translators: %d is the maximum number of entries allowed.
+#: inc/abilities/entries/bulk-get-entries.php:155
+#: inc/abilities/entries/delete-entry.php:123
+#: inc/abilities/entries/update-entry-status.php:130
+msgid "Maximum %d entry IDs allowed per request."
+msgstr ""
+
+#: inc/abilities/entries/bulk-get-entries.php:172
+#: inc/abilities/entries/get-entry.php:121
+#: inc/rest-api.php:655
+#: inc/rest-api.php:795
+msgid "Entry not found."
+msgstr ""
+
+#: inc/abilities/entries/delete-entry.php:40
+msgid "Delete Entry"
+msgstr ""
+
+#: inc/abilities/entries/delete-entry.php:41
+msgid "Permanently delete one or more SureForms form submission entries. This action cannot be undone."
+msgstr ""
+
+#: inc/abilities/entries/delete-entry.php:74
+msgid "Array of entry IDs to permanently delete."
+msgstr ""
+
+#: inc/abilities/entries/delete-entry.php:114
+#: inc/abilities/entries/update-entry-status.php:121
+msgid "At least one entry ID is required."
+msgstr ""
+
+#. Translators: %d is the form ID.
+#: inc/abilities/entries/entry-parser.php:72
+#: inc/rest-api.php:726
+msgid "SureForms Form #%d"
+msgstr ""
+
+#: inc/abilities/entries/get-entry.php:37
+msgid "Get Entry Details"
+msgstr ""
+
+#: inc/abilities/entries/get-entry.php:38
+msgid "Retrieve detailed information about a specific SureForms form submission entry, including all submitted field data with labels."
+msgstr ""
+
+#: inc/abilities/entries/get-entry.php:69
+msgid "The ID of the entry to retrieve."
+msgstr ""
+
+#: inc/abilities/entries/list-entries.php:34
+msgid "List Form Entries"
+msgstr ""
+
+#: inc/abilities/entries/list-entries.php:35
+msgid "List SureForms form submission entries with optional filtering by form, status, date range, and search. Supports pagination and sorting."
+msgstr ""
+
+#: inc/abilities/entries/list-entries.php:66
+msgid "Filter entries by form ID. Use 0 or omit for all forms."
+msgstr ""
+
+#: inc/abilities/entries/list-entries.php:71
+msgid "Filter entries by status."
+msgstr ""
+
+#: inc/abilities/entries/list-entries.php:77
+msgid "Search entries by entry ID."
+msgstr ""
+
+#: inc/abilities/entries/list-entries.php:81
+msgid "Start date for filtering entries (YYYY-MM-DD format)."
+msgstr ""
+
+#: inc/abilities/entries/list-entries.php:85
+msgid "End date for filtering entries (YYYY-MM-DD format)."
+msgstr ""
+
+#: inc/abilities/entries/list-entries.php:89
+msgid "Number of entries per page (1-100)."
+msgstr ""
+
+#: inc/abilities/entries/list-entries.php:94
+msgid "Page number for pagination."
+msgstr ""
+
+#: inc/abilities/entries/list-entries.php:99
+msgid "Column to order results by."
+msgstr ""
+
+#: inc/abilities/entries/list-entries.php:105
+msgid "Sort direction."
+msgstr ""
+
+#: inc/abilities/entries/update-entry-status.php:41
+msgid "Update Entry Status"
+msgstr ""
+
+#: inc/abilities/entries/update-entry-status.php:42
+msgid "Update the status of one or more SureForms form submission entries. Supports read, unread, trash, and restore operations."
+msgstr ""
+
+#: inc/abilities/entries/update-entry-status.php:75
+msgid "Array of entry IDs to update."
+msgstr ""
+
+#: inc/abilities/entries/update-entry-status.php:80
+msgid "New status for the entries."
+msgstr ""
+
+#: inc/abilities/entries/update-entry-status.php:140
+msgid "Status is required."
+msgstr ""
+
+#: inc/abilities/forms/create-form.php:39
+msgid "Create SureForms Form"
+msgstr ""
+
+#: inc/abilities/forms/create-form.php:40
+msgid "Create a new SureForms form with specified title, fields, metadata, and status. Supports all standard field types (input, email, textarea, dropdown, checkbox, multi-choice, phone, number, url, address, gdpr, payment, inline-button)."
+msgstr ""
+
+#: inc/abilities/forms/create-form.php:81
+msgid "Title of the form in 5-10 words."
+msgstr ""
+
+#: inc/abilities/forms/create-form.php:85
+msgid "Array of form field definitions."
+msgstr ""
+
+#: inc/abilities/forms/create-form.php:94
+msgid "Optional form metadata including confirmation, compliance, and styling settings."
+msgstr ""
+
+#: inc/abilities/forms/create-form.php:101
+#: inc/abilities/forms/update-form.php:104
+msgid "Message displayed after successful submission."
+msgstr ""
+
+#: inc/abilities/forms/create-form.php:138
+#: inc/abilities/forms/update-form.php:141
+msgid "Form styling settings including colors and spacing."
+msgstr ""
+
+#: inc/abilities/forms/create-form.php:142
+#: inc/abilities/forms/update-form.php:145
+msgid "Primary/accent color as hex (e.g. #111C44)."
+msgstr ""
+
+#: inc/abilities/forms/create-form.php:146
+#: inc/abilities/forms/update-form.php:149
+msgid "Text color as hex (e.g. #1E1E1E)."
+msgstr ""
+
+#: inc/abilities/forms/create-form.php:150
+#: inc/abilities/forms/update-form.php:153
+msgid "Text color on primary backgrounds as hex (e.g. #FFFFFF)."
+msgstr ""
+
+#: inc/abilities/forms/create-form.php:154
+#: inc/abilities/forms/update-form.php:157
+msgid "Spacing between fields."
+msgstr ""
+
+#: inc/abilities/forms/create-form.php:161
+#: inc/abilities/forms/update-form.php:164
+msgid "Email notification settings for the first notification. Merges with existing."
+msgstr ""
+
+#: inc/abilities/forms/create-form.php:165
+#: inc/abilities/forms/update-form.php:168
+msgid "Enable or disable the notification."
+msgstr ""
+
+#: inc/abilities/forms/create-form.php:169
+#: inc/abilities/forms/update-form.php:172
+msgid "Notification name."
+msgstr ""
+
+#: inc/abilities/forms/create-form.php:173
+#: inc/abilities/forms/update-form.php:176
+msgid "Recipient email. Supports smart tags like {admin_email}."
+msgstr ""
+
+#: inc/abilities/forms/create-form.php:178
+#: inc/abilities/forms/update-form.php:181
+msgid "Sender name. Supports smart tags like {site_title}."
+msgstr ""
+
+#: inc/abilities/forms/create-form.php:185
+#: inc/abilities/forms/update-form.php:188
+msgid "Email subject. Supports smart tags like {form_title}."
+msgstr ""
+
+#: inc/abilities/forms/create-form.php:189
+#: inc/abilities/forms/update-form.php:192
+msgid "Email body. Supports smart tags like {all_data}."
+msgstr ""
+
+#: inc/abilities/forms/create-form.php:195
+#: inc/abilities/forms/update-form.php:198
+msgid "Form submission restrictions and scheduling."
+msgstr ""
+
+#: inc/abilities/forms/create-form.php:199
+#: inc/abilities/forms/update-form.php:202
+msgid "Enable entry limit restriction."
+msgstr ""
+
+#: inc/abilities/forms/create-form.php:203
+#: inc/abilities/forms/update-form.php:206
+msgid "Maximum number of entries allowed (0 = unlimited)."
+msgstr ""
+
+#: inc/abilities/forms/create-form.php:207
+#: inc/abilities/forms/update-form.php:210
+msgid "Expiry date (YYYY-MM-DD)."
+msgstr ""
+
+#: inc/abilities/forms/create-form.php:217
+#: inc/abilities/forms/update-form.php:220
+msgid "Message shown when form is closed."
+msgstr ""
+
+#: inc/abilities/forms/create-form.php:221
+#: inc/abilities/forms/update-form.php:224
+msgid "Enable form scheduling."
+msgstr ""
+
+#: inc/abilities/forms/create-form.php:225
+#: inc/abilities/forms/update-form.php:228
+msgid "Schedule start date (YYYY-MM-DD)."
+msgstr ""
+
+#: inc/abilities/forms/create-form.php:239
+#: inc/abilities/forms/update-form.php:242
+msgid "Custom CSS for the form."
+msgstr ""
+
+#: inc/abilities/forms/create-form.php:245
+msgid "Form publish status."
+msgstr ""
+
+#: inc/abilities/forms/create-form.php:290
+msgid "Form title is required."
+msgstr ""
+
+#: inc/abilities/forms/create-form.php:298
+msgid "At least one form field is required."
+msgstr ""
+
+#: inc/abilities/forms/create-form.php:322
+msgid "Failed to generate form fields from the provided data."
+msgstr ""
+
+#: inc/abilities/forms/create-form.php:372
+msgid "Failed to create the form."
+msgstr ""
+
+#: inc/abilities/forms/delete-form.php:33
+msgid "Delete SureForms Form"
+msgstr ""
+
+#: inc/abilities/forms/delete-form.php:34
+msgid "Move a SureForms form to trash. When force is true, the form and all its metadata are permanently deleted — this cannot be undone."
+msgstr ""
+
+#: inc/abilities/forms/delete-form.php:63
+msgid "The ID of the form to delete."
+msgstr ""
+
+#: inc/abilities/forms/delete-form.php:67
+msgid "If true, permanently deletes the form. Otherwise moves to trash."
+msgstr ""
+
+#: inc/abilities/forms/delete-form.php:103
+#: inc/abilities/forms/get-form-stats.php:113
+#: inc/abilities/forms/get-form.php:110
+#: inc/abilities/forms/get-shortcode.php:95
+#: inc/abilities/forms/update-form.php:287
+msgid "Form not found."
+msgstr ""
+
+#: inc/abilities/forms/delete-form.php:119
+msgid "Failed to delete the form."
+msgstr ""
+
+#: inc/abilities/forms/duplicate-form.php:34
+msgid "Duplicate SureForms Form"
+msgstr ""
+
+#: inc/abilities/forms/duplicate-form.php:35
+msgid "Duplicate an existing SureForms form with all its fields, metadata, and settings. The new form is created as a draft."
+msgstr ""
+
+#: inc/abilities/forms/duplicate-form.php:68
+msgid "The ID of the form to duplicate."
+msgstr ""
+
+#: inc/abilities/forms/duplicate-form.php:72
+msgid "Suffix to append to the duplicated form title."
+msgstr ""
+
+#: inc/abilities/forms/form-field-schema.php:63
+msgid "Field label. e.g. First Name"
+msgstr ""
+
+#: inc/abilities/forms/form-field-schema.php:67
+msgid "Whether the field is required."
+msgstr ""
+
+#: inc/abilities/forms/form-field-schema.php:71
+msgid "The field type."
+msgstr ""
+
+#: inc/abilities/forms/form-field-schema.php:76
+msgid "Help text describing the field."
+msgstr ""
+
+#: inc/abilities/forms/form-field-schema.php:80
+msgid "Default value for the field."
+msgstr ""
+
+#: inc/abilities/forms/form-field-schema.php:84
+msgid "Options for dropdown or multi-choice fields."
+msgstr ""
+
+#: inc/abilities/forms/form-field-schema.php:95
+msgid "Allow only single selection in multi-choice field."
+msgstr ""
+
+#: inc/abilities/forms/form-field-schema.php:99
+msgid "Whether the field value must be unique."
+msgstr ""
+
+#: inc/abilities/forms/form-field-schema.php:103
+msgid "Maximum character length."
+msgstr ""
+
+#: inc/abilities/forms/get-form-stats.php:34
+msgid "Get Form Statistics"
+msgstr ""
+
+#: inc/abilities/forms/get-form-stats.php:35
+msgid "Get submission statistics for a specific SureForms form or all forms. Returns total entries, unread, read, and trash counts."
+msgstr ""
+
+#: inc/abilities/forms/get-form-stats.php:66
+msgid "The ID of the form to get stats for. Use 0 or omit for all forms."
+msgstr ""
+
+#: inc/abilities/forms/get-form.php:34
+msgid "Get SureForms Form Details"
+msgstr ""
+
+#: inc/abilities/forms/get-form.php:35
+msgid "Retrieve detailed information about a specific SureForms form including its fields, settings, and shortcode."
+msgstr ""
+
+#: inc/abilities/forms/get-form.php:62
+msgid "The ID of the form to retrieve."
+msgstr ""
+
+#: inc/abilities/forms/get-shortcode.php:33
+msgid "Get Form Shortcode"
+msgstr ""
+
+#: inc/abilities/forms/get-shortcode.php:34
+msgid "Get the shortcode and block markup needed to embed a SureForms form on any page or post."
+msgstr ""
+
+#: inc/abilities/forms/get-shortcode.php:61
+msgid "The ID of the form to get the shortcode for."
+msgstr ""
+
+#: inc/abilities/forms/list-forms.php:34
+msgid "List SureForms Forms"
+msgstr ""
+
+#: inc/abilities/forms/list-forms.php:35
+msgid "Retrieve a list of SureForms forms with optional filtering by status, search query, and pagination."
+msgstr ""
+
+#: inc/abilities/forms/list-forms.php:62
+msgid "Filter by form status. Defaults to \"publish\"."
+msgstr ""
+
+#: inc/abilities/forms/list-forms.php:68
+msgid "Search forms by title."
+msgstr ""
+
+#: inc/abilities/forms/list-forms.php:72
+msgid "Number of forms per page. Defaults to 10."
+msgstr ""
+
+#: inc/abilities/forms/list-forms.php:79
+msgid "Page number for pagination. Defaults to 1."
+msgstr ""
+
+#: inc/abilities/forms/update-form.php:39
+msgid "Update SureForms Form"
+msgstr ""
+
+#: inc/abilities/forms/update-form.php:40
+msgid "Update an existing SureForms form title, status (publish/draft/private/trash), fields, and/or metadata settings. Use status \"trash\" to trash a form, or change from \"trash\" to another status to restore it. Providing formFields replaces all existing fields."
+msgstr ""
+
+#: inc/abilities/forms/update-form.php:75
+msgid "The ID of the form to update."
+msgstr ""
+
+#: inc/abilities/forms/update-form.php:79
+msgid "New title for the form."
+msgstr ""
+
+#: inc/abilities/forms/update-form.php:83
+msgid "New status for the form."
+msgstr ""
+
+#: inc/abilities/forms/update-form.php:88
+msgid "Array of form field definitions. Providing this replaces all existing fields."
+msgstr ""
+
+#: inc/abilities/forms/update-form.php:97
+msgid "Optional form metadata including confirmation, compliance, and styling settings. Same schema as create-form."
+msgstr ""
+
+#: inc/abilities/settings/get-global-settings.php:44
+msgid "Get Global Settings"
+msgstr ""
+
+#: inc/abilities/settings/get-global-settings.php:45
+msgid "Retrieve SureForms global settings. Optionally filter by category: general, validation-messages, email-summary, security."
+msgstr ""
+
+#: inc/abilities/settings/get-global-settings.php:76
+msgid "Setting categories to retrieve. Omit for all categories."
+msgstr ""
+
+#: inc/abilities/settings/get-global-settings.php:192
+#: inc/global-settings/email-summary.php:571
+#: inc/global-settings/global-settings.php:250
+#: inc/global-settings/global-settings.php:455
+#: assets/build/settings.js:172
+msgid "Monday"
+msgstr ""
+
+#: inc/abilities/settings/update-global-settings.php:105
+msgid "Update Global Settings"
+msgstr ""
+
+#: inc/abilities/settings/update-global-settings.php:106
+msgid "Update SureForms global settings for a specific category: general, validation-messages, email-summary, or security."
+msgstr ""
+
+#: inc/abilities/settings/update-global-settings.php:139
+msgid "The settings category to update."
+msgstr ""
+
+#: inc/abilities/settings/update-global-settings.php:144
+msgid "Key-value pairs of settings to update."
+msgstr ""
+
+#: inc/abilities/settings/update-global-settings.php:180
+msgid "Settings category is required."
+msgstr ""
+
+#: inc/abilities/settings/update-global-settings.php:188
+msgid "Settings data is required."
+msgstr ""
+
+#: inc/abilities/settings/update-global-settings.php:199
+msgid "No valid settings keys provided for this category."
+msgstr ""
+
+#: inc/abilities/settings/update-global-settings.php:225
+msgid "Invalid settings category."
 msgstr ""
 
 #: inc/admin-ajax.php:76
@@ -303,7 +894,7 @@ msgid "OttoKit is not configured properly."
 msgstr ""
 
 #: inc/admin-ajax.php:182
-#: inc/form-submit.php:987
+#: inc/form-submit.php:975
 msgid "Invalid form ID."
 msgstr ""
 
@@ -366,7 +957,6 @@ msgid "You do not have permission to access this file."
 msgstr ""
 
 #: inc/admin-ajax.php:393
-#: inc/payments/front-end.php:249
 msgid "Security check failed."
 msgstr ""
 
@@ -383,55 +973,49 @@ msgid "File not found."
 msgstr ""
 
 #: inc/ai-form-builder/ai-auth.php:45
-#: inc/ai-form-builder/ai-auth.php:91
-#: inc/ai-form-builder/ai-auth.php:155
+#: inc/ai-form-builder/ai-auth.php:93
+#: inc/ai-form-builder/ai-auth.php:167
 #: inc/background-process.php:112
 #: inc/create-new-form.php:101
 #: inc/duplicate-form.php:176
 #: inc/export.php:118
 #: inc/export.php:176
-#: inc/form-submit.php:131
-#: inc/form-submit.php:975
 #: inc/forms-data.php:88
 #: inc/global-settings/global-settings.php:86
-#: inc/global-settings/global-settings.php:365
-#: inc/rest-api.php:91
-#: inc/rest-api.php:150
+#: inc/global-settings/global-settings.php:403
 #: inc/rest-api.php:170
-#: inc/rest-api.php:202
-#: inc/rest-api.php:224
-#: inc/rest-api.php:315
-#: inc/rest-api.php:360
-#: inc/rest-api.php:409
-#: inc/rest-api.php:458
-#: inc/rest-api.php:491
-#: inc/rest-api.php:626
-#: inc/rest-api.php:699
-#: inc/rest-api.php:759
 msgid "Nonce verification failed."
 msgstr ""
 
-#: inc/ai-form-builder/ai-auth.php:72
+#: inc/ai-form-builder/ai-auth.php:74
 msgid "Failed to encode the token data."
 msgstr ""
 
-#: inc/ai-form-builder/ai-auth.php:98
+#: inc/ai-form-builder/ai-auth.php:100
 msgid "Error processing Access Key."
 msgstr ""
 
-#: inc/ai-form-builder/ai-auth.php:113
+#: inc/ai-form-builder/ai-auth.php:111
+msgid "Authentication session expired. Please try again."
+msgstr ""
+
+#: inc/ai-form-builder/ai-auth.php:118
 msgid "No access key provided."
 msgstr ""
 
-#: inc/ai-form-builder/ai-auth.php:143
+#: inc/ai-form-builder/ai-auth.php:144
+msgid "Invalid access key format."
+msgstr ""
+
+#: inc/ai-form-builder/ai-auth.php:155
 msgid "Failed to decrypt the access key."
 msgstr ""
 
-#: inc/ai-form-builder/ai-auth.php:150
+#: inc/ai-form-builder/ai-auth.php:162
 msgid "Failed to json decode the decrypted data."
 msgstr ""
 
-#: inc/ai-form-builder/ai-auth.php:160
+#: inc/ai-form-builder/ai-auth.php:172
 msgid "No user email found in the decrypted data."
 msgstr ""
 
@@ -463,7 +1047,7 @@ msgid "HTTP Request Failed"
 msgstr ""
 
 #: inc/ai-form-builder/ai-helper.php:182
-msgid "An error occurred while trying to connect to the SureForms API server. Please check your connection"
+msgid "Unable to connect to SureForms API. Please check your connection."
 msgstr ""
 
 #: inc/ai-form-builder/ai-helper.php:185
@@ -471,7 +1055,7 @@ msgid "License Verification Failed"
 msgstr ""
 
 #: inc/ai-form-builder/ai-helper.php:186
-msgid "An error occurred while trying to verify your license. Please check your license key"
+msgid "Unable to verify license. Please check your license key."
 msgstr ""
 
 #: inc/ai-form-builder/ai-helper.php:189
@@ -479,7 +1063,7 @@ msgid "User Verification Failed"
 msgstr ""
 
 #: inc/ai-form-builder/ai-helper.php:190
-msgid "An error occurred while trying to verify your email. Please check your email you have used to log in/ sign up on billing.sureforms.com."
+msgid "An error occurred while trying to verify your email. Please check your email you have used to log in or sign up on billing.sureforms.com."
 msgstr ""
 
 #: inc/ai-form-builder/ai-helper.php:193
@@ -487,7 +1071,7 @@ msgid "Referer Mismatch"
 msgstr ""
 
 #: inc/ai-form-builder/ai-helper.php:194
-msgid "An error occurred while trying to verify your referer. Please check your referer."
+msgid "Unable to verify referer. Please check your referer."
 msgstr ""
 
 #: inc/ai-form-builder/ai-helper.php:197
@@ -503,7 +1087,7 @@ msgid "Domain Verification Failed"
 msgstr ""
 
 #: inc/ai-form-builder/ai-helper.php:202
-msgid "Domain Verification Failed on current site. Please try again on any another website."
+msgid "Domain Verification Failed on current site. Please try again on another website."
 msgstr ""
 
 #: inc/ai-form-builder/ai-helper.php:205
@@ -600,20 +1184,20 @@ msgid "Unable to create ZIP file."
 msgstr ""
 
 #: inc/entries.php:416
-msgid "Failed to generate export file."
+msgid "Unable to generate export file."
 msgstr ""
 
-#: inc/entries.php:679
+#: inc/entries.php:729
 #: assets/build/entries.js:172
 msgid "Entry ID"
 msgstr ""
 
-#: inc/entries.php:679
+#: inc/entries.php:729
 #: assets/build/formEditor.js:172
 msgid "Date"
 msgstr ""
 
-#: inc/entries.php:679
+#: inc/entries.php:729
 #: assets/build/entries.js:172
 #: assets/build/formEditor.js:172
 #: assets/build/payments.js:2
@@ -634,12 +1218,12 @@ msgid "Invalid form data structure provided."
 msgstr ""
 
 #: inc/export.php:215
-msgid "Forms imported successfully."
+msgid "Forms imported successfully!"
 msgstr ""
 
 #: inc/export.php:271
 #: inc/export.php:290
-msgid "Failed to import form."
+msgid "Unable to import form."
 msgstr ""
 
 #: inc/field-validation.php:273
@@ -677,18 +1261,17 @@ msgid "Confirm %s"
 msgstr ""
 
 #: inc/fields/gdpr-markup.php:29
-#: inc/fields/gdpr-markup.php:39
-#: inc/gutenberg-hooks.php:215
-msgid "I consent to have this website store my submitted information so they can respond to my inquiry."
+#: inc/fields/gdpr-markup.php:42
+msgid "I consent to have this website store my information so they can respond to my inquiry."
 msgstr ""
 
 #: inc/fields/inlinebutton-markup.php:183
-#: inc/generate-form-markup.php:580
+#: inc/generate-form-markup.php:581
 msgid "Please verify that you are not a robot."
 msgstr ""
 
 #: inc/fields/input-markup.php:65
-msgid "Text Field"
+msgid "Text field"
 msgstr ""
 
 #: inc/fields/multichoice-markup.php:113
@@ -791,145 +1374,161 @@ msgid "Textarea"
 msgstr ""
 
 #: inc/fields/url-markup.php:38
-msgid "Url"
+#: assets/build/formEditor.js:172
+#: modules/gutenberg/build/blocks.js:9
+msgid "URL"
 msgstr ""
 
 #: inc/form-restriction.php:160
 #: inc/form-restriction.php:161
 #: inc/post-types.php:1134
 #: inc/post-types.php:1174
-#: assets/build/formEditor.js:172
-msgid "This form is not yet available. Please check back after the scheduled start time."
+msgid "This form is not yet available. Check back after the scheduled start time."
 msgstr ""
 
 #: inc/form-restriction.php:165
 #: inc/form-restriction.php:166
-#: inc/post-types.php:1135
-#: inc/post-types.php:1175
 #: assets/build/formEditor.js:172
 msgid "This form is no longer accepting submissions. The submission period has ended."
 msgstr ""
 
-#: inc/form-submit.php:103
-msgid "Nonce refresh is disabled."
+#: inc/form-submit.php:101
+#: inc/form-submit.php:402
+#: inc/form-submit.php:447
+#: inc/form-submit.php:963
+#: inc/payments/front-end.php:77
+#: inc/payments/front-end.php:258
+#: inc/rest-api.php:91
+#: inc/rest-api.php:150
+#: inc/rest-api.php:316
+#: inc/rest-api.php:348
+#: inc/rest-api.php:370
+#: inc/rest-api.php:461
+#: inc/rest-api.php:506
+#: inc/rest-api.php:555
+#: inc/rest-api.php:604
+#: inc/rest-api.php:637
+#: inc/rest-api.php:773
+#: inc/rest-api.php:846
+#: inc/rest-api.php:906
+msgid "Security verification failed. Please refresh the page and try again."
 msgstr ""
 
-#: inc/form-submit.php:141
-#: inc/form-submit.php:515
-#: inc/form-submit.php:522
-msgid "Form data is not found."
+#: inc/form-submit.php:117
+msgid "Sorry, you do not have permission to access this resource."
 msgstr ""
 
-#: inc/form-submit.php:149
-msgid "Form Id is missing."
-msgstr ""
-
-#: inc/form-submit.php:166
-msgid "Sorry, you cannot access this route"
-msgstr ""
-
-#: inc/form-submit.php:184
+#: inc/form-submit.php:135
 msgid "Cloudflare Turnstile secret key is invalid."
 msgstr ""
 
-#: inc/form-submit.php:191
+#: inc/form-submit.php:142
 msgid "Cloudflare Turnstile response is missing."
 msgstr ""
 
-#: inc/form-submit.php:235
+#: inc/form-submit.php:186
 msgid "hCaptcha secret key is invalid."
 msgstr ""
 
-#: inc/form-submit.php:242
+#: inc/form-submit.php:193
 msgid "hCaptcha response is missing."
 msgstr ""
 
-#: inc/form-submit.php:316
-msgid "Form submission is restricted."
+#: inc/form-submit.php:234
+#: inc/form-submit.php:488
+msgid "Form data is not found."
 msgstr ""
 
-#: inc/form-submit.php:326
-msgid "Form does not exist."
+#: inc/form-submit.php:240
+msgid "Form ID is missing."
 msgstr ""
 
-#: inc/form-submit.php:339
-msgid "Form data is not valid."
+#: inc/form-submit.php:272
+msgid "You do not have permission to submit this form."
 msgstr ""
 
-#: inc/form-submit.php:446
+#: inc/form-submit.php:282
+msgid "This form is no longer available."
+msgstr ""
+
+#: inc/form-submit.php:295
+msgid "Please check the form for errors."
+msgstr ""
+
+#: inc/form-submit.php:422
+#: inc/form-submit.php:463
+msgid "Your submission was flagged as spam. Please try again."
+msgstr ""
+
 #: inc/form-submit.php:481
-msgid "reCAPTCHA error: Submit nonce is not available."
+msgid "Form data was not found."
 msgstr ""
 
-#: inc/form-submit.php:497
-msgid "Spam Detected"
+#: inc/form-submit.php:651
+msgid "Unable to submit form. Please try again."
 msgstr ""
 
-#: inc/form-submit.php:685
-msgid "Error submitting form"
-msgstr ""
-
-#: inc/form-submit.php:837
+#: inc/form-submit.php:823
 msgid "Email notification passed to the sending server"
 msgstr ""
 
 #. translators: Here, %s is the comma separated emails list.
-#: inc/form-submit.php:910
+#: inc/form-submit.php:896
 msgid "Email notification recipient: %s"
 msgstr ""
 
-#: inc/form-submit.php:917
-msgid "No SMTP plugin detected. Please configure one to enable email sending."
+#: inc/form-submit.php:903
+msgid "No SMTP plugin detected. Please configure an SMTP plugin to enable email sending."
 msgstr ""
 
-#: inc/form-submit.php:918
-msgid "The failure occurred due to an undetermined cause."
+#: inc/form-submit.php:904
+msgid "Email sending failed for an unknown reason."
 msgstr ""
 
 #. translators: Here, %1$s is the comma separated emails list and %2$s is error report ( if any ).
-#: inc/form-submit.php:927
+#: inc/form-submit.php:913
 msgid "Email server was unable to send the email notification. Recipient: %1$s. Reason: %2$s"
 msgstr ""
 
-#: inc/form-submit.php:957
-msgid "No emails were sent"
+#: inc/form-submit.php:943
+msgid "No emails were sent."
 msgstr ""
 
-#: inc/form-submit.php:1104
+#: inc/form-submit.php:1092
 msgid "Captcha validation failed. No error code provided."
 msgstr ""
 
-#: inc/form-submit.php:1105
+#: inc/form-submit.php:1093
 msgid "Captcha validation failed."
 msgstr ""
 
-#: inc/form-submit.php:1160
+#: inc/form-submit.php:1148
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:172
 msgid "Google reCAPTCHA"
 msgstr ""
 
-#: inc/form-submit.php:1164
+#: inc/form-submit.php:1152
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:172
 msgid "hCaptcha"
 msgstr ""
 
-#: inc/form-submit.php:1168
+#: inc/form-submit.php:1156
 #: assets/build/settings.js:172
 msgid "Cloudflare Turnstile"
 msgstr ""
 
-#: inc/form-submit.php:1172
+#: inc/form-submit.php:1160
 msgid "Unknown Captcha"
 msgstr ""
 
-#: inc/form-submit.php:1173
+#: inc/form-submit.php:1161
 msgid "Invalid captcha type."
 msgstr ""
 
 #. translators: %s is the captcha title.
-#: inc/form-submit.php:1186
+#: inc/form-submit.php:1174
 msgid "%s verification failed. Please contact your site administrator."
 msgstr ""
 
@@ -949,9 +1548,7 @@ msgstr ""
 msgid "HCaptcha sitekey verification failed. Please contact your site administrator."
 msgstr ""
 
-#: inc/generate-form-markup.php:748
-#: assets/build/formSubmit.js:2
-#: assets/js/unminified/form-submit.js:530
+#: inc/generate-form-markup.php:749
 msgid "There was an error trying to submit your form. Please try again."
 msgstr ""
 
@@ -1060,23 +1657,16 @@ msgstr ""
 msgid "Email Summary of your last week -  %1$s to %2$s"
 msgstr ""
 
-#: inc/global-settings/email-summary.php:571
-#: inc/global-settings/global-settings.php:243
-#: inc/global-settings/global-settings.php:408
-#: assets/build/settings.js:172
-msgid "Monday"
-msgstr ""
-
-#: inc/global-settings/global-settings.php:119
+#: inc/global-settings/global-settings.php:122
 msgid "Error Saving Settings!"
 msgstr ""
 
-#: inc/global-settings/global-settings.php:119
+#: inc/global-settings/global-settings.php:122
 #: assets/build/formEditor.js:172
 msgid "Global Settings"
 msgstr ""
 
-#: inc/global-settings/global-settings.php:123
+#: inc/global-settings/global-settings.php:126
 msgid "Settings Saved Successfully."
 msgstr ""
 
@@ -1089,7 +1679,12 @@ msgstr ""
 msgid "Advanced Fields"
 msgstr ""
 
+#: inc/gutenberg-hooks.php:215
+msgid "I consent to have this website store my submitted information so they can respond to my inquiry."
+msgstr ""
+
 #: inc/helper.php:70
+#: assets/build/formEditor.js:172
 msgid "This field is required."
 msgstr ""
 
@@ -1097,144 +1692,229 @@ msgstr ""
 msgid "Value needs to be unique."
 msgstr ""
 
-#: inc/helper.php:601
+#: inc/helper.php:625
 msgid "Sorry, you are not allowed to perform this action."
 msgstr ""
 
 #. translators: %s: Provider name like HCaptcha, Google reCAPTCHA, Turnstile
-#: inc/helper.php:1046
+#: inc/helper.php:1081
 msgid "%s sitekey is missing. Please contact your site administrator."
 msgstr ""
 
-#: inc/helper.php:1653
+#: inc/helper.php:1711
 msgid "SureContact"
 msgstr ""
 
-#: inc/helper.php:1654
+#: inc/helper.php:1712
 msgid "Turn Emails Into Revenue with a CRM Built for Your Website!"
 msgstr ""
 
-#: inc/helper.php:1655
+#: inc/helper.php:1713
 msgid "Send newsletters, run campaigns, set up automations, manage contacts, and see exactly how much revenue your emails generate, all in one place."
 msgstr ""
 
-#: inc/helper.php:1662
+#: inc/helper.php:1720
 msgid "SureMail"
 msgstr ""
 
-#: inc/helper.php:1663
+#: inc/helper.php:1721
 msgid "Boost Your Email Deliverability Instantly!"
 msgstr ""
 
-#: inc/helper.php:1664
+#: inc/helper.php:1722
 msgid "Access a powerful, easy-to-use email delivery service that ensures your emails land in inboxes, not spam folders. Automate your WordPress email workflows confidently with SureMail."
 msgstr ""
 
-#: inc/helper.php:1671
+#: inc/helper.php:1729
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:172
 msgid "OttoKit"
 msgstr ""
 
-#: inc/helper.php:1672
+#: inc/helper.php:1730
 msgid "Automate your WordPress workflows effortlessly."
 msgstr ""
 
-#: inc/helper.php:1673
+#: inc/helper.php:1731
 msgid "Connect your WordPress plugins and favourite apps, automate tasks, and sync data effortlessly using OttoKit’s clean, visual workflow builder — no coding or complex setup required."
 msgstr ""
 
-#: inc/helper.php:1683
+#: inc/helper.php:1741
 msgid "Starter Templates"
 msgstr ""
 
-#: inc/helper.php:1684
+#: inc/helper.php:1742
 msgid "Launch Beautiful Websites in Minutes!"
 msgstr ""
 
-#: inc/helper.php:1685
+#: inc/helper.php:1743
 msgid "Choose from professionally designed templates, import with one click, and customize effortlessly to match your brand."
 msgstr ""
 
-#: inc/helper.php:1697
+#: inc/helper.php:1755
 msgid "Ultimate Addons for Elementor"
 msgstr ""
 
-#: inc/helper.php:1698
+#: inc/helper.php:1756
 msgid "Power Up Elementor to Build Stunning Websites Faster!"
 msgstr ""
 
-#: inc/helper.php:1699
+#: inc/helper.php:1757
 msgid "Enhance Elementor with powerful widgets and templates. Build stunning, high-performing websites faster with creative design elements and seamless customization."
 msgstr ""
 
-#: inc/helper.php:1707
+#: inc/helper.php:1765
 msgid "SureRank"
 msgstr ""
 
-#: inc/helper.php:1708
+#: inc/helper.php:1766
 msgid "Elevate Your SEO and Climb Search Rankings Effortlessly!"
 msgstr ""
 
-#: inc/helper.php:1709
+#: inc/helper.php:1767
 msgid "Boost your website's visibility with smart SEO automation. Optimize content, track keyword performance, and get actionable insights, all inside WordPress."
 msgstr ""
 
-#: inc/helper.php:1893
+#: inc/helper.php:1951
 msgid "Invalid nonce action or name."
 msgstr ""
 
-#: inc/helper.php:1903
-#: inc/helper.php:1911
+#: inc/helper.php:1961
+#: inc/helper.php:1969
 msgid "Invalid security token."
 msgstr ""
 
-#: inc/helper.php:1918
+#: inc/helper.php:1976
 msgid "Invalid request type."
 msgstr ""
 
-#: inc/helper.php:1926
+#: inc/helper.php:1984
 msgid "You do not have permission to perform this action."
 msgstr ""
 
-#: inc/helper.php:2051
+#: inc/helper.php:2109
 msgid "Blank Form"
 msgstr ""
 
-#: inc/nps-notice.php:117
-msgid "Quick Question!"
+#: inc/learn.php:48
+msgid "Setting Up Your Form"
 msgstr ""
 
-#: inc/nps-notice.php:118
-msgid "How would you rate SureForms? Love it, hate it, or somewhere in between? Your honest answer helps us understand how we're doing."
+#: inc/learn.php:49
+msgid "Get started with SureForms by building your first form, adding the right fields, and styling it to match your brand."
 msgstr ""
 
-#: inc/nps-notice.php:119
-msgid "Thanks a lot for your feedback! 😍"
+#: inc/learn.php:54
+#: inc/learn.php:62
+msgid "Creating Your First Form"
 msgstr ""
 
-#: inc/nps-notice.php:120
-msgid "Thanks for being part of the SureForms community! Got feedback or suggestions? We'd love to hear it."
+#: inc/learn.php:55
+msgid "Creating a form with SureForms takes just a few minutes. Just describe the kind of form you need in a simple prompt, and let SureForms AI handle the heavy lifting for you."
 msgstr ""
 
-#: inc/nps-notice.php:122
-msgid "Thank you for your feedback"
+#: inc/learn.php:68
+msgid "Create a Form"
 msgstr ""
 
-#: inc/nps-notice.php:123
-msgid "We value your input. How can we improve your experience?"
+#: inc/learn.php:75
+#: inc/learn.php:83
+msgid "Set Up Your Form Fields"
 msgstr ""
 
-#: inc/nps-notice.php:124
-msgid "Rate SureForms"
+#: inc/learn.php:76
+msgid "Adjust the field settings according to your requirements."
 msgstr ""
 
-#: inc/nps-notice.php:125
-msgid "Hate it!"
+#: inc/learn.php:89
+msgid "Set Up Fields"
 msgstr ""
 
-#: inc/nps-notice.php:126
-msgid "Love it!"
+#: inc/learn.php:98
+#: inc/learn.php:106
+msgid "Style Your Forms"
+msgstr ""
+
+#: inc/learn.php:99
+msgid "Customize the look and feel of your form to match your brand. Adjust background, colors, layout and etc. to create a seamless experience for your visitors."
+msgstr ""
+
+#: inc/learn.php:112
+msgid "Style Form"
+msgstr ""
+
+#: inc/learn.php:123
+msgid "Making Your Form Live"
+msgstr ""
+
+#: inc/learn.php:124
+msgid "Publish your form and make it accessible to your visitors using Instant Form or by embedding it on any page."
+msgstr ""
+
+#: inc/learn.php:129
+#: inc/learn.php:137
+#: inc/learn.php:143
+#: assets/build/formEditor.js:172
+msgid "Instant Form"
+msgstr ""
+
+#: inc/learn.php:130
+msgid "No need to design a separate page just for the forms. Publish your form instantly on a dedicated landing page. Just enable Instant Form option and share the link."
+msgstr ""
+
+#: inc/learn.php:152
+#: inc/learn.php:160
+msgid "Embed Your Forms in a Page"
+msgstr ""
+
+#: inc/learn.php:153
+msgid "Easily embed your form on any page using the built-in SureForms block."
+msgstr ""
+
+#: inc/learn.php:166
+msgid "Embed Forms"
+msgstr ""
+
+#: inc/learn.php:175
+msgid "Managing Entries"
+msgstr ""
+
+#: inc/learn.php:176
+msgid "Stay on top of your form submissions with email notifications and the built-in entries manager."
+msgstr ""
+
+#: inc/learn.php:181
+#: assets/build/formEditor.js:172
+msgid "Email Notifications"
+msgstr ""
+
+#: inc/learn.php:182
+msgid "Get email notifications whenever someone fills out your form."
+msgstr ""
+
+#: inc/learn.php:189
+msgid "Configure Your Email Notification"
+msgstr ""
+
+#: inc/learn.php:195
+msgid "Configure"
+msgstr ""
+
+#: inc/learn.php:202
+#: inc/learn.php:210
+msgid "Manage Entries"
+msgstr ""
+
+#: inc/learn.php:203
+msgid "View, filter, and manage all form submissions from one place. Export entries, delete spam, and keep your data organized with the SureForms Entries manager."
+msgstr ""
+
+#: inc/learn.php:216
+msgid "Go to Entries"
+msgstr ""
+
+#: inc/learn.php:407
+msgid "Invalid chapter or step ID."
 msgstr ""
 
 #: inc/page-builders/bricks/elements/form-widget.php:96
@@ -1339,7 +2019,7 @@ msgid "Invalid date format for date_to."
 msgstr ""
 
 #: inc/payments/admin/admin-handler.php:170
-msgid "An error occurred while fetching payments."
+msgid "Unable to load payments. Please refresh the page."
 msgstr ""
 
 #: inc/payments/admin/admin-handler.php:194
@@ -1355,7 +2035,7 @@ msgid "Payment not found."
 msgstr ""
 
 #: inc/payments/admin/admin-handler.php:211
-msgid "An error occurred while fetching payment details."
+msgid "Unable to load payment details. Please try again."
 msgstr ""
 
 #: inc/payments/admin/admin-handler.php:235
@@ -1375,7 +2055,7 @@ msgid "Subscription not found."
 msgstr ""
 
 #: inc/payments/admin/admin-handler.php:300
-msgid "An error occurred while fetching subscription details."
+msgid "Unable to load subscription details. Please try again."
 msgstr ""
 
 #. translators: %d: Form ID
@@ -1384,7 +2064,7 @@ msgid "Form - #%d"
 msgstr ""
 
 #: inc/payments/admin/admin-handler.php:344
-msgid "An error occurred while fetching forms list."
+msgid "Unable to load forms. Please try again."
 msgstr ""
 
 #: inc/payments/admin/admin-handler.php:374
@@ -1396,7 +2076,7 @@ msgid "Failed to add note."
 msgstr ""
 
 #: inc/payments/admin/admin-handler.php:388
-msgid "An error occurred while adding the note."
+msgid "Unable to add note. Please try again."
 msgstr ""
 
 #: inc/payments/admin/admin-handler.php:418
@@ -1408,7 +2088,7 @@ msgid "Failed to delete note."
 msgstr ""
 
 #: inc/payments/admin/admin-handler.php:432
-msgid "An error occurred while deleting the note."
+msgid "Unable to delete note. Please try again."
 msgstr ""
 
 #: inc/payments/admin/admin-handler.php:462
@@ -1420,7 +2100,7 @@ msgid "Failed to delete log entry."
 msgstr ""
 
 #: inc/payments/admin/admin-handler.php:476
-msgid "An error occurred while deleting the log entry."
+msgid "Unable to delete log. Please try again."
 msgstr ""
 
 #: inc/payments/admin/admin-handler.php:508
@@ -1436,7 +2116,7 @@ msgid "No valid payment IDs provided."
 msgstr ""
 
 #: inc/payments/admin/admin-handler.php:541
-msgid "Cannot delete more than 100 payments at once. Please select fewer payments."
+msgid "Cannot delete more than 100 payments at once. Select fewer payments."
 msgstr ""
 
 #. translators: %d: number of payments deleted
@@ -1457,7 +2137,7 @@ msgid "Failed to delete payments. Please try again."
 msgstr ""
 
 #: inc/payments/admin/admin-handler.php:615
-msgid "An error occurred while deleting payments."
+msgid "Unable to delete payments. Please try again."
 msgstr ""
 
 #: inc/payments/admin/admin-handler.php:654
@@ -1484,7 +2164,7 @@ msgid "Failed to process refund. Please try again."
 msgstr ""
 
 #: inc/payments/admin/admin-handler.php:737
-msgid "An error occurred while processing the refund."
+msgid "Unable to process refund. Please try again."
 msgstr ""
 
 #: inc/payments/admin/admin-handler.php:960
@@ -1526,21 +2206,27 @@ msgstr ""
 #: inc/payments/admin/admin-handler.php:1468
 #: inc/payments/admin/admin-handler.php:1472
 #: inc/payments/admin/admin-handler.php:1476
-#: inc/payments/front-end.php:796
-#: inc/payments/front-end.php:1194
+#: inc/payments/front-end.php:811
+#: inc/payments/front-end.php:1209
 msgid "Guest User"
 msgstr ""
 
-#: inc/payments/front-end.php:86
+#: inc/payments/front-end.php:91
 msgid "Invalid payment amount."
 msgstr ""
 
-#: inc/payments/front-end.php:100
+#: inc/payments/front-end.php:97
+#: inc/payments/front-end.php:298
+#: inc/payments/payment-helper.php:589
+msgid "Invalid form configuration."
+msgstr ""
+
+#: inc/payments/front-end.php:107
 msgid "Valid customer email is required for payments."
 msgstr ""
 
-#: inc/payments/front-end.php:106
-#: inc/payments/front-end.php:305
+#: inc/payments/front-end.php:113
+#: inc/payments/front-end.php:320
 #: inc/payments/stripe/admin-stripe-handler.php:793
 #: inc/payments/stripe/payments-settings.php:349
 #: inc/payments/stripe/payments-settings.php:474
@@ -1550,135 +2236,135 @@ msgstr ""
 msgid "Stripe is not connected."
 msgstr ""
 
-#: inc/payments/front-end.php:112
-#: inc/payments/front-end.php:311
-#: inc/payments/front-end.php:595
-#: inc/payments/front-end.php:1084
+#: inc/payments/front-end.php:119
+#: inc/payments/front-end.php:326
+#: inc/payments/front-end.php:610
+#: inc/payments/front-end.php:1099
 msgid "Stripe secret key not found."
 msgstr ""
 
 #. translators: %s: formatted payment amount
-#: inc/payments/front-end.php:194
+#: inc/payments/front-end.php:201
 msgid "The payment amount (%s) is below the minimum allowed. Stripe only processes amounts above 50¢."
 msgstr ""
 
 #. translators: %s: Field name
-#: inc/payments/front-end.php:257
+#: inc/payments/front-end.php:268
 msgid "Missing required field: %s"
 msgstr ""
 
-#: inc/payments/front-end.php:274
+#: inc/payments/front-end.php:287
 msgid "Valid customer email is required for subscriptions."
 msgstr ""
 
-#: inc/payments/front-end.php:279
+#: inc/payments/front-end.php:292
 msgid "Customer name is required for subscriptions."
 msgstr ""
 
-#: inc/payments/front-end.php:293
+#: inc/payments/front-end.php:308
 msgid "Amount must be greater than 0"
 msgstr ""
 
-#: inc/payments/front-end.php:299
+#: inc/payments/front-end.php:314
 msgid "Invalid billing interval"
 msgstr ""
 
-#: inc/payments/front-end.php:322
+#: inc/payments/front-end.php:337
 msgid "Failed to create customer for subscription."
 msgstr ""
 
-#: inc/payments/front-end.php:355
-#: inc/payments/front-end.php:371
+#: inc/payments/front-end.php:370
+#: inc/payments/front-end.php:386
 msgid "Failed to create subscription through middleware."
 msgstr ""
 
-#: inc/payments/front-end.php:376
+#: inc/payments/front-end.php:391
 msgid "Empty response from subscription creation."
 msgstr ""
 
-#: inc/payments/front-end.php:381
+#: inc/payments/front-end.php:396
 msgid "Invalid JSON response from subscription creation."
 msgstr ""
 
-#: inc/payments/front-end.php:385
-#: inc/payments/front-end.php:389
+#: inc/payments/front-end.php:400
+#: inc/payments/front-end.php:404
 msgid "Invalid subscription data."
 msgstr ""
 
-#: inc/payments/front-end.php:396
+#: inc/payments/front-end.php:411
 msgid "Failed to create subscription."
 msgstr ""
 
 #. translators: %s: Error message
-#: inc/payments/front-end.php:426
+#: inc/payments/front-end.php:441
 msgid "Unexpected error: %s"
 msgstr ""
 
-#: inc/payments/front-end.php:566
+#: inc/payments/front-end.php:581
 #: inc/payments/stripe/admin-stripe-handler.php:101
 #: inc/payments/stripe/admin-stripe-handler.php:405
 msgid "Subscription ID not found."
 msgstr ""
 
-#: inc/payments/front-end.php:584
+#: inc/payments/front-end.php:599
 msgid "Customer ID not found for the payment."
 msgstr ""
 
-#: inc/payments/front-end.php:612
+#: inc/payments/front-end.php:627
 msgid "Failed to retrieve setup intent."
 msgstr ""
 
-#: inc/payments/front-end.php:641
+#: inc/payments/front-end.php:656
 msgid "Failed to update subscription."
 msgstr ""
 
-#: inc/payments/front-end.php:649
+#: inc/payments/front-end.php:664
 msgid "Latest invoice not found on subscription."
 msgstr ""
 
-#: inc/payments/front-end.php:662
+#: inc/payments/front-end.php:677
 msgid "Failed to retrieve invoice."
 msgstr ""
 
-#: inc/payments/front-end.php:684
+#: inc/payments/front-end.php:699
 msgid "Payment intent not found on invoice."
 msgstr ""
 
-#: inc/payments/front-end.php:699
+#: inc/payments/front-end.php:714
 msgid "Failed to confirm payment."
 msgstr ""
 
-#: inc/payments/front-end.php:715
+#: inc/payments/front-end.php:730
 msgid "Failed to retrieve subscription."
 msgstr ""
 
-#: inc/payments/front-end.php:730
+#: inc/payments/front-end.php:745
 msgid "Subscription not found for the payment."
 msgstr ""
 
 #. translators: %d: User ID
-#: inc/payments/front-end.php:794
-#: inc/payments/front-end.php:1194
+#: inc/payments/front-end.php:809
+#: inc/payments/front-end.php:1209
 msgid "User ID: %d"
 msgstr ""
 
 #. translators: %s: Invoice status
-#: inc/payments/front-end.php:802
+#: inc/payments/front-end.php:817
 msgid "Invoice Status: %s"
 msgstr ""
 
 #. translators: Title for subscription verification log
-#: inc/payments/front-end.php:809
+#: inc/payments/front-end.php:824
 msgid "Subscription Verification"
 msgstr ""
 
 #. translators: %s: Subscription ID
 #. translators: %s: Stripe subscription ID
-#: inc/payments/front-end.php:813
+#: inc/payments/front-end.php:828
 #: inc/payments/stripe/admin-stripe-handler.php:117
 #: inc/payments/stripe/admin-stripe-handler.php:421
-#: inc/payments/stripe/stripe-webhook.php:522
-#: inc/payments/stripe/stripe-webhook.php:1068
+#: inc/payments/stripe/stripe-webhook.php:572
+#: inc/payments/stripe/stripe-webhook.php:1118
 msgid "Subscription ID: %s"
 msgstr ""
 
@@ -1688,99 +2374,99 @@ msgstr ""
 #. translators: %s: payment gateway name (e.g., Stripe)
 #. translators: %s: payment gateway
 #. translators: %s: Payment gateway name (e.g., Stripe).
-#: inc/payments/front-end.php:815
-#: inc/payments/front-end.php:1205
+#: inc/payments/front-end.php:830
+#: inc/payments/front-end.php:1220
 #: inc/payments/stripe/admin-stripe-handler.php:122
 #: inc/payments/stripe/admin-stripe-handler.php:426
 #: inc/payments/stripe/admin-stripe-handler.php:601
 #: inc/payments/stripe/admin-stripe-handler.php:1123
-#: inc/payments/stripe/stripe-webhook.php:524
-#: inc/payments/stripe/stripe-webhook.php:664
-#: inc/payments/stripe/stripe-webhook.php:828
-#: inc/payments/stripe/stripe-webhook.php:1062
+#: inc/payments/stripe/stripe-webhook.php:574
+#: inc/payments/stripe/stripe-webhook.php:714
+#: inc/payments/stripe/stripe-webhook.php:878
+#: inc/payments/stripe/stripe-webhook.php:1112
 msgid "Payment Gateway: %s"
 msgstr ""
 
 #. translators: %s: Payment Intent ID
-#: inc/payments/front-end.php:817
+#: inc/payments/front-end.php:832
 msgid "Payment Intent ID: %s"
 msgstr ""
 
 #. translators: %s: Charge ID
-#: inc/payments/front-end.php:819
-#: inc/payments/stripe/stripe-webhook.php:998
+#: inc/payments/front-end.php:834
+#: inc/payments/stripe/stripe-webhook.php:1048
 msgid "Charge ID: %s"
 msgstr ""
 
 #. translators: %s: Subscription Status
 #. translators: %s: subscription status
-#: inc/payments/front-end.php:821
+#: inc/payments/front-end.php:836
 #: inc/payments/stripe/admin-stripe-handler.php:127
 #: inc/payments/stripe/admin-stripe-handler.php:431
 msgid "Subscription Status: %s"
 msgstr ""
 
 #. translators: %s: Customer ID
-#: inc/payments/front-end.php:823
-#: inc/payments/stripe/stripe-webhook.php:1072
+#: inc/payments/front-end.php:838
+#: inc/payments/stripe/stripe-webhook.php:1122
 msgid "Customer ID: %s"
 msgstr ""
 
 #. translators: 1: Amount, 2: Currency
 #. translators: %1$s: amount, %2$s: currency.
-#: inc/payments/front-end.php:825
-#: inc/payments/front-end.php:1207
-#: inc/payments/stripe/stripe-webhook.php:1003
-#: inc/payments/stripe/stripe-webhook.php:1064
+#: inc/payments/front-end.php:840
+#: inc/payments/front-end.php:1222
+#: inc/payments/stripe/stripe-webhook.php:1053
+#: inc/payments/stripe/stripe-webhook.php:1114
 msgid "Amount: %1$s %2$s"
 msgstr ""
 
 #. translators: %s: Payment mode (e.g. Live or Test)
 #. translators: %s: payment mode
-#: inc/payments/front-end.php:828
-#: inc/payments/front-end.php:1212
+#: inc/payments/front-end.php:843
+#: inc/payments/front-end.php:1227
 msgid "Mode: %s"
 msgstr ""
 
-#: inc/payments/front-end.php:862
+#: inc/payments/front-end.php:877
 msgid "Failed to verify subscription."
 msgstr ""
 
-#: inc/payments/front-end.php:1116
-#: inc/payments/front-end.php:1134
-#: inc/payments/front-end.php:1142
+#: inc/payments/front-end.php:1131
 #: inc/payments/front-end.php:1149
+#: inc/payments/front-end.php:1157
+#: inc/payments/front-end.php:1164
 msgid "Failed to retrieve payment intent."
 msgstr ""
 
-#: inc/payments/front-end.php:1157
+#: inc/payments/front-end.php:1172
 msgid "Payment was not confirmed successfully."
 msgstr ""
 
-#: inc/payments/front-end.php:1199
+#: inc/payments/front-end.php:1214
 msgid "Payment Verification"
 msgstr ""
 
 #. translators: %s: Stripe transaction ID
 #. translators: %s: Charge ID
-#: inc/payments/front-end.php:1203
-#: inc/payments/stripe/stripe-webhook.php:1060
+#: inc/payments/front-end.php:1218
+#: inc/payments/stripe/stripe-webhook.php:1110
 msgid "Transaction ID: %s"
 msgstr ""
 
 #. translators: %s: payment status
 #. translators: %s: Status
-#: inc/payments/front-end.php:1209
-#: inc/payments/stripe/stripe-webhook.php:526
-#: inc/payments/stripe/stripe-webhook.php:1066
+#: inc/payments/front-end.php:1224
+#: inc/payments/stripe/stripe-webhook.php:576
+#: inc/payments/stripe/stripe-webhook.php:1116
 msgid "Status: %s"
 msgstr ""
 
-#: inc/payments/front-end.php:1315
+#: inc/payments/front-end.php:1330
 msgid "Failed to create Stripe customer."
 msgstr ""
 
-#: inc/payments/front-end.php:1379
+#: inc/payments/front-end.php:1394
 msgid "Failed to create Stripe guest customer."
 msgstr ""
 
@@ -1985,7 +2671,7 @@ msgid "Payment successful"
 msgstr ""
 
 #: inc/payments/payment-helper.php:491
-msgid "Payment could not be completed. Please try again or contact the site administrator."
+msgid "Unable to complete payment. Please try again or contact support."
 msgstr ""
 
 #: inc/payments/payment-helper.php:494
@@ -2063,11 +2749,11 @@ msgid "Your card number is invalid. Please check and try again."
 msgstr ""
 
 #: inc/payments/payment-helper.php:513
-msgid "An error occurred while processing your card. Please try again."
+msgid "Unable to process card. Please try again."
 msgstr ""
 
 #: inc/payments/payment-helper.php:514
-msgid "The transaction could not be processed. Please try again."
+msgid "Unable to process transaction. Please try again."
 msgstr ""
 
 #: inc/payments/payment-helper.php:515
@@ -2091,7 +2777,7 @@ msgid "The payment amount is invalid. Please contact the site administrator."
 msgstr ""
 
 #: inc/payments/payment-helper.php:520
-msgid "Your card issuer could not be reached. Please try again later."
+msgid "Unable to reach card issuer. Please try again later."
 msgstr ""
 
 #: inc/payments/payment-helper.php:522
@@ -2131,7 +2817,7 @@ msgid "This transaction is not allowed. Please contact your bank."
 msgstr ""
 
 #: inc/payments/payment-helper.php:531
-msgid "The transaction could not be processed. Please try again later."
+msgid "Unable to process transaction. Please try again later."
 msgstr ""
 
 #: inc/payments/payment-helper.php:532
@@ -2155,19 +2841,15 @@ msgid "SureForms Customer"
 msgstr ""
 
 #: inc/payments/payment-helper.php:541
-msgid "Please complete the form to view the amount."
+msgid "Complete the form to view the amount."
 msgstr ""
 
 #: inc/payments/payment-helper.php:542
-msgid "Failed to create payment. Please contact the site owner"
+msgid "Unable to create payment. Please contact support."
 msgstr ""
 
 #: inc/payments/payment-helper.php:559
 msgid "Unknown error"
-msgstr ""
-
-#: inc/payments/payment-helper.php:589
-msgid "Invalid form configuration."
 msgstr ""
 
 #: inc/payments/payment-helper.php:597
@@ -2269,7 +2951,7 @@ msgstr ""
 #. translators: %s: user display name
 #. translators: %s: Canceled by method (e.g., Webhook).
 #: inc/payments/stripe/admin-stripe-handler.php:132
-#: inc/payments/stripe/stripe-webhook.php:844
+#: inc/payments/stripe/stripe-webhook.php:894
 msgid "Canceled by: %s"
 msgstr ""
 
@@ -2278,7 +2960,7 @@ msgid "Note: The subscription has been permanently canceled. The customer will n
 msgstr ""
 
 #: inc/payments/stripe/admin-stripe-handler.php:140
-#: inc/payments/stripe/stripe-webhook.php:548
+#: inc/payments/stripe/stripe-webhook.php:598
 msgid "Subscription Canceled"
 msgstr ""
 
@@ -2288,7 +2970,7 @@ msgid "Failed to update subscription status in database."
 msgstr ""
 
 #: inc/payments/stripe/admin-stripe-handler.php:159
-msgid "Subscription canceled successfully."
+msgid "Subscription canceled successfully!"
 msgstr ""
 
 #: inc/payments/stripe/admin-stripe-handler.php:199
@@ -2338,18 +3020,18 @@ msgid "Subscription Paused"
 msgstr ""
 
 #: inc/payments/stripe/admin-stripe-handler.php:462
-msgid "Subscription paused successfully."
+msgid "Subscription paused successfully!"
 msgstr ""
 
 #: inc/payments/stripe/admin-stripe-handler.php:590
 #: inc/payments/stripe/admin-stripe-handler.php:1112
-#: inc/payments/stripe/stripe-webhook.php:655
+#: inc/payments/stripe/stripe-webhook.php:705
 msgid "Full"
 msgstr ""
 
 #: inc/payments/stripe/admin-stripe-handler.php:590
 #: inc/payments/stripe/admin-stripe-handler.php:1112
-#: inc/payments/stripe/stripe-webhook.php:655
+#: inc/payments/stripe/stripe-webhook.php:705
 msgid "Partial"
 msgstr ""
 
@@ -2357,8 +3039,8 @@ msgstr ""
 #. translators: %s: Refund ID.
 #: inc/payments/stripe/admin-stripe-handler.php:596
 #: inc/payments/stripe/admin-stripe-handler.php:1118
-#: inc/payments/stripe/stripe-webhook.php:662
-#: inc/payments/stripe/stripe-webhook.php:826
+#: inc/payments/stripe/stripe-webhook.php:712
+#: inc/payments/stripe/stripe-webhook.php:876
 msgid "Refund ID: %s"
 msgstr ""
 
@@ -2367,7 +3049,7 @@ msgstr ""
 #. translators: 1: Refund amount, 2: Currency.
 #: inc/payments/stripe/admin-stripe-handler.php:606
 #: inc/payments/stripe/admin-stripe-handler.php:1128
-#: inc/payments/stripe/stripe-webhook.php:666
+#: inc/payments/stripe/stripe-webhook.php:716
 msgid "Refund Amount: %1$s %2$s"
 msgstr ""
 
@@ -2376,7 +3058,7 @@ msgstr ""
 #. translators: 1: Total refunded amount, 2: Currency, 3: Original amount, 4: Currency
 #: inc/payments/stripe/admin-stripe-handler.php:612
 #: inc/payments/stripe/admin-stripe-handler.php:1134
-#: inc/payments/stripe/stripe-webhook.php:669
+#: inc/payments/stripe/stripe-webhook.php:719
 msgid "Total Refunded: %1$s %2$s of %3$s %4$s"
 msgstr ""
 
@@ -2385,7 +3067,7 @@ msgstr ""
 #. translators: %s: Refund status (e.g., succeeded, failed).
 #: inc/payments/stripe/admin-stripe-handler.php:620
 #: inc/payments/stripe/admin-stripe-handler.php:1142
-#: inc/payments/stripe/stripe-webhook.php:676
+#: inc/payments/stripe/stripe-webhook.php:726
 msgid "Refund Status: %s"
 msgstr ""
 
@@ -2395,8 +3077,8 @@ msgstr ""
 #. translators: %s: Payment status (e.g., succeeded, partially refunded).
 #: inc/payments/stripe/admin-stripe-handler.php:625
 #: inc/payments/stripe/admin-stripe-handler.php:1147
-#: inc/payments/stripe/stripe-webhook.php:678
-#: inc/payments/stripe/stripe-webhook.php:842
+#: inc/payments/stripe/stripe-webhook.php:728
+#: inc/payments/stripe/stripe-webhook.php:892
 msgid "Payment Status: %s"
 msgstr ""
 
@@ -2405,7 +3087,7 @@ msgstr ""
 #. translators: %s: Refunded by method (e.g., Webhook).
 #: inc/payments/stripe/admin-stripe-handler.php:630
 #: inc/payments/stripe/admin-stripe-handler.php:1152
-#: inc/payments/stripe/stripe-webhook.php:680
+#: inc/payments/stripe/stripe-webhook.php:730
 msgid "Refunded by: %s"
 msgstr ""
 
@@ -2418,7 +3100,7 @@ msgstr ""
 #. translators: %s: refund type (Full or Partial)
 #. translators: %s: Refund type (e.g., Full, Partial).
 #: inc/payments/stripe/admin-stripe-handler.php:648
-#: inc/payments/stripe/stripe-webhook.php:658
+#: inc/payments/stripe/stripe-webhook.php:708
 msgid "%s Payment Refund"
 msgstr ""
 
@@ -2549,8 +3231,7 @@ msgid "OAuth callback missing response data."
 msgstr ""
 
 #: inc/payments/stripe/payments-settings.php:301
-#: assets/build/settings.js:172
-msgid "Stripe account disconnected successfully."
+msgid "Stripe account disconnected successfully!"
 msgstr ""
 
 #: inc/payments/stripe/payments-settings.php:357
@@ -2564,8 +3245,7 @@ msgid "Stripe %s secret key is missing."
 msgstr ""
 
 #: inc/payments/stripe/payments-settings.php:401
-#: assets/build/settings.js:172
-msgid "Failed to create webhook."
+msgid "Unable to create webhook."
 msgstr ""
 
 #: inc/payments/stripe/payments-settings.php:409
@@ -2599,7 +3279,7 @@ msgid "Webhooks created for %1$d mode(s). Some modes may have failed: %2$s"
 msgstr ""
 
 #: inc/payments/stripe/payments-settings.php:592
-msgid "Failed to create webhooks."
+msgid "Unable to create webhooks."
 msgstr ""
 
 #: inc/payments/stripe/payments-settings.php:655
@@ -2613,7 +3293,7 @@ msgid "Webhook deletion was not confirmed by Stripe."
 msgstr ""
 
 #: inc/payments/stripe/payments-settings.php:682
-msgid "Webhook deleted successfully."
+msgid "Webhook deleted successfully!"
 msgstr ""
 
 #. translators: %d: number of webhooks deleted
@@ -2624,7 +3304,7 @@ msgid "Webhooks deleted successfully for %d mode(s)."
 msgstr ""
 
 #: inc/payments/stripe/payments-settings.php:717
-msgid "Failed to delete webhooks."
+msgid "Unable to delete webhooks."
 msgstr ""
 
 #: inc/payments/stripe/payments-settings.php:772
@@ -2645,7 +3325,7 @@ msgid "Webhook deleted successfully for %s mode."
 msgstr ""
 
 #: inc/payments/stripe/payments-settings.php:876
-msgid "Failed to delete webhook."
+msgid "Unable to delete webhook."
 msgstr ""
 
 #: inc/payments/stripe/payments-settings.php:932
@@ -2661,8 +3341,7 @@ msgid "Permission Denied"
 msgstr ""
 
 #: inc/payments/stripe/payments-settings.php:1024
-#: assets/build/settings.js:172
-msgid "Failed to connect to Stripe."
+msgid "Unable to connect to Stripe."
 msgstr ""
 
 #. translators: %s: network error message
@@ -2674,83 +3353,95 @@ msgstr ""
 msgid "Invalid response format from Stripe API."
 msgstr ""
 
+#: inc/payments/stripe/stripe-webhook.php:107
+msgid "Missing webhook payload or signature."
+msgstr ""
+
+#: inc/payments/stripe/stripe-webhook.php:121
+msgid "Webhook secret not configured."
+msgstr ""
+
+#: inc/payments/stripe/stripe-webhook.php:125
+msgid "Invalid webhook signature."
+msgstr ""
+
 #. translators: %s: Canceled date
-#: inc/payments/stripe/stripe-webhook.php:528
+#: inc/payments/stripe/stripe-webhook.php:578
 msgid "Canceled at: %s"
 msgstr ""
 
 #. translators: %s: Cancellation reason
 #. translators: %s: Failure reason.
-#: inc/payments/stripe/stripe-webhook.php:534
-#: inc/payments/stripe/stripe-webhook.php:840
+#: inc/payments/stripe/stripe-webhook.php:584
+#: inc/payments/stripe/stripe-webhook.php:890
 msgid "Cancellation Reason: %s"
 msgstr ""
 
 #. translators: %s: Cancellation feedback
-#: inc/payments/stripe/stripe-webhook.php:542
+#: inc/payments/stripe/stripe-webhook.php:592
 msgid "Feedback: %s"
 msgstr ""
 
 #. translators: %s: Refunded by method (e.g., Webhook).
 #. translators: %s: Canceled by method (e.g., Webhook).
-#: inc/payments/stripe/stripe-webhook.php:680
-#: inc/payments/stripe/stripe-webhook.php:844
+#: inc/payments/stripe/stripe-webhook.php:730
+#: inc/payments/stripe/stripe-webhook.php:894
 #: assets/build/settings.js:172
 msgid "Webhook"
 msgstr ""
 
-#: inc/payments/stripe/stripe-webhook.php:822
+#: inc/payments/stripe/stripe-webhook.php:872
 msgid "Refund Canceled"
 msgstr ""
 
 #. translators: 1: Canceled amount, 2: Currency.
-#: inc/payments/stripe/stripe-webhook.php:830
+#: inc/payments/stripe/stripe-webhook.php:880
 msgid "Canceled Refund Amount: %1$s %2$s"
 msgstr ""
 
 #. translators: 1: Remaining refunded amount, 2: Currency, 3: Original amount, 4: Currency
-#: inc/payments/stripe/stripe-webhook.php:833
+#: inc/payments/stripe/stripe-webhook.php:883
 msgid "Remaining Refunded: %1$s %2$s of %3$s %4$s"
 msgstr ""
 
-#: inc/payments/stripe/stripe-webhook.php:994
+#: inc/payments/stripe/stripe-webhook.php:1044
 msgid "Initial Subscription Payment Succeeded"
 msgstr ""
 
 #. translators: %s: Invoice ID
-#: inc/payments/stripe/stripe-webhook.php:1000
-#: inc/payments/stripe/stripe-webhook.php:1070
+#: inc/payments/stripe/stripe-webhook.php:1050
+#: inc/payments/stripe/stripe-webhook.php:1120
 msgid "Invoice ID: %s"
 msgstr ""
 
-#: inc/payments/stripe/stripe-webhook.php:1007
+#: inc/payments/stripe/stripe-webhook.php:1057
 msgid "Payment Status: Succeeded"
 msgstr ""
 
-#: inc/payments/stripe/stripe-webhook.php:1008
+#: inc/payments/stripe/stripe-webhook.php:1058
 msgid "Subscription Status: Active"
 msgstr ""
 
-#: inc/payments/stripe/stripe-webhook.php:1056
+#: inc/payments/stripe/stripe-webhook.php:1106
 msgid "Subscription Charge Payment"
 msgstr ""
 
 #. translators: %s: Status
-#: inc/payments/stripe/stripe-webhook.php:1066
+#: inc/payments/stripe/stripe-webhook.php:1116
 msgid "Succeeded"
 msgstr ""
 
 #. translators: %s: Customer Email
-#: inc/payments/stripe/stripe-webhook.php:1074
+#: inc/payments/stripe/stripe-webhook.php:1124
 msgid "Customer Email: %s"
 msgstr ""
 
 #. translators: %s: Customer Name
-#: inc/payments/stripe/stripe-webhook.php:1076
+#: inc/payments/stripe/stripe-webhook.php:1126
 msgid "Customer Name: %s"
 msgstr ""
 
-#: inc/payments/stripe/stripe-webhook.php:1077
+#: inc/payments/stripe/stripe-webhook.php:1127
 msgid "Created via subscription billing cycle"
 msgstr ""
 
@@ -2792,6 +3483,7 @@ msgid "Add New Form"
 msgstr ""
 
 #: inc/post-types.php:212
+#: assets/build/forms.js:172
 #: assets/build/payments.js:172
 msgid "View Form"
 msgstr ""
@@ -2842,82 +3534,77 @@ msgstr ""
 msgid "Your form has been submitted successfully. We'll review your details and get back to you soon."
 msgstr ""
 
+#: inc/post-types.php:1135
+#: inc/post-types.php:1175
+msgid "This form is closed. The submission period has ended."
+msgstr ""
+
 #: inc/rest-api.php:97
-msgid "Request could not be processed."
+msgid "Missing required parameters."
 msgstr ""
 
 #: inc/rest-api.php:104
-msgid "Invalid date."
+msgid "Invalid date range."
 msgstr ""
 
-#: inc/rest-api.php:235
-msgid "Plugin slug is required."
+#: inc/rest-api.php:381
+msgid "Plugin identifier is required."
 msgstr ""
 
-#: inc/rest-api.php:244
-msgid "Plugin not found."
+#: inc/rest-api.php:390
+msgid "Integration not found."
 msgstr ""
 
-#: inc/rest-api.php:370
-#: inc/rest-api.php:419
-#: inc/rest-api.php:467
-msgid "No entry IDs provided."
+#: inc/rest-api.php:516
+#: inc/rest-api.php:565
+#: inc/rest-api.php:613
+msgid "Select at least one entry."
 msgstr ""
 
-#: inc/rest-api.php:377
-#: inc/rest-api.php:426
-msgid "No action provided."
+#: inc/rest-api.php:523
+#: inc/rest-api.php:572
+msgid "Action is required."
 msgstr ""
 
-#: inc/rest-api.php:385
-msgid "Invalid action. Must be \"read\" or \"unread\"."
+#: inc/rest-api.php:531
+msgid "Invalid action. Use \"read\" or \"unread\"."
 msgstr ""
 
-#: inc/rest-api.php:434
-msgid "Invalid action. Must be \"trash\" or \"restore\"."
+#: inc/rest-api.php:580
+msgid "Invalid action. Use \"trash\" or \"restore\"."
 msgstr ""
 
-#: inc/rest-api.php:500
-#: inc/rest-api.php:639
+#: inc/rest-api.php:646
+#: inc/rest-api.php:786
 msgid "Entry ID is required."
 msgstr ""
 
-#: inc/rest-api.php:509
-#: inc/rest-api.php:648
-msgid "Entry not found."
+#: inc/rest-api.php:920
+msgid "Select at least one form and specify an action."
 msgstr ""
 
-#. Translators: %d is the form ID.
-#: inc/rest-api.php:579
-msgid "SureForms Form #%d"
+#: inc/rest-api.php:935
+msgid "Form not found or is not a valid form type."
 msgstr ""
 
-#: inc/rest-api.php:773
-msgid "Form IDs and action are required."
+#: inc/rest-api.php:947
+msgid "This form is already in the trash."
 msgstr ""
 
-#: inc/rest-api.php:788
-msgid "Form not found or invalid post type."
+#: inc/rest-api.php:958
+msgid "This form is not in the trash."
 msgstr ""
 
-#: inc/rest-api.php:800
-msgid "Form is already in trash."
-msgstr ""
-
-#: inc/rest-api.php:811
-msgid "Form is not in trash."
-msgstr ""
-
-#: inc/rest-api.php:826
-msgid "Invalid action specified."
+#: inc/rest-api.php:973
+msgid "Invalid action."
 msgstr ""
 
 #. translators: %s: action name
-#: inc/rest-api.php:841
-msgid "Failed to %s form."
+#: inc/rest-api.php:988
+msgid "Failed to %s this form. Please try again."
 msgstr ""
 
-#: inc/rest-api.php:1395
+#: inc/rest-api.php:1598
 msgid " (Copy)"
 msgstr ""
 
@@ -3004,11 +3691,11 @@ msgid "Cookie Value"
 msgstr ""
 
 #: inc/translatable.php:88
-msgid "Please enter a valid phone number."
+msgid "Enter a valid phone number."
 msgstr ""
 
 #: inc/translatable.php:89
-msgid "Please enter a valid URL."
+msgid "Enter a valid URL."
 msgstr ""
 
 #: inc/translatable.php:90
@@ -3016,36 +3703,33 @@ msgid "Confirmation email does not match."
 msgstr ""
 
 #: inc/translatable.php:91
-msgid "Please enter a valid email address."
+msgid "Enter a valid email address."
 msgstr ""
 
 #. translators: %s represents the minimum acceptable value
 #: inc/translatable.php:94
-msgid "Minimum value is %s"
+msgid "Minimum value is %s."
 msgstr ""
 
 #. translators: %s represents the maximum acceptable value
 #: inc/translatable.php:97
-msgid "Maximum value is %s"
+msgid "Maximum value is %s."
 msgstr ""
 
-#. translators: %s represents the minimum number of selections required
-#. translators: %s represents the minimum number of characters required
+#. translators: %s represents the minimum number of options to select
 #: inc/translatable.php:100
 #: inc/translatable.php:106
-msgid "Minimum %s selections are required"
+msgid "Select at least %s options."
 msgstr ""
 
-#. translators: %s represents the maximum number of selections allowed
-#. translators: %s represents the maximum number of characters allowed
+#. translators: %s represents the maximum number of options that can be selected
 #: inc/translatable.php:103
 #: inc/translatable.php:109
-msgid "Maximum %s selections are allowed"
+msgid "You can select up to %s options."
 msgstr ""
 
 #: inc/translatable.php:120
-#: assets/build/formEditor.js:172
-msgid "This form is now closed as we've received all the entries."
+msgid "This form is now closed as we have reached the maximum number of entries."
 msgstr ""
 
 #: inc/updater.php:137
@@ -3054,8 +3738,8 @@ msgstr ""
 
 #: modules/gutenberg/classes/class-spec-block-config.php:470
 #: modules/gutenberg/build/blocks-placeholder.js:12
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:6
+#: modules/gutenberg/build/blocks.js:8
 msgid "Separator"
 msgstr ""
 
@@ -3064,26 +3748,26 @@ msgstr ""
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks-placeholder.js:11
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:15
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:6
+#: modules/gutenberg/build/blocks.js:8
+#: modules/gutenberg/build/blocks.js:9
 msgid "Image"
 msgstr ""
 
 #: modules/gutenberg/classes/class-spec-block-config.php:574
 #: assets/build/blocks.js:172
 #: modules/gutenberg/build/blocks-placeholder.js:10
-#: modules/gutenberg/build/blocks.js:7
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:4
+#: modules/gutenberg/build/blocks.js:6
+#: modules/gutenberg/build/blocks.js:9
 msgid "Icon"
 msgstr ""
 
 #: modules/gutenberg/classes/class-spec-block-config.php:585
 #: modules/gutenberg/icons/icons-v6-1.php:4571
 #: modules/gutenberg/build/blocks-placeholder.js:9
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:6
+#: modules/gutenberg/build/blocks.js:8
 msgid "Heading"
 msgstr ""
 
@@ -4447,7 +5131,7 @@ msgid "Church"
 msgstr ""
 
 #: modules/gutenberg/icons/icons-v6-0.php:3954
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:8
 msgid "Circle"
 msgstr ""
 
@@ -4897,7 +5581,7 @@ msgid "Critical Role"
 msgstr ""
 
 #: modules/gutenberg/icons/icons-v6-0.php:5301
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:9
 msgid "Crop"
 msgstr ""
 
@@ -5041,7 +5725,7 @@ msgid "Diagram Successor"
 msgstr ""
 
 #: modules/gutenberg/icons/icons-v6-1.php:389
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:8
 msgid "Diamond"
 msgstr ""
 
@@ -5762,7 +6446,7 @@ msgid "File Zipper"
 msgstr ""
 
 #: modules/gutenberg/icons/icons-v6-1.php:2569
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:8
 msgid "Fill"
 msgstr ""
 
@@ -6799,7 +7483,7 @@ msgid "ioxhost"
 msgstr ""
 
 #: modules/gutenberg/icons/icons-v6-2.php:180
-#: modules/gutenberg/build/blocks.js:7
+#: modules/gutenberg/build/blocks.js:4
 msgid "Italic"
 msgstr ""
 
@@ -7044,8 +7728,8 @@ msgid "Lines Leaning"
 msgstr ""
 
 #: modules/gutenberg/icons/icons-v6-2.php:893
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:6
+#: modules/gutenberg/build/blocks.js:9
 msgid "Link"
 msgstr ""
 
@@ -7254,7 +7938,7 @@ msgid "Martini Glass Empty"
 msgstr ""
 
 #: modules/gutenberg/icons/icons-v6-2.php:1470
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:8
 msgid "Mask"
 msgstr ""
 
@@ -7671,7 +8355,7 @@ msgid "Outdent"
 msgstr ""
 
 #: modules/gutenberg/icons/icons-v6-2.php:2649
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:6
 msgid "P"
 msgstr ""
 
@@ -8374,7 +9058,7 @@ msgstr ""
 
 #: modules/gutenberg/icons/icons-v6-2.php:4659
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:8
 msgid "Repeat"
 msgstr ""
 
@@ -8849,7 +9533,7 @@ msgid "Slack Logo"
 msgstr ""
 
 #: modules/gutenberg/icons/icons-v6-3.php:790
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:6
 msgid "Slash"
 msgstr ""
 
@@ -9748,7 +10432,7 @@ msgid "Uncharted Software"
 msgstr ""
 
 #: modules/gutenberg/icons/icons-v6-3.php:3405
-#: modules/gutenberg/build/blocks.js:7
+#: modules/gutenberg/build/blocks.js:4
 msgid "Underline"
 msgstr ""
 
@@ -10478,22 +11162,22 @@ msgstr ""
 #: assets/build/blocks.js:2
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:172
-#: modules/gutenberg/build/blocks.js:7
+#: modules/gutenberg/build/blocks.js:4
 msgid "General"
 msgstr ""
 
 #: assets/build/blocks.js:2
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:7
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:4
+#: modules/gutenberg/build/blocks.js:6
+#: modules/gutenberg/build/blocks.js:8
 msgid "Style"
 msgstr ""
 
 #: assets/build/blocks.js:2
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:7
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:4
+#: modules/gutenberg/build/blocks.js:6
 msgid "Advanced"
 msgstr ""
 
@@ -10525,7 +11209,7 @@ msgstr ""
 #. translators: abbreviation for units
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:3
+#: modules/gutenberg/build/blocks.js:2
 msgid "Reset"
 msgstr ""
 
@@ -10546,48 +11230,48 @@ msgstr ""
 
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:3
-#: modules/gutenberg/build/blocks.js:7
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:2
+#: modules/gutenberg/build/blocks.js:4
+#: modules/gutenberg/build/blocks.js:6
+#: modules/gutenberg/build/blocks.js:8
 msgid "Pixel"
 msgstr ""
 
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:3
-#: modules/gutenberg/build/blocks.js:7
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:2
+#: modules/gutenberg/build/blocks.js:4
+#: modules/gutenberg/build/blocks.js:6
+#: modules/gutenberg/build/blocks.js:8
 msgid "Em"
 msgstr ""
 
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:3
-#: modules/gutenberg/build/blocks.js:7
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:2
+#: modules/gutenberg/build/blocks.js:4
+#: modules/gutenberg/build/blocks.js:6
 msgid "Select Units"
 msgstr ""
 
 #. translators: abbreviation for units
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
+#: modules/gutenberg/build/blocks.js:3
+#: modules/gutenberg/build/blocks.js:4
 #: modules/gutenberg/build/blocks.js:5
+#: modules/gutenberg/build/blocks.js:6
 #: modules/gutenberg/build/blocks.js:7
-#: modules/gutenberg/build/blocks.js:9
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:13
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:8
 msgid "%s units"
 msgstr ""
 
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:7
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:15
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:4
+#: modules/gutenberg/build/blocks.js:6
+#: modules/gutenberg/build/blocks.js:8
+#: modules/gutenberg/build/blocks.js:9
 msgid "Margin"
 msgstr ""
 
@@ -10648,9 +11332,9 @@ msgstr ""
 
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:7
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:4
+#: modules/gutenberg/build/blocks.js:6
+#: modules/gutenberg/build/blocks.js:8
 msgid "None"
 msgstr ""
 
@@ -10676,7 +11360,7 @@ msgstr ""
 
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:8
 msgid "Custom"
 msgstr ""
 
@@ -10701,7 +11385,7 @@ msgid "Unique Entry"
 msgstr ""
 
 #: assets/build/blocks.js:172
-msgid "Validation Message for Duplicate "
+msgid "Validation Message for Duplicate"
 msgstr ""
 
 #: assets/build/blocks.js:172
@@ -10770,52 +11454,52 @@ msgstr ""
 
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:7
+#: modules/gutenberg/build/blocks.js:4
 msgid "Please add a option props to MultiButtonsControl"
 msgstr ""
 
 #: assets/build/blocks.js:172
-#: modules/gutenberg/build/blocks.js:7
+#: modules/gutenberg/build/blocks.js:4
 msgid "Icon Library"
 msgstr ""
 
 #: assets/build/blocks.js:172
-#: modules/gutenberg/build/blocks.js:7
+#: modules/gutenberg/build/blocks.js:4
 msgid "Search"
 msgstr ""
 
 #: assets/build/blocks.js:172
-#: modules/gutenberg/build/blocks.js:7
+#: modules/gutenberg/build/blocks.js:4
 msgid "Close"
 msgstr ""
 
 #: assets/build/blocks.js:172
-#: modules/gutenberg/build/blocks.js:7
+#: modules/gutenberg/build/blocks.js:4
 msgid "All Icons"
 msgstr ""
 
 #: assets/build/blocks.js:172
-#: modules/gutenberg/build/blocks.js:7
+#: modules/gutenberg/build/blocks.js:4
 msgid "Other"
 msgstr ""
 
 #: assets/build/blocks.js:172
-#: modules/gutenberg/build/blocks.js:7
+#: modules/gutenberg/build/blocks.js:4
 msgid "No Icons Found"
 msgstr ""
 
 #: assets/build/blocks.js:172
-#: modules/gutenberg/build/blocks.js:7
+#: modules/gutenberg/build/blocks.js:4
 msgid "Insert Icon"
 msgstr ""
 
 #: assets/build/blocks.js:172
-#: modules/gutenberg/build/blocks.js:7
+#: modules/gutenberg/build/blocks.js:4
 msgid "Change Icon"
 msgstr ""
 
 #: assets/build/blocks.js:172
-#: modules/gutenberg/build/blocks.js:7
+#: modules/gutenberg/build/blocks.js:4
 msgid "Choose Icon"
 msgstr ""
 
@@ -10825,7 +11509,7 @@ msgstr ""
 #: assets/build/forms.js:172
 #: assets/build/payments.js:172
 #: assets/build/settings.js:172
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:6
 msgid "Confirm"
 msgstr ""
 
@@ -10837,80 +11521,80 @@ msgstr ""
 #: assets/build/payments.js:2
 #: assets/build/payments.js:172
 #: assets/build/settings.js:172
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:6
 msgid "Cancel"
 msgstr ""
 
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 #: assets/build/payments.js:172
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:6
 msgid "Processing…"
 msgstr ""
 
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:6
 msgid "Select Video"
 msgstr ""
 
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:6
 msgid "Change Video"
 msgstr ""
 
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:6
 msgid "Select Lottie Animation"
 msgstr ""
 
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:6
 msgid "Change Lottie Animation"
 msgstr ""
 
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:6
 msgid "Upload SVG"
 msgstr ""
 
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:6
 msgid "Change SVG"
 msgstr ""
 
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:6
 msgid "Select Image"
 msgstr ""
 
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:6
 msgid "Change Image"
 msgstr ""
 
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:6
 msgid "Upload SVG?"
 msgstr ""
 
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:6
 msgid "Upload SVG can be potentially risky. Are you sure?"
 msgstr ""
 
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:6
 msgid "Upload Anyway"
 msgstr ""
 
@@ -10967,16 +11651,16 @@ msgid "Select Layout"
 msgstr ""
 
 #: assets/build/blocks.js:172
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:15
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:6
+#: modules/gutenberg/build/blocks.js:8
+#: modules/gutenberg/build/blocks.js:9
 msgid "Horizontal"
 msgstr ""
 
 #: assets/build/blocks.js:172
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:15
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:6
+#: modules/gutenberg/build/blocks.js:8
+#: modules/gutenberg/build/blocks.js:9
 msgid "Vertical"
 msgstr ""
 
@@ -11206,6 +11890,10 @@ msgid "Select the email field that contains the customer email"
 msgstr ""
 
 #: assets/build/blocks.js:172
+msgid "Click here to insert a form"
+msgstr ""
+
+#: assets/build/blocks.js:172
 msgid "%s Width"
 msgstr ""
 
@@ -11244,7 +11932,7 @@ msgstr ""
 #: assets/build/dashboard.js:172
 #: assets/build/formEditor.js:2
 #: assets/build/settings.js:2
-msgid "An error occurred. Please try again later."
+msgid "Unable to complete action. Please try again."
 msgstr ""
 
 #: assets/build/dashboard.js:172
@@ -11272,7 +11960,7 @@ msgid "Plugin Installation failed, Please try again later."
 msgstr ""
 
 #: assets/build/dashboard.js:172
-msgid "Super Charge Your Workflow"
+msgid "Supercharge Your Workflow"
 msgstr ""
 
 #: assets/build/dashboard.js:172
@@ -11286,6 +11974,7 @@ msgstr ""
 #: assets/build/dashboard.js:172
 #: assets/build/entries.js:172
 #: assets/build/forms.js:172
+#: assets/build/learn.js:172
 #: assets/build/page_header.js:172
 #: assets/build/payments.js:172
 #: assets/build/settings.js:2
@@ -11295,6 +11984,7 @@ msgstr ""
 #: assets/build/dashboard.js:172
 #: assets/build/entries.js:172
 #: assets/build/forms.js:172
+#: assets/build/learn.js:172
 #: assets/build/page_header.js:172
 #: assets/build/payments.js:172
 #: assets/build/settings.js:2
@@ -11304,6 +11994,7 @@ msgstr ""
 #: assets/build/dashboard.js:172
 #: assets/build/entries.js:172
 #: assets/build/forms.js:172
+#: assets/build/learn.js:172
 #: assets/build/page_header.js:172
 #: assets/build/payments.js:172
 #: assets/build/settings.js:2
@@ -11313,6 +12004,7 @@ msgstr ""
 #: assets/build/dashboard.js:172
 #: assets/build/entries.js:172
 #: assets/build/forms.js:172
+#: assets/build/learn.js:172
 #: assets/build/page_header.js:172
 #: assets/build/payments.js:172
 #: assets/build/settings.js:2
@@ -11322,6 +12014,7 @@ msgstr ""
 #: assets/build/dashboard.js:172
 #: assets/build/entries.js:172
 #: assets/build/forms.js:172
+#: assets/build/learn.js:172
 #: assets/build/page_header.js:172
 #: assets/build/payments.js:172
 #: assets/build/settings.js:2
@@ -11331,6 +12024,7 @@ msgstr ""
 #: assets/build/dashboard.js:172
 #: assets/build/entries.js:172
 #: assets/build/forms.js:172
+#: assets/build/learn.js:172
 #: assets/build/page_header.js:172
 #: assets/build/payments.js:172
 #: assets/build/settings.js:2
@@ -11340,6 +12034,7 @@ msgstr ""
 #: assets/build/dashboard.js:172
 #: assets/build/entries.js:172
 #: assets/build/forms.js:172
+#: assets/build/learn.js:172
 #: assets/build/page_header.js:172
 #: assets/build/payments.js:172
 #: assets/build/settings.js:2
@@ -11349,6 +12044,7 @@ msgstr ""
 #: assets/build/dashboard.js:172
 #: assets/build/entries.js:172
 #: assets/build/forms.js:172
+#: assets/build/learn.js:172
 #: assets/build/page_header.js:172
 #: assets/build/payments.js:172
 #: assets/build/settings.js:2
@@ -11358,6 +12054,7 @@ msgstr ""
 #: assets/build/dashboard.js:172
 #: assets/build/entries.js:172
 #: assets/build/forms.js:172
+#: assets/build/learn.js:172
 #: assets/build/page_header.js:172
 #: assets/build/payments.js:172
 #: assets/build/settings.js:2
@@ -11409,6 +12106,7 @@ msgid "And Much More…"
 msgstr ""
 
 #: assets/build/dashboard.js:172
+#: assets/build/learn.js:172
 msgid "Upgrade to Pro"
 msgstr ""
 
@@ -11505,7 +12203,7 @@ msgid "Works perfectly on mobile"
 msgstr ""
 
 #: assets/build/dashboard.js:172
-msgid "Spam protection built-in"
+msgid "Spam protection included"
 msgstr ""
 
 #: assets/build/dashboard.js:172
@@ -11605,11 +12303,11 @@ msgid "Tired of building forms manually? Let AI do the work for you. Just descri
 msgstr ""
 
 #: assets/build/dashboard.js:172
-msgid "Track, view, and manage all form submissions in one place. Stay organized, informed, and never miss a response."
+msgid "Track, view, and manage all form entries in one place. Stay organized, informed, and never miss a response."
 msgstr ""
 
 #: assets/build/dashboard.js:172
-msgid "Multi-step Forms"
+msgid "Multistep Forms"
 msgstr ""
 
 #: assets/build/dashboard.js:172
@@ -11629,7 +12327,7 @@ msgid "Webhooks"
 msgstr ""
 
 #: assets/build/dashboard.js:172
-msgid "Send form submissions instantly to any external system or endpoint to power advanced workflows."
+msgid "Send form entries instantly to any external system or endpoint to power advanced workflows."
 msgstr ""
 
 #: assets/build/dashboard.js:172
@@ -11669,7 +12367,7 @@ msgid "PDF Generation Made Simple"
 msgstr ""
 
 #: assets/build/dashboard.js:172
-msgid "Automatically turn form submissions into clean, ready-to-download PDFs. Perfect for records, sharing, archiving, or keeping things organized."
+msgid "Automatically turn form entries into clean, ready-to-download PDFs. Perfect for records, sharing, archiving, or keeping things organized."
 msgstr ""
 
 #: assets/build/dashboard.js:172
@@ -11713,7 +12411,7 @@ msgid "Style your form to better match your site's design"
 msgstr ""
 
 #: assets/build/dashboard.js:172
-msgid "Set up confirmation messages and email notifications for each submission"
+msgid "Set up confirmation messages and email notifications for each entry"
 msgstr ""
 
 #: assets/build/dashboard.js:172
@@ -11751,7 +12449,7 @@ msgid "mm/dd/yyyy - mm/dd/yyyy"
 msgstr ""
 
 #: assets/build/entries.js:172
-msgid "All Status"
+msgid "All Statuses"
 msgstr ""
 
 #: assets/build/entries.js:172
@@ -11767,8 +12465,7 @@ msgid "First Field"
 msgstr ""
 
 #: assets/build/entries.js:172
-#: assets/build/forms.js:172
-msgid "Date & Time"
+msgid "Date and Time"
 msgstr ""
 
 #: assets/build/entries.js:172
@@ -11813,7 +12510,6 @@ msgstr ""
 
 #: assets/build/entries.js:172
 #: assets/build/formEditor.js:172
-#: assets/build/forms.js:172
 #: assets/build/payments.js:2
 msgid "Delete"
 msgstr ""
@@ -11843,11 +12539,16 @@ msgstr ""
 
 #: assets/build/entries.js:172
 #: assets/build/forms.js:172
+msgid "Date & Time"
+msgstr ""
+
+#: assets/build/entries.js:172
 msgid "Preview"
 msgstr ""
 
 #: assets/build/entries.js:172
 #: assets/build/forms.js:172
+#: assets/build/payments.js:172
 msgid "Delete Permanently"
 msgstr ""
 
@@ -11917,7 +12618,7 @@ msgid "Type \"%s\""
 msgstr ""
 
 #: assets/build/entries.js:172
-msgid "Entry#%1$s marked as %2$s."
+msgid "Entry #%1$s marked as %2$s."
 msgstr ""
 
 #: assets/build/entries.js:172
@@ -11950,7 +12651,7 @@ msgid "Entry"
 msgstr ""
 
 #: assets/build/entries.js:172
-msgid "Entry#%s deleted permanently."
+msgid "Entry #%s deleted permanently."
 msgstr ""
 
 #: assets/build/entries.js:172
@@ -11964,11 +12665,11 @@ msgid "An error occurred. Please try again."
 msgstr ""
 
 #: assets/build/entries.js:172
-msgid "Entry#%s moved to trash."
+msgid "Entry #%s moved to trash."
 msgstr ""
 
 #: assets/build/entries.js:172
-msgid "Entry#%s restored successfully."
+msgid "Entry #%s restored successfully."
 msgstr ""
 
 #: assets/build/entries.js:172
@@ -11992,14 +12693,14 @@ msgid "An error occurred while fetching entries."
 msgstr ""
 
 #: assets/build/entries.js:172
-msgid "Delete Entry"
-msgid_plural "Delete Entries"
+msgid "Delete entry permanently?"
+msgid_plural "Delete entries permanently?"
 msgstr[0] ""
 msgstr[1] ""
 
 #: assets/build/entries.js:172
-msgid "Move Entry to Trash?"
-msgid_plural "Move Entries to Trash?"
+msgid "Move entry to trash?"
+msgid_plural "Move entries to trash?"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -12016,7 +12717,7 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: assets/build/entries.js:172
-msgid "Entries exported successfully."
+msgid "Entries exported successfully!"
 msgstr ""
 
 #: assets/build/entries.js:172
@@ -12066,7 +12767,7 @@ msgid "Entry:"
 msgstr ""
 
 #: assets/build/entries.js:172
-msgid "Form Name:"
+msgid "Form name:"
 msgstr ""
 
 #: assets/build/entries.js:172
@@ -12094,11 +12795,11 @@ msgid "Status:"
 msgstr ""
 
 #: assets/build/entries.js:172
-msgid "Submitted On:"
+msgid "Submitted on:"
 msgstr ""
 
 #: assets/build/entries.js:172
-msgid "Submission Info"
+msgid "Entry info"
 msgstr ""
 
 #: assets/build/entries.js:172
@@ -12164,7 +12865,7 @@ msgid "With the SureForms Starter plan, you can effortlessly resend email notifi
 msgstr ""
 
 #: assets/build/entries.js:172
-msgid "Resend Notification"
+msgid "Resend Email Notification"
 msgstr ""
 
 #: assets/build/entries.js:172
@@ -12197,43 +12898,43 @@ msgid "%s - Status"
 msgstr ""
 
 #. translators: abbreviation for units
-#: assets/build/formEditor.js:172
+#: assets/build/formEditor.js:2
 #: modules/quick-action-sidebar/components/draggable-block.js:83
 msgid "%s Removed from Quick Action Bar."
 msgstr ""
 
-#: assets/build/formEditor.js:172
+#: assets/build/formEditor.js:2
 #: modules/quick-action-sidebar/components/Modal.js:145
 msgid "Add to Quick Action Bar"
 msgstr ""
 
 #. translators: abbreviation for units
-#: assets/build/formEditor.js:172
+#: assets/build/formEditor.js:2
 #: modules/quick-action-sidebar/components/Modal.js:42
 msgid "%s Added to Quick Action Bar."
 msgstr ""
 
-#: assets/build/formEditor.js:172
+#: assets/build/formEditor.js:2
 #: modules/quick-action-sidebar/components/Modal.js:155
 msgid "Already Present in Quick Action Bar"
 msgstr ""
 
-#: assets/build/formEditor.js:172
+#: assets/build/formEditor.js:2
 #: modules/quick-action-sidebar/components/Modal.js:174
 msgid "No results found."
 msgstr ""
 
-#: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:11
+#: assets/build/formEditor.js:2
+#: modules/gutenberg/build/blocks.js:6
 msgid "data object is empty"
 msgstr ""
 
-#: assets/build/formEditor.js:172
+#: assets/build/formEditor.js:2
 #: modules/quick-action-sidebar/components/Sidebar.js:181
 msgid "Add blocks to Quick Action Bar"
 msgstr ""
 
-#: assets/build/formEditor.js:172
+#: assets/build/formEditor.js:2
 #: modules/quick-action-sidebar/components/Sidebar.js:231
 msgid "Re-arrange block inside Quick Action Bar"
 msgstr ""
@@ -12251,7 +12952,7 @@ msgid "Enable GDPR Compliance"
 msgstr ""
 
 #: assets/build/formEditor.js:172
-msgid "When enabled this form will not store User IP, Browser Name and the Device Name in the Entries."
+msgid "When enabled, this form will not store user IP, browser name, or device name in entries."
 msgstr ""
 
 #: assets/build/formEditor.js:172
@@ -12327,7 +13028,7 @@ msgid "Spam Protection"
 msgstr ""
 
 #: assets/build/formEditor.js:172
-msgid "Enable reCAPTCHA, hCaptcha, Turnstile, or Honeypot to block spam submissions."
+msgid "Enable reCAPTCHA, hCaptcha, or Turnstile to block spam submissions."
 msgstr ""
 
 #: assets/build/formEditor.js:172
@@ -12339,7 +13040,7 @@ msgid "Select Security Type"
 msgstr ""
 
 #: assets/build/formEditor.js:172
-msgid "Select a spam protection service from the list above. Make sure API keys are configured before enabling."
+msgid "Select a spam protection service. Configure API keys in Global Settings before enabling."
 msgstr ""
 
 #: assets/build/formEditor.js:172
@@ -12444,6 +13145,18 @@ msgid "Subject"
 msgstr ""
 
 #: assets/build/formEditor.js:172
+msgid "Send as Raw HTML"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+msgid "When enabled, the email body HTML will be preserved exactly as written and wrapped in a professional email template."
+msgstr ""
+
+#: assets/build/formEditor.js:172
+msgid "Smart tags that reference user-submitted fields will not be escaped in raw HTML mode. Avoid inserting untrusted field values directly into the email body."
+msgstr ""
+
+#: assets/build/formEditor.js:172
 msgid "CC"
 msgstr ""
 
@@ -12456,11 +13169,7 @@ msgid "Reply To"
 msgstr ""
 
 #: assets/build/formEditor.js:172
-msgid "Email Notifications"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-msgid "Please fill out the required field."
+msgid "Please provide a recipient email address and subject line."
 msgstr ""
 
 #: assets/build/formEditor.js:172
@@ -12485,15 +13194,15 @@ msgid "Duplicate"
 msgstr ""
 
 #: assets/build/formEditor.js:172
-msgid "Email Notification duplicated successfully."
+msgid "Email notification duplicated!"
 msgstr ""
 
 #: assets/build/formEditor.js:172
-msgid "Are you sure to delete this?"
+msgid "Are you sure you want to delete this email notification?"
 msgstr ""
 
 #: assets/build/formEditor.js:172
-msgid "Email Notification deleted successfully."
+msgid "Email notification deleted!"
 msgstr ""
 
 #: assets/build/formEditor.js:172
@@ -12557,15 +13266,11 @@ msgid "Suggestion: URL should use HTTPS"
 msgstr ""
 
 #: assets/build/formEditor.js:172
-msgid "URL is missing Top Level Domain (TLD)"
+msgid "URL is missing Top Level Domain (TLD)."
 msgstr ""
 
 #: assets/build/formEditor.js:172
-msgid "Please enter a valid URL"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-msgid "This field is required"
+msgid "Please enter a valid URL."
 msgstr ""
 
 #: assets/build/formEditor.js:172
@@ -12593,7 +13298,7 @@ msgid "Confirmation Type"
 msgstr ""
 
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:7
+#: modules/gutenberg/build/blocks.js:4
 msgid "Clear"
 msgstr ""
 
@@ -12630,6 +13335,10 @@ msgid "Response Description After Maximum Entries"
 msgstr ""
 
 #: assets/build/formEditor.js:172
+msgid "This form is now closed as the maximum number of entries has been received."
+msgstr ""
+
+#: assets/build/formEditor.js:172
 msgid "Form Scheduling"
 msgstr ""
 
@@ -12659,6 +13368,10 @@ msgstr ""
 
 #: assets/build/formEditor.js:172
 msgid "Response Description Before Start Date"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+msgid "This form is not yet available. Please check back after the scheduled start time."
 msgstr ""
 
 #: assets/build/formEditor.js:172
@@ -12892,6 +13605,30 @@ msgid "Automations"
 msgstr ""
 
 #: assets/build/formEditor.js:172
+msgid "Quizzes"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+msgid "Create interactive quizzes to engage your audience and gather insights."
+msgstr ""
+
+#: assets/build/formEditor.js:172
+msgid "Design engaging quizzes with various question types, personalized feedback, and automated scoring to captivate your audience and gain valuable insights."
+msgstr ""
+
+#: assets/build/formEditor.js:172
+msgid "Create interactive quizzes with multiple question types."
+msgstr ""
+
+#: assets/build/formEditor.js:172
+msgid "Provide personalized feedback based on user responses."
+msgstr ""
+
+#: assets/build/formEditor.js:172
+msgid "Automate scoring and lead segmentation for better insights."
+msgstr ""
+
+#: assets/build/formEditor.js:172
 msgid "SureTriggers"
 msgstr ""
 
@@ -12952,7 +13689,7 @@ msgid "There are few unsaved changes. Please save your changes to reflect the up
 msgstr ""
 
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:7
+#: modules/gutenberg/build/blocks.js:4
 msgid "Select Color"
 msgstr ""
 
@@ -12961,86 +13698,86 @@ msgid "Select Gradient"
 msgstr ""
 
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:6
 msgid "Basic"
 msgstr ""
 
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:6
 msgid "Color 1"
 msgstr ""
 
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:6
 msgid "Color 2"
 msgstr ""
 
 #: assets/build/formEditor.js:172
 #: assets/build/payments.js:172
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:6
 msgid "Type"
 msgstr ""
 
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:6
 msgid "Linear"
 msgstr ""
 
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:6
 msgid "Radial"
 msgstr ""
 
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:6
 msgid "Location 1"
 msgstr ""
 
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:6
 msgid "Location 2"
 msgstr ""
 
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:6
 msgid "Angle"
 msgstr ""
 
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:15
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:6
+#: modules/gutenberg/build/blocks.js:8
+#: modules/gutenberg/build/blocks.js:9
 msgid "Color"
 msgstr ""
 
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:6
 msgid "Gradient"
 msgstr ""
 
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:6
 msgid "Classic"
 msgstr ""
 
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:172
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:8
 msgid "Auto"
 msgstr ""
 
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:8
 msgid "Cover"
 msgstr ""
 
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:8
 msgid "Contain"
 msgstr ""
 
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:8
 msgid "Overlay Opacity"
 msgstr ""
 
@@ -13069,10 +13806,10 @@ msgid "Blend Mode"
 msgstr ""
 
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:7
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:15
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:4
+#: modules/gutenberg/build/blocks.js:6
+#: modules/gutenberg/build/blocks.js:8
+#: modules/gutenberg/build/blocks.js:9
 msgid "Normal"
 msgstr ""
 
@@ -13085,7 +13822,7 @@ msgid "Screen"
 msgstr ""
 
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:8
 msgid "Overlay"
 msgstr ""
 
@@ -13106,7 +13843,7 @@ msgid "Saturation"
 msgstr ""
 
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:8
 msgid "No Repeat"
 msgstr ""
 
@@ -13119,14 +13856,14 @@ msgid "Repeat-y"
 msgstr ""
 
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:6
+#: modules/gutenberg/build/blocks.js:9
 msgid "Size"
 msgstr ""
 
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:6
+#: modules/gutenberg/build/blocks.js:8
 msgid "Width"
 msgstr ""
 
@@ -13135,43 +13872,43 @@ msgid "PX"
 msgstr ""
 
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:7
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:4
+#: modules/gutenberg/build/blocks.js:6
+#: modules/gutenberg/build/blocks.js:8
 msgid "%"
 msgstr ""
 
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:6
 msgid "EM"
 msgstr ""
 
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:6
 msgid "Background Color"
 msgstr ""
 
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:6
 msgid "Top"
 msgstr ""
 
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:15
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:6
+#: modules/gutenberg/build/blocks.js:8
+#: modules/gutenberg/build/blocks.js:9
 msgid "Right"
 msgstr ""
 
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:6
 msgid "Bottom"
 msgstr ""
 
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:15
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:6
+#: modules/gutenberg/build/blocks.js:8
+#: modules/gutenberg/build/blocks.js:9
 msgid "Left"
 msgstr ""
 
@@ -13184,14 +13921,14 @@ msgid "Get full control over your form's look with custom colors, fonts, and lay
 msgstr ""
 
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:6
+#: modules/gutenberg/build/blocks.js:8
 msgid "Solid"
 msgstr ""
 
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:6
+#: modules/gutenberg/build/blocks.js:8
 msgid "Background"
 msgstr ""
 
@@ -13200,7 +13937,7 @@ msgid "Primary Color"
 msgstr ""
 
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:6
 msgid "Text Color"
 msgstr ""
 
@@ -13209,8 +13946,8 @@ msgid "Text Color on Primary"
 msgstr ""
 
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:6
+#: modules/gutenberg/build/blocks.js:9
 msgid "Padding"
 msgstr ""
 
@@ -13235,9 +13972,9 @@ msgid "Button Alignment"
 msgstr ""
 
 #: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:15
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:6
+#: modules/gutenberg/build/blocks.js:8
+#: modules/gutenberg/build/blocks.js:9
 msgid "Center"
 msgstr ""
 
@@ -13339,11 +14076,15 @@ msgid "With the SureForms Pro Plan, you can transform your forms into engaging c
 msgstr ""
 
 #: assets/build/formEditor.js:172
-msgid "Instant Form"
+msgid "Publish Your Form"
 msgstr ""
 
 #: assets/build/formEditor.js:172
 msgid "Enable Instant Form"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+msgid "Enable This to Instantly Publish the Form"
 msgstr ""
 
 #: assets/build/formEditor.js:172
@@ -13367,6 +14108,10 @@ msgid "Upload Image"
 msgstr ""
 
 #: assets/build/formEditor.js:172
+msgid "Style Your Instant Form Page Here"
+msgstr ""
+
+#: assets/build/formEditor.js:172
 msgid "Use banner as page background"
 msgstr ""
 
@@ -13380,11 +14125,6 @@ msgstr ""
 
 #: assets/build/formEditor.js:172
 msgid "Instant Form Border Radius"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-#: modules/gutenberg/build/blocks.js:17
-msgid "URL"
 msgstr ""
 
 #: assets/build/formEditor.js:172
@@ -13416,7 +14156,7 @@ msgid "Paste this shortcode on the page or post to render this form."
 msgstr ""
 
 #: assets/build/forms.js:2
-msgid "Export failed - No data received"
+msgid "Export failed: no data received."
 msgstr ""
 
 #: assets/build/forms.js:172
@@ -13444,7 +14184,7 @@ msgid "Import Forms"
 msgstr ""
 
 #: assets/build/forms.js:172
-msgid "Select the SureForms export file (.json) that you wish to import."
+msgid "Select a SureForms export file (.json) to import."
 msgstr ""
 
 #: assets/build/forms.js:172
@@ -13456,7 +14196,7 @@ msgid "Drag and drop or browse files"
 msgstr ""
 
 #: assets/build/forms.js:172
-msgid "Drop the form (.json) file here"
+msgid "Drop a form file (.json) here"
 msgstr ""
 
 #: assets/build/forms.js:172
@@ -13492,7 +14232,7 @@ msgid "Title"
 msgstr ""
 
 #: assets/build/forms.js:172
-msgid "- Draft"
+msgid "(Draft)"
 msgstr ""
 
 #: assets/build/forms.js:172
@@ -13505,10 +14245,6 @@ msgstr ""
 
 #: assets/build/forms.js:172
 msgid "Copy Shortcode"
-msgstr ""
-
-#: assets/build/forms.js:172
-msgid "Permanently Delete"
 msgstr ""
 
 #: assets/build/forms.js:172
@@ -13532,7 +14268,7 @@ msgid "Use AI to generate forms instantly from a simple prompt."
 msgstr ""
 
 #: assets/build/forms.js:172
-msgid "Build instant forms and share them with a link-no embedding needed."
+msgid "Build instant forms and share them with a link—no embedding needed."
 msgstr ""
 
 #: assets/build/forms.js:172
@@ -13570,7 +14306,7 @@ msgid "An error occurred while performing the action."
 msgstr ""
 
 #: assets/build/forms.js:172
-msgid "Form duplicated successfully: %s"
+msgid "Form \"%s\" duplicated successfully."
 msgstr ""
 
 #: assets/build/forms.js:172
@@ -13584,12 +14320,12 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: assets/build/forms.js:172
-msgid "Error loading forms: "
+msgid "Error loading forms"
 msgstr ""
 
 #: assets/build/forms.js:172
-msgid "Move Form to Trash?"
-msgid_plural "Move Forms to Trash?"
+msgid "Move form to trash?"
+msgid_plural "Move forms to trash?"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -13628,15 +14364,101 @@ msgid "This form will be moved to trash and can be restored later."
 msgstr ""
 
 #: assets/build/forms.js:172
+msgid "Delete form?"
+msgstr ""
+
+#: assets/build/forms.js:172
 msgid "Are you sure you want to permanently delete this form? This action cannot be undone."
 msgstr ""
 
 #: assets/build/forms.js:172
-msgid "Duplicate Form?"
+msgid "Duplicate form?"
 msgstr ""
 
 #: assets/build/forms.js:172
 msgid "This will create a copy of \"%s\" with all its settings."
+msgstr ""
+
+#: assets/build/formSubmit.js:2
+#: assets/js/unminified/form-submit.js:479
+msgid "An error occurred while submitting your form. Please try again."
+msgstr ""
+
+#: assets/build/learn.js:2
+msgid "Failed to save progress. Please try again."
+msgstr ""
+
+#: assets/build/learn.js:172
+msgid "1 minute"
+msgstr ""
+
+#: assets/build/learn.js:172
+msgid "%d minutes"
+msgstr ""
+
+#: assets/build/learn.js:172
+msgid "Mark as incomplete"
+msgstr ""
+
+#: assets/build/learn.js:172
+msgid "Mark as complete"
+msgstr ""
+
+#: assets/build/learn.js:172
+msgid "Completed"
+msgstr ""
+
+#: assets/build/learn.js:172
+msgid "In Progress"
+msgstr ""
+
+#: assets/build/learn.js:172
+msgid "Incomplete"
+msgstr ""
+
+#: assets/build/learn.js:172
+msgid "Play video"
+msgstr ""
+
+#: assets/build/learn.js:172
+msgid "View Steps"
+msgstr ""
+
+#: assets/build/learn.js:172
+msgid "Please create a form first"
+msgstr ""
+
+#: assets/build/learn.js:172
+#: assets/build/settings.js:172
+msgid "Documentation"
+msgstr ""
+
+#: assets/build/learn.js:172
+msgid "Mark as Incomplete"
+msgstr ""
+
+#: assets/build/learn.js:172
+msgid "Mark as Completed"
+msgstr ""
+
+#: assets/build/learn.js:172
+msgid "Learn how"
+msgstr ""
+
+#: assets/build/learn.js:172
+msgid "%1$d of %2$d steps completed"
+msgstr ""
+
+#: assets/build/learn.js:172
+msgid "All lessons in this module are already complete"
+msgstr ""
+
+#: assets/build/learn.js:172
+msgid "Mark All as Done"
+msgstr ""
+
+#: assets/build/learn.js:172
+msgid "To help you take full control and ensure success of your forms, we have outlined a few tasks and prepared a set of instructional videos. These will help you learn how to setup, customize and grow your forms."
 msgstr ""
 
 #: assets/build/payments.js:2
@@ -13739,7 +14561,7 @@ msgid "Collect simple payments without heavy eCommerce plugins"
 msgstr ""
 
 #: assets/build/payments.js:172
-msgid "Accept one-time payments or subscriptions quickly"
+msgid "Accept single payments or subscriptions quickly"
 msgstr ""
 
 #: assets/build/payments.js:172
@@ -13763,7 +14585,7 @@ msgid "Warning: Deleting payments will permanently remove all associated data in
 msgstr ""
 
 #: assets/build/payments.js:172
-msgid "Some payments could not be deleted"
+msgid "Some payments could not be deleted."
 msgstr ""
 
 #: assets/build/payments.js:172
@@ -13771,7 +14593,7 @@ msgid "Payments deleted successfully"
 msgstr ""
 
 #: assets/build/payments.js:172
-msgid "No payment IDs provided"
+msgid "No payment IDs provided."
 msgstr ""
 
 #: assets/build/payments.js:172
@@ -13819,15 +14641,11 @@ msgid "Submitted by %1$s - %2$s"
 msgstr ""
 
 #: assets/build/payments.js:172
-msgid "Delete Note?"
+msgid "Delete note?"
 msgstr ""
 
 #: assets/build/payments.js:172
 msgid "This action cannot be undone. The note will be permanently deleted."
-msgstr ""
-
-#: assets/build/payments.js:172
-msgid "Delete Note"
 msgstr ""
 
 #: assets/build/payments.js:172
@@ -13843,15 +14661,11 @@ msgid "Untitled Log"
 msgstr ""
 
 #: assets/build/payments.js:172
-msgid "Delete Log?"
+msgid "Delete log?"
 msgstr ""
 
 #: assets/build/payments.js:172
 msgid "This action cannot be undone. The log will be permanently deleted."
-msgstr ""
-
-#: assets/build/payments.js:172
-msgid "Delete Log"
 msgstr ""
 
 #: assets/build/payments.js:172
@@ -13899,7 +14713,7 @@ msgid "This will issue a partial refund of %1$s. Remaining balance of %2$s will 
 msgstr ""
 
 #: assets/build/payments.js:172
-msgid "Refund Payment"
+msgid "Refund payment"
 msgstr ""
 
 #: assets/build/payments.js:172
@@ -13907,7 +14721,7 @@ msgid "Process refund for payment #%s. The refunded amount will be sent to the c
 msgstr ""
 
 #: assets/build/payments.js:172
-msgid "Refund Amount"
+msgid "Refund amount"
 msgstr ""
 
 #: assets/build/payments.js:172
@@ -13919,7 +14733,7 @@ msgid "Maximum refundable amount: %s"
 msgstr ""
 
 #: assets/build/payments.js:172
-msgid "Refund Notes (Optional)"
+msgid "Refund notes (optional)"
 msgstr ""
 
 #: assets/build/payments.js:172
@@ -14111,6 +14925,14 @@ msgid "Enable spam protection for your forms using CAPTCHA services or honeypot 
 msgstr ""
 
 #: assets/build/settings.js:172
+msgid "MCP"
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "Configure AI client permissions and MCP server settings."
+msgstr ""
+
+#: assets/build/settings.js:172
 msgid "Payment Methods"
 msgstr ""
 
@@ -14147,7 +14969,7 @@ msgid "Sunday"
 msgstr ""
 
 #: assets/build/settings.js:172
-msgid "Enable Email Summaries "
+msgid "Enable email summaries"
 msgstr ""
 
 #: assets/build/settings.js:172
@@ -14163,7 +14985,7 @@ msgid "IP Logging"
 msgstr ""
 
 #: assets/build/settings.js:172
-msgid "Enable IP Logging"
+msgid "Enable IP logging"
 msgstr ""
 
 #: assets/build/settings.js:172
@@ -14180,6 +15002,10 @@ msgstr ""
 
 #: assets/build/settings.js:172
 msgid "Admin notifications keep you informed about new form entries since your last visit."
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "Turn on Admin Notification from here."
 msgstr ""
 
 #: assets/build/settings.js:172
@@ -14355,10 +15181,6 @@ msgid "Get Keys"
 msgstr ""
 
 #: assets/build/settings.js:172
-msgid "Documentation"
-msgstr ""
-
-#: assets/build/settings.js:172
 msgid "Enter your %s here"
 msgstr ""
 
@@ -14487,11 +15309,23 @@ msgid "Invalid response from server. Please try again."
 msgstr ""
 
 #: assets/build/settings.js:172
+msgid "Failed to connect to Stripe."
+msgstr ""
+
+#: assets/build/settings.js:172
 msgid "Failed to disconnect Stripe account."
 msgstr ""
 
 #: assets/build/settings.js:172
+msgid "Stripe account disconnected successfully."
+msgstr ""
+
+#: assets/build/settings.js:172
 msgid "Webhook created successfully!"
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "Failed to create webhook."
 msgstr ""
 
 #: assets/build/settings.js:172
@@ -14532,6 +15366,86 @@ msgstr ""
 
 #: assets/build/settings.js:172
 msgid "Stripe Settings"
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "Copy to clipboard"
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "Connect Your AI Client"
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "Create an Application Password — "
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "Open Application Passwords"
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "Copy the JSON config below into your AI client's MCP config file."
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "Replace \"your-application-password\" with the password from Step 1."
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "Add to .mcp.json (Claude Code), claude_desktop_config.json (Claude Desktop), or your client's MCP settings."
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "Experimental"
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "Enable Abilities"
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "Register SureForms abilities with the WordPress Abilities API. When enabled, AI clients can list, read, create, edit, and delete your forms and entries. When disabled, no abilities are registered and AI clients cannot perform any actions on your forms."
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "Abilities API — Edit"
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "Enable Edit Abilities"
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "When enabled, AI clients can create new forms, update form titles, fields, and settings, duplicate forms, and modify entry statuses. When disabled, these abilities are unregistered and AI clients can only read your data."
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "Abilities API — Delete"
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "Enable Delete Abilities"
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "When enabled, AI clients can permanently delete forms and entries. Deleted data cannot be recovered. When disabled, delete abilities are unregistered and AI clients cannot remove any data."
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "MCP Server"
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "Enable MCP Server"
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "Creates a dedicated SureForms MCP endpoint that AI clients like Claude can connect to. When disabled, the endpoint is removed and external AI clients cannot discover or call any SureForms abilities."
+msgstr ""
+
+#: assets/build/settings.js:172
+msgid "Learn more"
 msgstr ""
 
 #: assets/build/settings.js:172
@@ -14647,19 +15561,19 @@ msgid "more…"
 msgstr ""
 
 #: assets/build/templatePicker.js:172
-msgid "Or Build It Yourself"
+msgid "Or create it yourself"
 msgstr ""
 
 #: assets/build/templatePicker.js:172
-msgid "Error Creating Form"
+msgid "Unable to create form"
 msgstr ""
 
 #: assets/build/templatePicker.js:172
-msgid "There was an error mapping the AI response to Fields. Please try again."
+msgid "Something went wrong. Please try again."
 msgstr ""
 
 #: assets/build/templatePicker.js:172
-msgid "Try Again!"
+msgid "Try Again"
 msgstr ""
 
 #: assets/build/templatePicker.js:172
@@ -14747,6 +15661,10 @@ msgid "Select this if you want your form to display one question at a time, like
 msgstr ""
 
 #: assets/build/templatePicker.js:172
+msgid "Select this to create a quiz with scored questions and graded results."
+msgstr ""
+
+#: assets/build/templatePicker.js:172
 msgid "Select this if you want to collect payments through your form."
 msgstr ""
 
@@ -14803,6 +15721,10 @@ msgid "Describe the form that you want"
 msgstr ""
 
 #: assets/build/templatePicker.js:172
+msgid "Describe what kind of form you want"
+msgstr ""
+
+#: assets/build/templatePicker.js:172
 msgid "Describe the form you want to create"
 msgstr ""
 
@@ -14812,6 +15734,10 @@ msgstr ""
 
 #: assets/build/templatePicker.js:172
 msgid "Please allow microphone access to use voice input."
+msgstr ""
+
+#: assets/build/templatePicker.js:172
+msgid "Click to generate the form"
 msgstr ""
 
 #: assets/build/templatePicker.js:172
@@ -14827,19 +15753,19 @@ msgid "AI Form Builder"
 msgstr ""
 
 #: assets/build/templatePicker.js:172
-msgid "Connecting with AI…"
+msgid "Connecting to AI service"
 msgstr ""
 
 #: assets/build/templatePicker.js:172
-msgid "Generating Fields…"
+msgid "Generating fields"
 msgstr ""
 
 #: assets/build/templatePicker.js:172
-msgid "Just doing some final touches…"
+msgid "Finalizing your form"
 msgstr ""
 
 #: assets/build/templatePicker.js:172
-msgid "Redirecting to Editor"
+msgid "Opening form editor"
 msgstr ""
 
 #: assets/build/templatePicker.js:172
@@ -14855,15 +15781,11 @@ msgid "Create Calculators, Surveys, etc."
 msgstr ""
 
 #: assets/build/templatePicker.js:172
-msgid "Design Multi-step Forms"
+msgid "Design Multistep Forms"
 msgstr ""
 
 #: assets/build/templatePicker.js:172
-msgid "Send Forms Submissions to Your CRM or Any App"
-msgstr ""
-
-#: assets/build/templatePicker.js:172
-msgid "Try Again"
+msgid "Send Form Entries to Your CRM or Any App"
 msgstr ""
 
 #: assets/build/templatePicker.js:172
@@ -14871,11 +15793,11 @@ msgid "Form Generation Limit Reached"
 msgstr ""
 
 #: assets/build/templatePicker.js:172
-msgid "You Have Hit Your FUP Limit."
+msgid "You've reached your daily generation limit."
 msgstr ""
 
 #: assets/build/templatePicker.js:172
-msgid "You have reached the FUP limit of AI form generations for the day."
+msgid "You've reached your daily limit for AI form generations."
 msgstr ""
 
 #: assets/build/templatePicker.js:172
@@ -14910,666 +15832,666 @@ msgstr ""
 msgid "Connect to SureForms AI to Get 10 More."
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:7
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:4
+#: modules/gutenberg/build/blocks.js:6
+#: modules/gutenberg/build/blocks.js:8
 msgid "Default"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:7
+#: modules/gutenberg/build/blocks.js:4
 msgid "Font Size"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:7
+#: modules/gutenberg/build/blocks.js:4
 msgid "Font Family"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:7
+#: modules/gutenberg/build/blocks.js:4
 msgid "Weight"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:7
+#: modules/gutenberg/build/blocks.js:4
 msgid "Oblique"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:7
+#: modules/gutenberg/build/blocks.js:4
 msgid "Line Height"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:7
+#: modules/gutenberg/build/blocks.js:4
 msgid "Letter Spacing"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:7
+#: modules/gutenberg/build/blocks.js:4
 msgid "Transform"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:7
+#: modules/gutenberg/build/blocks.js:4
 msgid "Capitalize"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:7
+#: modules/gutenberg/build/blocks.js:4
 msgid "Uppercase"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:7
+#: modules/gutenberg/build/blocks.js:4
 msgid "Lowercase"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:7
+#: modules/gutenberg/build/blocks.js:4
 msgid "Decoration"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:7
+#: modules/gutenberg/build/blocks.js:4
 msgid "Overline"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:7
+#: modules/gutenberg/build/blocks.js:4
 msgid "Line Through"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:6
 msgid "Note: Please set Separator Height for proper thickness."
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:6
+#: modules/gutenberg/build/blocks.js:8
 msgid "Dotted"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:6
+#: modules/gutenberg/build/blocks.js:8
 msgid "Dashed"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:6
+#: modules/gutenberg/build/blocks.js:8
 msgid "Double"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:6
 msgid "Rectangles"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:6
 msgid "Parallelogram"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:6
 msgid "Leaves"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:6
 msgid "Add Element"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:6
 msgid "Text"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:6
+#: modules/gutenberg/build/blocks.js:8
 msgid "Heading Tag"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:6
+#: modules/gutenberg/build/blocks.js:8
 msgid "H1"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:6
+#: modules/gutenberg/build/blocks.js:8
 msgid "H2"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:6
+#: modules/gutenberg/build/blocks.js:8
 msgid "H3"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:6
+#: modules/gutenberg/build/blocks.js:8
 msgid "H4"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:6
+#: modules/gutenberg/build/blocks.js:8
 msgid "H5"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:6
+#: modules/gutenberg/build/blocks.js:8
 msgid "H6"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:6
 msgid "Span"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:15
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:6
+#: modules/gutenberg/build/blocks.js:8
+#: modules/gutenberg/build/blocks.js:9
 msgid "Alignment"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:6
 msgid "Separator Height"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:6
+#: modules/gutenberg/build/blocks.js:8
 msgid "Typography"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:6
 msgid "Icon Size"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:6
+#: modules/gutenberg/build/blocks.js:9
 msgid "Spacing"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:6
 msgid "Please add preview image."
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:6
 msgid "Add a modern separator to divide your page content with icon/text."
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:6
 msgid "divider"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:6
 msgid "separator"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:6
 msgid "Text Shadow"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:6
 msgid "Radius"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:6
 msgid "Border"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:15
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:6
+#: modules/gutenberg/build/blocks.js:8
+#: modules/gutenberg/build/blocks.js:9
 msgid "Hover"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:6
 msgid "Groove"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:6
 msgid "Inset"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:6
 msgid "Outset"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:6
 msgid "Ridge"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:6
 msgid "Above Heading"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:6
 msgid "Below Heading"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:6
 msgid "Above Sub-heading"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:6
 msgid "Below Sub-heading"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:6
 msgid "Div"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:6
 msgid "Heading Wrapper"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:6
 msgid "Header"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:6
 msgid "Content"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:6
 msgid "Sub Heading"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:6
 msgid "Enable Sub Heading"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:15
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:6
+#: modules/gutenberg/build/blocks.js:8
+#: modules/gutenberg/build/blocks.js:9
 msgid "Position"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:15
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:6
+#: modules/gutenberg/build/blocks.js:8
+#: modules/gutenberg/build/blocks.js:9
 msgid "Blur"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:6
 msgid "Bottom Spacing"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:6
+#: modules/gutenberg/build/blocks.js:8
 msgid "Thickness"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:6
 msgid "Below settings will apply to the heading text to which a link is applied."
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:6
 msgid "Highlight"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:6
 msgid "Highlight heading text from toolbar to see the below controls working."
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:6
 msgid "Write a Heading"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:6
 msgid "Write a Description"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:6
 msgid "Highlight Text"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:6
 msgid "Add heading, sub heading and a separator using one block."
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:6
 msgid "creative heading"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:6
+#: modules/gutenberg/build/blocks.js:9
 msgid "uag"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:6
 msgid "heading"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:15
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:6
+#: modules/gutenberg/build/blocks.js:8
+#: modules/gutenberg/build/blocks.js:9
 msgid "Box Shadow"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:6
 msgid "Inset (10px)"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:8
 msgid "Height"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:8
 msgid "Image Size"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:8
 msgid "Image Dimensions"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:15
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:8
+#: modules/gutenberg/build/blocks.js:9
 msgid "Preset 1"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:15
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:8
+#: modules/gutenberg/build/blocks.js:9
 msgid "Preset 2"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:15
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:8
+#: modules/gutenberg/build/blocks.js:9
 msgid "Preset 3"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:15
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:8
+#: modules/gutenberg/build/blocks.js:9
 msgid "Preset 4"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:15
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:8
+#: modules/gutenberg/build/blocks.js:9
 msgid "Preset 5"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:15
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:8
+#: modules/gutenberg/build/blocks.js:9
 msgid "Preset 6"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:8
 msgid "Select Preset"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:8
 msgid "Disable Lazy Loading"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:8
 msgid "Layout"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:8
 msgid "Content Position"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:8
 msgid "Border Distance From EDGE"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:8
 msgid "Alt Text"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:8
 msgid "Object Fit"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:8
 msgid "On Hover Image"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:8
 msgid "Static"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:8
 msgid "Zoom In"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:8
 msgid "Slide"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:8
 msgid "Gray Scale"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:8
 msgid "Enable Caption"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:8
 msgid "Mask Shape"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:8
 msgid "Hexagon"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:8
 msgid "Rounded"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:8
 msgid "Blob 1"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:8
 msgid "Blob 2"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:8
 msgid "Blob 3"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:8
 msgid "Blob 4"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:8
 msgid "Custom Mask Image"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:8
 msgid "Mask Size"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:8
 msgid "Mask Position"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:8
 msgid "Center Top"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:8
 msgid "Center Center"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:8
 msgid "Center Bottom"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:8
 msgid "Left Top"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:8
 msgid "Left Center"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:8
 msgid "Left Bottom"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:8
 msgid "Right Top"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:8
 msgid "Right Center"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:8
 msgid "Right Bottom"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:8
 msgid "Mask Repeat"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:8
 msgid "Repeat-X"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:8
 msgid "Repeat-Y"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:8
 msgid "Show On"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:8
 msgid "Always"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:8
 msgid "Before Title"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:8
 msgid "After Title"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:8
 msgid "After Sub Title"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:8
 msgid "Description"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:8
 msgid "Caption"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:15
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:8
+#: modules/gutenberg/build/blocks.js:9
 msgid "Separate Hover Shadow"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:15
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:8
+#: modules/gutenberg/build/blocks.js:9
 msgid "Spread"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:15
+#: modules/gutenberg/build/blocks.js:8
 msgid "Overlay Hover Opacity"
 msgstr ""
 
 #. translators: %s: file name
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:9
 msgid "This image has an empty alt attribute; its file name is %s"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:9
 msgid "This image has an empty alt attribute"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:9
 msgid "Image overlay heading text"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:9
 msgid "Add Heading"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:9
 msgid "Image caption text"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:9
 msgid "Add caption"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:9
 msgid "Edit image"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:9
 msgid "Image uploaded."
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:9
 msgid "Upload external image"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:9
 msgid "Upload an image file, pick one from your media library, or add one with a URL."
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:9
 msgid "Add images on your webpage with multiple customization options."
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:9
 msgid "image"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:9
 msgid "advance image"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:9
 msgid "caption"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:9
 msgid "overlay image"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:9
 msgid "Accessibility Mode"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:9
 msgid "SVG"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:9
 msgid "Decorative"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:9
 msgid "Accessibility Label"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:9
 msgid "Rotation"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:9
 msgid "Degree"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:9
 msgid "Enter URL"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:9
 msgid "Open in New Tab"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:9
 msgid "Presets"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:9
 msgid "Icon Color"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:9
 msgid "Background Type"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:9
 msgid "Drop Shadow"
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:9
 msgid "Add stunning customizable icons to your website."
 msgstr ""
 
-#: modules/gutenberg/build/blocks.js:17
+#: modules/gutenberg/build/blocks.js:9
 msgid "icon"
 msgstr ""
 
