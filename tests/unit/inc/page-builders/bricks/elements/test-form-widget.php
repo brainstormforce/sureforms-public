@@ -238,6 +238,20 @@ namespace SRFM\Inc\Page_Builders\Bricks\Elements {
 			$this->assertSame( '0px', $attrs['formBorderRadiusLeft'] );
 		}
 
+		public function test_map_spacing_defaults_to_px_when_unit_key_missing() {
+			$settings = [
+				'formPadding' => [
+					'top'   => '10',
+					'right' => '20',
+				],
+			];
+
+			$attrs = Form_Widget::map_bricks_spacing( $settings, 'formPadding', 'formPadding' );
+
+			$this->assertSame( '10px', $attrs['formPaddingTop'] );
+			$this->assertSame( '20px', $attrs['formPaddingRight'] );
+		}
+
 		public function test_map_spacing_applies_custom_prefix() {
 			$settings = [
 				'myControl' => [ 'top' => '8', 'right' => '16', 'bottom' => '8', 'left' => '16', 'unit' => 'em' ],
