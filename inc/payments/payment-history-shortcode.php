@@ -929,7 +929,8 @@ class Payment_History_Shortcode {
 
 		$where = [];
 		if ( ! empty( $or_conditions ) ) {
-			$where[] = $or_conditions;
+			$or_conditions['RELATION'] = 'OR';
+			$where[]                   = $or_conditions;
 		}
 
 		/**
