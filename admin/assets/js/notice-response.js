@@ -42,7 +42,9 @@
 		body.append( 'notice_id', noticeId );
 		body.append( 'button', button );
 
-		fetch( srfmNoticeResponse.ajaxurl, { method: 'POST', body } ).catch( () => {} );
+		fetch( srfmNoticeResponse.ajaxurl, { method: 'POST', body } ).catch(
+			() => {}
+		);
 	}
 
 	Object.keys( notices ).forEach( function ( noticeId ) {

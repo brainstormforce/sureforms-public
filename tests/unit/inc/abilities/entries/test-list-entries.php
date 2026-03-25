@@ -43,6 +43,8 @@ class Test_List_Entries extends TestCase {
 		$this->assertTrue( $annotations['readonly'] );
 		$this->assertFalse( $annotations['destructive'] );
 		$this->assertTrue( $annotations['idempotent'] );
+		$this->assertEquals( 1.0, $annotations['priority'] );
+		$this->assertFalse( $annotations['openWorldHint'] );
 	}
 
 	/**
@@ -57,6 +59,7 @@ class Test_List_Entries extends TestCase {
 		$this->assertArrayHasKey( 'page', $schema['properties'] );
 		$this->assertArrayHasKey( 'orderby', $schema['properties'] );
 		$this->assertArrayHasKey( 'order', $schema['properties'] );
+		$this->assertFalse( $schema['additionalProperties'] );
 	}
 
 	/**
@@ -99,4 +102,6 @@ class Test_List_Entries extends TestCase {
 		$this->assertContains( 'unread', $schema['properties']['status']['enum'] );
 		$this->assertContains( 'trash', $schema['properties']['status']['enum'] );
 	}
+
+
 }

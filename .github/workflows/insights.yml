@@ -1,16 +1,39 @@
 #.github/workflows/insights.yml
 name: PR Review by Insights
+
 on:
-    - pull_request
+  pull_request:
+    types: [labeled, opened, synchronize, reopened]
+    paths:
+      - '**.php'
+      - 'composer.json'
+      - 'composer.lock'
+      - 'phpinsights.php'
+      - '.github/workflows/insights.yml'
+
+concurrency:
+  group: insights-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
 
 jobs:
-    phpinsights:
-        runs-on: ubuntu-latest
-        name: PHP Insights checks
-        steps:
-            - uses: actions/checkout@v4
-            - uses: shivammathur/setup-php@v2
-              with:
-                  php-version: 8.2
-            - run: composer config github-oauth.github.com ${{ secrets.BSF_PRODUCTS_REPO_TOKEN }} && composer install --prefer-dist --no-progress --no-suggest
-            - run: vendor/bin/phpinsights -n --ansi --disable-security-check --min-quality=100 --min-architecture=100 --min-style=100 --format=github-action
+  phpinsights:
+    runs-on: ubuntu-latest
+    name: PHP Insights checks
+    if: |
+      (github.event.action == 'labeled' && github.event.label.name == 'run-insights') ||
+      (github.event.action != 'labeled' && contains(fromJSON('["master", "dev", "next-release"]'), github.base_ref))
+    steps:
+      - uses: actions/checkout@v6
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.2
+      - name: Get Composer cache directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+      - uses: actions/cache@v5
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+      - run: composer config github-oauth.github.com ${{ secrets.BSF_PRODUCTS_REPO_TOKEN }} && composer install --prefer-dist --no-progress --no-suggest
+      - run: vendor/bin/phpinsights -n --ansi --disable-security-check --min-quality=100 --min-architecture=100 --min-style=100 --format=github-action
