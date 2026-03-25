@@ -4,6 +4,12 @@
  * Handles PostMessage styling updates from the block editor
  * for real-time preview in the iframe.
  *
+ * Uses a dynamic <style> tag to override the server-rendered CSS variables.
+ * This avoids issues with container.style.setProperty() silently failing
+ * for certain CSS custom properties (e.g. --srfm-color-input-label,
+ * --srfm-color-input-text, --srfm-color-input-description) when the same
+ * properties are defined in a <style> tag nested inside the container.
+ *
  * @package
  * @since x.x.x
  */
@@ -25,6 +31,30 @@
 	// Store original classes for reset functionality.
 	const originalClasses = container.className;
 
+	// Create a dynamic <style> element for CSS variable overrides.
+	// Placed inside the container after the server-rendered <style> so it wins
+	// in the cascade with the same selector specificity (later declaration wins).
+	const overrideStyle = document.createElement( 'style' );
+	overrideStyle.id = 'srfm-preview-override-style';
+	container.appendChild( overrideStyle );
+
+	/**
+	 * Build CSS text for all variable overrides and apply via the dynamic <style> tag.
+	 *
+	 * @param {Object} cssVars Key-value pairs of CSS variable names to values.
+	 * @since x.x.x
+	 */
+	function applyCssVarOverrides( cssVars ) {
+		let cssText = '.' + containerId + ' {\n';
+		for ( const key in cssVars ) {
+			if ( cssVars[ key ] !== undefined && cssVars[ key ] !== null ) {
+				cssText += '\t' + key + ': ' + cssVars[ key ] + ';\n';
+			}
+		}
+		cssText += '}\n';
+		overrideStyle.textContent = cssText;
+	}
+
 	window.addEventListener( 'message', function ( event ) {
 		if ( event.origin !== window.location.origin ) {
 			return;
@@ -34,9 +64,9 @@
 			return;
 		}
 
-		// Handle reset styling - clear inline styles to use original CSS from style block.
+		// Handle reset styling - clear overrides to use original CSS from style block.
 		if ( event.data.type === 'srfm-reset-styling' ) {
-			container.removeAttribute( 'style' );
+			overrideStyle.textContent = '';
 			container.className = originalClasses;
 
 			// Reset button container styles.
@@ -62,158 +92,86 @@
 			return;
 		}
 
-		// Apply color variables.
+		// Collect all CSS variable overrides into a single object,
+		// then apply them all at once via the dynamic <style> tag.
+		const cssVars = {};
+
+		// Primary color variables.
 		if ( styling.primaryColor ) {
 			const primaryHsl = 'hsl(from ' + styling.primaryColor + ' h s l / ';
-			const primaryColorStyles = [
-				{
-					cssVar: '--srfm-color-scheme-primary',
-					value: styling.primaryColor,
-				},
-				{
-					cssVar: '--srfm-quill-editor-color',
-					value: styling.primaryColor,
-				},
-				{
-					cssVar: '--srfm-color-input-border-hover',
-					value: primaryHsl + '0.65)',
-				},
-				{
-					cssVar: '--srfm-color-input-border-focus-glow',
-					value: primaryHsl + '0.15)',
-				},
-				{
-					cssVar: '--srfm-color-input-selected',
-					value: primaryHsl + '0.1)',
-				},
-				{
-					cssVar: '--srfm-btn-color-hover',
-					value: primaryHsl + '0.9)',
-				},
-				{
-					cssVar: '--srfm-btn-color-disabled',
-					value: primaryHsl + '0.25)',
-				},
-			];
-			primaryColorStyles.forEach( ( { cssVar, value } ) => {
-				container.style.setProperty( cssVar, value );
-			} );
+			cssVars[ '--srfm-color-scheme-primary' ] = styling.primaryColor;
+			cssVars[ '--srfm-quill-editor-color' ] = styling.primaryColor;
+			cssVars[ '--srfm-color-input-border-hover' ] = primaryHsl + '0.65)';
+			cssVars[ '--srfm-color-input-border-focus-glow' ] =
+				primaryHsl + '0.15)';
+			cssVars[ '--srfm-color-input-selected' ] = primaryHsl + '0.1)';
+			cssVars[ '--srfm-btn-color-hover' ] = primaryHsl + '0.9)';
+			cssVars[ '--srfm-btn-color-disabled' ] = primaryHsl + '0.25)';
 		}
 
+		// Text color variables.
 		if ( styling.textColor ) {
 			const textHsl = 'hsl(from ' + styling.textColor + ' h s l / ';
-			const textColorStyles = [
-				{
-					cssVar: '--srfm-color-scheme-text',
-					value: styling.textColor,
-				},
-				{
-					cssVar: '--srfm-color-input-label',
-					value: styling.textColor,
-				},
-				{ cssVar: '--srfm-color-input-text', value: styling.textColor },
-				{
-					cssVar: '--srfm-color-input-description',
-					value: textHsl + '0.65)',
-				},
-				{
-					cssVar: '--srfm-color-input-placeholder',
-					value: textHsl + '0.5)',
-				},
-				{
-					cssVar: '--srfm-color-input-prefix',
-					value: textHsl + '0.65)',
-				},
-				{
-					cssVar: '--srfm-color-input-background',
-					value: textHsl + '0.02)',
-				},
-				{
-					cssVar: '--srfm-color-input-background-hover',
-					value: textHsl + '0.05)',
-				},
-				{
-					cssVar: '--srfm-color-input-background-disabled',
-					value: textHsl + '0.07)',
-				},
-				{
-					cssVar: '--srfm-color-input-border',
-					value: textHsl + '0.25)',
-				},
-				{
-					cssVar: '--srfm-color-input-border-disabled',
-					value: textHsl + '0.15)',
-				},
-				{
-					cssVar: '--srfm-color-multi-choice-svg',
-					value: textHsl + '0.7)',
-				},
-			];
-			textColorStyles.forEach( ( { cssVar, value } ) => {
-				container.style.setProperty( cssVar, value );
-			} );
+			cssVars[ '--srfm-color-scheme-text' ] = styling.textColor;
+			cssVars[ '--srfm-color-input-label' ] = styling.textColor;
+			cssVars[ '--srfm-color-input-text' ] = styling.textColor;
+			cssVars[ '--srfm-color-input-description' ] = textHsl + '0.65)';
+			cssVars[ '--srfm-color-input-placeholder' ] = textHsl + '0.5)';
+			cssVars[ '--srfm-color-input-prefix' ] = textHsl + '0.65)';
+			cssVars[ '--srfm-color-input-background' ] = textHsl + '0.02)';
+			cssVars[ '--srfm-color-input-background-hover' ] =
+				textHsl + '0.05)';
+			cssVars[ '--srfm-color-input-background-disabled' ] =
+				textHsl + '0.07)';
+			cssVars[ '--srfm-color-input-border' ] = textHsl + '0.25)';
+			cssVars[ '--srfm-color-input-border-disabled' ] = textHsl + '0.15)';
+			cssVars[ '--srfm-color-multi-choice-svg' ] = textHsl + '0.7)';
 		}
 
+		// Text on primary color.
 		if ( styling.textOnPrimaryColor ) {
-			container.style.setProperty(
-				'--srfm-color-scheme-text-on-primary',
-				styling.textOnPrimaryColor
-			);
+			cssVars[ '--srfm-color-scheme-text-on-primary' ] =
+				styling.textOnPrimaryColor;
 		}
 
-		// Apply padding and border radius.
+		// Padding and border radius.
 		const paddingUnit = styling.formPaddingUnit || 'px';
 		const borderRadiusUnit = styling.formBorderRadiusUnit || 'px';
 
-		const spacingStyles = [
-			{
-				value: styling.formPaddingTop,
-				unit: paddingUnit,
-				cssVar: '--srfm-form-padding-top',
-			},
-			{
-				value: styling.formPaddingRight,
-				unit: paddingUnit,
-				cssVar: '--srfm-form-padding-right',
-			},
-			{
-				value: styling.formPaddingBottom,
-				unit: paddingUnit,
-				cssVar: '--srfm-form-padding-bottom',
-			},
-			{
-				value: styling.formPaddingLeft,
-				unit: paddingUnit,
-				cssVar: '--srfm-form-padding-left',
-			},
-			{
-				value: styling.formBorderRadiusTop,
-				unit: borderRadiusUnit,
-				cssVar: '--srfm-form-border-radius-top',
-			},
-			{
-				value: styling.formBorderRadiusRight,
-				unit: borderRadiusUnit,
-				cssVar: '--srfm-form-border-radius-right',
-			},
-			{
-				value: styling.formBorderRadiusBottom,
-				unit: borderRadiusUnit,
-				cssVar: '--srfm-form-border-radius-bottom',
-			},
-			{
-				value: styling.formBorderRadiusLeft,
-				unit: borderRadiusUnit,
-				cssVar: '--srfm-form-border-radius-left',
-			},
-		];
-		spacingStyles.forEach( ( { value, unit, cssVar } ) => {
-			if ( value !== undefined ) {
-				container.style.setProperty( cssVar, value + unit );
-			}
-		} );
+		if ( styling.formPaddingTop !== undefined ) {
+			cssVars[ '--srfm-form-padding-top' ] =
+				styling.formPaddingTop + paddingUnit;
+		}
+		if ( styling.formPaddingRight !== undefined ) {
+			cssVars[ '--srfm-form-padding-right' ] =
+				styling.formPaddingRight + paddingUnit;
+		}
+		if ( styling.formPaddingBottom !== undefined ) {
+			cssVars[ '--srfm-form-padding-bottom' ] =
+				styling.formPaddingBottom + paddingUnit;
+		}
+		if ( styling.formPaddingLeft !== undefined ) {
+			cssVars[ '--srfm-form-padding-left' ] =
+				styling.formPaddingLeft + paddingUnit;
+		}
+		if ( styling.formBorderRadiusTop !== undefined ) {
+			cssVars[ '--srfm-form-border-radius-top' ] =
+				styling.formBorderRadiusTop + borderRadiusUnit;
+		}
+		if ( styling.formBorderRadiusRight !== undefined ) {
+			cssVars[ '--srfm-form-border-radius-right' ] =
+				styling.formBorderRadiusRight + borderRadiusUnit;
+		}
+		if ( styling.formBorderRadiusBottom !== undefined ) {
+			cssVars[ '--srfm-form-border-radius-bottom' ] =
+				styling.formBorderRadiusBottom + borderRadiusUnit;
+		}
+		if ( styling.formBorderRadiusLeft !== undefined ) {
+			cssVars[ '--srfm-form-border-radius-left' ] =
+				styling.formBorderRadiusLeft + borderRadiusUnit;
+		}
 
-		// Apply background - remove all background classes first.
+		// Background.
 		container.classList.remove(
 			'srfm-bg-color',
 			'srfm-bg-gradient',
@@ -223,18 +181,12 @@
 		if ( styling.bgType === 'color' ) {
 			container.classList.add( 'srfm-bg-color' );
 			if ( styling.bgColor ) {
-				container.style.setProperty(
-					'--srfm-bg-color',
-					styling.bgColor
-				);
+				cssVars[ '--srfm-bg-color' ] = styling.bgColor;
 			}
 		} else if ( styling.bgType === 'gradient' ) {
 			container.classList.add( 'srfm-bg-gradient' );
 			if ( styling.bgGradient ) {
-				container.style.setProperty(
-					'--srfm-bg-gradient',
-					styling.bgGradient
-				);
+				cssVars[ '--srfm-bg-gradient' ] = styling.bgGradient;
 			}
 		} else if ( styling.bgType === 'image' ) {
 			container.classList.add( 'srfm-bg-image' );
@@ -245,43 +197,26 @@
 					bgImageUrl.startsWith( 'https://' ) ||
 					bgImageUrl.startsWith( 'http://' )
 				) {
-					container.style.setProperty(
-						'--srfm-bg-image',
-						'url("' + bgImageUrl + '")'
-					);
+					cssVars[ '--srfm-bg-image' ] = 'url("' + bgImageUrl + '")';
 				}
-			} else {
-				container.style.removeProperty( '--srfm-bg-image' );
 			}
 			if ( styling.bgImagePosition ) {
 				const posX = ( styling.bgImagePosition.x ?? 0.5 ) * 100;
 				const posY = ( styling.bgImagePosition.y ?? 0.5 ) * 100;
-				container.style.setProperty(
-					'--srfm-bg-position',
-					posX + '% ' + posY + '%'
-				);
+				cssVars[ '--srfm-bg-position' ] = posX + '% ' + posY + '%';
 			}
 			if ( styling.bgImageSize ) {
-				container.style.setProperty(
-					'--srfm-bg-size',
-					styling.bgImageSize
-				);
+				cssVars[ '--srfm-bg-size' ] = styling.bgImageSize;
 			}
 			if ( styling.bgImageRepeat ) {
-				container.style.setProperty(
-					'--srfm-bg-repeat',
-					styling.bgImageRepeat
-				);
+				cssVars[ '--srfm-bg-repeat' ] = styling.bgImageRepeat;
 			}
 			if ( styling.bgImageAttachment ) {
-				container.style.setProperty(
-					'--srfm-bg-attachment',
-					styling.bgImageAttachment
-				);
+				cssVars[ '--srfm-bg-attachment' ] = styling.bgImageAttachment;
 			}
 		}
 
-		// Apply field spacing - uses CSS variables from Helper::get_css_vars() via localized data.
+		// Field spacing.
 		if ( styling.fieldSpacing ) {
 			const fieldSpacingVars =
 				window.srfmPreviewStyling?.fieldSpacingVars;
@@ -294,13 +229,17 @@
 
 				for ( const key in finalSize ) {
 					if ( key.startsWith( '--' ) ) {
-						container.style.setProperty( key, finalSize[ key ] );
+						cssVars[ key ] = finalSize[ key ];
 					}
 				}
 			}
 		}
 
-		// Apply button alignment.
+		// Apply all CSS variable overrides at once via the dynamic <style> tag.
+		applyCssVarOverrides( cssVars );
+
+		// Button alignment uses direct inline styles on the button element itself
+		// (not a CSS variable on the container), so this stays as style manipulation.
 		if ( styling.buttonAlignment ) {
 			const submitContainer = container.querySelector(
 				'.srfm-submit-container .wp-block-button'

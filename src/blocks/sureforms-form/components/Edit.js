@@ -294,13 +294,18 @@ export default ( { attributes, setAttributes, clientId } ) => {
 	} );
 	const layoutControls = getLayoutControls( { attributes, setAttributes } );
 	const fieldControls = getFieldControls( { attributes, setAttributes } );
-	const allButtonControls = getButtonControls( { attributes, setAttributes } );
+	const allButtonControls = getButtonControls( {
+		attributes,
+		setAttributes,
+	} );
 
 	// Hide button alignment when the form uses a custom (inline) button —
 	// the inline button manages its own layout. Keep other button styling
 	// controls (added by Pro) so they still apply in custom theme mode.
 	const buttonControls = isInlineButton
-		? allButtonControls.filter( ( control ) => control.id !== 'buttonAlignment' )
+		? allButtonControls.filter(
+			( control ) => control.id !== 'buttonAlignment'
+		  )
 		: allButtonControls;
 
 	// If the form is not published or is missing, show a warning and allow the user to change the form.
@@ -517,7 +522,7 @@ export default ( { attributes, setAttributes, clientId } ) => {
 							title="srfm-iframe"
 							src={
 								formUrl +
-								`?preview_id=${ id }&preview=true&form_preview=true&formTheme=${ encodeURIComponent( attributes.formTheme || 'inherit' ) }${ attributes.textColor ? '&textColor=' + encodeURIComponent( attributes.textColor ) : '' }`
+								`?preview_id=${ id }&preview=true&form_preview=true`
 							}
 							width={ '100%' }
 						/>
