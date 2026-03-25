@@ -254,7 +254,11 @@ async function processAllPayments( form, paymentBlock ) {
 
 		if ( ! paymentManager ) {
 			// Fallback to Stripe if payment manager not found
-			return await processStripePayment( form, paymentBlock, compositeKey );
+			return await processStripePayment(
+				form,
+				paymentBlock,
+				compositeKey
+			);
 		}
 
 		// Route to the correct payment gateway based on selected method
