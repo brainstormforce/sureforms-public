@@ -11,7 +11,6 @@ namespace SRFM\Inc;
 use SRFM\Inc\Database\Tables\Entries;
 use SRFM\Inc\Email\Email_Template;
 use SRFM\Inc\Lib\Browser\Browser;
-use SRFM\Inc\Submit_Token;
 use SRFM\Inc\Traits\Get_Instance;
 use WP_Error;
 use WP_REST_Server;
@@ -77,7 +76,6 @@ class Form_Submit {
 				'permission_callback' => [ $this, 'submit_form_permissions_check' ],
 			]
 		);
-
 	}
 
 	/**
