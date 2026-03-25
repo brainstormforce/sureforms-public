@@ -21,7 +21,6 @@ const features = [
 	__( 'Build interactive quizzes with scoring and instant feedback', 'sureforms' ),
 	__( 'Auto-grade responses and calculate scores in real time', 'sureforms' ),
 	__( 'Track submissions, view answers, and analyze performance', 'sureforms' ),
-	__( 'Export detailed quiz reports for insights and follow-ups', 'sureforms' ),
 ];
 
 const QuizEmptyState = () => {
@@ -82,7 +81,7 @@ const QuizEmptyState = () => {
 									color="primary"
 								>
 									{ __(
-										'Create Engaging Quizzes with SureForms Pro',
+										'Create Engaging Quizzes with SureForms',
 										'sureforms'
 									) }
 								</Text>
@@ -94,7 +93,7 @@ const QuizEmptyState = () => {
 										color="secondary"
 									>
 										{ __(
-											'Turn your forms into powerful quizzes. Upgrade to SureForms Pro to unlock quiz capabilities:',
+											'Turn your forms into powerful quizzes. Upgrade to SureForms to unlock quiz capabilities:',
 											'sureforms'
 										) }
 									</Text>
@@ -134,7 +133,7 @@ const QuizEmptyState = () => {
 									iconPosition="right"
 								>
 									{ __(
-										'Upgrade to SureForms Pro',
+										'Upgrade to SureForms',
 										'sureforms'
 									) }
 								</Button>
