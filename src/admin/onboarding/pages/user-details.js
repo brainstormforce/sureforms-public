@@ -192,7 +192,7 @@ const UserDetails = () => {
 											href={ privacyPolicyURL }
 											target="_blank"
 											rel="noopener noreferrer"
-											className="underline text-link-primary hover:text-link-primary-hover"
+											className="underline text-button-primary hover:text-button-primary-hover"
 										/>
 									),
 								}
