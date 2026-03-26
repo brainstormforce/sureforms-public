@@ -182,7 +182,7 @@ const UserDetails = () => {
 						label={ {
 							heading: createInterpolateElement(
 								__(
-									'Get notified about privacy issues on your website. Plus help improve SureCookie by sharing how you use the plugin. <a>View our Privacy Policy</a>',
+								'Get notified about privacy issues on your website. Plus help improve SureForms by sharing how you use the plugin. View our <a>Privacy Policy</a>.',
 									'sureforms'
 								),
 								{
