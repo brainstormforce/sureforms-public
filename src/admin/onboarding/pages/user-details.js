@@ -182,7 +182,7 @@ const UserDetails = () => {
 						label={ {
 							heading: createInterpolateElement(
 								__(
-									'Get notified about new features, updates, and useful tips. <a>View our Privacy Policy</a>',
+									'Get notified about privacy issues on your website. Plus help improve SureCookie by sharing how you use the plugin. <a>View our Privacy Policy</a>',
 									'sureforms'
 								),
 								{
@@ -192,8 +192,7 @@ const UserDetails = () => {
 											href={ privacyPolicyURL }
 											target="_blank"
 											rel="noopener noreferrer"
-											color="link"
-											className="no-underline"
+											className="underline text-link-primary hover:text-link-primary-hover"
 										/>
 									),
 								}
