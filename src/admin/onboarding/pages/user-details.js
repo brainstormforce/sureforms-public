@@ -194,7 +194,12 @@ const UserDetails = () => {
 													target="_blank"
 													rel="noopener noreferrer"
 													className="underline text-button-primary hover:text-button-primary-hover"
-												/>
+												>
+													{ __(
+														'Privacy Policy',
+														'sureforms'
+													) }
+												</a>
 											),
 										}
 									) }

@@ -210,6 +210,79 @@ class Test_Rest_Api extends TestCase {
 		$this->assertTrue( $args['email']['required'] );
 	}
 
+	public function test_save_onboarding_user_details() {
+		$user_id = $this->create_test_admin();
+		wp_set_current_user( $user_id );
+		do_action( 'rest_api_init' );
+
+		$original_options = get_option( 'srfm_options', [] );
+		if ( ! is_array( $original_options ) ) {
+			$original_options = [];
+		}
+
+		$captured_url  = '';
+		$captured_body = '';
+		$metrics_url   = 'https://metrics.brainstormforce.com/wp-json/bsf-metrics-server/v1/subscribe';
+
+		$pre_http_request = static function ( $preempt, $parsed_args, $url ) use ( &$captured_url, &$captured_body, $metrics_url ) {
+			if ( $metrics_url !== $url ) {
+				return $preempt;
+			}
+
+			$captured_url  = $url;
+			$captured_body = isset( $parsed_args['body'] ) ? (string) $parsed_args['body'] : '';
+
+			return [
+				'headers'  => [],
+				'body'     => '',
+				'response' => [
+					'code' => 200,
+				],
+				'cookies'  => [],
+			];
+		};
+
+		add_filter( 'pre_http_request', $pre_http_request, 10, 3 );
+
+		try {
+			$request = new WP_REST_Request( 'POST', '/sureforms/v1/onboarding/user-details' );
+			$request->set_header( 'X-WP-Nonce', wp_create_nonce( 'wp_rest' ) );
+			$request->set_body_params(
+				[
+					'first_name' => 'John',
+					'last_name'  => 'Doe',
+					'email'      => 'john.doe@example.com',
+				]
+			);
+
+			$response = rest_get_server()->dispatch( $request );
+			$data     = $response->get_data();
+
+			$this->assertEquals( 200, $response->get_status() );
+			$this->assertTrue( $data['success'] );
+			$this->assertTrue( $data['lead'] );
+			$this->assertEquals( $metrics_url, $captured_url );
+
+			$payload = json_decode( $captured_body, true );
+			$this->assertIsArray( $payload );
+			$this->assertEquals( 'john.doe@example.com', $payload['EMAIL'] );
+			$this->assertEquals( 'John', $payload['FIRSTNAME'] );
+			$this->assertEquals( 'Doe', $payload['LASTNAME'] );
+			$this->assertEquals( 'sureforms', $payload['source'] );
+			$this->assertArrayHasKey( 'DOMAIN', $payload );
+
+			$stored_details = \SRFM\Inc\Helper::get_srfm_option( 'onboarding_user_details', [] );
+			$this->assertEquals( 'John', $stored_details['first_name'] );
+			$this->assertEquals( 'Doe', $stored_details['last_name'] );
+			$this->assertEquals( 'john.doe@example.com', $stored_details['email'] );
+			$this->assertTrue( $stored_details['lead'] );
+		} finally {
+			remove_filter( 'pre_http_request', $pre_http_request, 10 );
+			update_option( 'srfm_options', $original_options );
+			wp_set_current_user( 0 );
+		}
+	}
+
 	public function test_entries_list_default_values() {
 		$endpoints = $this->call_private_method( $this->rest_api, 'get_endpoints' );
 		$args      = $endpoints['entries/list']['args'];
