@@ -123,6 +123,7 @@ class Test_Rest_Api extends TestCase {
 			'form-data',
 			'onboarding/set-status',
 			'onboarding/get-status',
+			'onboarding/user-details',
 			'plugin-status',
 			'entries/list',
 			'entries/read-status',
@@ -158,6 +159,7 @@ class Test_Rest_Api extends TestCase {
 		$this->assertEquals( 'POST', $endpoints['map-fields']['methods'] );
 		$this->assertEquals( 'GET', $endpoints['entries-chart-data']['methods'] );
 		$this->assertEquals( 'GET', $endpoints['entries/list']['methods'] );
+		$this->assertEquals( 'POST', $endpoints['onboarding/user-details']['methods'] );
 		$this->assertEquals( 'POST', $endpoints['entries/delete']['methods'] );
 		$this->assertEquals( 'POST', $endpoints['entries/read-status']['methods'] );
 		$this->assertEquals( 'POST', $endpoints['entries/trash']['methods'] );
@@ -199,6 +201,13 @@ class Test_Rest_Api extends TestCase {
 	public function test_plugin_status_requires_plugin_slug() {
 		$endpoints = $this->call_private_method( $this->rest_api, 'get_endpoints' );
 		$this->assertTrue( $endpoints['plugin-status']['args']['plugin']['required'] );
+	}
+
+	public function test_onboarding_user_details_args_required_fields() {
+		$endpoints = $this->call_private_method( $this->rest_api, 'get_endpoints' );
+		$args      = $endpoints['onboarding/user-details']['args'];
+		$this->assertTrue( $args['first_name']['required'] );
+		$this->assertTrue( $args['email']['required'] );
 	}
 
 	public function test_entries_list_default_values() {

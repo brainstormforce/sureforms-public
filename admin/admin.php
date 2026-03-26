@@ -873,6 +873,7 @@ class Admin {
 			'plugin_activate_text'       => __( 'Activate', 'sureforms' ),
 			'plugin_installing_text'     => __( 'Installing...', 'sureforms' ),
 			'plugin_installed_text'      => __( 'Installed', 'sureforms' ),
+			'privacy_policy_url'         => Helper::get_sureforms_website_url( 'privacy-policy/' ),
 			'is_rtl'                     => $is_rtl,
 			'onboarding_completed'       => method_exists( $onboarding_instance, 'get_onboarding_status' ) ? $onboarding_instance->get_onboarding_status() : false,
 			'onboarding_redirect'        => isset( $_GET['srfm-activation-redirect'] ), // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce is not required for the activation redirection.
