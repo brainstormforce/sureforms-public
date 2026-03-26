@@ -363,49 +363,6 @@ class Rest_Api {
 	}
 
 	/**
-	 * Get onboarding user details.
-	 *
-	 * @since 2.5.3
-	 * @return array<string, mixed>
-	 */
-	private function get_onboarding_user_details() {
-		$defaults = [
-			'first_name' => '',
-			'last_name'  => '',
-			'email'      => '',
-			'lead'       => false,
-		];
-
-		$user_details = Helper::get_srfm_option( $this->onboarding_user_details_key, $defaults );
-		if ( ! is_array( $user_details ) ) {
-			return $defaults;
-		}
-
-		return wp_parse_args( $user_details, $defaults );
-	}
-
-	/**
-	 * Set onboarding user details.
-	 *
-	 * @since 2.5.3
-	 * @param array<string, mixed> $user_details User details to store.
-	 * @return void
-	 */
-	private function set_onboarding_user_details( $user_details ) {
-		$details = wp_parse_args(
-			$user_details,
-			[
-				'first_name' => '',
-				'last_name'  => '',
-				'email'      => '',
-				'lead'       => false,
-			]
-		);
-
-		Helper::update_srfm_option( $this->onboarding_user_details_key, $details );
-	}
-
-	/**
 	 * Save onboarding user details and send lead data to metrics server.
 	 *
 	 * @since 2.5.3
@@ -1273,6 +1230,49 @@ class Rest_Api {
 	 */
 	public function get_dropdown_counter() {
 		return self::$dropdown_counter;
+	}
+
+	/**
+	 * Get onboarding user details.
+	 *
+	 * @since 2.5.3
+	 * @return array<string, mixed>
+	 */
+	private function get_onboarding_user_details() {
+		$defaults = [
+			'first_name' => '',
+			'last_name'  => '',
+			'email'      => '',
+			'lead'       => false,
+		];
+
+		$user_details = Helper::get_srfm_option( $this->onboarding_user_details_key, $defaults );
+		if ( ! is_array( $user_details ) ) {
+			return $defaults;
+		}
+
+		return wp_parse_args( $user_details, $defaults );
+	}
+
+	/**
+	 * Set onboarding user details.
+	 *
+	 * @since 2.5.3
+	 * @param array<string, mixed> $user_details User details to store.
+	 * @return void
+	 */
+	private function set_onboarding_user_details( $user_details ) {
+		$details = wp_parse_args(
+			$user_details,
+			[
+				'first_name' => '',
+				'last_name'  => '',
+				'email'      => '',
+				'lead'       => false,
+			]
+		);
+
+		Helper::update_srfm_option( $this->onboarding_user_details_key, $details );
 	}
 
 	/**
