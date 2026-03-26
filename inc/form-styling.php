@@ -93,7 +93,7 @@ class Form_Styling {
 		if ( ! empty( $block_attrs['fieldSpacing'] ) && in_array( $block_attrs['fieldSpacing'], [ 'small', 'medium', 'large' ], true ) ) {
 			$form_styling['field_spacing'] = $block_attrs['fieldSpacing'];
 		}
-		if ( ! empty( $block_attrs['buttonAlignment'] ) && in_array( $block_attrs['buttonAlignment'], [ 'left', 'center', 'right', 'justify' ], true ) ) {
+		if ( ! empty( $block_attrs['buttonAlignment'] ) && in_array( $block_attrs['buttonAlignment'], [ 'left', 'center', 'right', 'full', 'justify' ], true ) ) {
 			$form_styling['submit_button_alignment'] = $block_attrs['buttonAlignment'];
 		}
 

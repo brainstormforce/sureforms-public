@@ -403,6 +403,7 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 == Changelog ==
 = x.x.x =
 * New: Added styling options for Gutenberg SureForms Form Block.
+* New: Added styling options for Elementor SureForms Form Widget.
 = 2.6.0 - 23rd March 2026 =
 * New: Added MCP (Model Context Protocol) settings and Abilities API for AI-powered form management.
 * Improvement: Added Blocks API v3 compatibility.

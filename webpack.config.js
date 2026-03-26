@@ -32,6 +32,14 @@ module.exports = {
 			__dirname,
 			'assets/js/unminified/form-submit.js'
 		),
+		previewStyling: path.resolve(
+			__dirname,
+			'assets/js/unminified/preview-styling.js'
+		),
+		elementorPreviewStyling: path.resolve(
+			__dirname,
+			'inc/page-builders/elementor/assets/elementor-preview-styling.js'
+		),
 		quickActionSidebar: path.resolve(
 			__dirname,
 			'./modules/quick-action-sidebar/index.js'

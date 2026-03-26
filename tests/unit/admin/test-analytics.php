@@ -283,6 +283,160 @@ class Test_Analytics extends TestCase {
 		$this->assertTrue( Analytics_Events::is_tracked( 'embed_styling_configured' ) );
 	}
 
+	// ─── embed_styling_elementor_count ────────────────────────────
+
+	/**
+	 * Test returns 0 when no Elementor pages have embed styling.
+	 */
+	public function test_embed_styling_elementor_count_returns_zero_when_no_widgets() {
+		$count = Analytics::embed_styling_elementor_count( 'default' );
+		$this->assertSame( 0, $count );
+	}
+
+	/**
+	 * Test counts a single Elementor widget with 'default' formTheme.
+	 */
+	public function test_embed_styling_elementor_count_single_default() {
+		$this->create_post_with_elementor_data(
+			$this->build_elementor_json( [ [ 'formTheme' => 'default' ] ] )
+		);
+
+		$count = Analytics::embed_styling_elementor_count( 'default' );
+		$this->assertSame( 1, $count );
+	}
+
+	/**
+	 * Test counts a single Elementor widget with 'custom' formTheme.
+	 */
+	public function test_embed_styling_elementor_count_single_custom() {
+		$this->create_post_with_elementor_data(
+			$this->build_elementor_json( [ [ 'formTheme' => 'custom' ] ] )
+		);
+
+		$count = Analytics::embed_styling_elementor_count( 'custom' );
+		$this->assertSame( 1, $count );
+	}
+
+	/**
+	 * Test 'default' count does not include 'custom' Elementor widgets.
+	 */
+	public function test_embed_styling_elementor_count_default_excludes_custom() {
+		$this->create_post_with_elementor_data(
+			$this->build_elementor_json( [ [ 'formTheme' => 'custom' ] ] )
+		);
+
+		$count = Analytics::embed_styling_elementor_count( 'default' );
+		$this->assertSame( 0, $count );
+	}
+
+	/**
+	 * Test multiple Elementor widgets on a single page are counted individually.
+	 */
+	public function test_embed_styling_elementor_count_multiple_on_same_page() {
+		$this->create_post_with_elementor_data(
+			$this->build_elementor_json(
+				[
+					[ 'formTheme' => 'default' ],
+					[ 'formTheme' => 'default' ],
+					[ 'formTheme' => 'custom' ],
+				]
+			)
+		);
+
+		$default_count = Analytics::embed_styling_elementor_count( 'default' );
+		$custom_count  = Analytics::embed_styling_elementor_count( 'custom' );
+
+		$this->assertSame( 2, $default_count );
+		$this->assertSame( 1, $custom_count );
+	}
+
+	/**
+	 * Test Elementor widgets across multiple pages are counted.
+	 */
+	public function test_embed_styling_elementor_count_across_pages() {
+		$this->create_post_with_elementor_data(
+			$this->build_elementor_json( [ [ 'formTheme' => 'default' ] ] )
+		);
+		$this->create_post_with_elementor_data(
+			$this->build_elementor_json( [ [ 'formTheme' => 'default' ] ] ),
+			'page'
+		);
+
+		$count = Analytics::embed_styling_elementor_count( 'default' );
+		$this->assertSame( 2, $count );
+	}
+
+	/**
+	 * Test draft Elementor pages are not counted.
+	 */
+	public function test_embed_styling_elementor_count_excludes_drafts() {
+		$this->create_post_with_elementor_data(
+			$this->build_elementor_json( [ [ 'formTheme' => 'default' ] ] ),
+			'post',
+			'draft'
+		);
+
+		$count = Analytics::embed_styling_elementor_count( 'default' );
+		$this->assertSame( 0, $count );
+	}
+
+	// ─── track_embed_styling_configured (Elementor) ───────────────
+
+	/**
+	 * Test event is tracked for Elementor pages with styled widgets.
+	 */
+	public function test_track_embed_styling_configured_elementor_fires_event() {
+		$analytics = Analytics::get_instance();
+		$post_id   = $this->create_post_with_elementor_data(
+			$this->build_elementor_json( [ [ 'formTheme' => 'default' ] ] )
+		);
+
+		$analytics->track_embed_styling_configured( $post_id, get_post( $post_id ) );
+
+		$this->assertTrue( Analytics_Events::is_tracked( 'embed_styling_configured' ) );
+	}
+
+	/**
+	 * Test event properties contain 'elementor' source for Elementor pages.
+	 */
+	public function test_track_embed_styling_configured_elementor_source() {
+		$analytics = Analytics::get_instance();
+		$post_id   = $this->create_post_with_elementor_data(
+			$this->build_elementor_json(
+				[
+					[ 'formTheme' => 'default' ],
+					[ 'formTheme' => 'custom' ],
+				]
+			)
+		);
+
+		$analytics->track_embed_styling_configured( $post_id, get_post( $post_id ) );
+
+		$pending = get_option( 'srfm_options', [] );
+		$events  = $pending['usage_events_pending'] ?? [];
+		$event   = end( $events );
+
+		$this->assertSame( 'embed_styling_configured', $event['event_name'] );
+		$this->assertSame( 'elementor', $event['properties']['source'] );
+		$this->assertSame( 2, $event['properties']['block_count'] );
+		$this->assertArrayHasKey( 'default', $event['properties']['themes'] );
+		$this->assertArrayHasKey( 'custom', $event['properties']['themes'] );
+	}
+
+	/**
+	 * Test Elementor event is not tracked when formTheme is inherit.
+	 */
+	public function test_track_embed_styling_configured_elementor_skips_inherit() {
+		$analytics = Analytics::get_instance();
+		$post_id   = $this->create_post_with_elementor_data(
+			$this->build_elementor_json( [ [ 'formTheme' => 'inherit' ] ] )
+		);
+
+		$analytics->track_embed_styling_configured( $post_id, get_post( $post_id ) );
+
+		$this->assertFalse( Analytics_Events::is_tracked( 'embed_styling_configured' ) );
+	}
+
 	// ─── flush_pushed ─────────────────────────────────────────────
 
 	/**
@@ -583,6 +737,55 @@ class Test_Analytics extends TestCase {
 		update_post_meta( $post_id, '_srfm_test_post', true );
 
 		return $post_id;
+	}
+
+	/**
+	 * Create a test post with Elementor data in post meta.
+	 *
+	 * @param string $elementor_json JSON string for _elementor_data.
+	 * @param string $post_type      Post type. Default 'post'.
+	 * @param string $post_status    Post status. Default 'publish'.
+	 * @return int Post ID.
+	 */
+	private function create_post_with_elementor_data( $elementor_json, $post_type = 'post', $post_status = 'publish' ) {
+		$post_id = wp_insert_post(
+			[
+				'post_type'    => $post_type,
+				'post_status'  => $post_status,
+				'post_title'   => 'Elementor Analytics Test ' . wp_rand(),
+				'post_content' => '',
+			]
+		);
+
+		update_post_meta( $post_id, '_elementor_data', $elementor_json );
+		update_post_meta( $post_id, '_srfm_test_post', true );
+
+		return $post_id;
+	}
+
+	/**
+	 * Build Elementor JSON data with sureforms_form widgets.
+	 *
+	 * @param array<array<string, string>> $widgets Array of widget settings, each with 'formTheme' key.
+	 * @return string JSON string mimicking _elementor_data structure.
+	 */
+	private function build_elementor_json( $widgets ) {
+		$elements = [];
+		foreach ( $widgets as $index => $settings ) {
+			$elements[] = [
+				'id'         => 'abc' . $index,
+				'elType'     => 'widget',
+				'widgetType' => 'sureforms_form',
+				'settings'   => array_merge(
+					[
+						'srfm_form_block' => '1',
+					],
+					$settings
+				),
+			];
+		}
+
+		return wp_json_encode( $elements );
 	}
 
 	/**

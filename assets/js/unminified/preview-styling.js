@@ -13,7 +13,6 @@
  * @package
  * @since x.x.x
  */
-
 ( function () {
 	'use strict';
 
