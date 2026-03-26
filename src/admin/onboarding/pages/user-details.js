@@ -180,21 +180,25 @@ const UserDetails = () => {
 						onChange={ handleFieldChange( 'consent' ) }
 						size="sm"
 						label={ {
-							heading: createInterpolateElement(
-								__(
-								'Get notified about privacy issues on your website. Plus help improve SureForms by sharing how you use the plugin. View our <a>Privacy Policy</a>.',
-									'sureforms'
-								),
-								{
-									a: (
-										<a
-											href={ privacyPolicyURL }
-											target="_blank"
-											rel="noopener noreferrer"
-											className="underline text-button-primary hover:text-button-primary-hover"
-										/>
-									),
-								}
+							heading: (
+								<span>
+									{ createInterpolateElement(
+										__(
+											'Get notified about privacy issues on your website. Plus help improve SureForms by sharing how you use the plugin. View our <a>Privacy Policy</a>.',
+											'sureforms'
+										),
+										{
+											a: (
+												<a
+													href={ privacyPolicyURL }
+													target="_blank"
+													rel="noopener noreferrer"
+													className="underline text-button-primary hover:text-button-primary-hover"
+												/>
+											),
+										}
+									) }
+								</span>
 							),
 						} }
 					/>
