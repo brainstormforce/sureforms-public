@@ -187,12 +187,11 @@ const UserDetails = () => {
 								),
 								{
 									a: (
-										<Text
-											as="a"
+										<a
 											href={ privacyPolicyURL }
 											target="_blank"
 											rel="noopener noreferrer"
-											className="inline underline text-button-primary hover:text-button-primary-hover"
+											className="underline text-button-primary hover:text-button-primary-hover"
 										/>
 									),
 								}
