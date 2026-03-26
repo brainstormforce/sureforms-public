@@ -512,7 +512,7 @@ class Form_Widget extends \Bricks\Element {
 				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped in Generate_Form_Markup.
 				echo Generate_Form_Markup::get_form_markup(
 					$form_id,
-					! $form_title,
+					$form_title,
 					'',
 					'post',
 					true,
