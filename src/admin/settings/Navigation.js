@@ -12,7 +12,7 @@ import {
 	TriangleAlert,
 } from 'lucide-react';
 import { Accordion } from '@bsf/force-ui';
-import ottoKitIcon from '@Image/suretriggers-grayscale.svg';
+import ottoKitIcon from '@Image/ottokit.png';
 
 function useQuery() {
 	return new URLSearchParams( useLocation().search );
@@ -65,7 +65,7 @@ export const navigation = applyFilters( 'srfm.settings.navigation', [
 		),
 	},
 	{
-		name: __( 'Automations', 'sureforms' ),
+		name: __( 'OttoKit', 'sureforms' ),
 		slug: 'ottokit-settings',
 		icon: (
 			<img
