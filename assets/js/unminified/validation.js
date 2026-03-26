@@ -1,9 +1,9 @@
 import { applyFilters } from '@wordpress/hooks';
 
-async function getUniqueValidationData( checkData, formId, ajaxUrl, nonce ) {
+async function getUniqueValidationData( checkData, formId, ajaxUrl, token ) {
 	let queryString =
-		'action=validation_ajax_action&nonce=' +
-		encodeURIComponent( nonce ) +
+		'action=validation_ajax_action&token=' +
+		encodeURIComponent( token ) +
 		'&id=' +
 		encodeURIComponent( formId );
 
@@ -37,7 +37,7 @@ async function getUniqueValidationData( checkData, formId, ajaxUrl, nonce ) {
 export async function fieldValidation(
 	formId,
 	ajaxUrl,
-	nonce,
+	token,
 	formContainer,
 	singleField = false
 ) {
@@ -85,7 +85,7 @@ export async function fieldValidation(
 			uniqueValue,
 			formId,
 			ajaxUrl,
-			nonce
+			token
 		);
 	}
 
@@ -894,7 +894,7 @@ function addBlurListener( containerClass, blockClass ) {
 
 			// Function to validate slider inputs within the slider block
 			if ( containerClass === 'srfm-slider-block' ) {
-				addSliderBlurListener( areaField, areaInput, blockClass );
+				addSliderBlurListener( areaInput, blockClass );
 			}
 
 			// Function to validate dropdown blur
@@ -1075,11 +1075,10 @@ function addEmailBlurListener( areaInput, blockClass ) {
  * Add blur listeners to slider fields
  * That shows validation errors on blur.
  *
- * @param {HTMLElement} areaField
  * @param {HTMLElement} areaInput
  * @param {string}      blockClass
  */
-function addSliderBlurListener( areaField, areaInput, blockClass ) {
+function addSliderBlurListener( areaInput, blockClass ) {
 	const sliderInput = areaInput.querySelector( '.srfm-input-slider' );
 	const textSliderElement = areaInput.querySelector( '.srfm-text-slider' );
 	// Number slider
@@ -1112,10 +1111,10 @@ const fieldValidationInit = async ( areaField, blockClass ) => {
 	const form = formTextarea.closest( 'form' );
 	const formId = form.getAttribute( 'form-id' );
 	const ajaxUrl = form.getAttribute( 'ajaxurl' );
-	const nonce = form.getAttribute( 'data-nonce' );
+	const token = form.getAttribute( 'data-submit-token' );
 	const singleField = true;
 
-	await fieldValidation( formId, ajaxUrl, nonce, formTextarea, singleField );
+	await fieldValidation( formId, ajaxUrl, token, formTextarea, singleField );
 };
 
 /**

@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { applyFilters } from '@wordpress/hooks';
 import { cn } from '@Utils/Helpers';
 import {
+	Bot,
 	Cpu,
 	CreditCard,
 	Settings,
@@ -10,7 +11,7 @@ import {
 	TriangleAlert,
 } from 'lucide-react';
 import { Accordion } from '@bsf/force-ui';
-import ottoKitIcon from '@Image/suretriggers-grayscale.svg';
+import ottoKitIcon from '@Image/ottokit.png';
 
 function useQuery() {
 	return new URLSearchParams( useLocation().search );
@@ -63,7 +64,7 @@ export const navigation = applyFilters( 'srfm.settings.navigation', [
 		),
 	},
 	{
-		name: __( 'Automations', 'sureforms' ),
+		name: __( 'OttoKit', 'sureforms' ),
 		slug: 'ottokit-settings',
 		icon: (
 			<img
@@ -79,6 +80,15 @@ export const navigation = applyFilters( 'srfm.settings.navigation', [
 		slug: 'integration-settings',
 		icon: <Cpu />,
 		hidePageTitle: true, // Hide the page title for the Integrations tab.
+	},
+	{
+		name: __( 'MCP', 'sureforms' ),
+		slug: 'mcp-settings',
+		icon: <Bot />,
+		helpText: __(
+			'Configure AI client permissions and MCP server settings.',
+			'sureforms'
+		),
 	},
 	{
 		name: __( 'Payments', 'sureforms' ),

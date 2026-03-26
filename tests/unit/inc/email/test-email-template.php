@@ -48,40 +48,6 @@ class Test_Email_Template extends TestCase {
 	}
 
 	/**
-	 * Test render_raw returns complete HTML email in raw format.
-	 */
-	public function test_render_raw() {
-		$fields     = [];
-		$email_body = '<p>Raw email body</p>';
-		$result     = $this->email_template->render_raw( $fields, $email_body );
-
-		$this->assertIsString( $result );
-		$this->assertStringContainsString( 'Raw email body', $result );
-		$this->assertStringContainsString( '<!DOCTYPE', $result );
-	}
-
-	/**
-	 * Test get_raw_header returns HTML with DOCTYPE and responsive styles.
-	 */
-	public function test_get_raw_header() {
-		$result = $this->email_template->get_raw_header();
-
-		$this->assertIsString( $result );
-		$this->assertStringContainsString( '<!DOCTYPE', $result );
-		$this->assertStringContainsString( '<html', $result );
-		$this->assertStringContainsString( 'viewport', $result );
-	}
-
-	/**
-	 * Test get_raw_footer returns closing HTML.
-	 */
-	public function test_get_raw_footer() {
-		$result = $this->email_template->get_raw_footer();
-		$this->assertIsString( $result );
-		$this->assertStringContainsString( '</html>', $result );
-	}
-
-	/**
 	 * Test remove_border_from_last_tr_td_table removes border from last row.
 	 */
 	public function test_remove_border_from_last_tr_td_table() {
@@ -93,5 +59,43 @@ class Test_Email_Template extends TestCase {
 		// First row should still have it.
 		$this->assertStringContainsString( 'Row 1', $result );
 		$this->assertStringContainsString( 'Row 2', $result );
+	}
+
+	/**
+	 * Test get_raw_header returns the raw HTML header template.
+	 */
+	public function test_get_raw_header() {
+		$result = $this->email_template->get_raw_header();
+		$this->assertIsString( $result );
+		$this->assertStringContainsString( '<!DOCTYPE html>', $result );
+		$this->assertStringContainsString( '<html dir=', $result );
+		$this->assertStringContainsString( '<head>', $result );
+		$this->assertStringContainsString( '<body', $result );
+		$this->assertStringContainsString( 'srfm_raw_wrapper', $result );
+		$this->assertStringContainsString( 'srfm_raw_body_content_inner', $result );
+	}
+
+	/**
+	 * Test get_raw_footer returns the raw HTML footer template.
+	 */
+	public function test_get_raw_footer() {
+		$result = $this->email_template->get_raw_footer();
+		$this->assertIsString( $result );
+		$this->assertStringContainsString( '</body>', $result );
+		$this->assertStringContainsString( '</html>', $result );
+		$this->assertStringContainsString( 'srfm_raw_footer_credit', $result );
+		$this->assertStringContainsString( gmdate( 'Y' ), $result );
+	}
+
+	/**
+	 * Test render_raw returns complete HTML email with raw header, body, and footer.
+	 */
+	public function test_render_raw() {
+		$email_body = '<p>Test submission content</p>';
+		$result     = $this->email_template->render_raw( [], $email_body );
+		$this->assertIsString( $result );
+		$this->assertStringContainsString( '<!DOCTYPE html>', $result );
+		$this->assertStringContainsString( $email_body, $result );
+		$this->assertStringContainsString( '</html>', $result );
 	}
 }

@@ -91,14 +91,19 @@ const FormSettingsPopup = ( {
 				icon: <Cpu size={ 18 } />,
 			},
 			{
+				id: 'ottokit',
+				label: __( 'Automations', 'sureforms' ),
+				icon: (
+					<img
+						src={ ottoKitIcon }
+						alt={ __( 'OttoKit', 'sureforms' ) }
+					/>
+				),
+			},
+			{
 				id: 'pdf-generation-preview',
 				label: __( 'PDF Generation', 'sureforms' ),
 				icon: <File size={ 18 } />,
-			},
-			{
-				id: 'advanced-settings',
-				label: __( 'Advanced Settings', 'sureforms' ),
-				icon: <Settings size={ 18 } />,
 			},
 			{
 				id: 'save-resume-preview',
@@ -116,14 +121,9 @@ const FormSettingsPopup = ( {
 				icon: <FileText size={ 18 } />,
 			},
 			{
-				id: 'ottokit',
-				label: __( 'Automations', 'sureforms' ),
-				icon: (
-					<img
-						src={ ottoKitIcon }
-						alt={ __( 'OttoKit', 'sureforms' ) }
-					/>
-				),
+				id: 'advanced-settings',
+				label: __( 'Advanced Settings', 'sureforms' ),
+				icon: <Settings size={ 18 } />,
 			},
 			{
 				id: 'form_custom_css',

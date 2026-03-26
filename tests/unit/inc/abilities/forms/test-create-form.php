@@ -60,6 +60,8 @@ class Test_Create_Form extends TestCase {
 		$this->assertFalse( $annotations['readonly'] );
 		$this->assertFalse( $annotations['destructive'] );
 		$this->assertFalse( $annotations['idempotent'] );
+		$this->assertEquals( 2.0, $annotations['priority'] );
+		$this->assertFalse( $annotations['openWorldHint'] );
 	}
 
 	/**
@@ -72,6 +74,7 @@ class Test_Create_Form extends TestCase {
 		$this->assertArrayHasKey( 'formFields', $schema['properties'] );
 		$this->assertContains( 'formTitle', $schema['required'] );
 		$this->assertContains( 'formFields', $schema['required'] );
+		$this->assertFalse( $schema['additionalProperties'] );
 	}
 
 	/**
@@ -271,4 +274,6 @@ class Test_Create_Form extends TestCase {
 		$this->assertEquals( 'publish', $result['status'] );
 		$this->created_forms[] = $result['form_id'];
 	}
+
+
 }

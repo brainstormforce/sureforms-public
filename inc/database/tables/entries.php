@@ -544,7 +544,7 @@ class Entries extends Base {
 	 * Excludes LONGTEXT blob columns (form_data, submission_info, notes, logs, extras)
 	 * to prevent full-table sorts on un-indexed columns.
 	 *
-	 * @since x.x.x
+	 * @since 2.6.0
 	 * @return array<string>
 	 */
 	protected function get_allowed_orderby_columns() {
