@@ -21,6 +21,7 @@ parameters:
 		- tests/php/stubs/srfm-stubs.php
 		- tests/php/stubs/srfm-elementor-stubs.php
 		- tests/php/stubs/srfm-bricks-stubs.php
+		- tests/php/stubs/srfm-wp-abilities-stubs.php
 	paths:
 		- sureforms.php
 		- plugin-loader.php

@@ -110,7 +110,9 @@ sureforms/
 - `@since x.x.x` on all new functions/classes (updated in release PRs)
 - NEVER `echo` without escaping — use `esc_html()`, `esc_attr()`, `wp_kses_post()`
 - NEVER use `$_GET/$_POST/$_REQUEST` directly — use `sanitize_text_field( wp_unslash( ... ) )`
-- NEVER skip nonce checks — use `wp_verify_nonce()` or `check_ajax_referer()`
+- NEVER skip security verification on endpoints/AJAX handlers
+  - **Public form submission endpoints** use HMAC tokens via `Submit_Token::verify()` (`inc/submit-token.php`) — NOT nonces. These are cache-safe and session-independent. The `// phpcs:ignore WordPress.Security.NonceVerification.Missing` comment is expected on these handlers.
+  - **Admin/authenticated endpoints** still use traditional nonces (`wp_verify_nonce()` / `check_ajax_referer()`)
 - NEVER skip capability checks — use `current_user_can()` before privileged operations
 - NEVER use `wp_die()` in REST callbacks — use `WP_Error` with proper response codes
 - NEVER hardcode table names — use `$wpdb->prefix . 'sureforms_entries'`
@@ -146,7 +148,7 @@ Checklist:
 - No debug code left (`console.log`, `error_log`, `var_dump`)
 - All new functions have `@since x.x.x`
 - All user-facing strings use `__()` / `_e()`
-- Nonce + capability checks on new endpoints/handlers
+- Security checks on new endpoints/handlers (HMAC token for public, nonce for admin)
 - For significant changes, suggest `npm run play:run`
 
 ## Self-Improvement Loop
@@ -156,6 +158,8 @@ Checklist:
 
 ## Learned Rules
 <!-- Format: "- NEVER/ALWAYS [action] — [reason]" -->
+- NEVER flag `phpcs:ignore WordPress.Security.NonceVerification.Missing` as a security issue on public form submission handlers (form submit, field validation, Stripe/PayPal payment intents) — these use HMAC token verification (`Submit_Token::verify()`) instead of nonces for page-cache compatibility. The HMAC token is embedded in the form at render time and verified server-side without any session dependency.
+- ALWAYS use `Submit_Token::generate($form_id)` / `Submit_Token::verify($token, $form_id)` for public-facing form security — nonces (`wp_verify_nonce`) are only for admin/authenticated endpoints.
 
 ## Current Focus
 <!-- Update with current sprint/milestone priorities -->

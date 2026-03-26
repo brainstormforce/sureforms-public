@@ -74,6 +74,8 @@ class Test_List_Forms extends TestCase {
 		$this->assertTrue( $annotations['readonly'] );
 		$this->assertFalse( $annotations['destructive'] );
 		$this->assertTrue( $annotations['idempotent'] );
+		$this->assertEquals( 1.0, $annotations['priority'] );
+		$this->assertFalse( $annotations['openWorldHint'] );
 	}
 
 	/**
@@ -86,6 +88,7 @@ class Test_List_Forms extends TestCase {
 		$this->assertArrayHasKey( 'search', $schema['properties'] );
 		$this->assertArrayHasKey( 'per_page', $schema['properties'] );
 		$this->assertArrayHasKey( 'page', $schema['properties'] );
+		$this->assertFalse( $schema['additionalProperties'] );
 	}
 
 	/**
@@ -208,4 +211,6 @@ class Test_List_Forms extends TestCase {
 			$this->assertArrayHasKey( 'entry_count', $form );
 		}
 	}
+
+
 }

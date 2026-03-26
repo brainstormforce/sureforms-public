@@ -91,6 +91,31 @@ class Test_Admin extends TestCase {
     }
 
     /**
+     * Test that enqueue_scripts method exists and that the localization data contains current_user_login.
+     */
+    public function test_enqueue_scripts() {
+        // Verify the enqueue_scripts method exists on the Admin class.
+        $this->assertTrue(
+            method_exists( Admin::class, 'enqueue_scripts' ),
+            'The enqueue_scripts method should exist on the Admin class.'
+        );
+
+        // Verify it is a public instance method.
+        $reflection = new \ReflectionMethod( Admin::class, 'enqueue_scripts' );
+        $this->assertTrue( $reflection->isPublic(), 'enqueue_scripts should be a public method.' );
+        $this->assertFalse( $reflection->isStatic(), 'enqueue_scripts should be an instance method, not static.' );
+
+        // Verify the localization data structure includes 'current_user_login' by inspecting the source.
+        // We read the method body to confirm the key is present, ensuring the contract is maintained.
+        $source_file = $reflection->getFileName();
+        $start_line  = $reflection->getStartLine();
+        $end_line    = $reflection->getEndLine();
+        $source      = implode( '', array_slice( file( $source_file ), $start_line - 1, $end_line - $start_line + 1 ) );
+
+        $this->assertStringContainsString( 'current_user_login', $source, 'Localization data should include current_user_login.' );
+    }
+
+    /**
      * Test add_learn_page registers the Learn submenu page.
      */
     public function test_add_learn_page() {
@@ -142,14 +167,6 @@ class Test_Admin extends TestCase {
 
 		$this->assertStringContainsString( 'id="srfm-settings-container"', $output );
 		$this->assertStringContainsString( 'srfm-admin-wrapper', $output );
-	}
-
-	/**
-	 * Test enqueue_scripts is callable.
-	 */
-	public function test_enqueue_scripts() {
-		$admin = Admin::get_instance();
-		$this->assertTrue( method_exists( $admin, 'enqueue_scripts' ) );
 	}
 
 	/**

@@ -43,6 +43,8 @@ class Test_Delete_Form extends TestCase {
 		$this->assertFalse( $annotations['readonly'] );
 		$this->assertTrue( $annotations['destructive'] );
 		$this->assertFalse( $annotations['idempotent'] );
+		$this->assertEquals( 3.0, $annotations['priority'] );
+		$this->assertFalse( $annotations['openWorldHint'] );
 	}
 
 	/**
@@ -53,6 +55,7 @@ class Test_Delete_Form extends TestCase {
 		$this->assertArrayHasKey( 'form_id', $schema['properties'] );
 		$this->assertArrayHasKey( 'force', $schema['properties'] );
 		$this->assertContains( 'form_id', $schema['required'] );
+		$this->assertFalse( $schema['additionalProperties'] );
 	}
 
 	/**
@@ -141,4 +144,6 @@ class Test_Delete_Form extends TestCase {
 		$this->assertTrue( $result['deleted'] );
 		$this->assertNull( get_post( $form_id ) );
 	}
+
+
 }

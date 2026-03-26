@@ -1,0 +1,355 @@
+/**
+ * E2E tests — Field validation (P0).
+ *
+ * Verifies that each field type rejects invalid data and shows an error
+ * without submitting the form.
+ *
+ * Covered rules:
+ *   - Email format validation
+ *   - Email confirmation mismatch / match
+ *   - URL format validation
+ *   - Number min / max bounds
+ *   - Required: single-line input, email, phone, textarea
+ *   - Required: checkbox, GDPR, dropdown, multi-choice
+ */
+
+const { test, expect } = require( '@playwright/test' );
+const { loginAsAdmin } = require( '../utils/loginAsAdmin' );
+const {
+	createBlankForm,
+	publishFormAndGetURL,
+	addFieldBlock,
+	selectBlock,
+	openBlockSettingsTab,
+	enableRequiredField,
+} = require( '../utils/formHelpers' );
+
+test.describe( 'Field validation', () => {
+	test.beforeEach( async ( { page } ) => {
+		await loginAsAdmin( page );
+	} );
+
+	// ── 2.1 Email — invalid format ────────────────────────────────────────────
+	test( 'email field — invalid format shows error', async ( { page } ) => {
+		await createBlankForm( page );
+		await addFieldBlock( page, 'email' );
+
+		const formURL = await publishFormAndGetURL( page );
+		await page.goto( formURL );
+		await page.waitForLoadState( 'load' );
+
+		await page.locator( 'input.srfm-input-email' ).first().fill( 'not-an-email' );
+		await page.locator( '#srfm-submit-btn' ).click();
+
+		await expect( page.locator( '.srfm-email-block .srfm-error-wrap' ).first() )
+			.toBeVisible( { timeout: 10000 } );
+		await expect( page.locator( '.srfm-success-box' ) ).not.toBeVisible();
+	} );
+
+	// ── 2.2 Email confirmation — mismatch ─────────────────────────────────────
+	test( 'email confirmation — mismatch shows error', async ( { page } ) => {
+		await createBlankForm( page );
+		await addFieldBlock( page, 'email' );
+
+		// Select the email block to open its settings panel.
+		await selectBlock( page, 'email' );
+		await openBlockSettingsTab( page );
+
+		const confirmToggle = page
+			.locator( '.components-toggle-control' )
+			.filter( { hasText: /Enable Email Confirmation/i } )
+			.first();
+		await expect( confirmToggle ).toBeVisible( { timeout: 5000 } );
+		const isChecked = await confirmToggle.locator( 'input[type="checkbox"]' ).isChecked();
+		if ( ! isChecked ) {
+			await confirmToggle.locator( 'input[type="checkbox"]' ).click();
+		}
+
+		const formURL = await publishFormAndGetURL( page );
+		await page.goto( formURL );
+		await page.waitForLoadState( 'load' );
+
+		await page.locator( 'input.srfm-input-email' ).first().fill( 'user@example.com' );
+		await page.locator( 'input.srfm-input-email-confirm' ).first().fill( 'different@example.com' );
+		await page.locator( '#srfm-submit-btn' ).click();
+
+		await expect( page.locator( '.srfm-email-block .srfm-error-wrap' ).first() )
+			.toBeVisible( { timeout: 10000 } );
+		await expect( page.locator( '.srfm-success-box' ) ).not.toBeVisible();
+	} );
+
+	// ── 2.3 Email confirmation — matching emails submit successfully ───────────
+	test( 'email confirmation — matching emails submit successfully', async ( { page } ) => {
+		await createBlankForm( page );
+		await addFieldBlock( page, 'email' );
+
+		await selectBlock( page, 'email' );
+		await openBlockSettingsTab( page );
+
+		const confirmToggle = page
+			.locator( '.components-toggle-control' )
+			.filter( { hasText: /Enable Email Confirmation/i } )
+			.first();
+		await expect( confirmToggle ).toBeVisible( { timeout: 5000 } );
+		const isChecked = await confirmToggle.locator( 'input[type="checkbox"]' ).isChecked();
+		if ( ! isChecked ) {
+			await confirmToggle.locator( 'input[type="checkbox"]' ).click();
+		}
+
+		const formURL = await publishFormAndGetURL( page );
+		await page.goto( formURL );
+		await page.waitForLoadState( 'load' );
+
+		await page.locator( 'input.srfm-input-email' ).first().fill( 'user@example.com' );
+		await page.locator( 'input.srfm-input-email-confirm' ).first().fill( 'user@example.com' );
+		await page.locator( '#srfm-submit-btn' ).click();
+
+		await expect( page.locator( '.srfm-success-box' ) ).toBeVisible( { timeout: 15000 } );
+	} );
+
+	// ── 2.4 URL — invalid format ──────────────────────────────────────────────
+	test( 'URL field — invalid value shows error', async ( { page } ) => {
+		await createBlankForm( page );
+		await addFieldBlock( page, 'url' );
+
+		// Make the field required so submission is blocked (validation fires on submit).
+		await selectBlock( page, 'url' );
+		await openBlockSettingsTab( page );
+		await enableRequiredField( page );
+
+		const formURL = await publishFormAndGetURL( page );
+		await page.goto( formURL );
+		await page.waitForLoadState( 'load' );
+
+		await page.locator( 'input.srfm-input-url' ).first().fill( 'not a url' );
+		await page.locator( '#srfm-submit-btn' ).click();
+
+		await expect( page.locator( '.srfm-url-block .srfm-error-wrap' ).first() )
+			.toBeVisible( { timeout: 10000 } );
+		await expect( page.locator( '.srfm-success-box' ) ).not.toBeVisible();
+	} );
+
+	// ── 2.5 Number — below minimum ────────────────────────────────────────────
+	test( 'number field — value below minimum shows error', async ( { page } ) => {
+		await createBlankForm( page );
+		await addFieldBlock( page, 'number' );
+
+		// Set minValue = 10 in Block settings.
+		await selectBlock( page, 'number' );
+		await openBlockSettingsTab( page );
+
+		const minInput = page.locator( 'input[aria-label*="min" i], input[placeholder*="min" i]' ).first();
+		if ( await minInput.isVisible( { timeout: 3000 } ).catch( () => false ) ) {
+			await minInput.fill( '10' );
+		}
+
+		const formURL = await publishFormAndGetURL( page );
+		await page.goto( formURL );
+		await page.waitForLoadState( 'load' );
+
+		await page.locator( 'input.srfm-input-number' ).first().fill( '5' );
+		await page.locator( '#srfm-submit-btn' ).click();
+
+		await expect( page.locator( '.srfm-number-block .srfm-error-wrap' ).first() )
+			.toBeVisible( { timeout: 10000 } );
+		await expect( page.locator( '.srfm-success-box' ) ).not.toBeVisible();
+	} );
+
+	// ── 2.6 Number — above maximum ────────────────────────────────────────────
+	test( 'number field — value above maximum shows error', async ( { page } ) => {
+		await createBlankForm( page );
+		await addFieldBlock( page, 'number' );
+
+		await selectBlock( page, 'number' );
+		await openBlockSettingsTab( page );
+
+		const maxInput = page.locator( 'input[aria-label*="max" i], input[placeholder*="max" i]' ).first();
+		if ( await maxInput.isVisible( { timeout: 3000 } ).catch( () => false ) ) {
+			await maxInput.fill( '100' );
+		}
+
+		const formURL = await publishFormAndGetURL( page );
+		await page.goto( formURL );
+		await page.waitForLoadState( 'load' );
+
+		await page.locator( 'input.srfm-input-number' ).first().fill( '999' );
+		await page.locator( '#srfm-submit-btn' ).click();
+
+		await expect( page.locator( '.srfm-number-block .srfm-error-wrap' ).first() )
+			.toBeVisible( { timeout: 10000 } );
+		await expect( page.locator( '.srfm-success-box' ) ).not.toBeVisible();
+	} );
+
+	// ── 2.7 Required single-line input — submit empty ────────────────────────
+	test( 'required input — submit empty shows error', async ( { page } ) => {
+		await createBlankForm( page );
+		await addFieldBlock( page, 'input' );
+
+		await selectBlock( page, 'input' );
+		await openBlockSettingsTab( page );
+		await enableRequiredField( page );
+
+		const formURL = await publishFormAndGetURL( page );
+		await page.goto( formURL );
+		await page.waitForLoadState( 'load' );
+
+		// Submit without filling the field.
+		await page.locator( '#srfm-submit-btn' ).click();
+
+		await expect(
+			page.locator( '.srfm-input-block .srfm-error-wrap' ).first()
+		).toBeVisible( { timeout: 10000 } );
+		await expect( page.locator( '.srfm-success-box' ) ).not.toBeVisible();
+	} );
+
+	// ── 2.8 Required email — submit empty ────────────────────────────────────
+	test( 'required email — submit empty shows error', async ( { page } ) => {
+		await createBlankForm( page );
+		await addFieldBlock( page, 'email' );
+
+		await selectBlock( page, 'email' );
+		await openBlockSettingsTab( page );
+		await enableRequiredField( page );
+
+		const formURL = await publishFormAndGetURL( page );
+		await page.goto( formURL );
+		await page.waitForLoadState( 'load' );
+
+		// Submit without filling the field.
+		await page.locator( '#srfm-submit-btn' ).click();
+
+		await expect(
+			page.locator( '.srfm-email-block .srfm-error-wrap' ).first()
+		).toBeVisible( { timeout: 10000 } );
+		await expect( page.locator( '.srfm-success-box' ) ).not.toBeVisible();
+	} );
+
+	// ── 2.9 Required phone — submit empty ────────────────────────────────────
+	test( 'required phone — submit empty shows error', async ( { page } ) => {
+		await createBlankForm( page );
+		await addFieldBlock( page, 'phone' );
+
+		await selectBlock( page, 'phone' );
+		await openBlockSettingsTab( page );
+		await enableRequiredField( page );
+
+		const formURL = await publishFormAndGetURL( page );
+		await page.goto( formURL );
+		await page.waitForLoadState( 'load' );
+
+		// Submit without filling the field.
+		await page.locator( '#srfm-submit-btn' ).click();
+
+		await expect(
+			page.locator( '.srfm-phone-block .srfm-error-wrap' ).first()
+		).toBeVisible( { timeout: 10000 } );
+		await expect( page.locator( '.srfm-success-box' ) ).not.toBeVisible();
+	} );
+
+	// ── 2.10 Required textarea — submit empty ─────────────────────────────────
+	test( 'required textarea — submit empty shows error', async ( { page } ) => {
+		await createBlankForm( page );
+		await addFieldBlock( page, 'textarea' );
+
+		await selectBlock( page, 'textarea' );
+		await openBlockSettingsTab( page );
+		await enableRequiredField( page );
+
+		const formURL = await publishFormAndGetURL( page );
+		await page.goto( formURL );
+		await page.waitForLoadState( 'load' );
+
+		// Submit without filling the field.
+		await page.locator( '#srfm-submit-btn' ).click();
+
+		await expect(
+			page.locator( '.srfm-textarea-block .srfm-error-wrap' ).first()
+		).toBeVisible( { timeout: 10000 } );
+		await expect( page.locator( '.srfm-success-box' ) ).not.toBeVisible();
+	} );
+
+	// ── 2.11 Required checkbox — submit unchecked ─────────────────────────────
+	test( 'required checkbox — submit unchecked shows error', async ( { page } ) => {
+		await createBlankForm( page );
+		await addFieldBlock( page, 'checkbox' );
+
+		await selectBlock( page, 'checkbox' );
+		await openBlockSettingsTab( page );
+		await enableRequiredField( page );
+
+		const formURL = await publishFormAndGetURL( page );
+		await page.goto( formURL );
+		await page.waitForLoadState( 'load' );
+
+		// Do NOT check the checkbox — submit immediately.
+		await page.locator( '#srfm-submit-btn' ).click();
+
+		await expect(
+			page.locator( '.srfm-checkbox-block .srfm-error-wrap' ).first()
+		).toBeVisible( { timeout: 10000 } );
+		await expect( page.locator( '.srfm-success-box' ) ).not.toBeVisible();
+	} );
+
+	// ── 2.12 Required GDPR — submit without consent ───────────────────────────
+	test( 'required GDPR — submit without consent shows error', async ( { page } ) => {
+		await createBlankForm( page );
+		await addFieldBlock( page, 'gdpr' );
+
+		// GDPR is always required (hardcoded in GDPR_Markup constructor — no toggle).
+		const formURL = await publishFormAndGetURL( page );
+		await page.goto( formURL );
+		await page.waitForLoadState( 'load' );
+
+		// Do NOT check GDPR consent.
+		await page.locator( '#srfm-submit-btn' ).click();
+
+		await expect(
+			page.locator( '.srfm-gdpr-block .srfm-error-wrap' ).first()
+		).toBeVisible( { timeout: 10000 } );
+		await expect( page.locator( '.srfm-success-box' ) ).not.toBeVisible();
+	} );
+
+	// ── 2.13 Required dropdown — submit without selection ─────────────────────
+	test( 'required dropdown — submit without selection shows error', async ( { page } ) => {
+		await createBlankForm( page );
+		await addFieldBlock( page, 'dropdown' );
+
+		await selectBlock( page, 'dropdown' );
+		await openBlockSettingsTab( page );
+		await enableRequiredField( page );
+
+		const formURL = await publishFormAndGetURL( page );
+		await page.goto( formURL );
+		await page.waitForLoadState( 'load' );
+
+		// Do NOT select any option.
+		await page.locator( '#srfm-submit-btn' ).click();
+
+		await expect(
+			page.locator( '.srfm-dropdown-block .srfm-error-wrap' ).first()
+		).toBeVisible( { timeout: 10000 } );
+		await expect( page.locator( '.srfm-success-box' ) ).not.toBeVisible();
+	} );
+
+	// ── 2.14 Required multi-choice — submit without selection ─────────────────
+	test( 'required multi-choice — submit without selection shows error', async ( { page } ) => {
+		await createBlankForm( page );
+		await addFieldBlock( page, 'multi-choice' );
+
+		await selectBlock( page, 'multi-choice' );
+		await openBlockSettingsTab( page );
+		await enableRequiredField( page );
+
+		const formURL = await publishFormAndGetURL( page );
+		await page.goto( formURL );
+		await page.waitForLoadState( 'load' );
+
+		// Do NOT select any option.
+		await page.locator( '#srfm-submit-btn' ).click();
+
+		await expect(
+			page.locator( '.srfm-multi-choice-block .srfm-error-wrap' ).first()
+		).toBeVisible( { timeout: 10000 } );
+		await expect( page.locator( '.srfm-success-box' ) ).not.toBeVisible();
+	} );
+} );

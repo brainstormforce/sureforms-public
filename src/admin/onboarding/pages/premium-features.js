@@ -22,10 +22,10 @@ const allFeatures = [
 		plan: 'free',
 	},
 	{
-		id: 'entries',
-		title: __( 'View Entries', 'sureforms' ),
+		id: 'payment_forms',
+		title: __( 'Payment Forms', 'sureforms' ),
 		description: __(
-			'Track, view, and manage all form entries in one place. Stay organized, informed, and never miss a response.',
+			'Collect payments directly through your forms. Accept one-time and recurring payments seamlessly.',
 			'sureforms'
 		),
 		type: 'free',

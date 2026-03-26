@@ -253,7 +253,10 @@ const EmailConfirmation = ( props ) => {
 						} }
 						checked={ formData.is_raw_format }
 						onChange={ ( checked ) =>
-							setFormData( ( prev ) => ( { ...prev, is_raw_format: checked } ) )
+							setFormData( ( prev ) => ( {
+								...prev,
+								is_raw_format: checked,
+							} ) )
 						}
 					/>
 					{ formData.is_raw_format && (

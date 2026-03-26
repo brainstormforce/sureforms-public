@@ -326,109 +326,138 @@ const EmailNotification = ( {
 											className="gap-2"
 											justify="end"
 										>
-											<CustomButton
-												ariaLabel={ __(
+											<Tooltip
+												placement="top"
+												tooltipPortalId="srfm-settings-container"
+												content={ __(
 													'Duplicate',
 													'sureforms'
 												) }
-												icon={
-													<Copy className="size-4" />
-												}
-												onClick={ () =>
-													handleDuplicate( el )
-												}
-											/>
-											<CustomButton
-												ariaLabel={ __(
-													'Edit',
-													'sureforms'
-												) }
-												icon={
-													<PenLine className="size-4" />
-												}
-												onClick={ () =>
-													handleEdit( el )
-												}
-											/>
-											<Tooltip
-												arrow
-												offset={ 20 }
-												content={
-													<Container
-														direction="column"
-														className="gap-2"
-													>
-														<p className="text-[13px] font-normal">
-															{ __(
-																'Are you sure you want to delete this email notification?',
-																'sureforms'
-															) }
-														</p>
-														<Container className="gap-3">
-															<CustomButton
-																ariaLabel={ __(
-																	'Cancel',
-																	'sureforms'
-																) }
-																onClick={ () =>
-																	setIsPopup(
-																		null
-																	)
-																}
-																label={ __(
-																	'Cancel',
-																	'sureforms'
-																) }
-																variant="outline"
-																className="px-3"
-															/>
-															<CustomButton
-																ariaLabel={ __(
-																	'Confirm',
-																	'sureforms'
-																) }
-																onClick={ () =>
-																	handleDelete(
-																		el
-																	)
-																}
-																label={ __(
-																	'Confirm',
-																	'sureforms'
-																) }
-																variant="primary"
-																className="px-2 ml-2"
-																destructive
-															/>
-														</Container>
-													</Container>
-												}
-												placement="top"
-												triggers={ [
-													'click',
-													'focus',
-												] }
-												tooltipPortalId="srfm-settings-container"
-												interactive
-												className="z-999999"
-												variant="light"
-												open={ isPopup === el.id }
-												setOpen={ () =>
-													setIsPopup( el.id )
-												}
 											>
 												<CustomButton
 													ariaLabel={ __(
-														'Delete',
+														'Duplicate',
 														'sureforms'
 													) }
 													icon={
-														<Trash className="text-icon-secondary size-4" />
+														<Copy className="size-4" />
 													}
-													onClick={ () => {
-														setIsPopup( el.id );
-													} }
+													onClick={ () =>
+														handleDuplicate( el )
+													}
 												/>
+											</Tooltip>
+											<Tooltip
+												placement="top"
+												tooltipPortalId="srfm-settings-container"
+												content={ __(
+													'Edit',
+													'sureforms'
+												) }
+											>
+												<CustomButton
+													ariaLabel={ __(
+														'Edit',
+														'sureforms'
+													) }
+													icon={
+														<PenLine className="size-4" />
+													}
+													onClick={ () =>
+														handleEdit( el )
+													}
+												/>
+											</Tooltip>
+											<Tooltip
+												placement="top"
+												tooltipPortalId="srfm-settings-container"
+												content={ __(
+													'Delete',
+													'sureforms'
+												) }
+											>
+												<span>
+													<Tooltip
+														arrow
+														offset={ 20 }
+														content={
+															<Container
+																direction="column"
+																className="gap-2"
+															>
+																<p className="text-[13px] font-normal">
+																	{ __(
+																		'Are you sure you want to delete this email notification?',
+																		'sureforms'
+																	) }
+																</p>
+																<Container className="gap-3">
+																	<CustomButton
+																		ariaLabel={ __(
+																			'Cancel',
+																			'sureforms'
+																		) }
+																		onClick={ () =>
+																			setIsPopup(
+																				null
+																			)
+																		}
+																		label={ __(
+																			'Cancel',
+																			'sureforms'
+																		) }
+																		variant="outline"
+																		className="px-3"
+																	/>
+																	<CustomButton
+																		ariaLabel={ __(
+																			'Confirm',
+																			'sureforms'
+																		) }
+																		onClick={ () =>
+																			handleDelete(
+																				el
+																			)
+																		}
+																		label={ __(
+																			'Confirm',
+																			'sureforms'
+																		) }
+																		variant="primary"
+																		className="px-2 ml-2"
+																		destructive
+																	/>
+																</Container>
+															</Container>
+														}
+														placement="top"
+														triggers={ [
+															'click',
+															'focus',
+														] }
+														tooltipPortalId="srfm-settings-container"
+														interactive
+														className="z-999999"
+														variant="light"
+														open={ isPopup === el.id }
+														setOpen={ () =>
+															setIsPopup( el.id )
+														}
+													>
+														<CustomButton
+															ariaLabel={ __(
+																'Delete',
+																'sureforms'
+															) }
+															icon={
+																<Trash className="text-icon-secondary size-4" />
+															}
+															onClick={ () => {
+																setIsPopup( el.id );
+															} }
+														/>
+													</Tooltip>
+												</span>
 											</Tooltip>
 										</Container>
 									</Table.Cell>
