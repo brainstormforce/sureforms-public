@@ -4,19 +4,15 @@
  * Handles PostMessage styling updates from the block editor
  * for real-time preview in the iframe.
  *
+ * Uses a dynamic <style> tag to override the server-rendered CSS variables.
+ * This avoids issues with container.style.setProperty() silently failing
+ * for certain CSS custom properties (e.g. --srfm-color-input-label,
+ * --srfm-color-input-text, --srfm-color-input-description) when the same
+ * properties are defined in a <style> tag nested inside the container.
+ *
  * @package
  * @since x.x.x
  */
-
-import {
-	PRIMARY_COLOR_MAP,
-	TEXT_COLOR_MAP,
-	SIMPLE_CSS_MAP,
-	DIMENSIONS_CSS_MAP,
-	applyColorMap,
-	applyDimensionsFromStyling,
-} from '@Utils/styling-utils';
-
 ( function () {
 	'use strict';
 
@@ -34,6 +30,30 @@ import {
 	// Store original classes for reset functionality.
 	const originalClasses = container.className;
 
+	// Create a dynamic <style> element for CSS variable overrides.
+	// Placed inside the container after the server-rendered <style> so it wins
+	// in the cascade with the same selector specificity (later declaration wins).
+	const overrideStyle = document.createElement( 'style' );
+	overrideStyle.id = 'srfm-preview-override-style';
+	container.appendChild( overrideStyle );
+
+	/**
+	 * Build CSS text for all variable overrides and apply via the dynamic <style> tag.
+	 *
+	 * @param {Object} cssVars Key-value pairs of CSS variable names to values.
+	 * @since x.x.x
+	 */
+	function applyCssVarOverrides( cssVars ) {
+		let cssText = '.' + containerId + ' {\n';
+		for ( const key in cssVars ) {
+			if ( cssVars[ key ] !== undefined && cssVars[ key ] !== null ) {
+				cssText += '\t' + key + ': ' + cssVars[ key ] + ';\n';
+			}
+		}
+		cssText += '}\n';
+		overrideStyle.textContent = cssText;
+	}
+
 	window.addEventListener( 'message', function ( event ) {
 		if ( event.origin !== window.location.origin ) {
 			return;
@@ -43,9 +63,9 @@ import {
 			return;
 		}
 
-		// Handle reset styling - clear inline styles to use original CSS from style block.
+		// Handle reset styling - clear overrides to use original CSS from style block.
 		if ( event.data.type === 'srfm-reset-styling' ) {
-			container.removeAttribute( 'style' );
+			overrideStyle.textContent = '';
 			container.className = originalClasses;
 
 			// Reset button container styles.
@@ -71,51 +91,86 @@ import {
 			return;
 		}
 
-		// Apply color variables using shared utility functions.
+		// Collect all CSS variable overrides into a single object,
+		// then apply them all at once via the dynamic <style> tag.
+		const cssVars = {};
+
+		// Primary color variables.
 		if ( styling.primaryColor ) {
-			applyColorMap( container, PRIMARY_COLOR_MAP, styling.primaryColor );
+			const primaryHsl = 'hsl(from ' + styling.primaryColor + ' h s l / ';
+			cssVars[ '--srfm-color-scheme-primary' ] = styling.primaryColor;
+			cssVars[ '--srfm-quill-editor-color' ] = styling.primaryColor;
+			cssVars[ '--srfm-color-input-border-hover' ] = primaryHsl + '0.65)';
+			cssVars[ '--srfm-color-input-border-focus-glow' ] =
+				primaryHsl + '0.15)';
+			cssVars[ '--srfm-color-input-selected' ] = primaryHsl + '0.1)';
+			cssVars[ '--srfm-btn-color-hover' ] = primaryHsl + '0.9)';
+			cssVars[ '--srfm-btn-color-disabled' ] = primaryHsl + '0.25)';
 		}
 
+		// Text color variables.
 		if ( styling.textColor ) {
-			applyColorMap( container, TEXT_COLOR_MAP, styling.textColor );
+			const textHsl = 'hsl(from ' + styling.textColor + ' h s l / ';
+			cssVars[ '--srfm-color-scheme-text' ] = styling.textColor;
+			cssVars[ '--srfm-color-input-label' ] = styling.textColor;
+			cssVars[ '--srfm-color-input-text' ] = styling.textColor;
+			cssVars[ '--srfm-color-input-description' ] = textHsl + '0.65)';
+			cssVars[ '--srfm-color-input-placeholder' ] = textHsl + '0.5)';
+			cssVars[ '--srfm-color-input-prefix' ] = textHsl + '0.65)';
+			cssVars[ '--srfm-color-input-background' ] = textHsl + '0.02)';
+			cssVars[ '--srfm-color-input-background-hover' ] =
+				textHsl + '0.05)';
+			cssVars[ '--srfm-color-input-background-disabled' ] =
+				textHsl + '0.07)';
+			cssVars[ '--srfm-color-input-border' ] = textHsl + '0.25)';
+			cssVars[ '--srfm-color-input-border-disabled' ] = textHsl + '0.15)';
+			cssVars[ '--srfm-color-multi-choice-svg' ] = textHsl + '0.7)';
 		}
 
-		// Apply simple CSS variables.
-		// Note: `bgImagePosition` is intentionally included in SIMPLE_CSS_MAP so it
-		// can be applied as a plain string value in non-Gutenberg contexts (e.g. Elementor).
-		// In Gutenberg, `bgImagePosition` is an {x, y} object, so this loop will
-		// temporarily set --srfm-bg-position to "[object Object]". The explicit
-		// bgImagePosition handler below (inside the bgType === 'image' branch)
-		// immediately overwrites it with the correctly formatted "X% Y%" string.
-		for ( const controlName in SIMPLE_CSS_MAP ) {
-			if (
-				Object.hasOwn( SIMPLE_CSS_MAP, controlName ) &&
-				styling[ controlName ]
-			) {
-				container.style.setProperty(
-					SIMPLE_CSS_MAP[ controlName ],
-					styling[ controlName ]
-				);
-			}
+		// Text on primary color.
+		if ( styling.textOnPrimaryColor ) {
+			cssVars[ '--srfm-color-scheme-text-on-primary' ] =
+				styling.textOnPrimaryColor;
 		}
 
-		// Apply dimensions from styling object.
-		for ( const controlName in DIMENSIONS_CSS_MAP ) {
-			if ( Object.hasOwn( DIMENSIONS_CSS_MAP, controlName ) ) {
-				const prefix = DIMENSIONS_CSS_MAP[ controlName ];
-				const unitKey = controlName + 'Unit';
-				const unit = styling[ unitKey ] || 'px';
-				applyDimensionsFromStyling(
-					container,
-					prefix,
-					styling,
-					controlName,
-					unit
-				);
-			}
+		// Padding and border radius.
+		const paddingUnit = styling.formPaddingUnit || 'px';
+		const borderRadiusUnit = styling.formBorderRadiusUnit || 'px';
+
+		if ( styling.formPaddingTop !== undefined ) {
+			cssVars[ '--srfm-form-padding-top' ] =
+				styling.formPaddingTop + paddingUnit;
+		}
+		if ( styling.formPaddingRight !== undefined ) {
+			cssVars[ '--srfm-form-padding-right' ] =
+				styling.formPaddingRight + paddingUnit;
+		}
+		if ( styling.formPaddingBottom !== undefined ) {
+			cssVars[ '--srfm-form-padding-bottom' ] =
+				styling.formPaddingBottom + paddingUnit;
+		}
+		if ( styling.formPaddingLeft !== undefined ) {
+			cssVars[ '--srfm-form-padding-left' ] =
+				styling.formPaddingLeft + paddingUnit;
+		}
+		if ( styling.formBorderRadiusTop !== undefined ) {
+			cssVars[ '--srfm-form-border-radius-top' ] =
+				styling.formBorderRadiusTop + borderRadiusUnit;
+		}
+		if ( styling.formBorderRadiusRight !== undefined ) {
+			cssVars[ '--srfm-form-border-radius-right' ] =
+				styling.formBorderRadiusRight + borderRadiusUnit;
+		}
+		if ( styling.formBorderRadiusBottom !== undefined ) {
+			cssVars[ '--srfm-form-border-radius-bottom' ] =
+				styling.formBorderRadiusBottom + borderRadiusUnit;
+		}
+		if ( styling.formBorderRadiusLeft !== undefined ) {
+			cssVars[ '--srfm-form-border-radius-left' ] =
+				styling.formBorderRadiusLeft + borderRadiusUnit;
 		}
 
-		// Apply background - remove all background classes first.
+		// Background.
 		container.classList.remove(
 			'srfm-bg-color',
 			'srfm-bg-gradient',
@@ -125,18 +180,12 @@ import {
 		if ( styling.bgType === 'color' ) {
 			container.classList.add( 'srfm-bg-color' );
 			if ( styling.bgColor ) {
-				container.style.setProperty(
-					'--srfm-bg-color',
-					styling.bgColor
-				);
+				cssVars[ '--srfm-bg-color' ] = styling.bgColor;
 			}
 		} else if ( styling.bgType === 'gradient' ) {
 			container.classList.add( 'srfm-bg-gradient' );
 			if ( styling.bgGradient ) {
-				container.style.setProperty(
-					'--srfm-bg-gradient',
-					styling.bgGradient
-				);
+				cssVars[ '--srfm-bg-gradient' ] = styling.bgGradient;
 			}
 		} else if ( styling.bgType === 'image' ) {
 			container.classList.add( 'srfm-bg-image' );
@@ -147,25 +196,26 @@ import {
 					bgImageUrl.startsWith( 'https://' ) ||
 					bgImageUrl.startsWith( 'http://' )
 				) {
-					container.style.setProperty(
-						'--srfm-bg-image',
-						'url("' + bgImageUrl + '")'
-					);
+					cssVars[ '--srfm-bg-image' ] = 'url("' + bgImageUrl + '")';
 				}
-			} else {
-				container.style.removeProperty( '--srfm-bg-image' );
 			}
 			if ( styling.bgImagePosition ) {
 				const posX = ( styling.bgImagePosition.x ?? 0.5 ) * 100;
 				const posY = ( styling.bgImagePosition.y ?? 0.5 ) * 100;
-				container.style.setProperty(
-					'--srfm-bg-position',
-					posX + '% ' + posY + '%'
-				);
+				cssVars[ '--srfm-bg-position' ] = posX + '% ' + posY + '%';
+			}
+			if ( styling.bgImageSize ) {
+				cssVars[ '--srfm-bg-size' ] = styling.bgImageSize;
+			}
+			if ( styling.bgImageRepeat ) {
+				cssVars[ '--srfm-bg-repeat' ] = styling.bgImageRepeat;
+			}
+			if ( styling.bgImageAttachment ) {
+				cssVars[ '--srfm-bg-attachment' ] = styling.bgImageAttachment;
 			}
 		}
 
-		// Apply field spacing - uses CSS variables from Helper::get_css_vars() via localized data.
+		// Field spacing.
 		if ( styling.fieldSpacing ) {
 			const fieldSpacingVars =
 				window.srfmPreviewStyling?.fieldSpacingVars;
@@ -177,14 +227,18 @@ import {
 				const finalSize = Object.assign( {}, baseSize, overrideSize );
 
 				for ( const key in finalSize ) {
-					if ( Object.hasOwn( finalSize, key ) && key.startsWith( '--' ) ) {
-						container.style.setProperty( key, finalSize[ key ] );
+					if ( key.startsWith( '--' ) ) {
+						cssVars[ key ] = finalSize[ key ];
 					}
 				}
 			}
 		}
 
-		// Apply button alignment.
+		// Apply all CSS variable overrides at once via the dynamic <style> tag.
+		applyCssVarOverrides( cssVars );
+
+		// Button alignment uses direct inline styles on the button element itself
+		// (not a CSS variable on the container), so this stays as style manipulation.
 		if ( styling.buttonAlignment ) {
 			const submitContainer = container.querySelector(
 				'.srfm-submit-container .wp-block-button'
