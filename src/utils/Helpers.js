@@ -731,7 +731,7 @@ export const prepareBlockSlugs = ( updateBlockAttributes, srfmBlocks ) => {
 				_slugAutoLabels.get( block_id ) !== label
 			) {
 				// Auto-generated slug AND label has since changed: re-derive.
-				slug = generateSlug( label, existingSlugs );
+				slug = generateSlug( label, existingSlugs, block.name );
 				updateBlockAttributes( block.clientId, { slug } );
 				_slugAutoLabels.set( block_id, label );
 			}
