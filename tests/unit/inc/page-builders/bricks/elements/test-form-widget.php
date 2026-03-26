@@ -145,6 +145,32 @@ namespace SRFM\Inc\Page_Builders\Bricks\Elements {
 			$this->assertNull( Form_Widget::resolve_bricks_color( 12345 ) );
 		}
 
+		public function test_resolve_color_accepts_css_variable_string() {
+			// Bricks 2.x global palette colors are passed as CSS variable references.
+			$this->assertSame(
+				'var(--bricks-color-abc123)',
+				Form_Widget::resolve_bricks_color( 'var(--bricks-color-abc123)' )
+			);
+		}
+
+		public function test_resolve_color_accepts_css_variable_with_special_chars() {
+			// Bricks color IDs may contain $ characters.
+			$this->assertSame(
+				'var(--bricks-color-g$hzu)',
+				Form_Widget::resolve_bricks_color( 'var(--bricks-color-g$hzu)' )
+			);
+		}
+
+		public function test_resolve_color_rejects_css_variable_with_injection() {
+			// CSS variable with injection attempt should be rejected.
+			$this->assertNull( Form_Widget::resolve_bricks_color( 'var(--x); color: red' ) );
+		}
+
+		public function test_resolve_color_rejects_nested_css_functions() {
+			// Nested functions beyond simple var() should be rejected.
+			$this->assertNull( Form_Widget::resolve_bricks_color( 'var(--x, url(evil))' ) );
+		}
+
 		// -----------------------------------------------------------------------
 		// map_bricks_spacing
 		// -----------------------------------------------------------------------

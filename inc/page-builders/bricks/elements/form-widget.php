@@ -376,7 +376,12 @@ class Form_Widget extends \Bricks\Element {
 			'group'    => 'srfm_layout',
 			'label'    => __( 'Form Padding', 'sureforms' ),
 			'type'     => 'spacing',
-			'css'      => [],
+			'css'      => [
+				[
+					'property' => '--srfm-form-padding-{key}',
+					'selector' => '.srfm-form-container',
+				],
+			],
 			'default'  => [
 				'top'    => '0',
 				'right'  => '0',
@@ -392,7 +397,12 @@ class Form_Widget extends \Bricks\Element {
 			'group'    => 'srfm_layout',
 			'label'    => __( 'Form Border Radius', 'sureforms' ),
 			'type'     => 'spacing',
-			'css'      => [],
+			'css'      => [
+				[
+					'property' => '--srfm-form-border-radius-{key}',
+					'selector' => '.srfm-form-container',
+				],
+			],
 			'default'  => [
 				'top'    => '0',
 				'right'  => '0',
@@ -536,11 +546,13 @@ class Form_Widget extends \Bricks\Element {
 	}
 
 	/**
-	 * Resolve a Bricks color value to a hex string.
+	 * Resolve a Bricks color value to a CSS-safe color string.
 	 * Bricks color controls may return a string or an array with 'hex'/'raw' keys.
+	 * Since Bricks 2.x, global palette colors are stored as CSS variable references
+	 * (e.g., var(--bricks-color-xxx)) instead of raw hex values.
 	 *
 	 * @param mixed $color_value Raw value from Bricks color control.
-	 * @return string|null Hex color string or null.
+	 * @return string|null CSS-safe color string or null.
 	 * @since x.x.x
 	 */
 	public static function resolve_bricks_color( $color_value ) {
@@ -553,7 +565,13 @@ class Form_Widget extends \Bricks\Element {
 		if ( is_string( $color_value ) ) {
 			$raw = $color_value;
 		} elseif ( is_array( $color_value ) ) {
-			$raw = $color_value['hex'] ?? $color_value['raw'] ?? null;
+			// Use Bricks' native color resolution for global palette colors (Bricks 2.x+).
+			// This correctly handles palette IDs, light/dark mode, and CSS variable references.
+			if ( method_exists( '\Bricks\Assets', 'generate_css_color' ) ) {
+				$raw = \Bricks\Assets::generate_css_color( $color_value );
+			} else {
+				$raw = $color_value['hex'] ?? $color_value['raw'] ?? null;
+			}
 		}
 
 		if ( null === $raw || '' === $raw ) {
@@ -568,6 +586,11 @@ class Form_Widget extends \Bricks\Element {
 
 		// Allow rgb/rgba/hsl/hsla functional notation — restrict to safe characters only.
 		if ( preg_match( '/^(rgb|rgba|hsl|hsla)\s*\([0-9.,\s\/%]+\)$/i', $raw ) ) {
+			return $raw;
+		}
+
+		// Allow CSS custom property references (e.g., var(--bricks-color-xxx)) for Bricks 2.x global palette colors.
+		if ( preg_match( '/^var\(\s*--[a-zA-Z0-9_$-]+\s*\)$/', $raw ) ) {
 			return $raw;
 		}
 
