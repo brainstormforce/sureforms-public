@@ -15,6 +15,10 @@ body.sureforms-onboarding-page #wpadminbar,
 body.sureforms-onboarding-page #adminmenuwrap,
 body.sureforms-onboarding-page #adminmenuback,
 body.sureforms-onboarding-page #wpadminbar,
-body.sureforms-onboarding-page #wpfooter {
+body.sureforms-onboarding-page #wpfooter,
+body.sureforms-onboarding-page .notice,
+body.sureforms-onboarding-page .updated,
+body.sureforms-onboarding-page .update-nag,
+body.sureforms-onboarding-page .error {
 	display: none;
 }

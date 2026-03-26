@@ -500,8 +500,11 @@ class Smart_Tags {
 					$decoded_content   = html_entity_decode( $sanitized_content );
 					$replacement_data .= $decoded_content;
 				} else {
+					// Check if we should skip auto-linking (e.g., when building redirect URLs with query params).
+					$smart_tag_context = is_array( $form_data ) && ! empty( $form_data['smart_tag_context'] ) ? $form_data['smart_tag_context'] : '';
+
 					// if $submission_item_value is a url then add <a> tag. with view text.
-					if ( is_string( $submission_item_value ) && filter_var( $submission_item_value, FILTER_VALIDATE_URL ) ) {
+					if ( 'redirect' !== $smart_tag_context && is_string( $submission_item_value ) && filter_var( $submission_item_value, FILTER_VALIDATE_URL ) ) {
 						ob_start();
 						?>
 						<a href="<?php echo esc_url( urldecode( $submission_item_value ) ); ?>" target="_blank"><?php echo esc_html( esc_url( $submission_item_value ) ); ?></a>
