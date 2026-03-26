@@ -155,7 +155,7 @@ const SpamProtection = () => {
 			title={ __( 'Spam Protection', 'sureforms' ) }
 			shouldShowAutoSaveText
 			autoSaveHelpText={ __(
-				'Enable reCAPTCHA, hCaptcha, or Turnstile to block spam submissions.',
+				'Choose a spam protection method for this form to prevent unwanted submissions.',
 				'sureforms'
 			) }
 			shouldAddHelpTextPadding={ false }

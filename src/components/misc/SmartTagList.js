@@ -1,5 +1,5 @@
 import { applyFilters } from '@wordpress/hooks';
-import { cn, generateDropDownOptions } from '@Utils/Helpers';
+import { cn, generateDropDownOptions, lockBlockSlugBySlug } from '@Utils/Helpers';
 import { DropdownMenu, Button, Label } from '@bsf/force-ui';
 import { EllipsisVerticalIcon } from 'lucide-react';
 
@@ -17,11 +17,20 @@ export default function SmartTagList( {
 } ) {
 	const controls = [];
 
+	const handleTagInsert = ( key ) => {
+		// Lock the slug for both {form:slug} and {form-payment:slug:*} shortcodes.
+		const match = /^\{form(?:-payment)?:([^:}]+)/.exec( key );
+		if ( match ) {
+			lockBlockSlugBySlug( match[ 1 ] );
+		}
+		setTargetData( key );
+	};
+
 	applyFilters( 'srfm.smartTagList.tagsArray', tagsArray, tagFor ).forEach(
 		( tagsArrayItem ) => {
 			controls.push(
 				generateDropDownOptions(
-					setTargetData,
+					handleTagInsert,
 					tagsArrayItem.tags,
 					tagsArrayItem.label
 				)
