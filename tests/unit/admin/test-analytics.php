@@ -219,4 +219,45 @@ class Test_Analytics extends TestCase {
 
 		$this->assertFalse( Analytics::events()->is_tracked( 'first_form_published' ) );
 	}
+
+	/**
+	 * Test events() returns a BSF_Analytics_Events instance.
+	 *
+	 * @return void
+	 */
+	public function test_events() {
+		$events = Analytics::events();
+		$this->assertInstanceOf( \BSF_Analytics_Events::class, $events );
+	}
+
+	/**
+	 * Test add_srfm_analytics_data adds plugin data to stats.
+	 *
+	 * @return void
+	 */
+	public function test_add_srfm_analytics_data() {
+		$analytics  = new Analytics();
+		$stats_data = $analytics->add_srfm_analytics_data( [] );
+
+		$this->assertArrayHasKey( 'plugin_data', $stats_data );
+		$this->assertArrayHasKey( 'sureforms', $stats_data['plugin_data'] );
+		$this->assertArrayHasKey( 'free_version', $stats_data['plugin_data']['sureforms'] );
+	}
+
+	/**
+	 * Test track_first_editor_open tracks event on correct screen.
+	 *
+	 * @return void
+	 */
+	public function test_track_first_editor_open() {
+		// Simulate the sureforms_form screen.
+		$screen     = \WP_Screen::get( 'sureforms_form' );
+		$screen->id = 'sureforms_form';
+		set_current_screen( $screen );
+
+		$analytics = new Analytics();
+		$analytics->track_first_editor_open();
+
+		$this->assertTrue( Analytics::events()->is_tracked( 'first_form_editor_opened' ) );
+	}
 }

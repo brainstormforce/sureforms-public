@@ -30,32 +30,6 @@ class Analytics {
 	private static $events = null;
 
 	/**
-	 * Get the shared BSF_Analytics_Events instance.
-	 *
-	 * Uses SureForms' Helper option methods so data stays in the
-	 * existing srfm_options row — zero migration required.
-	 *
-	 * @since x.x.x
-	 * @return \BSF_Analytics_Events
-	 */
-	public static function events() {
-		if ( null === self::$events ) {
-			if ( ! class_exists( 'BSF_Analytics_Events' ) ) {
-				require_once SRFM_DIR . 'inc/lib/bsf-analytics/class-bsf-analytics-events.php';
-			}
-
-			self::$events = new \BSF_Analytics_Events(
-				'sureforms',
-				[
-					'get'    => [ Helper::class, 'get_srfm_option' ],
-					'update' => [ Helper::class, 'update_srfm_option' ],
-				]
-			);
-		}
-		return self::$events;
-	}
-
-	/**
 	 * Class constructor.
 	 *
 	 * @return void
@@ -117,6 +91,32 @@ class Analytics {
 
 		// Detect state-based events on admin load (dedup prevents repeat tracking).
 		$this->detect_state_events();
+	}
+
+	/**
+	 * Get the shared BSF_Analytics_Events instance.
+	 *
+	 * Uses SureForms' Helper option methods so data stays in the
+	 * existing srfm_options row — zero migration required.
+	 *
+	 * @since x.x.x
+	 * @return \BSF_Analytics_Events
+	 */
+	public static function events() {
+		if ( null === self::$events ) {
+			if ( ! class_exists( 'BSF_Analytics_Events' ) ) {
+				require_once SRFM_DIR . 'inc/lib/bsf-analytics/class-bsf-analytics-events.php';
+			}
+
+			self::$events = new \BSF_Analytics_Events(
+				'sureforms',
+				[
+					'get'    => [ Helper::class, 'get_srfm_option' ],
+					'update' => [ Helper::class, 'update_srfm_option' ],
+				]
+			);
+		}
+		return self::$events;
 	}
 
 	/**
