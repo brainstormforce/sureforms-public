@@ -8,7 +8,6 @@
 namespace SRFM\Admin;
 
 use Astra_Notices;
-use SRFM\Admin\Analytics;
 use SRFM\Inc\AI_Form_Builder\AI_Helper;
 use SRFM\Inc\Database\Tables\Entries;
 use SRFM\Inc\Helper;
