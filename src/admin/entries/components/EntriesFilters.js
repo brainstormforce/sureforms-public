@@ -264,20 +264,20 @@ const EntriesFilters = ( {
 						{ !! ResendNotificationModal &&
 							formFilter !== 'all' &&
 							formFilter !== '' && (
-								<Button
-									variant="outline"
-									size="sm"
-									onClick={ handleResendEmailNotifications }
-									icon={ <Send className="w-4 h-4" /> }
-									iconPosition="left"
-									className="min-w-fit"
-								>
-									{ __(
-										'Resend Notifications',
-										'sureforms'
-									) }
-								</Button>
-							) }
+							<Button
+								variant="outline"
+								size="sm"
+								onClick={ handleResendEmailNotifications }
+								icon={ <Send className="w-4 h-4" /> }
+								iconPosition="left"
+								className="min-w-fit"
+							>
+								{ __(
+									'Resend Notifications',
+									'sureforms'
+								) }
+							</Button>
+						) }
 						{ /* Show restore button when trash filter is active */ }
 						{ statusFilter === 'trash' && (
 							<Button
@@ -340,13 +340,13 @@ const EntriesFilters = ( {
 			{ !! ResendNotificationModal &&
 				formFilter !== 'all' &&
 				formFilter !== '' && (
-					<ResendNotificationModal
-						open={ openSendNotificationModal }
-						setOpen={ setOpenSendNotificationModal }
-						entryIds={ selectedEntries }
-						formId={ parseInt( formFilter, 10 ) }
-					/>
-				) }
+				<ResendNotificationModal
+					open={ openSendNotificationModal }
+					setOpen={ setOpenSendNotificationModal }
+					entryIds={ selectedEntries }
+					formId={ parseInt( formFilter, 10 ) }
+				/>
+			) }
 		</Fragment>
 	);
 };
