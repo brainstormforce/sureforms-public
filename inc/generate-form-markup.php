@@ -8,7 +8,6 @@
 
 namespace SRFM\Inc;
 
-use SRFM\Inc\Submit_Token;
 use SRFM\Inc\Traits\Get_Instance;
 
 if ( ! defined( 'ABSPATH' ) ) {
