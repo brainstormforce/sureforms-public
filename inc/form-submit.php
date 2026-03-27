@@ -11,7 +11,6 @@ namespace SRFM\Inc;
 use SRFM\Inc\Database\Tables\Entries;
 use SRFM\Inc\Email\Email_Template;
 use SRFM\Inc\Lib\Browser\Browser;
-use SRFM\Inc\Submit_Token;
 use SRFM\Inc\Traits\Get_Instance;
 use WP_Error;
 use WP_REST_Server;
@@ -77,7 +76,6 @@ class Form_Submit {
 				'permission_callback' => [ $this, 'submit_form_permissions_check' ],
 			]
 		);
-
 	}
 
 	/**
@@ -1013,41 +1011,6 @@ class Form_Submit {
 	}
 
 	/**
-	 * Check if the current request is rate-limited for unique validation.
-	 *
-	 * Uses transients keyed by IP + form ID to throttle requests.
-	 * Allows 10 requests per 60-second window per IP per form.
-	 *
-	 * @param int $form_id The form ID being validated.
-	 * @since x.x.x
-	 * @return bool True if rate-limited (should block), false if allowed.
-	 */
-	private function is_unique_validation_rate_limited( $form_id ) {
-		$ip = isset( $_SERVER['REMOTE_ADDR'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) ) : '';
-
-		if ( empty( $ip ) || ! filter_var( $ip, FILTER_VALIDATE_IP ) ) {
-			return true; // Fail closed if IP cannot be determined.
-		}
-
-		$transient_key = 'srfm_uv_' . md5( $ip . '_' . $form_id );
-		$attempts      = get_transient( $transient_key );
-
-		if ( false === $attempts ) {
-			set_transient( $transient_key, 1, MINUTE_IN_SECONDS );
-			return false;
-		}
-
-		$attempts_count = Helper::get_integer_value( $attempts );
-
-		if ( $attempts_count >= 10 ) {
-			return true;
-		}
-
-		set_transient( $transient_key, $attempts_count + 1, MINUTE_IN_SECONDS );
-		return false;
-	}
-
-	/**
 	 * Function to save allowed block data.
 	 *
 	 * @since 0.0.1
@@ -1215,6 +1178,41 @@ class Form_Submit {
 			'log_message' => $detail_message, // This variable is used for logging purposes, such as displaying detailed error information in the console on the front end.
 			'message'     => $message,
 		];
+	}
+
+	/**
+	 * Check if the current request is rate-limited for unique validation.
+	 *
+	 * Uses transients keyed by IP + form ID to throttle requests.
+	 * Allows 10 requests per 60-second window per IP per form.
+	 *
+	 * @param int $form_id The form ID being validated.
+	 * @since x.x.x
+	 * @return bool True if rate-limited (should block), false if allowed.
+	 */
+	private function is_unique_validation_rate_limited( $form_id ) {
+		$ip = isset( $_SERVER['REMOTE_ADDR'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) ) : '';
+
+		if ( empty( $ip ) || ! filter_var( $ip, FILTER_VALIDATE_IP ) ) {
+			return true; // Fail closed if IP cannot be determined.
+		}
+
+		$transient_key = 'srfm_uv_' . md5( $ip . '_' . $form_id );
+		$attempts      = get_transient( $transient_key );
+
+		if ( false === $attempts ) {
+			set_transient( $transient_key, 1, MINUTE_IN_SECONDS );
+			return false;
+		}
+
+		$attempts_count = Helper::get_integer_value( $attempts );
+
+		if ( $attempts_count >= 10 ) {
+			return true;
+		}
+
+		set_transient( $transient_key, $attempts_count + 1, MINUTE_IN_SECONDS );
+		return false;
 	}
 
 	/**
