@@ -1,7 +1,7 @@
 import { __ } from '@wordpress/i18n';
 import { useState } from '@wordpress/element';
 import { Badge, Button, Select, Switch } from '@bsf/force-ui';
-import { CopyCheckIcon, CopyIcon, Download, ExternalLink } from 'lucide-react';
+import { CopyCheckIcon, CopyIcon, Download } from 'lucide-react';
 import ContentSection from '../components/ContentSection';
 
 const MCP_ADAPTER_DOWNLOAD_URL =
@@ -272,12 +272,12 @@ const McpAdapterPrompt = ( { adapterStatus: initialStatus } ) => {
 			<p className="text-sm text-text-secondary m-0">
 				{ isInstalled
 					? __(
-							'The MCP Adapter plugin is installed but not active. Activate it to configure MCP settings.',
-							'sureforms'
+						'The MCP Adapter plugin is installed but not active. Activate it to configure MCP settings.',
+						'sureforms'
 					  )
 					: __(
-							'The MCP Adapter plugin is required to connect AI clients to your forms. Download and install it from GitHub, then activate it.',
-							'sureforms'
+						'The MCP Adapter plugin is required to connect AI clients to your forms. Download and install it from GitHub, then activate it.',
+						'sureforms'
 					  ) }
 			</p>
 			{ ! isInstalled && (
