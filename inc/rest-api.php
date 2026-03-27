@@ -415,11 +415,17 @@ class Rest_Api {
 
 		$body = wp_json_encode(
 			[
-				'EMAIL'     => $email,
-				'FIRSTNAME' => $first_name,
-				'LASTNAME'  => $last_name,
-				'DOMAIN'    => $domain,
-				'source'    => 'sureforms',
+				// Lowercase keys satisfy current BSF Metrics REST arg validation.
+				'email'      => $email,
+				'first_name' => $first_name,
+				'last_name'  => $last_name,
+				'domain'     => $domain,
+				'source'     => 'sureforms',
+				// Keep legacy uppercase keys for backward compatibility.
+				'EMAIL'      => $email,
+				'FIRSTNAME'  => $first_name,
+				'LASTNAME'   => $last_name,
+				'DOMAIN'     => $domain,
 			]
 		);
 
