@@ -1055,9 +1055,12 @@ class Rest_Api {
 					}
 
 					// Generate field name.
-					$label           = is_string( $merged_attributes['label'] ?? '' ) ? $merged_attributes['label'] : '';
-					$slug            = is_string( $merged_attributes['slug'] ?? '' ) ? $merged_attributes['slug'] : '';
-					$block_id        = is_string( $merged_attributes['block_id'] ?? '' ) ? $merged_attributes['block_id'] : '';
+					$label           = $merged_attributes['label'] ?? '';
+					$label           = is_string( $label ) ? $label : '';
+					$slug            = $merged_attributes['slug'] ?? '';
+					$slug            = is_string( $slug ) ? $slug : '';
+					$block_id        = $merged_attributes['block_id'] ?? '';
+					$block_id        = is_string( $block_id ) ? $block_id : '';
 					$field_name      = '';
 					$base_field_name = '';
 
