@@ -6,7 +6,6 @@
  */
 
 use Yoast\PHPUnitPolyfills\TestCases\TestCase;
-use SRFM\Inc\Analytics_Events;
 use SRFM\Inc\Helper;
 
 class Test_Analytics_Events extends TestCase {
@@ -21,10 +20,30 @@ class Test_Analytics_Events extends TestCase {
 	}
 
 	/**
+	 * Get a BSF_Analytics_Events instance configured for SureForms.
+	 *
+	 * @return \BSF_Analytics_Events
+	 */
+	private function get_events_instance() {
+		if ( ! class_exists( 'BSF_Analytics_Events' ) ) {
+			require_once SRFM_DIR . 'inc/lib/bsf-analytics/class-bsf-analytics-events.php';
+		}
+
+		return new \BSF_Analytics_Events(
+			'sureforms',
+			[
+				'get'    => [ Helper::class, 'get_srfm_option' ],
+				'update' => [ Helper::class, 'update_srfm_option' ],
+			]
+		);
+	}
+
+	/**
 	 * Test flush_pending returns empty array when no events are pending.
 	 */
 	public function test_flush_pending_returns_empty_when_no_events() {
-		$result = Analytics_Events::flush_pending();
+		$events = $this->get_events_instance();
+		$result = $events->flush_pending();
 
 		$this->assertIsArray( $result );
 		$this->assertEmpty( $result );
@@ -34,10 +53,11 @@ class Test_Analytics_Events extends TestCase {
 	 * Test flush_pending returns pending events and clears the queue.
 	 */
 	public function test_flush_pending_returns_and_clears_pending_events() {
-		Analytics_Events::track( 'test_event_1', 'v1' );
-		Analytics_Events::track( 'test_event_2', 'v2' );
+		$events = $this->get_events_instance();
+		$events->track( 'test_event_1', 'v1' );
+		$events->track( 'test_event_2', 'v2' );
 
-		$result = Analytics_Events::flush_pending();
+		$result = $events->flush_pending();
 
 		$this->assertCount( 2, $result );
 		$this->assertEquals( 'test_event_1', $result[0]['event_name'] );
@@ -52,9 +72,10 @@ class Test_Analytics_Events extends TestCase {
 	 * Test flush_pending adds event names to pushed dedup list.
 	 */
 	public function test_flush_pending_adds_to_pushed_dedup() {
-		Analytics_Events::track( 'dedup_event', 'val' );
+		$events = $this->get_events_instance();
+		$events->track( 'dedup_event', 'val' );
 
-		Analytics_Events::flush_pending();
+		$events->flush_pending();
 
 		$pushed = Helper::get_srfm_option( 'usage_events_pushed', [] );
 		$this->assertContains( 'dedup_event', $pushed );
@@ -64,11 +85,12 @@ class Test_Analytics_Events extends TestCase {
 	 * Test flush_pending prevents re-tracking of flushed events.
 	 */
 	public function test_flush_pending_prevents_retracking() {
-		Analytics_Events::track( 'once_event', 'v1' );
-		Analytics_Events::flush_pending();
+		$events = $this->get_events_instance();
+		$events->track( 'once_event', 'v1' );
+		$events->flush_pending();
 
 		// Try tracking the same event again.
-		Analytics_Events::track( 'once_event', 'v2' );
+		$events->track( 'once_event', 'v2' );
 
 		$pending = Helper::get_srfm_option( 'usage_events_pending', [] );
 		$this->assertEmpty( $pending );
@@ -78,15 +100,16 @@ class Test_Analytics_Events extends TestCase {
 	 * Test flush_pushed clears all pushed events when called with no arguments.
 	 */
 	public function test_flush_pushed_clears_all_when_no_args() {
-		Analytics_Events::track( 'ev1', 'v1' );
-		Analytics_Events::track( 'ev2', 'v2' );
-		Analytics_Events::flush_pending();
+		$events = $this->get_events_instance();
+		$events->track( 'ev1', 'v1' );
+		$events->track( 'ev2', 'v2' );
+		$events->flush_pending();
 
 		// Verify pushed has entries.
 		$pushed = Helper::get_srfm_option( 'usage_events_pushed', [] );
 		$this->assertNotEmpty( $pushed );
 
-		Analytics_Events::flush_pushed();
+		$events->flush_pushed();
 
 		$pushed = Helper::get_srfm_option( 'usage_events_pushed', [] );
 		$this->assertEmpty( $pushed );
@@ -96,11 +119,12 @@ class Test_Analytics_Events extends TestCase {
 	 * Test flush_pushed removes only specified event names.
 	 */
 	public function test_flush_pushed_removes_specific_events() {
-		Analytics_Events::track( 'keep_event', 'v1' );
-		Analytics_Events::track( 'remove_event', 'v2' );
-		Analytics_Events::flush_pending();
+		$events = $this->get_events_instance();
+		$events->track( 'keep_event', 'v1' );
+		$events->track( 'remove_event', 'v2' );
+		$events->flush_pending();
 
-		Analytics_Events::flush_pushed( [ 'remove_event' ] );
+		$events->flush_pushed( [ 'remove_event' ] );
 
 		$pushed = Helper::get_srfm_option( 'usage_events_pushed', [] );
 		$this->assertContains( 'keep_event', $pushed );
@@ -111,14 +135,15 @@ class Test_Analytics_Events extends TestCase {
 	 * Test flush_pushed allows re-tracking of cleared events.
 	 */
 	public function test_flush_pushed_allows_retracking() {
-		Analytics_Events::track( 'retry_event', 'v1' );
-		Analytics_Events::flush_pending();
+		$events = $this->get_events_instance();
+		$events->track( 'retry_event', 'v1' );
+		$events->flush_pending();
 
 		// Clear the pushed dedup for this event.
-		Analytics_Events::flush_pushed( [ 'retry_event' ] );
+		$events->flush_pushed( [ 'retry_event' ] );
 
 		// Should be trackable again.
-		Analytics_Events::track( 'retry_event', 'v2' );
+		$events->track( 'retry_event', 'v2' );
 
 		$pending = Helper::get_srfm_option( 'usage_events_pending', [] );
 		$this->assertCount( 1, $pending );
@@ -130,7 +155,8 @@ class Test_Analytics_Events extends TestCase {
 	 * Test flush_pushed handles empty pushed list gracefully.
 	 */
 	public function test_flush_pushed_handles_empty_list() {
-		Analytics_Events::flush_pushed();
+		$events = $this->get_events_instance();
+		$events->flush_pushed();
 
 		$pushed = Helper::get_srfm_option( 'usage_events_pushed', [] );
 		$this->assertIsArray( $pushed );

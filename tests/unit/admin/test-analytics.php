@@ -9,7 +9,6 @@
 
 use Yoast\PHPUnitPolyfills\TestCases\TestCase;
 use SRFM\Admin\Analytics;
-use SRFM\Inc\Analytics_Events;
 use SRFM\Inc\Helper;
 
 class Test_Analytics extends TestCase {
@@ -61,8 +60,8 @@ class Test_Analytics extends TestCase {
 		// Instantiate Analytics which calls detect_state_events in constructor.
 		new Analytics();
 
-		$this->assertTrue( Analytics_Events::is_tracked( 'abilities_api_enabled' ) );
-		$this->assertTrue( Analytics_Events::is_tracked( 'mcp_server_enabled' ) );
+		$this->assertTrue( Analytics::events()->is_tracked( 'abilities_api_enabled' ) );
+		$this->assertTrue( Analytics::events()->is_tracked( 'mcp_server_enabled' ) );
 	}
 
 	/**
@@ -74,8 +73,8 @@ class Test_Analytics extends TestCase {
 		// No MCP settings — all disabled.
 		new Analytics();
 
-		$this->assertFalse( Analytics_Events::is_tracked( 'abilities_api_enabled' ) );
-		$this->assertFalse( Analytics_Events::is_tracked( 'mcp_server_enabled' ) );
+		$this->assertFalse( Analytics::events()->is_tracked( 'abilities_api_enabled' ) );
+		$this->assertFalse( Analytics::events()->is_tracked( 'mcp_server_enabled' ) );
 	}
 
 	/**
@@ -94,8 +93,8 @@ class Test_Analytics extends TestCase {
 
 		new Analytics();
 
-		$this->assertTrue( Analytics_Events::is_tracked( 'abilities_api_enabled' ) );
-		$this->assertFalse( Analytics_Events::is_tracked( 'mcp_server_enabled' ) );
+		$this->assertTrue( Analytics::events()->is_tracked( 'abilities_api_enabled' ) );
+		$this->assertFalse( Analytics::events()->is_tracked( 'mcp_server_enabled' ) );
 	}
 
 	/**
@@ -176,7 +175,7 @@ class Test_Analytics extends TestCase {
 		$analytics = new Analytics();
 		$analytics->track_first_form_published( 'publish', 'draft', $post );
 
-		$this->assertTrue( Analytics_Events::is_tracked( 'first_form_published' ) );
+		$this->assertTrue( Analytics::events()->is_tracked( 'first_form_published' ) );
 	}
 
 	/**
@@ -190,7 +189,7 @@ class Test_Analytics extends TestCase {
 		$analytics = new Analytics();
 		$analytics->track_first_form_published( 'draft', 'draft', $post );
 
-		$this->assertFalse( Analytics_Events::is_tracked( 'first_form_published' ) );
+		$this->assertFalse( Analytics::events()->is_tracked( 'first_form_published' ) );
 	}
 
 	/**
@@ -204,7 +203,7 @@ class Test_Analytics extends TestCase {
 		$analytics = new Analytics();
 		$analytics->track_first_form_published( 'publish', 'publish', $post );
 
-		$this->assertFalse( Analytics_Events::is_tracked( 'first_form_published' ) );
+		$this->assertFalse( Analytics::events()->is_tracked( 'first_form_published' ) );
 	}
 
 	/**
@@ -218,6 +217,6 @@ class Test_Analytics extends TestCase {
 		$analytics = new Analytics();
 		$analytics->track_first_form_published( 'publish', 'draft', $post );
 
-		$this->assertFalse( Analytics_Events::is_tracked( 'first_form_published' ) );
+		$this->assertFalse( Analytics::events()->is_tracked( 'first_form_published' ) );
 	}
 }

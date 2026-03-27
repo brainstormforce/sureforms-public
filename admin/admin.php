@@ -8,8 +8,8 @@
 namespace SRFM\Admin;
 
 use Astra_Notices;
+use SRFM\Admin\Analytics;
 use SRFM\Inc\AI_Form_Builder\AI_Helper;
-use SRFM\Inc\Analytics_Events;
 use SRFM\Inc\Database\Tables\Entries;
 use SRFM\Inc\Helper;
 use SRFM\Inc\Onboarding;
@@ -1500,7 +1500,7 @@ class Admin {
 		}
 
 		$event_name = $valid[ $notice_id ][ $button ];
-		Analytics_Events::track( $event_name, $button );
+		Analytics::events()->track( $event_name, $button );
 
 		wp_send_json_success();
 	}
