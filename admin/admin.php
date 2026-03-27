@@ -866,6 +866,9 @@ class Admin {
 					'currency_sign_position'  => Payment_Helper::get_currency_sign_position(),
 				]
 			),
+			'mcp_adapter_status'          => file_exists( WP_PLUGIN_DIR . '/mcp-adapter/mcp-adapter.php' )
+				? ( is_plugin_active( 'mcp-adapter/mcp-adapter.php' ) ? 'active' : 'installed' )
+				: 'not_installed',
 		];
 
 		$is_screen_sureforms_menu          = Helper::validate_request_context( 'sureforms_menu', 'page' );

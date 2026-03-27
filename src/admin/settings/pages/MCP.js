@@ -1,8 +1,11 @@
 import { __ } from '@wordpress/i18n';
 import { useState } from '@wordpress/element';
 import { Badge, Button, Select, Switch } from '@bsf/force-ui';
-import { CopyCheckIcon, CopyIcon } from 'lucide-react';
+import { CopyCheckIcon, CopyIcon, Download, ExternalLink } from 'lucide-react';
 import ContentSection from '../components/ContentSection';
+
+const MCP_ADAPTER_DOWNLOAD_URL =
+	'https://github.com/WordPress/mcp-adapter/releases/latest';
 
 const CopyButton = ( { textToCopy, isCopied, setIsCopied } ) => (
 	<Button
@@ -230,8 +233,123 @@ const SetupInstructions = ( { mcpEndpointUrl } ) => {
 	);
 };
 
+const McpAdapterPrompt = ( { adapterStatus: initialStatus } ) => {
+	const [ status, setStatus ] = useState( initialStatus );
+	const isInstalled = 'installed' === status;
+
+	const activateAdapter = async () => {
+		setStatus( 'activating' );
+		const formData = new window.FormData();
+		formData.append( 'action', 'sureforms_recommended_plugin_activate' );
+		formData.append(
+			'security',
+			srfm_admin.sfPluginManagerNonce ??
+				srfm_admin.sf_plugin_manager_nonce
+		);
+		formData.append( 'init', 'mcp-adapter/mcp-adapter.php' );
+		formData.append( 'slug', 'mcp-adapter' );
+
+		try {
+			const response = await wp.apiFetch( {
+				url: srfm_admin.ajax_url,
+				method: 'POST',
+				body: formData,
+			} );
+
+			if ( response.success ) {
+				setStatus( 'active' );
+				window.location.reload();
+			} else {
+				setStatus( 'installed' );
+			}
+		} catch {
+			setStatus( 'installed' );
+		}
+	};
+
+	return (
+		<div className="space-y-4">
+			<p className="text-sm text-text-secondary m-0">
+				{ isInstalled
+					? __(
+							'The MCP Adapter plugin is installed but not active. Activate it to configure MCP settings.',
+							'sureforms'
+					  )
+					: __(
+							'The MCP Adapter plugin is required to connect AI clients to your forms. Download and install it from GitHub, then activate it.',
+							'sureforms'
+					  ) }
+			</p>
+			{ ! isInstalled && (
+				<ol className="list-decimal space-y-2 text-sm text-text-secondary m-0 pl-4">
+					<li>
+						{ __(
+							'Download the latest release from',
+							'sureforms'
+						) }{ ' ' }
+						<a
+							href={ MCP_ADAPTER_DOWNLOAD_URL }
+							target="_blank"
+							rel="noopener noreferrer"
+							className="text-field-helper underline"
+						>
+							{ __( 'GitHub', 'sureforms' ) }
+						</a>
+						.
+					</li>
+					<li>
+						{ __(
+							'Install the plugin via Plugins > Add New Plugin > Upload Plugin.',
+							'sureforms'
+						) }
+					</li>
+					<li>
+						{ __(
+							'Activate the MCP Adapter plugin.',
+							'sureforms'
+						) }
+					</li>
+				</ol>
+			) }
+			<div className="flex items-center gap-3">
+				{ isInstalled ? (
+					<Button
+						variant="primary"
+						size="md"
+						onClick={ activateAdapter }
+						disabled={ 'activating' === status }
+						loading={ 'activating' === status }
+					>
+						{ 'activating' === status
+							? __( 'Activating…', 'sureforms' )
+							: __( 'Activate MCP Adapter', 'sureforms' ) }
+					</Button>
+				) : (
+					<>
+						<Button
+							className="no-underline hover:no-underline"
+							variant="primary"
+							size="md"
+							icon={ <Download className="size-4" /> }
+							iconPosition="left"
+							tag="a"
+							href={ MCP_ADAPTER_DOWNLOAD_URL }
+							target="_blank"
+							rel="noopener noreferrer"
+						>
+							{ __( 'Download MCP Adapter', 'sureforms' ) }
+						</Button>
+					</>
+				) }
+			</div>
+		</div>
+	);
+};
+
 const MCPPage = ( { loading, mcpTabOptions, updateGlobalSettings } ) => {
 	const mcpEndpointUrl = `${ srfm_admin.site_url }/wp-json/sureforms/v1/mcp`;
+	const adapterStatus = srfm_admin?.mcp_adapter_status || 'not_installed';
+	const isAdapterActive = 'active' === adapterStatus;
 
 	const EditAbilitiesContent = () => {
 		return (
@@ -344,6 +462,25 @@ const MCPPage = ( { loading, mcpTabOptions, updateGlobalSettings } ) => {
 			/>
 		);
 	};
+
+	if ( ! isAdapterActive ) {
+		return (
+			<div className="space-y-6">
+				<ContentSection
+					loading={ loading }
+					title={
+						<span className="flex items-center gap-2">
+							{ __( 'MCP Adapter Required', 'sureforms' ) }
+							<ExperimentalBadge />
+						</span>
+					}
+					content={
+						<McpAdapterPrompt adapterStatus={ adapterStatus } />
+					}
+				/>
+			</div>
+		);
+	}
 
 	return (
 		<div className="space-y-6">
