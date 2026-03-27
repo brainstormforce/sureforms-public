@@ -24,11 +24,11 @@ const features = [
 ];
 
 const QuizEmptyState = () => {
-	const baseUrl = window.srfm_admin?.sureforms_pricing_page || '';
-	const pricingUrl = addQueryParam(
-		addQueryParam( baseUrl, 'astra-sites', 'utm_source' ),
-		'quiz-entries-upgrade-cta'
-	);
+	const baseUrl =
+		window.srfm_admin?.pricing_page_url ||
+		window.srfm_admin?.sureforms_pricing_page ||
+		'https://sureforms.com/pricing/';
+	const pricingUrl = addQueryParam( baseUrl, 'quiz-entries-upgrade-cta' );
 
 	return (
 		<>
@@ -121,7 +121,7 @@ const QuizEmptyState = () => {
 										window.open(
 											pricingUrl,
 											'_blank',
-											'noreferrer'
+											'noopener,noreferrer'
 										)
 									}
 									variant="primary"
