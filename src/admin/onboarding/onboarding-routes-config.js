@@ -13,6 +13,9 @@ const ONBOARDING_ROUTES_CONFIG = [
 		url: '/onboarding/premium-features',
 	},
 	{
+		url: '/onboarding/user-details',
+	},
+	{
 		url: '/onboarding/done',
 	},
 ];
