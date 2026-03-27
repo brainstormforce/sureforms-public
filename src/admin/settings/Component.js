@@ -10,6 +10,7 @@ import ValidationsPage from './pages/Validations';
 import SecurityPage from './pages/Security';
 import IntegrationPage from './pages/Integrations';
 import PaymentsPage from '../payment/global-setting-page';
+import MCPPage from './pages/MCP';
 import OttoKitPage from './pages/OttoKit';
 import { applyFilters } from '@wordpress/hooks';
 import PageTitleSection from '@Admin/components/PageTitleSection';
@@ -47,11 +48,23 @@ const Component = ( { path, subpage } ) => {
 		srfm_hcaptcha_secret_key: '',
 		srfm_honeypot: false,
 	} );
+	const [ mcpTabOptions, setMcpTabOptions ] = useState( {
+		srfm_abilities_api: false,
+		srfm_abilities_api_edit: false,
+		srfm_abilities_api_delete: false,
+		srfm_mcp_server: false,
+	} );
 	const [ dynamicBlockOptions, setDynamicBlockOptions ] = useState( {} );
 	const [ preDynamicBlockOptions, setPreDynamicBlockOptions ] = useState(
 		{}
 	);
 	const [ paymentsSettings, setPaymentsSettings ] = useState( {} );
+	const [ pluginConnected, setPluginConnected ] = useState(
+		srfm_admin?.integrations?.sure_triggers?.connected ?? null
+	);
+	const [ localPluginStatus, setLocalPluginStatus ] = useState(
+		srfm_admin?.integrations?.sure_triggers?.status
+	);
 
 	// Options to fetch from API.
 	const optionsToFetch = [
@@ -59,6 +72,7 @@ const Component = ( { path, subpage } ) => {
 		'srfm_email_summary_settings_options',
 		'srfm_security_settings_options',
 		'srfm_default_dynamic_block_option',
+		'srfm_mcp_settings_options',
 	];
 
 	// set page title and icon based on the path.
@@ -161,6 +175,21 @@ const Component = ( { path, subpage } ) => {
 					} );
 				}
 
+				if ( data.srfm_mcp_settings_options ) {
+					const {
+						srfm_abilities_api,
+						srfm_abilities_api_edit,
+						srfm_abilities_api_delete,
+						srfm_mcp_server,
+					} = data.srfm_mcp_settings_options;
+					setMcpTabOptions( {
+						srfm_abilities_api,
+						srfm_abilities_api_edit,
+						srfm_abilities_api_delete,
+						srfm_mcp_server,
+					} );
+				}
+
 				if ( data.srfm_default_dynamic_block_option ) {
 					setDynamicBlockOptions( {
 						...data.srfm_default_dynamic_block_option,
@@ -247,6 +276,13 @@ const Component = ( { path, subpage } ) => {
 				[ setting ]: value,
 			};
 			setDynamicBlockOptions( updatedTabOptions );
+		} else if ( tab === 'mcp-settings' ) {
+			updatedTabOptions = {
+				...mcpTabOptions,
+				srfm_tab: tab,
+				[ setting ]: value,
+			};
+			setMcpTabOptions( updatedTabOptions );
 		} else if ( tab === 'payments-settings' ) {
 			updatedTabOptions = {
 				...paymentsSettings,
@@ -302,8 +338,21 @@ const Component = ( { path, subpage } ) => {
 					/>
 				) }
 
+				{ 'mcp-settings' === path && (
+					<MCPPage
+						loading={ loading }
+						mcpTabOptions={ mcpTabOptions }
+						updateGlobalSettings={ updateGlobalSettings }
+					/>
+				) }
 				{ 'ottokit-settings' === path && (
-					<OttoKitPage loading={ loading } />
+					<OttoKitPage
+						loading={ loading }
+						pluginConnected={ pluginConnected }
+						setPluginConnected={ setPluginConnected }
+						localPluginStatus={ localPluginStatus }
+						setLocalPluginStatus={ setLocalPluginStatus }
+					/>
 				) }
 
 				{ 'integration-settings' === path && (

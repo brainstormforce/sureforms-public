@@ -113,7 +113,8 @@ export const useUpdateEntriesReadStatus = () => {
 
 	return useMutation( {
 		mutationFn: updateEntriesReadStatus,
-		onSuccess: ( data, variables ) => {
+		// `_data` is unused but required positionally to access `variables`.
+		onSuccess: ( _data, variables ) => {
 			// Invalidate and refetch entries list
 			queryClient.invalidateQueries( { queryKey: entriesKeys.lists() } );
 
@@ -185,7 +186,8 @@ export const useTrashEntries = () => {
 
 	return useMutation( {
 		mutationFn: trashEntries,
-		onSuccess: ( data, variables ) => {
+		// `_data` is unused but required positionally to access `variables`.
+		onSuccess: ( _data, variables ) => {
 			// Invalidate and refetch entries list
 			queryClient.invalidateQueries( { queryKey: entriesKeys.lists() } );
 
@@ -260,7 +262,8 @@ export const useDeleteEntries = () => {
 
 	return useMutation( {
 		mutationFn: deleteEntries,
-		onSuccess: ( data, variables ) => {
+		// `_data` is unused but required positionally to access `variables`.
+		onSuccess: ( _data, variables ) => {
 			// Invalidate and refetch entries list
 			queryClient.invalidateQueries( { queryKey: entriesKeys.lists() } );
 

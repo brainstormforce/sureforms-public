@@ -41,8 +41,10 @@ class Test_Update_Entry_Status extends TestCase {
 	public function test_get_annotations() {
 		$annotations = $this->ability->get_annotations();
 		$this->assertFalse( $annotations['readonly'] );
-		$this->assertFalse( $annotations['destructive'] );
+		$this->assertTrue( $annotations['destructive'] );
 		$this->assertTrue( $annotations['idempotent'] );
+		$this->assertEquals( 2.0, $annotations['priority'] );
+		$this->assertFalse( $annotations['openWorldHint'] );
 	}
 
 	/**
@@ -54,6 +56,7 @@ class Test_Update_Entry_Status extends TestCase {
 		$this->assertArrayHasKey( 'status', $schema['properties'] );
 		$this->assertContains( 'entry_ids', $schema['required'] );
 		$this->assertContains( 'status', $schema['required'] );
+		$this->assertFalse( $schema['additionalProperties'] );
 	}
 
 	/**
@@ -156,4 +159,6 @@ class Test_Update_Entry_Status extends TestCase {
 		$reflection->setAccessible( true );
 		$this->assertEquals( 'manage_options', $reflection->getValue( $this->ability ) );
 	}
+
+
 }

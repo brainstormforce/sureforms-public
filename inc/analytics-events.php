@@ -87,6 +87,29 @@ class Analytics_Events {
 	}
 
 	/**
+	 * Remove specific event names from the pushed dedup flag, allowing them to be re-tracked.
+	 *
+	 * Pass an array of event names to remove only those entries.
+	 * Pass an empty array (or omit) to clear all pushed events.
+	 *
+	 * @param array<string> $event_names Event names to remove. Empty = clear all.
+	 * @since 2.6.0
+	 * @return void
+	 */
+	public static function flush_pushed( $event_names = [] ) {
+		$pushed = Helper::get_srfm_option( 'usage_events_pushed', [] );
+		$pushed = is_array( $pushed ) ? $pushed : [];
+
+		if ( empty( $event_names ) ) {
+			Helper::update_srfm_option( 'usage_events_pushed', [] );
+			return;
+		}
+
+		$pushed = array_values( array_diff( $pushed, $event_names ) );
+		Helper::update_srfm_option( 'usage_events_pushed', $pushed );
+	}
+
+	/**
 	 * Check if an event has already been tracked (sent or pending).
 	 *
 	 * @param string $event_name Event identifier.

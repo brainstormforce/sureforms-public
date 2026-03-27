@@ -92,7 +92,9 @@ class StripePayment {
 				? 'srfm_create_subscription_intent'
 				: 'srfm_create_payment_intent'
 		);
-		data.append( 'nonce', srfm_ajax.payment_nonce );
+		// Read submit token from form element for server-side verification.
+		const formElement = paymentInput.closest( 'form' );
+		data.append( 'token', formElement?.getAttribute( 'data-submit-token' ) || '' );
 		// Handle zero-decimal currencies (JPY, KRW, etc.) - don't multiply by 100
 		const formattedAmount =
 			window?.srfmStripe?.zeroDecimalCurrencies?.includes(
@@ -106,9 +108,6 @@ class StripePayment {
 		data.append( 'block_id', blockId );
 		data.append( 'customer_email', customerData.email );
 		data.append( 'customer_name', customerData.name );
-
-		// Add form_id for server-side validation
-		const formElement = paymentInput.closest( 'form' );
 		const formIdInput = formElement?.querySelector(
 			'input[name="form-id"]'
 		);
@@ -156,7 +155,8 @@ class StripePayment {
 				}
 
 				// Update elements with client secret
-				const elementData = StripePayment.paymentElements[ compositeKey ];
+				const elementData =
+					StripePayment.paymentElements[ compositeKey ];
 				if ( elementData ) {
 					// CRITICAL: Store client secret WITHOUT calling elements.update()
 					// This preserves user-entered card data
@@ -204,7 +204,11 @@ class StripePayment {
 			paymentInput.getAttribute( 'data-payment-type' ) || 'one-time';
 
 		// Initialize Stripe elements using unified function
-		this.initializePaymentElements( compositeKey, paymentInput, paymentType );
+		this.initializePaymentElements(
+			compositeKey,
+			paymentInput,
+			paymentType
+		);
 	}
 
 	/**
@@ -648,9 +652,10 @@ class StripePayment {
 		// Extract original blockId from compositeKey for DOM queries
 		// compositeKey format is always "numericInstanceId-blockId"
 		const separatorIndex = compositeKey.indexOf( '-' );
-		const blockId = separatorIndex > -1
-			? compositeKey.substring( separatorIndex + 1 )
-			: compositeKey;
+		const blockId =
+			separatorIndex > -1
+				? compositeKey.substring( separatorIndex + 1 )
+				: compositeKey;
 
 		// Get the payment block element
 		const paymentBlock = form.querySelector(

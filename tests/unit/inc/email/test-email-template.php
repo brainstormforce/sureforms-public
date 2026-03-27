@@ -75,4 +75,5 @@ class Test_Email_Template extends TestCase {
 		$this->assertStringContainsString( 'Row 1', $result );
 		$this->assertStringContainsString( 'Row 2', $result );
 	}
+
 }

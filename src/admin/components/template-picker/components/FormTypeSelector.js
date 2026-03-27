@@ -1,7 +1,12 @@
 import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
 import { Container, Button, Tooltip } from '@bsf/force-ui';
-import { Calculator, MessagesSquare, CreditCard } from 'lucide-react';
+import {
+	Calculator,
+	MessagesSquare,
+	CreditCard,
+	ListChecks,
+} from 'lucide-react';
 import { useEffect, useState } from '@wordpress/element';
 import UpgradePopup from './UpgradePopup.js';
 import { addQueryParam, cn } from '@Utils/Helpers';
@@ -140,7 +145,8 @@ const FormTypeSelector = ( {
 		if (
 			option.slug === 'calculator' ||
 			option.slug === 'conversational' ||
-			option.slug === 'payment'
+			option.slug === 'payment' ||
+			option.slug === 'quiz'
 		) {
 			setformLayout( {} );
 		}
@@ -165,7 +171,8 @@ const FormTypeSelector = ( {
 					<Tooltip
 						arrow
 						content={
-							option.slug === 'calculator'
+							option.tooltipContent ||
+							( option.slug === 'calculator'
 								? __(
 									'Select this if you need calculations in your form. For example: Loan interest calculator.',
 									'sureforms'
@@ -175,10 +182,15 @@ const FormTypeSelector = ( {
 										'Select this if you want your form to display one question at a time, like a chat.',
 										'sureforms'
 								  )
-									: __(
-										'Select this if you want to collect payments through your form.',
-										'sureforms'
+									: option.slug === 'quiz'
+										? __(
+											'Select this to create a quiz with scored questions and graded results.',
+											'sureforms'
 								  )
+										: __(
+											'Select this if you want to collect payments through your form.',
+											'sureforms'
+								  ) )
 						}
 						placement="bottom"
 						triggers={ [ 'hover' ] }
@@ -198,6 +210,8 @@ const FormTypeSelector = ( {
 									<Calculator className="size-4" />
 								) : option.slug === 'conversational' ? (
 									<MessagesSquare className="size-4" />
+								) : option.slug === 'quiz' ? (
+									<ListChecks className="size-4" />
 								) : (
 									<CreditCard className="size-4" />
 								)
