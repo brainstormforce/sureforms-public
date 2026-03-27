@@ -114,6 +114,7 @@ class Analytics {
 			'restricted_forms'           => $this->get_restricted_forms(),
 			'embed_styling_gb_default'   => self::embed_styling_gutenberg_count( 'default' ),
 			'embed_styling_el_default'   => self::embed_styling_elementor_count( 'default' ),
+			'embed_styling_br_default'   => self::embed_styling_bricks_count( 'default' ),
 		];
 
 		$stats_data['plugin_data']['sureforms'] = array_merge_recursive( $stats_data['plugin_data']['sureforms'], $this->global_settings_data() );
@@ -352,6 +353,90 @@ class Analytics {
 		wp_cache_set( $cache_key, $count, 'sureforms', HOUR_IN_SECONDS );
 
 		return $count;
+	}
+
+	/**
+	 * Count Bricks sureforms elements using a specific formTheme.
+	 *
+	 * Searches _bricks_page_content_2 post meta (serialized PHP) for
+	 * sureforms elements with a non-inherit formTheme. Counts individual elements.
+	 *
+	 * @param string $theme Theme slug to count ('default' or 'custom').
+	 * @since x.x.x
+	 * @return int
+	 */
+	public static function embed_styling_bricks_count( $theme ) {
+		global $wpdb;
+
+		$cache_key     = 'embed_styling_br_' . $theme;
+		$cached_result = wp_cache_get( $cache_key, 'sureforms' );
+
+		if ( false !== $cached_result ) {
+			return (int) $cached_result;
+		}
+
+		// Bricks stores element data as serialized PHP in _bricks_page_content_2.
+		// In serialized format: s:9:"formTheme";s:7:"default" (for 'default' theme).
+		$serialized_theme = sprintf( '"formTheme";s:%d:"%s"', strlen( $theme ), $theme );
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- No WP_Query alternative for post meta content search with multiple LIKE conditions.
+		$meta_values = $wpdb->get_col(
+			$wpdb->prepare(
+				"SELECT pm.meta_value FROM {$wpdb->postmeta} pm
+				INNER JOIN {$wpdb->posts} p ON p.ID = pm.post_id
+				WHERE p.post_status = 'publish'
+				AND pm.meta_key = '_bricks_page_content_2'
+				AND pm.meta_value LIKE %s
+				AND pm.meta_value LIKE %s",
+				'%' . $wpdb->esc_like( '"sureforms"' ) . '%',
+				'%' . $wpdb->esc_like( $serialized_theme ) . '%'
+			)
+		);
+
+		$count                = 0;
+		$escaped_serial_theme = preg_quote( $serialized_theme, '/' );
+		foreach ( $meta_values as $data ) {
+			$count += preg_match_all( '/' . $escaped_serial_theme . '/', $data );
+		}
+
+		wp_cache_set( $cache_key, $count, 'sureforms', HOUR_IN_SECONDS );
+
+		return $count;
+	}
+
+	/**
+	 * Extract non-inherit formTheme values from Bricks element data.
+	 *
+	 * Recursively walks the unserialized Bricks elements array looking for
+	 * sureforms elements with custom formTheme settings.
+	 *
+	 * @param array<mixed> $elements Bricks elements array.
+	 * @return array<string> List of formTheme values (non-inherit).
+	 * @since x.x.x
+	 */
+	private static function extract_bricks_form_themes( $elements ) {
+		$themes = [];
+
+		foreach ( $elements as $element ) {
+			if ( ! is_array( $element ) ) {
+				continue;
+			}
+
+			$name       = $element['name'] ?? '';
+			$settings   = $element['settings'] ?? [];
+			$form_theme = $settings['formTheme'] ?? '';
+
+			if ( 'sureforms' === $name && ! empty( $form_theme ) && 'inherit' !== $form_theme ) {
+				$themes[] = sanitize_text_field( $form_theme );
+			}
+
+			// Recurse into nested children.
+			if ( ! empty( $element['children'] ) && is_array( $element['children'] ) ) {
+				$themes = array_merge( $themes, self::extract_bricks_form_themes( $element['children'] ) );
+			}
+		}
+
+		return $themes;
 	}
 
 	/**
@@ -661,9 +746,10 @@ class Analytics {
 	/**
 	 * Track embed styling configuration when a post/page is saved.
 	 *
-	 * Detects custom formTheme in both Gutenberg blocks (post_content) and
-	 * Elementor widgets (_elementor_data meta). Re-tracks on each save by
-	 * flushing the dedup flag.
+	 * Detects custom formTheme in Gutenberg blocks (post_content),
+	 * Elementor widgets (_elementor_data meta), and Bricks elements
+	 * (_bricks_page_content_2 meta). Re-tracks on each save by flushing
+	 * the dedup flag.
 	 *
 	 * @param int      $post_id Post ID.
 	 * @param \WP_Post $post    Post object.
@@ -696,6 +782,18 @@ class Analytics {
 			) {
 				$themes = array_count_values( $el_matches[1] );
 				$source = 'elementor';
+			}
+		}
+
+		// Check Bricks elements in _bricks_page_content_2 meta (serialized PHP).
+		if ( empty( $themes ) ) {
+			$bricks_data = get_post_meta( $post_id, '_bricks_page_content_2', true );
+			if ( is_array( $bricks_data ) ) {
+				$bricks_themes = self::extract_bricks_form_themes( $bricks_data );
+				if ( ! empty( $bricks_themes ) ) {
+					$themes = array_count_values( $bricks_themes );
+					$source = 'bricks';
+				}
 			}
 		}
 

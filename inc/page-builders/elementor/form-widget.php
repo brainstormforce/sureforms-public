@@ -931,15 +931,20 @@ class Form_Widget extends Widget_Base {
 		// Handle bgImage separately as it returns an object from Elementor.
 		$bg_image = isset( $settings['bgImage'] ) && is_array( $settings['bgImage'] ) ? $settings['bgImage'] : [];
 		if ( ! empty( $bg_image['url'] ) ) {
-			$block_attrs['bgImage'] = esc_url_raw( $bg_image['url'] );
+			$raw_url = esc_url_raw( $bg_image['url'] );
+			// Encode parentheses to prevent CSS injection in url() context.
+			$block_attrs['bgImage'] = str_replace( [ '(', ')' ], [ '%28', '%29' ], $raw_url );
 		}
 		if ( ! empty( $bg_image['id'] ) ) {
 			$block_attrs['bgImageId'] = $bg_image['id'];
 		}
 
 		/**
-		 * Filter the block attributes for Elementor widget.
-		 * Pro uses this to add additional styling attributes.
+		 * Filters the Elementor block attributes after sanitization.
+		 *
+		 * Third-party code hooking this filter is responsible for sanitizing
+		 * any values it adds or modifies. Unsanitized values may be output
+		 * directly into CSS custom properties.
 		 *
 		 * Uses get_settings() (raw) instead of get_settings_for_display() because Elementor
 		 * nullifies Group_Control_Background child fields when the parent 'background' type
@@ -976,10 +981,14 @@ class Form_Widget extends Widget_Base {
 
 		$dimensions    = $settings[ $control_key ];
 		$allowed_units = [ 'px', '%', 'em' ];
-		$unit          = in_array( $dimensions['unit'] ?? 'px', $allowed_units, true ) ? ( $dimensions['unit'] ?? 'px' ) : 'px';
+		$raw_unit      = $dimensions['unit'] ?? 'px';
+		$unit          = in_array( $raw_unit, $allowed_units, true ) ? $raw_unit : 'px';
 		$sides         = [ 'top', 'right', 'bottom', 'left' ];
 
 		foreach ( $sides as $side ) {
+			if ( ! isset( $dimensions[ $side ] ) ) {
+				continue;
+			}
 			if ( ! empty( $dimensions[ $side ] ) || '0' === $dimensions[ $side ] ) {
 				$block_attrs[ $control_key . ucfirst( $side ) ] = $dimensions[ $side ];
 			}

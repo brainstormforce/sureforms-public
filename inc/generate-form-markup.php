@@ -801,15 +801,17 @@ class Generate_Form_Markup {
 	 * @return void
 	 */
 	public static function enqueue_preview_styling_script( $container_id ) {
-		$file_prefix = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? '' : '.min';
-		$dir_name    = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? 'unminified' : 'minified';
-		$js_uri      = SRFM_URL . 'assets/js/' . $dir_name . '/';
+		$script_asset_path = SRFM_DIR . 'assets/build/previewStyling.asset.php';
+		$script_asset      = file_exists( $script_asset_path ) ? require $script_asset_path : [
+			'dependencies' => [],
+			'version'      => SRFM_VER,
+		];
 
 		wp_enqueue_script(
 			SRFM_SLUG . '-preview-styling',
-			$js_uri . 'preview-styling' . $file_prefix . '.js',
-			[],
-			SRFM_VER,
+			SRFM_URL . 'assets/build/previewStyling.js',
+			$script_asset['dependencies'],
+			$script_asset['version'],
 			true
 		);
 

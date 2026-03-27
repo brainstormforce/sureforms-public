@@ -188,7 +188,7 @@ export default ( { attributes, setAttributes, clientId } ) => {
 				modifyIframeContent();
 			};
 		}
-	}, [ id, iframeRef, hasResolved ] );
+	}, [ id, iframeRef, hasResolved, attributes.formTheme ] );
 
 	// Send styling updates to iframe via PostMessage
 	const sendStylingToIframe = useCallback( () => {
