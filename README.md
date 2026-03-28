@@ -4,7 +4,7 @@
 **Requires at least:** 6.4  
 **Tested up to:** 6.9.4  
 **Requires PHP:** 7.4  
-**Stable tag:** 2.6.0  
+**Stable tag:** 2.7.0  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -401,6 +401,9 @@ You can collect payments securely through Stripe & PayPal without any add-ons or
 You can report the issue through our [Bug Bounty Program](https://brainstormforce.com/bug-bounty-program/). We collaborate with Patchstack to provide opportunities for researchers to report vulnerabilities. The Patchstack team will help validate, triage, and handle any reported security issues.
 
 ## Changelog ##
+### 2.7.0 - 31st March 2026 ###
+* New: Added styling options for Gutenberg SureForms Form Block.
+* New: Added styling options for Elementor SureForms Form Widget.
 ### 2.6.0 - 23rd March 2026 ###
 * New: Added MCP (Model Context Protocol) settings and Abilities API for AI-powered form management.
 * Improvement: Added Blocks API v3 compatibility.
@@ -419,9 +422,6 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 * Fix: Fixed slug generation not working for newly added blocks in the editor.
 * Fix: Fixed unique field validation applying across all forms on the page instead of the submitted form only.
 * Fix: Fixed multi-file uploads not saving to the SureForms custom upload directory.
-### 2.5.1 - 16th February 2026 ###
-* New: Added option to change currency position (e.g., $100, 100$, $ 100, 100 $).
-* Fix: Fixed the payment block amount not updating correctly with conditional logic.
 The full changelog is available [here](https://sureforms.com/whats-new/).
 
 ## Upgrade Notice ##

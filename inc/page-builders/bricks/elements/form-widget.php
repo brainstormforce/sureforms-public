@@ -85,7 +85,7 @@ class Form_Widget extends \Bricks\Element {
 	/**
 	 * Set control groups for the Style tab accordion sections.
 	 *
-	 * @since x.x.x
+	 * @since 2.7.0
 	 * @return void
 	 */
 	public function set_control_groups() {
@@ -177,7 +177,7 @@ class Form_Widget extends \Bricks\Element {
 		 * Hook for Pro to add form theme control after inherit toggle.
 		 *
 		 * @param Form_Widget $element The element instance.
-		 * @since x.x.x
+		 * @since 2.7.0
 		 */
 		do_action( 'srfm_bricks_after_basic_styling_controls', $this );
 
@@ -417,7 +417,7 @@ class Form_Widget extends \Bricks\Element {
 		 * Hook for Pro to add additional layout controls (e.g., row/column gap).
 		 *
 		 * @param Form_Widget $element The element instance.
-		 * @since x.x.x
+		 * @since 2.7.0
 		 */
 		do_action( 'srfm_bricks_layout_controls', $this );
 
@@ -442,7 +442,7 @@ class Form_Widget extends \Bricks\Element {
 		 * Hook for Pro to add additional button controls.
 		 *
 		 * @param Form_Widget $element The element instance.
-		 * @since x.x.x
+		 * @since 2.7.0
 		 */
 		do_action( 'srfm_bricks_button_controls', $this );
 
@@ -467,7 +467,7 @@ class Form_Widget extends \Bricks\Element {
 		 * Hook for Pro to add additional field controls.
 		 *
 		 * @param Form_Widget $element The element instance.
-		 * @since x.x.x
+		 * @since 2.7.0
 		 */
 		do_action( 'srfm_bricks_field_controls', $this );
 
@@ -475,7 +475,7 @@ class Form_Widget extends \Bricks\Element {
 		 * Hook for Pro to add additional style sections (e.g., Messages).
 		 *
 		 * @param Form_Widget $element The element instance.
-		 * @since x.x.x
+		 * @since 2.7.0
 		 */
 		do_action( 'srfm_bricks_after_styling_section', $this );
 	}
@@ -553,7 +553,7 @@ class Form_Widget extends \Bricks\Element {
 	 *
 	 * @param mixed $color_value Raw value from Bricks color control.
 	 * @return string|null CSS-safe color string or null.
-	 * @since x.x.x
+	 * @since 2.7.0
 	 */
 	public static function resolve_bricks_color( $color_value ) {
 		if ( empty( $color_value ) ) {
@@ -605,7 +605,7 @@ class Form_Widget extends \Bricks\Element {
 	 * @param string               $setting_key Key in settings for the spacing control.
 	 * @param string               $attr_prefix Prefix for output block_attrs keys.
 	 * @return array<string, string> Mapped attributes.
-	 * @since x.x.x
+	 * @since 2.7.0
 	 */
 	public static function map_bricks_spacing( $settings, $setting_key, $attr_prefix ) {
 		$attrs = [];
@@ -635,7 +635,7 @@ class Form_Widget extends \Bricks\Element {
 	 * @param array<string, mixed> $settings Bricks settings.
 	 * @param string               $prefix   Control name prefix (e.g., 'bg' for bgGradientColor1).
 	 * @return string|null CSS gradient string or null.
-	 * @since x.x.x
+	 * @since 2.7.0
 	 */
 	public static function build_bricks_gradient_css( $settings, $prefix ) {
 		$color_1 = self::resolve_bricks_color( $settings[ $prefix . 'GradientColor1' ] ?? null );
@@ -677,7 +677,7 @@ class Form_Widget extends \Bricks\Element {
 	 *
 	 * @param array<string, mixed> $settings Bricks element settings.
 	 * @return array<string, mixed> Block attributes.
-	 * @since x.x.x
+	 * @since 2.7.0
 	 */
 	protected function get_block_attrs( $settings ) {
 		$block_attrs = [
@@ -754,7 +754,7 @@ class Form_Widget extends \Bricks\Element {
 		 *
 		 * @param array<string, mixed> $block_attrs Sanitized block attributes.
 		 * @param array<string, mixed> $settings    Raw Bricks element settings.
-		 * @since x.x.x
+		 * @since 2.7.0
 		 */
 		return apply_filters( 'srfm_bricks_block_attrs', $block_attrs, $settings );
 	}

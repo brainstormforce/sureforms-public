@@ -281,7 +281,7 @@ class Helper {
 	 *
 	 * @param mixed $value Raw CSS value.
 	 * @return string Sanitized CSS value.
-	 * @since x.x.x
+	 * @since 2.7.0
 	 */
 	public static function sanitize_css_value( $value ) {
 		$value = self::get_string_value( $value );
