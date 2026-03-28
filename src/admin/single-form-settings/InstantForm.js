@@ -182,11 +182,18 @@ const InstantFormComponent = () => {
 
 			const tip = document.createElement( 'div' );
 			tip.id = 'srfm-publish-learn-tip';
-			tip.style.cssText = `position:fixed;top:${ rect.bottom + 8 }px;left:${ rect.left + ( rect.width / 2 ) }px;transform:translateX(-50%);z-index:2147483647;pointer-events:none;`;
+			tip.style.cssText = `position:fixed;top:${
+				rect.bottom + 8
+			}px;left:${
+				rect.left + ( rect.width / 2 )
+			}px;transform:translateX(-50%);z-index:2147483647;pointer-events:none;`;
 
 			tip.innerHTML = `
 				<div style="position:absolute;top:-4px;left:50%;transform:translateX(-50%) rotate(45deg);width:8px;height:8px;background:#1e1e1e;"></div>
-				<div style="background:#1e1e1e;color:#fff;font-size:13px;padding:6px 12px;border-radius:6px;box-shadow:0 4px 12px rgba(0,0,0,0.15);white-space:nowrap;">${ __( 'Publish Your Form', 'sureforms' ) }</div>
+				<div style="background:#1e1e1e;color:#fff;font-size:13px;padding:6px 12px;border-radius:6px;box-shadow:0 4px 12px rgba(0,0,0,0.15);white-space:nowrap;">${ __(
+		'Publish Your Form',
+		'sureforms'
+	) }</div>
 			`;
 
 			document.body.appendChild( tip );
