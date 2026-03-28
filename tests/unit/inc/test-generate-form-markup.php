@@ -149,4 +149,149 @@ class Test_Generate_Form_Markup extends TestCase {
 
 		wp_delete_post( $form_id, true );
 	}
+
+	/**
+	 * Test get_redirect_url returns empty string when form_data is empty.
+	 */
+	public function test_get_redirect_url_empty_form_data() {
+		$result = Generate_Form_Markup::get_redirect_url();
+		$this->assertSame( '', $result );
+	}
+
+	/**
+	 * Test get_redirect_url returns empty string when no confirmation meta exists.
+	 */
+	public function test_get_redirect_url_no_confirmation_meta() {
+		remove_all_actions( 'wp_insert_post_data' );
+
+		$form_id = wp_insert_post( [
+			'post_title'  => 'Redirect URL Test Form',
+			'post_type'   => 'sureforms_form',
+			'post_status' => 'publish',
+		] );
+
+		$result = Generate_Form_Markup::get_redirect_url( [ 'form-id' => $form_id ] );
+		$this->assertSame( '', $result );
+
+		wp_delete_post( $form_id, true );
+	}
+
+	/**
+	 * Test get_redirect_url returns page URL for "different page" confirmation type.
+	 */
+	public function test_get_redirect_url_different_page() {
+		remove_all_actions( 'wp_insert_post_data' );
+
+		$form_id = wp_insert_post( [
+			'post_title'  => 'Redirect Page Test',
+			'post_type'   => 'sureforms_form',
+			'post_status' => 'publish',
+		] );
+
+		$confirmation = [
+			[
+				'confirmation_type' => 'different page',
+				'page_url'          => 'https://example.com/thank-you',
+				'custom_url'        => '',
+			],
+		];
+		update_post_meta( $form_id, '_srfm_form_confirmation', $confirmation );
+
+		$result = Generate_Form_Markup::get_redirect_url( [ 'form-id' => $form_id ] );
+		$this->assertSame( 'https://example.com/thank-you', $result );
+
+		wp_delete_post( $form_id, true );
+	}
+
+	/**
+	 * Test get_redirect_url returns custom URL for "custom url" confirmation type.
+	 */
+	public function test_get_redirect_url_custom_url() {
+		remove_all_actions( 'wp_insert_post_data' );
+
+		$form_id = wp_insert_post( [
+			'post_title'  => 'Redirect Custom URL Test',
+			'post_type'   => 'sureforms_form',
+			'post_status' => 'publish',
+		] );
+
+		$confirmation = [
+			[
+				'confirmation_type' => 'custom url',
+				'page_url'          => '',
+				'custom_url'        => 'https://example.com/custom-redirect',
+			],
+		];
+		update_post_meta( $form_id, '_srfm_form_confirmation', $confirmation );
+
+		$result = Generate_Form_Markup::get_redirect_url( [ 'form-id' => $form_id ] );
+		$this->assertSame( 'https://example.com/custom-redirect', $result );
+
+		wp_delete_post( $form_id, true );
+	}
+
+	/**
+	 * Test get_redirect_url appends query params when enabled.
+	 */
+	public function test_get_redirect_url_with_query_params() {
+		remove_all_actions( 'wp_insert_post_data' );
+
+		$form_id = wp_insert_post( [
+			'post_title'  => 'Redirect Query Params Test',
+			'post_type'   => 'sureforms_form',
+			'post_status' => 'publish',
+		] );
+
+		$confirmation = [
+			[
+				'confirmation_type'    => 'custom url',
+				'custom_url'           => 'https://example.com/result',
+				'page_url'             => '',
+				'enable_query_params'  => true,
+				'query_params'         => [
+					[ 'status' => 'submitted' ],
+					[ 'ref' => 'form' ],
+				],
+			],
+		];
+		update_post_meta( $form_id, '_srfm_form_confirmation', $confirmation );
+
+		$result = Generate_Form_Markup::get_redirect_url( [ 'form-id' => $form_id ] );
+		$this->assertStringContainsString( 'status=submitted', $result );
+		$this->assertStringContainsString( 'ref=form', $result );
+
+		wp_delete_post( $form_id, true );
+	}
+
+	/**
+	 * Test get_redirect_url returns URL without query params when disabled.
+	 */
+	public function test_get_redirect_url_query_params_disabled() {
+		remove_all_actions( 'wp_insert_post_data' );
+
+		$form_id = wp_insert_post( [
+			'post_title'  => 'Redirect No Params Test',
+			'post_type'   => 'sureforms_form',
+			'post_status' => 'publish',
+		] );
+
+		$confirmation = [
+			[
+				'confirmation_type'    => 'custom url',
+				'custom_url'           => 'https://example.com/result',
+				'page_url'             => '',
+				'enable_query_params'  => false,
+				'query_params'         => [
+					[ 'status' => 'submitted' ],
+				],
+			],
+		];
+		update_post_meta( $form_id, '_srfm_form_confirmation', $confirmation );
+
+		$result = Generate_Form_Markup::get_redirect_url( [ 'form-id' => $form_id ] );
+		$this->assertStringNotContainsString( 'status=submitted', $result );
+		$this->assertSame( 'https://example.com/result', $result );
+
+		wp_delete_post( $form_id, true );
+	}
 }
