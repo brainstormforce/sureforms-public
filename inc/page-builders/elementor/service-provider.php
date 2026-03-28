@@ -51,6 +51,8 @@ class Service_Provider {
 				'add_new_form_url' => admin_url( 'admin.php?page=add-new-form' ),
 			]
 		);
+		// Note: Styling preview script is loaded in Form_Widget constructor
+		// when in preview mode to ensure it runs in the correct iframe context.
 	}
 
 	/**

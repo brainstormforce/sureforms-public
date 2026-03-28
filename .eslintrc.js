@@ -97,5 +97,6 @@ module.exports = {
 		sessionStorage: true,
 		jQuery: true,
 		sureformsPointerData: true,
+		$e: true, // Elementor's global jQuery alias, used in some Elementor-specific scripts.
 	},
 };

@@ -401,6 +401,9 @@ You can collect payments securely through Stripe & PayPal without any add-ons or
 You can report the issue through our [Bug Bounty Program](https://brainstormforce.com/bug-bounty-program/). We collaborate with Patchstack to provide opportunities for researchers to report vulnerabilities. The Patchstack team will help validate, triage, and handle any reported security issues.
 
 == Changelog ==
+= x.x.x =
+* New: Added styling options for Gutenberg SureForms Form Block.
+* New: Added styling options for Elementor SureForms Form Widget.
 = 2.6.0 - 23rd March 2026 =
 * New: Added MCP (Model Context Protocol) settings and Abilities API for AI-powered form management.
 * Improvement: Added Blocks API v3 compatibility.
