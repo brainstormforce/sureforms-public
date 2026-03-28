@@ -76,7 +76,7 @@ class Form_Widget extends Widget_Base {
 			/**
 			 * Hook for Pro to register additional preview assets (scripts and styles).
 			 *
-			 * @since x.x.x
+			 * @since 2.7.0
 			 */
 			do_action( 'srfm_elementor_register_preview_assets' );
 		}
@@ -97,7 +97,7 @@ class Form_Widget extends Widget_Base {
 			 * Pro uses this to add its preview scripts.
 			 *
 			 * @param array<string> $scripts Script handles.
-			 * @since x.x.x
+			 * @since 2.7.0
 			 */
 			return apply_filters( 'srfm_elementor_widget_script_depends', $scripts );
 		}
@@ -108,7 +108,7 @@ class Form_Widget extends Widget_Base {
 	/**
 	 * Get style depends.
 	 *
-	 * @since x.x.x
+	 * @since 2.7.0
 	 * @return array<string> Style dependencies.
 	 */
 	public function get_style_depends() {
@@ -119,7 +119,7 @@ class Form_Widget extends Widget_Base {
 		 * Pro uses this to add its custom-styles CSS.
 		 *
 		 * @param array<string> $styles Style handles.
-		 * @since x.x.x
+		 * @since 2.7.0
 		 */
 		return apply_filters( 'srfm_elementor_widget_style_depends', $styles );
 	}
@@ -186,7 +186,7 @@ class Form_Widget extends Widget_Base {
 	 * @param array<string, mixed> $settings    Widget settings.
 	 * @param string               $control_key The control key.
 	 * @return string|null The color value or null if not set.
-	 * @since x.x.x
+	 * @since 2.7.0
 	 */
 	public static function get_resolved_color( $settings, $control_key ) {
 		// First check for a global color reference.
@@ -221,7 +221,7 @@ class Form_Widget extends Widget_Base {
 	 *
 	 * @param array<string, mixed> $settings Widget settings containing gradient values.
 	 * @return string|null CSS gradient string or null if colors not set.
-	 * @since x.x.x
+	 * @since 2.7.0
 	 */
 	public static function build_gradient_css( $settings ) {
 		// Get gradient colors - resolve global colors if used.
@@ -626,7 +626,7 @@ class Form_Widget extends Widget_Base {
 		 * Hook for Pro to add advanced styling controls.
 		 *
 		 * @param \Elementor\Widget_Base $widget The widget instance.
-		 * @since x.x.x
+		 * @since 2.7.0
 		 */
 		do_action( 'srfm_elementor_after_basic_styling_controls', $this );
 
@@ -686,7 +686,7 @@ class Form_Widget extends Widget_Base {
 		 * Hook for Pro to add additional layout controls.
 		 *
 		 * @param \Elementor\Widget_Base $widget The widget instance.
-		 * @since x.x.x
+		 * @since 2.7.0
 		 */
 		do_action( 'srfm_elementor_layout_controls', $this );
 
@@ -738,7 +738,7 @@ class Form_Widget extends Widget_Base {
 		 * Hook for Pro to add additional button controls.
 		 *
 		 * @param \Elementor\Widget_Base $widget The widget instance.
-		 * @since x.x.x
+		 * @since 2.7.0
 		 */
 		do_action( 'srfm_elementor_button_controls', $this );
 
@@ -780,7 +780,7 @@ class Form_Widget extends Widget_Base {
 		 * Hook for Pro to add additional field controls.
 		 *
 		 * @param \Elementor\Widget_Base $widget The widget instance.
-		 * @since x.x.x
+		 * @since 2.7.0
 		 */
 		do_action( 'srfm_elementor_field_controls', $this );
 
@@ -790,7 +790,7 @@ class Form_Widget extends Widget_Base {
 		 * Hook for Pro to add additional style sections.
 		 *
 		 * @param \Elementor\Widget_Base $widget The widget instance.
-		 * @since x.x.x
+		 * @since 2.7.0
 		 */
 		do_action( 'srfm_elementor_after_styling_section', $this );
 	}
@@ -860,7 +860,7 @@ class Form_Widget extends Widget_Base {
 	 *
 	 * @param array<string, mixed> $settings Widget settings.
 	 * @return array<string, mixed> Block attributes.
-	 * @since x.x.x
+	 * @since 2.7.0
 	 */
 	protected function get_block_attrs( $settings ) {
 		$block_attrs = [
@@ -952,7 +952,7 @@ class Form_Widget extends Widget_Base {
 		 *
 		 * @param array<string, mixed> $block_attrs Block attributes.
 		 * @param array<string, mixed> $settings    Raw widget settings.
-		 * @since x.x.x
+		 * @since 2.7.0
 		 */
 		/** Raw widget settings for filter.
 		 *
@@ -972,7 +972,7 @@ class Form_Widget extends Widget_Base {
 	 * @param array<string, mixed> $settings    Widget settings.
 	 * @param string               $control_key The Elementor dimensions control key (e.g., 'formPadding').
 	 * @return array<string, mixed> Updated block attributes.
-	 * @since x.x.x
+	 * @since 2.7.0
 	 */
 	private static function map_elementor_dimensions( $block_attrs, $settings, $control_key ) {
 		if ( empty( $settings[ $control_key ] ) || ! is_array( $settings[ $control_key ] ) ) {

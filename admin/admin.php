@@ -416,7 +416,7 @@ class Admin {
 	 * Add Quiz empty state submenu page for free users.
 	 *
 	 * @return void
-	 * @since x.x.x
+	 * @since 2.7.0
 	 */
 	public function add_quiz_page() {
 		add_submenu_page(
@@ -437,7 +437,7 @@ class Admin {
 	 * Quiz empty state page callback.
 	 *
 	 * @return void
-	 * @since x.x.x
+	 * @since 2.7.0
 	 */
 	public function render_quiz_empty_state() {
 		?>

@@ -7,7 +7,7 @@
  * provides filter hooks for Pro to extend with theme functionality.
  *
  * @package sureforms
- * @since x.x.x
+ * @since 2.7.0
  */
 
 namespace SRFM\Inc;
@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Form_Styling class.
  *
- * @since x.x.x
+ * @since 2.7.0
  */
 class Form_Styling {
 	/**
@@ -31,7 +31,7 @@ class Form_Styling {
 	 * @param array<string,mixed> $form_styling Existing form styling from post meta.
 	 * @param array<string,mixed> $block_attrs  Block attributes from srfm/form block.
 	 * @return array<string,mixed> Modified form styling array.
-	 * @since x.x.x
+	 * @since 2.7.0
 	 */
 	public static function map_block_attrs_to_styling( $form_styling, $block_attrs ) {
 		if ( empty( $block_attrs ) ) {
@@ -102,7 +102,7 @@ class Form_Styling {
 		 *
 		 * @param array<string,mixed> $form_styling Modified form styling array.
 		 * @param array<string,mixed> $block_attrs  Original block attributes.
-		 * @since x.x.x
+		 * @since 2.7.0
 		 */
 		return apply_filters( 'srfm_embed_block_attrs_to_styling', $form_styling, $block_attrs );
 	}
@@ -117,7 +117,7 @@ class Form_Styling {
 	 * @param array<string,mixed> $form_styling Current form styling array.
 	 * @param string              $theme_slug   Theme identifier (e.g., 'modern', 'minimal').
 	 * @return array<string,mixed> Form styling with theme values applied.
-	 * @since x.x.x
+	 * @since 2.7.0
 	 */
 	public static function apply_theme_styling( $form_styling, $theme_slug ) {
 		if ( empty( $theme_slug ) || 'default' === $theme_slug || 'inherit' === $theme_slug ) {
@@ -132,7 +132,7 @@ class Form_Styling {
 		 *
 		 * @param array<string,mixed> $form_styling Current form styling array.
 		 * @param string              $theme_slug   Theme identifier.
-		 * @since x.x.x
+		 * @since 2.7.0
 		 */
 		return apply_filters( 'srfm_apply_form_theme_styling', $form_styling, $theme_slug );
 	}
@@ -142,7 +142,7 @@ class Form_Styling {
 	 *
 	 * @param array<string,mixed> $block_attrs Block attributes.
 	 * @return bool True if using custom embed styling.
-	 * @since x.x.x
+	 * @since 2.7.0
 	 */
 	public static function has_custom_styling( $block_attrs ) {
 		return 'inherit' !== ( $block_attrs['formTheme'] ?? 'inherit' );
@@ -156,7 +156,7 @@ class Form_Styling {
 	 * @param string              $attr_prefix  Block attribute prefix (e.g., 'formPadding').
 	 * @param string              $style_prefix Form styling key prefix (e.g., 'form_padding').
 	 * @return array<string,mixed> Modified form styling array.
-	 * @since x.x.x
+	 * @since 2.7.0
 	 */
 	private static function map_dimension_attrs( $form_styling, $block_attrs, $attr_prefix, $style_prefix ) {
 		$sides = [ 'Top', 'Right', 'Bottom', 'Left' ];

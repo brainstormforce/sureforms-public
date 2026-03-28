@@ -100,7 +100,7 @@ class Analytics {
 	 * Uses SureForms' Helper option methods so data stays in the
 	 * existing srfm_options row — zero migration required.
 	 *
-	 * @since x.x.x
+	 * @since 2.7.0
 	 * @return \BSF_Analytics_Events
 	 */
 	public static function events() {
@@ -305,7 +305,7 @@ class Analytics {
 	 * contain multiple form embeds each with different styling.
 	 *
 	 * @param string $theme Theme slug to count ('default' or 'custom').
-	 * @since x.x.x
+	 * @since 2.7.0
 	 * @return int
 	 */
 	public static function embed_styling_gutenberg_count( $theme ) {
@@ -348,7 +348,7 @@ class Analytics {
 	 * a non-inherit formTheme. Counts individual widgets (not pages).
 	 *
 	 * @param string $theme Theme slug to count ('default' or 'custom').
-	 * @since x.x.x
+	 * @since 2.7.0
 	 * @return int
 	 */
 	public static function embed_styling_elementor_count( $theme ) {
@@ -394,7 +394,7 @@ class Analytics {
 	 * sureforms elements with a non-inherit formTheme. Counts individual elements.
 	 *
 	 * @param string $theme Theme slug to count ('default' or 'custom').
-	 * @since x.x.x
+	 * @since 2.7.0
 	 * @return int
 	 */
 	public static function embed_styling_bricks_count( $theme ) {
@@ -750,7 +750,7 @@ class Analytics {
 	 *
 	 * @param int      $post_id Post ID.
 	 * @param \WP_Post $post    Post object.
-	 * @since x.x.x
+	 * @since 2.7.0
 	 * @return void
 	 */
 	public function track_embed_styling_configured( $post_id, $post ) {
@@ -820,7 +820,7 @@ class Analytics {
 	 *
 	 * @param array<mixed> $elements Bricks elements array.
 	 * @return array<string> List of formTheme values (non-inherit).
-	 * @since x.x.x
+	 * @since 2.7.0
 	 */
 	private static function extract_bricks_form_themes( $elements ) {
 		$themes = [];

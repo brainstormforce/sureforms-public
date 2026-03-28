@@ -487,7 +487,7 @@ class Entries extends Base {
 	 * @param int    $form_id     The form ID to search within.
 	 * @param string $field_key   The form_data JSON key to match against.
 	 * @param string $field_value The value to check for uniqueness.
-	 * @since x.x.x
+	 * @since 2.7.0
 	 * @return bool True if a duplicate exists, false otherwise.
 	 */
 	public static function has_duplicate_field_value( $form_id, $field_key, $field_value ) {

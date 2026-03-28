@@ -27,7 +27,7 @@ class Generate_Form_Markup {
 	 * Used by child blocks (like inline button) to access parent form's embed styling.
 	 *
 	 * @var array<string,mixed>
-	 * @since x.x.x
+	 * @since 2.7.0
 	 */
 	private static $current_block_attrs = [];
 
@@ -44,7 +44,7 @@ class Generate_Form_Markup {
 	 * Get the current block attributes.
 	 *
 	 * @return array<string,mixed>
-	 * @since x.x.x
+	 * @since 2.7.0
 	 */
 	public static function get_current_block_attrs() {
 		return self::$current_block_attrs;
@@ -796,7 +796,7 @@ class Generate_Form_Markup {
 	 * Enqueue the preview styling script for real-time updates from block editor.
 	 *
 	 * @param string $container_id The form container ID selector.
-	 * @since x.x.x
+	 * @since 2.7.0
 	 * @return void
 	 */
 	public static function enqueue_preview_styling_script( $container_id ) {
@@ -826,7 +826,7 @@ class Generate_Form_Markup {
 		/**
 		 * Action to allow Pro to enqueue additional preview styling scripts.
 		 *
-		 * @since x.x.x
+		 * @since 2.7.0
 		 */
 		do_action( 'srfm_enqueue_preview_styling_scripts' );
 	}

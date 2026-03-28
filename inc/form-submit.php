@@ -955,7 +955,7 @@ class Form_Submit {
 	 * if duplicates exist. Rate-limited to prevent data enumeration.
 	 *
 	 * @since 0.0.1
-	 * @since x.x.x Added rate limiting, form validation, and optimized query.
+	 * @since 2.7.0 Added rate limiting, form validation, and optimized query.
 	 * @return void
 	 */
 	public function field_unique_validation() {
@@ -1187,7 +1187,7 @@ class Form_Submit {
 	 * Allows 10 requests per 60-second window per IP per form.
 	 *
 	 * @param int $form_id The form ID being validated.
-	 * @since x.x.x
+	 * @since 2.7.0
 	 * @return bool True if rate-limited (should block), false if allowed.
 	 */
 	private function is_unique_validation_rate_limited( $form_id ) {
