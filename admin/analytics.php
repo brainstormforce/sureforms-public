@@ -405,41 +405,6 @@ class Analytics {
 	}
 
 	/**
-	 * Extract non-inherit formTheme values from Bricks element data.
-	 *
-	 * Recursively walks the unserialized Bricks elements array looking for
-	 * sureforms elements with custom formTheme settings.
-	 *
-	 * @param array<mixed> $elements Bricks elements array.
-	 * @return array<string> List of formTheme values (non-inherit).
-	 * @since x.x.x
-	 */
-	private static function extract_bricks_form_themes( $elements ) {
-		$themes = [];
-
-		foreach ( $elements as $element ) {
-			if ( ! is_array( $element ) ) {
-				continue;
-			}
-
-			$name       = $element['name'] ?? '';
-			$settings   = $element['settings'] ?? [];
-			$form_theme = $settings['formTheme'] ?? '';
-
-			if ( 'sureforms' === $name && ! empty( $form_theme ) && 'inherit' !== $form_theme ) {
-				$themes[] = sanitize_text_field( $form_theme );
-			}
-
-			// Recurse into nested children.
-			if ( ! empty( $element['children'] ) && is_array( $element['children'] ) ) {
-				$themes = array_merge( $themes, self::extract_bricks_form_themes( $element['children'] ) );
-			}
-		}
-
-		return $themes;
-	}
-
-	/**
 	 * Return total number of restricted forms.
 	 *
 	 * @since 1.10.1
@@ -813,6 +778,41 @@ class Analytics {
 				'source'      => $source,
 			]
 		);
+	}
+
+	/**
+	 * Extract non-inherit formTheme values from Bricks element data.
+	 *
+	 * Recursively walks the unserialized Bricks elements array looking for
+	 * sureforms elements with custom formTheme settings.
+	 *
+	 * @param array<mixed> $elements Bricks elements array.
+	 * @return array<string> List of formTheme values (non-inherit).
+	 * @since x.x.x
+	 */
+	private static function extract_bricks_form_themes( $elements ) {
+		$themes = [];
+
+		foreach ( $elements as $element ) {
+			if ( ! is_array( $element ) ) {
+				continue;
+			}
+
+			$name       = $element['name'] ?? '';
+			$settings   = $element['settings'] ?? [];
+			$form_theme = $settings['formTheme'] ?? '';
+
+			if ( 'sureforms' === $name && ! empty( $form_theme ) && 'inherit' !== $form_theme ) {
+				$themes[] = sanitize_text_field( $form_theme );
+			}
+
+			// Recurse into nested children.
+			if ( ! empty( $element['children'] ) && is_array( $element['children'] ) ) {
+				$themes = array_merge( $themes, self::extract_bricks_form_themes( $element['children'] ) );
+			}
+		}
+
+		return $themes;
 	}
 
 	/**
