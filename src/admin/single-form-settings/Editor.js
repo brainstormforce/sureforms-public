@@ -234,7 +234,10 @@ const SureformsFormSpecificSettings = () => {
 			};
 			window.navigation.addEventListener( 'navigate', fseNavHandler );
 			return () => {
-				window.navigation.removeEventListener( 'navigate', fseNavHandler );
+				window.navigation.removeEventListener(
+					'navigate',
+					fseNavHandler
+				);
 			};
 		} else if ( enableQuickActionSidebar !== undefined ) {
 			// Attach the sidebar to the DOM.

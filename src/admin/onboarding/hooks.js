@@ -33,53 +33,104 @@ export const useOnboardingNavigation = () => {
 
 	// Check if user is already connected
 	const isUserConnected = () => {
-		return srfm_admin?.srfm_ai_details?.type !== 'non-registered';
+		return (
+			srfm_admin?.srfm_ai_details?.type !== 'non-registered' ||
+			onboardingState?.analytics?.accountConnected
+		);
+	};
+
+	const getVisibleRoutes = () => {
+		const userConnected = isUserConnected();
+		const businessPlan = hasBusinessPlan();
+
+		return ONBOARDING_ROUTES_CONFIG.filter( ( route ) => {
+			if ( route.url === '/onboarding/connect' && userConnected ) {
+				return false;
+			}
+
+			if (
+				route.url === '/onboarding/premium-features' &&
+				businessPlan
+			) {
+				return false;
+			}
+
+			if (
+				route.url === '/onboarding/user-details' &&
+				userConnected
+			) {
+				return false;
+			}
+
+			return true;
+		} );
+	};
+
+	const getCurrentRouteIndex = ( routePath, routes ) => {
+		return routes.findIndex( ( route ) => route.url === routePath );
+	};
+
+	const getAdjacentVisibleRoute = ( currentPath, direction ) => {
+		const visibleRoutes = getVisibleRoutes();
+		const allRouteIndex = getCurrentRouteIndex(
+			currentPath,
+			ONBOARDING_ROUTES_CONFIG
+		);
+
+		if ( allRouteIndex === -1 ) {
+			return visibleRoutes[ 0 ]?.url || '/onboarding/welcome';
+		}
+
+		const step = direction === 'next' ? 1 : -1;
+		for (
+			let index = allRouteIndex + step;
+			index >= 0 && index < ONBOARDING_ROUTES_CONFIG.length;
+			index += step
+		) {
+			const candidateRoute = ONBOARDING_ROUTES_CONFIG[ index ]?.url;
+			if (
+				visibleRoutes.some( ( route ) => route.url === candidateRoute )
+			) {
+				return candidateRoute;
+			}
+		}
+
+		const fallbackRoute =
+			direction === 'next'
+				? visibleRoutes[ visibleRoutes.length - 1 ]
+				: visibleRoutes[ 0 ];
+
+		return fallbackRoute?.url || '/onboarding/welcome';
 	};
 
 	const getNextRoute = ( currentPath ) => {
-		const currentIndex = ONBOARDING_ROUTES_CONFIG.findIndex(
-			( route ) => route.url === currentPath
-		);
+		const visibleRoutes = getVisibleRoutes();
+		const currentIndex = getCurrentRouteIndex( currentPath, visibleRoutes );
 
-		// If current path is welcome and user is already connected, skip connect screen
-		if ( currentPath === '/onboarding/welcome' && isUserConnected() ) {
-			// Skip to email-delivery page (index + 2)
-			return ONBOARDING_ROUTES_CONFIG[ currentIndex + 2 ].url;
+		if ( currentIndex !== -1 ) {
+			return (
+				visibleRoutes[ currentIndex + 1 ]?.url ||
+				visibleRoutes[ currentIndex ]?.url ||
+				'/onboarding/welcome'
+			);
 		}
 
-		// If current path is email-delivery and user has business plan, skip premium-features
-		if (
-			currentPath === '/onboarding/email-delivery' &&
-			hasBusinessPlan()
-		) {
-			// Skip to done page (index + 2)
-			return ONBOARDING_ROUTES_CONFIG[ currentIndex + 2 ].url;
-		}
-
-		return ONBOARDING_ROUTES_CONFIG[ currentIndex + 1 ].url;
+		return getAdjacentVisibleRoute( currentPath, 'next' );
 	};
 
 	const getPreviousRoute = ( currentPath ) => {
-		const currentIndex = ONBOARDING_ROUTES_CONFIG.findIndex(
-			( route ) => route.url === currentPath
-		);
+		const visibleRoutes = getVisibleRoutes();
+		const currentIndex = getCurrentRouteIndex( currentPath, visibleRoutes );
 
-		// If current path is email-delivery and user is connected, skip back past connect screen
-		if (
-			currentPath === '/onboarding/email-delivery' &&
-			isUserConnected()
-		) {
-			// Skip back to welcome page (index - 2)
-			return ONBOARDING_ROUTES_CONFIG[ currentIndex - 2 ].url;
+		if ( currentIndex !== -1 ) {
+			return (
+				visibleRoutes[ currentIndex - 1 ]?.url ||
+				visibleRoutes[ currentIndex ]?.url ||
+				'/onboarding/welcome'
+			);
 		}
 
-		// If current path is done and user has business plan, skip back past premium-features
-		if ( currentPath === '/onboarding/done' && hasBusinessPlan() ) {
-			// Skip back to email-delivery (index - 2)
-			return ONBOARDING_ROUTES_CONFIG[ currentIndex - 2 ].url;
-		}
-
-		return ONBOARDING_ROUTES_CONFIG[ currentIndex - 1 ].url;
+		return getAdjacentVisibleRoute( currentPath, 'previous' );
 	};
 
 	const navigateToNextRoute = () => {
@@ -93,22 +144,15 @@ export const useOnboardingNavigation = () => {
 	};
 
 	const getCurrentStepNumber = () => {
-		const currentIndex = ONBOARDING_ROUTES_CONFIG.findIndex(
-			( route ) => route.url === currentRoute
-		);
-		let stepNumber = currentIndex + 1;
+		const visibleRoutes = getVisibleRoutes();
+		const currentIndex = getCurrentRouteIndex( currentRoute, visibleRoutes );
 
-		// Adjust step number if connect screen is skipped for connected users
-		if ( isUserConnected() && currentIndex > 1 ) {
-			stepNumber -= 1; // Reduce by 1 since connect step is skipped
+		if ( currentIndex === -1 ) {
+			return 1;
 		}
 
-		// Adjust step number for business users to account for skipped premium features page
-		if ( hasBusinessPlan() && currentIndex > 2 ) {
-			stepNumber -= 1; // Reduce by 1 since premium features step is skipped
-		}
-
-		return stepNumber;
+		const maxProgressSteps = Math.max( visibleRoutes.length - 1, 1 );
+		return Math.min( currentIndex + 1, maxProgressSteps );
 	};
 
 	/**
@@ -118,32 +162,30 @@ export const useOnboardingNavigation = () => {
 	 * @return {string} URL to redirect to if access is restricted, or empty string if allowed.
 	 */
 	const checkRequiredStep = useCallback( () => {
-		// Get current route index
-		const currentIndex = ONBOARDING_ROUTES_CONFIG.findIndex(
-			( route ) => route.url === currentRoute
+		const visibleRoutes = getVisibleRoutes();
+		const currentVisibleIndex = getCurrentRouteIndex(
+			currentRoute,
+			visibleRoutes
+		);
+
+		// If hidden route is accessed directly, move to the nearest valid next route.
+		if ( currentVisibleIndex === -1 ) {
+			return getAdjacentVisibleRoute( currentRoute, 'next' );
+		}
+
+		const currentRouteIndex = getCurrentRouteIndex(
+			currentRoute,
+			ONBOARDING_ROUTES_CONFIG
 		);
 
 		// If we're on the first step or route not found, no redirection needed
-		if ( currentIndex <= 0 ) {
+		if ( currentRouteIndex <= 0 ) {
 			return '';
 		}
 
-		// If user is already connected and tries to access connect page, redirect to email-delivery
-		if ( isUserConnected() && currentRoute === '/onboarding/connect' ) {
-			return '/onboarding/email-delivery';
-		}
-
-		// If user has business plan and tries to access premium features page, redirect to done page
-		if (
-			hasBusinessPlan() &&
-			currentRoute === '/onboarding/premium-features'
-		) {
-			return '/onboarding/done';
-		}
-
 		// Check all previous steps for any unmet requirements
-		for ( let i = 0; i <= currentIndex; i++ ) {
-			const route = ONBOARDING_ROUTES_CONFIG[ i ];
+		for ( let index = 0; index <= currentVisibleIndex; index++ ) {
+			const route = visibleRoutes[ index ];
 
 			// Skip routes without requirements
 			if (
@@ -169,6 +211,7 @@ export const useOnboardingNavigation = () => {
 	}, [ location.pathname, onboardingState ] );
 
 	return {
+		getVisibleRoutes,
 		getNextRoute,
 		getPreviousRoute,
 		navigateToNextRoute,

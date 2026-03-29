@@ -7,7 +7,6 @@
 
 namespace SRFM\Admin;
 
-use SRFM\Inc\Analytics_Events;
 use SRFM\Inc\Database\Tables\Entries;
 use SRFM\Inc\Helper;
 use SRFM\Inc\Traits\Get_Instance;
@@ -22,6 +21,13 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class Analytics {
 	use Get_Instance;
+
+	/**
+	 * BSF_Analytics_Events instance for one-time event tracking.
+	 *
+	 * @var \BSF_Analytics_Events|null
+	 */
+	private static $events = null;
 
 	/**
 	 * Class constructor.
@@ -88,6 +94,32 @@ class Analytics {
 	}
 
 	/**
+	 * Get the shared BSF_Analytics_Events instance.
+	 *
+	 * Uses SureForms' Helper option methods so data stays in the
+	 * existing srfm_options row — zero migration required.
+	 *
+	 * @since x.x.x
+	 * @return \BSF_Analytics_Events
+	 */
+	public static function events() {
+		if ( null === self::$events ) {
+			if ( ! class_exists( 'BSF_Analytics_Events' ) ) {
+				require_once SRFM_DIR . 'inc/lib/bsf-analytics/class-bsf-analytics-events.php';
+			}
+
+			self::$events = new \BSF_Analytics_Events(
+				'sureforms',
+				[
+					'get'    => [ Helper::class, 'get_srfm_option' ],
+					'update' => [ Helper::class, 'update_srfm_option' ],
+				]
+			);
+		}
+		return self::$events;
+	}
+
+	/**
 	 * Callback function to add SureForms specific analytics data.
 	 *
 	 * @param array $stats_data existing stats_data.
@@ -124,7 +156,7 @@ class Analytics {
 		}
 
 		// Flush pending events into payload (only if any exist).
-		$pending_events = Analytics_Events::flush_pending();
+		$pending_events = self::events()->flush_pending();
 		if ( ! empty( $pending_events ) ) {
 			$stats_data['plugin_data']['sureforms']['events_record'] = $pending_events;
 		}
@@ -532,7 +564,7 @@ class Analytics {
 	public function track_first_editor_open() {
 		$screen = get_current_screen();
 		if ( $screen && 'sureforms_form' === $screen->id ) {
-			Analytics_Events::track( 'first_form_editor_opened' );
+			self::events()->track( 'first_form_editor_opened' );
 		}
 	}
 
@@ -553,7 +585,7 @@ class Analytics {
 		$is_ai       = ! empty( get_post_meta( $post->ID, '_srfm_is_ai_generated', true ) );
 		$block_count = substr_count( $post->post_content, '<!-- wp:srfm/' );
 
-		Analytics_Events::track(
+		self::events()->track(
 			'first_form_published',
 			(string) $post->ID,
 			[
@@ -656,38 +688,38 @@ class Analytics {
 
 	/**
 	 * Detect state-based events that can't use direct hooks.
-	 * Uses dedup in Analytics_Events::track() — safe to call repeatedly.
+	 * Uses dedup in self::events()->track() — safe to call repeatedly.
 	 *
 	 * @since 2.5.1
 	 * @return void
 	 */
 	private function detect_state_events() {
-		// plugin_activated: dedup in Analytics_Events::track() ensures this fires only once.
+		// plugin_activated: dedup in self::events()->track() ensures this fires only once.
 		$bsf_referrers = get_option( 'bsf_product_referers', [] );
 		$source        = ! empty( $bsf_referrers['sureforms'] ) ? $bsf_referrers['sureforms'] : 'self';
-		Analytics_Events::track( 'plugin_activated', SRFM_VER, [ 'source' => $source ] );
+		self::events()->track( 'plugin_activated', SRFM_VER, [ 'source' => $source ] );
 
 		// onboarding_completed: detect completed state.
 		if ( \SRFM\Inc\Onboarding::get_instance()->get_onboarding_status() ) {
-			Analytics_Events::track( 'onboarding_completed' );
+			self::events()->track( 'onboarding_completed' );
 		}
 
 		// stripe_connected: detect connection state.
 		if ( class_exists( '\SRFM\Inc\Payments\Stripe\Stripe_Helper' )
 			&& \SRFM\Inc\Payments\Stripe\Stripe_Helper::is_stripe_connected() ) {
 			$mode = \SRFM\Inc\Payments\Stripe\Stripe_Helper::get_stripe_mode();
-			Analytics_Events::track( 'stripe_connected', ! empty( $mode ) ? $mode : 'live' );
+			self::events()->track( 'stripe_connected', ! empty( $mode ) ? $mode : 'live' );
 		}
 
 		// MCP / Abilities API first-enable events.
 		$mcp_settings = get_option( 'srfm_mcp_settings_options', [] );
 
 		if ( ! empty( $mcp_settings['srfm_abilities_api'] ) ) {
-			Analytics_Events::track( 'abilities_api_enabled' );
+			self::events()->track( 'abilities_api_enabled' );
 		}
 
 		if ( ! empty( $mcp_settings['srfm_mcp_server'] ) ) {
-			Analytics_Events::track( 'mcp_server_enabled' );
+			self::events()->track( 'mcp_server_enabled' );
 		}
 	}
 

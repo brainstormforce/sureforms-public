@@ -33,7 +33,8 @@ jQuery( document ).ready( function ( $ ) {
 						edge: 'left',
 						align: 'center',
 					},
-					buttons( event, t ) {
+					// `_event` is unused but required positionally to access `t`.
+					buttons( _event, t ) {
 						const dismissBtn = $(
 							'<a class="close" href="#" style="margin-left:8px;"></a>'
 						)

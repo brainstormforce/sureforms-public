@@ -8,7 +8,6 @@
 
 namespace SRFM\Inc;
 
-use SRFM\Inc\Submit_Token;
 use SRFM\Inc\Traits\Get_Instance;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -891,7 +890,9 @@ class Generate_Form_Markup {
 			$smart_tags = new Smart_Tags();
 			// Adding upload_format_type = 'raw' to retrieve urls as comma separated values.
 			$form_data['upload_format_type'] = 'raw';
-			$redirect_url                    = html_entity_decode( Helper::get_string_value( $smart_tags->process_smart_tags( $redirect_url, $submission_data, $form_data ) ) );
+			// Skip auto-linking URLs in smart tag values — redirect query params need raw values, not HTML.
+			$form_data['smart_tag_context'] = 'redirect';
+			$redirect_url                   = html_entity_decode( Helper::get_string_value( $smart_tags->process_smart_tags( $redirect_url, $submission_data, $form_data ) ) );
 		}
 
 		return esc_url_raw( apply_filters( 'srfm_after_submit_redirect_url', $redirect_url ) );

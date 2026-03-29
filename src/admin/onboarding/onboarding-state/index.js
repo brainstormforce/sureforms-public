@@ -15,6 +15,12 @@ export const ONBOARDING_STORAGE_KEYS = [
 // Initial state
 const initialState = {
 	emailDeliveryConfigured: false,
+	userDetails: {
+		firstName: '',
+		lastName: '',
+		email: '',
+		consent: false,
+	},
 	// Analytics data
 	analytics: {
 		skippedSteps: [],
@@ -36,6 +42,7 @@ const ACTIONS = {
 	SET_SUREMAIL_INSTALLED: 'SET_SUREMAIL_INSTALLED',
 	SET_SELECTED_PREMIUM_FEATURES: 'SET_SELECTED_PREMIUM_FEATURES',
 	SET_ACCOUNT_CONNECTED: 'SET_ACCOUNT_CONNECTED',
+	SET_USER_DETAILS: 'SET_USER_DETAILS',
 	SET_COMPLETED: 'SET_COMPLETED',
 	SET_EXITED_EARLY: 'SET_EXITED_EARLY',
 	RESET_STATE: 'RESET_STATE',
@@ -104,6 +111,14 @@ const onboardingReducer = ( state, action ) => {
 				analytics: {
 					...state.analytics,
 					accountConnected: action.payload,
+				},
+			};
+		case ACTIONS.SET_USER_DETAILS:
+			return {
+				...state,
+				userDetails: {
+					...state.userDetails,
+					...action.payload,
 				},
 			};
 		case ACTIONS.SET_COMPLETED:
@@ -189,6 +204,11 @@ export const OnboardingProvider = ( { children } ) => {
 			dispatch( {
 				type: ACTIONS.SET_ACCOUNT_CONNECTED,
 				payload: connected,
+			} ),
+		setUserDetails: ( userDetails ) =>
+			dispatch( {
+				type: ACTIONS.SET_USER_DETAILS,
+				payload: userDetails,
 			} ),
 		setCompleted: ( completed ) =>
 			dispatch( {
