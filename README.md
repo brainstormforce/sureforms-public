@@ -406,11 +406,7 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 * New: Added styling options for Bricks Builder SureForms Form Element.
 * New: Added styling options for Elementor SureForms Form Widget.
 * New: Added per-client MCP setup instructions with tailored configuration for Claude Desktop, Claude Code, Cursor, VS Code, and Continue.
-* New: Added Quiz upgrade page for free users with feature highlights and upgrade CTA.
 * New: Added user details collection step in onboarding for non-authenticated users.
-* Improvement: Added hover tooltips to email notification action buttons and reordered Form Behavior tabs for better discoverability.
-* Improvement: Improved OttoKit automation tab with better copy, instant activation feedback, and polished button states.
-* Improvement: Updated Payment Forms description in onboarding to accurately reflect payment capabilities.
 * Fix: Fixed "Send as Raw HTML" email option wrapping content in unwanted template markup.
 * Fix: Fixed Multi Choice option labels with extra whitespace failing to resolve numeric values in payment calculations.
 * Fix: Fixed block slug not locking when a smart tag is inserted via the pro plugin.
