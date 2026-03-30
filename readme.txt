@@ -403,7 +403,14 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 == Changelog ==
 = 2.7.0 - 31st March 2026 =
 * New: Added styling options for Gutenberg SureForms Form Block.
+* New: Added styling options for Bricks Builder SureForms Form Element.
 * New: Added styling options for Elementor SureForms Form Widget.
+* Fix: Fixed "Send as Raw HTML" email option wrapping content in unwanted template markup.
+* Fix: Fixed Multi Choice option labels with extra whitespace failing to resolve numeric values in payment calculations.
+* Fix: Fixed block slug not locking when a smart tag is inserted via the pro plugin.
+* Fix: Fixed dynamic tag URLs being auto-linked with HTML markup when used in redirect query parameters.
+* Fix: Fixed theme text-transform styles cascading into form input fields.
+* Fix: Fixed unique field validation endpoint exposing submitted data to unauthenticated enumeration attacks.
 = 2.6.0 - 23rd March 2026 =
 * New: Added MCP (Model Context Protocol) settings and Abilities API for AI-powered form management.
 * Improvement: Added Blocks API v3 compatibility.
