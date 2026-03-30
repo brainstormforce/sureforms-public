@@ -168,10 +168,10 @@ class Admin_Stripe_Handler {
 	 * Used by both admin and frontend to cancel Stripe subscriptions.
 	 *
 	 * @since x.x.x
-	 * @param array  $result      Default result array.
-	 * @param array  $payment     Payment record from database.
-	 * @param string $cancel_type Cancel type (unused, always immediate).
-	 * @return array Result with success status and message.
+	 * @param array<string,mixed> $result      Default result array.
+	 * @param array<string,mixed> $payment     Payment record from database.
+	 * @param string              $cancel_type Cancel type (unused, always immediate).
+	 * @return array<string,mixed> Result with success status and message.
 	 */
 	public function process_stripe_subscription_cancellation( $result, $payment, $cancel_type = 'now' ) {
 		// Only process Stripe payments.
@@ -179,16 +179,17 @@ class Admin_Stripe_Handler {
 			return $result;
 		}
 
-		if ( empty( $payment['subscription_id'] ) ) {
+		if ( empty( $payment['subscription_id'] ) || ! is_string( $payment['subscription_id'] ) ) {
 			return [
 				'success' => false,
 				'message' => __( 'Subscription ID not found.', 'sureforms' ),
 			];
 		}
 
+		$subscription_id    = $payment['subscription_id'];
 		$this->payment_mode = ! empty( $payment['mode'] ) && is_string( $payment['mode'] ) ? $payment['mode'] : 'test';
 
-		$cancel_result = $this->cancel_subscription( $payment['subscription_id'] );
+		$cancel_result = $this->cancel_subscription( $subscription_id );
 		if ( ! $cancel_result ) {
 			return [
 				'success' => false,
@@ -202,7 +203,7 @@ class Admin_Stripe_Handler {
 			sprintf(
 				/* translators: %s: Stripe subscription ID */
 				__( 'Subscription ID: %s', 'sureforms' ),
-				$payment['subscription_id']
+				$subscription_id
 			),
 			sprintf(
 				/* translators: %s: payment gateway name */
@@ -227,7 +228,7 @@ class Admin_Stripe_Handler {
 			'messages'   => $log_messages,
 		];
 
-		$payment_id = isset( $payment['id'] ) ? absint( $payment['id'] ) : 0;
+		$payment_id = isset( $payment['id'] ) && is_numeric( $payment['id'] ) ? absint( $payment['id'] ) : 0;
 		Payments::update(
 			$payment_id,
 			[

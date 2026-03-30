@@ -107,7 +107,7 @@ class Payment_History_Shortcode {
 				'show_subscription' => 'true',
 				'show_renewal'      => 'true',
 			],
-			$atts,
+			is_array( $atts ) ? $atts : [],
 			self::SHORTCODE_TAG
 		);
 
@@ -256,9 +256,9 @@ class Payment_History_Shortcode {
 		);
 
 		if ( ! empty( $result['success'] ) ) {
-			wp_send_json_success( [ 'message' => isset( $result['message'] ) ? strval( $result['message'] ) : __( 'Subscription cancelled successfully.', 'sureforms' ) ] );
+			wp_send_json_success( [ 'message' => isset( $result['message'] ) && is_scalar( $result['message'] ) ? strval( $result['message'] ) : __( 'Subscription cancelled successfully.', 'sureforms' ) ] );
 		} else {
-			wp_send_json_error( isset( $result['message'] ) ? strval( $result['message'] ) : __( 'Failed to cancel subscription.', 'sureforms' ) );
+			wp_send_json_error( isset( $result['message'] ) && is_scalar( $result['message'] ) ? strval( $result['message'] ) : __( 'Failed to cancel subscription.', 'sureforms' ) );
 		}
 	}
 
@@ -308,7 +308,7 @@ class Payment_History_Shortcode {
 	/**
 	 * Get user subscriptions, deduplicated by subscription_id.
 	 *
-	 * @param array<int,array<int,array<string,string>>> $where WHERE conditions.
+	 * @param array<int,array<int|string,array<string,mixed>|string>> $where WHERE conditions.
 	 * @since x.x.x
 	 * @return array<int,array<string,mixed>>
 	 */
@@ -357,7 +357,7 @@ class Payment_History_Shortcode {
 		$cancelled_count = 0;
 
 		foreach ( $subscriptions as $sub ) {
-			$status = isset( $sub['subscription_status'] ) ? strval( $sub['subscription_status'] ) : '';
+			$status = isset( $sub['subscription_status'] ) && is_scalar( $sub['subscription_status'] ) ? strval( $sub['subscription_status'] ) : '';
 			if ( in_array( $status, [ 'active', 'trialing' ], true ) ) {
 				++$active_count;
 			} elseif ( 'canceled' === $status ) {
@@ -399,13 +399,13 @@ class Payment_History_Shortcode {
 	 * @return void
 	 */
 	private function render_subscription_row( $sub, $index ) {
-		$status       = isset( $sub['subscription_status'] ) ? strval( $sub['subscription_status'] ) : '';
+		$status       = isset( $sub['subscription_status'] ) && is_scalar( $sub['subscription_status'] ) ? strval( $sub['subscription_status'] ) : '';
 		$is_active    = in_array( $status, [ 'active', 'trialing' ], true );
 		$is_cancelled = 'canceled' === $status;
 		$currency     = isset( $sub['currency'] ) && is_string( $sub['currency'] ) ? strtoupper( $sub['currency'] ) : 'USD';
-		$form_title   = $this->get_form_title( isset( $sub['form_id'] ) ? absint( $sub['form_id'] ) : 0 );
+		$form_title   = $this->get_form_title( isset( $sub['form_id'] ) && is_numeric( $sub['form_id'] ) ? absint( $sub['form_id'] ) : 0 );
 		$sub_data     = $this->extract_subscription_data( $sub );
-		$amount_text  = $this->format_amount( isset( $sub['total_amount'] ) ? floatval( $sub['total_amount'] ) : 0.0, $currency );
+		$amount_text  = $this->format_amount( isset( $sub['total_amount'] ) && is_numeric( $sub['total_amount'] ) ? floatval( $sub['total_amount'] ) : 0.0, $currency );
 
 		if ( ! empty( $sub_data['interval_label'] ) ) {
 			$amount_text .= ' / ' . $sub_data['interval_label'];
@@ -513,10 +513,10 @@ class Payment_History_Shortcode {
 	 */
 	private function render_payment_row( $payment, $index ) {
 		$currency    = isset( $payment['currency'] ) && is_string( $payment['currency'] ) ? strtoupper( $payment['currency'] ) : 'USD';
-		$status      = isset( $payment['status'] ) ? strval( $payment['status'] ) : 'pending';
-		$txn_id      = ! empty( $payment['srfm_txn_id'] ) ? strval( $payment['srfm_txn_id'] ) : '';
-		$form_title  = $this->get_form_title( isset( $payment['form_id'] ) ? absint( $payment['form_id'] ) : 0 );
-		$date_format = strval( get_option( 'date_format' ) );
+		$status      = isset( $payment['status'] ) && is_scalar( $payment['status'] ) ? strval( $payment['status'] ) : 'pending';
+		$txn_id      = ! empty( $payment['srfm_txn_id'] ) && is_scalar( $payment['srfm_txn_id'] ) ? strval( $payment['srfm_txn_id'] ) : '';
+		$form_title  = $this->get_form_title( isset( $payment['form_id'] ) && is_numeric( $payment['form_id'] ) ? absint( $payment['form_id'] ) : 0 );
+		$date_format = is_string( get_option( 'date_format' ) ) ? get_option( 'date_format' ) : 'Y-m-d';
 		$date        = isset( $payment['created_at'] ) && is_string( $payment['created_at'] )
 			? date_i18n( $date_format, strtotime( $payment['created_at'] ) )
 			: '—';
@@ -533,7 +533,7 @@ class Payment_History_Shortcode {
 				<span class="srfm-pd-badge <?php echo esc_attr( $badge_class ); ?>">
 					<span class="srfm-pd-badge-dot"></span><?php echo esc_html( $badge_label ); ?>
 				</span>
-				<span class="srfm-pd-pay-row-amount"><?php echo esc_html( $this->format_amount( isset( $payment['total_amount'] ) ? floatval( $payment['total_amount'] ) : 0.0, $currency ) ); ?></span>
+				<span class="srfm-pd-pay-row-amount"><?php echo esc_html( $this->format_amount( isset( $payment['total_amount'] ) && is_numeric( $payment['total_amount'] ) ? floatval( $payment['total_amount'] ) : 0.0, $currency ) ); ?></span>
 				<span class="srfm-pd-chevron" aria-hidden="true">›</span>
 			</div>
 		</div>
@@ -553,62 +553,65 @@ class Payment_History_Shortcode {
 	 * @return void
 	 */
 	private function output_js_data( $subscriptions, $payments ) {
-		$date_format = strval( get_option( 'date_format' ) );
-		$subs_data   = [];
+		$date_format_opt = get_option( 'date_format' );
+		$date_format     = is_string( $date_format_opt ) ? $date_format_opt : 'Y-m-d';
+		$subs_data       = [];
 
 		foreach ( $subscriptions as $sub ) {
 			$currency   = isset( $sub['currency'] ) && is_string( $sub['currency'] ) ? strtoupper( $sub['currency'] ) : 'USD';
-			$form_title = $this->get_form_title( isset( $sub['form_id'] ) ? absint( $sub['form_id'] ) : 0 );
+			$form_title = $this->get_form_title( isset( $sub['form_id'] ) && is_numeric( $sub['form_id'] ) ? absint( $sub['form_id'] ) : 0 );
 			$sub_info   = $this->extract_subscription_data( $sub );
-			$status     = isset( $sub['subscription_status'] ) ? strval( $sub['subscription_status'] ) : '';
+			$status     = isset( $sub['subscription_status'] ) && is_scalar( $sub['subscription_status'] ) ? strval( $sub['subscription_status'] ) : '';
 			$is_active  = in_array( $status, [ 'active', 'trialing' ], true );
 
-			$amount_display = $this->format_amount( isset( $sub['total_amount'] ) ? floatval( $sub['total_amount'] ) : 0.0, $currency );
+			$amount_display = $this->format_amount( isset( $sub['total_amount'] ) && is_numeric( $sub['total_amount'] ) ? floatval( $sub['total_amount'] ) : 0.0, $currency );
 			if ( ! empty( $sub_info['interval_label'] ) ) {
 				$amount_display .= ' / ' . $sub_info['interval_label'];
 			}
 
+			$sub_id      = isset( $sub['id'] ) && is_numeric( $sub['id'] ) ? $sub['id'] : 0;
 			$subs_data[] = [
-				'id'             => absint( $sub['id'] ?? 0 ),
+				'id'             => absint( $sub_id ),
 				'name'           => ! empty( $sub_info['plan_name'] ) ? $sub_info['plan_name'] : $form_title,
 				'form'           => $form_title,
 				'amount'         => $amount_display,
 				'next'           => $sub_info['next_payment'],
-				'gateway'        => ucfirst( isset( $sub['gateway'] ) ? strval( $sub['gateway'] ) : '' ),
+				'gateway'        => ucfirst( isset( $sub['gateway'] ) && is_scalar( $sub['gateway'] ) ? strval( $sub['gateway'] ) : '' ),
 				'started'        => isset( $sub['created_at'] ) && is_string( $sub['created_at'] )
 					? date_i18n( $date_format, strtotime( $sub['created_at'] ) ) : '—',
 				'status'         => $status,
 				'cancelledOn'    => $sub_info['cancelled_on'],
 				'accessUntil'    => $sub_info['access_until'],
 				'canCancel'      => $is_active,
-				'subscriptionId' => isset( $sub['subscription_id'] ) ? strval( $sub['subscription_id'] ) : '',
-				'paymentId'      => absint( $sub['id'] ?? 0 ),
+				'subscriptionId' => isset( $sub['subscription_id'] ) && is_scalar( $sub['subscription_id'] ) ? strval( $sub['subscription_id'] ) : '',
+				'paymentId'      => absint( $sub_id ),
 			];
 		}
 
 		$txs_data = [];
 		foreach ( $payments as $payment ) {
 			$currency   = isset( $payment['currency'] ) && is_string( $payment['currency'] ) ? strtoupper( $payment['currency'] ) : 'USD';
-			$status     = isset( $payment['status'] ) ? strval( $payment['status'] ) : 'pending';
-			$type       = isset( $payment['type'] ) ? strval( $payment['type'] ) : 'payment';
-			$form_title = $this->get_form_title( isset( $payment['form_id'] ) ? absint( $payment['form_id'] ) : 0 );
+			$status     = isset( $payment['status'] ) && is_scalar( $payment['status'] ) ? strval( $payment['status'] ) : 'pending';
+			$type       = isset( $payment['type'] ) && is_scalar( $payment['type'] ) ? strval( $payment['type'] ) : 'payment';
+			$form_title = $this->get_form_title( isset( $payment['form_id'] ) && is_numeric( $payment['form_id'] ) ? absint( $payment['form_id'] ) : 0 );
 
-			$tx_item = [
-				'id'        => ! empty( $payment['srfm_txn_id'] ) ? strval( $payment['srfm_txn_id'] ) : 'SF-' . absint( $payment['id'] ?? 0 ),
-				'paymentId' => absint( $payment['id'] ?? 0 ),
+			$payment_id = isset( $payment['id'] ) && is_numeric( $payment['id'] ) ? $payment['id'] : 0;
+			$tx_item    = [
+				'id'        => ! empty( $payment['srfm_txn_id'] ) && is_scalar( $payment['srfm_txn_id'] ) ? strval( $payment['srfm_txn_id'] ) : 'SF-' . absint( $payment_id ),
+				'paymentId' => absint( $payment_id ),
 				'form'      => $form_title,
 				'date'      => isset( $payment['created_at'] ) && is_string( $payment['created_at'] )
 					? date_i18n( $date_format, strtotime( $payment['created_at'] ) ) : '—',
-				'amount'    => $this->format_amount( isset( $payment['total_amount'] ) ? floatval( $payment['total_amount'] ) : 0.0, $currency ),
+				'amount'    => $this->format_amount( isset( $payment['total_amount'] ) && is_numeric( $payment['total_amount'] ) ? floatval( $payment['total_amount'] ) : 0.0, $currency ),
 				'status'    => $status,
 				'type'      => in_array( $type, [ 'subscription', 'renewal' ], true ) ? 'subscription' : 'single',
-				'gateway'   => ucfirst( isset( $payment['gateway'] ) ? strval( $payment['gateway'] ) : '' ),
-				'txn'       => isset( $payment['transaction_id'] ) ? strval( $payment['transaction_id'] ) : '',
+				'gateway'   => ucfirst( isset( $payment['gateway'] ) && is_scalar( $payment['gateway'] ) ? strval( $payment['gateway'] ) : '' ),
+				'txn'       => isset( $payment['transaction_id'] ) && is_scalar( $payment['transaction_id'] ) ? strval( $payment['transaction_id'] ) : '',
 			];
 
 			if ( in_array( $type, [ 'subscription', 'renewal' ], true ) && ! empty( $payment['subscription_id'] ) ) {
 				$sub_info       = $this->extract_subscription_data( $payment );
-				$amount_display = $this->format_amount( isset( $payment['total_amount'] ) ? floatval( $payment['total_amount'] ) : 0.0, $currency );
+				$amount_display = $this->format_amount( isset( $payment['total_amount'] ) && is_numeric( $payment['total_amount'] ) ? floatval( $payment['total_amount'] ) : 0.0, $currency );
 				if ( ! empty( $sub_info['interval_label'] ) ) {
 					$amount_display .= ' / ' . $sub_info['interval_label'];
 				}
@@ -617,7 +620,7 @@ class Payment_History_Shortcode {
 					'name'     => ! empty( $sub_info['plan_name'] ) ? $sub_info['plan_name'] : $form_title,
 					'interval' => $amount_display,
 					'next'     => $sub_info['next_payment'],
-					'status'   => $this->get_subscription_status_label( isset( $payment['subscription_status'] ) ? strval( $payment['subscription_status'] ) : '' ),
+					'status'   => $this->get_subscription_status_label( isset( $payment['subscription_status'] ) && is_scalar( $payment['subscription_status'] ) ? strval( $payment['subscription_status'] ) : '' ),
 				];
 			}
 
@@ -671,7 +674,8 @@ class Payment_History_Shortcode {
 		if ( ! empty( $cancelled_at ) ) {
 			$data['cancelled_on'] = $this->format_timestamp( $cancelled_at );
 		} elseif ( isset( $payment['updated_at'] ) && is_string( $payment['updated_at'] ) && 'canceled' === ( $payment['subscription_status'] ?? '' ) ) {
-			$data['cancelled_on'] = date_i18n( strval( get_option( 'date_format' ) ), strtotime( $payment['updated_at'] ) );
+			$date_fmt             = get_option( 'date_format' );
+			$data['cancelled_on'] = date_i18n( is_string( $date_fmt ) ? $date_fmt : 'Y-m-d', strtotime( $payment['updated_at'] ) );
 		}
 
 		if ( ! empty( $next_date ) && 'canceled' === ( $payment['subscription_status'] ?? '' ) ) {
@@ -709,10 +713,10 @@ class Payment_History_Shortcode {
 	 * @return string
 	 */
 	private function get_string_from_sources( $key, $data1, $data2 ) {
-		if ( ! empty( $data1[ $key ] ) ) {
+		if ( ! empty( $data1[ $key ] ) && is_scalar( $data1[ $key ] ) ) {
 			return strval( $data1[ $key ] );
 		}
-		if ( ! empty( $data2[ $key ] ) ) {
+		if ( ! empty( $data2[ $key ] ) && is_scalar( $data2[ $key ] ) ) {
 			return strval( $data2[ $key ] );
 		}
 		return '';
@@ -726,7 +730,8 @@ class Payment_History_Shortcode {
 	 * @return string Formatted date.
 	 */
 	private function format_timestamp( $value ) {
-		$format = strval( get_option( 'date_format' ) );
+		$date_opt = get_option( 'date_format' );
+		$format   = is_string( $date_opt ) ? $date_opt : 'Y-m-d';
 		return is_numeric( $value )
 			? date_i18n( $format, intval( $value ) )
 			: date_i18n( $format, strtotime( $value ) );
@@ -870,7 +875,7 @@ class Payment_History_Shortcode {
 	 * @param int                  $user_id WordPress user ID.
 	 * @param array<string,string> $atts    Shortcode attributes.
 	 * @since x.x.x
-	 * @return array<int,array<int,array<string,string>>> WHERE conditions.
+	 * @return array<int,array<int|string,array<string,mixed>|string>> WHERE conditions.
 	 */
 	private function build_where_conditions( $user_id, $atts ) {
 		$stripe_customer_id = get_user_meta( $user_id, 'srfm_stripe_customer_id', true );
@@ -927,9 +932,9 @@ class Payment_History_Shortcode {
 		 * Filter the WHERE conditions for the payment history query.
 		 *
 		 * @since x.x.x
-		 * @param array<int,array<int,array<string,string>>> $where   WHERE conditions array.
-		 * @param int                                        $user_id WordPress user ID.
-		 * @param array<string,string>                       $atts    Shortcode attributes.
+		 * @param array<int,array<int|string,array<string,mixed>|string>> $where   WHERE conditions array.
+		 * @param int                                                     $user_id WordPress user ID.
+		 * @param array<string,string>                                    $atts    Shortcode attributes.
 		 */
 		return apply_filters( 'srfm_payment_history_where_conditions', $where, $user_id, $atts );
 	}

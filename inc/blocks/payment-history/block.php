@@ -33,7 +33,7 @@ class Block extends Base {
 	 */
 	public function render( $attributes ) {
 		$shortcode_atts = [
-			'per_page'          => isset( $attributes['perPage'] ) ? absint( $attributes['perPage'] ) : 10,
+			'per_page'          => isset( $attributes['perPage'] ) && is_numeric( $attributes['perPage'] ) ? strval( absint( $attributes['perPage'] ) ) : '10',
 			'show_subscription' => ! empty( $attributes['showSubscription'] ) ? 'true' : 'false',
 			'show_renewal'      => ! empty( $attributes['showRenewal'] ) ? 'true' : 'false',
 		];
