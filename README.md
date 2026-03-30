@@ -405,7 +405,6 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 * New: Added styling options for Gutenberg SureForms Form Block.
 * New: Added styling options for Bricks Builder SureForms Form Element.
 * New: Added styling options for Elementor SureForms Form Widget.
-* New: Added per-client MCP setup instructions with tailored configuration for Claude Desktop, Claude Code, Cursor, VS Code, and Continue.
 * New: Added user details collection step in onboarding for non-authenticated users.
 * Fix: Fixed "Send as Raw HTML" email option wrapping content in unwanted template markup.
 * Fix: Fixed Multi Choice option labels with extra whitespace failing to resolve numeric values in payment calculations.
