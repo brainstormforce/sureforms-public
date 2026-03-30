@@ -220,7 +220,7 @@ class Payment_History_Shortcode {
 			wp_send_json_error( __( 'You must be logged in.', 'sureforms' ) );
 		}
 
-		$payment_id  = isset( $_POST['payment_id'] ) ? absint( $_POST['payment_id'] ) : 0;
+		$payment_id = isset( $_POST['payment_id'] ) ? absint( $_POST['payment_id'] ) : 0;
 
 		if ( empty( $payment_id ) ) {
 			wp_send_json_error( __( 'Invalid payment data.', 'sureforms' ) );
