@@ -8,7 +8,7 @@
  * @since x.x.x
  */
 
-( function() {
+( function () {
 	'use strict';
 
 	const config = window.srfm_payment_history || {};
@@ -23,11 +23,11 @@
 	 */
 	function init() {
 		const subRows = document.querySelectorAll( '.srfm-pd-sub-row' );
-		subRows.forEach( function( row ) {
-			row.addEventListener( 'click', function() {
+		subRows.forEach( function ( row ) {
+			row.addEventListener( 'click', function () {
 				openSubDetail( parseInt( row.dataset.index, 10 ) );
 			} );
-			row.addEventListener( 'keydown', function( e ) {
+			row.addEventListener( 'keydown', function ( e ) {
 				if ( 'Enter' === e.key || ' ' === e.key ) {
 					e.preventDefault();
 					openSubDetail( parseInt( row.dataset.index, 10 ) );
@@ -36,11 +36,11 @@
 		} );
 
 		const payRows = document.querySelectorAll( '.srfm-pd-pay-row' );
-		payRows.forEach( function( row ) {
-			row.addEventListener( 'click', function() {
+		payRows.forEach( function ( row ) {
+			row.addEventListener( 'click', function () {
 				openTxDetail( parseInt( row.dataset.index, 10 ) );
 			} );
-			row.addEventListener( 'keydown', function( e ) {
+			row.addEventListener( 'keydown', function ( e ) {
 				if ( 'Enter' === e.key || ' ' === e.key ) {
 					e.preventDefault();
 					openTxDetail( parseInt( row.dataset.index, 10 ) );
@@ -48,15 +48,17 @@
 			} );
 		} );
 
-		document.querySelectorAll( '.srfm-pd-overlay' ).forEach( function( overlay ) {
-			overlay.addEventListener( 'click', function( e ) {
-				if ( e.target === overlay ) {
-					closeOverlay( overlay.id );
-				}
+		document
+			.querySelectorAll( '.srfm-pd-overlay' )
+			.forEach( function ( overlay ) {
+				overlay.addEventListener( 'click', function ( e ) {
+					if ( e.target === overlay ) {
+						closeOverlay( overlay.id );
+					}
+				} );
 			} );
-		} );
 
-		document.addEventListener( 'keydown', function( e ) {
+		document.addEventListener( 'keydown', function ( e ) {
 			if ( 'Escape' === e.key ) {
 				closeOverlay( 'srfm-pd-cancel-overlay' );
 				closeOverlay( 'srfm-pd-sub-overlay' );
@@ -85,17 +87,30 @@
 			paused: 'Paused',
 		};
 		const statusLabel = statusMap[ s.status ] || s.status;
-		const badgeClass = isActive ? 'srfm-pd-badge--active' : 'srfm-pd-badge--cancelled';
+		const badgeClass = isActive
+			? 'srfm-pd-badge--active'
+			: 'srfm-pd-badge--cancelled';
 
-		let html = '<div class="srfm-pd-panel-header">' +
+		let html =
+			'<div class="srfm-pd-panel-header">' +
 			'<div>' +
-			'<div class="srfm-pd-panel-id">' + esc( i18n.subscription || 'Subscription' ) + '</div>' +
-			'<div class="srfm-pd-panel-title">' + esc( s.name ) + '</div>' +
-			'<div class="srfm-pd-panel-subtitle">' + esc( s.form ) + '</div>' +
+			'<div class="srfm-pd-panel-id">' +
+			esc( i18n.subscription || 'Subscription' ) +
+			'</div>' +
+			'<div class="srfm-pd-panel-title">' +
+			esc( s.name ) +
+			'</div>' +
+			'<div class="srfm-pd-panel-subtitle">' +
+			esc( s.form ) +
+			'</div>' +
 			'</div>' +
 			'<div style="text-align:right;">' +
 			'<button type="button" class="srfm-pd-panel-close" onclick="srfmPH.closeSub()">&times;</button>' +
-			'<div style="margin-top:8px;"><span class="srfm-pd-badge ' + badgeClass + '"><span class="srfm-pd-badge-dot"></span>' + esc( statusLabel ) + '</span></div>' +
+			'<div style="margin-top:8px;"><span class="srfm-pd-badge ' +
+			badgeClass +
+			'"><span class="srfm-pd-badge-dot"></span>' +
+			esc( statusLabel ) +
+			'</span></div>' +
 			'</div></div>';
 
 		html += panelRow( i18n.amount || 'Amount', s.amount );
@@ -104,10 +119,16 @@
 			html += panelRow( i18n.next_payment || 'Next Payment', s.next );
 		} else if ( ! isActive ) {
 			if ( s.cancelledOn ) {
-				html += panelRow( i18n.cancelled_on || 'Cancelled On', s.cancelledOn );
+				html += panelRow(
+					i18n.cancelled_on || 'Cancelled On',
+					s.cancelledOn
+				);
 			}
 			if ( s.accessUntil ) {
-				html += panelRow( i18n.access_until || 'Access Until', s.accessUntil );
+				html += panelRow(
+					i18n.access_until || 'Access Until',
+					s.accessUntil
+				);
 			}
 		}
 
@@ -115,11 +136,24 @@
 		html += panelRow( i18n.started || 'Started', s.started );
 
 		html += '<div class="srfm-pd-panel-footer">';
-		html += '<button type="button" class="srfm-pd-btn" onclick="srfmPH.closeSub()">' + svgBack() + ' ' + esc( i18n.back || 'Back' ) + '</button>';
+		html +=
+			'<button type="button" class="srfm-pd-btn" onclick="srfmPH.closeSub()">' +
+			svgBack() +
+			' ' +
+			esc( i18n.back || 'Back' ) +
+			'</button>';
 
 		if ( isActive ) {
-			html += '<button type="button" class="srfm-pd-btn srfm-pd-btn--danger" onclick="srfmPH.closeSub();srfmPH.openCancel(\'' + escAttr( s.name ) + '\',' + s.paymentId + ')">' +
-				svgCancel() + ' ' + esc( i18n.cancel_subscription || 'Cancel Subscription' ) + '</button>';
+			html +=
+				'<button type="button" class="srfm-pd-btn srfm-pd-btn--danger" onclick="srfmPH.closeSub();srfmPH.openCancel(\'' +
+				escAttr( s.name ) +
+				"'," +
+				s.paymentId +
+				')">' +
+				svgCancel() +
+				' ' +
+				esc( i18n.cancel_subscription || 'Cancel Subscription' ) +
+				'</button>';
 		}
 
 		html += '</div>';
@@ -150,41 +184,97 @@
 			active: 'Active',
 		};
 		const statusLabel = statusMap[ t.status ] || t.status;
-		const badgeClass = 'refunded' === t.status || 'partially_refunded' === t.status
-			? 'srfm-pd-badge--refunded'
-			: ( 'succeeded' === t.status || 'active' === t.status ? 'srfm-pd-badge--paid' : 'srfm-pd-badge--pending' );
+		const badgeClass =
+			'refunded' === t.status || 'partially_refunded' === t.status
+				? 'srfm-pd-badge--refunded'
+				: 'succeeded' === t.status || 'active' === t.status
+					? 'srfm-pd-badge--paid'
+					: 'srfm-pd-badge--pending';
 
-		let html = '<div class="srfm-pd-panel-header">' +
+		let html =
+			'<div class="srfm-pd-panel-header">' +
 			'<div>' +
-			'<div class="srfm-pd-panel-id">' + esc( t.id ) + '</div>' +
-			'<div class="srfm-pd-panel-title">' + esc( t.amount ) + '</div>' +
-			'<div class="srfm-pd-panel-subtitle">' + esc( t.date ) + '</div>' +
+			'<div class="srfm-pd-panel-id">' +
+			esc( t.id ) +
+			'</div>' +
+			'<div class="srfm-pd-panel-title">' +
+			esc( t.amount ) +
+			'</div>' +
+			'<div class="srfm-pd-panel-subtitle">' +
+			esc( t.date ) +
+			'</div>' +
 			'</div>' +
 			'<div style="text-align:right;">' +
 			'<button type="button" class="srfm-pd-panel-close" onclick="srfmPH.closeTx()">&times;</button>' +
-			'<div style="margin-top:8px;"><span class="srfm-pd-badge ' + badgeClass + '"><span class="srfm-pd-badge-dot"></span>' + esc( statusLabel ) + '</span></div>' +
+			'<div style="margin-top:8px;"><span class="srfm-pd-badge ' +
+			badgeClass +
+			'"><span class="srfm-pd-badge-dot"></span>' +
+			esc( statusLabel ) +
+			'</span></div>' +
 			'</div></div>';
 
 		html += panelRow( i18n.form || 'Form', t.form );
-		html += panelRow( i18n.type || 'Type', 'subscription' === t.type ? ( i18n.subscription_payment || 'Subscription Payment' ) : ( i18n.one_time_payment || 'One-time Payment' ) );
+		html += panelRow(
+			i18n.type || 'Type',
+			'subscription' === t.type
+				? i18n.subscription_payment || 'Subscription Payment'
+				: i18n.one_time_payment || 'One-time Payment'
+		);
 		html += panelRow( i18n.gateway || 'Gateway', t.gateway );
-		html += panelRow( i18n.transaction_id || 'Transaction ID', '<span style="font-family:monospace;font-size:11px;">' + esc( t.txn ) + '</span>' );
+		html += panelRow(
+			i18n.transaction_id || 'Transaction ID',
+			'<span style="font-family:monospace;font-size:11px;">' +
+				esc( t.txn ) +
+				'</span>'
+		);
 
 		if ( 'subscription' === t.type && t.sub ) {
-			html += '<div class="srfm-pd-sub-info-box">' +
-				'<div class="srfm-pd-sub-info-title">' + esc( i18n.parent_subscription || 'Parent Subscription' ) + '</div>' +
+			html +=
+				'<div class="srfm-pd-sub-info-box">' +
+				'<div class="srfm-pd-sub-info-title">' +
+				esc( i18n.parent_subscription || 'Parent Subscription' ) +
+				'</div>' +
 				'<div class="srfm-pd-sub-info-grid">' +
-				'<div><div class="srfm-pd-sub-info-label">' + esc( i18n.plan || 'Plan' ) + '</div><div class="srfm-pd-sub-info-value">' + esc( t.sub.name ) + '</div></div>' +
-				'<div><div class="srfm-pd-sub-info-label">' + esc( i18n.amount || 'Amount' ) + '</div><div class="srfm-pd-sub-info-value">' + esc( t.sub.interval ) + '</div></div>' +
-				( t.sub.next ? '<div><div class="srfm-pd-sub-info-label">' + esc( i18n.next_payment || 'Next Payment' ) + '</div><div class="srfm-pd-sub-info-value">' + esc( t.sub.next ) + '</div></div>' : '' ) +
-				'<div><div class="srfm-pd-sub-info-label">' + esc( i18n.status || 'Status' ) + '</div><div class="srfm-pd-sub-info-value">' + esc( t.sub.status ) + '</div></div>' +
+				'<div><div class="srfm-pd-sub-info-label">' +
+				esc( i18n.plan || 'Plan' ) +
+				'</div><div class="srfm-pd-sub-info-value">' +
+				esc( t.sub.name ) +
+				'</div></div>' +
+				'<div><div class="srfm-pd-sub-info-label">' +
+				esc( i18n.amount || 'Amount' ) +
+				'</div><div class="srfm-pd-sub-info-value">' +
+				esc( t.sub.interval ) +
+				'</div></div>' +
+				( t.sub.next
+					? '<div><div class="srfm-pd-sub-info-label">' +
+					  esc( i18n.next_payment || 'Next Payment' ) +
+					  '</div><div class="srfm-pd-sub-info-value">' +
+					  esc( t.sub.next ) +
+					  '</div></div>'
+					: '' ) +
+				'<div><div class="srfm-pd-sub-info-label">' +
+				esc( i18n.status || 'Status' ) +
+				'</div><div class="srfm-pd-sub-info-value">' +
+				esc( t.sub.status ) +
+				'</div></div>' +
 				'</div></div>';
 		} else {
-			html += '<div class="srfm-pd-single-info-box">' + esc( i18n.one_time_note || 'One-time payment. No recurring subscription associated.' ) + '</div>';
+			html +=
+				'<div class="srfm-pd-single-info-box">' +
+				esc(
+					i18n.one_time_note ||
+						'One-time payment. No recurring subscription associated.'
+				) +
+				'</div>';
 		}
 
 		html += '<div class="srfm-pd-panel-footer">';
-		html += '<button type="button" class="srfm-pd-btn" onclick="srfmPH.closeTx()">' + svgBack() + ' ' + esc( i18n.back || 'Back' ) + '</button>';
+		html +=
+			'<button type="button" class="srfm-pd-btn" onclick="srfmPH.closeTx()">' +
+			svgBack() +
+			' ' +
+			esc( i18n.back || 'Back' ) +
+			'</button>';
 		html += '</div>';
 
 		document.getElementById( 'srfm-pd-tx-panel' ).innerHTML = html;
@@ -206,25 +296,53 @@
 		let html = '';
 
 		if ( 1 === step ) {
-			const msg = ( i18n.cancel_confirm_now || 'Your "%s" will be cancelled immediately. You will lose access right away.' ).replace( '%s', cancelState.name );
+			const msg = (
+				i18n.cancel_confirm_now ||
+				'Your "%s" will be cancelled immediately. You will lose access right away.'
+			).replace( '%s', cancelState.name );
 
-			html = '<div class="srfm-pd-cancel-body" style="padding-top:32px;">' +
-				'<div class="srfm-pd-cancel-icon" style="background:#fef3c7;">' + svgWarning() + '</div>' +
-				'<h4>' + esc( i18n.are_you_sure || 'Are you sure?' ) + '</h4>' +
-				'<p>' + esc( msg ) + '</p></div>';
+			html =
+				'<div class="srfm-pd-cancel-body" style="padding-top:32px;">' +
+				'<div class="srfm-pd-cancel-icon" style="background:#fef3c7;">' +
+				svgWarning() +
+				'</div>' +
+				'<h4>' +
+				esc( i18n.are_you_sure || 'Are you sure?' ) +
+				'</h4>' +
+				'<p>' +
+				esc( msg ) +
+				'</p></div>';
 
-			html += '<div class="srfm-pd-panel-footer">' +
-				'<button type="button" class="srfm-pd-btn" onclick="srfmPH.closeCancel()">' + esc( i18n.keep_subscription || 'Keep Subscription' ) + '</button>' +
-				'<button type="button" class="srfm-pd-btn srfm-pd-btn--danger-fill" id="srfm-pd-confirm-cancel" onclick="srfmPH.confirmCancel()">' + esc( i18n.yes_cancel || 'Yes, Cancel' ) + '</button>' +
+			html +=
+				'<div class="srfm-pd-panel-footer">' +
+				'<button type="button" class="srfm-pd-btn" onclick="srfmPH.closeCancel()">' +
+				esc( i18n.keep_subscription || 'Keep Subscription' ) +
+				'</button>' +
+				'<button type="button" class="srfm-pd-btn srfm-pd-btn--danger-fill" id="srfm-pd-confirm-cancel" onclick="srfmPH.confirmCancel()">' +
+				esc( i18n.yes_cancel || 'Yes, Cancel' ) +
+				'</button>' +
 				'</div>';
 		} else if ( 2 === step ) {
-			html = '<div class="srfm-pd-cancel-body" style="padding:40px 24px;">' +
-				'<div class="srfm-pd-cancel-icon" style="background:#dcfce7;">' + svgCheck() + '</div>' +
-				'<h4>' + esc( i18n.subscription_cancelled || 'Subscription Cancelled' ) + '</h4>' +
-				'<p>' + esc( i18n.cancel_success || 'The subscription has been cancelled successfully.' ) + '</p></div>';
+			html =
+				'<div class="srfm-pd-cancel-body" style="padding:40px 24px;">' +
+				'<div class="srfm-pd-cancel-icon" style="background:#dcfce7;">' +
+				svgCheck() +
+				'</div>' +
+				'<h4>' +
+				esc( i18n.subscription_cancelled || 'Subscription Cancelled' ) +
+				'</h4>' +
+				'<p>' +
+				esc(
+					i18n.cancel_success ||
+						'The subscription has been cancelled successfully.'
+				) +
+				'</p></div>';
 
-			html += '<div class="srfm-pd-panel-footer srfm-pd-panel-footer--center">' +
-				'<button type="button" class="srfm-pd-btn srfm-pd-btn--primary" onclick="srfmPH.finishCancel()">' + esc( i18n.done || 'Done' ) + '</button>' +
+			html +=
+				'<div class="srfm-pd-panel-footer srfm-pd-panel-footer--center">' +
+				'<button type="button" class="srfm-pd-btn srfm-pd-btn--primary" onclick="srfmPH.finishCancel()">' +
+				esc( i18n.done || 'Done' ) +
+				'</button>' +
 				'</div>';
 		}
 
@@ -249,10 +367,10 @@
 			body: formData,
 			credentials: 'same-origin',
 		} )
-			.then( function( response ) {
+			.then( function ( response ) {
 				return response.json();
 			} )
-			.then( function( data ) {
+			.then( function ( data ) {
 				if ( data.success ) {
 					showCancelStep( 2 );
 				} else {
@@ -260,15 +378,19 @@
 						btn.disabled = false;
 						btn.textContent = i18n.yes_cancel || 'Yes, Cancel';
 					}
-					window.alert( data.data || i18n.error || 'Something went wrong.' );
+					window.alert(
+						data.data || i18n.error || 'Something went wrong.'
+					);
 				}
 			} )
-			.catch( function() {
+			.catch( function () {
 				if ( btn ) {
 					btn.disabled = false;
 					btn.textContent = i18n.yes_cancel || 'Yes, Cancel';
 				}
-				window.alert( i18n.error || 'Something went wrong. Please try again.' );
+				window.alert(
+					i18n.error || 'Something went wrong. Please try again.'
+				);
 			} );
 	}
 
@@ -304,7 +426,13 @@
 	// =========================================================================
 
 	function panelRow( label, value ) {
-		return '<div class="srfm-pd-panel-row"><span class="srfm-pd-panel-label">' + esc( label ) + '</span><span class="srfm-pd-panel-value">' + value + '</span></div>';
+		return (
+			'<div class="srfm-pd-panel-row"><span class="srfm-pd-panel-label">' +
+			esc( label ) +
+			'</span><span class="srfm-pd-panel-value">' +
+			value +
+			'</span></div>'
+		);
 	}
 
 	function svgBack() {
