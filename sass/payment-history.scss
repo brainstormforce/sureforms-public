@@ -562,65 +562,6 @@
 	}
 }
 
-.srfm-pd-radio {
-	display: flex;
-	align-items: flex-start;
-	gap: 10px;
-	padding: 12px 14px;
-	border: 2px solid #e5e7eb;
-	border-radius: 8px;
-	cursor: pointer;
-	margin: 0 24px 8px;
-	text-align: left;
-	transition: all 0.15s;
-
-	&:hover {
-		border-color: #d1d5db;
-	}
-
-	&--on {
-		border-color: #6366f1;
-		background: #eef2ff;
-
-		.srfm-pd-radio-dot {
-			border-color: #6366f1;
-
-			&::after {
-				content: "";
-				width: 8px;
-				height: 8px;
-				border-radius: 50%;
-				background: #6366f1;
-			}
-		}
-	}
-}
-
-.srfm-pd-radio-dot {
-	width: 16px;
-	height: 16px;
-	border-radius: 50%;
-	border: 2px solid #d1d5db;
-	flex-shrink: 0;
-	margin-top: 2px;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-}
-
-.srfm-pd-radio-text {
-	font-size: 13px;
-	font-weight: 600;
-	color: #1f2937;
-}
-
-.srfm-pd-radio-desc {
-	font-size: 11px;
-	color: #6b7280;
-	margin-top: 1px;
-	font-weight: 400;
-}
-
 /* ==========================================================================
    Responsive
    ========================================================================== */

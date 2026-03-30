@@ -111,14 +111,14 @@
 			}
 		}
 
-		html += panelRow( i18n.payment_method || 'Payment Method', s.method );
+		html += panelRow( i18n.gateway || 'Gateway', s.gateway );
 		html += panelRow( i18n.started || 'Started', s.started );
 
 		html += '<div class="srfm-pd-panel-footer">';
 		html += '<button type="button" class="srfm-pd-btn" onclick="srfmPH.closeSub()">' + svgBack() + ' ' + esc( i18n.back || 'Back' ) + '</button>';
 
 		if ( isActive ) {
-			html += '<button type="button" class="srfm-pd-btn srfm-pd-btn--danger" onclick="srfmPH.closeSub();srfmPH.openCancel(\'' + escAttr( s.name ) + '\',\'' + escAttr( s.next || '' ) + '\',' + s.paymentId + ')">' +
+			html += '<button type="button" class="srfm-pd-btn srfm-pd-btn--danger" onclick="srfmPH.closeSub();srfmPH.openCancel(\'' + escAttr( s.name ) + '\',' + s.paymentId + ')">' +
 				svgCancel() + ' ' + esc( i18n.cancel_subscription || 'Cancel Subscription' ) + '</button>';
 		}
 
@@ -168,7 +168,6 @@
 		html += panelRow( i18n.form || 'Form', t.form );
 		html += panelRow( i18n.type || 'Type', 'subscription' === t.type ? ( i18n.subscription_payment || 'Subscription Payment' ) : ( i18n.one_time_payment || 'One-time Payment' ) );
 		html += panelRow( i18n.gateway || 'Gateway', t.gateway );
-		html += panelRow( i18n.payment_method || 'Payment Method', t.method );
 		html += panelRow( i18n.transaction_id || 'Transaction ID', '<span style="font-family:monospace;font-size:11px;">' + esc( t.txn ) + '</span>' );
 
 		if ( 'subscription' === t.type && t.sub ) {
@@ -196,8 +195,8 @@
 	// Cancel Flow
 	// =========================================================================
 
-	function openCancel( name, next, paymentId ) {
-		cancelState = { name, next, opt: 'eop', paymentId };
+	function openCancel( name, paymentId ) {
+		cancelState = { name, paymentId };
 		showCancelStep( 1 );
 		openOverlay( 'srfm-pd-cancel-overlay' );
 	}
@@ -207,27 +206,7 @@
 		let html = '';
 
 		if ( 1 === step ) {
-			const descEop = ( i18n.cancel_at_eop_desc || 'Keep access until %s. No more charges.' ).replace( '%s', cancelState.next || '—' );
-			const chooseText = ( i18n.choose_how_to_cancel || 'Choose how to cancel "%s"' ).replace( '%s', cancelState.name );
-
-			html = '<div class="srfm-pd-panel-header"><div>' +
-				'<div style="font-size:17px;font-weight:700;">' + esc( i18n.cancel_subscription || 'Cancel Subscription' ) + '</div>' +
-				'<div style="font-size:13px;color:#6b7280;margin-top:4px;">' + esc( chooseText ) + '</div>' +
-				'</div><button type="button" class="srfm-pd-panel-close" onclick="srfmPH.closeCancel()">&times;</button></div>';
-
-			html += '<div style="padding:16px 0 8px;">';
-			html += radioOption( 'eop', i18n.cancel_at_eop || 'Cancel at end of billing period', descEop, 'eop' === cancelState.opt );
-			html += radioOption( 'now', i18n.cancel_immediately || 'Cancel immediately', i18n.cancel_immediately_desc || 'Lose access right away. No refund for remaining time.', 'now' === cancelState.opt );
-			html += '</div>';
-
-			html += '<div class="srfm-pd-panel-footer">' +
-				'<button type="button" class="srfm-pd-btn" onclick="srfmPH.closeCancel()">' + esc( i18n.keep_subscription || 'Keep Subscription' ) + '</button>' +
-				'<button type="button" class="srfm-pd-btn srfm-pd-btn--danger-fill" onclick="srfmPH.cancelStep(2)">' + esc( i18n.continue || 'Continue' ) + '</button>' +
-				'</div>';
-		} else if ( 2 === step ) {
-			const msg = 'eop' === cancelState.opt
-				? ( i18n.cancel_confirm_eop || 'Your "%1$s" will remain active until %2$s, then be cancelled. No further charges.' ).replace( '%1$s', cancelState.name ).replace( '%2$s', cancelState.next || '—' )
-				: ( i18n.cancel_confirm_now || 'Your "%s" will be cancelled immediately. You will lose access right away.' ).replace( '%s', cancelState.name );
+			const msg = ( i18n.cancel_confirm_now || 'Your "%s" will be cancelled immediately. You will lose access right away.' ).replace( '%s', cancelState.name );
 
 			html = '<div class="srfm-pd-cancel-body" style="padding-top:32px;">' +
 				'<div class="srfm-pd-cancel-icon" style="background:#fef3c7;">' + svgWarning() + '</div>' +
@@ -235,18 +214,14 @@
 				'<p>' + esc( msg ) + '</p></div>';
 
 			html += '<div class="srfm-pd-panel-footer">' +
-				'<button type="button" class="srfm-pd-btn" onclick="srfmPH.cancelStep(1)">' + esc( i18n.go_back || 'Go Back' ) + '</button>' +
+				'<button type="button" class="srfm-pd-btn" onclick="srfmPH.closeCancel()">' + esc( i18n.keep_subscription || 'Keep Subscription' ) + '</button>' +
 				'<button type="button" class="srfm-pd-btn srfm-pd-btn--danger-fill" id="srfm-pd-confirm-cancel" onclick="srfmPH.confirmCancel()">' + esc( i18n.yes_cancel || 'Yes, Cancel' ) + '</button>' +
 				'</div>';
-		} else if ( 3 === step ) {
-			const msg2 = 'eop' === cancelState.opt
-				? ( i18n.cancel_at_eop_desc || 'Access until %s. No further charges.' ).replace( '%s', cancelState.next || '—' )
-				: ( i18n.cancel_immediately_desc || 'Cancelled immediately.' );
-
+		} else if ( 2 === step ) {
 			html = '<div class="srfm-pd-cancel-body" style="padding:40px 24px;">' +
 				'<div class="srfm-pd-cancel-icon" style="background:#dcfce7;">' + svgCheck() + '</div>' +
 				'<h4>' + esc( i18n.subscription_cancelled || 'Subscription Cancelled' ) + '</h4>' +
-				'<p>' + esc( msg2 ) + '</p></div>';
+				'<p>' + esc( i18n.cancel_success || 'The subscription has been cancelled successfully.' ) + '</p></div>';
 
 			html += '<div class="srfm-pd-panel-footer srfm-pd-panel-footer--center">' +
 				'<button type="button" class="srfm-pd-btn srfm-pd-btn--primary" onclick="srfmPH.finishCancel()">' + esc( i18n.done || 'Done' ) + '</button>' +
@@ -254,17 +229,6 @@
 		}
 
 		panel.innerHTML = html;
-
-		if ( 1 === step ) {
-			panel.querySelectorAll( '.srfm-pd-radio' ).forEach( function( radio ) {
-				radio.addEventListener( 'click', function() {
-					cancelState.opt = radio.dataset.value;
-					panel.querySelectorAll( '.srfm-pd-radio' ).forEach( function( r ) {
-						r.classList.toggle( 'srfm-pd-radio--on', r.dataset.value === cancelState.opt );
-					} );
-				} );
-			} );
-		}
 	}
 
 	function confirmCancel() {
@@ -278,7 +242,7 @@
 		formData.append( 'action', 'srfm_frontend_cancel_subscription' );
 		formData.append( 'nonce', config.nonce );
 		formData.append( 'payment_id', cancelState.paymentId );
-		formData.append( 'cancel_type', cancelState.opt );
+		formData.append( 'cancel_type', 'now' );
 
 		fetch( config.ajax_url, {
 			method: 'POST',
@@ -290,7 +254,7 @@
 			} )
 			.then( function( data ) {
 				if ( data.success ) {
-					showCancelStep( 3 );
+					showCancelStep( 2 );
 				} else {
 					if ( btn ) {
 						btn.disabled = false;
@@ -343,13 +307,6 @@
 		return '<div class="srfm-pd-panel-row"><span class="srfm-pd-panel-label">' + esc( label ) + '</span><span class="srfm-pd-panel-value">' + value + '</span></div>';
 	}
 
-	function radioOption( value, title, desc, isOn ) {
-		return '<div class="srfm-pd-radio' + ( isOn ? ' srfm-pd-radio--on' : '' ) + '" data-value="' + value + '" role="radio" tabindex="0" aria-checked="' + ( isOn ? 'true' : 'false' ) + '">' +
-			'<div class="srfm-pd-radio-dot"></div>' +
-			'<div><div class="srfm-pd-radio-text">' + esc( title ) + '</div>' +
-			'<div class="srfm-pd-radio-desc">' + esc( desc ) + '</div></div></div>';
-	}
-
 	function svgBack() {
 		return '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>';
 	}
@@ -394,7 +351,6 @@
 			closeOverlay( 'srfm-pd-cancel-overlay' );
 		},
 		openCancel,
-		cancelStep: showCancelStep,
 		confirmCancel,
 		finishCancel,
 	};

@@ -48,7 +48,7 @@ class Admin_Stripe_Handler {
 		// Hook into unified refund filter system.
 		add_filter( 'srfm_process_transaction_refund', [ $this, 'process_stripe_refund' ], 10, 2 );
 		// Hook into unified subscription cancellation filter system.
-		add_filter( 'srfm_process_subscription_cancellation', [ $this, 'process_stripe_subscription_cancellation' ], 10, 2 );
+		add_filter( 'srfm_process_subscription_cancellation', [ $this, 'process_stripe_subscription_cancellation' ], 10, 3 );
 		// Admin notices.
 		add_action( 'admin_notices', [ $this, 'webhook_configuration_notice' ] );
 	}
@@ -89,7 +89,7 @@ class Admin_Stripe_Handler {
 		// Get payment record.
 		$payment = Payments::get( $payment_id );
 
-		$this->payment_mode = $payment['payment_mode'] ?? 'test';
+		$this->payment_mode = ! empty( $payment['mode'] ) && is_string( $payment['mode'] ) ? $payment['mode'] : 'test';
 		if ( ! $payment ) {
 			wp_send_json_error( [ 'message' => esc_html__( 'Payment not found in the database.', 'sureforms' ) ] );
 		}
@@ -168,11 +168,12 @@ class Admin_Stripe_Handler {
 	 * Used by both admin and frontend to cancel Stripe subscriptions.
 	 *
 	 * @since x.x.x
-	 * @param array $result  Default result array.
-	 * @param array $payment Payment record from database.
+	 * @param array  $result      Default result array.
+	 * @param array  $payment     Payment record from database.
+	 * @param string $cancel_type Cancel type (unused, always immediate).
 	 * @return array Result with success status and message.
 	 */
-	public function process_stripe_subscription_cancellation( $result, $payment ) {
+	public function process_stripe_subscription_cancellation( $result, $payment, $cancel_type = 'now' ) {
 		// Only process Stripe payments.
 		if ( empty( $payment['gateway'] ) || 'stripe' !== $payment['gateway'] ) {
 			return $result;
@@ -185,7 +186,7 @@ class Admin_Stripe_Handler {
 			];
 		}
 
-		$this->payment_mode = $payment['payment_mode'] ?? 'test';
+		$this->payment_mode = ! empty( $payment['mode'] ) && is_string( $payment['mode'] ) ? $payment['mode'] : 'test';
 
 		$cancel_result = $this->cancel_subscription( $payment['subscription_id'] );
 		if ( ! $cancel_result ) {
@@ -285,7 +286,7 @@ class Admin_Stripe_Handler {
 		}
 
 		try {
-			$this->payment_mode = $payment['payment_mode'] ?? 'test';
+			$this->payment_mode = ! empty( $payment['mode'] ) && is_string( $payment['mode'] ) ? $payment['mode'] : 'test';
 
 			// Detect subscription payments and route to specialized handler (following WPForms pattern).
 			if ( isset( $payment['type'], $payment['subscription_id'] ) && ! empty( $payment['type'] ) && ! empty( $payment['subscription_id'] ) ) {
@@ -477,7 +478,7 @@ class Admin_Stripe_Handler {
 			wp_send_json_error( [ 'message' => esc_html__( 'Payment not found in the database.', 'sureforms' ) ] );
 		}
 
-		$this->payment_mode = $payment['payment_mode'] ?? 'test';
+		$this->payment_mode = ! empty( $payment['mode'] ) && is_string( $payment['mode'] ) ? $payment['mode'] : 'test';
 
 		// Validate it's a subscription payment.
 		if ( empty( $payment['type'] ) || 'subscription' !== $payment['type'] ) {

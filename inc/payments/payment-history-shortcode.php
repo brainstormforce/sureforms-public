@@ -270,19 +270,10 @@ class Payment_History_Shortcode {
 	 */
 	private function get_i18n_strings() {
 		return [
-			'cancel_at_eop'           => __( 'Cancel at end of billing period', 'sureforms' ),
-			/* translators: %s: date until which access remains */
-			'cancel_at_eop_desc'      => __( 'Keep access until %s. No more charges.', 'sureforms' ),
-			'cancel_immediately'      => __( 'Cancel immediately', 'sureforms' ),
-			'cancel_immediately_desc' => __( 'Lose access right away. No refund for remaining time.', 'sureforms' ),
-			/* translators: %1$s: subscription name, %2$s: date until which access remains */
-			'cancel_confirm_eop'      => __( 'Your "%1$s" will remain active until %2$s, then be cancelled. No further charges.', 'sureforms' ),
 			/* translators: %s: subscription name */
 			'cancel_confirm_now'      => __( 'Your "%s" will be cancelled immediately. You will lose access right away.', 'sureforms' ),
 			'are_you_sure'            => __( 'Are you sure?', 'sureforms' ),
 			'keep_subscription'       => __( 'Keep Subscription', 'sureforms' ),
-			'continue'                => __( 'Continue', 'sureforms' ),
-			'go_back'                 => __( 'Go Back', 'sureforms' ),
 			'yes_cancel'              => __( 'Yes, Cancel', 'sureforms' ),
 			'done'                    => __( 'Done', 'sureforms' ),
 			'subscription_cancelled'  => __( 'Subscription Cancelled', 'sureforms' ),
@@ -293,7 +284,6 @@ class Payment_History_Shortcode {
 			'next_payment'            => __( 'Next Payment', 'sureforms' ),
 			'cancelled_on'            => __( 'Cancelled On', 'sureforms' ),
 			'access_until'            => __( 'Access Until', 'sureforms' ),
-			'payment_method'          => __( 'Payment Method', 'sureforms' ),
 			'started'                 => __( 'Started', 'sureforms' ),
 			'form'                    => __( 'Form', 'sureforms' ),
 			'type'                    => __( 'Type', 'sureforms' ),
@@ -306,9 +296,8 @@ class Payment_History_Shortcode {
 			'subscription_payment'    => __( 'Subscription Payment', 'sureforms' ),
 			'one_time_payment'        => __( 'One-time Payment', 'sureforms' ),
 			'processing'              => __( 'Processing...', 'sureforms' ),
+			'cancel_success'          => __( 'The subscription has been cancelled successfully.', 'sureforms' ),
 			'error'                   => __( 'Something went wrong. Please try again.', 'sureforms' ),
-			/* translators: %s: subscription name */
-			'choose_how_to_cancel'    => __( 'Choose how to cancel "%s"', 'sureforms' ),
 		];
 	}
 
@@ -585,7 +574,7 @@ class Payment_History_Shortcode {
 				'form'           => $form_title,
 				'amount'         => $amount_display,
 				'next'           => $sub_info['next_payment'],
-				'method'         => $sub_info['payment_method'],
+				'gateway'        => ucfirst( isset( $sub['gateway'] ) ? strval( $sub['gateway'] ) : '' ),
 				'started'        => isset( $sub['created_at'] ) && is_string( $sub['created_at'] )
 					? date_i18n( $date_format, strtotime( $sub['created_at'] ) ) : '—',
 				'status'         => $status,
@@ -614,7 +603,6 @@ class Payment_History_Shortcode {
 				'status'    => $status,
 				'type'      => in_array( $type, [ 'subscription', 'renewal' ], true ) ? 'subscription' : 'single',
 				'gateway'   => ucfirst( isset( $payment['gateway'] ) ? strval( $payment['gateway'] ) : '' ),
-				'method'    => $this->get_payment_method_label( $payment ),
 				'txn'       => isset( $payment['transaction_id'] ) ? strval( $payment['transaction_id'] ) : '',
 			];
 
@@ -652,14 +640,13 @@ class Payment_History_Shortcode {
 	 *
 	 * @param array<string,mixed> $payment Payment record.
 	 * @since x.x.x
-	 * @return array{plan_name:string,interval_label:string,next_payment:string,payment_method:string,cancelled_on:string,access_until:string}
+	 * @return array{plan_name:string,interval_label:string,next_payment:string,cancelled_on:string,access_until:string}
 	 */
 	private function extract_subscription_data( $payment ) {
 		$data = [
 			'plan_name'      => '',
 			'interval_label' => '',
 			'next_payment'   => '',
-			'payment_method' => '—',
 			'cancelled_on'   => '',
 			'access_until'   => '',
 		];
@@ -678,14 +665,6 @@ class Payment_History_Shortcode {
 		$next_date = $this->get_string_from_sources( 'current_period_end', $payment_data, $extra );
 		if ( ! empty( $next_date ) ) {
 			$data['next_payment'] = $this->format_timestamp( $next_date );
-		}
-
-		$card_brand = $this->get_string_from_sources( 'card_brand', $payment_data, $extra );
-		$card_last4 = $this->get_string_from_sources( 'card_last4', $payment_data, $extra );
-		if ( ! empty( $card_brand ) && ! empty( $card_last4 ) ) {
-			$data['payment_method'] = ucfirst( $card_brand ) . ' ****' . $card_last4;
-		} elseif ( ! empty( $payment_data['payment_method_type'] ) ) {
-			$data['payment_method'] = ucfirst( strval( $payment_data['payment_method_type'] ) );
 		}
 
 		$cancelled_at = $this->get_string_from_sources( 'canceled_at', $payment_data, $extra );
@@ -766,28 +745,6 @@ class Payment_History_Shortcode {
 		}
 		$title = get_the_title( $form_id );
 		return ! empty( $title ) ? $title : __( 'Unknown Form', 'sureforms' );
-	}
-
-	/**
-	 * Get payment method label from payment record.
-	 *
-	 * @param array<string,mixed> $payment Payment record.
-	 * @since x.x.x
-	 * @return string Payment method label.
-	 */
-	private function get_payment_method_label( $payment ) {
-		$payment_data = $this->parse_json_field( $payment['payment_data'] ?? '' );
-		$extra        = $this->parse_json_field( $payment['extra'] ?? '' );
-
-		$card_brand = $this->get_string_from_sources( 'card_brand', $payment_data, $extra );
-		$card_last4 = $this->get_string_from_sources( 'card_last4', $payment_data, $extra );
-
-		if ( ! empty( $card_brand ) && ! empty( $card_last4 ) ) {
-			return ucfirst( $card_brand ) . ' ****' . $card_last4;
-		}
-
-		$gateway = isset( $payment['gateway'] ) ? strval( $payment['gateway'] ) : '';
-		return ! empty( $gateway ) ? ucfirst( $gateway ) : '—';
 	}
 
 	// =========================================================================
