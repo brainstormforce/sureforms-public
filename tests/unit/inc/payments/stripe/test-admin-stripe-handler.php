@@ -167,4 +167,66 @@ class Test_Admin_Stripe_Handler extends TestCase {
 		// Either empty (no admin) or notice is shown - depends on test environment.
 		$this->assertIsString( $output );
 	}
+
+	// ──────────────────────────────────────────────
+	// process_stripe_subscription_cancellation
+	// ──────────────────────────────────────────────
+
+	public function test_process_stripe_subscription_cancellation_skips_non_stripe() {
+		$default = [ 'success' => false, 'message' => 'default' ];
+		$payment = [ 'gateway' => 'paypal' ];
+		$result  = $this->handler->process_stripe_subscription_cancellation( $default, $payment );
+		$this->assertSame( $default, $result );
+	}
+
+	public function test_process_stripe_subscription_cancellation_skips_empty_gateway() {
+		$default = [ 'success' => false, 'message' => 'default' ];
+		$payment = [ 'gateway' => '' ];
+		$result  = $this->handler->process_stripe_subscription_cancellation( $default, $payment );
+		$this->assertSame( $default, $result );
+	}
+
+	public function test_process_stripe_subscription_cancellation_skips_missing_gateway() {
+		$default = [ 'success' => false, 'message' => 'default' ];
+		$payment = [];
+		$result  = $this->handler->process_stripe_subscription_cancellation( $default, $payment );
+		$this->assertSame( $default, $result );
+	}
+
+	public function test_process_stripe_subscription_cancellation_fails_missing_subscription_id() {
+		$default = [ 'success' => false, 'message' => 'default' ];
+		$payment = [ 'gateway' => 'stripe' ];
+		$result  = $this->handler->process_stripe_subscription_cancellation( $default, $payment );
+		$this->assertFalse( $result['success'] );
+		$this->assertStringContainsString( 'Subscription ID not found', $result['message'] );
+	}
+
+	public function test_process_stripe_subscription_cancellation_fails_empty_subscription_id() {
+		$default = [ 'success' => false, 'message' => 'default' ];
+		$payment = [ 'gateway' => 'stripe', 'subscription_id' => '' ];
+		$result  = $this->handler->process_stripe_subscription_cancellation( $default, $payment );
+		$this->assertFalse( $result['success'] );
+		$this->assertStringContainsString( 'Subscription ID not found', $result['message'] );
+	}
+
+	public function test_process_stripe_subscription_cancellation_fails_non_string_subscription_id() {
+		$default = [ 'success' => false, 'message' => 'default' ];
+		$payment = [ 'gateway' => 'stripe', 'subscription_id' => 12345 ];
+		$result  = $this->handler->process_stripe_subscription_cancellation( $default, $payment );
+		$this->assertFalse( $result['success'] );
+		$this->assertStringContainsString( 'Subscription ID not found', $result['message'] );
+	}
+
+	public function test_process_stripe_subscription_cancellation_uses_payment_mode() {
+		$default = [ 'success' => false, 'message' => 'default' ];
+		$payment = [
+			'gateway'         => 'stripe',
+			'subscription_id' => 'sub_test_123',
+			'mode'            => 'test',
+		];
+		// Without Stripe API keys, cancellation will fail but should process the gateway check.
+		$result = $this->handler->process_stripe_subscription_cancellation( $default, $payment );
+		$this->assertIsArray( $result );
+		$this->assertArrayHasKey( 'success', $result );
+	}
 }

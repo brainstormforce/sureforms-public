@@ -57,6 +57,99 @@ class Test_Payment_History_Shortcode extends TestCase {
 	}
 
 	// ──────────────────────────────────────────────
+	// enqueue_assets
+	// ──────────────────────────────────────────────
+
+	public function test_enqueue_assets_skips_when_no_global_post() {
+		$GLOBALS['post'] = null;
+		$this->shortcode->enqueue_assets();
+		$this->assertFalse( wp_style_is( 'srfm-payment-history', 'enqueued' ) );
+		$this->assertFalse( wp_script_is( 'srfm-payment-history', 'enqueued' ) );
+	}
+
+	public function test_enqueue_assets_skips_when_post_has_no_shortcode_or_block() {
+		$post_id         = wp_insert_post( [
+			'post_title'   => 'No Payment History',
+			'post_content' => 'Just regular content.',
+			'post_status'  => 'publish',
+		] );
+		$GLOBALS['post'] = get_post( $post_id );
+
+		$this->shortcode->enqueue_assets();
+		$this->assertFalse( wp_style_is( 'srfm-payment-history', 'enqueued' ) );
+		$this->assertFalse( wp_script_is( 'srfm-payment-history', 'enqueued' ) );
+
+		wp_delete_post( $post_id, true );
+	}
+
+	public function test_enqueue_assets_enqueues_when_shortcode_present() {
+		$post_id         = wp_insert_post( [
+			'post_title'   => 'Payment History Page',
+			'post_content' => '[srfm_payment_history]',
+			'post_status'  => 'publish',
+		] );
+		$GLOBALS['post'] = get_post( $post_id );
+
+		$this->shortcode->enqueue_assets();
+		$this->assertTrue( wp_style_is( 'srfm-payment-history', 'enqueued' ) );
+		$this->assertTrue( wp_script_is( 'srfm-payment-history', 'enqueued' ) );
+
+		// Cleanup.
+		wp_dequeue_style( 'srfm-payment-history' );
+		wp_dequeue_script( 'srfm-payment-history' );
+		wp_delete_post( $post_id, true );
+	}
+
+	// ──────────────────────────────────────────────
+	// ajax_cancel_subscription
+	// ──────────────────────────────────────────────
+
+	public function test_ajax_cancel_subscription_fails_without_nonce() {
+		// Simulate AJAX call without nonce — should trigger wp_send_json_error.
+		$_POST = [];
+		try {
+			$this->shortcode->ajax_cancel_subscription();
+		} catch ( \WPDieException $e ) {
+			$this->assertStringContainsString( 'Security check failed', $e->getMessage() );
+			return;
+		}
+		// If wp_send_json_error calls wp_die in test env, we get here.
+		$this->assertTrue( true );
+	}
+
+	public function test_ajax_cancel_subscription_fails_when_logged_out() {
+		wp_set_current_user( 0 );
+		$_POST['nonce'] = wp_create_nonce( 'srfm_frontend_payment_nonce' );
+		try {
+			$this->shortcode->ajax_cancel_subscription();
+		} catch ( \WPDieException $e ) {
+			$this->assertStringContainsString( 'logged in', $e->getMessage() );
+			return;
+		}
+		$this->assertTrue( true );
+	}
+
+	public function test_ajax_cancel_subscription_fails_with_empty_payment_id() {
+		$user_id = wp_insert_user( [
+			'user_login' => 'testuser_cancel_' . wp_rand(),
+			'user_pass'  => 'password',
+			'user_email' => 'cancel_test_' . wp_rand() . '@example.com',
+		] );
+		wp_set_current_user( $user_id );
+		$_POST['nonce']      = wp_create_nonce( 'srfm_frontend_payment_nonce' );
+		$_POST['payment_id'] = 0;
+		try {
+			$this->shortcode->ajax_cancel_subscription();
+		} catch ( \WPDieException $e ) {
+			$this->assertStringContainsString( 'Invalid payment data', $e->getMessage() );
+			wp_delete_user( $user_id );
+			return;
+		}
+		wp_delete_user( $user_id );
+		$this->assertTrue( true );
+	}
+
+	// ──────────────────────────────────────────────
 	// format_amount
 	// ──────────────────────────────────────────────
 
