@@ -405,7 +405,6 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 * New: Added styling options for Gutenberg SureForms Form Block.
 * New: Added styling options for Bricks Builder SureForms Form Element.
 * New: Added styling options for Elementor SureForms Form Widget.
-* New: Added user details collection step in onboarding for non-authenticated users.
 * Fix: Fixed "Send as Raw HTML" email option wrapping content in unwanted template markup.
 * Fix: Fixed Multi Choice option labels with extra whitespace failing to resolve numeric values in payment calculations.
 * Fix: Fixed block slug not locking when a smart tag is inserted via the pro plugin.
