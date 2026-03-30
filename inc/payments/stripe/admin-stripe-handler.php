@@ -48,7 +48,7 @@ class Admin_Stripe_Handler {
 		// Hook into unified refund filter system.
 		add_filter( 'srfm_process_transaction_refund', [ $this, 'process_stripe_refund' ], 10, 2 );
 		// Hook into unified subscription cancellation filter system.
-		add_filter( 'srfm_process_subscription_cancellation', [ $this, 'process_stripe_subscription_cancellation' ], 10, 3 );
+		add_filter( 'srfm_process_subscription_cancellation', [ $this, 'process_stripe_subscription_cancellation' ], 10, 2 );
 		// Admin notices.
 		add_action( 'admin_notices', [ $this, 'webhook_configuration_notice' ] );
 	}
@@ -168,12 +168,11 @@ class Admin_Stripe_Handler {
 	 * Used by both admin and frontend to cancel Stripe subscriptions.
 	 *
 	 * @since x.x.x
-	 * @param array<string,mixed> $result      Default result array.
-	 * @param array<string,mixed> $payment     Payment record from database.
-	 * @param string              $cancel_type Cancel type (unused, always immediate).
+	 * @param array<string,mixed> $result  Default result array.
+	 * @param array<string,mixed> $payment Payment record from database.
 	 * @return array<string,mixed> Result with success status and message.
 	 */
-	public function process_stripe_subscription_cancellation( $result, $payment, $cancel_type = 'now' ) {
+	public function process_stripe_subscription_cancellation( $result, $payment ) {
 		// Only process Stripe payments.
 		if ( empty( $payment['gateway'] ) || 'stripe' !== $payment['gateway'] ) {
 			return $result;

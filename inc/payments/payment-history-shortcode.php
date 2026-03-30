@@ -221,7 +221,6 @@ class Payment_History_Shortcode {
 		}
 
 		$payment_id  = isset( $_POST['payment_id'] ) ? absint( $_POST['payment_id'] ) : 0;
-		$cancel_type = isset( $_POST['cancel_type'] ) ? sanitize_text_field( wp_unslash( $_POST['cancel_type'] ) ) : 'eop';
 
 		if ( empty( $payment_id ) ) {
 			wp_send_json_error( __( 'Invalid payment data.', 'sureforms' ) );
@@ -241,9 +240,8 @@ class Payment_History_Shortcode {
 		 * Filter to process subscription cancellation. Gateways hook into this.
 		 *
 		 * @since x.x.x
-		 * @param array<string,mixed> $result      Default result.
-		 * @param array<string,mixed> $payment     Payment record.
-		 * @param string              $cancel_type Cancel type: 'eop' or 'now'.
+		 * @param array<string,mixed> $result  Default result.
+		 * @param array<string,mixed> $payment Payment record.
 		 */
 		$result = apply_filters(
 			'srfm_process_subscription_cancellation',
@@ -251,8 +249,7 @@ class Payment_History_Shortcode {
 				'success' => false,
 				'message' => __( 'Cancellation not supported for this gateway.', 'sureforms' ),
 			],
-			$payment,
-			$cancel_type
+			$payment
 		);
 
 		if ( ! empty( $result['success'] ) ) {
