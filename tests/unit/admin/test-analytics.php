@@ -55,8 +55,8 @@ class Test_Analytics extends TestCase {
 		}
 
 		// Reset analytics events — clear both pending queue and pushed dedup.
-		Analytics_Events::flush_pending();
-		Analytics_Events::flush_pushed();
+		Analytics::events()->flush_pending();
+		Analytics::events()->flush_pushed();
 
 		// Reset MCP settings and options.
 		delete_option( 'srfm_mcp_settings_options' );
@@ -198,7 +198,7 @@ class Test_Analytics extends TestCase {
 
 		$analytics->track_embed_styling_configured( $post_id, get_post( $post_id ) );
 
-		$this->assertTrue( Analytics_Events::is_tracked( 'embed_styling_configured' ) );
+		$this->assertTrue( Analytics::events()->is_tracked( 'embed_styling_configured' ) );
 	}
 
 	/**
@@ -242,7 +242,7 @@ class Test_Analytics extends TestCase {
 
 		$analytics->track_embed_styling_configured( $post_id, get_post( $post_id ) );
 
-		$this->assertFalse( Analytics_Events::is_tracked( 'embed_styling_configured' ) );
+		$this->assertFalse( Analytics::events()->is_tracked( 'embed_styling_configured' ) );
 	}
 
 	/**
@@ -256,7 +256,7 @@ class Test_Analytics extends TestCase {
 
 		$analytics->track_embed_styling_configured( $post_id, get_post( $post_id ) );
 
-		$this->assertFalse( Analytics_Events::is_tracked( 'embed_styling_configured' ) );
+		$this->assertFalse( Analytics::events()->is_tracked( 'embed_styling_configured' ) );
 	}
 
 	/**
@@ -272,14 +272,14 @@ class Test_Analytics extends TestCase {
 
 		// First save.
 		$analytics->track_embed_styling_configured( $post_id, $post );
-		$this->assertTrue( Analytics_Events::is_tracked( 'embed_styling_configured' ) );
+		$this->assertTrue( Analytics::events()->is_tracked( 'embed_styling_configured' ) );
 
 		// Simulate analytics flush (event sent).
-		Analytics_Events::flush_pending();
+		Analytics::events()->flush_pending();
 
 		// Second save should re-track because method calls flush_pushed.
 		$analytics->track_embed_styling_configured( $post_id, $post );
-		$this->assertTrue( Analytics_Events::is_tracked( 'embed_styling_configured' ) );
+		$this->assertTrue( Analytics::events()->is_tracked( 'embed_styling_configured' ) );
 	}
 
 	// ─── embed_styling_elementor_count ────────────────────────────
@@ -392,7 +392,7 @@ class Test_Analytics extends TestCase {
 
 		$analytics->track_embed_styling_configured( $post_id, get_post( $post_id ) );
 
-		$this->assertTrue( Analytics_Events::is_tracked( 'embed_styling_configured' ) );
+		$this->assertTrue( Analytics::events()->is_tracked( 'embed_styling_configured' ) );
 	}
 
 	/**
@@ -433,7 +433,7 @@ class Test_Analytics extends TestCase {
 
 		$analytics->track_embed_styling_configured( $post_id, get_post( $post_id ) );
 
-		$this->assertFalse( Analytics_Events::is_tracked( 'embed_styling_configured' ) );
+		$this->assertFalse( Analytics::events()->is_tracked( 'embed_styling_configured' ) );
 	}
 
 	// ─── embed_styling_bricks_count ───────────────────────────────
@@ -528,7 +528,7 @@ class Test_Analytics extends TestCase {
 
 		$analytics->track_embed_styling_configured( $post_id, get_post( $post_id ) );
 
-		$this->assertTrue( Analytics_Events::is_tracked( 'embed_styling_configured' ) );
+		$this->assertTrue( Analytics::events()->is_tracked( 'embed_styling_configured' ) );
 	}
 
 	/**
@@ -567,7 +567,7 @@ class Test_Analytics extends TestCase {
 
 		$analytics->track_embed_styling_configured( $post_id, get_post( $post_id ) );
 
-		$this->assertFalse( Analytics_Events::is_tracked( 'embed_styling_configured' ) );
+		$this->assertFalse( Analytics::events()->is_tracked( 'embed_styling_configured' ) );
 	}
 
 	// ─── flush_pushed ─────────────────────────────────────────────
@@ -576,33 +576,33 @@ class Test_Analytics extends TestCase {
 	 * Test flush_pushed removes specific event names.
 	 */
 	public function test_flush_pushed_removes_specific_events() {
-		Analytics_Events::track( 'event_a' );
-		Analytics_Events::track( 'event_b' );
-		Analytics_Events::flush_pending();
+		Analytics::events()->track( 'event_a' );
+		Analytics::events()->track( 'event_b' );
+		Analytics::events()->flush_pending();
 
 		// Both should be in pushed list.
-		$this->assertTrue( Analytics_Events::is_tracked( 'event_a' ) );
-		$this->assertTrue( Analytics_Events::is_tracked( 'event_b' ) );
+		$this->assertTrue( Analytics::events()->is_tracked( 'event_a' ) );
+		$this->assertTrue( Analytics::events()->is_tracked( 'event_b' ) );
 
 		// Flush only event_a.
-		Analytics_Events::flush_pushed( [ 'event_a' ] );
+		Analytics::events()->flush_pushed( [ 'event_a' ] );
 
-		$this->assertFalse( Analytics_Events::is_tracked( 'event_a' ) );
-		$this->assertTrue( Analytics_Events::is_tracked( 'event_b' ) );
+		$this->assertFalse( Analytics::events()->is_tracked( 'event_a' ) );
+		$this->assertTrue( Analytics::events()->is_tracked( 'event_b' ) );
 	}
 
 	/**
 	 * Test flush_pushed with empty array clears all.
 	 */
 	public function test_flush_pushed_clears_all_when_empty() {
-		Analytics_Events::track( 'event_a' );
-		Analytics_Events::track( 'event_b' );
-		Analytics_Events::flush_pending();
+		Analytics::events()->track( 'event_a' );
+		Analytics::events()->track( 'event_b' );
+		Analytics::events()->flush_pending();
 
-		Analytics_Events::flush_pushed();
+		Analytics::events()->flush_pushed();
 
-		$this->assertFalse( Analytics_Events::is_tracked( 'event_a' ) );
-		$this->assertFalse( Analytics_Events::is_tracked( 'event_b' ) );
+		$this->assertFalse( Analytics::events()->is_tracked( 'event_a' ) );
+		$this->assertFalse( Analytics::events()->is_tracked( 'event_b' ) );
 	}
 
 	// ─── MCP state events ────────────────────────────────────────

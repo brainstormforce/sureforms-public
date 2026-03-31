@@ -799,9 +799,9 @@ class Analytics {
 		}
 
 		// Flush dedup so event is re-tracked on each meaningful save.
-		Analytics_Events::flush_pushed( [ 'embed_styling_configured' ] );
+		self::events()->flush_pushed( [ 'embed_styling_configured' ] );
 
-		Analytics_Events::track(
+		self::events()->track(
 			'embed_styling_configured',
 			(string) $post_id,
 			[
