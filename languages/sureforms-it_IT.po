@@ -16,14 +16,14 @@ msgstr ""
 #: sureforms.php
 #: admin/admin.php:319
 #: admin/admin.php:320
-#: admin/admin.php:1680
+#: admin/admin.php:1745
 #: inc/abilities/abilities-registrar.php:133
 #: inc/gutenberg-hooks.php:109
-#: inc/page-builders/bricks/elements/form-widget.php:66
+#: inc/page-builders/bricks/elements/form-widget.php:67
 #: inc/page-builders/bricks/service-provider.php:55
-#: inc/page-builders/elementor/form-widget.php:93
-#: inc/page-builders/elementor/form-widget.php:143
-#: inc/page-builders/elementor/service-provider.php:72
+#: inc/page-builders/elementor/form-widget.php:144
+#: inc/page-builders/elementor/form-widget.php:301
+#: inc/page-builders/elementor/service-provider.php:74
 #: assets/build/formEditor.js:172
 msgid "SureForms"
 msgstr "SureForms"
@@ -58,7 +58,7 @@ msgstr "Cruscotto"
 
 #: admin/admin.php:350
 #: admin/admin.php:351
-#: admin/admin.php:689
+#: admin/admin.php:722
 #: assets/build/dashboard.js:172
 #: assets/build/entries.js:172
 #: assets/build/forms.js:172
@@ -69,15 +69,15 @@ msgstr "Cruscotto"
 msgid "Settings"
 msgstr "Impostazioni"
 
-#: admin/admin.php:525
-#: admin/admin.php:526
+#: admin/admin.php:558
+#: admin/admin.php:559
 #: inc/post-types.php:210
 msgid "New Form"
 msgstr "Nuovo modulo"
 
-#: admin/admin.php:534
-#: admin/admin.php:535
-#: admin/admin.php:1717
+#: admin/admin.php:567
+#: admin/admin.php:568
+#: admin/admin.php:1782
 #: inc/global-settings/email-summary.php:225
 #: assets/build/dashboard.js:172
 #: assets/build/entries.js:172
@@ -90,7 +90,7 @@ msgid "Entries"
 msgstr "Voci"
 
 #. Translators: Post Title.
-#: admin/admin.php:776
+#: admin/admin.php:809
 #, php-format
 msgid "Edit %1$s"
 msgstr "Modifica %1$s"
@@ -106,23 +106,23 @@ msgstr "Modifica %1$s"
 #: inc/forms-data.php:88
 #: inc/global-settings/global-settings.php:86
 #: inc/global-settings/global-settings.php:403
-#: inc/rest-api.php:170
+#: inc/rest-api.php:177
 msgid "Nonce verification failed."
 msgstr "Verifica del nonce fallita."
 
 #. translators: %1$s: Opening anchor tag with URL, %2$s: Closing anchor tag, %3$s: SureForms Pro Plugin Name.
-#: admin/admin.php:1309
+#: admin/admin.php:1374
 #, php-format
 msgid "Please %1$sactivate%2$s your copy of %3$s to get new features, access support, receive update notifications, and more."
 msgstr "Per favore %1$sattiva%2$s la tua copia di %3$s per ottenere nuove funzionalità, accedere al supporto, ricevere notifiche di aggiornamento e altro ancora."
 
 #. translators: %1$s: SureForms version, %2$s: SureForms Pro Plugin Name, %3$s: SureForms Pro Version, %4$s: Anchor tag open, %5$s: Closing anchor tag.
-#: admin/admin.php:1327
+#: admin/admin.php:1392
 #, php-format
 msgid "SureForms %1$s requires minimum %2$s %3$s to work properly. Please update to the latest version from %4$shere%5$s."
 msgstr "SureForms %1$s richiede almeno %2$s %3$s per funzionare correttamente. Si prega di aggiornare all'ultima versione da %4$squi%5$s."
 
-#: admin/admin.php:1716
+#: admin/admin.php:1781
 #: inc/global-settings/email-summary.php:224
 #: assets/build/entries.js:172
 #: assets/build/payments.js:172
@@ -163,7 +163,7 @@ msgstr "Esporta"
 msgid "Search"
 msgstr "Cerca"
 
-#: inc/page-builders/bricks/elements/form-widget.php:96
+#: inc/page-builders/bricks/elements/form-widget.php:135
 #: assets/build/entries.js:172
 #: assets/build/formEditor.js:172
 #: assets/build/payments.js:2
@@ -188,7 +188,7 @@ msgstr "Spazzatura"
 msgid "Published"
 msgstr "Pubblicato"
 
-#: admin/admin.php:1708
+#: admin/admin.php:1773
 msgid "View"
 msgstr "Visualizza"
 
@@ -214,7 +214,7 @@ msgstr "Tutte le voci del modulo"
 
 #. Translators: %d is the form ID.
 #: inc/abilities/entries/entry-parser.php:72
-#: inc/rest-api.php:726
+#: inc/rest-api.php:838
 #, php-format
 msgid "SureForms Form #%d"
 msgstr "Modulo SureForms n.%d"
@@ -243,10 +243,16 @@ msgstr "Utente:"
 msgid "Status:"
 msgstr "Stato:"
 
+#: inc/page-builders/bricks/elements/form-widget.php:115
+#: inc/page-builders/elementor/form-widget.php:751
 #: assets/build/formEditor.js:172
 msgid "Fields"
 msgstr "Campi"
 
+#: inc/page-builders/bricks/elements/form-widget.php:227
+#: inc/page-builders/bricks/elements/form-widget.php:309
+#: inc/page-builders/elementor/form-widget.php:451
+#: inc/page-builders/elementor/form-widget.php:531
 #: modules/gutenberg/classes/class-spec-block-config.php:562
 #: modules/gutenberg/icons/icons-v6-1.php:5470
 #: assets/build/blocks.js:172
@@ -270,11 +276,11 @@ msgstr "Nessun plugin specificato"
 msgid "Plugin Successfully Activated"
 msgstr "Plugin attivato con successo"
 
-#: admin/admin.php:842
+#: admin/admin.php:875
 msgid "Activating..."
 msgstr "Attivazione in corso..."
 
-#: admin/admin.php:843
+#: admin/admin.php:876
 #: assets/build/dashboard.js:172
 #: assets/build/entries.js:172
 #: assets/build/formEditor.js:172
@@ -287,17 +293,17 @@ msgstr "Attivazione in corso..."
 msgid "Activated"
 msgstr "Attivato"
 
-#: admin/admin.php:844
+#: admin/admin.php:877
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:172
 msgid "Activate"
 msgstr "Attiva"
 
-#: admin/admin.php:845
+#: admin/admin.php:878
 msgid "Installing..."
 msgstr "Installazione in corso..."
 
-#: admin/admin.php:846
+#: admin/admin.php:879
 msgid "Installed"
 msgstr "Installato"
 
@@ -305,10 +311,10 @@ msgstr "Installato"
 msgid "You do not have permission to access this page."
 msgstr "Non hai il permesso di accedere a questa pagina."
 
-#: admin/admin.php:1475
-#: admin/admin.php:1574
-#: admin/admin.php:1612
-#: admin/admin.php:1633
+#: admin/admin.php:1540
+#: admin/admin.php:1639
+#: admin/admin.php:1677
+#: admin/admin.php:1698
 #: inc/admin-ajax.php:162
 #: inc/payments/admin/admin-handler.php:638
 #: inc/payments/stripe/admin-stripe-handler.php:78
@@ -321,7 +327,7 @@ msgid "Form ID is required."
 msgstr "L'ID del modulo è obbligatorio."
 
 #: inc/admin-ajax.php:182
-#: inc/form-submit.php:975
+#: inc/form-submit.php:970
 msgid "Invalid form ID."
 msgstr "ID modulo non valido."
 
@@ -500,7 +506,7 @@ msgid "Dropdown"
 msgstr "Menu a tendina"
 
 #: inc/fields/dropdown-markup.php:106
-#: inc/gutenberg-hooks.php:216
+#: inc/gutenberg-hooks.php:220
 msgid "Select an option"
 msgstr "Seleziona un'opzione"
 
@@ -518,12 +524,12 @@ msgstr "Conferma"
 msgid "Confirm %s"
 msgstr "Conferma %s"
 
-#: inc/gutenberg-hooks.php:215
+#: inc/gutenberg-hooks.php:219
 msgid "I consent to have this website store my submitted information so they can respond to my inquiry."
 msgstr "Acconsento a che questo sito web memorizzi le informazioni che ho inviato in modo che possano rispondere alla mia richiesta."
 
-#: inc/fields/inlinebutton-markup.php:183
-#: inc/generate-form-markup.php:581
+#: inc/fields/inlinebutton-markup.php:184
+#: inc/generate-form-markup.php:615
 msgid "Please verify that you are not a robot."
 msgstr "Per favore verifica che tu non sia un robot."
 
@@ -544,24 +550,24 @@ msgstr "Telefono"
 msgid "Textarea"
 msgstr "Area di testo"
 
-#: inc/form-submit.php:135
+#: inc/form-submit.php:133
 msgid "Cloudflare Turnstile secret key is invalid."
 msgstr "La chiave segreta di Cloudflare Turnstile non è valida."
 
-#: inc/form-submit.php:142
+#: inc/form-submit.php:140
 msgid "Cloudflare Turnstile response is missing."
 msgstr "Manca la risposta di Cloudflare Turnstile."
 
-#: inc/form-submit.php:186
+#: inc/form-submit.php:184
 msgid "hCaptcha secret key is invalid."
 msgstr "La chiave segreta di hCaptcha non è valida."
 
-#: inc/form-submit.php:193
+#: inc/form-submit.php:191
 msgid "hCaptcha response is missing."
 msgstr "Manca la risposta di hCaptcha."
 
-#: inc/form-submit.php:234
-#: inc/form-submit.php:488
+#: inc/form-submit.php:232
+#: inc/form-submit.php:486
 msgid "Form data is not found."
 msgstr "I dati del modulo non sono stati trovati."
 
@@ -569,7 +575,7 @@ msgstr "I dati del modulo non sono stati trovati."
 msgid "Sorry, you are not allowed to view the form."
 msgstr "Spiacente, non sei autorizzato a visualizzare il modulo."
 
-#: inc/generate-form-markup.php:749
+#: inc/generate-form-markup.php:791
 msgid "There was an error trying to submit your form. Please try again."
 msgstr "C'è stato un errore nel tentativo di inviare il modulo. Per favore riprova."
 
@@ -620,74 +626,74 @@ msgstr "Questo campo è obbligatorio."
 msgid "Value needs to be unique."
 msgstr "Il valore deve essere unico."
 
-#: inc/helper.php:625
+#: inc/helper.php:644
 msgid "Sorry, you are not allowed to perform this action."
 msgstr "Spiacente, non ti è permesso eseguire questa azione."
 
-#: admin/admin.php:1373
+#: admin/admin.php:1438
 msgid "Rate SureForms"
 msgstr "Valuta SureForms"
 
-#: inc/page-builders/bricks/elements/form-widget.php:99
-#: inc/page-builders/elementor/form-widget.php:150
+#: inc/page-builders/bricks/elements/form-widget.php:138
+#: inc/page-builders/elementor/form-widget.php:308
 #: assets/build/dashboard.js:172
 msgid "Select Form"
 msgstr "Seleziona modulo"
 
-#: inc/page-builders/bricks/elements/form-widget.php:105
+#: inc/page-builders/bricks/elements/form-widget.php:144
 msgid "Show Form Title"
 msgstr "Mostra il titolo del modulo"
 
-#: inc/page-builders/bricks/elements/form-widget.php:107
+#: inc/page-builders/bricks/elements/form-widget.php:146
 msgid "Enable this to show form title."
 msgstr "Abilita questa opzione per mostrare il titolo del modulo."
 
-#: inc/page-builders/bricks/elements/form-widget.php:113
-#: inc/page-builders/elementor/form-widget.php:198
+#: inc/page-builders/bricks/elements/form-widget.php:152
+#: inc/page-builders/elementor/form-widget.php:356
 msgid "Form submission will be possible on the frontend."
 msgstr "Sarà possibile inviare il modulo nel frontend."
 
-#: inc/page-builders/bricks/elements/form-widget.php:161
-#: inc/page-builders/elementor/form-widget.php:227
+#: inc/page-builders/bricks/elements/form-widget.php:542
+#: inc/page-builders/elementor/form-widget.php:818
 msgid "Select the form that you wish to add here."
 msgstr "Seleziona il modulo che desideri aggiungere qui."
 
-#: inc/page-builders/elementor/form-widget.php:160
+#: inc/page-builders/elementor/form-widget.php:318
 #: inc/smart-tags.php:113
 #: assets/build/blocks.js:2
 #: assets/build/formEditor.js:172
 msgid "Form Title"
 msgstr "Titolo del modulo"
 
-#: inc/page-builders/elementor/form-widget.php:162
+#: inc/page-builders/elementor/form-widget.php:320
 #: assets/build/blocks.js:172
 msgid "Show"
 msgstr "Mostra"
 
-#: inc/page-builders/elementor/form-widget.php:163
+#: inc/page-builders/elementor/form-widget.php:321
 #: assets/build/blocks.js:172
 msgid "Hide"
 msgstr "Nascondi"
 
-#: inc/page-builders/elementor/form-widget.php:174
+#: inc/page-builders/elementor/form-widget.php:332
 #: inc/post-types.php:95
 #: inc/post-types.php:211
 #: assets/build/blocks.js:2
 msgid "Edit Form"
 msgstr "Modifica modulo"
 
-#: inc/page-builders/elementor/form-widget.php:177
+#: inc/page-builders/elementor/form-widget.php:335
 #: assets/build/formEditor.js:172
 #: assets/build/forms.js:172
 msgid "Edit"
 msgstr "Modifica"
 
-#: inc/page-builders/elementor/form-widget.php:188
+#: inc/page-builders/elementor/form-widget.php:346
 #: assets/build/dashboard.js:2
 msgid "Create New Form"
 msgstr "Crea nuovo modulo"
 
-#: inc/page-builders/elementor/form-widget.php:190
+#: inc/page-builders/elementor/form-widget.php:348
 msgid "Create"
 msgstr "Crea"
 
@@ -718,8 +724,8 @@ msgstr "Visualizza modulo"
 msgid "View Forms"
 msgstr "Visualizza moduli"
 
-#: admin/admin.php:516
-#: admin/admin.php:517
+#: admin/admin.php:549
+#: admin/admin.php:550
 #: inc/post-types.php:214
 #: assets/build/dashboard.js:172
 #: assets/build/entries.js:172
@@ -5090,6 +5096,8 @@ msgstr "Medaglia"
 msgid "MedApps"
 msgstr "MedApps"
 
+#: inc/page-builders/bricks/elements/form-widget.php:459
+#: inc/page-builders/elementor/form-widget.php:770
 #: modules/gutenberg/icons/icons-v6-2.php:1591
 #: assets/build/formEditor.js:172
 msgid "Medium"
@@ -6164,6 +6172,10 @@ msgstr "Registrato"
 msgid "Renren"
 msgstr "Renren"
 
+#: inc/page-builders/bricks/elements/form-widget.php:348
+#: inc/page-builders/bricks/elements/form-widget.php:352
+#: inc/page-builders/elementor/form-widget.php:591
+#: inc/page-builders/elementor/form-widget.php:596
 #: modules/gutenberg/icons/icons-v6-2.php:4659
 #: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:8
@@ -6430,6 +6442,8 @@ msgstr "Cacciavite Chiave"
 msgid "Scribd"
 msgstr "Scribd"
 
+#: inc/page-builders/bricks/elements/form-widget.php:365
+#: inc/page-builders/elementor/form-widget.php:615
 #: modules/gutenberg/icons/icons-v6-3.php:213
 #: assets/build/formEditor.js:172
 msgid "Scroll"
@@ -8208,7 +8222,7 @@ msgstr "Sociale"
 msgid "Travel"
 msgstr "Viaggio"
 
-#: inc/helper.php:2109
+#: inc/helper.php:2128
 msgid "Blank Form"
 msgstr "Modulo Vuoto"
 
@@ -8261,6 +8275,8 @@ msgid "Change Form"
 msgstr "Modifica modulo"
 
 #: inc/blocks/sform/block.php:42
+#: inc/page-builders/bricks/elements/form-widget.php:508
+#: inc/page-builders/elementor/form-widget.php:827
 #: inc/post-types.php:1228
 #: assets/build/blocks.js:2
 msgid "This form has been deleted or is unavailable."
@@ -8663,6 +8679,8 @@ msgstr "Inserisci ogni opzione su una nuova riga."
 msgid "Insert Options"
 msgstr "Inserisci opzioni"
 
+#: inc/page-builders/bricks/elements/form-widget.php:435
+#: inc/page-builders/elementor/form-widget.php:728
 #: assets/build/formEditor.js:172
 msgid "Full Width"
 msgstr "Larghezza completa"
@@ -8756,52 +8774,52 @@ msgid "Unlicensed"
 msgstr "Senza licenza"
 
 #. translators: abbreviation for units
-#: assets/build/formEditor.js:2
+#: assets/build/formEditor.js:172
 #: modules/quick-action-sidebar/components/draggable-block.js:83
 #, js-format
 msgid "%s Removed from Quick Action Bar."
 msgstr "%s rimosso dalla barra delle azioni rapide."
 
-#: assets/build/formEditor.js:2
+#: assets/build/formEditor.js:172
 #: modules/quick-action-sidebar/components/Modal.js:145
 msgid "Add to Quick Action Bar"
 msgstr "Aggiungi alla barra delle azioni rapide"
 
 #. translators: abbreviation for units
-#: assets/build/formEditor.js:2
+#: assets/build/formEditor.js:172
 #: modules/quick-action-sidebar/components/Modal.js:42
 #, js-format
 msgid "%s Added to Quick Action Bar."
 msgstr "%s aggiunto alla barra delle azioni rapide."
 
-#: assets/build/formEditor.js:2
+#: assets/build/formEditor.js:172
 #: modules/quick-action-sidebar/components/Modal.js:155
 msgid "Already Present in Quick Action Bar"
 msgstr "Già presente nella barra delle azioni rapide"
 
-#: assets/build/formEditor.js:2
+#: assets/build/formEditor.js:172
 #: modules/quick-action-sidebar/components/Modal.js:174
 msgid "No results found."
 msgstr "Nessun risultato trovato."
 
-#: assets/build/formEditor.js:2
+#: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:6
 msgid "data object is empty"
 msgstr "l'oggetto dati è vuoto"
 
-#: assets/build/formEditor.js:2
+#: assets/build/formEditor.js:172
 #: modules/quick-action-sidebar/components/Sidebar.js:181
 msgid "Add blocks to Quick Action Bar"
 msgstr "Aggiungi blocchi alla barra delle azioni rapide"
 
-#: assets/build/formEditor.js:2
+#: assets/build/formEditor.js:172
 #: modules/quick-action-sidebar/components/Sidebar.js:231
 msgid "Re-arrange block inside Quick Action Bar"
 msgstr "Riorganizza il blocco all'interno della Barra delle Azioni Rapide"
 
 #: admin/admin.php:408
 #: admin/admin.php:409
-#: admin/admin.php:1889
+#: admin/admin.php:1954
 #: assets/build/blocks.js:172
 #: assets/build/dashboard.js:172
 #: assets/build/entries.js:172
@@ -9072,10 +9090,14 @@ msgstr "Chiaro"
 msgid "Select Color"
 msgstr "Seleziona colore"
 
+#: inc/page-builders/bricks/elements/form-widget.php:187
+#: inc/page-builders/elementor/form-widget.php:397
 #: assets/build/formEditor.js:172
 msgid "Primary Color"
 msgstr "Colore primario"
 
+#: inc/page-builders/bricks/elements/form-widget.php:196
+#: inc/page-builders/elementor/form-widget.php:409
 #: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:6
 msgid "Text Color"
@@ -9085,18 +9107,26 @@ msgstr "Colore del testo"
 msgid "Text Color on Primary"
 msgstr "Colore del testo sul primario"
 
+#: inc/page-builders/bricks/elements/form-widget.php:455
+#: inc/page-builders/elementor/form-widget.php:765
 #: assets/build/formEditor.js:172
 msgid "Field Spacing"
 msgstr "Spaziatura del campo"
 
+#: inc/page-builders/bricks/elements/form-widget.php:458
+#: inc/page-builders/elementor/form-widget.php:769
 #: assets/build/formEditor.js:172
 msgid "Small"
 msgstr "Piccolo"
 
+#: inc/page-builders/bricks/elements/form-widget.php:460
+#: inc/page-builders/elementor/form-widget.php:771
 #: assets/build/formEditor.js:172
 msgid "Large"
 msgstr "Grande"
 
+#: inc/page-builders/bricks/elements/form-widget.php:432
+#: inc/page-builders/elementor/form-widget.php:716
 #: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:6
 #: modules/gutenberg/build/blocks.js:8
@@ -9104,6 +9134,8 @@ msgstr "Grande"
 msgid "Left"
 msgstr "Sinistra"
 
+#: inc/page-builders/bricks/elements/form-widget.php:433
+#: inc/page-builders/elementor/form-widget.php:720
 #: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:6
 #: modules/gutenberg/build/blocks.js:8
@@ -9111,6 +9143,8 @@ msgstr "Sinistra"
 msgid "Center"
 msgstr "Centro"
 
+#: inc/page-builders/bricks/elements/form-widget.php:434
+#: inc/page-builders/elementor/form-widget.php:724
 #: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:6
 #: modules/gutenberg/build/blocks.js:8
@@ -9118,7 +9152,7 @@ msgstr "Centro"
 msgid "Right"
 msgstr "Destra"
 
-#: inc/form-submit.php:1148
+#: inc/form-submit.php:1147
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:172
 msgid "Google reCAPTCHA"
@@ -9128,7 +9162,7 @@ msgstr "Google reCAPTCHA"
 msgid "CloudFlare Turnstile"
 msgstr "CloudFlare Turnstile"
 
-#: inc/form-submit.php:1152
+#: inc/form-submit.php:1151
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:172
 msgid "hCaptcha"
@@ -9222,6 +9256,9 @@ msgstr "Logo del sito"
 msgid "Banner Background"
 msgstr "Sfondo del banner"
 
+#: inc/page-builders/bricks/elements/form-widget.php:225
+#: inc/page-builders/elementor/form-widget.php:449
+#: inc/page-builders/elementor/form-widget.php:463
 #: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:6
 #: modules/gutenberg/build/blocks.js:8
@@ -9233,6 +9270,7 @@ msgstr "Colore"
 msgid "Upload Image"
 msgstr "Carica immagine"
 
+#: inc/page-builders/bricks/elements/form-widget.php:236
 #: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:6
 msgid "Background Color"
@@ -9371,6 +9409,8 @@ msgstr "%s rappresenta il numero massimo di scelte consentite. Ad esempio: \"Son
 msgid " Error Message"
 msgstr "Messaggio di errore"
 
+#: inc/page-builders/bricks/elements/form-widget.php:321
+#: inc/page-builders/elementor/form-widget.php:553
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:172
 #: modules/gutenberg/build/blocks.js:8
@@ -9410,7 +9450,7 @@ msgstr "Chiave del sito"
 msgid "Secret Key"
 msgstr "Chiave segreta"
 
-#: inc/form-submit.php:1156
+#: inc/form-submit.php:1155
 #: assets/build/settings.js:172
 msgid "Cloudflare Turnstile"
 msgstr "Cloudflare Turnstile"
@@ -9480,6 +9520,8 @@ msgstr "Per favore riprova dopo %s."
 msgid "You have reached the maximum number of form generations in your Free Plan."
 msgstr "Hai raggiunto il numero massimo di generazioni di moduli nel tuo Piano Gratuito."
 
+#: inc/page-builders/bricks/elements/form-widget.php:171
+#: inc/page-builders/elementor/form-widget.php:387
 #: modules/gutenberg/build/blocks.js:4
 #: modules/gutenberg/build/blocks.js:6
 #: modules/gutenberg/build/blocks.js:8
@@ -9647,6 +9689,8 @@ msgstr "H6"
 msgid "Span"
 msgstr "Intervallo"
 
+#: inc/page-builders/bricks/elements/form-widget.php:429
+#: inc/page-builders/elementor/form-widget.php:712
 #: modules/gutenberg/build/blocks.js:6
 #: modules/gutenberg/build/blocks.js:8
 #: modules/gutenberg/build/blocks.js:9
@@ -9659,6 +9703,8 @@ msgstr "Allineamento"
 msgid "Width"
 msgstr "Larghezza"
 
+#: inc/page-builders/bricks/elements/form-widget.php:316
+#: inc/page-builders/elementor/form-widget.php:547
 #: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:6
 #: modules/gutenberg/build/blocks.js:9
@@ -9710,42 +9756,52 @@ msgstr "divisore"
 msgid "separator"
 msgstr "separatore"
 
+#: inc/page-builders/elementor/form-widget.php:487
 #: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:6
 msgid "Color 1"
 msgstr "Colore 1"
 
+#: inc/page-builders/elementor/form-widget.php:497
 #: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:6
 msgid "Color 2"
 msgstr "Colore 2"
 
+#: inc/page-builders/bricks/elements/form-widget.php:222
+#: inc/page-builders/elementor/form-widget.php:445
 #: assets/build/formEditor.js:172
 #: assets/build/payments.js:172
 #: modules/gutenberg/build/blocks.js:6
 msgid "Type"
 msgstr "Tipo"
 
+#: inc/page-builders/bricks/elements/form-widget.php:286
 #: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:6
 msgid "Linear"
 msgstr "Lineare"
 
+#: inc/page-builders/bricks/elements/form-widget.php:287
 #: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:6
 msgid "Radial"
 msgstr "Radiale"
 
+#: inc/page-builders/elementor/form-widget.php:491
 #: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:6
 msgid "Location 1"
 msgstr "Posizione 1"
 
+#: inc/page-builders/elementor/form-widget.php:501
 #: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:6
 msgid "Location 2"
 msgstr "Posizione 2"
 
+#: inc/page-builders/bricks/elements/form-widget.php:295
+#: inc/page-builders/elementor/form-widget.php:508
 #: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:6
 msgid "Angle"
@@ -9756,6 +9812,9 @@ msgstr "Angolo"
 msgid "Classic"
 msgstr "Classico"
 
+#: inc/page-builders/bricks/elements/form-widget.php:226
+#: inc/page-builders/elementor/form-widget.php:450
+#: inc/page-builders/elementor/form-widget.php:483
 #: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:6
 msgid "Gradient"
@@ -9835,6 +9894,8 @@ msgstr "Sottotitolo"
 msgid "Enable Sub Heading"
 msgstr "Abilita sottotitolo"
 
+#: inc/page-builders/bricks/elements/form-widget.php:329
+#: inc/page-builders/elementor/form-widget.php:566
 #: modules/gutenberg/build/blocks.js:6
 #: modules/gutenberg/build/blocks.js:8
 #: modules/gutenberg/build/blocks.js:9
@@ -9882,6 +9943,8 @@ msgstr "Evidenzia"
 msgid "Highlight heading text from toolbar to see the below controls working."
 msgstr "Evidenzia il testo dell'intestazione dalla barra degli strumenti per vedere i controlli sottostanti funzionare."
 
+#: inc/page-builders/bricks/elements/form-widget.php:214
+#: inc/page-builders/elementor/form-widget.php:433
 #: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:6
 #: modules/gutenberg/build/blocks.js:8
@@ -9973,11 +10036,15 @@ msgstr "Preimpostazione 6"
 msgid "Select Preset"
 msgstr "Seleziona preimpostazione"
 
+#: inc/page-builders/bricks/elements/form-widget.php:319
+#: inc/page-builders/elementor/form-widget.php:551
 #: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:8
 msgid "Cover"
 msgstr "Copertina"
 
+#: inc/page-builders/bricks/elements/form-widget.php:320
+#: inc/page-builders/elementor/form-widget.php:552
 #: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:8
 msgid "Contain"
@@ -9987,6 +10054,8 @@ msgstr "Contenere"
 msgid "Disable Lazy Loading"
 msgstr "Disabilita il caricamento pigro"
 
+#: inc/page-builders/bricks/elements/form-widget.php:103
+#: inc/page-builders/elementor/form-widget.php:639
 #: modules/gutenberg/build/blocks.js:8
 msgid "Layout"
 msgstr "Layout"
@@ -10076,38 +10145,56 @@ msgstr "Dimensione della maschera"
 msgid "Mask Position"
 msgstr "Posizione della maschera"
 
+#: inc/page-builders/bricks/elements/form-widget.php:335
+#: inc/page-builders/elementor/form-widget.php:573
 #: modules/gutenberg/build/blocks.js:8
 msgid "Center Top"
 msgstr "Centro Alto"
 
+#: inc/page-builders/bricks/elements/form-widget.php:336
+#: inc/page-builders/elementor/form-widget.php:574
 #: modules/gutenberg/build/blocks.js:8
 msgid "Center Center"
 msgstr "Centro Centro"
 
+#: inc/page-builders/bricks/elements/form-widget.php:337
+#: inc/page-builders/elementor/form-widget.php:575
 #: modules/gutenberg/build/blocks.js:8
 msgid "Center Bottom"
 msgstr "Centro inferiore"
 
+#: inc/page-builders/bricks/elements/form-widget.php:332
+#: inc/page-builders/elementor/form-widget.php:570
 #: modules/gutenberg/build/blocks.js:8
 msgid "Left Top"
 msgstr "In alto a sinistra"
 
+#: inc/page-builders/bricks/elements/form-widget.php:333
+#: inc/page-builders/elementor/form-widget.php:571
 #: modules/gutenberg/build/blocks.js:8
 msgid "Left Center"
 msgstr "Centro Sinistra"
 
+#: inc/page-builders/bricks/elements/form-widget.php:334
+#: inc/page-builders/elementor/form-widget.php:572
 #: modules/gutenberg/build/blocks.js:8
 msgid "Left Bottom"
 msgstr "In basso a sinistra"
 
+#: inc/page-builders/bricks/elements/form-widget.php:338
+#: inc/page-builders/elementor/form-widget.php:576
 #: modules/gutenberg/build/blocks.js:8
 msgid "Right Top"
 msgstr "In alto a destra"
 
+#: inc/page-builders/bricks/elements/form-widget.php:339
+#: inc/page-builders/elementor/form-widget.php:577
 #: modules/gutenberg/build/blocks.js:8
 msgid "Right Center"
 msgstr "Centro Destra"
 
+#: inc/page-builders/bricks/elements/form-widget.php:340
+#: inc/page-builders/elementor/form-widget.php:578
 #: modules/gutenberg/build/blocks.js:8
 msgid "Right Bottom"
 msgstr "In basso a destra"
@@ -10116,6 +10203,8 @@ msgstr "In basso a destra"
 msgid "Mask Repeat"
 msgstr "Ripeti maschera"
 
+#: inc/page-builders/bricks/elements/form-widget.php:351
+#: inc/page-builders/elementor/form-widget.php:595
 #: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:8
 msgid "No Repeat"
@@ -10332,18 +10421,18 @@ msgstr "Sblocca Aggiungi Nota"
 msgid "With the SureForms Starter plan, enhance your submitted form entries by adding personalized notes for better clarity and tracking."
 msgstr "Con il piano SureForms Starter, migliora le tue voci di modulo inviate aggiungendo note personalizzate per una maggiore chiarezza e tracciabilità."
 
-#: inc/form-submit.php:823
+#: inc/form-submit.php:821
 msgid "Email notification passed to the sending server"
 msgstr "Notifica email passata al server di invio"
 
 #. translators: Here, %s is the comma separated emails list.
-#: inc/form-submit.php:896
+#: inc/form-submit.php:894
 #, php-format
 msgid "Email notification recipient: %s"
 msgstr "Destinatario della notifica email: %s"
 
 #. translators: Here, %1$s is the comma separated emails list and %2$s is error report ( if any ).
-#: inc/form-submit.php:913
+#: inc/form-submit.php:911
 #, php-format
 msgid "Email server was unable to send the email notification. Recipient: %1$s. Reason: %2$s"
 msgstr "Il server di posta elettronica non è riuscito a inviare la notifica email. Destinatario: %1$s. Motivo: %2$s"
@@ -10408,10 +10497,14 @@ msgstr "Colore di sovrapposizione dell'immagine"
 msgid "Image Position"
 msgstr "Posizione dell'immagine"
 
+#: inc/page-builders/bricks/elements/form-widget.php:362
+#: inc/page-builders/elementor/form-widget.php:611
 #: assets/build/formEditor.js:172
 msgid "Attachment"
 msgstr "Allegato"
 
+#: inc/page-builders/bricks/elements/form-widget.php:366
+#: inc/page-builders/elementor/form-widget.php:616
 #: assets/build/formEditor.js:172
 msgid "Fixed"
 msgstr "Fisso"
@@ -10456,11 +10549,13 @@ msgstr "Ripeti-y"
 msgid "PX"
 msgstr "PX"
 
+#: inc/page-builders/bricks/elements/form-widget.php:109
+#: inc/page-builders/elementor/form-widget.php:699
 #: assets/build/formEditor.js:172
 msgid "Button"
 msgstr "Pulsante"
 
-#: inc/helper.php:1729
+#: inc/helper.php:1748
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:172
 msgid "OttoKit"
@@ -10540,6 +10635,8 @@ msgstr "L'attuale indirizzo 'Da Email' potrebbe non corrispondere al nome di dom
 msgid "Border Radius"
 msgstr "Raggio del bordo"
 
+#: inc/page-builders/bricks/elements/form-widget.php:167
+#: inc/page-builders/elementor/form-widget.php:382
 #: assets/build/formEditor.js:172
 msgid "Form Theme"
 msgstr "Tema del modulo"
@@ -10560,24 +10657,24 @@ msgstr "Seleziona sfumatura"
 msgid "reCAPTCHA"
 msgstr "reCAPTCHA"
 
-#: inc/form-submit.php:1092
+#: inc/form-submit.php:1091
 msgid "Captcha validation failed. No error code provided."
 msgstr "La validazione del captcha non è riuscita. Nessun codice di errore fornito."
 
-#: inc/form-submit.php:1093
+#: inc/form-submit.php:1092
 msgid "Captcha validation failed."
 msgstr "La validazione del captcha è fallita."
 
-#: inc/form-submit.php:1160
+#: inc/form-submit.php:1159
 msgid "Unknown Captcha"
 msgstr "Captcha sconosciuto"
 
-#: inc/form-submit.php:1161
+#: inc/form-submit.php:1160
 msgid "Invalid captcha type."
 msgstr "Tipo di captcha non valido."
 
 #. translators: %s is the captcha title.
-#: inc/form-submit.php:1174
+#: inc/form-submit.php:1173
 #, php-format
 msgid "%s verification failed. Please contact your site administrator."
 msgstr "La verifica di %s non è riuscita. Si prega di contattare l'amministratore del sito."
@@ -10595,16 +10692,16 @@ msgid "HCaptcha sitekey verification failed. Please contact your site administra
 msgstr "La verifica del sitekey di HCaptcha non è riuscita. Si prega di contattare l'amministratore del sito."
 
 #. translators: %s: Provider name like HCaptcha, Google reCAPTCHA, Turnstile
-#: inc/helper.php:1081
+#: inc/helper.php:1100
 #, php-format
 msgid "%s sitekey is missing. Please contact your site administrator."
 msgstr "Manca il sitekey %s. Si prega di contattare l'amministratore del sito."
 
-#: inc/helper.php:1720
+#: inc/helper.php:1739
 msgid "SureMail"
 msgstr "SureMail"
 
-#: inc/helper.php:1741
+#: inc/helper.php:1760
 msgid "Starter Templates"
 msgstr "Modelli di partenza"
 
@@ -10955,8 +11052,8 @@ msgstr "Descrivi il modulo che desideri creare"
 msgid "We are building your form…"
 msgstr "Stiamo creando il tuo modulo…"
 
-#: admin/admin.php:424
-#: admin/admin.php:425
+#: admin/admin.php:457
+#: admin/admin.php:458
 msgid "SMTP"
 msgstr "SMTP"
 
@@ -11094,28 +11191,28 @@ msgstr "Le notifiche dell'amministratore ti tengono informato sui nuovi invii di
 msgid "Contribute to SureForms"
 msgstr "Contribuisci a SureForms"
 
-#: admin/admin.php:1479
-#: admin/admin.php:1570
-#: admin/admin.php:1608
-#: admin/admin.php:1629
+#: admin/admin.php:1544
+#: admin/admin.php:1635
+#: admin/admin.php:1673
+#: admin/admin.php:1694
 msgid "Unauthorized user."
 msgstr "Utente non autorizzato."
 
 #. translators: 1: opening span, 2: opening strong (inline), 3: closing strong, 4: closing span, 5: opening strong (block), 6: closing strong
-#: admin/admin.php:1579
+#: admin/admin.php:1644
 #, php-format
 msgid "%1$sGet started by %2$sbuilding your first form%3$s.%4$s%5$sExperience the power of our intuitive AI Form Builder%6$s"
 msgstr "%1$sInizia %2$scostruendo il tuo primo modulo%3$s.%4$s%5$sScopri la potenza del nostro intuitivo Costruttore di Moduli AI%6$s"
 
-#: admin/admin.php:1590
+#: admin/admin.php:1655
 msgid "SureForms is waiting for you!"
 msgstr "SureForms ti sta aspettando!"
 
-#: admin/admin.php:1592
+#: admin/admin.php:1657
 msgid "Build My First Form"
 msgstr "Crea il mio primo modulo"
 
-#: admin/admin.php:1593
+#: admin/admin.php:1658
 msgid "Dismiss"
 msgstr "Chiudi"
 
@@ -11135,51 +11232,51 @@ msgstr "Accesso"
 msgid "Register"
 msgstr "Registrati"
 
-#: admin/admin.php:1704
+#: admin/admin.php:1769
 msgid "Recent Entries"
 msgstr "Voci recenti"
 
-#: admin/admin.php:1705
+#: admin/admin.php:1770
 msgid "( Last 7 days )"
 msgstr "( Ultimi 7 giorni )"
 
-#: admin/admin.php:1825
+#: admin/admin.php:1890
 msgid "Use Conditional Logic to show only what matters"
 msgstr "Usa la logica condizionale per mostrare solo ciò che conta"
 
-#: admin/admin.php:1826
+#: admin/admin.php:1891
 msgid "Split your form into steps to keep it easy"
 msgstr "Dividi il tuo modulo in passaggi per mantenerlo semplice"
 
-#: admin/admin.php:1827
+#: admin/admin.php:1892
 msgid "Let people upload files directly to your form"
 msgstr "Consenti alle persone di caricare file direttamente nel tuo modulo"
 
-#: admin/admin.php:1828
+#: admin/admin.php:1893
 msgid "Turn responses into downloadable PDFs automatically"
 msgstr "Trasforma automaticamente le risposte in PDF scaricabili"
 
-#: admin/admin.php:1829
+#: admin/admin.php:1894
 msgid "Let users sign with a simple signature field"
 msgstr "Consenti agli utenti di firmare con un semplice campo firma"
 
-#: admin/admin.php:1830
+#: admin/admin.php:1895
 msgid "Connect your form to other tools using webhooks"
 msgstr "Collega il tuo modulo ad altri strumenti utilizzando i webhook"
 
-#: admin/admin.php:1831
+#: admin/admin.php:1896
 msgid "Use Conversational Forms for a chat-like experience"
 msgstr "Usa moduli conversazionali per un'esperienza simile a una chat"
 
-#: admin/admin.php:1832
+#: admin/admin.php:1897
 msgid "Let users register or log in through your form"
 msgstr "Consenti agli utenti di registrarsi o accedere tramite il tuo modulo"
 
-#: admin/admin.php:1833
+#: admin/admin.php:1898
 msgid "Build forms that create WordPress user accounts"
 msgstr "Crea moduli che creano account utente WordPress"
 
-#: admin/admin.php:1834
+#: admin/admin.php:1899
 msgid "Add calculations to auto-total scores or prices"
 msgstr "Aggiungi calcoli per totalizzare automaticamente i punteggi o i prezzi"
 
@@ -11417,20 +11514,20 @@ msgstr "Ritocchi finali che fanno la differenza:"
 msgid "Build Your First Form"
 msgstr "Crea il tuo primo modulo"
 
-#: inc/helper.php:1951
+#: inc/helper.php:1970
 msgid "Invalid nonce action or name."
 msgstr "Azione o nome del nonce non valido."
 
-#: inc/helper.php:1961
-#: inc/helper.php:1969
+#: inc/helper.php:1980
+#: inc/helper.php:1988
 msgid "Invalid security token."
 msgstr "Token di sicurezza non valido."
 
-#: inc/helper.php:1976
+#: inc/helper.php:1995
 msgid "Invalid request type."
 msgstr "Tipo di richiesta non valido."
 
-#: inc/helper.php:1984
+#: inc/helper.php:2003
 msgid "You do not have permission to perform this action."
 msgstr "Non hai il permesso di eseguire questa azione."
 
@@ -11542,7 +11639,7 @@ msgstr "Ciao,"
 msgid "Email Summary of your last week -  %1$s to %2$s"
 msgstr "Riepilogo email della tua ultima settimana - %1$s a %2$s"
 
-#: inc/helper.php:1755
+#: inc/helper.php:1774
 msgid "Ultimate Addons for Elementor"
 msgstr "Componenti aggiuntivi avanzati per Elementor"
 
@@ -11671,8 +11768,8 @@ msgstr "Miniatura video di SureForms"
 msgid "Expected format for emails - email@sureforms.com or John Doe <email@sureforms.com>"
 msgstr "Formato previsto per le email - email@sureforms.com o John Doe <email@sureforms.com>"
 
-#: admin/admin.php:544
-#: admin/admin.php:545
+#: admin/admin.php:577
+#: admin/admin.php:578
 #: assets/build/dashboard.js:172
 #: assets/build/entries.js:172
 #: assets/build/forms.js:172
@@ -11837,47 +11934,47 @@ msgstr "La modalità di test è attivata:"
 msgid "Click here to enable live mode and accept payment"
 msgstr "Fai clic qui per abilitare la modalità live e accettare il pagamento"
 
-#: inc/helper.php:1721
+#: inc/helper.php:1740
 msgid "Boost Your Email Deliverability Instantly!"
 msgstr "Migliora immediatamente la tua deliverability delle email!"
 
-#: inc/helper.php:1722
+#: inc/helper.php:1741
 msgid "Access a powerful, easy-to-use email delivery service that ensures your emails land in inboxes, not spam folders. Automate your WordPress email workflows confidently with SureMail."
 msgstr "Accedi a un potente servizio di consegna email facile da usare che garantisce che le tue email arrivino nelle caselle di posta, non nelle cartelle di spam. Automatizza con sicurezza i tuoi flussi di lavoro email di WordPress con SureMail."
 
-#: inc/helper.php:1730
+#: inc/helper.php:1749
 msgid "Automate your WordPress workflows effortlessly."
 msgstr "Automatizza i tuoi flussi di lavoro WordPress senza sforzo."
 
-#: inc/helper.php:1731
+#: inc/helper.php:1750
 msgid "Connect your WordPress plugins and favourite apps, automate tasks, and sync data effortlessly using OttoKit’s clean, visual workflow builder — no coding or complex setup required."
 msgstr "Collega i tuoi plugin di WordPress e le app preferite, automatizza le attività e sincronizza i dati senza sforzo utilizzando il pulito e visivo builder di flussi di lavoro di OttoKit — senza bisogno di codifica o configurazioni complesse."
 
-#: inc/helper.php:1742
+#: inc/helper.php:1761
 msgid "Launch Beautiful Websites in Minutes!"
 msgstr "Lancia bellissimi siti web in pochi minuti!"
 
-#: inc/helper.php:1743
+#: inc/helper.php:1762
 msgid "Choose from professionally designed templates, import with one click, and customize effortlessly to match your brand."
 msgstr "Scegli tra modelli progettati professionalmente, importa con un clic e personalizza facilmente per adattarli al tuo marchio."
 
-#: inc/helper.php:1756
+#: inc/helper.php:1775
 msgid "Power Up Elementor to Build Stunning Websites Faster!"
 msgstr "Potenzia Elementor per creare siti web straordinari più velocemente!"
 
-#: inc/helper.php:1757
+#: inc/helper.php:1776
 msgid "Enhance Elementor with powerful widgets and templates. Build stunning, high-performing websites faster with creative design elements and seamless customization."
 msgstr "Migliora Elementor con potenti widget e template. Crea siti web straordinari e ad alte prestazioni più velocemente con elementi di design creativi e personalizzazione senza interruzioni."
 
-#: inc/helper.php:1765
+#: inc/helper.php:1784
 msgid "SureRank"
 msgstr "SureRank"
 
-#: inc/helper.php:1766
+#: inc/helper.php:1785
 msgid "Elevate Your SEO and Climb Search Rankings Effortlessly!"
 msgstr "Eleva il tuo SEO e scala le classifiche di ricerca senza sforzo!"
 
-#: inc/helper.php:1767
+#: inc/helper.php:1786
 msgid "Boost your website's visibility with smart SEO automation. Optimize content, track keyword performance, and get actionable insights, all inside WordPress."
 msgstr "Aumenta la visibilità del tuo sito web con l'automazione intelligente della SEO. Ottimizza i contenuti, monitora le prestazioni delle parole chiave e ottieni informazioni utili, tutto all'interno di WordPress."
 
@@ -13176,15 +13273,15 @@ msgstr "Modifica questo modulo"
 msgid "Your form has been submitted successfully. We'll review your details and get back to you soon."
 msgstr "Il tuo modulo è stato inviato con successo. Esamineremo i tuoi dettagli e ti ricontatteremo presto."
 
-#: inc/rest-api.php:646
-#: inc/rest-api.php:786
+#: inc/rest-api.php:758
+#: inc/rest-api.php:898
 msgid "Entry ID is required."
 msgstr "L'ID di ingresso è obbligatorio."
 
 #: inc/abilities/entries/bulk-get-entries.php:172
 #: inc/abilities/entries/get-entry.php:121
-#: inc/rest-api.php:655
-#: inc/rest-api.php:795
+#: inc/rest-api.php:767
+#: inc/rest-api.php:907
 msgid "Entry not found."
 msgstr "Voce non trovata."
 
@@ -14866,7 +14963,7 @@ msgstr "È richiesto il valore del campo importo variabile."
 msgid "Payment amount below minimum. Minimum: %1$s, received %2$s."
 msgstr "Importo del pagamento inferiore al minimo. Minimo: %1$s, ricevuto %2$s."
 
-#: inc/rest-api.php:1598
+#: inc/rest-api.php:1781
 msgid " (Copy)"
 msgstr "(Copia)"
 
@@ -15066,24 +15163,24 @@ msgid "Stripe Settings"
 msgstr "Impostazioni di Stripe"
 
 #. translators: %1$s: SureForms version, %2$s: SureForms Pro Plugin Name, %3$s: SureForms Pro Version.
-#: admin/admin.php:1244
+#: admin/admin.php:1309
 #, php-format
 msgid "SureForms %1$s requires minimum %2$s %3$s to work properly. Please update to the latest version."
 msgstr "SureForms %1$s richiede almeno %2$s %3$s per funzionare correttamente. Si prega di aggiornare all'ultima versione."
 
-#: admin/admin.php:1257
+#: admin/admin.php:1322
 msgid "Update Now"
 msgstr "Aggiorna ora"
 
-#: inc/helper.php:1711
+#: inc/helper.php:1730
 msgid "SureContact"
 msgstr "SureContact"
 
-#: inc/helper.php:1712
+#: inc/helper.php:1731
 msgid "Turn Emails Into Revenue with a CRM Built for Your Website!"
 msgstr "Trasforma le email in entrate con un CRM creato per il tuo sito web!"
 
-#: inc/helper.php:1713
+#: inc/helper.php:1732
 msgid "Send newsletters, run campaigns, set up automations, manage contacts, and see exactly how much revenue your emails generate, all in one place."
 msgstr "Invia newsletter, gestisci campagne, imposta automazioni, gestisci contatti e vedi esattamente quanto reddito generano le tue email, tutto in un unico posto."
 
@@ -15119,8 +15216,8 @@ msgstr "Posizione del simbolo di valuta"
 msgid "Select the position of the currency symbol relative to the amount."
 msgstr "Seleziona la posizione del simbolo della valuta rispetto all'importo."
 
-#: admin/admin.php:487
-#: admin/admin.php:488
+#: admin/admin.php:520
+#: admin/admin.php:521
 #: assets/build/dashboard.js:172
 #: assets/build/entries.js:172
 #: assets/build/forms.js:172
@@ -15131,40 +15228,40 @@ msgstr "Seleziona la posizione del simbolo della valuta rispetto all'importo."
 msgid "Learn"
 msgstr "Impara"
 
-#: admin/admin.php:1370
+#: admin/admin.php:1435
 msgid "Amazing! SureForms is powering your forms and submissions - let's keep growing together!"
 msgstr "Incredibile! SureForms sta alimentando i tuoi moduli e le tue sottomissioni - continuiamo a crescere insieme!"
 
-#: admin/admin.php:1371
+#: admin/admin.php:1436
 msgid "If SureForms has been helpful, would you mind taking a moment to leave a 5-star review on WordPress.org?"
 msgstr "Se SureForms ti è stato utile, ti dispiacerebbe prendere un momento per lasciare una recensione a 5 stelle su WordPress.org?"
 
-#: admin/admin.php:1374
-#: admin/admin.php:1418
+#: admin/admin.php:1439
+#: admin/admin.php:1483
 msgid "Maybe later"
 msgstr "Forse più tardi"
 
-#: admin/admin.php:1375
+#: admin/admin.php:1440
 msgid "I already did"
 msgstr "L'ho già fatto"
 
-#: admin/admin.php:1414
+#: admin/admin.php:1479
 msgid "SureForms is ready to power your forms — explore what's possible!"
 msgstr "SureForms è pronto a potenziare i tuoi moduli — scopri cosa è possibile!"
 
-#: admin/admin.php:1415
+#: admin/admin.php:1480
 msgid "Manage your forms, track submissions, and discover features like AI Form Builder, payment integrations, and more from the SureForms dashboard."
 msgstr "Gestisci i tuoi moduli, traccia le sottomissioni e scopri funzionalità come AI Form Builder, integrazioni di pagamento e altro ancora dalla dashboard di SureForms."
 
-#: admin/admin.php:1417
+#: admin/admin.php:1482
 msgid "Go to Dashboard"
 msgstr "Vai al cruscotto"
 
-#: admin/admin.php:1419
+#: admin/admin.php:1484
 msgid "I already know"
 msgstr "Lo so già"
 
-#: admin/admin.php:1499
+#: admin/admin.php:1564
 msgid "Invalid parameters."
 msgstr "Parametri non validi."
 
@@ -15551,70 +15648,71 @@ msgstr "Campo di testo"
 msgid "This form is not yet available. Check back after the scheduled start time."
 msgstr "Questo modulo non è ancora disponibile. Ricontrolla dopo l'orario di inizio programmato."
 
-#: inc/form-submit.php:101
-#: inc/form-submit.php:402
-#: inc/form-submit.php:447
-#: inc/form-submit.php:963
+#: inc/form-submit.php:99
+#: inc/form-submit.php:400
+#: inc/form-submit.php:445
+#: inc/form-submit.php:966
 #: inc/payments/front-end.php:77
 #: inc/payments/front-end.php:258
-#: inc/rest-api.php:91
-#: inc/rest-api.php:150
-#: inc/rest-api.php:316
-#: inc/rest-api.php:348
-#: inc/rest-api.php:370
-#: inc/rest-api.php:461
-#: inc/rest-api.php:506
-#: inc/rest-api.php:555
-#: inc/rest-api.php:604
-#: inc/rest-api.php:637
-#: inc/rest-api.php:773
-#: inc/rest-api.php:846
-#: inc/rest-api.php:906
+#: inc/rest-api.php:98
+#: inc/rest-api.php:157
+#: inc/rest-api.php:323
+#: inc/rest-api.php:355
+#: inc/rest-api.php:377
+#: inc/rest-api.php:482
+#: inc/rest-api.php:573
+#: inc/rest-api.php:618
+#: inc/rest-api.php:667
+#: inc/rest-api.php:716
+#: inc/rest-api.php:749
+#: inc/rest-api.php:885
+#: inc/rest-api.php:958
+#: inc/rest-api.php:1018
 msgid "Security verification failed. Please refresh the page and try again."
 msgstr "Verifica di sicurezza fallita. Si prega di aggiornare la pagina e riprovare."
 
-#: inc/form-submit.php:481
+#: inc/form-submit.php:479
 msgid "Form data was not found."
 msgstr "I dati del modulo non sono stati trovati."
 
-#: inc/form-submit.php:240
+#: inc/form-submit.php:238
 msgid "Form ID is missing."
 msgstr "Manca l'ID del modulo."
 
-#: inc/form-submit.php:117
+#: inc/form-submit.php:115
 msgid "Sorry, you do not have permission to access this resource."
 msgstr "Spiacente, non hai il permesso di accedere a questa risorsa."
 
-#: inc/form-submit.php:272
+#: inc/form-submit.php:270
 msgid "You do not have permission to submit this form."
 msgstr "Non hai il permesso di inviare questo modulo."
 
-#: inc/form-submit.php:282
+#: inc/form-submit.php:280
 msgid "This form is no longer available."
 msgstr "Questo modulo non è più disponibile."
 
-#: inc/form-submit.php:295
+#: inc/form-submit.php:293
 msgid "Please check the form for errors."
 msgstr "Si prega di controllare il modulo per eventuali errori."
 
-#: inc/form-submit.php:422
-#: inc/form-submit.php:463
+#: inc/form-submit.php:420
+#: inc/form-submit.php:461
 msgid "Your submission was flagged as spam. Please try again."
 msgstr "Il tuo invio è stato segnalato come spam. Per favore riprova."
 
-#: inc/form-submit.php:651
+#: inc/form-submit.php:649
 msgid "Unable to submit form. Please try again."
 msgstr "Impossibile inviare il modulo. Per favore riprova."
 
-#: inc/form-submit.php:903
+#: inc/form-submit.php:901
 msgid "No SMTP plugin detected. Please configure an SMTP plugin to enable email sending."
 msgstr "Nessun plugin SMTP rilevato. Si prega di configurare un plugin SMTP per abilitare l'invio di email."
 
-#: inc/form-submit.php:904
+#: inc/form-submit.php:902
 msgid "Email sending failed for an unknown reason."
 msgstr "Invio email fallito per una ragione sconosciuta."
 
-#: inc/form-submit.php:943
+#: inc/form-submit.php:941
 msgid "No emails were sent."
 msgstr "Nessuna email è stata inviata."
 
@@ -15836,63 +15934,63 @@ msgstr "Impossibile connettersi a Stripe."
 msgid "This form is closed. The submission period has ended."
 msgstr "Questo modulo è chiuso. Il periodo di invio è terminato."
 
-#: inc/rest-api.php:97
+#: inc/rest-api.php:104
 msgid "Missing required parameters."
 msgstr "Mancano i parametri richiesti."
 
-#: inc/rest-api.php:104
+#: inc/rest-api.php:111
 msgid "Invalid date range."
 msgstr "Intervallo di date non valido."
 
-#: inc/rest-api.php:381
+#: inc/rest-api.php:493
 msgid "Plugin identifier is required."
 msgstr "È necessario l'identificatore del plugin."
 
-#: inc/rest-api.php:390
+#: inc/rest-api.php:502
 msgid "Integration not found."
 msgstr "Integrazione non trovata."
 
-#: inc/rest-api.php:516
-#: inc/rest-api.php:565
-#: inc/rest-api.php:613
+#: inc/rest-api.php:628
+#: inc/rest-api.php:677
+#: inc/rest-api.php:725
 msgid "Select at least one entry."
 msgstr "Seleziona almeno una voce."
 
-#: inc/rest-api.php:523
-#: inc/rest-api.php:572
+#: inc/rest-api.php:635
+#: inc/rest-api.php:684
 msgid "Action is required."
 msgstr "È necessaria un'azione."
 
-#: inc/rest-api.php:531
+#: inc/rest-api.php:643
 msgid "Invalid action. Use \"read\" or \"unread\"."
 msgstr "Azione non valida. Usa \"read\" o \"unread\"."
 
-#: inc/rest-api.php:580
+#: inc/rest-api.php:692
 msgid "Invalid action. Use \"trash\" or \"restore\"."
 msgstr "Azione non valida. Usa \"trash\" o \"restore\"."
 
-#: inc/rest-api.php:920
+#: inc/rest-api.php:1032
 msgid "Select at least one form and specify an action."
 msgstr "Seleziona almeno un modulo e specifica un'azione."
 
-#: inc/rest-api.php:935
+#: inc/rest-api.php:1047
 msgid "Form not found or is not a valid form type."
 msgstr "Modulo non trovato o non è un tipo di modulo valido."
 
-#: inc/rest-api.php:947
+#: inc/rest-api.php:1059
 msgid "This form is already in the trash."
 msgstr "Questo modulo è già nel cestino."
 
-#: inc/rest-api.php:958
+#: inc/rest-api.php:1070
 msgid "This form is not in the trash."
 msgstr "Questo modulo non è nel cestino."
 
-#: inc/rest-api.php:973
+#: inc/rest-api.php:1085
 msgid "Invalid action."
 msgstr "Azione non valida."
 
 #. translators: %s: action name
-#: inc/rest-api.php:988
+#: inc/rest-api.php:1100
 #, php-format
 msgid "Failed to %s this form. Please try again."
 msgstr "Impossibile %s questo modulo. Per favore riprova."
@@ -16145,7 +16243,7 @@ msgid "Duplicate form?"
 msgstr "Duplicare il modulo?"
 
 #: assets/build/formSubmit.js:2
-#: assets/js/unminified/form-submit.js:479
+#: assets/js/unminified/form-submit.js:482
 msgid "An error occurred while submitting your form. Please try again."
 msgstr "Si è verificato un errore durante l'invio del modulo. Si prega di riprovare."
 
@@ -16515,121 +16613,85 @@ msgstr "Segreto del webhook non configurato."
 msgid "Invalid webhook signature."
 msgstr "Firma del webhook non valida."
 
-#: assets/build/formEditor.js:172
+#: admin/admin.php:425
+#: admin/admin.php:933
 msgid "Quizzes"
 msgstr "Quiz"
 
-#: assets/build/formEditor.js:172
-msgid "Create interactive quizzes to engage your audience and gather insights."
-msgstr "Crea quiz interattivi per coinvolgere il tuo pubblico e raccogliere informazioni."
+#: admin/admin.php:424
+msgid "Quiz Entries"
+msgstr "Voci del quiz"
 
-#: assets/build/formEditor.js:172
-msgid "Design engaging quizzes with various question types, personalized feedback, and automated scoring to captivate your audience and gain valuable insights."
-msgstr "Progetta quiz coinvolgenti con vari tipi di domande, feedback personalizzati e punteggi automatici per catturare l'attenzione del tuo pubblico e ottenere preziose informazioni."
+#: admin/admin.php:427
+msgid "New"
+msgstr "Nuovo"
 
-#: assets/build/formEditor.js:172
-msgid "Create interactive quizzes with multiple question types."
-msgstr "Crea quiz interattivi con diversi tipi di domande."
+#: inc/form-submit.php:975
+msgid "Invalid form."
+msgstr "Modulo non valido."
 
-#: assets/build/formEditor.js:172
-msgid "Provide personalized feedback based on user responses."
-msgstr "Fornisci feedback personalizzato basato sulle risposte degli utenti."
+#: inc/form-submit.php:980
+msgid "Too many requests. Please try again shortly."
+msgstr "Troppe richieste. Si prega di riprovare a breve."
 
-#: assets/build/formEditor.js:172
-msgid "Automate scoring and lead segmentation for better insights."
-msgstr "Automatizza la valutazione e la segmentazione dei lead per ottenere migliori approfondimenti."
+#: inc/page-builders/bricks/elements/form-widget.php:93
+#: inc/page-builders/elementor/form-widget.php:370
+msgid "Form Styling"
+msgstr "Stile del modulo"
 
-#: assets/build/settings.js:172
-msgid "MCP"
-msgstr "MCP"
+#: inc/page-builders/bricks/elements/form-widget.php:170
+#: inc/page-builders/elementor/form-widget.php:386
+msgid "Inherit Form's Original Style"
+msgstr "Eredita lo stile originale del modulo"
 
-#: assets/build/settings.js:172
-msgid "Configure AI client permissions and MCP server settings."
-msgstr "Configura le autorizzazioni del client AI e le impostazioni del server MCP."
+#: inc/page-builders/bricks/elements/form-widget.php:205
+#: inc/page-builders/elementor/form-widget.php:421
+msgid "Text on Primary"
+msgstr "Testo su Primario"
 
-#: assets/build/settings.js:172
-msgid "Copy to clipboard"
-msgstr "Copia negli appunti"
+#: inc/page-builders/bricks/elements/form-widget.php:247
+msgid "Gradient Color 1"
+msgstr "Colore sfumato 1"
 
-#: assets/build/settings.js:172
-msgid "Connect Your AI Client"
-msgstr "Collega il tuo client AI"
+#: inc/page-builders/bricks/elements/form-widget.php:254
+msgid "Color 1 Location (%)"
+msgstr "Posizione Colore 1 (%)"
 
-#: assets/build/settings.js:172
-msgid "Create an Application Password — "
-msgstr "Crea una Password per l'Applicazione — "
+#: inc/page-builders/bricks/elements/form-widget.php:265
+msgid "Gradient Color 2"
+msgstr "Colore sfumato 2"
 
-#: assets/build/settings.js:172
-msgid "Open Application Passwords"
-msgstr "Apri Password Applicazioni"
+#: inc/page-builders/bricks/elements/form-widget.php:272
+msgid "Color 2 Location (%)"
+msgstr "Colore 2 Posizione (%)"
 
-#: assets/build/settings.js:172
-msgid "Copy the JSON config below into your AI client's MCP config file."
-msgstr "Copia la configurazione JSON qui sotto nel file di configurazione MCP del tuo client AI."
+#: inc/page-builders/bricks/elements/form-widget.php:283
+msgid "Gradient Type"
+msgstr "Tipo di gradiente"
 
-#: assets/build/settings.js:172
-msgid "Replace \"your-application-password\" with the password from Step 1."
-msgstr "Sostituisci \"your-application-password\" con la password del Passo 1."
+#: inc/page-builders/bricks/elements/form-widget.php:353
+#: inc/page-builders/elementor/form-widget.php:597
+msgid "Repeat X"
+msgstr "Ripeti X"
 
-#: assets/build/settings.js:172
-msgid "Add to .mcp.json (Claude Code), claude_desktop_config.json (Claude Desktop), or your client's MCP settings."
-msgstr "Aggiungi a .mcp.json (Claude Code), claude_desktop_config.json (Claude Desktop) o alle impostazioni MCP del tuo client."
+#: inc/page-builders/bricks/elements/form-widget.php:354
+#: inc/page-builders/elementor/form-widget.php:598
+msgid "Repeat Y"
+msgstr "Ripeti Y"
 
-#: assets/build/settings.js:172
-msgid "Experimental"
-msgstr "Sperimentale"
+#: inc/page-builders/bricks/elements/form-widget.php:377
+#: inc/page-builders/elementor/form-widget.php:652
+msgid "Form Padding"
+msgstr "Riempimento modulo"
 
-#: assets/build/settings.js:172
-msgid "Enable Abilities"
-msgstr "Abilita abilità"
+#: inc/page-builders/bricks/elements/form-widget.php:398
+#: inc/page-builders/elementor/form-widget.php:671
+msgid "Form Border Radius"
+msgstr "Raggio del bordo del modulo"
 
-#: assets/build/settings.js:172
-msgid "Register SureForms abilities with the WordPress Abilities API. When enabled, AI clients can list, read, create, edit, and delete your forms and entries. When disabled, no abilities are registered and AI clients cannot perform any actions on your forms."
-msgstr "Registra le abilità di SureForms con l'API Abilities di WordPress. Quando abilitato, i client AI possono elencare, leggere, creare, modificare e eliminare i tuoi moduli e le voci. Quando disabilitato, nessuna abilità è registrata e i client AI non possono eseguire alcuna azione sui tuoi moduli."
-
-#: assets/build/settings.js:172
-msgid "Abilities API — Edit"
-msgstr "API delle abilità — Modifica"
-
-#: assets/build/settings.js:172
-msgid "Enable Edit Abilities"
-msgstr "Abilita le capacità di modifica"
-
-#: assets/build/settings.js:172
-msgid "When enabled, AI clients can create new forms, update form titles, fields, and settings, duplicate forms, and modify entry statuses. When disabled, these abilities are unregistered and AI clients can only read your data."
-msgstr "Quando abilitato, i client AI possono creare nuovi moduli, aggiornare titoli, campi e impostazioni dei moduli, duplicare moduli e modificare gli stati delle voci. Quando disabilitato, queste capacità vengono annullate e i client AI possono solo leggere i tuoi dati."
-
-#: assets/build/settings.js:172
-msgid "Abilities API — Delete"
-msgstr "API delle abilità — Elimina"
-
-#: assets/build/settings.js:172
-msgid "Enable Delete Abilities"
-msgstr "Abilita le capacità di eliminazione"
-
-#: assets/build/settings.js:172
-msgid "When enabled, AI clients can permanently delete forms and entries. Deleted data cannot be recovered. When disabled, delete abilities are unregistered and AI clients cannot remove any data."
-msgstr "Quando abilitato, i client AI possono eliminare permanentemente moduli e voci. I dati eliminati non possono essere recuperati. Quando disabilitato, le capacità di eliminazione vengono annullate e i client AI non possono rimuovere alcun dato."
-
-#: assets/build/settings.js:172
-msgid "MCP Server"
-msgstr "Server MCP"
-
-#: assets/build/settings.js:172
-msgid "Enable MCP Server"
-msgstr "Abilita server MCP"
-
-#: assets/build/settings.js:172
-msgid "Creates a dedicated SureForms MCP endpoint that AI clients like Claude can connect to. When disabled, the endpoint is removed and external AI clients cannot discover or call any SureForms abilities."
-msgstr "Crea un endpoint SureForms MCP dedicato a cui i clienti AI come Claude possono connettersi. Quando è disabilitato, l'endpoint viene rimosso e i clienti AI esterni non possono scoprire o chiamare alcuna funzionalità di SureForms."
-
-#: assets/build/settings.js:172
-msgid "Learn more"
-msgstr "Scopri di più"
-
-#: assets/build/templatePicker.js:172
-msgid "Select this to create a quiz with scored questions and graded results."
-msgstr "Seleziona questo per creare un quiz con domande a punteggio e risultati valutati."
+#: inc/rest-api.php:388
+msgid "Invalid onboarding user details."
+msgstr "Dettagli utente di onboarding non validi."
 
 #: inc/post-types.php:205
 msgctxt "post type general name"
