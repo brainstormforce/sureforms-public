@@ -33,7 +33,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 2.6.0
  */
 class Submit_Token {
-
 	/**
 	 * Length of a single time window in seconds (12 hours).
 	 *
@@ -41,9 +40,8 @@ class Submit_Token {
 	 * far below typical cache TTLs.
 	 *
 	 * @since 2.6.0
-	 * @var int
 	 */
-	const WINDOW_SECONDS = 43200;
+	public const WINDOW_SECONDS = 43200;
 
 	/**
 	 * Number of consecutive windows that are considered valid.
@@ -53,9 +51,8 @@ class Submit_Token {
 	 * deployment uses unusually long cache TTLs.
 	 *
 	 * @since 2.6.0
-	 * @var int
 	 */
-	const DEFAULT_ACCEPTED_WINDOWS = 4;
+	public const DEFAULT_ACCEPTED_WINDOWS = 4;
 
 	/**
 	 * Generate a submission token for a given form.

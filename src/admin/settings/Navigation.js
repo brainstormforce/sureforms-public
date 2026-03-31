@@ -11,7 +11,7 @@ import {
 	TriangleAlert,
 } from 'lucide-react';
 import { Accordion } from '@bsf/force-ui';
-import ottoKitIcon from '@Image/suretriggers-grayscale.svg';
+import ottoKitIcon from '@Image/ottokit.png';
 
 function useQuery() {
 	return new URLSearchParams( useLocation().search );
@@ -64,7 +64,7 @@ export const navigation = applyFilters( 'srfm.settings.navigation', [
 		),
 	},
 	{
-		name: __( 'Automations', 'sureforms' ),
+		name: __( 'OttoKit', 'sureforms' ),
 		slug: 'ottokit-settings',
 		icon: (
 			<img
@@ -85,9 +85,21 @@ export const navigation = applyFilters( 'srfm.settings.navigation', [
 		name: __( 'MCP', 'sureforms' ),
 		slug: 'mcp-settings',
 		icon: <Bot />,
-		helpText: __(
-			'Configure AI client permissions and MCP server settings.',
-			'sureforms'
+		helpText: (
+			<>
+				{ __(
+					'Configure AI client permissions and MCP server settings.',
+					'sureforms'
+				) }{ ' ' }
+				<a
+					href="https://sureforms.com/docs/sureforms-abilities-connect-ai-clients-to-your-forms/"
+					target="_blank"
+					rel="noopener noreferrer"
+					className="text-field-helper underline"
+				>
+					{ __( 'View documentation', 'sureforms' ) }
+				</a>
+			</>
 		),
 	},
 	{

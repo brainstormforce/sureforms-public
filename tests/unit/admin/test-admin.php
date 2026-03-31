@@ -170,6 +170,86 @@ class Test_Admin extends TestCase {
 	}
 
 	/**
+	 * Test add_quiz_page registers the Quiz submenu page.
+	 *
+	 * @since 2.7.0
+	 */
+	public function test_add_quiz_page() {
+		if ( ! function_exists( 'add_submenu_page' ) ) {
+			$this->markTestSkipped( 'WordPress admin menu functions not available.' );
+			return;
+		}
+
+		$admin = Admin::get_instance();
+
+		// Calling add_quiz_page() should not throw — it registers a submenu.
+		$result = $admin->add_quiz_page();
+		$this->assertNull( $result );
+
+		// Verify the method source registers the correct page slug and menu label.
+		$reflection = new \ReflectionMethod( $admin, 'add_quiz_page' );
+		$source_file = $reflection->getFileName();
+		$start_line  = $reflection->getStartLine();
+		$end_line    = $reflection->getEndLine();
+		$source      = implode( '', array_slice( file( $source_file ), $start_line - 1, $end_line - $start_line + 1 ) );
+
+		$this->assertStringContainsString( 'sureforms_quiz_entries', $source, 'Quiz page should use sureforms_quiz_entries slug.' );
+		$this->assertStringContainsString( 'render_quiz_empty_state', $source, 'Quiz page callback should be render_quiz_empty_state.' );
+	}
+
+	/**
+	 * Test render_quiz_empty_state outputs the expected root div.
+	 *
+	 * @since 2.7.0
+	 */
+	public function test_render_quiz_empty_state() {
+		$admin = Admin::get_instance();
+
+		ob_start();
+		$admin->render_quiz_empty_state();
+		$output = ob_get_clean();
+
+		$this->assertStringContainsString(
+			'id="srfm-quiz-entries-root"',
+			$output,
+			'render_quiz_empty_state should output a div with id srfm-quiz-entries-root.'
+		);
+		$this->assertStringContainsString(
+			'srfm-admin-wrapper',
+			$output,
+			'render_quiz_empty_state should include the srfm-admin-wrapper class.'
+		);
+	}
+
+	/**
+	 * Test add_upgrade_to_pro registers the Upgrade submenu page.
+	 *
+	 * @since 2.7.0
+	 */
+	public function test_add_upgrade_to_pro() {
+		if ( ! function_exists( 'add_submenu_page' ) ) {
+			$this->markTestSkipped( 'WordPress admin menu functions not available.' );
+			return;
+		}
+
+		$admin = Admin::get_instance();
+
+		// Calling add_upgrade_to_pro() should not throw — it registers a submenu.
+		$result = $admin->add_upgrade_to_pro();
+		$this->assertNull( $result );
+
+		// Verify the method source registers with the upgrade URL and correct label.
+		$reflection = new \ReflectionMethod( $admin, 'add_upgrade_to_pro' );
+		$source_file = $reflection->getFileName();
+		$start_line  = $reflection->getStartLine();
+		$end_line    = $reflection->getEndLine();
+		$source      = implode( '', array_slice( file( $source_file ), $start_line - 1, $end_line - $start_line + 1 ) );
+
+		$this->assertStringContainsString( 'submenu_link_upgrade', $source, 'Upgrade page should use submenu_link_upgrade UTM medium.' );
+		$this->assertStringContainsString( 'sureforms_menu', $source, 'Upgrade page should be registered under sureforms_menu.' );
+	}
+
+	/**
 	 * Test srfm_pro_version_compatibility returns early when Pro is not active.
 	 */
 	public function test_srfm_pro_version_compatibility() {

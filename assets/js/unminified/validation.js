@@ -894,7 +894,7 @@ function addBlurListener( containerClass, blockClass ) {
 
 			// Function to validate slider inputs within the slider block
 			if ( containerClass === 'srfm-slider-block' ) {
-				addSliderBlurListener( areaField, areaInput, blockClass );
+				addSliderBlurListener( areaInput, blockClass );
 			}
 
 			// Function to validate dropdown blur
@@ -1075,11 +1075,10 @@ function addEmailBlurListener( areaInput, blockClass ) {
  * Add blur listeners to slider fields
  * That shows validation errors on blur.
  *
- * @param {HTMLElement} areaField
  * @param {HTMLElement} areaInput
  * @param {string}      blockClass
  */
-function addSliderBlurListener( areaField, areaInput, blockClass ) {
+function addSliderBlurListener( areaInput, blockClass ) {
 	const sliderInput = areaInput.querySelector( '.srfm-input-slider' );
 	const textSliderElement = areaInput.querySelector( '.srfm-text-slider' );
 	// Number slider

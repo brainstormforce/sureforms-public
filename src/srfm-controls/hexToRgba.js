@@ -20,7 +20,8 @@ function hexToRgba( color, opacity ) {
 
 	// Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
 	const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
-	color = color.replace( shorthandRegex, function ( m, r, g, b ) {
+	// `_m` (full match) is unused but required positionally to access `r`, `g`, `b`.
+	color = color.replace( shorthandRegex, function ( _m, r, g, b ) {
 		return r + r + g + g + b + b;
 	} );
 

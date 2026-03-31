@@ -12,6 +12,7 @@ import {
 	Connect,
 	EmailDelivery,
 	PremiumFeatures,
+	UserDetails,
 	Done,
 } from '../onboarding';
 import '../tw-base.scss';
@@ -38,6 +39,7 @@ const APP = () => {
 							path="premium-features"
 							element={ <PremiumFeatures /> }
 						/>
+						<Route path="user-details" element={ <UserDetails /> } />
 						<Route path="done" element={ <Done /> } />
 					</Route>
 					<Route
@@ -67,6 +69,7 @@ const APP = () => {
 						path="premium-features"
 						element={ <PremiumFeatures /> }
 					/>
+					<Route path="user-details" element={ <UserDetails /> } />
 					<Route path="done" element={ <Done /> } />
 				</Route>
 				<Route path="*" element={ <Dashboard /> } />
