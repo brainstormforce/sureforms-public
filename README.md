@@ -75,7 +75,7 @@ SureForms makes advanced features like conditional logic, multi-step forms, quer
 
 #### Payment Forms
 
-SureForms supports a built-in Payment Forms feature. With SureForms, anyone can easily create full-fledged donation forms, event registrations, product checkouts, or any kind of form that needs to accept payments, all without relying on any extra add-on or third-party plugins. This makes collecting payments seamless, secure, and effortless directly through your forms using Stripe. PayPal payments are available with SureForms Pro.
+SureForms supports a built-in Payment Forms feature. With SureForms, anyone can easily create full-fledged donation forms, event registrations, product checkouts, or any kind of form that needs to accept payments, all without relying on any extra add-on or third-party plugins. This makes collecting payments seamless, secure, and effortless directly through your forms using Stripe. PayPal payments are available with SureForms Business.
 
 Here are a few examples of how the Payment Feature in SureForms can power your forms:
 -   [Donation Form](https://sureforms.com/form/donation-form/)
@@ -154,7 +154,7 @@ SureForms gives developers clean APIs, hooks, and well-structured code, making i
 
 ### Premium Features of SureForms 🔥
 
-SureForms Pro unlocks advanced capabilities for power users, agencies, and businesses. Here's everything you get:
+SureForms Business unlocks advanced capabilities for power users, agencies, and businesses. Here's everything you get:
 
 #### Advanced Form Types
 
@@ -175,7 +175,7 @@ Provide instant quotes or results with interactive calculators in your site. Des
 
 #### Pro Field Types
 
-SureForms Pro adds these powerful field types on top of the 15+ free fields:
+SureForms Business adds these powerful field types on top of the 15+ free fields:
 
 -   Date Picker (with localization and disabled dates)
 -   Time Picker
@@ -447,25 +447,25 @@ templates that can be used to build your forms fast.
 ### Does SureForms support Multi-step Forms or Conversational Forms?
 
 Yes. You can easily create Multi-step Forms as well as Conversational
-Forms to improve user experience and conversion rates with SureForms Pro
+Forms to improve user experience and conversion rates with SureForms Business
 plans.
 ###
 ### Can I create quiz forms with SureForms? ###
 
-Yes! SureForms Pro includes a Quiz module. You can create scored quizzes with grading and personality tests with result output — all with the same drag-and-drop builder.
+Yes! SureForms Business includes a Quiz module. You can create scored quizzes with grading and personality tests with result output — all with the same drag-and-drop builder.
 
 ### Does SureForms support file uploads? ###
 
-Yes! With SureForms Pro, you can add file upload fields to your forms. It supports multi-file uploads, file type restrictions, and role-based access control for uploaded files.
+Yes! With SureForms Business, you can add file upload fields to your forms. It supports multi-file uploads, file type restrictions, and role-based access control for uploaded files.
 
 ### What integrations does SureForms support? ###
 
-SureForms Pro connects natively with 25+ services including Google Sheets, Mailchimp, HubSpot, ActiveCampaign, Klaviyo, Zoho CRM, Notion, and many more. You can also use Zapier to connect with 5,000+ additional apps, or use webhooks to send data to any API endpoint.
+SureForms Business connects natively with 25+ services including Google Sheets, Mailchimp, HubSpot, ActiveCampaign, Klaviyo, Zoho CRM, Notion, and many more. You can also use Zapier to connect with 5,000+ additional apps, or use webhooks to send data to any API endpoint.
 
 ### Does SureForms support Payment Forms? ###
 
 Yes! SureForms has built-in Payment Form support.
-You can collect payments securely through Stripe in the free version. PayPal payments are available with SureForms Pro. No add-ons or extra plugins needed.
+You can collect payments securely through Stripe in the free version. PayPal payments are available with SureForms Business. No add-ons or extra plugins needed.
 
 ## Screenshot ##
 
