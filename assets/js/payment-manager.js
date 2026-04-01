@@ -14,6 +14,9 @@ class PaymentManager {
 	constructor( paymentBlock, form ) {
 		this.paymentBlock = paymentBlock;
 		this.blockId = paymentBlock.getAttribute( 'data-block-id' );
+		this.compositeKey = window.srfmGetPaymentKey
+			? window.srfmGetPaymentKey( form, this.blockId )
+			: this.blockId;
 		this.paymentInput = paymentBlock.querySelector( '.srfm-payment-input' );
 		this.form = form;
 		this.init();
@@ -211,11 +214,11 @@ class PaymentManager {
 			};
 		}
 
-		const paymentData = window.srfmPaymentElements?.[ this.blockId ];
+		const paymentData = window.srfmPaymentElements?.[ this.compositeKey ];
 
 		if ( paymentData && paymentData.clientSecret ) {
 			const paymentResult = await window.StripePayment.srfmConfirmPayment(
-				this.blockId,
+				this.compositeKey,
 				paymentData,
 				form
 			).catch( () => {
@@ -253,8 +256,12 @@ class PaymentManager {
 		// PayPal uses a different flow - it's handled by PayPal buttons
 		// which call the backend directly and store completion status
 
-		// Check if PayPal payment completion data exists for this block
-		const paypalPaymentData = window.srfmPayPalPayments?.[ this.blockId ];
+		// Check if PayPal payment completion data exists for this block.
+		// No blockId fallback needed here — sureforms-pro (which writes to srfmPayPalPayments)
+		// is always updated alongside sureforms (core) since we enforce minimum core version
+		// via SRFM_PRO_CORE_RQD_VER, so both plugins will use compositeKey simultaneously.
+		const paypalPaymentData =
+			window.srfmPayPalPayments?.[ this.compositeKey ];
 
 		// Verify that PayPal payment was completed
 		if ( paypalPaymentData && paypalPaymentData.completed === true ) {
@@ -263,7 +270,7 @@ class PaymentManager {
 				window.srfmPaymentElements = {};
 			}
 
-			window.srfmPaymentElements[ this.blockId ] = {
+			window.srfmPaymentElements[ this.compositeKey ] = {
 				paymentMethod: 'paypal',
 				paypalOrderId: paypalPaymentData.orderID,
 				paypalSubscriptionId: paypalPaymentData.subscriptionID,
@@ -278,7 +285,7 @@ class PaymentManager {
 					'payment_successful',
 					'Payment successful'
 				),
-				paymentResult: window.srfmPaymentElements[ this.blockId ],
+				paymentResult: window.srfmPaymentElements[ this.compositeKey ],
 			};
 		}
 
@@ -300,13 +307,16 @@ function initializePaymentManagers() {
 
 		paymentBlocks.forEach( ( paymentBlock ) => {
 			const blockId = paymentBlock.getAttribute( 'data-block-id' );
+			const compositeKey = window.srfmGetPaymentKey
+				? window.srfmGetPaymentKey( form, blockId )
+				: blockId;
 
 			// Store payment manager instance
 			if ( ! window.srfmPaymentManagers ) {
 				window.srfmPaymentManagers = {};
 			}
 
-			window.srfmPaymentManagers[ blockId ] = new PaymentManager(
+			window.srfmPaymentManagers[ compositeKey ] = new PaymentManager(
 				paymentBlock,
 				form
 			);

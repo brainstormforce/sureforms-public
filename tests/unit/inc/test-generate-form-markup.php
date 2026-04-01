@@ -67,6 +67,34 @@ class Test_Generate_Form_Markup extends TestCase {
 		$this->assertIsString( $result );
 	}
 
+	/**
+	 * Test get_current_block_attrs returns an array.
+	 */
+	public function test_get_current_block_attrs_returns_array() {
+		$result = Generate_Form_Markup::get_current_block_attrs();
+		$this->assertIsArray( $result );
+	}
+
+	/**
+	 * Test enqueue_preview_styling_script enqueues the script.
+	 */
+	public function test_enqueue_preview_styling_script_enqueues_script() {
+		Generate_Form_Markup::enqueue_preview_styling_script( '#srfm-container-1' );
+		$this->assertTrue( wp_script_is( 'srfm-preview-styling', 'enqueued' ) );
+		wp_dequeue_script( 'srfm-preview-styling' );
+	}
+
+	/**
+	 * Test common_error_message outputs error markup.
+	 */
+	public function test_common_error_message_outputs_markup() {
+		ob_start();
+		Generate_Form_Markup::common_error_message();
+		$output = ob_get_clean();
+		$this->assertStringContainsString( 'srfm-error-message', $output );
+		$this->assertStringContainsString( 'srfm-footer-error', $output );
+	}
+
 	public function test_get_form_markup_returns_string() {
 		remove_all_actions( 'wp_insert_post_data' );
 
@@ -79,6 +107,190 @@ class Test_Generate_Form_Markup extends TestCase {
 
 		$result = Generate_Form_Markup::get_form_markup( $form_id );
 		$this->assertIsString( $result );
+
+		wp_delete_post( $form_id, true );
+	}
+
+	/**
+	 * Test form markup contains the HMAC submit token attribute.
+	 */
+	public function test_form_markup_contains_submit_token() {
+		remove_all_actions( 'wp_insert_post_data' );
+
+		$form_id = wp_insert_post( [
+			'post_title'   => 'Token Markup Test',
+			'post_type'    => 'sureforms_form',
+			'post_status'  => 'publish',
+			'post_content' => '',
+		] );
+
+		$markup = Generate_Form_Markup::get_form_markup( $form_id );
+		$this->assertStringContainsString( 'data-submit-token=', $markup, 'Form markup should contain data-submit-token attribute.' );
+
+		wp_delete_post( $form_id, true );
+	}
+
+	/**
+	 * Test form markup does not contain old nonce attributes.
+	 */
+	public function test_form_markup_does_not_contain_old_nonce_attributes() {
+		remove_all_actions( 'wp_insert_post_data' );
+
+		$form_id = wp_insert_post( [
+			'post_title'   => 'No Nonce Markup Test',
+			'post_type'    => 'sureforms_form',
+			'post_status'  => 'publish',
+			'post_content' => '',
+		] );
+
+		$markup = Generate_Form_Markup::get_form_markup( $form_id );
+		$this->assertStringNotContainsString( 'data-nonce=', $markup, 'Form markup should not contain old data-nonce attribute.' );
+		$this->assertStringNotContainsString( 'data-update-nonce=', $markup, 'Form markup should not contain old data-update-nonce attribute.' );
+
+		wp_delete_post( $form_id, true );
+	}
+
+	/**
+	 * Test get_redirect_url returns empty string when form_data is empty.
+	 */
+	public function test_get_redirect_url_empty_form_data() {
+		$result = Generate_Form_Markup::get_redirect_url();
+		$this->assertSame( '', $result );
+	}
+
+	/**
+	 * Test get_redirect_url returns empty string when no confirmation meta exists.
+	 */
+	public function test_get_redirect_url_no_confirmation_meta() {
+		remove_all_actions( 'wp_insert_post_data' );
+
+		$form_id = wp_insert_post( [
+			'post_title'  => 'Redirect URL Test Form',
+			'post_type'   => 'sureforms_form',
+			'post_status' => 'publish',
+		] );
+
+		$result = Generate_Form_Markup::get_redirect_url( [ 'form-id' => $form_id ] );
+		$this->assertSame( '', $result );
+
+		wp_delete_post( $form_id, true );
+	}
+
+	/**
+	 * Test get_redirect_url returns page URL for "different page" confirmation type.
+	 */
+	public function test_get_redirect_url_different_page() {
+		remove_all_actions( 'wp_insert_post_data' );
+
+		$form_id = wp_insert_post( [
+			'post_title'  => 'Redirect Page Test',
+			'post_type'   => 'sureforms_form',
+			'post_status' => 'publish',
+		] );
+
+		$confirmation = [
+			[
+				'confirmation_type' => 'different page',
+				'page_url'          => 'https://example.com/thank-you',
+				'custom_url'        => '',
+			],
+		];
+		update_post_meta( $form_id, '_srfm_form_confirmation', $confirmation );
+
+		$result = Generate_Form_Markup::get_redirect_url( [ 'form-id' => $form_id ] );
+		$this->assertSame( 'https://example.com/thank-you', $result );
+
+		wp_delete_post( $form_id, true );
+	}
+
+	/**
+	 * Test get_redirect_url returns custom URL for "custom url" confirmation type.
+	 */
+	public function test_get_redirect_url_custom_url() {
+		remove_all_actions( 'wp_insert_post_data' );
+
+		$form_id = wp_insert_post( [
+			'post_title'  => 'Redirect Custom URL Test',
+			'post_type'   => 'sureforms_form',
+			'post_status' => 'publish',
+		] );
+
+		$confirmation = [
+			[
+				'confirmation_type' => 'custom url',
+				'page_url'          => '',
+				'custom_url'        => 'https://example.com/custom-redirect',
+			],
+		];
+		update_post_meta( $form_id, '_srfm_form_confirmation', $confirmation );
+
+		$result = Generate_Form_Markup::get_redirect_url( [ 'form-id' => $form_id ] );
+		$this->assertSame( 'https://example.com/custom-redirect', $result );
+
+		wp_delete_post( $form_id, true );
+	}
+
+	/**
+	 * Test get_redirect_url appends query params when enabled.
+	 */
+	public function test_get_redirect_url_with_query_params() {
+		remove_all_actions( 'wp_insert_post_data' );
+
+		$form_id = wp_insert_post( [
+			'post_title'  => 'Redirect Query Params Test',
+			'post_type'   => 'sureforms_form',
+			'post_status' => 'publish',
+		] );
+
+		$confirmation = [
+			[
+				'confirmation_type'    => 'custom url',
+				'custom_url'           => 'https://example.com/result',
+				'page_url'             => '',
+				'enable_query_params'  => true,
+				'query_params'         => [
+					[ 'status' => 'submitted' ],
+					[ 'ref' => 'form' ],
+				],
+			],
+		];
+		update_post_meta( $form_id, '_srfm_form_confirmation', $confirmation );
+
+		$result = Generate_Form_Markup::get_redirect_url( [ 'form-id' => $form_id ] );
+		$this->assertStringContainsString( 'status=submitted', $result );
+		$this->assertStringContainsString( 'ref=form', $result );
+
+		wp_delete_post( $form_id, true );
+	}
+
+	/**
+	 * Test get_redirect_url returns URL without query params when disabled.
+	 */
+	public function test_get_redirect_url_query_params_disabled() {
+		remove_all_actions( 'wp_insert_post_data' );
+
+		$form_id = wp_insert_post( [
+			'post_title'  => 'Redirect No Params Test',
+			'post_type'   => 'sureforms_form',
+			'post_status' => 'publish',
+		] );
+
+		$confirmation = [
+			[
+				'confirmation_type'    => 'custom url',
+				'custom_url'           => 'https://example.com/result',
+				'page_url'             => '',
+				'enable_query_params'  => false,
+				'query_params'         => [
+					[ 'status' => 'submitted' ],
+				],
+			],
+		];
+		update_post_meta( $form_id, '_srfm_form_confirmation', $confirmation );
+
+		$result = Generate_Form_Markup::get_redirect_url( [ 'form-id' => $form_id ] );
+		$this->assertStringNotContainsString( 'status=submitted', $result );
+		$this->assertSame( 'https://example.com/result', $result );
 
 		wp_delete_post( $form_id, true );
 	}

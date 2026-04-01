@@ -37,6 +37,7 @@ import SureFormsDescription from './components/SureFormsDescription.js';
 import { defaultKeys, forcePanel } from './utils.js';
 import InstantForm from './InstantForm.js';
 import useContainerDynamicClass from './components/useContainerDynamicClass.js';
+import { useShouldIframe } from '@Utils/Helpers';
 
 // Capture URL source param at module-load time, before Gutenberg's BrowserURL
 // component can call history.replaceState and strip unknown query parameters.
@@ -63,17 +64,80 @@ const SureformsFormSpecificSettings = () => {
 		}
 	);
 
+	const shouldIframe = useShouldIframe();
+
 	const { editPost } = useDispatch( editorStore );
 	const { selectBlock } = useDispatch( blockEditorStore );
 	const [ rootContainer, setRootContainer ] = useState( null );
-	const [ rootContainerDiv, setRootContainerDiv ] = useState( null );
+	const [ rootHtmlTag, setRootHtmlTag ] = useState( null );
+	const [ documentBody, setDocumentBody ] = useState( null );
 
 	useEffect( () => {
-		setRootContainer( document.querySelector( '.is-root-container' ) );
-		setRootContainerDiv(
-			document.querySelector( '.edit-post-visual-editor__content-area' )
-		);
-	}, [] );
+		let intervalId = null;
+		let timeoutId = null;
+
+		const tryResolveIframeBody = () => {
+			// Case with "editor" element without iframe.
+			if ( ! shouldIframe ) {
+				setDocumentBody( document.getElementsByTagName( 'body' )[ 0 ] );
+				setRootContainer(
+					document.querySelector( '.is-root-container' )
+				);
+				setRootHtmlTag( document.getElementsByTagName( 'html' )[ 0 ] );
+				clearInterval( intervalId );
+				clearTimeout( timeoutId );
+				return;
+			}
+
+			// Case with "editor-canvas" iframe.
+			const iframe = document.querySelector(
+				'iframe[name="editor-canvas"]'
+			);
+			if ( ! iframe ) {
+				return false;
+			}
+
+			const iframeDoc =
+				iframe.contentDocument || iframe.contentWindow?.document;
+			if ( ! iframeDoc ) {
+				return false;
+			}
+
+			const getIframeBody = iframeDoc.querySelector(
+				'.block-editor-iframe__body'
+			);
+
+			// This is the real readiness check
+			if ( ! getIframeBody || ! getIframeBody.children.length ) {
+				return false;
+			}
+
+			setDocumentBody( getIframeBody );
+
+			const getRootContainer =
+				getIframeBody.querySelector( '.is-root-container' );
+
+			// Iframe body is fully ready
+			setRootContainer( getRootContainer );
+			setRootHtmlTag( iframeDoc.querySelector( 'html' ) );
+			clearInterval( intervalId );
+			clearTimeout( timeoutId );
+			return true;
+		};
+
+		// Poll every 100ms
+		intervalId = setInterval( tryResolveIframeBody, 100 );
+
+		// Safety timeout
+		timeoutId = setTimeout( () => {
+			clearInterval( intervalId );
+		}, 30000 );
+
+		return () => {
+			clearInterval( intervalId );
+			clearTimeout( timeoutId );
+		};
+	}, [ editorMode ] );
 
 	const isPageBreak = blocks.some(
 		( block ) => block.name === 'srfm/page-break'
@@ -93,22 +157,20 @@ const SureformsFormSpecificSettings = () => {
 
 	// Add styling class to main Editor Container
 	const addFormStylingClass = () => {
-		if ( rootContainer && 'Desktop' === deviceType ) {
+		if ( rootContainer ) {
 			rootContainer?.classList?.add( 'srfm-form-container' );
 			rootContainer.setAttribute( 'id', 'srfm-form-container' );
-		} else if ( rootContainerDiv ) {
-			rootContainerDiv?.classList?.add( 'srfm-form-container' );
-			rootContainerDiv.setAttribute( 'id', 'srfm-form-container' );
 		}
 	};
 
-	useEffect( addFormStylingClass, [
-		rootContainer,
-		rootContainerDiv,
-		deviceType,
-	] );
+	useEffect( addFormStylingClass, [ rootContainer, deviceType, editorMode ] );
 
-	useContainerDynamicClass( sureformsKeys );
+	useContainerDynamicClass( {
+		sureformsKeys,
+		documentBody,
+		shouldIframe,
+		editorMode,
+	} );
 
 	// Update the custom CSS when the formCustomCssData prop changes. This will apply the custom CSS to the editor.
 	const formCustomCssData = sureformsKeys?._srfm_form_custom_css || '';
@@ -155,6 +217,7 @@ const SureformsFormSpecificSettings = () => {
 		isInlineButtonBlockPresent,
 		updateMeta,
 		editorMode,
+		documentBody,
 	} );
 
 	useEffect( () => {
@@ -171,7 +234,10 @@ const SureformsFormSpecificSettings = () => {
 			};
 			window.navigation.addEventListener( 'navigate', fseNavHandler );
 			return () => {
-				window.navigation.removeEventListener( 'navigate', fseNavHandler );
+				window.navigation.removeEventListener(
+					'navigate',
+					fseNavHandler
+				);
 			};
 		} else if ( enableQuickActionSidebar !== undefined ) {
 			// Attach the sidebar to the DOM.
@@ -536,13 +602,18 @@ const SureformsFormSpecificSettings = () => {
 						/>
 					</InspectorTab>
 					<InspectorTab { ...SRFMTabs.style }>
-						<StyleSettings
-							defaultKeys={ defaultKeys }
-							isInlineButtonBlockPresent={
-								isInlineButtonBlockPresent
-							}
-							isPageBreak={ isPageBreak }
-						/>
+						{ documentBody && (
+							<StyleSettings
+								defaultKeys={ defaultKeys }
+								isInlineButtonBlockPresent={
+									isInlineButtonBlockPresent
+								}
+								isPageBreak={ isPageBreak }
+								iframeBody={ documentBody }
+								rootHtmlTag={ rootHtmlTag }
+								editorMode={ editorMode }
+							/>
+						) }
 					</InspectorTab>
 				</InspectorTabs>
 				<PluginPostPublishPanel>

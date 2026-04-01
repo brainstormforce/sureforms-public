@@ -1,5 +1,6 @@
 {
-	"apiVersion": 2,
+  "$schema": "https://json.schemastore.org/block.json",
+	"apiVersion": 3,
 	"name": "srfm/gdpr",
 	"title": "GDPR Agreement",
 	"description": "Displays a SureForms GDPR Agreement Field",

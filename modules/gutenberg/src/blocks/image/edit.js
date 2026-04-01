@@ -11,6 +11,7 @@ import { compose } from '@wordpress/compose';
 import { getLoopImage } from './getLoopImage';
 import AddStaticStyles from '@Controls/AddStaticStyles';
 import addInitialAttr from '@Controls/addInitialAttr';
+import { useBlockProps } from '@wordpress/block-editor';
 
 function UAGBImageEdit( props ) {
 	const {
@@ -24,6 +25,8 @@ function UAGBImageEdit( props ) {
 		clientId,
 		hasDynamicContent,
 	} = props;
+
+	const blockProps = useBlockProps();
 
 	useEffect( () => {
 		if ( hasDynamicContent && ! attributes?.context ) {
@@ -45,11 +48,11 @@ function UAGBImageEdit( props ) {
 	}, [ UAGHideDesktop, UAGHideTab, UAGHideMob, deviceType ] );
 
 	return (
-		<>
+		<div { ...blockProps }>
 			<DynamicCSSLoader { ...{ blockStyling } } />
 			{ isSelected && <Settings { ...props } /> }
 			<Render { ...props } />
-		</>
+		</div>
 	);
 }
 export default compose(

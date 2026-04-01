@@ -21,6 +21,7 @@
 		border-radius: var( --srfm-input-field-border-radius ) !important;
 		background-color: var( --srfm-color-input-background ) !important;
 		height: var( --srfm-input-height ) !important;
+		text-transform: none !important;
 		@include srfm-input-margin-styles( true );
 		outline: 0 !important;
 	} @else {
@@ -33,6 +34,7 @@
 		border-radius: var( --srfm-input-field-border-radius );
 		background-color: var( --srfm-color-input-background );
 		height: var( --srfm-input-height );
+		text-transform: none;
 		@include srfm-input-margin-styles;
 		outline: 0;
 	}

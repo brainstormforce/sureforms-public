@@ -23,12 +23,31 @@ class Generate_Form_Markup {
 	use Get_Instance;
 
 	/**
+	 * Current block attributes for the form being rendered.
+	 * Used by child blocks (like inline button) to access parent form's embed styling.
+	 *
+	 * @var array<string,mixed>
+	 * @since 2.7.0
+	 */
+	private static $current_block_attrs = [];
+
+	/**
 	 * Constructor
 	 *
 	 * @since  0.0.1
 	 */
 	public function __construct() {
 		add_action( 'rest_api_init', [ $this, 'register_custom_endpoint' ] );
+	}
+
+	/**
+	 * Get the current block attributes.
+	 *
+	 * @return array<string,mixed>
+	 * @since 2.7.0
+	 */
+	public static function get_current_block_attrs() {
+		return self::$current_block_attrs;
 	}
 
 	/**
@@ -52,16 +71,17 @@ class Generate_Form_Markup {
 	/**
 	 * Handle Form status
 	 *
-	 * @param int|string $id Contains form ID.
-	 * @param bool       $show_title_current_page Boolean to srfm-show/srfm-hide form title.
-	 * @param string     $sf_classname additional class_name.
-	 * @param string     $post_type Contains post type.
-	 * @param bool       $do_blocks Boolean to enable/disable parsing dynamic blocks.
+	 * @param int|string   $id Contains form ID.
+	 * @param bool         $show_title_current_page Boolean to srfm-show/srfm-hide form title.
+	 * @param string       $sf_classname additional class_name.
+	 * @param string       $post_type Contains post type.
+	 * @param bool         $do_blocks Boolean to enable/disable parsing dynamic blocks.
+	 * @param array<mixed> $block_attrs Block attributes for per-embed styling.
 	 *
 	 * @return string|false
 	 * @since 0.0.1
 	 */
-	public static function get_form_markup( $id, $show_title_current_page = true, $sf_classname = '', $post_type = 'post', $do_blocks = false ) {
+	public static function get_form_markup( $id, $show_title_current_page = true, $sf_classname = '', $post_type = 'post', $do_blocks = false, $block_attrs = [] ) {
 		if ( isset( $_GET['id'] ) && isset( $_GET['srfm_form_markup_nonce'] ) ) {
 			$nonce = isset( $_GET['srfm_form_markup_nonce'] ) ? sanitize_text_field( wp_unslash( $_GET['srfm_form_markup_nonce'] ) ) : '';
 			$id    = wp_verify_nonce( $nonce, 'srfm_form_markup' ) && ! empty( $_GET['srfm_form_markup_nonce'] ) ? Helper::get_integer_value( sanitize_text_field( wp_unslash( $_GET['id'] ) ) ) : '';
@@ -74,6 +94,9 @@ class Generate_Form_Markup {
 		if ( Form_Restriction::is_form_restricted( $form_id ) ) {
 			return Form_Restriction::display_form_restriction_message( $form_id );
 		}
+
+		// Store block_attrs for child blocks (like inline button) to access.
+		self::$current_block_attrs = $block_attrs;
 
 		do_action( 'srfm_localize_conditional_logic_data', $id );
 		$post = get_post( Helper::get_integer_value( $id ) );
@@ -88,10 +111,13 @@ class Generate_Form_Markup {
 		}
 
 		if ( $post && ! empty( $post->post_content ) ) {
+			// Filter to get the post content for the form.
+			$post_content = apply_filters( 'srfm_get_form_post_content', $post->post_content, $id );
+
 			if ( ! empty( $do_blocks ) ) {
-				$content = do_blocks( $post->post_content );
+				$content = do_blocks( $post_content );
 			} else {
-				$content = apply_filters( 'the_content', $post->post_content ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- wordpress hook
+				$content = apply_filters( 'the_content', $post_content ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- wordpress hook
 			}
 		}
 
@@ -105,9 +131,18 @@ class Generate_Form_Markup {
 		ob_start();
 		if ( '' !== $id && 0 !== $block_count ) {
 
-			$container_id = 'srfm-form-container-' . Helper::get_string_value( $id );
-			$form_styling = get_post_meta( $id, '_srfm_forms_styling', true );
-			$form_styling = ! empty( $form_styling ) && is_array( $form_styling ) ? $form_styling : [];
+			// Create unique container ID using blockId if available (for multiple embeds of same form).
+			// Base class (without blockId) is needed for JS compatibility - frontend.js and phone.js use form-id attribute to construct selectors.
+			$base_container_class = 'srfm-form-container-' . Helper::get_string_value( $id );
+			$block_id_suffix      = ! empty( $block_attrs['blockId'] ) ? '-' . Helper::get_string_value( $block_attrs['blockId'] ) : '';
+			$container_id         = $base_container_class . $block_id_suffix;
+			$form_styling         = get_post_meta( $id, '_srfm_forms_styling', true );
+			$form_styling         = ! empty( $form_styling ) && is_array( $form_styling ) ? $form_styling : [];
+
+			// Apply per-embed styling customization when formTheme is not 'inherit'.
+			if ( Form_Styling::has_custom_styling( $block_attrs ) ) {
+				$form_styling = Form_Styling::map_block_attrs_to_styling( $form_styling, $block_attrs );
+			}
 			// Background Settings.
 			$bg_type                   = $form_styling['bg_type'] ?? 'color';
 			$bg_color                  = $form_styling['bg_color'] ?? '';
@@ -184,14 +219,15 @@ class Generate_Form_Markup {
 				$overlay_size                = $bg_overlay_custom_size . $bg_overlay_custom_size_unit;
 			}
 
-			$background_classes = apply_filters( 'srfm_add_background_classes', Helper::get_background_classes( $bg_type, $overlay_type, $bg_image ), $id );
+			$background_classes = apply_filters( 'srfm_add_background_classes', Helper::get_background_classes( $bg_type, $overlay_type, $bg_image ), $id, $block_attrs );
 
 			$neve_theme_margin_class_name = 'srfm-neve-theme-add-margin-bottom';
 			$theme_name                   = wp_get_theme()->get( 'Name' );
 
 			$form_classes = [
 				'srfm-form-container',
-				$container_id,
+				$base_container_class, // Base class for JS compatibility (frontend.js, phone.js).
+				! empty( $block_id_suffix ) ? $container_id : '', // Unique class for CSS scoping when blockId exists.
 				$sf_classname,
 				'Neve' === $theme_name ? $neve_theme_margin_class_name : '', // compatibility with Neve theme for margin between main content and footer.
 				$background_classes,
@@ -285,10 +321,10 @@ class Generate_Form_Markup {
 			// Ensure $google_captcha_site_key is not empty, and if not, trim any leading or trailing whitespace.
 			$google_captcha_site_key = is_string( $google_captcha_site_key ) && ! empty( $google_captcha_site_key ) ? trim( $google_captcha_site_key ) : '';
 
-			$primary_color    = $form_styling['primary_color'];
-			$help_color_var   = $form_styling['text_color'];
-			$label_text_color = $form_styling['text_color_on_primary'];
-			$field_spacing    = $form_styling['field_spacing'];
+			$primary_color    = $form_styling['primary_color'] ?? '';
+			$help_color_var   = $form_styling['text_color'] ?? '';
+			$label_text_color = $form_styling['text_color_on_primary'] ?? '';
+			$field_spacing    = $form_styling['field_spacing'] ?? 'small';
 
 			// New colors.
 
@@ -438,6 +474,7 @@ class Generate_Form_Markup {
 							'primary_color' => $primary_color_var,
 							'help_color'    => $help_color_var,
 							'form_styling'  => $form_styling,
+							'block_attrs'   => $block_attrs,
 						]
 					);
 					// echo custom css on page/post.
@@ -519,19 +556,17 @@ class Generate_Form_Markup {
 				?>
 				</div>
 				<?php
+				self::$current_block_attrs = [];
 				return ob_get_clean();
 			}
-			$get_nonces                      = Helper::get_frontend_nonces();
-			$unique_validation_nonce         = $get_nonces['unique_validation'];
-			$form_submit_nonce               = $get_nonces['form_submit'];
-			$should_update_form_markup_nonce = Helper::should_update_form_markup_nonce();
+			$submit_token = Submit_Token::generate( (int) $id );
 
 			?>
 				<form method="post" enctype="multipart/form-data" id="srfm-form-<?php echo esc_attr( Helper::get_string_value( $id ) ); ?>" class="srfm-form <?php echo esc_attr( 'sureforms_form' === $post_type ? 'srfm-single-form ' : '' ); ?>"
-				form-id="<?php echo esc_attr( Helper::get_string_value( $id ) ); ?>" after-submission="<?php echo esc_attr( $submission_action ); ?>" message-type="<?php echo esc_attr( $confirmation_type ? $confirmation_type : 'same page' ); ?>" success-url="<?php echo esc_attr( $success_url ? $success_url : '' ); ?>" ajaxurl="<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>" data-nonce="<?php echo esc_attr( $unique_validation_nonce ); ?>" data-submit-nonce="<?php echo esc_attr( $form_submit_nonce ); ?>" data-update-nonce="<?php echo esc_attr( $should_update_form_markup_nonce ? 'yes' : 'no' ); ?>"
+				form-id="<?php echo esc_attr( Helper::get_string_value( $id ) ); ?>" after-submission="<?php echo esc_attr( $submission_action ); ?>" message-type="<?php echo esc_attr( $confirmation_type ? $confirmation_type : 'same page' ); ?>" success-url="<?php echo esc_attr( $success_url ? $success_url : '' ); ?>" ajaxurl="<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>" data-submit-token="<?php echo esc_attr( $submit_token ); ?>"
 				>
 				<?php
-					wp_nonce_field( 'srfm-form-submit', 'sureforms_form_submit' );
+					// Submission security is handled via the HMAC token in data-submit-token.
 					$global_setting_options = get_option( 'srfm_security_settings_options' );
 					$honeypot_spam          = is_array( $global_setting_options ) && isset( $global_setting_options['srfm_honeypot'] ) ? $global_setting_options['srfm_honeypot'] : '';
 
@@ -585,7 +620,7 @@ class Generate_Form_Markup {
 					if ( $is_page_break ) {
 						do_action( 'srfm_page_break_btn', $id );
 					}
-					$srfm_button_classes = apply_filters( 'srfm_add_button_classes', [ '1' === $btn_from_theme ? 'wp-block-button__link' : 'srfm-btn-frontend srfm-button srfm-submit-button', 'v3-reCAPTCHA' === $recaptcha_version ? ' g-recaptcha' : '' ] );
+					$srfm_button_classes = apply_filters( 'srfm_add_button_classes', [ '1' === $btn_from_theme ? 'wp-block-button__link' : 'srfm-btn-frontend srfm-button srfm-submit-button', 'v3-reCAPTCHA' === $recaptcha_version ? ' g-recaptcha' : '' ], $id, $block_attrs );
 					?>
 
 					<div class="srfm-submit-container <?php echo esc_attr( $is_page_break ? 'srfm-hide' : '' ); ?>" style="<?php echo ! $should_show_submit_button ? 'visibility:hidden;position:absolute;' : ''; ?>">
@@ -636,8 +671,16 @@ class Generate_Form_Markup {
 			<div class="srfm-single-form srfm-success-box in-page">
 				<div aria-live="polite" aria-atomic="true" role="alert" id="srfm-success-message-page-<?php echo esc_attr( Helper::get_string_value( $id ) ); ?>" class="srfm-success-box-description"></div>
 			</div>
+			<?php
+			// Add preview script for real-time styling updates from block editor.
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- This is a preview context, nonce not required.
+			if ( isset( $_GET['form_preview'] ) && 'true' === $_GET['form_preview'] && isset( $container_id ) ) {
+				self::enqueue_preview_styling_script( $container_id );
+			}
+			?>
 			</div>
 		<?php
+		self::$current_block_attrs = [];
 		return ob_get_clean();
 	}
 
@@ -747,6 +790,45 @@ class Generate_Form_Markup {
 		?>
 		<p id="srfm-error-message" class="<?php echo esc_attr( $classes ); ?>" hidden><?php echo wp_kses( $icon, Helper::$allowed_tags_svg ); ?><span class="srfm-error-content"><?php echo esc_html__( 'There was an error trying to submit your form. Please try again.', 'sureforms' ); ?></span></p>
 		<?php
+	}
+
+	/**
+	 * Enqueue the preview styling script for real-time updates from block editor.
+	 *
+	 * @param string $container_id The form container ID selector.
+	 * @since 2.7.0
+	 * @return void
+	 */
+	public static function enqueue_preview_styling_script( $container_id ) {
+		$script_asset_path = SRFM_DIR . 'assets/build/previewStyling.asset.php';
+		$script_asset      = file_exists( $script_asset_path ) ? require $script_asset_path : [
+			'dependencies' => [],
+			'version'      => SRFM_VER,
+		];
+
+		wp_enqueue_script(
+			SRFM_SLUG . '-preview-styling',
+			SRFM_URL . 'assets/build/previewStyling.js',
+			$script_asset['dependencies'],
+			$script_asset['version'],
+			true
+		);
+
+		wp_localize_script(
+			SRFM_SLUG . '-preview-styling',
+			'srfmPreviewStyling',
+			[
+				'containerId'      => $container_id,
+				'fieldSpacingVars' => Helper::get_css_vars(),
+			]
+		);
+
+		/**
+		 * Action to allow Pro to enqueue additional preview styling scripts.
+		 *
+		 * @since 2.7.0
+		 */
+		do_action( 'srfm_enqueue_preview_styling_scripts' );
 	}
 
 	/**
@@ -890,7 +972,9 @@ class Generate_Form_Markup {
 			$smart_tags = new Smart_Tags();
 			// Adding upload_format_type = 'raw' to retrieve urls as comma separated values.
 			$form_data['upload_format_type'] = 'raw';
-			$redirect_url                    = html_entity_decode( Helper::get_string_value( $smart_tags->process_smart_tags( $redirect_url, $submission_data, $form_data ) ) );
+			// Skip auto-linking URLs in smart tag values — redirect query params need raw values, not HTML.
+			$form_data['smart_tag_context'] = 'redirect';
+			$redirect_url                   = html_entity_decode( Helper::get_string_value( $smart_tags->process_smart_tags( $redirect_url, $submission_data, $form_data ) ) );
 		}
 
 		return esc_url_raw( apply_filters( 'srfm_after_submit_redirect_url', $redirect_url ) );

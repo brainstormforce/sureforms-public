@@ -2,9 +2,9 @@
 **Contributors:** [brainstormforce](https://profiles.wordpress.org/brainstormforce/)  
 **Tags:** forms, contact form, custom forms, payment form, form builder  
 **Requires at least:** 6.4  
-**Tested up to:** 6.9.3  
+**Tested up to:** 6.9.4  
 **Requires PHP:** 7.4  
-**Stable tag:** 2.5.2  
+**Stable tag:** 2.7.0  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -401,6 +401,23 @@ You can collect payments securely through Stripe & PayPal without any add-ons or
 You can report the issue through our [Bug Bounty Program](https://brainstormforce.com/bug-bounty-program/). We collaborate with Patchstack to provide opportunities for researchers to report vulnerabilities. The Patchstack team will help validate, triage, and handle any reported security issues.
 
 ## Changelog ##
+### 2.7.0 - 31st March 2026 ###
+* New: Added styling options for Gutenberg SureForms Form Block.
+* New: Added styling options for Bricks Builder SureForms Form Element.
+* New: Added styling options for Elementor SureForms Form Widget.
+* Fix: Fixed "Send as Raw HTML" email option wrapping content in unwanted template markup.
+* Fix: Fixed Multi Choice option labels with extra whitespace failing to resolve numeric values in payment calculations.
+* Fix: Fixed block slug not locking when a smart tag is inserted via the pro plugin.
+* Fix: Fixed dynamic tag URLs being auto-linked with HTML markup when used in redirect query parameters.
+* Fix: Fixed theme text-transform styles cascading into form input fields.
+* Fix: Fixed unique field validation endpoint exposing submitted data to unauthenticated enumeration attacks.
+### 2.6.0 - 23rd March 2026 ###
+* New: Added MCP (Model Context Protocol) settings and Abilities API for AI-powered form management.
+* Improvement: Added Blocks API v3 compatibility.
+* Improvement: Improved search for form and entry listing.
+* Fix: Fixed Stripe payment block not displaying correctly when the same form is embedded multiple times on a page.
+* Fix: Fixed entry Previous/Next navigation returning entries from other forms instead of the current form.
+* Fix: Resolved intermittent form submission failures on sites with page caching plugins due to expired security tokens.
 ### 2.5.2 - 12th March 2026 ###
 * New: Added the “Send as Raw HTML” option in email notifications for fully structured HTML emails.
 * New: Added the Learn section.
@@ -412,12 +429,6 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 * Fix: Fixed slug generation not working for newly added blocks in the editor.
 * Fix: Fixed unique field validation applying across all forms on the page instead of the submitted form only.
 * Fix: Fixed multi-file uploads not saving to the SureForms custom upload directory.
-### 2.5.1 - 16th February 2026 ###
-* New: Added option to change currency position (e.g., $100, 100$, $ 100, 100 $).
-* Fix: Fixed the payment block amount not updating correctly with conditional logic.
-### 2.5.0 - 2nd February 2026 ###
-* Improvement: Added translation support for the country list in the phone number field.
-* Fix: Fixed dropdown placeholder and GDPR label translation on the frontend.
 The full changelog is available [here](https://sureforms.com/whats-new/).
 
 ## Upgrade Notice ##

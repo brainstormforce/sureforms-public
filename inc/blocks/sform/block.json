@@ -12,6 +12,9 @@
 		"html": false
 	},
 	"attributes": {
+		"blockId": {
+			"type": "string"
+		},
 		"isPreview": {
 			"type": "boolean",
 			"default": false
@@ -36,6 +39,118 @@
 			"type": "string",
 			"enum": [ "all", "checkbox", "radio" ],
 			"default": "all"
+		},
+		"formTheme": {
+			"type": "string",
+			"default": "inherit"
+		},
+		"primaryColor": {
+			"type": "string",
+			"default": "#111C44"
+		},
+		"textColor": {
+			"type": "string",
+			"default": "#1E1E1E"
+		},
+		"textOnPrimaryColor": {
+			"type": "string",
+			"default": "#FFFFFF"
+		},
+		"bgType": {
+			"type": "string",
+			"enum": [ "color", "gradient", "image" ],
+			"default": "color"
+		},
+		"bgColor": {
+			"type": "string",
+			"default": "#FFFFFF"
+		},
+		"bgGradient": {
+			"type": "string",
+			"default": "linear-gradient(90deg, #FFC9B2 0%, #C7CBFF 100%)"
+		},
+		"bgImage": {
+			"type": "string",
+			"default": ""
+		},
+		"bgImageId": {
+			"type": "number"
+		},
+		"bgImagePosition": {
+			"type": "object",
+			"default": { "x": 0.5, "y": 0.5 }
+		},
+		"bgImageSize": {
+			"type": "string",
+			"default": "cover"
+		},
+		"bgImageRepeat": {
+			"type": "string",
+			"default": "no-repeat"
+		},
+		"bgImageAttachment": {
+			"type": "string",
+			"default": "scroll"
+		},
+		"formPaddingTop": {
+			"type": "number",
+			"default": 0
+		},
+		"formPaddingRight": {
+			"type": "number",
+			"default": 0
+		},
+		"formPaddingBottom": {
+			"type": "number",
+			"default": 0
+		},
+		"formPaddingLeft": {
+			"type": "number",
+			"default": 0
+		},
+		"formPaddingUnit": {
+			"type": "string",
+			"enum": [ "px", "em", "rem", "%", "vw", "vh" ],
+			"default": "px"
+		},
+		"formPaddingLink": {
+			"type": "boolean",
+			"default": true
+		},
+		"formBorderRadiusTop": {
+			"type": "number",
+			"default": 0
+		},
+		"formBorderRadiusRight": {
+			"type": "number",
+			"default": 0
+		},
+		"formBorderRadiusBottom": {
+			"type": "number",
+			"default": 0
+		},
+		"formBorderRadiusLeft": {
+			"type": "number",
+			"default": 0
+		},
+		"formBorderRadiusUnit": {
+			"type": "string",
+			"enum": [ "px", "em", "rem", "%", "vw", "vh" ],
+			"default": "px"
+		},
+		"formBorderRadiusLink": {
+			"type": "boolean",
+			"default": true
+		},
+		"fieldSpacing": {
+			"type": "string",
+			"enum": [ "small", "medium", "large" ],
+			"default": "medium"
+		},
+		"buttonAlignment": {
+			"type": "string",
+			"enum": [ "left", "center", "right", "justify" ],
+			"default": "left"
 		}
 	}
 }

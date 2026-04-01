@@ -1,5 +1,6 @@
 {
-	"apiVersion": 2,
+  "$schema": "https://json.schemastore.org/block.json",
+	"apiVersion": 3,
 	"name": "srfm/multi-choice",
 	"title": "Multiple Choice",
 	"description": "Displays a SureForms Multi-Choice Field",

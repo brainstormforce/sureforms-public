@@ -30,6 +30,7 @@ import {
 	Link2,
 	Save,
 	Split,
+	ListTodo,
 } from 'lucide-react';
 
 import Suretriggers from '../integrations/suretriggers';
@@ -48,7 +49,7 @@ import FormRestriction from '../form-restrictions/FormRestriction';
 import { FormRestrictionContext } from '../form-restrictions/context';
 import FeaturePreview from '../FeaturePreview';
 import OttoKitPage from '@Admin/settings/pages/OttoKit';
-import ottoKitIcon from '@Image/suretriggers-grayscale.svg';
+import ottoKitIcon from '@Image/ottokit.png';
 
 const Dialog = ( {
 	open,
@@ -251,6 +252,28 @@ const Dialog = ( {
 				),
 			},
 			{
+				id: 'ottokit',
+				label: __( 'Automations', 'sureforms' ),
+				icon: (
+					<img
+						src={ ottoKitIcon }
+						alt={ __( 'OttoKit', 'sureforms' ) }
+					/>
+				),
+				component: (
+					<OttoKitPage
+						{ ...{
+							isFormSettings: true,
+							setSelectedTab,
+							pluginConnected,
+							setPluginConnected,
+							localPluginStatus,
+							setLocalPluginStatus,
+						} }
+					/>
+				),
+			},
+			{
 				id: 'pdf-generation-preview',
 				label: __( 'PDF Generation', 'sureforms' ),
 				icon: <File />,
@@ -289,19 +312,6 @@ const Dialog = ( {
 						] }
 						utmMedium="pdf-preview-single-form-settings"
 					/>
-				),
-			},
-			{
-				id: 'advanced-settings',
-				label: __( 'Advanced Settings', 'sureforms' ),
-				icon: <Settings />,
-				component: (
-					<>
-						<FormRestriction
-							setHasValidationErrors={ setHasValidationErrors }
-						/>
-						<Compliance { ...{ complianceData } } />
-					</>
 				),
 			},
 			{
@@ -434,24 +444,56 @@ const Dialog = ( {
 				),
 			},
 			{
-				id: 'ottokit',
-				label: __( 'Automations', 'sureforms' ),
-				icon: (
-					<img
-						src={ ottoKitIcon }
-						alt={ __( 'OttoKit', 'sureforms' ) }
-					/>
-				),
+				id: 'advanced-settings',
+				label: __( 'Advanced Settings', 'sureforms' ),
+				icon: <Settings />,
 				component: (
-					<OttoKitPage
-						{ ...{
-							isFormSettings: true,
-							setSelectedTab,
-							pluginConnected,
-							setPluginConnected,
-							localPluginStatus,
-							setLocalPluginStatus,
-						} }
+					<>
+						<FormRestriction
+							setHasValidationErrors={ setHasValidationErrors }
+						/>
+						<Compliance { ...{ complianceData } } />
+					</>
+				),
+			},
+			{
+				id: 'quiz-preview',
+				label: __( 'Quizzes', 'sureforms' ),
+				icon: <ListTodo size={ 18 } />,
+				component: (
+					<FeaturePreview
+						featureName={ __( 'Quizzes', 'sureforms' ) }
+						featureHelpText={ __(
+							'Create interactive quizzes to engage your audience and gather insights.',
+							'sureforms'
+						) }
+						icon={
+							<ListTodo
+								className="text-orange-500"
+								size={ 40 }
+								strokeWidth={ 1 }
+							/>
+						}
+						title={ __( 'Quizzes', 'sureforms' ) }
+						subtitle={ __(
+							'Design engaging quizzes with various question types, personalized feedback, and automated scoring to captivate your audience and gain valuable insights.',
+							'sureforms'
+						) }
+						featureList={ [
+							__(
+								'Create interactive quizzes with multiple question types.',
+								'sureforms'
+							),
+							__(
+								'Provide personalized feedback based on user responses.',
+								'sureforms'
+							),
+							__(
+								'Automate scoring and lead segmentation for better insights.',
+								'sureforms'
+							),
+						] }
+						utmMedium="quiz-preview-single-form-settings"
 					/>
 				),
 			},

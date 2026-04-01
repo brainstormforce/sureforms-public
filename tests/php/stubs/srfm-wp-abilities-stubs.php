@@ -5,7 +5,7 @@
  * These symbols are not yet available in phpstan-wordpress stubs.
  *
  * @package sureforms
- * @since x.x.x
+ * @since 2.6.0
  */
 
 namespace {

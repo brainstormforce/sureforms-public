@@ -4,7 +4,7 @@
 		"Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
 		"This file is @generated automatically"
 	],
-	"content-hash": "651e78c6cca11aaffcecf8922e122df6",
+	"content-hash": "4b93ae81230a2cd5648a622ca71ab74e",
 	"packages": [
 		{
 			"name": "brainstormforce/astra-notices",
@@ -63,22 +63,24 @@
 		},
 		{
 			"name": "brainstormforce/bsf-analytics",
-			"version": "1.1.17",
+			"version": "1.1.21",
 			"source": {
 				"type": "git",
 				"url": "git@github.com:brainstormforce/bsf-analytics.git",
-				"reference": "283ad3198224d671ab427c1fbd3ff894480e628e"
+				"reference": "260283e34fab7feb2425d09d3295a25958fc56c9"
 			},
 			"dist": {
 				"type": "zip",
-				"url": "https://api.github.com/repos/brainstormforce/bsf-analytics/zipball/283ad3198224d671ab427c1fbd3ff894480e628e",
-				"reference": "283ad3198224d671ab427c1fbd3ff894480e628e",
+				"url": "https://api.github.com/repos/brainstormforce/bsf-analytics/zipball/260283e34fab7feb2425d09d3295a25958fc56c9",
+				"reference": "260283e34fab7feb2425d09d3295a25958fc56c9",
 				"shasum": ""
 			},
 			"require-dev": {
+				"10up/wp_mock": "^1.0",
 				"brainmaestro/composer-git-hooks": "^2.6",
 				"dealerdirect/phpcodesniffer-composer-installer": "^1.0",
 				"phpcompatibility/phpcompatibility-wp": "2.1.0",
+				"phpunit/phpunit": "^9.6",
 				"wp-coding-standards/wpcs": "2.2.1"
 			},
 			"type": "wordpress-plugin",
@@ -97,6 +99,9 @@
 				"lint": [
 					"phpcs --standard=phpcs.xml.dist --report-summary --report-source"
 				],
+				"test": [
+					"phpunit"
+				],
 				"post-install-cmd": [
 					"vendor/bin/cghooks add --ignore-lock"
 				],
@@ -106,10 +111,10 @@
 			},
 			"description": "Library to gather non sensitive analytics data to enhance bsf products.",
 			"support": {
-				"source": "https://github.com/brainstormforce/bsf-analytics/tree/1.1.17",
+				"source": "https://github.com/brainstormforce/bsf-analytics/tree/1.1.21",
 				"issues": "https://github.com/brainstormforce/bsf-analytics/issues"
 			},
-			"time": "2026-01-29T06:12:17+00:00"
+			"time": "2026-03-27T11:38:46+00:00"
 		},
 		{
 			"name": "composer/ca-bundle",
@@ -9672,7 +9677,7 @@
 	},
 	"prefer-stable": true,
 	"prefer-lowest": false,
-	"platform": [],
-	"platform-dev": [],
+	"platform": {},
+	"platform-dev": {},
 	"plugin-api-version": "2.6.0"
 }

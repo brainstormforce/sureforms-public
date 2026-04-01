@@ -133,7 +133,7 @@ class Helper {
 	 * Validate a date string in Y-m-d format.
 	 *
 	 * @param string $date The date string to validate.
-	 * @since x.x.x
+	 * @since 2.6.0
 	 * @return bool
 	 */
 	public static function validate_date( string $date ): bool {
@@ -270,6 +270,25 @@ class Helper {
 
 		// phpcs:ignore /** @phpstan-ignore-next-line */
 		return sanitize_text_field( filter_var( $value, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION | FILTER_FLAG_ALLOW_THOUSAND ) );
+	}
+
+	/**
+	 * Sanitize a CSS value to prevent injection.
+	 *
+	 * Strips characters that can break out of a CSS property value context
+	 * and removes dangerous CSS functions while preserving safe ones
+	 * (rgb, hsl, linear-gradient, etc.).
+	 *
+	 * @param mixed $value Raw CSS value.
+	 * @return string Sanitized CSS value.
+	 * @since 2.7.0
+	 */
+	public static function sanitize_css_value( $value ) {
+		$value = self::get_string_value( $value );
+		// Strip characters that can break out of a CSS property value context.
+		$value = preg_replace( '/[{}<>;\\\\"\'`]/', '', $value ) ?? '';
+		// Remove dangerous CSS functions (url, expression, import, etc.) while preserving safe ones (rgb, hsl, linear-gradient, etc.).
+		return preg_replace( '/\b(url|expression|import|javascript)\s*\(/i', '(', $value ) ?? '';
 	}
 
 	/**
@@ -2281,35 +2300,4 @@ class Helper {
 		return base64_encode( $json );
 	}
 
-	/**
-	 * Get the nonces for the form submission.
-	 *
-	 * @since 2.5.1
-	 * @return array<string> The nonces for the form submission.
-	 */
-	public static function get_frontend_nonces() {
-		$nonces = [
-			'unique_validation' => wp_create_nonce( 'unique_validation_nonce' ),
-			'form_submit'       => wp_create_nonce( 'srfm_form_submit' ),
-			'payment_nonce'     => wp_create_nonce( 'srfm_payment_nonce' ),
-		];
-
-		/**
-		 * Filter to allow Pro and third-party plugins to add additional nonces.
-		 *
-		 * @since 2.5.1
-		 * @param array<string> $nonces The nonces for the form submission.
-		 */
-		return apply_filters( 'srfm_frontend_nonces', $nonces );
-	}
-
-	/**
-	 * Check if the form markup nonce should be updated.
-	 *
-	 * @since 2.5.1
-	 * @return bool True if the form markup nonce should be updated, false otherwise.
-	 */
-	public static function should_update_form_markup_nonce() {
-		return apply_filters( 'srfm_should_update_form_markup_nonce', true );
-	}
 }

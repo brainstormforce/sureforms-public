@@ -44,6 +44,7 @@ if ( ! class_exists( 'Spec_Spectra_Compatibility' ) ) :
 
 			// Hook: Editor assets.
 			add_action( 'enqueue_block_editor_assets', [ $this, 'spectra_editor_assets' ] );
+			add_action( 'enqueue_block_assets', [ $this, 'spectra_editor_assets' ] );
 		}
 
 		/**

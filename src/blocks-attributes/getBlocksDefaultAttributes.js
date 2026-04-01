@@ -11,9 +11,11 @@ import dropdownAttributes from '@IncBlocks/dropdown/block.json';
 import gdprAttributes from '@IncBlocks/gdpr/block.json';
 import inlineButton from '@IncBlocks/inlinebutton/block.json';
 import paymentAttributes from '@IncBlocks/payment/block.json';
+import sformAttributes from '@IncBlocks/sform/block.json';
 import { getDefaultMessage } from '@Blocks/util';
 import { __ } from '@wordpress/i18n';
 
+// Form settings attributes (used in form editor settings panel).
 export const embedFormAttributes = {
 	// Form Properties.
 	// Padding.
@@ -142,6 +144,9 @@ export const blocksAttributes = {
 	},
 	payment: {
 		...paymentAttributes.attributes,
+	},
+	form: {
+		...sformAttributes.attributes,
 	},
 	form_specific: defaultKeys,
 };

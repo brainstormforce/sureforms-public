@@ -76,81 +76,28 @@ class Form_Submit {
 				'permission_callback' => [ $this, 'submit_form_permissions_check' ],
 			]
 		);
-
-		register_rest_route(
-			$this->namespace,
-			'/refresh-nonces',
-			[
-				'methods'             => 'GET',
-				'callback'            => [ $this, 'refresh_nonces' ],
-				'permission_callback' => '__return_true',
-			]
-		);
 	}
 
 	/**
-	 * Refresh frontend nonces for form submission
+	 * Check whether a given request has permission to submit the form.
 	 *
-	 * @return \WP_REST_Response Response with fresh nonces.
-	 * @since 2.5.1
-	 */
-	public function refresh_nonces() {
-		nocache_headers();
-
-		// Check if nonce refresh is allowed.
-		if ( ! Helper::should_update_form_markup_nonce() ) {
-			return rest_ensure_response(
-				[
-					'success' => false,
-					'message' => __( 'Nonce refresh is disabled.', 'sureforms' ),
-				]
-			);
-		}
-
-		// Get fresh nonces from Helper.
-		$nonces = Helper::get_frontend_nonces();
-
-		return rest_ensure_response(
-			[
-				'success' => true,
-				'nonces'  => $nonces,
-			]
-		);
-	}
-
-	/**
-	 * Check whether a given request has permission access route.
+	 * Validates the HMAC-based submission token embedded in the page at render
+	 * time. Tokens remain valid for up to 48 hours (four 12-hour windows), so
+	 * they survive cached-page scenarios without any browser-side refresh call.
 	 *
-	 * @param \WP_REST_Request $request Request object or array containing form data.
-	 * @since 1.8.0
+	 * @param \WP_REST_Request $request Incoming REST request.
+	 * @since 2.6.0
 	 * @return WP_Error|bool
 	 */
 	public function submit_form_permissions_check( $request ) {
-		$nonce = Helper::get_string_value( $request->get_header( 'X-WP-Submit-Nonce' ) );
-		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'srfm_form_submit' ) ) {
-			wp_send_json_error(
-				[
-					'message' => __( 'Security verification failed. Please refresh the page and try again.', 'sureforms' ),
-				]
-			);
-		}
+		$token   = Helper::get_string_value( $request->get_header( 'X-WP-Submit-Token' ) );
+		$form_id = absint( $request->get_param( 'form-id' ) );
 
-		$form_data = Helper::sanitize_by_field_type( $request->get_params() );
-
-		if ( empty( $form_data ) || ! is_array( $form_data ) ) {
-			wp_send_json_error(
-				[
-					'message' => __( 'Form data was not found.', 'sureforms' ),
-				]
-			);
-		}
-
-		if ( ! $form_data['form-id'] ) {
-			wp_send_json_error(
-				[
-					'message'  => __( 'Form ID is missing.', 'sureforms' ),
-					'position' => 'header',
-				]
+		if ( ! Submit_Token::verify( $token, $form_id ) ) {
+			return new WP_Error(
+				'srfm_token_invalid',
+				__( 'Security verification failed. Please refresh the page and try again.', 'sureforms' ),
+				[ 'status' => 403 ]
 			);
 		}
 
@@ -279,15 +226,20 @@ class Form_Submit {
 	 * @return \WP_REST_Response|\WP_Error Response object on success, or WP_Error object on failure.
 	 */
 	public function handle_form_submission( $request ) {
-		/**
-		 * All checks are done in submit_form_permissions_check method:
-		 * - Nonce verification
-		 * - Form data validation
-		 * - Form ID validation
-		 *
-		 * @since 1.8.0
-		 */
 		$form_data = Helper::sanitize_by_field_type( $request->get_params() );
+
+		if ( empty( $form_data ) || ! is_array( $form_data ) ) {
+			wp_send_json_error( [ 'message' => __( 'Form data is not found.', 'sureforms' ) ] );
+		}
+
+		if ( empty( $form_data['form-id'] ) ) {
+			wp_send_json_error(
+				[
+					'message'  => __( 'Form ID is missing.', 'sureforms' ),
+					'position' => 'header',
+				]
+			);
+		}
 
 		$current_form_id = $form_data['form-id'];
 
@@ -426,7 +378,7 @@ class Form_Submit {
 
 		if ( isset( $form_data['srfm-honeypot-field'] ) && empty( $form_data['srfm-honeypot-field'] ) ) {
 			if ( ! empty( $google_captcha_secret_key ) ) {
-				if ( isset( $form_data['sureforms_form_submit'] ) ) {
+				if ( ! empty( $form_data['form-id'] ) ) {
 					$secret_key       = $google_captcha_secret_key;
 					$ipaddress        = isset( $_SERVER['REMOTE_ADDR'] ) ? filter_var( wp_unslash( $_SERVER['REMOTE_ADDR'] ), FILTER_VALIDATE_IP ) : '';
 					$captcha_response = $form_data['g-recaptcha-response'];
@@ -471,7 +423,7 @@ class Form_Submit {
 			}
 
 			if ( ! empty( $google_captcha_secret_key ) ) {
-				if ( isset( $form_data['sureforms_form_submit'] ) ) {
+				if ( ! empty( $form_data['form-id'] ) ) {
 					$secret_key       = $google_captcha_secret_key;
 					$ipaddress        = isset( $_SERVER['REMOTE_ADDR'] ) ? filter_var( wp_unslash( $_SERVER['REMOTE_ADDR'] ), FILTER_VALIDATE_IP ) : '';
 					$captcha_response = $form_data['g-recaptcha-response'];
@@ -997,62 +949,65 @@ class Form_Submit {
 	}
 
 	/**
-	 * Retrieve all entries data for a specific form ID to check for unique values.
+	 * Validate unique field values for a specific form via AJAX.
+	 *
+	 * Checks submitted field values against existing entries to determine
+	 * if duplicates exist. Rate-limited to prevent data enumeration.
 	 *
 	 * @since 0.0.1
+	 * @since 2.7.0 Added rate limiting, form validation, and optimized query.
 	 * @return void
 	 */
 	public function field_unique_validation() {
-		if ( empty( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['nonce'] ) ), 'unique_validation_nonce' ) ) {
-			$error_message = __( 'Security verification failed. Please refresh the page and try again.', 'sureforms' );
-			$error_data    = [
-				'error' => $error_message,
-			];
-			wp_send_json_error( $error_data );
+		$token   = isset( $_POST['token'] ) ? sanitize_text_field( wp_unslash( $_POST['token'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- HMAC token verification replaces nonce.
+		$form_id = isset( $_POST['id'] ) ? absint( wp_unslash( $_POST['id'] ) ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Missing
+
+		if ( ! Submit_Token::verify( $token, $form_id ) ) {
+			wp_send_json_error( [ 'error' => __( 'Security verification failed. Please refresh the page and try again.', 'sureforms' ) ] );
 		}
 
-		global $wpdb;
-		$id         = isset( $_POST['id'] ) ? absint( wp_unslash( $_POST['id'] ) ) : 0;
-		$meta_value = $id;
-
-		if ( ! $meta_value ) {
-			$error_message = __( 'Invalid form ID.', 'sureforms' );
-			$error_data    = [
-				'error' => $error_message,
-			];
-			wp_send_json_error( $error_data );
+		if ( ! $form_id ) {
+			wp_send_json_error( [ 'error' => __( 'Invalid form ID.', 'sureforms' ) ] );
 		}
 
-		$_POST = array_map( 'wp_unslash', $_POST );
+		// Validate the form exists and is published to prevent cross-form probing.
+		if ( 'publish' !== get_post_status( $form_id ) || 'sureforms_form' !== get_post_type( $form_id ) ) {
+			wp_send_json_error( [ 'error' => __( 'Invalid form.', 'sureforms' ) ] );
+		}
 
-		// Get the entry IDs for the particualr form to perform unique field validation.
-		$entry_ids = Entries::get_all_entry_ids_for_form( $id );
+		// Rate limit: 10 requests per minute per IP per form.
+		if ( $this->is_unique_validation_rate_limited( $form_id ) ) {
+			wp_send_json_error( [ 'error' => __( 'Too many requests. Please try again shortly.', 'sureforms' ) ], 429 );
+		}
 
-		$all_form_entries = [];
-		$keys             = array_keys( $_POST );
-		$length           = count( $keys );
+		// Extract and validate field values from POST data.
+		$skip_keys  = [ 'action', 'token', 'id' ];
+		$duplicates = [];
 
-		for ( $i = 3; $i < $length; $i++ ) {
-			$key   = $keys[ $i ];
-			$value = isset( $_POST[ $key ] ) ? sanitize_text_field( wp_unslash( $_POST[ $key ] ) ) : '';
-			$key   = str_replace( '_', ' ', $keys[ $i ] );
+		foreach ( $_POST as $raw_key => $raw_value ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing -- HMAC token verified above.
+			if ( in_array( $raw_key, $skip_keys, true ) ) {
+				continue;
+			}
 
-			foreach ( $entry_ids as $entry_id ) {
-				$entry_id  = is_array( $entry_id ) ? Helper::get_integer_value( $entry_id['ID'] ) : 0;
-				$form_data = Entries::get_form_data( $entry_id );
-				if ( is_array( $form_data ) && isset( $form_data[ $key ] ) && $form_data[ $key ] === $value ) {
-					$obj = [ $key => 'not unique' ];
-					array_push( $all_form_entries, $obj );
-					break;
-				}
+			$field_key = str_replace( '_', ' ', sanitize_text_field( $raw_key ) );
+			$value     = sanitize_text_field( wp_unslash( $raw_value ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing -- HMAC token verified above.
+
+			// Only process SureForms field keys (they contain -lbl- in the name).
+			if ( false === strpos( $field_key, '-lbl-' ) ) {
+				continue;
+			}
+
+			if ( '' === $value ) {
+				continue;
+			}
+
+			// Single optimized query per field instead of loading all entries.
+			if ( Entries::has_duplicate_field_value( $form_id, $field_key, $value ) ) {
+				$duplicates[] = [ $field_key => 'not unique' ];
 			}
 		}
 
-		$results = [
-			'data' => $all_form_entries,
-		];
-
-		wp_send_json( $results );
+		wp_send_json( [ 'data' => $duplicates ] );
 	}
 
 	/**
@@ -1226,6 +1181,41 @@ class Form_Submit {
 	}
 
 	/**
+	 * Check if the current request is rate-limited for unique validation.
+	 *
+	 * Uses transients keyed by IP + form ID to throttle requests.
+	 * Allows 10 requests per 60-second window per IP per form.
+	 *
+	 * @param int $form_id The form ID being validated.
+	 * @since 2.7.0
+	 * @return bool True if rate-limited (should block), false if allowed.
+	 */
+	private function is_unique_validation_rate_limited( $form_id ) {
+		$ip = isset( $_SERVER['REMOTE_ADDR'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) ) : '';
+
+		if ( empty( $ip ) || ! filter_var( $ip, FILTER_VALIDATE_IP ) ) {
+			return true; // Fail closed if IP cannot be determined.
+		}
+
+		$transient_key = 'srfm_uv_' . md5( $ip . '_' . $form_id );
+		$attempts      = get_transient( $transient_key );
+
+		if ( false === $attempts ) {
+			set_transient( $transient_key, 1, MINUTE_IN_SECONDS );
+			return false;
+		}
+
+		$attempts_count = Helper::get_integer_value( $attempts );
+
+		if ( $attempts_count >= 10 ) {
+			return true;
+		}
+
+		set_transient( $transient_key, $attempts_count + 1, MINUTE_IN_SECONDS );
+		return false;
+	}
+
+	/**
 	 * Process and sanitize SureForms field data from submitted form data.
 	 *
 	 * @param array<mixed> $form_data Raw form data from submission.
@@ -1234,6 +1224,8 @@ class Form_Submit {
 	 * @return array Processed and sanitized submission data.
 	 */
 	private function process_form_fields( $form_data ) {
+		$form_id = isset( $form_data['form-id'] ) && is_numeric( $form_data['form-id'] ) ? absint( $form_data['form-id'] ) : 0;
+
 		$submission_data = [];
 
 		$form_data_keys  = array_keys( $form_data );
@@ -1317,7 +1309,29 @@ class Form_Submit {
 			}
 		}
 
-		return apply_filters( 'srfm_before_prepare_submission_data', $submission_data );
+		/**
+		 * Filters the submission data before preparing it for storage.
+		 *
+		 * The second parameter is a context array containing additional metadata
+		 * about the submission. This array is extensible — new keys may be added
+		 * in future versions without changing the filter signature.
+		 *
+		 * @since 2.6.0
+		 *
+		 * @param array<string,mixed> $submission_data Processed form submission data.
+		 * @param array<string,mixed> $context {
+		 *     Additional context for the submission.
+		 *
+		 *     @type int $form_id The ID of the form being submitted.
+		 * }
+		 */
+		return apply_filters(
+			'srfm_before_prepare_submission_data',
+			$submission_data,
+			[
+				'form_id' => $form_id,
+			]
+		);
 	}
 
 	/**

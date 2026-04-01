@@ -23,7 +23,16 @@ module.exports = {
 		],
 		'react/no-unknown-property': [ 'error', { ignore: [ 'css' ] } ],
 		'react/no-danger': 'error',
+		'no-unused-vars': [ 'error', { args: 'all', argsIgnorePattern: '^_', caughtErrorsIgnorePattern: '^_', ignoreRestSiblings: true } ],
 	},
+	overrides: [
+		{
+			files: [ 'modules/gutenberg/**/*.js' ],
+			rules: {
+				'no-unused-vars': 'off',
+			},
+		},
+	],
 	parserOptions: {
 		requireConfigFile: false,
 		babelOptions: {
@@ -97,5 +106,6 @@ module.exports = {
 		sessionStorage: true,
 		jQuery: true,
 		sureformsPointerData: true,
+		$e: true, // Elementor's global jQuery alias, used in some Elementor-specific scripts.
 	},
 };

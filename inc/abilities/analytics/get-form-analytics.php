@@ -3,7 +3,7 @@
  * Get Form Analytics Ability.
  *
  * @package sureforms
- * @since x.x.x
+ * @since 2.6.0
  */
 
 namespace SRFM\Inc\Abilities\Analytics;
@@ -21,20 +21,20 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * Retrieves form submission analytics for a given date range.
  *
- * @since x.x.x
+ * @since 2.6.0
  */
 class Get_Form_Analytics extends Abstract_Ability {
 	/**
 	 * Maximum number of analytics results to return.
 	 *
-	 * @since x.x.x
+	 * @since 2.6.0
 	 */
 	public const MAX_RESULTS = 10000;
 
 	/**
 	 * Constructor.
 	 *
-	 * @since x.x.x
+	 * @since 2.6.0
 	 */
 	public function __construct() {
 		$this->id          = 'sureforms/get-form-analytics';
@@ -46,7 +46,7 @@ class Get_Form_Analytics extends Abstract_Ability {
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @since x.x.x
+	 * @since 2.6.0
 	 */
 	public function get_annotations() {
 		return [
@@ -61,7 +61,7 @@ class Get_Form_Analytics extends Abstract_Ability {
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @since x.x.x
+	 * @since 2.6.0
 	 */
 	public function get_input_schema() {
 		return [
@@ -88,7 +88,7 @@ class Get_Form_Analytics extends Abstract_Ability {
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @since x.x.x
+	 * @since 2.6.0
 	 */
 	public function get_output_schema() {
 		return [
@@ -116,7 +116,7 @@ class Get_Form_Analytics extends Abstract_Ability {
 	 * Execute the get-form-analytics ability.
 	 *
 	 * @param array<string,mixed> $input Validated input data.
-	 * @since x.x.x
+	 * @since 2.6.0
 	 * @return array<string,mixed>|\WP_Error
 	 */
 	public function execute( $input ) {

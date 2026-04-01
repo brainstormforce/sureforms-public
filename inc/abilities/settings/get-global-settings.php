@@ -3,7 +3,7 @@
  * Get Global Settings Ability.
  *
  * @package sureforms
- * @since x.x.x
+ * @since 2.6.0
  */
 
 namespace SRFM\Inc\Abilities\Settings;
@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * Retrieves SureForms global settings by category.
  *
- * @since x.x.x
+ * @since 2.6.0
  */
 class Get_Global_Settings extends Abstract_Ability {
 	use Settings_Secret_Keys;
@@ -30,14 +30,14 @@ class Get_Global_Settings extends Abstract_Ability {
 	 *
 	 * Must match the sentinel in Update_Global_Settings for round-trip safety.
 	 *
-	 * @since x.x.x
+	 * @since 2.6.0
 	 */
 	private const SECRET_SENTINEL = '@@SRFM_SECRET_UNCHANGED@@';
 
 	/**
 	 * Constructor.
 	 *
-	 * @since x.x.x
+	 * @since 2.6.0
 	 */
 	public function __construct() {
 		$this->id          = 'sureforms/get-global-settings';
@@ -49,7 +49,7 @@ class Get_Global_Settings extends Abstract_Ability {
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @since x.x.x
+	 * @since 2.6.0
 	 */
 	public function get_annotations() {
 		return [
@@ -64,7 +64,7 @@ class Get_Global_Settings extends Abstract_Ability {
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @since x.x.x
+	 * @since 2.6.0
 	 */
 	public function get_input_schema() {
 		return [
@@ -86,7 +86,7 @@ class Get_Global_Settings extends Abstract_Ability {
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @since x.x.x
+	 * @since 2.6.0
 	 */
 	public function get_output_schema() {
 		return [
@@ -104,7 +104,7 @@ class Get_Global_Settings extends Abstract_Ability {
 	 * Execute the get-global-settings ability.
 	 *
 	 * @param array<string,mixed> $input Validated input data.
-	 * @since x.x.x
+	 * @since 2.6.0
 	 * @return array<string,mixed>|\WP_Error
 	 */
 	public function execute( $input ) {
@@ -137,7 +137,7 @@ class Get_Global_Settings extends Abstract_Ability {
 	/**
 	 * Get general settings.
 	 *
-	 * @since x.x.x
+	 * @since 2.6.0
 	 * @return array<string,mixed>
 	 */
 	private function get_general_settings() {
@@ -163,7 +163,7 @@ class Get_Global_Settings extends Abstract_Ability {
 	/**
 	 * Get validation messages settings.
 	 *
-	 * @since x.x.x
+	 * @since 2.6.0
 	 * @return array<string,mixed>
 	 */
 	private function get_validation_messages() {
@@ -179,7 +179,7 @@ class Get_Global_Settings extends Abstract_Ability {
 	/**
 	 * Get email summary settings.
 	 *
-	 * @since x.x.x
+	 * @since 2.6.0
 	 * @return array<string,mixed>
 	 */
 	private function get_email_summary_settings() {
@@ -199,7 +199,7 @@ class Get_Global_Settings extends Abstract_Ability {
 	/**
 	 * Get security settings with secret keys masked.
 	 *
-	 * @since x.x.x
+	 * @since 2.6.0
 	 * @return array<string,mixed>
 	 */
 	private function get_security_settings() {

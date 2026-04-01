@@ -2,13 +2,14 @@ import apiFetch from '@wordpress/api-fetch';
 import { __, sprintf } from '@wordpress/i18n';
 import { Toaster, ToastBar } from 'react-hot-toast';
 import { store as editorStore } from '@wordpress/editor';
-import { select } from '@wordpress/data';
+import { select, useSelect } from '@wordpress/data';
 import { addQueryArgs, cleanForSlug } from '@wordpress/url';
 import clsx from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { format as format_date } from 'date-fns';
 import { toast } from '@bsf/force-ui';
 import { applyFilters } from '@wordpress/hooks';
+import { store as blocksStore } from '@wordpress/blocks';
 
 /**
  * Get Image Sizes and return an array of Size.
@@ -666,19 +667,68 @@ const generateSlug = ( label, existingSlugs ) => {
 	return slug;
 };
 
-const prepareBlockSlugs = ( updateBlockAttributes, srfmBlocks ) => {
+// Tracks which slugs were auto-generated in this session and the label used.
+// Stored on window so all webpack bundles (core + pro) share the same Map instance.
+// Cleared on page reload. Enables re-derivation when the label changes.
+if ( typeof window._srfmSlugAutoLabels === 'undefined' ) {
+	window._srfmSlugAutoLabels = new Map();
+}
+const _slugAutoLabels = window._srfmSlugAutoLabels;
+
+// Returns true when the block carries a slug attribute and is not excluded.
+const isSlugEligible = ( block, withoutSlugBlocks ) =>
+	! withoutSlugBlocks.includes( block.name ) &&
+	Object.prototype.hasOwnProperty.call( block.attributes, 'slug' );
+
+export const prepareBlockSlugs = ( updateBlockAttributes, srfmBlocks ) => {
 	const blockSlugs = {};
 	const existingSlugs = new Set();
+	const withoutSlugBlocks = getWithoutSlugBlocks();
+
+	// Pre-pass: seed existingSlugs with all slugs that will NOT be regenerated.
+	const seedExisting = ( blocks ) => {
+		for ( const block of blocks ) {
+			if ( ! isSlugEligible( block, withoutSlugBlocks ) ) {
+				continue;
+			}
+			const { slug, label, block_id } = block.attributes;
+			const isAutoAndChanged =
+				slug &&
+				_slugAutoLabels.has( block_id ) &&
+				_slugAutoLabels.get( block_id ) !== label;
+			// Only add stable slugs (not ones about to be regenerated).
+			if ( slug && ! isAutoAndChanged ) {
+				existingSlugs.add( slug );
+			}
+			if ( Array.isArray( block.innerBlocks ) && block.innerBlocks.length > 0 ) {
+				seedExisting( block.innerBlocks );
+			}
+		}
+	};
+	seedExisting( srfmBlocks );
 
 	const processBlocks = ( blocks ) => {
 		for ( const block of blocks ) {
+			if ( ! isSlugEligible( block, withoutSlugBlocks ) ) {
+				continue;
+			}
 			let { slug, label, block_id } = block.attributes;
 
 			if ( ! slug ) {
+				// No slug yet: generate from current label and record it.
 				slug = generateSlug( label, existingSlugs );
-				// Update the block attributes with the generated slug.
 				updateBlockAttributes( block.clientId, { slug } );
+				_slugAutoLabels.set( block_id, label );
+			} else if (
+				_slugAutoLabels.has( block_id ) &&
+				_slugAutoLabels.get( block_id ) !== label
+			) {
+				// Auto-generated slug AND label has since changed: re-derive.
+				slug = generateSlug( label, existingSlugs );
+				updateBlockAttributes( block.clientId, { slug } );
+				_slugAutoLabels.set( block_id, label );
 			}
+			// else: stable slug from a previous session → leave untouched.
 
 			blockSlugs[ block_id ] = slug;
 			existingSlugs.add( slug );
@@ -695,6 +745,40 @@ const prepareBlockSlugs = ( updateBlockAttributes, srfmBlocks ) => {
 	processBlocks( srfmBlocks );
 
 	return blockSlugs;
+};
+
+/**
+ * Lock a block's slug so it is no longer subject to label-change re-derivation.
+ *
+ * Called when the user picks a {form:slug} shortcode from the smart tag picker.
+ * Deleting the block_id from _slugAutoLabels prevents prepareBlockSlugs from
+ * regenerating the slug if the block's label changes later in the same session.
+ *
+ * @param {string} slug - The slug portion extracted from the {form:slug} shortcode.
+ * @since x.x.x
+ */
+export const lockBlockSlugBySlug = ( slug ) => {
+	const { getBlocks } = select( 'core/block-editor' );
+
+	const findBlock = ( blocks ) => {
+		for ( const block of blocks ) {
+			if ( block.attributes?.slug === slug ) {
+				return block;
+			}
+			if ( block.innerBlocks?.length ) {
+				const found = findBlock( block.innerBlocks );
+				if ( found ) {
+					return found;
+				}
+			}
+		}
+		return null;
+	};
+
+	const block = findBlock( getBlocks() );
+	if ( block?.attributes?.block_id ) {
+		_slugAutoLabels.delete( block.attributes.block_id );
+	}
 };
 
 /**
@@ -1109,3 +1193,34 @@ export const formatDateTime = ( dateString, submissionInfo = false ) => {
 
 	return { shortFormat, fullFormat };
 };
+
+/**
+ * Internal dependencies
+ */
+export function useShouldIframe() {
+	const isGutenbergPlugin = window.globalThis.IS_GUTENBERG_PLUGIN
+		? true
+		: false;
+
+	return useSelect( ( _select ) => {
+		const { getEditorSettings, getCurrentPostType, getDeviceType } =
+			_select( editorStore );
+		return (
+			// If the theme is block based and the Gutenberg plugin is active,
+			// we ALWAYS use the iframe for consistency across the post and site
+			// editor.
+			( isGutenbergPlugin &&
+				getEditorSettings().__unstableIsBlockBasedTheme ) ||
+			// We also still want to iframe all the special
+			// editor features and modes such as device previews, zoom out, and
+			// template/pattern editing.
+			getDeviceType() !== 'Desktop' ||
+			[ 'wp_template', 'wp_block' ].includes( getCurrentPostType() ) ||
+			// Finally, still iframe the editor if all blocks are v3 (which means
+			// they are marked as iframe-compatible).
+			_select( blocksStore )
+				.getBlockTypes()
+				.every( ( type ) => type.apiVersion >= 3 )
+		);
+	}, [] );
+}

@@ -5,6 +5,20 @@
  */
 /* global Stripe, srfm_ajax */
 
+/**
+ * Get composite key for a payment block within a specific form instance.
+ * Supports multiple embeds of the same form on one page.
+ *
+ * @param {HTMLElement} form    - The form element.
+ * @param {string}      blockId - The block ID from data-block-id attribute.
+ * @return {string} Composite key in format "instanceId-blockId", or plain blockId as fallback.
+ */
+function getPaymentKey( form, blockId ) {
+	const instanceId = form.getAttribute( 'data-srfm-instance' );
+	return instanceId ? `${ instanceId }-${ blockId }` : blockId;
+}
+window.srfmGetPaymentKey = getPaymentKey;
+
 class StripePayment {
 	// Store Stripe instances
 	static stripeInstances = {};
@@ -38,7 +52,8 @@ class StripePayment {
 	 * Create payment or subscription intent during form submission.
 	 * Unified function that handles both payment types based on the paymentType parameter.
 	 *
-	 * @param {string}      blockId      - Block ID.
+	 * @param {string}      blockId      - Block ID (original, for server API).
+	 * @param {string}      compositeKey - Composite key (instanceId-blockId, for client-side maps).
 	 * @param {number}      amount       - The amount for the payment/subscription.
 	 * @param {HTMLElement} paymentInput - The payment input element.
 	 * @param {string}      paymentType  - Payment type: 'one-time' or 'subscription'.
@@ -46,6 +61,7 @@ class StripePayment {
 	 */
 	async createPaymentIntentOnSubmission(
 		blockId,
+		compositeKey,
 		amount,
 		paymentInput,
 		paymentType = 'one-time'
@@ -76,7 +92,9 @@ class StripePayment {
 				? 'srfm_create_subscription_intent'
 				: 'srfm_create_payment_intent'
 		);
-		data.append( 'nonce', srfm_ajax.payment_nonce );
+		// Read submit token from form element for server-side verification.
+		const formElement = paymentInput.closest( 'form' );
+		data.append( 'token', formElement?.getAttribute( 'data-submit-token' ) || '' );
 		// Handle zero-decimal currencies (JPY, KRW, etc.) - don't multiply by 100
 		const formattedAmount =
 			window?.srfmStripe?.zeroDecimalCurrencies?.includes(
@@ -90,9 +108,6 @@ class StripePayment {
 		data.append( 'block_id', blockId );
 		data.append( 'customer_email', customerData.email );
 		data.append( 'customer_name', customerData.name );
-
-		// Add form_id for server-side validation
-		const formElement = paymentInput.closest( 'form' );
 		const formIdInput = formElement?.querySelector(
 			'input[name="form-id"]'
 		);
@@ -125,7 +140,7 @@ class StripePayment {
 				if ( isSubscription ) {
 					const subscriptionId = responseData.data.subscription_id;
 
-					StripePayment.subscriptionIntents[ blockId ] = {
+					StripePayment.subscriptionIntents[ compositeKey ] = {
 						subscriptionId,
 						customerId: customerId || null,
 						paymentIntentId,
@@ -133,14 +148,15 @@ class StripePayment {
 						interval: customerData.interval,
 					};
 				} else {
-					StripePayment.paymentIntents[ blockId ] = {
+					StripePayment.paymentIntents[ compositeKey ] = {
 						paymentIntentId,
 						customerId: customerId || null,
 					};
 				}
 
 				// Update elements with client secret
-				const elementData = StripePayment.paymentElements[ blockId ];
+				const elementData =
+					StripePayment.paymentElements[ compositeKey ];
 				if ( elementData ) {
 					// CRITICAL: Store client secret WITHOUT calling elements.update()
 					// This preserves user-entered card data
@@ -182,31 +198,36 @@ class StripePayment {
 		}
 
 		const blockId = field.getAttribute( 'data-block-id' );
+		const compositeKey = getPaymentKey( this.form, blockId );
 		// Check payment type from data attribute
 		const paymentType =
 			paymentInput.getAttribute( 'data-payment-type' ) || 'one-time';
 
 		// Initialize Stripe elements using unified function
-		this.initializePaymentElements( blockId, paymentInput, paymentType );
+		this.initializePaymentElements(
+			compositeKey,
+			paymentInput,
+			paymentType
+		);
 	}
 
 	/**
 	 * Initialize Stripe elements for one-time payments or subscriptions.
 	 * Unified function that handles both payment types based on the paymentType parameter.
 	 *
-	 * @param {string}      blockId      - Block ID.
+	 * @param {string}      compositeKey - Composite key (instanceId-blockId) for client-side maps.
 	 * @param {HTMLElement} paymentInput - The payment input element.
 	 * @param {string}      paymentType  - Payment type: 'one-time' or 'subscription'.
 	 * @return {void} This function does not return a value.
 	 */
 	initializePaymentElements(
-		blockId,
+		compositeKey,
 		paymentInput,
 		paymentType = 'one-time'
 	) {
 		// CRITICAL: Check if elements already exist to prevent re-initialization
 		// Re-mounting elements destroys user-entered card data
-		if ( StripePayment.paymentElements[ blockId ] ) {
+		if ( StripePayment.paymentElements[ compositeKey ] ) {
 			return;
 		}
 
@@ -225,11 +246,11 @@ class StripePayment {
 		}
 
 		// Initialize Stripe
-		if ( ! StripePayment.stripeInstances[ blockId ] ) {
-			StripePayment.stripeInstances[ blockId ] = Stripe( stripeKey );
+		if ( ! StripePayment.stripeInstances[ compositeKey ] ) {
+			StripePayment.stripeInstances[ compositeKey ] = Stripe( stripeKey );
 		}
 
-		const stripe = StripePayment.stripeInstances[ blockId ];
+		const stripe = StripePayment.stripeInstances[ compositeKey ];
 
 		// Build elements configuration based on payment type
 		const elementsConfig = {
@@ -274,7 +295,7 @@ class StripePayment {
 			paymentType,
 		};
 
-		StripePayment.paymentElements[ blockId ] = storedData;
+		StripePayment.paymentElements[ compositeKey ] = storedData;
 
 		// Update window object
 		window.srfmPaymentElements = StripePayment.paymentElements;
@@ -436,10 +457,12 @@ class StripePayment {
 			// Create a temporary instance to call the method
 			const tempInstance = new StripePayment( form );
 			const blockId = paymentBlock.getAttribute( 'data-block-id' );
+			const compositeKey = getPaymentKey( form, blockId );
 
 			// Use unified function for both payment types
 			const result = await tempInstance.createPaymentIntentOnSubmission(
 				blockId,
+				compositeKey,
 				amount,
 				paymentInput,
 				paymentType
@@ -447,6 +470,7 @@ class StripePayment {
 
 			return {
 				blockId,
+				compositeKey,
 				paymentType,
 				valid: true,
 				...result,
@@ -580,12 +604,12 @@ class StripePayment {
 
 	/**
 	 * Confirm payment for a specific block
-	 * @param {string}      blockId     - The block ID.
-	 * @param {Object}      paymentData - The payment data.
-	 * @param {HTMLElement} form        - The form element.
+	 * @param {string}      compositeKey - Composite key (instanceId-blockId) for client-side maps.
+	 * @param {Object}      paymentData  - The payment data.
+	 * @param {HTMLElement} form         - The form element.
 	 * @return {Promise<string>} The payment intent or setup intent ID if successful.
 	 */
-	static async srfmConfirmPayment( blockId, paymentData, form ) {
+	static async srfmConfirmPayment( compositeKey, paymentData, form ) {
 		const { elements } = paymentData;
 
 		// Validate card details AFTER payment intent is created but BEFORE confirmation
@@ -603,7 +627,7 @@ class StripePayment {
 		// Handle payment confirmation via unified handler
 		try {
 			return await StripePayment.confirmStripePayment(
-				blockId,
+				compositeKey,
 				paymentData,
 				form
 			);
@@ -622,8 +646,16 @@ class StripePayment {
 		}
 	}
 
-	static async confirmStripePayment( blockId, paymentData, form ) {
+	static async confirmStripePayment( compositeKey, paymentData, form ) {
 		const { stripe, elements, clientSecret, paymentType } = paymentData;
+
+		// Extract original blockId from compositeKey for DOM queries
+		// compositeKey format is always "numericInstanceId-blockId"
+		const separatorIndex = compositeKey.indexOf( '-' );
+		const blockId =
+			separatorIndex > -1
+				? compositeKey.substring( separatorIndex + 1 )
+				: compositeKey;
 
 		// Get the payment block element
 		const paymentBlock = form.querySelector(
@@ -700,6 +732,7 @@ class StripePayment {
 
 		const resultArgs = {
 			paymentResult,
+			compositeKey,
 			blockId,
 			paymentType,
 			amountType,
@@ -726,6 +759,7 @@ class StripePayment {
 	 */
 	static prepareInputValueData( args ) {
 		const {
+			compositeKey,
 			blockId,
 			paymentType,
 			amountType,
@@ -744,7 +778,7 @@ class StripePayment {
 
 		if ( 'subscription' === paymentType ) {
 			const subscriptionData =
-				StripePayment.subscriptionIntents[ blockId ];
+				StripePayment.subscriptionIntents[ compositeKey ];
 			const getSubscriptionName = paymentInput.getAttribute(
 				'data-subscription-plan-name'
 			);
@@ -765,7 +799,7 @@ class StripePayment {
 			value.paymentType = 'stripe-subscription';
 			value.status = 'succeeded';
 		} else {
-			const paymentData = StripePayment.paymentIntents[ blockId ];
+			const paymentData = StripePayment.paymentIntents[ compositeKey ];
 			const customerId = paymentData?.customerId || null;
 			value.paymentId = paymentResult?.paymentIntent?.id;
 			value.paymentType = 'stripe';
@@ -1163,12 +1197,22 @@ const PAYMENT_UTILITY = {
 			'.srfm-multi-choice-single'
 		);
 
+		// Normalize whitespace: collapse multiple spaces to one, then trim.
+		// This is necessary because browsers collapse consecutive whitespace in
+		// innerText, while the stored value (from data-option-text attribute)
+		// preserves the original spacing from the block attributes.
+		const normalizeStr = ( str ) =>
+			typeof str === 'string' ? str.trim().replace( /\s+/g, ' ' ) : '';
+
 		selectedOptions.forEach( ( selectedOption ) => {
 			choices.forEach( ( choice ) => {
 				const label = choice.querySelector(
 					'.srfm-option-container label'
 				);
-				if ( label?.innerText?.trim() === selectedOption?.trim() ) {
+				if (
+					normalizeStr( label?.innerText ) ===
+					normalizeStr( selectedOption )
+				) {
 					const input = choice.querySelector(
 						'.srfm-input-multi-choice-single'
 					);

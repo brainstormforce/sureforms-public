@@ -247,11 +247,18 @@ async function processAllPayments( form, paymentBlock ) {
 	try {
 		// Get the payment manager for this block
 		const blockId = paymentBlock.getAttribute( 'data-block-id' );
-		const paymentManager = window.srfmPaymentManagers?.[ blockId ];
+		const compositeKey = window.srfmGetPaymentKey
+			? window.srfmGetPaymentKey( form, blockId )
+			: blockId;
+		const paymentManager = window.srfmPaymentManagers?.[ compositeKey ];
 
 		if ( ! paymentManager ) {
 			// Fallback to Stripe if payment manager not found
-			return await processStripePayment( form, paymentBlock, blockId );
+			return await processStripePayment(
+				form,
+				paymentBlock,
+				compositeKey
+			);
 		}
 
 		// Route to the correct payment gateway based on selected method
@@ -272,10 +279,10 @@ async function processAllPayments( form, paymentBlock ) {
  * Used when payment manager is not available
  * @param {HTMLElement} form         - The form element.
  * @param {HTMLElement} paymentBlock - The payment block element.
- * @param {string}      blockId      - The block ID.
+ * @param {string}      compositeKey - Composite key (instanceId-blockId) for client-side maps.
  * @return {Promise<Object>} Payment result object.
  */
-async function processStripePayment( form, paymentBlock, blockId ) {
+async function processStripePayment( form, paymentBlock, compositeKey ) {
 	const paymentResultOnCreateIntent =
 		await window.StripePayment.createPaymentIntentsForForm(
 			form,
@@ -289,11 +296,11 @@ async function processStripePayment( form, paymentBlock, blockId ) {
 		};
 	}
 
-	const paymentData = window.srfmPaymentElements?.[ blockId ];
+	const paymentData = window.srfmPaymentElements?.[ compositeKey ];
 
 	if ( paymentData && paymentData.clientSecret ) {
 		const paymentResult = await window.StripePayment.srfmConfirmPayment(
-			blockId,
+			compositeKey,
 			paymentData,
 			form
 		).catch( () => {
@@ -303,7 +310,7 @@ async function processStripePayment( form, paymentBlock, blockId ) {
 		if ( ! paymentResult?.valid ) {
 			return {
 				valid: false,
-				message: paymentResult.message,
+				message: paymentResult?.message || '',
 				paymentResult: null,
 			};
 		}

@@ -27,6 +27,13 @@ class Rest_Api {
 	use Get_Instance;
 
 	/**
+	 * Onboarding user details option key.
+	 *
+	 * @var string
+	 */
+	private $onboarding_user_details_key = 'onboarding_user_details';
+
+	/**
 	 * Dropdown counter for field name generation.
 	 *
 	 * @var int
@@ -356,6 +363,111 @@ class Rest_Api {
 	}
 
 	/**
+	 * Save onboarding user details and send lead data to metrics server.
+	 *
+	 * @since 2.5.3
+	 * @param \WP_REST_Request $request Full details about the request.
+	 * @return \WP_REST_Response
+	 */
+	public function save_onboarding_user_details( $request ) {
+		$nonce = Helper::get_string_value( $request->get_header( 'X-WP-Nonce' ) );
+
+		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'wp_rest' ) ) {
+			return new \WP_REST_Response(
+				[ 'error' => __( 'Security verification failed. Please refresh the page and try again.', 'sureforms' ) ],
+				403
+			);
+		}
+
+		$first_name = sanitize_text_field( Helper::get_string_value( $request->get_param( 'first_name' ) ) );
+		$last_name  = sanitize_text_field( Helper::get_string_value( $request->get_param( 'last_name' ) ) );
+		$email      = sanitize_email( Helper::get_string_value( $request->get_param( 'email' ) ) );
+
+		if ( empty( $first_name ) || empty( $email ) || ! is_email( $email ) ) {
+			return new \WP_REST_Response(
+				[ 'error' => __( 'Invalid onboarding user details.', 'sureforms' ) ],
+				400
+			);
+		}
+
+		$stored_details = $this->get_onboarding_user_details();
+		if ( ! empty( $stored_details['lead'] ) ) {
+			return new \WP_REST_Response(
+				[
+					'success' => true,
+					'lead'    => true,
+				]
+			);
+		}
+
+		$this->set_onboarding_user_details(
+			[
+				'first_name' => $first_name,
+				'last_name'  => $last_name,
+				'email'      => $email,
+			]
+		);
+
+		$domain = wp_parse_url( home_url(), PHP_URL_HOST );
+		if ( ! is_string( $domain ) ) {
+			$domain = '';
+		}
+
+		$body = wp_json_encode(
+			[
+				// Lowercase keys satisfy current BSF Metrics REST arg validation.
+				'email'      => $email,
+				'first_name' => $first_name,
+				'last_name'  => $last_name,
+				'domain'     => $domain,
+				'source'     => 'sureforms',
+				// Keep legacy uppercase keys for backward compatibility.
+				'EMAIL'      => $email,
+				'FIRSTNAME'  => $first_name,
+				'LASTNAME'   => $last_name,
+				'DOMAIN'     => $domain,
+			]
+		);
+
+		$lead_captured = false;
+		if ( false !== $body ) {
+			$response = wp_remote_post(
+				'https://metrics.brainstormforce.com/wp-json/bsf-metrics-server/v1/subscribe',
+				[
+					'headers' => [
+						'Content-Type' => 'application/json',
+					],
+					'body'    => $body,
+					'timeout' => 15,
+				]
+			);
+
+			$response_code = wp_remote_retrieve_response_code( $response );
+			if ( ! is_wp_error( $response ) && in_array( $response_code, [ 200, 201, 204 ], true ) ) {
+				$lead_captured = true;
+			}
+		}
+
+		if ( $lead_captured ) {
+			$this->set_onboarding_user_details(
+				[
+					'first_name' => $first_name,
+					'last_name'  => $last_name,
+					'email'      => $email,
+					'lead'       => true,
+				]
+			);
+		}
+
+		return new \WP_REST_Response(
+			[
+				'success' => true,
+				'lead'    => $lead_captured,
+			]
+		);
+	}
+
+	/**
 	 * Get plugin status for specified plugin.
 	 *
 	 * @param \WP_REST_Request $request Full details about the request.
@@ -657,8 +769,9 @@ class Rest_Api {
 			);
 		}
 
-		// Get adjacent entry IDs for navigation (all entries in chronological order).
-		$adjacent_entries = Entries_Class::get_adjacent_entry_ids( $entry_id );
+		// Get adjacent entry IDs for navigation scoped to the same form.
+		$form_id_raw      = $entry['form_id'] ?? 0;
+		$adjacent_entries = Entries_Class::get_adjacent_entry_ids( $entry_id, [ 'form_id' => is_scalar( $form_id_raw ) ? absint( $form_id_raw ) : 0 ] );
 
 		// Process form data.
 		$form_data       = [];
@@ -1054,9 +1167,12 @@ class Rest_Api {
 					}
 
 					// Generate field name.
-					$label           = is_string( $merged_attributes['label'] ?? '' ) ? $merged_attributes['label'] : '';
-					$slug            = is_string( $merged_attributes['slug'] ?? '' ) ? $merged_attributes['slug'] : '';
-					$block_id        = is_string( $merged_attributes['block_id'] ?? '' ) ? $merged_attributes['block_id'] : '';
+					$label           = $merged_attributes['label'] ?? '';
+					$label           = is_string( $label ) ? $label : '';
+					$slug            = $merged_attributes['slug'] ?? '';
+					$slug            = is_string( $slug ) ? $slug : '';
+					$block_id        = $merged_attributes['block_id'] ?? '';
+					$block_id        = is_string( $block_id ) ? $block_id : '';
 					$field_name      = '';
 					$base_field_name = '';
 
@@ -1120,6 +1236,49 @@ class Rest_Api {
 	 */
 	public function get_dropdown_counter() {
 		return self::$dropdown_counter;
+	}
+
+	/**
+	 * Get onboarding user details.
+	 *
+	 * @since 2.5.3
+	 * @return array<string, mixed>
+	 */
+	private function get_onboarding_user_details() {
+		$defaults = [
+			'first_name' => '',
+			'last_name'  => '',
+			'email'      => '',
+			'lead'       => false,
+		];
+
+		$user_details = Helper::get_srfm_option( $this->onboarding_user_details_key, $defaults );
+		if ( ! is_array( $user_details ) ) {
+			return $defaults;
+		}
+
+		return wp_parse_args( $user_details, $defaults );
+	}
+
+	/**
+	 * Set onboarding user details.
+	 *
+	 * @since 2.5.3
+	 * @param array<string, mixed> $user_details User details to store.
+	 * @return void
+	 */
+	private function set_onboarding_user_details( $user_details ) {
+		$details = wp_parse_args(
+			$user_details,
+			[
+				'first_name' => '',
+				'last_name'  => '',
+				'email'      => '',
+				'lead'       => false,
+			]
+		);
+
+		Helper::update_srfm_option( $this->onboarding_user_details_key, $details );
 	}
 
 	/**
@@ -1277,6 +1436,31 @@ class Rest_Api {
 					'callback'            => [ $this, 'get_onboarding_status' ],
 					'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
 				],
+				'onboarding/user-details'   => [
+					'methods'             => 'POST',
+					'callback'            => [ $this, 'save_onboarding_user_details' ],
+					'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
+					'args'                => [
+						'first_name' => [
+							'required'          => true,
+							'sanitize_callback' => 'sanitize_text_field',
+							'validate_callback' => static function( $value ) {
+								return is_string( $value ) && '' !== trim( $value );
+							},
+						],
+						'last_name'  => [
+							'required'          => false,
+							'sanitize_callback' => 'sanitize_text_field',
+						],
+						'email'      => [
+							'required'          => true,
+							'sanitize_callback' => 'sanitize_email',
+							'validate_callback' => static function( $value ) {
+								return is_string( $value ) && is_email( $value );
+							},
+						],
+					],
+				],
 				// Plugin status endpoint.
 				'plugin-status'             => [
 					'methods'             => 'GET',
@@ -1316,12 +1500,16 @@ class Rest_Api {
 							'default'           => '',
 						],
 						'orderby'   => [
+							'type'              => 'string',
 							'sanitize_callback' => 'sanitize_text_field',
 							'default'           => 'created_at',
+							'enum'              => [ 'ID', 'id', 'form_id', 'user_id', 'status', 'type', 'created_at', 'updated_at' ],
 						],
 						'order'     => [
+							'type'              => 'string',
 							'sanitize_callback' => 'sanitize_text_field',
 							'default'           => 'DESC',
+							'enum'              => [ 'ASC', 'DESC' ],
 						],
 						'per_page'  => [
 							'sanitize_callback' => 'absint',

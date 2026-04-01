@@ -65,7 +65,7 @@ class Abilities_Registrar {
 	/**
 	 * Check if the MCP adapter integration should be active.
 	 *
-	 * @since x.x.x
+	 * @since 2.6.0
 	 * @return bool
 	 */
 	public static function mcp_adapter_enabled() {
@@ -80,7 +80,7 @@ class Abilities_Registrar {
 	 * Creates endpoint: {site_url}/wp-json/sureforms/v1/mcp
 	 *
 	 * @param \WP\MCP\Adapter\Adapter $adapter The MCP adapter instance.
-	 * @since x.x.x
+	 * @since 2.6.0
 	 * @return void
 	 */
 	public function register_mcp_server( $adapter ) {

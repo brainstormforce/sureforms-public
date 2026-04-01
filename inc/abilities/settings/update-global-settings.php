@@ -3,7 +3,7 @@
  * Update Global Settings Ability.
  *
  * @package sureforms
- * @since x.x.x
+ * @since 2.6.0
  */
 
 namespace SRFM\Inc\Abilities\Settings;
@@ -21,7 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * Updates SureForms global settings by category.
  *
- * @since x.x.x
+ * @since 2.6.0
  */
 class Update_Global_Settings extends Abstract_Ability {
 	use Settings_Secret_Keys;
@@ -29,7 +29,7 @@ class Update_Global_Settings extends Abstract_Ability {
 	/**
 	 * Sentinel value used to represent masked secret keys.
 	 *
-	 * @since x.x.x
+	 * @since 2.6.0
 	 */
 	private const SECRET_SENTINEL = '@@SRFM_SECRET_UNCHANGED@@';
 
@@ -39,7 +39,7 @@ class Update_Global_Settings extends Abstract_Ability {
 	 * Only keys in this whitelist will be passed to the save functions.
 	 * This prevents arbitrary option injection via crafted key names.
 	 *
-	 * @since x.x.x
+	 * @since 2.6.0
 	 */
 	private const ALLOWED_KEYS = [
 		'general'             => [
@@ -98,7 +98,7 @@ class Update_Global_Settings extends Abstract_Ability {
 	/**
 	 * Constructor.
 	 *
-	 * @since x.x.x
+	 * @since 2.6.0
 	 */
 	public function __construct() {
 		$this->id          = 'sureforms/update-global-settings';
@@ -111,7 +111,7 @@ class Update_Global_Settings extends Abstract_Ability {
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @since x.x.x
+	 * @since 2.6.0
 	 */
 	public function get_annotations() {
 		return [
@@ -127,7 +127,7 @@ class Update_Global_Settings extends Abstract_Ability {
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @since x.x.x
+	 * @since 2.6.0
 	 */
 	public function get_input_schema() {
 		return [
@@ -151,7 +151,7 @@ class Update_Global_Settings extends Abstract_Ability {
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @since x.x.x
+	 * @since 2.6.0
 	 */
 	public function get_output_schema() {
 		return [
@@ -167,7 +167,7 @@ class Update_Global_Settings extends Abstract_Ability {
 	 * Execute the update-global-settings ability.
 	 *
 	 * @param array<string,mixed> $input Validated input data.
-	 * @since x.x.x
+	 * @since 2.6.0
 	 * @return array<string,mixed>|\WP_Error
 	 */
 	public function execute( $input ) {
@@ -238,7 +238,7 @@ class Update_Global_Settings extends Abstract_Ability {
 	 *
 	 * @param string              $category Settings category.
 	 * @param array<string,mixed> $settings Raw settings values.
-	 * @since x.x.x
+	 * @since 2.6.0
 	 * @return array<string,mixed> Filtered settings containing only whitelisted keys.
 	 */
 	private function filter_allowed_keys( $category, $settings ) {
@@ -254,7 +254,7 @@ class Update_Global_Settings extends Abstract_Ability {
 	 *
 	 * @param string              $category Settings category.
 	 * @param array<string,mixed> $settings Raw settings values.
-	 * @since x.x.x
+	 * @since 2.6.0
 	 * @return array<string,mixed> Sanitized settings.
 	 */
 	private function sanitize_settings( $category, $settings ) {
@@ -276,7 +276,7 @@ class Update_Global_Settings extends Abstract_Ability {
 	 * Sanitize general settings.
 	 *
 	 * @param array<string,mixed> $settings Raw settings.
-	 * @since x.x.x
+	 * @since 2.6.0
 	 * @return array<string,mixed>
 	 */
 	private function sanitize_general_settings( $settings ) {
@@ -295,7 +295,7 @@ class Update_Global_Settings extends Abstract_Ability {
 	 * Sanitize email summary settings.
 	 *
 	 * @param array<string,mixed> $settings Raw settings.
-	 * @since x.x.x
+	 * @since 2.6.0
 	 * @return array<string,mixed>
 	 */
 	private function sanitize_email_summary_settings( $settings ) {
@@ -318,7 +318,7 @@ class Update_Global_Settings extends Abstract_Ability {
 	 * Sanitize security settings (applied before sentinel check).
 	 *
 	 * @param array<string,mixed> $settings Raw settings.
-	 * @since x.x.x
+	 * @since 2.6.0
 	 * @return array<string,mixed>
 	 */
 	private function sanitize_security_settings( $settings ) {
@@ -354,7 +354,7 @@ class Update_Global_Settings extends Abstract_Ability {
 	 * Sanitize validation message settings.
 	 *
 	 * @param array<string,mixed> $settings Raw settings.
-	 * @since x.x.x
+	 * @since 2.6.0
 	 * @return array<string,mixed>
 	 */
 	private function sanitize_validation_messages( $settings ) {
@@ -374,7 +374,7 @@ class Update_Global_Settings extends Abstract_Ability {
 	 * value is preserved instead of being overwritten with the sentinel.
 	 *
 	 * @param array<string,mixed> $settings Settings to save.
-	 * @since x.x.x
+	 * @since 2.6.0
 	 * @return bool
 	 */
 	private function save_security_settings( $settings ) {
