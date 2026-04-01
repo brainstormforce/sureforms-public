@@ -217,7 +217,7 @@ Customize form appearance with advanced styling options when embedding forms via
 #### Integrations & Automation
 
 [**Advanced Native Integrations**](https://sureforms.com/integrations/):
-Connect your forms natively with 25+ apps and services to automate workflows and save time without any third-party add-ons or plugins.
+Connect your forms natively with top apps and services to automate workflows and save time without any third-party add-ons or plugins.
 
 SureForms connects natively with:
 -   Google Sheets
@@ -460,7 +460,7 @@ Yes! With SureForms Business, you can add file upload fields to your forms. It s
 
 = What integrations does SureForms support? =
 
-SureForms Business connects natively with 25+ services including Google Sheets, Mailchimp, HubSpot, ActiveCampaign, Klaviyo, Zoho CRM, Notion, and many more. You can also use Zapier to connect with 5,000+ additional apps, or use webhooks to send data to any API endpoint.
+SureForms Business connects natively with services including Google Sheets, Mailchimp, HubSpot, ActiveCampaign, Klaviyo, Zoho CRM, Notion, and many more. You can also use Zapier to connect with 5,000+ additional apps, or use webhooks to send data to any API endpoint.
 
 = Does SureForms support Payment Forms? =
 
