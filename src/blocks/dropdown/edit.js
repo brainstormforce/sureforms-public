@@ -36,6 +36,7 @@ import SRFMNumberControl from '@Components/number-control';
 import { BulkInserterWithButton } from '@Components/bulk-inserter';
 import {
 	attributeOptionsWithFilter,
+	afterAttributePanelBody,
 	enhanceDropdownOptions,
 } from '@Components/hooks';
 import { Trash2 } from 'lucide-react';
@@ -551,6 +552,9 @@ const Edit = ( props ) => {
 								( option ) => option.component
 							) }
 						</SRFMAdvancedPanelBody>
+						{ afterAttributePanelBody( props ).map(
+							( panel ) => panel.component
+						) }
 					</InspectorTab>
 					<InspectorTab { ...SRFMTabs.style }></InspectorTab>
 					<InspectorTab { ...SRFMTabs.advance }>
