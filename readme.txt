@@ -199,7 +199,7 @@ Let users save their progress and come back to complete the form later.
 [**Custom Registration & Login Forms**](https://sureforms.com/features/login-and-registration/):
 Fully functional, branded Registration & Login forms for your site using just a block.
 
-[**Custom Post Type Creation**](https://sureforms.com/):
+**Custom Post Type Creation**:
 Create WordPress posts or custom post types directly from form submissions.
 
 **Field Restrictions:**
