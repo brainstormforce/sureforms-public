@@ -2,7 +2,7 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { useState, useEffect } from '@wordpress/element';
+import { useState, useEffect, useRef } from '@wordpress/element';
 import { Notice } from '@wordpress/components';
 import { cleanForSlug } from '@wordpress/url';
 import { select, dispatch } from '@wordpress/data';
@@ -43,11 +43,25 @@ const collectExistingSlugs = ( blocks, excludeClientId ) => {
 const SlugControl = ( { slug, setAttributes, clientId } ) => {
 	const [ localSlug, setLocalSlug ] = useState( slug );
 	const [ isDuplicate, setIsDuplicate ] = useState( false );
+	const slugCommittedRef = useRef( false );
 
 	// Sync local state if slug changes externally (e.g. block duplication resets it)
 	useEffect( () => {
 		setLocalSlug( slug );
 		setIsDuplicate( false );
+	}, [ slug ] );
+
+	// Refresh smart tags after the store has processed the slug update.
+	// This runs when the slug prop changes (i.e. after setAttributes has been
+	// committed to Redux), so getBlocks() inside setFormSpecificSmartTags will
+	// read the up-to-date slug value.
+	useEffect( () => {
+		if ( slugCommittedRef.current ) {
+			slugCommittedRef.current = false;
+			setFormSpecificSmartTags(
+				dispatch( 'core/block-editor' ).updateBlockAttributes
+			);
+		}
 	}, [ slug ] );
 
 	const handleChange = ( value ) => {
@@ -84,14 +98,10 @@ const SlugControl = ( { slug, setAttributes, clientId } ) => {
 			return;
 		}
 
-		// Commit the new slug
+		// Commit the new slug. The useEffect watching `slug` will refresh
+		// smart tags once the store has processed this update.
+		slugCommittedRef.current = true;
 		setAttributes( { slug: localSlug } );
-
-		// Immediately refresh smart tags so calculation dropdowns, email
-		// settings, and other editor components reflect the new slug.
-		setFormSpecificSmartTags(
-			dispatch( 'core/block-editor' ).updateBlockAttributes
-		);
 	};
 
 	return (
