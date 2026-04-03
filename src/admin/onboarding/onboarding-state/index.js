@@ -1,7 +1,5 @@
 import { createContext, useContext, useReducer } from '@wordpress/element';
 
-/* global srfm_admin */
-
 const leadDetails = srfm_admin?.website_lead_details || {};
 
 // Session storage key for onboarding state
