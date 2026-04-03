@@ -416,7 +416,7 @@ class Admin {
 	 * Add Quiz empty state submenu page for free users.
 	 *
 	 * @return void
-	 * @since x.x.x
+	 * @since 2.7.0
 	 */
 	public function add_quiz_page() {
 		add_submenu_page(
@@ -437,7 +437,7 @@ class Admin {
 	 * Quiz empty state page callback.
 	 *
 	 * @return void
-	 * @since x.x.x
+	 * @since 2.7.0
 	 */
 	public function render_quiz_empty_state() {
 		?>
@@ -900,6 +900,9 @@ class Admin {
 					'currency_sign_position'  => Payment_Helper::get_currency_sign_position(),
 				]
 			),
+			'mcp_adapter_status'          => file_exists( WP_PLUGIN_DIR . '/mcp-adapter/mcp-adapter.php' )
+				? ( is_plugin_active( 'mcp-adapter/mcp-adapter.php' ) ? 'active' : 'installed' )
+				: 'not_installed',
 		];
 
 		$is_screen_sureforms_menu          = Helper::validate_request_context( 'sureforms_menu', 'page' );

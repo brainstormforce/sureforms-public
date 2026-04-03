@@ -172,7 +172,7 @@ class Test_Admin extends TestCase {
 	/**
 	 * Test add_quiz_page registers the Quiz submenu page.
 	 *
-	 * @since x.x.x
+	 * @since 2.7.0
 	 */
 	public function test_add_quiz_page() {
 		if ( ! function_exists( 'add_submenu_page' ) ) {
@@ -200,7 +200,7 @@ class Test_Admin extends TestCase {
 	/**
 	 * Test render_quiz_empty_state outputs the expected root div.
 	 *
-	 * @since x.x.x
+	 * @since 2.7.0
 	 */
 	public function test_render_quiz_empty_state() {
 		$admin = Admin::get_instance();
@@ -224,7 +224,7 @@ class Test_Admin extends TestCase {
 	/**
 	 * Test add_upgrade_to_pro registers the Upgrade submenu page.
 	 *
-	 * @since x.x.x
+	 * @since 2.7.0
 	 */
 	public function test_add_upgrade_to_pro() {
 		if ( ! function_exists( 'add_submenu_page' ) ) {
