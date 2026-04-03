@@ -1,5 +1,9 @@
 import { createContext, useContext, useReducer } from '@wordpress/element';
 
+/* global srfm_admin */
+
+const leadDetails = srfm_admin?.website_lead_details || {};
+
 // Session storage key for onboarding state
 export const ONBOARDING_SESSION_STORAGE_KEY = 'sureforms_onboarding_state';
 
@@ -16,9 +20,9 @@ export const ONBOARDING_STORAGE_KEYS = [
 const initialState = {
 	emailDeliveryConfigured: false,
 	userDetails: {
-		firstName: '',
-		lastName: '',
-		email: '',
+		firstName: leadDetails.first_name || '',
+		lastName: leadDetails.last_name || '',
+		email: leadDetails.email || '',
 		consent: false,
 	},
 	// Analytics data
