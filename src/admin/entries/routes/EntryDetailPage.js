@@ -230,7 +230,14 @@ const EntryDetailPage = () => {
 							) }
 						</Text>
 					</div>
-					<EntryNavigation { ...navigationProps } />
+					<div className="flex items-center gap-2">
+						{ applyFilters(
+							'srfm.entry_detail.extra_nav_actions',
+							null,
+							{ formId: entryData?.formId, entryId: id }
+						) }
+						<EntryNavigation { ...navigationProps } />
+					</div>
 				</div>
 				<div className="mx-auto max-w-[1500px]">
 					<div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
