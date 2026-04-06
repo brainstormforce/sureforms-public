@@ -1133,7 +1133,10 @@ class Admin {
 			wp_localize_script(
 				SRFM_SLUG . '-settings',
 				SRFM_SLUG . '_admin',
-				$localization_data
+				apply_filters(
+					SRFM_SLUG . '_admin_filter',
+					$localization_data
+				)
 			);
 
 			$script_translations_handlers[] = SRFM_SLUG . '-settings';
