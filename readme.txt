@@ -403,6 +403,7 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 == Changelog ==
 = x.x.x =
 * New: Added Payment Description field to the Stripe payment block with smart tag support.
+* Fix: Fixed non-Latin character field labels generating unstable slugs that broke conditional confirmation logic.
 = 2.7.0 - 31st March 2026 =
 * New: Added styling options for Gutenberg SureForms Form Block.
 * New: Added styling options for Bricks Builder SureForms Form Element.
