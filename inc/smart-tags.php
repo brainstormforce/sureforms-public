@@ -671,7 +671,7 @@ class Smart_Tags {
 					return '';
 				}
 
-				$blocks = parse_blocks( $form_post->post_content );
+				$blocks      = parse_blocks( $form_post->post_content );
 				$description = self::find_payment_block_description( $blocks, $block_id );
 				return sanitize_text_field( $description );
 
