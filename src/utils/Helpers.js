@@ -313,6 +313,15 @@ const pushSmartTagToArray = (
 						blockLabel
 					),
 				],
+				// Translators: %s is replaced by the Payment block label.
+				[
+					`{form-payment:${ fieldSlug }:description}`,
+					sprintf(
+						/* translators: %s is replaced by the Payment block label. */
+						__( '%s - Description', 'sureforms' ),
+						blockLabel
+					),
+				],
 			];
 
 			// Add all payment tags to the array

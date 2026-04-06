@@ -568,7 +568,7 @@ class Smart_Tags {
 		$property    = $matches[2];
 
 		// Valid properties for payment smart tags.
-		$valid_properties = [ 'order-id', 'amount', 'email', 'name', 'status' ];
+		$valid_properties = [ 'order-id', 'amount', 'email', 'name', 'status', 'description' ];
 		if ( ! in_array( $property, $valid_properties, true ) ) {
 			return '';
 		}
@@ -657,9 +657,65 @@ class Smart_Tags {
 				}
 				return ! empty( $payment_entry['status'] ) ? sanitize_text_field( $payment_entry['status'] ) : '';
 
+			case 'description':
+				// Read paymentDescription from the payment block attribute in form post content.
+				$form_id  = ! empty( $payment_entry['form_id'] ) ? absint( $payment_entry['form_id'] ) : 0;
+				$block_id = ! empty( $payment_entry['block_id'] ) ? sanitize_text_field( $payment_entry['block_id'] ) : '';
+
+				if ( empty( $form_id ) || empty( $block_id ) ) {
+					return '';
+				}
+
+				$form_post = get_post( $form_id );
+				if ( ! $form_post || empty( $form_post->post_content ) ) {
+					return '';
+				}
+
+				$blocks      = parse_blocks( $form_post->post_content );
+				$description = self::find_payment_block_description( $blocks, $block_id );
+				return sanitize_text_field( $description );
+
 			default:
 				return '';
 		}
+	}
+
+	/**
+	 * Find paymentDescription attribute from a payment block by block_id.
+	 *
+	 * Recursively searches parsed blocks (including innerBlocks) for a
+	 * srfm/payment block matching the given block_id and returns its
+	 * paymentDescription attribute.
+	 *
+	 * @param array<mixed> $blocks   Parsed blocks array from parse_blocks().
+	 * @param string       $block_id The block_id to match.
+	 * @since x.x.x
+	 * @return string The payment description or empty string.
+	 */
+	private static function find_payment_block_description( $blocks, $block_id ) {
+		foreach ( $blocks as $block ) {
+			if ( ! is_array( $block ) ) {
+				continue;
+			}
+			$attrs = (array) ( $block['attrs'] ?? [] );
+
+			if ( 'srfm/payment' === ( $block['blockName'] ?? '' ) &&
+				isset( $attrs['block_id'] ) &&
+				$attrs['block_id'] === $block_id
+			) {
+				return (string) ( $attrs['paymentDescription'] ?? '' );
+			}
+
+			// Search innerBlocks recursively.
+			if ( ! empty( $block['innerBlocks'] ) ) {
+				$found = self::find_payment_block_description( (array) $block['innerBlocks'], $block_id );
+				if ( '' !== $found ) {
+					return $found;
+				}
+			}
+		}
+
+		return '';
 	}
 
 	/**
