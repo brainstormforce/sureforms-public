@@ -322,19 +322,18 @@ class Payment_History_Shortcode {
 			'processing'             => __( 'Processing...', 'sureforms' ),
 			'cancel_success'         => __( 'The subscription has been cancelled successfully.', 'sureforms' ),
 			'error'                  => __( 'Something went wrong. Please try again.', 'sureforms' ),
-			// Subscription status labels.
-			'status_active'          => __( 'Active', 'sureforms' ),
-			'status_trialing'        => __( 'Trialing', 'sureforms' ),
-			'status_canceled'        => __( 'Cancelled', 'sureforms' ),
-			'status_past_due'        => __( 'Past Due', 'sureforms' ),
-			'status_paused'          => __( 'Paused', 'sureforms' ),
-			// Payment status labels.
-			'status_succeeded'       => __( 'Paid', 'sureforms' ),
-			'status_pending'         => __( 'Pending', 'sureforms' ),
-			'status_failed'          => __( 'Failed', 'sureforms' ),
-			'status_refunded'        => __( 'Refunded', 'sureforms' ),
+			// Status labels for JS overlay panels.
+			'status_active'             => __( 'Active', 'sureforms' ),
+			'status_trialing'           => __( 'Trialing', 'sureforms' ),
+			'status_canceled'           => __( 'Cancelled', 'sureforms' ),
+			'status_past_due'           => __( 'Past Due', 'sureforms' ),
+			'status_paused'             => __( 'Paused', 'sureforms' ),
+			'status_succeeded'          => __( 'Paid', 'sureforms' ),
+			'status_pending'            => __( 'Pending', 'sureforms' ),
+			'status_failed'             => __( 'Failed', 'sureforms' ),
+			'status_refunded'           => __( 'Refunded', 'sureforms' ),
 			'status_partially_refunded' => __( 'Partially Refunded', 'sureforms' ),
-			'status_processing'      => __( 'Processing', 'sureforms' ),
+			'status_processing'         => __( 'Processing', 'sureforms' ),
 		];
 	}
 
@@ -665,8 +664,11 @@ class Payment_History_Shortcode {
 
 			$txs_data[] = $tx_item;
 		}
-		$inline_data = 'window.srfmDashboardSubs=' . wp_json_encode( $subs_data, JSON_HEX_TAG | JSON_HEX_AMP ) . ';'
-			. 'window.srfmDashboardTxs=' . wp_json_encode( $txs_data, JSON_HEX_TAG | JSON_HEX_AMP ) . ';';
+		$inline_data = sprintf(
+			'window.srfmDashboardSubs=%s;window.srfmDashboardTxs=%s;',
+			wp_json_encode( $subs_data, JSON_HEX_TAG | JSON_HEX_AMP ),
+			wp_json_encode( $txs_data, JSON_HEX_TAG | JSON_HEX_AMP )
+		);
 		wp_add_inline_script( 'srfm-payment-history', $inline_data, 'before' );
 	}
 
@@ -790,7 +792,7 @@ class Payment_History_Shortcode {
 		if ( isset( $cache[ $form_id ] ) ) {
 			return $cache[ $form_id ];
 		}
-		$title              = get_the_title( $form_id );
+		$title             = get_the_title( $form_id );
 		$cache[ $form_id ] = ! empty( $title ) ? $title : __( 'Unknown Form', 'sureforms' );
 		return $cache[ $form_id ];
 	}
