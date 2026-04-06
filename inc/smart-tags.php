@@ -687,23 +687,28 @@ class Smart_Tags {
 	 * srfm/payment block matching the given block_id and returns its
 	 * paymentDescription attribute.
 	 *
-	 * @param array  $blocks  Parsed blocks array from parse_blocks().
-	 * @param string $block_id The block_id to match.
+	 * @param array<mixed> $blocks   Parsed blocks array from parse_blocks().
+	 * @param string       $block_id The block_id to match.
 	 * @since x.x.x
 	 * @return string The payment description or empty string.
 	 */
 	private static function find_payment_block_description( $blocks, $block_id ) {
 		foreach ( $blocks as $block ) {
+			if ( ! is_array( $block ) ) {
+				continue;
+			}
+			$attrs = (array) ( $block['attrs'] ?? [] );
+
 			if ( 'srfm/payment' === ( $block['blockName'] ?? '' ) &&
-				isset( $block['attrs']['block_id'] ) &&
-				$block['attrs']['block_id'] === $block_id
+				isset( $attrs['block_id'] ) &&
+				$attrs['block_id'] === $block_id
 			) {
-				return $block['attrs']['paymentDescription'] ?? '';
+				return (string) ( $attrs['paymentDescription'] ?? '' );
 			}
 
 			// Search innerBlocks recursively.
 			if ( ! empty( $block['innerBlocks'] ) ) {
-				$found = self::find_payment_block_description( $block['innerBlocks'], $block_id );
+				$found = self::find_payment_block_description( (array) $block['innerBlocks'], $block_id );
 				if ( '' !== $found ) {
 					return $found;
 				}
