@@ -484,8 +484,8 @@ const PremiumFeatures = () => {
 
 	// Get the display name for the plan
 	const getPlanDisplayName = ( _plan ) => {
-		/* translators: %s: plan name */
 		return sprintf(
+			/* translators: %s: plan name */
 			__( 'SureForms %s', 'sureforms' ),
 			__( 'Business', 'sureforms' )
 		);
