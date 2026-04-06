@@ -433,6 +433,7 @@ class Smart_Tags {
 
 			$label      = explode( '-lbl-', $submission_item_key )[1];
 			$slug       = implode( '-', array_slice( explode( '-', $label ), 1 ) );
+			$slug       = str_replace( ' ', '_', $slug );
 			$block_type = explode( '-lbl-', $submission_item_key )[0];
 			if ( $slug === $target_slug ) {
 

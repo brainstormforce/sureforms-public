@@ -740,6 +740,7 @@ class Helper {
 			}
 			$label = explode( '-lbl-', $key )[1];
 			$slug  = implode( '-', array_slice( explode( '-', $label ), 1 ) );
+			$slug  = str_replace( ' ', '_', $slug );
 
 			/**
 			 * Filters whether a field should be skipped when mapping slugs to submission data.
