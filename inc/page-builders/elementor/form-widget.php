@@ -838,7 +838,7 @@ class Form_Widget extends Widget_Base {
 		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped in Generate_Form_Markup.
 		echo Generate_Form_Markup::get_form_markup(
 			$form_id,
-			! $show_title,
+			$show_title,
 			'',
 			'post',
 			true,
