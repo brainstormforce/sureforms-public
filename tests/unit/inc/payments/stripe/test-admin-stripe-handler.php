@@ -80,7 +80,7 @@ class Test_Admin_Stripe_Handler extends TestCase {
 			'payment'        => [
 				'status'         => 'succeeded',
 				'transaction_id' => 'invalid_123',
-				'payment_mode'   => 'test',
+				'mode'           => 'test',
 			],
 			'payment_id'     => 1,
 			'transaction_id' => 'invalid_123',
@@ -98,7 +98,7 @@ class Test_Admin_Stripe_Handler extends TestCase {
 			'payment'        => [
 				'status'         => 'pending',
 				'transaction_id' => 'ch_test123',
-				'payment_mode'   => 'test',
+				'mode'           => 'test',
 			],
 			'payment_id'     => 1,
 			'transaction_id' => 'ch_test123',
@@ -116,7 +116,7 @@ class Test_Admin_Stripe_Handler extends TestCase {
 			'payment'        => [
 				'status'         => 'succeeded',
 				'transaction_id' => 'ch_original',
-				'payment_mode'   => 'test',
+				'mode'           => 'test',
 			],
 			'payment_id'     => 1,
 			'transaction_id' => 'ch_different',

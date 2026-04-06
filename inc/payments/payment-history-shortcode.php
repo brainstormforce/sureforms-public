@@ -47,21 +47,34 @@ class Payment_History_Shortcode {
 	/**
 	 * Conditionally enqueue assets when the shortcode is present on the page.
 	 *
+	 * Also called at render time (shortcode/block callback) to support
+	 * FSE themes and page builders where global $post is unavailable.
+	 *
 	 * @since x.x.x
 	 * @return void
 	 */
 	public function enqueue_assets() {
-		global $post;
-
-		if ( ! $post instanceof \WP_Post ) {
+		// Avoid double-enqueue — wp_enqueue_scripts hook may run first on classic themes,
+		// and render() calls this again as a fallback for FSE/page builders.
+		if ( wp_script_is( 'srfm-payment-history', 'enqueued' ) ) {
 			return;
 		}
 
-		$has_shortcode = has_shortcode( $post->post_content, self::SHORTCODE_TAG );
-		$has_block     = has_block( 'srfm/payment-history', $post );
+		// When called from the wp_enqueue_scripts hook, check if the shortcode/block is present.
+		// When called from render(), we know it's needed — skip the check.
+		if ( doing_action( 'wp_enqueue_scripts' ) ) {
+			global $post;
 
-		if ( ! $has_shortcode && ! $has_block ) {
-			return;
+			if ( ! $post instanceof \WP_Post ) {
+				return;
+			}
+
+			$has_shortcode = has_shortcode( $post->post_content, self::SHORTCODE_TAG );
+			$has_block     = has_block( 'srfm/payment-history', $post );
+
+			if ( ! $has_shortcode && ! $has_block ) {
+				return;
+			}
 		}
 
 		$file_prefix = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? '' : '.min';
@@ -120,6 +133,10 @@ class Payment_History_Shortcode {
 			return $this->get_login_message();
 		}
 
+		// Enqueue assets at render time — handles FSE themes, Elementor, and
+		// other page builders where global $post is unavailable during wp_enqueue_scripts.
+		$this->enqueue_assets();
+
 		$user_id = get_current_user_id();
 		$where   = $this->build_where_conditions( $user_id, $atts );
 
@@ -130,7 +147,7 @@ class Payment_History_Shortcode {
 		}
 
 		// Fetch all payments for history section.
-		$current_page = isset( $_GET['srfm_page'] ) ? absint( $_GET['srfm_page'] ) : 1; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$current_page = isset( $_GET['srfm_page'] ) ? absint( wp_unslash( $_GET['srfm_page'] ) ) : 1; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		if ( $current_page < 1 ) {
 			$current_page = 1;
 		}
@@ -319,6 +336,8 @@ class Payment_History_Shortcode {
 			],
 		];
 
+		// Cap subscription fetch to avoid unbounded queries. Pagination is not
+		// currently supported for the subscriptions section.
 		$all_subs = Payments::get_all(
 			[
 				'where'   => $sub_where,
@@ -623,12 +642,9 @@ class Payment_History_Shortcode {
 
 			$txs_data[] = $tx_item;
 		}
-		?>
-		<script type="text/javascript">
-			window.srfmDashboardSubs = <?php echo wp_json_encode( $subs_data ); ?>;
-			window.srfmDashboardTxs = <?php echo wp_json_encode( $txs_data ); ?>;
-		</script>
-		<?php
+		$inline_data = 'window.srfmDashboardSubs=' . wp_json_encode( $subs_data, JSON_HEX_TAG | JSON_HEX_AMP ) . ';'
+			. 'window.srfmDashboardTxs=' . wp_json_encode( $txs_data, JSON_HEX_TAG | JSON_HEX_AMP ) . ';';
+		wp_add_inline_script( 'srfm-payment-history', $inline_data, 'before' );
 	}
 
 	// =========================================================================
@@ -890,6 +906,17 @@ class Payment_History_Shortcode {
 		if ( ! empty( $or_conditions ) ) {
 			$or_conditions['RELATION'] = 'OR';
 			$where[]                   = $or_conditions;
+		} else {
+			// No customer ID found — return a zero-result condition to prevent data leakage.
+			// Pro gateways (e.g., PayPal) may add their own customer_id conditions via the filter below.
+			$where[] = [
+				[
+					'key'     => 'customer_id',
+					'compare' => '=',
+					'value'   => 'no_customer_' . $user_id,
+				],
+				'RELATION' => 'OR',
+			];
 		}
 
 		/**
@@ -946,12 +973,10 @@ class Payment_History_Shortcode {
 	 */
 	private function user_owns_payment( $payment, $user_id ) {
 		$stripe_customer_id = get_user_meta( $user_id, 'srfm_stripe_customer_id', true );
-		$user_email         = wp_get_current_user()->user_email;
 
+		// Only use system-assigned customer_id for ownership — email matching is not safe
+		// for destructive actions (e.g., cancellation) because WP account email is user-controlled.
 		if ( ! empty( $stripe_customer_id ) && ! empty( $payment['customer_id'] ) && $stripe_customer_id === $payment['customer_id'] ) {
-			return true;
-		}
-		if ( ! empty( $user_email ) && ! empty( $payment['customer_email'] ) && $user_email === $payment['customer_email'] ) {
 			return true;
 		}
 

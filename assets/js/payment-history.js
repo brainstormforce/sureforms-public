@@ -225,7 +225,8 @@
 			i18n.transaction_id || 'Transaction ID',
 			'<span style="font-family:monospace;font-size:11px;">' +
 				esc( t.txn ) +
-				'</span>'
+				'</span>',
+			true
 		);
 
 		if ( 'subscription' === t.type && t.sub ) {
@@ -360,7 +361,6 @@
 		formData.append( 'action', 'srfm_frontend_cancel_subscription' );
 		formData.append( 'nonce', config.nonce );
 		formData.append( 'payment_id', cancelState.paymentId );
-		formData.append( 'cancel_type', 'now' );
 
 		fetch( config.ajax_url, {
 			method: 'POST',
@@ -425,12 +425,12 @@
 	// HTML Helpers
 	// =========================================================================
 
-	function panelRow( label, value ) {
+	function panelRow( label, value, isHtml ) {
 		return (
 			'<div class="srfm-pd-panel-row"><span class="srfm-pd-panel-label">' +
 			esc( label ) +
 			'</span><span class="srfm-pd-panel-value">' +
-			value +
+			( isHtml ? value : esc( value ) ) +
 			'</span></div>'
 		);
 	}
