@@ -483,8 +483,9 @@ const PremiumFeatures = () => {
 	};
 
 	// Get the display name for the plan
-	const getPlanDisplayName = ( plan ) => {
-		return `SureForms ${ __( 'Business', 'sureforms' ) }`;
+	const getPlanDisplayName = ( _plan ) => {
+		/* translators: %s: plan name */
+		return sprintf( __( 'SureForms %s', 'sureforms' ), plan );
 	};
 
 	return (
