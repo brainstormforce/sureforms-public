@@ -16,7 +16,8 @@
 	const subs = window.srfmDashboardSubs || [];
 	const txs = window.srfmDashboardTxs || [];
 
-	let cancelState = { name: '', next: '', opt: 'eop', paymentId: null };
+	let cancelState = { name: '', paymentId: null };
+	let isCancelling = false; // eslint-disable-line prefer-const -- reassigned in confirmCancel()
 
 	/**
 	 * Initialize event listeners.
@@ -148,7 +149,7 @@
 				'<button type="button" class="srfm-pd-btn srfm-pd-btn--danger" onclick="srfmPH.closeSub();srfmPH.openCancel(\'' +
 				escAttr( s.name ) +
 				"'," +
-				s.paymentId +
+				parseInt( s.paymentId, 10 ) +
 				')">' +
 				svgCancel() +
 				' ' +
@@ -351,6 +352,11 @@
 	}
 
 	function confirmCancel() {
+		if ( isCancelling ) {
+			return;
+		}
+		isCancelling = true;
+
 		const btn = document.getElementById( 'srfm-pd-confirm-cancel' );
 		if ( btn ) {
 			btn.disabled = true;
@@ -374,6 +380,7 @@
 				if ( data.success ) {
 					showCancelStep( 2 );
 				} else {
+					isCancelling = false;
 					if ( btn ) {
 						btn.disabled = false;
 						btn.textContent = i18n.yes_cancel || 'Yes, Cancel';
@@ -384,6 +391,7 @@
 				}
 			} )
 			.catch( function () {
+				isCancelling = false;
 				if ( btn ) {
 					btn.disabled = false;
 					btn.textContent = i18n.yes_cancel || 'Yes, Cancel';
@@ -452,11 +460,11 @@
 	}
 
 	function esc( str ) {
-		if ( ! str ) {
+		if ( str === null || str === undefined || str === '' ) {
 			return '';
 		}
 		const div = document.createElement( 'div' );
-		div.appendChild( document.createTextNode( str ) );
+		div.appendChild( document.createTextNode( String( str ) ) );
 		return div.innerHTML;
 	}
 

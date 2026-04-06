@@ -50,12 +50,33 @@ class Payment_History_Shortcode {
 	 * Also called at render time (shortcode/block callback) to support
 	 * FSE themes and page builders where global $post is unavailable.
 	 *
+	 * CSS is always enqueued during wp_enqueue_scripts (lightweight, prevents FOUC
+	 * on page builders like Elementor/Bricks that store content in postmeta).
+	 * JS + localized data are only enqueued when the shortcode/block is detected.
+	 *
 	 * @since x.x.x
 	 * @return void
 	 */
 	public function enqueue_assets() {
-		// Avoid double-enqueue — wp_enqueue_scripts hook may run first on classic themes,
-		// and render() calls this again as a fallback for FSE/page builders.
+		$file_prefix = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? '' : '.min';
+		$dir_name    = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? 'unminified' : 'minified';
+
+		// Always enqueue CSS during wp_enqueue_scripts to ensure it loads in <head>.
+		// WordPress silently ignores late-enqueued styles (after wp_head), so page builders
+		// like Elementor, Bricks, and Beaver Builder (which store content in postmeta, not
+		// post_content) would get no CSS at all if we only enqueued conditionally.
+		// The CSS file is lightweight — one small stylesheet on frontend pages is acceptable.
+		if ( doing_action( 'wp_enqueue_scripts' ) && ! wp_style_is( 'srfm-payment-history', 'enqueued' ) ) {
+			wp_enqueue_style(
+				'srfm-payment-history',
+				SRFM_URL . 'assets/css/' . $dir_name . '/payment-history' . $file_prefix . '.css',
+				[],
+				SRFM_VER
+			);
+		}
+
+		// JS + localized data: only enqueue when the shortcode/block is actually present.
+		// JS can be late-enqueued (footer scripts) but CSS cannot, hence the split above.
 		if ( wp_script_is( 'srfm-payment-history', 'enqueued' ) ) {
 			return;
 		}
@@ -76,16 +97,6 @@ class Payment_History_Shortcode {
 				return;
 			}
 		}
-
-		$file_prefix = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? '' : '.min';
-		$dir_name    = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? 'unminified' : 'minified';
-
-		wp_enqueue_style(
-			'srfm-payment-history',
-			SRFM_URL . 'assets/css/' . $dir_name . '/payment-history' . $file_prefix . '.css',
-			[],
-			SRFM_VER
-		);
 
 		wp_enqueue_script(
 			'srfm-payment-history',
