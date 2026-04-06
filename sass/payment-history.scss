@@ -336,6 +336,14 @@
 	border-bottom: 1px solid #e5e7eb;
 }
 
+.srfm-pd-panel-header-right {
+	text-align: right;
+}
+
+.srfm-pd-panel-header-badge {
+	margin-top: 8px;
+}
+
 .srfm-pd-panel-close {
 	background: none;
 	border: none;
@@ -528,6 +536,14 @@
 	padding: 24px;
 	text-align: center;
 
+	&--confirm {
+		padding-top: 32px;
+	}
+
+	&--success {
+		padding: 40px 24px;
+	}
+
 	h4 {
 		font-size: 16px;
 		font-weight: 700;
@@ -552,6 +568,14 @@
 	justify-content: center;
 	margin: 0 auto 12px;
 
+	&--warning {
+		background: #fef3c7;
+	}
+
+	&--success {
+		background: #dcfce7;
+	}
+
 	svg {
 		width: 22px;
 		height: 22px;
@@ -560,6 +584,11 @@
 		stroke-linecap: round;
 		stroke-linejoin: round;
 	}
+}
+
+.srfm-pd-txn-id {
+	font-family: monospace;
+	font-size: 11px;
 }
 
 /* ==========================================================================

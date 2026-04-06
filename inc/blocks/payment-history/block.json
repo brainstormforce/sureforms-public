@@ -29,10 +29,6 @@
 		"showSubscription": {
 			"type": "boolean",
 			"default": true
-		},
-		"showRenewal": {
-			"type": "boolean",
-			"default": true
 		}
 	}
 }

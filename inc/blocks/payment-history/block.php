@@ -35,7 +35,6 @@ class Block extends Base {
 		$shortcode_atts = [
 			'per_page'          => isset( $attributes['perPage'] ) && is_numeric( $attributes['perPage'] ) ? strval( absint( $attributes['perPage'] ) ) : '10',
 			'show_subscription' => ! empty( $attributes['showSubscription'] ) ? 'true' : 'false',
-			'show_renewal'      => ! empty( $attributes['showRenewal'] ) ? 'true' : 'false',
 		];
 
 		$shortcode_instance = Payment_History_Shortcode::get_instance();

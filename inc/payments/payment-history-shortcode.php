@@ -129,7 +129,6 @@ class Payment_History_Shortcode {
 			[
 				'per_page'          => '10',
 				'show_subscription' => 'true',
-				'show_renewal'      => 'true',
 			],
 			is_array( $atts ) ? $atts : [],
 			self::SHORTCODE_TAG
@@ -323,6 +322,19 @@ class Payment_History_Shortcode {
 			'processing'             => __( 'Processing...', 'sureforms' ),
 			'cancel_success'         => __( 'The subscription has been cancelled successfully.', 'sureforms' ),
 			'error'                  => __( 'Something went wrong. Please try again.', 'sureforms' ),
+			// Subscription status labels.
+			'status_active'          => __( 'Active', 'sureforms' ),
+			'status_trialing'        => __( 'Trialing', 'sureforms' ),
+			'status_canceled'        => __( 'Cancelled', 'sureforms' ),
+			'status_past_due'        => __( 'Past Due', 'sureforms' ),
+			'status_paused'          => __( 'Paused', 'sureforms' ),
+			// Payment status labels.
+			'status_succeeded'       => __( 'Paid', 'sureforms' ),
+			'status_pending'         => __( 'Pending', 'sureforms' ),
+			'status_failed'          => __( 'Failed', 'sureforms' ),
+			'status_refunded'        => __( 'Refunded', 'sureforms' ),
+			'status_partially_refunded' => __( 'Partially Refunded', 'sureforms' ),
+			'status_processing'      => __( 'Processing', 'sureforms' ),
 		];
 	}
 
@@ -769,11 +781,18 @@ class Payment_History_Shortcode {
 	 * @return string Form title.
 	 */
 	private function get_form_title( $form_id ) {
+		static $cache = [];
+
 		if ( $form_id <= 0 ) {
 			return __( 'Unknown Form', 'sureforms' );
 		}
-		$title = get_the_title( $form_id );
-		return ! empty( $title ) ? $title : __( 'Unknown Form', 'sureforms' );
+
+		if ( isset( $cache[ $form_id ] ) ) {
+			return $cache[ $form_id ];
+		}
+		$title              = get_the_title( $form_id );
+		$cache[ $form_id ] = ! empty( $title ) ? $title : __( 'Unknown Form', 'sureforms' );
+		return $cache[ $form_id ];
 	}
 
 	// =========================================================================

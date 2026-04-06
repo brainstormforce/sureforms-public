@@ -18,43 +18,87 @@
 
 	let cancelState = { name: '', paymentId: null };
 	let isCancelling = false; // eslint-disable-line prefer-const -- reassigned in confirmCancel()
+	let lastFocusedElement = null;
 
 	/**
-	 * Initialize event listeners.
+	 * Subscription status label map using translated i18n strings.
+	 */
+	const subStatusMap = {
+		active: i18n.status_active || 'Active',
+		trialing: i18n.status_trialing || 'Trialing',
+		canceled: i18n.status_canceled || 'Cancelled',
+		past_due: i18n.status_past_due || 'Past Due',
+		paused: i18n.status_paused || 'Paused',
+	};
+
+	/**
+	 * Payment status label map using translated i18n strings.
+	 */
+	const payStatusMap = {
+		succeeded: i18n.status_succeeded || 'Paid',
+		pending: i18n.status_pending || 'Pending',
+		failed: i18n.status_failed || 'Failed',
+		canceled: i18n.status_canceled || 'Cancelled',
+		refunded: i18n.status_refunded || 'Refunded',
+		partially_refunded: i18n.status_partially_refunded || 'Partially Refunded',
+		processing: i18n.status_processing || 'Processing',
+		active: i18n.status_active || 'Active',
+	};
+
+	/**
+	 * Initialize event listeners using event delegation.
 	 */
 	function init() {
-		const subRows = document.querySelectorAll( '.srfm-pd-sub-row' );
-		subRows.forEach( function ( row ) {
-			row.addEventListener( 'click', function () {
-				openSubDetail( parseInt( row.dataset.index, 10 ) );
-			} );
-			row.addEventListener( 'keydown', function ( e ) {
-				if ( 'Enter' === e.key || ' ' === e.key ) {
-					e.preventDefault();
-					openSubDetail( parseInt( row.dataset.index, 10 ) );
-				}
-			} );
+		const widget = document.querySelector( '.srfm-pd-widget' );
+		if ( ! widget ) {
+			return;
+		}
+
+		// Event delegation for rows — handles clicks on subscription and payment rows.
+		widget.addEventListener( 'click', function ( e ) {
+			const subRow = e.target.closest( '.srfm-pd-sub-row' );
+			if ( subRow ) {
+				openSubDetail( parseInt( subRow.dataset.index, 10 ) );
+				return;
+			}
+
+			const payRow = e.target.closest( '.srfm-pd-pay-row' );
+			if ( payRow ) {
+				openTxDetail( parseInt( payRow.dataset.index, 10 ) );
+			}
 		} );
 
-		const payRows = document.querySelectorAll( '.srfm-pd-pay-row' );
-		payRows.forEach( function ( row ) {
-			row.addEventListener( 'click', function () {
-				openTxDetail( parseInt( row.dataset.index, 10 ) );
-			} );
-			row.addEventListener( 'keydown', function ( e ) {
-				if ( 'Enter' === e.key || ' ' === e.key ) {
-					e.preventDefault();
-					openTxDetail( parseInt( row.dataset.index, 10 ) );
-				}
-			} );
+		widget.addEventListener( 'keydown', function ( e ) {
+			if ( 'Enter' !== e.key && ' ' !== e.key ) {
+				return;
+			}
+			const subRow = e.target.closest( '.srfm-pd-sub-row' );
+			if ( subRow ) {
+				e.preventDefault();
+				openSubDetail( parseInt( subRow.dataset.index, 10 ) );
+				return;
+			}
+			const payRow = e.target.closest( '.srfm-pd-pay-row' );
+			if ( payRow ) {
+				e.preventDefault();
+				openTxDetail( parseInt( payRow.dataset.index, 10 ) );
+			}
 		} );
 
+		// Overlay click-outside-to-close and button delegation.
 		document
 			.querySelectorAll( '.srfm-pd-overlay' )
 			.forEach( function ( overlay ) {
 				overlay.addEventListener( 'click', function ( e ) {
 					if ( e.target === overlay ) {
 						closeOverlay( overlay.id );
+						return;
+					}
+
+					// Delegate button clicks inside panels.
+					const btn = e.target.closest( '[data-action]' );
+					if ( btn ) {
+						handlePanelAction( btn.dataset.action, btn.dataset );
 					}
 				} );
 			} );
@@ -69,6 +113,36 @@
 	}
 
 	/**
+	 * Handle delegated panel button actions.
+	 *
+	 * @param {string} action Action name from data-action attribute.
+	 * @param {Object} data   Dataset from the button element.
+	 */
+	function handlePanelAction( action, data ) {
+		switch ( action ) {
+			case 'close-sub':
+				closeOverlay( 'srfm-pd-sub-overlay' );
+				break;
+			case 'close-tx':
+				closeOverlay( 'srfm-pd-tx-overlay' );
+				break;
+			case 'close-cancel':
+				closeOverlay( 'srfm-pd-cancel-overlay' );
+				break;
+			case 'open-cancel':
+				closeOverlay( 'srfm-pd-sub-overlay' );
+				openCancel( data.name || '', parseInt( data.paymentId, 10 ) );
+				break;
+			case 'confirm-cancel':
+				confirmCancel();
+				break;
+			case 'finish-cancel':
+				finishCancel();
+				break;
+		}
+	}
+
+	/**
 	 * Open subscription detail overlay.
 	 *
 	 * @param {number} index Subscription index.
@@ -80,14 +154,7 @@
 		}
 
 		const isActive = s.canCancel;
-		const statusMap = {
-			active: 'Active',
-			trialing: 'Trialing',
-			canceled: 'Cancelled',
-			past_due: 'Past Due',
-			paused: 'Paused',
-		};
-		const statusLabel = statusMap[ s.status ] || s.status;
+		const statusLabel = subStatusMap[ s.status ] || s.status;
 		const badgeClass = isActive
 			? 'srfm-pd-badge--active'
 			: 'srfm-pd-badge--cancelled';
@@ -105,9 +172,9 @@
 			esc( s.form ) +
 			'</div>' +
 			'</div>' +
-			'<div style="text-align:right;">' +
-			'<button type="button" class="srfm-pd-panel-close" onclick="srfmPH.closeSub()">&times;</button>' +
-			'<div style="margin-top:8px;"><span class="srfm-pd-badge ' +
+			'<div class="srfm-pd-panel-header-right">' +
+			'<button type="button" class="srfm-pd-panel-close" data-action="close-sub" aria-label="' + escAttr( i18n.back || 'Close' ) + '">&times;</button>' +
+			'<div class="srfm-pd-panel-header-badge"><span class="srfm-pd-badge ' +
 			badgeClass +
 			'"><span class="srfm-pd-badge-dot"></span>' +
 			esc( statusLabel ) +
@@ -138,7 +205,7 @@
 
 		html += '<div class="srfm-pd-panel-footer">';
 		html +=
-			'<button type="button" class="srfm-pd-btn" onclick="srfmPH.closeSub()">' +
+			'<button type="button" class="srfm-pd-btn" data-action="close-sub">' +
 			svgBack() +
 			' ' +
 			esc( i18n.back || 'Back' ) +
@@ -146,11 +213,11 @@
 
 		if ( isActive ) {
 			html +=
-				'<button type="button" class="srfm-pd-btn srfm-pd-btn--danger" onclick="srfmPH.closeSub();srfmPH.openCancel(\'' +
+				'<button type="button" class="srfm-pd-btn srfm-pd-btn--danger" data-action="open-cancel" data-name="' +
 				escAttr( s.name ) +
-				"'," +
+				'" data-payment-id="' +
 				parseInt( s.paymentId, 10 ) +
-				')">' +
+				'">' +
 				svgCancel() +
 				' ' +
 				esc( i18n.cancel_subscription || 'Cancel Subscription' ) +
@@ -174,17 +241,7 @@
 			return;
 		}
 
-		const statusMap = {
-			succeeded: 'Paid',
-			pending: 'Pending',
-			failed: 'Failed',
-			canceled: 'Cancelled',
-			refunded: 'Refunded',
-			partially_refunded: 'Partially Refunded',
-			processing: 'Processing',
-			active: 'Active',
-		};
-		const statusLabel = statusMap[ t.status ] || t.status;
+		const statusLabel = payStatusMap[ t.status ] || t.status;
 		const badgeClass =
 			'refunded' === t.status || 'partially_refunded' === t.status
 				? 'srfm-pd-badge--refunded'
@@ -205,9 +262,9 @@
 			esc( t.date ) +
 			'</div>' +
 			'</div>' +
-			'<div style="text-align:right;">' +
-			'<button type="button" class="srfm-pd-panel-close" onclick="srfmPH.closeTx()">&times;</button>' +
-			'<div style="margin-top:8px;"><span class="srfm-pd-badge ' +
+			'<div class="srfm-pd-panel-header-right">' +
+			'<button type="button" class="srfm-pd-panel-close" data-action="close-tx" aria-label="' + escAttr( i18n.back || 'Close' ) + '">&times;</button>' +
+			'<div class="srfm-pd-panel-header-badge"><span class="srfm-pd-badge ' +
 			badgeClass +
 			'"><span class="srfm-pd-badge-dot"></span>' +
 			esc( statusLabel ) +
@@ -224,7 +281,7 @@
 		html += panelRow( i18n.gateway || 'Gateway', t.gateway );
 		html += panelRow(
 			i18n.transaction_id || 'Transaction ID',
-			'<span style="font-family:monospace;font-size:11px;">' +
+			'<span class="srfm-pd-txn-id">' +
 				esc( t.txn ) +
 				'</span>',
 			true
@@ -272,7 +329,7 @@
 
 		html += '<div class="srfm-pd-panel-footer">';
 		html +=
-			'<button type="button" class="srfm-pd-btn" onclick="srfmPH.closeTx()">' +
+			'<button type="button" class="srfm-pd-btn" data-action="close-tx">' +
 			svgBack() +
 			' ' +
 			esc( i18n.back || 'Back' ) +
@@ -289,6 +346,7 @@
 
 	function openCancel( name, paymentId ) {
 		cancelState = { name, paymentId };
+		isCancelling = false;
 		showCancelStep( 1 );
 		openOverlay( 'srfm-pd-cancel-overlay' );
 	}
@@ -304,8 +362,8 @@
 			).replace( '%s', cancelState.name );
 
 			html =
-				'<div class="srfm-pd-cancel-body" style="padding-top:32px;">' +
-				'<div class="srfm-pd-cancel-icon" style="background:#fef3c7;">' +
+				'<div class="srfm-pd-cancel-body srfm-pd-cancel-body--confirm">' +
+				'<div class="srfm-pd-cancel-icon srfm-pd-cancel-icon--warning">' +
 				svgWarning() +
 				'</div>' +
 				'<h4>' +
@@ -317,17 +375,17 @@
 
 			html +=
 				'<div class="srfm-pd-panel-footer">' +
-				'<button type="button" class="srfm-pd-btn" onclick="srfmPH.closeCancel()">' +
+				'<button type="button" class="srfm-pd-btn" data-action="close-cancel">' +
 				esc( i18n.keep_subscription || 'Keep Subscription' ) +
 				'</button>' +
-				'<button type="button" class="srfm-pd-btn srfm-pd-btn--danger-fill" id="srfm-pd-confirm-cancel" onclick="srfmPH.confirmCancel()">' +
+				'<button type="button" class="srfm-pd-btn srfm-pd-btn--danger-fill" id="srfm-pd-confirm-cancel" data-action="confirm-cancel">' +
 				esc( i18n.yes_cancel || 'Yes, Cancel' ) +
 				'</button>' +
 				'</div>';
 		} else if ( 2 === step ) {
 			html =
-				'<div class="srfm-pd-cancel-body" style="padding:40px 24px;">' +
-				'<div class="srfm-pd-cancel-icon" style="background:#dcfce7;">' +
+				'<div class="srfm-pd-cancel-body srfm-pd-cancel-body--success">' +
+				'<div class="srfm-pd-cancel-icon srfm-pd-cancel-icon--success">' +
 				svgCheck() +
 				'</div>' +
 				'<h4>' +
@@ -342,7 +400,7 @@
 
 			html +=
 				'<div class="srfm-pd-panel-footer srfm-pd-panel-footer--center">' +
-				'<button type="button" class="srfm-pd-btn srfm-pd-btn--primary" onclick="srfmPH.finishCancel()">' +
+				'<button type="button" class="srfm-pd-btn srfm-pd-btn--primary" data-action="finish-cancel">' +
 				esc( i18n.done || 'Done' ) +
 				'</button>' +
 				'</div>';
@@ -414,8 +472,17 @@
 	function openOverlay( id ) {
 		const el = document.getElementById( id );
 		if ( el ) {
+			lastFocusedElement = el.ownerDocument.activeElement;
+			el.setAttribute( 'role', 'dialog' );
+			el.setAttribute( 'aria-modal', 'true' );
 			el.classList.add( 'srfm-pd-overlay--open' );
 			document.body.style.overflow = 'hidden';
+
+			// Move focus to the first focusable element in the panel.
+			const focusable = el.querySelector( 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])' );
+			if ( focusable ) {
+				focusable.focus();
+			}
 		}
 	}
 
@@ -423,9 +490,17 @@
 		const el = document.getElementById( id );
 		if ( el ) {
 			el.classList.remove( 'srfm-pd-overlay--open' );
+			el.removeAttribute( 'role' );
+			el.removeAttribute( 'aria-modal' );
 		}
 		if ( ! document.querySelector( '.srfm-pd-overlay--open' ) ) {
 			document.body.style.overflow = '';
+
+			// Restore focus to the element that triggered the overlay.
+			if ( lastFocusedElement ) {
+				lastFocusedElement.focus();
+				lastFocusedElement = null;
+			}
 		}
 	}
 
@@ -473,22 +548,11 @@
 	}
 
 	// =========================================================================
-	// Public API
+	// Public API (minimal — only needed for external integration)
 	// =========================================================================
 
 	window.srfmPH = {
-		closeSub() {
-			closeOverlay( 'srfm-pd-sub-overlay' );
-		},
-		closeTx() {
-			closeOverlay( 'srfm-pd-tx-overlay' );
-		},
-		closeCancel() {
-			closeOverlay( 'srfm-pd-cancel-overlay' );
-		},
 		openCancel,
-		confirmCancel,
-		finishCancel,
 	};
 
 	if ( 'loading' === document.readyState ) {
