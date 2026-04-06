@@ -350,7 +350,7 @@ export default ( props ) => {
 								</span>
 							</Container.Item>
 							<Container.Item>
-								<div className="w-full min-w-[750px] mx-auto p-2 relative">
+								<div className="w-full min-w-[900px] mx-auto p-2 relative">
 									{ showLearnTip && (
 										<div className="absolute top-1/2 -translate-y-1/2 -right-2 translate-x-full z-[999999] pointer-events-none">
 											<div className="absolute top-1/2 -translate-y-1/2 -left-1 w-2 h-2 bg-tooltip-background-dark rotate-45" />

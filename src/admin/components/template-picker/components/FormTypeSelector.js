@@ -6,6 +6,7 @@ import {
 	MessagesSquare,
 	CreditCard,
 	ListChecks,
+	ClipboardList,
 } from 'lucide-react';
 import { useEffect, useState } from '@wordpress/element';
 import UpgradePopup from './UpgradePopup.js';
@@ -146,7 +147,8 @@ const FormTypeSelector = ( {
 			option.slug === 'calculator' ||
 			option.slug === 'conversational' ||
 			option.slug === 'payment' ||
-			option.slug === 'quiz'
+			option.slug === 'quiz' ||
+			option.slug === 'survey'
 		) {
 			setformLayout( {} );
 		}
@@ -187,9 +189,14 @@ const FormTypeSelector = ( {
 											'Select this to create a quiz with scored questions and graded results.',
 											'sureforms'
 								  )
-										: __(
-											'Select this if you want to collect payments through your form.',
-											'sureforms'
+										: option.slug === 'survey'
+											? __(
+												'Select this to create a survey to collect responses and opinions.',
+												'sureforms'
+								  )
+											: __(
+												'Select this if you want to collect payments through your form.',
+												'sureforms'
 								  ) )
 						}
 						placement="bottom"
@@ -212,6 +219,8 @@ const FormTypeSelector = ( {
 									<MessagesSquare className="size-4" />
 								) : option.slug === 'quiz' ? (
 									<ListChecks className="size-4" />
+								) : option.slug === 'survey' ? (
+									<ClipboardList className="size-4" />
 								) : (
 									<CreditCard className="size-4" />
 								)
