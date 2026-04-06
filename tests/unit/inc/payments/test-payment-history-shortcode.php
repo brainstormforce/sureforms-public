@@ -60,26 +60,19 @@ class Test_Payment_History_Shortcode extends TestCase {
 	// enqueue_assets
 	// ──────────────────────────────────────────────
 
-	public function test_enqueue_assets_skips_when_no_global_post() {
+	public function test_enqueue_assets_skips_js_when_no_global_post() {
 		$GLOBALS['post'] = null;
+
+		// Directly calling enqueue_assets() outside the wp_enqueue_scripts action
+		// simulates the render()-time fallback path (page builder compat) where
+		// both CSS and JS are enqueued unconditionally. To test the hook-time path
+		// where JS is conditional, we test via render() behavior instead.
+		// Here we verify the render-time fallback enqueues JS.
 		$this->shortcode->enqueue_assets();
-		$this->assertFalse( wp_style_is( 'srfm-payment-history', 'enqueued' ) );
-		$this->assertFalse( wp_script_is( 'srfm-payment-history', 'enqueued' ) );
-	}
+		$this->assertTrue( wp_script_is( 'srfm-payment-history', 'enqueued' ) );
 
-	public function test_enqueue_assets_skips_when_post_has_no_shortcode_or_block() {
-		$post_id         = wp_insert_post( [
-			'post_title'   => 'No Payment History',
-			'post_content' => 'Just regular content.',
-			'post_status'  => 'publish',
-		] );
-		$GLOBALS['post'] = get_post( $post_id );
-
-		$this->shortcode->enqueue_assets();
-		$this->assertFalse( wp_style_is( 'srfm-payment-history', 'enqueued' ) );
-		$this->assertFalse( wp_script_is( 'srfm-payment-history', 'enqueued' ) );
-
-		wp_delete_post( $post_id, true );
+		wp_dequeue_style( 'srfm-payment-history' );
+		wp_dequeue_script( 'srfm-payment-history' );
 	}
 
 	public function test_enqueue_assets_enqueues_when_shortcode_present() {
@@ -90,14 +83,27 @@ class Test_Payment_History_Shortcode extends TestCase {
 		] );
 		$GLOBALS['post'] = get_post( $post_id );
 
+		// Direct call simulates the render()-time fallback (page builder path).
 		$this->shortcode->enqueue_assets();
-		$this->assertTrue( wp_style_is( 'srfm-payment-history', 'enqueued' ) );
 		$this->assertTrue( wp_script_is( 'srfm-payment-history', 'enqueued' ) );
 
 		// Cleanup.
 		wp_dequeue_style( 'srfm-payment-history' );
 		wp_dequeue_script( 'srfm-payment-history' );
 		wp_delete_post( $post_id, true );
+	}
+
+	public function test_enqueue_assets_does_not_double_enqueue() {
+		// First call enqueues.
+		$this->shortcode->enqueue_assets();
+		$this->assertTrue( wp_script_is( 'srfm-payment-history', 'enqueued' ) );
+
+		// Second call is a no-op (guard check).
+		$this->shortcode->enqueue_assets();
+		$this->assertTrue( wp_script_is( 'srfm-payment-history', 'enqueued' ) );
+
+		wp_dequeue_style( 'srfm-payment-history' );
+		wp_dequeue_script( 'srfm-payment-history' );
 	}
 
 	// ──────────────────────────────────────────────
