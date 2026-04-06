@@ -315,6 +315,13 @@ class Smart_Tags {
 					return esc_url( site_url( $request_uri ) );
 				}
 
+				// During REST API requests (e.g. email notifications triggered by form submission),
+				// REQUEST_URI points to the REST endpoint, not the originating page.
+				// HTTP_REFERER contains the actual page URL the form was submitted from.
+				if ( defined( 'REST_REQUEST' ) && REST_REQUEST && isset( $_SERVER['HTTP_REFERER'] ) ) {
+					return esc_url( Helper::get_string_value( wp_unslash( $_SERVER['HTTP_REFERER'] ) ) );
+				}
+
 				if ( isset( $_SERVER['REQUEST_URI'] ) ) {
 					$request_uri = sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) );
 					return esc_url( site_url( $request_uri ) );
