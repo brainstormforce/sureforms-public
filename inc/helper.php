@@ -273,6 +273,25 @@ class Helper {
 	}
 
 	/**
+	 * Sanitize a CSS value to prevent injection.
+	 *
+	 * Strips characters that can break out of a CSS property value context
+	 * and removes dangerous CSS functions while preserving safe ones
+	 * (rgb, hsl, linear-gradient, etc.).
+	 *
+	 * @param mixed $value Raw CSS value.
+	 * @return string Sanitized CSS value.
+	 * @since 2.7.0
+	 */
+	public static function sanitize_css_value( $value ) {
+		$value = self::get_string_value( $value );
+		// Strip characters that can break out of a CSS property value context.
+		$value = preg_replace( '/[{}<>;\\\\"\'`]/', '', $value ) ?? '';
+		// Remove dangerous CSS functions (url, expression, import, etc.) while preserving safe ones (rgb, hsl, linear-gradient, etc.).
+		return preg_replace( '/\b(url|expression|import|javascript)\s*\(/i', '(', $value ) ?? '';
+	}
+
+	/**
 	 * This function sanitizes the submitted form data according to the field type.
 	 *
 	 * @param array<mixed> $form_data $form_data User submitted form data.

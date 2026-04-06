@@ -315,13 +315,18 @@ if ( ! class_exists( 'BSF_Analytics' ) ) {
 				return;
 			}
 
-			$source = isset( $_GET['bsf_analytics_source'] ) ? sanitize_text_field( wp_unslash( $_GET['bsf_analytics_source'] ) ) : '';
-
-			if ( ! isset( $_GET[ $source . '_analytics_nonce' ] ) ) {
-				return;
+			// Verify nonce before accessing any $_GET data.
+			// The nonce key is dynamic per entity, so iterate to find a valid one.
+			$source = '';
+			foreach ( $this->entities as $key => $data ) {
+				$nonce_key = $key . '_analytics_nonce';
+				if ( isset( $_GET[ $nonce_key ] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET[ $nonce_key ] ) ), $key . '_analytics_optin' ) ) {
+					$source = $key;
+					break;
+				}
 			}
 
-			if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET[ $source . '_analytics_nonce' ] ) ), $source . '_analytics_optin' ) ) {
+			if ( empty( $source ) ) {
 				return;
 			}
 
@@ -344,6 +349,7 @@ if ( ! class_exists( 'BSF_Analytics' ) ) {
 					)
 				)
 			);
+			exit;
 		}
 
 		/**
@@ -375,6 +381,7 @@ if ( ! class_exists( 'BSF_Analytics' ) ) {
 		private function includes() {
 			require_once __DIR__ . '/classes/class-bsf-analytics-helper.php';
 			require_once __DIR__ . '/class-bsf-analytics-stats.php';
+			require_once __DIR__ . '/class-bsf-analytics-events.php';
 
 			// Loads all the modules.
 			require_once __DIR__ . '/modules/deactivation-survey/classes/class-deactivation-survey-feedback.php';
@@ -594,7 +601,7 @@ if ( ! class_exists( 'BSF_Analytics' ) ) {
 		public function add_option_to_network( $option, $value ) {
 
 			// If action coming from general settings page.
-			if ( isset( $_POST['option_page'] ) && 'general' === $_POST['option_page'] ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
+			if ( isset( $_POST['option_page'] ) && 'general' === sanitize_text_field( wp_unslash( $_POST['option_page'] ) ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
 
 				if ( get_site_option( $option ) ) {
 					update_site_option( $option, $value );

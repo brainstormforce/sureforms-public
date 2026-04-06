@@ -1197,12 +1197,22 @@ const PAYMENT_UTILITY = {
 			'.srfm-multi-choice-single'
 		);
 
+		// Normalize whitespace: collapse multiple spaces to one, then trim.
+		// This is necessary because browsers collapse consecutive whitespace in
+		// innerText, while the stored value (from data-option-text attribute)
+		// preserves the original spacing from the block attributes.
+		const normalizeStr = ( str ) =>
+			typeof str === 'string' ? str.trim().replace( /\s+/g, ' ' ) : '';
+
 		selectedOptions.forEach( ( selectedOption ) => {
 			choices.forEach( ( choice ) => {
 				const label = choice.querySelector(
 					'.srfm-option-container label'
 				);
-				if ( label?.innerText?.trim() === selectedOption?.trim() ) {
+				if (
+					normalizeStr( label?.innerText ) ===
+					normalizeStr( selectedOption )
+				) {
 					const input = choice.querySelector(
 						'.srfm-input-multi-choice-single'
 					);

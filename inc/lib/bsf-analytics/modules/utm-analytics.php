@@ -42,6 +42,7 @@ if ( ! class_exists( 'BSF_UTM_Analytics' ) ) {
 			'convertpro',
 			'header-footer-elementor',
 			'latepoint',
+			'modern-cart',
 			'presto-player',
 			'surecart',
 			'sureforms',

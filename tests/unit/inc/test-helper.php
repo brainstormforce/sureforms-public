@@ -2057,6 +2057,78 @@ class Test_Helper extends TestCase {
         remove_all_filters('srfm_integrated_plugins');
     }
 
+    // ─── sanitize_css_value ──────────────────────────────────────
+
+    /**
+     * Test that safe color values pass through unchanged.
+     */
+    public function test_sanitize_css_value_preserves_hex_colors() {
+        $this->assertSame( '#FF0000', Helper::sanitize_css_value( '#FF0000' ) );
+        $this->assertSame( '#333', Helper::sanitize_css_value( '#333' ) );
+    }
+
+    /**
+     * Test that rgb/rgba/hsl/hsla values pass through unchanged.
+     */
+    public function test_sanitize_css_value_preserves_safe_css_functions() {
+        $this->assertSame( 'rgb(255, 0, 0)', Helper::sanitize_css_value( 'rgb(255, 0, 0)' ) );
+        $this->assertSame( 'rgba(0, 0, 0, 0.5)', Helper::sanitize_css_value( 'rgba(0, 0, 0, 0.5)' ) );
+        $this->assertSame( 'hsl(120, 100%, 50%)', Helper::sanitize_css_value( 'hsl(120, 100%, 50%)' ) );
+        $this->assertSame( 'hsla(120, 100%, 50%, 0.3)', Helper::sanitize_css_value( 'hsla(120, 100%, 50%, 0.3)' ) );
+    }
+
+    /**
+     * Test that CSS gradients pass through unchanged.
+     */
+    public function test_sanitize_css_value_preserves_gradients() {
+        $this->assertSame(
+            'linear-gradient(90deg, #000 0%, #fff 100%)',
+            Helper::sanitize_css_value( 'linear-gradient(90deg, #000 0%, #fff 100%)' )
+        );
+    }
+
+    /**
+     * Test that dangerous characters are stripped.
+     */
+    public function test_sanitize_css_value_strips_dangerous_characters() {
+        $this->assertSame( 'red', Helper::sanitize_css_value( 'red}' ) );
+        $this->assertSame( 'red', Helper::sanitize_css_value( 'red{' ) );
+        $this->assertSame( 'red', Helper::sanitize_css_value( 'red;' ) );
+        $this->assertSame( 'red', Helper::sanitize_css_value( 'red<' ) );
+        $this->assertSame( 'red', Helper::sanitize_css_value( 'red>' ) );
+        $this->assertSame( 'red', Helper::sanitize_css_value( "red'" ) );
+        $this->assertSame( 'red', Helper::sanitize_css_value( 'red"' ) );
+        $this->assertSame( 'red', Helper::sanitize_css_value( 'red`' ) );
+        $this->assertSame( 'red', Helper::sanitize_css_value( 'red\\' ) );
+    }
+
+    /**
+     * Test that dangerous CSS functions are neutralized.
+     */
+    public function test_sanitize_css_value_removes_dangerous_functions() {
+        $this->assertSame( '(https://evil.com/image.png)', Helper::sanitize_css_value( 'url(https://evil.com/image.png)' ) );
+        $this->assertSame( '(alert(1))', Helper::sanitize_css_value( 'expression(alert(1))' ) );
+        $this->assertSame( '(evil.css)', Helper::sanitize_css_value( 'import(evil.css)' ) );
+        $this->assertSame( '(:void)', Helper::sanitize_css_value( 'javascript(:void)' ) );
+    }
+
+    /**
+     * Test that non-string values are handled gracefully.
+     */
+    public function test_sanitize_css_value_handles_non_string_values() {
+        $this->assertSame( '42', Helper::sanitize_css_value( 42 ) );
+        $this->assertSame( '', Helper::sanitize_css_value( null ) );
+        $this->assertSame( '', Helper::sanitize_css_value( [] ) );
+    }
+
+    /**
+     * Test CSS injection attempt via property breakout.
+     */
+    public function test_sanitize_css_value_prevents_css_injection() {
+        // Attempt to break out of a property value and inject a new rule.
+        $this->assertSame( 'red  body  background: black ', Helper::sanitize_css_value( 'red; } body { background: black }' ) );
+    }
+
     public function test_get_integer_value_numeric() {
         $this->assertSame( 42, Helper::get_integer_value( 42 ) );
         $this->assertSame( 3, Helper::get_integer_value( 3.14 ) );

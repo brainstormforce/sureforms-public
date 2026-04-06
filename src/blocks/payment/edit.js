@@ -39,6 +39,7 @@ const Edit = ( props ) => {
 		customerNameField,
 		customerEmailField,
 		variableAmountField,
+		paymentDescription,
 	} = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
 	const [ availableFormFields, setAvailableFormFields ] = useState( {
@@ -165,6 +166,26 @@ const Edit = ( props ) => {
 						label: 'help',
 					} }
 					onChange={ ( value ) => setAttributes( { help: value } ) }
+				/>
+			),
+		},
+		{
+			id: 'payment-description',
+			component: (
+				<SRFMTextControl
+					label={ __( 'Payment Description', 'sureforms' ) }
+					value={ paymentDescription }
+					data={ {
+						value: paymentDescription,
+						label: 'paymentDescription',
+					} }
+					onChange={ ( value ) =>
+						setAttributes( { paymentDescription: value } )
+					}
+					help={ __(
+						'Shown on payment receipts and in your payment dashboard (Stripe and PayPal). Leave blank to use the default.',
+						'sureforms'
+					) }
 				/>
 			),
 		},

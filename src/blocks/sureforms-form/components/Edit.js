@@ -3,7 +3,7 @@
  */
 import { __ } from '@wordpress/i18n';
 import { useSelect } from '@wordpress/data';
-import { useRef, useEffect, useState } from '@wordpress/element';
+import { useRef, useEffect, useState, useCallback } from '@wordpress/element';
 import {
 	Placeholder,
 	TextControl,
@@ -12,6 +12,7 @@ import {
 	Spinner,
 	Button,
 	ToggleControl,
+	SelectControl,
 	ExternalLink,
 } from '@wordpress/components';
 import { useEntityProp, store as coreStore } from '@wordpress/core-data';
@@ -20,13 +21,37 @@ import {
 	useBlockProps,
 	Warning,
 } from '@wordpress/block-editor';
+import { applyFilters } from '@wordpress/hooks';
 
-export default ( { attributes, setAttributes } ) => {
-	const { id, showTitle } = attributes;
+/**
+ * Internal dependencies
+ */
+import {
+	getColorControls,
+	getLayoutControls,
+	getFieldControls,
+	getButtonControls,
+} from './panel-controls';
+import UpgradeModal from '@Components/upgrade-modal';
+
+export default ( { attributes, setAttributes, clientId } ) => {
+	const { id, showTitle, formTheme, blockId } = attributes;
+
 	const iframeRef = useRef( null );
 	const iframeContainerRef = useRef( null );
 	const [ loading, setLoading ] = useState( false );
 	const [ formIframeHeight, setFormIframeHeight ] = useState( 0 );
+	const [ showUpgradeModal, setShowUpgradeModal ] = useState( false );
+
+	// Generate unique blockId if not set (first render).
+	useEffect( () => {
+		if ( ! blockId ) {
+			setAttributes( { blockId: clientId.substring( 0, 8 ) } );
+		}
+	}, [ blockId, clientId, setAttributes ] );
+
+	// Check if Pro is active by looking for Pro-specific localized data.
+	const isProActive = Boolean( window.srfm_block_data?.is_pro_active );
 
 	// eslint-disable-next-line no-unused-vars
 	const [ formUrl, setFormUrl ] = useEntityProp(
@@ -57,25 +82,29 @@ export default ( { attributes, setAttributes } ) => {
 		[ id ]
 	);
 
-	const { isMissing, hasResolved } = useSelect( ( select ) => {
-		const hasResolvedValue = select( coreStore ).hasFinishedResolution(
-			'getEntityRecord',
-			[ 'postType', 'sureforms_form', id ]
-		);
-		const form = select( coreStore ).getEntityRecord(
-			'postType',
-			'sureforms_form',
-			id
-		);
-		const canEdit =
-			select( coreStore ).canUserEditEntityRecord( 'sureforms_form' );
-		return {
-			canEdit,
-			isMissing: hasResolvedValue && ! form,
-			hasResolved: hasResolvedValue,
-			form,
-		};
-	} );
+	const { isMissing, hasResolved, isInlineButton } = useSelect(
+		( select ) => {
+			const hasResolvedValue = select( coreStore ).hasFinishedResolution(
+				'getEntityRecord',
+				[ 'postType', 'sureforms_form', id ]
+			);
+			const form = select( coreStore ).getEntityRecord(
+				'postType',
+				'sureforms_form',
+				id
+			);
+			const canEdit =
+				select( coreStore ).canUserEditEntityRecord( 'sureforms_form' );
+			return {
+				canEdit,
+				isMissing: hasResolvedValue && ! form,
+				hasResolved: hasResolvedValue,
+				isInlineButton: Boolean( form?.meta?._srfm_is_inline_button ),
+				form,
+			};
+		},
+		[ id ]
+	);
 
 	// Remove unwanted elements from the iframe and add styling for the form
 	const modifyIframeContent = () => {
@@ -149,7 +178,7 @@ export default ( { attributes, setAttributes } ) => {
 
 		// Clean up the observer when the component unmounts or dependencies change
 		return () => observer.disconnect();
-	}, [ iframeContainerRef?.current ] ); // Re-run if iframe container reference changes
+	}, [] );
 
 	useEffect( () => {
 		if ( iframeRef && iframeRef.current ) {
@@ -159,7 +188,125 @@ export default ( { attributes, setAttributes } ) => {
 				modifyIframeContent();
 			};
 		}
-	}, [ id, iframeRef, hasResolved ] );
+	}, [ id, iframeRef, hasResolved, attributes.formTheme ] );
+
+	// Send styling updates to iframe via PostMessage
+	const sendStylingToIframe = useCallback( () => {
+		if ( ! iframeRef.current?.contentWindow || ! formUrl ) {
+			return;
+		}
+
+		const iframeOrigin = new URL( formUrl ).origin;
+
+		// If inheriting styling, send reset message to reload iframe with original styles
+		if ( 'inherit' === attributes.formTheme ) {
+			iframeRef.current.contentWindow.postMessage(
+				{
+					type: 'srfm-reset-styling',
+				},
+				iframeOrigin
+			);
+			return;
+		}
+
+		// Base styling object for free version
+		const baseStyling = {
+			formTheme: attributes.formTheme,
+			// Colors
+			primaryColor: attributes.primaryColor,
+			textColor: attributes.textColor,
+			textOnPrimaryColor: attributes.textOnPrimaryColor,
+			// Background
+			bgType: attributes.bgType,
+			bgColor: attributes.bgColor,
+			bgGradient: attributes.bgGradient,
+			bgImage: attributes.bgImage,
+			bgImagePosition: attributes.bgImagePosition,
+			bgImageSize: attributes.bgImageSize,
+			bgImageRepeat: attributes.bgImageRepeat,
+			bgImageAttachment: attributes.bgImageAttachment,
+			// Layout
+			formPaddingTop: attributes.formPaddingTop,
+			formPaddingRight: attributes.formPaddingRight,
+			formPaddingBottom: attributes.formPaddingBottom,
+			formPaddingLeft: attributes.formPaddingLeft,
+			formPaddingUnit: attributes.formPaddingUnit,
+			formBorderRadiusTop: attributes.formBorderRadiusTop,
+			formBorderRadiusRight: attributes.formBorderRadiusRight,
+			formBorderRadiusBottom: attributes.formBorderRadiusBottom,
+			formBorderRadiusLeft: attributes.formBorderRadiusLeft,
+			formBorderRadiusUnit: attributes.formBorderRadiusUnit,
+			// Fields
+			fieldSpacing: attributes.fieldSpacing,
+			// Button
+			buttonAlignment: attributes.buttonAlignment,
+		};
+
+		// Allow Pro to extend the styling object
+		const styling = applyFilters(
+			'srfm.embed.previewStyling',
+			baseStyling,
+			attributes
+		);
+
+		iframeRef.current.contentWindow.postMessage(
+			{
+				type: 'srfm-update-styling',
+				styling,
+			},
+			iframeOrigin
+		);
+	}, [ attributes, formUrl ] );
+
+	// Trigger styling update when attributes change
+	useEffect( () => {
+		sendStylingToIframe();
+	}, [ sendStylingToIframe ] );
+
+	// Re-send styling after iframe loads
+	useEffect( () => {
+		if ( ! loading && iframeRef.current?.contentWindow ) {
+			const timer = setTimeout( () => {
+				sendStylingToIframe();
+			}, 100 );
+			return () => clearTimeout( timer );
+		}
+	}, [ loading, sendStylingToIframe ] );
+
+	// Handle image selection for background
+	const onSelectImage = ( label, media ) => {
+		if ( ! media || ! media.url ) {
+			setAttributes( { [ label ]: '' } );
+			return;
+		}
+		setAttributes( {
+			[ label ]: media.url,
+			bgImageId: media.id,
+		} );
+	};
+
+	// Get panel controls from separate file
+	// Pro can filter these arrays to add, remove, or modify controls
+	const colorControls = getColorControls( {
+		attributes,
+		setAttributes,
+		onSelectImage,
+	} );
+	const layoutControls = getLayoutControls( { attributes, setAttributes } );
+	const fieldControls = getFieldControls( { attributes, setAttributes } );
+	const allButtonControls = getButtonControls( {
+		attributes,
+		setAttributes,
+	} );
+
+	// Hide button alignment when the form uses a custom (inline) button —
+	// the inline button manages its own layout. Keep other button styling
+	// controls (added by Pro) so they still apply in custom theme mode.
+	const buttonControls = isInlineButton
+		? allButtonControls.filter(
+			( control ) => control.id !== 'buttonAlignment'
+		  )
+		: allButtonControls;
 
 	// If the form is not published or is missing, show a warning and allow the user to change the form.
 	if ( isMissing || ( status && 'publish' !== status ) ) {
@@ -194,6 +341,7 @@ export default ( { attributes, setAttributes } ) => {
 	return (
 		<>
 			<InspectorControls>
+				{ /* 1. Form Settings (General) */ }
 				<PanelBody title={ __( 'Form Settings', 'sureforms' ) }>
 					<PanelRow>
 						<ToggleControl
@@ -220,6 +368,39 @@ export default ( { attributes, setAttributes } ) => {
 							/>
 						</PanelRow>
 					) }
+					<SelectControl
+						label={ __( 'Form Theme', 'sureforms' ) }
+						value={ formTheme }
+						options={ applyFilters( 'srfm.embed.formThemeOptions', [
+							{
+								label: __(
+									"Inherit Form's Original Style",
+									'sureforms'
+								),
+								value: 'inherit',
+							},
+							{
+								label: __( 'Default', 'sureforms' ),
+								value: 'default',
+							},
+							{
+								label: __( 'Custom (Premium)', 'sureforms' ),
+								value: 'custom',
+							},
+						] ) }
+						onChange={ ( value ) => {
+							// If Custom is selected and Pro is not active, show upgrade modal.
+							if ( 'custom' === value && ! isProActive ) {
+								setShowUpgradeModal( true );
+								return;
+							}
+							setAttributes( { formTheme: value } );
+						} }
+						help={ __(
+							'Select a theme style for this form embed.',
+							'sureforms'
+						) }
+					/>
 					{ srfm_block_data.is_admin_user && (
 						<PanelRow>
 							<p className="srfm-form-notice">
@@ -246,6 +427,80 @@ export default ( { attributes, setAttributes } ) => {
 						/>
 					</PanelRow>
 				</PanelBody>
+
+				{ /* Styling panels - only show when not inheriting */ }
+				{ 'inherit' !== formTheme && (
+					<>
+						{ /* 2. Colors */ }
+						<PanelBody
+							title={ __( 'Colors', 'sureforms' ) }
+							initialOpen={ false }
+						>
+							{ colorControls.map( ( control ) => (
+								<div
+									className="components-base-control"
+									key={ control.id }
+								>
+									{ control.component }
+								</div>
+							) ) }
+						</PanelBody>
+
+						{ /* 3. Layout */ }
+						<PanelBody
+							title={ __( 'Layout', 'sureforms' ) }
+							initialOpen={ false }
+							className="srfm-layout-panel"
+						>
+							{ layoutControls.map( ( control ) => (
+								<div
+									className="components-base-control"
+									key={ control.id }
+								>
+									{ control.component }
+								</div>
+							) ) }
+						</PanelBody>
+
+						{ /* 4. Fields */ }
+						<PanelBody
+							title={ __( 'Fields', 'sureforms' ) }
+							initialOpen={ false }
+						>
+							{ fieldControls.map( ( control ) => (
+								<div
+									className="components-base-control"
+									key={ control.id }
+								>
+									{ control.component }
+								</div>
+							) ) }
+						</PanelBody>
+
+						{ /* 5. Button — hidden when no controls remain (e.g. default theme + inline button) */ }
+						{ buttonControls.length > 0 && (
+							<PanelBody
+								title={ __( 'Button', 'sureforms' ) }
+								initialOpen={ false }
+							>
+								{ buttonControls.map( ( control ) => (
+									<div
+										className="components-base-control"
+										key={ control.id }
+									>
+										{ control.component }
+									</div>
+								) ) }
+							</PanelBody>
+						) }
+
+						{ /* Pro can add additional panels via filter */ }
+						{ applyFilters( 'srfm.embed.additionalPanels', null, {
+							attributes,
+							setAttributes,
+						} ) }
+					</>
+				) }
 			</InspectorControls>
 			{ hasResolved ? (
 				<div { ...blockProps }>
@@ -280,6 +535,25 @@ export default ( { attributes, setAttributes } ) => {
 					</Placeholder>
 				</div>
 			) }
+			<UpgradeModal
+				isOpen={ showUpgradeModal }
+				onClose={ () => setShowUpgradeModal( false ) }
+				title={ __( 'Advanced Styling', 'sureforms' ) }
+				heading={ __( 'Unlock Custom Styling', 'sureforms' ) }
+				description={ __(
+					"Switch to Custom Mode to take full control of your form's design and spacing.",
+					'sureforms'
+				) }
+				features={ [
+					__(
+						'Full color control (buttons, fields, text)',
+						'sureforms'
+					),
+					__( 'Row and column gap control', 'sureforms' ),
+					__( 'Field spacing and layout precision', 'sureforms' ),
+					__( 'Complete button styling', 'sureforms' ),
+				] }
+			/>
 		</>
 	);
 };
