@@ -1232,6 +1232,17 @@ class Helper {
 
 		if ( ! empty( $block['attrs']['label'] ) && is_string( $block['attrs']['label'] ) ) {
 			$slug = sanitize_title( $block['attrs']['label'] );
+
+			// If the label contains non-Latin characters (e.g. Japanese, Chinese),
+			// sanitize_title() produces a percent-encoded slug like "%e3%83%95%e3%83%aa".
+			// These are unstable and break conditional logic field matching.
+			// Fall back to the block name to ensure a stable ASCII slug.
+			if ( false !== strpos( $slug, '%' ) ) {
+				$block_name = is_string( $block['blockName'] ) ? $block['blockName'] : '';
+				// Strip the 'srfm/' namespace to match JS-side cleanForSlug() output.
+				$block_name = (string) preg_replace( '/^srfm\//', '', $block_name );
+				$slug       = sanitize_title( $block_name );
+			}
 		}
 
 		if ( ! empty( $prefix ) ) {
