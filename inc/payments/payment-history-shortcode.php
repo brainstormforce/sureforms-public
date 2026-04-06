@@ -615,7 +615,7 @@ class Payment_History_Shortcode {
 				'form'           => $form_title,
 				'amount'         => $amount_display,
 				'next'           => $sub_info['next_payment'],
-				'gateway'        => ucfirst( isset( $sub['gateway'] ) && is_scalar( $sub['gateway'] ) ? strval( $sub['gateway'] ) : '' ),
+				'gateway'        => $this->format_gateway_label( isset( $sub['gateway'] ) && is_scalar( $sub['gateway'] ) ? strval( $sub['gateway'] ) : '' ),
 				'started'        => isset( $sub['created_at'] ) && is_string( $sub['created_at'] )
 					? date_i18n( $date_format, strtotime( $sub['created_at'] ) ) : '—',
 				'status'         => $status,
@@ -644,7 +644,7 @@ class Payment_History_Shortcode {
 				'amount'    => $this->format_amount( isset( $payment['total_amount'] ) && is_numeric( $payment['total_amount'] ) ? floatval( $payment['total_amount'] ) : 0.0, $currency ),
 				'status'    => $status,
 				'type'      => in_array( $type, [ 'subscription', 'renewal' ], true ) ? 'subscription' : 'single',
-				'gateway'   => ucfirst( isset( $payment['gateway'] ) && is_scalar( $payment['gateway'] ) ? strval( $payment['gateway'] ) : '' ),
+				'gateway'   => $this->format_gateway_label( isset( $payment['gateway'] ) && is_scalar( $payment['gateway'] ) ? strval( $payment['gateway'] ) : '' ),
 				'txn'       => isset( $payment['transaction_id'] ) && is_scalar( $payment['transaction_id'] ) ? strval( $payment['transaction_id'] ) : '',
 			];
 
@@ -846,6 +846,30 @@ class Payment_History_Shortcode {
 
 		$label = $labels[ $interval ] ?? $interval;
 		return $interval_count > 1 ? $interval_count . ' ' . $label : $label;
+	}
+
+	/**
+	 * Format a gateway identifier into a display label.
+	 *
+	 * @param string $gateway Gateway identifier (e.g., 'stripe', 'paypal').
+	 * @since x.x.x
+	 * @return string Display label.
+	 */
+	private function format_gateway_label( $gateway ) {
+		$labels = [
+			'stripe' => 'Stripe',
+			'paypal' => 'PayPal',
+		];
+
+		/**
+		 * Filter the gateway display labels map.
+		 *
+		 * @since x.x.x
+		 * @param array<string,string> $labels Gateway ID to display label map.
+		 */
+		$labels = apply_filters( 'srfm_payment_history_gateway_labels', $labels );
+
+		return $labels[ $gateway ] ?? ucfirst( $gateway );
 	}
 
 	/**
