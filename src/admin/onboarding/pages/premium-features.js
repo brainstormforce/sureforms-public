@@ -484,14 +484,7 @@ const PremiumFeatures = () => {
 
 	// Get the display name for the plan
 	const getPlanDisplayName = ( plan ) => {
-		const planNames = {
-			starter: __( 'Starter', 'sureforms' ),
-			pro: __( 'Pro', 'sureforms' ),
-			business: __( 'Business', 'sureforms' ),
-		};
-		return `SureForms ${
-			planNames[ plan ] || __( 'Premium', 'sureforms' )
-		}`;
+		return `SureForms ${ __( 'Business', 'sureforms' ) }`;
 	};
 
 	return (
