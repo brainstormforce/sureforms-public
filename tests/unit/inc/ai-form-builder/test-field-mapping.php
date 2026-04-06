@@ -19,9 +19,9 @@ class Test_Field_Mapping extends TestCase {
 	}
 
 	/**
-	 * Test generate_gutenberg_fields handles fields without helpText.
+	 * Test generate_gutenberg_fields_from_questions handles fields without helpText.
 	 */
-	public function test_generate_gutenberg_fields_without_help_text() {
+	public function test_generate_gutenberg_fields_from_questions() {
 		$request = new WP_REST_Request();
 		$request->set_param(
 			'form_data',
