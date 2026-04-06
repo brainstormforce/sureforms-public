@@ -318,8 +318,10 @@ class Smart_Tags {
 				// During REST API requests (e.g. email notifications triggered by form submission),
 				// REQUEST_URI points to the REST endpoint, not the originating page.
 				// HTTP_REFERER contains the actual page URL the form was submitted from.
-				if ( defined( 'REST_REQUEST' ) && REST_REQUEST && isset( $_SERVER['HTTP_REFERER'] ) ) {
-					return esc_url( Helper::get_string_value( wp_unslash( $_SERVER['HTTP_REFERER'] ) ) );
+				// Nonce verification is not required here as this is a read-only operation that retrieves the referring page URL from the browser-set HTTP_REFERER header for display purposes in email notifications.
+				if ( defined( 'REST_REQUEST' ) && REST_REQUEST && isset( $_SERVER['HTTP_REFERER'] ) && ! empty( $_SERVER['HTTP_REFERER'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+					$referer_url = sanitize_text_field( wp_unslash( $_SERVER['HTTP_REFERER'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+					return esc_url( $referer_url );
 				}
 
 				if ( isset( $_SERVER['REQUEST_URI'] ) ) {
