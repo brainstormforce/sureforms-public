@@ -481,7 +481,12 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 ### 2.7.1 - 8th April 2026 ###
 * New: Added a customizable Field Slug panel to all form blocks.
 * New: Added Payment Description field to the Stripe payment block with smart tag support.
+* Fix: Fixed Elementor form title toggle working in reverse.
 * Fix: Fixed non-Latin character field labels generating unstable slugs that broke conditional confirmation logic.
+* Fix: Fixed PHP warnings for undefined array keys in compliance settings and AI field mapping.
+* Fix: Fixed slugs with underscores not mapping correctly during smart tag and integration processing.
+* Fix: Fixed textarea values losing line breaks in {form:field} smart tags.
+* Fix: Fixed {current_page_url} smart tag resolving to REST API URL in email notifications.
 ### 2.7.0 - 31st March 2026 ###
 * New: Added styling options for Gutenberg SureForms Form Block.
 * New: Added styling options for Bricks Builder SureForms Form Element.
