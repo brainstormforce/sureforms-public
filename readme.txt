@@ -1,6 +1,6 @@
 === SureForms - Contact Form, Payment Form & Other Custom Form Builder ===
 Contributors: brainstormforce
-Tags: forms, contact form, custom forms, payment form, form builder
+Tags: forms, contact form, custom form, payment form, form builder
 Requires at least: 6.4
 Tested up to: 6.9.4
 Requires PHP: 7.4
@@ -8,7 +8,7 @@ Stable tag: 2.7.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-The most beginner-friendly, AI Form Builder for WordPress to create contact forms, payment forms & other custom forms with advanced features, within minutes.
+The most beginner-friendly AI Form Builder for WordPress. Create contact, payment, quiz & custom forms with advanced features in minutes.
 
 == Description ==
 
@@ -75,7 +75,7 @@ SureForms makes advanced features like conditional logic, multi-step forms, quer
 
 #### Payment Forms
 
-SureForms supports a built-in Payment Forms feature. With SureForms, anyone can easily create full-fledged donation forms, event registrations, product checkouts, or any kind of form that needs to accept payments, all without relying on any extra add-on or third-party plugins. This makes collecting payments seamless, secure, and effortless directly through your forms using Stripe & PayPal.
+SureForms supports a built-in Payment Forms feature. With SureForms, anyone can easily create full-fledged donation forms, event registrations, product checkouts, or any kind of form that needs to accept payments, all without relying on any extra add-on or third-party plugins. This makes collecting payments seamless, secure, and effortless directly through your forms using Stripe. PayPal payments are available with SureForms Business.
 
 Here are a few examples of how the Payment Feature in SureForms can power your forms:
 -   [Donation Form](https://sureforms.com/form/donation-form/)
@@ -154,23 +154,71 @@ SureForms gives developers clean APIs, hooks, and well-structured code, making i
 
 ### Premium Features of SureForms 🔥
 
+SureForms Business unlocks advanced capabilities for power users, agencies, and businesses. Here's everything you get:
+
+#### Advanced Form Types
+
 [**Conversational Forms**](https://sureforms.com/features/conversational-form/):
 Chat-like forms, one question at a time, for more conversions.
 
 [**Multi-step Forms**](https://sureforms.com/features/multi-step-forms/):
-Bite-sized forms, less form fatigue for your users.
+Bite-sized forms with progress indicators, less form fatigue for your users.
+
+[**Quiz Forms**](https://sureforms.com/features/quiz/):
+Create scored quizzes and personality tests with result output and grading.
 
 [**Conditional Logic Forms**](https://sureforms.com/features/conditional-logic/):
-Personalized forms based on users' answers.
+Show or hide fields, customize email notifications, and display different confirmation messages based on users' answers.
+
+[**Calculators**](https://sureforms.com/features/calculator-form/):
+Provide instant quotes or results with interactive calculators in your site. Designed to bring more traffic to your site.
+
+#### Pro Field Types
+
+SureForms Business adds these powerful field types on top of the 15+ free fields:
+
+-   Date Picker (with localization and disabled dates)
+-   Time Picker
+-   File Upload (multi-file, type restrictions, role-based access)
+-   Signature Field
+-   Rating Field
+-   Range Slider
+-   Repeater Field (dynamically add field groups)
+-   Hidden Field
+-   Custom HTML
+-   Password Field
+
+#### Advanced Features
 
 [**PDF Generation**](https://sureforms.com/features/pdf-generator/):
 Instantly create downloadable PDFs of form submissions for records or sharing.
 
-[**Custom Registration & Login Forms**](https://sureforms.com/features/login-and-registration/):
-Fully functional, branded Registration & Login form for your site using just a block.
+[**Save & Resume**](https://sureforms.com/features/save-and-resume/):
+Let users save their progress and come back to complete the form later.
 
-[**Advanced Native Integration**](https://sureforms.com/integrations/):
+[**Custom Registration & Login Forms**](https://sureforms.com/features/login-and-registration/):
+Fully functional, branded Registration & Login forms for your site using just a block.
+
+**Custom Post Type Creation**:
+Create WordPress posts or custom post types directly from form submissions.
+
+**Field Restrictions:**
+Restrict form submissions by IP, country, keywords, user login, or password — with regex support for advanced validation.
+
+**Conditional Emails & Confirmations:**
+Send different email notifications and show different confirmation messages based on form field values.
+
+**Dynamic Options:**
+Populate dropdowns and multiple choice fields dynamically from post types, taxonomies, or user roles.
+
+**Embed Styling:**
+Customize form appearance with advanced styling options when embedding forms via shortcode or page builders.
+
+#### Integrations & Automation
+
+[**Advanced Native Integrations**](https://sureforms.com/integrations/):
 Connect your forms natively with top apps and services to automate workflows and save time without any third-party add-ons or plugins.
+
 SureForms connects natively with:
 -   Google Sheets
 -   Mailchimp
@@ -192,14 +240,29 @@ SureForms connects natively with:
 -   Hostinger Reach
 -   AgileCRM
 -   WPFusion
+-   Klaviyo
+-   Keap
+-   Notion
 -   MailPoet
 -   MailerPress
--   Keep
 -   Zoho CRM
-And new integrations getting added almost every month.
+-   SureContact
 
-[**Calculators**](https://sureforms.com/features/calculator-form/):
-Provide instant quotes or results with interactive calculators in your site. Designed to bring more traffic to your site.
+**Zapier Integration:**
+Connect your forms with 5,000+ apps through Zapier for limitless automation.
+
+**Webhooks:**
+Send form data to any external URL or API endpoint with conditional webhook triggers.
+
+**PayPal Payments:**
+Accept PayPal payments alongside Stripe for flexible payment collection.
+
+#### Page Builder Styling
+
+Customize form appearance directly within your favorite page builder:
+-   Gutenberg Block Editor — styling controls in the block sidebar
+-   Bricks Builder — styling options in the Bricks panel
+-   Elementor — styling controls in the Elementor widget
 
 With SureForms, we are here to fix some real issues users face with WordPress Forms. That's why **300,000+ websites** have embraced SureForms for all their form related needs.
 
@@ -304,6 +367,8 @@ To improve the user experience, SureForms may use the following 3rd party servic
 
 -   **reCAPTCHA** -- is used for spam prevention and to ensure that the submissions made through the form are done by real human users.
 
+-   **Stripe** -- is used for processing payment forms. [TOS](https://stripe.com/legal/ssa) and [Privacy Policy](https://stripe.com/privacy)
+
 == Blocks ==
 
 This plugin provides 16 blocks for all users:
@@ -382,13 +447,25 @@ templates that can be used to build your forms fast.
 = Does SureForms support Multi-step Forms or Conversational Forms?
 
 Yes. You can easily create Multi-step Forms as well as Conversational
-Forms to improve user experience and conversion rates with SureForms Pro
+Forms to improve user experience and conversion rates with SureForms Business
 plans.
+
+= Can I create quiz forms with SureForms? =
+
+Yes! SureForms Business includes a Quiz module. You can create scored quizzes with grading and personality tests with result output — all with the same drag-and-drop builder.
+
+= Does SureForms support file uploads? =
+
+Yes! With SureForms Business, you can add file upload fields to your forms. It supports multi-file uploads, file type restrictions, and role-based access control for uploaded files.
+
+= What integrations does SureForms support? =
+
+SureForms Business connects natively with services including Google Sheets, Mailchimp, HubSpot, ActiveCampaign, Klaviyo, Zoho CRM, Notion, and many more. You can also use Zapier to connect with 5,000+ additional apps, or use webhooks to send data to any API endpoint.
 
 = Does SureForms support Payment Forms? =
 
 Yes! SureForms has built-in Payment Form support.
-You can collect payments securely through Stripe & PayPal without any add-ons or extra plugins.
+You can collect payments securely through Stripe in the free version. PayPal payments are available with SureForms Business. No add-ons or extra plugins needed.
 
 == Screenshot ==
 

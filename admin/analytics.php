@@ -609,7 +609,7 @@ class Analytics {
 	}
 
 	/**
-	 * Track first time a form is published.
+	 * Track first time a form is published (activation event).
 	 *
 	 * @param string   $new_status New post status.
 	 * @param string   $old_status Old post status.
@@ -625,12 +625,20 @@ class Analytics {
 		$is_ai       = ! empty( get_post_meta( $post->ID, '_srfm_is_ai_generated', true ) );
 		$block_count = substr_count( $post->post_content, '<!-- wp:srfm/' );
 
+		// Time-to-value: days between install and first form published.
+		$install_time       = get_site_option( 'sureforms_usage_installed_time', 0 );
+		$days_since_install = 0;
+		if ( $install_time > 0 ) {
+			$days_since_install = (int) floor( ( time() - $install_time ) / DAY_IN_SECONDS );
+		}
+
 		self::events()->track(
 			'first_form_published',
 			(string) $post->ID,
 			[
-				'is_ai_generated' => $is_ai,
-				'block_count'     => $block_count,
+				'is_ai_generated'    => (string) (int) $is_ai,
+				'block_count'        => (string) $block_count,
+				'days_since_install' => (string) $days_since_install,
 			]
 		);
 	}
@@ -899,6 +907,29 @@ class Analytics {
 			&& \SRFM\Inc\Payments\Stripe\Stripe_Helper::is_stripe_connected() ) {
 			$mode = \SRFM\Inc\Payments\Stripe\Stripe_Helper::get_stripe_mode();
 			self::events()->track( 'stripe_connected', ! empty( $mode ) ? $mode : 'live' );
+		}
+
+		// first_ai_form_generated: detect if any AI-generated form exists.
+		// Guard with is_tracked() to skip the meta_query after the event is already tracked.
+		if ( ! self::events()->is_tracked( 'first_ai_form_generated' ) ) {
+			$ai_forms = get_posts(
+				[
+					'post_type'      => SRFM_FORMS_POST_TYPE,
+					'post_status'    => 'any',
+					'posts_per_page' => 1,
+					'fields'         => 'ids',
+					'meta_query'     => [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Runs once per lifecycle via is_tracked guard.
+						[
+							'key'     => '_srfm_is_ai_generated',
+							'value'   => '',
+							'compare' => '!=',
+						],
+					],
+				]
+			);
+			if ( ! empty( $ai_forms ) ) {
+				self::events()->track( 'first_ai_form_generated' );
+			}
 		}
 
 		// MCP / Abilities API first-enable events.
