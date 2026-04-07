@@ -982,7 +982,7 @@ class Analytics {
 				}
 
 				if ( ! empty( $onboarding_analytics['premiumFeatures']['selectedFeatures'] ) && is_array( $onboarding_analytics['premiumFeatures']['selectedFeatures'] ) ) {
-					$premium = array_filter(
+					$premium                                       = array_filter(
 						$onboarding_analytics['premiumFeatures']['selectedFeatures'],
 						static function( $f ) {
 							return 'ai-form-generation' !== $f && 'entries' !== $f;
