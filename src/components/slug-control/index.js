@@ -11,7 +11,7 @@ import { select, dispatch } from '@wordpress/data';
  * Internal dependencies
  */
 import SRFMTextControl from '@Components/text-control';
-import { setFormSpecificSmartTags } from '@Utils/Helpers';
+import { setFormSpecificSmartTags, lockBlockSlugByBlockId } from '@Utils/Helpers';
 
 /**
  * Collect all slug values in the editor, excluding the block identified
@@ -40,7 +40,7 @@ const collectExistingSlugs = ( blocks, excludeClientId ) => {
 	return slugs;
 };
 
-const SlugControl = ( { slug, setAttributes, clientId } ) => {
+const SlugControl = ( { slug, setAttributes, clientId, blockId } ) => {
 	const [ localSlug, setLocalSlug ] = useState( slug );
 	const [ isDuplicate, setIsDuplicate ] = useState( false );
 	const slugCommittedRef = useRef( false );
@@ -96,6 +96,11 @@ const SlugControl = ( { slug, setAttributes, clientId } ) => {
 			setLocalSlug( slug );
 			setIsDuplicate( false );
 			return;
+		}
+
+		// Lock the slug so prepareBlockSlugs no longer re-derives it on label change.
+		if ( blockId ) {
+			lockBlockSlugByBlockId( blockId );
 		}
 
 		// Commit the new slug. The useEffect watching `slug` will refresh

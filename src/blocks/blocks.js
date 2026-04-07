@@ -330,6 +330,7 @@ addFilter(
 							slug={ props?.attributes?.slug ?? '' }
 							setAttributes={ props?.setAttributes }
 							clientId={ props?.clientId }
+							blockId={ props?.attributes?.block_id }
 						/>
 					</PanelBody>
 				),

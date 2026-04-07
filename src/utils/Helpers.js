@@ -764,6 +764,18 @@ export const prepareBlockSlugs = ( updateBlockAttributes, srfmBlocks ) => {
 };
 
 /**
+ * Lock a block's slug by block_id so it is no longer subject to label-change re-derivation.
+ *
+ * Called when the user manually edits a slug via the SlugControl component.
+ *
+ * @param {string} blockId - The block_id attribute of the block to lock.
+ * @since x.x.x
+ */
+export const lockBlockSlugByBlockId = ( blockId ) => {
+	_slugAutoLabels.delete( blockId );
+};
+
+/**
  * Lock a block's slug so it is no longer subject to label-change re-derivation.
  *
  * Called when the user picks a {form:slug} shortcode from the smart tag picker.
