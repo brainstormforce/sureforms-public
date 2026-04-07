@@ -478,6 +478,10 @@ You can collect payments securely through Stripe in the free version. PayPal pay
 You can report the issue through our [Bug Bounty Program](https://brainstormforce.com/bug-bounty-program/). We collaborate with Patchstack to provide opportunities for researchers to report vulnerabilities. The Patchstack team will help validate, triage, and handle any reported security issues.
 
 == Changelog ==
+= x.x.x =
+* New: Added Payment Description field to the Stripe payment block with smart tag support.
+* New: Added a customizable Field Slug panel to all form blocks.
+* Fix: Fixed non-Latin character field labels generating unstable slugs that broke conditional confirmation logic.
 = 2.7.0 - 31st March 2026 =
 * New: Added styling options for Gutenberg SureForms Form Block.
 * New: Added styling options for Bricks Builder SureForms Form Element.

@@ -315,6 +315,15 @@ class Smart_Tags {
 					return esc_url( site_url( $request_uri ) );
 				}
 
+				// During REST API requests (e.g. email notifications triggered by form submission),
+				// REQUEST_URI points to the REST endpoint, not the originating page.
+				// HTTP_REFERER contains the actual page URL the form was submitted from.
+				// Nonce verification is not required here as this is a read-only operation that retrieves the referring page URL from the browser-set HTTP_REFERER header for display purposes in email notifications.
+				if ( defined( 'REST_REQUEST' ) && REST_REQUEST && isset( $_SERVER['HTTP_REFERER'] ) && ! empty( $_SERVER['HTTP_REFERER'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+					$referer_url = sanitize_text_field( wp_unslash( $_SERVER['HTTP_REFERER'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+					return esc_url( $referer_url );
+				}
+
 				if ( isset( $_SERVER['REQUEST_URI'] ) ) {
 					$request_uri = sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) );
 					return esc_url( site_url( $request_uri ) );
@@ -433,6 +442,7 @@ class Smart_Tags {
 
 			$label      = explode( '-lbl-', $submission_item_key )[1];
 			$slug       = implode( '-', array_slice( explode( '-', $label ), 1 ) );
+			$slug       = str_replace( ' ', '_', $slug );
 			$block_type = explode( '-lbl-', $submission_item_key )[0];
 			if ( $slug === $target_slug ) {
 
@@ -497,8 +507,9 @@ class Smart_Tags {
 					// Step 1 - Sanitize raw input.
 					$sanitized_content = Helper::sanitize_textarea( Helper::get_string_value( $submission_item_value ) );
 					// Step 2 - Decode HTML entities to preserve formatting.
-					$decoded_content   = html_entity_decode( $sanitized_content );
-					$replacement_data .= $decoded_content;
+					$decoded_content = html_entity_decode( $sanitized_content );
+					// Step 3 - Convert newlines to <br> tags so line breaks render in HTML emails.
+					$replacement_data .= nl2br( $decoded_content );
 				} else {
 					// Check if we should skip auto-linking (e.g., when building redirect URLs with query params).
 					$smart_tag_context = is_array( $form_data ) && ! empty( $form_data['smart_tag_context'] ) ? $form_data['smart_tag_context'] : '';
@@ -568,7 +579,7 @@ class Smart_Tags {
 		$property    = $matches[2];
 
 		// Valid properties for payment smart tags.
-		$valid_properties = [ 'order-id', 'amount', 'email', 'name', 'status' ];
+		$valid_properties = [ 'order-id', 'amount', 'email', 'name', 'status', 'description' ];
 		if ( ! in_array( $property, $valid_properties, true ) ) {
 			return '';
 		}
@@ -657,9 +668,65 @@ class Smart_Tags {
 				}
 				return ! empty( $payment_entry['status'] ) ? sanitize_text_field( $payment_entry['status'] ) : '';
 
+			case 'description':
+				// Read paymentDescription from the payment block attribute in form post content.
+				$form_id  = ! empty( $payment_entry['form_id'] ) ? absint( $payment_entry['form_id'] ) : 0;
+				$block_id = ! empty( $payment_entry['block_id'] ) ? sanitize_text_field( $payment_entry['block_id'] ) : '';
+
+				if ( empty( $form_id ) || empty( $block_id ) ) {
+					return '';
+				}
+
+				$form_post = get_post( $form_id );
+				if ( ! $form_post || empty( $form_post->post_content ) ) {
+					return '';
+				}
+
+				$blocks      = parse_blocks( $form_post->post_content );
+				$description = self::find_payment_block_description( $blocks, $block_id );
+				return sanitize_text_field( $description );
+
 			default:
 				return '';
 		}
+	}
+
+	/**
+	 * Find paymentDescription attribute from a payment block by block_id.
+	 *
+	 * Recursively searches parsed blocks (including innerBlocks) for a
+	 * srfm/payment block matching the given block_id and returns its
+	 * paymentDescription attribute.
+	 *
+	 * @param array<mixed> $blocks   Parsed blocks array from parse_blocks().
+	 * @param string       $block_id The block_id to match.
+	 * @since x.x.x
+	 * @return string The payment description or empty string.
+	 */
+	private static function find_payment_block_description( $blocks, $block_id ) {
+		foreach ( $blocks as $block ) {
+			if ( ! is_array( $block ) ) {
+				continue;
+			}
+			$attrs = (array) ( $block['attrs'] ?? [] );
+
+			if ( 'srfm/payment' === ( $block['blockName'] ?? '' ) &&
+				isset( $attrs['block_id'] ) &&
+				$attrs['block_id'] === $block_id
+			) {
+				return (string) ( $attrs['paymentDescription'] ?? '' );
+			}
+
+			// Search innerBlocks recursively.
+			if ( ! empty( $block['innerBlocks'] ) ) {
+				$found = self::find_payment_block_description( (array) $block['innerBlocks'], $block_id );
+				if ( '' !== $found ) {
+					return $found;
+				}
+			}
+		}
+
+		return '';
 	}
 
 	/**
