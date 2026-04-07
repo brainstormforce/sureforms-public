@@ -137,7 +137,7 @@ class Payment_Markup extends Base {
 	 * Payment description shown on receipts and in the payment dashboard.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 2.7.1
 	 */
 	protected $payment_description;
 

@@ -4,7 +4,7 @@ Tags: forms, contact form, custom form, payment form, form builder
 Requires at least: 6.4
 Tested up to: 6.9.4
 Requires PHP: 7.4
-Stable tag: 2.7.0
+Stable tag: 2.7.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -478,10 +478,15 @@ You can collect payments securely through Stripe in the free version. PayPal pay
 You can report the issue through our [Bug Bounty Program](https://brainstormforce.com/bug-bounty-program/). We collaborate with Patchstack to provide opportunities for researchers to report vulnerabilities. The Patchstack team will help validate, triage, and handle any reported security issues.
 
 == Changelog ==
-= x.x.x =
-* New: Added Payment Description field to the Stripe payment block with smart tag support.
+= 2.7.1 - 8th April 2026 =
 * New: Added a customizable Field Slug panel to all form blocks.
+* New: Added Payment Description field to the Stripe payment block with smart tag support.
+* Fix: Fixed Elementor form title toggle working in reverse.
 * Fix: Fixed non-Latin character field labels generating unstable slugs that broke conditional confirmation logic.
+* Fix: Fixed PHP warnings for undefined array keys in compliance settings and AI field mapping.
+* Fix: Fixed slugs with underscores not mapping correctly during smart tag and integration processing.
+* Fix: Fixed textarea values losing line breaks in {form:field} smart tags.
+* Fix: Fixed {current_page_url} smart tag resolving to REST API URL in email notifications.
 = 2.7.0 - 31st March 2026 =
 * New: Added styling options for Gutenberg SureForms Form Block.
 * New: Added styling options for Bricks Builder SureForms Form Element.
@@ -499,17 +504,6 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 * Fix: Fixed Stripe payment block not displaying correctly when the same form is embedded multiple times on a page.
 * Fix: Fixed entry Previous/Next navigation returning entries from other forms instead of the current form.
 * Fix: Resolved intermittent form submission failures on sites with page caching plugins due to expired security tokens.
-= 2.5.2 - 12th March 2026 =
-* New: Added the “Send as Raw HTML” option in email notifications for fully structured HTML emails.
-* New: Added the Learn section.
-* Improvement: Improved UX copy across validation messages, settings, and form management UI.
-* Fix: Added the `srfm_confirmation_links_open_in_new_tab` filter to allow confirmation message links to open in the same tab.
-* Fix: Fixed the page dropdown not loading all pages on large sites with 1,700+ pages by replacing the bulk page fetch with a paginated, searchable REST endpoint.
-* Fix: Preserved input formatting in the Entries view.
-* Fix: Fixed honeypot spam protection bypass when bots strip the honeypot field entirely.
-* Fix: Fixed slug generation not working for newly added blocks in the editor.
-* Fix: Fixed unique field validation applying across all forms on the page instead of the submitted form only.
-* Fix: Fixed multi-file uploads not saving to the SureForms custom upload directory.
 The full changelog is available [here](https://sureforms.com/whats-new/).
 
 == Upgrade Notice ==

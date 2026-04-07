@@ -700,7 +700,7 @@ class Smart_Tags {
 	 *
 	 * @param array<mixed> $blocks   Parsed blocks array from parse_blocks().
 	 * @param string       $block_id The block_id to match.
-	 * @since x.x.x
+	 * @since 2.7.1
 	 * @return string The payment description or empty string.
 	 */
 	private static function find_payment_block_description( $blocks, $block_id ) {
