@@ -18,7 +18,7 @@ import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
 import { FieldsPreview } from '../FieldsPreview.jsx';
 import ConditionalLogic from '@Components/conditional-logic';
-import { attributeOptionsWithFilter } from '@Components/hooks';
+import { attributeOptionsWithFilter, afterAttributePanelBody } from '@Components/hooks';
 import Separator from '@Components/separator';
 import MultiButtonsControl from '@Components/multi-buttons-control';
 import BillingCyclesControl from './components/billing-cycles-control.js';
@@ -519,6 +519,9 @@ const Edit = ( props ) => {
 								option?.component ? option.component : null
 							) }
 						</SRFMAdvancedPanelBody>
+						{ afterAttributePanelBody( props ).map(
+							( panel ) => panel.component
+						) }
 					</InspectorTab>
 					<InspectorTab { ...SRFMTabs.advance }>
 						<ConditionalLogic

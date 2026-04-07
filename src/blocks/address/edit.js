@@ -23,9 +23,11 @@ import { decodeHtmlEntities } from '@Blocks/util';
 
 import countries from './countries.json';
 import ConditionalLogic from '@Components/conditional-logic';
+import { afterAttributePanelBody } from '@Components/hooks';
 import HelpText from '@Components/misc/HelpText';
 
-const Edit = ( { clientId, attributes, setAttributes } ) => {
+const Edit = ( props ) => {
+	const { clientId, attributes, setAttributes } = props;
 	const { label, block_id, formId, preview, help, className } = attributes;
 
 	const currentFormId = useGetCurrentFormId( clientId );
@@ -124,6 +126,9 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 								}
 							/>
 						</SRFMAdvancedPanelBody>
+						{ afterAttributePanelBody( props ).map(
+							( panel ) => panel.component
+						) }
 					</InspectorTab>
 					<InspectorTab { ...SRFMTabs.advance }>
 						<ConditionalLogic
