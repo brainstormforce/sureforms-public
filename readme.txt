@@ -403,7 +403,7 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 == Changelog ==
 = x.x.x =
 * New: Added Payment Description field to the Stripe payment block with smart tag support.
-* New: Added extensible Field Slug panel via `srfm.block.after.attributes.panel.body` filter hook for all form field blocks.
+* New: Added a customizable Field Slug panel to all form blocks.
 * Fix: Fixed non-Latin character field labels generating unstable slugs that broke conditional confirmation logic.
 = 2.7.0 - 31st March 2026 =
 * New: Added styling options for Gutenberg SureForms Form Block.
