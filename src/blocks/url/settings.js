@@ -12,8 +12,10 @@ import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
 import SRFMTextControl from '@Components/text-control';
 import { useErrMessage } from '@Blocks/util';
 import ConditionalLogic from '@Components/conditional-logic';
+import { afterAttributePanelBody } from '@Components/hooks';
 
-export default ( { attributes, setAttributes } ) => {
+export default ( props ) => {
+	const { attributes, setAttributes } = props;
 	const { help, required, defaultValue, errorMsg, readOnly } = attributes;
 
 	const {
@@ -99,6 +101,9 @@ export default ( { attributes, setAttributes } ) => {
 							/>
 						) }
 					</SRFMAdvancedPanelBody>
+					{ afterAttributePanelBody( props ).map(
+						( panel ) => panel.component
+					) }
 				</InspectorTab>
 				<InspectorTab { ...SRFMTabs.style }></InspectorTab>
 				<InspectorTab { ...SRFMTabs.advance }>

@@ -97,9 +97,13 @@
 			"type": "string",
 			"default": ""
 		},
-    "paymentMethods": {
+		"paymentMethods": {
 			"type": "array",
 			"default": ["stripe"]
+		},
+		"paymentDescription": {
+			"type": "string",
+			"default": ""
 		}
 	}
 }

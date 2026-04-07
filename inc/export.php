@@ -240,6 +240,19 @@ class Export {
 			$post_meta    = $form_data['post_meta'];
 			$post_type    = sanitize_text_field( $form_data['post']['post_type'] );
 
+			// Remove percent-encoded slugs from imported form content.
+			// Non-Latin labels produce broken slugs like %e3%83%95%e3%83%aa
+			// via sanitize_title(). Clearing them lets process_blocks()
+			// regenerate clean block-name-based slugs on save.
+			$cleaned_content = preg_replace(
+				'/"slug":"(%[a-fA-F0-9]{2}[^"]*)"/',
+				'"slug":""',
+				$post_content
+			);
+			if ( is_string( $cleaned_content ) ) {
+				$post_content = $cleaned_content;
+			}
+
 			$post_content = addslashes( $post_content );
 
 			// Check if sureforms/form exists in post_content.
