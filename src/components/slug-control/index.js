@@ -45,11 +45,32 @@ const SlugControl = ( { slug, setAttributes, clientId, blockId } ) => {
 	const [ isDuplicate, setIsDuplicate ] = useState( false );
 	const slugCommittedRef = useRef( false );
 
+	// Refs to track latest values for the unmount cleanup.
+	const localSlugRef = useRef( localSlug );
+	const slugRef = useRef( slug );
+	const isDuplicateRef = useRef( isDuplicate );
+	localSlugRef.current = localSlug;
+	slugRef.current = slug;
+	isDuplicateRef.current = isDuplicate;
+
 	// Sync local state if slug changes externally (e.g. block duplication resets it)
 	useEffect( () => {
 		setLocalSlug( slug );
 		setIsDuplicate( false );
 	}, [ slug ] );
+
+	// Commit pending slug change on unmount (e.g. block deselected by clicking outside).
+	useEffect( () => {
+		return () => {
+			const pending = localSlugRef.current;
+			if ( pending && pending !== slugRef.current && ! isDuplicateRef.current ) {
+				if ( blockId ) {
+					lockBlockSlugByBlockId( blockId );
+				}
+				setAttributes( { slug: pending } );
+			}
+		};
+	}, [] ); // eslint-disable-line react-hooks/exhaustive-deps
 
 	// Refresh smart tags after the store has processed the slug update.
 	// This runs when the slug prop changes (i.e. after setAttributes has been
