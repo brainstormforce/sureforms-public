@@ -150,9 +150,6 @@ class Analytics {
 		];
 
 		$stats_data['plugin_data']['sureforms'] = array_merge_recursive( $stats_data['plugin_data']['sureforms'], $this->global_settings_data() );
-		// Add onboarding analytics data.
-		$stats_data['plugin_data']['sureforms'] = array_merge_recursive( $stats_data['plugin_data']['sureforms'], $this->onboarding_analytics_data() );
-
 		// Add KPI tracking data.
 		$kpi_data = $this->get_kpi_tracking_data();
 		if ( ! empty( $kpi_data ) ) {
@@ -951,9 +948,52 @@ class Analytics {
 		$source        = ! empty( $bsf_referrers['sureforms'] ) ? $bsf_referrers['sureforms'] : 'self';
 		self::events()->track( 'plugin_activated', SRFM_VER, [ 'source' => $source ] );
 
-		// onboarding_completed: detect completed state.
+		// One-time: re-send onboarding_completed with full properties (v2).
+		if ( ! Helper::get_srfm_option( 'onboarding_event_v2_flushed', false )
+			&& \SRFM\Inc\Onboarding::get_instance()->get_onboarding_status() ) {
+			self::events()->flush_pushed( [ 'onboarding_completed' ] );
+			Helper::update_srfm_option( 'onboarding_event_v2_flushed', true );
+		}
+
+		// onboarding_completed: detect completed state with full onboarding details.
 		if ( \SRFM\Inc\Onboarding::get_instance()->get_onboarding_status() ) {
-			self::events()->track( 'onboarding_completed' );
+			$onboarding_props     = [];
+			$onboarding_analytics = Helper::get_srfm_option( 'onboarding_analytics', [] );
+
+			if ( ! empty( $onboarding_analytics ) && is_array( $onboarding_analytics ) ) {
+				if ( ! empty( $onboarding_analytics['skippedSteps'] ) && is_array( $onboarding_analytics['skippedSteps'] ) ) {
+					$onboarding_props['skipped_steps'] = implode( ',', $onboarding_analytics['skippedSteps'] );
+				}
+
+				if ( isset( $onboarding_analytics['suremailInstalled'] ) ) {
+					$onboarding_props['suremail_installed'] = (bool) $onboarding_analytics['suremailInstalled'] ? 'yes' : 'no';
+				}
+
+				if ( isset( $onboarding_analytics['accountConnected'] ) ) {
+					$onboarding_props['account_connected'] = (bool) $onboarding_analytics['accountConnected'] ? 'yes' : 'no';
+				}
+
+				if ( isset( $onboarding_analytics['completed'] ) ) {
+					$onboarding_props['completed'] = (bool) $onboarding_analytics['completed'] ? 'yes' : 'no';
+				}
+
+				if ( isset( $onboarding_analytics['exitedEarly'] ) ) {
+					$onboarding_props['exited_early'] = (bool) $onboarding_analytics['exitedEarly'] ? 'yes' : 'no';
+				}
+
+				if ( ! empty( $onboarding_analytics['premiumFeatures']['selectedFeatures'] ) && is_array( $onboarding_analytics['premiumFeatures']['selectedFeatures'] ) ) {
+					$premium = array_filter(
+						$onboarding_analytics['premiumFeatures']['selectedFeatures'],
+						static function( $f ) {
+							return 'ai-form-generation' !== $f && 'entries' !== $f;
+						}
+					);
+					$onboarding_props['selected_premium_features'] = implode( ',', $premium );
+					$onboarding_props['premium_features_count']    = (string) count( $premium );
+				}
+			}
+
+			self::events()->track( 'onboarding_completed', '', $onboarding_props );
 		}
 
 		// stripe_connected: detect connection state.
