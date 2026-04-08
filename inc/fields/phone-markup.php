@@ -86,11 +86,32 @@ class Phone_Markup extends Base {
 		$this->country_filter_type   = $attributes['countryFilterType'] ?? 'include';
 		$this->include_countries     = $attributes['includeCountries'] ?? [];
 		$this->exclude_countries     = $attributes['excludeCountries'] ?? [];
+
+		// When auto country is enabled, derive country from the WordPress site locale
+		// instead of making a client-side API call to ipapi.co.
+		if ( $this->auto_country ) {
+			$this->default_country = $this->get_locale_country();
+		}
 		$this->set_unique_slug();
 		$this->set_field_name( $this->unique_slug );
 		$this->set_markup_properties( $this->input_label, true );
 		$this->set_aria_described_by();
 		$this->set_label_as_placeholder( $this->input_label );
+	}
+
+	/**
+	 * Derive a 2-letter country code from the WordPress locale.
+	 *
+	 * @since x.x.x
+	 * @return string Lowercase 2-letter country code, defaults to 'us'.
+	 */
+	private function get_locale_country() {
+		$locale = get_locale(); // e.g., 'en_US', 'hi_IN', 'de_DE', 'en'.
+		if ( false !== strpos( $locale, '_' ) ) {
+			$parts = explode( '_', $locale );
+			return strtolower( $parts[1] );
+		}
+		return 'us';
 	}
 
 	/**

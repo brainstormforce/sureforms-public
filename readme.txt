@@ -363,8 +363,6 @@ To improve the user experience, SureForms may use the following 3rd party servic
 
 -   **Google Fonts** -- are loaded to add additional fonts to your website. Google's [TOS](https://policies.google.com/terms) and [Privacy Policy](https://policies.google.com/privacy)
 
--   **ipapi** -- is used to auto detect the current user region Phone Field [TOS](https://ipapi.co/terms/) and [Privacy Policy](https://ipapi.co/privacy/)
-
 -   **reCAPTCHA** -- is used for spam prevention and to ensure that the submissions made through the form are done by real human users.
 
 -   **Stripe** -- is used for processing payment forms. [TOS](https://stripe.com/legal/ssa) and [Privacy Policy](https://stripe.com/privacy)

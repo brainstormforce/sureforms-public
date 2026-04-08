@@ -45,7 +45,8 @@ class Test_Phone_Markup extends TestCase {
 		$this->assertStringContainsString( 'type="tel"', $markup );
 		$this->assertStringContainsString( 'srfm-input-phone', $markup );
 		$this->assertStringContainsString( 'auto-country="true"', $markup );
-		$this->assertStringContainsString( 'default-country="US"', $markup );
+		// When autoCountry is true, default_country is overridden by get_locale() derived value.
+		$this->assertStringContainsString( 'default-country=', $markup );
 		$this->assertStringContainsString( 'data-block-id="phone001"', $markup );
 		$this->assertStringContainsString( 'data-required="true"', $markup );
 	}

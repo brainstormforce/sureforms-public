@@ -55,21 +55,14 @@ export const PhoneComponent = ( { setAttributes, attributes, blockID } ) => {
 
 	useEffect( () => {
 		if ( autoCountry && country === '' ) {
-			fetch( 'https://ipapi.co/json' )
-				.then( ( res ) => res.json() )
-				.then( ( res ) => {
-					let current_loc = res.country_code;
-					current_loc = current_loc.toLowerCase();
-					// Validate against filters
-					current_loc = getValidCountry( current_loc );
-					setCountry( current_loc );
-				} )
-				.catch( ( e ) => {
-					console.log( e );
-					// On error, set validated fallback
-					const fallback = getValidCountry( 'us' );
-					setCountry( fallback );
-				} );
+			// Derive country from WP site locale set on <html lang="en-US">.
+			const htmlLang = document.documentElement.lang || '';
+			let detectedCountry = 'us';
+			if ( htmlLang.includes( '-' ) ) {
+				detectedCountry = htmlLang.split( '-' ).pop().toLowerCase();
+			}
+			detectedCountry = getValidCountry( detectedCountry );
+			setCountry( detectedCountry );
 		}
 	}, [
 		autoCountry,
