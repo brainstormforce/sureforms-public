@@ -1,5 +1,6 @@
 import parse from 'html-react-parser';
 import svgIcons from '@Svg/svgs.json';
+import { forwardRef } from '@wordpress/element';
 
 export const modules = ( id ) => ( {
 	toolbar: {
@@ -7,9 +8,9 @@ export const modules = ( id ) => ( {
 	},
 } );
 
-export const QuillToolbar = ( { id } ) => {
+export const QuillToolbar = forwardRef( ( _props, ref ) => {
 	return (
-		<div id={ id }>
+		<div className="ql-toolbar" ref={ ref }>
 			<span className="ql-formats">
 				<select className="ql-header" defaultValue="false">
 					<option value="1">Heading 1</option>
@@ -31,7 +32,7 @@ export const QuillToolbar = ( { id } ) => {
 			</span>
 		</div>
 	);
-};
+} );
 
 export const formats = [
 	'header',
