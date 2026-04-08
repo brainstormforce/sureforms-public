@@ -11,7 +11,7 @@ const DEFAULT_FORM_DATA = {
 	firstName: '',
 	lastName: '',
 	email: '',
-	consent: false,
+	consent: true,
 };
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -184,7 +184,7 @@ const UserDetails = () => {
 								<span>
 									{ createInterpolateElement(
 										__(
-											'Get notified about new updates and features. Plus help improve SureForms by sharing how you use the plugin. View our <a>Privacy Policy</a>.',
+											'Stay in the loop and help shape SureForms! Get feature updates, and help us build a better SureForms by sharing how you use the plugin. <a>Privacy Policy</a>.',
 											'sureforms'
 										),
 										{
