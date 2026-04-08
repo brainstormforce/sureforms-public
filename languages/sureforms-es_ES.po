@@ -16,7 +16,7 @@ msgstr ""
 #: sureforms.php
 #: admin/admin.php:319
 #: admin/admin.php:320
-#: admin/admin.php:1745
+#: admin/admin.php:1754
 #: inc/abilities/abilities-registrar.php:133
 #: inc/gutenberg-hooks.php:109
 #: inc/page-builders/bricks/elements/form-widget.php:67
@@ -51,6 +51,7 @@ msgstr "https://sureforms.com/"
 #: assets/build/learn.js:172
 #: assets/build/page_header.js:172
 #: assets/build/payments.js:172
+#: assets/build/quizEmptyState.js:172
 #: assets/build/settings.js:2
 #: assets/build/templatePicker.js:172
 msgid "Dashboard"
@@ -65,6 +66,7 @@ msgstr "Tablero"
 #: assets/build/learn.js:172
 #: assets/build/page_header.js:172
 #: assets/build/payments.js:172
+#: assets/build/quizEmptyState.js:172
 #: assets/build/settings.js:2
 msgid "Settings"
 msgstr "Configuraciones"
@@ -77,7 +79,7 @@ msgstr "Nuevo formulario"
 
 #: admin/admin.php:567
 #: admin/admin.php:568
-#: admin/admin.php:1782
+#: admin/admin.php:1791
 #: inc/global-settings/email-summary.php:225
 #: assets/build/dashboard.js:172
 #: assets/build/entries.js:172
@@ -85,6 +87,7 @@ msgstr "Nuevo formulario"
 #: assets/build/learn.js:172
 #: assets/build/page_header.js:172
 #: assets/build/payments.js:172
+#: assets/build/quizEmptyState.js:172
 #: assets/build/settings.js:2
 msgid "Entries"
 msgstr "Entradas"
@@ -111,18 +114,18 @@ msgid "Nonce verification failed."
 msgstr "La verificación del nonce falló."
 
 #. translators: %1$s: Opening anchor tag with URL, %2$s: Closing anchor tag, %3$s: SureForms Pro Plugin Name.
-#: admin/admin.php:1374
+#: admin/admin.php:1383
 #, php-format
 msgid "Please %1$sactivate%2$s your copy of %3$s to get new features, access support, receive update notifications, and more."
 msgstr "Por favor, %1$sactiva%2$s tu copia de %3$s para obtener nuevas funciones, acceder al soporte, recibir notificaciones de actualizaciones y más."
 
 #. translators: %1$s: SureForms version, %2$s: SureForms Pro Plugin Name, %3$s: SureForms Pro Version, %4$s: Anchor tag open, %5$s: Closing anchor tag.
-#: admin/admin.php:1392
+#: admin/admin.php:1401
 #, php-format
 msgid "SureForms %1$s requires minimum %2$s %3$s to work properly. Please update to the latest version from %4$shere%5$s."
 msgstr "SureForms %1$s requiere un mínimo de %2$s %3$s para funcionar correctamente. Por favor, actualice a la última versión desde %4$saquí%5$s."
 
-#: admin/admin.php:1781
+#: admin/admin.php:1790
 #: inc/global-settings/email-summary.php:224
 #: assets/build/entries.js:172
 #: assets/build/payments.js:172
@@ -188,7 +191,7 @@ msgstr "Basura"
 msgid "Published"
 msgstr "Publicado"
 
-#: admin/admin.php:1773
+#: admin/admin.php:1782
 msgid "View"
 msgstr "Ver"
 
@@ -245,6 +248,7 @@ msgstr "Estado:"
 
 #: inc/page-builders/bricks/elements/form-widget.php:115
 #: inc/page-builders/elementor/form-widget.php:751
+#: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 msgid "Fields"
 msgstr "Campos"
@@ -276,11 +280,11 @@ msgstr "No se especificó ningún complemento"
 msgid "Plugin Successfully Activated"
 msgstr "Plugin activado con éxito"
 
-#: admin/admin.php:875
+#: admin/admin.php:881
 msgid "Activating..."
 msgstr "Activando..."
 
-#: admin/admin.php:876
+#: admin/admin.php:882
 #: assets/build/dashboard.js:172
 #: assets/build/entries.js:172
 #: assets/build/formEditor.js:172
@@ -288,22 +292,23 @@ msgstr "Activando..."
 #: assets/build/learn.js:172
 #: assets/build/page_header.js:172
 #: assets/build/payments.js:172
+#: assets/build/quizEmptyState.js:172
 #: assets/build/settings.js:2
 #: assets/build/settings.js:172
 msgid "Activated"
 msgstr "Activado"
 
-#: admin/admin.php:877
+#: admin/admin.php:883
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:172
 msgid "Activate"
 msgstr "Activar"
 
-#: admin/admin.php:878
+#: admin/admin.php:884
 msgid "Installing..."
 msgstr "Instalando..."
 
-#: admin/admin.php:879
+#: admin/admin.php:885
 msgid "Installed"
 msgstr "Instalado"
 
@@ -311,10 +316,10 @@ msgstr "Instalado"
 msgid "You do not have permission to access this page."
 msgstr "No tienes permiso para acceder a esta página."
 
-#: admin/admin.php:1540
-#: admin/admin.php:1639
-#: admin/admin.php:1677
-#: admin/admin.php:1698
+#: admin/admin.php:1549
+#: admin/admin.php:1648
+#: admin/admin.php:1686
+#: admin/admin.php:1707
 #: inc/admin-ajax.php:162
 #: inc/payments/admin/admin-handler.php:638
 #: inc/payments/stripe/admin-stripe-handler.php:78
@@ -656,7 +661,7 @@ msgstr "Seleccione el formulario que desea agregar aquí."
 
 #: inc/page-builders/elementor/form-widget.php:318
 #: inc/smart-tags.php:113
-#: assets/build/blocks.js:2
+#: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 msgid "Form Title"
 msgstr "Título del formulario"
@@ -674,7 +679,7 @@ msgstr "Ocultar"
 #: inc/page-builders/elementor/form-widget.php:332
 #: inc/post-types.php:95
 #: inc/post-types.php:211
-#: assets/build/blocks.js:2
+#: assets/build/blocks.js:172
 msgid "Edit Form"
 msgstr "Editar formulario"
 
@@ -729,6 +734,7 @@ msgstr "Ver formularios"
 #: assets/build/learn.js:172
 #: assets/build/page_header.js:172
 #: assets/build/payments.js:172
+#: assets/build/quizEmptyState.js:172
 #: assets/build/settings.js:2
 msgid "Forms"
 msgstr "Formularios"
@@ -3857,6 +3863,7 @@ msgid "Git Alt"
 msgstr "Git Alt"
 
 #: modules/gutenberg/icons/icons-v6-1.php:3450
+#: assets/build/settings.js:172
 msgid "GitHub"
 msgstr "GitHub"
 
@@ -5095,6 +5102,7 @@ msgstr "MedApps"
 #: inc/page-builders/bricks/elements/form-widget.php:459
 #: inc/page-builders/elementor/form-widget.php:770
 #: modules/gutenberg/icons/icons-v6-2.php:1591
+#: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 msgid "Medium"
 msgstr "Medio"
@@ -6173,6 +6181,7 @@ msgstr "Renren"
 #: inc/page-builders/elementor/form-widget.php:591
 #: inc/page-builders/elementor/form-widget.php:596
 #: modules/gutenberg/icons/icons-v6-2.php:4659
+#: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:8
 msgid "Repeat"
@@ -6441,6 +6450,7 @@ msgstr "Scribd"
 #: inc/page-builders/bricks/elements/form-widget.php:365
 #: inc/page-builders/elementor/form-widget.php:615
 #: modules/gutenberg/icons/icons-v6-3.php:213
+#: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 msgid "Scroll"
 msgstr "Desplazar"
@@ -6987,7 +6997,7 @@ msgstr "Vista de la calle"
 msgid "Strikethrough"
 msgstr "Tachado"
 
-#: inc/fields/payment-markup.php:397
+#: inc/fields/payment-markup.php:412
 #: modules/gutenberg/icons/icons-v6-3.php:1812
 #: assets/build/payments.js:172
 msgid "Stripe"
@@ -8218,10 +8228,11 @@ msgstr "Social"
 msgid "Travel"
 msgstr "Viajar"
 
-#: inc/helper.php:2128
+#: inc/helper.php:2140
 msgid "Blank Form"
 msgstr "Formulario en blanco"
 
+#: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:6
 msgid "Basic"
@@ -8266,7 +8277,7 @@ msgstr "Elegir"
 msgid "Create New"
 msgstr "Crear nuevo"
 
-#: assets/build/blocks.js:2
+#: assets/build/blocks.js:172
 msgid "Change Form"
 msgstr "Cambiar formulario"
 
@@ -8274,35 +8285,35 @@ msgstr "Cambiar formulario"
 #: inc/page-builders/bricks/elements/form-widget.php:508
 #: inc/page-builders/elementor/form-widget.php:827
 #: inc/post-types.php:1228
-#: assets/build/blocks.js:2
+#: assets/build/blocks.js:172
 msgid "This form has been deleted or is unavailable."
 msgstr "Este formulario ha sido eliminado o no está disponible."
 
-#: assets/build/blocks.js:2
+#: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 msgid "Form Settings"
 msgstr "Configuración del formulario"
 
-#: assets/build/blocks.js:2
+#: assets/build/blocks.js:172
 msgid "Show Form Title on this Page"
 msgstr "Mostrar el título del formulario en esta página"
 
-#: assets/build/blocks.js:2
+#: assets/build/blocks.js:172
 msgid "Note: For editing SureForms, please refer to the SureForms Editor - "
 msgstr "Nota: Para editar SureForms, consulte el Editor de SureForms -"
 
-#: assets/build/blocks.js:2
+#: assets/build/blocks.js:172
 msgid "Field preview"
 msgstr "Vista previa del campo"
 
-#: assets/build/blocks.js:2
+#: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:172
 #: modules/gutenberg/build/blocks.js:4
 msgid "General"
 msgstr "General"
 
-#: assets/build/blocks.js:2
+#: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:4
 #: modules/gutenberg/build/blocks.js:6
@@ -8310,7 +8321,7 @@ msgstr "General"
 msgid "Style"
 msgstr "Estilo"
 
-#: assets/build/blocks.js:2
+#: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:4
 #: modules/gutenberg/build/blocks.js:6
@@ -8540,6 +8551,7 @@ msgid "All Icons"
 msgstr "Todos los iconos"
 
 #: assets/build/blocks.js:172
+#: assets/build/settings.js:172
 #: modules/gutenberg/build/blocks.js:4
 msgid "Other"
 msgstr "Otro"
@@ -8677,6 +8689,7 @@ msgstr "Insertar opciones"
 
 #: inc/page-builders/bricks/elements/form-widget.php:435
 #: inc/page-builders/elementor/form-widget.php:728
+#: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 msgid "Full Width"
 msgstr "Ancho completo"
@@ -8711,25 +8724,19 @@ msgid "This is where your form views will appear"
 msgstr "Aquí es donde aparecerán las vistas de su formulario"
 
 #: assets/build/dashboard.js:172
-#: assets/build/formEditor.js:2
 #: assets/build/formEditor.js:172
-#: assets/build/settings.js:2
 #: assets/build/settings.js:172
 msgid "Install"
 msgstr "Instalar"
 
 #: assets/build/dashboard.js:172
-#: assets/build/formEditor.js:2
 #: assets/build/formEditor.js:172
-#: assets/build/settings.js:2
 #: assets/build/settings.js:172
 msgid "Plugin Installation failed, Please try again later."
 msgstr "La instalación del complemento falló, por favor intente de nuevo más tarde."
 
 #: assets/build/dashboard.js:172
-#: assets/build/formEditor.js:2
 #: assets/build/formEditor.js:172
-#: assets/build/settings.js:2
 #: assets/build/settings.js:172
 msgid "Plugin activation failed, Please try again later."
 msgstr "La activación del complemento falló, por favor intente de nuevo más tarde."
@@ -8745,6 +8752,7 @@ msgstr "Integraciones"
 #: assets/build/learn.js:172
 #: assets/build/page_header.js:172
 #: assets/build/payments.js:172
+#: assets/build/quizEmptyState.js:172
 #: assets/build/settings.js:2
 msgid "What's New?"
 msgstr "¿Qué hay de nuevo?"
@@ -8755,6 +8763,7 @@ msgstr "¿Qué hay de nuevo?"
 #: assets/build/learn.js:172
 #: assets/build/page_header.js:172
 #: assets/build/payments.js:172
+#: assets/build/quizEmptyState.js:172
 #: assets/build/settings.js:2
 msgid "Core"
 msgstr "Núcleo"
@@ -8765,57 +8774,58 @@ msgstr "Núcleo"
 #: assets/build/learn.js:172
 #: assets/build/page_header.js:172
 #: assets/build/payments.js:172
+#: assets/build/quizEmptyState.js:172
 #: assets/build/settings.js:2
 msgid "Unlicensed"
 msgstr "Sin licencia"
 
 #. translators: abbreviation for units
-#: assets/build/formEditor.js:172
+#: assets/build/formEditor.js:2
 #: modules/quick-action-sidebar/components/draggable-block.js:83
 #, js-format
 msgid "%s Removed from Quick Action Bar."
 msgstr "%s eliminado de la barra de acción rápida."
 
-#: assets/build/formEditor.js:172
+#: assets/build/formEditor.js:2
 #: modules/quick-action-sidebar/components/Modal.js:145
 msgid "Add to Quick Action Bar"
 msgstr "Agregar a la barra de acción rápida"
 
 #. translators: abbreviation for units
-#: assets/build/formEditor.js:172
+#: assets/build/formEditor.js:2
 #: modules/quick-action-sidebar/components/Modal.js:42
 #, js-format
 msgid "%s Added to Quick Action Bar."
 msgstr "%s añadido a la barra de acción rápida."
 
-#: assets/build/formEditor.js:172
+#: assets/build/formEditor.js:2
 #: modules/quick-action-sidebar/components/Modal.js:155
 msgid "Already Present in Quick Action Bar"
 msgstr "Ya presente en la barra de acción rápida"
 
-#: assets/build/formEditor.js:172
+#: assets/build/formEditor.js:2
 #: modules/quick-action-sidebar/components/Modal.js:174
 msgid "No results found."
 msgstr "No se encontraron resultados."
 
-#: assets/build/formEditor.js:172
+#: assets/build/formEditor.js:2
 #: modules/gutenberg/build/blocks.js:6
 msgid "data object is empty"
 msgstr "el objeto de datos está vacío"
 
-#: assets/build/formEditor.js:172
+#: assets/build/formEditor.js:2
 #: modules/quick-action-sidebar/components/Sidebar.js:181
 msgid "Add blocks to Quick Action Bar"
 msgstr "Agregar bloques a la barra de acción rápida"
 
-#: assets/build/formEditor.js:172
+#: assets/build/formEditor.js:2
 #: modules/quick-action-sidebar/components/Sidebar.js:231
 msgid "Re-arrange block inside Quick Action Bar"
 msgstr "Reorganizar bloque dentro de la Barra de Acción Rápida"
 
 #: admin/admin.php:408
 #: admin/admin.php:409
-#: admin/admin.php:1954
+#: admin/admin.php:1963
 #: assets/build/blocks.js:172
 #: assets/build/dashboard.js:172
 #: assets/build/entries.js:172
@@ -9076,11 +9086,13 @@ msgstr "Hay algunos cambios no guardados. Por favor, guarde sus cambios para ref
 msgid "Form Behavior"
 msgstr "Comportamiento del formulario"
 
+#: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:4
 msgid "Clear"
 msgstr "Claro"
 
+#: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:4
 msgid "Select Color"
@@ -9088,12 +9100,14 @@ msgstr "Seleccionar color"
 
 #: inc/page-builders/bricks/elements/form-widget.php:187
 #: inc/page-builders/elementor/form-widget.php:397
+#: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 msgid "Primary Color"
 msgstr "Color primario"
 
 #: inc/page-builders/bricks/elements/form-widget.php:196
 #: inc/page-builders/elementor/form-widget.php:409
+#: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:6
 msgid "Text Color"
@@ -9105,24 +9119,28 @@ msgstr "Color del texto en primario"
 
 #: inc/page-builders/bricks/elements/form-widget.php:455
 #: inc/page-builders/elementor/form-widget.php:765
+#: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 msgid "Field Spacing"
 msgstr "Espaciado de campo"
 
 #: inc/page-builders/bricks/elements/form-widget.php:458
 #: inc/page-builders/elementor/form-widget.php:769
+#: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 msgid "Small"
 msgstr "Pequeño"
 
 #: inc/page-builders/bricks/elements/form-widget.php:460
 #: inc/page-builders/elementor/form-widget.php:771
+#: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 msgid "Large"
 msgstr "Grande"
 
 #: inc/page-builders/bricks/elements/form-widget.php:432
 #: inc/page-builders/elementor/form-widget.php:716
+#: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:6
 #: modules/gutenberg/build/blocks.js:8
@@ -9132,6 +9150,7 @@ msgstr "Izquierda"
 
 #: inc/page-builders/bricks/elements/form-widget.php:433
 #: inc/page-builders/elementor/form-widget.php:720
+#: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:6
 #: modules/gutenberg/build/blocks.js:8
@@ -9141,6 +9160,7 @@ msgstr "Centro"
 
 #: inc/page-builders/bricks/elements/form-widget.php:434
 #: inc/page-builders/elementor/form-widget.php:724
+#: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:6
 #: modules/gutenberg/build/blocks.js:8
@@ -9255,6 +9275,7 @@ msgstr "Fondo del Banner"
 #: inc/page-builders/bricks/elements/form-widget.php:225
 #: inc/page-builders/elementor/form-widget.php:449
 #: inc/page-builders/elementor/form-widget.php:463
+#: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:6
 #: modules/gutenberg/build/blocks.js:8
@@ -9267,6 +9288,7 @@ msgid "Upload Image"
 msgstr "Subir imagen"
 
 #: inc/page-builders/bricks/elements/form-widget.php:236
+#: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:6
 msgid "Background Color"
@@ -9393,6 +9415,7 @@ msgstr "Mensaje de error"
 
 #: inc/page-builders/bricks/elements/form-widget.php:321
 #: inc/page-builders/elementor/form-widget.php:553
+#: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:172
 #: modules/gutenberg/build/blocks.js:8
@@ -9504,6 +9527,7 @@ msgstr "Has alcanzado el número máximo de generaciones de formularios en tu Pl
 
 #: inc/page-builders/bricks/elements/form-widget.php:171
 #: inc/page-builders/elementor/form-widget.php:387
+#: assets/build/blocks.js:172
 #: modules/gutenberg/build/blocks.js:4
 #: modules/gutenberg/build/blocks.js:6
 #: modules/gutenberg/build/blocks.js:8
@@ -9538,6 +9562,7 @@ msgstr "Espaciado de letras"
 msgid "Transform"
 msgstr "Transformar"
 
+#: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:4
 #: modules/gutenberg/build/blocks.js:6
@@ -9570,6 +9595,7 @@ msgstr "Sobrelinea"
 msgid "Line Through"
 msgstr "Línea Tachada"
 
+#: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:4
 #: modules/gutenberg/build/blocks.js:6
@@ -9577,11 +9603,13 @@ msgstr "Línea Tachada"
 msgid "%"
 msgstr "%"
 
+#: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:6
 msgid "Top"
 msgstr "Superior"
 
+#: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:6
 msgid "Bottom"
@@ -9679,6 +9707,7 @@ msgstr "Tramo"
 msgid "Alignment"
 msgstr "Alineación"
 
+#: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:6
 #: modules/gutenberg/build/blocks.js:8
@@ -9687,6 +9716,7 @@ msgstr "Ancho"
 
 #: inc/page-builders/bricks/elements/form-widget.php:316
 #: inc/page-builders/elementor/form-widget.php:547
+#: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:6
 #: modules/gutenberg/build/blocks.js:9
@@ -9706,6 +9736,7 @@ msgstr "Tipografía"
 msgid "Icon Size"
 msgstr "Tamaño del icono"
 
+#: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:6
 msgid "EM"
@@ -9716,6 +9747,7 @@ msgstr "EM"
 msgid "Spacing"
 msgstr "Espaciado"
 
+#: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:6
 #: modules/gutenberg/build/blocks.js:9
@@ -9739,12 +9771,14 @@ msgid "separator"
 msgstr "separador"
 
 #: inc/page-builders/elementor/form-widget.php:487
+#: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:6
 msgid "Color 1"
 msgstr "Color 1"
 
 #: inc/page-builders/elementor/form-widget.php:497
+#: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:6
 msgid "Color 2"
@@ -9752,6 +9786,7 @@ msgstr "Color 2"
 
 #: inc/page-builders/bricks/elements/form-widget.php:222
 #: inc/page-builders/elementor/form-widget.php:445
+#: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 #: assets/build/payments.js:172
 #: modules/gutenberg/build/blocks.js:6
@@ -9759,24 +9794,28 @@ msgid "Type"
 msgstr "Tipo"
 
 #: inc/page-builders/bricks/elements/form-widget.php:286
+#: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:6
 msgid "Linear"
 msgstr "Lineal"
 
 #: inc/page-builders/bricks/elements/form-widget.php:287
+#: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:6
 msgid "Radial"
 msgstr "Radial"
 
 #: inc/page-builders/elementor/form-widget.php:491
+#: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:6
 msgid "Location 1"
 msgstr "Ubicación 1"
 
 #: inc/page-builders/elementor/form-widget.php:501
+#: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:6
 msgid "Location 2"
@@ -9784,11 +9823,13 @@ msgstr "Ubicación 2"
 
 #: inc/page-builders/bricks/elements/form-widget.php:295
 #: inc/page-builders/elementor/form-widget.php:508
+#: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:6
 msgid "Angle"
 msgstr "Ángulo"
 
+#: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:6
 msgid "Classic"
@@ -9797,6 +9838,7 @@ msgstr "Clásico"
 #: inc/page-builders/bricks/elements/form-widget.php:226
 #: inc/page-builders/elementor/form-widget.php:450
 #: inc/page-builders/elementor/form-widget.php:483
+#: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:6
 msgid "Gradient"
@@ -9927,6 +9969,7 @@ msgstr "Resalta el texto del encabezado desde la barra de herramientas para ver 
 
 #: inc/page-builders/bricks/elements/form-widget.php:214
 #: inc/page-builders/elementor/form-widget.php:433
+#: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:6
 #: modules/gutenberg/build/blocks.js:8
@@ -10020,6 +10063,7 @@ msgstr "Seleccionar preajuste"
 
 #: inc/page-builders/bricks/elements/form-widget.php:319
 #: inc/page-builders/elementor/form-widget.php:551
+#: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:8
 msgid "Cover"
@@ -10027,6 +10071,7 @@ msgstr "Cubrir"
 
 #: inc/page-builders/bricks/elements/form-widget.php:320
 #: inc/page-builders/elementor/form-widget.php:552
+#: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:8
 msgid "Contain"
@@ -10038,10 +10083,12 @@ msgstr "Desactivar la carga diferida"
 
 #: inc/page-builders/bricks/elements/form-widget.php:103
 #: inc/page-builders/elementor/form-widget.php:639
+#: assets/build/blocks.js:172
 #: modules/gutenberg/build/blocks.js:8
 msgid "Layout"
 msgstr "Diseño"
 
+#: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:8
 msgid "Overlay"
@@ -10187,6 +10234,7 @@ msgstr "Repetir máscara"
 
 #: inc/page-builders/bricks/elements/form-widget.php:351
 #: inc/page-builders/elementor/form-widget.php:595
+#: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:8
 msgid "No Repeat"
@@ -10238,6 +10286,7 @@ msgstr "Separar sombra flotante"
 msgid "Spread"
 msgstr "Propagar"
 
+#: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 #: modules/gutenberg/build/blocks.js:8
 msgid "Overlay Opacity"
@@ -10365,7 +10414,7 @@ msgstr "Agrega impresionantes iconos personalizables a tu sitio web."
 msgid "icon"
 msgstr "icono"
 
-#: admin/admin.php:1438
+#: admin/admin.php:1447
 msgid "Rate SureForms"
 msgstr "Califica SureForms"
 
@@ -10485,77 +10534,93 @@ msgstr "Obtén SureForms Pro"
 msgid "Premium"
 msgstr "Premium"
 
+#: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 msgid "Overlay Type"
 msgstr "Tipo de superposición"
 
+#: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 msgid "Image Overlay Color"
 msgstr "Color de superposición de imagen"
 
+#: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 msgid "Image Position"
 msgstr "Posición de la imagen"
 
 #: inc/page-builders/bricks/elements/form-widget.php:362
 #: inc/page-builders/elementor/form-widget.php:611
+#: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 msgid "Attachment"
 msgstr "Adjunto"
 
 #: inc/page-builders/bricks/elements/form-widget.php:366
 #: inc/page-builders/elementor/form-widget.php:616
+#: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 msgid "Fixed"
 msgstr "Fijo"
 
+#: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 msgid "Blend Mode"
 msgstr "Modo de fusión"
 
+#: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 msgid "Multiply"
 msgstr "Multiplicar"
 
+#: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 msgid "Screen"
 msgstr "Pantalla"
 
+#: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 msgid "Darken"
 msgstr "Oscurecer"
 
+#: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 msgid "Lighten"
 msgstr "Aligerar"
 
+#: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 msgid "Color Dodge"
 msgstr "Sobreexponer color"
 
+#: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 msgid "Saturation"
 msgstr "Saturación"
 
+#: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 msgid "Repeat-x"
 msgstr "Repetir-x"
 
+#: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 msgid "Repeat-y"
 msgstr "Repetir-y"
 
+#: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 msgid "PX"
 msgstr "PX"
 
 #: inc/page-builders/bricks/elements/form-widget.php:109
 #: inc/page-builders/elementor/form-widget.php:699
+#: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 msgid "Button"
 msgstr "Botón"
 
-#: inc/helper.php:1748
+#: inc/helper.php:1760
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:172
 msgid "OttoKit"
@@ -10631,12 +10696,14 @@ msgstr "La dirección de 'Correo Electrónico del Remitente' actual puede no coi
 msgid "The current 'From Email' address may not match your website domain name (%s). This can cause your notification emails to be blocked or marked as spam. "
 msgstr "La dirección de 'Correo Electrónico del Remitente' actual puede no coincidir con el nombre de dominio de su sitio web (%s). Esto puede hacer que sus correos electrónicos de notificación sean bloqueados o marcados como spam."
 
+#: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 msgid "Border Radius"
 msgstr "Radio de borde"
 
 #: inc/page-builders/bricks/elements/form-widget.php:167
 #: inc/page-builders/elementor/form-widget.php:382
+#: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 msgid "Form Theme"
 msgstr "Tema del formulario"
@@ -10649,6 +10716,7 @@ msgstr "Relleno Instantáneo de Formularios"
 msgid "Instant Form Border Radius"
 msgstr "Radio de Borde de Formulario Instantáneo"
 
+#: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 msgid "Select Gradient"
 msgstr "Seleccionar degradado"
@@ -10692,16 +10760,16 @@ msgid "HCaptcha sitekey verification failed. Please contact your site administra
 msgstr "La verificación del sitekey de HCaptcha falló. Por favor, contacte a su administrador del sitio."
 
 #. translators: %s: Provider name like HCaptcha, Google reCAPTCHA, Turnstile
-#: inc/helper.php:1100
+#: inc/helper.php:1101
 #, php-format
 msgid "%s sitekey is missing. Please contact your site administrator."
 msgstr "Falta el sitekey de %s. Por favor, contacte a su administrador del sitio."
 
-#: inc/helper.php:1739
+#: inc/helper.php:1751
 msgid "SureMail"
 msgstr "SureMail"
 
-#: inc/helper.php:1760
+#: inc/helper.php:1772
 msgid "Starter Templates"
 msgstr "Plantillas de inicio"
 
@@ -10743,6 +10811,7 @@ msgstr "Fecha no válida"
 #: assets/build/learn.js:172
 #: assets/build/page_header.js:172
 #: assets/build/payments.js:172
+#: assets/build/quizEmptyState.js:172
 #: assets/build/settings.js:2
 msgid "Ready to go beyond free plan?"
 msgstr "¿Listo para ir más allá del plan gratuito?"
@@ -10753,6 +10822,7 @@ msgstr "¿Listo para ir más allá del plan gratuito?"
 #: assets/build/learn.js:172
 #: assets/build/page_header.js:172
 #: assets/build/payments.js:172
+#: assets/build/quizEmptyState.js:172
 #: assets/build/settings.js:2
 msgid "Upgrade now"
 msgstr "Actualiza ahora"
@@ -10763,6 +10833,7 @@ msgstr "Actualiza ahora"
 #: assets/build/learn.js:172
 #: assets/build/page_header.js:172
 #: assets/build/payments.js:172
+#: assets/build/quizEmptyState.js:172
 #: assets/build/settings.js:2
 msgid "and unlock the full power of SureForms!"
 msgstr "y desbloquea todo el poder de SureForms!"
@@ -10773,6 +10844,7 @@ msgstr "y desbloquea todo el poder de SureForms!"
 #: assets/build/learn.js:172
 #: assets/build/page_header.js:172
 #: assets/build/payments.js:172
+#: assets/build/quizEmptyState.js:172
 #: assets/build/settings.js:2
 msgid "Upgrade SureForms"
 msgstr "Actualizar SureForms"
@@ -11191,28 +11263,28 @@ msgstr "Las notificaciones de administrador te mantienen informado sobre nuevas 
 msgid "Contribute to SureForms"
 msgstr "Contribuir a SureForms"
 
-#: admin/admin.php:1544
-#: admin/admin.php:1635
-#: admin/admin.php:1673
-#: admin/admin.php:1694
+#: admin/admin.php:1553
+#: admin/admin.php:1644
+#: admin/admin.php:1682
+#: admin/admin.php:1703
 msgid "Unauthorized user."
 msgstr "Usuario no autorizado."
 
 #. translators: 1: opening span, 2: opening strong (inline), 3: closing strong, 4: closing span, 5: opening strong (block), 6: closing strong
-#: admin/admin.php:1644
+#: admin/admin.php:1653
 #, php-format
 msgid "%1$sGet started by %2$sbuilding your first form%3$s.%4$s%5$sExperience the power of our intuitive AI Form Builder%6$s"
 msgstr "%1$sComienza %2$screando tu primer formulario%3$s.%4$s%5$sExperimenta el poder de nuestro intuitivo Creador de Formularios AI%6$s"
 
-#: admin/admin.php:1655
+#: admin/admin.php:1664
 msgid "SureForms is waiting for you!"
 msgstr "¡SureForms te está esperando!"
 
-#: admin/admin.php:1657
+#: admin/admin.php:1666
 msgid "Build My First Form"
 msgstr "Construir mi primer formulario"
 
-#: admin/admin.php:1658
+#: admin/admin.php:1667
 msgid "Dismiss"
 msgstr "Descartar"
 
@@ -11232,51 +11304,51 @@ msgstr "Iniciar sesión"
 msgid "Register"
 msgstr "Registrar"
 
-#: admin/admin.php:1769
+#: admin/admin.php:1778
 msgid "Recent Entries"
 msgstr "Entradas Recientes"
 
-#: admin/admin.php:1770
+#: admin/admin.php:1779
 msgid "( Last 7 days )"
 msgstr "( Últimos 7 días )"
 
-#: admin/admin.php:1890
+#: admin/admin.php:1899
 msgid "Use Conditional Logic to show only what matters"
 msgstr "Usa lógica condicional para mostrar solo lo que importa"
 
-#: admin/admin.php:1891
+#: admin/admin.php:1900
 msgid "Split your form into steps to keep it easy"
 msgstr "Divide tu formulario en pasos para mantenerlo sencillo"
 
-#: admin/admin.php:1892
+#: admin/admin.php:1901
 msgid "Let people upload files directly to your form"
 msgstr "Permite que las personas suban archivos directamente a tu formulario"
 
-#: admin/admin.php:1893
+#: admin/admin.php:1902
 msgid "Turn responses into downloadable PDFs automatically"
 msgstr "Convierte las respuestas en PDFs descargables automáticamente"
 
-#: admin/admin.php:1894
+#: admin/admin.php:1903
 msgid "Let users sign with a simple signature field"
 msgstr "Permitir que los usuarios firmen con un campo de firma simple"
 
-#: admin/admin.php:1895
+#: admin/admin.php:1904
 msgid "Connect your form to other tools using webhooks"
 msgstr "Conecta tu formulario a otras herramientas usando webhooks"
 
-#: admin/admin.php:1896
+#: admin/admin.php:1905
 msgid "Use Conversational Forms for a chat-like experience"
 msgstr "Utiliza Formularios Conversacionales para una experiencia similar a un chat"
 
-#: admin/admin.php:1897
+#: admin/admin.php:1906
 msgid "Let users register or log in through your form"
 msgstr "Permitir a los usuarios registrarse o iniciar sesión a través de su formulario"
 
-#: admin/admin.php:1898
+#: admin/admin.php:1907
 msgid "Build forms that create WordPress user accounts"
 msgstr "Crear formularios que generen cuentas de usuario de WordPress"
 
-#: admin/admin.php:1899
+#: admin/admin.php:1908
 msgid "Add calculations to auto-total scores or prices"
 msgstr "Agrega cálculos para totalizar automáticamente las puntuaciones o precios"
 
@@ -11345,6 +11417,7 @@ msgid "Here's what that gives you:"
 msgstr "Aquí tienes lo que eso te da:"
 
 #: assets/build/dashboard.js:172
+#: assets/build/settings.js:172
 msgid "Continue"
 msgstr "Continuar"
 
@@ -11397,7 +11470,6 @@ msgid "Tired of building forms manually? Let AI do the work for you. Just descri
 msgstr "¿Cansado de crear formularios manualmente? Deja que la IA haga el trabajo por ti. Solo describe y nuestra IA creará tu formulario perfecto en segundos."
 
 #: inc/global-settings/email-summary.php:276
-#: assets/build/dashboard.js:172
 msgid "View Entries"
 msgstr "Ver entradas"
 
@@ -11475,14 +11547,6 @@ msgid "Selected features require %1$s - use code %2$s to get 10% off on any plan
 msgstr "Las funciones seleccionadas requieren %1$s - usa el código %2$s para obtener un 10% de descuento en cualquier plan."
 
 #: assets/build/dashboard.js:172
-msgid "Starter"
-msgstr "Entrada"
-
-#: assets/build/dashboard.js:172
-msgid "Pro"
-msgstr "Profesional"
-
-#: assets/build/dashboard.js:172
 msgid "Copied"
 msgstr "Copiado"
 
@@ -11514,20 +11578,20 @@ msgstr "Toques finales que marcan la diferencia:"
 msgid "Build Your First Form"
 msgstr "Construye tu primer formulario"
 
-#: inc/helper.php:1970
+#: inc/helper.php:1982
 msgid "Invalid nonce action or name."
 msgstr "Acción o nombre de nonce no válido."
 
-#: inc/helper.php:1980
-#: inc/helper.php:1988
+#: inc/helper.php:1992
+#: inc/helper.php:2000
 msgid "Invalid security token."
 msgstr "Token de seguridad no válido."
 
-#: inc/helper.php:1995
+#: inc/helper.php:2007
 msgid "Invalid request type."
 msgstr "Tipo de solicitud no válido."
 
-#: inc/helper.php:2003
+#: inc/helper.php:2015
 msgid "You do not have permission to perform this action."
 msgstr "No tienes permiso para realizar esta acción."
 
@@ -11639,7 +11703,7 @@ msgstr "Hola,"
 msgid "Email Summary of your last week -  %1$s to %2$s"
 msgstr "Resumen del correo electrónico de la semana pasada - %1$s a %2$s"
 
-#: inc/helper.php:1774
+#: inc/helper.php:1786
 msgid "Ultimate Addons for Elementor"
 msgstr "Complementos definitivos para Elementor"
 
@@ -11776,6 +11840,7 @@ msgstr "Formato esperado para correos electrónicos: email@sureforms.com o John 
 #: assets/build/learn.js:172
 #: assets/build/page_header.js:172
 #: assets/build/payments.js:172
+#: assets/build/quizEmptyState.js:172
 #: assets/build/settings.js:2
 #: assets/build/settings.js:172
 msgid "Payments"
@@ -11855,126 +11920,126 @@ msgstr "No se proporcionaron datos de formularios para la importación."
 msgid "Invalid form data structure provided."
 msgstr "Estructura de datos del formulario no válida proporcionada."
 
-#: inc/fields/payment-markup.php:238
+#: inc/fields/payment-markup.php:249
 #: inc/payments/payment-helper.php:538
 msgid "Subscription Plan"
 msgstr "Plan de suscripción"
 
 #. translators: 1: Amount with currency, 2: Interval (day/week/month/quarter/year)
-#: inc/fields/payment-markup.php:273
+#: inc/fields/payment-markup.php:288
 #, php-format
 msgid "%1$s per %2$s (until cancelled)"
 msgstr "%1$s por %2$s (hasta que se cancele)"
 
 #. translators: 1: Amount with currency, 2: Interval (day/week/month/quarter/year), 3: Number of billing cycles
-#: inc/fields/payment-markup.php:282
+#: inc/fields/payment-markup.php:297
 #, php-format
 msgid "%1$s per %2$s (%3$s payments)"
 msgstr "%1$s por %2$s (%3$s pagos)"
 
 #. translators: 1: Amount with currency, 2: Interval (day/week/month/quarter/year)
-#: inc/fields/payment-markup.php:292
+#: inc/fields/payment-markup.php:307
 #, php-format
 msgid "%1$s per %2$s"
 msgstr "%1$s por %2$s"
 
 #. translators: 1: Amount with currency placeholder, 2: Interval (day/week/month/quarter/year)
-#: inc/fields/payment-markup.php:319
+#: inc/fields/payment-markup.php:334
 #, php-format
 msgid "{amount} per %s (until cancelled)"
 msgstr "{amount} por %s (hasta que se cancele)"
 
 #. translators: 1: Amount with currency placeholder, 2: Interval (day/week/month/quarter/year), 3: Number of billing cycles
-#: inc/fields/payment-markup.php:322
+#: inc/fields/payment-markup.php:337
 #, php-format
 msgid "{amount} per %1$s (%2$s payments)"
 msgstr "{amount} por %1$s (%2$s pagos)"
 
 #. translators: 1: Amount with currency placeholder, 2: Interval (day/week/month/quarter/year)
-#: inc/fields/payment-markup.php:325
+#: inc/fields/payment-markup.php:340
 #, php-format
 msgid "{amount} per %s"
 msgstr "{amount} por %s"
 
 #. translators: %s: Minimum amount with currency
-#: inc/fields/payment-markup.php:338
+#: inc/fields/payment-markup.php:353
 #, php-format
 msgid "Minimum amount: %s"
 msgstr "Cantidad mínima: %s"
 
-#: inc/fields/payment-markup.php:370
+#: inc/fields/payment-markup.php:385
 msgid "Processing payment..."
 msgstr "Procesando el pago..."
 
-#: inc/fields/payment-markup.php:564
+#: inc/fields/payment-markup.php:579
 msgid "day"
 msgstr "día"
 
-#: inc/fields/payment-markup.php:565
+#: inc/fields/payment-markup.php:580
 msgid "week"
 msgstr "semana"
 
-#: inc/fields/payment-markup.php:566
+#: inc/fields/payment-markup.php:581
 msgid "month"
 msgstr "mes"
 
-#: inc/fields/payment-markup.php:567
+#: inc/fields/payment-markup.php:582
 msgid "quarter"
 msgstr "cuarto"
 
-#: inc/fields/payment-markup.php:568
+#: inc/fields/payment-markup.php:583
 msgid "year"
 msgstr "año"
 
-#: inc/fields/payment-markup.php:593
+#: inc/fields/payment-markup.php:608
 msgid "Test mode is enabled:"
 msgstr "El modo de prueba está habilitado:"
 
-#: inc/fields/payment-markup.php:595
+#: inc/fields/payment-markup.php:610
 msgid "Click here to enable live mode and accept payment"
 msgstr "Haz clic aquí para activar el modo en vivo y aceptar pagos"
 
-#: inc/helper.php:1740
+#: inc/helper.php:1752
 msgid "Boost Your Email Deliverability Instantly!"
 msgstr "¡Mejora la entregabilidad de tus correos electrónicos al instante!"
 
-#: inc/helper.php:1741
+#: inc/helper.php:1753
 msgid "Access a powerful, easy-to-use email delivery service that ensures your emails land in inboxes, not spam folders. Automate your WordPress email workflows confidently with SureMail."
 msgstr "Accede a un servicio de entrega de correos electrónicos potente y fácil de usar que garantiza que tus correos lleguen a las bandejas de entrada, no a las carpetas de spam. Automatiza tus flujos de trabajo de correo electrónico de WordPress con confianza usando SureMail."
 
-#: inc/helper.php:1749
+#: inc/helper.php:1761
 msgid "Automate your WordPress workflows effortlessly."
 msgstr "Automatiza tus flujos de trabajo de WordPress sin esfuerzo."
 
-#: inc/helper.php:1750
+#: inc/helper.php:1762
 msgid "Connect your WordPress plugins and favourite apps, automate tasks, and sync data effortlessly using OttoKit’s clean, visual workflow builder — no coding or complex setup required."
 msgstr "Conecta tus plugins de WordPress y tus aplicaciones favoritas, automatiza tareas y sincroniza datos sin esfuerzo utilizando el constructor de flujos de trabajo visual y limpio de OttoKit, sin necesidad de programación ni configuraciones complejas."
 
-#: inc/helper.php:1761
+#: inc/helper.php:1773
 msgid "Launch Beautiful Websites in Minutes!"
 msgstr "¡Lanza hermosos sitios web en minutos!"
 
-#: inc/helper.php:1762
+#: inc/helper.php:1774
 msgid "Choose from professionally designed templates, import with one click, and customize effortlessly to match your brand."
 msgstr "Elige entre plantillas diseñadas profesionalmente, importa con un solo clic y personaliza sin esfuerzo para que coincida con tu marca."
 
-#: inc/helper.php:1775
+#: inc/helper.php:1787
 msgid "Power Up Elementor to Build Stunning Websites Faster!"
 msgstr "¡Potencia Elementor para crear sitios web impresionantes más rápido!"
 
-#: inc/helper.php:1776
+#: inc/helper.php:1788
 msgid "Enhance Elementor with powerful widgets and templates. Build stunning, high-performing websites faster with creative design elements and seamless customization."
 msgstr "Mejora Elementor con potentes widgets y plantillas. Crea sitios web impresionantes y de alto rendimiento más rápido con elementos de diseño creativos y personalización sin fisuras."
 
-#: inc/helper.php:1784
+#: inc/helper.php:1796
 msgid "SureRank"
 msgstr "SureRank"
 
-#: inc/helper.php:1785
+#: inc/helper.php:1797
 msgid "Elevate Your SEO and Climb Search Rankings Effortlessly!"
 msgstr "¡Eleva tu SEO y asciende en los rankings de búsqueda sin esfuerzo!"
 
-#: inc/helper.php:1786
+#: inc/helper.php:1798
 msgid "Boost your website's visibility with smart SEO automation. Optimize content, track keyword performance, and get actionable insights, all inside WordPress."
 msgstr "Aumenta la visibilidad de tu sitio web con una automatización SEO inteligente. Optimiza el contenido, rastrea el rendimiento de las palabras clave y obtén información procesable, todo dentro de WordPress."
 
@@ -13486,6 +13551,7 @@ msgstr "Seleccione el campo de correo electrónico que contiene el correo electr
 #: assets/build/learn.js:172
 #: assets/build/page_header.js:172
 #: assets/build/payments.js:172
+#: assets/build/quizEmptyState.js:172
 #: assets/build/settings.js:2
 msgid "Knowledge Base"
 msgstr "Base de Conocimientos"
@@ -13496,6 +13562,7 @@ msgstr "Base de Conocimientos"
 #: assets/build/learn.js:172
 #: assets/build/page_header.js:172
 #: assets/build/payments.js:172
+#: assets/build/quizEmptyState.js:172
 #: assets/build/settings.js:2
 msgid "What’s New"
 msgstr "Qué hay de nuevo"
@@ -13741,31 +13808,37 @@ msgstr "Cargando registros…"
 msgid "No logs available."
 msgstr "No hay registros disponibles."
 
+#: assets/build/blocks.js:172
 #: assets/build/formEditor.js:2
 #: assets/build/templatePicker.js:172
 msgid "Payment"
 msgstr "Pago"
 
+#: assets/build/blocks.js:172
 #: assets/build/formEditor.js:2
 #, js-format
 msgid "%s - Order ID"
 msgstr "%s - ID de pedido"
 
+#: assets/build/blocks.js:172
 #: assets/build/formEditor.js:2
 #, js-format
 msgid "%s - Amount"
 msgstr "%s - Cantidad"
 
+#: assets/build/blocks.js:172
 #: assets/build/formEditor.js:2
 #, js-format
 msgid "%s - Customer Email"
 msgstr "%s - Correo Electrónico del Cliente"
 
+#: assets/build/blocks.js:172
 #: assets/build/formEditor.js:2
 #, js-format
 msgid "%s - Customer Name"
 msgstr "%s - Nombre del Cliente"
 
+#: assets/build/blocks.js:172
 #: assets/build/formEditor.js:2
 #, js-format
 msgid "%s - Status"
@@ -13809,43 +13882,8 @@ msgstr "Establezca límites en la cantidad de veces que se puede enviar un formu
 
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:172
-msgid "Push entries to Slack, Mailchimp, Google Sheets, or hundreds of other apps."
-msgstr "Envía entradas a Slack, Mailchimp, Google Sheets o cientos de otras aplicaciones."
-
-#: assets/build/formEditor.js:172
-#: assets/build/settings.js:172
-msgid "Create automatic workflows for every time someone submits a form."
-msgstr "Crea flujos de trabajo automáticos cada vez que alguien envía un formulario."
-
-#: assets/build/formEditor.js:172
-#: assets/build/settings.js:172
-msgid "Keep your tools updated, without lifting a finger."
-msgstr "Mantén tus herramientas actualizadas, sin mover un dedo."
-
-#: assets/build/formEditor.js:172
-#: assets/build/settings.js:172
 msgid "Go to OttoKit Settings"
 msgstr "Ve a la configuración de OttoKit"
-
-#: assets/build/formEditor.js:172
-#: assets/build/settings.js:172
-msgid "Automate What Happens After Someone Submits Your Form"
-msgstr "Automatiza lo que sucede después de que alguien envía tu formulario"
-
-#: assets/build/formEditor.js:172
-#: assets/build/settings.js:172
-msgid "Every time someone fills out a form, something needs to happen next: a Slack alert for your team, a lead added to your CRM, a follow-up email, a new row in Google Sheets…"
-msgstr "Cada vez que alguien completa un formulario, algo debe suceder a continuación: una alerta de Slack para tu equipo, un cliente potencial añadido a tu CRM, un correo electrónico de seguimiento, una nueva fila en Google Sheets…"
-
-#: assets/build/formEditor.js:172
-#: assets/build/settings.js:172
-msgid "Doing all that manually? That's where OttoKit comes in. With OttoKit, you can:"
-msgstr "¿Hacer todo eso manualmente? Ahí es donde entra OttoKit. Con OttoKit, puedes:"
-
-#: assets/build/formEditor.js:172
-#: assets/build/settings.js:172
-msgid "OttoKit turns your forms into powerful workflows. Set it up once, and let automation do the rest."
-msgstr "OttoKit convierte tus formularios en potentes flujos de trabajo. Configúralo una vez y deja que la automatización haga el resto."
 
 #: assets/build/formEditor.js:172
 msgid "Connect SureForms with your favorite apps to automate tasks and sync data seamlessly."
@@ -13948,7 +13986,6 @@ msgid "Automate the content publishing flow with few simple steps."
 msgstr "Automatiza el flujo de publicación de contenido con unos pocos pasos simples."
 
 #: assets/build/formEditor.js:172
-#: assets/build/settings.js:172
 msgid "Automations"
 msgstr "Automatizaciones"
 
@@ -13960,6 +13997,7 @@ msgstr "Desbloquear estilo avanzado"
 msgid "Get full control over your form's look with custom colors, fonts, and layouts."
 msgstr "Obtén control total sobre el aspecto de tu formulario con colores, fuentes y diseños personalizados."
 
+#: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
 msgid "Button Alignment"
 msgstr "Alineación del botón"
@@ -15020,7 +15058,7 @@ msgstr "Ocurrió un error al duplicar el formulario."
 msgid "This will create a copy of \"%s\" with all its settings."
 msgstr "Esto creará una copia de \"%s\" con todas sus configuraciones."
 
-#: inc/fields/payment-markup.php:398
+#: inc/fields/payment-markup.php:413
 msgid "Pay with credit or debit card"
 msgstr "Paga con tarjeta de crédito o débito"
 
@@ -15163,24 +15201,24 @@ msgid "Stripe Settings"
 msgstr "Configuración de Stripe"
 
 #. translators: %1$s: SureForms version, %2$s: SureForms Pro Plugin Name, %3$s: SureForms Pro Version.
-#: admin/admin.php:1309
+#: admin/admin.php:1318
 #, php-format
 msgid "SureForms %1$s requires minimum %2$s %3$s to work properly. Please update to the latest version."
 msgstr "SureForms %1$s requiere un mínimo de %2$s %3$s para funcionar correctamente. Por favor, actualice a la última versión."
 
-#: admin/admin.php:1322
+#: admin/admin.php:1331
 msgid "Update Now"
 msgstr "Actualizar ahora"
 
-#: inc/helper.php:1730
+#: inc/helper.php:1742
 msgid "SureContact"
 msgstr "SureContact"
 
-#: inc/helper.php:1731
+#: inc/helper.php:1743
 msgid "Turn Emails Into Revenue with a CRM Built for Your Website!"
 msgstr "¡Convierte correos electrónicos en ingresos con un CRM diseñado para tu sitio web!"
 
-#: inc/helper.php:1732
+#: inc/helper.php:1744
 msgid "Send newsletters, run campaigns, set up automations, manage contacts, and see exactly how much revenue your emails generate, all in one place."
 msgstr "Envía boletines, ejecuta campañas, configura automatizaciones, gestiona contactos y ve exactamente cuánto ingreso generan tus correos electrónicos, todo en un solo lugar."
 
@@ -15224,44 +15262,45 @@ msgstr "Seleccione la posición del símbolo de moneda en relación con la canti
 #: assets/build/learn.js:172
 #: assets/build/page_header.js:172
 #: assets/build/payments.js:172
+#: assets/build/quizEmptyState.js:172
 #: assets/build/settings.js:2
 msgid "Learn"
 msgstr "Aprender"
 
-#: admin/admin.php:1435
+#: admin/admin.php:1444
 msgid "Amazing! SureForms is powering your forms and submissions - let's keep growing together!"
 msgstr "¡Increíble! SureForms está impulsando tus formularios y envíos - ¡sigamos creciendo juntos!"
 
-#: admin/admin.php:1436
+#: admin/admin.php:1445
 msgid "If SureForms has been helpful, would you mind taking a moment to leave a 5-star review on WordPress.org?"
 msgstr "Si SureForms ha sido útil, ¿te importaría tomarte un momento para dejar una reseña de 5 estrellas en WordPress.org?"
 
-#: admin/admin.php:1439
-#: admin/admin.php:1483
+#: admin/admin.php:1448
+#: admin/admin.php:1492
 msgid "Maybe later"
 msgstr "Quizás más tarde"
 
-#: admin/admin.php:1440
+#: admin/admin.php:1449
 msgid "I already did"
 msgstr "Ya lo hice"
 
-#: admin/admin.php:1479
+#: admin/admin.php:1488
 msgid "SureForms is ready to power your forms — explore what's possible!"
 msgstr "SureForms está listo para potenciar tus formularios — ¡explora lo que es posible!"
 
-#: admin/admin.php:1480
+#: admin/admin.php:1489
 msgid "Manage your forms, track submissions, and discover features like AI Form Builder, payment integrations, and more from the SureForms dashboard."
 msgstr "Administra tus formularios, realiza un seguimiento de las presentaciones y descubre funciones como el Creador de Formularios con IA, integraciones de pago y más desde el panel de SureForms."
 
-#: admin/admin.php:1482
+#: admin/admin.php:1491
 msgid "Go to Dashboard"
 msgstr "Ir al panel de control"
 
-#: admin/admin.php:1484
+#: admin/admin.php:1493
 msgid "I already know"
 msgstr "Ya lo sé"
 
-#: admin/admin.php:1564
+#: admin/admin.php:1573
 msgid "Invalid parameters."
 msgstr "Parámetros no válidos."
 
@@ -15627,8 +15666,8 @@ msgstr "No se puede generar el archivo de exportación."
 msgid "Forms imported successfully!"
 msgstr "¡Formularios importados con éxito!"
 
-#: inc/export.php:271
-#: inc/export.php:290
+#: inc/export.php:284
+#: inc/export.php:303
 msgid "Unable to import form."
 msgstr "No se puede importar el formulario."
 
@@ -16046,8 +16085,6 @@ msgid "Click here to insert a form"
 msgstr "Haga clic aquí para insertar un formulario"
 
 #: assets/build/dashboard.js:172
-#: assets/build/formEditor.js:2
-#: assets/build/settings.js:2
 msgid "Unable to complete action. Please try again."
 msgstr "No se puede completar la acción. Por favor, inténtelo de nuevo."
 
@@ -16058,10 +16095,6 @@ msgstr "Potencia tu flujo de trabajo"
 #: assets/build/dashboard.js:172
 msgid "Spam protection included"
 msgstr "Protección contra spam incluida"
-
-#: assets/build/dashboard.js:172
-msgid "Track, view, and manage all form entries in one place. Stay organized, informed, and never miss a response."
-msgstr "Realiza un seguimiento, visualiza y gestiona todas las entradas de formularios en un solo lugar. Mantente organizado, informado y nunca te pierdas una respuesta."
 
 #: assets/build/dashboard.js:172
 msgid "Multistep Forms"
@@ -16142,10 +16175,6 @@ msgstr "Reenviar notificación de correo electrónico"
 #: assets/build/formEditor.js:172
 msgid "When enabled, this form will not store user IP, browser name, or device name in entries."
 msgstr "Cuando esté habilitado, este formulario no almacenará la IP del usuario, el nombre del navegador ni el nombre del dispositivo en las entradas."
-
-#: assets/build/formEditor.js:172
-msgid "Enable reCAPTCHA, hCaptcha, or Turnstile to block spam submissions."
-msgstr "Habilita reCAPTCHA, hCaptcha o Turnstile para bloquear envíos de spam."
 
 #: assets/build/formEditor.js:172
 msgid "Select a spam protection service. Configure API keys in Global Settings before enabling."
@@ -16614,7 +16643,8 @@ msgid "Invalid webhook signature."
 msgstr "Firma de webhook no válida."
 
 #: admin/admin.php:425
-#: admin/admin.php:933
+#: admin/admin.php:939
+#: assets/build/formEditor.js:172
 msgid "Quizzes"
 msgstr "Cuestionarios"
 
@@ -16641,11 +16671,13 @@ msgstr "Estilo de formulario"
 
 #: inc/page-builders/bricks/elements/form-widget.php:170
 #: inc/page-builders/elementor/form-widget.php:386
+#: assets/build/blocks.js:172
 msgid "Inherit Form's Original Style"
 msgstr "Heredar el estilo original del formulario"
 
 #: inc/page-builders/bricks/elements/form-widget.php:205
 #: inc/page-builders/elementor/form-widget.php:421
+#: assets/build/blocks.js:172
 msgid "Text on Primary"
 msgstr "Texto en Primario"
 
@@ -16692,6 +16724,456 @@ msgstr "Radio del borde del formulario"
 #: inc/rest-api.php:388
 msgid "Invalid onboarding user details."
 msgstr "Detalles de usuario de incorporación no válidos."
+
+#: assets/build/blocks.js:172
+#: assets/build/formEditor.js:2
+#, js-format
+msgid "%s - Description"
+msgstr "%s - Descripción"
+
+#: assets/build/blocks.js:172
+msgid "Upgrade to Unlock"
+msgstr "Actualiza para desbloquear"
+
+#: assets/build/blocks.js:172
+msgid "Custom (Premium)"
+msgstr "Personalizado (Premium)"
+
+#: assets/build/blocks.js:172
+msgid "Select a theme style for this form embed."
+msgstr "Seleccione un estilo de tema para este formulario incrustado."
+
+#: assets/build/blocks.js:172
+msgid "Colors"
+msgstr "Colores"
+
+#: assets/build/blocks.js:172
+msgid "Advanced Styling"
+msgstr "Estilo Avanzado"
+
+#: assets/build/blocks.js:172
+msgid "Unlock Custom Styling"
+msgstr "Desbloquear estilo personalizado"
+
+#: assets/build/blocks.js:172
+msgid "Switch to Custom Mode to take full control of your form's design and spacing."
+msgstr "Cambia a Modo Personalizado para tener control total sobre el diseño y el espaciado de tu formulario."
+
+#: assets/build/blocks.js:172
+msgid "Full color control (buttons, fields, text)"
+msgstr "Control total del color (botones, campos, texto)"
+
+#: assets/build/blocks.js:172
+msgid "Row and column gap control"
+msgstr "Control de separación de filas y columnas"
+
+#: assets/build/blocks.js:172
+msgid "Field spacing and layout precision"
+msgstr "Precisión en el espaciado y diseño de campos"
+
+#: assets/build/blocks.js:172
+msgid "Complete button styling"
+msgstr "Estilo completo del botón"
+
+#: assets/build/blocks.js:172
+msgid "Payment Description"
+msgstr "Descripción del pago"
+
+#: assets/build/blocks.js:172
+msgid "Shown on payment receipts and in your payment dashboard (Stripe and PayPal). Leave blank to use the default."
+msgstr "Se muestra en los recibos de pago y en su panel de pagos (Stripe y PayPal). Deje en blanco para usar el valor predeterminado."
+
+#: assets/build/blocks.js:172
+msgid "Slug"
+msgstr "Babosa"
+
+#: assets/build/blocks.js:172
+msgid "Auto-generated on save"
+msgstr "Generado automáticamente al guardar"
+
+#: assets/build/blocks.js:172
+msgid "This slug is already used by another field. It will revert to the previous value."
+msgstr "Este slug ya está siendo utilizado por otro campo. Volverá al valor anterior."
+
+#: assets/build/blocks.js:172
+msgid "Changing the slug may break form submissions, conditional logic, integrations, or any other feature currently referencing this slug. You will need to update all such references manually."
+msgstr "Cambiar el slug puede romper los envíos de formularios, la lógica condicional, las integraciones o cualquier otra característica que actualmente haga referencia a este slug. Necesitarás actualizar todas esas referencias manualmente."
+
+#: assets/build/blocks.js:172
+msgid "Field Slug"
+msgstr "Identificador de campo"
+
+#: assets/build/dashboard.js:172
+msgid "Payment Forms"
+msgstr "Formularios de Pago"
+
+#: assets/build/dashboard.js:172
+msgid "Collect payments directly through your forms. Accept one-time and recurring payments seamlessly."
+msgstr "Cobra pagos directamente a través de tus formularios. Acepta pagos únicos y recurrentes sin problemas."
+
+#: assets/build/dashboard.js:172
+#, js-format
+msgid "SureForms %s"
+msgstr "SureForms %s"
+
+#: assets/build/dashboard.js:172
+msgid "First name is required."
+msgstr "Se requiere el nombre."
+
+#: assets/build/dashboard.js:172
+msgid "Please enter a valid email address."
+msgstr "Por favor, introduce una dirección de correo electrónico válida."
+
+#: assets/build/dashboard.js:172
+msgid "Email address is required."
+msgstr "Se requiere la dirección de correo electrónico."
+
+#: assets/build/dashboard.js:172
+msgid "This is required."
+msgstr "Esto es necesario."
+
+#: assets/build/dashboard.js:172
+msgid "Okay, just one last step…"
+msgstr "Está bien, solo un último paso…"
+
+#: assets/build/dashboard.js:172
+msgid "Help us tailor your SureForms experience by sharing a bit about yourself."
+msgstr "Ayúdanos a personalizar tu experiencia con SureForms compartiendo un poco sobre ti."
+
+#: assets/build/dashboard.js:172
+msgid "First Name"
+msgstr "Nombre"
+
+#: assets/build/dashboard.js:172
+msgid "Enter your first name"
+msgstr "Ingrese su nombre"
+
+#: assets/build/dashboard.js:172
+msgid "Last Name"
+msgstr "Apellido"
+
+#: assets/build/dashboard.js:172
+msgid "Enter your last name"
+msgstr "Ingrese su apellido"
+
+#: assets/build/dashboard.js:172
+msgid "Email Address"
+msgstr "Dirección de correo electrónico"
+
+#: assets/build/dashboard.js:172
+msgid "Enter your email address"
+msgstr "Introduce tu dirección de correo electrónico"
+
+#: assets/build/dashboard.js:172
+msgid "Get notified about new updates and features. Plus help improve SureForms by sharing how you use the plugin. View our <a>Privacy Policy</a>."
+msgstr "Recibe notificaciones sobre nuevas actualizaciones y funciones. Además, ayuda a mejorar SureForms compartiendo cómo usas el complemento. Consulta nuestra <a>Política de Privacidad</a>."
+
+#: assets/build/dashboard.js:172
+msgid "Privacy Policy"
+msgstr "Política de Privacidad"
+
+#: assets/build/dashboard.js:172
+msgid "Finish"
+msgstr "Terminar"
+
+#: assets/build/formEditor.js:172
+msgid "Choose a spam protection method for this form to prevent unwanted submissions."
+msgstr "Elija un método de protección contra spam para este formulario para evitar envíos no deseados."
+
+#: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
+msgid "Send entries to 100+ popular apps."
+msgstr "Envía entradas a más de 100 aplicaciones populares."
+
+#: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
+msgid "Build automated workflows that run instantly."
+msgstr " Crea flujos de trabajo automatizados que se ejecutan al instante."
+
+#: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
+msgid "Create custom app integrations using our Custom App feature."
+msgstr "Crea integraciones de aplicaciones personalizadas utilizando nuestra función de Aplicación Personalizada."
+
+#: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
+msgid "Keep your tools in sync automatically."
+msgstr "Mantén tus herramientas sincronizadas automáticamente."
+
+#: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
+msgid "This will install and activate OttoKit on your WordPress site to enable automation features."
+msgstr "Esto instalará y activará OttoKit en su sitio de WordPress para habilitar funciones de automatización."
+
+#: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
+msgid "Automate Your Forms with OttoKit"
+msgstr "Automatiza tus formularios con OttoKit"
+
+#: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
+msgid "Every form submission should trigger something — a Slack alert, a CRM lead, a follow-up email, or a new row in Google Sheets."
+msgstr "Cada envío de formulario debería activar algo: una alerta de Slack, un cliente potencial en el CRM, un correo electrónico de seguimiento o una nueva fila en Google Sheets."
+
+#: assets/build/formEditor.js:172
+msgid "Create interactive quizzes to engage your audience and gather insights."
+msgstr "Crea cuestionarios interactivos para involucrar a tu audiencia y recopilar información."
+
+#: assets/build/formEditor.js:172
+msgid "Design engaging quizzes with various question types, personalized feedback, and automated scoring to captivate your audience and gain valuable insights."
+msgstr "Diseña cuestionarios atractivos con varios tipos de preguntas, retroalimentación personalizada y puntuación automatizada para cautivar a tu audiencia y obtener valiosos conocimientos."
+
+#: assets/build/formEditor.js:172
+msgid "Create interactive quizzes with multiple question types."
+msgstr "Crea cuestionarios interactivos con múltiples tipos de preguntas."
+
+#: assets/build/formEditor.js:172
+msgid "Provide personalized feedback based on user responses."
+msgstr "Proporciona comentarios personalizados basados en las respuestas del usuario."
+
+#: assets/build/formEditor.js:172
+msgid "Automate scoring and lead segmentation for better insights."
+msgstr "Automatiza la puntuación y la segmentación de leads para obtener mejores insights."
+
+#: assets/build/quizEmptyState.js:172
+msgid "Build interactive quizzes with scoring and instant feedback"
+msgstr "Crea cuestionarios interactivos con puntuación y retroalimentación instantánea"
+
+#: assets/build/quizEmptyState.js:172
+msgid "Auto-grade responses and calculate scores in real time"
+msgstr "Calificar automáticamente las respuestas y calcular las puntuaciones en tiempo real"
+
+#: assets/build/quizEmptyState.js:172
+msgid "Track submissions, view answers, and analyze performance"
+msgstr "Rastrear envíos, ver respuestas y analizar el rendimiento"
+
+#: assets/build/quizEmptyState.js:172
+msgid "Quiz Entries Placeholder"
+msgstr "Marcador de posición de entradas del cuestionario"
+
+#: assets/build/quizEmptyState.js:172
+msgid "Create Engaging Quizzes with SureForms"
+msgstr "Crea cuestionarios atractivos con SureForms"
+
+#: assets/build/quizEmptyState.js:172
+msgid "Turn your forms into powerful quizzes. Upgrade to SureForms to unlock quiz capabilities:"
+msgstr "Convierte tus formularios en cuestionarios poderosos. Mejora a SureForms para desbloquear capacidades de cuestionario:"
+
+#: assets/build/quizEmptyState.js:172
+msgid "Upgrade to SureForms"
+msgstr "Actualiza a SureForms"
+
+#: assets/build/settings.js:172
+msgid "MCP"
+msgstr "MCP"
+
+#: assets/build/settings.js:172
+msgid "Configure AI client permissions and MCP server settings."
+msgstr "Configura los permisos del cliente de IA y la configuración del servidor MCP."
+
+#: assets/build/settings.js:172
+msgid "View documentation"
+msgstr "Ver documentación"
+
+#: assets/build/settings.js:172
+msgid "Copy to clipboard"
+msgstr "Copiar al portapapeles"
+
+#: assets/build/settings.js:172
+msgid "Claude Desktop"
+msgstr "Escritorio Claude"
+
+#: assets/build/settings.js:172
+msgid "~/Library/Application Support/Claude/claude_desktop_config.json (macOS) or %APPDATA%\\Claude\\claude_desktop_config.json (Windows)"
+msgstr "~/Library/Application Support/Claude/claude_desktop_config.json (macOS) o %APPDATA%\\Claude\\claude_desktop_config.json (Windows)"
+
+#: assets/build/settings.js:172
+msgid "Claude Code"
+msgstr "Código Claude"
+
+#: assets/build/settings.js:172
+msgid ".mcp.json (project) or ~/.claude.json (global)"
+msgstr ".mcp.json (proyecto) o ~/.claude.json (global)"
+
+#: assets/build/settings.js:172
+msgid "Cursor"
+msgstr "Cursor"
+
+#: assets/build/settings.js:172
+msgid "~/.cursor/mcp.json"
+msgstr "~/.cursor/mcp.json"
+
+#: assets/build/settings.js:172
+msgid "VS Code (Copilot)"
+msgstr "VS Code (Copilot)"
+
+#: assets/build/settings.js:172
+msgid ".vscode/mcp.json (project) or settings.json > mcp.servers (global)"
+msgstr ".vscode/mcp.json (proyecto) o settings.json > mcp.servers (global)"
+
+#: assets/build/settings.js:172
+msgid "~/.continue/config.yaml or config.json"
+msgstr "~/.continue/config.yaml o config.json"
+
+#: assets/build/settings.js:172
+msgid "Your client's MCP configuration file"
+msgstr "El archivo de configuración MCP de su cliente"
+
+#: assets/build/settings.js:172
+msgid "Connect Your AI Client"
+msgstr "Conecta tu cliente de IA"
+
+#: assets/build/settings.js:172
+msgid "AI Client"
+msgstr "Cliente de IA"
+
+#: assets/build/settings.js:172
+msgid "Create an Application Password — "
+msgstr "Crear una Contraseña de Aplicación — "
+
+#: assets/build/settings.js:172
+msgid "Open Application Passwords"
+msgstr "Abrir contraseñas de aplicaciones"
+
+#: assets/build/settings.js:172
+msgid "Or use this CLI command to add the server quickly (you will still need to set the environment variables):"
+msgstr "O utiliza este comando CLI para añadir el servidor rápidamente (aún necesitarás configurar las variables de entorno):"
+
+#: assets/build/settings.js:172
+msgid "Copy the JSON config below into: "
+msgstr "Copie la configuración JSON a continuación en: "
+
+#: assets/build/settings.js:172
+msgid "Replace \"your-application-password\" with the password from Step 1."
+msgstr "Reemplace \"your-application-password\" con la contraseña del Paso 1."
+
+#: assets/build/settings.js:172
+msgid "WP_API_URL — your site's MCP endpoint. WP_API_USERNAME — your WordPress username. WP_API_PASSWORD — the application password you generated."
+msgstr "WP_API_URL — el punto final MCP de tu sitio. WP_API_USERNAME — tu nombre de usuario de WordPress. WP_API_PASSWORD — la contraseña de la aplicación que generaste."
+
+#: assets/build/settings.js:172
+msgid "View setup docs"
+msgstr "Ver documentos de configuración"
+
+#: assets/build/settings.js:172
+msgid "The MCP Adapter plugin is installed but not active. Activate it to configure MCP settings."
+msgstr "El complemento MCP Adapter está instalado pero no activo. Actívalo para configurar los ajustes de MCP."
+
+#: assets/build/settings.js:172
+msgid "The MCP Adapter plugin is required to connect AI clients to your forms. Download and install it from GitHub, then activate it."
+msgstr "El complemento MCP Adapter es necesario para conectar clientes de IA a tus formularios. Descárgalo e instálalo desde GitHub, luego actívalo."
+
+#: assets/build/settings.js:172
+msgid "Download the latest release from"
+msgstr "Descarga la última versión desde"
+
+#: assets/build/settings.js:172
+msgid "Install the plugin via Plugins > Add New Plugin > Upload Plugin."
+msgstr "Instala el complemento a través de Complementos > Añadir nuevo complemento > Subir complemento."
+
+#: assets/build/settings.js:172
+msgid "Activate the MCP Adapter plugin."
+msgstr "Activa el complemento del adaptador MCP."
+
+#: assets/build/settings.js:172
+msgid "Activating…"
+msgstr "Activando…"
+
+#: assets/build/settings.js:172
+msgid "Activate MCP Adapter"
+msgstr "Activar adaptador MCP"
+
+#: assets/build/settings.js:172
+msgid "Download MCP Adapter"
+msgstr "Descargar el adaptador MCP"
+
+#: assets/build/settings.js:172
+msgid "Experimental"
+msgstr "Experimental"
+
+#: assets/build/settings.js:172
+msgid "Enable Abilities"
+msgstr "Habilitar habilidades"
+
+#: assets/build/settings.js:172
+msgid "Register SureForms abilities with the WordPress Abilities API. When enabled, AI clients can list, read, create, edit, and delete your forms and entries. When disabled, no abilities are registered and AI clients cannot perform any actions on your forms."
+msgstr "Registra las habilidades de SureForms con la API de Habilidades de WordPress. Cuando está habilitado, los clientes de IA pueden listar, leer, crear, editar y eliminar tus formularios y entradas. Cuando está deshabilitado, no se registran habilidades y los clientes de IA no pueden realizar ninguna acción en tus formularios."
+
+#: assets/build/settings.js:172
+msgid "Abilities API — Edit"
+msgstr "API de habilidades — Editar"
+
+#: assets/build/settings.js:172
+msgid "Enable Edit Abilities"
+msgstr "Habilitar habilidades de edición"
+
+#: assets/build/settings.js:172
+msgid "When enabled, AI clients can create new forms, update form titles, fields, and settings, duplicate forms, and modify entry statuses. When disabled, these abilities are unregistered and AI clients can only read your data."
+msgstr "Cuando está habilitado, los clientes de IA pueden crear nuevos formularios, actualizar títulos de formularios, campos y configuraciones, duplicar formularios y modificar los estados de las entradas. Cuando está deshabilitado, estas habilidades se desregistran y los clientes de IA solo pueden leer sus datos."
+
+#: assets/build/settings.js:172
+msgid "Abilities API — Delete"
+msgstr "API de habilidades — Eliminar"
+
+#: assets/build/settings.js:172
+msgid "Enable Delete Abilities"
+msgstr "Habilitar habilidades de eliminación"
+
+#: assets/build/settings.js:172
+msgid "When enabled, AI clients can permanently delete forms and entries. Deleted data cannot be recovered. When disabled, delete abilities are unregistered and AI clients cannot remove any data."
+msgstr "Cuando está habilitado, los clientes de IA pueden eliminar permanentemente formularios y entradas. Los datos eliminados no se pueden recuperar. Cuando está deshabilitado, las capacidades de eliminación se desregistran y los clientes de IA no pueden eliminar ningún dato."
+
+#: assets/build/settings.js:172
+msgid "MCP Server"
+msgstr "Servidor MCP"
+
+#: assets/build/settings.js:172
+msgid "Enable MCP Server"
+msgstr "Habilitar servidor MCP"
+
+#: assets/build/settings.js:172
+msgid "Creates a dedicated SureForms MCP endpoint that AI clients like Claude can connect to. When disabled, the endpoint is removed and external AI clients cannot discover or call any SureForms abilities."
+msgstr "Crea un punto final dedicado de SureForms MCP al que los clientes de IA como Claude pueden conectarse. Cuando está deshabilitado, el punto final se elimina y los clientes de IA externos no pueden descubrir ni llamar a ninguna capacidad de SureForms."
+
+#: assets/build/settings.js:172
+msgid "Learn more"
+msgstr "Aprende más"
+
+#: assets/build/settings.js:172
+msgid "MCP Adapter Required"
+msgstr "Adaptador MCP Requerido"
+
+#: assets/build/templatePicker.js:172
+msgid "Quiz"
+msgstr "Cuestionario"
+
+#: assets/build/templatePicker.js:172
+msgid "Unlock Quiz Forms"
+msgstr "Desbloquear formularios de cuestionarios"
+
+#: assets/build/templatePicker.js:172
+msgid "Create Engaging Quizzes That Score Automatically"
+msgstr "Crea cuestionarios atractivos que se califiquen automáticamente"
+
+#: assets/build/templatePicker.js:172
+msgid "Build interactive quizzes with scored questions and graded results. Perfect for assessments, trivia, and educational content."
+msgstr "Crea cuestionarios interactivos con preguntas puntuadas y resultados calificados. Perfecto para evaluaciones, trivia y contenido educativo."
+
+#: assets/build/templatePicker.js:172
+msgid "Auto-score responses instantly"
+msgstr "Autoevaluar respuestas al instante"
+
+#: assets/build/templatePicker.js:172
+msgid "Display graded results to users"
+msgstr "Mostrar resultados calificados a los usuarios"
+
+#: assets/build/templatePicker.js:172
+msgid "Perfect for education, training, and fun trivia"
+msgstr "Perfecto para educación, formación y trivia divertida"
+
+#: assets/build/templatePicker.js:172
+msgid "Select this to create a quiz with scored questions and graded results."
+msgstr "Selecciona esto para crear un cuestionario con preguntas puntuadas y resultados calificados."
 
 #: inc/post-types.php:205
 msgctxt "post type general name"
