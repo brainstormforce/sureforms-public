@@ -232,9 +232,9 @@ const EntryDetailPage = () => {
 					</div>
 					<div className="flex items-center gap-2">
 						{ applyFilters(
-							'srfm.entry_detail.extra_nav_actions',
+							'srfm.entryDetail.extraNavActions',
 							null,
-							{ formId: entryData?.formId, entryId: id }
+							{ formId: entryData?.formId, entryId: parseInt( id, 10 ) }
 						) }
 						<EntryNavigation { ...navigationProps } />
 					</div>

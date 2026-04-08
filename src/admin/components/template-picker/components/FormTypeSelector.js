@@ -12,6 +12,36 @@ import { useEffect, useState } from '@wordpress/element';
 import UpgradePopup from './UpgradePopup.js';
 import { addQueryParam, cn } from '@Utils/Helpers';
 
+const TOOLTIP_CONTENT_MAP = {
+	calculator: __(
+		'Select this if you need calculations in your form. For example: Loan interest calculator.',
+		'sureforms'
+	),
+	conversational: __(
+		'Select this if you want your form to display one question at a time, like a chat.',
+		'sureforms'
+	),
+	quiz: __(
+		'Select this to create a quiz with scored questions and graded results.',
+		'sureforms'
+	),
+	survey: __(
+		'Select this to create a survey to collect responses and opinions.',
+		'sureforms'
+	),
+	payment: __(
+		'Select this if you want to collect payments through your form.',
+		'sureforms'
+	),
+};
+
+const ICON_MAP = {
+	calculator: Calculator,
+	conversational: MessagesSquare,
+	quiz: ListChecks,
+	survey: ClipboardList,
+};
+
 const FormTypeSelector = ( {
 	formTypeObj,
 	setFormTypeObj,
@@ -174,30 +204,8 @@ const FormTypeSelector = ( {
 						arrow
 						content={
 							option.tooltipContent ||
-							( option.slug === 'calculator'
-								? __(
-									'Select this if you need calculations in your form. For example: Loan interest calculator.',
-									'sureforms'
-								  )
-								: option.slug === 'conversational'
-									? __(
-										'Select this if you want your form to display one question at a time, like a chat.',
-										'sureforms'
-								  )
-									: option.slug === 'quiz'
-										? __(
-											'Select this to create a quiz with scored questions and graded results.',
-											'sureforms'
-								  )
-										: option.slug === 'survey'
-											? __(
-												'Select this to create a survey to collect responses and opinions.',
-												'sureforms'
-								  )
-											: __(
-												'Select this if you want to collect payments through your form.',
-												'sureforms'
-								  ) )
+							TOOLTIP_CONTENT_MAP[ option.slug ] ||
+							TOOLTIP_CONTENT_MAP.payment
 						}
 						placement="bottom"
 						triggers={ [ 'hover' ] }
@@ -212,19 +220,11 @@ const FormTypeSelector = ( {
 									'hover:bg-brand-background-hover-100 bg-brand-background-hover-100 border-0.5 border-solid border-border-ai-button text-icon-interactive'
 							) }
 							iconPosition="left"
-							icon={
-								option.slug === 'calculator' ? (
-									<Calculator className="size-4" />
-								) : option.slug === 'conversational' ? (
-									<MessagesSquare className="size-4" />
-								) : option.slug === 'quiz' ? (
-									<ListChecks className="size-4" />
-								) : option.slug === 'survey' ? (
-									<ClipboardList className="size-4" />
-								) : (
-									<CreditCard className="size-4" />
-								)
-							}
+							icon={ ( () => {
+								const IconComponent =
+									ICON_MAP[ option.slug ] || CreditCard;
+								return <IconComponent className="size-4" />;
+							} )() }
 							size="md"
 							variant="outline"
 							onClick={ () => handleSelection( option ) }

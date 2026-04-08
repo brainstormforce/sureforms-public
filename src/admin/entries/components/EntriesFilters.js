@@ -142,7 +142,7 @@ const EntriesFilters = ( {
 		<Fragment>
 			<div className="flex flex-wrap lg:flex-nowrap items-center justify-end gap-2 sm:gap-3 lg:gap-4 mt-4 lg:!mt-0">
 				{ /* Additional action buttons injected by pro plugin. */ }
-				{ applyFilters( 'srfm.entries_filters.extra_actions', null, {
+				{ applyFilters( 'srfm.entriesFilters.extraActions', null, {
 					formFilter,
 					statusFilter,
 					hasSelectedEntries,
