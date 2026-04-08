@@ -2,12 +2,6 @@ import parse from 'html-react-parser';
 import svgIcons from '@Svg/svgs.json';
 import { forwardRef } from '@wordpress/element';
 
-export const modules = ( id ) => ( {
-	toolbar: {
-		container: `#${ id }`,
-	},
-} );
-
 export const QuillToolbar = forwardRef( ( _props, ref ) => {
 	return (
 		<div className="ql-toolbar" ref={ ref }>
