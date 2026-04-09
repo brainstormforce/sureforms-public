@@ -2424,6 +2424,38 @@ class Test_Helper extends TestCase {
         $this->assertEquals( 'address-city', $slug );
     }
 
+    // --- srfm_base64_json_encode ---
+
+    /**
+     * Test srfm_base64_json_encode encodes valid array data.
+     */
+    public function test_srfm_base64_json_encode_valid_array() {
+        $data   = [ 'key' => 'value', 'num' => 42 ];
+        $result = Helper::srfm_base64_json_encode( $data );
+
+        $this->assertNotEmpty( $result );
+        // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_decode
+        $decoded = json_decode( base64_decode( $result ), true );
+        $this->assertEquals( $data, $decoded );
+    }
+
+    /**
+     * Test srfm_base64_json_encode returns empty string for empty data.
+     */
+    public function test_srfm_base64_json_encode_empty_data() {
+        $this->assertSame( '', Helper::srfm_base64_json_encode( [] ) );
+        $this->assertSame( '', Helper::srfm_base64_json_encode( '' ) );
+        $this->assertSame( '', Helper::srfm_base64_json_encode( null ) );
+    }
+
+    /**
+     * Test srfm_base64_json_encode returns empty string for non-array data.
+     */
+    public function test_srfm_base64_json_encode_non_array() {
+        $this->assertSame( '', Helper::srfm_base64_json_encode( 'string' ) );
+        $this->assertSame( '', Helper::srfm_base64_json_encode( 123 ) );
+    }
+
     // --- get_visitor_ip ---
 
     /**
