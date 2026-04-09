@@ -2,8 +2,8 @@ import { RichText } from '@wordpress/block-editor';
 import { decodeHtmlEntities } from '@Blocks/util';
 import HelpText from '@Components/misc/HelpText';
 import ReactQuill from 'react-quill';
-import { QuillToolbar, modules, formats } from './utils';
-import { useRef } from '@wordpress/element';
+import { QuillToolbar, formats } from './utils';
+import { useRef, useState, useCallback, useMemo } from '@wordpress/element';
 
 export const TextareaComponent = ( { attributes, blockID, setAttributes } ) => {
 	const {
@@ -21,10 +21,17 @@ export const TextareaComponent = ( { attributes, blockID, setAttributes } ) => {
 	const isRequired = required ? ' srfm-required' : '';
 	const slug = 'textarea';
 
-	const uniqueIDRef = useRef(
-		Math.random().toString( 36 ).substring( 2, 8 )
-	);
-	const quillId = `quill-id-${ uniqueIDRef.current }`;
+	const toolbarRef = useRef( null );
+	const [ isToolbarReady, setIsToolbarReady ] = useState( false );
+	const handleToolbarRef = useCallback( ( node ) => {
+		toolbarRef.current = node;
+		setIsToolbarReady( !! node );
+	}, [] );
+	const quillModules = useMemo( () => ( {
+		toolbar: {
+			container: toolbarRef.current,
+		},
+	} ), [ isToolbarReady ] );
 
 	return (
 		<>
@@ -51,12 +58,14 @@ export const TextareaComponent = ( { attributes, blockID, setAttributes } ) => {
 			>
 				{ isRichText ? (
 					<div className="srfm-textarea-quill">
-						<QuillToolbar id={ quillId } />
-						<ReactQuill
-							formats={ formats }
-							value={ defaultValue }
-							modules={ modules( quillId ) }
-						/>
+						<QuillToolbar ref={ handleToolbarRef } />
+						{ isToolbarReady && (
+							<ReactQuill
+								formats={ formats }
+								value={ defaultValue }
+								modules={ quillModules }
+							/>
+						) }
 					</div>
 				) : (
 					<textarea
