@@ -115,7 +115,7 @@ class Phone_Markup extends Base {
 
 		$cache_key = 'srfm_geo_' . md5( $ip );
 		$cached    = get_transient( $cache_key );
-		if ( false !== $cached ) {
+		if ( is_string( $cached ) && '' !== $cached ) {
 			return $cached;
 		}
 
@@ -132,9 +132,10 @@ class Phone_Markup extends Base {
 			return 'us';
 		}
 
+		/** @var array<string, mixed>|null $body */
 		$body = json_decode( wp_remote_retrieve_body( $response ), true );
 
-		if ( empty( $body['country_code'] ) ) {
+		if ( ! is_array( $body ) || empty( $body['country_code'] ) || ! is_string( $body['country_code'] ) ) {
 			return 'us';
 		}
 
