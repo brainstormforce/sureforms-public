@@ -363,6 +363,8 @@ To improve the user experience, SureForms may use the following 3rd party servic
 
 -   **Google Fonts** -- are loaded to add additional fonts to your website. Google's [TOS](https://policies.google.com/terms) and [Privacy Policy](https://policies.google.com/privacy)
 
+-   **ipapi** -- is used to auto detect the current user region Phone Field [TOS](https://ipapi.co/terms/) and [Privacy Policy](https://ipapi.co/privacy/)
+
 -   **reCAPTCHA** -- is used for spam prevention and to ensure that the submissions made through the form are done by real human users.
 
 -   **Stripe** -- is used for processing payment forms. [TOS](https://stripe.com/legal/ssa) and [Privacy Policy](https://stripe.com/privacy)
@@ -476,6 +478,8 @@ You can collect payments securely through Stripe in the free version. PayPal pay
 You can report the issue through our [Bug Bounty Program](https://brainstormforce.com/bug-bounty-program/). We collaborate with Patchstack to provide opportunities for researchers to report vulnerabilities. The Patchstack team will help validate, triage, and handle any reported security issues.
 
 == Changelog ==
+= x.x.x =
+* Fix: Phone field auto-country detection now works reliably without CORS errors or rate limits
 = 2.7.1 - 9th April 2026 =
 * New: Added a customizable Field Slug panel to all form blocks.
 * New: Added Payment Description field to the Stripe payment block with smart tag support.
