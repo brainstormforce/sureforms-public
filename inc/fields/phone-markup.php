@@ -119,7 +119,7 @@ class Phone_Markup extends Base {
 			return $cached;
 		}
 
-		$url      = 'https://ipapi.co/' . rawurlencode( $ip ) . '/country/';
+		$url      = 'https://ipapi.co/' . rawurlencode( $ip ) . '/json/';
 		$response = wp_remote_get(
 			$url,
 			[
@@ -132,14 +132,13 @@ class Phone_Markup extends Base {
 			return 'us';
 		}
 
-		$body = trim( wp_remote_retrieve_body( $response ) );
+		$body = json_decode( wp_remote_retrieve_body( $response ), true );
 
-		// Validate: must be exactly 2 alphabetic characters.
-		if ( ! preg_match( '/^[A-Za-z]{2}$/', $body ) ) {
+		if ( empty( $body['country_code'] ) ) {
 			return 'us';
 		}
 
-		$country = strtolower( $body );
+		$country = strtolower( $body['country_code'] );
 		set_transient( $cache_key, $country, DAY_IN_SECONDS );
 
 		return $country;
