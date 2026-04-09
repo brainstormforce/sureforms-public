@@ -100,52 +100,6 @@ class Phone_Markup extends Base {
 	}
 
 	/**
-	 * Detect the visitor's 2-letter country code via server-side IP geolocation.
-	 *
-	 * Uses ipapi.co with transient caching (24 h per IP) to avoid repeated API calls.
-	 *
-	 * @since x.x.x
-	 * @return string Lowercase 2-letter country code, defaults to 'us'.
-	 */
-	private function get_geo_country() {
-		$ip = Helper::get_visitor_ip();
-		if ( empty( $ip ) ) {
-			return 'us';
-		}
-
-		$cache_key = 'srfm_geo_' . md5( $ip );
-		$cached    = get_transient( $cache_key );
-		if ( is_string( $cached ) && '' !== $cached ) {
-			return $cached;
-		}
-
-		$url      = 'https://ipapi.co/json/';
-		$response = wp_remote_get(
-			$url,
-			[
-				'timeout'    => 3,
-				'user-agent' => 'SureForms/' . SRFM_VER . ' (+https://sureforms.com)',
-			]
-		);
-
-		if ( is_wp_error( $response ) || 200 !== wp_remote_retrieve_response_code( $response ) ) {
-			return 'us';
-		}
-
-		/** @var array<string, mixed>|null $body */
-		$body = json_decode( wp_remote_retrieve_body( $response ), true );
-
-		if ( ! is_array( $body ) || empty( $body['country_code'] ) || ! is_string( $body['country_code'] ) ) {
-			return 'us';
-		}
-
-		$country = strtolower( $body['country_code'] );
-		set_transient( $cache_key, $country, DAY_IN_SECONDS );
-
-		return $country;
-	}
-
-	/**
 	 * Render the sureforms phone classic styling
 	 *
 	 * @since 0.0.2
@@ -185,5 +139,50 @@ class Phone_Markup extends Base {
 		</div>
 		<?php
 		return ob_get_clean();
+	}
+
+	/**
+	 * Detect the visitor's 2-letter country code via server-side IP geolocation.
+	 *
+	 * Uses ipapi.co with transient caching (24 h per IP) to avoid repeated API calls.
+	 *
+	 * @since x.x.x
+	 * @return string Lowercase 2-letter country code, defaults to 'us'.
+	 */
+	private function get_geo_country() {
+		$ip = Helper::get_visitor_ip();
+		if ( empty( $ip ) ) {
+			return 'us';
+		}
+
+		$cache_key = 'srfm_geo_' . md5( $ip );
+		$cached    = get_transient( $cache_key );
+		if ( is_string( $cached ) && '' !== $cached ) {
+			return $cached;
+		}
+
+		$url      = 'https://ipapi.co/json/';
+		$response = wp_remote_get(
+			$url,
+			[
+				'timeout'    => 3,
+				'user-agent' => 'SureForms/' . SRFM_VER . ' (+https://sureforms.com)',
+			]
+		);
+
+		if ( is_wp_error( $response ) || 200 !== wp_remote_retrieve_response_code( $response ) ) {
+			return 'us';
+		}
+
+		$body = json_decode( wp_remote_retrieve_body( $response ), true );
+
+		if ( ! is_array( $body ) || empty( $body['country_code'] ) || ! is_string( $body['country_code'] ) ) {
+			return 'us';
+		}
+
+		$country = strtolower( $body['country_code'] );
+		set_transient( $cache_key, $country, DAY_IN_SECONDS );
+
+		return $country;
 	}
 }
