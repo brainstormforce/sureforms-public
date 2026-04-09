@@ -1058,7 +1058,7 @@ class Payment_History_Shortcode {
 	 * @return string HTML login message.
 	 */
 	private function get_login_message() {
-		$login_url = wp_login_url( get_permalink() );
+		$login_url = wp_login_url( (string) get_permalink() );
 		$html      = sprintf(
 			'<div class="srfm-pd-widget"><div class="srfm-pd-message">%s <a href="%s">%s</a> %s</div></div>',
 			esc_html__( 'Please', 'sureforms' ),
