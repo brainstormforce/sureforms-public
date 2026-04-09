@@ -63,16 +63,16 @@
 		},
 		{
 			"name": "brainstormforce/bsf-analytics",
-			"version": "1.1.21",
+			"version": "1.1.23",
 			"source": {
 				"type": "git",
 				"url": "git@github.com:brainstormforce/bsf-analytics.git",
-				"reference": "260283e34fab7feb2425d09d3295a25958fc56c9"
+				"reference": "23cf9c8d40b2307a2d600d7c51b28ab5680e6ba0"
 			},
 			"dist": {
 				"type": "zip",
-				"url": "https://api.github.com/repos/brainstormforce/bsf-analytics/zipball/260283e34fab7feb2425d09d3295a25958fc56c9",
-				"reference": "260283e34fab7feb2425d09d3295a25958fc56c9",
+				"url": "https://api.github.com/repos/brainstormforce/bsf-analytics/zipball/23cf9c8d40b2307a2d600d7c51b28ab5680e6ba0",
+				"reference": "23cf9c8d40b2307a2d600d7c51b28ab5680e6ba0",
 				"shasum": ""
 			},
 			"require-dev": {
@@ -111,10 +111,10 @@
 			},
 			"description": "Library to gather non sensitive analytics data to enhance bsf products.",
 			"support": {
-				"source": "https://github.com/brainstormforce/bsf-analytics/tree/1.1.21",
+				"source": "https://github.com/brainstormforce/bsf-analytics/tree/1.1.23",
 				"issues": "https://github.com/brainstormforce/bsf-analytics/issues"
 			},
-			"time": "2026-03-27T11:38:46+00:00"
+			"time": "2026-04-07T02:48:24+00:00"
 		},
 		{
 			"name": "composer/ca-bundle",

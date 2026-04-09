@@ -16,9 +16,11 @@ import * as paymentHistory from '@Blocks/payment-history';
 import { registerBlocks } from '@Blocks/register-block';
 import { createHigherOrderComponent } from '@wordpress/compose';
 import { addFilter, applyFilters } from '@wordpress/hooks';
+import SlugControl from '@Components/slug-control';
+import { getWithoutSlugBlocks } from '@Utils/Helpers';
 import { useDeviceType } from '@Controls/getPreviewType';
 import { BlockControls } from '@wordpress/block-editor';
-import { ToolbarGroup, ToolbarButton } from '@wordpress/components';
+import { ToolbarGroup, ToolbarButton, PanelBody } from '@wordpress/components';
 import { getBlockTypes } from '@Blocks/util';
 import { __, sprintf } from '@wordpress/i18n';
 import ConditionalLogic from '@Components/conditional-logic';
@@ -305,4 +307,35 @@ addFilter(
 	'srfm.blocks.dropdown.options.enhance',
 	'srfm/dropdown/options',
 	EnhancedDropdownOptions
+);
+
+// Register filter to inject the Field Slug panel after the Attributes panel.
+addFilter(
+	'srfm.block.after.attributes.panel.body',
+	'sureforms/field-slug-panel',
+	( panels, props ) => {
+		if ( getWithoutSlugBlocks().includes( props?.name ) ) {
+			return panels;
+		}
+		return [
+			...panels,
+			{
+				id: 'field-slug',
+				component: (
+					<PanelBody
+						key="field-slug"
+						title={ __( 'Field Slug', 'sureforms' ) }
+						initialOpen={ false }
+					>
+						<SlugControl
+							slug={ props?.attributes?.slug ?? '' }
+							setAttributes={ props?.setAttributes }
+							clientId={ props?.clientId }
+							blockId={ props?.attributes?.block_id }
+						/>
+					</PanelBody>
+				),
+			},
+		];
+	}
 );
