@@ -11,7 +11,6 @@ const DEFAULT_FORM_DATA = {
 	firstName: '',
 	lastName: '',
 	email: '',
-	consent: true,
 };
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -38,10 +37,6 @@ const UserDetails = () => {
 			...prev,
 			[ field ]: '',
 		} ) );
-	};
-
-	const persistUserDetails = ( nextData ) => {
-		actions.setUserDetails( nextData );
 	};
 
 	const validateForm = () => {
@@ -87,7 +82,7 @@ const UserDetails = () => {
 			email: formData.email.trim(),
 		};
 
-		persistUserDetails( formData );
+		actions.setUserDetails( formData );
 		actions.unmarkStepSkipped( 'userDetails' );
 
 		try {
@@ -104,7 +99,7 @@ const UserDetails = () => {
 	};
 
 	const handleSkip = () => {
-		persistUserDetails( formData );
+		actions.setUserDetails( formData );
 		actions.markStepSkipped( 'userDetails' );
 		navigateToNextRoute();
 	};
