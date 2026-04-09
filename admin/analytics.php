@@ -1003,7 +1003,7 @@ class Analytics {
 			$user_completed = 0;
 
 			foreach ( $step_counts as $key => $count ) {
-				list( $chapter_id, $step_id ) = explode( '/', $key );
+				[ $chapter_id, $step_id ] = explode( '/', $key );
 				if ( ! empty( $progress[ $chapter_id ][ $step_id ] ) ) {
 					$step_counts[ $key ] = $count + 1;
 					++$user_completed;
