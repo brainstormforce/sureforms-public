@@ -79,6 +79,42 @@ class Test_Phone_Markup extends TestCase {
 	}
 
 	/**
+	 * Test that cached transient is used on subsequent requests for the same IP.
+	 */
+	public function test_auto_country_uses_cached_transient() {
+		$test_ip                = '203.0.113.45';
+		$_SERVER['REMOTE_ADDR'] = $test_ip;
+		$cache_key              = 'srfm_geo_' . md5( $test_ip );
+
+		// Seed transient with 'de' (Germany).
+		set_transient( $cache_key, 'de', DAY_IN_SECONDS );
+
+		$phone  = new Phone_Markup( $this->get_auto_country_attributes() );
+		$markup = $phone->markup();
+
+		$this->assertStringContainsString( 'default-country="de"', $markup );
+
+		// Clean up.
+		delete_transient( $cache_key );
+	}
+
+	/**
+	 * Test that when autoCountry is disabled, the provided defaultCountry is used as-is.
+	 */
+	public function test_manual_country_uses_provided_default() {
+		$attributes                 = $this->get_auto_country_attributes();
+		$attributes['autoCountry']  = false;
+		$attributes['defaultCountry'] = 'GB';
+		$attributes['block_id']     = 'phone004';
+
+		$phone  = new Phone_Markup( $attributes );
+		$markup = $phone->markup();
+
+		$this->assertStringContainsString( 'auto-country="false"', $markup );
+		$this->assertStringContainsString( 'default-country="GB"', $markup );
+	}
+
+	/**
 	 * Test markup with country filter enabled.
 	 */
 	public function test_markup_with_country_filter_enabled() {
