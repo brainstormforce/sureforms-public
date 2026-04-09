@@ -10,10 +10,13 @@ use SRFM\Inc\Fields\Phone_Markup;
 
 class Test_Phone_Markup extends TestCase {
 
-	protected $phone_markup;
-
-	protected function setUp(): void {
-		$attributes = [
+	/**
+	 * Get default attributes for auto-country phone field tests.
+	 *
+	 * @return array
+	 */
+	private function get_auto_country_attributes() {
+		return [
 			'required'            => true,
 			'fieldWidth'          => '',
 			'label'               => 'Phone Number',
@@ -34,21 +37,45 @@ class Test_Phone_Markup extends TestCase {
 			'errorMsg'            => 'Phone is required.',
 			'duplicateMsg'        => '',
 		];
-		$this->phone_markup = new Phone_Markup( $attributes );
 	}
 
 	/**
 	 * Test markup contains telephone input with country attributes.
 	 */
 	public function test_markup_contains_tel_input_with_country() {
-		$markup = $this->phone_markup->markup();
+		// Pre-seed the geolocation transient to avoid a real API call in tests.
+		$test_ip                    = '127.0.0.1';
+		$_SERVER['REMOTE_ADDR']     = $test_ip;
+		set_transient( 'srfm_geo_' . md5( $test_ip ), 'in', DAY_IN_SECONDS );
+
+		$phone  = new Phone_Markup( $this->get_auto_country_attributes() );
+		$markup = $phone->markup();
+
 		$this->assertStringContainsString( 'type="tel"', $markup );
 		$this->assertStringContainsString( 'srfm-input-phone', $markup );
 		$this->assertStringContainsString( 'auto-country="true"', $markup );
-		// When autoCountry is true, default_country is overridden by get_locale() derived value.
-		$this->assertStringContainsString( 'default-country=', $markup );
+		$this->assertStringContainsString( 'default-country="in"', $markup );
 		$this->assertStringContainsString( 'data-block-id="phone001"', $markup );
 		$this->assertStringContainsString( 'data-required="true"', $markup );
+
+		// Clean up.
+		delete_transient( 'srfm_geo_' . md5( $test_ip ) );
+	}
+
+	/**
+	 * Test that auto country falls back to 'us' when IP is unavailable.
+	 */
+	public function test_auto_country_falls_back_to_us_on_unknown_ip() {
+		unset( $_SERVER['REMOTE_ADDR'] );
+
+		$attributes                = $this->get_auto_country_attributes();
+		$attributes['block_id']    = 'phone003';
+		$attributes['defaultCountry'] = 'GB';
+
+		$phone  = new Phone_Markup( $attributes );
+		$markup = $phone->markup();
+
+		$this->assertStringContainsString( 'default-country="us"', $markup );
 	}
 
 	/**

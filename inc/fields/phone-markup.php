@@ -87,10 +87,10 @@ class Phone_Markup extends Base {
 		$this->include_countries     = $attributes['includeCountries'] ?? [];
 		$this->exclude_countries     = $attributes['excludeCountries'] ?? [];
 
-		// When auto country is enabled, derive country from the WordPress site locale
-		// instead of making a client-side API call to ipapi.co.
+		// When auto country is enabled, detect the visitor's country via server-side
+		// IP geolocation instead of a client-side API call (avoids CORS / rate limits).
 		if ( $this->auto_country ) {
-			$this->default_country = $this->get_locale_country();
+			$this->default_country = $this->get_geo_country();
 		}
 		$this->set_unique_slug();
 		$this->set_field_name( $this->unique_slug );
@@ -100,18 +100,49 @@ class Phone_Markup extends Base {
 	}
 
 	/**
-	 * Derive a 2-letter country code from the WordPress locale.
+	 * Detect the visitor's 2-letter country code via server-side IP geolocation.
+	 *
+	 * Uses ipapi.co with transient caching (24 h per IP) to avoid repeated API calls.
 	 *
 	 * @since x.x.x
 	 * @return string Lowercase 2-letter country code, defaults to 'us'.
 	 */
-	private function get_locale_country() {
-		$locale = get_locale(); // e.g., 'en_US', 'hi_IN', 'de_DE', 'en'.
-		if ( false !== strpos( $locale, '_' ) ) {
-			$parts = explode( '_', $locale );
-			return strtolower( $parts[1] );
+	private function get_geo_country() {
+		$ip = Helper::get_visitor_ip();
+		if ( empty( $ip ) ) {
+			return 'us';
 		}
-		return 'us';
+
+		$cache_key = 'srfm_geo_' . md5( $ip );
+		$cached    = get_transient( $cache_key );
+		if ( false !== $cached ) {
+			return $cached;
+		}
+
+		$url      = 'https://ipapi.co/' . rawurlencode( $ip ) . '/country/';
+		$response = wp_remote_get(
+			$url,
+			[
+				'timeout'    => 3,
+				'user-agent' => 'SureForms/' . SRFM_VER . ' (+https://sureforms.com)',
+			]
+		);
+
+		if ( is_wp_error( $response ) || 200 !== wp_remote_retrieve_response_code( $response ) ) {
+			return 'us';
+		}
+
+		$body = trim( wp_remote_retrieve_body( $response ) );
+
+		// Validate: must be exactly 2 alphabetic characters.
+		if ( ! preg_match( '/^[A-Za-z]{2}$/', $body ) ) {
+			return 'us';
+		}
+
+		$country = strtolower( $body );
+		set_transient( $cache_key, $country, DAY_IN_SECONDS );
+
+		return $country;
 	}
 
 	/**
