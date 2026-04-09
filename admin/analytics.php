@@ -88,6 +88,7 @@ class Analytics {
 		// Event tracking hooks.
 		add_action( 'current_screen', [ $this, 'track_first_editor_open' ] );
 		add_action( 'transition_post_status', [ $this, 'track_first_form_published' ], 10, 3 );
+		add_action( 'save_post', [ $this, 'track_embed_styling_configured' ], 10, 2 );
 
 		// Detect state-based events on admin load (dedup prevents repeat tracking).
 		$this->detect_state_events();
@@ -99,7 +100,7 @@ class Analytics {
 	 * Uses SureForms' Helper option methods so data stays in the
 	 * existing srfm_options row — zero migration required.
 	 *
-	 * @since x.x.x
+	 * @since 2.7.0
 	 * @return \BSF_Analytics_Events
 	 */
 	public static function events() {
@@ -143,12 +144,12 @@ class Analytics {
 			'payment_forms'              => $this->get_payment_forms_count(),
 			'total_entries'              => Entries::get_total_entries_by_status(),
 			'restricted_forms'           => $this->get_restricted_forms(),
+			'embed_styling_gb_default'   => self::embed_styling_gutenberg_count( 'default' ),
+			'embed_styling_el_default'   => self::embed_styling_elementor_count( 'default' ),
+			'embed_styling_br_default'   => self::embed_styling_bricks_count( 'default' ),
 		];
 
 		$stats_data['plugin_data']['sureforms'] = array_merge_recursive( $stats_data['plugin_data']['sureforms'], $this->global_settings_data() );
-		// Add onboarding analytics data.
-		$stats_data['plugin_data']['sureforms'] = array_merge_recursive( $stats_data['plugin_data']['sureforms'], $this->onboarding_analytics_data() );
-
 		// Add KPI tracking data.
 		$kpi_data = $this->get_kpi_tracking_data();
 		if ( ! empty( $kpi_data ) ) {
@@ -292,6 +293,147 @@ class Analytics {
 	}
 
 	/**
+	 * Count Gutenberg srfm/form embed blocks using a specific formTheme.
+	 *
+	 * When formTheme is 'inherit' (the block.json default), WordPress does not
+	 * serialize it in the block comment. So only 'default' and 'custom' appear.
+	 *
+	 * Counts individual embed blocks (not pages), since a single page can
+	 * contain multiple form embeds each with different styling.
+	 *
+	 * @param string $theme Theme slug to count ('default' or 'custom').
+	 * @since 2.7.0
+	 * @return int
+	 */
+	public static function embed_styling_gutenberg_count( $theme ) {
+		global $wpdb;
+
+		$cache_key     = 'embed_styling_gb_' . $theme;
+		$cached_result = wp_cache_get( $cache_key, 'sureforms' );
+
+		if ( false !== $cached_result ) {
+			return (int) $cached_result;
+		}
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- No WP_Query alternative for cross-post-type content search with multiple LIKE conditions.
+		$posts = $wpdb->get_col(
+			$wpdb->prepare(
+				"SELECT post_content FROM {$wpdb->posts}
+				WHERE post_status = 'publish'
+				AND post_content LIKE %s
+				AND post_content LIKE %s",
+				'%' . $wpdb->esc_like( 'wp:srfm/form' ) . '%',
+				'%' . $wpdb->esc_like( '"formTheme":"' . $theme . '"' ) . '%'
+			)
+		);
+
+		$count         = 0;
+		$escaped_theme = preg_quote( $theme, '/' );
+		foreach ( $posts as $content ) {
+			$count += preg_match_all( '/<!--\s*wp:srfm\/form\s+\{[^}]*"formTheme"\s*:\s*"' . $escaped_theme . '"/', $content );
+		}
+
+		wp_cache_set( $cache_key, $count, 'sureforms', HOUR_IN_SECONDS );
+
+		return $count;
+	}
+
+	/**
+	 * Count Elementor sureforms_form widgets using a specific formTheme.
+	 *
+	 * Searches _elementor_data post meta for sureforms_form widgets with
+	 * a non-inherit formTheme. Counts individual widgets (not pages).
+	 *
+	 * @param string $theme Theme slug to count ('default' or 'custom').
+	 * @since 2.7.0
+	 * @return int
+	 */
+	public static function embed_styling_elementor_count( $theme ) {
+		global $wpdb;
+
+		$cache_key     = 'embed_styling_el_' . $theme;
+		$cached_result = wp_cache_get( $cache_key, 'sureforms' );
+
+		if ( false !== $cached_result ) {
+			return (int) $cached_result;
+		}
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- No WP_Query alternative for post meta content search with multiple LIKE conditions.
+		$meta_values = $wpdb->get_col(
+			$wpdb->prepare(
+				"SELECT pm.meta_value FROM {$wpdb->postmeta} pm
+				INNER JOIN {$wpdb->posts} p ON p.ID = pm.post_id
+				WHERE p.post_status = 'publish'
+				AND pm.meta_key = '_elementor_data'
+				AND pm.meta_value LIKE %s
+				AND pm.meta_value LIKE %s",
+				'%' . $wpdb->esc_like( 'sureforms_form' ) . '%',
+				'%' . $wpdb->esc_like( '"formTheme":"' . $theme . '"' ) . '%'
+			)
+		);
+
+		$count         = 0;
+		$escaped_theme = preg_quote( $theme, '/' );
+		foreach ( $meta_values as $json ) {
+			// Count widget instances with the specific formTheme in the JSON.
+			$count += preg_match_all( '/"widgetType"\s*:\s*"sureforms_form"[^}]*"formTheme"\s*:\s*"' . $escaped_theme . '"/', $json );
+		}
+
+		wp_cache_set( $cache_key, $count, 'sureforms', HOUR_IN_SECONDS );
+
+		return $count;
+	}
+
+	/**
+	 * Count Bricks sureforms elements using a specific formTheme.
+	 *
+	 * Searches _bricks_page_content_2 post meta (serialized PHP) for
+	 * sureforms elements with a non-inherit formTheme. Counts individual elements.
+	 *
+	 * @param string $theme Theme slug to count ('default' or 'custom').
+	 * @since 2.7.0
+	 * @return int
+	 */
+	public static function embed_styling_bricks_count( $theme ) {
+		global $wpdb;
+
+		$cache_key     = 'embed_styling_br_' . $theme;
+		$cached_result = wp_cache_get( $cache_key, 'sureforms' );
+
+		if ( false !== $cached_result ) {
+			return (int) $cached_result;
+		}
+
+		// Bricks stores element data as serialized PHP in _bricks_page_content_2.
+		// In serialized format: s:9:"formTheme";s:7:"default" (for 'default' theme).
+		$serialized_theme = sprintf( '"formTheme";s:%d:"%s"', strlen( $theme ), $theme );
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- No WP_Query alternative for post meta content search with multiple LIKE conditions.
+		$meta_values = $wpdb->get_col(
+			$wpdb->prepare(
+				"SELECT pm.meta_value FROM {$wpdb->postmeta} pm
+				INNER JOIN {$wpdb->posts} p ON p.ID = pm.post_id
+				WHERE p.post_status = 'publish'
+				AND pm.meta_key = '_bricks_page_content_2'
+				AND pm.meta_value LIKE %s
+				AND pm.meta_value LIKE %s",
+				'%' . $wpdb->esc_like( '"sureforms"' ) . '%',
+				'%' . $wpdb->esc_like( $serialized_theme ) . '%'
+			)
+		);
+
+		$count                = 0;
+		$escaped_serial_theme = preg_quote( $serialized_theme, '/' );
+		foreach ( $meta_values as $data ) {
+			$count += preg_match_all( '/' . $escaped_serial_theme . '/', $data );
+		}
+
+		wp_cache_set( $cache_key, $count, 'sureforms', HOUR_IN_SECONDS );
+
+		return $count;
+	}
+
+	/**
 	 * Return total number of restricted forms.
 	 *
 	 * @since 1.10.1
@@ -343,108 +485,6 @@ class Analytics {
 		$global_data['boolean_values']['stripe_enabled'] = $this->is_stripe_enabled();
 
 		return $global_data;
-	}
-
-	/**
-	 * Generates onboarding analytics data
-	 *
-	 * @since 1.9.1
-	 * @return array
-	 */
-	public function onboarding_analytics_data() {
-		$onboarding_data  = [];
-		$analytics_option = Helper::get_srfm_option( 'onboarding_analytics', [] );
-
-		if ( empty( $analytics_option ) ) {
-			return $onboarding_data;
-		}
-
-		// Process skipped steps - store as an array.
-		if ( ! empty( $analytics_option['skippedSteps'] ) && is_array( $analytics_option['skippedSteps'] ) ) {
-			// Map step keys to more descriptive names.
-			$step_mapping = [
-				'welcome'         => 'Welcome',
-				'connect'         => 'Connect',
-				'emailDelivery'   => 'SureMail',
-				'premiumFeatures' => 'Features',
-				'done'            => 'Done',
-			];
-
-			// Transform the step keys to their descriptive names.
-			$mapped_steps = array_map(
-				static function( $step ) use ( $step_mapping ) {
-					return $step_mapping[ $step ] ?? $step;
-				},
-				$analytics_option['skippedSteps']
-			);
-
-			// Store as an array.
-			$onboarding_data['onboarding_skipped_steps'] = $mapped_steps;
-		}
-
-		// SureMail Installation Status.
-		if ( isset( $analytics_option['suremailInstalled'] ) ) {
-			$onboarding_data['boolean_values']['onboarding_suremail_installed'] = (bool) $analytics_option['suremailInstalled'];
-		}
-
-		// Account Connection Status.
-		if ( isset( $analytics_option['accountConnected'] ) ) {
-			$onboarding_data['boolean_values']['onboarding_account_connected'] = (bool) $analytics_option['accountConnected'];
-		}
-
-		// Onboarding Completion Status.
-		if ( isset( $analytics_option['completed'] ) ) {
-			$onboarding_data['boolean_values']['onboarding_completed'] = (bool) $analytics_option['completed'];
-		}
-
-		// Onboarding Early Exit Status.
-		if ( isset( $analytics_option['exitedEarly'] ) ) {
-			$onboarding_data['boolean_values']['onboarding_exited_early'] = (bool) $analytics_option['exitedEarly'];
-		}
-
-		// Onboarding Selected Premium Features.
-		if ( ! empty( $analytics_option['premiumFeatures'] ) && ! empty( $analytics_option['premiumFeatures']['selectedFeatures'] ) ) {
-			// Map feature IDs to more descriptive names - exclude free features.
-			$feature_mapping = [
-				// Starter features.
-				'multi_step_form'      => 'Multi-step Forms',
-				'conditional_logic'    => 'Conditional Fields',
-				'webhooks'             => 'Webhooks',
-				'advanced_fields'      => 'Advanced Fields',
-
-				// Pro features.
-				'conversational_forms' => 'Conversational Forms',
-				'digital_signatures'   => 'Digital Signatures',
-
-				// Business features.
-				'calculations'         => 'Calculators',
-				'user_registration'    => 'User Registration and Login',
-				'custom_app'           => 'Custom App',
-				'pdf_generation'       => 'PDF Generation',
-			];
-
-			// Filter out any free features that might have been included.
-			$premium_features = array_filter(
-				$analytics_option['premiumFeatures']['selectedFeatures'],
-				static function( $feature ) {
-					// Exclude free features (ai-form-generation and entries).
-					return 'ai-form-generation' !== $feature && 'entries' !== $feature;
-				}
-			);
-
-			// Transform the feature IDs to their descriptive names.
-			$mapped_features = array_map(
-				static function( $feature ) use ( $feature_mapping ) {
-					return $feature_mapping[ $feature ] ?? $feature;
-				},
-				$premium_features
-			);
-
-			// Store as an array.
-			$onboarding_data['onboarding_selected_premium_features'] = $mapped_features;
-		}
-
-		return $onboarding_data;
 	}
 
 	/**
@@ -569,7 +609,7 @@ class Analytics {
 	}
 
 	/**
-	 * Track first time a form is published.
+	 * Track first time a form is published (activation event).
 	 *
 	 * @param string   $new_status New post status.
 	 * @param string   $old_status Old post status.
@@ -585,14 +625,129 @@ class Analytics {
 		$is_ai       = ! empty( get_post_meta( $post->ID, '_srfm_is_ai_generated', true ) );
 		$block_count = substr_count( $post->post_content, '<!-- wp:srfm/' );
 
+		// Time-to-value: days between install and first form published.
+		$install_time       = get_site_option( 'sureforms_usage_installed_time', 0 );
+		$days_since_install = 0;
+		if ( $install_time > 0 ) {
+			$days_since_install = (int) floor( ( time() - $install_time ) / DAY_IN_SECONDS );
+		}
+
 		self::events()->track(
 			'first_form_published',
 			(string) $post->ID,
 			[
-				'is_ai_generated' => $is_ai,
-				'block_count'     => $block_count,
+				'is_ai_generated'    => (string) (int) $is_ai,
+				'block_count'        => (string) $block_count,
+				'days_since_install' => (string) $days_since_install,
 			]
 		);
+	}
+
+	/**
+	 * Track embed styling configuration when a post/page is saved.
+	 *
+	 * Detects custom formTheme in Gutenberg blocks (post_content),
+	 * Elementor widgets (_elementor_data meta), and Bricks elements
+	 * (_bricks_page_content_2 meta). Re-tracks on each save by flushing
+	 * the dedup flag.
+	 *
+	 * @param int      $post_id Post ID.
+	 * @param \WP_Post $post    Post object.
+	 * @since 2.7.0
+	 * @return void
+	 */
+	public function track_embed_styling_configured( $post_id, $post ) {
+		if ( wp_is_post_revision( $post_id ) || wp_is_post_autosave( $post_id ) ) {
+			return;
+		}
+
+		if ( 'publish' !== $post->post_status ) {
+			return;
+		}
+
+		$themes = [];
+		$source = '';
+
+		// Check Gutenberg blocks in post_content.
+		if ( preg_match_all( '/<!--\s*wp:srfm\/form\s+\{[^}]*"formTheme"\s*:\s*"(?!inherit")([^"]*)"/', $post->post_content, $matches ) ) {
+			$themes = array_count_values( $matches[1] );
+			$source = 'gutenberg';
+		}
+
+		// Check Elementor widgets in _elementor_data meta.
+		if ( empty( $themes ) ) {
+			$elementor_data = get_post_meta( $post_id, '_elementor_data', true );
+			if ( is_string( $elementor_data )
+				&& preg_match_all( '/"widgetType"\s*:\s*"sureforms_form"[^}]*"formTheme"\s*:\s*"(?!inherit")([^"]*)"/', $elementor_data, $el_matches )
+			) {
+				$themes = array_count_values( $el_matches[1] );
+				$source = 'elementor';
+			}
+		}
+
+		// Check Bricks elements in _bricks_page_content_2 meta (serialized PHP).
+		if ( empty( $themes ) ) {
+			$bricks_data = get_post_meta( $post_id, '_bricks_page_content_2', true );
+			if ( is_array( $bricks_data ) ) {
+				$bricks_themes = self::extract_bricks_form_themes( $bricks_data );
+				if ( ! empty( $bricks_themes ) ) {
+					$themes = array_count_values( $bricks_themes );
+					$source = 'bricks';
+				}
+			}
+		}
+
+		if ( empty( $themes ) ) {
+			return;
+		}
+
+		// Flush dedup so event is re-tracked on each meaningful save.
+		self::events()->flush_pushed( [ 'embed_styling_configured' ] );
+
+		self::events()->track(
+			'embed_styling_configured',
+			(string) $post_id,
+			[
+				'themes'      => $themes,
+				'block_count' => array_sum( $themes ),
+				'source'      => $source,
+			]
+		);
+	}
+
+	/**
+	 * Extract non-inherit formTheme values from Bricks element data.
+	 *
+	 * Recursively walks the unserialized Bricks elements array looking for
+	 * sureforms elements with custom formTheme settings.
+	 *
+	 * @param array<mixed> $elements Bricks elements array.
+	 * @return array<string> List of formTheme values (non-inherit).
+	 * @since 2.7.0
+	 */
+	private static function extract_bricks_form_themes( $elements ) {
+		$themes = [];
+
+		foreach ( $elements as $element ) {
+			if ( ! is_array( $element ) ) {
+				continue;
+			}
+
+			$name       = $element['name'] ?? '';
+			$settings   = $element['settings'] ?? [];
+			$form_theme = $settings['formTheme'] ?? '';
+
+			if ( 'sureforms' === $name && ! empty( $form_theme ) && 'inherit' !== $form_theme ) {
+				$themes[] = sanitize_text_field( $form_theme );
+			}
+
+			// Recurse into nested children.
+			if ( ! empty( $element['children'] ) && is_array( $element['children'] ) ) {
+				$themes = array_merge( $themes, self::extract_bricks_form_themes( $element['children'] ) );
+			}
+		}
+
+		return $themes;
 	}
 
 	/**
@@ -699,9 +854,52 @@ class Analytics {
 		$source        = ! empty( $bsf_referrers['sureforms'] ) ? $bsf_referrers['sureforms'] : 'self';
 		self::events()->track( 'plugin_activated', SRFM_VER, [ 'source' => $source ] );
 
-		// onboarding_completed: detect completed state.
+		// One-time: re-send onboarding_completed with full properties (v2).
+		if ( ! Helper::get_srfm_option( 'onboarding_event_v2_flushed', false )
+			&& \SRFM\Inc\Onboarding::get_instance()->get_onboarding_status() ) {
+			self::events()->flush_pushed( [ 'onboarding_completed' ] );
+			Helper::update_srfm_option( 'onboarding_event_v2_flushed', true );
+		}
+
+		// onboarding_completed: detect completed state with full onboarding details.
 		if ( \SRFM\Inc\Onboarding::get_instance()->get_onboarding_status() ) {
-			self::events()->track( 'onboarding_completed' );
+			$onboarding_props     = [];
+			$onboarding_analytics = Helper::get_srfm_option( 'onboarding_analytics', [] );
+
+			if ( ! empty( $onboarding_analytics ) && is_array( $onboarding_analytics ) ) {
+				if ( ! empty( $onboarding_analytics['skippedSteps'] ) && is_array( $onboarding_analytics['skippedSteps'] ) ) {
+					$onboarding_props['skipped_steps'] = implode( ',', $onboarding_analytics['skippedSteps'] );
+				}
+
+				if ( isset( $onboarding_analytics['suremailInstalled'] ) ) {
+					$onboarding_props['suremail_installed'] = (bool) $onboarding_analytics['suremailInstalled'] ? 'yes' : 'no';
+				}
+
+				if ( isset( $onboarding_analytics['accountConnected'] ) ) {
+					$onboarding_props['account_connected'] = (bool) $onboarding_analytics['accountConnected'] ? 'yes' : 'no';
+				}
+
+				if ( isset( $onboarding_analytics['completed'] ) ) {
+					$onboarding_props['completed'] = (bool) $onboarding_analytics['completed'] ? 'yes' : 'no';
+				}
+
+				if ( isset( $onboarding_analytics['exitedEarly'] ) ) {
+					$onboarding_props['exited_early'] = (bool) $onboarding_analytics['exitedEarly'] ? 'yes' : 'no';
+				}
+
+				if ( ! empty( $onboarding_analytics['premiumFeatures']['selectedFeatures'] ) && is_array( $onboarding_analytics['premiumFeatures']['selectedFeatures'] ) ) {
+					$premium                                       = array_filter(
+						$onboarding_analytics['premiumFeatures']['selectedFeatures'],
+						static function( $f ) {
+							return 'ai-form-generation' !== $f && 'entries' !== $f;
+						}
+					);
+					$onboarding_props['selected_premium_features'] = implode( ',', $premium );
+					$onboarding_props['premium_features_count']    = (string) count( $premium );
+				}
+			}
+
+			self::events()->track( 'onboarding_completed', '', $onboarding_props );
 		}
 
 		// stripe_connected: detect connection state.
@@ -709,6 +907,29 @@ class Analytics {
 			&& \SRFM\Inc\Payments\Stripe\Stripe_Helper::is_stripe_connected() ) {
 			$mode = \SRFM\Inc\Payments\Stripe\Stripe_Helper::get_stripe_mode();
 			self::events()->track( 'stripe_connected', ! empty( $mode ) ? $mode : 'live' );
+		}
+
+		// first_ai_form_generated: detect if any AI-generated form exists.
+		// Guard with is_tracked() to skip the meta_query after the event is already tracked.
+		if ( ! self::events()->is_tracked( 'first_ai_form_generated' ) ) {
+			$ai_forms = get_posts(
+				[
+					'post_type'      => SRFM_FORMS_POST_TYPE,
+					'post_status'    => 'any',
+					'posts_per_page' => 1,
+					'fields'         => 'ids',
+					'meta_query'     => [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Runs once per lifecycle via is_tracked guard.
+						[
+							'key'     => '_srfm_is_ai_generated',
+							'value'   => '',
+							'compare' => '!=',
+						],
+					],
+				]
+			);
+			if ( ! empty( $ai_forms ) ) {
+				self::events()->track( 'first_ai_form_generated' );
+			}
 		}
 
 		// MCP / Abilities API first-enable events.

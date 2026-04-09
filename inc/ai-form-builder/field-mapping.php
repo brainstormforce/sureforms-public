@@ -84,7 +84,7 @@ class Field_Mapping {
 				[
 					'label'    => sanitize_text_field( $question['label'] ),
 					'required' => filter_var( $question['required'], FILTER_VALIDATE_BOOLEAN ),
-					'help'     => sanitize_text_field( $question['helpText'] ),
+					'help'     => isset( $question['helpText'] ) ? sanitize_text_field( $question['helpText'] ) : '',
 					'slug'     => isset( $question['slug'] ) ? sanitize_text_field( $question['slug'] ) : '',
 				]
 			);

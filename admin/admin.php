@@ -416,7 +416,7 @@ class Admin {
 	 * Add Quiz empty state submenu page for free users.
 	 *
 	 * @return void
-	 * @since x.x.x
+	 * @since 2.7.0
 	 */
 	public function add_quiz_page() {
 		add_submenu_page(
@@ -437,7 +437,7 @@ class Admin {
 	 * Quiz empty state page callback.
 	 *
 	 * @return void
-	 * @since x.x.x
+	 * @since 2.7.0
 	 */
 	public function render_quiz_empty_state() {
 		?>
@@ -850,10 +850,16 @@ class Admin {
 		 */
 		$script_translations_handlers = [];
 		$onboarding_instance          = Onboarding::get_instance();
+		$current_user                 = wp_get_current_user();
 
 		$localization_data = [
 			'site_url'                    => get_site_url(),
-			'current_user_login'          => wp_get_current_user()->user_login,
+			'current_user_login'          => $current_user->user_login ?? '',
+			'website_lead_details'        => [
+				'first_name' => $current_user->first_name ?? '',
+				'last_name'  => $current_user->last_name ?? '',
+				'email'      => $current_user->user_email ?? '',
+			],
 			'breadcrumbs'                 => $this->get_breadcrumbs_for_current_page(),
 			'sureforms_dashboard_url'     => admin_url( '/admin.php?page=sureforms_menu' ),
 			'plugin_version'              => SRFM_VER,
@@ -900,6 +906,9 @@ class Admin {
 					'currency_sign_position'  => Payment_Helper::get_currency_sign_position(),
 				]
 			),
+			'mcp_adapter_status'          => file_exists( WP_PLUGIN_DIR . '/mcp-adapter/mcp-adapter.php' )
+				? ( is_plugin_active( 'mcp-adapter/mcp-adapter.php' ) ? 'active' : 'installed' )
+				: 'not_installed',
 		];
 
 		$is_screen_sureforms_menu          = Helper::validate_request_context( 'sureforms_menu', 'page' );
@@ -1124,7 +1133,10 @@ class Admin {
 			wp_localize_script(
 				SRFM_SLUG . '-settings',
 				SRFM_SLUG . '_admin',
-				$localization_data
+				apply_filters(
+					SRFM_SLUG . '_admin_filter',
+					$localization_data
+				)
 			);
 
 			$script_translations_handlers[] = SRFM_SLUG . '-settings';

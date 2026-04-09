@@ -313,6 +313,15 @@ const pushSmartTagToArray = (
 						blockLabel
 					),
 				],
+				// Translators: %s is replaced by the Payment block label.
+				[
+					`{form-payment:${ fieldSlug }:description}`,
+					sprintf(
+						/* translators: %s is replaced by the Payment block label. */
+						__( '%s - Description', 'sureforms' ),
+						blockLabel
+					),
+				],
 			];
 
 			// Add all payment tags to the array
@@ -653,8 +662,15 @@ export const getLastNDays = ( dates ) => {
 	};
 };
 
-const generateSlug = ( label, existingSlugs ) => {
-	const baseSlug = cleanForSlug( label );
+const generateSlug = ( label, existingSlugs, blockName = '' ) => {
+	let baseSlug = cleanForSlug( label );
+
+	// If the label contains non-Latin characters (e.g. Japanese, Chinese),
+	// cleanForSlug() preserves them but PHP sanitize_title() will percent-encode them,
+	// causing slug mismatch. Fall back to block name for a stable ASCII slug.
+	if ( /[^\x00-\x7F]/.test( baseSlug ) ) {
+		baseSlug = blockName ? cleanForSlug( blockName.replace( /^srfm\//, '' ) ) : '';
+	}
 
 	let slug = baseSlug;
 	let counter = 1;
@@ -715,8 +731,8 @@ export const prepareBlockSlugs = ( updateBlockAttributes, srfmBlocks ) => {
 			let { slug, label, block_id } = block.attributes;
 
 			if ( ! slug ) {
-				// No slug yet: generate from current label and record it.
-				slug = generateSlug( label, existingSlugs );
+				slug = generateSlug( label, existingSlugs, block.name );
+				// Update the block attributes with the generated slug.
 				updateBlockAttributes( block.clientId, { slug } );
 				_slugAutoLabels.set( block_id, label );
 			} else if (
@@ -724,7 +740,7 @@ export const prepareBlockSlugs = ( updateBlockAttributes, srfmBlocks ) => {
 				_slugAutoLabels.get( block_id ) !== label
 			) {
 				// Auto-generated slug AND label has since changed: re-derive.
-				slug = generateSlug( label, existingSlugs );
+				slug = generateSlug( label, existingSlugs, block.name );
 				updateBlockAttributes( block.clientId, { slug } );
 				_slugAutoLabels.set( block_id, label );
 			}
@@ -745,6 +761,18 @@ export const prepareBlockSlugs = ( updateBlockAttributes, srfmBlocks ) => {
 	processBlocks( srfmBlocks );
 
 	return blockSlugs;
+};
+
+/**
+ * Lock a block's slug by block_id so it is no longer subject to label-change re-derivation.
+ *
+ * Called when the user manually edits a slug via the SlugControl component.
+ *
+ * @param {string} blockId - The block_id attribute of the block to lock.
+ * @since x.x.x
+ */
+export const lockBlockSlugByBlockId = ( blockId ) => {
+	_slugAutoLabels.delete( blockId );
 };
 
 /**
