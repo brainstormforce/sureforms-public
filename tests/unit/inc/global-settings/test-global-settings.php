@@ -160,47 +160,6 @@ class Test_Global_Settings extends TestCase {
 		$this->assertStringNotContainsString( 'onerror', $saved['srfm_valid_email'] );
 	}
 
-	/**
-	 * Test saving Google Maps settings stores the API key.
-	 */
-	public function test_srfm_save_google_maps_settings() {
-		$setting_options = [
-			'srfm_google_maps_api_key' => 'AIzaSyTestKey123',
-		];
-
-		$result = Global_Settings::srfm_save_google_maps_settings( $setting_options );
-
-		$saved = get_option( 'srfm_google_maps_settings' );
-		$this->assertIsArray( $saved );
-		$this->assertSame( 'AIzaSyTestKey123', $saved['srfm_google_maps_api_key'] );
-	}
-
-	/**
-	 * Test saving Google Maps settings sanitizes the API key.
-	 */
-	public function test_srfm_save_google_maps_settings_sanitizes_input() {
-		$setting_options = [
-			'srfm_google_maps_api_key' => '<script>alert(1)</script>',
-		];
-
-		Global_Settings::srfm_save_google_maps_settings( $setting_options );
-
-		$saved = get_option( 'srfm_google_maps_settings' );
-		$this->assertIsArray( $saved );
-		$this->assertStringNotContainsString( '<script>', $saved['srfm_google_maps_api_key'] );
-	}
-
-	/**
-	 * Test saving Google Maps settings with missing key defaults to empty string.
-	 */
-	public function test_srfm_save_google_maps_settings_missing_key() {
-		Global_Settings::srfm_save_google_maps_settings( [] );
-
-		$saved = get_option( 'srfm_google_maps_settings' );
-		$this->assertIsArray( $saved );
-		$this->assertSame( '', $saved['srfm_google_maps_api_key'] );
-	}
-
 	public function test_srfm_save_email_summary_settings() {
 		// Valid email is preserved.
 		Global_Settings::srfm_save_email_summary_settings(

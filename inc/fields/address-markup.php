@@ -19,22 +19,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class Address_Markup extends Base {
 	/**
-	 * Whether Google autocomplete is enabled for this field.
-	 *
-	 * @var bool
-	 * @since x.x.x
-	 */
-	protected $enable_autocomplete = false;
-
-	/**
-	 * Whether to show interactive map preview.
-	 *
-	 * @var bool
-	 * @since x.x.x
-	 */
-	protected $show_map = false;
-
-	/**
 	 * Initialize the properties based on block attributes.
 	 *
 	 * @param array<mixed> $attributes Block attributes.
@@ -45,10 +29,6 @@ class Address_Markup extends Base {
 		$this->set_input_label( __( 'Address', 'sureforms' ) );
 		$this->slug = 'address';
 		$this->set_markup_properties();
-
-		// Autocomplete attributes.
-		$this->enable_autocomplete = ! empty( $attributes['enableAutocomplete'] );
-		$this->show_map            = ! empty( $attributes['showMap'] );
 	}
 
 	/**
@@ -59,38 +39,30 @@ class Address_Markup extends Base {
 	 * @return string|bool
 	 */
 	public function markup( $content = '' ) {
-		$extra_classes  = [];
-		$google_api_key = '';
+		/**
+		 * Filter extra CSS classes for the address field wrapper.
+		 *
+		 * @param array<string> $extra_classes Extra CSS classes.
+		 * @param array<mixed>  $attributes    Block attributes.
+		 * @since x.x.x
+		 */
+		$extra_classes = apply_filters( 'srfm_address_field_classes', [], $this->attributes );
 
-		if ( $this->enable_autocomplete ) {
-			// Static cache: get_option is already object-cached by WordPress per-request,
-			// but a static variable avoids repeated array lookups when multiple address blocks render.
-			static $cached_api_key = null;
-			if ( null === $cached_api_key ) {
-				$google_maps_settings = get_option( 'srfm_google_maps_settings', [] );
-				$google_maps_settings = is_array( $google_maps_settings ) ? $google_maps_settings : [];
-				$cached_api_key       = isset( $google_maps_settings['srfm_google_maps_api_key'] )
-					? strval( $google_maps_settings['srfm_google_maps_api_key'] )
-					: '';
-			}
-			$google_api_key = $cached_api_key;
+		$this->class_name = $this->get_field_classes( $extra_classes );
 
-			if ( ! empty( $google_api_key ) ) {
-				$extra_classes[] = 'srfm-address-autocomplete-block';
-			}
-		}
-
-		$this->class_name     = $this->get_field_classes( $extra_classes );
-		$autocomplete_enabled = $this->enable_autocomplete && ! empty( $google_api_key );
+		/**
+		 * Filter additional HTML attributes for the address block wrapper div.
+		 *
+		 * @param string       $extra_attrs Additional HTML attributes string.
+		 * @param array<mixed> $attributes  Block attributes.
+		 * @since x.x.x
+		 */
+		$extra_attrs = apply_filters( 'srfm_address_block_attributes', '', $this->attributes );
 
 		ob_start(); ?>
 			<div data-block-id="<?php echo esc_attr( $this->block_id ); ?>" class="<?php echo esc_attr( $this->class_name ); ?>" data-slug="<?php echo esc_attr( $this->block_slug ); ?>"
 			<?php
-			if ( $autocomplete_enabled ) {
-				?>
-				data-autocomplete="true" data-show-map="<?php echo esc_attr( $this->show_map ? 'true' : 'false' ); ?>" data-api-key="<?php echo esc_attr( $google_api_key ); ?>"
-				<?php
-			}
+				echo $extra_attrs; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped by the filter callback.
 			?>
 			>
 				<fieldset>
@@ -98,16 +70,17 @@ class Address_Markup extends Base {
 						<?php echo wp_kses_post( $this->label_markup ); ?>
 						<?php echo wp_kses_post( $this->help_markup ); ?>
 					</legend>
-					<?php if ( $autocomplete_enabled ) { ?>
-					<div class="srfm-address-autocomplete-search-wrap">
-						<input
-							type="text"
-							class="srfm-input-address-autocomplete srfm-input-common"
-							placeholder="<?php echo esc_attr__( 'Start typing an address...', 'sureforms' ); ?>"
-							autocomplete="off"
-						/>
-					</div>
-					<?php } ?>
+					<?php
+					/**
+					 * Fires after the address field legend, before the inner block content.
+					 * Used by pro to render the autocomplete search input.
+					 *
+					 * @param array<mixed> $attributes Block attributes.
+					 * @param string       $block_id   Block ID.
+					 * @since x.x.x
+					 */
+					do_action( 'srfm_address_before_fields', $this->attributes, $this->block_id );
+					?>
 					<div class="srfm-block-wrap">
 					<?php
 						// phpcs:ignore
@@ -115,31 +88,17 @@ class Address_Markup extends Base {
 						// phpcs:ignoreEnd
 					?>
 					</div>
-					<?php if ( $autocomplete_enabled ) { ?>
-						<?php
-						/*
-						* These hidden fields are populated client-side by address-autocomplete.js
-						* when a user selects a place or drags the map marker.
-						*
-						* - srfm-address-structured-*: Full parsed address as JSON (street, city, state, postal, country, lat, lng, place_id).
-						* - srfm-address-place-id-*:   Google Place ID of the selected location.
-						* - srfm-address-lat-*:         Latitude in decimal degrees.
-						* - srfm-address-lng-*:         Longitude in decimal degrees.
-						*
-						* These are intentionally not processed by process_form_fields() (which handles
-						* labelled block fields). They are available as raw POST values for third-party
-						* integrations via srfm_before_fields_processing or srfm_update_prepared_submission_data.
-						* Future: extend prepare_submission_data() when geocoding-aware integrations are needed.
-						*/
-						?>
-					<input type="hidden" class="srfm-address-autocomplete-structured" name="srfm-address-structured-<?php echo esc_attr( $this->block_id ); ?>" value="" />
-					<input type="hidden" class="srfm-address-autocomplete-place-id" name="srfm-address-place-id-<?php echo esc_attr( $this->block_id ); ?>" value="" />
-					<input type="hidden" class="srfm-address-autocomplete-lat" name="srfm-address-lat-<?php echo esc_attr( $this->block_id ); ?>" value="" />
-					<input type="hidden" class="srfm-address-autocomplete-lng" name="srfm-address-lng-<?php echo esc_attr( $this->block_id ); ?>" value="" />
-						<?php if ( $this->show_map ) { ?>
-					<div class="srfm-address-autocomplete-map-preview" style="display:none; height:200px;"></div>
-						<?php } ?>
-					<?php } ?>
+					<?php
+					/**
+					 * Fires after the inner block content, before the closing fieldset.
+					 * Used by pro to render hidden fields and map container.
+					 *
+					 * @param array<mixed> $attributes Block attributes.
+					 * @param string       $block_id   Block ID.
+					 * @since x.x.x
+					 */
+					do_action( 'srfm_address_after_fields', $this->attributes, $this->block_id );
+					?>
 				</fieldset>
 			</div>
 		<?php

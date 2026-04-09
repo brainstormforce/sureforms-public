@@ -9,7 +9,6 @@ import {
 	useBlockProps,
 } from '@wordpress/block-editor';
 import { useEffect } from '@wordpress/element';
-import { Notice, ToggleControl } from '@wordpress/components';
 import SRFMTextControl from '@Components/text-control';
 import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
@@ -29,16 +28,7 @@ import HelpText from '@Components/misc/HelpText';
 
 const Edit = ( props ) => {
 	const { clientId, attributes, setAttributes } = props;
-	const {
-		label,
-		block_id,
-		formId,
-		preview,
-		help,
-		className,
-		enableAutocomplete,
-		showMap,
-	} = attributes;
+	const { label, block_id, formId, preview, help, className } = attributes;
 
 	const currentFormId = useGetCurrentFormId( clientId );
 	const blockProps = useBlockProps( {
@@ -59,8 +49,6 @@ const Edit = ( props ) => {
 
 	const slug = 'address';
 	const blockID = `srfm-${ slug }-${ block_id }`;
-
-	const hasApiKey = !! srfm_block_data?.google_maps_api_key;
 
 	const addressTemplate = [
 		[
@@ -137,53 +125,6 @@ const Edit = ( props ) => {
 									setAttributes( { help: value } )
 								}
 							/>
-						</SRFMAdvancedPanelBody>
-						<SRFMAdvancedPanelBody
-							title={ __(
-								'Location Services',
-								'sureforms'
-							) }
-							initialOpen={ false }
-						>
-							<ToggleControl
-								label={ __(
-									'Enable Google Autocomplete',
-									'sureforms'
-								) }
-								checked={ enableAutocomplete }
-								onChange={ ( value ) =>
-									setAttributes( {
-										enableAutocomplete: value,
-									} )
-								}
-							/>
-							{ enableAutocomplete && (
-								<>
-									{ ! hasApiKey && (
-										<Notice
-											status="warning"
-											isDismissible={ false }
-										>
-											{ __(
-												'Google Maps API key is not configured. Go to Settings > Google Maps to add your API key.',
-												'sureforms'
-											) }
-										</Notice>
-									) }
-									<ToggleControl
-										label={ __(
-											'Show Interactive Map',
-											'sureforms'
-										) }
-										checked={ showMap }
-										onChange={ ( value ) =>
-											setAttributes( {
-												showMap: value,
-											} )
-										}
-									/>
-								</>
-							) }
 						</SRFMAdvancedPanelBody>
 						{ afterAttributePanelBody( props ).map(
 							( panel ) => panel.component

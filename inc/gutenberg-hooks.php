@@ -192,9 +192,6 @@ class Gutenberg_Hooks {
 		$site_url = Helper::get_string_value( wp_parse_url( esc_url( get_site_url() ), PHP_URL_HOST ) );
 		$site_url = preg_replace( '/^www\./', '', $site_url );
 
-		$google_maps_settings = get_option( 'srfm_google_maps_settings', [] );
-		$google_maps_settings = is_array( $google_maps_settings ) ? $google_maps_settings : [];
-
 		wp_localize_script(
 			SRFM_SLUG . $all_screen_blocks,
 			SRFM_SLUG . '_block_data',
@@ -214,7 +211,6 @@ class Gutenberg_Hooks {
 				'is_admin_user'                     => Helper::current_user_can(),
 				'site_url'                          => $site_url,
 				'is_suremails_active'               => is_plugin_active( 'suremails/suremails.php' ),
-				'google_maps_api_key'               => ! empty( $google_maps_settings['srfm_google_maps_api_key'] ),
 				'upgrade_url'                       => add_query_arg(
 					[ 'utm_medium' => 'embed_styling_upgrade' ],
 					Helper::get_sureforms_website_url( 'pricing' )

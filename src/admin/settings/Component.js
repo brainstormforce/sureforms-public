@@ -9,7 +9,6 @@ import GeneralPage from './pages/General';
 import ValidationsPage from './pages/Validations';
 import SecurityPage from './pages/Security';
 import IntegrationPage from './pages/Integrations';
-import GoogleMapsPage from './pages/GoogleMaps';
 import PaymentsPage from '../payment/global-setting-page';
 import MCPPage from './pages/MCP';
 import OttoKitPage from './pages/OttoKit';
@@ -59,9 +58,6 @@ const Component = ( { path, subpage } ) => {
 	const [ preDynamicBlockOptions, setPreDynamicBlockOptions ] = useState(
 		{}
 	);
-	const [ googleMapsSettings, setGoogleMapsSettings ] = useState( {
-		srfm_google_maps_api_key: '',
-	} );
 	const [ paymentsSettings, setPaymentsSettings ] = useState( {} );
 	const [ pluginConnected, setPluginConnected ] = useState(
 		srfm_admin?.integrations?.sure_triggers?.connected ?? null
@@ -76,7 +72,6 @@ const Component = ( { path, subpage } ) => {
 		'srfm_email_summary_settings_options',
 		'srfm_security_settings_options',
 		'srfm_default_dynamic_block_option',
-		'srfm_google_maps_settings',
 		'srfm_mcp_settings_options',
 	];
 
@@ -204,10 +199,6 @@ const Component = ( { path, subpage } ) => {
 					} );
 				}
 
-				if ( data.srfm_google_maps_settings ) {
-					setGoogleMapsSettings( data.srfm_google_maps_settings );
-				}
-
 				if ( data.payment_settings ) {
 					setPaymentsSettings( data.payment_settings );
 				}
@@ -285,13 +276,6 @@ const Component = ( { path, subpage } ) => {
 				[ setting ]: value,
 			};
 			setDynamicBlockOptions( updatedTabOptions );
-		} else if ( tab === 'google-maps-settings' ) {
-			updatedTabOptions = {
-				...googleMapsSettings,
-				srfm_tab: tab,
-				[ setting ]: value,
-			};
-			setGoogleMapsSettings( updatedTabOptions );
 		} else if ( tab === 'mcp-settings' ) {
 			updatedTabOptions = {
 				...mcpTabOptions,
@@ -373,13 +357,6 @@ const Component = ( { path, subpage } ) => {
 
 				{ 'integration-settings' === path && (
 					<IntegrationPage loading={ loading } />
-				) }
-				{ 'google-maps-settings' === path && (
-					<GoogleMapsPage
-						loading={ loading }
-						googleMapsSettings={ googleMapsSettings }
-						updateGlobalSettings={ updateGlobalSettings }
-					/>
 				) }
 				{ 'payments-settings' === path && (
 					<PaymentsPage

@@ -57,46 +57,6 @@ class Test_Gutenberg_Hooks extends TestCase {
 	}
 
 	/**
-	 * Test that block_editor_assets localizes google_maps_api_key data.
-	 */
-	public function test_block_editor_assets_localizes_google_maps_key() {
-		// Set up a Google Maps API key.
-		update_option( 'srfm_google_maps_settings', [ 'srfm_google_maps_api_key' => 'AIzaSyTestKey123' ] );
-
-		// Mock the screen to avoid null issues.
-		$screen = WP_Screen::get( 'post' );
-		// phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- Required for unit test to simulate editor screen.
-		$GLOBALS['current_screen'] = $screen;
-
-		$this->gutenberg_hooks->block_editor_assets();
-
-		$localized_data = wp_scripts()->get_data( 'sureforms-blocks', 'data' );
-
-		$this->assertNotFalse( $localized_data, 'Block editor assets should localize script data.' );
-		$this->assertStringContainsString( 'google_maps_api_key', $localized_data );
-
-		// Clean up.
-		delete_option( 'srfm_google_maps_settings' );
-	}
-
-	/**
-	 * Test that block_editor_assets handles empty google maps settings gracefully.
-	 */
-	public function test_block_editor_assets_handles_empty_google_maps() {
-		delete_option( 'srfm_google_maps_settings' );
-
-		$screen = WP_Screen::get( 'post' );
-		// phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- Required for unit test to simulate editor screen.
-		$GLOBALS['current_screen'] = $screen;
-
-		$this->gutenberg_hooks->block_editor_assets();
-
-		$localized_data = wp_scripts()->get_data( 'sureforms-blocks', 'data' );
-
-		$this->assertNotFalse( $localized_data, 'Block editor assets should still localize data when google maps settings are empty.' );
-	}
-
-	/**
 	 * Test that register_block_categories adds the sureforms category.
 	 */
 	public function test_register_block_categories() {

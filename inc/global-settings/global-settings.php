@@ -110,9 +110,6 @@ class Global_Settings {
 			case 'payments-settings':
 				$is_option_saved = self::srfm_save_payments_settings( $setting_options );
 				break;
-			case 'google-maps-settings':
-				$is_option_saved = self::srfm_save_google_maps_settings( $setting_options );
-				break;
 			case 'mcp-settings':
 				$is_option_saved = self::srfm_save_mcp_settings( $setting_options );
 				break;
@@ -359,26 +356,6 @@ class Global_Settings {
 	}
 
 	/**
-	 * Save Google Maps Settings
-	 *
-	 * @param array<mixed> $setting_options Setting options.
-	 * @return bool
-	 * @since x.x.x
-	 */
-	public static function srfm_save_google_maps_settings( $setting_options ) {
-		$api_key = isset( $setting_options['srfm_google_maps_api_key'] ) && is_string( $setting_options['srfm_google_maps_api_key'] )
-			? sanitize_text_field( $setting_options['srfm_google_maps_api_key'] )
-			: '';
-
-		return update_option(
-			'srfm_google_maps_settings',
-			[
-				'srfm_google_maps_api_key' => $api_key,
-			]
-		);
-	}
-
-	/**
 	 * Save MCP Settings
 	 *
 	 * @param array<mixed> $setting_options Setting options.
@@ -440,7 +417,6 @@ class Global_Settings {
 			'srfm_email_summary_settings_options',
 			'srfm_security_settings_options',
 			'srfm_default_dynamic_block_option',
-			'srfm_google_maps_settings',
 			'srfm_mcp_settings_options',
 		];
 		$options_to_get  = array_values( array_intersect( array_map( 'sanitize_text_field', $options_to_get ), $allowed_options ) );
@@ -494,12 +470,6 @@ class Global_Settings {
 				'srfm_hcaptcha_site_key'       => '',
 				'srfm_hcaptcha_secret_key'     => '',
 				'srfm_honeypot'                => false,
-			];
-		}
-
-		if ( empty( $global_setting_options['srfm_google_maps_settings'] ) ) {
-			$global_setting_options['srfm_google_maps_settings'] = [
-				'srfm_google_maps_api_key' => '',
 			];
 		}
 

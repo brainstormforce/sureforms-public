@@ -39,30 +39,5 @@
 				}
 			}
 		}
-
-		.srfm-address-autocomplete-block {
-			.srfm-address-autocomplete-search-wrap {
-				margin-bottom: var( --srfm-gap-below-address-label );
-
-				.srfm-input-address-autocomplete {
-					width: 100%;
-				}
-			}
-
-			.srfm-address-autocomplete-map-preview {
-				width: 100%;
-				border-radius: var( --srfm-border-radius );
-				overflow: hidden;
-				margin-top: 10px;
-			}
-		}
 	}
-}
-
-// Google Places autocomplete dropdown z-index.
-// .pac-container is injected directly into <body> by the Google Maps JS API
-// and cannot be scoped inside .srfm-form-container. The global override is
-// required so the dropdown renders above modals and fixed headers (z-index > 9999).
-.pac-container {
-	z-index: 10000;
 }

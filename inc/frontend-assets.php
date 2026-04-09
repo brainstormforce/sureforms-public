@@ -335,64 +335,6 @@ class Frontend_Assets {
 			);
 		}
 
-		if ( 'address' === $block_name && ! empty( $attr['enableAutocomplete'] ) ) {
-			$google_maps_settings = get_option( 'srfm_google_maps_settings', [] );
-			$google_maps_settings = is_array( $google_maps_settings ) ? $google_maps_settings : [];
-			$google_api_key       = isset( $google_maps_settings['srfm_google_maps_api_key'] )
-				? strval( $google_maps_settings['srfm_google_maps_api_key'] )
-				: '';
-
-			if ( ! empty( $google_api_key ) ) {
-				$file_prefix = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? '' : '.min';
-				$dir_name    = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? 'unminified' : 'minified';
-				$js_uri      = SRFM_URL . 'assets/js/' . $dir_name . '/blocks/';
-
-				wp_enqueue_script(
-					SRFM_SLUG . '-address-autocomplete',
-					$js_uri . 'address-autocomplete' . $file_prefix . '.js',
-					[],
-					SRFM_VER,
-					true
-				);
-
-				/**
-				 * Filter the default map center and zoom shown before a place is selected.
-				 *
-				 * @param array $default_center {
-				 *     @type float $lat  Latitude. Default 40.7128 (New York City).
-				 *     @type float $lng  Longitude. Default -74.006 (New York City).
-				 *     @type int   $zoom Zoom level. Default 10.
-				 * }
-				 * @since x.x.x
-				 */
-				$default_center = apply_filters(
-					'srfm_maps_default_center',
-					[
-						'lat'  => 40.7128,
-						'lng'  => -74.006,
-						'zoom' => 10,
-					]
-				);
-
-				// Validate filter output: guard against non-numeric or out-of-range values from third-party hooks.
-				$map_lat  = isset( $default_center['lat'] ) && is_numeric( $default_center['lat'] ) ? (float) $default_center['lat'] : 40.7128;
-				$map_lng  = isset( $default_center['lng'] ) && is_numeric( $default_center['lng'] ) ? (float) $default_center['lng'] : -74.006;
-				$map_zoom = isset( $default_center['zoom'] ) && is_numeric( $default_center['zoom'] ) ? (int) $default_center['zoom'] : 10;
-
-				$default_center = [
-					'lat'  => max( -90.0, min( 90.0, $map_lat ) ),
-					'lng'  => max( -180.0, min( 180.0, $map_lng ) ),
-					'zoom' => max( 0, min( 21, $map_zoom ) ),
-				];
-
-				wp_localize_script(
-					SRFM_SLUG . '-address-autocomplete',
-					'srfmMapsConfig',
-					[ 'defaultCenter' => $default_center ]
-				);
-			}
-		}
-
 		// Trigger custom action hook to allow third-party plugins or add-ons
 		// to enqueue additional scripts/styles for specific blocks (e.g., payment providers).
 		do_action(
