@@ -86,6 +86,122 @@ class Test_Payment_Markup extends TestCase {
 		$this->assertFalse( $result );
 	}
 
+	/**
+	 * Test markup returns empty string when no payment methods are registered (Stripe not connected).
+	 */
+	public function test_markup() {
+		$attributes = [
+			'required'            => true,
+			'fieldWidth'          => '',
+			'label'               => 'Payment',
+			'help'                => '',
+			'block_id'            => 'pay003',
+			'formId'              => '1',
+			'slug'                => 'payment',
+			'placeholder'         => '',
+			'defaultValue'        => '',
+			'checked'             => '',
+			'isUnique'            => false,
+			'amount'              => 10,
+			'currency'            => 'USD',
+			'paymentType'         => 'one-time',
+			'subscriptionPlan'    => [],
+			'amountType'          => 'fixed',
+			'fixedAmount'         => 10,
+			'minimumAmount'       => 0,
+			'customerNameField'   => '',
+			'customerEmailField'  => 'email-field',
+			'variableAmountField' => '',
+			'paymentMethods'      => [ 'stripe' ],
+			'paymentDescription'  => 'Annual Membership',
+			'errorMsg'            => '',
+		];
+
+		$payment = new Payment_Markup( $attributes );
+		$markup  = $payment->markup();
+
+		// Stripe is not connected in unit test environment, so no payment methods
+		// are registered and markup() returns an empty string early.
+		$this->assertSame( '', $markup );
+	}
+
+	/**
+	 * Test paymentDescription attribute is stored on the payment_description property.
+	 */
+	public function test_markup_payment_description_stored() {
+		$attributes = [
+			'required'            => false,
+			'fieldWidth'          => '',
+			'label'               => 'Payment',
+			'help'                => '',
+			'block_id'            => 'pay004',
+			'formId'              => '1',
+			'slug'                => 'payment',
+			'placeholder'         => '',
+			'defaultValue'        => '',
+			'checked'             => '',
+			'isUnique'            => false,
+			'amount'              => 25,
+			'currency'            => 'USD',
+			'paymentType'         => 'one-time',
+			'subscriptionPlan'    => [],
+			'amountType'          => 'fixed',
+			'fixedAmount'         => 25,
+			'minimumAmount'       => 0,
+			'customerNameField'   => '',
+			'customerEmailField'  => 'email-field',
+			'variableAmountField' => '',
+			'paymentMethods'      => [ 'stripe' ],
+			'paymentDescription'  => 'Annual Membership',
+			'errorMsg'            => '',
+		];
+
+		$payment    = new Payment_Markup( $attributes );
+		$reflection = new \ReflectionClass( $payment );
+		$prop       = $reflection->getProperty( 'payment_description' );
+		$prop->setAccessible( true );
+
+		$this->assertSame( 'Annual Membership', $prop->getValue( $payment ) );
+	}
+
+	/**
+	 * Test payment_description defaults to empty string when attribute is absent.
+	 */
+	public function test_markup_payment_description_defaults_to_empty() {
+		$attributes = [
+			'required'            => false,
+			'fieldWidth'          => '',
+			'label'               => 'Payment',
+			'help'                => '',
+			'block_id'            => 'pay005',
+			'formId'              => '1',
+			'slug'                => 'payment',
+			'placeholder'         => '',
+			'defaultValue'        => '',
+			'checked'             => '',
+			'isUnique'            => false,
+			'amount'              => 10,
+			'currency'            => 'USD',
+			'paymentType'         => 'one-time',
+			'subscriptionPlan'    => [],
+			'amountType'          => 'fixed',
+			'fixedAmount'         => 10,
+			'minimumAmount'       => 0,
+			'customerNameField'   => '',
+			'customerEmailField'  => 'email-field',
+			'variableAmountField' => '',
+			'paymentMethods'      => [ 'stripe' ],
+			'errorMsg'            => '',
+		];
+
+		$payment    = new Payment_Markup( $attributes );
+		$reflection = new \ReflectionClass( $payment );
+		$prop       = $reflection->getProperty( 'payment_description' );
+		$prop->setAccessible( true );
+
+		$this->assertSame( '', $prop->getValue( $payment ) );
+	}
+
 	private function call_private_method( $object, $method_name, $parameters = [] ) {
 		$reflection = new \ReflectionClass( get_class( $object ) );
 		$method     = $reflection->getMethod( $method_name );

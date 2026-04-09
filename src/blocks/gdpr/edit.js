@@ -18,8 +18,10 @@ import { compose } from '@wordpress/compose';
 import { FieldsPreview } from '../FieldsPreview.jsx';
 import { useErrMessage } from '@Blocks/util';
 import ConditionalLogic from '@Components/conditional-logic';
+import { afterAttributePanelBody } from '@Components/hooks';
 
-const Edit = ( { attributes, setAttributes, clientId } ) => {
+const Edit = ( props ) => {
+	const { attributes, setAttributes, clientId } = props;
 	const {
 		checked: isChecked,
 		help,
@@ -96,6 +98,9 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 								}
 							/>
 						</SRFMAdvancedPanelBody>
+						{ afterAttributePanelBody( props ).map(
+							( panel ) => panel.component
+						) }
 					</InspectorTab>
 					<InspectorTab { ...SRFMTabs.style }></InspectorTab>
 					<InspectorTab { ...SRFMTabs.advance }>
