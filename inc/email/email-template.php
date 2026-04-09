@@ -121,167 +121,19 @@ class Email_Template {
 	}
 
 	/**
-	 * Render email template in raw HTML format.
+	 * Render email as raw HTML with no template wrapping.
 	 *
-	 * Preserves the email body HTML exactly as written and wraps it in the
-	 * advanced SureForms email template with full DOCTYPE, inline CSS,
-	 * dark mode support, mobile responsiveness, and RTL language support.
+	 * Returns the email body exactly as written with only smart tag
+	 * processing applied. No wrapper, no container, no layout, no
+	 * styles, no footer — true raw HTML output.
 	 *
 	 * @param array<mixed> $fields Submission fields.
 	 * @param string       $email_body Email body content.
 	 * @since 2.5.2
-	 * @return string The rendered email HTML.
+	 * @return string The raw email body with smart tags processed.
 	 */
 	public function render_raw( $fields, $email_body ) {
-		$email_body = $this->process_all_data_tag( $fields, $email_body );
-
-		return $this->get_raw_header() . $email_body . $this->get_raw_footer();
-	}
-
-	/**
-	 * Get raw HTML email header.
-	 *
-	 * Returns a professional HTML email header with DOCTYPE, meta tags,
-	 * inline CSS, dark mode support, and table-based layout.
-	 *
-	 * @since 2.5.2
-	 * @return string
-	 */
-	public function get_raw_header() {
-		$is_rtl      = is_rtl();
-		$dir         = $is_rtl ? 'rtl' : 'ltr';
-		$text_align  = $is_rtl ? 'right' : 'left';
-		$margin_attr = $is_rtl ? 'rightmargin' : 'leftmargin';
-
-		ob_start();
-		?>
-<!DOCTYPE html>
-<html dir="<?php echo esc_attr( $dir ); ?>">
-<head>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	<meta name="x-apple-disable-message-reformatting" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<title><?php echo esc_html( get_bloginfo( 'name', 'display' ) ); ?></title>
-	<!--[if mso]>
-	<noscript>
-		<xml>
-			<o:OfficeDocumentSettings>
-				<o:PixelsPerInch>96</o:PixelsPerInch>
-			</o:OfficeDocumentSettings>
-		</xml>
-	</noscript>
-	<![endif]-->
-	<style type="text/css">
-		/* Reset */
-		body, #srfm_raw_wrapper { margin: 0; padding: 0; }
-		img { border: none; display: inline; font-size: 14px; height: auto; outline: none; text-decoration: none; }
-		a { color: #5850EC; text-decoration: underline; }
-		h1 { font-size: 30px; font-weight: 300; line-height: 150%; margin: 0 0 .5em 0; }
-		h2 { font-size: 18px; font-weight: bold; line-height: 130%; margin: .5em 0; }
-		h3 { font-size: 16px; font-weight: bold; line-height: 130%; margin: .5em 0; }
-		p { margin: 0 0 16px; }
-
-		/* Dark mode support */
-		@media (prefers-color-scheme: dark) {
-			body, #srfm_raw_wrapper { background-color: #1a1a2e !important; }
-			#srfm_raw_template_container { background-color: #16213e !important; border-color: #2a2a4a !important; }
-			#srfm_raw_body_content { background-color: #16213e !important; }
-			#srfm_raw_body_content_inner { color: #e0e0e0 !important; }
-			#srfm_raw_body_content_inner h1,
-			#srfm_raw_body_content_inner h2,
-			#srfm_raw_body_content_inner h3 { color: #f0f0f0 !important; }
-			.srfm_all_data { border-color: #2a2a4a !important; }
-			.srfm_all_data .field-label th { background-color: #1a1a2e !important; color: #e0e0e0 !important; }
-			.srfm_all_data .field-value td { color: #c0c0c0 !important; border-color: #2a2a4a !important; }
-			#srfm_raw_footer_credit { color: #888888 !important; }
-			#srfm_raw_footer_credit a { color: #7c78f0 !important; }
-		}
-
-		/* iOS font size compensation */
-		@media screen and (max-device-width: 768px) and (-webkit-min-device-pixel-ratio: 2) {
-			* { font-size: 28px; line-height: 1.3em; }
-		}
-
-		/* Mobile responsive */
-		@media only screen and (max-width: 640px) {
-			body { padding: 0 !important; }
-			#srfm_raw_template_container { width: 100% !important; }
-			#srfm_raw_template_body { width: 100% !important; }
-			#srfm_raw_body_content_inner { padding: 20px !important; }
-			h1, h2, h3, h4 { font-weight: 800 !important; margin: 20px 0 5px !important; }
-			.srfm_all_data { width: 100% !important; }
-		}
-	</style>
-</head>
-<body <?php echo esc_attr( $margin_attr ); ?>="0" marginwidth="0" topmargin="0" marginheight="0" offset="0" style="margin: 0; padding: 0; background-color: #F8F8FC; -webkit-text-size-adjust: none; font-family: Roboto, -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; font-size: 14px; line-height: 1.4; width: 100%;">
-	<div id="srfm_raw_wrapper" dir="<?php echo esc_attr( $dir ); ?>" style="margin: 0; background-color: #F8F8FC; padding: 40px 0 0 0; -webkit-text-size-adjust: none !important; width: 100%;">
-		<table border="0" cellpadding="0" cellspacing="0" height="100%" width="100%">
-			<tr>
-				<td align="center" valign="top">
-					<table border="0" cellpadding="0" cellspacing="0" width="600" id="srfm_raw_template_container" style="background-color: #ffffff; border: 1px solid #dce0e6; margin-bottom: 25px;">
-						<tr>
-							<td align="center" valign="top">
-								<table border="0" cellpadding="0" cellspacing="0" width="600" id="srfm_raw_template_body">
-									<tr>
-										<td valign="top" id="srfm_raw_body_content" style="background-color: #ffffff;">
-											<table border="0" cellpadding="20" cellspacing="0" width="100%">
-												<tr>
-													<td valign="top" style="padding: 32px;">
-														<div id="srfm_raw_body_content_inner" style="color: #384860; font-family: Roboto, -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 14px; line-height: 170%; text-align: <?php echo esc_attr( $text_align ); ?>;">
-		<?php
-		$output = ob_get_clean();
-		return $output ? $output : '';
-	}
-
-	/**
-	 * Get raw HTML email footer.
-	 *
-	 * Returns a professional HTML email footer with site credits
-	 * and proper closing tags.
-	 *
-	 * @since 2.5.2
-	 * @return string
-	 */
-	public function get_raw_footer() {
-		$site_name = get_bloginfo( 'name', 'display' );
-		$site_url  = home_url();
-		$year      = gmdate( 'Y' );
-
-		ob_start();
-		?>
-														</div>
-													</td>
-												</tr>
-											</table>
-										</td>
-									</tr>
-								</table>
-							</td>
-						</tr>
-					</table>
-					<!-- Footer -->
-					<table border="0" cellpadding="10" cellspacing="0" width="600" id="srfm_raw_template_footer">
-						<tr>
-							<td valign="top">
-								<table border="0" cellpadding="10" cellspacing="0" width="100%">
-									<tr>
-										<td id="srfm_raw_footer_credit" colspan="2" valign="middle" style="border: 0; color: #999999; font-family: Arial, sans-serif; font-size: 12px; line-height: 125%; text-align: center; padding: 0 48px 48px 48px;">
-											<span>&copy; <?php echo esc_html( $year ); ?> <a href="<?php echo esc_url( $site_url ); ?>" style="color: #999999; text-decoration: none;"><?php echo esc_html( $site_name ); ?></a></span>
-										</td>
-									</tr>
-								</table>
-							</td>
-						</tr>
-					</table>
-				</td>
-			</tr>
-		</table>
-	</div>
-</body>
-</html>
-		<?php
-		$output = ob_get_clean();
-		return $output ? $output : '';
+		return $this->process_all_data_tag( $fields, $email_body );
 	}
 
 	/**

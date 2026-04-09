@@ -134,6 +134,14 @@ class Payment_Markup extends Base {
 	protected $payment_methods;
 
 	/**
+	 * Payment description shown on receipts and in the payment dashboard.
+	 *
+	 * @var string
+	 * @since x.x.x
+	 */
+	protected $payment_description;
+
+	/**
 	 * Constructor for the Payment Markup class.
 	 *
 	 * @param array<mixed> $attributes Block attributes.
@@ -181,6 +189,9 @@ class Payment_Markup extends Base {
 
 		// Set payment methods from block attributes, default to 'stripe' for backward compatibility.
 		$this->payment_methods = $attributes['paymentMethods'] ?? [ 'stripe' ];
+
+		// Set custom payment description (empty means JS/gateway will use its own default).
+		$this->payment_description = $attributes['paymentDescription'] ?? '';
 
 		// BACKWARD COMPATIBILITY: Migrate customer fields from subscriptionPlan.
 		if ( empty( $this->customer_name_field ) && ! empty( $this->subscription_plan['customer_name'] ) ) {
@@ -238,6 +249,10 @@ class Payment_Markup extends Base {
 			$data_input_attributes['data-subscription-plan-name']      = $this->subscription_plan['name'] ?? __( 'Subscription Plan', 'sureforms' );
 			$data_input_attributes['data-subscription-interval']       = $this->subscription_plan['interval'] ?? 'month';
 			$data_input_attributes['data-subscription-billing-cycles'] = $this->subscription_plan['billingCycles'] ?? 0;
+		}
+
+		if ( ! empty( $this->payment_description ) ) {
+			$data_input_attributes['data-description'] = $this->payment_description;
 		}
 
 		if ( 'variable' === $this->amount_type ) {

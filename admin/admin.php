@@ -9,7 +9,6 @@ namespace SRFM\Admin;
 
 use Astra_Notices;
 use SRFM\Inc\AI_Form_Builder\AI_Helper;
-use SRFM\Inc\Analytics_Events;
 use SRFM\Inc\Database\Tables\Entries;
 use SRFM\Inc\Helper;
 use SRFM\Inc\Onboarding;
@@ -77,6 +76,7 @@ class Admin {
 		add_action( 'admin_menu', [ $this, 'add_new_form' ] );
 		add_action( 'admin_menu', [ $this, 'add_suremail_page' ] );
 		if ( ! Helper::has_pro() ) {
+			add_action( 'admin_menu', [ $this, 'add_quiz_page' ] );
 			add_action( 'admin_menu', [ $this, 'add_upgrade_to_pro' ] );
 			add_action( 'admin_footer', [ $this, 'add_upgrade_to_pro_target_attr' ] );
 		}
@@ -410,6 +410,39 @@ class Admin {
 			self::$sureforms_page_default_capability,
 			$upgrade_url
 		);
+	}
+
+	/**
+	 * Add Quiz empty state submenu page for free users.
+	 *
+	 * @return void
+	 * @since 2.7.0
+	 */
+	public function add_quiz_page() {
+		add_submenu_page(
+			'sureforms_menu',
+			__( 'Quiz Entries', 'sureforms' ),
+			__( 'Quizzes', 'sureforms' ) .
+				' <span style="color:#4ADE80;font-size:9px;font-weight:600;">' .
+				esc_html__( 'New', 'sureforms' ) .
+				'</span>',
+			self::$sureforms_page_default_capability,
+			'sureforms_quiz_entries',
+			[ $this, 'render_quiz_empty_state' ],
+			5
+		);
+	}
+
+	/**
+	 * Quiz empty state page callback.
+	 *
+	 * @return void
+	 * @since 2.7.0
+	 */
+	public function render_quiz_empty_state() {
+		?>
+		<div id="srfm-quiz-entries-root" class="srfm-admin-wrapper"></div>
+		<?php
 	}
 
 	/**
@@ -817,10 +850,16 @@ class Admin {
 		 */
 		$script_translations_handlers = [];
 		$onboarding_instance          = Onboarding::get_instance();
+		$current_user                 = wp_get_current_user();
 
 		$localization_data = [
 			'site_url'                    => get_site_url(),
-			'current_user_login'          => wp_get_current_user()->user_login,
+			'current_user_login'          => $current_user->user_login ?? '',
+			'website_lead_details'        => [
+				'first_name' => $current_user->first_name ?? '',
+				'last_name'  => $current_user->last_name ?? '',
+				'email'      => $current_user->user_email ?? '',
+			],
 			'breadcrumbs'                 => $this->get_breadcrumbs_for_current_page(),
 			'sureforms_dashboard_url'     => admin_url( '/admin.php?page=sureforms_menu' ),
 			'plugin_version'              => SRFM_VER,
@@ -844,6 +883,7 @@ class Admin {
 			'plugin_activate_text'        => __( 'Activate', 'sureforms' ),
 			'plugin_installing_text'      => __( 'Installing...', 'sureforms' ),
 			'plugin_installed_text'       => __( 'Installed', 'sureforms' ),
+			'privacy_policy_url'          => Helper::get_sureforms_website_url( 'privacy-policy/' ),
 			'is_rtl'                      => $is_rtl,
 			'onboarding_completed'        => method_exists( $onboarding_instance, 'get_onboarding_status' ) ? $onboarding_instance->get_onboarding_status() : false,
 			'onboarding_redirect'         => isset( $_GET['srfm-activation-redirect'] ), // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce is not required for the activation redirection.
@@ -866,6 +906,9 @@ class Admin {
 					'currency_sign_position'  => Payment_Helper::get_currency_sign_position(),
 				]
 			),
+			'mcp_adapter_status'          => file_exists( WP_PLUGIN_DIR . '/mcp-adapter/mcp-adapter.php' )
+				? ( is_plugin_active( 'mcp-adapter/mcp-adapter.php' ) ? 'active' : 'installed' )
+				: 'not_installed',
 		];
 
 		$is_screen_sureforms_menu          = Helper::validate_request_context( 'sureforms_menu', 'page' );
@@ -875,6 +918,7 @@ class Admin {
 		$is_screen_sureforms_payments      = Helper::validate_request_context( 'sureforms_payments', 'page' );
 		$is_screen_sureforms_entries       = Helper::validate_request_context( SRFM_ENTRIES, 'page' );
 		$is_screen_sureforms_learn         = Helper::validate_request_context( 'sureforms_learn', 'page' );
+		$is_screen_quiz_empty_state        = Helper::validate_request_context( 'sureforms_quiz_entries', 'page' );
 		$is_post_type_sureforms_form       = SRFM_FORMS_POST_TYPE === $current_screen->post_type;
 
 		/**
@@ -888,7 +932,16 @@ class Admin {
 			];
 		}
 
-		$is_sureforms_screen = $is_screen_sureforms_menu || $is_post_type_sureforms_form || $is_screen_add_new_form || $is_screen_sureforms_forms || $is_screen_sureforms_form_settings || $is_screen_sureforms_entries || $is_screen_sureforms_payments || $is_screen_sureforms_learn;
+		// Add the Quizzes nav item to the header when pro is not active.
+		if ( ! Helper::has_pro() ) {
+			$localization_data['additional_header_nav_items'][] = [
+				'slug' => 'sureforms_quiz_entries',
+				'text' => __( 'Quizzes', 'sureforms' ),
+				'link' => admin_url( 'admin.php?page=sureforms_quiz_entries' ),
+			];
+		}
+
+		$is_sureforms_screen = $is_screen_sureforms_menu || $is_post_type_sureforms_form || $is_screen_add_new_form || $is_screen_sureforms_forms || $is_screen_sureforms_form_settings || $is_screen_sureforms_entries || $is_screen_sureforms_payments || $is_screen_sureforms_learn || $is_screen_quiz_empty_state;
 
 		/**
 		 * Filter to allow extending the SureForms dashboard screen check.
@@ -1044,6 +1097,24 @@ class Admin {
 			$script_translations_handlers[] = SRFM_SLUG . '-suremail';
 		}
 
+		// Enqueue scripts for the Quiz empty state page (free users only).
+		if ( $is_screen_quiz_empty_state && ! Helper::has_pro() ) {
+			$asset_handle = 'quizEmptyState';
+
+			$script_asset_path = SRFM_DIR . 'assets/build/' . $asset_handle . '.asset.php';
+			$script_info       = file_exists( $script_asset_path )
+				? include $script_asset_path
+				: [
+					'dependencies' => [],
+					'version'      => SRFM_VER,
+				];
+
+			wp_enqueue_script( SRFM_SLUG . '-quiz-empty-state', SRFM_URL . 'assets/build/' . $asset_handle . '.js', $script_info['dependencies'], SRFM_VER, true );
+			wp_enqueue_style( SRFM_SLUG . '-quiz-empty-state', SRFM_URL . 'assets/build/' . $asset_handle . '.css', [], SRFM_VER, 'all' );
+
+			$script_translations_handlers[] = SRFM_SLUG . '-quiz-empty-state';
+		}
+
 		// Admin Submenu Styles.
 		wp_enqueue_style( SRFM_SLUG . '-admin', $css_uri . 'backend/admin' . $file_prefix . $rtl . '.css', [], SRFM_VER );
 
@@ -1062,7 +1133,10 @@ class Admin {
 			wp_localize_script(
 				SRFM_SLUG . '-settings',
 				SRFM_SLUG . '_admin',
-				$localization_data
+				apply_filters(
+					SRFM_SLUG . '_admin_filter',
+					$localization_data
+				)
 			);
 
 			$script_translations_handlers[] = SRFM_SLUG . '-settings';
@@ -1500,7 +1574,7 @@ class Admin {
 		}
 
 		$event_name = $valid[ $notice_id ][ $button ];
-		Analytics_Events::track( $event_name, $button );
+		Analytics::events()->track( $event_name, $button );
 
 		wp_send_json_success();
 	}

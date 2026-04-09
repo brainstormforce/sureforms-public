@@ -567,6 +567,26 @@ namespace Bricks {
         {
         }
     }
+
+    /**
+     * Bricks Assets class.
+     *
+     * @since 1.0
+     */
+    class Assets {
+        /**
+         * Generate CSS color value from Bricks color control data.
+         *
+         * Returns CSS variable reference for global palette colors,
+         * or hex/rgb/raw values for other colors.
+         *
+         * @param array<string, mixed>|string $color Color control value.
+         * @return string CSS color string.
+         * @since 1.0
+         */
+        public static function generate_css_color( $color ) {
+        }
+    }
 }
 
 namespace {

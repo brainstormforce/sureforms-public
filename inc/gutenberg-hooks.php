@@ -215,6 +215,10 @@ class Gutenberg_Hooks {
 				'site_url'                          => $site_url,
 				'is_suremails_active'               => is_plugin_active( 'suremails/suremails.php' ),
 				'google_maps_api_key'               => ! empty( $google_maps_settings['srfm_google_maps_api_key'] ),
+				'upgrade_url'                       => add_query_arg(
+					[ 'utm_medium' => 'embed_styling_upgrade' ],
+					Helper::get_sureforms_website_url( 'pricing' )
+				),
 				'default_translations'              => [
 					'gdpr_label'           => __( 'I consent to have this website store my submitted information so they can respond to my inquiry.', 'sureforms' ),
 					'dropdown_placeholder' => __( 'Select an option', 'sureforms' ),

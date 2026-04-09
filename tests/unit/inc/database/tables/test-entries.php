@@ -285,6 +285,33 @@ class Test_Entries_Table extends TestCase {
 	}
 
 	/**
+	 * Test has_duplicate_field_value returns false for empty inputs.
+	 */
+	public function test_has_duplicate_field_value() {
+		// Empty form_id should return false.
+		$this->assertFalse( Entries::has_duplicate_field_value( 0, 'srfm-input-abc-lbl-Email', 'test@example.com' ) );
+
+		// Empty field_key should return false.
+		$this->assertFalse( Entries::has_duplicate_field_value( 1, '', 'test@example.com' ) );
+
+		// Empty field_value should return false.
+		$this->assertFalse( Entries::has_duplicate_field_value( 1, 'srfm-input-abc-lbl-Email', '' ) );
+
+		// Non-existent form should return false (no entries match).
+		$this->assertFalse( Entries::has_duplicate_field_value( 999999, 'srfm-input-abc-lbl-Email', 'test@example.com' ) );
+	}
+
+	/**
+	 * Test get_all_entry_ids_for_form returns array.
+	 */
+	public function test_get_all_entry_ids_for_form() {
+		// Non-existent form should return empty array.
+		$result = Entries::get_all_entry_ids_for_form( 999999 );
+		$this->assertIsArray( $result );
+		$this->assertEmpty( $result );
+	}
+
+	/**
 	 * Test get_columns_to_rename has expected structure.
 	 */
 	public function test_get_columns_to_rename() {

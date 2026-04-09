@@ -479,6 +479,40 @@ class Entries extends Base {
 	}
 
 	/**
+	 * Check if any non-trashed entry for a given form contains a specific field value.
+	 *
+	 * Uses a single SQL query with JSON_EXTRACT on the form_data column
+	 * instead of loading all entries into PHP. Stops at the first match.
+	 *
+	 * @param int    $form_id     The form ID to search within.
+	 * @param string $field_key   The form_data JSON key to match against.
+	 * @param string $field_value The value to check for uniqueness.
+	 * @since 2.7.0
+	 * @return bool True if a duplicate exists, false otherwise.
+	 */
+	public static function has_duplicate_field_value( $form_id, $field_key, $field_value ) {
+		if ( empty( $form_id ) || empty( $field_key ) || '' === $field_value ) {
+			return false;
+		}
+
+		global $wpdb;
+		$table_name = self::get_instance()->get_tablename();
+		$json_path  = '$."' . $field_key . '"';
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- One-off existence check; caching not beneficial for uniqueness validation.
+		$exists = $wpdb->get_var(
+			$wpdb->prepare(
+				"SELECT 1 FROM {$table_name} WHERE form_id = %d AND status != 'trash' AND JSON_UNQUOTE(JSON_EXTRACT(form_data, %s)) = %s LIMIT 1", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name is internally generated.
+				$form_id,
+				$json_path,
+				$field_value
+			)
+		);
+
+		return null !== $exists;
+	}
+
+	/**
 	 * Get form IDs associated with a list of entry IDs.
 	 * This method retrieves the distinct form IDs that are linked to the provided entry IDs.
 	 *

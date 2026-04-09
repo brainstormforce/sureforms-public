@@ -32,6 +32,14 @@ module.exports = {
 			__dirname,
 			'assets/js/unminified/form-submit.js'
 		),
+		previewStyling: path.resolve(
+			__dirname,
+			'assets/js/unminified/preview-styling.js'
+		),
+		elementorPreviewStyling: path.resolve(
+			__dirname,
+			'inc/page-builders/elementor/assets/elementor-preview-styling.js'
+		),
 		quickActionSidebar: path.resolve(
 			__dirname,
 			'./modules/quick-action-sidebar/index.js'
@@ -48,6 +56,7 @@ module.exports = {
 		),
 		dashboard: path.resolve( __dirname, 'src/admin/dashboard/index.js' ),
 		suremail: path.resolve( __dirname, 'src/admin/SureMail.js' ),
+		quizEmptyState: path.resolve( __dirname, 'src/admin/QuizEmptyState.js' ),
 		blocks: path.resolve( __dirname, 'src/blocks/blocks.js' ),
 		entries: path.resolve( __dirname, 'src/admin/entries/index.js' ),
 		payments: path.resolve( __dirname, 'src/admin/payment/index.js' ),
