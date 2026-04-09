@@ -1058,9 +1058,13 @@ class Payment_History_Shortcode {
 	 * @return string HTML login message.
 	 */
 	private function get_login_message() {
-		$html = sprintf(
-			'<div class="srfm-pd-widget"><div class="srfm-pd-message">%s</div></div>',
-			esc_html__( 'Please log in to view your payment history.', 'sureforms' )
+		$login_url = wp_login_url( get_permalink() );
+		$html      = sprintf(
+			'<div class="srfm-pd-widget"><div class="srfm-pd-message">%s <a href="%s">%s</a> %s</div></div>',
+			esc_html__( 'Please', 'sureforms' ),
+			esc_url( $login_url ),
+			esc_html__( 'log in', 'sureforms' ),
+			esc_html__( 'to view your payment dashboard.', 'sureforms' )
 		);
 
 		/**
