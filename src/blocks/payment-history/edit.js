@@ -87,11 +87,11 @@ export default function Edit( { attributes, setAttributes } ) {
 							color: '#111827',
 						} }
 					>
-						{ __( 'Payment History', 'sureforms' ) }
+						{ __( 'Payment Dashboard', 'sureforms' ) }
 					</span>
 					<span style={ { fontSize: '13px' } }>
 						{ __(
-							'Displays subscriptions and payment history for logged-in users with detail overlays and subscription management.',
+							'View your payments and manage subscriptions in a single dashboard.',
 							'sureforms'
 						) }
 					</span>
