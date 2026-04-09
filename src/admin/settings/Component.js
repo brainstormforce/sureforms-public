@@ -4,7 +4,7 @@ import { __ } from '@wordpress/i18n';
 import { useDebouncedCallback } from 'use-debounce';
 import { toast } from '@bsf/force-ui';
 import { cn } from '@Utils/Helpers';
-import { navigation } from './Navigation';
+import { getNavigation } from './Navigation';
 import GeneralPage from './pages/General';
 import ValidationsPage from './pages/Validations';
 import SecurityPage from './pages/Security';
@@ -78,7 +78,7 @@ const Component = ( { path, subpage } ) => {
 	// set page title and icon based on the path.
 	useEffect( () => {
 		if ( path ) {
-			navigation.forEach( ( single ) => {
+			getNavigation().forEach( ( single ) => {
 				const slug = single?.slug && single.slug ? single.slug : '';
 				const title = single?.name && single.name ? single.name : '';
 				// eslint-disable-next-line no-shadow

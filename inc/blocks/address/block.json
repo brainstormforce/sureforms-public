@@ -47,6 +47,14 @@
 		"slug": {
 			"type": "string",
 			"default": ""
+		},
+		"enableAutocomplete": {
+			"type": "boolean",
+			"default": false
+		},
+		"showMap": {
+			"type": "boolean",
+			"default": false
 		}
 	}
 }
