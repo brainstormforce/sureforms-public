@@ -273,6 +273,25 @@ class Helper {
 	}
 
 	/**
+	 * Sanitize a CSS value to prevent injection.
+	 *
+	 * Strips characters that can break out of a CSS property value context
+	 * and removes dangerous CSS functions while preserving safe ones
+	 * (rgb, hsl, linear-gradient, etc.).
+	 *
+	 * @param mixed $value Raw CSS value.
+	 * @return string Sanitized CSS value.
+	 * @since 2.7.0
+	 */
+	public static function sanitize_css_value( $value ) {
+		$value = self::get_string_value( $value );
+		// Strip characters that can break out of a CSS property value context.
+		$value = preg_replace( '/[{}<>;\\\\"\'`]/', '', $value ) ?? '';
+		// Remove dangerous CSS functions (url, expression, import, etc.) while preserving safe ones (rgb, hsl, linear-gradient, etc.).
+		return preg_replace( '/\b(url|expression|import|javascript)\s*\(/i', '(', $value ) ?? '';
+	}
+
+	/**
 	 * This function sanitizes the submitted form data according to the field type.
 	 *
 	 * @param array<mixed> $form_data $form_data User submitted form data.
@@ -721,6 +740,7 @@ class Helper {
 			}
 			$label = explode( '-lbl-', $key )[1];
 			$slug  = implode( '-', array_slice( explode( '-', $label ), 1 ) );
+			$slug  = str_replace( ' ', '_', $slug );
 
 			/**
 			 * Filters whether a field should be skipped when mapping slugs to submission data.
@@ -1213,6 +1233,17 @@ class Helper {
 
 		if ( ! empty( $block['attrs']['label'] ) && is_string( $block['attrs']['label'] ) ) {
 			$slug = sanitize_title( $block['attrs']['label'] );
+
+			// If the label contains non-Latin characters (e.g. Japanese, Chinese),
+			// sanitize_title() produces a percent-encoded slug like "%e3%83%95%e3%83%aa".
+			// These are unstable and break conditional logic field matching.
+			// Fall back to the block name to ensure a stable ASCII slug.
+			if ( false !== strpos( $slug, '%' ) ) {
+				$block_name = is_string( $block['blockName'] ) ? $block['blockName'] : '';
+				// Strip the 'srfm/' namespace to match JS-side cleanForSlug() output.
+				$block_name = (string) preg_replace( '/^srfm\//', '', $block_name );
+				$slug       = sanitize_title( $block_name );
+			}
 		}
 
 		if ( ! empty( $prefix ) ) {

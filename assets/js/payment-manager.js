@@ -260,7 +260,8 @@ class PaymentManager {
 		// No blockId fallback needed here — sureforms-pro (which writes to srfmPayPalPayments)
 		// is always updated alongside sureforms (core) since we enforce minimum core version
 		// via SRFM_PRO_CORE_RQD_VER, so both plugins will use compositeKey simultaneously.
-		const paypalPaymentData = window.srfmPayPalPayments?.[ this.compositeKey ];
+		const paypalPaymentData =
+			window.srfmPayPalPayments?.[ this.compositeKey ];
 
 		// Verify that PayPal payment was completed
 		if ( paypalPaymentData && paypalPaymentData.completed === true ) {

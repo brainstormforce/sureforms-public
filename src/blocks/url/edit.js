@@ -10,7 +10,8 @@ import { compose } from '@wordpress/compose';
 import { FieldsPreview } from '../FieldsPreview.jsx';
 import { useBlockProps } from '@wordpress/block-editor';
 
-const Edit = ( { attributes, setAttributes, clientId } ) => {
+const Edit = ( props ) => {
+	const { attributes, setAttributes, clientId } = props;
 	const { block_id, formId, preview, className } = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
 	const blockProps = useBlockProps( {
@@ -31,8 +32,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 	return (
 		<div { ...blockProps }>
 			<Settings
-				attributes={ attributes }
-				setAttributes={ setAttributes }
+				{ ...props }
 			/>
 			<UrlComponent
 				blockID={ block_id }
