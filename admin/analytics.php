@@ -9,6 +9,7 @@ namespace SRFM\Admin;
 
 use SRFM\Inc\Database\Tables\Entries;
 use SRFM\Inc\Helper;
+use SRFM\Inc\Learn;
 use SRFM\Inc\Traits\Get_Instance;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -155,6 +156,9 @@ class Analytics {
 		if ( ! empty( $kpi_data ) ) {
 			$stats_data['plugin_data']['sureforms']['kpi_records'] = $kpi_data;
 		}
+
+		// Build learn progress snapshot.
+		$this->get_learn_tracking_data();
 
 		// Flush pending events into payload (only if any exist).
 		$pending_events = self::events()->flush_pending();
@@ -942,6 +946,96 @@ class Analytics {
 		if ( ! empty( $mcp_settings['srfm_mcp_server'] ) ) {
 			self::events()->track( 'mcp_server_enabled' );
 		}
+	}
+
+	/**
+	 * Get learn section progress aggregated across all users.
+	 *
+	 * Queries all users with srfm_learn_progress meta, counts completions
+	 * per step. Called at analytics send time (bsf_core_stats filter).
+	 *
+	 * @since x.x.x
+	 * @return void
+	 */
+	private function get_learn_tracking_data() {
+		// Only send when progress changed or event has never been tracked.
+		$has_changed = get_transient( 'srfm_learn_progress_changed' );
+		if ( ! $has_changed && self::events()->is_tracked( 'learn' ) ) {
+			return;
+		}
+
+		$chapters    = Learn::get_chapters_structure();
+		$step_counts = [];
+		$total_steps = 0;
+
+		// Initialize step counters from canonical structure.
+		foreach ( $chapters as $chapter ) {
+			if ( ! isset( $chapter['id'], $chapter['steps'] ) || ! is_array( $chapter['steps'] ) ) {
+				continue;
+			}
+			foreach ( $chapter['steps'] as $step ) {
+				if ( ! isset( $step['id'] ) ) {
+					continue;
+				}
+				$step_counts[ $chapter['id'] . '/' . $step['id'] ] = 0;
+				++$total_steps;
+			}
+		}
+
+		// Query all users who have learn progress.
+		$users = get_users(
+			[
+				'meta_key' => 'srfm_learn_progress', // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- Runs once per analytics send cycle; bounded by admin user count.
+				'fields'   => 'ID',
+			]
+		);
+
+		$users_with_progress   = 0;
+		$users_fully_completed = 0;
+		$max_completed         = 0;
+
+		foreach ( $users as $user_id ) {
+			$progress = get_user_meta( $user_id, 'srfm_learn_progress', true );
+			if ( ! is_array( $progress ) || empty( $progress ) ) {
+				continue;
+			}
+
+			$user_completed = 0;
+
+			foreach ( $step_counts as $key => $count ) {
+				list( $chapter_id, $step_id ) = explode( '/', $key );
+				if ( ! empty( $progress[ $chapter_id ][ $step_id ] ) ) {
+					$step_counts[ $key ] = $count + 1;
+					++$user_completed;
+				}
+			}
+
+			if ( $user_completed > 0 ) {
+				++$users_with_progress;
+			}
+			if ( $user_completed === $total_steps ) {
+				++$users_fully_completed;
+			}
+			$max_completed = max( $max_completed, $user_completed );
+		}
+
+		// Build flat properties — step keys use snake_case (hyphens → underscores).
+		$properties = [];
+		foreach ( $step_counts as $key => $count ) {
+			$step_id = explode( '/', $key )[1];
+			$properties[ str_replace( '-', '_', $step_id ) ] = (string) $count;
+		}
+
+		$properties['users_with_progress']   = (string) $users_with_progress;
+		$properties['users_fully_completed'] = (string) $users_fully_completed;
+		$properties['total_steps']           = (string) $total_steps;
+
+		// Flush dedup so event re-tracks with latest snapshot.
+		self::events()->flush_pushed( [ 'learn' ] );
+		self::events()->track( 'learn', (string) $max_completed, $properties );
+
+		// Clear the change flag after tracking.
+		delete_transient( 'srfm_learn_progress_changed' );
 	}
 
 }
