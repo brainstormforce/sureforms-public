@@ -119,7 +119,7 @@ class Phone_Markup extends Base {
 			return $cached;
 		}
 
-		$url      = 'https://ipapi.co/' . rawurlencode( $ip ) . '/json/';
+		$url      = 'https://ipapi.co/json/';
 		$response = wp_remote_get(
 			$url,
 			[
