@@ -184,7 +184,7 @@ const UserDetails = () => {
 								<span>
 									{ createInterpolateElement(
 										__(
-											'Stay in the loop and help shape SureForms! Get feature updates, and help us build a better SureForms by sharing how you use the plugin. <a>Privacy Policy</a>.',
+											'Stay in the loop and help shape SureForms! Get feature updates, and help us in betterment of SureForms by sharing how you use the plugin. <a>Privacy Policy</a>.',
 											'sureforms'
 										),
 										{
