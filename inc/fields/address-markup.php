@@ -53,7 +53,10 @@ class Address_Markup extends Base {
 		/**
 		 * Filter additional HTML attributes for the address block wrapper div.
 		 *
-		 * @param string       $extra_attrs Additional HTML attributes string.
+		 * IMPORTANT: Callbacks MUST escape all values with esc_attr() before
+		 * returning. The output is echoed directly into a <div> tag.
+		 *
+		 * @param string       $extra_attrs Additional HTML attributes string (pre-escaped).
 		 * @param array<mixed> $attributes  Block attributes.
 		 * @since x.x.x
 		 */
