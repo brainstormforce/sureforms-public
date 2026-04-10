@@ -28,7 +28,7 @@ import HelpText from '@Components/misc/HelpText';
 
 const Edit = ( props ) => {
 	const { clientId, attributes, setAttributes } = props;
-	const { label, block_id, formId, preview, help, className } = attributes;
+	const { label, block_id, formId, preview, help, className, enableAutocomplete } = attributes;
 
 	const currentFormId = useGetCurrentFormId( clientId );
 	const blockProps = useBlockProps( {
@@ -56,6 +56,7 @@ const Edit = ( props ) => {
 			{
 				label: 'Address Line 1',
 				fieldWidth: 50,
+				addressComponent: 'line1',
 			},
 		],
 		[
@@ -63,6 +64,7 @@ const Edit = ( props ) => {
 			{
 				label: 'Address Line 2',
 				fieldWidth: 50,
+				addressComponent: 'line2',
 			},
 		],
 		[
@@ -70,6 +72,7 @@ const Edit = ( props ) => {
 			{
 				label: 'City',
 				fieldWidth: 50,
+				addressComponent: 'city',
 			},
 		],
 		[
@@ -77,6 +80,7 @@ const Edit = ( props ) => {
 			{
 				label: 'State',
 				fieldWidth: 50,
+				addressComponent: 'state',
 			},
 		],
 		[
@@ -84,6 +88,7 @@ const Edit = ( props ) => {
 			{
 				label: 'Postal Code',
 				fieldWidth: 50,
+				addressComponent: 'postal_code',
 			},
 		],
 		[
@@ -96,6 +101,7 @@ const Edit = ( props ) => {
 					} ),
 				],
 				fieldWidth: 50,
+				addressComponent: 'country',
 			},
 		],
 	];
@@ -158,6 +164,7 @@ const Edit = ( props ) => {
 			<InnerBlocks
 				template={ addressTemplate }
 				allowedBlocks={ allowedBlocks }
+				templateLock={ enableAutocomplete ? 'all' : false }
 			/>
 		</div>
 	);
