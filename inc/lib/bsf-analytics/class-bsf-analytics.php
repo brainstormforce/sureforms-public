@@ -30,7 +30,7 @@ if ( ! class_exists( 'BSF_Analytics' ) ) {
 		 *
 		 * @var string Usage tracking document URL
 		 */
-		public $usage_doc_link = 'https://store.brainstormforce.com/usage-tracking/?utm_source=wp_dashboard&utm_medium=general_settings&utm_campaign=usage_tracking';
+		public $usage_doc_link = 'https://store.brainstormforce.com/usage-tracking/';
 
 		/**
 		 * Setup actions, load files.
@@ -164,6 +164,12 @@ if ( ! class_exists( 'BSF_Analytics' ) ) {
 		 */
 		public function is_tracking_enabled() {
 
+			// Global kill switch — allows hosting providers, compliance plugins,
+			// or agency developers to disable all BSF tracking with one filter.
+			if ( ! apply_filters( 'bsf_usage_tracking_enabled', true ) ) {
+				return false;
+			}
+
 			foreach ( $this->entities as $key => $data ) {
 
 				$is_enabled = get_site_option( $key . '_usage_optin', false ) === 'yes' ? true : false;
@@ -202,6 +208,28 @@ if ( ! class_exists( 'BSF_Analytics' ) ) {
 		}
 
 		/**
+		 * Get usage doc link with UTM parameters.
+		 *
+		 * Appends product-specific UTM params to the default usage tracking URL
+		 * so we can attribute which plugin's link was clicked.
+		 *
+		 * @param string $product_key Product key (e.g., 'spectra', 'surerank').
+		 * @param string $context     Where the link appears ('notice' or 'settings').
+		 * @return string Full URL with UTM parameters.
+		 * @since 1.1.23
+		 */
+		public function get_usage_doc_link( $product_key, $context = 'notice' ) {
+			return add_query_arg(
+				array(
+					'utm_source'   => $product_key,
+					'utm_medium'   => $context,
+					'utm_campaign' => 'usage_tracking',
+				),
+				$this->usage_doc_link
+			);
+		}
+
+		/**
 		 * Display admin notice for usage tracking.
 		 *
 		 * @since 1.0.0
@@ -225,7 +253,7 @@ if ( ! class_exists( 'BSF_Analytics' ) ) {
 			foreach ( $this->entities as $key => $data ) {
 
 				$time_to_display = isset( $data['time_to_display'] ) ? $data['time_to_display'] : '+24 hours';
-				$usage_doc_link  = isset( $data['usage_doc_link'] ) ? $data['usage_doc_link'] : $this->usage_doc_link;
+				$usage_doc_link  = isset( $data['usage_doc_link'] ) ? $data['usage_doc_link'] : $this->get_usage_doc_link( $key, 'notice' );
 
 				// Don't display the notice if tracking is disabled or White Label is enabled for any of our plugins.
 				if ( false !== get_site_option( $key . '_usage_optin', false ) || $this->is_white_label_enabled( $key ) ) {
@@ -240,7 +268,7 @@ if ( ! class_exists( 'BSF_Analytics' ) ) {
 				/* translators: %s product name */
 				$notice_string = sprintf(
 					__(
-						'Help us improve %1$s and our other products!<br><br>With your permission, we\'d like to collect <strong>non-sensitive information</strong> from your website — like your PHP version and which features you use — so we can fix bugs faster, make smarter decisions, and build features that actually matter to you. <em>No personal info. Ever.</em>'
+						'Help shape the future of %1$s!<br><br>Become a contributor by sharing how you use %1$s — so we can build features that matter to you, fix issues faster, and make smarter decisions. We only collect <strong>non-sensitive</strong> information like your PHP version and which features you use.'
 					),
 					'<strong>' . esc_html( $data['product_name'] ) . '</strong>'
 				);
@@ -270,7 +298,7 @@ if ( ! class_exists( 'BSF_Analytics' ) ) {
 									</div>
 								</div>',
 							/* translators: %s usage doc link */
-							sprintf( $notice_string . '<span dir="%1s"><a href="%2s" target="_blank" rel="noreferrer noopener">%3s</a><span><br><br>', $language_dir, esc_url( $usage_doc_link ), __( ' Know More.' ) ),
+							sprintf( $notice_string . '<span dir="%1s"> <a href="%2s" target="_blank" rel="noreferrer noopener">%3s</a><span><br><br>', $language_dir, esc_url( $usage_doc_link ), __( 'Learn more.' ) ),
 							esc_url(
 								add_query_arg(
 									array(
@@ -280,7 +308,7 @@ if ( ! class_exists( 'BSF_Analytics' ) ) {
 									)
 								)
 							),
-							__( 'Yes! Allow it' ),
+							__( 'Sure, count me in!' ),
 							esc_url(
 								add_query_arg(
 									array(
@@ -291,7 +319,7 @@ if ( ! class_exists( 'BSF_Analytics' ) ) {
 								)
 							),
 							MONTH_IN_SECONDS,
-							__( 'No Thanks' )
+							__( 'No, thanks' )
 						),
 						'show_if'                    => true,
 						'repeat-notice-after'        => false,
@@ -371,6 +399,9 @@ if ( ! class_exists( 'BSF_Analytics' ) ) {
 		private function optout( $source ) {
 			update_site_option( $source . '_usage_optin', 'no' );
 			update_site_option( 'bsf_usage_last_displayed_time', time() );
+
+			// Clear tracking transient immediately so opt-out takes effect right away.
+			delete_site_transient( 'bsf_usage_track' );
 		}
 
 		/**
@@ -455,7 +486,7 @@ if ( ! class_exists( 'BSF_Analytics' ) ) {
 					continue;
 				}
 
-				$usage_doc_link = isset( $data['usage_doc_link'] ) ? $data['usage_doc_link'] : $this->usage_doc_link;
+				$usage_doc_link = isset( $data['usage_doc_link'] ) ? $data['usage_doc_link'] : $this->get_usage_doc_link( $key, 'settings' );
 				$author         = isset( $data['author'] ) ? $data['author'] : 'Brainstorm Force';
 
 				register_setting(
@@ -511,7 +542,7 @@ if ( ! class_exists( 'BSF_Analytics' ) ) {
 				<input id="<?php echo esc_attr( $args['id'] ); ?>" type="checkbox" value="1" name="<?php echo esc_attr( $args['name'] ); ?>" <?php checked( $is_checked ); ?>>
 				<?php
 				/* translators: %s Product title */
-				echo esc_html( sprintf( __( 'Allow %s products to track non-sensitive usage tracking data.' ), $args['title'] ) );// phpcs:ignore WordPress.WP.I18n.NonSingularStringLiteralText
+				echo esc_html( sprintf( __( 'Help improve %s by sharing non-sensitive usage data — like PHP version and features used.' ), $args['title'] ) );// phpcs:ignore WordPress.WP.I18n.NonSingularStringLiteralText
 
 				if ( is_multisite() ) {
 					esc_html_e( ' This will be applicable for all sites from the network.' );

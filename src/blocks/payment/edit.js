@@ -18,7 +18,7 @@ import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
 import { FieldsPreview } from '../FieldsPreview.jsx';
 import ConditionalLogic from '@Components/conditional-logic';
-import { attributeOptionsWithFilter } from '@Components/hooks';
+import { attributeOptionsWithFilter, afterAttributePanelBody } from '@Components/hooks';
 import Separator from '@Components/separator';
 import MultiButtonsControl from '@Components/multi-buttons-control';
 import BillingCyclesControl from './components/billing-cycles-control.js';
@@ -39,6 +39,7 @@ const Edit = ( props ) => {
 		customerNameField,
 		customerEmailField,
 		variableAmountField,
+		paymentDescription,
 	} = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
 	const [ availableFormFields, setAvailableFormFields ] = useState( {
@@ -165,6 +166,26 @@ const Edit = ( props ) => {
 						label: 'help',
 					} }
 					onChange={ ( value ) => setAttributes( { help: value } ) }
+				/>
+			),
+		},
+		{
+			id: 'payment-description',
+			component: (
+				<SRFMTextControl
+					label={ __( 'Payment Description', 'sureforms' ) }
+					value={ paymentDescription }
+					data={ {
+						value: paymentDescription,
+						label: 'paymentDescription',
+					} }
+					onChange={ ( value ) =>
+						setAttributes( { paymentDescription: value } )
+					}
+					help={ __(
+						'Shown on payment receipts and in your payment dashboard (Stripe and PayPal). Leave blank to use the default.',
+						'sureforms'
+					) }
 				/>
 			),
 		},
@@ -498,6 +519,9 @@ const Edit = ( props ) => {
 								option?.component ? option.component : null
 							) }
 						</SRFMAdvancedPanelBody>
+						{ afterAttributePanelBody( props ).map(
+							( panel ) => panel.component
+						) }
 					</InspectorTab>
 					<InspectorTab { ...SRFMTabs.advance }>
 						<ConditionalLogic

@@ -146,6 +146,41 @@ const FormTypeSelector = ( {
 					],
 				},
 			},
+			{
+				label: __( 'Quiz', 'sureforms' ),
+				slug: 'quiz',
+				isAvailable: false,
+				upgradeTooltipContent: {
+					tooltipHeading: __(
+						'Unlock Quiz Forms',
+						'sureforms'
+					),
+					tooltipContentTitle: __(
+						'Create Engaging Quizzes That Score Automatically',
+						'sureforms'
+					),
+					tooltipContent: __(
+						'Build interactive quizzes with scored questions and graded results. Perfect for assessments, trivia, and educational content.',
+						'sureforms'
+					),
+					utmMedium: 'ai_builder_quiz',
+					tooltipPosition: 'bottom',
+					features: [
+						__(
+							'Auto-score responses instantly',
+							'sureforms'
+						),
+						__(
+							'Display graded results to users',
+							'sureforms'
+						),
+						__(
+							'Perfect for education, training, and fun trivia',
+							'sureforms'
+						),
+					],
+				},
+			},
 		]
 	);
 
