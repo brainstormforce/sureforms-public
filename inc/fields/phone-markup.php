@@ -88,7 +88,20 @@ class Phone_Markup extends Base {
 		$this->exclude_countries     = $attributes['excludeCountries'] ?? [];
 
 		// When auto country is enabled, detect the visitor's country via server-side
-		// IP geolocation instead of a client-side API call (avoids CORS / rate limits).
+		// IP geolocation (ipapi.co) instead of a client-side fetch.
+		//
+		// Why not get_locale()?
+		// WordPress get_locale() returns the *site's* configured language (e.g. 'en_US'),
+		// not the visitor's physical location. A site set to English would show 'US' for
+		// every visitor worldwide — defeating the purpose of auto-country detection.
+		//
+		// Why server-side instead of client-side?
+		// The previous client-side fetch('https://ipapi.co/json') caused CORS failures,
+		// 429 rate limits on high-traffic sites, and exposed visitor IPs to a third party
+		// directly from the browser. Moving it server-side eliminates all three issues.
+		//
+		// Performance: The API is called only once per visitor IP and cached in a transient
+		// for 24 hours — subsequent page loads for the same IP resolve instantly from cache.
 		if ( $this->auto_country ) {
 			$this->default_country = $this->get_geo_country();
 		}
@@ -144,7 +157,14 @@ class Phone_Markup extends Base {
 	/**
 	 * Detect the visitor's 2-letter country code via server-side IP geolocation.
 	 *
-	 * Uses ipapi.co with transient caching (24 h per IP) to avoid repeated API calls.
+	 * Calls ipapi.co once per visitor IP and caches the result in a transient for
+	 * 24 hours so subsequent page loads resolve instantly without any API call.
+	 *
+	 * Note on page caching: When a full-page cache plugin is active, the HTML
+	 * (including default-country) is served from cache. The first visitor's country
+	 * is baked into the cached page. This is an acceptable tradeoff — the alternative
+	 * (client-side fetch) caused CORS failures and 429 rate limits. Sites needing
+	 * per-visitor precision can set a specific default country per field.
 	 *
 	 * @since x.x.x
 	 * @return string Lowercase 2-letter country code, defaults to 'us'.
@@ -181,6 +201,12 @@ class Phone_Markup extends Base {
 		}
 
 		$country = strtolower( $body['country_code'] );
+
+		// Validate the external API response is a valid 2-letter country code.
+		if ( ! preg_match( '/^[a-z]{2}$/', $country ) ) {
+			return 'us';
+		}
+
 		set_transient( $cache_key, $country, DAY_IN_SECONDS );
 
 		return $country;
