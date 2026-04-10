@@ -461,12 +461,33 @@ class Post_Types {
 			SRFM_FORMS_POST_TYPE,
 			'_srfm_instant_form_settings',
 			[
-				'single'        => true,
-				'type'          => 'object',
-				'auth_callback' => static function() {
+				'single'            => true,
+				'type'              => 'object',
+				'auth_callback'     => static function() {
 					return Helper::current_user_can();
 				},
-				'show_in_rest'  => [
+				'sanitize_callback' => static function( $meta_value ) {
+					if ( ! is_array( $meta_value ) ) {
+						return [];
+					}
+					return [
+						'site_logo'                     => isset( $meta_value['site_logo'] ) ? esc_url_raw( $meta_value['site_logo'] ) : '',
+						'site_logo_id'                  => isset( $meta_value['site_logo_id'] ) ? absint( $meta_value['site_logo_id'] ) : 0,
+						'cover_type'                    => isset( $meta_value['cover_type'] ) ? sanitize_text_field( $meta_value['cover_type'] ) : '',
+						'cover_color'                   => isset( $meta_value['cover_color'] ) ? sanitize_text_field( $meta_value['cover_color'] ) : '',
+						'cover_image'                   => isset( $meta_value['cover_image'] ) ? esc_url_raw( $meta_value['cover_image'] ) : '',
+						'cover_image_id'                => isset( $meta_value['cover_image_id'] ) ? absint( $meta_value['cover_image_id'] ) : 0,
+						'bg_type'                       => isset( $meta_value['bg_type'] ) ? sanitize_text_field( $meta_value['bg_type'] ) : '',
+						'bg_color'                      => isset( $meta_value['bg_color'] ) ? sanitize_text_field( $meta_value['bg_color'] ) : '',
+						'bg_image'                      => isset( $meta_value['bg_image'] ) ? esc_url_raw( $meta_value['bg_image'] ) : '',
+						'bg_image_id'                   => isset( $meta_value['bg_image_id'] ) ? absint( $meta_value['bg_image_id'] ) : 0,
+						'enable_instant_form'           => isset( $meta_value['enable_instant_form'] ) ? filter_var( $meta_value['enable_instant_form'], FILTER_VALIDATE_BOOLEAN ) : false,
+						'form_container_width'          => isset( $meta_value['form_container_width'] ) ? absint( $meta_value['form_container_width'] ) : 620,
+						'single_page_form_title'        => isset( $meta_value['single_page_form_title'] ) ? filter_var( $meta_value['single_page_form_title'], FILTER_VALIDATE_BOOLEAN ) : true,
+						'use_banner_as_page_background' => isset( $meta_value['use_banner_as_page_background'] ) ? filter_var( $meta_value['use_banner_as_page_background'], FILTER_VALIDATE_BOOLEAN ) : false,
+					];
+				},
+				'show_in_rest'      => [
 					'schema' => [
 						'type'       => 'object',
 						'context'    => [ 'edit' ],
@@ -518,7 +539,7 @@ class Post_Types {
 						],
 					],
 				],
-				'default'       => [
+				'default'           => [
 					'bg_type'                       => 'color',
 					'bg_color'                      => '#ffffff',
 					'bg_image'                      => '',
@@ -538,12 +559,15 @@ class Post_Types {
 			SRFM_FORMS_POST_TYPE,
 			'_srfm_forms_styling',
 			[
-				'single'        => true,
-				'type'          => 'object',
-				'auth_callback' => static function() {
+				'single'            => true,
+				'type'              => 'object',
+				'auth_callback'     => static function() {
 					return Helper::current_user_can();
 				},
-				'show_in_rest'  => [
+				'sanitize_callback' => static function( $meta_value ) {
+					return Helper::sanitize_by_type( $meta_value );
+				},
+				'show_in_rest'      => [
 					'schema' => [
 						'type'       => 'object',
 						'context'    => [ 'edit' ],
@@ -781,7 +805,7 @@ class Post_Types {
 						],
 					],
 				],
-				'default'       => [
+				'default'           => [
 					'primary_color'                     => '#111C44',
 					'text_color'                        => '#1E1E1E',
 					'text_color_on_primary'             => '#FFFFFF',
@@ -867,12 +891,38 @@ class Post_Types {
 			'sureforms_form',
 			'_srfm_email_notification',
 			[
-				'single'        => true,
-				'type'          => 'array',
-				'auth_callback' => static function() {
+				'single'            => true,
+				'type'              => 'array',
+				'auth_callback'     => static function() {
 					return Helper::current_user_can();
 				},
-				'show_in_rest'  => [
+				'sanitize_callback' => static function( $meta_value ) {
+					if ( ! is_array( $meta_value ) ) {
+						return [];
+					}
+					$sanitized = [];
+					foreach ( $meta_value as $item ) {
+						if ( ! is_array( $item ) ) {
+							continue;
+						}
+						$sanitized[] = [
+							'id'             => isset( $item['id'] ) ? intval( $item['id'] ) : 0,
+							'status'         => isset( $item['status'] ) ? filter_var( $item['status'], FILTER_VALIDATE_BOOLEAN ) : false,
+							'is_raw_format'  => isset( $item['is_raw_format'] ) ? filter_var( $item['is_raw_format'], FILTER_VALIDATE_BOOLEAN ) : false,
+							'name'           => isset( $item['name'] ) ? sanitize_text_field( $item['name'] ) : '',
+							'email_to'       => isset( $item['email_to'] ) ? sanitize_text_field( $item['email_to'] ) : '',
+							'email_reply_to' => isset( $item['email_reply_to'] ) ? sanitize_text_field( $item['email_reply_to'] ) : '',
+							'from_name'      => isset( $item['from_name'] ) ? sanitize_text_field( $item['from_name'] ) : '',
+							'from_email'     => isset( $item['from_email'] ) ? sanitize_text_field( $item['from_email'] ) : '',
+							'email_cc'       => isset( $item['email_cc'] ) ? sanitize_text_field( $item['email_cc'] ) : '',
+							'email_bcc'      => isset( $item['email_bcc'] ) ? sanitize_text_field( $item['email_bcc'] ) : '',
+							'subject'        => isset( $item['subject'] ) ? sanitize_text_field( $item['subject'] ) : '',
+							'email_body'     => isset( $item['email_body'] ) ? wp_kses_post( $item['email_body'] ) : '',
+						];
+					}
+					return $sanitized;
+				},
+				'show_in_rest'      => [
 					'schema' => [
 						'type'    => 'array',
 						'context' => [ 'edit' ],
@@ -919,7 +969,7 @@ class Post_Types {
 						],
 					],
 				],
-				'default'       => [
+				'default'           => [
 					[
 						'id'             => 1,
 						'status'         => true,
@@ -943,12 +993,31 @@ class Post_Types {
 			'sureforms_form',
 			'_srfm_compliance',
 			[
-				'single'        => true,
-				'type'          => 'array',
-				'auth_callback' => static function() {
+				'single'            => true,
+				'type'              => 'array',
+				'auth_callback'     => static function() {
 					return Helper::current_user_can();
 				},
-				'show_in_rest'  => [
+				'sanitize_callback' => static function( $meta_value ) {
+					if ( ! is_array( $meta_value ) ) {
+						return [];
+					}
+					$sanitized = [];
+					foreach ( $meta_value as $item ) {
+						if ( ! is_array( $item ) ) {
+							continue;
+						}
+						$sanitized[] = [
+							'id'                   => isset( $item['id'] ) ? sanitize_text_field( $item['id'] ) : '',
+							'gdpr'                 => isset( $item['gdpr'] ) ? filter_var( $item['gdpr'], FILTER_VALIDATE_BOOLEAN ) : false,
+							'do_not_store_entries' => isset( $item['do_not_store_entries'] ) ? filter_var( $item['do_not_store_entries'], FILTER_VALIDATE_BOOLEAN ) : false,
+							'auto_delete_entries'  => isset( $item['auto_delete_entries'] ) ? filter_var( $item['auto_delete_entries'], FILTER_VALIDATE_BOOLEAN ) : false,
+							'auto_delete_days'     => isset( $item['auto_delete_days'] ) ? sanitize_text_field( $item['auto_delete_days'] ) : '',
+						];
+					}
+					return $sanitized;
+				},
+				'show_in_rest'      => [
 					'schema' => [
 						'type'    => 'array',
 						'context' => [ 'edit' ],
@@ -974,7 +1043,7 @@ class Post_Types {
 						],
 					],
 				],
-				'default'       => [
+				'default'           => [
 					[
 						'id'                   => 'gdpr',
 						'gdpr'                 => false,

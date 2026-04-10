@@ -2363,6 +2363,125 @@ class Test_Helper extends TestCase {
     }
 
     /**
+     * Test sanitize_by_type returns sanitized string for string input.
+     */
+    public function test_sanitize_by_type_string() {
+        $this->assertSame( 'hello world', Helper::sanitize_by_type( 'hello world' ) );
+    }
+
+    /**
+     * Test sanitize_by_type strips HTML tags from strings.
+     */
+    public function test_sanitize_by_type_strips_html() {
+        $this->assertSame( 'alert("xss")test', Helper::sanitize_by_type( '<script>alert("xss")</script>test' ) );
+    }
+
+    /**
+     * Test sanitize_by_type preserves boolean values.
+     */
+    public function test_sanitize_by_type_boolean() {
+        $this->assertTrue( Helper::sanitize_by_type( true ) );
+        $this->assertFalse( Helper::sanitize_by_type( false ) );
+    }
+
+    /**
+     * Test sanitize_by_type preserves integer values.
+     */
+    public function test_sanitize_by_type_integer() {
+        $this->assertSame( 42, Helper::sanitize_by_type( 42 ) );
+        $this->assertSame( 0, Helper::sanitize_by_type( 0 ) );
+        $this->assertSame( -5, Helper::sanitize_by_type( -5 ) );
+    }
+
+    /**
+     * Test sanitize_by_type preserves float values.
+     */
+    public function test_sanitize_by_type_float() {
+        $this->assertSame( 3.14, Helper::sanitize_by_type( 3.14 ) );
+        $this->assertSame( 0.0, Helper::sanitize_by_type( 0.0 ) );
+    }
+
+    /**
+     * Test sanitize_by_type returns empty string for null.
+     */
+    public function test_sanitize_by_type_null() {
+        $this->assertSame( '', Helper::sanitize_by_type( null ) );
+    }
+
+    /**
+     * Test sanitize_by_type recursively sanitizes arrays.
+     */
+    public function test_sanitize_by_type_array() {
+        $input = [
+            'name'    => '<b>John</b>',
+            'age'     => 30,
+            'active'  => true,
+            'score'   => 9.5,
+        ];
+
+        $result = Helper::sanitize_by_type( $input );
+
+        $this->assertSame( 'John', $result['name'] );
+        $this->assertSame( 30, $result['age'] );
+        $this->assertTrue( $result['active'] );
+        $this->assertSame( 9.5, $result['score'] );
+    }
+
+    /**
+     * Test sanitize_by_type handles nested arrays.
+     */
+    public function test_sanitize_by_type_nested_array() {
+        $input = [
+            'level1' => [
+                'level2' => [
+                    'value' => '<img onerror=alert(1)>clean',
+                ],
+            ],
+        ];
+
+        $result = Helper::sanitize_by_type( $input );
+
+        $this->assertSame( 'clean', $result['level1']['level2']['value'] );
+    }
+
+    /**
+     * Test sanitize_by_type sanitizes array keys.
+     */
+    public function test_sanitize_by_type_sanitizes_keys() {
+        $input = [
+            '<script>key</script>' => 'value',
+        ];
+
+        $result = Helper::sanitize_by_type( $input );
+
+        $this->assertArrayHasKey( 'key', $result );
+        $this->assertSame( 'value', $result['key'] );
+    }
+
+    /**
+     * M1: Test sanitize_by_type truncates deeply nested arrays at depth 10.
+     */
+    public function test_sanitize_by_type_depth_limit() {
+        // Build a 15-level deep nested array.
+        $value = 'deep_value';
+        for ( $i = 0; $i < 15; $i++ ) {
+            $value = [ 'nested' => $value ];
+        }
+
+        $result = Helper::sanitize_by_type( $value );
+
+        // Traverse 10 levels — should still be an array.
+        $current = $result;
+        for ( $i = 0; $i < 10; $i++ ) {
+            $this->assertIsArray( $current, "Expected array at depth {$i}" );
+            $current = $current['nested'];
+        }
+
+        // At depth 11+, the value should be truncated to empty string.
+        $this->assertSame( '', $current );
+    }
+
+    /**
      * Test generate_unique_block_slug with a Latin label uses the label.
      */
     public function test_generate_unique_block_slug_latin_label() {
