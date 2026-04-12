@@ -230,45 +230,47 @@ const FormTypeSelector = ( {
 
 	return (
 		<Container.Item className="flex gap-2">
-			{ visibleFormTypes.map( ( option, index ) => (
-				<div
-					key={ index }
-					className="flex items-center justify-between gap-2"
-				>
-					<Tooltip
-						arrow
-						content={
-							option.tooltipContent ||
+			{ visibleFormTypes.map( ( option, index ) => {
+				const IconComponent =
+					ICON_MAP[ option.slug ] || CreditCard;
+				return (
+					<div
+						key={ index }
+						className="flex items-center justify-between gap-2"
+					>
+						<Tooltip
+							arrow
+							content={
+								option.tooltipContent ||
 							TOOLTIP_CONTENT_MAP[ option.slug ] ||
 							TOOLTIP_CONTENT_MAP.payment
-						}
-						placement="bottom"
-						triggers={ [ 'hover' ] }
-						variant="dark"
-						tooltipPortalId="srfm-add-new-form-container"
-						className="text-xs"
-					>
-						<Button
-							className={ cn(
-								'px-1.5 py-1 font-medium text-icon-secondary border border-solid border-border-strong flex-1 transition-colors duration-150 focus:[box-shadow:none] bg-background-secondary hover:bg-background-secondary',
-								formType === option.slug &&
-									'hover:bg-brand-background-hover-100 bg-brand-background-hover-100 border-0.5 border-solid border-border-ai-button text-icon-interactive'
-							) }
-							iconPosition="left"
-							icon={ ( () => {
-								const IconComponent =
-									ICON_MAP[ option.slug ] || CreditCard;
-								return <IconComponent className="size-4" />;
-							} )() }
-							size="md"
-							variant="outline"
-							onClick={ () => handleSelection( option ) }
+							}
+							placement="bottom"
+							triggers={ [ 'hover' ] }
+							variant="dark"
+							tooltipPortalId="srfm-add-new-form-container"
+							className="text-xs"
 						>
-							{ option.label }
-						</Button>
-					</Tooltip>
-				</div>
-			) ) }
+							<Button
+								className={ cn(
+									'px-1.5 py-1 font-medium text-icon-secondary border border-solid border-border-strong flex-1 transition-colors duration-150 focus:[box-shadow:none] bg-background-secondary hover:bg-background-secondary',
+									formType === option.slug &&
+									'hover:bg-brand-background-hover-100 bg-brand-background-hover-100 border-0.5 border-solid border-border-ai-button text-icon-interactive'
+								) }
+								iconPosition="left"
+								icon={
+									<IconComponent className="size-4" />
+								}
+								size="md"
+								variant="outline"
+								onClick={ () => handleSelection( option ) }
+							>
+								{ option.label }
+							</Button>
+						</Tooltip>
+					</div>
+				);
+			} ) }
 
 			{ showUpgradePopup && selectedUpgradeOption && (
 				<UpgradePopup
