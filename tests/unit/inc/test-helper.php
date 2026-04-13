@@ -2543,4 +2543,114 @@ class Test_Helper extends TestCase {
         $this->assertEquals( 'address-city', $slug );
     }
 
+    // --- srfm_base64_json_encode ---
+
+    /**
+     * Test srfm_base64_json_encode encodes valid array data.
+     */
+    public function test_srfm_base64_json_encode_valid_array() {
+        $data   = [ 'key' => 'value', 'num' => 42 ];
+        $result = Helper::srfm_base64_json_encode( $data );
+
+        $this->assertNotEmpty( $result );
+        // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_decode
+        $decoded = json_decode( base64_decode( $result ), true );
+        $this->assertEquals( $data, $decoded );
+    }
+
+    /**
+     * Test srfm_base64_json_encode returns empty string for empty data.
+     */
+    public function test_srfm_base64_json_encode_empty_data() {
+        $this->assertSame( '', Helper::srfm_base64_json_encode( [] ) );
+        $this->assertSame( '', Helper::srfm_base64_json_encode( '' ) );
+        $this->assertSame( '', Helper::srfm_base64_json_encode( null ) );
+    }
+
+    /**
+     * Test srfm_base64_json_encode returns empty string for non-array data.
+     */
+    public function test_srfm_base64_json_encode_non_array() {
+        $this->assertSame( '', Helper::srfm_base64_json_encode( 'string' ) );
+        $this->assertSame( '', Helper::srfm_base64_json_encode( 123 ) );
+    }
+
+    // --- get_visitor_ip ---
+
+    /**
+     * Test get_visitor_ip returns REMOTE_ADDR when no proxy headers are set.
+     */
+    public function test_get_visitor_ip_from_remote_addr() {
+        $this->clear_ip_server_vars();
+        $_SERVER['REMOTE_ADDR'] = '203.0.113.45';
+
+        $this->assertEquals( '203.0.113.45', Helper::get_visitor_ip() );
+    }
+
+    /**
+     * Test get_visitor_ip prefers HTTP_CLIENT_IP over REMOTE_ADDR.
+     */
+    public function test_get_visitor_ip_prefers_client_ip() {
+        $this->clear_ip_server_vars();
+        $_SERVER['HTTP_CLIENT_IP'] = '198.51.100.10';
+        $_SERVER['REMOTE_ADDR']    = '203.0.113.45';
+
+        $this->assertEquals( '198.51.100.10', Helper::get_visitor_ip() );
+    }
+
+    /**
+     * Test get_visitor_ip handles comma-separated IPs from proxies.
+     */
+    public function test_get_visitor_ip_comma_separated() {
+        $this->clear_ip_server_vars();
+        $_SERVER['HTTP_X_FORWARDED_FOR'] = '198.51.100.10, 70.41.3.18, 150.172.238.178';
+
+        $this->assertEquals( '198.51.100.10', Helper::get_visitor_ip() );
+    }
+
+    /**
+     * Test get_visitor_ip returns empty string when no IP headers are available.
+     */
+    public function test_get_visitor_ip_returns_empty_when_unavailable() {
+        $this->clear_ip_server_vars();
+
+        $this->assertSame( '', Helper::get_visitor_ip() );
+    }
+
+    /**
+     * Test get_visitor_ip skips invalid IP and falls through to next header.
+     */
+    public function test_get_visitor_ip_skips_invalid_ip() {
+        $this->clear_ip_server_vars();
+        $_SERVER['HTTP_CLIENT_IP'] = 'not-an-ip';
+        $_SERVER['REMOTE_ADDR']    = '203.0.113.45';
+
+        $this->assertEquals( '203.0.113.45', Helper::get_visitor_ip() );
+    }
+
+    /**
+     * Test get_visitor_ip reads HTTP_X_REAL_IP (Nginx proxy header).
+     */
+    public function test_get_visitor_ip_reads_x_real_ip() {
+        $this->clear_ip_server_vars();
+        $_SERVER['HTTP_X_REAL_IP'] = '198.51.100.25';
+
+        $this->assertEquals( '198.51.100.25', Helper::get_visitor_ip() );
+    }
+
+    /**
+     * Clear all IP-related $_SERVER variables for a clean test state.
+     */
+    private function clear_ip_server_vars() {
+        unset(
+            $_SERVER['HTTP_CLIENT_IP'],
+            $_SERVER['HTTP_X_FORWARDED_FOR'],
+            $_SERVER['HTTP_X_REAL_IP'],
+            $_SERVER['HTTP_X_FORWARDED'],
+            $_SERVER['HTTP_FORWARDED_FOR'],
+            $_SERVER['HTTP_FORWARDED'],
+            $_SERVER['REMOTE_ADDR']
+        );
+    }
+
 }

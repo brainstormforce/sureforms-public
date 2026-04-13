@@ -2349,4 +2349,58 @@ class Helper {
 		return base64_encode( $json );
 	}
 
+	/**
+	 * Get the visitor's IP address.
+	 *
+	 * Centralised IP detection that checks common proxy headers before
+	 * falling back to REMOTE_ADDR. Handles comma-separated IPs that
+	 * load-balancers / CDNs may append (takes the first, i.e. client IP).
+	 *
+	 * NOTE: Existing callers (Smart_Tags::get_the_user_ip, Front_End::get_user_ip,
+	 * inline reads in Form_Submit) can be migrated to this method in the future
+	 * to avoid duplicating the same header-chain logic.
+	 *
+	 * @since x.x.x
+	 * @return string Validated IP address, or empty string if unavailable.
+	 */
+	public static function get_visitor_ip() {
+		$headers = [
+			'HTTP_CLIENT_IP',
+			'HTTP_X_FORWARDED_FOR',
+			'HTTP_X_REAL_IP',
+			'HTTP_X_FORWARDED',
+			'HTTP_FORWARDED_FOR',
+			'HTTP_FORWARDED',
+			'REMOTE_ADDR',
+		];
+
+		foreach ( $headers as $header ) {
+			if ( empty( $_SERVER[ $header ] ) ) {
+				continue;
+			}
+
+			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Validated by FILTER_VALIDATE_IP below.
+			$raw = wp_unslash( $_SERVER[ $header ] );
+
+			// Proxies may send comma-separated IPs; the first is the original client.
+			if ( false !== strpos( $raw, ',' ) ) {
+				$raw = trim( explode( ',', $raw )[0] );
+			}
+
+			$ip = filter_var( $raw, FILTER_VALIDATE_IP );
+			if ( false !== $ip ) {
+				/**
+				 * Filters the detected visitor IP address.
+				 *
+				 * @since x.x.x
+				 *
+				 * @param string $ip Validated IP address.
+				 */
+				return apply_filters( 'srfm_visitor_ip', $ip );
+			}
+		}
+
+		return '';
+	}
+
 }
