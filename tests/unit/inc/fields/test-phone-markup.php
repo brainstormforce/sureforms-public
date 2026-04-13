@@ -44,7 +44,9 @@ class Test_Phone_Markup extends TestCase {
 	 */
 	public function test_markup_contains_tel_input_with_country() {
 		// Pre-seed the geolocation transient to avoid a real API call in tests.
-		$test_ip                    = '127.0.0.1';
+		// Use a non-reserved, non-private public IP (RFC 5737 TEST-NET-3 range)
+		// so it passes the FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE guard.
+		$test_ip                    = '203.0.113.1';
 		$_SERVER['REMOTE_ADDR']     = $test_ip;
 		set_transient( 'srfm_geo_' . md5( $test_ip ), 'in', DAY_IN_SECONDS );
 
@@ -53,8 +55,9 @@ class Test_Phone_Markup extends TestCase {
 
 		$this->assertStringContainsString( 'type="tel"', $markup );
 		$this->assertStringContainsString( 'srfm-input-phone', $markup );
-		$this->assertStringContainsString( 'auto-country="true"', $markup );
 		$this->assertStringContainsString( 'default-country="in"', $markup );
+		// The auto-country attribute is no longer emitted — frontend JS reads default-country directly.
+		$this->assertStringNotContainsString( 'auto-country=', $markup );
 		$this->assertStringContainsString( 'data-block-id="phone001"', $markup );
 		$this->assertStringContainsString( 'data-required="true"', $markup );
 
@@ -110,8 +113,9 @@ class Test_Phone_Markup extends TestCase {
 		$phone  = new Phone_Markup( $attributes );
 		$markup = $phone->markup();
 
-		$this->assertStringContainsString( 'auto-country="false"', $markup );
 		$this->assertStringContainsString( 'default-country="GB"', $markup );
+		// The auto-country attribute is no longer emitted — frontend JS reads default-country directly.
+		$this->assertStringNotContainsString( 'auto-country=', $markup );
 	}
 
 	/**
