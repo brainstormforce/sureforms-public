@@ -151,10 +151,7 @@ const FormTypeSelector = ( {
 				slug: 'quiz',
 				isAvailable: false,
 				upgradeTooltipContent: {
-					tooltipHeading: __(
-						'Unlock Quiz Forms',
-						'sureforms'
-					),
+					tooltipHeading: __( 'Unlock Quiz Forms', 'sureforms' ),
 					tooltipContentTitle: __(
 						'Create Engaging Quizzes That Score Automatically',
 						'sureforms'
@@ -166,16 +163,36 @@ const FormTypeSelector = ( {
 					utmMedium: 'ai_builder_quiz',
 					tooltipPosition: 'bottom',
 					features: [
-						__(
-							'Auto-score responses instantly',
-							'sureforms'
-						),
-						__(
-							'Display graded results to users',
-							'sureforms'
-						),
+						__( 'Auto-score responses instantly', 'sureforms' ),
+						__( 'Display graded results to users', 'sureforms' ),
 						__(
 							'Perfect for education, training, and fun trivia',
+							'sureforms'
+						),
+					],
+				},
+			},
+			{
+				label: __( 'Survey', 'sureforms' ),
+				slug: 'survey',
+				isAvailable: false,
+				upgradeTooltipContent: {
+					tooltipHeading: __( 'Unlock Survey Forms', 'sureforms' ),
+					tooltipContentTitle: __(
+						'Collect Insights with Powerful Surveys',
+						'sureforms'
+					),
+					tooltipContent: __(
+						'Create surveys to collect responses and opinions. Visualize results with charts and share aggregated insights with your audience.',
+						'sureforms'
+					),
+					utmMedium: 'ai_builder_survey',
+					tooltipPosition: 'bottom',
+					features: [
+						__( 'Aggregate and visualize responses', 'sureforms' ),
+						__( 'Show live results to respondents', 'sureforms' ),
+						__(
+							'Perfect for feedback, polls, and research',
 							'sureforms'
 						),
 					],
@@ -231,8 +248,7 @@ const FormTypeSelector = ( {
 	return (
 		<Container.Item className="flex gap-2">
 			{ visibleFormTypes.map( ( option, index ) => {
-				const IconComponent =
-					ICON_MAP[ option.slug ] || CreditCard;
+				const IconComponent = ICON_MAP[ option.slug ] || CreditCard;
 				return (
 					<div
 						key={ index }
@@ -242,8 +258,8 @@ const FormTypeSelector = ( {
 							arrow
 							content={
 								option.tooltipContent ||
-							TOOLTIP_CONTENT_MAP[ option.slug ] ||
-							TOOLTIP_CONTENT_MAP.payment
+								TOOLTIP_CONTENT_MAP[ option.slug ] ||
+								TOOLTIP_CONTENT_MAP.payment
 							}
 							placement="bottom"
 							triggers={ [ 'hover' ] }
@@ -255,12 +271,10 @@ const FormTypeSelector = ( {
 								className={ cn(
 									'px-1.5 py-1 font-medium text-icon-secondary border border-solid border-border-strong flex-1 transition-colors duration-150 focus:[box-shadow:none] bg-background-secondary hover:bg-background-secondary',
 									formType === option.slug &&
-									'hover:bg-brand-background-hover-100 bg-brand-background-hover-100 border-0.5 border-solid border-border-ai-button text-icon-interactive'
+										'hover:bg-brand-background-hover-100 bg-brand-background-hover-100 border-0.5 border-solid border-border-ai-button text-icon-interactive'
 								) }
 								iconPosition="left"
-								icon={
-									<IconComponent className="size-4" />
-								}
+								icon={ <IconComponent className="size-4" /> }
 								size="md"
 								variant="outline"
 								onClick={ () => handleSelection( option ) }
