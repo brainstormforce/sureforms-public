@@ -289,7 +289,7 @@ const Edit = ( props ) => {
 							<input
 								type={ multiSelect ? 'checkbox' : 'radio' }
 								checked={ preselectedOptions.includes( i ) }
-								onChange={ () => togglePreselection( i ) }
+								onClick={ () => togglePreselection( i ) }
 								title={ __(
 									'Preselect this option',
 									'sureforms'

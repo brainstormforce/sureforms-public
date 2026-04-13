@@ -480,6 +480,8 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 == Changelog ==
 = x.x.x =
 * Fix: Phone field auto-country detection now works reliably without CORS errors or rate limits
+* Fix: Single-selection Multi-Choice and Dropdown blocks now support deselecting a preselected option in the block editor.
+* Fix: Single-selection Multi-Choice field now allows deselecting an already-selected option by clicking it again on the frontend.
 = 2.7.1 - 9th April 2026 =
 * New: Added a customizable Field Slug panel to all form blocks.
 * New: Added Payment Description field to the Stripe payment block with smart tag support.
