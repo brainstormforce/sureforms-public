@@ -121,6 +121,22 @@ button.srfm-toolbar-width-setting-button {
 	// Add top margin to confirm email field.
 	.srfm-email-confirm-block {
 		margin-top: var( --srfm-row-gap-between-blocks );
+
+		&.srfm-error {
+			.srfm-block-wrap {
+				.srfm-input-common {
+					border-color: var( --srfm-error-color-border );
+
+					&:focus {
+						box-shadow: 0px 0px 0px 3px var( --srfm-error-color-border-glow );
+					}
+				}
+			}
+
+			.srfm-error-message {
+				display: block;
+			}
+		}
 	}
 
 	.srfm-block {
