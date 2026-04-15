@@ -6,7 +6,7 @@
  * Delegates to the Payment_History_Shortcode class for output.
  *
  * @package sureforms
- * @since x.x.x
+ * @since 2.8.0
  */
 
 namespace SRFM\Inc\Blocks\Payment_History;
@@ -21,14 +21,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Payment History Block.
  *
- * @since x.x.x
+ * @since 2.8.0
  */
 class Block extends Base {
 	/**
 	 * Render the block.
 	 *
 	 * @param array<mixed> $attributes Block attributes.
-	 * @since x.x.x
+	 * @since 2.8.0
 	 * @return string
 	 */
 	public function render( $attributes ) {

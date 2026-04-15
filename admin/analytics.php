@@ -954,7 +954,7 @@ class Analytics {
 	 * Queries all users with srfm_learn_progress meta, counts completions
 	 * per step. Called at analytics send time (bsf_core_stats filter).
 	 *
-	 * @since x.x.x
+	 * @since 2.8.0
 	 * @return void
 	 */
 	private function get_learn_tracking_data() {

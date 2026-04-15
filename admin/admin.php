@@ -450,7 +450,7 @@ class Admin {
 	 * Add Survey Reports promotional submenu page for free users.
 	 *
 	 * @return void
-	 * @since x.x.x
+	 * @since 2.8.0
 	 */
 	public function add_survey_reports_page() {
 		add_submenu_page(
@@ -471,7 +471,7 @@ class Admin {
 	 * Survey empty state page callback.
 	 *
 	 * @return void
-	 * @since x.x.x
+	 * @since 2.8.0
 	 */
 	public function render_survey_empty_state() {
 		?>
