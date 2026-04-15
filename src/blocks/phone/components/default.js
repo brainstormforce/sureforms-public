@@ -1,6 +1,6 @@
 import { RichText } from '@wordpress/block-editor';
 import IntlTelInput from 'intl-tel-input/reactWithUtils';
-import { useEffect, useState } from '@wordpress/element';
+import { useCallback, useEffect, useState } from '@wordpress/element';
 import { decodeHtmlEntities } from '@Blocks/util';
 import HelpText from '@Components/misc/HelpText';
 
@@ -22,62 +22,65 @@ export const PhoneComponent = ( { setAttributes, attributes, blockID } ) => {
 	const isRequired = required ? ' srfm-required' : '';
 	const slug = 'phone';
 
-	// Determine initial country based on filter settings
-	const getValidCountry = ( detectedCountry ) => {
-		let validCountry = detectedCountry;
+	// Determine initial country based on filter settings.
+	// Memoised so the useEffect below can safely list it as a dependency without
+	// re-running on every render.
+	const getValidCountry = useCallback(
+		( detectedCountry ) => {
+			let validCountry = detectedCountry;
 
-		if (
-			enableCountryFilter &&
-			countryFilterType === 'include' &&
-			includeCountries?.length > 0
-		) {
-			// If include filter is active, check if country is in the list
-			const countryLower = validCountry.toLowerCase();
-			if ( ! includeCountries.includes( countryLower ) ) {
-				// Country not in include list, use first country from the list
-				validCountry = includeCountries[ 0 ];
+			if (
+				enableCountryFilter &&
+				countryFilterType === 'include' &&
+				includeCountries?.length > 0
+			) {
+				// If include filter is active, check if country is in the list
+				const countryLower = validCountry.toLowerCase();
+				if ( ! includeCountries.includes( countryLower ) ) {
+					// Country not in include list, use first country from the list
+					validCountry = includeCountries[ 0 ];
+				}
+			} else if (
+				enableCountryFilter &&
+				countryFilterType === 'exclude' &&
+				excludeCountries?.length > 0
+			) {
+				// If exclude filter is active, check if country is excluded
+				const countryLower = validCountry.toLowerCase();
+				if ( excludeCountries.includes( countryLower ) ) {
+					// Country is excluded, use fallback
+					validCountry = excludeCountries.includes( 'us' ) ? 'gb' : 'us';
+				}
 			}
-		} else if (
-			enableCountryFilter &&
-			countryFilterType === 'exclude' &&
-			excludeCountries?.length > 0
-		) {
-			// If exclude filter is active, check if country is excluded
-			const countryLower = validCountry.toLowerCase();
-			if ( excludeCountries.includes( countryLower ) ) {
-				// Country is excluded, use fallback
-				validCountry = excludeCountries.includes( 'us' ) ? 'gb' : 'us';
-			}
-		}
 
-		return validCountry;
-	};
+			return validCountry;
+		},
+		[
+			enableCountryFilter,
+			countryFilterType,
+			includeCountries,
+			excludeCountries,
+		]
+	);
 
 	useEffect( () => {
 		if ( autoCountry && country === '' ) {
-			fetch( 'https://ipapi.co/json' )
-				.then( ( res ) => res.json() )
-				.then( ( res ) => {
-					let current_loc = res.country_code;
-					current_loc = current_loc.toLowerCase();
-					// Validate against filters
-					current_loc = getValidCountry( current_loc );
-					setCountry( current_loc );
-				} )
-				.catch( ( e ) => {
-					console.log( e );
-					// On error, set validated fallback
-					const fallback = getValidCountry( 'us' );
-					setCountry( fallback );
-				} );
+			// Derive country from WP site locale set on <html lang="en-US">.
+			// Guard against BCP 47 script subtags (sr-Latn, zh-Hans, zh-Hant,
+			// az-Latn) — only accept a final 2-char region subtag, else fall back.
+			const htmlLang = document.documentElement.lang || '';
+			let detectedCountry = 'us';
+			if ( htmlLang.includes( '-' ) ) {
+				const parts = htmlLang.split( '-' );
+				const lastPart = parts[ parts.length - 1 ] || '';
+				if ( lastPart.length === 2 ) {
+					detectedCountry = lastPart.toLowerCase();
+				}
+			}
+			detectedCountry = getValidCountry( detectedCountry );
+			setCountry( detectedCountry );
 		}
-	}, [
-		autoCountry,
-		enableCountryFilter,
-		countryFilterType,
-		includeCountries,
-		excludeCountries,
-	] );
+	}, [ autoCountry, country, getValidCountry ] );
 
 	// Calculate the country to display
 	const displayCountry = autoCountry
