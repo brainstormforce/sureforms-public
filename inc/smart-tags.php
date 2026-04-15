@@ -184,7 +184,7 @@ class Smart_Tags {
 			 * Note: Plugins that hook this filter to register custom tags must also hook
 			 * 'srfm_parse_smart_tags' to resolve their values. See smart_tags_callback() below.
 			 *
-			 * @since x.x.x
+			 * @since 2.8.0
 			 *
 			 * @param bool            $is_valid_tag Whether the tag passed built-in validation.
 			 * @param string          $tag          The smart tag being validated (e.g. '{survey_results:my-field}').

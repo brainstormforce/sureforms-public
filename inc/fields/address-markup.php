@@ -44,7 +44,7 @@ class Address_Markup extends Base {
 		 *
 		 * @param array<string> $extra_classes Extra CSS classes.
 		 * @param array<mixed>  $attributes    Block attributes.
-		 * @since x.x.x
+		 * @since 2.8.0
 		 */
 		$extra_classes = apply_filters( 'srfm_address_field_classes', [], $this->attributes );
 
@@ -58,7 +58,7 @@ class Address_Markup extends Base {
 		 *
 		 * @param string       $extra_attrs Additional HTML attributes string (pre-escaped).
 		 * @param array<mixed> $attributes  Block attributes.
-		 * @since x.x.x
+		 * @since 2.8.0
 		 */
 		$extra_attrs = apply_filters( 'srfm_address_block_attributes', '', $this->attributes );
 
@@ -80,7 +80,7 @@ class Address_Markup extends Base {
 					 *
 					 * @param array<mixed> $attributes Block attributes.
 					 * @param string       $block_id   Block ID.
-					 * @since x.x.x
+					 * @since 2.8.0
 					 */
 					do_action( 'srfm_address_before_fields', $this->attributes, $this->block_id );
 					?>
@@ -98,7 +98,7 @@ class Address_Markup extends Base {
 					 *
 					 * @param array<mixed> $attributes Block attributes.
 					 * @param string       $block_id   Block ID.
-					 * @since x.x.x
+					 * @since 2.8.0
 					 */
 					do_action( 'srfm_address_after_fields', $this->attributes, $this->block_id );
 					?>

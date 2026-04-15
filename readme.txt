@@ -4,7 +4,7 @@ Tags: forms, contact form, custom form, payment form, form builder
 Requires at least: 6.4
 Tested up to: 6.9.4
 Requires PHP: 7.4
-Stable tag: 2.7.1
+Stable tag: 2.8.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -478,11 +478,11 @@ You can collect payments securely through Stripe in the free version. PayPal pay
 You can report the issue through our [Bug Bounty Program](https://brainstormforce.com/bug-bounty-program/). We collaborate with Patchstack to provide opportunities for researchers to report vulnerabilities. The Patchstack team will help validate, triage, and handle any reported security issues.
 
 == Changelog ==
-= x.x.x =
-* Fix: Phone field auto-country detection now works reliably without CORS errors or rate limits
-* Fix: Single-selection Multi-Choice and Dropdown blocks now support deselecting a preselected option in the block editor.
-* Fix: Single-selection Multi-Choice field now allows deselecting an already-selected option by clicking it again on the frontend.
-* Fix: Payment method selection now displays correctly on the frontend.
+= 2.8.0 - 16th April 2026 =
+* Fix: Fixed payment method selection not displaying correctly on the frontend.
+* Fix: Fixed phone field auto-country detection failing due to CORS errors and rate limits.
+* Fix: Fixed single-selection Multi-Choice and Dropdown blocks not allowing deselection of a preselected option in the block editor.
+* Fix: Fixed single-selection Multi-Choice field not allowing deselection of an already-selected option on the frontend.
 = 2.7.1 - 9th April 2026 =
 * New: Added a customizable Field Slug panel to all form blocks.
 * New: Added Payment Description field to the Stripe payment block with smart tag support.
@@ -502,13 +502,6 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 * Fix: Fixed dynamic tag URLs being auto-linked with HTML markup when used in redirect query parameters.
 * Fix: Fixed theme text-transform styles cascading into form input fields.
 * Fix: Fixed unique field validation endpoint exposing submitted data to unauthenticated enumeration attacks.
-= 2.6.0 - 23rd March 2026 =
-* New: Added MCP (Model Context Protocol) settings and Abilities API for AI-powered form management.
-* Improvement: Added Blocks API v3 compatibility.
-* Improvement: Improved search for form and entry listing.
-* Fix: Fixed Stripe payment block not displaying correctly when the same form is embedded multiple times on a page.
-* Fix: Fixed entry Previous/Next navigation returning entries from other forms instead of the current form.
-* Fix: Resolved intermittent form submission failures on sites with page caching plugins due to expired security tokens.
 The full changelog is available [here](https://sureforms.com/whats-new/).
 
 == Upgrade Notice ==

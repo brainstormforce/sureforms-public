@@ -167,7 +167,7 @@ class Admin_Stripe_Handler {
 	 * Filter callback for 'srfm_process_subscription_cancellation'.
 	 * Used by both admin and frontend to cancel Stripe subscriptions.
 	 *
-	 * @since x.x.x
+	 * @since 2.8.0
 	 * @param array<string,mixed> $result  Default result array.
 	 * @param array<string,mixed> $payment Payment record from database.
 	 * @return array<string,mixed> Result with success status and message.
