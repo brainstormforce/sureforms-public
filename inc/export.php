@@ -253,7 +253,7 @@ class Export {
 				$post_content = $cleaned_content;
 			}
 
-			$post_content = addslashes( $post_content );
+			$post_content = wp_slash( $post_content );
 
 			// Check if sureforms/form exists in post_content.
 			if ( 'sureforms_form' === $post_type ) {
@@ -287,16 +287,31 @@ class Export {
 				$forms_mapping[ $old_id ] = $post_id;
 
 				// Update post meta.
+				$allowed_keys           = $this->get_allowed_import_meta_keys();
+				$unserialized_meta_keys = $this->get_unserialized_post_metas();
+				$registered             = get_registered_meta_keys( 'post', SRFM_FORMS_POST_TYPE );
 				foreach ( $post_meta as $meta_key => $meta_value ) {
-					// Check if the meta key is one of the unserialized post metas then add it as is.
-					if ( in_array( $meta_key, $this->get_unserialized_post_metas(), true ) ) {
+					// 1. Whitelist check — skip unknown keys from crafted import files.
+					if ( ! in_array( $meta_key, $allowed_keys, true ) ) {
+						continue;
+					}
+
+					if ( in_array( $meta_key, $unserialized_meta_keys, true ) ) {
+						// Complex array metas — sanitize_callback registered via register_post_meta()
+						// is automatically invoked by add_post_meta() → update_metadata() pipeline.
+						// When Pro is inactive, some keys may lack a registered callback — apply fallback.
+						if ( empty( $registered[ $meta_key ]['sanitize_callback'] ) ) {
+							$meta_value = Helper::sanitize_by_type( $meta_value );
+						}
 						add_post_meta( $post_id, $meta_key, $meta_value );
 					} else {
-						if ( is_array( $meta_value ) && isset( $meta_value[0] ) ) {
-							add_post_meta( $post_id, $meta_key, $meta_value[0] );
-						} else {
-							add_post_meta( $post_id, $meta_key, $meta_value );
+						// Scalar metas — unwrap single-element arrays produced by get_post_meta().
+						$raw_value = is_array( $meta_value ) && isset( $meta_value[0] ) ? $meta_value[0] : $meta_value;
+						// Fallback sanitization — skip when a registered callback already handles it.
+						if ( is_string( $raw_value ) && empty( $registered[ $meta_key ]['sanitize_callback'] ) ) {
+							$raw_value = sanitize_text_field( $raw_value );
 						}
+						add_post_meta( $post_id, $meta_key, $raw_value );
 					}
 				}
 			} else {
@@ -305,6 +320,63 @@ class Export {
 		}
 
 		return $forms_mapping;
+	}
+
+	/**
+	 * Get the list of meta keys allowed during import.
+	 *
+	 * Only meta keys present in this list will be written to the DB during import.
+	 * Unknown keys from crafted import files are silently ignored.
+	 *
+	 * @since x.x.x
+	 * @return array<string>
+	 */
+	private function get_allowed_import_meta_keys(): array {
+		$scalar_metas = [
+			'_srfm_additional_classes',
+			'_srfm_bg_color',
+			'_srfm_bg_image',
+			'_srfm_bg_type',
+			'_srfm_button_border_radius',
+			'_srfm_captcha_security_type',
+			'_srfm_cover_image',
+			'_srfm_form_container_width',
+			'_srfm_form_custom_css',
+			'_srfm_form_recaptcha',
+			'_srfm_form_restriction',
+			'_srfm_inherit_theme_button',
+			'_srfm_instant_form',
+			'_srfm_is_ai_generated',
+			'_srfm_is_inline_button',
+			'_srfm_single_page_form_title',
+			'_srfm_submit_alignment',
+			'_srfm_submit_alignment_backend',
+			'_srfm_submit_button_text',
+			'_srfm_submit_type',
+			'_srfm_submit_width',
+			'_srfm_submit_width_backend',
+			'_srfm_use_label_as_placeholder',
+		];
+
+		/**
+		 * Filter the list of scalar meta keys allowed during import.
+		 *
+		 * Pro and other extensions can hook into this to add their own scalar meta keys.
+		 *
+		 * @since x.x.x
+		 * @param array<string> $scalar_metas List of scalar meta keys.
+		 */
+		$scalar_metas = apply_filters( 'srfm_import_scalar_meta_keys', $scalar_metas );
+
+		// Ensure filter consumers cannot inject non-SureForms meta keys.
+		$scalar_metas = array_filter(
+			$scalar_metas,
+			static function ( $key ) {
+				return str_starts_with( $key, '_srfm_' );
+			}
+		);
+
+		return array_merge( $this->get_unserialized_post_metas(), $scalar_metas );
 	}
 
 }

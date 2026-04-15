@@ -60,7 +60,6 @@ function initializePhoneField() {
 		phoneNumber.setAttribute( 'data-srfm-phone-initialized', 'true' );
 
 		const errorMessage = element.querySelector( '.srfm-error-message' );
-		const isAutoCountry = phoneNumber.getAttribute( 'auto-country' );
 		const defaultCountry = phoneNumber.getAttribute( 'default-country' );
 		const phoneFieldName = phoneNumber.getAttribute( 'name' );
 		const enableCountryFilter = phoneNumber.getAttribute(
@@ -115,47 +114,6 @@ function initializePhoneField() {
 			initialCountry,
 			allowPhonewords: true,
 		};
-
-		if ( isAutoCountry === 'true' ) {
-			itlOptions.initialCountry = 'auto';
-			itlOptions.geoIpLookup = function ( callback ) {
-				fetch( 'https://ipapi.co/json' )
-					.then( function ( res ) {
-						return res.json();
-					} )
-					.then( function ( data ) {
-						let detectedCountry = data.country_code
-							? data.country_code.toLowerCase()
-							: 'us';
-
-						// Validate detected country against filters
-						detectedCountry = validateCountryWithFilters(
-							detectedCountry,
-							enableCountryFilter,
-							countryFilterType,
-							includeCountries,
-							excludeCountries
-						);
-
-						callback( detectedCountry );
-					} )
-					.catch( function () {
-						// On error, use validated fallback country
-						let fallbackCountry = 'us';
-
-						// Validate fallback country against filters
-						fallbackCountry = validateCountryWithFilters(
-							fallbackCountry,
-							enableCountryFilter,
-							countryFilterType,
-							includeCountries,
-							excludeCountries
-						);
-
-						callback( fallbackCountry );
-					} );
-			};
-		}
 
 		// Apply country filtering if enabled
 		if ( enableCountryFilter === 'true' ) {

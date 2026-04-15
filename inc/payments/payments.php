@@ -42,6 +42,7 @@ class Payments {
 
 		Front_End::get_instance();
 		Stripe_Webhook::get_instance();
+		Payment_History_Shortcode::get_instance();
 
 		add_filter( 'srfm_ai_form_generator_body', [ $this, 'add_payment_version_to_ai_body' ], 10, 2 );
 	}
