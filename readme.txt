@@ -480,7 +480,7 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 == Changelog ==
 = 2.8.0 - 16th April 2026 =
 * New: Added My Account page allowing users to view and manage their payment history and subscriptions.
-* Improvement: Replaced third-party IP-based country detection with locale-based auto-detection for the Phone field, improving privacy and reliability.
+* Improvement: Phone number country detection moved to backend with caching, reducing multiple API calls.
 * Fix: Fixed payment method radio button display issue when both Stripe and PayPal gateways are enabled.
 * Fix: Fixed crash when saving a form containing the Register block.
 * Fix: Fixed inability to deselect a preselected option in single-selection controls (radio, dropdown) within the editor.

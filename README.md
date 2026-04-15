@@ -479,12 +479,8 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 
 ## Changelog ##
 ### 2.8.0 - 16th April 2026 ###
-* New: Introduced Survey and Polls for creating interactive surveys and polls directly within forms.
 * New: Added My Account page allowing users to view and manage their payment history and subscriptions.
-* New: Added Google Maps autocomplete for the Address field — users can search and select addresses with auto-fill.
-* New: Added per-notification "Attach Uploaded Files" toggle to include file uploads in email notifications.
-* Improvement: Replaced third-party IP-based country detection with locale-based auto-detection for the Phone field, improving privacy and reliability.
-* Improvement: Updated consent and analytics copy for better clarity.
+* Improvement: Phone number country detection moved to backend with caching, reducing multiple API calls.
 * Fix: Fixed payment method radio button display issue when both Stripe and PayPal gateways are enabled.
 * Fix: Fixed crash when saving a form containing the Register block.
 * Fix: Fixed inability to deselect a preselected option in single-selection controls (radio, dropdown) within the editor.
