@@ -4,11 +4,12 @@ import { __ } from '@wordpress/i18n';
 import { useDebouncedCallback } from 'use-debounce';
 import { toast } from '@bsf/force-ui';
 import { cn } from '@Utils/Helpers';
-import { navigation } from './Navigation';
+import { getNavigation } from './Navigation';
 import GeneralPage from './pages/General';
 import ValidationsPage from './pages/Validations';
 import SecurityPage from './pages/Security';
 import IntegrationPage from './pages/Integrations';
+import GoogleMapsPage from './pages/GoogleMaps';
 import PaymentsPage from '../payment/global-setting-page';
 import MCPPage from './pages/MCP';
 import OttoKitPage from './pages/OttoKit';
@@ -78,14 +79,17 @@ const Component = ( { path, subpage } ) => {
 	// set page title and icon based on the path.
 	useEffect( () => {
 		if ( path ) {
-			navigation.forEach( ( single ) => {
+			getNavigation().forEach( ( single ) => {
 				const slug = single?.slug && single.slug ? single.slug : '';
 				const title = single?.name && single.name ? single.name : '';
 				// eslint-disable-next-line no-shadow
 				const helpText =
 					single?.helpText && single.helpText ? single.helpText : '';
 				// Check for the property to hide the page title.
-				const hideTitle = !! single?.hidePageTitle;
+				// Show title for Google Maps when pro is active (settings page), hide for banner.
+				const hideTitle = slug === 'google-maps-settings' && srfm_admin?.is_pro_active
+					? false
+					: !! single?.hidePageTitle;
 				if ( slug ) {
 					if ( slug === path ) {
 						setPageTitle( title );
@@ -296,7 +300,8 @@ const Component = ( { path, subpage } ) => {
 		debouncedSave( updatedTabOptions, tab );
 	}
 	const pathsForFullWidth = [ 'ottokit-settings', 'integration-settings' ];
-	const isFullWidth = pathsForFullWidth.includes( path );
+	const isFullWidth = pathsForFullWidth.includes( path ) ||
+		( 'google-maps-settings' === path && ! srfm_admin?.is_pro_active );
 
 	return (
 		<>
@@ -357,6 +362,12 @@ const Component = ( { path, subpage } ) => {
 
 				{ 'integration-settings' === path && (
 					<IntegrationPage loading={ loading } />
+				) }
+				{ 'google-maps-settings' === path && (
+					<GoogleMapsPage
+						loading={ loading }
+						toast={ toast }
+					/>
 				) }
 				{ 'payments-settings' === path && (
 					<PaymentsPage
