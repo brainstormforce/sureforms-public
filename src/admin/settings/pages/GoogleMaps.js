@@ -1,13 +1,13 @@
 import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
 import IntegrationsInitialState from '@Admin/components/IntegrationsInitialState';
-import UpgradeToProImage from '@Image/upgrade-to-pro.svg';
+import GoogleMapsImage from '@Image/google-maps.svg';
 import { addQueryParam } from '@Utils/Helpers';
 
 const GoogleMapsPage = ( { loading, toast } ) => {
 	const freePluginUI = (
 		<IntegrationsInitialState
-			image={ UpgradeToProImage }
+			image={ GoogleMapsImage }
 			title={ __(
 				'Enable Google Address Autocomplete',
 				'sureforms'
