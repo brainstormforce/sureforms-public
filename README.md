@@ -479,10 +479,17 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 
 ## Changelog ##
 ### 2.8.0 - 16th April 2026 ###
-* Fix: Fixed payment method selection not displaying correctly on the frontend.
-* Fix: Fixed phone field auto-country detection failing due to CORS errors and rate limits.
-* Fix: Fixed single-selection Multi-Choice and Dropdown blocks not allowing deselection of a preselected option in the block editor.
-* Fix: Fixed single-selection Multi-Choice field not allowing deselection of an already-selected option on the frontend.
+* New: Introduced Survey and Polls for creating interactive surveys and polls directly within forms.
+* New: Added My Account page allowing users to view and manage their payment history and subscriptions.
+* New: Added Google Maps autocomplete for the Address field — users can search and select addresses with auto-fill.
+* New: Added per-notification "Attach Uploaded Files" toggle to include file uploads in email notifications.
+* Improvement: Replaced third-party IP-based country detection with locale-based auto-detection for the Phone field, improving privacy and reliability.
+* Improvement: Updated consent and analytics copy for better clarity.
+* Fix: Fixed payment method radio button display issue when both Stripe and PayPal gateways are enabled.
+* Fix: Fixed crash when saving a form containing the Register block.
+* Fix: Fixed inability to deselect a preselected option in single-selection controls (radio, dropdown) within the editor.
+* Fix: Fixed Quill rich text editor toolbar strings not being translatable.
+* Fix: Fixed unsanitized post meta during form import.
 ### 2.7.1 - 9th April 2026 ###
 * New: Added a customizable Field Slug panel to all form blocks.
 * New: Added Payment Description field to the Stripe payment block with smart tag support.
