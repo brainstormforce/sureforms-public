@@ -1,0 +1,34 @@
+{
+	"$schema": "https://json.schemastore.org/block.json",
+	"apiVersion": 3,
+	"name": "srfm/payment-history",
+	"title": "Payment History",
+	"description": "Display subscriptions and payment history for logged-in users with detail overlays and subscription management.",
+	"category": "sureforms",
+	"keywords": [ "payment", "history", "transactions", "account", "billing" ],
+	"textdomain": "sureforms",
+	"supports": {
+		"reusable": false,
+		"html": false,
+		"multiple": false
+	},
+	"example": {
+		"attributes": {
+			"isPreview": true
+		}
+	},
+	"attributes": {
+		"isPreview": {
+			"type": "boolean",
+			"default": false
+		},
+		"perPage": {
+			"type": "number",
+			"default": 10
+		},
+		"showSubscription": {
+			"type": "boolean",
+			"default": true
+		}
+	}
+}
