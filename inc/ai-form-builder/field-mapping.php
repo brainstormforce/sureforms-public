@@ -207,6 +207,7 @@ class Field_Mapping {
 				case 'hidden':
 				case 'rating':
 				case 'signature':
+				case 'nps':
 					// If pro version is not active then do not add pro fields.
 					if ( ! defined( 'SRFM_PRO_VER' ) ) {
 						break;

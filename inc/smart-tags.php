@@ -175,6 +175,23 @@ class Smart_Tags {
 			0 === strpos( $tag, '{form:' ) ||
 			0 === strpos( $tag, '{form-payment:' );
 
+			/**
+			 * Filter whether a smart tag should be treated as valid for processing.
+			 *
+			 * Allows plugins to register dynamic tag prefixes (e.g. {survey_results:field_slug})
+			 * that are not in the static smart tag list.
+			 *
+			 * Note: Plugins that hook this filter to register custom tags must also hook
+			 * 'srfm_parse_smart_tags' to resolve their values. See smart_tags_callback() below.
+			 *
+			 * @since x.x.x
+			 *
+			 * @param bool            $is_valid_tag Whether the tag passed built-in validation.
+			 * @param string          $tag          The smart tag being validated (e.g. '{survey_results:my-field}').
+			 * @param array<mixed>|null $form_data   The form configuration data.
+			 */
+			$is_valid_tag = apply_filters( 'srfm_is_valid_smart_tag', $is_valid_tag, $tag, $form_data );
+
 			if ( ! $is_valid_tag ) {
 				continue;
 			}

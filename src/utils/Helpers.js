@@ -132,7 +132,7 @@ export const randomNiceColor = () => {
 	const h = randomInt( 0, 360 );
 	const s = randomInt( 42, 98 );
 	const l = randomInt( 40, 90 );
-	return `hsla(${ h },${ s }%,${ l }%,${ 0.2 })`;
+	return `hsl(${ h },${ s }%,${ l }%)`;
 };
 
 export const generateDropDownOptions = (
