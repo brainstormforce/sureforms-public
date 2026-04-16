@@ -1,3 +1,4 @@
+import { __, _x } from '@wordpress/i18n';
 import parse from 'html-react-parser';
 import svgIcons from '@Svg/svgs.json';
 
@@ -109,13 +110,13 @@ export const QuillToolbar = () => (
 	>
 		<span className="ql-formats">
 			<select className="ql-header" defaultValue="false">
-				<option value="1">Heading 1</option>
-				<option value="2">Heading 2</option>
-				<option value="3">Heading 3</option>
-				<option value="4">Heading 4</option>
-				<option value="5">Heading 5</option>
-				<option value="6">Heading 6</option>
-				<option value="false">Normal</option>
+				<option value="1">{ __( 'Heading 1', 'sureforms' ) }</option>
+				<option value="2">{ __( 'Heading 2', 'sureforms' ) }</option>
+				<option value="3">{ __( 'Heading 3', 'sureforms' ) }</option>
+				<option value="4">{ __( 'Heading 4', 'sureforms' ) }</option>
+				<option value="5">{ __( 'Heading 5', 'sureforms' ) }</option>
+				<option value="6">{ __( 'Heading 6', 'sureforms' ) }</option>
+				<option value="false">{ _x( 'Normal', 'Quill heading picker: default paragraph style', 'sureforms' ) }</option>
 			</select>
 			<button className="ql-bold" />
 			<button className="ql-italic" />

@@ -511,6 +511,10 @@ abstract class Base {
 		}
 
 		$result = $this->wpdb->insert( $this->get_tablename(), $prepared_data['data'], $format );
+
+		// Reset cache so subsequent queries in the same request include the new row.
+		$this->cache_reset();
+
 		return $result ? $this->wpdb->insert_id : false;
 	}
 

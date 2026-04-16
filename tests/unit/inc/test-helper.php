@@ -2363,6 +2363,125 @@ class Test_Helper extends TestCase {
     }
 
     /**
+     * Test sanitize_by_type returns sanitized string for string input.
+     */
+    public function test_sanitize_by_type_string() {
+        $this->assertSame( 'hello world', Helper::sanitize_by_type( 'hello world' ) );
+    }
+
+    /**
+     * Test sanitize_by_type strips HTML tags from strings.
+     */
+    public function test_sanitize_by_type_strips_html() {
+        $this->assertSame( 'alert("xss")test', Helper::sanitize_by_type( '<script>alert("xss")</script>test' ) );
+    }
+
+    /**
+     * Test sanitize_by_type preserves boolean values.
+     */
+    public function test_sanitize_by_type_boolean() {
+        $this->assertTrue( Helper::sanitize_by_type( true ) );
+        $this->assertFalse( Helper::sanitize_by_type( false ) );
+    }
+
+    /**
+     * Test sanitize_by_type preserves integer values.
+     */
+    public function test_sanitize_by_type_integer() {
+        $this->assertSame( 42, Helper::sanitize_by_type( 42 ) );
+        $this->assertSame( 0, Helper::sanitize_by_type( 0 ) );
+        $this->assertSame( -5, Helper::sanitize_by_type( -5 ) );
+    }
+
+    /**
+     * Test sanitize_by_type preserves float values.
+     */
+    public function test_sanitize_by_type_float() {
+        $this->assertSame( 3.14, Helper::sanitize_by_type( 3.14 ) );
+        $this->assertSame( 0.0, Helper::sanitize_by_type( 0.0 ) );
+    }
+
+    /**
+     * Test sanitize_by_type returns empty string for null.
+     */
+    public function test_sanitize_by_type_null() {
+        $this->assertSame( '', Helper::sanitize_by_type( null ) );
+    }
+
+    /**
+     * Test sanitize_by_type recursively sanitizes arrays.
+     */
+    public function test_sanitize_by_type_array() {
+        $input = [
+            'name'    => '<b>John</b>',
+            'age'     => 30,
+            'active'  => true,
+            'score'   => 9.5,
+        ];
+
+        $result = Helper::sanitize_by_type( $input );
+
+        $this->assertSame( 'John', $result['name'] );
+        $this->assertSame( 30, $result['age'] );
+        $this->assertTrue( $result['active'] );
+        $this->assertSame( 9.5, $result['score'] );
+    }
+
+    /**
+     * Test sanitize_by_type handles nested arrays.
+     */
+    public function test_sanitize_by_type_nested_array() {
+        $input = [
+            'level1' => [
+                'level2' => [
+                    'value' => '<img onerror=alert(1)>clean',
+                ],
+            ],
+        ];
+
+        $result = Helper::sanitize_by_type( $input );
+
+        $this->assertSame( 'clean', $result['level1']['level2']['value'] );
+    }
+
+    /**
+     * Test sanitize_by_type sanitizes array keys.
+     */
+    public function test_sanitize_by_type_sanitizes_keys() {
+        $input = [
+            '<script>key</script>' => 'value',
+        ];
+
+        $result = Helper::sanitize_by_type( $input );
+
+        $this->assertArrayHasKey( 'key', $result );
+        $this->assertSame( 'value', $result['key'] );
+    }
+
+    /**
+     * M1: Test sanitize_by_type truncates deeply nested arrays at depth 10.
+     */
+    public function test_sanitize_by_type_depth_limit() {
+        // Build a 15-level deep nested array.
+        $value = 'deep_value';
+        for ( $i = 0; $i < 15; $i++ ) {
+            $value = [ 'nested' => $value ];
+        }
+
+        $result = Helper::sanitize_by_type( $value );
+
+        // Traverse 10 levels — should still be an array.
+        $current = $result;
+        for ( $i = 0; $i < 10; $i++ ) {
+            $this->assertIsArray( $current, "Expected array at depth {$i}" );
+            $current = $current['nested'];
+        }
+
+        // At depth 11+, the value should be truncated to empty string.
+        $this->assertSame( '', $current );
+    }
+
+    /**
      * Test generate_unique_block_slug with a Latin label uses the label.
      */
     public function test_generate_unique_block_slug_latin_label() {
@@ -2422,6 +2541,116 @@ class Test_Helper extends TestCase {
         ];
         $slug = Helper::generate_unique_block_slug( $block, [], 'address' );
         $this->assertEquals( 'address-city', $slug );
+    }
+
+    // --- srfm_base64_json_encode ---
+
+    /**
+     * Test srfm_base64_json_encode encodes valid array data.
+     */
+    public function test_srfm_base64_json_encode_valid_array() {
+        $data   = [ 'key' => 'value', 'num' => 42 ];
+        $result = Helper::srfm_base64_json_encode( $data );
+
+        $this->assertNotEmpty( $result );
+        // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_decode
+        $decoded = json_decode( base64_decode( $result ), true );
+        $this->assertEquals( $data, $decoded );
+    }
+
+    /**
+     * Test srfm_base64_json_encode returns empty string for empty data.
+     */
+    public function test_srfm_base64_json_encode_empty_data() {
+        $this->assertSame( '', Helper::srfm_base64_json_encode( [] ) );
+        $this->assertSame( '', Helper::srfm_base64_json_encode( '' ) );
+        $this->assertSame( '', Helper::srfm_base64_json_encode( null ) );
+    }
+
+    /**
+     * Test srfm_base64_json_encode returns empty string for non-array data.
+     */
+    public function test_srfm_base64_json_encode_non_array() {
+        $this->assertSame( '', Helper::srfm_base64_json_encode( 'string' ) );
+        $this->assertSame( '', Helper::srfm_base64_json_encode( 123 ) );
+    }
+
+    // --- get_visitor_ip ---
+
+    /**
+     * Test get_visitor_ip returns REMOTE_ADDR when no proxy headers are set.
+     */
+    public function test_get_visitor_ip_from_remote_addr() {
+        $this->clear_ip_server_vars();
+        $_SERVER['REMOTE_ADDR'] = '203.0.113.45';
+
+        $this->assertEquals( '203.0.113.45', Helper::get_visitor_ip() );
+    }
+
+    /**
+     * Test get_visitor_ip prefers HTTP_CLIENT_IP over REMOTE_ADDR.
+     */
+    public function test_get_visitor_ip_prefers_client_ip() {
+        $this->clear_ip_server_vars();
+        $_SERVER['HTTP_CLIENT_IP'] = '198.51.100.10';
+        $_SERVER['REMOTE_ADDR']    = '203.0.113.45';
+
+        $this->assertEquals( '198.51.100.10', Helper::get_visitor_ip() );
+    }
+
+    /**
+     * Test get_visitor_ip handles comma-separated IPs from proxies.
+     */
+    public function test_get_visitor_ip_comma_separated() {
+        $this->clear_ip_server_vars();
+        $_SERVER['HTTP_X_FORWARDED_FOR'] = '198.51.100.10, 70.41.3.18, 150.172.238.178';
+
+        $this->assertEquals( '198.51.100.10', Helper::get_visitor_ip() );
+    }
+
+    /**
+     * Test get_visitor_ip returns empty string when no IP headers are available.
+     */
+    public function test_get_visitor_ip_returns_empty_when_unavailable() {
+        $this->clear_ip_server_vars();
+
+        $this->assertSame( '', Helper::get_visitor_ip() );
+    }
+
+    /**
+     * Test get_visitor_ip skips invalid IP and falls through to next header.
+     */
+    public function test_get_visitor_ip_skips_invalid_ip() {
+        $this->clear_ip_server_vars();
+        $_SERVER['HTTP_CLIENT_IP'] = 'not-an-ip';
+        $_SERVER['REMOTE_ADDR']    = '203.0.113.45';
+
+        $this->assertEquals( '203.0.113.45', Helper::get_visitor_ip() );
+    }
+
+    /**
+     * Test get_visitor_ip reads HTTP_X_REAL_IP (Nginx proxy header).
+     */
+    public function test_get_visitor_ip_reads_x_real_ip() {
+        $this->clear_ip_server_vars();
+        $_SERVER['HTTP_X_REAL_IP'] = '198.51.100.25';
+
+        $this->assertEquals( '198.51.100.25', Helper::get_visitor_ip() );
+    }
+
+    /**
+     * Clear all IP-related $_SERVER variables for a clean test state.
+     */
+    private function clear_ip_server_vars() {
+        unset(
+            $_SERVER['HTTP_CLIENT_IP'],
+            $_SERVER['HTTP_X_FORWARDED_FOR'],
+            $_SERVER['HTTP_X_REAL_IP'],
+            $_SERVER['HTTP_X_FORWARDED'],
+            $_SERVER['HTTP_FORWARDED_FOR'],
+            $_SERVER['HTTP_FORWARDED'],
+            $_SERVER['REMOTE_ADDR']
+        );
     }
 
 }

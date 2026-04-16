@@ -6,10 +6,41 @@ import {
 	MessagesSquare,
 	CreditCard,
 	ListChecks,
+	ClipboardList,
 } from 'lucide-react';
 import { useEffect, useState } from '@wordpress/element';
 import UpgradePopup from './UpgradePopup.js';
 import { addQueryParam, cn } from '@Utils/Helpers';
+
+const TOOLTIP_CONTENT_MAP = {
+	calculator: __(
+		'Select this if you need calculations in your form. For example: Loan interest calculator.',
+		'sureforms'
+	),
+	conversational: __(
+		'Select this if you want your form to display one question at a time, like a chat.',
+		'sureforms'
+	),
+	quiz: __(
+		'Select this to create a quiz with scored questions and graded results.',
+		'sureforms'
+	),
+	survey: __(
+		'Select this to create a survey to collect responses and opinions.',
+		'sureforms'
+	),
+	payment: __(
+		'Select this if you want to collect payments through your form.',
+		'sureforms'
+	),
+};
+
+const ICON_MAP = {
+	calculator: Calculator,
+	conversational: MessagesSquare,
+	quiz: ListChecks,
+	survey: ClipboardList,
+};
 
 const FormTypeSelector = ( {
 	formTypeObj,
@@ -120,10 +151,7 @@ const FormTypeSelector = ( {
 				slug: 'quiz',
 				isAvailable: false,
 				upgradeTooltipContent: {
-					tooltipHeading: __(
-						'Unlock Quiz Forms',
-						'sureforms'
-					),
+					tooltipHeading: __( 'Unlock Quiz Forms', 'sureforms' ),
 					tooltipContentTitle: __(
 						'Create Engaging Quizzes That Score Automatically',
 						'sureforms'
@@ -135,16 +163,36 @@ const FormTypeSelector = ( {
 					utmMedium: 'ai_builder_quiz',
 					tooltipPosition: 'bottom',
 					features: [
-						__(
-							'Auto-score responses instantly',
-							'sureforms'
-						),
-						__(
-							'Display graded results to users',
-							'sureforms'
-						),
+						__( 'Auto-score responses instantly', 'sureforms' ),
+						__( 'Display graded results to users', 'sureforms' ),
 						__(
 							'Perfect for education, training, and fun trivia',
+							'sureforms'
+						),
+					],
+				},
+			},
+			{
+				label: __( 'Survey', 'sureforms' ),
+				slug: 'survey',
+				isAvailable: false,
+				upgradeTooltipContent: {
+					tooltipHeading: __( 'Unlock Survey Forms', 'sureforms' ),
+					tooltipContentTitle: __(
+						'Collect Insights with Powerful Surveys',
+						'sureforms'
+					),
+					tooltipContent: __(
+						'Create surveys to collect responses and opinions. Visualize results with charts and share aggregated insights with your audience.',
+						'sureforms'
+					),
+					utmMedium: 'ai_builder_survey',
+					tooltipPosition: 'bottom',
+					features: [
+						__( 'Aggregate and visualize responses', 'sureforms' ),
+						__( 'Show live results to respondents', 'sureforms' ),
+						__(
+							'Perfect for feedback, polls, and research',
 							'sureforms'
 						),
 					],
@@ -181,7 +229,8 @@ const FormTypeSelector = ( {
 			option.slug === 'calculator' ||
 			option.slug === 'conversational' ||
 			option.slug === 'payment' ||
-			option.slug === 'quiz'
+			option.slug === 'quiz' ||
+			option.slug === 'survey'
 		) {
 			setformLayout( {} );
 		}
@@ -198,68 +247,44 @@ const FormTypeSelector = ( {
 
 	return (
 		<Container.Item className="flex gap-2">
-			{ visibleFormTypes.map( ( option, index ) => (
-				<div
-					key={ index }
-					className="flex items-center justify-between gap-2"
-				>
-					<Tooltip
-						arrow
-						content={
-							option.tooltipContent ||
-							( option.slug === 'calculator'
-								? __(
-									'Select this if you need calculations in your form. For example: Loan interest calculator.',
-									'sureforms'
-								  )
-								: option.slug === 'conversational'
-									? __(
-										'Select this if you want your form to display one question at a time, like a chat.',
-										'sureforms'
-								  )
-									: option.slug === 'quiz'
-										? __(
-											'Select this to create a quiz with scored questions and graded results.',
-											'sureforms'
-								  )
-										: __(
-											'Select this if you want to collect payments through your form.',
-											'sureforms'
-								  ) )
-						}
-						placement="bottom"
-						triggers={ [ 'hover' ] }
-						variant="dark"
-						tooltipPortalId="srfm-add-new-form-container"
-						className="text-xs"
+			{ visibleFormTypes.map( ( option, index ) => {
+				const IconComponent = ICON_MAP[ option.slug ] || CreditCard;
+				return (
+					<div
+						key={ index }
+						className="flex items-center justify-between gap-2"
 					>
-						<Button
-							className={ cn(
-								'px-1.5 py-1 font-medium text-icon-secondary border border-solid border-border-strong flex-1 transition-colors duration-150 focus:[box-shadow:none] bg-background-secondary hover:bg-background-secondary',
-								formType === option.slug &&
-									'hover:bg-brand-background-hover-100 bg-brand-background-hover-100 border-0.5 border-solid border-border-ai-button text-icon-interactive'
-							) }
-							iconPosition="left"
-							icon={
-								option.slug === 'calculator' ? (
-									<Calculator className="size-4" />
-								) : option.slug === 'conversational' ? (
-									<MessagesSquare className="size-4" />
-								) : option.slug === 'quiz' ? (
-									<ListChecks className="size-4" />
-								) : (
-									<CreditCard className="size-4" />
-								)
+						<Tooltip
+							arrow
+							content={
+								option.tooltipContent ||
+								TOOLTIP_CONTENT_MAP[ option.slug ] ||
+								TOOLTIP_CONTENT_MAP.payment
 							}
-							size="md"
-							variant="outline"
-							onClick={ () => handleSelection( option ) }
+							placement="bottom"
+							triggers={ [ 'hover' ] }
+							variant="dark"
+							tooltipPortalId="srfm-add-new-form-container"
+							className="text-xs"
 						>
-							{ option.label }
-						</Button>
-					</Tooltip>
-				</div>
-			) ) }
+							<Button
+								className={ cn(
+									'px-1.5 py-1 font-medium text-icon-secondary border border-solid border-border-strong flex-1 transition-colors duration-150 focus:[box-shadow:none] bg-background-secondary hover:bg-background-secondary',
+									formType === option.slug &&
+										'hover:bg-brand-background-hover-100 bg-brand-background-hover-100 border-0.5 border-solid border-border-ai-button text-icon-interactive'
+								) }
+								iconPosition="left"
+								icon={ <IconComponent className="size-4" /> }
+								size="md"
+								variant="outline"
+								onClick={ () => handleSelection( option ) }
+							>
+								{ option.label }
+							</Button>
+						</Tooltip>
+					</div>
+				);
+			} ) }
 
 			{ showUpgradePopup && selectedUpgradeOption && (
 				<UpgradePopup

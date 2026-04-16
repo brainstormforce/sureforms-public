@@ -4,7 +4,7 @@
 **Requires at least:** 6.4  
 **Tested up to:** 6.9.4  
 **Requires PHP:** 7.4  
-**Stable tag:** 2.7.1  
+**Stable tag:** 2.8.0  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -478,6 +478,13 @@ You can collect payments securely through Stripe in the free version. PayPal pay
 You can report the issue through our [Bug Bounty Program](https://brainstormforce.com/bug-bounty-program/). We collaborate with Patchstack to provide opportunities for researchers to report vulnerabilities. The Patchstack team will help validate, triage, and handle any reported security issues.
 
 ## Changelog ##
+### 2.8.0 - 16th April 2026 ###
+* New: Added My Account page allowing users to view and manage their payment history and subscriptions.
+* Improvement: Phone number country detection moved to backend with caching, reducing multiple API calls.
+* Fix: Fixed payment method radio button display issue when both Stripe and PayPal gateways are enabled.
+* Fix: Fixed crash when saving a form containing the Register block.
+* Fix: Fixed inability to deselect a preselected option in single-selection controls (radio, dropdown) within the editor.
+* Fix: Fixed Quill rich text editor toolbar strings not being translatable.
 ### 2.7.1 - 9th April 2026 ###
 * New: Added a customizable Field Slug panel to all form blocks.
 * New: Added Payment Description field to the Stripe payment block with smart tag support.
@@ -497,13 +504,6 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 * Fix: Fixed dynamic tag URLs being auto-linked with HTML markup when used in redirect query parameters.
 * Fix: Fixed theme text-transform styles cascading into form input fields.
 * Fix: Fixed unique field validation endpoint exposing submitted data to unauthenticated enumeration attacks.
-### 2.6.0 - 23rd March 2026 ###
-* New: Added MCP (Model Context Protocol) settings and Abilities API for AI-powered form management.
-* Improvement: Added Blocks API v3 compatibility.
-* Improvement: Improved search for form and entry listing.
-* Fix: Fixed Stripe payment block not displaying correctly when the same form is embedded multiple times on a page.
-* Fix: Fixed entry Previous/Next navigation returning entries from other forms instead of the current form.
-* Fix: Resolved intermittent form submission failures on sites with page caching plugins due to expired security tokens.
 The full changelog is available [here](https://sureforms.com/whats-new/).
 
 ## Upgrade Notice ##
