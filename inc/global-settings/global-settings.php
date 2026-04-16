@@ -417,6 +417,7 @@ class Global_Settings {
 			'srfm_email_summary_settings_options',
 			'srfm_security_settings_options',
 			'srfm_default_dynamic_block_option',
+			'srfm_mcp_settings_options',
 		];
 		$options_to_get  = array_values( array_intersect( array_map( 'sanitize_text_field', $options_to_get ), $allowed_options ) );
 

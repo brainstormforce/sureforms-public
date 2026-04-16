@@ -77,6 +77,7 @@ class Admin {
 		add_action( 'admin_menu', [ $this, 'add_suremail_page' ] );
 		if ( ! Helper::has_pro() ) {
 			add_action( 'admin_menu', [ $this, 'add_quiz_page' ] );
+			add_action( 'admin_menu', [ $this, 'add_survey_reports_page' ] );
 			add_action( 'admin_menu', [ $this, 'add_upgrade_to_pro' ] );
 			add_action( 'admin_footer', [ $this, 'add_upgrade_to_pro_target_attr' ] );
 		}
@@ -442,6 +443,39 @@ class Admin {
 	public function render_quiz_empty_state() {
 		?>
 		<div id="srfm-quiz-entries-root" class="srfm-admin-wrapper"></div>
+		<?php
+	}
+
+	/**
+	 * Add Survey Reports promotional submenu page for free users.
+	 *
+	 * @return void
+	 * @since 2.8.0
+	 */
+	public function add_survey_reports_page() {
+		add_submenu_page(
+			'sureforms_menu',
+			__( 'Survey Reports', 'sureforms' ),
+			__( 'Survey Reports', 'sureforms' ) .
+				' <span style="color:#4ADE80;font-size:9px;font-weight:600;">' .
+				esc_html__( 'New', 'sureforms' ) .
+				'</span>',
+			self::$sureforms_page_default_capability,
+			'sureforms_survey_reports',
+			[ $this, 'render_survey_empty_state' ],
+			6
+		);
+	}
+
+	/**
+	 * Survey empty state page callback.
+	 *
+	 * @return void
+	 * @since 2.8.0
+	 */
+	public function render_survey_empty_state() {
+		?>
+		<div id="srfm-survey-empty-state-root" class="srfm-admin-wrapper"></div>
 		<?php
 	}
 
@@ -919,6 +953,7 @@ class Admin {
 		$is_screen_sureforms_entries       = Helper::validate_request_context( SRFM_ENTRIES, 'page' );
 		$is_screen_sureforms_learn         = Helper::validate_request_context( 'sureforms_learn', 'page' );
 		$is_screen_quiz_empty_state        = Helper::validate_request_context( 'sureforms_quiz_entries', 'page' );
+		$is_screen_survey_empty_state      = Helper::validate_request_context( 'sureforms_survey_reports', 'page' );
 		$is_post_type_sureforms_form       = SRFM_FORMS_POST_TYPE === $current_screen->post_type;
 
 		/**
@@ -932,16 +967,21 @@ class Admin {
 			];
 		}
 
-		// Add the Quizzes nav item to the header when pro is not active.
+		// Add the Quizzes and Survey Reports nav items when pro is not active.
 		if ( ! Helper::has_pro() ) {
 			$localization_data['additional_header_nav_items'][] = [
 				'slug' => 'sureforms_quiz_entries',
 				'text' => __( 'Quizzes', 'sureforms' ),
 				'link' => admin_url( 'admin.php?page=sureforms_quiz_entries' ),
 			];
+			$localization_data['additional_header_nav_items'][] = [
+				'slug' => 'sureforms_survey_reports',
+				'text' => __( 'Survey Reports', 'sureforms' ),
+				'link' => admin_url( 'admin.php?page=sureforms_survey_reports' ),
+			];
 		}
 
-		$is_sureforms_screen = $is_screen_sureforms_menu || $is_post_type_sureforms_form || $is_screen_add_new_form || $is_screen_sureforms_forms || $is_screen_sureforms_form_settings || $is_screen_sureforms_entries || $is_screen_sureforms_payments || $is_screen_sureforms_learn || $is_screen_quiz_empty_state;
+		$is_sureforms_screen = $is_screen_sureforms_menu || $is_post_type_sureforms_form || $is_screen_add_new_form || $is_screen_sureforms_forms || $is_screen_sureforms_form_settings || $is_screen_sureforms_entries || $is_screen_sureforms_payments || $is_screen_sureforms_learn || $is_screen_quiz_empty_state || $is_screen_survey_empty_state;
 
 		/**
 		 * Filter to allow extending the SureForms dashboard screen check.
@@ -1113,6 +1153,24 @@ class Admin {
 			wp_enqueue_style( SRFM_SLUG . '-quiz-empty-state', SRFM_URL . 'assets/build/' . $asset_handle . '.css', [], SRFM_VER, 'all' );
 
 			$script_translations_handlers[] = SRFM_SLUG . '-quiz-empty-state';
+		}
+
+		// Enqueue scripts for the Survey Reports empty state page (free users only).
+		if ( $is_screen_survey_empty_state && ! Helper::has_pro() ) {
+			$asset_handle = 'surveyEmptyState';
+
+			$script_asset_path = SRFM_DIR . 'assets/build/' . $asset_handle . '.asset.php';
+			$script_info       = file_exists( $script_asset_path )
+				? include $script_asset_path
+				: [
+					'dependencies' => [],
+					'version'      => SRFM_VER,
+				];
+
+			wp_enqueue_script( SRFM_SLUG . '-survey-empty-state', SRFM_URL . 'assets/build/' . $asset_handle . '.js', $script_info['dependencies'], SRFM_VER, true );
+			wp_enqueue_style( SRFM_SLUG . '-survey-empty-state', SRFM_URL . 'assets/build/' . $asset_handle . '.css', [], SRFM_VER, 'all' );
+
+			$script_translations_handlers[] = SRFM_SLUG . '-survey-empty-state';
 		}
 
 		// Admin Submenu Styles.
