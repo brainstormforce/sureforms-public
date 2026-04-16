@@ -424,6 +424,9 @@ class Learn {
 		// Save to user meta.
 		update_user_meta( $user_id, 'srfm_learn_progress', $saved_progress );
 
+		// Flag for analytics — next send cycle will include updated learn snapshot.
+		set_transient( 'srfm_learn_progress_changed', 1, 0 );
+
 		return rest_ensure_response(
 			[
 				'success'   => true,

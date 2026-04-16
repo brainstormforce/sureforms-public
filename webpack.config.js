@@ -57,6 +57,7 @@ module.exports = {
 		dashboard: path.resolve( __dirname, 'src/admin/dashboard/index.js' ),
 		suremail: path.resolve( __dirname, 'src/admin/SureMail.js' ),
 		quizEmptyState: path.resolve( __dirname, 'src/admin/QuizEmptyState.js' ),
+		surveyEmptyState: path.resolve( __dirname, 'src/admin/SurveyEmptyState.js' ),
 		blocks: path.resolve( __dirname, 'src/blocks/blocks.js' ),
 		entries: path.resolve( __dirname, 'src/admin/entries/index.js' ),
 		payments: path.resolve( __dirname, 'src/admin/payment/index.js' ),

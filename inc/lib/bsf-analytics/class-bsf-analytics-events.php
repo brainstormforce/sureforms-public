@@ -58,42 +58,79 @@ if ( ! class_exists( 'BSF_Analytics_Events' ) ) {
 		}
 
 		/**
-		 * Track a one-time event. Skips if already tracked or pending.
+		 * Track an event. By default, skips if already tracked or pending (one-time semantics).
+		 * When $force is true, the event is treated as retrackable — bypasses the post-send
+		 * dedup check and overwrites any pending entry with the same name. Useful for
+		 * recurring events like `plugin_updated` where the latest value should always win.
 		 * Only stores temporary data — cleaned up after analytics send.
 		 *
 		 * @param string               $event_name  Event identifier.
 		 * @param string               $event_value Primary value (version, form ID, mode, etc.).
-		 * @param array<string, mixed> $properties  Additional context as key-value pairs.
+		 * @param array<string, mixed> $properties  Additional context as key-value pairs. Values are stored as-is — sanitization is the caller's responsibility.
+		 * @param bool                 $force       When true, bypass pushed dedup and overwrite pending entry. Default false.
 		 * @since 1.1.21
+		 * @since 1.1.25 Added the $force parameter.
 		 * @return void
 		 */
-		public function track( $event_name, $event_value = '', $properties = array() ) {
+		public function track( $event_name, $event_value = '', $properties = array(), $force = false ) {
 			// Sanitize inputs once upfront — ensures dedup comparisons match stored values.
 			$event_name  = sanitize_text_field( $event_name );
 			$event_value = sanitize_text_field( (string) $event_value );
 			$properties  = is_array( $properties ) ? $properties : array();
+			$force       = (bool) $force;
 
 			// Check dedup flag — already sent in a previous cycle.
-			$pushed = $this->get_option( 'usage_events_pushed', array() );
-			$pushed = is_array( $pushed ) ? $pushed : array();
-			if ( in_array( $event_name, $pushed, true ) ) {
-				return;
+			// Force bypasses this check; pushed list will be refreshed on next flush_pending().
+			if ( ! $force ) {
+				$pushed = $this->get_option( 'usage_events_pushed', array() );
+				$pushed = is_array( $pushed ) ? $pushed : array();
+				if ( in_array( $event_name, $pushed, true ) ) {
+					return;
+				}
 			}
 
 			// Check if already queued in current cycle.
 			$pending = $this->get_option( 'usage_events_pending', array() );
 			$pending = is_array( $pending ) ? $pending : array();
-			if ( in_array( $event_name, array_column( $pending, 'event_name' ), true ) ) {
-				return;
-			}
 
-			// Add to pending queue.
-			$pending[] = array(
+			$new_event = array(
 				'event_name'  => $event_name,
 				'event_value' => $event_value,
 				'properties'  => $properties,
 				'date'        => current_time( 'mysql' ),
 			);
+
+			if ( ! $force ) {
+				// Default path: cheap membership check — no need to locate the key.
+				if ( in_array( $event_name, array_column( $pending, 'event_name' ), true ) ) {
+					return;
+				}
+				$pending[] = $new_event;
+			} else {
+				// Force path: locate any existing entry by actual key to overwrite safely.
+				$existing_key = null;
+				foreach ( $pending as $key => $entry ) {
+					if ( isset( $entry['event_name'] ) && $entry['event_name'] === $event_name ) {
+						$existing_key = $key;
+						break;
+					}
+				}
+
+				if ( null !== $existing_key ) {
+					// Skip the write when nothing material changed (only `date` would differ).
+					$existing = $pending[ $existing_key ];
+					if ( array_key_exists( 'event_value', $existing )
+						&& array_key_exists( 'properties', $existing )
+						&& $existing['event_value'] === $new_event['event_value']
+						&& $existing['properties'] === $new_event['properties'] ) {
+						return;
+					}
+					$pending[ $existing_key ] = $new_event;
+				} else {
+					$pending[] = $new_event;
+				}
+			}
+
 			$this->update_option( 'usage_events_pending', $pending );
 		}
 
