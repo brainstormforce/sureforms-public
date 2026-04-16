@@ -485,7 +485,6 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 * Fix: Fixed crash when saving a form containing the Register block.
 * Fix: Fixed inability to deselect a preselected option in single-selection controls (radio, dropdown) within the editor.
 * Fix: Fixed Quill rich text editor toolbar strings not being translatable.
-* Fix: Fixed unsanitized post meta during form import.
 = 2.7.1 - 9th April 2026 =
 * New: Added a customizable Field Slug panel to all form blocks.
 * New: Added Payment Description field to the Stripe payment block with smart tag support.
