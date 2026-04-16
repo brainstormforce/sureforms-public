@@ -1,3 +1,9 @@
+v1.1.25 - 13-April-2026
+- New: Added optional `$force` parameter (4th arg) to `track()` — when true, bypasses the post-send dedup and overwrites any pending entry with the latest value. Default behavior (skip on duplicate) is unchanged. Useful for recurring events like `plugin_updated`.
+
+v1.1.24 - 8-April-2026
+- Improvement: Updated admin notice copy — concise heading, description, and button labels.
+
 v1.1.23 - 7-April-2026
 - Improvement: Improved consent notice copy — leads with benefit, clearer CTAs.
 - Improvement: Standardized usage doc link with dynamic product-specific UTM parameters.
