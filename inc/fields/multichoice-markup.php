@@ -211,7 +211,7 @@ class Multichoice_Markup extends Base {
 	 * @return void
 	 */
 	protected function resolve_dynamic_default( $attributes ) {
-		$dynamic_default = $attributes['dynamicDefaultValue'] ?? '';
+		$dynamic_default = is_string( $attributes['dynamicDefaultValue'] ?? '' ) ? $attributes['dynamicDefaultValue'] : '';
 		if ( empty( $dynamic_default ) || ! $this->single_selection ) {
 			return;
 		}
