@@ -61,7 +61,7 @@
 		"grunt-wp-readme-to-markdown": "^2.0.1",
 		"install": "^0.13.0",
 		"node-sass": "^7.0",
-		"sass-loader": "^13.3.2",
+		"sass-loader": "^16.0.7",
 		"style-loader": "^3.3.3",
 		"webpack": "^5.89.0"
 	},
