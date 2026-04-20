@@ -60,7 +60,7 @@
 		"grunt-wp-i18n": "^1.0.3",
 		"grunt-wp-readme-to-markdown": "^2.0.1",
 		"install": "^0.13.0",
-		"node-sass": "^7.0",
+		"node-sass": "^9.0",
 		"sass-loader": "^13.3.2",
 		"style-loader": "^3.3.3",
 		"webpack": "^5.89.0"
