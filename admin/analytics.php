@@ -44,8 +44,8 @@ class Analytics {
 			require_once SRFM_DIR . 'inc/lib/bsf-analytics/class-bsf-analytics-loader.php';
 		}
 
-		if ( ! class_exists( 'Astra_Notices' ) ) {
-			require_once SRFM_DIR . 'inc/lib/astra-notices/class-astra-notices.php';
+		if ( ! class_exists( 'BSF_Admin_Notices' ) ) {
+			require_once SRFM_DIR . 'inc/lib/astra-notices/class-bsf-admin-notices.php';
 		}
 
 		add_filter(
