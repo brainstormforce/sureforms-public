@@ -20,8 +20,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
-if ( ! class_exists( 'Astra_Notices' ) ) {
-	require_once SRFM_DIR . 'inc/lib/astra-notices/class-astra-notices.php';
+if ( ! class_exists( 'BSF_Admin_Notices' ) ) {
+	require_once SRFM_DIR . 'inc/lib/astra-notices/class-bsf-admin-notices.php';
 }
 /**
  * Admin handler class.
