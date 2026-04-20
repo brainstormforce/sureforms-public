@@ -209,13 +209,17 @@ function GeneralSettings( props ) {
 			const isAutosave = editorSelect.isAutosavingPost?.();
 
 			// Fire only on the leading edge of a manual (non-autosave) save.
+			// Guard BEFORE dispatching — updateBlockAttributes is synchronous
+			// and re-triggers subscribe listeners, causing infinite recursion
+			// if wasSavingPost is still false.
 			if ( isSaving && ! isAutosave && ! wasSavingPost ) {
+				wasSavingPost = true;
 				const { getBlocks } = wp.data.select( 'core/block-editor' );
 				const { updateBlockAttributes } = wp.data.dispatch( 'core/block-editor' );
 				prepareBlockSlugs( updateBlockAttributes, getBlocks() );
+			} else {
+				wasSavingPost = !! isSaving;
 			}
-
-			wasSavingPost = !! isSaving;
 		} );
 
 		return unsubscribePreSave;

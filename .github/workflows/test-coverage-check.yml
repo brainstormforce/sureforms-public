@@ -15,7 +15,7 @@ concurrency:
 
 jobs:
     check-test-coverage:
-        if: ${{ !contains(github.event.pull_request.labels.*.name, 'skip-test-check') }}
+        if: ${{ !contains(github.event.pull_request.labels.*.name, 'skip-test-check') && !contains(github.event.pull_request.labels.*.name, 'dependencies') }}
         runs-on: ubuntu-latest
 
         steps:

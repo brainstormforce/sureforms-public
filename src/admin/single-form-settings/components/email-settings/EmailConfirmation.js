@@ -397,7 +397,7 @@ const EmailConfirmation = ( props ) => {
 	// This allows us to modify the email notification options.
 	let filterOptions = singleFormEmailOptionsWithFilter(
 		emailNotificationOptions,
-		props
+		{ ...props, formData, setFormData }
 	);
 
 	// if filterOptions is empty, return null to avoid rendering

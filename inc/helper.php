@@ -317,6 +317,43 @@ class Helper {
 	}
 
 	/**
+	 * Sanitize a value based on its PHP type.
+	 *
+	 * Recursively sanitizes arrays while preserving native PHP types (bool, int, float).
+	 * Use this for complex object metas with many properties where per-field callbacks are impractical.
+	 *
+	 * @param mixed $value The value to sanitize.
+	 * @param int   $depth Current recursion depth. Values nested beyond 10 levels are discarded.
+	 * @since 2.8.0
+	 * @return mixed The sanitized value.
+	 */
+	public static function sanitize_by_type( $value, int $depth = 0 ) {
+		if ( $depth > 10 ) {
+			return '';
+		}
+		if ( is_array( $value ) ) {
+			$sanitized = [];
+			foreach ( $value as $key => $val ) {
+				$sanitized[ sanitize_text_field( (string) $key ) ] = self::sanitize_by_type( $val, $depth + 1 );
+			}
+			return $sanitized;
+		}
+		if ( is_bool( $value ) ) {
+			return $value;
+		}
+		if ( is_int( $value ) ) {
+			return intval( $value );
+		}
+		if ( is_float( $value ) ) {
+			return floatval( $value );
+		}
+		if ( is_string( $value ) ) {
+			return sanitize_text_field( $value );
+		}
+		return '';
+	}
+
+	/**
 	 * This function performs array_map for multi dimensional array
 	 *
 	 * @param string       $function function name to be applied on each element on array.
@@ -2310,6 +2347,60 @@ class Helper {
 
 		// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
 		return base64_encode( $json );
+	}
+
+	/**
+	 * Get the visitor's IP address.
+	 *
+	 * Centralised IP detection that checks common proxy headers before
+	 * falling back to REMOTE_ADDR. Handles comma-separated IPs that
+	 * load-balancers / CDNs may append (takes the first, i.e. client IP).
+	 *
+	 * NOTE: Existing callers (Smart_Tags::get_the_user_ip, Front_End::get_user_ip,
+	 * inline reads in Form_Submit) can be migrated to this method in the future
+	 * to avoid duplicating the same header-chain logic.
+	 *
+	 * @since 2.8.0
+	 * @return string Validated IP address, or empty string if unavailable.
+	 */
+	public static function get_visitor_ip() {
+		$headers = [
+			'HTTP_CLIENT_IP',
+			'HTTP_X_FORWARDED_FOR',
+			'HTTP_X_REAL_IP',
+			'HTTP_X_FORWARDED',
+			'HTTP_FORWARDED_FOR',
+			'HTTP_FORWARDED',
+			'REMOTE_ADDR',
+		];
+
+		foreach ( $headers as $header ) {
+			if ( empty( $_SERVER[ $header ] ) ) {
+				continue;
+			}
+
+			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Validated by FILTER_VALIDATE_IP below.
+			$raw = wp_unslash( $_SERVER[ $header ] );
+
+			// Proxies may send comma-separated IPs; the first is the original client.
+			if ( false !== strpos( $raw, ',' ) ) {
+				$raw = trim( explode( ',', $raw )[0] );
+			}
+
+			$ip = filter_var( $raw, FILTER_VALIDATE_IP );
+			if ( false !== $ip ) {
+				/**
+				 * Filters the detected visitor IP address.
+				 *
+				 * @since 2.8.0
+				 *
+				 * @param string $ip Validated IP address.
+				 */
+				return apply_filters( 'srfm_visitor_ip', $ip );
+			}
+		}
+
+		return '';
 	}
 
 }

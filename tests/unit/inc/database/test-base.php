@@ -105,6 +105,19 @@ class Test_Database_Base extends TestCase {
 	}
 
 	// ---------------------------------------------------------------
+	// use_insert
+	// ---------------------------------------------------------------
+
+	/**
+	 * Test use_insert returns false when required data is missing.
+	 */
+	public function test_use_insert() {
+		// Inserting with an empty array should fail gracefully.
+		$result = $this->base->use_insert( [] );
+		$this->assertFalse( $result );
+	}
+
+	// ---------------------------------------------------------------
 	// get_total_count
 	// ---------------------------------------------------------------
 

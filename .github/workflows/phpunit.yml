@@ -17,6 +17,7 @@ concurrency:
 jobs:
   phpunit:
     name: PHPUnit (PHP ${{ matrix.php }} with WordPress ${{ matrix.wordpress }})
+    if: ${{ !contains(github.event.pull_request.labels.*.name, 'dependencies') }}
     runs-on: ubuntu-22.04
 
     services:
