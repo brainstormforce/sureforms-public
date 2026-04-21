@@ -145,29 +145,40 @@ class Create_New_Form {
 				'meta_input'   => $post_metas,
 				'post_status'  => 'draft',
 				'post_type'    => 'sureforms_form',
-			]
+			],
+			true
 		);
 
-		if ( ! empty( $post_id ) ) {
-
-			/**
-			 * Update _srfm_is_ai_generated meta to true.
-			 * If the request is coming here then the form is AI generated.
-			 */
-			update_post_meta( $post_id, '_srfm_is_ai_generated', true );
-
+		if ( is_wp_error( $post_id ) ) {
 			return new WP_REST_Response(
 				[
-					'message' => __( 'SureForms Form created successfully.', 'sureforms' ),
-					'id'      => $post_id,
-				]
+					'message' => $post_id->get_error_message(),
+				],
+				500
 			);
 		}
-			wp_send_json_error(
+
+		if ( ! is_int( $post_id ) || $post_id <= 0 ) {
+			return new WP_REST_Response(
 				[
-					'message' => __( 'Error creating SureForms Form, ', 'sureforms' ),
-				]
+					'message' => __( 'Error creating SureForms Form.', 'sureforms' ),
+				],
+				500
 			);
+		}
+
+		/**
+		 * Update _srfm_is_ai_generated meta to true.
+		 * If the request is coming here then the form is AI generated.
+		 */
+		update_post_meta( $post_id, '_srfm_is_ai_generated', true );
+
+		return new WP_REST_Response(
+			[
+				'message' => __( 'SureForms Form created successfully.', 'sureforms' ),
+				'id'      => $post_id,
+			]
+		);
 	}
 
 }

@@ -67,15 +67,11 @@ class AI_Helper {
 		// Get the response body.
 		$response_body = wp_remote_retrieve_body( $response );
 
-		// If the response body is not a JSON, then abandon ship.
-		if ( empty( $response_body ) || ! json_decode( $response_body ) ) {
-			return [
-				'error' => __( 'The SureForms AI Middleware encountered an error.', 'sureforms' ),
-			];
-		}
-
-		// Return the response body.
-		return json_decode( $response_body, true );
+		return self::decode_json_response(
+			$response_body,
+			wp_remote_retrieve_response_code( $response ),
+			'generate/form'
+		);
 	}
 
 	/**
@@ -142,15 +138,75 @@ class AI_Helper {
 		// Get the response body.
 		$response_body = wp_remote_retrieve_body( $response );
 
-		// If the response body is not a JSON, then abandon ship.
-		if ( empty( $response_body ) || ! json_decode( $response_body ) ) {
-			return [
-				'error' => __( 'The SureForms API server encountered an error.', 'sureforms' ),
-			];
+		return self::decode_json_response(
+			$response_body,
+			wp_remote_retrieve_response_code( $response ),
+			'usage',
+			__( 'The SureForms API server encountered an error.', 'sureforms' )
+		);
+	}
+
+	/**
+	 * Decode the response body from the SureForms AI Middleware, returning
+	 * a structured error payload when the body is empty or invalid JSON.
+	 *
+	 * @param string      $response_body  Raw HTTP response body.
+	 * @param int|string  $status_code    HTTP status code, used for debug logging.
+	 * @param string      $endpoint       Short endpoint label, used for debug logging.
+	 * @param string|null $error_fallback Translated fallback message on decode failure.
+	 * @since x.x.x
+	 * @return array<mixed>
+	 */
+	protected static function decode_json_response( $response_body, $status_code, $endpoint, $error_fallback = null ) {
+		if ( null === $error_fallback ) {
+			$error_fallback = __( 'The SureForms AI Middleware encountered an error.', 'sureforms' );
 		}
 
-		// Return the response body.
-		return json_decode( $response_body, true );
+		if ( '' === $response_body || null === $response_body ) {
+			self::log_ai_response_failure( $endpoint, $status_code, 'empty_body', '' );
+			return [ 'error' => $error_fallback ];
+		}
+
+		$decoded = json_decode( $response_body, true );
+
+		if ( JSON_ERROR_NONE !== json_last_error() ) {
+			self::log_ai_response_failure( $endpoint, $status_code, 'invalid_json', $response_body );
+			return [ 'error' => $error_fallback ];
+		}
+
+		if ( ! is_array( $decoded ) ) {
+			self::log_ai_response_failure( $endpoint, $status_code, 'non_array_json', $response_body );
+			return [ 'error' => $error_fallback ];
+		}
+
+		return $decoded;
+	}
+
+	/**
+	 * Log an AI middleware response failure when WP_DEBUG is enabled.
+	 *
+	 * @param string     $endpoint    Short endpoint label.
+	 * @param int|string $status_code HTTP status code.
+	 * @param string     $reason      Failure reason identifier.
+	 * @param string     $body        Raw response body (will be truncated).
+	 * @since x.x.x
+	 * @return void
+	 */
+	protected static function log_ai_response_failure( $endpoint, $status_code, $reason, $body ) {
+		if ( ! defined( 'WP_DEBUG' ) || ! WP_DEBUG ) {
+			return;
+		}
+
+		$snippet = is_string( $body ) ? substr( $body, 0, 500 ) : '';
+		error_log( // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Debug-only logging behind WP_DEBUG.
+			sprintf(
+				'[SureForms AI] %s %s status=%s body=%s',
+				$endpoint,
+				$reason,
+				(string) $status_code,
+				$snippet
+			)
+		);
 	}
 
 	/**

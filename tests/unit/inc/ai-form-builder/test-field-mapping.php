@@ -15,7 +15,8 @@ class Test_Field_Mapping extends TestCase {
 		$request->set_param( 'form_data', [] );
 
 		$result = Field_Mapping::generate_gutenberg_fields_from_questions( $request );
-		$this->assertEquals( '', $result );
+		$this->assertInstanceOf( WP_Error::class, $result );
+		$this->assertSame( 'srfm_ai_mapping_missing_form_data', $result->get_error_code() );
 	}
 
 	/**

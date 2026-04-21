@@ -10,6 +10,7 @@ namespace SRFM\Inc\AI_Form_Builder;
 
 use SRFM\Inc\Helper;
 use SRFM\Inc\Traits\Get_Instance;
+use WP_Error;
 
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
@@ -26,7 +27,7 @@ class Field_Mapping {
 	 * Generate Gutenberg Fields from AI data.
 	 *
 	 * @param \WP_REST_Request $request Full details about the request.
-	 * @return string
+	 * @return string|WP_Error
 	 */
 	public static function generate_gutenberg_fields_from_questions( $request ) {
 
@@ -35,24 +36,39 @@ class Field_Mapping {
 
 		// check parama is empty or not and is an array and consist form_data key.
 		if ( empty( $params ) || ! is_array( $params ) || ! isset( $params['form_data'] ) || 0 === count( $params['form_data'] ) ) {
-			return '';
+			return new WP_Error(
+				'srfm_ai_mapping_missing_form_data',
+				__( 'The AI form data is missing. Please try again.', 'sureforms' ),
+				[ 'status' => 400 ]
+			);
 		}
 
 		// Get questions from form data.
 		$form_data = $params['form_data'];
 		if ( empty( $form_data ) || ! is_array( $form_data ) ) {
-			return '';
+			return new WP_Error(
+				'srfm_ai_mapping_invalid_form_data',
+				__( 'The AI form data is not in the expected format.', 'sureforms' ),
+				[ 'status' => 400 ]
+			);
 		}
 
-		$form = $form_data['form'];
+		$form = isset( $form_data['form'] ) ? $form_data['form'] : null;
 		if ( empty( $form ) || ! is_array( $form ) ) {
-			return '';
+			return new WP_Error(
+				'srfm_ai_mapping_missing_form',
+				__( 'The AI response did not include a form. Please try again.', 'sureforms' ),
+				[ 'status' => 400 ]
+			);
 		}
 
-		$form_fields = $form['formFields'];
-		// if questions is empty then return empty string.
-		if ( empty( $form_fields ) || ! is_array( $form ) ) {
-			return '';
+		$form_fields = isset( $form['formFields'] ) ? $form['formFields'] : null;
+		if ( empty( $form_fields ) || ! is_array( $form_fields ) ) {
+			return new WP_Error(
+				'srfm_ai_mapping_missing_form_fields',
+				__( 'The AI was unable to generate form fields. Please try again.', 'sureforms' ),
+				[ 'status' => 400 ]
+			);
 		}
 
 		// Initialize post content string.
@@ -69,7 +85,11 @@ class Field_Mapping {
 
 			// Check if question is empty then continue to next question.
 			if ( empty( $question ) || ! is_array( $question ) ) {
-				return '';
+				return new WP_Error(
+					'srfm_ai_mapping_invalid_field',
+					__( 'The AI returned a malformed form field. Please try again.', 'sureforms' ),
+					[ 'status' => 400 ]
+				);
 			}
 
 			// Initialize common attributes.

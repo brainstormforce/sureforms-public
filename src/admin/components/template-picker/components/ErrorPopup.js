@@ -2,7 +2,16 @@ import { __ } from '@wordpress/i18n';
 import ICONS from './icons.js';
 import { Button, Container, Label } from '@bsf/force-ui';
 
-const ErrorPopup = () => {
+const ErrorPopup = ( { errorMessage = '', onRetry } ) => {
+	const handleRetry =
+		typeof onRetry === 'function'
+			? onRetry
+			: () => window.location.reload();
+
+	const bodyText =
+		errorMessage ||
+		__( 'Something went wrong. Please try again.', 'sureforms' );
+
 	return (
 		<Container
 			direction="column"
@@ -28,20 +37,11 @@ const ErrorPopup = () => {
 						size="sm"
 						className="text-text-secondary font-normal"
 					>
-						{ __(
-							'Something went wrong. Please try again.',
-							'sureforms'
-						) }
+						{ bodyText }
 					</Label>
 				</Container.Item>
 				<Container.Item className="flex flex-col w-full gap-4 pb-2">
-					<Button
-						size="md"
-						variant="primary"
-						onClick={ () => {
-							window.location.reload();
-						} }
-					>
+					<Button size="md" variant="primary" onClick={ handleRetry }>
 						{ __( 'Try Again', 'sureforms' ) }
 					</Button>
 				</Container.Item>
