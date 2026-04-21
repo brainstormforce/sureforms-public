@@ -53,7 +53,7 @@ class Field_Mapping {
 			);
 		}
 
-		$form = isset( $form_data['form'] ) ? $form_data['form'] : null;
+		$form = $form_data['form'] ?? null;
 		if ( empty( $form ) || ! is_array( $form ) ) {
 			return new WP_Error(
 				'srfm_ai_mapping_missing_form',
@@ -62,7 +62,7 @@ class Field_Mapping {
 			);
 		}
 
-		$form_fields = isset( $form['formFields'] ) ? $form['formFields'] : null;
+		$form_fields = $form['formFields'] ?? null;
 		if ( empty( $form_fields ) || ! is_array( $form_fields ) ) {
 			return new WP_Error(
 				'srfm_ai_mapping_missing_form_fields',
