@@ -23,6 +23,18 @@ class Test_AI_Helper extends TestCase {
 	}
 
 	/**
+	 * is_pro_license_active should return an empty string when the pro
+	 * licensing class is unavailable.
+	 */
+	public function test_is_pro_license_active_returns_empty_when_pro_missing() {
+		if ( class_exists( 'SRFM_Pro\\Admin\\Licensing' ) ) {
+			$this->markTestSkipped( 'SureForms Pro is loaded in this environment; the no-pro branch cannot be exercised.' );
+		}
+
+		$this->assertSame( '', AI_Helper::is_pro_license_active() );
+	}
+
+	/**
 	 * Invoke a protected static method on AI_Helper via reflection.
 	 *
 	 * @param string $method Method name.
