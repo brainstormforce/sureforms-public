@@ -525,18 +525,17 @@ class Form_Submit {
 		 */
 		do_action( 'srfm_before_submission', $form_before_submission_data );
 
-		$name = sanitize_text_field( get_the_title( intval( $id ) ) );
+		$name       = sanitize_text_field( get_the_title( intval( $id ) ) );
+		$send_email = $this->send_email( $id, $submission_data, $form_data );
+		$emails     = [];
+
+		if ( $send_email ) {
+			$emails = $send_email['emails'];
+		}
 
 		// Check if GDPR is enabled and do not store entries is enabled.
 		// If so, send email and do not store entries.
 		if ( $gdpr && $do_not_store_entries ) {
-			// No entry is stored in this path, so {entry_id} resolves to ''.
-			$send_email = $this->send_email( $id, $submission_data, $form_data );
-			$emails     = [];
-
-			if ( $send_email ) {
-				$emails = $send_email['emails'];
-			}
 
 			$form_submit_response = [
 				'success'   => true,
@@ -615,15 +614,8 @@ class Form_Submit {
 
 		$entry_id = Entries::add( $entries_data );
 		if ( $entry_id ) {
-			// Inject entry_id so {entry_id} smart tag resolves in emails, confirmations, redirects, and integrations.
+			// Inject entry_id so {entry_id} smart tag resolves in confirmation message, redirect URL, and downstream integrations.
 			$form_data['entry_id'] = intval( $entry_id );
-
-			$send_email = $this->send_email( $id, $submission_data, $form_data );
-			$emails     = [];
-
-			if ( $send_email ) {
-				$emails = $send_email['emails'];
-			}
 
 			$confirmation_message = Generate_Form_Markup::get_confirmation_markup( $form_data, $submission_data );
 
