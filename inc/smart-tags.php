@@ -125,6 +125,7 @@ class Smart_Tags {
 				'{browser_platform}'       => __( 'Browser Platform', 'sureforms' ),
 				'{embed_post_id}'          => __( 'Embedded Post/Page ID', 'sureforms' ),
 				'{embed_post_title}'       => __( 'Embedded Post/Page Title', 'sureforms' ),
+				'{entry_id}'               => __( 'Entry ID', 'sureforms' ),
 				'{get_input:param}'        => __( 'Populate by GET Param', 'sureforms' ),
 				'{get_cookie:cookie_name}' => __( 'Cookie Value', 'sureforms' ),
 			]
@@ -173,8 +174,7 @@ class Smart_Tags {
 			strpos( $tag, 'get_input:' ) ||
 			strpos( $tag, 'get_cookie:' ) ||
 			0 === strpos( $tag, '{form:' ) ||
-			0 === strpos( $tag, '{form-payment:' ) ||
-			'{entry_id}' === $tag; // Post-submission only — excluded from editor dropdowns intentionally.
+			0 === strpos( $tag, '{form-payment:' );
 
 			/**
 			 * Filter whether a smart tag should be treated as valid for processing.
