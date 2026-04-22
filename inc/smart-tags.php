@@ -338,7 +338,7 @@ class Smart_Tags {
 				}
 				return '';
 
-		case '{current_page_url}':
+			case '{current_page_url}':
 				if ( isset( $form_data['_wp_http_referer'] ) ) {
 					$request_uri = sanitize_text_field( Helper::get_string_value( wp_unslash( $form_data['_wp_http_referer'] ) ) );
 					return esc_url( site_url( $request_uri ) );
