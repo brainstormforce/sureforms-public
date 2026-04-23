@@ -61,6 +61,7 @@ const Edit = ( props ) => {
 		maxValue,
 		showValues,
 		preselectedOptions = [],
+		dynamicDefaultValue,
 	} = attributes;
 
 	const currentFormId = useGetCurrentFormId( clientId );
@@ -619,10 +620,33 @@ const Edit = ( props ) => {
 					label={ __( 'Single Choice Only', 'sureforms' ) }
 					checked={ singleSelection }
 					onChange={ ( checked ) =>
-						setAttributes( { singleSelection: checked } )
+						setAttributes( {
+							singleSelection: checked,
+							...( ! checked && {
+								dynamicDefaultValue: '',
+							} ),
+						} )
 					}
 				/>
 			),
+		},
+		{
+			id: 'dynamicDefaultValue',
+			component: singleSelection ? (
+				<SRFMTextControl
+					label={ __( 'Dynamic Default Value', 'sureforms' ) }
+					className="srfm-with-dropdown"
+					value={ dynamicDefaultValue }
+					withSmartTagDropdown={ true }
+					data={ {
+						value: dynamicDefaultValue,
+						label: 'dynamicDefaultValue',
+					} }
+					onChange={ ( value ) =>
+						setAttributes( { dynamicDefaultValue: value } )
+					}
+				/>
+			) : null,
 		},
 		{
 			id: 'min-max',
