@@ -125,9 +125,9 @@ function StyleSettings( props ) {
 	useEffect( () => {
 		setTimeout( () => {
 			setSubmitBtnCtn(
-				rootRef.querySelector( '.srfm-submit-btn-container' )
+				rootRef?.querySelector( '.srfm-submit-btn-container' )
 			);
-			setSubmitBtn( rootRef.querySelector( '.srfm-submit-richtext' ) );
+			setSubmitBtn( rootRef?.querySelector( '.srfm-submit-richtext' ) );
 			submitButtonInherit();
 		}, 1000 );
 	}, [
