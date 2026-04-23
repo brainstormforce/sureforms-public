@@ -255,6 +255,11 @@ class Payment_Helper {
 				'symbol'         => 'kr',
 				'decimal_places' => 2,
 			],
+			'PLN' => [
+				'name'           => __( 'Polish Złoty', 'sureforms' ),
+				'symbol'         => 'zł',
+				'decimal_places' => 2,
+			],
 			'KRW' => [
 				'name'           => __( 'South Korean Won', 'sureforms' ),
 				'symbol'         => '₩',
