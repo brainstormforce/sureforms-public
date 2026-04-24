@@ -478,7 +478,7 @@ You can collect payments securely through Stripe in the free version. PayPal pay
 You can report the issue through our [Bug Bounty Program](https://brainstormforce.com/bug-bounty-program/). We collaborate with Patchstack to provide opportunities for researchers to report vulnerabilities. The Patchstack team will help validate, triage, and handle any reported security issues.
 
 == Changelog ==
-= 2.8.1 - 24th April 2026 =
+= 2.8.1 - 27th April 2026 =
 * New: Added dynamic default value support for Dropdown and Multi Choice fields.
 * New: Added PLN (Polish Zloty) currency support to payment fields.
 * New: Added {entry_id} smart tag for use in emails, confirmations, PDFs, and integrations.
