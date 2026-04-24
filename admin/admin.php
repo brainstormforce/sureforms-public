@@ -943,6 +943,7 @@ class Admin {
 			'mcp_adapter_status'          => file_exists( WP_PLUGIN_DIR . '/mcp-adapter/mcp-adapter.php' )
 				? ( is_plugin_active( 'mcp-adapter/mcp-adapter.php' ) ? 'active' : 'installed' )
 				: 'not_installed',
+			'mcp_endpoint_url'            => esc_url_raw( rest_url( 'sureforms/v1/mcp' ) ),
 		];
 
 		$is_screen_sureforms_menu          = Helper::validate_request_context( 'sureforms_menu', 'page' );
