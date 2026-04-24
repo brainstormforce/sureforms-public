@@ -4,7 +4,7 @@ Tags: forms, contact form, custom form, payment form, form builder
 Requires at least: 6.4
 Tested up to: 6.9.4
 Requires PHP: 7.4
-Stable tag: 2.8.0
+Stable tag: 2.8.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -478,6 +478,15 @@ You can collect payments securely through Stripe in the free version. PayPal pay
 You can report the issue through our [Bug Bounty Program](https://brainstormforce.com/bug-bounty-program/). We collaborate with Patchstack to provide opportunities for researchers to report vulnerabilities. The Patchstack team will help validate, triage, and handle any reported security issues.
 
 == Changelog ==
+= 2.8.1 - 24th April 2026 =
+* New: Added dynamic default value support for Dropdown and Multi Choice fields.
+* New: Added PLN (Polish Zloty) currency support to payment fields.
+* New: Added {entry_id} smart tag for use in emails, confirmations, PDFs, and integrations.
+* Improvement: Updated Astra Notices to 1.2.1 and BSF Analytics to 1.1.26.
+* Fix: Background color not applied in non-iframe editor mode.
+* Fix: Dynamic options repeater generated incorrect field slugs.
+* Fix: MCP endpoint REST URL ignored sites with a custom REST path prefix.
+* Fix: Phone field country flag changed unexpectedly on browser autofill or input.
 = 2.8.0 - 16th April 2026 =
 * New: Added My Account page allowing users to view and manage their payment history and subscriptions.
 * Improvement: Phone number country detection moved to backend with caching, reducing multiple API calls.
@@ -494,16 +503,6 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 * Fix: Fixed slugs with underscores not mapping correctly during smart tag and integration processing.
 * Fix: Fixed textarea values losing line breaks in {form:field} smart tags.
 * Fix: Fixed {current_page_url} smart tag resolving to REST API URL in email notifications.
-= 2.7.0 - 31st March 2026 =
-* New: Added styling options for Gutenberg SureForms Form Block.
-* New: Added styling options for Bricks Builder SureForms Form Element.
-* New: Added styling options for Elementor SureForms Form Widget.
-* Fix: Fixed "Send as Raw HTML" email option wrapping content in unwanted template markup.
-* Fix: Fixed Multi Choice option labels with extra whitespace failing to resolve numeric values in payment calculations.
-* Fix: Fixed block slug not locking when a smart tag is inserted via the pro plugin.
-* Fix: Fixed dynamic tag URLs being auto-linked with HTML markup when used in redirect query parameters.
-* Fix: Fixed theme text-transform styles cascading into form input fields.
-* Fix: Fixed unique field validation endpoint exposing submitted data to unauthenticated enumeration attacks.
 The full changelog is available [here](https://sureforms.com/whats-new/).
 
 == Upgrade Notice ==

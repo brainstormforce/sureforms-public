@@ -207,7 +207,7 @@ class Multichoice_Markup extends Base {
 	 * Resolve dynamic default value from smart tags and override preselected options.
 	 *
 	 * @param array<mixed> $attributes Block attributes.
-	 * @since x.x.x
+	 * @since 2.8.1
 	 * @return void
 	 */
 	protected function resolve_dynamic_default( $attributes ) {
