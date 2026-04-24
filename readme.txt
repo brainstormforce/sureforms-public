@@ -482,7 +482,6 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 * New: Added support for dynamic default values on Dropdown and Multi-Choice fields.
 * New: Added {entry_id} smart tag for use in email templates, confirmations, and dynamic content.
 * Improvement: Added PLN (Polish Złoty) to the currency dropdown.
-* Improvement: Updated bundled libraries: astra-notices to 1.2.1 and bsf-analytics to 1.1.26.
 * Fix: Fixed background color not applying correctly in non-iframe editor mode.
 * Fix: Fixed dynamic options not loading for Dropdown and Multi-Choice fields placed inside a Repeater.
 * Fix: Fixed MCP endpoint REST URL resolution so it uses the correct site URL.
