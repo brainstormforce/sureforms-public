@@ -479,14 +479,15 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 
 == Changelog ==
 = 2.8.1 - 27th April 2026 =
-* New: Added dynamic default value support for Dropdown and Multi Choice fields.
-* New: Added PLN (Polish Zloty) currency support to payment fields.
-* New: Added {entry_id} smart tag for use in emails, confirmations, PDFs, and integrations.
-* Improvement: Updated Astra Notices to 1.2.1 and BSF Analytics to 1.1.26.
-* Fix: Background color not applied in non-iframe editor mode.
-* Fix: Dynamic options repeater generated incorrect field slugs.
-* Fix: MCP endpoint REST URL ignored sites with a custom REST path prefix.
-* Fix: Phone field country flag changed unexpectedly on browser autofill or input.
+* New: Added support for dynamic default values on Dropdown and Multi-Choice fields.
+* New: Added {entry_id} smart tag for use in email templates, confirmations, and dynamic content.
+* Improvement: Added PLN (Polish Złoty) to the currency dropdown.
+* Improvement: Updated bundled libraries: astra-notices to 1.2.1 and bsf-analytics to 1.1.26.
+* Fix: Fixed background color not applying correctly in non-iframe editor mode.
+* Fix: Fixed dynamic options not loading for Dropdown and Multi-Choice fields placed inside a Repeater.
+* Fix: Fixed MCP endpoint REST URL resolution so it uses the correct site URL.
+* Fix: Fixed Phone field country flag unexpectedly changing during browser autocomplete.
+* Fix: Fixed review/validation issues in Global Settings.
 = 2.8.0 - 16th April 2026 =
 * New: Added My Account page allowing users to view and manage their payment history and subscriptions.
 * Improvement: Phone number country detection moved to backend with caching, reducing multiple API calls.
