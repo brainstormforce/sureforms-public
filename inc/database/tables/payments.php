@@ -117,6 +117,7 @@ class Payments extends Base {
 		'SGD',
 		'HKD',
 		'NOK',
+		'PLN',
 		'TRY',
 		'RUB',
 		'INR',

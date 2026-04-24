@@ -612,6 +612,7 @@ const SureformsFormSpecificSettings = () => {
 								iframeBody={ documentBody }
 								rootHtmlTag={ rootHtmlTag }
 								editorMode={ editorMode }
+								shouldIframe={ shouldIframe }
 							/>
 						) }
 					</InspectorTab>

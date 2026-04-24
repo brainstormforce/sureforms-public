@@ -93,7 +93,7 @@ if ( ! class_exists( 'BSF_Analytics' ) ) {
 		public function set_actions() {
 
 			foreach ( $this->entities as $key => $data ) {
-				add_action( 'astra_notice_before_markup_' . $key . '-optin-notice', array( $this, 'enqueue_assets' ) );
+				add_action( 'bsf_admin_notice_before_markup_' . $key . '-optin-notice', array( $this, 'enqueue_assets' ) );
 				add_action( 'update_option_' . $key . '_usage_optin', array( $this, 'update_analytics_option_callback' ), 10, 3 );
 				add_action( 'add_option_' . $key . '_usage_optin', array( $this, 'add_analytics_option_callback' ), 10, 2 );
 			}
@@ -235,6 +235,9 @@ if ( ! class_exists( 'BSF_Analytics' ) ) {
 		 * @since 1.0.0
 		 */
 		public function option_notice() {
+			if ( ! class_exists( 'BSF_Admin_Notices' ) ) {
+				return;
+			}
 
 			if ( ! current_user_can( 'manage_options' ) ) {
 				return;
@@ -279,7 +282,7 @@ if ( ! class_exists( 'BSF_Analytics' ) ) {
 
 				$language_dir = is_rtl() ? 'rtl' : 'ltr';
 
-				Astra_Notices::add_notice(
+				BSF_Admin_Notices::add_notice(
 					array(
 						'id'                         => $key . '-optin-notice',
 						'type'                       => '',
