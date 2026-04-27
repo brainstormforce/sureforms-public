@@ -92,4 +92,50 @@ class Test_Multichoice_Markup extends TestCase {
 		$this->assertStringContainsString( 'srfm-radio-mode', $markup );
 		$this->assertStringContainsString( 'name="srfm-input-multi-choice-mc002"', $markup );
 	}
+
+	/**
+	 * Test resolve_dynamic_default pre-selects the matching option via GET param.
+	 */
+	public function test_resolve_dynamic_default() {
+		$_SERVER['QUERY_STRING'] = 'service=Blue';
+
+		$attributes = [
+			'required'            => false,
+			'fieldWidth'          => '',
+			'label'               => 'Pick Color',
+			'help'                => '',
+			'block_id'            => 'mc003',
+			'formId'              => '1',
+			'slug'                => 'pick-color',
+			'placeholder'         => '',
+			'defaultValue'        => '',
+			'checked'             => '',
+			'isUnique'            => false,
+			'options'             => [
+				[ 'optionTitle' => 'Red', 'icon' => '', 'image' => '' ],
+				[ 'optionTitle' => 'Blue', 'icon' => '', 'image' => '' ],
+				[ 'optionTitle' => 'Green', 'icon' => '', 'image' => '' ],
+			],
+			'singleSelection'     => true,
+			'choiceWidth'         => '',
+			'verticalLayout'      => false,
+			'optionType'          => 'icon',
+			'errorMsg'            => '',
+			'minValue'            => '',
+			'maxValue'            => '',
+			'preselectedOptions'  => [],
+			'dynamicDefaultValue' => '{get_input:service}',
+		];
+		$mc     = new Multichoice_Markup( $attributes );
+		$markup = $mc->markup();
+
+		// "Blue" is at index 1, its input should be checked.
+		$this->assertMatchesRegularExpression(
+			'/id="srfm-multi-choice-mc003-1"[^>]*checked/',
+			$markup,
+			'Option "Blue" at index 1 should be checked.'
+		);
+
+		unset( $_SERVER['QUERY_STRING'] );
+	}
 }

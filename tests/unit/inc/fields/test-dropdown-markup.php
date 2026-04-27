@@ -62,6 +62,50 @@ class Test_Dropdown_Markup extends TestCase {
 		$this->assertSame( '', $result );
 	}
 
+	/**
+	 * Test resolve_dynamic_default pre-selects the matching option via GET param.
+	 */
+	public function test_resolve_dynamic_default() {
+		$_SERVER['QUERY_STRING'] = 'country=Canada';
+
+		$attributes = [
+			'required'            => false,
+			'fieldWidth'          => '',
+			'label'               => 'Select Country',
+			'help'                => '',
+			'block_id'            => 'dd002',
+			'formId'              => '1',
+			'slug'                => 'select-country',
+			'placeholder'         => 'Select an option',
+			'defaultValue'        => '',
+			'checked'             => '',
+			'isUnique'            => false,
+			'options'             => [
+				[ 'label' => 'USA', 'icon' => '' ],
+				[ 'label' => 'Canada', 'icon' => '' ],
+				[ 'label' => 'UK', 'icon' => '' ],
+			],
+			'multiSelect'         => false,
+			'searchable'          => false,
+			'preselectedOptions'  => [],
+			'errorMsg'            => '',
+			'minValue'            => '',
+			'maxValue'            => '',
+			'dynamicDefaultValue' => '{get_input:country}',
+		];
+		$dd     = new Dropdown_Markup( $attributes );
+		$markup = $dd->markup();
+
+		// "Canada" should have "selected" attribute.
+		$this->assertMatchesRegularExpression(
+			'/<option[^>]*value="Canada"[^>]*selected/',
+			$markup,
+			'Option "Canada" should be selected.'
+		);
+
+		unset( $_SERVER['QUERY_STRING'] );
+	}
+
 	private function call_private_method( $object, $method_name, $parameters = [] ) {
 		$reflection = new \ReflectionClass( get_class( $object ) );
 		$method     = $reflection->getMethod( $method_name );
