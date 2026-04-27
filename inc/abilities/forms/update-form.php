@@ -396,7 +396,7 @@ class Update_Form extends Abstract_Ability {
 				return $post_content;
 			}
 
-			if ( ! empty( $post_content ) && is_string( $post_content ) ) {
+			if ( ! empty( $post_content ) ) {
 				wp_update_post(
 					[
 						'ID'           => $form_id,

@@ -152,7 +152,11 @@ class Field_Mapping {
 					if ( 'dropdown' === $field_type && ! empty( $question['fieldOptions'] ) && is_array( $question['fieldOptions'] ) &&
 					! empty( $question['fieldOptions'][0]['label'] )
 					) {
-						$merged_attributes['options'] = $question['fieldOptions'];
+						// Defense-in-depth: although the upstream middleware is
+						// trusted and these endpoints are capability-gated,
+						// strings flow into Gutenberg block markup so we run
+						// the user-facing fields through sanitize_text_field.
+						$merged_attributes['options'] = self::sanitize_field_options( $question['fieldOptions'] );
 
 						if ( isset( $question['showValues'] ) ) {
 							$merged_attributes['showValues'] = filter_var( $question['showValues'], FILTER_VALIDATE_BOOLEAN );
@@ -179,7 +183,9 @@ class Field_Mapping {
 
 						// Set options if they are valid.
 						if ( ! empty( $question['fieldOptions'][0]['optionTitle'] ) ) {
-							$merged_attributes['options'] = $question['fieldOptions'];
+							// Same defense-in-depth sanitization as the
+							// dropdown branch above.
+							$merged_attributes['options'] = self::sanitize_field_options( $question['fieldOptions'] );
 						}
 
 						// Determine vertical layout based on icons.
@@ -344,6 +350,38 @@ class Field_Mapping {
 		}
 
 		return apply_filters( 'srfm_ai_form_builder_post_content', $post_content, $is_conversational, $form_type );
+	}
+
+	/**
+	 * Sanitize the user-facing strings on each entry of the AI-generated
+	 * fieldOptions array before they are merged into block attributes.
+	 *
+	 * Defense-in-depth: the middleware is trusted today, but these strings
+	 * are serialized into Gutenberg block markup. Running each string field
+	 * through sanitize_text_field() prevents stored-content injection if
+	 * the upstream ever returns reflected user content. Non-string fields
+	 * (icon class names, booleans) are left untouched.
+	 *
+	 * @param array<int, array<string, mixed>> $options Raw fieldOptions array.
+	 * @since x.x.x
+	 * @return array<int, array<string, mixed>> Sanitized options.
+	 */
+	private static function sanitize_field_options( $options ) {
+		if ( ! is_array( $options ) ) {
+			return [];
+		}
+		$sanitizable_keys = [ 'label', 'value', 'optionTitle' ];
+		foreach ( $options as $key => $option ) {
+			if ( ! is_array( $option ) ) {
+				continue;
+			}
+			foreach ( $sanitizable_keys as $field ) {
+				if ( isset( $option[ $field ] ) && is_string( $option[ $field ] ) ) {
+					$options[ $key ][ $field ] = sanitize_text_field( $option[ $field ] );
+				}
+			}
+		}
+		return $options;
 	}
 
 }

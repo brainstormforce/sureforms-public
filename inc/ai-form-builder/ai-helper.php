@@ -259,7 +259,10 @@ class AI_Helper {
 	}
 
 	/**
-	 * Log an AI middleware response failure when WP_DEBUG is enabled.
+	 * Log an AI middleware response failure when WP_DEBUG and WP_DEBUG_LOG are both enabled.
+	 *
+	 * Newlines are collapsed to prevent log injection, and known sensitive JSON keys
+	 * (email, token, license_key, prompt, query) are redacted before logging.
 	 *
 	 * @param string     $endpoint    Short endpoint label.
 	 * @param int|string $status_code HTTP status code.
@@ -273,8 +276,23 @@ class AI_Helper {
 			return;
 		}
 
+		// Only write to the debug log file when WP_DEBUG_LOG is also enabled.
+		// Without this guard, error_log() falls back to the host's PHP error log.
+		if ( ! defined( 'WP_DEBUG_LOG' ) || ! WP_DEBUG_LOG ) {
+			return;
+		}
+
 		$snippet = is_string( $body ) ? substr( $body, 0, 500 ) : '';
-		error_log( // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Debug-only logging behind WP_DEBUG.
+		// Collapse all whitespace (including CR/LF) to a single space to prevent log injection.
+		$snippet = (string) preg_replace( '/\s+/', ' ', $snippet );
+		// Redact known sensitive keys if echoed in the body.
+		$snippet = (string) preg_replace(
+			'/("(?:email|token|license_key|prompt|query)"\s*:\s*")[^"]*"/i',
+			'$1[redacted]"',
+			$snippet
+		);
+
+		error_log( // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Debug-only logging behind WP_DEBUG && WP_DEBUG_LOG.
 			sprintf(
 				'[SureForms AI] %s %s status=%s body=%s',
 				$endpoint,
@@ -283,6 +301,63 @@ class AI_Helper {
 				$snippet
 			)
 		);
+	}
+
+	/**
+	 * Sanitize an upstream error message before returning it to the client.
+	 *
+	 * The OpenAI / SureForms middleware sometimes echoes infrastructure details
+	 * (URLs, request IDs, model names, organization/user IDs, raw API keys)
+	 * inside error messages. The endpoints surfacing these messages are
+	 * capability-gated, but contributors-and-up shouldn't see infra leaks.
+	 *
+	 * Pass-through behaviour is preserved when the message has no sensitive
+	 * tokens — only matched patterns are stripped. Returns an empty string
+	 * if nothing useful remains, so callers can fall back to a canonical
+	 * translated message.
+	 *
+	 * @param mixed      $raw         Raw upstream message; non-strings are coerced.
+	 * @param string     $endpoint    Optional endpoint label; when set, the raw input
+	 *                                is passed through {@see self::log_ai_response_failure()}
+	 *                                so the unredacted form is preserved server-side
+	 *                                (subject to the usual WP_DEBUG / WP_DEBUG_LOG gates).
+	 * @param int|string $status_code Optional HTTP status, forwarded to the logger.
+	 * @since x.x.x
+	 * @return string Sanitized message safe to return to the client.
+	 */
+	public static function sanitize_ai_error_message( $raw, $endpoint = '', $status_code = '' ) {
+		if ( ! is_string( $raw ) ) {
+			return '';
+		}
+		$raw = trim( $raw );
+		if ( '' === $raw ) {
+			return '';
+		}
+
+		if ( '' !== $endpoint ) {
+			self::log_ai_response_failure( $endpoint, $status_code, 'upstream_error', $raw );
+		}
+
+		$patterns = [
+			// URLs (http / https / protocol-relative).
+			'#https?://\S+#i',
+			'#(?<=\s)//\S+#i',
+			// OpenAI-shape opaque IDs: org-/user-/key-/sess-/req-/file-/chatcmpl-/asst-.
+			'/\b(?:org|user|key|sess|req|file|chatcmpl|asst|run|thread)-[A-Za-z0-9_]{6,}/i',
+			// Generic "request id: ..." trailers.
+			'/\brequest[_\s-]?id[:\s]*[A-Za-z0-9-]+/i',
+			// Bearer / API-key shapes.
+			'/\bsk-[A-Za-z0-9_-]{12,}/i',
+			'/\bBearer\s+[A-Za-z0-9._-]+/i',
+			// Model identifiers that would otherwise leak the underlying provider.
+			'/\bgpt-[A-Za-z0-9.-]+/i',
+		];
+		$cleaned  = (string) preg_replace( $patterns, '', $raw );
+		// Collapse the gaps left by removed tokens.
+		$cleaned = (string) preg_replace( '/\s+/', ' ', $cleaned );
+		$cleaned = trim( $cleaned, " \t\n\r\0\x0B.,;:" );
+
+		return $cleaned;
 	}
 
 	/**
@@ -303,7 +378,7 @@ class AI_Helper {
 		$user_email = get_option( 'srfm_ai_auth_user_email' );
 
 		// if the license is not active then use the user email/site url as the token.
-		return ! empty( $user_email ) && is_array( $user_email ) ? $user_email['user_email'] : 'http://www.republiquedesmangues.fr/';
+		return ! empty( $user_email ) && is_array( $user_email ) ? $user_email['user_email'] : site_url();
 	}
 
 	/**

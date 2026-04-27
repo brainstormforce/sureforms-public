@@ -320,7 +320,7 @@ class Create_Form extends Abstract_Ability {
 			return $post_content;
 		}
 
-		if ( empty( $post_content ) || ! is_string( $post_content ) ) {
+		if ( empty( $post_content ) ) {
 			return new \WP_Error(
 				'srfm_field_mapping_failed',
 				__( 'Failed to generate form fields from the provided data.', 'sureforms' ),

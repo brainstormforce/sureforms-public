@@ -111,18 +111,6 @@ const AiFormBuilder = () => {
 			return;
 		}
 
-		// The AI response was not valid JSON.
-		if ( response?.code === 'invalid_json' ) {
-			handleFormCreationError(
-				response?.message ||
-					__(
-						'The AI returned an invalid response. Please try again.',
-						'sureforms'
-					)
-			);
-			return;
-		}
-
 		setMessage( __( 'Finalizing your form', 'sureforms' ) );
 		setPercentBuild( 75 );
 
@@ -388,23 +376,19 @@ const AiFormBuilder = () => {
 		}
 	};
 
-	// shows while the form is being built
+	// shows while the form is being built. The error popup is intentionally
+	// rendered only at the bottom of the component (outer return) — when
+	// handleFormCreationError fires it sets isBuildingForm=false in the same
+	// batch as setFormCreationErr, so the early-return here never coincides
+	// with a non-empty formCreationErr; an inner ErrorPopup would be dead code.
 	if ( isBuildingForm ) {
 		return (
-			<>
-				<Container className="h-screen bg-background-secondary p-8 gap-8">
-					<AiFormProgressPage
-						message={ message }
-						percentBuild={ percentBuild }
-					/>
-				</Container>
-				{ formCreationErr && (
-					<ErrorPopup
-						errorMessage={ formCreationErr }
-						onRetry={ resetFormCreationError }
-					/>
-				) }
-			</>
+			<Container className="h-screen bg-background-secondary p-8 gap-8">
+				<AiFormProgressPage
+					message={ message }
+					percentBuild={ percentBuild }
+				/>
+			</Container>
 		);
 	}
 

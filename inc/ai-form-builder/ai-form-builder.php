@@ -70,15 +70,20 @@ class AI_Form_Builder {
 
 		if ( ! empty( $response['error'] ) ) {
 			// If the response has an error, handle it and report it back.
-			$message = '';
+			// We sanitize before returning so OpenAI / middleware infra details
+			// (URLs, request IDs, model names, account IDs) do not leak to the
+			// client; the raw message is preserved in the debug log via
+			// AI_Helper::sanitize_ai_error_message() when WP_DEBUG[_LOG] is on.
+			$raw = '';
 			if ( is_array( $response['error'] ) && ! empty( $response['error']['message'] ) ) {
 				// If any error message received from OpenAI.
-				$message = $response['error']['message'];
+				$raw = $response['error']['message'];
 			} elseif ( is_string( $response['error'] ) ) {
 				// If any error message received from the middleware server.
-				$message = $response['error'];
+				$raw = $response['error'];
 			}
-			if ( empty( $message ) ) {
+			$message = AI_Helper::sanitize_ai_error_message( $raw, 'generate/form' );
+			if ( '' === $message ) {
 				$message = __( 'The SureForms AI Middleware encountered an error.', 'sureforms' );
 			}
 			wp_send_json_error( [ 'message' => $message ] );
