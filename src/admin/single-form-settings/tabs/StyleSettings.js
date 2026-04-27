@@ -34,6 +34,7 @@ function StyleSettings( props ) {
 		iframeBody,
 		editorMode,
 		rootHtmlTag,
+		shouldIframe,
 	} = props;
 
 	let sureformsKeys = useSelect(
@@ -45,7 +46,7 @@ function StyleSettings( props ) {
 		[ editorStore ]
 	);
 	const formStyling = sureformsKeys?._srfm_forms_styling || {};
-	const rootRef = iframeBody;
+	const rootRef = shouldIframe ? iframeBody : iframeBody?.querySelector( '.editor-styles-wrapper' );
 
 	const deviceType = useDeviceType();
 	const [ submitBtn, setSubmitBtn ] = useState( null );
@@ -124,9 +125,9 @@ function StyleSettings( props ) {
 	useEffect( () => {
 		setTimeout( () => {
 			setSubmitBtnCtn(
-				rootRef.querySelector( '.srfm-submit-btn-container' )
+				rootRef?.querySelector( '.srfm-submit-btn-container' )
 			);
-			setSubmitBtn( rootRef.querySelector( '.srfm-submit-richtext' ) );
+			setSubmitBtn( rootRef?.querySelector( '.srfm-submit-richtext' ) );
 			submitButtonInherit();
 		}, 1000 );
 	}, [

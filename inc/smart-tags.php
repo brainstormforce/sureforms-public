@@ -125,6 +125,7 @@ class Smart_Tags {
 				'{browser_platform}'       => __( 'Browser Platform', 'sureforms' ),
 				'{embed_post_id}'          => __( 'Embedded Post/Page ID', 'sureforms' ),
 				'{embed_post_title}'       => __( 'Embedded Post/Page Title', 'sureforms' ),
+				'{entry_id}'               => __( 'Entry ID', 'sureforms' ),
 				'{get_input:param}'        => __( 'Populate by GET Param', 'sureforms' ),
 				'{get_cookie:cookie_name}' => __( 'Cookie Value', 'sureforms' ),
 			]
@@ -326,6 +327,17 @@ class Smart_Tags {
 			case '{embed_post_title}':
 			case '{embed_post_url}':
 				return self::parse_post_props( $tag );
+			case '{entry_id}':
+				// Check $form_data first (normal submission path).
+				if ( ! empty( $form_data ) && is_array( $form_data ) && ! empty( $form_data['entry_id'] ) ) {
+					return absint( $form_data['entry_id'] );
+				}
+				// Webhooks pass form_data as $submission_data; check there too.
+				if ( ! empty( $submission_data ) && is_array( $submission_data ) && ! empty( $submission_data['entry_id'] ) ) {
+					return absint( $submission_data['entry_id'] );
+				}
+				return '';
+
 			case '{current_page_url}':
 				if ( isset( $form_data['_wp_http_referer'] ) ) {
 					$request_uri = sanitize_text_field( Helper::get_string_value( wp_unslash( $form_data['_wp_http_referer'] ) ) );

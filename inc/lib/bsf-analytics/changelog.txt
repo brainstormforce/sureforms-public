@@ -1,3 +1,6 @@
+v1.1.26 - 20-April-2026
+- Improvement: Switched from `Astra_Notices` to `BSF_Admin_Notices`.
+
 v1.1.25 - 13-April-2026
 - New: Added optional `$force` parameter (4th arg) to `track()` — when true, bypasses the post-send dedup and overwrites any pending entry with the latest value. Default behavior (skip on duplicate) is unchanged. Useful for recurring events like `plugin_updated`.
 
