@@ -139,6 +139,13 @@ function initializePhoneField() {
 		}
 
 		const iti = window.intlTelInput( phoneNumber, itlOptions );
+
+		// Prevent the country flag from changing based on input value changes
+		// (e.g., browser autocomplete, typing, or deleting the country code).
+		// The flag should only change when the user explicitly selects a country from the dropdown.
+		// Dropdown selection goes through _selectListItem -> _setCountry directly, so it still works.
+		iti._updateCountryFromNumber = () => false;
+
 		const countriesData =
 			iti?.countryList.querySelectorAll( '.iti__country' );
 

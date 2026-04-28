@@ -20,8 +20,9 @@ jobs:
     runs-on: ubuntu-latest
     name: PHP Insights checks
     if: |
-      (github.event.action == 'labeled' && github.event.label.name == 'run-insights') ||
-      (github.event.action != 'labeled' && contains(fromJSON('["master", "dev", "next-release"]'), github.base_ref))
+      !contains(github.event.pull_request.labels.*.name, 'dependencies') &&
+      ((github.event.action == 'labeled' && github.event.label.name == 'run-insights') ||
+      (github.event.action != 'labeled' && contains(fromJSON('["master", "dev", "next-release"]'), github.base_ref)))
     steps:
       - uses: actions/checkout@v6
       - uses: shivammathur/setup-php@v2

@@ -125,6 +125,7 @@ class Smart_Tags {
 				'{browser_platform}'       => __( 'Browser Platform', 'sureforms' ),
 				'{embed_post_id}'          => __( 'Embedded Post/Page ID', 'sureforms' ),
 				'{embed_post_title}'       => __( 'Embedded Post/Page Title', 'sureforms' ),
+				'{entry_id}'               => __( 'Entry ID', 'sureforms' ),
 				'{get_input:param}'        => __( 'Populate by GET Param', 'sureforms' ),
 				'{get_cookie:cookie_name}' => __( 'Cookie Value', 'sureforms' ),
 			]
@@ -174,6 +175,23 @@ class Smart_Tags {
 			strpos( $tag, 'get_cookie:' ) ||
 			0 === strpos( $tag, '{form:' ) ||
 			0 === strpos( $tag, '{form-payment:' );
+
+			/**
+			 * Filter whether a smart tag should be treated as valid for processing.
+			 *
+			 * Allows plugins to register dynamic tag prefixes (e.g. {survey_results:field_slug})
+			 * that are not in the static smart tag list.
+			 *
+			 * Note: Plugins that hook this filter to register custom tags must also hook
+			 * 'srfm_parse_smart_tags' to resolve their values. See smart_tags_callback() below.
+			 *
+			 * @since 2.8.0
+			 *
+			 * @param bool            $is_valid_tag Whether the tag passed built-in validation.
+			 * @param string          $tag          The smart tag being validated (e.g. '{survey_results:my-field}').
+			 * @param array<mixed>|null $form_data   The form configuration data.
+			 */
+			$is_valid_tag = apply_filters( 'srfm_is_valid_smart_tag', $is_valid_tag, $tag, $form_data );
 
 			if ( ! $is_valid_tag ) {
 				continue;
@@ -309,6 +327,17 @@ class Smart_Tags {
 			case '{embed_post_title}':
 			case '{embed_post_url}':
 				return self::parse_post_props( $tag );
+			case '{entry_id}':
+				// Check $form_data first (normal submission path).
+				if ( ! empty( $form_data ) && is_array( $form_data ) && ! empty( $form_data['entry_id'] ) ) {
+					return absint( $form_data['entry_id'] );
+				}
+				// Webhooks pass form_data as $submission_data; check there too.
+				if ( ! empty( $submission_data ) && is_array( $submission_data ) && ! empty( $submission_data['entry_id'] ) ) {
+					return absint( $submission_data['entry_id'] );
+				}
+				return '';
+
 			case '{current_page_url}':
 				if ( isset( $form_data['_wp_http_referer'] ) ) {
 					$request_uri = sanitize_text_field( Helper::get_string_value( wp_unslash( $form_data['_wp_http_referer'] ) ) );

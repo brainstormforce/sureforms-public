@@ -21,7 +21,7 @@ const initialState = {
 		firstName: leadDetails.first_name || '',
 		lastName: leadDetails.last_name || '',
 		email: leadDetails.email || '',
-		consent: false,
+		consent: true,
 	},
 	// Analytics data
 	analytics: {

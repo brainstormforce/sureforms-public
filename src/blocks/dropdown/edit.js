@@ -58,6 +58,7 @@ const Edit = ( props ) => {
 		maxValue,
 		showValues,
 		preselectedOptions = [],
+		dynamicDefaultValue,
 	} = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
 	const [ newOption, setNewOption ] = useState( '' );
@@ -524,10 +525,33 @@ const Edit = ( props ) => {
 					label={ __( 'Allow Multiple', 'sureforms' ) }
 					checked={ multiSelect }
 					onChange={ ( checked ) =>
-						setAttributes( { multiSelect: checked } )
+						setAttributes( {
+							multiSelect: checked,
+							...( checked && {
+								dynamicDefaultValue: '',
+							} ),
+						} )
 					}
 				/>
 			),
+		},
+		{
+			id: 'dynamicDefaultValue',
+			component: ! multiSelect ? (
+				<SRFMTextControl
+					label={ __( 'Dynamic Default Value', 'sureforms' ) }
+					className="srfm-with-dropdown"
+					value={ dynamicDefaultValue }
+					withSmartTagDropdown={ true }
+					data={ {
+						value: dynamicDefaultValue,
+						label: 'dynamicDefaultValue',
+					} }
+					onChange={ ( value ) =>
+						setAttributes( { dynamicDefaultValue: value } )
+					}
+				/>
+			) : null,
 		},
 		{
 			id: 'minMaxComponent',

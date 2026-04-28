@@ -328,7 +328,7 @@ class Export {
 	 * Only meta keys present in this list will be written to the DB during import.
 	 * Unknown keys from crafted import files are silently ignored.
 	 *
-	 * @since x.x.x
+	 * @since 2.8.0
 	 * @return array<string>
 	 */
 	private function get_allowed_import_meta_keys(): array {
@@ -363,7 +363,7 @@ class Export {
 		 *
 		 * Pro and other extensions can hook into this to add their own scalar meta keys.
 		 *
-		 * @since x.x.x
+		 * @since 2.8.0
 		 * @param array<string> $scalar_metas List of scalar meta keys.
 		 */
 		$scalar_metas = apply_filters( 'srfm_import_scalar_meta_keys', $scalar_metas );

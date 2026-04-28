@@ -10,6 +10,7 @@ namespace SRFM\Inc\Fields;
 
 use Spec_Gb_Helper;
 use SRFM\Inc\Helper;
+use SRFM\Inc\Smart_Tags;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -122,6 +123,7 @@ class Multichoice_Markup extends Base {
 		$this->choice_width_attr   = $this->choice_width ? 'srfm-choice-width-' . str_replace( '.', '-', $this->choice_width ) : '';
 		$this->show_values         = apply_filters( 'srfm_show_options_values', false, $attributes['showValues'] ?? false );
 		$this->preselected_options = $attributes['preselectedOptions'] ?? [];
+		$this->resolve_dynamic_default( $attributes );
 		$this->set_markup_properties();
 		$this->set_aria_described_by();
 	}
@@ -199,6 +201,39 @@ class Multichoice_Markup extends Base {
 				'attributes' => $this->attributes,
 			]
 		);
+	}
+
+	/**
+	 * Resolve dynamic default value from smart tags and override preselected options.
+	 *
+	 * @param array<mixed> $attributes Block attributes.
+	 * @since 2.8.1
+	 * @return void
+	 */
+	protected function resolve_dynamic_default( $attributes ) {
+		$dynamic_default = is_string( $attributes['dynamicDefaultValue'] ?? '' ) ? $attributes['dynamicDefaultValue'] : '';
+		if ( empty( $dynamic_default ) || ! $this->single_selection ) {
+			return;
+		}
+
+		$smart_tags = new Smart_Tags();
+		$resolved   = $smart_tags->process_smart_tags( $dynamic_default );
+
+		if ( empty( $resolved ) || ! is_string( $resolved ) ) {
+			return;
+		}
+
+		$resolved = trim( $resolved );
+
+		if ( is_array( $this->options ) ) {
+			foreach ( $this->options as $i => $option ) {
+				$option_title = $option['optionTitle'] ?? '';
+				if ( strcasecmp( $option_title, $resolved ) === 0 ) {
+					$this->preselected_options = [ $i ];
+					return;
+				}
+			}
+		}
 	}
 
 	/**

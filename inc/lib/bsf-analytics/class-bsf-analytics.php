@@ -93,7 +93,7 @@ if ( ! class_exists( 'BSF_Analytics' ) ) {
 		public function set_actions() {
 
 			foreach ( $this->entities as $key => $data ) {
-				add_action( 'astra_notice_before_markup_' . $key . '-optin-notice', array( $this, 'enqueue_assets' ) );
+				add_action( 'bsf_admin_notice_before_markup_' . $key . '-optin-notice', array( $this, 'enqueue_assets' ) );
 				add_action( 'update_option_' . $key . '_usage_optin', array( $this, 'update_analytics_option_callback' ), 10, 3 );
 				add_action( 'add_option_' . $key . '_usage_optin', array( $this, 'add_analytics_option_callback' ), 10, 2 );
 			}
@@ -235,6 +235,9 @@ if ( ! class_exists( 'BSF_Analytics' ) ) {
 		 * @since 1.0.0
 		 */
 		public function option_notice() {
+			if ( ! class_exists( 'BSF_Admin_Notices' ) ) {
+				return;
+			}
 
 			if ( ! current_user_can( 'manage_options' ) ) {
 				return;
@@ -268,9 +271,9 @@ if ( ! class_exists( 'BSF_Analytics' ) ) {
 				/* translators: %s product name */
 				$notice_string = sprintf(
 					__(
-						'Help shape the future of %1$s!<br><br>Become a contributor by sharing how you use %1$s — so we can build features that matter to you, fix issues faster, and make smarter decisions. We only collect <strong>non-sensitive</strong> information like your PHP version and which features you use.'
+						'<strong>Help shape the future of %1$s.</strong><br><br>Share how you use the plugin so we can build features that matter, fix issues faster, and make smarter decisions.'
 					),
-					'<strong>' . esc_html( $data['product_name'] ) . '</strong>'
+					esc_html( $data['product_name'] )
 				);
 				
 				if ( is_multisite() ) {
@@ -279,7 +282,7 @@ if ( ! class_exists( 'BSF_Analytics' ) ) {
 
 				$language_dir = is_rtl() ? 'rtl' : 'ltr';
 
-				Astra_Notices::add_notice(
+				BSF_Admin_Notices::add_notice(
 					array(
 						'id'                         => $key . '-optin-notice',
 						'type'                       => '',
@@ -308,7 +311,7 @@ if ( ! class_exists( 'BSF_Analytics' ) ) {
 									)
 								)
 							),
-							__( 'Sure, count me in!' ),
+							__( 'Happy to help!' ),
 							esc_url(
 								add_query_arg(
 									array(
@@ -319,7 +322,7 @@ if ( ! class_exists( 'BSF_Analytics' ) ) {
 								)
 							),
 							MONTH_IN_SECONDS,
-							__( 'No, thanks' )
+							__( 'Skip' )
 						),
 						'show_if'                    => true,
 						'repeat-notice-after'        => false,

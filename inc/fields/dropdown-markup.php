@@ -12,6 +12,7 @@ require SRFM_DIR . 'modules/gutenberg/classes/class-spec-gb-helper.php';
 
 use Spec_Gb_Helper;
 use SRFM\Inc\Helper;
+use SRFM\Inc\Smart_Tags;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -85,6 +86,7 @@ class Dropdown_Markup extends Base {
 		$this->multi_select_attr   = ! empty( $attributes['multiSelect'] ) ? 'true' : 'false';
 		$this->search_attr         = ! empty( $attributes['searchable'] ) ? 'true' : 'false';
 		$this->preselected_options = $attributes['preselectedOptions'] ?? [];
+		$this->resolve_dynamic_default( $attributes );
 		$this->set_markup_properties();
 		$this->set_aria_described_by();
 
@@ -184,6 +186,39 @@ class Dropdown_Markup extends Base {
 				'attributes' => $this->attributes,
 			]
 		);
+	}
+
+	/**
+	 * Resolve dynamic default value from smart tags and override preselected options.
+	 *
+	 * @param array<mixed> $attributes Block attributes.
+	 * @since 2.8.1
+	 * @return void
+	 */
+	protected function resolve_dynamic_default( $attributes ) {
+		$dynamic_default = is_string( $attributes['dynamicDefaultValue'] ?? '' ) ? $attributes['dynamicDefaultValue'] : '';
+		if ( empty( $dynamic_default ) || ! empty( $attributes['multiSelect'] ) ) {
+			return;
+		}
+
+		$smart_tags = new Smart_Tags();
+		$resolved   = $smart_tags->process_smart_tags( $dynamic_default );
+
+		if ( empty( $resolved ) || ! is_string( $resolved ) ) {
+			return;
+		}
+
+		$resolved = trim( $resolved );
+
+		if ( is_array( $this->options ) ) {
+			foreach ( $this->options as $i => $option ) {
+				$option_label = is_array( $option ) ? ( $option['label'] ?? '' ) : '';
+				if ( strcasecmp( $option_label, $resolved ) === 0 ) {
+					$this->preselected_options = [ $i ];
+					return;
+				}
+			}
+		}
 	}
 
 	/**

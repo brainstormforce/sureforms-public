@@ -4,7 +4,7 @@ Tags: forms, contact form, custom form, payment form, form builder
 Requires at least: 6.4
 Tested up to: 6.9.4
 Requires PHP: 7.4
-Stable tag: 2.7.1
+Stable tag: 2.8.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -479,10 +479,22 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 
 == Changelog ==
 = x.x.x =
-* Fix: Phone field auto-country detection now works reliably without CORS errors or rate limits
-* Fix: Single-selection Multi-Choice and Dropdown blocks now support deselecting a preselected option in the block editor.
-* Fix: Single-selection Multi-Choice field now allows deselecting an already-selected option by clicking it again on the frontend.
 * Fix: Confirm Email field no longer silently blocks form submission when the Email field is not required.
+= 2.8.1 - 27th April 2026 =
+* New: Added support for dynamic default values on Dropdown and Multi-Choice fields.
+* New: Added {entry_id} smart tag for use in email templates, confirmations, and dynamic content.
+* Improvement: Added PLN (Polish Złoty) to the currency dropdown.
+* Fix: Fixed background color not applying correctly in non-iframe editor mode.
+* Fix: Fixed MCP endpoint REST URL resolution so it uses the correct site URL.
+* Fix: Fixed Phone field country flag unexpectedly changing during browser autocomplete.
+* Fix: Fixed review/validation issues in Global Settings.
+= 2.8.0 - 16th April 2026 =
+* New: Added My Account page allowing users to view and manage their payment history and subscriptions.
+* Improvement: Phone number country detection moved to backend with caching, reducing multiple API calls.
+* Fix: Fixed payment method radio button display issue when both Stripe and PayPal gateways are enabled.
+* Fix: Fixed crash when saving a form containing the Register block.
+* Fix: Fixed inability to deselect a preselected option in single-selection controls (radio, dropdown) within the editor.
+* Fix: Fixed Quill rich text editor toolbar strings not being translatable.
 = 2.7.1 - 9th April 2026 =
 * New: Added a customizable Field Slug panel to all form blocks.
 * New: Added Payment Description field to the Stripe payment block with smart tag support.
@@ -492,23 +504,6 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 * Fix: Fixed slugs with underscores not mapping correctly during smart tag and integration processing.
 * Fix: Fixed textarea values losing line breaks in {form:field} smart tags.
 * Fix: Fixed {current_page_url} smart tag resolving to REST API URL in email notifications.
-= 2.7.0 - 31st March 2026 =
-* New: Added styling options for Gutenberg SureForms Form Block.
-* New: Added styling options for Bricks Builder SureForms Form Element.
-* New: Added styling options for Elementor SureForms Form Widget.
-* Fix: Fixed "Send as Raw HTML" email option wrapping content in unwanted template markup.
-* Fix: Fixed Multi Choice option labels with extra whitespace failing to resolve numeric values in payment calculations.
-* Fix: Fixed block slug not locking when a smart tag is inserted via the pro plugin.
-* Fix: Fixed dynamic tag URLs being auto-linked with HTML markup when used in redirect query parameters.
-* Fix: Fixed theme text-transform styles cascading into form input fields.
-* Fix: Fixed unique field validation endpoint exposing submitted data to unauthenticated enumeration attacks.
-= 2.6.0 - 23rd March 2026 =
-* New: Added MCP (Model Context Protocol) settings and Abilities API for AI-powered form management.
-* Improvement: Added Blocks API v3 compatibility.
-* Improvement: Improved search for form and entry listing.
-* Fix: Fixed Stripe payment block not displaying correctly when the same form is embedded multiple times on a page.
-* Fix: Fixed entry Previous/Next navigation returning entries from other forms instead of the current form.
-* Fix: Resolved intermittent form submission failures on sites with page caching plugins due to expired security tokens.
 The full changelog is available [here](https://sureforms.com/whats-new/).
 
 == Upgrade Notice ==

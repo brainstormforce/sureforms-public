@@ -527,4 +527,27 @@ class Test_Getting_Started_Notice extends TestCase {
 		$admin = Admin::get_instance();
 		$this->assertTrue( method_exists( $admin, 'enqueue_notice_response_script' ) );
 	}
+
+	/**
+	 * Test: add_survey_reports_page method exists and is callable.
+	 *
+	 * @since 2.8.0
+	 */
+	public function test_add_survey_reports_page() {
+		$admin = Admin::get_instance();
+		$this->assertTrue( method_exists( $admin, 'add_survey_reports_page' ) );
+	}
+
+	/**
+	 * Test: render_survey_empty_state outputs the root div.
+	 *
+	 * @since 2.8.0
+	 */
+	public function test_render_survey_empty_state() {
+		$admin = Admin::get_instance();
+		ob_start();
+		$admin->render_survey_empty_state();
+		$output = ob_get_clean();
+		$this->assertStringContainsString( 'srfm-survey-empty-state-root', $output );
+	}
 }

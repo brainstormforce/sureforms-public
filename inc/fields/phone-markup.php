@@ -177,7 +177,7 @@ class Phone_Markup extends Base {
 	 * (client-side fetch) caused CORS failures and 429 rate limits. Sites needing
 	 * per-visitor precision can set a specific default country per field.
 	 *
-	 * @since x.x.x
+	 * @since 2.8.0
 	 * @return string Lowercase 2-letter country code, defaults to 'us'.
 	 */
 	private function get_geo_country() {

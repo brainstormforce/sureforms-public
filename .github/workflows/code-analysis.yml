@@ -26,6 +26,7 @@ concurrency:
 jobs:
     phpcs:
         name: PHPCS
+        if: ${{ !contains(github.event.pull_request.labels.*.name, 'dependencies') }}
         runs-on: ubuntu-latest
         steps:
             - name: Checkout
@@ -58,6 +59,7 @@ jobs:
 
     phpstan:
         name: PHPStan
+        if: ${{ !contains(github.event.pull_request.labels.*.name, 'dependencies') }}
         runs-on: ubuntu-latest
         steps:
             - name: Checkout
@@ -90,6 +92,7 @@ jobs:
 
     js-css-lint:
         name: JS & CSS Lint
+        if: ${{ !contains(github.event.pull_request.labels.*.name, 'dependencies') }}
         runs-on: ubuntu-latest
         steps:
             - name: Checkout

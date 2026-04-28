@@ -23,7 +23,9 @@ import { decodeHtmlEntities } from '@Blocks/util';
 
 import countries from './countries.json';
 import ConditionalLogic from '@Components/conditional-logic';
+import LocationServicesPreview from '@Components/location-services-preview';
 import { afterAttributePanelBody } from '@Components/hooks';
+import { applyFilters } from '@wordpress/hooks';
 import HelpText from '@Components/misc/HelpText';
 
 const Edit = ( props ) => {
@@ -129,6 +131,9 @@ const Edit = ( props ) => {
 						{ afterAttributePanelBody( props ).map(
 							( panel ) => panel.component
 						) }
+						{ ! srfm_block_data?.is_pro_active && (
+							<LocationServicesPreview />
+						) }
 					</InspectorTab>
 					<InspectorTab { ...SRFMTabs.advance }>
 						<ConditionalLogic
@@ -158,6 +163,11 @@ const Edit = ( props ) => {
 			<InnerBlocks
 				template={ addressTemplate }
 				allowedBlocks={ allowedBlocks }
+				templateLock={ applyFilters(
+					'srfm.address.templateLock',
+					false,
+					attributes
+				) }
 			/>
 		</div>
 	);

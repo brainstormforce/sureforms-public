@@ -324,7 +324,7 @@ class Helper {
 	 *
 	 * @param mixed $value The value to sanitize.
 	 * @param int   $depth Current recursion depth. Values nested beyond 10 levels are discarded.
-	 * @since x.x.x
+	 * @since 2.8.0
 	 * @return mixed The sanitized value.
 	 */
 	public static function sanitize_by_type( $value, int $depth = 0 ) {
@@ -2360,7 +2360,7 @@ class Helper {
 	 * inline reads in Form_Submit) can be migrated to this method in the future
 	 * to avoid duplicating the same header-chain logic.
 	 *
-	 * @since x.x.x
+	 * @since 2.8.0
 	 * @return string Validated IP address, or empty string if unavailable.
 	 */
 	public static function get_visitor_ip() {
@@ -2392,7 +2392,7 @@ class Helper {
 				/**
 				 * Filters the detected visitor IP address.
 				 *
-				 * @since x.x.x
+				 * @since 2.8.0
 				 *
 				 * @param string $ip Validated IP address.
 				 */
