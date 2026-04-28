@@ -210,4 +210,72 @@ class Test_AI_Helper extends TestCase {
 		$this->assertIsArray( $result );
 		$this->assertSame( 10, $result['remaining'] );
 	}
+
+	/**
+	 * sanitize_ai_error_message coerces non-strings to an empty string.
+	 */
+	public function test_sanitize_ai_error_message_returns_empty_for_non_string_input() {
+		$this->assertSame( '', AI_Helper::sanitize_ai_error_message( null ) );
+		$this->assertSame( '', AI_Helper::sanitize_ai_error_message( [ 'message' => 'x' ] ) );
+		$this->assertSame( '', AI_Helper::sanitize_ai_error_message( 0 ) );
+		$this->assertSame( '', AI_Helper::sanitize_ai_error_message( '' ) );
+		$this->assertSame( '', AI_Helper::sanitize_ai_error_message( "   \n\t " ) );
+	}
+
+	/**
+	 * sanitize_ai_error_message passes through messages without sensitive tokens.
+	 */
+	public function test_sanitize_ai_error_message_passes_through_clean_messages() {
+		$message = 'Rate limit exceeded. Please retry in a few seconds.';
+		$this->assertSame( $message, AI_Helper::sanitize_ai_error_message( $message ) );
+	}
+
+	/**
+	 * sanitize_ai_error_message strips URLs, OpenAI-shape IDs, request IDs,
+	 * API keys, Bearer tokens, and gpt model names. Whitespace is collapsed.
+	 *
+	 * The function does not mutate spaces inside parentheses or other
+	 * structural punctuation — only outer whitespace and separator-class
+	 * punctuation is trimmed — so test expectations preserve those gaps.
+	 */
+	public function test_sanitize_ai_error_message_strips_known_infra_patterns() {
+		$cases = [
+			'see https://api.openai.com/v1/error for details'   => 'see for details',
+			'You have hit org-ABCDEF123456 quota'               => 'You have hit quota',
+			'failed for user-zyxwvut0987654 today'              => 'failed for today',
+			'rejected for req_abcDEF12345 reason'               => 'rejected for reason',
+			'request id: abcDEF12345 was logged'                => 'was logged',
+			'auth failed (key sk-abcdef0123456789ABCDEF) retry' => 'auth failed (key ) retry',
+			'token Bearer abc123.def456-XYZ rejected'           => 'token rejected',
+			'model gpt-4o-mini-2024-07-18 unavailable'          => 'model unavailable',
+		];
+		foreach ( $cases as $input => $expected ) {
+			$this->assertSame(
+				$expected,
+				AI_Helper::sanitize_ai_error_message( $input ),
+				sprintf( 'Failed sanitizing: %s', $input )
+			);
+		}
+	}
+
+	/**
+	 * sanitize_ai_error_message returns an empty string when stripping consumes
+	 * the entire message, so callers fall back to a canonical translated message.
+	 */
+	public function test_sanitize_ai_error_message_returns_empty_when_only_infra_remains() {
+		$this->assertSame( '', AI_Helper::sanitize_ai_error_message( 'https://example.com' ) );
+		$this->assertSame( '', AI_Helper::sanitize_ai_error_message( 'org-AAAAAA1111' ) );
+	}
+
+	/**
+	 * Empty endpoint argument means we should not log; the public API still
+	 * returns a sanitized message.
+	 */
+	public function test_sanitize_ai_error_message_does_not_log_when_endpoint_empty() {
+		// Pre-condition: WP_DEBUG state should not influence the return value
+		// when no endpoint is supplied. Just exercise the path without asserting
+		// log output (PHPUnit can't easily inspect error_log destinations here).
+		$result = AI_Helper::sanitize_ai_error_message( 'plain message' );
+		$this->assertSame( 'plain message', $result );
+	}
 }

@@ -223,6 +223,62 @@ class AI_Helper {
 	}
 
 	/**
+	 * Sanitize an upstream error message before returning it to the client.
+	 *
+	 * The OpenAI / SureForms middleware sometimes echoes infrastructure details
+	 * (URLs, request IDs, model names, organization/user IDs, raw API keys)
+	 * inside error messages. The endpoints surfacing these messages are
+	 * capability-gated, but contributors-and-up shouldn't see infra leaks.
+	 *
+	 * Pass-through behaviour is preserved when the message has no sensitive
+	 * tokens — only matched patterns are stripped. Returns an empty string
+	 * if nothing useful remains, so callers can fall back to a canonical
+	 * translated message.
+	 *
+	 * @param mixed      $raw         Raw upstream message; non-strings are coerced.
+	 * @param string     $endpoint    Optional endpoint label; when set, the raw input
+	 *                                is passed through {@see self::log_ai_response_failure()}
+	 *                                so the unredacted form is preserved server-side
+	 *                                (subject to the usual WP_DEBUG / WP_DEBUG_LOG gates).
+	 * @param int|string $status_code Optional HTTP status, forwarded to the logger.
+	 * @since x.x.x
+	 * @return string Sanitized message safe to return to the client.
+	 */
+	public static function sanitize_ai_error_message( $raw, $endpoint = '', $status_code = '' ) {
+		if ( ! is_string( $raw ) ) {
+			return '';
+		}
+		$raw = trim( $raw );
+		if ( '' === $raw ) {
+			return '';
+		}
+
+		if ( '' !== $endpoint ) {
+			self::log_ai_response_failure( $endpoint, $status_code, 'upstream_error', $raw );
+		}
+
+		$patterns = [
+			// URLs (http / https / protocol-relative).
+			'#https?://\S+#i',
+			'#(?<=\s)//\S+#i',
+			// OpenAI-shape opaque IDs: org-/user-/key-/sess-/req-/file-/chatcmpl-/asst-/run-/thread-.
+			// Both '-' and '_' separators are observed in the wild (e.g. req-… and req_…).
+			'/\b(?:org|user|key|sess|req|file|chatcmpl|asst|run|thread)[-_][A-Za-z0-9_]{6,}/i',
+			// Generic "request id: …" / "request-id …" trailers — require a separator and a substantive id.
+			'/\brequest[_\s-]?id[:\s]+[A-Za-z0-9_-]{4,}/i',
+			// Bearer / API-key shapes.
+			'/\bsk-[A-Za-z0-9_-]{12,}/i',
+			'/\bBearer\s+[A-Za-z0-9._-]+/i',
+			// Model identifiers that would otherwise leak the underlying provider.
+			'/\bgpt-[A-Za-z0-9.-]+/i',
+		];
+		$cleaned  = (string) preg_replace( $patterns, '', $raw );
+		// Collapse the gaps left by removed tokens.
+		$cleaned = (string) preg_replace( '/\s+/', ' ', $cleaned );
+		return trim( $cleaned, " \t\n\r\0\x0B.,;:" );
+	}
+
+	/**
 	 * Decode the response body from the SureForms AI Middleware, returning
 	 * a structured error payload when the body is empty or invalid JSON.
 	 *
@@ -301,63 +357,6 @@ class AI_Helper {
 				$snippet
 			)
 		);
-	}
-
-	/**
-	 * Sanitize an upstream error message before returning it to the client.
-	 *
-	 * The OpenAI / SureForms middleware sometimes echoes infrastructure details
-	 * (URLs, request IDs, model names, organization/user IDs, raw API keys)
-	 * inside error messages. The endpoints surfacing these messages are
-	 * capability-gated, but contributors-and-up shouldn't see infra leaks.
-	 *
-	 * Pass-through behaviour is preserved when the message has no sensitive
-	 * tokens — only matched patterns are stripped. Returns an empty string
-	 * if nothing useful remains, so callers can fall back to a canonical
-	 * translated message.
-	 *
-	 * @param mixed      $raw         Raw upstream message; non-strings are coerced.
-	 * @param string     $endpoint    Optional endpoint label; when set, the raw input
-	 *                                is passed through {@see self::log_ai_response_failure()}
-	 *                                so the unredacted form is preserved server-side
-	 *                                (subject to the usual WP_DEBUG / WP_DEBUG_LOG gates).
-	 * @param int|string $status_code Optional HTTP status, forwarded to the logger.
-	 * @since x.x.x
-	 * @return string Sanitized message safe to return to the client.
-	 */
-	public static function sanitize_ai_error_message( $raw, $endpoint = '', $status_code = '' ) {
-		if ( ! is_string( $raw ) ) {
-			return '';
-		}
-		$raw = trim( $raw );
-		if ( '' === $raw ) {
-			return '';
-		}
-
-		if ( '' !== $endpoint ) {
-			self::log_ai_response_failure( $endpoint, $status_code, 'upstream_error', $raw );
-		}
-
-		$patterns = [
-			// URLs (http / https / protocol-relative).
-			'#https?://\S+#i',
-			'#(?<=\s)//\S+#i',
-			// OpenAI-shape opaque IDs: org-/user-/key-/sess-/req-/file-/chatcmpl-/asst-.
-			'/\b(?:org|user|key|sess|req|file|chatcmpl|asst|run|thread)-[A-Za-z0-9_]{6,}/i',
-			// Generic "request id: ..." trailers.
-			'/\brequest[_\s-]?id[:\s]*[A-Za-z0-9-]+/i',
-			// Bearer / API-key shapes.
-			'/\bsk-[A-Za-z0-9_-]{12,}/i',
-			'/\bBearer\s+[A-Za-z0-9._-]+/i',
-			// Model identifiers that would otherwise leak the underlying provider.
-			'/\bgpt-[A-Za-z0-9.-]+/i',
-		];
-		$cleaned  = (string) preg_replace( $patterns, '', $raw );
-		// Collapse the gaps left by removed tokens.
-		$cleaned = (string) preg_replace( '/\s+/', ' ', $cleaned );
-		$cleaned = trim( $cleaned, " \t\n\r\0\x0B.,;:" );
-
-		return $cleaned;
 	}
 
 	/**
