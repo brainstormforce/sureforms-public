@@ -478,6 +478,8 @@ You can collect payments securely through Stripe in the free version. PayPal pay
 You can report the issue through our [Bug Bounty Program](https://brainstormforce.com/bug-bounty-program/). We collaborate with Patchstack to provide opportunities for researchers to report vulnerabilities. The Patchstack team will help validate, triage, and handle any reported security issues.
 
 == Changelog ==
+= x.x.x =
+* Fix: Confirm Email field no longer silently blocks form submission when the Email field is not required.
 = 2.8.1 - 27th April 2026 =
 * New: Added support for dynamic default values on Dropdown and Multi-Choice fields.
 * New: Added {entry_id} smart tag for use in email templates, confirmations, and dynamic content.

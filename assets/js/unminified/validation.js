@@ -346,8 +346,10 @@ export async function fieldValidation(
 						validateResult = true;
 					} else if ( confirmValue !== inputValue ) {
 						window?.srfm?.toggleErrorState( confirmParent, true );
-						confirmError.textContent =
-							window?.srfm_submit?.messages?.srfm_confirm_email_same;
+						if ( confirmError ) {
+							confirmError.textContent =
+								window?.srfm_submit?.messages?.srfm_confirm_email_same;
+						}
 
 						// Set the first error input.
 						setFirstErrorInput( confirmInput, confirmParent );
