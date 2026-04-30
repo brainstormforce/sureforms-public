@@ -10,6 +10,7 @@ namespace SRFM\Inc\AI_Form_Builder;
 
 use SRFM\Inc\Helper;
 use SRFM\Inc\Traits\Get_Instance;
+use WP_Error;
 
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
@@ -26,7 +27,7 @@ class Field_Mapping {
 	 * Generate Gutenberg Fields from AI data.
 	 *
 	 * @param \WP_REST_Request $request Full details about the request.
-	 * @return string
+	 * @return string|WP_Error
 	 */
 	public static function generate_gutenberg_fields_from_questions( $request ) {
 
@@ -35,24 +36,39 @@ class Field_Mapping {
 
 		// check parama is empty or not and is an array and consist form_data key.
 		if ( empty( $params ) || ! is_array( $params ) || ! isset( $params['form_data'] ) || 0 === count( $params['form_data'] ) ) {
-			return '';
+			return new WP_Error(
+				'srfm_ai_mapping_missing_form_data',
+				__( 'The AI form data is missing. Please try again.', 'sureforms' ),
+				[ 'status' => 400 ]
+			);
 		}
 
 		// Get questions from form data.
 		$form_data = $params['form_data'];
 		if ( empty( $form_data ) || ! is_array( $form_data ) ) {
-			return '';
+			return new WP_Error(
+				'srfm_ai_mapping_invalid_form_data',
+				__( 'The AI form data is not in the expected format.', 'sureforms' ),
+				[ 'status' => 400 ]
+			);
 		}
 
-		$form = $form_data['form'];
+		$form = $form_data['form'] ?? null;
 		if ( empty( $form ) || ! is_array( $form ) ) {
-			return '';
+			return new WP_Error(
+				'srfm_ai_mapping_missing_form',
+				__( 'The AI response did not include a form. Please try again.', 'sureforms' ),
+				[ 'status' => 400 ]
+			);
 		}
 
-		$form_fields = $form['formFields'];
-		// if questions is empty then return empty string.
-		if ( empty( $form_fields ) || ! is_array( $form ) ) {
-			return '';
+		$form_fields = $form['formFields'] ?? null;
+		if ( empty( $form_fields ) || ! is_array( $form_fields ) ) {
+			return new WP_Error(
+				'srfm_ai_mapping_missing_form_fields',
+				__( 'The AI was unable to generate form fields. Please try again.', 'sureforms' ),
+				[ 'status' => 400 ]
+			);
 		}
 
 		// Initialize post content string.
@@ -69,7 +85,11 @@ class Field_Mapping {
 
 			// Check if question is empty then continue to next question.
 			if ( empty( $question ) || ! is_array( $question ) ) {
-				return '';
+				return new WP_Error(
+					'srfm_ai_mapping_invalid_field',
+					__( 'The AI returned a malformed form field. Please try again.', 'sureforms' ),
+					[ 'status' => 400 ]
+				);
 			}
 
 			// Initialize common attributes.
@@ -132,7 +152,11 @@ class Field_Mapping {
 					if ( 'dropdown' === $field_type && ! empty( $question['fieldOptions'] ) && is_array( $question['fieldOptions'] ) &&
 					! empty( $question['fieldOptions'][0]['label'] )
 					) {
-						$merged_attributes['options'] = $question['fieldOptions'];
+						// Defense-in-depth: although the upstream middleware is
+						// trusted and these endpoints are capability-gated,
+						// strings flow into Gutenberg block markup so we run
+						// the user-facing fields through sanitize_text_field.
+						$merged_attributes['options'] = self::sanitize_field_options( $question['fieldOptions'] );
 
 						if ( isset( $question['showValues'] ) ) {
 							$merged_attributes['showValues'] = filter_var( $question['showValues'], FILTER_VALIDATE_BOOLEAN );
@@ -159,7 +183,9 @@ class Field_Mapping {
 
 						// Set options if they are valid.
 						if ( ! empty( $question['fieldOptions'][0]['optionTitle'] ) ) {
-							$merged_attributes['options'] = $question['fieldOptions'];
+							// Same defense-in-depth sanitization as the
+							// dropdown branch above.
+							$merged_attributes['options'] = self::sanitize_field_options( $question['fieldOptions'] );
 						}
 
 						// Determine vertical layout based on icons.
@@ -324,6 +350,38 @@ class Field_Mapping {
 		}
 
 		return apply_filters( 'srfm_ai_form_builder_post_content', $post_content, $is_conversational, $form_type );
+	}
+
+	/**
+	 * Sanitize the user-facing strings on each entry of the AI-generated
+	 * fieldOptions array before they are merged into block attributes.
+	 *
+	 * Defense-in-depth: the middleware is trusted today, but these strings
+	 * are serialized into Gutenberg block markup. Running each string field
+	 * through sanitize_text_field() prevents stored-content injection if
+	 * the upstream ever returns reflected user content. Non-string fields
+	 * (icon class names, booleans) are left untouched.
+	 *
+	 * @param array<int, array<string, mixed>> $options Raw fieldOptions array.
+	 * @since x.x.x
+	 * @return array<int, array<string, mixed>> Sanitized options.
+	 */
+	private static function sanitize_field_options( $options ) {
+		if ( ! is_array( $options ) ) {
+			return [];
+		}
+		$sanitizable_keys = [ 'label', 'value', 'optionTitle' ];
+		foreach ( $options as $key => $option ) {
+			if ( ! is_array( $option ) ) {
+				continue;
+			}
+			foreach ( $sanitizable_keys as $field ) {
+				if ( isset( $option[ $field ] ) && is_string( $option[ $field ] ) ) {
+					$options[ $key ][ $field ] = sanitize_text_field( $option[ $field ] );
+				}
+			}
+		}
+		return $options;
 	}
 
 }

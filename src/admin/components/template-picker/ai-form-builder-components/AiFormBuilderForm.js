@@ -53,7 +53,6 @@ const VoiceToggleButton = memo( ( { isListening, toggleListening } ) => {
 export default ( props ) => {
 	const {
 		handleCreateAiForm,
-		setIsBuildingForm,
 		formTypeObj,
 		setFormTypeObj,
 		setFormType,
@@ -474,9 +473,6 @@ export default ( props ) => {
 																handleCreateAiForm(
 																	text,
 																	[],
-																	true
-																);
-																setIsBuildingForm(
 																	true
 																);
 															} }
