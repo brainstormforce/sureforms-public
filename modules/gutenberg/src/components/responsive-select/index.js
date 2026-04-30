@@ -44,6 +44,7 @@ const ResponsiveSelectControl = ( props ) => {
 	const output = {};
 	output.Desktop = (
 		<SelectControl
+			__next40pxDefaultSize
 			value={ data.desktop.value }
 			onChange={ ( value ) =>
 				setAttributes( { [ data.desktop.label ]: value } )
@@ -53,6 +54,7 @@ const ResponsiveSelectControl = ( props ) => {
 	);
 	output.Tablet = (
 		<SelectControl
+			__next40pxDefaultSize
 			value={ data.tablet.value }
 			onChange={ ( value ) =>
 				setAttributes( { [ data.tablet.label ]: value } )
@@ -62,6 +64,7 @@ const ResponsiveSelectControl = ( props ) => {
 	);
 	output.Mobile = (
 		<SelectControl
+			__next40pxDefaultSize
 			value={ data.mobile.value }
 			onChange={ ( value ) =>
 				setAttributes( { [ data.mobile.label ]: value } )

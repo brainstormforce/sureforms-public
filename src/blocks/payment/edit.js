@@ -250,6 +250,7 @@ const Edit = ( props ) => {
 					id: 'subscription-interval',
 					component: (
 						<SelectControl
+							__next40pxDefaultSize
 							label={ __( 'Billing Interval', 'sureforms' ) }
 							value={ subscriptionPlan?.interval || 'month' }
 							options={ [
@@ -361,6 +362,7 @@ const Edit = ( props ) => {
 					id: 'variable-amount-field',
 					component: (
 						<SelectControl
+							__next40pxDefaultSize
 							label={ __(
 								'Choose Amount Field',
 								'sureforms'
@@ -427,6 +429,7 @@ const Edit = ( props ) => {
 			id: 'customer-name-field',
 			component: (
 				<SelectControl
+					__next40pxDefaultSize
 					label={
 						paymentType === 'subscription'
 							? __(
@@ -472,6 +475,7 @@ const Edit = ( props ) => {
 			id: 'customer-email-field',
 			component: (
 				<SelectControl
+					__next40pxDefaultSize
 					label={ __(
 						'Customer Email Field (Required)',
 						'sureforms'

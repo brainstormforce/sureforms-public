@@ -84,6 +84,7 @@ const BillingCyclesControl = ( { subscriptionPlan, setAttributes } ) => {
 	return (
 		<>
 			<SelectControl
+				__next40pxDefaultSize
 				label={ __( 'Stop Subscription After', 'sureforms' ) }
 				value={ isCustom ? 'custom' : subscriptionPlan?.billingCycles }
 				options={ defaultOptions }

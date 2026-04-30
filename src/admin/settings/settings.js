@@ -1,4 +1,4 @@
-import { render, useEffect, useState } from '@wordpress/element';
+import { createRoot, useEffect, useState } from '@wordpress/element';
 import { BrowserRouter as Router, useLocation } from 'react-router-dom';
 import FormPageHeader from '../components/PageHeader';
 
@@ -128,7 +128,8 @@ export default Settings;
 
 	function renderApp() {
 		if ( null !== app ) {
-			render( <Settings />, app );
+			const root = createRoot( app );
+			root.render( <Settings /> );
 		}
 	}
 
