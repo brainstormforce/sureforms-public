@@ -35,7 +35,7 @@ define( 'SRFM_WEBSITE', 'https://sureforms.com/' );
 define( 'SRFM_AI_MIDDLEWARE', 'https://credits.startertemplates.com/sureforms/' );
 define( 'SRFM_MIDDLEWARE_BASE_URL', 'https://api.sureforms.com/' );
 define( 'SRFM_BILLING_PORTAL', 'https://billing.sureforms.com/' );
-define( 'SRFM_PRO_RECOMMENDED_VER', '2.8.2' );
+define( 'SRFM_PRO_RECOMMENDED_VER', '2.8.3' );
 
 define( 'SRFM_SURETRIGGERS_INTEGRATION_BASE_URL', 'https://app.ottokit.com/' );
 

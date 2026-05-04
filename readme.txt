@@ -479,7 +479,7 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 
 == Changelog ==
 = 2.8.2 - 5th May 2026 =
-* New: Added "Both" payment type so submitters can choose between Stripe and PayPal at checkout.
+* New: Added "Both" payment type so a single form can collect one-time and subscription payments together.
 * New: Added Hidden field support for the payment block's dynamic amount.
 * New: Added minimum character limit support for the Textarea field.
 * Improvement: Added extension hooks for windowed entry caps in form restriction.
