@@ -294,6 +294,22 @@ class Field_Validation {
 		// Extract payment type (single or subscription).
 		$payment_config['payment_type'] = isset( $attrs['paymentType'] ) && is_string( $attrs['paymentType'] ) ? sanitize_text_field( $attrs['paymentType'] ) : 'one-time';
 
+		// Persist subscription plan (interval + billing cycles) for any form that
+		// has a subscription path. The admin picks a single value for each in the
+		// editor; the server uses these stored values as the source of truth on
+		// submit so a tampered interval/cycles in form data cannot redirect Stripe
+		// to a different billing cadence.
+		if ( in_array( $payment_config['payment_type'], [ 'subscription', 'both' ], true ) && isset( $attrs['subscriptionPlan'] ) && is_array( $attrs['subscriptionPlan'] ) ) {
+			if ( isset( $attrs['subscriptionPlan']['interval'] ) && is_string( $attrs['subscriptionPlan']['interval'] ) ) {
+				$payment_config['subscription_interval'] = sanitize_text_field( $attrs['subscriptionPlan']['interval'] );
+			}
+			if ( isset( $attrs['subscriptionPlan']['billingCycles'] ) ) {
+				// billingCycles is either an integer count or the string 'ongoing'.
+				$cycles_raw                                    = $attrs['subscriptionPlan']['billingCycles'];
+				$payment_config['subscription_billing_cycles'] = is_numeric( $cycles_raw ) ? intval( $cycles_raw ) : sanitize_text_field( (string) $cycles_raw );
+			}
+		}
+
 		// Extract amount type (fixed or minimum).
 		$payment_config['amount_type'] = isset( $attrs['amountType'] ) && is_string( $attrs['amountType'] ) ? sanitize_text_field( $attrs['amountType'] ) : 'fixed';
 
@@ -312,6 +328,44 @@ class Field_Validation {
 					if ( isset( $block['attrs']['slug'] ) && $block['attrs']['slug'] === $variable_amount_slug ) {
 						$payment_config['variable_amount_field_block_name'] = $block['blockName'];
 						break;
+					}
+				}
+			}
+		}
+
+		// BOTH MODE: store per-type amount configs so server-side validation can
+		// use the correct config based on which flow the user actually chose.
+		if ( 'both' === $payment_config['payment_type'] ) {
+			$payment_config['one_time_amount_type']    = isset( $attrs['oneTimeAmountType'] ) && is_string( $attrs['oneTimeAmountType'] ) ? sanitize_text_field( $attrs['oneTimeAmountType'] ) : 'fixed';
+			$payment_config['one_time_fixed_amount']   = isset( $attrs['oneTimeFixedAmount'] ) ? floatval( $attrs['oneTimeFixedAmount'] ) : 10;
+			$payment_config['one_time_minimum_amount'] = isset( $attrs['oneTimeMinimumAmount'] ) ? floatval( $attrs['oneTimeMinimumAmount'] ) : 0;
+
+			if ( isset( $attrs['oneTimeVariableAmountField'] ) ) {
+				$ot_slug = sanitize_text_field( $attrs['oneTimeVariableAmountField'] );
+				$payment_config['one_time_variable_amount_field'] = $ot_slug;
+				if ( ! empty( $ot_slug ) && is_array( $blocks ) ) {
+					foreach ( $blocks as $block ) {
+						if ( isset( $block['attrs']['slug'] ) && $block['attrs']['slug'] === $ot_slug ) {
+							$payment_config['one_time_variable_amount_field_block_name'] = $block['blockName'];
+							break;
+						}
+					}
+				}
+			}
+
+			$payment_config['subscription_amount_type']    = isset( $attrs['subscriptionAmountType'] ) && is_string( $attrs['subscriptionAmountType'] ) ? sanitize_text_field( $attrs['subscriptionAmountType'] ) : 'fixed';
+			$payment_config['subscription_fixed_amount']   = isset( $attrs['subscriptionFixedAmount'] ) ? floatval( $attrs['subscriptionFixedAmount'] ) : 10;
+			$payment_config['subscription_minimum_amount'] = isset( $attrs['subscriptionMinimumAmount'] ) ? floatval( $attrs['subscriptionMinimumAmount'] ) : 0;
+
+			if ( isset( $attrs['subscriptionVariableAmountField'] ) ) {
+				$sub_slug = sanitize_text_field( $attrs['subscriptionVariableAmountField'] );
+				$payment_config['subscription_variable_amount_field'] = $sub_slug;
+				if ( ! empty( $sub_slug ) && is_array( $blocks ) ) {
+					foreach ( $blocks as $block ) {
+						if ( isset( $block['attrs']['slug'] ) && $block['attrs']['slug'] === $sub_slug ) {
+							$payment_config['subscription_variable_amount_field_block_name'] = $block['blockName'];
+							break;
+						}
 					}
 				}
 			}
