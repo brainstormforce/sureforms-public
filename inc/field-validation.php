@@ -496,7 +496,7 @@ class Field_Validation {
 	 *
 	 * @param array<mixed> $attrs Block attributes.
 	 * @return array Processed textarea configuration.
-	 * @since x.x.x
+	 * @since 2.8.2
 	 */
 	private static function process_textarea_block( $attrs ) {
 		$textarea_config = [];

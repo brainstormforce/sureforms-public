@@ -149,7 +149,7 @@ class Payment_Markup extends Base {
 	 * so we keep the original intent here for conditionals.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 2.8.2
 	 */
 	protected $original_payment_type;
 
@@ -157,7 +157,7 @@ class Payment_Markup extends Base {
 	 * Label shown next to the "one-time" radio choice in both mode.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 2.8.2
 	 */
 	protected $one_time_label;
 
@@ -165,7 +165,7 @@ class Payment_Markup extends Base {
 	 * Label shown next to the "subscription" radio choice in both mode.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 2.8.2
 	 */
 	protected $subscription_label;
 
@@ -173,7 +173,7 @@ class Payment_Markup extends Base {
 	 * Default radio selection in both mode ("one-time" or "subscription").
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 2.8.2
 	 */
 	protected $default_payment_choice;
 
@@ -181,7 +181,7 @@ class Payment_Markup extends Base {
 	 * One-time amount configuration (used only in both mode).
 	 *
 	 * @var array<mixed>
-	 * @since x.x.x
+	 * @since 2.8.2
 	 */
 	protected $one_time_config = [];
 
@@ -189,7 +189,7 @@ class Payment_Markup extends Base {
 	 * Subscription amount configuration (used only in both mode).
 	 *
 	 * @var array<mixed>
-	 * @since x.x.x
+	 * @since 2.8.2
 	 */
 	protected $subscription_config = [];
 	// BOTH MODE: end.
@@ -535,7 +535,7 @@ class Payment_Markup extends Base {
 	 * Render the one-time / subscription radio chooser shown only in "both" mode.
 	 *
 	 * @return string Chooser markup.
-	 * @since x.x.x
+	 * @since 2.8.2
 	 */
 	private function render_payment_type_chooser() {
 		$chooser_name = 'srfm-payment-type-choice-' . $this->block_id;
@@ -596,7 +596,7 @@ class Payment_Markup extends Base {
 	 *
 	 * @param array{wrapper_class:string,radio_id:string,name:string,value:string,label:string,checked:bool,radio_class:string,aria_controls?:string,data_attrs?:array<string,string>} $args Pill config.
 	 * @return string Pill markup.
-	 * @since x.x.x
+	 * @since 2.8.2
 	 */
 	private function render_radio_pill( $args ) {
 		$check_svg     = Helper::fetch_svg( 'circle-checked', 'srfm-payment-icon', 'aria-hidden="true"' );
@@ -650,7 +650,7 @@ class Payment_Markup extends Base {
 	 * @param float  $fixed_amount   The configured fixed amount.
 	 * @param float  $minimum_amount The configured minimum amount.
 	 * @return string Amount display markup.
-	 * @since x.x.x
+	 * @since 2.8.2
 	 */
 	private function render_amount_display( $payment_type, $amount_type, $fixed_amount, $minimum_amount ) {
 		ob_start();

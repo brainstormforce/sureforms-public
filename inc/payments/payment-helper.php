@@ -835,7 +835,7 @@ class Payment_Helper {
 	 * @return array<mixed> Config array with amount_type, fixed_amount, minimum_amount,
 	 *                      variable_amount_field, variable_amount_field_block_name resolved
 	 *                      for the active type.
-	 * @since x.x.x
+	 * @since 2.8.2
 	 */
 	private static function resolve_payment_config_for_active_type( $payment_config, $active_type ) {
 		// Only remap when the block is in "both" mode and the caller told us the active type.
@@ -870,7 +870,7 @@ class Payment_Helper {
 	 * Validate that a submitted dynamic amount matches one of the options configured
 	 * on a linked dropdown/multi-choice block (when single-selection is enabled).
 	 *
-	 * @since x.x.x
+	 * @since 2.8.2
 	 * @param array<string, mixed> $payment_config           Resolved payment block config (active for current mode).
 	 * @param array<string, mixed> $block_config             All form block configs keyed by block_id.
 	 * @param float                $submitted_amount_decimal Submitted amount as a decimal (not smallest unit).

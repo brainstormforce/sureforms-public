@@ -34,7 +34,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Editor nudge handler.
  *
- * @since x.x.x
+ * @since 2.8.2
  */
 class Editor_Nudge {
 	use Get_Instance;
@@ -45,14 +45,14 @@ class Editor_Nudge {
 	 * Per-post (rather than per-user) so dismissing the nudge on one
 	 * page does not silence it on every other page in the same site.
 	 *
-	 * @since x.x.x
+	 * @since 2.8.2
 	 */
 	public const DISMISS_META_KEY = 'srfm_editor_nudge_dismissed';
 
 	/**
 	 * Nonce action used by the dismiss AJAX endpoint.
 	 *
-	 * @since x.x.x
+	 * @since 2.8.2
 	 */
 	public const NONCE_ACTION = 'srfm_editor_nudge_dismiss';
 
@@ -64,14 +64,14 @@ class Editor_Nudge {
 	 * Prevents a single mis-click from hiding the banner forever on a
 	 * post with no recovery path.
 	 *
-	 * @since x.x.x
+	 * @since 2.8.2
 	 */
 	public const DISMISS_EXPIRY_SECONDS = 90 * DAY_IN_SECONDS;
 
 	/**
 	 * Constructor.
 	 *
-	 * @since x.x.x
+	 * @since 2.8.2
 	 */
 	public function __construct() {
 		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_scripts' ] );
@@ -81,7 +81,7 @@ class Editor_Nudge {
 	/**
 	 * Decide whether the nudge script should be loaded for the current request.
 	 *
-	 * @since x.x.x
+	 * @since 2.8.2
 	 * @return bool
 	 */
 	public function allow_load() {
@@ -129,7 +129,7 @@ class Editor_Nudge {
 	 * and rolls over once the recorded timestamp is older than
 	 * `DISMISS_EXPIRY_SECONDS`.
 	 *
-	 * @since x.x.x
+	 * @since 2.8.2
 	 * @param int $post_id Post ID to check.
 	 * @return bool
 	 */
@@ -146,7 +146,7 @@ class Editor_Nudge {
 	/**
 	 * Enqueue the nudge script when allowed.
 	 *
-	 * @since x.x.x
+	 * @since 2.8.2
 	 * @return void
 	 */
 	public function enqueue_scripts() {
@@ -200,7 +200,7 @@ class Editor_Nudge {
 	/**
 	 * AJAX handler to persist the dismissed state for the post being edited.
 	 *
-	 * @since x.x.x
+	 * @since 2.8.2
 	 * @return void
 	 */
 	public function handle_dismiss() {
@@ -256,7 +256,7 @@ class Editor_Nudge {
 	/**
 	 * Resolve the post ID being edited on the current admin request.
 	 *
-	 * @since x.x.x
+	 * @since 2.8.2
 	 * @return int Post ID, or 0 when no post is in scope.
 	 */
 	protected function get_current_post_id() {

@@ -145,7 +145,7 @@ class Form_Restriction {
 		 * @param int                  $entries_count    Lifetime entry count for the form.
 		 * @param int                  $form_id          The ID of the form.
 		 * @param array<string, mixed> $form_restriction The form restriction settings.
-		 * @since x.x.x
+		 * @since 2.8.2
 		 */
 		$entries_count = apply_filters( 'srfm_form_restriction_entries_count', $entries_count, $form_id, $form_restriction );
 
