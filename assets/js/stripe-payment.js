@@ -1166,6 +1166,47 @@ const PAYMENT_UTILITY = {
 									initialAmount
 								);
 							}
+						} else if (
+							getMappedBlock.classList.contains(
+								'srfm-hidden-block'
+							)
+						) {
+							const hiddenFieldInput =
+								getMappedBlock.querySelector(
+									'.srfm-hidden-input'
+								);
+							if ( hiddenFieldInput ) {
+								// Hidden inputs don't fire native input/change
+								// events when set programmatically, so listen
+								// for both — integrators that set the value
+								// via JS should dispatch a 'change' event.
+								const syncAmount = () => {
+									const trimmed =
+										hiddenFieldInput.value.trim();
+									const rawValue =
+										/^\d+(\.\d+)?$/.test( trimmed )
+											? parseFloat( trimmed )
+											: NaN;
+									const amount =
+										isNaN( rawValue ) || rawValue < 0
+											? 0
+											: rawValue;
+									PAYMENT_UTILITY.updatePaymentBlockAmount(
+										paymentInput,
+										amount
+									);
+								};
+								hiddenFieldInput.addEventListener(
+									'change',
+									syncAmount
+								);
+								hiddenFieldInput.addEventListener(
+									'input',
+									syncAmount
+								);
+								// Set initial value from defaultValue.
+								syncAmount();
+							}
 						}
 					}
 				}

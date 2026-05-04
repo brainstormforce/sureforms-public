@@ -128,6 +128,12 @@ const Edit = ( props ) => {
 							label: `${ label } (multi-choice)`,
 							type: 'multi-choice',
 						} );
+					} else if ( blockName === 'srfm/hidden' ) {
+						variableAmountFields.push( {
+							slug,
+							label: `${ label } (hidden)`,
+							type: 'hidden',
+						} );
 					}
 				}
 			} );
@@ -825,7 +831,7 @@ const Edit = ( props ) => {
 										} );
 									} }
 									help={ __(
-										'Pick a field from your form like a number, dropdown, or multichoice whose value should decide the payment amount.',
+										'Pick a field from your form like a number, dropdown, multichoice, or hidden whose value should decide the payment amount.',
 										'sureforms'
 									) }
 								/>

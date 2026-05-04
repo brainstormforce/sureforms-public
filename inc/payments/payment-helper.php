@@ -1091,9 +1091,29 @@ class Payment_Helper {
 						'message' => sprintf( __( 'Payment amount mismatch. Expected %1$s, received %2$s.', 'sureforms' ), $converted_payment_amount, $payment_amount ),
 					];
 				}
+			} elseif ( 'srfm/hidden' === $dynamic_amount_field_block_name ) {
+				// Hidden field values are dynamic — they may be set at runtime via
+				// URL params, cookies, or JS. Trust the value submitted with the
+				// form and verify the Stripe-charged amount matches it.
+				$expected_amount = is_numeric( $submitted_field_value ) ? floatval( $submitted_field_value ) : 0;
+
+				if ( $expected_amount <= 0 ) {
+					return [
+						'valid'   => false,
+						'message' => __( 'Variable amount field value is required.', 'sureforms' ),
+					];
+				}
+
+				if ( abs( $payment_amount - $expected_amount ) > 0.01 ) {
+					return [
+						'valid'   => false,
+						/* translators: %1$s: expected amount, %2$s: payment amount */
+						'message' => sprintf( __( 'Payment amount mismatch. Expected %1$s, received %2$s.', 'sureforms' ), $expected_amount, $payment_amount ),
+					];
+				}
 			}
 
-			// For other variable amount sources (e.g., number field), validate minimum amount.
+			// All variable amount sources (number, hidden) are subject to the configured minimum amount floor.
 			// Use resolved_config so 'both'-mode forms read the active type's per-type minimum
 			// (oneTimeMinimumAmount / subscriptionMinimumAmount) instead of the unset legacy scalar.
 			$minimum_amount = isset( $resolved_config['minimum_amount'] ) ? floatval( $resolved_config['minimum_amount'] ) : 0;
@@ -1251,6 +1271,8 @@ class Payment_Helper {
 			$block_name = 'srfm-input-multi-choice';
 		} elseif ( 'srfm/number' === $dynamic_amount_field_block_name ) {
 			$block_name = 'srfm-number';
+		} elseif ( 'srfm/hidden' === $dynamic_amount_field_block_name ) {
+			$block_name = 'srfm-hidden';
 		}
 
 		// Now we need to get the submitted value.
