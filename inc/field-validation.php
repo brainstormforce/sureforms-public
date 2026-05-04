@@ -67,6 +67,9 @@ class Field_Validation {
 				case 'srfm/number':
 					$processed_config = self::process_number_block( $block['attrs'] );
 					break;
+				case 'srfm/textarea':
+					$processed_config = self::process_textarea_block( $block['attrs'] );
+					break;
 			}
 
 			// If block was processed, store its configuration.
@@ -273,6 +276,20 @@ class Field_Validation {
 					$not_valid_fields[ $key ] = $field_validated['error'] ?? __( 'Field is not valid.', 'sureforms' );
 				}
 			}
+
+			// Textarea minimum character server-side validation.
+			if ( 'srfm-textarea' === $get_field_name && is_string( $value ) && '' !== $value ) {
+				$block_config = isset( $get_form_config[ $extracted_id ] ) && is_array( $get_form_config[ $extracted_id ] ) ? $get_form_config[ $extracted_id ] : [];
+				$min_length   = isset( $block_config['min_length'] ) ? absint( $block_config['min_length'] ) : 0;
+				if ( $min_length > 0 && mb_strlen( $value ) < $min_length ) {
+					$dynamic_messages  = Translatable::dynamic_validation_messages();
+					$min_chars_message = isset( $dynamic_messages['srfm_textarea_min_chars'] ) && is_string( $dynamic_messages['srfm_textarea_min_chars'] ) && '' !== $dynamic_messages['srfm_textarea_min_chars']
+						? $dynamic_messages['srfm_textarea_min_chars']
+						/* translators: %s represents the minimum number of characters required */
+						: __( 'Please enter at least %s characters.', 'sureforms' );
+					$not_valid_fields[ $key ] = sprintf( $min_chars_message, $min_length );
+				}
+			}
 		}
 
 		// Return the array of invalid fields and their error messages.
@@ -472,6 +489,36 @@ class Field_Validation {
 		}
 
 		return $multichoice_config;
+	}
+
+	/**
+	 * Process textarea block configuration.
+	 *
+	 * @param array<mixed> $attrs Block attributes.
+	 * @return array Processed textarea configuration.
+	 * @since x.x.x
+	 */
+	private static function process_textarea_block( $attrs ) {
+		$textarea_config = [];
+
+		// Skip min-length tracking entirely when the textarea is a rich-text editor —
+		// the submitted value contains HTML markup, which would skew mb_strlen counts.
+		if ( ! empty( $attrs['isRichText'] ) ) {
+			return $textarea_config;
+		}
+
+		// Only store config when minLength is set — nothing else requires server-side handling.
+		if ( isset( $attrs['minLength'] ) && is_numeric( $attrs['minLength'] ) ) {
+			$min_length = absint( $attrs['minLength'] );
+			$max_length = isset( $attrs['maxLength'] ) && is_numeric( $attrs['maxLength'] ) ? absint( $attrs['maxLength'] ) : 0;
+
+			// Misconfiguration guard — drop min when it exceeds max so the form stays submittable.
+			if ( $min_length > 0 && ( 0 === $max_length || $min_length <= $max_length ) ) {
+				$textarea_config['min_length'] = $min_length;
+			}
+		}
+
+		return $textarea_config;
 	}
 
 	/**

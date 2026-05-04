@@ -476,6 +476,43 @@ export async function fieldValidation(
 			}
 		}
 
+		// Textarea minimum character validation.
+		// Skip rich-text editors — their value is HTML and would inflate the character count.
+		if (
+			container.classList.contains( 'srfm-textarea-block' ) &&
+			! container.classList.contains( 'srfm-richtext' )
+		) {
+			const textareaField = container.querySelector( 'textarea' );
+			if ( textareaField ) {
+				const minLength = textareaField.getAttribute( 'data-minlength' );
+				const maxLengthAttr = textareaField.getAttribute( 'maxlength' );
+				const minLengthNum = Number( minLength );
+				const maxLengthNum = Number( maxLengthAttr );
+				// Misconfiguration guard — skip when min > max so the form stays submittable.
+				const minIsValid =
+					minLength &&
+					minLengthNum > 0 &&
+					( ! maxLengthAttr || maxLengthNum <= 0 || minLengthNum <= maxLengthNum );
+				if ( minIsValid && inputValue !== '' ) {
+					if ( inputValue.length < minLengthNum ) {
+						window?.srfm?.toggleErrorState(
+							textareaField.closest( '.srfm-block' ),
+							true
+						);
+						if ( errorMessage ) {
+							errorMessage.textContent =
+								window?.srfm?.srfmSprintfString(
+									window?.srfm_submit?.messages?.srfm_textarea_min_chars,
+									minLength
+								);
+						}
+						validateResult = true;
+						setFirstErrorInput( textareaField, container );
+					}
+				}
+			}
+		}
+
 		//rating field
 		if ( container.classList.contains( 'srfm-rating-block' ) ) {
 			const ratingInput = container.querySelector( '.srfm-input-rating' );
