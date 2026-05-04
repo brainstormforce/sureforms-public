@@ -93,6 +93,7 @@ export default function SRFMSelectControl( {
 			{ controlBeforeDomElement }
 			{ children ? (
 				<SelectControl
+					__next40pxDefaultSize
 					label={ label }
 					value={ data.value }
 					onChange={ ( value ) =>
@@ -106,6 +107,7 @@ export default function SRFMSelectControl( {
 				</SelectControl>
 			) : (
 				<SelectControl
+					__next40pxDefaultSize
 					label={ label }
 					value={ data.value }
 					onChange={ ( value ) =>

@@ -54,6 +54,7 @@ export default function PostURL( { onClose } ) {
 			/>
 			{ isEditable && (
 				<TextControl
+					__next40pxDefaultSize
 					__nextHasNoMarginBottom
 					label={ __( 'Permalink', 'sureforms' ) }
 					value={ forceEmptyField ? '' : postSlug }

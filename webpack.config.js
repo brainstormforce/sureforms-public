@@ -91,6 +91,10 @@ module.exports = {
 		quizEmptyState: path.resolve( __dirname, 'src/admin/QuizEmptyState.js' ),
 		surveyEmptyState: path.resolve( __dirname, 'src/admin/SurveyEmptyState.js' ),
 		blocks: path.resolve( __dirname, 'src/blocks/blocks.js' ),
+		editorNudge: path.resolve(
+			__dirname,
+			'src/admin/editor-nudge/index.js'
+		),
 		entries: path.resolve( __dirname, 'src/admin/entries/index.js' ),
 		payments: path.resolve( __dirname, 'src/admin/payment/index.js' ),
 		forms: path.resolve( __dirname, 'src/admin/forms/index.js' ),

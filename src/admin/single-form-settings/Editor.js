@@ -7,7 +7,7 @@ import {
 	TextControl,
 } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
-import { useState, useEffect, render } from '@wordpress/element';
+import { useState, useEffect, createRoot } from '@wordpress/element';
 
 import { useSelect, useDispatch } from '@wordpress/data';
 import {
@@ -286,7 +286,7 @@ const SureformsFormSpecificSettings = () => {
 					const newDiv = document.createElement( 'div' );
 					newDiv.className = 'upgrade-pro-container';
 					targetElement.appendChild( newDiv );
-					render( <ProPanel />, newDiv );
+					createRoot( newDiv ).render( <ProPanel /> );
 				}
 			}
 		};
@@ -629,6 +629,7 @@ const SureformsFormSpecificSettings = () => {
 						>
 							<div className="srfm-shortcode">
 								<TextControl
+									__next40pxDefaultSize
 									value={ `[sureforms id="${ postId }"]` }
 									disabled
 								/>

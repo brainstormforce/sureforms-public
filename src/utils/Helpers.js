@@ -66,10 +66,22 @@ export const handleAddNewPost = async (
 	templateName,
 	templateMetas,
 	isConversational = false,
-	formType = ''
+	formType = '',
+	onError
 ) => {
+	const reportError = ( message ) => {
+		if ( typeof onError === 'function' ) {
+			onError( message );
+		}
+	};
+
 	if ( '1' !== srfm_admin.capability ) {
-		console.error( 'User does not have permission to create posts' );
+		const message = __(
+			'You do not have permission to create forms.',
+			'sureforms'
+		);
+		console.error( message );
+		reportError( message );
 		return;
 	}
 
@@ -90,7 +102,7 @@ export const handleAddNewPost = async (
 			},
 		} );
 
-		if ( response.id ) {
+		if ( response?.id ) {
 			const postId = response.id;
 
 			// Store the post ID so the Learn section Lesson 2 can open this form directly.
@@ -101,11 +113,23 @@ export const handleAddNewPost = async (
 
 			// Redirect to the newly created post
 			window.location.href = `${ srfm_admin.site_url }/wp-admin/post.php?post=${ postId }&action=edit`;
-		} else {
-			console.error( 'Error creating sureforms_form:', response.message );
+			return;
 		}
+
+		const message =
+			response?.message ||
+			__( 'The form could not be saved. Please try again.', 'sureforms' );
+		console.error( 'Error creating sureforms_form:', message );
+		reportError( message );
 	} catch ( error ) {
-		console.log( error );
+		console.error( 'Error creating sureforms_form:', error );
+		reportError(
+			error?.message ||
+				__(
+					'The form could not be saved. Please try again.',
+					'sureforms'
+				)
+		);
 	}
 };
 
@@ -669,7 +693,9 @@ const generateSlug = ( label, existingSlugs, blockName = '' ) => {
 	// cleanForSlug() preserves them but PHP sanitize_title() will percent-encode them,
 	// causing slug mismatch. Fall back to block name for a stable ASCII slug.
 	if ( /[^\x00-\x7F]/.test( baseSlug ) ) {
-		baseSlug = blockName ? cleanForSlug( blockName.replace( /^srfm\//, '' ) ) : '';
+		baseSlug = blockName
+			? cleanForSlug( blockName.replace( /^srfm\//, '' ) )
+			: '';
 	}
 
 	let slug = baseSlug;
@@ -716,7 +742,10 @@ export const prepareBlockSlugs = ( updateBlockAttributes, srfmBlocks ) => {
 			if ( slug && ! isAutoAndChanged ) {
 				existingSlugs.add( slug );
 			}
-			if ( Array.isArray( block.innerBlocks ) && block.innerBlocks.length > 0 ) {
+			if (
+				Array.isArray( block.innerBlocks ) &&
+				block.innerBlocks.length > 0
+			) {
 				seedExisting( block.innerBlocks );
 			}
 		}
