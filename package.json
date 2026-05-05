@@ -116,7 +116,7 @@
 		"react-select": "^5.7.2",
 		"react-virtualized": "^9.22.5",
 		"tailwind-merge": "^3.3.1",
-		"use-debounce": "^10.0.0"
+		"use-debounce": "^10.1.1"
 	},
 	"volta": {
 		"node": "20.20.1"
