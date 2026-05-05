@@ -411,6 +411,53 @@ class Test_Payment_Helper extends TestCase {
 		$this->assertNull( $result );
 	}
 
+	// --- validate_payment_amount ---
+
+	public function test_validate_payment_amount_returns_invalid_for_nonexistent_form() {
+		$result = Payment_Helper::validate_payment_amount( 1000, 'usd', 999999999, 'block-1' );
+		$this->assertIsArray( $result );
+		$this->assertArrayHasKey( 'valid', $result );
+		$this->assertFalse( $result['valid'] );
+		$this->assertArrayHasKey( 'message', $result );
+		$this->assertNotEmpty( $result['message'] );
+	}
+
+	public function test_validate_payment_amount_accepts_active_type_parameter() {
+		// Signature accepts $active_type for "both" mode resolution; missing form
+		// still produces an invalid result, not a fatal error.
+		$result = Payment_Helper::validate_payment_amount( 1000, 'usd', 0, 'block-1', 'subscription' );
+		$this->assertIsArray( $result );
+		$this->assertFalse( $result['valid'] );
+	}
+
+	// --- verify_payment_intent ---
+
+	public function test_verify_payment_intent_rejects_empty_block_id() {
+		$result = Payment_Helper::verify_payment_intent( '', 'pi_test', [ 'form-id' => 1 ] );
+		$this->assertIsArray( $result );
+		$this->assertFalse( $result['valid'] );
+		$this->assertNotEmpty( $result['message'] );
+	}
+
+	public function test_verify_payment_intent_rejects_empty_payment_intent_id() {
+		$result = Payment_Helper::verify_payment_intent( 'block-1', '', [ 'form-id' => 1 ] );
+		$this->assertIsArray( $result );
+		$this->assertFalse( $result['valid'] );
+	}
+
+	public function test_verify_payment_intent_rejects_missing_form_id() {
+		$result = Payment_Helper::verify_payment_intent( 'block-1', 'pi_test', [] );
+		$this->assertIsArray( $result );
+		$this->assertFalse( $result['valid'] );
+	}
+
+	public function test_verify_payment_intent_fails_without_stored_metadata() {
+		// No transient stored for this block+intent, so verification fails.
+		$result = Payment_Helper::verify_payment_intent( 'block-nonexistent', 'pi_nonexistent', [ 'form-id' => 1 ], 'one-time' );
+		$this->assertIsArray( $result );
+		$this->assertFalse( $result['valid'] );
+	}
+
 	private function call_private_method( $object, $method_name, $parameters = [] ) {
 		$reflection = new \ReflectionClass( Payment_Helper::class );
 		$method     = $reflection->getMethod( $method_name );

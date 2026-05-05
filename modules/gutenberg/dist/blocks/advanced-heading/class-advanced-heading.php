@@ -664,7 +664,17 @@ if ( ! class_exists( 'Advanced_Heading' ) ) {
 				$heading_wrapper = $attributes['headingWrapper'];
 			}
 
-			$element = ! empty( $heading_wrapper ) ? $heading_wrapper : 'div';
+			// Validate tag-name attributes against the editor UI options to prevent
+			// arbitrary HTML injection in tag-name position (esc_attr() does not strip
+			// `<`, `>`, spaces or `=`, which is unsafe when echoed as a tag name).
+			$allowed_wrapper_tags = [ 'div', 'header' ];
+			$allowed_heading_tags = [ 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'div' ];
+
+			$element = in_array( $heading_wrapper, $allowed_wrapper_tags, true ) ? $heading_wrapper : 'div';
+
+			$heading_tag = isset( $attributes['headingTag'] ) && in_array( $attributes['headingTag'], $allowed_heading_tags, true )
+				? $attributes['headingTag']
+				: 'h2';
 
 			$seperator = '';
 
@@ -681,7 +691,7 @@ if ( ! class_exists( 'Advanced_Heading' ) ) {
 				$attributes['headingId'] = isset( $attributes['headingId'] ) ? "id='{$attributes['headingId']}'" : '';
 				$heading_text           .= sprintf(
 					'<%1$s class="uagb-heading-text" %3$s>%2$s</%1$s>',
-					esc_attr( $attributes['headingTag'] ),
+					esc_attr( $heading_tag ),
 					$attributes['headingTitle'],
 					esc_attr( $attributes['headingId'] )
 				);

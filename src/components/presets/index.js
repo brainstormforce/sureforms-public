@@ -230,6 +230,7 @@ const SRFMPresets = ( props ) => {
 
 	const presetDropdown = (
 		<SelectControl
+			__next40pxDefaultSize
 			className="srfm-presets-dropdown"
 			onChange={ updatePresets }
 			options={ presets }

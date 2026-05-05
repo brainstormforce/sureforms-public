@@ -1,4 +1,4 @@
-import { useEffect, render } from '@wordpress/element';
+import { useEffect, createRoot } from '@wordpress/element';
 import { BrowserRouter as Router } from 'react-router-dom';
 import AiFormBuilder from './components/AiFormBuilder.js';
 
@@ -28,7 +28,8 @@ export default TemplatePicker;
 
 	function renderApp() {
 		if ( null !== app ) {
-			render( <TemplatePicker />, app );
+			const root = createRoot( app );
+			root.render( <TemplatePicker /> );
 		}
 	}
 

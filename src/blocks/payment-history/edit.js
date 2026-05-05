@@ -23,6 +23,7 @@ export default function Edit( { attributes, setAttributes } ) {
 					initialOpen={ true }
 				>
 					<RangeControl
+						__next40pxDefaultSize
 						label={ __( 'Payments Per Page', 'sureforms' ) }
 						value={ perPage }
 						onChange={ ( value ) =>

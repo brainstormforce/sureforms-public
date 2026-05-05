@@ -6,6 +6,7 @@ import {
 	useMemo,
 	useEffect,
 } from '@wordpress/element';
+import { useSelect } from '@wordpress/data';
 import { FormRestrictionContext } from './context';
 import {
 	Container,
@@ -27,6 +28,20 @@ const FormRestriction = ( { setHasValidationErrors } ) => {
 	const { updateMeta, preserveMetaData } = useContext(
 		FormRestrictionContext
 	);
+
+	// Read compliance meta directly — it lives in a separate post-meta key
+	// (`_srfm_compliance`) outside FormRestrictionContext. When GDPR + Never
+	// Store are both on, `Form_Submit` returns before inserting an entry
+	// (inc/form-submit.php:538), so the entries-table-driven cap (and any
+	// recurring extension that hooks `srfm_form_restriction_entries_count`)
+	// has no row to count and silently does not enforce.
+	const isNeverStoreEntriesEnabled = useSelect( ( select ) => {
+		const meta = select( 'core/editor' ).getEditedPostAttribute( 'meta' );
+		const compliance = Array.isArray( meta?._srfm_compliance )
+			? meta._srfm_compliance[ 0 ]
+			: null;
+		return !! ( compliance?.gdpr && compliance?.do_not_store_entries );
+	}, [] );
 
 	// Validate that start date/time is before end date/time
 	const dateTimeValidationError = useMemo( () => {
@@ -179,7 +194,23 @@ const FormRestriction = ( { setHasValidationErrors } ) => {
 
 					{ preserveMetaData?.status && (
 						<>
-							<div className="flex gap-2 w-full">
+							{ isNeverStoreEntriesEnabled && (
+								<Container className="w-full p-3 gap-2 border border-solid border-alert-border-warning bg-alert-background-warning rounded-lg">
+									<span className="size-5">
+										<Info
+											size={ 20 }
+											className="text-yellow-600"
+										/>
+									</span>
+									<span className="text-sm font-normal">
+										{ __(
+											'The entry cap relies on stored entries to count submissions. While Compliance Settings has "Never store entry data after form submission" enabled, this limit will not be enforced. Disable that option, or remove the entry limit, to use this feature.',
+											'sureforms'
+										) }
+									</span>
+								</Container>
+							) }
+							<div className="flex gap-2 w-full items-end">
 								<div className="w-full">
 									<Input
 										size="md"
@@ -210,6 +241,33 @@ const FormRestriction = ( { setHasValidationErrors } ) => {
 										} }
 									/>
 								</div>
+								{ /*
+								  * Slot for extensions to render a control aligned
+								  * to the right of the Maximum Entries input — used
+								  * by SureForms Pro to expose a Total / Per Day /
+								  * Per Week / Per Month / Per Year period selector.
+								  *
+								  * Filter contract: callbacks receive whatever the
+								  * previous callback returned (initially `null`)
+								  * and are expected to return a JSX node. To stay
+								  * a good citizen alongside other extensions a
+								  * callback should compose with the previous return
+								  * rather than replacing it, e.g.:
+								  *
+								  *   addFilter(
+								  *     'srfm_form_restriction_max_entries_after',
+								  *     'my-plugin/extra',
+								  *     ( prev ) => <>{ prev }<MyControl /></>
+								  *   );
+								  *
+								  * Last-registered-callback-wins is acceptable when
+								  * only one extension is active, which is the
+								  * current single-vendor reality (SureForms Pro).
+								  */ }
+								{ applyFilters(
+									'srfm_form_restriction_max_entries_after',
+									null
+								) }
 							</div>
 
 							<div>

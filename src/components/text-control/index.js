@@ -153,6 +153,7 @@ const SRFMTextControl = ( props ) => {
 						<>
 							{ props?.variant !== 'textarea' && (
 								<TextControl
+									__next40pxDefaultSize
 									label={
 										props?.variant === 'inline' ||
 										( props?.variant !== 'inline' &&

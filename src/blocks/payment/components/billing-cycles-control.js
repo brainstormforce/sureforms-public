@@ -45,14 +45,23 @@ const BillingCyclesControl = ( { subscriptionPlan, setAttributes } ) => {
 		} );
 	};
 
-	const isCustomIfBlank = '' === subscriptionPlan?.billingCycles;
+	// BILLING_CYCLES_NUMERIC_STRING: start
+	// Normalize billingCycles to a number when it's either a number or a numeric string (e.g. "6").
+	const rawBillingCycles = subscriptionPlan?.billingCycles;
+	const isNumericValue =
+		typeof rawBillingCycles === 'number' ||
+		( typeof rawBillingCycles === 'string' &&
+			rawBillingCycles.trim() !== '' &&
+			! isNaN( Number( rawBillingCycles ) ) );
+	const numericBillingCycles = isNumericValue ? Number( rawBillingCycles ) : null;
+	// BILLING_CYCLES_NUMERIC_STRING: end
+
+	const isCustomIfBlank = '' === rawBillingCycles;
 	const cycleIsNotThree =
-		typeof subscriptionPlan?.billingCycles === 'number' &&
-		subscriptionPlan?.billingCycles !== 3;
+		isNumericValue && numericBillingCycles !== 3;
 	const isCustom = isCustomIfBlank || cycleIsNotThree;
 	const showInput =
-		[ 2, 3, 4, 5 ].includes( Number( subscriptionPlan?.billingCycles ) ) ||
-		isCustom;
+		[ 2, 3, 4, 5 ].includes( numericBillingCycles ) || isCustom;
 
 	const defaultOptions = [
 		{
@@ -84,6 +93,7 @@ const BillingCyclesControl = ( { subscriptionPlan, setAttributes } ) => {
 	return (
 		<>
 			<SelectControl
+				__next40pxDefaultSize
 				label={ __( 'Stop Subscription After', 'sureforms' ) }
 				value={ isCustom ? 'custom' : subscriptionPlan?.billingCycles }
 				options={ defaultOptions }

@@ -30,10 +30,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Setup Node 18
+      - name: Setup Node 20
         uses: actions/setup-node@v6
         with:
-          node-version: '18.15.0'
+          node-version: '20.20.1'
 
       - name: Restore node_modules cache
         id: npm-cache
@@ -143,10 +143,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Setup Node 18
+      - name: Setup Node 20
         uses: actions/setup-node@v6
         with:
-          node-version: '18.15.0'
+          node-version: '20.20.1'
 
       - name: Restore node_modules cache
         id: npm-cache

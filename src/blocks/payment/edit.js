@@ -22,6 +22,7 @@ import { attributeOptionsWithFilter, afterAttributePanelBody } from '@Components
 import Separator from '@Components/separator';
 import MultiButtonsControl from '@Components/multi-buttons-control';
 import BillingCyclesControl from './components/billing-cycles-control.js';
+// BOTH MODE: "both" mode reuses the same single-select controls as subscription mode.
 
 const Edit = ( props ) => {
 	const { clientId, attributes, setAttributes, isSelected } = props;
@@ -40,6 +41,19 @@ const Edit = ( props ) => {
 		customerEmailField,
 		variableAmountField,
 		paymentDescription,
+		// BOTH MODE: start — new attributes for "both" payment type
+		oneTimeLabel,
+		subscriptionLabel,
+		defaultPaymentChoice,
+		oneTimeAmountType,
+		oneTimeFixedAmount,
+		oneTimeMinimumAmount,
+		oneTimeVariableAmountField,
+		subscriptionAmountType,
+		subscriptionFixedAmount,
+		subscriptionMinimumAmount,
+		subscriptionVariableAmountField,
+		// BOTH MODE: end
 	} = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
 	const [ availableFormFields, setAvailableFormFields ] = useState( {
@@ -114,6 +128,12 @@ const Edit = ( props ) => {
 							label: `${ label } (multi-choice)`,
 							type: 'multi-choice',
 						} );
+					} else if ( blockName === 'srfm/hidden' ) {
+						variableAmountFields.push( {
+							slug,
+							label: `${ label } (hidden)`,
+							type: 'hidden',
+						} );
 					}
 				}
 			} );
@@ -129,18 +149,22 @@ const Edit = ( props ) => {
 		}
 	};
 
-	// Update available fields when form changes
+	// Update available fields when the form context or selection changes.
+	// Depending on currentFormId ensures the field list refreshes when the
+	// editor switches between forms; the previous length-guard workaround
+	// hid a stale-closure bug because the effect didn't react to formId changes.
 	useEffect( () => {
-		if ( isSelected || ! availableFormFields?.emailsFields?.length ) {
-			const { emailsFields, nameFields, variableAmountFields } =
-				extractFormFields();
-			setAvailableFormFields( {
-				emailsFields,
-				nameFields,
-				variableAmountFields,
-			} );
-		}
-	}, [ isSelected ] );
+		const { emailsFields, nameFields, variableAmountFields } =
+			extractFormFields();
+		setAvailableFormFields( {
+			emailsFields,
+			nameFields,
+			variableAmountFields,
+		} );
+		// extractFormFields is declared inline and closes over the latest
+		// getBlocks/currentFormId — safe to omit from deps.
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [ isSelected, currentFormId ] );
 
 	useEffect( () => {
 		if ( formId !== currentFormId ) {
@@ -212,6 +236,12 @@ const Edit = ( props ) => {
 							value: 'subscription',
 							label: __( 'Subscription', 'sureforms' ),
 						},
+						// BOTH MODE: start — new "Both" option
+						{
+							value: 'both',
+							label: __( 'Both', 'sureforms' ),
+						},
+						// BOTH MODE: end
 					] }
 					showIcons={ false }
 				/>
@@ -227,7 +257,7 @@ const Edit = ( props ) => {
 								'Subscription Plan Name',
 								'sureforms'
 							) }
-							value={ subscriptionPlan?.name }
+							value={ subscriptionPlan?.name || '' }
 							data={ {
 								value:
 										subscriptionPlan?.name ||
@@ -250,6 +280,7 @@ const Edit = ( props ) => {
 					id: 'subscription-interval',
 					component: (
 						<SelectControl
+							__next40pxDefaultSize
 							label={ __( 'Billing Interval', 'sureforms' ) }
 							value={ subscriptionPlan?.interval || 'month' }
 							options={ [
@@ -296,129 +327,544 @@ const Edit = ( props ) => {
 				},
 			  ]
 			: [] ),
-		{
-			id: 'separator',
-			component: <Separator />,
-		},
-		{
-			id: 'amount-type',
-			component: (
-				<MultiButtonsControl
-					setAttributes={ setAttributes }
-					label={ __( 'Amount Type', 'sureforms' ) }
-					data={ {
-						value: amountType,
-						label: 'amountType',
-					} }
-					options={ [
-						{
-							value: 'fixed',
-							label: __( 'Fixed Amount', 'sureforms' ),
-						},
-						{
-							value: 'variable',
-							label: __( 'Dynamic Amount', 'sureforms' ),
-						},
-					] }
-					showIcons={ false }
-					help={ __(
-						'Choose whether to charge a fixed amount or charge the amount based on user input in other form fields.',
-						'sureforms'
-					) }
-				/>
-			),
-		},
-		...( amountType === 'fixed'
+		// BOTH MODE: start — entire settings block for "both" payment type
+		...( paymentType === 'both'
 			? [
 				{
-					id: 'fixed-amount',
+					id: 'both-one-time-label',
 					component: (
 						<SRFMTextControl
-							label={ __( 'Fixed Amount', 'sureforms' ) }
-							type="number"
-							value={ fixedAmount }
+							label={ __( 'One-Time Label', 'sureforms' ) }
+							value={ oneTimeLabel }
 							data={ {
-								value: fixedAmount,
-								label: 'fixedAmount',
+								value: oneTimeLabel,
+								label: 'oneTimeLabel',
 							} }
 							onChange={ ( value ) =>
-								setAttributes( {
-									fixedAmount: parseFloat( value ) || 0,
-								} )
+								setAttributes( { oneTimeLabel: value } )
 							}
 							help={ __(
-								'Set the exact amount you want to charge. Users won’t be able to change it',
+								'Label shown to users for the one-time payment option.',
 								'sureforms'
 							) }
 						/>
 					),
 				},
-			  ]
-			: [] ),
-		...( amountType === 'variable'
-			? [
 				{
-					id: 'variable-amount-field',
+					id: 'both-subscription-label',
 					component: (
-						<SelectControl
-							label={ __(
-								'Choose Amount Field',
+						<SRFMTextControl
+							label={ __( 'Subscription Label', 'sureforms' ) }
+							value={ subscriptionLabel }
+							data={ {
+								value: subscriptionLabel,
+								label: 'subscriptionLabel',
+							} }
+							onChange={ ( value ) =>
+								setAttributes( { subscriptionLabel: value } )
+							}
+							help={ __(
+								'Label shown to users for the subscription option.',
 								'sureforms'
 							) }
-							value={ variableAmountField || '' }
+						/>
+					),
+				},
+				{
+					id: 'both-default-choice',
+					component: (
+						<MultiButtonsControl
+							setAttributes={ setAttributes }
+							label={ __( 'Default Selection', 'sureforms' ) }
+							data={ {
+								value: defaultPaymentChoice,
+								label: 'defaultPaymentChoice',
+							} }
 							options={ [
 								{
-									label: __(
-										'Select a field…',
-										'sureforms'
-									),
-									value: '',
+									value: 'one-time',
+									label: __( 'One Time', 'sureforms' ),
 								},
-								...(
-									availableFormFields?.variableAmountFields ||
-										[]
-								).map( ( field ) => ( {
-									label: field.label,
-									value: field.slug,
-								} ) ),
+								{
+									value: 'subscription',
+									label: __( 'Subscription', 'sureforms' ),
+								},
+							] }
+							showIcons={ false }
+							help={ __(
+								'Which option is pre-selected when the form loads.',
+								'sureforms'
+							) }
+						/>
+					),
+				},
+				{
+					id: 'both-separator-one-time',
+					component: <Separator />,
+				},
+				{
+					id: 'both-one-time-amount-type',
+					component: (
+						<MultiButtonsControl
+							setAttributes={ setAttributes }
+							label={ __( 'One-Time Amount Type', 'sureforms' ) }
+							data={ {
+								value: oneTimeAmountType,
+								label: 'oneTimeAmountType',
+							} }
+							options={ [
+								{
+									value: 'fixed',
+									label: __( 'Fixed Amount', 'sureforms' ),
+								},
+								{
+									value: 'variable',
+									label: __( 'Dynamic Amount', 'sureforms' ),
+								},
+							] }
+							showIcons={ false }
+							help={ __(
+								'Set how the one-time payment amount is determined.',
+								'sureforms'
+							) }
+						/>
+					),
+				},
+				...( oneTimeAmountType === 'fixed'
+					? [
+						{
+							id: 'both-one-time-fixed-amount',
+							component: (
+								<SRFMTextControl
+									label={ __(
+										'One-Time Fixed Amount',
+										'sureforms'
+									) }
+									type="number"
+									value={ oneTimeFixedAmount }
+									data={ {
+										value: oneTimeFixedAmount,
+										label: 'oneTimeFixedAmount',
+									} }
+									onChange={ ( value ) =>
+										setAttributes( {
+											oneTimeFixedAmount:
+													parseFloat( value ) || 0,
+										} )
+									}
+									help={ __(
+										'Amount charged for a one-time payment.',
+										'sureforms'
+									) }
+								/>
+							),
+						},
+					  ]
+					: [] ),
+				...( oneTimeAmountType === 'variable'
+					? [
+						{
+							id: 'both-one-time-variable-field',
+							component: (
+								<SelectControl
+									label={ __(
+										'One-Time Amount Field',
+										'sureforms'
+									) }
+									value={ oneTimeVariableAmountField || '' }
+									options={ [
+										{
+											label: __(
+												'Select a field…',
+												'sureforms'
+											),
+											value: '',
+										},
+										...(
+											availableFormFields?.variableAmountFields ||
+												[]
+										).map( ( field ) => ( {
+											label: field.label,
+											value: field.slug,
+										} ) ),
+									] }
+									onChange={ ( value ) => {
+										setAttributes( {
+											oneTimeVariableAmountField: value,
+										} );
+									} }
+									help={ __(
+										'Pick a form field whose value determines the one-time payment amount.',
+										'sureforms'
+									) }
+								/>
+							),
+						},
+						{
+							id: 'both-one-time-minimum-amount',
+							component: (
+								<SRFMTextControl
+									label={ __(
+										'One-Time Minimum Amount',
+										'sureforms'
+									) }
+									type="number"
+									value={ oneTimeMinimumAmount }
+									data={ {
+										value: oneTimeMinimumAmount,
+										label: 'oneTimeMinimumAmount',
+									} }
+									onChange={ ( value ) =>
+										setAttributes( {
+											oneTimeMinimumAmount:
+													parseFloat( value ) || 0,
+										} )
+									}
+									help={ __(
+										'Minimum amount users can enter for one-time payment (0 for no minimum).',
+										'sureforms'
+									) }
+								/>
+							),
+						},
+					  ]
+					: [] ),
+				{
+					id: 'both-separator-subscription',
+					component: <Separator />,
+				},
+				{
+					id: 'both-subscription-amount-type',
+					component: (
+						<MultiButtonsControl
+							setAttributes={ setAttributes }
+							label={ __(
+								'Subscription Amount Type',
+								'sureforms'
+							) }
+							data={ {
+								value: subscriptionAmountType,
+								label: 'subscriptionAmountType',
+							} }
+							options={ [
+								{
+									value: 'fixed',
+									label: __( 'Fixed Amount', 'sureforms' ),
+								},
+								{
+									value: 'variable',
+									label: __( 'Dynamic Amount', 'sureforms' ),
+								},
+							] }
+							showIcons={ false }
+							help={ __(
+								'Set how the subscription amount is determined.',
+								'sureforms'
+							) }
+						/>
+					),
+				},
+				...( subscriptionAmountType === 'fixed'
+					? [
+						{
+							id: 'both-subscription-fixed-amount',
+							component: (
+								<SRFMTextControl
+									label={ __(
+										'Subscription Fixed Amount',
+										'sureforms'
+									) }
+									type="number"
+									value={ subscriptionFixedAmount }
+									data={ {
+										value: subscriptionFixedAmount,
+										label: 'subscriptionFixedAmount',
+									} }
+									onChange={ ( value ) =>
+										setAttributes( {
+											subscriptionFixedAmount:
+													parseFloat( value ) || 0,
+										} )
+									}
+									help={ __(
+										'Recurring amount charged per billing interval.',
+										'sureforms'
+									) }
+								/>
+							),
+						},
+					  ]
+					: [] ),
+				...( subscriptionAmountType === 'variable'
+					? [
+						{
+							id: 'both-subscription-variable-field',
+							component: (
+								<SelectControl
+									label={ __(
+										'Subscription Amount Field',
+										'sureforms'
+									) }
+									value={
+										subscriptionVariableAmountField || ''
+									}
+									options={ [
+										{
+											label: __(
+												'Select a field…',
+												'sureforms'
+											),
+											value: '',
+										},
+										...(
+											availableFormFields?.variableAmountFields ||
+												[]
+										).map( ( field ) => ( {
+											label: field.label,
+											value: field.slug,
+										} ) ),
+									] }
+									onChange={ ( value ) => {
+										setAttributes( {
+											subscriptionVariableAmountField:
+													value,
+										} );
+									} }
+									help={ __(
+										'Pick a form field whose value determines the subscription amount.',
+										'sureforms'
+									) }
+								/>
+							),
+						},
+						{
+							id: 'both-subscription-minimum-amount',
+							component: (
+								<SRFMTextControl
+									label={ __(
+										'Subscription Minimum Amount',
+										'sureforms'
+									) }
+									type="number"
+									value={ subscriptionMinimumAmount }
+									data={ {
+										value: subscriptionMinimumAmount,
+										label: 'subscriptionMinimumAmount',
+									} }
+									onChange={ ( value ) =>
+										setAttributes( {
+											subscriptionMinimumAmount:
+													parseFloat( value ) || 0,
+										} )
+									}
+									help={ __(
+										'Minimum amount users can enter for subscription (0 for no minimum).',
+										'sureforms'
+									) }
+								/>
+							),
+						},
+					  ]
+					: [] ),
+				{
+					id: 'both-separator-plan',
+					component: <Separator />,
+				},
+				{
+					id: 'both-subscription-plan-name',
+					component: (
+						<SRFMTextControl
+							label={ __(
+								'Subscription Plan Name',
+								'sureforms'
+							) }
+							value={ subscriptionPlan?.name || '' }
+							data={ {
+								value:
+										subscriptionPlan?.name ||
+										'Subscription Plan',
+								label: 'subscription-plan-name',
+							} }
+							onChange={ ( value ) => {
+								setAttributes( {
+									subscriptionPlan: {
+										...( subscriptionPlan || {} ),
+										name: value,
+									},
+								} );
+							} }
+							allowReset={ false }
+						/>
+					),
+				},
+				{
+					id: 'both-subscription-interval',
+					component: (
+						// BOTH MODE: single-select, same as subscription mode.
+						<SelectControl
+							label={ __( 'Billing Interval', 'sureforms' ) }
+							value={ subscriptionPlan?.interval || 'month' }
+							options={ [
+								{ label: __( 'Daily', 'sureforms' ), value: 'day' },
+								{ label: __( 'Weekly', 'sureforms' ), value: 'week' },
+								{ label: __( 'Monthly', 'sureforms' ), value: 'month' },
+								{ label: __( 'Quarterly', 'sureforms' ), value: 'quarter' },
+								{ label: __( 'Yearly', 'sureforms' ), value: 'year' },
 							] }
 							onChange={ ( value ) => {
 								setAttributes( {
-									variableAmountField: value,
+									subscriptionPlan: {
+										...( subscriptionPlan || {} ),
+										interval: value,
+									},
 								} );
 							} }
-							help={ __(
-								'Pick a field from your form like a number, dropdown, or multichoice whose value should decide the payment amount.',
-								'sureforms'
-							) }
 						/>
 					),
 				},
 				{
-					id: 'minimum-amount',
+					id: 'both-billing-cycles',
 					component: (
-						<SRFMTextControl
-							label={ __( 'Minimum Amount', 'sureforms' ) }
-							type="number"
-							value={ minimumAmount }
-							data={ {
-								value: minimumAmount,
-								label: 'minimumAmount',
-							} }
-							onChange={ ( value ) =>
-								setAttributes( {
-									minimumAmount: parseFloat( value ) || 0,
-								} )
-							}
-							help={ __(
-								'Set the minimum amount users can enter (0 for no minimum)',
-								'sureforms'
-							) }
+						// BOTH MODE: single-select, same as subscription mode.
+						<BillingCyclesControl
+							subscriptionPlan={ subscriptionPlan }
+							setAttributes={ setAttributes }
 						/>
 					),
 				},
 			  ]
 			: [] ),
+		// BOTH MODE: end
+		// BOTH MODE: shared amount section hidden when paymentType === 'both'
+		...( paymentType !== 'both'
+			? [
+				{
+					id: 'separator',
+					component: <Separator />,
+				},
+				{
+					id: 'amount-type',
+					component: (
+						<MultiButtonsControl
+							setAttributes={ setAttributes }
+							label={ __( 'Amount Type', 'sureforms' ) }
+							data={ {
+								value: amountType,
+								label: 'amountType',
+							} }
+							options={ [
+								{
+									value: 'fixed',
+									label: __( 'Fixed Amount', 'sureforms' ),
+								},
+								{
+									value: 'variable',
+									label: __( 'Dynamic Amount', 'sureforms' ),
+								},
+							] }
+							showIcons={ false }
+							help={ __(
+								'Choose whether to charge a fixed amount or charge the amount based on user input in other form fields.',
+								'sureforms'
+							) }
+						/>
+					),
+				},
+				...( amountType === 'fixed'
+					? [
+						{
+							id: 'fixed-amount',
+							component: (
+								<SRFMTextControl
+									label={ __( 'Fixed Amount', 'sureforms' ) }
+									type="number"
+									value={ fixedAmount }
+									data={ {
+										value: fixedAmount,
+										label: 'fixedAmount',
+									} }
+									onChange={ ( value ) =>
+										setAttributes( {
+											fixedAmount: parseFloat( value ) || 0,
+										} )
+									}
+									help={ __(
+										'Set the exact amount you want to charge. Users won’t be able to change it',
+										'sureforms'
+									) }
+								/>
+							),
+						},
+					  ]
+					: [] ),
+				...( amountType === 'variable'
+					? [
+						{
+							id: 'variable-amount-field',
+							component: (
+								<SelectControl
+									__next40pxDefaultSize
+									label={ __(
+										'Choose Amount Field',
+										'sureforms'
+									) }
+									value={ variableAmountField || '' }
+									options={ [
+										{
+											label: __(
+												'Select a field…',
+												'sureforms'
+											),
+											value: '',
+										},
+										...(
+											availableFormFields?.variableAmountFields ||
+												[]
+										).map( ( field ) => ( {
+											label: field.label,
+											value: field.slug,
+										} ) ),
+									] }
+									onChange={ ( value ) => {
+										setAttributes( {
+											variableAmountField: value,
+										} );
+									} }
+									help={ __(
+										'Pick a field from your form like a number, dropdown, multichoice, or hidden whose value should decide the payment amount.',
+										'sureforms'
+									) }
+								/>
+							),
+						},
+						{
+							id: 'minimum-amount',
+							component: (
+								<SRFMTextControl
+									label={ __( 'Minimum Amount', 'sureforms' ) }
+									type="number"
+									value={ minimumAmount }
+									data={ {
+										value: minimumAmount,
+										label: 'minimumAmount',
+									} }
+									onChange={ ( value ) =>
+										setAttributes( {
+											minimumAmount: parseFloat( value ) || 0,
+										} )
+									}
+									help={ __(
+										'Set the minimum amount users can enter (0 for no minimum)',
+										'sureforms'
+									) }
+								/>
+							),
+						},
+					  ]
+					: [] ),
+			  ]
+			: [] ),
+		// BOTH MODE: end of shared amount guard
 		{
 			id: 'separator-2',
 			component: <Separator />,
@@ -427,8 +873,11 @@ const Edit = ( props ) => {
 			id: 'customer-name-field',
 			component: (
 				<SelectControl
+					__next40pxDefaultSize
 					label={
-						paymentType === 'subscription'
+						// BOTH MODE: treat "both" like "subscription" for name requirement
+						paymentType === 'subscription' ||
+						paymentType === 'both'
 							? __(
 								'Customer Name Field (Required)',
 								'sureforms'
@@ -455,7 +904,9 @@ const Edit = ( props ) => {
 						setAttributes( { customerNameField: value } );
 					} }
 					help={
-						paymentType === 'subscription'
+						// BOTH MODE: treat "both" like "subscription" for help text
+						paymentType === 'subscription' ||
+						paymentType === 'both'
 							? __(
 								'Select the input field that contains the customer name (Required for subscriptions)',
 								'sureforms'
@@ -472,6 +923,7 @@ const Edit = ( props ) => {
 			id: 'customer-email-field',
 			component: (
 				<SelectControl
+					__next40pxDefaultSize
 					label={ __(
 						'Customer Email Field (Required)',
 						'sureforms'

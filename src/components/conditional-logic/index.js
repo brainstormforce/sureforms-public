@@ -43,6 +43,7 @@ const ConditionalLogicPreview = () => {
 					/>
 					<div className="srfm-show-hide-select">
 						<SelectControl
+							__next40pxDefaultSize
 							value={ 'show' }
 							disabled={ true }
 							options={ [

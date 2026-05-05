@@ -13,6 +13,7 @@ use SRFM\Admin\Analytics;
 use SRFM\Admin\Notice_Manager;
 use SRFM\Inc\Abilities\Abilities_Registrar;
 use SRFM\Inc\Activator;
+use SRFM\Inc\Admin\Editor_Nudge;
 use SRFM\Inc\Admin_Ajax;
 use SRFM\Inc\AI_Form_Builder\AI_Auth;
 use SRFM\Inc\AI_Form_Builder\AI_Form_Builder;
@@ -212,6 +213,7 @@ class Plugin_Loader {
 			Admin::get_instance();
 			// phpcs:ignore /** @phpstan-ignore-next-line */ -- Class is loaded dynamically in WordPress
 			Notice_Manager::get_instance();
+			Editor_Nudge::get_instance();
 		}
 		Payments::get_instance();
 		Duplicate_Form::get_instance();

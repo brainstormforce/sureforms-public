@@ -12,6 +12,11 @@ module.exports = function ( grunt ) {
 				sourcemap: 'none',
 				outputStyle: 'expanded',
 				linefeed: 'lf',
+				silenceDeprecations: [
+					'legacy-js-api',
+					'import',
+					'global-builtin',
+				],
 			},
 			dist: {
 				files: [
@@ -32,7 +37,7 @@ module.exports = function ( grunt ) {
 				map: false,
 				processors: [
 					autoprefixer( {
-						browsers: [
+						overrideBrowserslist: [
 							'> 1%',
 							'ie >= 11',
 							'last 1 Android versions',

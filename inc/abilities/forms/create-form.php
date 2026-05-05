@@ -316,6 +316,10 @@ class Create_Form extends Abstract_Ability {
 
 		$post_content = Field_Mapping::generate_gutenberg_fields_from_questions( $request );
 
+		if ( is_wp_error( $post_content ) ) {
+			return $post_content;
+		}
+
 		if ( empty( $post_content ) ) {
 			return new \WP_Error(
 				'srfm_field_mapping_failed',

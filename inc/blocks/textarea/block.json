@@ -46,6 +46,10 @@
 			"type": "string",
 			"default": ""
 		},
+		"minLength": {
+			"type": "number",
+			"default": ""
+		},
 		"maxLength": {
 			"type": "number",
 			"default": ""

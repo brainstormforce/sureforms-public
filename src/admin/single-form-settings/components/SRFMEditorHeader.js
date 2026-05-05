@@ -26,6 +26,7 @@ const SRFMEditorHeader = () => {
 
 	return (
 		<TextControl
+			__next40pxDefaultSize
 			ref={ formTitleInputRef }
 			className="srfm-header-title-input"
 			placeholder={ __( 'Form Title', 'sureforms' ) }

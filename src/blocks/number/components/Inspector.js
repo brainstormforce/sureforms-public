@@ -16,6 +16,7 @@ export default function CustomInspectorControls( {
 			<PanelBody title={ __( 'Attributes', 'sureforms' ) }>
 				<PanelRow>
 					<TextControl
+						__next40pxDefaultSize
 						label={ __( 'Name', 'sureforms' ) }
 						value={ name }
 						onChange={ ( newName ) =>
@@ -25,6 +26,7 @@ export default function CustomInspectorControls( {
 				</PanelRow>
 				<PanelRow>
 					<TextControl
+						__next40pxDefaultSize
 						label={ __( 'Label', 'sureforms' ) }
 						value={ label }
 						onChange={ ( newLabel ) =>
@@ -34,6 +36,7 @@ export default function CustomInspectorControls( {
 				</PanelRow>
 				<PanelRow>
 					<TextControl
+						__next40pxDefaultSize
 						label={ __( 'Placeholder', 'sureforms' ) }
 						value={ placeholder }
 						onChange={ ( newPlaceholder ) =>
@@ -43,6 +46,7 @@ export default function CustomInspectorControls( {
 				</PanelRow>
 				<PanelRow>
 					<TextControl
+						__next40pxDefaultSize
 						label={ __( 'Help', 'sureforms' ) }
 						value={ help }
 						onChange={ ( newHelp ) =>

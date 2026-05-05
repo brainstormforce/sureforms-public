@@ -78,9 +78,11 @@ export const PaymentComponent = ( props ) => {
 		return nameFieldExists || emailFieldExists;
 	};
 
-	// Check payment type (subscription or one-time)
+	// Check payment type (subscription, one-time, or both)
 	const paymentType = attributes.paymentType || 'one-time';
 	const isSubscription = paymentType === 'subscription';
+	// BOTH MODE: detect "both" mode
+	const isBoth = paymentType === 'both';
 
 	// Check amount type
 	const amountType = attributes.amountType || 'fixed';
@@ -91,20 +93,57 @@ export const PaymentComponent = ( props ) => {
 	const customerEmail = attributes.customerEmailField || '';
 	const variableAmountField = attributes.variableAmountField || '';
 
-	// Name field validation: required only for subscriptions
+	// Name field validation: required for subscriptions AND "both" mode
+	// BOTH MODE: require name field because user may choose subscription
 	const missingNameField =
-		isSubscription &&
+		( isSubscription || isBoth ) &&
 		( ! customerName || ! verifyFieldIsValid( customerName ) );
 
 	// Email field validation: required for all payment types
 	const missingEmailField =
 		! customerEmail || ! verifyFieldIsValid( customerEmail );
 
-	// Variable amount field validation: required when amount type is variable
-	const missingVariableAmountField =
-		isVariableAmount &&
-		( ! variableAmountField ||
-			! verifyFieldIsValid( variableAmountField, 'variableAmount' ) );
+	// Variable amount field validation
+	let missingVariableAmountField = false;
+	// BOTH MODE: validate one-time AND subscription variable amount fields independently
+	if ( isBoth ) {
+		const oneTimeAmountType =
+			attributes.oneTimeAmountType || 'fixed';
+		if ( oneTimeAmountType === 'variable' ) {
+			const oneTimeField =
+				attributes.oneTimeVariableAmountField || '';
+			if (
+				! oneTimeField ||
+				! verifyFieldIsValid( oneTimeField, 'variableAmount' )
+			) {
+				missingVariableAmountField = true;
+			}
+		}
+		const subscriptionAmountType =
+			attributes.subscriptionAmountType || 'fixed';
+		if ( subscriptionAmountType === 'variable' ) {
+			const subscriptionField =
+				attributes.subscriptionVariableAmountField || '';
+			if (
+				! subscriptionField ||
+				! verifyFieldIsValid(
+					subscriptionField,
+					'variableAmount'
+				)
+			) {
+				missingVariableAmountField = true;
+			}
+		}
+	} else {
+		// Existing single-type logic
+		missingVariableAmountField =
+			isVariableAmount &&
+			( ! variableAmountField ||
+				! verifyFieldIsValid(
+					variableAmountField,
+					'variableAmount'
+				) );
+	}
 
 	const hasCustomerFieldsError =
 		missingNameField || missingEmailField || missingVariableAmountField;
@@ -130,7 +169,8 @@ export const PaymentComponent = ( props ) => {
 
 		if ( missingFields.length > 0 ) {
 			const fieldsList = missingFields.join( ' and ' );
-			if ( isSubscription && missingFields.length > 1 ) {
+			// BOTH MODE: treat "both" like "subscription" for plural error message
+			if ( ( isSubscription || isBoth ) && missingFields.length > 1 ) {
 				errorMessage = sprintf(
 					/* translators: %1$s: a comma-separated list of missing field names */
 					__(

@@ -4,7 +4,7 @@ Tags: forms, contact form, custom form, payment form, form builder
 Requires at least: 6.4
 Tested up to: 6.9.4
 Requires PHP: 7.4
-Stable tag: 2.8.1
+Stable tag: 2.8.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -478,6 +478,13 @@ You can collect payments securely through Stripe in the free version. PayPal pay
 You can report the issue through our [Bug Bounty Program](https://brainstormforce.com/bug-bounty-program/). We collaborate with Patchstack to provide opportunities for researchers to report vulnerabilities. The Patchstack team will help validate, triage, and handle any reported security issues.
 
 == Changelog ==
+= 2.8.2 - 5th May 2026 =
+* New: Added "Both" payment type so a single form can collect one-time and subscription payments together.
+* New: Added Hidden field support for the payment block's dynamic amount.
+* New: Added minimum character limit support for the Textarea field.
+* Improvement: Added extension hooks for windowed entry caps in form restriction.
+* Fix: Fixed AI Form Builder silent failures and replaced generic error messages with clearer feedback.
+* Fix: Resolved an issue where the Confirm Email field could silently block form submission when the Email field was not marked as required.
 = 2.8.1 - 27th April 2026 =
 * New: Added support for dynamic default values on Dropdown and Multi-Choice fields.
 * New: Added {entry_id} smart tag for use in email templates, confirmations, and dynamic content.
@@ -493,15 +500,6 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 * Fix: Fixed crash when saving a form containing the Register block.
 * Fix: Fixed inability to deselect a preselected option in single-selection controls (radio, dropdown) within the editor.
 * Fix: Fixed Quill rich text editor toolbar strings not being translatable.
-= 2.7.1 - 9th April 2026 =
-* New: Added a customizable Field Slug panel to all form blocks.
-* New: Added Payment Description field to the Stripe payment block with smart tag support.
-* Fix: Fixed Elementor form title toggle working in reverse.
-* Fix: Fixed non-Latin character field labels generating unstable slugs that broke conditional confirmation logic.
-* Fix: Fixed PHP warnings for undefined array keys in compliance settings and AI field mapping.
-* Fix: Fixed slugs with underscores not mapping correctly during smart tag and integration processing.
-* Fix: Fixed textarea values losing line breaks in {form:field} smart tags.
-* Fix: Fixed {current_page_url} smart tag resolving to REST API URL in email notifications.
 The full changelog is available [here](https://sureforms.com/whats-new/).
 
 == Upgrade Notice ==

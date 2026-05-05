@@ -109,6 +109,7 @@ export const EnhancedMultiChoiceOptions = ( defaultOption, args ) => {
 			<div>
 				<DragIcon param={ param } />
 				<TextControl
+					__next40pxDefaultSize
 					value={ option.optionTitle }
 					onChange={ ( value ) => editOption( value, i ) }
 				/>
@@ -156,6 +157,7 @@ export const EnhancedDropdownOptions = ( defaultOption, args ) => {
 			<div>
 				<DragIcon param={ param } />
 				<TextControl
+					__next40pxDefaultSize
 					value={ option.label }
 					onChange={ ( value ) => editOption( value, i ) }
 				/>

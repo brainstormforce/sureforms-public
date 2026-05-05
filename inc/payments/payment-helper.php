@@ -575,7 +575,8 @@ class Payment_Helper {
 	 * @param int|float $amount   Amount in smallest currency unit (e.g., cents for USD).
 	 * @param string    $currency Currency code (e.g., 'usd', 'eur').
 	 * @param int       $form_id  WordPress post ID of the form.
-	 * @param string    $block_id Block identifier for the payment block.
+	 * @param string    $block_id    Block identifier for the payment block.
+	 * @param string    $active_type Optional. 'one-time' or 'subscription' for "both" mode resolution.
 	 * @return array {
 	 *     Validation result.
 	 *
@@ -583,7 +584,7 @@ class Payment_Helper {
 	 *     @type string $message Error message if validation failed, empty if valid.
 	 * }
 	 */
-	public static function validate_payment_amount( $amount, $currency, $form_id, $block_id ) {
+	public static function validate_payment_amount( $amount, $currency, $form_id, $block_id, $active_type = '' ) {
 		// Retrieve block configuration from post meta.
 		$block_config = Field_Validation::get_or_migrate_block_config_for_legacy_form( $form_id );
 
@@ -614,13 +615,31 @@ class Payment_Helper {
 			];
 		}
 
+		// Reject when the requested flow (one-time vs subscription) is not allowed by
+		// the form's stored payment_type. "both" mode allows either flow; pure modes
+		// allow only their matching flow. Without this guard, an attacker could call
+		// the wrong intent-creation route on a pure-subscription form and pay once for
+		// what should be a recurring charge (or vice versa).
+		$payment_type = isset( $payment_config['payment_type'] ) && is_string( $payment_config['payment_type'] ) ? $payment_config['payment_type'] : 'one-time';
+		if ( ! empty( $active_type ) && 'both' !== $payment_type && $active_type !== $payment_type ) {
+			return [
+				'valid'   => false,
+				'message' => __( 'Payment type does not match the form configuration.', 'sureforms' ),
+			];
+		}
+
+		// BOTH MODE: when payment_type is 'both', resolve the correct per-type
+		// config (amount_type, fixed_amount, minimum_amount, variable_amount_field)
+		// based on which flow the user actually chose (one-time vs subscription).
+		$resolved_config = self::resolve_payment_config_for_active_type( $payment_config, $active_type );
+
 		// Get amount type (fixed or minimum).
-		$amount_type = $payment_config['amount_type'] ?? 'fixed';
+		$amount_type = $resolved_config['amount_type'] ?? 'fixed';
 
 		// Validate based on amount type.
 		if ( 'fixed' === $amount_type ) {
 			// Fixed amount validation - must match exactly.
-			$configured_amount = isset( $payment_config['fixed_amount'] ) ? floatval( $payment_config['fixed_amount'] ) : 10.00;
+			$configured_amount = isset( $resolved_config['fixed_amount'] ) ? floatval( $resolved_config['fixed_amount'] ) : 10.00;
 
 			// Allow small floating point difference (0.01) due to rounding.
 			if ( abs( $amount - $configured_amount ) > 0.01 ) {
@@ -632,7 +651,7 @@ class Payment_Helper {
 			}
 		} elseif ( 'variable' === $amount_type ) {
 			// Minimum amount validation - must be >= minimum.
-			$minimum_amount = isset( $payment_config['minimum_amount'] ) ? floatval( $payment_config['minimum_amount'] ) : 0;
+			$minimum_amount = isset( $resolved_config['minimum_amount'] ) ? floatval( $resolved_config['minimum_amount'] ) : 0;
 
 			if ( $amount < $minimum_amount ) {
 				return [
@@ -644,7 +663,7 @@ class Payment_Helper {
 
 			// Validate dynamic amount from dropdown/multi-choice field.
 			$dynamic_amount_validation = self::validate_dynamic_amount_field(
-				$payment_config,
+				$resolved_config,
 				$block_config,
 				$amount,
 				$currency
@@ -699,6 +718,7 @@ class Payment_Helper {
 	 * @param string               $block_id          Block identifier.
 	 * @param string               $payment_intent_id Payment intent ID from Stripe.
 	 * @param array<string, mixed> $form_data         Submitted form data.
+	 * @param string               $active_type       Optional. 'one-time' or 'subscription' for "both" mode resolution.
 	 * @return array {
 	 *     Verification result.
 	 *
@@ -706,7 +726,7 @@ class Payment_Helper {
 	 *     @type string $message Error message if verification failed, empty if valid.
 	 * }
 	 */
-	public static function verify_payment_intent( $block_id, $payment_intent_id, $form_data ) {
+	public static function verify_payment_intent( $block_id, $payment_intent_id, $form_data, $active_type = '' ) {
 		// Get form ID from form data for verification.
 		$form_id = isset( $form_data['form-id'] ) && ! empty( $form_data['form-id'] ) && is_numeric( $form_data['form-id'] ) ? intval( $form_data['form-id'] ) : 0;
 
@@ -729,10 +749,22 @@ class Payment_Helper {
 			];
 		}
 
+		// Reject when the submit path's active_type does not match the type that
+		// was validated at intent-creation time. Prevents an attacker from passing
+		// a one-time intent_id through the subscription submit path (or vice versa)
+		// to replay a small one-time charge in place of a recurring subscription.
+		$stored_active_type = isset( $metadata['active_type'] ) && is_string( $metadata['active_type'] ) ? $metadata['active_type'] : '';
+		if ( ! empty( $active_type ) && ! empty( $stored_active_type ) && $active_type !== $stored_active_type ) {
+			return [
+				'valid'   => false,
+				'message' => __( 'Payment verification failed. Payment type mismatch.', 'sureforms' ),
+			];
+		}
+
 		$payment_amount = isset( $metadata['amount'] ) && ! empty( $metadata['amount'] ) && is_numeric( $metadata['amount'] ) ? floatval( $metadata['amount'] ) : 0;
 
 		// Validate payment amount matches configuration.
-		$amount_validation = self::validate_payment_intent_amount( $block_id, $form_id, $form_data, $payment_amount );
+		$amount_validation = self::validate_payment_intent_amount( $block_id, $form_id, $form_data, $payment_amount, $active_type );
 
 		if ( false === $amount_validation['valid'] ) {
 			return $amount_validation;
@@ -787,6 +819,63 @@ class Payment_Helper {
 	 * @param string               $currency Currency code.
 	 * @return array|null Validation result array or null if validation passes.
 	 * @since 2.3.0
+	 */
+	/**
+	 * BOTH MODE: resolve the correct amount config keys from the payment block
+	 * config based on which flow (one-time or subscription) the user chose.
+	 *
+	 * For pure one-time / subscription blocks, the config already has the correct
+	 * scalar keys (amount_type, fixed_amount, minimum_amount, etc.) so this method
+	 * returns them unchanged. For "both" blocks, it remaps the per-type keys
+	 * (one_time_* or subscription_*) into the scalar positions the validation
+	 * functions expect.
+	 *
+	 * @param array<mixed> $payment_config Full block config from _srfm_block_config.
+	 * @param string       $active_type    'one-time' or 'subscription' — which flow is active.
+	 * @return array<mixed> Config array with amount_type, fixed_amount, minimum_amount,
+	 *                      variable_amount_field, variable_amount_field_block_name resolved
+	 *                      for the active type.
+	 * @since 2.8.2
+	 */
+	private static function resolve_payment_config_for_active_type( $payment_config, $active_type ) {
+		// Only remap when the block is in "both" mode and the caller told us the active type.
+		if ( 'both' !== ( $payment_config['payment_type'] ?? '' ) || empty( $active_type ) ) {
+			return $payment_config;
+		}
+
+		$prefix = 'subscription' === $active_type ? 'subscription_' : 'one_time_';
+
+		$resolved = $payment_config; // Keep all original keys as fallback.
+
+		if ( isset( $payment_config[ $prefix . 'amount_type' ] ) ) {
+			$resolved['amount_type'] = $payment_config[ $prefix . 'amount_type' ];
+		}
+		if ( isset( $payment_config[ $prefix . 'fixed_amount' ] ) ) {
+			$resolved['fixed_amount'] = (float) $payment_config[ $prefix . 'fixed_amount' ];
+		}
+		if ( isset( $payment_config[ $prefix . 'minimum_amount' ] ) ) {
+			$resolved['minimum_amount'] = (float) $payment_config[ $prefix . 'minimum_amount' ];
+		}
+		if ( isset( $payment_config[ $prefix . 'variable_amount_field' ] ) ) {
+			$resolved['variable_amount_field'] = $payment_config[ $prefix . 'variable_amount_field' ];
+		}
+		if ( isset( $payment_config[ $prefix . 'variable_amount_field_block_name' ] ) ) {
+			$resolved['variable_amount_field_block_name'] = $payment_config[ $prefix . 'variable_amount_field_block_name' ];
+		}
+
+		return $resolved;
+	}
+
+	/**
+	 * Validate that a submitted dynamic amount matches one of the options configured
+	 * on a linked dropdown/multi-choice block (when single-selection is enabled).
+	 *
+	 * @since 2.8.2
+	 * @param array<string, mixed> $payment_config           Resolved payment block config (active for current mode).
+	 * @param array<string, mixed> $block_config             All form block configs keyed by block_id.
+	 * @param float                $submitted_amount_decimal Submitted amount as a decimal (not smallest unit).
+	 * @param string               $currency                 ISO currency code.
+	 * @return array<string, mixed>|null Validation result array with 'valid' + 'message', or null when no validation is required.
 	 */
 	private static function validate_dynamic_amount_field( $payment_config, $block_config, $submitted_amount_decimal, $currency ) {
 		// Check if variable amount field is from dropdown or multi-choice block.
@@ -878,6 +967,7 @@ class Payment_Helper {
 	 * @param int                  $form_id        Form post ID.
 	 * @param array<string, mixed> $form_data      Submitted form data.
 	 * @param int|float            $payment_amount Payment amount from Stripe (in smallest currency unit).
+	 * @param string               $active_type    Optional. 'one-time' or 'subscription' for "both" mode resolution.
 	 * @return array {
 	 *     Validation result.
 	 *
@@ -885,7 +975,7 @@ class Payment_Helper {
 	 *     @type string $message Error message if validation failed, empty if valid.
 	 * }
 	 */
-	private static function validate_payment_intent_amount( $block_id, $form_id, $form_data, $payment_amount ) {
+	private static function validate_payment_intent_amount( $block_id, $form_id, $form_data, $payment_amount, $active_type = '' ) {
 		// Get block configuration.
 		$block_config = Field_Validation::get_or_migrate_block_config_for_legacy_form( $form_id );
 
@@ -897,12 +987,13 @@ class Payment_Helper {
 			];
 		}
 
-		$payment_config = $block_config[ $block_id ];
-		$amount_type    = $payment_config['amount_type'] ?? 'fixed';
+		$payment_config  = $block_config[ $block_id ];
+		$resolved_config = self::resolve_payment_config_for_active_type( $payment_config, $active_type );
+		$amount_type     = $resolved_config['amount_type'] ?? 'fixed';
 
 		// For fixed amounts, validate against configured amount.
 		if ( 'fixed' === $amount_type ) {
-			$configured_amount = isset( $payment_config['fixed_amount'] ) ? floatval( $payment_config['fixed_amount'] ) : 0;
+			$configured_amount = isset( $resolved_config['fixed_amount'] ) ? floatval( $resolved_config['fixed_amount'] ) : 0;
 
 			// Allow small floating point difference (0.01) due to rounding.
 			if ( abs( $payment_amount - $configured_amount ) > 0.01 ) {
@@ -922,8 +1013,8 @@ class Payment_Helper {
 		// For variable amounts, validate based on source field.
 		if ( 'variable' === $amount_type ) {
 			// Check if variable amount comes from dropdown/multi-choice.
-			$dynamic_amount_field_block_name = $payment_config['variable_amount_field_block_name'] ?? '';
-			$variable_amount_field_slug      = $payment_config['variable_amount_field'] ?? '';
+			$dynamic_amount_field_block_name = $resolved_config['variable_amount_field_block_name'] ?? '';
+			$variable_amount_field_slug      = $resolved_config['variable_amount_field'] ?? '';
 
 			// Skipping if it is old form configuration.
 			if ( empty( $dynamic_amount_field_block_name ) || empty( $variable_amount_field_slug ) ) {
@@ -1000,10 +1091,32 @@ class Payment_Helper {
 						'message' => sprintf( __( 'Payment amount mismatch. Expected %1$s, received %2$s.', 'sureforms' ), $converted_payment_amount, $payment_amount ),
 					];
 				}
+			} elseif ( 'srfm/hidden' === $dynamic_amount_field_block_name ) {
+				// Hidden field values are dynamic — they may be set at runtime via
+				// URL params, cookies, or JS. Trust the value submitted with the
+				// form and verify the Stripe-charged amount matches it.
+				$expected_amount = is_numeric( $submitted_field_value ) ? floatval( $submitted_field_value ) : 0;
+
+				if ( $expected_amount <= 0 ) {
+					return [
+						'valid'   => false,
+						'message' => __( 'Variable amount field value is required.', 'sureforms' ),
+					];
+				}
+
+				if ( abs( $payment_amount - $expected_amount ) > 0.01 ) {
+					return [
+						'valid'   => false,
+						/* translators: %1$s: expected amount, %2$s: payment amount */
+						'message' => sprintf( __( 'Payment amount mismatch. Expected %1$s, received %2$s.', 'sureforms' ), $expected_amount, $payment_amount ),
+					];
+				}
 			}
 
-			// For other variable amount sources (e.g., number field), validate minimum amount.
-			$minimum_amount = isset( $payment_config['minimum_amount'] ) ? floatval( $payment_config['minimum_amount'] ) : 0;
+			// All variable amount sources (number, hidden) are subject to the configured minimum amount floor.
+			// Use resolved_config so 'both'-mode forms read the active type's per-type minimum
+			// (oneTimeMinimumAmount / subscriptionMinimumAmount) instead of the unset legacy scalar.
+			$minimum_amount = isset( $resolved_config['minimum_amount'] ) ? floatval( $resolved_config['minimum_amount'] ) : 0;
 
 			if ( $payment_amount < $minimum_amount ) {
 				return [
@@ -1158,6 +1271,8 @@ class Payment_Helper {
 			$block_name = 'srfm-input-multi-choice';
 		} elseif ( 'srfm/number' === $dynamic_amount_field_block_name ) {
 			$block_name = 'srfm-number';
+		} elseif ( 'srfm/hidden' === $dynamic_amount_field_block_name ) {
+			$block_name = 'srfm-hidden';
 		}
 
 		// Now we need to get the submitted value.

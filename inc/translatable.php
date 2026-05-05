@@ -90,6 +90,9 @@ class Translatable {
 			'srfm_confirm_email_same'          => __( 'Confirmation email does not match.', 'sureforms' ),
 			'srfm_valid_email'                 => __( 'Enter a valid email address.', 'sureforms' ),
 
+			/* translators: %s represents the minimum number of characters required */
+			'srfm_textarea_min_chars'          => __( 'Please enter at least %s characters.', 'sureforms' ),
+
 			/* translators: %s represents the minimum acceptable value */
 			'srfm_input_min_value'             => __( 'Minimum value is %s.', 'sureforms' ),
 
