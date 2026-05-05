@@ -61,3 +61,4 @@ blob-report/*
 
 # Abilities audit artifacts
 .abilities-audit/
+config.bat
