@@ -1575,6 +1575,8 @@ function switchActivePaymentType( form, paymentBlock, paymentInput, newType ) {
 			const multiChoiceInput = mappedBlock.querySelector(
 				'.srfm-input-multi-choice-hidden'
 			);
+			const hiddenFieldInput =
+				mappedBlock.querySelector( '.srfm-hidden-input' );
 
 			let currentValue = 0;
 			if ( numberInput ) {
@@ -1591,6 +1593,18 @@ function switchActivePaymentType( form, paymentBlock, paymentInput, newType ) {
 						mappedBlock,
 						multiChoiceInput
 					) || 0;
+			} else if ( hiddenFieldInput ) {
+				// Mirror syncAmount() in listenAmountChanges — accept only numeric
+				// strings, clamp negatives to 0. Without this branch, currentValue
+				// stays 0 and overwrites the value syncAmount() just wrote during
+				// listenAmountChanges() above, breaking initial-amount pickup on
+				// every one-time/subscription flip.
+				const trimmed = hiddenFieldInput.value.trim();
+				const rawValue = /^\d+(\.\d+)?$/.test( trimmed )
+					? parseFloat( trimmed )
+					: NaN;
+				currentValue =
+					isNaN( rawValue ) || rawValue < 0 ? 0 : rawValue;
 			}
 
 			PAYMENT_UTILITY.updatePaymentBlockAmount(
