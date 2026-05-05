@@ -103,7 +103,7 @@
 		"gpt-po": "1.1.1",
 		"html-react-parser": "^5.0.7",
 		"intl-tel-input": "^25.14.0",
-		"lucide-react": "^0.475.0",
+		"lucide-react": "^1.14.0",
 		"postcss": "^8.5.1",
 		"prop-types": "^15.8.1",
 		"react-beautiful-dnd": "^13.1.1",
