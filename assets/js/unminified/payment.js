@@ -105,7 +105,10 @@ function validateThePaymentBlock( form ) {
 		'data-customer-name-field'
 	);
 
-	// Get payment type (subscription or one-time)
+	// Get payment type (subscription or one-time).
+	// BOTH MODE: when the admin chose "both", data-payment-type is kept in sync with the
+	// active radio choice by the chooser handler in stripe-payment.js, so reading it
+	// directly here continues to give the correct effective type at submission time.
 	const paymentType =
 		paymentInput.getAttribute( 'data-payment-type' ) || 'one-time';
 	const isSubscription = paymentType === 'subscription';
@@ -194,6 +197,14 @@ function validateThePaymentBlock( form ) {
  * @param {HTMLElement} form - The form element.
  */
 export async function handleFormPayment( form ) {
+	// BOTH MODE: mark the form as having a payment in flight so the type-flip
+	// chooser can no-op while createIntent + Stripe.confirmPayment are pending.
+	// Without this guard, flipping mid-submit unmounts the Stripe Element and
+	// deletes the cached intent the in-flight confirmation is still using —
+	// which can produce a second charge on retry, or complete the original
+	// (now wrong-type) charge silently.
+	form.dataset.srfmPaymentInFlight = 'true';
+
 	try {
 		const valiDatePaymentBlocks = validateThePaymentBlock( form );
 
@@ -234,6 +245,8 @@ export async function handleFormPayment( form ) {
 			),
 			paymentResultOnCreateIntent: null,
 		};
+	} finally {
+		delete form.dataset.srfmPaymentInFlight;
 	}
 }
 

@@ -99,7 +99,7 @@ class Get_Entry extends Abstract_Ability {
 					],
 				],
 				'submission_info' => [ 'type' => 'object' ],
-				'user'            => [ 'type' => 'object' ],
+				'user'            => [ 'type' => [ 'object', 'null' ] ],
 			],
 		];
 	}

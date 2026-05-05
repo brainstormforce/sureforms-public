@@ -21,6 +21,22 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class Textarea_Markup extends Base {
 	/**
+	 * Minimum length of text required for the textarea.
+	 *
+	 * @var string
+	 * @since 2.8.2
+	 */
+	protected $min_length;
+
+	/**
+	 * HTML attribute string for the minimum length.
+	 *
+	 * @var string
+	 * @since 2.8.2
+	 */
+	protected $min_length_attr;
+
+	/**
 	 * Maximum length of text allowed for the textarea.
 	 *
 	 * @var string
@@ -94,21 +110,33 @@ class Textarea_Markup extends Base {
 		$this->set_properties( $attributes );
 		$this->set_input_label( __( 'Textarea', 'sureforms' ) );
 		$this->set_error_msg( $attributes, 'srfm_textarea_block_required_text' );
-		$this->slug       = 'textarea';
+		$this->slug        = 'textarea';
+		$this->is_richtext = $attributes['isRichText'] ?? false;
+		// Min-length only applies to plain textareas; the rich-text submission contains HTML markup.
+		$this->min_length = $this->is_richtext ? '' : ( $attributes['minLength'] ?? '' );
 		$this->max_length = $attributes['maxLength'] ?? '';
-		$this->rows       = $attributes['rows'] ?? '';
-		$this->read_only  = ! empty( trim( $this->default ) ) && $attributes['readOnly'];
+		// Misconfiguration guard — if min exceeds max, drop min so the form stays submittable.
+		// The editor already warns the form-builder when this happens.
+		if (
+			'' !== $this->min_length &&
+			'' !== $this->max_length &&
+			(int) $this->min_length > (int) $this->max_length
+		) {
+			$this->min_length = '';
+		}
+		$this->rows      = $attributes['rows'] ?? '';
+		$this->read_only = ! empty( trim( $this->default ) ) && $attributes['readOnly'];
 		// html attributes.
+		$this->min_length_attr = $this->min_length ? ' data-minlength="' . esc_attr( $this->min_length ) . '" ' : '';
 		$this->max_length_attr = $this->max_length ? ' maxLength="' . esc_attr( $this->max_length ) . '" ' : '';
 		$this->rows_attr       = $this->rows ? ' rows="' . esc_attr( $this->rows ) . '" ' : '';
 		$this->max_length_html = '' !== $this->max_length ? '0/' . $this->max_length : '';
 		$this->random_id       = wp_rand( 1000, 9999 );
 		$this->set_unique_slug();
 		$this->set_field_name( $this->unique_slug );
-		$this->set_markup_properties( $this->input_label . '-' . $this->random_id );
+		$this->set_markup_properties( $this->input_label . '-' . $this->random_id, ! empty( $this->min_length ) );
 		$this->set_aria_described_by();
 		$this->set_label_as_placeholder( $this->input_label );
-		$this->is_richtext = $attributes['isRichText'] ?? false;
 	}
 
 	/**
@@ -143,7 +171,7 @@ class Textarea_Markup extends Base {
 					name="<?php echo esc_attr( $this->field_name ); ?>"
 					id="<?php echo esc_attr( $random_id ); ?>"
 					<?php echo ! empty( $this->aria_described_by ) ? "aria-describedby='" . esc_attr( trim( $this->aria_described_by ) ) . "'" : ''; ?>
-					data-required="<?php echo esc_attr( $this->data_require_attr ); ?>" aria-required="<?php echo esc_attr( $this->data_require_attr ); ?>" <?php echo wp_kses_post( $this->max_length_attr . '' . $this->rows_attr ); ?> <?php echo wp_kses_post( $this->placeholder_attr ); ?>
+					data-required="<?php echo esc_attr( $this->data_require_attr ); ?>" aria-required="<?php echo esc_attr( $this->data_require_attr ); ?>" <?php echo wp_kses_post( $this->min_length_attr . $this->max_length_attr . $this->rows_attr ); ?> <?php echo wp_kses_post( $this->placeholder_attr ); ?>
 					<?php echo $this->is_richtext ? 'data-is-richtext="true"' : ''; ?>
 					<?php echo $this->read_only ? 'readonly' : ''; ?>
 					><?php echo esc_html( $this->default ); ?></textarea>

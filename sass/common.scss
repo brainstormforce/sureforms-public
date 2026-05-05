@@ -119,8 +119,31 @@ body.post-type-sureforms_form .is-root-container,
 	}
 
 	// Add top margin to confirm email field.
-	.srfm-email-confirm-block {
-		margin-top: var( --srfm-row-gap-between-blocks );
+	// Selector is wrapped under `.srfm-block` (the email outer wrapper has it)
+	// so the show rule has specificity (0,5,0) — one class higher than the
+	// base `.srfm-form .srfm-block .srfm-error-message { display: none }`
+	// rule in `frontend/form.scss`. With identical (0,4,0) the hide rule
+	// would win on load order (common.css enqueues before frontend/form.css).
+	.srfm-block {
+		.srfm-email-confirm-block {
+			margin-top: var( --srfm-row-gap-between-blocks );
+
+			&.srfm-error {
+				.srfm-block-wrap {
+					.srfm-input-common {
+						border-color: var( --srfm-error-color-border );
+
+						&:focus {
+							box-shadow: 0px 0px 0px 3px var( --srfm-error-color-border-glow );
+						}
+					}
+				}
+
+				.srfm-error-message {
+					display: block;
+				}
+			}
+		}
 	}
 
 	.srfm-block {

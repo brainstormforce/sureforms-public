@@ -9,6 +9,7 @@
 namespace SRFM\Inc\Payments;
 
 use SRFM\Inc\Database\Tables\Payments;
+use SRFM\Inc\Field_Validation;
 use SRFM\Inc\Payments\Stripe\Stripe_Helper;
 use SRFM\Inc\Submit_Token;
 use SRFM\Inc\Traits\Get_Instance;
@@ -97,7 +98,8 @@ class Front_End {
 			wp_send_json_error( __( 'Invalid form configuration.', 'sureforms' ) );
 		}
 
-		$validation_result = Payment_Helper::validate_payment_amount( $amount_processed_with_currency, $currency, $form_id, $block_id );
+		// BOTH MODE: pass 'one-time' so the validator uses the correct per-type amount config.
+		$validation_result = Payment_Helper::validate_payment_amount( $amount_processed_with_currency, $currency, $form_id, $block_id, 'one-time' );
 		if ( ! $validation_result['valid'] ) {
 			wp_send_json_error( $validation_result['message'] );
 		}
@@ -218,14 +220,17 @@ class Front_End {
 			}
 
 			// Store payment intent metadata in transient for verification.
+			// active_type binds this intent to the one-time flow so a tampered
+			// submission cannot replay it through the subscription submit path.
 			Payment_Helper::store_payment_intent_metadata(
 				$block_id,
 				$payment_intent['id'],
 				[
-					'form_id'  => $form_id,
-					'block_id' => $block_id,
-					'amount'   => $amount_processed_with_currency,
-					'currency' => strtolower( $currency ),
+					'form_id'     => $form_id,
+					'block_id'    => $block_id,
+					'amount'      => $amount_processed_with_currency,
+					'currency'    => strtolower( $currency ),
+					'active_type' => 'one-time',
 				]
 			);
 
@@ -298,7 +303,8 @@ class Front_End {
 			wp_send_json_error( __( 'Invalid form configuration.', 'sureforms' ) );
 		}
 
-		$validation_result = Payment_Helper::validate_payment_amount( $amount_processed_with_currency, $currency, $form_id, $block_id );
+		// BOTH MODE: pass 'subscription' so the validator uses the correct per-type amount config.
+		$validation_result = Payment_Helper::validate_payment_amount( $amount_processed_with_currency, $currency, $form_id, $block_id, 'subscription' );
 		if ( ! $validation_result['valid'] ) {
 			wp_send_json_error( $validation_result['message'] );
 		}
@@ -309,9 +315,23 @@ class Front_End {
 		}
 
 		// Validate interval like simple-stripe-subscriptions.
-		$valid_intervals = [ 'day', 'week', 'month', 'year' ];
+		// BOTH MODE: 'quarter' is a valid editor option but was missing from the allow-list,
+		// causing Quarterly subscriptions to be rejected at submit time.
+		$valid_intervals = [ 'day', 'week', 'month', 'quarter', 'year' ];
 		if ( ! in_array( $subscription_interval, $valid_intervals, true ) ) {
 			wp_send_json_error( __( 'Invalid billing interval', 'sureforms' ) );
+		}
+
+		// Reject when the submitted interval does not match what the admin saved in
+		// the form's stored block config. Admin picks a single interval in the editor;
+		// the end user has no chooser. So a divergence here is always tampering — the
+		// data attribute the server itself rendered has been altered before submit.
+		$stored_block_config = Field_Validation::get_or_migrate_block_config_for_legacy_form( $form_id );
+		if ( is_array( $stored_block_config ) && isset( $stored_block_config[ $block_id ] ) && is_array( $stored_block_config[ $block_id ] ) ) {
+			$stored_interval = $stored_block_config[ $block_id ]['subscription_interval'] ?? '';
+			if ( ! empty( $stored_interval ) && $stored_interval !== $subscription_interval ) {
+				wp_send_json_error( __( 'Billing interval does not match the form configuration.', 'sureforms' ) );
+			}
 		}
 
 		try {
@@ -412,6 +432,8 @@ class Front_End {
 			}
 
 			// Store subscription metadata in transient for verification.
+			// active_type binds this intent to the subscription flow so a tampered
+			// submission cannot replay it through the one-time submit path.
 			Payment_Helper::store_payment_intent_metadata(
 				$block_id,
 				$payment_intent_id,
@@ -421,6 +443,7 @@ class Front_End {
 					'amount'          => $amount_processed_with_currency,
 					'currency'        => strtolower( $currency ),
 					'subscription_id' => $subscription_id,
+					'active_type'     => 'subscription',
 				]
 			);
 
@@ -586,7 +609,8 @@ class Front_End {
 		$setup_intent_id = ! empty( $subscription_value['setupIntent'] ) && is_string( $subscription_value['setupIntent'] ) ? $subscription_value['setupIntent'] : '';
 
 		// Verify payment intent with comprehensive validation including form data.
-		$verification_result = Payment_Helper::verify_payment_intent( $block_id, $setup_intent_id, $form_data );
+		// BOTH MODE: pass 'subscription' so per-type amount config is used for verification.
+		$verification_result = Payment_Helper::verify_payment_intent( $block_id, $setup_intent_id, $form_data, 'subscription' );
 
 		if ( false === $verification_result['valid'] ) {
 			return [
@@ -637,6 +661,25 @@ class Front_End {
 							'default_payment_method' => $setup_intent['payment_method'],
 							'collection_method'      => 'charge_automatically',
 						];
+
+						// Override interval + billing cycles with the values stored in the
+						// form's block config. These come from the data attributes the
+						// server itself rendered, so they cannot legitimately diverge from
+						// the admin's saved subscriptionPlan. Trusting the submitted values
+						// would let an attacker DevTools-flip cancel_at to 'ongoing'.
+						$form_id_for_config = isset( $form_data['form-id'] ) && is_numeric( $form_data['form-id'] ) ? intval( $form_data['form-id'] ) : 0;
+						if ( $form_id_for_config > 0 && ! empty( $block_id ) ) {
+							$stored_block_config = Field_Validation::get_or_migrate_block_config_for_legacy_form( $form_id_for_config );
+							if ( is_array( $stored_block_config ) && isset( $stored_block_config[ $block_id ] ) && is_array( $stored_block_config[ $block_id ] ) ) {
+								$stored_payment_config = $stored_block_config[ $block_id ];
+								if ( isset( $stored_payment_config['subscription_interval'] ) ) {
+									$subscription_value['subscriptionInterval'] = $stored_payment_config['subscription_interval'];
+								}
+								if ( isset( $stored_payment_config['subscription_billing_cycles'] ) ) {
+									$subscription_value['subscriptionBillingCycles'] = $stored_payment_config['subscription_billing_cycles'];
+								}
+							}
+						}
 
 						// Calculate cancel_at timestamp based on billing cycles and interval.
 						$cancel_at = $this->prepare_cancel_at( $subscription_value );
@@ -1101,7 +1144,8 @@ class Front_End {
 			}
 
 			// Verify payment intent with comprehensive validation including form data.
-			$verification_result = Payment_Helper::verify_payment_intent( $block_id, $payment_id, $form_data );
+			// BOTH MODE: pass 'one-time' so per-type amount config is used for verification.
+			$verification_result = Payment_Helper::verify_payment_intent( $block_id, $payment_id, $form_data, 'one-time' );
 
 			if ( false === $verification_result['valid'] ) {
 				return [

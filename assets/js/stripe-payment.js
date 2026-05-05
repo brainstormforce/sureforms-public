@@ -25,6 +25,10 @@ class StripePayment {
 	static paymentElements = {};
 	static paymentIntents = {};
 	static subscriptionIntents = {};
+	// BOTH MODE: per-block guard so rapid type-flips don't race two
+	// Stripe.elements() instances on the same DOM container. Keyed by
+	// compositeKey, cleared in the 'ready' handler of the new element.
+	static reinitInProgress = new Set();
 
 	// Initialize on page load
 	static {
@@ -301,22 +305,24 @@ class StripePayment {
 		window.srfmPaymentElements = StripePayment.paymentElements;
 
 		// Setup event handlers
-		this.setupPaymentElementEvents( paymentElement );
+		this.setupPaymentElementEvents( paymentElement, compositeKey );
 	}
 
 	/**
 	 * Setup event handlers for payment element.
 	 *
 	 * @param {Object} paymentElement - The Stripe payment element.
+	 * @param {string} compositeKey   - Composite key (instanceId-blockId) used to clear the reinit-in-flight flag.
 	 * @return {void} This function does not return a value.
 	 */
-	setupPaymentElementEvents( paymentElement ) {
-		// Ready event
-		paymentElement.on( 'ready', () => {} );
-
-		// Change event (handling differs by payment type)
-		paymentElement.on( 'change', () => {
-			// Lets manage the event.error, event.complete events if required.
+	setupPaymentElementEvents( paymentElement, compositeKey ) {
+		// Ready event — clears the reinit-in-flight flag so subsequent type
+		// flips can proceed. Without this, a stale flag would block all future
+		// reinits for this block.
+		paymentElement.on( 'ready', () => {
+			if ( compositeKey ) {
+				StripePayment.reinitInProgress.delete( compositeKey );
+			}
 		} );
 	}
 
@@ -647,7 +653,7 @@ class StripePayment {
 	}
 
 	static async confirmStripePayment( compositeKey, paymentData, form ) {
-		const { stripe, elements, clientSecret, paymentType } = paymentData;
+		const { stripe, elements, clientSecret } = paymentData;
 
 		// Extract original blockId from compositeKey for DOM queries
 		// compositeKey format is always "numericInstanceId-blockId"
@@ -665,6 +671,17 @@ class StripePayment {
 		const paymentInput = paymentBlock.querySelector(
 			'.srfm-payment-input'
 		);
+
+		// BOTH MODE: read paymentType fresh from the live data attribute rather
+		// than the cached paymentData. reinitForBlock() rebuilds the cache on
+		// type flip, and a confirm captured before the flip would otherwise
+		// branch on a stale type. If paymentType and clientSecret ever truly
+		// diverge, Stripe itself rejects the wrong confirmSetup/confirmPayment
+		// call — no need for a redundant client-side guard here.
+		const paymentType =
+			paymentInput.getAttribute( 'data-payment-type' ) ||
+			paymentData.paymentType ||
+			'one-time';
 
 		const amountType =
 			paymentInput.getAttribute( 'data-amount-type' ) || 'fixed';
@@ -810,6 +827,54 @@ class StripePayment {
 	}
 }
 
+// BOTH MODE: start — helper to re-mount Stripe Elements when the user flips the
+// payment-type chooser between one-time and subscription. Stripe's elements.update()
+// does not reliably support switching `mode`, so we unmount, drop the cached
+// element, and let the existing initializer pathway recreate everything.
+StripePayment.reinitForBlock = function ( form, paymentBlock ) {
+	const paymentInput = paymentBlock.querySelector( 'input.srfm-payment-input' );
+	if ( ! paymentInput ) {
+		return;
+	}
+
+	const blockId = paymentBlock.getAttribute( 'data-block-id' );
+	const compositeKey = getPaymentKey( form, blockId );
+
+	// Bail if a reinit is already in flight for this block. Stripe's iframe
+	// mount is async, and a second pass before 'ready' fires would race two
+	// elements.create('payment') instances on the same DOM container. The
+	// caller (radio change handler) reverts the radio UI when this guard
+	// trips so the visible state stays consistent.
+	if ( StripePayment.reinitInProgress.has( compositeKey ) ) {
+		return;
+	}
+
+	const existing = StripePayment.paymentElements[ compositeKey ];
+	if ( existing && existing.paymentElement ) {
+		try {
+			existing.paymentElement.unmount();
+		} catch ( err ) {
+			// Already unmounted — safe to ignore.
+		}
+	}
+	delete StripePayment.paymentElements[ compositeKey ];
+	delete StripePayment.paymentIntents[ compositeKey ];
+	delete StripePayment.subscriptionIntents[ compositeKey ];
+	window.srfmPaymentElements = StripePayment.paymentElements;
+
+	StripePayment.reinitInProgress.add( compositeKey );
+
+	// Re-init only the target block. Previously this used `new StripePayment(form)`
+	// which walked every payment block in the form and re-ran processPayment on
+	// each — wasted work on multi-block forms. Object.create gives us a stub
+	// bound to the form (the only `this` field processPayment touches indirectly
+	// via initializePaymentElements) without triggering the constructor walk.
+	const stub = Object.create( StripePayment.prototype );
+	stub.form = form;
+	stub.processPayment( paymentBlock );
+};
+// BOTH MODE: end
+
 // Make StripePayment available globally for form submission
 window.StripePayment = StripePayment;
 
@@ -904,9 +969,14 @@ const PAYMENT_UTILITY = {
 		amount,
 		inputFormatType = 'us-style'
 	) => {
-		const getPlaceHolderElement = paymentInput
-			.closest( '.srfm-block' )
-			.querySelector( '.srfm-payment-value' );
+		// BOTH MODE: in "both" payment-type mode two .srfm-payment-value spans
+		// exist (one per amount block). Target the VISIBLE one so the correct
+		// type's amount updates. Falls back to the first match for non-both mode.
+		const paymentBlock = paymentInput.closest( '.srfm-block' );
+		const getPlaceHolderElement =
+			paymentBlock.querySelector(
+				'.srfm-payment-amount-block:not([hidden]) .srfm-payment-value'
+			) || paymentBlock.querySelector( '.srfm-payment-value' );
 		if ( getPlaceHolderElement ) {
 			const getCurrencySymbol = getPlaceHolderElement.getAttribute(
 				'data-currency-symbol'
@@ -966,6 +1036,20 @@ const PAYMENT_UTILITY = {
 					'data-variable-amount-field'
 				);
 
+				// BOTH MODE: tear down any listeners previously bound for this
+				// payment input. switchActivePaymentType() calls this method again
+				// each time the user flips one-time/subscription, which previously
+				// piled up duplicate listeners on the source field. Round-trip
+				// flips compounded the leak (field A → field B → field A → ...).
+				// Each prior listener still fires on input events and can overwrite
+				// the displayed amount with a stale source field's value.
+				if ( paymentInput._srfmAmountListenerController ) {
+					paymentInput._srfmAmountListenerController.abort();
+				}
+				const controller = new AbortController();
+				paymentInput._srfmAmountListenerController = controller;
+				const listenerOpts = { signal: controller.signal };
+
 				if ( getBlockMappedSlug ) {
 					const getMappedBlock =
 						PAYMENT_UTILITY.currentForm.querySelector(
@@ -998,7 +1082,8 @@ const PAYMENT_UTILITY = {
 											getMappedBlockInputValue,
 											inputFormatType
 										);
-									}
+									},
+									listenerOpts
 								);
 								// Get initial format type for the initial value
 								const inputFormatType =
@@ -1020,17 +1105,21 @@ const PAYMENT_UTILITY = {
 								'.srfm-input-dropdown-hidden'
 							);
 							if ( hiddenInput ) {
-								hiddenInput.addEventListener( 'change', () => {
-									const amount =
-										PAYMENT_UTILITY.getDropdownAmount(
-											getMappedBlock,
-											hiddenInput
+								hiddenInput.addEventListener(
+									'change',
+									() => {
+										const amount =
+											PAYMENT_UTILITY.getDropdownAmount(
+												getMappedBlock,
+												hiddenInput
+											);
+										PAYMENT_UTILITY.updatePaymentBlockAmount(
+											paymentInput,
+											amount
 										);
-									PAYMENT_UTILITY.updatePaymentBlockAmount(
-										paymentInput,
-										amount
-									);
-								} );
+									},
+									listenerOpts
+								);
 								// Set initial value
 								const initialAmount =
 									PAYMENT_UTILITY.getDropdownAmount(
@@ -1051,17 +1140,21 @@ const PAYMENT_UTILITY = {
 								'.srfm-input-multi-choice-hidden'
 							);
 							if ( hiddenInput ) {
-								hiddenInput.addEventListener( 'change', () => {
-									const amount =
-										PAYMENT_UTILITY.getMultiChoiceAmount(
-											getMappedBlock,
-											hiddenInput
+								hiddenInput.addEventListener(
+									'change',
+									() => {
+										const amount =
+											PAYMENT_UTILITY.getMultiChoiceAmount(
+												getMappedBlock,
+												hiddenInput
+											);
+										PAYMENT_UTILITY.updatePaymentBlockAmount(
+											paymentInput,
+											amount
 										);
-									PAYMENT_UTILITY.updatePaymentBlockAmount(
-										paymentInput,
-										amount
-									);
-								} );
+									},
+									listenerOpts
+								);
 								// Set initial value
 								const initialAmount =
 									PAYMENT_UTILITY.getMultiChoiceAmount(
@@ -1072,6 +1165,47 @@ const PAYMENT_UTILITY = {
 									paymentInput,
 									initialAmount
 								);
+							}
+						} else if (
+							getMappedBlock.classList.contains(
+								'srfm-hidden-block'
+							)
+						) {
+							const hiddenFieldInput =
+								getMappedBlock.querySelector(
+									'.srfm-hidden-input'
+								);
+							if ( hiddenFieldInput ) {
+								// Hidden inputs don't fire native input/change
+								// events when set programmatically, so listen
+								// for both — integrators that set the value
+								// via JS should dispatch a 'change' event.
+								const syncAmount = () => {
+									const trimmed =
+										hiddenFieldInput.value.trim();
+									const rawValue =
+										/^\d+(\.\d+)?$/.test( trimmed )
+											? parseFloat( trimmed )
+											: NaN;
+									const amount =
+										isNaN( rawValue ) || rawValue < 0
+											? 0
+											: rawValue;
+									PAYMENT_UTILITY.updatePaymentBlockAmount(
+										paymentInput,
+										amount
+									);
+								};
+								hiddenFieldInput.addEventListener(
+									'change',
+									syncAmount
+								);
+								hiddenFieldInput.addEventListener(
+									'input',
+									syncAmount
+								);
+								// Set initial value from defaultValue.
+								syncAmount();
 							}
 						}
 					}
@@ -1274,6 +1408,239 @@ document.addEventListener( 'srfm_form_after_initialization', ( event ) => {
 		if ( paymentBlocks.length > 0 ) {
 			new StripePayment( form );
 			PAYMENT_UTILITY.init( form );
+			// BOTH MODE: wire the one-time / subscription radio chooser, if present.
+			initPaymentTypeChoosers( form );
 		}
 	}
 } );
+
+// BOTH MODE: start — payment-type chooser (one-time vs subscription) wiring.
+
+/**
+ * Wire the payment-type chooser radios for any payment blocks in this form
+ * that were saved with paymentType === 'both'.
+ *
+ * @param {HTMLFormElement} form - The form element.
+ */
+function initPaymentTypeChoosers( form ) {
+	const paymentBlocks = form.querySelectorAll(
+		'.srfm-block.srfm-payment-block'
+	);
+
+	paymentBlocks.forEach( ( paymentBlock ) => {
+		const paymentInput = paymentBlock.querySelector(
+			'input.srfm-payment-input'
+		);
+		if ( ! paymentInput ) {
+			return;
+		}
+
+		// Only wire when the admin chose "both" mode.
+		if (
+			paymentInput.getAttribute( 'data-original-payment-type' ) !==
+			'both'
+		) {
+			return;
+		}
+
+		const radios = paymentBlock.querySelectorAll(
+			'.srfm-payment-type-choice-radio'
+		);
+		if ( radios.length === 0 ) {
+			return;
+		}
+
+		radios.forEach( ( radio ) => {
+			radio.addEventListener( 'change', ( event ) => {
+				if ( ! event.target.checked ) {
+					return;
+				}
+
+				// BOTH MODE: block type-flip while a payment is in flight.
+				// reinitForBlock() unmounts the Stripe Element and deletes the
+				// cached intent the pending confirmPayment is still using —
+				// flipping mid-submit produces double charges or wrong-type
+				// completions. Revert the radio to whatever data-payment-type
+				// currently is so the UI does not lie about the user's choice.
+				const blockId =
+					paymentBlock.getAttribute( 'data-block-id' );
+				const compositeKey = getPaymentKey( form, blockId );
+				const reinitInFlight =
+					StripePayment.reinitInProgress.has( compositeKey );
+
+				if (
+					form.dataset.srfmPaymentInFlight === 'true' ||
+					reinitInFlight
+				) {
+					const activeType =
+						paymentInput.getAttribute( 'data-payment-type' ) ||
+						'one-time';
+					radios.forEach( ( r ) => {
+						r.checked = r.value === activeType;
+					} );
+					return;
+				}
+
+				switchActivePaymentType(
+					form,
+					paymentBlock,
+					paymentInput,
+					event.target.value
+				);
+			} );
+		} );
+	} );
+}
+
+/**
+ * Apply a new active payment type to the block. Updates DOM visibility, syncs
+ * the live data-* attributes that the rest of the JS reads, re-initializes
+ * the Stripe Element in the new mode, and dispatches a gateway-agnostic event
+ * so other gateways (e.g. PayPal in sureforms-pro) can react.
+ *
+ * @param {HTMLFormElement}  form         - The form element.
+ * @param {HTMLElement}      paymentBlock - The payment block wrapper.
+ * @param {HTMLInputElement} paymentInput - The hidden payment input.
+ * @param {string}           newType      - 'one-time' or 'subscription'.
+ */
+function switchActivePaymentType( form, paymentBlock, paymentInput, newType ) {
+	const safeType = newType === 'subscription' ? 'subscription' : 'one-time';
+
+	// 1. Toggle visible amount block.
+	const amountBlocks = paymentBlock.querySelectorAll(
+		'.srfm-payment-amount-block'
+	);
+	amountBlocks.forEach( ( el ) => {
+		if ( el.getAttribute( 'data-payment-type' ) === safeType ) {
+			el.removeAttribute( 'hidden' );
+		} else {
+			el.setAttribute( 'hidden', '' );
+		}
+	} );
+
+	// 2. Sync the live data attributes from the per-type configuration.
+	const prefix = safeType === 'subscription' ? 'subscription' : 'one-time';
+	const amountType =
+		paymentInput.getAttribute( `data-${ prefix }-amount-type` ) || 'fixed';
+	const fixedAmount =
+		paymentInput.getAttribute( `data-${ prefix }-fixed-amount` ) || '0';
+	const minimumAmount =
+		paymentInput.getAttribute( `data-${ prefix }-minimum-amount` ) || '0';
+	const variableField =
+		paymentInput.getAttribute( `data-${ prefix }-variable-amount-field` ) ||
+		'';
+
+	paymentInput.setAttribute( 'data-payment-type', safeType );
+	paymentInput.setAttribute( 'data-amount-type', amountType );
+	paymentInput.setAttribute( 'data-fixed-amount', fixedAmount );
+
+	if ( parseFloat( minimumAmount ) > 0 ) {
+		paymentInput.setAttribute( 'data-minimum-amount', minimumAmount );
+	} else {
+		paymentInput.removeAttribute( 'data-minimum-amount' );
+	}
+
+	if ( amountType === 'variable' && variableField ) {
+		paymentInput.setAttribute( 'data-variable-amount-field', variableField );
+	} else {
+		paymentInput.removeAttribute( 'data-variable-amount-field' );
+		// Also clear any cached current-amount so stale values don't leak across choices.
+		paymentInput.removeAttribute( 'data-current-amount' );
+	}
+
+	// 3. Re-initialize Stripe Element in the new mode.
+	if ( typeof StripePayment.reinitForBlock === 'function' ) {
+		StripePayment.reinitForBlock( form, paymentBlock );
+	}
+
+	// 3b. BOTH MODE: re-wire variable-amount listeners and trigger an immediate
+	// display update for the new type. listenAmountChanges() queries
+	// [data-variable-amount-field] which was just updated above, so it will
+	// find and wire the correct field. The immediate update populates the
+	// amount span which is empty at PHP render time for variable types.
+	if ( amountType === 'variable' && variableField ) {
+		PAYMENT_UTILITY.listenAmountChanges();
+
+		// Read current value from the mapped field and update the display now.
+		const mappedBlock = form.querySelector(
+			`.srfm-block.srfm-slug-${ variableField }`
+		);
+		if ( mappedBlock ) {
+			const numberInput = mappedBlock.querySelector(
+				'input.srfm-input-common'
+			);
+			const dropdownInput = mappedBlock.querySelector(
+				'.srfm-input-dropdown-hidden'
+			);
+			const multiChoiceInput = mappedBlock.querySelector(
+				'.srfm-input-multi-choice-hidden'
+			);
+			const hiddenFieldInput =
+				mappedBlock.querySelector( '.srfm-hidden-input' );
+
+			let currentValue = 0;
+			if ( numberInput ) {
+				currentValue = numberInput.value || 0;
+			} else if ( dropdownInput ) {
+				currentValue =
+					PAYMENT_UTILITY.getDropdownAmount(
+						mappedBlock,
+						dropdownInput
+					) || 0;
+			} else if ( multiChoiceInput ) {
+				currentValue =
+					PAYMENT_UTILITY.getMultiChoiceAmount(
+						mappedBlock,
+						multiChoiceInput
+					) || 0;
+			} else if ( hiddenFieldInput ) {
+				// Mirror syncAmount() in listenAmountChanges — accept only numeric
+				// strings, clamp negatives to 0. Without this branch, currentValue
+				// stays 0 and overwrites the value syncAmount() just wrote during
+				// listenAmountChanges() above, breaking initial-amount pickup on
+				// every one-time/subscription flip.
+				const trimmed = hiddenFieldInput.value.trim();
+				const rawValue = /^\d+(\.\d+)?$/.test( trimmed )
+					? parseFloat( trimmed )
+					: NaN;
+				currentValue =
+					isNaN( rawValue ) || rawValue < 0 ? 0 : rawValue;
+			}
+
+			PAYMENT_UTILITY.updatePaymentBlockAmount(
+				paymentInput,
+				currentValue
+			);
+		} else {
+			// No mapped field found — show placeholder.
+			PAYMENT_UTILITY.updatePaymentBlockAmount( paymentInput, 0 );
+		}
+	}
+
+	// 4. Dispatch gateway-agnostic event so other gateways (PayPal etc.) can react.
+	//
+	// Event contract — `srfm_payment_type_changed` (document-level, bubbles):
+	//   detail: {
+	//     blockId:      string            — Original payment block id (no instance prefix).
+	//     form:         HTMLFormElement   — Form element the payment block belongs to.
+	//     paymentType:  'one-time' | 'subscription' — The newly active type.
+	//     paymentInput: HTMLInputElement  — The hidden .srfm-payment-input element.
+	//   }
+	// Companion event `srfm_payment_method_changed` (dispatched in payment-manager.js)
+	// uses a deliberately narrower shape — { blockId, paymentMethod, form } — because
+	// gateway listeners only need the method id; if you need paymentInput on that
+	// path, query it from the form rather than expanding the schema (avoids drift).
+	const blockId = paymentBlock.getAttribute( 'data-block-id' );
+	document.dispatchEvent(
+		new CustomEvent( 'srfm_payment_type_changed', {
+			detail: {
+				blockId,
+				form,
+				paymentType: safeType,
+				paymentInput,
+			},
+			bubbles: true,
+		} )
+	);
+}
+// BOTH MODE: end

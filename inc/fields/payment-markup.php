@@ -8,6 +8,7 @@
 
 namespace SRFM\Inc\Fields;
 
+use SRFM\Inc\Helper;
 use SRFM\Inc\Payments\Payment_Helper;
 use SRFM\Inc\Payments\Stripe\Stripe_Helper;
 
@@ -141,6 +142,58 @@ class Payment_Markup extends Base {
 	 */
 	protected $payment_description;
 
+	// BOTH MODE: start — admin-configurable dual-mode attributes.
+	/**
+	 * Original payment type as configured in the editor (one-time / subscription / both).
+	 * While rendering we may rewrite $this->payment_type to the resolved default-choice,
+	 * so we keep the original intent here for conditionals.
+	 *
+	 * @var string
+	 * @since 2.8.2
+	 */
+	protected $original_payment_type;
+
+	/**
+	 * Label shown next to the "one-time" radio choice in both mode.
+	 *
+	 * @var string
+	 * @since 2.8.2
+	 */
+	protected $one_time_label;
+
+	/**
+	 * Label shown next to the "subscription" radio choice in both mode.
+	 *
+	 * @var string
+	 * @since 2.8.2
+	 */
+	protected $subscription_label;
+
+	/**
+	 * Default radio selection in both mode ("one-time" or "subscription").
+	 *
+	 * @var string
+	 * @since 2.8.2
+	 */
+	protected $default_payment_choice;
+
+	/**
+	 * One-time amount configuration (used only in both mode).
+	 *
+	 * @var array<mixed>
+	 * @since 2.8.2
+	 */
+	protected $one_time_config = [];
+
+	/**
+	 * Subscription amount configuration (used only in both mode).
+	 *
+	 * @var array<mixed>
+	 * @since 2.8.2
+	 */
+	protected $subscription_config = [];
+	// BOTH MODE: end.
+
 	/**
 	 * Constructor for the Payment Markup class.
 	 *
@@ -186,6 +239,44 @@ class Payment_Markup extends Base {
 
 		// Set variable amount field mapping.
 		$this->variable_amount_field = $attributes['variableAmountField'] ?? '';
+
+		// BOTH MODE: start — capture original intent and dual-mode configuration.
+		$this->original_payment_type = $this->payment_type;
+
+		$this->one_time_label         = $attributes['oneTimeLabel'] ?? __( 'One-Time Payment', 'sureforms' );
+		$this->subscription_label     = $attributes['subscriptionLabel'] ?? __( 'Subscription', 'sureforms' );
+		$this->default_payment_choice = $attributes['defaultPaymentChoice'] ?? 'one-time';
+		if ( ! in_array( $this->default_payment_choice, [ 'one-time', 'subscription' ], true ) ) {
+			$this->default_payment_choice = 'one-time';
+		}
+
+		$this->one_time_config = [
+			'amount_type'    => $attributes['oneTimeAmountType'] ?? 'fixed',
+			'fixed_amount'   => isset( $attributes['oneTimeFixedAmount'] ) ? (float) $attributes['oneTimeFixedAmount'] : 10.0,
+			'minimum_amount' => isset( $attributes['oneTimeMinimumAmount'] ) ? (float) $attributes['oneTimeMinimumAmount'] : 0.0,
+			'variable_field' => $attributes['oneTimeVariableAmountField'] ?? '',
+		];
+
+		$this->subscription_config = [
+			'amount_type'    => $attributes['subscriptionAmountType'] ?? 'fixed',
+			'fixed_amount'   => isset( $attributes['subscriptionFixedAmount'] ) ? (float) $attributes['subscriptionFixedAmount'] : 10.0,
+			'minimum_amount' => isset( $attributes['subscriptionMinimumAmount'] ) ? (float) $attributes['subscriptionMinimumAmount'] : 0.0,
+			'variable_field' => $attributes['subscriptionVariableAmountField'] ?? '',
+		];
+
+		// When rendering the "both" block, the visible amount + Stripe mode is driven by
+		// the default choice. Rewrite the scalar properties so the existing rendering
+		// logic below continues to work with zero changes.
+		if ( 'both' === $this->original_payment_type ) {
+			$active_config               = 'subscription' === $this->default_payment_choice ? $this->subscription_config : $this->one_time_config;
+			$this->amount_type           = $active_config['amount_type'];
+			$this->fixed_amount          = $active_config['fixed_amount'];
+			$this->minimum_amount        = $active_config['minimum_amount'];
+			$this->variable_amount_field = $active_config['variable_field'];
+			// $this->payment_type now represents the *active* rendering type, not the admin-set value.
+			$this->payment_type = $this->default_payment_choice;
+		}
+		// BOTH MODE: end.
 
 		// Set payment methods from block attributes, default to 'stripe' for backward compatibility.
 		$this->payment_methods = $attributes['paymentMethods'] ?? [ 'stripe' ];
@@ -245,9 +336,15 @@ class Payment_Markup extends Base {
 			'data-selected-method'      => $first_method_id,
 		];
 
-		if ( 'subscription' === $this->payment_type && ! empty( $this->subscription_plan ) ) {
-			$data_input_attributes['data-subscription-plan-name']      = $this->subscription_plan['name'] ?? __( 'Subscription Plan', 'sureforms' );
-			$data_input_attributes['data-subscription-interval']       = $this->subscription_plan['interval'] ?? 'month';
+		// Subscription plan attributes are emitted when subscription is the active type
+		// OR when "both" mode allows it as a possible end-user choice.
+		$has_subscription_path = 'subscription' === $this->payment_type || 'both' === $this->original_payment_type;
+		if ( $has_subscription_path && ! empty( $this->subscription_plan ) ) {
+			// Defense-in-depth: coerce to scalar before output. A malformed REST
+			// save could store these as arrays, which would otherwise emit notices
+			// or empty strings through esc_attr() downstream.
+			$data_input_attributes['data-subscription-plan-name']      = (string) ( $this->subscription_plan['name'] ?? __( 'Subscription Plan', 'sureforms' ) );
+			$data_input_attributes['data-subscription-interval']       = (string) ( $this->subscription_plan['interval'] ?? 'month' );
 			$data_input_attributes['data-subscription-billing-cycles'] = $this->subscription_plan['billingCycles'] ?? 0;
 		}
 
@@ -259,10 +356,44 @@ class Payment_Markup extends Base {
 			$data_input_attributes['data-variable-amount-field'] = $this->variable_amount_field;
 		}
 
+		// BOTH MODE: ensure data-variable-amount-field is emitted at page load if
+		// EITHER type uses variable amount. listenAmountChanges() runs once at init
+		// and queries [data-variable-amount-field] — without this, the listener is
+		// never wired when the default choice is fixed but the other type is variable.
+		if ( 'both' === $this->original_payment_type && 'variable' !== $this->amount_type ) {
+			$other_config = 'subscription' === $this->default_payment_choice
+				? $this->one_time_config
+				: $this->subscription_config;
+			if ( 'variable' === $other_config['amount_type'] && ! empty( $other_config['variable_field'] ) ) {
+				$data_input_attributes['data-variable-amount-field'] = $other_config['variable_field'];
+			}
+		}
+
 		// If minimum amount is greater than 0, add it to the data input attributes.
 		if ( $this->minimum_amount > 0 ) {
 			$data_input_attributes['data-minimum-amount'] = $this->minimum_amount;
 		}
+
+		// BOTH MODE: start — emit per-type configuration for the JS chooser to read.
+		if ( 'both' === $this->original_payment_type ) {
+			$data_input_attributes['data-original-payment-type']  = 'both';
+			$data_input_attributes['data-default-payment-choice'] = $this->default_payment_choice;
+
+			$data_input_attributes['data-one-time-amount-type']    = $this->one_time_config['amount_type'];
+			$data_input_attributes['data-one-time-fixed-amount']   = $this->one_time_config['fixed_amount'];
+			$data_input_attributes['data-one-time-minimum-amount'] = $this->one_time_config['minimum_amount'];
+			if ( 'variable' === $this->one_time_config['amount_type'] ) {
+				$data_input_attributes['data-one-time-variable-amount-field'] = $this->one_time_config['variable_field'];
+			}
+
+			$data_input_attributes['data-subscription-amount-type']    = $this->subscription_config['amount_type'];
+			$data_input_attributes['data-subscription-fixed-amount']   = $this->subscription_config['fixed_amount'];
+			$data_input_attributes['data-subscription-minimum-amount'] = $this->subscription_config['minimum_amount'];
+			if ( 'variable' === $this->subscription_config['amount_type'] ) {
+				$data_input_attributes['data-subscription-variable-amount-field'] = $this->subscription_config['variable_field'];
+			}
+		}
+		// BOTH MODE: end.
 
 		ob_start();
 		?>
@@ -270,95 +401,65 @@ class Payment_Markup extends Base {
 			<?php echo wp_kses_post( $this->label_markup ); ?>
 			<?php echo wp_kses_post( $this->help_markup ); ?>
 			<div class="srfm-payment-field-wrapper">
-				<?php if ( 'fixed' === $this->amount_type ) { ?>
-					<!-- Fixed Payment Amount Display. -->
-					<div class="srfm-payment-amount srfm-block-label">
-						<span class="srfm-payment-value">
-							<?php
-							if ( 'subscription' === $this->payment_type && ! empty( $this->subscription_plan ) ) {
-								$interval       = $this->subscription_plan['interval'] ?? 'month';
-								$billing_cycles = $this->subscription_plan['billingCycles'] ?? 0;
-								$interval_label = $this->get_interval_label( $interval );
+				<?php
+				// BOTH MODE: start — render the payment-type chooser.
+				if ( 'both' === $this->original_payment_type ) {
+					echo $this->render_payment_type_chooser(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+				}
+				// BOTH MODE: end.
 
-								// Build subscription text.
-								if ( 'ongoing' === $billing_cycles ) {
-									echo esc_html(
-										sprintf(
-											/* translators: 1: Amount with currency, 2: Interval (day/week/month/quarter/year) */
-											__( '%1$s per %2$s (until cancelled)', 'sureforms' ),
-											$this->format_currency( $this->fixed_amount, $this->currency ),
-											$interval_label
-										)
-									);
-								} elseif ( $billing_cycles > 0 ) {
-									echo esc_html(
-										sprintf(
-											/* translators: 1: Amount with currency, 2: Interval (day/week/month/quarter/year), 3: Number of billing cycles */
-											__( '%1$s per %2$s (%3$s payments)', 'sureforms' ),
-											$this->format_currency( $this->fixed_amount, $this->currency ),
-											$interval_label,
-											$billing_cycles
-										)
-									);
-								} else {
-									echo esc_html(
-										sprintf(
-											/* translators: 1: Amount with currency, 2: Interval (day/week/month/quarter/year) */
-											__( '%1$s per %2$s', 'sureforms' ),
-											$this->format_currency( $this->fixed_amount, $this->currency ),
-											$interval_label
-										)
-									);
-								}
-							} else {
-								echo esc_html( $this->format_currency( $this->fixed_amount, $this->currency ) );
-							}
-							?>
-						</span>
+				if ( 'both' === $this->original_payment_type ) {
+					// BOTH MODE: render two amount displays, one per choice. JS toggles visibility.
+					$is_one_time_default = 'one-time' === $this->default_payment_choice;
+					?>
+					<div
+						id="srfm-payment-amount-<?php echo esc_attr( $this->block_id ); ?>-one-time"
+						class="srfm-payment-amount-block srfm-payment-amount-block-one-time"
+						data-payment-type="one-time"
+						aria-labelledby="srfm-payment-type-<?php echo esc_attr( $this->block_id ); ?>-one-time"
+						<?php echo esc_attr( $is_one_time_default ? '' : 'hidden' ); ?>
+					>
+						<?php
+						// phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped -- render_amount_display handles its own escaping.
+						echo $this->render_amount_display(
+							'one-time',
+							Helper::get_string_value( $this->one_time_config['amount_type'] ?? 'fixed' ),
+							is_numeric( $this->one_time_config['fixed_amount'] ?? null ) ? (float) $this->one_time_config['fixed_amount'] : 0.0,
+							is_numeric( $this->one_time_config['minimum_amount'] ?? null ) ? (float) $this->one_time_config['minimum_amount'] : 0.0
+						);
+						// phpcs:enable WordPress.Security.EscapeOutput.OutputNotEscaped
+						?>
 					</div>
-				<?php } else { ?>
-					<!-- Variable Payment Amount Display. -->
-					<div class="srfm-variable-amount-display srfm-block-label">
-						<div class="srfm-payment-amount-wrapper">
-							<?php
-							// Generate message format for variable amounts.
-							$message_format = '{amount}';
-							if ( 'subscription' === $this->payment_type && ! empty( $this->subscription_plan ) ) {
-								$interval       = $this->subscription_plan['interval'] ?? 'month';
-								$billing_cycles = $this->subscription_plan['billingCycles'] ?? 0;
-								$interval_label = $this->get_interval_label( $interval );
-
-								// Build message format based on billing cycles.
-								if ( 'ongoing' === $billing_cycles ) {
-									/* translators: 1: Amount with currency placeholder, 2: Interval (day/week/month/quarter/year) */
-									$message_format = sprintf( __( '{amount} per %s (until cancelled)', 'sureforms' ), $interval_label );
-								} elseif ( $billing_cycles > 0 ) {
-									/* translators: 1: Amount with currency placeholder, 2: Interval (day/week/month/quarter/year), 3: Number of billing cycles */
-									$message_format = sprintf( __( '{amount} per %1$s (%2$s payments)', 'sureforms' ), $interval_label, $billing_cycles );
-								} else {
-									/* translators: 1: Amount with currency placeholder, 2: Interval (day/week/month/quarter/year) */
-									$message_format = sprintf( __( '{amount} per %s', 'sureforms' ), $interval_label );
-								}
-							}
-							?>
-							<span class="srfm-payment-value" data-currency="<?php echo esc_attr( strtolower( $this->currency ) ); ?>" data-currency-symbol="<?php echo esc_attr( Stripe_Helper::get_currency_symbol( $this->currency ) ); ?>" data-message-format="<?php echo esc_attr( $message_format ); ?>">
-							</span>
-						</div>
-						<?php if ( $this->minimum_amount > 0 ) { ?>
-							<span class="srfm-description">
-								<?php
-								echo esc_html(
-									sprintf(
-										/* translators: %s: Minimum amount with currency */
-										__( 'Minimum amount: %s', 'sureforms' ),
-										$this->format_currency( $this->minimum_amount, $this->currency )
-									)
-								);
-								?>
-							</span>
-						<?php } ?>
+					<div
+						id="srfm-payment-amount-<?php echo esc_attr( $this->block_id ); ?>-subscription"
+						class="srfm-payment-amount-block srfm-payment-amount-block-subscription"
+						data-payment-type="subscription"
+						aria-labelledby="srfm-payment-type-<?php echo esc_attr( $this->block_id ); ?>-subscription"
+						<?php echo esc_attr( $is_one_time_default ? 'hidden' : '' ); ?>
+					>
+						<?php
+						// phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped -- render_amount_display handles its own escaping.
+						echo $this->render_amount_display(
+							'subscription',
+							Helper::get_string_value( $this->subscription_config['amount_type'] ?? 'fixed' ),
+							is_numeric( $this->subscription_config['fixed_amount'] ?? null ) ? (float) $this->subscription_config['fixed_amount'] : 0.0,
+							is_numeric( $this->subscription_config['minimum_amount'] ?? null ) ? (float) $this->subscription_config['minimum_amount'] : 0.0
+						);
+						// phpcs:enable WordPress.Security.EscapeOutput.OutputNotEscaped
+						?>
 					</div>
-				<?php } ?>
+					<?php
+				} else {
+					// phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped -- render_amount_display handles its own escaping.
+					echo $this->render_amount_display(
+						$this->payment_type,
+						$this->amount_type,
+						$this->fixed_amount,
+						$this->minimum_amount
+					);
+					// phpcs:enable WordPress.Security.EscapeOutput.OutputNotEscaped
+				}
+				?>
 
 				<?php
 				if ( 'test' === $this->payment_mode ) {
@@ -427,6 +528,231 @@ class Payment_Markup extends Base {
 
 		return $methods;
 	}
+
+	// BOTH MODE: start — helper renderers for the dual-mode chooser and amount displays.
+
+	/**
+	 * Render the one-time / subscription radio chooser shown only in "both" mode.
+	 *
+	 * @return string Chooser markup.
+	 * @since 2.8.2
+	 */
+	private function render_payment_type_chooser() {
+		$chooser_name = 'srfm-payment-type-choice-' . $this->block_id;
+		$is_one_time  = 'one-time' === $this->default_payment_choice;
+
+		$options = [
+			[
+				'value'   => 'one-time',
+				'label'   => $this->one_time_label,
+				'checked' => $is_one_time,
+			],
+			[
+				'value'   => 'subscription',
+				'label'   => $this->subscription_label,
+				'checked' => ! $is_one_time,
+			],
+		];
+
+		ob_start();
+		?>
+		<div
+			class="srfm-payment-type-chooser srfm-block-wrap"
+			role="radiogroup"
+			aria-label="<?php esc_attr_e( 'Choose payment type', 'sureforms' ); ?>"
+		>
+			<?php
+			foreach ( $options as $opt ) {
+				$radio_id = 'srfm-payment-type-' . $this->block_id . '-' . $opt['value'];
+				$panel_id = 'srfm-payment-amount-' . $this->block_id . '-' . $opt['value'];
+				// phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped -- render_radio_pill handles its own escaping.
+				echo $this->render_radio_pill(
+					[
+						'wrapper_class' => 'srfm-payment-type-choice srfm-payment-type-choice--' . $opt['value'],
+						'radio_id'      => $radio_id,
+						'name'          => $chooser_name,
+						'value'         => $opt['value'],
+						'label'         => $opt['label'],
+						'checked'       => $opt['checked'],
+						'radio_class'   => 'srfm-payment-type-choice-radio',
+						'aria_controls' => $panel_id,
+						'data_attrs'    => [ 'data-payment-type' => $opt['value'] ],
+					]
+				);
+				// phpcs:enable WordPress.Security.EscapeOutput.OutputNotEscaped
+			}
+			?>
+		</div>
+		<?php
+		$markup = ob_get_clean();
+		return is_string( $markup ) ? $markup : '';
+	}
+
+	/**
+	 * Render a single radio "pill" using the same DOM shape as the multi-choice
+	 * block (`.srfm-block-content-wrap` + `.srfm-option-container` + circle SVGs).
+	 * This lets us inherit the existing visual language: bordered box, hover/focus
+	 * states, primary-tinted background when selected, animated check icon.
+	 *
+	 * @param array{wrapper_class:string,radio_id:string,name:string,value:string,label:string,checked:bool,radio_class:string,aria_controls?:string,data_attrs?:array<string,string>} $args Pill config.
+	 * @return string Pill markup.
+	 * @since 2.8.2
+	 */
+	private function render_radio_pill( $args ) {
+		$check_svg     = Helper::fetch_svg( 'circle-checked', 'srfm-payment-icon', 'aria-hidden="true"' );
+		$unchecked_svg = Helper::fetch_svg( 'circle-unchecked', 'srfm-payment-icon-unchecked', 'aria-hidden="true"' );
+
+		$data_attrs_html = '';
+		if ( ! empty( $args['data_attrs'] ) && is_array( $args['data_attrs'] ) ) {
+			foreach ( $args['data_attrs'] as $key => $val ) {
+				$data_attrs_html .= ' ' . esc_attr( $key ) . '="' . esc_attr( $val ) . '"';
+			}
+		}
+
+		ob_start();
+		?>
+		<label class="<?php echo esc_attr( $args['wrapper_class'] ); ?>">
+			<input
+				type="radio"
+				id="<?php echo esc_attr( $args['radio_id'] ); ?>"
+				name="<?php echo esc_attr( $args['name'] ); ?>"
+				value="<?php echo esc_attr( $args['value'] ); ?>"
+				class="<?php echo esc_attr( $args['radio_class'] ); ?>"
+				<?php if ( ! empty( $args['aria_controls'] ) ) { ?>
+					aria-controls="<?php echo esc_attr( $args['aria_controls'] ); ?>"
+				<?php } ?>
+				<?php echo $data_attrs_html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+				<?php checked( ! empty( $args['checked'] ) ); ?>
+			/>
+			<div class="srfm-block-content-wrap">
+				<div class="srfm-option-container">
+					<span class="srfm-payment-option-label"><?php echo esc_html( $args['label'] ); ?></span>
+				</div>
+				<div class="srfm-icon-container">
+					<?php
+					echo wp_kses( $check_svg, Helper::$allowed_tags_svg );
+					echo wp_kses( $unchecked_svg, Helper::$allowed_tags_svg );
+					?>
+				</div>
+			</div>
+		</label>
+		<?php
+		$markup = ob_get_clean();
+		return is_string( $markup ) ? $markup : '';
+	}
+
+	/**
+	 * Render the amount display block (fixed or variable, one-time or subscription).
+	 * Extracted so the "both" mode can render two of these — one per choice.
+	 *
+	 * @param string $payment_type   The payment type for this block ("one-time" or "subscription").
+	 * @param string $amount_type    Either "fixed" or "variable".
+	 * @param float  $fixed_amount   The configured fixed amount.
+	 * @param float  $minimum_amount The configured minimum amount.
+	 * @return string Amount display markup.
+	 * @since 2.8.2
+	 */
+	private function render_amount_display( $payment_type, $amount_type, $fixed_amount, $minimum_amount ) {
+		ob_start();
+		if ( 'fixed' === $amount_type ) {
+			?>
+			<!-- Fixed Payment Amount Display. -->
+			<div class="srfm-payment-amount srfm-block-label">
+				<span class="srfm-payment-value">
+					<?php
+					if ( 'subscription' === $payment_type && ! empty( $this->subscription_plan ) ) {
+						$interval       = $this->subscription_plan['interval'] ?? 'month';
+						$billing_cycles = $this->subscription_plan['billingCycles'] ?? 0;
+						$interval_label = $this->get_interval_label( $interval );
+
+						if ( 'ongoing' === $billing_cycles ) {
+							echo esc_html(
+								sprintf(
+									/* translators: 1: Amount with currency, 2: Interval (day/week/month/quarter/year) */
+									__( '%1$s per %2$s (until cancelled)', 'sureforms' ),
+									$this->format_currency( $fixed_amount, $this->currency ),
+									$interval_label
+								)
+							);
+						} elseif ( $billing_cycles > 0 ) {
+							echo esc_html(
+								sprintf(
+									/* translators: 1: Amount with currency, 2: Interval (day/week/month/quarter/year), 3: Number of billing cycles */
+									__( '%1$s per %2$s (%3$s payments)', 'sureforms' ),
+									$this->format_currency( $fixed_amount, $this->currency ),
+									$interval_label,
+									$billing_cycles
+								)
+							);
+						} else {
+							echo esc_html(
+								sprintf(
+									/* translators: 1: Amount with currency, 2: Interval (day/week/month/quarter/year) */
+									__( '%1$s per %2$s', 'sureforms' ),
+									$this->format_currency( $fixed_amount, $this->currency ),
+									$interval_label
+								)
+							);
+						}
+					} else {
+						echo esc_html( $this->format_currency( $fixed_amount, $this->currency ) );
+					}
+					?>
+				</span>
+			</div>
+			<?php
+		} else {
+			// Variable amount display.
+			$message_format = '{amount}';
+			if ( 'subscription' === $payment_type && ! empty( $this->subscription_plan ) ) {
+				$interval       = $this->subscription_plan['interval'] ?? 'month';
+				$billing_cycles = $this->subscription_plan['billingCycles'] ?? 0;
+				$interval_label = $this->get_interval_label( $interval );
+
+				if ( 'ongoing' === $billing_cycles ) {
+					/* translators: 1: Amount with currency placeholder, 2: Interval (day/week/month/quarter/year) */
+					$message_format = sprintf( __( '{amount} per %s (until cancelled)', 'sureforms' ), $interval_label );
+				} elseif ( $billing_cycles > 0 ) {
+					/* translators: 1: Amount with currency placeholder, 2: Interval (day/week/month/quarter/year), 3: Number of billing cycles */
+					$message_format = sprintf( __( '{amount} per %1$s (%2$s payments)', 'sureforms' ), $interval_label, $billing_cycles );
+				} else {
+					/* translators: 1: Amount with currency placeholder, 2: Interval (day/week/month/quarter/year) */
+					$message_format = sprintf( __( '{amount} per %s', 'sureforms' ), $interval_label );
+				}
+			}
+			?>
+			<!-- Variable Payment Amount Display. -->
+			<div class="srfm-variable-amount-display srfm-block-label">
+				<div class="srfm-payment-amount-wrapper">
+					<span
+						class="srfm-payment-value"
+						data-currency="<?php echo esc_attr( strtolower( $this->currency ) ); ?>"
+						data-currency-symbol="<?php echo esc_attr( Stripe_Helper::get_currency_symbol( $this->currency ) ); ?>"
+						data-message-format="<?php echo esc_attr( $message_format ); ?>"
+					></span>
+				</div>
+				<?php if ( $minimum_amount > 0 ) { ?>
+					<span class="srfm-description">
+						<?php
+						echo esc_html(
+							sprintf(
+								/* translators: %s: Minimum amount with currency */
+								__( 'Minimum amount: %s', 'sureforms' ),
+								$this->format_currency( $minimum_amount, $this->currency )
+							)
+						);
+						?>
+					</span>
+				<?php } ?>
+			</div>
+			<?php
+		}
+
+		$markup = ob_get_clean();
+		return is_string( $markup ) ? $markup : '';
+	}
+
+	// BOTH MODE: end.
 
 	/**
 	 * Render payment methods as accordion.
@@ -524,7 +850,8 @@ class Payment_Markup extends Base {
 		}
 
 		// Check subscription-specific requirements.
-		if ( 'subscription' === $this->payment_type ) {
+		// BOTH MODE: subscription is a possible end-user choice, so name field is also required.
+		if ( 'subscription' === $this->original_payment_type || 'both' === $this->original_payment_type ) {
 			if ( empty( $this->customer_name_field ) ) {
 				return false;
 			}

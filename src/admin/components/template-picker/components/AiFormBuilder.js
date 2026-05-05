@@ -22,8 +22,22 @@ const AiFormBuilder = () => {
 	);
 	const [ isBuildingForm, setIsBuildingForm ] = useState( false );
 	const [ percentBuild, setPercentBuild ] = useState( 0 );
-	const [ showFormCreationErr, setShowFormCreationErr ] = useState( false );
+	const [ formCreationErr, setFormCreationErr ] = useState( '' );
 	const [ showAuthErrorPopup, setShowAuthErrorPopup ] = useState( false );
+
+	const handleFormCreationError = ( errorMessage ) => {
+		setFormCreationErr(
+			errorMessage ||
+				__( 'Something went wrong. Please try again.', 'sureforms' )
+		);
+		setIsBuildingForm( false );
+		setPercentBuild( 0 );
+	};
+
+	const resetFormCreationError = () => {
+		setFormCreationErr( '' );
+		setPercentBuild( 0 );
+	};
 	const [ formTypeObj, setFormTypeObj ] = useState( {} );
 	const [ formType, setFormType ] = useState( 'simple' );
 
@@ -42,10 +56,11 @@ const AiFormBuilder = () => {
 		previousMessages,
 		useSystemMessage
 	) => {
-		setPercentBuild( 0 );
 		// Check if the user has permission to create posts.
 		if ( '1' !== srfm_admin.capability ) {
-			console.error( 'User does not have permission to create posts' );
+			handleFormCreationError(
+				__( 'You do not have permission to create forms.', 'sureforms' )
+			);
 			return;
 		}
 
@@ -63,80 +78,131 @@ const AiFormBuilder = () => {
 			form_type: formType,
 		};
 
-		// add a pause of 2 seconds and set percentBuild to 25 without using setTimeout
+		setIsBuildingForm( true );
 		setPercentBuild( 50 );
 		setMessage( __( 'Generating fields', 'sureforms' ) );
 
+		let response;
 		try {
-			const response = await apiFetch( {
+			response = await apiFetch( {
 				path: 'sureforms/v1/generate-form',
 				method: 'POST',
 				data: postData,
 			} );
-
-			if ( response ) {
-				/**
-				 * If the response contains an error code, handle it.
-				 * This is the most common error that can occur when the AI response is not in the expected format.
-				 */
-				if ( response?.code === 'invalid_json' ) {
-					setShowFormCreationErr( true );
-					return;
-				}
-				setMessage( __( 'Finalizing your form', 'sureforms' ) );
-				setPercentBuild( 75 );
-
-				if ( response?.success === false ) {
-					setShowFormCreationErr( true );
-					return;
-				}
-
-				const content = response?.data;
-
-				if ( ! content ) {
-					setShowFormCreationErr( true );
-					return;
-				}
-
-				const postContent = await apiFetch( {
-					path: 'sureforms/v1/map-fields',
-					method: 'POST',
-					data: {
-						form_data: content,
-						is_conversional: formTypeObj?.isConversationalForm,
-					},
-				} );
-
-				if ( postContent ) {
-					setMessage( __( 'Opening form editor', 'sureforms' ) );
-					setPercentBuild( 100 );
-					const formTitle = content?.form?.formTitle;
-					const metasToUpdate = applyFilters(
-						'srfm.aiFormScreen.metasToUpdate',
-						{},
-						formTypeObj,
-						content
-					);
-					handleAddNewPost(
-						postContent,
-						formTitle,
-						metasToUpdate,
-						formTypeObj?.isConversationalForm,
-						formType
-					);
-				} else {
-					setShowFormCreationErr( true );
-				}
-			} else {
-				setShowFormCreationErr( true );
-				console.error(
-					'Error creating sureforms form using AI: ',
-					response.message
-				);
-			}
 		} catch ( error ) {
-			console.log( error );
+			console.error( 'Error generating AI form:', error );
+			handleFormCreationError(
+				error?.message ||
+					__(
+						'Unable to reach the SureForms AI service. Please check your connection and try again.',
+						'sureforms'
+					)
+			);
+			return;
 		}
+
+		if ( ! response ) {
+			handleFormCreationError(
+				__(
+					'The AI service did not return a response. Please try again.',
+					'sureforms'
+				)
+			);
+			return;
+		}
+
+		setMessage( __( 'Finalizing your form', 'sureforms' ) );
+		setPercentBuild( 75 );
+
+		if ( response?.success === false ) {
+			handleFormCreationError(
+				response?.data?.message ||
+					response?.message ||
+					__(
+						'Form generation failed. Please try again.',
+						'sureforms'
+					)
+			);
+			return;
+		}
+
+		const content = response?.data;
+
+		if ( ! content ) {
+			handleFormCreationError(
+				__(
+					'The AI response was empty. Please refine your prompt and try again.',
+					'sureforms'
+				)
+			);
+			return;
+		}
+
+		let postContent;
+		try {
+			postContent = await apiFetch( {
+				path: 'sureforms/v1/map-fields',
+				method: 'POST',
+				data: {
+					form_data: content,
+					is_conversional: formTypeObj?.isConversationalForm,
+				},
+			} );
+		} catch ( error ) {
+			console.error( 'Error mapping AI form fields:', error );
+			handleFormCreationError(
+				error?.message ||
+					__(
+						'Unable to build form fields from the AI response.',
+						'sureforms'
+					)
+			);
+			return;
+		}
+
+		// field-mapping returns a WP_Error serialised as { code, message } on failure.
+		if (
+			postContent &&
+			typeof postContent === 'object' &&
+			postContent.code
+		) {
+			handleFormCreationError(
+				postContent.message ||
+					__(
+						'Unable to build form fields from the AI response.',
+						'sureforms'
+					)
+			);
+			return;
+		}
+
+		if ( ! postContent ) {
+			handleFormCreationError(
+				__(
+					'Unable to build form fields from the AI response.',
+					'sureforms'
+				)
+			);
+			return;
+		}
+
+		setMessage( __( 'Opening form editor', 'sureforms' ) );
+		setPercentBuild( 100 );
+		const formTitle = content?.form?.formTitle;
+		const metasToUpdate = applyFilters(
+			'srfm.aiFormScreen.metasToUpdate',
+			{},
+			formTypeObj,
+			content
+		);
+		handleAddNewPost(
+			postContent,
+			formTitle,
+			metasToUpdate,
+			formTypeObj?.isConversationalForm,
+			formType,
+			handleFormCreationError
+		);
 	};
 
 	const handleAccessKey = async () => {
@@ -310,18 +376,19 @@ const AiFormBuilder = () => {
 		}
 	};
 
-	// shows while the form is being built
+	// shows while the form is being built. The error popup is intentionally
+	// rendered only at the bottom of the component (outer return) — when
+	// handleFormCreationError fires it sets isBuildingForm=false in the same
+	// batch as setFormCreationErr, so the early-return here never coincides
+	// with a non-empty formCreationErr; an inner ErrorPopup would be dead code.
 	if ( isBuildingForm ) {
 		return (
-			<>
-				<Container className="h-screen bg-background-secondary p-8 gap-8">
-					<AiFormProgressPage
-						message={ message }
-						percentBuild={ percentBuild }
-					/>
-				</Container>
-				{ showFormCreationErr && <ErrorPopup /> }
-			</>
+			<Container className="h-screen bg-background-secondary p-8 gap-8">
+				<AiFormProgressPage
+					message={ message }
+					percentBuild={ percentBuild }
+				/>
+			</Container>
 		);
 	}
 
@@ -348,7 +415,6 @@ const AiFormBuilder = () => {
 			<div className="mt-14">
 				<AiFormBuilderForm
 					handleCreateAiForm={ handleCreateAiForm }
-					setIsBuildingForm={ setIsBuildingForm }
 					formTypeObj={ formTypeObj }
 					setFormTypeObj={ setFormTypeObj }
 					setFormType={ setFormType }
@@ -364,6 +430,13 @@ const AiFormBuilder = () => {
 			srfm_admin?.srfm_ai_usage_details?.code
 				? getLimitReachedPopup()
 				: null }
+
+			{ formCreationErr && (
+				<ErrorPopup
+					errorMessage={ formCreationErr }
+					onRetry={ resetFormCreationError }
+				/>
+			) }
 		</div>
 	);
 };

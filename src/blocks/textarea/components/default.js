@@ -10,6 +10,7 @@ export const TextareaComponent = ( { attributes, blockID, setAttributes } ) => {
 		label,
 		placeholder,
 		required,
+		minLength,
 		maxLength,
 		defaultValue,
 		rows,
@@ -75,6 +76,7 @@ export const TextareaComponent = ( { attributes, blockID, setAttributes } ) => {
 						value={ defaultValue }
 						rows={ rows }
 						cols={ cols }
+						data-minlength={ minLength || undefined }
 						maxLength={ maxLength }
 						className={ `srfm-input-common srfm-input-${ slug }` }
 					></textarea>

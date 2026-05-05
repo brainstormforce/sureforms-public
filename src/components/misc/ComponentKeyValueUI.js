@@ -84,6 +84,7 @@ const ComponentKeyValueUI = ( {
 							>
 								<div className="flex gap-3 items-center w-full">
 									<TextControl
+										__next40pxDefaultSize
 										type="text"
 										placeholder={ __(
 											'Add Key',
@@ -97,6 +98,7 @@ const ComponentKeyValueUI = ( {
 										}
 									/>
 									<TextControl
+										__next40pxDefaultSize
 										type="text"
 										placeholder={ __(
 											'Add Value',

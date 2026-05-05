@@ -70,23 +70,54 @@ class AI_Form_Builder {
 
 		if ( ! empty( $response['error'] ) ) {
 			// If the response has an error, handle it and report it back.
-			$message = '';
-			if ( ! empty( $response['error']['message'] ) ) { // If any error message received from OpenAI.
-				$message = $response['error']['message'];
-			} elseif ( is_string( $response['error'] ) ) {  // If any error message received from server.
-				if ( ! empty( $response['code'] && is_string( $response['code'] ) ) ) {
-					$message = __( 'The SureForms AI Middleware encountered an error.', 'sureforms' );
-				}
-				$message = ! empty( $message ) ? $message : $response['error'];
+			// We sanitize before returning so OpenAI / middleware infra details
+			// (URLs, request IDs, model names, account IDs) do not leak to the
+			// client; the raw message is preserved in the debug log via
+			// AI_Helper::sanitize_ai_error_message() when WP_DEBUG[_LOG] is on.
+			$raw = '';
+			if ( is_array( $response['error'] ) && ! empty( $response['error']['message'] ) ) {
+				// If any error message received from OpenAI.
+				$raw = $response['error']['message'];
+			} elseif ( is_string( $response['error'] ) ) {
+				// If any error message received from the middleware server.
+				$raw = $response['error'];
+			}
+			$message = AI_Helper::sanitize_ai_error_message( $raw, 'generate/form' );
+			if ( '' === $message ) {
+				$message = __( 'The SureForms AI Middleware encountered an error.', 'sureforms' );
 			}
 			wp_send_json_error( [ 'message' => $message ] );
-		} elseif ( is_array( $response['form'] ) && ! empty( $response['form']['formTitle'] ) && is_array( $response['form']['formFields'] ) && ! empty( $response['form']['formFields'] ) ) {
-			// If the message was sent successfully, send it successfully.
-			wp_send_json_success( $response );
-		} else {
-			// If you've reached here, then something has definitely gone amuck. Abandon ship.
-			wp_send_json_error( $response );
-		}//end if
+		}
+
+		// Validate the expected form structure piece by piece so we can return specific errors.
+		if ( empty( $response['form'] ) || ! is_array( $response['form'] ) ) {
+			wp_send_json_error(
+				[
+					'message' => __( 'The AI did not return a form. Please refine your prompt and try again.', 'sureforms' ),
+				]
+			);
+		}
+
+		if ( empty( $response['form']['formTitle'] ) ) {
+			wp_send_json_error(
+				[
+					'message' => __( 'The AI response is missing a form title. Please try again.', 'sureforms' ),
+				]
+			);
+		}
+
+		if (
+			empty( $response['form']['formFields'] ) ||
+			! is_array( $response['form']['formFields'] )
+		) {
+			wp_send_json_error(
+				[
+					'message' => __( 'The AI was unable to generate form fields. Please try again.', 'sureforms' ),
+				]
+			);
+		}
+
+		wp_send_json_success( $response );
 	}
 
 }

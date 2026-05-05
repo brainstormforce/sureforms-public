@@ -1,4 +1,4 @@
-import { render } from '@wordpress/element';
+import { createRoot } from '@wordpress/element';
 import { cn } from '@Utils/Helpers';
 import Header from './Header';
 
@@ -15,7 +15,8 @@ const FormPageHeader = ( { className } ) => {
 
 	function renderApp() {
 		if ( null !== app ) {
-			render( <FormPageHeader />, app );
+			const root = createRoot( app );
+			root.render( <FormPageHeader /> );
 		}
 	}
 

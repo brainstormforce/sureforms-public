@@ -159,6 +159,7 @@ const Edit = ( props ) => {
 			id: 'input-pattern',
 			component: (
 				<SelectControl
+					__next40pxDefaultSize
 					label={ __( 'Input Pattern', 'sureforms' ) }
 					value={ inputMask }
 					options={ [

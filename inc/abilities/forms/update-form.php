@@ -392,6 +392,10 @@ class Update_Form extends Abstract_Ability {
 
 			$post_content = Field_Mapping::generate_gutenberg_fields_from_questions( $request );
 
+			if ( is_wp_error( $post_content ) ) {
+				return $post_content;
+			}
+
 			if ( ! empty( $post_content ) ) {
 				wp_update_post(
 					[

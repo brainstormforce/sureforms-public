@@ -8,6 +8,7 @@
 
 namespace SRFM\Inc;
 
+use SRFM\Inc\AI_Form_Builder\AI_Helper;
 use SRFM\Inc\Traits\Get_Instance;
 use WP_Error;
 use WP_REST_Response;
@@ -145,29 +146,48 @@ class Create_New_Form {
 				'meta_input'   => $post_metas,
 				'post_status'  => 'draft',
 				'post_type'    => 'sureforms_form',
-			]
+			],
+			true
 		);
 
-		if ( ! empty( $post_id ) ) {
-
-			/**
-			 * Update _srfm_is_ai_generated meta to true.
-			 * If the request is coming here then the form is AI generated.
-			 */
-			update_post_meta( $post_id, '_srfm_is_ai_generated', true );
-
+		if ( is_wp_error( $post_id ) ) {
+			// Pass the raw WP_Error through the shared sanitizer so any URLs,
+			// request IDs, or model names injected by a filter on
+			// wp_insert_post don't leak via the REST response. The raw message
+			// is still logged server-side (gated on WP_DEBUG / WP_DEBUG_LOG).
+			$sanitized = AI_Helper::sanitize_ai_error_message( $post_id->get_error_message(), 'wp_insert_post' );
+			if ( '' === $sanitized ) {
+				$sanitized = __( 'Error creating SureForms Form.', 'sureforms' );
+			}
 			return new WP_REST_Response(
 				[
-					'message' => __( 'SureForms Form created successfully.', 'sureforms' ),
-					'id'      => $post_id,
-				]
+					'message' => $sanitized,
+				],
+				500
 			);
 		}
-			wp_send_json_error(
+
+		if ( ! is_int( $post_id ) || $post_id <= 0 ) {
+			return new WP_REST_Response(
 				[
-					'message' => __( 'Error creating SureForms Form, ', 'sureforms' ),
-				]
+					'message' => __( 'Error creating SureForms Form.', 'sureforms' ),
+				],
+				500
 			);
+		}
+
+		/**
+		 * Update _srfm_is_ai_generated meta to true.
+		 * If the request is coming here then the form is AI generated.
+		 */
+		update_post_meta( $post_id, '_srfm_is_ai_generated', true );
+
+		return new WP_REST_Response(
+			[
+				'message' => __( 'SureForms Form created successfully.', 'sureforms' ),
+				'id'      => $post_id,
+			]
+		);
 	}
 
 }
