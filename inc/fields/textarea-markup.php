@@ -24,7 +24,7 @@ class Textarea_Markup extends Base {
 	 * Minimum length of text required for the textarea.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 2.8.2
 	 */
 	protected $min_length;
 
@@ -32,7 +32,7 @@ class Textarea_Markup extends Base {
 	 * HTML attribute string for the minimum length.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 2.8.2
 	 */
 	protected $min_length_attr;
 

@@ -241,7 +241,7 @@ class AI_Helper {
 	 *                                so the unredacted form is preserved server-side
 	 *                                (subject to the usual WP_DEBUG / WP_DEBUG_LOG gates).
 	 * @param int|string $status_code Optional HTTP status, forwarded to the logger.
-	 * @since x.x.x
+	 * @since 2.8.2
 	 * @return string Sanitized message safe to return to the client.
 	 */
 	public static function sanitize_ai_error_message( $raw, $endpoint = '', $status_code = '' ) {
@@ -286,7 +286,7 @@ class AI_Helper {
 	 * @param int|string  $status_code    HTTP status code, used for debug logging.
 	 * @param string      $endpoint       Short endpoint label, used for debug logging.
 	 * @param string|null $error_fallback Translated fallback message on decode failure.
-	 * @since x.x.x
+	 * @since 2.8.2
 	 * @return array<mixed>
 	 */
 	protected static function decode_json_response( $response_body, $status_code, $endpoint, $error_fallback = null ) {
@@ -324,7 +324,7 @@ class AI_Helper {
 	 * @param int|string $status_code HTTP status code.
 	 * @param string     $reason      Failure reason identifier.
 	 * @param string     $body        Raw response body (will be truncated).
-	 * @since x.x.x
+	 * @since 2.8.2
 	 * @return void
 	 */
 	protected static function log_ai_response_failure( $endpoint, $status_code, $reason, $body ) {

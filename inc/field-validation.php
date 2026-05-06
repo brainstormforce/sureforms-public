@@ -94,9 +94,14 @@ class Field_Validation {
 			}
 		}
 
-		// Only update meta if we have processed configurations.
+		// Sync the meta on every save. When $block_config is empty (e.g. a textarea
+		// whose minLength was cleared, with no other blocks needing per-block
+		// validation), we must clear the stored meta — otherwise the previously
+		// saved values keep being used by the validator.
 		if ( ! empty( $block_config ) ) {
 			update_post_meta( $form_id, '_srfm_block_config', $block_config );
+		} else {
+			delete_post_meta( $form_id, '_srfm_block_config' );
 		}
 	}
 
@@ -496,29 +501,26 @@ class Field_Validation {
 	 *
 	 * @param array<mixed> $attrs Block attributes.
 	 * @return array Processed textarea configuration.
-	 * @since x.x.x
+	 * @since 2.8.2
 	 */
 	private static function process_textarea_block( $attrs ) {
-		$textarea_config = [];
-
-		// Skip min-length tracking entirely when the textarea is a rich-text editor —
-		// the submitted value contains HTML markup, which would skew mb_strlen counts.
+		// Always emit a min_length key so a cleared/invalid value overwrites any
+		// previously stored config on save instead of falling back to stale data.
+		// Rich-text editors submit HTML markup which would skew mb_strlen counts,
+		// so they're treated as "no min-length validation".
 		if ( ! empty( $attrs['isRichText'] ) ) {
-			return $textarea_config;
+			return [ 'min_length' => 0 ];
 		}
 
-		// Only store config when minLength is set — nothing else requires server-side handling.
-		if ( isset( $attrs['minLength'] ) && is_numeric( $attrs['minLength'] ) ) {
-			$min_length = absint( $attrs['minLength'] );
-			$max_length = isset( $attrs['maxLength'] ) && is_numeric( $attrs['maxLength'] ) ? absint( $attrs['maxLength'] ) : 0;
+		$min_length = isset( $attrs['minLength'] ) && is_numeric( $attrs['minLength'] ) ? absint( $attrs['minLength'] ) : 0;
+		$max_length = isset( $attrs['maxLength'] ) && is_numeric( $attrs['maxLength'] ) ? absint( $attrs['maxLength'] ) : 0;
 
-			// Misconfiguration guard — drop min when it exceeds max so the form stays submittable.
-			if ( $min_length > 0 && ( 0 === $max_length || $min_length <= $max_length ) ) {
-				$textarea_config['min_length'] = $min_length;
-			}
+		// Misconfiguration guard — drop min when it exceeds max so the form stays submittable.
+		if ( $max_length > 0 && $min_length > $max_length ) {
+			$min_length = 0;
 		}
 
-		return $textarea_config;
+		return [ 'min_length' => $min_length ];
 	}
 
 	/**

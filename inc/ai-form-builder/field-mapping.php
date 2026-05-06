@@ -438,7 +438,7 @@ class Field_Mapping {
 	 * (icon class names, booleans) are left untouched.
 	 *
 	 * @param array<int, array<string, mixed>> $options Raw fieldOptions array.
-	 * @since x.x.x
+	 * @since 2.8.2
 	 * @return array<int, array<string, mixed>> Sanitized options.
 	 */
 	private static function sanitize_field_options( $options ) {

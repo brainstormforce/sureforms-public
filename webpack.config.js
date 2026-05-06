@@ -5,6 +5,32 @@ const path = require( 'path' );
 const CopyPlugin = require( 'copy-webpack-plugin' );
 const webpack = require( 'webpack' );
 
+const sassDeprecations = [
+	'legacy-js-api',
+	'import',
+	'global-builtin',
+];
+
+// Silence Sass deprecation warnings and Babel compact note in default rules.
+defaultConfig.module.rules.forEach( ( item ) => {
+	if ( item.use && Array.isArray( item.use ) ) {
+		item.use = item.use.map( ( loader ) => {
+			if (
+				typeof loader === 'object' &&
+				loader.loader &&
+				loader.loader.includes( 'sass-loader' )
+			) {
+				loader.options = loader.options || {};
+				loader.options.sassOptions =
+					loader.options.sassOptions || {};
+				loader.options.sassOptions.silenceDeprecations =
+					sassDeprecations;
+			}
+			return loader;
+		} );
+	}
+} );
+
 const wp_rules = defaultConfig.module.rules.filter( function ( item ) {
 	if ( String( item.test ) === String( /\.jsx?$/ ) ) {
 		return true;
@@ -19,6 +45,12 @@ const wp_rules = defaultConfig.module.rules.filter( function ( item ) {
 
 module.exports = {
 	...defaultConfig,
+	cache: {
+		type: 'filesystem',
+	},
+	performance: {
+		hints: false,
+	},
 	optimization: {
 		usedExports: true,
 	},
@@ -103,7 +135,14 @@ module.exports = {
 						},
 					},
 					'css-loader',
-					'sass-loader',
+					{
+						loader: 'sass-loader',
+						options: {
+							sassOptions: {
+								silenceDeprecations: sassDeprecations,
+							},
+						},
+					},
 				],
 			},
 		],
