@@ -550,4 +550,49 @@ class Test_Getting_Started_Notice extends TestCase {
 		$output = ob_get_clean();
 		$this->assertStringContainsString( 'srfm-survey-empty-state-root', $output );
 	}
+
+	/**
+	 * Test: add_action_links appends a UTM-tagged upsell link when SureForms
+	 * Pro is not active. Asserts the deterministic source/campaign defaults
+	 * and the placement carried via utm_medium.
+	 */
+	public function test_add_action_links_appends_utm_tagged_upsell_when_pro_inactive() {
+		if ( class_exists( '\\SRFM\\Inc\\Helper' ) && \\SRFM\\Inc\\Helper::has_pro() ) {
+			$this->markTestSkipped( 'SureForms Pro is active; upsell branch is not exercised.' );
+		}
+
+		$admin = Admin::get_instance();
+		$links = $admin->add_action_links( [] );
+
+		$this->assertCount( 1, $links, 'A single upsell link must be appended when pro is not active.' );
+		$this->assertStringContainsString( 'utm_source=sureforms_plugin', $links[0] );
+		$this->assertStringContainsString( 'utm_medium=plugin-list', $links[0] );
+		$this->assertStringContainsString( 'utm_campaign=core_plugin', $links[0] );
+	}
+
+	/**
+	 * Test: add_action_links returns the array unchanged when SureForms
+	 * Pro is active — no upsell link is appended.
+	 */
+	public function test_add_action_links_returns_unchanged_when_pro_active() {
+		if ( ! class_exists( '\\SRFM\\Inc\\Helper' ) || ! \\SRFM\\Inc\\Helper::has_pro() ) {
+			$this->markTestSkipped( 'SureForms Pro is not active in this test env.' );
+		}
+
+		$admin = Admin::get_instance();
+		$input = [ '<a href="#">Existing</a>' ];
+		$links = $admin->add_action_links( $input );
+
+		$this->assertSame( $input, $links );
+	}
+
+	/**
+	 * Test: add_upgrade_to_pro is callable. Side-effect (calling
+	 * add_submenu_page) requires the parent menu to be registered, which
+	 * is outside this unit's scope — so we only assert the method exists.
+	 */
+	public function test_add_upgrade_to_pro_is_callable() {
+		$admin = Admin::get_instance();
+		$this->assertTrue( method_exists( $admin, 'add_upgrade_to_pro' ) );
+	}
 }
