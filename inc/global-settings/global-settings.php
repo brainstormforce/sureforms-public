@@ -213,6 +213,7 @@ class Global_Settings {
 			'srfm_valid_url',
 			'srfm_confirm_email_same',
 			'srfm_valid_email',
+			'srfm_textarea_min_chars',
 			'srfm_input_min_value',
 			'srfm_input_max_value',
 			'srfm_dropdown_min_selections',
@@ -417,6 +418,7 @@ class Global_Settings {
 			'srfm_email_summary_settings_options',
 			'srfm_security_settings_options',
 			'srfm_default_dynamic_block_option',
+			'srfm_mcp_settings_options',
 		];
 		$options_to_get  = array_values( array_intersect( array_map( 'sanitize_text_field', $options_to_get ), $allowed_options ) );
 

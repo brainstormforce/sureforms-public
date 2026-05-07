@@ -3,6 +3,9 @@ vendor/
 node_modules/
 sureforms/
 
+# Analytics audit working files
+.analytics-audit/
+
 # Logs
 *.log
 

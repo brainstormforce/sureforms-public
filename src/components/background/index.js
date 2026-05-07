@@ -243,6 +243,7 @@ const Background = ( props ) => {
 						<>
 							<div className="srfm-background-image-position">
 								<SelectControl
+									__next40pxDefaultSize
 									label={ __(
 										'Image Position',
 										'sureforms'
@@ -322,6 +323,7 @@ const Background = ( props ) => {
 							</div>
 							<div className="srfm-background-image-attachment">
 								<SelectControl
+									__next40pxDefaultSize
 									label={ __( 'Attachment', 'sureforms' ) }
 									value={ backgroundAttachment.value }
 									onChange={ ( value ) =>
@@ -344,6 +346,7 @@ const Background = ( props ) => {
 							</div>
 							<div className="srfm-background-image-repeat">
 								<SelectControl
+									__next40pxDefaultSize
 									label={ __( 'Repeat', 'sureforms' ) }
 									value={ backgroundRepeat.value }
 									onChange={ ( value ) =>
@@ -382,6 +385,7 @@ const Background = ( props ) => {
 							</div>
 							<div className="srfm-background-image-size">
 								<SelectControl
+									__next40pxDefaultSize
 									label={ __( 'Size', 'sureforms' ) }
 									value={ backgroundSize.value }
 									onChange={ ( value ) =>

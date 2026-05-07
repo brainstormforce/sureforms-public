@@ -346,8 +346,10 @@ export async function fieldValidation(
 						validateResult = true;
 					} else if ( confirmValue !== inputValue ) {
 						window?.srfm?.toggleErrorState( confirmParent, true );
-						confirmError.textContent =
-							window?.srfm_submit?.messages?.srfm_confirm_email_same;
+						if ( confirmError ) {
+							confirmError.textContent =
+								window?.srfm_submit?.messages?.srfm_confirm_email_same;
+						}
 
 						// Set the first error input.
 						setFirstErrorInput( confirmInput, confirmParent );
@@ -469,6 +471,43 @@ export async function fieldValidation(
 							// Set the first error input.
 							setFirstErrorInput( inputField, container );
 						}
+					}
+				}
+			}
+		}
+
+		// Textarea minimum character validation.
+		// Skip rich-text editors — their value is HTML and would inflate the character count.
+		if (
+			container.classList.contains( 'srfm-textarea-block' ) &&
+			! container.classList.contains( 'srfm-richtext' )
+		) {
+			const textareaField = container.querySelector( 'textarea' );
+			if ( textareaField ) {
+				const minLength = textareaField.getAttribute( 'data-minlength' );
+				const maxLengthAttr = textareaField.getAttribute( 'maxlength' );
+				const minLengthNum = Number( minLength );
+				const maxLengthNum = Number( maxLengthAttr );
+				// Misconfiguration guard — skip when min > max so the form stays submittable.
+				const minIsValid =
+					minLength &&
+					minLengthNum > 0 &&
+					( ! maxLengthAttr || maxLengthNum <= 0 || minLengthNum <= maxLengthNum );
+				if ( minIsValid && inputValue !== '' ) {
+					if ( inputValue.length < minLengthNum ) {
+						window?.srfm?.toggleErrorState(
+							textareaField.closest( '.srfm-block' ),
+							true
+						);
+						if ( errorMessage ) {
+							errorMessage.textContent =
+								window?.srfm?.srfmSprintfString(
+									window?.srfm_submit?.messages?.srfm_textarea_min_chars,
+									minLength
+								);
+						}
+						validateResult = true;
+						setFirstErrorInput( textareaField, container );
 					}
 				}
 			}

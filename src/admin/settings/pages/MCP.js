@@ -347,7 +347,7 @@ const McpAdapterPrompt = ( { adapterStatus: initialStatus } ) => {
 };
 
 const MCPPage = ( { loading, mcpTabOptions, updateGlobalSettings } ) => {
-	const mcpEndpointUrl = `${ srfm_admin.site_url }/wp-json/sureforms/v1/mcp`;
+	const mcpEndpointUrl = srfm_admin.mcp_endpoint_url;
 	const adapterStatus = srfm_admin?.mcp_adapter_status || 'not_installed';
 	const isAdapterActive = 'active' === adapterStatus;
 

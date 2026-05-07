@@ -226,6 +226,7 @@ const UAGNumberControl = ( props ) => {
 				{ ! isEnableDynamicContent() && (
 					<>
 						<NumberControl
+							__next40pxDefaultSize
 							labelPosition="edge"
 							disabled={ props.disabled }
 							isShiftStepEnabled={ isShiftStepEnabled }

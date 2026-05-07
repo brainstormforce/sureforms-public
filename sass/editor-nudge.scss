@@ -1,0 +1,71 @@
+/**
+ * SureForms — Editor Nudge.
+ *
+ * Styles for the dismissible notice shown in the block editor when the
+ * post title hints at a form. Scoped to the `.srfm-editor-nudge` class
+ * so we never affect other Gutenberg notices.
+ */
+
+$srfm-nudge-bg: #fff8f3;
+$srfm-nudge-border: #f9d0b0;
+$srfm-nudge-text: #1e1e1e;
+$srfm-nudge-cta-bg: #e8580c;
+$srfm-nudge-cta-bg-hover: #cf4a06;
+$srfm-nudge-cta-color: #fff;
+
+.components-notice.srfm-editor-nudge {
+	background-color: $srfm-nudge-bg;
+	border-left: 4px solid $srfm-nudge-cta-bg;
+	box-shadow: 0 1px 2px rgba( 0, 0, 0, 0.04 );
+	padding: 10px 14px;
+
+	.srfm-editor-nudge__icon {
+		width: 22px;
+		height: 22px;
+		flex-shrink: 0;
+		border-radius: 4px;
+		margin-right: 10px;
+		align-self: center;
+		display: block;
+	}
+
+	.components-notice__content {
+		color: $srfm-nudge-text;
+		font-size: 13px;
+		line-height: 1.5;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		margin: 0 25px 0 0;
+	}
+
+	.components-notice__dismiss {
+		color: #757575;
+
+		&:hover,
+		&:focus {
+			color: $srfm-nudge-text;
+		}
+	}
+
+	.srfm-editor-nudge__cta {
+		background-color: $srfm-nudge-cta-bg;
+		border-color: $srfm-nudge-cta-bg;
+		color: $srfm-nudge-cta-color;
+		font-weight: 600;
+		display: inline-flex;
+		padding: 5px 14px;
+		border-radius: 4px;
+		text-decoration: none;
+		font-size: 12px;
+		line-height: 1;
+		margin: 0;
+
+		&:hover,
+		&:focus {
+			background-color: $srfm-nudge-cta-bg-hover;
+			border-color: $srfm-nudge-cta-bg-hover;
+			color: $srfm-nudge-cta-color;
+		}
+	}
+}

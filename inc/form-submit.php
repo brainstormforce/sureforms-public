@@ -614,6 +614,8 @@ class Form_Submit {
 
 		$entry_id = Entries::add( $entries_data );
 		if ( $entry_id ) {
+			// Inject entry_id so {entry_id} smart tag resolves in confirmation message, redirect URL, and downstream integrations.
+			$form_data['entry_id'] = intval( $entry_id );
 
 			$confirmation_message = Generate_Form_Markup::get_confirmation_markup( $form_data, $submission_data );
 

@@ -20,13 +20,14 @@ import { compose } from '@wordpress/compose';
 import { FieldsPreview } from '../FieldsPreview.jsx';
 import { useErrMessage } from '@Blocks/util';
 import ConditionalLogic from '@Components/conditional-logic';
-import { attributeOptionsWithFilter } from '@Components/hooks';
+import { attributeOptionsWithFilter, afterAttributePanelBody } from '@Components/hooks';
 
 const Edit = ( props ) => {
 	const { clientId, attributes, setAttributes } = props;
 	const {
 		help,
 		required,
+		minLength,
 		maxLength,
 		block_id,
 		defaultValue,
@@ -172,6 +173,32 @@ const Edit = ( props ) => {
 			component: ! isRichText && (
 				<>
 					<SRFMNumberControl
+						label={ __( 'Minimum Characters', 'sureforms' ) }
+						value={ minLength }
+						displayUnit={ false }
+						data={ {
+							value: minLength,
+							label: 'minLength',
+						} }
+						onChange={ ( value ) => {
+							setAttributes( {
+								minLength: Number( value ),
+							} );
+						} }
+						min={ 0 }
+						showControlHeader={ false }
+						help={
+							Number( minLength ) > 0 &&
+							Number( maxLength ) > 0 &&
+							Number( minLength ) > Number( maxLength )
+								? __(
+									'Minimum characters cannot exceed Maximum characters.',
+									'sureforms'
+								)
+								: false
+						}
+					/>
+					<SRFMNumberControl
 						label={ __( 'Maximum Characters', 'sureforms' ) }
 						value={ maxLength }
 						displayUnit={ false }
@@ -226,6 +253,9 @@ const Edit = ( props ) => {
 								( option ) => option.component
 							) }
 						</SRFMAdvancedPanelBody>
+						{ afterAttributePanelBody( props ).map(
+							( panel ) => panel.component
+						) }
 					</InspectorTab>
 					<InspectorTab { ...SRFMTabs.style }></InspectorTab>
 					<InspectorTab { ...SRFMTabs.advance }>

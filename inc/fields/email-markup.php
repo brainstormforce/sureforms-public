@@ -134,6 +134,7 @@ class Email_Markup extends Base {
 						$this->placeholder_attr = ' placeholder="' . esc_attr( $placeholder ) . '" ';
 					}
 
+					$confirm_error_markup = Helper::generate_common_form_markup( $this->form_id, 'error', '', '', $this->block_id, boolval( $this->required ), '', $this->error_msg, false, '', true );
 					?>
 					<div class="srfm-<?php echo esc_attr( $this->slug ); ?>-confirm-block srf-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?>-confirm-block">
 					<?php echo wp_kses_post( $confirm_label_markup ); ?>
@@ -143,7 +144,7 @@ class Email_Markup extends Base {
 							data-required="<?php echo esc_attr( $this->data_require_attr ); ?>" aria-required="<?php echo esc_attr( $this->data_require_attr ); ?>" value="<?php echo esc_attr( $this->default ); ?>" <?php echo wp_kses_post( $this->placeholder_attr ); ?> <?php echo $this->read_only ? 'readonly' : ''; ?> />
 						</div>
 						<div class="srfm-error-wrap">
-						<?php echo wp_kses_post( $this->error_msg_markup ); ?>
+						<?php echo wp_kses_post( $confirm_error_markup ); ?>
 						</div>
 					</div>
 				<?php } ?>

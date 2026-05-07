@@ -77,3 +77,13 @@ export const filterSubmitButton = ( submitButton, args ) => {
 export const getStylePanels = ( panels, args ) => {
 	return applyFilters( 'srfm.style.panels', panels, args );
 };
+
+/**
+ * Returns additional panel bodies to render after the Attributes panel.
+ *
+ * @param {Object} props - Block props (name, attributes, setAttributes, clientId).
+ * @return {Array} - Array of { id, component } objects to render after the Attributes panel.
+ */
+export const afterAttributePanelBody = ( props ) => {
+	return applyFilters( 'srfm.block.after.attributes.panel.body', [], props );
+};

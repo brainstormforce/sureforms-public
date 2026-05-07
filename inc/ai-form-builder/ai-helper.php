@@ -67,15 +67,11 @@ class AI_Helper {
 		// Get the response body.
 		$response_body = wp_remote_retrieve_body( $response );
 
-		// If the response body is not a JSON, then abandon ship.
-		if ( empty( $response_body ) || ! json_decode( $response_body ) ) {
-			return [
-				'error' => __( 'The SureForms AI Middleware encountered an error.', 'sureforms' ),
-			];
-		}
-
-		// Return the response body.
-		return json_decode( $response_body, true );
+		return self::decode_json_response(
+			$response_body,
+			wp_remote_retrieve_response_code( $response ),
+			'generate/form'
+		);
 	}
 
 	/**
@@ -142,15 +138,12 @@ class AI_Helper {
 		// Get the response body.
 		$response_body = wp_remote_retrieve_body( $response );
 
-		// If the response body is not a JSON, then abandon ship.
-		if ( empty( $response_body ) || ! json_decode( $response_body ) ) {
-			return [
-				'error' => __( 'The SureForms API server encountered an error.', 'sureforms' ),
-			];
-		}
-
-		// Return the response body.
-		return json_decode( $response_body, true );
+		return self::decode_json_response(
+			$response_body,
+			wp_remote_retrieve_response_code( $response ),
+			'usage',
+			__( 'The SureForms API server encountered an error.', 'sureforms' )
+		);
 	}
 
 	/**
@@ -227,6 +220,143 @@ class AI_Helper {
 		}
 		// Check if the SureForms Pro license is active.
 		return $licensing->is_license_active();
+	}
+
+	/**
+	 * Sanitize an upstream error message before returning it to the client.
+	 *
+	 * The OpenAI / SureForms middleware sometimes echoes infrastructure details
+	 * (URLs, request IDs, model names, organization/user IDs, raw API keys)
+	 * inside error messages. The endpoints surfacing these messages are
+	 * capability-gated, but contributors-and-up shouldn't see infra leaks.
+	 *
+	 * Pass-through behaviour is preserved when the message has no sensitive
+	 * tokens — only matched patterns are stripped. Returns an empty string
+	 * if nothing useful remains, so callers can fall back to a canonical
+	 * translated message.
+	 *
+	 * @param mixed      $raw         Raw upstream message; non-strings are coerced.
+	 * @param string     $endpoint    Optional endpoint label; when set, the raw input
+	 *                                is passed through {@see self::log_ai_response_failure()}
+	 *                                so the unredacted form is preserved server-side
+	 *                                (subject to the usual WP_DEBUG / WP_DEBUG_LOG gates).
+	 * @param int|string $status_code Optional HTTP status, forwarded to the logger.
+	 * @since 2.8.2
+	 * @return string Sanitized message safe to return to the client.
+	 */
+	public static function sanitize_ai_error_message( $raw, $endpoint = '', $status_code = '' ) {
+		if ( ! is_string( $raw ) ) {
+			return '';
+		}
+		$raw = trim( $raw );
+		if ( '' === $raw ) {
+			return '';
+		}
+
+		if ( '' !== $endpoint ) {
+			self::log_ai_response_failure( $endpoint, $status_code, 'upstream_error', $raw );
+		}
+
+		$patterns = [
+			// URLs (http / https / protocol-relative).
+			'#https?://\S+#i',
+			'#(?<=\s)//\S+#i',
+			// OpenAI-shape opaque IDs: org-/user-/key-/sess-/req-/file-/chatcmpl-/asst-/run-/thread-.
+			// Both '-' and '_' separators are observed in the wild (e.g. req-… and req_…).
+			'/\b(?:org|user|key|sess|req|file|chatcmpl|asst|run|thread)[-_][A-Za-z0-9_]{6,}/i',
+			// Generic "request id: …" / "request-id …" trailers — require a separator and a substantive id.
+			'/\brequest[_\s-]?id[:\s]+[A-Za-z0-9_-]{4,}/i',
+			// Bearer / API-key shapes.
+			'/\bsk-[A-Za-z0-9_-]{12,}/i',
+			'/\bBearer\s+[A-Za-z0-9._-]+/i',
+			// Model identifiers that would otherwise leak the underlying provider.
+			'/\bgpt-[A-Za-z0-9.-]+/i',
+		];
+		$cleaned  = (string) preg_replace( $patterns, '', $raw );
+		// Collapse the gaps left by removed tokens.
+		$cleaned = (string) preg_replace( '/\s+/', ' ', $cleaned );
+		return trim( $cleaned, " \t\n\r\0\x0B.,;:" );
+	}
+
+	/**
+	 * Decode the response body from the SureForms AI Middleware, returning
+	 * a structured error payload when the body is empty or invalid JSON.
+	 *
+	 * @param string      $response_body  Raw HTTP response body.
+	 * @param int|string  $status_code    HTTP status code, used for debug logging.
+	 * @param string      $endpoint       Short endpoint label, used for debug logging.
+	 * @param string|null $error_fallback Translated fallback message on decode failure.
+	 * @since 2.8.2
+	 * @return array<mixed>
+	 */
+	protected static function decode_json_response( $response_body, $status_code, $endpoint, $error_fallback = null ) {
+		if ( null === $error_fallback ) {
+			$error_fallback = __( 'The SureForms AI Middleware encountered an error.', 'sureforms' );
+		}
+
+		if ( '' === $response_body || null === $response_body ) {
+			self::log_ai_response_failure( $endpoint, $status_code, 'empty_body', '' );
+			return [ 'error' => $error_fallback ];
+		}
+
+		$decoded = json_decode( $response_body, true );
+
+		if ( JSON_ERROR_NONE !== json_last_error() ) {
+			self::log_ai_response_failure( $endpoint, $status_code, 'invalid_json', $response_body );
+			return [ 'error' => $error_fallback ];
+		}
+
+		if ( ! is_array( $decoded ) ) {
+			self::log_ai_response_failure( $endpoint, $status_code, 'non_array_json', $response_body );
+			return [ 'error' => $error_fallback ];
+		}
+
+		return $decoded;
+	}
+
+	/**
+	 * Log an AI middleware response failure when WP_DEBUG and WP_DEBUG_LOG are both enabled.
+	 *
+	 * Newlines are collapsed to prevent log injection, and known sensitive JSON keys
+	 * (email, token, license_key, prompt, query) are redacted before logging.
+	 *
+	 * @param string     $endpoint    Short endpoint label.
+	 * @param int|string $status_code HTTP status code.
+	 * @param string     $reason      Failure reason identifier.
+	 * @param string     $body        Raw response body (will be truncated).
+	 * @since 2.8.2
+	 * @return void
+	 */
+	protected static function log_ai_response_failure( $endpoint, $status_code, $reason, $body ) {
+		if ( ! defined( 'WP_DEBUG' ) || ! WP_DEBUG ) {
+			return;
+		}
+
+		// Only write to the debug log file when WP_DEBUG_LOG is also enabled.
+		// Without this guard, error_log() falls back to the host's PHP error log.
+		if ( ! defined( 'WP_DEBUG_LOG' ) || ! WP_DEBUG_LOG ) {
+			return;
+		}
+
+		$snippet = is_string( $body ) ? substr( $body, 0, 500 ) : '';
+		// Collapse all whitespace (including CR/LF) to a single space to prevent log injection.
+		$snippet = (string) preg_replace( '/\s+/', ' ', $snippet );
+		// Redact known sensitive keys if echoed in the body.
+		$snippet = (string) preg_replace(
+			'/("(?:email|token|license_key|prompt|query)"\s*:\s*")[^"]*"/i',
+			'$1[redacted]"',
+			$snippet
+		);
+
+		error_log( // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Debug-only logging behind WP_DEBUG && WP_DEBUG_LOG.
+			sprintf(
+				'[SureForms AI] %s %s status=%s body=%s',
+				$endpoint,
+				$reason,
+				(string) $status_code,
+				$snippet
+			)
+		);
 	}
 
 	/**

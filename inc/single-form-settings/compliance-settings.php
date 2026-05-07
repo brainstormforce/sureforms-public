@@ -64,7 +64,7 @@ class Compliance_Settings {
 			$is_auto_delete_entries = false;
 			$days_old               = 0;
 
-			if ( is_array( $compliance_settings ) && is_array( $compliance_settings[0] ) && isset( $compliance_settings[0]['gdpr'], $compliance_settings[0]['do_not_store_entries'], $compliance_settings[0]['auto_delete_entries'] ) ) {
+			if ( is_array( $compliance_settings ) && ! empty( $compliance_settings[0] ) && is_array( $compliance_settings[0] ) && isset( $compliance_settings[0]['gdpr'], $compliance_settings[0]['do_not_store_entries'], $compliance_settings[0]['auto_delete_entries'] ) ) {
 				$gdpr                   = $compliance_settings[0]['gdpr'];
 				$do_not_store_entries   = $compliance_settings[0]['do_not_store_entries'];
 				$is_auto_delete_entries = $compliance_settings[0]['auto_delete_entries'];

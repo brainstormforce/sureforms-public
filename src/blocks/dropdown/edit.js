@@ -36,6 +36,7 @@ import SRFMNumberControl from '@Components/number-control';
 import { BulkInserterWithButton } from '@Components/bulk-inserter';
 import {
 	attributeOptionsWithFilter,
+	afterAttributePanelBody,
 	enhanceDropdownOptions,
 } from '@Components/hooks';
 import { Trash2 } from 'lucide-react';
@@ -57,6 +58,7 @@ const Edit = ( props ) => {
 		maxValue,
 		showValues,
 		preselectedOptions = [],
+		dynamicDefaultValue,
 	} = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
 	const [ newOption, setNewOption ] = useState( '' );
@@ -288,7 +290,7 @@ const Edit = ( props ) => {
 							<input
 								type={ multiSelect ? 'checkbox' : 'radio' }
 								checked={ preselectedOptions.includes( i ) }
-								onChange={ () => togglePreselection( i ) }
+								onClick={ () => togglePreselection( i ) }
 								title={ __(
 									'Preselect this option',
 									'sureforms'
@@ -523,10 +525,33 @@ const Edit = ( props ) => {
 					label={ __( 'Allow Multiple', 'sureforms' ) }
 					checked={ multiSelect }
 					onChange={ ( checked ) =>
-						setAttributes( { multiSelect: checked } )
+						setAttributes( {
+							multiSelect: checked,
+							...( checked && {
+								dynamicDefaultValue: '',
+							} ),
+						} )
 					}
 				/>
 			),
+		},
+		{
+			id: 'dynamicDefaultValue',
+			component: ! multiSelect ? (
+				<SRFMTextControl
+					label={ __( 'Dynamic Default Value', 'sureforms' ) }
+					className="srfm-with-dropdown"
+					value={ dynamicDefaultValue }
+					withSmartTagDropdown={ true }
+					data={ {
+						value: dynamicDefaultValue,
+						label: 'dynamicDefaultValue',
+					} }
+					onChange={ ( value ) =>
+						setAttributes( { dynamicDefaultValue: value } )
+					}
+				/>
+			) : null,
 		},
 		{
 			id: 'minMaxComponent',
@@ -551,6 +576,9 @@ const Edit = ( props ) => {
 								( option ) => option.component
 							) }
 						</SRFMAdvancedPanelBody>
+						{ afterAttributePanelBody( props ).map(
+							( panel ) => panel.component
+						) }
 					</InspectorTab>
 					<InspectorTab { ...SRFMTabs.style }></InspectorTab>
 					<InspectorTab { ...SRFMTabs.advance }>

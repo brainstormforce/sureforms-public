@@ -60,7 +60,6 @@ function initializePhoneField() {
 		phoneNumber.setAttribute( 'data-srfm-phone-initialized', 'true' );
 
 		const errorMessage = element.querySelector( '.srfm-error-message' );
-		const isAutoCountry = phoneNumber.getAttribute( 'auto-country' );
 		const defaultCountry = phoneNumber.getAttribute( 'default-country' );
 		const phoneFieldName = phoneNumber.getAttribute( 'name' );
 		const enableCountryFilter = phoneNumber.getAttribute(
@@ -116,47 +115,6 @@ function initializePhoneField() {
 			allowPhonewords: true,
 		};
 
-		if ( isAutoCountry === 'true' ) {
-			itlOptions.initialCountry = 'auto';
-			itlOptions.geoIpLookup = function ( callback ) {
-				fetch( 'https://ipapi.co/json' )
-					.then( function ( res ) {
-						return res.json();
-					} )
-					.then( function ( data ) {
-						let detectedCountry = data.country_code
-							? data.country_code.toLowerCase()
-							: 'us';
-
-						// Validate detected country against filters
-						detectedCountry = validateCountryWithFilters(
-							detectedCountry,
-							enableCountryFilter,
-							countryFilterType,
-							includeCountries,
-							excludeCountries
-						);
-
-						callback( detectedCountry );
-					} )
-					.catch( function () {
-						// On error, use validated fallback country
-						let fallbackCountry = 'us';
-
-						// Validate fallback country against filters
-						fallbackCountry = validateCountryWithFilters(
-							fallbackCountry,
-							enableCountryFilter,
-							countryFilterType,
-							includeCountries,
-							excludeCountries
-						);
-
-						callback( fallbackCountry );
-					} );
-			};
-		}
-
 		// Apply country filtering if enabled
 		if ( enableCountryFilter === 'true' ) {
 			if (
@@ -181,6 +139,13 @@ function initializePhoneField() {
 		}
 
 		const iti = window.intlTelInput( phoneNumber, itlOptions );
+
+		// Prevent the country flag from changing based on input value changes
+		// (e.g., browser autocomplete, typing, or deleting the country code).
+		// The flag should only change when the user explicitly selects a country from the dropdown.
+		// Dropdown selection goes through _selectListItem -> _setCountry directly, so it still works.
+		iti._updateCountryFromNumber = () => false;
+
 		const countriesData =
 			iti?.countryList.querySelectorAll( '.iti__country' );
 

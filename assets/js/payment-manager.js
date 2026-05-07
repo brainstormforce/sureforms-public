@@ -19,7 +19,22 @@ class PaymentManager {
 			: this.blockId;
 		this.paymentInput = paymentBlock.querySelector( '.srfm-payment-input' );
 		this.form = form;
+		// AbortController scopes the document-level srfm_payment_type_changed
+		// listener so it is removable on form re-initialization. Pattern mirrors
+		// PAYMENT_UTILITY.listenAmountChanges() in stripe-payment.js.
+		this.abortController = new AbortController();
 		this.init();
+	}
+
+	/**
+	 * Tear down listeners owned by this instance. Called by
+	 * initializePaymentManagers before replacing this manager so document-level
+	 * listeners don't accumulate across form re-initializations.
+	 */
+	destroy() {
+		if ( this.abortController ) {
+			this.abortController.abort();
+		}
 	}
 
 	init() {
@@ -65,6 +80,30 @@ class PaymentManager {
 				this.handleAccordionHeaderClick( header );
 			} );
 		} );
+
+		// BOTH MODE: forward the payment-type change so gateways can reinit if needed.
+		// stripe-payment.js dispatches `srfm_payment_type_changed` on the document.
+		// We keep a per-instance listener so multiple payment blocks on a page don't
+		// step on each other. Scoped to abortController so it can be torn down on
+		// form re-initialization (see destroy()).
+		document.addEventListener(
+			'srfm_payment_type_changed',
+			( event ) => {
+				if ( event?.detail?.blockId !== this.blockId ) {
+					return;
+				}
+				if ( event?.detail?.form !== this.form ) {
+					return;
+				}
+				// Re-broadcast a payment-method event so accordion gateways re-render
+				// for the new mode (Stripe is already handled by reinitForBlock).
+				this.dispatchPaymentMethodEvent(
+					this.getSelectedMethod(),
+					this.form
+				);
+			},
+			{ signal: this.abortController.signal }
+		);
 	}
 
 	/**
@@ -315,6 +354,10 @@ function initializePaymentManagers() {
 			if ( ! window.srfmPaymentManagers ) {
 				window.srfmPaymentManagers = {};
 			}
+
+			// Tear down the previous manager (if any) so its document-level
+			// srfm_payment_type_changed listener is removed before we replace it.
+			window.srfmPaymentManagers[ compositeKey ]?.destroy?.();
 
 			window.srfmPaymentManagers[ compositeKey ] = new PaymentManager(
 				paymentBlock,

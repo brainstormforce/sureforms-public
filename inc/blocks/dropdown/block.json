@@ -87,6 +87,10 @@
 		"preselectedOptions": {
 			"type": "array",
 			"default": []
+		},
+		"dynamicDefaultValue": {
+			"type": "string",
+			"default": ""
 		}
 	}
 }

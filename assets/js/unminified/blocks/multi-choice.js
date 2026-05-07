@@ -8,6 +8,8 @@ function initializeMultichoice() {
 			// Initialize savedValues array to track checked options in checkbox mode
 			// Must be declared before initializeHiddenInput() to capture preselected values
 			let savedValues = [];
+			// Track the currently selected radio value for deselection support in single-select mode
+			let currentRadioValue = ''; // eslint-disable-line prefer-const -- reassigned in click handler and initializeHiddenInput
 
 			// Initialize hidden input value with preselected options on page load
 			const initializeHiddenInput = () => {
@@ -37,6 +39,9 @@ function initializeMultichoice() {
 						hiddenInput.dispatchEvent(
 							new Event( 'change', { bubbles: true } )
 						);
+						// Initialize tracker with preselected radio value
+						currentRadioValue =
+							hiddenInput.getAttribute( 'value' ) || '';
 					}
 				} else if (
 					// For checkbox mode / multi select
@@ -131,8 +136,15 @@ function initializeMultichoice() {
 
 					// For Radio Mode / single select.
 					if ( single.classList.contains( 'srfm-radio-mode' ) ) {
-						if ( e.target.checked ) {
+						if ( currentRadioValue === getValue ) {
+							// Deselect: user clicked the already-selected option.
+							e.target.checked = false;
+							setValue = '';
+							currentRadioValue = '';
+						} else {
+							// Select new option.
 							setValue = getValue;
+							currentRadioValue = getValue;
 						}
 					} else if (
 						// For checkbox mode / multi select.

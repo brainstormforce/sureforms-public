@@ -6,6 +6,7 @@ import {
 	Bot,
 	Cpu,
 	CreditCard,
+	MapPin,
 	Settings,
 	ShieldCheck,
 	TriangleAlert,
@@ -17,7 +18,7 @@ function useQuery() {
 	return new URLSearchParams( useLocation().search );
 }
 
-export const navigation = applyFilters( 'srfm.settings.navigation', [
+const defaultNavigation = [
 	{
 		name: __( 'General Settings', 'sureforms' ),
 		slug: 'general-settings',
@@ -82,6 +83,16 @@ export const navigation = applyFilters( 'srfm.settings.navigation', [
 		hidePageTitle: true, // Hide the page title for the Integrations tab.
 	},
 	{
+		name: __( 'Google Maps', 'sureforms' ),
+		slug: 'google-maps-settings',
+		icon: <MapPin />,
+		hidePageTitle: true,
+		helpText: __(
+			'Configure Google Maps API key for address autocomplete and map preview.',
+			'sureforms'
+		),
+	},
+	{
 		name: __( 'MCP', 'sureforms' ),
 		slug: 'mcp-settings',
 		icon: <Bot />,
@@ -121,7 +132,10 @@ export const navigation = applyFilters( 'srfm.settings.navigation', [
 			'sureforms'
 		),
 	},
-] );
+];
+
+export const getNavigation = () =>
+	applyFilters( 'srfm.settings.navigation', defaultNavigation );
 
 const NavLink = ( { label, path, icon: Icon, subPage = '' } ) => {
 	const activatedTab = useQuery();
@@ -229,6 +243,8 @@ const SubmenuAccordion = ( { label, path, icon: Icon, submenu } ) => {
 };
 
 const Navigation = () => {
+	const navigation = getNavigation();
+
 	return (
 		<div className="flex-shrink-0 bg-background-primary">
 			<div className="px-4 pb-4 pt-2 absolute">

@@ -230,6 +230,7 @@ const UAGPresets = ( props ) => {
 
 	const presetDropdown = (
 		<SelectControl
+			__next40pxDefaultSize
 			className="uagb-presets-dropdown"
 			onChange={ updatePresets }
 			options={ presets }

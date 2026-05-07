@@ -319,6 +319,8 @@
 
 				.srfm-payment-method-radio {
 					width: 14px;
+					min-width: 14px;
+					min-height: 14px;
 					height: 14px;
 					border-radius: 50%;
 					appearance: none;
@@ -338,6 +340,9 @@
 					&:checked {
 						border: 5px solid #0c78fb;
 						background-color: transparent;
+						&::before {
+							background-color: transparent;
+						}
 					}
 
 					// Focus state for accessibility

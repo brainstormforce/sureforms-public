@@ -218,12 +218,12 @@ const GeneralPage = ( {
 		return (
 			<Switch
 				label={ {
-					heading: __( 'Contribute to SureForms', 'sureforms' ),
+					heading: __( 'Help shape the future of SureForms', 'sureforms' ),
 					description: (
 						<>
 							<p>
 								{ __(
-									'Collect non-sensitive information from your website, such as the PHP version and features used, to help us fix bugs faster, make smarter decisions, and build features that actually matter to you. ',
+									'Share how you use the plugin so we can build features that matter, fix issues faster, and make smarter decisions. ',
 									'sureforms'
 								) }
 								<a

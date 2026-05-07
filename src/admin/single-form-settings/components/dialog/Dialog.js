@@ -520,7 +520,9 @@ const Dialog = ( {
 		}
 	);
 
-	setFormSpecificSmartTags( updateBlockAttributes );
+	useEffect( () => {
+		setFormSpecificSmartTags( updateBlockAttributes );
+	}, [] ); // eslint-disable-line react-hooks/exhaustive-deps
 
 	useEffect( () => {
 		const activeTabObject = tabs.find( ( tab ) => tab.id === selectedTab );

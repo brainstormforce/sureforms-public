@@ -392,20 +392,24 @@ class Base {
 		$filter_classes  = apply_filters( 'srfm_field_classes', $default_classes, [ 'attributes' => $attributes ] );
 		$field_config    = apply_filters( 'srfm_field_config', [], [ 'attributes' => $attributes ] );
 
-		$this->field_config       = $field_config ? htmlspecialchars( Helper::get_string_value( wp_json_encode( $field_config, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) ), ENT_QUOTES, 'UTF-8' ) : '';
-		$this->attributes         = $attributes;
-		$this->required           = $attributes['required'] ?? false;
-		$this->field_width        = $attributes['fieldWidth'] ?? '';
-		$this->label              = $attributes['label'] ?? '';
-		$this->help               = $attributes['help'] ?? '';
-		$this->block_id           = isset( $attributes['block_id'] ) ? Helper::get_string_value( $attributes['block_id'] ) : '';
-		$this->form_id            = isset( $attributes['formId'] ) ? Helper::get_string_value( $attributes['formId'] ) : '';
-		$this->block_slug         = $attributes['slug'] ?? '';
-		$this->class_name         = $filter_classes;
-		$this->placeholder        = $attributes['placeholder'] ?? '';
-		$this->default            = $attributes['defaultValue'] ?? '';
-		$this->checked            = $attributes['checked'] ?? '';
-		$this->options            = apply_filters( 'srfm_field_options', $attributes['options'] ?? '', $attributes );
+		$this->field_config = $field_config ? htmlspecialchars( Helper::get_string_value( wp_json_encode( $field_config, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) ), ENT_QUOTES, 'UTF-8' ) : '';
+		$this->attributes   = $attributes;
+		$this->required     = $attributes['required'] ?? false;
+		$this->field_width  = $attributes['fieldWidth'] ?? '';
+		$this->label        = $attributes['label'] ?? '';
+		$this->help         = $attributes['help'] ?? '';
+		$this->block_id     = isset( $attributes['block_id'] ) ? Helper::get_string_value( $attributes['block_id'] ) : '';
+		$this->form_id      = isset( $attributes['formId'] ) ? Helper::get_string_value( $attributes['formId'] ) : '';
+		$this->block_slug   = $attributes['slug'] ?? '';
+		$this->class_name   = $filter_classes;
+		$this->placeholder  = $attributes['placeholder'] ?? '';
+		$this->default      = $attributes['defaultValue'] ?? '';
+		$this->checked      = $attributes['checked'] ?? '';
+		// Inject the block type slug (e.g. 'dropdown', 'multi-choice') into the attributes passed to
+		// the filter. The field's `slug` attribute can be prefixed when the block is inside a repeater
+		// (e.g. 'srfm-repeater-srfm-dropdown'), so filter consumers need a reliable block type identifier.
+		$block_args               = [ 'block_args' => [ 'slug' => $this->slug ] ];
+		$this->options            = apply_filters( 'srfm_field_options', $attributes['options'] ?? '', array_merge( $attributes, $block_args ) );
 		$this->is_unique          = $attributes['isUnique'] ?? false;
 		$this->conditional_class  = apply_filters( 'srfm_conditional_logic_classes', $this->form_id, $this->block_id );
 		$this->data_require_attr  = $this->required ? 'true' : 'false';

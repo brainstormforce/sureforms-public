@@ -4,7 +4,7 @@ Tags: forms, contact form, custom form, payment form, form builder
 Requires at least: 6.4
 Tested up to: 6.9.4
 Requires PHP: 7.4
-Stable tag: 2.7.0
+Stable tag: 2.8.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -478,34 +478,28 @@ You can collect payments securely through Stripe in the free version. PayPal pay
 You can report the issue through our [Bug Bounty Program](https://brainstormforce.com/bug-bounty-program/). We collaborate with Patchstack to provide opportunities for researchers to report vulnerabilities. The Patchstack team will help validate, triage, and handle any reported security issues.
 
 == Changelog ==
-= 2.7.0 - 31st March 2026 =
-* New: Added styling options for Gutenberg SureForms Form Block.
-* New: Added styling options for Bricks Builder SureForms Form Element.
-* New: Added styling options for Elementor SureForms Form Widget.
-* Fix: Fixed "Send as Raw HTML" email option wrapping content in unwanted template markup.
-* Fix: Fixed Multi Choice option labels with extra whitespace failing to resolve numeric values in payment calculations.
-* Fix: Fixed block slug not locking when a smart tag is inserted via the pro plugin.
-* Fix: Fixed dynamic tag URLs being auto-linked with HTML markup when used in redirect query parameters.
-* Fix: Fixed theme text-transform styles cascading into form input fields.
-* Fix: Fixed unique field validation endpoint exposing submitted data to unauthenticated enumeration attacks.
-= 2.6.0 - 23rd March 2026 =
-* New: Added MCP (Model Context Protocol) settings and Abilities API for AI-powered form management.
-* Improvement: Added Blocks API v3 compatibility.
-* Improvement: Improved search for form and entry listing.
-* Fix: Fixed Stripe payment block not displaying correctly when the same form is embedded multiple times on a page.
-* Fix: Fixed entry Previous/Next navigation returning entries from other forms instead of the current form.
-* Fix: Resolved intermittent form submission failures on sites with page caching plugins due to expired security tokens.
-= 2.5.2 - 12th March 2026 =
-* New: Added the “Send as Raw HTML” option in email notifications for fully structured HTML emails.
-* New: Added the Learn section.
-* Improvement: Improved UX copy across validation messages, settings, and form management UI.
-* Fix: Added the `srfm_confirmation_links_open_in_new_tab` filter to allow confirmation message links to open in the same tab.
-* Fix: Fixed the page dropdown not loading all pages on large sites with 1,700+ pages by replacing the bulk page fetch with a paginated, searchable REST endpoint.
-* Fix: Preserved input formatting in the Entries view.
-* Fix: Fixed honeypot spam protection bypass when bots strip the honeypot field entirely.
-* Fix: Fixed slug generation not working for newly added blocks in the editor.
-* Fix: Fixed unique field validation applying across all forms on the page instead of the submitted form only.
-* Fix: Fixed multi-file uploads not saving to the SureForms custom upload directory.
+= 2.8.2 - 5th May 2026 =
+* New: Added "Both" payment type so a single form can collect one-time and subscription payments together.
+* New: Added Hidden field support for the payment block's dynamic amount.
+* New: Added minimum character limit support for the Textarea field.
+* Improvement: Added extension hooks for windowed entry caps in form restriction.
+* Fix: Fixed AI Form Builder silent failures and replaced generic error messages with clearer feedback.
+* Fix: Resolved an issue where the Confirm Email field could silently block form submission when the Email field was not marked as required.
+= 2.8.1 - 27th April 2026 =
+* New: Added support for dynamic default values on Dropdown and Multi-Choice fields.
+* New: Added {entry_id} smart tag for use in email templates, confirmations, and dynamic content.
+* Improvement: Added PLN (Polish Złoty) to the currency dropdown.
+* Fix: Fixed background color not applying correctly in non-iframe editor mode.
+* Fix: Fixed MCP endpoint REST URL resolution so it uses the correct site URL.
+* Fix: Fixed Phone field country flag unexpectedly changing during browser autocomplete.
+* Fix: Fixed review/validation issues in Global Settings.
+= 2.8.0 - 16th April 2026 =
+* New: Added My Account page allowing users to view and manage their payment history and subscriptions.
+* Improvement: Phone number country detection moved to backend with caching, reducing multiple API calls.
+* Fix: Fixed payment method radio button display issue when both Stripe and PayPal gateways are enabled.
+* Fix: Fixed crash when saving a form containing the Register block.
+* Fix: Fixed inability to deselect a preselected option in single-selection controls (radio, dropdown) within the editor.
+* Fix: Fixed Quill rich text editor toolbar strings not being translatable.
 The full changelog is available [here](https://sureforms.com/whats-new/).
 
 == Upgrade Notice ==
