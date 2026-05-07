@@ -560,7 +560,6 @@ export const addQueryParam = ( url, paramValue, paramKey = 'utm_medium' ) => {
 			if ( ! urlObj.searchParams.get( 'utm_campaign' ) ) {
 				urlObj.searchParams.set( 'utm_campaign', 'core_plugin' );
 			}
-			urlObj.searchParams.set( 'utm_content', paramValue );
 		}
 
 		return urlObj.toString();

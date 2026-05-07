@@ -395,9 +395,8 @@ class Test_Editor_Nudge extends TestCase {
 		foreach (
 			[
 				'utm_source=sureforms_plugin',
-				'utm_medium=wordpress_plugin',
+				'utm_medium=editor_nudge',
 				'utm_campaign=core_plugin',
-				'utm_content=editor_nudge',
 			] as $needle
 		) {
 			$this->assertStringContainsString(

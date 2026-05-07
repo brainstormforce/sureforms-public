@@ -182,15 +182,14 @@ class Editor_Nudge {
 		);
 
 		// Editor nudge UTM attribution — start.
-		// Tag the "Create Form" CTA with the same deterministic UTM keys used
-		// for outbound nudge links so the destination flow can attribute the
+		// Tag the "Create Form" CTA with the same UTM scheme used by other
+		// SureForms nudge links so the destination flow can attribute the
 		// click. Only fills keys not already present in the URL.
 		$create_form_url = admin_url( 'admin.php?page=add-new-form' );
 		$nudge_utm       = [
 			'utm_source'   => 'sureforms_plugin',
-			'utm_medium'   => 'wordpress_plugin',
+			'utm_medium'   => 'editor_nudge',
 			'utm_campaign' => 'core_plugin',
-			'utm_content'  => 'editor_nudge',
 		];
 		$existing_args   = [];
 		$query_string    = wp_parse_url( $create_form_url, PHP_URL_QUERY );

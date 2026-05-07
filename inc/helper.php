@@ -1470,12 +1470,12 @@ class Helper {
 
 		// SRFM-2709: deterministic UTM attribution — start.
 		// When the caller opts into UTM tracking by passing any utm_args, fill in
-		// SureForms' deterministic source/medium/campaign defaults. Caller keys win.
+		// SureForms' deterministic source/campaign defaults. Caller-provided keys
+		// (including the placement passed via utm_medium) always win.
 		if ( ! empty( $utm_args ) ) {
 			$utm_args = array_merge(
 				[
 					'utm_source'   => 'sureforms_plugin',
-					'utm_medium'   => 'wordpress_plugin',
 					'utm_campaign' => 'core_plugin',
 				],
 				$utm_args

@@ -2655,34 +2655,34 @@ class Test_Helper extends TestCase {
     }
 
     /**
-     * When the caller passes any UTM arg (e.g. utm_content), the helper
-     * must fill in the deterministic source/medium/campaign defaults so
-     * the final URL carries stable attribution for GA4.
+     * When the caller passes a placement via utm_medium, the helper must
+     * fill in the deterministic source/campaign defaults so the final URL
+     * carries stable attribution even if BSF_UTM_Analytics has no referer
+     * recorded.
      */
-    public function test_get_sureforms_website_url_applies_deterministic_defaults_when_utm_content_passed() {
-        $url     = Helper::get_sureforms_website_url( 'pricing', [ 'utm_content' => 'plugin-list' ] );
+    public function test_get_sureforms_website_url_applies_deterministic_defaults_when_utm_medium_passed() {
+        $url     = Helper::get_sureforms_website_url( 'pricing', [ 'utm_medium' => 'plugin-list' ] );
         $decoded = html_entity_decode( $url );
         $query   = (string) wp_parse_url( $decoded, PHP_URL_QUERY );
         $args    = [];
         parse_str( $query, $args );
 
         $this->assertSame( 'sureforms_plugin', $args['utm_source'] ?? null );
-        $this->assertSame( 'wordpress_plugin', $args['utm_medium'] ?? null );
+        $this->assertSame( 'plugin-list', $args['utm_medium'] ?? null );
         $this->assertSame( 'core_plugin', $args['utm_campaign'] ?? null );
-        $this->assertSame( 'plugin-list', $args['utm_content'] ?? null );
     }
 
     /**
      * Caller-provided UTM keys must override the deterministic defaults.
      * Without this guarantee any caller wanting custom attribution would
-     * have its source/medium silently flipped back to the defaults.
+     * have its source silently flipped back to the default.
      */
     public function test_get_sureforms_website_url_caller_keys_win_over_defaults() {
         $url     = Helper::get_sureforms_website_url(
             'pricing',
             [
-                'utm_source'  => 'custom_source',
-                'utm_content' => 'dashboard-widget',
+                'utm_source' => 'custom_source',
+                'utm_medium' => 'dashboard-widget',
             ]
         );
         $decoded = html_entity_decode( $url );
@@ -2691,9 +2691,8 @@ class Test_Helper extends TestCase {
         parse_str( $query, $args );
 
         $this->assertSame( 'custom_source', $args['utm_source'] ?? null, 'Caller-provided utm_source must win over default.' );
-        $this->assertSame( 'wordpress_plugin', $args['utm_medium'] ?? null );
+        $this->assertSame( 'dashboard-widget', $args['utm_medium'] ?? null );
         $this->assertSame( 'core_plugin', $args['utm_campaign'] ?? null );
-        $this->assertSame( 'dashboard-widget', $args['utm_content'] ?? null );
     }
 
     /**
@@ -2702,7 +2701,7 @@ class Test_Helper extends TestCase {
      * esc_url replaces raw `&` separators with the encoded `&amp;` / `&#038;`.
      */
     public function test_get_sureforms_website_url_returns_escaped_url() {
-        $url = Helper::get_sureforms_website_url( 'pricing', [ 'utm_content' => 'plugin-list' ] );
+        $url = Helper::get_sureforms_website_url( 'pricing', [ 'utm_medium' => 'plugin-list' ] );
 
         $this->assertMatchesRegularExpression( '/(&amp;|&#038;)/', $url );
     }
