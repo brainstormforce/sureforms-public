@@ -230,12 +230,7 @@ class Admin {
 	public function add_action_links( $links ) {
 		if ( ! Helper::has_pro() ) {
 			// Display upsell link if SureForms Pro is not installed.
-			$upsell_link = add_query_arg(
-				[
-					'utm_medium' => 'plugin-list',
-				],
-				Helper::get_sureforms_website_url( 'pricing' )
-			);
+			$upsell_link = Helper::get_sureforms_website_url( 'pricing', [ 'utm_medium' => 'plugin-list' ] );
 
 			ob_start();
 			?>
@@ -397,12 +392,7 @@ class Admin {
 	public function add_upgrade_to_pro() {
 		// The url used here is used as a selector for css to style the upgrade to pro submenu.
 		// If you are changing this url, please make sure to update the css as well.
-		$upgrade_url = add_query_arg(
-			[
-				'utm_medium' => 'submenu_link_upgrade',
-			],
-			Helper::get_sureforms_website_url( 'upgrade' )
-		);
+		$upgrade_url = Helper::get_sureforms_website_url( 'upgrade', [ 'utm_medium' => 'submenu_link_upgrade' ] );
 
 		add_submenu_page(
 			'sureforms_menu',
@@ -2011,12 +2001,7 @@ class Admin {
 					<span><?php echo esc_html( $this->get_random_premium_feature_text() ); ?></span>
 				</div>
 				<?php
-				$upgrade_url = add_query_arg(
-					[
-						'utm_medium' => 'dashboard-widget',
-					],
-					Helper::get_sureforms_website_url( 'pricing' )
-				);
+				$upgrade_url = Helper::get_sureforms_website_url( 'pricing', [ 'utm_medium' => 'dashboard-widget' ] );
 				?>
 				<a href="<?php echo esc_url( $upgrade_url ); ?>" class="srfm-upgrade-link" target="_blank">
 					<?php esc_html_e( 'Upgrade', 'sureforms' ); ?>
