@@ -370,6 +370,44 @@ class Test_Editor_Nudge extends TestCase {
 		);
 	}
 
+	/**
+	 * SRFM-2709: when allow_load() passes, the localised create_form_url
+	 * must carry the deterministic UTM keys so the destination flow can
+	 * attribute the click. Asserts on the JSON the script tag will emit.
+	 */
+	public function test_enqueue_scripts_tags_create_form_url_with_utm_attribution() {
+		wp_set_current_user( $this->admin_id );
+
+		if ( ! defined( 'WP_ADMIN' ) ) {
+			define( 'WP_ADMIN', true );
+		}
+
+		$this->force_block_editor_screen( 'page' );
+		$this->set_current_post( $this->post_id );
+
+		$this->nudge->enqueue_scripts();
+
+		$handle = SRFM_SLUG . '-editor-nudge';
+		$data   = wp_scripts()->get_data( $handle, 'data' );
+
+		$this->assertIsString( $data, 'Localized data must be present after a successful enqueue.' );
+
+		foreach (
+			[
+				'utm_source=sureforms_plugin',
+				'utm_medium=wordpress_plugin',
+				'utm_campaign=core_plugin',
+				'utm_content=editor_nudge',
+			] as $needle
+		) {
+			$this->assertStringContainsString(
+				$needle,
+				$data,
+				"Localized create_form_url must include {$needle}."
+			);
+		}
+	}
+
 	// ---------------------------------------------------------------
 	// handle_dismiss()
 	// ---------------------------------------------------------------
