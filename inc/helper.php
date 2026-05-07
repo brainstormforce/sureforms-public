@@ -1419,49 +1419,42 @@ class Helper {
 			$utm_args = [];
 		}
 
+		// SRFM-2709: deterministic UTM attribution — start.
+		// When the caller opts into UTM tracking by passing any utm_args, fill in
+		// SureForms' deterministic source/medium/campaign defaults. Caller keys win.
+		if ( ! empty( $utm_args ) ) {
+			$utm_args = array_merge(
+				[
+					'utm_source'   => 'sureforms_plugin',
+					'utm_medium'   => 'wordpress_plugin',
+					'utm_campaign' => 'core_plugin',
+				],
+				$utm_args
+			);
+		}
+		// SRFM-2709: deterministic UTM attribution — end.
+
 		if ( class_exists( 'BSF_UTM_Analytics' ) ) {
 			$url = \BSF_UTM_Analytics::get_utm_ready_link( $url, 'sureforms', $utm_args );
 		}
 
-		// BSF_UTM_Analytics returns the URL unchanged when no referer is recorded.
-		// Ensure optional caller-provided UTM args are still retained in that case.
-		if ( ! empty( $utm_args ) && strpos( $url, 'utm_' ) === false ) {
-			$url = add_query_arg( $utm_args, $url );
+		// SRFM-2709: post-BSF_UTM_Analytics fallback — start.
+		// BSF_UTM_Analytics returns the URL unchanged when no install referer is
+		// recorded. Merge any caller UTM keys still missing from the final URL.
+		if ( ! empty( $utm_args ) ) {
+			$existing = [];
+			$query    = wp_parse_url( $url, PHP_URL_QUERY );
+			if ( is_string( $query ) && '' !== $query ) {
+				parse_str( $query, $existing );
+			}
+			$missing = array_diff_key( $utm_args, $existing );
+			if ( ! empty( $missing ) ) {
+				$url = add_query_arg( $missing, $url );
+			}
 		}
+		// SRFM-2709: post-BSF_UTM_Analytics fallback — end.
 
 		return esc_url( $url );
-	}
-
-	/**
-	 * Build a UTM-tagged marketing link with stable defaults.
-	 *
-	 * Uses deterministic UTM values for SureForms outbound marketing links and
-	 * tracks placement via `utm_content`.
-	 *
-	 * @param string                $path        Optional path appended to SRFM_WEBSITE.
-	 * @param string                $utm_content Placement identifier for attribution.
-	 * @param array<string, string> $extra       Additional query args merged last.
-	 * @since 2.8.0
-	 * @return string Sanitized URL with UTM parameters.
-	 */
-	public static function get_marketing_link( string $path, string $utm_content, array $extra = [] ): string {
-		$base = SRFM_WEBSITE;
-
-		if ( '' !== $path ) {
-			$base .= ltrim( $path, '/' );
-		}
-
-		$utm_args = array_merge(
-			[
-				'utm_source'   => 'sureforms_plugin',
-				'utm_medium'   => 'wordpress_plugin',
-				'utm_campaign' => 'core_plugin',
-				'utm_content'  => $utm_content,
-			],
-			$extra
-		);
-
-		return esc_url_raw( add_query_arg( $utm_args, $base ) );
 	}
 
 	/**
