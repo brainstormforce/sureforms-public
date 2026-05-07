@@ -8,6 +8,7 @@
 use Yoast\PHPUnitPolyfills\TestCases\TestCase;
 
 use SRFM\Admin\Admin;
+use SRFM\Inc\Helper;
 
 require_once __DIR__ . '/trait-astra-notices-helper.php';
 
@@ -557,7 +558,7 @@ class Test_Getting_Started_Notice extends TestCase {
 	 * and the placement carried via utm_medium.
 	 */
 	public function test_add_action_links_appends_utm_tagged_upsell_when_pro_inactive() {
-		if ( class_exists( '\\SRFM\\Inc\\Helper' ) && \\SRFM\\Inc\\Helper::has_pro() ) {
+		if ( class_exists( Helper::class ) && Helper::has_pro() ) {
 			$this->markTestSkipped( 'SureForms Pro is active; upsell branch is not exercised.' );
 		}
 
@@ -575,7 +576,7 @@ class Test_Getting_Started_Notice extends TestCase {
 	 * Pro is active — no upsell link is appended.
 	 */
 	public function test_add_action_links_returns_unchanged_when_pro_active() {
-		if ( ! class_exists( '\\SRFM\\Inc\\Helper' ) || ! \\SRFM\\Inc\\Helper::has_pro() ) {
+		if ( ! class_exists( Helper::class ) || ! Helper::has_pro() ) {
 			$this->markTestSkipped( 'SureForms Pro is not active in this test env.' );
 		}
 
