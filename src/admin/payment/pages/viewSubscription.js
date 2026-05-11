@@ -1,4 +1,4 @@
-import { useState, useEffect } from '@wordpress/element';
+import { useState, useEffect, useMemo } from '@wordpress/element';
 import { Button, Badge, Text, Table, Dialog } from '@bsf/force-ui';
 import { ArrowUpRight, Eye } from 'lucide-react';
 import { __, sprintf } from '@wordpress/i18n';
@@ -27,6 +27,24 @@ import PaymentHeader from '../components/paymentHeader';
 import PaymentLoadingSkeleton from '../components/paymentLoadingSkeleton';
 import RefundDialog from '../components/RefundDialog';
 import ConfirmationDialog from '@Admin/components/ConfirmationDialog';
+
+// Module-level sentinel so `billingData || EMPTY_BILLING` returns a stable
+// reference across renders. Without it, `useMemo` below would recompute every
+// render whenever `billingData` is undefined.
+const EMPTY_BILLING = [];
+
+// Statuses representing an initial subscription EMI that can still be
+// refunded. 'active'/'succeeded'/'paid' are the standard success states;
+// 'partially_refunded' allows further refunds; 'canceled' covers historical
+// rows where the cancellation handler used to overwrite `status` — the
+// initial charge is still refundable in Stripe/PayPal.
+const REFUNDABLE_EMI_STATUSES = [
+	'active',
+	'paid',
+	'succeeded',
+	'partially_refunded',
+	'canceled',
+];
 
 const ViewSubscription = () => {
 	const { id } = useParams();
@@ -205,6 +223,31 @@ const ViewSubscription = () => {
 		setIsCancelDialogOpen( true );
 	};
 
+	// Subscription billing history data - use fetched billing data or the
+	// module-level EMPTY_BILLING sentinel for referential stability. Defined
+	// before the early return so the useMemo below stays in the same call
+	// order on every render per React's Rules of Hooks.
+	const subscriptionBillingData = billingData || EMPTY_BILLING;
+
+	const firstPaidEMI = useMemo(
+		() =>
+			subscriptionBillingData
+				.filter( ( payment ) =>
+					REFUNDABLE_EMI_STATUSES.includes( payment.status )
+				)
+				.sort(
+					( a, b ) =>
+						new Date( a.created_at ) - new Date( b.created_at )
+				)[ 0 ],
+		[ subscriptionBillingData ]
+	);
+
+	const isFirstEMIFullyRefunded = firstPaidEMI
+		? parseFloat( firstPaidEMI.total_amount ) ===
+				parseFloat( firstPaidEMI.refunded_amount || 0 ) ||
+		  firstPaidEMI.status === 'refunded'
+		: false;
+
 	// Loading, error, not found states
 	if ( isLoading || error || ! subscriptionData ) {
 		return (
@@ -338,33 +381,17 @@ const ViewSubscription = () => {
 		}
 	};
 
-	const handleRefundLatestEMI = () => {
-		// Find the first (initial/linked) paid EMI transaction
-		// Note: 'active' status is used for subscription records, 'succeeded' for one-time payments
-		const firstPaidEMI = subscriptionBillingData
-			.filter(
-				( payment ) =>
-					payment.status === 'active' ||
-					payment.status === 'paid' ||
-					payment.status === 'succeeded' ||
-					payment.status === 'partially_refunded'
-			)
-			.sort(
-				( a, b ) => new Date( a.created_at ) - new Date( b.created_at )
-			)[ 0 ];
+	const openPauseDialog = () => {
+		setIsPauseDialogOpen( true );
+	};
 
+	const handleRefundLatestEMI = () => {
 		if ( ! firstPaidEMI ) {
 			alert( __( 'No paid EMI found to refund.', 'sureforms' ) );
 			return;
 		}
 
-		// Check if the first EMI is fully refunded
-		const isFullyRefunded =
-			parseFloat( firstPaidEMI.total_amount ) ===
-				parseFloat( firstPaidEMI.refunded_amount || 0 ) ||
-			firstPaidEMI.status === 'refunded';
-
-		if ( isFullyRefunded ) {
+		if ( isFirstEMIFullyRefunded ) {
 			alert(
 				__(
 					'This payment has already been fully refunded.',
@@ -374,35 +401,8 @@ const ViewSubscription = () => {
 			return;
 		}
 
-		// Open refund dialog with first EMI (linked transaction)
 		openRefundDialog( firstPaidEMI );
 	};
-
-	const openPauseDialog = () => {
-		setIsPauseDialogOpen( true );
-	};
-
-	// Subscription billing history data - use fetched billing data or empty array
-	const subscriptionBillingData = billingData || [];
-
-	// Check if the first paid EMI is fully refunded (for disabling refund button)
-	const firstPaidEMI = subscriptionBillingData
-		.filter(
-			( payment ) =>
-				payment.status === 'active' ||
-				payment.status === 'paid' ||
-				payment.status === 'succeeded' ||
-				payment.status === 'partially_refunded'
-		)
-		.sort(
-			( a, b ) => new Date( a.created_at ) - new Date( b.created_at )
-		)[ 0 ];
-
-	const isFirstEMIFullyRefunded = firstPaidEMI
-		? parseFloat( firstPaidEMI.total_amount ) ===
-				parseFloat( firstPaidEMI.refunded_amount || 0 ) ||
-		  firstPaidEMI.status === 'refunded'
-		: false;
 
 	const viewPaymentInPlateForm = applyFilters(
 		'srfm_view_subscription_payment_in_platform_button',

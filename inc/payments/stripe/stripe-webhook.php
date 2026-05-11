@@ -602,10 +602,12 @@ class Stripe_Webhook {
 
 		$current_logs[] = $new_log;
 
-		// Update subscription record with canceled status.
+		// Track lifecycle on `subscription_status` and leave the transaction `status`
+		// (e.g. 'succeeded') untouched so admins can still refund the initial payment
+		// after Stripe emits customer.subscription.deleted.
 		$update_data = [
-			'status' => 'canceled',
-			'log'    => $current_logs,
+			'subscription_status' => 'canceled',
+			'log'                 => $current_logs,
 		];
 
 		$result = Payments::update( $subscription_db_id, $update_data );
