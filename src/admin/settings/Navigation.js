@@ -10,6 +10,7 @@ import {
 	Settings,
 	ShieldCheck,
 	TriangleAlert,
+	Globe,
 } from 'lucide-react';
 import { Accordion } from '@bsf/force-ui';
 import ottoKitIcon from '@Image/ottokit.png';
@@ -25,6 +26,33 @@ const defaultNavigation = [
 		icon: <Settings />,
 		helpText: __(
 			'Set up email summaries, admin alerts, and data preferences to manage your forms with ease.',
+			'sureforms'
+		),
+	},
+	{
+		name: __( 'Global Defaults', 'sureforms' ),
+		slug: 'global-defaults',
+		icon: <Globe />,
+		submenu: [
+			{
+				name: __( 'Email Notification', 'sureforms' ),
+				slug: 'email-notifications',
+			},
+			{
+				name: __( 'Form Confirmation', 'sureforms' ),
+				slug: 'form-confirmation',
+			},
+			{
+				name: __( 'Form Restrictions', 'sureforms' ),
+				slug: 'form-restrictions',
+			},
+			{
+				name: __( 'Compliance Settings', 'sureforms' ),
+				slug: 'compliance-settings',
+			},
+		],
+		helpText: __(
+			'Configure default settings that apply to newly created forms.',
 			'sureforms'
 		),
 	},
@@ -142,11 +170,27 @@ const NavLink = ( { label, path, icon: Icon, subPage = '' } ) => {
 	const addActiveClass = false;
 
 	const isActive = () => {
+		const currentTab = activatedTab.get( 'tab' );
+
 		if ( subPage ) {
-			return activatedTab.get( 'subpage' ) === subPage;
+			const currentSubpage = activatedTab.get( 'subpage' );
+			// If subpage matches and we're on the correct tab, it's active.
+			if ( currentTab === path && currentSubpage === subPage ) {
+				return true;
+			}
+			// Default 'email-notifications' as active when on global-defaults tab with no subpage.
+			if (
+				currentTab === 'global-defaults' &&
+				! currentSubpage &&
+				path === 'global-defaults' &&
+				subPage === 'email-notifications'
+			) {
+				return true;
+			}
+			return false;
 		}
 
-		if ( activatedTab.get( 'tab' ) === path ) {
+		if ( currentTab === path ) {
 			return true;
 		}
 		return false;

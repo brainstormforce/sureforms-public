@@ -1,6 +1,6 @@
 import { useDispatch, useSelect } from '@wordpress/data';
 import { store as editorStore } from '@wordpress/editor';
-import { useEffect, useState } from '@wordpress/element';
+import { useEffect, useRef, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import ComponentKeyValueUI from '@Components/misc/ComponentKeyValueUI';
 import { useDebouncedCallback } from 'use-debounce';
@@ -21,6 +21,13 @@ const FormConfirmSetting = ( { toast, setHasValidationErrors } ) => {
 	const [ pageOptions, setPageOptions ] = useState( [] );
 	const [ errorMessage, setErrorMessage ] = useState( null );
 	const [ showSuccess, setShowSuccess ] = useState( null );
+	// SF-2815 start: counter-gate the debounced auto-save so it only fires
+	// for user-initiated edits. The data-dep effect runs once on mount with
+	// data={}, then again when the load effect calls setData(loaded). We
+	// skip both — otherwise opening a form would re-snapshot the inherited
+	// global value back into wp_postmeta on Save and defeat live inheritance.
+	const debounceSkipsRef = useRef( 1 );
+	// SF-2815 end.
 
 	const handleSaveChanges = () => {
 		const validationStatus = validateForm();
@@ -39,6 +46,13 @@ const FormConfirmSetting = ( { toast, setHasValidationErrors } ) => {
 	const debounced = useDebouncedCallback( handleSaveChanges, 500 );
 
 	useEffect( () => {
+		// SF-2815 start: skip the queued non-user runs (mount + load-driven
+		// setData). Only user-driven setData calls reach the debounce.
+		if ( debounceSkipsRef.current > 0 ) {
+			debounceSkipsRef.current -= 1;
+			return;
+		}
+		// SF-2815 end.
 		if ( null !== errorMessage ) {
 			setErrorMessage( validateForm() );
 		}
@@ -139,6 +153,10 @@ const FormConfirmSetting = ( { toast, setHasValidationErrors } ) => {
 		} );
 
 		if ( formConfirmationData ) {
+			// SF-2815 start: this setData triggers another data-dep run that
+			// is also non-user; bump the skip counter so it gets swallowed.
+			debounceSkipsRef.current += 1;
+			// SF-2815 end.
 			setData( formConfirmationData[ 0 ] );
 		}
 	}, [] );

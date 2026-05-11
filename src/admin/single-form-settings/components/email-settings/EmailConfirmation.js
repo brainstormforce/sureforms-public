@@ -1,12 +1,9 @@
 import { __ } from '@wordpress/i18n';
-import Editor from '../QuillEditor';
 import { useState, useEffect } from '@wordpress/element';
 import { useDebouncedCallback } from 'use-debounce';
-import { Container, Switch } from '@bsf/force-ui';
-import ModalInputBox from '@Components/force-ui-components/ModalInputBox';
-import ModalWarning from '@Components/force-ui-components/ModalWarning';
+import { Container } from '@bsf/force-ui';
 import TabContentWrapper from '@Components/tab-content-wrapper';
-import FromEmail from './FromEmail';
+import { EmailNotificationFields } from '@Admin/shared-components/email-notification';
 import { singleFormEmailOptionsWithFilter } from '@Components/hooks';
 
 const EmailConfirmation = ( props ) => {
@@ -16,6 +13,7 @@ const EmailConfirmation = ( props ) => {
 		handleBackNotification,
 		setHasValidationErrors,
 	} = props;
+
 	const [ formData, setFormData ] = useState( {
 		id: data.id || false,
 		status: data.status || true,
@@ -32,32 +30,19 @@ const EmailConfirmation = ( props ) => {
 	} );
 
 	const [ prevData, setPrevData ] = useState( {} ); // Previous saved data before making any changes.
-
 	const [ dynamicSubject, setDynamicSubject ] = useState(
 		data.subject || ''
 	);
-	const handleOnChangeEmailBodyContent = ( newContent ) => {
-		setFormData( { ...formData, email_body: newContent } );
-	};
+
+	// Sync subject with formData.
 	useEffect( () => {
-		setFormData( { ...formData, subject: dynamicSubject } );
+		setFormData( ( prev ) => ( { ...prev, subject: dynamicSubject } ) );
 	}, [ dynamicSubject ] );
 
-	const genericSmartTags = window.srfm_block_data?.smart_tags_array
-		? Object.entries( window.srfm_block_data.smart_tags_array )
-		: [];
-	const genericEmailSmartTags = window.srfm_block_data?.smart_tags_array_email
-		? Object.entries( window.srfm_block_data.smart_tags_array_email )
-		: [];
-	const formSmartTags = window.sureforms?.formSpecificSmartTags ?? [];
-
-	const formEmailSmartTags =
-		window.sureforms?.formSpecificEmailSmartTags ?? [];
-
-	// Remove the required error class from the input field on change
-	const maybeRemoveRequiredError = ( e ) => {
+	// Remove the required error class from the input field on change.
+	const maybeRemoveRequiredError = ( fieldId ) => {
 		const queryId =
-			e === 'subject'
+			fieldId === 'subject'
 				? '#srfm-email-notification-subject'
 				: '#srfm-email-notification-to';
 		const inputField = document.querySelector( queryId );
@@ -66,7 +51,7 @@ const EmailConfirmation = ( props ) => {
 		}
 	};
 
-	// Function to remove the required error class if the condition is met
+	// Function to remove the required error class if the condition is met.
 	const removeErrorClassIfNeeded = ( selector, condition ) => {
 		if ( condition ) {
 			const inputElement = document.querySelector( selector );
@@ -74,7 +59,7 @@ const EmailConfirmation = ( props ) => {
 		}
 	};
 
-	// if required fields values are changed by smart tags then remove the required error
+	// If required fields values are changed by smart tags then remove the required error.
 	useEffect( () => {
 		removeErrorClassIfNeeded(
 			'#srfm-email-notification-to',
@@ -122,288 +107,34 @@ const EmailConfirmation = ( props ) => {
 		}
 	}, [ formData ] );
 
-	const emailHelpText = __(
-		'Comma separated values are also accepted.',
-		'sureforms'
-	);
+	/**
+	 * Handle field change from shared component.
+	 *
+	 * @param {string} key   - Field key
+	 * @param {*}      value - New value
+	 */
+	const handleChange = ( key, value ) => {
+		// Handle special cases for required field error removal.
+		if ( key === 'email_to' ) {
+			maybeRemoveRequiredError( 'email_to' );
+		}
+		if ( key === 'subject' ) {
+			maybeRemoveRequiredError( 'subject' );
+			setDynamicSubject( value );
+			return; // Subject is synced via useEffect.
+		}
 
-	const emailNotificationOptions = [
-		{
-			id: 'name',
-			component: (
-				<ModalInputBox
-					label={ __( 'Name', 'sureforms' ) }
-					id="srfm-email-notification-name"
-					value={ formData.name }
-					onChange={ ( newInput ) =>
-						setFormData( {
-							...formData,
-							name: newInput,
-						} )
-					}
-					showSmartTagList={ false }
-					smartTagList={ [
-						{
-							tags: formSmartTags,
-							label: __( 'Form input tags', 'sureforms' ),
-						},
-						{
-							tags: genericSmartTags,
-							label: __( 'Generic tags', 'sureforms' ),
-						},
-					] }
-					tagFor="srfm-email-notification-name"
-					setTargetData={ ( tag ) =>
-						setDynamicSubject( dynamicSubject + tag )
-					}
-				/>
-			),
-		},
-		{
-			id: 'send-email-to',
-			component: (
-				<ModalInputBox
-					label={ __( 'Send Email To', 'sureforms' ) }
-					id="srfm-email-notification-to"
-					value={ formData.email_to }
-					onChange={ ( e ) => {
-						setFormData( {
-							...formData,
-							email_to: e,
-						} );
-						maybeRemoveRequiredError( 'email_to' );
-					} }
-					required={ true }
-					helpText={ emailHelpText }
-					smartTagList={ [
-						{
-							tags: formEmailSmartTags,
-							label: __( 'Form input tags', 'sureforms' ),
-						},
-						{
-							tags: genericEmailSmartTags,
-							label: __( 'Generic tags', 'sureforms' ),
-						},
-					] }
-					tagFor="emailConfirmation.sendEmailTo"
-					setTargetData={ ( tag ) =>
-						setFormData( {
-							...formData,
-							email_to: formData.email_to + tag,
-						} )
-					}
-				/>
-			),
-		},
-		{
-			id: 'subject',
-			component: (
-				<ModalInputBox
-					label={ __( 'Subject', 'sureforms' ) }
-					id="srfm-email-notification-subject"
-					value={ dynamicSubject }
-					onChange={ ( e ) => {
-						setDynamicSubject( e );
-						maybeRemoveRequiredError( 'subject' );
-					} }
-					required={ true }
-					smartTagList={ [
-						{
-							tags: formSmartTags,
-							label: __( 'Form input tags', 'sureforms' ),
-						},
-						{
-							tags: genericSmartTags,
-							label: __( 'Generic tags', 'sureforms' ),
-						},
-					] }
-					tagFor="emailConfirmation.Subject"
-					setTargetData={ ( tag ) =>
-						setDynamicSubject( dynamicSubject + tag )
-					}
-				/>
-			),
-		},
-		{
-			id: 'email-body',
-			component: (
-				<div className="py-2 gap-6">
-					<Editor
-						handleContentChange={ handleOnChangeEmailBodyContent }
-						content={ formData.email_body }
-						formData={ formData }
-						setFormData={ setFormData }
-						allData={ true }
-					/>
-				</div>
-			),
-		},
-		{
-			id: 'is-raw-format',
-			component: (
-				<>
-					<Switch
-						size="sm"
-						label={ {
-							heading: __( 'Send as Raw HTML', 'sureforms' ),
-							description: __(
-								'When enabled, the email body HTML will be preserved exactly as written and wrapped in a professional email template.',
-								'sureforms'
-							),
-						} }
-						checked={ formData.is_raw_format }
-						onChange={ ( checked ) =>
-							setFormData( ( prev ) => ( {
-								...prev,
-								is_raw_format: checked,
-							} ) )
-						}
-					/>
-					{ formData.is_raw_format && (
-						<ModalWarning
-							message={ __(
-								'Smart tags that reference user-submitted fields will not be escaped in raw HTML mode. Avoid inserting untrusted field values directly into the email body.',
-								'sureforms'
-							) }
-						/>
-					) }
-				</>
-			),
-		},
-		{
-			id: 'from-email',
-			component: (
-				<FromEmail
-					formData={ formData }
-					setFormData={ setFormData }
-					genericSmartTags={ genericSmartTags }
-					genericEmailSmartTags={ genericEmailSmartTags }
-					formSmartTags={ formSmartTags }
-					formEmailSmartTags={ formEmailSmartTags }
-				/>
-			),
-		},
-		{
-			id: 'cc',
-			component: (
-				<ModalInputBox
-					label={ __( 'CC', 'sureforms' ) }
-					id="srfm-email-notification-cc"
-					value={ formData.email_cc }
-					onChange={ ( e ) =>
-						setFormData( {
-							...formData,
-							email_cc: e,
-						} )
-					}
-					helpText={ emailHelpText }
-					required={ false }
-					smartTagList={ [
-						{
-							tags: formEmailSmartTags,
-							label: __( 'Form input tags', 'sureforms' ),
-						},
-						{
-							tags: genericEmailSmartTags,
-							label: __( 'Generic tags', 'sureforms' ),
-						},
-					] }
-					tagFor="emailConfirmation.CC"
-					setTargetData={ ( tag ) =>
-						setFormData( {
-							...formData,
-							email_cc: formData.email_cc + tag,
-						} )
-					}
-					labelWithInfoTooltip={ true }
-				/>
-			),
-		},
-		{
-			id: 'bcc',
-			component: (
-				<ModalInputBox
-					label={ __( 'BCC', 'sureforms' ) }
-					id="srfm-email-notification-bcc"
-					value={ formData.email_bcc }
-					onChange={ ( e ) =>
-						setFormData( {
-							...formData,
-							email_bcc: e,
-						} )
-					}
-					required={ false }
-					helpText={ emailHelpText }
-					smartTagList={ [
-						{
-							tags: formEmailSmartTags,
-							label: __( 'Form input tags', 'sureforms' ),
-						},
-						{
-							tags: genericEmailSmartTags,
-							label: __( 'Generic tags', 'sureforms' ),
-						},
-					] }
-					tagFor="emailConfirmation.BCC"
-					setTargetData={ ( tag ) =>
-						setFormData( {
-							...formData,
-							email_bcc: formData.email_bcc + tag,
-						} )
-					}
-					labelWithInfoTooltip={ true }
-				/>
-			),
-		},
-		{
-			id: 'reply-to',
-			component: (
-				<ModalInputBox
-					label={ __( 'Reply To', 'sureforms' ) }
-					id="srfm-email-notification-reply-to"
-					value={ formData.email_reply_to }
-					onChange={ ( e ) =>
-						setFormData( {
-							...formData,
-							email_reply_to: e,
-						} )
-					}
-					required={ false }
-					helpText={ emailHelpText }
-					smartTagList={ [
-						{
-							tags: formEmailSmartTags,
-							label: __( 'Form input tags', 'sureforms' ),
-						},
-						{
-							tags: genericEmailSmartTags,
-							label: __( 'Generic tags', 'sureforms' ),
-						},
-					] }
-					tagFor="emailConfirmation.replyTo"
-					setTargetData={ ( tag ) =>
-						setFormData( {
-							...formData,
-							email_reply_to: formData.email_reply_to + tag,
-						} )
-					}
-					labelWithInfoTooltip={ true }
-				/>
-			),
-		},
-	];
+		setFormData( ( prev ) => ( { ...prev, [ key ]: value } ) );
+	};
 
 	// Apply filters to the email options.
-	// This allows us to modify the email notification options.
-	let filterOptions = singleFormEmailOptionsWithFilter(
-		emailNotificationOptions,
-		{ ...props, formData, setFormData }
-	);
+	// This allows Pro and other extensions to modify the email notification options.
+	// Pass formData/setFormData so Pro can inject UI components that
+	// read/write notification state (e.g. upload field attachment selection).
+	singleFormEmailOptionsWithFilter( [], { ...props, formData, setFormData } );
 
-	// if filterOptions is empty, return null to avoid rendering
-	if ( ! filterOptions || filterOptions.length === 0 ) {
-		filterOptions = emailNotificationOptions;
-	}
+	// If filters returned custom options, we might need to handle them.
+	// For now, use the shared component for standard fields.
 
 	return (
 		<TabContentWrapper
@@ -415,7 +146,16 @@ const EmailConfirmation = ( props ) => {
 			shouldShowAutoSaveText={ true }
 		>
 			<Container direction="column" className="gap-4 px-2">
-				{ filterOptions.map( ( option ) => option.component ) }
+				<EmailNotificationFields
+					context="form"
+					values={ formData }
+					onChange={ handleChange }
+					showNameField={ true }
+					showAllDataTag={ true }
+					dynamicSubject={ dynamicSubject }
+					setDynamicSubject={ setDynamicSubject }
+					onValidationError={ setHasValidationErrors }
+				/>
 			</Container>
 		</TabContentWrapper>
 	);

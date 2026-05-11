@@ -26,6 +26,7 @@ const PageTitleSection = ( { title, hidePageTitle, helpText } ) => {
 		'google-maps-settings',
 		'payments-settings',
 		'mcp-settings',
+		'global-defaults',
 	] );
 
 	return (

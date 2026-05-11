@@ -10,10 +10,12 @@ namespace SRFM\Admin;
 use Astra_Notices;
 use SRFM\Inc\AI_Form_Builder\AI_Helper;
 use SRFM\Inc\Database\Tables\Entries;
+use SRFM\Inc\Global_Settings\Global_Settings;
 use SRFM\Inc\Helper;
 use SRFM\Inc\Onboarding;
 use SRFM\Inc\Payments\Payment_Helper;
 use SRFM\Inc\Payments\Stripe\Stripe_Helper;
+use SRFM\Inc\Smart_Tags;
 use SRFM\Inc\Traits\Get_Instance;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -877,44 +879,52 @@ class Admin {
 		$current_user                 = wp_get_current_user();
 
 		$localization_data = [
-			'site_url'                    => get_site_url(),
-			'current_user_login'          => $current_user->user_login ?? '',
-			'website_lead_details'        => [
+			'site_url'                     => get_site_url(),
+			'current_user_login'           => $current_user->user_login ?? '',
+			'website_lead_details'         => [
 				'first_name' => $current_user->first_name ?? '',
 				'last_name'  => $current_user->last_name ?? '',
 				'email'      => $current_user->user_email ?? '',
 			],
-			'breadcrumbs'                 => $this->get_breadcrumbs_for_current_page(),
-			'sureforms_dashboard_url'     => admin_url( '/admin.php?page=sureforms_menu' ),
-			'plugin_version'              => SRFM_VER,
-			'global_settings_nonce'       => Helper::current_user_can() ? wp_create_nonce( 'wp_rest' ) : '',
-			'is_pro_active'               => Helper::has_pro(),
-			'is_first_form_created'       => self::is_first_form_created(),
-			'check_three_days_threshold'  => self::check_first_form_creation_threshold(),
-			'check_eight_days_threshold'  => self::check_first_form_creation_threshold( 8 ),
-			'pro_plugin_version'          => Helper::has_pro() ? SRFM_PRO_VER : '',
-			'pro_plugin_name'             => Helper::has_pro() && defined( 'SRFM_PRO_PRODUCT' ) ? SRFM_PRO_PRODUCT : 'SureForms Pro',
-			'sureforms_pricing_page'      => Helper::get_sureforms_website_url( 'pricing' ),
-			'field_spacing_vars'          => Helper::get_css_vars(),
-			'is_ver_lower_than_6_7'       => version_compare( $wp_version, '6.6.2', '<=' ),
-			'integrations'                => Helper::sureforms_get_integration(),
-			'rotating_plugin_banner'      => Helper::get_rotating_plugin_banner(),
-			'ajax_url'                    => admin_url( 'admin-ajax.php' ),
-			'sf_plugin_manager_nonce'     => wp_create_nonce( 'sf_plugin_manager_nonce' ),
-			'plugin_installer_nonce'      => wp_create_nonce( 'updates' ),
-			'plugin_activating_text'      => __( 'Activating...', 'sureforms' ),
-			'plugin_activated_text'       => __( 'Activated', 'sureforms' ),
-			'plugin_activate_text'        => __( 'Activate', 'sureforms' ),
-			'plugin_installing_text'      => __( 'Installing...', 'sureforms' ),
-			'plugin_installed_text'       => __( 'Installed', 'sureforms' ),
-			'privacy_policy_url'          => Helper::get_sureforms_website_url( 'privacy-policy/' ),
-			'is_rtl'                      => $is_rtl,
-			'onboarding_completed'        => method_exists( $onboarding_instance, 'get_onboarding_status' ) ? $onboarding_instance->get_onboarding_status() : false,
-			'onboarding_redirect'         => isset( $_GET['srfm-activation-redirect'] ), // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce is not required for the activation redirection.
-			'pointer_nonce'               => wp_create_nonce( 'sureforms_pointer_action' ),
-			'general_settings_url'        => admin_url( '/options-general.php' ),
-			'additional_header_nav_items' => [],
-			'payments'                    => apply_filters(
+			'breadcrumbs'                  => $this->get_breadcrumbs_for_current_page(),
+			'sureforms_dashboard_url'      => admin_url( '/admin.php?page=sureforms_menu' ),
+			'plugin_version'               => SRFM_VER,
+			'global_settings_nonce'        => Helper::current_user_can() ? wp_create_nonce( 'wp_rest' ) : '',
+			'is_pro_active'                => Helper::has_pro(),
+			'is_first_form_created'        => self::is_first_form_created(),
+			'check_three_days_threshold'   => self::check_first_form_creation_threshold(),
+			'check_eight_days_threshold'   => self::check_first_form_creation_threshold( 8 ),
+			'pro_plugin_version'           => Helper::has_pro() ? SRFM_PRO_VER : '',
+			'pro_plugin_name'              => Helper::has_pro() && defined( 'SRFM_PRO_PRODUCT' ) ? SRFM_PRO_PRODUCT : 'SureForms Pro',
+			'sureforms_pricing_page'       => Helper::get_sureforms_website_url( 'pricing' ),
+			'field_spacing_vars'           => Helper::get_css_vars(),
+			'is_ver_lower_than_6_7'        => version_compare( $wp_version, '6.6.2', '<=' ),
+			'integrations'                 => Helper::sureforms_get_integration(),
+			'rotating_plugin_banner'       => Helper::get_rotating_plugin_banner(),
+			'ajax_url'                     => admin_url( 'admin-ajax.php' ),
+			'sf_plugin_manager_nonce'      => wp_create_nonce( 'sf_plugin_manager_nonce' ),
+			'plugin_installer_nonce'       => wp_create_nonce( 'updates' ),
+			'plugin_activating_text'       => __( 'Activating...', 'sureforms' ),
+			'plugin_activated_text'        => __( 'Activated', 'sureforms' ),
+			'plugin_activate_text'         => __( 'Activate', 'sureforms' ),
+			'plugin_installing_text'       => __( 'Installing...', 'sureforms' ),
+			'plugin_installed_text'        => __( 'Installed', 'sureforms' ),
+			'privacy_policy_url'           => Helper::get_sureforms_website_url( 'privacy-policy/' ),
+			'is_rtl'                       => $is_rtl,
+			'onboarding_completed'         => method_exists( $onboarding_instance, 'get_onboarding_status' ) ? $onboarding_instance->get_onboarding_status() : false,
+			'onboarding_redirect'          => isset( $_GET['srfm-activation-redirect'] ), // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce is not required for the activation redirection.
+			'pointer_nonce'                => wp_create_nonce( 'sureforms_pointer_action' ),
+			'general_settings_url'         => admin_url( '/options-general.php' ),
+			'additional_header_nav_items'  => [],
+			// Smart tags for the Global Defaults email notification fields.
+			// srfm_block_data is only available in the block editor; these keys
+			// make the same data accessible on the settings page via srfm_admin.
+			'smart_tags_array'             => Smart_Tags::smart_tag_list(),
+			'smart_tags_array_email'       => Smart_Tags::email_smart_tag_list(),
+			// Default confirmation message HTML (icon + heading + text) used as
+			// the initial React state before the settings API response arrives.
+			'default_confirmation_message' => Global_Settings::get_default_confirmation_message(),
+			'payments'                     => apply_filters(
 				'srfm_admin_localize_payments_data',
 				[
 					'stripe_connected'        => Stripe_Helper::is_stripe_connected(),
@@ -930,10 +940,10 @@ class Admin {
 					'currency_sign_position'  => Payment_Helper::get_currency_sign_position(),
 				]
 			),
-			'mcp_adapter_status'          => file_exists( WP_PLUGIN_DIR . '/mcp-adapter/mcp-adapter.php' )
+			'mcp_adapter_status'           => file_exists( WP_PLUGIN_DIR . '/mcp-adapter/mcp-adapter.php' )
 				? ( is_plugin_active( 'mcp-adapter/mcp-adapter.php' ) ? 'active' : 'installed' )
 				: 'not_installed',
-			'mcp_endpoint_url'            => esc_url_raw( rest_url( 'sureforms/v1/mcp' ) ),
+			'mcp_endpoint_url'             => esc_url_raw( rest_url( 'sureforms/v1/mcp' ) ),
 		];
 
 		$is_screen_sureforms_menu          = Helper::validate_request_context( 'sureforms_menu', 'page' );
@@ -1187,6 +1197,10 @@ class Admin {
 					$localization_data
 				)
 			);
+
+			// Enqueue Tailwind and Quill editor styles for the settings page.
+			wp_enqueue_style( SRFM_SLUG . '-settings-build', SRFM_URL . 'assets/build/settings.css', [], SRFM_VER, 'all' );
+			wp_enqueue_style( SRFM_SLUG . '-reactQuill', SRFM_URL . 'assets/css/minified/deps/quill/quill.snow.css', [], SRFM_VER );
 
 			$script_translations_handlers[] = SRFM_SLUG . '-settings';
 		}

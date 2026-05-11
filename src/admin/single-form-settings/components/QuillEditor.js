@@ -10,7 +10,14 @@ import { ChevronDownIcon } from 'lucide-react';
 import { Label, Tabs, TextArea } from '@bsf/force-ui';
 import { applyFilters } from '@wordpress/hooks';
 
-const Editor = ( { handleContentChange, content, allData = false } ) => {
+const Editor = ( {
+	handleContentChange,
+	content,
+	allData = false,
+	// SF-2815 start: context prop — 'global' uses generic tags only.
+	context = 'form',
+	// SF-2815 end.
+} ) => {
 	const quillRef = useRef( null );
 	const textAreaRef = useRef( null );
 
@@ -86,10 +93,21 @@ const Editor = ( { handleContentChange, content, allData = false } ) => {
 		}
 	};
 
-	const genericSmartTags = window.srfm_block_data?.smart_tags_array
-		? Object.entries( window.srfm_block_data.smart_tags_array )
+	// SF-2815 start: srfm_block_data exists in the block editor only;
+	// fall back to srfm_admin so generic tags work on the settings page.
+	const rawGenericSmartTags =
+		window.srfm_block_data?.smart_tags_array ||
+		window.srfm_admin?.smart_tags_array;
+	const genericSmartTags = rawGenericSmartTags
+		? Object.entries( rawGenericSmartTags )
 		: [];
-	const formSmartTags = window.sureforms?.formSpecificSmartTags ?? [];
+	// In the global settings context there is no specific form, so skip
+	// form-specific tags entirely.
+	const formSmartTags =
+		context === 'global'
+			? []
+			: window.sureforms?.formSpecificSmartTags ?? [];
+	// SF-2815 end.
 
 	let formSmartTagsAllData = {};
 	if ( allData ) {
@@ -132,16 +150,41 @@ const Editor = ( { handleContentChange, content, allData = false } ) => {
 
 	const formConfirmationSmartTags = applyFilters(
 		'srfm.formSettings.formConfirmationSmartTags',
-		[
-			{
-				tags: allData ? formSmartTagsAllData : formSmartTags,
-				label: __( 'Form input tags', 'sureforms' ),
-			},
-			{
-				tags: genericSmartTags,
-				label: __( 'Generic tags', 'sureforms' ),
-			},
-		]
+		// SF-2815 start: in global context show generic tags only, plus
+		// `{all_data}` when the caller opts in via the `allData` prop.
+		// Field-specific tags are intentionally omitted because the global
+		// settings don't know which form they'll apply to.
+		context === 'global'
+			? [
+				...( allData
+					? [
+						{
+							tags: [
+								[
+									'{all_data}',
+									__( 'All Data', 'sureforms' ),
+								],
+							],
+							label: __( 'Form data', 'sureforms' ),
+						},
+					]
+					: [] ),
+				{
+					tags: genericSmartTags,
+					label: __( 'Generic tags', 'sureforms' ),
+				},
+			]
+			: [
+				{
+					tags: allData ? formSmartTagsAllData : formSmartTags,
+					label: __( 'Form input tags', 'sureforms' ),
+				},
+				{
+					tags: genericSmartTags,
+					label: __( 'Generic tags', 'sureforms' ),
+				},
+			]
+		// SF-2815 end.
 	);
 
 	return (

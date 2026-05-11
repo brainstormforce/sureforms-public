@@ -1,6 +1,7 @@
 import { createRoot, useEffect, useState } from '@wordpress/element';
 import { BrowserRouter as Router, useLocation } from 'react-router-dom';
 import FormPageHeader from '../components/PageHeader';
+import '../tw-base.scss';
 
 import Navigation from './Navigation';
 import Component from './Component';
@@ -97,7 +98,7 @@ const Settings = () => {
 			<Router>
 				<FormPageHeader />
 				<div
-					className="grid grid-cols-[15rem_1fr] auto-rows-fr bg-background-secondary before:content-['_'] before:fixed before:inset-0 before:h-full before:w-[var(--bg-width)] before:bg-background-primary before:shadow-sm rtl:before:right-0 rtl:before:left-auto"
+					className="grid grid-cols-[15rem_1fr] auto-rows-fr min-h-screen bg-background-secondary before:content-['_'] before:fixed before:inset-0 before:h-full before:w-[var(--bg-width)] before:bg-background-primary before:shadow-sm rtl:before:right-0 rtl:before:left-auto"
 					style={ backgroundStyle }
 				>
 					<Navigation />
@@ -133,5 +134,14 @@ export default Settings;
 		}
 	}
 
-	document.addEventListener( 'DOMContentLoaded', renderApp );
+	// Footer scripts run synchronously and in dependency order, so pro's
+	// settings bundle runs AFTER this file. If we render immediately, pro's
+	// `addFilter( 'srfm.settings.navigation', ... )` (and other settings-page
+	// filters) hasn't run yet and the License tab — plus any other pro-injected
+	// tab/page-content — is missing from the first paint.
+	//
+	// Defer one event-loop tick so every dependent script (pro + any third
+	// party) has finished registering its filters before React calls
+	// applyFilters during the first render.
+	setTimeout( renderApp, 0 );
 }() );
