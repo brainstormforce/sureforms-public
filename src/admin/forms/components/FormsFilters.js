@@ -130,7 +130,7 @@ const FormsFilters = ( {
 						</Button>
 					</Container.Item>
 				) }
-				{ statusFilter !== 'trash' && (
+				{ statusFilter !== 'trash' && statusFilter !== 'draft' && (
 					<Container.Item>
 						<Button
 							variant="outline"

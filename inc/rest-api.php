@@ -1080,7 +1080,12 @@ class Rest_Api {
 					break;
 
 				case 'draft':
-					if ( 'draft' === $post->post_status ) {
+					if ( 'trash' === $post->post_status ) {
+						$errors[] = [
+							'form_id' => $form_id,
+							'error'   => __( 'Use the restore action to recover a trashed form before switching it to draft.', 'sureforms' ),
+						];
+					} elseif ( 'draft' === $post->post_status ) {
 						$errors[] = [
 							'form_id' => $form_id,
 							'error'   => __( 'This form is already a draft.', 'sureforms' ),
