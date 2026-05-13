@@ -555,7 +555,7 @@ class Test_Getting_Started_Notice extends TestCase {
 	/**
 	 * Test: add_partial_entries_page method exists and is callable.
 	 *
-	 * @since x.x.x
+	 * @since 2.9.0
 	 */
 	public function test_add_partial_entries_page() {
 		$admin = Admin::get_instance();
@@ -565,7 +565,7 @@ class Test_Getting_Started_Notice extends TestCase {
 	/**
 	 * Test: render_partial_entries_empty_state outputs the root div.
 	 *
-	 * @since x.x.x
+	 * @since 2.9.0
 	 */
 	public function test_render_partial_entries_empty_state() {
 		$admin = Admin::get_instance();

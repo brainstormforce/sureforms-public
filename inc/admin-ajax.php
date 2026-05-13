@@ -429,7 +429,7 @@ class Admin_Ajax {
 				/**
 				 * Filter the user-facing filename used when serving an exported ZIP archive.
 				 *
-				 * @since x.x.x
+				 * @since 2.9.0
 				 *
 				 * @param string             $filename  Default ZIP filename.
 				 * @param array<string,mixed> $file_info pathinfo() result for the file being served.

@@ -476,7 +476,7 @@ class Admin {
 	 * Add Partial Entries promotional submenu page for free users.
 	 *
 	 * @return void
-	 * @since x.x.x
+	 * @since 2.9.0
 	 */
 	public function add_partial_entries_page() {
 		add_submenu_page(
@@ -497,7 +497,7 @@ class Admin {
 	 * Partial Entries empty state page callback.
 	 *
 	 * @return void
-	 * @since x.x.x
+	 * @since 2.9.0
 	 */
 	public function render_partial_entries_empty_state() {
 		?>
