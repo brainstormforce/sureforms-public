@@ -5,6 +5,7 @@ import '../tw-base.scss';
 
 import Navigation from './Navigation';
 import Component from './Component';
+import UnsavedChangesGuard from './UnsavedChangesGuard';
 import { Toaster } from '@bsf/force-ui';
 import { cn } from '@Utils/Helpers';
 
@@ -108,6 +109,7 @@ const Settings = () => {
 						</div>
 					</div>
 				</div>
+				<UnsavedChangesGuard />
 			</Router>
 			<Toaster
 				className={ cn(

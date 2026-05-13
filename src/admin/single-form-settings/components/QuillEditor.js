@@ -54,7 +54,11 @@ const Editor = ( {
 			index = length - 1;
 		}
 
-		quillInstance.insertText( index, text );
+		// Pass `'user'` as the source so the resulting `text-change` event
+		// is tagged as user-driven; the visual-tab onChange below filters on
+		// `source === 'user'` to ignore synthetic emissions (mount-time
+		// normalization, parent-prop sync).
+		quillInstance.insertText( index, text, 'user' );
 	};
 
 	const insertSmartTag = ( tag ) => {
@@ -230,7 +234,19 @@ const Editor = ( {
 							formats={ formats }
 							modules={ modules }
 							value={ content }
-							onChange={ ( newContent ) => {
+							onChange={ ( newContent, _delta, source ) => {
+								// Quill tags each emission with its origin:
+								// 'user' for real keystrokes / format toolbar
+								// clicks, 'api' for programmatic content set
+								// (mount-time normalization + value-prop
+								// resync after fetch / discard), 'silent'
+								// for muted internal updates. Only propagate
+								// user-driven changes so the page-level
+								// dirty signal isn't flipped on by
+								// normalization of the initial content.
+								if ( source !== 'user' ) {
+									return;
+								}
 								handleContentChange( newContent );
 							} }
 							className="[&>div]:border [&>div]:border-field-border [&>div]:border-solid [&>div]:rounded-b-lg [&_.ql-editor]:min-h-[18.75rem]"

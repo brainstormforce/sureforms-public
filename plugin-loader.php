@@ -44,6 +44,7 @@ use SRFM\Inc\Payments\Payments;
 use SRFM\Inc\Post_Types;
 use SRFM\Inc\Rest_Api;
 use SRFM\Inc\Single_Form_Settings\Compliance_Settings;
+use SRFM\Inc\Single_Form_Settings\Form_Settings_Api;
 use SRFM\Inc\Smart_Tags;
 use SRFM\Inc\Updater;
 
@@ -299,6 +300,7 @@ class Plugin_Loader {
 		Global_Settings_Defaults::get_instance();
 		Email_Summary::get_instance();
 		Compliance_Settings::get_instance();
+		Form_Settings_Api::get_instance();
 		Events_Scheduler::get_instance();
 		AI_Form_Builder::get_instance();
 		Field_Mapping::get_instance();

@@ -16,16 +16,28 @@ import { useEmailSmartTags } from './useEmailSmartTags';
  * Context-aware component for rendering email notification settings.
  * Can be used in both form-level and global settings contexts.
  *
- * @param {Object}   props
- * @param {string}   props.context                - 'form' | 'global'
- * @param {Object}   props.values                 - Current email notification values
- * @param {Function} props.onChange               - Handler: (fieldKey, value) => void
- * @param {boolean}  props.showNameField          - Show name field (form context only)
- * @param {boolean}  props.showAllDataTag         - Show {all_data} in editor (form context only)
- * @param {boolean}  props.loading                - Loading state (global context only)
- * @param {boolean}  props.wrapWithContentSection - Wrap fields in ContentSection (global context)
- * @param {string}   props.dynamicSubject         - External subject state (form context for smart tags)
- * @param {Function} props.setDynamicSubject      - External subject setter (form context)
+ * @param {Object}      props
+ * @param {string}      props.context                - 'form' | 'global'
+ * @param {Object}      props.values                 - Current email notification values
+ * @param {Function}    props.onChange               - Handler: (fieldKey, value) => void
+ * @param {boolean}     props.showNameField          - Show name field (form context only)
+ * @param {boolean}     props.showAllDataTag         - Show {all_data} in editor (form context only)
+ * @param {boolean}     props.loading                - Loading state (global context only)
+ * @param {boolean}     props.wrapWithContentSection - Wrap fields in ContentSection (global context)
+ * @param {string}      props.dynamicSubject         - External subject state (form context for smart tags)
+ * @param {Function}    props.setDynamicSubject      - External subject setter (form context)
+ * @param {JSX.Element} props.renderAfterEmailBody   - Optional JSX rendered between the Email Body
+ *                                                   and From Name fields. Used by the form-level
+ *                                                   EmailConfirmation to inject "Send as Raw
+ *                                                   HTML" + filter-driven extensions (e.g. pro
+ *                                                   "Attach Uploaded Files") at the same
+ *                                                   position the legacy single-form options array
+ *                                                   placed them in master.
+ * @param {JSX.Element} props.renderAfterFields      - Optional JSX rendered after every field
+ *                                                   (i.e. after Reply To). Used for trailing
+ *                                                   extension panels (e.g. pro "Add Trigger
+ *                                                   Conditions" which master pushed to the end
+ *                                                   of the single-form options array).
  */
 const EmailNotificationFields = ( {
 	context,
@@ -37,6 +49,8 @@ const EmailNotificationFields = ( {
 	wrapWithContentSection = false,
 	dynamicSubject,
 	setDynamicSubject,
+	renderAfterEmailBody = null,
+	renderAfterFields = null,
 } ) => {
 	const [ fromEmailWarningMessage, setFromEmailWarningMessage ] =
 		useState( '' );
@@ -197,7 +211,9 @@ const EmailNotificationFields = ( {
 		),
 	} );
 
-	// Email Body field.
+	// Email Body field. QuillEditor filters out non-user-driven onChange
+	// emissions (mount-time normalization, parent-prop sync), so this
+	// handler only ever runs for real user edits.
 	fields.push( {
 		key: 'email_body',
 		title: __( 'Confirmation Message', 'sureforms' ),
@@ -393,19 +409,46 @@ const EmailNotificationFields = ( {
 		),
 	} );
 
+	// `renderAfterEmailBody` JSX gets injected immediately after the
+	// Email Body field so form-level callers can interleave the
+	// "Send as Raw HTML" toggle + pro filter-driven entries (e.g.
+	// "Attach Uploaded Files") at the position they sit in master,
+	// without having to duplicate the rest of the field markup.
+	const emailBodyIndex = fields.findIndex(
+		( field ) => field.key === 'email_body'
+	);
+	const fieldsBefore =
+		emailBodyIndex === -1
+			? fields
+			: fields.slice( 0, emailBodyIndex + 1 );
+	const fieldsAfter =
+		emailBodyIndex === -1 ? [] : fields.slice( emailBodyIndex + 1 );
+
 	// Render based on context.
 	if ( wrapWithContentSection ) {
 		return (
 			<div className="space-y-6">
-				{ fields.map( ( field ) =>
+				{ fieldsBefore.map( ( field ) =>
 					renderField( field.title, field.content, field.key )
 				) }
+				{ renderAfterEmailBody }
+				{ fieldsAfter.map( ( field ) =>
+					renderField( field.title, field.content, field.key )
+				) }
+				{ renderAfterFields }
 			</div>
 		);
 	}
 
 	// Form context: render fields directly.
-	return <>{ fields.map( ( field ) => field.content ) }</>;
+	return (
+		<>
+			{ fieldsBefore.map( ( field ) => field.content ) }
+			{ renderAfterEmailBody }
+			{ fieldsAfter.map( ( field ) => field.content ) }
+			{ renderAfterFields }
+		</>
+	);
 };
 
 export default EmailNotificationFields;

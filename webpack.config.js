@@ -112,6 +112,7 @@ module.exports = {
 			'@Attributes': path.resolve( __dirname, 'src/blocks-attributes/' ),
 			'@Image': path.resolve( __dirname, 'images/' ),
 			'@IncBlocks': path.resolve( __dirname, 'inc/blocks/' ),
+			'@Store': path.resolve( __dirname, 'src/store/' ),
 		},
 	},
 	module: {

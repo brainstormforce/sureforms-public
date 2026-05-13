@@ -54,10 +54,6 @@ const ConfirmationFields = ( {
 		setCanDisplayError( false );
 	}, [ data?.confirmation_type ] );
 
-	/**
-	 * Handle editor content change.
-	 * @param {string} newContent
-	 */
 	const handleEditorChange = ( newContent ) => {
 		onChange( 'message', newContent );
 	};
