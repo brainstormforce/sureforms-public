@@ -1,75 +1,77 @@
 import { __ } from '@wordpress/i18n';
-import { store as editorStore } from '@wordpress/editor';
-import { useDispatch } from '@wordpress/data';
-import { Input, Switch, Label, Container, Title } from '@bsf/force-ui';
+import { useEffect } from '@wordpress/element';
+import { useDispatch, useSelect } from '@wordpress/data';
+import { Title } from '@bsf/force-ui';
 import TabContentWrapper from '@Components/tab-content-wrapper';
+import { ComplianceFields } from '@Admin/shared-components/compliance';
+import { srfmEditFormMeta } from '@Components/tab-content-wrapper/edit-form-meta';
+import { STORE_NAME as SRFM_STORE_NAME } from '@Store/constants';
 
+/**
+ * Compliance Settings panel — rendered as a sibling of Form Restriction
+ * inside the Advanced Settings tab (`Dialog.js` mounts both side-by-side
+ * inside the tab's `component` Fragment).
+ *
+ * Wires into the tab's Save button via the per-slot dirty map in Redux
+ * (`formSettings.tabDirtyContributions`). `FormRestriction` ORs the
+ * aggregate into its own `isDirty`, so the same Save button responds
+ * to Compliance edits without Compliance having to live inside
+ * FormRestriction's render tree.
+ *
+ * Writes route through `srfmEditFormMeta` so the value lands in the
+ * shared `formSettings.values` slice that `TabContentWrapper.handleSave`
+ * reads when building the POST payload (and the existing core/editor
+ * consumers — the post sidebar etc. — still see the change via the
+ * mirror inside `srfmEditFormMeta`).
+ *
+ * Dirty derivation compares the edited buffer vs the saved snapshot
+ * via `core/editor` selectors — the panel has no local React state
+ * buffer, so saved-vs-edited on the editor store is the authoritative
+ * comparison.
+ *
+ * @param {Object} props                Component props.
+ * @param {Array}  props.complianceData Current `_srfm_compliance` array
+ *                                      (single item today).
+ */
 const Compliance = ( { complianceData } ) => {
-	const { editPost } = useDispatch( editorStore );
+	const { setTabDirtyContribution } = useDispatch( SRFM_STORE_NAME );
 
-	const handleToggle = ( id, status ) => {
+	/**
+	 * Handle field change and stage to Redux + core/editor.
+	 *
+	 * @param {string} key   - Field key to update.
+	 * @param {*}      value - New value.
+	 */
+	const handleChange = ( key, value ) => {
 		const updatedData = complianceData.map( ( item ) => ( {
 			...item,
-			[ id ]: status,
+			[ key ]: value,
 		} ) );
-
-		editPost( {
-			meta: {
-				_srfm_compliance: updatedData,
-			},
-		} );
+		srfmEditFormMeta( '_srfm_compliance', updatedData );
 	};
 
-	const ComplianceSwitch = ( { id, label, value, onChange, key } ) => {
-		return (
-			<Switch
-				key={ key }
-				label={ label }
-				value={ value }
-				onChange={ ( val ) => onChange( id, val ) }
-			/>
-		);
-	};
+	// Dirty derivation: edited buffer vs saved snapshot. No local
+	// React state in this component — writes go straight through
+	// `srfmEditFormMeta`, so saved-vs-edited on the editor store is
+	// the source of truth.
+	const isDirty = useSelect( ( select ) => {
+		const editor = select( 'core/editor' );
+		const edited = editor.getEditedPostAttribute( 'meta' )
+			?._srfm_compliance;
+		const saved = editor.getCurrentPostAttribute( 'meta' )
+			?._srfm_compliance;
+		return JSON.stringify( edited ) !== JSON.stringify( saved );
+	}, [] );
 
-	const switches = [
-		{
-			id: 'gdpr',
-			label: {
-				heading: __( 'Enable GDPR Compliance', 'sureforms' ),
-				description: __(
-					'When enabled, this form will not store user IP, browser name, or device name in entries.',
-					'sureforms'
-				),
-			},
-		},
-		{
-			id: 'do_not_store_entries',
-			label: {
-				heading: __(
-					'Never store entry data after form submission',
-					'sureforms'
-				),
-				description: __(
-					'When enabled this form will never store Entries.',
-					'sureforms'
-				),
-			},
-			condition: complianceData[ 0 ]?.gdpr,
-		},
-		{
-			id: 'auto_delete_entries',
-			label: {
-				heading: __( 'Automatically delete entries', 'sureforms' ),
-				description: __(
-					'When enabled this form will automatically delete entries after a certain period of time.',
-					'sureforms'
-				),
-			},
-			condition:
-				complianceData[ 0 ]?.gdpr &&
-				! complianceData[ 0 ]?.do_not_store_entries,
-		},
-	];
+	// Push our slot's contribution into Redux. The host
+	// (`FormRestriction`) reads the aggregate via
+	// `selectTabDirtyContributionsAggregate` and ORs it into the Save
+	// button's `isDirty`. Cleanup on unmount clears the slot so a tab
+	// switch / discard doesn't leave a stale `true`.
+	useEffect( () => {
+		setTabDirtyContribution( 'compliance', isDirty );
+		return () => setTabDirtyContribution( 'compliance', false );
+	}, [ isDirty, setTabDirtyContribution ] );
 
 	return (
 		<TabContentWrapper className="!mt-0">
@@ -79,62 +81,11 @@ const Compliance = ( { complianceData } ) => {
 					className="mb-4"
 					title={ __( 'Compliance Settings', 'sureforms' ) }
 				/>
-				<Container direction="column" className="gap-6">
-					{ switches.map(
-						( { id, label, condition = true } ) =>
-							condition &&
-							ComplianceSwitch( {
-								id,
-								label,
-								value: complianceData[ 0 ]?.[ id ],
-								onChange: handleToggle,
-								key: id,
-							} )
-					) }
-					{ complianceData[ 0 ]?.auto_delete_entries &&
-						! complianceData[ 0 ]?.do_not_store_entries &&
-						complianceData[ 0 ]?.gdpr && (
-						<Container direction="column" className="gap-1.5">
-							<Input
-								aria-label={ __(
-									'Entries older than the selected days will be deleted.',
-									'sureforms'
-								) }
-								size="md"
-								type="number"
-								value={
-									complianceData[ 0 ]?.auto_delete_days
-								}
-								label={ __(
-									'Entries Time Period',
-									'sureforms'
-								) }
-								onChange={ ( value ) => {
-									value = parseInt( value );
-
-									if ( value < 0 ) {
-										value = 1;
-									}
-
-									value = value.toString();
-
-									handleToggle(
-										'auto_delete_days',
-										value
-									);
-								} }
-							/>
-							<Container gap="0" align="center">
-								<Label tag="p" size="sm" variant="help">
-									{ __(
-										'Entries older than the days set will be deleted automatically.',
-										'sureforms'
-									) }
-								</Label>
-							</Container>
-						</Container>
-					) }
-				</Container>
+				<ComplianceFields
+					context="form"
+					values={ complianceData[ 0 ] }
+					onChange={ handleChange }
+				/>
 			</>
 		</TabContentWrapper>
 	);

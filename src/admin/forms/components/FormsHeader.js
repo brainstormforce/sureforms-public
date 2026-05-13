@@ -12,6 +12,7 @@ const FormsHeader = ( {
 	onBulkExport,
 	onBulkRestore,
 	onBulkDelete,
+	onBulkDraft,
 	onImportSuccess,
 	statusFilter,
 	onStatusFilterChange,
@@ -63,6 +64,7 @@ const FormsHeader = ( {
 					onBulkExport={ onBulkExport }
 					onBulkRestore={ onBulkRestore }
 					onBulkDelete={ onBulkDelete }
+					onBulkDraft={ onBulkDraft }
 					onImportSuccess={ onImportSuccess }
 					statusFilter={ statusFilter }
 					onStatusFilterChange={ onStatusFilterChange }

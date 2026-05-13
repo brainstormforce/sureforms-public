@@ -3,6 +3,7 @@ import {
 	useLayoutEffect,
 	createPortal,
 	useEffect,
+	useRef,
 	memo,
 	useContext,
 	useMemo,
@@ -12,6 +13,8 @@ import {
 	Button,
 	Container,
 	Title,
+	Toaster,
+	toast as bsfToast,
 } from '@bsf/force-ui';
 import SidebarNav from './SidebarNav';
 import {
@@ -43,13 +46,15 @@ import EmailNotification from '../email-settings/EmailNotification';
 import FormConfirmSetting from '../form-confirm-setting';
 import { setFormSpecificSmartTags, cn } from '@Utils/Helpers';
 import toast from 'react-hot-toast';
-import { useDispatch, useSelect } from '@wordpress/data';
+import { useDispatch, useSelect, select } from '@wordpress/data';
 import { store as blockEditorStore } from '@wordpress/block-editor';
+import { STORE_NAME as SRFM_STORE_NAME } from '@Store/constants';
 import FormRestriction from '../form-restrictions/FormRestriction';
 import { FormRestrictionContext } from '../form-restrictions/context';
 import FeaturePreview from '../FeaturePreview';
 import OttoKitPage from '@Admin/settings/pages/OttoKit';
 import ottoKitIcon from '@Image/ottokit.png';
+import ConfirmationDialog from '@Admin/components/ConfirmationDialog';
 
 const Dialog = ( {
 	open,
@@ -67,6 +72,98 @@ const Dialog = ( {
 	useEffect( () => {
 		editMeta();
 	}, [] );
+
+	const {
+		discardFormSettingsState,
+		discardFormSettingValues,
+		discardChanges,
+		keepChanges,
+		confirmBackDiscard,
+		cancelBackDiscard,
+	} = useDispatch( SRFM_STORE_NAME );
+
+	// Active sub-form dirty signal — pushed by the tab via
+	// `setSingleFormSettingUnsave`. Drives the close / tab-switch /
+	// Esc / backdrop / beforeunload guards below.
+	const isDialogDirty = useSelect(
+		( s ) =>
+			s( SRFM_STORE_NAME )?.selectSingleFormSettingUnsave?.() || false,
+		[]
+	);
+	// Active sub-form in-flight Save signal — pushed by
+	// `TabContentWrapper.handleSave` around its await. The guards below
+	// short-circuit while this is true so a tab-switch / close during
+	// an in-flight POST can't trigger a discard that would revert local
+	// state for a save the server has already accepted.
+	const isDialogSaving = useSelect(
+		( s ) =>
+			s( SRFM_STORE_NAME )?.selectSingleFormSettingSaving?.() || false,
+		[]
+	);
+
+	// Copy payload for the dialog-level back-arrow discard modal. Set by
+	// the active tab via `requestBackDiscard`; the tab subscribes to the
+	// confirm counter to react when the user confirms.
+	const pendingBackDiscard = useSelect(
+		( s ) =>
+			s( SRFM_STORE_NAME )?.selectPendingBackDiscard?.() || null,
+		[]
+	);
+
+	// Centralized toast queue. Tabs and helpers call `notify.success/.error`
+	// from `@Utils/notify`, which dispatches `requestToast` — that bumps
+	// `toastCounter` and stashes the payload in `pendingToast`. The
+	// listener below reads the payload and fires @bsf/force-ui's
+	// imperative `toast.success/.error(...)` exactly once per bump.
+	const toastCounter = useSelect(
+		( s ) => s( SRFM_STORE_NAME )?.selectToastCounter?.() || 0,
+		[]
+	);
+	const lastToastCounter = useRef( toastCounter );
+	useEffect( () => {
+		if ( toastCounter === lastToastCounter.current ) {
+			return;
+		}
+		lastToastCounter.current = toastCounter;
+		const payload =
+			select( SRFM_STORE_NAME )?.selectPendingToast?.();
+		if ( ! payload || ! payload.message ) {
+			return;
+		}
+		// Dismiss any in-flight toast so only the latest action is on
+		// screen at a time — matches the `toast.dismiss()` pattern the
+		// migrated call sites used to inline.
+		bsfToast.dismiss();
+		const fire =
+			payload.type === 'error' ? bsfToast.error : bsfToast.success;
+		fire( payload.message, { duration: payload.duration ?? 5000 } );
+	}, [ toastCounter ] );
+
+	// `{ type: 'tab' | 'close', tab?: string }` while the guard modal is
+	// asking the user to confirm.
+	const [ pendingAction, setPendingAction ] = useState( null );
+
+	// Native browser confirmation when the user closes the browser tab
+	// or navigates away with the dialog open AND dirty.
+	useEffect( () => {
+		if ( ! open || ! isDialogDirty ) {
+			return undefined;
+		}
+		const handler = ( e ) => {
+			e.preventDefault();
+			e.returnValue = '';
+		};
+		window.addEventListener( 'beforeunload', handler );
+		return () => window.removeEventListener( 'beforeunload', handler );
+	}, [ open, isDialogDirty ] );
+
+	// Tear down the Redux `formSettings` slice on dialog close so the
+	// next open starts from a clean slate.
+	useEffect( () => {
+		if ( ! open ) {
+			discardFormSettingsState();
+		}
+	}, [ open ] );
 
 	// Create a root element for the dialog
 	useLayoutEffect( () => {
@@ -86,8 +183,10 @@ const Dialog = ( {
 	};
 
 	const isFullscreen = useSelect(
-		( select ) =>
-			select( 'core/edit-post' ).isFeatureActive( 'fullscreenMode' ),
+		// Param renamed to `wpSelect` to avoid shadowing the imported
+		// `select` from `@wordpress/data` used by the toast listener below.
+		( wpSelect ) =>
+			wpSelect( 'core/edit-post' ).isFeatureActive( 'fullscreenMode' ),
 		[]
 	);
 
@@ -116,12 +215,97 @@ const Dialog = ( {
 		return () => window.removeEventListener( 'resize', updateMargin );
 	}, [ open, isFullscreen ] );
 
+	useEffect( () => {
+		const dialogWrapper = document.querySelector( '.srfm-dialog-panel' );
+		if ( ! dialogWrapper ) {
+			return;
+		}
+		if ( ! isFullscreen ) {
+			dialogWrapper.style.marginTop = '40px';
+		} else {
+			dialogWrapper.style.removeProperty( 'margin-top' );
+		}
+	}, [ open, isFullscreen ] );
+
 	const emailNotificationData = sureformsKeys._srfm_email_notification || [];
 	const complianceData = sureformsKeys._srfm_compliance || [];
 	const formCustomCssData = sureformsKeys._srfm_form_custom_css || [];
 	const [ selectedTab, setSelectedTab ] = useState(
 		targetTab ?? 'email_notification'
 	);
+
+	const performAction = ( action ) => {
+		if ( ! action ) {
+			return;
+		}
+		if ( 'tab' === action.type ) {
+			setSelectedTab( action.tab );
+			return;
+		}
+		if ( 'close' === action.type ) {
+			setOpen( false );
+		}
+	};
+
+	const requestTabSwitch = ( nextTab ) => {
+		// Hold tab clicks while a save POST is in flight — the in-flight
+		// edits will be the post-save baseline once the await resolves,
+		// and switching tabs mid-await would let "Discard & continue"
+		// roll back an already-accepted save.
+		if ( isDialogSaving ) {
+			return;
+		}
+		if ( ! isDialogDirty || nextTab === selectedTab ) {
+			setSelectedTab( nextTab );
+			return;
+		}
+		setPendingAction( { type: 'tab', tab: nextTab } );
+	};
+
+	const requestClose = () => {
+		if ( isDialogSaving ) {
+			return;
+		}
+		if ( ! isDialogDirty ) {
+			if ( typeof close === 'function' ) {
+				close();
+			} else {
+				setOpen( false );
+			}
+			return;
+		}
+		setPendingAction( { type: 'close' } );
+	};
+
+	// Wrap `setOpen` so Esc / backdrop close attempts also flow through
+	// the guard. `ForceUIDialog` calls `setOpen(false)` on those paths.
+	const guardedSetOpen = ( nextOpen ) => {
+		if ( false === nextOpen && isDialogSaving ) {
+			return;
+		}
+		if ( false === nextOpen && isDialogDirty ) {
+			setPendingAction( { type: 'close' } );
+			return;
+		}
+		setOpen( nextOpen );
+	};
+
+	const onConfirmDiscard = () => {
+		discardFormSettingValues();
+		// Flips the centralized dirty flag false + bumps the discard
+		// counter so the active tab resets its local React state.
+		discardChanges();
+		const next = pendingAction;
+		setPendingAction( null );
+		performAction( next );
+	};
+
+	const onCancelDiscard = () => {
+		// API-symmetric "stay" branch. No state change today; gives us a
+		// single hook to extend later.
+		keepChanges();
+		setPendingAction( null );
+	};
 
 	const [ parentTab, setParentTab ] = useState( null );
 
@@ -570,7 +754,7 @@ const Dialog = ( {
 				exitOnEsc
 				scrollLock
 				open={ open }
-				setOpen={ setOpen }
+				setOpen={ guardedSetOpen }
 				className="[&>div>div]:h-full z-99999 border-radius-none"
 			>
 				<ForceUIDialog.Backdrop />
@@ -590,7 +774,7 @@ const Dialog = ( {
 								variant="ghost"
 								size="sm"
 								className="p-1"
-								onClick={ close }
+								onClick={ requestClose }
 								icon={ <XIcon /> }
 							/>
 						</Container>
@@ -599,7 +783,7 @@ const Dialog = ( {
 							<SidebarNav
 								tabs={ tabs }
 								selectedTab={ selectedTab }
-								setSelectedTab={ setSelectedTab }
+								setSelectedTab={ requestTabSwitch }
 								parentTab={ parentTab }
 							/>
 							{ /* Content Area */ }
@@ -614,6 +798,69 @@ const Dialog = ( {
 							</div>
 						</div>
 					</Container>
+					<ConfirmationDialog
+						isOpen={ pendingAction !== null }
+						title={ __( 'Unsaved changes', 'sureforms' ) }
+						description={ __(
+							'You have unsaved changes. Discard them to continue, or stay to save your changes.',
+							'sureforms'
+						) }
+						confirmButtonText={ __(
+							'Discard & continue',
+							'sureforms'
+						) }
+						cancelButtonText={ __( 'Keep editing', 'sureforms' ) }
+						onConfirm={ onConfirmDiscard }
+						onCancel={ onCancelDiscard }
+						destructiveConfirmButton={ true }
+					/>
+					{ /*
+					 * Centralized back-arrow discard modal. Tabs that own
+					 * a "back arrow" (e.g. EmailConfirmation editor)
+					 * dispatch `requestBackDiscard({ ...copy })` with
+					 * caller-supplied copy. On confirm we bump the
+					 * `backDiscardConfirmCounter` so the originating tab
+					 * fires its own navigation (e.g. `handleBackNotification`).
+					 */ }
+					<ConfirmationDialog
+						isOpen={ pendingBackDiscard !== null }
+						title={ pendingBackDiscard?.title || '' }
+						description={ pendingBackDiscard?.description || '' }
+						confirmButtonText={
+							pendingBackDiscard?.confirmText ||
+							__( 'Discard & go back', 'sureforms' )
+						}
+						cancelButtonText={
+							pendingBackDiscard?.cancelText ||
+							__( 'Keep editing', 'sureforms' )
+						}
+						onConfirm={ confirmBackDiscard }
+						onCancel={ cancelBackDiscard }
+						destructiveConfirmButton={ true }
+					/>
+					{ /*
+					 * Single Toaster mount for the entire dialog. Every
+					 * tab + helper goes through `notify` (in @Utils),
+					 * which dispatches `requestToast`; the listener above
+					 * fires @bsf/force-ui's imperative `toast.success/.error`
+					 * on each bump. RTL + z-index config matches the
+					 * page-level mounts elsewhere in the admin.
+					 */ }
+					<Toaster
+						position={
+							srfm_admin?.is_rtl ? 'top-left' : 'top-right'
+						}
+						design="stack"
+						theme="light"
+						autoDismiss={ true }
+						dismissAfter={ 5000 }
+						className={ cn(
+							'z-[999999]',
+							srfm_admin?.is_rtl
+								? '[&>li>div>div.absolute]:right-auto [&>li>div>div.absolute]:left-[0.75rem!important]'
+								: ''
+						) }
+					/>
 				</ForceUIDialog.Panel>
 			</ForceUIDialog>,
 			renderRoot

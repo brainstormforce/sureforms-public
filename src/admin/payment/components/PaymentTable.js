@@ -167,8 +167,15 @@ const PaymentTable = ( {
 			</div>
 		);
 
+		// For subscription rows, prefer `subscription_status` so canceled/paused
+		// lifecycle states surface here. Falls back to `status` for non-subs and
+		// when `subscription_status` is missing.
+		const paymentStatusSource =
+			'subscription' === payment.type && payment.subscription_status
+				? payment.subscription_status
+				: payment.status;
 		const paymentStatus =
-			'active' === payment.status ? 'succeeded' : payment.status;
+			'active' === paymentStatusSource ? 'succeeded' : paymentStatusSource;
 
 		const rowStatusBadge = (
 			<Badge

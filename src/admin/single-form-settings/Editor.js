@@ -50,19 +50,23 @@ const SureformsFormSpecificSettings = () => {
 	const [ enableQuickActionSidebar, setEnableQuickActionSidebar ] =
 		useState( 'enabled' );
 
-	const { postId, sureformsKeys, blockCount, blocks, editorMode } = useSelect(
-		( select ) => {
-			const { get } = select( preferencesStore );
-			return {
-				editorMode: get( 'core', 'editorMode' ) ?? 'visual',
-				postId: select( 'core/editor' ).getCurrentPostId(),
-				sureformsKeys:
-					select( editorStore ).getEditedPostAttribute( 'meta' ),
-				blockCount: select( blockEditorStore ).getBlockCount(),
-				blocks: select( 'core/block-editor' ).getBlocks(),
-			};
-		}
-	);
+	const {
+		postId,
+		sureformsKeys,
+		blockCount,
+		blocks,
+		editorMode,
+	} = useSelect( ( select ) => {
+		const { get } = select( preferencesStore );
+		return {
+			editorMode: get( 'core', 'editorMode' ) ?? 'visual',
+			postId: select( 'core/editor' ).getCurrentPostId(),
+			sureformsKeys:
+				select( editorStore ).getEditedPostAttribute( 'meta' ),
+			blockCount: select( blockEditorStore ).getBlockCount(),
+			blocks: select( 'core/block-editor' ).getBlocks(),
+		};
+	} );
 
 	const shouldIframe = useShouldIframe();
 

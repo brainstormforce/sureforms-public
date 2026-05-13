@@ -1,12 +1,17 @@
 import { __ } from '@wordpress/i18n';
 import {
+	useCallback,
 	useContext,
 	createInterpolateElement,
 	isValidElement,
 	useMemo,
 	useEffect,
+	useRef,
+	useState,
 } from '@wordpress/element';
-import { useSelect } from '@wordpress/data';
+import { select, useDispatch, useSelect } from '@wordpress/data';
+import { store as editorStore } from '@wordpress/editor';
+import { decodeJson } from '@Utils/Helpers';
 import { FormRestrictionContext } from './context';
 import {
 	Container,
@@ -16,18 +21,106 @@ import {
 	Label,
 	TextArea,
 	Tooltip,
-	toast,
 } from '@bsf/force-ui';
 import { Info } from 'lucide-react';
 import TabContentWrapper from '@Components/tab-content-wrapper';
 import DatePickerModal from '@Components/force-ui-components/DatePickerModal';
 import TimePicker from '@Components/force-ui-components/TimePicker';
 import { applyFilters } from '@wordpress/hooks';
+import { srfmEditFormMeta } from '@Components/tab-content-wrapper/edit-form-meta';
+import { STORE_NAME as SRFM_STORE_NAME } from '@Store/constants';
+import { notify } from '@Utils/notify';
 
 const FormRestriction = ( { setHasValidationErrors } ) => {
-	const { updateMeta, preserveMetaData } = useContext(
-		FormRestrictionContext
+	const { updateMeta, preserveMetaData, rawMeta, editMeta, setPreserveMetaData } =
+		useContext( FormRestrictionContext );
+
+	// Tab-owned in-flight save flag. TabContentWrapper toggles this via
+	// `onSavingChange` around the POST so the Save button locks during
+	// the network call.
+	const [ isSaving, setIsSaving ] = useState( false );
+
+	// `preserveMetaData` (from context) is the live editing state;
+	// `rawMeta` is the last-saved post-meta baseline. isDirty compares
+	// the two; after a successful Save the response.meta updates
+	// `rawMeta` and `onSaveSuccess` re-syncs `preserveMetaData` to it.
+	const localIsDirty = useMemo(
+		() =>
+			JSON.stringify( preserveMetaData ) !== JSON.stringify( rawMeta ),
+		[ preserveMetaData, rawMeta ]
 	);
+
+	// Per-slot dirty contributions from filter-driven extension panels
+	// (e.g. pro modules rendered via `srfm_form_restriction_additional_settings`).
+	// The setter below is passed through the filter's second arg so panels
+	// can push their own dirty boolean up without needing cross-bundle
+	// React Context or extra Redux state. Slots auto-clean on unmount via
+	// the panel's effect cleanup (`registerExtensionDirty(slot, false)`).
+	const [ extensionDirtyMap, setExtensionDirtyMap ] = useState( {} );
+	const registerExtensionDirty = useCallback( ( slot, value ) => {
+		if ( ! slot ) {
+			return;
+		}
+		setExtensionDirtyMap( ( prev ) => {
+			if ( prev[ slot ] === value ) {
+				return prev;
+			}
+			return { ...prev, [ slot ]: value };
+		} );
+	}, [] );
+	const extensionsIsDirty = useMemo(
+		() => Object.values( extensionDirtyMap ).some( Boolean ),
+		[ extensionDirtyMap ]
+	);
+
+	// Sibling-panel dirty contributions via the Redux per-slot map.
+	// Compliance Settings is a Dialog.js-level sibling (not a child of
+	// this component) and pushes its own slot via
+	// `setTabDirtyContribution`. We OR-fold the aggregate into the
+	// Save button's `isDirty` so the same button responds to those
+	// edits without restructuring the dialog tree.
+	const tabSiblingsIsDirty = useSelect(
+		( s ) =>
+			s( SRFM_STORE_NAME )?.selectTabDirtyContributionsAggregate?.() ||
+			false,
+		[]
+	);
+
+	const isDirty = localIsDirty || extensionsIsDirty || tabSiblingsIsDirty;
+
+	// Push the local dirty signal into the store so the dialog's
+	// unsaved-changes guard can read it.
+	const { setSingleFormSettingUnsave } = useDispatch( SRFM_STORE_NAME );
+	useEffect( () => {
+		setSingleFormSettingUnsave( isDirty );
+	}, [ isDirty, setSingleFormSettingUnsave ] );
+
+	// Unmount cleanup — covers every exit path so the central flag
+	// doesn't leak past a discard / tab switch.
+	useEffect( () => {
+		return () => {
+			setSingleFormSettingUnsave( false );
+		};
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [] );
+
+	// Listen for the discard signal dispatched by the dialog's "Discard
+	// & continue" branch. Each bump is one discard event; the ref skips
+	// the initial render so the tab doesn't reset on mount.
+	const discardCounter = useSelect(
+		( s ) =>
+			s( SRFM_STORE_NAME )?.selectSingleFormSettingDiscardCounter?.() ||
+			0,
+		[]
+	);
+	const lastDiscardCounter = useRef( discardCounter );
+	useEffect( () => {
+		if ( discardCounter === lastDiscardCounter.current ) {
+			return;
+		}
+		lastDiscardCounter.current = discardCounter;
+		editMeta();
+	}, [ discardCounter ] );
 
 	// Read compliance meta directly — it lives in a separate post-meta key
 	// (`_srfm_compliance`) outside FormRestrictionContext. When GDPR + Never
@@ -35,8 +128,8 @@ const FormRestriction = ( { setHasValidationErrors } ) => {
 	// (inc/form-submit.php:538), so the entries-table-driven cap (and any
 	// recurring extension that hooks `srfm_form_restriction_entries_count`)
 	// has no row to count and silently does not enforce.
-	const isNeverStoreEntriesEnabled = useSelect( ( select ) => {
-		const meta = select( 'core/editor' ).getEditedPostAttribute( 'meta' );
+	const isNeverStoreEntriesEnabled = useSelect( ( wpSelect ) => {
+		const meta = wpSelect( 'core/editor' ).getEditedPostAttribute( 'meta' );
 		const compliance = Array.isArray( meta?._srfm_compliance )
 			? meta._srfm_compliance[ 0 ]
 			: null;
@@ -118,27 +211,65 @@ const FormRestriction = ( { setHasValidationErrors } ) => {
 		preserveMetaData?.meridiem,
 	] );
 
-	// Update parent component's validation state and show toast
+	// Mirror the date/time validation error into the parent's flag so
+	// any downstream consumers know there's an issue. Toast is now
+	// surfaced from `validateBeforeSave` at Save click (not on every
+	// keystroke) — matches the EmailConfirmation pattern.
 	useEffect( () => {
-		const hasError = !! dateTimeValidationError;
-
-		// Update parent component's validation state
 		if ( setHasValidationErrors ) {
-			setHasValidationErrors( hasError );
-		}
-
-		// Show toast notification when validation error occurs
-		if ( hasError ) {
-			toast.error( dateTimeValidationError, {
-				duration: 4000,
-			} );
+			setHasValidationErrors( !! dateTimeValidationError );
 		}
 	}, [ dateTimeValidationError, setHasValidationErrors ] );
 
-	// Apply filter and sanitize for security
+	// Returns null on valid; an error string for TabContentWrapper to
+	// surface as a toast otherwise. Stages the in-flight preserveMetaData
+	// into Redux `values` so `handleSave` reads the right payload.
+	const validateBeforeSave = () => {
+		if ( dateTimeValidationError ) {
+			return dateTimeValidationError;
+		}
+		srfmEditFormMeta(
+			'_srfm_form_restriction',
+			JSON.stringify( preserveMetaData || {} )
+		);
+		return null;
+	};
+
+	// After a successful Save the response.meta updates the editor
+	// store → re-sync the preserve buffer to the just-saved value so
+	// isDirty drops to false.
+	//
+	// IMPORTANT: read the latest meta imperatively from
+	// `select(editorStore)` rather than relying on the closure's
+	// `rawMeta`. `handleSave` dispatches `editPost(response.meta)` and
+	// `commitSavedMeta(...)` synchronously right before invoking
+	// `onSaveSuccess`, but those dispatches haven't yet propagated to a
+	// re-render — so the closure's `rawMeta` still reflects the
+	// pre-save value. Calling `editMeta()` (which closes over the
+	// stale `rawMeta`) would reset `preserveMetaData` to the pre-save
+	// baseline, making the just-saved field appear to revert in the
+	// UI.
+	const onSaveSuccess = () => {
+		const latestMeta =
+			select( editorStore ).getEditedPostAttribute( 'meta' ) || {};
+		setPreserveMetaData(
+			decodeJson( latestMeta?._srfm_form_restriction ) || {}
+		);
+		notify.success( __( 'Form settings saved.', 'sureforms' ) );
+	};
+
+	// Apply filter and sanitize for security.
+	// The 2nd arg is a context bag forwarded to every callback so
+	// extension panels (e.g. pro IP restriction) can push their own
+	// `isDirty` boolean via `registerExtensionDirty(slot, isDirty)`.
+	// This avoids cross-bundle React Context — the setter is a stable
+	// `useCallback` reference and crosses the bundle boundary as a
+	// plain function prop, which works because the @wordpress/hooks
+	// registry is shared between bundles via `wp.hooks`.
 	let additionalSettings = applyFilters(
 		'srfm_form_restriction_additional_settings',
-		[]
+		[],
+		{ registerExtensionDirty }
 	);
 
 	// Lightweight security validation for admin context
@@ -165,6 +296,13 @@ const FormRestriction = ( { setHasValidationErrors } ) => {
 					'Set limits on how many times a form can be submitted and manage compliance options, including GDPR and data retention.',
 					'sureforms'
 				) }
+				tabId="advanced-settings"
+				showSaveButton={ true }
+				validate={ validateBeforeSave }
+				isDirty={ isDirty }
+				isSaving={ isSaving }
+				onSavingChange={ setIsSaving }
+				onSaveSuccess={ onSaveSuccess }
 			>
 				<div id="srfm-form-restriction-panel" />
 				<Title

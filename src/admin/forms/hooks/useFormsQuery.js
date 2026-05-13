@@ -102,6 +102,18 @@ export const useBulkFormsAction = () => {
 						count
 					);
 					break;
+				case 'draft':
+					message = sprintf(
+						/* translators: %d: number of forms */
+						_n(
+							'%d form switched to draft.',
+							'%d forms switched to draft.',
+							count,
+							'sureforms'
+						),
+						count
+					);
+					break;
 			}
 
 			if ( message ) {

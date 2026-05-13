@@ -551,6 +551,17 @@ export const addQueryParam = ( url, paramValue, paramKey = 'utm_medium' ) => {
 	try {
 		const urlObj = new URL( url );
 		urlObj.searchParams.set( paramKey, paramValue );
+
+		// Keep SureForms attribution deterministic for outbound marketing links.
+		if ( 'utm_medium' === paramKey ) {
+			if ( ! urlObj.searchParams.get( 'utm_source' ) ) {
+				urlObj.searchParams.set( 'utm_source', 'sureforms_plugin' );
+			}
+			if ( ! urlObj.searchParams.get( 'utm_campaign' ) ) {
+				urlObj.searchParams.set( 'utm_campaign', 'core_plugin' );
+			}
+		}
+
 		return urlObj.toString();
 	} catch ( error ) {
 		console.error( 'Invalid URL:', error );
