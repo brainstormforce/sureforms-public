@@ -16955,6 +16955,14 @@ msgid "The form could not be saved. Please try again."
 msgstr ""
 
 #: assets/build/templatePicker.js:172
+msgid "You do not have permission to create forms."
+msgstr ""
+
+#: assets/build/templatePicker.js:172
+msgid "The form could not be saved. Please try again."
+msgstr ""
+
+#: assets/build/templatePicker.js:172
 msgid "Generate with AI"
 msgstr ""
 
