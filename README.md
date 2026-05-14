@@ -478,7 +478,7 @@ You can collect payments securely through Stripe in the free version. PayPal pay
 You can report the issue through our [Bug Bounty Program](https://brainstormforce.com/bug-bounty-program/). We collaborate with Patchstack to provide opportunities for researchers to report vulnerabilities. The Patchstack team will help validate, triage, and handle any reported security issues.
 
 ## Changelog ##
-### 2.9.0 - 13th May 2026 ###
+### 2.9.0 - 14th May 2026 ###
 * New: Added a Global Settings panel to configure form defaults (Form Confirmation, Email Notification, Spam Protection, Custom CSS, and Advanced Settings) that every new form inherits automatically, with per-form overrides still supported.
 * New: Added a Switch to Draft action to the All Forms list so published forms can be moved back to draft directly from the row actions without opening the editor.
 * New: Added an unsaved-changes guard to the single-form settings dialog that warns before discarding edits when switching tabs or closing the dialog.
