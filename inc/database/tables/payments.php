@@ -1095,41 +1095,10 @@ class Payments extends Base {
 		// Handle additional where conditions if provided.
 		if ( ! empty( $_args['where'] ) ) {
 			foreach ( $_args['where'] as $where_group ) {
-				if ( is_array( $where_group ) ) {
-					foreach ( $where_group as $condition ) {
-						if ( isset( $condition['key'], $condition['compare'], $condition['value'] ) ) {
-							// Validate column name against whitelist.
-							if ( ! in_array( $condition['key'], self::ALLOWED_COLUMNS, true ) ) {
-								continue;
-							}
-
-							// Validate and normalize the comparison operator.
-							$operator = strtoupper( trim( $condition['compare'] ) );
-
-							// Skip this condition if operator is not in whitelist.
-							if ( ! in_array( $operator, self::ALLOWED_OPERATORS, true ) ) {
-								continue;
-							}
-
-							$column = $condition['key'];
-
-							if ( in_array( $operator, [ 'IN', 'NOT IN' ], true ) && is_array( $condition['value'] ) ) {
-								$ids = array_map( 'absint', $condition['value'] );
-								if ( empty( $ids ) ) {
-									$ids = [ 0 ];
-								}
-								$placeholders  = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
-								$where_clause .= " AND {$column} {$operator} ({$placeholders})";
-								foreach ( $ids as $id ) {
-									$params[] = $id;
-								}
-							} else {
-								$where_clause .= " AND {$column} {$operator} %s";
-								$params[]      = $condition['value'];
-							}
-						}
-					}
+				if ( ! is_array( $where_group ) ) {
+					continue;
 				}
+				$where_clause .= self::build_clause_for_group( $where_group, $params );
 			}
 		}
 
@@ -1199,43 +1168,10 @@ class Payments extends Base {
 		// Handle additional where conditions if provided.
 		if ( ! empty( $where_conditions ) ) {
 			foreach ( $where_conditions as $where_group ) {
-				if ( is_array( $where_group ) ) {
-					foreach ( $where_group as $condition ) {
-						if ( isset( $condition['key'], $condition['compare'], $condition['value'] ) ) {
-							// Validate column name against whitelist.
-							if ( ! in_array( $condition['key'], self::ALLOWED_COLUMNS, true ) ) {
-								continue;
-							}
-
-							// Validate and normalize the comparison operator.
-							$operator = strtoupper( trim( $condition['compare'] ) );
-
-							// Skip this condition if operator is not in whitelist.
-							if ( ! in_array( $operator, self::ALLOWED_OPERATORS, true ) ) {
-								continue;
-							}
-
-							$column = $condition['key'];
-
-							// Special handling for IN/NOT IN with arrays.
-							if ( in_array( $operator, [ 'IN', 'NOT IN' ], true ) && is_array( $condition['value'] ) ) {
-								$ids = array_map( 'absint', $condition['value'] );
-								// Prevent empty IN ().
-								if ( empty( $ids ) ) {
-									$ids = [ 0 ];
-								}
-								$placeholders  = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
-								$where_clause .= " AND {$column} {$operator} ({$placeholders})";
-								foreach ( $ids as $id ) {
-									$params[] = $id;
-								}
-							} else {
-								$where_clause .= " AND {$column} {$operator} %s";
-								$params[]      = $condition['value'];
-							}
-						}
-					}
+				if ( ! is_array( $where_group ) ) {
+					continue;
 				}
+				$where_clause .= self::build_clause_for_group( $where_group, $params );
 			}
 		}
 
@@ -1292,5 +1228,87 @@ class Payments extends Base {
 		}
 
 		return 'payment' === ( $payment['type'] ?? '' ) && ! empty( $payment['subscription_id'] );
+	}
+
+	/**
+	 * Build the SQL fragment for a single where group, handling both flat
+	 * AND-only groups and explicit RELATION (OR/AND) groups.
+	 *
+	 * Flat group example:
+	 *     [ [ 'key' => 'status', 'compare' => '=', 'value' => 'paid' ] ]
+	 *     → " AND status = %s"
+	 *
+	 * RELATION group example:
+	 *     [
+	 *         'RELATION' => 'OR',
+	 *         [ 'key' => 'status',              'compare' => '=', 'value' => 'canceled' ],
+	 *         [ 'key' => 'subscription_status', 'compare' => '=', 'value' => 'canceled' ],
+	 *     ]
+	 *     → " AND (status = %s OR subscription_status = %s)"
+	 *
+	 * Conditions with disallowed columns or operators are silently skipped.
+	 * Always prefixes the returned fragment with " AND " so callers can append
+	 * directly to a `WHERE 1=1` clause.
+	 *
+	 * @param array<int|string,mixed> $where_group  Group of conditions, optionally with 'RELATION'.
+	 * @param array<mixed>            $params       Reference to running params array; appended in place.
+	 * @since 2.9.0
+	 * @return string SQL fragment to append, or empty string if nothing valid.
+	 */
+	private static function build_clause_for_group( array $where_group, array &$params ) {
+		if ( empty( $where_group ) ) {
+			return '';
+		}
+
+		$is_relation_group = ! empty( $where_group['RELATION'] ) && is_string( $where_group['RELATION'] );
+		$relation          = $is_relation_group && 'OR' === strtoupper( $where_group['RELATION'] )
+			? 'OR'
+			: 'AND';
+
+		$sub_clauses = [];
+
+		foreach ( $where_group as $key => $condition ) {
+			if ( 'RELATION' === $key || ! is_array( $condition ) ) {
+				continue;
+			}
+			if ( ! isset( $condition['key'], $condition['compare'], $condition['value'] ) ) {
+				continue;
+			}
+			if ( ! in_array( $condition['key'], self::ALLOWED_COLUMNS, true ) ) {
+				continue;
+			}
+
+			$operator = strtoupper( trim( (string) $condition['compare'] ) );
+			if ( ! in_array( $operator, self::ALLOWED_OPERATORS, true ) ) {
+				continue;
+			}
+
+			$column = $condition['key'];
+
+			if ( in_array( $operator, [ 'IN', 'NOT IN' ], true ) && is_array( $condition['value'] ) ) {
+				$ids = array_map( 'absint', $condition['value'] );
+				if ( empty( $ids ) ) {
+					$ids = [ 0 ];
+				}
+				$placeholders  = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
+				$sub_clauses[] = "{$column} {$operator} ({$placeholders})";
+				foreach ( $ids as $id ) {
+					$params[] = $id;
+				}
+			} else {
+				$sub_clauses[] = "{$column} {$operator} %s";
+				$params[]      = $condition['value'];
+			}
+		}
+
+		if ( empty( $sub_clauses ) ) {
+			return '';
+		}
+
+		if ( $is_relation_group ) {
+			return ' AND (' . implode( " {$relation} ", $sub_clauses ) . ')';
+		}
+
+		return ' AND ' . implode( ' AND ', $sub_clauses );
 	}
 }

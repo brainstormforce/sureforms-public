@@ -56,7 +56,7 @@ const HeaderTooltipItem = ( { title, icon, onClick, children } ) => (
 			title={ title }
 			placement="bottom"
 			className="z-999999"
-			portalId="srfm-dashboard-container"
+			portalId="srfm-dashboard-container-tooltip"
 			variant="dark"
 		>
 			{ children ? (

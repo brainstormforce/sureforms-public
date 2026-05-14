@@ -343,6 +343,38 @@ const FormsListingPage = () => {
 		} );
 	};
 
+	const handleBulkDraft = () => {
+		setConfirmDialog( {
+			open: true,
+			title: _n(
+				'Switch form to draft?',
+				'Switch forms to draft?',
+				selectedForms.length,
+				'sureforms'
+			),
+			description: sprintf(
+				/* translators: %d: number of forms */
+				_n(
+					'%d form will be switched to draft and will no longer be publicly accessible.',
+					'%d forms will be switched to draft and will no longer be publicly accessible.',
+					selectedForms.length,
+					'sureforms'
+				),
+				selectedForms.length
+			),
+			action: async () => {
+				await new Promise( ( resolve ) => {
+					handleBulkAction( 'draft', selectedForms );
+					resolve();
+				} );
+				setConfirmDialog( ( prev ) => ( { ...prev, open: false } ) );
+			},
+			confirmButtonText: __( 'Switch to Draft', 'sureforms' ),
+			destructive: false,
+			requireConfirmation: false,
+		} );
+	};
+
 	// Individual form actions
 	const handleFormEdit = ( form ) => {
 		window.location.href = form.edit_url;
@@ -365,6 +397,27 @@ const FormsListingPage = () => {
 			},
 			confirmButtonText: __( 'Move to Trash', 'sureforms' ),
 			destructive: true,
+			requireConfirmation: false,
+		} );
+	};
+
+	const handleFormDraft = ( form ) => {
+		setConfirmDialog( {
+			open: true,
+			title: __( 'Switch form to draft?', 'sureforms' ),
+			description: __(
+				'This form will be switched to draft and will no longer be publicly accessible.',
+				'sureforms'
+			),
+			action: async () => {
+				await new Promise( ( resolve ) => {
+					handleBulkAction( 'draft', [ form.id ] );
+					resolve();
+				} );
+				setConfirmDialog( ( prev ) => ( { ...prev, open: false } ) );
+			},
+			confirmButtonText: __( 'Switch to Draft', 'sureforms' ),
+			destructive: false,
 			requireConfirmation: false,
 		} );
 	};
@@ -527,6 +580,7 @@ const FormsListingPage = () => {
 									onBulkDelete={ handleBulkDelete }
 									onBulkExport={ handleBulkExport }
 									onBulkRestore={ handleBulkRestore }
+									onBulkDraft={ handleBulkDraft }
 									onImportSuccess={ handleImportSuccess }
 									statusFilter={ statusFilter }
 									onStatusFilterChange={ handleStatusFilter }
@@ -556,6 +610,7 @@ const FormsListingPage = () => {
 										onEdit={ handleFormEdit }
 										onTrash={ handleFormTrash }
 										onRestore={ handleFormRestore }
+										onDraft={ handleFormDraft }
 										onDelete={ handleFormDelete }
 										onDuplicate={ handleFormDuplicate }
 										isLoading={ isLoading }

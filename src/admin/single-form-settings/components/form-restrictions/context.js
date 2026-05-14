@@ -4,7 +4,7 @@
  */
 
 import { useState, createContext } from '@wordpress/element';
-import { useSelect, useDispatch } from '@wordpress/data';
+import { useSelect } from '@wordpress/data';
 import { decodeJson, deepCopy } from '@Utils/Helpers';
 
 // React context for form restriction meta state
@@ -30,8 +30,7 @@ export const useFormRestrictionMeta = () => {
  * @return {JSX.Element} Provider wrapper with context value
  */
 export const FormRestrictionProvider = ( { children } ) => {
-	const rawMeta = useFormRestrictionMeta(); // Raw meta from post
-	const { editPost } = useDispatch( 'core/editor' ); // WP editor dispatcher
+	const rawMeta = useFormRestrictionMeta(); // Raw meta from post (= saved baseline)
 	const [ preserveMetaData, setPreserveMetaData ] = useState( null ); // Temporary buffer for editing
 	const [ newMeta, setNewMeta ] = useState( false ); // Flag to indicate we're creating a new restriction
 
@@ -63,27 +62,16 @@ export const FormRestrictionProvider = ( { children } ) => {
 	};
 
 	/**
-	 * Updates a key in the actual form meta (post-level).
-	 * Skips update if we're in "new template" creation mode.
+	 * Stages a meta key into the preserve buffer only — the explicit Save
+	 * in `FormRestriction` flushes the buffer through Redux + REST. Kept
+	 * as a separate name from `updatePreserveMeta` so existing consumers
+	 * keep working; both functions now have identical semantics.
 	 *
 	 * @param {string} key   - Field name to update
 	 * @param {*}      value - New value to assign
 	 */
 	const updateMeta = ( key, value ) => {
-		const shouldUpdate = updatePreserveMeta( key, value );
-
-		if ( ! shouldUpdate || newMeta ) {
-			return;
-		}
-
-		const updated = deepCopy( rawMeta );
-		if ( updated ) {
-			updated[ key ] = value;
-
-			editPost( {
-				meta: { _srfm_form_restriction: JSON.stringify( updated ) },
-			} );
-		}
+		updatePreserveMeta( key, value );
 	};
 
 	/**

@@ -1,6 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import { useState } from '@wordpress/element';
-import { Edit3, Trash, RotateCcw, Eye, Share, Copy, Check } from 'lucide-react';
+import { Edit3, Trash, RotateCcw, Eye, Share, Copy, Check, FilePen } from 'lucide-react';
 import { Button, Container, Badge, Text, Tooltip } from '@bsf/force-ui';
 import Table from '@Admin/common/listing/components/Table';
 import { exportForms } from '../utils';
@@ -44,6 +44,7 @@ const FormsTable = ( {
 	onRestore,
 	onDelete,
 	onDuplicate,
+	onDraft,
 	paginationProps,
 } ) => {
 	// State to track which shortcode was recently copied
@@ -245,6 +246,16 @@ const FormsTable = ( {
 						icon: <Copy className="size-4" />,
 						onClick: () => onDuplicate?.( form ),
 					} );
+
+					// Switch to Draft action (only for published forms)
+					if ( form.status === 'publish' ) {
+						actions.push( {
+							key: 'draft',
+							label: __( 'Switch to Draft', 'sureforms' ),
+							icon: <FilePen className="size-4" />,
+							onClick: () => onDraft?.( form ),
+						} );
+					}
 
 					// Delete action
 					actions.push( {

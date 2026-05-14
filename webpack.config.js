@@ -90,6 +90,7 @@ module.exports = {
 		suremail: path.resolve( __dirname, 'src/admin/SureMail.js' ),
 		quizEmptyState: path.resolve( __dirname, 'src/admin/QuizEmptyState.js' ),
 		surveyEmptyState: path.resolve( __dirname, 'src/admin/SurveyEmptyState.js' ),
+		partialEntriesEmptyState: path.resolve( __dirname, 'src/admin/PartialEntriesEmptyState.js' ),
 		blocks: path.resolve( __dirname, 'src/blocks/blocks.js' ),
 		editorNudge: path.resolve(
 			__dirname,
@@ -112,6 +113,7 @@ module.exports = {
 			'@Attributes': path.resolve( __dirname, 'src/blocks-attributes/' ),
 			'@Image': path.resolve( __dirname, 'images/' ),
 			'@IncBlocks': path.resolve( __dirname, 'inc/blocks/' ),
+			'@Store': path.resolve( __dirname, 'src/store/' ),
 		},
 	},
 	module: {

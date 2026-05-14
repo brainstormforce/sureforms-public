@@ -1468,9 +1468,40 @@ class Helper {
 			$utm_args = [];
 		}
 
+		// SRFM-2709: deterministic UTM attribution — start.
+		// When the caller opts into UTM tracking by passing any utm_args, fill in
+		// SureForms' deterministic source/campaign defaults. Caller-provided keys
+		// (including the placement passed via utm_medium) always win.
+		if ( ! empty( $utm_args ) ) {
+			$utm_args = array_merge(
+				[
+					'utm_source'   => 'sureforms_plugin',
+					'utm_campaign' => 'core_plugin',
+				],
+				$utm_args
+			);
+		}
+		// SRFM-2709: deterministic UTM attribution — end.
+
 		if ( class_exists( 'BSF_UTM_Analytics' ) ) {
 			$url = \BSF_UTM_Analytics::get_utm_ready_link( $url, 'sureforms', $utm_args );
 		}
+
+		// SRFM-2709: post-BSF_UTM_Analytics fallback — start.
+		// BSF_UTM_Analytics returns the URL unchanged when no install referer is
+		// recorded. Merge any caller UTM keys still missing from the final URL.
+		if ( ! empty( $utm_args ) ) {
+			$existing = [];
+			$query    = wp_parse_url( $url, PHP_URL_QUERY );
+			if ( is_string( $query ) && '' !== $query ) {
+				parse_str( $query, $existing );
+			}
+			$missing = array_diff_key( $utm_args, $existing );
+			if ( ! empty( $missing ) ) {
+				$url = add_query_arg( $missing, $url );
+			}
+		}
+		// SRFM-2709: post-BSF_UTM_Analytics fallback — end.
 
 		return esc_url( $url );
 	}
