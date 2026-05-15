@@ -426,7 +426,15 @@ class Admin_Ajax {
 				$content_type = 'text/csv';
 			} elseif ( 'zip' === $file_info['extension'] ) {
 				$content_type = 'application/zip';
-				$filename     = 'SureForms Entries.zip';
+				/**
+				 * Filter the user-facing filename used when serving an exported ZIP archive.
+				 *
+				 * @since 2.9.0
+				 *
+				 * @param string             $filename  Default ZIP filename.
+				 * @param array<string,mixed> $file_info pathinfo() result for the file being served.
+				 */
+				$filename = (string) apply_filters( 'srfm_export_zip_filename', 'SureForms Entries.zip', $file_info );
 			}
 		}
 

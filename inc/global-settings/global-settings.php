@@ -408,7 +408,7 @@ class Global_Settings {
 	 *
 	 * @param array<mixed> $setting_options Setting options.
 	 * @return bool
-	 * @since x.x.x
+	 * @since 2.9.0
 	 */
 	public static function srfm_save_form_restriction_settings( $setting_options ) {
 		$max_entries = isset( $setting_options['max_entries'] ) && is_array( $setting_options['max_entries'] ) ? $setting_options['max_entries'] : [];
@@ -436,7 +436,7 @@ class Global_Settings {
 	 *
 	 * @param array<mixed> $setting_options Setting options.
 	 * @return bool
-	 * @since x.x.x
+	 * @since 2.9.0
 	 */
 	public static function srfm_save_compliance_settings( $setting_options ) {
 		$settings = [
@@ -453,7 +453,7 @@ class Global_Settings {
 	 * Get default compliance settings.
 	 *
 	 * @return array<string, mixed>
-	 * @since x.x.x
+	 * @since 2.9.0
 	 */
 	public static function get_default_compliance_settings() {
 		return [
@@ -472,7 +472,7 @@ class Global_Settings {
 	 *
 	 * @param array<mixed> $setting_options Setting options.
 	 * @return bool
-	 * @since x.x.x
+	 * @since 2.9.0
 	 */
 	public static function srfm_save_form_confirmation_settings( $setting_options ) {
 		$valid_confirmation_types = [ 'same page', 'different page', 'custom url' ];
@@ -520,7 +520,7 @@ class Global_Settings {
 	 * exactly the same value without duplication.
 	 *
 	 * @return string
-	 * @since x.x.x
+	 * @since 2.9.0
 	 */
 	public static function get_default_confirmation_message() {
 		$check_icon = esc_url( plugins_url( 'images/check-icon.svg', SRFM_FILE ) );
@@ -533,7 +533,7 @@ class Global_Settings {
 	 * Get default form confirmation settings.
 	 *
 	 * @return array<string, mixed>
-	 * @since x.x.x
+	 * @since 2.9.0
 	 */
 	public static function get_default_form_confirmation_settings() {
 		return [
@@ -555,7 +555,7 @@ class Global_Settings {
 	 *
 	 * @param array<mixed> $setting_options Setting options.
 	 * @return bool
-	 * @since x.x.x
+	 * @since 2.9.0
 	 */
 	public static function srfm_save_email_notification_settings( $setting_options ) {
 		$settings = [
@@ -576,7 +576,7 @@ class Global_Settings {
 	 * Get default email notification settings.
 	 *
 	 * @return array<string, mixed>
-	 * @since x.x.x
+	 * @since 2.9.0
 	 */
 	public static function get_default_email_notification_settings() {
 		return [
@@ -603,7 +603,7 @@ class Global_Settings {
 	 * Pro plugin.
 	 *
 	 * @return array<string, array<string, mixed>>
-	 * @since x.x.x
+	 * @since 2.9.0
 	 */
 	public static function get_default_form_restriction_settings() {
 		return [

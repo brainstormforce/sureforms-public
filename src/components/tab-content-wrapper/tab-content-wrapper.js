@@ -52,6 +52,16 @@ const TabContentWrapper = ( {
 	onSaveSuccess,
 	// Resolves the meta-keys owned by this tab via the registry.
 	tabId,
+	// Opt-in: after a successful meta POST, also commit any pending edits
+	// to the post entity itself (title / content / `post.password` /
+	// other top-level attributes) via core-data's
+	// `saveEditedEntityRecord`. Needed by tabs that surface a core
+	// post attribute alongside meta — today that's Advanced Settings
+	// (the Password Protection sub-panel writes `post.password`
+	// directly, since WP's native password field is the source of truth).
+	// Default `false` because most tabs ONLY edit meta and shouldn't
+	// silently flush unrelated Gutenberg edits.
+	commitEntityOnSave = false,
 } ) => {
 	const metaKeys = tabId ? getTabMetaKeys( tabId ) : [];
 
@@ -163,6 +173,37 @@ const TabContentWrapper = ( {
 				// detection now reads clean.
 				dispatch( editorStore ).editPost( { meta: response.meta } );
 				commitSavedMeta( response.meta );
+			}
+
+			// Opt-in entity flush. When the tab handles a top-level post
+			// attribute alongside meta (e.g. Advanced Settings →
+			// Password Protection writes `post.password` directly), our
+			// meta POST above doesn't touch the entity record. Without
+			// this flush, the Save toast appears successful but
+			// `post.password` stays in the editor's edited buffer
+			// unsaved server-side. `saveEditedEntityRecord` POSTs a
+			// diff payload to core's `/wp/v2/...` endpoint so only the
+			// edited attributes are sent; meta we just synced is
+			// equal-to-current and won't be re-sent.
+			if ( commitEntityOnSave ) {
+				try {
+					await dispatch( coreStore ).saveEditedEntityRecord(
+						'postType',
+						postType,
+						postId
+					);
+				} catch ( err ) {
+					// Don't fail the whole Save on a partial entity
+					// flush failure — the meta is already persisted.
+					// Surface a softer warning so the user knows the
+					// entity-level changes didn't land.
+					notify.error(
+						__(
+							'Settings saved, but post attributes (password / title / content) failed to update. Retry to persist them.',
+							'sureforms'
+						)
+					);
+				}
 			}
 
 			if ( typeof onSaveSuccess === 'function' ) {

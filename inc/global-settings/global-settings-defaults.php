@@ -5,7 +5,7 @@
  * Applies global settings as defaults when creating new forms.
  *
  * @package sureforms.
- * @since x.x.x
+ * @since 2.9.0
  */
 
 namespace SRFM\Inc\Global_Settings;
@@ -21,7 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * Handles applying global settings as defaults to newly created forms.
  *
- * @since x.x.x
+ * @since 2.9.0
  */
 class Global_Settings_Defaults {
 	use Get_Instance;
@@ -29,7 +29,7 @@ class Global_Settings_Defaults {
 	/**
 	 * Constructor
 	 *
-	 * @since x.x.x
+	 * @since 2.9.0
 	 */
 	public function __construct() {
 		// SF-2815 start: live inheritance via read-time filter.
@@ -64,7 +64,7 @@ class Global_Settings_Defaults {
 	 * @param string $meta_key  Meta key.
 	 * @param bool   $single    Whether single value is requested.
 	 * @return mixed
-	 * @since x.x.x
+	 * @since 2.9.0
 	 */
 	public function inject_global_defaults( $value, $object_id, $meta_key, $single ) {
 		if ( SRFM_FORMS_POST_TYPE !== get_post_type( $object_id ) ) {
@@ -116,7 +116,7 @@ class Global_Settings_Defaults {
 	 * and (b) the save_post hook to write defaults on first save.
 	 *
 	 * @return array<string, mixed> Map of meta_key => meta_value.
-	 * @since x.x.x
+	 * @since 2.9.0
 	 */
 	public static function get_global_defaults_as_form_meta() {
 		$meta = [];
@@ -149,7 +149,7 @@ class Global_Settings_Defaults {
 	 * Build email notification form meta from global settings.
 	 *
 	 * @return array<int, array<string, mixed>>|null Form meta array or null if no global settings configured.
-	 * @since x.x.x
+	 * @since 2.9.0
 	 */
 	private static function build_email_notification_meta() {
 		$global_settings = get_option( 'srfm_email_notification_settings_options', [] );
@@ -180,7 +180,7 @@ class Global_Settings_Defaults {
 	 * Build form confirmation form meta from global settings.
 	 *
 	 * @return array<int, array<string, mixed>>|null Form meta array or null if no global settings configured.
-	 * @since x.x.x
+	 * @since 2.9.0
 	 */
 	private static function build_form_confirmation_meta() {
 		$global_settings = get_option( 'srfm_form_confirmation_settings_options', [] );
@@ -209,7 +209,7 @@ class Global_Settings_Defaults {
 	 * Build compliance form meta from global settings.
 	 *
 	 * @return array<int, array<string, mixed>>|null Form meta array or null if no global settings configured.
-	 * @since x.x.x
+	 * @since 2.9.0
 	 */
 	private static function build_compliance_meta() {
 		$global_settings = get_option( 'srfm_compliance_settings_options', [] );
@@ -237,7 +237,7 @@ class Global_Settings_Defaults {
 	 * has a simpler structure focused on entry limits and scheduling.
 	 *
 	 * @return array<string, mixed>|null Form meta array (unencoded) or null if no global settings configured.
-	 * @since x.x.x
+	 * @since 2.9.0
 	 */
 	private static function build_form_restriction_meta() {
 		$global_settings = get_option( 'srfm_form_restriction_settings_options', [] );

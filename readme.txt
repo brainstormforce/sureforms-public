@@ -4,7 +4,7 @@ Tags: forms, contact form, custom form, payment form, form builder
 Requires at least: 6.4
 Tested up to: 6.9.4
 Requires PHP: 7.4
-Stable tag: 2.8.2
+Stable tag: 2.9.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -478,6 +478,14 @@ You can collect payments securely through Stripe in the free version. PayPal pay
 You can report the issue through our [Bug Bounty Program](https://brainstormforce.com/bug-bounty-program/). We collaborate with Patchstack to provide opportunities for researchers to report vulnerabilities. The Patchstack team will help validate, triage, and handle any reported security issues.
 
 == Changelog ==
+= 2.9.0 - 14th May 2026 =
+* New: Added a Global Settings panel to configure form defaults (Form Confirmation, Email Notification, Spam Protection, Custom CSS, and Advanced Settings) that every new form inherits automatically, with per-form overrides still supported.
+* New: Added a Switch to Draft action to the All Forms list so published forms can be moved back to draft directly from the row actions without opening the editor.
+* New: Added an unsaved-changes guard to the single-form settings dialog that warns before discarding edits when switching tabs or closing the dialog.
+* New: Added explicit Save buttons to each tab of the single-form settings dialog (Email Notification, Form Confirmation, Spam Protection, Custom CSS, Advanced Settings) so changes are only persisted on click.
+* New: Added the `srfm_export_zip_filename` filter so the exported form ZIP filename can be customized.
+* Improvement: Improved UTM attribution accuracy on upgrade and editor-nudge CTAs across the plugin.
+* Fix: Resolved an issue where the Refund action was disabled on cancelled subscription payment entries, blocking legitimate refunds.
 = 2.8.2 - 5th May 2026 =
 * New: Added "Both" payment type so a single form can collect one-time and subscription payments together.
 * New: Added Hidden field support for the payment block's dynamic amount.
@@ -493,13 +501,6 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 * Fix: Fixed MCP endpoint REST URL resolution so it uses the correct site URL.
 * Fix: Fixed Phone field country flag unexpectedly changing during browser autocomplete.
 * Fix: Fixed review/validation issues in Global Settings.
-= 2.8.0 - 16th April 2026 =
-* New: Added My Account page allowing users to view and manage their payment history and subscriptions.
-* Improvement: Phone number country detection moved to backend with caching, reducing multiple API calls.
-* Fix: Fixed payment method radio button display issue when both Stripe and PayPal gateways are enabled.
-* Fix: Fixed crash when saving a form containing the Register block.
-* Fix: Fixed inability to deselect a preselected option in single-selection controls (radio, dropdown) within the editor.
-* Fix: Fixed Quill rich text editor toolbar strings not being translatable.
 The full changelog is available [here](https://sureforms.com/whats-new/).
 
 == Upgrade Notice ==

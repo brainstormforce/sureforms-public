@@ -218,5 +218,5 @@ module.exports = withTW( {
 		preflight: false,
 	},
 	important:
-		':is(#srfm-dashboard-container,#srfm-dashboard-container-tooltip, #srfm-settings-container, #srfm-page-header, #srfm-dialog-root, #srfm-add-new-form-container, #srfm-suremail-container, #srfm-entries-root, #srfm-survey-reports-root, #srfm-quiz-entries-root, #srfm-survey-empty-state-root, #srfm-forms-root, #srfm-learn-root, #srfm-payments-react-container)',
+		':is(#srfm-dashboard-container, #srfm-dashboard-container-tooltip, #srfm-settings-container, #srfm-page-header, #srfm-dialog-root, #srfm-add-new-form-container, #srfm-suremail-container, #srfm-entries-root, #srfm-survey-reports-root, #srfm-quiz-entries-root, #srfm-survey-empty-state-root, #srfm-forms-root, #srfm-learn-root, #srfm-payments-react-container, #srfm-partial-entries-empty-state-root)',
 } );

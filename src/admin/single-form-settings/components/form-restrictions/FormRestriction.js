@@ -303,6 +303,15 @@ const FormRestriction = ( { setHasValidationErrors } ) => {
 				isSaving={ isSaving }
 				onSavingChange={ setIsSaving }
 				onSaveSuccess={ onSaveSuccess }
+				// Advanced Settings hosts the pro Password Protection
+				// sub-panel, which writes the form's password to
+				// `post.password` (WP's native password field) rather
+				// than to our meta blob. Flush the entity record after
+				// the meta POST so password changes actually persist
+				// server-side — without this, the user types a password,
+				// clicks Save, sees the success toast, but reload shows
+				// the password unchanged because only meta was POSTed.
+				commitEntityOnSave={ true }
 			>
 				<div id="srfm-form-restriction-panel" />
 				<Title
