@@ -1252,7 +1252,7 @@ class Payments extends Base {
 	 *
 	 * @param array<int|string,mixed> $where_group  Group of conditions, optionally with 'RELATION'.
 	 * @param array<mixed>            $params       Reference to running params array; appended in place.
-	 * @since x.x.x
+	 * @since 2.9.0
 	 * @return string SQL fragment to append, or empty string if nothing valid.
 	 */
 	private static function build_clause_for_group( array $where_group, array &$params ) {

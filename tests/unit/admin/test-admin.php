@@ -553,6 +553,29 @@ class Test_Getting_Started_Notice extends TestCase {
 	}
 
 	/**
+	 * Test: add_partial_entries_page method exists and is callable.
+	 *
+	 * @since 2.9.0
+	 */
+	public function test_add_partial_entries_page() {
+		$admin = Admin::get_instance();
+		$this->assertTrue( method_exists( $admin, 'add_partial_entries_page' ) );
+	}
+
+	/**
+	 * Test: render_partial_entries_empty_state outputs the root div.
+	 *
+	 * @since 2.9.0
+	 */
+	public function test_render_partial_entries_empty_state() {
+		$admin = Admin::get_instance();
+		ob_start();
+		$admin->render_partial_entries_empty_state();
+		$output = ob_get_clean();
+		$this->assertStringContainsString( 'srfm-partial-entries-empty-state-root', $output );
+	}
+
+	/**
 	 * Test: add_action_links appends a UTM-tagged upsell link when SureForms
 	 * Pro is not active. Asserts the deterministic source/campaign defaults
 	 * and the placement carried via utm_medium.

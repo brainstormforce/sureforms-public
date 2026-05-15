@@ -1119,7 +1119,7 @@ class Admin_Handler {
 	 * match either column.
 	 *
 	 * @param string $frontend_status Status value from the frontend filter.
-	 * @since x.x.x
+	 * @since 2.9.0
 	 * @return array<int|string,mixed> WHERE clause group, or empty array if invalid.
 	 */
 	private function build_status_where_clause( $frontend_status ) {

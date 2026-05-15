@@ -34,7 +34,7 @@ const EmailSummariesContent = ( { emailTabOptions, updateGlobalSettings } ) => {
 		<>
 			<Switch
 				label={ {
-					heading: __( 'Enable Email Summaries ', 'sureforms' ),
+					heading: __( 'Enable email summaries', 'sureforms' ),
 				} }
 				value={ emailTabOptions.srfm_email_summary }
 				onChange={ ( value ) =>
@@ -149,7 +149,7 @@ const IPLoggingContent = ( { generalTabOptions, updateGlobalSettings } ) => {
 		<>
 			<Switch
 				label={ {
-					heading: __( 'Enable IP Logging', 'sureforms' ),
+					heading: __( 'Enable IP logging', 'sureforms' ),
 					description: __(
 						"If this option is turned on, the user's IP address will be saved with the form data",
 						'sureforms'
@@ -229,7 +229,7 @@ const UsageTrackingContent = ( {
 	return (
 		<Switch
 			label={ {
-				heading: __( 'Contribute to SureForms', 'sureforms' ),
+				heading: __( 'Help shape the future of SureForms', 'sureforms' ),
 				description: (
 					<>
 						<p>

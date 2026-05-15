@@ -3,7 +3,7 @@
  * SureForms single form settings - REST endpoint for saving scoped meta.
  *
  * @package sureforms
- * @since x.x.x
+ * @since 2.9.0
  */
 
 namespace SRFM\Inc\Single_Form_Settings;
@@ -24,7 +24,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * persist only its own meta keys without dirtying meta the user didn't
  * touch.
  *
- * @since x.x.x
+ * @since 2.9.0
  */
 class Form_Settings_Api {
 	use Get_Instance;
@@ -32,7 +32,7 @@ class Form_Settings_Api {
 	/**
 	 * Constructor.
 	 *
-	 * @since x.x.x
+	 * @since 2.9.0
 	 */
 	public function __construct() {
 		add_filter( 'srfm_rest_api_endpoints', [ $this, 'register_endpoint' ] );
@@ -42,7 +42,7 @@ class Form_Settings_Api {
 	 * Register the form-settings endpoint via the existing route filter.
 	 *
 	 * @param array<string,array<string,mixed>> $endpoints Existing endpoints.
-	 * @since x.x.x
+	 * @since 2.9.0
 	 * @return array<string,array<string,mixed>>
 	 */
 	public function register_endpoint( $endpoints ) {
@@ -77,7 +77,7 @@ class Form_Settings_Api {
 	 * the user's capability to edit the target form post.
 	 *
 	 * @param WP_REST_Request $request Request.
-	 * @since x.x.x
+	 * @since 2.9.0
 	 * @return bool|WP_Error
 	 */
 	public function permission_check( $request ) {
@@ -114,7 +114,7 @@ class Form_Settings_Api {
 	 * Save the supplied meta keys against the target form post.
 	 *
 	 * @param WP_REST_Request $request Request.
-	 * @since x.x.x
+	 * @since 2.9.0
 	 * @return WP_Error|WP_REST_Response
 	 */
 	public function save_form_settings( $request ) {

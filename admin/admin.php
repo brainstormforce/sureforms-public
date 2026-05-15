@@ -80,6 +80,7 @@ class Admin {
 		if ( ! Helper::has_pro() ) {
 			add_action( 'admin_menu', [ $this, 'add_quiz_page' ] );
 			add_action( 'admin_menu', [ $this, 'add_survey_reports_page' ] );
+			add_action( 'admin_menu', [ $this, 'add_partial_entries_page' ] );
 			add_action( 'admin_menu', [ $this, 'add_upgrade_to_pro' ] );
 			add_action( 'admin_footer', [ $this, 'add_upgrade_to_pro_target_attr' ] );
 		}
@@ -468,6 +469,39 @@ class Admin {
 	public function render_survey_empty_state() {
 		?>
 		<div id="srfm-survey-empty-state-root" class="srfm-admin-wrapper"></div>
+		<?php
+	}
+
+	/**
+	 * Add Partial Entries promotional submenu page for free users.
+	 *
+	 * @return void
+	 * @since 2.9.0
+	 */
+	public function add_partial_entries_page() {
+		add_submenu_page(
+			'sureforms_menu',
+			__( 'Partial Entries', 'sureforms' ),
+			__( 'Partial Entries', 'sureforms' ) .
+				' <span style="color:#4ADE80;font-size:9px;font-weight:600;">' .
+				esc_html__( 'New', 'sureforms' ) .
+				'</span>',
+			self::$sureforms_page_default_capability,
+			'sureforms_partial_entries',
+			[ $this, 'render_partial_entries_empty_state' ],
+			7
+		);
+	}
+
+	/**
+	 * Partial Entries empty state page callback.
+	 *
+	 * @return void
+	 * @since 2.9.0
+	 */
+	public function render_partial_entries_empty_state() {
+		?>
+		<div id="srfm-partial-entries-empty-state-root" class="srfm-admin-wrapper"></div>
 		<?php
 	}
 
@@ -946,16 +980,17 @@ class Admin {
 			'mcp_endpoint_url'             => esc_url_raw( rest_url( 'sureforms/v1/mcp' ) ),
 		];
 
-		$is_screen_sureforms_menu          = Helper::validate_request_context( 'sureforms_menu', 'page' );
-		$is_screen_add_new_form            = Helper::validate_request_context( 'add-new-form', 'page' );
-		$is_screen_sureforms_forms         = Helper::validate_request_context( 'sureforms_forms', 'page' );
-		$is_screen_sureforms_form_settings = Helper::validate_request_context( 'sureforms_form_settings', 'page' );
-		$is_screen_sureforms_payments      = Helper::validate_request_context( 'sureforms_payments', 'page' );
-		$is_screen_sureforms_entries       = Helper::validate_request_context( SRFM_ENTRIES, 'page' );
-		$is_screen_sureforms_learn         = Helper::validate_request_context( 'sureforms_learn', 'page' );
-		$is_screen_quiz_empty_state        = Helper::validate_request_context( 'sureforms_quiz_entries', 'page' );
-		$is_screen_survey_empty_state      = Helper::validate_request_context( 'sureforms_survey_reports', 'page' );
-		$is_post_type_sureforms_form       = SRFM_FORMS_POST_TYPE === $current_screen->post_type;
+		$is_screen_sureforms_menu              = Helper::validate_request_context( 'sureforms_menu', 'page' );
+		$is_screen_add_new_form                = Helper::validate_request_context( 'add-new-form', 'page' );
+		$is_screen_sureforms_forms             = Helper::validate_request_context( 'sureforms_forms', 'page' );
+		$is_screen_sureforms_form_settings     = Helper::validate_request_context( 'sureforms_form_settings', 'page' );
+		$is_screen_sureforms_payments          = Helper::validate_request_context( 'sureforms_payments', 'page' );
+		$is_screen_sureforms_entries           = Helper::validate_request_context( SRFM_ENTRIES, 'page' );
+		$is_screen_sureforms_learn             = Helper::validate_request_context( 'sureforms_learn', 'page' );
+		$is_screen_quiz_empty_state            = Helper::validate_request_context( 'sureforms_quiz_entries', 'page' );
+		$is_screen_survey_empty_state          = Helper::validate_request_context( 'sureforms_survey_reports', 'page' );
+		$is_screen_partial_entries_empty_state = Helper::validate_request_context( 'sureforms_partial_entries', 'page' );
+		$is_post_type_sureforms_form           = SRFM_FORMS_POST_TYPE === $current_screen->post_type;
 
 		/**
 		 * Check if the current screen is the SureForms Menu and AI Auth Email is present then we will add user type as registered.
@@ -980,9 +1015,14 @@ class Admin {
 				'text' => __( 'Survey Reports', 'sureforms' ),
 				'link' => admin_url( 'admin.php?page=sureforms_survey_reports' ),
 			];
+			$localization_data['additional_header_nav_items'][] = [
+				'slug' => 'sureforms_partial_entries',
+				'text' => __( 'Partial Entries', 'sureforms' ),
+				'link' => admin_url( 'admin.php?page=sureforms_partial_entries' ),
+			];
 		}
 
-		$is_sureforms_screen = $is_screen_sureforms_menu || $is_post_type_sureforms_form || $is_screen_add_new_form || $is_screen_sureforms_forms || $is_screen_sureforms_form_settings || $is_screen_sureforms_entries || $is_screen_sureforms_payments || $is_screen_sureforms_learn || $is_screen_quiz_empty_state || $is_screen_survey_empty_state;
+		$is_sureforms_screen = $is_screen_sureforms_menu || $is_post_type_sureforms_form || $is_screen_add_new_form || $is_screen_sureforms_forms || $is_screen_sureforms_form_settings || $is_screen_sureforms_entries || $is_screen_sureforms_payments || $is_screen_sureforms_learn || $is_screen_quiz_empty_state || $is_screen_survey_empty_state || $is_screen_partial_entries_empty_state;
 
 		/**
 		 * Filter to allow extending the SureForms dashboard screen check.
@@ -1172,6 +1212,24 @@ class Admin {
 			wp_enqueue_style( SRFM_SLUG . '-survey-empty-state', SRFM_URL . 'assets/build/' . $asset_handle . '.css', [], SRFM_VER, 'all' );
 
 			$script_translations_handlers[] = SRFM_SLUG . '-survey-empty-state';
+		}
+
+		// Enqueue scripts for the Partial Entries empty state page (free users only).
+		if ( $is_screen_partial_entries_empty_state && ! Helper::has_pro() ) {
+			$asset_handle = 'partialEntriesEmptyState';
+
+			$script_asset_path = SRFM_DIR . 'assets/build/' . $asset_handle . '.asset.php';
+			$script_info       = file_exists( $script_asset_path )
+				? include $script_asset_path
+				: [
+					'dependencies' => [],
+					'version'      => SRFM_VER,
+				];
+
+			wp_enqueue_script( SRFM_SLUG . '-partial-entries-empty-state', SRFM_URL . 'assets/build/' . $asset_handle . '.js', $script_info['dependencies'], SRFM_VER, true );
+			wp_enqueue_style( SRFM_SLUG . '-partial-entries-empty-state', SRFM_URL . 'assets/build/' . $asset_handle . '.css', [], SRFM_VER, 'all' );
+
+			$script_translations_handlers[] = SRFM_SLUG . '-partial-entries-empty-state';
 		}
 
 		// Admin Submenu Styles.
