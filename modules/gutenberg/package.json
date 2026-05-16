@@ -30,7 +30,7 @@
 		"classnames": "^2.2.6",
 		"prop-types": "^15.6.2",
 		"re-resizable": "^4.7.1",
-		"react": "^18.2.0",
+		"react": "^19.2.5",
 		"react-color": "^2.18.0",
 		"react-container-dimensions": "^1.4.1",
 		"react-countdown": "^2.3.1",
