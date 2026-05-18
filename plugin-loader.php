@@ -22,6 +22,7 @@ use SRFM\Inc\AI_Form_Builder\AI_Helper;
 use SRFM\Inc\AI_Form_Builder\Field_Mapping;
 use SRFM\Inc\Background_Process;
 use SRFM\Inc\Blocks\Register;
+use SRFM\Inc\Compatibility\Multilingual\Multilingual_Manager;
 use SRFM\Inc\Compatibility\Themes\Astra;
 use SRFM\Inc\Create_New_Form;
 use SRFM\Inc\Database\Register as DatabaseRegister;
@@ -328,6 +329,7 @@ class Plugin_Loader {
 		Abilities_Registrar::get_instance();
 		// Initializing Compatibilities.
 		Astra::get_instance();
+		Multilingual_Manager::get_instance();
 
 		/**
 		 * Load core files necessary for the Spectra block.

@@ -1,0 +1,91 @@
+<?php
+/**
+ * Multilingual Provider Interface.
+ *
+ * Defines the contract that every multilingual plugin adapter (WPML, Polylang, Null)
+ * must implement so the rest of SureForms can stay agnostic of the underlying plugin.
+ *
+ * @package sureforms.
+ * @since x.x.x
+ */
+
+namespace SRFM\Inc\Compatibility\Multilingual\Providers;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
+
+/**
+ * Provider.
+ *
+ * Common surface area exposed by every multilingual provider adapter.
+ *
+ * @since x.x.x
+ */
+interface Provider {
+	/**
+	 * Whether the underlying multilingual plugin is active and usable.
+	 *
+	 * @since x.x.x
+	 * @return bool True when the provider can perform translations, false otherwise.
+	 */
+	public function is_active(): bool;
+
+	/**
+	 * Current visitor language code.
+	 *
+	 * @since x.x.x
+	 * @return string Language code (e.g. 'en', 'de'). Empty string when not active.
+	 */
+	public function current_language(): string;
+
+	/**
+	 * Site default language code.
+	 *
+	 * @since x.x.x
+	 * @return string Language code (e.g. 'en'). Empty string when not active.
+	 */
+	public function default_language(): string;
+
+	/**
+	 * Register a translatable string with the multilingual plugin's String Translation registry.
+	 *
+	 * @param string $name   Unique string identifier within the domain.
+	 * @param string $value  Original string value to register.
+	 * @param string $domain Translation domain. Defaults to the sureforms text domain.
+	 * @since x.x.x
+	 * @return void
+	 */
+	public function register_string( string $name, string $value, string $domain = 'sureforms' ): void;
+
+	/**
+	 * Translate a previously registered string.
+	 *
+	 * @param string      $value    Original string value (used as fallback).
+	 * @param string      $name     Unique string identifier within the domain.
+	 * @param string      $domain   Translation domain. Defaults to the sureforms text domain.
+	 * @param string|null $language Optional target language code. When null, uses the current language.
+	 * @since x.x.x
+	 * @return string Translated string, or the original value when no translation is found.
+	 */
+	public function translate( string $value, string $name, string $domain = 'sureforms', ?string $language = null ): string;
+
+	/**
+	 * Switch the active language context.
+	 *
+	 * Pushes the new language onto an internal stack so {@see restore_language()} can revert it.
+	 *
+	 * @param string $language Target language code to switch to.
+	 * @since x.x.x
+	 * @return void
+	 */
+	public function switch_language( string $language ): void;
+
+	/**
+	 * Restore the previous language context after {@see switch_language()}.
+	 *
+	 * @since x.x.x
+	 * @return void
+	 */
+	public function restore_language(): void;
+}

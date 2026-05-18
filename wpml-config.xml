@@ -1,0 +1,170 @@
+<wpml-config>
+	<!--
+		SureForms WPML Configuration.
+
+		Tells WPML which SureForms structures are translatable.
+
+		Design principles:
+		1. The `sureforms_form` CPT is NOT translatable — we ship ONE form per
+		   `post_id` and translate its strings via WPML String Translation.
+		   This keeps entries unified on a single form regardless of language.
+		2. Block attributes that are user-facing text are declared per-block.
+		3. Form-level meta (notifications, confirmation messages, compliance text)
+		   is declared via custom-fields-texts. A programmatic string-collector
+		   (registered on save_post) acts as a belt-and-suspenders against
+		   WPML's flaky nested-array wildcard handling.
+
+		@since x.x.x
+	-->
+
+	<!-- 1) Do NOT duplicate the SureForms form CPT per language. -->
+	<custom-types>
+		<custom-type translate="0">sureforms_form</custom-type>
+	</custom-types>
+
+	<!-- 2) Block-attribute translation. Names use the registered block name
+	     (srfm/* — confirmed from inc/blocks/<block>/block.json). -->
+	<gutenberg-blocks>
+		<gutenberg-block type="srfm/input" translate="1">
+			<key name="label"/>
+			<key name="placeholder"/>
+			<key name="help"/>
+			<key name="errorMsg"/>
+			<key name="defaultValue"/>
+			<key name="duplicateMsg"/>
+		</gutenberg-block>
+
+		<gutenberg-block type="srfm/email" translate="1">
+			<key name="label"/>
+			<key name="placeholder"/>
+			<key name="help"/>
+			<key name="errorMsg"/>
+			<key name="defaultValue"/>
+			<key name="duplicateMsg"/>
+			<key name="confirmLabel"/>
+		</gutenberg-block>
+
+		<gutenberg-block type="srfm/phone" translate="1">
+			<key name="label"/>
+			<key name="placeholder"/>
+			<key name="help"/>
+			<key name="errorMsg"/>
+			<key name="duplicateMsg"/>
+		</gutenberg-block>
+
+		<gutenberg-block type="srfm/number" translate="1">
+			<key name="label"/>
+			<key name="placeholder"/>
+			<key name="help"/>
+			<key name="errorMsg"/>
+			<key name="defaultValue"/>
+			<key name="prefix"/>
+			<key name="suffix"/>
+		</gutenberg-block>
+
+		<gutenberg-block type="srfm/url" translate="1">
+			<key name="label"/>
+			<key name="placeholder"/>
+			<key name="help"/>
+			<key name="errorMsg"/>
+			<key name="defaultValue"/>
+		</gutenberg-block>
+
+		<gutenberg-block type="srfm/textarea" translate="1">
+			<key name="label"/>
+			<key name="placeholder"/>
+			<key name="help"/>
+			<key name="errorMsg"/>
+			<key name="defaultValue"/>
+		</gutenberg-block>
+
+		<gutenberg-block type="srfm/address" translate="1">
+			<key name="label"/>
+			<key name="help"/>
+		</gutenberg-block>
+
+		<gutenberg-block type="srfm/dropdown" translate="1">
+			<key name="label"/>
+			<key name="placeholder"/>
+			<key name="help"/>
+			<key name="errorMsg"/>
+			<key name="options">
+				<key name="*">
+					<key name="label"/>
+				</key>
+			</key>
+		</gutenberg-block>
+
+		<gutenberg-block type="srfm/multi-choice" translate="1">
+			<key name="label"/>
+			<key name="help"/>
+			<key name="errorMsg"/>
+			<key name="options">
+				<key name="*">
+					<key name="label"/>
+				</key>
+			</key>
+		</gutenberg-block>
+
+		<gutenberg-block type="srfm/checkbox" translate="1">
+			<key name="label"/>
+			<key name="help"/>
+			<key name="errorMsg"/>
+		</gutenberg-block>
+
+		<gutenberg-block type="srfm/gdpr" translate="1">
+			<key name="label"/>
+			<key name="help"/>
+			<key name="errorMsg"/>
+		</gutenberg-block>
+
+		<gutenberg-block type="srfm/inline-button" translate="1">
+			<key name="buttonText"/>
+		</gutenberg-block>
+
+		<gutenberg-block type="srfm/payment" translate="1">
+			<key name="label"/>
+			<key name="help"/>
+			<key name="errorMsg"/>
+			<key name="amountLabel"/>
+			<key name="paymentDescription"/>
+			<key name="oneTimeLabel"/>
+			<key name="subscriptionLabel"/>
+		</gutenberg-block>
+	</gutenberg-blocks>
+
+	<!-- 3) Form-level meta translation.
+	     The custom-field action="translate" entries copy the value at translation
+	     time. The custom-fields-texts entries declare which keys inside complex
+	     meta are user-facing strings. -->
+	<custom-fields>
+		<custom-field action="translate">_srfm_submit_button_text</custom-field>
+	</custom-fields>
+
+	<custom-fields-texts>
+		<custom-field name="_srfm_email_notification">
+			<key name="*">
+				<key name="subject"/>
+				<key name="body"/>
+				<key name="from_name"/>
+				<key name="reply_to"/>
+			</key>
+		</custom-field>
+
+		<custom-field name="_srfm_form_confirmation">
+			<key name="*">
+				<key name="message"/>
+			</key>
+		</custom-field>
+
+		<custom-field name="_srfm_compliance">
+			<key name="*">
+				<key name="message"/>
+			</key>
+		</custom-field>
+
+		<custom-field name="_srfm_form_restriction">
+			<key name="message"/>
+		</custom-field>
+	</custom-fields-texts>
+</wpml-config>
