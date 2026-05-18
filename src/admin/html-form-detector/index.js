@@ -31,6 +31,12 @@ import { Fragment, useMemo, useState } from '@wordpress/element';
 import { addFilter } from '@wordpress/hooks';
 import { __, sprintf } from '@wordpress/i18n';
 
+// The SureForms brand logomark — the same component registered as the
+// `srfm/form` block icon (see `src/blocks/sureforms-form/index.js`).
+// Reusing it keeps the toolbar affordance visually consistent with the
+// block inserter entry users already associate with SureForms.
+import SureFormsIcon from '@Image/Logo.js';
+
 import { parseFormHtml } from './parse.js';
 
 const HTML_BLOCK_NAME = 'core/html';
@@ -182,7 +188,7 @@ const withConvertToSureForms = createHigherOrderComponent(
 				<BlockControls group="other">
 					<ToolbarGroup>
 						<ToolbarButton
-							icon="forms"
+							icon={ <SureFormsIcon /> }
 							label={ __( 'Convert to SureForms', 'sureforms' ) }
 							onClick={ handleConvert }
 							disabled={ isConverting }
