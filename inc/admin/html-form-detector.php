@@ -120,7 +120,7 @@ class Html_Form_Detector {
 		$asset      = file_exists( $asset_path )
 			? include $asset_path
 			: [
-				'dependencies' => [ 'wp-api-fetch', 'wp-blocks', 'wp-data', 'wp-dom-ready', 'wp-i18n' ],
+				'dependencies' => [ 'wp-api-fetch', 'wp-block-editor', 'wp-blocks', 'wp-components', 'wp-compose', 'wp-data', 'wp-element', 'wp-hooks', 'wp-i18n' ],
 				'version'      => SRFM_VER,
 			];
 

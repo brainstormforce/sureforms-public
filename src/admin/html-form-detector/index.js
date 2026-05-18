@@ -1,97 +1,50 @@
 /**
  * SureForms — HTML Form Detector.
  *
- * Walks the block list in the active editor, finds `core/html` blocks that
- * contain a `<form>` element, and surfaces a "Convert to SureForms" notice
- * per detected block. Clicking the notice action posts the parsed schema
- * (or the raw HTML when local parsing was low-confidence) to the
- * `sureforms/v1/convert-html-form` REST endpoint, which creates the
- * SureForms form and returns a shortcode. The source `core/html` block is
- * then replaced with a `core/shortcode` block holding `[sureforms id="X"]`.
+ * Adds a "Convert to SureForms" toolbar button to every `core/html`
+ * block whose content contains a `<form>` element. Clicking the button
+ * posts the parsed schema (or the raw HTML when local parsing was
+ * low-confidence) to the `sureforms/v1/convert-html-form` REST
+ * endpoint, which creates the SureForms form and returns a shortcode.
+ * The source `core/html` block is then replaced with a `core/shortcode`
+ * block holding `[sureforms id="X"]`.
  *
- * Why per-block notices instead of one global banner: a page can hold more
- * than one raw HTML form (e.g. a contact form and a newsletter signup), and
- * each needs its own conversion target so the user knows which block will
- * change when they click.
+ * Why a per-block toolbar button instead of a global editor notice:
+ * a page can hold any number of raw HTML forms (contact + newsletter +
+ * footer subscribe, etc.). A single banner cannot disambiguate which
+ * block it acts on. Mounting the affordance on the block itself —
+ * exactly where the user is editing the form — also makes it
+ * discoverable in context: the user does not have to scroll up to a
+ * banner to invoke the action. Each `core/html` instance gets its own
+ * toolbar item independently, so the N-forms case is handled by the
+ * block editor's own per-block render lifecycle without any
+ * reconciliation logic on our side.
  */
 
 import apiFetch from '@wordpress/api-fetch';
+import { BlockControls } from '@wordpress/block-editor';
 import { createBlock } from '@wordpress/blocks';
-import domReady from '@wordpress/dom-ready';
-import { dispatch, select, subscribe } from '@wordpress/data';
+import { ToolbarButton, ToolbarGroup } from '@wordpress/components';
+import { createHigherOrderComponent } from '@wordpress/compose';
+import { dispatch, select } from '@wordpress/data';
+import { Fragment, useMemo, useState } from '@wordpress/element';
+import { addFilter } from '@wordpress/hooks';
 import { __, sprintf } from '@wordpress/i18n';
 
 import { parseFormHtml } from './parse.js';
 
-const CORE_BLOCK_EDITOR = 'core/block-editor';
-const CORE_NOTICES = 'core/notices';
 const HTML_BLOCK_NAME = 'core/html';
 const SHORTCODE_BLOCK_NAME = 'core/shortcode';
-const NOTICE_ID_PREFIX = 'srfm-html-form-detector:';
+const CORE_BLOCK_EDITOR = 'core/block-editor';
+const CORE_NOTICES = 'core/notices';
 const CONVERT_REST_PATH = '/sureforms/v1/convert-html-form';
+const FILTER_NAMESPACE = 'sureforms/html-form-detector';
 
 /**
- * Set of `clientId`s currently mid-conversion. Used to debounce double
- * clicks on the Convert button — `core/notices` actions do not toggle a
- * loading state for us, so without this guard a slow network round-trip
- * could create two duplicate SureForms forms.
- *
- * @type {Set<string>}
- */
-const inFlightConversions = new Set();
-
-/**
- * Map of `clientId` → last `content` we parsed for that block. Lets us skip
- * the DOMParser pass when the block content has not changed across ticks
- * (which is the overwhelmingly common case under `subscribe`).
- *
- * @type {Map<string, string>}
- */
-const lastContentByClientId = new Map();
-
-/**
- * Set of `clientId`s that currently have a visible notice. Used so we can
- * tear down notices for blocks that have been removed or had their `<form>`
- * deleted, without iterating the entire core/notices store.
- *
- * @type {Set<string>}
- */
-const activeNoticeClientIds = new Set();
-
-function noticeId( clientId ) {
-	return NOTICE_ID_PREFIX + clientId;
-}
-
-/**
- * Recursively walk the block tree collecting every `core/html` block. We
- * cannot use `getBlocksByName` for this without pulling in `@wordpress/blocks`
- * just to make the call, and the tree walk is cheap enough that doing it
- * inline keeps the bundle small.
- *
- * @param {Array} blocks Top-level block list from `getBlocks()`.
- * @param {Array} acc    Accumulator (defaults to a new array).
- * @return {Array<{clientId: string, attributes: object}>} Collected blocks.
- */
-function collectHtmlBlocks( blocks, acc = [] ) {
-	for ( const block of blocks ) {
-		if ( ! block ) {
-			continue;
-		}
-		if ( block.name === HTML_BLOCK_NAME ) {
-			acc.push( block );
-		}
-		if ( block.innerBlocks?.length ) {
-			collectHtmlBlocks( block.innerBlocks, acc );
-		}
-	}
-	return acc;
-}
-
-/**
- * Build a sensible default title for the converted form. Falls back to the
- * current post title when the parser cannot surface anything better — we
- * deliberately avoid scraping the page's `<h1>` because that is often the
- * page's hero copy, not the form's purpose.
+ * Build a sensible default title for the converted form. Falls back to
+ * the current post title when there is nothing better — we deliberately
+ * avoid scraping the page's `<h1>` because that is often the page's
+ * hero copy, not the form's purpose.
  *
  * @return {string} Form title for the created `sureforms_form` CPT.
  */
@@ -110,24 +63,21 @@ function deriveFormTitle() {
 }
 
 /**
- * POST the parsed schema (and raw HTML for the AI fallback path) to the
- * conversion endpoint, swap the source `core/html` block for a
+ * POST the parsed schema (and raw HTML for the AI fallback path) to
+ * the conversion endpoint, swap the source `core/html` block for a
  * `core/shortcode` block, and surface a success/error snackbar.
  *
- * Failure handling: we leave the original `core/html` block intact on any
- * error so the user can either retry or build the form manually — losing
- * the source markup just because the API hiccupped would be a bad trade.
+ * Failure-mode: we leave the original `core/html` block intact on any
+ * error so the user can either retry or build the form manually —
+ * losing the source markup just because the API hiccupped would be a
+ * bad trade.
  *
  * @param {string} clientId Block clientId being converted.
  * @param {string} content  Raw HTML content of the block.
  * @param {Object} parsed   Result of `parseFormHtml( content )`.
+ * @return {Promise<boolean>} Resolves true on a successful conversion.
  */
 async function convertBlock( clientId, content, parsed ) {
-	if ( inFlightConversions.has( clientId ) ) {
-		return;
-	}
-	inFlightConversions.add( clientId );
-
 	const noticesDispatch = dispatch( CORE_NOTICES );
 	const blockEditorDispatch = dispatch( CORE_BLOCK_EDITOR );
 
@@ -149,7 +99,8 @@ async function convertBlock( clientId, content, parsed ) {
 		} );
 
 		const formId = Number( response?.form_id ?? 0 );
-		const shortcode = typeof response?.shortcode === 'string' ? response.shortcode : '';
+		const shortcode =
+			typeof response?.shortcode === 'string' ? response.shortcode : '';
 
 		if ( ! formId || ! shortcode ) {
 			throw new Error( 'Conversion endpoint returned an unexpected payload.' );
@@ -160,145 +111,98 @@ async function convertBlock( clientId, content, parsed ) {
 			createBlock( SHORTCODE_BLOCK_NAME, { text: shortcode } )
 		);
 
-		// Block is gone — drop its notice + cached content so the reconciler
-		// does not try to remove it again on the next tick.
-		activeNoticeClientIds.delete( clientId );
-		lastContentByClientId.delete( clientId );
-		noticesDispatch.removeNotice( noticeId( clientId ) );
-
 		noticesDispatch.createSuccessNotice(
 			response?.used_ai
 				? __( 'Form converted to SureForms using AI. Review the new form for any tweaks.', 'sureforms' )
 				: __( 'Form converted to SureForms.', 'sureforms' ),
 			{ type: 'snackbar' }
 		);
+		return true;
 	} catch ( error ) {
 		const message =
 			error?.message ||
 			__( 'Could not convert this form to SureForms. Please try again.', 'sureforms' );
 		noticesDispatch.createErrorNotice( message, { type: 'snackbar' } );
-	} finally {
-		inFlightConversions.delete( clientId );
+		return false;
 	}
 }
 
 /**
- * Show the conversion notice for a single detected HTML-form block.
+ * Higher-order component that adds a "Convert to SureForms" toolbar
+ * button to every `core/html` block that contains a `<form>` element.
  *
- * @param {string} clientId Block clientId.
- * @param {string} content  Raw HTML content of the block.
- * @param {Object} parsed   Result of `parseFormHtml( content )`.
- */
-function showNoticeFor( clientId, content, parsed ) {
-	// Avoid spamming an identical notice on every keystroke — the notices
-	// store de-dupes by id, but creating a notice still triggers store
-	// dispatches and any subscriber side effects.
-	if ( activeNoticeClientIds.has( clientId ) ) {
-		return;
-	}
-
-	const id = noticeId( clientId );
-
-	const message =
-		parsed.confidence === 'low'
-			? __( 'SureForms detected a raw HTML form. Convert it to a SureForms form for entries, validation, and notifications.', 'sureforms' )
-			: __( 'SureForms detected a raw HTML form. Convert it in one click — fields and styling will be preserved.', 'sureforms' );
-
-	dispatch( CORE_NOTICES ).createInfoNotice( message, {
-		id,
-		isDismissible: true,
-		actions: [
-			{
-				label: __( 'Convert to SureForms', 'sureforms' ),
-				variant: 'primary',
-				onClick: () => {
-					convertBlock( clientId, content, parsed );
-				},
-			},
-		],
-	} );
-
-	activeNoticeClientIds.add( clientId );
-}
-
-function hideNoticeFor( clientId ) {
-	if ( ! activeNoticeClientIds.has( clientId ) ) {
-		return;
-	}
-	dispatch( CORE_NOTICES ).removeNotice( noticeId( clientId ) );
-	activeNoticeClientIds.delete( clientId );
-	lastContentByClientId.delete( clientId );
-}
-
-/**
- * Reconcile detector state against the live block list.
+ * The HOC is mounted once per block instance by Gutenberg, so multiple
+ * HTML form blocks on the same page each render their own toolbar
+ * button — no manual reconciliation is needed.
  *
- * - For each `core/html` block whose content has changed since last tick,
- *   re-run the parser; show/hide its notice based on whether a form is now
- *   present.
- * - For any `clientId` we previously decorated but is no longer in the
- *   block list (block deleted, post switched), drop the notice.
+ * Parsing is memoized against the block's current `content` attribute
+ * so re-renders driven by unrelated state (selection changes, sidebar
+ * toggles) do not re-run `DOMParser`. The parser itself short-circuits
+ * cheaply for HTML blocks that hold non-form markup.
  */
-function reconcile() {
-	const blockEditor = select( CORE_BLOCK_EDITOR );
-	if ( ! blockEditor ) {
-		return;
-	}
-
-	const htmlBlocks = collectHtmlBlocks( blockEditor.getBlocks() );
-	const liveIds = new Set( htmlBlocks.map( ( b ) => b.clientId ) );
-
-	for ( const block of htmlBlocks ) {
-		const content = block.attributes?.content ?? '';
-		const previous = lastContentByClientId.get( block.clientId );
-		if ( previous === content ) {
-			continue;
+const withConvertToSureForms = createHigherOrderComponent(
+	( BlockEdit ) => ( props ) => {
+		// We only decorate `core/html` blocks — every other block type
+		// passes through untouched. Putting the type guard up here
+		// avoids running the memo / parser for blocks we will never
+		// add a button to.
+		if ( props.name !== HTML_BLOCK_NAME ) {
+			return <BlockEdit { ...props } />;
 		}
-		lastContentByClientId.set( block.clientId, content );
 
-		const parsed = parseFormHtml( content );
-		if ( parsed && parsed.fields.length > 0 ) {
-			// Force a refresh when content changed: the notice itself does
-			// not display field data, so we only need to re-create it if it
-			// was missing — but a stale notice for a now-different form
-			// would be confusing. Cheapest correct path: drop and recreate.
-			if ( activeNoticeClientIds.has( block.clientId ) ) {
-				dispatch( CORE_NOTICES ).removeNotice( noticeId( block.clientId ) );
-				activeNoticeClientIds.delete( block.clientId );
+		const content = props.attributes?.content ?? '';
+		const parsed = useMemo( () => parseFormHtml( content ), [ content ] );
+		const [ isConverting, setIsConverting ] = useState( false );
+
+		// Render the unmodified block when there is no form to convert,
+		// so we never light up an empty toolbar group on regular HTML
+		// blocks (e.g. a custom embed snippet, a Tailwind playground).
+		if ( ! parsed || parsed.fields.length === 0 ) {
+			return <BlockEdit { ...props } />;
+		}
+
+		const handleConvert = async () => {
+			if ( isConverting ) {
+				return;
 			}
-			showNoticeFor( block.clientId, content, parsed );
-		} else {
-			hideNoticeFor( block.clientId );
-		}
-	}
+			setIsConverting( true );
+			// `convertBlock` swaps the block on success — after which
+			// React unmounts this HOC for the (gone) `core/html`
+			// clientId, so clearing `isConverting` would never run.
+			// That is fine; the only path where the cleanup matters is
+			// the failure case, where the original block is preserved.
+			const ok = await convertBlock( props.clientId, content, parsed );
+			if ( ! ok ) {
+				setIsConverting( false );
+			}
+		};
 
-	// Clean up notices for blocks that no longer exist (deleted, post change).
-	for ( const clientId of Array.from( activeNoticeClientIds ) ) {
-		if ( ! liveIds.has( clientId ) ) {
-			hideNoticeFor( clientId );
-		}
-	}
-}
+		return (
+			<Fragment>
+				<BlockControls group="other">
+					<ToolbarGroup>
+						<ToolbarButton
+							icon="forms"
+							label={ __( 'Convert to SureForms', 'sureforms' ) }
+							onClick={ handleConvert }
+							disabled={ isConverting }
+							isBusy={ isConverting }
+						>
+							{ isConverting
+								? __( 'Converting…', 'sureforms' )
+								: __( 'Convert to SureForms', 'sureforms' ) }
+						</ToolbarButton>
+					</ToolbarGroup>
+				</BlockControls>
+				<BlockEdit { ...props } />
+			</Fragment>
+		);
+	},
+	'withConvertToSureForms'
+);
 
-/**
- * Subscribe to editor state. The subscriber fires on every dispatch — we
- * fast-path on the block-list reference (memoized by core/block-editor),
- * so the recursive walk only runs when the tree actually changes.
- */
-function watch() {
-	let lastBlocks = select( CORE_BLOCK_EDITOR )?.getBlocks();
-	reconcile();
-
-	subscribe( () => {
-		const blocks = select( CORE_BLOCK_EDITOR )?.getBlocks();
-		if ( blocks === lastBlocks ) {
-			return;
-		}
-		lastBlocks = blocks;
-		reconcile();
-	} );
-}
-
-domReady( () => {
-	watch();
-} );
+addFilter(
+	'editor.BlockEdit',
+	`${ FILTER_NAMESPACE }/with-convert-button`,
+	withConvertToSureForms
+);
