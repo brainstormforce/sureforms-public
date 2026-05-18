@@ -109,6 +109,16 @@ class Field_Mapping {
 				]
 			);
 
+			// Forward `placeholder` to the block attrs. Every input-like
+			// block (`input`, `email`, `url`, `phone`, `number`,
+			// `textarea`, `dropdown`) declares a `placeholder` attribute
+			// in its block.json; without this passthrough the value is
+			// silently dropped by the mapper even when the caller (AI,
+			// MCP, or the HTML-form converter) supplied it.
+			if ( isset( $question['placeholder'] ) && is_string( $question['placeholder'] ) && '' !== $question['placeholder'] ) {
+				$merged_attributes['placeholder'] = sanitize_text_field( $question['placeholder'] );
+			}
+
 			// Apply filter to modify field type.
 			$field_type = apply_filters( 'srfm_ai_field_modify_field_type', $question['fieldType'], $question, $is_conversational, $form_type );
 
