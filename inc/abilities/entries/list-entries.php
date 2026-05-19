@@ -97,7 +97,7 @@ class List_Entries extends Abstract_Ability {
 				'orderby'   => [
 					'type'        => 'string',
 					'description' => __( 'Column to order results by.', 'sureforms' ),
-					'enum'        => [ 'created_at', 'ID', 'form_id', 'status' ],
+					'enum'        => [ 'created_at', 'ID', 'form_id', 'status', 'language' ],
 					'default'     => 'created_at',
 				],
 				'order'     => [
@@ -128,6 +128,7 @@ class List_Entries extends Abstract_Ability {
 							'form_id'    => [ 'type' => 'integer' ],
 							'form_title' => [ 'type' => 'string' ],
 							'status'     => [ 'type' => 'string' ],
+							'language'   => [ 'type' => 'string' ],
 							'created_at' => [ 'type' => 'string' ],
 						],
 					],
@@ -181,6 +182,7 @@ class List_Entries extends Abstract_Ability {
 					'form_id'    => $form_id,
 					'form_title' => $form_title,
 					'status'     => $entry['status'] ?? '',
+					'language'   => Helper::get_string_value( $entry['language'] ?? '' ),
 					'created_at' => $entry['created_at'] ?? '',
 				];
 			}
