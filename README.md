@@ -4,7 +4,7 @@
 **Requires at least:** 6.4  
 **Tested up to:** 6.9.4  
 **Requires PHP:** 7.4  
-**Stable tag:** 2.9.0  
+**Stable tag:** 2.9.1  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -478,6 +478,8 @@ You can collect payments securely through Stripe in the free version. PayPal pay
 You can report the issue through our [Bug Bounty Program](https://brainstormforce.com/bug-bounty-program/). We collaborate with Patchstack to provide opportunities for researchers to report vulnerabilities. The Patchstack team will help validate, triage, and handle any reported security issues.
 
 ## Changelog ##
+### 2.9.1 - 19th May 2026 ###
+* Improvement: Added compatibility with WordPress 7.0.
 ### 2.9.0 - 14th May 2026 ###
 * New: Added a Global Settings panel to configure form defaults (Form Confirmation, Email Notification, Spam Protection, Custom CSS, and Advanced Settings) that every new form inherits automatically, with per-form overrides still supported.
 * New: Added a Switch to Draft action to the All Forms list so published forms can be moved back to draft directly from the row actions without opening the editor.
@@ -493,14 +495,6 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 * Improvement: Added extension hooks for windowed entry caps in form restriction.
 * Fix: Fixed AI Form Builder silent failures and replaced generic error messages with clearer feedback.
 * Fix: Resolved an issue where the Confirm Email field could silently block form submission when the Email field was not marked as required.
-### 2.8.1 - 27th April 2026 ###
-* New: Added support for dynamic default values on Dropdown and Multi-Choice fields.
-* New: Added {entry_id} smart tag for use in email templates, confirmations, and dynamic content.
-* Improvement: Added PLN (Polish Złoty) to the currency dropdown.
-* Fix: Fixed background color not applying correctly in non-iframe editor mode.
-* Fix: Fixed MCP endpoint REST URL resolution so it uses the correct site URL.
-* Fix: Fixed Phone field country flag unexpectedly changing during browser autocomplete.
-* Fix: Fixed review/validation issues in Global Settings.
 The full changelog is available [here](https://sureforms.com/whats-new/).
 
 ## Upgrade Notice ##
