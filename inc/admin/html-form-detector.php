@@ -29,6 +29,7 @@ use SRFM\Inc\Helper;
 use SRFM\Inc\Traits\Get_Instance;
 use WP_Error;
 use WP_REST_Request;
+use WP_REST_Server;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -64,11 +65,21 @@ class Html_Form_Detector {
 	/**
 	 * Constructor.
 	 *
+	 * Registers the REST route only on admin / REST-dispatch requests
+	 * — that is the only context where the route is reachable, and
+	 * gating registration narrows the blast radius if the shared
+	 * `Helper::get_items_permissions_check` is ever loosened by an
+	 * unrelated change. The endpoint also re-checks `manage_options`
+	 * inside the handler so authorization survives both contexts.
+	 *
 	 * @since x.x.x
 	 */
 	public function __construct() {
 		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_scripts' ] );
-		add_filter( 'srfm_rest_api_endpoints', [ $this, 'register_rest_endpoint' ] );
+
+		if ( is_admin() || ( defined( 'REST_REQUEST' ) && REST_REQUEST ) ) {
+			add_filter( 'srfm_rest_api_endpoints', [ $this, 'register_rest_endpoint' ] );
+		}
 	}
 
 	/**
@@ -160,35 +171,41 @@ class Html_Form_Detector {
 		}
 
 		$endpoints['convert-html-form'] = [
-			'methods'             => 'POST',
+			'methods'             => WP_REST_Server::CREATABLE,
 			'callback'            => [ $this, 'handle_convert_html_form' ],
 			'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
 			'args'                => [
 				'parsed_fields' => [
 					'required'    => false,
+					'type'        => 'array',
 					'description' => __( 'Array of fields produced by the editor-side parser.', 'sureforms' ),
 				],
 				'submit_text'   => [
 					'required'          => false,
+					'type'              => 'string',
 					'sanitize_callback' => 'sanitize_text_field',
 					'default'           => '',
 				],
 				'confidence'    => [
 					'required'          => false,
+					'type'              => 'string',
 					'sanitize_callback' => 'sanitize_text_field',
 					'default'           => 'high',
 				],
 				'html'          => [
 					'required'    => false,
+					'type'        => 'string',
 					'description' => __( 'Raw HTML of the source <form>. Required when parser confidence is low so we can hand the markup to the AI middleware.', 'sureforms' ),
 				],
 				'form_title'    => [
 					'required'          => false,
+					'type'              => 'string',
 					'sanitize_callback' => 'sanitize_text_field',
 					'default'           => '',
 				],
 				'styling'       => [
 					'required'    => false,
+					'type'        => 'object',
 					'description' => __( 'Best-effort styling descriptor (hex colors) extracted from inline styles on the source <form>.', 'sureforms' ),
 				],
 			],
@@ -424,6 +441,16 @@ class Html_Form_Detector {
 	 * units are accepted; anything else falls back to px to match the
 	 * SureForms admin's allowed values.
 	 *
+	 * Security-critical input boundary — DO NOT relax without auditing
+	 * `Generate_Form_Markup`: values from this function flow verbatim
+	 * into the form-container `<style>` block. The strict numeric +
+	 * whitelisted-unit regex below is what prevents a crafted source
+	 * `style="padding: }</style><script>…"` from escaping the
+	 * declaration and producing stored XSS. If you ever extend the
+	 * accepted units (e.g. `calc()`, `vh`, `vw`) you MUST also confirm
+	 * the downstream consumer still wraps the value in a context where
+	 * those tokens cannot escape into the surrounding markup.
+	 *
 	 * @since x.x.x
 	 * @param mixed $value Raw shorthand string from the parser.
 	 * @return array{top:float,right:float,bottom:float,left:float,unit:string,link:bool}|null
@@ -445,6 +472,8 @@ class Html_Form_Detector {
 		$nums  = [];
 		$units = [];
 		foreach ( $parts as $part ) {
+			// Security-critical regex — see method docblock. The unit
+			// alternation MUST stay a fixed whitelist.
 			if ( ! preg_match( '/^(-?\d+(?:\.\d+)?)(px|rem|em|%)?$/', $part, $m ) ) {
 				return null;
 			}
@@ -500,15 +529,32 @@ class Html_Form_Detector {
 	 * middleware errors or returns a malformed payload we surface a single
 	 * WP_Error so the caller can fall back to a manual create-form CTA.
 	 *
+	 * Privacy hardening: the source `<form>` markup may contain values
+	 * the admin did not author — prefilled hidden inputs from a previous
+	 * form library, CSRF tokens, server-rendered email addresses, etc.
+	 * We strip `<input type="hidden">` and `value="..."` attributes
+	 * before forwarding so the middleware only sees the structural
+	 * shape (which is all it needs to infer field types). The endpoint
+	 * is admin-trusted, so this is defense-in-depth rather than a
+	 * trust-boundary check, but it meaningfully reduces what leaves
+	 * the site.
+	 *
+	 * Defensive filtering on the response: even though the middleware
+	 * is trusted, we drop any non-array entries from `formFields`
+	 * before returning so a malformed payload cannot reach the
+	 * `Create_Form` schema validator as a surprise scalar.
+	 *
 	 * @since x.x.x
 	 * @param string $html Raw HTML containing the source `<form>`.
 	 * @return array<int,array<string,mixed>>|\WP_Error
 	 */
 	protected function extract_fields_via_ai( $html ) {
+		$sanitized_html = $this->scrub_html_for_ai( $html );
+
 		$query = sprintf(
 			// translators: %s = raw HTML markup of a <form> element.
 			__( 'Convert the following raw HTML form into a SureForms field schema. Preserve field types, labels, the required attribute, and any select/radio/checkbox options. Do not invent fields that are not present in the markup. HTML: %s', 'sureforms' ),
-			$html
+			$sanitized_html
 		);
 
 		$response = AI_Helper::get_chat_completions_response( [ 'query' => $query ] );
@@ -534,7 +580,73 @@ class Html_Form_Detector {
 			);
 		}
 
-		return $response['form']['formFields'];
+		// Belt-and-braces: trust the middleware to return well-formed
+		// fields but never let a non-array slip through to the
+		// downstream schema validator.
+		$fields = array_values( array_filter( $response['form']['formFields'], 'is_array' ) );
+
+		if ( empty( $fields ) ) {
+			return new WP_Error(
+				'srfm_html_convert_ai_empty',
+				__( 'The SureForms AI service returned an unusable response. Try again or build the form manually.', 'sureforms' ),
+				[ 'status' => 502 ]
+			);
+		}
+
+		return $fields;
+	}
+
+	/**
+	 * Remove pre-filled values + hidden inputs from the source HTML
+	 * before handing it to the AI middleware. The structural shape of
+	 * a form (`<input type="email" name="..." required>`) is enough
+	 * for the model to infer the correct SureForms field type; the
+	 * concrete `value="..."` payload, hidden CSRF tokens, and
+	 * action-URL attributes only widen the data we send out.
+	 *
+	 * Implementation note: we deliberately do this as a regex pass
+	 * rather than round-tripping through `DOMDocument` to avoid an
+	 * encoding renormalization step on the JS-supplied bytes (each
+	 * `loadHTML` / `saveHTML` pair can mutate whitespace and entity
+	 * encoding in ways the AI prompt is sensitive to).
+	 *
+	 * @since x.x.x
+	 * @param string $html Source HTML markup.
+	 * @return string Sanitized markup safe to forward.
+	 */
+	protected function scrub_html_for_ai( $html ) {
+		// Drop hidden inputs entirely.
+		$html = preg_replace(
+			'/<input\b[^>]*\btype\s*=\s*["\']?hidden["\']?[^>]*>/i',
+			'',
+			$html
+		);
+		if ( ! is_string( $html ) ) {
+			return '';
+		}
+
+		// Strip any remaining `value="..."` / `value='...'` so
+		// pre-filled defaults do not leave the site. Attribute names
+		// without a value (boolean attrs like `required`) are
+		// untouched.
+		$html = preg_replace(
+			'/\svalue\s*=\s*(?:"[^"]*"|\'[^\']*\'|[^\s>]+)/i',
+			'',
+			$html
+		);
+		if ( ! is_string( $html ) ) {
+			return '';
+		}
+
+		// Strip the form's `action` attribute — the middleware does
+		// not need the host site's internal endpoint URL.
+		$html = preg_replace(
+			'/(<form\b[^>]*?)\saction\s*=\s*(?:"[^"]*"|\'[^\']*\'|[^\s>]+)/i',
+			'$1',
+			$html
+		);
+
+		return is_string( $html ) ? $html : '';
 	}
 
 	/**

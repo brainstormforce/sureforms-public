@@ -85,15 +85,31 @@ function deriveFormTitle() {
  */
 async function convertBlock( clientId, content, parsed ) {
 	const noticesDispatch = dispatch( CORE_NOTICES );
+
+	const restNonce = window.srfm_html_form_detector?.rest_nonce;
+
+	// Fail fast when the localized nonce is missing — without it the
+	// request would just bounce off the server's `wp_verify_nonce`
+	// check and surface as a confusing 403 snackbar. A focused
+	// message tells the user exactly what to do.
+	if ( ! restNonce ) {
+		noticesDispatch.createErrorNotice(
+			__(
+				'SureForms could not authenticate this request. Please reload the editor and try again.',
+				'sureforms'
+			),
+			{ type: 'snackbar' }
+		);
+		return false;
+	}
+
 	const blockEditorDispatch = dispatch( CORE_BLOCK_EDITOR );
 
 	try {
-		const restNonce = window.srfm_html_form_detector?.rest_nonce;
-
 		const response = await apiFetch( {
 			path: CONVERT_REST_PATH,
 			method: 'POST',
-			headers: restNonce ? { 'X-WP-Nonce': restNonce } : {},
+			headers: { 'X-WP-Nonce': restNonce },
 			data: {
 				parsed_fields: parsed.fields,
 				submit_text: parsed.submitText,
@@ -109,7 +125,7 @@ async function convertBlock( clientId, content, parsed ) {
 			typeof response?.shortcode === 'string' ? response.shortcode : '';
 
 		if ( ! formId || ! shortcode ) {
-			throw new Error( 'Conversion endpoint returned an unexpected payload.' );
+			throw { code: 'srfm_html_convert_bad_payload' };
 		}
 
 		blockEditorDispatch.replaceBlock(
@@ -125,11 +141,66 @@ async function convertBlock( clientId, content, parsed ) {
 		);
 		return true;
 	} catch ( error ) {
-		const message =
-			error?.message ||
-			__( 'Could not convert this form to SureForms. Please try again.', 'sureforms' );
-		noticesDispatch.createErrorNotice( message, { type: 'snackbar' } );
+		noticesDispatch.createErrorNotice( errorMessageForCode( error?.code ), {
+			type: 'snackbar',
+		} );
 		return false;
+	}
+}
+
+/**
+ * Map a known REST error code to a user-facing translated string.
+ *
+ * Why we whitelist by `code` rather than forwarding `error.message`
+ * verbatim: `apiFetch` rejections can contain raw server messages
+ * (DB error fragments, file paths from misconfigured plugins, etc.).
+ * Surfacing those in a snackbar to the editor is both ugly and a
+ * small info-leak vector. Everything outside the known set collapses
+ * to a generic message; the precise cause is still logged server-side.
+ *
+ * @param {string|undefined} code REST error code returned by the endpoint.
+ * @return {string} Translated message safe to display.
+ */
+function errorMessageForCode( code ) {
+	switch ( code ) {
+		case 'srfm_html_convert_nonce_failed':
+		case 'rest_cookie_invalid_nonce':
+			return __(
+				'SureForms could not authenticate this request. Please reload the editor and try again.',
+				'sureforms'
+			);
+		case 'srfm_html_convert_forbidden':
+		case 'rest_forbidden':
+			return __(
+				'You do not have permission to convert this form.',
+				'sureforms'
+			);
+		case 'srfm_html_convert_too_large':
+			return __(
+				'This form is too large to convert. Try simplifying the markup or building the form manually.',
+				'sureforms'
+			);
+		case 'srfm_html_convert_no_fields':
+			return __(
+				'SureForms could not derive any fields from this form.',
+				'sureforms'
+			);
+		case 'srfm_html_convert_ai_failed':
+		case 'srfm_html_convert_ai_empty':
+			return __(
+				'The SureForms AI service could not process this form. Please try again or build the form manually.',
+				'sureforms'
+			);
+		case 'srfm_html_convert_bad_payload':
+			return __(
+				'SureForms received an unexpected response. Please try again.',
+				'sureforms'
+			);
+		default:
+			return __(
+				'Could not convert this form to SureForms. Please try again.',
+				'sureforms'
+			);
 	}
 }
 
@@ -183,20 +254,26 @@ const withConvertToSureForms = createHigherOrderComponent(
 			}
 		};
 
+		// Drive the accessible name from the same string as the visible
+		// child text so screen readers announce the state change when
+		// the button flips to the busy state. `isBusy` alone is a
+		// purely visual cue.
+		const buttonText = isConverting
+			? __( 'Converting…', 'sureforms' )
+			: __( 'Convert to SureForms', 'sureforms' );
+
 		return (
 			<Fragment>
 				<BlockControls group="other">
 					<ToolbarGroup>
 						<ToolbarButton
 							icon={ <SureFormsIcon /> }
-							label={ __( 'Convert to SureForms', 'sureforms' ) }
+							label={ buttonText }
 							onClick={ handleConvert }
 							disabled={ isConverting }
 							isBusy={ isConverting }
 						>
-							{ isConverting
-								? __( 'Converting…', 'sureforms' )
-								: __( 'Convert to SureForms', 'sureforms' ) }
+							{ buttonText }
 						</ToolbarButton>
 					</ToolbarGroup>
 				</BlockControls>
