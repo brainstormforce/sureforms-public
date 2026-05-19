@@ -454,7 +454,7 @@ body.post-type-sureforms_form {
 	.editor-header__center {
 		// styles added to make title bar compatible if block toolbar settings are moved in the header
 		display: flex;
-		align-items: stretch;
+		align-items: center;
 		justify-content: center;
 		gap: 0;
 		min-width: 0;
@@ -467,7 +467,7 @@ body.post-type-sureforms_form {
 			max-width: 500px;
 
 			.components-base-control__field {
-				margin-top: 0;
+				margin: 0;
 			}
 		}
 
