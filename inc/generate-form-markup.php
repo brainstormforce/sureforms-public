@@ -8,6 +8,7 @@
 
 namespace SRFM\Inc;
 
+use SRFM\Inc\Compatibility\Multilingual\String_Translator;
 use SRFM\Inc\Traits\Get_Instance;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -267,6 +268,7 @@ class Generate_Form_Markup {
 
 			// Submit button.
 			$button_text             = Helper::get_meta_value( $id, '_srfm_submit_button_text' );
+			$button_text             = String_Translator::get_instance()->translate_submit_button( (int) $id, Helper::get_string_value( $button_text ) );
 			$submit_button_alignment = ! empty( $form_styling['submit_button_alignment'] ) ? $form_styling['submit_button_alignment'] : 'left';
 
 			if ( is_rtl() && ( 'left' === $submit_button_alignment || 'right' === $submit_button_alignment ) ) {
@@ -869,6 +871,7 @@ class Generate_Form_Markup {
 
 		if ( is_array( $form_confirmation ) && isset( $confirmation_data['message'] ) && is_string( $confirmation_data['message'] ) ) {
 			$confirmation_message = $confirmation_data['message'];
+			$confirmation_message = String_Translator::get_instance()->translate_confirmation_message( (int) $form_id, 0, $confirmation_message );
 		}
 		if ( empty( $submission_data ) ) {
 			return $confirmation_message;
