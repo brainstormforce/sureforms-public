@@ -191,34 +191,71 @@ class Dropdown_Markup extends Base {
 	/**
 	 * Resolve dynamic default value from smart tags and override preselected options.
 	 *
+	 * Supports a single resolved value for single-select dropdowns and a
+	 * comma-separated list of resolved values for multi-select dropdowns
+	 * (for example "{get_input:a}, {get_input:b}" resolving to "Red, Blue").
+	 * When the `Add Numeric Values to Options` (showValues) setting is on,
+	 * each segment is also compared against the option's `value`.
+	 *
 	 * @param array<mixed> $attributes Block attributes.
 	 * @since 2.8.1
 	 * @return void
 	 */
 	protected function resolve_dynamic_default( $attributes ) {
 		$dynamic_default = is_string( $attributes['dynamicDefaultValue'] ?? '' ) ? $attributes['dynamicDefaultValue'] : '';
-		if ( empty( $dynamic_default ) || ! empty( $attributes['multiSelect'] ) ) {
+		if ( empty( $dynamic_default ) ) {
 			return;
 		}
 
 		$smart_tags = new Smart_Tags();
 		$resolved   = $smart_tags->process_smart_tags( $dynamic_default );
 
-		if ( empty( $resolved ) || ! is_string( $resolved ) ) {
+		if ( empty( $resolved ) || ! is_string( $resolved ) || ! is_array( $this->options ) ) {
 			return;
 		}
 
-		$resolved = trim( $resolved );
+		// START: multi-value dynamic default resolution.
+		$segments = array_filter(
+			array_map( 'trim', explode( ',', $resolved ) ),
+			static function ( $segment ) {
+				return '' !== $segment;
+			}
+		);
 
-		if ( is_array( $this->options ) ) {
+		if ( empty( $segments ) ) {
+			return;
+		}
+
+		$is_multi_select  = ! empty( $attributes['multiSelect'] );
+		$match_value_too  = ! empty( $attributes['showValues'] );
+		$matching_indices = [];
+
+		foreach ( $segments as $segment ) {
 			foreach ( $this->options as $i => $option ) {
-				$option_label = is_array( $option ) ? ( $option['label'] ?? '' ) : '';
-				if ( strcasecmp( $option_label, $resolved ) === 0 ) {
-					$this->preselected_options = [ $i ];
-					return;
+				if ( ! is_array( $option ) || in_array( $i, $matching_indices, true ) ) {
+					continue;
+				}
+
+				$option_label = $option['label'] ?? '';
+				$option_value = $match_value_too ? (string) ( $option['value'] ?? '' ) : '';
+
+				$is_match = strcasecmp( $option_label, $segment ) === 0
+					|| ( $match_value_too && '' !== $option_value && strcasecmp( $option_value, $segment ) === 0 );
+
+				if ( $is_match ) {
+					$matching_indices[] = $i;
+					if ( ! $is_multi_select ) {
+						break 2;
+					}
+					break;
 				}
 			}
 		}
+
+		if ( ! empty( $matching_indices ) ) {
+			$this->preselected_options = $is_multi_select ? $matching_indices : [ $matching_indices[0] ];
+		}
+		// END: multi-value dynamic default resolution.
 	}
 
 	/**
