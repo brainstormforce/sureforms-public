@@ -2,7 +2,7 @@
 **Contributors:** [brainstormforce](https://profiles.wordpress.org/brainstormforce/)  
 **Tags:** forms, contact form, custom form, payment form, form builder  
 **Requires at least:** 6.4  
-**Tested up to:** 6.9.4  
+**Tested up to:** 7.0  
 **Requires PHP:** 7.4  
 **Stable tag:** 2.9.1  
 **License:** GPLv2 or later  
