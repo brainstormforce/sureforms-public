@@ -42,8 +42,11 @@ const SubmissionInfoSection = ( { entryData } ) => {
 				entryData?.submissionInfo?.submissionUrl ||
 				entryData?.formPermalink ||
 				'-',
+			// Defense-in-depth: only render as a clickable link when the value
+			// looks like an http(s) URL. Server side already enforces this, but
+			// React's `href={val}` does not block exotic schemes on its own.
 			render: ( val ) =>
-				val && val !== '-' ? (
+				typeof val === 'string' && /^https?:\/\//i.test( val ) ? (
 					<Button
 						variant="link"
 						tag="a"

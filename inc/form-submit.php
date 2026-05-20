@@ -584,33 +584,29 @@ class Form_Submit {
 			$browser_name = sanitize_text_field( $browser->getBrowser() );
 			$device_name  = sanitize_text_field( $browser->getPlatform() );
 
-			// Capture the page URL the form was submitted from, server-side from the
-			// Referer header. Only accept same-origin URLs and only the http/https
-			// schemes — anything else (missing, cross-origin, mailto:, data:, …) is
-			// stored as empty so a non-browser client cannot put attacker-controlled
-			// values into the admin-visible row. The 2048-char cap guards against a
-			// non-browser client sending a megabyte Referer to bloat the entries row.
-			// We rebuild the URL from parsed components so any userinfo segment
-			// (`http://user:pass@host/…`, which real browsers strip but a curl-style
-			// client could include) is dropped before display.
+			// Capture submission page URL server-side from the Referer header. The
+			// stored value is rebuilt from parsed components so a non-browser client
+			// cannot inject attacker-controlled bits a real browser would never send
+			// (userinfo, fragment) or mismatch the legitimate origin's port. Anything
+			// not same-origin http(s) is stored as empty.
 			$referer = isset( $_SERVER['HTTP_REFERER'] )
 				? sanitize_text_field( wp_unslash( $_SERVER['HTTP_REFERER'] ) )
 				: '';
 			if ( '' !== $referer && strlen( $referer ) <= 2048 ) {
-				$parts     = wp_parse_url( $referer );
-				$home_host = wp_parse_url( home_url(), PHP_URL_HOST );
+				$parts      = wp_parse_url( $referer );
+				$home_parts = wp_parse_url( home_url() );
 				if (
 					is_array( $parts )
-					&& isset( $parts['scheme'], $parts['host'] )
+					&& is_array( $home_parts )
+					&& isset( $parts['scheme'], $parts['host'], $home_parts['host'] )
 					&& in_array( strtolower( $parts['scheme'] ), [ 'http', 'https' ], true )
-					&& $home_host
-					&& 0 === strcasecmp( (string) $parts['host'], (string) $home_host )
+					&& 0 === strcasecmp( (string) $parts['host'], (string) $home_parts['host'] )
+					&& ( $parts['port'] ?? null ) === ( $home_parts['port'] ?? null )
 				) {
 					$clean          = $parts['scheme'] . '://' . $parts['host']
 						. ( isset( $parts['port'] ) ? ':' . $parts['port'] : '' )
 						. ( isset( $parts['path'] ) ? $parts['path'] : '' )
-						. ( isset( $parts['query'] ) ? '?' . $parts['query'] : '' )
-						. ( isset( $parts['fragment'] ) ? '#' . $parts['fragment'] : '' );
+						. ( isset( $parts['query'] ) ? '?' . $parts['query'] : '' );
 					$submission_url = esc_url_raw( $clean, [ 'http', 'https' ] );
 				}
 			}
