@@ -584,13 +584,20 @@ class Form_Submit {
 			$browser_name = sanitize_text_field( $browser->getBrowser() );
 			$device_name  = sanitize_text_field( $browser->getPlatform() );
 
-			// Capture the page URL the form was submitted from. Prefer the client-side
-			// hidden field (`srfm-page-url`, populated with window.location.href) because
-			// HTTP_REFERER is unreliable under page caching. Fall back to wp_get_referer().
-			$client_page_url = isset( $form_data['srfm-page-url'] ) ? Helper::get_string_value( $form_data['srfm-page-url'] ) : '';
-			$referer         = wp_get_referer();
-			$candidate       = '' !== $client_page_url ? $client_page_url : ( is_string( $referer ) ? $referer : '' );
-			$submission_url  = esc_url_raw( $candidate );
+			// Capture the page URL the form was submitted from, server-side from the
+			// Referer header. Only accept same-origin URLs and only the http/https
+			// schemes — anything else (missing, cross-origin, mailto:, data:, …) is
+			// stored as empty so a non-browser client cannot put attacker-controlled
+			// values into the admin-visible row. The 2048-char cap guards against a
+			// non-browser client sending a megabyte Referer to bloat the entries row.
+			$referer = isset( $_SERVER['HTTP_REFERER'] ) ? wp_unslash( $_SERVER['HTTP_REFERER'] ) : ''; // phpcs:ignore WordPressVIPMinimum.Variables.ServerVariables.UserControlledHeaders
+			if ( is_string( $referer ) && '' !== $referer && strlen( $referer ) <= 2048 ) {
+				$ref_host  = wp_parse_url( $referer, PHP_URL_HOST );
+				$home_host = wp_parse_url( home_url(), PHP_URL_HOST );
+				if ( $ref_host && $home_host && 0 === strcasecmp( (string) $ref_host, (string) $home_host ) ) {
+					$submission_url = esc_url_raw( $referer, [ 'http', 'https' ] );
+				}
+			}
 		}
 
 		$form_markup = get_the_content( null, false, Helper::get_integer_value( $form_data['form-id'] ) );
