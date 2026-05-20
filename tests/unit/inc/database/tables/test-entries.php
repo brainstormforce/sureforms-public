@@ -312,6 +312,28 @@ class Test_Entries_Table extends TestCase {
 	}
 
 	/**
+	 * Test get_new_columns_definition includes the upgrade columns added across
+	 * SureForms versions, including the `language` column added for the WPML
+	 * compatibility work.
+	 *
+	 * @since x.x.x
+	 */
+	public function test_get_new_columns_definition() {
+		$new_columns = $this->entries_table->get_new_columns_definition();
+		$this->assertIsArray( $new_columns );
+		$this->assertNotEmpty( $new_columns );
+
+		$blob = implode( "\n", $new_columns );
+		// Columns added in earlier versions are still announced for sites upgrading from < 0.0.13.
+		$this->assertStringContainsString( 'type VARCHAR(20)', $blob );
+		$this->assertStringContainsString( 'extras LONGTEXT', $blob );
+		$this->assertStringContainsString( 'user_id BIGINT(20) UNSIGNED', $blob );
+		// Language column + composite index added by the multilingual feature.
+		$this->assertStringContainsString( 'language VARCHAR(10) NOT NULL DEFAULT "" AFTER extras', $blob );
+		$this->assertStringContainsString( 'INDEX idx_form_id_language (form_id, language)', $blob );
+	}
+
+	/**
 	 * Test get_columns_to_rename has expected structure.
 	 */
 	public function test_get_columns_to_rename() {
