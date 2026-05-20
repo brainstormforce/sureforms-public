@@ -590,8 +590,10 @@ class Form_Submit {
 			// stored as empty so a non-browser client cannot put attacker-controlled
 			// values into the admin-visible row. The 2048-char cap guards against a
 			// non-browser client sending a megabyte Referer to bloat the entries row.
-			$referer = isset( $_SERVER['HTTP_REFERER'] ) ? wp_unslash( $_SERVER['HTTP_REFERER'] ) : ''; // phpcs:ignore WordPressVIPMinimum.Variables.ServerVariables.UserControlledHeaders
-			if ( is_string( $referer ) && '' !== $referer && strlen( $referer ) <= 2048 ) {
+			$referer = isset( $_SERVER['HTTP_REFERER'] )
+				? sanitize_text_field( wp_unslash( $_SERVER['HTTP_REFERER'] ) )
+				: '';
+			if ( '' !== $referer && strlen( $referer ) <= 2048 ) {
 				$ref_host  = wp_parse_url( $referer, PHP_URL_HOST );
 				$home_host = wp_parse_url( home_url(), PHP_URL_HOST );
 				if ( $ref_host && $home_host && 0 === strcasecmp( (string) $ref_host, (string) $home_host ) ) {
