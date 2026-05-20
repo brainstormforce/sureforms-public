@@ -265,6 +265,12 @@ function prepareAddressesData( form ) {
 }
 
 async function submitFormData( form ) {
+	// Record the page where the form was actually submitted from.
+	// Captured client-side because HTTP_REFERER is unreliable under page caching.
+	const pageUrlInput = form.querySelector( 'input[name="srfm-page-url"]' );
+	if ( pageUrlInput ) {
+		pageUrlInput.value = window.location.href;
+	}
 	const formData = new FormData( form );
 	const filteredFormData = new FormData();
 	const submitToken = form.getAttribute( 'data-submit-token' );

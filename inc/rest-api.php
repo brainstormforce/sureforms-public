@@ -851,9 +851,10 @@ class Rest_Api {
 			'form_data'       => $form_data,
 			'form_content'    => $form_fields,
 			'submission_info' => [
-				'user_ip'      => $entry['submission_info']['user_ip'] ?? '',
-				'browser_name' => $entry['submission_info']['browser_name'] ?? '',
-				'device_name'  => $entry['submission_info']['device_name'] ?? '',
+				'user_ip'        => $entry['submission_info']['user_ip'] ?? '',
+				'browser_name'   => $entry['submission_info']['browser_name'] ?? '',
+				'device_name'    => $entry['submission_info']['device_name'] ?? '',
+				'submission_url' => $entry['submission_info']['submission_url'] ?? '',
 			],
 			'user'            => $user_info ? [
 				'id'           => $user_id,

@@ -133,6 +133,7 @@ export const transformEntryDetail = ( entryDetail ) => {
 			userIp: entryDetail.submission_info?.user_ip || '-',
 			browserName: entryDetail.submission_info?.browser_name || '-',
 			deviceName: entryDetail.submission_info?.device_name || '-',
+			submissionUrl: entryDetail.submission_info?.submission_url || '',
 		},
 		user: entryDetail.user
 			? {

@@ -34,20 +34,29 @@ const SubmissionInfoSection = ( { entryData } ) => {
 		},
 		{
 			id: 'url',
+			// Prefer the actual submission page URL (where the form was filled in).
+			// Fall back to the form CPT permalink for entries created before this
+			// field was captured (pre-migration), and to '-' if neither is present.
 			label: __( 'URL:', 'sureforms' ),
-			value: entryData?.formPermalink || '-',
-			render: ( val ) => (
-				<Button
-					variant="link"
-					tag="a"
-					href={ val }
-					className="no-underline hover:underline"
-					target="_blank"
-					rel="noopener noreferrer"
-				>
-					{ val }
-				</Button>
-			),
+			value:
+				entryData?.submissionInfo?.submissionUrl ||
+				entryData?.formPermalink ||
+				'-',
+			render: ( val ) =>
+				val && val !== '-' ? (
+					<Button
+						variant="link"
+						tag="a"
+						href={ val }
+						className="no-underline hover:underline"
+						target="_blank"
+						rel="noopener noreferrer"
+					>
+						{ val }
+					</Button>
+				) : (
+					val
+				),
 		},
 		{
 			id: 'browser',

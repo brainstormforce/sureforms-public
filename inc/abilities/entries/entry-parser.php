@@ -87,9 +87,10 @@ trait Entry_Parser {
 		}
 
 		$submission_info = [
-			'user_ip'      => $ip,
-			'browser_name' => (string) ( $submission_info_raw['browser_name'] ?? '' ),
-			'device_name'  => (string) ( $submission_info_raw['device_name'] ?? '' ),
+			'user_ip'        => $ip,
+			'browser_name'   => (string) ( $submission_info_raw['browser_name'] ?? '' ),
+			'device_name'    => (string) ( $submission_info_raw['device_name'] ?? '' ),
+			'submission_url' => (string) ( $submission_info_raw['submission_url'] ?? '' ),
 		];
 
 		// Build user info.

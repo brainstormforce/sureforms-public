@@ -570,11 +570,12 @@ class Form_Submit {
 
 		$global_setting_options = get_option( 'srfm_general_settings_options' );
 
-		// If GDPR is enabled, do not store IP, browser, and device info.
-		// If not, store IP, browser, and device info.
-		$user_ip      = '';
-		$browser_name = '';
-		$device_name  = '';
+		// If GDPR is enabled, do not store IP, browser, device, and submission URL.
+		// If not, store all of them.
+		$user_ip        = '';
+		$browser_name   = '';
+		$device_name    = '';
+		$submission_url = '';
 		if ( ! $gdpr ) {
 			$srfm_ip_log = is_array( $global_setting_options ) && isset( $global_setting_options['srfm_ip_log'] ) ? $global_setting_options['srfm_ip_log'] : '';
 
@@ -582,15 +583,24 @@ class Form_Submit {
 			$browser      = new Browser();
 			$browser_name = sanitize_text_field( $browser->getBrowser() );
 			$device_name  = sanitize_text_field( $browser->getPlatform() );
+
+			// Capture the page URL the form was submitted from. Prefer the client-side
+			// hidden field (`srfm-page-url`, populated with window.location.href) because
+			// HTTP_REFERER is unreliable under page caching. Fall back to wp_get_referer().
+			$client_page_url = isset( $form_data['srfm-page-url'] ) ? Helper::get_string_value( $form_data['srfm-page-url'] ) : '';
+			$referer         = wp_get_referer();
+			$candidate       = '' !== $client_page_url ? $client_page_url : ( is_string( $referer ) ? $referer : '' );
+			$submission_url  = esc_url_raw( $candidate );
 		}
 
 		$form_markup = get_the_content( null, false, Helper::get_integer_value( $form_data['form-id'] ) );
 		$pattern     = '/"label":"(.*?)"/';
 		preg_match_all( $pattern, $form_markup, $matches );
 		$submission_info = [
-			'user_ip'      => $user_ip,
-			'browser_name' => $browser_name,
-			'device_name'  => $device_name,
+			'user_ip'        => $user_ip,
+			'browser_name'   => $browser_name,
+			'device_name'    => $device_name,
+			'submission_url' => $submission_url,
 		];
 		$entries_data    = [
 			'form_id'         => $id,
