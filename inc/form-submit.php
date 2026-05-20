@@ -590,14 +590,28 @@ class Form_Submit {
 			// stored as empty so a non-browser client cannot put attacker-controlled
 			// values into the admin-visible row. The 2048-char cap guards against a
 			// non-browser client sending a megabyte Referer to bloat the entries row.
+			// We rebuild the URL from parsed components so any userinfo segment
+			// (`http://user:pass@host/…`, which real browsers strip but a curl-style
+			// client could include) is dropped before display.
 			$referer = isset( $_SERVER['HTTP_REFERER'] )
 				? sanitize_text_field( wp_unslash( $_SERVER['HTTP_REFERER'] ) )
 				: '';
 			if ( '' !== $referer && strlen( $referer ) <= 2048 ) {
-				$ref_host  = wp_parse_url( $referer, PHP_URL_HOST );
+				$parts     = wp_parse_url( $referer );
 				$home_host = wp_parse_url( home_url(), PHP_URL_HOST );
-				if ( $ref_host && $home_host && 0 === strcasecmp( (string) $ref_host, (string) $home_host ) ) {
-					$submission_url = esc_url_raw( $referer, [ 'http', 'https' ] );
+				if (
+					is_array( $parts )
+					&& isset( $parts['scheme'], $parts['host'] )
+					&& in_array( strtolower( $parts['scheme'] ), [ 'http', 'https' ], true )
+					&& $home_host
+					&& 0 === strcasecmp( (string) $parts['host'], (string) $home_host )
+				) {
+					$clean          = $parts['scheme'] . '://' . $parts['host']
+						. ( isset( $parts['port'] ) ? ':' . $parts['port'] : '' )
+						. ( isset( $parts['path'] ) ? $parts['path'] : '' )
+						. ( isset( $parts['query'] ) ? '?' . $parts['query'] : '' )
+						. ( isset( $parts['fragment'] ) ? '#' . $parts['fragment'] : '' );
+					$submission_url = esc_url_raw( $clean, [ 'http', 'https' ] );
 				}
 			}
 		}
