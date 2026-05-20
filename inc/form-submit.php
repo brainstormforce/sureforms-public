@@ -605,7 +605,7 @@ class Form_Submit {
 				) {
 					$clean          = $parts['scheme'] . '://' . $parts['host']
 						. ( isset( $parts['port'] ) ? ':' . $parts['port'] : '' )
-						. ( isset( $parts['path'] ) ? $parts['path'] : '' )
+						. ( $parts['path'] ?? '' )
 						. ( isset( $parts['query'] ) ? '?' . $parts['query'] : '' );
 					$submission_url = esc_url_raw( $clean, [ 'http', 'https' ] );
 				}
