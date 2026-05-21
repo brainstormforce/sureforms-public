@@ -133,7 +133,7 @@ class Entries extends Base {
 			'status VARCHAR(10)',
 			'type VARCHAR(20)', // Note: @since 0.0.13 -- We have added type column, it will have entry's form type eg quiz, standard etc.
 			'extras LONGTEXT',
-			'language VARCHAR(10) NOT NULL DEFAULT ""', // Note: @since x.x.x -- Submission language code, captured from the active multilingual provider.
+			'language VARCHAR(10)', // Note: @since x.x.x -- Submission language code, captured from the active multilingual provider. Nullable to match status/type column convention; INSERT path always supplies a value or empty string.
 			'created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP',
 			'updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP',
 			'INDEX idx_form_id (form_id)', // Indexing for the performance improvements.
@@ -154,7 +154,7 @@ class Entries extends Base {
 			'user_id BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 AFTER form_id',
 			'INDEX idx_user_id (user_id)',
 			// Note: @since x.x.x -- Added language column for multilingual submission tracking.
-			'language VARCHAR(10) NOT NULL DEFAULT "" AFTER extras',
+			'language VARCHAR(10) AFTER extras',
 			'INDEX idx_form_id_language (form_id, language)',
 		];
 	}
