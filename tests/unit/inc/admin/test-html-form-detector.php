@@ -277,8 +277,11 @@ class Test_Html_Form_Detector extends TestCase {
 
 	public function test_scrub_html_for_ai() {
 		$html = '<form action="/internal/submit" method="post">'
+			. '<!-- INTERNAL_API_KEY=sk-live-abc123 do-not-leak -->'
 			. '<input type="hidden" name="csrf" value="secret-token-123"/>'
 			. '<input type="text" name="email" value="prefilled@example.com" required/>'
+			. '<textarea name="draft">half-written reply containing pii@example.com</textarea>'
+			. '<script>const API_TOKEN = "leak-me-please";</script>'
 			. '<button type="submit">Send</button>'
 			. '</form>';
 
@@ -297,6 +300,26 @@ class Test_Html_Form_Detector extends TestCase {
 
 		// `action` attribute is gone.
 		$this->assertStringNotContainsString( '/internal/submit', $scrubbed );
+
+		// HTML comments are stripped — they routinely host staging
+		// notes / build hashes / API keys that have no business going
+		// to the conversion middleware.
+		$this->assertStringNotContainsString( 'INTERNAL_API_KEY', $scrubbed );
+		$this->assertStringNotContainsString( 'do-not-leak', $scrubbed );
+
+		// Textarea body is emptied so pre-filled drafts (often PII,
+		// CSRF tokens, or server-rendered defaults) do not leave the
+		// site. The opening/closing tags survive so the model still
+		// sees a `<textarea>` at this position.
+		$this->assertStringNotContainsString( 'half-written reply', $scrubbed );
+		$this->assertStringNotContainsString( 'pii@example.com', $scrubbed );
+		$this->assertMatchesRegularExpression( '#<textarea[^>]*>\s*</textarea>#', $scrubbed );
+
+		// `<script>` body is emptied for the same reason — inline
+		// tokens or endpoint config must not be forwarded.
+		$this->assertStringNotContainsString( 'API_TOKEN', $scrubbed );
+		$this->assertStringNotContainsString( 'leak-me-please', $scrubbed );
+		$this->assertMatchesRegularExpression( '#<script[^>]*>\s*</script>#', $scrubbed );
 
 		// Non-string input collapses to empty string defensively.
 		$this->assertSame( '', $this->call_protected( 'scrub_html_for_ai', [ null ] ) );

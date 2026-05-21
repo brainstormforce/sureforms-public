@@ -557,9 +557,12 @@ class Html_Form_Detector {
 	protected function extract_fields_via_ai( $html ) {
 		$sanitized_html = $this->scrub_html_for_ai( $html );
 
+		// English-only by design — this is the instruction sent to the
+		// AI middleware, not user-facing copy. Wrapping it in `__()`
+		// would invite translators to localize a machine prompt (and
+		// the model is not multilingual on the conversion task today).
 		$query = sprintf(
-			// translators: %s = raw HTML markup of a <form> element.
-			__( 'Convert the following raw HTML form into a SureForms field schema. Preserve field types, labels, the required attribute, and any select/radio/checkbox options. Do not invent fields that are not present in the markup. HTML: %s', 'sureforms' ),
+			'Convert the following raw HTML form into a SureForms field schema. Preserve field types, labels, the required attribute, and any select/radio/checkbox options. Do not invent fields that are not present in the markup. HTML: %s',
 			$sanitized_html
 		);
 
@@ -659,6 +662,47 @@ class Html_Form_Detector {
 		$html = preg_replace(
 			'/(<form\b[^>]*?)\saction\s*=\s*(?:"[^"]*"|\'[^\']*\'|[^\s>]+)/i',
 			'$1',
+			$html
+		);
+		if ( ! is_string( $html ) ) {
+			return '';
+		}
+
+		// Strip HTML comments. Source authors sometimes leave server-
+		// side staging notes, build hashes, or even API keys inside
+		// `<!-- ... -->`. The model has no use for them and the regex
+		// scrubber's whole purpose is to keep that surface out of the
+		// outbound request.
+		$html = preg_replace( '/<!--.*?-->/s', '', $html );
+		if ( ! is_string( $html ) ) {
+			return '';
+		}
+
+		// Empty out `<script>` bodies — the structural fact that a
+		// `<script>` block exists may be useful for the model to
+		// recognize multi-step / handler-driven forms, but the
+		// contents (often containing tokens, endpoint URLs, or
+		// inline configuration) must not leave the site. Keep the
+		// opening/closing tags so the model still sees the shape.
+		$html = preg_replace(
+			'/(<script\b[^>]*>).*?(<\/script>)/is',
+			'$1$2',
+			$html
+		);
+		if ( ! is_string( $html ) ) {
+			return '';
+		}
+
+		// Empty out `<textarea>` bodies for the same reason as the
+		// hidden-input scrub above: pre-filled defaults can be CSRF
+		// tokens, server-rendered email addresses, or the user's
+		// stored draft. The model only needs to know a textarea is
+		// present at this position; the existing content adds nothing
+		// to the conversion and is exactly the data class we are
+		// trying not to forward.
+		$html = preg_replace(
+			'/(<textarea\b[^>]*>).*?(<\/textarea>)/is',
+			'$1$2',
 			$html
 		);
 
