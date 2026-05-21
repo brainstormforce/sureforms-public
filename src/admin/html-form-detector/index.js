@@ -69,6 +69,37 @@ function deriveFormTitle() {
 }
 
 /**
+ * Remove the first `<form>` element from the source HTML and return
+ * whatever non-empty markup remains. Returns an empty string when the
+ * block held only the form (and optional whitespace) — callers use that
+ * as the signal to fall back to a straight block-for-block swap.
+ *
+ * We rely on the browser's own parser (`DOMParser`) so any wrapping
+ * elements around the form stay intact in the remaining tree — e.g. a
+ * `<div class="form-container">` with a `<h2>` above the form and a
+ * post-submit `<p>` below it. Removing just the `<form>` node leaves
+ * `<div class="form-container"><h2>…</h2><p>…</p></div>` as the
+ * preserved markup, which we then hand back to a fresh `core/html`
+ * block. No string-level splitting on the form's source position — that
+ * would corrupt the wrapper when the form is nested inside it.
+ *
+ * @param {string} html The raw HTML the source `core/html` block held.
+ * @return {string} Trimmed remaining markup, or '' when nothing is left.
+ */
+function stripFormFromHtml( html ) {
+	if ( typeof html !== 'string' || ! html ) {
+		return '';
+	}
+	const doc = new window.DOMParser().parseFromString( html, 'text/html' );
+	const formEl = doc.querySelector( 'form' );
+	if ( ! formEl ) {
+		return '';
+	}
+	formEl.remove();
+	return doc.body ? doc.body.innerHTML.trim() : '';
+}
+
+/**
  * POST the parsed schema (and raw HTML for the AI fallback path) to
  * the conversion endpoint, swap the source `core/html` block for a
  * `core/shortcode` block, and surface a success/error snackbar.
@@ -128,10 +159,31 @@ async function convertBlock( clientId, content, parsed ) {
 			throw { code: 'srfm_html_convert_bad_payload' };
 		}
 
-		blockEditorDispatch.replaceBlock(
-			clientId,
-			createBlock( SHORTCODE_BLOCK_NAME, { text: shortcode } )
-		);
+		const shortcodeBlock = createBlock( SHORTCODE_BLOCK_NAME, {
+			text: shortcode,
+		} );
+		const surroundingHtml = stripFormFromHtml( content );
+
+		// When the source `core/html` block held nothing but the `<form>`
+		// (and optional whitespace), the historical behavior is correct:
+		// swap one block for one block. When the block contained other
+		// markup — a wrapping `<div>`, a heading above the form, a
+		// post-submit message below it, an inline `<script>` — replacing
+		// the whole block would silently delete that markup. Keep it as
+		// a separate `core/html` block and put the shortcode after it
+		// so the user does not lose context they almost certainly meant
+		// to keep alongside the form.
+		if ( surroundingHtml ) {
+			const preservedBlock = createBlock( HTML_BLOCK_NAME, {
+				content: surroundingHtml,
+			} );
+			blockEditorDispatch.replaceBlock( clientId, [
+				preservedBlock,
+				shortcodeBlock,
+			] );
+		} else {
+			blockEditorDispatch.replaceBlock( clientId, shortcodeBlock );
+		}
 
 		noticesDispatch.createSuccessNotice(
 			response?.used_ai
