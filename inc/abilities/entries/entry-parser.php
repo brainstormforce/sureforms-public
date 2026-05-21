@@ -87,9 +87,12 @@ trait Entry_Parser {
 		}
 
 		$submission_info = [
-			'user_ip'      => $ip,
-			'browser_name' => (string) ( $submission_info_raw['browser_name'] ?? '' ),
-			'device_name'  => (string) ( $submission_info_raw['device_name'] ?? '' ),
+			'user_ip'        => $ip,
+			'browser_name'   => (string) ( $submission_info_raw['browser_name'] ?? '' ),
+			'device_name'    => (string) ( $submission_info_raw['device_name'] ?? '' ),
+			// Re-sanitize at the exposure boundary in case the stored value
+			// was written by a future code path that bypasses form-submit.php.
+			'submission_url' => esc_url_raw( (string) ( $submission_info_raw['submission_url'] ?? '' ), [ 'http', 'https' ] ),
 		];
 
 		// Build user info.

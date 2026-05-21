@@ -34,20 +34,32 @@ const SubmissionInfoSection = ( { entryData } ) => {
 		},
 		{
 			id: 'url',
+			// Prefer the actual submission page URL (where the form was filled in).
+			// Fall back to the form CPT permalink for entries created before this
+			// field was captured (pre-migration), and to '-' if neither is present.
 			label: __( 'URL:', 'sureforms' ),
-			value: entryData?.formPermalink || '-',
-			render: ( val ) => (
-				<Button
-					variant="link"
-					tag="a"
-					href={ val }
-					className="no-underline hover:underline"
-					target="_blank"
-					rel="noopener noreferrer"
-				>
-					{ val }
-				</Button>
-			),
+			value:
+				entryData?.submissionInfo?.submissionUrl ||
+				entryData?.formPermalink ||
+				'-',
+			// Defense-in-depth: only render as a clickable link when the value
+			// looks like an http(s) URL. Server side already enforces this, but
+			// React's `href={val}` does not block exotic schemes on its own.
+			render: ( val ) =>
+				typeof val === 'string' && /^https?:\/\//i.test( val ) ? (
+					<Button
+						variant="link"
+						tag="a"
+						href={ val }
+						className="no-underline hover:underline"
+						target="_blank"
+						rel="noopener noreferrer"
+					>
+						{ val }
+					</Button>
+				) : (
+					val
+				),
 		},
 		{
 			id: 'browser',

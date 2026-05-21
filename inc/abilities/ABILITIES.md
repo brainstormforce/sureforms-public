@@ -346,7 +346,8 @@ Complete reference for all 15 abilities registered with the WordPress Abilities 
   "submission_info": {
     "user_ip": "192.168.1.1",
     "browser_name": "Chrome",
-    "device_name": "Desktop"
+    "device_name": "Desktop",
+    "submission_url": "https://example.com/contact/"
   },
   "user": {
     "id": 1,
