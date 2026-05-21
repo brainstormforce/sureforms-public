@@ -24,12 +24,85 @@ const TYPE_MAP = {
 };
 
 /**
+ * Read the text content of a `<label>` element that appears immediately
+ * before the given element in the same parent — separated only by
+ * whitespace or `<br>` elements, never by other content. Captures the
+ * common shape where a label is authored as a sibling rather than via
+ * `for=` or by wrapping the input:
+ *
+ *     <label>How satisfied are you?</label><br>
+ *     <input type="radio" name="rating" value="1"> 1
+ *
+ *     <label>What can we improve?</label>
+ *     <textarea name="feedback"></textarea>
+ *
+ * The walk stops at the first non-whitespace text node or any element
+ * that is not `<br>` or `<label>` — so an unrelated label further up
+ * the tree never bleeds into the wrong field. Labels with an explicit
+ * `for` attribute are skipped: those are already tied to a specific
+ * field and only that field should claim them (handled separately in
+ * `resolveLabel` via `querySelector('label[for="…"]')`).
+ *
+ * @param {Element} element
+ * @return {string} Trimmed label text, or '' when none applies.
+ */
+function readPrecedingLabelText( element ) {
+	let cursor = element.previousSibling;
+	while ( cursor ) {
+		if ( cursor.nodeType === 1 /* ELEMENT_NODE */ ) {
+			if ( cursor.tagName === 'LABEL' ) {
+				if ( cursor.getAttribute( 'for' ) ) {
+					return '';
+				}
+				return ( cursor.textContent || '' ).trim();
+			}
+			if ( cursor.tagName !== 'BR' ) {
+				return '';
+			}
+		} else if ( cursor.nodeType === 3 /* TEXT_NODE */ ) {
+			if ( ( cursor.textContent || '' ).trim() !== '' ) {
+				return '';
+			}
+		}
+		cursor = cursor.previousSibling;
+	}
+	return '';
+}
+
+/**
+ * Read the visible text that immediately follows the given element in
+ * its parent — the "<input> 5" / "<input> Yes" pattern where radio
+ * options are labelled by adjacent text nodes rather than `<label>`
+ * elements. Stops at the next element so we never pull in a
+ * neighbouring input's label.
+ *
+ * @param {Element} element
+ * @return {string} Trimmed trailing text, or '' when none applies.
+ */
+function readTrailingTextLabel( element ) {
+	let cursor = element.nextSibling;
+	let text = '';
+	while ( cursor && cursor.nodeType !== 1 ) {
+		if ( cursor.nodeType === 3 ) {
+			text += cursor.textContent || '';
+		}
+		cursor = cursor.nextSibling;
+	}
+	return text.trim();
+}
+
+/**
  * Resolve the label text for a given input element.
  *
  * Prefers an explicit `<label for="id">` association, then a wrapping
- * `<label>` ancestor, then `aria-label` / `placeholder` / `name` as
- * progressively weaker signals. Returns an empty string when nothing
- * usable can be derived — callers treat that as a low-confidence field.
+ * `<label>` ancestor, then a preceding free-floating `<label>` sibling,
+ * then `aria-label` / `placeholder` / `name` as progressively weaker
+ * signals. Returns an empty string when nothing usable can be derived
+ * — callers treat that as a low-confidence field.
+ *
+ * Note: this resolver is intentionally NOT used for radio per-option
+ * labels — those go through `resolveRadioOptionLabel` which prefers
+ * adjacent text and refuses to fall back to `name` (the group key).
  *
  * @param {Element}  element The input/textarea/select element.
  * @param {Document} doc     The owner document (for `getElementById`).
@@ -49,6 +122,11 @@ function resolveLabel( element, doc ) {
 		return wrappingLabel.textContent.trim();
 	}
 
+	const preceding = readPrecedingLabelText( element );
+	if ( preceding ) {
+		return preceding;
+	}
+
 	const aria = element.getAttribute( 'aria-label' );
 	if ( aria ) {
 		return aria.trim();
@@ -66,6 +144,51 @@ function resolveLabel( element, doc ) {
 			.replace( /[_-]+/g, ' ' )
 			.replace( /\b\w/g, ( c ) => c.toUpperCase() )
 			.trim();
+	}
+
+	return '';
+}
+
+/**
+ * Resolve the per-option label for a radio input. Distinct priority
+ * from `resolveLabel` because radios have a different DOM contract:
+ *
+ *  - The text that visually labels each option usually sits as a text
+ *    node *after* the `<input>`, not before it — so trailing text wins
+ *    over any other signal.
+ *  - The `name` attribute is the group identifier shared by every
+ *    option, so using it as a label fallback would yield N identical
+ *    options. Never fall through to it here.
+ *
+ * The group's title (the question being asked) is resolved separately
+ * in `parseInput` via `<fieldset><legend>` or `readPrecedingLabelText`.
+ *
+ * @param {Element}  element The radio input.
+ * @param {Document} doc     The owner document.
+ * @return {string} Trimmed option label, or '' when none applies.
+ */
+function resolveRadioOptionLabel( element, doc ) {
+	const trailing = readTrailingTextLabel( element );
+	if ( trailing ) {
+		return trailing;
+	}
+
+	const id = element.getAttribute( 'id' );
+	if ( id ) {
+		const explicit = doc.querySelector( `label[for="${ window.CSS.escape( id ) }"]` );
+		if ( explicit?.textContent ) {
+			return explicit.textContent.trim();
+		}
+	}
+
+	const wrappingLabel = element.closest( 'label' );
+	if ( wrappingLabel?.textContent ) {
+		return wrappingLabel.textContent.trim();
+	}
+
+	const value = element.getAttribute( 'value' );
+	if ( value ) {
+		return value.trim();
 	}
 
 	return '';
@@ -99,15 +222,22 @@ function parseInput( element, doc ) {
 		// the legend instead of the actual option names.
 		const fieldset = element.closest( 'fieldset' );
 		const legend = fieldset?.querySelector( ':scope > legend' );
-		const groupLabel = legend?.textContent?.trim() || '';
+		// Group title fallback chain: explicit <legend>, then a
+		// free-floating <label> sibling that sits above the first
+		// radio (e.g. `<label>How satisfied are you?</label><br>
+		// <input type="radio">…`). `readPrecedingLabelText` returns ''
+		// for radios after the first one in a group — their preceding
+		// sibling is the previous radio's trailing text, not a label —
+		// so only the first radio actually contributes a group label,
+		// which is exactly what `collapseRadioGroups` consumes.
+		const groupLabel =
+			legend?.textContent?.trim() ||
+			readPrecedingLabelText( element ) ||
+			'';
 
 		return {
 			fieldType: 'multi-choice',
-			label:
-				resolveLabel( element, doc ) ||
-				element.getAttribute( 'value' ) ||
-				element.getAttribute( 'name' ) ||
-				'Choice',
+			label: resolveRadioOptionLabel( element, doc ) || 'Choice',
 			required: element.hasAttribute( 'required' ),
 			singleSelection: true,
 			confidence: 'medium',
