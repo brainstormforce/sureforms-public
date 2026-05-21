@@ -77,9 +77,15 @@ class Html_Form_Detector {
 	public function __construct() {
 		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_scripts' ] );
 
-		if ( is_admin() || ( defined( 'REST_REQUEST' ) && REST_REQUEST ) ) {
-			add_filter( 'srfm_rest_api_endpoints', [ $this, 'register_rest_endpoint' ] );
-		}
+		// Register the REST endpoint unconditionally. The constructor runs on
+		// the `init` hook (see plugin-loader.php), which fires *before*
+		// `parse_request` — the point at which WordPress defines
+		// `REST_REQUEST`. Gating on `REST_REQUEST` here meant the filter was
+		// never attached for the actual REST dispatch, and the endpoint 404'd.
+		// `apply_filters( 'srfm_rest_api_endpoints', ... )` is only invoked
+		// from `Rest_Api::register_endpoints()` on `rest_api_init`, so
+		// attaching this filter on non-REST requests has no runtime cost.
+		add_filter( 'srfm_rest_api_endpoints', [ $this, 'register_rest_endpoint' ] );
 	}
 
 	/**
