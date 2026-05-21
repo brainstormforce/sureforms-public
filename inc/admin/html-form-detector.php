@@ -239,22 +239,33 @@ class Html_Form_Detector {
 	 * @return array<string,mixed>|\WP_Error
 	 */
 	public function handle_convert_html_form( $request ) {
+		// Capability check runs first — cheaper than `wp_verify_nonce`,
+		// and the REST framework's `permission_callback` already passed
+		// at this point, so a failure here means a `current_user_can`
+		// filter or capability-mapping shim was loosened between the
+		// permission callback and the handler. Bail early to keep
+		// the expensive AI middleware path off the table for users who
+		// could not legitimately complete the action.
+		if ( ! Helper::current_user_can( 'manage_options' ) ) {
+			return new WP_Error(
+				'srfm_html_convert_forbidden',
+				__( 'You are not allowed to convert HTML forms.', 'sureforms' ),
+				[ 'status' => 403 ]
+			);
+		}
+
+		// Nonce check is CSRF defense for the legitimate
+		// `manage_options` user we just confirmed. Running it after the
+		// cap check means cap-less requests never pay the
+		// `hash_hmac`/session-lookup cost of nonce verification, and
+		// the error-code precedence is also more honest: a subscriber
+		// without `manage_options` gets `forbidden`, not the misleading
+		// `nonce_failed`.
 		$nonce = Helper::get_string_value( $request->get_header( 'X-WP-Nonce' ) );
 		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'wp_rest' ) ) {
 			return new WP_Error(
 				'srfm_html_convert_nonce_failed',
 				__( 'Security verification failed. Please refresh the page and try again.', 'sureforms' ),
-				[ 'status' => 403 ]
-			);
-		}
-
-		// Cap is enforced again inside Create_Form via the `manage_options`
-		// capability — this is an explicit second check so a malformed
-		// permission_callback override never reaches the endpoint.
-		if ( ! Helper::current_user_can( 'manage_options' ) ) {
-			return new WP_Error(
-				'srfm_html_convert_forbidden',
-				__( 'You are not allowed to convert HTML forms.', 'sureforms' ),
 				[ 'status' => 403 ]
 			);
 		}
@@ -321,8 +332,32 @@ class Html_Form_Detector {
 		 * @param array<int,array<string,mixed>> $clean_fields Sanitized field list ready for Create_Form.
 		 * @param string                         $raw_html     Original HTML of the source `<form>` block.
 		 * @param string                         $confidence   Parser confidence (`high`/`medium`/`low`).
+		 *
+		 * SECURITY CONTRACT: callbacks MUST return values already
+		 * sanitized for storage as block attributes. `Create_Form`
+		 * re-sanitizes a hardcoded list of properties (label,
+		 * placeholder, helpText, defaultValue, fieldOptions), but any
+		 * property a callback introduces beyond that set — a pro
+		 * field's `allowedFormats`, `dateFormat`, `step`, etc. — is NOT
+		 * covered by the downstream sanitization pass. Strings should
+		 * pass through `sanitize_text_field` / `wp_kses_post`, scalars
+		 * through `absint` / `floatval`, arrays should have each leaf
+		 * sanitized. The defensive `strip_unsafe_html_in_fields` pass
+		 * below catches obvious raw-tag injection but is not a
+		 * substitute for proper per-property sanitization.
 		 */
 		$clean_fields = apply_filters( 'srfm_html_form_detector_refine_fields', $clean_fields, $raw_html, $confidence );
+
+		// Defensive post-filter sweep: strip raw HTML tags from every
+		// string leaf in every field property. The filter contract
+		// above documents that callbacks must sanitize, but a sloppy
+		// callback could re-introduce attacker markup in properties
+		// `Create_Form` does not know to clean — at which point a
+		// later block renderer that emits the attribute as inner HTML
+		// becomes a stored-XSS sink. Stripping tags here is a narrow
+		// safety net that loses no legitimate value: form-field
+		// attributes are not HTML containers.
+		$clean_fields = $this->strip_unsafe_html_in_fields( $clean_fields );
 
 		$create_form = new Create_Form();
 		$result      = $create_form->execute(
@@ -362,8 +397,94 @@ class Html_Form_Detector {
 			do_action( 'srfm_html_form_detector_after_styling', $form_id, $styling_in, $raw_html );
 		}
 
+		// Compute the markup that survives once the source `<form>` is
+		// removed from the original block — wrapping `<div>`s, a
+		// heading above the form, a post-submit paragraph below it,
+		// inline `<script>`, etc. The client also computes this (so
+		// the conversion is responsive even when the response is in
+		// flight), but the client output is treated as untrusted: we
+		// return the server-computed value here and the editor
+		// prefers it when present. This lets us KSES-filter the
+		// remnant for users without `unfiltered_html` so a converter
+		// click cannot surface previously-hidden attacker markup that
+		// the original `<form>` was masking visually.
+		$result['preserved_html'] = $this->strip_form_for_preservation( $raw_html );
+
 		$result['used_ai'] = $used_ai;
 		return $result;
+	}
+
+	/**
+	 * Strip the first `<form>` element from the supplied HTML and
+	 * return whatever non-empty markup remains, optionally KSES-filtered
+	 * when the current user lacks `unfiltered_html`.
+	 *
+	 * The editor would otherwise drop the source `core/html` block's
+	 * non-form content silently when the user clicks Convert. Routing
+	 * that decision through the server lets us apply the same
+	 * `unfiltered_html` capability gate WordPress applies to every
+	 * other path that writes user-supplied HTML into post_content —
+	 * site admins on multisite (who have `manage_options` but not
+	 * `unfiltered_html`) get the `wp_kses_post` treatment, super
+	 * admins on single-site / multisite get the raw markup through.
+	 *
+	 * @since x.x.x
+	 * @param string $html Original `core/html` block contents.
+	 * @return string Stripped (and optionally filtered) markup, or '' when nothing survives.
+	 */
+	protected function strip_form_for_preservation( $html ) {
+		if ( ! is_string( $html ) || '' === $html ) {
+			return '';
+		}
+
+		// DOMDocument copes with malformed HTML, wrappers around the
+		// `<form>`, and embedded `<script>`/`<style>` blocks without
+		// us hand-rolling a regex. The `LIBXML_NOERROR` flag silences
+		// the warnings WordPress core suppresses with the same pattern.
+		$dom    = new \DOMDocument();
+		$loaded = @$dom->loadHTML( // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
+			'<?xml encoding="UTF-8"><div id="srfm-preserve-root">' . $html . '</div>',
+			LIBXML_NOERROR | LIBXML_NOWARNING
+		);
+		if ( ! $loaded ) {
+			return '';
+		}
+
+		$root = $dom->getElementById( 'srfm-preserve-root' );
+		if ( ! $root instanceof \DOMElement ) {
+			return '';
+		}
+
+		$forms = $root->getElementsByTagName( 'form' );
+		if ( $forms->length > 0 ) {
+			$first = $forms->item( 0 );
+			if ( $first instanceof \DOMNode && $first->parentNode instanceof \DOMNode ) {
+				$first->parentNode->removeChild( $first );
+			}
+		}
+
+		$preserved = '';
+		foreach ( iterator_to_array( $root->childNodes ) as $child ) {
+			$preserved .= $dom->saveHTML( $child );
+		}
+
+		$preserved = trim( $preserved );
+		if ( '' === $preserved ) {
+			return '';
+		}
+
+		// Gate `<script>` / `<iframe>` / similar survival on the same
+		// capability WordPress applies to every other unsanitized HTML
+		// sink. On multisite, this means a site admin (who can paste
+		// `<script>` into a `core/html` block only by virtue of
+		// per-site rules WP already enforces) gets the same treatment
+		// here that they would get if the post were saved through the
+		// REST API directly.
+		if ( ! current_user_can( 'unfiltered_html' ) ) {
+			$preserved = wp_kses_post( $preserved );
+		}
+
+		return $preserved;
 	}
 
 	/**
@@ -827,6 +948,50 @@ class Html_Form_Detector {
 			$cleaned[] = $field;
 		}
 
+		return $cleaned;
+	}
+
+	/**
+	 * Defensive sweep over post-filter fields. Walks every string leaf
+	 * inside every field — including arbitrary-depth `fieldOptions`
+	 * arrays — and runs each one through `wp_strip_all_tags` so a
+	 * sloppy `srfm_html_form_detector_refine_fields` callback cannot
+	 * smuggle raw HTML into a downstream block attribute.
+	 *
+	 * Form-field attributes are not HTML containers — labels,
+	 * placeholders, helptext, and option labels render as text-nodes
+	 * (escaped via the block renderer's `esc_html`) or as attribute
+	 * values (escaped via `esc_attr`). Stripping tags here loses no
+	 * legitimate value and short-circuits the stored-XSS path for
+	 * any pro-added property that `Create_Form`'s hardcoded sanitize
+	 * list does not cover.
+	 *
+	 * @since x.x.x
+	 * @param array<int,array<string,mixed>> $fields Filter output.
+	 * @return array<int,array<string,mixed>>
+	 */
+	protected function strip_unsafe_html_in_fields( $fields ) {
+		if ( ! is_array( $fields ) ) {
+			return [];
+		}
+
+		$walker = static function ( $value ) use ( &$walker ) {
+			if ( is_string( $value ) ) {
+				return wp_strip_all_tags( $value );
+			}
+			if ( is_array( $value ) ) {
+				return array_map( $walker, $value );
+			}
+			return $value;
+		};
+
+		$cleaned = [];
+		foreach ( $fields as $field ) {
+			if ( ! is_array( $field ) ) {
+				continue;
+			}
+			$cleaned[] = array_map( $walker, $field );
+		}
 		return $cleaned;
 	}
 }

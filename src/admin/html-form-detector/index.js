@@ -171,7 +171,24 @@ async function convertBlock( clientId, content, parsed ) {
 		const shortcodeBlock = createBlock( SHORTCODE_BLOCK_NAME, {
 			text: shortcode,
 		} );
-		const surroundingHtml = stripFormFromHtml( content );
+
+		// Prefer the server-computed preserved markup over the client-
+		// side strip. The server runs `wp_kses_post` on the remnant for
+		// users without the `unfiltered_html` cap, so multisite site
+		// admins (who have `manage_options` but not `unfiltered_html`)
+		// can't smuggle `<script>` / `<iframe>` markup into the new
+		// `core/html` block by hiding it behind the source `<form>`.
+		// Fall back to the client strip only when the server payload
+		// did not include `preserved_html` — defensive for older
+		// deployments and for the offline / proxy-stripped case.
+		const serverPreserved =
+			typeof response?.preserved_html === 'string'
+				? response.preserved_html
+				: null;
+		const surroundingHtml =
+			serverPreserved !== null
+				? serverPreserved
+				: stripFormFromHtml( content );
 
 		// When the source `core/html` block held nothing but the `<form>`
 		// (and optional whitespace), the historical behavior is correct:

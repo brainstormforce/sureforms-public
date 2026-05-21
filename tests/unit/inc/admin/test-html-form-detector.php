@@ -188,6 +188,27 @@ class Test_Html_Form_Detector extends TestCase {
 		$this->assertSame( 'srfm_html_convert_nonce_failed', $result->get_error_code() );
 	}
 
+	public function test_handle_convert_html_form_rejects_subscriber_with_forbidden() {
+		// Locks in the capability-before-nonce order. A subscriber
+		// (who can hold a valid `wp_rest` nonce — every logged-in
+		// user gets one via `apiFetch`) must be bounced on the cap
+		// check, not the nonce check, so a future loosening of
+		// `current_user_can` cannot promote them to a 'nonce_failed'
+		// 403 that might be retried with a fresh nonce.
+		wp_set_current_user( $this->subscriber_id );
+
+		$request = new \WP_REST_Request( 'POST', '/sureforms/v1/convert-html-form' );
+		$request->add_header( 'X-WP-Nonce', wp_create_nonce( 'wp_rest' ) );
+		$request->set_param(
+			'parsed_fields',
+			[ [ 'label' => 'Name', 'fieldType' => 'input', 'required' => true ] ]
+		);
+
+		$result = $this->detector->handle_convert_html_form( $request );
+		$this->assertInstanceOf( \WP_Error::class, $result );
+		$this->assertSame( 'srfm_html_convert_forbidden', $result->get_error_code() );
+	}
+
 	public function test_apply_native_card_styling() {
 		$form_id = self::factory()->post->create( [ 'post_type' => SRFM_FORMS_POST_TYPE ] );
 
@@ -388,5 +409,90 @@ class Test_Html_Form_Detector extends TestCase {
 		$this->assertArrayNotHasKey( '_optionValue', $result[0] );
 		$this->assertArrayNotHasKey( '_groupLabel', $result[0] );
 		$this->assertArrayNotHasKey( 'confidence', $result[0] );
+	}
+
+	public function test_strip_unsafe_html_in_fields() {
+		// Simulates a sloppy `srfm_html_form_detector_refine_fields`
+		// callback that re-introduces raw HTML in properties
+		// `Create_Form` does not know to sanitize. The defensive sweep
+		// must strip tags from every string leaf at any depth.
+		$result = $this->call_protected(
+			'strip_unsafe_html_in_fields',
+			[
+				[
+					[
+						'label'        => 'Name <script>alert(1)</script>',
+						'fieldType'    => 'input',
+						'helpText'     => 'Hint <img src=x onerror=alert(1)>',
+						'fieldOptions' => [
+							[
+								'label' => 'Yes <iframe src=//evil>',
+								'value' => 'yes',
+							],
+							[
+								'label' => 'No',
+								'value' => 'no',
+							],
+						],
+						'allowedFormats' => [ 'jpg<script>', 'png' ],
+						'required'       => true,
+						'maxFiles'       => 5,
+					],
+					'not-an-array-entry',
+				],
+			]
+		);
+
+		$this->assertCount( 1, $result );
+		$this->assertSame( 'Name alert(1)', $result[0]['label'] );
+		$this->assertSame( 'Hint ', $result[0]['helpText'] );
+		$this->assertSame( 'Yes ', $result[0]['fieldOptions'][0]['label'] );
+		$this->assertSame( 'yes', $result[0]['fieldOptions'][0]['value'] );
+		$this->assertSame( 'No', $result[0]['fieldOptions'][1]['label'] );
+		// Scalars survive.
+		$this->assertTrue( $result[0]['required'] );
+		$this->assertSame( 5, $result[0]['maxFiles'] );
+		// Nested array of strings — each leaf cleaned.
+		$this->assertSame( [ 'jpg', 'png' ], $result[0]['allowedFormats'] );
+	}
+
+	public function test_strip_form_for_preservation_kses_for_non_unfiltered() {
+		// Site admin without `unfiltered_html` (mirrors a multisite
+		// site admin) — `<script>` outside the form must be stripped.
+		$user_id = self::factory()->user->create( [ 'role' => 'editor' ] );
+		wp_set_current_user( $user_id );
+
+		$html = '<div class="wrap"><h2>Free eBook</h2>'
+			. '<form><input type="email" name="email" required></form>'
+			. '<p>Thanks for signing up.</p>'
+			. '<script>alert("xss")</script>'
+			. '</div>';
+
+		$preserved = $this->call_protected( 'strip_form_for_preservation', [ $html ] );
+
+		$this->assertStringContainsString( '<h2>Free eBook</h2>', $preserved );
+		$this->assertStringContainsString( 'Thanks for signing up', $preserved );
+		$this->assertStringNotContainsString( '<form', $preserved );
+		$this->assertStringNotContainsString( '<script', $preserved );
+		$this->assertStringNotContainsString( 'alert("xss")', $preserved );
+
+		wp_delete_user( $user_id );
+	}
+
+	public function test_strip_form_for_preservation_preserves_form_only_block() {
+		// When the source block held only the `<form>` (no wrapper),
+		// the preserved markup must be empty so the caller can fall
+		// through to the historical one-block-for-one-block swap.
+		wp_set_current_user( $this->admin_id );
+
+		$html      = '<form><input type="text" name="x"></form>';
+		$preserved = $this->call_protected( 'strip_form_for_preservation', [ $html ] );
+
+		$this->assertSame( '', $preserved );
+	}
+
+	public function test_strip_form_for_preservation_empty_input() {
+		$this->assertSame( '', $this->call_protected( 'strip_form_for_preservation', [ '' ] ) );
+		$this->assertSame( '', $this->call_protected( 'strip_form_for_preservation', [ null ] ) );
 	}
 }

@@ -23,6 +23,14 @@ const TYPE_MAP = {
 	hidden: 'hidden',
 };
 
+// Skip the deep parse for forms whose input count exceeds this. The
+// O(N^2) label/fieldset resolution would otherwise block the editor
+// main thread on every keystroke inside the source block. A real
+// contact / signup / quiz form clears 200 fields by a wide margin;
+// anything past that is almost always a marketing-page export the
+// AI middleware is better-suited to convert anyway.
+const FORM_INPUT_SOFT_LIMIT = 200;
+
 /**
  * Read the text content of a `<label>` element that appears immediately
  * before the given element in the same parent — separated only by
@@ -382,9 +390,37 @@ export function parseFormHtml( html ) {
 		return null;
 	}
 
+	const formInputs = formEl.querySelectorAll( 'input, textarea, select' );
+
+	// Bail out of the deep parse for pathologically large forms. Every
+	// field walk runs `closest('fieldset')` (O(depth)) and a per-field
+	// `label[for="..."]` document query (O(N) within the doc); on a
+	// form with hundreds of inputs that is O(N^2) on the editor's main
+	// thread, and the parser runs on every keystroke inside the source
+	// `core/html` block. Return a single-field sentinel with
+	// `confidence: 'low'` so the HOC still surfaces the Convert button
+	// (it shows when `fields.length > 0`) AND the server routes the
+	// conversion through the AI middleware, which has the raw HTML and
+	// can take its time off the editor's main thread.
+	if ( formInputs.length > FORM_INPUT_SOFT_LIMIT ) {
+		return {
+			fields: [
+				{
+					fieldType: 'input',
+					label: 'Field',
+					required: false,
+					confidence: 'low',
+				},
+			],
+			submitText: '',
+			styling: {},
+			confidence: 'low',
+		};
+	}
+
 	const rawFields = [];
 
-	formEl.querySelectorAll( 'input, textarea, select' ).forEach( ( element ) => {
+	formInputs.forEach( ( element ) => {
 		if ( element.tagName === 'INPUT' ) {
 			const parsed = parseInput( element, doc );
 			if ( parsed ) {
