@@ -116,7 +116,14 @@ class Field_Mapping {
 			// silently dropped by the mapper even when the caller (AI,
 			// MCP, or the HTML-form converter) supplied it.
 			if ( isset( $question['placeholder'] ) && is_string( $question['placeholder'] ) && '' !== $question['placeholder'] ) {
-				$merged_attributes['placeholder'] = sanitize_text_field( $question['placeholder'] );
+				// Bound the placeholder to 500 chars: other string fields
+				// in this mapper are implicitly bounded by their upstream
+				// schema, but `placeholder` lands here from three call
+				// sites (AI, MCP, HTML converter) and a pathological
+				// caller could push a multi-MB string into the block's
+				// `_srfm_*` post meta. `wp_html_excerpt` strips HTML
+				// first, then truncates safely on word boundaries.
+				$merged_attributes['placeholder'] = wp_html_excerpt( sanitize_text_field( $question['placeholder'] ), 500 );
 			}
 
 			// Apply filter to modify field type.

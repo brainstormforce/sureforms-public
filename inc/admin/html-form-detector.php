@@ -621,6 +621,16 @@ class Html_Form_Detector {
 	 * @return string Sanitized markup safe to forward.
 	 */
 	protected function scrub_html_for_ai( $html ) {
+		// Normalize Unicode whitespace separators to plain ASCII space
+		// before the regex pass. Without this, a payload such as
+		// `<input type=<NBSP>"hidden">` (U+00A0 between attr name and
+		// the `=`) sails through every `\s`-based pattern below because
+		// PCRE's default `\s` is ASCII-only. Defense-in-depth — the
+		// trust boundary is the `manage_options` cap on the route — but
+		// the cost is one `str_replace` and the regex patterns stay
+		// readable.
+		$html = str_replace( [ "\xC2\xA0", "\xE2\x80\x83", "\xE2\x80\x82" ], ' ', $html );
+
 		// Drop hidden inputs entirely.
 		$html = preg_replace(
 			'/<input\b[^>]*\btype\s*=\s*["\']?hidden["\']?[^>]*>/i',

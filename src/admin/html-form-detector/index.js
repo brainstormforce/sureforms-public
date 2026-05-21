@@ -156,7 +156,16 @@ async function convertBlock( clientId, content, parsed ) {
 			typeof response?.shortcode === 'string' ? response.shortcode : '';
 
 		if ( ! formId || ! shortcode ) {
-			throw { code: 'srfm_html_convert_bad_payload' };
+			// Throw an Error rather than a plain object so the rejection
+			// carries a stack trace (useful in editor console traces),
+			// satisfies `eslint(no-throw-literal)`, and still surfaces
+			// `code` through the catch block below alongside any other
+			// REST rejection.
+			const badPayload = new Error(
+				'SureForms convert endpoint returned an unexpected payload.'
+			);
+			badPayload.code = 'srfm_html_convert_bad_payload';
+			throw badPayload;
 		}
 
 		const shortcodeBlock = createBlock( SHORTCODE_BLOCK_NAME, {

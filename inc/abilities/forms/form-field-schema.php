@@ -102,6 +102,7 @@ trait Form_Field_Schema {
 				'type'        => 'integer',
 				'description' => __( 'Maximum character length.', 'sureforms' ),
 			],
+			// `placeholder` — @since x.x.x (added alongside the HTML-form converter)
 			'placeholder'     => [
 				'type'        => 'string',
 				'description' => __( 'Placeholder text shown inside the empty input/textarea or as the empty first option in a dropdown.', 'sureforms' ),

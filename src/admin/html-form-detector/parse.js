@@ -221,7 +221,12 @@ function parseInput( element, doc ) {
 		// earlier revision did — produced N options all labelled with
 		// the legend instead of the actual option names.
 		const fieldset = element.closest( 'fieldset' );
-		const legend = fieldset?.querySelector( ':scope > legend' );
+		// Tailwind / Bootstrap-style markup often wraps `<legend>` in a
+		// styling `<div>` for layout reasons; `:scope > legend` misses
+		// those cases. The first descendant `<legend>` is good enough —
+		// nested fieldsets are rare in form payloads and would each
+		// have their own `closest('fieldset')` resolution anyway.
+		const legend = fieldset?.querySelector( 'legend' );
 		// Group title fallback chain: explicit <legend>, then a
 		// free-floating <label> sibling that sits above the first
 		// radio (e.g. `<label>How satisfied are you?</label><br>
@@ -404,10 +409,17 @@ export function parseFormHtml( html ) {
 
 	const styling = extractInlineStyling( formEl, submitEl );
 
+	// Majority-low (rather than any-low) so a single uncommon field type
+	// — e.g. one `<input type="color">` in an otherwise standard contact
+	// form — does not flip the whole form to low and burn an AI roundtrip.
+	// The AI fallback is expensive (network + tokens + middleware cost);
+	// reserve it for forms where the local parser genuinely can't carry
+	// most of the load.
+	const lowCount = fields.filter( ( f ) => f.confidence === 'low' ).length;
 	const overallConfidence =
 		fields.length === 0
 			? 'low'
-			: fields.some( ( f ) => f.confidence === 'low' )
+			: lowCount * 2 > fields.length
 				? 'low'
 				: 'high';
 
