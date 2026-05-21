@@ -160,6 +160,87 @@ class String_Collector {
 				$this->register_if_non_empty( 'form_' . $form_id . '_restriction_message', $message );
 			}
 		}
+
+		// Block-attribute strings (field labels, placeholders, option labels, etc.).
+		$this->collect_block_strings( $form_id );
+	}
+
+	/**
+	 * Walk the form's parsed blocks and register every translatable block attribute
+	 * with the active multilingual provider.
+	 *
+	 * Names use the same scheme that {@see String_Translator::translate_block_attribute()}
+	 * and {@see String_Translator::translate_block_option_label()} consume at render time,
+	 * so the collector and the translator stay in lockstep:
+	 *
+	 *  - `form_{form_id}_block_{block_id}_{attribute}`
+	 *  - `form_{form_id}_block_{block_id}_option_{N}_label`
+	 *
+	 * Bails early when the form has no block content.
+	 *
+	 * @param int $form_id The form post ID.
+	 * @since x.x.x
+	 * @return void
+	 */
+	public function collect_block_strings( int $form_id ): void {
+		$post = get_post( $form_id );
+		if ( ! $post instanceof \WP_Post || '' === trim( $post->post_content ) ) {
+			return;
+		}
+
+		$blocks = parse_blocks( $post->post_content );
+		if ( empty( $blocks ) ) {
+			return;
+		}
+
+		$this->walk_blocks_for_collection( $form_id, $blocks );
+	}
+
+	/**
+	 * Recursively iterate parsed blocks and register translatable strings.
+	 *
+	 * @param int                                     $form_id Form post ID.
+	 * @param array<int|string, array<string, mixed>> $blocks  Parsed-blocks structure.
+	 * @since x.x.x
+	 * @return void
+	 */
+	protected function walk_blocks_for_collection( int $form_id, array $blocks ): void {
+		$attribute_map = String_Translator::translatable_block_attributes();
+		$option_blocks = String_Translator::translatable_option_blocks();
+
+		foreach ( $blocks as $block ) {
+			$block_name = isset( $block['blockName'] ) && is_string( $block['blockName'] ) ? $block['blockName'] : '';
+			$attrs      = isset( $block['attrs'] ) && is_array( $block['attrs'] ) ? $block['attrs'] : [];
+			$block_id   = isset( $attrs['block_id'] ) && is_string( $attrs['block_id'] ) ? $attrs['block_id'] : '';
+
+			if ( '' !== $block_id && isset( $attribute_map[ $block_name ] ) ) {
+				foreach ( $attribute_map[ $block_name ] as $attribute_key ) {
+					if ( ! isset( $attrs[ $attribute_key ] ) || ! is_string( $attrs[ $attribute_key ] ) ) {
+						continue;
+					}
+					$this->register_if_non_empty(
+						'form_' . $form_id . '_block_' . $block_id . '_' . $attribute_key,
+						$attrs[ $attribute_key ]
+					);
+				}
+			}
+
+			if ( '' !== $block_id && in_array( $block_name, $option_blocks, true ) && isset( $attrs['options'] ) && is_array( $attrs['options'] ) ) {
+				foreach ( $attrs['options'] as $option_index => $option ) {
+					if ( ! is_array( $option ) || ! isset( $option['label'] ) || ! is_string( $option['label'] ) ) {
+						continue;
+					}
+					$this->register_if_non_empty(
+						'form_' . $form_id . '_block_' . $block_id . '_option_' . (int) $option_index . '_label',
+						$option['label']
+					);
+				}
+			}
+
+			if ( ! empty( $block['innerBlocks'] ) && is_array( $block['innerBlocks'] ) ) {
+				$this->walk_blocks_for_collection( $form_id, $block['innerBlocks'] );
+			}
+		}
 	}
 
 	/**

@@ -342,6 +342,69 @@ class Test_String_Collector extends TestCase {
 		$this->assertSame( [], $stub->registered );
 	}
 
+	public function test_collect_block_strings_registers_field_attributes() {
+		$stub    = $this->install_stub_provider();
+		$content = '<!-- wp:srfm/input {"block_id":"abc123","label":"Your Name","placeholder":"Enter your name"} /-->';
+		$form_id = $this->make_form( [ 'post_content' => $content ] );
+
+		String_Collector::get_instance()->collect_block_strings( $form_id );
+
+		$names = $this->registered_names();
+		$this->assertContains( 'form_' . $form_id . '_block_abc123_label', $names );
+		$this->assertContains( 'form_' . $form_id . '_block_abc123_placeholder', $names );
+	}
+
+	public function test_collect_block_strings_registers_dropdown_option_labels() {
+		$stub    = $this->install_stub_provider();
+		$content = '<!-- wp:srfm/dropdown {"block_id":"def456","label":"How?","options":[{"label":"Friend"},{"label":"Google"}]} /-->';
+		$form_id = $this->make_form( [ 'post_content' => $content ] );
+
+		String_Collector::get_instance()->collect_block_strings( $form_id );
+
+		$names = $this->registered_names();
+		$this->assertContains( 'form_' . $form_id . '_block_def456_label', $names );
+		$this->assertContains( 'form_' . $form_id . '_block_def456_option_0_label', $names );
+		$this->assertContains( 'form_' . $form_id . '_block_def456_option_1_label', $names );
+	}
+
+	public function test_collect_block_strings_noops_on_empty_content() {
+		$stub    = $this->install_stub_provider();
+		$form_id = $this->make_form( [ 'post_content' => '' ] );
+
+		String_Collector::get_instance()->collect_block_strings( $form_id );
+
+		$this->assertSame( [], $stub->registered );
+	}
+
+	public function test_walk_blocks_for_collection_recurses_into_inner_blocks() {
+		$stub      = $this->install_stub_provider();
+		$collector = String_Collector::get_instance();
+		$method    = new \ReflectionMethod( $collector, 'walk_blocks_for_collection' );
+		$method->setAccessible( true );
+
+		$blocks = [
+			[
+				'blockName'   => 'core/group',
+				'attrs'       => [],
+				'innerBlocks' => [
+					[
+						'blockName'   => 'srfm/input',
+						'attrs'       => [
+							'block_id' => 'nest1',
+							'label'    => 'Nested',
+						],
+						'innerBlocks' => [],
+					],
+				],
+			],
+		];
+
+		$method->invoke( $collector, 99, $blocks );
+
+		$names = $this->registered_names();
+		$this->assertContains( 'form_99_block_nest1_label', $names );
+	}
+
 	/**
 	 * NOTE: This test is intentionally declared LAST in the file. Defining
 	 * DOING_AUTOSAVE is a one-way operation that persists for the rest of the

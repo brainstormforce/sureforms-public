@@ -115,6 +115,11 @@ class Generate_Form_Markup {
 			// Filter to get the post content for the form.
 			$post_content = apply_filters( 'srfm_get_form_post_content', $post->post_content, $id );
 
+			// Pre-translate block-attribute strings (labels, placeholders, options, etc.)
+			// before rendering, so the visitor's chosen language is honoured. No-op when
+			// no multilingual provider is active.
+			$post_content = String_Translator::get_instance()->translate_form_content( (int) $id, Helper::get_string_value( $post_content ) );
+
 			if ( ! empty( $do_blocks ) ) {
 				$content = do_blocks( $post_content );
 			} else {
