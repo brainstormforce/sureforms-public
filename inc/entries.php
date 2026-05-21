@@ -809,6 +809,13 @@ class Entries {
 			return implode( ', ', array_map( 'sanitize_text_field', $field_value ) );
 		}
 
+		// Textarea fields contain intentional line breaks — use sanitize_textarea_field()
+		// to preserve them. sanitize_text_field() strips newlines, flattening multi-line
+		// content in the CSV export.
+		if ( str_contains( $field_key, 'srfm-textarea' ) ) {
+			return sanitize_textarea_field( Helper::get_string_value( $field_value ) );
+		}
+
 		return sanitize_text_field( Helper::get_string_value( $field_value ) );
 	}
 }
