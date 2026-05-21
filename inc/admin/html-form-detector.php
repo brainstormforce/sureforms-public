@@ -439,13 +439,16 @@ class Html_Form_Detector {
 
 		// DOMDocument copes with malformed HTML, wrappers around the
 		// `<form>`, and embedded `<script>`/`<style>` blocks without
-		// us hand-rolling a regex. The `LIBXML_NOERROR` flag silences
-		// the warnings WordPress core suppresses with the same pattern.
-		$dom    = new \DOMDocument();
-		$loaded = @$dom->loadHTML( // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
+		// us hand-rolling a regex. `libxml_use_internal_errors()` is the
+		// idiomatic way to suppress malformed-HTML warnings without the
+		// `@` operator (mirrors `Helper::strip_js_attributes()`).
+		$dom = new \DOMDocument();
+		libxml_use_internal_errors( true );
+		$loaded = $dom->loadHTML(
 			'<?xml encoding="UTF-8"><div id="srfm-preserve-root">' . $html . '</div>',
 			LIBXML_NOERROR | LIBXML_NOWARNING
 		);
+		libxml_clear_errors();
 		if ( ! $loaded ) {
 			return '';
 		}
@@ -458,12 +461,15 @@ class Html_Form_Detector {
 		$forms = $root->getElementsByTagName( 'form' );
 		if ( $forms->length > 0 ) {
 			$first = $forms->item( 0 );
+			// phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase -- DOM property.
 			if ( $first instanceof \DOMNode && $first->parentNode instanceof \DOMNode ) {
+				// phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase -- DOM property.
 				$first->parentNode->removeChild( $first );
 			}
 		}
 
 		$preserved = '';
+		// phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase -- DOM property.
 		foreach ( iterator_to_array( $root->childNodes ) as $child ) {
 			$preserved .= $dom->saveHTML( $child );
 		}
