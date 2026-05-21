@@ -622,11 +622,20 @@ class Form_Submit {
 			'device_name'    => $device_name,
 			'submission_url' => $submission_url,
 		];
-		$entries_data    = [
+		// Prefer the language the visitor saw at form-render time (captured in a
+		// hidden srfm-form-language input), since WPML's language detection on the
+		// REST submit endpoint frequently falls back to the default. Fall back to
+		// the active provider's current language when no hidden value was sent.
+		$submitted_language = isset( $form_data['srfm-form-language'] ) ? sanitize_text_field( Helper::get_string_value( $form_data['srfm-form-language'] ) ) : '';
+		$entry_language     = '' !== $submitted_language && preg_match( '/^[a-z]{2,3}([_-][A-Za-z0-9]{2,8})?$/', $submitted_language ) === 1
+			? $submitted_language
+			: Multilingual_Manager::get_instance()->provider()->current_language();
+
+		$entries_data = [
 			'form_id'         => $id,
 			'form_data'       => $submission_data,
 			'submission_info' => $submission_info,
-			'language'        => Multilingual_Manager::get_instance()->provider()->current_language(),
+			'language'        => $entry_language,
 			'created_at'      => current_time( 'mysql' ),
 		];
 		if ( is_user_logged_in() ) {

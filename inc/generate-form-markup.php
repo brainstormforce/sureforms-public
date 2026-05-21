@@ -8,6 +8,7 @@
 
 namespace SRFM\Inc;
 
+use SRFM\Inc\Compatibility\Multilingual\Multilingual_Manager;
 use SRFM\Inc\Compatibility\Multilingual\String_Translator;
 use SRFM\Inc\Traits\Get_Instance;
 
@@ -583,6 +584,7 @@ class Generate_Form_Markup {
 				?>
 
 				<input type="hidden" value="<?php echo esc_attr( Helper::get_string_value( $id ) ); ?>" name="form-id">
+				<input type="hidden" value="<?php echo esc_attr( Multilingual_Manager::get_instance()->provider()->current_language() ); ?>" name="srfm-form-language">
 				<input type="hidden" value="" name="srfm-sender-email-field" id="srfm-sender-email">
 				<input type="hidden" value="<?php echo esc_attr( Helper::get_string_value( $is_page_break ) ); ?>" id="srfm-page-break">
 				<?php if ( $honeypot_spam ) { ?>
