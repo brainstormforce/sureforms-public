@@ -106,6 +106,8 @@
 
 				.srfm-char-counter {
 					font-size: var( --srfm-error-font-size );
+					font-weight: var( --srfm-error-font-weight );
+					line-height: var( --srfm-error-line-height );
 					color: var( --srfm-color-input-text );
 					opacity: 0.65;
 
