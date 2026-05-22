@@ -100,6 +100,23 @@
 				}
 			}
 
+			.srfm-char-counter-wrap {
+				display: flex;
+				justify-content: flex-end;
+				padding-top: 4px;
+
+				.srfm-char-counter {
+					font-size: var( --srfm-error-font-size );
+					color: var( --srfm-color-input-text );
+					opacity: 0.65;
+
+					&.srfm-char-counter--error {
+						color: var( --srfm-error-color );
+						opacity: 1;
+					}
+				}
+			}
+
 			.srfm-error-wrap {
 				.srfm-error-message {
 					@include srfm-error-styles;
