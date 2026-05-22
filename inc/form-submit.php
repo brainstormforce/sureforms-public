@@ -657,6 +657,17 @@ class Form_Submit {
 			// Inject entry_id so {entry_id} smart tag resolves in confirmation message, redirect URL, email notifications, and downstream integrations.
 			$form_data['entry_id'] = intval( $entry_id );
 
+			// Switch the multilingual provider to the entry's language so the
+			// confirmation message, redirect URL, and email notifications render
+			// in the language the visitor saw at submit time. The REST submit
+			// endpoint doesn't carry the ?lang= URL parameter, so without this
+			// switch the provider would return strings in its default language
+			// even though the entry itself is correctly tagged.
+			$provider = Multilingual_Manager::get_instance()->provider();
+			if ( $provider->is_active() && '' !== $entry_language ) {
+				$provider->switch_language( $entry_language );
+			}
+
 			// Send email after entry creation so {entry_id} is available when smart tags are processed.
 			$send_email = $this->send_email( $id, $submission_data, $form_data );
 			if ( $send_email ) {
@@ -664,6 +675,11 @@ class Form_Submit {
 			}
 
 			$confirmation_message = Generate_Form_Markup::get_confirmation_markup( $form_data, $submission_data );
+			$redirect_url         = Generate_Form_Markup::get_redirect_url( $form_data, $submission_data );
+
+			if ( $provider->is_active() && '' !== $entry_language ) {
+				$provider->restore_language();
+			}
 
 			$response = [
 				'success'      => true,
@@ -674,7 +690,7 @@ class Form_Submit {
 					'after_submit'       => true,
 					'after_submit_nonce' => wp_create_nonce( 'srfm_after_submission_' . Helper::get_string_value( $entry_id ) ),
 				],
-				'redirect_url' => Generate_Form_Markup::get_redirect_url( $form_data, $submission_data ),
+				'redirect_url' => $redirect_url,
 			];
 
 			$form_submit_response = apply_filters(
