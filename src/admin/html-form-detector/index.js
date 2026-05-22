@@ -69,37 +69,6 @@ function deriveFormTitle() {
 }
 
 /**
- * Remove the first `<form>` element from the source HTML and return
- * whatever non-empty markup remains. Returns an empty string when the
- * block held only the form (and optional whitespace) — callers use that
- * as the signal to fall back to a straight block-for-block swap.
- *
- * We rely on the browser's own parser (`DOMParser`) so any wrapping
- * elements around the form stay intact in the remaining tree — e.g. a
- * `<div class="form-container">` with a `<h2>` above the form and a
- * post-submit `<p>` below it. Removing just the `<form>` node leaves
- * `<div class="form-container"><h2>…</h2><p>…</p></div>` as the
- * preserved markup, which we then hand back to a fresh `core/html`
- * block. No string-level splitting on the form's source position — that
- * would corrupt the wrapper when the form is nested inside it.
- *
- * @param {string} html The raw HTML the source `core/html` block held.
- * @return {string} Trimmed remaining markup, or '' when nothing is left.
- */
-function stripFormFromHtml( html ) {
-	if ( typeof html !== 'string' || ! html ) {
-		return '';
-	}
-	const doc = new window.DOMParser().parseFromString( html, 'text/html' );
-	const formEl = doc.querySelector( 'form' );
-	if ( ! formEl ) {
-		return '';
-	}
-	formEl.remove();
-	return doc.body ? doc.body.innerHTML.trim() : '';
-}
-
-/**
  * POST the parsed schema (and raw HTML for the AI fallback path) to
  * the conversion endpoint, swap the source `core/html` block for a
  * `core/shortcode` block, and surface a success/error snackbar.
@@ -172,23 +141,25 @@ async function convertBlock( clientId, content, parsed ) {
 			text: shortcode,
 		} );
 
-		// Prefer the server-computed preserved markup over the client-
-		// side strip. The server runs `wp_kses_post` on the remnant for
-		// users without the `unfiltered_html` cap, so multisite site
-		// admins (who have `manage_options` but not `unfiltered_html`)
-		// can't smuggle `<script>` / `<iframe>` markup into the new
-		// `core/html` block by hiding it behind the source `<form>`.
-		// Fall back to the client strip only when the server payload
-		// did not include `preserved_html` — defensive for older
-		// deployments and for the offline / proxy-stripped case.
-		const serverPreserved =
+		// Use the server-computed preserved markup ONLY. The server
+		// runs `wp_kses_post` on the remnant for users without the
+		// `unfiltered_html` cap, so multisite site admins (who have
+		// `manage_options` but not `unfiltered_html`) can't smuggle
+		// `<script>` / `<iframe>` markup into the new `core/html`
+		// block by hiding it behind the source `<form>`.
+		//
+		// No client-side fallback to `stripFormFromHtml(content)` here
+		// because the client has no equivalent cap-gated sanitizer —
+		// dropping back to it on a proxy-stripped response would let
+		// the un-sanitized branch run in production. When the server
+		// omits `preserved_html` we treat it as "nothing surrounding"
+		// and fall through to the one-block swap path below; the user
+		// loses the wrapper markup but never gets a stored-XSS path
+		// they couldn't already reach via a `core/html` block.
+		const surroundingHtml =
 			typeof response?.preserved_html === 'string'
 				? response.preserved_html
-				: null;
-		const surroundingHtml =
-			serverPreserved !== null
-				? serverPreserved
-				: stripFormFromHtml( content );
+				: '';
 
 		// When the source `core/html` block held nothing but the `<form>`
 		// (and optional whitespace), the historical behavior is correct:

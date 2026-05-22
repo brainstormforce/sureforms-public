@@ -373,9 +373,16 @@ class Test_Html_Form_Detector extends TestCase {
 		$meta = $this->call_protected( 'build_form_metadata', [ '', [ 'textColor' => 'not-a-hex' ] ] );
 		$this->assertSame( '#1E1E1E', $meta['formStyling']['textColor'] );
 
-		// Form background flows into instantForm.formBackgroundColor.
+		// `formBackgroundColor` is intentionally NOT applied through
+		// `formMetaData` — the `Form_Metadata` trait only exposes the
+		// colors + field-spacing slice, so the background is routed
+		// through `apply_native_card_styling` to `_srfm_forms_styling`
+		// instead. Asserting it landed in `instantForm` would lock in
+		// a contract the method explicitly disclaims (see the comment
+		// at the bottom of `build_form_metadata`). That assertion is
+		// covered by `test_apply_native_card_styling` below.
 		$meta = $this->call_protected( 'build_form_metadata', [ '', [ 'formBackgroundColor' => '#abcdef' ] ] );
-		$this->assertSame( '#abcdef', $meta['instantForm']['formBackgroundColor'] );
+		$this->assertArrayNotHasKey( 'formBackgroundColor', $meta['instantForm'] );
 	}
 
 	public function test_pick_hex() {

@@ -444,9 +444,18 @@ class Html_Form_Detector {
 		// `@` operator (mirrors `Helper::strip_js_attributes()`).
 		$dom = new \DOMDocument();
 		libxml_use_internal_errors( true );
+		// Defense-in-depth flags mirror the pro extension's loadHTML
+		// call. `LIBXML_NONET` refuses any outbound DTD fetch even if a
+		// `<!DOCTYPE … SYSTEM …>` ever slipped past `LIBXML_HTML_NODEFDTD`;
+		// the latter suppresses the default HTML4 DTD, which libxml
+		// would otherwise pull in. Single-site admins reach this path
+		// with `unfiltered_html` so the attack surface is mostly
+		// theoretical, but multisite site-admins (manage_options
+		// without unfiltered_html) do not — closing this gives them
+		// the same hardening their pro counterparts get.
 		$loaded = $dom->loadHTML(
 			'<?xml encoding="UTF-8"><div id="srfm-preserve-root">' . $html . '</div>',
-			LIBXML_NOERROR | LIBXML_NOWARNING
+			LIBXML_NOERROR | LIBXML_NOWARNING | LIBXML_NONET | LIBXML_HTML_NODEFDTD
 		);
 		libxml_clear_errors();
 		if ( ! $loaded ) {
