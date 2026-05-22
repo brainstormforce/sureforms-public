@@ -14,6 +14,7 @@ use SRFM\Admin\Notice_Manager;
 use SRFM\Inc\Abilities\Abilities_Registrar;
 use SRFM\Inc\Activator;
 use SRFM\Inc\Admin\Editor_Nudge;
+use SRFM\Inc\Admin\Html_Form_Detector;
 use SRFM\Inc\Admin_Ajax;
 use SRFM\Inc\AI_Form_Builder\AI_Auth;
 use SRFM\Inc\AI_Form_Builder\AI_Form_Builder;
@@ -217,6 +218,11 @@ class Plugin_Loader {
 			Notice_Manager::get_instance();
 			Editor_Nudge::get_instance();
 		}
+		// Always instantiate — script enqueue is self-gated by `allow_load()`,
+		// while the REST endpoint for converting HTML forms must register
+		// outside the admin context (REST dispatch runs with `is_admin()` ===
+		// false, so admin-only instantiation would 404 the endpoint).
+		Html_Form_Detector::get_instance();
 		Payments::get_instance();
 		Duplicate_Form::get_instance();
 		Learn::get_instance();

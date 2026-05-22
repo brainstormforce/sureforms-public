@@ -96,6 +96,10 @@ module.exports = {
 			__dirname,
 			'src/admin/editor-nudge/index.js'
 		),
+		htmlFormDetector: path.resolve(
+			__dirname,
+			'src/admin/html-form-detector/index.js'
+		),
 		entries: path.resolve( __dirname, 'src/admin/entries/index.js' ),
 		payments: path.resolve( __dirname, 'src/admin/payment/index.js' ),
 		forms: path.resolve( __dirname, 'src/admin/forms/index.js' ),
