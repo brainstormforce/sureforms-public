@@ -101,9 +101,8 @@
 			}
 
 			.srfm-char-counter-wrap {
-				display: flex;
-				justify-content: flex-end;
-				padding-top: 4px;
+				float: right;
+				margin-left: 8px;
 
 				.srfm-char-counter {
 					font-size: var( --srfm-error-font-size );
