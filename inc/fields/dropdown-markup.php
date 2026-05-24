@@ -191,9 +191,18 @@ class Dropdown_Markup extends Base {
 	/**
 	 * Resolve dynamic default value from smart tags and override preselected options.
 	 *
-	 * Supports a single resolved value for single-select dropdowns and a
-	 * comma-separated list of resolved values for multi-select dropdowns
-	 * (for example "{get_input:a}, {get_input:b}" resolving to "Red, Blue").
+	 * Single-select dropdowns match the resolved value as a single trimmed
+	 * string, so labels that legitimately contain commas (for example
+	 * "Bonaire, Sint Eustatius and Saba") still match.
+	 *
+	 * Multi-select dropdowns split the resolved value on commas and match
+	 * every segment (for example "{get_input:a}, {get_input:b}" resolving to
+	 * "Red, Blue", or a single `{get_input:colors}` smart tag with URL
+	 * `?colors=Red,Blue`). The same comma-split applies to multi-character
+	 * resolved values from `{get_input:...}` and `{get_cookie:...}`, so cookie
+	 * payloads that contain commas are treated as multi-value in multi-select
+	 * mode.
+	 *
 	 * When the `Add Numeric Values to Options` (showValues) setting is on,
 	 * each segment is also compared against the option's `value`.
 	 *
@@ -215,18 +224,26 @@ class Dropdown_Markup extends Base {
 		}
 
 		// START: multi-value dynamic default resolution.
-		$segments = array_filter(
-			array_map( 'trim', explode( ',', $resolved ) ),
-			static function ( $segment ) {
-				return '' !== $segment;
-			}
-		);
+		$is_multi_select = ! empty( $attributes['multiSelect'] );
+
+		if ( $is_multi_select ) {
+			$segments = array_filter(
+				array_map( 'trim', explode( ',', $resolved ) ),
+				static function ( $segment ) {
+					return '' !== $segment;
+				}
+			);
+			// Cap segments to avoid pathological URLs (e.g. ?colors=,,,,,...) producing thousands of comparisons.
+			$segments = array_slice( $segments, 0, 50 );
+		} else {
+			$trimmed  = trim( $resolved );
+			$segments = '' === $trimmed ? [] : [ $trimmed ];
+		}
 
 		if ( empty( $segments ) ) {
 			return;
 		}
 
-		$is_multi_select  = ! empty( $attributes['multiSelect'] );
 		$match_value_too  = ! empty( $attributes['showValues'] );
 		$matching_indices = [];
 
@@ -237,7 +254,8 @@ class Dropdown_Markup extends Base {
 				}
 
 				$option_label = $option['label'] ?? '';
-				$option_value = $match_value_too ? (string) ( $option['value'] ?? '' ) : '';
+				$raw_value    = $option['value'] ?? '';
+				$option_value = $match_value_too && is_scalar( $raw_value ) ? (string) $raw_value : '';
 
 				$is_match = strcasecmp( $option_label, $segment ) === 0
 					|| ( $match_value_too && '' !== $option_value && strcasecmp( $option_value, $segment ) === 0 );

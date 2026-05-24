@@ -206,11 +206,19 @@ class Multichoice_Markup extends Base {
 	/**
 	 * Resolve dynamic default value from smart tags and override preselected options.
 	 *
-	 * Supports a single resolved value for radio (single-selection) mode and
-	 * a comma-separated list of resolved values for checkbox mode (for example
-	 * "{get_input:a}, {get_input:b}" resolving to "Red, Blue"). When the
-	 * `Add Numeric Values to Options` (showValues) setting is on, each
-	 * segment is also compared against the option's `value`.
+	 * Radio (single-selection) mode matches the resolved value as a single
+	 * trimmed string, so option titles that legitimately contain commas
+	 * (for example "Bonaire, Sint Eustatius and Saba") still match.
+	 *
+	 * Checkbox mode splits the resolved value on commas and matches every
+	 * segment (for example "{get_input:a}, {get_input:b}" resolving to
+	 * "Red, Blue", or a single `{get_input:colors}` with URL `?colors=Red,Blue`).
+	 * The same comma-split applies to multi-character resolved values from
+	 * `{get_input:...}` and `{get_cookie:...}`, so cookie payloads that
+	 * contain commas are treated as multi-value in checkbox mode.
+	 *
+	 * When the `Add Numeric Values to Options` (showValues) setting is on,
+	 * each segment is also compared against the option's `value`.
 	 *
 	 * @param array<mixed> $attributes Block attributes.
 	 * @since 2.8.1
@@ -230,12 +238,19 @@ class Multichoice_Markup extends Base {
 		}
 
 		// START: multi-value dynamic default resolution.
-		$segments = array_filter(
-			array_map( 'trim', explode( ',', $resolved ) ),
-			static function ( $segment ) {
-				return '' !== $segment;
-			}
-		);
+		if ( ! $this->single_selection ) {
+			$segments = array_filter(
+				array_map( 'trim', explode( ',', $resolved ) ),
+				static function ( $segment ) {
+					return '' !== $segment;
+				}
+			);
+			// Cap segments to avoid pathological URLs (e.g. ?colors=,,,,,...) producing thousands of comparisons.
+			$segments = array_slice( $segments, 0, 50 );
+		} else {
+			$trimmed  = trim( $resolved );
+			$segments = '' === $trimmed ? [] : [ $trimmed ];
+		}
 
 		if ( empty( $segments ) ) {
 			return;
@@ -251,7 +266,8 @@ class Multichoice_Markup extends Base {
 				}
 
 				$option_title = $option['optionTitle'] ?? '';
-				$option_value = $match_value_too ? (string) ( $option['value'] ?? '' ) : '';
+				$raw_value    = $option['value'] ?? '';
+				$option_value = $match_value_too && is_scalar( $raw_value ) ? (string) $raw_value : '';
 
 				$is_match = strcasecmp( $option_title, $segment ) === 0
 					|| ( $match_value_too && '' !== $option_value && strcasecmp( $option_value, $segment ) === 0 );
