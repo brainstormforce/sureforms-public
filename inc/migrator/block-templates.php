@@ -1,0 +1,496 @@
+<?php
+/**
+ * Block Templates — emits Gutenberg block markup for each SureForms field block.
+ *
+ * Acts as the canonical destination dictionary for the form migrator. Each
+ * `template_*()` method returns a serialized Gutenberg block string that can
+ * be concatenated into a SureForms form's `post_content`.
+ *
+ * Attribute schemas mirror `src/blocks/<block>/block.json` — only attributes
+ * different from the block's defaults are emitted, to keep imported forms
+ * indistinguishable from hand-built ones in the editor.
+ *
+ * @package sureforms
+ * @since   x.x.x
+ */
+
+namespace SRFM\Inc\Migrator;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+/**
+ * Block_Templates
+ *
+ * @since x.x.x
+ */
+class Block_Templates {
+
+	/**
+	 * Build a srfm/input block (text / email-as-text / password / date / hidden).
+	 *
+	 * @since x.x.x
+	 *
+	 * @param array<string,mixed> $args Field args (label, placeholder, required, fieldType, etc.).
+	 * @return string Serialized Gutenberg block markup.
+	 */
+	public static function input( array $args ) {
+		$attrs = self::strip_empty(
+			[
+				'label'        => self::str( $args, 'label', 'Text Field' ),
+				'placeholder'  => self::str( $args, 'placeholder' ),
+				'defaultValue' => self::str( $args, 'default_value' ),
+				'required'     => self::bool( $args, 'required' ),
+				'help'         => self::str( $args, 'help' ),
+				'errorMsg'     => self::str( $args, 'error_message' ),
+				'textLength'   => self::int_or_null( $args, 'max_length' ),
+				'inputMask'    => self::str( $args, 'input_mask', 'none' ),
+				'slug'         => self::slugify( self::str( $args, 'label', 'text-field' ) ),
+				'block_id'     => self::block_id(),
+			]
+		);
+		return self::serialize_block( 'srfm/input', $attrs );
+	}
+
+	/**
+	 * Build a srfm/email block.
+	 *
+	 * @since x.x.x
+	 *
+	 * @param array<string,mixed> $args Field args.
+	 * @return string
+	 */
+	public static function email( array $args ) {
+		$attrs = self::strip_empty(
+			[
+				'label'        => self::str( $args, 'label', 'Email' ),
+				'placeholder'  => self::str( $args, 'placeholder' ),
+				'defaultValue' => self::str( $args, 'default_value' ),
+				'required'     => self::bool( $args, 'required' ),
+				'help'         => self::str( $args, 'help' ),
+				'errorMsg'     => self::str( $args, 'error_message' ),
+				'slug'         => self::slugify( self::str( $args, 'label', 'email' ) ),
+				'block_id'     => self::block_id(),
+			]
+		);
+		return self::serialize_block( 'srfm/email', $attrs );
+	}
+
+	/**
+	 * Build a srfm/url block.
+	 *
+	 * @since x.x.x
+	 *
+	 * @param array<string,mixed> $args Field args.
+	 * @return string
+	 */
+	public static function url( array $args ) {
+		$attrs = self::strip_empty(
+			[
+				'label'        => self::str( $args, 'label', 'URL' ),
+				'placeholder'  => self::str( $args, 'placeholder' ),
+				'defaultValue' => self::str( $args, 'default_value' ),
+				'required'     => self::bool( $args, 'required' ),
+				'help'         => self::str( $args, 'help' ),
+				'errorMsg'     => self::str( $args, 'error_message' ),
+				'slug'         => self::slugify( self::str( $args, 'label', 'url' ) ),
+				'block_id'     => self::block_id(),
+			]
+		);
+		return self::serialize_block( 'srfm/url', $attrs );
+	}
+
+	/**
+	 * Build a srfm/phone block.
+	 *
+	 * @since x.x.x
+	 *
+	 * @param array<string,mixed> $args Field args.
+	 * @return string
+	 */
+	public static function phone( array $args ) {
+		$attrs = self::strip_empty(
+			[
+				'label'       => self::str( $args, 'label', 'Phone Number' ),
+				'placeholder' => self::str( $args, 'placeholder' ),
+				'required'    => self::bool( $args, 'required' ),
+				'help'        => self::str( $args, 'help' ),
+				'errorMsg'    => self::str( $args, 'error_message' ),
+				'slug'        => self::slugify( self::str( $args, 'label', 'phone' ) ),
+				'block_id'    => self::block_id(),
+			]
+		);
+		return self::serialize_block( 'srfm/phone', $attrs );
+	}
+
+	/**
+	 * Build a srfm/number block. Handles range/slider via min/max args.
+	 *
+	 * @since x.x.x
+	 *
+	 * @param array<string,mixed> $args Field args.
+	 * @return string
+	 */
+	public static function number( array $args ) {
+		$attrs = self::strip_empty(
+			[
+				'label'        => self::str( $args, 'label', 'Number' ),
+				'placeholder'  => self::str( $args, 'placeholder' ),
+				'defaultValue' => self::str( $args, 'default_value' ),
+				'required'     => self::bool( $args, 'required' ),
+				'help'         => self::str( $args, 'help' ),
+				'errorMsg'     => self::str( $args, 'error_message' ),
+				'minValue'     => self::int_or_null( $args, 'min' ),
+				'maxValue'     => self::int_or_null( $args, 'max' ),
+				'prefix'       => self::str( $args, 'prefix' ),
+				'suffix'       => self::str( $args, 'suffix' ),
+				'slug'         => self::slugify( self::str( $args, 'label', 'number' ) ),
+				'block_id'     => self::block_id(),
+			]
+		);
+		return self::serialize_block( 'srfm/number', $attrs );
+	}
+
+	/**
+	 * Build a srfm/textarea block.
+	 *
+	 * @since x.x.x
+	 *
+	 * @param array<string,mixed> $args Field args.
+	 * @return string
+	 */
+	public static function textarea( array $args ) {
+		$attrs = self::strip_empty(
+			[
+				'label'        => self::str( $args, 'label', 'Textarea' ),
+				'placeholder'  => self::str( $args, 'placeholder' ),
+				'defaultValue' => self::str( $args, 'default_value' ),
+				'required'     => self::bool( $args, 'required' ),
+				'help'         => self::str( $args, 'help' ),
+				'errorMsg'     => self::str( $args, 'error_message' ),
+				'minLength'    => self::int_or_null( $args, 'min_length' ),
+				'maxLength'    => self::int_or_null( $args, 'max_length' ),
+				'rows'         => self::int_or_null( $args, 'rows', 4 ),
+				'slug'         => self::slugify( self::str( $args, 'label', 'textarea' ) ),
+				'block_id'     => self::block_id(),
+			]
+		);
+		return self::serialize_block( 'srfm/textarea', $attrs );
+	}
+
+	/**
+	 * Build a srfm/dropdown (single-select or multi-select) block.
+	 *
+	 * @since x.x.x
+	 *
+	 * @param array<string,mixed> $args Field args. Expects `options` => list of strings.
+	 * @return string
+	 */
+	public static function dropdown( array $args ) {
+		$options = self::format_options( $args, 'label' );
+		$attrs   = self::strip_empty(
+			[
+				'label'              => self::str( $args, 'label', 'Dropdown' ),
+				'placeholder'        => self::str( $args, 'placeholder' ),
+				'required'           => self::bool( $args, 'required' ),
+				'multiSelect'        => self::bool( $args, 'multiple' ),
+				'help'               => self::str( $args, 'help' ),
+				'errorMsg'           => self::str( $args, 'error_message' ),
+				'options'            => $options,
+				'preselectedOptions' => self::array_or_null( $args, 'preselected' ),
+				'slug'               => self::slugify( self::str( $args, 'label', 'dropdown' ) ),
+				'block_id'           => self::block_id(),
+			]
+		);
+		return self::serialize_block( 'srfm/dropdown', $attrs );
+	}
+
+	/**
+	 * Build a srfm/multi-choice (radio / multiple-choice) block.
+	 *
+	 * @since x.x.x
+	 *
+	 * @param array<string,mixed> $args Field args. Expects `options` => list of strings.
+	 * @return string
+	 */
+	public static function multi_choice( array $args ) {
+		$options = self::format_options( $args, 'optionTitle' );
+		$attrs   = self::strip_empty(
+			[
+				'label'              => self::str( $args, 'label', 'Multi Choice' ),
+				'required'           => self::bool( $args, 'required' ),
+				'singleSelection'    => ! self::bool( $args, 'multiple' ),
+				'help'               => self::str( $args, 'help' ),
+				'errorMsg'           => self::str( $args, 'error_message' ),
+				'options'            => $options,
+				'preselectedOptions' => self::array_or_null( $args, 'preselected' ),
+				'slug'               => self::slugify( self::str( $args, 'label', 'multi-choice' ) ),
+				'block_id'           => self::block_id(),
+			]
+		);
+		return self::serialize_block( 'srfm/multi-choice', $attrs );
+	}
+
+	/**
+	 * Build a srfm/checkbox block.
+	 *
+	 * @since x.x.x
+	 *
+	 * @param array<string,mixed> $args Field args.
+	 * @return string
+	 */
+	public static function checkbox( array $args ) {
+		$attrs = self::strip_empty(
+			[
+				'label'    => self::str( $args, 'label', 'Checkbox' ),
+				'required' => self::bool( $args, 'required' ),
+				'checked'  => self::bool( $args, 'checked' ),
+				'help'     => self::str( $args, 'help' ),
+				'errorMsg' => self::str( $args, 'error_message' ),
+				'slug'     => self::slugify( self::str( $args, 'label', 'checkbox' ) ),
+				'block_id' => self::block_id(),
+			]
+		);
+		return self::serialize_block( 'srfm/checkbox', $attrs );
+	}
+
+	/**
+	 * Build a srfm/gdpr block.
+	 *
+	 * @since x.x.x
+	 *
+	 * @param array<string,mixed> $args Field args. Expects `label` (consent text).
+	 * @return string
+	 */
+	public static function gdpr( array $args ) {
+		$attrs = self::strip_empty(
+			[
+				'label'    => self::str( $args, 'label', 'I consent to have this website store my submitted information so they can respond to my inquiry.' ),
+				'checked'  => self::bool( $args, 'checked' ),
+				'help'     => self::str( $args, 'help' ),
+				'errorMsg' => self::str( $args, 'error_message' ),
+				'slug'     => self::slugify( self::str( $args, 'label', 'consent' ) ),
+				'block_id' => self::block_id(),
+			]
+		);
+		return self::serialize_block( 'srfm/gdpr', $attrs );
+	}
+
+	/**
+	 * Build a srfm/inline-button submit button.
+	 *
+	 * @since x.x.x
+	 *
+	 * @param array<string,mixed> $args Args. Expects `text` (button label).
+	 * @return string
+	 */
+	public static function submit_button( array $args = [] ) {
+		$attrs = self::strip_empty(
+			[
+				'buttonText' => self::str( $args, 'text', 'Submit' ),
+				'block_id'   => self::block_id(),
+			]
+		);
+		return self::serialize_block( 'srfm/inline-button', $attrs );
+	}
+
+	/**
+	 * Wrap a concatenated string of field-block markup in a srfm/form block.
+	 *
+	 * @since x.x.x
+	 *
+	 * @param string $inner Concatenated inner block markup.
+	 * @return string
+	 */
+	public static function form_wrapper( $inner ) {
+		$attrs = self::strip_empty(
+			[
+				'blockId' => self::block_id(),
+			]
+		);
+		$json  = self::encode_attrs( $attrs );
+		return "<!-- wp:srfm/form {$json} -->\n{$inner}<!-- /wp:srfm/form -->";
+	}
+
+	/**
+	 * Generate a deterministic Gutenberg-style block id.
+	 *
+	 * @since x.x.x
+	 *
+	 * @return string An 8-character lowercase hex slug.
+	 */
+	public static function block_id() {
+		return substr( md5( wp_generate_uuid4() ), 0, 8 );
+	}
+
+	/**
+	 * Serialize a self-closing Gutenberg block with the given name and attributes.
+	 *
+	 * @since x.x.x
+	 *
+	 * @param string              $name  Block name (e.g. 'srfm/input').
+	 * @param array<string,mixed> $attrs Block attributes.
+	 * @return string Block markup.
+	 */
+	private static function serialize_block( $name, array $attrs ) {
+		$json = self::encode_attrs( $attrs );
+		return "<!-- wp:{$name} {$json} /-->\n";
+	}
+
+	/**
+	 * JSON-encode block attributes for Gutenberg comment delimiter.
+	 *
+	 * @since x.x.x
+	 *
+	 * @param array<string,mixed> $attrs Attributes to encode.
+	 * @return string JSON string, or '{}' if empty.
+	 */
+	private static function encode_attrs( array $attrs ) {
+		if ( empty( $attrs ) ) {
+			return '{}';
+		}
+		$json = wp_json_encode( $attrs, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE );
+		return is_string( $json ) ? $json : '{}';
+	}
+
+	/**
+	 * Drop keys whose value is null, empty string, or empty array.
+	 *
+	 * Keeps zero-valued numbers and `false` booleans, which are meaningful.
+	 *
+	 * @since x.x.x
+	 *
+	 * @param array<string,mixed> $arr Attribute array.
+	 * @return array<string,mixed>
+	 */
+	private static function strip_empty( array $arr ) {
+		return array_filter(
+			$arr,
+			static function ( $v ) {
+				if ( null === $v ) {
+					return false;
+				}
+				if ( '' === $v ) {
+					return false;
+				}
+				if ( is_array( $v ) && empty( $v ) ) {
+					return false;
+				}
+				return true;
+			}
+		);
+	}
+
+	/**
+	 * Fetch a string from args with a default.
+	 *
+	 * @since x.x.x
+	 *
+	 * @param array<string,mixed> $args    Args.
+	 * @param string              $key     Key to fetch.
+	 * @param string              $default Default if missing/empty.
+	 * @return string
+	 */
+	private static function str( array $args, $key, $default = '' ) {
+		if ( ! isset( $args[ $key ] ) ) {
+			return $default;
+		}
+		$v = $args[ $key ];
+		if ( ! is_string( $v ) && ! is_numeric( $v ) ) {
+			return $default;
+		}
+		return (string) $v;
+	}
+
+	/**
+	 * Fetch a boolean from args.
+	 *
+	 * @since x.x.x
+	 *
+	 * @param array<string,mixed> $args Args.
+	 * @param string              $key  Key.
+	 * @return bool
+	 */
+	private static function bool( array $args, $key ) {
+		return ! empty( $args[ $key ] );
+	}
+
+	/**
+	 * Fetch an integer or return null if missing.
+	 *
+	 * @since x.x.x
+	 *
+	 * @param array<string,mixed> $args    Args.
+	 * @param string              $key     Key.
+	 * @param int|null            $default Default if missing.
+	 * @return int|null
+	 */
+	private static function int_or_null( array $args, $key, $default = null ) {
+		if ( ! isset( $args[ $key ] ) || '' === $args[ $key ] ) {
+			return $default;
+		}
+		if ( ! is_numeric( $args[ $key ] ) ) {
+			return $default;
+		}
+		return (int) $args[ $key ];
+	}
+
+	/**
+	 * Fetch an array or return null if missing.
+	 *
+	 * @since x.x.x
+	 *
+	 * @param array<string,mixed> $args Args.
+	 * @param string              $key  Key.
+	 * @return array<int,mixed>|null
+	 */
+	private static function array_or_null( array $args, $key ) {
+		if ( ! isset( $args[ $key ] ) || ! is_array( $args[ $key ] ) || empty( $args[ $key ] ) ) {
+			return null;
+		}
+		return array_values( $args[ $key ] );
+	}
+
+	/**
+	 * Convert a label string to a URL-safe slug, lowercased.
+	 *
+	 * @since x.x.x
+	 *
+	 * @param string $label Source label.
+	 * @return string Slug — falls back to 'field' if empty.
+	 */
+	private static function slugify( $label ) {
+		$slug = sanitize_title( $label );
+		return $slug ? $slug : 'field';
+	}
+
+	/**
+	 * Format a list of source-plugin choices into SureForms dropdown/multi-choice
+	 * option shape.
+	 *
+	 * @since x.x.x
+	 *
+	 * @param array<string,mixed> $args     Field args containing 'options'.
+	 * @param string              $label_key Either 'label' (dropdown) or 'optionTitle' (multi-choice).
+	 * @return array<int,array<string,string>>
+	 */
+	private static function format_options( array $args, $label_key ) {
+		if ( empty( $args['options'] ) || ! is_array( $args['options'] ) ) {
+			return [
+				[ $label_key => 'Option 1' ],
+			];
+		}
+		$out = [];
+		foreach ( $args['options'] as $opt ) {
+			if ( is_string( $opt ) ) {
+				$out[] = [ $label_key => $opt ];
+				continue;
+			}
+			if ( is_array( $opt ) && isset( $opt['label'] ) ) {
+				$out[] = [ $label_key => (string) $opt['label'] ];
+			}
+		}
+		return empty( $out ) ? [ [ $label_key => 'Option 1' ] ] : $out;
+	}
+}
