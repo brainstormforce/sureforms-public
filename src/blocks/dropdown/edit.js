@@ -541,7 +541,7 @@ const Edit = ( props ) => {
 					help={
 						multiSelect
 							? __(
-								'Use a smart tag like {get_input:colors} and pass comma-separated values in the URL (for example ?colors=Red,Blue). Every option whose label matches a value will be preselected. You can also chain multiple smart tags separated by commas.',
+								'Use a smart tag like {get_input:colors} and pass pipe separated values in the URL (for example ?colors=Red|Blue). Every option whose label matches a value will be preselected. You can also chain multiple smart tags separated by pipes.',
 								'sureforms'
 							)
 							: __(

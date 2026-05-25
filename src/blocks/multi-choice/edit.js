@@ -640,7 +640,7 @@ const Edit = ( props ) => {
 								'sureforms'
 							)
 							: __(
-								'Use a smart tag like {get_input:colors} and pass comma-separated values in the URL (for example ?colors=Red,Blue). Every option whose title matches a value will be checked. You can also chain multiple smart tags separated by commas.',
+								'Use a smart tag like {get_input:colors} and pass pipe separated values in the URL (for example ?colors=Red|Blue). Every option whose title matches a value will be checked. You can also chain multiple smart tags separated by pipes.',
 								'sureforms'
 							)
 					}
