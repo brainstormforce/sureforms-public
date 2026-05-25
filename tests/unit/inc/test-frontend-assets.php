@@ -112,4 +112,21 @@ class Test_Frontend_Assets extends TestCase {
 
 		$this->assertFalse( $localized_data, 'Localized data should not exist for non-richtext textarea.' );
 	}
+
+	/**
+	 * Smoke test for register_scripts(): the method should run without errors,
+	 * and the `srfm-form-submit` script — through which the WPML pipeline
+	 * localizes built-in validation messages to JS — should be registered.
+	 */
+	public function test_register_scripts() {
+		// Start clean so we can inspect what register_scripts() produced.
+		wp_scripts()->registered = [];
+		wp_scripts()->queue      = [];
+
+		$this->frontend_assets->register_scripts();
+
+		// The form-submit script is the host for localized validation strings.
+		$registered = wp_scripts()->query( SRFM_SLUG . '-form-submit', 'registered' );
+		$this->assertNotFalse( $registered, 'srfm-form-submit script should be registered after register_scripts().' );
+	}
 }
