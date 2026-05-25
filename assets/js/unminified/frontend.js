@@ -110,6 +110,46 @@ function srfmSprintfString( str, ...args ) {
 addGlobalSrfmObject( 'toggleErrorState', toggleErrorState );
 addGlobalSrfmObject( 'srfmSprintfString', srfmSprintfString );
 
+// Character counter for textarea/input fields with min or max length configured.
+function initCharCounters() {
+	document
+		.querySelectorAll( '.srfm-char-counter' )
+		.forEach( ( counter ) => {
+			const block = counter.closest( '.srfm-block' );
+			if ( ! block ) {
+				return;
+			}
+			const field = block.querySelector(
+				'textarea.srfm-input-textarea, input.srfm-input-input'
+			);
+			if ( ! field ) {
+				return;
+			}
+
+			const limit = counter.getAttribute( 'data-counter-limit' );
+			const min = counter.getAttribute( 'data-counter-min' );
+
+			function updateCounter() {
+				const len = field.value.length;
+				counter.textContent = len + '/' + limit;
+				if ( min && len < parseInt( min, 10 ) ) {
+					counter.classList.add( 'srfm-char-counter--error' );
+				} else {
+					counter.classList.remove( 'srfm-char-counter--error' );
+				}
+			}
+
+			updateCounter();
+			field.addEventListener( 'input', updateCounter );
+		} );
+}
+
+if ( document.readyState === 'loading' ) {
+	document.addEventListener( 'DOMContentLoaded', initCharCounters );
+} else {
+	initCharCounters();
+}
+
 // Sender's Email.
 
 const emailElements = document.getElementsByClassName(
