@@ -70,4 +70,8 @@ class Test_Provider extends TestCase {
 	public function test_restore_language() {
 		$this->assert_signature( 'restore_language', 0, 'void' );
 	}
+
+	public function test_render_language_switcher() {
+		$this->assert_signature( 'render_language_switcher', 0, 'string' );
+	}
 }

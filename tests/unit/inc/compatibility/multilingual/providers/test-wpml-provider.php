@@ -209,4 +209,55 @@ class Test_Wpml_Provider extends TestCase {
 
 		$this->assertSame( '', $html );
 	}
+
+	public function test_get_active_languages() {
+		$active = new Srfm_Active_Wpml_Provider();
+		$method = new \ReflectionMethod( $active, 'get_active_languages' );
+		$method->setAccessible( true );
+
+		// Prefer the WPML filter when it returns data.
+		$listener = static function () {
+			return [
+				'en' => [
+					'language_code' => 'en',
+					'native_name'   => 'English',
+					'url'           => 'https://example.test/',
+					'active'        => 1,
+				],
+			];
+		};
+		add_filter( 'wpml_active_languages', $listener );
+
+		$languages = $method->invoke( $active );
+
+		remove_filter( 'wpml_active_languages', $listener );
+
+		$this->assertIsArray( $languages );
+		$this->assertArrayHasKey( 'en', $languages );
+		$this->assertSame( 'English', $languages['en']['native_name'] );
+
+		// When the WPML filter returns empty AND no SitePress is available, fall
+		// back to an empty array gracefully.
+		$empty = $method->invoke( $active );
+		$this->assertIsArray( $empty );
+	}
+
+	public function test_guess_current_url() {
+		$active = new Srfm_Active_Wpml_Provider();
+		$method = new \ReflectionMethod( $active, 'guess_current_url' );
+		$method->setAccessible( true );
+
+		$original_uri               = $_SERVER['REQUEST_URI'] ?? null;
+		$_SERVER['REQUEST_URI']     = '/form/6/?lang=hi';
+		$url                        = $method->invoke( $active );
+
+		if ( null === $original_uri ) {
+			unset( $_SERVER['REQUEST_URI'] );
+		} else {
+			$_SERVER['REQUEST_URI'] = $original_uri;
+		}
+
+		$this->assertIsString( $url );
+		$this->assertStringContainsString( '/form/6/', $url );
+	}
 }
