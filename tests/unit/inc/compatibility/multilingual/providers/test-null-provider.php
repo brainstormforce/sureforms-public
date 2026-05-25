@@ -77,4 +77,9 @@ class Test_Null_Provider extends TestCase {
 		// No actions should have fired, no exceptions should have been thrown.
 		$this->assertSame( $before, $after );
 	}
+
+	public function test_render_language_switcher() {
+		$result = $this->provider->render_language_switcher();
+		$this->assertSame( '', $result );
+	}
 }

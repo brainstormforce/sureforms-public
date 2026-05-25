@@ -103,4 +103,14 @@ class Null_Provider implements Provider {
 	public function restore_language(): void {
 		// No-op: there is no language context to restore.
 	}
+
+	/**
+	 * Render a language switcher. No-op for the Null provider.
+	 *
+	 * @since x.x.x
+	 * @return string Empty string — no switcher to render when no provider is active.
+	 */
+	public function render_language_switcher(): string {
+		return '';
+	}
 }

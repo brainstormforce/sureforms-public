@@ -56,6 +56,10 @@ class Srfm_String_Translator_Stub_Provider implements \SRFM\Inc\Compatibility\Mu
 	public function restore_language(): void {
 		// No-op.
 	}
+
+	public function render_language_switcher(): string {
+		return '';
+	}
 }
 
 /**
@@ -91,6 +95,10 @@ class Srfm_String_Translator_Translating_Stub implements \SRFM\Inc\Compatibility
 
 	public function restore_language(): void {
 		// No-op.
+	}
+
+	public function render_language_switcher(): string {
+		return '';
 	}
 }
 

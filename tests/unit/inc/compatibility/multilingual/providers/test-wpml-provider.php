@@ -150,4 +150,63 @@ class Test_Wpml_Provider extends TestCase {
 		$this->assertSame( '', $captured[2] );
 		$this->assertSame( '', $captured[3] );
 	}
+
+	public function test_render_language_switcher_returns_empty_when_inactive() {
+		$result = $this->provider->render_language_switcher();
+		$this->assertSame( '', $result );
+	}
+
+	public function test_render_language_switcher_builds_list_from_wpml_active_languages() {
+		$active = new Srfm_Active_Wpml_Provider();
+
+		$listener = static function () {
+			return [
+				'en' => [
+					'language_code' => 'en',
+					'native_name'   => 'English',
+					'url'           => 'https://example.test/',
+					'active'        => 1,
+				],
+				'hi' => [
+					'language_code' => 'hi',
+					'native_name'   => 'हिन्दी',
+					'url'           => 'https://example.test/?lang=hi',
+					'active'        => 0,
+				],
+			];
+		};
+		add_filter( 'wpml_active_languages', $listener );
+
+		$html = $active->render_language_switcher();
+
+		remove_filter( 'wpml_active_languages', $listener );
+
+		$this->assertStringContainsString( 'srfm-lang-switcher-list', $html );
+		$this->assertStringContainsString( 'srfm-lang-item-current', $html );
+		$this->assertStringContainsString( 'href="https://example.test/?lang=hi"', $html );
+		$this->assertStringContainsString( 'English', $html );
+		$this->assertStringContainsString( 'हिन्दी', $html );
+	}
+
+	public function test_render_language_switcher_returns_empty_with_fewer_than_two_languages() {
+		$active = new Srfm_Active_Wpml_Provider();
+
+		$listener = static function () {
+			return [
+				'en' => [
+					'language_code' => 'en',
+					'native_name'   => 'English',
+					'url'           => 'https://example.test/',
+					'active'        => 1,
+				],
+			];
+		};
+		add_filter( 'wpml_active_languages', $listener );
+
+		$html = $active->render_language_switcher();
+
+		remove_filter( 'wpml_active_languages', $listener );
+
+		$this->assertSame( '', $html );
+	}
 }

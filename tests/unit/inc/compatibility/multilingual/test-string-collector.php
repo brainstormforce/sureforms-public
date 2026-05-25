@@ -52,6 +52,10 @@ class Srfm_String_Collector_Stub_Provider implements Provider {
 	public function restore_language(): void {
 		// No-op stub.
 	}
+
+	public function render_language_switcher(): string {
+		return '';
+	}
 }
 
 /**

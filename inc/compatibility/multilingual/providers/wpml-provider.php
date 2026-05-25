@@ -174,4 +174,126 @@ class WPML_Provider implements Provider {
 		$previous = array_pop( $this->previous_language );
 		do_action( 'wpml_switch_language', $previous );
 	}
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * Builds a self-contained list-based switcher from WPML's `wpml_active_languages`
+	 * data. Doesn't depend on the site's WPML "switcher slot" being enabled (footer,
+	 * post-actions, etc.), so it works on custom templates that don't include the
+	 * theme footer — like SureForms' single-form.php instant-form template.
+	 *
+	 * Returns empty when WPML is inactive or fewer than two languages are configured.
+	 *
+	 * @since x.x.x
+	 * @return string Rendered switcher HTML, or empty string.
+	 */
+	public function render_language_switcher(): string {
+		if ( ! $this->is_active() ) {
+			return '';
+		}
+
+		$languages = $this->get_active_languages();
+		if ( count( $languages ) < 2 ) {
+			return '';
+		}
+
+		$current = $this->current_language();
+
+		$items = '';
+		foreach ( $languages as $code => $language ) {
+			$url    = isset( $language['url'] ) && is_string( $language['url'] ) ? $language['url'] : '';
+			$native = isset( $language['native_name'] ) && is_string( $language['native_name'] ) ? $language['native_name'] : '';
+			$lang   = isset( $language['language_code'] ) && is_string( $language['language_code'] ) ? $language['language_code'] : (string) $code;
+
+			if ( '' === $url || '' === $native ) {
+				continue;
+			}
+
+			$is_current = $lang === $current;
+			$class      = $is_current ? 'srfm-lang-item srfm-lang-item-current' : 'srfm-lang-item';
+			$items     .= sprintf(
+				'<li class="%1$s"><a href="%2$s" hreflang="%3$s" lang="%3$s">%4$s</a></li>',
+				esc_attr( $class ),
+				esc_url( $url ),
+				esc_attr( $lang ),
+				esc_html( $native )
+			);
+		}
+
+		if ( '' === $items ) {
+			return '';
+		}
+
+		return '<ul class="srfm-lang-switcher-list" role="navigation" aria-label="' . esc_attr__( 'Language Switcher', 'sureforms' ) . '">' . $items . '</ul>';
+	}
+
+	/**
+	 * Build the active-language list from the most reliable WPML surface available.
+	 *
+	 * Tries `apply_filters( 'wpml_active_languages', ... )` first (the documented
+	 * public API that returns URLs for the current page). When that returns no
+	 * data — which happens on custom template paths that run before WPML has
+	 * fully bootstrapped its language switcher — falls back to SitePress's
+	 * internal `get_active_languages()` data and constructs URLs via the
+	 * `wpml_permalink` filter so the switcher still links to translated copies.
+	 *
+	 * @since x.x.x
+	 * @return array<string, array<string, mixed>> Map of language code → {url, native_name, language_code}.
+	 */
+	protected function get_active_languages(): array {
+		$languages = apply_filters( 'wpml_active_languages', null, 'skip_missing=0' );
+		if ( is_array( $languages ) && ! empty( $languages ) ) {
+			return $languages;
+		}
+
+		global $sitepress;
+		if ( ! is_object( $sitepress ) || ! method_exists( $sitepress, 'get_active_languages' ) ) {
+			return [];
+		}
+
+		$sp_languages = $sitepress->get_active_languages();
+		if ( ! is_array( $sp_languages ) || empty( $sp_languages ) ) {
+			return [];
+		}
+
+		$current_url = $this->guess_current_url();
+		$out         = [];
+		foreach ( $sp_languages as $code => $data ) {
+			if ( ! is_string( $code ) || '' === $code || ! is_array( $data ) ) {
+				continue;
+			}
+			$native = isset( $data['native_name'] ) && is_string( $data['native_name'] ) ? $data['native_name'] : $code;
+
+			$url = apply_filters( 'wpml_permalink', $current_url, $code );
+			if ( ! is_string( $url ) || '' === $url ) {
+				continue;
+			}
+
+			$out[ $code ] = [
+				'language_code' => $code,
+				'native_name'   => $native,
+				'url'           => $url,
+			];
+		}
+		return $out;
+	}
+
+	/**
+	 * Best-effort current page URL for use with the `wpml_permalink` filter when
+	 * SitePress hasn't pre-computed per-language URLs for the request.
+	 *
+	 * @since x.x.x
+	 * @return string Current request URL, or home URL as a last resort.
+	 */
+	protected function guess_current_url(): string {
+		if ( function_exists( 'home_url' ) ) {
+			$uri = isset( $_SERVER['REQUEST_URI'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '';
+			if ( '' !== $uri ) {
+				return home_url( $uri );
+			}
+			return home_url( '/' );
+		}
+		return '';
+	}
 }

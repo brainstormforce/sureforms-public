@@ -5,6 +5,7 @@
  * @package SureForms
  */
 
+use SRFM\Inc\Compatibility\Multilingual\Multilingual_Manager;
 use SRFM\Inc\Generate_Form_Markup;
 use SRFM\Inc\Helper;
 
@@ -159,6 +160,24 @@ if ( $use_banner_as_page_background ) {
 							<?php
 						}
 
+						/**
+						 * Render the active multilingual provider's language switcher inside
+						 * the instant-form banner. The instant-form template doesn't include
+						 * the theme footer, so providers that rely on `wp_footer` to inject
+						 * their switcher (WPML's footer slot, etc.) would otherwise have no
+						 * place to render. No-op when no provider is active.
+						 *
+						 * @since x.x.x
+						 *
+						 * @param bool $show Whether to show the switcher. Filterable so site
+						 *                   owners can suppress it.
+						 */
+						if ( apply_filters( 'srfm_instant_form_show_language_switcher', true ) ) {
+							$srfm_language_switcher = Multilingual_Manager::get_instance()->provider()->render_language_switcher();
+							if ( '' !== $srfm_language_switcher ) {
+								echo '<div class="srfm-language-switcher">' . wp_kses_post( $srfm_language_switcher ) . '</div>';
+							}
+						}
 						?>
 					</div>
 					<div class="srfm-form-wrapper">

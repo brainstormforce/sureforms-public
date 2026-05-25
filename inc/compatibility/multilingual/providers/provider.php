@@ -88,4 +88,19 @@ interface Provider {
 	 * @return void
 	 */
 	public function restore_language(): void;
+
+	/**
+	 * Render a language switcher widget as HTML.
+	 *
+	 * Used by templates that don't include the theme's footer (e.g., the
+	 * SureForms instant-form template) so visitors can still change languages
+	 * without depending on theme integration.
+	 *
+	 * Returns an empty string when no provider is active or when the provider
+	 * can't produce a switcher (e.g., only one language configured).
+	 *
+	 * @since x.x.x
+	 * @return string Rendered switcher HTML.
+	 */
+	public function render_language_switcher(): string;
 }
