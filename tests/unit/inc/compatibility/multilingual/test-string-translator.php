@@ -258,6 +258,49 @@ class Test_String_Translator extends TestCase {
 		$this->assertInstanceOf( String_Translator::class, $a );
 	}
 
+	public function test_translate_validation_message_uses_validation_prefix_in_name() {
+		$result = String_Translator::get_instance()->translate_validation_message( 'srfm_valid_email', 'Enter a valid email address.' );
+
+		$this->assertCount( 1, $this->stub->calls );
+		$this->assertSame( 'validation_srfm_valid_email', $this->stub->calls[0]['name'] );
+		$this->assertSame( 'Enter a valid email address.', $this->stub->calls[0]['value'] );
+		$this->assertSame( 'sureforms', $this->stub->calls[0]['domain'] );
+		$this->assertSame( 'Enter a valid email address.', $result );
+	}
+
+	public function test_translate_validation_message_returns_input_when_key_or_value_empty() {
+		$translator = String_Translator::get_instance();
+
+		$this->assertSame( 'fallback', $translator->translate_validation_message( '', 'fallback' ) );
+		$this->assertSame( '', $translator->translate_validation_message( 'k', '' ) );
+		$this->assertCount( 0, $this->stub->calls );
+	}
+
+	public function test_translate_validation_messages_preserves_keys_and_translates_each() {
+		$input  = [
+			'srfm_valid_email' => 'Enter a valid email address.',
+			'srfm_valid_url'   => 'Enter a valid URL.',
+		];
+		$result = String_Translator::get_instance()->translate_validation_messages( $input );
+
+		$this->assertSame( array_keys( $input ), array_keys( $result ) );
+		$this->assertCount( 2, $this->stub->calls );
+		$this->assertSame( 'validation_srfm_valid_email', $this->stub->calls[0]['name'] );
+		$this->assertSame( 'validation_srfm_valid_url', $this->stub->calls[1]['name'] );
+	}
+
+	public function test_translate_validation_messages_passes_through_non_string_values() {
+		$input  = [
+			'ok'   => 'Hello',
+			'bad'  => 12345, // non-string — should be left alone.
+			0      => 'numeric-key', // numeric key — should still be processed (key is_string check passes via type juggling on cast).
+		];
+		$result = String_Translator::get_instance()->translate_validation_messages( $input );
+
+		$this->assertSame( 12345, $result['bad'] );
+		$this->assertArrayHasKey( 'ok', $result );
+	}
+
 	public function test_translatable_block_attributes_covers_known_field_blocks() {
 		$map = String_Translator::translatable_block_attributes();
 

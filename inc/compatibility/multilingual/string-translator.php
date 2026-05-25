@@ -215,6 +215,52 @@ class String_Translator {
 	}
 
 	/**
+	 * Translate a single built-in validation message keyed by its srfm_* identifier.
+	 *
+	 * Falls back to the supplied `$value` (which is typically already the
+	 * WP-locale-translated output of {@see Translatable::dynamic_messages()}),
+	 * so existing `.mo`-based translations keep working when the active
+	 * multilingual provider has no translation for the string.
+	 *
+	 * @param string $key   Stable identifier (e.g., `srfm_valid_email`).
+	 * @param string $value Already-i18n'd value to use as fallback.
+	 * @since x.x.x
+	 * @return string Translated value, or `$value` when the provider has no
+	 *                better translation.
+	 */
+	public function translate_validation_message( string $key, string $value ): string {
+		if ( '' === $key || '' === $value ) {
+			return $value;
+		}
+
+		$name = 'validation_' . $key;
+		return $this->dispatch( $value, $name );
+	}
+
+	/**
+	 * Translate an associative array of validation messages in one shot.
+	 *
+	 * Convenience wrapper around {@see translate_validation_message()} for the
+	 * frontend-localize call site. Preserves the original array's keys and
+	 * leaves the structure intact when the provider is inactive.
+	 *
+	 * @param array<string, string> $messages Map of `srfm_*` keys to message values.
+	 * @since x.x.x
+	 * @return array<string, string> Map with translated values.
+	 */
+	public function translate_validation_messages( array $messages ): array {
+		$out = [];
+		foreach ( $messages as $key => $value ) {
+			if ( ! is_string( $key ) || ! is_string( $value ) ) {
+				$out[ $key ] = $value;
+				continue;
+			}
+			$out[ $key ] = $this->translate_validation_message( $key, $value );
+		}
+		return $out;
+	}
+
+	/**
 	 * Translate the form restriction message.
 	 *
 	 * @param int    $form_id Form post ID.

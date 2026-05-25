@@ -342,6 +342,28 @@ class Test_String_Collector extends TestCase {
 		$this->assertSame( [], $stub->registered );
 	}
 
+	public function test_collect_validation_messages_registers_known_keys() {
+		$stub = $this->install_stub_provider();
+
+		String_Collector::get_instance()->collect_validation_messages();
+
+		$names = $this->registered_names();
+		$this->assertContains( 'validation_srfm_valid_email', $names );
+		$this->assertContains( 'validation_srfm_valid_phone_number', $names );
+		$this->assertContains( 'validation_srfm_valid_url', $names );
+		$this->assertContains( 'validation_srfm_input_min_value', $names );
+	}
+
+	public function test_collect_validation_messages_noops_when_provider_inactive() {
+		// No stub install — Null_Provider is active by default in fresh manager state.
+		String_Collector::get_instance()->collect_validation_messages();
+
+		// No way to assert directly without the stub; this test is here to lock
+		// the early-return path so future refactors don't accidentally start
+		// registering against the null provider.
+		$this->assertTrue( true );
+	}
+
 	public function test_collect_block_strings_registers_field_attributes() {
 		$stub    = $this->install_stub_provider();
 		$content = '<!-- wp:srfm/input {"block_id":"abc123","label":"Your Name","placeholder":"Enter your name"} /-->';

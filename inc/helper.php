@@ -8,6 +8,7 @@
 
 namespace SRFM\Inc;
 
+use SRFM\Inc\Compatibility\Multilingual\String_Translator;
 use SRFM\Inc\Database\Tables\Entries;
 use SRFM\Inc\Traits\Get_Instance;
 use WP_Error;
@@ -66,9 +67,10 @@ class Helper {
 	 * @return array<string>
 	 */
 	public static function get_common_err_msg() {
+		$translator = String_Translator::get_instance();
 		return [
-			'required' => __( 'This field is required.', 'sureforms' ),
-			'unique'   => __( 'Value needs to be unique.', 'sureforms' ),
+			'required' => $translator->translate_validation_message( 'srfm_required_field', __( 'This field is required.', 'sureforms' ) ),
+			'unique'   => $translator->translate_validation_message( 'srfm_unique_field', __( 'Value needs to be unique.', 'sureforms' ) ),
 		];
 	}
 

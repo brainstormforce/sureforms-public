@@ -9,6 +9,8 @@
 
 namespace SRFM\Inc;
 
+use SRFM\Inc\Compatibility\Multilingual\String_Collector;
+use SRFM\Inc\Compatibility\Multilingual\String_Translator;
 use SRFM\Inc\Traits\Get_Instance;
 use SRFM\Inc\Payments\Payment_Helper;
 use SRFM\Inc\Payments\Stripe\Stripe_Helper;
@@ -123,20 +125,32 @@ class Frontend_Assets {
 			}
 		}
 
+		// Register the built-in validation message strings with the active
+		// multilingual provider (no-op when none is active). Idempotent on the
+		// WPML side, so doing this on every frontend request is safe.
+		String_Collector::get_instance()->collect_validation_messages();
+
+		$validation_messages = array_merge(
+			Translatable::get_frontend_validation_messages(),
+			[
+				'srfm_turnstile_error_message'      => __( 'Turnstile sitekey verification failed. Please contact your site administrator.', 'sureforms' ),
+				'srfm_google_captcha_error_message' => __( 'Google Captcha sitekey verification failed. Please contact your site administrator.', 'sureforms' ),
+				'srfm_captcha_h_error_message'      => __( 'HCaptcha sitekey verification failed. Please contact your site administrator.', 'sureforms' ),
+			]
+		);
+
+		// Translate each validation message through the active provider so
+		// admin-supplied translations from WPML String Translation win over the
+		// .mo-file fallback. When no provider is active, this is a pass-through.
+		$validation_messages = String_Translator::get_instance()->translate_validation_messages( $validation_messages );
+
 		wp_localize_script(
 			SRFM_SLUG . '-form-submit',
 			SRFM_SLUG . '_submit',
 			[
 				'site_url' => site_url(),
 				'nonce'    => wp_create_nonce( 'wp_rest' ),
-				'messages' => array_merge(
-					Translatable::get_frontend_validation_messages(),
-					[
-						'srfm_turnstile_error_message' => __( 'Turnstile sitekey verification failed. Please contact your site administrator.', 'sureforms' ),
-						'srfm_google_captcha_error_message' => __( 'Google Captcha sitekey verification failed. Please contact your site administrator.', 'sureforms' ),
-						'srfm_captcha_h_error_message' => __( 'HCaptcha sitekey verification failed. Please contact your site administrator.', 'sureforms' ),
-					]
-				),
+				'messages' => $validation_messages,
 				'is_rtl'   => $is_rtl,
 			]
 		);

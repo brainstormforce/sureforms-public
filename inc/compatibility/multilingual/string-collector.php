@@ -15,6 +15,7 @@ namespace SRFM\Inc\Compatibility\Multilingual;
 
 use SRFM\Inc\Helper;
 use SRFM\Inc\Traits\Get_Instance;
+use SRFM\Inc\Translatable;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -163,6 +164,43 @@ class String_Collector {
 
 		// Block-attribute strings (field labels, placeholders, option labels, etc.).
 		$this->collect_block_strings( $form_id );
+	}
+
+	/**
+	 * Register every built-in dynamic validation message with the multilingual
+	 * provider, using the raw English source as the value. Names follow
+	 * {@see String_Translator::translate_validation_message()}: `validation_{key}`.
+	 *
+	 * Idempotent — WPML's `wpml_register_single_string` action deduplicates by
+	 * (domain, name, value), so calling this on every frontend request is safe.
+	 * Bails when no provider is active.
+	 *
+	 * @since x.x.x
+	 * @return void
+	 */
+	public function collect_validation_messages(): void {
+		$provider = Multilingual_Manager::get_instance()->provider();
+		if ( ! $provider->is_active() ) {
+			return;
+		}
+
+		foreach ( Translatable::dynamic_messages_source() as $key => $value ) {
+			if ( ! is_string( $key ) || ! is_string( $value ) ) {
+				continue;
+			}
+			$this->register_if_non_empty( 'validation_' . $key, $value );
+		}
+
+		// Common error messages used in server-rendered field markup (these
+		// are NOT part of the JS-validation dynamic_messages bucket).
+		$common = [
+			'srfm_required_field' => 'This field is required.',
+			'srfm_unique_field'   => 'Value needs to be unique.',
+			'srfm_submit_error'   => 'There was an error trying to submit your form. Please try again.',
+		];
+		foreach ( $common as $key => $value ) {
+			$this->register_if_non_empty( 'validation_' . $key, $value );
+		}
 	}
 
 	/**
