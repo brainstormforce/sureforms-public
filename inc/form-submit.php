@@ -624,12 +624,18 @@ class Form_Submit {
 		];
 		// Prefer the language the visitor saw at form-render time (captured in a
 		// hidden srfm-form-language input), since WPML's language detection on the
-		// REST submit endpoint frequently falls back to the default. Fall back to
-		// the active provider's current language when no hidden value was sent.
+		// REST submit endpoint frequently falls back to the default. The hidden
+		// input is client-supplied, so:
+		// 1. Validate shape with a BCP-47 regex.
+		// 2. Cross-check against the active multilingual provider's known
+		// languages (active + default) so a crafted request can't pollute
+		// the column with codes the site doesn't support.
+		// 3. Fall back to the provider's current_language() on either failure.
+		$entry_language     = Multilingual_Manager::get_instance()->provider()->current_language();
 		$submitted_language = isset( $form_data['srfm-form-language'] ) ? sanitize_text_field( Helper::get_string_value( $form_data['srfm-form-language'] ) ) : '';
-		$entry_language     = '' !== $submitted_language && preg_match( '/^[a-z]{2,3}([_-][A-Za-z0-9]{2,8})?$/', $submitted_language ) === 1
-			? $submitted_language
-			: Multilingual_Manager::get_instance()->provider()->current_language();
+		if ( '' !== $submitted_language && preg_match( '/^[a-z]{2,3}([_-][A-Za-z0-9]{2,8})?$/', $submitted_language ) === 1 && $this->is_known_language( $submitted_language ) ) {
+			$entry_language = $submitted_language;
+		}
 
 		$entries_data = [
 			'form_id'         => $id,
@@ -1242,6 +1248,51 @@ class Form_Submit {
 			'log_message' => $detail_message, // This variable is used for logging purposes, such as displaying detailed error information in the console on the front end.
 			'message'     => $message,
 		];
+	}
+
+	/**
+	 * Check whether the given language code is known to the active multilingual
+	 * provider (i.e. in its active-languages set or matches the default language).
+	 *
+	 * Used to reject crafted srfm-form-language hidden-input values that pass
+	 * the BCP-47 shape regex but reference languages the site doesn't actually
+	 * support.
+	 *
+	 * @param string $language Language code to check (e.g. 'hi', 'de-AT').
+	 * @since x.x.x
+	 * @return bool True when the code is known, false otherwise.
+	 */
+	protected function is_known_language( string $language ): bool {
+		if ( '' === $language ) {
+			return false;
+		}
+
+		$provider = Multilingual_Manager::get_instance()->provider();
+
+		// When no provider is active there's no authoritative set to check
+		// against. Accept whatever the visitor sent (shape-validated) so the
+		// column still reflects the visitor's intent on non-WPML sites.
+		if ( ! $provider->is_active() ) {
+			return true;
+		}
+
+		// Default language is always considered known.
+		if ( $language === $provider->default_language() ) {
+			return true;
+		}
+
+		// Use WPML's filter when available — works regardless of which
+		// multilingual plugin is the active provider, as Polylang implements
+		// the same filter for compatibility.
+		$active = apply_filters( 'wpml_active_languages', null, 'skip_missing=0' );
+		if ( is_array( $active ) && ! empty( $active ) ) {
+			return array_key_exists( $language, $active );
+		}
+
+		// Last-ditch: trust the regex-validated code so we don't drop a
+		// legitimate submission just because the provider hasn't published its
+		// language list yet.
+		return true;
 	}
 
 	/**

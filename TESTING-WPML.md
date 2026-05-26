@@ -77,9 +77,12 @@ The `sureforms_form` row should appear with **"Not translatable"** locked. No "A
    - Submit button with text "Send"
 2. Save the form.
 
-Open **WPML → String Translation**. In the "Select strings within domain" dropdown, pick `sureforms`. You should see entries like:
-- The block attribute strings (`label`, `placeholder`, etc.) for each field — registered by WPML's Gutenberg scanner via `wpml-config.xml`
-- The form-level strings registered programmatically by SureForms — names like `form_{id}_submit_button`, `form_{id}_confirmation_0_message`, `form_{id}_notification_0_subject`, etc.
+Open **WPML → String Translation**. In the "Select strings within domain" dropdown, pick `sureforms`. You should see entries with **per-form names** so each form's strings stay grouped together in the UI:
+
+- Form-level meta: `form_{id}_submit_button`, `form_{id}_confirmation_0_message`, `form_{id}_notification_0_subject`, `form_{id}_restriction_message`, etc.
+- Block-attribute strings: `form_{id}_block_{block_id}_label`, `form_{id}_block_{block_id}_placeholder`, `form_{id}_block_{block_id}_errorMsg`, `form_{id}_block_{block_id}_option_0_label` (for dropdown / multi-choice option labels), etc.
+
+Note: SureForms intentionally does NOT declare its blocks in `wpml-config.xml`'s `<gutenberg-blocks>` section. WPML's auto-scanner would otherwise register the same strings a second time under flat block-type names (e.g., `srfm/input/label`), forcing translators to maintain two copies per attribute. The plugin's `String_Collector` registers everything programmatically on `save_post` under the per-form scheme above.
 
 If you see strings under domain `sureforms`, registration is working.
 
@@ -232,3 +235,32 @@ ae5776304  Phase 2+3 string collector + render-time translator (submit button, c
 ```
 
 When you're satisfied, push the branch and open a PR to `dev`.
+
+---
+
+## Deployment notes
+
+### Schema migration window
+
+The plugin update runs an `ALTER TABLE wp_srfm_entries` to add the `language VARCHAR(20)` column + the `(form_id, language)` composite index. Behaviour by MySQL version:
+
+- **MySQL 8.0+**: `ADD COLUMN` is INSTANT (metadata-only); `ADD INDEX` runs INPLACE. Safe on live traffic for tables of any size.
+- **MySQL 5.7**: `ADD INDEX` may fall back to an INPLACE rebuild that briefly blocks writes. Schedule the upgrade during a low-traffic window for sites with very large entries tables (>1M rows).
+
+### Rollback
+
+If you need to revert the migration without rolling back the plugin code:
+
+```sql
+ALTER TABLE wp_srfm_entries DROP INDEX idx_form_id_language;
+ALTER TABLE wp_srfm_entries DROP COLUMN language;
+
+-- Reset the DB version so the next plugin load re-applies the migration cleanly:
+UPDATE wp_options
+   SET option_value = 'a:1:{s:7:"entries";i:1;}'
+ WHERE option_name = 'srfm_database_table_versions';
+```
+
+(Replace `wp_` with your site's actual table prefix.)
+
+The new column is nullable with no application code reading it back via `=== ''` strict comparisons, so dropping it is safe — existing entries lose only the language tag, not any data.

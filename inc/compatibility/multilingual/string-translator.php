@@ -30,7 +30,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  *  - Notification body:            `form_{form_id}_notification_{N}_body`
  *  - Notification from_name:       `form_{form_id}_notification_{N}_from_name`
  *  - Notification reply_to:        `form_{form_id}_notification_{N}_reply_to`
- *  - Compliance message:           `form_{form_id}_compliance_{N}_message`
  *  - Form restriction message:     `form_{form_id}_restriction_message`
  *  - Block string attribute:       `form_{form_id}_block_{block_id}_{attribute}`
  *  - Block option label:           `form_{form_id}_block_{block_id}_option_{N}_label`
@@ -193,24 +192,6 @@ class String_Translator {
 		}
 
 		$name = 'form_' . $form_id . '_notification_' . $index . '_reply_to';
-		return $this->dispatch( $value, $name );
-	}
-
-	/**
-	 * Translate a compliance/GDPR message.
-	 *
-	 * @param int    $form_id Form post ID.
-	 * @param int    $index   Zero-based index of the compliance entry within the form's compliance set.
-	 * @param string $value   Original value.
-	 * @since x.x.x
-	 * @return string Translated value, or the original when no provider/translation is available.
-	 */
-	public function translate_compliance_message( int $form_id, int $index, string $value ): string {
-		if ( '' === $value ) {
-			return $value;
-		}
-
-		$name = 'form_' . $form_id . '_compliance_' . $index . '_message';
 		return $this->dispatch( $value, $name );
 	}
 

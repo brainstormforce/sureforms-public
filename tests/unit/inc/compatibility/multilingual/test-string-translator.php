@@ -230,15 +230,6 @@ class Test_String_Translator extends TestCase {
 		$this->assertSame( 'sureforms', $this->stub->calls[0]['domain'] );
 	}
 
-	public function test_translate_compliance_message_uses_correct_name() {
-		String_Translator::get_instance()->translate_compliance_message( 42, 0, 'I agree' );
-
-		$this->assertCount( 1, $this->stub->calls );
-		$this->assertSame( 'form_42_compliance_0_message', $this->stub->calls[0]['name'] );
-		$this->assertSame( 'I agree', $this->stub->calls[0]['value'] );
-		$this->assertSame( 'sureforms', $this->stub->calls[0]['domain'] );
-	}
-
 	public function test_translate_restriction_message_uses_correct_name() {
 		String_Translator::get_instance()->translate_restriction_message( 42, 'Form closed' );
 

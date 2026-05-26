@@ -134,24 +134,6 @@ class String_Collector {
 			}
 		}
 
-		// Compliance items — same nested-array shape.
-		$compliance_raw = get_post_meta( $form_id, '_srfm_compliance' );
-		$compliance     = is_array( $compliance_raw ) && isset( $compliance_raw[0] ) && is_array( $compliance_raw[0] )
-			? $compliance_raw[0]
-			: [];
-
-		foreach ( $compliance as $index => $item ) {
-			if ( ! is_array( $item ) ) {
-				continue;
-			}
-
-			$message = isset( $item['message'] ) ? Helper::get_string_value( $item['message'] ) : '';
-			$this->register_if_non_empty(
-				'form_' . $form_id . '_compliance_' . (int) $index . '_message',
-				$message
-			);
-		}
-
 		// Form restriction — JSON-encoded string in single meta.
 		$restriction_raw = $this->get_meta_string( $form_id, '_srfm_form_restriction' );
 		if ( '' !== $restriction_raw ) {

@@ -329,7 +329,7 @@ class Test_Entries_Table extends TestCase {
 		$this->assertStringContainsString( 'extras LONGTEXT', $blob );
 		$this->assertStringContainsString( 'user_id BIGINT(20) UNSIGNED', $blob );
 		// Language column + composite index added by the multilingual feature.
-		$this->assertStringContainsString( 'language VARCHAR(10) AFTER extras', $blob );
+		$this->assertStringContainsString( 'language VARCHAR(20) AFTER extras', $blob );
 		$this->assertStringContainsString( 'INDEX idx_form_id_language (form_id, language)', $blob );
 	}
 

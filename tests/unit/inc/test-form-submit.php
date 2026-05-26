@@ -712,4 +712,46 @@ class Test_Form_Submit extends TestCase {
 		// form-id = 0 is valid but should be removed from result
 		$this->assertArrayNotHasKey( 'form-id', $result );
 	}
+
+	/**
+	 * is_known_language() returns false for an empty string regardless of
+	 * provider state — empty is never a valid stored value.
+	 */
+	public function test_is_known_language_rejects_empty_string() {
+		$result = $this->call_private_method( $this->form_submit, 'is_known_language', [ '' ] );
+		$this->assertFalse( $result );
+	}
+
+	/**
+	 * On non-WPML / non-Polylang sites the multilingual manager resolves to
+	 * Null_Provider. is_known_language() should then accept the shape-validated
+	 * code so we don't drop legitimate submissions just because no multilingual
+	 * plugin is active.
+	 */
+	public function test_is_known_language_accepts_when_provider_inactive() {
+		$result = $this->call_private_method( $this->form_submit, 'is_known_language', [ 'hi' ] );
+		$this->assertTrue( $result );
+	}
+
+	/**
+	 * When the wpml_active_languages filter exposes a known set, the helper
+	 * should still accept codes not in that set when the active provider
+	 * reports is_active() === false (Null_Provider case in the test env). This
+	 * test pins that fallback path so the filter alone doesn't cause valid
+	 * submissions to be rejected on non-multilingual sites.
+	 */
+	public function test_is_known_language_does_not_reject_when_provider_inactive_even_with_filter() {
+		$listener = static function () {
+			return [ 'en' => [ 'language_code' => 'en' ] ];
+		};
+		add_filter( 'wpml_active_languages', $listener );
+
+		// 'hi' is NOT in the filter list, but the provider is inactive — so
+		// is_known_language() should still return true (defence-in-depth applies
+		// to the active-provider path only).
+		$result = $this->call_private_method( $this->form_submit, 'is_known_language', [ 'hi' ] );
+		$this->assertTrue( $result );
+
+		remove_filter( 'wpml_active_languages', $listener );
+	}
 }
