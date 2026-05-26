@@ -25,6 +25,10 @@ const MigrationPage = () => {
 	const [ step, setStep ] = useState( 'source' );
 	const [ source, setSource ] = useState( null );
 	const [ formIds, setFormIds ] = useState( [] );
+	// Per-source re-import behavior chosen on the FormSelector step; passed
+	// verbatim to the backend so the user's "update / skip / create" decision
+	// for previously-imported forms is honored.
+	const [ behaviorMap, setBehaviorMap ] = useState( {} );
 	const [ result, setResult ] = useState( null );
 
 	const handleSourceSelect = ( picked ) => {
@@ -32,8 +36,9 @@ const MigrationPage = () => {
 		setStep( 'forms' );
 	};
 
-	const handleFormsContinue = ( ids ) => {
+	const handleFormsContinue = ( ids, behavior = {} ) => {
 		setFormIds( ids );
+		setBehaviorMap( behavior );
 		setStep( 'preview' );
 	};
 
@@ -45,6 +50,7 @@ const MigrationPage = () => {
 	const handleRestart = () => {
 		setSource( null );
 		setFormIds( [] );
+		setBehaviorMap( {} );
 		setResult( null );
 		setStep( 'source' );
 	};
@@ -56,6 +62,7 @@ const MigrationPage = () => {
 	const handleBackToSource = () => {
 		setSource( null );
 		setFormIds( [] );
+		setBehaviorMap( {} );
 		setStep( 'source' );
 	};
 
@@ -97,6 +104,7 @@ const MigrationPage = () => {
 				<DryRunPreview
 					source={ source }
 					formIds={ formIds }
+					behavior={ behaviorMap }
 					onBack={ handleBackToForms }
 					onConfirm={ handleImportConfirmed }
 				/>

@@ -77,6 +77,104 @@ class Test_Cf7_Importer extends TestCase {
 	}
 
 	/**
+	 * Return the first imported sureforms_form post or fail the test.
+	 *
+	 * Wraps `get_posts()` so PHPStan stops treating the returned value as
+	 * `mixed` once we've asserted it's a real WP_Post.
+	 *
+	 * @return \WP_Post
+	 */
+	private function get_first_srfm_post() {
+		$posts = get_posts(
+			[
+				'post_type'      => SRFM_FORMS_POST_TYPE,
+				'post_status'    => 'any',
+				'posts_per_page' => 1,
+				'orderby'        => 'ID',
+				'order'          => 'DESC',
+			]
+		);
+		$this->assertNotEmpty( $posts, 'Expected at least one sureforms_form post.' );
+		$first = $posts[0];
+		$this->assertInstanceOf( \WP_Post::class, $first );
+		return $first;
+	}
+
+	/**
+	 * Extract `_srfm_email_notification[0]['email_body']` as a string from a
+	 * given post id. Returns '' when the meta is missing or malformed so the
+	 * caller can assertStringContainsString without phpstan mixed-cast errors.
+	 *
+	 * @param int $post_id SureForms post id.
+	 * @return string
+	 */
+	private function get_notification_body( $post_id ) {
+		$meta = get_post_meta( (int) $post_id, '_srfm_email_notification', true );
+		if ( ! is_array( $meta ) || ! isset( $meta[0] ) || ! is_array( $meta[0] ) ) {
+			return '';
+		}
+		$body = $meta[0]['email_body'] ?? '';
+		return is_string( $body ) ? $body : '';
+	}
+
+	/**
+	 * Extract `_srfm_email_notification[0][$key]` as a string. Same defensive
+	 * wrapper as `get_notification_body()` but for arbitrary keys (subject,
+	 * email_to, etc.) so tests can assert against them without offset-on-mixed
+	 * complaints.
+	 *
+	 * @param int    $post_id SureForms post id.
+	 * @param string $key     Notification field key.
+	 * @return string
+	 */
+	private function get_notification_field( $post_id, $key ) {
+		$meta = get_post_meta( (int) $post_id, '_srfm_email_notification', true );
+		if ( ! is_array( $meta ) || ! isset( $meta[0] ) || ! is_array( $meta[0] ) ) {
+			return '';
+		}
+		$value = $meta[0][ $key ] ?? '';
+		return is_string( $value ) ? $value : '';
+	}
+
+	/**
+	 * Extract `_srfm_form_confirmation[0]['message']` as a string.
+	 *
+	 * @param int $post_id SureForms post id.
+	 * @return string
+	 */
+	private function get_confirmation_message( $post_id ) {
+		$meta = get_post_meta( (int) $post_id, '_srfm_form_confirmation', true );
+		if ( ! is_array( $meta ) || ! isset( $meta[0] ) || ! is_array( $meta[0] ) ) {
+			return '';
+		}
+		$msg = $meta[0]['message'] ?? '';
+		return is_string( $msg ) ? $msg : '';
+	}
+
+	/**
+	 * Pluck a single field from a list_forms() row.
+	 *
+	 * @param array<int,array<string,mixed>> $listing list_forms() output.
+	 * @param int                             $needle  Source form id.
+	 * @param string                          $key     Field name.
+	 * @return string|int
+	 */
+	private function listing_field( array $listing, $needle, $key ) {
+		foreach ( $listing as $row ) {
+			$row_id = $row['id'] ?? 0;
+			$row_id = is_int( $row_id ) || is_numeric( $row_id ) ? (int) $row_id : 0;
+			if ( $row_id === (int) $needle ) {
+				$value = $row[ $key ] ?? '';
+				if ( is_string( $value ) || is_int( $value ) ) {
+					return $value;
+				}
+				return '';
+			}
+		}
+		return '';
+	}
+
+	/**
 	 * Tear down — purge sureforms_form and wpcf7_contact_form posts plus the
 	 * importer mapping option so each test starts from a clean slate.
 	 *
@@ -374,5 +472,237 @@ class Test_Cf7_Importer extends TestCase {
 
 		$this->assertSame( $before, $after, 'Dry-run must not create any sureforms_form posts.' );
 		$this->assertNotEmpty( $this->first_preview( $result ), 'Dry-run result must include preview markup.' );
+	}
+
+	/**
+	 * Two CF7 fields with identical labels must produce distinct SureForms
+	 * slugs (collision dedupe).
+	 *
+	 * @return void
+	 */
+	public function test_slug_collision_dedupes_with_numeric_suffix() {
+		// First case: two fields with distinct CF7 names — each gets its own
+		// slug seeded from the name. No collision.
+		$post_id  = $this->create_cf7_form(
+			"Your Name\n[text* name1]\nYour Email\n[email* name2]"
+		);
+		$importer = $this->make_importer();
+		$result   = $importer->import_forms( [ $post_id ], true );
+		$preview  = $this->first_preview( $result );
+
+		$this->assertStringContainsString( '"slug":"name1"', $preview );
+		$this->assertStringContainsString( '"slug":"name2"', $preview );
+
+		// Second case: two fields share the same CF7 name (which CF7 itself
+		// allows, even though it's a footgun). The importer must dedupe so
+		// the resulting SureForms post has unique slugs per field.
+		wp_delete_post( $post_id, true );
+		$post_id2 = $this->create_cf7_form(
+			"Your Name\n[text* shared]\nYour Other Name\n[text* shared]"
+		);
+		$result2  = $importer->import_forms( [ $post_id2 ], true );
+		$preview2 = $this->first_preview( $result2 );
+
+		$this->assertStringContainsString( '"slug":"shared"', $preview2 );
+		$this->assertStringContainsString( '"slug":"shared-2"', $preview2 );
+	}
+
+	/**
+	 * CF7 `_mail.body` shortcodes like `[your-name]` must be rewritten to
+	 * SureForms smart tags `{your-name}` (or the deduped slug) in the
+	 * stored notification.
+	 *
+	 * @return void
+	 */
+	public function test_mail_template_translates_field_shortcodes() {
+		$post_id = $this->create_cf7_form( "Name\n[text* your-name]" );
+		update_post_meta(
+			$post_id,
+			'_mail',
+			[
+				'subject'   => 'New submission from [your-name]',
+				'body'      => "Hello, [your-name] sent a message.\n--",
+				'recipient' => 'admin@example.test',
+			]
+		);
+
+		$importer = $this->make_importer();
+		$importer->import_forms( [ $post_id ], false );
+
+		$srfm_post = $this->get_first_srfm_post();
+		$this->assertStringContainsString( '{your-name}', $this->get_notification_body( $srfm_post->ID ) );
+		$this->assertStringContainsString( '{your-name}', $this->get_notification_field( $srfm_post->ID, 'subject' ) );
+		$this->assertSame( 'admin@example.test', $this->get_notification_field( $srfm_post->ID, 'email_to' ) );
+	}
+
+	/**
+	 * CF7 system shortcodes in mail bodies must map to SureForms smart tags
+	 * (e.g. `[_post_title]` → `{post_title}`).
+	 *
+	 * @return void
+	 */
+	public function test_mail_template_translates_system_shortcodes() {
+		$post_id = $this->create_cf7_form( "Email\n[email* your-email]" );
+		update_post_meta(
+			$post_id,
+			'_mail',
+			[
+				'body' => 'Posted on [_post_title] at [_url] by [_user_email]',
+			]
+		);
+		$importer = $this->make_importer();
+		$importer->import_forms( [ $post_id ], false );
+
+		$srfm_post = $this->get_first_srfm_post();
+		$body      = $this->get_notification_body( $srfm_post->ID );
+		$this->assertStringContainsString( '{post_title}', $body );
+		$this->assertStringContainsString( '{current_url}', $body );
+		$this->assertStringContainsString( '{email_address}', $body );
+	}
+
+	/**
+	 * When the source CF7 form sets `_messages.mail_sent_ok`, that string
+	 * must become the SureForms form-confirmation message (overriding the
+	 * default "Thank you" stub).
+	 *
+	 * @return void
+	 */
+	public function test_confirmation_uses_mail_sent_ok_when_present() {
+		$post_id = $this->create_cf7_form( "Email\n[email* your-email]" );
+		update_post_meta(
+			$post_id,
+			'_messages',
+			[ 'mail_sent_ok' => 'Got it, we\'ll be in touch shortly.' ]
+		);
+
+		$importer = $this->make_importer();
+		$importer->import_forms( [ $post_id ], false );
+
+		$srfm_post = $this->get_first_srfm_post();
+		$message   = $this->get_confirmation_message( $srfm_post->ID );
+		$this->assertStringContainsString( 'Got it', $message );
+		$this->assertStringNotContainsString( 'Thank you', $message );
+	}
+
+	/**
+	 * The CF7 Multi-Step Forms addon emits `[step]` wrappers — these must be
+	 * surfaced as an unsupported-fields warning instead of being silently
+	 * flattened.
+	 *
+	 * @return void
+	 */
+	public function test_step_tag_is_reported_as_unsupported_addon() {
+		$post_id  = $this->create_cf7_form( "[step]\nName\n[text* your-name]\n[/step]" );
+		$importer = $this->make_importer();
+
+		$result = $importer->import_forms( [ $post_id ], true );
+
+		$this->assertContains(
+			'Multi-Step Forms addon',
+			$result['unsupported_fields'],
+			'Multi-Step `[step]` tag must trigger a dedicated unsupported-fields note.'
+		);
+	}
+
+	/**
+	 * The CF7 Conditional Fields addon emits `[group]` wrappers — these must
+	 * be surfaced as an unsupported-fields warning.
+	 *
+	 * @return void
+	 */
+	public function test_group_tag_is_reported_as_unsupported_addon() {
+		$post_id  = $this->create_cf7_form( "[group cond-a]\nName\n[text* your-name]\n[/group]" );
+		$importer = $this->make_importer();
+
+		$result = $importer->import_forms( [ $post_id ], true );
+
+		$this->assertContains(
+			'Conditional Fields addon',
+			$result['unsupported_fields'],
+			'Conditional Fields `[group]` tag must trigger a dedicated unsupported-fields note.'
+		);
+	}
+
+	/**
+	 * list_forms() must return `imported_srfm_id` AND `imported_srfm_edit_url`
+	 * for forms that have a prior SureForms import — the UI uses the edit_url
+	 * for the "Open existing form" link next to the "Previously imported" badge.
+	 *
+	 * @return void
+	 */
+	public function test_list_forms_returns_imported_srfm_id_and_edit_url() {
+		$post_id  = $this->create_cf7_form( "Name\n[text* your-name]" );
+		$importer = $this->make_importer();
+
+		// Before import, no edit_url.
+		$listing = $importer->list_forms();
+		$this->assertSame( 0, (int) $this->listing_field( $listing, $post_id, 'imported_srfm_id' ) );
+		$this->assertSame( '', (string) $this->listing_field( $listing, $post_id, 'imported_srfm_edit_url' ) );
+
+		// After import, both fields populated.
+		$importer->import_forms( [ $post_id ], false );
+		$listing = $importer->list_forms();
+		$this->assertGreaterThan( 0, (int) $this->listing_field( $listing, $post_id, 'imported_srfm_id' ) );
+		$edit_url = (string) $this->listing_field( $listing, $post_id, 'imported_srfm_edit_url' );
+		$this->assertStringContainsString( 'post.php?post=', $edit_url );
+		$this->assertStringContainsString( 'action=edit', $edit_url );
+	}
+
+	/**
+	 * Passing `behavior[ source_id ] = 'skip'` must leave the existing
+	 * SureForms post untouched and report the form under `skipped`.
+	 *
+	 * @return void
+	 */
+	public function test_reimport_with_skip_behavior_leaves_existing_post_untouched() {
+		$post_id  = $this->create_cf7_form( "Name\n[text* your-name]" );
+		$importer = $this->make_importer();
+
+		$first   = $importer->import_forms( [ $post_id ], false );
+		$srfm_id = $this->first_srfm_id( $first );
+
+		$snapshot_before = get_post( $srfm_id );
+		$this->assertInstanceOf( \WP_Post::class, $snapshot_before );
+
+		// Re-import with skip behavior.
+		$second = $importer->import_forms( [ $post_id ], false, [ (string) $post_id => 'skip' ] );
+
+		$this->assertEmpty( $second['imported'], 'Skipped re-import must not produce an `imported` entry.' );
+		$this->assertCount( 1, $second['skipped'], 'Skipped re-import must report under `skipped`.' );
+		$skipped_id = $second['skipped'][0]['srfm_id'] ?? 0;
+		$skipped_id = is_int( $skipped_id ) || is_numeric( $skipped_id ) ? (int) $skipped_id : 0;
+		$this->assertSame( $srfm_id, $skipped_id );
+
+		$snapshot_after = get_post( $srfm_id );
+		$this->assertInstanceOf( \WP_Post::class, $snapshot_after );
+		$this->assertSame(
+			$snapshot_before->post_modified_gmt,
+			$snapshot_after->post_modified_gmt,
+			'Existing post must not be modified when behavior=skip.'
+		);
+	}
+
+	/**
+	 * Passing `behavior[ source_id ] = 'create'` must insert a fresh
+	 * SureForms post alongside the existing one — useful when the user
+	 * wants a side-by-side draft to compare.
+	 *
+	 * @return void
+	 */
+	public function test_reimport_with_create_behavior_creates_second_post() {
+		$post_id  = $this->create_cf7_form( "Name\n[text* your-name]" );
+		$importer = $this->make_importer();
+
+		$first         = $importer->import_forms( [ $post_id ], false );
+		$first_srfm_id = $this->first_srfm_id( $first );
+
+		$second          = $importer->import_forms( [ $post_id ], false, [ (string) $post_id => 'create' ] );
+		$second_srfm_id  = $this->first_srfm_id( $second );
+
+		$this->assertNotSame( $first_srfm_id, $second_srfm_id, 'create behavior must produce a different SureForms post.' );
+		$this->assertGreaterThan( 0, $second_srfm_id );
+
+		$count = wp_count_posts( SRFM_FORMS_POST_TYPE );
+		$this->assertSame( 2, (int) $count->publish, 'Two SureForms posts must exist after one update and one create.' );
 	}
 }

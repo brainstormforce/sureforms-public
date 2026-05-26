@@ -9,7 +9,7 @@
  * @since x.x.x
  */
 
-import { useEffect, useState } from '@wordpress/element';
+import { useEffect, useMemo, useState } from '@wordpress/element';
 import { __, sprintf, _n } from '@wordpress/i18n';
 import {
 	Badge,
@@ -17,22 +17,38 @@ import {
 	Checkbox,
 	Container,
 	Loader,
+	Select,
 	Text,
 	Title,
 } from '@bsf/force-ui';
-import { ArrowLeft, ArrowRight, RefreshCcw } from 'lucide-react';
+import { ArrowLeft, ArrowRight, ExternalLink, RefreshCcw } from 'lucide-react';
 import { listForms } from './api';
+
+// Re-import behavior options for forms that already have a SureForms copy.
+const BEHAVIOR_OPTIONS = [
+	{ value: 'update', label: __( 'Update existing', 'sureforms' ) },
+	{ value: 'skip', label: __( 'Skip', 'sureforms' ) },
+	{ value: 'create', label: __( 'Create a new copy', 'sureforms' ) },
+];
+
+const labelForBehavior = ( value ) =>
+	BEHAVIOR_OPTIONS.find( ( o ) => o.value === value )?.label ?? value;
 
 const FormSelector = ( { source, onBack, onContinue } ) => {
 	const [ forms, setForms ] = useState( [] );
 	const [ loading, setLoading ] = useState( true );
 	const [ error, setError ] = useState( '' );
 	const [ selected, setSelected ] = useState( () => new Set() );
+	// behaviorMap: { [sourceFormId: string]: 'update' | 'skip' | 'create' }.
+	// Only populated for forms that have a prior SureForms import; new forms
+	// don't need an entry (the backend defaults to insert).
+	const [ behaviorMap, setBehaviorMap ] = useState( {} );
 
 	useEffect( () => {
 		let cancelled = false;
 		setLoading( true );
 		setSelected( new Set() );
+		setBehaviorMap( {} );
 		listForms( source.key )
 			.then( ( res ) => {
 				if ( cancelled ) {
@@ -41,12 +57,19 @@ const FormSelector = ( { source, onBack, onContinue } ) => {
 				setForms( Array.isArray( res?.forms ) ? res.forms : [] );
 				setLoading( false );
 			} )
-			.catch( () => {
+			.catch( ( err ) => {
 				if ( cancelled ) {
 					return;
 				}
+				// Surface the server's message when one is provided — the WP
+				// REST error envelope puts the human-readable string on
+				// `err.message` (apiFetch unwraps `data.message` automatically).
 				setError(
-					__( 'Could not load forms for this source.', 'sureforms' )
+					err?.message ||
+						__(
+							'Could not load forms for this source.',
+							'sureforms'
+						)
 				);
 				setLoading( false );
 			} );
@@ -55,24 +78,58 @@ const FormSelector = ( { source, onBack, onContinue } ) => {
 		};
 	}, [ source.key ] );
 
-	const toggle = ( id ) => {
-		const next = new Set( selected );
+	const toggle = ( id, isImported ) => {
 		const key = String( id );
+		const next = new Set( selected );
 		if ( next.has( key ) ) {
 			next.delete( key );
 		} else {
 			next.add( key );
 		}
 		setSelected( next );
+		// Seed the behavior for previously-imported forms when they're picked
+		// for the first time so the dropdown has a real value to bind to.
+		if ( isImported && next.has( key ) && ! behaviorMap[ key ] ) {
+			setBehaviorMap( ( m ) => ( { ...m, [ key ]: 'update' } ) );
+		}
 	};
+
+	const setBehavior = ( id, value ) =>
+		setBehaviorMap( ( m ) => ( { ...m, [ String( id ) ]: value } ) );
 
 	const toggleAll = () => {
 		if ( selected.size === forms.length ) {
 			setSelected( new Set() );
 			return;
 		}
-		setSelected( new Set( forms.map( ( f ) => String( f.id ) ) ) );
+		const next = new Set( forms.map( ( f ) => String( f.id ) ) );
+		setSelected( next );
+		// Default behavior for every previously-imported form just added.
+		setBehaviorMap( ( m ) => {
+			const updated = { ...m };
+			forms.forEach( ( f ) => {
+				if ( f.imported_srfm_id > 0 && ! updated[ String( f.id ) ] ) {
+					updated[ String( f.id ) ] = 'update';
+				}
+			} );
+			return updated;
+		} );
 	};
+
+	// Are all selected rows previously-imported? Used to flip the CTA label.
+	const allSelectedAreImported = useMemo( () => {
+		if ( selected.size === 0 ) {
+			return false;
+		}
+		const byId = new Map( forms.map( ( f ) => [ String( f.id ), f ] ) );
+		for ( const sid of selected ) {
+			const f = byId.get( sid );
+			if ( ! f || ! ( f.imported_srfm_id > 0 ) ) {
+				return false;
+			}
+		}
+		return true;
+	}, [ selected, forms ] );
 
 	if ( loading ) {
 		return (
@@ -156,41 +213,103 @@ const FormSelector = ( { source, onBack, onContinue } ) => {
 						</Text>
 					</div>
 					<ul className="divide-y divide-border-subtle">
-						{ forms.map( ( form ) => (
-							<li
-								key={ form.id }
-								className="flex items-center justify-between gap-3 px-4 py-3"
-							>
-								<Checkbox
-									size="sm"
-									checked={ selected.has(
-										String( form.id )
-									) }
-									onChange={ () => toggle( form.id ) }
-									label={ {
-										heading:
-											form.name ||
-											__(
-												'(untitled form)',
-												'sureforms'
-											),
-									} }
-								/>
-								{ form.imported_srfm_id > 0 && (
-									<Badge
-										variant="blue"
-										size="xs"
-										icon={
-											<RefreshCcw className="size-3" />
+						{ forms.map( ( form ) => {
+							const sid = String( form.id );
+							const isImported = form.imported_srfm_id > 0;
+							const isSelected = selected.has( sid );
+							const behavior = behaviorMap[ sid ] || 'update';
+							return (
+								<li
+									key={ form.id }
+									className="flex items-center justify-between gap-3 px-4 py-3"
+								>
+									<Checkbox
+										size="sm"
+										checked={ isSelected }
+										onChange={ () =>
+											toggle( form.id, isImported )
 										}
-										label={ __(
-											'Previously imported',
-											'sureforms'
-										) }
+										label={ {
+											heading:
+												form.name ||
+												__(
+													'(untitled form)',
+													'sureforms'
+												),
+										} }
 									/>
-								) }
-							</li>
-						) ) }
+									{ isImported && (
+										<div className="flex items-center gap-2">
+											<Badge
+												variant="blue"
+												size="xs"
+												icon={
+													<RefreshCcw className="size-3" />
+												}
+												label={ __(
+													'Previously imported',
+													'sureforms'
+												) }
+											/>
+											{ form.imported_srfm_edit_url && (
+												<a
+													href={
+														form.imported_srfm_edit_url
+													}
+													target="_blank"
+													rel="noopener noreferrer"
+													className="inline-flex items-center gap-1 text-xs text-text-tertiary hover:text-text-primary"
+													aria-label={ __(
+														'Open existing SureForms form in a new tab',
+														'sureforms'
+													) }
+												>
+													<ExternalLink className="size-3" />
+												</a>
+											) }
+											{ isSelected && (
+												<div className="min-w-[140px]">
+													<Select
+														size="sm"
+														value={ behavior }
+														onChange={ ( v ) =>
+															setBehavior(
+																form.id,
+																v
+															)
+														}
+													>
+														<Select.Button>
+															{ labelForBehavior(
+																behavior
+															) }
+														</Select.Button>
+														<Select.Options className="z-999999">
+															{ BEHAVIOR_OPTIONS.map(
+																( opt ) => (
+																	<Select.Option
+																		key={
+																			opt.value
+																		}
+																		value={
+																			opt.value
+																		}
+																	>
+																		{
+																			opt.label
+																		}
+																	</Select.Option>
+																)
+															) }
+														</Select.Options>
+													</Select>
+												</div>
+											) }
+										</div>
+									) }
+								</li>
+							);
+						} ) }
 					</ul>
 				</div>
 			) }
@@ -209,11 +328,15 @@ const FormSelector = ( { source, onBack, onContinue } ) => {
 					variant="primary"
 					size="sm"
 					disabled={ selectedIds.length === 0 }
-					onClick={ () => onContinue( selectedIds ) }
+					onClick={ () =>
+						onContinue( selectedIds, behaviorMap )
+					}
 					icon={ <ArrowRight /> }
 					iconPosition="right"
 				>
-					{ __( 'Preview import', 'sureforms' ) }
+					{ allSelectedAreImported
+						? __( 'Preview update', 'sureforms' )
+						: __( 'Preview import', 'sureforms' ) }
 				</Button>
 			</div>
 		</Container>

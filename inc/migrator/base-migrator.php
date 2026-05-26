@@ -153,11 +153,15 @@ abstract class Base_Migrator {
 		}
 		$out = [];
 		foreach ( $this->get_source_forms() as $form ) {
-			$source_id = $this->get_source_form_id( $form );
-			$out[]     = [
-				'id'               => $source_id,
-				'name'             => $this->get_source_form_name( $form ),
-				'imported_srfm_id' => $this->find_existing_srfm_id( $source_id ),
+			$source_id   = $this->get_source_form_id( $form );
+			$existing_id = $this->find_existing_srfm_id( $source_id );
+			$out[]       = [
+				'id'                     => $source_id,
+				'name'                   => $this->get_source_form_name( $form ),
+				'imported_srfm_id'       => $existing_id,
+				'imported_srfm_edit_url' => $existing_id
+					? admin_url( 'post.php?post=' . $existing_id . '&action=edit' )
+					: '',
 			];
 		}
 		return $out;
@@ -166,17 +170,24 @@ abstract class Base_Migrator {
 	/**
 	 * Import (or dry-run) the selected source forms into SureForms.
 	 *
+	 * Re-imports honour an optional per-source behavior map:
+	 *  - `update` (default) — overwrite the existing SureForms post.
+	 *  - `skip`             — leave the existing post untouched; report under `skipped`.
+	 *  - `create`           — insert a fresh SureForms post even if one already exists.
+	 *
 	 * @since x.x.x
 	 *
-	 * @param array<int,int|string> $selected_ids List of source form ids to import. Empty = all.
-	 * @param bool                  $dry_run      If true, no posts are inserted and a preview is returned.
-	 * @return array{imported: array<int,array<string,mixed>>, failed: array<int,string>, unsupported_fields: array<int,string>, preview?: array<string,string>}
+	 * @param array<int,int|string>    $selected_ids List of source form ids. Empty = all.
+	 * @param bool                     $dry_run      If true, no posts are inserted; a preview is returned.
+	 * @param array<int|string,string> $behavior   Per-source-id behavior. Keyed by source id (any cast).
+	 * @return array{imported: array<int,array<string,mixed>>, failed: array<int,string>, skipped: array<int,array<string,mixed>>, unsupported_fields: array<int,string>, preview?: array<string,string>}
 	 */
-	public function import_forms( array $selected_ids = [], $dry_run = false ) {
+	public function import_forms( array $selected_ids = [], $dry_run = false, array $behavior = [] ) {
 		$this->unsupported_fields = [];
 		$result                   = [
 			'imported'           => [],
 			'failed'             => [],
+			'skipped'            => [],
 			'unsupported_fields' => [],
 		];
 
@@ -184,7 +195,8 @@ abstract class Base_Migrator {
 			return $result;
 		}
 
-		$preview = [];
+		$preview         = [];
+		$allowed_actions = [ 'update', 'skip', 'create' ];
 
 		foreach ( $this->get_source_forms() as $form ) {
 			$source_id = $this->get_source_form_id( $form );
@@ -209,7 +221,22 @@ abstract class Base_Migrator {
 
 			$metas       = $this->get_form_metas( $form );
 			$existing_id = $this->find_existing_srfm_id( $source_id );
-			if ( $existing_id ) {
+			$action      = $behavior[ (string) $source_id ] ?? ( $behavior[ (int) $source_id ] ?? 'update' );
+			if ( ! in_array( $action, $allowed_actions, true ) ) {
+				$action = 'update';
+			}
+
+			if ( $existing_id && 'skip' === $action ) {
+				$result['skipped'][] = [
+					'srfm_id'   => $existing_id,
+					'source_id' => $source_id,
+					'name'      => $this->get_source_form_name( $form ),
+					'edit_url'  => admin_url( 'post.php?post=' . $existing_id . '&action=edit' ),
+				];
+				continue;
+			}
+
+			if ( $existing_id && 'create' !== $action ) {
 				$post_id = $this->update_form_post( $existing_id, $form, $markup, $metas );
 			} else {
 				$post_id = $this->insert_form_post( $form, $markup, $metas );

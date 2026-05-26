@@ -45,6 +45,26 @@ class Cf7_Importer extends Base_Migrator {
 	private $submit_label = '';
 
 	/**
+	 * Slugs already used in the current form, lower-cased. Populated as fields
+	 * are emitted so the next field with a colliding slug can be suffixed
+	 * `-2`, `-3`, … — preventing duplicate `srfm/*` block slugs which would
+	 * silently break submission handling.
+	 *
+	 * @var array<string,int>
+	 */
+	private $used_slugs = [];
+
+	/**
+	 * Map of CF7 field `name` attribute → final SureForms slug for the current
+	 * form. Used by `translate_mail_shortcodes()` to rewrite CF7 mail-template
+	 * shortcodes like `[your-name]` into SureForms smart tags `{your-name}`
+	 * (or the deduped equivalent).
+	 *
+	 * @var array<string,string>
+	 */
+	private $field_slug_map = [];
+
+	/**
 	 * Constructor — set source identifiers.
 	 *
 	 * @since x.x.x
@@ -159,33 +179,42 @@ class Cf7_Importer extends Base_Migrator {
 	 * @return array<string,mixed> SureForms meta_input payload.
 	 */
 	protected function get_form_metas( array $form ) {
-		$title = $this->get_source_form_name( $form );
+		$title   = $this->get_source_form_name( $form );
+		$post_id = $this->get_source_form_id( $form );
+
+		$cf7_mail     = $post_id ? get_post_meta( $post_id, '_mail', true ) : [];
+		$cf7_mail     = is_array( $cf7_mail ) ? $cf7_mail : [];
+		$cf7_messages = $post_id ? get_post_meta( $post_id, '_messages', true ) : [];
+		$cf7_messages = is_array( $cf7_messages ) ? $cf7_messages : [];
+
+		$default_subject = sprintf(
+			/* translators: %s: form title from the source CF7 form. */
+			__( 'New submission: %s', 'sureforms' ),
+			$title
+		);
 
 		$notification = [
 			'id'             => 1,
 			'status'         => true,
 			'is_raw_format'  => false,
 			'name'           => __( 'Admin Notification Email', 'sureforms' ),
-			'email_to'       => '{admin_email}',
+			'email_to'       => $this->translate_recipient( $cf7_mail['recipient'] ?? '', '{admin_email}' ),
 			'email_reply_to' => '{admin_email}',
 			'from_name'      => '{site_title}',
 			'from_email'     => '{admin_email}',
 			'email_cc'       => '',
 			'email_bcc'      => '',
-			'subject'        => sprintf(
-				/* translators: %s: form title from the source CF7 form. */
-				__( 'New submission: %s', 'sureforms' ),
-				$title
-			),
-			'email_body'     => '{all_data}',
+			'subject'        => $this->translate_mail_shortcodes( $cf7_mail['subject'] ?? '', $default_subject ),
+			'email_body'     => $this->translate_mail_shortcodes( $cf7_mail['body'] ?? '', '{all_data}' ),
 		];
 
+		$mail_sent_ok = isset( $cf7_messages['mail_sent_ok'] ) ? trim( (string) $cf7_messages['mail_sent_ok'] ) : '';
 		$confirmation = [
 			'id'                => 1,
 			'confirmation_type' => 'same page',
 			'page_url'          => '',
 			'custom_url'        => '',
-			'message'           => $this->default_confirmation_message(),
+			'message'           => '' !== $mail_sent_ok ? wp_kses_post( $mail_sent_ok ) : $this->default_confirmation_message(),
 			'submission_action' => 'hide form',
 		];
 
@@ -193,6 +222,97 @@ class Cf7_Importer extends Base_Migrator {
 			'_srfm_email_notification' => [ $notification ],
 			'_srfm_form_confirmation'  => [ $confirmation ],
 		];
+	}
+
+	/**
+	 * Translate a CF7 mail-template string into a SureForms smart-tag string.
+	 *
+	 * Rewrites two flavors of CF7 shortcodes:
+	 *  - Field references — `[your-name]` becomes `{your-name}` (or the
+	 *    deduped slug from `$this->field_slug_map`).
+	 *  - CF7 system tags — `[_post_title]` → `{post_title}`, `[_user_email]`
+	 *    → `{email_address}`, and friends. Unknown system tags are dropped.
+	 *
+	 * Empty input returns the supplied fallback so callers get a sane default.
+	 *
+	 * @since x.x.x
+	 *
+	 * @param string $body     Raw CF7 mail template.
+	 * @param string $fallback Returned verbatim when `$body` is blank.
+	 * @return string Translated body, or fallback.
+	 */
+	private function translate_mail_shortcodes( $body, $fallback = '' ) {
+		$body = (string) $body;
+		if ( '' === trim( $body ) ) {
+			return $fallback;
+		}
+
+		// CF7 system tags → SureForms smart tags. Only tags with a direct
+		// counterpart are mapped; unknown tags are stripped at the end.
+		$system_map = [
+			'_post_title'  => '{post_title}',
+			'_post_url'    => '{post_url}',
+			'_post_id'     => '{post_id}',
+			'_post_author' => '{author_name}',
+			'_user_email'  => '{email_address}',
+			'_user_login'  => '{username}',
+			'_user_agent'  => '{user_agent}',
+			'_remote_ip'   => '{ip_address}',
+			'_url'         => '{current_url}',
+			'_date'        => '{date}',
+			'_time'        => '{time}',
+			'_site_title'  => '{site_title}',
+			'_site_url'    => '{site_url}',
+		];
+		foreach ( $system_map as $cf7 => $srfm ) {
+			$body = str_replace( '[' . $cf7 . ']', $srfm, $body );
+		}
+
+		// Field references — only translate tokens that match a known CF7 name.
+		// The callback returns the matched literal when there's no mapping so
+		// unrelated bracket text (e.g. "[Reserved]") survives.
+		if ( ! empty( $this->field_slug_map ) ) {
+			$body = preg_replace_callback(
+				'/\[([a-zA-Z0-9_\-]+)\]/',
+				function ( $m ) {
+					$name = $m[1];
+					if ( isset( $this->field_slug_map[ $name ] ) ) {
+						return '{' . $this->field_slug_map[ $name ] . '}';
+					}
+					return $m[0];
+				},
+				$body
+			);
+		}
+
+		return is_string( $body ) ? $body : $fallback;
+	}
+
+	/**
+	 * Translate the CF7 mail recipient string into a SureForms `email_to`
+	 * value. Falls back to `{admin_email}` when the recipient is empty or
+	 * uses unrecognised tokens (so the imported form still routes to a real
+	 * inbox even when the source template referenced `[_user_email]` for an
+	 * auto-reply mail that didn't get ported).
+	 *
+	 * @since x.x.x
+	 *
+	 * @param string $recipient CF7 `_mail.recipient` value.
+	 * @param string $fallback  Returned when recipient is unusable.
+	 * @return string
+	 */
+	private function translate_recipient( $recipient, $fallback ) {
+		$recipient = trim( (string) $recipient );
+		if ( '' === $recipient ) {
+			return $fallback;
+		}
+		$translated = $this->translate_mail_shortcodes( $recipient, $fallback );
+		// Sanity check: if translation produced empty or only smart tags without
+		// a concrete address, keep the fallback so the notification is deliverable.
+		if ( '' === trim( $translated ) ) {
+			return $fallback;
+		}
+		return $translated;
 	}
 
 	/**
@@ -232,8 +352,10 @@ class Cf7_Importer extends Base_Migrator {
 	 * @return string Concatenated field block markup.
 	 */
 	protected function build_form_content( array $form ) {
-		$this->submit_label = '';
-		$post_id            = $this->get_source_form_id( $form );
+		$this->submit_label   = '';
+		$this->used_slugs     = [];
+		$this->field_slug_map = [];
+		$post_id              = $this->get_source_form_id( $form );
 		if ( ! $post_id ) {
 			return '';
 		}
@@ -314,6 +436,20 @@ class Cf7_Importer extends Base_Migrator {
 				$this->note_unsupported( 'Quiz' );
 				continue;
 			}
+			// CF7 Multi-Step Forms addon — `[step ...]` wraps groups of fields.
+			// Without explicit support, the step boundaries silently flatten into
+			// a single SureForms form, hiding navigation logic from the user.
+			if ( 0 === strpos( $line, '[step' ) || 0 === strpos( $line, '[/step' ) ) {
+				$this->note_unsupported( __( 'Multi-Step Forms addon', 'sureforms' ) );
+				continue;
+			}
+			// CF7 Conditional Fields addon — `[group ...]` wraps conditional groups.
+			// As with [step], silently dropping these would produce a form whose
+			// behaviour differs from the source. Flag it once per form.
+			if ( 0 === strpos( $line, '[group' ) || 0 === strpos( $line, '[/group' ) ) {
+				$this->note_unsupported( __( 'Conditional Fields addon', 'sureforms' ) );
+				continue;
+			}
 			$bracket_pos = strpos( $line, '[' );
 			if ( false === $bracket_pos ) {
 				// Line has only label text; pair with next line if it holds a tag.
@@ -384,9 +520,26 @@ class Cf7_Importer extends Base_Migrator {
 		}
 		$template_method = $template_map[ $tag_name ];
 
-		$attrs = $this->extract_tag_attrs( $body, $tag_name );
-		$args  = [
-			'label'         => '' !== $label ? $label : ucfirst( $tag_name ),
+		$attrs       = $this->extract_tag_attrs( $body, $tag_name );
+		$field_label = '' !== $label ? $label : ucfirst( $tag_name );
+
+		// Acceptance: the quoted text becomes the consent HTML, but reserve the
+		// slug from the original `name` attribute so [acceptance accept-this ...]
+		// reserves "accept-this", not the long consent sentence.
+		$slug_seed = $field_label;
+		$cf7_name  = isset( $parts[1] ) ? (string) $parts[1] : '';
+		// CF7 field name is the 2nd token unless that token is an option (`size:`, `min:`, …).
+		if ( '' !== $cf7_name && false === strpos( $cf7_name, ':' ) && '"' !== $cf7_name[0] && "'" !== $cf7_name[0] ) {
+			$slug_seed = $cf7_name;
+		}
+		$resolved_slug = $this->reserve_slug( $slug_seed );
+		if ( '' !== $cf7_name ) {
+			$this->field_slug_map[ $cf7_name ] = $resolved_slug;
+		}
+
+		$args = [
+			'label'         => $field_label,
+			'slug'          => $resolved_slug,
 			'required'      => $required,
 			'placeholder'   => $attrs['placeholder'],
 			'default_value' => $attrs['default'],
@@ -538,5 +691,33 @@ class Cf7_Importer extends Base_Migrator {
 		}
 
 		return $attrs;
+	}
+
+	/**
+	 * Reserve a unique slug for the current form.
+	 *
+	 * Generates a slug from the seed via sanitize_title(). If the slug is
+	 * already taken in this form, appends `-2`, `-3`, … until a free slot
+	 * is found. Tracks the slug in `$this->used_slugs` so subsequent calls
+	 * within the same form see the collision.
+	 *
+	 * @since x.x.x
+	 *
+	 * @param string $seed Slug seed (CF7 field name or field label).
+	 * @return string Deduped slug.
+	 */
+	private function reserve_slug( $seed ) {
+		$base = sanitize_title( (string) $seed );
+		if ( '' === $base ) {
+			$base = 'field';
+		}
+		$slug = $base;
+		$n    = 2;
+		while ( isset( $this->used_slugs[ $slug ] ) ) {
+			$slug = $base . '-' . $n;
+			++$n;
+		}
+		$this->used_slugs[ $slug ] = 1;
+		return $slug;
 	}
 }

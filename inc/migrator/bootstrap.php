@@ -102,6 +102,10 @@ class Bootstrap {
 					'sanitize_callback' => 'rest_sanitize_boolean',
 					'default'           => false,
 				],
+				'behavior' => [
+					'sanitize_callback' => [ $this, 'sanitize_behavior' ],
+					'default'           => [],
+				],
 			],
 		];
 
@@ -202,8 +206,12 @@ class Bootstrap {
 		if ( ! is_array( $form_ids ) ) {
 			$form_ids = [];
 		}
-		$dry_run = (bool) $request->get_param( 'dry_run' );
-		$result  = $importer->import_forms( $form_ids, $dry_run );
+		$dry_run  = (bool) $request->get_param( 'dry_run' );
+		$behavior = $request->get_param( 'behavior' );
+		if ( ! is_array( $behavior ) ) {
+			$behavior = [];
+		}
+		$result = $importer->import_forms( $form_ids, $dry_run, $behavior );
 		return new WP_REST_Response( $result, 200 );
 	}
 
@@ -250,6 +258,37 @@ class Bootstrap {
 			__( 'Security verification failed. Please refresh the page and try again.', 'sureforms' ),
 			[ 'status' => 403 ]
 		);
+	}
+
+	/**
+	 * Sanitize the re-import behavior map — keys are source-form ids, values
+	 * are one of `update`, `skip`, `create`. Unknown actions and non-scalar
+	 * keys are dropped silently so the migrator falls back to its default
+	 * `update` behavior.
+	 *
+	 * @since x.x.x
+	 *
+	 * @param mixed $value Raw value from the REST request.
+	 * @return array<string,string>
+	 */
+	public function sanitize_behavior( $value ) {
+		if ( ! is_array( $value ) ) {
+			return [];
+		}
+		$allowed = [ 'update', 'skip', 'create' ];
+		$out     = [];
+		foreach ( $value as $source_id => $action ) {
+			$action = is_string( $action ) ? strtolower( $action ) : '';
+			if ( ! in_array( $action, $allowed, true ) ) {
+				continue;
+			}
+			$key = is_int( $source_id ) || is_numeric( $source_id ) ? (string) (int) $source_id : sanitize_text_field( (string) $source_id );
+			if ( '' === $key ) {
+				continue;
+			}
+			$out[ $key ] = $action;
+		}
+		return $out;
 	}
 
 	/**

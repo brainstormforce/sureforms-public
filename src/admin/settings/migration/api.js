@@ -32,17 +32,19 @@ export const listForms = ( key ) =>
 /**
  * Import (or dry-run) selected forms from one source.
  *
- * @param {string}               key     Source key.
- * @param {Array<number|string>} formIds Source form ids to import. Empty = all.
- * @param {boolean}              dryRun  If true, no posts are inserted; preview is returned.
- * @return {Promise<{imported: Array<{srfm_id: number, source_id: number|string, name: string, edit_url: string}>, failed: Array<string>, unsupported_fields: Array<string>, preview?: Record<string, string>}>} Resolves with the import outcome.
+ * @param {string}                        key      Source key.
+ * @param {Array<number|string>}          formIds  Source form ids to import. Empty = all.
+ * @param {boolean}                       dryRun   If true, no posts are inserted; preview is returned.
+ * @param {Object<string|number, string>} behavior Optional per-source re-import behavior — keyed by source form id, value is one of `update`, `skip`, `create`. Defaults to `update` when omitted.
+ * @return {Promise<{imported: Array<{srfm_id: number, source_id: number|string, name: string, edit_url: string}>, failed: Array<string>, skipped: Array<{srfm_id: number, source_id: number|string, name: string, edit_url: string}>, unsupported_fields: Array<string>, preview?: Record<string, string>}>} Resolves with the import outcome.
  */
-export const importForms = ( key, formIds, dryRun = false ) =>
+export const importForms = ( key, formIds, dryRun = false, behavior = {} ) =>
 	apiFetch( {
 		path: `${ BASE }/sources/${ encodeURIComponent( key ) }/import`,
 		method: 'POST',
 		data: {
 			form_ids: formIds,
 			dry_run: dryRun,
+			behavior,
 		},
 	} );

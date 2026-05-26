@@ -9,7 +9,7 @@
  * @since x.x.x
  */
 
-import { useEffect, useState } from '@wordpress/element';
+import { useEffect, useRef, useState } from '@wordpress/element';
 import { __, sprintf, _n } from '@wordpress/i18n';
 import {
 	Alert,
@@ -22,17 +22,26 @@ import {
 import { ArrowLeft, AlertTriangle, Check } from 'lucide-react';
 import { importForms } from './api';
 
-const DryRunPreview = ( { source, formIds, onBack, onConfirm } ) => {
+const DryRunPreview = ( {
+	source,
+	formIds,
+	behavior = {},
+	onBack,
+	onConfirm,
+} ) => {
 	const [ data, setData ] = useState( null );
 	const [ loading, setLoading ] = useState( true );
 	const [ error, setError ] = useState( '' );
 	const [ submitting, setSubmitting ] = useState( false );
+	// Double-submit guard — synchronous so two rapid clicks can't both pass
+	// the in-flight check before React re-renders with `submitting = true`.
+	const inFlight = useRef( false );
 
 	useEffect( () => {
 		let cancelled = false;
 		setLoading( true );
 		setError( '' );
-		importForms( source.key, formIds, true )
+		importForms( source.key, formIds, true, behavior )
 			.then( ( res ) => {
 				if ( cancelled ) {
 					return;
@@ -40,36 +49,51 @@ const DryRunPreview = ( { source, formIds, onBack, onConfirm } ) => {
 				setData( res );
 				setLoading( false );
 			} )
-			.catch( () => {
+			.catch( ( err ) => {
 				if ( cancelled ) {
 					return;
 				}
 				setError(
-					__(
-						'Could not generate the import preview.',
-						'sureforms'
-					)
+					err?.message ||
+						__(
+							'Could not generate the import preview.',
+							'sureforms'
+						)
 				);
 				setLoading( false );
 			} );
 		return () => {
 			cancelled = true;
 		};
-	}, [ source.key, formIds ] );
+		// `behavior` participates because changing it (e.g. choosing "skip")
+		// should re-flow the preview text. Reference identity is stable
+		// because MigrationPage seeds it once per step transition.
+	}, [ source.key, formIds, behavior ] );
 
 	const handleConfirm = async () => {
+		if ( inFlight.current ) {
+			return;
+		}
+		inFlight.current = true;
 		setSubmitting( true );
 		try {
-			const res = await importForms( source.key, formIds, false );
+			const res = await importForms(
+				source.key,
+				formIds,
+				false,
+				behavior
+			);
 			onConfirm( res );
 		} catch ( e ) {
 			setError(
-				__(
-					'Import failed. Please try again or check your error logs.',
-					'sureforms'
-				)
+				e?.message ||
+					__(
+						'Import failed. Please try again or check your error logs.',
+						'sureforms'
+					)
 			);
 			setSubmitting( false );
+			inFlight.current = false;
 		}
 	};
 
@@ -105,6 +129,17 @@ const DryRunPreview = ( { source, formIds, onBack, onConfirm } ) => {
 		? data.unsupported_fields
 		: [];
 	const failed = Array.isArray( data?.failed ) ? data.failed : [];
+
+	// Choose the CTA label based on the behavior the user picked on step 2.
+	// If at least one form is being updated and none are being created fresh,
+	// "Update & import" reads more accurately than "Confirm & import".
+	const behaviorValues = Object.values( behavior );
+	const hasUpdates = behaviorValues.includes( 'update' );
+	const hasCreates = behaviorValues.includes( 'create' );
+	const confirmLabel =
+		hasUpdates && ! hasCreates
+			? __( 'Update & import', 'sureforms' )
+			: __( 'Confirm & import', 'sureforms' );
 
 	return (
 		<Container direction="column" gap="lg">
@@ -212,7 +247,7 @@ const DryRunPreview = ( { source, formIds, onBack, onConfirm } ) => {
 					icon={ <Check /> }
 					iconPosition="right"
 				>
-					{ __( 'Confirm & import', 'sureforms' ) }
+					{ confirmLabel }
 				</Button>
 			</div>
 		</Container>

@@ -46,7 +46,7 @@ class Block_Templates {
 				'errorMsg'     => self::str( $args, 'error_message' ),
 				'textLength'   => self::int_or_null( $args, 'max_length' ),
 				'inputMask'    => self::str( $args, 'input_mask', 'none' ),
-				'slug'         => self::slugify( self::str( $args, 'label', 'text-field' ) ),
+				'slug'         => self::slug_from_args( $args, 'text-field' ),
 				'block_id'     => self::block_id(),
 			]
 		);
@@ -70,7 +70,7 @@ class Block_Templates {
 				'required'     => self::bool( $args, 'required' ),
 				'help'         => self::str( $args, 'help' ),
 				'errorMsg'     => self::str( $args, 'error_message' ),
-				'slug'         => self::slugify( self::str( $args, 'label', 'email' ) ),
+				'slug'         => self::slug_from_args( $args, 'email' ),
 				'block_id'     => self::block_id(),
 			]
 		);
@@ -94,7 +94,7 @@ class Block_Templates {
 				'required'     => self::bool( $args, 'required' ),
 				'help'         => self::str( $args, 'help' ),
 				'errorMsg'     => self::str( $args, 'error_message' ),
-				'slug'         => self::slugify( self::str( $args, 'label', 'url' ) ),
+				'slug'         => self::slug_from_args( $args, 'url' ),
 				'block_id'     => self::block_id(),
 			]
 		);
@@ -117,7 +117,7 @@ class Block_Templates {
 				'required'    => self::bool( $args, 'required' ),
 				'help'        => self::str( $args, 'help' ),
 				'errorMsg'    => self::str( $args, 'error_message' ),
-				'slug'        => self::slugify( self::str( $args, 'label', 'phone' ) ),
+				'slug'        => self::slug_from_args( $args, 'phone' ),
 				'block_id'    => self::block_id(),
 			]
 		);
@@ -145,7 +145,7 @@ class Block_Templates {
 				'maxValue'     => self::int_or_null( $args, 'max' ),
 				'prefix'       => self::str( $args, 'prefix' ),
 				'suffix'       => self::str( $args, 'suffix' ),
-				'slug'         => self::slugify( self::str( $args, 'label', 'number' ) ),
+				'slug'         => self::slug_from_args( $args, 'number' ),
 				'block_id'     => self::block_id(),
 			]
 		);
@@ -172,7 +172,7 @@ class Block_Templates {
 				'minLength'    => self::int_or_null( $args, 'min_length' ),
 				'maxLength'    => self::int_or_null( $args, 'max_length' ),
 				'rows'         => self::int_or_null( $args, 'rows', 4 ),
-				'slug'         => self::slugify( self::str( $args, 'label', 'textarea' ) ),
+				'slug'         => self::slug_from_args( $args, 'textarea' ),
 				'block_id'     => self::block_id(),
 			]
 		);
@@ -199,7 +199,7 @@ class Block_Templates {
 				'errorMsg'           => self::str( $args, 'error_message' ),
 				'options'            => $options,
 				'preselectedOptions' => self::array_or_null( $args, 'preselected' ),
-				'slug'               => self::slugify( self::str( $args, 'label', 'dropdown' ) ),
+				'slug'               => self::slug_from_args( $args, 'dropdown' ),
 				'block_id'           => self::block_id(),
 			]
 		);
@@ -225,7 +225,7 @@ class Block_Templates {
 				'errorMsg'           => self::str( $args, 'error_message' ),
 				'options'            => $options,
 				'preselectedOptions' => self::array_or_null( $args, 'preselected' ),
-				'slug'               => self::slugify( self::str( $args, 'label', 'multi-choice' ) ),
+				'slug'               => self::slug_from_args( $args, 'multi-choice' ),
 				'block_id'           => self::block_id(),
 			]
 		);
@@ -248,7 +248,7 @@ class Block_Templates {
 				'checked'  => self::bool( $args, 'checked' ),
 				'help'     => self::str( $args, 'help' ),
 				'errorMsg' => self::str( $args, 'error_message' ),
-				'slug'     => self::slugify( self::str( $args, 'label', 'checkbox' ) ),
+				'slug'     => self::slug_from_args( $args, 'checkbox' ),
 				'block_id' => self::block_id(),
 			]
 		);
@@ -270,7 +270,7 @@ class Block_Templates {
 				'checked'  => self::bool( $args, 'checked' ),
 				'help'     => self::str( $args, 'help' ),
 				'errorMsg' => self::str( $args, 'error_message' ),
-				'slug'     => self::slugify( self::str( $args, 'label', 'consent' ) ),
+				'slug'     => self::slug_from_args( $args, 'consent' ),
 				'block_id' => self::block_id(),
 			]
 		);
@@ -467,6 +467,24 @@ class Block_Templates {
 	private static function slugify( $label ) {
 		$slug = sanitize_title( $label );
 		return $slug ? $slug : 'field';
+	}
+
+	/**
+	 * Resolve the block slug from `$args`, honoring an explicit `slug` override
+	 * (used by importers that need to dedupe collisions across the form).
+	 *
+	 * @since x.x.x
+	 *
+	 * @param array<string,mixed> $args     Block args.
+	 * @param string              $fallback Slug fallback when label is empty.
+	 * @return string
+	 */
+	private static function slug_from_args( array $args, $fallback ) {
+		$override = self::str( $args, 'slug' );
+		if ( '' !== $override ) {
+			return $override;
+		}
+		return self::slugify( self::str( $args, 'label', $fallback ) );
 	}
 
 	/**
