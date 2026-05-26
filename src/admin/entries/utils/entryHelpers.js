@@ -133,6 +133,10 @@ export const transformEntryDetail = ( entryDetail ) => {
 			userIp: entryDetail.submission_info?.user_ip || '-',
 			browserName: entryDetail.submission_info?.browser_name || '-',
 			deviceName: entryDetail.submission_info?.device_name || '-',
+			// Use '' (not '-') so SubmissionInfoSection's `|| formPermalink || '-'`
+			// fallback chain works for pre-migration entries and for entries where
+			// the Referer header was missing/cross-origin at submission time.
+			submissionUrl: entryDetail.submission_info?.submission_url || '',
 		},
 		user: entryDetail.user
 			? {
