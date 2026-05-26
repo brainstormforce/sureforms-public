@@ -342,7 +342,9 @@ class Cf7_Importer extends Base_Migrator {
 		// Extract label text (everything before the first `[`).
 		$label = '';
 		if ( preg_match( '/^(.*?)\[/', $blob, $m ) ) {
-			$label = trim( $m[1] );
+			// CF7 templates often wrap field rows in `<p>...</p>` or `<label>...</label>`;
+			// strip any HTML so wrapper markup doesn't bleed into the rendered field label.
+			$label = trim( wp_strip_all_tags( $m[1] ) );
 		}
 
 		// Extract the tag body (between the brackets).

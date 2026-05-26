@@ -198,8 +198,9 @@ abstract class Base_Migrator {
 				continue;
 			}
 
-			$content = $this->append_submit_button( $content );
-			$markup  = Block_Templates::form_wrapper( $content );
+			// SureForms CPT post_content stores field blocks at top level —
+			// `srfm/form` is the embed block for OTHER posts, not a wrapper.
+			$markup = $this->append_submit_button( $content );
 
 			if ( $dry_run ) {
 				$preview[ (string) $source_id ] = $markup;
@@ -251,7 +252,9 @@ abstract class Base_Migrator {
 			'post_type'    => SRFM_FORMS_POST_TYPE,
 			'post_status'  => 'publish',
 			'post_title'   => $this->get_source_form_name( $form ),
-			'post_content' => $markup,
+			// wp_insert_post applies wp_unslash to post_content; pre-slash so the
+			// JSON unicode escapes (e.g. <) survive the round-trip.
+			'post_content' => wp_slash( $markup ),
 		];
 		if ( ! empty( $metas ) ) {
 			$args['meta_input'] = $metas;
@@ -275,7 +278,9 @@ abstract class Base_Migrator {
 		$args = [
 			'ID'           => $post_id,
 			'post_title'   => $this->get_source_form_name( $form ),
-			'post_content' => $markup,
+			// wp_update_post applies wp_unslash to post_content; pre-slash so the
+			// JSON unicode escapes (e.g. <) survive the round-trip.
+			'post_content' => wp_slash( $markup ),
 		];
 		if ( ! empty( $metas ) ) {
 			$args['meta_input'] = $metas;

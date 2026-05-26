@@ -142,7 +142,9 @@ const FormSelector = ( { source, onBack, onContinue } ) => {
 							size="sm"
 							checked={ allSelected }
 							onChange={ toggleAll }
-							label={ __( 'Select all', 'sureforms' ) }
+							label={ {
+								heading: __( 'Select all', 'sureforms' ),
+							} }
 						/>
 						<Text size={ 13 } color="secondary">
 							{ sprintf(
@@ -165,13 +167,14 @@ const FormSelector = ( { source, onBack, onContinue } ) => {
 										String( form.id )
 									) }
 									onChange={ () => toggle( form.id ) }
-									label={
-										form.name ||
-										__(
-											'(untitled form)',
-											'sureforms'
-										)
-									}
+									label={ {
+										heading:
+											form.name ||
+											__(
+												'(untitled form)',
+												'sureforms'
+											),
+									} }
 								/>
 								{ form.imported_srfm_id > 0 && (
 									<Badge

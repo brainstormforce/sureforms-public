@@ -2,9 +2,9 @@
 /**
  * Test-only subclass of Cf7_Importer for PHPUnit fixtures.
  *
- * Forces exist() to return true so import_forms() can run without the CF7
- * plugin being active, and exposes the protected build_form_content() for
- * direct fixture-level testing.
+ * - exist() returns true so import_forms() can run without the CF7 plugin
+ *   being active in the WP test environment.
+ * - Exposes the protected build_form_content() for direct fixture testing.
  *
  * @package sureforms
  */

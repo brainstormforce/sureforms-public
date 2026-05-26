@@ -18,6 +18,15 @@ require_once __DIR__ . '/class-cf7-importer-testable.php';
 
 class Test_Cf7_Importer extends TestCase {
 	/**
+	 * Build a test-only Cf7_Importer subclass.
+	 *
+	 * @return Cf7_Importer_Testable
+	 */
+	private function make_importer() {
+		return new Cf7_Importer_Testable();
+	}
+
+	/**
 	 * Helper — create a fake CF7 post with the given _form shortcode template.
 	 *
 	 * @param string $template CF7 shortcode template.
@@ -68,10 +77,30 @@ class Test_Cf7_Importer extends TestCase {
 	}
 
 	/**
+	 * Tear down — purge sureforms_form and wpcf7_contact_form posts plus the
+	 * importer mapping option so each test starts from a clean slate.
+	 *
+	 * This TestCase (Yoast polyfill base) does NOT use WP_UnitTestCase
+	 * transactions, so the cleanup has to be explicit.
+	 *
 	 * @return void
 	 */
 	public function tear_down() {
 		delete_option( 'srfm_imported_forms_map' );
+		$post_types = [ SRFM_FORMS_POST_TYPE, 'wpcf7_contact_form' ];
+		foreach ( $post_types as $post_type ) {
+			$ids = get_posts(
+				[
+					'post_type'      => $post_type,
+					'post_status'    => 'any',
+					'posts_per_page' => -1,
+					'fields'         => 'ids',
+				]
+			);
+			foreach ( $ids as $id ) {
+				wp_delete_post( (int) $id, true );
+			}
+		}
 		parent::tear_down();
 	}
 
@@ -81,7 +110,7 @@ class Test_Cf7_Importer extends TestCase {
 	 * @return void
 	 */
 	public function test_parser_text_tag_emits_input_block() {
-		$importer = new Cf7_Importer_Testable();
+		$importer = $this->make_importer();
 		$post_id  = $this->create_cf7_form( "Your Name\n[text* your-name placeholder \"Jane Doe\"]" );
 
 		$content = $importer->build_form_content_public( [ 'id' => $post_id, 'name' => 'Test Form' ] );
@@ -90,6 +119,65 @@ class Test_Cf7_Importer extends TestCase {
 		$this->assertStringContainsString( '"label":"Your Name"', $content );
 		$this->assertStringContainsString( '"required":true', $content );
 		$this->assertStringContainsString( 'Jane Doe', $content );
+	}
+
+	/**
+	 * Parser — CF7 templates often wrap rows in `<p>...</p>`. The HTML wrapper
+	 * must be stripped from the field label so the editor doesn't render a
+	 * literal "<p>" prefix.
+	 *
+	 * @return void
+	 */
+	public function test_parser_strips_html_wrapper_from_label() {
+		$importer = $this->make_importer();
+		$post_id  = $this->create_cf7_form( "<p>Your Name (required)\n[text* your-name]</p>" );
+
+		$content = $importer->build_form_content_public( [ 'id' => $post_id, 'name' => 'HTML Wrap' ] );
+
+		$this->assertStringContainsString( '"label":"Your Name (required)"', $content );
+		// JSON_HEX_TAG escapes `<` as < — the encoded form must not leak.
+		$this->assertStringNotContainsString( '<p>', $content, 'HTML wrapper must be stripped from label before JSON encoding.' );
+	}
+
+	/**
+	 * After insert, the stored post_content must still contain valid JSON
+	 * unicode escapes (e.g. `<` for `<`), NOT a slash-stripped `u003C`.
+	 *
+	 * wp_insert_post applies wp_unslash to post_content; the migrator must
+	 * wp_slash() the markup first or every JSON escape gets corrupted —
+	 * imported forms then open as empty placeholders in Gutenberg.
+	 *
+	 * Uses the acceptance tag, whose quoted text becomes the label verbatim
+	 * (no HTML stripping), so we can plant a `<` for the encoder to escape.
+	 *
+	 * @return void
+	 */
+	public function test_stored_post_content_preserves_unicode_escapes() {
+		$post_id  = $this->create_cf7_form( '[acceptance accept-this "I agree <click>"]' );
+		$importer = $this->make_importer();
+
+		$importer->import_forms( [ $post_id ], false );
+
+		$srfm_posts = get_posts(
+			[
+				'post_type'      => SRFM_FORMS_POST_TYPE,
+				'post_status'    => 'any',
+				'posts_per_page' => 1,
+			]
+		);
+		$this->assertNotEmpty( $srfm_posts );
+		$content = $srfm_posts[0]->post_content;
+
+		$this->assertStringContainsString(
+			'<',
+			$content,
+			'JSON unicode escape backslash was stripped from stored post_content — markup must be wp_slash()ed before wp_insert_post.'
+		);
+		$this->assertStringNotContainsString(
+			'u003C',
+			$content,
+			'Unicode escape lost its backslash — wp_unslash ate it.'
+		);
 	}
 
 	/**
@@ -111,7 +199,7 @@ class Test_Cf7_Importer extends TestCase {
 			'GDPR'     => [ '[acceptance accept-this "I agree"]', 'wp:srfm/gdpr' ],
 		];
 
-		$importer = new Cf7_Importer_Testable();
+		$importer = $this->make_importer();
 		foreach ( $cases as $name => $case ) {
 			$template       = $case[0];
 			$expected_block = $case[1];
@@ -134,7 +222,7 @@ class Test_Cf7_Importer extends TestCase {
 		$post_id  = $this->create_cf7_form(
 			"Email\n[email* your-email]\nUpload\n[file your-file]"
 		);
-		$importer = new Cf7_Importer_Testable();
+		$importer = $this->make_importer();
 
 		$result = $importer->import_forms( [ $post_id ], true );
 
@@ -149,7 +237,7 @@ class Test_Cf7_Importer extends TestCase {
 	 */
 	public function test_parser_submit_label_is_used() {
 		$post_id  = $this->create_cf7_form( "[email* your-email]\n[submit \"Send it\"]" );
-		$importer = new Cf7_Importer_Testable();
+		$importer = $this->make_importer();
 
 		$result  = $importer->import_forms( [ $post_id ], true );
 		$preview = $this->first_preview( $result );
@@ -171,7 +259,7 @@ class Test_Cf7_Importer extends TestCase {
 		$malicious = 'Bad --> <script>alert(1)</script> end';
 		$post_id   = $this->create_cf7_form( "{$malicious}\n[text* your-name]" );
 
-		$importer = new Cf7_Importer_Testable();
+		$importer = $this->make_importer();
 		$result   = $importer->import_forms( [ $post_id ], true );
 		$markup   = $this->first_preview( $result );
 
@@ -212,7 +300,7 @@ class Test_Cf7_Importer extends TestCase {
 	 */
 	public function test_reimport_is_idempotent_no_duplicates() {
 		$post_id  = $this->create_cf7_form( "Name\n[text* your-name]\n[submit \"Send\"]" );
-		$importer = new Cf7_Importer_Testable();
+		$importer = $this->make_importer();
 
 		$first         = $importer->import_forms( [ $post_id ], false );
 		$first_srfm_id = $this->first_srfm_id( $first );
@@ -255,7 +343,7 @@ class Test_Cf7_Importer extends TestCase {
 	 */
 	public function test_reimport_after_deletion_recreates_post() {
 		$post_id  = $this->create_cf7_form( "Name\n[text* your-name]" );
-		$importer = new Cf7_Importer_Testable();
+		$importer = $this->make_importer();
 
 		$first   = $importer->import_forms( [ $post_id ], false );
 		$srfm_id = $this->first_srfm_id( $first );
@@ -276,7 +364,7 @@ class Test_Cf7_Importer extends TestCase {
 	 */
 	public function test_dry_run_does_not_insert_posts() {
 		$post_id  = $this->create_cf7_form( "Name\n[text* your-name]" );
-		$importer = new Cf7_Importer_Testable();
+		$importer = $this->make_importer();
 
 		$counts = wp_count_posts( SRFM_FORMS_POST_TYPE );
 		$before = isset( $counts->publish ) ? (int) $counts->publish : 0;
