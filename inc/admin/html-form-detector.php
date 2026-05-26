@@ -38,7 +38,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * HTML form detector handler.
  *
- * @since x.x.x
+ * @since 2.10.0
  */
 class Html_Form_Detector {
 	use Get_Instance;
@@ -47,7 +47,7 @@ class Html_Form_Detector {
 	 * Confidence level below which we route the raw HTML through the AI
 	 * middleware instead of trusting the local parser output.
 	 *
-	 * @since x.x.x
+	 * @since 2.10.0
 	 */
 	public const AI_FALLBACK_CONFIDENCE = 'low';
 
@@ -58,7 +58,7 @@ class Html_Form_Detector {
 	 * single `<form>` and would waste an AI roundtrip on noise. Matches the
 	 * upper bound the AI middleware tolerates for `query` payloads.
 	 *
-	 * @since x.x.x
+	 * @since 2.10.0
 	 */
 	public const MAX_HTML_BYTES = 32768;
 
@@ -72,7 +72,7 @@ class Html_Form_Detector {
 	 * unrelated change. The endpoint also re-checks `manage_options`
 	 * inside the handler so authorization survives both contexts.
 	 *
-	 * @since x.x.x
+	 * @since 2.10.0
 	 */
 	public function __construct() {
 		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_scripts' ] );
@@ -91,7 +91,7 @@ class Html_Form_Detector {
 	/**
 	 * Decide whether the detector script should be loaded for the current request.
 	 *
-	 * @since x.x.x
+	 * @since 2.10.0
 	 * @return bool
 	 */
 	public function allow_load() {
@@ -124,7 +124,7 @@ class Html_Form_Detector {
 	/**
 	 * Enqueue the detector script when allowed.
 	 *
-	 * @since x.x.x
+	 * @since 2.10.0
 	 * @return void
 	 */
 	public function enqueue_scripts() {
@@ -167,7 +167,7 @@ class Html_Form_Detector {
 	 * `sureforms/v1/*` routes without touching `Rest_Api::get_endpoints()` —
 	 * keeping every concern of the detector co-located in this class.
 	 *
-	 * @since x.x.x
+	 * @since 2.10.0
 	 * @param array<string,array<string,mixed>> $endpoints Existing endpoints map.
 	 * @return array<string,array<string,mixed>>
 	 */
@@ -234,7 +234,7 @@ class Html_Form_Detector {
 	 *    code path produces the final `sureforms_form` CPT; no parallel
 	 *    insert logic to maintain.
 	 *
-	 * @since x.x.x
+	 * @since 2.10.0
 	 * @param WP_REST_Request $request REST request.
 	 * @return array<string,mixed>|\WP_Error
 	 */
@@ -328,7 +328,7 @@ class Html_Form_Detector {
 		 * server is simpler and avoids leaking pro-specific behavior
 		 * into the public block-editor bundle.
 		 *
-		 * @since x.x.x
+		 * @since 2.10.0
 		 * @param array<int,array<string,mixed>> $clean_fields Sanitized field list ready for Create_Form.
 		 * @param string                         $raw_html     Original HTML of the source `<form>` block.
 		 * @param string                         $confidence   Parser confidence (`high`/`medium`/`low`).
@@ -389,7 +389,7 @@ class Html_Form_Detector {
 			 * additional `_srfm_forms_styling` keys — e.g. a pro
 			 * `form_theme` preset chosen from inline-style hints.
 			 *
-			 * @since x.x.x
+			 * @since 2.10.0
 			 * @param int                 $form_id  Newly-created SureForms form ID.
 			 * @param array<string,mixed> $styling  Parser styling descriptor (inline-style hints).
 			 * @param string              $raw_html Original HTML of the source `<form>` block.
@@ -428,7 +428,7 @@ class Html_Form_Detector {
 	 * `unfiltered_html`) get the `wp_kses_post` treatment, super
 	 * admins on single-site / multisite get the raw markup through.
 	 *
-	 * @since x.x.x
+	 * @since 2.10.0
 	 * @param string $html Original `core/html` block contents.
 	 * @return string Stripped (and optionally filtered) markup, or '' when nothing survives.
 	 */
@@ -523,7 +523,7 @@ class Html_Form_Detector {
 	 * `src/admin/single-form-settings/tabs/StyleSettings.js` — neither
 	 * gates these behind `SRFM_PRO_VER`). Pro is not required.
 	 *
-	 * @since x.x.x
+	 * @since 2.10.0
 	 * @param int                 $form_id Newly-created form ID.
 	 * @param array<string,mixed> $styling Parser styling descriptor.
 	 * @return void
@@ -593,7 +593,7 @@ class Html_Form_Detector {
 	 * the downstream consumer still wraps the value in a context where
 	 * those tokens cannot escape into the surrounding markup.
 	 *
-	 * @since x.x.x
+	 * @since 2.10.0
 	 * @param mixed $value Raw shorthand string from the parser.
 	 * @return array{top:float,right:float,bottom:float,left:float,unit:string,link:bool}|null
 	 */
@@ -686,7 +686,7 @@ class Html_Form_Detector {
 	 * before returning so a malformed payload cannot reach the
 	 * `Create_Form` schema validator as a surprise scalar.
 	 *
-	 * @since x.x.x
+	 * @since 2.10.0
 	 * @param string $html Raw HTML containing the source `<form>`.
 	 * @return array<int,array<string,mixed>>|\WP_Error
 	 */
@@ -755,7 +755,7 @@ class Html_Form_Detector {
 	 * `loadHTML` / `saveHTML` pair can mutate whitespace and entity
 	 * encoding in ways the AI prompt is sensitive to).
 	 *
-	 * @since x.x.x
+	 * @since 2.10.0
 	 * @param string $html Source HTML markup.
 	 * @return string Sanitized markup safe to forward.
 	 */
@@ -867,7 +867,7 @@ class Html_Form_Detector {
 	 * SureForms render its own form title there produces the duplicate
 	 * "Contact Us" header we saw in QA.
 	 *
-	 * @since x.x.x
+	 * @since 2.10.0
 	 * @param string              $submit_text Submit button label extracted from the source form.
 	 * @param array<string,mixed> $styling     Inline-style colors the parser was able to read.
 	 * @return array<string,mixed>
@@ -926,7 +926,7 @@ class Html_Form_Detector {
 	 * back to a default. Centralizes the `sanitize_hex_color() || default`
 	 * pattern used in several places in `build_form_metadata()`.
 	 *
-	 * @since x.x.x
+	 * @since 2.10.0
 	 * @param mixed  $value   Candidate hex color.
 	 * @param string $default Default to use when the candidate is unusable.
 	 * @return string
@@ -945,7 +945,7 @@ class Html_Form_Detector {
 	 * `additionalProperties: false`, so passing through `_groupName`,
 	 * `_optionValue`, or `confidence` would reject the entire request.
 	 *
-	 * @since x.x.x
+	 * @since 2.10.0
 	 * @param array<int,mixed> $fields Raw parser fields.
 	 * @return array<int,array<string,mixed>>
 	 */
@@ -981,7 +981,7 @@ class Html_Form_Detector {
 	 * any pro-added property that `Create_Form`'s hardcoded sanitize
 	 * list does not cover.
 	 *
-	 * @since x.x.x
+	 * @since 2.10.0
 	 * @param array<int,array<string,mixed>> $fields Filter output.
 	 * @return array<int,array<string,mixed>>
 	 */
