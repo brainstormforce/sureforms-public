@@ -4,7 +4,7 @@
 **Requires at least:** 6.4  
 **Tested up to:** 7.0  
 **Requires PHP:** 7.4  
-**Stable tag:** 2.9.1  
+**Stable tag:** 2.10.0  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -486,6 +486,10 @@ Yes. SureForms has built-in Payment Form support. You can collect payments secur
 You can report security issues through our [Bug Bounty Program](https://brainstormforce.com/bug-bounty-program/). We collaborate with Patchstack to provide opportunities for researchers to report vulnerabilities. The Patchstack team will help validate, triage, and handle any reported security issues.
 
 ## Changelog ##
+### 2.10.0 - 27th May 2026 ###
+* New: Added a live character counter to Textarea fields so users can see remaining characters while typing.
+* New: Added an HTML form converter that converts existing HTML forms on your site into native SureForms with a single click.
+* Fix: Moved help text outside the <legend> element for Dropdown and Address fields to improve screen reader compatibility.
 ### 2.9.1 - 19th May 2026 ###
 * Improvement: Added compatibility with WordPress 7.0.
 ### 2.9.0 - 14th May 2026 ###
@@ -496,13 +500,6 @@ You can report security issues through our [Bug Bounty Program](https://brainsto
 * New: Added the `srfm_export_zip_filename` filter so the exported form ZIP filename can be customized.
 * Improvement: Improved UTM attribution accuracy on upgrade and editor-nudge CTAs across the plugin.
 * Fix: Resolved an issue where the Refund action was disabled on cancelled subscription payment entries, blocking legitimate refunds.
-### 2.8.2 - 5th May 2026 ###
-* New: Added "Both" payment type so a single form can collect one-time and subscription payments together.
-* New: Added Hidden field support for the payment block's dynamic amount.
-* New: Added minimum character limit support for the Textarea field.
-* Improvement: Added extension hooks for windowed entry caps in form restriction.
-* Fix: Fixed AI Form Builder silent failures and replaced generic error messages with clearer feedback.
-* Fix: Resolved an issue where the Confirm Email field could silently block form submission when the Email field was not marked as required.
 The full changelog is available [here](https://sureforms.com/whats-new/).
 
 ## Upgrade Notice ##
