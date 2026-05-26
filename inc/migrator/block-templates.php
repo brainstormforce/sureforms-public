@@ -350,7 +350,11 @@ class Block_Templates {
 		if ( empty( $attrs ) ) {
 			return '{}';
 		}
-		$json = wp_json_encode( $attrs, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE );
+		// JSON_HEX_TAG/AMP/APOS/QUOT escape <, >, &, ', " as < etc. so attacker-controlled
+		// strings (e.g. a CF7 label containing `-->`) cannot terminate the surrounding HTML block
+		// comment delimiter and inject markup. Mirrors what core's serialize_block() does.
+		$flags = JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT;
+		$json  = wp_json_encode( $attrs, $flags );
 		return is_string( $json ) ? $json : '{}';
 	}
 

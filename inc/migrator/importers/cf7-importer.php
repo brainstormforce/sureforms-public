@@ -99,7 +99,7 @@ class Cf7_Importer extends Base_Migrator {
 		$posts = get_posts(
 			[
 				'post_type'      => 'wpcf7_contact_form',
-				'post_status'    => 'any',
+				'post_status'    => [ 'publish', 'draft', 'private' ],
 				'posts_per_page' => -1,
 				'orderby'        => 'title',
 				'order'          => 'ASC',

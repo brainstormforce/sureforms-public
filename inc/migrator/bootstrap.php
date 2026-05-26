@@ -22,6 +22,7 @@ namespace SRFM\Inc\Migrator;
 use SRFM\Inc\Helper;
 use SRFM\Inc\Migrator\Importers\Cf7_Importer;
 use SRFM\Inc\Traits\Get_Instance;
+use WP_Error;
 use WP_REST_Request;
 use WP_REST_Response;
 
@@ -113,10 +114,13 @@ class Bootstrap {
 	 * @since x.x.x
 	 *
 	 * @param WP_REST_Request $request REST request.
-	 * @return WP_REST_Response
+	 * @return WP_REST_Response|WP_Error
 	 */
 	public function rest_list_sources( $request ) {
-		$this->verify_nonce( $request );
+		$nonce_error = $this->verify_nonce( $request );
+		if ( $nonce_error instanceof WP_Error ) {
+			return $nonce_error;
+		}
 		$out = [];
 		foreach ( array_keys( $this->importer_classes ) as $key ) {
 			$importer = $this->get_importer( $key );
@@ -140,10 +144,13 @@ class Bootstrap {
 	 * @since x.x.x
 	 *
 	 * @param WP_REST_Request $request REST request.
-	 * @return WP_REST_Response
+	 * @return WP_REST_Response|WP_Error
 	 */
 	public function rest_list_forms( $request ) {
-		$this->verify_nonce( $request );
+		$nonce_error = $this->verify_nonce( $request );
+		if ( $nonce_error instanceof WP_Error ) {
+			return $nonce_error;
+		}
 		$key      = (string) $request->get_param( 'key' );
 		$importer = $this->get_importer( $key );
 		if ( null === $importer ) {
@@ -170,10 +177,13 @@ class Bootstrap {
 	 * @since x.x.x
 	 *
 	 * @param WP_REST_Request $request REST request.
-	 * @return WP_REST_Response
+	 * @return WP_REST_Response|WP_Error
 	 */
 	public function rest_import_forms( $request ) {
-		$this->verify_nonce( $request );
+		$nonce_error = $this->verify_nonce( $request );
+		if ( $nonce_error instanceof WP_Error ) {
+			return $nonce_error;
+		}
 		$key      = (string) $request->get_param( 'key' );
 		$importer = $this->get_importer( $key );
 		if ( null === $importer ) {
@@ -221,21 +231,25 @@ class Bootstrap {
 	/**
 	 * Verify the WordPress REST cookie nonce.
 	 *
-	 * Aborts the request via `wp_send_json_error` if the nonce is invalid,
-	 * matching the pattern used in `inc/rest-api.php`.
+	 * Returns a WP_Error the REST callback can short-circuit on. The shape matches
+	 * REST conventions (rest_cookie_invalid_nonce, 403) so api.js receives a
+	 * properly structured error response instead of an AJAX-shaped envelope.
 	 *
 	 * @since x.x.x
 	 *
 	 * @param WP_REST_Request $request REST request.
-	 * @return void
+	 * @return WP_Error|null
 	 */
 	private function verify_nonce( $request ) {
 		$nonce = (string) $request->get_header( 'X-WP-Nonce' );
-		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'wp_rest' ) ) {
-			wp_send_json_error(
-				__( 'Security verification failed. Please refresh the page and try again.', 'sureforms' )
-			);
+		if ( wp_verify_nonce( sanitize_text_field( $nonce ), 'wp_rest' ) ) {
+			return null;
 		}
+		return new WP_Error(
+			'rest_cookie_invalid_nonce',
+			__( 'Security verification failed. Please refresh the page and try again.', 'sureforms' ),
+			[ 'status' => 403 ]
+		);
 	}
 
 	/**
