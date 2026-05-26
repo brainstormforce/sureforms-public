@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-05-26T15:30:07+00:00\n"
+"POT-Creation-Date: 2026-05-26T15:32:32+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: sureforms\n"
@@ -12924,6 +12924,14 @@ msgid "Dynamic Default Value"
 msgstr ""
 
 #: assets/build/blocks.js:172
+msgid "Use a smart tag like {get_input:country}. The first option whose title matches the resolved value will be preselected."
+msgstr ""
+
+#: assets/build/blocks.js:172
+msgid "Use a smart tag like {get_input:colors} and pass pipe separated values in the URL (for example ?colors=Red|Blue). Every option whose title matches a value will be checked. You can also chain multiple smart tags separated by pipes."
+msgstr ""
+
+#: assets/build/blocks.js:172
 msgid "Select Country"
 msgstr ""
 
@@ -12977,6 +12985,14 @@ msgstr ""
 
 #: assets/build/blocks.js:172
 msgid "Allow Multiple"
+msgstr ""
+
+#: assets/build/blocks.js:172
+msgid "Use a smart tag like {get_input:colors} and pass pipe separated values in the URL (for example ?colors=Red|Blue). Every option whose label matches a value will be preselected. You can also chain multiple smart tags separated by pipes."
+msgstr ""
+
+#: assets/build/blocks.js:172
+msgid "Use a smart tag like {get_input:country}. The first option whose label matches the resolved value will be preselected."
 msgstr ""
 
 #: assets/build/blocks.js:172
