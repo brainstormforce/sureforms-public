@@ -12,26 +12,11 @@
  * @package sureforms
  */
 
-use SRFM\Inc\Migrator\Importers\Cf7_Importer;
 use Yoast\PHPUnitPolyfills\TestCases\TestCase;
 
-/**
- * Test-only subclass that:
- *  - Forces exist() to return true so import_forms() runs without CF7 active.
- *  - Exposes the protected build_form_content() for direct fixture testing.
- */
-class Cf7_Importer_Testable extends Cf7_Importer {
-	public function exist() {
-		return true;
-	}
-
-	public function build_form_content_public( array $form ) {
-		return $this->build_form_content( $form );
-	}
-}
+require_once __DIR__ . '/class-cf7-importer-testable.php';
 
 class Test_Cf7_Importer extends TestCase {
-
 	/**
 	 * Helper — create a fake CF7 post with the given _form shortcode template.
 	 *
@@ -51,6 +36,40 @@ class Test_Cf7_Importer extends TestCase {
 		return (int) $post_id;
 	}
 
+	/**
+	 * Extract a single imported srfm_id from import_forms() result.
+	 *
+	 * @param array<string,mixed> $result Import result.
+	 * @return int
+	 */
+	private function first_srfm_id( array $result ) {
+		if ( ! isset( $result['imported'] ) || ! is_array( $result['imported'] ) ) {
+			return 0;
+		}
+		$first = reset( $result['imported'] );
+		if ( ! is_array( $first ) || ! isset( $first['srfm_id'] ) ) {
+			return 0;
+		}
+		return (int) $first['srfm_id'];
+	}
+
+	/**
+	 * Extract the first preview markup string from a dry-run result.
+	 *
+	 * @param array<string,mixed> $result Import result.
+	 * @return string
+	 */
+	private function first_preview( array $result ) {
+		if ( ! isset( $result['preview'] ) || ! is_array( $result['preview'] ) ) {
+			return '';
+		}
+		$preview = reset( $result['preview'] );
+		return is_string( $preview ) ? $preview : '';
+	}
+
+	/**
+	 * @return void
+	 */
 	public function tear_down() {
 		delete_option( 'srfm_imported_forms_map' );
 		parent::tear_down();
@@ -58,6 +77,8 @@ class Test_Cf7_Importer extends TestCase {
 
 	/**
 	 * Parser — `text` tag emits an srfm/input block with the label as field label.
+	 *
+	 * @return void
 	 */
 	public function test_parser_text_tag_emits_input_block() {
 		$importer = new Cf7_Importer_Testable();
@@ -74,6 +95,8 @@ class Test_Cf7_Importer extends TestCase {
 	/**
 	 * Parser — `email`, `url`, `tel`, `number`, `textarea`, `date` each map to
 	 * their expected srfm block.
+	 *
+	 * @return void
 	 */
 	public function test_parser_each_supported_tag_emits_correct_block() {
 		$cases = [
@@ -85,13 +108,15 @@ class Test_Cf7_Importer extends TestCase {
 			'Select'   => [ "Country\n[select your-country \"USA\" \"Canada\"]", 'wp:srfm/dropdown' ],
 			'Checkbox' => [ "Topics\n[checkbox topics \"News\" \"Updates\"]", 'wp:srfm/checkbox' ],
 			'Radio'    => [ "Gender\n[radio gender \"Male\" \"Female\"]", 'wp:srfm/multi-choice' ],
-			'GDPR'     => [ "[acceptance accept-this \"I agree\"]", 'wp:srfm/gdpr' ],
+			'GDPR'     => [ '[acceptance accept-this "I agree"]', 'wp:srfm/gdpr' ],
 		];
 
 		$importer = new Cf7_Importer_Testable();
-		foreach ( $cases as $name => [ $template, $expected_block ] ) {
-			$post_id = $this->create_cf7_form( $template, "Form: {$name}" );
-			$content = $importer->build_form_content_public( [ 'id' => $post_id, 'name' => "Form: {$name}" ] );
+		foreach ( $cases as $name => $case ) {
+			$template       = $case[0];
+			$expected_block = $case[1];
+			$post_id        = $this->create_cf7_form( $template, "Form: {$name}" );
+			$content        = $importer->build_form_content_public( [ 'id' => $post_id, 'name' => "Form: {$name}" ] );
 			$this->assertStringContainsString(
 				$expected_block,
 				$content,
@@ -102,6 +127,8 @@ class Test_Cf7_Importer extends TestCase {
 
 	/**
 	 * Parser — unsupported tags (file, captchar) are tracked, not silently dropped.
+	 *
+	 * @return void
 	 */
 	public function test_parser_unsupported_tags_are_reported() {
 		$post_id  = $this->create_cf7_form(
@@ -111,20 +138,21 @@ class Test_Cf7_Importer extends TestCase {
 
 		$result = $importer->import_forms( [ $post_id ], true );
 
-		$this->assertNotEmpty( $result['preview'], 'Dry-run preview should contain the imported form markup.' );
+		$this->assertNotEmpty( $this->first_preview( $result ), 'Dry-run preview should contain the imported form markup.' );
 		$this->assertContains( 'Upload', $result['unsupported_fields'], 'File upload field should be reported as unsupported.' );
 	}
 
 	/**
 	 * Parser — submit tag's quoted label is captured and used on the submit button.
+	 *
+	 * @return void
 	 */
 	public function test_parser_submit_label_is_used() {
 		$post_id  = $this->create_cf7_form( "[email* your-email]\n[submit \"Send it\"]" );
 		$importer = new Cf7_Importer_Testable();
 
-		$result = $importer->import_forms( [ $post_id ], true );
-
-		$preview = reset( $result['preview'] );
+		$result  = $importer->import_forms( [ $post_id ], true );
+		$preview = $this->first_preview( $result );
 		$this->assertStringContainsString( 'Send it', $preview );
 	}
 
@@ -136,6 +164,8 @@ class Test_Cf7_Importer extends TestCase {
 	 *
 	 * If this test fails, attacker-controlled CF7 content can inject HTML into
 	 * the SureForms editor.
+	 *
+	 * @return void
 	 */
 	public function test_xss_label_with_comment_terminator_is_escaped() {
 		$malicious = 'Bad --> <script>alert(1)</script> end';
@@ -143,9 +173,9 @@ class Test_Cf7_Importer extends TestCase {
 
 		$importer = new Cf7_Importer_Testable();
 		$result   = $importer->import_forms( [ $post_id ], true );
-		$markup   = reset( $result['preview'] );
+		$markup   = $this->first_preview( $result );
 
-		$this->assertNotFalse( $markup, 'Expected a preview markup string.' );
+		$this->assertNotEmpty( $markup, 'Expected a preview markup string.' );
 
 		// The attacker payload must not appear verbatim — both the comment terminator
 		// and the script tag must be JSON-escaped (`>`, `<`) by encode_attrs().
@@ -177,20 +207,22 @@ class Test_Cf7_Importer extends TestCase {
 	 * must grow by 1, not 2.
 	 *
 	 * This is the load-bearing claim of the entire PR.
+	 *
+	 * @return void
 	 */
 	public function test_reimport_is_idempotent_no_duplicates() {
 		$post_id  = $this->create_cf7_form( "Name\n[text* your-name]\n[submit \"Send\"]" );
 		$importer = new Cf7_Importer_Testable();
 
-		$first = $importer->import_forms( [ $post_id ], false );
+		$first         = $importer->import_forms( [ $post_id ], false );
+		$first_srfm_id = $this->first_srfm_id( $first );
 		$this->assertCount( 1, $first['imported'], 'First import should produce exactly one SureForms post.' );
-		$first_srfm_id = (int) $first['imported'][0]['srfm_id'];
 		$this->assertGreaterThan( 0, $first_srfm_id );
 
 		// Second import — same source form.
-		$second = $importer->import_forms( [ $post_id ], false );
+		$second         = $importer->import_forms( [ $post_id ], false );
+		$second_srfm_id = $this->first_srfm_id( $second );
 		$this->assertCount( 1, $second['imported'], 'Re-import should still produce one entry, not duplicate.' );
-		$second_srfm_id = (int) $second['imported'][0]['srfm_id'];
 
 		$this->assertSame(
 			$first_srfm_id,
@@ -218,35 +250,41 @@ class Test_Cf7_Importer extends TestCase {
 	/**
 	 * Idempotency — when a previously imported SureForms post is hard-deleted,
 	 * the next re-import recreates it (the stale map entry is pruned, no fatal).
+	 *
+	 * @return void
 	 */
 	public function test_reimport_after_deletion_recreates_post() {
 		$post_id  = $this->create_cf7_form( "Name\n[text* your-name]" );
 		$importer = new Cf7_Importer_Testable();
 
 		$first   = $importer->import_forms( [ $post_id ], false );
-		$srfm_id = (int) $first['imported'][0]['srfm_id'];
+		$srfm_id = $this->first_srfm_id( $first );
 
 		// Hard-delete the SureForms post.
 		wp_delete_post( $srfm_id, true );
 
-		$second = $importer->import_forms( [ $post_id ], false );
+		$second  = $importer->import_forms( [ $post_id ], false );
+		$new_id  = $this->first_srfm_id( $second );
 		$this->assertCount( 1, $second['imported'] );
-		$this->assertNotSame( $srfm_id, (int) $second['imported'][0]['srfm_id'], 'A fresh post should be created.' );
+		$this->assertNotSame( $srfm_id, $new_id, 'A fresh post should be created.' );
 	}
 
 	/**
 	 * Dry-run must not insert any sureforms_form posts.
+	 *
+	 * @return void
 	 */
 	public function test_dry_run_does_not_insert_posts() {
 		$post_id  = $this->create_cf7_form( "Name\n[text* your-name]" );
 		$importer = new Cf7_Importer_Testable();
 
-		$before = (int) wp_count_posts( SRFM_FORMS_POST_TYPE )->publish;
+		$counts = wp_count_posts( SRFM_FORMS_POST_TYPE );
+		$before = isset( $counts->publish ) ? (int) $counts->publish : 0;
 		$result = $importer->import_forms( [ $post_id ], true );
-		$after  = (int) wp_count_posts( SRFM_FORMS_POST_TYPE )->publish;
+		$counts = wp_count_posts( SRFM_FORMS_POST_TYPE );
+		$after  = isset( $counts->publish ) ? (int) $counts->publish : 0;
 
 		$this->assertSame( $before, $after, 'Dry-run must not create any sureforms_form posts.' );
-		$this->assertArrayHasKey( 'preview', $result );
-		$this->assertNotEmpty( $result['preview'] );
+		$this->assertNotEmpty( $this->first_preview( $result ), 'Dry-run result must include preview markup.' );
 	}
 }
