@@ -130,8 +130,8 @@ class Dropdown_Markup extends Base {
 					<input class="srfm-input-<?php echo esc_attr( $this->slug ); ?>-hidden" data-required="<?php echo esc_attr( $this->data_require_attr ); ?>" aria-required="<?php echo esc_attr( $this->data_require_attr ); ?>" <?php echo wp_kses_post( $this->data_attribute_markup() ); ?> name="srfm-<?php echo esc_attr( $this->unique_slug ); ?>-<?php echo esc_attr( $this->block_id ); ?><?php echo esc_attr( $this->field_name ); ?>" type="hidden" value=""/>
 					<legend class="srfm-block-legend">
 						<?php echo wp_kses_post( $this->label_markup ); ?>
-						<?php echo wp_kses_post( $this->help_markup ); ?>
 					</legend>
+					<?php echo wp_kses_post( $this->help_markup ); ?>
 					<div class="srfm-block-wrap srfm-dropdown-common-wrap">
 					<?php
 					if ( is_array( $this->options ) ) {
