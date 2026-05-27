@@ -37,8 +37,10 @@ class Cf7_Importer extends Base_Migrator {
 	/**
 	 * Submit-button label parsed from the source form.
 	 *
-	 * Captured during `build_form_content()` and applied in
-	 * `append_submit_button()` so each migrated form keeps the original CTA.
+	 * Captured during `build_form_content()` and written to the
+	 * `_srfm_submit_button_text` meta in `get_form_metas()` so each migrated
+	 * form keeps the original CTA. SureForms auto-renders the submit button
+	 * from this meta — it is never a content block.
 	 *
 	 * @var string
 	 */
@@ -103,7 +105,10 @@ class Cf7_Importer extends Base_Migrator {
 			'date'       => 'input',
 			'textarea'   => 'textarea',
 			'select'     => 'dropdown',
-			'checkbox'   => 'checkbox',
+			// CF7 [checkbox] is always a multi-option group, so it maps to
+			// srfm/multi-choice in multi-select mode — NOT srfm/checkbox, which
+			// is SureForms' single on/off checkbox and carries no options.
+			'checkbox'   => 'multi_choice',
 			'radio'      => 'multi_choice',
 			'acceptance' => 'gdpr',
 		];
@@ -218,10 +223,19 @@ class Cf7_Importer extends Base_Migrator {
 			'submission_action' => 'hide form',
 		];
 
-		return [
+		$metas = [
 			'_srfm_email_notification' => [ $notification ],
 			'_srfm_form_confirmation'  => [ $confirmation ],
 		];
+
+		// CF7 [submit "Label"] → SureForms submit-button text. SureForms renders
+		// the submit button from this meta, so no button block is added to the
+		// post content (see Base_Migrator::import_forms).
+		if ( '' !== $this->submit_label ) {
+			$metas['_srfm_submit_button_text'] = $this->submit_label;
+		}
+
+		return $metas;
 	}
 
 	/**
@@ -375,19 +389,6 @@ class Cf7_Importer extends Base_Migrator {
 			}
 		}
 		return $content;
-	}
-
-	/**
-	 * Override the submit button to use the CF7-derived label.
-	 *
-	 * @since x.x.x
-	 *
-	 * @param string $content Concatenated field markup.
-	 * @return string
-	 */
-	protected function append_submit_button( $content ) {
-		$label = '' !== $this->submit_label ? $this->submit_label : __( 'Submit', 'sureforms' );
-		return $content . Block_Templates::submit_button( [ 'text' => $label ] );
 	}
 
 	/**
@@ -551,14 +552,28 @@ class Cf7_Importer extends Base_Migrator {
 			'multiple'      => $attrs['multiple'],
 		];
 
-		// Date tag → srfm/input with date field type.
-		if ( 'date' === $tag_name ) {
-			$args['field_type'] = 'date';
+		// CF7 [date] → srfm/input (plain text). SureForms has no native date
+		// field, so this is a best-effort text mapping — the value still
+		// imports, it just isn't a date picker.
+
+		// Acceptance consent text becomes the GDPR label. CF7 supports two
+		// syntaxes: inline `[acceptance id "I agree"]` (quoted token) and block
+		// `[acceptance id] I agree [/acceptance]` (text between the tags).
+		if ( 'acceptance' === $tag_name ) {
+			if ( ! empty( $attrs['quoted'] ) ) {
+				$args['label'] = (string) $attrs['quoted'][0];
+			} elseif ( preg_match( '/\[acceptance[^\]]*\](.*?)\[\/acceptance\]/s', $blob, $cm ) ) {
+				$consent = trim( wp_strip_all_tags( $cm[1] ) );
+				if ( '' !== $consent ) {
+					$args['label'] = $consent;
+				}
+			}
 		}
 
-		// Acceptance: the quoted text becomes the consent HTML.
-		if ( 'acceptance' === $tag_name && ! empty( $attrs['quoted'] ) ) {
-			$args['label'] = (string) $attrs['quoted'][0];
+		// CF7 [checkbox] is a multi-option group → render as multi-select
+		// (srfm/multi-choice with singleSelection:false).
+		if ( 'checkbox' === $tag_name ) {
+			$args['multiple'] = true;
 		}
 
 		// Multi-select for select tag with `multiple` attribute.

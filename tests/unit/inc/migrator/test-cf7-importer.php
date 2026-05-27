@@ -292,7 +292,7 @@ class Test_Cf7_Importer extends TestCase {
 			'Number'   => [ "Age\n[number your-age min:1 max:120]", 'wp:srfm/number' ],
 			'Textarea' => [ "Message\n[textarea* your-message]", 'wp:srfm/textarea' ],
 			'Select'   => [ "Country\n[select your-country \"USA\" \"Canada\"]", 'wp:srfm/dropdown' ],
-			'Checkbox' => [ "Topics\n[checkbox topics \"News\" \"Updates\"]", 'wp:srfm/checkbox' ],
+			'Checkbox' => [ "Topics\n[checkbox topics \"News\" \"Updates\"]", 'wp:srfm/multi-choice' ],
 			'Radio'    => [ "Gender\n[radio gender \"Male\" \"Female\"]", 'wp:srfm/multi-choice' ],
 			'GDPR'     => [ '[acceptance accept-this "I agree"]', 'wp:srfm/gdpr' ],
 		];
@@ -309,6 +309,49 @@ class Test_Cf7_Importer extends TestCase {
 				"Expected block {$expected_block} for tag {$name}"
 			);
 		}
+	}
+
+	/**
+	 * CF7 [checkbox] is a multi-option group — it must map to srfm/multi-choice
+	 * in multi-select mode (singleSelection:false) with all options preserved,
+	 * NOT to the single-toggle srfm/checkbox (which drops every option).
+	 *
+	 * @return void
+	 */
+	public function test_checkbox_group_maps_to_multichoice_with_all_options() {
+		$post_id  = $this->create_cf7_form(
+			"Skills\n[checkbox skills \"JavaScript\" \"PHP\" \"React\" \"WordPress\"]"
+		);
+		$importer = $this->make_importer();
+		$content  = $importer->build_form_content_public( [ 'id' => $post_id, 'name' => 'Skills' ] );
+
+		$this->assertStringContainsString( 'wp:srfm/multi-choice', $content );
+		$this->assertStringNotContainsString( 'wp:srfm/checkbox', $content, 'CF7 checkbox group must not become a single srfm/checkbox.' );
+		// Multi-select, not radio.
+		$this->assertStringContainsString( '"singleSelection":false', $content );
+		// All four options survive.
+		foreach ( [ 'JavaScript', 'PHP', 'React', 'WordPress' ] as $opt ) {
+			$this->assertStringContainsString( $opt, $content, "Checkbox option {$opt} must be preserved." );
+		}
+	}
+
+	/**
+	 * CF7 block-form acceptance `[acceptance id] consent text [/acceptance]`
+	 * must use the consent text as the GDPR field label, not the generic
+	 * "Acceptance" fallback.
+	 *
+	 * @return void
+	 */
+	public function test_acceptance_block_form_uses_consent_text_as_label() {
+		$post_id  = $this->create_cf7_form(
+			"<p>[acceptance consent] I agree to the privacy policy. [/acceptance]</p>"
+		);
+		$importer = $this->make_importer();
+		$content  = $importer->build_form_content_public( [ 'id' => $post_id, 'name' => 'Consent' ] );
+
+		$this->assertStringContainsString( 'wp:srfm/gdpr', $content );
+		$this->assertStringContainsString( 'I agree to the privacy policy.', $content );
+		$this->assertStringNotContainsString( '"label":"Acceptance"', $content, 'Block-form consent text must override the generic label.' );
 	}
 
 	/**
@@ -329,17 +372,26 @@ class Test_Cf7_Importer extends TestCase {
 	}
 
 	/**
-	 * Parser — submit tag's quoted label is captured and used on the submit button.
+	 * Submit tag's quoted label is written to the `_srfm_submit_button_text`
+	 * meta (SureForms auto-renders the submit button from it) — NOT emitted as
+	 * a content block. The preview markup must contain no button block.
 	 *
 	 * @return void
 	 */
-	public function test_parser_submit_label_is_used() {
+	public function test_parser_submit_label_goes_to_meta_not_content() {
 		$post_id  = $this->create_cf7_form( "[email* your-email]\n[submit \"Send it\"]" );
 		$importer = $this->make_importer();
 
-		$result  = $importer->import_forms( [ $post_id ], true );
-		$preview = $this->first_preview( $result );
-		$this->assertStringContainsString( 'Send it', $preview );
+		// Dry-run preview must NOT contain a button block.
+		$preview = $this->first_preview( $importer->import_forms( [ $post_id ], true ) );
+		$this->assertStringNotContainsString( 'srfm/inline-button', $preview, 'Submit must not be a content block.' );
+		$this->assertStringNotContainsString( 'srfm/button', $preview );
+
+		// Real import writes the label to the submit-button meta.
+		$importer->import_forms( [ $post_id ], false );
+		$srfm_post   = $this->get_first_srfm_post();
+		$submit_text = get_post_meta( $srfm_post->ID, '_srfm_submit_button_text', true );
+		$this->assertSame( 'Send it', $submit_text );
 	}
 
 	/**

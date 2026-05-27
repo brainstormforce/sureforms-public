@@ -278,42 +278,6 @@ class Block_Templates {
 	}
 
 	/**
-	 * Build a srfm/inline-button submit button.
-	 *
-	 * @since x.x.x
-	 *
-	 * @param array<string,mixed> $args Args. Expects `text` (button label).
-	 * @return string
-	 */
-	public static function submit_button( array $args = [] ) {
-		$attrs = self::strip_empty(
-			[
-				'buttonText' => self::str( $args, 'text', 'Submit' ),
-				'block_id'   => self::block_id(),
-			]
-		);
-		return self::serialize_block( 'srfm/inline-button', $attrs );
-	}
-
-	/**
-	 * Wrap a concatenated string of field-block markup in a srfm/form block.
-	 *
-	 * @since x.x.x
-	 *
-	 * @param string $inner Concatenated inner block markup.
-	 * @return string
-	 */
-	public static function form_wrapper( $inner ) {
-		$attrs = self::strip_empty(
-			[
-				'blockId' => self::block_id(),
-			]
-		);
-		$json  = self::encode_attrs( $attrs );
-		return "<!-- wp:srfm/form {$json} -->\n{$inner}<!-- /wp:srfm/form -->";
-	}
-
-	/**
 	 * Generate a deterministic Gutenberg-style block id.
 	 *
 	 * @since x.x.x

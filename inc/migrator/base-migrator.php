@@ -210,9 +210,11 @@ abstract class Base_Migrator {
 				continue;
 			}
 
-			// SureForms CPT post_content stores field blocks at top level —
-			// `srfm/form` is the embed block for OTHER posts, not a wrapper.
-			$markup = $this->append_submit_button( $content );
+			// SureForms CPT post_content holds only field blocks at top level.
+			// The submit button is NOT a content block — SureForms auto-renders
+			// it from the `_srfm_submit_button_text` meta (set in get_form_metas),
+			// so we must not append a button block here or the form shows two.
+			$markup = $content;
 
 			if ( $dry_run ) {
 				$preview[ (string) $source_id ] = $markup;
@@ -314,20 +316,6 @@ abstract class Base_Migrator {
 		}
 		$updated = wp_update_post( $args, true );
 		return is_wp_error( $updated ) ? 0 : (int) $updated;
-	}
-
-	/**
-	 * Append a default submit button to the concatenated field markup.
-	 *
-	 * Subclasses may override to use a source-derived submit label.
-	 *
-	 * @since x.x.x
-	 *
-	 * @param string $content Concatenated field markup.
-	 * @return string
-	 */
-	protected function append_submit_button( $content ) {
-		return $content . Block_Templates::submit_button( [ 'text' => __( 'Submit', 'sureforms' ) ] );
 	}
 
 	/**

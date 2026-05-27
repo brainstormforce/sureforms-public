@@ -41,6 +41,8 @@ class Cf7_Importer_Testable extends Cf7_Importer {
 	 * @return array Diagnostic-only stub.
 	 */
 	public function _phpstan_anchor() {
+		// Kept in the same commit as test-cf7-importer.php so the pre-push
+		// PHPStan scan (changed files only) can resolve this class.
 		return [];
 	}
 }
