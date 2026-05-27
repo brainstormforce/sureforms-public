@@ -32,6 +32,29 @@ const TYPE_MAP = {
 const FORM_INPUT_SOFT_LIMIT = 200;
 
 /**
+ * Escape a string for safe use inside an attribute-selector value.
+ *
+ * Prefers the native `CSS.escape` but degrades gracefully when it is
+ * unavailable (older embedded webviews, some test/SSR harnesses) so the
+ * parser never throws an uncaught `TypeError` mid-render. The fallback
+ * escapes the characters that matter inside a double-quoted
+ * `[attr="…"]` value (backslash and double quote).
+ *
+ * @param {string} value Raw attribute value.
+ * @return {string} Selector-safe value.
+ */
+function cssEscape( value ) {
+	if (
+		typeof window !== 'undefined' &&
+		window.CSS &&
+		typeof window.CSS.escape === 'function'
+	) {
+		return window.CSS.escape( value );
+	}
+	return String( value ).replace( /["\\]/g, '\\$&' );
+}
+
+/**
  * Read the text content of a `<label>` element that appears immediately
  * before the given element in the same parent — separated only by
  * whitespace or `<br>` elements, never by other content. Captures the
@@ -119,7 +142,7 @@ function readTrailingTextLabel( element ) {
 function resolveLabel( element, doc ) {
 	const id = element.getAttribute( 'id' );
 	if ( id ) {
-		const explicit = doc.querySelector( `label[for="${ window.CSS.escape( id ) }"]` );
+		const explicit = doc.querySelector( `label[for="${ cssEscape( id ) }"]` );
 		if ( explicit?.textContent ) {
 			return explicit.textContent.trim();
 		}
@@ -183,7 +206,7 @@ function resolveRadioOptionLabel( element, doc ) {
 
 	const id = element.getAttribute( 'id' );
 	if ( id ) {
-		const explicit = doc.querySelector( `label[for="${ window.CSS.escape( id ) }"]` );
+		const explicit = doc.querySelector( `label[for="${ cssEscape( id ) }"]` );
 		if ( explicit?.textContent ) {
 			return explicit.textContent.trim();
 		}
@@ -435,9 +458,24 @@ export function parseFormHtml( html ) {
 
 	const fields = collapseRadioGroups( rawFields );
 
-	const submitEl =
-		formEl.querySelector( 'button[type="submit"], input[type="submit"], button:not([type])' ) ||
-		formEl.querySelector( 'input[type="submit"]' );
+	// Prefer an explicit submit control. Only when none exists do we fall
+	// back to a typeless `<button>` (submit by spec inside a form) — and to
+	// the LAST such button, skipping decorative cancel/reset/back buttons, so
+	// a leading "Cancel" button is not mistaken for the form's submit action.
+	let submitEl = formEl.querySelector(
+		'button[type="submit"], input[type="submit"]'
+	);
+	if ( ! submitEl ) {
+		const typelessButtons = Array.from(
+			formEl.querySelectorAll( 'button:not([type])' )
+		).filter(
+			( btn ) =>
+				! /\b(cancel|reset|clear|back|close)\b/i.test(
+					( btn.textContent || '' ).trim()
+				)
+		);
+		submitEl = typelessButtons[ typelessButtons.length - 1 ] || null;
+	}
 	const submitText =
 		submitEl?.textContent?.trim() ||
 		submitEl?.getAttribute( 'value' )?.trim() ||

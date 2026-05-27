@@ -208,10 +208,14 @@ class Dropdown_Markup extends Base {
 	 *
 	 * @param array<mixed> $attributes Block attributes.
 	 * @since 2.8.1
+	 * @since 2.10.0 Added multi-select (pipe-delimited) value matching.
 	 * @return void
 	 */
 	protected function resolve_dynamic_default( $attributes ) {
-		$dynamic_default = is_string( $attributes['dynamicDefaultValue'] ?? '' ) ? $attributes['dynamicDefaultValue'] : '';
+		// Coalesce first so blocks saved before this attribute existed (pre-2.10.0)
+		// don't trigger an "Undefined array key" warning on every frontend render.
+		$raw_default     = $attributes['dynamicDefaultValue'] ?? '';
+		$dynamic_default = is_string( $raw_default ) ? $raw_default : '';
 		if ( empty( $dynamic_default ) ) {
 			return;
 		}
@@ -253,11 +257,11 @@ class Dropdown_Markup extends Base {
 					continue;
 				}
 
-				$option_label = $option['label'] ?? '';
+				$option_label = isset( $option['label'] ) && is_scalar( $option['label'] ) ? (string) $option['label'] : '';
 				$raw_value    = $option['value'] ?? '';
 				$option_value = $match_value_too && is_scalar( $raw_value ) ? (string) $raw_value : '';
 
-				$is_match = strcasecmp( $option_label, $segment ) === 0
+				$is_match = ( '' !== $option_label && strcasecmp( $option_label, $segment ) === 0 )
 					|| ( $match_value_too && '' !== $option_value && strcasecmp( $option_value, $segment ) === 0 );
 
 				if ( $is_match ) {
