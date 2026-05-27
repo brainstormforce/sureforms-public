@@ -570,11 +570,12 @@ class Form_Submit {
 
 		$global_setting_options = get_option( 'srfm_general_settings_options' );
 
-		// If GDPR is enabled, do not store IP, browser, and device info.
-		// If not, store IP, browser, and device info.
-		$user_ip      = '';
-		$browser_name = '';
-		$device_name  = '';
+		// If GDPR is enabled, do not store IP, browser, device, and submission URL.
+		// If not, store all of them.
+		$user_ip        = '';
+		$browser_name   = '';
+		$device_name    = '';
+		$submission_url = '';
 		if ( ! $gdpr ) {
 			$srfm_ip_log = is_array( $global_setting_options ) && isset( $global_setting_options['srfm_ip_log'] ) ? $global_setting_options['srfm_ip_log'] : '';
 
@@ -582,15 +583,43 @@ class Form_Submit {
 			$browser      = new Browser();
 			$browser_name = sanitize_text_field( $browser->getBrowser() );
 			$device_name  = sanitize_text_field( $browser->getPlatform() );
+
+			// Capture submission page URL server-side from the Referer header. The
+			// stored value is rebuilt from parsed components so a non-browser client
+			// cannot inject attacker-controlled bits a real browser would never send
+			// (userinfo, fragment) or mismatch the legitimate origin's port. Anything
+			// not same-origin http(s) is stored as empty.
+			$referer = isset( $_SERVER['HTTP_REFERER'] )
+				? sanitize_text_field( wp_unslash( $_SERVER['HTTP_REFERER'] ) )
+				: '';
+			if ( '' !== $referer && strlen( $referer ) <= 2048 ) {
+				$parts      = wp_parse_url( $referer );
+				$home_parts = wp_parse_url( home_url() );
+				if (
+					is_array( $parts )
+					&& is_array( $home_parts )
+					&& isset( $parts['scheme'], $parts['host'], $home_parts['host'] )
+					&& in_array( strtolower( $parts['scheme'] ), [ 'http', 'https' ], true )
+					&& 0 === strcasecmp( (string) $parts['host'], (string) $home_parts['host'] )
+					&& ( $parts['port'] ?? null ) === ( $home_parts['port'] ?? null )
+				) {
+					$clean          = $parts['scheme'] . '://' . $parts['host']
+						. ( isset( $parts['port'] ) ? ':' . $parts['port'] : '' )
+						. ( $parts['path'] ?? '' )
+						. ( isset( $parts['query'] ) ? '?' . $parts['query'] : '' );
+					$submission_url = esc_url_raw( $clean, [ 'http', 'https' ] );
+				}
+			}
 		}
 
 		$form_markup = get_the_content( null, false, Helper::get_integer_value( $form_data['form-id'] ) );
 		$pattern     = '/"label":"(.*?)"/';
 		preg_match_all( $pattern, $form_markup, $matches );
 		$submission_info = [
-			'user_ip'      => $user_ip,
-			'browser_name' => $browser_name,
-			'device_name'  => $device_name,
+			'user_ip'        => $user_ip,
+			'browser_name'   => $browser_name,
+			'device_name'    => $device_name,
+			'submission_url' => $submission_url,
 		];
 		$entries_data    = [
 			'form_id'         => $id,

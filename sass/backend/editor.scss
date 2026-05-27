@@ -253,6 +253,10 @@ body.post-type-sureforms_form {
 
 	.srfm-single-form-settings-description {
 		border-top: none !important;
+
+		.block-editor-block-card {
+			display: flex;
+		}
 	}
 
 	.block-editor-inner-blocks {

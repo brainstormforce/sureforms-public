@@ -110,6 +110,69 @@ function srfmSprintfString( str, ...args ) {
 addGlobalSrfmObject( 'toggleErrorState', toggleErrorState );
 addGlobalSrfmObject( 'srfmSprintfString', srfmSprintfString );
 
+// Character counter for textarea/input fields with min or max length configured.
+const SRFM_CHAR_COUNTER_FIELD_SELECTOR =
+	'textarea.srfm-input-textarea, input.srfm-input-input';
+
+// Refresh a single counter's text and over/under-limit error state from its field's current value.
+function updateCharCounter( counter ) {
+	const block = counter.closest( '.srfm-block' );
+	if ( ! block ) {
+		return;
+	}
+	const field = block.querySelector( SRFM_CHAR_COUNTER_FIELD_SELECTOR );
+	if ( ! field ) {
+		return;
+	}
+
+	const limit = counter.getAttribute( 'data-counter-limit' );
+	const min = counter.getAttribute( 'data-counter-min' );
+	const len = field.value.length;
+
+	counter.textContent = len + '/' + limit;
+
+	const tooShort = min && len < parseInt( min, 10 );
+	const tooLong = limit && len > parseInt( limit, 10 );
+	counter.classList.toggle(
+		'srfm-char-counter--error',
+		Boolean( tooShort || tooLong )
+	);
+}
+
+// Initial paint for every counter already in the DOM (handles pre-filled default values).
+function initCharCounters() {
+	document
+		.querySelectorAll( '.srfm-char-counter' )
+		.forEach( updateCharCounter );
+}
+
+// Delegated input handler so counters keep working for fields added or revealed
+// after initial paint — multi-step navigation, conditional logic, and AJAX-loaded forms.
+document.addEventListener( 'input', ( e ) => {
+	const field = e.target;
+	if (
+		! field ||
+		typeof field.matches !== 'function' ||
+		! field.matches( SRFM_CHAR_COUNTER_FIELD_SELECTOR )
+	) {
+		return;
+	}
+	const block = field.closest( '.srfm-block' );
+	if ( ! block ) {
+		return;
+	}
+	const counter = block.querySelector( '.srfm-char-counter' );
+	if ( counter ) {
+		updateCharCounter( counter );
+	}
+} );
+
+if ( document.readyState === 'loading' ) {
+	document.addEventListener( 'DOMContentLoaded', initCharCounters );
+} else {
+	initCharCounters();
+}
+
 // Sender's Email.
 
 const emailElements = document.getElementsByClassName(

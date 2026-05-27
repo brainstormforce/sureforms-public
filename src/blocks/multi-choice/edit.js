@@ -620,24 +620,30 @@ const Edit = ( props ) => {
 					label={ __( 'Single Choice Only', 'sureforms' ) }
 					checked={ singleSelection }
 					onChange={ ( checked ) =>
-						setAttributes( {
-							singleSelection: checked,
-							...( ! checked && {
-								dynamicDefaultValue: '',
-							} ),
-						} )
+						setAttributes( { singleSelection: checked } )
 					}
 				/>
 			),
 		},
 		{
 			id: 'dynamicDefaultValue',
-			component: singleSelection ? (
+			component: (
 				<SRFMTextControl
 					label={ __( 'Dynamic Default Value', 'sureforms' ) }
 					className="srfm-with-dropdown"
 					value={ dynamicDefaultValue }
 					withSmartTagDropdown={ true }
+					help={
+						singleSelection
+							? __(
+								'Use a smart tag like {get_input:country}. The first option whose title matches the resolved value will be preselected.',
+								'sureforms'
+							)
+							: __(
+								'Use a smart tag like {get_input:colors} and pass pipe separated values in the URL (for example ?colors=Red|Blue). Every option whose title matches a value will be checked. You can also chain multiple smart tags separated by pipes.',
+								'sureforms'
+							)
+					}
 					data={ {
 						value: dynamicDefaultValue,
 						label: 'dynamicDefaultValue',
@@ -646,7 +652,7 @@ const Edit = ( props ) => {
 						setAttributes( { dynamicDefaultValue: value } )
 					}
 				/>
-			) : null,
+			),
 		},
 		{
 			id: 'min-max',

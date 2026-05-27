@@ -130,8 +130,8 @@ class Dropdown_Markup extends Base {
 					<input class="srfm-input-<?php echo esc_attr( $this->slug ); ?>-hidden" data-required="<?php echo esc_attr( $this->data_require_attr ); ?>" aria-required="<?php echo esc_attr( $this->data_require_attr ); ?>" <?php echo wp_kses_post( $this->data_attribute_markup() ); ?> name="srfm-<?php echo esc_attr( $this->unique_slug ); ?>-<?php echo esc_attr( $this->block_id ); ?><?php echo esc_attr( $this->field_name ); ?>" type="hidden" value=""/>
 					<legend class="srfm-block-legend">
 						<?php echo wp_kses_post( $this->label_markup ); ?>
-						<?php echo wp_kses_post( $this->help_markup ); ?>
 					</legend>
+					<?php echo wp_kses_post( $this->help_markup ); ?>
 					<div class="srfm-block-wrap srfm-dropdown-common-wrap">
 					<?php
 					if ( is_array( $this->options ) ) {
@@ -191,34 +191,93 @@ class Dropdown_Markup extends Base {
 	/**
 	 * Resolve dynamic default value from smart tags and override preselected options.
 	 *
+	 * Single-select dropdowns match the resolved value as a single trimmed
+	 * string, so labels that legitimately contain delimiter characters
+	 * (commas, pipes, etc.) still match.
+	 *
+	 * Multi-select dropdowns split the resolved value on the pipe character
+	 * (`|`) and match every segment (for example "{get_input:a}|{get_input:b}"
+	 * resolving to "Red|Blue", or a single `{get_input:colors}` smart tag with
+	 * URL `?colors=Red|Blue`). The same pipe split applies to multi-character
+	 * resolved values from `{get_input:...}` and `{get_cookie:...}`, so cookie
+	 * payloads that contain pipes are treated as multi-value in multi-select
+	 * mode.
+	 *
+	 * When the `Add Numeric Values to Options` (showValues) setting is on,
+	 * each segment is also compared against the option's `value`.
+	 *
 	 * @param array<mixed> $attributes Block attributes.
 	 * @since 2.8.1
+	 * @since 2.10.0 Added multi-select (pipe-delimited) value matching.
 	 * @return void
 	 */
 	protected function resolve_dynamic_default( $attributes ) {
-		$dynamic_default = is_string( $attributes['dynamicDefaultValue'] ?? '' ) ? $attributes['dynamicDefaultValue'] : '';
-		if ( empty( $dynamic_default ) || ! empty( $attributes['multiSelect'] ) ) {
+		// Coalesce first so blocks saved before this attribute existed (pre-2.10.0)
+		// don't trigger an "Undefined array key" warning on every frontend render.
+		$raw_default     = $attributes['dynamicDefaultValue'] ?? '';
+		$dynamic_default = is_string( $raw_default ) ? $raw_default : '';
+		if ( empty( $dynamic_default ) ) {
 			return;
 		}
 
 		$smart_tags = new Smart_Tags();
 		$resolved   = $smart_tags->process_smart_tags( $dynamic_default );
 
-		if ( empty( $resolved ) || ! is_string( $resolved ) ) {
+		if ( empty( $resolved ) || ! is_string( $resolved ) || ! is_array( $this->options ) ) {
 			return;
 		}
 
-		$resolved = trim( $resolved );
+		// START: multi-value dynamic default resolution.
+		$is_multi_select = ! empty( $attributes['multiSelect'] );
 
-		if ( is_array( $this->options ) ) {
+		if ( $is_multi_select ) {
+			$segments = array_filter(
+				array_map( 'trim', explode( '|', $resolved ) ),
+				static function ( $segment ) {
+					return '' !== $segment;
+				}
+			);
+			// Cap segments to avoid pathological URLs (e.g. ?colors=|||||...) producing thousands of comparisons.
+			$segments = array_slice( $segments, 0, 50 );
+		} else {
+			$trimmed  = trim( $resolved );
+			$segments = '' === $trimmed ? [] : [ $trimmed ];
+		}
+
+		if ( empty( $segments ) ) {
+			return;
+		}
+
+		$match_value_too  = ! empty( $attributes['showValues'] );
+		$matching_indices = [];
+
+		foreach ( $segments as $segment ) {
 			foreach ( $this->options as $i => $option ) {
-				$option_label = is_array( $option ) ? ( $option['label'] ?? '' ) : '';
-				if ( strcasecmp( $option_label, $resolved ) === 0 ) {
-					$this->preselected_options = [ $i ];
-					return;
+				if ( ! is_array( $option ) || in_array( $i, $matching_indices, true ) ) {
+					continue;
+				}
+
+				$option_label = isset( $option['label'] ) && is_scalar( $option['label'] ) ? (string) $option['label'] : '';
+				$raw_value    = $option['value'] ?? '';
+				$option_value = $match_value_too && is_scalar( $raw_value ) ? (string) $raw_value : '';
+
+				$is_match = ( '' !== $option_label && strcasecmp( $option_label, $segment ) === 0 )
+					|| ( $match_value_too && '' !== $option_value && strcasecmp( $option_value, $segment ) === 0 );
+
+				if ( $is_match ) {
+					$matching_indices[] = $i;
+					if ( ! $is_multi_select ) {
+						break 2;
+					}
+					break;
 				}
 			}
 		}
+
+		if ( ! empty( $matching_indices ) ) {
+			$this->preselected_options = $is_multi_select ? $matching_indices : [ $matching_indices[0] ];
+		}
+		// END: multi-value dynamic default resolution.
 	}
 
 	/**
