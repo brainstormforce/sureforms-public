@@ -27,7 +27,7 @@ import { createBlock } from '@wordpress/blocks';
 import { ToolbarButton, ToolbarGroup } from '@wordpress/components';
 import { createHigherOrderComponent } from '@wordpress/compose';
 import { dispatch, select } from '@wordpress/data';
-import { Fragment, useMemo, useState } from '@wordpress/element';
+import { Fragment, useEffect, useMemo, useState } from '@wordpress/element';
 import { addFilter } from '@wordpress/hooks';
 import { __, sprintf } from '@wordpress/i18n';
 
@@ -277,7 +277,30 @@ const withConvertToSureForms = createHigherOrderComponent(
 		}
 
 		const content = props.attributes?.content ?? '';
-		const parsed = useMemo( () => parseFormHtml( content ), [ content ] );
+
+		// Debounce the parse so typing inside the source HTML block does
+		// not run `DOMParser` + the per-field walk on every keystroke.
+		// Seeded with `content` so a block that already holds a form gets
+		// its toolbar button on first paint with no delay.
+		const [ debouncedContent, setDebouncedContent ] = useState( content );
+		useEffect( () => {
+			const timer = setTimeout(
+				() => setDebouncedContent( content ),
+				250
+			);
+			return () => clearTimeout( timer );
+		}, [ content ] );
+
+		// Guard the parser so malformed or hostile HTML degrades to "no
+		// Convert button" instead of throwing an uncaught error that would
+		// crash this block's edit render.
+		const parsed = useMemo( () => {
+			try {
+				return parseFormHtml( debouncedContent );
+			} catch ( error ) {
+				return null;
+			}
+		}, [ debouncedContent ] );
 		const [ isConverting, setIsConverting ] = useState( false );
 
 		// Render the unmodified block when there is no form to convert,

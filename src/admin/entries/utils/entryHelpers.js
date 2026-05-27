@@ -59,12 +59,16 @@ export const getFirstFieldValue = ( formData ) => {
 };
 
 /**
- * Format date and time for display
+ * Format date and time for the entries list display.
+ *
+ * Named distinctly from `formatDateTime` in `@Utils/Helpers` (which takes a
+ * second `submissionInfo` flag and can return a `{ shortFormat, fullFormat }`
+ * object) to avoid a same-name/different-signature import mix-up.
  *
  * @param {string} dateString - The date string from API (e.g., "2025-10-07 15:54:49")
  * @return {string} Formatted date time
  */
-export const formatDateTime = ( dateString ) => {
+export const formatEntryListDate = ( dateString ) => {
 	if ( ! dateString ) {
 		return '-';
 	}
@@ -103,7 +107,7 @@ export const transformEntry = ( entry, formsMap = {} ) => {
 		status: entry.status,
 		statusLabel: getStatusLabel( entry.status ),
 		firstField: getFirstFieldValue( entry.form_data ),
-		dateTime: formatDateTime( entry.created_at ),
+		dateTime: formatEntryListDate( entry.created_at ),
 		rawData: entry, // Keep original data for reference
 	};
 };
