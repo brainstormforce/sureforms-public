@@ -16,12 +16,12 @@ import {
 	Button,
 	Checkbox,
 	Container,
-	Loader,
 	Select,
 	Text,
 	Title,
 } from '@bsf/force-ui';
 import { ArrowLeft, ArrowRight, ExternalLink, RefreshCcw } from 'lucide-react';
+import LoadingSkeleton from '@Admin/components/LoadingSkeleton';
 import { listForms } from './api';
 
 // Re-import behavior options for forms that already have a SureForms copy.
@@ -132,11 +132,7 @@ const FormSelector = ( { source, onBack, onContinue } ) => {
 	}, [ selected, forms ] );
 
 	if ( loading ) {
-		return (
-			<div className="flex items-center justify-center p-12">
-				<Loader />
-			</div>
-		);
+		return <LoadingSkeleton count={ 3 } height={ 25 } />;
 	}
 
 	if ( error ) {
@@ -193,8 +189,15 @@ const FormSelector = ( { source, onBack, onContinue } ) => {
 			</Container>
 
 			{ forms.length > 0 && (
-				<div className="rounded-lg border border-border-subtle bg-background-primary overflow-hidden">
-					<div className="flex items-center justify-between px-4 py-3 border-b border-border-subtle bg-background-secondary">
+				<Container
+					direction="column"
+					className="rounded-lg border border-border-subtle bg-background-primary overflow-hidden"
+				>
+					<Container
+						align="center"
+						justify="between"
+						className="px-4 py-3 border-0 border-b border-solid border-border-subtle bg-background-secondary"
+					>
 						<Checkbox
 							size="sm"
 							checked={ allSelected }
@@ -211,110 +214,111 @@ const FormSelector = ( { source, onBack, onContinue } ) => {
 								forms.length
 							) }
 						</Text>
-					</div>
-					<ul className="divide-y divide-border-subtle">
-						{ forms.map( ( form ) => {
-							const sid = String( form.id );
-							const isImported = form.imported_srfm_id > 0;
-							const isSelected = selected.has( sid );
-							const behavior = behaviorMap[ sid ] || 'update';
-							return (
-								<li
-									key={ form.id }
-									className="flex items-center justify-between gap-3 px-4 py-3"
-								>
-									<Checkbox
-										size="sm"
-										checked={ isSelected }
-										onChange={ () =>
-											toggle( form.id, isImported )
-										}
-										label={ {
-											heading:
-												form.name ||
-												__(
-													'(untitled form)',
-													'sureforms'
-												),
-										} }
-									/>
-									{ isImported && (
-										<div className="flex items-center gap-2">
-											<Badge
-												variant="blue"
-												size="xs"
-												icon={
-													<RefreshCcw className="size-3" />
+					</Container>
+					{ forms.map( ( form ) => {
+						const sid = String( form.id );
+						const isImported = form.imported_srfm_id > 0;
+						const isSelected = selected.has( sid );
+						const behavior = behaviorMap[ sid ] || 'update';
+						return (
+							<Container
+								key={ form.id }
+								align="center"
+								justify="between"
+								gap="sm"
+								className="px-4 py-3 border-0 border-t border-solid border-border-subtle first:border-t-0"
+							>
+								<Checkbox
+									size="sm"
+									checked={ isSelected }
+									onChange={ () =>
+										toggle( form.id, isImported )
+									}
+									label={ {
+										heading:
+											form.name ||
+											__(
+												'(untitled form)',
+												'sureforms'
+											),
+									} }
+								/>
+								{ isImported && (
+									<Container align="center" gap="xs">
+										<Badge
+											variant="blue"
+											size="xs"
+											icon={
+												<RefreshCcw className="size-3" />
+											}
+											label={ __(
+												'Previously imported',
+												'sureforms'
+											) }
+										/>
+										{ form.imported_srfm_edit_url && (
+											<a
+												href={
+													form.imported_srfm_edit_url
 												}
-												label={ __(
-													'Previously imported',
+												target="_blank"
+												rel="noopener noreferrer"
+												className="inline-flex items-center gap-1 text-xs text-text-tertiary hover:text-text-primary"
+												aria-label={ __(
+													'Open existing SureForms form in a new tab',
 													'sureforms'
 												) }
-											/>
-											{ form.imported_srfm_edit_url && (
-												<a
-													href={
-														form.imported_srfm_edit_url
+											>
+												<ExternalLink className="size-3" />
+											</a>
+										) }
+										{ isSelected && (
+											<div className="min-w-[140px]">
+												<Select
+													size="sm"
+													value={ behavior }
+													onChange={ ( v ) =>
+														setBehavior(
+															form.id,
+															v
+														)
 													}
-													target="_blank"
-													rel="noopener noreferrer"
-													className="inline-flex items-center gap-1 text-xs text-text-tertiary hover:text-text-primary"
-													aria-label={ __(
-														'Open existing SureForms form in a new tab',
-														'sureforms'
-													) }
 												>
-													<ExternalLink className="size-3" />
-												</a>
-											) }
-											{ isSelected && (
-												<div className="min-w-[140px]">
-													<Select
-														size="sm"
-														value={ behavior }
-														onChange={ ( v ) =>
-															setBehavior(
-																form.id,
-																v
+													<Select.Button>
+														{ labelForBehavior(
+															behavior
+														) }
+													</Select.Button>
+													<Select.Options className="z-999999">
+														{ BEHAVIOR_OPTIONS.map(
+															( opt ) => (
+																<Select.Option
+																	key={
+																		opt.value
+																	}
+																	value={
+																		opt.value
+																	}
+																>
+																	{
+																		opt.label
+																	}
+																</Select.Option>
 															)
-														}
-													>
-														<Select.Button>
-															{ labelForBehavior(
-																behavior
-															) }
-														</Select.Button>
-														<Select.Options className="z-999999">
-															{ BEHAVIOR_OPTIONS.map(
-																( opt ) => (
-																	<Select.Option
-																		key={
-																			opt.value
-																		}
-																		value={
-																			opt.value
-																		}
-																	>
-																		{
-																			opt.label
-																		}
-																	</Select.Option>
-																)
-															) }
-														</Select.Options>
-													</Select>
-												</div>
-											) }
-										</div>
-									) }
-								</li>
-							);
-						} ) }
-					</ul>
-				</div>
+														) }
+													</Select.Options>
+												</Select>
+											</div>
+										) }
+									</Container>
+								) }
+							</Container>
+						);
+					} ) }
+				</Container>
 			) }
 
-			<div className="flex items-center justify-between">
+			<Container align="center" justify="between">
 				<Button
 					variant="outline"
 					size="sm"
@@ -338,7 +342,7 @@ const FormSelector = ( { source, onBack, onContinue } ) => {
 						? __( 'Preview update', 'sureforms' )
 						: __( 'Preview import', 'sureforms' ) }
 				</Button>
-			</div>
+			</Container>
 		</Container>
 	);
 };

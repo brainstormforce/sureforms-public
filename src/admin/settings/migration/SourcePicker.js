@@ -10,8 +10,9 @@
 
 import { useEffect, useState } from '@wordpress/element';
 import { __, sprintf, _n } from '@wordpress/i18n';
-import { Badge, Button, Container, Loader, Text, Title } from '@bsf/force-ui';
+import { Badge, Button, Container, Text, Title } from '@bsf/force-ui';
 import { ArrowRight, CheckCircle2, CircleSlash } from 'lucide-react';
+import LoadingSkeleton from '@Admin/components/LoadingSkeleton';
 import { listSources } from './api';
 
 const SourcePicker = ( { onSelect } ) => {
@@ -48,11 +49,7 @@ const SourcePicker = ( { onSelect } ) => {
 	}, [] );
 
 	if ( loading ) {
-		return (
-			<div className="flex items-center justify-center p-12">
-				<Loader />
-			</div>
-		);
+		return <LoadingSkeleton count={ 3 } height={ 25 } />;
 	}
 
 	if ( error ) {
@@ -71,6 +68,16 @@ const SourcePicker = ( { onSelect } ) => {
 		);
 	}
 
+	// Column count tracks how many sources we have: 1 → full width, 2 → 50/50,
+	// 3 → thirds, 4+ → thirds wrapping onto new rows. Capped per breakpoint so
+	// tiles stack on small screens instead of squeezing.
+	const count = sources.length;
+	const cols = {
+		sm: 1,
+		md: Math.min( count, 2 ),
+		lg: Math.min( count, 3 ),
+	};
+
 	return (
 		<Container direction="column" gap="lg">
 			<Container direction="column" gap="xs">
@@ -86,7 +93,7 @@ const SourcePicker = ( { onSelect } ) => {
 					) }
 				</Text>
 			</Container>
-			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+			<Container containerType="grid" cols={ cols } gap="md">
 				{ sources.map( ( source ) => (
 					<SourceTile
 						key={ source.key }
@@ -94,7 +101,7 @@ const SourcePicker = ( { onSelect } ) => {
 						onSelect={ onSelect }
 					/>
 				) ) }
-			</div>
+			</Container>
 		</Container>
 	);
 };
@@ -105,14 +112,16 @@ const SourceTile = ( { source, onSelect } ) => {
 	const hasForms = isInstalled && formCount > 0;
 
 	return (
-		<div
-			className={ `rounded-lg border border-border-subtle bg-background-primary p-5 flex flex-col gap-3 ${
+		<Container
+			direction="column"
+			gap="sm"
+			className={ `rounded-lg border border-border-subtle bg-background-primary p-5 ${
 				hasForms
 					? 'hover:border-border-strong transition-colors'
 					: 'opacity-70'
 			}` }
 		>
-			<div className="flex items-start justify-between gap-2">
+			<Container align="start" justify="between" gap="xs">
 				<Title size="sm" tag="h4" title={ source.title } />
 				{ isInstalled ? (
 					<Badge
@@ -129,7 +138,7 @@ const SourceTile = ( { source, onSelect } ) => {
 						label={ __( 'Not installed', 'sureforms' ) }
 					/>
 				) }
-			</div>
+			</Container>
 			<Text size={ 13 } color="secondary">
 				{ isInstalled
 					? sprintf(
@@ -157,7 +166,7 @@ const SourceTile = ( { source, onSelect } ) => {
 			>
 				{ __( 'Select', 'sureforms' ) }
 			</Button>
-		</div>
+		</Container>
 	);
 };
 

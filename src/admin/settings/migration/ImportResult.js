@@ -57,36 +57,44 @@ const ImportResult = ( { result, onRestart } ) => {
 			</Container>
 
 			{ imported.length > 0 && (
-				<div className="rounded-lg border border-border-subtle bg-background-primary overflow-hidden">
-					<div className="flex items-center gap-2 px-4 py-3 border-b border-border-subtle bg-background-secondary">
+				<Container
+					direction="column"
+					className="rounded-lg border border-border-subtle bg-background-primary overflow-hidden"
+				>
+					<Container
+						align="center"
+						gap="xs"
+						className="px-4 py-3 border-0 border-b border-solid border-border-subtle bg-background-secondary"
+					>
 						<CheckCircle2 className="size-4 text-text-success" />
 						<Text size={ 13 } weight={ 600 }>
 							{ __( 'Imported forms', 'sureforms' ) }
 						</Text>
-					</div>
-					<ul className="divide-y divide-border-subtle">
-						{ imported.map( ( item ) => (
-							<li
-								key={ item.srfm_id }
-								className="flex items-center justify-between gap-3 px-4 py-3"
+					</Container>
+					{ imported.map( ( item ) => (
+						<Container
+							key={ item.srfm_id }
+							align="center"
+							justify="between"
+							gap="sm"
+							className="px-4 py-3 border-0 border-t border-solid border-border-subtle first:border-t-0"
+						>
+							<Text size={ 14 }>{ item.name }</Text>
+							<Button
+								tag="a"
+								href={ item.edit_url }
+								target="_blank"
+								rel="noopener noreferrer"
+								variant="outline"
+								size="xs"
+								icon={ <ExternalLink /> }
+								iconPosition="right"
 							>
-								<Text size={ 14 }>{ item.name }</Text>
-								<Button
-									tag="a"
-									href={ item.edit_url }
-									target="_blank"
-									rel="noopener noreferrer"
-									variant="outline"
-									size="xs"
-									icon={ <ExternalLink /> }
-									iconPosition="right"
-								>
-									{ __( 'Edit in SureForms', 'sureforms' ) }
-								</Button>
-							</li>
-						) ) }
-					</ul>
-				</div>
+								{ __( 'Edit in SureForms', 'sureforms' ) }
+							</Button>
+						</Container>
+					) ) }
+				</Container>
 			) }
 
 			{ unsupported.length > 0 && (
@@ -131,7 +139,7 @@ const ImportResult = ( { result, onRestart } ) => {
 				/>
 			) }
 
-			<div className="flex items-center justify-end">
+			<Container align="center" justify="end">
 				<Button
 					variant="primary"
 					size="sm"
@@ -141,7 +149,7 @@ const ImportResult = ( { result, onRestart } ) => {
 				>
 					{ __( 'Import more forms', 'sureforms' ) }
 				</Button>
-			</div>
+			</Container>
 		</Container>
 	);
 };

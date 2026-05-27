@@ -12,14 +12,15 @@
 import { useEffect, useRef, useState } from '@wordpress/element';
 import { __, sprintf, _n } from '@wordpress/i18n';
 import {
+	Accordion,
 	Alert,
 	Button,
 	Container,
-	Loader,
 	Text,
 	Title,
 } from '@bsf/force-ui';
 import { ArrowLeft, AlertTriangle, Check } from 'lucide-react';
+import LoadingSkeleton from '@Admin/components/LoadingSkeleton';
 import { importForms } from './api';
 
 const DryRunPreview = ( {
@@ -98,11 +99,7 @@ const DryRunPreview = ( {
 	};
 
 	if ( loading ) {
-		return (
-			<div className="flex items-center justify-center p-12">
-				<Loader />
-			</div>
-		);
+		return <LoadingSkeleton count={ 3 } height={ 25 } />;
 	}
 
 	if ( error ) {
@@ -206,28 +203,30 @@ const DryRunPreview = ( {
 			) }
 
 			{ previewEntries.length > 0 && (
-				<div className="space-y-3">
+				<Accordion type="boxed" iconType="arrow" autoClose>
 					{ previewEntries.map( ( [ sourceId, markup ] ) => (
-						<details
+						<Accordion.Item
 							key={ sourceId }
-							className="rounded-lg border border-border-subtle bg-background-primary"
+							value={ sourceId }
 						>
-							<summary className="px-4 py-3 cursor-pointer text-sm font-medium">
+							<Accordion.Trigger>
 								{ sprintf(
 									/* translators: %s: source form id. */
 									__( 'Source form #%s', 'sureforms' ),
 									sourceId
 								) }
-							</summary>
-							<pre className="px-4 py-3 text-xs bg-background-secondary overflow-x-auto whitespace-pre-wrap break-all border-t border-border-subtle m-0">
-								{ markup }
-							</pre>
-						</details>
+							</Accordion.Trigger>
+							<Accordion.Content>
+								<pre className="px-4 py-3 text-xs bg-background-secondary overflow-x-auto whitespace-pre-wrap break-all m-0">
+									{ markup }
+								</pre>
+							</Accordion.Content>
+						</Accordion.Item>
 					) ) }
-				</div>
+				</Accordion>
 			) }
 
-			<div className="flex items-center justify-between">
+			<Container align="center" justify="between">
 				<Button
 					variant="outline"
 					size="sm"
@@ -249,7 +248,7 @@ const DryRunPreview = ( {
 				>
 					{ confirmLabel }
 				</Button>
-			</div>
+			</Container>
 		</Container>
 	);
 };
