@@ -296,6 +296,12 @@ class Export {
 						continue;
 					}
 
+					// Note: add_post_meta() internally runs wp_unslash() on the value before
+					// invoking the registered sanitize_callback. Imported values are unslashed,
+					// so without re-slashing, backslashes are stripped — corrupting JSON-string
+					// metas (e.g. _srfm_save_resume, _srfm_conditional_confirmation) whose escaped
+					// quotes (\") then fail json_decode() in their sanitizers, wiping the value to
+					// an empty string. wp_slash() pre-escapes so wp_unslash() restores the original.
 					if ( in_array( $meta_key, $unserialized_meta_keys, true ) ) {
 						// Complex array metas — sanitize_callback registered via register_post_meta()
 						// is automatically invoked by add_post_meta() → update_metadata() pipeline.
@@ -303,7 +309,7 @@ class Export {
 						if ( empty( $registered[ $meta_key ]['sanitize_callback'] ) ) {
 							$meta_value = Helper::sanitize_by_type( $meta_value );
 						}
-						add_post_meta( $post_id, $meta_key, $meta_value );
+						add_post_meta( $post_id, $meta_key, wp_slash( $meta_value ) );
 					} else {
 						// Scalar metas — unwrap single-element arrays produced by get_post_meta().
 						$raw_value = is_array( $meta_value ) && isset( $meta_value[0] ) ? $meta_value[0] : $meta_value;
@@ -311,7 +317,7 @@ class Export {
 						if ( is_string( $raw_value ) && empty( $registered[ $meta_key ]['sanitize_callback'] ) ) {
 							$raw_value = sanitize_text_field( $raw_value );
 						}
-						add_post_meta( $post_id, $meta_key, $raw_value );
+						add_post_meta( $post_id, $meta_key, wp_slash( $raw_value ) );
 					}
 				}
 			} else {
