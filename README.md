@@ -489,7 +489,7 @@ You can report security issues through our [Bug Bounty Program](https://brainsto
 ### 2.10.0 - 27th May 2026 ###
 * New: Added a live character counter to Textarea fields.
 * New: Added a one-click converter that turns raw HTML forms into native SureForms in gutenberg editor.
-* Improvement: Added Dynamic Default Value support for multi-select Dropdown and Multi-Choice fields.
+* Improvement: Added dynamic default value support for multi-select Dropdown and Multi-Choice fields.
 * Improvement: Entry URL now records actual submission page.
 * Fix: CSV export was stripping line breaks from Textarea submissions.
 ### 2.9.1 - 19th May 2026 ###
