@@ -851,9 +851,12 @@ class Rest_Api {
 			'form_data'       => $form_data,
 			'form_content'    => $form_fields,
 			'submission_info' => [
-				'user_ip'      => $entry['submission_info']['user_ip'] ?? '',
-				'browser_name' => $entry['submission_info']['browser_name'] ?? '',
-				'device_name'  => $entry['submission_info']['device_name'] ?? '',
+				'user_ip'        => $entry['submission_info']['user_ip'] ?? '',
+				'browser_name'   => $entry['submission_info']['browser_name'] ?? '',
+				'device_name'    => $entry['submission_info']['device_name'] ?? '',
+				// Re-sanitize at the exposure boundary in case the stored value
+				// was written by a future code path that bypasses form-submit.php.
+				'submission_url' => esc_url_raw( $entry['submission_info']['submission_url'] ?? '', [ 'http', 'https' ] ),
 			],
 			'user'            => $user_info ? [
 				'id'           => $user_id,

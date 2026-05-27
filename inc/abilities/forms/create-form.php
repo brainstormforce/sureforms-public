@@ -331,7 +331,14 @@ class Create_Form extends Abstract_Ability {
 		// Get default post meta.
 		$post_metas = Create_New_Form::get_default_meta_keys();
 
-		// Add serialized meta defaults for metadata overrides.
+		// Pull complex-meta defaults from the registered schemas so created
+		// forms are identical to hand-created ones. Storing empty arrays/strings
+		// would override the register_post_meta 'default' values (WordPress only
+		// uses those defaults when no value is stored at all), causing confirmation
+		// messages, email notifications, styling, and restriction settings to be
+		// blank for any form created through this code path.
+		$registered = get_registered_meta_keys( 'post', SRFM_FORMS_POST_TYPE );
+
 		$post_metas['_srfm_instant_form_settings'] = [
 			'bg_type'                       => 'color',
 			'bg_color'                      => '#ffffff',
@@ -345,11 +352,11 @@ class Create_Form extends Abstract_Ability {
 			'single_page_form_title'        => true,
 			'use_banner_as_page_background' => false,
 		];
-		$post_metas['_srfm_form_confirmation']     = [];
-		$post_metas['_srfm_compliance']            = [];
-		$post_metas['_srfm_forms_styling']         = [];
-		$post_metas['_srfm_email_notification']    = [];
-		$post_metas['_srfm_form_restriction']      = '';
+		$post_metas['_srfm_form_confirmation']     = $registered['_srfm_form_confirmation']['default'] ?? [];
+		$post_metas['_srfm_compliance']            = $registered['_srfm_compliance']['default'] ?? [];
+		$post_metas['_srfm_forms_styling']         = $registered['_srfm_forms_styling']['default'] ?? [];
+		$post_metas['_srfm_email_notification']    = $registered['_srfm_email_notification']['default'] ?? [];
+		$post_metas['_srfm_form_restriction']      = $registered['_srfm_form_restriction']['default'] ?? '';
 		$post_metas['_srfm_form_custom_css']       = '';
 
 		// Apply metadata overrides from input.

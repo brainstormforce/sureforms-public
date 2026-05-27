@@ -102,6 +102,11 @@ trait Form_Field_Schema {
 				'type'        => 'integer',
 				'description' => __( 'Maximum character length.', 'sureforms' ),
 			],
+			// `placeholder` — @since 2.10.0 (added alongside the HTML-form converter)
+			'placeholder'     => [
+				'type'        => 'string',
+				'description' => __( 'Placeholder text shown inside the empty input/textarea or as the empty first option in a dropdown.', 'sureforms' ),
+			],
 		];
 
 		/**
@@ -142,6 +147,9 @@ trait Form_Field_Schema {
 			}
 			if ( isset( $field['defaultValue'] ) && is_string( $field['defaultValue'] ) ) {
 				$fields[ $index ]['defaultValue'] = sanitize_text_field( $field['defaultValue'] );
+			}
+			if ( isset( $field['placeholder'] ) && is_string( $field['placeholder'] ) ) {
+				$fields[ $index ]['placeholder'] = sanitize_text_field( $field['placeholder'] );
 			}
 			if ( ! empty( $field['fieldOptions'] ) && is_array( $field['fieldOptions'] ) ) {
 				// @phpstan-ignore-next-line -- $field['fieldOptions'] is validated as array above.

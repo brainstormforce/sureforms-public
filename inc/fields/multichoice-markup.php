@@ -206,34 +206,90 @@ class Multichoice_Markup extends Base {
 	/**
 	 * Resolve dynamic default value from smart tags and override preselected options.
 	 *
+	 * Radio (single-selection) mode matches the resolved value as a single
+	 * trimmed string, so option titles that legitimately contain delimiter
+	 * characters (commas, pipes, etc.) still match.
+	 *
+	 * Checkbox mode splits the resolved value on the pipe character (`|`) and
+	 * matches every segment (for example "{get_input:a}|{get_input:b}" resolving
+	 * to "Red|Blue", or a single `{get_input:colors}` with URL
+	 * `?colors=Red|Blue`). The same pipe split applies to multi-character
+	 * resolved values from `{get_input:...}` and `{get_cookie:...}`, so cookie
+	 * payloads that contain pipes are treated as multi-value in checkbox mode.
+	 *
+	 * When the `Add Numeric Values to Options` (showValues) setting is on,
+	 * each segment is also compared against the option's `value`.
+	 *
 	 * @param array<mixed> $attributes Block attributes.
 	 * @since 2.8.1
+	 * @since 2.10.0 Added checkbox (pipe-delimited) multi-value matching.
 	 * @return void
 	 */
 	protected function resolve_dynamic_default( $attributes ) {
-		$dynamic_default = is_string( $attributes['dynamicDefaultValue'] ?? '' ) ? $attributes['dynamicDefaultValue'] : '';
-		if ( empty( $dynamic_default ) || ! $this->single_selection ) {
+		// Coalesce first so blocks saved before this attribute existed (pre-2.10.0)
+		// don't trigger an "Undefined array key" warning on every frontend render.
+		$raw_default     = $attributes['dynamicDefaultValue'] ?? '';
+		$dynamic_default = is_string( $raw_default ) ? $raw_default : '';
+		if ( empty( $dynamic_default ) ) {
 			return;
 		}
 
 		$smart_tags = new Smart_Tags();
 		$resolved   = $smart_tags->process_smart_tags( $dynamic_default );
 
-		if ( empty( $resolved ) || ! is_string( $resolved ) ) {
+		if ( empty( $resolved ) || ! is_string( $resolved ) || ! is_array( $this->options ) ) {
 			return;
 		}
 
-		$resolved = trim( $resolved );
+		// START: multi-value dynamic default resolution.
+		if ( ! $this->single_selection ) {
+			$segments = array_filter(
+				array_map( 'trim', explode( '|', $resolved ) ),
+				static function ( $segment ) {
+					return '' !== $segment;
+				}
+			);
+			// Cap segments to avoid pathological URLs (e.g. ?colors=|||||...) producing thousands of comparisons.
+			$segments = array_slice( $segments, 0, 50 );
+		} else {
+			$trimmed  = trim( $resolved );
+			$segments = '' === $trimmed ? [] : [ $trimmed ];
+		}
 
-		if ( is_array( $this->options ) ) {
+		if ( empty( $segments ) ) {
+			return;
+		}
+
+		$match_value_too  = ! empty( $attributes['showValues'] );
+		$matching_indices = [];
+
+		foreach ( $segments as $segment ) {
 			foreach ( $this->options as $i => $option ) {
-				$option_title = $option['optionTitle'] ?? '';
-				if ( strcasecmp( $option_title, $resolved ) === 0 ) {
-					$this->preselected_options = [ $i ];
-					return;
+				if ( ! is_array( $option ) || in_array( $i, $matching_indices, true ) ) {
+					continue;
+				}
+
+				$option_title = isset( $option['optionTitle'] ) && is_scalar( $option['optionTitle'] ) ? (string) $option['optionTitle'] : '';
+				$raw_value    = $option['value'] ?? '';
+				$option_value = $match_value_too && is_scalar( $raw_value ) ? (string) $raw_value : '';
+
+				$is_match = ( '' !== $option_title && strcasecmp( $option_title, $segment ) === 0 )
+					|| ( $match_value_too && '' !== $option_value && strcasecmp( $option_value, $segment ) === 0 );
+
+				if ( $is_match ) {
+					$matching_indices[] = $i;
+					if ( $this->single_selection ) {
+						break 2;
+					}
+					break;
 				}
 			}
 		}
+
+		if ( ! empty( $matching_indices ) ) {
+			$this->preselected_options = $this->single_selection ? [ $matching_indices[0] ] : $matching_indices;
+		}
+		// END: multi-value dynamic default resolution.
 	}
 
 	/**
