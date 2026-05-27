@@ -488,11 +488,10 @@ You can report security issues through our [Bug Bounty Program](https://brainsto
 ## Changelog ##
 ### 2.10.0 - 27th May 2026 ###
 * New: Added a live character counter to Textarea fields.
-* New: Added a one-click converter that turns raw HTML forms into native SureForms.
-* Improvement: Added Dynamic Default Value support for multi-select Dropdown and checkbox Multi-Choice fields.
+* New: Added a one-click converter that turns raw HTML forms into native SureForms in gutenberg editor.
+* Improvement: Added dynamic default value support for multi-select Dropdown and Multi-Choice fields.
+* Improvement: Entry URL now records actual submission page.
 * Fix: CSV export was stripping line breaks from Textarea submissions.
-* Fix: Entry URL was recording the form permalink instead of the actual submission page.
-* Fix: Moved help text outside `<legend>` for Dropdown and Address fields to improve screen reader compatibility.
 ### 2.9.1 - 19th May 2026 ###
 * Improvement: Added compatibility with WordPress 7.0.
 ### 2.9.0 - 14th May 2026 ###
