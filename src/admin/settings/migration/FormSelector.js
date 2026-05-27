@@ -12,7 +12,7 @@
 import { useEffect, useMemo, useState } from '@wordpress/element';
 import { __, sprintf, _n } from '@wordpress/i18n';
 import { Badge, Button, Container, Select, Text } from '@bsf/force-ui';
-import { ArrowRight, ExternalLink, RefreshCcw } from 'lucide-react';
+import { ArrowLeft, ArrowRight, ExternalLink, RefreshCcw } from 'lucide-react';
 import Table from '@Admin/common/listing/components/Table';
 import LoadingSkeleton from '@Admin/components/LoadingSkeleton';
 import { listForms } from './api';
@@ -27,7 +27,7 @@ const BEHAVIOR_OPTIONS = [
 const labelForBehavior = ( value ) =>
 	BEHAVIOR_OPTIONS.find( ( o ) => o.value === value )?.label ?? value;
 
-const FormSelector = ( { source, toolbar = null, onContinue } ) => {
+const FormSelector = ( { source, onBack, onContinue } ) => {
 	const [ forms, setForms ] = useState( [] );
 	const [ loading, setLoading ] = useState( true );
 	const [ error, setError ] = useState( '' );
@@ -228,8 +228,6 @@ const FormSelector = ( { source, toolbar = null, onContinue } ) => {
 
 	return (
 		<Container direction="column" gap="md">
-			{ toolbar }
-
 			<Table
 				data={ forms }
 				columns={ columns }
@@ -244,37 +242,48 @@ const FormSelector = ( { source, toolbar = null, onContinue } ) => {
 			/>
 
 			<Container align="center" justify="between">
-				<Text size={ 13 } color="secondary">
-					{ sprintf(
-						/* translators: 1: selected count, 2: total forms. */
-						_n(
-							'%1$d of %2$d form selected',
-							'%1$d of %2$d forms selected',
-							forms.length,
-							'sureforms'
-						),
-						selected.size,
-						forms.length
-					) }
-				</Text>
 				<Button
-					variant="primary"
+					variant="ghost"
 					size="sm"
-					disabled={ selectedIds.length === 0 }
-					onClick={ () =>
-						onContinue(
-							selectedIds,
-							behaviorMap,
-							forms.filter( ( f ) => selected.has( f.id ) )
-						)
-					}
-					icon={ <ArrowRight /> }
-					iconPosition="right"
+					onClick={ onBack }
+					icon={ <ArrowLeft /> }
+					iconPosition="left"
 				>
-					{ allSelectedAreImported
-						? __( 'Preview update', 'sureforms' )
-						: __( 'Preview import', 'sureforms' ) }
+					{ __( 'Back', 'sureforms' ) }
 				</Button>
+				<Container align="center" gap="md">
+					<Text size={ 13 } color="secondary">
+						{ sprintf(
+							/* translators: 1: selected count, 2: total forms. */
+							_n(
+								'%1$d of %2$d form selected',
+								'%1$d of %2$d forms selected',
+								forms.length,
+								'sureforms'
+							),
+							selected.size,
+							forms.length
+						) }
+					</Text>
+					<Button
+						variant="primary"
+						size="sm"
+						disabled={ selectedIds.length === 0 }
+						onClick={ () =>
+							onContinue(
+								selectedIds,
+								behaviorMap,
+								forms.filter( ( f ) => selected.has( f.id ) )
+							)
+						}
+						icon={ <ArrowRight /> }
+						iconPosition="right"
+					>
+						{ allSelectedAreImported
+							? __( 'Preview update', 'sureforms' )
+							: __( 'Preview import', 'sureforms' ) }
+					</Button>
+				</Container>
 			</Container>
 		</Container>
 	);

@@ -1,18 +1,19 @@
 /**
  * MigrationPage — top-level component for the Migration tab.
  *
- * Single-screen importer (no wizard): pick a source plugin (auto-selected when
- * only one is installed, a dropdown when several are), choose forms in a native
- * table, review a human-readable summary, then import — with the result shown
- * inline. Mounted from `src/admin/settings/Component.js` when the URL `tab`
- * query param equals `migration-settings`.
+ * Single-screen importer (no wizard). Lands on a table of available source
+ * plugins (SourcePicker); choosing one drills into its forms (FormSelector),
+ * then a human-readable review (DryRunPreview), then an inline result
+ * (ImportResult). Mounted from `src/admin/settings/Component.js` when the URL
+ * `tab` query param equals `migration-settings`.
  *
  * @since x.x.x
  */
 
 import { useEffect, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
-import { Container, Select, Text } from '@bsf/force-ui';
+import { Text } from '@bsf/force-ui';
+import SourcePicker from './SourcePicker';
 import FormSelector from './FormSelector';
 import DryRunPreview from './DryRunPreview';
 import ImportResult from './ImportResult';
@@ -25,8 +26,8 @@ const MigrationPage = () => {
 	const [ error, setError ] = useState( '' );
 	const [ source, setSource ] = useState( null );
 
-	// view: 'select' (choose forms) → 'review' (confirm) → 'result' (done).
-	const [ view, setView ] = useState( 'select' );
+	// view: 'sources' (pick plugin) → 'select' (choose forms) → 'review' → 'result'.
+	const [ view, setView ] = useState( 'sources' );
 	const [ formIds, setFormIds ] = useState( [] );
 	const [ behaviorMap, setBehaviorMap ] = useState( {} );
 	const [ selectedForms, setSelectedForms ] = useState( [] );
@@ -39,13 +40,7 @@ const MigrationPage = () => {
 				if ( cancelled ) {
 					return;
 				}
-				const list = Array.isArray( res?.sources ) ? res.sources : [];
-				setSources( list );
-				// Auto-select the first installed source that has forms.
-				const firstUsable = list.find(
-					( s ) => s.installed && Number( s.form_count ?? 0 ) > 0
-				);
-				setSource( firstUsable || null );
+				setSources( Array.isArray( res?.sources ) ? res.sources : [] );
 				setLoading( false );
 			} )
 			.catch( () => {
@@ -65,6 +60,11 @@ const MigrationPage = () => {
 		};
 	}, [] );
 
+	const handleSourceSelect = ( picked ) => {
+		setSource( picked );
+		setView( 'select' );
+	};
+
 	const handleFormsContinue = ( ids, behavior, forms ) => {
 		setFormIds( ids );
 		setBehaviorMap( behavior );
@@ -77,12 +77,17 @@ const MigrationPage = () => {
 		setView( 'result' );
 	};
 
-	const handleRestart = () => {
+	const handleBackToSources = () => {
+		setSource( null );
 		setFormIds( [] );
 		setBehaviorMap( {} );
 		setSelectedForms( [] );
+		setView( 'sources' );
+	};
+
+	const handleRestart = () => {
 		setResult( null );
-		setView( 'select' );
+		handleBackToSources();
 	};
 
 	if ( loading ) {
@@ -97,62 +102,11 @@ const MigrationPage = () => {
 		);
 	}
 
-	// Installed sources that can actually be imported from.
-	const usableSources = sources.filter(
-		( s ) => s.installed && Number( s.form_count ?? 0 ) > 0
-	);
-
-	if ( ! source ) {
-		return (
-			<Text size={ 14 }>
-				{ __(
-					'No importable form plugins detected. Activate a supported plugin (e.g. Contact Form 7) with at least one form to begin.',
-					'sureforms'
-				) }
-			</Text>
-		);
-	}
-
-	// A compact source switcher, shown only when more than one source is
-	// available. With a single source it is auto-selected and the control is
-	// hidden — keeping the screen as lean as the other settings tabs.
-	const sourceToolbar =
-		usableSources.length > 1 ? (
-			<Container align="center" gap="sm">
-				<Text size={ 13 } color="secondary">
-					{ __( 'Import from', 'sureforms' ) }
-				</Text>
-				<div className="min-w-[200px]">
-					<Select
-						size="sm"
-						value={ source.key }
-						onChange={ ( key ) => {
-							const next = usableSources.find(
-								( s ) => s.key === key
-							);
-							if ( next ) {
-								setSource( next );
-							}
-						} }
-					>
-						<Select.Button>{ source.title }</Select.Button>
-						<Select.Options className="z-999999">
-							{ usableSources.map( ( s ) => (
-								<Select.Option key={ s.key } value={ s.key }>
-									{ s.title }
-								</Select.Option>
-							) ) }
-						</Select.Options>
-					</Select>
-				</div>
-			</Container>
-		) : null;
-
 	if ( 'result' === view ) {
 		return <ImportResult result={ result } onRestart={ handleRestart } />;
 	}
 
-	if ( 'review' === view ) {
+	if ( 'review' === view && source ) {
 		return (
 			<DryRunPreview
 				source={ source }
@@ -165,14 +119,18 @@ const MigrationPage = () => {
 		);
 	}
 
-	return (
-		<FormSelector
-			key={ source.key }
-			source={ source }
-			toolbar={ sourceToolbar }
-			onContinue={ handleFormsContinue }
-		/>
-	);
+	if ( 'select' === view && source ) {
+		return (
+			<FormSelector
+				key={ source.key }
+				source={ source }
+				onBack={ handleBackToSources }
+				onContinue={ handleFormsContinue }
+			/>
+		);
+	}
+
+	return <SourcePicker sources={ sources } onSelect={ handleSourceSelect } />;
 };
 
 export default MigrationPage;
