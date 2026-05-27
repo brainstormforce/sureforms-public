@@ -1,32 +1,27 @@
 /**
- * DryRunPreview — step 3 of the migration wizard.
+ * DryRunPreview — the "review" view of the Migration tab.
  *
- * Calls the migrator import endpoint with `dry_run: true`, then renders the
- * resulting block markup in a code pane and any unsupported-field warnings
- * in an alert callout. From here the user either commits the import or
- * goes back to reselect.
+ * Runs the importer with `dry_run: true` and renders a human-readable summary
+ * of what each selected form will become in SureForms (field count + field
+ * list) plus any skipped-field warnings. No raw block markup is shown. From
+ * here the user commits the import or goes back to reselect.
  *
  * @since x.x.x
  */
 
 import { useEffect, useRef, useState } from '@wordpress/element';
 import { __, sprintf, _n } from '@wordpress/i18n';
-import {
-	Accordion,
-	Alert,
-	Button,
-	Container,
-	Text,
-	Title,
-} from '@bsf/force-ui';
+import { Alert, Badge, Button, Container, Text } from '@bsf/force-ui';
 import { ArrowLeft, AlertTriangle, Check } from 'lucide-react';
 import LoadingSkeleton from '@Admin/components/LoadingSkeleton';
+import { parseFieldSummary } from './parseFieldSummary';
 import { importForms } from './api';
 
 const DryRunPreview = ( {
 	source,
 	formIds,
 	behavior = {},
+	selectedForms = [],
 	onBack,
 	onConfirm,
 } ) => {
@@ -34,8 +29,8 @@ const DryRunPreview = ( {
 	const [ loading, setLoading ] = useState( true );
 	const [ error, setError ] = useState( '' );
 	const [ submitting, setSubmitting ] = useState( false );
-	// Double-submit guard — synchronous so two rapid clicks can't both pass
-	// the in-flight check before React re-renders with `submitting = true`.
+	// Synchronous double-submit guard — blocks a second click before React
+	// re-renders with `submitting = true`.
 	const inFlight = useRef( false );
 
 	useEffect( () => {
@@ -66,9 +61,6 @@ const DryRunPreview = ( {
 		return () => {
 			cancelled = true;
 		};
-		// `behavior` participates because changing it (e.g. choosing "skip")
-		// should re-flow the preview text. Reference identity is stable
-		// because MigrationPage seeds it once per step transition.
 	}, [ source.key, formIds, behavior ] );
 
 	const handleConfirm = async () => {
@@ -99,7 +91,7 @@ const DryRunPreview = ( {
 	};
 
 	if ( loading ) {
-		return <LoadingSkeleton count={ 3 } height={ 25 } />;
+		return <LoadingSkeleton count={ 4 } height={ 25 } />;
 	}
 
 	if ( error ) {
@@ -108,15 +100,17 @@ const DryRunPreview = ( {
 				<Text size={ 14 } className="text-text-error">
 					{ error }
 				</Text>
-				<Button
-					variant="outline"
-					size="sm"
-					onClick={ onBack }
-					icon={ <ArrowLeft /> }
-					iconPosition="left"
-				>
-					{ __( 'Go back', 'sureforms' ) }
-				</Button>
+				<div>
+					<Button
+						variant="outline"
+						size="sm"
+						onClick={ onBack }
+						icon={ <ArrowLeft /> }
+						iconPosition="left"
+					>
+						{ __( 'Go back', 'sureforms' ) }
+					</Button>
+				</div>
 			</Container>
 		);
 	}
@@ -127,9 +121,12 @@ const DryRunPreview = ( {
 		: [];
 	const failed = Array.isArray( data?.failed ) ? data.failed : [];
 
-	// Choose the CTA label based on the behavior the user picked on step 2.
-	// If at least one form is being updated and none are being created fresh,
-	// "Update & import" reads more accurately than "Confirm & import".
+	const nameById = {};
+	selectedForms.forEach( ( f ) => {
+		nameById[ String( f.id ) ] = f.name;
+	} );
+
+	// CTA label: "Update & import" when updating existing forms (none created fresh).
 	const behaviorValues = Object.values( behavior );
 	const hasUpdates = behaviorValues.includes( 'update' );
 	const hasCreates = behaviorValues.includes( 'create' );
@@ -140,25 +137,54 @@ const DryRunPreview = ( {
 
 	return (
 		<Container direction="column" gap="lg">
-			<Container direction="column" gap="xs">
-				<Title
-					size="md"
-					tag="h3"
-					title={ __( 'Review the migration preview', 'sureforms' ) }
-				/>
-				<Text size={ 14 } color="secondary">
-					{ sprintf(
-						/* translators: %d: number of forms in this batch. */
-						_n(
-							'This is what %d form will look like in SureForms after import. Nothing has been saved yet.',
-							'This is what %d forms will look like in SureForms after import. Nothing has been saved yet.',
-							previewEntries.length,
-							'sureforms'
-						),
-						previewEntries.length
-					) }
-				</Text>
-			</Container>
+			{ previewEntries.map( ( [ sourceId, markup ] ) => {
+				const summary = parseFieldSummary( markup );
+				const name =
+					nameById[ sourceId ] ||
+					sprintf(
+						/* translators: %s: source form id. */
+						__( 'Form #%s', 'sureforms' ),
+						sourceId
+					);
+				return (
+					<Container
+						key={ sourceId }
+						direction="column"
+						gap="sm"
+						className="rounded-lg border border-border-subtle bg-background-primary p-4"
+					>
+						<Container align="center" justify="between" gap="xs">
+							<Text size={ 14 } weight={ 600 }>
+								{ name }
+							</Text>
+							<Text size={ 13 } color="secondary">
+								{ sprintf(
+									/* translators: %d: number of fields. */
+									_n(
+										'%d field will import',
+										'%d fields will import',
+										summary.count,
+										'sureforms'
+									),
+									summary.count
+								) }
+							</Text>
+						</Container>
+						{ summary.fields.length > 0 && (
+							<Container wrap="wrap" gap="xs">
+								{ summary.fields.map( ( field, idx ) => (
+									<Badge
+										key={ idx }
+										variant="neutral"
+										size="xs"
+										label={ field.label }
+									/>
+								) ) }
+							</Container>
+						) }
+					</Container>
+				);
+			} ) }
 
 			{ unsupported.length > 0 && (
 				<Alert
@@ -171,7 +197,7 @@ const DryRunPreview = ( {
 						<Container direction="column" gap="2xs">
 							<Text size={ 13 }>
 								{ __(
-									'These fields will be skipped during import — add them manually after the form is created:',
+									'These fields will be skipped — add them manually after the form is created:',
 									'sureforms'
 								) }
 							</Text>
@@ -191,39 +217,10 @@ const DryRunPreview = ( {
 			{ failed.length > 0 && (
 				<Alert
 					variant="danger"
-					title={ __(
-						'Some forms could not be parsed',
-						'sureforms'
-					) }
-					content={
-						<Text size={ 13 }>{ failed.join( ', ' ) }</Text>
-					}
+					title={ __( 'Some forms could not be parsed', 'sureforms' ) }
+					content={ <Text size={ 13 }>{ failed.join( ', ' ) }</Text> }
 					icon={ <AlertTriangle /> }
 				/>
-			) }
-
-			{ previewEntries.length > 0 && (
-				<Accordion type="boxed" iconType="arrow" autoClose>
-					{ previewEntries.map( ( [ sourceId, markup ] ) => (
-						<Accordion.Item
-							key={ sourceId }
-							value={ sourceId }
-						>
-							<Accordion.Trigger>
-								{ sprintf(
-									/* translators: %s: source form id. */
-									__( 'Source form #%s', 'sureforms' ),
-									sourceId
-								) }
-							</Accordion.Trigger>
-							<Accordion.Content>
-								<pre className="px-4 py-3 text-xs bg-background-secondary overflow-x-auto whitespace-pre-wrap break-all m-0">
-									{ markup }
-								</pre>
-							</Accordion.Content>
-						</Accordion.Item>
-					) ) }
-				</Accordion>
 			) }
 
 			<Container align="center" justify="between">
