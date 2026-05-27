@@ -343,7 +343,7 @@ msgid "Form ID is required."
 msgstr "O ID do formulário é obrigatório."
 
 #: inc/admin-ajax.php:182
-#: inc/form-submit.php:972
+#: inc/form-submit.php:1001
 msgid "Invalid form ID."
 msgstr "ID de formulário inválido."
 
@@ -625,7 +625,6 @@ msgid "Advanced Fields"
 msgstr "Campos Avançados"
 
 #: inc/helper.php:70
-#: assets/build/formEditor.js:172
 msgid "This field is required."
 msgstr "Este campo é obrigatório."
 
@@ -777,6 +776,7 @@ msgstr "Email de Notificação do Administrador"
 #: inc/global-settings/global-settings-defaults.php:173
 #: inc/global-settings/global-settings.php:586
 #: inc/post-types.php:1005
+#: assets/build/settings.js:172
 #, php-format
 msgid "New Form Submission - %s"
 msgstr "Nova Submissão de Formulário - %s"
@@ -8270,6 +8270,7 @@ msgstr "Feito com ♡ %s"
 
 #: assets/build/blocks.js:2
 #: assets/build/forms.js:172
+#: assets/build/settings.js:172
 msgid "(no title)"
 msgstr "(sem título)"
 
@@ -8342,6 +8343,7 @@ msgstr "Avançado"
 
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:2
+#: assets/build/settings.js:2
 msgid "No tags available"
 msgstr "Sem etiquetas disponíveis"
 
@@ -8386,6 +8388,7 @@ msgstr "Redefinir"
 
 #: assets/build/blocks.js:172
 #: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
 msgid "Generic tags"
 msgstr "Etiquetas genéricas"
 
@@ -8871,30 +8874,37 @@ msgid "Install & Activate"
 msgstr "Instalar e Ativar"
 
 #: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
 msgid "Compliance Settings"
 msgstr "Configurações de Conformidade"
 
 #: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
 msgid "Enable GDPR Compliance"
 msgstr "Ativar conformidade com o GDPR"
 
 #: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
 msgid "Never store entry data after form submission"
 msgstr "Nunca armazene os dados de entrada após o envio do formulário"
 
 #: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
 msgid "When enabled this form will never store Entries."
 msgstr "Quando ativado, este formulário nunca armazenará entradas."
 
 #: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
 msgid "Automatically delete entries"
 msgstr "Excluir entradas automaticamente"
 
 #: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
 msgid "When enabled this form will automatically delete entries after a certain period of time."
 msgstr "Quando ativado, este formulário excluirá automaticamente as entradas após um determinado período de tempo."
 
 #: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
 msgid "Entries older than the days set will be deleted automatically."
 msgstr "As entradas mais antigas do que os dias definidos serão excluídas automaticamente."
 
@@ -8907,34 +8917,42 @@ msgid "The following CSS styles added below will only apply to this form contain
 msgstr "Os estilos CSS a seguir adicionados abaixo serão aplicados apenas a este contêiner de formulário."
 
 #: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
 msgid "Visual"
 msgstr "Visual"
 
 #: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
 msgid "HTML"
 msgstr "HTML"
 
 #: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
 msgid "All Data"
 msgstr "Todos os dados"
 
 #: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
 msgid "Add Shortcode"
 msgstr "Adicionar Shortcode"
 
 #: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
 msgid "Form input tags"
 msgstr "Etiquetas de entrada de formulário"
 
 #: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
 msgid "Comma separated values are also accepted."
 msgstr "Valores separados por vírgula também são aceitos."
 
 #: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
 msgid "Email Notification"
 msgstr "Notificação por Email"
 
 #: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
 msgid "Name"
 msgstr "Nome"
 
@@ -8944,18 +8962,22 @@ msgid "Send Email To"
 msgstr "Enviar Email Para"
 
 #: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
 msgid "Subject"
 msgstr "Assunto"
 
 #: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
 msgid "CC"
 msgstr "CC"
 
 #: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
 msgid "BCC"
 msgstr "Cco"
 
 #: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
 msgid "Reply To"
 msgstr "Responder a"
 
@@ -8964,54 +8986,57 @@ msgid "Add Notification"
 msgstr "Adicionar Notificação"
 
 #: assets/build/formEditor.js:172
-msgid "Email Notification disabled successfully."
-msgstr "Notificação por email desativada com sucesso."
-
-#: assets/build/formEditor.js:172
-msgid "Email Notification enabled successfully."
-msgstr "Notificação por email ativada com sucesso."
-
-#: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
 msgid "Add Key"
 msgstr "Adicionar Chave"
 
 #: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
 msgid "Add Value"
 msgstr "Adicionar Valor"
 
 #: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
 msgid "Add"
 msgstr "Adicionar"
 
 #: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
 msgid "Confirmation Message"
 msgstr "Mensagem de Confirmação"
 
 #: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
 msgid "After Form Submission"
 msgstr "Após o Envio do Formulário"
 
 #: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
 msgid "Hide Form"
 msgstr "Ocultar Formulário"
 
 #: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
 msgid "Reset Form"
 msgstr "Redefinir Formulário"
 
 #: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
 msgid "Custom URL"
 msgstr "URL personalizada"
 
 #: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
 msgid "Add Query Parameters"
 msgstr "Adicionar Parâmetros de Consulta"
 
 #: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
 msgid "Select if you want to add key-value pairs for form fields to include in query parameters"
 msgstr "Selecione se deseja adicionar pares chave-valor para campos de formulário a serem incluídos nos parâmetros de consulta"
 
 #: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
 msgid "Query Parameters"
 msgstr "Parâmetros de Consulta"
 
@@ -9024,14 +9049,17 @@ msgid "Suggestion: URL should use HTTPS"
 msgstr "Sugestão: a URL deve usar HTTPS"
 
 #: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
 msgid "Success Message"
 msgstr "Mensagem de Sucesso"
 
 #: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
 msgid "Redirect"
 msgstr "Redirecionar"
 
 #: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
 msgid "Redirect to"
 msgstr "Redirecionar para"
 
@@ -9039,14 +9067,17 @@ msgstr "Redirecionar para"
 #: assets/build/formEditor.js:172
 #: assets/build/forms.js:172
 #: assets/build/payments.js:172
+#: assets/build/settings.js:172
 msgid "Page"
 msgstr "Página"
 
 #: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
 msgid "Form Confirmation"
 msgstr "Confirmação de Formulário"
 
 #: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
 msgid "Confirmation Type"
 msgstr "Tipo de Confirmação"
 
@@ -9188,7 +9219,7 @@ msgstr "Centro"
 msgid "Right"
 msgstr "Certo"
 
-#: inc/form-submit.php:1149
+#: inc/form-submit.php:1178
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:172
 msgid "Google reCAPTCHA"
@@ -9198,7 +9229,7 @@ msgstr "Google reCAPTCHA"
 msgid "CloudFlare Turnstile"
 msgstr "CloudFlare Turnstile"
 
-#: inc/form-submit.php:1153
+#: inc/form-submit.php:1182
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:172
 msgid "hCaptcha"
@@ -9491,7 +9522,7 @@ msgstr "Chave do Site"
 msgid "Secret Key"
 msgstr "Chave Secreta"
 
-#: inc/form-submit.php:1157
+#: inc/form-submit.php:1186
 #: assets/build/settings.js:172
 msgid "Cloudflare Turnstile"
 msgstr "Cloudflare Turnstile"
@@ -9507,10 +9538,6 @@ msgstr "Ativar Segurança Honeypot"
 #: assets/build/settings.js:172
 msgid "Enable Honeypot Security for better spam protection"
 msgstr "Ative a Segurança Honeypot para melhor proteção contra spam"
-
-#: assets/build/settings.js:172
-msgid "This field cannot be left blank."
-msgstr "Este campo não pode ficar em branco."
 
 #: assets/build/templatePicker.js:172
 msgid "Connect Now"
@@ -10489,18 +10516,18 @@ msgstr "Desbloquear Adicionar Nota"
 msgid "With the SureForms Starter plan, enhance your submitted form entries by adding personalized notes for better clarity and tracking."
 msgstr "Com o plano SureForms Starter, melhore suas entradas de formulário enviadas adicionando notas personalizadas para maior clareza e acompanhamento."
 
-#: inc/form-submit.php:823
+#: inc/form-submit.php:852
 msgid "Email notification passed to the sending server"
 msgstr "Notificação por email enviada para o servidor de envio"
 
 #. translators: Here, %s is the comma separated emails list.
-#: inc/form-submit.php:896
+#: inc/form-submit.php:925
 #, php-format
 msgid "Email notification recipient: %s"
 msgstr "Destinatário da notificação por e-mail: %s"
 
 #. translators: Here, %1$s is the comma separated emails list and %2$s is error report ( if any ).
-#: inc/form-submit.php:913
+#: inc/form-submit.php:942
 #, php-format
 msgid "Email server was unable to send the email notification. Recipient: %1$s. Reason: %2$s"
 msgstr "O servidor de e-mail não conseguiu enviar a notificação por e-mail. Destinatário: %1$s. Motivo: %2$s"
@@ -10671,46 +10698,56 @@ msgid "SUREFORMS PREMIUM FIELDS"
 msgstr "CAMPOS PREMIUM DO SUREFORMS"
 
 #: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
 #, js-format
 msgid "The current 'From Email' address does not match your website domain name (%1$s). This can cause your notification emails to be blocked or marked as spam. Alternately, try using a From Address that matches your website domain (admin@%2$s)."
 msgstr "O endereço de 'Email de Remetente' atual não corresponde ao nome de domínio do seu site (%1$s). Isso pode fazer com que seus e-mails de notificação sejam bloqueados ou marcados como spam. Alternativamente, tente usar um Endereço de Remetente que corresponda ao domínio do seu site (admin@%2$s)."
 
 #: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
 #, js-format
 msgid "The current 'From Email' address does not match your website domain name (%s). This can cause your notification emails to be blocked or marked as spam. "
 msgstr "O endereço de 'Email de Remetente' atual não corresponde ao nome de domínio do seu site (%s). Isso pode fazer com que seus e-mails de notificação sejam bloqueados ou marcados como spam."
 
 #: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
 msgid "We strongly recommend that you install the free "
 msgstr "Recomendamos fortemente que você instale o gratuito"
 
 #: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
 msgid " plugin! The Setup Wizard makes it easy to fix your emails. "
 msgstr "plugin! O Assistente de Configuração facilita a correção dos seus e-mails."
 
 #: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
 #, js-format
 msgid " Alternately, try using a From Address that matches your website domain (admin@%s)."
 msgstr "Alternativamente, tente usar um endereço de remetente que corresponda ao domínio do seu site (admin@%s)."
 
 #: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
 msgid "Please enter a valid email address. Your notifications won't be sent if the field is not filled in correctly."
 msgstr "Por favor, insira um endereço de e-mail válido. Suas notificações não serão enviadas se o campo não for preenchido corretamente."
 
 #: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
 msgid "From Name"
 msgstr "De Nome"
 
 #: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
 msgid "From Email"
 msgstr "De Email"
 
 #: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
 #, js-format
 msgid "The current 'From Email' address may not match your website domain name (%1$s). This can cause your notification emails to be blocked or marked as spam. Alternately, try using a From Address that matches your website domain (admin@%2$s)."
 msgstr "O endereço de 'Email de Remetente' atual pode não corresponder ao nome de domínio do seu site (%1$s). Isso pode fazer com que seus e-mails de notificação sejam bloqueados ou marcados como spam. Alternativamente, tente usar um Endereço de Remetente que corresponda ao domínio do seu site (admin@%2$s)."
 
 #: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
 #, js-format
 msgid "The current 'From Email' address may not match your website domain name (%s). This can cause your notification emails to be blocked or marked as spam. "
 msgstr "O endereço de 'Email de Remetente' atual pode não corresponder ao nome de domínio do seu site (%s). Isso pode fazer com que seus e-mails de notificação sejam bloqueados ou marcados como spam."
@@ -10744,24 +10781,24 @@ msgstr "Selecionar Gradiente"
 msgid "reCAPTCHA"
 msgstr "reCAPTCHA"
 
-#: inc/form-submit.php:1093
+#: inc/form-submit.php:1122
 msgid "Captcha validation failed. No error code provided."
 msgstr "A validação do Captcha falhou. Nenhum código de erro fornecido."
 
-#: inc/form-submit.php:1094
+#: inc/form-submit.php:1123
 msgid "Captcha validation failed."
 msgstr "Falha na validação do captcha."
 
-#: inc/form-submit.php:1161
+#: inc/form-submit.php:1190
 msgid "Unknown Captcha"
 msgstr "Captcha Desconhecido"
 
-#: inc/form-submit.php:1162
+#: inc/form-submit.php:1191
 msgid "Invalid captcha type."
 msgstr "Tipo de captcha inválido."
 
 #. translators: %s is the captcha title.
-#: inc/form-submit.php:1175
+#: inc/form-submit.php:1204
 #, php-format
 msgid "%s verification failed. Please contact your site administrator."
 msgstr "A verificação de %s falhou. Por favor, entre em contato com o administrador do seu site."
@@ -10959,10 +10996,12 @@ msgid "Free"
 msgstr "Grátis"
 
 #: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
 msgid "Entries older than the selected days will be deleted."
 msgstr "As entradas mais antigas que os dias selecionados serão excluídas."
 
 #: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
 msgid "Entries Time Period"
 msgstr "Período de Tempo das Entradas"
 
@@ -10971,6 +11010,7 @@ msgid "Custom CSS Panel"
 msgstr "Painel de CSS Personalizado"
 
 #: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
 msgid "Notifications can use only one From Email so please enter a single address."
 msgstr "As notificações podem usar apenas um único endereço de e-mail de remetente, portanto, insira um único endereço."
 
@@ -10998,14 +11038,17 @@ msgid "Delete"
 msgstr "Excluir"
 
 #: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
 msgid "Select Page to redirect"
 msgstr "Selecione a página para redirecionar"
 
 #: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
 msgid "Search for a page"
 msgstr "Procurar uma página"
 
 #: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
 msgid "Select a page"
 msgstr "Selecione uma página"
 
@@ -11131,6 +11174,7 @@ msgstr "Para ativar o hCAPTCHA, adicione sua chave do site e chave secreta. Conf
 msgid "To enable Cloudflare Turnstile, please add your site key and secret key. Configure these settings within the individual form."
 msgstr "Para ativar o Cloudflare Turnstile, adicione sua chave do site e chave secreta. Configure essas configurações dentro do formulário individual."
 
+#: assets/build/formEditor.js:172
 #: assets/build/settings.js:172
 msgid "Save"
 msgstr "Salvar"
@@ -11689,10 +11733,12 @@ msgid "Form Restriction"
 msgstr "Restrição de Formulário"
 
 #: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
 msgid "Maximum Number of Entries"
 msgstr "Número Máximo de Entradas"
 
 #: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
 msgid "Maximum Entries"
 msgstr "Entradas Máximas"
 
@@ -11710,6 +11756,7 @@ msgid "Click here"
 msgstr "Clique aqui"
 
 #: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
 msgid "Response Description After Maximum Entries"
 msgstr "Descrição da Resposta Após o Máximo de Entradas"
 
@@ -11849,6 +11896,7 @@ msgid "SureForms Video Thumbnail"
 msgstr "Miniatura de Vídeo do SureForms"
 
 #: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
 msgid "Expected format for emails - email@sureforms.com or John Doe <email@sureforms.com>"
 msgstr "Formato esperado para e-mails - email@sureforms.com ou John Doe <email@sureforms.com>"
 
@@ -13378,14 +13426,14 @@ msgid "Your form has been submitted successfully. We'll review your details and 
 msgstr "Seu formulário foi enviado com sucesso. Analisaremos seus dados e entraremos em contato em breve."
 
 #: inc/rest-api.php:758
-#: inc/rest-api.php:898
+#: inc/rest-api.php:901
 msgid "Entry ID is required."
 msgstr "É necessário o ID de entrada."
 
 #: inc/abilities/entries/bulk-get-entries.php:172
 #: inc/abilities/entries/get-entry.php:121
 #: inc/rest-api.php:767
-#: inc/rest-api.php:907
+#: inc/rest-api.php:910
 msgid "Entry not found."
 msgstr "Entrada não encontrada."
 
@@ -13680,6 +13728,7 @@ msgid "Go to Forms"
 msgstr "Ir para Formulários"
 
 #: assets/build/entries.js:172
+#: assets/build/formEditor.js:172
 #: assets/build/forms.js:172
 #: assets/build/payments.js:172
 #: assets/build/settings.js:172
@@ -13687,6 +13736,7 @@ msgid "delete"
 msgstr "excluir"
 
 #: assets/build/entries.js:172
+#: assets/build/formEditor.js:172
 #: assets/build/forms.js:172
 #: assets/build/payments.js:172
 #: assets/build/settings.js:172
@@ -13695,6 +13745,7 @@ msgid "Please type \"%s\" in the input box"
 msgstr "Por favor, digite \"%s\" na caixa de entrada"
 
 #: assets/build/entries.js:172
+#: assets/build/formEditor.js:172
 #: assets/build/forms.js:172
 #: assets/build/payments.js:172
 #: assets/build/settings.js:172
@@ -13703,6 +13754,7 @@ msgid "To confirm, type \"%s\" in the box below:"
 msgstr "Para confirmar, digite \"%s\" na caixa abaixo:"
 
 #: assets/build/entries.js:172
+#: assets/build/formEditor.js:172
 #: assets/build/forms.js:172
 #: assets/build/payments.js:172
 #: assets/build/settings.js:172
@@ -14937,6 +14989,7 @@ msgid "This entry will be moved to trash and can be restored later."
 msgstr "Esta entrada será movida para a lixeira e poderá ser restaurada mais tarde."
 
 #: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
 msgid "Set the total number of submissions allowed for this form."
 msgstr "Defina o número total de envios permitidos para este formulário."
 
@@ -15064,7 +15117,7 @@ msgstr "É necessário o valor do campo de quantidade variável."
 msgid "Payment amount below minimum. Minimum: %1$s, received %2$s."
 msgstr "Valor do pagamento abaixo do mínimo. Mínimo: %1$s, recebido %2$s."
 
-#: inc/rest-api.php:1802
+#: inc/rest-api.php:1805
 msgid " (Copy)"
 msgstr "(Cópia)"
 
@@ -15529,7 +15582,7 @@ msgstr "Pelo menos um campo de formulário é necessário."
 msgid "Failed to generate form fields from the provided data."
 msgstr "Falha ao gerar campos do formulário a partir dos dados fornecidos."
 
-#: inc/abilities/forms/create-form.php:376
+#: inc/abilities/forms/create-form.php:383
 msgid "Failed to create the form."
 msgstr "Falha ao criar o formulário."
 
@@ -15754,10 +15807,11 @@ msgstr "Campo de texto"
 msgid "This form is not yet available. Check back after the scheduled start time."
 msgstr "Este formulário ainda não está disponível. Verifique novamente após o horário de início programado."
 
+#: inc/admin/html-form-detector.php:268
 #: inc/form-submit.php:99
 #: inc/form-submit.php:400
 #: inc/form-submit.php:445
-#: inc/form-submit.php:968
+#: inc/form-submit.php:997
 #: inc/payments/front-end.php:78
 #: inc/payments/front-end.php:263
 #: inc/rest-api.php:98
@@ -15771,9 +15825,9 @@ msgstr "Este formulário ainda não está disponível. Verifique novamente após
 #: inc/rest-api.php:667
 #: inc/rest-api.php:716
 #: inc/rest-api.php:749
-#: inc/rest-api.php:885
-#: inc/rest-api.php:958
-#: inc/rest-api.php:1018
+#: inc/rest-api.php:888
+#: inc/rest-api.php:961
+#: inc/rest-api.php:1021
 #: inc/single-form-settings/form-settings-api.php:88
 msgid "Security verification failed. Please refresh the page and try again."
 msgstr "A verificação de segurança falhou. Por favor, atualize a página e tente novamente."
@@ -15807,19 +15861,19 @@ msgstr "Por favor, verifique o formulário em busca de erros."
 msgid "Your submission was flagged as spam. Please try again."
 msgstr "Sua submissão foi marcada como spam. Por favor, tente novamente."
 
-#: inc/form-submit.php:651
+#: inc/form-submit.php:680
 msgid "Unable to submit form. Please try again."
 msgstr "Não foi possível enviar o formulário. Por favor, tente novamente."
 
-#: inc/form-submit.php:903
+#: inc/form-submit.php:932
 msgid "No SMTP plugin detected. Please configure an SMTP plugin to enable email sending."
 msgstr "Nenhum plugin SMTP detectado. Por favor, configure um plugin SMTP para habilitar o envio de e-mails."
 
-#: inc/form-submit.php:904
+#: inc/form-submit.php:933
 msgid "Email sending failed for an unknown reason."
 msgstr "O envio do e-mail falhou por uma razão desconhecida."
 
-#: inc/form-submit.php:943
+#: inc/form-submit.php:972
 msgid "No emails were sent."
 msgstr "Nenhum e-mail foi enviado."
 
@@ -16076,28 +16130,28 @@ msgstr "Ação inválida. Use \"ler\" ou \"não lida\"."
 msgid "Invalid action. Use \"trash\" or \"restore\"."
 msgstr "Ação inválida. Use \"trash\" ou \"restore\"."
 
-#: inc/rest-api.php:1032
+#: inc/rest-api.php:1035
 msgid "Select at least one form and specify an action."
 msgstr "Selecione pelo menos um formulário e especifique uma ação."
 
-#: inc/rest-api.php:1047
+#: inc/rest-api.php:1050
 msgid "Form not found or is not a valid form type."
 msgstr "Formulário não encontrado ou não é um tipo de formulário válido."
 
-#: inc/rest-api.php:1059
+#: inc/rest-api.php:1062
 msgid "This form is already in the trash."
 msgstr "Este formulário já está na lixeira."
 
-#: inc/rest-api.php:1070
+#: inc/rest-api.php:1073
 msgid "This form is not in the trash."
 msgstr "Este formulário não está na lixeira."
 
-#: inc/rest-api.php:1106
+#: inc/rest-api.php:1109
 msgid "Invalid action."
 msgstr "Ação inválida."
 
 #. translators: %s: action name
-#: inc/rest-api.php:1121
+#: inc/rest-api.php:1124
 #, php-format
 msgid "Failed to %s this form. Please try again."
 msgstr "Falha ao %s este formulário. Por favor, tente novamente."
@@ -16239,10 +16293,6 @@ msgstr "Informações de entrada"
 #: assets/build/entries.js:172
 msgid "Resend Email Notification"
 msgstr "Reenviar Notificação de Email"
-
-#: assets/build/formEditor.js:172
-msgid "When enabled, this form will not store user IP, browser name, or device name in entries."
-msgstr "Quando ativado, este formulário não armazenará o IP do usuário, o nome do navegador ou o nome do dispositivo nas entradas."
 
 #: assets/build/formEditor.js:172
 msgid "Select a spam protection service. Configure API keys in Global Settings before enabling."
@@ -16727,11 +16777,11 @@ msgstr "Entradas do Quiz"
 msgid "New"
 msgstr "Novo"
 
-#: inc/form-submit.php:977
+#: inc/form-submit.php:1006
 msgid "Invalid form."
 msgstr "Formulário inválido."
 
-#: inc/form-submit.php:982
+#: inc/form-submit.php:1011
 msgid "Too many requests. Please try again shortly."
 msgstr "Solicitações demais. Por favor, tente novamente em breve."
 
@@ -16942,10 +16992,6 @@ msgstr "Política de Privacidade"
 #: assets/build/dashboard.js:172
 msgid "Finish"
 msgstr "Terminar"
-
-#: assets/build/formEditor.js:172
-msgid "Choose a spam protection method for this form to prevent unwanted submissions."
-msgstr "Escolha um método de proteção contra spam para este formulário para evitar envios indesejados."
 
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:172
@@ -17252,31 +17298,37 @@ msgstr "Relatórios de Pesquisa"
 
 #: inc/frontend-assets.php:281
 #: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
 msgid "Heading 1"
 msgstr "Título 1"
 
 #: inc/frontend-assets.php:282
 #: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
 msgid "Heading 2"
 msgstr "Título 2"
 
 #: inc/frontend-assets.php:283
 #: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
 msgid "Heading 3"
 msgstr "Título 3"
 
 #: inc/frontend-assets.php:284
 #: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
 msgid "Heading 4"
 msgstr "Título 4"
 
 #: inc/frontend-assets.php:285
 #: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
 msgid "Heading 5"
 msgstr "Título 5"
 
 #: inc/frontend-assets.php:286
 #: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
 msgid "Heading 6"
 msgstr "Título 6"
 
@@ -17511,10 +17563,6 @@ msgid "Help shape the future of SureForms"
 msgstr "Ajude a moldar o futuro do SureForms"
 
 #: assets/build/settings.js:172
-msgid "Share how you use the plugin so we can build features that matter, fix issues faster, and make smarter decisions. "
-msgstr "Compartilhe como você usa o plugin para que possamos desenvolver funcionalidades que importam, corrigir problemas mais rapidamente e tomar decisões mais inteligentes."
-
-#: assets/build/settings.js:172
 msgid "Enable Google Address Autocomplete"
 msgstr "Ativar o preenchimento automático de endereços do Google"
 
@@ -17534,17 +17582,14 @@ msgstr "Mostrar uma pré-visualização de mapa interativo com um pino arrastáv
 msgid "Automatically populate address fields like city, state, and postal code"
 msgstr "Preencher automaticamente campos de endereço como cidade, estado e código postal"
 
-#: assets/build/partialEntriesEmptyState.js:172
 #: assets/build/surveyEmptyState.js:172
 msgid "Turn any form into a survey or poll with one click"
 msgstr "Transforme qualquer formulário em uma pesquisa ou enquete com um clique"
 
-#: assets/build/partialEntriesEmptyState.js:172
 #: assets/build/surveyEmptyState.js:172
 msgid "Visualize responses with bar charts, NPS scores, and real-time results"
 msgstr "Visualize as respostas com gráficos de barras, pontuações NPS e resultados em tempo real"
 
-#: assets/build/partialEntriesEmptyState.js:172
 #: assets/build/surveyEmptyState.js:172
 msgid "Share results via shortcodes, smart tags, or exportable reports"
 msgstr "Compartilhe resultados via shortcodes, smart tags ou relatórios exportáveis"
@@ -17553,12 +17598,10 @@ msgstr "Compartilhe resultados via shortcodes, smart tags ou relatórios export�
 msgid "Survey Reports Placeholder"
 msgstr "Relatório de Pesquisa Placeholder"
 
-#: assets/build/partialEntriesEmptyState.js:172
 #: assets/build/surveyEmptyState.js:172
 msgid "Create Surveys & Polls with SureForms"
 msgstr "Crie Pesquisas e Enquetes com SureForms"
 
-#: assets/build/partialEntriesEmptyState.js:172
 #: assets/build/surveyEmptyState.js:172
 msgid "Collect feedback, run polls, and visualize results. Upgrade to SureForms to unlock survey capabilities:"
 msgstr "Recolha feedback, realize enquetes e visualize resultados. Faça upgrade para o SureForms para desbloquear capacidades de pesquisa:"
@@ -17818,6 +17861,7 @@ msgstr "Entradas Parciais"
 #: inc/global-settings/global-settings-defaults.php:260
 #: inc/global-settings/global-settings.php:425
 #: inc/global-settings/global-settings.php:613
+#: assets/build/settings.js:172
 msgid "This form is now closed as we've received all the entries."
 msgstr "Este formulário está agora fechado, pois recebemos todas as inscrições."
 
@@ -17826,14 +17870,15 @@ msgid "Invalid settings tab."
 msgstr "Aba de configurações inválida."
 
 #: inc/global-settings/global-settings.php:481
+#: assets/build/settings.js:172
 msgid "Thank you for contacting us! We will be in touch with you shortly."
 msgstr "Obrigado por nos contatar! Entraremos em contato com você em breve."
 
-#: inc/rest-api.php:1086
+#: inc/rest-api.php:1089
 msgid "Use the restore action to recover a trashed form before switching it to draft."
 msgstr "Use a ação de restauração para recuperar um formulário descartado antes de alterá-lo para rascunho."
 
-#: inc/rest-api.php:1091
+#: inc/rest-api.php:1094
 msgid "This form is already a draft."
 msgstr "Este formulário já é um rascunho."
 
@@ -17846,6 +17891,7 @@ msgid "Invalid form id."
 msgstr "ID de formulário inválido."
 
 #: inc/single-form-settings/form-settings-api.php:179
+#: assets/build/formEditor.js:172
 msgid "Form settings saved."
 msgstr "Configurações do formulário salvas."
 
@@ -17856,6 +17902,307 @@ msgstr "O limite de entrada depende de entradas armazenadas para contar as submi
 #: assets/build/partialEntriesEmptyState.js:172
 msgid "Partial Entries Placeholder"
 msgstr "Espaço reservado para entradas parciais"
+
+#: inc/abilities/forms/form-field-schema.php:108
+msgid "Placeholder text shown inside the empty input/textarea or as the empty first option in a dropdown."
+msgstr "Texto de espaço reservado mostrado dentro do campo de entrada/área de texto vazia ou como a primeira opção vazia em um menu suspenso."
+
+#: inc/admin/html-form-detector.php:187
+msgid "Array of fields produced by the editor-side parser."
+msgstr "Matriz de campos produzida pelo analisador do lado do editor."
+
+#: inc/admin/html-form-detector.php:204
+msgid "Raw HTML of the source <form>. Required when parser confidence is low so we can hand the markup to the AI middleware."
+msgstr "HTML bruto da fonte <form>. Necessário quando a confiança do analisador é baixa para que possamos entregar a marcação ao middleware de IA."
+
+#: inc/admin/html-form-detector.php:215
+msgid "Best-effort styling descriptor (hex colors) extracted from inline styles on the source <form>."
+msgstr "Descritor de estilo de melhor esforço (cores hexadecimais) extraído de estilos embutidos no <form> de origem."
+
+#: inc/admin/html-form-detector.php:252
+msgid "You are not allowed to convert HTML forms."
+msgstr "Você não tem permissão para converter formulários HTML."
+
+#: inc/admin/html-form-detector.php:283
+#: assets/build/htmlFormDetector.js:2
+msgid "Converted form"
+msgstr "Forma convertida"
+
+#: inc/admin/html-form-detector.php:293
+msgid "The HTML form is too large to convert. Please simplify the markup or build the form manually."
+msgstr "O formulário HTML é muito grande para converter. Por favor, simplifique a marcação ou construa o formulário manualmente."
+
+#: inc/admin/html-form-detector.php:309
+msgid "No fields could be derived from the supplied form."
+msgstr "Não foi possível derivar campos do formulário fornecido."
+
+#: inc/admin/html-form-detector.php:710
+msgid "The SureForms AI service could not process this form. Try again or build the form manually."
+msgstr "O serviço SureForms AI não conseguiu processar este formulário. Tente novamente ou construa o formulário manualmente."
+
+#: inc/admin/html-form-detector.php:723
+#: inc/admin/html-form-detector.php:736
+msgid "The SureForms AI service returned an unusable response. Try again or build the form manually."
+msgstr "O serviço SureForms AI retornou uma resposta inutilizável. Tente novamente ou construa o formulário manualmente."
+
+#: assets/build/blocks.js:172
+msgid "Use a smart tag like {get_input:country}. The first option whose title matches the resolved value will be preselected."
+msgstr "Use uma tag inteligente como {get_input:country}. A primeira opção cujo título corresponder ao valor resolvido será pré-selecionada."
+
+#: assets/build/blocks.js:172
+msgid "Use a smart tag like {get_input:colors} and pass pipe separated values in the URL (for example ?colors=Red|Blue). Every option whose title matches a value will be checked. You can also chain multiple smart tags separated by pipes."
+msgstr "Use uma tag inteligente como {get_input:colors} e passe valores separados por pipe na URL (por exemplo ?colors=Red|Blue). Toda opção cujo título corresponder a um valor será marcada. Você também pode encadear várias tags inteligentes separadas por pipes."
+
+#: assets/build/blocks.js:172
+msgid "Use a smart tag like {get_input:colors} and pass pipe separated values in the URL (for example ?colors=Red|Blue). Every option whose label matches a value will be preselected. You can also chain multiple smart tags separated by pipes."
+msgstr "Use uma tag inteligente como {get_input:colors} e passe valores separados por pipe na URL (por exemplo ?colors=Red|Blue). Toda opção cujo rótulo corresponder a um valor será pré-selecionada. Você também pode encadear várias tags inteligentes separadas por pipes."
+
+#: assets/build/blocks.js:172
+msgid "Use a smart tag like {get_input:country}. The first option whose label matches the resolved value will be preselected."
+msgstr "Use uma tag inteligente como {get_input:country}. A primeira opção cujo rótulo corresponder ao valor resolvido será pré-selecionada."
+
+#: assets/build/formEditor.js:172
+msgid "Settings saved, but post attributes (password / title / content) failed to update. Retry to persist them."
+msgstr "Configurações salvas, mas os atributos da postagem (senha / título / conteúdo) não foram atualizados. Tente novamente para persistir."
+
+#: assets/build/formEditor.js:172
+msgid "Failed to save form settings."
+msgstr "Falha ao salvar as configurações do formulário."
+
+#: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
+msgid "Saving…"
+msgstr "Salvando…"
+
+#: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
+msgid "When enabled this form will not store User IP, Browser Name and the Device Name in the Entries."
+msgstr "Quando ativado, este formulário não armazenará o IP do usuário, o nome do navegador e o nome do dispositivo nas entradas."
+
+#: assets/build/formEditor.js:172
+msgid "Failed to save. Please try again."
+msgstr "Falha ao salvar. Por favor, tente novamente."
+
+#: assets/build/formEditor.js:172
+msgid "reCAPTCHA API keys for the selected version are not configured. Set them in Global Settings."
+msgstr "As chaves da API reCAPTCHA para a versão selecionada não estão configuradas. Defina-as nas Configurações Globais."
+
+#: assets/build/formEditor.js:172
+msgid "Please select a reCAPTCHA version."
+msgstr "Por favor, selecione uma versão do reCAPTCHA."
+
+#: assets/build/formEditor.js:172
+msgid "hCaptcha API keys are not configured. Set them in Global Settings."
+msgstr "As chaves da API do hCaptcha não estão configuradas. Defina-as nas Configurações Globais."
+
+#: assets/build/formEditor.js:172
+msgid "Cloudflare Turnstile API keys are not configured. Set them in Global Settings."
+msgstr "As chaves da API do Cloudflare Turnstile não estão configuradas. Defina-as nas Configurações Globais."
+
+#: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
+msgid "Form data"
+msgstr "Dados do formulário"
+
+#: assets/build/formEditor.js:172
+msgid "Some fields need attention"
+msgstr "Alguns campos precisam de atenção"
+
+#: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
+msgid "Unsaved changes"
+msgstr "Alterações não salvas"
+
+#: assets/build/formEditor.js:172
+msgid "A recipient email address and subject line are required before this notification can be saved. Fix the highlighted fields, or discard your changes to go back."
+msgstr "Um endereço de e-mail do destinatário e uma linha de assunto são necessários antes que esta notificação possa ser salva. Corrija os campos destacados ou descarte suas alterações para voltar."
+
+#: assets/build/formEditor.js:172
+msgid "You have unsaved changes for this notification. Discard them to go back, or stay to save them."
+msgstr "Você tem alterações não salvas para esta notificação. Descarte-as para voltar ou permaneça para salvá-las."
+
+#: assets/build/formEditor.js:172
+msgid "Discard & go back"
+msgstr "Descartar e voltar"
+
+#: assets/build/formEditor.js:172
+msgid "Stay & fix"
+msgstr "Fique e conserte"
+
+#: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
+msgid "Keep editing"
+msgstr "Continue editando"
+
+#: assets/build/formEditor.js:172
+msgid "Please provide a recipient email address."
+msgstr "Por favor, forneça um endereço de e-mail do destinatário."
+
+#: assets/build/formEditor.js:172
+msgid "Please provide a subject line."
+msgstr "Por favor, forneça uma linha de assunto."
+
+#: assets/build/formEditor.js:172
+msgid "Please provide a custom URL."
+msgstr "Por favor, forneça um URL personalizado."
+
+#: assets/build/formEditor.js:172
+msgid "You have unsaved changes. Discard them to continue, or stay to save your changes."
+msgstr "Você tem alterações não salvas. Descarte-as para continuar ou permaneça para salvar suas alterações."
+
+#: assets/build/formEditor.js:172
+msgid "Discard & continue"
+msgstr "Descartar e continuar"
+
+#: assets/build/forms.js:172
+msgid "Switch to Draft"
+msgstr "Alternar para Rascunho"
+
+#: assets/build/forms.js:172
+msgid "%d form switched to draft."
+msgid_plural "%d forms switched to draft."
+msgstr[0] "%d formulário alterado para rascunho."
+msgstr[1] ""
+
+#: assets/build/forms.js:172
+msgid "Switch form to draft?"
+msgid_plural "Switch forms to draft?"
+msgstr[0] "Alterar formulário para rascunho?"
+msgstr[1] ""
+
+#: assets/build/forms.js:172
+msgid "%d form will be switched to draft and will no longer be publicly accessible."
+msgid_plural "%d forms will be switched to draft and will no longer be publicly accessible."
+msgstr[0] "%d formulário será alterado para rascunho e não estará mais acessível ao público."
+msgstr[1] ""
+
+#: assets/build/forms.js:172
+msgid "This form will be switched to draft and will no longer be publicly accessible."
+msgstr "Este formulário será alterado para rascunho e não estará mais acessível ao público."
+
+#: assets/build/htmlFormDetector.js:2
+msgid "SureForms could not authenticate this request. Please reload the editor and try again."
+msgstr "SureForms não conseguiu autenticar esta solicitação. Por favor, recarregue o editor e tente novamente."
+
+#: assets/build/htmlFormDetector.js:2
+msgid "%s — Converted form"
+msgstr "%s — Forma convertida"
+
+#: assets/build/htmlFormDetector.js:2
+msgid "Form converted to SureForms using AI. Review the new form for any tweaks."
+msgstr "Formulário convertido para SureForms usando IA. Revise o novo formulário para quaisquer ajustes."
+
+#: assets/build/htmlFormDetector.js:2
+msgid "Form converted to SureForms."
+msgstr "Formulário convertido para SureForms."
+
+#: assets/build/htmlFormDetector.js:2
+msgid "You do not have permission to convert this form."
+msgstr "Você não tem permissão para converter este formulário."
+
+#: assets/build/htmlFormDetector.js:2
+msgid "This form is too large to convert. Try simplifying the markup or building the form manually."
+msgstr "Este formulário é muito grande para converter. Tente simplificar a marcação ou construir o formulário manualmente."
+
+#: assets/build/htmlFormDetector.js:2
+msgid "SureForms could not derive any fields from this form."
+msgstr "O SureForms não conseguiu derivar nenhum campo deste formulário."
+
+#: assets/build/htmlFormDetector.js:2
+msgid "The SureForms AI service could not process this form. Please try again or build the form manually."
+msgstr "O serviço SureForms AI não conseguiu processar este formulário. Por favor, tente novamente ou construa o formulário manualmente."
+
+#: assets/build/htmlFormDetector.js:2
+msgid "SureForms received an unexpected response. Please try again."
+msgstr "SureForms recebeu uma resposta inesperada. Por favor, tente novamente."
+
+#: assets/build/htmlFormDetector.js:2
+msgid "Could not convert this form to SureForms. Please try again."
+msgstr "Não foi possível converter este formulário para SureForms. Por favor, tente novamente."
+
+#: assets/build/htmlFormDetector.js:2
+msgid "Converting…"
+msgstr "A converter…"
+
+#: assets/build/htmlFormDetector.js:2
+msgid "Convert to SureForms"
+msgstr "Converter para SureForms"
+
+#: assets/build/partialEntriesEmptyState.js:172
+msgid "Capture in-progress form data the moment visitors stop typing — no submit required"
+msgstr "Capture os dados do formulário em andamento no momento em que os visitantes pararem de digitar — sem necessidade de envio"
+
+#: assets/build/partialEntriesEmptyState.js:172
+msgid "Recover abandoned submissions and follow up with prospects you would otherwise lose"
+msgstr "Recupere envios abandonados e faça o acompanhamento com potenciais clientes que você perderia de outra forma"
+
+#: assets/build/partialEntriesEmptyState.js:172
+msgid "Let visitors pick up where they left off with secure, shareable resume links"
+msgstr "Permita que os visitantes retomem de onde pararam com links de currículo seguros e compartilháveis"
+
+#: assets/build/partialEntriesEmptyState.js:172
+msgid "Stop Losing Leads to Abandoned Forms"
+msgstr "Pare de perder leads para formulários abandonados"
+
+#: assets/build/partialEntriesEmptyState.js:172
+msgid "See what visitors typed before they walked away. Upgrade to SureForms Premium to unlock Partial Entries:"
+msgstr "Veja o que os visitantes digitaram antes de saírem. Faça upgrade para o SureForms Premium para desbloquear Entradas Parciais:"
+
+#: assets/build/settings.js:172
+msgid "Global Defaults"
+msgstr "Configurações Globais"
+
+#: assets/build/settings.js:172
+msgid "Form Restrictions"
+msgstr "Restrições de Formulário"
+
+#: assets/build/settings.js:172
+msgid "Configure default settings that apply to newly created forms."
+msgstr "Configurar as configurações padrão que se aplicam a formulários recém-criados."
+
+#: assets/build/settings.js:172
+msgid "Collect non-sensitive information from your website, such as the PHP version and features used, to help us fix bugs faster, make smarter decisions, and build features that actually matter to you. "
+msgstr "Recolha informações não sensíveis do seu site, como a versão do PHP e as funcionalidades utilizadas, para nos ajudar a corrigir erros mais rapidamente, tomar decisões mais inteligentes e desenvolver funcionalidades que realmente importam para você. "
+
+#: assets/build/settings.js:172
+msgid "Failed to load pages. Please refresh and try again."
+msgstr "Falha ao carregar as páginas. Por favor, atualize e tente novamente."
+
+#: assets/build/settings.js:172
+msgid "Failed to load settings. Please refresh and try again."
+msgstr "Falha ao carregar as configurações. Por favor, atualize e tente novamente."
+
+#: assets/build/settings.js:172
+msgid "Form Validation fields cannot be left blank."
+msgstr "Os campos de validação de formulário não podem ficar em branco."
+
+#: assets/build/settings.js:172
+msgid "Recipient email is required when email summaries are enabled."
+msgstr "O e-mail do destinatário é necessário quando os resumos por e-mail estão ativados."
+
+#: assets/build/settings.js:172
+msgid "Please enter a valid recipient email."
+msgstr "Por favor, insira um email de destinatário válido."
+
+#: assets/build/settings.js:172
+msgid "Settings saved."
+msgstr "Configurações salvas."
+
+#: assets/build/settings.js:172
+msgid "Failed to save settings."
+msgstr "Falha ao salvar as configurações."
+
+#: assets/build/settings.js:172
+msgid "Some settings failed to save. Please retry."
+msgstr "Algumas configurações não foram salvas. Por favor, tente novamente."
+
+#: assets/build/settings.js:172
+msgid "Some fields have unsaved changes. Discard them to continue, or stay to save your edits."
+msgstr "Alguns campos têm alterações não salvas. Descarte-as para continuar ou permaneça para salvar suas edições."
+
+#: assets/build/settings.js:172
+msgid "Discard & switch"
+msgstr "Descartar e mudar"
 
 #: inc/post-types.php:226
 msgctxt "post type general name"
@@ -18278,6 +18625,7 @@ msgstr "conta"
 
 #: inc/frontend-assets.php:280
 #: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
 msgctxt "Quill heading picker: default paragraph style"
 msgid "Normal"
 msgstr "Normal"
