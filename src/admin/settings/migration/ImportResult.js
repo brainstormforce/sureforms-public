@@ -72,7 +72,7 @@ const ImportResult = ( { result, onRestart } ) => {
 							>
 								<Text size={ 14 }>{ item.name }</Text>
 								<Button
-									as="a"
+									tag="a"
 									href={ item.edit_url }
 									target="_blank"
 									rel="noopener noreferrer"
