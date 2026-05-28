@@ -702,6 +702,167 @@ class Test_Wpforms_Importer extends TestCase {
 	 *
 	 * @return void
 	 */
+	/**
+	 * build_block_args carries the format / date_format / time_format keys
+	 * for `date-time` fields so Pro's `date_time_picker` emitter can route
+	 * correctly. Probe by registering a tiny in-test subscriber and
+	 * asserting the args it receives.
+	 *
+	 * @return void
+	 */
+	public function test_build_block_args_carries_date_time_format() {
+		$captured = [];
+		add_filter(
+			'srfm_migrator_block_template',
+			static function ( $markup, $method, $args ) use ( &$captured ) {
+				if ( 'date_time_picker' === $method ) {
+					$captured = $args;
+					return '<!-- wp:srfm/time-picker /-->';
+				}
+				return $markup;
+			},
+			10,
+			3
+		);
+		add_filter(
+			'srfm_migrator_tag_to_template_map',
+			static function ( $map, $key ) {
+				if ( 'wpforms' === $key ) {
+					$map['date-time'] = 'date_time_picker';
+				}
+				return $map;
+			},
+			10,
+			2
+		);
+		$id = $this->make_wpforms(
+			$this->form_data_with(
+				[ 'id' => 1, 'type' => 'date-time', 'label' => 'When', 'format' => 'time', 'date_format' => 'd/m/Y' ]
+			)
+		);
+		$this->make_importer()->build_form_content_public(
+			[ 'id' => 1, 'name' => 'F', 'post_content' => get_post_field( 'post_content', $id ) ]
+		);
+		$this->assertSame( 'time', $captured['format'] );
+		$this->assertSame( 'd/m/Y', $captured['date_format'] );
+	}
+
+	/**
+	 * build_block_args expands a comma-separated WPForms file-upload
+	 * `extensions` string into an `allowed_formats` array and forwards
+	 * max_size / max_file_number as numeric attributes.
+	 *
+	 * @return void
+	 */
+	public function test_build_block_args_translates_file_upload_constraints() {
+		$captured = [];
+		add_filter(
+			'srfm_migrator_block_template',
+			static function ( $markup, $method, $args ) use ( &$captured ) {
+				if ( 'upload' === $method ) {
+					$captured = $args;
+					return '<!-- wp:srfm/upload /-->';
+				}
+				return $markup;
+			},
+			10,
+			3
+		);
+		add_filter(
+			'srfm_migrator_tag_to_template_map',
+			static function ( $map, $key ) {
+				if ( 'wpforms' === $key ) {
+					$map['file-upload'] = 'upload';
+				}
+				return $map;
+			},
+			10,
+			2
+		);
+		$id = $this->make_wpforms(
+			$this->form_data_with(
+				[ 'id' => 1, 'type' => 'file-upload', 'label' => 'Resume', 'extensions' => 'pdf, docx, txt', 'max_size' => '5', 'max_file_number' => 3 ]
+			)
+		);
+		$this->make_importer()->build_form_content_public(
+			[ 'id' => 1, 'name' => 'F', 'post_content' => get_post_field( 'post_content', $id ) ]
+		);
+		$this->assertSame( [ 'pdf', 'docx', 'txt' ], $captured['allowed_formats'] );
+		$this->assertSame( 5, $captured['file_size_limit'] );
+		$this->assertSame( 3, $captured['max_files'] );
+		$this->assertTrue( $captured['multiple'] );
+	}
+
+	/**
+	 * translate_repeater_field assembles children markup recursively and
+	 * passes it through the `repeater_container` filter so Pro can wrap
+	 * with srfm/repeater innerBlocks. When no subscriber answers, the
+	 * children fall back to top-level so submission data isn't lost.
+	 *
+	 * @return void
+	 */
+	public function test_translate_repeater_field_recurses_into_children() {
+		add_filter(
+			'srfm_migrator_block_template',
+			static function ( $markup, $method, $args ) {
+				if ( 'repeater_container' === $method ) {
+					return "<!-- wp:srfm/repeater -->\n" . ( $args['children'] ?? '' ) . "<!-- /wp:srfm/repeater -->\n";
+				}
+				return $markup;
+			},
+			10,
+			3
+		);
+		$id = $this->make_wpforms(
+			$this->form_data_with(
+				[
+					'id'       => 20,
+					'type'     => 'repeater',
+					'label'    => 'Items',
+					'min_rows' => 1,
+					'max_rows' => 5,
+					'columns'  => [
+						[ 'fields' => [
+							[ 'id' => 21, 'type' => 'text', 'label' => 'Item name' ],
+							[ 'id' => 22, 'type' => 'number', 'label' => 'Quantity' ],
+						] ],
+					],
+				]
+			)
+		);
+		$markup = $this->make_importer()->build_form_content_public(
+			[ 'id' => 1, 'name' => 'F', 'post_content' => get_post_field( 'post_content', $id ) ]
+		);
+		$this->assertStringContainsString( '<!-- wp:srfm/repeater', $markup );
+		$this->assertStringContainsString( '<!-- /wp:srfm/repeater', $markup );
+		$this->assertStringContainsString( '"label":"Item name"', $markup );
+		$this->assertStringContainsString( '"label":"Quantity"', $markup );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function test_translate_repeater_field_falls_back_to_inline_children_without_subscriber() {
+		$id = $this->make_wpforms(
+			$this->form_data_with(
+				[
+					'id'      => 20,
+					'type'    => 'repeater',
+					'label'   => 'Items',
+					'columns' => [
+						[ 'fields' => [ [ 'id' => 21, 'type' => 'text', 'label' => 'Item name' ] ] ],
+					],
+				]
+			)
+		);
+		$markup = $this->make_importer()->build_form_content_public(
+			[ 'id' => 1, 'name' => 'F', 'post_content' => get_post_field( 'post_content', $id ) ]
+		);
+		// No subscriber → no repeater wrapper, children appear inline.
+		$this->assertStringNotContainsString( 'wp:srfm/repeater', $markup );
+		$this->assertStringContainsString( '"label":"Item name"', $markup );
+	}
+
 	public function test_import_forms_creates_sureforms_post() {
 		$form_data = [
 			'id'       => 1,

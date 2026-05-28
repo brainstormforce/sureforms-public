@@ -338,6 +338,10 @@ class Wpforms_Importer extends Base_Migrator {
 			return $this->translate_layout_field( $field );
 		}
 
+		if ( 'repeater' === $type ) {
+			return $this->translate_repeater_field( $field );
+		}
+
 		// captcha is rendered form-level in SureForms, never as a block.
 		if ( 0 === strpos( $type, 'captcha_' ) || 'captcha' === $type ) {
 			return '';
@@ -451,6 +455,74 @@ class Wpforms_Importer extends Base_Migrator {
 				// emit the primary block here; the importer notes the loss
 				// of confirm-pair semantics in build_form_content().
 				break;
+			case 'date-time':
+				$args['format']      = $this->str_arg( $field, 'format', 'date' );
+				$args['date_format'] = $this->str_arg( $field, 'date_format', 'mm/dd/yyyy' );
+				$args['time_format'] = $this->str_arg( $field, 'time_format' );
+				break;
+			case 'rating':
+				$args['icon']  = $this->str_arg( $field, 'icon', 'star' );
+				$args['scale'] = isset( $field['scale'] ) && is_numeric( $field['scale'] ) ? (int) $field['scale'] : 5;
+				break;
+			case 'net_promoter_score':
+				$args['low_label']  = $this->str_arg( $field, 'nps_low_label' );
+				$args['high_label'] = $this->str_arg( $field, 'nps_high_label' );
+				break;
+			case 'signature':
+				$args['ink_color'] = $this->str_arg( $field, 'ink_color' );
+				break;
+			case 'html':
+				$args['content'] = $this->str_arg( $field, 'code' );
+				break;
+			case 'content':
+				$args['content'] = $this->str_arg( $field, 'content' );
+				break;
+			case 'divider':
+				// label + help are already in $args; nothing extra to carry.
+				break;
+			case 'file-upload':
+				$exts = $this->str_arg( $field, 'extensions' );
+				if ( '' !== $exts ) {
+					$args['allowed_formats'] = array_values(
+						array_filter(
+							array_map( 'trim', explode( ',', $exts ) ),
+							static function ( $v ) {
+								return '' !== $v;
+							}
+						)
+					);
+				}
+				if ( isset( $field['max_size'] ) && is_numeric( $field['max_size'] ) ) {
+					$args['file_size_limit'] = (int) $field['max_size'];
+				}
+				if ( isset( $field['max_file_number'] ) && is_numeric( $field['max_file_number'] ) ) {
+					$args['max_files'] = (int) $field['max_file_number'];
+				}
+				$args['multiple'] = isset( $field['max_file_number'] ) && is_numeric( $field['max_file_number'] ) && (int) $field['max_file_number'] > 1;
+				break;
+			case 'hidden':
+			case 'internal-information':
+				$args['default_value'] = $this->str_arg( $field, 'default_value' );
+				if ( '' === $args['default_value'] ) {
+					$args['default_value'] = $this->str_arg( $field, 'code' );
+				}
+				break;
+			case 'phone':
+				// WPForms phone format `smart` / `us` / `international` — SureForms
+				// phone has its own intl/US toggle; we carry the raw value through
+				// and let the Pro emitter (or default) interpret.
+				$args['format'] = $this->str_arg( $field, 'format', 'smart' );
+				break;
+			case 'address':
+				$args['format'] = $this->str_arg( $field, 'format', 'us' );
+				break;
+			case 'pagebreak':
+				// Title precedes the page-break block heading; map it onto label.
+				$title = $this->str_arg( $field, 'title' );
+				if ( '' !== $title ) {
+					$args['label'] = $title;
+				}
+				break;
 		}
 
 		return $args;
@@ -532,6 +604,54 @@ class Wpforms_Importer extends Base_Migrator {
 		}
 		$out .= "\n</div>\n<!-- /wp:columns -->\n";
 		return $out;
+	}
+
+	/**
+	 * Translate WPForms' Repeater container — recurse into each column's
+	 * child fields, assemble their markup, then hand it to the Pro
+	 * `repeater_container` emitter as `children` so it can wrap with
+	 * Gutenberg innerBlocks markers.
+	 *
+	 * When Pro is not active, the dispatch falls through to the
+	 * `srfm_migrator_block_template` filter and (since no subscriber
+	 * answers) the field is flagged as unsupported — the children are
+	 * still tracked so the warning is meaningful.
+	 *
+	 * @since x.x.x
+	 *
+	 * @param array<string,mixed> $field WPForms repeater field.
+	 * @return string
+	 */
+	private function translate_repeater_field( array $field ) {
+		$columns  = isset( $field['columns'] ) && is_array( $field['columns'] ) ? $field['columns'] : [];
+		$children = '';
+		foreach ( $columns as $column ) {
+			if ( ! is_array( $column ) ) {
+				continue;
+			}
+			$child_fields = isset( $column['fields'] ) && is_array( $column['fields'] ) ? $column['fields'] : [];
+			foreach ( $child_fields as $child ) {
+				if ( is_array( $child ) ) {
+					$children .= $this->translate_field( $child );
+				}
+			}
+		}
+
+		$args = [
+			'label'    => $this->str_arg( $field, 'label', 'Repeater Field' ),
+			'help'     => $this->str_arg( $field, 'description' ),
+			'min_rows' => isset( $field['min_rows'] ) && is_numeric( $field['min_rows'] ) ? (int) $field['min_rows'] : null,
+			'max_rows' => isset( $field['max_rows'] ) && is_numeric( $field['max_rows'] ) ? (int) $field['max_rows'] : null,
+			'slug'     => $this->reserve_slug( $this->str_arg( $field, 'label', 'repeater' ) ),
+			'children' => $children,
+		];
+
+		$markup = (string) apply_filters( 'srfm_migrator_block_template', '', 'repeater_container', $args, $this->key );
+		if ( '' === $markup ) {
+			$this->note_unsupported( $this->str_arg( $field, 'label', 'Repeater' ) );
+			return $children; // Fall back to inlining the children at top level so data isn't lost.
+		}
+		return $markup;
 	}
 
 	/**
