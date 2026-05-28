@@ -62,6 +62,15 @@ abstract class Base_Migrator {
 	protected $unsupported_fields = [];
 
 	/**
+	 * Slugs already used in the current form, for collision avoidance in
+	 * `reserve_slug()`. Reset per form by subclasses before calling
+	 * `build_form_content()`.
+	 *
+	 * @var array<string,int>
+	 */
+	protected $used_slugs = [];
+
+	/**
 	 * List forms in the source plugin, formatted for the picker UI.
 	 *
 	 * @since x.x.x
@@ -335,6 +344,100 @@ abstract class Base_Migrator {
 	protected function note_unsupported( $label ) {
 		$label                      = trim( (string) $label );
 		$this->unsupported_fields[] = '' === $label ? __( '(unnamed field)', 'sureforms' ) : $label;
+	}
+
+	/**
+	 * Reserve a unique slug for the current form. Generates a slug from the
+	 * seed via `sanitize_title()`. If the slug is already taken in this form,
+	 * appends `-2`, `-3`, … until a free slot is found. Tracks the slug in
+	 * `$this->used_slugs` so subsequent calls within the same form see the
+	 * collision.
+	 *
+	 * Subclasses must reset `$this->used_slugs = []` at the start of each
+	 * `build_form_content()` call.
+	 *
+	 * @since x.x.x
+	 *
+	 * @param string $seed Slug seed (source field name or label).
+	 * @return string Deduped slug.
+	 */
+	protected function reserve_slug( $seed ) {
+		$base = sanitize_title( (string) $seed );
+		if ( '' === $base ) {
+			$base = 'field';
+		}
+		$slug = $base;
+		$n    = 2;
+		while ( isset( $this->used_slugs[ $slug ] ) ) {
+			$slug = $base . '-' . $n;
+			++$n;
+		}
+		$this->used_slugs[ $slug ] = 1;
+		return $slug;
+	}
+
+	/**
+	 * Default confirmation HTML used when the source plugin doesn't ship a
+	 * usable thank-you message. Centered heading + body, neutral copy.
+	 *
+	 * @since x.x.x
+	 *
+	 * @return string Confirmation HTML.
+	 */
+	protected function default_confirmation_message() {
+		$heading = esc_html__( 'Thank you', 'sureforms' );
+		$body    = esc_html__(
+			"Your form has been submitted successfully. We'll review your details and get back to you soon.",
+			'sureforms'
+		);
+		return sprintf(
+			'<h2 style="text-align: center;">%1$s</h2><p style="text-align: center;">%2$s</p>',
+			$heading,
+			$body
+		);
+	}
+
+	/**
+	 * Static dispatch from a template-method name to a `Block_Templates`
+	 * emitter. Returns an empty string when the method is unknown — the
+	 * caller (after applying the `srfm_migrator_block_template` filter) is
+	 * responsible for flagging unsupported fields.
+	 *
+	 * Shared by every importer so add-on subscribers (e.g. SureForms Pro)
+	 * can register new emitter names without each importer re-implementing
+	 * the dispatch switch.
+	 *
+	 * @since x.x.x
+	 *
+	 * @param string              $method Template method name.
+	 * @param array<string,mixed> $args   Block args.
+	 * @return string Block markup, or `''` when unknown.
+	 */
+	protected function dispatch_template( $method, array $args ) {
+		switch ( $method ) {
+			case 'input':
+				return Block_Templates::input( $args );
+			case 'email':
+				return Block_Templates::email( $args );
+			case 'url':
+				return Block_Templates::url( $args );
+			case 'phone':
+				return Block_Templates::phone( $args );
+			case 'number':
+				return Block_Templates::number( $args );
+			case 'textarea':
+				return Block_Templates::textarea( $args );
+			case 'dropdown':
+				return Block_Templates::dropdown( $args );
+			case 'multi_choice':
+				return Block_Templates::multi_choice( $args );
+			case 'checkbox':
+				return Block_Templates::checkbox( $args );
+			case 'gdpr':
+				return Block_Templates::gdpr( $args );
+			default:
+				return '';
+		}
 	}
 
 	/**

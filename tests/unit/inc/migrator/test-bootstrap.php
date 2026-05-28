@@ -73,6 +73,11 @@ class Test_Bootstrap extends TestCase {
 		$data = $response->get_data();
 		$this->assertArrayHasKey( 'sources', $data );
 		$this->assertIsArray( $data['sources'] );
+		// Both CF7 and WPForms importers are registered; when the underlying
+		// plugins are active, both appear in the source list.
+		$keys = array_column( $data['sources'], 'key' );
+		$this->assertContains( 'cf7', $keys );
+		$this->assertContains( 'wpforms', $keys );
 	}
 
 	/**
