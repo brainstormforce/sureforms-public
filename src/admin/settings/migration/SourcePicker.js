@@ -10,8 +10,8 @@
  */
 
 import { __, sprintf, _n } from '@wordpress/i18n';
-import { Badge, Button, Container, Table, Text } from '@bsf/force-ui';
-import { ArrowRight, CheckCircle2 } from 'lucide-react';
+import { Button, Container, Table, Text } from '@bsf/force-ui';
+import { ArrowRight } from 'lucide-react';
 
 const SourcePicker = ( { sources, onSelect } ) => {
 	// Show only sources available on this site (an active plugin we support).
@@ -31,8 +31,7 @@ const SourcePicker = ( { sources, onSelect } ) => {
 	return (
 		<Table className="rounded-md">
 			<Table.Head>
-				<Table.HeadCell>{ __( 'Source', 'sureforms' ) }</Table.HeadCell>
-				<Table.HeadCell>{ __( 'Status', 'sureforms' ) }</Table.HeadCell>
+				<Table.HeadCell>{ __( 'Plugin', 'sureforms' ) }</Table.HeadCell>
 				<Table.HeadCell>{ __( 'Forms', 'sureforms' ) }</Table.HeadCell>
 				<Table.HeadCell className="text-right">
 					<span className="sr-only">
@@ -50,14 +49,6 @@ const SourcePicker = ( { sources, onSelect } ) => {
 								<Text size={ 14 } weight={ 500 }>
 									{ source.title }
 								</Text>
-							</Table.Cell>
-							<Table.Cell>
-								<Badge
-									variant="green"
-									size="xs"
-									icon={ <CheckCircle2 className="size-3" /> }
-									label={ __( 'Active', 'sureforms' ) }
-								/>
 							</Table.Cell>
 							<Table.Cell>
 								<Text size={ 14 } color="secondary">
