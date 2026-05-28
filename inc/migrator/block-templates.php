@@ -26,7 +26,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since x.x.x
  */
 class Block_Templates {
-
 	/**
 	 * Build a srfm/input block (text / email-as-text / password / date / hidden).
 	 *

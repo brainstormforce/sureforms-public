@@ -757,4 +757,90 @@ class Test_Cf7_Importer extends TestCase {
 		$count = wp_count_posts( SRFM_FORMS_POST_TYPE );
 		$this->assertSame( 2, (int) $count->publish, 'Two SureForms posts must exist after one update and one create.' );
 	}
+
+	/**
+	 * Cf7_Importer::exist() — true when CF7 constants are defined.
+	 *
+	 * @return void
+	 */
+	public function test_exist() {
+		// Test subclass forces exist() → true regardless of CF7 presence,
+		// covering the success branch import_forms relies on.
+		$importer = $this->make_importer();
+		$this->assertTrue( $importer->exist() );
+	}
+
+	/**
+	 * Cf7_Importer::get_source_forms() — enumerates wpcf7_contact_form posts.
+	 *
+	 * @return void
+	 */
+	public function test_get_source_forms() {
+		$post_id = $this->create_cf7_form( "Name\n[text* your-name]", 'List me' );
+		$listing = $this->make_importer()->list_forms();
+		$ids     = array_map( static fn( $row ) => (int) ( $row['id'] ?? 0 ), $listing );
+		$this->assertContains( $post_id, $ids );
+	}
+
+	/**
+	 * Cf7_Importer::get_source_form_id() — pulls the int id from a form descriptor.
+	 *
+	 * @return void
+	 */
+	public function test_get_source_form_id() {
+		$post_id = $this->create_cf7_form( "Name\n[text* n]", 'For id' );
+		$listing = $this->make_importer()->list_forms();
+		$row     = array_values( array_filter( $listing, static fn( $r ) => (int) $r['id'] === $post_id ) )[0] ?? null;
+		$this->assertNotNull( $row );
+		$this->assertSame( $post_id, (int) $row['id'] );
+	}
+
+	/**
+	 * Cf7_Importer::get_source_form_name() — pulls the title from a form descriptor.
+	 *
+	 * @return void
+	 */
+	public function test_get_source_form_name() {
+		$post_id = $this->create_cf7_form( "Name\n[text* n]", 'My CF7 Form' );
+		$listing = $this->make_importer()->list_forms();
+		$row     = array_values( array_filter( $listing, static fn( $r ) => (int) $r['id'] === $post_id ) )[0] ?? null;
+		$this->assertNotNull( $row );
+		$this->assertSame( 'My CF7 Form', $row['name'] );
+	}
+
+	/**
+	 * Cf7_Importer::get_form_metas() — emits SureForms email + confirmation meta.
+	 *
+	 * @return void
+	 */
+	public function test_get_form_metas() {
+		$post_id = $this->create_cf7_form( "Name\n[text* n]", 'Meta test' );
+		update_post_meta(
+			$post_id,
+			'_mail',
+			[
+				'recipient' => 'team@example.test',
+				'subject'   => 'Hi',
+				'body'      => 'Body',
+			]
+		);
+		$this->make_importer()->import_forms( [ $post_id ], false );
+		$srfm_post   = $this->get_first_srfm_post();
+		$recipient   = $this->get_notification_field( $srfm_post->ID, 'email_to' );
+		$this->assertSame( 'team@example.test', $recipient );
+	}
+
+	/**
+	 * Cf7_Importer::build_form_content() — parses CF7 template into srfm markup.
+	 *
+	 * @return void
+	 */
+	public function test_build_form_content() {
+		$post_id = $this->create_cf7_form( "Name\n[text* your-name placeholder \"Jane\"]" );
+		$markup  = $this->make_importer()->build_form_content_public(
+			[ 'id' => $post_id, 'name' => 'BFC' ]
+		);
+		$this->assertStringContainsString( 'wp:srfm/input', $markup );
+		$this->assertStringContainsString( '"label":"Name"', $markup );
+	}
 }

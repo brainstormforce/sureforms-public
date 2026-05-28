@@ -216,51 +216,6 @@ class Bootstrap {
 	}
 
 	/**
-	 * Resolve a source key into an importer instance.
-	 *
-	 * @since x.x.x
-	 *
-	 * @param string $key Source key.
-	 * @return Base_Migrator|null
-	 */
-	private function get_importer( $key ) {
-		$key = sanitize_key( (string) $key );
-		if ( ! isset( $this->importer_classes[ $key ] ) ) {
-			return null;
-		}
-		$class = $this->importer_classes[ $key ];
-		if ( ! class_exists( $class ) ) {
-			return null;
-		}
-		$instance = new $class();
-		return $instance instanceof Base_Migrator ? $instance : null;
-	}
-
-	/**
-	 * Verify the WordPress REST cookie nonce.
-	 *
-	 * Returns a WP_Error the REST callback can short-circuit on. The shape matches
-	 * REST conventions (rest_cookie_invalid_nonce, 403) so api.js receives a
-	 * properly structured error response instead of an AJAX-shaped envelope.
-	 *
-	 * @since x.x.x
-	 *
-	 * @param WP_REST_Request $request REST request.
-	 * @return WP_Error|null
-	 */
-	private function verify_nonce( $request ) {
-		$nonce = (string) $request->get_header( 'X-WP-Nonce' );
-		if ( wp_verify_nonce( sanitize_text_field( $nonce ), 'wp_rest' ) ) {
-			return null;
-		}
-		return new WP_Error(
-			'rest_cookie_invalid_nonce',
-			__( 'Security verification failed. Please refresh the page and try again.', 'sureforms' ),
-			[ 'status' => 403 ]
-		);
-	}
-
-	/**
 	 * Sanitize the re-import behavior map — keys are source-form ids, values
 	 * are one of `update`, `skip`, `create`. Unknown actions and non-scalar
 	 * keys are dropped silently so the migrator falls back to its default
@@ -315,5 +270,50 @@ class Bootstrap {
 			}
 		}
 		return $out;
+	}
+
+	/**
+	 * Resolve a source key into an importer instance.
+	 *
+	 * @since x.x.x
+	 *
+	 * @param string $key Source key.
+	 * @return Base_Migrator|null
+	 */
+	private function get_importer( $key ) {
+		$key = sanitize_key( (string) $key );
+		if ( ! isset( $this->importer_classes[ $key ] ) ) {
+			return null;
+		}
+		$class = $this->importer_classes[ $key ];
+		if ( ! class_exists( $class ) ) {
+			return null;
+		}
+		$instance = new $class();
+		return $instance instanceof Base_Migrator ? $instance : null;
+	}
+
+	/**
+	 * Verify the WordPress REST cookie nonce.
+	 *
+	 * Returns a WP_Error the REST callback can short-circuit on. The shape matches
+	 * REST conventions (rest_cookie_invalid_nonce, 403) so api.js receives a
+	 * properly structured error response instead of an AJAX-shaped envelope.
+	 *
+	 * @since x.x.x
+	 *
+	 * @param WP_REST_Request $request REST request.
+	 * @return WP_Error|null
+	 */
+	private function verify_nonce( $request ) {
+		$nonce = (string) $request->get_header( 'X-WP-Nonce' );
+		if ( wp_verify_nonce( sanitize_text_field( $nonce ), 'wp_rest' ) ) {
+			return null;
+		}
+		return new WP_Error(
+			'rest_cookie_invalid_nonce',
+			__( 'Security verification failed. Please refresh the page and try again.', 'sureforms' ),
+			[ 'status' => 403 ]
+		);
 	}
 }

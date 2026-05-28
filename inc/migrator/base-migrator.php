@@ -26,20 +26,15 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since x.x.x
  */
 abstract class Base_Migrator {
-
 	/**
 	 * Option key for the source→SureForms import map.
-	 *
-	 * @var string
 	 */
-	const IMPORTED_MAP_OPTION = 'srfm_imported_forms_map';
+	public const IMPORTED_MAP_OPTION = 'srfm_imported_forms_map';
 
 	/**
 	 * Default cap on entries imported per form (overridable via filter).
-	 *
-	 * @var int
 	 */
-	const DEFAULT_ENTRY_LIMIT = 1000;
+	public const DEFAULT_ENTRY_LIMIT = 1000;
 
 	/**
 	 * Source key — one of: cf7, wpforms, gravity, ninja, caldera.
@@ -65,81 +60,6 @@ abstract class Base_Migrator {
 	 * @var array<int,string>
 	 */
 	protected $unsupported_fields = [];
-
-	/**
-	 * Whether the source plugin is currently installed/active.
-	 *
-	 * @since x.x.x
-	 * @return bool
-	 */
-	abstract public function exist();
-
-	/**
-	 * Return the list of source forms, normalized to ['id', 'name', ...].
-	 *
-	 * Each element is treated opaquely by the base class and passed back to
-	 * the subclass in `get_source_form_id`, `get_source_form_name`,
-	 * `build_form_content`.
-	 *
-	 * @since x.x.x
-	 * @return array<int,array<string,mixed>>
-	 */
-	abstract protected function get_source_forms();
-
-	/**
-	 * Return the source-side identifier for a given form item.
-	 *
-	 * @since x.x.x
-	 *
-	 * @param array<string,mixed> $form Source form descriptor.
-	 * @return int|string
-	 */
-	abstract protected function get_source_form_id( array $form );
-
-	/**
-	 * Return the source-side display name for a given form item.
-	 *
-	 * @since x.x.x
-	 *
-	 * @param array<string,mixed> $form Source form descriptor.
-	 * @return string
-	 */
-	abstract protected function get_source_form_name( array $form );
-
-	/**
-	 * Build the inner block markup for one source form.
-	 *
-	 * Implementations should append field labels that fail to map onto
-	 * SureForms blocks to `$this->unsupported_fields` so the admin UI can
-	 * warn the user.
-	 *
-	 * @since x.x.x
-	 *
-	 * @param array<string,mixed> $form Source form descriptor.
-	 * @return string Concatenated field-block markup (without form wrapper).
-	 */
-	abstract protected function build_form_content( array $form );
-
-	/**
-	 * Build the SureForms post-meta payload for one source form.
-	 *
-	 * Returns a map of `meta_key => meta_value` that will be passed to
-	 * `wp_insert_post()` / `wp_update_post()` via `meta_input`. Keys should
-	 * be SureForms' canonical meta keys (e.g. `_srfm_email_notification`,
-	 * `_srfm_form_confirmation`). Values must already match the schemas
-	 * registered in `inc/post-types.php` — the sanitize_callback there will
-	 * still run on import.
-	 *
-	 * Subclasses without source-side metadata (or where the source format
-	 * is incompatible — e.g. CF7) should return a sensible default that
-	 * leaves the imported form usable.
-	 *
-	 * @since x.x.x
-	 *
-	 * @param array<string,mixed> $form Source form descriptor.
-	 * @return array<string,mixed> Meta key → meta value.
-	 */
-	abstract protected function get_form_metas( array $form );
 
 	/**
 	 * List forms in the source plugin, formatted for the picker UI.
@@ -267,6 +187,34 @@ abstract class Base_Migrator {
 	}
 
 	/**
+	 * Source key accessor.
+	 *
+	 * @since x.x.x
+	 * @return string
+	 */
+	public function get_key() {
+		return $this->key;
+	}
+
+	/**
+	 * Display title accessor.
+	 *
+	 * @since x.x.x
+	 * @return string
+	 */
+	public function get_title() {
+		return $this->title;
+	}
+
+	/**
+	 * Whether the source plugin is currently installed/active.
+	 *
+	 * @since x.x.x
+	 * @return bool
+	 */
+	abstract public function exist();
+
+	/**
 	 * Insert a new sureforms_form post.
 	 *
 	 * @since x.x.x
@@ -390,22 +338,69 @@ abstract class Base_Migrator {
 	}
 
 	/**
-	 * Source key accessor.
+	 * Return the list of source forms, normalized to ['id', 'name', ...].
+	 *
+	 * Each element is treated opaquely by the base class and passed back to
+	 * the subclass in `get_source_form_id`, `get_source_form_name`,
+	 * `build_form_content`.
 	 *
 	 * @since x.x.x
-	 * @return string
+	 * @return array<int,array<string,mixed>>
 	 */
-	public function get_key() {
-		return $this->key;
-	}
+	abstract protected function get_source_forms();
 
 	/**
-	 * Display title accessor.
+	 * Return the source-side identifier for a given form item.
 	 *
 	 * @since x.x.x
+	 *
+	 * @param array<string,mixed> $form Source form descriptor.
+	 * @return int|string
+	 */
+	abstract protected function get_source_form_id( array $form );
+
+	/**
+	 * Return the source-side display name for a given form item.
+	 *
+	 * @since x.x.x
+	 *
+	 * @param array<string,mixed> $form Source form descriptor.
 	 * @return string
 	 */
-	public function get_title() {
-		return $this->title;
-	}
+	abstract protected function get_source_form_name( array $form );
+
+	/**
+	 * Build the inner block markup for one source form.
+	 *
+	 * Implementations should append field labels that fail to map onto
+	 * SureForms blocks to `$this->unsupported_fields` so the admin UI can
+	 * warn the user.
+	 *
+	 * @since x.x.x
+	 *
+	 * @param array<string,mixed> $form Source form descriptor.
+	 * @return string Concatenated field-block markup (without form wrapper).
+	 */
+	abstract protected function build_form_content( array $form );
+
+	/**
+	 * Build the SureForms post-meta payload for one source form.
+	 *
+	 * Returns a map of `meta_key => meta_value` that will be passed to
+	 * `wp_insert_post()` / `wp_update_post()` via `meta_input`. Keys should
+	 * be SureForms' canonical meta keys (e.g. `_srfm_email_notification`,
+	 * `_srfm_form_confirmation`). Values must already match the schemas
+	 * registered in `inc/post-types.php` — the sanitize_callback there will
+	 * still run on import.
+	 *
+	 * Subclasses without source-side metadata (or where the source format
+	 * is incompatible — e.g. CF7) should return a sensible default that
+	 * leaves the imported form usable.
+	 *
+	 * @since x.x.x
+	 *
+	 * @param array<string,mixed> $form Source form descriptor.
+	 * @return array<string,mixed> Meta key → meta value.
+	 */
+	abstract protected function get_form_metas( array $form );
 }

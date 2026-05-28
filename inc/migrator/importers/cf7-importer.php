@@ -33,7 +33,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since x.x.x
  */
 class Cf7_Importer extends Base_Migrator {
-
 	/**
 	 * Submit-button label parsed from the source form.
 	 *
@@ -84,34 +83,6 @@ class Cf7_Importer extends Base_Migrator {
 	 */
 	public function exist() {
 		return defined( 'WPCF7_PLUGIN' ) || defined( 'WPCF7_VERSION' );
-	}
-
-	/**
-	 * Map a CF7 form-tag name (without the trailing `*`) to a SureForms block
-	 * template method on Block_Templates.
-	 *
-	 * @since x.x.x
-	 *
-	 * @return array<string,string>
-	 */
-	private function tag_to_template_map() {
-		return [
-			'text'       => 'input',
-			'email'      => 'email',
-			'url'        => 'url',
-			'tel'        => 'phone',
-			'number'     => 'number',
-			'range'      => 'number',
-			'date'       => 'input',
-			'textarea'   => 'textarea',
-			'select'     => 'dropdown',
-			// CF7 [checkbox] is always a multi-option group, so it maps to
-			// srfm/multi-choice in multi-select mode — NOT srfm/checkbox, which
-			// is SureForms' single on/off checkbox and carries no options.
-			'checkbox'   => 'multi_choice',
-			'radio'      => 'multi_choice',
-			'acceptance' => 'gdpr',
-		];
 	}
 
 	/**
@@ -239,6 +210,74 @@ class Cf7_Importer extends Base_Migrator {
 	}
 
 	/**
+	 * Parse a CF7 form's shortcode template into SureForms block markup.
+	 *
+	 * Pipeline:
+	 *   1. Read `_form` post meta.
+	 *   2. Split into per-line tokens.
+	 *   3. Strip `<label>` wrappers, extract labels, drop quiz tags.
+	 *   4. Per form-tag: regex out attributes, map to srfm/* block.
+	 *
+	 * @since x.x.x
+	 *
+	 * @param array<string,mixed> $form Form descriptor.
+	 * @return string Concatenated field block markup.
+	 */
+	protected function build_form_content( array $form ) {
+		$this->submit_label   = '';
+		$this->used_slugs     = [];
+		$this->field_slug_map = [];
+		$post_id              = $this->get_source_form_id( $form );
+		if ( ! $post_id ) {
+			return '';
+		}
+		$raw = get_post_meta( $post_id, '_form', true );
+		if ( ! is_string( $raw ) || '' === trim( $raw ) ) {
+			return '';
+		}
+		$lines     = preg_split( '/\r\n|\r|\n/', $raw );
+		$lines     = is_array( $lines ) ? $lines : [];
+		$lines     = $this->strip_labels_and_blanks( $lines );
+		$tag_blobs = $this->collect_tag_blobs( $lines );
+		$content   = '';
+		foreach ( $tag_blobs as $blob ) {
+			$markup = $this->build_field_from_tag_blob( $blob );
+			if ( '' !== $markup ) {
+				$content .= $markup;
+			}
+		}
+		return $content;
+	}
+
+	/**
+	 * Map a CF7 form-tag name (without the trailing `*`) to a SureForms block
+	 * template method on Block_Templates.
+	 *
+	 * @since x.x.x
+	 *
+	 * @return array<string,string>
+	 */
+	private function tag_to_template_map() {
+		return [
+			'text'       => 'input',
+			'email'      => 'email',
+			'url'        => 'url',
+			'tel'        => 'phone',
+			'number'     => 'number',
+			'range'      => 'number',
+			'date'       => 'input',
+			'textarea'   => 'textarea',
+			'select'     => 'dropdown',
+			// CF7 [checkbox] is always a multi-option group, so it maps to
+			// srfm/multi-choice in multi-select mode — NOT srfm/checkbox, which
+			// is SureForms' single on/off checkbox and carries no options.
+			'checkbox'   => 'multi_choice',
+			'radio'      => 'multi_choice',
+			'acceptance' => 'gdpr',
+		];
+	}
+
+	/**
 	 * Translate a CF7 mail-template string into a SureForms smart-tag string.
 	 *
 	 * Rewrites two flavors of CF7 shortcodes:
@@ -349,46 +388,6 @@ class Cf7_Importer extends Base_Migrator {
 			$heading,
 			$body
 		);
-	}
-
-	/**
-	 * Parse a CF7 form's shortcode template into SureForms block markup.
-	 *
-	 * Pipeline:
-	 *   1. Read `_form` post meta.
-	 *   2. Split into per-line tokens.
-	 *   3. Strip `<label>` wrappers, extract labels, drop quiz tags.
-	 *   4. Per form-tag: regex out attributes, map to srfm/* block.
-	 *
-	 * @since x.x.x
-	 *
-	 * @param array<string,mixed> $form Form descriptor.
-	 * @return string Concatenated field block markup.
-	 */
-	protected function build_form_content( array $form ) {
-		$this->submit_label   = '';
-		$this->used_slugs     = [];
-		$this->field_slug_map = [];
-		$post_id              = $this->get_source_form_id( $form );
-		if ( ! $post_id ) {
-			return '';
-		}
-		$raw = get_post_meta( $post_id, '_form', true );
-		if ( ! is_string( $raw ) || '' === trim( $raw ) ) {
-			return '';
-		}
-		$lines     = preg_split( '/\r\n|\r|\n/', $raw );
-		$lines     = is_array( $lines ) ? $lines : [];
-		$lines     = $this->strip_labels_and_blanks( $lines );
-		$tag_blobs = $this->collect_tag_blobs( $lines );
-		$content   = '';
-		foreach ( $tag_blobs as $blob ) {
-			$markup = $this->build_field_from_tag_blob( $blob );
-			if ( '' !== $markup ) {
-				$content .= $markup;
-			}
-		}
-		return $content;
 	}
 
 	/**
