@@ -1285,9 +1285,19 @@ export function useShouldIframe() {
 			getDeviceType() !== 'Desktop' ||
 			[ 'wp_template', 'wp_block' ].includes( getCurrentPostType() ) ||
 			// Finally, still iframe the editor if all blocks are v3 (which means
-			// they are marked as iframe-compatible).
+			// they are marked as iframe-compatible). Only consider core and
+			// SureForms blocks here — third-party plugins (e.g. ThirstyAffiliates'
+			// ta/image at apiVersion 1) globally register legacy blocks that
+			// would otherwise flip this heuristic and force a non-iframe path,
+			// which breaks the editor because WP itself still iframes the form
+			// editor canvas.
 			_select( blocksStore )
 				.getBlockTypes()
+				.filter(
+					( type ) =>
+						type.name?.startsWith( 'srfm/' ) ||
+						type.name?.startsWith( 'core/' )
+				)
 				.every( ( type ) => type.apiVersion >= 3 )
 		);
 	}, [] );
