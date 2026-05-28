@@ -22,6 +22,7 @@ namespace SRFM\Inc\Migrator;
 use SRFM\Inc\Helper;
 use SRFM\Inc\Migrator\Importers\Cf7_Importer;
 use SRFM\Inc\Migrator\Importers\Wpforms_Importer;
+use SRFM\Inc\Migrator\Importers\Gravity_Importer;
 use SRFM\Inc\Traits\Get_Instance;
 use WP_Error;
 use WP_REST_Request;
@@ -47,6 +48,7 @@ class Bootstrap {
 	private $importer_classes = [
 		'cf7'     => Cf7_Importer::class,
 		'wpforms' => Wpforms_Importer::class,
+		'gravity' => Gravity_Importer::class,
 	];
 
 	/**
