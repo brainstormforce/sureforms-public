@@ -323,7 +323,9 @@ class Test_Wpforms_Importer extends TestCase {
 		$this->assertStringContainsString( 'wp:srfm/dropdown', $markup );
 		$this->assertStringContainsString( 'India', $markup );
 		$this->assertStringContainsString( 'Canada', $markup );
-		$this->assertStringContainsString( '"preselectedOptions":["Canada"]', $markup );
+		// SureForms' dropdown / multi-choice render preselected entries by
+		// option index, not label. Canada is index 1 in the source choices.
+		$this->assertStringContainsString( '"preselectedOptions":[1]', $markup );
 	}
 
 	/**

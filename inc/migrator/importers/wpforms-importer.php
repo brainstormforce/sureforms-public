@@ -663,7 +663,7 @@ class Wpforms_Importer extends Base_Migrator {
 	 * @since x.x.x
 	 *
 	 * @param array<string,mixed> $field WPForms field.
-	 * @return array{options: array<int,array<string,string>>, preselected: array<int,string>, id_map: array<string,int>}
+	 * @return array{options: array<int,array<string,string>>, preselected: array<int,int>, id_map: array<string,int>}
 	 */
 	private function translate_choices( array $field ) {
 		$choices     = isset( $field['choices'] ) && is_array( $field['choices'] ) ? $field['choices'] : [];
@@ -682,8 +682,11 @@ class Wpforms_Importer extends Base_Migrator {
 			$entry                   = [ 'label' => $value ];
 			$options[]               = $entry;
 			$id_map[ (string) $cid ] = $i;
+			// SureForms' dropdown / multi-choice render preselected entries by
+			// matching the option *index*, not the label — see
+			// inc/fields/dropdown-markup.php:162. Push the integer index here.
 			if ( ! empty( $choice['default'] ) ) {
-				$preselected[] = $value;
+				$preselected[] = $i;
 			}
 			++$i;
 		}
