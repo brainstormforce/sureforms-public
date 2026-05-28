@@ -473,7 +473,7 @@ class Gravity_Importer extends Base_Migrator {
 				$args['multiple']       = 'multiselect' === $type || 'checkbox' === $type;
 				break;
 			case 'date':
-				$args['date_format'] = $this->str_arg( $field, 'dateFormat', 'mdy' );
+				$args['date_format'] = $this->normalize_date_format( $this->str_arg( $field, 'dateFormat', 'mdy' ) );
 				break;
 			case 'time':
 				$args['format']      = 'time';
@@ -851,7 +851,33 @@ class Gravity_Importer extends Base_Migrator {
 	}
 
 	/**
-	 * Coerce a mixed array entry to string (PHPStan level 9 friendly).
+	 * Map a Gravity Forms `dateFormat` slug onto the format string the
+	 * SureForms date-picker block expects (it ships a fixed enum of
+	 * `mm/dd/yyyy`, `dd/mm/yyyy`, `yyyy-mm-dd` etc.).
+	 *
+	 * Gravity formats: `mdy` / `dmy` / `dmy_dash` / `dmy_dot` /
+	 * `ymd_slash` / `ymd_dash` / `ymd_dot`.
+	 *
+	 * @since x.x.x
+	 *
+	 * @param string $gf_format Gravity Forms date format slug.
+	 * @return string SureForms date format string.
+	 */
+	private function normalize_date_format( $gf_format ) {
+		$map = [
+			'mdy'       => 'mm/dd/yyyy',
+			'dmy'       => 'dd/mm/yyyy',
+			'dmy_dash'  => 'dd-mm-yyyy',
+			'dmy_dot'   => 'dd.mm.yyyy',
+			'ymd_slash' => 'yyyy/mm/dd',
+			'ymd_dash'  => 'yyyy-mm-dd',
+			'ymd_dot'   => 'yyyy.mm.dd',
+		];
+		return $map[ $gf_format ] ?? 'mm/dd/yyyy';
+	}
+
+	/**
+	 * Coerce a mixed array entry to string. PHPStan level 9 friendly.
 	 *
 	 * @since x.x.x
 	 *
