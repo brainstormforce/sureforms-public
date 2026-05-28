@@ -71,8 +71,8 @@ class Address_Markup extends Base {
 				<fieldset>
 					<legend class="srfm-block-legend">
 						<?php echo wp_kses_post( $this->label_markup ); ?>
-						<?php echo wp_kses_post( $this->help_markup ); ?>
 					</legend>
+					<?php echo wp_kses_post( $this->help_markup ); ?>
 					<?php
 					/**
 					 * Fires after the address field legend, before the inner block content.

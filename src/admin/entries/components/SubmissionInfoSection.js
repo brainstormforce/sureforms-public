@@ -94,7 +94,7 @@ const SubmissionInfoSection = ( { entryData } ) => {
 		{
 			id: 'status',
 			label: __( 'Status:', 'sureforms' ),
-			value: entryData.status.toLowerCase(),
+			value: entryData?.status ? entryData.status.toLowerCase() : '-',
 			render: ( val ) => val.charAt( 0 ).toUpperCase() + val.slice( 1 ),
 		},
 		{
