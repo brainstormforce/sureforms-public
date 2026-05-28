@@ -1,14 +1,22 @@
 import { useEffect } from '@wordpress/element';
 import { validateClassName } from '../utils';
 const useContainerDynamicClass = ( props ) => {
-	const { sureformsKeys, documentBody, shouldIframe, editorMode } = props;
+	const { sureformsKeys, documentBody, editorMode } = props;
 
 	const getStyleWrapper = () => {
-		if ( shouldIframe ) {
+		// Detect from the DOM rather than the `shouldIframe` prediction:
+		// when the iframe body actually rendered, `documentBody` IS the
+		// `.block-editor-iframe__body` and is already the style wrapper.
+		// Falling back to `.editor-styles-wrapper` covers the non-iframe
+		// case where `documentBody` is the top-level `<body>`.
+		if ( documentBody?.classList?.contains( 'block-editor-iframe__body' ) ) {
 			return documentBody;
 		}
 
-		return documentBody?.querySelector( '.editor-styles-wrapper' );
+		return (
+			documentBody?.querySelector( '.editor-styles-wrapper' ) ??
+			documentBody
+		);
 	};
 
 	const addRootClass = () => {
@@ -64,7 +72,6 @@ const useContainerDynamicClass = ( props ) => {
 		sureformsKeys?._srfm_additional_classes,
 		editorMode,
 		documentBody,
-		shouldIframe,
 	] );
 };
 

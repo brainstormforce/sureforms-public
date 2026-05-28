@@ -152,7 +152,11 @@ const SureformsFormSpecificSettings = () => {
 			clearInterval( intervalId );
 			clearTimeout( timeoutId );
 		};
-	}, [ editorMode ] );
+		// `shouldIframe` selects the polling branch (top body vs. iframe body),
+		// so changes to it must restart the polling — otherwise a late flip from
+		// false → true (e.g. block types finish registering after first render)
+		// leaves us stuck on the top-document branch.
+	}, [ editorMode, shouldIframe ] );
 
 	const isPageBreak = blocks.some(
 		( block ) => block.name === 'srfm/page-break'
