@@ -235,6 +235,21 @@ class Cf7_Importer extends Base_Migrator {
 		if ( ! is_string( $raw ) || '' === trim( $raw ) ) {
 			return '';
 		}
+		/**
+		 * Filters the raw CF7 template string before parsing.
+		 *
+		 * Lets add-on importers (e.g. SureForms Pro) rewrite the source
+		 * template — for instance to replace `[step]` Multi-Step markers with
+		 * synthetic field tags that the rest of the pipeline can map to a
+		 * SureForms block.
+		 *
+		 * @since x.x.x
+		 *
+		 * @param string              $raw  Raw CF7 `_form` template.
+		 * @param string              $key  Migrator source key (always `cf7` here).
+		 * @param array<string,mixed> $form Source form descriptor.
+		 */
+		$raw       = (string) apply_filters( 'srfm_migrator_preprocess_template', $raw, $this->key, $form );
 		$lines     = preg_split( '/\r\n|\r|\n/', $raw );
 		$lines     = is_array( $lines ) ? $lines : [];
 		$lines     = $this->strip_labels_and_blanks( $lines );
@@ -258,7 +273,7 @@ class Cf7_Importer extends Base_Migrator {
 	 * @return array<string,string>
 	 */
 	private function tag_to_template_map() {
-		return [
+		$map = [
 			'text'       => 'input',
 			'email'      => 'email',
 			'url'        => 'url',
@@ -275,6 +290,20 @@ class Cf7_Importer extends Base_Migrator {
 			'radio'      => 'multi_choice',
 			'acceptance' => 'gdpr',
 		];
+		/**
+		 * Filters the CF7-tag → Block_Templates-method map.
+		 *
+		 * Lets add-on importers (e.g. SureForms Pro) overlay extra mappings
+		 * such as `['date' => 'date_picker', 'file' => 'upload', 'hidden' =>
+		 * 'hidden_field', 'range' => 'slider']`. The corresponding method
+		 * must be emitted by a `srfm_migrator_block_template` subscriber.
+		 *
+		 * @since x.x.x
+		 *
+		 * @param array<string,string> $map Tag name → Block_Templates method.
+		 * @param string               $key Migrator source key (`cf7`).
+		 */
+		return (array) apply_filters( 'srfm_migrator_tag_to_template_map', $map, $this->key );
 	}
 
 	/**
@@ -506,8 +535,24 @@ class Cf7_Importer extends Base_Migrator {
 			return '';
 		}
 
-		// Unsupported tags are flagged explicitly.
-		$unsupported_tags = [ 'file', 'captchar', 'hidden' ];
+		/**
+		 * Filters the list of CF7 tags that have no SureForms equivalent.
+		 *
+		 * Add-on importers (e.g. SureForms Pro) can drop entries from this
+		 * list when they ship a block that covers the tag — Pro removes
+		 * `file` and `hidden` because it provides `srfm/upload` and
+		 * `srfm/hidden`.
+		 *
+		 * @since x.x.x
+		 *
+		 * @param array<int,string> $tags Lower-cased CF7 tag names.
+		 * @param string            $key  Migrator source key (`cf7`).
+		 */
+		$unsupported_tags = (array) apply_filters(
+			'srfm_migrator_unsupported_tags',
+			[ 'file', 'captchar', 'hidden' ],
+			$this->key
+		);
 		if ( in_array( $tag_name, $unsupported_tags, true ) ) {
 			$this->note_unsupported( '' !== $label ? $label : $tag_name );
 			return '';
@@ -580,23 +625,49 @@ class Cf7_Importer extends Base_Migrator {
 			$args['multiple'] = true;
 		}
 
-		return $this->dispatch_template( $template_method, $args, '' !== $label ? $label : $tag_name );
+		$fallback_label = '' !== $label ? $label : $tag_name;
+		$markup         = $this->dispatch_template( $template_method, $args );
+		if ( '' === $markup ) {
+			/**
+			 * Filters the markup for a template method this importer doesn't
+			 * know about, allowing add-ons (e.g. SureForms Pro) to emit blocks
+			 * for new template names registered via
+			 * `srfm_migrator_tag_to_template_map`.
+			 *
+			 * Subscribers should return the serialized Gutenberg block string
+			 * for the given `$method`+`$args`, or an empty string to fall
+			 * through to the unsupported-fields warning.
+			 *
+			 * @since x.x.x
+			 *
+			 * @param string              $markup Default empty string.
+			 * @param string              $method Template method name.
+			 * @param array<string,mixed> $args   Block args.
+			 * @param string              $key    Migrator source key (`cf7`).
+			 */
+			$markup = (string) apply_filters( 'srfm_migrator_block_template', '', $template_method, $args, $this->key );
+		}
+		if ( '' === $markup ) {
+			$this->note_unsupported( $fallback_label );
+		}
+		return $markup;
 	}
 
 	/**
 	 * Invoke a Block_Templates method by name with safe static dispatch.
 	 *
 	 * Avoids `call_user_func` (which PHPStan can't type-check) by enumerating
-	 * each supported template; unknown methods are flagged as unsupported.
+	 * each supported template. Returns an empty string for unknown methods so
+	 * the caller can give add-on subscribers a chance via
+	 * `srfm_migrator_block_template` before flagging the tag as unsupported.
 	 *
 	 * @since x.x.x
 	 *
-	 * @param string              $method   Block_Templates method name.
-	 * @param array<string,mixed> $args     Block args.
-	 * @param string              $label    Field label (for unsupported notes).
-	 * @return string Block markup, or '' if dispatch failed.
+	 * @param string              $method Block_Templates method name.
+	 * @param array<string,mixed> $args   Block args.
+	 * @return string Block markup, or '' if no built-in template matched.
 	 */
-	private function dispatch_template( $method, array $args, $label ) {
+	private function dispatch_template( $method, array $args ) {
 		switch ( $method ) {
 			case 'input':
 				return Block_Templates::input( $args );
@@ -619,7 +690,6 @@ class Cf7_Importer extends Base_Migrator {
 			case 'gdpr':
 				return Block_Templates::gdpr( $args );
 			default:
-				$this->note_unsupported( $label );
 				return '';
 		}
 	}
