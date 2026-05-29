@@ -212,6 +212,7 @@ const Range = ( props ) => {
 				</div>
 				<div className="srfm-range-control__mobile-controls">
 					<RangeControl
+						__next40pxDefaultSize
 						value={ inputValue }
 						onChange={ handleOnChange }
 						withInputField={ false }
@@ -224,6 +225,7 @@ const Range = ( props ) => {
 					/>
 					{ withInputField && isNumberControlSupported && (
 						<NumberControl
+							__next40pxDefaultSize
 							disabled={ props.disabled }
 							isShiftStepEnabled={ isShiftStepEnabled }
 							max={ max }

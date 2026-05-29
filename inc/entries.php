@@ -756,7 +756,7 @@ class Entries {
 
 			foreach ( $block_key_map as $srfm_key ) {
 				$field_value = $form_data[ $srfm_key ] ?? '';
-				$row[]       = self::normalize_field_values( $field_value, $srfm_key );
+				$row[]       = self::escape_csv_formula( self::normalize_field_values( $field_value, $srfm_key ) );
 			}
 
 			fputcsv( $stream, $row ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fputcsv
@@ -809,6 +809,45 @@ class Entries {
 			return implode( ', ', array_map( 'sanitize_text_field', $field_value ) );
 		}
 
+		// Textarea fields contain intentional line breaks — use sanitize_textarea_field()
+		// to preserve them. sanitize_text_field() strips newlines, flattening multi-line
+		// content in the CSV export.
+		if ( str_contains( $field_key, 'srfm-textarea' ) ) {
+			return sanitize_textarea_field( Helper::get_string_value( $field_value ) );
+		}
+
 		return sanitize_text_field( Helper::get_string_value( $field_value ) );
+	}
+
+	/**
+	 * Neutralize CSV formula/macro injection in an exported cell.
+	 *
+	 * Spreadsheet applications (Excel, Google Sheets, LibreOffice) interpret a
+	 * cell whose value begins with `=`, `+`, `-`, `@`, a tab, or a carriage
+	 * return as a formula and may execute it when an admin opens the export.
+	 * A submitter could store `=HYPERLINK(...)` or `=cmd|...` in a field and
+	 * have it run on the admin's machine. Prefixing such values with a single
+	 * quote forces the spreadsheet to treat them as literal text.
+	 *
+	 * Well-formed numbers (including negative and decimal values) are returned
+	 * unchanged so numeric columns remain numeric in the spreadsheet.
+	 *
+	 * @param string $value Cell value (already normalized for CSV).
+	 *
+	 * @since 2.10.0
+	 * @return string Safe cell value.
+	 */
+	private static function escape_csv_formula( $value ) {
+		$value = Helper::get_string_value( $value );
+
+		if ( '' === $value || is_numeric( $value ) ) {
+			return $value;
+		}
+
+		if ( in_array( $value[0], [ '=', '+', '-', '@', "\t", "\r" ], true ) ) {
+			return "'" . $value;
+		}
+
+		return $value;
 	}
 }

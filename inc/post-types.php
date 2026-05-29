@@ -115,20 +115,41 @@ class Post_Types {
 	 * @since 1.7.3
 	 */
 	public function sureforms_normalize_meta_for_rest( $response, $post ) {
-		$meta_raw          = get_post_meta( $post->ID, '_srfm_form_confirmation', true );
-		$form_confirmation = maybe_unserialize( is_string( $meta_raw ) ? $meta_raw : '' );
+		$meta_raw = get_post_meta( $post->ID, '_srfm_form_confirmation', true );
+		// Meta may be a PHP array (new forms stored via update_post_meta with an array)
+		// or a serialized/JSON string (legacy forms). Handle both.
+		$form_confirmation = is_array( $meta_raw ) ? $meta_raw : maybe_unserialize( is_string( $meta_raw ) ? $meta_raw : '' );
 
 		if ( ! is_array( $form_confirmation ) ) {
 			return $response;
 		}
+
+		// Only normalize keys that extensions (e.g. SureForms Pro) have actually
+		// declared in the REST schema; otherwise REST PUT validation rejects them
+		// with "<key> is not a valid property of Object.".
+		$registered      = get_registered_meta_keys( 'post', SRFM_FORMS_POST_TYPE );
+		$item_properties = $registered['_srfm_form_confirmation']['show_in_rest']['schema']['items']['properties'] ?? [];
 
 		foreach ( $form_confirmation as $index => $item ) {
 			if ( ! is_array( $item ) ) {
 				continue;
 			}
 
-			$form_confirmation[ $index ]['hide_copy']         = ! empty( $item['hide_copy'] );
-			$form_confirmation[ $index ]['hide_download_all'] = ! empty( $item['hide_download_all'] );
+			if ( isset( $item_properties['hide_copy'] ) ) {
+				$form_confirmation[ $index ]['hide_copy'] = ! empty( $item['hide_copy'] );
+			}
+			if ( isset( $item_properties['hide_download_all'] ) ) {
+				$form_confirmation[ $index ]['hide_download_all'] = ! empty( $item['hide_download_all'] );
+			}
+
+			// DOMDocument::saveHTML() strips the "data:" prefix from data URIs in src attributes.
+			// Restore it so the editor displays SVG images correctly.
+			if ( isset( $item['message'] ) && is_string( $item['message'] ) && false !== strpos( $item['message'], 'src="image/svg+xml;base64' ) ) {
+				$normalized = preg_replace( '/src="image\/svg\+xml;base64/', 'src="data:image/svg+xml;base64', $item['message'] );
+				if ( is_string( $normalized ) ) {
+					$form_confirmation[ $index ]['message'] = $normalized;
+				}
+			}
 		}
 
 		$response_data = $response->get_data();

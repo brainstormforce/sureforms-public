@@ -974,7 +974,30 @@ class Generate_Form_Markup {
 			$form_data['upload_format_type'] = 'raw';
 			// Skip auto-linking URLs in smart tag values — redirect query params need raw values, not HTML.
 			$form_data['smart_tag_context'] = 'redirect';
-			$redirect_url                   = html_entity_decode( Helper::get_string_value( $smart_tags->process_smart_tags( $redirect_url, $submission_data, $form_data ) ) );
+
+			/*
+			 * Resolve smart tags in the URL, normalize the multi-value delimiters
+			 * left behind by the substitution, then decode any HTML entities.
+			 *
+			 * Multi-select dropdown values are packed as "Red | Blue" by the frontend
+			 * (srfmUtility.prepareValue in assets/js/unminified/frontend.js), and
+			 * checkbox multi-choice values are rendered as "Red<br>Blue" by
+			 * Smart_Tags::parse_form_input. Neither delimiter is URL-friendly as-is:
+			 * " | " leaks whitespace into the query string and "<br>" gets mangled
+			 * by esc_url_raw below. Normalize both to a plain "|" so the final
+			 * redirect URL carries a clean, URL-safe list that the receiver can
+			 * split on "|".
+			 *
+			 * The str_replace runs before html_entity_decode so that any literal
+			 * "<br>" character sequence inside an option label — which
+			 * Smart_Tags::parse_form_input escapes to "&lt;br&gt;" before joining
+			 * — survives intact. Only the actual delimiter (the unescaped "<br>"
+			 * emitted by the implode) is converted to a pipe; html_entity_decode
+			 * then restores the option's original text.
+			 */
+			$resolved_redirect_url  = Helper::get_string_value( $smart_tags->process_smart_tags( $redirect_url, $submission_data, $form_data ) );
+			$multi_value_delimiters = [ '<br>', ' | ' ];
+			$redirect_url           = html_entity_decode( str_replace( $multi_value_delimiters, '|', $resolved_redirect_url ) );
 		}
 
 		return esc_url_raw( apply_filters( 'srfm_after_submit_redirect_url', $redirect_url ) );

@@ -35,7 +35,9 @@ const RefundDialog = ( { isOpen, setIsOpen, payment, queryKey } ) => {
 		}
 	}, [ isOpen, payment, refundableAmount ] );
 
-	// Refund mutation
+	// Refund mutation. Errors surface inline via `refundMutation.error` below
+	// (rendered with the same `refundMessage` callout pattern), so the admin
+	// can adjust amount/notes and retry without losing dialog context.
 	const refundMutation = useMutation( {
 		mutationFn: refundPayment,
 		onSuccess: () => {
@@ -46,7 +48,6 @@ const RefundDialog = ( { isOpen, setIsOpen, payment, queryKey } ) => {
 		},
 		onError: ( error ) => {
 			console.error( 'Refund failed:', error );
-			alert( __( 'Refund failed. Please try again.', 'sureforms' ) );
 		},
 	} );
 
@@ -54,6 +55,23 @@ const RefundDialog = ( { isOpen, setIsOpen, payment, queryKey } ) => {
 		setIsOpen( false );
 		setRefundAmount( '' );
 		setRefundNotes( '' );
+		refundMutation.reset();
+	};
+
+	// Clear any stale gateway error as soon as the admin starts editing —
+	// otherwise the inline red callout would persist until the next submit.
+	const handleAmountChange = ( value ) => {
+		setRefundAmount( value );
+		if ( refundMutation.isError ) {
+			refundMutation.reset();
+		}
+	};
+
+	const handleNotesChange = ( value ) => {
+		setRefundNotes( value );
+		if ( refundMutation.isError ) {
+			refundMutation.reset();
+		}
 	};
 
 	const processRefund = () => {
@@ -191,7 +209,7 @@ const RefundDialog = ( { isOpen, setIsOpen, payment, queryKey } ) => {
 							<Input
 								type="number"
 								value={ refundAmount }
-								onChange={ setRefundAmount }
+								onChange={ handleAmountChange }
 								placeholder={ sprintf(
 									/* translators: %s: maximum refundable amount */
 									__( 'Max: %s', 'sureforms' ),
@@ -223,7 +241,7 @@ const RefundDialog = ( { isOpen, setIsOpen, payment, queryKey } ) => {
 							</Label>
 							<TextArea
 								value={ refundNotes }
-								onChange={ setRefundNotes }
+								onChange={ handleNotesChange }
 								placeholder={ __(
 									'Add a reason or note for this refund…',
 									'sureforms'
@@ -260,6 +278,19 @@ const RefundDialog = ( { isOpen, setIsOpen, payment, queryKey } ) => {
 									}` }
 								>
 									{ refundMessage.message }
+								</Text>
+							</div>
+						) }
+
+						{ /* Gateway error (e.g. Stripe API error, validation) */ }
+						{ refundMutation.isError && (
+							<div className="p-3 rounded-md bg-red-50 border border-red-200">
+								<Text className="text-sm text-red-700">
+									{ refundMutation.error?.message ||
+										__(
+											'Refund failed. Please try again.',
+											'sureforms'
+										) }
 								</Text>
 							</div>
 						) }

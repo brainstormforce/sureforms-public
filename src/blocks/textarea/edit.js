@@ -27,6 +27,7 @@ const Edit = ( props ) => {
 	const {
 		help,
 		required,
+		minLength,
 		maxLength,
 		block_id,
 		defaultValue,
@@ -171,6 +172,32 @@ const Edit = ( props ) => {
 			id: 'max-length',
 			component: ! isRichText && (
 				<>
+					<SRFMNumberControl
+						label={ __( 'Minimum Characters', 'sureforms' ) }
+						value={ minLength }
+						displayUnit={ false }
+						data={ {
+							value: minLength,
+							label: 'minLength',
+						} }
+						onChange={ ( value ) => {
+							setAttributes( {
+								minLength: Number( value ),
+							} );
+						} }
+						min={ 0 }
+						showControlHeader={ false }
+						help={
+							Number( minLength ) > 0 &&
+							Number( maxLength ) > 0 &&
+							Number( minLength ) > Number( maxLength )
+								? __(
+									'Minimum characters cannot exceed Maximum characters.',
+									'sureforms'
+								)
+								: false
+						}
+					/>
 					<SRFMNumberControl
 						label={ __( 'Maximum Characters', 'sureforms' ) }
 						value={ maxLength }

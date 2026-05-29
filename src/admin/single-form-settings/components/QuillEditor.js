@@ -10,7 +10,14 @@ import { ChevronDownIcon } from 'lucide-react';
 import { Label, Tabs, TextArea } from '@bsf/force-ui';
 import { applyFilters } from '@wordpress/hooks';
 
-const Editor = ( { handleContentChange, content, allData = false } ) => {
+const Editor = ( {
+	handleContentChange,
+	content,
+	allData = false,
+	// SF-2815 start: context prop — 'global' uses generic tags only.
+	context = 'form',
+	// SF-2815 end.
+} ) => {
 	const quillRef = useRef( null );
 	const textAreaRef = useRef( null );
 
@@ -47,7 +54,11 @@ const Editor = ( { handleContentChange, content, allData = false } ) => {
 			index = length - 1;
 		}
 
-		quillInstance.insertText( index, text );
+		// Pass `'user'` as the source so the resulting `text-change` event
+		// is tagged as user-driven; the visual-tab onChange below filters on
+		// `source === 'user'` to ignore synthetic emissions (mount-time
+		// normalization, parent-prop sync).
+		quillInstance.insertText( index, text, 'user' );
 	};
 
 	const insertSmartTag = ( tag ) => {
@@ -86,10 +97,21 @@ const Editor = ( { handleContentChange, content, allData = false } ) => {
 		}
 	};
 
-	const genericSmartTags = window.srfm_block_data?.smart_tags_array
-		? Object.entries( window.srfm_block_data.smart_tags_array )
+	// SF-2815 start: srfm_block_data exists in the block editor only;
+	// fall back to srfm_admin so generic tags work on the settings page.
+	const rawGenericSmartTags =
+		window.srfm_block_data?.smart_tags_array ||
+		window.srfm_admin?.smart_tags_array;
+	const genericSmartTags = rawGenericSmartTags
+		? Object.entries( rawGenericSmartTags )
 		: [];
-	const formSmartTags = window.sureforms?.formSpecificSmartTags ?? [];
+	// In the global settings context there is no specific form, so skip
+	// form-specific tags entirely.
+	const formSmartTags =
+		context === 'global'
+			? []
+			: window.sureforms?.formSpecificSmartTags ?? [];
+	// SF-2815 end.
 
 	let formSmartTagsAllData = {};
 	if ( allData ) {
@@ -132,16 +154,41 @@ const Editor = ( { handleContentChange, content, allData = false } ) => {
 
 	const formConfirmationSmartTags = applyFilters(
 		'srfm.formSettings.formConfirmationSmartTags',
-		[
-			{
-				tags: allData ? formSmartTagsAllData : formSmartTags,
-				label: __( 'Form input tags', 'sureforms' ),
-			},
-			{
-				tags: genericSmartTags,
-				label: __( 'Generic tags', 'sureforms' ),
-			},
-		]
+		// SF-2815 start: in global context show generic tags only, plus
+		// `{all_data}` when the caller opts in via the `allData` prop.
+		// Field-specific tags are intentionally omitted because the global
+		// settings don't know which form they'll apply to.
+		context === 'global'
+			? [
+				...( allData
+					? [
+						{
+							tags: [
+								[
+									'{all_data}',
+									__( 'All Data', 'sureforms' ),
+								],
+							],
+							label: __( 'Form data', 'sureforms' ),
+						},
+					]
+					: [] ),
+				{
+					tags: genericSmartTags,
+					label: __( 'Generic tags', 'sureforms' ),
+				},
+			]
+			: [
+				{
+					tags: allData ? formSmartTagsAllData : formSmartTags,
+					label: __( 'Form input tags', 'sureforms' ),
+				},
+				{
+					tags: genericSmartTags,
+					label: __( 'Generic tags', 'sureforms' ),
+				},
+			]
+		// SF-2815 end.
 	);
 
 	return (
@@ -187,7 +234,19 @@ const Editor = ( { handleContentChange, content, allData = false } ) => {
 							formats={ formats }
 							modules={ modules }
 							value={ content }
-							onChange={ ( newContent ) => {
+							onChange={ ( newContent, _delta, source ) => {
+								// Quill tags each emission with its origin:
+								// 'user' for real keystrokes / format toolbar
+								// clicks, 'api' for programmatic content set
+								// (mount-time normalization + value-prop
+								// resync after fetch / discard), 'silent'
+								// for muted internal updates. Only propagate
+								// user-driven changes so the page-level
+								// dirty signal isn't flipped on by
+								// normalization of the initial content.
+								if ( source !== 'user' ) {
+									return;
+								}
 								handleContentChange( newContent );
 							} }
 							className="[&>div]:border [&>div]:border-field-border [&>div]:border-solid [&>div]:rounded-b-lg [&_.ql-editor]:min-h-[18.75rem]"

@@ -352,6 +352,41 @@ class Test_Front_End_Payments extends TestCase {
 		$this->fail( 'Expected WPDieException for missing token in create_subscription_intent.' );
 	}
 
+	// --- verify_stripe_subscription_intent_and_save ---
+
+	public function test_verify_stripe_subscription_intent_and_save_empty_subscription_id() {
+		$result = $this->front_end->verify_stripe_subscription_intent_and_save(
+			[ 'subscriptionId' => '', 'customerId' => 'cus_1', 'setupIntent' => 'seti_1' ],
+			'block-1',
+			[ 'form-id' => 1 ]
+		);
+		$this->assertIsArray( $result );
+		$this->assertArrayHasKey( 'error', $result );
+	}
+
+	public function test_verify_stripe_subscription_intent_and_save_missing_customer_id() {
+		// With a valid-looking subscriptionId but no stored payment intent metadata,
+		// verification fails before the customer_id branch — still returns an error array.
+		$result = $this->front_end->verify_stripe_subscription_intent_and_save(
+			[ 'subscriptionId' => 'sub_nonexistent', 'customerId' => '', 'setupIntent' => 'seti_nonexistent' ],
+			'block-1',
+			[ 'form-id' => 1 ]
+		);
+		$this->assertIsArray( $result );
+		$this->assertArrayHasKey( 'error', $result );
+	}
+
+	public function test_verify_stripe_subscription_intent_and_save_invalid_subscription_id_type() {
+		// Non-string subscriptionId is rejected.
+		$result = $this->front_end->verify_stripe_subscription_intent_and_save(
+			[ 'subscriptionId' => 12345, 'customerId' => 'cus_1', 'setupIntent' => 'seti_1' ],
+			'block-1',
+			[ 'form-id' => 1 ]
+		);
+		$this->assertIsArray( $result );
+		$this->assertArrayHasKey( 'error', $result );
+	}
+
 	private function call_private_method( $object, $method_name, $parameters = [] ) {
 		$reflection = new \ReflectionClass( get_class( $object ) );
 		$method     = $reflection->getMethod( $method_name );

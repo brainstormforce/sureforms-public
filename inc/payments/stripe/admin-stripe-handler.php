@@ -145,12 +145,12 @@ class Admin_Stripe_Handler {
 		];
 		$current_logs[] = $new_log;
 
-		// Update database status to canceled (following WPForms pattern).
+		// Preserve the transaction `status` (e.g. 'succeeded') so the Refund option
+		// remains available; lifecycle is tracked via `subscription_status`.
 		$updated = Payments::update(
 			$payment_id,
 			[
 				'subscription_status' => 'canceled',
-				'status'              => 'canceled',
 				'log'                 => $current_logs,
 			]
 		);
@@ -228,11 +228,12 @@ class Admin_Stripe_Handler {
 		];
 
 		$payment_id = isset( $payment['id'] ) && is_numeric( $payment['id'] ) ? absint( $payment['id'] ) : 0;
+		// Preserve the transaction `status` so the admin Refund option stays enabled
+		// after the customer cancels from the My Account page.
 		Payments::update(
 			$payment_id,
 			[
 				'subscription_status' => 'canceled',
-				'status'              => 'canceled',
 				'log'                 => $current_logs,
 			]
 		);
@@ -851,7 +852,9 @@ class Admin_Stripe_Handler {
 
 			// Step 3: Verify subscription payment status.
 			// Note: 'active' status is used for subscription records, while 'succeeded' is used for one-time payments.
-			$refundable_statuses = [ 'active', 'succeeded', 'partially_refunded' ];
+			// 'canceled' is accepted because the initial charge on a canceled subscription is still refundable
+			// (and historical rows persisted with `status='canceled'` should remain refundable).
+			$refundable_statuses = [ 'active', 'succeeded', 'partially_refunded', 'canceled' ];
 			if ( empty( $payment['status'] ) || ! in_array( $payment['status'], $refundable_statuses, true ) ) {
 				return [
 					'success' => false,

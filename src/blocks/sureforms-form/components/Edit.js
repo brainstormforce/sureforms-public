@@ -359,6 +359,7 @@ export default ( { attributes, setAttributes, clientId } ) => {
 					{ showTitle && (
 						<PanelRow>
 							<TextControl
+								__next40pxDefaultSize
 								label={ __( 'Form Title', 'sureforms' ) }
 								value={ title }
 								onChange={ ( value ) => {
@@ -369,6 +370,7 @@ export default ( { attributes, setAttributes, clientId } ) => {
 						</PanelRow>
 					) }
 					<SelectControl
+						__next40pxDefaultSize
 						label={ __( 'Form Theme', 'sureforms' ) }
 						value={ formTheme }
 						options={ applyFilters( 'srfm.embed.formThemeOptions', [

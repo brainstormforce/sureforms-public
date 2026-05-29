@@ -28,6 +28,78 @@ class Test_Post_Types extends TestCase {
 		$this->assertIsString( $result );
 	}
 
+	/**
+	 * Test sureforms_normalize_meta_for_rest normalizes confirmation meta.
+	 */
+	public function test_sureforms_normalize_meta_for_rest() {
+		$post_types = new Post_Types();
+
+		$form_id = wp_insert_post(
+			[
+				'post_type'   => 'sureforms_form',
+				'post_status' => 'publish',
+				'post_title'  => 'Normalize Meta Test',
+			]
+		);
+
+		// Store confirmation meta with missing boolean fields.
+		$confirmation = [
+			[
+				'id'                => 1,
+				'confirmation_type' => 'same page',
+				'message'           => '<p>Thank you</p>',
+			],
+		];
+		update_post_meta( $form_id, '_srfm_form_confirmation', $confirmation );
+
+		$post     = get_post( $form_id );
+		$response = new WP_REST_Response( [ 'meta' => [] ] );
+
+		$result = $post_types->sureforms_normalize_meta_for_rest( $response, $post );
+
+		$data = $result->get_data();
+		$this->assertIsArray( $data['meta']['_srfm_form_confirmation'] );
+		// Missing booleans should be normalized to false.
+		$this->assertFalse( $data['meta']['_srfm_form_confirmation'][0]['hide_copy'] );
+		$this->assertFalse( $data['meta']['_srfm_form_confirmation'][0]['hide_download_all'] );
+
+		wp_delete_post( $form_id, true );
+	}
+
+	/**
+	 * Test sureforms_normalize_meta_for_rest fixes broken SVG data URIs.
+	 */
+	public function test_sureforms_normalize_meta_for_rest_fixes_svg_data_uri() {
+		$post_types = new Post_Types();
+
+		$form_id = wp_insert_post(
+			[
+				'post_type'   => 'sureforms_form',
+				'post_status' => 'publish',
+				'post_title'  => 'SVG URI Test',
+			]
+		);
+
+		// Simulate DOMDocument stripping 'data:' prefix.
+		$confirmation = [
+			[
+				'id'      => 1,
+				'message' => '<img src="image/svg+xml;base64,abc123" />',
+			],
+		];
+		update_post_meta( $form_id, '_srfm_form_confirmation', $confirmation );
+
+		$post     = get_post( $form_id );
+		$response = new WP_REST_Response( [ 'meta' => [] ] );
+
+		$result = $post_types->sureforms_normalize_meta_for_rest( $response, $post );
+
+		$data = $result->get_data();
+		$this->assertStringContainsString( 'data:image/svg+xml;base64', $data['meta']['_srfm_form_confirmation'][0]['message'] );
+
+		wp_delete_post( $form_id, true );
+	}
+
 	public function test_register_post_types() {
 		if ( ! defined( 'SRFM_FORMS_POST_TYPE' ) ) {
 			$this->markTestSkipped( 'SRFM_FORMS_POST_TYPE not defined' );
