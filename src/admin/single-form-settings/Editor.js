@@ -111,17 +111,28 @@ const SureformsFormSpecificSettings = () => {
 				'.block-editor-iframe__body'
 			);
 
-			// This is the real readiness check
-			if ( ! getIframeBody || ! getIframeBody.children.length ) {
+			if ( ! getIframeBody ) {
+				return false;
+			}
+
+			// The iframe body receives helper overlays (block-canvas-cover,
+			// collaborators-overlay-full, a11y-speak-intro-text) before the
+			// block editor itself mounts. Only treat the iframe as ready once
+			// the root container AND block-list layout exist; otherwise plugins
+			// that delay editor boot (e.g. ThirstyAffiliates) can leave
+			// downstream effects with a null rootContainer, which skips the
+			// .srfm-form-container scope class and the custom submit button.
+			const getRootContainer =
+				getIframeBody.querySelector( '.is-root-container' );
+			const blockListLayout = getIframeBody.querySelector(
+				'.block-editor-block-list__layout'
+			);
+
+			if ( ! getRootContainer || ! blockListLayout ) {
 				return false;
 			}
 
 			setDocumentBody( getIframeBody );
-
-			const getRootContainer =
-				getIframeBody.querySelector( '.is-root-container' );
-
-			// Iframe body is fully ready
 			setRootContainer( getRootContainer );
 			setRootHtmlTag( iframeDoc.querySelector( 'html' ) );
 			clearInterval( intervalId );
@@ -141,7 +152,11 @@ const SureformsFormSpecificSettings = () => {
 			clearInterval( intervalId );
 			clearTimeout( timeoutId );
 		};
-	}, [ editorMode ] );
+		// `shouldIframe` selects the polling branch (top body vs. iframe body),
+		// so changes to it must restart the polling — otherwise a late flip from
+		// false → true (e.g. block types finish registering after first render)
+		// leaves us stuck on the top-document branch.
+	}, [ editorMode, shouldIframe ] );
 
 	const isPageBreak = blocks.some(
 		( block ) => block.name === 'srfm/page-break'
