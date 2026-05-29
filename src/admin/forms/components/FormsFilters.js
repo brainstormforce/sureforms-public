@@ -7,6 +7,7 @@ import {
 	Search,
 	X,
 	RotateCcw,
+	FilePen,
 } from 'lucide-react';
 import { Input, Button, Container, Select } from '@bsf/force-ui';
 import DatePicker from '@Admin/components/DatePicker';
@@ -22,6 +23,7 @@ const FormsFilters = ( {
 	onBulkExport,
 	onBulkRestore,
 	onBulkDelete,
+	onBulkDraft,
 	statusFilter,
 	onStatusFilterChange,
 	selectedDates = { from: null, to: null },
@@ -125,6 +127,19 @@ const FormsFilters = ( {
 							onClick={ onBulkRestore }
 						>
 							{ __( 'Restore', 'sureforms' ) }
+						</Button>
+					</Container.Item>
+				) }
+				{ statusFilter !== 'trash' && statusFilter !== 'draft' && (
+					<Container.Item>
+						<Button
+							variant="outline"
+							size="sm"
+							icon={ <FilePen className="w-4 h-4" /> }
+							iconPosition="left"
+							onClick={ onBulkDraft }
+						>
+							{ __( 'Switch to Draft', 'sureforms' ) }
 						</Button>
 					</Container.Item>
 				) }

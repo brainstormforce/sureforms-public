@@ -124,19 +124,26 @@ class Duplicate_Form {
 				}
 
 				// Handle unserialized metas (these are already arrays/objects).
+				// Note: get_post_meta() returns unslashed data, but add_post_meta()
+				// internally runs wp_unslash() on the value. Without re-slashing,
+				// backslashes are stripped — corrupting JSON-string metas (e.g.
+				// _srfm_save_resume, _srfm_conditional_confirmation) whose escaped
+				// quotes (\") then fail json_decode() in their sanitize callbacks,
+				// causing those callbacks to wipe the value to an empty string.
+				// wp_slash() pre-escapes so wp_unslash() restores the original.
 				if ( in_array( $meta_key, $unserialized_metas, true ) ) {
 					if ( is_array( $meta_values ) && isset( $meta_values[0] ) ) {
 						// Ensure the value is a string before unserializing.
 						$first_value = $meta_values[0];
 						if ( is_string( $first_value ) ) {
 							$meta_value = maybe_unserialize( $first_value );
-							add_post_meta( $new_form_id, $meta_key, $meta_value );
+							add_post_meta( $new_form_id, $meta_key, wp_slash( $meta_value ) );
 						}
 					}
 				} else {
 					// Handle serialized metas (get first value).
 					if ( is_array( $meta_values ) && isset( $meta_values[0] ) ) {
-						add_post_meta( $new_form_id, $meta_key, $meta_values[0] );
+						add_post_meta( $new_form_id, $meta_key, wp_slash( $meta_values[0] ) );
 					}
 				}
 			}

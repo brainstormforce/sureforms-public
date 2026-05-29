@@ -851,9 +851,12 @@ class Rest_Api {
 			'form_data'       => $form_data,
 			'form_content'    => $form_fields,
 			'submission_info' => [
-				'user_ip'      => $entry['submission_info']['user_ip'] ?? '',
-				'browser_name' => $entry['submission_info']['browser_name'] ?? '',
-				'device_name'  => $entry['submission_info']['device_name'] ?? '',
+				'user_ip'        => $entry['submission_info']['user_ip'] ?? '',
+				'browser_name'   => $entry['submission_info']['browser_name'] ?? '',
+				'device_name'    => $entry['submission_info']['device_name'] ?? '',
+				// Re-sanitize at the exposure boundary in case the stored value
+				// was written by a future code path that bypasses form-submit.php.
+				'submission_url' => esc_url_raw( $entry['submission_info']['submission_url'] ?? '', [ 'http', 'https' ] ),
 			],
 			'user'            => $user_info ? [
 				'id'           => $user_id,
@@ -1077,6 +1080,27 @@ class Rest_Api {
 				case 'delete':
 					// Force delete permanently.
 					$result = wp_delete_post( $form_id, true );
+					break;
+
+				case 'draft':
+					if ( 'trash' === $post->post_status ) {
+						$errors[] = [
+							'form_id' => $form_id,
+							'error'   => __( 'Use the restore action to recover a trashed form before switching it to draft.', 'sureforms' ),
+						];
+					} elseif ( 'draft' === $post->post_status ) {
+						$errors[] = [
+							'form_id' => $form_id,
+							'error'   => __( 'This form is already a draft.', 'sureforms' ),
+						];
+					} else {
+						$result = wp_update_post(
+							[
+								'ID'          => $form_id,
+								'post_status' => 'draft',
+							]
+						);
+					}
 					break;
 
 				default:
@@ -1731,7 +1755,7 @@ class Rest_Api {
 						],
 					],
 				],
-				// Form lifecycle management endpoint (trash/restore/delete).
+				// Form lifecycle management endpoint (trash/restore/delete/draft).
 				'forms/manage'              => [
 					'methods'             => 'POST',
 					'callback'            => [ $this, 'manage_form_lifecycle' ],
@@ -1756,7 +1780,7 @@ class Rest_Api {
 						'action'   => [
 							'required'          => true,
 							'type'              => 'string',
-							'enum'              => [ 'trash', 'restore', 'delete' ],
+							'enum'              => [ 'trash', 'restore', 'delete', 'draft' ],
 							'sanitize_callback' => 'sanitize_text_field',
 						],
 					],

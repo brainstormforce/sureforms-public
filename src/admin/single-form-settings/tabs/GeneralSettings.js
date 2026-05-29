@@ -306,6 +306,7 @@ function GeneralSettings( props ) {
 						</>
 					) }
 					<SelectControl
+						__next40pxDefaultSize
 						label={ __( 'Progress Indicator', 'sureforms' ) }
 						value={ pageBreakSettings?.progress_indicator_type }
 						className="srfm-progress-control"

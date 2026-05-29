@@ -783,11 +783,19 @@ if ( ! class_exists( 'Advanced_Image' ) ) {
 
 			if ( ! empty( $attributes['heading'] ) ) {
 
-				$heading_id    = isset( $attributes['headingId'] ) ? ' id="' . $attributes['headingId'] . '"' : '';
+				// Validate the tag-name attribute against the editor UI options
+				// (esc_html() does not strip spaces or `=`, which is unsafe when
+				// echoed in tag-name position).
+				$allowed_heading_tags = [ 'h1', 'h2', 'h3', 'h4', 'h5', 'h6' ];
+				$heading_tag          = isset( $attributes['headingTag'] ) && in_array( $attributes['headingTag'], $allowed_heading_tags, true )
+					? $attributes['headingTag']
+					: 'h2';
+
+				$heading_id    = ! empty( $attributes['headingId'] ) ? ' id="' . esc_attr( $attributes['headingId'] ) . '"' : '';
 				$image_heading = sprintf(
 					'<%1$s%2$s class="uagb-image-heading">%3$s</%1$s>',
-					esc_html( $attributes['headingTag'] ),
-					esc_attr( $heading_id ),
+					esc_html( $heading_tag ),
+					$heading_id,
 					esc_html( $attributes['heading'] )
 				);
 			}

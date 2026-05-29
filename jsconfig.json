@@ -10,7 +10,8 @@
 			"@Svg/*": [ "assets/svg/*" ],
 			"@Attributes/*": [ "src/blocks-attributes/*" ],
 			"@Image/*": [ "images/*" ],
-			"@IncBlocks/*": [ "inc/blocks/*" ]
+			"@IncBlocks/*": [ "inc/blocks/*" ],
+			"@Store/*": [ "src/store/*" ]
 		}
 	},
 	"exclude": [

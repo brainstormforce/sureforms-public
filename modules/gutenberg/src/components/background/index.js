@@ -357,6 +357,7 @@ const Background = ( props ) => {
 						<>
 							<div className="uag-background-image-position">
 								<SelectControl
+									__next40pxDefaultSize
 									label={ __(
 										'Image Position',
 										'sureforms'
@@ -439,6 +440,7 @@ const Background = ( props ) => {
 							</div>
 							<div className="uag-background-image-attachment">
 								<SelectControl
+									__next40pxDefaultSize
 									label={ __(
 										'Attachment',
 										'sureforms'
@@ -472,6 +474,7 @@ const Background = ( props ) => {
 							</div>
 							<div className="uag-background-blend-mode">
 								<SelectControl
+									__next40pxDefaultSize
 									label={ __(
 										'Blend Mode',
 										'sureforms'
@@ -552,6 +555,7 @@ const Background = ( props ) => {
 							</div>
 							<div className="uag-background-image-repeat">
 								<SelectControl
+									__next40pxDefaultSize
 									label={ __( 'Repeat', 'sureforms' ) }
 									value={ backgroundOverlayRepeat.value }
 									onChange={ ( value ) =>
@@ -594,6 +598,7 @@ const Background = ( props ) => {
 							</div>
 							<div className="uag-background-image-size">
 								<SelectControl
+									__next40pxDefaultSize
 									label={ __( 'Size', 'sureforms' ) }
 									value={ backgroundOverlaySize.value }
 									onChange={ ( value ) =>
@@ -1351,6 +1356,7 @@ const Background = ( props ) => {
 						<>
 							<div className="uag-background-image-position">
 								<SelectControl
+									__next40pxDefaultSize
 									label={ __(
 										'Image Position',
 										'sureforms'
@@ -1430,6 +1436,7 @@ const Background = ( props ) => {
 							</div>
 							<div className="uag-background-image-attachment">
 								<SelectControl
+									__next40pxDefaultSize
 									label={ __( 'Attachment', 'sureforms' ) }
 									value={ backgroundAttachment.value }
 									onChange={ ( value ) =>
@@ -1452,6 +1459,7 @@ const Background = ( props ) => {
 							</div>
 							<div className="uag-background-image-repeat">
 								<SelectControl
+									__next40pxDefaultSize
 									label={ __( 'Repeat', 'sureforms' ) }
 									value={ backgroundRepeat.value }
 									onChange={ ( value ) =>
@@ -1490,6 +1498,7 @@ const Background = ( props ) => {
 							</div>
 							<div className="uag-background-image-size">
 								<SelectControl
+									__next40pxDefaultSize
 									label={ __( 'Size', 'sureforms' ) }
 									value={ backgroundSize.value }
 									onChange={ ( value ) =>
