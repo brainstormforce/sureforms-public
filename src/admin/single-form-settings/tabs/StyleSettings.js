@@ -34,7 +34,6 @@ function StyleSettings( props ) {
 		iframeBody,
 		editorMode,
 		rootHtmlTag,
-		shouldIframe,
 	} = props;
 
 	let sureformsKeys = useSelect(
@@ -46,7 +45,17 @@ function StyleSettings( props ) {
 		[ editorStore ]
 	);
 	const formStyling = sureformsKeys?._srfm_forms_styling || {};
-	const rootRef = shouldIframe ? iframeBody : iframeBody?.querySelector( '.editor-styles-wrapper' );
+	// Derive the style root from the actual DOM. `useShouldIframe()` is a
+	// best-effort prediction of what WP will do; `iframeBody` is the source
+	// of truth for what actually rendered. When the iframe body itself is
+	// passed in, target it directly; otherwise fall back to the
+	// `.editor-styles-wrapper` inside the top document.
+	const isIframedBody = iframeBody?.classList?.contains(
+		'block-editor-iframe__body'
+	);
+	const rootRef = isIframedBody
+		? iframeBody
+		: iframeBody?.querySelector( '.editor-styles-wrapper' ) ?? iframeBody;
 
 	const deviceType = useDeviceType();
 	const [ submitBtn, setSubmitBtn ] = useState( null );
