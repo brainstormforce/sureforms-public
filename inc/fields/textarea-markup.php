@@ -158,8 +158,10 @@ class Textarea_Markup extends Base {
 			$this->read_only ? 'srfm-read-only' : '',
 		];
 
-		$classes   = Helper::join_strings( $classes );
-		$random_id = $this->unique_slug . '-' . $this->random_id;
+		$classes       = Helper::join_strings( $classes );
+		$random_id     = $this->unique_slug . '-' . $this->random_id;
+		$has_counter   = ! $this->is_richtext && ( '' !== $this->min_length || '' !== $this->max_length );
+		$display_limit = $has_counter ? ( '' !== $this->max_length ? $this->max_length : $this->min_length ) : '';
 
 		ob_start(); ?>
 		<div data-block-id="<?php echo esc_attr( $this->block_id ); ?>" class="<?php echo esc_attr( $classes ); ?>">
@@ -181,23 +183,19 @@ class Textarea_Markup extends Base {
 				</div>
 				<?php } ?>
 			</div>
-			<?php
-			// Show character counter for plain textareas when min or max length is configured.
-			if ( ! $this->is_richtext && ( '' !== $this->min_length || '' !== $this->max_length ) ) {
-				$display_limit = '' !== $this->max_length ? $this->max_length : $this->min_length;
-				?>
-			<div class="srfm-char-counter-wrap">
-				<span class="srfm-char-counter"
-					data-counter-limit="<?php echo esc_attr( $display_limit ); ?>"
-					<?php if ( '' !== $this->min_length ) { ?>
-					data-counter-min="<?php echo esc_attr( $this->min_length ); ?>"
-					<?php } ?>
-					aria-live="polite"
-				>0/<?php echo esc_html( $display_limit ); ?></span>
-			</div>
-			<?php } ?>
 			<div class="srfm-error-wrap">
 				<?php echo wp_kses_post( $this->error_msg_markup ); ?>
+				<?php if ( $has_counter ) { ?>
+				<div class="srfm-char-counter-wrap">
+					<span class="srfm-char-counter"
+						data-counter-limit="<?php echo esc_attr( $display_limit ); ?>"
+						<?php if ( '' !== $this->min_length ) { ?>
+						data-counter-min="<?php echo esc_attr( $this->min_length ); ?>"
+						<?php } ?>
+						aria-live="polite"
+					>0/<?php echo esc_html( $display_limit ); ?></span>
+				</div>
+				<?php } ?>
 			</div>
 		</div>
 
