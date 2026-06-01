@@ -72,6 +72,11 @@ const SubmissionInfoSection = ( { entryData } ) => {
 			value: entryData?.submissionInfo?.deviceName || '-',
 		},
 		{
+			id: 'language',
+			label: __( 'Language:', 'sureforms' ),
+			value: entryData?.language || '-',
+		},
+		{
 			id: 'user',
 			label: __( 'User:', 'sureforms' ),
 			value: entryData?.user?.displayName || '-',

@@ -154,7 +154,11 @@ class Entries extends Base {
 			'user_id BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 AFTER form_id',
 			'INDEX idx_user_id (user_id)',
 			// Note: @since x.x.x -- Added language column for multilingual submission tracking.
-			'language VARCHAR(20) AFTER extras',
+			// No `AFTER` clause: on a pre-0.0.13 install upgrading straight to this version,
+			// `extras` is added in the SAME combined ALTER, and MySQL resolves `AFTER extras`
+			// against the pre-ALTER schema, throwing "Unknown column 'extras'" and failing the
+			// whole atomic ALTER. Column ordinal position is cosmetic and addressed by name everywhere.
+			'language VARCHAR(20)',
 			'INDEX idx_form_id_language (form_id, language)',
 		];
 	}

@@ -135,6 +135,11 @@ export const transformEntryDetail = ( entryDetail ) => {
 		status: entryDetail.status,
 		statusLabel: getStatusLabel( entryDetail.status ),
 		createdAt: entryDetail.created_at,
+		language:
+			typeof entryDetail.language === 'string' &&
+			entryDetail.language !== ''
+				? entryDetail.language.toUpperCase()
+				: '',
 		formData: entryDetail.form_data || [],
 		formContent: entryDetail.form_content || [],
 		submissionInfo: {

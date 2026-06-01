@@ -175,7 +175,26 @@ if ( $use_banner_as_page_background ) {
 						if ( apply_filters( 'srfm_instant_form_show_language_switcher', true ) ) {
 							$srfm_language_switcher = Multilingual_Manager::get_instance()->provider()->render_language_switcher();
 							if ( '' !== $srfm_language_switcher ) {
-								echo '<div class="srfm-language-switcher">' . wp_kses_post( $srfm_language_switcher ) . '</div>';
+								// Tailored allowlist: a bare wp_kses_post() would strip the switcher's
+								// hreflang/lang link attributes (an i18n/accessibility regression). The
+								// markup is already individually escaped where it is built in the provider.
+								$srfm_switcher_allowed_html = [
+									'ul' => [
+										'class'      => true,
+										'role'       => true,
+										'aria-label' => true,
+									],
+									'li' => [
+										'class' => true,
+									],
+									'a'  => [
+										'href'     => true,
+										'hreflang' => true,
+										'lang'     => true,
+										'class'    => true,
+									],
+								];
+								echo '<div class="srfm-language-switcher">' . wp_kses( $srfm_language_switcher, $srfm_switcher_allowed_html ) . '</div>';
 							}
 						}
 						?>

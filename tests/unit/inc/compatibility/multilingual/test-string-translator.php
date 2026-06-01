@@ -221,15 +221,6 @@ class Test_String_Translator extends TestCase {
 		$this->assertSame( 'sureforms', $this->stub->calls[0]['domain'] );
 	}
 
-	public function test_translate_notification_reply_to_uses_correct_name() {
-		String_Translator::get_instance()->translate_notification_reply_to( 42, 0, 'reply@example.com' );
-
-		$this->assertCount( 1, $this->stub->calls );
-		$this->assertSame( 'form_42_notification_0_reply_to', $this->stub->calls[0]['name'] );
-		$this->assertSame( 'reply@example.com', $this->stub->calls[0]['value'] );
-		$this->assertSame( 'sureforms', $this->stub->calls[0]['domain'] );
-	}
-
 	public function test_translate_restriction_message_uses_correct_name() {
 		String_Translator::get_instance()->translate_restriction_message( 42, 'Form closed' );
 
@@ -396,6 +387,112 @@ class Test_String_Translator extends TestCase {
 		$out     = String_Translator::get_instance()->translate_form_content( 42, $content );
 
 		$this->assertSame( $content, $out );
+	}
+
+	public function test_translate_form_content_with_blocks_returns_markup_and_parsed_blocks() {
+		$translating_stub = new Srfm_String_Translator_Translating_Stub();
+		add_filter(
+			'srfm_multilingual_provider',
+			static function () use ( $translating_stub ) {
+				return $translating_stub;
+			},
+			20
+		);
+		$this->reset_singleton( \SRFM\Inc\Compatibility\Multilingual\Multilingual_Manager::class );
+		$this->reset_singleton( String_Translator::class );
+
+		// Two top-level blocks. Unique content keeps the per-content cache key isolated.
+		$content = '<!-- wp:srfm/input {"block_id":"wb1","label":"With Blocks A"} /-->'
+			. '<!-- wp:srfm/input {"block_id":"wb2","label":"With Blocks B"} /-->';
+
+		[ $markup, $blocks ] = String_Translator::get_instance()->translate_form_content_with_blocks( 4242, $content );
+
+		$this->assertStringContainsString( '"label":"DE:With Blocks A"', $markup );
+		$this->assertIsArray( $blocks );
+		// Top-level block count is returned for the render path to reuse (no re-parse).
+		$this->assertCount( 2, $blocks );
+
+		remove_all_filters( 'srfm_multilingual_provider' );
+	}
+
+	public function test_translate_form_content_with_blocks_passthrough_when_inactive() {
+		// Remove the active stub so the resolved provider is inactive.
+		remove_filter( 'srfm_multilingual_provider', $this->filter, 10 );
+		$this->filter = null;
+		$this->reset_singleton( \SRFM\Inc\Compatibility\Multilingual\Multilingual_Manager::class );
+		$this->reset_singleton( String_Translator::class );
+
+		$content = '<!-- wp:srfm/input {"block_id":"pt1","label":"X"} /-->';
+
+		[ $markup, $blocks ] = String_Translator::get_instance()->translate_form_content_with_blocks( 4243, $content );
+
+		// Pure pass-through: markup unchanged and no parsed blocks returned (render path parses once itself).
+		$this->assertSame( $content, $markup );
+		$this->assertSame( [], $blocks );
+	}
+
+	public function test_translatable_block_attributes_filter_extends_and_falls_back() {
+		// Filter can add a Pro block to the map.
+		add_filter(
+			'srfm_translatable_block_attributes',
+			static function ( $map ) {
+				$map['srfm/pro-field'] = [ 'label', 'help' ];
+				return $map;
+			}
+		);
+		$map = String_Translator::translatable_block_attributes();
+		$this->assertArrayHasKey( 'srfm/pro-field', $map );
+		$this->assertArrayHasKey( 'srfm/input', $map, 'Core entries remain.' );
+		remove_all_filters( 'srfm_translatable_block_attributes' );
+
+		// A non-array filter return falls back to the core map (no fatal).
+		add_filter( 'srfm_translatable_block_attributes', '__return_false' );
+		$fallback = String_Translator::translatable_block_attributes();
+		$this->assertIsArray( $fallback );
+		$this->assertArrayHasKey( 'srfm/input', $fallback );
+		remove_all_filters( 'srfm_translatable_block_attributes' );
+	}
+
+	public function test_translatable_option_blocks_filter_extends_and_falls_back() {
+		add_filter(
+			'srfm_translatable_option_blocks',
+			static function ( $blocks ) {
+				$blocks[] = 'srfm/pro-rating';
+				return $blocks;
+			}
+		);
+		$blocks = String_Translator::translatable_option_blocks();
+		$this->assertContains( 'srfm/pro-rating', $blocks );
+		$this->assertContains( 'srfm/dropdown', $blocks, 'Core entries remain.' );
+		remove_all_filters( 'srfm_translatable_option_blocks' );
+
+		add_filter( 'srfm_translatable_option_blocks', '__return_null' );
+		$fallback = String_Translator::translatable_option_blocks();
+		$this->assertIsArray( $fallback );
+		$this->assertContains( 'srfm/dropdown', $fallback );
+		remove_all_filters( 'srfm_translatable_option_blocks' );
+	}
+
+	public function test_translatable_maps_stay_consistent() {
+		$attribute_map = String_Translator::translatable_block_attributes();
+		$option_blocks = String_Translator::translatable_option_blocks();
+
+		// Every block name in either map must be a SureForms (`srfm/`) block.
+		foreach ( array_keys( $attribute_map ) as $block_name ) {
+			$this->assertStringStartsWith( 'srfm/', $block_name );
+		}
+
+		// Drift guard: any block that declares translatable option labels must also
+		// appear in the attribute map, so the collector and translator never disagree
+		// about which blocks they walk. Catches a new option block added to one map
+		// but forgotten in the other.
+		foreach ( $option_blocks as $block_name ) {
+			$this->assertArrayHasKey(
+				$block_name,
+				$attribute_map,
+				"Option block {$block_name} must also be present in translatable_block_attributes()."
+			);
+		}
 	}
 
 	public function test_translate_blocks_recursive_walks_inner_blocks() {

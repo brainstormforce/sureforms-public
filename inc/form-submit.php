@@ -1289,10 +1289,12 @@ class Form_Submit {
 			return array_key_exists( $language, $active );
 		}
 
-		// Last-ditch: trust the regex-validated code so we don't drop a
-		// legitimate submission just because the provider hasn't published its
-		// language list yet.
-		return true;
+		// A provider IS active but its language list is unavailable. Rather than
+		// fail open and trust an arbitrary client-supplied code, accept it only when
+		// it matches the server-resolved current language. The caller already
+		// defaults $entry_language to current_language(), so this keeps mis-tagging
+		// to the server's own determination instead of the (cacheable) client value.
+		return $language === $provider->current_language();
 	}
 
 	/**

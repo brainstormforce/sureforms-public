@@ -414,7 +414,7 @@ class Helper {
 					ob_start();
 					?>
 					<label id="srfm-label-<?php echo esc_attr( $block_id ); ?>" for="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>" class="srfm-block-label">
-						<?php echo wp_kses_post( $label ); ?>
+						<?php echo esc_html( $label ); ?>
 						<?php if ( $required ) { ?>
 							<span class="srfm-required" aria-hidden="true"> *</span>
 						<?php } ?>
@@ -428,7 +428,7 @@ class Helper {
 					ob_start();
 					?>
 					<div class="srfm-description" id="srfm-description-<?php echo esc_attr( $block_id ); ?>">
-						<?php echo wp_kses_post( $help ); ?>
+						<?php echo esc_html( $help ); ?>
 					</div>
 					<?php
 					$markup = ob_get_clean();
@@ -457,14 +457,14 @@ class Helper {
 				}
 				break;
 			case 'placeholder':
-				$markup = $label && '1' === $show_labels_as_placeholder ? wp_kses_post( $label ) . ( $required ? esc_attr( $required_sign ) : '' ) : '';
+				$markup = $label && '1' === $show_labels_as_placeholder ? esc_html( $label ) . ( $required ? esc_attr( $required_sign ) : '' ) : '';
 				break;
 			case 'label_text':
 				// This has been added for generating label text for the form markup instead of adding it in the label tag.
 				if ( $label ) {
 					ob_start();
 					?>
-					<?php echo wp_kses_post( $label ); ?>
+					<?php echo esc_html( $label ); ?>
 					<?php if ( $required ) { ?>
 						<span class="srfm-required" aria-hidden="true"> *</span>
 					<?php } ?>

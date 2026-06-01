@@ -9,7 +9,6 @@
 
 namespace SRFM\Inc;
 
-use SRFM\Inc\Compatibility\Multilingual\String_Collector;
 use SRFM\Inc\Compatibility\Multilingual\String_Translator;
 use SRFM\Inc\Traits\Get_Instance;
 use SRFM\Inc\Payments\Payment_Helper;
@@ -124,11 +123,6 @@ class Frontend_Assets {
 				);
 			}
 		}
-
-		// Register the built-in validation message strings with the active
-		// multilingual provider (no-op when none is active). Idempotent on the
-		// WPML side, so doing this on every frontend request is safe.
-		String_Collector::get_instance()->collect_validation_messages();
 
 		$validation_messages = array_merge(
 			Translatable::get_frontend_validation_messages(),

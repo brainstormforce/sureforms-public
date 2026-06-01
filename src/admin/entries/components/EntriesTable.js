@@ -169,8 +169,8 @@ const EntriesTable = ( {
 			sortBy: 'language',
 			headerClassName: 'w-[8%]',
 			render: ( entry ) => (
-				<span className="text-sm font-normal text-text-secondary">
-					{ entry.language || '—' }
+				<span className="line-clamp-1 break-all overflow-hidden text-sm font-normal text-text-secondary">
+					{ entry.language || '-' }
 				</span>
 			),
 		},

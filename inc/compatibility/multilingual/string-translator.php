@@ -29,7 +29,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  *  - Notification subject:         `form_{form_id}_notification_{N}_subject`
  *  - Notification body:            `form_{form_id}_notification_{N}_body`
  *  - Notification from_name:       `form_{form_id}_notification_{N}_from_name`
- *  - Notification reply_to:        `form_{form_id}_notification_{N}_reply_to`
  *  - Form restriction message:     `form_{form_id}_restriction_message`
  *  - Block string attribute:       `form_{form_id}_block_{block_id}_{attribute}`
  *  - Block option label:           `form_{form_id}_block_{block_id}_option_{N}_label`
@@ -61,7 +60,7 @@ class String_Translator {
 	 * @return array<string, array<int, string>>
 	 */
 	public static function translatable_block_attributes(): array {
-		return [
+		$map = [
 			'srfm/input'         => [ 'label', 'placeholder', 'help', 'errorMsg', 'defaultValue', 'duplicateMsg' ],
 			'srfm/email'         => [ 'label', 'placeholder', 'help', 'errorMsg', 'defaultValue', 'duplicateMsg', 'confirmLabel' ],
 			'srfm/phone'         => [ 'label', 'placeholder', 'help', 'errorMsg', 'duplicateMsg' ],
@@ -76,6 +75,20 @@ class String_Translator {
 			'srfm/inline-button' => [ 'buttonText' ],
 			'srfm/payment'       => [ 'label', 'help', 'errorMsg', 'amountLabel', 'paymentDescription', 'oneTimeLabel', 'subscriptionLabel' ],
 		];
+
+		/**
+		 * Filters the map of block name → translatable scalar attribute keys.
+		 *
+		 * Both the string-collector (registration on save) and the string-translator
+		 * (translation at render) read this method, so a single filter keeps the two
+		 * sides in lockstep. Pro field blocks register their translatable attributes here.
+		 *
+		 * @since x.x.x
+		 * @param array<string, array<int, string>> $map Block name → attribute keys.
+		 */
+		$filtered = apply_filters( 'srfm_translatable_block_attributes', $map );
+
+		return is_array( $filtered ) ? $filtered : $map;
 	}
 
 	/**
@@ -85,7 +98,21 @@ class String_Translator {
 	 * @return array<int, string>
 	 */
 	public static function translatable_option_blocks(): array {
-		return [ 'srfm/dropdown', 'srfm/multi-choice' ];
+		$blocks = [ 'srfm/dropdown', 'srfm/multi-choice' ];
+
+		/**
+		 * Filters the list of block names whose `options[*].label` entries are translatable.
+		 *
+		 * Read by both the string-collector (registration) and the string-translator
+		 * (translation), so a single filter keeps the two sides in lockstep. Pro
+		 * option-bearing blocks opt into option-label translation here.
+		 *
+		 * @since x.x.x
+		 * @param array<int, string> $blocks Block names with translatable option labels.
+		 */
+		$filtered = apply_filters( 'srfm_translatable_option_blocks', $blocks );
+
+		return is_array( $filtered ) ? $filtered : $blocks;
 	}
 
 	/**
@@ -174,24 +201,6 @@ class String_Translator {
 		}
 
 		$name = 'form_' . $form_id . '_notification_' . $index . '_from_name';
-		return $this->dispatch( $value, $name );
-	}
-
-	/**
-	 * Translate an email notification reply-to address.
-	 *
-	 * @param int    $form_id Form post ID.
-	 * @param int    $index   Zero-based index of the notification within the form's notification set.
-	 * @param string $value   Original value.
-	 * @since x.x.x
-	 * @return string Translated value, or the original when no provider/translation is available.
-	 */
-	public function translate_notification_reply_to( int $form_id, int $index, string $value ): string {
-		if ( '' === $value ) {
-			return $value;
-		}
-
-		$name = 'form_' . $form_id . '_notification_' . $index . '_reply_to';
 		return $this->dispatch( $value, $name );
 	}
 
@@ -297,16 +306,77 @@ class String_Translator {
 	}
 
 	/**
-	 * Pre-translate a form's raw block markup before it reaches `do_blocks()`.
+	 * Pre-translate a form's raw block markup and also return the parsed top-level
+	 * blocks so the render path can derive its block count without re-parsing the
+	 * rendered HTML.
 	 *
 	 * Parses the post content, walks every translatable SureForms block attribute
 	 * (per {@see translatable_block_attributes()} and {@see translatable_option_blocks()}),
 	 * substitutes the translated value where the active multilingual provider has one,
-	 * and re-serialises the markup back into a string. Inner blocks are walked
-	 * recursively so nested fields are covered.
+	 * and re-serialises the markup. Inner blocks are walked recursively.
 	 *
-	 * Acts as a no-op when no multilingual provider is active or when the content
-	 * contains no SureForms blocks the translator knows about.
+	 * This is the canonical, idempotent entry point that every render path (the
+	 * standard form markup, and Pro multi-step / conversational renderers) should
+	 * call AFTER applying the `srfm_get_form_post_content` filter and AFTER any
+	 * path-specific marker injection — never before.
+	 *
+	 * The translated markup is cached per (form, language, post-modified, content)
+	 * in the object cache: `post_modified_gmt` auto-invalidates on every form edit,
+	 * and the content hash guards against content-mutating filters (e.g. randomised
+	 * question order). Acts as a pure pass-through — no cache access, no parse — when
+	 * no provider is active or the content is empty.
+	 *
+	 * @param int           $form_id      Form post ID.
+	 * @param string        $post_content Raw block markup (typically `$post->post_content`).
+	 * @param \WP_Post|null $post        Form post, used only for cache invalidation via `post_modified_gmt`.
+	 * @since x.x.x
+	 * @return array{0: string, 1: array<int|string, array<string, mixed>>} [ markup, parsed top-level blocks ].
+	 */
+	public function translate_form_content_with_blocks( int $form_id, string $post_content, ?\WP_Post $post = null ): array {
+		$provider = Multilingual_Manager::get_instance()->provider();
+
+		// Single-language / no-provider path: pure pass-through, zero overhead.
+		if ( ! $provider->is_active() || '' === trim( $post_content ) ) {
+			return [ $post_content, [] ];
+		}
+
+		$language  = $provider->current_language();
+		$modified  = $post instanceof \WP_Post ? (string) $post->post_modified_gmt : '';
+		$cache_key = 'srfm_xl_form_' . $form_id . '_' . md5( $language . '|' . $modified . '|' . md5( $post_content ) );
+
+		$cached = wp_cache_get( $cache_key, 'srfm_multilingual' );
+		if ( is_string( $cached ) ) {
+			return [ $cached, parse_blocks( $cached ) ];
+		}
+
+		$blocks = parse_blocks( $post_content );
+
+		if ( empty( $blocks ) ) {
+			return [ $post_content, [] ];
+		}
+
+		$translated_blocks = $this->translate_blocks_recursive( $form_id, $blocks );
+
+		// $translated_blocks is the round-tripped output of parse_blocks() with only
+		// its scalar attribute values swapped, so serialize_blocks() is safe here.
+		// PHPStan's stricter shape declaration for serialize_blocks() can't see through
+		// the generic array<string, mixed> we use internally to keep the recursion
+		// type-stable across innerBlocks. The runtime shape is identical.
+		// @phpstan-ignore-next-line argument.type
+		$markup = serialize_blocks( $translated_blocks );
+
+		wp_cache_set( $cache_key, $markup, 'srfm_multilingual', HOUR_IN_SECONDS );
+
+		return [ $markup, $translated_blocks ];
+	}
+
+	/**
+	 * Back-compatible single-string entry point. Pre-translate a form's raw block
+	 * markup before it reaches `do_blocks()`.
+	 *
+	 * Thin wrapper over {@see translate_form_content_with_blocks()} preserved for
+	 * existing callers (including Pro) that only need the markup string. Idempotent:
+	 * re-feeding already-translated markup is safe.
 	 *
 	 * @param int    $form_id      Form post ID.
 	 * @param string $post_content Raw block markup (typically `$post->post_content`).
@@ -314,27 +384,10 @@ class String_Translator {
 	 * @return string The (possibly translated) block markup.
 	 */
 	public function translate_form_content( int $form_id, string $post_content ): string {
-		$provider = Multilingual_Manager::get_instance()->provider();
+		$post       = get_post( $form_id );
+		[ $markup ] = $this->translate_form_content_with_blocks( $form_id, $post_content, $post instanceof \WP_Post ? $post : null );
 
-		if ( ! $provider->is_active() || '' === trim( $post_content ) ) {
-			return $post_content;
-		}
-
-		$blocks = parse_blocks( $post_content );
-
-		if ( empty( $blocks ) ) {
-			return $post_content;
-		}
-
-		$blocks = $this->translate_blocks_recursive( $form_id, $blocks );
-
-		// $blocks is the round-tripped output of parse_blocks() with only its scalar
-		// attribute values swapped, so serialize_blocks() is safe here. PHPStan's
-		// stricter shape declaration for serialize_blocks() can't see through the
-		// generic array<string, mixed> we use internally to keep the recursion
-		// type-stable across innerBlocks. The runtime shape is identical.
-		// @phpstan-ignore-next-line argument.type
-		return serialize_blocks( $blocks );
+		return $markup;
 	}
 
 	/**

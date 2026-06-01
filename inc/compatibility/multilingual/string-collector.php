@@ -43,6 +43,16 @@ class String_Collector {
 	 */
 	public function __construct() {
 		add_action( 'save_post_' . SRFM_FORMS_POST_TYPE, [ $this, 'on_form_save' ], 20, 1 );
+
+		// Register the GLOBAL built-in validation strings once per admin request
+		// (no-op when no multilingual provider is active). These strings are not
+		// per-form, so they belong on an admin/authoring hook rather than on every
+		// frontend request. WPML dedupes by (domain, name, value), so re-asserting
+		// on each admin load is cheap and idempotent, and covers fresh installs and
+		// the WPML-activated-after-SureForms case.
+		if ( is_admin() ) {
+			add_action( 'admin_init', [ $this, 'collect_validation_messages' ] );
+		}
 	}
 
 	/**
@@ -124,7 +134,10 @@ class String_Collector {
 				continue;
 			}
 
-			$fields = [ 'subject', 'body', 'from_name', 'reply_to' ];
+			// reply_to is an email address (or a smart tag resolving to one), not
+			// human-readable copy, so it is intentionally excluded from the
+			// translatable set. from_name can legitimately be a localized display name.
+			$fields = [ 'subject', 'body', 'from_name' ];
 			foreach ( $fields as $field ) {
 				$value = isset( $notification[ $field ] ) ? Helper::get_string_value( $notification[ $field ] ) : '';
 				$this->register_if_non_empty(
@@ -153,9 +166,10 @@ class String_Collector {
 	 * provider, using the raw English source as the value. Names follow
 	 * {@see String_Translator::translate_validation_message()}: `validation_{key}`.
 	 *
-	 * Idempotent — WPML's `wpml_register_single_string` action deduplicates by
-	 * (domain, name, value), so calling this on every frontend request is safe.
-	 * Bails when no provider is active.
+	 * These strings are global (not per-form), so registration runs on `admin_init`
+	 * (see the constructor) rather than on the front end. Idempotent — WPML's
+	 * `wpml_register_single_string` action deduplicates by (domain, name, value),
+	 * so re-asserting on each admin load is safe. Bails when no provider is active.
 	 *
 	 * @since x.x.x
 	 * @return void

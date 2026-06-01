@@ -14,12 +14,13 @@
 		   per-form naming scheme (`form_{form_id}_block_{block_id}_{attribute}`)
 		   so each form's strings stay grouped together in WPML's String
 		   Translation UI rather than appearing as flat per-block-type entries.
-		3. Submit button text is registered via WPML's custom-field translation
-		   (`<custom-field action="translate">`); other form-level meta
-		   (notifications, confirmation messages, restriction message) is
-		   registered programmatically by String_Collector for the same
-		   per-form-grouping reason and to avoid WPML's nested-array
-		   <custom-fields-texts> quirks.
+		3. ALL form-level meta — submit button text, notifications, confirmation
+		   messages and the restriction message — is registered programmatically by
+		   String_Collector under a per-form naming scheme (e.g. `form_{form_id}_submit_button`)
+		   rather than via `<custom-fields>`. This keeps every form's strings grouped
+		   together in WPML's String Translation UI, avoids WPML's nested-array
+		   <custom-fields-texts> quirks, and prevents a duplicate/dead declaration
+		   competing with the programmatic registration at render time.
 
 		@since x.x.x
 	-->
@@ -28,12 +29,4 @@
 	<custom-types>
 		<custom-type translate="0">sureforms_form</custom-type>
 	</custom-types>
-
-	<!-- Single scalar meta — copied at translation time. Nested-array meta
-	     (_srfm_email_notification, _srfm_form_confirmation,
-	     _srfm_form_restriction) is registered programmatically by
-	     String_Collector for reliability + per-form grouping. -->
-	<custom-fields>
-		<custom-field action="translate">_srfm_submit_button_text</custom-field>
-	</custom-fields>
 </wpml-config>

@@ -210,7 +210,10 @@ class WPML_Provider implements Provider {
 				continue;
 			}
 
-			$is_current = $lang === $current;
+			// Prefer WPML's own `active` flag from wpml_active_languages (the canonical
+			// current-language signal for the switcher), falling back to comparing against
+			// current_language() when the flag isn't present.
+			$is_current = isset( $language['active'] ) ? ! empty( $language['active'] ) : ( $lang === $current );
 			$class      = $is_current ? 'srfm-lang-item srfm-lang-item-current' : 'srfm-lang-item';
 			$items     .= sprintf(
 				'<li class="%1$s"><a href="%2$s" hreflang="%3$s" lang="%3$s">%4$s</a></li>',

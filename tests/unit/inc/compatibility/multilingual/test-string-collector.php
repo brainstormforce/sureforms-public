@@ -274,6 +274,30 @@ class Test_String_Collector extends TestCase {
 		$this->assertContains( 'form_' . $form_id . '_notification_0_from_name', $names );
 	}
 
+	public function test_collect_does_not_register_notification_reply_to() {
+		$this->install_stub_provider();
+		$form_id = $this->make_form();
+
+		$notifications = [
+			[
+				'subject'   => 'Subject A',
+				'body'      => 'Body A',
+				'from_name' => 'From A',
+				'reply_to'  => 'reply@example.com',
+			],
+		];
+		update_post_meta( $form_id, '_srfm_email_notification', $notifications );
+
+		String_Collector::get_instance()->collect( $form_id );
+
+		$names = $this->registered_names();
+		// reply_to is an email address — it must never be registered as translatable.
+		$this->assertNotContains( 'form_' . $form_id . '_notification_0_reply_to', $names );
+		// The genuine copy fields are still registered.
+		$this->assertContains( 'form_' . $form_id . '_notification_0_subject', $names );
+		$this->assertContains( 'form_' . $form_id . '_notification_0_from_name', $names );
+	}
+
 	public function test_collect_skips_empty_strings() {
 		$stub    = $this->install_stub_provider();
 		$form_id = $this->make_form();
