@@ -1,59 +1,83 @@
 import { useDispatch, useSelect } from '@wordpress/data';
 import { store as editorStore } from '@wordpress/editor';
-import { useEffect, useState } from '@wordpress/element';
+import { useEffect, useMemo, useRef, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import ComponentKeyValueUI from '@Components/misc/ComponentKeyValueUI';
-import { useDebouncedCallback } from 'use-debounce';
 import { applyFilters } from '@wordpress/hooks';
 import DefaultConfirmationTypes from './DefaultConfirmationTypes';
 import { Label } from '@bsf/force-ui';
 import RadioGroup from '@Admin/components/RadioGroup';
 import TabContentWrapper from '@Components/tab-content-wrapper';
 import { getWordPressPages } from '@Utils/Helpers';
+import { srfmEditFormMeta } from '@Components/tab-content-wrapper/edit-form-meta';
+import { STORE_NAME as SRFM_STORE_NAME } from '@Store/constants';
 
-const FormConfirmSetting = ( { toast, setHasValidationErrors } ) => {
+const FormConfirmSetting = ( { setHasValidationErrors } ) => {
 	const sureforms_keys = useSelect( ( select ) =>
 		select( editorStore ).getEditedPostAttribute( 'meta' )
 	);
 
-	const { editPost } = useDispatch( editorStore );
+	// `data` is the live editing state; `prevData` is the last-saved baseline.
+	// Both start from the post-meta value on mount so isDirty reads false
+	// until the user edits a field. `onSaveSuccess` re-baselines after a
+	// successful POST.
 	const [ data, setData ] = useState( {} );
+	const [ prevData, setPrevData ] = useState( {} );
 	const [ pageOptions, setPageOptions ] = useState( [] );
 	const [ errorMessage, setErrorMessage ] = useState( null );
-	const [ showSuccess, setShowSuccess ] = useState( null );
+	// Tab-owned in-flight save flag. TabContentWrapper toggles this via
+	// `onSavingChange` around the POST so the Save button locks during
+	// the network call.
+	const [ isSaving, setIsSaving ] = useState( false );
 
-	const handleSaveChanges = () => {
-		const validationStatus = validateForm();
+	const isDirty = useMemo(
+		() => JSON.stringify( data ) !== JSON.stringify( prevData ),
+		[ data, prevData ]
+	);
 
-		setErrorMessage( validationStatus );
-		if ( '' !== validationStatus ) {
-			setHasValidationErrors( true );
-			toast.dismiss();
-			return false;
-		}
-		updateMeta( '_srfm_form_confirmation', [ data ] );
-		setShowSuccess( true );
-		toast.dismiss();
-	};
-
-	const debounced = useDebouncedCallback( handleSaveChanges, 500 );
-
+	// Push the local dirty signal into the store so the dialog's
+	// unsaved-changes guard (tab switch / X / Esc / backdrop / beforeunload)
+	// can read it without holding a reference to this component.
+	const { setSingleFormSettingUnsave } = useDispatch( SRFM_STORE_NAME );
 	useEffect( () => {
-		if ( null !== errorMessage ) {
-			setErrorMessage( validateForm() );
-		}
+		setSingleFormSettingUnsave( isDirty );
+	}, [ isDirty, setSingleFormSettingUnsave ] );
 
+	// Unmount cleanup — covers every exit path (dialog close, tab switch
+	// via Discard & continue). Without this, the central flag would stay
+	// `true` and mis-fire the guard on the next tab click.
+	useEffect( () => {
+		return () => {
+			setSingleFormSettingUnsave( false );
+		};
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [] );
+
+	// Listen for the discard signal dispatched by the dialog's "Discard &
+	// continue" branch. Each bump of `discardCounter` is one discard event;
+	// the ref skips the initial render so the tab doesn't reset itself on
+	// mount.
+	const discardCounter = useSelect(
+		( s ) =>
+			s( SRFM_STORE_NAME )?.selectSingleFormSettingDiscardCounter?.() ||
+			0,
+		[]
+	);
+	const lastDiscardCounter = useRef( discardCounter );
+	useEffect( () => {
+		if ( discardCounter === lastDiscardCounter.current ) {
+			return;
+		}
+		lastDiscardCounter.current = discardCounter;
+		setData( prevData );
+	}, [ discardCounter ] );
+
+	// Clear any stale form-level validation error flag when the user edits.
+	// Validation runs at Save click (`validateBeforeSave`), not on every
+	// keystroke.
+	useEffect( () => {
 		setHasValidationErrors( false );
-		debounced( data );
 	}, [ data ] );
-	useEffect( () => {
-		if ( true === showSuccess ) {
-			setTimeout( () => {
-				setShowSuccess( false );
-				toast.dismiss();
-			}, 500 );
-		}
-	}, [ showSuccess ] );
 
 	const handleQueryParamsChange = ( queryParams ) => {
 		setData( { ...data, query_params: queryParams } );
@@ -91,7 +115,10 @@ const FormConfirmSetting = ( { toast, setHasValidationErrors } ) => {
 		}
 		if ( 'custom url' === data?.confirmation_type ) {
 			if ( ! data?.custom_url ) {
-				validation = __( 'This field is required.', 'sureforms' );
+				validation = __(
+					'Please provide a custom URL.',
+					'sureforms'
+				);
 			} else {
 				try {
 					const newURL = new URL( data?.custom_url );
@@ -122,24 +149,35 @@ const FormConfirmSetting = ( { toast, setHasValidationErrors } ) => {
 		return validation;
 	};
 
-	function updateMeta( option, value ) {
-		const option_array = {};
-		option_array[ option ] = value;
-		editPost( {
-			meta: option_array,
-		} );
-	}
+	// Returns null on valid; an error string for TabContentWrapper to
+	// surface as a toast otherwise. Also stages the in-flight `data` into
+	// Redux `values` so `handleSave` reads the right payload, mirroring
+	// the EmailConfirmation pattern where `handleConfirmEmail` stages on
+	// validation success.
+	const validateBeforeSave = () => {
+		const error = validateForm();
+		setErrorMessage( error );
+		if ( error !== '' ) {
+			setHasValidationErrors( true );
+			return error;
+		}
+		srfmEditFormMeta( '_srfm_form_confirmation', [ data ] );
+		return null;
+	};
+
+	const onSaveSuccess = () => setPrevData( data );
 
 	useEffect( () => {
-		const formConfirmationData = sureforms_keys._srfm_form_confirmation;
+		const formConfirmationData = sureforms_keys?._srfm_form_confirmation;
 
 		// Fetch the first page of options and include saved value for label hydration.
 		getWordPressPages( setPageOptions, {
 			selectedUrl: formConfirmationData?.[ 0 ]?.page_url || '',
 		} );
 
-		if ( formConfirmationData ) {
+		if ( formConfirmationData?.[ 0 ] ) {
 			setData( formConfirmationData[ 0 ] );
+			setPrevData( formConfirmationData[ 0 ] );
 		}
 	}, [] );
 
@@ -231,6 +269,13 @@ const FormConfirmSetting = ( { toast, setHasValidationErrors } ) => {
 				'sureforms'
 			) }
 			showTitleHelpText={ true }
+			tabId="form_confirmation"
+			showSaveButton={ true }
+			validate={ validateBeforeSave }
+			isDirty={ isDirty }
+			isSaving={ isSaving }
+			onSavingChange={ setIsSaving }
+			onSaveSuccess={ onSaveSuccess }
 		>
 			<div className="space-y-6">
 				<div className="space-y-2">

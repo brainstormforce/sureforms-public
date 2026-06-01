@@ -181,13 +181,34 @@ class Editor_Nudge {
 			SRFM_VER
 		);
 
+		// Editor nudge UTM attribution — start.
+		// Tag the "Create Form" CTA with the same UTM scheme used by other
+		// SureForms nudge links so the destination flow can attribute the
+		// click. Only fills keys not already present in the URL.
+		$create_form_url = admin_url( 'admin.php?page=add-new-form' );
+		$nudge_utm       = [
+			'utm_source'   => 'sureforms_plugin',
+			'utm_medium'   => 'editor_nudge',
+			'utm_campaign' => 'core_plugin',
+		];
+		$existing_args   = [];
+		$query_string    = wp_parse_url( $create_form_url, PHP_URL_QUERY );
+		if ( is_string( $query_string ) && '' !== $query_string ) {
+			parse_str( $query_string, $existing_args );
+		}
+		$missing_utm = array_diff_key( $nudge_utm, $existing_args );
+		if ( ! empty( $missing_utm ) ) {
+			$create_form_url = add_query_arg( $missing_utm, $create_form_url );
+		}
+		// Editor nudge UTM attribution — end.
+
 		wp_localize_script(
 			$handle,
 			'srfm_editor_nudge',
 			[
 				'ajax_url'        => admin_url( 'admin-ajax.php' ),
 				'nonce'           => wp_create_nonce( self::NONCE_ACTION ),
-				'create_form_url' => admin_url( 'admin.php?page=add-new-form' ),
+				'create_form_url' => $create_form_url,
 				'message'         => __( 'Hey! It looks like you\'re creating a form. Build a ready-to-use form in under 30 seconds with SureForms AI, with no extra setup required.', 'sureforms' ),
 				'button_label'    => __( 'Create Form', 'sureforms' ),
 				'logo_url'        => SRFM_URL . 'admin/assets/sureforms-logo.png',

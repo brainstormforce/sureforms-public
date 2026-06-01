@@ -1,7 +1,9 @@
 import { __ } from '@wordpress/i18n';
 import { Link, useLocation } from 'react-router-dom';
 import { applyFilters } from '@wordpress/hooks';
+import { useSelect, useDispatch } from '@wordpress/data';
 import { cn } from '@Utils/Helpers';
+import { STORE_NAME as SRFM_STORE_NAME } from '../../store/constants';
 import {
 	Bot,
 	Cpu,
@@ -10,6 +12,7 @@ import {
 	Settings,
 	ShieldCheck,
 	TriangleAlert,
+	Globe,
 } from 'lucide-react';
 import { Accordion } from '@bsf/force-ui';
 import ottoKitIcon from '@Image/ottokit.png';
@@ -25,6 +28,33 @@ const defaultNavigation = [
 		icon: <Settings />,
 		helpText: __(
 			'Set up email summaries, admin alerts, and data preferences to manage your forms with ease.',
+			'sureforms'
+		),
+	},
+	{
+		name: __( 'Global Defaults', 'sureforms' ),
+		slug: 'global-defaults',
+		icon: <Globe />,
+		submenu: [
+			{
+				name: __( 'Email Notification', 'sureforms' ),
+				slug: 'email-notifications',
+			},
+			{
+				name: __( 'Form Confirmation', 'sureforms' ),
+				slug: 'form-confirmation',
+			},
+			{
+				name: __( 'Form Restrictions', 'sureforms' ),
+				slug: 'form-restrictions',
+			},
+			{
+				name: __( 'Compliance Settings', 'sureforms' ),
+				slug: 'compliance-settings',
+			},
+		],
+		helpText: __(
+			'Configure default settings that apply to newly created forms.',
 			'sureforms'
 		),
 	},
@@ -141,25 +171,74 @@ const NavLink = ( { label, path, icon: Icon, subPage = '' } ) => {
 	const activatedTab = useQuery();
 	const addActiveClass = false;
 
+	// Subscribe to the aggregate dirty signals so the click can be
+	// intercepted before react-router navigates.
+	const { pageDirty, proDirty } = useSelect( ( select ) => {
+		const store = select( SRFM_STORE_NAME );
+		return {
+			pageDirty: store?.selectGlobalSettingsPageDirty
+				? store.selectGlobalSettingsPageDirty()
+				: false,
+			proDirty: store?.selectAnyGlobalSettingsTabAdapterDirty
+				? store.selectAnyGlobalSettingsTabAdapterDirty()
+				: false,
+		};
+	}, [] );
+	const { requestGlobalSettingsNavigation } = useDispatch( SRFM_STORE_NAME );
+
 	const isActive = () => {
+		const currentTab = activatedTab.get( 'tab' );
+
 		if ( subPage ) {
-			return activatedTab.get( 'subpage' ) === subPage;
+			const currentSubpage = activatedTab.get( 'subpage' );
+			// If subpage matches and we're on the correct tab, it's active.
+			if ( currentTab === path && currentSubpage === subPage ) {
+				return true;
+			}
+			// Default 'email-notifications' as active when on global-defaults tab with no subpage.
+			if (
+				currentTab === 'global-defaults' &&
+				! currentSubpage &&
+				path === 'global-defaults' &&
+				subPage === 'email-notifications'
+			) {
+				return true;
+			}
+			return false;
 		}
 
-		if ( activatedTab.get( 'tab' ) === path ) {
+		if ( currentTab === path ) {
 			return true;
 		}
 		return false;
+	};
+
+	const targetSearch = `?page=sureforms_form_settings&tab=${ path }${
+		subPage ? `&subpage=${ subPage }` : ''
+	}`;
+
+	const onClick = ( e ) => {
+		// Already on this tab — let react-router skip the work.
+		if ( isActive() ) {
+			return;
+		}
+		if ( ! pageDirty && ! proDirty ) {
+			// Clean state: native react-router click.
+			return;
+		}
+		// Intercept: stash the destination and let `UnsavedChangesGuard`
+		// surface the modal. The actual navigation fires on confirm.
+		e.preventDefault();
+		requestGlobalSettingsNavigation( targetSearch );
 	};
 
 	return (
 		<Link
 			to={ {
 				location: `${ srfm_admin.site_url }/wp-admin/admin.php`,
-				search: `?page=sureforms_form_settings&tab=${ path }${
-					subPage ? `&subpage=${ subPage }` : ''
-				}`,
+				search: targetSearch,
 			} }
+			onClick={ onClick }
 			className={ cn(
 				'flex items-start gap-3.5 px-2.5 py-2 rounded-md transition-[colors,box-shadow] text-text-secondary hover:bg-brand-background-50 no-underline hover:no-underline focus:outline-none focus:ring-1 focus:ring-focus w-full',
 				( isActive() ||

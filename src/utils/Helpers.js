@@ -551,6 +551,17 @@ export const addQueryParam = ( url, paramValue, paramKey = 'utm_medium' ) => {
 	try {
 		const urlObj = new URL( url );
 		urlObj.searchParams.set( paramKey, paramValue );
+
+		// Keep SureForms attribution deterministic for outbound marketing links.
+		if ( 'utm_medium' === paramKey ) {
+			if ( ! urlObj.searchParams.get( 'utm_source' ) ) {
+				urlObj.searchParams.set( 'utm_source', 'sureforms_plugin' );
+			}
+			if ( ! urlObj.searchParams.get( 'utm_campaign' ) ) {
+				urlObj.searchParams.set( 'utm_campaign', 'core_plugin' );
+			}
+		}
+
 		return urlObj.toString();
 	} catch ( error ) {
 		console.error( 'Invalid URL:', error );
@@ -1262,6 +1273,20 @@ export function useShouldIframe() {
 	return useSelect( ( _select ) => {
 		const { getEditorSettings, getCurrentPostType, getDeviceType } =
 			_select( editorStore );
+
+		// Only consider core and SureForms blocks for the apiVersion check —
+		// third-party plugins (e.g. ThirstyAffiliates' ta/image at apiVersion
+		// 1) globally register legacy blocks that would otherwise flip this
+		// heuristic and force a non-iframe path, breaking the editor because
+		// WP itself still iframes the form editor canvas.
+		const relevantBlocks = _select( blocksStore )
+			.getBlockTypes()
+			.filter(
+				( type ) =>
+					type.name?.startsWith( 'srfm/' ) ||
+					type.name?.startsWith( 'core/' )
+			);
+
 		return (
 			// If the theme is block based and the Gutenberg plugin is active,
 			// we ALWAYS use the iframe for consistency across the post and site
@@ -1274,10 +1299,11 @@ export function useShouldIframe() {
 			getDeviceType() !== 'Desktop' ||
 			[ 'wp_template', 'wp_block' ].includes( getCurrentPostType() ) ||
 			// Finally, still iframe the editor if all blocks are v3 (which means
-			// they are marked as iframe-compatible).
-			_select( blocksStore )
-				.getBlockTypes()
-				.every( ( type ) => type.apiVersion >= 3 )
+			// they are marked as iframe-compatible). Guard against the empty
+			// case — `[].every()` returns true vacuously and would force the
+			// iframe path before any blocks have registered.
+			( relevantBlocks.length > 0 &&
+				relevantBlocks.every( ( type ) => type.apiVersion >= 3 ) )
 		);
 	}, [] );
 }

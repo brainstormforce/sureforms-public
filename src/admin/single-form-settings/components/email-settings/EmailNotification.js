@@ -1,20 +1,20 @@
 import { __ } from '@wordpress/i18n';
 import EmailConfirmation from './EmailConfirmation';
 import { useEffect, useState, forwardRef } from '@wordpress/element';
-import { store as editorStore } from '@wordpress/editor';
-import { useDispatch } from '@wordpress/data';
+import {
+	srfmEditFormMeta,
+	srfmSaveFormMeta,
+} from '@Components/tab-content-wrapper/edit-form-meta';
 import {
 	Button,
 	Container,
 	Switch,
 	Table,
-	Toaster,
-	toast,
 	Tooltip,
 } from '@bsf/force-ui';
 import { Copy, PenLine, Trash } from 'lucide-react';
 import TabContentWrapper from '@Components/tab-content-wrapper';
-import { cn } from '@Utils/Helpers';
+import { notify } from '@Utils/notify';
 import { applyFilters, doAction } from '@wordpress/hooks';
 
 const CustomButton = forwardRef(
@@ -54,7 +54,6 @@ const EmailNotification = ( {
 	const [ showConfirmation, setShowConfirmation ] = useState( false );
 	const [ currData, setCurrData ] = useState( [] );
 	const [ isPopup, setIsPopup ] = useState( null );
-	const { editPost } = useDispatch( editorStore );
 
 	const getNextUniqueId = () => {
 		if ( ! emailNotificationData || emailNotificationData.length === 0 ) {
@@ -75,12 +74,13 @@ const EmailNotification = ( {
 		const filterData = emailNotificationData.filter(
 			( el ) => el.id !== data.id
 		);
-		updateMeta( '_srfm_email_notification', filterData );
+		// Commit immediately so the deletion isn't seen as an "unsaved
+		// change" — no Save button activation, no unsaved-changes popup.
+		srfmSaveFormMeta( '_srfm_email_notification', filterData );
 
 		doAction( 'srfm.emailNotification.deleted', data );
 
-		toast.dismiss();
-		toast.success( __( 'Email notification deleted!', 'sureforms' ), {
+		notify.success( __( 'Email notification deleted!', 'sureforms' ), {
 			duration: 500,
 		} );
 	};
@@ -94,12 +94,11 @@ const EmailNotification = ( {
 
 		doAction( 'srfm.emailNotification.duplicated', data, duplicateData );
 
-		toast.dismiss();
-		toast.success( __( 'Email notification duplicated!', 'sureforms' ), {
+		notify.success( __( 'Email notification duplicated!', 'sureforms' ), {
 			duration: 500,
 		} );
 	};
-	const handleUpdateEmailData = ( newData ) => {
+	const handleUpdateEmailData = ( newData, { silent = false } = {} ) => {
 		let { email_to, subject } = newData;
 		let hasError = false;
 
@@ -128,14 +127,30 @@ const EmailNotification = ( {
 		}
 
 		if ( hasError ) {
-			toast.dismiss();
-			toast.error(
-				__(
-					'Please provide a recipient email address and subject line.',
-					'sureforms'
-				),
-				{ duration: 500 }
-			);
+			if ( ! silent ) {
+				// Branch the toast copy so the user knows exactly which
+				// required field is missing.
+				const missingEmail = ! email_to;
+				const missingSubject = ! subject;
+				let message;
+				if ( missingEmail && missingSubject ) {
+					message = __(
+						'Please provide a recipient email address and subject line.',
+						'sureforms'
+					);
+				} else if ( missingEmail ) {
+					message = __(
+						'Please provide a recipient email address.',
+						'sureforms'
+					);
+				} else {
+					message = __(
+						'Please provide a subject line.',
+						'sureforms'
+					);
+				}
+				notify.error( message, { duration: 500 } );
+			}
 			setHasValidationErrors( true );
 			return false;
 		}
@@ -153,15 +168,10 @@ const EmailNotification = ( {
 			} );
 		}
 		updateMeta( '_srfm_email_notification', currEmailData );
-		toast.dismiss();
 		return true;
 	};
 	function updateMeta( option, value ) {
-		const option_array = {};
-		option_array[ option ] = value;
-		editPost( {
-			meta: option_array,
-		} );
+		srfmEditFormMeta( option, value );
 	}
 	const handleToggle = ( data ) => {
 		const updatedData = emailNotificationData.map( ( el ) => {
@@ -170,20 +180,11 @@ const EmailNotification = ( {
 			}
 			return el;
 		} );
-		updateMeta( '_srfm_email_notification', updatedData );
-
-		toast.dismiss();
-		if ( ! data.status ) {
-			toast.success(
-				__( 'Email Notification enabled successfully.', 'sureforms' ),
-				{ duration: 500 }
-			);
-		} else {
-			toast.success(
-				__( 'Email Notification disabled successfully.', 'sureforms' ),
-				{ duration: 500 }
-			);
-		}
+		// Commit immediately so flipping status isn't seen as an "unsaved
+		// change" — it shouldn't activate Save or trip the discard popup.
+		// The Switch in the table re-renders from the new data, so the
+		// "enabled/disabled successfully" toast is redundant.
+		srfmSaveFormMeta( '_srfm_email_notification', updatedData );
 	};
 	const handleBackNotification = () => {
 		setShowConfirmation( false );
@@ -205,9 +206,6 @@ const EmailNotification = ( {
 		},
 	];
 
-	const isRTL = srfm_admin?.is_rtl;
-	const toasterPosition = isRTL ? 'top-left' : 'top-right';
-
 	useEffect( () => {
 		function handleClickOutside() {
 			setIsPopup( null );
@@ -222,28 +220,16 @@ const EmailNotification = ( {
 	}, [ isPopup ] );
 
 	if ( showConfirmation ) {
+		// Toaster is mounted once at the dialog level (Dialog.js).
+		// `notify.success/.error` calls from this branch route through
+		// the store and surface there.
 		return (
-			<>
-				<Toaster
-					position={ toasterPosition }
-					design="stack"
-					theme="light"
-					autoDismiss={ true }
-					dismissAfter={ 5000 }
-					className={ cn(
-						'z-[999999]',
-						isRTL
-							? '[&>li>div>div.absolute]:right-auto [&>li>div>div.absolute]:left-[0.75rem!important]'
-							: ''
-					) }
-				/>
-				<EmailConfirmation
-					setHasValidationErrors={ setHasValidationErrors }
-					handleConfirmEmail={ handleUpdateEmailData }
-					handleBackNotification={ handleBackNotification }
-					data={ currData }
-				/>
-			</>
+			<EmailConfirmation
+				setHasValidationErrors={ setHasValidationErrors }
+				handleConfirmEmail={ handleUpdateEmailData }
+				handleBackNotification={ handleBackNotification }
+				data={ currData }
+			/>
 		);
 	}
 
@@ -268,20 +254,14 @@ const EmailNotification = ( {
 				'Control email alerts sent to admins or users after a form submission.',
 				'sureforms'
 			) }
+			// The listing view itself has nothing to "save" — toggle and
+			// delete are immediate-commit; Add Notification opens the
+			// editor sub-view which renders its own Save button. Hide the
+			// header Save here so the regression flagged on the prior PR
+			// (perma-disabled Save) doesn't appear.
+			showSaveButton={ false }
+			tabId="email_notification"
 		>
-			<Toaster
-				position={ toasterPosition }
-				design="stack"
-				theme="light"
-				autoDismiss={ true }
-				dismissAfter={ 5000 }
-				className={ cn(
-					'z-[999999]',
-					isRTL
-						? '[&>li>div>div.absolute]:right-auto [&>li>div>div.absolute]:left-[0.75rem!important]'
-						: ''
-				) }
-			/>
 			<Table className="rounded-md">
 				<Table.Head>
 					{ headerContent.map( ( header, index ) => (

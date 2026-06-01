@@ -2638,6 +2638,85 @@ class Test_Helper extends TestCase {
         $this->assertEquals( '198.51.100.25', Helper::get_visitor_ip() );
     }
 
+    // ---------------------------------------------------------------
+    // SRFM-2709: get_sureforms_website_url() UTM behavior
+    // ---------------------------------------------------------------
+
+    /**
+     * When the caller passes no UTM args, the helper must return a clean
+     * site URL with no UTM params added by us. Privacy-policy and other
+     * non-tracking callers depend on this.
+     */
+    public function test_get_sureforms_website_url_no_utm_args_returns_clean_url() {
+        $url = Helper::get_sureforms_website_url( 'privacy-policy/' );
+
+        $this->assertStringContainsString( 'privacy-policy/', $url );
+        $this->assertStringNotContainsString( 'utm_', $url );
+    }
+
+    /**
+     * When the caller passes a placement via utm_medium, the helper must
+     * fill in the deterministic source/campaign defaults so the final URL
+     * carries stable attribution even if BSF_UTM_Analytics has no referer
+     * recorded.
+     */
+    public function test_get_sureforms_website_url_applies_deterministic_defaults_when_utm_medium_passed() {
+        $url     = Helper::get_sureforms_website_url( 'pricing', [ 'utm_medium' => 'plugin-list' ] );
+        $decoded = html_entity_decode( $url );
+        $query   = (string) wp_parse_url( $decoded, PHP_URL_QUERY );
+        $args    = [];
+        parse_str( $query, $args );
+
+        $this->assertSame( 'sureforms_plugin', $args['utm_source'] ?? null );
+        $this->assertSame( 'plugin-list', $args['utm_medium'] ?? null );
+        $this->assertSame( 'core_plugin', $args['utm_campaign'] ?? null );
+    }
+
+    /**
+     * Caller-provided UTM keys must override the deterministic defaults.
+     * Without this guarantee any caller wanting custom attribution would
+     * have its source silently flipped back to the default.
+     */
+    public function test_get_sureforms_website_url_caller_keys_win_over_defaults() {
+        $url     = Helper::get_sureforms_website_url(
+            'pricing',
+            [
+                'utm_source' => 'custom_source',
+                'utm_medium' => 'dashboard-widget',
+            ]
+        );
+        $decoded = html_entity_decode( $url );
+        $query   = (string) wp_parse_url( $decoded, PHP_URL_QUERY );
+        $args    = [];
+        parse_str( $query, $args );
+
+        $this->assertSame( 'custom_source', $args['utm_source'] ?? null, 'Caller-provided utm_source must win over default.' );
+        $this->assertSame( 'dashboard-widget', $args['utm_medium'] ?? null );
+        $this->assertSame( 'core_plugin', $args['utm_campaign'] ?? null );
+    }
+
+    /**
+     * The returned URL must be sanitized via esc_url so it is safe to
+     * echo into href attributes without further escaping at every call site.
+     * esc_url replaces raw `&` separators with the encoded `&amp;` / `&#038;`.
+     */
+    public function test_get_sureforms_website_url_returns_escaped_url() {
+        $url = Helper::get_sureforms_website_url( 'pricing', [ 'utm_medium' => 'plugin-list' ] );
+
+        $this->assertMatchesRegularExpression( '/(&amp;|&#038;)/', $url );
+    }
+
+    /**
+     * Non-array $utm_args (legacy callers) must be coerced to an empty
+     * array rather than triggering a fatal.
+     */
+    public function test_get_sureforms_website_url_handles_non_array_utm_args() {
+        $url = Helper::get_sureforms_website_url( 'pricing', 'not-an-array' );
+
+        $this->assertStringContainsString( 'pricing', $url );
+        $this->assertStringNotContainsString( 'utm_', $url );
+    }
+
     /**
      * Clear all IP-related $_SERVER variables for a clean test state.
      */

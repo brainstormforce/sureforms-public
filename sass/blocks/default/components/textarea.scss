@@ -2,6 +2,37 @@
 .srfm-form-container {
 	.srfm-form {
 		.srfm-textarea-block {
+			.srfm-error-wrap {
+				display: flex;
+				align-items: center;
+				gap: 8px;
+
+				.srfm-char-counter-wrap {
+					// Right-align the counter via margin-left:auto, not justify-content:space-between.
+					// The error message is the only other flex child and stays display:none until a
+					// validation error fires, so space-between would leave the counter (the lone visible
+					// child) pinned to the left — the very bug this block is meant to fix.
+					margin-left: auto;
+					flex-shrink: 0;
+					// Reset the inherited theme line-height so the wrap matches the fixed-height
+					// .srfm-error-wrap and the counter is not vertically clipped.
+					line-height: var( --srfm-error-line-height );
+
+					.srfm-char-counter {
+						font-size: var( --srfm-error-font-size );
+						font-weight: var( --srfm-error-font-weight );
+						line-height: var( --srfm-error-line-height );
+						color: var( --srfm-color-input-text );
+						opacity: 0.65;
+
+						&.srfm-char-counter--error {
+							color: var( --srfm-error-color );
+							opacity: 1;
+						}
+					}
+				}
+			}
+
 			.srfm-block-wrap {
 				line-height: 0;
 				.srfm-input-textarea {

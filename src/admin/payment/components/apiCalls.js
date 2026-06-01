@@ -1,5 +1,23 @@
 import apiFetch from '@wordpress/api-fetch';
 
+/**
+ * Extract the human-readable error message from a failed admin-ajax response.
+ *
+ * Backends in this codebase use both shapes interchangeably:
+ *   - wp_send_json_error( $message_string )         → data.data is the string
+ *   - wp_send_json_error( [ 'message' => '...' ] )  → data.data.message holds it
+ *
+ * @param {Object} data     The parsed admin-ajax response body.
+ * @param {string} fallback Message to use when no specific error is available.
+ * @return {string} A human-readable error message.
+ */
+const parseAjaxError = ( data, fallback ) => {
+	if ( typeof data?.data === 'string' && data.data ) {
+		return data.data;
+	}
+	return data?.data?.message || fallback;
+};
+
 export const fetchPayments = async ( args ) => {
 	const {
 		searchTerm,
@@ -51,8 +69,10 @@ export const fetchPayments = async ( args ) => {
 
 		// Check WordPress AJAX response format
 		if ( ! data.success ) {
-			const errorMessage =
-				data.data?.message || 'Failed to fetch payments';
+			const errorMessage = parseAjaxError(
+				data,
+				'Failed to fetch payments'
+			);
 			console.error( 'AJAX error:', errorMessage );
 			throw new Error( errorMessage );
 		}
@@ -88,8 +108,10 @@ export const fetchSinglePayment = async ( paymentId ) => {
 
 		// Check WordPress AJAX response format
 		if ( ! data.success ) {
-			const errorMessage =
-				data.data?.message || 'Failed to fetch payment details';
+			const errorMessage = parseAjaxError(
+				data,
+				'Failed to fetch payment details'
+			);
 			console.error( 'Single payment AJAX error:', errorMessage );
 			throw new Error( errorMessage );
 		}
@@ -135,8 +157,10 @@ export const refundPayment = async ( {
 
 		// Check WordPress AJAX response format
 		if ( ! data.success ) {
-			const errorMessage =
-				data.data?.message || 'Failed to process refund';
+			const errorMessage = parseAjaxError(
+				data,
+				'Failed to process refund'
+			);
 			console.error( 'Refund AJAX error:', errorMessage );
 			throw new Error( errorMessage );
 		}
@@ -172,8 +196,10 @@ export const fetchSubscription = async ( subscriptionId ) => {
 
 		// Check WordPress AJAX response format
 		if ( ! data.success ) {
-			const errorMessage =
-				data.data?.message || 'Failed to fetch subscription details';
+			const errorMessage = parseAjaxError(
+				data,
+				'Failed to fetch subscription details'
+			);
 			console.error( 'Subscription AJAX error:', errorMessage );
 			throw new Error( errorMessage );
 		}
@@ -208,8 +234,10 @@ export const fetchForms = async () => {
 
 		// Check WordPress AJAX response format
 		if ( ! data.success ) {
-			const errorMessage =
-				data.data?.message || 'Failed to fetch forms list';
+			const errorMessage = parseAjaxError(
+				data,
+				'Failed to fetch forms list'
+			);
 			console.error( 'Forms list AJAX error:', errorMessage );
 			throw new Error( errorMessage );
 		}
@@ -245,8 +273,10 @@ export const cancelSubscription = async ( paymentId ) => {
 
 		// Check WordPress AJAX response format
 		if ( ! data.success ) {
-			const errorMessage =
-				data.data?.message || 'Failed to cancel subscription';
+			const errorMessage = parseAjaxError(
+				data,
+				'Failed to cancel subscription'
+			);
 			console.error( 'Cancel subscription AJAX error:', errorMessage );
 			throw new Error( errorMessage );
 		}
@@ -282,8 +312,10 @@ export const pauseSubscription = async ( paymentId ) => {
 
 		// Check WordPress AJAX response format
 		if ( ! data.success ) {
-			const errorMessage =
-				data.data?.message || 'Failed to pause subscription';
+			const errorMessage = parseAjaxError(
+				data,
+				'Failed to pause subscription'
+			);
 			console.error( 'Pause subscription AJAX error:', errorMessage );
 			throw new Error( errorMessage );
 		}
@@ -320,7 +352,7 @@ export const addPaymentNote = async ( paymentId, noteText ) => {
 
 		// Check WordPress AJAX response format
 		if ( ! data.success ) {
-			const errorMessage = data.data?.message || 'Failed to add note';
+			const errorMessage = parseAjaxError( data, 'Failed to add note' );
 			console.error( 'Add note AJAX error:', errorMessage );
 			throw new Error( errorMessage );
 		}
@@ -357,7 +389,7 @@ export const deletePaymentNote = async ( paymentId, noteIndex ) => {
 
 		// Check WordPress AJAX response format
 		if ( ! data.success ) {
-			const errorMessage = data.data?.message || 'Failed to delete note';
+			const errorMessage = parseAjaxError( data, 'Failed to delete note' );
 			console.error( 'Delete note AJAX error:', errorMessage );
 			throw new Error( errorMessage );
 		}
@@ -394,7 +426,7 @@ export const deletePaymentLog = async ( paymentId, logIndex ) => {
 
 		// Check WordPress AJAX response format
 		if ( ! data.success ) {
-			const errorMessage = data.data?.message || 'Failed to delete log';
+			const errorMessage = parseAjaxError( data, 'Failed to delete log' );
 			console.error( 'Delete log AJAX error:', errorMessage );
 			throw new Error( errorMessage );
 		}

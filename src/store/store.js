@@ -1,7 +1,7 @@
 /**
  * WordPress dependencies
  */
-import { createReduxStore, register } from '@wordpress/data';
+import { createReduxStore, register, select } from '@wordpress/data';
 
 /**
  * Internal dependencies
@@ -25,5 +25,10 @@ export const store = createReduxStore( storeName, {
 	selectors,
 } );
 
-register( store );
+// Guard against the "Store 'sureforms' is already registered" warning when
+// both free and pro bundles each ship the store module and reach the same
+// `wp.data` registry. The probe returns falsy only on first registration.
+if ( ! select( storeName ) ) {
+	register( store );
+}
 // setInitialState();
