@@ -5,11 +5,18 @@
 			.srfm-error-wrap {
 				display: flex;
 				align-items: center;
-				justify-content: space-between;
 				gap: 8px;
 
 				.srfm-char-counter-wrap {
+					// Right-align the counter via margin-left:auto, not justify-content:space-between.
+					// The error message is the only other flex child and stays display:none until a
+					// validation error fires, so space-between would leave the counter (the lone visible
+					// child) pinned to the left — the very bug this block is meant to fix.
+					margin-left: auto;
 					flex-shrink: 0;
+					// Reset the inherited theme line-height so the wrap matches the fixed-height
+					// .srfm-error-wrap and the counter is not vertically clipped.
+					line-height: var( --srfm-error-line-height );
 
 					.srfm-char-counter {
 						font-size: var( --srfm-error-font-size );
