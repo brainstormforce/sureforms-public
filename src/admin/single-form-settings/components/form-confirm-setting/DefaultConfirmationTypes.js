@@ -1,182 +1,47 @@
-import Editor from '../QuillEditor';
-import { __ } from '@wordpress/i18n';
-import { useEffect, useRef, useState } from '@wordpress/element';
-import { Select, Label, Input } from '@bsf/force-ui';
-import RadioGroup from '@Admin/components/RadioGroup';
-import { useDebouncedCallback } from 'use-debounce';
-import { getWordPressPages } from '@Utils/Helpers';
+import { ConfirmationFields } from '@Admin/shared-components/form-confirmation';
 
-const AFTER_SUBMISSION_OPTIONS = [
-	{
-		label: __( 'Hide Form', 'sureforms' ),
-		value: 'hide form',
-	},
-	{
-		label: __( 'Reset Form', 'sureforms' ),
-		value: 'reset form',
-	},
-];
-
+/**
+ * Form-Level Default Confirmation Types Component
+ *
+ * Uses shared ConfirmationFields component for consistency with global settings.
+ * Adds form-specific features like query parameters.
+ *
+ * @param {Object}   props
+ * @param {Object}   props.data              - Current confirmation data
+ * @param {Function} props.setData           - Data setter
+ * @param {Array}    props.pageOptions       - WordPress pages for dropdown
+ * @param {string}   props.errorMessage      - Validation error message
+ * @param {Function} props.setErrorMessage   - Error message setter
+ * @param {Function} props.keyValueComponent - Query params UI renderer
+ */
 const DefaultConfirmationTypes = ( {
 	data,
 	setData,
 	pageOptions,
-	setPageOptions,
 	setErrorMessage,
 	errorMessage,
 	keyValueComponent,
 } ) => {
-	const [ canDisplayError, setCanDisplayError ] = useState( false );
-	const controllerRef = useRef( null );
-	const handlePageSearch = useDebouncedCallback( ( keyword = '' ) => {
-		controllerRef.current?.abort();
-		controllerRef.current = new AbortController();
-		getWordPressPages( setPageOptions, {
-			search: keyword,
-			selectedUrl: data?.page_url || '',
-			signal: controllerRef.current.signal,
-		} );
-	}, 300 );
-
-	const handleEditorChange = ( newContent ) => {
-		setData( { ...data, message: newContent } );
+	/**
+	 * Handle field change and update parent state.
+	 * @param {string} key
+	 * @param {*}      value
+	 */
+	const handleChange = ( key, value ) => {
+		setData( { ...data, [ key ]: value } );
 	};
 
-	useEffect( () => {
-		// Do not display pre-validation message right after changing tabs or confirmation type.
-		setCanDisplayError( false );
-	}, [ data?.confirmation_type ] );
-
-	useEffect( () => {
-		return () => {
-			handlePageSearch.cancel();
-			controllerRef.current?.abort();
-		};
-	}, [ handlePageSearch ] );
-
 	return (
-		<>
-			{ data?.confirmation_type === 'same page' && (
-				<>
-					<div>
-						<Editor
-							handleContentChange={ handleEditorChange }
-							content={ data?.message }
-						/>
-					</div>
-					<div className="space-y-2">
-						<Label>
-							{ __( 'After Form Submission', 'sureforms' ) }
-						</Label>
-						<RadioGroup cols={ 2 }>
-							{ AFTER_SUBMISSION_OPTIONS.map(
-								( option, index ) => (
-									<RadioGroup.Option
-										key={ index }
-										label={ option.label }
-										value={ option.value }
-										checked={
-											data?.submission_action ===
-											option.value
-										}
-										onChange={ () =>
-											setData( {
-												...data,
-												submission_action: option.value,
-											} )
-										}
-									/>
-								)
-							) }
-						</RadioGroup>
-					</div>
-				</>
-			) }
-
-			{ data?.confirmation_type === 'different page' && (
-				<>
-					<div className="space-y-6">
-						<div className="space-y-1.5">
-							<Label htmlFor="select-page">
-								{ __( 'Select Page to redirect', 'sureforms' ) }
-							</Label>
-							<Select
-								options={ pageOptions }
-								value={ data?.page_url }
-								onChange={ ( value ) => {
-									setCanDisplayError( true );
-									setErrorMessage( null );
-									setData( {
-										...data,
-										page_url: value,
-									} );
-								} }
-								combobox
-								searchFn={ handlePageSearch }
-								debounceDelay={ 0 }
-								searchPlaceholder={ __(
-									'Search for a page',
-									'sureforms'
-								) }
-							>
-								<Select.Button
-									id="select-page"
-									placeholder={ __(
-										'Select a page',
-										'sureforms'
-									) }
-								>
-									{
-										pageOptions?.find(
-											( option ) =>
-												option.value === data?.page_url
-										)?.label
-									}
-								</Select.Button>
-								<Select.Options>
-									{ pageOptions?.map( ( option ) => (
-										<Select.Option
-											key={ option.value }
-											value={ option.value }
-											selected={
-												option.value === data?.page_url
-											}
-										>
-											{ option.label }
-										</Select.Option>
-									) ) }
-								</Select.Options>
-							</Select>
-						</div>
-					</div>
-					{ keyValueComponent() }
-				</>
-			) }
-			{ data?.confirmation_type === 'custom url' && (
-				<>
-					<div className="space-y-1.5">
-						<Label htmlFor="custom-url-input" required>
-							{ __( 'Custom URL', 'sureforms' ) }
-						</Label>
-						<Input
-							id="custom-url-input"
-							value={ data?.custom_url }
-							onChange={ ( value ) => {
-								setCanDisplayError( true );
-								setData( { ...data, custom_url: value } );
-							} }
-							size="md"
-						/>
-						{ canDisplayError && errorMessage && (
-							<Label variant="error" size="sm">
-								{ errorMessage }
-							</Label>
-						) }
-					</div>
-					{ keyValueComponent() }
-				</>
-			) }
-		</>
+		<ConfirmationFields
+			context="form"
+			data={ data }
+			onChange={ handleChange }
+			pageOptions={ pageOptions }
+			errorMessage={ errorMessage }
+			setErrorMessage={ setErrorMessage }
+			showQueryParams={ true }
+			renderQueryParams={ keyValueComponent }
+		/>
 	);
 };
 

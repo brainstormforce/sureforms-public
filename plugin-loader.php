@@ -14,6 +14,7 @@ use SRFM\Admin\Notice_Manager;
 use SRFM\Inc\Abilities\Abilities_Registrar;
 use SRFM\Inc\Activator;
 use SRFM\Inc\Admin\Editor_Nudge;
+use SRFM\Inc\Admin\Html_Form_Detector;
 use SRFM\Inc\Admin_Ajax;
 use SRFM\Inc\AI_Form_Builder\AI_Auth;
 use SRFM\Inc\AI_Form_Builder\AI_Form_Builder;
@@ -34,6 +35,7 @@ use SRFM\Inc\Frontend_Assets;
 use SRFM\Inc\Generate_Form_Markup;
 use SRFM\Inc\Global_Settings\Email_Summary;
 use SRFM\Inc\Global_Settings\Global_Settings;
+use SRFM\Inc\Global_Settings\Global_Settings_Defaults;
 use SRFM\Inc\Gutenberg_Hooks;
 use SRFM\Inc\Helper;
 use SRFM\Inc\Learn;
@@ -43,6 +45,7 @@ use SRFM\Inc\Payments\Payments;
 use SRFM\Inc\Post_Types;
 use SRFM\Inc\Rest_Api;
 use SRFM\Inc\Single_Form_Settings\Compliance_Settings;
+use SRFM\Inc\Single_Form_Settings\Form_Settings_Api;
 use SRFM\Inc\Smart_Tags;
 use SRFM\Inc\Updater;
 
@@ -215,6 +218,11 @@ class Plugin_Loader {
 			Notice_Manager::get_instance();
 			Editor_Nudge::get_instance();
 		}
+		// Always instantiate — script enqueue is self-gated by `allow_load()`,
+		// while the REST endpoint for converting HTML forms must register
+		// outside the admin context (REST dispatch runs with `is_admin()` ===
+		// false, so admin-only instantiation would 404 the endpoint).
+		Html_Form_Detector::get_instance();
 		Payments::get_instance();
 		Duplicate_Form::get_instance();
 		Learn::get_instance();
@@ -295,8 +303,10 @@ class Plugin_Loader {
 		Generate_Form_Markup::get_instance();
 		Create_New_Form::get_instance();
 		Global_Settings::get_instance();
+		Global_Settings_Defaults::get_instance();
 		Email_Summary::get_instance();
 		Compliance_Settings::get_instance();
+		Form_Settings_Api::get_instance();
 		Events_Scheduler::get_instance();
 		AI_Form_Builder::get_instance();
 		Field_Mapping::get_instance();

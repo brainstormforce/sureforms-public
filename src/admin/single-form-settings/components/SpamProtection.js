@@ -1,7 +1,7 @@
 import { __ } from '@wordpress/i18n';
 import { store as editorStore } from '@wordpress/editor';
-import { useDispatch, useSelect } from '@wordpress/data';
-import { useState, useEffect } from '@wordpress/element';
+import { useDispatch, useSelect, select as wpSelect } from '@wordpress/data';
+import { useEffect, useMemo, useRef, useState } from '@wordpress/element';
 import { Select, Label, Container } from '@bsf/force-ui';
 import TabContentWrapper from '@Components/tab-content-wrapper';
 import RadioGroup from '@Admin/components/RadioGroup';
@@ -9,12 +9,26 @@ import apiFetch from '@wordpress/api-fetch';
 import { Info } from 'lucide-react';
 import svg from '@Svg/svgs.json';
 import parse from 'html-react-parser';
+import { srfmEditFormMeta } from '@Components/tab-content-wrapper/edit-form-meta';
+import { STORE_NAME as SRFM_STORE_NAME } from '@Store/constants';
+
+const DEFAULT_DATA = {
+	_srfm_captcha_security_type: 'none',
+	_srfm_form_recaptcha: '',
+};
 
 const SpamProtection = () => {
-	const { editPost } = useDispatch( editorStore );
 	const sureformsKeys = useSelect( ( select ) =>
 		select( editorStore ).getEditedPostAttribute( 'meta' )
 	);
+
+	// `data` is the live editing state; `prevData` is the last-saved
+	// baseline. Both start at the defaults on mount; the load useEffect
+	// below syncs them from `sureformsKeys` so isDirty reads false until
+	// the user edits.
+	const [ data, setData ] = useState( DEFAULT_DATA );
+	const [ prevData, setPrevData ] = useState( DEFAULT_DATA );
+	const [ isSaving, setIsSaving ] = useState( false );
 
 	const [ keys, setKeys ] = useState( {
 		v2Checkbox: { site: '', secret: '' },
@@ -28,9 +42,47 @@ const SpamProtection = () => {
 		useState( false );
 	const [ showErr, setShowErr ] = useState( false );
 
-	const updateMeta = ( option, value ) => {
-		editPost( { meta: { [ option ]: value } } );
-	};
+	const isDirty = useMemo(
+		() => JSON.stringify( data ) !== JSON.stringify( prevData ),
+		[ data, prevData ]
+	);
+
+	// Push the local dirty signal into the store so the dialog's
+	// unsaved-changes guard can read it without holding a reference to
+	// this component.
+	const { setSingleFormSettingUnsave } = useDispatch( SRFM_STORE_NAME );
+	useEffect( () => {
+		setSingleFormSettingUnsave( isDirty );
+	}, [ isDirty, setSingleFormSettingUnsave ] );
+
+	// Unmount cleanup — covers every exit path so the central flag
+	// doesn't leak past a discard / tab switch.
+	useEffect( () => {
+		return () => {
+			setSingleFormSettingUnsave( false );
+		};
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [] );
+
+	// Listen for the discard signal dispatched by the dialog's "Discard
+	// & continue" branch. Each bump of `discardCounter` is one discard
+	// event; the ref skips the initial render so the tab doesn't reset
+	// itself on mount.
+	const discardCounter = useSelect(
+		( s ) =>
+			s( SRFM_STORE_NAME )?.selectSingleFormSettingDiscardCounter?.() ||
+			0,
+		[]
+	);
+	const lastDiscardCounter = useRef( discardCounter );
+	useEffect( () => {
+		if ( discardCounter === lastDiscardCounter.current ) {
+			return;
+		}
+		lastDiscardCounter.current = discardCounter;
+		setData( prevData );
+		setShowErr( false );
+	}, [ discardCounter ] );
 
 	const validateKeys = ( type ) => {
 		const { site, secret } = keys[ type ] || {};
@@ -40,7 +92,7 @@ const SpamProtection = () => {
 	useEffect( () => {
 		const fetchData = async () => {
 			try {
-				const data = await apiFetch( {
+				const fetched = await apiFetch( {
 					path: `sureforms/v1/srfm-global-settings?options_to_fetch=srfm_security_settings_options`,
 					method: 'GET',
 					headers: {
@@ -49,7 +101,7 @@ const SpamProtection = () => {
 					},
 				} );
 
-				const opts = data?.srfm_security_settings_options || {};
+				const opts = fetched?.srfm_security_settings_options || {};
 				const keyMap = {
 					v2Checkbox: {
 						site: opts.srfm_v2_checkbox_site_key,
@@ -100,35 +152,108 @@ const SpamProtection = () => {
 		fetchData();
 	}, [] );
 
-	const handleSecurityTypeChange = ( value ) => {
-		const keyTypeMap = {
-			'cf-turnstile': 'turnstile',
-			hcaptcha: 'hcaptcha',
+	// Load existing per-form meta into local state on mount. Both `data`
+	// and `prevData` start from the same loaded value so isDirty is
+	// false until the user edits.
+	useEffect( () => {
+		const loaded = {
+			_srfm_captcha_security_type:
+				sureformsKeys?._srfm_captcha_security_type || 'none',
+			_srfm_form_recaptcha:
+				sureformsKeys?._srfm_form_recaptcha || '',
 		};
+		setData( loaded );
+		setPrevData( loaded );
+	}, [] );
 
-		if ( keyTypeMap[ value ] && ! validateKeys( keyTypeMap[ value ] ) ) {
-			setShowErr( true );
-			return;
-		}
-
+	const handleSecurityTypeChange = ( value ) => {
 		setShowErr( false );
-		updateMeta( '_srfm_captcha_security_type', value );
+		setData( ( prev ) => ( {
+			...prev,
+			_srfm_captcha_security_type: value,
+		} ) );
 	};
 
 	const handleRecaptchaVersionChange = ( value ) => {
-		const keyTypeMap = {
-			'v2-checkbox': 'v2Checkbox',
-			'v2-invisible': 'v2Invisible',
-			'v3-reCAPTCHA': 'v3',
-		};
+		setShowErr( false );
+		setData( ( prev ) => ( {
+			...prev,
+			_srfm_form_recaptcha: value,
+		} ) );
+	};
 
-		if ( keyTypeMap[ value ] && ! validateKeys( keyTypeMap[ value ] ) ) {
-			setShowErr( true );
-			return;
+	// Returns null on valid; an error string for TabContentWrapper to
+	// surface as a toast otherwise. Also stages the in-flight `data`
+	// into Redux `values` so `handleSave` reads the right payload.
+	const validateBeforeSave = () => {
+		const type = data._srfm_captcha_security_type;
+		let error = '';
+
+		if ( type === 'cf-turnstile' && ! validateKeys( 'turnstile' ) ) {
+			error = __(
+				'Cloudflare Turnstile API keys are not configured. Set them in Global Settings.',
+				'sureforms'
+			);
+		} else if ( type === 'hcaptcha' && ! validateKeys( 'hcaptcha' ) ) {
+			error = __(
+				'hCaptcha API keys are not configured. Set them in Global Settings.',
+				'sureforms'
+			);
+		} else if ( type === 'g-recaptcha' ) {
+			const version = data._srfm_form_recaptcha;
+			const keyTypeMap = {
+				'v2-checkbox': 'v2Checkbox',
+				'v2-invisible': 'v2Invisible',
+				'v3-reCAPTCHA': 'v3',
+			};
+			if ( ! version ) {
+				error = __(
+					'Please select a reCAPTCHA version.',
+					'sureforms'
+				);
+			} else if ( ! validateKeys( keyTypeMap[ version ] ) ) {
+				error = __(
+					'reCAPTCHA API keys for the selected version are not configured. Set them in Global Settings.',
+					'sureforms'
+				);
+			}
 		}
 
+		if ( error ) {
+			setShowErr( true );
+			return error;
+		}
 		setShowErr( false );
-		updateMeta( '_srfm_form_recaptcha', value );
+		srfmEditFormMeta(
+			'_srfm_captcha_security_type',
+			data._srfm_captcha_security_type
+		);
+		srfmEditFormMeta( '_srfm_form_recaptcha', data._srfm_form_recaptcha );
+		return null;
+	};
+
+	const onSaveSuccess = () => {
+		// Re-baseline from the entity record's `current` meta (synced by
+		// `receiveEntityRecords` in TabContentWrapper.handleSave) rather
+		// than the editor's edited buffer (which still holds the user's
+		// pre-sanitize typed value pushed by `srfmEditFormMeta`).
+		// `_srfm_captcha_security_type` and `_srfm_form_recaptcha` use
+		// `sanitize_text_field` today — no-op for the known enum values,
+		// but reading the canonical post-save value keeps the pattern
+		// aligned with FormCustomCss (which IS mutated by `wp_kses_post`)
+		// so future sanitizer changes can't quietly re-introduce a
+		// save → dirty flip.
+		const savedMeta =
+			wpSelect( editorStore ).getCurrentPostAttribute( 'meta' ) || {};
+		const next = {
+			_srfm_captcha_security_type:
+				savedMeta._srfm_captcha_security_type ??
+				data._srfm_captcha_security_type,
+			_srfm_form_recaptcha:
+				savedMeta._srfm_form_recaptcha ?? data._srfm_form_recaptcha,
+		};
+		setData( next );
+		setPrevData( next );
 	};
 
 	const securityTypeOptions = [
@@ -153,12 +278,13 @@ const SpamProtection = () => {
 	return (
 		<TabContentWrapper
 			title={ __( 'Spam Protection', 'sureforms' ) }
-			shouldShowAutoSaveText
-			autoSaveHelpText={ __(
-				'Choose a spam protection method for this form to prevent unwanted submissions.',
-				'sureforms'
-			) }
-			shouldAddHelpTextPadding={ false }
+			tabId="spam_protection"
+			showSaveButton={ true }
+			validate={ validateBeforeSave }
+			isDirty={ isDirty }
+			isSaving={ isSaving }
+			onSavingChange={ setIsSaving }
+			onSaveSuccess={ onSaveSuccess }
 		>
 			<div className="space-y-6">
 				{ /* Security Type */ }
@@ -168,10 +294,7 @@ const SpamProtection = () => {
 							{ __( 'Spam Protection Type', 'sureforms' ) }
 						</Label>
 						<Select
-							value={
-								sureformsKeys._srfm_captcha_security_type ||
-								'none'
-							}
+							value={ data._srfm_captcha_security_type }
 							onChange={ handleSecurityTypeChange }
 							options={ securityTypeOptions }
 						>
@@ -185,7 +308,7 @@ const SpamProtection = () => {
 								{ securityTypeOptions.find(
 									( o ) =>
 										o.value ===
-										sureformsKeys._srfm_captcha_security_type
+										data._srfm_captcha_security_type
 								)?.label || __( 'None', 'sureforms' ) }
 							</Select.Button>
 							<Select.Options>
@@ -195,7 +318,7 @@ const SpamProtection = () => {
 										value={ option.value }
 										selected={
 											option.value ===
-											sureformsKeys._srfm_captcha_security_type
+											data._srfm_captcha_security_type
 										}
 									>
 										{ option.label }
@@ -213,8 +336,7 @@ const SpamProtection = () => {
 				</div>
 
 				{ /* reCAPTCHA versions */ }
-				{ sureformsKeys._srfm_captcha_security_type ===
-					'g-recaptcha' && (
+				{ data._srfm_captcha_security_type === 'g-recaptcha' && (
 					<>
 						{ showRecaptchaConflictNotice && (
 							<Container className="w-full p-3 gap-2 border border-solid border-alert-border-warning bg-alert-background-warning rounded-lg">
@@ -240,7 +362,7 @@ const SpamProtection = () => {
 										label={ option.label }
 										value={ option.value }
 										checked={
-											sureformsKeys._srfm_form_recaptcha ===
+											data._srfm_form_recaptcha ===
 											option.value
 										}
 										onChange={ () =>

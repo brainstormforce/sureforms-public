@@ -525,24 +525,30 @@ const Edit = ( props ) => {
 					label={ __( 'Allow Multiple', 'sureforms' ) }
 					checked={ multiSelect }
 					onChange={ ( checked ) =>
-						setAttributes( {
-							multiSelect: checked,
-							...( checked && {
-								dynamicDefaultValue: '',
-							} ),
-						} )
+						setAttributes( { multiSelect: checked } )
 					}
 				/>
 			),
 		},
 		{
 			id: 'dynamicDefaultValue',
-			component: ! multiSelect ? (
+			component: (
 				<SRFMTextControl
 					label={ __( 'Dynamic Default Value', 'sureforms' ) }
 					className="srfm-with-dropdown"
 					value={ dynamicDefaultValue }
 					withSmartTagDropdown={ true }
+					help={
+						multiSelect
+							? __(
+								'Use a smart tag like {get_input:colors} and pass pipe separated values in the URL (for example ?colors=Red|Blue). Every option whose label matches a value will be preselected. You can also chain multiple smart tags separated by pipes.',
+								'sureforms'
+							)
+							: __(
+								'Use a smart tag like {get_input:country}. The first option whose label matches the resolved value will be preselected.',
+								'sureforms'
+							)
+					}
 					data={ {
 						value: dynamicDefaultValue,
 						label: 'dynamicDefaultValue',
@@ -551,7 +557,7 @@ const Edit = ( props ) => {
 						setAttributes( { dynamicDefaultValue: value } )
 					}
 				/>
-			) : null,
+			),
 		},
 		{
 			id: 'minMaxComponent',

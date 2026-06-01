@@ -315,12 +315,20 @@ const ViewPayment = () => {
 		);
 	};
 
-	// Billing data from real payment data
+	// Billing data from real payment data. For subscription rows, prefer
+	// `subscription_status` so canceled/paused lifecycle states surface in the
+	// status badge below — the transaction `status` stays as 'succeeded' on
+	// canceled subscriptions and would otherwise misleadingly badge as "Paid".
+	const displayStatus =
+		'subscription' === paymentData.type && paymentData.subscription_status
+			? paymentData.subscription_status
+			: paymentData.status;
+
 	const billingData = [
 		{
 			id: paymentData.id,
 			amount_paid: parseFloat( paymentData.total_amount ),
-			status: paymentData.status,
+			status: displayStatus,
 			date_time: paymentData.created_at,
 			refunded_amount: parseFloat( paymentData.refunded_amount || 0 ),
 		},
