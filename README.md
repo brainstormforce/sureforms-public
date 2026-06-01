@@ -487,7 +487,7 @@ You can report security issues through our [Bug Bounty Program](https://brainsto
 
 ## Changelog ##
 ### 2.10.1 - 1st June 2026 ###
-* Fix: Resolved a compatibility issue with older Block API versions so the SureForms editor loads reliably across WordPress environments.
+* Improvement: Improved compatibility with older Block API versions so the SureForms editor loads reliably across WordPress environments.
 * Fix: Resolved an issue where the Textarea character counter was misaligned.
 * Fix: Resolved an issue where the {entry_id} smart tag failed to resolve in email notifications.
 ### 2.10.0 - 27th May 2026 ###
