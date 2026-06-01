@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: SureForms 2.10.0\n"
+"Project-Id-Version: SureForms 2.10.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/sureforms\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-05-26T15:32:32+00:00\n"
+"POT-Creation-Date: 2026-06-01T10:21:28+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: sureforms\n"
@@ -948,7 +948,7 @@ msgid "OttoKit is not configured properly."
 msgstr ""
 
 #: inc/admin-ajax.php:182
-#: inc/form-submit.php:1001
+#: inc/form-submit.php:1007
 msgid "Invalid form ID."
 msgstr ""
 
@@ -1077,7 +1077,7 @@ msgstr ""
 #: inc/form-submit.php:99
 #: inc/form-submit.php:400
 #: inc/form-submit.php:445
-#: inc/form-submit.php:997
+#: inc/form-submit.php:1003
 #: inc/payments/front-end.php:78
 #: inc/payments/front-end.php:263
 #: inc/rest-api.php:98
@@ -1125,7 +1125,7 @@ msgstr ""
 #: inc/ai-form-builder/ai-auth.php:167
 #: inc/background-process.php:112
 #: inc/create-new-form.php:102
-#: inc/duplicate-form.php:176
+#: inc/duplicate-form.php:183
 #: inc/export.php:118
 #: inc/export.php:176
 #: inc/forms-data.php:88
@@ -1404,7 +1404,7 @@ msgid "Forms imported successfully!"
 msgstr ""
 
 #: inc/export.php:284
-#: inc/export.php:318
+#: inc/export.php:324
 msgid "Unable to import form."
 msgstr ""
 
@@ -1647,79 +1647,79 @@ msgstr ""
 msgid "Form data was not found."
 msgstr ""
 
-#: inc/form-submit.php:680
+#: inc/form-submit.php:686
 msgid "Unable to submit form. Please try again."
 msgstr ""
 
-#: inc/form-submit.php:852
+#: inc/form-submit.php:858
 msgid "Email notification passed to the sending server"
 msgstr ""
 
 #. translators: Here, %s is the comma separated emails list.
-#: inc/form-submit.php:925
+#: inc/form-submit.php:931
 msgid "Email notification recipient: %s"
 msgstr ""
 
-#: inc/form-submit.php:932
+#: inc/form-submit.php:938
 msgid "No SMTP plugin detected. Please configure an SMTP plugin to enable email sending."
 msgstr ""
 
-#: inc/form-submit.php:933
+#: inc/form-submit.php:939
 msgid "Email sending failed for an unknown reason."
 msgstr ""
 
 #. translators: Here, %1$s is the comma separated emails list and %2$s is error report ( if any ).
-#: inc/form-submit.php:942
+#: inc/form-submit.php:948
 msgid "Email server was unable to send the email notification. Recipient: %1$s. Reason: %2$s"
 msgstr ""
 
-#: inc/form-submit.php:972
+#: inc/form-submit.php:978
 msgid "No emails were sent."
 msgstr ""
 
-#: inc/form-submit.php:1006
+#: inc/form-submit.php:1012
 msgid "Invalid form."
 msgstr ""
 
-#: inc/form-submit.php:1011
+#: inc/form-submit.php:1017
 msgid "Too many requests. Please try again shortly."
 msgstr ""
 
-#: inc/form-submit.php:1122
+#: inc/form-submit.php:1128
 msgid "Captcha validation failed. No error code provided."
 msgstr ""
 
-#: inc/form-submit.php:1123
+#: inc/form-submit.php:1129
 msgid "Captcha validation failed."
 msgstr ""
 
-#: inc/form-submit.php:1178
+#: inc/form-submit.php:1184
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:172
 msgid "Google reCAPTCHA"
 msgstr ""
 
-#: inc/form-submit.php:1182
+#: inc/form-submit.php:1188
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:172
 msgid "hCaptcha"
 msgstr ""
 
-#: inc/form-submit.php:1186
+#: inc/form-submit.php:1192
 #: assets/build/settings.js:172
 msgid "Cloudflare Turnstile"
 msgstr ""
 
-#: inc/form-submit.php:1190
+#: inc/form-submit.php:1196
 msgid "Unknown Captcha"
 msgstr ""
 
-#: inc/form-submit.php:1191
+#: inc/form-submit.php:1197
 msgid "Invalid captcha type."
 msgstr ""
 
 #. translators: %s is the captcha title.
-#: inc/form-submit.php:1204
+#: inc/form-submit.php:1210
 msgid "%s verification failed. Please contact your site administrator."
 msgstr ""
 

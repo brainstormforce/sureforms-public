@@ -4,7 +4,7 @@ Tags: forms, contact form, form builder, payment form, WordPress form plugin
 Requires at least: 6.4
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 2.10.0
+Stable tag: 2.10.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -486,6 +486,10 @@ Yes. SureForms has built-in Payment Form support. You can collect payments secur
 You can report security issues through our [Bug Bounty Program](https://brainstormforce.com/bug-bounty-program/). We collaborate with Patchstack to provide opportunities for researchers to report vulnerabilities. The Patchstack team will help validate, triage, and handle any reported security issues.
 
 == Changelog ==
+= 2.10.1 - 1st June 2026 =
+* Improvement: Improved compatibility with older Block API versions so the SureForms editor loads reliably across WordPress environments.
+* Fix: Resolved an issue where the Textarea character counter was misaligned.
+* Fix: Resolved an issue where the {entry_id} smart tag failed to resolve in email notifications.
 = 2.10.0 - 27th May 2026 =
 * New: Added a live character counter to Textarea fields.
 * New: Added a one-click converter that turns raw HTML forms into native SureForms in gutenberg editor.
@@ -494,14 +498,6 @@ You can report security issues through our [Bug Bounty Program](https://brainsto
 * Fix: CSV export was stripping line breaks from Textarea submissions.
 = 2.9.1 - 19th May 2026 =
 * Improvement: Added compatibility with WordPress 7.0.
-= 2.9.0 - 14th May 2026 =
-* New: Added a Global Settings panel to configure form defaults (Form Confirmation, Email Notification, Spam Protection, Custom CSS, and Advanced Settings) that every new form inherits automatically, with per-form overrides still supported.
-* New: Added a Switch to Draft action to the All Forms list so published forms can be moved back to draft directly from the row actions without opening the editor.
-* New: Added an unsaved-changes guard to the single-form settings dialog that warns before discarding edits when switching tabs or closing the dialog.
-* New: Added explicit Save buttons to each tab of the single-form settings dialog (Email Notification, Form Confirmation, Spam Protection, Custom CSS, Advanced Settings) so changes are only persisted on click.
-* New: Added the `srfm_export_zip_filename` filter so the exported form ZIP filename can be customized.
-* Improvement: Improved UTM attribution accuracy on upgrade and editor-nudge CTAs across the plugin.
-* Fix: Resolved an issue where the Refund action was disabled on cancelled subscription payment entries, blocking legitimate refunds.
 The full changelog is available [here](https://sureforms.com/whats-new/).
 
 == Upgrade Notice ==
