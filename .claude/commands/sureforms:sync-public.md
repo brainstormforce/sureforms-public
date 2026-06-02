@@ -5,7 +5,7 @@ description: Sync private master to the sureforms-public mirror, stripping inter
 
 # SureForms — Sync to Public Mirror
 
-Sync `brainstormforce/sureforms@master` (private, this repo) to `brainstormforce/sureforms-public@master` (public WordPress.org-facing mirror), stripping internal-only paths in a single follow-up commit on the sync branch. Replaces the previous manual flow (`git push mirror origin/master:sync/master` + `gh pr create`).
+Sync `brainstormforce/sureforms@master` (private, this repo) to `brainstormforce/sureforms-public@master` (public WordPress.org-facing mirror), stripping internal-only paths. The sync branch is bulk re-signed (verified signatures) and capped with a merge commit against the mirror so the public PR diff stays clean.
 
 This skill is the **only sanctioned way** to sync the public mirror. Running raw `git push mirror …` skips the strip and re-leaks internal artifacts.
 
@@ -40,9 +40,17 @@ Working directory: any worktree of this repo.
 
 Required remotes:
 - `origin` → `https://github.com/brainstormforce/sureforms` (private)
-- `mirror` → `https://github.com/brainstormforce/sureforms-public` (public)
+- public-mirror remote → `https://github.com/brainstormforce/sureforms-public` (public). May be named `mirror` **or** `public` — detect with `git remote -v` and use whichever points at `sureforms-public`. Examples below use `$MIRROR`.
 
-Verify with `git remote -v`. Abort if either remote is missing.
+Verify with `git remote -v`. Abort if neither a `mirror` nor `public` remote points at `sureforms-public`.
+
+### ⚠️ `sureforms-public` ruleset constraints (READ FIRST)
+
+The public repo enforces a branch ruleset (since 2026-06-01) that the previous version of this skill violated. This flow is built around them:
+
+1. **Every commit needs a *verified* signature.** Signing is not enough — GitHub must mark it **Verified**, which requires BOTH the signing key registered on the pushing account as a **Signing Key** (an *Authentication* key does NOT count) AND the **committer email** verified on that account. Validated combo: on-disk key `~/.ssh/id_ed25519` (registered as a Signing Key on `vanshk141999`) + committer `kvansh297@gmail.com`. The Secretive hardware key verifies too but prompts Touch-ID per commit, so it cannot bulk-sign ~150 commits — use `id_ed25519`.
+2. **`sync/master` is force-push protected.** Push each sync to a **fresh** branch `sync/master-<YYYYMMDD>` (`-v2`, `-v3`… if re-pushing the same day — reusing a branch makes the ruleset re-evaluate the mirror's own unsigned ancestors and reject).
+3. **Claude's auto-mode guardrail blocks the agent from pushing to the public mirror.** The agent prepares everything and hands the user the exact `git push` to run themselves. `gh pr` / `gh api` ARE agent-allowed.
 
 ## Instructions
 
@@ -125,40 +133,65 @@ if [ -d .scripts ] && [ -z "$(ls -A .scripts 2>/dev/null)" ]; then
 fi
 ```
 
-### Step 6: Commit the strip if anything changed
+### Step 6: Commit the strip, then bulk re-sign ALL commits
+
+First commit the strip (committer must be the verified email — see ruleset constraints):
 
 ```bash
 STRIPPED=false
 if ! git diff --cached --quiet; then
   STRIPPED=true
   STRIPPED_PATHS=$(git diff --cached --name-only | tr '\n' ' ')
-  git -c user.name="sureforms-sync" \
-      -c user.email="noreply@brainstormforce.com" \
+  git -c user.name="Vansh Kapoor" -c user.email="kvansh297@gmail.com" \
       commit -m "chore: strip internal-only paths from public mirror sync"
 fi
 ```
 
-If `STRIPPED=false`, the upstream commits did not touch any internal-only paths — that's fine, just push the unmodified upstream tip.
-
-### Step 7: Push to `mirror sync/master`
+Then re-sign **every** commit new to the mirror so they all carry verified signatures. Use `filter-branch` (it reuses each commit's tree + parents and only adds a signature → zero conflicts; `rebase --rebase-merges` re-merges and hits conflicts):
 
 ```bash
-git push --force-with-lease mirror HEAD:sync/master
+BASE=$(git merge-base "$MIRROR/master" "$PRIVATE_TIP")
+FILTER_BRANCH_SQUELCH_WARNING=1 git \
+  -c gpg.format=ssh -c user.signingkey="$HOME/.ssh/id_ed25519.pub" \
+  filter-branch -f \
+    --env-filter 'export GIT_COMMITTER_NAME="Vansh Kapoor"; export GIT_COMMITTER_EMAIL="kvansh297@gmail.com"' \
+    --commit-filter 'git -c gpg.format=ssh -c user.signingkey="$HOME/.ssh/id_ed25519.pub" commit-tree -S "$@"' \
+    -- "$BASE..HEAD"
 ```
 
-`--force-with-lease` is used because the strip commit is regenerated on top of each new upstream tip; previous strip commits on `sync/master` are discarded. The `--force-with-lease` flag still refuses if someone else has pushed to `sync/master` in the meantime.
+### Step 7: Cap with a merge commit on the mirror, push to a fresh branch
+
+Cap the branch with a merge commit whose **first parent is `$MIRROR/master`**. This makes GitHub diff the PR against `$MIRROR/master` (which has no internal files), so the public PR shows **only real upstream changes — no internal-file deletions**.
+
+```bash
+SIGNED_TIP=$(git rev-parse HEAD)
+MERGE=$(git -c gpg.format=ssh -c user.signingkey="$HOME/.ssh/id_ed25519.pub" \
+  -c user.name="Vansh Kapoor" -c user.email="kvansh297@gmail.com" \
+  commit-tree -S "$(git rev-parse HEAD^{tree})" -p "$MIRROR/master" -p "$SIGNED_TIP" \
+  -m "Sync master from upstream")
+BRANCH="sync/master-$(date +%Y%m%d)"
+git branch -f "$BRANCH" "$MERGE"
+```
+
+Then **the user runs the push** (the agent's push to the public mirror is blocked by Claude's guardrail). Push to a **fresh** branch — never `sync/master` (force-protected), and never reuse an existing branch (its prior value makes the ruleset re-evaluate the mirror's unsigned ancestors):
+
+```bash
+git push $MIRROR <BRANCH>:refs/heads/<BRANCH>
+```
+
+If the push is rejected for "verified signatures", isolate before re-signing ~150 commits: push a single test commit signed the same way to a throwaway branch and confirm it's accepted (and `gh api .../commits/<sha> -q .commit.verification.verified` is `true`).
 
 ### Step 8: Open or update the sync PR
 
-Check whether an open PR already exists from `sync/master` → `master` on `brainstormforce/sureforms-public`:
+Check whether an open PR already exists for the current sync branch → `master` on `brainstormforce/sureforms-public`:
 
 ```bash
 EXISTING_PR=$(gh pr list -R brainstormforce/sureforms-public \
-  --base master --head sync/master --state open \
+  --base master --head "$BRANCH" --state open \
   --json number -q '.[0].number')
 ```
 
-- **If `EXISTING_PR` is non-empty:** the existing PR auto-updates with the new commits (no action needed). Comment on it with a brief refresh note:
+- **If `EXISTING_PR` is non-empty:** comment a refresh note:
 
   ```bash
   gh pr comment "$EXISTING_PR" -R brainstormforce/sureforms-public \
@@ -169,13 +202,20 @@ EXISTING_PR=$(gh pr list -R brainstormforce/sureforms-public \
 
   Title: `Sync master from upstream`
 
-  Body: list the upstream commit range, the commit count, and the strip status. Paste the high-level summary of upstream commits (use `git log --oneline "$PUBLIC_TIP..$PRIVATE_TIP"`) into a "## Highlights" section. Note in the body that the strip commit on top of upstream content is the only public-only change.
+  Body: upstream commit range, count, strip status, and a "## Highlights" section (`git log --oneline "$PUBLIC_TIP..$PRIVATE_TIP"`). Note that the diff is computed against `public/master` (merge-cap) so no internal files appear.
 
   ```bash
   gh pr create -R brainstormforce/sureforms-public \
-    --base master --head sync/master \
+    --base master --head "$BRANCH" \
     --title "Sync master from upstream" \
     --body "$PR_BODY"
+  ```
+
+  Close/delete any superseded sync branch + PR:
+
+  ```bash
+  gh pr close <OLD_PR> -R brainstormforce/sureforms-public
+  gh api -X DELETE repos/brainstormforce/sureforms-public/git/refs/heads/<OLD_BRANCH>
   ```
 
 ### Step 9: Tear down the temp worktree
@@ -213,6 +253,9 @@ If any step fails:
 
 Common failure modes:
 
-- **`git push --force-with-lease` rejected** — someone else pushed to `sync/master` since the last fetch. Re-run the skill from Step 2; their changes will be incorporated automatically.
+- **Push rejected, "Commits must have verified signatures"** — a commit is signed by an unregistered key or committed under an unverified email. Confirm `~/.ssh/id_ed25519` is registered as a **Signing Key** (not Authentication) on the pushing account and the committer is `kvansh297@gmail.com`. Test with a single throwaway commit before re-signing ~150.
+- **Push rejected, "Cannot force-push to this branch"** — you targeted `sync/master`; use a fresh `sync/master-<date>` branch instead.
+- **Push rejected naming a few commits already on `master`** — you reused/updated an existing branch; push to a brand-new branch name so the ruleset only evaluates the new commits.
+- **Agent push "denied by auto mode classifier"** — expected; the user must run the `git push` to the mirror themselves.
 - **`gh pr create` fails with "PR already exists"** — Step 8 detection missed a draft PR. Re-run Step 8 with `--state all` and reuse / reopen the existing PR.
-- **No `mirror` remote** — add it and re-run: `git remote add mirror https://github.com/brainstormforce/sureforms-public`.
+- **No mirror remote** — add it and re-run: `git remote add public https://github.com/brainstormforce/sureforms-public`.
