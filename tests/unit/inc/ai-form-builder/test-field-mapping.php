@@ -74,6 +74,59 @@ class Test_Field_Mapping extends TestCase {
 	}
 
 	/**
+	 * Test that a field's className is forwarded into the block attributes.
+	 */
+	public function test_generate_gutenberg_fields_forwards_class_name() {
+		$request = new WP_REST_Request();
+		$request->set_param(
+			'form_data',
+			[
+				'form' => [
+					'formFields' => [
+						[
+							'label'     => 'Name',
+							'fieldType' => 'input',
+							'required'  => true,
+							'className' => 'vk-name',
+						],
+					],
+				],
+			]
+		);
+
+		$result = Field_Mapping::generate_gutenberg_fields_from_questions( $request );
+		$this->assertStringContainsString( 'wp:srfm/input', $result );
+		$this->assertStringContainsString( '"className"', $result );
+		$this->assertStringContainsString( 'vk-name', $result );
+	}
+
+	/**
+	 * Test that an empty/blank className is not added to the block attributes.
+	 */
+	public function test_generate_gutenberg_fields_skips_blank_class_name() {
+		$request = new WP_REST_Request();
+		$request->set_param(
+			'form_data',
+			[
+				'form' => [
+					'formFields' => [
+						[
+							'label'     => 'Name',
+							'fieldType' => 'input',
+							'required'  => true,
+							'className' => '   ',
+						],
+					],
+				],
+			]
+		);
+
+		$result = Field_Mapping::generate_gutenberg_fields_from_questions( $request );
+		$this->assertStringContainsString( 'wp:srfm/input', $result );
+		$this->assertStringNotContainsString( '"className"', $result );
+	}
+
+	/**
 	 * Test that form_data set to a non-array value returns the
 	 * srfm_ai_mapping_invalid_form_data error code.
 	 */
