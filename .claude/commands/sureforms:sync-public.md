@@ -48,7 +48,7 @@ Verify with `git remote -v`. Abort if neither a `mirror` nor `public` remote poi
 
 The public repo enforces a branch ruleset (since 2026-06-01) that the previous version of this skill violated. This flow is built around them:
 
-1. **Every commit needs a *verified* signature.** Signing is not enough — GitHub must mark it **Verified**, which requires BOTH the signing key registered on the pushing account as a **Signing Key** (an *Authentication* key does NOT count) AND the **committer email** verified on that account. Validated combo: on-disk key `~/.ssh/id_ed25519` (registered as a Signing Key on `vanshk141999`) + committer `kvansh297@gmail.com`. The Secretive hardware key verifies too but prompts Touch-ID per commit, so it cannot bulk-sign ~150 commits — use `id_ed25519`.
+1. **Every commit needs a *verified* signature.** Signing is not enough — GitHub must mark it **Verified**, which requires BOTH the signing key registered on the pushing account as a **Signing Key** (an *Authentication* key does NOT count) AND the **committer email** verified on that account. **The skill uses the identity of whoever runs it** — your local `git config user.name` / `user.email` / `user.signingkey`. Before running, confirm: your `user.signingkey` points at an SSH public-key file (`*.pub`, since `gpg.format=ssh`) that is registered as a **Signing Key** on *your* GitHub account, and your `user.email` is a **verified** email on that same account. Hardware-backed keys (e.g. Secretive) verify fine but prompt for a tap **per commit**, so they cannot bulk-sign ~150 commits — use an on-disk passphrase-less key for the bulk re-sign.
 2. **`sync/master` is force-push protected.** Push each sync to a **fresh** branch `sync/master-<YYYYMMDD>` (`-v2`, `-v3`… if re-pushing the same day — reusing a branch makes the ruleset re-evaluate the mirror's own unsigned ancestors and reject).
 3. **Claude's auto-mode guardrail blocks the agent from pushing to the public mirror.** The agent prepares everything and hands the user the exact `git push` to run themselves. `gh pr` / `gh api` ARE agent-allowed.
 
@@ -67,18 +67,29 @@ if [ -n "$(git status --porcelain)" ]; then
 fi
 ```
 
-### Step 2: Fetch both remotes
+### Step 2: Detect the mirror remote + signing identity, then fetch
+
+Detect the public-mirror remote (named `mirror` or `public`) once, and capture the running user's signing identity. These vars are used throughout:
 
 ```bash
+MIRROR=$(git remote -v | awk '/sureforms-public(\.git)?[[:space:]]/{print $1; exit}')
+[ -n "$MIRROR" ] || { echo "No remote points at sureforms-public — add one and retry"; exit 1; }
+
+# Identity of whoever runs the skill (must satisfy the ruleset — see Preconditions)
+SIGN_NAME=$(git config user.name)
+SIGN_EMAIL=$(git config user.email)
+SIGN_KEY=$(git config user.signingkey)   # expected: path to an SSH *.pub registered as a Signing Key
+[ -n "$SIGN_NAME" ] && [ -n "$SIGN_EMAIL" ] && [ -n "$SIGN_KEY" ] || { echo "git user.name/user.email/user.signingkey must all be set"; exit 1; }
+
 git fetch origin master
-git fetch mirror master sync/master 2>/dev/null || git fetch mirror master
+git fetch "$MIRROR" master sync/master 2>/dev/null || git fetch "$MIRROR" master
 ```
 
 ### Step 3: Detect no-op
 
 ```bash
 PRIVATE_TIP=$(git rev-parse origin/master)
-PUBLIC_TIP=$(git rev-parse mirror/master)
+PUBLIC_TIP=$(git rev-parse "$MIRROR/master")
 ```
 
 If `PRIVATE_TIP` == `PUBLIC_TIP`, report "Public mirror is already up to date with private master — nothing to sync." Run **Step 8 cleanup** and exit.
@@ -135,27 +146,28 @@ fi
 
 ### Step 6: Commit the strip, then bulk re-sign ALL commits
 
-First commit the strip (committer must be the verified email — see ruleset constraints):
+First commit the strip (committer is the running user — must be the verified email, see ruleset constraints):
 
 ```bash
 STRIPPED=false
 if ! git diff --cached --quiet; then
   STRIPPED=true
   STRIPPED_PATHS=$(git diff --cached --name-only | tr '\n' ' ')
-  git -c user.name="Vansh Kapoor" -c user.email="kvansh297@gmail.com" \
-      commit -m "chore: strip internal-only paths from public mirror sync"
+  git commit -m "chore: strip internal-only paths from public mirror sync"
 fi
 ```
 
 Then re-sign **every** commit new to the mirror so they all carry verified signatures. Use `filter-branch` (it reuses each commit's tree + parents and only adds a signature → zero conflicts; `rebase --rebase-merges` re-merges and hits conflicts):
 
+> **Note:** this rewrites the **committer** of all re-signed commits to `$SIGN_EMAIL` (the original **author** of each commit is preserved). That committer/attribution change on the mirror is intentional — it's what lets the running user's registered key produce verified signatures.
+
 ```bash
 BASE=$(git merge-base "$MIRROR/master" "$PRIVATE_TIP")
 FILTER_BRANCH_SQUELCH_WARNING=1 git \
-  -c gpg.format=ssh -c user.signingkey="$HOME/.ssh/id_ed25519.pub" \
+  -c gpg.format=ssh -c user.signingkey="$SIGN_KEY" \
   filter-branch -f \
-    --env-filter 'export GIT_COMMITTER_NAME="Vansh Kapoor"; export GIT_COMMITTER_EMAIL="kvansh297@gmail.com"' \
-    --commit-filter 'git -c gpg.format=ssh -c user.signingkey="$HOME/.ssh/id_ed25519.pub" commit-tree -S "$@"' \
+    --env-filter "export GIT_COMMITTER_NAME=\"$SIGN_NAME\"; export GIT_COMMITTER_EMAIL=\"$SIGN_EMAIL\"" \
+    --commit-filter "git -c gpg.format=ssh -c user.signingkey=\"$SIGN_KEY\" commit-tree -S \"\$@\"" \
     -- "$BASE..HEAD"
 ```
 
@@ -165,8 +177,8 @@ Cap the branch with a merge commit whose **first parent is `$MIRROR/master`**. T
 
 ```bash
 SIGNED_TIP=$(git rev-parse HEAD)
-MERGE=$(git -c gpg.format=ssh -c user.signingkey="$HOME/.ssh/id_ed25519.pub" \
-  -c user.name="Vansh Kapoor" -c user.email="kvansh297@gmail.com" \
+MERGE=$(git -c gpg.format=ssh -c user.signingkey="$SIGN_KEY" \
+  -c user.name="$SIGN_NAME" -c user.email="$SIGN_EMAIL" \
   commit-tree -S "$(git rev-parse HEAD^{tree})" -p "$MIRROR/master" -p "$SIGNED_TIP" \
   -m "Sync master from upstream")
 BRANCH="sync/master-$(date +%Y%m%d)"
@@ -176,7 +188,7 @@ git branch -f "$BRANCH" "$MERGE"
 Then **the user runs the push** (the agent's push to the public mirror is blocked by Claude's guardrail). Push to a **fresh** branch — never `sync/master` (force-protected), and never reuse an existing branch (its prior value makes the ruleset re-evaluate the mirror's unsigned ancestors):
 
 ```bash
-git push $MIRROR <BRANCH>:refs/heads/<BRANCH>
+git push "$MIRROR" "$BRANCH:refs/heads/$BRANCH"
 ```
 
 If the push is rejected for "verified signatures", isolate before re-signing ~150 commits: push a single test commit signed the same way to a throwaway branch and confirm it's accepted (and `gh api .../commits/<sha> -q .commit.verification.verified` is `true`).
@@ -253,7 +265,7 @@ If any step fails:
 
 Common failure modes:
 
-- **Push rejected, "Commits must have verified signatures"** — a commit is signed by an unregistered key or committed under an unverified email. Confirm `~/.ssh/id_ed25519` is registered as a **Signing Key** (not Authentication) on the pushing account and the committer is `kvansh297@gmail.com`. Test with a single throwaway commit before re-signing ~150.
+- **Push rejected, "Commits must have verified signatures"** — a commit is signed by an unregistered key or committed under an unverified email. Confirm your `git config user.signingkey` (the `*.pub`) is registered as a **Signing Key** (not Authentication) on your GitHub account and your `git config user.email` is a verified email there. Test with a single throwaway commit before re-signing ~150.
 - **Push rejected, "Cannot force-push to this branch"** — you targeted `sync/master`; use a fresh `sync/master-<date>` branch instead.
 - **Push rejected naming a few commits already on `master`** — you reused/updated an existing branch; push to a brand-new branch name so the ruleset only evaluates the new commits.
 - **Agent push "denied by auto mode classifier"** — expected; the user must run the `git push` to the mirror themselves.
