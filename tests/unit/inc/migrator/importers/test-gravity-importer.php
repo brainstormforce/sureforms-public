@@ -97,7 +97,6 @@ class Test_Gravity_Importer extends TestCase {
 	public function tear_down() {
 		remove_all_filters( 'srfm_migrator_preprocess_template' );
 		remove_all_filters( 'srfm_migrator_tag_to_template_map' );
-		remove_all_filters( 'srfm_migrator_unsupported_tags' );
 		remove_all_filters( 'srfm_migrator_block_template' );
 		$ids = get_posts(
 			[
@@ -429,8 +428,10 @@ class Test_Gravity_Importer extends TestCase {
 	}
 
 	/**
-	 * Conditional logic — verify the 7 operators translate correctly and
-	 * rule targets are rewritten to SureForms block_ids.
+	 * Conditional logic — verify operators valid for the source bucket
+	 * translate, rule targets are rewritten to SureForms block_ids, and an
+	 * operator invalid for the bucket (`greater_than` on a text/`default`
+	 * source) is dropped rather than emitted as a dead rule.
 	 *
 	 * @return void
 	 */
@@ -449,6 +450,8 @@ class Test_Gravity_Importer extends TestCase {
 							[ 'fieldId' => '1', 'operator' => 'is',           'value' => 'yes' ],
 							[ 'fieldId' => '1', 'operator' => 'contains',     'value' => 'pre' ],
 							[ 'fieldId' => '1', 'operator' => 'starts_with',  'value' => 'a' ],
+							[ 'fieldId' => '1', 'operator' => 'ends_with',    'value' => 'z' ],
+							// `>` is not valid for the `default` (text) bucket — dropped.
 							[ 'fieldId' => '1', 'operator' => 'greater_than', 'value' => '0' ],
 						],
 					],
@@ -462,9 +465,91 @@ class Test_Gravity_Importer extends TestCase {
 		$this->assertSame( 'show', $payload['action'] );
 		$this->assertCount( 1, $payload['logic'] ); // logicType=all → one AND-group.
 		$ops = array_column( $payload['logic'][0], 'operator' );
-		$this->assertSame( [ '==', 'includes', 'startWith', '>' ], $ops );
+		$this->assertSame( [ '==', 'includes', 'startWith', 'endWith' ], $ops );
+		$this->assertNotContains( '>', $ops, 'greater_than is invalid for a text source and must be dropped' );
 		// rule.field is the source block_id (8 hex), not the GF field id.
 		$this->assertMatchesRegularExpression( '/^[a-f0-9]{8}$/', $payload['logic'][0][0]['field'] );
+	}
+
+	/**
+	 * A Name field must participate in conditional logic — both as a target
+	 * (rule on the whole-field id `1`) and as a source via a dotted sub-input
+	 * id (`1.3`), which the parent-id fallback resolves to the Name block.
+	 *
+	 * @return void
+	 */
+	public function test_get_form_metas_maps_conditional_logic_on_name_subinputs() {
+		$form = $this->source_form_with(
+			[
+				[
+					'id'     => 1,
+					'type'   => 'name',
+					'label'  => 'Name',
+					'inputs' => [
+						[ 'id' => '1.3', 'label' => 'First' ],
+						[ 'id' => '1.6', 'label' => 'Last' ],
+					],
+				],
+				[
+					'id'               => 2,
+					'type'             => 'text',
+					'label'            => 'Dependent',
+					'conditionalLogic' => [
+						'actionType' => 'show',
+						'logicType'  => 'all',
+						'rules'      => [
+							// Source references the First-name sub-input id.
+							[ 'fieldId' => '1.3', 'operator' => 'is', 'value' => 'Ada' ],
+						],
+					],
+				],
+			]
+		);
+		$metas = $this->make_importer()->get_form_metas_public( $form );
+		$this->assertNotEmpty( $metas['_srfm_conditional_logic'], 'rule on a name sub-input must not be dropped' );
+		$payload = (array) reset( $metas['_srfm_conditional_logic'][0] );
+		$rule    = $payload['logic'][0][0];
+		$this->assertSame( '==', $rule['operator'] );
+		// The sub-input id 1.3 resolves to the First-name block_id.
+		$this->assertMatchesRegularExpression( '/^[a-f0-9]{8}$/', $rule['field'] );
+	}
+
+	/**
+	 * A Name field as a CL *target* (rule keyed on the whole-field id) is
+	 * shown/hidden — it was previously invisible because translate_name_field
+	 * never registered the field id.
+	 *
+	 * @return void
+	 */
+	public function test_get_form_metas_maps_name_field_as_conditional_target() {
+		$form = $this->source_form_with(
+			[
+				[ 'id' => 1, 'type' => 'text', 'label' => 'Trigger' ],
+				[
+					'id'               => 2,
+					'type'             => 'name',
+					'label'            => 'Name',
+					'inputs'           => [
+						[ 'id' => '2.3', 'label' => 'First' ],
+						[ 'id' => '2.6', 'label' => 'Last' ],
+					],
+					'conditionalLogic' => [
+						'actionType' => 'hide',
+						'logicType'  => 'all',
+						'rules'      => [
+							[ 'fieldId' => '1', 'operator' => 'is', 'value' => 'hide' ],
+						],
+					],
+				],
+			]
+		);
+		$metas = $this->make_importer()->get_form_metas_public( $form );
+		$this->assertNotEmpty( $metas['_srfm_conditional_logic'], 'name field must be addressable as a CL target' );
+		$entry   = $metas['_srfm_conditional_logic'][0];
+		$payload = (array) reset( $entry );
+		$this->assertSame( 'hide', $payload['action'] );
+		// Target key is the Name field's first sub-block id (8 hex).
+		$this->assertMatchesRegularExpression( '/^[a-f0-9]{8}$/', (string) key( $entry ) );
 	}
 
 	/**
