@@ -39,9 +39,6 @@ use SRFM\Inc\Global_Settings\Global_Settings_Defaults;
 use SRFM\Inc\Gutenberg_Hooks;
 use SRFM\Inc\Helper;
 use SRFM\Inc\Learn;
-// region: form-migration — Phase P1 foundation.
-use SRFM\Inc\Migrator\Bootstrap as Migrator_Bootstrap;
-// endregion: form-migration.
 use SRFM\Inc\Onboarding;
 use SRFM\Inc\Page_Builders\Page_Builders;
 use SRFM\Inc\Payments\Payments;
@@ -316,9 +313,6 @@ class Plugin_Loader {
 		Background_Process::get_instance();
 		Page_Builders::get_instance();
 		Rest_Api::get_instance();
-		// region: form-migration — Phase P1 foundation.
-		Migrator_Bootstrap::get_instance();
-		// endregion: form-migration.
 		AI_Helper::get_instance();
 		AI_Auth::get_instance();
 		Updater::get_instance();
