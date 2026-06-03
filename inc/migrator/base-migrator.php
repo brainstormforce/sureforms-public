@@ -62,6 +62,15 @@ abstract class Base_Migrator {
 	protected $unsupported_fields = [];
 
 	/**
+	 * Slugs already used in the current form, for collision avoidance in
+	 * `reserve_slug()`. Reset per form by subclasses before calling
+	 * `build_form_content()`.
+	 *
+	 * @var array<string,int>
+	 */
+	protected $used_slugs = [];
+
+	/**
 	 * Request-scoped cache of the imported-forms map. `null` until first read.
 	 *
 	 * The map option is `autoload=false`, so reading it once per request (rather
@@ -440,6 +449,144 @@ abstract class Base_Migrator {
 	protected function note_unsupported( $label ) {
 		$label                      = trim( (string) $label );
 		$this->unsupported_fields[] = '' === $label ? __( '(unnamed field)', 'sureforms' ) : $label;
+	}
+
+	/**
+	 * Operators SureForms' conditional-logic editor exposes per block-type
+	 * bucket. Mirrors `src/conditional-logic/conditional-logic-options.json`
+	 * in SureForms Pro — keep in sync if that schema changes.
+	 *
+	 * @var array<string,array<int,string>>
+	 */
+	protected const CL_BUCKET_OPERATORS = [
+		'default'    => [ '==', '!=', 'null', '!null', 'includes', '!includes', 'startWith', 'endWith', 'matchesPattern', 'doesNotMatchPattern' ],
+		'text'       => [ '==', '!=', 'null', '!null', 'includes', '!includes', 'startWith', 'endWith', 'matchesPattern', 'doesNotMatchPattern' ],
+		'number'     => [ '==', '!=', '>', '>=', '<', '<=', 'between', 'matchesPattern', 'doesNotMatchPattern' ],
+		'list'       => [ '==', '!=', 'in', '!in', 'isSelected', '!isSelected', 'matchesPattern', 'doesNotMatchPattern' ],
+		'checkbox'   => [ 'isChecked', '!isChecked', 'matchesPattern', 'doesNotMatchPattern' ],
+		'datepicker' => [ 'datePickerIs', 'isBefore', 'isOnOrBefore', 'isAfter', 'isOnOrAfter' ],
+		'timepicker' => [ 'timePickerIs', 'isBefore', 'isOnOrBefore', 'isAfter', 'isOnOrAfter' ],
+	];
+
+	/**
+	 * Reconcile a converted CL operator against a field's block-type bucket.
+	 *
+	 * SureForms' CL editor only evaluates a restricted operator set per bucket
+	 * (e.g. a `list` field supports `==`/`!=`/`in`, not `includes`/`startWith`).
+	 * A source rule whose operator doesn't fit its bucket would import but never
+	 * evaluate. This returns a usable bucket — the original when valid, or
+	 * `default` when the operator is a text-style comparator the default bucket
+	 * accepts — or `''` when no bucket supports the operator (caller drops it).
+	 *
+	 * @since x.x.x
+	 *
+	 * @param string $operator SureForms operator (already mapped from source).
+	 * @param string $bucket   Field's block-type bucket.
+	 * @return string Usable bucket, or '' if the rule should be dropped.
+	 */
+	protected function resolve_cl_bucket( $operator, $bucket ) {
+		$ops = self::CL_BUCKET_OPERATORS;
+		if ( isset( $ops[ $bucket ] ) && in_array( $operator, $ops[ $bucket ], true ) ) {
+			return $bucket;
+		}
+		if ( in_array( $operator, $ops['default'], true ) ) {
+			return 'default';
+		}
+		return '';
+	}
+
+	/**
+	 * Reserve a unique slug for the current form. Generates a slug from the
+	 * seed via `sanitize_title()`. If the slug is already taken in this form,
+	 * appends `-2`, `-3`, … until a free slot is found. Tracks the slug in
+	 * `$this->used_slugs` so subsequent calls within the same form see the
+	 * collision.
+	 *
+	 * Subclasses must reset `$this->used_slugs = []` at the start of each
+	 * `build_form_content()` call.
+	 *
+	 * @since x.x.x
+	 *
+	 * @param string $seed Slug seed (source field name or label).
+	 * @return string Deduped slug.
+	 */
+	protected function reserve_slug( $seed ) {
+		$base = sanitize_title( (string) $seed );
+		if ( '' === $base ) {
+			$base = 'field';
+		}
+		$slug = $base;
+		$n    = 2;
+		while ( isset( $this->used_slugs[ $slug ] ) ) {
+			$slug = $base . '-' . $n;
+			++$n;
+		}
+		$this->used_slugs[ $slug ] = 1;
+		return $slug;
+	}
+
+	/**
+	 * Default confirmation HTML used when the source plugin doesn't ship a
+	 * usable thank-you message. Centered heading + body, neutral copy.
+	 *
+	 * @since x.x.x
+	 *
+	 * @return string Confirmation HTML.
+	 */
+	protected function default_confirmation_message() {
+		$heading = esc_html__( 'Thank you', 'sureforms' );
+		$body    = esc_html__(
+			"Your form has been submitted successfully. We'll review your details and get back to you soon.",
+			'sureforms'
+		);
+		return sprintf(
+			'<h2 style="text-align: center;">%1$s</h2><p style="text-align: center;">%2$s</p>',
+			$heading,
+			$body
+		);
+	}
+
+	/**
+	 * Static dispatch from a template-method name to a `Block_Templates`
+	 * emitter. Returns an empty string when the method is unknown — the
+	 * caller (after applying the `srfm_migrator_block_template` filter) is
+	 * responsible for flagging unsupported fields.
+	 *
+	 * Shared by every importer so add-on subscribers (e.g. SureForms Pro)
+	 * can register new emitter names without each importer re-implementing
+	 * the dispatch switch.
+	 *
+	 * @since x.x.x
+	 *
+	 * @param string              $method Template method name.
+	 * @param array<string,mixed> $args   Block args.
+	 * @return string Block markup, or `''` when unknown.
+	 */
+	protected function dispatch_template( $method, array $args ) {
+		switch ( $method ) {
+			case 'input':
+				return Block_Templates::input( $args );
+			case 'email':
+				return Block_Templates::email( $args );
+			case 'url':
+				return Block_Templates::url( $args );
+			case 'phone':
+				return Block_Templates::phone( $args );
+			case 'number':
+				return Block_Templates::number( $args );
+			case 'textarea':
+				return Block_Templates::textarea( $args );
+			case 'dropdown':
+				return Block_Templates::dropdown( $args );
+			case 'multi_choice':
+				return Block_Templates::multi_choice( $args );
+			case 'checkbox':
+				return Block_Templates::checkbox( $args );
+			case 'gdpr':
+				return Block_Templates::gdpr( $args );
+			default:
+				return '';
+		}
 	}
 
 	/**

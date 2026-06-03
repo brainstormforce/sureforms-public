@@ -46,20 +46,13 @@ class Cf7_Importer extends Base_Migrator {
 	private $submit_label = '';
 
 	/**
-	 * Slugs already used in the current form, lower-cased. Populated as fields
-	 * are emitted so the next field with a colliding slug can be suffixed
-	 * `-2`, `-3`, … — preventing duplicate `srfm/*` block slugs which would
-	 * silently break submission handling.
-	 *
-	 * @var array<string,int>
-	 */
-	private $used_slugs = [];
-
-	/**
 	 * Map of CF7 field `name` attribute → final SureForms slug for the current
 	 * form. Used by `translate_mail_shortcodes()` to rewrite CF7 mail-template
 	 * shortcodes like `[your-name]` into SureForms smart tags `{your-name}`
 	 * (or the deduped equivalent).
+	 *
+	 * Note: slug-collision tracking (`used_slugs` + `reserve_slug()`) lives on
+	 * `Base_Migrator` so every importer shares the dedupe logic.
 	 *
 	 * @var array<string,string>
 	 */
@@ -403,28 +396,6 @@ class Cf7_Importer extends Base_Migrator {
 	}
 
 	/**
-	 * Default success message used for imported CF7 forms. Mirrors the
-	 * canonical SureForms confirmation HTML registered in
-	 * `inc/post-types.php` (centered heading + paragraph).
-	 *
-	 * @since x.x.x
-	 *
-	 * @return string Confirmation HTML.
-	 */
-	private function default_confirmation_message() {
-		$heading = esc_html__( 'Thank you', 'sureforms' );
-		$body    = esc_html__(
-			"Your form has been submitted successfully. We'll review your details and get back to you soon.",
-			'sureforms'
-		);
-		return sprintf(
-			'<h2 style="text-align: center;">%1$s</h2><p style="text-align: center;">%2$s</p>',
-			$heading,
-			$body
-		);
-	}
-
-	/**
 	 * Remove `<label>...</label>` wrappers and blank lines, keep the label text
 	 * inline so the next pass can pair it with the form-tag.
 	 *
@@ -717,47 +688,6 @@ class Cf7_Importer extends Base_Migrator {
 	}
 
 	/**
-	 * Invoke a Block_Templates method by name with safe static dispatch.
-	 *
-	 * Avoids `call_user_func` (which PHPStan can't type-check) by enumerating
-	 * each supported template. Returns an empty string for unknown methods so
-	 * the caller can give add-on subscribers a chance via
-	 * `srfm_migrator_block_template` before flagging the tag as unsupported.
-	 *
-	 * @since x.x.x
-	 *
-	 * @param string              $method Block_Templates method name.
-	 * @param array<string,mixed> $args   Block args.
-	 * @return string Block markup, or '' if no built-in template matched.
-	 */
-	private function dispatch_template( $method, array $args ) {
-		switch ( $method ) {
-			case 'input':
-				return Block_Templates::input( $args );
-			case 'email':
-				return Block_Templates::email( $args );
-			case 'url':
-				return Block_Templates::url( $args );
-			case 'phone':
-				return Block_Templates::phone( $args );
-			case 'number':
-				return Block_Templates::number( $args );
-			case 'textarea':
-				return Block_Templates::textarea( $args );
-			case 'dropdown':
-				return Block_Templates::dropdown( $args );
-			case 'multi_choice':
-				return Block_Templates::multi_choice( $args );
-			case 'checkbox':
-				return Block_Templates::checkbox( $args );
-			case 'gdpr':
-				return Block_Templates::gdpr( $args );
-			default:
-				return '';
-		}
-	}
-
-	/**
 	 * Match a CF7 `name:value` option, accepting bare, double- or single-quoted
 	 * values so multi-word options like `default:"Hello World"` aren't dropped.
 	 *
@@ -856,33 +786,5 @@ class Cf7_Importer extends Base_Migrator {
 		}
 
 		return $attrs;
-	}
-
-	/**
-	 * Reserve a unique slug for the current form.
-	 *
-	 * Generates a slug from the seed via sanitize_title(). If the slug is
-	 * already taken in this form, appends `-2`, `-3`, … until a free slot
-	 * is found. Tracks the slug in `$this->used_slugs` so subsequent calls
-	 * within the same form see the collision.
-	 *
-	 * @since x.x.x
-	 *
-	 * @param string $seed Slug seed (CF7 field name or field label).
-	 * @return string Deduped slug.
-	 */
-	private function reserve_slug( $seed ) {
-		$base = sanitize_title( (string) $seed );
-		if ( '' === $base ) {
-			$base = 'field';
-		}
-		$slug = $base;
-		$n    = 2;
-		while ( isset( $this->used_slugs[ $slug ] ) ) {
-			$slug = $base . '-' . $n;
-			++$n;
-		}
-		$this->used_slugs[ $slug ] = 1;
-		return $slug;
 	}
 }

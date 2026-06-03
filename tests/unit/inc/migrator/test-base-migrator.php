@@ -199,6 +199,108 @@ class Test_Base_Migrator extends TestCase {
 	}
 
 	/**
+	 * Base_Migrator::reserve_slug() — deduplicates colliding slugs within
+	 * the same form by appending `-2`, `-3`, … and preserves a base name
+	 * even when the seed sanitizes to an empty string.
+	 *
+	 * @return void
+	 */
+	public function test_reserve_slug() {
+		$probe = new class() extends Cf7_Importer {
+			public function exist() {
+				return true;
+			}
+			/**
+			 * @param string $seed Seed.
+			 * @return string
+			 */
+			public function reserve_public( $seed ) {
+				return $this->reserve_slug( $seed );
+			}
+		};
+		$this->assertSame( 'name', $probe->reserve_public( 'Name' ) );
+		$this->assertSame( 'name-2', $probe->reserve_public( 'Name' ) );
+		$this->assertSame( 'name-3', $probe->reserve_public( 'name' ) );
+		$this->assertSame( 'field', $probe->reserve_public( '!@#$%' ) );
+	}
+
+	/**
+	 * Base_Migrator::default_confirmation_message() — returns centered
+	 * heading + body HTML with the canonical "Thank you" copy.
+	 *
+	 * @return void
+	 */
+	public function test_default_confirmation_message() {
+		$probe = new class() extends Cf7_Importer {
+			public function exist() {
+				return true;
+			}
+			/**
+			 * @return string
+			 */
+			public function confirmation_public() {
+				return $this->default_confirmation_message();
+			}
+		};
+		$out = $probe->confirmation_public();
+		$this->assertStringContainsString( 'Thank you', $out );
+		$this->assertStringContainsString( 'text-align: center', $out );
+		$this->assertStringContainsString( '<h2', $out );
+	}
+
+	/**
+	 * Base_Migrator::dispatch_template() — known method names produce the
+	 * corresponding `srfm/*` block markup; unknown names return an empty
+	 * string so the caller can give filter subscribers a chance.
+	 *
+	 * @return void
+	 */
+	public function test_dispatch_template() {
+		$probe = new class() extends Cf7_Importer {
+			public function exist() {
+				return true;
+			}
+			/**
+			 * @param string              $m Method name.
+			 * @param array<string,mixed> $a Args.
+			 * @return string
+			 */
+			public function dispatch_public( $m, array $a ) {
+				return $this->dispatch_template( $m, $a );
+			}
+		};
+		$this->assertStringContainsString( 'wp:srfm/input', $probe->dispatch_public( 'input', [ 'label' => 'X' ] ) );
+		$this->assertStringContainsString( 'wp:srfm/email', $probe->dispatch_public( 'email', [ 'label' => 'X' ] ) );
+		$this->assertStringContainsString( 'wp:srfm/dropdown', $probe->dispatch_public( 'dropdown', [ 'label' => 'X', 'options' => [ 'A' ] ] ) );
+		$this->assertSame( '', $probe->dispatch_public( 'mystery_widget', [] ) );
+	}
+
+	/**
+	 * Base_Migrator::resolve_cl_bucket() — keeps a bucket when it supports the
+	 * operator, down-buckets text-style operators to `default`, and returns ''
+	 * when no bucket supports the operator (caller drops the rule).
+	 *
+	 * @return void
+	 */
+	public function test_resolve_cl_bucket() {
+		$importer = $this->make_importer();
+		$method   = new \ReflectionMethod( $importer, 'resolve_cl_bucket' );
+		$method->setAccessible( true );
+
+		// Operator valid for the field's own bucket → bucket preserved.
+		$this->assertSame( 'list', $method->invoke( $importer, '==', 'list' ) );
+		$this->assertSame( 'number', $method->invoke( $importer, '>', 'number' ) );
+		$this->assertSame( 'default', $method->invoke( $importer, 'includes', 'default' ) );
+
+		// Text-style operator on a list/number field → down-bucket to default.
+		$this->assertSame( 'default', $method->invoke( $importer, 'includes', 'list' ) );
+		$this->assertSame( 'default', $method->invoke( $importer, 'startWith', 'number' ) );
+
+		// Operator no bucket (incl. default) supports → '' so the rule is dropped.
+		$this->assertSame( '', $method->invoke( $importer, 'isSelected', 'default' ) );
+	}
+
+	/**
 	 * Base_Migrator::count_source_forms() — returns the source-form count
 	 * without resolving per-form import mappings.
 	 *
