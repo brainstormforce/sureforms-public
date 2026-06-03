@@ -299,4 +299,62 @@ class Test_Base_Migrator extends TestCase {
 		// Operator no bucket (incl. default) supports → '' so the rule is dropped.
 		$this->assertSame( '', $method->invoke( $importer, 'isSelected', 'default' ) );
 	}
+
+	/**
+	 * Base_Migrator::count_source_forms() — returns the source-form count
+	 * without resolving per-form import mappings.
+	 *
+	 * @return void
+	 */
+	public function test_count_source_forms() {
+		$this->make_cf7( "Name\n[text* a]", 'Count A' );
+		$this->make_cf7( "Name\n[text* b]", 'Count B' );
+		$importer = $this->make_importer();
+		$this->assertSame( count( $importer->list_forms() ), $importer->count_source_forms() );
+		$this->assertGreaterThanOrEqual( 2, $importer->count_source_forms() );
+	}
+
+	/**
+	 * Base_Migrator::get_imported_map() — memoizes the map: the first read hits
+	 * the option, subsequent reads return the cached array within the request.
+	 *
+	 * @return void
+	 */
+	public function test_get_imported_map() {
+		$importer = $this->make_importer();
+		$method   = new \ReflectionMethod( $importer, 'get_imported_map' );
+		$method->setAccessible( true );
+
+		// Empty option → empty array.
+		$this->assertSame( [], $method->invoke( $importer ) );
+
+		// After an import the map is populated and readable via the helper.
+		$post_id = $this->make_cf7( "Name\n[text* n]", 'Mapped' );
+		$importer->import_forms( [ $post_id ], false );
+		$map = $method->invoke( $importer );
+		$this->assertIsArray( $map );
+		$this->assertNotEmpty( $map );
+	}
+
+	/**
+	 * Base_Migrator::save_imported_map() — persists the map to the option and
+	 * refreshes the request cache so get_imported_map() reflects the write.
+	 *
+	 * @return void
+	 */
+	public function test_save_imported_map() {
+		$importer = $this->make_importer();
+		$save     = new \ReflectionMethod( $importer, 'save_imported_map' );
+		$save->setAccessible( true );
+		$get = new \ReflectionMethod( $importer, 'get_imported_map' );
+		$get->setAccessible( true );
+
+		$payload = [ 123 => [ 'source_id' => '7', 'source_key' => 'cf7' ] ];
+		$save->invoke( $importer, $payload );
+
+		// Written to the option…
+		$this->assertSame( $payload, get_option( Base_Migrator::IMPORTED_MAP_OPTION ) );
+		// …and the request cache returns the same payload without a fresh read.
+		$this->assertSame( $payload, $get->invoke( $importer ) );
+	}
 }

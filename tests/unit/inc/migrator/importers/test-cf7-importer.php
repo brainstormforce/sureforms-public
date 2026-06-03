@@ -238,6 +238,50 @@ class Test_Cf7_Importer extends TestCase {
 	}
 
 	/**
+	 * Regression: two form-tags on a single line (common in two-column CF7
+	 * layouts, e.g. `[text* first-name] [text* last-name]`) must each emit a
+	 * field. The importer previously matched only the first `[...]` per blob
+	 * and silently dropped every subsequent tag on the line.
+	 *
+	 * @return void
+	 */
+	public function test_parser_two_tags_on_one_line_emit_both_fields() {
+		$importer = $this->make_importer();
+		$post_id  = $this->create_cf7_form( '[text* first-name] [text* last-name]' );
+
+		$content = $importer->build_form_content_public( [ 'id' => $post_id, 'name' => 'Two Column' ] );
+
+		$this->assertSame(
+			2,
+			substr_count( $content, 'wp:srfm/input' ),
+			'Both tags sharing one line must import, not just the first.'
+		);
+		$this->assertStringContainsString( '"slug":"first-name"', $content );
+		$this->assertStringContainsString( '"slug":"last-name"', $content );
+	}
+
+	/**
+	 * The block-syntax acceptance tag (`[acceptance id] consent [/acceptance]`)
+	 * must survive blob-splitting as a single field — the closing `[/acceptance]`
+	 * must not be mistaken for a second tag.
+	 *
+	 * @return void
+	 */
+	public function test_parser_acceptance_block_not_split_by_closing_tag() {
+		$importer = $this->make_importer();
+		$post_id  = $this->create_cf7_form( '[acceptance accept-this] I agree to the terms [/acceptance]' );
+
+		$content = $importer->build_form_content_public( [ 'id' => $post_id, 'name' => 'Consent' ] );
+
+		$this->assertSame(
+			1,
+			substr_count( $content, 'wp:srfm/gdpr' ),
+			'Acceptance block syntax must emit exactly one field.'
+		);
+		$this->assertStringContainsString( 'I agree to the terms', $content );
+	}
+
+	/**
 	 * After insert, the stored post_content must still contain valid JSON
 	 * unicode escapes (e.g. `<` for `<`), NOT a slash-stripped `u003C`.
 	 *

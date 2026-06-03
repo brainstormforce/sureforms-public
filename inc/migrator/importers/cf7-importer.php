@@ -249,9 +249,14 @@ class Cf7_Importer extends Base_Migrator {
 		$tag_blobs = $this->collect_tag_blobs( $lines );
 		$content   = '';
 		foreach ( $tag_blobs as $blob ) {
-			$markup = $this->build_field_from_tag_blob( $blob );
-			if ( '' !== $markup ) {
-				$content .= $markup;
+			// A single line can carry several form-tags (e.g. two-column layouts
+			// like `[text* first-name] [text* last-name]`). Split into one
+			// sub-blob per tag so every field is emitted, not just the first.
+			foreach ( $this->split_blob_into_tag_blobs( $blob ) as $sub_blob ) {
+				$markup = $this->build_field_from_tag_blob( $sub_blob );
+				if ( '' !== $markup ) {
+					$content .= $markup;
+				}
 			}
 		}
 		return $content;
@@ -466,6 +471,64 @@ class Cf7_Importer extends Base_Migrator {
 	}
 
 	/**
+	 * Split a blob that may hold several form-tags into one sub-blob per field.
+	 *
+	 * Two-column CF7 templates put multiple tags on one line
+	 * (`[text* first-name] [text* last-name]`); resolving only the first tag
+	 * silently dropped the rest. Each sub-blob keeps the label text that
+	 * precedes its tag. Block-syntax tags with a matching closing tag
+	 * (e.g. `[acceptance id] I agree [/acceptance]`) are kept whole, and bare
+	 * closing tags are absorbed rather than treated as new fields.
+	 *
+	 * @since x.x.x
+	 *
+	 * @param string $blob One cleaned template blob.
+	 * @return array<int,string> One sub-blob per opening form-tag (>= 1 entry).
+	 */
+	private function split_blob_into_tag_blobs( $blob ) {
+		if ( ! preg_match_all( '/\[[^\]]+\]/', $blob, $m, PREG_OFFSET_CAPTURE ) ) {
+			return [ $blob ];
+		}
+		$tokens = $m[0];
+		// Only one bracket token: nothing to split, preserve original behaviour.
+		if ( count( $tokens ) < 2 ) {
+			return [ $blob ];
+		}
+
+		$out    = [];
+		$cursor = 0; // Start of the current field's label region.
+		foreach ( $tokens as $token ) {
+			$token_str = (string) $token[0];
+			$token_off = (int) $token[1];
+			$token_end = $token_off + strlen( $token_str );
+
+			// Bare closing tag (`[/acceptance]`) — absorbed by its opener below.
+			if ( 0 === strpos( $token_str, '[/' ) ) {
+				continue;
+			}
+
+			// If a matching closing tag follows, extend the field through it so
+			// block-syntax tags stay intact as a single field.
+			$field_end = $token_end;
+			if ( preg_match( '/^\[\s*([A-Za-z0-9_-]+)/', $token_str, $nm ) ) {
+				$close    = '[/' . strtolower( $nm[1] ) . ']';
+				$close_at = stripos( $blob, $close, $token_end );
+				if ( false !== $close_at ) {
+					$field_end = $close_at + strlen( $close );
+				}
+			}
+
+			$sub = trim( substr( $blob, $cursor, $field_end - $cursor ) );
+			if ( '' !== $sub ) {
+				$out[] = $sub;
+			}
+			$cursor = $field_end;
+		}
+
+		return ! empty( $out ) ? $out : [ $blob ];
+	}
+
+	/**
 	 * Translate one tag blob into a SureForms block. Handles `[submit]` by
 	 * stashing the label rather than emitting a block.
 	 *
@@ -625,6 +688,30 @@ class Cf7_Importer extends Base_Migrator {
 	}
 
 	/**
+	 * Match a CF7 `name:value` option, accepting bare, double- or single-quoted
+	 * values so multi-word options like `default:"Hello World"` aren't dropped.
+	 *
+	 * @since x.x.x
+	 *
+	 * @param string $name CF7 option name (e.g. `default`, `min`, `max`).
+	 * @param string $body Tag body (without the surrounding brackets).
+	 * @return string Matched value, or '' if the option is absent.
+	 */
+	private function match_tag_option( $name, $body ) {
+		$pattern = '/\b' . preg_quote( $name, '/' ) . ':(?:"([^"]*)"|\'([^\']*)\'|([^\s"\']+))/';
+		if ( ! preg_match( $pattern, $body, $m ) ) {
+			return '';
+		}
+		if ( isset( $m[1] ) && '' !== $m[1] ) {
+			return $m[1];
+		}
+		if ( isset( $m[2] ) && '' !== $m[2] ) {
+			return $m[2];
+		}
+		return $m[3] ?? '';
+	}
+
+	/**
 	 * Extract attribute tokens from a CF7 form-tag body.
 	 *
 	 * Mirrors the attribute syntax documented at
@@ -652,12 +739,9 @@ class Cf7_Importer extends Base_Migrator {
 			'autocomplete' => '',
 		];
 
-		if ( preg_match( '/\bmin:([A-Za-z0-9._-]+)/', $body, $m ) ) {
-			$attrs['min'] = $m[1];
-		}
-		if ( preg_match( '/\bmax:([A-Za-z0-9._-]+)/', $body, $m ) ) {
-			$attrs['max'] = $m[1];
-		}
+		$attrs['min']     = $this->match_tag_option( 'min', $body );
+		$attrs['max']     = $this->match_tag_option( 'max', $body );
+		$attrs['default'] = $this->match_tag_option( 'default', $body );
 		if ( preg_match( '/\bminlength:([0-9]+)/', $body, $m ) ) {
 			$attrs['minlength'] = $m[1];
 		}
@@ -666,9 +750,6 @@ class Cf7_Importer extends Base_Migrator {
 		}
 		if ( preg_match( '/\bstep:([0-9.]+)/', $body, $m ) ) {
 			$attrs['step'] = $m[1];
-		}
-		if ( preg_match( '/\bdefault:([A-Za-z0-9_-]+)/', $body, $m ) ) {
-			$attrs['default'] = $m[1];
 		}
 		if ( preg_match( '/(?:placeholder|watermark)\s+"([^"]+)"/', $body, $m ) ) {
 			$attrs['placeholder'] = $m[1];
