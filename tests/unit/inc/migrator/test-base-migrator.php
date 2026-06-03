@@ -274,4 +274,29 @@ class Test_Base_Migrator extends TestCase {
 		$this->assertStringContainsString( 'wp:srfm/dropdown', $probe->dispatch_public( 'dropdown', [ 'label' => 'X', 'options' => [ 'A' ] ] ) );
 		$this->assertSame( '', $probe->dispatch_public( 'mystery_widget', [] ) );
 	}
+
+	/**
+	 * Base_Migrator::resolve_cl_bucket() — keeps a bucket when it supports the
+	 * operator, down-buckets text-style operators to `default`, and returns ''
+	 * when no bucket supports the operator (caller drops the rule).
+	 *
+	 * @return void
+	 */
+	public function test_resolve_cl_bucket() {
+		$importer = $this->make_importer();
+		$method   = new \ReflectionMethod( $importer, 'resolve_cl_bucket' );
+		$method->setAccessible( true );
+
+		// Operator valid for the field's own bucket → bucket preserved.
+		$this->assertSame( 'list', $method->invoke( $importer, '==', 'list' ) );
+		$this->assertSame( 'number', $method->invoke( $importer, '>', 'number' ) );
+		$this->assertSame( 'default', $method->invoke( $importer, 'includes', 'default' ) );
+
+		// Text-style operator on a list/number field → down-bucket to default.
+		$this->assertSame( 'default', $method->invoke( $importer, 'includes', 'list' ) );
+		$this->assertSame( 'default', $method->invoke( $importer, 'startWith', 'number' ) );
+
+		// Operator no bucket (incl. default) supports → '' so the rule is dropped.
+		$this->assertSame( '', $method->invoke( $importer, 'isSelected', 'default' ) );
+	}
 }

@@ -668,6 +668,62 @@ class Test_Wpforms_Importer extends TestCase {
 	}
 
 	/**
+	 * Conditional logic on a CHOICE (list-bucket) source field must emit a
+	 * payload SureForms actually evaluates: `==` stays on the `list` bucket,
+	 * while a text-style operator (`contains` → `includes`, invalid for `list`)
+	 * is down-bucketed to `default` rather than emitted as a dead rule.
+	 *
+	 * @return void
+	 */
+	public function test_get_form_metas_choice_source_reconciles_operator_bucket() {
+		$form_data = [
+			'id'       => 11,
+			'fields'   => [
+				1 => [
+					'id'      => 1,
+					'type'    => 'radio',
+					'label'   => 'Choice',
+					'choices' => [
+						1 => [ 'label' => 'Yes', 'value' => '', 'default' => '' ],
+						2 => [ 'label' => 'No', 'value' => '', 'default' => '' ],
+					],
+				],
+				2 => [
+					'id'                => 2,
+					'type'              => 'text',
+					'label'             => 'Dependent',
+					'conditional_logic' => '1',
+					'conditional_type'  => 'show',
+					'conditionals'      => [
+						[
+							[ 'field' => 1, 'operator' => '==', 'value' => 'Yes' ],
+							[ 'field' => 1, 'operator' => 'c', 'value' => 'Y' ],
+						],
+					],
+				],
+			],
+			'settings' => [ 'submit_text' => 'Submit' ],
+		];
+		$id    = $this->make_wpforms( $form_data, 'CL Choice' );
+		$metas = $this->make_importer()->get_form_metas_public(
+			[ 'id' => 11, 'name' => 'CL Choice', 'post_content' => get_post_field( 'post_content', $id ) ]
+		);
+
+		$this->assertNotEmpty( $metas['_srfm_conditional_logic'] );
+		$payload = (array) reset( $metas['_srfm_conditional_logic'][0] );
+		$group   = $payload['logic'][0];
+
+		// `==` is valid for a list field → bucket stays `list`.
+		$this->assertSame( '==', $group[0]['operator'] );
+		$this->assertSame( 'list', $group[0]['type'] );
+
+		// `includes` is NOT valid for `list` → down-bucketed to `default` so the
+		// rule still evaluates (rather than importing dead).
+		$this->assertSame( 'includes', $group[1]['operator'] );
+		$this->assertSame( 'default', $group[1]['type'] );
+	}
+
+	/**
 	 * @return void
 	 */
 	public function test_get_form_metas_drops_unsupported_operators() {

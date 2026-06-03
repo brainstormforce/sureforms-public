@@ -347,6 +347,50 @@ abstract class Base_Migrator {
 	}
 
 	/**
+	 * Operators SureForms' conditional-logic editor exposes per block-type
+	 * bucket. Mirrors `src/conditional-logic/conditional-logic-options.json`
+	 * in SureForms Pro — keep in sync if that schema changes.
+	 *
+	 * @var array<string,array<int,string>>
+	 */
+	protected const CL_BUCKET_OPERATORS = [
+		'default'    => [ '==', '!=', 'null', '!null', 'includes', '!includes', 'startWith', 'endWith', 'matchesPattern', 'doesNotMatchPattern' ],
+		'text'       => [ '==', '!=', 'null', '!null', 'includes', '!includes', 'startWith', 'endWith', 'matchesPattern', 'doesNotMatchPattern' ],
+		'number'     => [ '==', '!=', '>', '>=', '<', '<=', 'between', 'matchesPattern', 'doesNotMatchPattern' ],
+		'list'       => [ '==', '!=', 'in', '!in', 'isSelected', '!isSelected', 'matchesPattern', 'doesNotMatchPattern' ],
+		'checkbox'   => [ 'isChecked', '!isChecked', 'matchesPattern', 'doesNotMatchPattern' ],
+		'datepicker' => [ 'datePickerIs', 'isBefore', 'isOnOrBefore', 'isAfter', 'isOnOrAfter' ],
+		'timepicker' => [ 'timePickerIs', 'isBefore', 'isOnOrBefore', 'isAfter', 'isOnOrAfter' ],
+	];
+
+	/**
+	 * Reconcile a converted CL operator against a field's block-type bucket.
+	 *
+	 * SureForms' CL editor only evaluates a restricted operator set per bucket
+	 * (e.g. a `list` field supports `==`/`!=`/`in`, not `includes`/`startWith`).
+	 * A source rule whose operator doesn't fit its bucket would import but never
+	 * evaluate. This returns a usable bucket — the original when valid, or
+	 * `default` when the operator is a text-style comparator the default bucket
+	 * accepts — or `''` when no bucket supports the operator (caller drops it).
+	 *
+	 * @since x.x.x
+	 *
+	 * @param string $operator SureForms operator (already mapped from source).
+	 * @param string $bucket   Field's block-type bucket.
+	 * @return string Usable bucket, or '' if the rule should be dropped.
+	 */
+	protected function resolve_cl_bucket( $operator, $bucket ) {
+		$ops = self::CL_BUCKET_OPERATORS;
+		if ( isset( $ops[ $bucket ] ) && in_array( $operator, $ops[ $bucket ], true ) ) {
+			return $bucket;
+		}
+		if ( in_array( $operator, $ops['default'], true ) ) {
+			return 'default';
+		}
+		return '';
+	}
+
+	/**
 	 * Reserve a unique slug for the current form. Generates a slug from the
 	 * seed via `sanitize_title()`. If the slug is already taken in this form,
 	 * appends `-2`, `-3`, … until a free slot is found. Tracks the slug in

@@ -47,6 +47,12 @@ class Wpforms_Importer extends Base_Migrator {
 	];
 
 	/**
+	 * Maximum layout/repeater nesting depth translated before bailing. Real
+	 * WPForms layouts can't nest, so this only guards crafted/corrupt JSON.
+	 */
+	private const MAX_NESTING_DEPTH = 5;
+
+	/**
 	 * Conditional-logic payload accumulated while emitting field blocks for
 	 * the form currently being built. Reset per form in `build_form_content`.
 	 * Each entry holds the source-side target field id, the show/hide
@@ -279,6 +285,9 @@ class Wpforms_Importer extends Base_Migrator {
 			$metas['_srfm_email_notification'] = $email;
 		}
 
+		// `_srfm_conditional_logic` is registered by SureForms Pro
+		// (inc/extensions/conditional-logic.php). When Pro is inactive the meta
+		// is still written but simply sits unused until Pro is enabled — harmless.
 		$cl_meta = $this->assemble_conditional_logic_meta();
 		if ( ! empty( $cl_meta ) ) {
 			$metas['_srfm_conditional_logic'] = $cl_meta;
@@ -322,9 +331,17 @@ class Wpforms_Importer extends Base_Migrator {
 	 * @since x.x.x
 	 *
 	 * @param array<string,mixed> $field WPForms field array.
+	 * @param int                 $depth Current nesting depth (layout/repeater recursion).
 	 * @return string
 	 */
-	private function translate_field( array $field ) {
+	private function translate_field( array $field, $depth = 0 ) {
+		// Guard against a crafted/corrupt self-nesting layout/repeater chain that
+		// would otherwise recurse unbounded during an authenticated import.
+		if ( $depth > self::MAX_NESTING_DEPTH ) {
+			$this->note_unsupported( $this->str_arg( $field, 'label', $this->str_arg( $field, 'type', 'nested field' ) ) );
+			return '';
+		}
+
 		$type = $this->str_arg( $field, 'type' );
 		if ( '' === $type ) {
 			return '';
@@ -335,11 +352,11 @@ class Wpforms_Importer extends Base_Migrator {
 		}
 
 		if ( 'layout' === $type ) {
-			return $this->translate_layout_field( $field );
+			return $this->translate_layout_field( $field, $depth );
 		}
 
 		if ( 'repeater' === $type ) {
-			return $this->translate_repeater_field( $field );
+			return $this->translate_repeater_field( $field, $depth );
 		}
 
 		// captcha is rendered form-level in SureForms, never as a block.
@@ -426,14 +443,16 @@ class Wpforms_Importer extends Base_Migrator {
 				break;
 			case 'number':
 			case 'number-slider':
+				// Preserve decimals — a WPForms slider step of 0.5 must not be
+				// truncated to 0. `+ 0` yields an int for whole numbers, float otherwise.
 				if ( isset( $field['min'] ) && is_numeric( $field['min'] ) ) {
-					$args['min'] = (int) $field['min'];
+					$args['min'] = $field['min'] + 0;
 				}
 				if ( isset( $field['max'] ) && is_numeric( $field['max'] ) ) {
-					$args['max'] = (int) $field['max'];
+					$args['max'] = $field['max'] + 0;
 				}
 				if ( isset( $field['step'] ) && is_numeric( $field['step'] ) ) {
-					$args['step'] = (int) $field['step'];
+					$args['step'] = $field['step'] + 0;
 				}
 				if ( '' !== $this->str_arg( $field, 'default_value' ) ) {
 					$args['default_value'] = $this->str_arg( $field, 'default_value' );
@@ -543,7 +562,7 @@ class Wpforms_Importer extends Base_Migrator {
 		$req    = ! empty( $field['required'] );
 
 		if ( 'simple' === $format ) {
-			return Block_Templates::input(
+			$markup = Block_Templates::input(
 				[
 					'label'         => $base,
 					'placeholder'   => $this->str_arg( $field, 'simple_placeholder' ),
@@ -552,6 +571,10 @@ class Wpforms_Importer extends Base_Migrator {
 					'slug'          => $this->reserve_slug( $base ),
 				]
 			);
+			// Register field id → first sub-block id so a Name field can be a
+			// conditional-logic source/target (capture_field_metadata reads the
+			// first block_id from the markup and any rules off the field).
+			return $this->capture_field_metadata( $field, [], $markup, 'name' );
 		}
 
 		$parts = 'first-middle-last' === $format
@@ -570,7 +593,9 @@ class Wpforms_Importer extends Base_Migrator {
 				]
 			);
 		}
-		return $markup;
+		// Map the composite field to its first sub-block id so CL rules that
+		// target the Name field resolve to the first input.
+		return $this->capture_field_metadata( $field, [], $markup, 'name' );
 	}
 
 	/**
@@ -581,9 +606,10 @@ class Wpforms_Importer extends Base_Migrator {
 	 * @since x.x.x
 	 *
 	 * @param array<string,mixed> $field Layout field.
+	 * @param int                 $depth Current nesting depth.
 	 * @return string
 	 */
-	private function translate_layout_field( array $field ) {
+	private function translate_layout_field( array $field, $depth = 0 ) {
 		$columns = isset( $field['columns'] ) && is_array( $field['columns'] ) ? $field['columns'] : [];
 		if ( empty( $columns ) ) {
 			return '';
@@ -597,7 +623,7 @@ class Wpforms_Importer extends Base_Migrator {
 			$inner    = '';
 			foreach ( $children as $child ) {
 				if ( is_array( $child ) ) {
-					$inner .= $this->translate_field( $child );
+					$inner .= $this->translate_field( $child, $depth + 1 );
 				}
 			}
 			$out .= "\n<!-- wp:column -->\n<div class=\"wp-block-column\">{$inner}</div>\n<!-- /wp:column -->";
@@ -620,9 +646,10 @@ class Wpforms_Importer extends Base_Migrator {
 	 * @since x.x.x
 	 *
 	 * @param array<string,mixed> $field WPForms repeater field.
+	 * @param int                 $depth Current nesting depth.
 	 * @return string
 	 */
-	private function translate_repeater_field( array $field ) {
+	private function translate_repeater_field( array $field, $depth = 0 ) {
 		$columns  = isset( $field['columns'] ) && is_array( $field['columns'] ) ? $field['columns'] : [];
 		$children = '';
 		foreach ( $columns as $column ) {
@@ -632,7 +659,7 @@ class Wpforms_Importer extends Base_Migrator {
 			$child_fields = isset( $column['fields'] ) && is_array( $column['fields'] ) ? $column['fields'] : [];
 			foreach ( $child_fields as $child ) {
 				if ( is_array( $child ) ) {
-					$children .= $this->translate_field( $child );
+					$children .= $this->translate_field( $child, $depth + 1 );
 				}
 			}
 		}
@@ -871,11 +898,21 @@ class Wpforms_Importer extends Base_Migrator {
 		if ( ! isset( self::OPERATOR_MAP[ $op ] ) ) {
 			return null;
 		}
+		$operator = self::OPERATOR_MAP[ $op ];
+		$bucket   = $this->field_id_to_block_type[ $src_field_id ] ?? 'default';
+		// Reconcile the operator with the field's bucket — SureForms' CL editor
+		// only evaluates a restricted operator set per bucket, so a list/number
+		// field with a text-style operator is down-bucketed to `default` (or the
+		// rule is dropped when no bucket supports it).
+		$bucket = $this->resolve_cl_bucket( $operator, $bucket );
+		if ( '' === $bucket ) {
+			return null;
+		}
 		return [
 			'field'    => $source_block,
-			'operator' => self::OPERATOR_MAP[ $op ],
+			'operator' => $operator,
 			'value'    => $this->str_arg( $rule, 'value', '' ),
-			'type'     => $this->field_id_to_block_type[ $src_field_id ] ?? 'default',
+			'type'     => $bucket,
 		];
 	}
 
@@ -892,6 +929,10 @@ class Wpforms_Importer extends Base_Migrator {
 		$notifications = isset( $settings['notifications'] ) && is_array( $settings['notifications'] ) ? $settings['notifications'] : [];
 		if ( empty( $notifications ) ) {
 			return [];
+		}
+		// SureForms supports a single notification; surface the dropped extras.
+		if ( count( $notifications ) > 1 ) {
+			$this->note_unsupported( __( 'Additional email notifications (only the first was imported)', 'sureforms' ) );
 		}
 		$first = reset( $notifications );
 		if ( ! is_array( $first ) ) {
@@ -927,8 +968,12 @@ class Wpforms_Importer extends Base_Migrator {
 	 */
 	private function translate_confirmation( array $settings ) {
 		$confirmations = isset( $settings['confirmations'] ) && is_array( $settings['confirmations'] ) ? $settings['confirmations'] : [];
-		$first         = is_array( reset( $confirmations ) ) ? reset( $confirmations ) : [];
-		$type          = $this->str_arg( $first, 'type', 'message' );
+		// SureForms supports a single confirmation; surface the dropped extras.
+		if ( count( $confirmations ) > 1 ) {
+			$this->note_unsupported( __( 'Additional confirmations (only the first was imported)', 'sureforms' ) );
+		}
+		$first = is_array( reset( $confirmations ) ) ? reset( $confirmations ) : [];
+		$type  = $this->str_arg( $first, 'type', 'message' );
 
 		$entry = [
 			'confirmation_type' => 'same page',
