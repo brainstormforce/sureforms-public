@@ -481,9 +481,13 @@ class Wpforms_Importer extends Base_Migrator {
 					: ! empty( $field['multiple'] );
 				break;
 			case 'email':
-				// `confirmation=1` adds a "Confirm Email" second block. We
-				// emit the primary block here; the importer notes the loss
-				// of confirm-pair semantics in build_form_content().
+				// WPForms' "Enable Email Confirmation" (confirmation=1) is a
+				// second input on the same field; srfm/email models that
+				// natively via isConfirmEmail, so enable the option on the one
+				// block instead of dropping it or emitting a duplicate field.
+				if ( ! empty( $field['confirmation'] ) ) {
+					$args['confirm_email'] = true;
+				}
 				break;
 			case 'date-time':
 				$args['format']      = $this->str_arg( $field, 'format', 'date' );

@@ -260,6 +260,27 @@ class Test_Wpforms_Importer extends TestCase {
 			[ 'id' => 1, 'name' => 'F', 'post_content' => get_post_field( 'post_content', $id ) ]
 		);
 		$this->assertStringContainsString( 'wp:srfm/email', $markup );
+		// No confirmation → confirm mode stays off.
+		$this->assertStringNotContainsString( '"isConfirmEmail":true', $markup );
+	}
+
+	/**
+	 * WPForms' "Enable Email Confirmation" maps to srfm/email's native
+	 * confirm option on one field — not a dropped flag or a duplicate block.
+	 *
+	 * @return void
+	 */
+	public function test_build_form_content_enables_confirm_email_option() {
+		$id = $this->make_wpforms(
+			$this->form_data_with(
+				[ 'id' => 1, 'type' => 'email', 'label' => 'Email', 'required' => '1', 'confirmation' => '1' ]
+			)
+		);
+		$markup = $this->make_importer()->build_form_content_public(
+			[ 'id' => 1, 'name' => 'F', 'post_content' => get_post_field( 'post_content', $id ) ]
+		);
+		$this->assertSame( 1, substr_count( $markup, 'wp:srfm/email' ) );
+		$this->assertStringContainsString( '"isConfirmEmail":true', $markup );
 	}
 
 	/**
