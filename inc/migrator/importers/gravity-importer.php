@@ -53,6 +53,46 @@ class Gravity_Importer extends Base_Migrator {
 	];
 
 	/**
+	 * Bucket-specific operator maps for date / time sources. SureForms'
+	 * datepicker / timepicker block types expose their own operator set
+	 * (`datePickerIs`, `isBefore`, `isAfter`, …) — the generic OPERATOR_MAP
+	 * (`==`, `>`, …) is invalid for them, so date/time rules translate
+	 * through these instead. Operators with no equivalent (e.g. `isnot` on a
+	 * date — there is no `!=` for datepicker) are absent and the rule is
+	 * dropped by the validity gate in `convert_rule()`.
+	 */
+	private const DATE_OPERATOR_MAP = [
+		'is'           => 'datePickerIs',
+		'>'            => 'isAfter',
+		'greater_than' => 'isAfter',
+		'<'            => 'isBefore',
+		'less_than'    => 'isBefore',
+	];
+
+	private const TIME_OPERATOR_MAP = [
+		'is'           => 'timePickerIs',
+		'>'            => 'isAfter',
+		'greater_than' => 'isAfter',
+		'<'            => 'isBefore',
+		'less_than'    => 'isBefore',
+	];
+
+	/**
+	 * Operators each SureForms CL block-type bucket actually supports, mirrored
+	 * from Pro's `src/conditional-logic/conditional-logic-options.json`. A
+	 * translated rule whose operator isn't in its bucket's set is dropped
+	 * rather than emitted — an invalid `{type, operator}` pair renders as a
+	 * dead rule the CL editor can't evaluate.
+	 */
+	private const ALLOWED_OPERATORS = [
+		'default'    => [ '==', '!=', 'null', '!null', 'includes', '!includes', 'startWith', 'endWith', 'matchesPattern', 'doesNotMatchPattern' ],
+		'number'     => [ '==', '!=', '>', '>=', '<', '<=', 'between', 'matchesPattern', 'doesNotMatchPattern' ],
+		'list'       => [ '==', '!=', 'in', '!in', 'isSelected', '!isSelected', 'matchesPattern', 'doesNotMatchPattern' ],
+		'datepicker' => [ 'datePickerIs', 'isBefore', 'isOnOrBefore', 'isAfter', 'isOnOrAfter' ],
+		'timepicker' => [ 'timePickerIs', 'isBefore', 'isOnOrBefore', 'isAfter', 'isOnOrAfter' ],
+	];
+
+	/**
 	 * Accumulator: conditional-logic targets discovered during emission.
 	 * Each entry: { source_field_id, action, rules: [...] }.
 	 *
@@ -397,6 +437,21 @@ class Gravity_Importer extends Base_Migrator {
 			return $this->capture_field_metadata( $field, $args, $markup, $type );
 		}
 
+		// Gravity's "confirm email" is a second input on the same field;
+		// srfm/email models that natively via isConfirmEmail, so enable the
+		// option on the single block rather than emitting a duplicate email
+		// field. The GF confirm sub-input label (inputs[1]) carries over.
+		if ( 'email' === $type && ! empty( $field['emailConfirmEnabled'] ) ) {
+			$args['confirm_email'] = true;
+			$inputs                = isset( $field['inputs'] ) && is_array( $field['inputs'] ) ? $field['inputs'] : [];
+			if ( isset( $inputs[1] ) && is_array( $inputs[1] ) ) {
+				$confirm_label = $this->str_arg( $inputs[1], 'label' );
+				if ( '' !== $confirm_label ) {
+					$args['confirm_label'] = $confirm_label;
+				}
+			}
+		}
+
 		$markup = $this->dispatch_template( $method, $args );
 		if ( '' === $markup ) {
 			$markup = (string) apply_filters( 'srfm_migrator_block_template', '', $method, $args, $this->key );
@@ -404,16 +459,6 @@ class Gravity_Importer extends Base_Migrator {
 		if ( '' === $markup ) {
 			$this->note_unsupported( $this->str_arg( $field, 'label', $type ) );
 			return '';
-		}
-
-		// Email with confirmation: emit a second email block "Confirm Email".
-		if ( 'email' === $type && ! empty( $field['emailConfirmEnabled'] ) ) {
-			$base_label               = isset( $args['label'] ) && is_string( $args['label'] ) ? $args['label'] : 'Email';
-			$confirm_args             = $args;
-			$confirm_args['label']    = $base_label . ' (Confirm)';
-			$confirm_args['slug']     = $this->reserve_slug( $confirm_args['label'] );
-			$confirm_args['required'] = ! empty( $field['isRequired'] );
-			$markup                  .= Block_Templates::email( $confirm_args );
 		}
 
 		return $this->capture_field_metadata( $field, $args, $markup, $method );
@@ -466,11 +511,10 @@ class Gravity_Importer extends Base_Migrator {
 			case 'multiselect':
 			case 'radio':
 			case 'checkbox':
-				$options                = $this->translate_choices( $field );
-				$args['options']        = $options['options'];
-				$args['preselected']    = $options['preselected'];
-				$args['_choice_id_map'] = $options['id_map'];
-				$args['multiple']       = 'multiselect' === $type || 'checkbox' === $type;
+				$options             = $this->translate_choices( $field );
+				$args['options']     = $options['options'];
+				$args['preselected'] = $options['preselected'];
+				$args['multiple']    = 'multiselect' === $type || 'checkbox' === $type;
 				break;
 			case 'date':
 				$args['date_format'] = $this->normalize_date_format( $this->str_arg( $field, 'dateFormat', 'mdy' ) );
@@ -528,27 +572,53 @@ class Gravity_Importer extends Base_Migrator {
 	 * @return string
 	 */
 	private function translate_name_field( array $field ) {
-		$base   = $this->str_arg( $field, 'label', 'Name' );
-		$req    = ! empty( $field['isRequired'] );
-		$inputs = isset( $field['inputs'] ) && is_array( $field['inputs'] ) ? $field['inputs'] : [];
-		$markup = '';
+		$base     = $this->str_arg( $field, 'label', 'Name' );
+		$req      = ! empty( $field['isRequired'] );
+		$field_id = $this->str_arg( $field, 'id' );
+		$inputs   = isset( $field['inputs'] ) && is_array( $field['inputs'] ) ? $field['inputs'] : [];
+		$markup   = '';
+		$first    = '';
 		foreach ( $inputs as $sub ) {
 			if ( ! is_array( $sub ) || ! empty( $sub['isHidden'] ) ) {
 				continue;
 			}
-			$sub_label = $this->str_arg( $sub, 'label' );
-			$markup   .= Block_Templates::input(
+			$sub_label  = $this->str_arg( $sub, 'label' );
+			$sub_markup = Block_Templates::input(
 				[
 					'label'    => $base . ( '' !== $sub_label ? ' (' . $sub_label . ')' : '' ),
 					'required' => $req,
 					'slug'     => $this->reserve_slug( $base . '-' . $sub_label ),
 				]
 			);
+			$markup    .= $sub_markup;
+			// Register each visible sub-input's dotted id (e.g. "1.3") so CL
+			// rules that reference a specific name part resolve to its block.
+			$sub_block = $this->extract_block_id( $sub_markup );
+			if ( '' === $sub_block ) {
+				continue;
+			}
+			if ( '' === $first ) {
+				$first = $sub_block;
+			}
+			$sub_id = $this->str_arg( $sub, 'id' );
+			if ( '' !== $sub_id ) {
+				$this->field_id_to_block_id[ $sub_id ]   = $sub_block;
+				$this->field_id_to_block_type[ $sub_id ] = 'default';
+			}
 		}
 		if ( '' === $markup ) {
 			// `nameFormat=simple` or no inputs[] — emit one input.
 			$markup = Block_Templates::input( $this->build_block_args( $field ) );
+			$first  = $this->extract_block_id( $markup );
 		}
+		// Register the whole-field id → first sub-block so the Name field can
+		// act as a CL source/target by its top-level id, then capture its own
+		// CL rules (translate_name_field bypasses capture_field_metadata).
+		if ( '' !== $field_id && '' !== $first ) {
+			$this->field_id_to_block_id[ $field_id ]   = $first;
+			$this->field_id_to_block_type[ $field_id ] = 'default';
+		}
+		$this->record_conditional_logic( $field );
 		return $markup;
 	}
 
@@ -573,8 +643,10 @@ class Gravity_Importer extends Base_Migrator {
 
 	/**
 	 * Translate Gravity's `choices[]` (`{text,value,isSelected,price}`)
-	 * into SureForms options + a preselected-index list + a choice-id map
-	 * used by `convert_rule` to re-key CL rule values.
+	 * into SureForms options + a preselected-index list. The option title is
+	 * the choice value (when `enableChoiceValue`) else its text — the same
+	 * string Gravity CL rules reference, so `convert_rule()` matches against
+	 * it directly without a re-key map.
 	 *
 	 * @since x.x.x
 	 *
@@ -586,18 +658,16 @@ class Gravity_Importer extends Base_Migrator {
 		$use_values  = ! empty( $field['enableChoiceValue'] );
 		$options     = [];
 		$preselected = [];
-		$id_map      = [];
 		$i           = 0;
 		foreach ( $raw as $choice ) {
 			if ( ! is_array( $choice ) ) {
 				continue;
 			}
-			$text                  = $this->str_arg( $choice, 'text' );
-			$value                 = $use_values && '' !== $this->str_arg( $choice, 'value' )
+			$text      = $this->str_arg( $choice, 'text' );
+			$value     = $use_values && '' !== $this->str_arg( $choice, 'value' )
 				? $this->str_arg( $choice, 'value' )
 				: $text;
-			$options[]             = [ 'label' => $value ];
-			$id_map[ (string) $i ] = $i;
+			$options[] = [ 'label' => $value ];
 			if ( ! empty( $choice['isSelected'] ) ) {
 				$preselected[] = $i;
 			}
@@ -609,7 +679,6 @@ class Gravity_Importer extends Base_Migrator {
 		return [
 			'options'     => $options,
 			'preselected' => $preselected,
-			'id_map'      => $id_map,
 		];
 	}
 
@@ -649,20 +718,104 @@ class Gravity_Importer extends Base_Migrator {
 	private function capture_field_metadata( array $field, array $args, $markup, $type_key ) {
 		unset( $args );
 		$field_id = $this->str_arg( $field, 'id' );
-		if ( '' !== $field_id && preg_match( '/"block_id":"([a-f0-9]{8})"/', $markup, $m ) ) {
-			$this->field_id_to_block_id[ $field_id ]   = $m[1];
+		$block_id = $this->extract_block_id( $markup );
+		if ( '' !== $field_id && '' !== $block_id ) {
+			$this->field_id_to_block_id[ $field_id ]   = $block_id;
 			$this->field_id_to_block_type[ $field_id ] = $this->block_type_bucket( $type_key );
 		}
-		if ( ! empty( $field['conditionalLogic'] ) && is_array( $field['conditionalLogic'] ) ) {
-			$cl                        = $field['conditionalLogic'];
-			$this->conditional_logic[] = [
-				'target_field_id' => $field_id,
-				'action'          => isset( $cl['actionType'] ) ? (string) $cl['actionType'] : 'show',
-				'logic_type'      => isset( $cl['logicType'] ) ? (string) $cl['logicType'] : 'all',
-				'rules'           => isset( $cl['rules'] ) && is_array( $cl['rules'] ) ? $cl['rules'] : [],
-			];
-		}
+		$this->record_conditional_logic( $field );
 		return $markup;
+	}
+
+	/**
+	 * Extract the first `block_id` from a block markup string, or '' if none.
+	 *
+	 * @since x.x.x
+	 *
+	 * @param string $markup Serialized block markup.
+	 * @return string
+	 */
+	private function extract_block_id( $markup ) {
+		return preg_match( '/"block_id":"([a-f0-9]{8})"/', (string) $markup, $m ) ? $m[1] : '';
+	}
+
+	/**
+	 * Record a field's `conditionalLogic` block (if any) for later assembly.
+	 * Split out of `capture_field_metadata()` so composite emitters (Name)
+	 * that register their own sub-input ids can still capture CL rules.
+	 *
+	 * @since x.x.x
+	 *
+	 * @param array<string,mixed> $field Source field.
+	 * @return void
+	 */
+	private function record_conditional_logic( array $field ) {
+		if ( empty( $field['conditionalLogic'] ) || ! is_array( $field['conditionalLogic'] ) ) {
+			return;
+		}
+		$cl                        = $field['conditionalLogic'];
+		$this->conditional_logic[] = [
+			'target_field_id' => $this->str_arg( $field, 'id' ),
+			'action'          => isset( $cl['actionType'] ) ? (string) $cl['actionType'] : 'show',
+			'logic_type'      => isset( $cl['logicType'] ) ? (string) $cl['logicType'] : 'all',
+			'rules'           => isset( $cl['rules'] ) && is_array( $cl['rules'] ) ? $cl['rules'] : [],
+		];
+	}
+
+	/**
+	 * Resolve a Gravity field id (whole or dotted sub-input like `1.3`) to the
+	 * SureForms block_id captured during translation. Gravity CL rules
+	 * frequently reference a sub-input id — a Name part, an Address line, a
+	 * single Checkbox choice. When the exact id isn't registered, fall back to
+	 * the parent field id (truncate at the first `.`) so the rule maps to the
+	 * composite block instead of being silently dropped.
+	 *
+	 * @since x.x.x
+	 *
+	 * @param string $field_id Gravity field id (e.g. `1` or `1.3`).
+	 * @return string SureForms block_id, or '' if neither resolves.
+	 */
+	private function resolve_block_id( $field_id ) {
+		if ( isset( $this->field_id_to_block_id[ $field_id ] ) ) {
+			return $this->field_id_to_block_id[ $field_id ];
+		}
+		$parent = $this->parent_field_id( $field_id );
+		return '' !== $parent && isset( $this->field_id_to_block_id[ $parent ] )
+			? $this->field_id_to_block_id[ $parent ]
+			: '';
+	}
+
+	/**
+	 * Resolve a Gravity field id to its CL block-type bucket, with the same
+	 * dotted-sub-input → parent fallback as `resolve_block_id()`.
+	 *
+	 * @since x.x.x
+	 *
+	 * @param string $field_id Gravity field id.
+	 * @return string Block-type bucket (defaults to `default`).
+	 */
+	private function resolve_block_type( $field_id ) {
+		if ( isset( $this->field_id_to_block_type[ $field_id ] ) ) {
+			return $this->field_id_to_block_type[ $field_id ];
+		}
+		$parent = $this->parent_field_id( $field_id );
+		return '' !== $parent && isset( $this->field_id_to_block_type[ $parent ] )
+			? $this->field_id_to_block_type[ $parent ]
+			: 'default';
+	}
+
+	/**
+	 * Return the parent field id of a dotted sub-input id (`1.3` → `1`), or ''
+	 * when the id has no dot.
+	 *
+	 * @since x.x.x
+	 *
+	 * @param string $field_id Gravity field id.
+	 * @return string
+	 */
+	private function parent_field_id( $field_id ) {
+		$dot = strpos( (string) $field_id, '.' );
+		return false === $dot ? '' : substr( (string) $field_id, 0, $dot );
 	}
 
 	/**
@@ -680,6 +833,15 @@ class Gravity_Importer extends Base_Migrator {
 		if ( in_array( $type, [ 'select', 'multiselect', 'radio', 'checkbox', 'multi_choice', 'dropdown' ], true ) ) {
 			return 'list';
 		}
+		// Pro makes date/time importable (#1258); their CL block types expose a
+		// dedicated operator set, so bucket them accordingly instead of letting
+		// them fall to `default` (which can't evaluate date/time operators).
+		if ( in_array( $type, [ 'date', 'date_picker' ], true ) ) {
+			return 'datepicker';
+		}
+		if ( in_array( $type, [ 'time', 'time_picker' ], true ) ) {
+			return 'timepicker';
+		}
 		return 'default';
 	}
 
@@ -696,7 +858,7 @@ class Gravity_Importer extends Base_Migrator {
 		$out = [];
 		foreach ( $this->conditional_logic as $entry ) {
 			$target_field_id = $this->str_arg( $entry, 'target_field_id' );
-			$target_block_id = $this->field_id_to_block_id[ $target_field_id ] ?? '';
+			$target_block_id = $this->resolve_block_id( $target_field_id );
 			if ( '' === $target_block_id ) {
 				continue;
 			}
@@ -738,19 +900,54 @@ class Gravity_Importer extends Base_Migrator {
 	private function convert_rule( array $rule ) {
 		$src   = $this->str_arg( $rule, 'fieldId' );
 		$op    = $this->str_arg( $rule, 'operator', 'is' );
-		$block = $this->field_id_to_block_id[ $src ] ?? '';
+		$block = $this->resolve_block_id( $src );
 		if ( '' === $block ) {
 			return null;
 		}
-		if ( ! isset( self::OPERATOR_MAP[ $op ] ) ) {
+		$bucket   = $this->resolve_block_type( $src );
+		$operator = $this->map_operator( $op, $bucket );
+		if ( null === $operator ) {
+			// Operator has no equivalent for this block type (e.g. `contains`
+			// on a list field, `isnot` on a date) — drop the rule rather than
+			// emit a {type, operator} pair the CL editor can't evaluate.
 			return null;
 		}
+		// Gravity stores the rule value as the choice `value`; we emit list
+		// options keyed by that same value (translate_choices), so the raw
+		// value matches the SureForms option title — pass it through as-is.
 		return [
 			'field'    => $block,
-			'operator' => self::OPERATOR_MAP[ $op ],
+			'operator' => $operator,
 			'value'    => $this->str_arg( $rule, 'value' ),
-			'type'     => $this->field_id_to_block_type[ $src ] ?? 'default',
+			'type'     => $bucket,
 		];
+	}
+
+	/**
+	 * Map a Gravity operator to the SureForms operator valid for the given CL
+	 * block-type bucket, or null when there's no valid equivalent. Date/time
+	 * buckets use their dedicated operator maps; all others go through
+	 * OPERATOR_MAP and are then gated against the bucket's allowed set.
+	 *
+	 * @since x.x.x
+	 *
+	 * @param string $gf_operator Gravity operator (e.g. `is`, `contains`).
+	 * @param string $bucket      Resolved block-type bucket.
+	 * @return string|null
+	 */
+	private function map_operator( $gf_operator, $bucket ) {
+		if ( 'datepicker' === $bucket ) {
+			return self::DATE_OPERATOR_MAP[ $gf_operator ] ?? null;
+		}
+		if ( 'timepicker' === $bucket ) {
+			return self::TIME_OPERATOR_MAP[ $gf_operator ] ?? null;
+		}
+		$mapped = self::OPERATOR_MAP[ $gf_operator ] ?? null;
+		if ( null === $mapped ) {
+			return null;
+		}
+		$allowed = self::ALLOWED_OPERATORS[ $bucket ] ?? self::ALLOWED_OPERATORS['default'];
+		return in_array( $mapped, $allowed, true ) ? $mapped : null;
 	}
 
 	/**

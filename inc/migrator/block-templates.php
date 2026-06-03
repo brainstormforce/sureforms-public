@@ -53,11 +53,15 @@ class Block_Templates {
 	}
 
 	/**
-	 * Build a srfm/email block.
+	 * Build a srfm/email block. When `confirm_email` is set, the block's
+	 * native confirm-email mode (`isConfirmEmail`) is enabled — a second
+	 * "Confirm Email" input on the same field — instead of the caller having
+	 * to emit a separate email block.
 	 *
 	 * @since x.x.x
 	 *
-	 * @param array<string,mixed> $args Field args.
+	 * @param array<string,mixed> $args Field args (incl. `confirm_email`,
+	 *                                   `confirm_label`).
 	 * @return string
 	 */
 	public static function email( array $args ) {
@@ -73,6 +77,13 @@ class Block_Templates {
 				'block_id'     => self::block_id(),
 			]
 		);
+		if ( self::bool( $args, 'confirm_email' ) ) {
+			$attrs['isConfirmEmail'] = true;
+			$confirm_label           = self::str( $args, 'confirm_label' );
+			if ( '' !== $confirm_label ) {
+				$attrs['confirmLabel'] = $confirm_label;
+			}
+		}
 		return self::serialize_block( 'srfm/email', $attrs );
 	}
 
