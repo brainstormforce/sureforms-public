@@ -119,6 +119,33 @@ class Test_Ninja_Importer extends TestCase {
 			public function source_forms_public() {
 				return $this->get_source_forms();
 			}
+
+			// Wrappers calling the REAL (parent) DB readers — bypass the stub
+			// overrides above so the actual implementations can be exercised.
+
+			/**
+			 * @param int $form_id Form id.
+			 * @return array<int,array<string,mixed>>
+			 */
+			public function fetch_fields_real( $form_id ) {
+				return parent::fetch_fields( $form_id );
+			}
+
+			/**
+			 * @param int $form_id Form id.
+			 * @return array<string,mixed>
+			 */
+			public function fetch_form_meta_real( $form_id ) {
+				return parent::fetch_form_meta( $form_id );
+			}
+
+			/**
+			 * @param int $form_id Form id.
+			 * @return array<int,array<string,mixed>>
+			 */
+			public function fetch_actions_real( $form_id ) {
+				return parent::fetch_actions( $form_id );
+			}
 		};
 	}
 
@@ -550,5 +577,39 @@ class Test_Ninja_Importer extends TestCase {
 		// `exist()` overridden true; the actual DB has no nf3_forms table
 		// in the test env, so wpdb->get_results returns null → [].
 		$this->assertIsArray( $this->make_importer()->source_forms_public() );
+	}
+
+	/**
+	 * The real fetch_fields() degrades to [] when nf3 tables are absent
+	 * (wpdb->get_results returns null on a missing table).
+	 *
+	 * @return void
+	 */
+	public function test_fetch_fields() {
+		$this->assertSame( [], $this->make_importer()->fetch_fields_real( 1 ) );
+	}
+
+	/**
+	 * The real fetch_form_meta() degrades to [] when nf3 tables are absent.
+	 *
+	 * @return void
+	 */
+	public function test_fetch_form_meta() {
+		$this->assertSame( [], $this->make_importer()->fetch_form_meta_real( 1 ) );
+	}
+
+	/**
+	 * The real fetch_actions() degrades to [] when nf3 tables are absent, and
+	 * is memoized — a second call returns the same cached result rather than
+	 * re-querying (notifications + confirmation both read it per form).
+	 *
+	 * @return void
+	 */
+	public function test_fetch_actions() {
+		$importer = $this->make_importer();
+		$first    = $importer->fetch_actions_real( 1 );
+		$second   = $importer->fetch_actions_real( 1 );
+		$this->assertSame( [], $first );
+		$this->assertSame( $first, $second );
 	}
 }

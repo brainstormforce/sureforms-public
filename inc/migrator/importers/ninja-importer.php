@@ -756,7 +756,8 @@ class Ninja_Importer extends Base_Migrator {
 		if ( ! is_string( $value ) || ! is_serialized( $value ) ) {
 			return $value;
 		}
-		return unserialize( $value, [ 'allowed_classes' => false ] ); // phpcs:ignore WordPress.PHP.NoSilencedErrors
+		// allowed_classes => false forbids object instantiation (no gadget surface).
+		return unserialize( $value, [ 'allowed_classes' => false ] ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.serialize_unserialize
 	}
 
 	/**
