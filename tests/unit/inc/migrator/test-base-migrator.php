@@ -357,4 +357,36 @@ class Test_Base_Migrator extends TestCase {
 		// …and the request cache returns the same payload without a fresh read.
 		$this->assertSame( $payload, $get->invoke( $importer ) );
 	}
+
+	/**
+	 * Base_Migrator::apply_form_id_to_blocks() — injects `formId` as the first
+	 * attribute of every srfm block (so SureForms can resolve conditional-logic
+	 * classes at render) without disturbing the existing JSON_HEX-escaped attrs.
+	 *
+	 * @return void
+	 */
+	public function test_apply_form_id_to_blocks() {
+		$importer = $this->make_importer();
+		$method   = new \ReflectionMethod( $importer, 'apply_form_id_to_blocks' );
+		$method->setAccessible( true );
+
+		// A srfm block whose label carries JSON_HEX-escaped markup, exactly as the
+		// Block_Templates emitters produce it ("<" serialised as the literal
+		// six-character sequence <, not a raw "<").
+		$markup = '<!-- wp:srfm/input {"block_id":"abc12345","label":"\u003Cb\u003EName"} /-->'
+			. "\n" . '<!-- wp:columns --><div class="wp-block-columns"></div><!-- /wp:columns -->';
+
+		$out = (string) $method->invoke( $importer, $markup, 728 );
+
+		// formId injected as the first attribute on the srfm block.
+		$this->assertStringContainsString( '<!-- wp:srfm/input {"formId":"728","block_id":"abc12345"', $out );
+		// Existing JSON_HEX escaping is preserved (the < sequence is untouched,
+		// never decoded to a raw "<" that could break the block delimiter).
+		$this->assertStringContainsString( '\u003Cb\u003EName', $out );
+		$this->assertStringNotContainsString( '<b>Name', $out );
+		// Non-srfm blocks (core/columns) are left untouched.
+		$this->assertStringContainsString( '<!-- wp:columns -->', $out );
+		// Guard: invalid form id returns the markup unchanged.
+		$this->assertSame( $markup, (string) $method->invoke( $importer, $markup, 0 ) );
+	}
 }

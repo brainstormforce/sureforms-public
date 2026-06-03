@@ -277,7 +277,25 @@ abstract class Base_Migrator {
 			$args['meta_input'] = $metas;
 		}
 		$post_id = wp_insert_post( $args, true );
-		return is_wp_error( $post_id ) ? 0 : (int) $post_id;
+		if ( is_wp_error( $post_id ) ) {
+			return 0;
+		}
+		$post_id = (int) $post_id;
+
+		// Blocks carry the form's post id in their `formId` attribute, which
+		// SureForms uses at render to resolve per-block conditional-logic classes
+		// (`conditional-trigger`/`conditional-logic`). The id isn't known until
+		// the post exists, so stamp it now and re-save the content.
+		$stamped = $this->apply_form_id_to_blocks( $markup, $post_id );
+		if ( $stamped !== $markup ) {
+			wp_update_post(
+				[
+					'ID'           => $post_id,
+					'post_content' => wp_slash( $stamped ),
+				]
+			);
+		}
+		return $post_id;
 	}
 
 	/**
@@ -296,14 +314,48 @@ abstract class Base_Migrator {
 			'ID'           => $post_id,
 			'post_title'   => $this->get_source_form_name( $form ),
 			// wp_update_post applies wp_unslash to post_content; pre-slash so the
-			// JSON unicode escapes (e.g. <) survive the round-trip.
-			'post_content' => wp_slash( $markup ),
+			// JSON unicode escapes (e.g. <) survive the round-trip. The form id is
+			// stamped into each block's `formId` so SureForms can resolve per-block
+			// conditional-logic classes at render.
+			'post_content' => wp_slash( $this->apply_form_id_to_blocks( $markup, (int) $post_id ) ),
 		];
 		if ( ! empty( $metas ) ) {
 			$args['meta_input'] = $metas;
 		}
 		$updated = wp_update_post( $args, true );
 		return is_wp_error( $updated ) ? 0 : (int) $updated;
+	}
+
+	/**
+	 * Stamp the form's post id into every SureForms block's `formId` attribute.
+	 *
+	 * SureForms resolves per-block conditional-logic classes at render from each
+	 * block's `formId` (see `Base::$conditional_class`). Migrated markup is built
+	 * before the post exists, so the id is injected once it's known.
+	 *
+	 * Uses a targeted string insert rather than parse_blocks()/serialize_blocks()
+	 * on purpose: re-serialising would drop the JSON_HEX escaping the
+	 * Block_Templates emitters apply to neutralise hostile labels. Every srfm
+	 * block carries at least a `block_id`, so the opening `{` is always followed
+	 * by a quoted key — `formId` is inserted ahead of it without touching the
+	 * existing (already-escaped) attribute payload.
+	 *
+	 * @since x.x.x
+	 *
+	 * @param string $markup  Serialized block markup.
+	 * @param int    $form_id Target form post id.
+	 * @return string
+	 */
+	protected function apply_form_id_to_blocks( $markup, $form_id ) {
+		$form_id = (int) $form_id;
+		if ( $form_id <= 0 || '' === trim( (string) $markup ) ) {
+			return (string) $markup;
+		}
+		return (string) preg_replace(
+			'/(<!--\s+wp:srfm\/[A-Za-z0-9-]+\s+\{)(")/',
+			'${1}"formId":"' . $form_id . '",$2',
+			(string) $markup
+		);
 	}
 
 	/**
