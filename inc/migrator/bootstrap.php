@@ -90,23 +90,23 @@ class Bootstrap {
 			'callback'            => [ $this, 'rest_import_forms' ],
 			'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
 			'args'                => [
-				'key'      => [
+				'key'         => [
 					'sanitize_callback' => 'sanitize_key',
 				],
-				'form_ids' => [
+				'form_ids'    => [
 					'sanitize_callback' => [ $this, 'sanitize_form_ids' ],
 					'default'           => [],
 				],
-				'dry_run'  => [
+				'dry_run'     => [
 					'sanitize_callback' => 'rest_sanitize_boolean',
 					'default'           => false,
 				],
-				'behavior' => [
+				'behavior'    => [
 					'sanitize_callback' => [ $this, 'sanitize_behavior' ],
 					'default'           => [],
 				],
 				'post_status' => [
-					'sanitize_callback' => static function( $value ) {
+					'sanitize_callback' => static function ( $value ) {
 						return in_array( $value, [ 'draft', 'publish' ], true ) ? $value : 'publish';
 					},
 					'default'           => 'publish',

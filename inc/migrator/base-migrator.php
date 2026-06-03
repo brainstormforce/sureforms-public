@@ -67,7 +67,7 @@ abstract class Base_Migrator {
 	 * The map option is `autoload=false`, so reading it once per request (rather
 	 * than once per source form) avoids an N+1 DB hit on the listing endpoints.
 	 *
-	 * @var array<int,array<string,mixed>>|null
+	 * @var array<int|string,mixed>|null
 	 */
 	private $imported_map_cache = null;
 
@@ -131,6 +131,7 @@ abstract class Base_Migrator {
 	 */
 	public function import_forms( array $selected_ids = [], $dry_run = false, array $behavior = [], $post_status = 'publish' ) {
 		$post_status = in_array( $post_status, [ 'draft', 'publish' ], true ) ? $post_status : 'publish';
+
 		$this->unsupported_fields = [];
 		$result                   = [
 			'imported'           => [],
@@ -311,7 +312,8 @@ abstract class Base_Migrator {
 			if ( ! is_array( $entry ) ) {
 				continue;
 			}
-			if ( (string) ( $entry['source_id'] ?? '' ) !== (string) $source_id ) {
+			$entry_source_id = $entry['source_id'] ?? '';
+			if ( ! is_scalar( $entry_source_id ) || (string) $entry_source_id !== (string) $source_id ) {
 				continue;
 			}
 			if ( ( $entry['source_key'] ?? '' ) !== $this->key ) {
@@ -333,7 +335,7 @@ abstract class Base_Migrator {
 	 * Read the imported-forms map once per request (memoized).
 	 *
 	 * @since x.x.x
-	 * @return array<int,array<string,mixed>>
+	 * @return array<int|string,mixed>
 	 */
 	protected function get_imported_map() {
 		if ( null === $this->imported_map_cache ) {
@@ -348,7 +350,7 @@ abstract class Base_Migrator {
 	 *
 	 * @since x.x.x
 	 *
-	 * @param array<int,array<string,mixed>> $map Map to store.
+	 * @param array<int|string,mixed> $map Map to store.
 	 * @return void
 	 */
 	protected function save_imported_map( array $map ) {
