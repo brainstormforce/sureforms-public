@@ -62,6 +62,16 @@ abstract class Base_Migrator {
 	protected $unsupported_fields = [];
 
 	/**
+	 * Request-scoped cache of the imported-forms map. `null` until first read.
+	 *
+	 * The map option is `autoload=false`, so reading it once per request (rather
+	 * than once per source form) avoids an N+1 DB hit on the listing endpoints.
+	 *
+	 * @var array<int,array<string,mixed>>|null
+	 */
+	private $imported_map_cache = null;
+
+	/**
 	 * List forms in the source plugin, formatted for the picker UI.
 	 *
 	 * @since x.x.x
@@ -88,6 +98,22 @@ abstract class Base_Migrator {
 	}
 
 	/**
+	 * Count the source forms without resolving per-form import mappings.
+	 *
+	 * The sources listing only needs a count; calling list_forms() there would
+	 * run find_existing_srfm_id() for every form purely to discard the result.
+	 *
+	 * @since x.x.x
+	 * @return int
+	 */
+	public function count_source_forms() {
+		if ( ! $this->exist() ) {
+			return 0;
+		}
+		return count( $this->get_source_forms() );
+	}
+
+	/**
 	 * Import (or dry-run) the selected source forms into SureForms.
 	 *
 	 * Re-imports honour an optional per-source behavior map:
@@ -100,9 +126,11 @@ abstract class Base_Migrator {
 	 * @param array<int,int|string>    $selected_ids List of source form ids. Empty = all.
 	 * @param bool                     $dry_run      If true, no posts are inserted; a preview is returned.
 	 * @param array<int|string,string> $behavior   Per-source-id behavior. Keyed by source id (any cast).
+	 * @param string                   $post_status Status for newly inserted forms; one of `draft`/`publish`.
 	 * @return array{imported: array<int,array<string,mixed>>, failed: array<int,string>, skipped: array<int,array<string,mixed>>, unsupported_fields: array<int,string>, preview?: array<string,string>}
 	 */
-	public function import_forms( array $selected_ids = [], $dry_run = false, array $behavior = [] ) {
+	public function import_forms( array $selected_ids = [], $dry_run = false, array $behavior = [], $post_status = 'publish' ) {
+		$post_status = in_array( $post_status, [ 'draft', 'publish' ], true ) ? $post_status : 'publish';
 		$this->unsupported_fields = [];
 		$result                   = [
 			'imported'           => [],
@@ -161,7 +189,7 @@ abstract class Base_Migrator {
 			if ( $existing_id && 'create' !== $action ) {
 				$post_id = $this->update_form_post( $existing_id, $form, $markup, $metas );
 			} else {
-				$post_id = $this->insert_form_post( $form, $markup, $metas );
+				$post_id = $this->insert_form_post( $form, $markup, $metas, $post_status );
 			}
 
 			if ( $post_id ) {
@@ -219,15 +247,17 @@ abstract class Base_Migrator {
 	 *
 	 * @since x.x.x
 	 *
-	 * @param array<string,mixed> $form   Source form descriptor (for title).
-	 * @param string              $markup Block markup for post_content.
-	 * @param array<string,mixed> $metas  Optional meta_input payload (key => value).
+	 * @param array<string,mixed> $form        Source form descriptor (for title).
+	 * @param string              $markup      Block markup for post_content.
+	 * @param array<string,mixed> $metas       Optional meta_input payload (key => value).
+	 * @param string              $post_status Status for the new post; one of `draft`/`publish`.
 	 * @return int Inserted post id, or 0 on failure.
 	 */
-	protected function insert_form_post( array $form, $markup, array $metas = [] ) {
-		$args = [
+	protected function insert_form_post( array $form, $markup, array $metas = [], $post_status = 'publish' ) {
+		$post_status = in_array( $post_status, [ 'draft', 'publish' ], true ) ? $post_status : 'publish';
+		$args        = [
 			'post_type'    => SRFM_FORMS_POST_TYPE,
-			'post_status'  => 'publish',
+			'post_status'  => $post_status,
 			'post_title'   => $this->get_source_form_name( $form ),
 			// wp_insert_post applies wp_unslash to post_content; pre-slash so the
 			// JSON unicode escapes (e.g. <) survive the round-trip.
@@ -276,10 +306,7 @@ abstract class Base_Migrator {
 	 * @return int 0 if not previously imported.
 	 */
 	protected function find_existing_srfm_id( $source_id ) {
-		$map = get_option( self::IMPORTED_MAP_OPTION, [] );
-		if ( ! is_array( $map ) ) {
-			return 0;
-		}
+		$map = $this->get_imported_map();
 		foreach ( $map as $srfm_id => $entry ) {
 			if ( ! is_array( $entry ) ) {
 				continue;
@@ -296,10 +323,37 @@ abstract class Base_Migrator {
 				return (int) $srfm_id;
 			}
 			unset( $map[ $srfm_id ] );
-			update_option( self::IMPORTED_MAP_OPTION, $map, false );
+			$this->save_imported_map( $map );
 			return 0;
 		}
 		return 0;
+	}
+
+	/**
+	 * Read the imported-forms map once per request (memoized).
+	 *
+	 * @since x.x.x
+	 * @return array<int,array<string,mixed>>
+	 */
+	protected function get_imported_map() {
+		if ( null === $this->imported_map_cache ) {
+			$map                      = get_option( self::IMPORTED_MAP_OPTION, [] );
+			$this->imported_map_cache = is_array( $map ) ? $map : [];
+		}
+		return $this->imported_map_cache;
+	}
+
+	/**
+	 * Persist the imported-forms map and refresh the request cache.
+	 *
+	 * @since x.x.x
+	 *
+	 * @param array<int,array<string,mixed>> $map Map to store.
+	 * @return void
+	 */
+	protected function save_imported_map( array $map ) {
+		$this->imported_map_cache = $map;
+		update_option( self::IMPORTED_MAP_OPTION, $map, false );
 	}
 
 	/**
@@ -312,16 +366,13 @@ abstract class Base_Migrator {
 	 * @return void
 	 */
 	protected function record_import_mapping( $srfm_id, $source_id ) {
-		$map = get_option( self::IMPORTED_MAP_OPTION, [] );
-		if ( ! is_array( $map ) ) {
-			$map = [];
-		}
+		$map                   = $this->get_imported_map();
 		$map[ (int) $srfm_id ] = [
 			'source_id'     => $source_id,
 			'source_key'    => $this->key,
 			'last_imported' => current_time( 'mysql' ),
 		];
-		update_option( self::IMPORTED_MAP_OPTION, $map, false );
+		$this->save_imported_map( $map );
 	}
 
 	/**

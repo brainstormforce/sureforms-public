@@ -33,6 +33,12 @@ const DryRunPreview = ( {
 	// re-renders with `submitting = true`.
 	const inFlight = useRef( false );
 
+	// Depend on serialized values, not the array/object identities — otherwise a
+	// parent that recreates `formIds`/`behavior` each render would re-fire the
+	// dry-run import on every render.
+	const formIdsKey = formIds.join( ',' );
+	const behaviorKey = JSON.stringify( behavior );
+
 	useEffect( () => {
 		let cancelled = false;
 		setLoading( true );
@@ -61,7 +67,8 @@ const DryRunPreview = ( {
 		return () => {
 			cancelled = true;
 		};
-	}, [ source.key, formIds, behavior ] );
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [ source.key, formIdsKey, behaviorKey ] );
 
 	const handleConfirm = async () => {
 		if ( inFlight.current ) {

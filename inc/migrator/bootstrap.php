@@ -2,13 +2,12 @@
 /**
  * Migrator Bootstrap — wires REST routes, importer factory, and admin assets.
  *
- * Registers four REST endpoints under `/sureforms/v1/migrator/` by filtering
+ * Registers three REST endpoints under `/sureforms/v1/migrator/` by filtering
  * into `srfm_rest_api_endpoints`:
  *
  *   GET  /migrator/sources                          — list installable sources
  *   GET  /migrator/sources/(?P<key>[a-z0-9]+)/forms — list forms in one source
  *   POST /migrator/sources/(?P<key>[a-z0-9]+)/import — import selected forms
- *   POST /migrator/sources/(?P<key>[a-z0-9]+)/forms/(?P<id>[a-zA-Z0-9_-]+)/entries — entries
  *
  * Each route uses `Helper::get_items_permissions_check` for capability gating,
  * matching the existing pattern in `inc/rest-api.php`.
@@ -106,6 +105,12 @@ class Bootstrap {
 					'sanitize_callback' => [ $this, 'sanitize_behavior' ],
 					'default'           => [],
 				],
+				'post_status' => [
+					'sanitize_callback' => static function( $value ) {
+						return in_array( $value, [ 'draft', 'publish' ], true ) ? $value : 'publish';
+					},
+					'default'           => 'publish',
+				],
 			],
 		];
 
@@ -131,11 +136,12 @@ class Bootstrap {
 			if ( null === $importer ) {
 				continue;
 			}
-			$forms_count = $importer->exist() ? count( $importer->list_forms() ) : 0;
+			$installed   = $importer->exist();
+			$forms_count = $installed ? $importer->count_source_forms() : 0;
 			$out[]       = [
 				'key'        => $importer->get_key(),
 				'title'      => $importer->get_title(),
-				'installed'  => $importer->exist(),
+				'installed'  => $installed,
 				'form_count' => $forms_count,
 			];
 		}
@@ -211,7 +217,8 @@ class Bootstrap {
 		if ( ! is_array( $behavior ) ) {
 			$behavior = [];
 		}
-		$result = $importer->import_forms( $form_ids, $dry_run, $behavior );
+		$post_status = (string) $request->get_param( 'post_status' );
+		$result      = $importer->import_forms( $form_ids, $dry_run, $behavior, $post_status );
 		return new WP_REST_Response( $result, 200 );
 	}
 

@@ -13,7 +13,7 @@ Fluent's full migrator source was read end-to-end (`fluentform/app/Services/Migr
 - **One abstract base class** with the import loop, idempotency map, and a ~1,200-line canonical field dictionary.
 - **Thin per-source subclasses** (500–900 LOC each) that only do (a) `source_type → fluent_id` mapping and (b) source-specific args formatting.
 - **4 AJAX endpoints** for: list sources, list forms in source, import forms, import entries.
-- **Template Method pattern** — base class drives the flow, subclasses fill in 7 abstract methods (`exist`, `getForms`, `getFields`, `getFormName`, `getFormMetas`, `getFormsFormatted`, `getFormId`).
+- **Template Method pattern** — base class drives the flow, subclasses fill in 5 abstract methods (`exist`, `get_source_forms`, `get_source_form_id`, `get_source_form_name`, `build_form_content`, `get_form_metas`).
 
 It's clean, proven, and easy to extend. SureForms will adopt the same shape, adapted for:
 
@@ -209,8 +209,8 @@ Namespace: `/wp-json/sureforms/v1/migrator/` (extending the existing `/sureforms
 |---|---|---|---|
 | GET | `/migrator/sources` | — | `[{key, title, installed, form_count, supports_entries}]` |
 | GET | `/migrator/sources/{key}/forms` | — | `[{id, name, field_count, imported_srfm_id, last_imported_at}]` |
-| POST | `/migrator/sources/{key}/import` | `{form_ids: [], dry_run: bool, field_overrides: {}}` | `{imported: [{srfm_id, edit_url, source_id}], unsupported_fields: [], block_markup_preview?: str}` |
-| POST | `/migrator/sources/{key}/forms/{id}/entries` | `{limit?: 1000}` | `{count_imported, count_skipped, count_total}` |
+| POST | `/migrator/sources/{key}/import` | `{form_ids: [], dry_run: bool, behavior: {}, post_status?: 'draft'\|'publish'}` | `{imported: [{srfm_id, edit_url, source_id}], failed: [], skipped: [], unsupported_fields: [], preview?: {}}` |
+| POST | `/migrator/sources/{key}/forms/{id}/entries` _(planned — P3, not yet registered)_ | `{limit?: 1000}` | `{count_imported, count_skipped, count_total}` |
 
 **Security model** (per `sureforms/CLAUDE.md`):
 - Every route's `permission_callback` requires `current_user_can('manage_options')`.
@@ -276,22 +276,21 @@ abstract class SRFM_Base_Migrator {
     protected string $title;                // Display name
     protected array  $unsupported_fields = [];
 
-    // Per-source plumbing
+    // Per-source plumbing (abstract — subclasses implement)
     abstract public function exist(): bool;
-    abstract protected function get_forms(): array;
-    abstract protected function get_form_id( $source_form );
-    abstract protected function get_form_name( $source_form ): string;
-    abstract protected function get_fields( $source_form ): string;        // concatenated block markup
-    abstract protected function get_form_metas( $source_form ): array;     // notifications, confirmations
-    abstract protected function get_entries( $source_form_id ): array;
+    abstract protected function get_source_forms(): array;
+    abstract protected function get_source_form_id( array $form );
+    abstract protected function get_source_form_name( array $form ): string;
+    abstract protected function build_form_content( array $form ): string; // concatenated block markup
+    abstract protected function get_form_metas( array $form ): array;       // notifications, confirmations
+    // NOTE: get_entries() is planned for the entries-migration phase (P3); not shipped yet.
 
     // Shared (in base):
-    public function import_forms( array $selected_ids, bool $dry_run = false ): array;
-    public function get_forms_formatted(): array;
-    public function is_already_imported( $source_form ): int|false;
+    public function list_forms(): array;
+    public function count_source_forms(): int;
+    public function import_forms( array $selected_ids = [], bool $dry_run = false, array $behavior = [], string $post_status = 'publish' ): array;
+    protected function find_existing_srfm_id( $source_id ): int;
     protected function record_import_mapping( int $srfm_id, $source_id ): void;
-    protected function map_options( array $source_options ): array;
-    protected function migrate_files( array $urls ): array;
 }
 ```
 
