@@ -107,6 +107,10 @@ trait Form_Field_Schema {
 				'type'        => 'string',
 				'description' => __( 'Placeholder text shown inside the empty input/textarea or as the empty first option in a dropdown.', 'sureforms' ),
 			],
+			'className'       => [
+				'type'        => 'string',
+				'description' => __( 'Additional CSS class(es) for the field wrapper. Space-separate multiple classes, e.g. "vk-0 highlight".', 'sureforms' ),
+			],
 		];
 
 		/**
@@ -150,6 +154,12 @@ trait Form_Field_Schema {
 			}
 			if ( isset( $field['placeholder'] ) && is_string( $field['placeholder'] ) ) {
 				$fields[ $index ]['placeholder'] = sanitize_text_field( $field['placeholder'] );
+			}
+			if ( isset( $field['className'] ) && is_string( $field['className'] ) ) {
+				$classes                       = preg_split( '/\s+/', trim( $field['className'] ) );
+				$fields[ $index ]['className'] = is_array( $classes )
+					? implode( ' ', array_filter( array_map( 'sanitize_html_class', $classes ) ) )
+					: '';
 			}
 			if ( ! empty( $field['fieldOptions'] ) && is_array( $field['fieldOptions'] ) ) {
 				// @phpstan-ignore-next-line -- $field['fieldOptions'] is validated as array above.
