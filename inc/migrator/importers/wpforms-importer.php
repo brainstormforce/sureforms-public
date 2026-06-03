@@ -81,6 +81,16 @@ class Wpforms_Importer extends Base_Migrator {
 	private $field_id_to_block_type = [];
 
 	/**
+	 * Mapping from WPForms choice-field id → [ choice key => SureForms option
+	 * label ]. WPForms stores a conditional rule's value as the choice KEY, but
+	 * SureForms' CL engine compares against the option label — so convert_rule()
+	 * re-keys list-source rule values through this map.
+	 *
+	 * @var array<string,array<string,string>>
+	 */
+	private $field_id_to_choices = [];
+
+	/**
 	 * Submit-button text discovered while parsing form settings; threaded
 	 * through to `get_form_metas` as `_srfm_submit_button_text`.
 	 *
@@ -216,6 +226,7 @@ class Wpforms_Importer extends Base_Migrator {
 		$this->conditional_logic      = [];
 		$this->field_id_to_block_id   = [];
 		$this->field_id_to_block_type = [];
+		$this->field_id_to_choices    = [];
 		$this->submit_label           = '';
 		$this->form_settings          = [];
 
@@ -690,7 +701,7 @@ class Wpforms_Importer extends Base_Migrator {
 	 * @since x.x.x
 	 *
 	 * @param array<string,mixed> $field WPForms field.
-	 * @return array{options: array<int,array<string,string>>, preselected: array<int,int>, id_map: array<string,int>}
+	 * @return array{options: array<int,array<string,string>>, preselected: array<int,int>, id_map: array<string,string>}
 	 */
 	private function translate_choices( array $field ) {
 		$choices     = isset( $field['choices'] ) && is_array( $field['choices'] ) ? $field['choices'] : [];
@@ -704,11 +715,15 @@ class Wpforms_Importer extends Base_Migrator {
 			if ( ! is_array( $choice ) ) {
 				continue;
 			}
-			$label                   = $this->str_arg( $choice, 'label' );
-			$value                   = $show_values && ! empty( $choice['value'] ) ? (string) $choice['value'] : $label;
-			$entry                   = [ 'label' => $value ];
-			$options[]               = $entry;
-			$id_map[ (string) $cid ] = $i;
+			$label     = $this->str_arg( $choice, 'label' );
+			$value     = $show_values && ! empty( $choice['value'] ) ? (string) $choice['value'] : $label;
+			$entry     = [ 'label' => $value ];
+			$options[] = $entry;
+			// Map the WPForms choice KEY to the SureForms option label. WPForms
+			// conditional rules reference a choice by its key; SureForms' CL
+			// engine compares against the option label (= $value here), so this
+			// lets convert_rule() rewrite the rule value to one that matches.
+			$id_map[ (string) $cid ] = $value;
 			// SureForms' dropdown / multi-choice render preselected entries by
 			// matching the option *index*, not the label — see
 			// inc/fields/dropdown-markup.php:162. Push the integer index here.
@@ -793,6 +808,11 @@ class Wpforms_Importer extends Base_Migrator {
 		if ( '' !== $field_id && preg_match( '/"block_id":"([a-f0-9]{8})"/', $markup, $m ) ) {
 			$this->field_id_to_block_id[ $field_id ]   = $m[1];
 			$this->field_id_to_block_type[ $field_id ] = $this->block_type_bucket( $type_key );
+			// Remember a choice field's [ key => option label ] map so a rule that
+			// uses this field as a CL source can have its value re-keyed.
+			if ( ! empty( $args['_choice_id_map'] ) && is_array( $args['_choice_id_map'] ) ) {
+				$this->field_id_to_choices[ $field_id ] = $args['_choice_id_map'];
+			}
 		}
 
 		if ( ! empty( $field['conditional_logic'] ) && ! empty( $field['conditionals'] ) && is_array( $field['conditionals'] ) ) {
@@ -800,7 +820,6 @@ class Wpforms_Importer extends Base_Migrator {
 				'target_field_id' => $field_id,
 				'action'          => $this->str_arg( $field, 'conditional_type', 'show' ),
 				'rules'           => $field['conditionals'],
-				'choice_id_map'   => $args['_choice_id_map'] ?? [],
 			];
 		}
 
@@ -908,10 +927,21 @@ class Wpforms_Importer extends Base_Migrator {
 		if ( '' === $bucket ) {
 			return null;
 		}
+
+		// WPForms stores a choice source's rule value as the choice KEY (e.g.
+		// "2"); SureForms' CL engine compares against the option label, so
+		// re-key it through the source field's [ key => label ] map. Text/number
+		// sources have no choice map and pass through unchanged.
+		$value      = $this->str_arg( $rule, 'value', '' );
+		$choice_map = $this->field_id_to_choices[ $src_field_id ] ?? [];
+		if ( ! empty( $choice_map ) && array_key_exists( $value, $choice_map ) ) {
+			$value = (string) $choice_map[ $value ];
+		}
+
 		return [
 			'field'    => $source_block,
 			'operator' => $operator,
-			'value'    => $this->str_arg( $rule, 'value', '' ),
+			'value'    => $value,
 			'type'     => $bucket,
 		];
 	}

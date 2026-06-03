@@ -668,14 +668,14 @@ class Test_Wpforms_Importer extends TestCase {
 	}
 
 	/**
-	 * Conditional logic on a CHOICE (list-bucket) source field must emit a
-	 * payload SureForms actually evaluates: `==` stays on the `list` bucket,
-	 * while a text-style operator (`contains` → `includes`, invalid for `list`)
-	 * is down-bucketed to `default` rather than emitted as a dead rule.
+	 * Conditional logic on a CHOICE (list-bucket) source field. WPForms stores
+	 * the rule value as the choice KEY (e.g. "2"), not the label — the migrator
+	 * must re-key it to the SureForms option label the CL engine compares
+	 * against, and keep `==`/`!=` on the `list` bucket.
 	 *
 	 * @return void
 	 */
-	public function test_get_form_metas_choice_source_reconciles_operator_bucket() {
+	public function test_get_form_metas_choice_source_rekeys_value_to_label() {
 		$form_data = [
 			'id'       => 11,
 			'fields'   => [
@@ -694,10 +694,10 @@ class Test_Wpforms_Importer extends TestCase {
 					'label'             => 'Dependent',
 					'conditional_logic' => '1',
 					'conditional_type'  => 'show',
+					// WPForms stores the choice KEY ("2" = "No") as the rule value.
 					'conditionals'      => [
 						[
-							[ 'field' => 1, 'operator' => '==', 'value' => 'Yes' ],
-							[ 'field' => 1, 'operator' => 'c', 'value' => 'Y' ],
+							[ 'field' => 1, 'operator' => '==', 'value' => '2' ],
 						],
 					],
 				],
@@ -711,16 +711,61 @@ class Test_Wpforms_Importer extends TestCase {
 
 		$this->assertNotEmpty( $metas['_srfm_conditional_logic'] );
 		$payload = (array) reset( $metas['_srfm_conditional_logic'][0] );
-		$group   = $payload['logic'][0];
+		$rule    = $payload['logic'][0][0];
 
-		// `==` is valid for a list field → bucket stays `list`.
-		$this->assertSame( '==', $group[0]['operator'] );
-		$this->assertSame( 'list', $group[0]['type'] );
+		$this->assertSame( '==', $rule['operator'] );
+		$this->assertSame( 'list', $rule['type'] );
+		// The choice KEY "2" must be re-keyed to the option LABEL "No".
+		$this->assertSame( 'No', $rule['value'] );
+	}
 
-		// `includes` is NOT valid for `list` → down-bucketed to `default` so the
-		// rule still evaluates (rather than importing dead).
-		$this->assertSame( 'includes', $group[1]['operator'] );
-		$this->assertSame( 'default', $group[1]['type'] );
+	/**
+	 * When the choice field has `show_values` enabled, the SureForms option
+	 * label is the choice VALUE, so the re-keyed CL rule value must match that
+	 * value (mirroring how SureForms renders + compares the option).
+	 *
+	 * @return void
+	 */
+	public function test_get_form_metas_choice_source_rekeys_with_show_values() {
+		$form_data = [
+			'id'       => 12,
+			'fields'   => [
+				1 => [
+					'id'          => 1,
+					'type'        => 'select',
+					'label'       => 'Plan',
+					'show_values' => '1',
+					'choices'     => [
+						1 => [ 'label' => 'Basic Plan', 'value' => 'basic', 'default' => '' ],
+						2 => [ 'label' => 'Pro Plan', 'value' => 'pro', 'default' => '' ],
+					],
+				],
+				2 => [
+					'id'                => 2,
+					'type'              => 'text',
+					'label'             => 'Coupon',
+					'conditional_logic' => '1',
+					'conditional_type'  => 'show',
+					'conditionals'      => [
+						[
+							[ 'field' => 1, 'operator' => '==', 'value' => '2' ],
+						],
+					],
+				],
+			],
+			'settings' => [ 'submit_text' => 'Submit' ],
+		];
+		$id    = $this->make_wpforms( $form_data, 'CL ShowValues' );
+		$metas = $this->make_importer()->get_form_metas_public(
+			[ 'id' => 12, 'name' => 'CL ShowValues', 'post_content' => get_post_field( 'post_content', $id ) ]
+		);
+
+		$this->assertNotEmpty( $metas['_srfm_conditional_logic'] );
+		$payload = (array) reset( $metas['_srfm_conditional_logic'][0] );
+		$rule    = $payload['logic'][0][0];
+		// show_values on → SureForms option label is the choice value "pro".
+		$this->assertSame( 'pro', $rule['value'] );
+		$this->assertSame( 'list', $rule['type'] );
 	}
 
 	/**
