@@ -588,7 +588,7 @@ class Gravity_Importer extends Base_Migrator {
 					'slug'     => $this->reserve_slug( $base . '-' . $sub_label ),
 				]
 			);
-			$markup   .= $sub_markup;
+			$markup    .= $sub_markup;
 			// Register each visible sub-input's dotted id (e.g. "1.3") so CL
 			// rules that reference a specific name part resolve to its block.
 			$sub_block = $this->extract_block_id( $sub_markup );
@@ -661,11 +661,11 @@ class Gravity_Importer extends Base_Migrator {
 			if ( ! is_array( $choice ) ) {
 				continue;
 			}
-			$text        = $this->str_arg( $choice, 'text' );
-			$value       = $use_values && '' !== $this->str_arg( $choice, 'value' )
+			$text      = $this->str_arg( $choice, 'text' );
+			$value     = $use_values && '' !== $this->str_arg( $choice, 'value' )
 				? $this->str_arg( $choice, 'value' )
 				: $text;
-			$options[]   = [ 'label' => $value ];
+			$options[] = [ 'label' => $value ];
 			if ( ! empty( $choice['isSelected'] ) ) {
 				$preselected[] = $i;
 			}
@@ -715,8 +715,8 @@ class Gravity_Importer extends Base_Migrator {
 	 */
 	private function capture_field_metadata( array $field, array $args, $markup, $type_key ) {
 		unset( $args );
-		$field_id  = $this->str_arg( $field, 'id' );
-		$block_id  = $this->extract_block_id( $markup );
+		$field_id = $this->str_arg( $field, 'id' );
+		$block_id = $this->extract_block_id( $markup );
 		if ( '' !== $field_id && '' !== $block_id ) {
 			$this->field_id_to_block_id[ $field_id ]   = $block_id;
 			$this->field_id_to_block_type[ $field_id ] = $this->block_type_bucket( $type_key );
@@ -896,9 +896,9 @@ class Gravity_Importer extends Base_Migrator {
 	 * @return array<string,string>|null
 	 */
 	private function convert_rule( array $rule ) {
-		$src    = $this->str_arg( $rule, 'fieldId' );
-		$op     = $this->str_arg( $rule, 'operator', 'is' );
-		$block  = $this->resolve_block_id( $src );
+		$src   = $this->str_arg( $rule, 'fieldId' );
+		$op    = $this->str_arg( $rule, 'operator', 'is' );
+		$block = $this->resolve_block_id( $src );
 		if ( '' === $block ) {
 			return null;
 		}
