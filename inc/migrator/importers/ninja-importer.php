@@ -53,22 +53,6 @@ class Ninja_Importer extends Base_Migrator {
 	];
 
 	/**
-	 * Operators each SureForms CL block-type bucket actually supports, mirrored
-	 * from Pro's `conditional-logic-options.json`. A translated rule whose
-	 * operator isn't valid for its bucket is dropped rather than emitted — an
-	 * invalid `{type, operator}` pair (e.g. a `list` source with `includes`)
-	 * imports as a dead rule the CL editor can't evaluate. Kept consistent
-	 * with the WPForms and Gravity importers.
-	 */
-	private const ALLOWED_OPERATORS = [
-		'default'    => [ '==', '!=', 'null', '!null', 'includes', '!includes', 'startWith', 'endWith', 'matchesPattern', 'doesNotMatchPattern' ],
-		'number'     => [ '==', '!=', '>', '>=', '<', '<=', 'between', 'matchesPattern', 'doesNotMatchPattern' ],
-		'list'       => [ '==', '!=', 'in', '!in', 'isSelected', '!isSelected', 'matchesPattern', 'doesNotMatchPattern' ],
-		'datepicker' => [ 'datePickerIs', 'isBefore', 'isOnOrBefore', 'isAfter', 'isOnOrAfter' ],
-		'timepicker' => [ 'timePickerIs', 'isBefore', 'isOnOrBefore', 'isAfter', 'isOnOrAfter' ],
-	];
-
-	/**
 	 * Bucket-specific operator maps for date / time sources (SureForms'
 	 * datepicker / timepicker expose their own operator set). Operators with
 	 * no equivalent are absent and the rule is dropped by the validity gate.
@@ -734,8 +718,8 @@ class Ninja_Importer extends Base_Migrator {
 		if ( null === $mapped ) {
 			return null;
 		}
-		$allowed = self::ALLOWED_OPERATORS[ $bucket ] ?? self::ALLOWED_OPERATORS['default'];
-		return in_array( $mapped, $allowed, true ) ? $mapped : null;
+		// Gate against the shared allowlist in Base_Migrator (single source of truth).
+		return $this->cl_operator_allowed( $mapped, $bucket ) ? $mapped : null;
 	}
 
 	/**

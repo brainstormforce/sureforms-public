@@ -78,21 +78,6 @@ class Gravity_Importer extends Base_Migrator {
 	];
 
 	/**
-	 * Operators each SureForms CL block-type bucket actually supports, mirrored
-	 * from Pro's `src/conditional-logic/conditional-logic-options.json`. A
-	 * translated rule whose operator isn't in its bucket's set is dropped
-	 * rather than emitted — an invalid `{type, operator}` pair renders as a
-	 * dead rule the CL editor can't evaluate.
-	 */
-	private const ALLOWED_OPERATORS = [
-		'default'    => [ '==', '!=', 'null', '!null', 'includes', '!includes', 'startWith', 'endWith', 'matchesPattern', 'doesNotMatchPattern' ],
-		'number'     => [ '==', '!=', '>', '>=', '<', '<=', 'between', 'matchesPattern', 'doesNotMatchPattern' ],
-		'list'       => [ '==', '!=', 'in', '!in', 'isSelected', '!isSelected', 'matchesPattern', 'doesNotMatchPattern' ],
-		'datepicker' => [ 'datePickerIs', 'isBefore', 'isOnOrBefore', 'isAfter', 'isOnOrAfter' ],
-		'timepicker' => [ 'timePickerIs', 'isBefore', 'isOnOrBefore', 'isAfter', 'isOnOrAfter' ],
-	];
-
-	/**
 	 * Accumulator: conditional-logic targets discovered during emission.
 	 * Each entry: { source_field_id, action, rules: [...] }.
 	 *
@@ -946,8 +931,8 @@ class Gravity_Importer extends Base_Migrator {
 		if ( null === $mapped ) {
 			return null;
 		}
-		$allowed = self::ALLOWED_OPERATORS[ $bucket ] ?? self::ALLOWED_OPERATORS['default'];
-		return in_array( $mapped, $allowed, true ) ? $mapped : null;
+		// Gate against the shared allowlist in Base_Migrator (single source of truth).
+		return $this->cl_operator_allowed( $mapped, $bucket ) ? $mapped : null;
 	}
 
 	/**

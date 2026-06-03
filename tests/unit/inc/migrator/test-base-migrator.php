@@ -274,4 +274,38 @@ class Test_Base_Migrator extends TestCase {
 		$this->assertStringContainsString( 'wp:srfm/dropdown', $probe->dispatch_public( 'dropdown', [ 'label' => 'X', 'options' => [ 'A' ] ] ) );
 		$this->assertSame( '', $probe->dispatch_public( 'mystery_widget', [] ) );
 	}
+
+	/**
+	 * The shared CL operator allowlist gates operators per bucket — the single
+	 * source of truth every importer's map_operator() validates against.
+	 *
+	 * @return void
+	 */
+	public function test_cl_operator_allowed_gates_per_bucket() {
+		$probe = new class() extends Cf7_Importer {
+			public function exist() {
+				return true;
+			}
+			/**
+			 * @param string $operator Operator slug.
+			 * @param string $bucket   Block-type bucket.
+			 * @return bool
+			 */
+			public function cl_allowed_public( $operator, $bucket ) {
+				return $this->cl_operator_allowed( $operator, $bucket );
+			}
+		};
+		// Valid combinations.
+		$this->assertTrue( $probe->cl_allowed_public( 'includes', 'default' ) );
+		$this->assertTrue( $probe->cl_allowed_public( '>', 'number' ) );
+		$this->assertTrue( $probe->cl_allowed_public( 'isSelected', 'list' ) );
+		$this->assertTrue( $probe->cl_allowed_public( 'datePickerIs', 'datepicker' ) );
+		// Invalid combinations — these are what map_operator() drops.
+		$this->assertFalse( $probe->cl_allowed_public( '>', 'default' ) );
+		$this->assertFalse( $probe->cl_allowed_public( 'includes', 'list' ) );
+		$this->assertFalse( $probe->cl_allowed_public( '==', 'datepicker' ) );
+		// Unknown bucket falls back to the default set.
+		$this->assertTrue( $probe->cl_allowed_public( '==', 'mystery_bucket' ) );
+		$this->assertFalse( $probe->cl_allowed_public( 'in', 'mystery_bucket' ) );
+	}
 }

@@ -37,6 +37,27 @@ abstract class Base_Migrator {
 	public const DEFAULT_ENTRY_LIMIT = 1000;
 
 	/**
+	 * Single source of truth for which SureForms conditional-logic operators
+	 * each block-type bucket supports, mirrored from Pro's
+	 * `conditional-logic-options.json`. Importers translate a source operator
+	 * to a SureForms operator, then call `cl_operator_allowed()` to drop any
+	 * operator that isn't valid for the resolved bucket — emitting an invalid
+	 * `{type, operator}` pair would import as a dead rule the CL editor can't
+	 * evaluate. Importers keep their own source→operator maps (and any
+	 * date/time overrides); this const is the shared allowlist they all gate
+	 * against so the data can't drift per importer.
+	 *
+	 * @var array<string,array<int,string>>
+	 */
+	public const CL_BUCKET_OPERATORS = [
+		'default'    => [ '==', '!=', 'null', '!null', 'includes', '!includes', 'startWith', 'endWith', 'matchesPattern', 'doesNotMatchPattern' ],
+		'number'     => [ '==', '!=', '>', '>=', '<', '<=', 'between', 'matchesPattern', 'doesNotMatchPattern' ],
+		'list'       => [ '==', '!=', 'in', '!in', 'isSelected', '!isSelected', 'matchesPattern', 'doesNotMatchPattern' ],
+		'datepicker' => [ 'datePickerIs', 'isBefore', 'isOnOrBefore', 'isAfter', 'isOnOrAfter' ],
+		'timepicker' => [ 'timePickerIs', 'isBefore', 'isOnOrBefore', 'isAfter', 'isOnOrAfter' ],
+	];
+
+	/**
 	 * Source key — one of: cf7, wpforms, gravity, ninja, caldera.
 	 *
 	 * Subclasses MUST override.
@@ -344,6 +365,23 @@ abstract class Base_Migrator {
 	protected function note_unsupported( $label ) {
 		$label                      = trim( (string) $label );
 		$this->unsupported_fields[] = '' === $label ? __( '(unnamed field)', 'sureforms' ) : $label;
+	}
+
+	/**
+	 * Whether a (already-translated) SureForms operator is valid for the given
+	 * conditional-logic block-type bucket. Shared by every importer so the
+	 * operator-per-bucket allowlist lives in exactly one place
+	 * (`CL_BUCKET_OPERATORS`). Unknown buckets fall back to `default`.
+	 *
+	 * @since x.x.x
+	 *
+	 * @param string $operator SureForms operator slug (e.g. `==`, `includes`).
+	 * @param string $bucket   Block-type bucket (e.g. `default`, `list`).
+	 * @return bool
+	 */
+	protected function cl_operator_allowed( $operator, $bucket ) {
+		$allowed = self::CL_BUCKET_OPERATORS[ $bucket ] ?? self::CL_BUCKET_OPERATORS['default'];
+		return in_array( $operator, $allowed, true );
 	}
 
 	/**
