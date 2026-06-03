@@ -53,6 +53,45 @@ class Ninja_Importer extends Base_Migrator {
 	];
 
 	/**
+	 * Operators each SureForms CL block-type bucket actually supports, mirrored
+	 * from Pro's `conditional-logic-options.json`. A translated rule whose
+	 * operator isn't valid for its bucket is dropped rather than emitted — an
+	 * invalid `{type, operator}` pair (e.g. a `list` source with `includes`)
+	 * imports as a dead rule the CL editor can't evaluate. Kept consistent
+	 * with the WPForms and Gravity importers.
+	 */
+	private const ALLOWED_OPERATORS = [
+		'default'    => [ '==', '!=', 'null', '!null', 'includes', '!includes', 'startWith', 'endWith', 'matchesPattern', 'doesNotMatchPattern' ],
+		'number'     => [ '==', '!=', '>', '>=', '<', '<=', 'between', 'matchesPattern', 'doesNotMatchPattern' ],
+		'list'       => [ '==', '!=', 'in', '!in', 'isSelected', '!isSelected', 'matchesPattern', 'doesNotMatchPattern' ],
+		'datepicker' => [ 'datePickerIs', 'isBefore', 'isOnOrBefore', 'isAfter', 'isOnOrAfter' ],
+		'timepicker' => [ 'timePickerIs', 'isBefore', 'isOnOrBefore', 'isAfter', 'isOnOrAfter' ],
+	];
+
+	/**
+	 * Bucket-specific operator maps for date / time sources (SureForms'
+	 * datepicker / timepicker expose their own operator set). Operators with
+	 * no equivalent are absent and the rule is dropped by the validity gate.
+	 */
+	private const DATE_OPERATOR_MAP = [
+		'equal'        => 'datePickerIs',
+		'=='           => 'datePickerIs',
+		'greater_than' => 'isAfter',
+		'>'            => 'isAfter',
+		'less_than'    => 'isBefore',
+		'<'            => 'isBefore',
+	];
+
+	private const TIME_OPERATOR_MAP = [
+		'equal'        => 'timePickerIs',
+		'=='           => 'timePickerIs',
+		'greater_than' => 'isAfter',
+		'>'            => 'isAfter',
+		'less_than'    => 'isBefore',
+		'<'            => 'isBefore',
+	];
+
+	/**
 	 * Map: source Ninja Forms field key (slug) → SureForms block_id.
 	 *
 	 * @var array<string,string>
@@ -94,6 +133,14 @@ class Ninja_Importer extends Base_Migrator {
 	 * @var int
 	 */
 	private $current_form_id = 0;
+
+	/**
+	 * Per-form memo of fetch_actions() — notifications and confirmations both
+	 * read it, so cache to avoid double-querying nf3_objects/meta per form.
+	 *
+	 * @var array<int,array<string,mixed>>|null
+	 */
+	private $actions_cache = null;
 
 	/**
 	 * Set source identifiers.
@@ -222,6 +269,7 @@ class Ninja_Importer extends Base_Migrator {
 		$this->submit_label            = '';
 		$this->form_conditions         = [];
 		$this->form_meta               = [];
+		$this->actions_cache           = null;
 		$this->current_form_id         = $this->get_source_form_id( $form );
 
 		$fields = $this->fetch_fields( $this->current_form_id );
@@ -337,12 +385,10 @@ class Ninja_Importer extends Base_Migrator {
 		$meta_by_field = [];
 		if ( is_array( $meta_rows ) ) {
 			foreach ( $meta_rows as $m ) {
-				$pid = (int) $m['parent_id'];
-				$k   = (string) $m['k'];
-				$v   = $m['v'];
-				if ( is_string( $v ) ) {
-					$v = maybe_unserialize( $v );
-				}
+				$pid                         = (int) $m['parent_id'];
+				$k                           = (string) $m['k'];
+				$v                           = $m['v'];
+				$v                           = $this->safe_unserialize( $v );
 				$meta_by_field[ $pid ][ $k ] = $v;
 			}
 		}
@@ -383,11 +429,9 @@ class Ninja_Importer extends Base_Migrator {
 		$out  = [];
 		if ( is_array( $rows ) ) {
 			foreach ( $rows as $row ) {
-				$k = (string) $row['k'];
-				$v = $row['v'];
-				if ( is_string( $v ) ) {
-					$v = maybe_unserialize( $v );
-				}
+				$k         = (string) $row['k'];
+				$v         = $row['v'];
+				$v         = $this->safe_unserialize( $v );
 				$out[ $k ] = $v;
 			}
 		}
@@ -518,11 +562,10 @@ class Ninja_Importer extends Base_Migrator {
 			case 'listmultiselect':
 			case 'listradio':
 			case 'listcheckbox':
-				$options                = $this->translate_options( $field );
-				$args['options']        = $options['options'];
-				$args['preselected']    = $options['preselected'];
-				$args['_choice_id_map'] = $options['id_map'];
-				$args['multiple']       = in_array( $type, [ 'listmultiselect', 'listcheckbox' ], true );
+				$options             = $this->translate_options( $field );
+				$args['options']     = $options['options'];
+				$args['preselected'] = $options['preselected'];
+				$args['multiple']    = in_array( $type, [ 'listmultiselect', 'listcheckbox' ], true );
 				break;
 			case 'checkbox':
 				$args['checked'] = ! empty( $field['checkbox_default_value'] );
@@ -563,8 +606,10 @@ class Ninja_Importer extends Base_Migrator {
 
 	/**
 	 * Translate Ninja's `options[]` (assoc rows with label/value/selected)
-	 * into SureForms options + preselected-INDEX list + id_map (used by
-	 * convert_rule to re-key CL choice values).
+	 * into SureForms options + a preselected-INDEX list. The option title is
+	 * the Ninja label (falling back to value) — the same string Ninja CL
+	 * rules compare against — so `convert_rule()` matches it directly without
+	 * a re-key map.
 	 *
 	 * @since x.x.x
 	 *
@@ -575,7 +620,6 @@ class Ninja_Importer extends Base_Migrator {
 		$raw         = isset( $field['options'] ) && is_array( $field['options'] ) ? $field['options'] : [];
 		$options     = [];
 		$preselected = [];
-		$id_map      = [];
 		$i           = 0;
 		foreach ( $raw as $opt ) {
 			if ( ! is_array( $opt ) ) {
@@ -584,10 +628,9 @@ class Ninja_Importer extends Base_Migrator {
 			// Ninja stores the visible text in `label` and the submitted
 			// value in `value` — surface the label as the SureForms option
 			// title, falling back to `value` when the editor left label empty.
-			$label                 = $this->str_arg( $opt, 'label' );
-			$display               = '' !== $label ? $label : $this->str_arg( $opt, 'value' );
-			$options[]             = [ 'label' => $display ];
-			$id_map[ (string) $i ] = $i;
+			$label     = $this->str_arg( $opt, 'label' );
+			$display   = '' !== $label ? $label : $this->str_arg( $opt, 'value' );
+			$options[] = [ 'label' => $display ];
 			if ( ! empty( $opt['selected'] ) ) {
 				$preselected[] = $i;
 			}
@@ -599,7 +642,6 @@ class Ninja_Importer extends Base_Migrator {
 		return [
 			'options'     => $options,
 			'preselected' => $preselected,
-			'id_map'      => $id_map,
 		];
 	}
 
@@ -660,7 +702,61 @@ class Ninja_Importer extends Base_Migrator {
 		if ( in_array( $type, [ 'listselect', 'listmultiselect', 'listradio', 'listcheckbox', 'multi_choice', 'dropdown' ], true ) ) {
 			return 'list';
 		}
+		if ( in_array( $type, [ 'date', 'date_picker' ], true ) ) {
+			return 'datepicker';
+		}
+		if ( in_array( $type, [ 'time', 'time_picker' ], true ) ) {
+			return 'timepicker';
+		}
 		return 'default';
+	}
+
+	/**
+	 * Map a Ninja comparator to the SureForms operator valid for the given CL
+	 * block-type bucket, or null when there's no valid equivalent. Date/time
+	 * buckets use their dedicated maps; all others go through OPERATOR_MAP and
+	 * are then gated against the bucket's allowed set.
+	 *
+	 * @since x.x.x
+	 *
+	 * @param string $comparator Ninja comparator (e.g. `equal`, `contains`).
+	 * @param string $bucket     Resolved block-type bucket.
+	 * @return string|null
+	 */
+	private function map_operator( $comparator, $bucket ) {
+		if ( 'datepicker' === $bucket ) {
+			return self::DATE_OPERATOR_MAP[ $comparator ] ?? null;
+		}
+		if ( 'timepicker' === $bucket ) {
+			return self::TIME_OPERATOR_MAP[ $comparator ] ?? null;
+		}
+		$mapped = self::OPERATOR_MAP[ $comparator ] ?? null;
+		if ( null === $mapped ) {
+			return null;
+		}
+		$allowed = self::ALLOWED_OPERATORS[ $bucket ] ?? self::ALLOWED_OPERATORS['default'];
+		return in_array( $mapped, $allowed, true ) ? $mapped : null;
+	}
+
+	/**
+	 * Unserialize a Ninja meta value without instantiating objects.
+	 *
+	 * `maybe_unserialize()` delegates to bare `unserialize()` with no class
+	 * allow-list, so a serialized object in `nf3_*_meta` would be woken
+	 * (`__wakeup`/`__destruct` gadget surface). Gate on `is_serialized()` and
+	 * forbid classes — matches the Gravity importer's hardening. Non-string
+	 * and non-serialized values pass through unchanged.
+	 *
+	 * @since x.x.x
+	 *
+	 * @param mixed $value Raw meta value.
+	 * @return mixed
+	 */
+	private function safe_unserialize( $value ) {
+		if ( ! is_string( $value ) || ! is_serialized( $value ) ) {
+			return $value;
+		}
+		return unserialize( $value, [ 'allowed_classes' => false ] ); // phpcs:ignore WordPress.PHP.NoSilencedErrors
 	}
 
 	/**
@@ -740,14 +836,21 @@ class Ninja_Importer extends Base_Migrator {
 		if ( '' === $block ) {
 			return null;
 		}
-		if ( ! isset( self::OPERATOR_MAP[ $cmp ] ) ) {
+		$bucket   = $this->field_key_to_block_type[ $src ] ?? 'default';
+		$operator = $this->map_operator( $cmp, $bucket );
+		if ( null === $operator ) {
+			// Comparator has no valid equivalent for this block type (e.g.
+			// `contains` on a list field) — drop rather than emit a dead rule.
 			return null;
 		}
+		// The option title we emit is the Ninja option label (translate_options),
+		// which is the same string Ninja CL rules compare against — pass the
+		// value through directly.
 		return [
 			'field'    => $block,
-			'operator' => self::OPERATOR_MAP[ $cmp ],
+			'operator' => $operator,
 			'value'    => $this->str_arg( $rule, 'value' ),
-			'type'     => $this->field_key_to_block_type[ $src ] ?? 'default',
+			'type'     => $bucket,
 		];
 	}
 
@@ -830,6 +933,9 @@ class Ninja_Importer extends Base_Migrator {
 	 * @return array<int,array<string,mixed>>
 	 */
 	protected function fetch_actions( $form_id ) {
+		if ( null !== $this->actions_cache ) {
+			return $this->actions_cache;
+		}
 		global $wpdb;
 		$objects_table = $wpdb->prefix . 'nf3_objects';
 		$rels_table    = $wpdb->prefix . 'nf3_relationships';
@@ -847,7 +953,8 @@ class Ninja_Importer extends Base_Migrator {
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
 		$rows = $wpdb->get_results( $query, ARRAY_A );
 		if ( ! is_array( $rows ) || empty( $rows ) ) {
-			return [];
+			$this->actions_cache = [];
+			return $this->actions_cache;
 		}
 
 		$ids = array_map( static fn( $r ) => (int) $r['id'], $rows );
@@ -864,12 +971,10 @@ class Ninja_Importer extends Base_Migrator {
 		$by_id     = [];
 		if ( is_array( $meta_rows ) ) {
 			foreach ( $meta_rows as $m ) {
-				$pid = (int) $m['parent_id'];
-				$k   = (string) $m['k'];
-				$v   = $m['v'];
-				if ( is_string( $v ) ) {
-					$v = maybe_unserialize( $v );
-				}
+				$pid                 = (int) $m['parent_id'];
+				$k                   = (string) $m['k'];
+				$v                   = $m['v'];
+				$v                   = $this->safe_unserialize( $v );
 				$by_id[ $pid ][ $k ] = $v;
 			}
 		}
@@ -884,7 +989,8 @@ class Ninja_Importer extends Base_Migrator {
 				'settings' => $by_id[ $id ] ?? [],
 			];
 		}
-		return $out;
+		$this->actions_cache = $out;
+		return $this->actions_cache;
 	}
 
 	/**

@@ -440,8 +440,10 @@ class Test_Ninja_Importer extends TestCase {
 	}
 
 	/**
-	 * Conditional logic — verify operators translate and rule targets are
-	 * rewritten to SureForms block_ids.
+	 * Conditional logic — verify operators valid for the source bucket
+	 * translate and rule targets are rewritten to SureForms block_ids, and an
+	 * operator invalid for the bucket (`greater_than` on a textbox/`default`
+	 * source) is dropped rather than emitted as a dead rule.
 	 *
 	 * @return void
 	 */
@@ -458,6 +460,8 @@ class Test_Ninja_Importer extends TestCase {
 							[ 'key' => 'trigger_field', 'comparator' => 'equal',        'value' => 'yes' ],
 							[ 'key' => 'trigger_field', 'comparator' => 'contains',     'value' => 'pre' ],
 							[ 'key' => 'trigger_field', 'comparator' => 'starts_with',  'value' => 'a' ],
+							[ 'key' => 'trigger_field', 'comparator' => 'ends_with',    'value' => 'z' ],
+							// `>` is not valid for the `default` (text) bucket — dropped.
 							[ 'key' => 'trigger_field', 'comparator' => 'greater_than', 'value' => '0' ],
 						],
 						'connector' => 'and',
@@ -474,8 +478,43 @@ class Test_Ninja_Importer extends TestCase {
 		$this->assertSame( 'show', $payload['action'] );
 		$this->assertCount( 1, $payload['logic'] );
 		$ops = array_column( $payload['logic'][0], 'operator' );
-		$this->assertSame( [ '==', 'includes', 'startWith', '>' ], $ops );
+		$this->assertSame( [ '==', 'includes', 'startWith', 'endWith' ], $ops );
+		$this->assertNotContains( '>', $ops, 'greater_than is invalid for a text source and must be dropped' );
 		$this->assertMatchesRegularExpression( '/^[a-f0-9]{8}$/', $payload['logic'][0][0]['field'] );
+	}
+
+	/**
+	 * A CL rule whose source is a list field using a text/numeric comparator
+	 * (e.g. `contains`) is dropped — `list` supports only ==/!=/in/etc., so an
+	 * `includes` operator on a list source would import as a dead rule.
+	 *
+	 * @return void
+	 */
+	public function test_get_form_metas_drops_invalid_operator_for_list_source() {
+		$metas = $this->make_importer(
+			[
+				[ 'id' => 1, 'type' => 'listselect', 'label' => 'Choice', 'key' => 'choice_field', 'options' => [ [ 'label' => 'A', 'value' => 'a' ] ] ],
+				[ 'id' => 2, 'type' => 'textbox',    'label' => 'Dep',    'key' => 'dep_field' ],
+			],
+			[
+				'conditions' => [
+					[
+						'when'      => [
+							// Valid for list.
+							[ 'key' => 'choice_field', 'comparator' => 'equal',    'value' => 'a' ],
+							// Invalid for list → dropped.
+							[ 'key' => 'choice_field', 'comparator' => 'contains', 'value' => 'a' ],
+						],
+						'connector' => 'and',
+						'then'      => [ [ 'key' => 'dep_field', 'trigger' => 'show', 'value' => '' ] ],
+					],
+				],
+			]
+		)->get_form_metas_public( [ 'id' => 1, 'name' => 'F' ] );
+		$payload = (array) reset( $metas['_srfm_conditional_logic'][0] );
+		$ops     = array_column( $payload['logic'][0], 'operator' );
+		$this->assertSame( [ '==' ], $ops );
+		$this->assertNotContains( 'includes', $ops );
 	}
 
 	/**
