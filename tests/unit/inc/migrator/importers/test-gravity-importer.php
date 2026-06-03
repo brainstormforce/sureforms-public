@@ -215,14 +215,30 @@ class Test_Gravity_Importer extends TestCase {
 	/**
 	 * @return void
 	 */
-	public function test_build_form_content_emits_two_email_blocks_when_confirmation_enabled() {
+	public function test_build_form_content_enables_confirm_email_option_not_a_second_field() {
 		$markup = $this->make_importer()->build_form_content_public(
 			$this->source_form_with(
-				[ [ 'id' => 1, 'type' => 'email', 'label' => 'Email', 'isRequired' => true, 'emailConfirmEnabled' => true ] ]
+				[
+					[
+						'id'                 => 1,
+						'type'               => 'email',
+						'label'              => 'Email',
+						'isRequired'         => true,
+						'emailConfirmEnabled' => true,
+						'inputs'             => [
+							[ 'id' => '1', 'label' => 'Enter Email' ],
+							[ 'id' => '1.2', 'label' => 'Confirm Your Email' ],
+						],
+					],
+				]
 			)
 		);
-		$this->assertSame( 2, substr_count( $markup, 'wp:srfm/email' ) );
-		$this->assertStringContainsString( 'Email (Confirm)', $markup );
+		// One email field with the native confirm option — not a duplicate block.
+		$this->assertSame( 1, substr_count( $markup, 'wp:srfm/email' ) );
+		$this->assertStringContainsString( '"isConfirmEmail":true', $markup );
+		// The Gravity confirm sub-input label (inputs[1]) carries over.
+		$this->assertStringContainsString( 'Confirm Your Email', $markup );
+		$this->assertStringNotContainsString( 'Email (Confirm)', $markup );
 	}
 
 	/**

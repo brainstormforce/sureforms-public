@@ -437,6 +437,21 @@ class Gravity_Importer extends Base_Migrator {
 			return $this->capture_field_metadata( $field, $args, $markup, $type );
 		}
 
+		// Gravity's "confirm email" is a second input on the same field;
+		// srfm/email models that natively via isConfirmEmail, so enable the
+		// option on the single block rather than emitting a duplicate email
+		// field. The GF confirm sub-input label (inputs[1]) carries over.
+		if ( 'email' === $type && ! empty( $field['emailConfirmEnabled'] ) ) {
+			$args['confirm_email'] = true;
+			$inputs                = isset( $field['inputs'] ) && is_array( $field['inputs'] ) ? $field['inputs'] : [];
+			if ( isset( $inputs[1] ) && is_array( $inputs[1] ) ) {
+				$confirm_label = $this->str_arg( $inputs[1], 'label' );
+				if ( '' !== $confirm_label ) {
+					$args['confirm_label'] = $confirm_label;
+				}
+			}
+		}
+
 		$markup = $this->dispatch_template( $method, $args );
 		if ( '' === $markup ) {
 			$markup = (string) apply_filters( 'srfm_migrator_block_template', '', $method, $args, $this->key );
@@ -444,19 +459,6 @@ class Gravity_Importer extends Base_Migrator {
 		if ( '' === $markup ) {
 			$this->note_unsupported( $this->str_arg( $field, 'label', $type ) );
 			return '';
-		}
-
-		// Email with confirmation: emit a second email block "Confirm Email".
-		// This confirm block is intentionally not registered for conditional
-		// logic — only the primary email field carries the source field id, so
-		// the confirm block has no Gravity field id to map CL rules against.
-		if ( 'email' === $type && ! empty( $field['emailConfirmEnabled'] ) ) {
-			$base_label               = isset( $args['label'] ) && is_string( $args['label'] ) ? $args['label'] : 'Email';
-			$confirm_args             = $args;
-			$confirm_args['label']    = $base_label . ' (Confirm)';
-			$confirm_args['slug']     = $this->reserve_slug( $confirm_args['label'] );
-			$confirm_args['required'] = ! empty( $field['isRequired'] );
-			$markup                  .= Block_Templates::email( $confirm_args );
 		}
 
 		return $this->capture_field_metadata( $field, $args, $markup, $method );
