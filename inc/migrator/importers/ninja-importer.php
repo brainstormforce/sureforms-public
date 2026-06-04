@@ -696,10 +696,10 @@ class Ninja_Importer extends Base_Migrator {
 	}
 
 	/**
-	 * Map a Ninja comparator to the SureForms operator valid for the given CL
-	 * block-type bucket, or null when there's no valid equivalent. Date/time
-	 * buckets use their dedicated maps; all others go through OPERATOR_MAP and
-	 * are then gated against the bucket's allowed set.
+	 * Map a Ninja comparator to the SureForms operator slug, or null when the
+	 * comparator has no equivalent. Date/time buckets use their dedicated maps;
+	 * all others go through OPERATOR_MAP. Validity against the bucket's allowed
+	 * set is reconciled by `resolve_cl_bucket()` in the caller.
 	 *
 	 * @since x.x.x
 	 *
@@ -714,12 +714,7 @@ class Ninja_Importer extends Base_Migrator {
 		if ( 'timepicker' === $bucket ) {
 			return self::TIME_OPERATOR_MAP[ $comparator ] ?? null;
 		}
-		$mapped = self::OPERATOR_MAP[ $comparator ] ?? null;
-		if ( null === $mapped ) {
-			return null;
-		}
-		// Gate against the shared allowlist in Base_Migrator (single source of truth).
-		return $this->cl_operator_allowed( $mapped, $bucket ) ? $mapped : null;
+		return self::OPERATOR_MAP[ $comparator ] ?? null;
 	}
 
 	/**
@@ -824,8 +819,14 @@ class Ninja_Importer extends Base_Migrator {
 		$bucket   = $this->field_key_to_block_type[ $src ] ?? 'default';
 		$operator = $this->map_operator( $cmp, $bucket );
 		if ( null === $operator ) {
-			// Comparator has no valid equivalent for this block type (e.g.
-			// `contains` on a list field) — drop rather than emit a dead rule.
+			// Comparator has no SureForms equivalent — drop the rule.
+			return null;
+		}
+		// Reconcile the operator against the bucket via the shared Base_Migrator
+		// allowlist: down-buckets a text-style operator to `default`, or drops
+		// the rule when no bucket supports it.
+		$bucket = $this->resolve_cl_bucket( $operator, $bucket );
+		if ( '' === $bucket ) {
 			return null;
 		}
 		// The option title we emit is the Ninja option label (translate_options),

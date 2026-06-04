@@ -276,36 +276,117 @@ class Test_Base_Migrator extends TestCase {
 	}
 
 	/**
-	 * The shared CL operator allowlist gates operators per bucket — the single
-	 * source of truth every importer's map_operator() validates against.
+	 * Base_Migrator::resolve_cl_bucket() — keeps a bucket when it supports the
+	 * operator, down-buckets text-style operators to `default`, and returns ''
+	 * when no bucket supports the operator (caller drops the rule).
 	 *
 	 * @return void
 	 */
-	public function test_cl_operator_allowed_gates_per_bucket() {
-		$probe = new class() extends Cf7_Importer {
-			public function exist() {
-				return true;
-			}
-			/**
-			 * @param string $operator Operator slug.
-			 * @param string $bucket   Block-type bucket.
-			 * @return bool
-			 */
-			public function cl_allowed_public( $operator, $bucket ) {
-				return $this->cl_operator_allowed( $operator, $bucket );
-			}
-		};
-		// Valid combinations.
-		$this->assertTrue( $probe->cl_allowed_public( 'includes', 'default' ) );
-		$this->assertTrue( $probe->cl_allowed_public( '>', 'number' ) );
-		$this->assertTrue( $probe->cl_allowed_public( 'isSelected', 'list' ) );
-		$this->assertTrue( $probe->cl_allowed_public( 'datePickerIs', 'datepicker' ) );
-		// Invalid combinations — these are what map_operator() drops.
-		$this->assertFalse( $probe->cl_allowed_public( '>', 'default' ) );
-		$this->assertFalse( $probe->cl_allowed_public( 'includes', 'list' ) );
-		$this->assertFalse( $probe->cl_allowed_public( '==', 'datepicker' ) );
-		// Unknown bucket falls back to the default set.
-		$this->assertTrue( $probe->cl_allowed_public( '==', 'mystery_bucket' ) );
-		$this->assertFalse( $probe->cl_allowed_public( 'in', 'mystery_bucket' ) );
+	public function test_resolve_cl_bucket() {
+		$importer = $this->make_importer();
+		$method   = new \ReflectionMethod( $importer, 'resolve_cl_bucket' );
+		$method->setAccessible( true );
+
+		// Operator valid for the field's own bucket → bucket preserved.
+		$this->assertSame( 'list', $method->invoke( $importer, '==', 'list' ) );
+		$this->assertSame( 'number', $method->invoke( $importer, '>', 'number' ) );
+		$this->assertSame( 'default', $method->invoke( $importer, 'includes', 'default' ) );
+
+		// Text-style operator on a list/number field → down-bucket to default.
+		$this->assertSame( 'default', $method->invoke( $importer, 'includes', 'list' ) );
+		$this->assertSame( 'default', $method->invoke( $importer, 'startWith', 'number' ) );
+
+		// Operator no bucket (incl. default) supports → '' so the rule is dropped.
+		$this->assertSame( '', $method->invoke( $importer, 'isSelected', 'default' ) );
+	}
+
+	/**
+	 * Base_Migrator::count_source_forms() — returns the source-form count
+	 * without resolving per-form import mappings.
+	 *
+	 * @return void
+	 */
+	public function test_count_source_forms() {
+		$this->make_cf7( "Name\n[text* a]", 'Count A' );
+		$this->make_cf7( "Name\n[text* b]", 'Count B' );
+		$importer = $this->make_importer();
+		$this->assertSame( count( $importer->list_forms() ), $importer->count_source_forms() );
+		$this->assertGreaterThanOrEqual( 2, $importer->count_source_forms() );
+	}
+
+	/**
+	 * Base_Migrator::get_imported_map() — memoizes the map: the first read hits
+	 * the option, subsequent reads return the cached array within the request.
+	 *
+	 * @return void
+	 */
+	public function test_get_imported_map() {
+		$importer = $this->make_importer();
+		$method   = new \ReflectionMethod( $importer, 'get_imported_map' );
+		$method->setAccessible( true );
+
+		// Empty option → empty array.
+		$this->assertSame( [], $method->invoke( $importer ) );
+
+		// After an import the map is populated and readable via the helper.
+		$post_id = $this->make_cf7( "Name\n[text* n]", 'Mapped' );
+		$importer->import_forms( [ $post_id ], false );
+		$map = $method->invoke( $importer );
+		$this->assertIsArray( $map );
+		$this->assertNotEmpty( $map );
+	}
+
+	/**
+	 * Base_Migrator::save_imported_map() — persists the map to the option and
+	 * refreshes the request cache so get_imported_map() reflects the write.
+	 *
+	 * @return void
+	 */
+	public function test_save_imported_map() {
+		$importer = $this->make_importer();
+		$save     = new \ReflectionMethod( $importer, 'save_imported_map' );
+		$save->setAccessible( true );
+		$get = new \ReflectionMethod( $importer, 'get_imported_map' );
+		$get->setAccessible( true );
+
+		$payload = [ 123 => [ 'source_id' => '7', 'source_key' => 'cf7' ] ];
+		$save->invoke( $importer, $payload );
+
+		// Written to the option…
+		$this->assertSame( $payload, get_option( Base_Migrator::IMPORTED_MAP_OPTION ) );
+		// …and the request cache returns the same payload without a fresh read.
+		$this->assertSame( $payload, $get->invoke( $importer ) );
+	}
+
+	/**
+	 * Base_Migrator::apply_form_id_to_blocks() — injects `formId` as the first
+	 * attribute of every srfm block (so SureForms can resolve conditional-logic
+	 * classes at render) without disturbing the existing JSON_HEX-escaped attrs.
+	 *
+	 * @return void
+	 */
+	public function test_apply_form_id_to_blocks() {
+		$importer = $this->make_importer();
+		$method   = new \ReflectionMethod( $importer, 'apply_form_id_to_blocks' );
+		$method->setAccessible( true );
+
+		// A srfm block whose label carries JSON_HEX-escaped markup, exactly as the
+		// Block_Templates emitters produce it ("<" serialised as the literal
+		// six-character sequence <, not a raw "<").
+		$markup = '<!-- wp:srfm/input {"block_id":"abc12345","label":"\u003Cb\u003EName"} /-->'
+			. "\n" . '<!-- wp:columns --><div class="wp-block-columns"></div><!-- /wp:columns -->';
+
+		$out = (string) $method->invoke( $importer, $markup, 728 );
+
+		// formId injected as the first attribute on the srfm block.
+		$this->assertStringContainsString( '<!-- wp:srfm/input {"formId":"728","block_id":"abc12345"', $out );
+		// Existing JSON_HEX escaping is preserved (the < sequence is untouched,
+		// never decoded to a raw "<" that could break the block delimiter).
+		$this->assertStringContainsString( '\u003Cb\u003EName', $out );
+		$this->assertStringNotContainsString( '<b>Name', $out );
+		// Non-srfm blocks (core/columns) are left untouched.
+		$this->assertStringContainsString( '<!-- wp:columns -->', $out );
+		// Guard: invalid form id returns the markup unchanged.
+		$this->assertSame( $markup, (string) $method->invoke( $importer, $markup, 0 ) );
 	}
 }

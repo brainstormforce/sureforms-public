@@ -892,9 +892,15 @@ class Gravity_Importer extends Base_Migrator {
 		$bucket   = $this->resolve_block_type( $src );
 		$operator = $this->map_operator( $op, $bucket );
 		if ( null === $operator ) {
-			// Operator has no equivalent for this block type (e.g. `contains`
-			// on a list field, `isnot` on a date) — drop the rule rather than
-			// emit a {type, operator} pair the CL editor can't evaluate.
+			// Source operator has no SureForms equivalent (e.g. `isnot` on a
+			// date) — drop the rule.
+			return null;
+		}
+		// Reconcile the operator against the bucket via the shared Base_Migrator
+		// allowlist: down-buckets a text-style operator to `default`, or drops
+		// the rule when no bucket supports it.
+		$bucket = $this->resolve_cl_bucket( $operator, $bucket );
+		if ( '' === $bucket ) {
 			return null;
 		}
 		// Gravity stores the rule value as the choice `value`; we emit list
@@ -909,10 +915,10 @@ class Gravity_Importer extends Base_Migrator {
 	}
 
 	/**
-	 * Map a Gravity operator to the SureForms operator valid for the given CL
-	 * block-type bucket, or null when there's no valid equivalent. Date/time
-	 * buckets use their dedicated operator maps; all others go through
-	 * OPERATOR_MAP and are then gated against the bucket's allowed set.
+	 * Map a Gravity operator to the SureForms operator slug, or null when the
+	 * source operator has no equivalent. Date/time buckets use their dedicated
+	 * operator maps; all others go through OPERATOR_MAP. Validity against the
+	 * bucket's allowed set is reconciled by `resolve_cl_bucket()` in the caller.
 	 *
 	 * @since x.x.x
 	 *
@@ -927,12 +933,7 @@ class Gravity_Importer extends Base_Migrator {
 		if ( 'timepicker' === $bucket ) {
 			return self::TIME_OPERATOR_MAP[ $gf_operator ] ?? null;
 		}
-		$mapped = self::OPERATOR_MAP[ $gf_operator ] ?? null;
-		if ( null === $mapped ) {
-			return null;
-		}
-		// Gate against the shared allowlist in Base_Migrator (single source of truth).
-		return $this->cl_operator_allowed( $mapped, $bucket ) ? $mapped : null;
+		return self::OPERATOR_MAP[ $gf_operator ] ?? null;
 	}
 
 	/**

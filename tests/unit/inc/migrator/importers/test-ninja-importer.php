@@ -511,13 +511,15 @@ class Test_Ninja_Importer extends TestCase {
 	}
 
 	/**
-	 * A CL rule whose source is a list field using a text/numeric comparator
-	 * (e.g. `contains`) is dropped — `list` supports only ==/!=/in/etc., so an
-	 * `includes` operator on a list source would import as a dead rule.
+	 * A CL rule whose source is a list field using a text-style comparator
+	 * (e.g. `contains` → `includes`) is reconciled by the shared
+	 * `resolve_cl_bucket()`: `list` doesn't support `includes`, but `default`
+	 * does, so the rule is down-bucketed to `default` rather than dropped — and
+	 * a comparator no bucket supports would be dropped.
 	 *
 	 * @return void
 	 */
-	public function test_get_form_metas_drops_invalid_operator_for_list_source() {
+	public function test_get_form_metas_downbuckets_text_operator_on_list_source() {
 		$metas = $this->make_importer(
 			[
 				[ 'id' => 1, 'type' => 'listselect', 'label' => 'Choice', 'key' => 'choice_field', 'options' => [ [ 'label' => 'A', 'value' => 'a' ] ] ],
@@ -527,9 +529,9 @@ class Test_Ninja_Importer extends TestCase {
 				'conditions' => [
 					[
 						'when'      => [
-							// Valid for list.
+							// Valid for list → stays `list`.
 							[ 'key' => 'choice_field', 'comparator' => 'equal',    'value' => 'a' ],
-							// Invalid for list → dropped.
+							// Not valid for list, valid for default → down-bucketed.
 							[ 'key' => 'choice_field', 'comparator' => 'contains', 'value' => 'a' ],
 						],
 						'connector' => 'and',
@@ -539,9 +541,10 @@ class Test_Ninja_Importer extends TestCase {
 			]
 		)->get_form_metas_public( [ 'id' => 1, 'name' => 'F' ] );
 		$payload = (array) reset( $metas['_srfm_conditional_logic'][0] );
-		$ops     = array_column( $payload['logic'][0], 'operator' );
-		$this->assertSame( [ '==' ], $ops );
-		$this->assertNotContains( 'includes', $ops );
+		$rules   = $payload['logic'][0];
+		$this->assertSame( [ '==', 'includes' ], array_column( $rules, 'operator' ) );
+		// The `==` rule keeps the `list` bucket; the `includes` rule down-buckets to `default`.
+		$this->assertSame( [ 'list', 'default' ], array_column( $rules, 'type' ) );
 	}
 
 	/**
