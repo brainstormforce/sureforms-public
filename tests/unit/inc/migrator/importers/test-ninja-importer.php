@@ -418,12 +418,169 @@ class Test_Ninja_Importer extends TestCase {
 						'to'            => 'admin@example.com',
 						'email_subject' => 'New entry',
 						'email_message' => '{all_fields}',
+						'reply_to'      => 'reply@example.com',
 					],
 				],
 			]
 		)->get_form_metas_public( [ 'id' => 1, 'name' => 'F' ] );
-		$this->assertSame( 'admin@example.com', $metas['_srfm_email_notification'][0]['email_to'] );
-		$this->assertSame( 'New entry', $metas['_srfm_email_notification'][0]['subject'] );
+		$notification = $metas['_srfm_email_notification'][0];
+		$this->assertSame( 'admin@example.com', $notification['email_to'] );
+		$this->assertSame( 'New entry', $notification['subject'] );
+		$this->assertSame( 'reply@example.com', $notification['email_reply_to'] );
+		$this->assertSame( '{all_fields}', $notification['email_body'] );
+		// The full canonical shape must be present so SureForms applies it
+		// instead of falling back to the global-default notification.
+		$this->assertSame( 1, $notification['id'] );
+		$this->assertTrue( $notification['status'] );
+		$this->assertArrayHasKey( 'from_name', $notification );
+		$this->assertArrayHasKey( 'from_email', $notification );
+		$this->assertFalse( $notification['is_raw_format'] );
+	}
+
+	/**
+	 * #9 — every Ninja email action becomes its own SureForms notification
+	 * (the loop must not return after the first one).
+	 *
+	 * @return void
+	 */
+	public function test_get_form_metas_collects_all_email_notifications() {
+		$metas = $this->make_importer(
+			[],
+			[],
+			[
+				[
+					'id'       => 10,
+					'type'     => 'email',
+					'label'    => 'Admin',
+					'settings' => [ 'to' => 'admin@example.com', 'email_subject' => 'Admin copy' ],
+				],
+				[
+					'id'       => 11,
+					'type'     => 'successmessage',
+					'label'    => 'Msg',
+					'settings' => [ 'success_msg' => 'Thanks' ],
+				],
+				[
+					'id'       => 12,
+					'type'     => 'email',
+					'label'    => 'User',
+					'settings' => [ 'to' => '{field:email}', 'email_subject' => 'User copy' ],
+				],
+			]
+		)->get_form_metas_public( [ 'id' => 1, 'name' => 'F' ] );
+		$notifications = $metas['_srfm_email_notification'];
+		$this->assertCount( 2, $notifications );
+		$this->assertSame( 'admin@example.com', $notifications[0]['email_to'] );
+		$this->assertSame( '{field:email}', $notifications[1]['email_to'] );
+		$this->assertSame( 1, $notifications[0]['id'] );
+		$this->assertSame( 2, $notifications[1]['id'] );
+	}
+
+	/**
+	 * #3 — a default-checked Ninja single checkbox imports CHECKED.
+	 *
+	 * @return void
+	 */
+	public function test_build_form_content_checkbox_default_checked() {
+		$markup = $this->make_importer(
+			[ [ 'id' => 1, 'type' => 'checkbox', 'label' => 'Subscribe', 'key' => 'sub', 'default_value' => 'checked' ] ]
+		)->build_form_content_public( [ 'id' => 1, 'name' => 'F' ] );
+		$this->assertStringContainsString( 'wp:srfm/checkbox', $markup );
+		$this->assertStringContainsString( '"checked":true', $markup );
+	}
+
+	/**
+	 * #3 — an unchecked-default Ninja checkbox does not set checked.
+	 *
+	 * @return void
+	 */
+	public function test_build_form_content_checkbox_default_unchecked() {
+		$markup = $this->make_importer(
+			[ [ 'id' => 1, 'type' => 'checkbox', 'label' => 'Subscribe', 'key' => 'sub', 'default_value' => 'unchecked' ] ]
+		)->build_form_content_public( [ 'id' => 1, 'name' => 'F' ] );
+		$this->assertStringContainsString( 'wp:srfm/checkbox', $markup );
+		$this->assertStringNotContainsString( '"checked":true', $markup );
+	}
+
+	/**
+	 * #5 — a Ninja date+time field emits both a date-picker and a time-picker.
+	 *
+	 * @return void
+	 */
+	public function test_build_form_content_date_and_time_emits_both_blocks() {
+		add_filter(
+			'srfm_migrator_block_template',
+			static function ( $markup, $method, $args, $key ) {
+				if ( 'ninja' !== $key || 'date_time_picker' !== $method ) {
+					return $markup;
+				}
+				$format = $args['format'] ?? 'date';
+				return 'time' === $format
+					? '<!-- wp:srfm/time-picker {"block_id":"aaaaaaaa"} /-->'
+					: '<!-- wp:srfm/date-picker {"block_id":"bbbbbbbb"} /-->';
+			},
+			10,
+			4
+		);
+		$markup = $this->make_importer(
+			[ [ 'id' => 1, 'type' => 'date', 'label' => 'When', 'key' => 'when', 'date_mode' => 'date and time' ] ]
+		)->build_form_content_public( [ 'id' => 1, 'name' => 'F' ] );
+		$this->assertStringContainsString( 'wp:srfm/date-picker', $markup );
+		$this->assertStringContainsString( 'wp:srfm/time-picker', $markup );
+	}
+
+	/**
+	 * #5 — a time-only Ninja date field routes to the time picker.
+	 *
+	 * @return void
+	 */
+	public function test_build_form_content_time_only_routes_to_time_picker() {
+		$captured = [];
+		add_filter(
+			'srfm_migrator_block_template',
+			static function ( $markup, $method, $args, $key ) use ( &$captured ) {
+				if ( 'ninja' === $key && 'date_time_picker' === $method ) {
+					$captured[] = $args['format'] ?? 'date';
+					return '<!-- wp:srfm/time-picker {"block_id":"cccccccc"} /-->';
+				}
+				return $markup;
+			},
+			10,
+			4
+		);
+		$this->make_importer(
+			[ [ 'id' => 1, 'type' => 'date', 'label' => 'At', 'key' => 'at', 'date_mode' => 'time' ] ]
+		)->build_form_content_public( [ 'id' => 1, 'name' => 'F' ] );
+		$this->assertSame( [ 'time' ], $captured );
+	}
+
+	/**
+	 * #6a — Ninja listcountry dropdown imports populated.
+	 *
+	 * @return void
+	 */
+	public function test_build_form_content_listcountry_populates_options() {
+		$markup = $this->make_importer(
+			[ [ 'id' => 1, 'type' => 'listcountry', 'label' => 'Country', 'key' => 'country' ] ]
+		)->build_form_content_public( [ 'id' => 1, 'name' => 'F' ] );
+		$this->assertStringContainsString( 'wp:srfm/dropdown', $markup );
+		$this->assertStringContainsString( 'United States', $markup );
+		$this->assertStringNotContainsString( 'Option 1', $markup );
+	}
+
+	/**
+	 * #6a — Ninja liststate dropdown imports populated with US states.
+	 *
+	 * @return void
+	 */
+	public function test_build_form_content_liststate_populates_us_states() {
+		$markup = $this->make_importer(
+			[ [ 'id' => 1, 'type' => 'liststate', 'label' => 'State', 'key' => 'state' ] ]
+		)->build_form_content_public( [ 'id' => 1, 'name' => 'F' ] );
+		$this->assertStringContainsString( 'wp:srfm/dropdown', $markup );
+		$this->assertStringContainsString( 'California', $markup );
+		$this->assertStringContainsString( 'Texas', $markup );
+		$this->assertStringNotContainsString( 'Option 1', $markup );
 	}
 
 	/**

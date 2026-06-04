@@ -204,7 +204,7 @@ const DryRunPreview = ( {
 						<Container direction="column" gap="2xs">
 							<Text size={ 13 }>
 								{ __(
-									'These fields will be skipped — add them manually after the form is created:',
+									'These fields will be skipped - add them manually after the form is created:',
 									'sureforms'
 								) }
 							</Text>
