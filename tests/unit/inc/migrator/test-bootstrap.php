@@ -81,6 +81,32 @@ class Test_Bootstrap extends TestCase {
 	}
 
 	/**
+	 * Bootstrap::rest_list_sources() — payload includes the imported_count
+	 * and pending_count fields the onboarding picker needs to render the
+	 * "X forms ready · Y already imported" split and to decide whether to
+	 * hide the step entirely.
+	 *
+	 * @return void
+	 */
+	public function test_rest_list_sources_exposes_pending_counts() {
+		$response = $this->bootstrap()->rest_list_sources( $this->authed_request() );
+		$data     = $response->get_data();
+		foreach ( $data['sources'] as $source ) {
+			$this->assertArrayHasKey( 'form_count', $source );
+			$this->assertArrayHasKey( 'imported_count', $source );
+			$this->assertArrayHasKey( 'pending_count', $source );
+			$this->assertGreaterThanOrEqual( 0, $source['imported_count'] );
+			$this->assertGreaterThanOrEqual( 0, $source['pending_count'] );
+			// pending should never exceed total — the clamp in the bootstrap
+			// guarantees this even if the underlying counts disagree.
+			$this->assertLessThanOrEqual(
+				$source['form_count'],
+				$source['pending_count']
+			);
+		}
+	}
+
+	/**
 	 * Bootstrap::rest_list_forms() — returns 404 for an unknown source key.
 	 *
 	 * @return void

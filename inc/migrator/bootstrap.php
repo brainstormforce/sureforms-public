@@ -20,9 +20,9 @@ namespace SRFM\Inc\Migrator;
 
 use SRFM\Inc\Helper;
 use SRFM\Inc\Migrator\Importers\Cf7_Importer;
-use SRFM\Inc\Migrator\Importers\Wpforms_Importer;
 use SRFM\Inc\Migrator\Importers\Gravity_Importer;
 use SRFM\Inc\Migrator\Importers\Ninja_Importer;
+use SRFM\Inc\Migrator\Importers\Wpforms_Importer;
 use SRFM\Inc\Traits\Get_Instance;
 use WP_Error;
 use WP_REST_Request;
@@ -96,28 +96,32 @@ class Bootstrap {
 			'callback'            => [ $this, 'rest_import_forms' ],
 			'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
 			'args'                => [
-				'key'         => [
+				'key'           => [
 					'sanitize_callback' => 'sanitize_key',
 				],
-				'form_ids'    => [
+				'form_ids'      => [
 					'sanitize_callback' => [ $this, 'sanitize_form_ids' ],
 					'default'           => [],
 				],
-				'dry_run'     => [
+				'dry_run'       => [
 					'sanitize_callback' => 'rest_sanitize_boolean',
 					'default'           => false,
 				],
-				'behavior'    => [
+				'behavior'      => [
 					'sanitize_callback' => [ $this, 'sanitize_behavior' ],
 					'default'           => [],
 				],
-				'post_status' => [
+				'post_status'   => [
 					// Migrator imports default to draft so the user reviews the
 					// migrated markup before publishing; pass 'publish' to override.
 					'sanitize_callback' => static function ( $value ) {
 						return in_array( $value, [ 'draft', 'publish' ], true ) ? $value : 'draft';
 					},
 					'default'           => 'draft',
+				],
+				'skip_existing' => [
+					'sanitize_callback' => 'rest_sanitize_boolean',
+					'default'           => false,
 				],
 			],
 		];
@@ -144,13 +148,31 @@ class Bootstrap {
 			if ( null === $importer ) {
 				continue;
 			}
-			$installed   = $importer->exist();
-			$forms_count = $installed ? $importer->count_source_forms() : 0;
-			$out[]       = [
-				'key'        => $importer->get_key(),
-				'title'      => $importer->get_title(),
-				'installed'  => $installed,
-				'form_count' => $forms_count,
+			$installed = $importer->exist();
+			// Single per-form scan: list_forms() already resolves each form's
+			// imported_srfm_id (via the memoized imported-map), so derive both
+			// the total and imported counts from its rows in one pass — this
+			// endpoint runs on every onboarding boot + Forms-listing page load
+			// (review #2).
+			$forms          = $installed ? $importer->list_forms() : [];
+			$forms_count    = count( $forms );
+			$imported_count = count(
+				array_filter(
+					$forms,
+					static function ( $row ) {
+						return ! empty( $row['imported_srfm_id'] );
+					}
+				)
+			);
+			// `pending` is what the onboarding picker actually offers.
+			$pending_count = max( 0, $forms_count - $imported_count );
+			$out[]         = [
+				'key'            => $importer->get_key(),
+				'title'          => $importer->get_title(),
+				'installed'      => $installed,
+				'form_count'     => $forms_count,
+				'imported_count' => $imported_count,
+				'pending_count'  => $pending_count,
 			];
 		}
 		return new WP_REST_Response( [ 'sources' => $out ], 200 );
@@ -226,7 +248,12 @@ class Bootstrap {
 			$behavior = [];
 		}
 		$post_status = (string) $request->get_param( 'post_status' );
-		$result      = $importer->import_forms( $form_ids, $dry_run, $behavior, $post_status );
+		// `skip_existing` is the onboarding-step's safe-default — when no per-form
+		// behavior is provided, any source form already mapped to a SureForms
+		// post is skipped instead of overwritten. Per-form entries in $behavior
+		// still take precedence (explicit beats implicit).
+		$skip_existing = (bool) $request->get_param( 'skip_existing' );
+		$result        = $importer->import_forms( $form_ids, $dry_run, $behavior, $post_status, $skip_existing );
 		return new WP_REST_Response( $result, 200 );
 	}
 

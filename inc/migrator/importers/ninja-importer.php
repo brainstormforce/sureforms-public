@@ -423,6 +423,76 @@ class Ninja_Importer extends Base_Migrator {
 	}
 
 	/**
+	 * Fetch the form's actions (success message, email, redirect, …) via
+	 * the `nf3_objects` + `nf3_object_meta` + `nf3_relationships` tables.
+	 *
+	 * @since x.x.x
+	 *
+	 * @param int $form_id Ninja form id.
+	 * @return array<int,array<string,mixed>>
+	 */
+	protected function fetch_actions( $form_id ) {
+		if ( null !== $this->actions_cache ) {
+			return $this->actions_cache;
+		}
+		global $wpdb;
+		$objects_table = $wpdb->prefix . 'nf3_objects';
+		$rels_table    = $wpdb->prefix . 'nf3_relationships';
+		$meta_table    = $wpdb->prefix . 'nf3_object_meta';
+
+		// Table names are derived from $wpdb->prefix + a hard-coded literal;
+		// child_type is the hard-coded string 'action'; only $form_id needs
+		// prepared-statement protection.
+		$query = sprintf(
+			"SELECT o.id, o.type, o.title AS label FROM %1\$s o JOIN %2\$s r ON r.child_id = o.id WHERE r.parent_id = %3\$d AND r.child_type = 'action'",
+			esc_sql( $objects_table ),
+			esc_sql( $rels_table ),
+			(int) $form_id
+		);
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+		$rows = $wpdb->get_results( $query, ARRAY_A );
+		if ( ! is_array( $rows ) || empty( $rows ) ) {
+			$this->actions_cache = [];
+			return $this->actions_cache;
+		}
+
+		$ids = array_map( static fn( $r ) => (int) $r['id'], $rows );
+		// Each id is cast to int above; safe to interpolate the IN-list
+		// directly.
+		$ids_sql    = implode( ',', $ids );
+		$meta_query = sprintf(
+			'SELECT parent_id, COALESCE(NULLIF(meta_key, \'\'), `key`) AS k, COALESCE(NULLIF(meta_value, \'\'), `value`) AS v FROM %s WHERE parent_id IN (%s)',
+			esc_sql( $meta_table ),
+			$ids_sql
+		);
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+		$meta_rows = $wpdb->get_results( $meta_query, ARRAY_A );
+		$by_id     = [];
+		if ( is_array( $meta_rows ) ) {
+			foreach ( $meta_rows as $m ) {
+				$pid                 = (int) $m['parent_id'];
+				$k                   = (string) $m['k'];
+				$v                   = $m['v'];
+				$v                   = $this->safe_unserialize( $v );
+				$by_id[ $pid ][ $k ] = $v;
+			}
+		}
+
+		$out = [];
+		foreach ( $rows as $r ) {
+			$id    = (int) $r['id'];
+			$out[] = [
+				'id'       => $id,
+				'type'     => (string) $r['type'],
+				'label'    => (string) $r['label'],
+				'settings' => $by_id[ $id ] ?? [],
+			];
+		}
+		$this->actions_cache = $out;
+		return $this->actions_cache;
+	}
+
+	/**
 	 * Translate a single Ninja field (with meta merged in) into block
 	 * markup.
 	 *
@@ -686,9 +756,7 @@ class Ninja_Importer extends Base_Migrator {
 			: __( 'Time', 'sureforms' );
 		$time_args['label']  = $time_label;
 		$time_args['slug']   = $this->reserve_slug( $time_label );
-		$markup             .= (string) apply_filters( 'srfm_migrator_block_template', '', 'date_time_picker', $time_args, $this->key );
-
-		return $markup;
+		return $markup . (string) apply_filters( 'srfm_migrator_block_template', '', 'date_time_picker', $time_args, $this->key );
 	}
 
 	/**
@@ -1125,76 +1193,6 @@ class Ninja_Importer extends Base_Migrator {
 			}
 		}
 		return [ $entry ];
-	}
-
-	/**
-	 * Fetch the form's actions (success message, email, redirect, …) via
-	 * the `nf3_objects` + `nf3_object_meta` + `nf3_relationships` tables.
-	 *
-	 * @since x.x.x
-	 *
-	 * @param int $form_id Ninja form id.
-	 * @return array<int,array<string,mixed>>
-	 */
-	protected function fetch_actions( $form_id ) {
-		if ( null !== $this->actions_cache ) {
-			return $this->actions_cache;
-		}
-		global $wpdb;
-		$objects_table = $wpdb->prefix . 'nf3_objects';
-		$rels_table    = $wpdb->prefix . 'nf3_relationships';
-		$meta_table    = $wpdb->prefix . 'nf3_object_meta';
-
-		// Table names are derived from $wpdb->prefix + a hard-coded literal;
-		// child_type is the hard-coded string 'action'; only $form_id needs
-		// prepared-statement protection.
-		$query = sprintf(
-			"SELECT o.id, o.type, o.title AS label FROM %1\$s o JOIN %2\$s r ON r.child_id = o.id WHERE r.parent_id = %3\$d AND r.child_type = 'action'",
-			esc_sql( $objects_table ),
-			esc_sql( $rels_table ),
-			(int) $form_id
-		);
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
-		$rows = $wpdb->get_results( $query, ARRAY_A );
-		if ( ! is_array( $rows ) || empty( $rows ) ) {
-			$this->actions_cache = [];
-			return $this->actions_cache;
-		}
-
-		$ids = array_map( static fn( $r ) => (int) $r['id'], $rows );
-		// Each id is cast to int above; safe to interpolate the IN-list
-		// directly.
-		$ids_sql    = implode( ',', $ids );
-		$meta_query = sprintf(
-			'SELECT parent_id, COALESCE(NULLIF(meta_key, \'\'), `key`) AS k, COALESCE(NULLIF(meta_value, \'\'), `value`) AS v FROM %s WHERE parent_id IN (%s)',
-			esc_sql( $meta_table ),
-			$ids_sql
-		);
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
-		$meta_rows = $wpdb->get_results( $meta_query, ARRAY_A );
-		$by_id     = [];
-		if ( is_array( $meta_rows ) ) {
-			foreach ( $meta_rows as $m ) {
-				$pid                 = (int) $m['parent_id'];
-				$k                   = (string) $m['k'];
-				$v                   = $m['v'];
-				$v                   = $this->safe_unserialize( $v );
-				$by_id[ $pid ][ $k ] = $v;
-			}
-		}
-
-		$out = [];
-		foreach ( $rows as $r ) {
-			$id    = (int) $r['id'];
-			$out[] = [
-				'id'       => $id,
-				'type'     => (string) $r['type'],
-				'label'    => (string) $r['label'],
-				'settings' => $by_id[ $id ] ?? [],
-			];
-		}
-		$this->actions_cache = $out;
-		return $this->actions_cache;
 	}
 
 	/**
