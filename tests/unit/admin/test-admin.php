@@ -619,4 +619,99 @@ class Test_Getting_Started_Notice extends TestCase {
 		$admin = Admin::get_instance();
 		$this->assertTrue( method_exists( $admin, 'add_upgrade_to_pro' ) );
 	}
+
+	/**
+	 * Test suppress_foreign_admin_notices exists and is a public instance method.
+	 *
+	 * @since 2.10.0
+	 */
+	public function test_suppress_foreign_admin_notices_signature() {
+		$this->assertTrue(
+			method_exists( Admin::class, 'suppress_foreign_admin_notices' ),
+			'suppress_foreign_admin_notices should exist on the Admin class.'
+		);
+
+		$reflection = new \ReflectionMethod( Admin::class, 'suppress_foreign_admin_notices' );
+		$this->assertTrue( $reflection->isPublic(), 'suppress_foreign_admin_notices should be public.' );
+		$this->assertFalse( $reflection->isStatic(), 'suppress_foreign_admin_notices should be an instance method.' );
+
+		// It must be strictly scoped to SureForms admin screens.
+		$source_file = $reflection->getFileName();
+		$start_line  = $reflection->getStartLine();
+		$end_line    = $reflection->getEndLine();
+		$source      = implode( '', array_slice( file( $source_file ), $start_line - 1, $end_line - $start_line + 1 ) );
+
+		$this->assertStringContainsString( 'is_sureforms_admin_page', $source, 'Suppression must be scoped to SureForms admin screens.' );
+		$this->assertStringContainsString( 'current_action', $source, 'Suppression should act on the current notice hook only.' );
+	}
+
+	/**
+	 * Test is_sureforms_owned_notice_callback recognises SureForms-owned callbacks
+	 * and treats foreign callbacks as not owned.
+	 *
+	 * @since 2.10.0
+	 */
+	public function test_is_sureforms_owned_notice_callback() {
+		$admin  = Admin::get_instance();
+		$method = new \ReflectionMethod( Admin::class, 'is_sureforms_owned_notice_callback' );
+		$method->setAccessible( true );
+
+		// SureForms instance method ([ $object, 'method' ]) is owned.
+		$this->assertTrue(
+			$method->invoke( $admin, [ $admin, 'display_srfm_rating_notice' ] ),
+			'A SureForms class instance method should be recognised as owned.'
+		);
+
+		// SureForms static callback as a string is owned.
+		$this->assertTrue(
+			$method->invoke( $admin, 'SRFM\\Inc\\Helper::is_sureforms_admin_page' ),
+			'A SRFM namespaced static callback should be recognised as owned.'
+		);
+
+		// Pro namespaced callback is owned. Pro's real namespace is the
+		// case-sensitive `SRFM_Pro\` (capital P, lowercase ro) — assert the
+		// actual cased class so this guards against the all-caps mismatch.
+		$this->assertTrue(
+			$method->invoke( $admin, [ 'SRFM_Pro\\Inc\\Admin\\Licensing', 'some_notice' ] ),
+			'A SRFM_Pro namespaced callback should be recognised as owned.'
+		);
+
+		// The all-caps SRFM_PRO_ form is a constant prefix, not the namespace —
+		// a class under it is foreign and must NOT be treated as owned.
+		$this->assertFalse(
+			$method->invoke( $admin, [ 'SRFM_PRO_Something\\Notice', 'render' ] ),
+			'An all-caps SRFM_PRO_ class (not the SRFM_Pro namespace) should not be owned.'
+		);
+
+		// Bundled notices library is owned.
+		$this->assertTrue(
+			$method->invoke( $admin, [ 'BSF_Admin_Notices', 'show_notices' ] ),
+			'The bundled BSF_Admin_Notices library should be recognised as owned.'
+		);
+
+		// Foreign plugin object method is NOT owned.
+		$foreign = new \stdClass();
+		$this->assertFalse(
+			$method->invoke( $admin, [ $foreign, 'render_promo_banner' ] ),
+			'A third-party class instance method should not be recognised as owned.'
+		);
+
+		// Foreign plugin static callback string is NOT owned.
+		$this->assertFalse(
+			$method->invoke( $admin, 'Ninja_Forms_Admin_Notices::output' ),
+			'A third-party static callback should not be recognised as owned.'
+		);
+
+		// Plain function callback is NOT owned.
+		$this->assertFalse(
+			$method->invoke( $admin, 'some_foreign_notice_function' ),
+			'A plain function callback should not be recognised as owned.'
+		);
+
+		// Null callback is NOT owned.
+		$this->assertFalse(
+			$method->invoke( $admin, null ),
+			'A null callback should not be recognised as owned.'
+		);
+	}
 }

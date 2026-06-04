@@ -112,10 +112,12 @@ class Bootstrap {
 					'default'           => [],
 				],
 				'post_status' => [
+					// Migrator imports default to draft so the user reviews the
+					// migrated markup before publishing; pass 'publish' to override.
 					'sanitize_callback' => static function ( $value ) {
-						return in_array( $value, [ 'draft', 'publish' ], true ) ? $value : 'publish';
+						return in_array( $value, [ 'draft', 'publish' ], true ) ? $value : 'draft';
 					},
-					'default'           => 'publish',
+					'default'           => 'draft',
 				],
 			],
 		];

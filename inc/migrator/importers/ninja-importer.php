@@ -447,7 +447,7 @@ class Ninja_Importer extends Base_Migrator {
 			return $this->dispatch_via_filter( 'html_block', $this->build_block_args( $field ), $field );
 		}
 		if ( 'date' === $type ) {
-			return $this->dispatch_via_filter( 'date_time_picker', $this->build_block_args( $field ), $field );
+			return $this->translate_date_field( $field );
 		}
 		if ( 'file_upload' === $type ) {
 			return $this->dispatch_via_filter( 'upload', $this->build_block_args( $field ), $field );
@@ -551,11 +551,29 @@ class Ninja_Importer extends Base_Migrator {
 				$args['preselected'] = $options['preselected'];
 				$args['multiple']    = in_array( $type, [ 'listmultiselect', 'listcheckbox' ], true );
 				break;
+			case 'listcountry':
+			case 'liststate':
+				// Ninja auto-populates Country / State lists at render time, so the
+				// stored field has no `options[]` — translate_options() would yield
+				// only the "Option 1" placeholder. Seed the canonical list instead.
+				$options             = 'listcountry' === $type ? $this->country_options() : $this->state_options();
+				$args['options']     = $options;
+				$args['preselected'] = [];
+				$args['multiple']    = false;
+				break;
 			case 'checkbox':
-				$args['checked'] = ! empty( $field['checkbox_default_value'] );
+				$args['checked'] = $this->checkbox_is_checked( $field );
 				break;
 			case 'date':
-				$args['format']      = 'date';
+				// Ninja's Date/Time field carries a `date_mode` setting whose
+				// value is one of `date` / `time` / `date and time`. Map that to
+				// SureForms' date-picker `format` enum (`date`|`time`|`date-time`)
+				// so a time-only or date+time field isn't flattened to date-only.
+				// `date_time_picker` emits a time-picker for `time` and a
+				// date-picker for `date`/`date-time`; we additionally emit a
+				// companion time block for `date-time` (see translate_field()),
+				// because SureForms' date-picker has no on-field time component.
+				$args['format']      = $this->date_format_from_mode( $field );
 				$args['date_format'] = $this->str_arg( $field, 'date_format', 'm/d/Y' );
 				break;
 			case 'file_upload':
@@ -627,6 +645,193 @@ class Ninja_Importer extends Base_Migrator {
 			'options'     => $options,
 			'preselected' => $preselected,
 		];
+	}
+
+	/**
+	 * Translate a Ninja Date/Time field. Ninja's single field can be a date
+	 * picker, a time picker, or both (its `date_mode` setting). SureForms'
+	 * date-picker block has no on-field time component, so a `date and time`
+	 * Ninja field is emitted as TWO blocks — a date-picker plus a companion
+	 * time-picker — rather than being flattened to date-only.
+	 *
+	 * @since x.x.x
+	 *
+	 * @param array<string,mixed> $field Ninja date field with merged meta.
+	 * @return string
+	 */
+	private function translate_date_field( array $field ) {
+		$args   = $this->build_block_args( $field );
+		$format = $this->str_arg( $args, 'format', 'date' );
+
+		if ( 'date-time' !== $format ) {
+			// Pure date or pure time → one date_time_picker block; the Pro
+			// emitter routes on args['format'] ('date'|'time').
+			return $this->dispatch_via_filter( 'date_time_picker', $args, $field );
+		}
+
+		// Date + time → emit a date block plus a companion time block so the
+		// time component survives. Only the date block is registered for
+		// conditional logic (via dispatch_via_filter → capture_field_metadata):
+		// the Ninja field has a single key, so it anchors CL to the primary
+		// date block. The companion time block is supplementary and emitted
+		// directly without re-registering the same key (which would clobber it).
+		$date_args           = $args;
+		$date_args['format'] = 'date';
+		$markup              = $this->dispatch_via_filter( 'date_time_picker', $date_args, $field );
+
+		$time_args           = $args;
+		$time_args['format'] = 'time';
+		$time_label          = '' !== $this->str_arg( $args, 'label' )
+			? $this->str_arg( $args, 'label' ) . ' ' . __( '(Time)', 'sureforms' )
+			: __( 'Time', 'sureforms' );
+		$time_args['label']  = $time_label;
+		$time_args['slug']   = $this->reserve_slug( $time_label );
+		$markup             .= (string) apply_filters( 'srfm_migrator_block_template', '', 'date_time_picker', $time_args, $this->key );
+
+		return $markup;
+	}
+
+	/**
+	 * Resolve the SureForms date-picker `format` enum (`date`|`time`|`date-time`)
+	 * from a Ninja date field's `date_mode` setting. Ninja stores one of
+	 * `date` / `time` / `date and time`; older builds may use `datetime`.
+	 *
+	 * @since x.x.x
+	 *
+	 * @param array<string,mixed> $field Ninja date field.
+	 * @return string `date`, `time`, or `date-time`.
+	 */
+	private function date_format_from_mode( array $field ) {
+		$mode = strtolower( trim( $this->str_arg( $field, 'date_mode', 'date' ) ) );
+		if ( 'time' === $mode ) {
+			return 'time';
+		}
+		if ( in_array( $mode, [ 'date and time', 'datetime', 'date-time', 'date_and_time' ], true ) ) {
+			return 'date-time';
+		}
+		return 'date';
+	}
+
+	/**
+	 * Resolve whether a Ninja single-checkbox field defaults to checked.
+	 *
+	 * Ninja stores the default in the `default_value` setting as the string
+	 * `checked` / `unchecked` (the generic `default` key can also carry it).
+	 * Treat `checked` (case-insensitive) or a truthy `1`/`true`/`yes` as on.
+	 *
+	 * @since x.x.x
+	 *
+	 * @param array<string,mixed> $field Ninja checkbox field.
+	 * @return bool
+	 */
+	private function checkbox_is_checked( array $field ) {
+		$raw = strtolower( trim( $this->str_arg( $field, 'default_value', $this->str_arg( $field, 'default' ) ) ) );
+		if ( in_array( $raw, [ 'checked', '1', 'true', 'yes' ], true ) ) {
+			return true;
+		}
+		// Ninja checkboxes can define a custom "checked" value; a default that
+		// equals it (and isn't blank) means the box starts checked.
+		$checked_value = strtolower( trim( $this->str_arg( $field, 'checked_value' ) ) );
+		return '' !== $checked_value && $raw === $checked_value;
+	}
+
+	/**
+	 * Build SureForms dropdown options for a Ninja `listcountry` field from the
+	 * bundled, server-readable country list at `inc/fields/countries.json`
+	 * (Ninja auto-populates its country list at render, so the source field
+	 * carries no options of its own).
+	 *
+	 * @since x.x.x
+	 *
+	 * @return array<int,array<string,string>>
+	 */
+	private function country_options() {
+		$path = SRFM_DIR . 'inc/fields/countries.json';
+		// Local bundled catalogue — wp_remote_get() is for remote URLs only.
+		$raw  = is_readable( $path ) ? file_get_contents( $path ) : false; // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
+		$list = is_string( $raw ) ? json_decode( $raw, true ) : null;
+		$out  = [];
+		if ( is_array( $list ) ) {
+			foreach ( $list as $entry ) {
+				if ( is_array( $entry ) ) {
+					$name = $this->str_arg( $entry, 'name' );
+					if ( '' !== $name ) {
+						$out[] = [ 'label' => $name ];
+					}
+				}
+			}
+		}
+		return ! empty( $out ) ? $out : [ [ 'label' => 'Option 1' ] ];
+	}
+
+	/**
+	 * Built-in US state list for a Ninja `liststate` field. Ninja's State
+	 * dropdown auto-populates the 50 US states + DC at render time, so the
+	 * stored field carries no options to read; this mirrors that catalogue.
+	 *
+	 * @since x.x.x
+	 *
+	 * @return array<int,array<string,string>>
+	 */
+	private function state_options() {
+		$states = [
+			'Alabama',
+			'Alaska',
+			'Arizona',
+			'Arkansas',
+			'California',
+			'Colorado',
+			'Connecticut',
+			'Delaware',
+			'District of Columbia',
+			'Florida',
+			'Georgia',
+			'Hawaii',
+			'Idaho',
+			'Illinois',
+			'Indiana',
+			'Iowa',
+			'Kansas',
+			'Kentucky',
+			'Louisiana',
+			'Maine',
+			'Maryland',
+			'Massachusetts',
+			'Michigan',
+			'Minnesota',
+			'Mississippi',
+			'Missouri',
+			'Montana',
+			'Nebraska',
+			'Nevada',
+			'New Hampshire',
+			'New Jersey',
+			'New Mexico',
+			'New York',
+			'North Carolina',
+			'North Dakota',
+			'Ohio',
+			'Oklahoma',
+			'Oregon',
+			'Pennsylvania',
+			'Rhode Island',
+			'South Carolina',
+			'South Dakota',
+			'Tennessee',
+			'Texas',
+			'Utah',
+			'Vermont',
+			'Virginia',
+			'Washington',
+			'West Virginia',
+			'Wisconsin',
+			'Wyoming',
+		];
+		$out    = [];
+		foreach ( $states as $state ) {
+			$out[] = [ 'label' => $state ];
+		}
+		return $out;
 	}
 
 	/**
@@ -853,7 +1058,9 @@ class Ninja_Importer extends Base_Migrator {
 	 * @return array<int,array<string,mixed>>
 	 */
 	private function translate_email_notifications_from_actions() {
-		$actions = $this->fetch_actions( $this->current_form_id );
+		$actions       = $this->fetch_actions( $this->current_form_id );
+		$notifications = [];
+		$id            = 1;
 		foreach ( $actions as $action ) {
 			if ( 'email' !== ( $action['type'] ?? '' ) ) {
 				continue;
@@ -862,20 +1069,31 @@ class Ninja_Importer extends Base_Migrator {
 			$to       = $this->str_arg( $settings, 'to' );
 			if ( '' === $to ) {
 				$admin = get_option( 'admin_email' );
-				$to    = is_string( $admin ) ? $admin : '';
+				$to    = is_string( $admin ) ? $admin : '{admin_email}';
 			}
-			return [
-				[
-					'status'         => true,
-					'name'           => $this->str_arg( $action, 'label', __( 'Admin Notification', 'sureforms' ) ),
-					'email_to'       => $to,
-					'subject'        => $this->str_arg( $settings, 'email_subject', __( 'New form submission', 'sureforms' ) ),
-					'email_reply_to' => $this->str_arg( $settings, 'reply_to', '{admin_email}' ),
-					'email_body'     => $this->str_arg( $settings, 'email_message', '{all_fields}' ),
-				],
+			$from_name  = $this->str_arg( $settings, 'from_name', '{site_title}' );
+			$from_email = $this->str_arg( $settings, 'from_address', '{admin_email}' );
+			// SureForms reads the full notification shape (id/from_*/cc/bcc) at
+			// both render (form-submit.php) and editor (form-metadata.php) time;
+			// mirror Migrator_CF7's canonical keys so the editor doesn't fall back
+			// to the global-default notification.
+			$notifications[] = [
+				'id'             => $id,
+				'status'         => true,
+				'is_raw_format'  => false,
+				'name'           => $this->str_arg( $action, 'label', __( 'Admin Notification Email', 'sureforms' ) ),
+				'email_to'       => $to,
+				'email_reply_to' => $this->str_arg( $settings, 'reply_to', '{admin_email}' ),
+				'from_name'      => '' !== $from_name ? $from_name : '{site_title}',
+				'from_email'     => '' !== $from_email ? $from_email : '{admin_email}',
+				'email_cc'       => $this->str_arg( $settings, 'cc' ),
+				'email_bcc'      => $this->str_arg( $settings, 'bcc' ),
+				'subject'        => $this->str_arg( $settings, 'email_subject', __( 'New form submission', 'sureforms' ) ),
+				'email_body'     => $this->str_arg( $settings, 'email_message', '{all_data}' ),
 			];
+			++$id;
 		}
-		return [];
+		return $notifications;
 	}
 
 	/**

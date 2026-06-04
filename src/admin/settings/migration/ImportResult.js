@@ -108,7 +108,7 @@ const ImportResult = ( { result, onRestart } ) => {
 						<Container direction="column" gap="2xs">
 							<Text size={ 13 }>
 								{ __(
-									'Add these manually in the form editor — they have no SureForms equivalent yet:',
+									'Add these manually in the form editor - they have no SureForms equivalent yet:',
 									'sureforms'
 								) }
 							</Text>
