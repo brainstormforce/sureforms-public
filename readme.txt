@@ -156,7 +156,7 @@ Analyze and gain insights from form submissions through interactive charts, grap
 
 SureForms gives developers clean APIs, hooks, and well-structured code, making it easy to customize, extend, and integrate forms with other systems, plugins, or themes.
 
-### Multilingual WordPress Forms- Built-In Translations
+#### Multilingual WordPress Forms - Built-In Translations
 
 SureForms ships with built-in translations for 7 languages. No extra plugins, no manual setup. Install SureForms and it works immediately in:
 
