@@ -668,10 +668,19 @@ class Test_Getting_Started_Notice extends TestCase {
 			'A SRFM namespaced static callback should be recognised as owned.'
 		);
 
-		// Pro namespaced callback is owned.
+		// Pro namespaced callback is owned. Pro's real namespace is the
+		// case-sensitive `SRFM_Pro\` (capital P, lowercase ro) — assert the
+		// actual cased class so this guards against the all-caps mismatch.
 		$this->assertTrue(
-			$method->invoke( $admin, [ 'SRFM_PRO\\Admin\\Licensing', 'some_notice' ] ),
-			'A SRFM_PRO namespaced callback should be recognised as owned.'
+			$method->invoke( $admin, [ 'SRFM_Pro\\Inc\\Admin\\Licensing', 'some_notice' ] ),
+			'A SRFM_Pro namespaced callback should be recognised as owned.'
+		);
+
+		// The all-caps SRFM_PRO_ form is a constant prefix, not the namespace —
+		// a class under it is foreign and must NOT be treated as owned.
+		$this->assertFalse(
+			$method->invoke( $admin, [ 'SRFM_PRO_Something\\Notice', 'render' ] ),
+			'An all-caps SRFM_PRO_ class (not the SRFM_Pro namespace) should not be owned.'
 		);
 
 		// Bundled notices library is owned.

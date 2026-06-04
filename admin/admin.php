@@ -231,8 +231,10 @@ class Admin {
 			return false;
 		}
 
-		// SureForms (free and pro) namespaced classes.
-		if ( 0 === strpos( $class_name, 'SRFM\\' ) || 0 === strpos( $class_name, 'SRFM_PRO\\' ) ) {
+		// SureForms (free and pro) namespaced classes. Pro's real namespace is
+		// `SRFM_Pro\` (case-sensitive) — not the all-caps `SRFM_PRO_` constant
+		// prefix — so match it case-insensitively to be safe.
+		if ( 0 === strpos( $class_name, 'SRFM\\' ) || 0 === stripos( $class_name, 'SRFM_Pro\\' ) ) {
 			return true;
 		}
 
