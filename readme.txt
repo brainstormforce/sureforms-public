@@ -20,7 +20,7 @@ SureForms is the most beginner-friendly **WordPress form builder**, designed to 
 
 Trusted by **500,000+ websites**, SureForms is the modern alternative to traditional contact form plugins — purpose-built for speed, design, and conversions.
 
-👉 <a href="https://bsf.io/sureforms-demo?utm_source=wordpress.org&utm_medium=live_demo" target="_blank" rel="">Try the live demo of SureForms</a>
+👉 <a href="https://bsf.io/sureforms-demo" target="_blank" rel="">Try the live demo of SureForms</a>
 
 [youtube https://www.youtube.com/watch?v=qLpnm4GdXks]
 
@@ -532,7 +532,7 @@ Yes. SureForms Business includes fully functional user registration forms and lo
 4. Beautify your forms with Instant Form Styling and a wide range of Block and Form Settings — customize colors, typography, spacing, and every visual detail.
 5. Publish your forms instantly with a shareable Instant Form link, or easily embed forms in any page or post using SureForms' native Gutenberg block.
 
-You can report security issues through our [Bug Bounty Program](https://brainstormforce.com/bug-bounty-program/?utm_source=wordpress.org&utm_medium=bug_bounty). We collaborate with Patchstack to provide opportunities for researchers to report vulnerabilities. The Patchstack team will help validate, triage, and handle any reported security issues.
+You can report security issues through our [Bug Bounty Program](https://brainstormforce.com/bug-bounty-program/). We collaborate with Patchstack to provide opportunities for researchers to report vulnerabilities. The Patchstack team will help validate, triage, and handle any reported security issues.
 
 == Changelog ==
 = 2.10.1 - 1st June 2026 =
