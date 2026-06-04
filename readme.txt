@@ -1,6 +1,6 @@
 === SureForms - Drag & Drop Contact Form, Payment Form, Survey, Quiz, Calculator & Custom Form Builder ===
 Contributors: brainstormforce
-Tags: contact form, form builder, custom form, survey, payment form
+Tags: forms, contact form, form builder, survey, payment form
 Requires at least: 6.4
 Tested up to: 7.0
 Requires PHP: 7.4
