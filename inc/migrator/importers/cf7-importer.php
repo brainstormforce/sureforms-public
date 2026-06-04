@@ -21,7 +21,6 @@
 namespace SRFM\Inc\Migrator\Importers;
 
 use SRFM\Inc\Migrator\Base_Migrator;
-use SRFM\Inc\Migrator\Block_Templates;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;

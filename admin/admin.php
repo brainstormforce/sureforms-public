@@ -186,7 +186,7 @@ class Admin {
 
 		foreach ( $wp_filter[ $current_hook ]->callbacks as $priority => $callbacks ) {
 			foreach ( $callbacks as $callback ) {
-				$function = isset( $callback['function'] ) ? $callback['function'] : null;
+				$function = $callback['function'] ?? null;
 
 				// Never remove our own suppression callback.
 				if ( is_array( $function ) && isset( $function[0] ) && $function[0] === $this && 'suppress_foreign_admin_notices' === $function[1] ) {
@@ -201,63 +201,6 @@ class Admin {
 				remove_action( $current_hook, $function, $priority );
 			}
 		}
-	}
-
-	/**
-	 * Determine whether a notice callback is owned by SureForms.
-	 *
-	 * Recognises object methods on classes in the `SRFM` / `SRFM_PRO` namespaces
-	 * as well as the bundled notices libraries (`BSF_Admin_Notices` and the
-	 * legacy `Astra_Notices` alias). Everything else is treated as foreign.
-	 *
-	 * @param callable|array|string|null $function The registered callback function.
-	 * @since 2.10.0
-	 * @return bool True when the callback belongs to SureForms, false otherwise.
-	 */
-	private function is_sureforms_owned_notice_callback( $function ) {
-		$class_name = '';
-
-		if ( is_array( $function ) && isset( $function[0] ) ) {
-			// Object or static method callback represented as an array. The first
-			// element is either the object instance or the fully qualified class name.
-			$class_name = is_object( $function[0] ) ? get_class( $function[0] ) : (string) $function[0];
-		} elseif ( is_string( $function ) && false !== strpos( $function, '::' ) ) {
-			// Static method passed as "Class::method".
-			$class_name = strstr( $function, '::', true );
-		}
-
-		if ( '' === $class_name ) {
-			// Plain function callbacks are never owned by SureForms.
-			return false;
-		}
-
-		// SureForms (free and pro) namespaced classes. Pro's real namespace is
-		// `SRFM_Pro\` (case-sensitive) — not the all-caps `SRFM_PRO_` constant
-		// prefix — so match it case-insensitively to be safe.
-		if ( 0 === strpos( $class_name, 'SRFM\\' ) || 0 === stripos( $class_name, 'SRFM_Pro\\' ) ) {
-			return true;
-		}
-
-		// Bundled notices library shipped with SureForms.
-		return in_array( $class_name, [ 'BSF_Admin_Notices', 'Astra_Notices' ], true );
-	}
-
-	/**
-	 * Whether the current admin page is a SureForms-owned screen identified by a
-	 * `sureforms_*` / `srfm_*` `page` query slug. Complements
-	 * {@see Helper::is_sureforms_admin_page()} so foreign-notice suppression also
-	 * covers the payments / quiz / survey / learn / SMTP / partial-entries screens
-	 * that the core helper does not enumerate. Read-only screen check.
-	 *
-	 * @since 2.10.0
-	 * @return bool
-	 */
-	private function is_sureforms_owned_admin_page() {
-		if ( ! is_admin() || empty( $_GET['page'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only screen detection, no state change.
-			return false;
-		}
-		$page = sanitize_key( wp_unslash( $_GET['page'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only screen detection, no state change.
-		return 0 === strpos( $page, 'sureforms' ) || 0 === strpos( $page, 'srfm' );
 	}
 
 	/**
@@ -1076,6 +1019,8 @@ class Admin {
 			'privacy_policy_url'           => Helper::get_sureforms_website_url( 'privacy-policy/' ),
 			'is_rtl'                       => $is_rtl,
 			'onboarding_completed'         => method_exists( $onboarding_instance, 'get_onboarding_status' ) ? $onboarding_instance->get_onboarding_status() : false,
+			'migration_banner_dismissed'   => method_exists( $onboarding_instance, 'is_migration_banner_dismissed' ) ? $onboarding_instance->is_migration_banner_dismissed() : false,
+			'migration_settings_url'       => admin_url( 'admin.php?page=sureforms_form_settings&tab=migration-settings' ),
 			'onboarding_redirect'          => isset( $_GET['srfm-activation-redirect'] ), // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce is not required for the activation redirection.
 			'pointer_nonce'                => wp_create_nonce( 'sureforms_pointer_action' ),
 			'general_settings_url'         => admin_url( '/options-general.php' ),
@@ -2059,6 +2004,63 @@ class Admin {
 			?>
 		</div>
 		<?php
+	}
+
+	/**
+	 * Determine whether a notice callback is owned by SureForms.
+	 *
+	 * Recognises object methods on classes in the `SRFM` / `SRFM_PRO` namespaces
+	 * as well as the bundled notices libraries (`BSF_Admin_Notices` and the
+	 * legacy `Astra_Notices` alias). Everything else is treated as foreign.
+	 *
+	 * @param callable|array|string|null $function The registered callback function.
+	 * @since 2.10.0
+	 * @return bool True when the callback belongs to SureForms, false otherwise.
+	 */
+	private function is_sureforms_owned_notice_callback( $function ) {
+		$class_name = '';
+
+		if ( is_array( $function ) && isset( $function[0] ) ) {
+			// Object or static method callback represented as an array. The first
+			// element is either the object instance or the fully qualified class name.
+			$class_name = is_object( $function[0] ) ? get_class( $function[0] ) : (string) $function[0];
+		} elseif ( is_string( $function ) && false !== strpos( $function, '::' ) ) {
+			// Static method passed as "Class::method".
+			$class_name = strstr( $function, '::', true );
+		}
+
+		if ( '' === $class_name ) {
+			// Plain function callbacks are never owned by SureForms.
+			return false;
+		}
+
+		// SureForms (free and pro) namespaced classes. Pro's real namespace is
+		// `SRFM_Pro\` (case-sensitive) — not the all-caps `SRFM_PRO_` constant
+		// prefix — so match it case-insensitively to be safe.
+		if ( 0 === strpos( $class_name, 'SRFM\\' ) || 0 === stripos( $class_name, 'SRFM_Pro\\' ) ) {
+			return true;
+		}
+
+		// Bundled notices library shipped with SureForms.
+		return in_array( $class_name, [ 'BSF_Admin_Notices', 'Astra_Notices' ], true );
+	}
+
+	/**
+	 * Whether the current admin page is a SureForms-owned screen identified by a
+	 * `sureforms_*` / `srfm_*` `page` query slug. Complements
+	 * {@see Helper::is_sureforms_admin_page()} so foreign-notice suppression also
+	 * covers the payments / quiz / survey / learn / SMTP / partial-entries screens
+	 * that the core helper does not enumerate. Read-only screen check.
+	 *
+	 * @since 2.10.0
+	 * @return bool
+	 */
+	private function is_sureforms_owned_admin_page() {
+		if ( ! is_admin() || empty( $_GET['page'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only screen detection, no state change.
+			return false;
+		}
+		$page = sanitize_key( wp_unslash( $_GET['page'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only screen detection, no state change.
+		return 0 === strpos( $page, 'sureforms' ) || 0 === strpos( $page, 'srfm' );
 	}
 
 	/**

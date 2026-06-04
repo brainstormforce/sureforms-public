@@ -151,6 +151,47 @@ class Test_Base_Migrator extends TestCase {
 	}
 
 	/**
+	 * Base_Migrator::import_forms() — when `skip_existing` is true, a re-run
+	 * over a source that was already imported routes the form to the
+	 * `skipped` bucket instead of overwriting the SureForms post. This is
+	 * the onboarding-step's safety net against silently destroying user
+	 * edits on a second onboarding pass.
+	 *
+	 * @return void
+	 */
+	public function test_import_forms_respects_skip_existing() {
+		$post_id  = $this->make_cf7( "Name\n[text* n]", 'Skip me' );
+		$importer = $this->make_importer();
+		$importer->import_forms( [ $post_id ], false );
+		$result = $importer->import_forms( [ $post_id ], false, [], true );
+		$this->assertCount( 0, $result['imported'] );
+		$this->assertCount( 1, $result['skipped'] );
+		$this->assertSame( (string) $post_id, (string) $result['skipped'][0]['source_id'] );
+	}
+
+	/**
+	 * Base_Migrator::import_forms() — an explicit per-form behavior entry
+	 * still wins over `skip_existing`. The onboarding default is "be safe",
+	 * but the Settings → Migration tab can opt back into overwrite on a
+	 * per-form basis without the safety net surprising users.
+	 *
+	 * @return void
+	 */
+	public function test_skip_existing_yields_to_explicit_behavior() {
+		$post_id  = $this->make_cf7( "Name\n[text* n]", 'Update wins' );
+		$importer = $this->make_importer();
+		$importer->import_forms( [ $post_id ], false );
+		$result = $importer->import_forms(
+			[ $post_id ],
+			false,
+			[ (string) $post_id => 'update' ],
+			true
+		);
+		$this->assertCount( 1, $result['imported'] );
+		$this->assertCount( 0, $result['skipped'] );
+	}
+
+	/**
 	 * Base_Migrator::find_existing_srfm_id() — after an import, list_forms
 	 * returns `imported_srfm_id` > 0 for the just-imported source form.
 	 *

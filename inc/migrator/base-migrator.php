@@ -37,6 +37,21 @@ abstract class Base_Migrator {
 	public const DEFAULT_ENTRY_LIMIT = 1000;
 
 	/**
+	 * Operators SureForms' conditional-logic editor exposes per block-type
+	 * bucket. Mirrors `src/conditional-logic/conditional-logic-options.json`
+	 * in SureForms Pro — keep in sync if that schema changes.
+	 */
+	protected const CL_BUCKET_OPERATORS = [
+		'default'    => [ '==', '!=', 'null', '!null', 'includes', '!includes', 'startWith', 'endWith', 'matchesPattern', 'doesNotMatchPattern' ],
+		'text'       => [ '==', '!=', 'null', '!null', 'includes', '!includes', 'startWith', 'endWith', 'matchesPattern', 'doesNotMatchPattern' ],
+		'number'     => [ '==', '!=', '>', '>=', '<', '<=', 'between', 'matchesPattern', 'doesNotMatchPattern' ],
+		'list'       => [ '==', '!=', 'in', '!in', 'isSelected', '!isSelected', 'matchesPattern', 'doesNotMatchPattern' ],
+		'checkbox'   => [ 'isChecked', '!isChecked', 'matchesPattern', 'doesNotMatchPattern' ],
+		'datepicker' => [ 'datePickerIs', 'isBefore', 'isOnOrBefore', 'isAfter', 'isOnOrAfter' ],
+		'timepicker' => [ 'timePickerIs', 'isBefore', 'isOnOrBefore', 'isAfter', 'isOnOrAfter' ],
+	];
+
+	/**
 	 * Source key — one of: cf7, wpforms, gravity, ninja, caldera.
 	 *
 	 * Subclasses MUST override.
@@ -132,13 +147,17 @@ abstract class Base_Migrator {
 	 *
 	 * @since x.x.x
 	 *
-	 * @param array<int,int|string>    $selected_ids List of source form ids. Empty = all.
-	 * @param bool                     $dry_run      If true, no posts are inserted; a preview is returned.
-	 * @param array<int|string,string> $behavior   Per-source-id behavior. Keyed by source id (any cast).
-	 * @param string                   $post_status Status for newly inserted forms; one of `draft`/`publish`.
+	 * @param array<int,int|string>    $selected_ids  List of source form ids. Empty = all.
+	 * @param bool                     $dry_run       If true, no posts are inserted; a preview is returned.
+	 * @param array<int|string,string> $behavior      Per-source-id behavior. Keyed by source id (any cast).
+	 * @param string                   $post_status   Status for newly inserted forms; one of `draft`/`publish`.
+	 * @param bool                     $skip_existing Force `skip` for any source form already mapped to a
+	 *                                                SureForms post — the onboarding "Import all" uses this so it
+	 *                                                cannot silently overwrite forms the user already imported +
+	 *                                                hand-edited. Per-form $behavior entries still win.
 	 * @return array{imported: array<int,array<string,mixed>>, failed: array<int,string>, skipped: array<int,array<string,mixed>>, unsupported_fields: array<int,string>, preview?: array<string,string>}
 	 */
-	public function import_forms( array $selected_ids = [], $dry_run = false, array $behavior = [], $post_status = 'publish' ) {
+	public function import_forms( array $selected_ids = [], $dry_run = false, array $behavior = [], $post_status = 'publish', $skip_existing = false ) {
 		$post_status = in_array( $post_status, [ 'draft', 'publish' ], true ) ? $post_status : 'publish';
 
 		$this->unsupported_fields = [];
@@ -181,8 +200,17 @@ abstract class Base_Migrator {
 
 			$metas       = $this->get_form_metas( $form );
 			$existing_id = $this->find_existing_srfm_id( $source_id );
-			$action      = $behavior[ (string) $source_id ] ?? ( $behavior[ (int) $source_id ] ?? 'update' );
-			if ( ! in_array( $action, $allowed_actions, true ) ) {
+
+			// Resolve the per-form action. Order of precedence:
+			// 1. explicit per-id entry from $behavior (user choice)
+			// 2. `$skip_existing` shortcut when there IS an existing import
+			// 3. default `update` (re-import overwrites — matches Settings UI default).
+			$explicit_action = $behavior[ (string) $source_id ] ?? ( $behavior[ (int) $source_id ] ?? null );
+			if ( is_string( $explicit_action ) && in_array( $explicit_action, $allowed_actions, true ) ) {
+				$action = $explicit_action;
+			} elseif ( $skip_existing && $existing_id ) {
+				$action = 'skip';
+			} else {
 				$action = 'update';
 			}
 
@@ -450,23 +478,6 @@ abstract class Base_Migrator {
 		$label                      = trim( (string) $label );
 		$this->unsupported_fields[] = '' === $label ? __( '(unnamed field)', 'sureforms' ) : $label;
 	}
-
-	/**
-	 * Operators SureForms' conditional-logic editor exposes per block-type
-	 * bucket. Mirrors `src/conditional-logic/conditional-logic-options.json`
-	 * in SureForms Pro — keep in sync if that schema changes.
-	 *
-	 * @var array<string,array<int,string>>
-	 */
-	protected const CL_BUCKET_OPERATORS = [
-		'default'    => [ '==', '!=', 'null', '!null', 'includes', '!includes', 'startWith', 'endWith', 'matchesPattern', 'doesNotMatchPattern' ],
-		'text'       => [ '==', '!=', 'null', '!null', 'includes', '!includes', 'startWith', 'endWith', 'matchesPattern', 'doesNotMatchPattern' ],
-		'number'     => [ '==', '!=', '>', '>=', '<', '<=', 'between', 'matchesPattern', 'doesNotMatchPattern' ],
-		'list'       => [ '==', '!=', 'in', '!in', 'isSelected', '!isSelected', 'matchesPattern', 'doesNotMatchPattern' ],
-		'checkbox'   => [ 'isChecked', '!isChecked', 'matchesPattern', 'doesNotMatchPattern' ],
-		'datepicker' => [ 'datePickerIs', 'isBefore', 'isOnOrBefore', 'isAfter', 'isOnOrAfter' ],
-		'timepicker' => [ 'timePickerIs', 'isBefore', 'isOnOrBefore', 'isAfter', 'isOnOrAfter' ],
-	];
 
 	/**
 	 * Reconcile a converted CL operator against a field's block-type bucket.
