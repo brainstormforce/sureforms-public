@@ -163,7 +163,8 @@ class Test_Base_Migrator extends TestCase {
 		$post_id  = $this->make_cf7( "Name\n[text* n]", 'Skip me' );
 		$importer = $this->make_importer();
 		$importer->import_forms( [ $post_id ], false );
-		$result = $importer->import_forms( [ $post_id ], false, [], true );
+		// Args: selected_ids, dry_run, behavior, post_status, skip_existing.
+		$result = $importer->import_forms( [ $post_id ], false, [], 'publish', true );
 		$this->assertCount( 0, $result['imported'] );
 		$this->assertCount( 1, $result['skipped'] );
 		$this->assertSame( (string) $post_id, (string) $result['skipped'][0]['source_id'] );
@@ -181,10 +182,12 @@ class Test_Base_Migrator extends TestCase {
 		$post_id  = $this->make_cf7( "Name\n[text* n]", 'Update wins' );
 		$importer = $this->make_importer();
 		$importer->import_forms( [ $post_id ], false );
+		// Explicit per-form `update` must win over skip_existing (5th arg).
 		$result = $importer->import_forms(
 			[ $post_id ],
 			false,
 			[ (string) $post_id => 'update' ],
+			'publish',
 			true
 		);
 		$this->assertCount( 1, $result['imported'] );

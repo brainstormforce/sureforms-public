@@ -151,9 +151,9 @@ class Bootstrap {
 			$installed = $importer->exist();
 			// Single per-form scan: list_forms() already resolves each form's
 			// imported_srfm_id (via the memoized imported-map), so derive both
-			// counts from its rows instead of a second count_imported_forms()
-			// pass — this endpoint runs on every onboarding boot + Forms-listing
-			// page load (review #2).
+			// the total and imported counts from its rows in one pass — this
+			// endpoint runs on every onboarding boot + Forms-listing page load
+			// (review #2).
 			$forms          = $installed ? $importer->list_forms() : [];
 			$forms_count    = count( $forms );
 			$imported_count = count(

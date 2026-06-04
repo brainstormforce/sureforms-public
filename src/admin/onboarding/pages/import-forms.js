@@ -138,11 +138,15 @@ const ImportForms = () => {
 			// empty. `skip_existing: true` guarantees we never silently
 			// overwrite a form the user has previously imported + edited,
 			// even if they re-run the onboarding wizard.
+			// Args: key, formIds(all), dryRun, behavior, postStatus, skipExisting.
+			// Onboarding imports land as drafts and never overwrite an existing
+			// import (skip_existing=true) — both must be passed in their slots.
 			const res = await importForms(
 				selectedSource.key,
 				[],
 				false,
 				{},
+				'draft',
 				true
 			);
 			setResult( res );
