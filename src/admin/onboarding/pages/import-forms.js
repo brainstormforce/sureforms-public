@@ -242,8 +242,8 @@ const ImportForms = () => {
 							{ sprintf(
 								/* translators: 1: imported count, 2: source plugin title. */
 								_n(
-									'%1$d form from %2$s is now in SureForms — ready to publish, style, and connect.',
-									'%1$d forms from %2$s are now in SureForms — ready to publish, style, and connect.',
+									'%1$d form from %2$s is now in SureForms, ready to publish, style, and connect.',
+									'%1$d forms from %2$s are now in SureForms, ready to publish, style, and connect.',
 									imported,
 									'sureforms'
 								),
@@ -291,8 +291,8 @@ const ImportForms = () => {
 								{ sprintf(
 									/* translators: %d: count of unsupported fields. */
 									_n(
-										'%d field type was unsupported — you can rebuild it manually inside SureForms.',
-										'%d field types were unsupported — you can rebuild them manually inside SureForms.',
+										'%d field type was unsupported. You can rebuild it manually inside SureForms.',
+										'%d field types were unsupported. You can rebuild them manually inside SureForms.',
 										unsupported,
 										'sureforms'
 									),
@@ -327,14 +327,21 @@ const ImportForms = () => {
 					/>
 					<Text size={ 14 } weight={ 400 } color="secondary">
 						{ __(
-							'We detected forms in another plugin. Pick one to import into SureForms — fields, settings, and conditional logic come over automatically.',
+							'We detected forms in another plugin. Pick one to import into SureForms.',
 							'sureforms'
 						) }
 					</Text>
 				</div>
 			</Container>
 
-			<div className="space-y-2">
+			<div
+				role="radiogroup"
+				aria-label={ __(
+					'Choose a form plugin to import from',
+					'sureforms'
+				) }
+				className="space-y-2"
+			>
 				{ usableSources.map( ( source ) => (
 					<SourceMigrationCard
 						key={ source.key }

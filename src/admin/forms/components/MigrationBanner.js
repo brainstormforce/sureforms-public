@@ -158,11 +158,6 @@ const MigrationBanner = () => {
 					</Text>
 					<Text size={ 13 } color="secondary">
 						{ formsLabel }
-						{ ' · ' }
-						{ __(
-							'Fields, settings, and conditional logic come over automatically.',
-							'sureforms'
-						) }
 					</Text>
 				</div>
 			</Container>

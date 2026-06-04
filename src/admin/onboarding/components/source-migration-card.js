@@ -57,11 +57,13 @@ const SourceMigrationCard = ( { source, selected, onSelect, disabled } ) => {
 		<label
 			htmlFor={ id }
 			className={ `flex items-center justify-between gap-3 rounded-md border border-solid p-4 transition-colors focus-within:ring-2 focus-within:ring-focus focus-within:ring-offset-1 ${
-				isDisabled
-					? 'cursor-not-allowed bg-background-secondary border-border-subtle'
-					: 'cursor-pointer'
+				allImported
+					? 'cursor-not-allowed bg-background-secondary'
+					: isDisabled
+						? 'cursor-not-allowed'
+						: 'cursor-pointer'
 			} ${
-				selected && ! isDisabled
+				selected
 					? 'border-border-interactive bg-background-interactive-subtle'
 					: 'border-border-subtle hover:border-border-strong'
 			}`.trim() }
@@ -80,7 +82,7 @@ const SourceMigrationCard = ( { source, selected, onSelect, disabled } ) => {
 					type="radio"
 					name="srfm-onboarding-source"
 					value={ source?.key }
-					checked={ !! selected && ! isDisabled }
+					checked={ !! selected }
 					disabled={ isDisabled }
 					onChange={ () => onSelect?.( source ) }
 					className="sr-only"
@@ -94,12 +96,12 @@ const SourceMigrationCard = ( { source, selected, onSelect, disabled } ) => {
 					<span
 						aria-hidden="true"
 						className={ `flex size-4 shrink-0 items-center justify-center rounded-full border border-solid transition-colors ${
-							selected && ! isDisabled
+							selected
 								? 'border-icon-interactive bg-icon-interactive'
 								: 'border-border-strong bg-background-primary'
 						}` }
 					>
-						{ selected && ! isDisabled && (
+						{ selected && (
 							<span className="size-1.5 rounded-full bg-background-primary" />
 						) }
 					</span>
@@ -107,7 +109,7 @@ const SourceMigrationCard = ( { source, selected, onSelect, disabled } ) => {
 				<Text
 					size={ 14 }
 					weight={ 500 }
-					color={ isDisabled ? 'secondary' : 'primary' }
+					color={ isDisabled && ! selected ? 'secondary' : 'primary' }
 				>
 					{ source?.title ||
 						__( '(unnamed source)', 'sureforms' ) }
