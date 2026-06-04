@@ -217,7 +217,7 @@ Instantly create downloadable PDFs of form submissions for records or sharing.
 [**Save & Resume**](https://sureforms.com/features/save-and-resume/):
 Let users save their progress and come back to complete the form later.
 
-[**Partial Entries**](https://sureforms.com/features/):
+**Partial Entries**:
 Capture in-progress form submissions automatically — recover abandoned forms and follow up with users who dropped off before completing.
 
 **Form Restrictions:**
@@ -226,7 +226,7 @@ Restrict form visibility and submissions by IP address, country, keywords, user 
 [**Custom Registration & Login Forms**](https://sureforms.com/features/login-and-registration/):
 Fully functional, branded Registration and Login forms for your WordPress site using just a block.
 
-**Custom Post Type Creation**:
+[**Custom Post Type Creation**](https://sureforms.com/features/post-creation/):
 Create WordPress posts or custom post types directly from form submissions.
 
 **Field Restrictions:**
@@ -502,11 +502,11 @@ Yes. SureForms has built-in Payment Form support. You can collect payments secur
 
 = How is SureForms different from WPForms? =
 
-SureForms and WPForms are both powerful WordPress form builders, but they differ on pricing and architecture. WPForms requires the $199/yr Pro tier for multi-step forms and higher tiers for conversational forms and advanced features. SureForms includes every feature AI form generation, conditional logic, multi-step forms, conversational forms, payment forms, quizzes, and surveys, on every paid plan from $59/yr with no feature-gating. SureForms is also built natively on the Gutenberg block editor, while WPForms uses a separate proprietary interface.
+SureForms and WPForms are both powerful WordPress form builders, but they differ on pricing and architecture. WPForms requires the $199/yr Pro tier for multi-step forms and higher tiers for conversational forms and advanced features. SureForms includes every feature AI form generation, conditional logic, multi-step forms, conversational forms, payment forms, quizzes, and surveys, on every paid plan from $59/yr with no feature-gating. SureForms is also built natively on the Gutenberg block editor, while WPForms uses a separate proprietary interface. Read the full comparison: [SureForms vs WPForms](https://sureforms.com/sureforms-vs-wpforms/).
 
 = How is SureForms different from Fluent Forms? =
 
-Both are capable WordPress form plugins. SureForms differentiates with built-in AI form generation (no API key needed), native Gutenberg block editor integration, and flat pricing where every feature is available on every paid plan. SureForms also ships with built-in translations for 7 languages out of the box and stores all form data exclusively on your own site. No cloud storage.
+Both are capable WordPress form plugins. SureForms differentiates with built-in AI form generation (no API key needed), native Gutenberg block editor integration, and flat pricing where every feature is available on every paid plan. SureForms also ships with built-in translations for 7 languages out of the box and stores all form data exclusively on your own site. No cloud storage. Read the full comparison: [SureForms vs Fluent Forms](https://sureforms.com/sureforms-vs-fluent-forms/).
 
 = Is SureForms a good Contact Form 7 alternative? =
 
