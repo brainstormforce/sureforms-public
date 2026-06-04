@@ -512,10 +512,6 @@ Both are capable WordPress form plugins. SureForms differentiates with built-in 
 
 Yes. SureForms is one of the best Contact Form 7 alternatives for WordPress. Unlike Contact Form 7, SureForms requires no shortcodes or manual HTML. You build forms visually using the Gutenberg block editor. SureForms also adds payment forms, AI form generation, conditional logic, multi-step forms, conversational forms, file uploads, and 25+ native integrations.All features Contact Form 7 requires add-ons or custom code to replicate.
 
-= Can I migrate from Contact Form 7 to SureForms? =
-
-Yes. SureForms includes a one-click HTML form importer that can convert existing HTML forms — including Contact Form 7 output into native SureForms. Your form fields, structure, and layout carry over automatically. All new entries, analytics, and integrations are immediately available on the converted form.
-
 = Can I build a calculator form in WordPress with SureForms? =
 
 Yes. SureForms Business includes a dedicated Calculator Forms feature. You can build pricing calculators, quote generators, cost estimators, BMI calculators, and any other calculation-based form using the built-in formula builder. No coding required. Dynamic values can be shown to users in real time as they fill the form.
