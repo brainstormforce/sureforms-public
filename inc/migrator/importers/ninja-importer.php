@@ -669,8 +669,12 @@ class Ninja_Importer extends Base_Migrator {
 			return $this->dispatch_via_filter( 'date_time_picker', $args, $field );
 		}
 
-		// Date + time → emit a date block and a companion time block so the
-		// time component survives. Both are captured for CL targeting.
+		// Date + time → emit a date block plus a companion time block so the
+		// time component survives. Only the date block is registered for
+		// conditional logic (via dispatch_via_filter → capture_field_metadata):
+		// the Ninja field has a single key, so it anchors CL to the primary
+		// date block. The companion time block is supplementary and emitted
+		// directly without re-registering the same key (which would clobber it).
 		$date_args           = $args;
 		$date_args['format'] = 'date';
 		$markup              = $this->dispatch_via_filter( 'date_time_picker', $date_args, $field );
@@ -721,15 +725,21 @@ class Ninja_Importer extends Base_Migrator {
 	 * @return bool
 	 */
 	private function checkbox_is_checked( array $field ) {
-		$raw = $this->str_arg( $field, 'default_value', $this->str_arg( $field, 'default' ) );
-		$raw = strtolower( trim( $raw ) );
-		return in_array( $raw, [ 'checked', '1', 'true', 'yes' ], true );
+		$raw = strtolower( trim( $this->str_arg( $field, 'default_value', $this->str_arg( $field, 'default' ) ) ) );
+		if ( in_array( $raw, [ 'checked', '1', 'true', 'yes' ], true ) ) {
+			return true;
+		}
+		// Ninja checkboxes can define a custom "checked" value; a default that
+		// equals it (and isn't blank) means the box starts checked.
+		$checked_value = strtolower( trim( $this->str_arg( $field, 'checked_value' ) ) );
+		return '' !== $checked_value && $raw === $checked_value;
 	}
 
 	/**
 	 * Build SureForms dropdown options for a Ninja `listcountry` field from the
-	 * bundled, server-readable country list (`inc/fields/countries.json`, the
-	 * same catalogue the srfm/phone + srfm/address blocks ship).
+	 * bundled, server-readable country list at `inc/fields/countries.json`
+	 * (Ninja auto-populates its country list at render, so the source field
+	 * carries no options of its own).
 	 *
 	 * @since x.x.x
 	 *

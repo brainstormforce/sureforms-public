@@ -36,9 +36,16 @@ export const listForms = ( key ) =>
  * @param {Array<number|string>}          formIds  Source form ids to import. Empty = all.
  * @param {boolean}                       dryRun   If true, no posts are inserted; preview is returned.
  * @param {Object<string|number, string>} behavior Optional per-source re-import behavior — keyed by source form id, value is one of `update`, `skip`, `create`. Defaults to `update` when omitted.
+ * @param {string}                        postStatus Status for newly created forms; `draft` (default) or `publish`. Imported forms land as drafts so the user can review the migrated markup before publishing.
  * @return {Promise<{imported: Array<{srfm_id: number, source_id: number|string, name: string, edit_url: string}>, failed: Array<string>, skipped: Array<{srfm_id: number, source_id: number|string, name: string, edit_url: string}>, unsupported_fields: Array<string>, preview?: Record<string, string>}>} Resolves with the import outcome.
  */
-export const importForms = ( key, formIds, dryRun = false, behavior = {} ) =>
+export const importForms = (
+	key,
+	formIds,
+	dryRun = false,
+	behavior = {},
+	postStatus = 'draft'
+) =>
 	apiFetch( {
 		path: `${ BASE }/sources/${ encodeURIComponent( key ) }/import`,
 		method: 'POST',
@@ -46,5 +53,6 @@ export const importForms = ( key, formIds, dryRun = false, behavior = {} ) =>
 			form_ids: formIds,
 			dry_run: dryRun,
 			behavior,
+			post_status: postStatus,
 		},
 	} );

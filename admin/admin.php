@@ -167,7 +167,11 @@ class Admin {
 	public function suppress_foreign_admin_notices() {
 		// Bail early if we are not on a SureForms admin screen. This keeps the
 		// suppression strictly scoped and avoids touching any other admin page.
-		if ( ! Helper::is_sureforms_admin_page() ) {
+		// is_sureforms_admin_page() covers the core screens (dashboard, add-new,
+		// settings, entries, the form CPT); we additionally match any admin page
+		// whose `page` slug is SureForms-owned (sureforms_* / srfm_*) so the
+		// suppression also applies to the payments/quiz/survey/learn/SMTP screens.
+		if ( ! Helper::is_sureforms_admin_page() && ! $this->is_sureforms_owned_admin_page() ) {
 			return;
 		}
 
@@ -234,6 +238,24 @@ class Admin {
 
 		// Bundled notices library shipped with SureForms.
 		return in_array( $class_name, [ 'BSF_Admin_Notices', 'Astra_Notices' ], true );
+	}
+
+	/**
+	 * Whether the current admin page is a SureForms-owned screen identified by a
+	 * `sureforms_*` / `srfm_*` `page` query slug. Complements
+	 * {@see Helper::is_sureforms_admin_page()} so foreign-notice suppression also
+	 * covers the payments / quiz / survey / learn / SMTP / partial-entries screens
+	 * that the core helper does not enumerate. Read-only screen check.
+	 *
+	 * @since 2.10.0
+	 * @return bool
+	 */
+	private function is_sureforms_owned_admin_page() {
+		if ( ! is_admin() || empty( $_GET['page'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only screen detection, no state change.
+			return false;
+		}
+		$page = sanitize_key( wp_unslash( $_GET['page'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only screen detection, no state change.
+		return 0 === strpos( $page, 'sureforms' ) || 0 === strpos( $page, 'srfm' );
 	}
 
 	/**
