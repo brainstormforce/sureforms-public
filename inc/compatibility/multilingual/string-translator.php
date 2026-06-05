@@ -23,15 +23,20 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Bridges SureForms render paths to the multilingual provider using a stable naming
  * scheme that matches the strings registered on save by the string-collector.
  *
- * Naming scheme (domain `sureforms`):
- *  - Submit button text:           `form_{form_id}_submit_button`
- *  - Confirmation message:         `form_{form_id}_confirmation_{N}_message`
- *  - Notification subject:         `form_{form_id}_notification_{N}_subject`
- *  - Notification body:            `form_{form_id}_notification_{N}_body`
- *  - Notification from_name:       `form_{form_id}_notification_{N}_from_name`
- *  - Form restriction message:     `form_{form_id}_restriction_message`
- *  - Block string attribute:       `form_{form_id}_block_{block_id}_{attribute}`
- *  - Block option label:           `form_{form_id}_block_{block_id}_option_{N}_label`
+ * Per-form strings are translated through a WPML **String Package** (one package
+ * per form, see {@see form_package()}), so they appear grouped under the form in the
+ * Translation Editor instead of as flat global strings. Package-scoped string names
+ * (no `form_{id}_` prefix — the package is the form):
+ *  - Submit button text:       `submit_button`
+ *  - Confirmation message:     `confirmation_{N}_message`
+ *  - Notification field:       `notification_{N}_{subject|body|from_name|reply_to}`
+ *  - Form restriction message: `restriction_message`
+ *  - Block string attribute:   `block_{block_id}_{attribute}`
+ *  - Block option label:       `block_{block_id}_option_{N}_label`
+ *
+ * Built-in validation messages stay flat global strings (domain `sureforms`,
+ * `validation_{key}`) since they are not per-form. When the provider can't do
+ * packages, per-form strings fall back to the legacy flat name `form_{id}_{name}`.
  *
  * @since x.x.x
  */
@@ -116,6 +121,163 @@ class String_Translator {
 	}
 
 	/**
+	 * Human-readable field-type label for a SureForms block, used to group a
+	 * field's strings in the Translation Editor (e.g. the "Email #2" heading).
+	 *
+	 * Deliberately uses the block TYPE rather than the user-entered field label:
+	 * WPML builds the Translation-Editor tree by splitting the string title on
+	 * `/` (nesting) and `: ` (path vs. leaf), so a user who types either sequence
+	 * into a field label would otherwise corrupt the grouping. Block types are
+	 * plugin-controlled and safe.
+	 *
+	 * @since x.x.x
+	 * @param string $block_name Full block name, e.g. `srfm/email`.
+	 * @return string Friendly type label, e.g. `Email`.
+	 */
+	public static function block_type_label( string $block_name ): string {
+		$labels = [
+			'srfm/input'         => __( 'Text', 'sureforms' ),
+			'srfm/email'         => __( 'Email', 'sureforms' ),
+			'srfm/phone'         => __( 'Phone', 'sureforms' ),
+			'srfm/number'        => __( 'Number', 'sureforms' ),
+			'srfm/url'           => __( 'URL', 'sureforms' ),
+			'srfm/textarea'      => __( 'Textarea', 'sureforms' ),
+			'srfm/address'       => __( 'Address', 'sureforms' ),
+			'srfm/dropdown'      => __( 'Dropdown', 'sureforms' ),
+			'srfm/multi-choice'  => __( 'Multiple Choice', 'sureforms' ),
+			'srfm/checkbox'      => __( 'Checkbox', 'sureforms' ),
+			'srfm/gdpr'          => __( 'GDPR', 'sureforms' ),
+			'srfm/inline-button' => __( 'Button', 'sureforms' ),
+			'srfm/payment'       => __( 'Payment', 'sureforms' ),
+		];
+
+		/**
+		 * Filters the block-name → field-type label map used to group a field's
+		 * strings in the Translation Editor. Pro field blocks add their labels here.
+		 *
+		 * @since x.x.x
+		 * @param array<string, string> $labels Block name → friendly type label.
+		 */
+		$labels = apply_filters( 'srfm_block_type_labels', $labels );
+
+		if ( isset( $labels[ $block_name ] ) && is_string( $labels[ $block_name ] ) ) {
+			return $labels[ $block_name ];
+		}
+
+		// Derive from the block name: strip the namespace, turn dashes into spaces
+		// and title-case (e.g. `srfm/date-time-picker` → `Date Time Picker`).
+		$slug = false !== strpos( $block_name, '/' ) ? substr( $block_name, strpos( $block_name, '/' ) + 1 ) : $block_name;
+		$slug = str_replace( '-', ' ', $slug );
+		return '' !== $slug ? ucwords( $slug ) : __( 'Field', 'sureforms' );
+	}
+
+	/**
+	 * WPML "kind" label for SureForms form string packages.
+	 *
+	 * @since x.x.x
+	 */
+	public const PACKAGE_KIND = 'SureForms Form';
+
+	/**
+	 * Build the string-package descriptor for a form.
+	 *
+	 * One package per form (named by post ID) so every form string surfaces
+	 * together under the form in the multilingual plugin's Translation Editor,
+	 * instead of as flat, global String-Translation entries. The collector
+	 * (registration) and the translator (render) both call this, keeping the two
+	 * sides in lockstep.
+	 *
+	 * @param int $form_id Form post ID.
+	 * @since x.x.x
+	 * @return array<string,string> { kind, name, title, edit_link }.
+	 */
+	public static function form_package( int $form_id ): array {
+		$title = get_the_title( $form_id );
+		if ( '' === $title ) {
+			/* translators: %d is the form ID. */
+			$title = sprintf( __( 'SureForms Form #%d', 'sureforms' ), $form_id );
+		}
+
+		$edit_link = get_edit_post_link( $form_id, 'raw' );
+
+		return [
+			'kind'      => self::PACKAGE_KIND,
+			'name'      => (string) $form_id,
+			'title'     => $title,
+			'edit_link' => is_string( $edit_link ) ? $edit_link : '',
+		];
+	}
+
+	/**
+	 * Package-scoped submit-button string name. Names are unique within a form's
+	 * package (which is itself scoped to the form), so they carry no `form_{id}_`
+	 * prefix; the legacy flat-string fallback re-adds it in {@see dispatch_package()}.
+	 *
+	 * @since x.x.x
+	 * @return string
+	 */
+	public static function submit_button_name(): string {
+		return 'submit_button';
+	}
+
+	/**
+	 * Package-scoped confirmation-message string name.
+	 *
+	 * @param int $index Confirmation index.
+	 * @since x.x.x
+	 * @return string
+	 */
+	public static function confirmation_name( int $index ): string {
+		return 'confirmation_' . $index . '_message';
+	}
+
+	/**
+	 * Package-scoped notification-field string name.
+	 *
+	 * @param int    $index Notification index.
+	 * @param string $field Notification field (subject|body|from_name|reply_to).
+	 * @since x.x.x
+	 * @return string
+	 */
+	public static function notification_name( int $index, string $field ): string {
+		return 'notification_' . $index . '_' . $field;
+	}
+
+	/**
+	 * Package-scoped restriction-message string name.
+	 *
+	 * @since x.x.x
+	 * @return string
+	 */
+	public static function restriction_name(): string {
+		return 'restriction_message';
+	}
+
+	/**
+	 * Package-scoped block-attribute string name.
+	 *
+	 * @param string $block_id  Stable block identifier.
+	 * @param string $attribute Attribute key.
+	 * @since x.x.x
+	 * @return string
+	 */
+	public static function block_attribute_name( string $block_id, string $attribute ): string {
+		return 'block_' . $block_id . '_' . $attribute;
+	}
+
+	/**
+	 * Package-scoped block-option-label string name.
+	 *
+	 * @param string $block_id     Stable block identifier.
+	 * @param int    $option_index Option index.
+	 * @since x.x.x
+	 * @return string
+	 */
+	public static function block_option_name( string $block_id, int $option_index ): string {
+		return 'block_' . $block_id . '_option_' . $option_index . '_label';
+	}
+
+	/**
 	 * Translate a form's submit button text.
 	 *
 	 * @param int    $form_id Form post ID.
@@ -128,8 +290,7 @@ class String_Translator {
 			return $value;
 		}
 
-		$name = 'form_' . $form_id . '_submit_button';
-		return $this->dispatch( $value, $name );
+		return $this->dispatch_package( $form_id, self::submit_button_name(), $value );
 	}
 
 	/**
@@ -146,8 +307,7 @@ class String_Translator {
 			return $value;
 		}
 
-		$name = 'form_' . $form_id . '_confirmation_' . $index . '_message';
-		return $this->dispatch( $value, $name );
+		return $this->dispatch_package( $form_id, self::confirmation_name( $index ), $value );
 	}
 
 	/**
@@ -164,8 +324,7 @@ class String_Translator {
 			return $value;
 		}
 
-		$name = 'form_' . $form_id . '_notification_' . $index . '_subject';
-		return $this->dispatch( $value, $name );
+		return $this->dispatch_package( $form_id, self::notification_name( $index, 'subject' ), $value );
 	}
 
 	/**
@@ -182,8 +341,7 @@ class String_Translator {
 			return $value;
 		}
 
-		$name = 'form_' . $form_id . '_notification_' . $index . '_body';
-		return $this->dispatch( $value, $name );
+		return $this->dispatch_package( $form_id, self::notification_name( $index, 'body' ), $value );
 	}
 
 	/**
@@ -200,8 +358,7 @@ class String_Translator {
 			return $value;
 		}
 
-		$name = 'form_' . $form_id . '_notification_' . $index . '_from_name';
-		return $this->dispatch( $value, $name );
+		return $this->dispatch_package( $form_id, self::notification_name( $index, 'from_name' ), $value );
 	}
 
 	/**
@@ -263,8 +420,7 @@ class String_Translator {
 			return $value;
 		}
 
-		$name = 'form_' . $form_id . '_restriction_message';
-		return $this->dispatch( $value, $name );
+		return $this->dispatch_package( $form_id, self::restriction_name(), $value );
 	}
 
 	/**
@@ -282,8 +438,7 @@ class String_Translator {
 			return $value;
 		}
 
-		$name = 'form_' . $form_id . '_block_' . $block_id . '_' . $attribute;
-		return $this->dispatch( $value, $name );
+		return $this->dispatch_package( $form_id, self::block_attribute_name( $block_id, $attribute ), $value );
 	}
 
 	/**
@@ -301,8 +456,7 @@ class String_Translator {
 			return $value;
 		}
 
-		$name = 'form_' . $form_id . '_block_' . $block_id . '_option_' . $option_index . '_label';
-		return $this->dispatch( $value, $name );
+		return $this->dispatch_package( $form_id, self::block_option_name( $block_id, $option_index ), $value );
 	}
 
 	/**
@@ -461,5 +615,34 @@ class String_Translator {
 	private function dispatch( string $value, string $name ): string {
 		$provider = Multilingual_Manager::get_instance()->provider();
 		return $provider->translate( $value, $name, self::DOMAIN );
+	}
+
+	/**
+	 * Translate a per-form string via the provider's String Package, so it shows
+	 * grouped under the form in the Translation Editor.
+	 *
+	 * Falls back to a flat String-Translation string (legacy `form_{id}_{name}`
+	 * naming) when the provider can't do packages — keeping older WPML setups and
+	 * non-package providers working.
+	 *
+	 * @param int    $form_id Form post ID.
+	 * @param string $name    Package-scoped string name (see the *_name() builders).
+	 * @param string $value   Original value (fallback when untranslated).
+	 * @since x.x.x
+	 * @return string Translated value, or the original when no translation exists.
+	 */
+	private function dispatch_package( int $form_id, string $name, string $value ): string {
+		if ( '' === $value ) {
+			return $value;
+		}
+
+		$provider = Multilingual_Manager::get_instance()->provider();
+
+		if ( $provider->supports_packages() ) {
+			return $provider->translate_package_string( self::form_package( $form_id ), $name, $value );
+		}
+
+		// Legacy / non-package fallback: flat string with the form-scoped name.
+		return $provider->translate( $value, 'form_' . $form_id . '_' . $name, self::DOMAIN );
 	}
 }

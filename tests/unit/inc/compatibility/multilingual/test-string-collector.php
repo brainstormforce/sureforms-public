@@ -7,6 +7,7 @@
 
 use Yoast\PHPUnitPolyfills\TestCases\TestCase;
 use SRFM\Inc\Compatibility\Multilingual\String_Collector;
+use SRFM\Inc\Compatibility\Multilingual\String_Translator;
 use SRFM\Inc\Compatibility\Multilingual\Providers\Provider;
 
 /**
@@ -15,11 +16,27 @@ use SRFM\Inc\Compatibility\Multilingual\Providers\Provider;
  */
 class Srfm_String_Collector_Stub_Provider implements Provider {
 	/**
-	 * Recorded register_string() invocations.
+	 * Recorded register_string()/register_package_string() invocations. Package
+	 * strings are mirrored here under their legacy flat name (`form_{id}_{name}`)
+	 * so existing name-based assertions keep working across both paths.
 	 *
 	 * @var array<int, array{name:string,value:string,domain:string}>
 	 */
 	public $registered = [];
+
+	/**
+	 * Recorded register_package_string() calls with full package detail.
+	 *
+	 * @var array<int, array<string,mixed>>
+	 */
+	public $package_strings = [];
+
+	/**
+	 * Recorded start/finish package lifecycle calls: [ 'start'|'finish', $package ].
+	 *
+	 * @var array<int, array{0:string,1:array<string,string>}>
+	 */
+	public $package_events = [];
 
 	public function is_active(): bool {
 		return true;
@@ -55,6 +72,38 @@ class Srfm_String_Collector_Stub_Provider implements Provider {
 
 	public function render_language_switcher(): string {
 		return '';
+	}
+
+	public function supports_packages(): bool {
+		return true;
+	}
+
+	public function start_package( array $package ): void {
+		$this->package_events[] = [ 'start', $package ];
+	}
+
+	public function finish_package( array $package ): void {
+		$this->package_events[] = [ 'finish', $package ];
+	}
+
+	public function register_package_string( array $package, string $name, string $value, string $title = '', string $type = 'LINE' ): void {
+		// Mirror under the legacy flat name so existing name-based assertions hold.
+		$this->registered[]      = [
+			'name'   => 'form_' . ( $package['name'] ?? '' ) . '_' . $name,
+			'value'  => $value,
+			'domain' => 'sureforms',
+		];
+		$this->package_strings[] = [
+			'name'    => $name,
+			'value'   => $value,
+			'title'   => $title,
+			'type'    => $type,
+			'package' => $package,
+		];
+	}
+
+	public function translate_package_string( array $package, string $name, string $value ): string {
+		return $value;
 	}
 }
 
@@ -453,6 +502,60 @@ class Test_String_Collector extends TestCase {
 
 		$names = $this->registered_names();
 		$this->assertContains( 'form_99_block_nest1_label', $names );
+	}
+
+	public function test_collect_registers_strings_as_a_form_package() {
+		$stub    = $this->install_stub_provider();
+		$form_id = $this->make_form( [ 'post_title' => 'Contact Us' ] );
+		update_post_meta( $form_id, '_srfm_submit_button_text', 'Send' );
+
+		// Isolate the explicit collect() from the save_post-triggered run during make_form().
+		$stub->package_events  = [];
+		$stub->package_strings = [];
+
+		String_Collector::get_instance()->collect( $form_id );
+
+		// The run is bracketed by a start + finish for one package.
+		$kinds = array_column( array_column( $stub->package_events, 1 ), 'kind' );
+		$this->assertContains( String_Translator::PACKAGE_KIND, $kinds, 'A SureForms Form package should be opened.' );
+		$starts = array_filter( $stub->package_events, static fn( $e ) => 'start' === $e[0] );
+		$ends   = array_filter( $stub->package_events, static fn( $e ) => 'finish' === $e[0] );
+		$this->assertCount( 1, $starts, 'Exactly one package start.' );
+		$this->assertCount( 1, $ends, 'Exactly one package finish (prunes removed strings).' );
+
+		$pkg = array_values( $starts )[0][1];
+		$this->assertSame( String_Translator::PACKAGE_KIND, $pkg['kind'] );
+		$this->assertSame( (string) $form_id, $pkg['name'] );
+		$this->assertSame( 'Contact Us', $pkg['title'] );
+	}
+
+	public function test_collect_package_strings_carry_titles_and_types() {
+		$stub    = $this->install_stub_provider();
+		$form_id = $this->make_form();
+		update_post_meta( $form_id, '_srfm_submit_button_text', 'Send' );
+		update_post_meta( $form_id, '_srfm_form_confirmation', [ [ 'message' => '<p>Thanks</p>' ] ] );
+
+		$stub->package_strings = [];
+		String_Collector::get_instance()->collect( $form_id );
+
+		$by_name = [];
+		foreach ( $stub->package_strings as $row ) {
+			$by_name[ $row['name'] ] = $row;
+		}
+
+		$this->assertArrayHasKey( String_Translator::submit_button_name(), $by_name );
+		$this->assertNotSame( '', $by_name[ String_Translator::submit_button_name() ]['title'], 'Submit button has a human title.' );
+		$this->assertSame( 'LINE', $by_name[ String_Translator::submit_button_name() ]['type'] );
+
+		// Titles follow WPML's "Group: Leaf" convention so the Translation Editor can
+		// group them. The ': ' label separator is what WPML splits on — without it the
+		// editor renders the strings flat.
+		$this->assertStringContainsString( ': ', $by_name[ String_Translator::submit_button_name() ]['title'], 'Submit button title uses the Group: Leaf separator.' );
+
+		$conf = String_Translator::confirmation_name( 0 );
+		$this->assertArrayHasKey( $conf, $by_name );
+		$this->assertSame( 'AREA', $by_name[ $conf ]['type'], 'Confirmation message uses a multi-line editor type.' );
+		$this->assertStringContainsString( ': ', $by_name[ $conf ]['title'], 'Confirmation title uses the Group: Leaf separator.' );
 	}
 
 	/**

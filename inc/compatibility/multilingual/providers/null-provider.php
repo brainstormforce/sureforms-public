@@ -113,4 +113,65 @@ class Null_Provider implements Provider {
 	public function render_language_switcher(): string {
 		return '';
 	}
+
+	/**
+	 * No package support without an active multilingual provider.
+	 *
+	 * @since x.x.x
+	 * @return bool Always false.
+	 */
+	public function supports_packages(): bool {
+		return false;
+	}
+
+	/**
+	 * Begin a package registration. No-op for the Null provider.
+	 *
+	 * @param array<string,string> $package Package descriptor.
+	 * @since x.x.x
+	 * @return void
+	 */
+	public function start_package( array $package ): void {
+		unset( $package );
+	}
+
+	/**
+	 * Finish a package registration. No-op for the Null provider.
+	 *
+	 * @param array<string,string> $package Package descriptor.
+	 * @since x.x.x
+	 * @return void
+	 */
+	public function finish_package( array $package ): void {
+		unset( $package );
+	}
+
+	/**
+	 * Register a package string. No-op for the Null provider.
+	 *
+	 * @param array<string,string> $package Package descriptor.
+	 * @param string               $name    String identifier.
+	 * @param string               $value   Original value.
+	 * @param string               $title   Editor label.
+	 * @param string               $type    Editor field type.
+	 * @since x.x.x
+	 * @return void
+	 */
+	public function register_package_string( array $package, string $name, string $value, string $title = '', string $type = 'LINE' ): void {
+		unset( $package, $name, $value, $title, $type );
+	}
+
+	/**
+	 * Translate a package string. Returns the original value for the Null provider.
+	 *
+	 * @param array<string,string> $package Package descriptor.
+	 * @param string               $name    String identifier.
+	 * @param string               $value   Original value.
+	 * @since x.x.x
+	 * @return string The original value unchanged.
+	 */
+	public function translate_package_string( array $package, string $name, string $value ): string {
+		unset( $package, $name );
+		return $value;
+	}
 }

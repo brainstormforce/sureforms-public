@@ -27,6 +27,22 @@ class Srfm_String_Translator_Stub_Provider implements \SRFM\Inc\Compatibility\Mu
 	 */
 	public string $translate_returns = '';
 
+	/**
+	 * Whether this stub advertises String Package support. Defaults to false so the
+	 * translator uses the flat translate() fallback (and existing assertions hold);
+	 * flip to true in a test to exercise the package path.
+	 *
+	 * @var bool
+	 */
+	public bool $supports_packages = false;
+
+	/**
+	 * Recorded calls to translate_package_string().
+	 *
+	 * @var array<int, array<string, mixed>>
+	 */
+	public array $package_calls = [];
+
 	public function is_active(): bool {
 		return true;
 	}
@@ -59,6 +75,27 @@ class Srfm_String_Translator_Stub_Provider implements \SRFM\Inc\Compatibility\Mu
 
 	public function render_language_switcher(): string {
 		return '';
+	}
+
+	public function supports_packages(): bool {
+		return $this->supports_packages;
+	}
+
+	public function start_package( array $package ): void {
+		unset( $package );
+	}
+
+	public function finish_package( array $package ): void {
+		unset( $package );
+	}
+
+	public function register_package_string( array $package, string $name, string $value, string $title = '', string $type = 'LINE' ): void {
+		unset( $package, $name, $value, $title, $type );
+	}
+
+	public function translate_package_string( array $package, string $name, string $value ): string {
+		$this->package_calls[] = compact( 'package', 'name', 'value' );
+		return '' !== $this->translate_returns ? $this->translate_returns : $value;
 	}
 }
 
@@ -99,6 +136,28 @@ class Srfm_String_Translator_Translating_Stub implements \SRFM\Inc\Compatibility
 
 	public function render_language_switcher(): string {
 		return '';
+	}
+
+	public function supports_packages(): bool {
+		// Use the flat translate() path so the "DE:" prefix substitution stays visible.
+		return false;
+	}
+
+	public function start_package( array $package ): void {
+		unset( $package );
+	}
+
+	public function finish_package( array $package ): void {
+		unset( $package );
+	}
+
+	public function register_package_string( array $package, string $name, string $value, string $title = '', string $type = 'LINE' ): void {
+		unset( $package, $name, $value, $title, $type );
+	}
+
+	public function translate_package_string( array $package, string $name, string $value ): string {
+		unset( $package, $name );
+		return 'DE:' . $value;
 	}
 }
 
@@ -525,5 +584,39 @@ class Test_String_Translator extends TestCase {
 		// Returned structure shape preserved.
 		$this->assertSame( 'core/group', $result[0]['blockName'] );
 		$this->assertSame( 'Nested Label', $result[0]['innerBlocks'][0]['attrs']['label'] );
+	}
+
+	/**
+	 * When the provider supports packages, per-form strings route through the
+	 * form's String Package (unscoped name + form package descriptor) rather than
+	 * the flat translate() path.
+	 */
+	public function test_per_form_strings_route_through_package_when_supported() {
+		$this->stub->supports_packages = true;
+
+		$result = String_Translator::get_instance()->translate_submit_button( 42, 'Send' );
+
+		$this->assertCount( 0, $this->stub->calls, 'Flat translate() must not be used on the package path.' );
+		$this->assertCount( 1, $this->stub->package_calls );
+
+		$call = $this->stub->package_calls[0];
+		$this->assertSame( String_Translator::submit_button_name(), $call['name'] );
+		$this->assertSame( 'Send', $call['value'] );
+		$this->assertSame( String_Translator::PACKAGE_KIND, $call['package']['kind'] );
+		$this->assertSame( '42', $call['package']['name'] );
+		$this->assertSame( 'Send', $result );
+	}
+
+	/**
+	 * A block attribute also routes through the package with its unscoped name.
+	 */
+	public function test_block_attribute_routes_through_package_when_supported() {
+		$this->stub->supports_packages = true;
+
+		String_Translator::get_instance()->translate_block_attribute( 42, 'abc123', 'label', 'Name' );
+
+		$this->assertCount( 1, $this->stub->package_calls );
+		$this->assertSame( String_Translator::block_attribute_name( 'abc123', 'label' ), $this->stub->package_calls[0]['name'] );
+		$this->assertSame( '42', $this->stub->package_calls[0]['package']['name'] );
 	}
 }

@@ -103,4 +103,58 @@ interface Provider {
 	 * @return string Rendered switcher HTML.
 	 */
 	public function render_language_switcher(): string;
+
+	/**
+	 * Whether the provider supports translation "string packages" — groups of
+	 * strings bound to a single object (e.g. a form) that surface together in the
+	 * multilingual plugin's Translation Editor, instead of as flat, global strings.
+	 *
+	 * @since x.x.x
+	 * @return bool True when package registration/translation is available.
+	 */
+	public function supports_packages(): bool;
+
+	/**
+	 * Begin (re)registering a string package. Call before registering its strings
+	 * so strings no longer present can be pruned by {@see finish_package()}.
+	 *
+	 * @param array<string,string> $package Package descriptor: kind, name, title, edit_link.
+	 * @since x.x.x
+	 * @return void
+	 */
+	public function start_package( array $package ): void;
+
+	/**
+	 * Finish registering a string package, removing any strings that were not
+	 * re-registered since {@see start_package()} (e.g. fields deleted from a form).
+	 *
+	 * @param array<string,string> $package Package descriptor.
+	 * @since x.x.x
+	 * @return void
+	 */
+	public function finish_package( array $package ): void;
+
+	/**
+	 * Register a single string within a package.
+	 *
+	 * @param array<string,string> $package Package descriptor.
+	 * @param string               $name    Stable string identifier within the package.
+	 * @param string               $value   Original string value.
+	 * @param string               $title   Human-readable label shown in the Translation Editor.
+	 * @param string               $type    Editor field type: LINE, AREA or VISUAL.
+	 * @since x.x.x
+	 * @return void
+	 */
+	public function register_package_string( array $package, string $name, string $value, string $title = '', string $type = 'LINE' ): void;
+
+	/**
+	 * Translate a single package string for the current language.
+	 *
+	 * @param array<string,string> $package Package descriptor.
+	 * @param string               $name    Stable string identifier within the package.
+	 * @param string               $value   Original value (fallback when untranslated).
+	 * @since x.x.x
+	 * @return string Translated value, or the original when no translation exists.
+	 */
+	public function translate_package_string( array $package, string $name, string $value ): string;
 }

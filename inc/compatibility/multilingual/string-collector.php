@@ -34,6 +34,33 @@ class String_Collector {
 	use Get_Instance;
 
 	/**
+	 * The form's String Package descriptor for the current collect() run, or null
+	 * when no package run is active.
+	 *
+	 * @since x.x.x
+	 * @var array<string,string>|null
+	 */
+	private $active_package = null;
+
+	/**
+	 * Whether the active provider supports String Packages (decided once per run).
+	 *
+	 * @since x.x.x
+	 * @var bool
+	 */
+	private $packages_supported = false;
+
+	/**
+	 * Running 1-based index of the current field within a form, used to build the
+	 * "Fields/<Type> #<n>" group path shown in the Translation Editor. Reset at the
+	 * start of each form's block walk.
+	 *
+	 * @since x.x.x
+	 * @var int
+	 */
+	private $field_index = 0;
+
+	/**
 	 * Constructor. Hooks into save_post for the SureForms form post type.
 	 *
 	 * Uses priority 20 so this runs after WordPress's own save processing and
@@ -101,9 +128,25 @@ class String_Collector {
 			return;
 		}
 
+		// Group every per-form string into a single WPML String Package so they
+		// surface together under the form in the Translation Editor (instead of as
+		// flat, global String-Translation entries). start/finish bracket the
+		// registrations so strings for deleted fields are pruned automatically.
+		$package                  = String_Translator::form_package( $form_id );
+		$this->packages_supported = $provider->supports_packages();
+		$this->active_package     = $package;
+		if ( $this->packages_supported ) {
+			$provider->start_package( $package );
+		}
+
 		// Submit button text.
-		$submit_button_text = $this->get_meta_string( $form_id, '_srfm_submit_button_text' );
-		$this->register_if_non_empty( 'form_' . $form_id . '_submit_button', $submit_button_text );
+		$this->register_form_string(
+			$form_id,
+			String_Translator::submit_button_name(),
+			$this->get_meta_string( $form_id, '_srfm_submit_button_text' ),
+			// "Group: Leaf" — WPML splits on ': ' to nest this under a Settings group.
+			__( 'Settings', 'sureforms' ) . ': ' . __( 'Submit button text', 'sureforms' )
+		);
 
 		// Form confirmations — stored as a nested array (get_post_meta without $single = true).
 		$confirmations_raw = get_post_meta( $form_id, '_srfm_form_confirmation' );
@@ -117,9 +160,13 @@ class String_Collector {
 			}
 
 			$message = isset( $confirmation['message'] ) ? Helper::get_string_value( $confirmation['message'] ) : '';
-			$this->register_if_non_empty(
-				'form_' . $form_id . '_confirmation_' . (int) $index . '_message',
-				$message
+			$this->register_form_string(
+				$form_id,
+				String_Translator::confirmation_name( (int) $index ),
+				$message,
+				/* translators: %d is the confirmation number. */
+				__( 'Confirmations', 'sureforms' ) . '/' . sprintf( __( 'Confirmation #%d', 'sureforms' ), (int) $index + 1 ) . ': ' . __( 'Message', 'sureforms' ),
+				'AREA'
 			);
 		}
 
@@ -137,12 +184,21 @@ class String_Collector {
 			// reply_to is an email address (or a smart tag resolving to one), not
 			// human-readable copy, so it is intentionally excluded from the
 			// translatable set. from_name can legitimately be a localized display name.
-			$fields = [ 'subject', 'body', 'from_name' ];
-			foreach ( $fields as $field ) {
+			$fields = [
+				'subject'   => [ __( 'Subject', 'sureforms' ), 'LINE' ],
+				'body'      => [ __( 'Message body', 'sureforms' ), 'AREA' ],
+				'from_name' => [ __( '"From" name', 'sureforms' ), 'LINE' ],
+			];
+			/* translators: %d is the notification number. */
+			$notification_group = __( 'Notifications', 'sureforms' ) . '/' . sprintf( __( 'Notification #%d', 'sureforms' ), (int) $index + 1 );
+			foreach ( $fields as $field => $meta ) {
 				$value = isset( $notification[ $field ] ) ? Helper::get_string_value( $notification[ $field ] ) : '';
-				$this->register_if_non_empty(
-					'form_' . $form_id . '_notification_' . (int) $index . '_' . $field,
-					$value
+				$this->register_form_string(
+					$form_id,
+					String_Translator::notification_name( (int) $index, $field ),
+					$value,
+					$notification_group . ': ' . $meta[0],
+					$meta[1]
 				);
 			}
 		}
@@ -153,12 +209,23 @@ class String_Collector {
 			$restriction = json_decode( $restriction_raw, true );
 			if ( is_array( $restriction ) && isset( $restriction['message'] ) ) {
 				$message = Helper::get_string_value( $restriction['message'] );
-				$this->register_if_non_empty( 'form_' . $form_id . '_restriction_message', $message );
+				$this->register_form_string(
+					$form_id,
+					String_Translator::restriction_name(),
+					$message,
+					__( 'Settings', 'sureforms' ) . ': ' . __( 'Form restriction message', 'sureforms' ),
+					'AREA'
+				);
 			}
 		}
 
 		// Block-attribute strings (field labels, placeholders, option labels, etc.).
 		$this->collect_block_strings( $form_id );
+
+		if ( $this->packages_supported ) {
+			$provider->finish_package( $package );
+		}
+		$this->active_package = null;
 	}
 
 	/**
@@ -187,12 +254,15 @@ class String_Collector {
 			$this->register_if_non_empty( 'validation_' . $key, $value );
 		}
 
-		// Common error messages used in server-rendered field markup (these
-		// are NOT part of the JS-validation dynamic_messages bucket).
+		// Common strings rendered server-side in field markup that are NOT stored
+		// per-form (so they never reach a form package): JS-validation fallbacks
+		// and shared field defaults such as the dropdown's empty-state placeholder,
+		// which is only serialized into block markup when a site owner overrides it.
 		$common = [
-			'srfm_required_field' => 'This field is required.',
-			'srfm_unique_field'   => 'Value needs to be unique.',
-			'srfm_submit_error'   => 'There was an error trying to submit your form. Please try again.',
+			'srfm_required_field'       => 'This field is required.',
+			'srfm_unique_field'         => 'Value needs to be unique.',
+			'srfm_submit_error'         => 'There was an error trying to submit your form. Please try again.',
+			'srfm_dropdown_placeholder' => 'Select an option',
 		];
 		foreach ( $common as $key => $value ) {
 			$this->register_if_non_empty( 'validation_' . $key, $value );
@@ -227,7 +297,28 @@ class String_Collector {
 			return;
 		}
 
+		// Self-frame the package when called directly (not from collect()), so the
+		// block strings are still grouped + pruned. collect() leaves $active_package
+		// set, in which case we reuse its framing.
+		$standalone = null === $this->active_package;
+		if ( $standalone ) {
+			$provider                 = Multilingual_Manager::get_instance()->provider();
+			$this->packages_supported = $provider->supports_packages();
+			$this->active_package     = String_Translator::form_package( $form_id );
+			if ( $this->packages_supported ) {
+				$provider->start_package( $this->active_package );
+			}
+		}
+
+		$this->field_index = 0;
 		$this->walk_blocks_for_collection( $form_id, $blocks );
+
+		if ( $standalone ) {
+			if ( $this->packages_supported && is_array( $this->active_package ) ) {
+				Multilingual_Manager::get_instance()->provider()->finish_package( $this->active_package );
+			}
+			$this->active_package = null;
+		}
 	}
 
 	/**
@@ -247,26 +338,49 @@ class String_Collector {
 			$attrs      = isset( $block['attrs'] ) && is_array( $block['attrs'] ) ? $block['attrs'] : [];
 			$block_id   = isset( $attrs['block_id'] ) && is_string( $attrs['block_id'] ) ? $attrs['block_id'] : '';
 
-			if ( '' !== $block_id && isset( $attribute_map[ $block_name ] ) ) {
+			$has_attributes = '' !== $block_id && isset( $attribute_map[ $block_name ] );
+			$has_options    = '' !== $block_id && in_array( $block_name, $option_blocks, true ) && isset( $attrs['options'] ) && is_array( $attrs['options'] );
+
+			// Build the "Fields/<Type> #<n>" group path once per translatable field,
+			// so a field's label/placeholder/help/options nest together under one
+			// node in the Translation Editor. The block TYPE (not the user label) is
+			// used so the path can't be corrupted by '/' or ': ' in user content.
+			$field_group = '';
+			if ( $has_attributes || $has_options ) {
+				$this->field_index++;
+				$field_group = sprintf(
+					'%s/%s #%d',
+					__( 'Fields', 'sureforms' ),
+					String_Translator::block_type_label( $block_name ),
+					$this->field_index
+				);
+			}
+
+			if ( $has_attributes ) {
 				foreach ( $attribute_map[ $block_name ] as $attribute_key ) {
 					if ( ! isset( $attrs[ $attribute_key ] ) || ! is_string( $attrs[ $attribute_key ] ) ) {
 						continue;
 					}
-					$this->register_if_non_empty(
-						'form_' . $form_id . '_block_' . $block_id . '_' . $attribute_key,
-						$attrs[ $attribute_key ]
+					$this->register_form_string(
+						$form_id,
+						String_Translator::block_attribute_name( $block_id, $attribute_key ),
+						$attrs[ $attribute_key ],
+						$field_group . ': ' . $this->attribute_label( $attribute_key )
 					);
 				}
 			}
 
-			if ( '' !== $block_id && in_array( $block_name, $option_blocks, true ) && isset( $attrs['options'] ) && is_array( $attrs['options'] ) ) {
+			if ( $has_options ) {
 				foreach ( $attrs['options'] as $option_index => $option ) {
 					if ( ! is_array( $option ) || ! isset( $option['label'] ) || ! is_string( $option['label'] ) ) {
 						continue;
 					}
-					$this->register_if_non_empty(
-						'form_' . $form_id . '_block_' . $block_id . '_option_' . (int) $option_index . '_label',
-						$option['label']
+					$this->register_form_string(
+						$form_id,
+						String_Translator::block_option_name( $block_id, (int) $option_index ),
+						$option['label'],
+						/* translators: %d is the option number. */
+						$field_group . ': ' . sprintf( __( 'Option %d', 'sureforms' ), (int) $option_index + 1 )
 					);
 				}
 			}
@@ -303,5 +417,65 @@ class String_Collector {
 		}
 
 		Multilingual_Manager::get_instance()->provider()->register_string( $name, $value );
+	}
+
+	/**
+	 * Register a per-form string into the active String Package, skipping empties.
+	 *
+	 * Falls back to a flat String-Translation string (legacy `form_{id}_{name}`
+	 * name) when the provider can't do packages, matching
+	 * {@see String_Translator::dispatch_package()} so registration and render stay
+	 * in lockstep on either path.
+	 *
+	 * @param int    $form_id Form post ID.
+	 * @param string $name    Package-scoped string name (see String_Translator *_name() builders).
+	 * @param string $value   Original string value.
+	 * @param string $title   Human-readable label shown in the Translation Editor.
+	 * @param string $type    Editor field type: LINE, AREA or VISUAL.
+	 * @since x.x.x
+	 * @return void
+	 */
+	private function register_form_string( int $form_id, string $name, string $value, string $title = '', string $type = 'LINE' ): void {
+		if ( ! is_string( $value ) || '' === trim( $value ) ) {
+			return;
+		}
+
+		$provider = Multilingual_Manager::get_instance()->provider();
+
+		if ( $this->packages_supported && is_array( $this->active_package ) ) {
+			$provider->register_package_string( $this->active_package, $name, $value, $title, $type );
+			return;
+		}
+
+		// Legacy / non-package fallback: flat string with the form-scoped name.
+		$provider->register_string( 'form_' . $form_id . '_' . $name, $value );
+	}
+
+	/**
+	 * Human-readable label for a block attribute, shown in the Translation Editor.
+	 *
+	 * @param string $attribute Block attribute key.
+	 * @since x.x.x
+	 * @return string
+	 */
+	private function attribute_label( string $attribute ): string {
+		$labels = [
+			'label'              => __( 'Label', 'sureforms' ),
+			'placeholder'        => __( 'Placeholder', 'sureforms' ),
+			'help'               => __( 'Help text', 'sureforms' ),
+			'errorMsg'           => __( 'Error message', 'sureforms' ),
+			'defaultValue'       => __( 'Default value', 'sureforms' ),
+			'duplicateMsg'       => __( 'Duplicate message', 'sureforms' ),
+			'confirmLabel'       => __( 'Confirm label', 'sureforms' ),
+			'prefix'             => __( 'Prefix', 'sureforms' ),
+			'suffix'             => __( 'Suffix', 'sureforms' ),
+			'buttonText'         => __( 'Button text', 'sureforms' ),
+			'amountLabel'        => __( 'Amount label', 'sureforms' ),
+			'paymentDescription' => __( 'Payment description', 'sureforms' ),
+			'oneTimeLabel'       => __( 'One-time label', 'sureforms' ),
+			'subscriptionLabel'  => __( 'Subscription label', 'sureforms' ),
+		];
+
+		return $labels[ $attribute ] ?? $attribute;
 	}
 }

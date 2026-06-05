@@ -299,4 +299,81 @@ class WPML_Provider implements Provider {
 		}
 		return '';
 	}
+
+	/**
+	 * Whether WPML's String Package API is available.
+	 *
+	 * Package translation is provided by the WPML String Translation plugin's
+	 * package module. Gate on the `wpml_register_string` action so we degrade
+	 * gracefully (callers fall back to flat strings) if only WPML core is active.
+	 *
+	 * @since x.x.x
+	 * @return bool
+	 */
+	public function supports_packages(): bool {
+		return $this->is_active() && has_action( 'wpml_register_string' );
+	}
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * @param array<string,string> $package Package descriptor (kind, name, title, edit_link).
+	 * @since x.x.x
+	 * @return void
+	 */
+	public function start_package( array $package ): void {
+		if ( ! $this->supports_packages() ) {
+			return;
+		}
+		do_action( 'wpml_start_string_package_registration', $package );
+	}
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * @param array<string,string> $package Package descriptor.
+	 * @since x.x.x
+	 * @return void
+	 */
+	public function finish_package( array $package ): void {
+		if ( ! $this->supports_packages() ) {
+			return;
+		}
+		do_action( 'wpml_delete_unused_package_strings', $package );
+	}
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * @param array<string,string> $package Package descriptor.
+	 * @param string               $name    String identifier within the package.
+	 * @param string               $value   Original value.
+	 * @param string               $title   Editor label.
+	 * @param string               $type    Editor field type (LINE|AREA|VISUAL).
+	 * @since x.x.x
+	 * @return void
+	 */
+	public function register_package_string( array $package, string $name, string $value, string $title = '', string $type = 'LINE' ): void {
+		if ( ! $this->supports_packages() ) {
+			return;
+		}
+		do_action( 'wpml_register_string', $value, $name, $package, '' !== $title ? $title : $name, $type );
+	}
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * @param array<string,string> $package Package descriptor.
+	 * @param string               $name    String identifier within the package.
+	 * @param string               $value   Original value (fallback).
+	 * @since x.x.x
+	 * @return string
+	 */
+	public function translate_package_string( array $package, string $name, string $value ): string {
+		if ( ! $this->supports_packages() ) {
+			return $value;
+		}
+		$translated = apply_filters( 'wpml_translate_string', $value, $name, $package );
+		return is_string( $translated ) ? $translated : $value;
+	}
 }

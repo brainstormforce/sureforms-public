@@ -45,6 +45,27 @@ class Srfm_Stub_Multilingual_Provider implements Provider {
 	public function render_language_switcher(): string {
 		return '';
 	}
+
+	public function supports_packages(): bool {
+		return false;
+	}
+
+	public function start_package( array $package ): void {
+		unset( $package );
+	}
+
+	public function finish_package( array $package ): void {
+		unset( $package );
+	}
+
+	public function register_package_string( array $package, string $name, string $value, string $title = '', string $type = 'LINE' ): void {
+		unset( $package, $name, $value, $title, $type );
+	}
+
+	public function translate_package_string( array $package, string $name, string $value ): string {
+		unset( $package, $name );
+		return $value;
+	}
 }
 
 /**
