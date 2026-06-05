@@ -162,14 +162,7 @@ const Edit = ( props ) => {
 		{
 			id: 'color-picker',
 			component: ! isSureFormsProActive ? (
-				<div
-					style={ {
-						display: 'flex',
-						alignItems: 'flex-start',
-						justifyContent: 'space-between',
-						gap: '8px',
-					} }
-				>
+				<div className="srfm-color-picker-nudge">
 					<ToggleControl
 						label={ __( 'Color Picker', 'sureforms' ) }
 						checked={ false }
