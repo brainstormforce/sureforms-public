@@ -74,4 +74,24 @@ class Test_Provider extends TestCase {
 	public function test_render_language_switcher() {
 		$this->assert_signature( 'render_language_switcher', 0, 'string' );
 	}
+
+	public function test_supports_packages() {
+		$this->assert_signature( 'supports_packages', 0, 'bool' );
+	}
+
+	public function test_start_package() {
+		$this->assert_signature( 'start_package', 1, 'void' );
+	}
+
+	public function test_finish_package() {
+		$this->assert_signature( 'finish_package', 1, 'void' );
+	}
+
+	public function test_register_package_string() {
+		$this->assert_signature( 'register_package_string', 5, 'void' );
+	}
+
+	public function test_translate_package_string() {
+		$this->assert_signature( 'translate_package_string', 3, 'string' );
+	}
 }

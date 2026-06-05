@@ -242,6 +242,156 @@ class Test_Wpml_Provider extends TestCase {
 		$this->assertIsArray( $empty );
 	}
 
+	public function test_supports_packages() {
+		// Inactive provider never supports packages.
+		$this->assertFalse( $this->provider->supports_packages() );
+
+		$active = new Srfm_Active_Wpml_Provider();
+
+		// Active but without the WPML String Package action -> no package support.
+		$this->assertFalse( $active->supports_packages() );
+
+		// Active AND the package action present -> supports packages.
+		$noop = static function () {};
+		add_action( 'wpml_register_string', $noop );
+		$this->assertTrue( $active->supports_packages() );
+		remove_action( 'wpml_register_string', $noop );
+	}
+
+	public function test_start_package() {
+		$noop = static function () {};
+		add_action( 'wpml_register_string', $noop );
+
+		$captured = [];
+		$spy      = static function ( $package ) use ( &$captured ) {
+			$captured[] = $package;
+		};
+		add_action( 'wpml_start_string_package_registration', $spy, 10, 1 );
+
+		$provider = new Srfm_Active_Wpml_Provider();
+		$package  = [
+			'kind' => 'SureForms Form',
+			'name' => '7',
+		];
+		$provider->start_package( $package );
+
+		remove_action( 'wpml_start_string_package_registration', $spy, 10 );
+		remove_action( 'wpml_register_string', $noop );
+
+		$this->assertCount( 1, $captured );
+		$this->assertSame( $package, $captured[0] );
+	}
+
+	public function test_finish_package() {
+		$noop = static function () {};
+		add_action( 'wpml_register_string', $noop );
+
+		$captured = [];
+		$spy      = static function ( $package ) use ( &$captured ) {
+			$captured[] = $package;
+		};
+		add_action( 'wpml_delete_unused_package_strings', $spy, 10, 1 );
+
+		$provider = new Srfm_Active_Wpml_Provider();
+		$package  = [
+			'kind' => 'SureForms Form',
+			'name' => '7',
+		];
+		$provider->finish_package( $package );
+
+		remove_action( 'wpml_delete_unused_package_strings', $spy, 10 );
+		remove_action( 'wpml_register_string', $noop );
+
+		$this->assertCount( 1, $captured );
+		$this->assertSame( $package, $captured[0] );
+	}
+
+	public function test_register_package_string() {
+		$captured = [];
+		$spy      = static function ( $value, $name, $package, $title, $type ) use ( &$captured ) {
+			$captured[] = [ $value, $name, $package, $title, $type ];
+		};
+		add_action( 'wpml_register_string', $spy, 10, 5 );
+
+		$provider = new Srfm_Active_Wpml_Provider();
+		$package  = [
+			'kind' => 'SureForms Form',
+			'name' => '7',
+		];
+		$provider->register_package_string( $package, 'submit_button', 'Send' );
+
+		remove_action( 'wpml_register_string', $spy, 10 );
+
+		$this->assertCount( 1, $captured );
+		$this->assertSame( 'Send', $captured[0][0] );
+		$this->assertSame( 'submit_button', $captured[0][1] );
+		$this->assertSame( $package, $captured[0][2] );
+		// Title defaults to the name when not supplied.
+		$this->assertSame( 'submit_button', $captured[0][3] );
+		$this->assertSame( 'LINE', $captured[0][4] );
+	}
+
+	public function test_register_package_string_does_nothing_without_package_support() {
+		$before = did_action( 'wpml_register_string' );
+
+		$provider = new Srfm_Active_Wpml_Provider();
+		$provider->register_package_string(
+			[
+				'kind' => 'SureForms Form',
+				'name' => '7',
+			],
+			'submit_button',
+			'Send'
+		);
+
+		$after = did_action( 'wpml_register_string' );
+
+		// No package action registered -> supports_packages() is false -> no-op.
+		$this->assertSame( $before, $after );
+	}
+
+	public function test_translate_package_string() {
+		$noop = static function () {};
+		add_action( 'wpml_register_string', $noop );
+
+		$filter = static function ( $value ) {
+			return is_string( $value ) ? strtoupper( $value ) : $value;
+		};
+		add_filter( 'wpml_translate_string', $filter, 10, 1 );
+
+		$provider = new Srfm_Active_Wpml_Provider();
+		$result   = $provider->translate_package_string(
+			[
+				'kind' => 'SureForms Form',
+				'name' => '7',
+			],
+			'submit_button',
+			'send'
+		);
+
+		remove_filter( 'wpml_translate_string', $filter, 10 );
+		remove_action( 'wpml_register_string', $noop );
+
+		$this->assertSame( 'SEND', $result );
+	}
+
+	public function test_translate_package_string_returns_original_without_package_support() {
+		$provider = new Srfm_Active_Wpml_Provider();
+
+		// No package action registered -> supports_packages() is false -> returns input.
+		$this->assertSame(
+			'Send',
+			$provider->translate_package_string(
+				[
+					'kind' => 'SureForms Form',
+					'name' => '7',
+				],
+				'submit_button',
+				'Send'
+			)
+		);
+	}
+
 	public function test_guess_current_url() {
 		$active = new Srfm_Active_Wpml_Provider();
 		$method = new \ReflectionMethod( $active, 'guess_current_url' );

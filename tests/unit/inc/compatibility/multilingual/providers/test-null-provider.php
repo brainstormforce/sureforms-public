@@ -82,4 +82,69 @@ class Test_Null_Provider extends TestCase {
 		$result = $this->provider->render_language_switcher();
 		$this->assertSame( '', $result );
 	}
+
+	public function test_supports_packages() {
+		$this->assertFalse( $this->provider->supports_packages() );
+	}
+
+	public function test_start_package() {
+		$before = did_action( 'wpml_start_string_package_registration' );
+
+		$this->provider->start_package(
+			[
+				'kind' => 'SureForms Form',
+				'name' => '1',
+			]
+		);
+
+		$after = did_action( 'wpml_start_string_package_registration' );
+
+		// No-op: no actions should have fired.
+		$this->assertSame( $before, $after );
+	}
+
+	public function test_finish_package() {
+		$before = did_action( 'wpml_delete_unused_package_strings' );
+
+		$this->provider->finish_package(
+			[
+				'kind' => 'SureForms Form',
+				'name' => '1',
+			]
+		);
+
+		$after = did_action( 'wpml_delete_unused_package_strings' );
+
+		// No-op: no actions should have fired.
+		$this->assertSame( $before, $after );
+	}
+
+	public function test_register_package_string() {
+		$before = did_action( 'wpml_register_string' );
+
+		$this->provider->register_package_string(
+			[
+				'kind' => 'SureForms Form',
+				'name' => '1',
+			],
+			'submit_button',
+			'Send'
+		);
+
+		$after = did_action( 'wpml_register_string' );
+
+		// No-op: no actions should have fired.
+		$this->assertSame( $before, $after );
+	}
+
+	public function test_translate_package_string() {
+		$package = [
+			'kind' => 'SureForms Form',
+			'name' => '1',
+		];
+
+		// Pass-through: returns the supplied value unchanged.
+		$this->assertSame( 'Send', $this->provider->translate_package_string( $package, 'submit_button', 'Send' ) );
+		$this->assertSame( '', $this->provider->translate_package_string( $package, 'submit_button', '' ) );
+	}
 }

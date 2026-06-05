@@ -619,4 +619,51 @@ class Test_String_Translator extends TestCase {
 		$this->assertSame( String_Translator::block_attribute_name( 'abc123', 'label' ), $this->stub->package_calls[0]['name'] );
 		$this->assertSame( '42', $this->stub->package_calls[0]['package']['name'] );
 	}
+
+	public function test_block_type_label() {
+		// Curated label from the built-in map.
+		$this->assertSame( 'Email', String_Translator::block_type_label( 'srfm/email' ) );
+
+		// Unknown block derives a Title-Cased label from the slug.
+		$this->assertSame( 'Date Time Picker', String_Translator::block_type_label( 'srfm/date-time-picker' ) );
+	}
+
+	public function test_form_package() {
+		$package = String_Translator::form_package( 99 );
+
+		$this->assertArrayHasKey( 'kind', $package );
+		$this->assertArrayHasKey( 'name', $package );
+		$this->assertArrayHasKey( 'title', $package );
+		$this->assertSame( 'SureForms Form', $package['kind'] );
+		$this->assertSame( String_Translator::PACKAGE_KIND, $package['kind'] );
+		$this->assertSame( '99', $package['name'] );
+	}
+
+	public function test_submit_button_name() {
+		$this->assertSame( 'submit_button', String_Translator::submit_button_name() );
+	}
+
+	public function test_confirmation_name() {
+		$this->assertSame( 'confirmation_0_message', String_Translator::confirmation_name( 0 ) );
+		$this->assertSame( 'confirmation_3_message', String_Translator::confirmation_name( 3 ) );
+	}
+
+	public function test_notification_name() {
+		$this->assertSame( 'notification_0_subject', String_Translator::notification_name( 0, 'subject' ) );
+		$this->assertSame( 'notification_2_body', String_Translator::notification_name( 2, 'body' ) );
+	}
+
+	public function test_restriction_name() {
+		$this->assertSame( 'restriction_message', String_Translator::restriction_name() );
+	}
+
+	public function test_block_attribute_name() {
+		$this->assertSame( 'block_abc123_label', String_Translator::block_attribute_name( 'abc123', 'label' ) );
+		$this->assertSame( 'block_def456_placeholder', String_Translator::block_attribute_name( 'def456', 'placeholder' ) );
+	}
+
+	public function test_block_option_name() {
+		$this->assertSame( 'block_abc123_option_0_label', String_Translator::block_option_name( 'abc123', 0 ) );
+		$this->assertSame( 'block_def456_option_2_label', String_Translator::block_option_name( 'def456', 2 ) );
+	}
 }
