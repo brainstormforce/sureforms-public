@@ -585,32 +585,11 @@ class Form_Submit {
 			$browser_name = sanitize_text_field( $browser->getBrowser() );
 			$device_name  = sanitize_text_field( $browser->getPlatform() );
 
-			// Capture submission page URL server-side from the Referer header. The
-			// stored value is rebuilt from parsed components so a non-browser client
-			// cannot inject attacker-controlled bits a real browser would never send
-			// (userinfo, fragment) or mismatch the legitimate origin's port. Anything
-			// not same-origin http(s) is stored as empty.
-			$referer = isset( $_SERVER['HTTP_REFERER'] )
-				? sanitize_text_field( wp_unslash( $_SERVER['HTTP_REFERER'] ) )
-				: '';
-			if ( '' !== $referer && strlen( $referer ) <= 2048 ) {
-				$parts      = wp_parse_url( $referer );
-				$home_parts = wp_parse_url( home_url() );
-				if (
-					is_array( $parts )
-					&& is_array( $home_parts )
-					&& isset( $parts['scheme'], $parts['host'], $home_parts['host'] )
-					&& in_array( strtolower( $parts['scheme'] ), [ 'http', 'https' ], true )
-					&& 0 === strcasecmp( (string) $parts['host'], (string) $home_parts['host'] )
-					&& ( $parts['port'] ?? null ) === ( $home_parts['port'] ?? null )
-				) {
-					$clean          = $parts['scheme'] . '://' . $parts['host']
-						. ( isset( $parts['port'] ) ? ':' . $parts['port'] : '' )
-						. ( $parts['path'] ?? '' )
-						. ( isset( $parts['query'] ) ? '?' . $parts['query'] : '' );
-					$submission_url = esc_url_raw( $clean, [ 'http', 'https' ] );
-				}
-			}
+			// Capture submission page URL server-side from the Referer header.
+			// esc_url_raw() (not sanitize_text_field) preserves percent-encoded
+			// non-ASCII slugs; normalize_submission_url() then validates same-origin.
+			$referer        = isset( $_SERVER['HTTP_REFERER'] ) ? esc_url_raw( wp_unslash( $_SERVER['HTTP_REFERER'] ) ) : '';
+			$submission_url = $this->normalize_submission_url( $referer );
 		}
 
 		$form_markup = get_the_content( null, false, Helper::get_integer_value( $form_data['form-id'] ) );
@@ -1248,6 +1227,53 @@ class Form_Submit {
 			'log_message' => $detail_message, // This variable is used for logging purposes, such as displaying detailed error information in the console on the front end.
 			'message'     => $message,
 		];
+	}
+
+	/**
+	 * Sanitise and validate a Referer into a storable submission URL.
+	 *
+	 * The value is rebuilt from parsed components so a non-browser client cannot
+	 * inject bits a real browser would never send (userinfo, fragment) or mismatch
+	 * the legitimate origin's port. Anything that is not a same-origin http(s) URL,
+	 * or is longer than 2048 chars, is rejected and returns an empty string.
+	 *
+	 * Uses esc_url_raw() rather than sanitize_text_field(): the latter strips
+	 * percent-encoded octets (`%E0%A4...`), which mangles the URLs of translated
+	 * pages whose slugs contain non-ASCII characters (e.g. WPML Hindi/Arabic
+	 * permalinks) down to bare hyphens. esc_url_raw() preserves the percent-encoding
+	 * so the recorded submission URL stays accurate.
+	 *
+	 * @param string $referer Raw (unslashed) Referer header value.
+	 * @since x.x.x
+	 * @return string Same-origin http(s) URL, or empty string when invalid.
+	 */
+	protected function normalize_submission_url( string $referer ): string {
+		$referer = esc_url_raw( $referer );
+
+		if ( '' === $referer || strlen( $referer ) > 2048 ) {
+			return '';
+		}
+
+		$parts      = wp_parse_url( $referer );
+		$home_parts = wp_parse_url( home_url() );
+
+		if (
+			! is_array( $parts )
+			|| ! is_array( $home_parts )
+			|| ! isset( $parts['scheme'], $parts['host'], $home_parts['host'] )
+			|| ! in_array( strtolower( $parts['scheme'] ), [ 'http', 'https' ], true )
+			|| 0 !== strcasecmp( (string) $parts['host'], (string) $home_parts['host'] )
+			|| ( $parts['port'] ?? null ) !== ( $home_parts['port'] ?? null )
+		) {
+			return '';
+		}
+
+		$clean = $parts['scheme'] . '://' . $parts['host']
+			. ( isset( $parts['port'] ) ? ':' . $parts['port'] : '' )
+			. ( $parts['path'] ?? '' )
+			. ( isset( $parts['query'] ) ? '?' . $parts['query'] : '' );
+
+		return esc_url_raw( $clean, [ 'http', 'https' ] );
 	}
 
 	/**

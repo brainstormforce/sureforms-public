@@ -754,4 +754,59 @@ class Test_Form_Submit extends TestCase {
 
 		remove_filter( 'wpml_active_languages', $listener );
 	}
+
+	/**
+	 * Regression for the WPML permalink bug: a same-origin referer with a
+	 * percent-encoded (non-ASCII) slug must keep its octets, NOT be collapsed to
+	 * hyphens the way sanitize_text_field() did.
+	 */
+	public function test_normalize_submission_url_preserves_multibyte_percent_encoding() {
+		$home = home_url();
+		$path = '/' . rawurlencode( 'परीक्षण' ) . '/';
+		$url  = $home . $path;
+
+		$result = $this->call_private_method( $this->form_submit, 'normalize_submission_url', [ $url ] );
+
+		$this->assertStringContainsString( '%E0%A4', $result, 'Percent-encoded octets must be preserved.' );
+		$this->assertStringNotContainsString( '--', $result, 'Slug must not collapse to bare hyphens.' );
+	}
+
+	/**
+	 * normalize_submission_url() rejects cross-origin, non-http(s) and overlong
+	 * referers, returning an empty string.
+	 */
+	public function test_normalize_submission_url_rejects_invalid_referers() {
+		// Cross-origin.
+		$this->assertSame(
+			'',
+			$this->call_private_method( $this->form_submit, 'normalize_submission_url', [ 'https://evil.example.com/x/' ] )
+		);
+		// Non-http scheme.
+		$this->assertSame(
+			'',
+			$this->call_private_method( $this->form_submit, 'normalize_submission_url', [ 'javascript:alert(1)' ] )
+		);
+		// Empty.
+		$this->assertSame(
+			'',
+			$this->call_private_method( $this->form_submit, 'normalize_submission_url', [ '' ] )
+		);
+		// Overlong (>2048).
+		$this->assertSame(
+			'',
+			$this->call_private_method( $this->form_submit, 'normalize_submission_url', [ home_url( '/' . str_repeat( 'a', 2100 ) ) ] )
+		);
+	}
+
+	/**
+	 * normalize_submission_url() keeps a legitimate same-origin URL and drops the
+	 * fragment/userinfo by rebuilding from parsed parts.
+	 */
+	public function test_normalize_submission_url_accepts_same_origin_and_strips_fragment() {
+		$result = $this->call_private_method( $this->form_submit, 'normalize_submission_url', [ home_url( '/form/6/?lang=hi#frag' ) ] );
+
+		$this->assertStringContainsString( '/form/6/', $result );
+		$this->assertStringContainsString( 'lang=hi', $result );
+		$this->assertStringNotContainsString( '#frag', $result, 'Fragment must be dropped.' );
+	}
 }
