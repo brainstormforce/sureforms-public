@@ -13,6 +13,7 @@ import {
 	EmailDelivery,
 	PremiumFeatures,
 	UserDetails,
+	ImportForms,
 	Done,
 } from '../onboarding';
 import '../tw-base.scss';
@@ -40,6 +41,7 @@ const APP = () => {
 							element={ <PremiumFeatures /> }
 						/>
 						<Route path="user-details" element={ <UserDetails /> } />
+						<Route path="import-forms" element={ <ImportForms /> } />
 						<Route path="done" element={ <Done /> } />
 					</Route>
 					<Route
@@ -70,6 +72,7 @@ const APP = () => {
 						element={ <PremiumFeatures /> }
 					/>
 					<Route path="user-details" element={ <UserDetails /> } />
+					<Route path="import-forms" element={ <ImportForms /> } />
 					<Route path="done" element={ <Done /> } />
 				</Route>
 				<Route path="*" element={ <Dashboard /> } />

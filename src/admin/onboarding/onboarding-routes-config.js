@@ -16,6 +16,9 @@ const ONBOARDING_ROUTES_CONFIG = [
 		url: '/onboarding/user-details',
 	},
 	{
+		url: '/onboarding/import-forms',
+	},
+	{
 		url: '/onboarding/done',
 	},
 ];
