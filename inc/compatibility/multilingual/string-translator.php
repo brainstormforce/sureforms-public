@@ -51,6 +51,13 @@ class String_Translator {
 	public const DOMAIN = 'sureforms';
 
 	/**
+	 * WPML "kind" label for SureForms form string packages.
+	 *
+	 * @since x.x.x
+	 */
+	public const PACKAGE_KIND = 'SureForms Form';
+
+	/**
 	 * Map of SureForms block name → translatable scalar attribute keys.
 	 *
 	 * Keys correspond to the `name` field in each block's `block.json`. Values
@@ -170,13 +177,6 @@ class String_Translator {
 		$slug = str_replace( '-', ' ', $slug );
 		return '' !== $slug ? ucwords( $slug ) : __( 'Field', 'sureforms' );
 	}
-
-	/**
-	 * WPML "kind" label for SureForms form string packages.
-	 *
-	 * @since x.x.x
-	 */
-	public const PACKAGE_KIND = 'SureForms Form';
 
 	/**
 	 * Build the string-package descriptor for a form.
