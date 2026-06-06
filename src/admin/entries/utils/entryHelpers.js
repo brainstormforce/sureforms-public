@@ -108,6 +108,10 @@ export const transformEntry = ( entry, formsMap = {} ) => {
 		statusLabel: getStatusLabel( entry.status ),
 		firstField: getFirstFieldValue( entry.form_data ),
 		dateTime: formatEntryListDate( entry.created_at ),
+		language:
+			typeof entry.language === 'string' && entry.language !== ''
+				? entry.language.toUpperCase()
+				: '',
 		rawData: entry, // Keep original data for reference
 	};
 };
@@ -131,6 +135,11 @@ export const transformEntryDetail = ( entryDetail ) => {
 		status: entryDetail.status,
 		statusLabel: getStatusLabel( entryDetail.status ),
 		createdAt: entryDetail.created_at,
+		language:
+			typeof entryDetail.language === 'string' &&
+			entryDetail.language !== ''
+				? entryDetail.language.toUpperCase()
+				: '',
 		formData: entryDetail.form_data || [],
 		formContent: entryDetail.form_content || [],
 		submissionInfo: {

@@ -1,0 +1,32 @@
+<wpml-config>
+	<!--
+		SureForms WPML Configuration.
+
+		Tells WPML which SureForms structures are translatable.
+
+		Design principles:
+		1. The `sureforms_form` CPT is NOT translatable — we ship ONE form per
+		   `post_id` and translate its strings via WPML String Translation.
+		   This keeps entries unified on a single form regardless of language.
+		2. Block-attribute strings (labels, placeholders, help, errorMsg, option
+		   labels, etc.) are NOT declared here. They are registered
+		   programmatically at form-save time by String_Collector using a
+		   per-form naming scheme (`form_{form_id}_block_{block_id}_{attribute}`)
+		   so each form's strings stay grouped together in WPML's String
+		   Translation UI rather than appearing as flat per-block-type entries.
+		3. ALL form-level meta — submit button text, notifications, confirmation
+		   messages and the restriction message — is registered programmatically by
+		   String_Collector under a per-form naming scheme (e.g. `form_{form_id}_submit_button`)
+		   rather than via `<custom-fields>`. This keeps every form's strings grouped
+		   together in WPML's String Translation UI, avoids WPML's nested-array
+		   <custom-fields-texts> quirks, and prevents a duplicate/dead declaration
+		   competing with the programmatic registration at render time.
+
+		@since x.x.x
+	-->
+
+	<!-- Do NOT duplicate the SureForms form CPT per language. -->
+	<custom-types>
+		<custom-type translate="0">sureforms_form</custom-type>
+	</custom-types>
+</wpml-config>

@@ -312,6 +312,33 @@ class Test_Entries_Table extends TestCase {
 	}
 
 	/**
+	 * Test get_new_columns_definition includes the upgrade columns added across
+	 * SureForms versions, including the `language` column added for the WPML
+	 * compatibility work.
+	 *
+	 * @since x.x.x
+	 */
+	public function test_get_new_columns_definition() {
+		$new_columns = $this->entries_table->get_new_columns_definition();
+		$this->assertIsArray( $new_columns );
+		$this->assertNotEmpty( $new_columns );
+
+		$blob = implode( "\n", $new_columns );
+		// Columns added in earlier versions are still announced for sites upgrading from < 0.0.13.
+		$this->assertStringContainsString( 'type VARCHAR(20)', $blob );
+		$this->assertStringContainsString( 'extras LONGTEXT', $blob );
+		$this->assertStringContainsString( 'user_id BIGINT(20) UNSIGNED', $blob );
+		// Language column + composite index added by the multilingual feature.
+		$this->assertStringContainsString( 'language VARCHAR(20)', $blob );
+		$this->assertStringContainsString( 'INDEX idx_form_id_language (form_id, language)', $blob );
+		// The language column must NOT carry an `AFTER extras` clause: on a pre-0.0.13
+		// install upgrading straight to this version, `extras` is added in the SAME
+		// combined ALTER, and MySQL resolves `AFTER extras` against the pre-ALTER schema,
+		// failing the whole atomic ALTER with "Unknown column 'extras'".
+		$this->assertStringNotContainsString( 'language VARCHAR(20) AFTER', $blob );
+	}
+
+	/**
 	 * Test get_columns_to_rename has expected structure.
 	 */
 	public function test_get_columns_to_rename() {

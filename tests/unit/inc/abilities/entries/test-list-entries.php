@@ -103,5 +103,24 @@ class Test_List_Entries extends TestCase {
 		$this->assertContains( 'trash', $schema['properties']['status']['enum'] );
 	}
 
+	/**
+	 * Test that 'language' is an allowed orderby value (so the entries admin
+	 * UI can sort by submission language).
+	 */
+	public function test_orderby_enum_includes_language() {
+		$schema = $this->ability->get_input_schema();
+		$this->assertContains( 'language', $schema['properties']['orderby']['enum'] );
+	}
+
+	/**
+	 * Test that the per-entry output shape includes the 'language' key so the
+	 * React table can render a Language column.
+	 */
+	public function test_output_schema_entry_includes_language() {
+		$schema      = $this->ability->get_output_schema();
+		$entry_props = $schema['properties']['entries']['items']['properties'];
+		$this->assertArrayHasKey( 'language', $entry_props );
+		$this->assertSame( 'string', $entry_props['language']['type'] );
+	}
 
 }
