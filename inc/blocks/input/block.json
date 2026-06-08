@@ -5,7 +5,7 @@
 	"title": "Text",
 	"description": "Displays a SureForms Text Field",
 	"category": "sureforms",
-	"keywords": [ "text", "input", "custom", "field", "name" ],
+	"keywords": [ "text", "input", "custom", "field", "name", "color" ],
 	"textdomain": "sureforms",
 	"supports": {
 		"reusable": false,

@@ -24,6 +24,7 @@ import { FieldsPreview } from '../FieldsPreview.jsx';
 import { useErrMessage } from '@Blocks/util';
 import ConditionalLogic from '@Components/conditional-logic';
 import { attributeOptionsWithFilter, afterAttributePanelBody } from '@Components/hooks';
+import EditorPremiumBadge from '@Admin/components/EditorPremiumBadge';
 
 const Edit = ( props ) => {
 	const { clientId, attributes, setAttributes } = props;
@@ -63,6 +64,10 @@ const Edit = ( props ) => {
 		currentMessage: currentUniqueMessage,
 		setCurrentMessage: setCurrentUniqueMessage,
 	} = useErrMessage( 'srfm_input_block_unique_text', duplicateMsg );
+	const isSureFormsProActive =
+		srfm_block_data?.is_pro_active === true ||
+		srfm_block_data?.is_pro_active === 1 ||
+		srfm_block_data?.is_pro_active === '1';
 
 	// show the block preview on hover.
 	if ( preview ) {
@@ -154,7 +159,30 @@ const Edit = ( props ) => {
 			id: 'separator-1',
 			component: <div className="srfm-settings-separator" />,
 		},
-
+		{
+			id: 'color-picker',
+			component: ! isSureFormsProActive ? (
+				<div className="srfm-color-picker-nudge">
+					<ToggleControl
+						label={ __( 'Color Picker', 'sureforms' ) }
+						checked={ false }
+						disabled={ true }
+					/>
+					<EditorPremiumBadge
+						tooltipHeading={ __(
+							'Use Text Field as Color Picker',
+							'sureforms'
+						) }
+						tooltipContent={ __(
+							'Upgrade to the SureForms Pro Plan to use the Text field as a color picker.',
+							'sureforms'
+						) }
+						tooltipPosition={ 'bottom' }
+						utmMedium={ 'editor_blocks_text_color_picker' }
+					/>
+				</div>
+			) : null,
+		},
 		{
 			id: 'input-pattern',
 			component: (
