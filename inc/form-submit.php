@@ -1244,7 +1244,7 @@ class Form_Submit {
 	 * so the recorded submission URL stays accurate.
 	 *
 	 * @param string $referer Raw (unslashed) Referer header value.
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return string Same-origin http(s) URL, or empty string when invalid.
 	 */
 	protected function normalize_submission_url( string $referer ): string {
@@ -1285,7 +1285,7 @@ class Form_Submit {
 	 * support.
 	 *
 	 * @param string $language Language code to check (e.g. 'hi', 'de-AT').
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return bool True when the code is known, false otherwise.
 	 */
 	protected function is_known_language( string $language ): bool {

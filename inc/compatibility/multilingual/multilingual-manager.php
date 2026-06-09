@@ -6,7 +6,7 @@
  * no supported multilingual plugin is active, so call sites can stay free of conditionals.
  *
  * @package sureforms.
- * @since x.x.x
+ * @since 2.11.0
  */
 
 namespace SRFM\Inc\Compatibility\Multilingual;
@@ -26,7 +26,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Resolves the active multilingual provider (WPML for v1). Returns Null_Provider when
  * no supported multilingual plugin is active.
  *
- * @since x.x.x
+ * @since 2.11.0
  */
 class Multilingual_Manager {
 	use Get_Instance;
@@ -34,7 +34,7 @@ class Multilingual_Manager {
 	/**
 	 * Resolved provider instance.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @var Provider
 	 */
 	private $provider;
@@ -42,7 +42,7 @@ class Multilingual_Manager {
 	/**
 	 * Constructor. Resolves and caches the active multilingual provider.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 */
 	public function __construct() {
 		$this->provider = $this->resolve_provider();
@@ -51,7 +51,7 @@ class Multilingual_Manager {
 	/**
 	 * Get the resolved multilingual provider.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return Provider Active provider instance, or Null_Provider when none is available.
 	 */
 	public function provider(): Provider {
@@ -67,7 +67,7 @@ class Multilingual_Manager {
 	 *  3. The `srfm_multilingual_provider` filter may override the default with any
 	 *     {@see Provider} implementation; non-conforming values are ignored.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return Provider Resolved provider instance.
 	 */
 	protected function resolve_provider(): Provider {
@@ -81,7 +81,7 @@ class Multilingual_Manager {
 		 * Third parties can return their own {@see Provider} implementation to
 		 * replace SureForms' default resolution. Non-conforming return values are ignored.
 		 *
-		 * @since x.x.x
+		 * @since 2.11.0
 		 * @param Provider $provider The resolved provider instance.
 		 */
 		$filtered = apply_filters( 'srfm_multilingual_provider', $provider );

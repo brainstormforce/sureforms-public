@@ -316,7 +316,7 @@ class Test_Entries_Table extends TestCase {
 	 * SureForms versions, including the `language` column added for the WPML
 	 * compatibility work.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 */
 	public function test_get_new_columns_definition() {
 		$new_columns = $this->entries_table->get_new_columns_definition();

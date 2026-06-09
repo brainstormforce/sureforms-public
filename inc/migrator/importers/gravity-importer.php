@@ -17,7 +17,7 @@
  * field IDs (string form, can include dotted sub-IDs for sub-inputs).
  *
  * @package sureforms
- * @since   x.x.x
+ * @since   2.11.0
  */
 
 namespace SRFM\Inc\Migrator\Importers;
@@ -32,7 +32,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Gravity_Importer
  *
- * @since x.x.x
+ * @since 2.11.0
  */
 class Gravity_Importer extends Base_Migrator {
 	/**
@@ -118,7 +118,7 @@ class Gravity_Importer extends Base_Migrator {
 	/**
 	 * Set source identifiers.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 */
 	public function __construct() {
 		$this->key   = 'gravity';
@@ -128,7 +128,7 @@ class Gravity_Importer extends Base_Migrator {
 	/**
 	 * Whether Gravity Forms (any version since 2.0) is currently active.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @return bool
 	 */
@@ -141,7 +141,7 @@ class Gravity_Importer extends Base_Migrator {
 	 * types Free can render without Pro. Pro overlays the rest via the
 	 * `srfm_migrator_tag_to_template_map` filter.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @return array<string,string>
 	 */
@@ -164,7 +164,7 @@ class Gravity_Importer extends Base_Migrator {
 	 * Fetch all Gravity forms from the custom tables, gating on the
 	 * legacy / modern table-name split (pre-2.3 vs 2.3+).
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @return array<int,array<string,mixed>>
 	 */
@@ -204,7 +204,7 @@ class Gravity_Importer extends Base_Migrator {
 	/**
 	 * Return the Gravity form id from a source descriptor.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param array<string,mixed> $form Source descriptor.
 	 * @return int
@@ -216,7 +216,7 @@ class Gravity_Importer extends Base_Migrator {
 	/**
 	 * Return the form title for a source descriptor.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param array<string,mixed> $form Source descriptor.
 	 * @return string
@@ -229,7 +229,7 @@ class Gravity_Importer extends Base_Migrator {
 	/**
 	 * Parse `display_meta` and emit SureForms block markup for the form.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param array<string,mixed> $form Source descriptor.
 	 * @return string
@@ -250,7 +250,7 @@ class Gravity_Importer extends Base_Migrator {
 		/**
 		 * Filter parsed Gravity Forms `display_meta` before iteration.
 		 *
-		 * @since x.x.x
+		 * @since 2.11.0
 		 *
 		 * @param array<string,mixed> $display_meta Decoded form definition.
 		 * @param string              $key          Migrator source key (`gravity`).
@@ -278,7 +278,7 @@ class Gravity_Importer extends Base_Migrator {
 	 * Build SureForms post-meta payload — submit text, confirmations,
 	 * notifications, and the assembled conditional-logic blob.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param array<string,mixed> $form Source descriptor.
 	 * @return array<string,mixed>
@@ -312,7 +312,7 @@ class Gravity_Importer extends Base_Migrator {
 	 * `gf_form*`; earlier installs use `rg_form*`. We detect the schema
 	 * version via the `gf_database_version` option.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @return array{0:string,1:string} `[form_table, meta_table]`.
 	 */
@@ -331,7 +331,7 @@ class Gravity_Importer extends Base_Migrator {
 	 * PHP-serialized rows, then falls back to `json_decode()`. Mirrors
 	 * Gravity's own `GFFormsModel::unserialize()`.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param array<string,mixed> $form Source descriptor.
 	 * @return array<string,mixed>
@@ -358,7 +358,7 @@ class Gravity_Importer extends Base_Migrator {
 	/**
 	 * Translate one Gravity field array into SureForms block markup.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param array<string,mixed> $field Gravity field array.
 	 * @return string
@@ -403,7 +403,7 @@ class Gravity_Importer extends Base_Migrator {
 		/**
 		 * Filter the Gravity-field-type → template-method map.
 		 *
-		 * @since x.x.x
+		 * @since 2.11.0
 		 *
 		 * @param array<string,string> $map Gravity field type → method name.
 		 * @param string               $key Migrator source key (`gravity`).
@@ -452,7 +452,7 @@ class Gravity_Importer extends Base_Migrator {
 	/**
 	 * Build a SureForms block-args array from a Gravity field array.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param array<string,mixed> $field Gravity field.
 	 * @return array<string,mixed>
@@ -551,7 +551,7 @@ class Gravity_Importer extends Base_Migrator {
 	 * Translate Gravity's Name composite. Sub-input visibility is per-
 	 * `inputs[].isHidden`; we emit one `srfm/input` per visible sub.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param array<string,mixed> $field Name field.
 	 * @return string
@@ -611,7 +611,7 @@ class Gravity_Importer extends Base_Migrator {
 	 * Translate Gravity's Address composite. Routes to the Pro
 	 * `srfm/address` emitter via the `address` template-method.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param array<string,mixed> $field Address field.
 	 * @return string
@@ -633,7 +633,7 @@ class Gravity_Importer extends Base_Migrator {
 	 * string Gravity CL rules reference, so `convert_rule()` matches against
 	 * it directly without a re-key map.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param array<string,mixed> $field Source field.
 	 * @return array<string,mixed>
@@ -672,7 +672,7 @@ class Gravity_Importer extends Base_Migrator {
 	 * `srfm_migrator_block_template` filter, flag unsupported if no
 	 * subscriber answers.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param string              $method Template method name.
 	 * @param array<string,mixed> $args   Block args.
@@ -692,7 +692,7 @@ class Gravity_Importer extends Base_Migrator {
 	 * After emitting a block, capture its block_id + CL rules for later
 	 * meta-assembly.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param array<string,mixed> $field    Source field.
 	 * @param array<string,mixed> $args     Final block args.
@@ -715,7 +715,7 @@ class Gravity_Importer extends Base_Migrator {
 	/**
 	 * Extract the first `block_id` from a block markup string, or '' if none.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param string $markup Serialized block markup.
 	 * @return string
@@ -729,7 +729,7 @@ class Gravity_Importer extends Base_Migrator {
 	 * Split out of `capture_field_metadata()` so composite emitters (Name)
 	 * that register their own sub-input ids can still capture CL rules.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param array<string,mixed> $field Source field.
 	 * @return void
@@ -755,7 +755,7 @@ class Gravity_Importer extends Base_Migrator {
 	 * the parent field id (truncate at the first `.`) so the rule maps to the
 	 * composite block instead of being silently dropped.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param string $field_id Gravity field id (e.g. `1` or `1.3`).
 	 * @return string SureForms block_id, or '' if neither resolves.
@@ -774,7 +774,7 @@ class Gravity_Importer extends Base_Migrator {
 	 * Resolve a Gravity field id to its CL block-type bucket, with the same
 	 * dotted-sub-input → parent fallback as `resolve_block_id()`.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param string $field_id Gravity field id.
 	 * @return string Block-type bucket (defaults to `default`).
@@ -793,7 +793,7 @@ class Gravity_Importer extends Base_Migrator {
 	 * Return the parent field id of a dotted sub-input id (`1.3` → `1`), or ''
 	 * when the id has no dot.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param string $field_id Gravity field id.
 	 * @return string
@@ -806,7 +806,7 @@ class Gravity_Importer extends Base_Migrator {
 	/**
 	 * Coarse block-type bucket for SureForms' CL editor.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param string $type Gravity Forms type or template-method name.
 	 * @return string
@@ -835,7 +835,7 @@ class Gravity_Importer extends Base_Migrator {
 	 * SureForms AND group; `logicType=any` becomes a SureForms group of
 	 * one-rule subgroups (mirrors WPForms' rule shape).
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @return array<int,array<string,mixed>>
 	 */
@@ -877,7 +877,7 @@ class Gravity_Importer extends Base_Migrator {
 	/**
 	 * Convert one Gravity CL rule into the SureForms rule shape.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param array<string,mixed> $rule Gravity rule (`{fieldId, operator, value}`).
 	 * @return array<string,string>|null
@@ -920,7 +920,7 @@ class Gravity_Importer extends Base_Migrator {
 	 * operator maps; all others go through OPERATOR_MAP. Validity against the
 	 * bucket's allowed set is reconciled by `resolve_cl_bucket()` in the caller.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param string $gf_operator Gravity operator (e.g. `is`, `contains`).
 	 * @param string $bucket      Resolved block-type bucket.
@@ -940,7 +940,7 @@ class Gravity_Importer extends Base_Migrator {
 	 * Translate Gravity's notifications JSON column into SureForms'
 	 * `_srfm_email_notification` shape — first notification wins.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param array<string,mixed> $settings Captured form_settings.
 	 * @return array<int,array<string,mixed>>
@@ -974,7 +974,7 @@ class Gravity_Importer extends Base_Migrator {
 	/**
 	 * Translate Gravity's confirmations JSON column — first wins.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param array<string,mixed> $settings Captured form_settings.
 	 * @return array<int,array<string,mixed>>
@@ -1001,7 +1001,7 @@ class Gravity_Importer extends Base_Migrator {
 	/**
 	 * Field types Gravity stores but SureForms has no peer for.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @return array<int,string>
 	 */
@@ -1041,7 +1041,7 @@ class Gravity_Importer extends Base_Migrator {
 	 * Gravity formats: `mdy` / `dmy` / `dmy_dash` / `dmy_dot` /
 	 * `ymd_slash` / `ymd_dash` / `ymd_dot`.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param string $gf_format Gravity Forms date format slug.
 	 * @return string SureForms date format string.
@@ -1062,7 +1062,7 @@ class Gravity_Importer extends Base_Migrator {
 	/**
 	 * Coerce a mixed array entry to string. PHPStan level 9 friendly.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param array<string,mixed> $arr     Source array.
 	 * @param string              $key     Key.

@@ -6,7 +6,7 @@
  * form-level metadata strings through the active multilingual provider.
  *
  * @package sureforms.
- * @since x.x.x
+ * @since 2.11.0
  */
 
 namespace SRFM\Inc\Compatibility\Multilingual;
@@ -38,7 +38,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * `validation_{key}`) since they are not per-form. When the provider can't do
  * packages, per-form strings fall back to the legacy flat name `form_{id}_{name}`.
  *
- * @since x.x.x
+ * @since 2.11.0
  */
 class String_Translator {
 	use Get_Instance;
@@ -46,14 +46,14 @@ class String_Translator {
 	/**
 	 * Translation domain used for every SureForms string.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 */
 	public const DOMAIN = 'sureforms';
 
 	/**
 	 * WPML "kind" label for SureForms form string packages.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 */
 	public const PACKAGE_KIND = 'SureForms Form';
 
@@ -68,7 +68,7 @@ class String_Translator {
 	 * scalar attributes here; their `options[*].label` strings are walked
 	 * separately by {@see translatable_option_blocks()}.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return array<string, array<int, string>>
 	 */
 	public static function translatable_block_attributes(): array {
@@ -95,7 +95,7 @@ class String_Translator {
 		 * (translation at render) read this method, so a single filter keeps the two
 		 * sides in lockstep. Pro field blocks register their translatable attributes here.
 		 *
-		 * @since x.x.x
+		 * @since 2.11.0
 		 * @param array<string, array<int, string>> $map Block name → attribute keys.
 		 */
 		$filtered = apply_filters( 'srfm_translatable_block_attributes', $map );
@@ -106,7 +106,7 @@ class String_Translator {
 	/**
 	 * Block names whose `options` array contains translatable `label` entries.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return array<int, string>
 	 */
 	public static function translatable_option_blocks(): array {
@@ -119,7 +119,7 @@ class String_Translator {
 		 * (translation), so a single filter keeps the two sides in lockstep. Pro
 		 * option-bearing blocks opt into option-label translation here.
 		 *
-		 * @since x.x.x
+		 * @since 2.11.0
 		 * @param array<int, string> $blocks Block names with translatable option labels.
 		 */
 		$filtered = apply_filters( 'srfm_translatable_option_blocks', $blocks );
@@ -137,7 +137,7 @@ class String_Translator {
 	 * into a field label would otherwise corrupt the grouping. Block types are
 	 * plugin-controlled and safe.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @param string $block_name Full block name, e.g. `srfm/email`.
 	 * @return string Friendly type label, e.g. `Email`.
 	 */
@@ -162,7 +162,7 @@ class String_Translator {
 		 * Filters the block-name → field-type label map used to group a field's
 		 * strings in the Translation Editor. Pro field blocks add their labels here.
 		 *
-		 * @since x.x.x
+		 * @since 2.11.0
 		 * @param array<string, string> $labels Block name → friendly type label.
 		 */
 		$labels = apply_filters( 'srfm_block_type_labels', $labels );
@@ -188,7 +188,7 @@ class String_Translator {
 	 * sides in lockstep.
 	 *
 	 * @param int $form_id Form post ID.
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return array<string,string> { kind, name, title, edit_link }.
 	 */
 	public static function form_package( int $form_id ): array {
@@ -213,7 +213,7 @@ class String_Translator {
 	 * package (which is itself scoped to the form), so they carry no `form_{id}_`
 	 * prefix; the legacy flat-string fallback re-adds it in {@see dispatch_package()}.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return string
 	 */
 	public static function submit_button_name(): string {
@@ -224,7 +224,7 @@ class String_Translator {
 	 * Package-scoped confirmation-message string name.
 	 *
 	 * @param int $index Confirmation index.
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return string
 	 */
 	public static function confirmation_name( int $index ): string {
@@ -236,7 +236,7 @@ class String_Translator {
 	 *
 	 * @param int    $index Notification index.
 	 * @param string $field Notification field (subject|body|from_name|reply_to).
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return string
 	 */
 	public static function notification_name( int $index, string $field ): string {
@@ -246,7 +246,7 @@ class String_Translator {
 	/**
 	 * Package-scoped restriction-message string name.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return string
 	 */
 	public static function restriction_name(): string {
@@ -258,7 +258,7 @@ class String_Translator {
 	 *
 	 * @param string $block_id  Stable block identifier.
 	 * @param string $attribute Attribute key.
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return string
 	 */
 	public static function block_attribute_name( string $block_id, string $attribute ): string {
@@ -270,7 +270,7 @@ class String_Translator {
 	 *
 	 * @param string $block_id     Stable block identifier.
 	 * @param int    $option_index Option index.
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return string
 	 */
 	public static function block_option_name( string $block_id, int $option_index ): string {
@@ -282,7 +282,7 @@ class String_Translator {
 	 *
 	 * @param int    $form_id Form post ID.
 	 * @param string $value   Original value (used as fallback when no translation exists).
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return string Translated value, or the original when no provider/translation is available.
 	 */
 	public function translate_submit_button( int $form_id, string $value ): string {
@@ -299,7 +299,7 @@ class String_Translator {
 	 * @param int    $form_id Form post ID.
 	 * @param int    $index   Zero-based index of the confirmation within the form's confirmation set.
 	 * @param string $value   Original value.
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return string Translated value, or the original when no provider/translation is available.
 	 */
 	public function translate_confirmation_message( int $form_id, int $index, string $value ): string {
@@ -316,7 +316,7 @@ class String_Translator {
 	 * @param int    $form_id Form post ID.
 	 * @param int    $index   Zero-based index of the notification within the form's notification set.
 	 * @param string $value   Original value.
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return string Translated value, or the original when no provider/translation is available.
 	 */
 	public function translate_notification_subject( int $form_id, int $index, string $value ): string {
@@ -333,7 +333,7 @@ class String_Translator {
 	 * @param int    $form_id Form post ID.
 	 * @param int    $index   Zero-based index of the notification within the form's notification set.
 	 * @param string $value   Original value.
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return string Translated value, or the original when no provider/translation is available.
 	 */
 	public function translate_notification_body( int $form_id, int $index, string $value ): string {
@@ -350,7 +350,7 @@ class String_Translator {
 	 * @param int    $form_id Form post ID.
 	 * @param int    $index   Zero-based index of the notification within the form's notification set.
 	 * @param string $value   Original value.
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return string Translated value, or the original when no provider/translation is available.
 	 */
 	public function translate_notification_from_name( int $form_id, int $index, string $value ): string {
@@ -371,7 +371,7 @@ class String_Translator {
 	 *
 	 * @param string $key   Stable identifier (e.g., `srfm_valid_email`).
 	 * @param string $value Already-i18n'd value to use as fallback.
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return string Translated value, or `$value` when the provider has no
 	 *                better translation.
 	 */
@@ -392,7 +392,7 @@ class String_Translator {
 	 * leaves the structure intact when the provider is inactive.
 	 *
 	 * @param array<string, string> $messages Map of `srfm_*` keys to message values.
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return array<string, string> Map with translated values.
 	 */
 	public function translate_validation_messages( array $messages ): array {
@@ -412,7 +412,7 @@ class String_Translator {
 	 *
 	 * @param int    $form_id Form post ID.
 	 * @param string $value   Original value.
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return string Translated value, or the original when no provider/translation is available.
 	 */
 	public function translate_restriction_message( int $form_id, string $value ): string {
@@ -430,7 +430,7 @@ class String_Translator {
 	 * @param string $block_id  Stable block identifier from the block's `block_id` attribute.
 	 * @param string $attribute Attribute key (e.g., `label`, `placeholder`).
 	 * @param string $value     Original value.
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return string Translated value, or the original when no provider/translation is available.
 	 */
 	public function translate_block_attribute( int $form_id, string $block_id, string $attribute, string $value ): string {
@@ -448,7 +448,7 @@ class String_Translator {
 	 * @param string $block_id     Stable block identifier from the block's `block_id` attribute.
 	 * @param int    $option_index Zero-based index of the option within the block's options array.
 	 * @param string $value        Original label value.
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return string Translated value, or the original when no provider/translation is available.
 	 */
 	public function translate_block_option_label( int $form_id, string $block_id, int $option_index, string $value ): string {
@@ -483,7 +483,7 @@ class String_Translator {
 	 * @param int           $form_id      Form post ID.
 	 * @param string        $post_content Raw block markup (typically `$post->post_content`).
 	 * @param \WP_Post|null $post        Form post, used only for cache invalidation via `post_modified_gmt`.
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return array{0: string, 1: array<int|string, array<string, mixed>>} [ markup, parsed top-level blocks ].
 	 */
 	public function translate_form_content_with_blocks( int $form_id, string $post_content, ?\WP_Post $post = null ): array {
@@ -534,7 +534,7 @@ class String_Translator {
 	 *
 	 * @param int    $form_id      Form post ID.
 	 * @param string $post_content Raw block markup (typically `$post->post_content`).
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return string The (possibly translated) block markup.
 	 */
 	public function translate_form_content( int $form_id, string $post_content ): string {
@@ -551,7 +551,7 @@ class String_Translator {
 	 *
 	 * @param int                                     $form_id Form post ID.
 	 * @param array<int|string, array<string, mixed>> $blocks  Parsed-blocks structure.
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return array<int|string, array<string, mixed>> The same structure with translatable attribute values swapped.
 	 */
 	protected function translate_blocks_recursive( int $form_id, array $blocks ): array {
@@ -609,7 +609,7 @@ class String_Translator {
 	 *
 	 * @param string $value Original value (used as fallback when no translation exists).
 	 * @param string $name  Fully built string name per the documented naming scheme.
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return string Translated value, or the original value when the provider has no translation.
 	 */
 	private function dispatch( string $value, string $name ): string {
@@ -628,7 +628,7 @@ class String_Translator {
 	 * @param int    $form_id Form post ID.
 	 * @param string $name    Package-scoped string name (see the *_name() builders).
 	 * @param string $value   Original value (fallback when untranslated).
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return string Translated value, or the original when no translation exists.
 	 */
 	private function dispatch_package( int $form_id, string $name, string $value ): string {

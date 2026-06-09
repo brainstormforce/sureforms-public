@@ -429,7 +429,7 @@ abstract class Base {
 				/**
 				 * Fires when a SureForms DB schema-upgrade query fails.
 				 *
-				 * @since x.x.x
+				 * @since 2.11.0
 				 * @param string $last_error The DB error message ( $wpdb->last_error ).
 				 * @param string $query      The ALTER query that failed.
 				 * @param string $table      The table being altered.

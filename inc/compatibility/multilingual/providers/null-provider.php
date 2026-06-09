@@ -6,7 +6,7 @@
  * existing single-language behavior is preserved without conditional checks at call sites.
  *
  * @package sureforms.
- * @since x.x.x
+ * @since 2.11.0
  */
 
 namespace SRFM\Inc\Compatibility\Multilingual\Providers;
@@ -20,13 +20,13 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * Pass-through implementation of {@see Provider}.
  *
- * @since x.x.x
+ * @since 2.11.0
  */
 class Null_Provider implements Provider {
 	/**
 	 * Whether the underlying multilingual plugin is active.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return bool Always false for the Null provider.
 	 */
 	public function is_active(): bool {
@@ -36,7 +36,7 @@ class Null_Provider implements Provider {
 	/**
 	 * Current visitor language code.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return string Always an empty string.
 	 */
 	public function current_language(): string {
@@ -46,7 +46,7 @@ class Null_Provider implements Provider {
 	/**
 	 * Site default language code.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return string Always an empty string.
 	 */
 	public function default_language(): string {
@@ -59,7 +59,7 @@ class Null_Provider implements Provider {
 	 * @param string $name   Unique string identifier within the domain.
 	 * @param string $value  Original string value to register.
 	 * @param string $domain Translation domain. Defaults to the sureforms text domain.
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return void
 	 */
 	public function register_string( string $name, string $value, string $domain = 'sureforms' ): void {
@@ -74,7 +74,7 @@ class Null_Provider implements Provider {
 	 * @param string      $name     Unique string identifier within the domain.
 	 * @param string      $domain   Translation domain. Defaults to the sureforms text domain.
 	 * @param string|null $language Optional target language code.
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return string The unchanged input value.
 	 */
 	public function translate( string $value, string $name, string $domain = 'sureforms', ?string $language = null ): string {
@@ -86,7 +86,7 @@ class Null_Provider implements Provider {
 	 * Switch the active language context. No-op for the Null provider.
 	 *
 	 * @param string $language Target language code.
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return void
 	 */
 	public function switch_language( string $language ): void {
@@ -97,7 +97,7 @@ class Null_Provider implements Provider {
 	/**
 	 * Restore the previous language context. No-op for the Null provider.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return void
 	 */
 	public function restore_language(): void {
@@ -107,7 +107,7 @@ class Null_Provider implements Provider {
 	/**
 	 * Render a language switcher. No-op for the Null provider.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return string Empty string — no switcher to render when no provider is active.
 	 */
 	public function render_language_switcher(): string {
@@ -117,7 +117,7 @@ class Null_Provider implements Provider {
 	/**
 	 * No package support without an active multilingual provider.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return bool Always false.
 	 */
 	public function supports_packages(): bool {
@@ -128,7 +128,7 @@ class Null_Provider implements Provider {
 	 * Begin a package registration. No-op for the Null provider.
 	 *
 	 * @param array<string,string> $package Package descriptor.
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return void
 	 */
 	public function start_package( array $package ): void {
@@ -139,7 +139,7 @@ class Null_Provider implements Provider {
 	 * Finish a package registration. No-op for the Null provider.
 	 *
 	 * @param array<string,string> $package Package descriptor.
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return void
 	 */
 	public function finish_package( array $package ): void {
@@ -154,7 +154,7 @@ class Null_Provider implements Provider {
 	 * @param string               $value   Original value.
 	 * @param string               $title   Editor label.
 	 * @param string               $type    Editor field type.
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return void
 	 */
 	public function register_package_string( array $package, string $name, string $value, string $title = '', string $type = 'LINE' ): void {
@@ -167,7 +167,7 @@ class Null_Provider implements Provider {
 	 * @param array<string,string> $package Package descriptor.
 	 * @param string               $name    String identifier.
 	 * @param string               $value   Original value.
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return string The original value unchanged.
 	 */
 	public function translate_package_string( array $package, string $name, string $value ): string {

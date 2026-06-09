@@ -11,7 +11,7 @@
  * mappings for Pro-only fields (date-time, signature, repeater, …).
  *
  * @package sureforms
- * @since   x.x.x
+ * @since   2.11.0
  */
 
 namespace SRFM\Inc\Migrator\Importers;
@@ -26,7 +26,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Wpforms_Importer
  *
- * @since x.x.x
+ * @since 2.11.0
  */
 class Wpforms_Importer extends Base_Migrator {
 	/**
@@ -108,7 +108,7 @@ class Wpforms_Importer extends Base_Migrator {
 	/**
 	 * Set source identifiers.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 */
 	public function __construct() {
 		$this->key   = 'wpforms';
@@ -118,7 +118,7 @@ class Wpforms_Importer extends Base_Migrator {
 	/**
 	 * Whether WPForms (Lite or Pro) is currently installed/active.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @return bool
 	 */
@@ -135,7 +135,7 @@ class Wpforms_Importer extends Base_Migrator {
 	 * Public so tests can read it; Pro subscribers extend it through the
 	 * filter, not through inheritance.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @return array<string,string>
 	 */
@@ -157,7 +157,7 @@ class Wpforms_Importer extends Base_Migrator {
 	 * Fetch all `wpforms` posts. The CPT is `public=false, show_ui=false` so we
 	 * have to query it explicitly.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @return array<int,array<string,mixed>>
 	 */
@@ -188,7 +188,7 @@ class Wpforms_Importer extends Base_Migrator {
 	/**
 	 * Return the WP post id for a source descriptor.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param array<string,mixed> $form Source descriptor.
 	 * @return int
@@ -200,7 +200,7 @@ class Wpforms_Importer extends Base_Migrator {
 	/**
 	 * Return the WPForms form title for a source descriptor.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param array<string,mixed> $form Source descriptor.
 	 * @return string
@@ -215,7 +215,7 @@ class Wpforms_Importer extends Base_Migrator {
 	 * block markup. Sub-fields of composite types (Name, Layout, Repeater)
 	 * are handled inline rather than via the field map.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param array<string,mixed> $form Source descriptor.
 	 * @return string
@@ -241,7 +241,7 @@ class Wpforms_Importer extends Base_Migrator {
 		/**
 		 * Filter the parsed WPForms form-data array before block emission.
 		 *
-		 * @since x.x.x
+		 * @since 2.11.0
 		 *
 		 * @param array<string,mixed> $data Decoded form_data.
 		 * @param string              $key  Migrator source key (`wpforms`).
@@ -274,7 +274,7 @@ class Wpforms_Importer extends Base_Migrator {
 	 * Build the SureForms meta payload — email notifications, confirmation,
 	 * submit text, and the conditional-logic blob assembled during emission.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param array<string,mixed> $form Source descriptor.
 	 * @return array<string,mixed>
@@ -314,7 +314,7 @@ class Wpforms_Importer extends Base_Migrator {
 	 * would corrupt the escaped quotes inside string values (e.g.
 	 * `replyto:"{field_id=\"1\"}"`).
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param array<string,mixed> $form Source descriptor.
 	 * @return array<string,mixed>
@@ -339,7 +339,7 @@ class Wpforms_Importer extends Base_Migrator {
 	 *    `srfm_migrator_block_template` filter giving Pro subscribers a
 	 *    chance for unmapped types before we flag them unsupported.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param array<string,mixed> $field WPForms field array.
 	 * @param int                 $depth Current nesting depth (layout/repeater recursion).
@@ -383,7 +383,7 @@ class Wpforms_Importer extends Base_Migrator {
 		 * repeater, …). The filter is the same one CF7 uses — discriminate by
 		 * the second parameter `$key`.
 		 *
-		 * @since x.x.x
+		 * @since 2.11.0
 		 *
 		 * @param array<string,string> $map WPForms field type → method name.
 		 * @param string               $key Migrator source key (`wpforms`).
@@ -424,7 +424,7 @@ class Wpforms_Importer extends Base_Migrator {
 	 * mapped 1:1; type-specific keys (choices, min/max, format, …) are added
 	 * conditionally.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param array<string,mixed> $field WPForms field.
 	 * @return array<string,mixed>
@@ -566,7 +566,7 @@ class Wpforms_Importer extends Base_Migrator {
 	 * Translate WPForms' Name composite (`format=simple|first-last|first-middle-last`)
 	 * into 1–3 `srfm/input` blocks. SureForms has no dedicated Name block.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param array<string,mixed> $field Name field.
 	 * @return string
@@ -618,7 +618,7 @@ class Wpforms_Importer extends Base_Migrator {
 	 * width presets from the WPForms `preset` (50-50, 33-33-33, …) and
 	 * recurse the nested children into each column.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param array<string,mixed> $field Layout field.
 	 * @param int                 $depth Current nesting depth.
@@ -658,7 +658,7 @@ class Wpforms_Importer extends Base_Migrator {
 	 * answers) the field is flagged as unsupported — the children are
 	 * still tracked so the warning is meaningful.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param array<string,mixed> $field WPForms repeater field.
 	 * @param int                 $depth Current nesting depth.
@@ -702,7 +702,7 @@ class Wpforms_Importer extends Base_Migrator {
 	 * option index). The id-map is consumed by `translate_conditional_logic`
 	 * to rewrite rule values.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param array<string,mixed> $field WPForms field.
 	 * @return array{options: array<int,array<string,string>>, preselected: array<int,int>, id_map: array<string,string>}
@@ -753,7 +753,7 @@ class Wpforms_Importer extends Base_Migrator {
 	 * `characters` mode maps cleanly; `words` mode is noted as a partial
 	 * loss and converted to a generous character heuristic (count × 7).
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param array<string,mixed> $field WPForms field.
 	 * @return int|null
@@ -777,7 +777,7 @@ class Wpforms_Importer extends Base_Migrator {
 	/**
 	 * Map WPForms field `size` → SureForms textarea row count.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param string $size 'small', 'medium', 'large'.
 	 * @return int
@@ -799,7 +799,7 @@ class Wpforms_Importer extends Base_Migrator {
 	 * markup and stash the WPForms-id → block_id mapping. Also stages the
 	 * field's conditional logic for the get_form_metas payload.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param array<string,mixed> $field    Source field.
 	 * @param array<string,mixed> $args     Final block args (used to resolve choice id-map).
@@ -834,7 +834,7 @@ class Wpforms_Importer extends Base_Migrator {
 	 * Coarse bucket for SureForms' CL editor — `default` for text-like fields,
 	 * `number` for numeric, `list` for choice fields.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param string $type WPForms type or template-method name.
 	 * @return string
@@ -855,7 +855,7 @@ class Wpforms_Importer extends Base_Migrator {
 	 * SureForms block ids; unsupported operators are dropped with a
 	 * single warning per rule.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @return array<int,array<string,mixed>>
 	 */
@@ -904,7 +904,7 @@ class Wpforms_Importer extends Base_Migrator {
 	/**
 	 * Convert one WPForms conditional-logic rule into the SureForms shape.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param array<string,mixed> $rule WPForms rule (`{ field, operator, value }`).
 	 * @return array<string,string>|null Null when the rule references an
@@ -954,7 +954,7 @@ class Wpforms_Importer extends Base_Migrator {
 	 * Translate WPForms' first email notification (the only one SureForms
 	 * supports) into the `_srfm_email_notification` shape.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param array<string,mixed> $settings WPForms settings array.
 	 * @return array<int,array<string,mixed>>
@@ -995,7 +995,7 @@ class Wpforms_Importer extends Base_Migrator {
 	 * `_srfm_form_confirmation` shape. Falls back to the canonical default
 	 * confirmation when WPForms didn't customize it.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param array<string,mixed> $settings WPForms settings array.
 	 * @return array<int,array<string,mixed>>
@@ -1032,7 +1032,7 @@ class Wpforms_Importer extends Base_Migrator {
 	 * `is_string` / `is_scalar` guards so the per-field translators above
 	 * stay readable.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param array<string,mixed> $arr     Source array.
 	 * @param string              $key     Key to read.

@@ -122,7 +122,7 @@ class Translatable {
 	 * values are the raw English source strings without any `__()` wrapping,
 	 * so they don't shift when the site locale changes.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return array<string, string>
 	 */
 	public static function dynamic_messages_source() {

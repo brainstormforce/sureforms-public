@@ -13,7 +13,7 @@
  * matching the existing pattern in `inc/rest-api.php`.
  *
  * @package sureforms
- * @since   x.x.x
+ * @since   2.11.0
  */
 
 namespace SRFM\Inc\Migrator;
@@ -35,7 +35,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Bootstrap
  *
- * @since x.x.x
+ * @since 2.11.0
  */
 class Bootstrap {
 	use Get_Instance;
@@ -55,7 +55,7 @@ class Bootstrap {
 	/**
 	 * Constructor — hook into the REST endpoint filter.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 */
 	public function __construct() {
 		add_filter( 'srfm_rest_api_endpoints', [ $this, 'register_routes' ] );
@@ -64,7 +64,7 @@ class Bootstrap {
 	/**
 	 * Append migrator routes to the SureForms REST endpoint registry.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param array<string,array<string,mixed>> $endpoints Existing endpoint registry.
 	 * @return array<string,array<string,mixed>>
@@ -132,7 +132,7 @@ class Bootstrap {
 	/**
 	 * GET /migrator/sources — list importable plugins.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param WP_REST_Request $request REST request.
 	 * @return WP_REST_Response|WP_Error
@@ -181,7 +181,7 @@ class Bootstrap {
 	/**
 	 * GET /migrator/sources/{key}/forms — list forms inside one source.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param WP_REST_Request $request REST request.
 	 * @return WP_REST_Response|WP_Error
@@ -214,7 +214,7 @@ class Bootstrap {
 	/**
 	 * POST /migrator/sources/{key}/import — import (or dry-run) selected forms.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param WP_REST_Request $request REST request.
 	 * @return WP_REST_Response|WP_Error
@@ -263,7 +263,7 @@ class Bootstrap {
 	 * keys are dropped silently so the migrator falls back to its default
 	 * `update` behavior.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param mixed $value Raw value from the REST request.
 	 * @return array<string,string>
@@ -292,7 +292,7 @@ class Bootstrap {
 	 * Sanitize a list of form ids — accepts ints or alphanumeric strings (source
 	 * plugins use both).
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param mixed $value Raw value.
 	 * @return array<int,string>
@@ -317,7 +317,7 @@ class Bootstrap {
 	/**
 	 * Resolve a source key into an importer instance.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param string $key Source key.
 	 * @return Base_Migrator|null
@@ -342,7 +342,7 @@ class Bootstrap {
 	 * REST conventions (rest_cookie_invalid_nonce, 403) so api.js receives a
 	 * properly structured error response instead of an AJAX-shaped envelope.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param WP_REST_Request $request REST request.
 	 * @return WP_Error|null

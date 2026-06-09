@@ -6,7 +6,7 @@
  * Requires WPML 4.5+; older versions are treated as inactive.
  *
  * @package sureforms.
- * @since x.x.x
+ * @since 2.11.0
  */
 
 namespace SRFM\Inc\Compatibility\Multilingual\Providers;
@@ -20,20 +20,20 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * Implements {@see Provider} on top of WPML's filter/action API.
  *
- * @since x.x.x
+ * @since 2.11.0
  */
 class WPML_Provider implements Provider {
 	/**
 	 * Minimum supported WPML version.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 */
 	public const MIN_WPML_VERSION = '4.5';
 
 	/**
 	 * Memoized active state. Null means "not yet computed".
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @var bool|null
 	 */
 	private $is_active_cache = null;
@@ -41,7 +41,7 @@ class WPML_Provider implements Provider {
 	/**
 	 * Stack of languages pushed by {@see switch_language()}, used to restore previous context.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @var array<int, string>
 	 */
 	private $previous_language = [];
@@ -49,7 +49,7 @@ class WPML_Provider implements Provider {
 	/**
 	 * Whether WPML is active and at the minimum supported version.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return bool True when WPML 4.5+ is available, false otherwise.
 	 */
 	public function is_active(): bool {
@@ -68,7 +68,7 @@ class WPML_Provider implements Provider {
 	/**
 	 * Current visitor language code as reported by WPML.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return string Language code, or empty string when WPML is inactive or the filter returns a non-string.
 	 */
 	public function current_language(): string {
@@ -83,7 +83,7 @@ class WPML_Provider implements Provider {
 	/**
 	 * Site default language code as reported by WPML.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return string Language code, or empty string when WPML is inactive or the filter returns a non-string.
 	 */
 	public function default_language(): string {
@@ -101,7 +101,7 @@ class WPML_Provider implements Provider {
 	 * @param string $name   Unique string identifier within the domain.
 	 * @param string $value  Original string value to register.
 	 * @param string $domain Translation domain. Defaults to the sureforms text domain.
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return void
 	 */
 	public function register_string( string $name, string $value, string $domain = 'sureforms' ): void {
@@ -119,7 +119,7 @@ class WPML_Provider implements Provider {
 	 * @param string      $name     Unique string identifier within the domain.
 	 * @param string      $domain   Translation domain. Defaults to the sureforms text domain.
 	 * @param string|null $language Optional target language code. When null, uses the current language.
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return string Translated value, or the original $value when WPML is inactive or no translation exists.
 	 */
 	public function translate( string $value, string $name, string $domain = 'sureforms', ?string $language = null ): string {
@@ -144,7 +144,7 @@ class WPML_Provider implements Provider {
 	 * Push the current language onto an internal stack and switch WPML to $language.
 	 *
 	 * @param string $language Target language code to switch to.
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return void
 	 */
 	public function switch_language( string $language ): void {
@@ -159,7 +159,7 @@ class WPML_Provider implements Provider {
 	/**
 	 * Pop the previous language off the internal stack and restore WPML's context.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return void
 	 */
 	public function restore_language(): void {
@@ -185,7 +185,7 @@ class WPML_Provider implements Provider {
 	 *
 	 * Returns empty when WPML is inactive or fewer than two languages are configured.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return string Rendered switcher HTML, or empty string.
 	 */
 	public function render_language_switcher(): string {
@@ -238,7 +238,7 @@ class WPML_Provider implements Provider {
 	 * package module. Gate on the `wpml_register_string` action so we degrade
 	 * gracefully (callers fall back to flat strings) if only WPML core is active.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return bool
 	 */
 	public function supports_packages(): bool {
@@ -249,7 +249,7 @@ class WPML_Provider implements Provider {
 	 * {@inheritDoc}
 	 *
 	 * @param array<string,string> $package Package descriptor (kind, name, title, edit_link).
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return void
 	 */
 	public function start_package( array $package ): void {
@@ -263,7 +263,7 @@ class WPML_Provider implements Provider {
 	 * {@inheritDoc}
 	 *
 	 * @param array<string,string> $package Package descriptor.
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return void
 	 */
 	public function finish_package( array $package ): void {
@@ -281,7 +281,7 @@ class WPML_Provider implements Provider {
 	 * @param string               $value   Original value.
 	 * @param string               $title   Editor label.
 	 * @param string               $type    Editor field type (LINE|AREA|VISUAL).
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return void
 	 */
 	public function register_package_string( array $package, string $name, string $value, string $title = '', string $type = 'LINE' ): void {
@@ -297,7 +297,7 @@ class WPML_Provider implements Provider {
 	 * @param array<string,string> $package Package descriptor.
 	 * @param string               $name    String identifier within the package.
 	 * @param string               $value   Original value (fallback).
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return string
 	 */
 	public function translate_package_string( array $package, string $name, string $value ): string {
@@ -318,7 +318,7 @@ class WPML_Provider implements Provider {
 	 * internal `get_active_languages()` data and constructs URLs via the
 	 * `wpml_permalink` filter so the switcher still links to translated copies.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return array<string, array<string, mixed>> Map of language code → {url, native_name, language_code}.
 	 */
 	protected function get_active_languages(): array {
@@ -363,7 +363,7 @@ class WPML_Provider implements Provider {
 	 * Best-effort current page URL for use with the `wpml_permalink` filter when
 	 * SitePress hasn't pre-computed per-language URLs for the request.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return string Current request URL, or home URL as a last resort.
 	 */
 	protected function guess_current_url(): string {

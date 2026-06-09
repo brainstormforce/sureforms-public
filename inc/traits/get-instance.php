@@ -43,7 +43,7 @@ trait Get_Instance {
 	 * multilingual provider via a filter). The next get_instance() call rebuilds
 	 * the object.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return void
 	 */
 	public static function reset_instance() {

@@ -11,7 +11,7 @@
  * indistinguishable from hand-built ones in the editor.
  *
  * @package sureforms
- * @since   x.x.x
+ * @since   2.11.0
  */
 
 namespace SRFM\Inc\Migrator;
@@ -23,13 +23,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Block_Templates
  *
- * @since x.x.x
+ * @since 2.11.0
  */
 class Block_Templates {
 	/**
 	 * Build a srfm/input block (text / email-as-text / password / date / hidden).
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param array<string,mixed> $args Field args (label, placeholder, required, fieldType, etc.).
 	 * @return string Serialized Gutenberg block markup.
@@ -58,7 +58,7 @@ class Block_Templates {
 	 * "Confirm Email" input on the same field — instead of the caller having
 	 * to emit a separate email block.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param array<string,mixed> $args Field args (incl. `confirm_email`,
 	 *                                   `confirm_label`).
@@ -90,7 +90,7 @@ class Block_Templates {
 	/**
 	 * Build a srfm/url block.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param array<string,mixed> $args Field args.
 	 * @return string
@@ -114,7 +114,7 @@ class Block_Templates {
 	/**
 	 * Build a srfm/phone block.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param array<string,mixed> $args Field args.
 	 * @return string
@@ -137,7 +137,7 @@ class Block_Templates {
 	/**
 	 * Build a srfm/number block. Handles range/slider via min/max args.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param array<string,mixed> $args Field args.
 	 * @return string
@@ -165,7 +165,7 @@ class Block_Templates {
 	/**
 	 * Build a srfm/textarea block.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param array<string,mixed> $args Field args.
 	 * @return string
@@ -192,7 +192,7 @@ class Block_Templates {
 	/**
 	 * Build a srfm/dropdown (single-select or multi-select) block.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param array<string,mixed> $args Field args. Expects `options` => list of strings.
 	 * @return string
@@ -219,7 +219,7 @@ class Block_Templates {
 	/**
 	 * Build a srfm/multi-choice (radio / multiple-choice) block.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param array<string,mixed> $args Field args. Expects `options` => list of strings.
 	 * @return string
@@ -245,7 +245,7 @@ class Block_Templates {
 	/**
 	 * Build a srfm/checkbox block.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param array<string,mixed> $args Field args.
 	 * @return string
@@ -268,7 +268,7 @@ class Block_Templates {
 	/**
 	 * Build a srfm/gdpr block.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param array<string,mixed> $args Field args. Expects `label` (consent text).
 	 * @return string
@@ -290,7 +290,7 @@ class Block_Templates {
 	/**
 	 * Generate a deterministic Gutenberg-style block id.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @return string An 8-character lowercase hex slug.
 	 */
@@ -301,7 +301,7 @@ class Block_Templates {
 	/**
 	 * Serialize a self-closing Gutenberg block with the given name and attributes.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param string              $name  Block name (e.g. 'srfm/input').
 	 * @param array<string,mixed> $attrs Block attributes.
@@ -315,7 +315,7 @@ class Block_Templates {
 	/**
 	 * JSON-encode block attributes for Gutenberg comment delimiter.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param array<string,mixed> $attrs Attributes to encode.
 	 * @return string JSON string, or '{}' if empty.
@@ -337,7 +337,7 @@ class Block_Templates {
 	 *
 	 * Keeps zero-valued numbers and `false` booleans, which are meaningful.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param array<string,mixed> $arr Attribute array.
 	 * @return array<string,mixed>
@@ -363,7 +363,7 @@ class Block_Templates {
 	/**
 	 * Fetch a string from args with a default.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param array<string,mixed> $args    Args.
 	 * @param string              $key     Key to fetch.
@@ -384,7 +384,7 @@ class Block_Templates {
 	/**
 	 * Fetch a boolean from args.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param array<string,mixed> $args Args.
 	 * @param string              $key  Key.
@@ -397,7 +397,7 @@ class Block_Templates {
 	/**
 	 * Fetch an integer or return null if missing.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param array<string,mixed> $args    Args.
 	 * @param string              $key     Key.
@@ -417,7 +417,7 @@ class Block_Templates {
 	/**
 	 * Fetch an array or return null if missing.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param array<string,mixed> $args Args.
 	 * @param string              $key  Key.
@@ -433,7 +433,7 @@ class Block_Templates {
 	/**
 	 * Convert a label string to a URL-safe slug, lowercased.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param string $label Source label.
 	 * @return string Slug — falls back to 'field' if empty.
@@ -447,7 +447,7 @@ class Block_Templates {
 	 * Resolve the block slug from `$args`, honoring an explicit `slug` override
 	 * (used by importers that need to dedupe collisions across the form).
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param array<string,mixed> $args     Block args.
 	 * @param string              $fallback Slug fallback when label is empty.
@@ -465,7 +465,7 @@ class Block_Templates {
 	 * Format a list of source-plugin choices into SureForms dropdown/multi-choice
 	 * option shape.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param array<string,mixed> $args     Field args containing 'options'.
 	 * @param string              $label_key Either 'label' (dropdown) or 'optionTitle' (multi-choice).
