@@ -43,6 +43,77 @@ function validateCountryWithFilters(
 	return country;
 }
 
+/**
+ * Apply per-visitor auto country detection to an intl-tel-input instance.
+ *
+ * Fetches the visitor's country from the same-origin geo-country REST endpoint
+ * and applies it via setCountry(), so auto-detection is correct per visitor even
+ * when the page HTML is full-page cached. Respects the field's country filters
+ * and never overrides a value the visitor already started typing. The result is
+ * cached in sessionStorage to avoid repeat requests within a session.
+ *
+ * @param {Object}      iti         The intl-tel-input instance.
+ * @param {HTMLElement} phoneNumber The phone input element.
+ * @param {Object}      filters     Country-filter settings for this field.
+ */
+function applyAutoCountry( iti, phoneNumber, filters ) {
+	const endpoint =
+		window.srfm_phone_data && window.srfm_phone_data.geo_endpoint;
+	if ( ! endpoint ) {
+		return;
+	}
+
+	const setCountry = ( country ) => {
+		if ( ! country || typeof country !== 'string' ) {
+			return;
+		}
+		// Don't override a value the visitor already started entering.
+		if ( phoneNumber.value && phoneNumber.value.trim() !== '' ) {
+			return;
+		}
+		const validated = validateCountryWithFilters(
+			country.toLowerCase(),
+			filters.enableCountryFilter,
+			filters.countryFilterType,
+			filters.includeCountries,
+			filters.excludeCountries
+		);
+		if ( validated ) {
+			iti.setCountry( validated );
+		}
+	};
+
+	// Reuse a cached lookup for the session to avoid repeat requests.
+	let cached = null;
+	try {
+		cached = window.sessionStorage?.getItem( 'srfm_geo_country' );
+	} catch {
+		cached = null;
+	}
+	if ( cached ) {
+		setCountry( cached );
+		return;
+	}
+
+	fetch( endpoint, { headers: { Accept: 'application/json' } } )
+		.then( ( res ) => ( res.ok ? res.json() : null ) )
+		.then( ( data ) => {
+			const country = data && data.country ? String( data.country ) : '';
+			if ( ! country ) {
+				return;
+			}
+			try {
+				window.sessionStorage?.setItem( 'srfm_geo_country', country );
+			} catch {
+				// sessionStorage may be unavailable (e.g. private mode) — ignore.
+			}
+			setCountry( country );
+		} )
+		.catch( () => {
+			// Network error — keep the server-provided default-country.
+		} );
+}
+
 function initializePhoneField() {
 	const phone = document.querySelectorAll( '.srfm-phone-block' );
 
@@ -145,6 +216,20 @@ function initializePhoneField() {
 		// The flag should only change when the user explicitly selects a country from the dropdown.
 		// Dropdown selection goes through _selectListItem -> _setCountry directly, so it still works.
 		iti._updateCountryFromNumber = () => false;
+
+		// Per-visitor auto country detection. The server bakes an initial
+		// `default-country`, but on full-page-cached sites that value is the first
+		// visitor's. When auto-country is enabled, fetch the current visitor's
+		// country from the same-origin REST endpoint (not part of the cached page
+		// HTML) and apply it — correct per visitor.
+		if ( phoneNumber.getAttribute( 'data-auto-country' ) === 'true' ) {
+			applyAutoCountry( iti, phoneNumber, {
+				enableCountryFilter,
+				countryFilterType,
+				includeCountries,
+				excludeCountries,
+			} );
+		}
 
 		const countriesData =
 			iti?.countryList.querySelectorAll( '.iti__country' );

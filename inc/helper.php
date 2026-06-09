@@ -2434,4 +2434,188 @@ class Helper {
 		return '';
 	}
 
+	/**
+	 * Read a visitor country code from a CDN / server geo header, if present.
+	 *
+	 * Many hosts sit behind Cloudflare, CloudFront or a geo-aware web server that
+	 * injects the visitor's country as a request header. This is free, instant,
+	 * per-visitor and works on full-page-cached sites, so we prefer it over an
+	 * outbound API call. Returns '' when no usable header is present.
+	 *
+	 * @since x.x.x
+	 * @return string Lowercase 2-letter country code, or '' when unavailable.
+	 */
+	private static function get_cdn_country() {
+		$headers = [
+			'HTTP_CF_IPCOUNTRY',              // Cloudflare.
+			'HTTP_CLOUDFRONT_VIEWER_COUNTRY', // AWS CloudFront.
+			'GEOIP_COUNTRY_CODE',             // Apache/Nginx mod_geoip / MaxMind.
+			'HTTP_X_GEO_COUNTRY',             // Some CDNs / reverse proxies.
+			'HTTP_X_COUNTRY_CODE',            // Some CDNs.
+		];
+
+		foreach ( $headers as $header ) {
+			if ( empty( $_SERVER[ $header ] ) ) {
+				continue;
+			}
+
+			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Validated by the regex below.
+			$code = strtolower( trim( sanitize_text_field( wp_unslash( $_SERVER[ $header ] ) ) ) );
+
+			// Cloudflare sends 'xx' for unknown and 't1' for Tor; reject non-ISO values.
+			if ( preg_match( '/^[a-z]{2}$/', $code ) && 'xx' !== $code && 't1' !== $code ) {
+				return $code;
+			}
+		}
+
+		/**
+		 * Filters the CDN-derived visitor country code, before the ipapi.co fallback.
+		 *
+		 * Lets sites short-circuit detection with a server-side country code (e.g.
+		 * from a custom header) without any outbound API call.
+		 *
+		 * @since x.x.x
+		 *
+		 * @param string $code Lowercase 2-letter country code, or '' if none found.
+		 */
+		return apply_filters( 'srfm_cdn_country', '' );
+	}
+
+	/**
+	 * TTL (in seconds) for caching a failed geo lookup.
+	 *
+	 * Short by default so a transient blip (rate-limit, timeout) self-heals on the
+	 * next visit instead of pinning the fallback country for a full hour, while
+	 * still preventing per-request retry storms. Filterable via `srfm_geo_failure_ttl`.
+	 *
+	 * @since x.x.x
+	 * @return int
+	 */
+	private static function get_geo_failure_ttl() {
+		return self::get_integer_value( apply_filters( 'srfm_geo_failure_ttl', 5 * MINUTE_IN_SECONDS ) );
+	}
+
+	/**
+	 * Detect the visitor's 2-letter country code via server-side IP geolocation.
+	 *
+	 * Prefers a CDN/server-provided country header (Cloudflare, CloudFront, mod_geoip)
+	 * when present — free, instant and cache-safe. Otherwise calls ipapi.co once per
+	 * visitor IP and caches the result in a transient for 24 hours so subsequent
+	 * lookups for the same IP resolve instantly. Failures are cached for a short TTL
+	 * (see get_geo_failure_ttl()) to avoid retry storms while still self-healing, and
+	 * a site-wide hourly cap (filterable via `srfm_geo_api_hourly_cap`, default 40)
+	 * bounds outbound calls. Private/reserved IPs are rejected up front.
+	 *
+	 * Intended to be called per-visitor (e.g. via the geo-country REST route) so
+	 * the result is correct on full-page-cached sites instead of being baked into
+	 * the cached HTML.
+	 *
+	 * Local testing: private/loopback IPs (e.g. 127.0.0.1) cannot be geolocated, so
+	 * inject a public IP via the `srfm_visitor_ip` filter to exercise detection:
+	 *
+	 *     add_filter( 'srfm_visitor_ip', static fn() => '8.8.8.8' ); // US; try 1.1.1.1 etc.
+	 *
+	 * @param string $fallback Country code returned when detection is unavailable.
+	 * @since x.x.x
+	 * @return string Lowercase 2-letter country code.
+	 */
+	public static function get_geo_country( $fallback = 'us' ) {
+		// Prefer a CDN/server-provided country header — free, instant, per-visitor
+		// and cache-safe. It is independent of the connecting IP (it still resolves
+		// when the visitor IP is private/loopback, e.g. local dev or behind a
+		// proxy), so it must be checked before the IP-based path below.
+		$cdn_country = self::get_cdn_country();
+		if ( '' !== $cdn_country ) {
+			return $cdn_country;
+		}
+
+		$ip = self::get_visitor_ip();
+		if ( empty( $ip ) ) {
+			return $fallback;
+		}
+
+		// Reject private/reserved IPs: ipapi.co cannot geolocate them, and accepting
+		// them would let spoofed X-Forwarded-For headers flood the transient cache.
+		if ( ! filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE ) ) {
+			return $fallback;
+		}
+
+		$cache_key = 'srfm_geo_' . md5( $ip );
+		$cached    = get_transient( $cache_key );
+		if ( is_string( $cached ) && '' !== $cached ) {
+			return $cached;
+		}
+
+		// Site-wide hourly cap on outbound ipapi calls; the counter rolls over
+		// every hour (key includes YmdH) so it never needs an explicit reset.
+		$quota_key = 'srfm_geo_quota_' . gmdate( 'YmdH' );
+		$quota_cap = self::get_integer_value( apply_filters( 'srfm_geo_api_hourly_cap', 40 ) );
+		$count     = self::get_integer_value( get_transient( $quota_key ) );
+		if ( $count >= $quota_cap ) {
+			self::srfm_log( $quota_cap, 'SRFM geo lookup skipped (hourly cap reached):' );
+			set_transient( $cache_key, $fallback, self::get_geo_failure_ttl() );
+			return $fallback;
+		}
+		set_transient( $quota_key, $count + 1, HOUR_IN_SECONDS );
+
+		// Pass the visitor's IP explicitly via /{ip}/json/ — the request originates
+		// from the server, so the bare /json/ endpoint would return the host's country.
+		$url = 'https://ipapi.co/' . rawurlencode( $ip ) . '/json/';
+
+		// ipapi.co's free (keyless) tier is heavily rate-limited, so unauthenticated
+		// lookups are best-effort and often fail to the configured fallback. Sites
+		// that need reliable IP-based detection can supply a paid ipapi.co key via
+		// this filter; CDN-fronted sites resolve earlier via get_cdn_country() and
+		// never reach this call.
+		$api_key = self::get_string_value( apply_filters( 'srfm_ipapi_api_key', '' ) );
+		if ( '' !== $api_key ) {
+			$url = add_query_arg( 'key', rawurlencode( $api_key ), $url );
+		}
+
+		$response = wp_remote_get(
+			$url,
+			[
+				'timeout'    => 3,
+				'user-agent' => 'SureForms/' . SRFM_VER . ' (+https://sureforms.com)',
+			]
+		);
+
+		if ( is_wp_error( $response ) || 200 !== wp_remote_retrieve_response_code( $response ) ) {
+			$detail = is_wp_error( $response ) ? $response->get_error_message() : wp_remote_retrieve_response_code( $response );
+			self::srfm_log( $detail, 'SRFM geo lookup failed (transport):' );
+			set_transient( $cache_key, $fallback, self::get_geo_failure_ttl() );
+			return $fallback;
+		}
+
+		$body = json_decode( wp_remote_retrieve_body( $response ), true );
+
+		// ipapi.co's free tier returns HTTP 200 with a JSON error body
+		// (e.g. {"error":true,"reason":"RateLimited"}) when throttled — treat as a failure.
+		if ( is_array( $body ) && ! empty( $body['error'] ) ) {
+			$reason = ! empty( $body['reason'] ) && is_string( $body['reason'] ) ? $body['reason'] : 'unknown';
+			self::srfm_log( $reason, 'SRFM geo lookup failed (ipapi error):' );
+			set_transient( $cache_key, $fallback, self::get_geo_failure_ttl() );
+			return $fallback;
+		}
+
+		if ( ! is_array( $body ) || empty( $body['country_code'] ) || ! is_string( $body['country_code'] ) ) {
+			self::srfm_log( wp_remote_retrieve_response_code( $response ), 'SRFM geo lookup failed (no country_code):' );
+			set_transient( $cache_key, $fallback, self::get_geo_failure_ttl() );
+			return $fallback;
+		}
+
+		$country = strtolower( $body['country_code'] );
+
+		// Validate the external API response is a valid 2-letter country code.
+		if ( ! preg_match( '/^[a-z]{2}$/', $country ) ) {
+			self::srfm_log( $country, 'SRFM geo lookup failed (invalid country code):' );
+			set_transient( $cache_key, $fallback, self::get_geo_failure_ttl() );
+			return $fallback;
+		}
+
+		set_transient( $cache_key, $country, DAY_IN_SECONDS );
+
+		return $country;
+	}
+
 }
