@@ -6,7 +6,7 @@
  * must implement so the rest of SureForms can stay agnostic of the underlying plugin.
  *
  * @package sureforms.
- * @since x.x.x
+ * @since 2.11.0
  */
 
 namespace SRFM\Inc\Compatibility\Multilingual\Providers;
@@ -20,13 +20,13 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * Common surface area exposed by every multilingual provider adapter.
  *
- * @since x.x.x
+ * @since 2.11.0
  */
 interface Provider {
 	/**
 	 * Whether the underlying multilingual plugin is active and usable.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return bool True when the provider can perform translations, false otherwise.
 	 */
 	public function is_active(): bool;
@@ -34,7 +34,7 @@ interface Provider {
 	/**
 	 * Current visitor language code.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return string Language code (e.g. 'en', 'de'). Empty string when not active.
 	 */
 	public function current_language(): string;
@@ -42,7 +42,7 @@ interface Provider {
 	/**
 	 * Site default language code.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return string Language code (e.g. 'en'). Empty string when not active.
 	 */
 	public function default_language(): string;
@@ -53,7 +53,7 @@ interface Provider {
 	 * @param string $name   Unique string identifier within the domain.
 	 * @param string $value  Original string value to register.
 	 * @param string $domain Translation domain. Defaults to the sureforms text domain.
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return void
 	 */
 	public function register_string( string $name, string $value, string $domain = 'sureforms' ): void;
@@ -65,7 +65,7 @@ interface Provider {
 	 * @param string      $name     Unique string identifier within the domain.
 	 * @param string      $domain   Translation domain. Defaults to the sureforms text domain.
 	 * @param string|null $language Optional target language code. When null, uses the current language.
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return string Translated string, or the original value when no translation is found.
 	 */
 	public function translate( string $value, string $name, string $domain = 'sureforms', ?string $language = null ): string;
@@ -76,7 +76,7 @@ interface Provider {
 	 * Pushes the new language onto an internal stack so {@see restore_language()} can revert it.
 	 *
 	 * @param string $language Target language code to switch to.
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return void
 	 */
 	public function switch_language( string $language ): void;
@@ -84,7 +84,7 @@ interface Provider {
 	/**
 	 * Restore the previous language context after {@see switch_language()}.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return void
 	 */
 	public function restore_language(): void;
@@ -99,7 +99,7 @@ interface Provider {
 	 * Returns an empty string when no provider is active or when the provider
 	 * can't produce a switcher (e.g., only one language configured).
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return string Rendered switcher HTML.
 	 */
 	public function render_language_switcher(): string;
@@ -109,7 +109,7 @@ interface Provider {
 	 * strings bound to a single object (e.g. a form) that surface together in the
 	 * multilingual plugin's Translation Editor, instead of as flat, global strings.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return bool True when package registration/translation is available.
 	 */
 	public function supports_packages(): bool;
@@ -119,7 +119,7 @@ interface Provider {
 	 * so strings no longer present can be pruned by {@see finish_package()}.
 	 *
 	 * @param array<string,string> $package Package descriptor: kind, name, title, edit_link.
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return void
 	 */
 	public function start_package( array $package ): void;
@@ -129,7 +129,7 @@ interface Provider {
 	 * re-registered since {@see start_package()} (e.g. fields deleted from a form).
 	 *
 	 * @param array<string,string> $package Package descriptor.
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return void
 	 */
 	public function finish_package( array $package ): void;
@@ -142,7 +142,7 @@ interface Provider {
 	 * @param string               $value   Original string value.
 	 * @param string               $title   Human-readable label shown in the Translation Editor.
 	 * @param string               $type    Editor field type: LINE, AREA or VISUAL.
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return void
 	 */
 	public function register_package_string( array $package, string $name, string $value, string $title = '', string $type = 'LINE' ): void;
@@ -153,7 +153,7 @@ interface Provider {
 	 * @param array<string,string> $package Package descriptor.
 	 * @param string               $name    Stable string identifier within the package.
 	 * @param string               $value   Original value (fallback when untranslated).
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return string Translated value, or the original when no translation exists.
 	 */
 	public function translate_package_string( array $package, string $name, string $value ): string;

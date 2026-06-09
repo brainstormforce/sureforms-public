@@ -11,7 +11,7 @@
  * SureForms' block-markup output and WP REST API patterns.
  *
  * @package sureforms
- * @since   x.x.x
+ * @since   2.11.0
  */
 
 namespace SRFM\Inc\Migrator;
@@ -23,7 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Base_Migrator
  *
- * @since x.x.x
+ * @since 2.11.0
  */
 abstract class Base_Migrator {
 	/**
@@ -98,7 +98,7 @@ abstract class Base_Migrator {
 	/**
 	 * List forms in the source plugin, formatted for the picker UI.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return array<int,array<string,mixed>>
 	 */
 	public function list_forms() {
@@ -127,7 +127,7 @@ abstract class Base_Migrator {
 	 * The sources listing only needs a count; calling list_forms() there would
 	 * run find_existing_srfm_id() for every form purely to discard the result.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return int
 	 */
 	public function count_source_forms() {
@@ -145,7 +145,7 @@ abstract class Base_Migrator {
 	 *  - `skip`             — leave the existing post untouched; report under `skipped`.
 	 *  - `create`           — insert a fresh SureForms post even if one already exists.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param array<int,int|string>    $selected_ids  List of source form ids. Empty = all.
 	 * @param bool                     $dry_run       If true, no posts are inserted; a preview is returned.
@@ -255,7 +255,7 @@ abstract class Base_Migrator {
 	/**
 	 * Source key accessor.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return string
 	 */
 	public function get_key() {
@@ -265,7 +265,7 @@ abstract class Base_Migrator {
 	/**
 	 * Display title accessor.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return string
 	 */
 	public function get_title() {
@@ -275,7 +275,7 @@ abstract class Base_Migrator {
 	/**
 	 * Whether the source plugin is currently installed/active.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return bool
 	 */
 	abstract public function exist();
@@ -283,7 +283,7 @@ abstract class Base_Migrator {
 	/**
 	 * Insert a new sureforms_form post.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param array<string,mixed> $form        Source form descriptor (for title).
 	 * @param string              $markup      Block markup for post_content.
@@ -329,7 +329,7 @@ abstract class Base_Migrator {
 	/**
 	 * Update an existing sureforms_form post with re-imported markup.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param int                 $post_id Existing post id.
 	 * @param array<string,mixed> $form    Source form descriptor.
@@ -368,7 +368,7 @@ abstract class Base_Migrator {
 	 * by a quoted key — `formId` is inserted ahead of it without touching the
 	 * existing (already-escaped) attribute payload.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param string $markup  Serialized block markup.
 	 * @param int    $form_id Target form post id.
@@ -390,7 +390,7 @@ abstract class Base_Migrator {
 	 * Find the existing SureForms post id (if any) that was imported from a
 	 * given source identifier.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param int|string $source_id Source form id.
 	 * @return int 0 if not previously imported.
@@ -423,7 +423,7 @@ abstract class Base_Migrator {
 	/**
 	 * Read the imported-forms map once per request (memoized).
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return array<int|string,mixed>
 	 */
 	protected function get_imported_map() {
@@ -437,7 +437,7 @@ abstract class Base_Migrator {
 	/**
 	 * Persist the imported-forms map and refresh the request cache.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param array<int|string,mixed> $map Map to store.
 	 * @return void
@@ -450,7 +450,7 @@ abstract class Base_Migrator {
 	/**
 	 * Record an import mapping for future idempotency checks.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param int        $srfm_id   Newly inserted/updated SureForms post id.
 	 * @param int|string $source_id Source-plugin form id.
@@ -469,7 +469,7 @@ abstract class Base_Migrator {
 	/**
 	 * Push a label onto the unsupported-fields list.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param string $label Field label.
 	 * @return void
@@ -489,7 +489,7 @@ abstract class Base_Migrator {
 	 * `default` when the operator is a text-style comparator the default bucket
 	 * accepts — or `''` when no bucket supports the operator (caller drops it).
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param string $operator SureForms operator (already mapped from source).
 	 * @param string $bucket   Field's block-type bucket.
@@ -516,7 +516,7 @@ abstract class Base_Migrator {
 	 * Subclasses must reset `$this->used_slugs = []` at the start of each
 	 * `build_form_content()` call.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param string $seed Slug seed (source field name or label).
 	 * @return string Deduped slug.
@@ -540,7 +540,7 @@ abstract class Base_Migrator {
 	 * Default confirmation HTML used when the source plugin doesn't ship a
 	 * usable thank-you message. Centered heading + body, neutral copy.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @return string Confirmation HTML.
 	 */
@@ -567,7 +567,7 @@ abstract class Base_Migrator {
 	 * can register new emitter names without each importer re-implementing
 	 * the dispatch switch.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param string              $method Template method name.
 	 * @param array<string,mixed> $args   Block args.
@@ -607,7 +607,7 @@ abstract class Base_Migrator {
 	 * the subclass in `get_source_form_id`, `get_source_form_name`,
 	 * `build_form_content`.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return array<int,array<string,mixed>>
 	 */
 	abstract protected function get_source_forms();
@@ -615,7 +615,7 @@ abstract class Base_Migrator {
 	/**
 	 * Return the source-side identifier for a given form item.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param array<string,mixed> $form Source form descriptor.
 	 * @return int|string
@@ -625,7 +625,7 @@ abstract class Base_Migrator {
 	/**
 	 * Return the source-side display name for a given form item.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param array<string,mixed> $form Source form descriptor.
 	 * @return string
@@ -639,7 +639,7 @@ abstract class Base_Migrator {
 	 * SureForms blocks to `$this->unsupported_fields` so the admin UI can
 	 * warn the user.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param array<string,mixed> $form Source form descriptor.
 	 * @return string Concatenated field-block markup (without form wrapper).
@@ -660,7 +660,7 @@ abstract class Base_Migrator {
 	 * is incompatible — e.g. CF7) should return a sensible default that
 	 * leaves the imported form usable.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param array<string,mixed> $form Source form descriptor.
 	 * @return array<string,mixed> Meta key → meta value.

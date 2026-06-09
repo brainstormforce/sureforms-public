@@ -31,7 +31,7 @@ class Onboarding {
 	 * banner on the Forms listing page. The banner stays gone until a
 	 * fresh install or a manual delete of the meta.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 */
 	public const MIGRATION_BANNER_DISMISSED_META_KEY = 'srfm_onboarding_migration_banner_dismissed';
 
@@ -47,7 +47,7 @@ class Onboarding {
 	 * the existing `srfm_rest_api_endpoints` filter. Keeps the route
 	 * registration consistent with the migrator + rest-api modules.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 */
 	public function __construct() {
 		add_filter( 'srfm_rest_api_endpoints', [ $this, 'register_routes' ] );
@@ -56,7 +56,7 @@ class Onboarding {
 	/**
 	 * Append onboarding-related REST routes to the SureForms registry.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param array<string,array<string,mixed>> $endpoints Existing registry.
 	 * @return array<string,array<string,mixed>>
@@ -82,7 +82,7 @@ class Onboarding {
 	 * REST callback — persist the dismissal flag on the current user's
 	 * meta so the migration banner stays gone across reloads.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param WP_REST_Request $request REST request.
 	 * @return WP_REST_Response|WP_Error
@@ -110,7 +110,7 @@ class Onboarding {
 	 * Whether the current user has dismissed the migration banner.
 	 * Surfaced to the admin React app via `srfm_admin.migration_banner_dismissed`.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @return bool
 	 */

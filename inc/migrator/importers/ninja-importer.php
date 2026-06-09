@@ -16,7 +16,7 @@
  * way out.
  *
  * @package sureforms
- * @since   x.x.x
+ * @since   2.11.0
  */
 
 namespace SRFM\Inc\Migrator\Importers;
@@ -30,7 +30,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Ninja_Importer
  *
- * @since x.x.x
+ * @since 2.11.0
  */
 class Ninja_Importer extends Base_Migrator {
 	/**
@@ -129,7 +129,7 @@ class Ninja_Importer extends Base_Migrator {
 	/**
 	 * Set source identifiers.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 */
 	public function __construct() {
 		$this->key   = 'ninja';
@@ -139,7 +139,7 @@ class Ninja_Importer extends Base_Migrator {
 	/**
 	 * Whether Ninja Forms is currently active.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @return bool
 	 */
@@ -151,7 +151,7 @@ class Ninja_Importer extends Base_Migrator {
 	 * Map of Ninja Forms type → `Block_Templates` method for Free-emitable
 	 * types. Pro overlays the rest via `srfm_migrator_tag_to_template_map`.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @return array<string,string>
 	 */
@@ -182,7 +182,7 @@ class Ninja_Importer extends Base_Migrator {
 	/**
 	 * Fetch all Ninja forms from the custom tables.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @return array<int,array<string,mixed>>
 	 */
@@ -214,7 +214,7 @@ class Ninja_Importer extends Base_Migrator {
 	/**
 	 * Return the Ninja form id from a source descriptor.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param array<string,mixed> $form Source descriptor.
 	 * @return int
@@ -226,7 +226,7 @@ class Ninja_Importer extends Base_Migrator {
 	/**
 	 * Return the form title for a source descriptor.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param array<string,mixed> $form Source descriptor.
 	 * @return string
@@ -241,7 +241,7 @@ class Ninja_Importer extends Base_Migrator {
 	 * and `nf3_field_meta` to assemble each field's settings, then
 	 * dispatches via the shared `srfm_migrator_*` filter pipeline.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param array<string,mixed> $form Source descriptor.
 	 * @return string
@@ -270,7 +270,7 @@ class Ninja_Importer extends Base_Migrator {
 		/**
 		 * Filter the Ninja field list before iteration.
 		 *
-		 * @since x.x.x
+		 * @since 2.11.0
 		 *
 		 * @param array<int,array<string,mixed>> $fields Assembled Ninja fields.
 		 * @param string                         $key    Migrator source key (`ninja`).
@@ -298,7 +298,7 @@ class Ninja_Importer extends Base_Migrator {
 	/**
 	 * Build SureForms post-meta payload.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param array<string,mixed> $form Source descriptor.
 	 * @return array<string,mixed>
@@ -332,7 +332,7 @@ class Ninja_Importer extends Base_Migrator {
 	 * into a flat associative array per field. Mirrors what Ninja's
 	 * `NF_Abstracts_Model::__construct` does on read.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param int $form_id Ninja form id.
 	 * @return array<int,array<string,mixed>>
@@ -395,7 +395,7 @@ class Ninja_Importer extends Base_Migrator {
 	/**
 	 * Query `nf3_form_meta` and collapse into a flat assoc array.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param int $form_id Ninja form id.
 	 * @return array<string,mixed>
@@ -426,7 +426,7 @@ class Ninja_Importer extends Base_Migrator {
 	 * Fetch the form's actions (success message, email, redirect, …) via
 	 * the `nf3_objects` + `nf3_object_meta` + `nf3_relationships` tables.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param int $form_id Ninja form id.
 	 * @return array<int,array<string,mixed>>
@@ -496,7 +496,7 @@ class Ninja_Importer extends Base_Migrator {
 	 * Translate a single Ninja field (with meta merged in) into block
 	 * markup.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param array<string,mixed> $field Ninja field with merged meta.
 	 * @return string
@@ -538,7 +538,7 @@ class Ninja_Importer extends Base_Migrator {
 		/**
 		 * Filter the Ninja-type → template-method map.
 		 *
-		 * @since x.x.x
+		 * @since 2.11.0
 		 *
 		 * @param array<string,string> $map Type → method.
 		 * @param string               $key Migrator source key (`ninja`).
@@ -570,7 +570,7 @@ class Ninja_Importer extends Base_Migrator {
 	/**
 	 * Build SureForms block args from a Ninja field with merged meta.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param array<string,mixed> $field Ninja field.
 	 * @return array<string,mixed>
@@ -683,7 +683,7 @@ class Ninja_Importer extends Base_Migrator {
 	 * rules compare against — so `convert_rule()` matches it directly without
 	 * a re-key map.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param array<string,mixed> $field Ninja field.
 	 * @return array<string,mixed>
@@ -724,7 +724,7 @@ class Ninja_Importer extends Base_Migrator {
 	 * Ninja field is emitted as TWO blocks — a date-picker plus a companion
 	 * time-picker — rather than being flattened to date-only.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param array<string,mixed> $field Ninja date field with merged meta.
 	 * @return string
@@ -764,7 +764,7 @@ class Ninja_Importer extends Base_Migrator {
 	 * from a Ninja date field's `date_mode` setting. Ninja stores one of
 	 * `date` / `time` / `date and time`; older builds may use `datetime`.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param array<string,mixed> $field Ninja date field.
 	 * @return string `date`, `time`, or `date-time`.
@@ -787,7 +787,7 @@ class Ninja_Importer extends Base_Migrator {
 	 * `checked` / `unchecked` (the generic `default` key can also carry it).
 	 * Treat `checked` (case-insensitive) or a truthy `1`/`true`/`yes` as on.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param array<string,mixed> $field Ninja checkbox field.
 	 * @return bool
@@ -809,7 +809,7 @@ class Ninja_Importer extends Base_Migrator {
 	 * (Ninja auto-populates its country list at render, so the source field
 	 * carries no options of its own).
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @return array<int,array<string,string>>
 	 */
@@ -837,7 +837,7 @@ class Ninja_Importer extends Base_Migrator {
 	 * dropdown auto-populates the 50 US states + DC at render time, so the
 	 * stored field carries no options to read; this mirrors that catalogue.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @return array<int,array<string,string>>
 	 */
@@ -906,7 +906,7 @@ class Ninja_Importer extends Base_Migrator {
 	 * Dispatch a method through `srfm_migrator_block_template`, flag
 	 * unsupported if no subscriber answers.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param string              $method Template method name.
 	 * @param array<string,mixed> $args   Block args.
@@ -926,7 +926,7 @@ class Ninja_Importer extends Base_Migrator {
 	 * After emitting a block, capture its block_id under the source
 	 * field's `key` (slug) so conditional logic can rewrite targets.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param array<string,mixed> $field    Source field.
 	 * @param array<string,mixed> $args     Block args.
@@ -947,7 +947,7 @@ class Ninja_Importer extends Base_Migrator {
 	/**
 	 * Block-type bucket for the SureForms CL editor.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param string $type Source type or method name.
 	 * @return string
@@ -974,7 +974,7 @@ class Ninja_Importer extends Base_Migrator {
 	 * all others go through OPERATOR_MAP. Validity against the bucket's allowed
 	 * set is reconciled by `resolve_cl_bucket()` in the caller.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param string $comparator Ninja comparator (e.g. `equal`, `contains`).
 	 * @param string $bucket     Resolved block-type bucket.
@@ -999,7 +999,7 @@ class Ninja_Importer extends Base_Migrator {
 	 * forbid classes — matches the Gravity importer's hardening. Non-string
 	 * and non-serialized values pass through unchanged.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param mixed $value Raw meta value.
 	 * @return mixed
@@ -1016,7 +1016,7 @@ class Ninja_Importer extends Base_Migrator {
 	 * Assemble the `_srfm_conditional_logic` post-meta from Ninja's
 	 * form-level `conditions` array (paid add-on only).
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @return array<int,array<string,mixed>>
 	 */
@@ -1077,7 +1077,7 @@ class Ninja_Importer extends Base_Migrator {
 	/**
 	 * Convert one Ninja conditional rule into the SureForms shape.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param array<string,mixed> $rule Ninja `when` rule.
 	 * @return array<string,string>|null
@@ -1121,7 +1121,7 @@ class Ninja_Importer extends Base_Migrator {
 	 * cache that Ninja exposes via its REST API; if unavailable, fall
 	 * back to scanning form_meta for an `email_*` key prefix.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @return array<int,array<string,mixed>>
 	 */
@@ -1168,7 +1168,7 @@ class Ninja_Importer extends Base_Migrator {
 	 * Translate Ninja `successmessage` / `redirect` actions into the
 	 * SureForms confirmation shape.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @return array<int,array<string,mixed>>
 	 */
@@ -1198,7 +1198,7 @@ class Ninja_Importer extends Base_Migrator {
 	/**
 	 * Source types Ninja Forms ships but SureForms has no peer for.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @return array<int,string>
 	 */
@@ -1224,7 +1224,7 @@ class Ninja_Importer extends Base_Migrator {
 	/**
 	 * Coerce a mixed array entry to string.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param array<string,mixed> $arr     Source array.
 	 * @param string              $key     Key.

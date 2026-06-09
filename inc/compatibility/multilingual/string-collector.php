@@ -8,7 +8,7 @@
  * <custom-fields-texts> handling is inconsistent across versions.
  *
  * @package sureforms.
- * @since x.x.x
+ * @since 2.11.0
  */
 
 namespace SRFM\Inc\Compatibility\Multilingual;
@@ -28,7 +28,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * the active multilingual provider. Acts as a belt-and-suspenders safeguard
  * against inconsistencies in WPML's declarative <custom-fields-texts> handling.
  *
- * @since x.x.x
+ * @since 2.11.0
  */
 class String_Collector {
 	use Get_Instance;
@@ -37,7 +37,7 @@ class String_Collector {
 	 * The form's String Package descriptor for the current collect() run, or null
 	 * when no package run is active.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @var array<string,string>|null
 	 */
 	private $active_package = null;
@@ -45,7 +45,7 @@ class String_Collector {
 	/**
 	 * Whether the active provider supports String Packages (decided once per run).
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @var bool
 	 */
 	private $packages_supported = false;
@@ -55,7 +55,7 @@ class String_Collector {
 	 * "Fields/<Type> #<n>" group path shown in the Translation Editor. Reset at the
 	 * start of each form's block walk.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @var int
 	 */
 	private $field_index = 0;
@@ -66,7 +66,7 @@ class String_Collector {
 	 * Uses priority 20 so this runs after WordPress's own save processing and
 	 * any default meta updates from the editor request.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 */
 	public function __construct() {
 		add_action( 'save_post_' . SRFM_FORMS_POST_TYPE, [ $this, 'on_form_save' ], 20, 1 );
@@ -89,7 +89,7 @@ class String_Collector {
 	 * active. Otherwise delegates to {@see collect()} to register all strings.
 	 *
 	 * @param int $form_id The form post ID being saved.
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return void
 	 */
 	public function on_form_save( int $form_id ): void {
@@ -118,7 +118,7 @@ class String_Collector {
 	 * back-fill strings for existing forms.
 	 *
 	 * @param int $form_id The form post ID.
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return void
 	 */
 	public function collect( int $form_id ): void {
@@ -238,7 +238,7 @@ class String_Collector {
 	 * `wpml_register_single_string` action deduplicates by (domain, name, value),
 	 * so re-asserting on each admin load is safe. Bails when no provider is active.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return void
 	 */
 	public function collect_validation_messages(): void {
@@ -283,7 +283,7 @@ class String_Collector {
 	 * Bails early when the form has no block content.
 	 *
 	 * @param int $form_id The form post ID.
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return void
 	 */
 	public function collect_block_strings( int $form_id ): void {
@@ -326,7 +326,7 @@ class String_Collector {
 	 *
 	 * @param int                                     $form_id Form post ID.
 	 * @param array<int|string, array<string, mixed>> $blocks  Parsed-blocks structure.
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return void
 	 */
 	protected function walk_blocks_for_collection( int $form_id, array $blocks ): void {
@@ -396,7 +396,7 @@ class String_Collector {
 	 *
 	 * @param int    $form_id The form post ID.
 	 * @param string $key     Meta key to read.
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return string Meta value coerced to string, or empty string when missing.
 	 */
 	private function get_meta_string( int $form_id, string $key ): string {
@@ -408,7 +408,7 @@ class String_Collector {
 	 *
 	 * @param string $name  Unique string identifier.
 	 * @param string $value Original string value.
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return void
 	 */
 	private function register_if_non_empty( string $name, string $value ): void {
@@ -432,7 +432,7 @@ class String_Collector {
 	 * @param string $value   Original string value.
 	 * @param string $title   Human-readable label shown in the Translation Editor.
 	 * @param string $type    Editor field type: LINE, AREA or VISUAL.
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return void
 	 */
 	private function register_form_string( int $form_id, string $name, string $value, string $title = '', string $type = 'LINE' ): void {
@@ -455,7 +455,7 @@ class String_Collector {
 	 * Human-readable label for a block attribute, shown in the Translation Editor.
 	 *
 	 * @param string $attribute Block attribute key.
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return string
 	 */
 	private function attribute_label( string $attribute ): string {

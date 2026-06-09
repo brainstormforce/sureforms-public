@@ -15,7 +15,7 @@
  * quiz, captchar, hidden) are flagged via Base_Migrator::note_unsupported().
  *
  * @package sureforms
- * @since   x.x.x
+ * @since   2.11.0
  */
 
 namespace SRFM\Inc\Migrator\Importers;
@@ -29,7 +29,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Cf7_Importer
  *
- * @since x.x.x
+ * @since 2.11.0
  */
 class Cf7_Importer extends Base_Migrator {
 	/**
@@ -60,7 +60,7 @@ class Cf7_Importer extends Base_Migrator {
 	/**
 	 * Constructor — set source identifiers.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 */
 	public function __construct() {
 		$this->key   = 'cf7';
@@ -70,7 +70,7 @@ class Cf7_Importer extends Base_Migrator {
 	/**
 	 * Whether Contact Form 7 is currently active.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return bool
 	 */
 	public function exist() {
@@ -80,7 +80,7 @@ class Cf7_Importer extends Base_Migrator {
 	/**
 	 * Enumerate all CF7 forms as `wpcf7_contact_form` posts.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 * @return array<int,array<string,mixed>>
 	 */
 	protected function get_source_forms() {
@@ -106,7 +106,7 @@ class Cf7_Importer extends Base_Migrator {
 	/**
 	 * Get the source form id.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param array<string,mixed> $form Form descriptor from get_source_forms().
 	 * @return int
@@ -121,7 +121,7 @@ class Cf7_Importer extends Base_Migrator {
 	/**
 	 * Get the source form display name.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param array<string,mixed> $form Form descriptor.
 	 * @return string
@@ -141,7 +141,7 @@ class Cf7_Importer extends Base_Migrator {
 	 * generic confirmation message. The imported form is fully usable —
 	 * users can refine the email body in SureForms' Single Form Settings.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param array<string,mixed> $form Form descriptor.
 	 * @return array<string,mixed> SureForms meta_input payload.
@@ -210,7 +210,7 @@ class Cf7_Importer extends Base_Migrator {
 	 *   3. Strip `<label>` wrappers, extract labels, drop quiz tags.
 	 *   4. Per form-tag: regex out attributes, map to srfm/* block.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param array<string,mixed> $form Form descriptor.
 	 * @return string Concatenated field block markup.
@@ -235,7 +235,7 @@ class Cf7_Importer extends Base_Migrator {
 		 * synthetic field tags that the rest of the pipeline can map to a
 		 * SureForms block.
 		 *
-		 * @since x.x.x
+		 * @since 2.11.0
 		 *
 		 * @param string              $raw  Raw CF7 `_form` template.
 		 * @param string              $key  Migrator source key (always `cf7` here).
@@ -265,7 +265,7 @@ class Cf7_Importer extends Base_Migrator {
 	 * Map a CF7 form-tag name (without the trailing `*`) to a SureForms block
 	 * template method on Block_Templates.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @return array<string,string>
 	 */
@@ -295,7 +295,7 @@ class Cf7_Importer extends Base_Migrator {
 		 * 'hidden_field', 'range' => 'slider']`. The corresponding method
 		 * must be emitted by a `srfm_migrator_block_template` subscriber.
 		 *
-		 * @since x.x.x
+		 * @since 2.11.0
 		 *
 		 * @param array<string,string> $map Tag name → Block_Templates method.
 		 * @param string               $key Migrator source key (`cf7`).
@@ -314,7 +314,7 @@ class Cf7_Importer extends Base_Migrator {
 	 *
 	 * Empty input returns the supplied fallback so callers get a sane default.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param string $body     Raw CF7 mail template.
 	 * @param string $fallback Returned verbatim when `$body` is blank.
@@ -374,7 +374,7 @@ class Cf7_Importer extends Base_Migrator {
 	 * inbox even when the source template referenced `[_user_email]` for an
 	 * auto-reply mail that didn't get ported).
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param string $recipient CF7 `_mail.recipient` value.
 	 * @param string $fallback  Returned when recipient is unusable.
@@ -398,7 +398,7 @@ class Cf7_Importer extends Base_Migrator {
 	 * Remove `<label>...</label>` wrappers and blank lines, keep the label text
 	 * inline so the next pass can pair it with the form-tag.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param array<int,string> $lines Raw template lines.
 	 * @return array<int,string>
@@ -425,7 +425,7 @@ class Cf7_Importer extends Base_Migrator {
 	 * Walk the cleaned lines and produce per-tag blob strings of the form
 	 * `Label text [text* name "default" placeholder "foo"]`.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param array<int,string> $lines Cleaned template lines.
 	 * @return array<int,string>
@@ -479,7 +479,7 @@ class Cf7_Importer extends Base_Migrator {
 	 * (e.g. `[acceptance id] I agree [/acceptance]`) are kept whole, and bare
 	 * closing tags are absorbed rather than treated as new fields.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param string $blob One cleaned template blob.
 	 * @return array<int,string> One sub-blob per opening form-tag (>= 1 entry).
@@ -531,7 +531,7 @@ class Cf7_Importer extends Base_Migrator {
 	 * Translate one tag blob into a SureForms block. Handles `[submit]` by
 	 * stashing the label rather than emitting a block.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param string $blob One tag blob (label + [shortcode]).
 	 * @return string Block markup, or '' if not emitted.
@@ -576,7 +576,7 @@ class Cf7_Importer extends Base_Migrator {
 		 * `file` and `hidden` because it provides `srfm/upload` and
 		 * `srfm/hidden`.
 		 *
-		 * @since x.x.x
+		 * @since 2.11.0
 		 *
 		 * @param array<int,string> $tags Lower-cased CF7 tag names.
 		 * @param string            $key  Migrator source key (`cf7`).
@@ -671,7 +671,7 @@ class Cf7_Importer extends Base_Migrator {
 			 * for the given `$method`+`$args`, or an empty string to fall
 			 * through to the unsupported-fields warning.
 			 *
-			 * @since x.x.x
+			 * @since 2.11.0
 			 *
 			 * @param string              $markup Default empty string.
 			 * @param string              $method Template method name.
@@ -690,7 +690,7 @@ class Cf7_Importer extends Base_Migrator {
 	 * Match a CF7 `name:value` option, accepting bare, double- or single-quoted
 	 * values so multi-word options like `default:"Hello World"` aren't dropped.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param string $name CF7 option name (e.g. `default`, `min`, `max`).
 	 * @param string $body Tag body (without the surrounding brackets).
@@ -717,7 +717,7 @@ class Cf7_Importer extends Base_Migrator {
 	 * https://contactform7.com/tag-syntax/ — single-token attrs (`autocomplete:foo`)
 	 * and quoted-list attrs (`"opt 1" "opt 2"`).
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 *
 	 * @param string $body     Tag body (without the surrounding brackets).
 	 * @param string $tag_name Lower-cased tag name (without trailing `*`).

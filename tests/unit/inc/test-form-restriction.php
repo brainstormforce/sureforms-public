@@ -377,7 +377,7 @@ class Test_Form_Restriction extends TestCase {
 	 * a graceful no-op when no multilingual provider is active, so the message
 	 * should still appear unchanged.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.0
 	 */
 	public function test_display_form_restriction_message() {
 		$past_date = gmdate( 'Y-m-d', strtotime( '-1 day' ) );
