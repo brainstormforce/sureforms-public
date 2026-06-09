@@ -96,8 +96,16 @@ class Rest_Api {
 	 * @return \WP_REST_Response
 	 */
 	public function get_geo_country() {
+		// Pass an empty fallback so '' unambiguously means "not confidently
+		// detected" (no CDN header and no successful IP lookup). The frontend then
+		// falls back to a privacy-safe, network-free Intl guess in the browser.
+		$country = Helper::get_geo_country( '' );
+
 		return new \WP_REST_Response(
-			[ 'country' => Helper::get_geo_country() ],
+			[
+				'country'  => $country,
+				'detected' => '' !== $country,
+			],
 			200
 		);
 	}

@@ -44,25 +44,54 @@ function validateCountryWithFilters(
 }
 
 /**
+ * Detect a likely country for the visitor using only on-device browser data.
+ *
+ * Reads the ISO region from the browser's locale(s) via Intl — no network
+ * request, no IP, no third-party call — so it works offline, on localhost and
+ * on full-page-cached pages, and never raises the CORS / rate-limit / privacy
+ * concerns that a browser geo-IP request would.
+ *
+ * @return {string} Lowercase 2-letter country code, or '' when undeterminable.
+ */
+function detectCountryFromBrowser() {
+	try {
+		const locales =
+			Array.isArray( navigator.languages ) && navigator.languages.length
+				? navigator.languages
+				: [ navigator.language ];
+		for ( const locale of locales ) {
+			if ( ! locale ) {
+				continue;
+			}
+			const region = new Intl.Locale( locale ).region;
+			if ( region && /^[A-Z]{2}$/.test( region ) ) {
+				return region.toLowerCase();
+			}
+		}
+	} catch {
+		// Intl.Locale unsupported or a malformed locale — fall through.
+	}
+	return '';
+}
+
+/**
  * Apply per-visitor auto country detection to an intl-tel-input instance.
  *
- * Fetches the visitor's country from the same-origin geo-country REST endpoint
- * and applies it via setCountry(), so auto-detection is correct per visitor even
- * when the page HTML is full-page cached. Respects the field's country filters
- * and never overrides a value the visitor already started typing. The result is
- * cached in sessionStorage to avoid repeat requests within a session.
+ * Resolution order, most-to-least authoritative:
+ *   1. A browser-local Intl guess applied immediately — works offline, on
+ *      localhost and on full-page-cached pages, with no flash and no network.
+ *   2. The same-origin geo-country REST endpoint, used to refine the guess only
+ *      when the server *confidently* detected (CDN header or a successful IP
+ *      lookup); cached in sessionStorage for the session.
+ *
+ * Respects the field's country filters and never overrides a value the visitor
+ * already started typing.
  *
  * @param {Object}      iti         The intl-tel-input instance.
  * @param {HTMLElement} phoneNumber The phone input element.
  * @param {Object}      filters     Country-filter settings for this field.
  */
 function applyAutoCountry( iti, phoneNumber, filters ) {
-	const endpoint =
-		window.srfm_phone_data && window.srfm_phone_data.geo_endpoint;
-	if ( ! endpoint ) {
-		return;
-	}
-
 	const setCountry = ( country ) => {
 		if ( ! country || typeof country !== 'string' ) {
 			return;
@@ -83,10 +112,20 @@ function applyAutoCountry( iti, phoneNumber, filters ) {
 		}
 	};
 
-	// Reuse a cached lookup for the session to avoid repeat requests.
+	// 1. Immediate, network-free local guess so the flag is sensible even on
+	//    localhost, offline, or before any request resolves.
+	setCountry( detectCountryFromBrowser() );
+
+	const endpoint =
+		window.srfm_phone_data && window.srfm_phone_data.geo_endpoint;
+	if ( ! endpoint ) {
+		return;
+	}
+
+	// 2. Prefer a confident server detection. Reuse a cached one for the session.
 	let cached = null;
 	try {
-		cached = window.sessionStorage?.getItem( 'srfm_geo_country' );
+		cached = window.sessionStorage?.getItem( 'srfm_geo_country_detected' );
 	} catch {
 		cached = null;
 	}
@@ -98,19 +137,20 @@ function applyAutoCountry( iti, phoneNumber, filters ) {
 	fetch( endpoint, { headers: { Accept: 'application/json' } } )
 		.then( ( res ) => ( res.ok ? res.json() : null ) )
 		.then( ( data ) => {
-			const country = data && data.country ? String( data.country ) : '';
-			if ( ! country ) {
+			// Only override the local guess when the server is confident.
+			if ( ! data || ! data.detected || ! data.country ) {
 				return;
 			}
+			const country = String( data.country );
 			try {
-				window.sessionStorage?.setItem( 'srfm_geo_country', country );
+				window.sessionStorage?.setItem( 'srfm_geo_country_detected', country );
 			} catch {
 				// sessionStorage may be unavailable (e.g. private mode) — ignore.
 			}
 			setCountry( country );
 		} )
 		.catch( () => {
-			// Network error — keep the server-provided default-country.
+			// Network error — keep the local guess.
 		} );
 }
 
