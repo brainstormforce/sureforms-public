@@ -44,16 +44,56 @@ function validateCountryWithFilters(
 }
 
 /**
+ * IANA timezone → ISO 3166-1 alpha-2 country (lowercase).
+ *
+ * The device timezone reflects the visitor's physical location far better than
+ * their browser language, so it is the primary on-device signal. Covers the
+ * common canonical zones; anything unlisted falls back to the locale region.
+ */
+const TIMEZONE_TO_COUNTRY = {
+	// North America.
+	'America/New_York': 'us', 'America/Detroit': 'us', 'America/Chicago': 'us', 'America/Denver': 'us', 'America/Phoenix': 'us', 'America/Los_Angeles': 'us', 'America/Anchorage': 'us', 'America/Adak': 'us', 'America/Boise': 'us', 'America/Indiana/Indianapolis': 'us', 'Pacific/Honolulu': 'us',
+	'America/Toronto': 'ca', 'America/Vancouver': 'ca', 'America/Edmonton': 'ca', 'America/Winnipeg': 'ca', 'America/Halifax': 'ca', 'America/St_Johns': 'ca', 'America/Regina': 'ca',
+	'America/Mexico_City': 'mx', 'America/Tijuana': 'mx', 'America/Monterrey': 'mx', 'America/Cancun': 'mx',
+	// Central & South America.
+	'America/Bogota': 'co', 'America/Lima': 'pe', 'America/Caracas': 've', 'America/Santiago': 'cl', 'America/Argentina/Buenos_Aires': 'ar', 'America/Sao_Paulo': 'br', 'America/Bahia': 'br', 'America/Fortaleza': 'br', 'America/Manaus': 'br', 'America/Montevideo': 'uy', 'America/Asuncion': 'py', 'America/La_Paz': 'bo', 'America/Guayaquil': 'ec', 'America/Panama': 'pa', 'America/Costa_Rica': 'cr', 'America/Guatemala': 'gt', 'America/El_Salvador': 'sv', 'America/Tegucigalpa': 'hn', 'America/Managua': 'ni', 'America/Santo_Domingo': 'do', 'America/Havana': 'cu', 'America/Jamaica': 'jm', 'America/Puerto_Rico': 'pr', 'America/Port_of_Spain': 'tt',
+	// Europe.
+	'Europe/London': 'gb', 'Europe/Dublin': 'ie', 'Europe/Lisbon': 'pt', 'Atlantic/Canary': 'es', 'Europe/Madrid': 'es', 'Europe/Paris': 'fr', 'Europe/Brussels': 'be', 'Europe/Amsterdam': 'nl', 'Europe/Luxembourg': 'lu', 'Europe/Berlin': 'de', 'Europe/Zurich': 'ch', 'Europe/Vienna': 'at', 'Europe/Rome': 'it', 'Europe/Malta': 'mt', 'Europe/Copenhagen': 'dk', 'Europe/Oslo': 'no', 'Europe/Stockholm': 'se', 'Europe/Helsinki': 'fi', 'Europe/Reykjavik': 'is', 'Europe/Warsaw': 'pl', 'Europe/Prague': 'cz', 'Europe/Bratislava': 'sk', 'Europe/Budapest': 'hu', 'Europe/Vilnius': 'lt', 'Europe/Riga': 'lv', 'Europe/Tallinn': 'ee', 'Europe/Athens': 'gr', 'Europe/Bucharest': 'ro', 'Europe/Sofia': 'bg', 'Europe/Belgrade': 'rs', 'Europe/Zagreb': 'hr', 'Europe/Ljubljana': 'si', 'Europe/Sarajevo': 'ba', 'Europe/Skopje': 'mk', 'Europe/Tirane': 'al', 'Europe/Chisinau': 'md', 'Europe/Kyiv': 'ua', 'Europe/Kiev': 'ua', 'Europe/Minsk': 'by', 'Europe/Moscow': 'ru', 'Europe/Istanbul': 'tr',
+	// Middle East.
+	'Asia/Jerusalem': 'il', 'Asia/Beirut': 'lb', 'Asia/Amman': 'jo', 'Asia/Damascus': 'sy', 'Asia/Baghdad': 'iq', 'Asia/Riyadh': 'sa', 'Asia/Kuwait': 'kw', 'Asia/Qatar': 'qa', 'Asia/Dubai': 'ae', 'Asia/Muscat': 'om', 'Asia/Bahrain': 'bh', 'Asia/Tehran': 'ir',
+	// South & Central Asia.
+	'Asia/Kabul': 'af', 'Asia/Karachi': 'pk', 'Asia/Kolkata': 'in', 'Asia/Calcutta': 'in', 'Asia/Colombo': 'lk', 'Asia/Kathmandu': 'np', 'Asia/Dhaka': 'bd', 'Asia/Thimphu': 'bt', 'Asia/Almaty': 'kz', 'Asia/Tashkent': 'uz', 'Asia/Baku': 'az', 'Asia/Yerevan': 'am', 'Asia/Tbilisi': 'ge',
+	// East & Southeast Asia.
+	'Asia/Yangon': 'mm', 'Asia/Bangkok': 'th', 'Asia/Ho_Chi_Minh': 'vn', 'Asia/Phnom_Penh': 'kh', 'Asia/Vientiane': 'la', 'Asia/Jakarta': 'id', 'Asia/Makassar': 'id', 'Asia/Kuala_Lumpur': 'my', 'Asia/Singapore': 'sg', 'Asia/Manila': 'ph', 'Asia/Hong_Kong': 'hk', 'Asia/Macau': 'mo', 'Asia/Taipei': 'tw', 'Asia/Shanghai': 'cn', 'Asia/Urumqi': 'cn', 'Asia/Tokyo': 'jp', 'Asia/Seoul': 'kr', 'Asia/Ulaanbaatar': 'mn',
+	// Africa.
+	'Africa/Abidjan': 'ci', 'Africa/Accra': 'gh', 'Africa/Addis_Ababa': 'et', 'Africa/Algiers': 'dz', 'Africa/Cairo': 'eg', 'Africa/Casablanca': 'ma', 'Africa/Johannesburg': 'za', 'Africa/Lagos': 'ng', 'Africa/Nairobi': 'ke', 'Africa/Tripoli': 'ly', 'Africa/Tunis': 'tn', 'Africa/Khartoum': 'sd', 'Africa/Dar_es_Salaam': 'tz', 'Africa/Kampala': 'ug', 'Africa/Kinshasa': 'cd', 'Africa/Maputo': 'mz', 'Africa/Windhoek': 'na', 'Africa/Harare': 'zw', 'Africa/Lusaka': 'zm', 'Africa/Dakar': 'sn',
+	// Oceania.
+	'Australia/Sydney': 'au', 'Australia/Melbourne': 'au', 'Australia/Brisbane': 'au', 'Australia/Perth': 'au', 'Australia/Adelaide': 'au', 'Australia/Darwin': 'au', 'Australia/Hobart': 'au', 'Pacific/Auckland': 'nz', 'Pacific/Fiji': 'fj', 'Pacific/Guam': 'gu', 'Pacific/Port_Moresby': 'pg',
+};
+
+/**
  * Detect a likely country for the visitor using only on-device browser data.
  *
- * Reads the ISO region from the browser's locale(s) via Intl — no network
- * request, no IP, no third-party call — so it works offline, on localhost and
- * on full-page-cached pages, and never raises the CORS / rate-limit / privacy
- * concerns that a browser geo-IP request would.
+ * Primary signal is the device timezone (physical location); the browser locale
+ * region (language) is a weaker secondary fallback. Both are read locally via
+ * Intl — no network request, no IP, no third-party call — so detection works
+ * offline, on localhost and on full-page-cached pages, and never raises the
+ * CORS / rate-limit / privacy concerns of a browser geo-IP request.
  *
  * @return {string} Lowercase 2-letter country code, or '' when undeterminable.
  */
 function detectCountryFromBrowser() {
+	// 1. Timezone → country (reflects physical location).
+	try {
+		const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+		if ( tz && TIMEZONE_TO_COUNTRY[ tz ] ) {
+			return TIMEZONE_TO_COUNTRY[ tz ];
+		}
+	} catch {
+		// Intl.DateTimeFormat unsupported — fall through to locale.
+	}
+
+	// 2. Locale region (language) — weaker, but better than nothing.
 	try {
 		const locales =
 			Array.isArray( navigator.languages ) && navigator.languages.length
