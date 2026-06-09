@@ -536,13 +536,8 @@ You can report security issues through our [Bug Bounty Program](https://brainsto
 
 ## Changelog ##
 ### 2.11.0 - 9th June 2026 ###
-* New: Added a Color Picker field for capturing color values.
 * New: Added a Form Migrator to import forms from Contact Form 7, WPForms, Gravity Forms, and Ninja Forms in a single click.
-* New: Added Additional CSS Class support for individual fields in the create-form and update-form MCP abilities.
-* New: Added an srfm.entryDetail.extraActions filter to register custom actions in the entry detail view.
-* New: Added bundled translations for the top 20 languages.
 * New: Added native WPML support to translate each form individually using String Packages.
-* Fix: Resolved an issue where conditional logic "less than" conditions were silently dropped when editing field values.
 ### 2.10.1 - 1st June 2026 ###
 * Improvement: Improved compatibility with older Block API versions so the SureForms editor loads reliably across WordPress environments.
 * Fix: Resolved an issue where the Textarea character counter was misaligned.
