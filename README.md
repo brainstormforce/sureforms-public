@@ -535,7 +535,7 @@ Yes. SureForms Business includes fully functional user registration forms and lo
 You can report security issues through our [Bug Bounty Program](https://brainstormforce.com/bug-bounty-program/). We collaborate with Patchstack to provide opportunities for researchers to report vulnerabilities. The Patchstack team will help validate, triage, and handle any reported security issues.
 
 ## Changelog ##
-### 2.11.0 - 9th June 2026 ###
+### 2.11.0 - 10th June 2026 ###
 * New: Added a Form Migrator to import forms from Contact Form 7, WPForms, Gravity Forms, and Ninja Forms in a single click.
 * New: Added native WPML support to translate each form individually using String Packages.
 ### 2.10.1 - 1st June 2026 ###
