@@ -23,6 +23,12 @@ const initialState = {
 		email: leadDetails.email || '',
 		consent: true,
 	},
+	// Sources detected by the migrator on onboarding boot. Populated by
+	// the layout via listSources(); used by getVisibleRoutes() to gate
+	// the /onboarding/import-forms step and by the import-forms page to
+	// render the picker.
+	migrationSources: [],
+	migrationDetectionLoaded: false,
 	// Analytics data
 	analytics: {
 		skippedSteps: [],
@@ -33,6 +39,9 @@ const initialState = {
 		accountConnected: false,
 		completed: false,
 		exitedEarly: false,
+		// Migration step state. Captured for telemetry on /done.
+		migrationSourceKey: null,
+		migrationResult: null,
 	},
 };
 
@@ -47,6 +56,8 @@ const ACTIONS = {
 	SET_USER_DETAILS: 'SET_USER_DETAILS',
 	SET_COMPLETED: 'SET_COMPLETED',
 	SET_EXITED_EARLY: 'SET_EXITED_EARLY',
+	SET_MIGRATION_SOURCES: 'SET_MIGRATION_SOURCES',
+	SET_MIGRATION_RESULT: 'SET_MIGRATION_RESULT',
 	RESET_STATE: 'RESET_STATE',
 };
 
@@ -143,6 +154,21 @@ const onboardingReducer = ( state, action ) => {
 					completed: false,
 				},
 			};
+		case ACTIONS.SET_MIGRATION_SOURCES:
+			return {
+				...state,
+				migrationSources: Array.isArray( action.payload ) ? action.payload : [],
+				migrationDetectionLoaded: true,
+			};
+		case ACTIONS.SET_MIGRATION_RESULT:
+			return {
+				...state,
+				analytics: {
+					...state.analytics,
+					migrationSourceKey: action.payload?.sourceKey ?? null,
+					migrationResult: action.payload?.result ?? null,
+				},
+			};
 		case ACTIONS.RESET_STATE:
 			return initialState;
 		default:
@@ -221,6 +247,16 @@ export const OnboardingProvider = ( { children } ) => {
 			dispatch( {
 				type: ACTIONS.SET_EXITED_EARLY,
 				payload: exited,
+			} ),
+		setMigrationSources: ( sources ) =>
+			dispatch( {
+				type: ACTIONS.SET_MIGRATION_SOURCES,
+				payload: sources,
+			} ),
+		setMigrationResult: ( sourceKey, result ) =>
+			dispatch( {
+				type: ACTIONS.SET_MIGRATION_RESULT,
+				payload: { sourceKey, result },
 			} ),
 		resetState: () => dispatch( { type: ACTIONS.RESET_STATE } ),
 		clearStorage: clearOnboardingStorage,

@@ -18,7 +18,7 @@ trait Get_Instance {
 	/**
 	 * Instance object.
 	 *
-	 * @var self Class Instance.
+	 * @var self|null Class Instance.
 	 */
 	private static $instance = null;
 
@@ -33,5 +33,20 @@ trait Get_Instance {
 			self::$instance = new self();
 		}
 		return self::$instance;
+	}
+
+	/**
+	 * Reset the cached instance.
+	 *
+	 * Primarily for tests, which need to re-resolve a singleton after changing
+	 * the environment it reads at construction time (e.g. activating a
+	 * multilingual provider via a filter). The next get_instance() call rebuilds
+	 * the object.
+	 *
+	 * @since 2.11.0
+	 * @return void
+	 */
+	public static function reset_instance() {
+		self::$instance = null;
 	}
 }

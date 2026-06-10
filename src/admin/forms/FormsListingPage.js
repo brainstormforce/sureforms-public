@@ -7,6 +7,7 @@ import Header from '../components/Header';
 import FormsHeader from './components/FormsHeader';
 import FormsTable from './components/FormsTable';
 import EmptyState from './components/EmptyState';
+import MigrationBanner from './components/MigrationBanner';
 import ConfirmationDialog from '@Admin/components/ConfirmationDialog';
 import AdminNotice from '@Admin/components/AdminNotice';
 import { cn } from '@Utils/Helpers';
@@ -559,6 +560,14 @@ const FormsListingPage = () => {
 					direction="column"
 					gap="2xl"
 				>
+					{ /* Surface the migrator for switchers who completed
+					     onboarding before this feature shipped, or who
+					     skipped the dedicated step. Self-hides when
+					     dismissed, when no sources are detected, or when
+					     onboarding hasn't finished yet (the onboarding
+					     step covers that audience). */ }
+					<MigrationBanner />
+
 					{ /* Content */ }
 					{ shouldShowInitialEmptyState ? (
 						<div className="bg-background-secondary rounded-lg shadow-sm border-0.5 border-solid border-border-subtle">

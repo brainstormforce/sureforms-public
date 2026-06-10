@@ -11,6 +11,7 @@ import {
 } from './onboarding-state';
 import apiFetch from '@wordpress/api-fetch';
 import ICONS from '@Admin/components/template-picker/components/icons';
+import { listSources } from '@Admin/settings/migration/api';
 
 const NavBar = () => {
 	const { getCurrentStepNumber, getVisibleRoutes } =
@@ -150,6 +151,32 @@ const OnboardingContent = () => {
 		return () => {
 			document.body.classList.remove( 'sureforms-onboarding-page' );
 		};
+	}, [] );
+
+	// Probe the migration sources REST endpoint once on boot so the
+	// /onboarding/import-forms step can decide whether to render. We
+	// fail-closed on errors (the step stays hidden; users still reach it
+	// via Settings → Migration).
+	useEffect( () => {
+		let cancelled = false;
+		listSources()
+			.then( ( res ) => {
+				if ( cancelled ) {
+					return;
+				}
+				const sources = Array.isArray( res?.sources ) ? res.sources : [];
+				actions.setMigrationSources( sources );
+			} )
+			.catch( () => {
+				if ( cancelled ) {
+					return;
+				}
+				actions.setMigrationSources( [] );
+			} );
+		return () => {
+			cancelled = true;
+		};
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [] );
 
 	// Clear when on the done page

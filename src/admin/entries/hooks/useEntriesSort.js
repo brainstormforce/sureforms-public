@@ -26,6 +26,7 @@ export const useEntriesSort = ( initialSortBy = '', initialOrder = '' ) => {
 		id: 'id',
 		status: 'status',
 		dateTime: 'created_at',
+		language: 'language',
 	};
 
 	// Update URL params when sort changes

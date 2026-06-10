@@ -712,4 +712,101 @@ class Test_Form_Submit extends TestCase {
 		// form-id = 0 is valid but should be removed from result
 		$this->assertArrayNotHasKey( 'form-id', $result );
 	}
+
+	/**
+	 * is_known_language() returns false for an empty string regardless of
+	 * provider state — empty is never a valid stored value.
+	 */
+	public function test_is_known_language_rejects_empty_string() {
+		$result = $this->call_private_method( $this->form_submit, 'is_known_language', [ '' ] );
+		$this->assertFalse( $result );
+	}
+
+	/**
+	 * On non-WPML / non-Polylang sites the multilingual manager resolves to
+	 * Null_Provider. is_known_language() should then accept the shape-validated
+	 * code so we don't drop legitimate submissions just because no multilingual
+	 * plugin is active.
+	 */
+	public function test_is_known_language_accepts_when_provider_inactive() {
+		$result = $this->call_private_method( $this->form_submit, 'is_known_language', [ 'hi' ] );
+		$this->assertTrue( $result );
+	}
+
+	/**
+	 * When the wpml_active_languages filter exposes a known set, the helper
+	 * should still accept codes not in that set when the active provider
+	 * reports is_active() === false (Null_Provider case in the test env). This
+	 * test pins that fallback path so the filter alone doesn't cause valid
+	 * submissions to be rejected on non-multilingual sites.
+	 */
+	public function test_is_known_language_does_not_reject_when_provider_inactive_even_with_filter() {
+		$listener = static function () {
+			return [ 'en' => [ 'language_code' => 'en' ] ];
+		};
+		add_filter( 'wpml_active_languages', $listener );
+
+		// 'hi' is NOT in the filter list, but the provider is inactive — so
+		// is_known_language() should still return true (defence-in-depth applies
+		// to the active-provider path only).
+		$result = $this->call_private_method( $this->form_submit, 'is_known_language', [ 'hi' ] );
+		$this->assertTrue( $result );
+
+		remove_filter( 'wpml_active_languages', $listener );
+	}
+
+	/**
+	 * Regression for the WPML permalink bug: a same-origin referer with a
+	 * percent-encoded (non-ASCII) slug must keep its octets, NOT be collapsed to
+	 * hyphens the way sanitize_text_field() did.
+	 */
+	public function test_normalize_submission_url_preserves_multibyte_percent_encoding() {
+		$home = home_url();
+		$path = '/' . rawurlencode( 'परीक्षण' ) . '/';
+		$url  = $home . $path;
+
+		$result = $this->call_private_method( $this->form_submit, 'normalize_submission_url', [ $url ] );
+
+		$this->assertStringContainsString( '%E0%A4', $result, 'Percent-encoded octets must be preserved.' );
+		$this->assertStringNotContainsString( '--', $result, 'Slug must not collapse to bare hyphens.' );
+	}
+
+	/**
+	 * normalize_submission_url() rejects cross-origin, non-http(s) and overlong
+	 * referers, returning an empty string.
+	 */
+	public function test_normalize_submission_url_rejects_invalid_referers() {
+		// Cross-origin.
+		$this->assertSame(
+			'',
+			$this->call_private_method( $this->form_submit, 'normalize_submission_url', [ 'https://evil.example.com/x/' ] )
+		);
+		// Non-http scheme.
+		$this->assertSame(
+			'',
+			$this->call_private_method( $this->form_submit, 'normalize_submission_url', [ 'javascript:alert(1)' ] )
+		);
+		// Empty.
+		$this->assertSame(
+			'',
+			$this->call_private_method( $this->form_submit, 'normalize_submission_url', [ '' ] )
+		);
+		// Overlong (>2048).
+		$this->assertSame(
+			'',
+			$this->call_private_method( $this->form_submit, 'normalize_submission_url', [ home_url( '/' . str_repeat( 'a', 2100 ) ) ] )
+		);
+	}
+
+	/**
+	 * normalize_submission_url() keeps a legitimate same-origin URL and drops the
+	 * fragment/userinfo by rebuilding from parsed parts.
+	 */
+	public function test_normalize_submission_url_accepts_same_origin_and_strips_fragment() {
+		$result = $this->call_private_method( $this->form_submit, 'normalize_submission_url', [ home_url( '/form/6/?lang=hi#frag' ) ] );
+
+		$this->assertStringContainsString( '/form/6/', $result );
+		$this->assertStringContainsString( 'lang=hi', $result );
+		$this->assertStringNotContainsString( '#frag', $result, 'Fragment must be dropped.' );
+	}
 }

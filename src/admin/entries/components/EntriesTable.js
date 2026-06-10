@@ -73,7 +73,7 @@ const EntriesTable = ( {
 		{
 			label: __( 'Form Name', 'sureforms' ),
 			key: 'formName',
-			headerClassName: 'w-[27%]',
+			headerClassName: 'w-[25%]',
 			render: ( entry ) =>
 				!! entry.formPermalink ? (
 					<Button
@@ -107,7 +107,7 @@ const EntriesTable = ( {
 		{
 			label: __( 'First Field', 'sureforms' ),
 			key: 'firstField',
-			headerClassName: 'w-[23%]',
+			headerClassName: 'w-[21%]',
 			render: ( entry ) => {
 				if ( typeof entry?.firstField === 'string' ) {
 					return (
@@ -140,7 +140,7 @@ const EntriesTable = ( {
 			label: __( 'Date & Time', 'sureforms' ),
 			key: 'dateTime',
 			sortable: true,
-			headerClassName: 'w-[15%]',
+			headerClassName: 'w-[13%]',
 			render: ( entry ) => {
 				const { shortFormat, fullFormat } = formatDateTime(
 					entry.dateTime
@@ -163,10 +163,22 @@ const EntriesTable = ( {
 			},
 		},
 		{
+			label: __( 'Language', 'sureforms' ),
+			key: 'language',
+			sortable: true,
+			sortBy: 'language',
+			headerClassName: 'w-[8%]',
+			render: ( entry ) => (
+				<span className="line-clamp-1 break-all overflow-hidden text-sm font-normal text-text-secondary">
+					{ entry.language || '-' }
+				</span>
+			),
+		},
+		{
 			label: __( 'Actions', 'sureforms' ),
 			key: 'actions',
 			align: 'right',
-			headerClassName: 'w-[12%]',
+			headerClassName: 'w-[10%]',
 			render: ( entry ) => {
 				const buttons = [];
 				if ( entry.status !== 'trash' ) {
