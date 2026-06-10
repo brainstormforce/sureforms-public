@@ -61,4 +61,71 @@ class Test_Form_Field_Schema extends TestCase {
 		$this->assertContains( 'number', $field_type_enum );
 		$this->assertContains( 'dropdown', $field_type_enum );
 	}
+
+	/**
+	 * Test the schema exposes a string `className` property.
+	 */
+	public function test_schema_exposes_class_name_property() {
+		$reflection = new \ReflectionMethod( $this->ability, 'get_form_field_schema' );
+		$reflection->setAccessible( true );
+		$schema = $reflection->invoke( $this->ability );
+
+		$this->assertArrayHasKey( 'className', $schema );
+		$this->assertSame( 'string', $schema['className']['type'] );
+	}
+
+	/**
+	 * Test sanitize_form_fields preserves a valid single className.
+	 */
+	public function test_sanitize_form_fields_preserves_single_class() {
+		$reflection = new \ReflectionMethod( $this->ability, 'sanitize_form_fields' );
+		$reflection->setAccessible( true );
+		$result = $reflection->invoke(
+			$this->ability,
+			[
+				[
+					'label'     => 'Name',
+					'className' => 'vk-0',
+				],
+			]
+		);
+		$this->assertSame( 'vk-0', $result[0]['className'] );
+	}
+
+	/**
+	 * Test sanitize_form_fields keeps multiple space-separated classes.
+	 */
+	public function test_sanitize_form_fields_preserves_multiple_classes() {
+		$reflection = new \ReflectionMethod( $this->ability, 'sanitize_form_fields' );
+		$reflection->setAccessible( true );
+		$result = $reflection->invoke(
+			$this->ability,
+			[
+				[
+					'label'     => 'Name',
+					'className' => '  vk-0   highlight ',
+				],
+			]
+		);
+		$this->assertSame( 'vk-0 highlight', $result[0]['className'] );
+	}
+
+	/**
+	 * Test sanitize_form_fields strips invalid CSS-class characters per token.
+	 */
+	public function test_sanitize_form_fields_strips_invalid_class_chars() {
+		$reflection = new \ReflectionMethod( $this->ability, 'sanitize_form_fields' );
+		$reflection->setAccessible( true );
+		$result = $reflection->invoke(
+			$this->ability,
+			[
+				[
+					'label'     => 'Name',
+					'className' => 'vk-0! <bad> ok_2',
+				],
+			]
+		);
+		// sanitize_html_class drops disallowed chars: "vk-0!" -> "vk-0", "<bad>" -> "bad", "ok_2" kept.
+		$this->assertSame( 'vk-0 bad ok_2', $result[0]['className'] );
+	}
 }

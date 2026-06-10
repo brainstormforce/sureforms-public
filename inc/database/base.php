@@ -421,8 +421,20 @@ abstract class Base {
 			$result = $wpdb->query( $query ); // phpcs:ignore -- It is okay. We are already using prepare above and we need to do DB query directly here.
 
 			if ( false === $result ) {
-				// Stop DB alteration if we have any error.
+				// Stop DB alteration if we have any error. A failed ALTER leaves the table
+				// version un-bumped, so it retries on every request — expose the underlying
+				// error so persistent failures are diagnosable (hook for logging/monitoring).
 				$this->db_upgradable = false;
+
+				/**
+				 * Fires when a SureForms DB schema-upgrade query fails.
+				 *
+				 * @since 2.11.0
+				 * @param string $last_error The DB error message ( $wpdb->last_error ).
+				 * @param string $query      The ALTER query that failed.
+				 * @param string $table      The table being altered.
+				 */
+				do_action( 'srfm_db_upgrade_query_failed', $this->wpdb->last_error, $query, $this->get_tablename() );
 			}
 
 			return $result;

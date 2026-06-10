@@ -164,18 +164,26 @@ const Table = ( {
 					) )
 				) }
 			</FUITable.Body>
-			<FUITable.Footer className="flex flex-col md:flex-row md:justify-between">
-				{ isLoading ? (
-					<div className="w-full flex items-center justify-between">
-						<Skeleton className="h-8 w-24 rounded-md" />
-						<Skeleton className="h-8 w-32 rounded-md" />
-					</div>
-				) : paginationProps ? (
-					<Pagination { ...paginationProps } />
-				) : (
-					children
-				) }
-			</FUITable.Footer>
+			{ /*
+			   Render the footer only when there's something to show — an
+			   empty FUITable.Footer still takes up its padding row, which
+			   leaves dead space under tables that don't paginate (the
+			   Migration tab's form list, for example).
+			*/ }
+			{ ( isLoading || paginationProps || children ) && (
+				<FUITable.Footer className="flex flex-col md:flex-row md:justify-between">
+					{ isLoading ? (
+						<div className="w-full flex items-center justify-between">
+							<Skeleton className="h-8 w-24 rounded-md" />
+							<Skeleton className="h-8 w-32 rounded-md" />
+						</div>
+					) : paginationProps ? (
+						<Pagination { ...paginationProps } />
+					) : (
+						children
+					) }
+				</FUITable.Footer>
+			) }
 		</FUITable>
 	);
 };

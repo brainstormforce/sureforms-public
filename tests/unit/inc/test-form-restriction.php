@@ -371,4 +371,40 @@ class Test_Form_Restriction extends TestCase {
 		$this->assertFalse( $result );
 	}
 
+	/**
+	 * Test display_form_restriction_message returns the rendered HTML including
+	 * the (potentially multilingual-translated) message text. The translator is
+	 * a graceful no-op when no multilingual provider is active, so the message
+	 * should still appear unchanged.
+	 *
+	 * @since 2.11.0
+	 */
+	public function test_display_form_restriction_message() {
+		$past_date = gmdate( 'Y-m-d', strtotime( '-1 day' ) );
+
+		update_post_meta(
+			self::$form_id,
+			'_srfm_form_restriction',
+			wp_json_encode(
+				[
+					'status'           => true,
+					'schedulingStatus' => true,
+					'maxEntries'       => 9999,
+					'date'             => $past_date,
+					'hours'            => '12',
+					'minutes'          => '00',
+					'meridiem'         => 'AM',
+					'message'          => 'Sorry, this form is closed.',
+				]
+			)
+		);
+
+		$markup = Form_Restriction::display_form_restriction_message( self::$form_id );
+
+		$this->assertIsString( $markup );
+		$this->assertStringContainsString( 'srfm-form-restriction-message', $markup );
+		// Null_Provider translator is transparent — the original message survives.
+		$this->assertStringContainsString( 'Sorry', $markup );
+	}
+
 }
