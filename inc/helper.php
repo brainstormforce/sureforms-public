@@ -2435,67 +2435,6 @@ class Helper {
 	}
 
 	/**
-	 * Read a visitor country code from a CDN / server geo header, if present.
-	 *
-	 * Many hosts sit behind Cloudflare, CloudFront or a geo-aware web server that
-	 * injects the visitor's country as a request header. This is free, instant,
-	 * per-visitor and works on full-page-cached sites, so we prefer it over an
-	 * outbound API call. Returns '' when no usable header is present.
-	 *
-	 * @since x.x.x
-	 * @return string Lowercase 2-letter country code, or '' when unavailable.
-	 */
-	private static function get_cdn_country() {
-		$headers = [
-			'HTTP_CF_IPCOUNTRY',              // Cloudflare.
-			'HTTP_CLOUDFRONT_VIEWER_COUNTRY', // AWS CloudFront.
-			'GEOIP_COUNTRY_CODE',             // Apache/Nginx mod_geoip / MaxMind.
-			'HTTP_X_GEO_COUNTRY',             // Some CDNs / reverse proxies.
-			'HTTP_X_COUNTRY_CODE',            // Some CDNs.
-		];
-
-		foreach ( $headers as $header ) {
-			if ( empty( $_SERVER[ $header ] ) ) {
-				continue;
-			}
-
-			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Validated by the regex below.
-			$code = strtolower( trim( sanitize_text_field( wp_unslash( $_SERVER[ $header ] ) ) ) );
-
-			// Cloudflare sends 'xx' for unknown and 't1' for Tor; reject non-ISO values.
-			if ( preg_match( '/^[a-z]{2}$/', $code ) && 'xx' !== $code && 't1' !== $code ) {
-				return $code;
-			}
-		}
-
-		/**
-		 * Filters the CDN-derived visitor country code, before the ipapi.co fallback.
-		 *
-		 * Lets sites short-circuit detection with a server-side country code (e.g.
-		 * from a custom header) without any outbound API call.
-		 *
-		 * @since x.x.x
-		 *
-		 * @param string $code Lowercase 2-letter country code, or '' if none found.
-		 */
-		return apply_filters( 'srfm_cdn_country', '' );
-	}
-
-	/**
-	 * TTL (in seconds) for caching a failed geo lookup.
-	 *
-	 * Short by default so a transient blip (rate-limit, timeout) self-heals on the
-	 * next visit instead of pinning the fallback country for a full hour, while
-	 * still preventing per-request retry storms. Filterable via `srfm_geo_failure_ttl`.
-	 *
-	 * @since x.x.x
-	 * @return int
-	 */
-	private static function get_geo_failure_ttl() {
-		return self::get_integer_value( apply_filters( 'srfm_geo_failure_ttl', 5 * MINUTE_IN_SECONDS ) );
-	}
-
-	/**
 	 * Detect the visitor's 2-letter country code via server-side IP geolocation.
 	 *
 	 * Prefers a CDN/server-provided country header (Cloudflare, CloudFront, mod_geoip)
@@ -2616,6 +2555,67 @@ class Helper {
 		set_transient( $cache_key, $country, DAY_IN_SECONDS );
 
 		return $country;
+	}
+
+	/**
+	 * Read a visitor country code from a CDN / server geo header, if present.
+	 *
+	 * Many hosts sit behind Cloudflare, CloudFront or a geo-aware web server that
+	 * injects the visitor's country as a request header. This is free, instant,
+	 * per-visitor and works on full-page-cached sites, so we prefer it over an
+	 * outbound API call. Returns '' when no usable header is present.
+	 *
+	 * @since x.x.x
+	 * @return string Lowercase 2-letter country code, or '' when unavailable.
+	 */
+	private static function get_cdn_country() {
+		$headers = [
+			'HTTP_CF_IPCOUNTRY',              // Cloudflare.
+			'HTTP_CLOUDFRONT_VIEWER_COUNTRY', // AWS CloudFront.
+			'GEOIP_COUNTRY_CODE',             // Apache/Nginx mod_geoip / MaxMind.
+			'HTTP_X_GEO_COUNTRY',             // Some CDNs / reverse proxies.
+			'HTTP_X_COUNTRY_CODE',            // Some CDNs.
+		];
+
+		foreach ( $headers as $header ) {
+			if ( empty( $_SERVER[ $header ] ) ) {
+				continue;
+			}
+
+			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Validated by the regex below.
+			$code = strtolower( trim( sanitize_text_field( wp_unslash( $_SERVER[ $header ] ) ) ) );
+
+			// Cloudflare sends 'xx' for unknown and 't1' for Tor; reject non-ISO values.
+			if ( preg_match( '/^[a-z]{2}$/', $code ) && 'xx' !== $code && 't1' !== $code ) {
+				return $code;
+			}
+		}
+
+		/**
+		 * Filters the CDN-derived visitor country code, before the ipapi.co fallback.
+		 *
+		 * Lets sites short-circuit detection with a server-side country code (e.g.
+		 * from a custom header) without any outbound API call.
+		 *
+		 * @since x.x.x
+		 *
+		 * @param string $code Lowercase 2-letter country code, or '' if none found.
+		 */
+		return apply_filters( 'srfm_cdn_country', '' );
+	}
+
+	/**
+	 * TTL (in seconds) for caching a failed geo lookup.
+	 *
+	 * Short by default so a transient blip (rate-limit, timeout) self-heals on the
+	 * next visit instead of pinning the fallback country for a full hour, while
+	 * still preventing per-request retry storms. Filterable via `srfm_geo_failure_ttl`.
+	 *
+	 * @since x.x.x
+	 * @return int
+	 */
+	private static function get_geo_failure_ttl() {
+		return self::get_integer_value( apply_filters( 'srfm_geo_failure_ttl', 5 * MINUTE_IN_SECONDS ) );
 	}
 
 }
