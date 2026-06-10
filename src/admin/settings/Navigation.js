@@ -5,6 +5,7 @@ import { useSelect, useDispatch } from '@wordpress/data';
 import { cn } from '@Utils/Helpers';
 import { STORE_NAME as SRFM_STORE_NAME } from '../../store/constants';
 import {
+	ArrowRightLeft,
 	Bot,
 	Cpu,
 	CreditCard,
@@ -162,6 +163,17 @@ const defaultNavigation = [
 			'sureforms'
 		),
 	},
+	// region: form-migration — Phase P1 UI.
+	{
+		name: __( 'Migration', 'sureforms' ),
+		slug: 'migration-settings',
+		icon: <ArrowRightLeft />,
+		helpText: __(
+			'Import forms from Contact Form 7, WPForms, Gravity Forms, and other plugins into SureForms.',
+			'sureforms'
+		),
+	},
+	// endregion: form-migration.
 ];
 
 export const getNavigation = () =>

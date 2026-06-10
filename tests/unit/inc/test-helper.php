@@ -2732,4 +2732,27 @@ class Test_Helper extends TestCase {
         );
     }
 
+    /**
+     * generate_common_form_markup() must HTML-escape the label so block
+     * attribute content cannot inject raw HTML/script into the form markup.
+     * Regression guard for the wp_kses_post() -> esc_html() hardening.
+     */
+    public function test_generate_common_form_markup_escapes_label() {
+        $markup = Helper::generate_common_form_markup(
+            0,
+            'label',
+            '<script>alert(1)</script>Full Name',
+            'full-name',
+            'block123',
+            true
+        );
+
+        $this->assertIsString( $markup );
+        $this->assertStringContainsString( 'srfm-block-label', $markup );
+        // Label text is rendered, but the HTML is escaped rather than raw.
+        $this->assertStringContainsString( 'Full Name', $markup );
+        $this->assertStringContainsString( '&lt;script&gt;', $markup );
+        $this->assertStringNotContainsString( '<script>', $markup );
+    }
+
 }

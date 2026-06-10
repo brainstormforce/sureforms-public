@@ -22,6 +22,9 @@ import GoogleMapsPage from './pages/GoogleMaps';
 import PaymentsPage from '../payment/global-setting-page';
 import MCPPage from './pages/MCP';
 import OttoKitPage from './pages/OttoKit';
+// region: form-migration — Phase P1 UI.
+import MigrationPage from './migration/MigrationPage';
+// endregion: form-migration.
 import { applyFilters } from '@wordpress/hooks';
 import PageTitleSection from '@Admin/components/PageTitleSection';
 
@@ -782,6 +785,9 @@ const Component = ( { path, subpage } ) => {
 						subpage={ subpage }
 					/>
 				) }
+				{ /* region: form-migration — Phase P1 UI. */ }
+				{ 'migration-settings' === path && <MigrationPage /> }
+				{ /* endregion: form-migration. */ }
 				{ applyFilters(
 					'srfm.settings.page.content',
 					[],

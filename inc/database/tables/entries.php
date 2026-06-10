@@ -37,7 +37,7 @@ class Entries extends Base {
 	 *
 	 * @var int
 	 */
-	protected $table_version = 1;
+	protected $table_version = 2;
 
 	/**
 	 * Current logs.
@@ -110,6 +110,11 @@ class Entries extends Base {
 				'type'    => 'array',
 				'default' => [],
 			],
+			// Submission language code (e.g. 'en', 'de'). Empty when no multilingual provider is active.
+			'language'        => [
+				'type'    => 'string',
+				'default' => '',
+			],
 		];
 	}
 
@@ -128,11 +133,13 @@ class Entries extends Base {
 			'status VARCHAR(10)',
 			'type VARCHAR(20)', // Note: @since 0.0.13 -- We have added type column, it will have entry's form type eg quiz, standard etc.
 			'extras LONGTEXT',
+			'language VARCHAR(20)', // Note: @since 2.11.0 -- Submission language code, captured from the active multilingual provider. Nullable to match status/type column convention; INSERT path always supplies a value or empty string. Width matches the `type` column precedent and covers extended BCP-47 codes (e.g. `ca-valencia`).
 			'created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP',
 			'updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP',
 			'INDEX idx_form_id (form_id)', // Indexing for the performance improvements.
 			'INDEX idx_user_id (user_id)',
 			'INDEX idx_form_id_created_at_status (form_id, created_at, status)', // Composite index for performance improvements.
+			'INDEX idx_form_id_language (form_id, language)', // Composite index for per-language entry filtering.
 		];
 	}
 
@@ -146,6 +153,13 @@ class Entries extends Base {
 			'extras LONGTEXT AFTER status',
 			'user_id BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 AFTER form_id',
 			'INDEX idx_user_id (user_id)',
+			// Note: @since 2.11.0 -- Added language column for multilingual submission tracking.
+			// No `AFTER` clause: on a pre-0.0.13 install upgrading straight to this version,
+			// `extras` is added in the SAME combined ALTER, and MySQL resolves `AFTER extras`
+			// against the pre-ALTER schema, throwing "Unknown column 'extras'" and failing the
+			// whole atomic ALTER. Column ordinal position is cosmetic and addressed by name everywhere.
+			'language VARCHAR(20)',
+			'INDEX idx_form_id_language (form_id, language)',
 		];
 	}
 
@@ -582,6 +596,6 @@ class Entries extends Base {
 	 * @return array<string>
 	 */
 	protected function get_allowed_orderby_columns() {
-		return [ 'ID', 'id', 'form_id', 'user_id', 'status', 'type', 'created_at', 'updated_at' ];
+		return [ 'ID', 'id', 'form_id', 'user_id', 'status', 'type', 'language', 'created_at', 'updated_at' ];
 	}
 }

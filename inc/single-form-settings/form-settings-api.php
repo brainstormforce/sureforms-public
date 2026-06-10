@@ -8,6 +8,7 @@
 
 namespace SRFM\Inc\Single_Form_Settings;
 
+use SRFM\Inc\Compatibility\Multilingual\String_Collector;
 use SRFM\Inc\Helper;
 use SRFM\Inc\Traits\Get_Instance;
 use WP_Error;
@@ -172,6 +173,13 @@ class Form_Settings_Api {
 			// against whatever sanitize_callbacks returned.
 			$saved[ $meta_key ] = get_post_meta( $post_id, $meta_key, true );
 		}
+
+		// The settings dialog persists meta via update_post_meta() without firing
+		// save_post, so String_Collector::on_form_save() never runs for these edits.
+		// Re-collect explicitly so confirmation / notification / restriction strings
+		// are (re-)registered with the active multilingual provider. collect() is
+		// provider-gated and idempotent, and a no-op when no provider is active.
+		String_Collector::get_instance()->collect( $post_id );
 
 		return new WP_REST_Response(
 			[

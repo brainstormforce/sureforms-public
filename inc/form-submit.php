@@ -8,6 +8,7 @@
 
 namespace SRFM\Inc;
 
+use SRFM\Inc\Compatibility\Multilingual\Multilingual_Manager;
 use SRFM\Inc\Database\Tables\Entries;
 use SRFM\Inc\Email\Email_Template;
 use SRFM\Inc\Lib\Browser\Browser;
@@ -584,32 +585,11 @@ class Form_Submit {
 			$browser_name = sanitize_text_field( $browser->getBrowser() );
 			$device_name  = sanitize_text_field( $browser->getPlatform() );
 
-			// Capture submission page URL server-side from the Referer header. The
-			// stored value is rebuilt from parsed components so a non-browser client
-			// cannot inject attacker-controlled bits a real browser would never send
-			// (userinfo, fragment) or mismatch the legitimate origin's port. Anything
-			// not same-origin http(s) is stored as empty.
-			$referer = isset( $_SERVER['HTTP_REFERER'] )
-				? sanitize_text_field( wp_unslash( $_SERVER['HTTP_REFERER'] ) )
-				: '';
-			if ( '' !== $referer && strlen( $referer ) <= 2048 ) {
-				$parts      = wp_parse_url( $referer );
-				$home_parts = wp_parse_url( home_url() );
-				if (
-					is_array( $parts )
-					&& is_array( $home_parts )
-					&& isset( $parts['scheme'], $parts['host'], $home_parts['host'] )
-					&& in_array( strtolower( $parts['scheme'] ), [ 'http', 'https' ], true )
-					&& 0 === strcasecmp( (string) $parts['host'], (string) $home_parts['host'] )
-					&& ( $parts['port'] ?? null ) === ( $home_parts['port'] ?? null )
-				) {
-					$clean          = $parts['scheme'] . '://' . $parts['host']
-						. ( isset( $parts['port'] ) ? ':' . $parts['port'] : '' )
-						. ( $parts['path'] ?? '' )
-						. ( isset( $parts['query'] ) ? '?' . $parts['query'] : '' );
-					$submission_url = esc_url_raw( $clean, [ 'http', 'https' ] );
-				}
-			}
+			// Capture submission page URL server-side from the Referer header.
+			// esc_url_raw() (not sanitize_text_field) preserves percent-encoded
+			// non-ASCII slugs; normalize_submission_url() then validates same-origin.
+			$referer        = isset( $_SERVER['HTTP_REFERER'] ) ? esc_url_raw( wp_unslash( $_SERVER['HTTP_REFERER'] ) ) : '';
+			$submission_url = $this->normalize_submission_url( $referer );
 		}
 
 		$form_markup = get_the_content( null, false, Helper::get_integer_value( $form_data['form-id'] ) );
@@ -621,10 +601,26 @@ class Form_Submit {
 			'device_name'    => $device_name,
 			'submission_url' => $submission_url,
 		];
-		$entries_data    = [
+		// Prefer the language the visitor saw at form-render time (captured in a
+		// hidden srfm-form-language input), since WPML's language detection on the
+		// REST submit endpoint frequently falls back to the default. The hidden
+		// input is client-supplied, so:
+		// 1. Validate shape with a BCP-47 regex.
+		// 2. Cross-check against the active multilingual provider's known
+		// languages (active + default) so a crafted request can't pollute
+		// the column with codes the site doesn't support.
+		// 3. Fall back to the provider's current_language() on either failure.
+		$entry_language     = Multilingual_Manager::get_instance()->provider()->current_language();
+		$submitted_language = isset( $form_data['srfm-form-language'] ) ? sanitize_text_field( Helper::get_string_value( $form_data['srfm-form-language'] ) ) : '';
+		if ( '' !== $submitted_language && preg_match( '/^[a-z]{2,3}([_-][A-Za-z0-9]{2,8})?$/', $submitted_language ) === 1 && $this->is_known_language( $submitted_language ) ) {
+			$entry_language = $submitted_language;
+		}
+
+		$entries_data = [
 			'form_id'         => $id,
 			'form_data'       => $submission_data,
 			'submission_info' => $submission_info,
+			'language'        => $entry_language,
 			'created_at'      => current_time( 'mysql' ),
 		];
 		if ( is_user_logged_in() ) {
@@ -646,6 +642,17 @@ class Form_Submit {
 			// Inject entry_id so {entry_id} smart tag resolves in confirmation message, redirect URL, email notifications, and downstream integrations.
 			$form_data['entry_id'] = intval( $entry_id );
 
+			// Switch the multilingual provider to the entry's language so the
+			// confirmation message, redirect URL, and email notifications render
+			// in the language the visitor saw at submit time. The REST submit
+			// endpoint doesn't carry the ?lang= URL parameter, so without this
+			// switch the provider would return strings in its default language
+			// even though the entry itself is correctly tagged.
+			$provider = Multilingual_Manager::get_instance()->provider();
+			if ( $provider->is_active() && '' !== $entry_language ) {
+				$provider->switch_language( $entry_language );
+			}
+
 			// Send email after entry creation so {entry_id} is available when smart tags are processed.
 			$send_email = $this->send_email( $id, $submission_data, $form_data );
 			if ( $send_email ) {
@@ -653,6 +660,11 @@ class Form_Submit {
 			}
 
 			$confirmation_message = Generate_Form_Markup::get_confirmation_markup( $form_data, $submission_data );
+			$redirect_url         = Generate_Form_Markup::get_redirect_url( $form_data, $submission_data );
+
+			if ( $provider->is_active() && '' !== $entry_language ) {
+				$provider->restore_language();
+			}
 
 			$response = [
 				'success'      => true,
@@ -663,7 +675,7 @@ class Form_Submit {
 					'after_submit'       => true,
 					'after_submit_nonce' => wp_create_nonce( 'srfm_after_submission_' . Helper::get_string_value( $entry_id ) ),
 				],
-				'redirect_url' => Generate_Form_Markup::get_redirect_url( $form_data, $submission_data ),
+				'redirect_url' => $redirect_url,
 			];
 
 			$form_submit_response = apply_filters(
@@ -1215,6 +1227,100 @@ class Form_Submit {
 			'log_message' => $detail_message, // This variable is used for logging purposes, such as displaying detailed error information in the console on the front end.
 			'message'     => $message,
 		];
+	}
+
+	/**
+	 * Sanitise and validate a Referer into a storable submission URL.
+	 *
+	 * The value is rebuilt from parsed components so a non-browser client cannot
+	 * inject bits a real browser would never send (userinfo, fragment) or mismatch
+	 * the legitimate origin's port. Anything that is not a same-origin http(s) URL,
+	 * or is longer than 2048 chars, is rejected and returns an empty string.
+	 *
+	 * Uses esc_url_raw() rather than sanitize_text_field(): the latter strips
+	 * percent-encoded octets (`%E0%A4...`), which mangles the URLs of translated
+	 * pages whose slugs contain non-ASCII characters (e.g. WPML Hindi/Arabic
+	 * permalinks) down to bare hyphens. esc_url_raw() preserves the percent-encoding
+	 * so the recorded submission URL stays accurate.
+	 *
+	 * @param string $referer Raw (unslashed) Referer header value.
+	 * @since 2.11.0
+	 * @return string Same-origin http(s) URL, or empty string when invalid.
+	 */
+	protected function normalize_submission_url( string $referer ): string {
+		$referer = esc_url_raw( $referer );
+
+		if ( '' === $referer || strlen( $referer ) > 2048 ) {
+			return '';
+		}
+
+		$parts      = wp_parse_url( $referer );
+		$home_parts = wp_parse_url( home_url() );
+
+		if (
+			! is_array( $parts )
+			|| ! is_array( $home_parts )
+			|| ! isset( $parts['scheme'], $parts['host'], $home_parts['host'] )
+			|| ! in_array( strtolower( $parts['scheme'] ), [ 'http', 'https' ], true )
+			|| 0 !== strcasecmp( (string) $parts['host'], (string) $home_parts['host'] )
+			|| ( $parts['port'] ?? null ) !== ( $home_parts['port'] ?? null )
+		) {
+			return '';
+		}
+
+		$clean = $parts['scheme'] . '://' . $parts['host']
+			. ( isset( $parts['port'] ) ? ':' . $parts['port'] : '' )
+			. ( $parts['path'] ?? '' )
+			. ( isset( $parts['query'] ) ? '?' . $parts['query'] : '' );
+
+		return esc_url_raw( $clean, [ 'http', 'https' ] );
+	}
+
+	/**
+	 * Check whether the given language code is known to the active multilingual
+	 * provider (i.e. in its active-languages set or matches the default language).
+	 *
+	 * Used to reject crafted srfm-form-language hidden-input values that pass
+	 * the BCP-47 shape regex but reference languages the site doesn't actually
+	 * support.
+	 *
+	 * @param string $language Language code to check (e.g. 'hi', 'de-AT').
+	 * @since 2.11.0
+	 * @return bool True when the code is known, false otherwise.
+	 */
+	protected function is_known_language( string $language ): bool {
+		if ( '' === $language ) {
+			return false;
+		}
+
+		$provider = Multilingual_Manager::get_instance()->provider();
+
+		// When no provider is active there's no authoritative set to check
+		// against. Accept whatever the visitor sent (shape-validated) so the
+		// column still reflects the visitor's intent on non-WPML sites.
+		if ( ! $provider->is_active() ) {
+			return true;
+		}
+
+		// Default language is always considered known.
+		if ( $language === $provider->default_language() ) {
+			return true;
+		}
+
+		// Use WPML's filter when available — works regardless of which
+		// multilingual plugin is the active provider, as Polylang implements
+		// the same filter for compatibility.
+		$active = apply_filters( 'wpml_active_languages', null, 'skip_missing=0' );
+		if ( is_array( $active ) && ! empty( $active ) ) {
+			return array_key_exists( $language, $active );
+		}
+
+		// A provider IS active but its language list is unavailable. Rather than
+		// fail open and trust an arbitrary client-supplied code, accept it only when
+		// it matches the server-resolved current language. The caller already
+		// defaults $entry_language to current_language(), so this keeps mis-tagging
+		// to the server's own determination instead of the (cacheable) client value.
+		return $language === $provider->current_language();
 	}
 
 	/**

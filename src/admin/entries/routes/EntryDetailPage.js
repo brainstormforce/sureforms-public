@@ -259,11 +259,19 @@ const EntryDetailPage = () => {
 								onConfirmation={ handleConfirmation }
 							/>
 							{ /* Action buttons */ }
-							<div className="ml-0.5">
+							<div className="ml-0.5 flex flex-wrap items-center gap-3">
 								<SendDetailsButton
 									handleSendEmail={ handleSendEmail }
 									isDisabled={ ! ResendNotificationModal }
 								/>
+								{ applyFilters(
+									'srfm.entryDetail.extraActions',
+									null,
+									{
+										entryId: parseInt( id, 10 ),
+										formId: entryData?.formId,
+									}
+								) }
 							</div>
 						</div>
 					</div>

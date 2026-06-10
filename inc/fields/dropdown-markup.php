@@ -11,6 +11,7 @@ namespace SRFM\Inc\Fields;
 require SRFM_DIR . 'modules/gutenberg/classes/class-spec-gb-helper.php';
 
 use Spec_Gb_Helper;
+use SRFM\Inc\Compatibility\Multilingual\String_Translator;
 use SRFM\Inc\Helper;
 use SRFM\Inc\Smart_Tags;
 
@@ -103,9 +104,12 @@ class Dropdown_Markup extends Base {
 			$this->placeholder = $original_placeholder;
 		}
 
-		// Translate the default placeholder text for frontend display.
+		// Translate the default placeholder text for frontend display. Routed through
+		// the multilingual provider (not just the textdomain) so it is translated on
+		// WPML/Polylang sites too — the default placeholder is not serialized into
+		// block markup, so it never reaches the per-form string package.
 		if ( 'Select an option' === $this->placeholder ) {
-			$this->placeholder = __( 'Select an option', 'sureforms' );
+			$this->placeholder = String_Translator::get_instance()->translate_validation_message( 'srfm_dropdown_placeholder', __( 'Select an option', 'sureforms' ) );
 		}
 
 		$this->show_values = apply_filters( 'srfm_show_options_values', false, $attributes['showValues'] ?? false );

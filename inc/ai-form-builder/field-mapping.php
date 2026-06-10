@@ -126,6 +126,20 @@ class Field_Mapping {
 				$merged_attributes['placeholder'] = wp_html_excerpt( sanitize_text_field( $question['placeholder'] ), 500 );
 			}
 
+			// Forward `className` (Additional CSS Class) to the block attrs.
+			// Field blocks inherit core's className support and render it onto the
+			// field wrapper (see inc/fields/base.php::set_properties()). Lands from
+			// multiple callers (AI, MCP, HTML converter), so sanitize each token.
+			if ( isset( $question['className'] ) && is_string( $question['className'] ) && '' !== $question['className'] ) {
+				$classes = preg_split( '/\s+/', trim( $question['className'] ) );
+				if ( is_array( $classes ) ) {
+					$clean = implode( ' ', array_filter( array_map( 'sanitize_html_class', $classes ) ) );
+					if ( '' !== $clean ) {
+						$merged_attributes['className'] = $clean;
+					}
+				}
+			}
+
 			// Apply filter to modify field type.
 			$field_type = apply_filters( 'srfm_ai_field_modify_field_type', $question['fieldType'], $question, $is_conversational, $form_type );
 

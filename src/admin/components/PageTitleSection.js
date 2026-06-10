@@ -45,6 +45,9 @@ const PageTitleSection = ( {
 		'integration-settings',
 		'ottokit-settings',
 		'payments-settings/payment-methods',
+		// Migration is a wizard-style importer with its own inline actions —
+		// it has no settings to persist, so the header Save button is hidden.
+		'migration-settings',
 	] );
 
 	const currentSlugs = getCurrentPageSlugs();

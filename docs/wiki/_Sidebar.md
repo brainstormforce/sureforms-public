@@ -17,6 +17,7 @@
 - [Email Notifications](Email-Notifications)
 - [AI Form Builder](AI-Form-Builder)
 - [Data Export & Import](Data-Export-Import)
+- [Using WPML With SureForms](Using-WPML-With-SureForms)
 
 **Frontend / React**
 - [Admin Dashboard](Admin-Dashboard)
