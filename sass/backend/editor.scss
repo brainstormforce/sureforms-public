@@ -752,6 +752,13 @@ html[dir="rtl"] body.post-type-sureforms_form {
 	background-color: #e4e4e7;
 }
 
+.srfm-color-picker-nudge {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	gap: 8px;
+}
+
 /**
  * Upgrade Prompt Styles.
  */

@@ -419,4 +419,18 @@ class Test_Database_Base extends TestCase {
 		$this->assertStringContainsString( '>=', $result );
 		$this->assertStringContainsString( '<=', $result );
 	}
+
+	// ---------------------------------------------------------------
+	// maybe_add_new_columns — guard clause
+	// ---------------------------------------------------------------
+
+	/**
+	 * maybe_add_new_columns() must short-circuit to false when given no
+	 * columns, before attempting any schema ALTER. Guard-clause coverage for
+	 * the function that gained the srfm_db_upgrade_query_failed failure hook.
+	 */
+	public function test_maybe_add_new_columns_returns_false_for_empty_input() {
+		$this->assertFalse( $this->base->maybe_add_new_columns( [] ) );
+		$this->assertFalse( $this->base->maybe_add_new_columns() );
+	}
 }

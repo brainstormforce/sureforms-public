@@ -62,6 +62,41 @@ export const useOnboardingNavigation = () => {
 				return false;
 			}
 
+			// Hide the migration step only AFTER the source probe has
+			// resolved AND no source has anything left to import. We use
+			// `pending_count` (form_count - imported_count) rather than
+			// `form_count` so a site whose forms have all been migrated on
+			// a previous run doesn't see a re-import prompt — that scenario
+			// is what the "All forms already imported" caption on the
+			// Settings → Migration tab handles instead.
+			//
+			// While the probe is in-flight (`migrationDetectionLoaded === false`)
+			// we keep the step visible so that linear navigation past
+			// `user-details` doesn't race past it into `/done`. The step
+			// itself renders a short loader and a clean "nothing to
+			// import" hint if the probe ultimately finds nothing.
+			if ( route.url === '/onboarding/import-forms' ) {
+				const detectionLoaded =
+					onboardingState?.migrationDetectionLoaded;
+				if ( detectionLoaded ) {
+					const sources = onboardingState?.migrationSources || [];
+					const hasPending = sources.some( ( s ) => {
+						if ( ! s?.installed ) {
+							return false;
+						}
+						const pending = Number(
+							s?.pending_count ??
+								Number( s?.form_count ?? 0 ) -
+									Number( s?.imported_count ?? 0 )
+						);
+						return pending > 0;
+					} );
+					if ( ! hasPending ) {
+						return false;
+					}
+				}
+			}
+
 			return true;
 		} );
 	};

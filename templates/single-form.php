@@ -158,7 +158,6 @@ if ( $use_banner_as_page_background ) {
 							<h1 class="srfm-single-banner-title"><?php echo esc_html( get_the_title() ); ?></h1>
 							<?php
 						}
-
 						?>
 					</div>
 					<div class="srfm-form-wrapper">

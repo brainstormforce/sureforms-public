@@ -8,6 +8,7 @@
 
 namespace SRFM\Inc;
 
+use SRFM\Inc\Compatibility\Multilingual\String_Translator;
 use SRFM\Inc\Database\Tables\Entries;
 use SRFM\Inc\Traits\Get_Instance;
 
@@ -255,6 +256,10 @@ class Form_Restriction {
 		// Get the scheduling state and appropriate message.
 		$scheduling_state         = self::get_form_scheduling_state( $form_restriction );
 		$form_restriction_message = self::get_restriction_message_by_state( $scheduling_state, $form_restriction );
+
+		// Translate the restriction message via the active multilingual provider
+		// (no-op when no WPML/Polylang is installed).
+		$form_restriction_message = String_Translator::get_instance()->translate_restriction_message( (int) $form_id, $form_restriction_message );
 
 		$form_restriction_message = apply_filters( 'srfm_form_restriction_message', $form_restriction_message, $form_id, $form_restriction );
 
