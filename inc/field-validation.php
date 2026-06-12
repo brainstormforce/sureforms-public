@@ -557,7 +557,8 @@ class Field_Validation {
 		if ( ! empty( $attrs['enableCalculation'] ) ) {
 			$number_config['enableCalculation']  = true;
 			$number_config['calculationFormula'] = isset( $attrs['calculationFormula'] ) && is_string( $attrs['calculationFormula'] ) ? $attrs['calculationFormula'] : '';
-			$number_config['calculationRound']   = isset( $attrs['calculationRound'] ) ? absint( $attrs['calculationRound'] ) : 0;
+			// Stored as null when unset so the validator rounds only when a precision is configured.
+			$number_config['calculationRound'] = isset( $attrs['calculationRound'] ) && is_numeric( $attrs['calculationRound'] ) ? absint( $attrs['calculationRound'] ) : null;
 		}
 
 		return $number_config;
