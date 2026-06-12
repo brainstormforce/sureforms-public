@@ -1035,100 +1035,121 @@ class Payment_Helper {
 			$dynamic_amount_field_block_name = $resolved_config['variable_amount_field_block_name'] ?? '';
 			$variable_amount_field_slug      = $resolved_config['variable_amount_field'] ?? '';
 
-			// When the amount source field is identifiable, validate the charged amount
-			// against the server-derived expected amount for that source. When it is NOT
-			// identifiable (legacy/old form configuration with an empty source reference),
-			// we cannot derive an exact expected amount — but we must NOT skip validation.
-			// The configured minimum-amount floor below is always enforced.
-			//
-			// Security: this branch previously returned a valid result unconditionally for
-			// legacy forms, which allowed an unauthenticated attacker to pay any amount.
-			if ( ! empty( $dynamic_amount_field_block_name ) && ! empty( $variable_amount_field_slug ) ) {
-				$submitted_field_value = self::get_form_submitted_value_by_slug_and_block_name( $variable_amount_field_slug, $dynamic_amount_field_block_name, $form_data );
+			// "Variant B": legacy/stale config may not have recorded the amount-source field
+			// (empty source reference). Without it we cannot derive a server-side expected
+			// amount. First try to recover it by refreshing the block config from the form's
+			// current content — forms saved with current code record the source — which
+			// self-heals legacy forms whose source field still exists.
+			if ( empty( $dynamic_amount_field_block_name ) || empty( $variable_amount_field_slug ) ) {
+				$refreshed_config = self::refresh_block_config( $form_id );
+				if ( is_array( $refreshed_config ) && isset( $refreshed_config[ $block_id ] ) && is_array( $refreshed_config[ $block_id ] ) ) {
+					$block_config                    = $refreshed_config;
+					$resolved_config                 = self::resolve_payment_config_for_active_type( $block_config[ $block_id ], $active_type );
+					$dynamic_amount_field_block_name = $resolved_config['variable_amount_field_block_name'] ?? '';
+					$variable_amount_field_slug      = $resolved_config['variable_amount_field'] ?? '';
+				}
+			}
 
-				if ( empty( $submitted_field_value ) ) {
+			// If the source still cannot be identified, there is no server-side configuration
+			// to validate against, so we MUST NOT accept an attacker-supplied amount. Fail safe.
+			//
+			// Security: this branch previously returned a valid result unconditionally for such
+			// forms, which allowed an unauthenticated attacker to pay any amount (down to 1 cent
+			// when the form had no minimum-amount floor).
+			if ( empty( $dynamic_amount_field_block_name ) || empty( $variable_amount_field_slug ) ) {
+				return [
+					'valid'   => false,
+					'message' => __( 'Payment amount could not be verified for this form. Please edit and re-save the form, then try again.', 'sureforms' ),
+				];
+			}
+
+			// The amount source is identified: validate the charged amount against the
+			// server-derived expected amount for that source. The configured minimum-amount
+			// floor below is always enforced as an additional lower bound.
+			$submitted_field_value = self::get_form_submitted_value_by_slug_and_block_name( $variable_amount_field_slug, $dynamic_amount_field_block_name, $form_data );
+
+			if ( empty( $submitted_field_value ) ) {
+				return [
+					'valid'   => false,
+					'message' => __( 'Variable amount field value is required.', 'sureforms' ),
+				];
+			}
+
+			if ( 'srfm/dropdown' === $dynamic_amount_field_block_name || 'srfm/multi-choice' === $dynamic_amount_field_block_name ) {
+				// Get the block config for the variable amount field by matching slug and block name.
+				$variable_amount_block_config = self::get_block_config_by_name_and_slug( $block_config, $dynamic_amount_field_block_name, $variable_amount_field_slug );
+
+				if ( empty( $variable_amount_block_config ) || ! is_string( $submitted_field_value ) ) {
 					return [
 						'valid'   => false,
-						'message' => __( 'Variable amount field value is required.', 'sureforms' ),
+						'message' => __( 'Variable amount field configuration not found.', 'sureforms' ),
 					];
 				}
 
-				if ( 'srfm/dropdown' === $dynamic_amount_field_block_name || 'srfm/multi-choice' === $dynamic_amount_field_block_name ) {
-					// Get the block config for the variable amount field by matching slug and block name.
-					$variable_amount_block_config = self::get_block_config_by_name_and_slug( $block_config, $dynamic_amount_field_block_name, $variable_amount_field_slug );
+				// The expected amount is read from the server-side option config keyed by the
+				// submitted selection — the attacker chooses the option, never its price.
+				$get_expected_amount = self::get_amount_by_the_config_options( $submitted_field_value, $variable_amount_block_config );
 
-					if ( empty( $variable_amount_block_config ) || ! is_string( $submitted_field_value ) ) {
-						return [
-							'valid'   => false,
-							'message' => __( 'Variable amount field configuration not found.', 'sureforms' ),
-						];
-					}
+				// Validate payment amount matches expected amount.
+				if ( abs( $payment_amount - $get_expected_amount ) > 0.01 ) {
+					return [
+						'valid'   => false,
+						/* translators: %1$s: expected amount, %2$s: payment amount */
+						'message' => sprintf( __( 'Payment amount mismatch. Expected %1$s, received %2$s.', 'sureforms' ), $get_expected_amount, $payment_amount ),
+					];
+				}
+			} else {
+				// Number and hidden fields. Their value may be server-determined — a
+				// configured default value, or a calculation computed from other fields.
+				// In those cases the expected amount MUST be derived server-side and the
+				// value submitted with the request must never be trusted as the price.
+				$variable_amount_block_config = self::get_block_config_by_name_and_slug( $block_config, $dynamic_amount_field_block_name, $variable_amount_field_slug );
 
-					// The expected amount is read from the server-side option config keyed by the
-					// submitted selection — the attacker chooses the option, never its price.
-					$get_expected_amount = self::get_amount_by_the_config_options( $submitted_field_value, $variable_amount_block_config );
+				if ( empty( $variable_amount_block_config ) ) {
+					return [
+						'valid'   => false,
+						'message' => __( 'Variable amount field configuration not found.', 'sureforms' ),
+					];
+				}
 
-					// Validate payment amount matches expected amount.
-					if ( abs( $payment_amount - $get_expected_amount ) > 0.01 ) {
+				$expected_amount = self::resolve_server_side_variable_amount( $variable_amount_block_config, $block_config, $form_data );
+
+				if ( null !== $expected_amount ) {
+					// Authoritative server-side amount (static default value or a
+					// server-recomputed calculation). Reject any mismatch.
+					if ( abs( $payment_amount - floatval( $expected_amount ) ) > 0.01 ) {
 						return [
 							'valid'   => false,
 							/* translators: %1$s: expected amount, %2$s: payment amount */
-							'message' => sprintf( __( 'Payment amount mismatch. Expected %1$s, received %2$s.', 'sureforms' ), $get_expected_amount, $payment_amount ),
+							'message' => sprintf( __( 'Payment amount mismatch. Expected %1$s, received %2$s.', 'sureforms' ), floatval( $expected_amount ), $payment_amount ),
 						];
 					}
-				} else {
-					// Number and hidden fields. Their value may be server-determined — a
-					// configured default value, or a calculation computed from other fields.
-					// In those cases the expected amount MUST be derived server-side and the
-					// value submitted with the request must never be trusted as the price.
-					$variable_amount_block_config = self::get_block_config_by_name_and_slug( $block_config, $dynamic_amount_field_block_name, $variable_amount_field_slug );
+				} elseif ( 'srfm/number' === $dynamic_amount_field_block_name ) {
+					// Plain user-entered number ("name your price"): the amount is the
+					// customer's own choice, so confirm the charge matches what they entered.
+					// The minimum-amount floor below guards the lower bound.
+					$number_format_type       = isset( $variable_amount_block_config['format_type'] ) && ! empty( $variable_amount_block_config['format_type'] ) ? $variable_amount_block_config['format_type'] : 'us-style';
+					$submitted_field_value    = Helper::get_string_value( $submitted_field_value );
+					$converted_payment_amount = self::normalize_amount_by_format( $submitted_field_value, $number_format_type );
 
-					if ( empty( $variable_amount_block_config ) ) {
+					if ( ! is_numeric( $converted_payment_amount ) || $converted_payment_amount <= 0 ) {
 						return [
 							'valid'   => false,
-							'message' => __( 'Variable amount field configuration not found.', 'sureforms' ),
+							'message' => __( 'Variable amount field value is required.', 'sureforms' ),
 						];
 					}
 
-					$expected_amount = self::resolve_server_side_variable_amount( $variable_amount_block_config, $block_config, $form_data );
-
-					if ( null !== $expected_amount ) {
-						// Authoritative server-side amount (static default value or a
-						// server-recomputed calculation). Reject any mismatch.
-						if ( abs( $payment_amount - floatval( $expected_amount ) ) > 0.01 ) {
-							return [
-								'valid'   => false,
-								/* translators: %1$s: expected amount, %2$s: payment amount */
-								'message' => sprintf( __( 'Payment amount mismatch. Expected %1$s, received %2$s.', 'sureforms' ), floatval( $expected_amount ), $payment_amount ),
-							];
-						}
-					} elseif ( 'srfm/number' === $dynamic_amount_field_block_name ) {
-						// Plain user-entered number ("name your price"): the amount is the
-						// customer's own choice, so confirm the charge matches what they entered.
-						// The minimum-amount floor below guards the lower bound.
-						$number_format_type       = isset( $variable_amount_block_config['format_type'] ) && ! empty( $variable_amount_block_config['format_type'] ) ? $variable_amount_block_config['format_type'] : 'us-style';
-						$submitted_field_value    = Helper::get_string_value( $submitted_field_value );
-						$converted_payment_amount = self::normalize_amount_by_format( $submitted_field_value, $number_format_type );
-
-						if ( ! is_numeric( $converted_payment_amount ) || $converted_payment_amount <= 0 ) {
-							return [
-								'valid'   => false,
-								'message' => __( 'Variable amount field value is required.', 'sureforms' ),
-							];
-						}
-
-						if ( abs( $payment_amount - $converted_payment_amount ) > 0.01 ) {
-							return [
-								'valid'   => false,
-								/* translators: %1$s: expected amount, %2$s: payment amount */
-								'message' => sprintf( __( 'Payment amount mismatch. Expected %1$s, received %2$s.', 'sureforms' ), $converted_payment_amount, $payment_amount ),
-							];
-						}
+					if ( abs( $payment_amount - $converted_payment_amount ) > 0.01 ) {
+						return [
+							'valid'   => false,
+							/* translators: %1$s: expected amount, %2$s: payment amount */
+							'message' => sprintf( __( 'Payment amount mismatch. Expected %1$s, received %2$s.', 'sureforms' ), $converted_payment_amount, $payment_amount ),
+						];
 					}
-					// Otherwise (e.g. a hidden field whose value could not be resolved
-					// server-side): do NOT trust the submitted value — fall through to the
-					// minimum-amount floor below as the only safe guarantee.
 				}
+				// Otherwise (e.g. a hidden field whose value could not be resolved
+				// server-side): do NOT trust the submitted value — fall through to the
+				// minimum-amount floor below as the only safe guarantee.
 			}
 
 			// All variable amount sources are subject to the configured minimum amount floor.
@@ -1150,6 +1171,36 @@ class Payment_Helper {
 			'valid'   => true,
 			'message' => '',
 		];
+	}
+
+	/**
+	 * Force a refresh of the form's stored block configuration from its current content.
+	 *
+	 * Recovers the amount-source field reference for legacy forms whose cached
+	 * _srfm_block_config predates server-side source tracking (an empty
+	 * variable_amount_field_block_name). Re-parses the form blocks and rebuilds the config —
+	 * forms saved with current code record the source — then returns the refreshed config.
+	 *
+	 * @param int $form_id Form post ID.
+	 * @since 2.11.1
+	 * @return array<mixed>|null Refreshed block configuration, or null if it cannot be rebuilt.
+	 */
+	private static function refresh_block_config( $form_id ) {
+		if ( ! is_int( $form_id ) || $form_id <= 0 ) {
+			return null;
+		}
+
+		$post = get_post( $form_id );
+		if ( ! ( $post instanceof \WP_Post ) || empty( $post->post_content ) || ! function_exists( 'parse_blocks' ) ) {
+			return null;
+		}
+
+		$blocks = parse_blocks( $post->post_content );
+		if ( is_array( $blocks ) && ! empty( $blocks ) ) {
+			Field_Validation::add_block_config( $blocks, $form_id );
+		}
+
+		return Field_Validation::get_or_migrate_block_config_for_legacy_form( $form_id );
 	}
 
 	/**
