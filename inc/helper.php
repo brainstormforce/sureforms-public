@@ -2479,7 +2479,10 @@ class Helper {
 			return $fallback;
 		}
 
-		$cache_key = 'srfm_geo_' . md5( $ip );
+		// Versioned key (v2) so stale failure transients written by older code
+		// (which used the byte-identical 'srfm_geo_' key and a 1h TTL) don't shadow
+		// the current CDN/fallback logic for the failure-TTL window after an upgrade.
+		$cache_key = 'srfm_geo_v2_' . md5( $ip );
 		$cached    = get_transient( $cache_key );
 		if ( is_string( $cached ) && '' !== $cached ) {
 			return $cached;
@@ -2492,7 +2495,10 @@ class Helper {
 		$count     = self::get_integer_value( get_transient( $quota_key ) );
 		if ( $count >= $quota_cap ) {
 			self::srfm_log( $quota_cap, 'SRFM geo lookup skipped (hourly cap reached):' );
-			set_transient( $cache_key, $fallback, self::get_geo_failure_ttl() );
+			// Do NOT cache a per-IP transient here: the hourly counter already
+			// blocks outbound calls, and writing per IP is the one path not bounded
+			// by the cap — it would let spoofed X-Forwarded-For headers churn
+			// wp_options / the object cache under sustained traffic.
 			return $fallback;
 		}
 		set_transient( $quota_key, $count + 1, HOUR_IN_SECONDS );
@@ -2564,6 +2570,11 @@ class Helper {
 	 * injects the visitor's country as a request header. This is free, instant,
 	 * per-visitor and works on full-page-cached sites, so we prefer it over an
 	 * outbound API call. Returns '' when no usable header is present.
+	 *
+	 * NOTE: these headers are client-spoofable when the site is NOT actually behind
+	 * the named CDN/proxy. The value is used only as a phone-field UI default (the
+	 * pre-selected flag), never for access control, so spoofing has no security
+	 * impact here — at worst a visitor sees a different default country.
 	 *
 	 * @since x.x.x
 	 * @return string Lowercase 2-letter country code, or '' when unavailable.

@@ -87,21 +87,24 @@ class Phone_Markup extends Base {
 		$this->include_countries     = $attributes['includeCountries'] ?? [];
 		$this->exclude_countries     = $attributes['excludeCountries'] ?? [];
 
-		// When auto country is enabled, detect the visitor's country via server-side
-		// IP geolocation (ipapi.co) instead of a client-side fetch.
+		// When auto country is enabled, resolve a best-effort country here at render
+		// time to seed the baked `default-country` attribute (a sensible flag before
+		// any JS runs). The authoritative per-visitor detection happens client-side:
+		// phone.js applies an immediate network-free Intl guess and then refines it
+		// from the same-origin geo-country REST endpoint — so it stays correct even on
+		// full-page-cached sites, where this baked value would otherwise be the first
+		// visitor's country.
 		//
 		// Why not get_locale()?
 		// WordPress get_locale() returns the *site's* configured language (e.g. 'en_US'),
 		// not the visitor's physical location. A site set to English would show 'US' for
 		// every visitor worldwide — defeating the purpose of auto-country detection.
 		//
-		// Why server-side instead of client-side?
-		// The previous client-side fetch('https://ipapi.co/json') caused CORS failures,
-		// 429 rate limits on high-traffic sites, and exposed visitor IPs to a third party
-		// directly from the browser. Moving it server-side eliminates all three issues.
-		//
-		// Performance: The API is called only once per visitor IP and cached in a transient
-		// for 24 hours — subsequent page loads for the same IP resolve instantly from cache.
+		// Why resolve server-side at all (vs. a browser geo-IP fetch)?
+		// A client-side fetch('https://ipapi.co/json') caused CORS failures, 429 rate
+		// limits on high-traffic sites, and exposed visitor IPs to a third party from the
+		// browser. The server path (CDN header first, then a capped, cached ipapi.co
+		// lookup in Helper::get_geo_country()) avoids all three.
 		if ( $this->auto_country ) {
 			// Pass the configured default as the fallback so a detection failure
 			// degrades to the user's chosen country instead of a hardcoded 'us'.

@@ -2702,7 +2702,7 @@ class Test_Helper extends TestCase {
     public function test_get_geo_country_resolves_via_api_and_caches() {
         $this->clear_geo_server_vars();
         $_SERVER['REMOTE_ADDR'] = '203.0.113.77';
-        delete_transient( 'srfm_geo_' . md5( '203.0.113.77' ) );
+        delete_transient( 'srfm_geo_v2_' . md5( '203.0.113.77' ) );
 
         $requests = 0;
         $stub     = static function () use ( &$requests ) {
@@ -2723,7 +2723,7 @@ class Test_Helper extends TestCase {
         $this->assertSame( 1, $requests, 'Only the first lookup may hit the API.' );
 
         remove_filter( 'pre_http_request', $stub );
-        delete_transient( 'srfm_geo_' . md5( '203.0.113.77' ) );
+        delete_transient( 'srfm_geo_v2_' . md5( '203.0.113.77' ) );
         $this->clear_geo_server_vars();
     }
 
@@ -2735,7 +2735,7 @@ class Test_Helper extends TestCase {
     public function test_get_geo_country_falls_back_on_api_error_body() {
         $this->clear_geo_server_vars();
         $_SERVER['REMOTE_ADDR'] = '203.0.113.88';
-        delete_transient( 'srfm_geo_' . md5( '203.0.113.88' ) );
+        delete_transient( 'srfm_geo_v2_' . md5( '203.0.113.88' ) );
 
         $requests = 0;
         $stub     = static function () use ( &$requests ) {
@@ -2761,7 +2761,48 @@ class Test_Helper extends TestCase {
         $this->assertSame( 1, $requests, 'A cached failure must not retry the API.' );
 
         remove_filter( 'pre_http_request', $stub );
-        delete_transient( 'srfm_geo_' . md5( '203.0.113.88' ) );
+        delete_transient( 'srfm_geo_v2_' . md5( '203.0.113.88' ) );
+        $this->clear_geo_server_vars();
+    }
+
+    /**
+     * Test that when the hourly outbound cap is already reached, get_geo_country
+     * returns the fallback WITHOUT making a request and WITHOUT writing a per-IP
+     * transient (so spoofed IPs can't churn the cache past the cap).
+     */
+    public function test_get_geo_country_cap_reached_does_not_cache_fallback() {
+        $this->clear_geo_server_vars();
+
+        $ip        = '203.0.113.99';
+        $ip_filter = static function () use ( $ip ) {
+            return $ip;
+        };
+        add_filter( 'srfm_visitor_ip', $ip_filter );
+
+        // Saturate the hourly quota counter.
+        $quota_key = 'srfm_geo_quota_' . gmdate( 'YmdH' );
+        set_transient( $quota_key, 40, HOUR_IN_SECONDS );
+
+        $cache_key = 'srfm_geo_v2_' . md5( $ip );
+        delete_transient( $cache_key );
+
+        $requests = 0;
+        $stub     = static function () use ( &$requests ) {
+            $requests++;
+            return new \WP_Error( 'unexpected', 'No HTTP request expected when capped.' );
+        };
+        add_filter( 'pre_http_request', $stub );
+
+        $this->assertSame( 'us', Helper::get_geo_country( 'us' ) );
+        $this->assertSame( 0, $requests, 'No outbound call may be made once the cap is reached.' );
+        $this->assertFalse(
+            get_transient( $cache_key ),
+            'The cap-reached branch must not write a per-IP transient.'
+        );
+
+        remove_filter( 'pre_http_request', $stub );
+        remove_filter( 'srfm_visitor_ip', $ip_filter );
+        delete_transient( $quota_key );
         $this->clear_geo_server_vars();
     }
 

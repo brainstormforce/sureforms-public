@@ -1,3 +1,6 @@
+// A valid ISO 3166-1 alpha-2 code, lowercase.
+const isIso2 = ( c ) => typeof c === 'string' && /^[a-z]{2}$/.test( c );
+
 /**
  * Validates and returns a country code based on filter settings.
  * If the country is not valid for current filters, returns the first valid country.
@@ -16,31 +19,49 @@ function validateCountryWithFilters(
 	includeCountries,
 	excludeCountries
 ) {
+	const countryLower =
+		typeof country === 'string' ? country.toLowerCase() : '';
+
 	if ( enableCountryFilter !== 'true' ) {
-		return country;
+		return isIso2( countryLower ) ? countryLower : '';
 	}
 
-	const countryLower = country.toLowerCase();
-
-	// Handle include filter
-	if ( countryFilterType === 'include' && includeCountries.length > 0 ) {
-		if ( ! includeCountries.includes( countryLower ) ) {
-			// Country not in include list, use first country from the list
-			return includeCountries[ 0 ];
+	// Handle include filter. The list is JSON.parsed from a data attribute, so
+	// normalize to lowercase and drop anything that isn't a valid ISO2 code.
+	if (
+		countryFilterType === 'include' &&
+		Array.isArray( includeCountries ) &&
+		includeCountries.length > 0
+	) {
+		const include = includeCountries
+			.map( ( c ) => String( c ).toLowerCase() )
+			.filter( isIso2 );
+		if ( countryLower && include.includes( countryLower ) ) {
+			return countryLower;
 		}
-		return countryLower;
+		// Country not in include list — use the first valid included country.
+		return include[ 0 ] || '';
 	}
 
-	// Handle exclude filter
-	if ( countryFilterType === 'exclude' && excludeCountries.length > 0 ) {
-		if ( excludeCountries.includes( countryLower ) ) {
-			// Country is excluded, use 'us' or another fallback
-			return excludeCountries.includes( 'us' ) ? 'gb' : 'us';
+	// Handle exclude filter.
+	if (
+		countryFilterType === 'exclude' &&
+		Array.isArray( excludeCountries ) &&
+		excludeCountries.length > 0
+	) {
+		const exclude = excludeCountries
+			.map( ( c ) => String( c ).toLowerCase() )
+			.filter( isIso2 );
+		if ( countryLower && ! exclude.includes( countryLower ) ) {
+			return countryLower;
 		}
-		return countryLower;
+		// Country is excluded — pick the first sensible fallback that is NOT
+		// itself excluded (never a hardcoded gb/us that the site may exclude).
+		const candidates = [ 'us', 'gb', 'ca', 'au', 'de', 'fr', 'in', 'jp' ];
+		return candidates.find( ( c ) => ! exclude.includes( c ) ) || '';
 	}
 
-	return country;
+	return isIso2( countryLower ) ? countryLower : '';
 }
 
 /**
@@ -132,16 +153,35 @@ function detectCountryFromBrowser() {
  * @param {Object}      filters     Country-filter settings for this field.
  */
 function applyAutoCountry( iti, phoneNumber, filters ) {
-	const setCountry = ( country ) => {
+	// Track the last country WE applied, seeded from whatever the instance
+	// currently shows (the server-baked default). The async "refine" steps only
+	// apply if the selected country still equals this — i.e. the visitor hasn't
+	// changed it meanwhile (by typing OR by picking from the dropdown).
+	let lastAutoApplied = iti.getSelectedCountryData()?.iso2 || null;
+
+	const setCountry = ( country, { isRefine = false } = {} ) => {
 		if ( ! country || typeof country !== 'string' ) {
+			return;
+		}
+		const countryLower = country.toLowerCase();
+		// Guard the (possibly external) value before it reaches setCountry().
+		if ( ! isIso2( countryLower ) ) {
 			return;
 		}
 		// Don't override a value the visitor already started entering.
 		if ( phoneNumber.value && phoneNumber.value.trim() !== '' ) {
 			return;
 		}
+		// Don't override an explicit country the visitor chose (e.g. from the
+		// dropdown, without typing) before this async refine resolved.
+		if ( isRefine && lastAutoApplied !== null ) {
+			const current = iti.getSelectedCountryData()?.iso2;
+			if ( current && current !== lastAutoApplied ) {
+				return;
+			}
+		}
 		const validated = validateCountryWithFilters(
-			country.toLowerCase(),
+			countryLower,
 			filters.enableCountryFilter,
 			filters.countryFilterType,
 			filters.includeCountries,
@@ -149,6 +189,7 @@ function applyAutoCountry( iti, phoneNumber, filters ) {
 		);
 		if ( validated ) {
 			iti.setCountry( validated );
+			lastAutoApplied = validated;
 		}
 	};
 
@@ -170,7 +211,7 @@ function applyAutoCountry( iti, phoneNumber, filters ) {
 		cached = null;
 	}
 	if ( cached ) {
-		setCountry( cached );
+		setCountry( cached, { isRefine: true } );
 		return;
 	}
 
@@ -187,7 +228,7 @@ function applyAutoCountry( iti, phoneNumber, filters ) {
 			} catch {
 				// sessionStorage may be unavailable (e.g. private mode) — ignore.
 			}
-			setCountry( country );
+			setCountry( country, { isRefine: true } );
 		} )
 		.catch( () => {
 			// Network error — keep the local guess.
