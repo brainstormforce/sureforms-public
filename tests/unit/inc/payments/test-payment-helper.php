@@ -485,6 +485,56 @@ class Test_Payment_Helper extends TestCase {
 		$this->assertFalse( $result['valid'] );
 	}
 
+	public function test_validate_amount_against_config_unrecoverable_source_floor() {
+		// A legacy variable-amount form whose amount-source field reference is empty and cannot be
+		// recovered (empty post content => refresh_block_config() returns null). The stored config
+		// has amount_type 'variable' with no source but a positive minimum amount.
+		$form_id = self::factory()->post->create( [ 'post_content' => '' ] );
+
+		update_post_meta(
+			$form_id,
+			'_srfm_block_config',
+			[
+				'block123' => [
+					'blockName'                        => 'srfm/stripe',
+					'block_id'                         => 'block123',
+					'amount_type'                      => 'variable',
+					'minimum_amount'                   => 50,
+					'variable_amount_field'            => '',
+					'variable_amount_field_block_name' => '',
+				],
+			]
+		);
+
+		// With a positive minimum floor, a charge at/above the floor is accepted (legacy form keeps
+		// working without a re-save) and a charge below the floor is rejected.
+		$above = Payment_Helper::validate_amount_against_config( 'block123', $form_id, [ 'form-id' => $form_id ], 100.0 );
+		$this->assertTrue( $above['valid'] );
+
+		$below = Payment_Helper::validate_amount_against_config( 'block123', $form_id, [ 'form-id' => $form_id ], 10.0 );
+		$this->assertFalse( $below['valid'] );
+
+		// With no positive floor, there is nothing safe to validate against, so it must fail safe
+		// and reject (preventing the unauthenticated underpayment bypass from reopening).
+		update_post_meta(
+			$form_id,
+			'_srfm_block_config',
+			[
+				'block123' => [
+					'blockName'                        => 'srfm/stripe',
+					'block_id'                         => 'block123',
+					'amount_type'                      => 'variable',
+					'minimum_amount'                   => 0,
+					'variable_amount_field'            => '',
+					'variable_amount_field_block_name' => '',
+				],
+			]
+		);
+
+		$no_floor = Payment_Helper::validate_amount_against_config( 'block123', $form_id, [ 'form-id' => $form_id ], 100.0 );
+		$this->assertFalse( $no_floor['valid'] );
+	}
+
 	private function call_private_method( $object, $method_name, $parameters = [] ) {
 		$reflection = new \ReflectionClass( Payment_Helper::class );
 		$method     = $reflection->getMethod( $method_name );

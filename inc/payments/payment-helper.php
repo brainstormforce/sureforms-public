@@ -1081,13 +1081,37 @@ class Payment_Helper {
 				}
 			}
 
-			// If the source still cannot be identified, there is no server-side configuration
-			// to validate against, so we MUST NOT accept an attacker-supplied amount. Fail safe.
+			// The source still cannot be identified (e.g. the amount-source field was deleted from
+			// the form while the payment amount type is still "variable", so there is no field-level
+			// config left to derive an expected amount from).
 			//
 			// Security: this branch previously returned a valid result unconditionally for such
 			// forms, which allowed an unauthenticated attacker to pay any amount (down to 1 cent
 			// when the form had no minimum-amount floor).
+			//
+			// If the admin configured a positive minimum amount we enforce it as the authoritative
+			// lower bound — the only server-side guarantee available for such a form — instead of
+			// rejecting outright. This keeps legacy forms (whose source field still has a floor)
+			// working without requiring a re-save. With no positive floor there is nothing safe to
+			// validate against, so we MUST fail safe and reject to avoid reopening the bypass.
 			if ( empty( $dynamic_amount_field_block_name ) || empty( $variable_amount_field_slug ) ) {
+				$minimum_amount = isset( $resolved_config['minimum_amount'] ) ? floatval( $resolved_config['minimum_amount'] ) : 0;
+
+				if ( $minimum_amount > 0 ) {
+					if ( $payment_amount < $minimum_amount ) {
+						return [
+							'valid'   => false,
+							/* translators: %1$s: minimum amount, %2$s: payment amount */
+							'message' => sprintf( __( 'Payment amount below minimum. Minimum: %1$s, received %2$s.', 'sureforms' ), $minimum_amount, $payment_amount ),
+						];
+					}
+
+					return [
+						'valid'   => true,
+						'message' => '',
+					];
+				}
+
 				return [
 					'valid'   => false,
 					'message' => __( 'Payment amount could not be verified for this form. Please edit and re-save the form, then try again.', 'sureforms' ),
@@ -1181,6 +1205,15 @@ class Payment_Helper {
 				// Otherwise (e.g. a hidden field whose value could not be resolved
 				// server-side): do NOT trust the submitted value — fall through to the
 				// minimum-amount floor below as the only safe guarantee.
+				//
+				// In practice this covers the documented dynamic-prefill case: a hidden field
+				// whose default value is a smart tag (e.g. {get_input:amount}) is stored raw and
+				// is therefore non-numeric, so resolve_server_side_variable_amount() returns null
+				// and the charge is validated against the floor only — dynamic prefill keeps
+				// working. A hidden field with a literal numeric default, by contrast, is treated
+				// as authoritative above; merchants doing custom JS-driven dynamic pricing must
+				// supply a server-authoritative amount via the `srfm_server_side_variable_amount`
+				// filter or a calculation-enabled field rather than relying on the submitted value.
 			}
 
 			// All variable amount sources are subject to the configured minimum amount floor.
@@ -1280,7 +1313,11 @@ class Payment_Helper {
 			return floatval( $expected );
 		}
 
-		// Static hidden field: the configured default value is the server-side source of truth.
+		// Static hidden field: a *literal numeric* configured default value is the server-side
+		// source of truth and is authoritative. A non-numeric default (e.g. a smart tag such as
+		// {get_input:amount} stored raw, resolved to a runtime value only at render time) is NOT
+		// treated as authoritative here — it returns null below so the caller validates against the
+		// minimum-amount floor instead, preserving the documented dynamic-prefill behavior.
 		$block_name = $source_config['block_name'] ?? ( $source_config['blockName'] ?? '' );
 		if ( 'srfm/hidden' === $block_name && empty( $source_config['enableCalculation'] ) && isset( $source_config['defaultValue'] ) && is_numeric( $source_config['defaultValue'] ) ) {
 			return floatval( $source_config['defaultValue'] );
