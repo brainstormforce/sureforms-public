@@ -830,6 +830,37 @@ class Payment_Helper {
 	}
 
 	/**
+	 * Get a submitted form value by field slug.
+	 *
+	 * Matches the SureForms field-name convention `{block}-{block_id}-lbl-{label}-{slug}` by
+	 * suffix, regardless of block type. Used to resolve `{form:slug}` tokens when recomputing a
+	 * calculation server-side. Returns null when the slug is not present in the submission.
+	 *
+	 * @param string       $slug      The field slug to look up.
+	 * @param array<mixed> $form_data Submitted form data.
+	 * @since 2.11.1
+	 * @return mixed|null The submitted value, or null when not found.
+	 */
+	public static function get_submitted_value_by_slug( $slug, $form_data ) {
+		if ( empty( $slug ) || ! is_string( $slug ) || ! is_array( $form_data ) ) {
+			return null;
+		}
+
+		$suffix = '-' . $slug;
+		foreach ( $form_data as $field_key => $field_value ) {
+			if ( ! is_string( $field_key ) || false === strpos( $field_key, '-lbl-' ) ) {
+				continue;
+			}
+
+			if ( substr( $field_key, -strlen( $suffix ) ) === $suffix ) {
+				return $field_value;
+			}
+		}
+
+		return null;
+	}
+
+	/**
 	 * Validate dynamic amount field from dropdown or multi-choice.
 	 *
 	 * @param array<string, mixed> $payment_config Payment block configuration.
@@ -1421,37 +1452,6 @@ class Payment_Helper {
 		}
 
 		return $submitted_field_value;
-	}
-
-	/**
-	 * Get a submitted form value by field slug.
-	 *
-	 * Matches the SureForms field-name convention `{block}-{block_id}-lbl-{label}-{slug}` by
-	 * suffix, regardless of block type. Used to resolve `{form:slug}` tokens when recomputing a
-	 * calculation server-side. Returns null when the slug is not present in the submission.
-	 *
-	 * @param string       $slug      The field slug to look up.
-	 * @param array<mixed> $form_data Submitted form data.
-	 * @since 2.11.1
-	 * @return mixed|null The submitted value, or null when not found.
-	 */
-	public static function get_submitted_value_by_slug( $slug, $form_data ) {
-		if ( empty( $slug ) || ! is_string( $slug ) || ! is_array( $form_data ) ) {
-			return null;
-		}
-
-		$suffix = '-' . $slug;
-		foreach ( $form_data as $field_key => $field_value ) {
-			if ( ! is_string( $field_key ) || false === strpos( $field_key, '-lbl-' ) ) {
-				continue;
-			}
-
-			if ( substr( $field_key, -strlen( $suffix ) ) === $suffix ) {
-				return $field_value;
-			}
-		}
-
-		return null;
 	}
 
 	/**

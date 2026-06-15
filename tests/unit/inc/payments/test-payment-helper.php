@@ -458,6 +458,33 @@ class Test_Payment_Helper extends TestCase {
 		$this->assertFalse( $result['valid'] );
 	}
 
+	public function test_get_submitted_value_by_slug() {
+		$form_data = [
+			'srfm-input-abc-lbl-RnVsbCBOYW1l-full-name' => 'John',
+			'srfm-number-xyz-lbl-UHJpY2U-price'         => '50',
+		];
+
+		// Resolves by slug suffix regardless of block type.
+		$this->assertSame( '50', Payment_Helper::get_submitted_value_by_slug( 'price', $form_data ) );
+		$this->assertSame( 'John', Payment_Helper::get_submitted_value_by_slug( 'full-name', $form_data ) );
+
+		// Missing slug, empty slug, and non-array form data return null.
+		$this->assertNull( Payment_Helper::get_submitted_value_by_slug( 'missing', $form_data ) );
+		$this->assertNull( Payment_Helper::get_submitted_value_by_slug( '', $form_data ) );
+		$this->assertNull( Payment_Helper::get_submitted_value_by_slug( 'price', 'not-an-array' ) );
+	}
+
+	public function test_validate_amount_against_config() {
+		// With no resolvable form configuration, validation must fail safe with a structured
+		// result (it must never silently accept the amount).
+		$result = Payment_Helper::validate_amount_against_config( 'block123', 0, [ 'form-id' => 0 ], 10.0, 'one-time' );
+
+		$this->assertIsArray( $result );
+		$this->assertArrayHasKey( 'valid', $result );
+		$this->assertArrayHasKey( 'message', $result );
+		$this->assertFalse( $result['valid'] );
+	}
+
 	private function call_private_method( $object, $method_name, $parameters = [] ) {
 		$reflection = new \ReflectionClass( Payment_Helper::class );
 		$method     = $reflection->getMethod( $method_name );
