@@ -1806,8 +1806,18 @@ class Helper {
 		$logo_starter_templates = file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/starterTemplates.svg' );
 		$logo_sure_rank         = file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/surerank.svg' );
 		$logo_sure_contact      = file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/surecontact.svg' );
+		$logo_sure_donation     = file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/suredonation.svg' );
 
 		$integrations = [
+			'sure_donation'     => [
+				'title'                 => __( 'SureDonation', 'sureforms' ),
+				'singleLineDescription' => __( 'Start Collecting Donations Today', 'sureforms' ),
+				'subtitle'              => __( 'Want to accept donations too? SureDonation makes it easy to collect contributions right on your WordPress site.', 'sureforms' ),
+				'status'                => self::get_plugin_status( 'suredonation/suredonation.php' ),
+				'slug'                  => 'suredonation',
+				'path'                  => 'suredonation/suredonation.php',
+				'logo'                  => self::encode_svg( is_string( $logo_sure_donation ) ? $logo_sure_donation : '' ),
+			],
 			'sure_contact'      => [
 				'title'                 => __( 'SureContact', 'sureforms' ),
 				'singleLineDescription' => __( 'Turn Emails Into Revenue with a CRM Built for Your Website!', 'sureforms' ),
