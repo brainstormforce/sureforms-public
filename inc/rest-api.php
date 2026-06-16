@@ -85,6 +85,32 @@ class Rest_Api {
 	}
 
 	/**
+	 * Return the visitor's detected country code.
+	 *
+	 * Public, read-only — resolves the country for the *current* request's IP via
+	 * Helper::get_geo_country(), so the phone field can fetch it per-visitor and
+	 * work on full-page-cached sites. Outbound geolocation calls are bounded by
+	 * the hourly cap inside Helper::get_geo_country().
+	 *
+	 * @since x.x.x
+	 * @return \WP_REST_Response
+	 */
+	public function get_geo_country() {
+		// Pass an empty fallback so '' unambiguously means "not confidently
+		// detected" (no CDN header and no successful IP lookup). The frontend then
+		// falls back to a privacy-safe, network-free Intl guess in the browser.
+		$country = Helper::get_geo_country( '' );
+
+		return new \WP_REST_Response(
+			[
+				'country'  => $country,
+				'detected' => '' !== $country,
+			],
+			200
+		);
+	}
+
+	/**
 	 * Get the data for generating entries chart.
 	 *
 	 * @param \WP_REST_Request $request Full details about the request.
@@ -1384,6 +1410,14 @@ class Rest_Api {
 					'methods'             => 'POST',
 					'callback'            => [ AI_Auth::get_instance(), 'handle_access_key' ],
 					'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
+				],
+				// Public route: returns the visitor's detected country code. Called
+				// per-visitor from the phone field so auto-country detection works
+				// on full-page-cached sites (the value isn't baked into cached HTML).
+				'geo-country'               => [
+					'methods'             => 'GET',
+					'callback'            => [ $this, 'get_geo_country' ],
+					'permission_callback' => '__return_true',
 				],
 				// This route is to get the form submissions for the last 30 days.
 				'entries-chart-data'        => [
