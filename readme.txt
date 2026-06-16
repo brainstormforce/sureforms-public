@@ -536,15 +536,9 @@ You can report security issues through our [Bug Bounty Program](https://brainsto
 
 == Changelog ==
 = 2.11.1 - 16th June 2026 =
-* Improvement: Added SureDonation to the integrations banner.
-* Improvement: Hardened the translation (i18n) workflow by blocking head-ref injection, gating the trigger, and adding locale gating to prevent unreviewable mass-translation pull requests.
-* Improvement: Standardized the build tooling to Node.js 24.16.0 across core and pro.
-* Fix: Migrated the Address field autocomplete off Google's deprecated Maps JavaScript APIs to remove the deprecation warnings and restore the field's placeholder text.
-* Fix: Resolved a security vulnerability where the payment amount on variable-amount and calculation-driven forms could be tampered with by an unauthenticated user; amounts are now recomputed and validated server-side before charging.
-* Fix: Resolved an issue where conditional logic did not trigger for Slider and similar fields by refreshing operator options when the condition field changes, so conditions are no longer dropped.
-* Fix: Resolved an issue where the color picker's default color did not resolve theme palette CSS variables when using the Astra theme.
 * Fix: Resolved an issue where the Phone field's automatic country detection always resolved to the United States, so each visitor's country is now detected reliably per visitor.
 * Fix: Updated the Cloudflare Turnstile "Get Keys" link to point to the correct Cloudflare dashboard URL.
+* Fix: Addressed a security bug. Props to Erwan Le Rousseau from WPScan for privately reporting it.
 = 2.11.0 - 10th June 2026 =
 * New: Added a Form Migrator to import forms from Contact Form 7, WPForms, Gravity Forms, and Ninja Forms in a single click.
 * New: Added native WPML support to translate each form individually using String Packages.
