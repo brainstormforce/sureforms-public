@@ -2467,7 +2467,7 @@ class Helper {
 	 *     add_filter( 'srfm_visitor_ip', static fn() => '8.8.8.8' ); // US; try 1.1.1.1 etc.
 	 *
 	 * @param string $fallback Country code returned when detection is unavailable.
-	 * @since x.x.x
+	 * @since 2.11.1
 	 * @return string Lowercase 2-letter country code.
 	 */
 	public static function get_geo_country( $fallback = 'us' ) {
@@ -2588,7 +2588,7 @@ class Helper {
 	 * pre-selected flag), never for access control, so spoofing has no security
 	 * impact here — at worst a visitor sees a different default country.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.1
 	 * @return string Lowercase 2-letter country code, or '' when unavailable.
 	 */
 	private static function get_cdn_country() {
@@ -2620,7 +2620,7 @@ class Helper {
 		 * Lets sites short-circuit detection with a server-side country code (e.g.
 		 * from a custom header) without any outbound API call.
 		 *
-		 * @since x.x.x
+		 * @since 2.11.1
 		 *
 		 * @param string $code Lowercase 2-letter country code, or '' if none found.
 		 */
@@ -2634,7 +2634,7 @@ class Helper {
 	 * next visit instead of pinning the fallback country for a full hour, while
 	 * still preventing per-request retry storms. Filterable via `srfm_geo_failure_ttl`.
 	 *
-	 * @since x.x.x
+	 * @since 2.11.1
 	 * @return int
 	 */
 	private static function get_geo_failure_ttl() {
