@@ -2755,4 +2755,65 @@ class Test_Helper extends TestCase {
         $this->assertStringNotContainsString( '<script>', $markup );
     }
 
+    /**
+     * Test sureforms_get_integration returns the expected recommended integrations.
+     *
+     * Covers the default entry shape, the SureDonation entry leading the banner,
+     * status resolution via get_plugin_status(), and the conditional SureRank /
+     * UAE branch driven by whether Elementor is installed.
+     */
+    public function test_sureforms_get_integration() {
+        // Case 1: No third-party plugins installed (Elementor absent).
+        self::$mock_plugins = [];
+
+        $integrations = Helper::sureforms_get_integration();
+
+        $this->assertIsArray( $integrations );
+
+        // SureDonation must lead the rotating banner (first entry).
+        $this->assertSame( 'sure_donation', array_key_first( $integrations ), 'SureDonation should be the first integration.' );
+
+        // Core integrations are always present.
+        foreach ( [ 'sure_donation', 'sure_contact', 'sure_mails', 'sure_triggers', 'starter_templates' ] as $key ) {
+            $this->assertArrayHasKey( $key, $integrations, "Missing expected integration: {$key}" );
+        }
+
+        // Verify the SureDonation entry shape and values.
+        $sure_donation = $integrations['sure_donation'];
+        $this->assertSame( 'SureDonation', $sure_donation['title'] );
+        $this->assertSame( 'suredonation', $sure_donation['slug'] );
+        $this->assertSame( 'suredonation/suredonation.php', $sure_donation['path'] );
+        $this->assertIsString( $sure_donation['singleLineDescription'] );
+        $this->assertIsString( $sure_donation['subtitle'] );
+        // Not installed, so status should be "Install".
+        $this->assertSame( 'Install', $sure_donation['status'] );
+        // Logo is an encoded SVG data URI.
+        $this->assertStringStartsWith( 'data:image/svg+xml;base64,', $sure_donation['logo'] );
+
+        // Without Elementor, SureRank is offered and UAE is not.
+        $this->assertArrayHasKey( 'sure_rank', $integrations, 'SureRank should be present when Elementor is absent.' );
+        $this->assertArrayNotHasKey( 'uae', $integrations, 'UAE should not be present when Elementor is absent.' );
+
+        // Case 2: Elementor installed -> UAE offered instead of SureRank.
+        self::$mock_plugins = [
+            'elementor/elementor.php' => [ 'Name' => 'Elementor' ],
+        ];
+
+        $integrations = Helper::sureforms_get_integration();
+        $this->assertArrayHasKey( 'uae', $integrations, 'UAE should be present when Elementor is installed.' );
+        $this->assertArrayNotHasKey( 'sure_rank', $integrations, 'SureRank should not be present when Elementor is installed.' );
+
+        // Case 3: The srfm_integrated_plugins filter can mutate the result.
+        add_filter( 'srfm_integrated_plugins', static function ( $plugins ) {
+            $plugins['custom_integration'] = [ 'title' => 'Custom' ];
+            return $plugins;
+        } );
+
+        $integrations = Helper::sureforms_get_integration();
+        $this->assertArrayHasKey( 'custom_integration', $integrations, 'srfm_integrated_plugins filter should be applied.' );
+
+        remove_all_filters( 'srfm_integrated_plugins' );
+        self::$mock_plugins = [];
+    }
+
 }
