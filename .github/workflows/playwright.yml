@@ -30,10 +30,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Setup Node 20
+      - name: Setup Node 24
         uses: actions/setup-node@v6
         with:
-          node-version: '20.20.1'
+          node-version: '24.16.0'
 
       - name: Restore node_modules cache
         id: npm-cache
@@ -60,7 +60,7 @@ jobs:
 
       - name: Install dependencies
         if: steps.npm-cache.outputs.cache-hit != 'true'
-        run: npm ci --legacy-peer-deps
+        run: npm ci
 
       - name: Build plugin assets
         if: steps.build-cache.outputs.cache-hit != 'true'
@@ -143,10 +143,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Setup Node 20
+      - name: Setup Node 24
         uses: actions/setup-node@v6
         with:
-          node-version: '20.20.1'
+          node-version: '24.16.0'
 
       - name: Restore node_modules cache
         id: npm-cache
@@ -157,7 +157,7 @@ jobs:
 
       - name: Install dependencies
         if: steps.npm-cache.outputs.cache-hit != 'true'
-        run: npm ci --legacy-peer-deps
+        run: npm ci
 
       - name: Download blob reports from all shards
         uses: actions/download-artifact@v8

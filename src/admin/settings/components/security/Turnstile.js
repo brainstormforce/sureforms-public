@@ -49,7 +49,7 @@ const Turnstile = ( { securitytabOptions, updateGlobalSettings } ) => {
 					<div className="pr-2 inline-flex items-center">
 						<Button
 							tag="a"
-							href="https://www.cloudflare.com/en-gb/products/turnstile/"
+							href="https://dash.cloudflare.com/?to=/:account/turnstile"
 							className="[&>span]:p-0 no-underline hover:no-underline"
 							variant="link"
 							target="_blank"

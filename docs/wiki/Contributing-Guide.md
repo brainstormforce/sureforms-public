@@ -5,7 +5,7 @@ Thank you for your interest in contributing to SureForms! This guide covers the 
 ## Prerequisites
 
 - **PHP** 7.4+
-- **Node.js** 18.15.0 (managed via [Volta](https://volta.sh/))
+- **Node.js** 24.16.0 (managed via [Volta](https://volta.sh/))
 - **Composer** for PHP dependencies
 - **Git** for version control
 - **Docker** (optional, for wp-env test environment)
