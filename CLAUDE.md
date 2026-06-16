@@ -14,7 +14,7 @@ SureForms is a WordPress form builder plugin (v2.5.1) by Brainstorm Force. AI-po
 - **Build:** WordPress Scripts (Webpack 5) + Grunt
 - **Testing:** PHPUnit 9 (unit) + Playwright (E2E)
 - **Static Analysis:** PHPStan level 9 + PHPCS (WordPress-Extra)
-- **Node:** 18.15.0 (Volta) | **UI Library:** @bsf/force-ui
+- **Node:** 24.16.0 (Volta) | **UI Library:** @bsf/force-ui
 
 ## Commands
 
@@ -135,7 +135,7 @@ sureforms/
 - **PHPStan level 9** is strict; check baseline before adding new ignores
 - **Grunt** still used alongside Webpack for CSS minification and release packaging
 - **`inc/lib/`** is third-party code — do not lint or modify
-- **Node 18.15.0** pinned via Volta — other versions may cause build issues
+- **Node 24.16.0** pinned via Volta — other versions may cause build issues
 
 ## Verification Before Done
 After code changes, verify before reporting done:
