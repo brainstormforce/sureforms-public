@@ -1145,6 +1145,17 @@ class Payment_Helper {
 				// submitted selection — the attacker chooses the option, never its price.
 				$get_expected_amount = self::get_amount_by_the_config_options( $submitted_field_value, $variable_amount_block_config );
 
+				// Fail safe when the submitted selection doesn't map to a configured
+				// option value: get_amount_by_the_config_options() returns null, and
+				// abs( $payment_amount - null ) would coerce null to 0 — reject explicitly
+				// so the comparison can never be silently weakened by that coercion.
+				if ( ! is_numeric( $get_expected_amount ) ) {
+					return [
+						'valid'   => false,
+						'message' => __( 'Payment amount could not be verified for this form. Please edit and re-save the form, then try again.', 'sureforms' ),
+					];
+				}
+
 				// Validate payment amount matches expected amount.
 				if ( abs( $payment_amount - $get_expected_amount ) > 0.01 ) {
 					return [
@@ -1180,6 +1191,19 @@ class Payment_Helper {
 						];
 					}
 				} elseif ( 'srfm/number' === $dynamic_amount_field_block_name ) {
+					// Calculation-driven number: a null server amount means the formula
+					// could NOT be recomputed server-side (a referenced field was
+					// non-numeric, or the formula used something the parser can't
+					// evaluate). This is NOT "name your price" — we must fail safe and
+					// reject, never fall back to the client-submitted amount, which
+					// would reopen the unauthenticated underpayment bypass.
+					if ( ! empty( $variable_amount_block_config['enableCalculation'] ) ) {
+						return [
+							'valid'   => false,
+							'message' => __( 'Payment amount could not be verified for this form. Please edit and re-save the form, then try again.', 'sureforms' ),
+						];
+					}
+
 					// Plain user-entered number ("name your price"): the amount is the
 					// customer's own choice, so confirm the charge matches what they entered.
 					// The minimum-amount floor below guards the lower bound.

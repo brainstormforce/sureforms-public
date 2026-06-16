@@ -535,6 +535,45 @@ class Test_Payment_Helper extends TestCase {
 		$this->assertFalse( $no_floor['valid'] );
 	}
 
+	/**
+	 * A calculation-enabled number amount source whose formula the server can't
+	 * recompute (e.g. free-only, no Pro recompute handler) must FAIL SAFE — never
+	 * fall back to the client-submitted amount. With minimum_amount = 0 this isolates
+	 * the bypass: without the fail-safe, the "name your price" branch would accept
+	 * the attacker's matching amount.
+	 */
+	public function test_validate_amount_against_config_calc_number_fails_safe() {
+		$form_id = self::factory()->post->create( [ 'post_content' => '' ] );
+
+		update_post_meta(
+			$form_id,
+			'_srfm_block_config',
+			[
+				'pay123' => [
+					'block_id'                         => 'pay123',
+					'amount_type'                      => 'variable',
+					'minimum_amount'                   => 0,
+					'variable_amount_field'            => 'price',
+					'variable_amount_field_block_name' => 'srfm/number',
+				],
+				'num456' => [
+					'block_id'           => 'num456',
+					'block_name'         => 'srfm/number',
+					'slug'               => 'price',
+					'enableCalculation'  => true,
+					'calculationFormula' => '{form:price} * 2',
+				],
+			]
+		);
+
+		// Attacker submits a low value and charges that same low amount. Without the
+		// fail-safe (calc-enabled + server amount null) this would be accepted.
+		$form_data = [ 'srfm-number-num456-lbl-UHJpY2U-price' => '10' ];
+		$result    = Payment_Helper::validate_amount_against_config( 'pay123', $form_id, $form_data, 10.0 );
+
+		$this->assertFalse( $result['valid'] );
+	}
+
 	private function call_private_method( $object, $method_name, $parameters = [] ) {
 		$reflection = new \ReflectionClass( Payment_Helper::class );
 		$method     = $reflection->getMethod( $method_name );
