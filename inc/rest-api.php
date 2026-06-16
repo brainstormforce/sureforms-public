@@ -92,7 +92,7 @@ class Rest_Api {
 	 * work on full-page-cached sites. Outbound geolocation calls are bounded by
 	 * the hourly cap inside Helper::get_geo_country().
 	 *
-	 * @since x.x.x
+	 * @since 2.11.1
 	 * @return \WP_REST_Response
 	 */
 	public function get_geo_country() {

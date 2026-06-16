@@ -789,7 +789,7 @@ class Payment_Helper {
 	 * @param array<string, mixed> $form_data   Submitted form data.
 	 * @param float                $amount      Amount to validate (decimal, in the form currency).
 	 * @param string               $active_type Optional. 'one-time' or 'subscription' for "both" mode resolution.
-	 * @since x.x.x
+	 * @since 2.11.1
 	 * @return array<string, mixed> Validation result with 'valid' (bool) and 'message' (string) keys.
 	 */
 	public static function validate_amount_against_config( $block_id, $form_id, $form_data, $amount, $active_type = '' ) {
@@ -838,7 +838,7 @@ class Payment_Helper {
 	 *
 	 * @param string       $slug      The field slug to look up.
 	 * @param array<mixed> $form_data Submitted form data.
-	 * @since x.x.x
+	 * @since 2.11.1
 	 * @return mixed|null The submitted value, or null when not found.
 	 */
 	public static function get_submitted_value_by_slug( $slug, $form_data ) {
@@ -1270,7 +1270,7 @@ class Payment_Helper {
 	 * forms saved with current code record the source — then returns the refreshed config.
 	 *
 	 * @param int $form_id Form post ID.
-	 * @since x.x.x
+	 * @since 2.11.1
 	 * @return array<mixed>|null Refreshed block configuration, or null if it cannot be rebuilt.
 	 */
 	private static function refresh_block_config( $form_id ) {
@@ -1303,7 +1303,7 @@ class Payment_Helper {
 	 * @param array<mixed> $source_config The amount-source field block config (block_name, slug, enableCalculation, defaultValue, calculationFormula, ...).
 	 * @param array<mixed> $block_config  All block configurations for the form.
 	 * @param array<mixed> $form_data     Submitted form data.
-	 * @since x.x.x
+	 * @since 2.11.1
 	 * @return float|null Expected amount, or null if it cannot be determined server-side.
 	 */
 	private static function resolve_server_side_variable_amount( $source_config, $block_config, $form_data ) {
@@ -1319,7 +1319,7 @@ class Payment_Helper {
 		 * server-side configuration and other submitted inputs — never the raw value of the
 		 * amount field submitted with the request — or null if it cannot be computed.
 		 *
-		 * @since x.x.x
+		 * @since 2.11.1
 		 * @param float|null           $amount  The resolved amount. Default null.
 		 * @param array<string, mixed> $context Context: source_config, block_config, form_data.
 		 */

@@ -4,7 +4,7 @@ Tags: forms, contact form, form builder, survey, payment form
 Requires at least: 6.4
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 2.11.0
+Stable tag: 2.11.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -535,6 +535,16 @@ Yes. SureForms Business includes fully functional user registration forms and lo
 You can report security issues through our [Bug Bounty Program](https://brainstormforce.com/bug-bounty-program/). We collaborate with Patchstack to provide opportunities for researchers to report vulnerabilities. The Patchstack team will help validate, triage, and handle any reported security issues.
 
 == Changelog ==
+= 2.11.1 - 16th June 2026 =
+* Improvement: Added SureDonation to the integrations banner.
+* Improvement: Hardened the translation (i18n) workflow by blocking head-ref injection, gating the trigger, and adding locale gating to prevent unreviewable mass-translation pull requests.
+* Improvement: Standardized the build tooling to Node.js 24.16.0 across core and pro.
+* Fix: Migrated the Address field autocomplete off Google's deprecated Maps JavaScript APIs to remove the deprecation warnings and restore the field's placeholder text.
+* Fix: Resolved a security vulnerability where the payment amount on variable-amount and calculation-driven forms could be tampered with by an unauthenticated user; amounts are now recomputed and validated server-side before charging.
+* Fix: Resolved an issue where conditional logic did not trigger for Slider and similar fields by refreshing operator options when the condition field changes, so conditions are no longer dropped.
+* Fix: Resolved an issue where the color picker's default color did not resolve theme palette CSS variables when using the Astra theme.
+* Fix: Resolved an issue where the Phone field's automatic country detection always resolved to the United States, so each visitor's country is now detected reliably per visitor.
+* Fix: Updated the Cloudflare Turnstile "Get Keys" link to point to the correct Cloudflare dashboard URL.
 = 2.11.0 - 10th June 2026 =
 * New: Added a Form Migrator to import forms from Contact Form 7, WPForms, Gravity Forms, and Ninja Forms in a single click.
 * New: Added native WPML support to translate each form individually using String Packages.
@@ -542,12 +552,6 @@ You can report security issues through our [Bug Bounty Program](https://brainsto
 * Improvement: Improved compatibility with older Block API versions so the SureForms editor loads reliably across WordPress environments.
 * Fix: Resolved an issue where the Textarea character counter was misaligned.
 * Fix: Resolved an issue where the {entry_id} smart tag failed to resolve in email notifications.
-= 2.10.0 - 27th May 2026 =
-* New: Added a live character counter to Textarea fields.
-* New: Added a one-click converter that turns raw HTML forms into native SureForms in gutenberg editor.
-* Improvement: Added dynamic default value support for multi-select Dropdown and Multi-Choice fields.
-* Improvement: Entry URL now records actual submission page.
-* Fix: CSV export was stripping line breaks from Textarea submissions.
 The full changelog is available [here](https://sureforms.com/whats-new/?utm_source=wordpress.org&utm_medium=whats_new).
 
 == Upgrade Notice ==
