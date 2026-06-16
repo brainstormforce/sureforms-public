@@ -8,7 +8,7 @@ This guide walks you through setting up a SureForms development environment from
 |------|---------|-------|
 | PHP | 7.4+ | Required for plugin runtime |
 | WordPress | 6.4+ | Required for block editor features |
-| Node.js | 18.15.0 | Managed via Volta (auto-switches) |
+| Node.js | 24.16.0 | Managed via Volta (auto-switches) |
 | Composer | 2.x | PHP dependency manager |
 | Git | 2.x | Version control |
 | Docker | Latest | Optional, for wp-env test environment |
@@ -21,7 +21,7 @@ This guide walks you through setting up a SureForms development environment from
 curl https://get.volta.sh | bash
 ```
 
-The `package.json` pins Node 18.15.0 via Volta config -- it activates automatically when you enter the project directory.
+The `package.json` pins Node 24.16.0 via Volta config -- it activates automatically when you enter the project directory.
 
 ## Initial Setup
 
