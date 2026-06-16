@@ -6,9 +6,9 @@
 |-------------|---------|-------|
 | PHP | 7.4+ | WordPress minimum requirement |
 | WordPress | 6.4+ | Gutenberg block editor required |
-| Node.js | 18.15.0 | Managed via Volta (see `package.json`) |
+| Node.js | 24.16.0 | Managed via Volta (see `package.json`) |
 | Composer | 2.x | PHP dependency management |
-| npm | 9.x+ | Comes with Node 18 |
+| npm | 11.x+ | Comes with Node 24 |
 
 ## Plugin Constants
 
@@ -156,7 +156,7 @@ Node version is pinned in `package.json`:
 ```json
 {
   "volta": {
-    "node": "18.15.0"
+    "node": "24.16.0"
   }
 }
 ```
