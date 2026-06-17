@@ -532,7 +532,7 @@ You can report security issues through our [Bug Bounty Program](https://brainsto
 = 2.11.1 - 16th June 2026 =
 * Fix: Phone field auto country detection always resolved to the United States.
 * Fix: Corrected the Cloudflare Turnstile "Get Keys" link.
-* Fix: This update addressed a security bug. Props to Erwan Le Rousseau from WPScan for reporting it responsibly to our team.
+* Fix: This update addressed a security bug. Props to Yaswanth Reddy Sunkara for reporting it responsibly to our team.
 = 2.11.0 - 10th June 2026 =
 * New: Added a Form Migrator to import forms from Contact Form 7, WPForms, Gravity Forms, and Ninja Forms in a single click.
 * New: Added native WPML support to translate each form individually using String Packages.
