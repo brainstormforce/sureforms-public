@@ -574,6 +574,56 @@ class Test_Payment_Helper extends TestCase {
 		$this->assertFalse( $result['valid'] );
 	}
 
+	/**
+	 * An unresolved hidden-field amount source (a hidden field whose default is a
+	 * non-numeric smart tag, so resolve_server_side_variable_amount() returns null and
+	 * there is no Pro recompute handler) must FAIL SAFE when there is no positive
+	 * minimum-amount floor. Without the guard the charge would fall through to a zero
+	 * floor and accept any amount — the unauthenticated underpayment bypass flagged by
+	 * the WordPress.org scanner. With a positive minimum, the documented dynamic-prefill
+	 * behavior is preserved: charges at/above the floor are accepted, below are rejected.
+	 */
+	public function test_validate_amount_against_config_unresolved_hidden_fails_safe() {
+		$form_id = self::factory()->post->create( [ 'post_content' => '' ] );
+
+		$config = static function ( $minimum_amount ) {
+			return [
+				'pay123' => [
+					'block_id'                         => 'pay123',
+					'amount_type'                      => 'variable',
+					'minimum_amount'                   => $minimum_amount,
+					'variable_amount_field'            => 'amount',
+					'variable_amount_field_block_name' => 'srfm/hidden',
+				],
+				'hid456' => [
+					'block_id'     => 'hid456',
+					'block_name'   => 'srfm/hidden',
+					'slug'         => 'amount',
+					// Non-numeric smart-tag default => resolve_server_side_variable_amount() returns null.
+					'defaultValue' => '{get_input:amount}',
+				],
+			];
+		};
+
+		// Submitted hidden value is present (so we pass the "value required" check) but must
+		// never be trusted as the price.
+		$form_data = [ 'srfm-hidden-hid456-lbl-QW1vdW50-amount' => '10' ];
+
+		// minimum_amount = 0: nothing safe to validate against => reject.
+		update_post_meta( $form_id, '_srfm_block_config', $config( 0 ) );
+		$no_floor = Payment_Helper::validate_amount_against_config( 'pay123', $form_id, $form_data, 10.0 );
+		$this->assertFalse( $no_floor['valid'] );
+
+		// minimum_amount = 50: dynamic-prefill preserved — at/above floor accepted, below rejected.
+		update_post_meta( $form_id, '_srfm_block_config', $config( 50 ) );
+
+		$above = Payment_Helper::validate_amount_against_config( 'pay123', $form_id, $form_data, 100.0 );
+		$this->assertTrue( $above['valid'] );
+
+		$below = Payment_Helper::validate_amount_against_config( 'pay123', $form_id, $form_data, 10.0 );
+		$this->assertFalse( $below['valid'] );
+	}
+
 	private function call_private_method( $object, $method_name, $parameters = [] ) {
 		$reflection = new \ReflectionClass( Payment_Helper::class );
 		$method     = $reflection->getMethod( $method_name );
