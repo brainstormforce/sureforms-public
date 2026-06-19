@@ -266,6 +266,18 @@ class Frontend_Assets {
 					$block_dependencies = [ SRFM_SLUG . "-{$block_name}-intl-input-deps" ];
 				}
 				wp_enqueue_script( SRFM_SLUG . "-{$block_name}", $js_uri . $block_name . $file_prefix . '.js', $block_dependencies, SRFM_VER, true );
+
+				if ( 'phone' === $block_name ) {
+					// Geo-country endpoint for per-visitor auto country detection.
+					// Built with rest_url() so it is correct regardless of permalink structure.
+					wp_localize_script(
+						SRFM_SLUG . "-{$block_name}",
+						'srfm_phone_data',
+						[
+							'geo_endpoint' => esc_url_raw( rest_url( 'sureforms/v1/geo-country' ) ),
+						]
+					);
+				}
 			}
 
 			if ( 'input' === $block_name && isset( $attr['inputMask'] ) && 'none' !== $attr['inputMask'] ) {
