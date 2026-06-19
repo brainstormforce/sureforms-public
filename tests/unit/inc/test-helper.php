@@ -2638,6 +2638,174 @@ class Test_Helper extends TestCase {
         $this->assertEquals( '198.51.100.25', Helper::get_visitor_ip() );
     }
 
+    // --- get_geo_country ---
+
+    /**
+     * Test get_geo_country prefers a CDN-provided country header and never
+     * makes an outbound API call when one is present.
+     */
+    public function test_get_geo_country_prefers_cdn_header() {
+        $this->clear_geo_server_vars();
+        $_SERVER['HTTP_CF_IPCOUNTRY'] = 'DE';
+
+        $requests = 0;
+        $stub     = static function () use ( &$requests ) {
+            $requests++;
+            return new \WP_Error( 'unexpected', 'No HTTP request expected.' );
+        };
+        add_filter( 'pre_http_request', $stub );
+
+        $this->assertSame( 'de', Helper::get_geo_country() );
+        $this->assertSame( 0, $requests, 'A CDN header must short-circuit the API call.' );
+
+        remove_filter( 'pre_http_request', $stub );
+        $this->clear_geo_server_vars();
+    }
+
+    /**
+     * Test get_geo_country rejects Cloudflare's 'XX' (unknown) placeholder and
+     * returns the fallback when the visitor IP is private/loopback.
+     */
+    public function test_get_geo_country_rejects_cdn_placeholder_and_falls_back() {
+        $this->clear_geo_server_vars();
+        $_SERVER['HTTP_CF_IPCOUNTRY'] = 'XX';
+        $_SERVER['REMOTE_ADDR']       = '127.0.0.1'; // Private IP → no API call.
+
+        $this->assertSame( 'us', Helper::get_geo_country() );
+        $this->assertSame( 'in', Helper::get_geo_country( 'in' ) );
+
+        $this->clear_geo_server_vars();
+    }
+
+    /**
+     * Test the srfm_cdn_country filter can short-circuit detection before the
+     * ipapi.co fallback.
+     */
+    public function test_get_geo_country_uses_cdn_country_filter() {
+        $this->clear_geo_server_vars();
+
+        $filter = static function () {
+            return 'fr';
+        };
+        add_filter( 'srfm_cdn_country', $filter );
+
+        $this->assertSame( 'fr', Helper::get_geo_country() );
+
+        remove_filter( 'srfm_cdn_country', $filter );
+        $this->clear_geo_server_vars();
+    }
+
+    /**
+     * Test get_geo_country resolves the country via the IP API and caches the
+     * result in a transient so a second lookup makes no further request.
+     */
+    public function test_get_geo_country_resolves_via_api_and_caches() {
+        $this->clear_geo_server_vars();
+        $_SERVER['REMOTE_ADDR'] = '203.0.113.77';
+        delete_transient( 'srfm_geo_v2_' . md5( '203.0.113.77' ) );
+
+        $requests = 0;
+        $stub     = static function () use ( &$requests ) {
+            $requests++;
+            return [
+                'headers'  => [],
+                'body'     => (string) wp_json_encode( [ 'country_code' => 'IN' ] ),
+                'response' => [
+                    'code'    => 200,
+                    'message' => 'OK',
+                ],
+            ];
+        };
+        add_filter( 'pre_http_request', $stub );
+
+        $this->assertSame( 'in', Helper::get_geo_country() );
+        $this->assertSame( 'in', Helper::get_geo_country(), 'Second lookup must be served from the transient cache.' );
+        $this->assertSame( 1, $requests, 'Only the first lookup may hit the API.' );
+
+        remove_filter( 'pre_http_request', $stub );
+        delete_transient( 'srfm_geo_v2_' . md5( '203.0.113.77' ) );
+        $this->clear_geo_server_vars();
+    }
+
+    /**
+     * Test get_geo_country returns the fallback when ipapi.co answers HTTP 200
+     * with an error body (free-tier rate limiting), and caches the failure so
+     * the next call does not retry immediately.
+     */
+    public function test_get_geo_country_falls_back_on_api_error_body() {
+        $this->clear_geo_server_vars();
+        $_SERVER['REMOTE_ADDR'] = '203.0.113.88';
+        delete_transient( 'srfm_geo_v2_' . md5( '203.0.113.88' ) );
+
+        $requests = 0;
+        $stub     = static function () use ( &$requests ) {
+            $requests++;
+            return [
+                'headers'  => [],
+                'body'     => (string) wp_json_encode(
+                    [
+                        'error'  => true,
+                        'reason' => 'RateLimited',
+                    ]
+                ),
+                'response' => [
+                    'code'    => 200,
+                    'message' => 'OK',
+                ],
+            ];
+        };
+        add_filter( 'pre_http_request', $stub );
+
+        $this->assertSame( 'us', Helper::get_geo_country() );
+        $this->assertSame( 'us', Helper::get_geo_country(), 'Failure must be cached for the failure TTL.' );
+        $this->assertSame( 1, $requests, 'A cached failure must not retry the API.' );
+
+        remove_filter( 'pre_http_request', $stub );
+        delete_transient( 'srfm_geo_v2_' . md5( '203.0.113.88' ) );
+        $this->clear_geo_server_vars();
+    }
+
+    /**
+     * Test that when the hourly outbound cap is already reached, get_geo_country
+     * returns the fallback WITHOUT making a request and WITHOUT writing a per-IP
+     * transient (so spoofed IPs can't churn the cache past the cap).
+     */
+    public function test_get_geo_country_cap_reached_does_not_cache_fallback() {
+        $this->clear_geo_server_vars();
+
+        $ip        = '203.0.113.99';
+        $ip_filter = static function () use ( $ip ) {
+            return $ip;
+        };
+        add_filter( 'srfm_visitor_ip', $ip_filter );
+
+        // Saturate the hourly quota counter.
+        $quota_key = 'srfm_geo_quota_' . gmdate( 'YmdH' );
+        set_transient( $quota_key, 40, HOUR_IN_SECONDS );
+
+        $cache_key = 'srfm_geo_v2_' . md5( $ip );
+        delete_transient( $cache_key );
+
+        $requests = 0;
+        $stub     = static function () use ( &$requests ) {
+            $requests++;
+            return new \WP_Error( 'unexpected', 'No HTTP request expected when capped.' );
+        };
+        add_filter( 'pre_http_request', $stub );
+
+        $this->assertSame( 'us', Helper::get_geo_country( 'us' ) );
+        $this->assertSame( 0, $requests, 'No outbound call may be made once the cap is reached.' );
+        $this->assertFalse(
+            get_transient( $cache_key ),
+            'The cap-reached branch must not write a per-IP transient.'
+        );
+
+        remove_filter( 'pre_http_request', $stub );
+        remove_filter( 'srfm_visitor_ip', $ip_filter );
+        delete_transient( $quota_key );
+        $this->clear_geo_server_vars();
+    }
+
     // ---------------------------------------------------------------
     // SRFM-2709: get_sureforms_website_url() UTM behavior
     // ---------------------------------------------------------------
@@ -2715,6 +2883,20 @@ class Test_Helper extends TestCase {
 
         $this->assertStringContainsString( 'pricing', $url );
         $this->assertStringNotContainsString( 'utm_', $url );
+    }
+
+    /**
+     * Clear CDN geo headers and IP-related $_SERVER variables for a clean test state.
+     */
+    private function clear_geo_server_vars() {
+        $this->clear_ip_server_vars();
+        unset(
+            $_SERVER['HTTP_CF_IPCOUNTRY'],
+            $_SERVER['HTTP_CLOUDFRONT_VIEWER_COUNTRY'],
+            $_SERVER['GEOIP_COUNTRY_CODE'],
+            $_SERVER['HTTP_X_GEO_COUNTRY'],
+            $_SERVER['HTTP_X_COUNTRY_CODE']
+        );
     }
 
     /**
