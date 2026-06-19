@@ -551,6 +551,16 @@ class Field_Validation {
 			$number_config['max'] = floatval( $attrs['max'] );
 		}
 
+		// Capture calculation config (Pro feature) so a calculation-driven number field used as a
+		// payment amount source can be re-derived server-side instead of trusting the submitted
+		// value. Harmless when the calculation feature is not in use.
+		if ( ! empty( $attrs['enableCalculation'] ) ) {
+			$number_config['enableCalculation']  = true;
+			$number_config['calculationFormula'] = isset( $attrs['calculationFormula'] ) && is_string( $attrs['calculationFormula'] ) ? $attrs['calculationFormula'] : '';
+			// Stored as null when unset so the validator rounds only when a precision is configured.
+			$number_config['calculationRound'] = isset( $attrs['calculationRound'] ) && is_numeric( $attrs['calculationRound'] ) ? absint( $attrs['calculationRound'] ) : null;
+		}
+
 		return $number_config;
 	}
 }

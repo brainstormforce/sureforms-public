@@ -46,6 +46,62 @@ class Test_Rest_Api extends TestCase {
 	}
 
 	// ---------------------------------------------------------------
+	// get_geo_country()
+	// ---------------------------------------------------------------
+
+	/**
+	 * With a CDN country header present the endpoint reports the detected
+	 * country; with no header and no usable visitor IP it reports an empty
+	 * country with detected=false so the frontend can apply its own fallback.
+	 */
+	public function test_get_geo_country() {
+		$geo_server_vars = [
+			'HTTP_CF_IPCOUNTRY',
+			'HTTP_CLOUDFRONT_VIEWER_COUNTRY',
+			'GEOIP_COUNTRY_CODE',
+			'HTTP_X_GEO_COUNTRY',
+			'HTTP_X_COUNTRY_CODE',
+			'HTTP_CLIENT_IP',
+			'HTTP_X_FORWARDED_FOR',
+			'HTTP_X_REAL_IP',
+			'HTTP_X_FORWARDED',
+			'HTTP_FORWARDED_FOR',
+			'HTTP_FORWARDED',
+			'REMOTE_ADDR',
+		];
+		foreach ( $geo_server_vars as $server_var ) {
+			unset( $_SERVER[ $server_var ] );
+		}
+
+		// CDN header present → detected country.
+		$_SERVER['HTTP_CF_IPCOUNTRY'] = 'DE';
+
+		$response = $this->rest_api->get_geo_country();
+		$this->assertInstanceOf( \WP_REST_Response::class, $response );
+		$this->assertSame( 200, $response->get_status() );
+		$this->assertSame(
+			[
+				'country'  => 'de',
+				'detected' => true,
+			],
+			$response->get_data()
+		);
+
+		// No CDN header and no usable visitor IP → not detected, empty country.
+		unset( $_SERVER['HTTP_CF_IPCOUNTRY'] );
+
+		$response = $this->rest_api->get_geo_country();
+		$this->assertSame( 200, $response->get_status() );
+		$this->assertSame(
+			[
+				'country'  => '',
+				'detected' => false,
+			],
+			$response->get_data()
+		);
+	}
+
+	// ---------------------------------------------------------------
 	// sanitize_entry_ids()
 	// ---------------------------------------------------------------
 

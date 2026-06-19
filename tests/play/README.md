@@ -9,7 +9,7 @@ Install Docker Desktop if you don't have it installed:
 -   [Docker Desktop for Mac](https://docs.docker.com/docker-for-mac/install/)
 -   [Docker Desktop for Windows](https://docs.docker.com/docker-for-windows/install/)
 
-### Install npm ( Node version v18.15.0 & npm v9.5.0 )
+### Install npm ( Node version v24.16.0 & npm v9.5.0 )
 
 ### Install playwright
 
