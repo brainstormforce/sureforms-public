@@ -785,9 +785,9 @@ class Stripe_Webhook {
 		);
 
 		// Notify consumers that a refund was recorded against this payment.
-		$is_full_refund    = $total_after_refund >= $original_amount;
-		$refunded_payment  = Payments::get( $payment_id );
-		$refunded_payment  = is_array( $refunded_payment ) ? $refunded_payment : $payment;
+		$is_full_refund   = $total_after_refund >= $original_amount;
+		$refunded_payment = Payments::get( $payment_id );
+		$refunded_payment = is_array( $refunded_payment ) ? $refunded_payment : $payment;
 		/**
 		 * Fires when a refund is recorded against a SureForms payment (covers both
 		 * the Stripe webhook and admin-initiated refund paths).
