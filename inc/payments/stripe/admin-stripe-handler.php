@@ -103,10 +103,28 @@ class Admin_Stripe_Handler {
 			wp_send_json_error( [ 'message' => esc_html__( 'Subscription ID not found.', 'sureforms' ) ] );
 		}
 
-		// Cancel the subscription.
-		$cancel_result = $this->cancel_subscription( $payment['subscription_id'] );
-		if ( ! $cancel_result ) {
-			wp_send_json_error( [ 'message' => esc_html__( 'Subscription cancellation failed.', 'sureforms' ) ] );
+		// Cancel via the gateway-agnostic filter so the payment's OWN gateway (Stripe or
+		// PayPal) performs the cancellation. Previously this called the Stripe API directly,
+		// which failed for PayPal subscriptions cancelled from the admin screen. Both gateways
+		// hook 'srfm_process_subscription_cancellation' (Stripe + PayPal), matching the
+		// frontend cancellation path.
+		$cancel_result = apply_filters(
+			'srfm_process_subscription_cancellation',
+			[
+				'success' => false,
+				'message' => __( 'Cancellation is not supported for this payment gateway.', 'sureforms' ),
+			],
+			$payment
+		);
+
+		if ( empty( $cancel_result['success'] ) ) {
+			wp_send_json_error(
+				[
+					'message' => ! empty( $cancel_result['message'] ) && is_string( $cancel_result['message'] )
+						? $cancel_result['message']
+						: esc_html__( 'Subscription cancellation failed.', 'sureforms' ),
+				]
+			);
 		}
 
 		// Get current logs and add cancel log entry.
@@ -115,14 +133,14 @@ class Admin_Stripe_Handler {
 		// Build log messages array.
 		$log_messages = [
 			sprintf(
-				/* translators: %s: Stripe subscription ID */
+				/* translators: %s: subscription ID */
 				__( 'Subscription ID: %s', 'sureforms' ),
 				$payment['subscription_id']
 			),
 			sprintf(
 				/* translators: %s: payment gateway name */
 				__( 'Payment Gateway: %s', 'sureforms' ),
-				'Stripe'
+				ucfirst( ! empty( $payment['gateway'] ) && is_string( $payment['gateway'] ) ? $payment['gateway'] : 'unknown' )
 			),
 			sprintf(
 				/* translators: %s: subscription status */
