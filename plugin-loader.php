@@ -283,6 +283,7 @@ class Plugin_Loader {
 			load_textdomain( 'sureforms', $mofile_local );
 		} else {
 			// Load the default language files.
+			// phpcs:ignore PluginCheck.CodeAnalysis.DiscouragedFunctions.load_plugin_textdomainFound -- Fallback when no global/local .mo override is present.
 			load_plugin_textdomain( 'sureforms', false, $lang_dir );
 		}
 	}

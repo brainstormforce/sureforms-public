@@ -1035,7 +1035,7 @@ class Admin_Stripe_Handler {
 			return $this->create_refund_by_charge( $payment, $charge_id, $refund_amount, $refund_notes );
 		}
 
-		throw new \Exception( __( 'Unable to determine the appropriate refund method for this subscription payment.', 'sureforms' ) );
+		throw new \Exception( esc_html__( 'Unable to determine the appropriate refund method for this subscription payment.', 'sureforms' ) );
 	}
 
 	/**

@@ -519,15 +519,8 @@ class Form_Widget extends \Bricks\Element {
 			<div <?php echo $this->render_attributes( '_root' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
 				<?php
 				// Bypass shortcode — call Generate_Form_Markup directly with block_attrs.
-				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped in Generate_Form_Markup.
-				echo Generate_Form_Markup::get_form_markup(
-					$form_id,
-					$form_title,
-					'',
-					'post',
-					true,
-					$block_attrs
-				);
+				$form_markup = Generate_Form_Markup::get_form_markup( $form_id, $form_title, '', 'post', true, $block_attrs );
+				echo $form_markup; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped in Generate_Form_Markup.
 				?>
 				<style><?php echo $styles['css']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></style>
 				<script><?php echo $styles['js']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></script>
@@ -535,13 +528,13 @@ class Form_Widget extends \Bricks\Element {
 			<?php
 		} else {
 			// Show placeholder when no form is selected.
-			// phpcs:ignore -- WordPress.Security.EscapeOutput.OutputNotEscaped - Escaping not required.
-			echo $this->render_element_placeholder(
+			$placeholder = $this->render_element_placeholder(
 				[
 					'icon-class'  => $this->icon,
 					'description' => esc_html__( 'Select the form that you wish to add here.', 'sureforms' ),
 				]
 			);
+			echo $placeholder; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Bricks render_element_placeholder() returns safe markup.
 		}
 	}
 

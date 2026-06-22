@@ -451,10 +451,10 @@ class Admin_Ajax {
 		}
 
 		// Output the file.
-		readfile( $filepath ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_read_readfile -- Need direct file output for download.
+		readfile( $filepath ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_read_readfile, WordPress.WP.AlternativeFunctions.file_system_operations_readfile -- Direct file output is required to stream the download.
 
 		// Clean up the temporary file.
-		unlink( $filepath );
+		wp_delete_file( $filepath );
 
 		exit;
 	}
