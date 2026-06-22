@@ -637,7 +637,7 @@ class Stripe_Webhook {
 			 * @param array<string, mixed> $context             Resolved context: form_id, entry_id,
 			 *                                                   user_id (0 for guests), customer_email,
 			 *                                                   type, gateway, mode.
-			 * @since 2.12.0
+			 * @since x.x.x
 			 */
 			do_action( 'srfm_subscription_canceled', $canceled_record, Payment_Helper::build_payment_context( $canceled_record ) );
 		}
@@ -798,7 +798,7 @@ class Stripe_Webhook {
 		 * @param array<string, mixed> $context        Resolved context: form_id, entry_id,
 		 *                                              user_id (0 for guests), customer_email,
 		 *                                              type, gateway, mode.
-		 * @since 2.12.0
+		 * @since x.x.x
 		 */
 		do_action( 'srfm_payment_refunded', $refunded_payment, (float) $new_refund_amount, $is_full_refund, Payment_Helper::build_payment_context( $refunded_payment ) );
 
@@ -1115,7 +1115,7 @@ class Stripe_Webhook {
 				 * @param array<string, mixed> $context Resolved context: form_id, entry_id,
 				 *                                       user_id (0 for guests), customer_email,
 				 *                                       type, gateway, mode.
-				 * @since 2.12.0
+				 * @since x.x.x
 				 */
 				do_action( 'srfm_payment_completed', $payment, Payment_Helper::build_payment_context( $payment ) );
 			}
@@ -1238,7 +1238,7 @@ class Stripe_Webhook {
 				 * @param array<string, mixed> $context              Resolved context: form_id, entry_id,
 				 *                                                    user_id (0 for guests), customer_email,
 				 *                                                    type, gateway, mode.
-				 * @since 2.12.0
+				 * @since x.x.x
 				 */
 				do_action( 'srfm_subscription_renewed', $renewal_payment, $subscription_record, Payment_Helper::build_payment_context( $renewal_payment ) );
 			}

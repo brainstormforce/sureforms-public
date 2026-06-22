@@ -871,7 +871,7 @@ class Payment_Helper {
 	 *
 	 * @param array<string, mixed> $payment Payment record (a `sureforms_payments` row).
 	 * @return int Resolved WordPress user ID, or 0 when none can be determined.
-	 * @since 2.12.0
+	 * @since x.x.x
 	 */
 	public static function resolve_payment_user( $payment ) {
 		if ( ! is_array( $payment ) ) {
@@ -912,7 +912,7 @@ class Payment_Helper {
 	 *
 	 * @param array<string, mixed> $payment Payment record (a `sureforms_payments` row).
 	 * @return array{form_id:int, entry_id:int, user_id:int, customer_email:string, type:string, gateway:string, mode:string} Resolved payment context.
-	 * @since 2.12.0
+	 * @since x.x.x
 	 */
 	public static function build_payment_context( $payment ) {
 		$payment = is_array( $payment ) ? $payment : [];
