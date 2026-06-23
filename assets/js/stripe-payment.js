@@ -283,6 +283,15 @@ class StripePayment {
 		// Add type-specific configuration
 		if ( paymentType === 'one-time' ) {
 			elementsConfig.captureMethod = 'manual';
+			// Manual capture is incompatible with some account-enabled payment methods
+			// (e.g. Bacs Direct Debit, Link, Cash App, BNPL). When any of those are enabled,
+			// Stripe rejects the deferred elements/sessions request with HTTP 400 and the
+			// Payment Element fails to render — which is why the card field does not load in
+			// live mode while test mode (card-only) works. Scope the element to card so only
+			// capture-compatible methods are offered. Apple Pay / Google Pay still appear
+			// (they are surfaced through `card`); the methods dropped here could never be used
+			// with manual capture anyway, so no working checkout is lost.
+			elementsConfig.paymentMethodTypes = [ 'card' ];
 		}
 
 		// Create and mount payment element
