@@ -222,6 +222,10 @@ abstract class Abstract_Ability {
 
 		$annotations = $this->get_annotations();
 
+		// wp_register_ability() is a WP 6.9+ Abilities API function. It is only reached
+		// after the function_exists() guard above (and via the wp_abilities_api_init hook),
+		// so it is inert on WP 6.4-6.8. Plugin Check's static WP-version check cannot see the
+		// runtime guard, so it reports a false positive here.
 		wp_register_ability(
 			$this->id,
 			[
