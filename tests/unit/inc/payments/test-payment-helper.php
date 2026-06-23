@@ -574,6 +574,75 @@ class Test_Payment_Helper extends TestCase {
 		$this->assertFalse( $result['valid'] );
 	}
 
+	// --- resolve_payment_user ---
+
+	public function test_resolve_payment_user_non_array_returns_zero() {
+		$this->assertSame( 0, Payment_Helper::resolve_payment_user( 'not-an-array' ) );
+	}
+
+	public function test_resolve_payment_user_empty_payment_returns_zero() {
+		$this->assertSame( 0, Payment_Helper::resolve_payment_user( [] ) );
+	}
+
+	public function test_resolve_payment_user_guest_unknown_email_returns_zero() {
+		// Guest checkout (no entry user_id) with an email matching no WP user resolves to 0.
+		$payment = [
+			'entry_id'       => 0,
+			'customer_email' => 'no-such-user-' . uniqid() . '@example.com',
+		];
+		$this->assertSame( 0, Payment_Helper::resolve_payment_user( $payment ) );
+	}
+
+	public function test_resolve_payment_user_matches_user_by_customer_email() {
+		// Falls back to a WP user matching customer_email when there is no entry user_id.
+		$user_id = self::factory()->user->create( [ 'user_email' => 'buyer-resolve@example.com' ] );
+		$payment = [
+			'entry_id'       => 0,
+			'customer_email' => 'buyer-resolve@example.com',
+		];
+		$this->assertSame( $user_id, Payment_Helper::resolve_payment_user( $payment ) );
+	}
+
+	// --- build_payment_context ---
+
+	public function test_build_payment_context_non_array_returns_defaults() {
+		$context = Payment_Helper::build_payment_context( 'not-an-array' );
+		$this->assertIsArray( $context );
+		foreach ( [ 'form_id', 'entry_id', 'user_id', 'customer_email', 'type', 'gateway', 'mode' ] as $key ) {
+			$this->assertArrayHasKey( $key, $context, "Context missing '{$key}'" );
+		}
+		$this->assertSame( 0, $context['form_id'] );
+		$this->assertSame( 0, $context['entry_id'] );
+		$this->assertSame( 0, $context['user_id'] );
+		$this->assertSame( '', $context['customer_email'] );
+		$this->assertSame( '', $context['type'] );
+		$this->assertSame( '', $context['gateway'] );
+		$this->assertSame( '', $context['mode'] );
+	}
+
+	public function test_build_payment_context_resolves_and_sanitizes_fields() {
+		$user_id = self::factory()->user->create( [ 'user_email' => 'buyer-context@example.com' ] );
+		$payment = [
+			'form_id'        => '42',
+			'entry_id'       => 0,
+			'customer_email' => 'buyer-context@example.com',
+			'type'           => 'subscription',
+			'gateway'        => 'stripe',
+			'mode'           => 'test',
+		];
+
+		$context = Payment_Helper::build_payment_context( $payment );
+
+		// Numeric strings are cast to int, strings sanitized, and user_id resolved via email.
+		$this->assertSame( 42, $context['form_id'] );
+		$this->assertSame( 0, $context['entry_id'] );
+		$this->assertSame( $user_id, $context['user_id'] );
+		$this->assertSame( 'buyer-context@example.com', $context['customer_email'] );
+		$this->assertSame( 'subscription', $context['type'] );
+		$this->assertSame( 'stripe', $context['gateway'] );
+		$this->assertSame( 'test', $context['mode'] );
+	}
+
 	private function call_private_method( $object, $method_name, $parameters = [] ) {
 		$reflection = new \ReflectionClass( Payment_Helper::class );
 		$method     = $reflection->getMethod( $method_name );

@@ -625,6 +625,22 @@ class Stripe_Webhook {
 				gmdate( 'Y-m-d H:i:s', $canceled_at )
 			)
 		);
+
+		// Notify consumers that the subscription has reached a terminal canceled state.
+		$canceled_record = Payments::get( $subscription_db_id );
+		if ( is_array( $canceled_record ) ) {
+			/**
+			 * Fires when a subscription reaches its terminal `canceled` state (for
+			 * Stripe, after the billing period ends — `customer.subscription.deleted`).
+			 *
+			 * @param array<string, mixed> $subscription_record The canceled subscription payment record.
+			 * @param array<string, mixed> $context             Resolved context: form_id, entry_id,
+			 *                                                   user_id (0 for guests), customer_email,
+			 *                                                   type, gateway, mode.
+			 * @since x.x.x
+			 */
+			do_action( 'srfm_subscription_canceled', $canceled_record, Payment_Helper::build_payment_context( $canceled_record ) );
+		}
 	}
 
 	/**
@@ -767,6 +783,24 @@ class Stripe_Webhook {
 				$currency
 			)
 		);
+
+		// Notify consumers that a refund was recorded against this payment.
+		$is_full_refund   = $total_after_refund >= $original_amount;
+		$refunded_payment = Payments::get( $payment_id );
+		$refunded_payment = is_array( $refunded_payment ) ? $refunded_payment : $payment;
+		/**
+		 * Fires when a refund is recorded against a SureForms payment (covers both
+		 * the Stripe webhook and admin-initiated refund paths).
+		 *
+		 * @param array<string, mixed> $payment        Payment record (a `sureforms_payments` row).
+		 * @param float                $refund_amount  Refunded amount for this event, in the store's decimal currency.
+		 * @param bool                 $is_full_refund Whether the cumulative refunds now cover the full payment.
+		 * @param array<string, mixed> $context        Resolved context: form_id, entry_id,
+		 *                                              user_id (0 for guests), customer_email,
+		 *                                              type, gateway, mode.
+		 * @since x.x.x
+		 */
+		do_action( 'srfm_payment_refunded', $refunded_payment, (float) $new_refund_amount, $is_full_refund, Payment_Helper::build_payment_context( $refunded_payment ) );
 
 		return true;
 	}
@@ -1069,6 +1103,22 @@ class Stripe_Webhook {
 			Helper::srfm_log( 'Failed to update subscription record for initial payment. Subscription ID: ' . $subscription_id . '.' );
 		} else {
 			Helper::srfm_log( 'Initial subscription payment processed successfully. Subscription ID: ' . $subscription_id . '.' );
+
+			// Notify consumers that the initial subscription charge succeeded.
+			$payment = Payments::get( $subscription_id );
+			if ( is_array( $payment ) ) {
+				/**
+				 * Fires when a SureForms payment reaches the `succeeded` state — a
+				 * one-time payment, or the initial charge of a subscription.
+				 *
+				 * @param array<string, mixed> $payment Payment record (a `sureforms_payments` row).
+				 * @param array<string, mixed> $context Resolved context: form_id, entry_id,
+				 *                                       user_id (0 for guests), customer_email,
+				 *                                       type, gateway, mode.
+				 * @since x.x.x
+				 */
+				do_action( 'srfm_payment_completed', $payment, Payment_Helper::build_payment_context( $payment ) );
+			}
 		}
 	}
 
@@ -1174,6 +1224,23 @@ class Stripe_Webhook {
 			if ( ! empty( $charge_id ) ) {
 				$get_secret_key = Stripe_Helper::get_stripe_secret_key( $this->mode );
 				Stripe_Helper::intersect_payment( $charge_id, $get_secret_key, '', 'SureForms' );
+			}
+
+			// Notify consumers that a subscription renewal charge succeeded.
+			$renewal_payment = Payments::get( $payment_entry_id );
+			if ( is_array( $renewal_payment ) ) {
+				/**
+				 * Fires when a subscription renewal charge succeeds and its payment
+				 * row has been recorded.
+				 *
+				 * @param array<string, mixed> $payment              Renewal payment record (a `sureforms_payments` row).
+				 * @param array<string, mixed> $parent_subscription  The parent subscription payment record.
+				 * @param array<string, mixed> $context              Resolved context: form_id, entry_id,
+				 *                                                    user_id (0 for guests), customer_email,
+				 *                                                    type, gateway, mode.
+				 * @since x.x.x
+				 */
+				do_action( 'srfm_subscription_renewed', $renewal_payment, $subscription_record, Payment_Helper::build_payment_context( $renewal_payment ) );
 			}
 		} else {
 			Helper::srfm_log( 'Failed to create renewal payment record.' );

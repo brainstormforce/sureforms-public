@@ -1550,10 +1550,53 @@ class Front_End {
 
 			// Update the payment entry with entry_id using Payments class.
 			$updated = Payments::update( $payment_entry_id, [ 'entry_id' => $entry_id ] );
-			return $updated ? true : false;
+
+			if ( $updated ) {
+				$this->maybe_fire_payment_completed( $payment_entry_id );
+				return true;
+			}
+
+			return false;
 		}
 
 		return false;
+	}
+
+	/**
+	 * Fire the `srfm_payment_completed` action for a freshly linked payment.
+	 *
+	 * Called right after a payment row is linked to its form entry, so `entry_id`
+	 * (and therefore the submitting user) is resolvable. Gated on the `succeeded`
+	 * status so consumers never grant access for pending, failed or refunded
+	 * payments.
+	 *
+	 * @param int $payment_entry_id Primary key of the linked `sureforms_payments` row.
+	 * @since x.x.x
+	 * @return void
+	 */
+	private function maybe_fire_payment_completed( $payment_entry_id ) {
+		$payment = Payments::get( $payment_entry_id );
+		if ( ! is_array( $payment ) ) {
+			return;
+		}
+
+		$status = ! empty( $payment['status'] ) && is_string( $payment['status'] ) ? $payment['status'] : '';
+		if ( 'succeeded' !== $status ) {
+			return;
+		}
+
+		/**
+		 * Fires when a SureForms payment reaches the `succeeded` state and has been
+		 * linked to its form entry — a one-time payment, or the initial charge of a
+		 * subscription.
+		 *
+		 * @param array<string, mixed> $payment Payment record (a `sureforms_payments` row).
+		 * @param array<string, mixed> $context Resolved context: form_id, entry_id,
+		 *                                       user_id (0 for guests), customer_email,
+		 *                                       type, gateway, mode.
+		 * @since x.x.x
+		 */
+		do_action( 'srfm_payment_completed', $payment, Payment_Helper::build_payment_context( $payment ) );
 	}
 
 	/**
@@ -1580,7 +1623,13 @@ class Front_End {
 
 			// Update the payment entry with entry_id using Payments class.
 			$updated = Payments::update( $payment_entry_id, [ 'entry_id' => $entry_id ] );
-			return $updated ? true : false;
+
+			if ( $updated ) {
+				$this->maybe_fire_payment_completed( $payment_entry_id );
+				return true;
+			}
+
+			return false;
 		}
 
 		return false;

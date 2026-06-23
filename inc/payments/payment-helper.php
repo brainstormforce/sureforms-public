@@ -12,6 +12,7 @@
 
 namespace SRFM\Inc\Payments;
 
+use SRFM\Inc\Database\Tables\Entries;
 use SRFM\Inc\Field_Validation;
 use SRFM\Inc\Helper;
 use SRFM\Inc\Payments\Stripe\Stripe_Helper;
@@ -858,6 +859,73 @@ class Payment_Helper {
 		}
 
 		return null;
+	}
+
+	/**
+	 * Resolve the WordPress user associated with a payment record.
+	 *
+	 * Resolution order:
+	 *  1. The linked entry's `user_id` (set when a logged-in user submitted the form).
+	 *  2. A user matching the payment's `customer_email`.
+	 *  3. `0` for guest checkouts where no WordPress user can be resolved.
+	 *
+	 * @param array<string, mixed> $payment Payment record (a `sureforms_payments` row).
+	 * @return int Resolved WordPress user ID, or 0 when none can be determined.
+	 * @since x.x.x
+	 */
+	public static function resolve_payment_user( $payment ) {
+		if ( ! is_array( $payment ) ) {
+			return 0;
+		}
+
+		// 1. Prefer the user_id stored on the linked entry.
+		$entry_id = ! empty( $payment['entry_id'] ) && is_numeric( $payment['entry_id'] ) ? intval( $payment['entry_id'] ) : 0;
+		if ( $entry_id > 0 ) {
+			$entry = Entries::get( $entry_id );
+			if ( is_array( $entry ) && ! empty( $entry['user_id'] ) && is_numeric( $entry['user_id'] ) ) {
+				$user_id = intval( $entry['user_id'] );
+				if ( $user_id > 0 ) {
+					return $user_id;
+				}
+			}
+		}
+
+		// 2. Fall back to a user matching the customer email.
+		$customer_email = ! empty( $payment['customer_email'] ) && is_string( $payment['customer_email'] ) ? sanitize_email( $payment['customer_email'] ) : '';
+		if ( ! empty( $customer_email ) ) {
+			$user = get_user_by( 'email', $customer_email );
+			if ( $user instanceof \WP_User ) {
+				return intval( $user->ID );
+			}
+		}
+
+		// 3. Guest checkout — no resolvable WordPress user.
+		return 0;
+	}
+
+	/**
+	 * Build the standard context array passed alongside payment-lifecycle actions.
+	 *
+	 * Gives consumers (membership, LMS and other plugins) a consistent, resolved
+	 * snapshot of who paid and through which form/gateway, without each consumer
+	 * having to re-derive it from the raw payment row.
+	 *
+	 * @param array<string, mixed> $payment Payment record (a `sureforms_payments` row).
+	 * @return array{form_id:int, entry_id:int, user_id:int, customer_email:string, type:string, gateway:string, mode:string} Resolved payment context.
+	 * @since x.x.x
+	 */
+	public static function build_payment_context( $payment ) {
+		$payment = is_array( $payment ) ? $payment : [];
+
+		return [
+			'form_id'        => ! empty( $payment['form_id'] ) && is_numeric( $payment['form_id'] ) ? intval( $payment['form_id'] ) : 0,
+			'entry_id'       => ! empty( $payment['entry_id'] ) && is_numeric( $payment['entry_id'] ) ? intval( $payment['entry_id'] ) : 0,
+			'user_id'        => self::resolve_payment_user( $payment ),
+			'customer_email' => ! empty( $payment['customer_email'] ) && is_string( $payment['customer_email'] ) ? sanitize_email( $payment['customer_email'] ) : '',
+			'type'           => ! empty( $payment['type'] ) && is_string( $payment['type'] ) ? sanitize_text_field( $payment['type'] ) : '',
+			'gateway'        => ! empty( $payment['gateway'] ) && is_string( $payment['gateway'] ) ? sanitize_text_field( $payment['gateway'] ) : '',
+			'mode'           => ! empty( $payment['mode'] ) && is_string( $payment['mode'] ) ? sanitize_text_field( $payment['mode'] ) : '',
+		];
 	}
 
 	/**
