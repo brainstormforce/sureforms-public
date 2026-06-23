@@ -16,9 +16,12 @@ permissions:
 
 jobs:
   i18n:
+    # Only trusted users may trigger a run — this job executes branch build
+    # scripts with secrets, so gate on the commenter's association.
     if: |
       github.event.comment.body == '/i18n' &&
-      github.event.issue.pull_request != null
+      github.event.issue.pull_request != null &&
+      contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.comment.author_association)
     runs-on: ubuntu-latest
 
     steps:
@@ -77,7 +80,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: '20.20.1'
+          node-version: '24.16.0'
           cache: 'npm'
 
       - name: Install WP-CLI
@@ -88,7 +91,7 @@ jobs:
           wp --info
 
       - name: Install dependencies
-        run: npm ci --legacy-peer-deps
+        run: npm ci
 
       # Build first so makepot picks up all the latest strings
       - name: Build
@@ -119,8 +122,11 @@ jobs:
       # object is introduced here.
       - name: Create i18n branch
         if: steps.changes.outputs.changed == 'true'
+        env:
+          # Pass via env so the branch name can't inject shell commands.
+          HEAD_REF: ${{ steps.pr.outputs.head_ref }}
         run: |
-          BRANCH="i18n/${{ steps.pr.outputs.head_ref }}"
+          BRANCH="i18n/$HEAD_REF"
           echo "BRANCH=$BRANCH" >> "$GITHUB_ENV"
           git push --force origin "HEAD:refs/heads/$BRANCH"
 
@@ -148,13 +154,15 @@ jobs:
         id: create_pr
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Pass via env so the base branch name can't inject shell commands.
+          HEAD_REF: ${{ steps.pr.outputs.head_ref }}
         run: |
           PR_URL=$(gh pr create \
             --title "chore: update i18n translations" \
             --body "This PR updates translation files for 7 languages (nl, fr, de, es, it, pt, pl).
 
           Triggered by \`/i18n\` command on #${{ github.event.issue.number }}." \
-            --base "${{ steps.pr.outputs.head_ref }}" \
+            --base "$HEAD_REF" \
             --head "$BRANCH")
 
           echo "pr_url=$PR_URL" >> "$GITHUB_OUTPUT"

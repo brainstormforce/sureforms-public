@@ -9,9 +9,9 @@ Common issues, debugging tips, and frequently asked questions for SureForms deve
 **Problem:** `npm run build` fails with errors.
 
 **Solutions:**
-1. Ensure Node.js 18.15.0 is active (Volta manages this automatically via `package.json`):
+1. Ensure Node.js 24.16.0 is active (Volta manages this automatically via `package.json`):
    ```bash
-   node -v   # Should output v18.15.0
+   node -v   # Should output v24.16.0
    ```
 2. Clear and reinstall dependencies:
    ```bash

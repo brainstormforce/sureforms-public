@@ -1,3 +1,6 @@
+// A valid ISO 3166-1 alpha-2 code, lowercase.
+const isIso2 = ( c ) => typeof c === 'string' && /^[a-z]{2}$/.test( c );
+
 /**
  * Validates and returns a country code based on filter settings.
  * If the country is not valid for current filters, returns the first valid country.
@@ -16,31 +19,220 @@ function validateCountryWithFilters(
 	includeCountries,
 	excludeCountries
 ) {
+	const countryLower =
+		typeof country === 'string' ? country.toLowerCase() : '';
+
 	if ( enableCountryFilter !== 'true' ) {
-		return country;
+		return isIso2( countryLower ) ? countryLower : '';
 	}
 
-	const countryLower = country.toLowerCase();
-
-	// Handle include filter
-	if ( countryFilterType === 'include' && includeCountries.length > 0 ) {
-		if ( ! includeCountries.includes( countryLower ) ) {
-			// Country not in include list, use first country from the list
-			return includeCountries[ 0 ];
+	// Handle include filter. The list is JSON.parsed from a data attribute, so
+	// normalize to lowercase and drop anything that isn't a valid ISO2 code.
+	if (
+		countryFilterType === 'include' &&
+		Array.isArray( includeCountries ) &&
+		includeCountries.length > 0
+	) {
+		const include = includeCountries
+			.map( ( c ) => String( c ).toLowerCase() )
+			.filter( isIso2 );
+		if ( countryLower && include.includes( countryLower ) ) {
+			return countryLower;
 		}
-		return countryLower;
+		// Country not in include list — use the first valid included country.
+		return include[ 0 ] || '';
 	}
 
-	// Handle exclude filter
-	if ( countryFilterType === 'exclude' && excludeCountries.length > 0 ) {
-		if ( excludeCountries.includes( countryLower ) ) {
-			// Country is excluded, use 'us' or another fallback
-			return excludeCountries.includes( 'us' ) ? 'gb' : 'us';
+	// Handle exclude filter.
+	if (
+		countryFilterType === 'exclude' &&
+		Array.isArray( excludeCountries ) &&
+		excludeCountries.length > 0
+	) {
+		const exclude = excludeCountries
+			.map( ( c ) => String( c ).toLowerCase() )
+			.filter( isIso2 );
+		if ( countryLower && ! exclude.includes( countryLower ) ) {
+			return countryLower;
 		}
-		return countryLower;
+		// Country is excluded — pick the first sensible fallback that is NOT
+		// itself excluded (never a hardcoded gb/us that the site may exclude).
+		const candidates = [ 'us', 'gb', 'ca', 'au', 'de', 'fr', 'in', 'jp' ];
+		return candidates.find( ( c ) => ! exclude.includes( c ) ) || '';
 	}
 
-	return country;
+	return isIso2( countryLower ) ? countryLower : '';
+}
+
+/**
+ * IANA timezone → ISO 3166-1 alpha-2 country (lowercase).
+ *
+ * The device timezone reflects the visitor's physical location far better than
+ * their browser language, so it is the primary on-device signal. Covers the
+ * common canonical zones; anything unlisted falls back to the locale region.
+ */
+const TIMEZONE_TO_COUNTRY = {
+	// North America.
+	'America/New_York': 'us', 'America/Detroit': 'us', 'America/Chicago': 'us', 'America/Denver': 'us', 'America/Phoenix': 'us', 'America/Los_Angeles': 'us', 'America/Anchorage': 'us', 'America/Adak': 'us', 'America/Boise': 'us', 'America/Indiana/Indianapolis': 'us', 'Pacific/Honolulu': 'us',
+	'America/Toronto': 'ca', 'America/Vancouver': 'ca', 'America/Edmonton': 'ca', 'America/Winnipeg': 'ca', 'America/Halifax': 'ca', 'America/St_Johns': 'ca', 'America/Regina': 'ca',
+	'America/Mexico_City': 'mx', 'America/Tijuana': 'mx', 'America/Monterrey': 'mx', 'America/Cancun': 'mx',
+	// Central & South America.
+	'America/Bogota': 'co', 'America/Lima': 'pe', 'America/Caracas': 've', 'America/Santiago': 'cl', 'America/Argentina/Buenos_Aires': 'ar', 'America/Sao_Paulo': 'br', 'America/Bahia': 'br', 'America/Fortaleza': 'br', 'America/Manaus': 'br', 'America/Montevideo': 'uy', 'America/Asuncion': 'py', 'America/La_Paz': 'bo', 'America/Guayaquil': 'ec', 'America/Panama': 'pa', 'America/Costa_Rica': 'cr', 'America/Guatemala': 'gt', 'America/El_Salvador': 'sv', 'America/Tegucigalpa': 'hn', 'America/Managua': 'ni', 'America/Santo_Domingo': 'do', 'America/Havana': 'cu', 'America/Jamaica': 'jm', 'America/Puerto_Rico': 'pr', 'America/Port_of_Spain': 'tt',
+	// Europe.
+	'Europe/London': 'gb', 'Europe/Dublin': 'ie', 'Europe/Lisbon': 'pt', 'Atlantic/Canary': 'es', 'Europe/Madrid': 'es', 'Europe/Paris': 'fr', 'Europe/Brussels': 'be', 'Europe/Amsterdam': 'nl', 'Europe/Luxembourg': 'lu', 'Europe/Berlin': 'de', 'Europe/Zurich': 'ch', 'Europe/Vienna': 'at', 'Europe/Rome': 'it', 'Europe/Malta': 'mt', 'Europe/Copenhagen': 'dk', 'Europe/Oslo': 'no', 'Europe/Stockholm': 'se', 'Europe/Helsinki': 'fi', 'Europe/Reykjavik': 'is', 'Europe/Warsaw': 'pl', 'Europe/Prague': 'cz', 'Europe/Bratislava': 'sk', 'Europe/Budapest': 'hu', 'Europe/Vilnius': 'lt', 'Europe/Riga': 'lv', 'Europe/Tallinn': 'ee', 'Europe/Athens': 'gr', 'Europe/Bucharest': 'ro', 'Europe/Sofia': 'bg', 'Europe/Belgrade': 'rs', 'Europe/Zagreb': 'hr', 'Europe/Ljubljana': 'si', 'Europe/Sarajevo': 'ba', 'Europe/Skopje': 'mk', 'Europe/Tirane': 'al', 'Europe/Chisinau': 'md', 'Europe/Kyiv': 'ua', 'Europe/Kiev': 'ua', 'Europe/Minsk': 'by', 'Europe/Moscow': 'ru', 'Europe/Istanbul': 'tr',
+	// Middle East.
+	'Asia/Jerusalem': 'il', 'Asia/Beirut': 'lb', 'Asia/Amman': 'jo', 'Asia/Damascus': 'sy', 'Asia/Baghdad': 'iq', 'Asia/Riyadh': 'sa', 'Asia/Kuwait': 'kw', 'Asia/Qatar': 'qa', 'Asia/Dubai': 'ae', 'Asia/Muscat': 'om', 'Asia/Bahrain': 'bh', 'Asia/Tehran': 'ir',
+	// South & Central Asia.
+	'Asia/Kabul': 'af', 'Asia/Karachi': 'pk', 'Asia/Kolkata': 'in', 'Asia/Calcutta': 'in', 'Asia/Colombo': 'lk', 'Asia/Kathmandu': 'np', 'Asia/Dhaka': 'bd', 'Asia/Thimphu': 'bt', 'Asia/Almaty': 'kz', 'Asia/Tashkent': 'uz', 'Asia/Baku': 'az', 'Asia/Yerevan': 'am', 'Asia/Tbilisi': 'ge',
+	// East & Southeast Asia.
+	'Asia/Yangon': 'mm', 'Asia/Bangkok': 'th', 'Asia/Ho_Chi_Minh': 'vn', 'Asia/Phnom_Penh': 'kh', 'Asia/Vientiane': 'la', 'Asia/Jakarta': 'id', 'Asia/Makassar': 'id', 'Asia/Kuala_Lumpur': 'my', 'Asia/Singapore': 'sg', 'Asia/Manila': 'ph', 'Asia/Hong_Kong': 'hk', 'Asia/Macau': 'mo', 'Asia/Taipei': 'tw', 'Asia/Shanghai': 'cn', 'Asia/Urumqi': 'cn', 'Asia/Tokyo': 'jp', 'Asia/Seoul': 'kr', 'Asia/Ulaanbaatar': 'mn',
+	// Africa.
+	'Africa/Abidjan': 'ci', 'Africa/Accra': 'gh', 'Africa/Addis_Ababa': 'et', 'Africa/Algiers': 'dz', 'Africa/Cairo': 'eg', 'Africa/Casablanca': 'ma', 'Africa/Johannesburg': 'za', 'Africa/Lagos': 'ng', 'Africa/Nairobi': 'ke', 'Africa/Tripoli': 'ly', 'Africa/Tunis': 'tn', 'Africa/Khartoum': 'sd', 'Africa/Dar_es_Salaam': 'tz', 'Africa/Kampala': 'ug', 'Africa/Kinshasa': 'cd', 'Africa/Maputo': 'mz', 'Africa/Windhoek': 'na', 'Africa/Harare': 'zw', 'Africa/Lusaka': 'zm', 'Africa/Dakar': 'sn',
+	// Oceania.
+	'Australia/Sydney': 'au', 'Australia/Melbourne': 'au', 'Australia/Brisbane': 'au', 'Australia/Perth': 'au', 'Australia/Adelaide': 'au', 'Australia/Darwin': 'au', 'Australia/Hobart': 'au', 'Pacific/Auckland': 'nz', 'Pacific/Fiji': 'fj', 'Pacific/Guam': 'gu', 'Pacific/Port_Moresby': 'pg',
+};
+
+/**
+ * Detect a likely country for the visitor using only on-device browser data.
+ *
+ * Primary signal is the device timezone (physical location); the browser locale
+ * region (language) is a weaker secondary fallback. Both are read locally via
+ * Intl — no network request, no IP, no third-party call — so detection works
+ * offline, on localhost and on full-page-cached pages, and never raises the
+ * CORS / rate-limit / privacy concerns of a browser geo-IP request.
+ *
+ * @return {string} Lowercase 2-letter country code, or '' when undeterminable.
+ */
+function detectCountryFromBrowser() {
+	// 1. Timezone → country (reflects physical location).
+	try {
+		const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+		if ( tz && TIMEZONE_TO_COUNTRY[ tz ] ) {
+			return TIMEZONE_TO_COUNTRY[ tz ];
+		}
+	} catch {
+		// Intl.DateTimeFormat unsupported — fall through to locale.
+	}
+
+	// 2. Locale region (language) — weaker, but better than nothing.
+	try {
+		const locales =
+			Array.isArray( navigator.languages ) && navigator.languages.length
+				? navigator.languages
+				: [ navigator.language ];
+		for ( const locale of locales ) {
+			if ( ! locale ) {
+				continue;
+			}
+			const region = new Intl.Locale( locale ).region;
+			if ( region && /^[A-Z]{2}$/.test( region ) ) {
+				return region.toLowerCase();
+			}
+		}
+	} catch {
+		// Intl.Locale unsupported or a malformed locale — fall through.
+	}
+	return '';
+}
+
+/**
+ * Apply per-visitor auto country detection to an intl-tel-input instance.
+ *
+ * Resolution order, most-to-least authoritative:
+ *   1. A browser-local Intl guess applied immediately — works offline, on
+ *      localhost and on full-page-cached pages, with no flash and no network.
+ *   2. The same-origin geo-country REST endpoint, used to refine the guess only
+ *      when the server *confidently* detected (CDN header or a successful IP
+ *      lookup); cached in sessionStorage for the session.
+ *
+ * Respects the field's country filters and never overrides a value the visitor
+ * already started typing.
+ *
+ * @param {Object}      iti         The intl-tel-input instance.
+ * @param {HTMLElement} phoneNumber The phone input element.
+ * @param {Object}      filters     Country-filter settings for this field.
+ */
+function applyAutoCountry( iti, phoneNumber, filters ) {
+	// Track the last country WE applied, seeded from whatever the instance
+	// currently shows (the server-baked default). The async "refine" steps only
+	// apply if the selected country still equals this — i.e. the visitor hasn't
+	// changed it meanwhile (by typing OR by picking from the dropdown).
+	let lastAutoApplied = iti.getSelectedCountryData()?.iso2 || null;
+
+	const setCountry = ( country, { isRefine = false } = {} ) => {
+		if ( ! country || typeof country !== 'string' ) {
+			return;
+		}
+		const countryLower = country.toLowerCase();
+		// Guard the (possibly external) value before it reaches setCountry().
+		if ( ! isIso2( countryLower ) ) {
+			return;
+		}
+		// Don't override a value the visitor already started entering.
+		if ( phoneNumber.value && phoneNumber.value.trim() !== '' ) {
+			return;
+		}
+		// Don't override an explicit country the visitor chose (e.g. from the
+		// dropdown, without typing) before this async refine resolved.
+		if ( isRefine && lastAutoApplied !== null ) {
+			const current = iti.getSelectedCountryData()?.iso2;
+			if ( current && current !== lastAutoApplied ) {
+				return;
+			}
+		}
+		const validated = validateCountryWithFilters(
+			countryLower,
+			filters.enableCountryFilter,
+			filters.countryFilterType,
+			filters.includeCountries,
+			filters.excludeCountries
+		);
+		if ( validated ) {
+			iti.setCountry( validated );
+			lastAutoApplied = validated;
+		}
+	};
+
+	// 1. Immediate, network-free local guess so the flag is sensible even on
+	//    localhost, offline, or before any request resolves.
+	setCountry( detectCountryFromBrowser() );
+
+	const endpoint =
+		window.srfm_phone_data && window.srfm_phone_data.geo_endpoint;
+	if ( ! endpoint ) {
+		return;
+	}
+
+	// 2. Prefer a confident server detection. Reuse a cached one for the session.
+	let cached = null;
+	try {
+		cached = window.sessionStorage?.getItem( 'srfm_geo_country_detected' );
+	} catch {
+		cached = null;
+	}
+	if ( cached ) {
+		setCountry( cached, { isRefine: true } );
+		return;
+	}
+
+	fetch( endpoint, { headers: { Accept: 'application/json' } } )
+		.then( ( res ) => ( res.ok ? res.json() : null ) )
+		.then( ( data ) => {
+			// Only override the local guess when the server is confident.
+			if ( ! data || ! data.detected || ! data.country ) {
+				return;
+			}
+			const country = String( data.country );
+			try {
+				window.sessionStorage?.setItem( 'srfm_geo_country_detected', country );
+			} catch {
+				// sessionStorage may be unavailable (e.g. private mode) — ignore.
+			}
+			setCountry( country, { isRefine: true } );
+		} )
+		.catch( () => {
+			// Network error — keep the local guess.
+		} );
 }
 
 function initializePhoneField() {
@@ -145,6 +337,20 @@ function initializePhoneField() {
 		// The flag should only change when the user explicitly selects a country from the dropdown.
 		// Dropdown selection goes through _selectListItem -> _setCountry directly, so it still works.
 		iti._updateCountryFromNumber = () => false;
+
+		// Per-visitor auto country detection. The server bakes an initial
+		// `default-country`, but on full-page-cached sites that value is the first
+		// visitor's. When auto-country is enabled, fetch the current visitor's
+		// country from the same-origin REST endpoint (not part of the cached page
+		// HTML) and apply it — correct per visitor.
+		if ( phoneNumber.getAttribute( 'data-auto-country' ) === 'true' ) {
+			applyAutoCountry( iti, phoneNumber, {
+				enableCountryFilter,
+				countryFilterType,
+				includeCountries,
+				excludeCountries,
+			} );
+		}
 
 		const countriesData =
 			iti?.countryList.querySelectorAll( '.iti__country' );

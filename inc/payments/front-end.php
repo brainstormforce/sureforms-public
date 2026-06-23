@@ -798,6 +798,17 @@ class Front_End {
 			$form_id             = isset( $form_data['form-id'] ) && ! empty( $form_data['form-id'] ) ? $form_data['form-id'] : 0;
 			$subscription_status = isset( $subscription['status'] ) && ! empty( $subscription['status'] ) && is_string( $subscription['status'] ) ? $subscription['status'] : '';
 
+			// Defense-in-depth: re-validate the amount Stripe actually invoiced against the form's
+			// server-side configuration. The recurring price is the invoiced amount, so an
+			// underpayment here would otherwise repeat every billing cycle.
+			$charged_amount    = Stripe_Helper::amount_from_stripe_format( is_numeric( $amount ) ? (int) $amount : 0, is_string( $currency ) ? $currency : 'usd' );
+			$charge_validation = Payment_Helper::validate_amount_against_config( $block_id, is_numeric( $form_id ) ? (int) $form_id : 0, $form_data, $charged_amount, 'subscription' );
+			if ( false === $charge_validation['valid'] ) {
+				return [
+					'error' => $charge_validation['message'],
+				];
+			}
+
 			$invoice_status = isset( $paid_invoice['status'] ) && ! empty( $paid_invoice['status'] ) && is_string( $paid_invoice['status'] ) ? $paid_invoice['status'] : '';
 
 			// Extract customer data.
@@ -1225,6 +1236,16 @@ class Front_End {
 			$confirm_payment_currency = is_array( $confirmed_payment_intent ) && isset( $confirmed_payment_intent['currency'] ) && ! empty( $confirmed_payment_intent['currency'] ) ? (string) $confirmed_payment_intent['currency'] : 'usd';
 			$confirm_payment_id       = is_array( $confirmed_payment_intent ) && isset( $confirmed_payment_intent['id'] ) && ! empty( $confirmed_payment_intent['id'] ) ? (string) $confirmed_payment_intent['id'] : '';
 
+			// Defense-in-depth: re-validate the amount Stripe actually charged against the form's
+			// server-side configuration — not only the amount recorded when the intent was created.
+			$charged_amount    = Stripe_Helper::amount_from_stripe_format( $confirm_payment_amount, $confirm_payment_currency );
+			$charge_validation = Payment_Helper::validate_amount_against_config( $block_id, $form_id, $form_data, $charged_amount, 'one-time' );
+			if ( false === $charge_validation['valid'] ) {
+				return [
+					'error' => $charge_validation['message'],
+				];
+			}
+
 			// Extract customer data.
 			$customer_data = $this->extract_customer_data( $payment_value );
 
@@ -1529,10 +1550,53 @@ class Front_End {
 
 			// Update the payment entry with entry_id using Payments class.
 			$updated = Payments::update( $payment_entry_id, [ 'entry_id' => $entry_id ] );
-			return $updated ? true : false;
+
+			if ( $updated ) {
+				$this->maybe_fire_payment_completed( $payment_entry_id );
+				return true;
+			}
+
+			return false;
 		}
 
 		return false;
+	}
+
+	/**
+	 * Fire the `srfm_payment_completed` action for a freshly linked payment.
+	 *
+	 * Called right after a payment row is linked to its form entry, so `entry_id`
+	 * (and therefore the submitting user) is resolvable. Gated on the `succeeded`
+	 * status so consumers never grant access for pending, failed or refunded
+	 * payments.
+	 *
+	 * @param int $payment_entry_id Primary key of the linked `sureforms_payments` row.
+	 * @since x.x.x
+	 * @return void
+	 */
+	private function maybe_fire_payment_completed( $payment_entry_id ) {
+		$payment = Payments::get( $payment_entry_id );
+		if ( ! is_array( $payment ) ) {
+			return;
+		}
+
+		$status = ! empty( $payment['status'] ) && is_string( $payment['status'] ) ? $payment['status'] : '';
+		if ( 'succeeded' !== $status ) {
+			return;
+		}
+
+		/**
+		 * Fires when a SureForms payment reaches the `succeeded` state and has been
+		 * linked to its form entry — a one-time payment, or the initial charge of a
+		 * subscription.
+		 *
+		 * @param array<string, mixed> $payment Payment record (a `sureforms_payments` row).
+		 * @param array<string, mixed> $context Resolved context: form_id, entry_id,
+		 *                                       user_id (0 for guests), customer_email,
+		 *                                       type, gateway, mode.
+		 * @since x.x.x
+		 */
+		do_action( 'srfm_payment_completed', $payment, Payment_Helper::build_payment_context( $payment ) );
 	}
 
 	/**
@@ -1559,7 +1623,13 @@ class Front_End {
 
 			// Update the payment entry with entry_id using Payments class.
 			$updated = Payments::update( $payment_entry_id, [ 'entry_id' => $entry_id ] );
-			return $updated ? true : false;
+
+			if ( $updated ) {
+				$this->maybe_fire_payment_completed( $payment_entry_id );
+				return true;
+			}
+
+			return false;
 		}
 
 		return false;
