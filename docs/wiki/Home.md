@@ -2,7 +2,7 @@
 
 Welcome to the SureForms developer wiki. This documentation covers the architecture, APIs, development workflows, and internals of the SureForms WordPress form builder plugin.
 
-**Version:** 2.5.1 | **WordPress:** 6.4+ | **PHP:** 7.4+ | **Node:** 18.15.0
+**Version:** 2.5.1 | **WordPress:** 6.4+ | **PHP:** 7.4+ | **Node:** 24.16.0
 
 ## Quick Links
 

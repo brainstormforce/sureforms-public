@@ -101,11 +101,11 @@ jobs:
             - name: Use desired version of NodeJS
               uses: actions/setup-node@v6
               with:
-                  node-version: '18.15.0'
+                  node-version: '24.16.0'
                   cache: 'npm'
 
             - name: Install npm dependencies
-              run: npm ci --legacy-peer-deps
+              run: npm ci
 
             - name: Lint JS
               run: npm run lint-js

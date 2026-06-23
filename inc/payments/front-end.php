@@ -798,6 +798,17 @@ class Front_End {
 			$form_id             = isset( $form_data['form-id'] ) && ! empty( $form_data['form-id'] ) ? $form_data['form-id'] : 0;
 			$subscription_status = isset( $subscription['status'] ) && ! empty( $subscription['status'] ) && is_string( $subscription['status'] ) ? $subscription['status'] : '';
 
+			// Defense-in-depth: re-validate the amount Stripe actually invoiced against the form's
+			// server-side configuration. The recurring price is the invoiced amount, so an
+			// underpayment here would otherwise repeat every billing cycle.
+			$charged_amount    = Stripe_Helper::amount_from_stripe_format( is_numeric( $amount ) ? (int) $amount : 0, is_string( $currency ) ? $currency : 'usd' );
+			$charge_validation = Payment_Helper::validate_amount_against_config( $block_id, is_numeric( $form_id ) ? (int) $form_id : 0, $form_data, $charged_amount, 'subscription' );
+			if ( false === $charge_validation['valid'] ) {
+				return [
+					'error' => $charge_validation['message'],
+				];
+			}
+
 			$invoice_status = isset( $paid_invoice['status'] ) && ! empty( $paid_invoice['status'] ) && is_string( $paid_invoice['status'] ) ? $paid_invoice['status'] : '';
 
 			// Extract customer data.
@@ -1224,6 +1235,16 @@ class Front_End {
 			$confirm_payment_amount   = is_array( $confirmed_payment_intent ) && isset( $confirmed_payment_intent['amount'] ) && ! empty( $confirmed_payment_intent['amount'] ) ? intval( $confirmed_payment_intent['amount'] ) : 0;
 			$confirm_payment_currency = is_array( $confirmed_payment_intent ) && isset( $confirmed_payment_intent['currency'] ) && ! empty( $confirmed_payment_intent['currency'] ) ? (string) $confirmed_payment_intent['currency'] : 'usd';
 			$confirm_payment_id       = is_array( $confirmed_payment_intent ) && isset( $confirmed_payment_intent['id'] ) && ! empty( $confirmed_payment_intent['id'] ) ? (string) $confirmed_payment_intent['id'] : '';
+
+			// Defense-in-depth: re-validate the amount Stripe actually charged against the form's
+			// server-side configuration — not only the amount recorded when the intent was created.
+			$charged_amount    = Stripe_Helper::amount_from_stripe_format( $confirm_payment_amount, $confirm_payment_currency );
+			$charge_validation = Payment_Helper::validate_amount_against_config( $block_id, $form_id, $form_data, $charged_amount, 'one-time' );
+			if ( false === $charge_validation['valid'] ) {
+				return [
+					'error' => $charge_validation['message'],
+				];
+			}
 
 			// Extract customer data.
 			$customer_data = $this->extract_customer_data( $payment_value );

@@ -458,6 +458,172 @@ class Test_Payment_Helper extends TestCase {
 		$this->assertFalse( $result['valid'] );
 	}
 
+	public function test_get_submitted_value_by_slug() {
+		$form_data = [
+			'srfm-input-abc-lbl-RnVsbCBOYW1l-full-name' => 'John',
+			'srfm-number-xyz-lbl-UHJpY2U-price'         => '50',
+		];
+
+		// Resolves by slug suffix regardless of block type.
+		$this->assertSame( '50', Payment_Helper::get_submitted_value_by_slug( 'price', $form_data ) );
+		$this->assertSame( 'John', Payment_Helper::get_submitted_value_by_slug( 'full-name', $form_data ) );
+
+		// Missing slug, empty slug, and non-array form data return null.
+		$this->assertNull( Payment_Helper::get_submitted_value_by_slug( 'missing', $form_data ) );
+		$this->assertNull( Payment_Helper::get_submitted_value_by_slug( '', $form_data ) );
+		$this->assertNull( Payment_Helper::get_submitted_value_by_slug( 'price', 'not-an-array' ) );
+	}
+
+	public function test_validate_amount_against_config() {
+		// With no resolvable form configuration, validation must fail safe with a structured
+		// result (it must never silently accept the amount).
+		$result = Payment_Helper::validate_amount_against_config( 'block123', 0, [ 'form-id' => 0 ], 10.0, 'one-time' );
+
+		$this->assertIsArray( $result );
+		$this->assertArrayHasKey( 'valid', $result );
+		$this->assertArrayHasKey( 'message', $result );
+		$this->assertFalse( $result['valid'] );
+	}
+
+	public function test_validate_amount_against_config_unrecoverable_source_floor() {
+		// A legacy variable-amount form whose amount-source field reference is empty and cannot be
+		// recovered (empty post content => refresh_block_config() returns null). The stored config
+		// has amount_type 'variable' with no source but a positive minimum amount.
+		$form_id = self::factory()->post->create( [ 'post_content' => '' ] );
+
+		update_post_meta(
+			$form_id,
+			'_srfm_block_config',
+			[
+				'block123' => [
+					'blockName'                        => 'srfm/stripe',
+					'block_id'                         => 'block123',
+					'amount_type'                      => 'variable',
+					'minimum_amount'                   => 50,
+					'variable_amount_field'            => '',
+					'variable_amount_field_block_name' => '',
+				],
+			]
+		);
+
+		// With a positive minimum floor, a charge at/above the floor is accepted (legacy form keeps
+		// working without a re-save) and a charge below the floor is rejected.
+		$above = Payment_Helper::validate_amount_against_config( 'block123', $form_id, [ 'form-id' => $form_id ], 100.0 );
+		$this->assertTrue( $above['valid'] );
+
+		$below = Payment_Helper::validate_amount_against_config( 'block123', $form_id, [ 'form-id' => $form_id ], 10.0 );
+		$this->assertFalse( $below['valid'] );
+
+		// With no positive floor, there is nothing safe to validate against, so it must fail safe
+		// and reject (preventing the unauthenticated underpayment bypass from reopening).
+		update_post_meta(
+			$form_id,
+			'_srfm_block_config',
+			[
+				'block123' => [
+					'blockName'                        => 'srfm/stripe',
+					'block_id'                         => 'block123',
+					'amount_type'                      => 'variable',
+					'minimum_amount'                   => 0,
+					'variable_amount_field'            => '',
+					'variable_amount_field_block_name' => '',
+				],
+			]
+		);
+
+		$no_floor = Payment_Helper::validate_amount_against_config( 'block123', $form_id, [ 'form-id' => $form_id ], 100.0 );
+		$this->assertFalse( $no_floor['valid'] );
+	}
+
+	/**
+	 * A calculation-enabled number amount source whose formula the server can't
+	 * recompute (e.g. free-only, no Pro recompute handler) must FAIL SAFE — never
+	 * fall back to the client-submitted amount. With minimum_amount = 0 this isolates
+	 * the bypass: without the fail-safe, the "name your price" branch would accept
+	 * the attacker's matching amount.
+	 */
+	public function test_validate_amount_against_config_calc_number_fails_safe() {
+		$form_id = self::factory()->post->create( [ 'post_content' => '' ] );
+
+		update_post_meta(
+			$form_id,
+			'_srfm_block_config',
+			[
+				'pay123' => [
+					'block_id'                         => 'pay123',
+					'amount_type'                      => 'variable',
+					'minimum_amount'                   => 0,
+					'variable_amount_field'            => 'price',
+					'variable_amount_field_block_name' => 'srfm/number',
+				],
+				'num456' => [
+					'block_id'           => 'num456',
+					'block_name'         => 'srfm/number',
+					'slug'               => 'price',
+					'enableCalculation'  => true,
+					'calculationFormula' => '{form:price} * 2',
+				],
+			]
+		);
+
+		// Attacker submits a low value and charges that same low amount. Without the
+		// fail-safe (calc-enabled + server amount null) this would be accepted.
+		$form_data = [ 'srfm-number-num456-lbl-UHJpY2U-price' => '10' ];
+		$result    = Payment_Helper::validate_amount_against_config( 'pay123', $form_id, $form_data, 10.0 );
+
+		$this->assertFalse( $result['valid'] );
+	}
+
+	/**
+	 * An unresolved hidden-field amount source (a hidden field whose default is a
+	 * non-numeric smart tag, so resolve_server_side_variable_amount() returns null and
+	 * there is no Pro recompute handler) must FAIL SAFE when there is no positive
+	 * minimum-amount floor. Without the guard the charge would fall through to a zero
+	 * floor and accept any amount — the unauthenticated underpayment bypass flagged by
+	 * the WordPress.org scanner. With a positive minimum, the documented dynamic-prefill
+	 * behavior is preserved: charges at/above the floor are accepted, below are rejected.
+	 */
+	public function test_validate_amount_against_config_unresolved_hidden_fails_safe() {
+		$form_id = self::factory()->post->create( [ 'post_content' => '' ] );
+
+		$config = static function ( $minimum_amount ) {
+			return [
+				'pay123' => [
+					'block_id'                         => 'pay123',
+					'amount_type'                      => 'variable',
+					'minimum_amount'                   => $minimum_amount,
+					'variable_amount_field'            => 'amount',
+					'variable_amount_field_block_name' => 'srfm/hidden',
+				],
+				'hid456' => [
+					'block_id'     => 'hid456',
+					'block_name'   => 'srfm/hidden',
+					'slug'         => 'amount',
+					// Non-numeric smart-tag default => resolve_server_side_variable_amount() returns null.
+					'defaultValue' => '{get_input:amount}',
+				],
+			];
+		};
+
+		// Submitted hidden value is present (so we pass the "value required" check) but must
+		// never be trusted as the price.
+		$form_data = [ 'srfm-hidden-hid456-lbl-QW1vdW50-amount' => '10' ];
+
+		// minimum_amount = 0: nothing safe to validate against => reject.
+		update_post_meta( $form_id, '_srfm_block_config', $config( 0 ) );
+		$no_floor = Payment_Helper::validate_amount_against_config( 'pay123', $form_id, $form_data, 10.0 );
+		$this->assertFalse( $no_floor['valid'] );
+
+		// minimum_amount = 50: dynamic-prefill preserved — at/above floor accepted, below rejected.
+		update_post_meta( $form_id, '_srfm_block_config', $config( 50 ) );
+
+		$above = Payment_Helper::validate_amount_against_config( 'pay123', $form_id, $form_data, 100.0 );
+		$this->assertTrue( $above['valid'] );
+
+		$below = Payment_Helper::validate_amount_against_config( 'pay123', $form_id, $form_data, 10.0 );
+		$this->assertFalse( $below['valid'] );
+	}
+
 	private function call_private_method( $object, $method_name, $parameters = [] ) {
 		$reflection = new \ReflectionClass( Payment_Helper::class );
 		$method     = $reflection->getMethod( $method_name );

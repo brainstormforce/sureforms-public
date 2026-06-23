@@ -48,7 +48,7 @@ class Test_Phone_Markup extends TestCase {
 		// so it passes the FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE guard.
 		$test_ip                    = '203.0.113.1';
 		$_SERVER['REMOTE_ADDR']     = $test_ip;
-		set_transient( 'srfm_geo_' . md5( $test_ip ), 'in', DAY_IN_SECONDS );
+		set_transient( 'srfm_geo_v2_' . md5( $test_ip ), 'in', DAY_IN_SECONDS );
 
 		$phone  = new Phone_Markup( $this->get_auto_country_attributes() );
 		$markup = $phone->markup();
@@ -62,7 +62,7 @@ class Test_Phone_Markup extends TestCase {
 		$this->assertStringContainsString( 'data-required="true"', $markup );
 
 		// Clean up.
-		delete_transient( 'srfm_geo_' . md5( $test_ip ) );
+		delete_transient( 'srfm_geo_v2_' . md5( $test_ip ) );
 	}
 
 	/**
@@ -87,7 +87,7 @@ class Test_Phone_Markup extends TestCase {
 	public function test_auto_country_uses_cached_transient() {
 		$test_ip                = '203.0.113.45';
 		$_SERVER['REMOTE_ADDR'] = $test_ip;
-		$cache_key              = 'srfm_geo_' . md5( $test_ip );
+		$cache_key              = 'srfm_geo_v2_' . md5( $test_ip );
 
 		// Seed transient with 'de' (Germany).
 		set_transient( $cache_key, 'de', DAY_IN_SECONDS );

@@ -53,7 +53,7 @@ PHPUnit runs in GitHub Actions (`.github/workflows/phpunit.yml`):
 
 ### Prerequisites
 
-- Node.js 18.15.0 (Volta)
+- Node.js 24.16.0 (Volta)
 - Docker (for wp-env)
 
 ### Setup

@@ -1126,7 +1126,7 @@ class Payments extends Base {
 			$query = $wpdb->prepare( $query, $params );
 		}
 
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared -- Custom table query with dynamic preparation, caching not applicable for dynamic queries.
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Custom table query with dynamic preparation; table name internal, not user input; caching not applicable for dynamic queries.
 		$results = $wpdb->get_results( $query, ARRAY_A );
 
 		return is_array( $results ) ? $results : [];
@@ -1183,7 +1183,7 @@ class Payments extends Base {
 			$query = $wpdb->prepare( $query, $params );
 		}
 
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared -- Custom table query with dynamic preparation, caching not applicable for count operations.
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Custom table query with dynamic preparation; table name internal, not user input; caching not applicable for count operations.
 		$result = $wpdb->get_var( $query );
 
 		return absint( $result );

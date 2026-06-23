@@ -208,7 +208,8 @@ class Inlinebutton_Markup extends Base {
 				if ( 'cf-turnstile' === $this->captcha_security_type ) {
 					if ( ! empty( $this->cf_turnstile_site_key ) ) {
 						// Cloudflare Turnstile script.
-						wp_enqueue_script( // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
+						// phpcs:disable WordPress.WP.EnqueuedResourceParameters.MissingVersion, PluginCheck.CodeAnalysis.EnqueuedResourceOffloading.OffloadedContent -- Cloudflare Turnstile must be loaded from Cloudflare's servers for token verification; the version is controlled by Cloudflare.
+						wp_enqueue_script(
 							SRFM_SLUG . '-cf-turnstile',
 							'https://challenges.cloudflare.com/turnstile/v0/api.js',
 							[],
@@ -218,13 +219,14 @@ class Inlinebutton_Markup extends Base {
 								'defer' => true,
 							]
 						);
+						// phpcs:enable WordPress.WP.EnqueuedResourceParameters.MissingVersion, PluginCheck.CodeAnalysis.EnqueuedResourceOffloading.OffloadedContent
 					} else {
 						Helper::render_missing_sitekey_error( 'Cloudflare Turnstile' );
 					}
 				}
 				if ( 'hcaptcha' === $this->captcha_security_type ) {
 					if ( ! empty( $this->hcaptcha_site_key ) ) {
-						wp_enqueue_script( 'hcaptcha', 'https://js.hcaptcha.com/1/api.js', [], null, [ 'strategy' => 'defer' ] ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
+						wp_enqueue_script( 'hcaptcha', 'https://js.hcaptcha.com/1/api.js', [], null, [ 'strategy' => 'defer' ] ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion, PluginCheck.CodeAnalysis.EnqueuedResourceOffloading.OffloadedContent -- hCaptcha must be loaded from hCaptcha's servers for token verification; the version is controlled by hCaptcha.
 					} else {
 						Helper::render_missing_sitekey_error( 'HCaptcha' );
 					}
