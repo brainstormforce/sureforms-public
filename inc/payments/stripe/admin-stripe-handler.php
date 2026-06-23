@@ -121,62 +121,23 @@ class Admin_Stripe_Handler {
 			wp_send_json_error(
 				[
 					'message' => ! empty( $cancel_result['message'] ) && is_string( $cancel_result['message'] )
-						? $cancel_result['message']
+						? esc_html( $cancel_result['message'] )
 						: esc_html__( 'Subscription cancellation failed.', 'sureforms' ),
 				]
 			);
 		}
 
-		// Get current logs and add cancel log entry.
-		$current_logs = Helper::get_array_value( $payment['log'] );
-
-		// Build log messages array.
-		$log_messages = [
-			sprintf(
-				/* translators: %s: subscription ID */
-				__( 'Subscription ID: %s', 'sureforms' ),
-				$payment['subscription_id']
-			),
-			sprintf(
-				/* translators: %s: payment gateway name */
-				__( 'Payment Gateway: %s', 'sureforms' ),
-				ucfirst( ! empty( $payment['gateway'] ) && is_string( $payment['gateway'] ) ? $payment['gateway'] : 'unknown' )
-			),
-			sprintf(
-				/* translators: %s: subscription status */
-				__( 'Subscription Status: %s', 'sureforms' ),
-				__( 'Canceled', 'sureforms' )
-			),
-			sprintf(
-				/* translators: %s: user display name */
-				__( 'Canceled by: %s', 'sureforms' ),
-				wp_get_current_user()->display_name
-			),
-			__( 'Note: The subscription has been permanently canceled. The customer will no longer be charged and will lose access to subscription benefits.', 'sureforms' ),
-		];
-
-		// Create new log entry.
-		$new_log        = [
-			'title'      => __( 'Subscription Canceled', 'sureforms' ),
-			'created_at' => current_time( 'mysql' ),
-			'messages'   => $log_messages,
-		];
-		$current_logs[] = $new_log;
-
-		// Preserve the transaction `status` (e.g. 'succeeded') so the Refund option
-		// remains available; lifecycle is tracked via `subscription_status`.
-		$updated = Payments::update(
-			$payment_id,
+		// The gateway callback (Stripe/PayPal) is the single source of truth: it has already
+		// cancelled at the gateway AND persisted subscription_status + the "Subscription Canceled"
+		// activity log. Just report success here — mirroring the frontend cancel path — so we don't
+		// write the DB a second time or append a duplicate log entry.
+		wp_send_json_success(
 			[
-				'subscription_status' => 'canceled',
-				'log'                 => $current_logs,
+				'message' => ! empty( $cancel_result['message'] ) && is_string( $cancel_result['message'] )
+					? esc_html( $cancel_result['message'] )
+					: esc_html__( 'Subscription cancelled successfully.', 'sureforms' ),
 			]
 		);
-		if ( ! $updated ) {
-			wp_send_json_error( [ 'message' => esc_html__( 'Failed to update subscription status in database.', 'sureforms' ) ] );
-		}
-
-		wp_send_json_success( [ 'message' => esc_html__( 'Subscription canceled successfully!', 'sureforms' ) ] );
 	}
 
 	/**
@@ -191,8 +152,10 @@ class Admin_Stripe_Handler {
 	 * @return array<string,mixed> Result with success status and message.
 	 */
 	public function process_stripe_subscription_cancellation( $result, $payment ) {
-		// Only process Stripe payments.
-		if ( empty( $payment['gateway'] ) || 'stripe' !== $payment['gateway'] ) {
+		// Process Stripe payments. Stripe is the only gateway in the free plugin, and the
+		// `gateway` column defaults to '' for legacy/imported rows — so an empty gateway is
+		// treated as Stripe. Only an explicitly different gateway (e.g. 'paypal') is skipped.
+		if ( ! empty( $payment['gateway'] ) && 'stripe' !== $payment['gateway'] ) {
 			return $result;
 		}
 
