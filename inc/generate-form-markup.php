@@ -760,13 +760,15 @@ class Generate_Form_Markup {
 
 		<?php if ( 'v3-reCAPTCHA' === $recaptcha_version ) { ?>
 			<?php
-				wp_enqueue_script( // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion -- This is a third-party script, and specifying a version may lead to caching issues. Using null ensures the latest version is always loaded.
+				// phpcs:disable WordPress.WP.EnqueuedResourceParameters.MissingVersion, PluginCheck.CodeAnalysis.EnqueuedResourceOffloading.OffloadedContent -- Google reCAPTCHA must be loaded from Google's servers for token verification; the version is controlled by Google, and passing null avoids stale caching.
+				wp_enqueue_script(
 					'srfm-google-recaptchaV3',
 					'https://www.google.com/recaptcha/api.js?render=' . $google_captcha_site_key,
 					[],
 					null,
 					true
 				);
+				// phpcs:enable WordPress.WP.EnqueuedResourceParameters.MissingVersion, PluginCheck.CodeAnalysis.EnqueuedResourceOffloading.OffloadedContent
 			?>
 			<?php
 		}
@@ -783,7 +785,8 @@ class Generate_Form_Markup {
 	public static function get_cf_turnstile_script( $srfm_cf_appearance_mode, $srfm_cf_turnstile_site_key ) {
 		if ( ! empty( $srfm_cf_turnstile_site_key ) ) {
 			// Cloudflare Turnstile script.
-			wp_enqueue_script( // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion -- Third-party script; version not under our control.
+			// phpcs:disable WordPress.WP.EnqueuedResourceParameters.MissingVersion, PluginCheck.CodeAnalysis.EnqueuedResourceOffloading.OffloadedContent -- Cloudflare Turnstile must be loaded from Cloudflare's servers for token verification; the version is controlled by Cloudflare.
+			wp_enqueue_script(
 				SRFM_SLUG . '-cf-turnstile',
 				'https://challenges.cloudflare.com/turnstile/v0/api.js',
 				[],
@@ -793,6 +796,7 @@ class Generate_Form_Markup {
 					'defer' => true,
 				]
 			);
+			// phpcs:enable WordPress.WP.EnqueuedResourceParameters.MissingVersion, PluginCheck.CodeAnalysis.EnqueuedResourceOffloading.OffloadedContent
 			?>
 			<!-- The callback methods below are available on frontend.js. onTurnstileError displays and error in place of recaptcha dialog.  -->
 		<div id="srfm-cf-sitekey" class="cf-turnstile" data-callback="onSuccess" data-error-callback="onTurnstileError" data-theme="<?php echo esc_attr( $srfm_cf_appearance_mode ); ?>" data-sitekey="<?php echo esc_attr( $srfm_cf_turnstile_site_key ); ?>"></div>

@@ -1798,7 +1798,7 @@ class Helper {
 	 * @return array<mixed>
 	 */
 	public static function sureforms_get_integration() {
-		$suretrigger_connected  = apply_filters( 'suretriggers_is_user_connected', '' );
+		$suretrigger_connected  = apply_filters( 'suretriggers_is_user_connected', '' ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- SureTriggers' own filter; the name must match SureTriggers exactly to integrate.
 		$logo_sure_triggers     = file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/suretriggers.svg' );
 		$logo_full              = file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/suretriggers_full.svg' );
 		$logo_sure_mails        = file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/suremails.svg' );
@@ -2163,7 +2163,7 @@ class Helper {
 		}
 
 		// Apply the filter with additional arguments.
-		$filtered = apply_filters( $filter_name, $default, ...$args );
+		$filtered = apply_filters( $filter_name, $default, ...$args ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound -- Generic dynamic-filter dispatcher; the caller supplies the (already prefixed) hook name.
 
 		// Return filtered result if it's a non-empty array.
 		return is_array( $filtered ) && ! empty( $filtered ) ? $filtered : $default;

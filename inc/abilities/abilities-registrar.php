@@ -84,6 +84,9 @@ class Abilities_Registrar {
 	 * @return void
 	 */
 	public function register_mcp_server( $adapter ) {
+		// wp_get_abilities() is a WP 6.9+ Abilities API function. This method is only hooked
+		// when mcp_adapter_enabled() is true, which itself requires function_exists( 'wp_register_ability' ),
+		// so it is inert on WP 6.4-6.8. Plugin Check's static WP-version check reports a false positive here.
 		$abilities = wp_get_abilities();
 		$tools     = [];
 
@@ -122,6 +125,9 @@ class Abilities_Registrar {
 	 * @return void
 	 */
 	public function register_category() {
+		// wp_has_ability_category() / wp_register_ability_category() are WP 6.9+ Abilities API
+		// functions, each called only behind its own function_exists() guard, so they are inert
+		// on WP 6.4-6.8. Plugin Check's static WP-version check reports false positives here.
 		if ( function_exists( 'wp_has_ability_category' ) && wp_has_ability_category( 'sureforms' ) ) {
 			return;
 		}
@@ -198,6 +204,9 @@ class Abilities_Registrar {
 			}
 
 			// Skip abilities already registered by zipwp-mcp.
+			// wp_has_ability() is a WP 6.9+ Abilities API function, called only behind its
+			// function_exists() guard, so it is inert on WP 6.4-6.8. Plugin Check's static
+			// WP-version check reports a false positive here.
 			if ( function_exists( 'wp_has_ability' ) && wp_has_ability( $ability->get_id() ) ) {
 				continue;
 			}
