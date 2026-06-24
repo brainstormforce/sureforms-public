@@ -8,7 +8,7 @@ Stable tag: 2.11.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-AI WordPress form builder. Create contact forms, payment forms, surveys, quizzes & multi-step forms — drag & drop, no code.
+SureForms is an AI-powered WordPress form builder for creating contact forms, payment forms, surveys, quizzes, and multi-step forms without code.
 
 == Description ==
 

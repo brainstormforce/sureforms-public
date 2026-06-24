@@ -1293,19 +1293,32 @@ class Payment_Helper {
 							'message' => sprintf( __( 'Payment amount mismatch. Expected %1$s, received %2$s.', 'sureforms' ), $converted_payment_amount, $payment_amount ),
 						];
 					}
+				} else {
+					// Unresolved hidden / dynamic source: resolve_server_side_variable_amount()
+					// returned null (e.g. a hidden field whose default is a smart tag like
+					// {get_input:amount}, stored raw and therefore non-numeric), so the submitted
+					// value cannot be trusted as the price and there is no server-authoritative
+					// amount to compare against. The configured minimum-amount floor is then the
+					// ONLY server-side guarantee, so it must be a positive authoritative value.
+					//
+					// This mirrors the "amount source not identified" handling above: with a
+					// positive minimum we fall through to the floor check below (the documented
+					// dynamic-prefill case keeps working); with no positive minimum there is
+					// nothing safe to validate against, so we MUST fail safe and reject rather than
+					// letting the floor default to 0 and accept any amount down to the gateway cent
+					// floor — which would reopen the unauthenticated underpayment bypass. Merchants
+					// doing custom JS-driven dynamic pricing must supply a server-authoritative
+					// amount via the `srfm_server_side_variable_amount` filter or a
+					// calculation-enabled field rather than relying on the submitted value.
+					$unresolved_minimum = isset( $resolved_config['minimum_amount'] ) ? floatval( $resolved_config['minimum_amount'] ) : 0;
+
+					if ( $unresolved_minimum <= 0 ) {
+						return [
+							'valid'   => false,
+							'message' => __( 'Payment amount could not be verified for this form. Please edit and re-save the form, then try again.', 'sureforms' ),
+						];
+					}
 				}
-				// Otherwise (e.g. a hidden field whose value could not be resolved
-				// server-side): do NOT trust the submitted value — fall through to the
-				// minimum-amount floor below as the only safe guarantee.
-				//
-				// In practice this covers the documented dynamic-prefill case: a hidden field
-				// whose default value is a smart tag (e.g. {get_input:amount}) is stored raw and
-				// is therefore non-numeric, so resolve_server_side_variable_amount() returns null
-				// and the charge is validated against the floor only — dynamic prefill keeps
-				// working. A hidden field with a literal numeric default, by contrast, is treated
-				// as authoritative above; merchants doing custom JS-driven dynamic pricing must
-				// supply a server-authoritative amount via the `srfm_server_side_variable_amount`
-				// filter or a calculation-enabled field rather than relying on the submitted value.
 			}
 
 			// All variable amount sources are subject to the configured minimum amount floor.

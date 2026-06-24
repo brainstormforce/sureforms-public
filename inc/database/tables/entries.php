@@ -513,7 +513,7 @@ class Entries extends Base {
 		$table_name = self::get_instance()->get_tablename();
 		$json_path  = '$."' . $field_key . '"';
 
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- One-off existence check; caching not beneficial for uniqueness validation.
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter -- One-off existence check; table name from get_tablename() (not user input); caching not beneficial for uniqueness validation.
 		$exists = $wpdb->get_var(
 			$wpdb->prepare(
 				"SELECT 1 FROM {$table_name} WHERE form_id = %d AND status != 'trash' AND JSON_UNQUOTE(JSON_EXTRACT(form_data, %s)) = %s LIMIT 1", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name is internally generated.
