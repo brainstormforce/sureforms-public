@@ -34,6 +34,7 @@ import {
 	Save,
 	Split,
 	ListTodo,
+	Table,
 } from 'lucide-react';
 
 import Suretriggers from '../integrations/suretriggers';
@@ -678,6 +679,47 @@ const Dialog = ( {
 							),
 						] }
 						utmMedium="quiz-preview-single-form-settings"
+					/>
+				),
+			},
+			{
+				id: 'show-entries-preview',
+				label: __( 'Show Entries', 'sureforms' ),
+				icon: <Table size={ 18 } />,
+				component: (
+					<FeaturePreview
+						featureName={ __( 'Show Entries', 'sureforms' ) }
+						featureHelpText={ __(
+							'Display this form’s entries in a table on the frontend.',
+							'sureforms'
+						) }
+						icon={
+							<Table
+								className="text-orange-500"
+								size={ 40 }
+								strokeWidth={ 1 }
+							/>
+						}
+						title={ __( 'Show Entries', 'sureforms' ) }
+						subtitle={ __(
+							'Publish this form’s submissions as a sortable, paginated table on any page — perfect for public directories, listings, and team dashboards, with per-role view access.',
+							'sureforms'
+						) }
+						featureList={ [
+							__(
+								'Embed a sortable, paginated entries table with a simple shortcode.',
+								'sureforms'
+							),
+							__(
+								'Choose exactly which fields appear as columns.',
+								'sureforms'
+							),
+							__(
+								'Restrict who can view entries by user role.',
+								'sureforms'
+							),
+						] }
+						utmMedium="show-entries-preview-single-form-settings"
 					/>
 				),
 			},
