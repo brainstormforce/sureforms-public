@@ -24,7 +24,6 @@ function GeneralSettings( props ) {
 		select( editorStore ).getEditedPostAttribute( 'meta' )
 	);
 
-
 	const deviceType = useDeviceType();
 	const [ rootContainer, setRootContainer ] = useState(
 		document.getElementById( 'srfm-form-container' )
@@ -186,7 +185,6 @@ function GeneralSettings( props ) {
 	if ( ! Array.isArray( singleSettings ) ) {
 		singleSettings = singleFormSettingsComponents;
 	}
-
 
 	// Guarantee no empty slugs reach post_content on save.
 	useEffect( () => {
