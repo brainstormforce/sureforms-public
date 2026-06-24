@@ -1571,7 +1571,7 @@ class Front_End {
 	 * payments.
 	 *
 	 * @param int $payment_entry_id Primary key of the linked `sureforms_payments` row.
-	 * @since x.x.x
+	 * @since 2.12.0
 	 * @return void
 	 */
 	private function maybe_fire_payment_completed( $payment_entry_id ) {
@@ -1594,7 +1594,7 @@ class Front_End {
 		 * @param array<string, mixed> $context Resolved context: form_id, entry_id,
 		 *                                       user_id (0 for guests), customer_email,
 		 *                                       type, gateway, mode.
-		 * @since x.x.x
+		 * @since 2.12.0
 		 */
 		do_action( 'srfm_payment_completed', $payment, Payment_Helper::build_payment_context( $payment ) );
 	}

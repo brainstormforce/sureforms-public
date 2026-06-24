@@ -4,11 +4,11 @@
 **Requires at least:** 6.4  
 **Tested up to:** 7.0  
 **Requires PHP:** 7.4  
-**Stable tag:** 2.11.1  
+**Stable tag:** 2.12.0  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
-AI WordPress form builder. Create contact forms, payment forms, surveys, quizzes & multi-step forms — drag & drop, no code.
+SureForms is an AI-powered WordPress form builder for creating contact forms, payment forms, surveys, quizzes, and multi-step forms without code.
 
 ## Description ##
 
@@ -458,6 +458,17 @@ Yes. SureForms Business includes fully functional user registration forms and lo
 You can report security issues through our [Bug Bounty Program](https://brainstormforce.com/bug-bounty-program/). We collaborate with Patchstack to provide opportunities for researchers to report vulnerabilities. The Patchstack team will help validate, triage, and handle any reported security issues.
 
 ## Changelog ##
+### 2.12.0 - 24th June 2026 ###
+* New: Added a Show Entries preview tab in the single-form settings so free users can discover the new Pro entries table.
+* New: Added action hooks around payment success, cancellation, and refund events so plugins such as SureMembers, LMS, and CRMs can grant or revoke access for both Stripe and PayPal.
+* New: Added the [srfm_show_entries] shortcode (Pro) to display a form's collected entries in a sortable, paginated table on any page, with column whitelisting, per-user filtering, read/unread/trash views, sorting, and pagination.
+* Fix: Cancel Subscription now routes through the correct payment gateway so PayPal subscriptions cancel properly instead of always calling Stripe.
+* Fix: Conditional logic now works on the Custom Button, allowing it to be conditionally hidden while correctly blocking submission, and resolved settings panels not rendering for single-tab blocks.
+* Fix: FluentCRM Date of Birth mapping (Pro) no longer fails when mapping a Date Picker field, with dates now normalized to YYYY-MM-DD.
+* Fix: Forms with multiple Cloudflare Turnstile widgets now submit correctly instead of silently failing with a generic error.
+* Fix: Hardened variable amount validation when a hidden-field amount cannot be resolved and no minimum is set.
+* Fix: Resolved an issue where the Stripe Payment Element failed to render on live accounts that have Bacs Direct Debit, Link, Cash App, or BNPL enabled.
+* Fix: Restored the form editor on WordPress 6.x sites running plugins that register older-style blocks such as ThirstyAffiliates, Ninja Forms, and Gravity Forms.
 ### 2.11.1 - 16th June 2026 ###
 * Fix: Phone field auto country detection always resolved to the United States.
 * Fix: Corrected the Cloudflare Turnstile "Get Keys" link.
@@ -465,10 +476,6 @@ You can report security issues through our [Bug Bounty Program](https://brainsto
 ### 2.11.0 - 10th June 2026 ###
 * New: Added a Form Migrator to import forms from Contact Form 7, WPForms, Gravity Forms, and Ninja Forms in a single click.
 * New: Added native WPML support to translate each form individually using String Packages.
-### 2.10.1 - 1st June 2026 ###
-* Improvement: Improved compatibility with older Block API versions so the SureForms editor loads reliably across WordPress environments.
-* Fix: Resolved an issue where the Textarea character counter was misaligned.
-* Fix: Resolved an issue where the {entry_id} smart tag failed to resolve in email notifications.
 The full changelog is available [here](https://sureforms.com/whats-new/?utm_source=wordpress.org&utm_medium=whats_new).
 
 ## Upgrade Notice ##

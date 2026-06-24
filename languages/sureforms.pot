@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: SureForms 2.11.1\n"
+"Project-Id-Version: SureForms 2.12.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/sureforms\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-06-16T12:34:04+00:00\n"
+"POT-Creation-Date: 2026-06-24T06:55:32+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: sureforms\n"
@@ -20,7 +20,7 @@ msgstr ""
 #: admin/admin.php:391
 #: admin/admin.php:392
 #: admin/admin.php:1950
-#: inc/abilities/abilities-registrar.php:133
+#: inc/abilities/abilities-registrar.php:139
 #: inc/gutenberg-hooks.php:109
 #: inc/page-builders/bricks/elements/form-widget.php:67
 #: inc/page-builders/bricks/service-provider.php:55
@@ -303,7 +303,7 @@ msgstr ""
 #: inc/admin-ajax.php:162
 #: inc/payments/admin/admin-handler.php:638
 #: inc/payments/stripe/admin-stripe-handler.php:80
-#: inc/payments/stripe/admin-stripe-handler.php:467
+#: inc/payments/stripe/admin-stripe-handler.php:448
 msgid "Invalid nonce."
 msgstr ""
 
@@ -395,15 +395,15 @@ msgstr ""
 msgid "Add calculations to auto-total scores or prices"
 msgstr ""
 
-#: inc/abilities/abilities-registrar.php:104
+#: inc/abilities/abilities-registrar.php:107
 msgid "SureForms MCP Server"
 msgstr ""
 
-#: inc/abilities/abilities-registrar.php:105
+#: inc/abilities/abilities-registrar.php:108
 msgid "SureForms MCP Server for form building and management."
 msgstr ""
 
-#: inc/abilities/abilities-registrar.php:134
+#: inc/abilities/abilities-registrar.php:140
 msgid "Form building and management abilities powered by SureForms."
 msgstr ""
 
@@ -1056,7 +1056,7 @@ msgstr ""
 
 #: inc/admin/editor-nudge.php:230
 #: inc/payments/stripe/admin-stripe-handler.php:84
-#: inc/payments/stripe/admin-stripe-handler.php:471
+#: inc/payments/stripe/admin-stripe-handler.php:452
 msgid "You are not allowed to perform this action."
 msgstr ""
 
@@ -1310,7 +1310,7 @@ msgstr ""
 msgid "This form has been deleted or is unavailable."
 msgstr ""
 
-#: inc/compatibility/multilingual/providers/wpml-provider.php:231
+#: inc/compatibility/multilingual/providers/wpml-provider.php:233
 msgid "Language Switcher"
 msgstr ""
 
@@ -1700,7 +1700,7 @@ msgid "Subscription"
 msgstr ""
 
 #: inc/fields/payment-markup.php:346
-#: inc/payments/payment-helper.php:543
+#: inc/payments/payment-helper.php:544
 msgid "Subscription Plan"
 msgstr ""
 
@@ -2019,7 +2019,7 @@ msgctxt "Quill link tooltip action"
 msgid "Remove"
 msgstr ""
 
-#: inc/generate-form-markup.php:816
+#: inc/generate-form-markup.php:820
 msgid "There was an error trying to submit your form. Please try again."
 msgstr ""
 
@@ -2943,7 +2943,7 @@ msgstr ""
 msgid "Large"
 msgstr ""
 
-#: inc/page-builders/bricks/elements/form-widget.php:542
+#: inc/page-builders/bricks/elements/form-widget.php:534
 #: inc/page-builders/elementor/form-widget.php:818
 msgid "Select the form that you wish to add here."
 msgstr ""
@@ -3188,12 +3188,12 @@ msgid "Refund processing is not supported for %s gateway."
 msgstr ""
 
 #: inc/payments/admin/admin-handler.php:723
-#: inc/payments/stripe/admin-stripe-handler.php:372
+#: inc/payments/stripe/admin-stripe-handler.php:353
 msgid "Payment refunded successfully."
 msgstr ""
 
 #: inc/payments/admin/admin-handler.php:733
-#: inc/payments/stripe/admin-stripe-handler.php:382
+#: inc/payments/stripe/admin-stripe-handler.php:363
 msgid "Failed to process refund. Please try again."
 msgstr ""
 
@@ -3247,7 +3247,7 @@ msgstr ""
 
 #: inc/payments/front-end.php:98
 #: inc/payments/front-end.php:303
-#: inc/payments/payment-helper.php:595
+#: inc/payments/payment-helper.php:596
 msgid "Invalid form configuration."
 msgstr ""
 
@@ -3257,7 +3257,7 @@ msgstr ""
 
 #: inc/payments/front-end.php:115
 #: inc/payments/front-end.php:340
-#: inc/payments/stripe/admin-stripe-handler.php:880
+#: inc/payments/stripe/admin-stripe-handler.php:861
 #: inc/payments/stripe/payments-settings.php:349
 #: inc/payments/stripe/payments-settings.php:474
 #: inc/payments/stripe/payments-settings.php:613
@@ -3339,8 +3339,8 @@ msgstr ""
 
 #: inc/payments/front-end.php:604
 #: inc/payments/stripe/admin-stripe-handler.php:103
-#: inc/payments/stripe/admin-stripe-handler.php:184
-#: inc/payments/stripe/admin-stripe-handler.php:490
+#: inc/payments/stripe/admin-stripe-handler.php:165
+#: inc/payments/stripe/admin-stripe-handler.php:471
 msgid "Subscription ID not found."
 msgstr ""
 
@@ -3401,11 +3401,10 @@ msgstr ""
 #. translators: %s: Subscription ID
 #. translators: %s: Stripe subscription ID
 #: inc/payments/front-end.php:882
-#: inc/payments/stripe/admin-stripe-handler.php:119
-#: inc/payments/stripe/admin-stripe-handler.php:204
-#: inc/payments/stripe/admin-stripe-handler.php:506
+#: inc/payments/stripe/admin-stripe-handler.php:185
+#: inc/payments/stripe/admin-stripe-handler.php:487
 #: inc/payments/stripe/stripe-webhook.php:572
-#: inc/payments/stripe/stripe-webhook.php:1120
+#: inc/payments/stripe/stripe-webhook.php:1170
 #, php-format
 msgid "Subscription ID: %s"
 msgstr ""
@@ -3418,15 +3417,14 @@ msgstr ""
 #. translators: %s: Payment gateway name (e.g., Stripe).
 #: inc/payments/front-end.php:884
 #: inc/payments/front-end.php:1285
-#: inc/payments/stripe/admin-stripe-handler.php:124
-#: inc/payments/stripe/admin-stripe-handler.php:209
-#: inc/payments/stripe/admin-stripe-handler.php:511
-#: inc/payments/stripe/admin-stripe-handler.php:686
-#: inc/payments/stripe/admin-stripe-handler.php:1210
+#: inc/payments/stripe/admin-stripe-handler.php:190
+#: inc/payments/stripe/admin-stripe-handler.php:492
+#: inc/payments/stripe/admin-stripe-handler.php:667
+#: inc/payments/stripe/admin-stripe-handler.php:1191
 #: inc/payments/stripe/stripe-webhook.php:574
-#: inc/payments/stripe/stripe-webhook.php:716
-#: inc/payments/stripe/stripe-webhook.php:880
-#: inc/payments/stripe/stripe-webhook.php:1114
+#: inc/payments/stripe/stripe-webhook.php:732
+#: inc/payments/stripe/stripe-webhook.php:914
+#: inc/payments/stripe/stripe-webhook.php:1164
 #, php-format
 msgid "Payment Gateway: %s"
 msgstr ""
@@ -3439,7 +3437,7 @@ msgstr ""
 
 #. translators: %s: Charge ID
 #: inc/payments/front-end.php:888
-#: inc/payments/stripe/stripe-webhook.php:1050
+#: inc/payments/stripe/stripe-webhook.php:1084
 #, php-format
 msgid "Charge ID: %s"
 msgstr ""
@@ -3447,16 +3445,15 @@ msgstr ""
 #. translators: %s: Subscription Status
 #. translators: %s: subscription status
 #: inc/payments/front-end.php:890
-#: inc/payments/stripe/admin-stripe-handler.php:129
-#: inc/payments/stripe/admin-stripe-handler.php:214
-#: inc/payments/stripe/admin-stripe-handler.php:516
+#: inc/payments/stripe/admin-stripe-handler.php:195
+#: inc/payments/stripe/admin-stripe-handler.php:497
 #, php-format
 msgid "Subscription Status: %s"
 msgstr ""
 
 #. translators: %s: Customer ID
 #: inc/payments/front-end.php:892
-#: inc/payments/stripe/stripe-webhook.php:1124
+#: inc/payments/stripe/stripe-webhook.php:1174
 #, php-format
 msgid "Customer ID: %s"
 msgstr ""
@@ -3465,8 +3462,8 @@ msgstr ""
 #. translators: %1$s: amount, %2$s: currency.
 #: inc/payments/front-end.php:894
 #: inc/payments/front-end.php:1287
-#: inc/payments/stripe/stripe-webhook.php:1055
-#: inc/payments/stripe/stripe-webhook.php:1116
+#: inc/payments/stripe/stripe-webhook.php:1089
+#: inc/payments/stripe/stripe-webhook.php:1166
 #, php-format
 msgid "Amount: %1$s %2$s"
 msgstr ""
@@ -3501,7 +3498,7 @@ msgstr ""
 #. translators: %s: Stripe transaction ID
 #. translators: %s: Charge ID
 #: inc/payments/front-end.php:1283
-#: inc/payments/stripe/stripe-webhook.php:1112
+#: inc/payments/stripe/stripe-webhook.php:1162
 #, php-format
 msgid "Transaction ID: %s"
 msgstr ""
@@ -3510,7 +3507,7 @@ msgstr ""
 #. translators: %s: Status
 #: inc/payments/front-end.php:1289
 #: inc/payments/stripe/stripe-webhook.php:576
-#: inc/payments/stripe/stripe-webhook.php:1118
+#: inc/payments/stripe/stripe-webhook.php:1168
 #, php-format
 msgid "Status: %s"
 msgstr ""
@@ -3523,474 +3520,475 @@ msgstr ""
 msgid "Failed to create Stripe guest customer."
 msgstr ""
 
-#: inc/payments/payment-helper.php:189
+#: inc/payments/payment-helper.php:190
 msgid "US Dollar"
 msgstr ""
 
-#: inc/payments/payment-helper.php:194
+#: inc/payments/payment-helper.php:195
 msgid "Euro"
 msgstr ""
 
-#: inc/payments/payment-helper.php:199
+#: inc/payments/payment-helper.php:200
 msgid "British Pound"
 msgstr ""
 
-#: inc/payments/payment-helper.php:204
+#: inc/payments/payment-helper.php:205
 msgid "Japanese Yen"
 msgstr ""
 
-#: inc/payments/payment-helper.php:209
+#: inc/payments/payment-helper.php:210
 msgid "Australian Dollar"
 msgstr ""
 
-#: inc/payments/payment-helper.php:214
+#: inc/payments/payment-helper.php:215
 msgid "Canadian Dollar"
 msgstr ""
 
-#: inc/payments/payment-helper.php:219
+#: inc/payments/payment-helper.php:220
 msgid "Swiss Franc"
 msgstr ""
 
-#: inc/payments/payment-helper.php:224
+#: inc/payments/payment-helper.php:225
 msgid "Chinese Yuan"
 msgstr ""
 
-#: inc/payments/payment-helper.php:229
+#: inc/payments/payment-helper.php:230
 msgid "Swedish Krona"
 msgstr ""
 
-#: inc/payments/payment-helper.php:234
+#: inc/payments/payment-helper.php:235
 msgid "New Zealand Dollar"
 msgstr ""
 
-#: inc/payments/payment-helper.php:239
+#: inc/payments/payment-helper.php:240
 msgid "Mexican Peso"
 msgstr ""
 
-#: inc/payments/payment-helper.php:244
+#: inc/payments/payment-helper.php:245
 msgid "Singapore Dollar"
 msgstr ""
 
-#: inc/payments/payment-helper.php:249
+#: inc/payments/payment-helper.php:250
 msgid "Hong Kong Dollar"
 msgstr ""
 
-#: inc/payments/payment-helper.php:254
+#: inc/payments/payment-helper.php:255
 msgid "Norwegian Krone"
 msgstr ""
 
-#: inc/payments/payment-helper.php:259
+#: inc/payments/payment-helper.php:260
 msgid "Polish Złoty"
 msgstr ""
 
-#: inc/payments/payment-helper.php:264
+#: inc/payments/payment-helper.php:265
 msgid "South Korean Won"
 msgstr ""
 
-#: inc/payments/payment-helper.php:269
+#: inc/payments/payment-helper.php:270
 msgid "Turkish Lira"
 msgstr ""
 
-#: inc/payments/payment-helper.php:274
+#: inc/payments/payment-helper.php:275
 msgid "Russian Ruble"
 msgstr ""
 
-#: inc/payments/payment-helper.php:279
+#: inc/payments/payment-helper.php:280
 msgid "Indian Rupee"
 msgstr ""
 
-#: inc/payments/payment-helper.php:284
+#: inc/payments/payment-helper.php:285
 msgid "Brazilian Real"
 msgstr ""
 
-#: inc/payments/payment-helper.php:289
+#: inc/payments/payment-helper.php:290
 msgid "South African Rand"
 msgstr ""
 
-#: inc/payments/payment-helper.php:294
+#: inc/payments/payment-helper.php:295
 msgid "UAE Dirham"
 msgstr ""
 
-#: inc/payments/payment-helper.php:299
+#: inc/payments/payment-helper.php:300
 msgid "Philippine Peso"
 msgstr ""
 
-#: inc/payments/payment-helper.php:304
+#: inc/payments/payment-helper.php:305
 msgid "Indonesian Rupiah"
 msgstr ""
 
-#: inc/payments/payment-helper.php:309
+#: inc/payments/payment-helper.php:310
 msgid "Malaysian Ringgit"
 msgstr ""
 
-#: inc/payments/payment-helper.php:314
+#: inc/payments/payment-helper.php:315
 msgid "Thai Baht"
 msgstr ""
 
-#: inc/payments/payment-helper.php:319
+#: inc/payments/payment-helper.php:320
 msgid "Burundian Franc"
 msgstr ""
 
-#: inc/payments/payment-helper.php:324
+#: inc/payments/payment-helper.php:325
 msgid "Chilean Peso"
 msgstr ""
 
-#: inc/payments/payment-helper.php:329
+#: inc/payments/payment-helper.php:330
 msgid "Djiboutian Franc"
 msgstr ""
 
-#: inc/payments/payment-helper.php:334
+#: inc/payments/payment-helper.php:335
 msgid "Guinean Franc"
 msgstr ""
 
-#: inc/payments/payment-helper.php:339
+#: inc/payments/payment-helper.php:340
 msgid "Comorian Franc"
 msgstr ""
 
-#: inc/payments/payment-helper.php:344
+#: inc/payments/payment-helper.php:345
 msgid "Malagasy Ariary"
 msgstr ""
 
-#: inc/payments/payment-helper.php:349
+#: inc/payments/payment-helper.php:350
 msgid "Paraguayan Guaraní"
 msgstr ""
 
-#: inc/payments/payment-helper.php:354
+#: inc/payments/payment-helper.php:355
 msgid "Rwandan Franc"
 msgstr ""
 
-#: inc/payments/payment-helper.php:359
+#: inc/payments/payment-helper.php:360
 msgid "Ugandan Shilling"
 msgstr ""
 
-#: inc/payments/payment-helper.php:364
+#: inc/payments/payment-helper.php:365
 msgid "Vietnamese Đồng"
 msgstr ""
 
-#: inc/payments/payment-helper.php:369
+#: inc/payments/payment-helper.php:370
 msgid "Vanuatu Vatu"
 msgstr ""
 
-#: inc/payments/payment-helper.php:374
+#: inc/payments/payment-helper.php:375
 msgid "Central African CFA Franc"
 msgstr ""
 
-#: inc/payments/payment-helper.php:379
+#: inc/payments/payment-helper.php:380
 msgid "West African CFA Franc"
 msgstr ""
 
-#: inc/payments/payment-helper.php:384
+#: inc/payments/payment-helper.php:385
 msgid "CFP Franc"
 msgstr ""
 
-#: inc/payments/payment-helper.php:480
+#: inc/payments/payment-helper.php:481
 msgid "An unknown error occurred. Please try again or contact the site administrator."
 msgstr ""
 
-#: inc/payments/payment-helper.php:482
+#: inc/payments/payment-helper.php:483
 msgid "Payment is currently unavailable. Please contact the site administrator."
 msgstr ""
 
-#: inc/payments/payment-helper.php:483
+#: inc/payments/payment-helper.php:484
 msgid "Payment is currently unavailable. Please contact the site administrator to configure the payment amount."
 msgstr ""
 
-#: inc/payments/payment-helper.php:484
+#: inc/payments/payment-helper.php:485
 msgid "Invalid payment amount"
 msgstr ""
 
-#: inc/payments/payment-helper.php:485
+#: inc/payments/payment-helper.php:486
 msgid "Payment amount must be at least {symbol}{amount}."
 msgstr ""
 
-#: inc/payments/payment-helper.php:488
+#: inc/payments/payment-helper.php:489
 msgid "Payment is currently unavailable. Please contact the site administrator to configure the customer name field."
 msgstr ""
 
-#: inc/payments/payment-helper.php:489
+#: inc/payments/payment-helper.php:490
 msgid "Payment is currently unavailable. Please contact the site administrator to configure the customer email field."
 msgstr ""
 
-#: inc/payments/payment-helper.php:490
+#: inc/payments/payment-helper.php:491
 msgid "Please enter your name."
 msgstr ""
 
-#: inc/payments/payment-helper.php:491
+#: inc/payments/payment-helper.php:492
 msgid "Please enter your email."
 msgstr ""
 
-#: inc/payments/payment-helper.php:494
+#: inc/payments/payment-helper.php:495
 msgid "Payment failed"
 msgstr ""
 
-#: inc/payments/payment-helper.php:495
+#: inc/payments/payment-helper.php:496
 msgid "Payment successful"
 msgstr ""
 
-#: inc/payments/payment-helper.php:496
+#: inc/payments/payment-helper.php:497
 msgid "Unable to complete payment. Please try again or contact support."
 msgstr ""
 
-#: inc/payments/payment-helper.php:499
 #: inc/payments/payment-helper.php:500
+#: inc/payments/payment-helper.php:501
 msgid "Your card was declined. Please try a different payment method or contact your bank."
 msgstr ""
 
-#: inc/payments/payment-helper.php:501
+#: inc/payments/payment-helper.php:502
 msgid "Your card has insufficient funds. Please use a different payment method."
 msgstr ""
 
-#: inc/payments/payment-helper.php:502
+#: inc/payments/payment-helper.php:503
 msgid "Your card was declined because it has been reported as lost. Please contact your bank."
 msgstr ""
 
-#: inc/payments/payment-helper.php:503
+#: inc/payments/payment-helper.php:504
 msgid "Your card was declined because it has been reported as stolen. Please contact your bank."
 msgstr ""
 
-#: inc/payments/payment-helper.php:504
+#: inc/payments/payment-helper.php:505
 msgid "Your card has expired. Please use a different payment method."
 msgstr ""
 
-#: inc/payments/payment-helper.php:505
-#: inc/payments/payment-helper.php:526
+#: inc/payments/payment-helper.php:506
+#: inc/payments/payment-helper.php:527
 msgid "Your card was declined. Please contact your bank for more information."
 msgstr ""
 
-#: inc/payments/payment-helper.php:506
+#: inc/payments/payment-helper.php:507
 msgid "Your card was declined due to restrictions. Please contact your bank."
 msgstr ""
 
-#: inc/payments/payment-helper.php:507
+#: inc/payments/payment-helper.php:508
 msgid "Your card was declined due to a security violation. Please contact your bank."
 msgstr ""
 
-#: inc/payments/payment-helper.php:508
+#: inc/payments/payment-helper.php:509
 msgid "Your card does not support this type of purchase. Please use a different payment method."
 msgstr ""
 
-#: inc/payments/payment-helper.php:509
+#: inc/payments/payment-helper.php:510
 msgid "A stop payment order has been placed on this card. Please contact your bank."
 msgstr ""
 
-#: inc/payments/payment-helper.php:510
+#: inc/payments/payment-helper.php:511
 msgid "A test card was used in a live environment. Please use a real card."
 msgstr ""
 
-#: inc/payments/payment-helper.php:511
+#: inc/payments/payment-helper.php:512
 msgid "Your card has exceeded its withdrawal limit. Please contact your bank."
 msgstr ""
 
-#: inc/payments/payment-helper.php:512
+#: inc/payments/payment-helper.php:513
 msgid "Your card's security code is incorrect. Please check and try again."
 msgstr ""
 
-#: inc/payments/payment-helper.php:513
+#: inc/payments/payment-helper.php:514
 msgid "Your card number is incorrect. Please check and try again."
 msgstr ""
 
-#: inc/payments/payment-helper.php:514
+#: inc/payments/payment-helper.php:515
 msgid "Your card's security code is invalid. Please check and try again."
 msgstr ""
 
-#: inc/payments/payment-helper.php:515
+#: inc/payments/payment-helper.php:516
 msgid "Your card's expiration month is invalid. Please check and try again."
 msgstr ""
 
-#: inc/payments/payment-helper.php:516
+#: inc/payments/payment-helper.php:517
 msgid "Your card's expiration year is invalid. Please check and try again."
 msgstr ""
 
-#: inc/payments/payment-helper.php:517
+#: inc/payments/payment-helper.php:518
 msgid "Your card number is invalid. Please check and try again."
 msgstr ""
 
-#: inc/payments/payment-helper.php:518
+#: inc/payments/payment-helper.php:519
 msgid "Unable to process card. Please try again."
 msgstr ""
 
-#: inc/payments/payment-helper.php:519
+#: inc/payments/payment-helper.php:520
 msgid "Unable to process transaction. Please try again."
 msgstr ""
 
-#: inc/payments/payment-helper.php:520
+#: inc/payments/payment-helper.php:521
 msgid "Your card is not supported for this transaction. Please use a different payment method."
 msgstr ""
 
-#: inc/payments/payment-helper.php:521
+#: inc/payments/payment-helper.php:522
 msgid "Your card does not support the currency used for this transaction. Please use a different payment method."
 msgstr ""
 
-#: inc/payments/payment-helper.php:522
+#: inc/payments/payment-helper.php:523
 msgid "A transaction with identical details was submitted recently. Please wait a moment and try again."
 msgstr ""
 
-#: inc/payments/payment-helper.php:523
+#: inc/payments/payment-helper.php:524
 msgid "The account associated with your card is invalid. Please contact your bank."
 msgstr ""
 
-#: inc/payments/payment-helper.php:524
+#: inc/payments/payment-helper.php:525
 msgid "The payment amount is invalid. Please contact the site administrator."
 msgstr ""
 
-#: inc/payments/payment-helper.php:525
+#: inc/payments/payment-helper.php:526
 msgid "Unable to reach card issuer. Please try again later."
 msgstr ""
 
-#: inc/payments/payment-helper.php:527
+#: inc/payments/payment-helper.php:528
 msgid "Your card information needs to be updated. Please contact your bank."
 msgstr ""
 
-#: inc/payments/payment-helper.php:528
+#: inc/payments/payment-helper.php:529
 msgid "The card cannot be used for this transaction. Please contact your bank."
 msgstr ""
 
-#: inc/payments/payment-helper.php:529
+#: inc/payments/payment-helper.php:530
 msgid "The transaction is not permitted. Please contact your bank."
 msgstr ""
 
-#: inc/payments/payment-helper.php:530
+#: inc/payments/payment-helper.php:531
 msgid "Your card requires offline PIN authentication. Please try again."
 msgstr ""
 
-#: inc/payments/payment-helper.php:531
+#: inc/payments/payment-helper.php:532
 msgid "Your card requires PIN authentication. Please try again."
 msgstr ""
 
-#: inc/payments/payment-helper.php:532
+#: inc/payments/payment-helper.php:533
 msgid "You have exceeded the maximum number of PIN attempts. Please contact your bank."
 msgstr ""
 
-#: inc/payments/payment-helper.php:533
+#: inc/payments/payment-helper.php:534
 msgid "All authorizations for this card have been revoked. Please contact your bank."
 msgstr ""
 
-#: inc/payments/payment-helper.php:534
+#: inc/payments/payment-helper.php:535
 msgid "The authorization for this transaction has been revoked. Please try again."
 msgstr ""
 
-#: inc/payments/payment-helper.php:535
+#: inc/payments/payment-helper.php:536
 msgid "This transaction is not allowed. Please contact your bank."
 msgstr ""
 
-#: inc/payments/payment-helper.php:536
+#: inc/payments/payment-helper.php:537
 msgid "Unable to process transaction. Please try again later."
 msgstr ""
 
-#: inc/payments/payment-helper.php:537
+#: inc/payments/payment-helper.php:538
 msgid "Your card was declined. Your request was in live mode, but used a known test card."
 msgstr ""
 
-#: inc/payments/payment-helper.php:538
+#: inc/payments/payment-helper.php:539
 msgid "Your card was declined. Your request was in test mode, but used a non test card. For a list of valid test cards, visit: https://stripe.com/docs/testing."
 msgstr ""
 
-#: inc/payments/payment-helper.php:541
+#: inc/payments/payment-helper.php:542
 msgid "SureForms Subscription"
 msgstr ""
 
-#: inc/payments/payment-helper.php:542
+#: inc/payments/payment-helper.php:543
 msgid "SureForms Payment"
 msgstr ""
 
-#: inc/payments/payment-helper.php:544
+#: inc/payments/payment-helper.php:545
 msgid "SureForms Customer"
 msgstr ""
 
-#: inc/payments/payment-helper.php:546
+#: inc/payments/payment-helper.php:547
 msgid "Complete the form to view the amount."
 msgstr ""
 
-#: inc/payments/payment-helper.php:547
+#: inc/payments/payment-helper.php:548
 msgid "Unable to create payment. Please contact support."
 msgstr ""
 
-#: inc/payments/payment-helper.php:564
+#: inc/payments/payment-helper.php:565
 msgid "Unknown error"
 msgstr ""
 
-#: inc/payments/payment-helper.php:603
+#: inc/payments/payment-helper.php:604
 msgid "Payment configuration not found for this form."
 msgstr ""
 
 #. translators: 1: expected currency, 2: received currency
-#: inc/payments/payment-helper.php:614
+#: inc/payments/payment-helper.php:615
 #, php-format
 msgid "Currency mismatch: expected %1$s, received %2$s."
 msgstr ""
 
-#: inc/payments/payment-helper.php:627
+#: inc/payments/payment-helper.php:628
 msgid "Payment type does not match the form configuration."
 msgstr ""
 
 #. translators: 1: expected amount with currency
-#: inc/payments/payment-helper.php:649
+#: inc/payments/payment-helper.php:650
 #, php-format
 msgid "Payment amount must be exactly %1$s."
 msgstr ""
 
 #. translators: 1: minimum amount with currency
-#: inc/payments/payment-helper.php:660
+#: inc/payments/payment-helper.php:661
 #, php-format
 msgid "Payment amount must be at least %1$s."
 msgstr ""
 
-#: inc/payments/payment-helper.php:737
+#: inc/payments/payment-helper.php:738
 msgid "Invalid payment verification parameters."
 msgstr ""
 
-#: inc/payments/payment-helper.php:748
+#: inc/payments/payment-helper.php:749
 msgid "Payment verification failed. Invalid payment intent."
 msgstr ""
 
-#: inc/payments/payment-helper.php:760
+#: inc/payments/payment-helper.php:761
 msgid "Payment verification failed. Payment type mismatch."
 msgstr ""
 
-#: inc/payments/payment-helper.php:953
-#: inc/payments/payment-helper.php:1140
-#: inc/payments/payment-helper.php:1177
+#: inc/payments/payment-helper.php:1021
+#: inc/payments/payment-helper.php:1208
+#: inc/payments/payment-helper.php:1245
 msgid "Variable amount field configuration not found."
 msgstr ""
 
-#: inc/payments/payment-helper.php:974
+#: inc/payments/payment-helper.php:1042
 msgid "No payment options are configured for this field."
 msgstr ""
 
 #. translators: %s: currency code
-#: inc/payments/payment-helper.php:1000
+#: inc/payments/payment-helper.php:1068
 msgid "Invalid payment amount. Please select a valid amount from the available options."
 msgstr ""
 
 #. translators: %1$s: expected amount, %2$s: payment amount
-#: inc/payments/payment-helper.php:1036
+#: inc/payments/payment-helper.php:1104
 msgid "Payment configuration not found."
 msgstr ""
 
 #. translators: %1$s: expected amount, %2$s: payment amount
-#: inc/payments/payment-helper.php:1053
-#: inc/payments/payment-helper.php:1164
-#: inc/payments/payment-helper.php:1190
-#: inc/payments/payment-helper.php:1225
+#: inc/payments/payment-helper.php:1121
+#: inc/payments/payment-helper.php:1232
+#: inc/payments/payment-helper.php:1258
+#: inc/payments/payment-helper.php:1293
 #, php-format
 msgid "Payment amount mismatch. Expected %1$s, received %2$s."
 msgstr ""
 
 #. translators: %1$s: minimum amount, %2$s: payment amount
-#: inc/payments/payment-helper.php:1105
-#: inc/payments/payment-helper.php:1252
+#: inc/payments/payment-helper.php:1173
+#: inc/payments/payment-helper.php:1333
 #, php-format
 msgid "Payment amount below minimum. Minimum: %1$s, received %2$s."
 msgstr ""
 
-#: inc/payments/payment-helper.php:1117
-#: inc/payments/payment-helper.php:1155
-#: inc/payments/payment-helper.php:1203
+#: inc/payments/payment-helper.php:1185
+#: inc/payments/payment-helper.php:1223
+#: inc/payments/payment-helper.php:1271
+#: inc/payments/payment-helper.php:1318
 msgid "Payment amount could not be verified for this form. Please edit and re-save the form, then try again."
 msgstr ""
 
-#: inc/payments/payment-helper.php:1129
-#: inc/payments/payment-helper.php:1217
+#: inc/payments/payment-helper.php:1197
+#: inc/payments/payment-helper.php:1285
 msgid "Variable amount field value is required."
 msgstr ""
 
@@ -4007,7 +4005,8 @@ msgid "Cancellation not supported for this gateway."
 msgstr ""
 
 #: inc/payments/payment-history-shortcode.php:283
-#: inc/payments/stripe/admin-stripe-handler.php:243
+#: inc/payments/stripe/admin-stripe-handler.php:138
+#: inc/payments/stripe/admin-stripe-handler.php:224
 msgid "Subscription cancelled successfully."
 msgstr ""
 
@@ -4144,7 +4143,7 @@ msgstr ""
 
 #: inc/payments/payment-history-shortcode.php:330
 #: inc/payments/payment-history-shortcode.php:890
-#: inc/payments/stripe/admin-stripe-handler.php:517
+#: inc/payments/stripe/admin-stripe-handler.php:498
 #: assets/build/payments.js:2
 msgid "Paused"
 msgstr ""
@@ -4287,123 +4286,115 @@ msgid "No payments found."
 msgstr ""
 
 #: inc/payments/stripe/admin-stripe-handler.php:70
-#: inc/payments/stripe/admin-stripe-handler.php:457
+#: inc/payments/stripe/admin-stripe-handler.php:438
 msgid "Missing payment ID."
 msgstr ""
 
 #: inc/payments/stripe/admin-stripe-handler.php:94
-#: inc/payments/stripe/admin-stripe-handler.php:479
+#: inc/payments/stripe/admin-stripe-handler.php:460
 msgid "Payment not found in the database."
 msgstr ""
 
 #: inc/payments/stripe/admin-stripe-handler.php:99
-#: inc/payments/stripe/admin-stripe-handler.php:486
+#: inc/payments/stripe/admin-stripe-handler.php:467
 msgid "This is not a subscription payment."
 msgstr ""
 
-#: inc/payments/stripe/admin-stripe-handler.php:109
-#: inc/payments/stripe/admin-stripe-handler.php:195
+#: inc/payments/stripe/admin-stripe-handler.php:115
+msgid "Cancellation is not supported for this payment gateway."
+msgstr ""
+
+#: inc/payments/stripe/admin-stripe-handler.php:125
+#: inc/payments/stripe/admin-stripe-handler.php:176
 msgid "Subscription cancellation failed."
 msgstr ""
 
-#: inc/payments/stripe/admin-stripe-handler.php:130
-#: inc/payments/stripe/admin-stripe-handler.php:215
+#: inc/payments/stripe/admin-stripe-handler.php:196
 #: assets/build/payments.js:2
 msgid "Canceled"
 msgstr ""
 
 #. translators: %s: user display name
 #. translators: %s: Canceled by method (e.g., Webhook).
-#: inc/payments/stripe/admin-stripe-handler.php:134
-#: inc/payments/stripe/admin-stripe-handler.php:219
-#: inc/payments/stripe/stripe-webhook.php:896
+#: inc/payments/stripe/admin-stripe-handler.php:200
+#: inc/payments/stripe/stripe-webhook.php:930
 #, php-format
 msgid "Canceled by: %s"
 msgstr ""
 
-#: inc/payments/stripe/admin-stripe-handler.php:137
-msgid "Note: The subscription has been permanently canceled. The customer will no longer be charged and will lose access to subscription benefits."
-msgstr ""
-
-#: inc/payments/stripe/admin-stripe-handler.php:142
-#: inc/payments/stripe/admin-stripe-handler.php:225
+#: inc/payments/stripe/admin-stripe-handler.php:206
 #: inc/payments/stripe/stripe-webhook.php:598
 msgid "Subscription Canceled"
 msgstr ""
 
-#: inc/payments/stripe/admin-stripe-handler.php:158
-#: inc/payments/stripe/admin-stripe-handler.php:544
-msgid "Failed to update subscription status in database."
-msgstr ""
-
-#: inc/payments/stripe/admin-stripe-handler.php:161
-msgid "Subscription canceled successfully!"
-msgstr ""
-
-#: inc/payments/stripe/admin-stripe-handler.php:284
+#: inc/payments/stripe/admin-stripe-handler.php:265
 msgid "Invalid refund parameters."
 msgstr ""
 
-#: inc/payments/stripe/admin-stripe-handler.php:301
+#: inc/payments/stripe/admin-stripe-handler.php:282
 msgid "Only succeeded or partially refunded payments can be refunded."
 msgstr ""
 
-#: inc/payments/stripe/admin-stripe-handler.php:310
+#: inc/payments/stripe/admin-stripe-handler.php:291
 msgid "Transaction ID mismatch."
 msgstr ""
 
-#: inc/payments/stripe/admin-stripe-handler.php:342
+#: inc/payments/stripe/admin-stripe-handler.php:323
 msgid "Invalid transaction ID format for refund."
 msgstr ""
 
-#: inc/payments/stripe/admin-stripe-handler.php:350
+#: inc/payments/stripe/admin-stripe-handler.php:331
 msgid "Failed to process refund through Stripe API."
 msgstr ""
 
-#: inc/payments/stripe/admin-stripe-handler.php:365
+#: inc/payments/stripe/admin-stripe-handler.php:346
 msgid "Failed to update payment record after refund."
 msgstr ""
 
-#: inc/payments/stripe/admin-stripe-handler.php:496
+#: inc/payments/stripe/admin-stripe-handler.php:477
 msgid "Subscription pause failed."
 msgstr ""
 
 #. translators: %s: user display name
-#: inc/payments/stripe/admin-stripe-handler.php:521
+#: inc/payments/stripe/admin-stripe-handler.php:502
 #, php-format
 msgid "Paused by: %s"
 msgstr ""
 
-#: inc/payments/stripe/admin-stripe-handler.php:524
+#: inc/payments/stripe/admin-stripe-handler.php:505
 msgid "Note: The subscription billing has been paused. No charges will occur until the subscription is resumed."
 msgstr ""
 
-#: inc/payments/stripe/admin-stripe-handler.php:529
+#: inc/payments/stripe/admin-stripe-handler.php:510
 msgid "Subscription Paused"
 msgstr ""
 
-#: inc/payments/stripe/admin-stripe-handler.php:547
+#: inc/payments/stripe/admin-stripe-handler.php:525
+msgid "Failed to update subscription status in database."
+msgstr ""
+
+#: inc/payments/stripe/admin-stripe-handler.php:528
 msgid "Subscription paused successfully!"
 msgstr ""
 
-#: inc/payments/stripe/admin-stripe-handler.php:675
-#: inc/payments/stripe/admin-stripe-handler.php:1199
-#: inc/payments/stripe/stripe-webhook.php:707
+#: inc/payments/stripe/admin-stripe-handler.php:656
+#: inc/payments/stripe/admin-stripe-handler.php:1180
+#: inc/payments/stripe/stripe-webhook.php:723
 msgid "Full"
 msgstr ""
 
-#: inc/payments/stripe/admin-stripe-handler.php:675
-#: inc/payments/stripe/admin-stripe-handler.php:1199
-#: inc/payments/stripe/stripe-webhook.php:707
+#: inc/payments/stripe/admin-stripe-handler.php:656
+#: inc/payments/stripe/admin-stripe-handler.php:1180
+#: inc/payments/stripe/stripe-webhook.php:723
 msgid "Partial"
 msgstr ""
 
 #. translators: %s: refund ID
 #. translators: %s: Refund ID.
-#: inc/payments/stripe/admin-stripe-handler.php:681
-#: inc/payments/stripe/admin-stripe-handler.php:1205
-#: inc/payments/stripe/stripe-webhook.php:714
-#: inc/payments/stripe/stripe-webhook.php:878
+#: inc/payments/stripe/admin-stripe-handler.php:662
+#: inc/payments/stripe/admin-stripe-handler.php:1186
+#: inc/payments/stripe/stripe-webhook.php:730
+#: inc/payments/stripe/stripe-webhook.php:912
 #, php-format
 msgid "Refund ID: %s"
 msgstr ""
@@ -4411,9 +4402,9 @@ msgstr ""
 #. translators: 1: refund amount, 2: currency
 #. translators: 1: refund amount, 2: currency code
 #. translators: 1: Refund amount, 2: Currency.
-#: inc/payments/stripe/admin-stripe-handler.php:691
-#: inc/payments/stripe/admin-stripe-handler.php:1215
-#: inc/payments/stripe/stripe-webhook.php:718
+#: inc/payments/stripe/admin-stripe-handler.php:672
+#: inc/payments/stripe/admin-stripe-handler.php:1196
+#: inc/payments/stripe/stripe-webhook.php:734
 #, php-format
 msgid "Refund Amount: %1$s %2$s"
 msgstr ""
@@ -4421,9 +4412,9 @@ msgstr ""
 #. translators: 1: total refunded, 2: currency, 3: original total, 4: currency
 #. translators: 1: total refunded, 2: currency, 3: original amount, 4: currency
 #. translators: 1: Total refunded amount, 2: Currency, 3: Original amount, 4: Currency
-#: inc/payments/stripe/admin-stripe-handler.php:697
-#: inc/payments/stripe/admin-stripe-handler.php:1221
-#: inc/payments/stripe/stripe-webhook.php:721
+#: inc/payments/stripe/admin-stripe-handler.php:678
+#: inc/payments/stripe/admin-stripe-handler.php:1202
+#: inc/payments/stripe/stripe-webhook.php:737
 #, php-format
 msgid "Total Refunded: %1$s %2$s of %3$s %4$s"
 msgstr ""
@@ -4431,9 +4422,9 @@ msgstr ""
 #. translators: %s: status (e.g., succeeded, processed)
 #. translators: %s: refund status
 #. translators: %s: Refund status (e.g., succeeded, failed).
-#: inc/payments/stripe/admin-stripe-handler.php:705
-#: inc/payments/stripe/admin-stripe-handler.php:1229
-#: inc/payments/stripe/stripe-webhook.php:728
+#: inc/payments/stripe/admin-stripe-handler.php:686
+#: inc/payments/stripe/admin-stripe-handler.php:1210
+#: inc/payments/stripe/stripe-webhook.php:744
 #, php-format
 msgid "Refund Status: %s"
 msgstr ""
@@ -4442,10 +4433,10 @@ msgstr ""
 #. translators: %s: payment status
 #. translators: %s: Payment status (e.g., refunded, partially refunded).
 #. translators: %s: Payment status (e.g., succeeded, partially refunded).
-#: inc/payments/stripe/admin-stripe-handler.php:710
-#: inc/payments/stripe/admin-stripe-handler.php:1234
-#: inc/payments/stripe/stripe-webhook.php:730
-#: inc/payments/stripe/stripe-webhook.php:894
+#: inc/payments/stripe/admin-stripe-handler.php:691
+#: inc/payments/stripe/admin-stripe-handler.php:1215
+#: inc/payments/stripe/stripe-webhook.php:746
+#: inc/payments/stripe/stripe-webhook.php:928
 #, php-format
 msgid "Payment Status: %s"
 msgstr ""
@@ -4453,132 +4444,132 @@ msgstr ""
 #. translators: %s: user display name
 #. translators: %s: refunded by user
 #. translators: %s: Refunded by method (e.g., Webhook).
-#: inc/payments/stripe/admin-stripe-handler.php:715
-#: inc/payments/stripe/admin-stripe-handler.php:1239
-#: inc/payments/stripe/stripe-webhook.php:732
+#: inc/payments/stripe/admin-stripe-handler.php:696
+#: inc/payments/stripe/admin-stripe-handler.php:1220
+#: inc/payments/stripe/stripe-webhook.php:748
 #, php-format
 msgid "Refunded by: %s"
 msgstr ""
 
 #. translators: %s: refund notes
-#: inc/payments/stripe/admin-stripe-handler.php:724
-#: inc/payments/stripe/admin-stripe-handler.php:1248
+#: inc/payments/stripe/admin-stripe-handler.php:705
+#: inc/payments/stripe/admin-stripe-handler.php:1229
 #, php-format
 msgid "Refund Notes: %s"
 msgstr ""
 
 #. translators: %s: refund type (Full or Partial)
 #. translators: %s: Refund type (e.g., Full, Partial).
-#: inc/payments/stripe/admin-stripe-handler.php:733
-#: inc/payments/stripe/stripe-webhook.php:710
+#: inc/payments/stripe/admin-stripe-handler.php:714
+#: inc/payments/stripe/stripe-webhook.php:726
 #, php-format
 msgid "%s Payment Refund"
 msgstr ""
 
 #. translators: %1$s: Payment settings link
-#: inc/payments/stripe/admin-stripe-handler.php:797
+#: inc/payments/stripe/admin-stripe-handler.php:778
 #: assets/build/payments.js:2
 #, php-format,js-format
 msgid "Webhooks keep SureForms in sync with Stripe by automatically updating payment and subscription data. Please %1$s Webhook."
 msgstr ""
 
-#: inc/payments/stripe/admin-stripe-handler.php:804
+#: inc/payments/stripe/admin-stripe-handler.php:785
 #: assets/build/payments.js:2
 msgid "configure"
 msgstr ""
 
-#: inc/payments/stripe/admin-stripe-handler.php:834
+#: inc/payments/stripe/admin-stripe-handler.php:815
 msgid "Invalid refund parameters provided."
 msgstr ""
 
-#: inc/payments/stripe/admin-stripe-handler.php:848
+#: inc/payments/stripe/admin-stripe-handler.php:829
 msgid "This payment is not related to a subscription."
 msgstr ""
 
-#: inc/payments/stripe/admin-stripe-handler.php:861
+#: inc/payments/stripe/admin-stripe-handler.php:842
 msgid "Only active, succeeded, or partially refunded subscription payments can be refunded."
 msgstr ""
 
-#: inc/payments/stripe/admin-stripe-handler.php:891
+#: inc/payments/stripe/admin-stripe-handler.php:872
 msgid "Stripe refund creation failed. Please check your Stripe dashboard for more details."
 msgstr ""
 
-#: inc/payments/stripe/admin-stripe-handler.php:902
+#: inc/payments/stripe/admin-stripe-handler.php:883
 msgid "Refund was processed by Stripe but failed to update local records. Please check your payment records manually."
 msgstr ""
 
-#: inc/payments/stripe/admin-stripe-handler.php:910
+#: inc/payments/stripe/admin-stripe-handler.php:891
 msgid "Subscription payment refunded successfully."
 msgstr ""
 
 #. translators: 1: Maximum refundable amount (numeric), 2: Currency code (e.g. USD)
-#: inc/payments/stripe/admin-stripe-handler.php:977
+#: inc/payments/stripe/admin-stripe-handler.php:958
 #, php-format
 msgid "Refund amount exceeds available amount. Maximum refundable: %1$s %2$s"
 msgstr ""
 
-#: inc/payments/stripe/admin-stripe-handler.php:987
+#: inc/payments/stripe/admin-stripe-handler.php:968
 msgid "Refund amount must be greater than zero."
 msgstr ""
 
-#: inc/payments/stripe/admin-stripe-handler.php:995
+#: inc/payments/stripe/admin-stripe-handler.php:976
 msgid "Refund amount must be at least $0.50."
 msgstr ""
 
-#: inc/payments/stripe/admin-stripe-handler.php:1038
+#: inc/payments/stripe/admin-stripe-handler.php:1019
 msgid "Unable to determine the appropriate refund method for this subscription payment."
 msgstr ""
 
 #. translators: %s: refund type (Full/Partial)
-#: inc/payments/stripe/admin-stripe-handler.php:1256
+#: inc/payments/stripe/admin-stripe-handler.php:1237
 #, php-format
 msgid "%s Subscription Payment Refund"
 msgstr ""
 
-#: inc/payments/stripe/admin-stripe-handler.php:1288
+#: inc/payments/stripe/admin-stripe-handler.php:1269
 #: assets/build/payments.js:172
 msgid "This payment has already been fully refunded."
 msgstr ""
 
-#: inc/payments/stripe/admin-stripe-handler.php:1289
+#: inc/payments/stripe/admin-stripe-handler.php:1270
 msgid "The payment could not be found in Stripe."
 msgstr ""
 
-#: inc/payments/stripe/admin-stripe-handler.php:1290
+#: inc/payments/stripe/admin-stripe-handler.php:1271
 msgid "The refund amount exceeds the available refundable amount."
 msgstr ""
 
-#: inc/payments/stripe/admin-stripe-handler.php:1291
+#: inc/payments/stripe/admin-stripe-handler.php:1272
 msgid "The payment for this subscription could not be found."
 msgstr ""
 
-#: inc/payments/stripe/admin-stripe-handler.php:1292
+#: inc/payments/stripe/admin-stripe-handler.php:1273
 msgid "The subscription could not be found in Stripe."
 msgstr ""
 
-#: inc/payments/stripe/admin-stripe-handler.php:1293
+#: inc/payments/stripe/admin-stripe-handler.php:1274
 msgid "This subscription has no successful payments to refund."
 msgstr ""
 
-#: inc/payments/stripe/admin-stripe-handler.php:1294
+#: inc/payments/stripe/admin-stripe-handler.php:1275
 msgid "The payment method for this subscription is invalid."
 msgstr ""
 
-#: inc/payments/stripe/admin-stripe-handler.php:1295
+#: inc/payments/stripe/admin-stripe-handler.php:1276
 msgid "Insufficient permissions to process refunds."
 msgstr ""
 
-#: inc/payments/stripe/admin-stripe-handler.php:1296
+#: inc/payments/stripe/admin-stripe-handler.php:1277
 msgid "Too many requests. Please try again in a moment."
 msgstr ""
 
-#: inc/payments/stripe/admin-stripe-handler.php:1297
+#: inc/payments/stripe/admin-stripe-handler.php:1278
 #: assets/build/payments.js:172
 msgid "Network error. Please check your connection and try again."
 msgstr ""
 
 #. translators: %s: technical error message returned from Stripe.
-#: inc/payments/stripe/admin-stripe-handler.php:1308
+#: inc/payments/stripe/admin-stripe-handler.php:1289
 #, php-format
 msgid "Subscription refund failed: %s"
 msgstr ""
@@ -4756,7 +4747,7 @@ msgstr ""
 #. translators: %s: Cancellation reason
 #. translators: %s: Failure reason.
 #: inc/payments/stripe/stripe-webhook.php:584
-#: inc/payments/stripe/stripe-webhook.php:892
+#: inc/payments/stripe/stripe-webhook.php:926
 #, php-format
 msgid "Cancellation Reason: %s"
 msgstr ""
@@ -4769,69 +4760,69 @@ msgstr ""
 
 #. translators: %s: Refunded by method (e.g., Webhook).
 #. translators: %s: Canceled by method (e.g., Webhook).
-#: inc/payments/stripe/stripe-webhook.php:732
-#: inc/payments/stripe/stripe-webhook.php:896
+#: inc/payments/stripe/stripe-webhook.php:748
+#: inc/payments/stripe/stripe-webhook.php:930
 #: assets/build/settings.js:172
 msgid "Webhook"
 msgstr ""
 
-#: inc/payments/stripe/stripe-webhook.php:874
+#: inc/payments/stripe/stripe-webhook.php:908
 msgid "Refund Canceled"
 msgstr ""
 
 #. translators: 1: Canceled amount, 2: Currency.
-#: inc/payments/stripe/stripe-webhook.php:882
+#: inc/payments/stripe/stripe-webhook.php:916
 #, php-format
 msgid "Canceled Refund Amount: %1$s %2$s"
 msgstr ""
 
 #. translators: 1: Remaining refunded amount, 2: Currency, 3: Original amount, 4: Currency
-#: inc/payments/stripe/stripe-webhook.php:885
+#: inc/payments/stripe/stripe-webhook.php:919
 #, php-format
 msgid "Remaining Refunded: %1$s %2$s of %3$s %4$s"
 msgstr ""
 
-#: inc/payments/stripe/stripe-webhook.php:1046
+#: inc/payments/stripe/stripe-webhook.php:1080
 msgid "Initial Subscription Payment Succeeded"
 msgstr ""
 
 #. translators: %s: Invoice ID
-#: inc/payments/stripe/stripe-webhook.php:1052
-#: inc/payments/stripe/stripe-webhook.php:1122
+#: inc/payments/stripe/stripe-webhook.php:1086
+#: inc/payments/stripe/stripe-webhook.php:1172
 #, php-format
 msgid "Invoice ID: %s"
 msgstr ""
 
-#: inc/payments/stripe/stripe-webhook.php:1059
+#: inc/payments/stripe/stripe-webhook.php:1093
 msgid "Payment Status: Succeeded"
 msgstr ""
 
-#: inc/payments/stripe/stripe-webhook.php:1060
+#: inc/payments/stripe/stripe-webhook.php:1094
 msgid "Subscription Status: Active"
 msgstr ""
 
-#: inc/payments/stripe/stripe-webhook.php:1108
+#: inc/payments/stripe/stripe-webhook.php:1158
 msgid "Subscription Charge Payment"
 msgstr ""
 
 #. translators: %s: Status
-#: inc/payments/stripe/stripe-webhook.php:1118
+#: inc/payments/stripe/stripe-webhook.php:1168
 msgid "Succeeded"
 msgstr ""
 
 #. translators: %s: Customer Email
-#: inc/payments/stripe/stripe-webhook.php:1126
+#: inc/payments/stripe/stripe-webhook.php:1176
 #, php-format
 msgid "Customer Email: %s"
 msgstr ""
 
 #. translators: %s: Customer Name
-#: inc/payments/stripe/stripe-webhook.php:1128
+#: inc/payments/stripe/stripe-webhook.php:1178
 #, php-format
 msgid "Customer Name: %s"
 msgstr ""
 
-#: inc/payments/stripe/stripe-webhook.php:1129
+#: inc/payments/stripe/stripe-webhook.php:1179
 msgid "Created via subscription billing cycle"
 msgstr ""
 
@@ -12469,21 +12460,21 @@ msgstr ""
 msgid "Travel"
 msgstr ""
 
-#: templates/single-form.php:150
+#: templates/single-form.php:152
 msgid "Link to homepage"
 msgstr ""
 
-#: templates/single-form.php:151
+#: templates/single-form.php:153
 msgid "Instant form site logo"
 msgstr ""
 
 #. translators: Here %s is the plugin's name.
-#: templates/single-form.php:178
+#: templates/single-form.php:180
 #, php-format
 msgid "Crafted with ♡ %s"
 msgstr ""
 
-#: templates/single-form.php:199
+#: templates/single-form.php:201
 msgid "Instant Form Disabled"
 msgstr ""
 
@@ -16258,7 +16249,7 @@ msgid "This will create a copy of \"%s\" with all its settings."
 msgstr ""
 
 #: assets/build/formSubmit.js:2
-#: assets/js/unminified/form-submit.js:482
+#: assets/js/unminified/form-submit.js:487
 msgid "An error occurred while submitting your form. Please try again."
 msgstr ""
 
