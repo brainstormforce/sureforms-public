@@ -137,7 +137,12 @@ function initializeFormHandlers() {
 					'button.srfm-custom-button'
 				);
 
-				if ( hasHiddenClass && ! isCustomButton ) {
+				// Check if the custom button is hidden by conditional logic.
+				const isCustomButtonHidden = isCustomButton
+					?.closest( '.srfm-custom-button-ctn' )
+					?.classList.contains( 'hide-element' );
+
+				if ( hasHiddenClass && ( ! isCustomButton || isCustomButtonHidden ) ) {
 					console.warn(
 						'Form submission is disabled because the submit button is hidden.'
 					);

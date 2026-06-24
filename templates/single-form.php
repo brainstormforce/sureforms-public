@@ -12,6 +12,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template-scoped variables consumed only within this template, not true plugin globals.
+
 $srfm_custom_post_id = absint( get_the_ID() );
 $srfm_form_preview   = isset( $_GET['form_preview'] ) ? boolval( wp_unslash( $_GET['form_preview'] ) ) : false;  // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verification is not required here.
 $srfm_live_mode_data = Helper::get_instant_form_live_data();

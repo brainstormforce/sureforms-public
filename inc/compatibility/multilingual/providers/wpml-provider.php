@@ -15,6 +15,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- This adapter exists solely to call WPML's own hooks (wpml_*); their names must match WPML exactly to integrate.
+
 /**
  * WPML_Provider.
  *

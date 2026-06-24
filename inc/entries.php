@@ -358,7 +358,7 @@ class Entries {
 			$csv_filepath = $temp_dir . $csv_filename;
 
 			if ( file_exists( $csv_filepath ) ) {
-				unlink( $csv_filepath );
+				wp_delete_file( $csv_filepath );
 			}
 
 			$stream = fopen( $csv_filepath, 'wb' ); // phpcs:ignore -- Using fopen to decrease the memory use.
@@ -399,7 +399,7 @@ class Entries {
 			// Clean up CSV files.
 			foreach ( $csv_files as $csv_file ) {
 				if ( file_exists( $csv_file ) ) {
-					unlink( $csv_file );
+					wp_delete_file( $csv_file );
 				}
 			}
 

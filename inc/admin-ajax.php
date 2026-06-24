@@ -184,7 +184,7 @@ class Admin_Ajax {
 
 		// Translators: %s: Form ID.
 		$form_name = ! empty( $form->post_title ) ? $form->post_title : sprintf( __( 'SureForms id: %s', 'sureforms' ), $form_id );
-		$api_url   = apply_filters( 'suretriggers_get_iframe_url', SRFM_SURETRIGGERS_INTEGRATION_BASE_URL );
+		$api_url   = apply_filters( 'suretriggers_get_iframe_url', SRFM_SURETRIGGERS_INTEGRATION_BASE_URL ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- SureTriggers' own filter; the name must match SureTriggers exactly to integrate.
 
 		// This is the format of data required by SureTriggers for adding iframe in target id.
 		$body = [
@@ -451,10 +451,10 @@ class Admin_Ajax {
 		}
 
 		// Output the file.
-		readfile( $filepath ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_read_readfile -- Need direct file output for download.
+		readfile( $filepath ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_read_readfile, WordPress.WP.AlternativeFunctions.file_system_operations_readfile -- Direct file output is required to stream the download.
 
 		// Clean up the temporary file.
-		unlink( $filepath );
+		wp_delete_file( $filepath );
 
 		exit;
 	}

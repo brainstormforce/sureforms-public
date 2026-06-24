@@ -12,6 +12,7 @@
 
 namespace SRFM\Inc\Payments;
 
+use SRFM\Inc\Database\Tables\Entries;
 use SRFM\Inc\Field_Validation;
 use SRFM\Inc\Helper;
 use SRFM\Inc\Payments\Stripe\Stripe_Helper;
@@ -861,6 +862,73 @@ class Payment_Helper {
 	}
 
 	/**
+	 * Resolve the WordPress user associated with a payment record.
+	 *
+	 * Resolution order:
+	 *  1. The linked entry's `user_id` (set when a logged-in user submitted the form).
+	 *  2. A user matching the payment's `customer_email`.
+	 *  3. `0` for guest checkouts where no WordPress user can be resolved.
+	 *
+	 * @param array<string, mixed> $payment Payment record (a `sureforms_payments` row).
+	 * @return int Resolved WordPress user ID, or 0 when none can be determined.
+	 * @since 2.12.0
+	 */
+	public static function resolve_payment_user( $payment ) {
+		if ( ! is_array( $payment ) ) {
+			return 0;
+		}
+
+		// 1. Prefer the user_id stored on the linked entry.
+		$entry_id = ! empty( $payment['entry_id'] ) && is_numeric( $payment['entry_id'] ) ? intval( $payment['entry_id'] ) : 0;
+		if ( $entry_id > 0 ) {
+			$entry = Entries::get( $entry_id );
+			if ( is_array( $entry ) && ! empty( $entry['user_id'] ) && is_numeric( $entry['user_id'] ) ) {
+				$user_id = intval( $entry['user_id'] );
+				if ( $user_id > 0 ) {
+					return $user_id;
+				}
+			}
+		}
+
+		// 2. Fall back to a user matching the customer email.
+		$customer_email = ! empty( $payment['customer_email'] ) && is_string( $payment['customer_email'] ) ? sanitize_email( $payment['customer_email'] ) : '';
+		if ( ! empty( $customer_email ) ) {
+			$user = get_user_by( 'email', $customer_email );
+			if ( $user instanceof \WP_User ) {
+				return intval( $user->ID );
+			}
+		}
+
+		// 3. Guest checkout — no resolvable WordPress user.
+		return 0;
+	}
+
+	/**
+	 * Build the standard context array passed alongside payment-lifecycle actions.
+	 *
+	 * Gives consumers (membership, LMS and other plugins) a consistent, resolved
+	 * snapshot of who paid and through which form/gateway, without each consumer
+	 * having to re-derive it from the raw payment row.
+	 *
+	 * @param array<string, mixed> $payment Payment record (a `sureforms_payments` row).
+	 * @return array{form_id:int, entry_id:int, user_id:int, customer_email:string, type:string, gateway:string, mode:string} Resolved payment context.
+	 * @since 2.12.0
+	 */
+	public static function build_payment_context( $payment ) {
+		$payment = is_array( $payment ) ? $payment : [];
+
+		return [
+			'form_id'        => ! empty( $payment['form_id'] ) && is_numeric( $payment['form_id'] ) ? intval( $payment['form_id'] ) : 0,
+			'entry_id'       => ! empty( $payment['entry_id'] ) && is_numeric( $payment['entry_id'] ) ? intval( $payment['entry_id'] ) : 0,
+			'user_id'        => self::resolve_payment_user( $payment ),
+			'customer_email' => ! empty( $payment['customer_email'] ) && is_string( $payment['customer_email'] ) ? sanitize_email( $payment['customer_email'] ) : '',
+			'type'           => ! empty( $payment['type'] ) && is_string( $payment['type'] ) ? sanitize_text_field( $payment['type'] ) : '',
+			'gateway'        => ! empty( $payment['gateway'] ) && is_string( $payment['gateway'] ) ? sanitize_text_field( $payment['gateway'] ) : '',
+			'mode'           => ! empty( $payment['mode'] ) && is_string( $payment['mode'] ) ? sanitize_text_field( $payment['mode'] ) : '',
+		];
+	}
+
+	/**
 	 * Validate dynamic amount field from dropdown or multi-choice.
 	 *
 	 * @param array<string, mixed> $payment_config Payment block configuration.
@@ -1225,19 +1293,32 @@ class Payment_Helper {
 							'message' => sprintf( __( 'Payment amount mismatch. Expected %1$s, received %2$s.', 'sureforms' ), $converted_payment_amount, $payment_amount ),
 						];
 					}
+				} else {
+					// Unresolved hidden / dynamic source: resolve_server_side_variable_amount()
+					// returned null (e.g. a hidden field whose default is a smart tag like
+					// {get_input:amount}, stored raw and therefore non-numeric), so the submitted
+					// value cannot be trusted as the price and there is no server-authoritative
+					// amount to compare against. The configured minimum-amount floor is then the
+					// ONLY server-side guarantee, so it must be a positive authoritative value.
+					//
+					// This mirrors the "amount source not identified" handling above: with a
+					// positive minimum we fall through to the floor check below (the documented
+					// dynamic-prefill case keeps working); with no positive minimum there is
+					// nothing safe to validate against, so we MUST fail safe and reject rather than
+					// letting the floor default to 0 and accept any amount down to the gateway cent
+					// floor — which would reopen the unauthenticated underpayment bypass. Merchants
+					// doing custom JS-driven dynamic pricing must supply a server-authoritative
+					// amount via the `srfm_server_side_variable_amount` filter or a
+					// calculation-enabled field rather than relying on the submitted value.
+					$unresolved_minimum = isset( $resolved_config['minimum_amount'] ) ? floatval( $resolved_config['minimum_amount'] ) : 0;
+
+					if ( $unresolved_minimum <= 0 ) {
+						return [
+							'valid'   => false,
+							'message' => __( 'Payment amount could not be verified for this form. Please edit and re-save the form, then try again.', 'sureforms' ),
+						];
+					}
 				}
-				// Otherwise (e.g. a hidden field whose value could not be resolved
-				// server-side): do NOT trust the submitted value — fall through to the
-				// minimum-amount floor below as the only safe guarantee.
-				//
-				// In practice this covers the documented dynamic-prefill case: a hidden field
-				// whose default value is a smart tag (e.g. {get_input:amount}) is stored raw and
-				// is therefore non-numeric, so resolve_server_side_variable_amount() returns null
-				// and the charge is validated against the floor only — dynamic prefill keeps
-				// working. A hidden field with a literal numeric default, by contrast, is treated
-				// as authoritative above; merchants doing custom JS-driven dynamic pricing must
-				// supply a server-authoritative amount via the `srfm_server_side_variable_amount`
-				// filter or a calculation-enabled field rather than relying on the submitted value.
 			}
 
 			// All variable amount sources are subject to the configured minimum amount floor.
