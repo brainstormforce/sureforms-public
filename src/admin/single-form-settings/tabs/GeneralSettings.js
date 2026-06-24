@@ -1,7 +1,7 @@
 import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
-import SRFMTextControl from '@Components/text-control';
+import PageBreakSettings from '@Components/page-break-settings';
 import { useDeviceType } from '@Controls/getPreviewType';
-import { SelectControl, ToggleControl } from '@wordpress/components';
+import { ToggleControl } from '@wordpress/components';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { store as editorStore } from '@wordpress/editor';
 import { useEffect, useState } from '@wordpress/element';
@@ -23,8 +23,6 @@ function GeneralSettings( props ) {
 	let sureformsKeys = useSelect( ( select ) =>
 		select( editorStore ).getEditedPostAttribute( 'meta' )
 	);
-
-	const pageBreakSettings = sureformsKeys?._srfm_page_break_settings || {};
 
 	const deviceType = useDeviceType();
 	const [ rootContainer, setRootContainer ] = useState(
@@ -188,17 +186,6 @@ function GeneralSettings( props ) {
 		singleSettings = singleFormSettingsComponents;
 	}
 
-	function updatePageBreakSettings( option, value ) {
-		editPost( {
-			meta: {
-				_srfm_page_break_settings: {
-					...pageBreakSettings,
-					[ option ]: value,
-				},
-			},
-		} );
-	}
-
 	// Guarantee no empty slugs reach post_content on save.
 	useEffect( () => {
 		let wasSavingPost = false;
@@ -276,93 +263,7 @@ function GeneralSettings( props ) {
 					title={ __( 'Page Break', 'sureforms' ) }
 					initialOpen={ false }
 				>
-					{ pageBreakSettings?.progress_indicator_type !== 'none' && (
-						<>
-							<ToggleControl
-								label={ __( 'Show Labels', 'sureforms' ) }
-								checked={ pageBreakSettings?.toggle_label }
-								onChange={ ( value ) => {
-									updatePageBreakSettings(
-										'toggle_label',
-										value
-									);
-								} }
-							/>
-							<SRFMTextControl
-								label={ __( 'First Page Label', 'sureforms' ) }
-								value={ pageBreakSettings?.first_page_label }
-								data={ {
-									value: pageBreakSettings?.first_page_label,
-									label: 'first_page_label',
-								} }
-								onChange={ ( value ) =>
-									updatePageBreakSettings(
-										'first_page_label',
-										value
-									)
-								}
-								isFormSpecific={ true }
-							/>
-						</>
-					) }
-					<SelectControl
-						__next40pxDefaultSize
-						label={ __( 'Progress Indicator', 'sureforms' ) }
-						value={ pageBreakSettings?.progress_indicator_type }
-						className="srfm-progress-control"
-						options={ [
-							{ label: __( 'None', 'sureforms' ), value: 'none' },
-							{
-								label: __( 'Progress Bar', 'sureforms' ),
-								value: 'progress-bar',
-							},
-							{
-								label: __( 'Connector', 'sureforms' ),
-								value: 'connector',
-							},
-							{
-								label: __( 'Steps', 'sureforms' ),
-								value: 'steps',
-							},
-						] }
-						onChange={ ( value ) =>
-							updatePageBreakSettings(
-								'progress_indicator_type',
-								value
-							)
-						}
-						__nextHasNoMarginBottom
-					/>
-					<SRFMTextControl
-						data={ {
-							value: pageBreakSettings?.next_button_text,
-							label: 'next_button_text',
-						} }
-						label={ __( 'Next Button Text', 'sureforms' ) }
-						value={ pageBreakSettings?.next_button_text }
-						onChange={ ( value ) => {
-							updatePageBreakSettings(
-								'next_button_text',
-								value
-							);
-						} }
-						isFormSpecific={ true }
-					/>
-					<SRFMTextControl
-						data={ {
-							value: pageBreakSettings?.back_button_text,
-							label: 'back_button_text',
-						} }
-						label={ __( 'Back Button Text', 'sureforms' ) }
-						value={ pageBreakSettings?.back_button_text }
-						onChange={ ( value ) => {
-							updatePageBreakSettings(
-								'back_button_text',
-								value
-							);
-						} }
-						isFormSpecific={ true }
-					/>
+					<PageBreakSettings />
 				</SRFMAdvancedPanelBody>
 			) }
 
