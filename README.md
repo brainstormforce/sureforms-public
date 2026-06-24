@@ -459,14 +459,9 @@ You can report security issues through our [Bug Bounty Program](https://brainsto
 
 ## Changelog ##
 ### 2.12.0 - 24th June 2026 ###
-* New: Added a Show Entries preview tab in the single-form settings so free users can discover the new Pro entries table.
 * New: Added action hooks around payment success, cancellation, and refund events so plugins such as SureMembers, LMS, and CRMs can grant or revoke access for both Stripe and PayPal.
-* New: Added the [srfm_show_entries] shortcode (Pro) to display a form's collected entries in a sortable, paginated table on any page, with column whitelisting, per-user filtering, read/unread/trash views, sorting, and pagination.
 * Fix: Cancel Subscription now routes through the correct payment gateway so PayPal subscriptions cancel properly instead of always calling Stripe.
-* Fix: Conditional logic now works on the Custom Button, allowing it to be conditionally hidden while correctly blocking submission, and resolved settings panels not rendering for single-tab blocks.
-* Fix: FluentCRM Date of Birth mapping (Pro) no longer fails when mapping a Date Picker field, with dates now normalized to YYYY-MM-DD.
 * Fix: Forms with multiple Cloudflare Turnstile widgets now submit correctly instead of silently failing with a generic error.
-* Fix: Hardened variable amount validation when a hidden-field amount cannot be resolved and no minimum is set.
 * Fix: Resolved an issue where the Stripe Payment Element failed to render on live accounts that have Bacs Direct Debit, Link, Cash App, or BNPL enabled.
 * Fix: Restored the form editor on WordPress 6.x sites running plugins that register older-style blocks such as ThirstyAffiliates, Ninja Forms, and Gravity Forms.
 ### 2.11.1 - 16th June 2026 ###
