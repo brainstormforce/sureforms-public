@@ -98,6 +98,31 @@ const SureformsFormSpecificSettings = () => {
 				'iframe[name="editor-canvas"]'
 			);
 			if ( ! iframe ) {
+				// WP 6.x compatibility: when a third-party plugin registers a
+				// legacy block (apiVersion < 3), WP 6.x core checks ALL
+				// registered block types and opts out of iframing entirely —
+				// even though our heuristic (restricted to srfm/ + core/ blocks)
+				// still returns true. In that scenario the editor renders in the
+				// top document, so detect it and fall back gracefully instead of
+				// waiting out the 30s safety timeout.
+				const topRootContainer = document.querySelector(
+					'.is-root-container'
+				);
+				const topBlockList = document.querySelector(
+					'.block-editor-block-list__layout'
+				);
+				if ( topRootContainer && topBlockList ) {
+					setDocumentBody(
+						document.getElementsByTagName( 'body' )[ 0 ]
+					);
+					setRootContainer( topRootContainer );
+					setRootHtmlTag(
+						document.getElementsByTagName( 'html' )[ 0 ]
+					);
+					clearInterval( intervalId );
+					clearTimeout( timeoutId );
+					return true;
+				}
 				return false;
 			}
 

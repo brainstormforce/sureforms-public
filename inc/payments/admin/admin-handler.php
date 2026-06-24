@@ -872,7 +872,7 @@ class Admin_Handler {
 		}
 
 		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table query for search, table name is validated and cannot be parameterized with prepare().
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Custom table query for search; table name from get_tablename() and validated (not user input); cannot be parameterized with prepare().
 		$results = $wpdb->get_col(
 			$wpdb->prepare(
 				"SELECT DISTINCT id FROM {$payments_table}
