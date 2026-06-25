@@ -1310,7 +1310,7 @@ class Form_Submit {
 		// Use WPML's filter when available — works regardless of which
 		// multilingual plugin is the active provider, as Polylang implements
 		// the same filter for compatibility.
-		$active = apply_filters( 'wpml_active_languages', null, 'skip_missing=0' );
+		$active = apply_filters( 'wpml_active_languages', null, 'skip_missing=0' ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- WPML's own filter; the name must match WPML/Polylang exactly to integrate.
 		if ( is_array( $active ) && ! empty( $active ) ) {
 			return array_key_exists( $language, $active );
 		}

@@ -294,4 +294,66 @@ class Test_Generate_Form_Markup extends TestCase {
 
 		wp_delete_post( $form_id, true );
 	}
+
+	/**
+	 * Test get_google_captcha_script renders the widget + enqueues the right
+	 * Google script per version, and falls back to the missing-sitekey error.
+	 */
+	public function test_get_google_captcha_script() {
+		// Empty site key => missing-sitekey error, no widget rendered.
+		ob_start();
+		Generate_Form_Markup::get_google_captcha_script( 'v2-checkbox', '' );
+		$empty_output = ob_get_clean();
+		$this->assertStringContainsString( 'sitekey-error', $empty_output );
+		$this->assertStringNotContainsString( 'g-recaptcha', $empty_output );
+
+		// v2-checkbox => g-recaptcha widget carrying the site key, and the
+		// google-recaptcha script enqueued.
+		ob_start();
+		Generate_Form_Markup::get_google_captcha_script( 'v2-checkbox', 'test-site-key-v2' );
+		$v2_output = ob_get_clean();
+		$this->assertStringContainsString( 'g-recaptcha', $v2_output );
+		$this->assertStringContainsString( 'test-site-key-v2', $v2_output );
+		$this->assertTrue( wp_script_is( 'google-recaptcha', 'enqueued' ) );
+		wp_dequeue_script( 'google-recaptcha' );
+
+		// v3 => the dedicated v3 handle is enqueued.
+		ob_start();
+		Generate_Form_Markup::get_google_captcha_script( 'v3-reCAPTCHA', 'test-site-key-v3' );
+		ob_get_clean();
+		$this->assertTrue( wp_script_is( 'srfm-google-recaptchaV3', 'enqueued' ) );
+		wp_dequeue_script( 'srfm-google-recaptchaV3' );
+	}
+
+	/**
+	 * Test get_cf_turnstile_script renders the Turnstile widget + enqueues the
+	 * Cloudflare script, and falls back to the missing-sitekey error.
+	 */
+	public function test_get_cf_turnstile_script() {
+		// The Turnstile enqueue passes a legacy $args shape that WordPress trunk
+		// flags via _doing_it_wrong (a PHP notice that PHPUnit would convert to a
+		// failure). Suppress just the triggered notice for the duration of this
+		// test so the rendered markup can still be asserted.
+		add_filter( 'doing_it_wrong_trigger_error', '__return_false' );
+
+		// Empty site key => missing-sitekey error, no widget.
+		ob_start();
+		Generate_Form_Markup::get_cf_turnstile_script( 'light', '' );
+		$empty_output = ob_get_clean();
+		$this->assertStringContainsString( 'sitekey-error', $empty_output );
+		$this->assertStringNotContainsString( 'cf-turnstile', $empty_output );
+
+		// Valid site key => cf-turnstile widget with the key + appearance mode,
+		// and the Cloudflare Turnstile script enqueued.
+		ob_start();
+		Generate_Form_Markup::get_cf_turnstile_script( 'dark', 'test-turnstile-key' );
+		$output = ob_get_clean();
+		$this->assertStringContainsString( 'cf-turnstile', $output );
+		$this->assertStringContainsString( 'test-turnstile-key', $output );
+		$this->assertStringContainsString( 'dark', $output );
+		$this->assertTrue( wp_script_is( SRFM_SLUG . '-cf-turnstile', 'enqueued' ) );
+		wp_dequeue_script( SRFM_SLUG . '-cf-turnstile' );
+
+		remove_filter( 'doing_it_wrong_trigger_error', '__return_false' );
+	}
 }

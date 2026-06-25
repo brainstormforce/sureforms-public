@@ -452,4 +452,31 @@ class Test_Stripe_Helper extends TestCase {
 		$result = Stripe_Helper::get_license_key();
 		$this->assertSame( '', $result );
 	}
+
+	// ──────────────────────────────────────────────
+	// is_transaction_present (public) - payments table presence check
+	// ──────────────────────────────────────────────
+
+	public function test_is_transaction_present_matches_payments_table_state() {
+		global $wpdb;
+
+		$result = Stripe_Helper::is_transaction_present();
+		$this->assertIsBool( $result, 'is_transaction_present() must always return a boolean.' );
+
+		// The boolean must reflect the actual row state of the payments table:
+		// true only when at least one transaction row exists, false when the table
+		// is empty or absent. Computed from a direct count here (read-only, no mutation).
+		$table    = \SRFM\Inc\Payments\Payments::get_instance()->get_tablename();
+		$expected = false;
+		if ( is_string( $table ) && '' !== $table ) {
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+			$table_exists = $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table ) ) === $table;
+			if ( $table_exists ) {
+				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+				$expected = (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$table}" ) > 0;
+			}
+		}
+
+		$this->assertSame( $expected, $result );
+	}
 }
