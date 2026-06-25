@@ -525,7 +525,7 @@ class Stripe_Helper {
 		}
 
 		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table query to check transaction existence, table name is validated and cannot be parameterized with prepare().
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Custom table query to check transaction existence; table name from get_tablename() and validated (not user input); cannot be parameterized with prepare().
 		$count = $wpdb->get_var(
 			"SELECT COUNT(*) FROM {$payments_table} LIMIT 1"
 		);

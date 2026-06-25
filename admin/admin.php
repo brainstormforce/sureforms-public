@@ -1639,7 +1639,7 @@ class Admin {
 				'message'                    => $this->build_notice_markup(
 					esc_html__( 'Amazing! SureForms is powering your forms and submissions - let\'s keep growing together!', 'sureforms' ),
 					esc_html__( 'If SureForms has been helpful, would you mind taking a moment to leave a 5-star review on WordPress.org?', 'sureforms' ),
-					esc_url( 'https://wordpress.org/support/plugin/sureforms/reviews/?filter=5#new-post' ),
+					esc_url( 'https://wordpress.org/support/plugin/sureforms/reviews/' ),
 					esc_html__( 'Rate SureForms', 'sureforms' ),
 					esc_html__( 'Maybe later', 'sureforms' ),
 					esc_html__( 'I already did', 'sureforms' ),

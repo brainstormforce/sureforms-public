@@ -196,7 +196,7 @@ class Ninja_Importer extends Base_Migrator {
 			'SELECT id, title FROM %s ORDER BY id ASC',
 			esc_sql( $forms_table )
 		);
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Table names from $wpdb->prefix and IDs are int-cast/esc_sql'd; not user input.
 		$rows = $wpdb->get_results( $query, ARRAY_A );
 		if ( ! is_array( $rows ) ) {
 			return [];
@@ -347,7 +347,7 @@ class Ninja_Importer extends Base_Migrator {
 			esc_sql( $fields_table ),
 			(int) $form_id
 		);
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Table names from $wpdb->prefix and IDs are int-cast/esc_sql'd; not user input.
 		$rows = $wpdb->get_results( $fields_query, ARRAY_A );
 		if ( ! is_array( $rows ) || empty( $rows ) ) {
 			return [];
@@ -363,7 +363,7 @@ class Ninja_Importer extends Base_Migrator {
 			esc_sql( $field_meta_table ),
 			$ids_sql
 		);
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Table names from $wpdb->prefix and IDs are int-cast/esc_sql'd; not user input.
 		$meta_rows = $wpdb->get_results( $meta_query, ARRAY_A );
 
 		$meta_by_field = [];
@@ -408,7 +408,7 @@ class Ninja_Importer extends Base_Migrator {
 			esc_sql( $table ),
 			(int) $form_id
 		);
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Table names from $wpdb->prefix and IDs are int-cast/esc_sql'd; not user input.
 		$rows = $wpdb->get_results( $query, ARRAY_A );
 		$out  = [];
 		if ( is_array( $rows ) ) {
@@ -449,7 +449,7 @@ class Ninja_Importer extends Base_Migrator {
 			esc_sql( $rels_table ),
 			(int) $form_id
 		);
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Table names from $wpdb->prefix and IDs are int-cast/esc_sql'd; not user input.
 		$rows = $wpdb->get_results( $query, ARRAY_A );
 		if ( ! is_array( $rows ) || empty( $rows ) ) {
 			$this->actions_cache = [];
@@ -465,7 +465,7 @@ class Ninja_Importer extends Base_Migrator {
 			esc_sql( $meta_table ),
 			$ids_sql
 		);
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Table names from $wpdb->prefix and IDs are int-cast/esc_sql'd; not user input.
 		$meta_rows = $wpdb->get_results( $meta_query, ARRAY_A );
 		$by_id     = [];
 		if ( is_array( $meta_rows ) ) {

@@ -477,7 +477,7 @@ class Form_Widget extends Widget_Base {
 			[
 				'name'           => 'bgGradient',
 				'types'          => [ 'gradient' ],
-				'exclude'        => [ 'image' ],
+				'exclude'        => [ 'image' ], // phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_exclude -- Elementor Group_Control_Background option, not a query argument.
 				'fields_options' => [
 					'background'        => [
 						'label'   => __( 'Gradient', 'sureforms' ),
@@ -835,15 +835,8 @@ class Form_Widget extends Widget_Base {
 
 		// Bypass shortcode - call get_form_markup() directly.
 		// $do_blocks = true to match current shortcode behavior.
-		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped in Generate_Form_Markup.
-		echo Generate_Form_Markup::get_form_markup(
-			$form_id,
-			$show_title,
-			'',
-			'post',
-			true,
-			$block_attrs
-		);
+		$form_markup = Generate_Form_Markup::get_form_markup( $form_id, $show_title, '', 'post', true, $block_attrs );
+		echo $form_markup; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped in Generate_Form_Markup.
 
 		// Get spectra blocks and add css and js.
 		$blocks = parse_blocks( get_post_field( 'post_content', $form_id ) );

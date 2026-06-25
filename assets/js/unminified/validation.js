@@ -1226,9 +1226,22 @@ export const handleCaptchaValidation = (
 	} else if ( !! hCaptchaDiv ) {
 		captchaResponse = hcaptcha.getResponse();
 	} else if ( !! turnstileDiv ) {
-		captchaResponse = turnstile.getResponse();
+		// `turnstile.getResponse()` without a widget id is unreliable when more
+		// than one Turnstile widget is rendered on the page — it can return
+		// `undefined`, which previously threw a TypeError on `.length` below and
+		// surfaced as a generic "An error occurred while submitting your form".
+		// Read the token from the hidden response field scoped to THIS form's
+		// widget, falling back to the global getResponse() for safety.
+		const turnstileResponseField = turnstileDiv.querySelector(
+			'[name="cf-turnstile-response"]'
+		);
+		captchaResponse =
+			turnstileResponseField?.value || turnstile.getResponse();
 	}
-	const isValid = captchaResponse.length > 0;
+	// Guard against captcha libraries returning `undefined` (e.g. multiple
+	// widgets on the page) so a missing token shows the captcha error instead
+	// of throwing and failing the whole submission silently.
+	const isValid = ( captchaResponse || '' ).length > 0;
 	captchaErrorElement.style.display = isValid ? 'none' : 'block';
 
 	return isValid;

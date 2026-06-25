@@ -106,6 +106,6 @@ Spec_Filesystem::get_instance();
  *
  * @since 0.0.1
  */
-function spec_filesystem() {
+function spec_filesystem() { // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound -- Shared Spectra/UAG helper; the name is kept identical across products for cross-plugin compatibility.
 	return Spec_Filesystem::get_instance()->get_filesystem();
 }
