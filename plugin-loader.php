@@ -8,6 +8,10 @@
 
 namespace SRFM;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
+
 use SRFM\Admin\Admin;
 use SRFM\Admin\Analytics;
 use SRFM\Admin\Notice_Manager;
@@ -53,10 +57,6 @@ use SRFM\Inc\Single_Form_Settings\Compliance_Settings;
 use SRFM\Inc\Single_Form_Settings\Form_Settings_Api;
 use SRFM\Inc\Smart_Tags;
 use SRFM\Inc\Updater;
-
-if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly.
-}
 
 /**
  * Plugin_Loader
@@ -283,6 +283,7 @@ class Plugin_Loader {
 			load_textdomain( 'sureforms', $mofile_local );
 		} else {
 			// Load the default language files.
+			// phpcs:ignore PluginCheck.CodeAnalysis.DiscouragedFunctions.load_plugin_textdomainFound -- Fallback when no global/local .mo override is present.
 			load_plugin_textdomain( 'sureforms', false, $lang_dir );
 		}
 	}

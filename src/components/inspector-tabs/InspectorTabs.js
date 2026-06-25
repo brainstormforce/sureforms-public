@@ -238,21 +238,20 @@ const InspectorTabs = ( props ) => {
 				</div>
 			</div>
 
-			{ Array.isArray( children ) &&
-				Children.map( children, ( child, index ) => {
-					if ( ! child ) {
-						return child;
-					}
-					if ( ! child.key ) {
-						throw new Error(
-							'props.key not found in <InspectorTab />, you must use `key` prop'
-						);
-					}
-					return cloneElement( child, {
-						index,
-						isActive: child.key === currentTab,
-					} );
-				} ) }
+			{ Children.map( children, ( child, index ) => {
+				if ( ! child ) {
+					return child;
+				}
+				if ( ! child.key ) {
+					throw new Error(
+						'props.key not found in <InspectorTab />, you must use `key` prop'
+					);
+				}
+				return cloneElement( child, {
+					index,
+					isActive: child.key === currentTab,
+				} );
+			} ) }
 		</>
 	);
 };

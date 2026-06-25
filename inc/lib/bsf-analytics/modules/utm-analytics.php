@@ -49,6 +49,7 @@ if ( ! class_exists( 'BSF_UTM_Analytics' ) ) {
 			'surecontact',
 			'surecookie',
 			'suredash',
+			'suredonation',
 			'sureforms',
 			'suremails',
 			'surerank',

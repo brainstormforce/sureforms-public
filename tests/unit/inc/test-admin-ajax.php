@@ -227,4 +227,65 @@ class Test_Admin_Ajax extends TestCase {
 		$this->assertSame( 0, strpos( wp_normalize_path( $safe ), $temp_dir ) );
 		$this->assertNotSame( 0, strpos( wp_normalize_path( $unsafe ), $temp_dir ) );
 	}
+
+	// ---------------------------------------------------------------
+	// Tests for generate_data_for_suretriggers_integration() guards
+	// ---------------------------------------------------------------
+
+	/**
+	 * The SureTriggers integration AJAX handler must reject requests that fail
+	 * its capability, nonce, and required-parameter guards (each ends in a
+	 * wp_send_json_error -> WPDieException in the test runner).
+	 */
+	public function test_generate_data_for_suretriggers_integration() {
+		// 1. No logged-in user => capability check fails.
+		wp_set_current_user( 0 );
+		ob_start();
+		try {
+			$this->admin_ajax->generate_data_for_suretriggers_integration();
+			ob_end_clean();
+			$this->fail( 'Expected WPDieException for missing capability.' );
+		} catch ( \WPDieException $e ) {
+			$data = json_decode( (string) ob_get_clean(), true );
+			$this->assertIsArray( $data );
+			$this->assertFalse( $data['success'] );
+			$this->assertStringContainsString( 'permission', $data['data']['message'] );
+		}
+
+		// 2. Admin user but an invalid nonce => nonce check fails.
+		$admin_id = self::factory()->user->create( [ 'role' => 'administrator' ] );
+		wp_set_current_user( $admin_id );
+		$_POST['security']    = 'bad-nonce';
+		$_REQUEST['security'] = 'bad-nonce';
+		ob_start();
+		try {
+			$this->admin_ajax->generate_data_for_suretriggers_integration();
+			ob_end_clean();
+			$this->fail( 'Expected WPDieException for invalid nonce.' );
+		} catch ( \WPDieException $e ) {
+			$data = json_decode( (string) ob_get_clean(), true );
+			$this->assertFalse( $data['success'] );
+			$this->assertStringContainsString( 'nonce', strtolower( $data['data']['message'] ) );
+		}
+
+		// 3. Admin user + valid nonce, but no formId => required-param check fails.
+		$nonce                = wp_create_nonce( 'suretriggers_nonce' );
+		$_POST['security']    = $nonce;
+		$_REQUEST['security'] = $nonce;
+		unset( $_POST['formId'] );
+		ob_start();
+		try {
+			$this->admin_ajax->generate_data_for_suretriggers_integration();
+			ob_end_clean();
+			$this->fail( 'Expected WPDieException for missing form id.' );
+		} catch ( \WPDieException $e ) {
+			$data = json_decode( (string) ob_get_clean(), true );
+			$this->assertFalse( $data['success'] );
+			$this->assertStringContainsString( 'Form ID', $data['data']['message'] );
+		}
+
+		// Cleanup.
+		unset( $_POST['security'], $_REQUEST['security'] );
+		wp_set_current_user( 0 );
+	}
 }
