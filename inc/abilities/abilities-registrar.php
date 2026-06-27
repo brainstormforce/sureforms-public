@@ -87,6 +87,7 @@ class Abilities_Registrar {
 		// wp_get_abilities() is a WP 6.9+ Abilities API function. This method is only hooked
 		// when mcp_adapter_enabled() is true, which itself requires function_exists( 'wp_register_ability' ),
 		// so it is inert on WP 6.4-6.8. Plugin Check's static WP-version check reports a false positive here.
+		// phpcs:ignore WPFunctions.FunctionNotCompatibleWithRequiresWp -- Runtime guarded by function_exists check above
 		$abilities = wp_get_abilities();
 		$tools     = [];
 
@@ -128,11 +129,13 @@ class Abilities_Registrar {
 		// wp_has_ability_category() / wp_register_ability_category() are WP 6.9+ Abilities API
 		// functions, each called only behind its own function_exists() guard, so they are inert
 		// on WP 6.4-6.8. Plugin Check's static WP-version check reports false positives here.
+		// phpcs:ignore WPFunctions.FunctionNotCompatibleWithRequiresWp -- Runtime guarded by function_exists check
 		if ( function_exists( 'wp_has_ability_category' ) && wp_has_ability_category( 'sureforms' ) ) {
 			return;
 		}
 
 		if ( function_exists( 'wp_register_ability_category' ) ) {
+			// phpcs:ignore WPFunctions.FunctionNotCompatibleWithRequiresWp -- Runtime guarded by function_exists check
 			wp_register_ability_category(
 				'sureforms',
 				[
@@ -207,6 +210,7 @@ class Abilities_Registrar {
 			// wp_has_ability() is a WP 6.9+ Abilities API function, called only behind its
 			// function_exists() guard, so it is inert on WP 6.4-6.8. Plugin Check's static
 			// WP-version check reports a false positive here.
+			// phpcs:ignore WPFunctions.FunctionNotCompatibleWithRequiresWp -- Runtime guarded by function_exists check
 			if ( function_exists( 'wp_has_ability' ) && wp_has_ability( $ability->get_id() ) ) {
 				continue;
 			}

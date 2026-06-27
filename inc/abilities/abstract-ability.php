@@ -226,6 +226,7 @@ abstract class Abstract_Ability {
 		// after the function_exists() guard above (and via the wp_abilities_api_init hook),
 		// so it is inert on WP 6.4-6.8. Plugin Check's static WP-version check cannot see the
 		// runtime guard, so it reports a false positive here.
+		// phpcs:ignore WPFunctions.FunctionNotCompatibleWithRequiresWp -- Runtime guarded by function_exists check above
 		wp_register_ability(
 			$this->id,
 			[

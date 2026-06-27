@@ -25,7 +25,7 @@ if ( ! class_exists( 'BSF_Analytics_Helper' ) ) {
 
 			$result = array(
 				'error'         => false,
-				'error_message' => __( 'Oops! Something went wrong. Please refresh the page and try again.' ),
+				'error_message' => __( 'Oops! Something went wrong. Please refresh the page and try again.', 'sureforms' ),
 				'error_code'    => 0,
 			);
 

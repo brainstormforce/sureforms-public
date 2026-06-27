@@ -69,7 +69,7 @@ abstract class ActionScheduler_TimezoneHelper {
 		// Last try, guess timezone string manually.
 		foreach ( timezone_abbreviations_list() as $abbr ) {
 			foreach ( $abbr as $city ) {
-				if ( (bool) date( 'I' ) === (bool) $city['dst'] && $city['timezone_id'] && intval( $city['offset'] ) === $utc_offset ) {
+				if ( (bool) gmdate( 'I' ) === (bool) $city['dst'] && $city['timezone_id'] && intval( $city['offset'] ) === $utc_offset ) {
 					return $city['timezone_id'];
 				}
 			}
