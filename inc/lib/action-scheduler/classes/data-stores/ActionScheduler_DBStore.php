@@ -1042,6 +1042,7 @@ AND `group_id` = %d
 		$wpdb->delete( $wpdb->actionscheduler_claims, array( 'claim_id' => $claim->get_id() ), array( '%d' ) );
 
 		if ( $row_updates < count( $action_ids ) ) {
+			/* translators: %d: claim ID */
 			throw new RuntimeException(
 				sprintf(
 					__( 'Unable to release actions from claim id %d.', 'action-scheduler' ),

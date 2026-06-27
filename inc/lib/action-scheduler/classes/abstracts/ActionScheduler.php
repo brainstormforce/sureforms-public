@@ -229,6 +229,7 @@ abstract class ActionScheduler {
 				__( '%s() was called before the Action Scheduler data store was initialized', 'action-scheduler' ),
 				esc_attr( $function_name )
 			);
+			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- message is built with esc_attr and __(), safe for _doing_it_wrong
 			_doing_it_wrong( $function_name, $message, '3.1.6' );
 		}
 

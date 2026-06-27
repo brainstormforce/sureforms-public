@@ -60,7 +60,7 @@ abstract class ActionScheduler_Abstract_QueueRunner extends ActionScheduler_Abst
 			 * @param string $message Error message.
 			 */
 			function ( $type, $message ) {
-				throw new Exception( $message );
+				throw new Exception( esc_html( $message ) );
 			},
 			E_USER_ERROR | E_RECOVERABLE_ERROR
 		);

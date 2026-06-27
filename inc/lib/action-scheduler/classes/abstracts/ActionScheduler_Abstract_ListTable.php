@@ -1,5 +1,9 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if ( ! class_exists( 'WP_List_Table' ) ) {
 	require_once ABSPATH . 'wp-admin/includes/class-wp-list-table.php';
 }
@@ -159,7 +163,7 @@ abstract class ActionScheduler_Abstract_ListTable extends WP_List_Table {
 
 		foreach ( $this->bulk_actions as $action => $label ) {
 			if ( ! is_callable( array( $this, 'bulk_' . $action ) ) ) {
-				throw new RuntimeException( "The bulk action $action does not have a callback method" );
+				throw new RuntimeException( sprintf( esc_html__( 'The bulk action %s does not have a callback method', 'action-scheduler' ), esc_html( $action ) ) );
 			}
 
 			$actions[ $action ] = $label;

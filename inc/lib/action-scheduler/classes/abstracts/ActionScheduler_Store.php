@@ -330,6 +330,7 @@ abstract class ActionScheduler_Store extends ActionScheduler_Store_Deprecated {
 	 */
 	protected function validate_action( ActionScheduler_Action $action ) {
 		if ( strlen( json_encode( $action->get_args() ) ) > static::$max_args_length ) {
+			/* translators: %d: maximum allowed length for encoded args */
 			throw new InvalidArgumentException( sprintf( __( 'ActionScheduler_Action::$args too long. To ensure the args column can be indexed, action args should not be more than %d characters when encoded as JSON.', 'action-scheduler' ), static::$max_args_length ) );
 		}
 	}
