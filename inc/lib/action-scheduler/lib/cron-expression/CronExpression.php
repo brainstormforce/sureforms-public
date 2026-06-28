@@ -1,4 +1,5 @@
 <?php
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals -- vendored third-party library
 
 /**
  * CRON expression parser that can determine whether or not a CRON expression is
