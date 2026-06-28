@@ -281,7 +281,7 @@ class ActionScheduler_ListTable extends ActionScheduler_Abstract_ListTable {
 
 		$row_html = '<ul>';
 		foreach ( $row['args'] as $key => $value ) {
-			$row_html .= sprintf( '<li><code>%s => %s</code></li>', esc_html( var_export( $key, true ) ), esc_html( var_export( $value, true ) ) );
+			$row_html .= sprintf( '<li><code>%s => %s</code></li>', esc_html( var_export( $key, true ) ), esc_html( var_export( $value, true ) ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_var_export -- vendored lib, admin display only
 		}
 		$row_html .= '</ul>';
 
@@ -357,7 +357,7 @@ class ActionScheduler_ListTable extends ActionScheduler_Abstract_ListTable {
 				'actionscheduler_claims',
 			);
 
-			$found_tables = $wpdb->get_col( "SHOW TABLES LIKE '{$wpdb->prefix}actionscheduler%'" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$found_tables = $wpdb->get_col( "SHOW TABLES LIKE '{$wpdb->prefix}actionscheduler%'" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- vendored lib, direct query required
 			foreach ( $table_list as $table_name ) {
 				if ( ! in_array( $wpdb->prefix . $table_name, $found_tables ) ) {
 					$this->admin_notices[] = array(
@@ -508,7 +508,7 @@ class ActionScheduler_ListTable extends ActionScheduler_Abstract_ListTable {
 			} catch ( Exception $e ) {
 				// A possible reason for an exception would include a scenario where the same action is deleted by a
 				// concurrent request.
-				error_log(
+				error_log( // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- vendored lib, error logging for failed delete
 					sprintf(
 						/* translators: 1: action ID 2: exception message. */
 						__( 'Action Scheduler was unable to delete action %1$d. Reason: %2$s', 'action-scheduler' ),

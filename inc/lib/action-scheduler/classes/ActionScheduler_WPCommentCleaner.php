@@ -86,7 +86,7 @@ class ActionScheduler_WPCommentCleaner {
 	 */
 	public static function delete_all_action_comments() {
 		global $wpdb;
-		$wpdb->delete(
+		$wpdb->delete( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- vendored lib, write operation caching not applicable
 			$wpdb->comments,
 			array(
 				'comment_type'  => ActionScheduler_wpCommentLogger::TYPE,

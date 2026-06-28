@@ -1,4 +1,5 @@
 <?php
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals -- vendored third-party library
 /**
  * General API functions for scheduling actions
  *

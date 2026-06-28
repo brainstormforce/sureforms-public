@@ -173,7 +173,7 @@ class Migration_Command extends WP_CLI_Command {
 		add_action(
 			'action_scheduler/migration_batch_starting',
 			function ( $batch ) {
-				WP_CLI::debug( 'Beginning migration of batch: ' . print_r( $batch, true ) );
+				WP_CLI::debug( 'Beginning migration of batch: ' . print_r( $batch, true ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r -- vendored lib, CLI debug output only
 			},
 			10,
 			1

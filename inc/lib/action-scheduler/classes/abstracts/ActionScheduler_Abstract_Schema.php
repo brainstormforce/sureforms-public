@@ -164,7 +164,7 @@ abstract class ActionScheduler_Abstract_Schema {
 		foreach ( $this->tables as $table_name ) {
 			$table_name     = $wpdb->prefix . $table_name;
 			$pattern        = str_replace( '_', '\\_', $table_name );
-			$existing_table = $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $pattern ) );
+			$existing_table = $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $pattern ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- vendored lib, direct query required
 
 			if ( $existing_table !== $table_name ) {
 				$tables_exist = false;

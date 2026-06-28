@@ -33,7 +33,7 @@ class ActionScheduler_OptionLock extends ActionScheduler_Lock {
 
 		// The lock may not exist yet, or may have been deleted.
 		if ( empty( $existing_lock_value ) ) {
-			return (bool) $wpdb->insert(
+			return (bool) $wpdb->insert( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- vendored lib, write operation caching not applicable
 				$wpdb->options,
 				array(
 					'option_name'  => $lock_key,
@@ -48,7 +48,7 @@ class ActionScheduler_OptionLock extends ActionScheduler_Lock {
 		}
 
 		// Otherwise, try to obtain the lock.
-		return (bool) $wpdb->update(
+		return (bool) $wpdb->update( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- vendored lib, write operation caching not applicable
 			$wpdb->options,
 			array( 'option_value' => $new_lock_value ),
 			array(
@@ -112,7 +112,7 @@ class ActionScheduler_OptionLock extends ActionScheduler_Lock {
 		global $wpdb;
 
 		// Now grab the existing lock value, if there is one.
-		return (string) $wpdb->get_var(
+		return (string) $wpdb->get_var( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- vendored lib, direct query required
 			$wpdb->prepare(
 				"SELECT option_value FROM $wpdb->options WHERE option_name = %s",
 				$this->get_key( $lock_type )

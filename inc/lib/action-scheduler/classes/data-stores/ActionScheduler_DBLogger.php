@@ -31,7 +31,7 @@ class ActionScheduler_DBLogger extends ActionScheduler_Logger {
 
 		/** @var \wpdb $wpdb */ //phpcs:ignore Generic.Commenting.DocComment.MissingShort
 		global $wpdb;
-		$wpdb->insert(
+		$wpdb->insert( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- vendored lib, write operation caching not applicable
 			$wpdb->actionscheduler_logs,
 			array(
 				'action_id'      => $action_id,
@@ -55,6 +55,7 @@ class ActionScheduler_DBLogger extends ActionScheduler_Logger {
 	public function get_entry( $entry_id ) {
 		/** @var \wpdb $wpdb */ //phpcs:ignore Generic.Commenting.DocComment.MissingShort
 		global $wpdb;
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- vendored lib, direct query required
 		$entry = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$wpdb->actionscheduler_logs} WHERE log_id=%d", $entry_id ) );
 
 		return $this->create_entry_from_db_record( $entry );
@@ -92,6 +93,7 @@ class ActionScheduler_DBLogger extends ActionScheduler_Logger {
 		/** @var \wpdb $wpdb */ //phpcs:ignore Generic.Commenting.DocComment.MissingShort
 		global $wpdb;
 
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- vendored lib, direct query required
 		$records = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->actionscheduler_logs} WHERE action_id=%d", $action_id ) );
 
 		return array_map( array( $this, 'create_entry_from_db_record' ), $records );
@@ -120,7 +122,7 @@ class ActionScheduler_DBLogger extends ActionScheduler_Logger {
 	public function clear_deleted_action_logs( $action_id ) {
 		/** @var \wpdb $wpdb */ //phpcs:ignore Generic.Commenting.DocComment.MissingShort
 		global $wpdb;
-		$wpdb->delete( $wpdb->actionscheduler_logs, array( 'action_id' => $action_id ), array( '%d' ) );
+		$wpdb->delete( $wpdb->actionscheduler_logs, array( 'action_id' => $action_id ), array( '%d' ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- vendored lib, write operation caching not applicable
 	}
 
 	/**
@@ -149,6 +151,6 @@ class ActionScheduler_DBLogger extends ActionScheduler_Logger {
 		}
 		$sql_query .= implode( ',', $value_rows );
 
-		$wpdb->query( $sql_query ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+		$wpdb->query( $sql_query ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- $sql_query built from prepared fragments; vendored lib, write operation caching not applicable
 	}
 }
