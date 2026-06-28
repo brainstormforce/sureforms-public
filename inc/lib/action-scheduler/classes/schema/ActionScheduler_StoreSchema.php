@@ -108,7 +108,7 @@ class ActionScheduler_StoreSchema extends ActionScheduler_Abstract_Schema {
 			return;
 		}
 
-		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter -- table name from $wpdb object
 		$table_name   = $wpdb->prefix . 'actionscheduler_actions';
 		$table_list   = $wpdb->get_col( "SHOW TABLES LIKE '{$table_name}'" );
 		$default_date = self::DEFAULT_DATE;

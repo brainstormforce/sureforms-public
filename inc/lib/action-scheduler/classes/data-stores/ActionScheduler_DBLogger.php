@@ -149,6 +149,6 @@ class ActionScheduler_DBLogger extends ActionScheduler_Logger {
 		}
 		$sql_query .= implode( ',', $value_rows );
 
-		$wpdb->query( $sql_query ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+		$wpdb->query( $sql_query ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter -- $sql_query built from prepared fragments
 	}
 }

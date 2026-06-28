@@ -71,7 +71,7 @@ class ActionScheduler_LoggerSchema extends ActionScheduler_Abstract_Schema {
 			return;
 		}
 
-		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter -- table name from $wpdb object
 		$table_name   = $wpdb->prefix . 'actionscheduler_logs';
 		$table_list   = $wpdb->get_col( "SHOW TABLES LIKE '{$table_name}'" );
 		$default_date = ActionScheduler_StoreSchema::DEFAULT_DATE;
