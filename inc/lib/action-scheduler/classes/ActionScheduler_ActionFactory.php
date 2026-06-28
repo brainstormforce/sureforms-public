@@ -308,7 +308,7 @@ class ActionScheduler_ActionFactory {
 				break;
 
 			default:
-				error_log( "Unknown action type '{$options['type']}' specified when trying to create an action for '{$options['hook']}'." );
+				error_log( "Unknown action type '{$options['type']}' specified when trying to create an action for '{$options['hook']}'." ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- vendored lib, required for error handling
 				return 0;
 		}
 
@@ -319,7 +319,7 @@ class ActionScheduler_ActionFactory {
 		try {
 			$action_id = $options['unique'] ? $this->store_unique_action( $action ) : $this->store( $action );
 		} catch ( Exception $e ) {
-			error_log(
+			error_log( // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- vendored lib, required for error handling
 				sprintf(
 					/* translators: %1$s is the name of the hook to be enqueued, %2$s is the exception message. */
 					__( 'Caught exception while enqueuing action "%1$s": %2$s', 'action-scheduler' ),

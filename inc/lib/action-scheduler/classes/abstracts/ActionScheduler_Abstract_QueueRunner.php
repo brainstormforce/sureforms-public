@@ -49,7 +49,7 @@ abstract class ActionScheduler_Abstract_QueueRunner extends ActionScheduler_Abst
 	 */
 	public function process_action( $action_id, $context = '' ) {
 		// Temporarily override the error handler while we process the current action.
-		set_error_handler(
+		set_error_handler( // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_set_error_handler -- vendored lib, error handling for action processing
 			/**
 			 * Temporary error handler which can catch errors and convert them into exceptions. This faciliates more
 			 * robust error handling across all supported PHP versions.
