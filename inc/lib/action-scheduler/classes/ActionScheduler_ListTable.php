@@ -357,7 +357,7 @@ class ActionScheduler_ListTable extends ActionScheduler_Abstract_ListTable {
 				'actionscheduler_claims',
 			);
 
-			$found_tables = $wpdb->get_col( "SHOW TABLES LIKE '{$wpdb->prefix}actionscheduler%'" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$found_tables = $wpdb->get_col( "SHOW TABLES LIKE '{$wpdb->prefix}actionscheduler%'" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- vendored lib, direct query required
 			foreach ( $table_list as $table_name ) {
 				if ( ! in_array( $wpdb->prefix . $table_name, $found_tables ) ) {
 					$this->admin_notices[] = array(

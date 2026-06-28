@@ -36,7 +36,7 @@ class ActionScheduler_DBStoreMigrator extends ActionScheduler_DBStore {
 					'last_attempt_local' => $this->get_scheduled_date_string_local( $action, $last_attempt_date ),
 				];
 
-				$wpdb->update( $wpdb->actionscheduler_actions, $data, array( 'action_id' => $action_id ), array( '%s', '%s' ), array( '%d' ) );
+				$wpdb->update( $wpdb->actionscheduler_actions, $data, array( 'action_id' => $action_id ), array( '%s', '%s' ), array( '%d' ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- vendored lib, write operation caching not applicable
 			}
 
 			return $action_id;

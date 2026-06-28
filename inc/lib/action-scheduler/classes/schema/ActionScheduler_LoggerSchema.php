@@ -73,7 +73,7 @@ class ActionScheduler_LoggerSchema extends ActionScheduler_Abstract_Schema {
 
 		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter -- table name from $wpdb object
 		$table_name   = $wpdb->prefix . 'actionscheduler_logs';
-		$table_list   = $wpdb->get_col( "SHOW TABLES LIKE '{$table_name}'" );
+		$table_list   = $wpdb->get_col( "SHOW TABLES LIKE '{$table_name}'" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- vendored lib, direct query required
 		$default_date = ActionScheduler_StoreSchema::DEFAULT_DATE;
 
 		if ( ! empty( $table_list ) ) {
@@ -82,7 +82,7 @@ class ActionScheduler_LoggerSchema extends ActionScheduler_Abstract_Schema {
 				MODIFY COLUMN log_date_gmt datetime NULL default '{$default_date}',
 				MODIFY COLUMN log_date_local datetime NULL default '{$default_date}'
 			";
-			$wpdb->query( $query ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+			$wpdb->query( $query ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- vendored lib, write operation caching not applicable
 		}
 		// phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 	}

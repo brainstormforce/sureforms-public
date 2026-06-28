@@ -174,7 +174,7 @@ class ActionScheduler_wpCommentLogger extends ActionScheduler_Logger {
 		if ( ! $stats ) {
 			$stats = array();
 
-			$count = $wpdb->get_results( "SELECT comment_approved, COUNT( * ) AS num_comments FROM {$wpdb->comments} WHERE comment_type NOT IN('order_note','action_log') GROUP BY comment_approved", ARRAY_A );
+			$count = $wpdb->get_results( "SELECT comment_approved, COUNT( * ) AS num_comments FROM {$wpdb->comments} WHERE comment_type NOT IN('order_note','action_log') GROUP BY comment_approved", ARRAY_A ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- vendored lib, direct query required
 
 			$total    = 0;
 			$stats    = array();

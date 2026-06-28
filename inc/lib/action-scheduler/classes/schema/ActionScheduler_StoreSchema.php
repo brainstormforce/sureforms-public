@@ -110,7 +110,7 @@ class ActionScheduler_StoreSchema extends ActionScheduler_Abstract_Schema {
 
 		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter -- table name from $wpdb object
 		$table_name   = $wpdb->prefix . 'actionscheduler_actions';
-		$table_list   = $wpdb->get_col( "SHOW TABLES LIKE '{$table_name}'" );
+		$table_list   = $wpdb->get_col( "SHOW TABLES LIKE '{$table_name}'" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- vendored lib, direct query required
 		$default_date = self::DEFAULT_DATE;
 
 		if ( ! empty( $table_list ) ) {
@@ -121,7 +121,7 @@ class ActionScheduler_StoreSchema extends ActionScheduler_Abstract_Schema {
 				MODIFY COLUMN last_attempt_gmt datetime NULL default '{$default_date}',
 				MODIFY COLUMN last_attempt_local datetime NULL default '{$default_date}'
 		";
-			$wpdb->query( $query ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+			$wpdb->query( $query ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- vendored lib, write operation caching not applicable
 		}
 		// phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 	}

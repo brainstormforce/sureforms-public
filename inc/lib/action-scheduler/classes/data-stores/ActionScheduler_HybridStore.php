@@ -86,7 +86,7 @@ class ActionScheduler_HybridStore extends Store {
 			$date_gmt     = $this->get_scheduled_date_string( $null_action, $default_date );
 			$date_local   = $this->get_scheduled_date_string_local( $null_action, $default_date );
 
-			$row_count = $wpdb->insert(
+			$row_count = $wpdb->insert( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- vendored lib, write operation caching not applicable
 				$wpdb->{ActionScheduler_StoreSchema::ACTIONS_TABLE},
 				[
 					'action_id'            => $this->demarkation_id,
@@ -99,7 +99,7 @@ class ActionScheduler_HybridStore extends Store {
 				]
 			);
 			if ( $row_count > 0 ) {
-				$wpdb->delete(
+				$wpdb->delete( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- vendored lib, write operation caching not applicable
 					$wpdb->{ActionScheduler_StoreSchema::ACTIONS_TABLE},
 					[ 'action_id' => $this->demarkation_id ]
 				);
@@ -121,7 +121,7 @@ class ActionScheduler_HybridStore extends Store {
 		if ( empty( $id ) ) {
 			/** @var \wpdb $wpdb */
 			global $wpdb;
-			$id = (int) $wpdb->get_var( "SELECT MAX(ID) FROM $wpdb->posts" );
+			$id = (int) $wpdb->get_var( "SELECT MAX(ID) FROM $wpdb->posts" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- vendored lib, direct query required
 			$id ++;
 		}
 		update_option( self::DEMARKATION_OPTION, $id );
