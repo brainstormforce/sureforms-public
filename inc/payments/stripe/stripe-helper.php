@@ -395,7 +395,7 @@ class Stripe_Helper {
 	 *                                 SureCart API. Pass false from front-end request
 	 *                                 paths - see is_pro_license_active().
 	 * @since 2.0.0
-	 * @since x.x.x Added the $allow_remote_check parameter.
+	 * @since 2.12.8 Added the $allow_remote_check parameter.
 	 * @return string The SureForms Pro License Key.
 	 */
 	public static function get_license_key( $allow_remote_check = true ) {
@@ -424,7 +424,7 @@ class Stripe_Helper {
 	 *
 	 * @param bool $allow_remote_check Whether a cache miss may block on the SureCart API.
 	 * @since 2.0.0
-	 * @since x.x.x Added the $allow_remote_check parameter.
+	 * @since 2.12.8 Added the $allow_remote_check parameter.
 	 * @return bool|string True if the SureForms Pro license is active, false otherwise.
 	 */
 	public static function is_pro_license_active( $allow_remote_check = true ) {

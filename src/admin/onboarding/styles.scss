@@ -1,3 +1,56 @@
+// Waving hand on the welcome title. Pivots from the wrist (bottom-right of
+// the glyph), waves twice, then rests for the remainder of each 2.5s loop.
+@keyframes srfm-onboarding-wave {
+	0%,
+	60%,
+	100% {
+		transform: rotate( 0deg );
+	}
+
+	10%,
+	30% {
+		transform: rotate( 14deg );
+	}
+
+	20%,
+	40% {
+		transform: rotate( -8deg );
+	}
+
+	50% {
+		transform: rotate( 10deg );
+	}
+}
+
+.srfm-onboarding-wave {
+	display: inline-block;
+	transform-origin: 70% 70%;
+	animation: srfm-onboarding-wave 2.5s ease-in-out infinite;
+
+	@media ( prefers-reduced-motion: reduce ) {
+		animation: none;
+	}
+}
+
+// Fade-in for the welcome carousel caption on each slide change.
+@keyframes srfm-onboarding-fade-in {
+	from {
+		opacity: 0;
+	}
+
+	to {
+		opacity: 1;
+	}
+}
+
+.srfm-onboarding-fade-in {
+	animation: srfm-onboarding-fade-in 0.5s ease-in-out;
+
+	@media ( prefers-reduced-motion: reduce ) {
+		animation: none;
+	}
+}
+
 // SureForms Onboarding Stylings - Full Screen Support.
 html:has( > body.sureforms-onboarding-page ).wp-toolbar {
 	padding-top: 0 !important;

@@ -13,24 +13,6 @@ export const useOnboardingNavigation = () => {
 	const currentRoute = location.pathname;
 	const [ onboardingState ] = useOnboardingState();
 
-	// Check if user has business plan
-	const hasBusinessPlan = () => {
-		// Get current active pro version if available
-		const currentProVersion = srfm_admin?.pro_plugin_name || '';
-		const hasProVersion = currentProVersion.includes( 'SureForms' );
-
-		if ( hasProVersion ) {
-			// Extract plan name from "SureForms <plan name>"
-			const planMatch = currentProVersion.match( /SureForms\s+(.*)/ );
-			if ( planMatch && planMatch[ 1 ] ) {
-				const plan = planMatch[ 1 ].trim().toLowerCase();
-				return plan === 'business';
-			}
-		}
-
-		return false;
-	};
-
 	// Check if user is already connected
 	const isUserConnected = () => {
 		return (
@@ -41,23 +23,37 @@ export const useOnboardingNavigation = () => {
 
 	const getVisibleRoutes = () => {
 		const userConnected = isUserConnected();
-		const businessPlan = hasBusinessPlan();
 
 		return ONBOARDING_ROUTES_CONFIG.filter( ( route ) => {
 			if ( route.url === '/onboarding/connect' && userConnected ) {
 				return false;
 			}
 
+			// The add-ons step is an upsell, so only free installs see it.
+			// `is_pro_active` is Helper::has_pro() (i.e. SRFM_PRO_VER defined)
+			// and is the only trustworthy signal here: `pro_plugin_name` falls
+			// back to the literal 'SureForms Pro' when Pro is absent
+			// (admin/admin.php:1813), so testing it would hide the upsell from
+			// every free user.
 			if (
 				route.url === '/onboarding/premium-features' &&
-				businessPlan
+				srfm_admin?.is_pro_active
 			) {
 				return false;
 			}
 
+			if ( route.url === '/onboarding/user-details' && userConnected ) {
+				return false;
+			}
+
+			// The cache-conflict step only makes sense when a recognised caching
+			// plugin is active. `caching_plugin` is the display name of the
+			// first active plugin in Helper::get_known_caching_plugins() and
+			// is '' when there is none; the step's title and guide link both
+			// take their plugin from it.
 			if (
-				route.url === '/onboarding/user-details' &&
-				userConnected
+				route.url === '/onboarding/cache-conflict' &&
+				! srfm_admin?.caching_plugin
 			) {
 				return false;
 			}
@@ -72,7 +68,7 @@ export const useOnboardingNavigation = () => {
 			//
 			// While the probe is in-flight (`migrationDetectionLoaded === false`)
 			// we keep the step visible so that linear navigation past
-			// `user-details` doesn't race past it into `/done`. The step
+			// `premium-features` doesn't race past it into `cache-conflict`. The step
 			// itself renders a short loader and a clean "nothing to
 			// import" hint if the probe ultimately finds nothing.
 			if ( route.url === '/onboarding/import-forms' ) {
@@ -180,7 +176,10 @@ export const useOnboardingNavigation = () => {
 
 	const getCurrentStepNumber = () => {
 		const visibleRoutes = getVisibleRoutes();
-		const currentIndex = getCurrentRouteIndex( currentRoute, visibleRoutes );
+		const currentIndex = getCurrentRouteIndex(
+			currentRoute,
+			visibleRoutes
+		);
 
 		if ( currentIndex === -1 ) {
 			return 1;
@@ -253,7 +252,6 @@ export const useOnboardingNavigation = () => {
 		navigateToPreviousRoute,
 		getCurrentStepNumber,
 		checkRequiredStep,
-		hasBusinessPlan,
 		isUserConnected,
 	};
 };

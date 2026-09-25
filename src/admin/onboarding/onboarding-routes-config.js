@@ -13,10 +13,13 @@ const ONBOARDING_ROUTES_CONFIG = [
 		url: '/onboarding/premium-features',
 	},
 	{
-		url: '/onboarding/user-details',
+		url: '/onboarding/import-forms',
 	},
 	{
-		url: '/onboarding/import-forms',
+		url: '/onboarding/cache-conflict',
+	},
+	{
+		url: '/onboarding/user-details',
 	},
 	{
 		url: '/onboarding/done',

@@ -10,6 +10,7 @@
 use Yoast\PHPUnitPolyfills\TestCases\TestCase;
 use SRFM\Admin\Analytics;
 use SRFM\Inc\Helper;
+use SRFM\Inc\Onboarding;
 
 /**
  * Tests for embed styling and MCP analytics tracking.
@@ -74,7 +75,226 @@ class Test_Analytics extends TestCase {
 		Helper::update_srfm_option( 'usage_events_pushed', [] );
 		Helper::update_srfm_option( 'usage_events_pending', [] );
 
+		// Only the onboarding_completed tests touch these, and this class has no
+		// DB rollback, so put back exactly what was there rather than blanketing
+		// every test in the class with a write.
+		if ( null !== $this->onboarding_options_backup ) {
+			foreach ( $this->onboarding_options_backup as $key => $value ) {
+				Helper::update_srfm_option( $key, $value );
+			}
+			$this->onboarding_options_backup = null;
+		}
+
 		parent::tearDown();
+	}
+
+	// ─── onboarding_completed (state event) ───────────────────────
+
+	/**
+	 * Onboarding options as they were before a test overwrote them, or null
+	 * when the running test never touched them.
+	 *
+	 * @var array<string,mixed>|null
+	 */
+	private $onboarding_options_backup = null;
+
+	/**
+	 * Store an onboarding analytics blob, run state detection, and return the
+	 * properties the onboarding_completed event was tracked with.
+	 *
+	 * @param array<string,mixed> $blob The onboarding_analytics option value.
+	 * @return array<string,mixed>
+	 */
+	private function detect_onboarding_completed_props( array $blob ) {
+		$this->onboarding_options_backup = [
+			'onboarding_completed'       => Helper::get_srfm_option( 'onboarding_completed', 'no' ),
+			'onboarding_analytics'       => Helper::get_srfm_option( 'onboarding_analytics', [] ),
+			'onboarding_event_v2_flushed' => Helper::get_srfm_option( 'onboarding_event_v2_flushed', false ),
+		];
+
+		Onboarding::get_instance()->set_onboarding_status( 'yes' );
+		Helper::update_srfm_option( 'onboarding_event_v2_flushed', true );
+		Helper::update_srfm_option( 'onboarding_analytics', $blob );
+
+		// Invoke the detector on the existing singleton rather than constructing
+		// a second Analytics. The constructor registers four callbacks, and a new
+		// object identity means add_action cannot dedupe them -- they would
+		// survive this test and fire on every later test's save_post.
+		$detect = new \ReflectionMethod( Analytics::class, 'detect_state_events' );
+		$detect->setAccessible( true );
+		$detect->invoke( Analytics::get_instance() );
+
+		$pending = get_option( 'srfm_options', [] )['usage_events_pending'] ?? [];
+		foreach ( $pending as $event ) {
+			if ( 'onboarding_completed' === ( $event['event_name'] ?? '' ) ) {
+				return $event['properties'] ?? [];
+			}
+		}
+
+		$this->fail( 'onboarding_completed was not tracked.' );
+	}
+
+	/**
+	 * The add-ons step reports the tabs the user opened and whether they clicked
+	 * Upgrade; the cache step reports whether the warning was acknowledged.
+	 */
+	public function test_onboarding_completed_maps_viewed_tabs_upgrade_and_cache_ack() {
+		$props = $this->detect_onboarding_completed_props(
+			[
+				'skippedSteps'             => [ 'connect' ],
+				'premiumFeatures'          => [
+					'viewedTabs'     => [ 'multistep', 'conditional' ],
+					'upgradeClicked' => true,
+					// Present on purpose. The assertions below claim the old
+					// mapping is gone, and without this key in the blob they pass
+					// against the old code too.
+					'selectedFeatures' => [ 'multistep', 'calculations' ],
+				],
+				'cacheConflictAcknowledged' => true,
+				'completed'                => true,
+			]
+		);
+
+		$this->assertSame( 'connect', $props['skipped_steps'] );
+		$this->assertSame( 'multistep,conditional', $props['viewed_premium_tabs'] );
+		$this->assertSame( 'yes', $props['premium_upgrade_clicked'] );
+		$this->assertSame( 'yes', $props['cache_conflict_acknowledged'] );
+		$this->assertArrayNotHasKey( 'selected_premium_features', $props );
+		$this->assertArrayNotHasKey( 'premium_features_count', $props );
+	}
+
+	/**
+	 * A blob written by an older wizard (no tab / cache keys) must not emit the
+	 * new properties, so dashboards can tell "not tracked" from "no".
+	 */
+	public function test_onboarding_completed_omits_new_props_when_absent() {
+		$props = $this->detect_onboarding_completed_props(
+			[
+				'skippedSteps' => [ 'emailDelivery' ],
+				'completed'    => true,
+			]
+		);
+
+		$this->assertSame( 'emailDelivery', $props['skipped_steps'] );
+		$this->assertArrayNotHasKey( 'viewed_premium_tabs', $props );
+		$this->assertArrayNotHasKey( 'premium_upgrade_clicked', $props );
+		$this->assertArrayNotHasKey( 'cache_conflict_acknowledged', $props );
+	}
+
+	/**
+	 * A null flag means "this step never rendered" and must emit nothing.
+	 *
+	 * Distinct from the absent-key case above: that one passes because the key is
+	 * missing, this one because the value is null, and they are different paths
+	 * through isset(). Both are needed -- a refactor to array_key_exists() would
+	 * invert the meaning of both properties and leave the absent-key test green.
+	 */
+	public function test_onboarding_completed_omits_new_props_when_null() {
+		$props = $this->detect_onboarding_completed_props(
+			[
+				'skippedSteps'              => [ 'connect' ],
+				'premiumFeatures'           => [ 'upgradeClicked' => null ],
+				'cacheConflictAcknowledged' => null,
+				'completed'                 => true,
+			]
+		);
+
+		$this->assertArrayNotHasKey( 'premium_upgrade_clicked', $props );
+		$this->assertArrayNotHasKey( 'cache_conflict_acknowledged', $props );
+	}
+
+	/**
+	 * false is a real answer and must be reported, not swallowed with null.
+	 */
+	public function test_onboarding_completed_reports_false_flags_as_no() {
+		$props = $this->detect_onboarding_completed_props(
+			[
+				'premiumFeatures'           => [ 'upgradeClicked' => false ],
+				'cacheConflictAcknowledged' => false,
+				'completed'                 => true,
+			]
+		);
+
+		$this->assertSame( 'no', $props['premium_upgrade_clicked'] );
+		$this->assertSame( 'no', $props['cache_conflict_acknowledged'] );
+	}
+
+	/**
+	 * viewedTabs is whatever the wizard POSTed, so only known slugs get through.
+	 *
+	 * The tabs are a closed set of four. Intersecting against it drops arrays,
+	 * nulls and booleans that would otherwise stringify into the property, and
+	 * caps its length at the same time.
+	 */
+	public function test_onboarding_completed_keeps_only_known_premium_tabs() {
+		$props = $this->detect_onboarding_completed_props(
+			[
+				'premiumFeatures' => [
+					'viewedTabs' => [
+						'multistep',
+						[ 'x' ],
+						null,
+						true,
+						'not-a-tab',
+						'conversational',
+					],
+				],
+				'completed'       => true,
+			]
+		);
+
+		$this->assertSame(
+			'multistep,conversational',
+			$props['viewed_premium_tabs']
+		);
+	}
+
+	/**
+	 * Which wizard produced the blob. Every onboarding_completed event must carry
+	 * it, so old and new onboarding can be split with one filter instead of
+	 * inferred from which properties happen to be present -- a v2 run on a Pro
+	 * install with no caching plugin emits none of the new properties and would
+	 * otherwise be indistinguishable from a v1 run.
+	 *
+	 * Three tests rather than three calls in one: track() dedupes per event name
+	 * and only setUp() resets that, so a second detect in the same test would
+	 * hand back the first call's properties.
+	 */
+	public function test_onboarding_completed_reports_onboarding_v2_yes() {
+		$props = $this->detect_onboarding_completed_props(
+			[
+				'onboardingV2' => true,
+				'completed'    => true,
+			]
+		);
+
+		$this->assertSame( 'yes', $props['onboarding_v2'] );
+	}
+
+	/**
+	 * A blob from the old wizard has no onboardingV2 key. Deliberately not the
+	 * isset() shape the other flags use: absence IS the legacy case, so it has to
+	 * produce a value rather than nothing.
+	 */
+	public function test_onboarding_completed_reports_onboarding_v2_no_for_a_legacy_blob() {
+		$props = $this->detect_onboarding_completed_props(
+			[
+				'premiumFeatures' => [ 'selectedFeatures' => [ 'multistep' ] ],
+				'completed'       => true,
+			]
+		);
+
+		$this->assertSame( 'no', $props['onboarding_v2'] );
+	}
+
+	/**
+	 * No blob at all: onboarding was completed before analytics were captured.
+	 * The other properties are all inside the non-empty guard; this one must not be.
+	 */
+	public function test_onboarding_completed_reports_onboarding_v2_no_without_a_blob() {
+		$props = $this->detect_onboarding_completed_props( [] );
+
+		$this->assertSame( 'no', $props['onboarding_v2'] );
 	}
 
 	// ─── embed_styling_gutenberg_count ────────────────────────────

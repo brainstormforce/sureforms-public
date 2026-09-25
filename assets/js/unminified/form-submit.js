@@ -727,11 +727,15 @@ async function submitFormData( form ) {
 
 			const errorCode = parsed?.data?.code ? ` (${ parsed.data.code })` : '';
 
+			// A rejection naming specific fields is the server asking the visitor
+			// to correct something. Not logged: the server drops the 'blocked' type,
+			// so sending it only spends a request.
+			if ( rejected.length ) {
+				return parsed;
+			}
+
 			srfmLog.add( {
-				// A rejection naming specific fields is the server asking the
-				// visitor to correct something. Recorded, but never counted toward
-				// the "this form is broken" signal.
-				type: rejected.length ? 'blocked' : 'network',
+				type: 'network',
 				status,
 				duration_ms: durationMs,
 				message: `Submission responded ${ status } (${ contentType })${ errorCode }: ${ reason }${ codeText }`,
@@ -745,9 +749,7 @@ async function submitFormData( form ) {
 						return '';
 					}
 				} )(),
-				field_keys: rejected.length
-					? rejected
-					: [ ...filteredFormData.keys() ],
+				field_keys: [ ...filteredFormData.keys() ],
 			} );
 		}
 
@@ -1099,33 +1101,8 @@ async function handleFormSubmission(
 		if ( isValidate?.validateResult || ! isCaptchaValid ) {
 			loader.classList.remove( 'srfm-active' );
 
-			// Logged here because this path returns before submitFormData ever
-			// runs, so nothing downstream can see it. This is the class of failure
-			// where a third-party script breaks a field's own validation -- the
-			// visitor is stopped and the server never hears about it.
-			// The reason, not just the fact. Validation has already rendered its
-			// message for the visitor, so read that rather than logging a generic
-			// "validation failed" that says nothing a support engineer can act on.
-			const shownErrors = [ ...form.querySelectorAll( '.srfm-error-message' ) ]
-				.map( ( el ) => el.textContent.trim() )
-				.filter( Boolean )
-				.slice( 0, 5 )
-				.join( ' | ' );
-
-			const captchaReason =
-				captchaErrorElement?.textContent?.trim() ||
-				`captcha: ${ recaptchaType || 'unknown type' }`;
-
-			srfmLog.add( {
-				type: 'blocked',
-				message: isValidate?.validateResult
-					? `Blocked before submit: field validation failed. ${ shownErrors }`
-					: `Blocked before submit: ${ captchaReason }`,
-				field_keys: isValidate?.firstErrorInput?.name
-					? [ isValidate.firstErrorInput.name ]
-					: [],
-			} );
-			srfmLog.flush( form );
+			// Not logged: a visitor-correctable stop is not a failure of the form,
+			// and the server drops the 'blocked' type anyway.
 
 			// Re-enable submit button after validation fails.
 			enableSubmitButton( form );
@@ -1169,17 +1146,6 @@ async function handleFormSubmission(
 		const paymentResult = await handleFormPayment( form );
 
 		if ( ! paymentResult?.valid ) {
-			// The payment leg runs on its own endpoint before the submission, so a
-			// failure here stops the submission without the submit route ever
-			// being called.
-			srfmLog.add( {
-				type: 'blocked',
-				message: `Blocked before submit: payment. ${
-					paymentResult?.message ?? ''
-				}`,
-			} );
-			srfmLog.flush( form );
-
 			showErrorMessage( { form, message: paymentResult?.message } );
 			// Remove loading.
 			loader.classList.remove( 'srfm-active' );
@@ -1264,14 +1230,8 @@ async function handleFormSubmission(
 			showErrorMessage( { form, ...errorData } );
 			loader.classList.remove( 'srfm-active' );
 
-			// Record the message the visitor actually saw, then ship everything
-			// buffered for this attempt.
-			srfmLog.add( {
-				type: 'blocked',
-				message: String(
-					errorData.log_message || errorData.message || ''
-				).slice( 0, 500 ),
-			} );
+			// Ship everything buffered for this attempt. The message the visitor
+			// saw is already in the response entry submitFormData recorded.
 			srfmLog.flush( form );
 
 			// Re-enable submit button after error.

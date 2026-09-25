@@ -16,6 +16,10 @@ export default () => {
 
 	const isFirstFormCreated = srfm_admin?.is_first_form_created || false;
 	const isProActive = srfm_admin?.is_pro_active || false;
+	// Distraction Free (SureForms Pro): drop Quick Access and lay the page out
+	// in one full-width column. Action items are alerts, not promotions, so
+	// they stay, above everything else.
+	const hidePromotions = srfm_admin?.hide_promotions || false;
 
 	const leftSidebar = (
 		<>
@@ -55,12 +59,21 @@ export default () => {
 					cols={ 12 }
 					gap="2xl"
 				>
-					<Container.Item className="flex flex-col gap-8 col-span-12 xl:col-span-8">
-						{ leftSidebar }
-					</Container.Item>
-					<Container.Item className="flex flex-col gap-8 col-span-12 xl:col-span-4">
-						{ rightSidebar }
-					</Container.Item>
+					{ hidePromotions ? (
+						<Container.Item className="flex flex-col gap-8 col-span-12">
+							<ActionItems />
+							{ leftSidebar }
+						</Container.Item>
+					) : (
+						<>
+							<Container.Item className="flex flex-col gap-8 col-span-12 xl:col-span-8">
+								{ leftSidebar }
+							</Container.Item>
+							<Container.Item className="flex flex-col gap-8 col-span-12 xl:col-span-4">
+								{ rightSidebar }
+							</Container.Item>
+						</>
+					) }
 				</Container>
 			</Container.Item>
 		</Container>

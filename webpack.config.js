@@ -123,7 +123,30 @@ module.exports = {
 	module: {
 		rules: [
 			//...wp_rules,
-			...defaultConfig.module.rules,
+			// The onboarding artwork is large (some files are >100KB) and is only
+			// ever used as an <img>/<object> source. wp-scripts' default SVG rule
+			// inlines every SVG as a base64 data URI, which would add ~950KB to
+			// the dashboard bundle for screens that never render it — so emit
+			// these as separate hashed files and let the browser cache them.
+			{
+				test: /\.svg$/,
+				include: path.resolve( __dirname, 'images/onboarding' ),
+				type: 'asset/resource',
+				generator: {
+					filename: 'images/[name].[contenthash:8][ext]',
+				},
+			},
+			...defaultConfig.module.rules.map( ( rule ) =>
+				String( rule.test ) === String( /\.svg$/ )
+					? {
+						...rule,
+						exclude: path.resolve(
+							__dirname,
+							'images/onboarding'
+						),
+					  }
+					: rule
+			),
 			{
 				test: /\.(scss|css)$/,
 				exclude: [

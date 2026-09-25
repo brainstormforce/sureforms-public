@@ -16,12 +16,15 @@ import { listSources } from '@Admin/settings/migration/api';
 const NavBar = () => {
 	const { getCurrentStepNumber, getVisibleRoutes } =
 		useOnboardingNavigation();
+	const { pathname } = useLocation();
 	const [ onboardingState, actions ] = useOnboardingState();
-	const location = useLocation();
 	const [ isExiting, setIsExiting ] = useState( false );
 
-	// Do not include the final thank-you page in progress indicators.
+	// Do not include the final thank-you page in progress indicators, and
+	// hide the bar entirely once the user reaches it — there is nothing left
+	// to track at that point.
 	const totalSteps = Math.max( getVisibleRoutes().length - 1, 1 );
+	const showProgress = pathname !== '/onboarding/done';
 
 	// Function to handle exit with proper state updates
 	const handleExit = () => {
@@ -33,11 +36,6 @@ const NavBar = () => {
 
 		// Mark as exited early
 		actions.setExitedEarly( true );
-
-		// If exiting from premium features screen, clear selected features
-		if ( location.pathname === '/onboarding/premium-features' ) {
-			actions.setSelectedPremiumFeatures( [] );
-		}
 
 		// Clear all onboarding storage data
 		actions.clearStorage();
@@ -82,20 +80,22 @@ const NavBar = () => {
 				<Topbar.Item>{ ICONS.logo }</Topbar.Item>
 			</Topbar.Left>
 			<Topbar.Middle align="center">
-				<Topbar.Item className="md:block hidden">
-					<ProgressSteps
-						completedVariant="number"
-						currentStep={ getCurrentStepNumber() }
-						size="md"
-						type="inline"
-						variant="number"
-						lineClassName="w-[128px]"
-					>
-						{ Array.from( { length: totalSteps }, ( _, index ) => (
-							<ProgressSteps.Step key={ index } size="md" />
-						) ) }
-					</ProgressSteps>
-				</Topbar.Item>
+				{ showProgress && (
+					<Topbar.Item className="md:block hidden">
+						<ProgressSteps
+							completedVariant="number"
+							currentStep={ getCurrentStepNumber() }
+							size="md"
+							type="inline"
+							variant="number"
+							lineClassName="w-[128px]"
+						>
+							{ Array.from( { length: totalSteps }, ( _, index ) => (
+								<ProgressSteps.Step key={ index } size="md" />
+							) ) }
+						</ProgressSteps>
+					</Topbar.Item>
+				) }
 			</Topbar.Middle>
 			<Topbar.Right>
 				<Topbar.Item>
@@ -137,13 +137,6 @@ const OnboardingContent = () => {
 	const location = useLocation();
 	const [ , actions ] = useOnboardingState();
 
-	const widthClassNames = {
-		1: 'max-w-xl', // 560px converted to rem (assuming 1rem = 16px)
-		2: 'max-w-2xl', // 750px converted to rem (assuming 1rem = 16px)
-	};
-
-	const widthClassKey = location.pathname === '/onboarding/welcome' ? 1 : 2;
-
 	// Add body class for onboarding-specific styles
 	useEffect( () => {
 		document.body.classList.add( 'sureforms-onboarding-page' );
@@ -164,7 +157,9 @@ const OnboardingContent = () => {
 				if ( cancelled ) {
 					return;
 				}
-				const sources = Array.isArray( res?.sources ) ? res.sources : [];
+				const sources = Array.isArray( res?.sources )
+					? res.sources
+					: [];
 				actions.setMigrationSources( sources );
 			} )
 			.catch( () => {
@@ -192,9 +187,7 @@ const OnboardingContent = () => {
 			<NavBar />
 			{ /* Content */ }
 			<div className="p-7 w-full h-full">
-				<div
-					className={ `w-full h-full border-0.5 border-solid border-border-subtle bg-background-primary shadow-sm rounded-xl mx-auto p-7 ${ widthClassNames[ widthClassKey ] }` }
-				>
+				<div className="w-full h-full max-w-2xl border-0.5 border-solid border-border-subtle bg-background-primary shadow-sm rounded-xl mx-auto p-6">
 					<Outlet />
 				</div>
 			</div>

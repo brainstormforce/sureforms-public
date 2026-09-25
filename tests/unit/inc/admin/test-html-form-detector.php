@@ -293,9 +293,16 @@ class Test_Html_Form_Detector extends SRFM_Unit_Test_Case {
 	}
 
 	public function test_extract_fields_via_ai() {
-		// The middleware is unreachable in unit tests; the method must
-		// surface a WP_Error rather than throwing or returning garbage.
+		// When the middleware is unreachable the method must surface a
+		// WP_Error rather than throwing or returning garbage. Block the
+		// request here rather than relying on CI having no network access.
+		$block = static function () {
+			return new \WP_Error( 'http_request_failed', 'Blocked in unit tests.' );
+		};
+		add_filter( 'pre_http_request', $block );
 		$result = $this->call_protected( 'extract_fields_via_ai', [ '<form><input type="text"/></form>' ] );
+		remove_filter( 'pre_http_request', $block );
+
 		$this->assertInstanceOf( \WP_Error::class, $result );
 	}
 

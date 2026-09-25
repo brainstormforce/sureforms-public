@@ -990,6 +990,14 @@ class Analytics {
 			$onboarding_props     = [];
 			$onboarding_analytics = Helper::get_srfm_option( 'onboarding_analytics', [] );
 
+			// Which wizard produced the blob. Outside the non-empty guard and not
+			// isset()-gated like the flags below, because absence IS the answer: a
+			// blob from the old wizard, or no blob at all, must still report 'no'.
+			// Without this the two wizards share one event name and can only be
+			// told apart by which properties happen to be present -- and a v2 run
+			// on Pro with no caching plugin emits none of the new ones.
+			$onboarding_props['onboarding_v2'] = ! empty( $onboarding_analytics['onboardingV2'] ) ? 'yes' : 'no';
+
 			if ( ! empty( $onboarding_analytics ) && is_array( $onboarding_analytics ) ) {
 				if ( ! empty( $onboarding_analytics['skippedSteps'] ) && is_array( $onboarding_analytics['skippedSteps'] ) ) {
 					$onboarding_props['skipped_steps'] = implode( ',', $onboarding_analytics['skippedSteps'] );
@@ -1011,15 +1019,38 @@ class Analytics {
 					$onboarding_props['exited_early'] = (bool) $onboarding_analytics['exitedEarly'] ? 'yes' : 'no';
 				}
 
-				if ( ! empty( $onboarding_analytics['premiumFeatures']['selectedFeatures'] ) && is_array( $onboarding_analytics['premiumFeatures']['selectedFeatures'] ) ) {
-					$premium                                       = array_filter(
-						$onboarding_analytics['premiumFeatures']['selectedFeatures'],
-						static function( $f ) {
-							return 'ai-form-generation' !== $f && 'entries' !== $f;
-						}
+				// Add-ons step: the wizard shows one feature tab at a time
+				// instead of a checkbox list, so we report which tabs were opened and
+				// whether Upgrade was clicked. Blobs written by older wizards carry
+				// neither key and emit neither property.
+				if ( ! empty( $onboarding_analytics['premiumFeatures']['viewedTabs'] ) && is_array( $onboarding_analytics['premiumFeatures']['viewedTabs'] ) ) {
+					// The blob is whatever the wizard POSTed. The tabs are a closed
+					// set of four, so intersect against it rather than filtering on
+					// type: that drops anything unrecognised and caps both the
+					// content and the length of the property in one step.
+					$viewed_tabs                             = array_values(
+						array_intersect(
+							array_map( 'strval', array_filter( (array) $onboarding_analytics['premiumFeatures']['viewedTabs'], 'is_scalar' ) ),
+							[ 'multistep', 'conditional', 'calculation', 'conversational' ]
+						)
 					);
-					$onboarding_props['selected_premium_features'] = implode( ',', $premium );
-					$onboarding_props['premium_features_count']    = (string) count( $premium );
+					$onboarding_props['viewed_premium_tabs'] = implode( ',', $viewed_tabs );
+				}
+
+				if ( isset( $onboarding_analytics['premiumFeatures']['upgradeClicked'] ) ) {
+					$onboarding_props['premium_upgrade_clicked'] = (bool) $onboarding_analytics['premiumFeatures']['upgradeClicked'] ? 'yes' : 'no';
+				}
+
+				// Cache-conflict step: shown only when a recognised caching plugin
+				// is active; "yes" means the user pressed "I've fixed this".
+				//
+				// Read this as an abandonment signal, not as intent. Acknowledging
+				// is the only way past the step, so everyone who completes the
+				// wizard reports "yes" and "no" only ever appears next to
+				// exited_early. It cannot answer "did people act on the warning" --
+				// only "did they stop here".
+				if ( isset( $onboarding_analytics['cacheConflictAcknowledged'] ) ) {
+					$onboarding_props['cache_conflict_acknowledged'] = (bool) $onboarding_analytics['cacheConflictAcknowledged'] ? 'yes' : 'no';
 				}
 			}
 

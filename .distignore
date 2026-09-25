@@ -67,6 +67,11 @@ auth.json
 credentials.json
 
 # Directories
+# Build-time artwork source. Webpack re-emits every @Image/onboarding import as a
+# hashed file under assets/build/images/, so shipping this directory as well put
+# the same 2.8 MB in the ZIP twice. The rest of images/ cannot be ignored --
+# inc/gutenberg-hooks.php serves images/field-previews/* directly.
+images/onboarding
 node_modules
 vendor
 tests

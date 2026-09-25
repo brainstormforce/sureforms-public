@@ -14,10 +14,34 @@ import {
 	PremiumFeatures,
 	UserDetails,
 	ImportForms,
+	CacheConflict,
 	Done,
 } from '../onboarding';
 import '../tw-base.scss';
 import '../onboarding/styles.scss';
+
+// One definition for both Router branches below. Keeping two hand-maintained
+// copies is how `cache-conflict` ended up registered in only one of them: a
+// missing path falls through to `*`, which unmounts OnboardingLayout and wipes
+// the wizard's state mid-flow.
+const ONBOARDING_ROUTES = [
+	[ 'welcome', <Welcome key="welcome" /> ],
+	[ 'connect', <Connect key="connect" /> ],
+	[ 'email-delivery', <EmailDelivery key="email-delivery" /> ],
+	[ 'premium-features', <PremiumFeatures key="premium-features" /> ],
+	[ 'import-forms', <ImportForms key="import-forms" /> ],
+	[ 'cache-conflict', <CacheConflict key="cache-conflict" /> ],
+	[ 'user-details', <UserDetails key="user-details" /> ],
+	[ 'done', <Done key="done" /> ],
+];
+
+const renderOnboardingRoutes = () => (
+	<Route path="/onboarding" element={ <OnboardingLayout /> }>
+		{ ONBOARDING_ROUTES.map( ( [ path, element ] ) => (
+			<Route key={ path } path={ path } element={ element } />
+		) ) }
+	</Route>
+);
 
 const APP = () => {
 	const { onboarding_completed, onboarding_redirect } = srfm_admin || {};
@@ -29,26 +53,10 @@ const APP = () => {
 		return (
 			<Router>
 				<Routes>
-					<Route path="/onboarding" element={ <OnboardingLayout /> }>
-						<Route path="welcome" element={ <Welcome /> } />
-						<Route path="connect" element={ <Connect /> } />
-						<Route
-							path="email-delivery"
-							element={ <EmailDelivery /> }
-						/>
-						<Route
-							path="premium-features"
-							element={ <PremiumFeatures /> }
-						/>
-						<Route path="user-details" element={ <UserDetails /> } />
-						<Route path="import-forms" element={ <ImportForms /> } />
-						<Route path="done" element={ <Done /> } />
-					</Route>
+					{ renderOnboardingRoutes() }
 					<Route
 						path="*"
-						element={
-							<Navigate to="/onboarding/welcome" replace />
-						}
+						element={ <Navigate to="/onboarding/welcome" replace /> }
 					/>
 				</Routes>
 			</Router>
@@ -60,21 +68,7 @@ const APP = () => {
 		<Router>
 			<Routes>
 				<Route path="/" element={ <Dashboard /> } />
-				<Route path="/onboarding" element={ <OnboardingLayout /> }>
-					<Route path="welcome" element={ <Welcome /> } />
-					<Route path="connect" element={ <Connect /> } />
-					<Route
-						path="email-delivery"
-						element={ <EmailDelivery /> }
-					/>
-					<Route
-						path="premium-features"
-						element={ <PremiumFeatures /> }
-					/>
-					<Route path="user-details" element={ <UserDetails /> } />
-					<Route path="import-forms" element={ <ImportForms /> } />
-					<Route path="done" element={ <Done /> } />
-				</Route>
+				{ renderOnboardingRoutes() }
 				<Route path="*" element={ <Dashboard /> } />
 			</Routes>
 		</Router>

@@ -1,8 +1,8 @@
 import { __ } from '@wordpress/i18n';
 import { createInterpolateElement, useState } from '@wordpress/element';
-import { Checkbox, Input, Text, Title } from '@bsf/force-ui';
+import { Checkbox, Input, Text } from '@bsf/force-ui';
 import apiFetch from '@wordpress/api-fetch';
-import { Divider } from '../components';
+import { Divider, Header } from '../components';
 import NavigationButtons from '../components/navigation-buttons';
 import { useOnboardingNavigation } from '../hooks';
 import { useOnboardingState } from '../onboarding-state';
@@ -26,7 +26,8 @@ const UserDetails = () => {
 	const [ errors, setErrors ] = useState( {} );
 
 	const privacyPolicyURL =
-		srfm_admin?.privacy_policy_url || 'https://sureforms.com/privacy-policy/';
+		srfm_admin?.privacy_policy_url ||
+		'https://sureforms.com/privacy-policy/';
 
 	const handleFieldChange = ( field ) => ( value ) => {
 		setFormData( ( prev ) => ( {
@@ -46,14 +47,14 @@ const UserDetails = () => {
 
 		if ( ! firstName ) {
 			validationErrors.firstName = __(
-				'First name is required.',
+				'Please enter your first name.',
 				'sureforms'
 			);
 		}
 
 		if ( ! email ) {
 			validationErrors.email = __(
-				'Email address is required.',
+				'Please enter your email address.',
 				'sureforms'
 			);
 		} else if ( ! emailRegex.test( email ) ) {
@@ -64,7 +65,10 @@ const UserDetails = () => {
 		}
 
 		if ( ! formData.consent ) {
-			validationErrors.consent = __( 'This is required.', 'sureforms' );
+			validationErrors.consent = __(
+				'Please check this box to continue.',
+				'sureforms'
+			);
 		}
 
 		setErrors( validationErrors );
@@ -105,20 +109,14 @@ const UserDetails = () => {
 	};
 
 	return (
-		<div className="space-y-6">
-			<div className="space-y-2">
-				<Title
-					tag="h3"
-					title={ __( 'Okay, just one last step…', 'sureforms' ) }
-					size="lg"
-				/>
-				<Text size={ 14 } weight={ 400 } color="secondary">
-					{ __(
-						'Help us tailor your SureForms experience by sharing a bit about yourself.',
-						'sureforms'
-					) }
-				</Text>
-			</div>
+		<div className="space-y-4">
+			<Header
+				title={ __( 'Okay, just one last step…', 'sureforms' ) }
+				description={ __(
+					'Help us tailor your SureForms experience by sharing a bit about yourself.',
+					'sureforms'
+				) }
+			/>
 
 			<div className="space-y-4">
 				<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -127,7 +125,11 @@ const UserDetails = () => {
 							id="srfm-onboarding-first-name"
 							size="md"
 							label={ __( 'First Name', 'sureforms' ) }
-							placeholder={ __( 'Enter your first name', 'sureforms' ) }
+							required
+							placeholder={ __(
+								'Enter your first name',
+								'sureforms'
+							) }
 							value={ formData.firstName }
 							onChange={ handleFieldChange( 'firstName' ) }
 							error={ errors.firstName }
@@ -143,8 +145,11 @@ const UserDetails = () => {
 						<Input
 							id="srfm-onboarding-last-name"
 							size="md"
-							label={ __( 'Last Name', 'sureforms' ) }
-							placeholder={ __( 'Enter your last name', 'sureforms' ) }
+							label={ __( 'Last Name (optional)', 'sureforms' ) }
+							placeholder={ __(
+								'Enter your last name',
+								'sureforms'
+							) }
 							value={ formData.lastName }
 							onChange={ handleFieldChange( 'lastName' ) }
 						/>
@@ -157,7 +162,11 @@ const UserDetails = () => {
 						size="md"
 						type="email"
 						label={ __( 'Email Address', 'sureforms' ) }
-						placeholder={ __( 'Enter your email address', 'sureforms' ) }
+						required
+						placeholder={ __(
+							'Enter your email address',
+							'sureforms'
+						) }
 						value={ formData.email }
 						onChange={ handleFieldChange( 'email' ) }
 						error={ errors.email }
@@ -220,10 +229,7 @@ const UserDetails = () => {
 					onClick: handleContinue,
 					text: __( 'Finish', 'sureforms' ),
 				} }
-				skipProps={ {
-					onClick: handleSkip,
-					text: __( 'Skip', 'sureforms' ),
-				} }
+				skipProps={ { onClick: handleSkip } }
 			/>
 		</div>
 	);

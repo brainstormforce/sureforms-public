@@ -3,8 +3,8 @@
  * plugins (CF7, WPForms, Gravity Forms, Ninja Forms) and offers to import
  * them into SureForms in one click.
  *
- * The step is registered between `/onboarding/user-details` and
- * `/onboarding/done` and is **hidden silently** when:
+ * The step is registered between `/onboarding/premium-features` and
+ * `/onboarding/cache-conflict` and is **hidden silently** when:
  *  - the migration sources REST call fails, OR
  *  - no source plugin is installed, OR
  *  - all installed sources have zero forms.
@@ -16,11 +16,11 @@
  * @since 2.11.0
  */
 
-import { Container, Text, Title, Loader, Alert } from '@bsf/force-ui';
+import { Container, Text, Loader, Alert } from '@bsf/force-ui';
 import { __, _n, sprintf } from '@wordpress/i18n';
 import { useState, useMemo, useEffect } from '@wordpress/element';
 import { CheckCircle2 } from 'lucide-react';
-import { Divider } from '../components';
+import { Divider, Header } from '../components';
 import NavigationButtons from '../components/navigation-buttons';
 import SourceMigrationCard from '../components/source-migration-card';
 import { useOnboardingState } from '../onboarding-state';
@@ -230,29 +230,21 @@ const ImportForms = () => {
 		const failed = ( result?.failed || [] ).length;
 		const unsupported = ( result?.unsupported_fields || [] ).length;
 		return (
-			<div className="space-y-6">
-				<Container gap="sm" align="center" className="h-auto">
-					<div className="space-y-2">
-						<Title
-							tag="h3"
-							title={ __( 'Forms imported', 'sureforms' ) }
-							size="lg"
-						/>
-						<Text size={ 14 } weight={ 400 } color="secondary">
-							{ sprintf(
-								/* translators: 1: imported count, 2: source plugin title. */
-								_n(
-									'%1$d form from %2$s is now in SureForms, ready to publish, style, and connect.',
-									'%1$d forms from %2$s are now in SureForms, ready to publish, style, and connect.',
-									imported,
-									'sureforms'
-								),
-								imported,
-								selectedSource?.title || ''
-							) }
-						</Text>
-					</div>
-				</Container>
+			<div className="space-y-4">
+				<Header
+					title={ __( 'Forms imported', 'sureforms' ) }
+					description={ sprintf(
+						/* translators: 1: imported count, 2: source plugin title. */
+						_n(
+							'%1$d form from %2$s is now in SureForms, ready to publish, style, and connect.',
+							'%1$d forms from %2$s are now in SureForms, ready to publish, style, and connect.',
+							imported,
+							'sureforms'
+						),
+						imported,
+						selectedSource?.title || ''
+					) }
+				/>
 				<div className="space-y-2">
 					<Container className="flex items-center gap-1.5">
 						<CheckCircle2 className="size-4 text-icon-interactive" />
@@ -314,25 +306,17 @@ const ImportForms = () => {
 	}
 
 	return (
-		<div className="space-y-6">
-			<Container gap="sm" align="center" className="h-auto">
-				<div className="space-y-2">
-					<Title
-						tag="h3"
-						title={ __(
-							'Bring your existing forms with you',
-							'sureforms'
-						) }
-						size="lg"
-					/>
-					<Text size={ 14 } weight={ 400 } color="secondary">
-						{ __(
-							'We detected forms in another plugin. Pick one to import into SureForms.',
-							'sureforms'
-						) }
-					</Text>
-				</div>
-			</Container>
+		<div className="space-y-4">
+			<Header
+				title={ __(
+					'Bring your existing forms with you',
+					'sureforms'
+				) }
+				description={ __(
+					'We detected forms in another plugin. Pick one to import into SureForms.',
+					'sureforms'
+				) }
+			/>
 
 			<div
 				role="radiogroup"
@@ -363,10 +347,7 @@ const ImportForms = () => {
 			{ status === 'error' && (
 				<Alert
 					variant="warning"
-					title={ __(
-						'Import did not complete',
-						'sureforms'
-					) }
+					title={ __( 'Import did not complete', 'sureforms' ) }
 					content={ errorMsg }
 				/>
 			) }
@@ -377,10 +358,7 @@ const ImportForms = () => {
 				backProps={ { onClick: navigateToPreviousRoute } }
 				skipProps={ {
 					onClick: handleSkip,
-					text: __(
-						"I'll do this later",
-						'sureforms'
-					),
+					text: __( "I'll do this later", 'sureforms' ),
 				} }
 				continueProps={ {
 					onClick: status === 'error' ? handleRetry : handleImport,

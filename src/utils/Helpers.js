@@ -135,12 +135,11 @@ export const handleAddNewPost = async (
 };
 
 export const initiateAuth = async ( source = 'default' ) => {
+	// No manual X-WP-Nonce header: apiFetch's nonce middleware adds the REST
+	// nonce on every screen, whereas template_picker_nonce is only localized
+	// on the template-picker page and would be sent as "undefined" elsewhere.
 	const response = await apiFetch( {
 		path: `/sureforms/v1/initiate-auth?source=${ source }`,
-		headers: {
-			'Content-Type': 'application/json',
-			'X-WP-Nonce': srfm_admin.template_picker_nonce,
-		},
 		method: 'GET',
 	} );
 
@@ -194,12 +193,18 @@ export const generateDropDownOptions = (
 
 // Creates excerpt.
 export function trimTextToWords( text, wordLimit, ending = '...' ) {
+	// Callers pass block attributes straight in, and not every block that reaches
+	// them declares a label -- srfm/register and srfm/login carry a slug but no
+	// label attribute, so text arrives undefined. Always resolve to a string
+	// before splitting: this helper must never throw, whatever a block hands it.
+	const safeText = String( text ?? '' );
+
 	// Split the text into words
-	const words = text.split( /\s+/ );
+	const words = safeText.split( /\s+/ );
 
 	// If the text has fewer words than the limit, return it as is
 	if ( words.length <= wordLimit ) {
-		return text;
+		return safeText;
 	}
 
 	// Slice the array to the limit and join it back into a string and append the ending if there are more words than the limit
@@ -998,6 +1003,70 @@ export function activatePlugin( { plugin, event } ) {
 		},
 	} );
 }
+
+/**
+ * Install (when it is not there yet) and activate a recommended plugin,
+ * resolving only once it is really active.
+ *
+ * Promise-based sibling of handlePluginActionTrigger, which reports progress by
+ * writing into a button's innerText and reports install failure through
+ * alert(). Onboarding can use neither: it has to await the result to decide
+ * whether the wizard may advance, and a modal alert inside the wizard blocks
+ * the step. Both read the same statuses, nonces and AJAX actions.
+ *
+ * @param {Object}   plugin     Plugin descriptor, as srfm_admin.integrations holds it.
+ * @param {Function} onProgress Called with 'installing', then 'activating'.
+ * @return {Promise<void>} Resolves once active; rejects with the server's message.
+ */
+export const installAndActivatePlugin = async (
+	plugin,
+	onProgress = () => {}
+) => {
+	// Already active: nothing to do, and activating again would error.
+	if ( plugin?.status === 'Activated' ) {
+		return;
+	}
+
+	const post = async ( formData ) => {
+		const response = await apiFetch( {
+			url: srfm_admin.ajax_url,
+			method: 'POST',
+			body: formData,
+		} );
+
+		// Both handlers answer 200 with success:false on refusal, so the
+		// status code alone never tells us whether this worked.
+		if ( ! response?.success ) {
+			throw new Error(
+				response?.data?.errorMessage || response?.data?.message || ''
+			);
+		}
+
+		return response;
+	};
+
+	if ( getAction( plugin?.status ) === PLUGIN_ACTIONS.INSTALL ) {
+		onProgress( 'installing' );
+
+		const installData = new window.FormData();
+		installData.append( 'action', PLUGIN_ACTIONS.INSTALL );
+		installData.append( '_ajax_nonce', srfm_admin.plugin_installer_nonce );
+		installData.append( 'slug', plugin.slug );
+		await post( installData );
+	}
+
+	onProgress( 'activating' );
+
+	const activateData = new window.FormData();
+	activateData.append( 'action', PLUGIN_ACTIONS.ACTIVATE );
+	activateData.append(
+		'security',
+		srfm_admin.sfPluginManagerNonce ?? srfm_admin.sf_plugin_manager_nonce
+	);
+	activateData.append( 'init', plugin.path );
+	activateData.append( 'slug', plugin.slug );
+	await post( activateData );
+};
 
 export function handlePluginActionTrigger( { plugin, event } ) {
 	const action = getAction( plugin.status );

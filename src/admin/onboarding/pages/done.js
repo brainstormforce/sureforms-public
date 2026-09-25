@@ -1,17 +1,14 @@
-import { Container, Text, Title } from '@bsf/force-ui';
 import { __ } from '@wordpress/i18n';
-import { Check } from 'lucide-react';
 import { useState } from '@wordpress/element';
-import { Divider } from '../components';
+import { Divider, Header, FeatureList } from '../components';
 import NavigationButtons from '../components/navigation-buttons';
 import { useOnboardingState } from '../onboarding-state';
-import { useOnboardingNavigation } from '../hooks';
 import apiFetch from '@wordpress/api-fetch';
 
 const features = [
 	__( "Style your form to better match your site's design", 'sureforms' ),
 	__(
-		'Set up confirmation messages and email notifications for each entry',
+		'Set up confirmation messages and email notifications for each submission',
 		'sureforms'
 	),
 	__( 'Add spam protection to block common bot submissions', 'sureforms' ),
@@ -23,7 +20,6 @@ const features = [
 
 const Done = () => {
 	const [ onboardingState, actions ] = useOnboardingState();
-	const { navigateToPreviousRoute } = useOnboardingNavigation();
 	const [ isCompleting, setIsCompleting ] = useState( false );
 
 	const handleBuildForm = () => {
@@ -74,48 +70,27 @@ const Done = () => {
 	};
 
 	return (
-		<div className="space-y-6">
-			<Container gap="sm" align="center" className="h-auto">
-				<div className="space-y-2">
-					<Title
-						tag="h3"
-						title={ __( "You're All Set! 🚀", 'sureforms' ) }
-						size="lg"
-					/>
-					<Text size={ 14 } weight={ 400 } color="secondary">
-						{ __(
-							'Use our AI form builder to get started quickly, or build your form from scratch if you already know what you need. Your forms are ready to create, share, and connect with your site visitors.',
-							'sureforms'
-						) }
-					</Text>
-				</div>
-			</Container>
-			<div className="space-y-2">
-				<Text size={ 14 } weight={ 600 } color="primary">
-					{ __(
-						'Final Touches That Make a Difference:',
-						'sureforms'
-					) }
-				</Text>
-				{ features.map( ( feature, index ) => (
-					<Container
-						key={ index }
-						className="flex items-center gap-1.5"
-					>
-						<Check className="size-4 text-icon-interactive" />
-						<Text size={ 14 } weight={ 500 } color="label">
-							{ feature }
-						</Text>
-					</Container>
-				) ) }
-			</div>
+		<div className="space-y-4">
+			<Header
+				title={ __( "You're All Set! 🚀", 'sureforms' ) }
+				description={ __(
+					'Try AI if you want a quick head start or start from scratch if you have a clear idea in mind. Forms are ready to be created, shared, and connected to your audience.',
+					'sureforms'
+				) }
+			/>
+
+			<FeatureList
+				heading={ __(
+					'Final Touches That Make a Difference:',
+					'sureforms'
+				) }
+				items={ features }
+			/>
 
 			<Divider />
 
 			<NavigationButtons
-				backProps={ {
-					onClick: navigateToPreviousRoute,
-				} }
+				containerProps={ { justify: 'start' } }
 				continueProps={ {
 					onClick: handleBuildForm,
 					text: __( 'Build Your First Form', 'sureforms' ),

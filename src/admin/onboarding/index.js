@@ -5,4 +5,5 @@ export { default as EmailDelivery } from './pages/email-delivery';
 export { default as PremiumFeatures } from './pages/premium-features';
 export { default as UserDetails } from './pages/user-details';
 export { default as ImportForms } from './pages/import-forms';
+export { default as CacheConflict } from './pages/cache-conflict';
 export { default as Done } from './pages/done';
