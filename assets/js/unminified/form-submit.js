@@ -776,10 +776,10 @@ async function submitFormData( form ) {
 				: message,
 		} );
 
-		// showErrorMessage() writes the message with innerHTML, and a native fetch
-		// or JSON error is raw browser text ("Load failed", or a SyntaxError
-		// quoting an HTML challenge page). An empty message shows the translated
-		// generic error instead, as the Pro login handler does.
+		// Only server-authored messages are shown to the visitor. A native fetch or
+		// JSON error is raw browser text ("Load failed", or a SyntaxError about an
+		// HTML challenge page), so an empty message shows the translated generic
+		// error instead, as the Pro login handler does.
 		const isRawBrowserError =
 			e instanceof TypeError || e instanceof SyntaxError;
 
@@ -954,20 +954,23 @@ window.addEventListener( 'pageshow', ( event ) => {
  * Navigate to the confirmation URL.
  *
  * @param {string} url Redirect URL.
- * @return {boolean} True when the page will unload. False for a URL that only
- *                   changes the hash of the current page, which keeps it on screen.
+ * @return {boolean} True when the page will unload. False when it stays on
+ *                   screen: a URL that only changes the fragment of the current
+ *                   page (including an empty `#`), or a non-http(s) URL such as
+ *                   mailto: or tel:, which hands off to another app.
  */
 function redirectToUrl( url ) {
 	let leavesPage = true;
 	try {
 		const target = new URL( url, window.location.href );
 		const here = new URL( window.location.href );
-		leavesPage = ! (
-			target.hash &&
+		const isHttp = [ 'http:', 'https:' ].includes( target.protocol );
+		const isFragmentOnly =
+			String( url ).includes( '#' ) &&
 			target.origin === here.origin &&
 			target.pathname === here.pathname &&
-			target.search === here.search
-		);
+			target.search === here.search;
+		leavesPage = isHttp && ! isFragmentOnly;
 	} catch ( e ) {
 		// Not a parseable URL. The browser decides; assume it navigates.
 	}
@@ -1283,25 +1286,29 @@ async function handleFormSubmission(
 				// navigates. The old page can stay on screen for seconds, and a
 				// second tap would resubmit into a request the unload then cancels.
 				let fallbackTimer = 0;
+				// Back/forward cache restore: the page is back, so is the form.
+				const onPageShow = ( pageEvent ) => {
+					if ( pageEvent.persisted ) {
+						release();
+					}
+				};
 				const release = () => {
 					window.clearTimeout( fallbackTimer );
+					window.removeEventListener( 'pageshow', onPageShow );
 					loader.classList.remove( 'srfm-active' );
 					enableSubmitButton( form );
 				};
-				// Back/forward cache restore: the page is back, so is the form.
-				window.addEventListener(
-					'pageshow',
-					( pageEvent ) => {
-						if ( pageEvent.persisted ) {
-							release();
-						}
-					},
-					{ once: true }
-				);
+				window.addEventListener( 'pageshow', onPageShow );
 				// ponytail: fixed 15s fallback for a redirect that never unloads the
-				// page (e.g. a URL served as a file download). Make it configurable
-				// if a real slow redirect ever takes longer.
-				fallbackTimer = window.setTimeout( release, 15000 );
+				// page (e.g. a URL served as a file download, or a beforeunload
+				// prompt the visitor cancelled). Make it configurable if a real slow
+				// redirect ever takes longer. The page is still here, so failures
+				// count again; if the navigation does commit later, pagehide sets
+				// navigatingAway back before the unload.
+				fallbackTimer = window.setTimeout( () => {
+					navigatingAway = false;
+					release();
+				}, 15000 );
 			} else {
 				loader.classList.remove( 'srfm-active' );
 
