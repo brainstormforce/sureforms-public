@@ -1,11 +1,24 @@
-import { __ } from '@wordpress/i18n';
-import { useState, useRef, useEffect, memo } from '@wordpress/element';
-import { Button, Container, TextArea, toast, Tooltip } from '@bsf/force-ui';
+import { __, sprintf } from '@wordpress/i18n';
+import { useState, useRef, useEffect, useMemo, memo } from '@wordpress/element';
+import {
+	Button,
+	Container,
+	ProgressSteps,
+	TextArea,
+	toast,
+	Tooltip,
+} from '@bsf/force-ui';
 import { ArrowRight, Sparkles, MicOff, Mic } from 'lucide-react';
 import { applyFilters } from '@wordpress/hooks';
+import { speak } from '@wordpress/a11y';
 import { cn, srfmClassNames } from '@Utils/Helpers';
 import FormTypeSelector from '../components/FormTypeSelector.js';
 import CreditDetailsPopup from './CreditDetailsPopup.js';
+import StarterPrompts from './StarterPrompts.js';
+import {
+	getStarterPrompts,
+	MAX_PROMPT_LENGTH,
+} from '../utils/starter-prompts.js';
 import { useLocation } from 'react-router-dom';
 
 const VoiceToggleButton = memo( ( { isListening, toggleListening } ) => {
@@ -75,9 +88,26 @@ export default ( props ) => {
 	// 👇 added new state for banner visibility
 	const [ isFocused, setIsFocused ] = useState( false );
 
-	const handlePromptClick = ( prompt ) => {
+	const starters = useMemo( () => getStarterPrompts(), [] );
+	const [ selectedStarterId, setSelectedStarterId ] = useState( null );
+	// Prompt replaced by a starter card, kept so the user can undo.
+	const [ replacedPrompt, setReplacedPrompt ] = useState( null );
+	const [ showEmptyPromptHint, setShowEmptyPromptHint ] = useState( false );
+
+	const canGenerate = Boolean( text.trim() );
+
+	const setPrompt = ( prompt ) => {
 		setText( prompt );
 		setCharacterCount( prompt.length );
+	};
+
+	// Handles prompt edits made by typing or pasting.
+	const handlePromptClick = ( prompt ) => {
+		setPrompt( prompt );
+		setReplacedPrompt( null );
+		if ( ! prompt.trim() ) {
+			setSelectedStarterId( null );
+		}
 	};
 
 	function useQuery() {
@@ -144,8 +174,15 @@ export default ( props ) => {
 				// keep on appending the result to the textarea
 				const speechResult =
 					event.results[ event.results.length - 1 ][ 0 ].transcript;
+				setReplacedPrompt( null );
 				setText( ( prevText ) => {
-					const updatedText = prevText + speechResult;
+					const separator =
+						prevText && ! /\s$/.test( prevText ) ? ' ' : '';
+					const updatedText = (
+						prevText +
+						separator +
+						speechResult.trim()
+					).slice( 0, MAX_PROMPT_LENGTH );
 					setCharacterCount( updatedText.length );
 					return updatedText;
 				} );
@@ -192,7 +229,7 @@ export default ( props ) => {
 			},
 			{
 				title: __(
-					'Job application form for "Marketing Manager" with resume upload',
+					'Job application form for "Marketing Manager" with a link to their resume or LinkedIn profile',
 					'sureforms'
 				),
 			},
@@ -284,17 +321,26 @@ export default ( props ) => {
 		return () => clearInterval( interval );
 	}, [ textAreaPlaceholder ] );
 
-	// Show learn tip tooltips sequentially when redirected from Learn section.
+	// Show the first learn tip when redirected from Learn section.
 	useEffect( () => {
 		if ( source === 'learn' ) {
 			setShowLearnTip( true );
-			const hideTimer = setTimeout( () => {
-				setShowLearnTip( false );
-				setShowGenerateTip( true );
-			}, 5000 );
-			return () => clearTimeout( hideTimer );
 		}
 	}, [ source ] );
+
+	// Move to the generate tip once the prompt has text.
+	useEffect( () => {
+		if ( showLearnTip && canGenerate ) {
+			setShowLearnTip( false );
+			setShowGenerateTip( true );
+		}
+	}, [ showLearnTip, canGenerate ] );
+
+	useEffect( () => {
+		if ( canGenerate ) {
+			setShowEmptyPromptHint( false );
+		}
+	}, [ canGenerate ] );
 
 	// Auto-dismiss generate tip after 5 seconds.
 	useEffect( () => {
@@ -320,183 +366,334 @@ export default ( props ) => {
 	const finalFormCreationCountRemaining =
 		isRegistered && formCreationleft > 20 ? 20 : formCreationleft;
 
-	const is_pro_active =
-		srfm_admin?.is_pro_active && srfm_admin?.is_pro_license_active;
+	const handleStarterToggle = ( starter ) => {
+		// Stop voice input so it doesn't append to the starter prompt.
+		handleTyping();
+
+		if ( selectedStarterId === starter.id ) {
+			setSelectedStarterId( null );
+			setReplacedPrompt( null );
+			// Only clear the prompt if the user hasn't edited it.
+			if ( text === starter.prompt ) {
+				setPrompt( '' );
+			}
+			speak( __( 'Example removed.', 'sureforms' ) );
+			return;
+		}
+
+		const isStarterText =
+			! text.trim() || starters.some( ( item ) => item.prompt === text );
+
+		setReplacedPrompt( isStarterText ? null : text );
+		setPrompt( starter.prompt );
+		setSelectedStarterId( starter.id );
+		speak(
+			sprintf(
+				/* translators: %s: starter example title, e.g. "Contact form". */
+				__(
+					'%s example added to the prompt. Edit it or press Generate.',
+					'sureforms'
+				),
+				starter.title
+			)
+		);
+	};
+
+	const handleUndoReplace = () => {
+		setPrompt( replacedPrompt ?? '' );
+		setSelectedStarterId( null );
+		setReplacedPrompt( null );
+		document.getElementById( 'textarea' )?.focus();
+	};
+
+	// Guided steps: 1 Pick, 2 Customize, 3 Generate.
+	const isUntouchedStarter =
+		!! selectedStarterId &&
+		starters.some(
+			( item ) => item.id === selectedStarterId && item.prompt === text
+		);
+	let currentStep = 3;
+	if ( ! canGenerate ) {
+		currentStep = 1;
+	} else if ( isUntouchedStarter ) {
+		currentStep = 2;
+	}
+
+	let counterColorClass = 'text-field-helper';
+	if ( characterCount >= MAX_PROMPT_LENGTH ) {
+		counterColorClass = 'text-support-error';
+	} else if ( characterCount >= MAX_PROMPT_LENGTH * 0.9 ) {
+		counterColorClass = 'text-badge-color-yellow';
+	}
 
 	return (
 		<Container
-			className={ cn(
-				'gap-0',
-				showCreditDetailsPopup &&
-					! is_pro_active &&
-					'h-screen overflow-y-auto'
-			) }
+			className="gap-0 h-screen overflow-y-auto"
 			direction="column"
 		>
 			<Container.Item className="w-full">
 				<Container
-					className={ cn(
-						'p-8 gap-6 mx-auto w-full bg-background-secondary',
-						! is_pro_active ? 'min-h-screen pb-16' : 'h-screen'
-					) }
+					className="p-4 sm:p-8 gap-6 mx-auto w-full min-h-screen pb-16 bg-background-secondary"
 					direction="column"
 					justify="center"
 					align="center"
 				>
-					<Container.Item>
+					<Container.Item className="w-full">
 						<Container
 							direction="column"
 							align="center"
 							justify="center"
-							className="gap-6"
+							className="gap-6 w-full"
 						>
-							<Container.Item>
-								<span className="text-3xl font-semibold text-text-primary">
+							<Container.Item className="flex flex-col items-center gap-2 text-center">
+								<h1 className="m-0 text-3xl font-semibold text-text-primary">
 									{ __(
-										'Describe the form that you want',
+										'What form should we build?',
 										'sureforms'
 									) }
-								</span>
+								</h1>
+								<p className="m-0 text-base font-normal text-text-secondary">
+									{ __(
+										'Start with an example, or describe your own form below.',
+										'sureforms'
+									) }
+								</p>
 							</Container.Item>
 							<Container.Item>
-								<div className="w-full min-w-[750px] lg:min-w-[900px] mx-auto p-2 relative">
-									{ showLearnTip && (
-										<div className="absolute top-1/2 -translate-y-1/2 -right-2 translate-x-full z-[999999] pointer-events-none">
-											<div className="absolute top-1/2 -translate-y-1/2 -left-1 w-2 h-2 bg-tooltip-background-dark rotate-45" />
-											<div className="bg-tooltip-background-dark text-text-on-color text-sm px-3 py-2 rounded-md shadow-lg whitespace-nowrap">
-												{ __(
-													'Describe what kind of form you want',
-													'sureforms'
-												) }
+								<ProgressSteps
+									completedVariant="number"
+									currentStep={ currentStep }
+									size="sm"
+									type="inline"
+									variant="number"
+									lineClassName="w-12 sm:w-20"
+								>
+									<ProgressSteps.Step
+										labelText={ __( 'Pick', 'sureforms' ) }
+									/>
+									<ProgressSteps.Step
+										labelText={ __(
+											'Customize',
+											'sureforms'
+										) }
+									/>
+									<ProgressSteps.Step
+										labelText={ __(
+											'Generate',
+											'sureforms'
+										) }
+									/>
+								</ProgressSteps>
+							</Container.Item>
+							<Container.Item className="w-full">
+								<div className="w-full max-w-[750px] lg:max-w-[900px] mx-auto p-2 flex flex-col gap-4">
+									<StarterPrompts
+										starters={ starters }
+										selectedStarterId={ selectedStarterId }
+										onToggle={ handleStarterToggle }
+									/>
+									<div className="relative">
+										{ showLearnTip && (
+											<div className="absolute top-1/2 -translate-y-1/2 -right-2 translate-x-full z-[999999] pointer-events-none">
+												<div className="absolute top-1/2 -translate-y-1/2 -left-1 w-2 h-2 bg-tooltip-background-dark rotate-45" />
+												<div className="bg-tooltip-background-dark text-text-on-color text-sm px-3 py-2 rounded-md shadow-lg whitespace-nowrap">
+													{ __(
+														'Pick an example or describe your form',
+														'sureforms'
+													) }
+												</div>
+											</div>
+										) }
+										<div
+											className="relative rounded-lg shadow-lg p-[2px]"
+											style={ {
+												background:
+													'linear-gradient(180deg, #FF5811 0%, #8B2E16 5%, #000000 10%, #000000 100%)',
+											} }
+										>
+											<div className="relative bg-white rounded-[calc(0.5rem-1px)]">
+												<TextArea
+													aria-label={ __(
+														'Describe the form you want to create',
+														'sureforms'
+													) }
+													aria-describedby="srfm-ai-prompt-counter"
+													placeholder={
+														displayedPlaceholder
+													}
+													id="textarea"
+													value={ text }
+													size="lg"
+													className={ cn(
+														'border-none focus:[box-shadow:none] focus:outline-none resize-none w-full min-h-[140px] max-h-[300px] text-field-placeholder pt-3 px-4 pb-14 rounded-[calc(0.5rem-1px)]',
+														characterCount > 0 &&
+															'text-text-primary'
+													) }
+													onChange={ ( e ) => {
+														handlePromptClick( e );
+													} }
+													onInput={ handleTyping }
+													onFocus={ () =>
+														setIsFocused( true )
+													}
+													onBlur={ () =>
+														setIsFocused( false )
+													}
+													maxLength={
+														MAX_PROMPT_LENGTH
+													}
+												/>
+
+												<Container
+													className="flex-wrap gap-y-2 py-2 px-4"
+													align="center"
+													justify="between"
+												>
+													<Container.Item className="flex flex-row gap-4 items-center">
+														<FormTypeSelector
+															formTypeObj={
+																formTypeObj
+															}
+															setFormTypeObj={
+																setFormTypeObj
+															}
+															formType={ formType }
+															setFormType={
+																setFormType
+															}
+															setformLayout={
+																setformLayout
+															}
+														/>
+													</Container.Item>
+													<Container.Item className="ml-auto gap-3 flex flex-row items-center">
+														<span
+															id="srfm-ai-prompt-counter"
+															className={ cn(
+																'text-xs font-normal tabular-nums',
+																counterColorClass
+															) }
+														>
+															{ sprintf(
+																/* translators: 1: current prompt length, 2: maximum prompt length. */
+																__(
+																	'%1$d/%2$d',
+																	'sureforms'
+																),
+																characterCount,
+																MAX_PROMPT_LENGTH
+															) }
+														</span>
+														<VoiceToggleButton
+															isListening={
+																isListening
+															}
+															toggleListening={
+																toggleListening
+															}
+														/>
+														<div className="relative">
+															{ showGenerateTip && (
+																<div className="absolute top-1/2 -translate-y-1/2 -right-2 translate-x-full z-[999999] pointer-events-none">
+																	<div className="absolute top-1/2 -translate-y-1/2 -left-1 w-2 h-2 bg-tooltip-background-dark rotate-45" />
+																	<div className="bg-tooltip-background-dark text-text-on-color text-sm px-3 py-2 rounded-md shadow-lg whitespace-nowrap">
+																		{ __(
+																			'Click to generate the form',
+																			'sureforms'
+																		) }
+																	</div>
+																</div>
+															) }
+															<Button
+																className={ cn(
+																	'gap-1',
+																	! canGenerate &&
+																		'bg-button-disabled hover:bg-button-disabled outline-button-disabled hover:outline-button-disabled text-text-disabled shadow-none cursor-not-allowed'
+																) }
+																icon={
+																	<Sparkles className="w-4 h-4" />
+																}
+																iconPosition="left"
+																size="md"
+																variant="primary"
+																aria-disabled={
+																	! canGenerate
+																}
+																aria-describedby={
+																	showEmptyPromptHint
+																		? 'srfm-ai-empty-prompt-hint'
+																		: undefined
+																}
+																onClick={ () => {
+																	if (
+																		! canGenerate
+																	) {
+																		setShowEmptyPromptHint(
+																			true
+																		);
+																		speak(
+																			__(
+																				'Describe your form or pick an example to continue.',
+																				'sureforms'
+																			)
+																		);
+																		document
+																			.getElementById(
+																				'textarea'
+																			)
+																			?.focus();
+																		return;
+																	}
+
+																	handleCreateAiForm(
+																		text,
+																		[],
+																		true
+																	);
+																} }
+															>
+																{ __(
+																	'Generate',
+																	'sureforms'
+																) }
+															</Button>
+														</div>
+													</Container.Item>
+												</Container>
 											</div>
 										</div>
+									</div>
+									{ showEmptyPromptHint && ! canGenerate && (
+										<p
+											id="srfm-ai-empty-prompt-hint"
+											className="m-0 text-sm text-text-secondary"
+										>
+											{ __(
+												'Describe your form or pick an example to continue.',
+												'sureforms'
+											) }
+										</p>
 									) }
-									<div
-										className="relative rounded-lg shadow-lg p-[2px]"
-										style={ {
-											background:
-												'linear-gradient(180deg, #FF5811 0%, #8B2E16 5%, #000000 10%, #000000 100%)',
-										} }
-									>
-										<div className="relative bg-white rounded-[calc(0.5rem-1px)]">
-											<TextArea
-												aria-label={ __(
-													'Describe the form you want to create',
+									{ replacedPrompt !== null && (
+										<Container
+											align="center"
+											className="gap-2 text-sm text-text-secondary"
+										>
+											<span>
+												{ __(
+													'Your previous prompt was replaced.',
 													'sureforms'
 												) }
-												placeholder={
-													displayedPlaceholder
-												}
-												id="textarea"
-												value={ text }
-												size="lg"
-												className={ cn(
-													'border-none focus:[box-shadow:none] focus:outline-none resize-none w-full min-h-[140px] max-h-[300px] text-field-placeholder pt-3 px-4 pb-14 rounded-[calc(0.5rem-1px)]',
-													characterCount > 0 &&
-														'text-text-primary'
-												) }
-												onChange={ ( e ) => {
-													handlePromptClick( e );
-												} }
-												onInput={ handleTyping }
-												onFocus={ () => {
-													setIsFocused( true );
-													if ( showLearnTip ) {
-														setShowLearnTip(
-															false
-														);
-														setShowGenerateTip(
-															true
-														);
-													}
-												} }
-												onBlur={ () =>
-													setIsFocused( false )
-												}
-												maxLength={ 2000 }
-											/>
-
-											<Container
-												className="flex-wrap py-2 px-4"
-												align="center"
-												justify="between"
+											</span>
+											<Button
+												size="xs"
+												variant="link"
+												onClick={ handleUndoReplace }
 											>
-												<Container.Item className="flex flex-row gap-4 items-center">
-													<FormTypeSelector
-														formTypeObj={
-															formTypeObj
-														}
-														setFormTypeObj={
-															setFormTypeObj
-														}
-														formType={ formType }
-														setFormType={
-															setFormType
-														}
-														setformLayout={
-															setformLayout
-														}
-													/>
-												</Container.Item>
-												<Container.Item className="gap-4 flex flex-row">
-													<VoiceToggleButton
-														isListening={
-															isListening
-														}
-														toggleListening={
-															toggleListening
-														}
-													/>
-													<div className="relative">
-														{ showGenerateTip && (
-															<div className="absolute top-1/2 -translate-y-1/2 -right-2 translate-x-full z-[999999] pointer-events-none">
-																<div className="absolute top-1/2 -translate-y-1/2 -left-1 w-2 h-2 bg-tooltip-background-dark rotate-45" />
-																<div className="bg-tooltip-background-dark text-text-on-color text-sm px-3 py-2 rounded-md shadow-lg whitespace-nowrap">
-																	{ __(
-																		'Click to generate the form',
-																		'sureforms'
-																	) }
-																</div>
-															</div>
-														) }
-														<Button
-															className="gap-1"
-															icon={
-																<Sparkles className="w-4 h-4" />
-															}
-															iconPosition="left"
-															size="md"
-															variant="primary"
-															onClick={ () => {
-																if (
-																	! text ||
-																	! text.trim()
-																) {
-																	const textArea =
-																		document.getElementById(
-																			'textarea'
-																		);
-																	textArea.focus();
-																	return;
-																}
-
-																handleCreateAiForm(
-																	text,
-																	[],
-																	true
-																);
-															} }
-														>
-															{ __(
-																'Generate',
-																'sureforms'
-															) }
-														</Button>
-													</div>
-												</Container.Item>
-											</Container>
-										</div>
-									</div>
+												{ __( 'Undo', 'sureforms' ) }
+											</Button>
+										</Container>
+									) }
 								</div>
 							</Container.Item>
 						</Container>
