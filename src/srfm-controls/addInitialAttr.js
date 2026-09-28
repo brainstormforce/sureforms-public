@@ -65,6 +65,20 @@ const addInitialAttr = ( ChildComponent ) => {
 					attributeObject.slug = '';
 				}
 
+				// Deep-clone array attributes so the duplicated block does not
+				// share the same array references as the original. Without this,
+				// mutations on one block's arrays (e.g. options in multi-choice)
+				// would silently affect the other block.
+				Object.entries( attributes ).forEach( ( [ key, value ] ) => {
+					if ( Array.isArray( value ) ) {
+						attributeObject[ key ] = value.map( ( item ) =>
+							typeof item === 'object' && item !== null
+								? { ...item }
+								: item
+						);
+					}
+				} );
+
 				// Only copy conditional logic if pro is active (action is registered).
 				if ( hasAction( 'srfm.duplicateBlock' ) ) {
 					doAction( 'srfm.duplicateBlock', block_id, newBlockId );
