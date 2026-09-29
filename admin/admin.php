@@ -12,6 +12,7 @@ use SRFM\Inc\AI_Form_Builder\AI_Helper;
 use SRFM\Inc\Client_Logger;
 use SRFM\Inc\Database\Register;
 use SRFM\Inc\Database\Tables\Entries;
+use SRFM\Inc\Email_Delivery\Mailer;
 use SRFM\Inc\Email_Delivery\Status as Email_Delivery_Status;
 use SRFM\Inc\Email_Delivery\Suremail_Adapter;
 use SRFM\Inc\Generate_Form_Markup;
@@ -619,10 +620,11 @@ class Admin {
 		// date automatically (see BSF_Analytics_Events::track()) and dedupes per
 		// event name, matching the sibling notice's telemetry.
 		$events = [
-			'edit_form'     => 'form_setup_widget_edit_form',
-			'edit_thankyou' => 'form_setup_widget_edit_thankyou',
-			'set_up_email'  => 'form_setup_widget_set_up_email',
-			'view_form'     => 'form_setup_widget_view_form',
+			'edit_form'      => 'form_setup_widget_edit_form',
+			'edit_thankyou'  => 'form_setup_widget_edit_thankyou',
+			'set_up_email'   => 'form_setup_widget_set_up_email',
+			'view_form'      => 'form_setup_widget_view_form',
+			'email_delivery' => 'form_setup_widget_email_delivery',
 		];
 
 		if ( isset( $events[ $action ] ) ) {
@@ -704,6 +706,32 @@ class Admin {
 			],
 		];
 
+		// Whether those notifications will actually be sent. A form imported by a
+		// site builder is often live before any mailer is set up, which is the
+		// owner this widget exists for. The status title is the label; a button
+		// only when there is something to do.
+		$email_delivery = Email_Delivery_Status::get_status();
+		$delivery_row   = [
+			'label' => Helper::get_string_value( $email_delivery['title'] ?? '' ),
+			'cta'   => '',
+			'url'   => '',
+			'event' => 'email_delivery',
+		];
+		$delivery_state = Helper::get_string_value( $email_delivery['state'] ?? '' );
+
+		if ( 'not_configured' === $delivery_state ) {
+			// The Form Checks panel there installs SureMail in one click.
+			$delivery_row['cta'] = __( 'Set up email delivery', 'sureforms' );
+			$delivery_row['url'] = admin_url( 'admin.php?page=sureforms_menu' );
+		} elseif ( ! empty( $email_delivery['action']['url'] ) ) {
+			$delivery_row['cta'] = Helper::get_string_value( $email_delivery['action']['label'] ?? '' );
+			$delivery_row['url'] = Helper::get_string_value( $email_delivery['action']['url'] );
+		}
+
+		if ( '' !== $delivery_row['label'] ) {
+			$rows[] = $delivery_row;
+		}
+
 		// Fall back to a generic label for an untitled form so the heading never
 		// renders "Finish setting up " with a dangling space.
 		$card_title = '' !== trim( (string) $card['title'] ) ? $card['title'] : __( 'your form', 'sureforms' );
@@ -728,7 +756,9 @@ class Admin {
 				<?php foreach ( $rows as $row ) { ?>
 					<li class="srfm-setup-checklist__step">
 						<span class="srfm-setup-checklist__label"><?php echo esc_html( $row['label'] ); ?></span>
-						<a class="srfm-setup-checklist__cta" data-srfm-event="<?php echo esc_attr( $row['event'] ); ?>" href="<?php echo esc_url( $row['url'] ); ?>" target="_blank" rel="noopener noreferrer"><?php echo esc_html( $row['cta'] ); ?></a>
+						<?php if ( '' !== $row['cta'] && '' !== $row['url'] ) { ?>
+							<a class="srfm-setup-checklist__cta" data-srfm-event="<?php echo esc_attr( $row['event'] ); ?>" href="<?php echo esc_url( $row['url'] ); ?>" target="_blank" rel="noopener noreferrer"><?php echo esc_html( $row['cta'] ); ?></a>
+						<?php } ?>
 					</li>
 				<?php } ?>
 			</ul>
@@ -2890,7 +2920,17 @@ JS;
 			'notification_error'          => [
 				'contact_support' => 'notification_failure_notice_cta',
 				'help_me_fix'     => 'notification_failure_notice_guide',
+				'view_logs'       => 'notification_failure_notice_logs',
 				'dismissed'       => 'notification_failure_notice_dismiss',
+			],
+			// Email delivery advice (#3150), dashboard panel only. Ignore goes through
+			// srfm_dismiss_action_item, which records its own dismiss event.
+			'email_delivery_setup'        => [
+				'setup_email_delivery' => 'email_setup_notice_install',
+				'open_suremail'        => 'email_setup_notice_connect',
+			],
+			'email_delivery_limited'      => [
+				'open_suremail' => 'email_limited_notice_cta',
 			],
 			'integration_error'           => [
 				'contact_support' => 'integration_failure_notice_cta',
@@ -3703,6 +3743,15 @@ JS;
 			$warnings = $this->get_first_party_action_items();
 		}
 
+		// Email delivery advice, outside the logging gate: it is about the site's
+		// setup, not about recorded failures. On the SureForms dashboard only --
+		// an owner who has not set up email yet needs telling where they manage
+		// forms, not on every admin screen -- which also keeps the form lookup
+		// behind it off every other page load.
+		if ( Helper::validate_request_context( 'sureforms_menu', 'page' ) ) {
+			$warnings = array_merge( $warnings, $this->get_email_delivery_action_items() );
+		}
+
 		$this->track_action_item_impressions( $warnings );
 
 		/**
@@ -3933,6 +3982,14 @@ CSS;
 			],
 		];
 
+		// With SureMail sending, the reason for the failure is in its email log --
+		// a closer next step than a general guide.
+		if ( 'suremail' === Mailer::get_active()['slug'] ) {
+			$categories['notification']['guide']        = Suremail_Adapter::logs_url();
+			$categories['notification']['guide_label']  = __( 'View SureMail Logs', 'sureforms' );
+			$categories['notification']['guide_action'] = 'view_logs';
+		}
+
 		// A form that does not store entries has no saved copy to fall back on: the
 		// email that failed was the only record of that submission. "The entry was
 		// saved" would be false, and the fix differs, so say both.
@@ -3984,9 +4041,9 @@ CSS;
 			// without a guide needs no branch in either renderer, and neither does
 			// an item contributed through srfm_action_items.
 			if ( ! empty( $copy['guide'] ) ) {
-				$warning['guide_label']  = __( 'Help Me Fix', 'sureforms' );
+				$warning['guide_label']  = $copy['guide_label'] ?? __( 'Help Me Fix', 'sureforms' );
 				$warning['guide_url']    = $copy['guide'];
-				$warning['guide_action'] = 'help_me_fix';
+				$warning['guide_action'] = $copy['guide_action'] ?? 'help_me_fix';
 			}
 
 			$warnings[] = $warning;
@@ -4020,6 +4077,105 @@ CSS;
 		}
 
 		return $warnings;
+	}
+
+	/**
+	 * Email delivery advice for the Form Checks panel.
+	 *
+	 * Shown only when a published form actually sends a notification: a site
+	 * with no notifications has nothing for email delivery to break. Advisory and
+	 * dismissible -- an actual failure is reported by notification_error, which
+	 * is not. Hidden with promotions, since the fix is installing SureMail.
+	 *
+	 * @since x.x.x
+	 * @return array<int,array<string,mixed>>
+	 */
+	private function get_email_delivery_action_items() {
+		if ( Helper::hide_promotions() ) {
+			return [];
+		}
+
+		$status = Email_Delivery_Status::get_status();
+		$state  = Helper::get_string_value( $status['state'] ?? '' );
+		$ids    = [
+			'not_configured'         => 'email_delivery_setup',
+			'suremail_no_connection' => 'email_delivery_setup',
+			'limited'                => 'email_delivery_limited',
+		];
+
+		if ( ! isset( $ids[ $state ] ) ) {
+			return [];
+		}
+
+		$item_id   = $ids[ $state ];
+		$dismissed = Helper::get_array_value( Helper::get_srfm_option( 'dismissed_action_items', [] ) );
+
+		if ( in_array( $item_id, $dismissed, true ) || ! $this->has_form_with_active_notification() ) {
+			return [];
+		}
+
+		$action = Helper::get_array_value( $status['action'] ?? [] );
+		$item   = [
+			'id'          => $item_id,
+			'status'      => 'warning',
+			'title'       => Helper::get_string_value( $status['title'] ?? '' ),
+			'message'     => Helper::get_string_value( $status['message'] ?? '' ),
+			'cta_label'   => Helper::get_string_value( $action['label'] ?? '' ),
+			'cta_url'     => Helper::get_string_value( $action['url'] ?? '' ),
+			'cta_action'  => 'open_suremail',
+			'dismissible' => true,
+		];
+
+		// SureMail not active yet. The link is WordPress's own installer, which
+		// works in both renderers without JavaScript; the dashboard panel turns
+		// it into a one-click install when the user may install plugins.
+		if ( 'not_configured' === $state ) {
+			$item['cta_url']    = 'Installed' === ( $status['suremail']['plugin_status'] ?? '' )
+				? admin_url( 'plugins.php?plugin_status=inactive' )
+				: admin_url( 'plugin-install.php?s=SureMail&tab=search&type=term' );
+			$item['cta_action'] = 'setup_email_delivery';
+
+			if ( ! empty( $status['can_install'] ) ) {
+				$item['cta_install'] = 'sure_mails';
+			}
+		}
+
+		return '' !== $item['cta_label'] && '' !== $item['cta_url'] ? [ $item ] : [];
+	}
+
+	/**
+	 * Whether any published form sends at least one email notification.
+	 *
+	 * @since x.x.x
+	 * @return bool
+	 */
+	private function has_form_with_active_notification() {
+		$form_ids = get_posts(
+			[
+				'post_type'      => SRFM_FORMS_POST_TYPE,
+				'post_status'    => 'publish',
+				'posts_per_page' => 50,
+				'fields'         => 'ids',
+				'no_found_rows'  => true,
+				'meta_key'       => '_srfm_email_notification', // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- SureForms dashboard only, capped at 50.
+			]
+		);
+
+		foreach ( $form_ids as $form_id ) {
+			$notifications = get_post_meta( Helper::get_integer_value( $form_id ), '_srfm_email_notification', true );
+
+			if ( ! is_array( $notifications ) ) {
+				continue;
+			}
+
+			foreach ( $notifications as $notification ) {
+				if ( is_array( $notification ) && ! empty( $notification['status'] ) ) {
+					return true;
+				}
+			}
+		}
+
+		return false;
 	}
 
 	/**
@@ -5051,7 +5207,7 @@ CSS;
 	 * @return bool False when the id is not dismissible.
 	 */
 	private function dismiss_action_item( $item_id ) {
-		if ( ! in_array( $item_id, [ 'caching_plugin' ], true ) ) {
+		if ( ! in_array( $item_id, [ 'caching_plugin', 'email_delivery_setup', 'email_delivery_limited' ], true ) ) {
 			return false;
 		}
 

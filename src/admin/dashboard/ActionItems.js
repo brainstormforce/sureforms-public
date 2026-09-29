@@ -1,5 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import { useState, useMemo } from '@wordpress/element';
+import apiFetch from '@wordpress/api-fetch';
 import { Button, Label } from '@bsf/force-ui';
 import {
 	CircleCheck,
@@ -8,6 +9,7 @@ import {
 	ChevronDown,
 } from 'lucide-react';
 import safeUrl from './utils/safeUrl';
+import { installAndActivatePlugin } from '@Utils/Helpers';
 
 /**
  * Dashboard panel listing what SureForms has checked on this site.
@@ -42,6 +44,8 @@ export default () => {
 	// just this panel.
 	const [ dismissed, setDismissed ] = useState( [] );
 	const [ open, setOpen ] = useState( true );
+	// Item id and installer stage while a one-click install runs.
+	const [ installing, setInstalling ] = useState( { id: '', stage: '' } );
 
 	const items = useMemo( () => {
 		const all =
@@ -111,12 +115,16 @@ export default () => {
 					name: item.cta_action,
 					label: item.cta_label,
 					url: safeUrl( item.cta_url ),
+					install: item.cta_install || '',
 					// A mailto must reach the mail client, not a browser tab --
 					// there is no document to open, so _blank leaves a blank one
 					// behind. srfm_action_items is public, so an http(s) item can
 					// still arrive. Matched case-insensitively: a MAILTO: from the
 					// filter would otherwise get target="_blank".
-					external: ! /^mailto:/i.test( item.cta_url ),
+					// The plugin installer is part of wp-admin, not a page to keep
+					// beside the dashboard.
+					external:
+							! item.cta_install && ! /^mailto:/i.test( item.cta_url ),
 				},
 			  ]
 			: [] ),
@@ -129,6 +137,52 @@ export default () => {
 			// the allowlist that has to accept it.
 			button: action,
 		} );
+
+	/**
+	 * Install and activate a plugin in place, then continue to its setup.
+	 *
+	 * The link itself points at WordPress's installer, so it still works if any
+	 * of this fails: every failure path falls back to following it.
+	 *
+	 * @param {Object} item   Action item.
+	 * @param {Object} action Resolved action.
+	 * @return {Function} Click handler.
+	 */
+	const handleInstall = ( item, action ) => async ( event ) => {
+		const plugin = srfm_admin?.integrations?.[ action.install ];
+		if ( ! plugin || installing.id ) {
+			return;
+		}
+
+		event.preventDefault();
+		handleFix( item, action.name )();
+		setInstalling( { id: item.id, stage: 'installing' } );
+
+		try {
+			await installAndActivatePlugin( plugin, ( stage ) =>
+				setInstalling( { id: item.id, stage } )
+			);
+			// SureMail skips its own welcome redirect for an AJAX activation, so
+			// ask where its setup lives now that it is loaded.
+			const status = await apiFetch( {
+				path: '/sureforms/v1/email-delivery/status',
+			} );
+			window.location.href =
+				safeUrl( status?.action?.url || status?.links?.setup ) ||
+				action.url;
+		} catch ( error ) {
+			window.location.href = action.url;
+		}
+	};
+
+	const labelFor = ( item, action ) => {
+		if ( installing.id !== item.id || ! action.install ) {
+			return action.label;
+		}
+		return 'activating' === installing.stage
+			? __( 'Activating SureMail…', 'sureforms' )
+			: __( 'Installing SureMail…', 'sureforms' );
+	};
 
 	return (
 		<div className="w-full bg-background-primary border-0.5 border-solid rounded-xl border-border-subtle p-3 gap-2 shadow-sm-blur-1">
@@ -215,10 +269,15 @@ export default () => {
 											// "undefined" as the button and is
 											// rejected by the allowlist anyway.
 											{ ...( action.name && {
-												onClick: handleFix(
-													item,
-													action.name
-												),
+												onClick: action.install
+													? handleInstall(
+														item,
+														action
+													  )
+													: handleFix(
+														item,
+														action.name
+													  ),
 											} ) }
 											// Underlined on hover only, matching
 											// Quick Access below it. Three
@@ -231,7 +290,7 @@ export default () => {
 													: ''
 											}` }
 										>
-											{ action.label }
+											{ labelFor( item, action ) }
 										</Button>
 									) ) }
 								</div>
