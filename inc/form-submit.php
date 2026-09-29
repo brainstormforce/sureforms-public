@@ -687,7 +687,8 @@ class Form_Submit {
 		// If so, send email and do not store entries.
 		if ( $gdpr && $do_not_store_entries ) {
 			// Send email before early return. No entry is created in this path so {entry_id} will be empty — that is expected.
-			$send_email = $this->send_email( $id, $submission_data, $form_data );
+			// The email is the only copy of this submission, so a failure is recorded as such.
+			$send_email = $this->send_email( $id, $submission_data, $form_data, [ 'entry_saved' => false ] );
 			if ( $send_email ) {
 				$emails = $send_email['emails'];
 			}
@@ -1040,10 +1041,14 @@ class Form_Submit {
 	 * @param string        $id Form ID.
 	 * @param array<mixed>  $submission_data Submission data.
 	 * @param array<string> $form_data Request object or array containing form data.
+	 * @param array<mixed>  $context   Optional. 'entry_saved' => false when the form does not store entries,
+	 *                                 so a failed notification is the loss of the submission itself.
 	 * @since 0.0.1
+	 * @since x.x.x Added $context.
 	 * @return array<mixed> Array containing the response data.
 	 */
-	public static function send_email( $id, $submission_data, $form_data = [] ) {
+	public static function send_email( $id, $submission_data, $form_data = [], $context = [] ) {
+		$entry_saved        = ! is_array( $context ) || ! isset( $context['entry_saved'] ) || (bool) $context['entry_saved'];
 		$email_notification = get_post_meta( intval( $id ), '_srfm_email_notification' );
 		$is_mail_sent       = false;
 		// Any recipient failing counts as a failure for the whole submission, so
@@ -1133,7 +1138,7 @@ class Form_Submit {
 							// Outside the logging guard below: this is the site's
 							// current email state, which the owner needs to see
 							// even with debug logging switched off.
-							Email_Delivery_Status::record_outcome( false, intval( $id ), '' !== $email_report ? 'mailer_error' : $rejection['code'] );
+							Email_Delivery_Status::record_outcome( false, intval( $id ), '' !== $email_report ? 'mailer_error' : $rejection['code'], $entry_saved );
 						}
 
 						if ( is_int( $log_key ) ) {
@@ -1178,18 +1183,21 @@ class Form_Submit {
 											'type'       => 'message',
 											'form_id'    => intval( $id ),
 											'form_title' => Helper::get_string_value( get_the_title( intval( $id ) ) ),
-											'message'    => 'Email notification failed to send. ' . $reason,
+											'message'    => 'Email notification failed to send. ' . $reason . ( $entry_saved ? '' : ' The form does not store entries, so this submission was not saved.' ),
 										]
 									)
 								);
 
-								// Its own category: the entry saved, so this is not a
-								// submission failure. The site owner is simply not being
-								// told about entries they did receive.
+								// Its own category: the submission reached PHP, so this is
+								// not a submission failure. The site owner is not being
+								// told about entries they received -- or, on a form that
+								// does not store entries, has lost this one outright,
+								// which the notice has to say.
 								Client_Logger::record_failure(
 									'notification',
 									intval( $id ),
-									Helper::get_string_value( get_the_title( intval( $id ) ) )
+									Helper::get_string_value( get_the_title( intval( $id ) ) ),
+									[ 'entry_saved' => $entry_saved ]
 								);
 							}
 						}

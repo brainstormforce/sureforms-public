@@ -1156,6 +1156,73 @@ class Test_Form_Submit extends SRFM_Unit_Test_Case {
 	}
 
 	/**
+	 * On a form that never stores entries, a failed notification loses the
+	 * submission. The visitor still sees success -- from their side it was sent --
+	 * but the failure is recorded as a lost submission, not a missed email.
+	 */
+	public function test_notification_failure_on_a_form_without_entries_is_recorded_as_lost() {
+		$this->reset_email_delivery_state();
+
+		$form_id = wp_insert_post(
+			[
+				'post_type'   => 'sureforms_form',
+				'post_title'  => 'Private Form',
+				'post_status' => 'publish',
+			]
+		);
+
+		update_post_meta(
+			$form_id,
+			'_srfm_compliance',
+			[
+				[
+					'gdpr'                 => true,
+					'do_not_store_entries' => true,
+				],
+			]
+		);
+		update_post_meta(
+			$form_id,
+			'_srfm_email_notification',
+			[
+				[
+					'id'     => 1,
+					'status' => true,
+				],
+			]
+		);
+
+		$parsed = static function () {
+			return [
+				'to'      => 'owner@example.com',
+				'subject' => 'New entry',
+				'message' => 'An entry arrived.',
+				'headers' => [],
+			];
+		};
+
+		add_filter( 'srfm_email_notification', $parsed, 99 );
+		add_filter( 'pre_wp_mail', '__return_false', 99 );
+
+		EntriesTable::get_instance()->reset_logs();
+		$response = $this->form_submit->handle_form_entry( [ 'form-id' => (string) $form_id ] );
+
+		remove_filter( 'pre_wp_mail', '__return_false', 99 );
+		remove_filter( 'srfm_email_notification', $parsed, 99 );
+
+		$this->assertTrue( $response['success'], 'The visitor is not shown an error for a notification failure.' );
+		$this->assertArrayNotHasKey( 'submission_id', $response['data'], 'Precondition: no entry was stored.' );
+
+		$open = Client_Logger::get_open_failures();
+		$this->assertArrayHasKey( 'notification', $open );
+		$this->assertFalse( $open['notification']['entry_saved'] );
+		$this->assertFalse( Email_Delivery_Status::get_outcomes()['last_failure_entry_saved'] );
+
+		wp_delete_post( $form_id, true );
+		$this->reset_email_delivery_state();
+	}
+
+	/**
 	 * Test field_unique_validation is callable.
 	 */
 	public function test_field_unique_validation() {

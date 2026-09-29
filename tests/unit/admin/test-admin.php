@@ -1212,6 +1212,31 @@ class Test_Admin extends TestCase {
 	}
 
 	/**
+	 * On a form that never stores entries, the failed email was the only copy of
+	 * the submission, so the notice must not claim the entry was saved.
+	 */
+	public function test_notification_failure_on_a_form_without_entries_says_the_submission_was_lost() {
+		wp_set_current_user( $this->make_user( 'administrator' ) );
+		delete_option( Client_Logger::FAILURES_OPTION );
+
+		Client_Logger::record_failure( 'notification', 42, 'Private Form', [ 'entry_saved' => false ] );
+
+		$items = [];
+		foreach ( Admin::get_instance()->get_action_items() as $item ) {
+			$items[ $item['id'] ] = $item;
+		}
+
+		$this->assertArrayHasKey( 'notification_error', $items );
+		$this->assertStringContainsString( 'Private Form', $items['notification_error']['title'] );
+		$this->assertStringContainsString( 'not stored', $items['notification_error']['title'] );
+		$this->assertStringNotContainsString( 'The entry was saved', $items['notification_error']['message'] );
+		$this->assertStringContainsString( 'Never store entry data', $items['notification_error']['message'] );
+		$this->assertSame( 'help_me_fix', $items['notification_error']['guide_action'] ?? '', 'The guide stays: setting up email is the fix.' );
+
+		delete_option( Client_Logger::FAILURES_OPTION );
+	}
+
+	/**
 	 * The guide click is a distinct analytics event, and is accepted by the
 	 * allowlist that gates every notice response.
 	 *

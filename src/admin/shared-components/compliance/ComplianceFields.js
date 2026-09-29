@@ -1,6 +1,23 @@
 import { __ } from '@wordpress/i18n';
 import { useState, useEffect } from '@wordpress/element';
-import { Input, Switch, Label, Container } from '@bsf/force-ui';
+import { Alert, Input, Switch, Label, Container, Text } from '@bsf/force-ui';
+import { AlertTriangle } from 'lucide-react';
+
+// States in which a mailer is known to be carrying wp_mail(). Anything else
+// means a failed notification is likely, and on a form that stores no entries
+// that failure loses the submission.
+const EMAIL_DELIVERY_OK_STATES = [ 'ready', 'other_mailer' ];
+
+/**
+ * Email delivery status localised for this screen: srfm_block_data in the form
+ * editor, srfm_admin on the global settings page.
+ *
+ * @return {Object|null} Status, or null when not provided.
+ */
+const getEmailDeliveryStatus = () =>
+	window?.srfm_block_data?.email_delivery ||
+	window?.srfm_admin?.email_delivery ||
+	null;
 
 /**
  * Debounced Number Input for Compliance
@@ -97,6 +114,14 @@ const ComplianceFields = ( { context, values, onChange } ) => {
 		},
 	];
 
+	// With entries never stored, the notification email is the only copy of each
+	// submission. Say so, and say it louder when email delivery is not set up.
+	const neverStores = !! ( values?.gdpr && values?.do_not_store_entries );
+	const emailDelivery = neverStores ? getEmailDeliveryStatus() : null;
+	const emailAtRisk =
+		!! emailDelivery?.state &&
+		! EMAIL_DELIVERY_OK_STATES.includes( emailDelivery.state );
+
 	// Determine if auto_delete_days input should be shown.
 	const showAutoDeleteDays =
 		values?.auto_delete_entries &&
@@ -115,6 +140,36 @@ const ComplianceFields = ( { context, values, onChange } ) => {
 							onChange={ ( val ) => onChange( id, val ) }
 						/>
 					)
+			) }
+			{ neverStores && (
+				<Alert
+					variant={ emailAtRisk ? 'warning' : 'info' }
+					title={
+						emailAtRisk
+							? __(
+								'Submissions may be lost if an email fails',
+								'sureforms'
+							  )
+							: __(
+								'Email is the only copy of each submission',
+								'sureforms'
+							  )
+					}
+					content={
+						<Text size={ 13 }>
+							{ emailAtRisk
+								? __(
+									'This form will not store entries, and email delivery is not set up on this site yet. If a notification email is not sent, that submission is gone. Set up email delivery from the SureForms dashboard first.',
+									'sureforms'
+								  )
+								: __(
+									'This form will not store entries. If a notification email ever fails to send, that submission cannot be recovered.',
+									'sureforms'
+								  ) }
+						</Text>
+					}
+					icon={ <AlertTriangle /> }
+				/>
 			) }
 			{ showAutoDeleteDays && (
 				<Container direction="column" className="gap-1.5">

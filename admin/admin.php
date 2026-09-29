@@ -3933,6 +3933,16 @@ CSS;
 			],
 		];
 
+		// A form that does not store entries has no saved copy to fall back on: the
+		// email that failed was the only record of that submission. "The entry was
+		// saved" would be false, and the fix differs, so say both.
+		if ( isset( $open['notification'] ) && false === ( $open['notification']['entry_saved'] ?? true ) ) {
+			/* translators: %s: form title. */
+			$categories['notification']['title']   = __( 'A notification failed on %s, and the submission was not stored.', 'sureforms' );
+			$categories['notification']['generic'] = __( 'A notification failed, and the submission was not stored.', 'sureforms' );
+			$categories['notification']['message'] = __( 'This form is set to never store entries, so the email was the only copy of that submission and it could not be sent. Set up email delivery, or turn off "Never store entry data after form submission" for this form, so submissions are not lost.', 'sureforms' );
+		}
+
 		foreach ( $categories as $category => $copy ) {
 			if ( ! isset( $open[ $category ] ) ) {
 				continue;
