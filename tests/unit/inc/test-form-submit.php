@@ -9,6 +9,7 @@ use Yoast\PHPUnitPolyfills\TestCases\TestCase;
 
 use SRFM\Inc\Client_Logger;
 use SRFM\Inc\Database\Tables\Entries as EntriesTable;
+use SRFM\Inc\Email_Delivery\Status as Email_Delivery_Status;
 use SRFM\Inc\Form_Submit;
 use SRFM\Inc\Helper;
 use SRFM\Inc\Submit_Token;
@@ -861,22 +862,20 @@ class Test_Form_Submit extends SRFM_Unit_Test_Case {
 			]
 		);
 
-		// First recipient valid, second empty -- and an empty destination fails in
-		// every environment, where a failing transport does not, because
-		// send_email() falls back to PHP's mail().
 		$calls  = 0;
 		$parsed = static function () use ( &$calls ) {
 			$calls++;
 
 			return [
-				'to'      => 1 === $calls ? 'owner@example.com' : '',
+				'to'      => 'owner@example.com',
 				'subject' => 'New entry',
 				'message' => 'An entry arrived.',
 				'headers' => [],
 			];
 		};
 
-		// Only the first send succeeds; the second falls through to mail( '' ).
+		// Only the first send is accepted. With no raw mail() fallback, a false
+		// from wp_mail() is the failure in every environment.
 		$sent = static function () use ( &$calls ) {
 			return 1 === $calls;
 		};
@@ -907,11 +906,8 @@ class Test_Form_Submit extends SRFM_Unit_Test_Case {
 	 * rather than inside it: one recipient succeeding while another fails is still
 	 * a failure, and clearing on the success would erase the report.
 	 *
-	 * Failure is forced with an empty recipient rather than a failing transport.
-	 * send_email() falls back to PHP's mail() when wp_mail() returns false, and
-	 * mail() is not filterable -- on a machine with a working sendmail it succeeds
-	 * and the send is not a failure at all. An empty destination fails in every
-	 * environment.
+	 * wp_mail() is short-circuited to false. There is no raw mail() fallback
+	 * behind it any more, so that is the failure on every machine.
 	 */
 	public function test_send_email_keeps_the_notification_fault_on_failure() {
 		delete_option( Client_Logger::FAILURES_OPTION );
@@ -938,7 +934,7 @@ class Test_Form_Submit extends SRFM_Unit_Test_Case {
 
 		$parsed = static function () {
 			return [
-				'to'      => '',
+				'to'      => 'owner@example.com',
 				'subject' => 'New entry',
 				'message' => 'An entry arrived.',
 				'headers' => [],
@@ -964,6 +960,199 @@ class Test_Form_Submit extends SRFM_Unit_Test_Case {
 
 		wp_delete_post( $form_id, true );
 		delete_option( Client_Logger::FAILURES_OPTION );
+	}
+
+	/**
+	 * Run send_email() for a fresh form with one active notification.
+	 *
+	 * @param callable $pre_wp_mail pre_wp_mail callback deciding the outcome.
+	 * @return array{form_id:int,response:array<mixed>,logs:array<mixed>}
+	 */
+	private function send_one_notification( $pre_wp_mail ) {
+		$form_id = wp_insert_post(
+			[
+				'post_type'   => 'sureforms_form',
+				'post_title'  => 'Delivery Form',
+				'post_status' => 'publish',
+			]
+		);
+
+		update_post_meta(
+			$form_id,
+			'_srfm_email_notification',
+			[
+				[
+					'id'     => 1,
+					'status' => true,
+				],
+			]
+		);
+
+		$parsed = static function () {
+			return [
+				'to'      => 'owner@example.com',
+				'subject' => 'New entry',
+				'message' => 'An entry arrived.',
+				'headers' => [],
+			];
+		};
+
+		add_filter( 'srfm_email_notification', $parsed, 99 );
+		add_filter( 'pre_wp_mail', $pre_wp_mail, 99, 2 );
+
+		EntriesTable::get_instance()->reset_logs();
+		$response = Form_Submit::send_email( $form_id, [] );
+		$logs     = EntriesTable::get_instance()->get_logs();
+
+		remove_filter( 'pre_wp_mail', $pre_wp_mail, 99 );
+		remove_filter( 'srfm_email_notification', $parsed, 99 );
+		wp_delete_post( $form_id, true );
+
+		return [
+			'form_id'  => $form_id,
+			'response' => $response,
+			'logs'     => $logs,
+		];
+	}
+
+	/**
+	 * Every message on the notification log, flattened.
+	 *
+	 * @param array<mixed> $logs Entry logs.
+	 * @return string
+	 */
+	private function notification_log_text( $logs ) {
+		$text = '';
+		foreach ( $logs as $log ) {
+			$text .= implode( ' ', Helper::get_array_value( $log['messages'] ?? [] ) ) . ' ';
+		}
+		return $text;
+	}
+
+	/**
+	 * Reset the email-delivery state these tests touch.
+	 */
+	private function reset_email_delivery_state() {
+		remove_all_filters( 'pre_option_active_plugins' );
+		remove_all_filters( 'srfm_allow_php_mail_fallback' );
+		delete_option( Email_Delivery_Status::OUTCOMES_OPTION );
+		delete_option( Client_Logger::FAILURES_OPTION );
+		Email_Delivery_Status::reset();
+	}
+
+	/**
+	 * A rejected notification is recorded as the site's email state, and raw
+	 * mail() is not tried unless the owner opts in.
+	 */
+	public function test_send_email_does_not_fall_back_to_php_mail_by_default() {
+		$this->reset_email_delivery_state();
+		add_filter(
+			'pre_option_active_plugins',
+			static function () {
+				return [];
+			}
+		);
+
+		$asked = 0;
+		add_filter(
+			'srfm_allow_php_mail_fallback',
+			static function ( $allow ) use ( &$asked ) {
+				$asked++;
+				return $allow;
+			}
+		);
+
+		$result   = $this->send_one_notification( '__return_false' );
+		$outcomes = Email_Delivery_Status::get_outcomes();
+
+		$this->assertSame( 1, $asked, 'With no mail plugin, the opt-in filter is consulted.' );
+		$this->assertFalse( $result['response']['success'] );
+		$this->assertSame( 'failure', $outcomes['last_result'] );
+		$this->assertSame( $result['form_id'], $outcomes['last_failure_form_id'] );
+		$this->assertSame( 'php_mail_failed', $outcomes['last_failure_reason'] );
+		$this->assertStringContainsString( 'No SMTP plugin detected', $this->notification_log_text( $result['logs'] ) );
+
+		$this->reset_email_delivery_state();
+	}
+
+	/**
+	 * With a mail plugin active, raw mail() would bypass its routing and logs --
+	 * and SureMail, which retries a rejected email itself, would send it twice.
+	 * The opt-in is not even consulted.
+	 */
+	public function test_php_mail_fallback_is_never_consulted_with_a_mail_plugin() {
+		$this->reset_email_delivery_state();
+		add_filter(
+			'pre_option_active_plugins',
+			static function () {
+				return [ 'suremails/suremails.php' ];
+			}
+		);
+
+		$asked = 0;
+		add_filter(
+			'srfm_allow_php_mail_fallback',
+			static function () use ( &$asked ) {
+				$asked++;
+				return true;
+			}
+		);
+
+		$result = $this->send_one_notification( '__return_false' );
+
+		$this->assertSame( 0, $asked );
+		$this->assertFalse( $result['response']['success'] );
+		$this->assertSame( 'suremail_rejected', Email_Delivery_Status::get_outcomes()['last_failure_reason'] );
+		$this->assertStringContainsString( 'SureMail did not accept this email', $this->notification_log_text( $result['logs'] ) );
+
+		$this->reset_email_delivery_state();
+	}
+
+	/**
+	 * The mailer's own error, reported through wp_mail_failed, is what the log
+	 * records -- not "unknown reason". The listener is scoped to the one send.
+	 */
+	public function test_send_email_records_the_mailers_own_reason() {
+		$this->reset_email_delivery_state();
+		add_filter(
+			'pre_option_active_plugins',
+			static function () {
+				return [ 'wp-mail-smtp/wp_mail_smtp.php' ];
+			}
+		);
+
+		$listeners_before = has_action( 'wp_mail_failed' ) ? count( $GLOBALS['wp_filter']['wp_mail_failed']->callbacks, COUNT_RECURSIVE ) : 0;
+
+		$result = $this->send_one_notification(
+			static function () {
+				do_action( 'wp_mail_failed', new WP_Error( 'wp_mail_failed', 'SMTP Error: Could not authenticate.' ) );
+				return false;
+			}
+		);
+
+		$listeners_after = has_action( 'wp_mail_failed' ) ? count( $GLOBALS['wp_filter']['wp_mail_failed']->callbacks, COUNT_RECURSIVE ) : 0;
+
+		$this->assertStringContainsString( 'Could not authenticate', $this->notification_log_text( $result['logs'] ) );
+		$this->assertSame( 'mailer_error', Email_Delivery_Status::get_outcomes()['last_failure_reason'] );
+		$this->assertSame( $listeners_before, $listeners_after, 'The wp_mail_failed listener must not outlive the send.' );
+
+		$this->reset_email_delivery_state();
+	}
+
+	/**
+	 * An accepted notification after a failure records the recovery, so the
+	 * email delivery status stops asking for attention.
+	 */
+	public function test_send_email_records_recovery_after_a_failure() {
+		$this->reset_email_delivery_state();
+		Email_Delivery_Status::record_outcome( false, 5, 'mailer_rejected' );
+
+		$result = $this->send_one_notification( '__return_true' );
+
+		$this->assertTrue( $result['response']['success'] );
+		$this->assertSame( 'success', Email_Delivery_Status::get_outcomes()['last_result'] );
+
+		$this->reset_email_delivery_state();
 	}
 
 	/**

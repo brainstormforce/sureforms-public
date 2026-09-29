@@ -11,6 +11,8 @@ namespace SRFM\Inc;
 use SRFM\Inc\Compatibility\Multilingual\Multilingual_Manager;
 use SRFM\Inc\Database\Tables\Entries;
 use SRFM\Inc\Email\Email_Template;
+use SRFM\Inc\Email_Delivery\Mailer;
+use SRFM\Inc\Email_Delivery\Status as Email_Delivery_Status;
 use SRFM\Inc\Lib\Browser\Browser;
 use SRFM\Inc\Traits\Get_Instance;
 use WP_Error;
@@ -1047,8 +1049,8 @@ class Form_Submit {
 		// Any recipient failing counts as a failure for the whole submission, so
 		// these are set inside the loop and only read after it.
 		$notification_failed = false;
-		// Whether any recipient's "success" came from the mail() fallback, which
-		// reports true for a message the local MTA accepted and will bounce.
+		// Whether any recipient's "success" came from the opt-in mail() fallback,
+		// which reports true for a message the local MTA accepted and may bounce.
 		$used_mail_fallback = false;
 		$emails             = [];
 
@@ -1114,24 +1116,24 @@ class Form_Submit {
 						 *
 						 * @since 1.2.2
 						 */
-						$sent = false;
-						ob_start();
-						$sent = wp_mail( $parsed['to'], $parsed['subject'], $parsed['message'], $parsed['headers'] );
-						if ( ! $sent ) {
-							// Fallback to default PHP mail if for some reasons wp_mail fails.
-							$sent = mail( $parsed['to'], $parsed['subject'], $parsed['message'], $parsed['headers'] );
+						$dispatch     = self::dispatch_notification( $parsed, intval( $id ) );
+						$sent         = $dispatch['sent'];
+						$email_report = $dispatch['error'];
 
-							if ( $sent ) {
-								// Accepted by the local MTA, not delivered. Good
-								// enough to avoid recording a fault, not good
-								// enough to retire one.
-								$used_mail_fallback = true;
-							}
+						if ( $dispatch['via_php_mail'] ) {
+							// Accepted by the local MTA, not delivered. Good enough
+							// to avoid recording a fault, not good enough to retire one.
+							$used_mail_fallback = true;
 						}
-						$email_report = ob_get_clean(); // Catch any printed notice/errors/message for reports.
 
 						if ( true !== $sent ) {
 							$notification_failed = true;
+							$rejection           = Mailer::get_rejection_reason();
+
+							// Outside the logging guard below: this is the site's
+							// current email state, which the owner needs to see
+							// even with debug logging switched off.
+							Email_Delivery_Status::record_outcome( false, intval( $id ), '' !== $email_report ? 'mailer_error' : $rejection['code'] );
 						}
 
 						if ( is_int( $log_key ) ) {
@@ -1145,12 +1147,9 @@ class Form_Submit {
 									]
 								);
 							} else {
-								$reason = ! empty( $email_report )
+								$reason = '' !== $email_report
 									? esc_html( $email_report )
-									: ( ! Helper::is_any_smtp_plugin_active()
-									? esc_html__( 'No SMTP plugin detected. Please configure an SMTP plugin to enable email sending.', 'sureforms' )
-									: esc_html__( 'Email sending failed for an unknown reason.', 'sureforms' )
-									);
+									: esc_html( Mailer::get_rejection_reason()['message'] );
 
 								$entries_db_instance->update_log(
 									$log_key,
@@ -1230,7 +1229,7 @@ class Form_Submit {
 			// by anyone. The notice names a form, so the granularity is visible
 			// now that this clears as well as records.
 			//
-			// wp_mail() only. The mail() fallback above returns true when the local
+			// wp_mail() only. The opt-in mail() fallback returns true when the local
 			// MTA merely accepts a message it will later bounce, which is the
 			// broken configuration rather than the fixed one.
 			//
@@ -1238,6 +1237,10 @@ class Form_Submit {
 			// inside it, so without it an install where add_log() returns a
 			// non-int would never record a notification fault but would still
 			// clear one.
+			if ( ! empty( $emails ) && ! $notification_failed && ! $used_mail_fallback ) {
+				Email_Delivery_Status::record_outcome( true, intval( $id ) );
+			}
+
 			$open_failures = Client_Logger::get_failures();
 
 			if ( ! empty( $emails ) && ! $notification_failed && is_int( $log_key )
@@ -1250,6 +1253,58 @@ class Form_Submit {
 		return [
 			'success' => $is_mail_sent,
 			'emails'  => $emails,
+		];
+	}
+
+	/**
+	 * Hand one notification to wp_mail().
+	 *
+	 * Output is buffered because some mail plugins (Zoho Mail, for one) echo
+	 * notices or errors instead of throwing, which would corrupt the JSON
+	 * response. The wp_mail_failed listener is attached for this call only, so
+	 * the reason recorded is the mailer's own rather than a guess.
+	 *
+	 * Raw PHP mail() is not tried unless Mailer::allow_php_mail_fallback() says
+	 * so; see there for why.
+	 *
+	 * @param array<string,mixed> $parsed  Parsed notification: to, subject, message, headers.
+	 * @param int                 $form_id Form the notification belongs to.
+	 * @since x.x.x
+	 * @return array{sent:bool,via_php_mail:bool,error:string}
+	 */
+	private static function dispatch_notification( $parsed, $form_id ) {
+		$to      = Helper::get_string_value( $parsed['to'] ?? '' );
+		$subject = Helper::get_string_value( $parsed['subject'] ?? '' );
+		$message = Helper::get_string_value( $parsed['message'] ?? '' );
+		$headers = $parsed['headers'] ?? '';
+		$headers = is_array( $headers ) ? $headers : Helper::get_string_value( $headers );
+
+		$error   = '';
+		$capture = static function ( $wp_error ) use ( &$error ) {
+			if ( $wp_error instanceof \WP_Error ) {
+				$error = $wp_error->get_error_message();
+			}
+		};
+
+		add_action( 'wp_mail_failed', $capture );
+		ob_start();
+
+		$sent         = (bool) wp_mail( $to, $subject, $message, $headers );
+		$via_php_mail = false;
+
+		if ( ! $sent && Mailer::allow_php_mail_fallback( $form_id, 'notification' ) ) {
+			// phpcs:ignore WordPress.WP.AlternativeFunctions -- Owner opted in via srfm_allow_php_mail_fallback.
+			$sent         = mail( $to, $subject, $message, is_array( $headers ) ? implode( "\r\n", $headers ) : $headers );
+			$via_php_mail = $sent;
+		}
+
+		$output = Helper::get_string_value( ob_get_clean() );
+		remove_action( 'wp_mail_failed', $capture );
+
+		return [
+			'sent'         => $sent,
+			'via_php_mail' => $via_php_mail,
+			'error'        => '' !== $error ? $error : trim( $output ),
 		];
 	}
 

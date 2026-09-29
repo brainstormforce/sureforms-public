@@ -120,6 +120,75 @@ class Mailer {
 	}
 
 	/**
+	 * Whether a failed wp_mail() may be retried through PHP's own mail().
+	 *
+	 * Off by default. Core's wp_mail() already sends through mail() when no mail
+	 * plugin is active, so a raw mail() that succeeds after it failed has usually
+	 * skipped the validation that caught a broken From address — the email
+	 * "works" and the misconfiguration stays hidden. With a mail plugin active it
+	 * is worse: the email bypasses that plugin's routing and logs, and SureMail,
+	 * which retries a rejected email itself, would send it twice.
+	 *
+	 * So the filter is only consulted when no mail plugin is active, for hosts
+	 * where raw mail() genuinely is the only thing that works.
+	 *
+	 * @since x.x.x
+	 * @param int    $form_id Form the email belongs to.
+	 * @param string $context What is being sent, e.g. 'notification'.
+	 * @return bool
+	 */
+	public static function allow_php_mail_fallback( $form_id = 0, $context = 'notification' ) {
+		if ( self::has_mailer() ) {
+			return false;
+		}
+
+		/**
+		 * Filters whether a failed wp_mail() is retried through PHP's mail().
+		 *
+		 * Only applied when no mail plugin is active.
+		 *
+		 * @since x.x.x
+		 * @param bool   $allow   Whether to retry. Default false.
+		 * @param int    $form_id Form the email belongs to.
+		 * @param string $context What is being sent, e.g. 'notification'.
+		 */
+		return (bool) apply_filters( 'srfm_allow_php_mail_fallback', false, (int) $form_id, (string) $context );
+	}
+
+	/**
+	 * Why a mailer did not accept an email, for when it gave no reason itself.
+	 *
+	 * @since x.x.x
+	 * @return array{code:string,message:string}
+	 */
+	public static function get_rejection_reason() {
+		$mailer = self::get_active();
+
+		if ( 'suremail' === $mailer['slug'] ) {
+			return [
+				'code'    => 'suremail_rejected',
+				'message' => __( 'SureMail did not accept this email. It may retry it automatically; SureMail\'s email logs show the reason.', 'sureforms' ),
+			];
+		}
+
+		if ( 'none' !== $mailer['slug'] ) {
+			return [
+				'code'    => 'mailer_rejected',
+				'message' => sprintf(
+					/* translators: %s: name of the site's mail plugin. */
+					__( '%s did not accept this email. Its logs show the reason.', 'sureforms' ),
+					'' !== $mailer['label'] ? $mailer['label'] : __( 'Your mail plugin', 'sureforms' )
+				),
+			];
+		}
+
+		return [
+			'code'    => 'php_mail_failed',
+			'message' => __( 'No SMTP plugin detected. Please configure an SMTP plugin to enable email sending.', 'sureforms' ),
+		];
+	}
+
+	/**
 	 * Detection without the filter.
 	 *
 	 * @since x.x.x
