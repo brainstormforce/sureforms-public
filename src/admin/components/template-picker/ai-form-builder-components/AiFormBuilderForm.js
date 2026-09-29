@@ -390,11 +390,12 @@ export default ( props ) => {
 
 		if ( selectedStarterId === starter.id ) {
 			setSelectedStarterId( null );
-			setReplacedPrompt( null );
-			// Only clear the prompt if the user hasn't edited it.
+			// An untouched example gives back whatever it replaced; an edited
+			// prompt belongs to the user now and is kept.
 			if ( text === starter.prompt ) {
-				setPrompt( '' );
+				setPrompt( replacedPrompt ?? '' );
 			}
+			setReplacedPrompt( null );
 			speak( __( 'Example removed.', 'sureforms' ) );
 			return;
 		}
