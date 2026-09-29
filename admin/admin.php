@@ -1814,7 +1814,7 @@ JS;
 			'check_three_days_threshold'   => self::check_first_form_creation_threshold(),
 			'check_eight_days_threshold'   => self::check_first_form_creation_threshold( 8 ),
 			'pro_plugin_version'           => Helper::has_pro() ? SRFM_PRO_VER : '',
-			'pro_plugin_name'              => Helper::has_pro() && defined( 'SRFM_PRO_PRODUCT' ) ? SRFM_PRO_PRODUCT : 'SureForms Pro',
+			'pro_plugin_name'              => Helper::has_pro() && defined( 'SRFM_PRO_PRODUCT' ) ? SRFM_PRO_PRODUCT : 'SureForms Business',
 			'sureforms_pricing_page'       => Helper::get_sureforms_website_url( 'pricing' ),
 			'field_spacing_vars'           => Helper::get_css_vars(),
 			'is_ver_lower_than_6_7'        => version_compare( $wp_version, '6.6.2', '<=' ),
@@ -2331,7 +2331,7 @@ JS;
 
 		// Register version outdated notice for React pages.
 		if ( ! version_compare( SRFM_PRO_VER, SRFM_PRO_RECOMMENDED_VER, '>=' ) ) {
-			$pro_plugin_name        = defined( 'SRFM_PRO_PRODUCT' ) ? SRFM_PRO_PRODUCT : 'SureForms Pro';
+			$pro_plugin_name        = defined( 'SRFM_PRO_PRODUCT' ) ? SRFM_PRO_PRODUCT : 'SureForms Business';
 			$react_outdated_message = sprintf(
 				// translators: %1$s: SureForms version, %2$s: SureForms Pro Plugin Name, %3$s: SureForms Pro Version.
 				esc_html__( 'SureForms %1$s requires minimum %2$s %3$s to work properly. Please update to the latest version.', 'sureforms' ),
@@ -2615,7 +2615,7 @@ JS;
 			update_option( 'srfm_pro_license_status', $srfm_pro_license_status );
 		}
 
-		$pro_plugin_name = defined( 'SRFM_PRO_PRODUCT' ) ? SRFM_PRO_PRODUCT : 'SureForms Pro';
+		$pro_plugin_name = defined( 'SRFM_PRO_PRODUCT' ) ? SRFM_PRO_PRODUCT : 'SureForms Business';
 		$message         = '';
 		$url             = admin_url( 'admin.php?page=sureforms_form_settings&tab=account-settings' );
 		if ( 'unlicensed' === $srfm_pro_license_status ) {
