@@ -725,23 +725,6 @@ export default ( props ) => {
 						</Container>
 					</Container.Item>
 
-					{ page === 'add-new-form' &&
-						! srfm_admin?.is_pro_active && (
-						<CreditDetailsPopup
-							finalFormCreationCountRemaining={
-								finalFormCreationCountRemaining
-							}
-							setShowCreditDetailsPopup={
-								setShowCreditDetailsPopup
-							}
-							showCreditDetailsPopup={
-								showCreditDetailsPopup
-							}
-							type={ type }
-							features={ features }
-						/>
-					) }
-
 					<Container.Item className="flex p-2 gap-6 justify-center">
 						<Button
 							className="text-text-tertiary hover:cursor-pointer hover:text-text-secondary"
@@ -764,6 +747,23 @@ export default ( props ) => {
 							{ __( 'Or create it yourself', 'sureforms' ) }
 						</Button>
 					</Container.Item>
+
+					{ page === 'add-new-form' &&
+						! srfm_admin?.is_pro_active && (
+						<CreditDetailsPopup
+							finalFormCreationCountRemaining={
+								finalFormCreationCountRemaining
+							}
+							setShowCreditDetailsPopup={
+								setShowCreditDetailsPopup
+							}
+							showCreditDetailsPopup={
+								showCreditDetailsPopup
+							}
+							type={ type }
+							features={ features }
+						/>
+					) }
 				</Container>
 			</Container.Item>
 		</Container>
