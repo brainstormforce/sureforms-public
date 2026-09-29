@@ -405,6 +405,13 @@ export default ( props ) => {
 		document.getElementById( 'textarea' )?.focus();
 	};
 
+	// Whether the prompt is still exactly the selected starter's text (for tracking edits).
+	const isUntouchedStarter =
+		!! selectedStarterId &&
+		starters.some(
+			( item ) => item.id === selectedStarterId && item.prompt === text
+		);
+
 	let counterColorClass = 'text-field-helper';
 	if ( characterCount >= MAX_PROMPT_LENGTH ) {
 		counterColorClass = 'text-support-error';
