@@ -1,0 +1,452 @@
+<?php
+/**
+ * Email delivery status.
+ *
+ * One answer to "will this site's form notifications reach the owner, and if
+ * not, what should they do?" — shared by onboarding, the dashboard, Form Checks
+ * and the editor so they never disagree.
+ *
+ * Wording rule for everything this returns: a true wp_mail() means the email was
+ * accepted by, or handed off to, the mailer. It is never described as delivered.
+ *
+ * @package SureForms
+ * @since   x.x.x
+ */
+
+namespace SRFM\Inc\Email_Delivery;
+
+use SRFM\Inc\Client_Logger;
+use SRFM\Inc\Helper;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+/**
+ * Status
+ *
+ * States, highest priority first:
+ *
+ *  - attention              A recent notification was not accepted, or a SureMail
+ *                           connection that existed is gone.
+ *  - not_configured         Nothing beyond PHP's mail() carries wp_mail().
+ *  - suremail_no_connection SureMail is active with no connection.
+ *  - limited                SureContact is connected but its account email is
+ *                           unverified, so it accepts only a few sends a day.
+ *  - other_mailer           Another mail plugin owns sending. SureForms does not
+ *                           second-guess its configuration.
+ *  - ready                  SureMail has a connection that is not limited.
+ *
+ * @since x.x.x
+ */
+class Status {
+	/**
+	 * Option holding the outcome of recent notification sends.
+	 *
+	 * Timestamps, a form id and a reason code only — no addresses or content.
+	 *
+	 * @since x.x.x
+	 */
+	public const OUTCOMES_OPTION = 'srfm_email_delivery_outcomes';
+
+	/**
+	 * How long an unrecovered failure keeps the status at "attention".
+	 *
+	 * A low-traffic form may not send again for days, and without a later success
+	 * nothing proves the problem went away. Two weeks is long enough to still be
+	 * there when the owner next logs in, short enough not to nag about a fault
+	 * fixed outside SureForms' sight.
+	 *
+	 * @since x.x.x
+	 */
+	public const ATTENTION_WINDOW = 14 * DAY_IN_SECONDS;
+
+	/**
+	 * Minimum gap between success writes while nothing is wrong.
+	 *
+	 * Successes are recorded on the public submit path, so a busy form must not
+	 * write an option on every submission. A success that follows a failure is
+	 * always written: it is the one that clears the warning.
+	 *
+	 * @since x.x.x
+	 */
+	public const SUCCESS_WRITE_INTERVAL = HOUR_IN_SECONDS;
+
+	/**
+	 * Memoised status for this request.
+	 *
+	 * @var array<string,mixed>|null
+	 * @since x.x.x
+	 */
+	private static $memo = null;
+
+	/**
+	 * Current email delivery status.
+	 *
+	 * @since x.x.x
+	 * @return array<string,mixed>
+	 */
+	public static function get_status() {
+		if ( null !== self::$memo ) {
+			return self::$memo;
+		}
+
+		$status = self::compute();
+
+		/**
+		 * Filters the email delivery status.
+		 *
+		 * @since x.x.x
+		 * @param array<string,mixed> $status Status array.
+		 */
+		$filtered = apply_filters( 'srfm_email_delivery_status', $status );
+
+		self::$memo = is_array( $filtered ) ? $filtered : $status;
+
+		return self::$memo;
+	}
+
+	/**
+	 * Record whether a notification was accepted by the mail system.
+	 *
+	 * Recorded whether or not debug logging is on: this is the site's current
+	 * state, not a log, and the attention window bounds how stale it can get.
+	 *
+	 * @since x.x.x
+	 * @param bool   $accepted    Whether wp_mail() accepted the email.
+	 * @param int    $form_id     Form the notification belongs to.
+	 * @param string $reason      Short reason code for a failure.
+	 * @param bool   $entry_saved Whether the submission was stored as an entry.
+	 * @return void
+	 */
+	public static function record_outcome( $accepted, $form_id = 0, $reason = '', $entry_saved = true ) {
+		$outcomes = self::get_outcomes();
+		$now      = time();
+
+		if ( $accepted ) {
+			$recovering = 'failure' === $outcomes['last_result'];
+			if ( ! $recovering && $now - $outcomes['last_success_at'] < self::SUCCESS_WRITE_INTERVAL ) {
+				return;
+			}
+
+			$outcomes['last_result']          = 'success';
+			$outcomes['last_success_at']      = $now;
+			$outcomes['consecutive_failures'] = 0;
+		} else {
+			$outcomes['last_result']              = 'failure';
+			$outcomes['last_failure_at']          = $now;
+			$outcomes['last_failure_form_id']     = absint( $form_id );
+			$outcomes['last_failure_reason']      = substr( sanitize_key( (string) $reason ), 0, 64 );
+			$outcomes['last_failure_mailer']      = Mailer::get_active()['slug'];
+			$outcomes['last_failure_entry_saved'] = (bool) $entry_saved;
+			++$outcomes['consecutive_failures'];
+		}
+
+		update_option( self::OUTCOMES_OPTION, $outcomes, false );
+		self::$memo = null;
+	}
+
+	/**
+	 * Stored send outcomes with defaults filled in.
+	 *
+	 * @since x.x.x
+	 * @return array{last_result:string,last_success_at:int,last_failure_at:int,last_failure_form_id:int,last_failure_reason:string,last_failure_mailer:string,last_failure_entry_saved:bool,consecutive_failures:int,suremail_connected_at:int}
+	 */
+	public static function get_outcomes() {
+		$stored = get_option( self::OUTCOMES_OPTION, [] );
+		$stored = is_array( $stored ) ? $stored : [];
+
+		return [
+			'last_result'              => isset( $stored['last_result'] ) && in_array( $stored['last_result'], [ 'success', 'failure' ], true ) ? $stored['last_result'] : '',
+			'last_success_at'          => isset( $stored['last_success_at'] ) ? absint( $stored['last_success_at'] ) : 0,
+			'last_failure_at'          => isset( $stored['last_failure_at'] ) ? absint( $stored['last_failure_at'] ) : 0,
+			'last_failure_form_id'     => isset( $stored['last_failure_form_id'] ) ? absint( $stored['last_failure_form_id'] ) : 0,
+			'last_failure_reason'      => isset( $stored['last_failure_reason'] ) && is_string( $stored['last_failure_reason'] ) ? $stored['last_failure_reason'] : '',
+			'last_failure_mailer'      => isset( $stored['last_failure_mailer'] ) && is_string( $stored['last_failure_mailer'] ) ? $stored['last_failure_mailer'] : '',
+			'last_failure_entry_saved' => ! isset( $stored['last_failure_entry_saved'] ) || (bool) $stored['last_failure_entry_saved'],
+			'consecutive_failures'     => isset( $stored['consecutive_failures'] ) ? absint( $stored['consecutive_failures'] ) : 0,
+			'suremail_connected_at'    => isset( $stored['suremail_connected_at'] ) ? absint( $stored['suremail_connected_at'] ) : 0,
+		];
+	}
+
+	/**
+	 * Drop the memoised status.
+	 *
+	 * @since x.x.x
+	 * @return void
+	 */
+	public static function reset() {
+		self::$memo = null;
+	}
+
+	/**
+	 * Build the status.
+	 *
+	 * @since x.x.x
+	 * @return array<string,mixed>
+	 */
+	private static function compute() {
+		$mailer   = Mailer::get_active();
+		$outcomes = self::get_outcomes();
+		$now      = time();
+
+		// From the mailer, not SUREMAILS_VERSION, so every part of the status agrees
+		// on one answer — including when a host declares SureMail via the filter.
+		$suremail_active = 'suremail' === $mailer['slug'];
+		$readiness       = $suremail_active ? Suremail_Adapter::get_readiness() : null;
+		$connections     = null !== $readiness ? $readiness['connections'] : 0;
+
+		$connection_lost = false;
+		if ( null !== $readiness ) {
+			$connection_lost = self::track_suremail_connection( $outcomes, $connections ) || $readiness['default_missing'];
+		}
+
+		$failure_open = 'failure' === $outcomes['last_result'] && $outcomes['last_failure_at'] >= $now - self::ATTENTION_WINDOW;
+		if ( ! $failure_open ) {
+			// Form Checks' fault only clears on a later success from the same form,
+			// so a site-wide success after it means mail is working again.
+			$open         = Client_Logger::get_open_failures();
+			$fault_at     = isset( $open['notification']['at'] ) ? Helper::get_integer_value( $open['notification']['at'] ) : 0;
+			$failure_open = $fault_at > 0 && $fault_at >= $now - self::ATTENTION_WINDOW && $fault_at > $outcomes['last_success_at'];
+		}
+
+		$surecontact = null !== $readiness ? $readiness['surecontact'] : [
+			'connected'      => false,
+			'email_verified' => null,
+			'is_paid'        => null,
+		];
+
+		if ( $failure_open || $connection_lost ) {
+			$state = 'attention';
+		} elseif ( 'none' === $mailer['slug'] ) {
+			$state = 'not_configured';
+		} elseif ( $suremail_active && 0 === $connections ) {
+			$state = 'suremail_no_connection';
+		} elseif ( $suremail_active && $surecontact['connected'] && false === $surecontact['email_verified'] ) {
+			$state = 'limited';
+		} elseif ( $suremail_active ) {
+			$state = 'ready';
+		} else {
+			$state = 'other_mailer';
+		}
+
+		$plugin_status = $suremail_active ? 'Activated' : self::get_suremail_plugin_status();
+		$provider      = null !== $readiness ? $readiness['provider_label'] : '';
+		$copy          = self::get_copy( $state, $mailer, $provider, $connection_lost, $failure_open, $outcomes );
+
+		return [
+			'state'        => $state,
+			'severity'     => $copy['severity'],
+			'title'        => $copy['title'],
+			'message'      => $copy['message'],
+			'mailer'       => [
+				'slug'  => $mailer['slug'],
+				'label' => $mailer['label'],
+			],
+			'provider'     => $provider,
+			'suremail'     => [
+				'plugin_status'        => $plugin_status,
+				'version'              => Suremail_Adapter::get_version(),
+				'connections'          => $connections,
+				'onboarding_completed' => $suremail_active && Suremail_Adapter::is_onboarding_completed(),
+				'supports_surecontact' => Suremail_Adapter::supports_surecontact(),
+			],
+			'surecontact'  => $surecontact,
+			'last_outcome' => [
+				'accepted_at'    => $outcomes['last_success_at'],
+				'failed_at'      => $outcomes['last_failure_at'],
+				'failed_form_id' => $outcomes['last_failure_form_id'],
+				'reason'         => $outcomes['last_failure_reason'],
+				'entry_saved'    => $outcomes['last_failure_entry_saved'],
+			],
+			'action'       => self::get_action( $state, $mailer, $plugin_status, $connection_lost ),
+			'links'        => [
+				'setup' => $suremail_active ? Suremail_Adapter::setup_url() : '',
+				'logs'  => $suremail_active ? Suremail_Adapter::logs_url() : '',
+				'guide' => Helper::get_sureforms_website_url(
+					'docs/troubleshooting-email-sending-in-sureforms/',
+					[ 'utm_medium' => 'email_delivery_status' ]
+				),
+			],
+			'can_install'  => current_user_can( 'install_plugins' ),
+			'source'       => null !== $readiness ? $readiness['source'] : 'heuristic',
+		];
+	}
+
+	/**
+	 * Remember that SureMail once had a connection, and report losing it.
+	 *
+	 * SureMail rebalances its storage when a connection is deleted — including
+	 * when SureContact revokes it remotely — so zero connections looks the same
+	 * as never having set one up. The only way to tell is to have seen one.
+	 * Writes only on the transition, not on every read.
+	 *
+	 * @since x.x.x
+	 * @param array<string,mixed> $outcomes    Stored outcomes.
+	 * @param int                 $connections Current connection count.
+	 * @return bool Whether a previously seen connection is gone.
+	 */
+	private static function track_suremail_connection( array $outcomes, $connections ) {
+		$seen = ! empty( $outcomes['suremail_connected_at'] );
+
+		if ( $connections > 0 && ! $seen ) {
+			$outcomes['suremail_connected_at'] = time();
+			update_option( self::OUTCOMES_OPTION, $outcomes, false );
+			return false;
+		}
+
+		return 0 === $connections && $seen;
+	}
+
+	/**
+	 * SureMail's install state when it is not loaded.
+	 *
+	 * @since x.x.x
+	 * @return string Install | Installed | Activated.
+	 */
+	private static function get_suremail_plugin_status() {
+		if ( ! function_exists( 'get_plugins' ) || ! function_exists( 'is_plugin_active' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/plugin.php';
+		}
+
+		return Helper::get_plugin_status( Mailer::SUREMAIL_FILE );
+	}
+
+	/**
+	 * The next step to offer the owner.
+	 *
+	 * The install_activate and activate steps are carried out by the SureForms UI
+	 * through the existing plugin installer, which is why they have no URL.
+	 *
+	 * @since x.x.x
+	 * @param string                                      $state           Status state.
+	 * @param array{slug:string,label:string,file:string} $mailer          Active mailer.
+	 * @param string                                      $plugin_status   SureMail install state.
+	 * @param bool                                        $connection_lost Whether a SureMail connection went away.
+	 * @return array{type:string,label:string,url:string}
+	 */
+	private static function get_action( $state, array $mailer, $plugin_status, $connection_lost ) {
+		$none = [
+			'type'  => 'none',
+			'label' => '',
+			'url'   => '',
+		];
+
+		if ( 'not_configured' === $state || ( 'attention' === $state && 'none' === $mailer['slug'] ) ) {
+			return [
+				'type'  => 'Installed' === $plugin_status ? 'activate' : 'install_activate',
+				'label' => 'Installed' === $plugin_status ? __( 'Activate SureMail', 'sureforms' ) : __( 'Set up email delivery', 'sureforms' ),
+				'url'   => '',
+			];
+		}
+
+		if ( 'suremail_no_connection' === $state || ( 'attention' === $state && $connection_lost ) ) {
+			return [
+				'type'  => 'open_suremail',
+				'label' => Suremail_Adapter::supports_surecontact() ? __( 'Connect SureContact in SureMail', 'sureforms' ) : __( 'Add a connection in SureMail', 'sureforms' ),
+				'url'   => Suremail_Adapter::setup_url(),
+			];
+		}
+
+		if ( 'limited' === $state ) {
+			return [
+				'type'  => 'open_suremail',
+				'label' => __( 'Finish in SureMail', 'sureforms' ),
+				'url'   => Suremail_Adapter::admin_url( '/dashboard' ),
+			];
+		}
+
+		if ( 'attention' === $state && 'suremail' === $mailer['slug'] ) {
+			return [
+				'type'  => 'view_logs',
+				'label' => __( 'View SureMail logs', 'sureforms' ),
+				'url'   => Suremail_Adapter::logs_url(),
+			];
+		}
+
+		return $none;
+	}
+
+	/**
+	 * Owner-facing title, message and severity.
+	 *
+	 * @since x.x.x
+	 * @param string                                      $state           Status state.
+	 * @param array{slug:string,label:string,file:string} $mailer          Active mailer.
+	 * @param string                                      $provider        SureMail provider label.
+	 * @param bool                                        $connection_lost Whether a SureMail connection went away.
+	 * @param bool                                        $failure_open    Whether a notification failure is unresolved.
+	 * @param array<string,mixed>                         $outcomes        Stored outcomes.
+	 * @return array{severity:string,title:string,message:string}
+	 */
+	private static function get_copy( $state, array $mailer, $provider, $connection_lost, $failure_open, array $outcomes ) {
+		switch ( $state ) {
+			case 'attention':
+				if ( $connection_lost && ! $failure_open ) {
+					return [
+						'severity' => 'error',
+						'title'    => __( 'SureMail lost its sending connection', 'sureforms' ),
+						'message'  => __( 'SureMail no longer has a connection, so form notifications are not handed to an email service. Reconnect in SureMail.', 'sureforms' ),
+					];
+				}
+
+				if ( 'suremail' === $mailer['slug'] ) {
+					$message = __( 'SureMail did not accept a recent form notification. It may retry automatically; SureMail\'s email logs show the reason.', 'sureforms' );
+				} elseif ( 'none' === $mailer['slug'] ) {
+					$message = __( 'A recent form notification could not be handed to your server\'s mail function. Set up email delivery so notifications are sent through a proper email service.', 'sureforms' );
+				} else {
+					/* translators: %s: name of the site's mail plugin. */
+					$message = sprintf( __( '%s did not accept a recent form notification. Its logs show the reason.', 'sureforms' ), $mailer['label'] );
+				}
+
+				if ( empty( $outcomes['last_failure_entry_saved'] ) && 'failure' === $outcomes['last_result'] ) {
+					$message .= ' ' . __( 'That form does not store entries, so the submission was not saved anywhere.', 'sureforms' );
+				}
+
+				return [
+					'severity' => 'error',
+					'title'    => __( 'A form notification was not sent', 'sureforms' ),
+					'message'  => $message,
+				];
+
+			case 'not_configured':
+				return [
+					'severity' => 'warning',
+					'title'    => __( 'Email delivery is not set up', 'sureforms' ),
+					'message'  => __( 'Form notifications are handed to your server\'s built-in mail function, which many hosts block or send to spam. Set up email delivery so new entries reach your inbox.', 'sureforms' ),
+				];
+
+			case 'suremail_no_connection':
+				return [
+					'severity' => 'warning',
+					'title'    => __( 'SureMail needs a sending connection', 'sureforms' ),
+					'message'  => __( 'SureMail is active but has no connection yet, so form notifications are not handed to an email service.', 'sureforms' ),
+				];
+
+			case 'limited':
+				return [
+					'severity' => 'warning',
+					'title'    => __( 'SureContact sending is limited', 'sureforms' ),
+					'message'  => __( 'Your SureContact account email is not verified yet, so only a few emails a day are accepted. Verify it from the email SureContact sent you.', 'sureforms' ),
+				];
+
+			case 'other_mailer':
+				return [
+					'severity' => 'info',
+					/* translators: %s: name of the site's mail plugin. */
+					'title'    => sprintf( __( 'Emails are sent through %s', 'sureforms' ), '' !== $mailer['label'] ? $mailer['label'] : __( 'your mail plugin', 'sureforms' ) ),
+					'message'  => __( 'Form notifications are handed off to your mail plugin. Manage sending and logs there.', 'sureforms' ),
+				];
+
+			default:
+				return [
+					'severity' => 'success',
+					'title'    => __( 'Email delivery is set up', 'sureforms' ),
+					'message'  => '' !== $provider
+						/* translators: %s: SureMail connection name, e.g. SureContact. */
+						? sprintf( __( 'Form notifications are handed off to SureMail (%s).', 'sureforms' ), $provider )
+						: __( 'Form notifications are handed off to SureMail.', 'sureforms' ),
+				];
+		}
+	}
+}

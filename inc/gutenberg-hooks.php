@@ -7,6 +7,7 @@
 
 namespace SRFM\Inc;
 
+use SRFM\Inc\Email_Delivery\Status as Email_Delivery_Status;
 use SRFM\Inc\Traits\Get_Instance;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -225,6 +226,7 @@ class Gutenberg_Hooks {
 				'is_admin_user'                     => Helper::current_user_can(),
 				'site_url'                          => $site_url,
 				'is_suremails_active'               => is_plugin_active( 'suremails/suremails.php' ),
+				'email_delivery'                    => Email_Delivery_Status::get_status(),
 				'upgrade_url'                       => add_query_arg(
 					[ 'utm_medium' => 'embed_styling_upgrade' ],
 					Helper::get_sureforms_website_url( 'pricing' )

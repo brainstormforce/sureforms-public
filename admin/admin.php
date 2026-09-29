@@ -12,6 +12,8 @@ use SRFM\Inc\AI_Form_Builder\AI_Helper;
 use SRFM\Inc\Client_Logger;
 use SRFM\Inc\Database\Register;
 use SRFM\Inc\Database\Tables\Entries;
+use SRFM\Inc\Email_Delivery\Status as Email_Delivery_Status;
+use SRFM\Inc\Email_Delivery\Suremail_Adapter;
 use SRFM\Inc\Generate_Form_Markup;
 use SRFM\Inc\Global_Settings\Global_Settings;
 use SRFM\Inc\Helper;
@@ -1410,8 +1412,9 @@ JS;
 
 		// Check if SureMail is installed and active.
 		if ( 'sureforms_smtp' === $submenu_page && file_exists( WP_PLUGIN_DIR . '/suremails/suremails.php' ) && is_plugin_active( 'suremails/suremails.php' ) ) {
-			// Plugin is installed and active - redirect to SureMail dashboard.
-			wp_safe_redirect( admin_url( 'options-general.php?page=suremail#/dashboard' ) );
+			// Plugin is installed and active - redirect to SureMail dashboard. SureMail
+			// can live under Settings or as a top-level menu, so let it build the URL.
+			wp_safe_redirect( Suremail_Adapter::admin_url( '/dashboard' ) );
 			exit;
 		}
 	}
@@ -1825,6 +1828,7 @@ JS;
 			'ajax_url'                     => admin_url( 'admin-ajax.php' ),
 			'client_logs_nonce'            => Helper::current_user_can() ? wp_create_nonce( 'srfm_client_logs' ) : '',
 			'action_items'                 => $this->get_action_items(),
+			'email_delivery'               => Email_Delivery_Status::get_status(),
 			'notice_response_nonce'        => Helper::current_user_can() ? wp_create_nonce( 'srfm_notice_response' ) : '',
 			'dismiss_action_item_nonce'    => Helper::current_user_can() ? wp_create_nonce( 'srfm_dismiss_action_item' ) : '',
 			'sf_plugin_manager_nonce'      => wp_create_nonce( 'sf_plugin_manager_nonce' ),
