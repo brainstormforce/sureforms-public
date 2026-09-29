@@ -205,4 +205,32 @@ test.describe( 'Generate with AI — starter cards', () => {
 			page.getByRole( 'button', { name: 'Show examples' } )
 		).toHaveCount( 0 );
 	} );
+
+	test( 'deselecting an untouched card gives back the text it replaced', async ( {
+		page,
+	} ) => {
+		await openAiScreen( page );
+
+		await promptBox( page ).fill( 'Booking form for my yoga studio' );
+		await starterCard( page, 'Contact form' ).click();
+		await starterCard( page, 'Contact form' ).click();
+
+		await expect( promptBox( page ) ).toHaveValue(
+			'Booking form for my yoga studio'
+		);
+	} );
+
+	test( 'deselecting an edited card keeps the edits', async ( { page } ) => {
+		await openAiScreen( page );
+
+		await starterCard( page, 'Event registration' ).click();
+		const edited = ( await promptBox( page ).inputValue() ) + ' Add a T-shirt size dropdown.';
+		await promptBox( page ).fill( edited );
+		await starterCard( page, 'Event registration' ).click();
+
+		await expect( promptBox( page ) ).toHaveValue( edited );
+		await expect(
+			starterCard( page, 'Event registration' )
+		).toHaveAttribute( 'aria-pressed', 'false' );
+	} );
 } );
