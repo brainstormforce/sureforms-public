@@ -3,7 +3,6 @@ import { useState, useRef, useEffect, useMemo, memo } from '@wordpress/element';
 import {
 	Button,
 	Container,
-	ProgressSteps,
 	TextArea,
 	toast,
 	Tooltip,
@@ -406,19 +405,6 @@ export default ( props ) => {
 		document.getElementById( 'textarea' )?.focus();
 	};
 
-	// Guided steps: 1 Pick, 2 Customize, 3 Generate.
-	const isUntouchedStarter =
-		!! selectedStarterId &&
-		starters.some(
-			( item ) => item.id === selectedStarterId && item.prompt === text
-		);
-	let currentStep = 3;
-	if ( ! canGenerate ) {
-		currentStep = 1;
-	} else if ( isUntouchedStarter ) {
-		currentStep = 2;
-	}
-
 	let counterColorClass = 'text-field-helper';
 	if ( characterCount >= MAX_PROMPT_LENGTH ) {
 		counterColorClass = 'text-support-error';
@@ -458,32 +444,6 @@ export default ( props ) => {
 										'sureforms'
 									) }
 								</p>
-							</Container.Item>
-							<Container.Item>
-								<ProgressSteps
-									completedVariant="number"
-									currentStep={ currentStep }
-									size="sm"
-									type="inline"
-									variant="number"
-									lineClassName="w-12 sm:w-20"
-								>
-									<ProgressSteps.Step
-										labelText={ __( 'Pick', 'sureforms' ) }
-									/>
-									<ProgressSteps.Step
-										labelText={ __(
-											'Customize',
-											'sureforms'
-										) }
-									/>
-									<ProgressSteps.Step
-										labelText={ __(
-											'Generate',
-											'sureforms'
-										) }
-									/>
-								</ProgressSteps>
 							</Container.Item>
 							<Container.Item className="w-full">
 								<div className="w-full max-w-[750px] lg:max-w-[900px] mx-auto p-2 flex flex-col gap-4">
