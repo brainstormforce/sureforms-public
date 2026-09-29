@@ -292,4 +292,42 @@ class Test_AI_Helper extends TestCase {
 		$result = AI_Helper::sanitize_ai_error_message( 'plain message' );
 		$this->assertSame( 'plain message', $result );
 	}
+
+	/**
+	 * has_ai_generated_forms() is false until a form carries the AI meta.
+	 */
+	public function test_has_ai_generated_forms_false_without_ai_forms() {
+		// This suite does not roll back between tests, so clear AI flags left by others.
+		delete_post_meta_by_key( '_srfm_is_ai_generated' );
+
+		$post_id = wp_insert_post(
+			[
+				'post_type'   => SRFM_FORMS_POST_TYPE,
+				'post_title'  => 'Manual form',
+				'post_status' => 'publish',
+			]
+		);
+
+		$this->assertFalse( AI_Helper::has_ai_generated_forms() );
+
+		wp_delete_post( $post_id, true );
+	}
+
+	/**
+	 * has_ai_generated_forms() counts AI forms in any status, including drafts.
+	 */
+	public function test_has_ai_generated_forms_true_for_draft_ai_form() {
+		$post_id = wp_insert_post(
+			[
+				'post_type'   => SRFM_FORMS_POST_TYPE,
+				'post_title'  => 'AI form',
+				'post_status' => 'draft',
+			]
+		);
+		update_post_meta( $post_id, '_srfm_is_ai_generated', true );
+
+		$this->assertTrue( AI_Helper::has_ai_generated_forms() );
+
+		wp_delete_post( $post_id, true );
+	}
 }
