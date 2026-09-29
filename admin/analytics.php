@@ -732,7 +732,6 @@ class Analytics {
 				'is_ai_generated'    => (string) (int) $is_ai,
 				'block_count'        => (string) $block_count,
 				'days_since_install' => (string) $days_since_install,
-				'ai_starter'         => Helper::get_string_value( get_post_meta( $post->ID, '_srfm_ai_starter', true ) ),
 			]
 		);
 	}
@@ -750,10 +749,14 @@ class Analytics {
 	 * @return void
 	 */
 	public static function track_ai_starter_usage( $starter_id, $edited ) {
+		// The id becomes an option key and an event property key, so clean it here
+		// rather than trusting every caller.
+		$starter_id = substr( sanitize_key( Helper::get_string_value( $starter_id ) ), 0, 40 );
+
 		$usage = Helper::get_srfm_option( 'ai_starter_usage', [] );
 		$usage = is_array( $usage ) ? $usage : [];
 
-		$counts = isset( $usage['starters'] ) && is_array( $usage['starters'] ) ? $usage['starters'] : [];
+		$counts = isset( $usage['starters'] ) && is_array( $usage['starters'] ) ? array_map( 'absint', $usage['starters'] ) : [];
 
 		$usage['total_ai_forms'] = absint( $usage['total_ai_forms'] ?? 0 ) + 1;
 

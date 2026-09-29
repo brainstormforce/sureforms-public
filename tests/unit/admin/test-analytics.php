@@ -1596,4 +1596,13 @@ class Test_Analytics extends TestCase {
 		$this->assertCount( 20, $usage['starters'] );
 		$this->assertSame( 25, $usage['total_ai_forms'] );
 	}
+
+	public function test_track_ai_starter_usage_sanitizes_the_starter_id() {
+		Helper::update_srfm_option( 'ai_starter_usage', [] );
+
+		Analytics::track_ai_starter_usage( 'Contact<script>Form', false );
+
+		$usage = Helper::get_srfm_option( 'ai_starter_usage', [] );
+		$this->assertSame( [ 'contactscriptform' => 1 ], $usage['starters'] );
+	}
 }
