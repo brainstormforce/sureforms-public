@@ -44,7 +44,7 @@ export const getStarterPrompts = () => {
 			description: __( 'Sign-ups with attendee details', 'sureforms' ),
 			icon: CalendarCheck,
 			prompt: __(
-				'Event registration form with full name, email address, phone number, number of attendees, a dropdown to choose a session (Morning, Afternoon, Evening), checkboxes for dietary needs (Vegetarian, Vegan, Gluten-free, None), and a field for questions or special requests.',
+				'Event registration form with full name, email address, phone number, number of attendees, a dropdown to choose a session (Morning, Afternoon, Evening), a multiple-choice question for dietary needs that allows selecting more than one option (Vegetarian, Vegan, Gluten-free, None), and a field for questions or special requests.',
 				'sureforms'
 			),
 		},
