@@ -23,10 +23,13 @@ const STARTERS = [
  * Open the AI screen with usable AI credits and a stubbed generate endpoint.
  *
  * @param {import('@playwright/test').Page} page
+ * @param {Object}                          options
+ * @param {boolean}                         options.hasAiForms Pretend the site already has an AI form.
+ * @param {string}                          options.query      Extra query string, e.g. '&source=learn'.
  * @return {Promise<Array<Object>>} Request bodies sent to generate-form.
  */
-async function openAiScreen( page ) {
-	await page.addInitScript( () => {
+async function openAiScreen( page, { hasAiForms = false, query = '' } = {} ) {
+	await page.addInitScript( ( siteHasAiForms ) => {
 		// srfm_admin is printed as `var srfm_admin = {...}`; intercept the
 		// assignment so the screen boots without the limit/verification popup.
 		let srfmAdmin;
@@ -41,10 +44,11 @@ async function openAiScreen( page ) {
 						remaining: 5,
 						limit: 10,
 					},
+					has_ai_generated_forms: siteHasAiForms,
 				};
 			},
 		} );
-	} );
+	}, hasAiForms );
 
 	const generateRequests = [];
 	await page.route( GENERATE_FORM_ROUTE, async ( route ) => {
@@ -60,7 +64,7 @@ async function openAiScreen( page ) {
 	} );
 
 	await loginAsAdmin( page );
-	await page.goto( AI_SCREEN );
+	await page.goto( AI_SCREEN + query );
 	await expect(
 		page.getByRole( 'heading', { name: 'What form should we build?' } )
 	).toBeVisible();
@@ -177,5 +181,28 @@ test.describe( 'Generate with AI — starter cards', () => {
 		await expect(
 			starterCard( page, 'Contact form' )
 		).toHaveAttribute( 'aria-pressed', 'false' );
+	} );
+
+	test( 'examples collapse once the site has an AI form and can be expanded', async ( {
+		page,
+	} ) => {
+		await openAiScreen( page, { hasAiForms: true } );
+
+		await expect( starterCard( page, 'Contact form' ) ).toHaveCount( 0 );
+		await page.getByRole( 'button', { name: 'Show examples' } ).click();
+
+		for ( const { title } of STARTERS ) {
+			await expect( starterCard( page, title ) ).toBeVisible();
+		}
+		await expect( starterCard( page, 'Contact form' ) ).toBeFocused();
+	} );
+
+	test( 'the Learn flow always shows the examples', async ( { page } ) => {
+		await openAiScreen( page, { hasAiForms: true, query: '&source=learn' } );
+
+		await expect( starterCard( page, 'Contact form' ) ).toBeVisible();
+		await expect(
+			page.getByRole( 'button', { name: 'Show examples' } )
+		).toHaveCount( 0 );
 	} );
 } );

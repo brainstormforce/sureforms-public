@@ -120,6 +120,25 @@ export default ( props ) => {
 	const [ showLearnTip, setShowLearnTip ] = useState( false );
 	const [ showGenerateTip, setShowGenerateTip ] = useState( false );
 
+	// Starter examples are for getting started: collapse them once the site has
+	// an AI form, except in the Learn flow which is about the first form.
+	const [ showStarters, setShowStarters ] = useState(
+		() => ! srfm_admin?.has_ai_generated_forms || source === 'learn'
+	);
+	const [ focusStarters, setFocusStarters ] = useState( false );
+
+	// Move focus to the first example after "Show examples" is clicked.
+	useEffect( () => {
+		if ( focusStarters && showStarters ) {
+			document
+				.querySelector(
+					'[aria-labelledby="srfm-starter-prompts-label"] button'
+				)
+				?.focus();
+			setFocusStarters( false );
+		}
+	}, [ focusStarters, showStarters ] );
+
 	const initSpeechRecognition = () => {
 		const SpeechRecognition =
 			window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -454,11 +473,43 @@ export default ( props ) => {
 							</Container.Item>
 							<Container.Item className="w-full">
 								<div className="w-full max-w-[750px] lg:max-w-[900px] mx-auto p-2 flex flex-col gap-4">
-									<StarterPrompts
-										starters={ starters }
-										selectedStarterId={ selectedStarterId }
-										onToggle={ handleStarterToggle }
-									/>
+									{ showStarters ? (
+										<StarterPrompts
+											starters={ starters }
+											selectedStarterId={
+												selectedStarterId
+											}
+											onToggle={ handleStarterToggle }
+										/>
+									) : (
+										starters.length > 0 && (
+											<Container
+												align="center"
+												className="gap-1 text-sm text-text-secondary"
+											>
+												<span>
+													{ __(
+														'Need ideas?',
+														'sureforms'
+													) }
+												</span>
+												<Button
+													size="sm"
+													variant="link"
+													aria-expanded={ false }
+													onClick={ () => {
+														setShowStarters( true );
+														setFocusStarters( true );
+													} }
+												>
+													{ __(
+														'Show examples',
+														'sureforms'
+													) }
+												</Button>
+											</Container>
+										)
+									) }
 									<div className="relative">
 										{ showLearnTip && (
 											<div className="absolute top-1/2 -translate-y-1/2 -right-2 translate-x-full z-[999999] pointer-events-none">
