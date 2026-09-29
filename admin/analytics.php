@@ -743,8 +743,8 @@ class Analytics {
 	 * as the `ai_starter_usage` event, so the share of AI forms started from
 	 * each card can be read from the warehouse.
 	 *
-	 * @param string $starter_id Starter card id, or empty string for a free-text prompt.
-	 * @param bool   $edited     Whether the starter prompt was edited before generating.
+	 * @param mixed $starter_id Starter card id (sanitized here), or empty string for a free-text prompt.
+	 * @param bool  $edited     Whether the starter prompt was edited before generating.
 	 * @since x.x.x
 	 * @return void
 	 */

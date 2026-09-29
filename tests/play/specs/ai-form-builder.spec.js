@@ -249,4 +249,95 @@ test.describe( 'Generate with AI — starter cards', () => {
 		await expect( page.locator( '#srfm-ai-empty-prompt-hint' ) ).toBeVisible();
 		await expect( starterCard( page, 'Contact form' ) ).toBeVisible();
 	} );
+
+	/**
+	 * Let generation succeed (stubbed) and capture the create-new-form request.
+	 *
+	 * Routes added after openAiScreen() take precedence over its failing stub.
+	 *
+	 * @param {import('@playwright/test').Page} page
+	 * @return {Promise<Array<Object>>} Request bodies sent to create-new-form.
+	 */
+	async function captureCreateForm( page ) {
+		await page.route( GENERATE_FORM_ROUTE, ( route ) =>
+			route.fulfill( {
+				status: 200,
+				contentType: 'application/json',
+				body: JSON.stringify( {
+					success: true,
+					data: { form: { formTitle: 'Stubbed form', formFields: [] } },
+				} ),
+			} )
+		);
+		await page.route( /sureforms(\/|%2F)v1(\/|%2F)map-fields/, ( route ) =>
+			route.fulfill( {
+				status: 200,
+				contentType: 'application/json',
+				body: JSON.stringify( '<!-- wp:srfm/input {"block_id":"a1"} /-->' ),
+			} )
+		);
+		const createRequests = [];
+		await page.route(
+			/sureforms(\/|%2F)v1(\/|%2F)create-new-form/,
+			async ( route ) => {
+				createRequests.push( JSON.parse( route.request().postData() ) );
+				// No id in the response, so the screen stays put instead of redirecting.
+				await route.fulfill( {
+					status: 200,
+					contentType: 'application/json',
+					body: JSON.stringify( { message: 'Stubbed in tests.' } ),
+				} );
+			}
+		);
+		return createRequests;
+	}
+
+	test( 'create-new-form receives the untouched starter card', async ( {
+		page,
+	} ) => {
+		await openAiScreen( page );
+		const createRequests = await captureCreateForm( page );
+
+		await starterCard( page, 'Contact form' ).click();
+		await generateButton( page ).click();
+
+		await expect.poll( () => createRequests.length ).toBe( 1 );
+		expect( createRequests[ 0 ] ).toMatchObject( {
+			ai_starter: 'contact',
+			ai_starter_edited: false,
+		} );
+	} );
+
+	test( 'create-new-form marks an edited starter prompt', async ( { page } ) => {
+		await openAiScreen( page );
+		const createRequests = await captureCreateForm( page );
+
+		await starterCard( page, 'Feedback form' ).click();
+		await promptBox( page ).fill(
+			( await promptBox( page ).inputValue() ) + ' Add a star rating.'
+		);
+		await generateButton( page ).click();
+
+		await expect.poll( () => createRequests.length ).toBe( 1 );
+		expect( createRequests[ 0 ] ).toMatchObject( {
+			ai_starter: 'feedback',
+			ai_starter_edited: true,
+		} );
+	} );
+
+	test( 'create-new-form gets no starter for a free-text prompt', async ( {
+		page,
+	} ) => {
+		await openAiScreen( page );
+		const createRequests = await captureCreateForm( page );
+
+		await promptBox( page ).fill( 'Booking form for my yoga studio' );
+		await generateButton( page ).click();
+
+		await expect.poll( () => createRequests.length ).toBe( 1 );
+		expect( createRequests[ 0 ] ).toMatchObject( {
+			ai_starter: '',
+			ai_starter_edited: false,
+		} );
+	} );
 } );
