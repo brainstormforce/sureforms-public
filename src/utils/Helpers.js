@@ -68,7 +68,8 @@ export const handleAddNewPost = async (
 	templateMetas,
 	isConversational = false,
 	formType = '',
-	onError
+	onError,
+	extraData = {}
 ) => {
 	const reportError = ( message ) => {
 		if ( typeof onError === 'function' ) {
@@ -100,6 +101,7 @@ export const handleAddNewPost = async (
 				template_metas: templateMetas,
 				is_conversational: isConversational,
 				form_type: formType,
+				...extraData,
 			},
 		} );
 

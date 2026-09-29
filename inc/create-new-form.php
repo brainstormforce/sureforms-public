@@ -8,6 +8,7 @@
 
 namespace SRFM\Inc;
 
+use SRFM\Admin\Analytics;
 use SRFM\Inc\AI_Form_Builder\AI_Helper;
 use SRFM\Inc\Traits\Get_Instance;
 use WP_Error;
@@ -181,6 +182,16 @@ class Create_New_Form {
 		 * If the request is coming here then the form is AI generated.
 		 */
 		update_post_meta( $post_id, '_srfm_is_ai_generated', true );
+
+		// Record which starter card (if any) the AI prompt came from.
+		$starter_id = isset( $form_info_obj->ai_starter ) && is_string( $form_info_obj->ai_starter ) ? substr( sanitize_key( $form_info_obj->ai_starter ), 0, 40 ) : '';
+		$edited     = ! empty( $form_info_obj->ai_starter_edited );
+
+		if ( '' !== $starter_id ) {
+			update_post_meta( $post_id, '_srfm_ai_starter', $starter_id );
+		}
+
+		Analytics::track_ai_starter_usage( $starter_id, $edited );
 
 		return new WP_REST_Response(
 			[

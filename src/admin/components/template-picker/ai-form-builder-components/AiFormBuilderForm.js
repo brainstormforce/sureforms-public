@@ -648,7 +648,14 @@ export default ( props ) => {
 																	handleCreateAiForm(
 																		text,
 																		[],
-																		true
+																		true,
+																		{
+																			starterId:
+																				selectedStarterId,
+																			starterEdited:
+																				!! selectedStarterId &&
+																				! isUntouchedStarter,
+																		}
 																	);
 																} }
 															>

@@ -732,8 +732,53 @@ class Analytics {
 				'is_ai_generated'    => (string) (int) $is_ai,
 				'block_count'        => (string) $block_count,
 				'days_since_install' => (string) $days_since_install,
+				'ai_starter'         => Helper::get_string_value( get_post_meta( $post->ID, '_srfm_ai_starter', true ) ),
 			]
 		);
+	}
+
+	/**
+	 * Track AI form creation, broken down by the starter card used (if any).
+	 *
+	 * Keeps cumulative counters in srfm_options and re-sends the latest totals
+	 * as the `ai_starter_usage` event, so the share of AI forms started from
+	 * each card can be read from the warehouse.
+	 *
+	 * @param string $starter_id Starter card id, or empty string for a free-text prompt.
+	 * @param bool   $edited     Whether the starter prompt was edited before generating.
+	 * @since x.x.x
+	 * @return void
+	 */
+	public static function track_ai_starter_usage( $starter_id, $edited ) {
+		$usage = Helper::get_srfm_option( 'ai_starter_usage', [] );
+		$usage = is_array( $usage ) ? $usage : [];
+
+		$counts = isset( $usage['starters'] ) && is_array( $usage['starters'] ) ? $usage['starters'] : [];
+
+		$usage['total_ai_forms'] = absint( $usage['total_ai_forms'] ?? 0 ) + 1;
+
+		// Cap distinct keys so a filtered starter list can't grow the option unbounded.
+		if ( '' !== $starter_id && ( isset( $counts[ $starter_id ] ) || count( $counts ) < 20 ) ) {
+			$counts[ $starter_id ] = absint( $counts[ $starter_id ] ?? 0 ) + 1;
+
+			if ( $edited ) {
+				$usage['edited'] = absint( $usage['edited'] ?? 0 ) + 1;
+			}
+		}
+
+		$usage['starters'] = $counts;
+		Helper::update_srfm_option( 'ai_starter_usage', $usage );
+
+		$properties = [
+			'total_ai_forms' => (string) $usage['total_ai_forms'],
+			'edited'         => (string) absint( $usage['edited'] ?? 0 ),
+		];
+		foreach ( $counts as $id => $count ) {
+			$properties[ 'starter_' . $id ] = (string) $count;
+		}
+
+		// $force = true: cumulative counter, must re-send the latest totals each cycle.
+		self::events()->track( 'ai_starter_usage', (string) array_sum( $counts ), $properties, true );
 	}
 
 	/**
