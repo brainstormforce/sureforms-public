@@ -522,8 +522,7 @@ export default ( props ) => {
 									) }
 									<div className="relative">
 										{ showLearnTip && (
-											<div className="absolute bottom-full right-0 mb-2 z-[999999] pointer-events-none">
-												<div className="absolute -bottom-1 right-6 w-2 h-2 bg-tooltip-background-dark rotate-45" />
+											<div className="absolute top-4 right-4 z-[999999] pointer-events-none">
 												<div className="bg-tooltip-background-dark text-text-on-color text-sm px-3 py-2 rounded-md shadow-lg whitespace-nowrap">
 													{ __(
 														'Pick an example or describe your form',
