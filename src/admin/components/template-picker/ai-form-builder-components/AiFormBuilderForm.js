@@ -392,11 +392,16 @@ export default ( props ) => {
 			setSelectedStarterId( null );
 			// An untouched example gives back whatever it replaced; an edited
 			// prompt belongs to the user now and is kept.
-			if ( text === starter.prompt ) {
+			const isUntouched = text === starter.prompt;
+			if ( isUntouched ) {
 				setPrompt( replacedPrompt ?? '' );
 			}
 			setReplacedPrompt( null );
-			speak( __( 'Example removed.', 'sureforms' ) );
+			speak(
+				isUntouched
+					? __( 'Example removed.', 'sureforms' )
+					: __( 'Example unselected. Your edits were kept.', 'sureforms' )
+			);
 			return;
 		}
 
@@ -459,10 +464,15 @@ export default ( props ) => {
 									) }
 								</h1>
 								<p className="m-0 text-base font-normal text-text-secondary">
-									{ __(
-										'Start with an example, or describe your own form below.',
-										'sureforms'
-									) }
+									{ showStarters
+										? __(
+											'Start with an example, or describe your own form below.',
+											'sureforms'
+										  )
+										: __(
+											'Describe the form you want to create.',
+											'sureforms'
+										  ) }
 								</p>
 							</Container.Item>
 							<Container.Item className="w-full">
@@ -490,7 +500,6 @@ export default ( props ) => {
 												<Button
 													size="sm"
 													variant="link"
-													aria-expanded={ false }
 													onClick={ () => {
 														setShowStarters( true );
 														setFocusStarters( true );
@@ -506,8 +515,8 @@ export default ( props ) => {
 									) }
 									<div className="relative">
 										{ showLearnTip && (
-											<div className="absolute top-1/2 -translate-y-1/2 -right-2 translate-x-full z-[999999] pointer-events-none">
-												<div className="absolute top-1/2 -translate-y-1/2 -left-1 w-2 h-2 bg-tooltip-background-dark rotate-45" />
+											<div className="absolute bottom-full right-0 mb-2 z-[999999] pointer-events-none">
+												<div className="absolute -bottom-1 right-6 w-2 h-2 bg-tooltip-background-dark rotate-45" />
 												<div className="bg-tooltip-background-dark text-text-on-color text-sm px-3 py-2 rounded-md shadow-lg whitespace-nowrap">
 													{ __(
 														'Pick an example or describe your form',
@@ -606,8 +615,8 @@ export default ( props ) => {
 														/>
 														<div className="relative">
 															{ showGenerateTip && (
-																<div className="absolute top-1/2 -translate-y-1/2 -right-2 translate-x-full z-[999999] pointer-events-none">
-																	<div className="absolute top-1/2 -translate-y-1/2 -left-1 w-2 h-2 bg-tooltip-background-dark rotate-45" />
+																<div className="absolute bottom-full right-0 mb-2 z-[999999] pointer-events-none">
+																	<div className="absolute -bottom-1 right-6 w-2 h-2 bg-tooltip-background-dark rotate-45" />
 																	<div className="bg-tooltip-background-dark text-text-on-color text-sm px-3 py-2 rounded-md shadow-lg whitespace-nowrap">
 																		{ __(
 																			'Click to generate the form',
@@ -641,6 +650,10 @@ export default ( props ) => {
 																		! canGenerate
 																	) {
 																		setShowEmptyPromptHint(
+																			true
+																		);
+																		// The hint suggests picking an example, so make sure they're visible.
+																		setShowStarters(
 																			true
 																		);
 																		speak(

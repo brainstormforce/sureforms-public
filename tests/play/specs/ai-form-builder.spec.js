@@ -233,4 +233,20 @@ test.describe( 'Generate with AI — starter cards', () => {
 			starterCard( page, 'Event registration' )
 		).toHaveAttribute( 'aria-pressed', 'false' );
 	} );
+
+	test( 'the empty-prompt hint opens the collapsed examples it points to', async ( {
+		page,
+	} ) => {
+		await openAiScreen( page, { hasAiForms: true } );
+
+		await expect( starterCard( page, 'Contact form' ) ).toHaveCount( 0 );
+		await expect(
+			page.getByText( 'Describe the form you want to create.' )
+		).toBeVisible();
+
+		await generateButton( page ).click( { force: true } );
+
+		await expect( page.locator( '#srfm-ai-empty-prompt-hint' ) ).toBeVisible();
+		await expect( starterCard( page, 'Contact form' ) ).toBeVisible();
+	} );
 } );

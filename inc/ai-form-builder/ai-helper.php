@@ -223,7 +223,7 @@ class AI_Helper {
 	}
 
 	/**
-	 * Check whether the site has any AI-generated form, in any status.
+	 * Check whether the site has any AI-generated form (any status except trash and auto-draft).
 	 *
 	 * Used by the Generate with AI screen to collapse the starter examples once
 	 * the site has made its first AI form.
@@ -239,6 +239,7 @@ class AI_Helper {
 				'posts_per_page' => 1,
 				'fields'         => 'ids',
 				'no_found_rows'  => true,
+				'orderby'        => 'none',
 				'meta_query'     => [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- One-row lookup, only on the Generate with AI screen.
 					[
 						'key'     => '_srfm_is_ai_generated',
