@@ -3,6 +3,15 @@ import { Text } from '@bsf/force-ui';
 import { Plus, X } from 'lucide-react';
 import { cn } from '@Utils/Helpers';
 
+// Icon tile colors per starter accent (full class names so Tailwind keeps them).
+const ACCENT_CLASSES = {
+	blue: 'bg-indigo-50 text-indigo-600',
+	orange: 'bg-orange-50 text-orange-600',
+	purple: 'bg-violet-50 text-violet-600',
+	green: 'bg-emerald-50 text-emerald-600',
+};
+const DEFAULT_ACCENT_CLASSES = 'bg-background-secondary text-icon-secondary';
+
 /**
  * Starter prompt cards shown above the AI prompt box.
  *
@@ -56,9 +65,8 @@ const StarterPrompts = ( { starters, selectedStarterId, onToggle } ) => {
 									aria-hidden="true"
 									className={ cn(
 										'flex size-8 shrink-0 items-center justify-center rounded-md',
-										isSelected
-											? 'bg-brand-background-hover-100 text-icon-interactive'
-											: 'bg-background-secondary text-icon-secondary'
+										ACCENT_CLASSES[ starter.accent ] ??
+											DEFAULT_ACCENT_CLASSES
 									) }
 								>
 									<Icon className="size-4" />
