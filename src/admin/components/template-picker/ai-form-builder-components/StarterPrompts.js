@@ -1,6 +1,5 @@
 import { __ } from '@wordpress/i18n';
 import { Text } from '@bsf/force-ui';
-import { Plus, X } from 'lucide-react';
 import { cn } from '@Utils/Helpers';
 
 // Icon tile colors per starter accent (full class names so Tailwind keeps them).
@@ -45,8 +44,6 @@ const StarterPrompts = ( { starters, selectedStarterId, onToggle } ) => {
 				{ starters.map( ( starter ) => {
 					const isSelected = selectedStarterId === starter.id;
 					const Icon = starter.icon;
-					const TrailingIcon = isSelected ? X : Plus;
-
 					return (
 						<button
 							key={ starter.id }
@@ -54,9 +51,9 @@ const StarterPrompts = ( { starters, selectedStarterId, onToggle } ) => {
 							aria-pressed={ isSelected }
 							onClick={ () => onToggle( starter ) }
 							className={ cn(
-								'group flex w-full items-center gap-2.5 rounded-lg border border-solid p-3 text-left cursor-pointer transition-colors duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-1',
+								'group relative flex w-full items-center gap-2.5 rounded-lg border border-solid p-3 pr-9 text-left cursor-pointer transition-colors duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-1',
 								isSelected
-									? 'border-border-ai-button bg-brand-background-50'
+									? 'border-border-ai-button bg-background-primary shadow-sm'
 									: 'border-border-subtle bg-background-primary shadow-sm hover:border-border-strong'
 							) }
 						>
@@ -92,15 +89,17 @@ const StarterPrompts = ( { starters, selectedStarterId, onToggle } ) => {
 									</Text>
 								) }
 							</span>
-							<TrailingIcon
+							{ /* Selection indicator: outline circle; the ring turns brand when selected. */ }
+							<span
 								aria-hidden="true"
 								className={ cn(
-									'size-4 shrink-0',
+									'absolute top-3 right-3 size-3.5 rounded-full border-solid bg-background-primary transition-all duration-150',
 									isSelected
-										? 'text-icon-interactive'
-										: 'text-icon-secondary group-hover:text-icon-primary'
+										? 'border-4 border-border-ai-button'
+										: 'border border-border-subtle group-hover:border-border-strong'
 								) }
-							/>
+							>
+							</span>
 						</button>
 					);
 				} ) }
