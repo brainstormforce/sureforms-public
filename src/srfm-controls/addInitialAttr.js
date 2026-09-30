@@ -65,17 +65,20 @@ const addInitialAttr = ( ChildComponent ) => {
 					attributeObject.slug = '';
 				}
 
-				// Deep-clone array attributes so the duplicated block does not
-				// share the same array references as the original. Without this,
-				// mutations on one block's arrays (e.g. options in multi-choice)
-				// would silently affect the other block.
+				// Give the duplicated block its own copy of every array attribute
+				// (one level: arrays and plain objects inside them are copied,
+				// anything deeper is still shared) so editing one block's arrays,
+				// e.g. options in multi-choice, cannot change the other block.
 				Object.entries( attributes ).forEach( ( [ key, value ] ) => {
 					if ( Array.isArray( value ) ) {
-						attributeObject[ key ] = value.map( ( item ) =>
-							typeof item === 'object' && item !== null
+						attributeObject[ key ] = value.map( ( item ) => {
+							if ( Array.isArray( item ) ) {
+								return [ ...item ];
+							}
+							return typeof item === 'object' && item !== null
 								? { ...item }
-								: item
-						);
+								: item;
+						} );
 					}
 				} );
 
