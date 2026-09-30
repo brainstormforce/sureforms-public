@@ -275,6 +275,24 @@ class Test_Email_Delivery_Status extends TestCase {
 		$this->assertSame( 'ready', Status::get_status()['state'] );
 	}
 
+	/**
+	 * A failure recorded before SureMail was set up, or while it has no
+	 * connection: the fix is to connect, not SureMail's empty logs. Found on a
+	 * fresh ZipWP site right after the one-click install.
+	 */
+	public function test_failure_with_suremail_but_no_connection_asks_to_connect() {
+		$this->activate_plugins( [ Mailer::SUREMAIL_FILE ] );
+		$this->set_suremail_connections( [], '' );
+		Status::record_outcome( false, 3, 'mailer_error' );
+
+		$status = Status::get_status();
+
+		$this->assertSame( 'attention', $status['state'] );
+		$this->assertSame( 'open_suremail', $status['action']['type'] );
+		$this->assertStringEndsWith( '#/onboarding/connection', $status['action']['url'] );
+		$this->assertStringContainsString( 'no sending connection', $status['message'] );
+	}
+
 	public function test_failure_outside_the_window_is_ignored() {
 		$this->activate_plugins( [ 'wp-mail-smtp/wp_mail_smtp.php' ] );
 		update_option(

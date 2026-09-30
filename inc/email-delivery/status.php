@@ -230,9 +230,13 @@ class Status {
 			$state = 'other_mailer';
 		}
 
+		// SureMail with nothing to send through: the fix is a connection, whether
+		// one was lost or never made -- not SureMail's (empty) email logs.
+		$needs_connection = $connection_lost || ( $suremail_active && 0 === $connections );
+
 		$plugin_status = $suremail_active ? 'Activated' : self::get_suremail_plugin_status();
 		$provider      = null !== $readiness ? $readiness['provider_label'] : '';
-		$copy          = self::get_copy( $state, $mailer, $provider, $connection_lost, $failure_open, $outcomes );
+		$copy          = self::get_copy( $state, $mailer, $provider, $needs_connection, $failure_open, $outcomes );
 
 		return [
 			'state'        => $state,
@@ -259,7 +263,7 @@ class Status {
 				'reason'         => $outcomes['last_failure_reason'],
 				'entry_saved'    => $outcomes['last_failure_entry_saved'],
 			],
-			'action'       => self::get_action( $state, $mailer, $plugin_status, $connection_lost ),
+			'action'       => self::get_action( $state, $mailer, $plugin_status, $needs_connection ),
 			'links'        => [
 				'setup' => $suremail_active ? Suremail_Adapter::setup_url() : '',
 				'logs'  => $suremail_active ? Suremail_Adapter::logs_url() : '',
@@ -322,10 +326,10 @@ class Status {
 	 * @param string                                      $state           Status state.
 	 * @param array{slug:string,label:string,file:string} $mailer          Active mailer.
 	 * @param string                                      $plugin_status   SureMail install state.
-	 * @param bool                                        $connection_lost Whether a SureMail connection went away.
+	 * @param bool                                        $needs_connection Whether SureMail has no connection to send through.
 	 * @return array{type:string,label:string,url:string}
 	 */
-	private static function get_action( $state, array $mailer, $plugin_status, $connection_lost ) {
+	private static function get_action( $state, array $mailer, $plugin_status, $needs_connection ) {
 		$none = [
 			'type'  => 'none',
 			'label' => '',
@@ -340,7 +344,7 @@ class Status {
 			];
 		}
 
-		if ( 'suremail_no_connection' === $state || ( 'attention' === $state && $connection_lost ) ) {
+		if ( 'suremail_no_connection' === $state || ( 'attention' === $state && $needs_connection ) ) {
 			return [
 				'type'  => 'open_suremail',
 				'label' => Suremail_Adapter::supports_surecontact() ? __( 'Connect SureContact in SureMail', 'sureforms' ) : __( 'Add a connection in SureMail', 'sureforms' ),
@@ -374,15 +378,15 @@ class Status {
 	 * @param string                                      $state           Status state.
 	 * @param array{slug:string,label:string,file:string} $mailer          Active mailer.
 	 * @param string                                      $provider        SureMail provider label.
-	 * @param bool                                        $connection_lost Whether a SureMail connection went away.
+	 * @param bool                                        $needs_connection Whether SureMail has no connection to send through.
 	 * @param bool                                        $failure_open    Whether a notification failure is unresolved.
 	 * @param array<string,mixed>                         $outcomes        Stored outcomes.
 	 * @return array{severity:string,title:string,message:string}
 	 */
-	private static function get_copy( $state, array $mailer, $provider, $connection_lost, $failure_open, array $outcomes ) {
+	private static function get_copy( $state, array $mailer, $provider, $needs_connection, $failure_open, array $outcomes ) {
 		switch ( $state ) {
 			case 'attention':
-				if ( $connection_lost && ! $failure_open ) {
+				if ( $needs_connection && ! $failure_open ) {
 					return [
 						'severity' => 'error',
 						'title'    => __( 'SureMail lost its sending connection', 'sureforms' ),
@@ -390,7 +394,9 @@ class Status {
 					];
 				}
 
-				if ( 'suremail' === $mailer['slug'] ) {
+				if ( 'suremail' === $mailer['slug'] && $needs_connection ) {
+					$message = __( 'A recent form notification was not sent, and SureMail has no sending connection yet. Connect one so notifications are handed to an email service.', 'sureforms' );
+				} elseif ( 'suremail' === $mailer['slug'] ) {
 					$message = __( 'SureMail did not accept a recent form notification. It may retry automatically; SureMail\'s email logs show the reason.', 'sureforms' );
 				} elseif ( 'none' === $mailer['slug'] ) {
 					$message = __( 'A recent form notification could not be handed to your server\'s mail function. Set up email delivery so notifications are sent through a proper email service.', 'sureforms' );
