@@ -236,6 +236,45 @@ class Test_Email_Delivery_Action_Items extends TestCase {
 		$this->assertArrayNotHasKey( 'email_delivery_setup', $items );
 	}
 
+	/**
+	 * A fresh ZipWP site has no mailer and its first notification fails. The
+	 * failure notice alone offered only a guide and support; the one-click fix
+	 * must stay next to it, non-dismissible, and must not repeat the failure.
+	 */
+	public function test_setup_item_stays_next_to_a_failure_when_the_fix_is_suremail() {
+		$this->use_plugins( [] );
+		$form_id = $this->make_form();
+		Client_Logger::record_failure( 'notification', $form_id, 'Contact Form' );
+		Status::record_outcome( false, $form_id, 'mailer_error' );
+		$this->on_sureforms_dashboard();
+
+		$items = $this->items();
+
+		$this->assertArrayHasKey( 'notification_error', $items );
+		$this->assertArrayHasKey( 'email_delivery_setup', $items );
+		$setup = $items['email_delivery_setup'];
+		$this->assertSame( 'Email delivery is not set up', $setup['title'] );
+		$this->assertFalse( $setup['dismissible'] );
+		$this->assertSame( 'sure_mails', $setup['cta_install'] ?? '' );
+	}
+
+	/**
+	 * Ignoring the advice earlier does not hide the fix once email actually fails.
+	 */
+	public function test_a_failure_brings_back_an_ignored_setup_item() {
+		$this->use_plugins( [] );
+		$form_id = $this->make_form();
+		Helper::update_srfm_option( 'dismissed_action_items', [ 'email_delivery_setup' ] );
+		$this->on_sureforms_dashboard();
+		$this->assertArrayNotHasKey( 'email_delivery_setup', $this->items(), 'Precondition: ignored while nothing failed.' );
+
+		Status::record_outcome( false, $form_id, 'mailer_error' );
+		Status::reset();
+		Admin::reset_action_items_cache();
+
+		$this->assertArrayHasKey( 'email_delivery_setup', $this->items() );
+	}
+
 	public function test_notification_failure_points_at_suremail_logs_when_suremail_sends() {
 		$this->use_plugins( [ 'suremails/suremails.php' ] );
 		Client_Logger::record_failure( 'notification', 42, 'Contact Form' );

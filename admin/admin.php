@@ -4095,41 +4095,64 @@ CSS;
 			return [];
 		}
 
-		$status = Email_Delivery_Status::get_status();
-		$state  = Helper::get_string_value( $status['state'] ?? '' );
-		$ids    = [
-			'not_configured'         => 'email_delivery_setup',
-			'suremail_no_connection' => 'email_delivery_setup',
-			'limited'                => 'email_delivery_limited',
-		];
+		$status      = Email_Delivery_Status::get_status();
+		$state       = Helper::get_string_value( $status['state'] ?? '' );
+		$action      = Helper::get_array_value( $status['action'] ?? [] );
+		$action_type = Helper::get_string_value( $action['type'] ?? '' );
+		$installs    = in_array( $action_type, [ 'install_activate', 'activate' ], true );
 
-		if ( ! isset( $ids[ $state ] ) ) {
+		// Keyed off the next step, not only the state: when a notification has
+		// already failed ("attention") and the fix is still to set up or connect
+		// SureMail, that is exactly when the owner needs this button -- found on a
+		// fresh ZipWP site, whose first notification failed with no mailer.
+		if ( 'limited' === $state ) {
+			$item_id = 'email_delivery_limited';
+		} elseif ( $installs || 'open_suremail' === $action_type ) {
+			$item_id = 'email_delivery_setup';
+		} else {
 			return [];
 		}
 
-		$item_id   = $ids[ $state ];
 		$dismissed = Helper::get_array_value( Helper::get_srfm_option( 'dismissed_action_items', [] ) );
 
-		if ( in_array( $item_id, $dismissed, true ) || ! $this->has_form_with_active_notification() ) {
+		// A real failure brings the advice back even if it was ignored before, and
+		// keeps it until email works: it is no longer optional.
+		$failing = 'attention' === $state;
+
+		if ( ( ! $failing && in_array( $item_id, $dismissed, true ) ) || ! $this->has_form_with_active_notification() ) {
 			return [];
 		}
 
-		$action = Helper::get_array_value( $status['action'] ?? [] );
-		$item   = [
+		$title   = Helper::get_string_value( $status['title'] ?? '' );
+		$message = Helper::get_string_value( $status['message'] ?? '' );
+
+		// The failure itself is notification_error's to report; this item names
+		// the fix, so it does not repeat "a notification was not sent".
+		if ( 'attention' === $state ) {
+			if ( $installs ) {
+				$title   = __( 'Email delivery is not set up', 'sureforms' );
+				$message = __( 'Form notifications have no email service behind them, which is why they can fail. Set up email delivery so new entries reach your inbox.', 'sureforms' );
+			} else {
+				$title   = __( 'SureMail needs a sending connection', 'sureforms' );
+				$message = __( 'SureMail has no working connection, so form notifications are not handed to an email service.', 'sureforms' );
+			}
+		}
+
+		$item = [
 			'id'          => $item_id,
 			'status'      => 'warning',
-			'title'       => Helper::get_string_value( $status['title'] ?? '' ),
-			'message'     => Helper::get_string_value( $status['message'] ?? '' ),
+			'title'       => $title,
+			'message'     => $message,
 			'cta_label'   => Helper::get_string_value( $action['label'] ?? '' ),
 			'cta_url'     => Helper::get_string_value( $action['url'] ?? '' ),
 			'cta_action'  => 'open_suremail',
-			'dismissible' => true,
+			'dismissible' => ! $failing,
 		];
 
 		// SureMail not active yet. The link is WordPress's own installer, which
 		// works in both renderers without JavaScript; the dashboard panel turns
 		// it into a one-click install when the user may install plugins.
-		if ( 'not_configured' === $state ) {
+		if ( $installs ) {
 			$item['cta_url']    = 'Installed' === ( $status['suremail']['plugin_status'] ?? '' )
 				? admin_url( 'plugins.php?plugin_status=inactive' )
 				: admin_url( 'plugin-install.php?s=SureMail&tab=search&type=term' );
