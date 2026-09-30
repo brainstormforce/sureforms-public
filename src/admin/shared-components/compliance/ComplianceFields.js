@@ -1,4 +1,4 @@
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import { useState, useEffect } from '@wordpress/element';
 import { Alert, Input, Switch, Label, Container, Text } from '@bsf/force-ui';
 import { AlertTriangle } from 'lucide-react';
@@ -158,9 +158,13 @@ const ComplianceFields = ( { context, values, onChange } ) => {
 					content={
 						<Text size={ 13 }>
 							{ emailAtRisk
-								? __(
-									'This form will not store entries, and email delivery is not set up on this site yet. If a notification email is not sent, that submission is gone. Set up email delivery from the SureForms dashboard first.',
-									'sureforms'
+								? sprintf(
+									/* translators: %s: current email delivery status, e.g. "Email delivery is not set up". */
+									__(
+										'This form will not store entries, so if a notification email is not sent, that submission is gone. Email delivery on this site needs attention first: %s.',
+										'sureforms'
+									),
+									emailDelivery?.title || ''
 								  )
 								: __(
 									'This form will not store entries. If a notification email ever fails to send, that submission cannot be recovered.',
