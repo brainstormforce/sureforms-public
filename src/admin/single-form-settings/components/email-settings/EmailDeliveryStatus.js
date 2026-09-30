@@ -50,6 +50,8 @@ const EmailDeliveryStatus = () => {
 
 	return (
 		<Alert
+			// Spaced off the notification table below, which it otherwise touches.
+			className="mb-3"
 			variant={ ok ? 'info' : 'warning' }
 			title={ status.title }
 			icon={ ok ? <CircleCheck /> : <AlertTriangle /> }
