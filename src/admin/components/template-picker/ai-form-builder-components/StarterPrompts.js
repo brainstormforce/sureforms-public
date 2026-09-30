@@ -30,7 +30,7 @@ const StarterPrompts = ( { starters, selectedStarterId, onToggle } ) => {
 		<div
 			role="group"
 			aria-labelledby="srfm-starter-prompts-label"
-			className="flex flex-col gap-2"
+			className="mb-4 flex flex-col gap-2"
 		>
 			<Text
 				as="span"
@@ -41,7 +41,7 @@ const StarterPrompts = ( { starters, selectedStarterId, onToggle } ) => {
 			>
 				{ __( 'Start with an example', 'sureforms' ) }
 			</Text>
-			<div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+			<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
 				{ starters.map( ( starter ) => {
 					const isSelected = selectedStarterId === starter.id;
 					const Icon = starter.icon;
