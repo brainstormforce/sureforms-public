@@ -54,7 +54,7 @@ const StarterPrompts = ( { starters, selectedStarterId, onToggle } ) => {
 							aria-pressed={ isSelected }
 							onClick={ () => onToggle( starter ) }
 							className={ cn(
-								'group flex w-full items-center gap-3 rounded-lg border border-solid p-3 text-left cursor-pointer transition-colors duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-1',
+								'group flex w-full items-center gap-2.5 rounded-lg border border-solid p-3 text-left cursor-pointer transition-colors duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-1',
 								isSelected
 									? 'border-border-ai-button bg-brand-background-50'
 									: 'border-border-subtle bg-background-primary shadow-sm hover:border-border-strong'
@@ -64,12 +64,12 @@ const StarterPrompts = ( { starters, selectedStarterId, onToggle } ) => {
 								<span
 									aria-hidden="true"
 									className={ cn(
-										'flex size-8 shrink-0 items-center justify-center rounded-md',
+										'flex size-9 shrink-0 items-center justify-center rounded-lg',
 										ACCENT_CLASSES[ starter.accent ] ??
 											DEFAULT_ACCENT_CLASSES
 									) }
 								>
-									<Icon className="size-4" />
+									<Icon className="size-5" />
 								</span>
 							) }
 							<span className="flex min-w-0 flex-1 flex-col gap-0.5">
