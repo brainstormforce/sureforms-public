@@ -14,7 +14,7 @@ const MAX_STARTERS = 4;
  * Default prompts only ask for fields available in the free plugin.
  *
  * @since x.x.x
- * @return {Array<{id: string, title: string, description: string, icon: Function, prompt: string}>} Starter prompts.
+ * @return {Array<{id: string, title: string, description: string, icon: Function, accent?: string, prompt: string}>} Starter prompts.
  */
 export const getStarterPrompts = () => {
 	const starters = applyFilters( 'srfm.aiFormScreen.starterPrompts', [
@@ -23,6 +23,7 @@ export const getStarterPrompts = () => {
 			title: __( 'Contact form', 'sureforms' ),
 			description: __( 'Name, email and message', 'sureforms' ),
 			icon: Mail,
+			accent: 'blue',
 			prompt: __(
 				'Contact form with full name, email address, phone number (optional), subject and message. Add a consent checkbox asking permission to reply by email.',
 				'sureforms'
@@ -33,6 +34,7 @@ export const getStarterPrompts = () => {
 			title: __( 'Quote request', 'sureforms' ),
 			description: __( 'Enquiries with project details', 'sureforms' ),
 			icon: FileText,
+			accent: 'orange',
 			prompt: __(
 				'Quote request form for a service business with full name, email, phone number, company name (optional), a dropdown to choose the service needed, a dropdown for budget range (Under $500, $500–$2,000, $2,000–$5,000, Over $5,000), a dropdown for timeline (As soon as possible, Within a month, 1–3 months, Just exploring), a field describing the project, and preferred contact method (Email, Phone).',
 				'sureforms'
@@ -43,6 +45,7 @@ export const getStarterPrompts = () => {
 			title: __( 'Event registration', 'sureforms' ),
 			description: __( 'Sign-ups with attendee details', 'sureforms' ),
 			icon: CalendarCheck,
+			accent: 'purple',
 			prompt: __(
 				'Event registration form with full name, email address, phone number, number of attendees, a dropdown to choose a session (Morning, Afternoon, Evening), a multiple-choice question for dietary needs that allows selecting more than one option (Vegetarian, Vegan, Gluten-free, None), and a field for questions or special requests.',
 				'sureforms'
@@ -53,6 +56,7 @@ export const getStarterPrompts = () => {
 			title: __( 'Feedback form', 'sureforms' ),
 			description: __( 'Ratings and suggestions', 'sureforms' ),
 			icon: MessageSquare,
+			accent: 'green',
 			prompt: __(
 				'Customer feedback form with name (optional), email (optional), a multiple-choice question "How satisfied are you with our service?" from Very satisfied to Very dissatisfied, a field for what we did well, a field for what we could improve, and a Yes/No question "Would you recommend us to a friend?"',
 				'sureforms'
