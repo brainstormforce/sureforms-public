@@ -222,6 +222,10 @@ class Suremail_Adapter {
 	/**
 	 * Readiness from SureMail's own contract, when it provides one.
 	 *
+	 * SureMail 2.0.2 does not ship this filter yet. It is the contract requested
+	 * in brainstormforce/suremails#809; until it lands, has_filter() keeps this
+	 * branch inert and the option read above is what runs.
+	 *
 	 * @since x.x.x
 	 * @return array{source:string,connections:int,default_type:string,default_missing:bool,provider_label:string,surecontact:array{connected:bool,email_verified:bool|null,is_paid:bool|null}}|null
 	 */

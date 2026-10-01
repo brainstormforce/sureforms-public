@@ -94,7 +94,8 @@ class Test_Email_Delivery_Status extends TestCase {
 
 	public function test_suremail_wins_over_another_mail_plugin() {
 		$this->activate_plugins( [ 'wp-mail-smtp/wp_mail_smtp.php', Mailer::SUREMAIL_FILE ] );
-		$this->assertSame( 'suremail', Mailer::get_active()['slug'] );
+		$this->set_suremail_connections( [ 'sc1' => $this->surecontact_row( true ) ], 'sc1' );
+		$this->assertSame( 'suremail', Mailer::get_active()['slug'], 'A connected SureMail sends.' );
 	}
 
 	public function test_other_mail_plugin_is_named() {
