@@ -170,6 +170,28 @@ class Test_Email_Delivery_Action_Items extends TestCase {
 		$this->assertArrayNotHasKey( 'email_delivery_setup', $this->items() );
 	}
 
+	/**
+	 * Forms are checked in pages, so an older form that sends notifications is
+	 * found even when the newest fifty do not.
+	 */
+	public function test_setup_item_finds_a_notifying_form_past_the_first_page() {
+		$this->use_plugins( [] );
+		$old = $this->make_form( true );
+		wp_update_post(
+			[
+				'ID'            => $old,
+				'post_date'     => '2020-01-01 00:00:00',
+				'post_date_gmt' => '2020-01-01 00:00:00',
+			]
+		);
+		for ( $i = 0; $i < 50; $i++ ) {
+			$this->make_form( false );
+		}
+		$this->on_sureforms_dashboard();
+
+		$this->assertArrayHasKey( 'email_delivery_setup', $this->items() );
+	}
+
 	public function test_setup_item_is_hidden_with_promotions() {
 		$this->use_plugins( [] );
 		$this->make_form();
