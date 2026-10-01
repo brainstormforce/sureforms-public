@@ -8,6 +8,7 @@ import { useOnboardingState } from '../onboarding-state';
 import { installAndActivatePlugin } from '@Utils/Helpers';
 import { Divider, Header, FeatureList, HERO_PANEL_CLASS } from '../components';
 import NavigationButtons from '../components/navigation-buttons';
+import { getView, getDoneAction } from './email-delivery-view';
 // Rendered via <object>, not <img> or an inlined component: the artwork
 // animates with CSS keyframes, which svgr/svgo strips when inlining, and
 // <object> gives the SVG its own document where they run untouched.
@@ -27,32 +28,6 @@ const features = [
 		'sureforms'
 	),
 ];
-
-/**
- * Which screen the step shows for an email delivery state.
- *
- * @param {Object|null} status Email delivery status from the REST endpoint.
- * @return {'install'|'connect'|'limited'|'done'} View name.
- */
-const getView = ( status ) => {
-	const state = status?.state;
-	const action = status?.action?.type;
-
-	if (
-		'not_configured' === state ||
-		'install_activate' === action ||
-		'activate' === action
-	) {
-		return 'install';
-	}
-	if ( 'suremail_no_connection' === state || 'open_suremail' === action ) {
-		return 'limited' === state ? 'limited' : 'connect';
-	}
-	if ( 'limited' === state ) {
-		return 'limited';
-	}
-	return 'done';
-};
 
 const fetchStatus = () =>
 	apiFetch( {
@@ -133,16 +108,24 @@ const EmailDelivery = () => {
 	// State the owner arrived with, for analytics. Captured once.
 	const stateAtStep = useRef( srfm_admin?.email_delivery?.state ?? '' );
 
-	const refreshStatus = async () => {
-		try {
-			const next = await fetchStatus();
-			if ( next?.state ) {
-				setStatus( next );
-			}
-			return next;
-		} catch ( fetchError ) {
-			return null;
+	// One request at a time: coming back from SureMail fires both focus and
+	// visibilitychange, which would otherwise fetch the status twice.
+	const inFlight = useRef( null );
+	const refreshStatus = () => {
+		if ( ! inFlight.current ) {
+			inFlight.current = fetchStatus()
+				.then( ( next ) => {
+					if ( next?.state ) {
+						setStatus( next );
+					}
+					return next;
+				} )
+				.catch( () => null )
+				.finally( () => {
+					inFlight.current = null;
+				} );
 		}
+		return inFlight.current;
 	};
 
 	useEffect( () => {
@@ -346,16 +329,29 @@ const EmailDelivery = () => {
 			};
 			break;
 
+		case 'attention':
+			// A notification failed and the fix is not to set up or connect
+			// SureMail: say so, and offer that fix (logs, or verifying SureContact).
+			title = status?.title || __( 'Email Delivery', 'sureforms' );
+			description = status?.message || '';
+			continueProps = {
+				onClick: () => leave( 'continue_attention' ),
+				text: __( 'Continue', 'sureforms' ),
+			};
+			skipProps = status?.action?.url
+				? {
+					onClick: openSureMail,
+					text: status.action.label,
+					icon: <ExternalLink />,
+				  }
+				: {};
+			break;
+
 		default:
 			title = status?.title || __( 'Email Delivery', 'sureforms' );
 			description = status?.message || '';
 			continueProps = {
-				onClick: () =>
-					leave(
-						'other_mailer' === status?.state
-							? 'continue_other_mailer'
-							: 'continue_ready'
-					),
+				onClick: () => leave( getDoneAction( status ) ),
 				text: __( 'Continue', 'sureforms' ),
 			};
 			skipProps = {};

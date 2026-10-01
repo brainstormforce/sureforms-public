@@ -1636,4 +1636,39 @@ class Test_Analytics extends TestCase {
 		$memo->setAccessible( true );
 		$memo->setValue( null, null );
 	}
+
+	/**
+	 * The email delivery state is sent once a day at most, and only when it
+	 * changed since the last one sent.
+	 */
+	public function test_track_email_delivery_status() {
+		delete_transient( 'srfm_email_delivery_state_checked' );
+		\SRFM\Inc\Helper::update_srfm_option( 'email_delivery_state_tracked', '' );
+		add_filter( 'pre_option_active_plugins', '__return_empty_array' );
+		\SRFM\Inc\Email_Delivery\Status::reset();
+
+		$analytics = \SRFM\Admin\Analytics::get_instance();
+		$analytics->track_email_delivery_status();
+		$tracked = \SRFM\Inc\Helper::get_srfm_option( 'email_delivery_state_tracked', '' );
+		$this->assertStringStartsWith( 'not_configured|none|', $tracked );
+
+		// Checked again within the day: nothing new, even if the state moved.
+		remove_filter( 'pre_option_active_plugins', '__return_empty_array' );
+		$smtp = static function () {
+			return [ 'wp-mail-smtp/wp_mail_smtp.php' ];
+		};
+		add_filter( 'pre_option_active_plugins', $smtp );
+		\SRFM\Inc\Email_Delivery\Status::reset();
+		$analytics->track_email_delivery_status();
+		$this->assertSame( $tracked, \SRFM\Inc\Helper::get_srfm_option( 'email_delivery_state_tracked', '' ) );
+
+		// A day later the change is sent.
+		delete_transient( 'srfm_email_delivery_state_checked' );
+		$analytics->track_email_delivery_status();
+		$this->assertStringStartsWith( 'other_mailer|other|WP Mail SMTP', \SRFM\Inc\Helper::get_srfm_option( 'email_delivery_state_tracked', '' ) );
+
+		remove_filter( 'pre_option_active_plugins', $smtp );
+		delete_transient( 'srfm_email_delivery_state_checked' );
+		\SRFM\Inc\Email_Delivery\Status::reset();
+	}
 }
