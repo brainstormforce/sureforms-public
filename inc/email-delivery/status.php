@@ -368,6 +368,12 @@ class Status {
 		];
 
 		if ( 'not_configured' === $state || ( 'attention' === $state && 'none' === $mailer['slug'] ) ) {
+			// Installing SureMail is a promotion, so it follows the same switch as
+			// the SureMail menu. The status text stays honest either way.
+			if ( Helper::hide_promotions() ) {
+				return $none;
+			}
+
 			return [
 				'type'  => 'Installed' === $plugin_status ? 'activate' : 'install_activate',
 				'label' => 'Installed' === $plugin_status ? __( 'Activate SureMail', 'sureforms' ) : __( 'Set up email delivery', 'sureforms' ),

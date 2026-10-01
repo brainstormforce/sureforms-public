@@ -226,7 +226,9 @@ class Gutenberg_Hooks {
 				'is_admin_user'                     => Helper::current_user_can(),
 				'site_url'                          => $site_url,
 				'is_suremails_active'               => is_plugin_active( 'suremails/suremails.php' ),
-				'email_delivery'                    => Email_Delivery_Status::get_status(),
+				// Only the SureForms form editor shows it, and only to admins: it names
+				// the mailer and SureMail's admin URLs, and building it can write an option.
+				'email_delivery'                    => $screen && SRFM_FORMS_POST_TYPE === $screen->post_type && Helper::current_user_can() ? Email_Delivery_Status::get_status() : null,
 				'upgrade_url'                       => add_query_arg(
 					[ 'utm_medium' => 'embed_styling_upgrade' ],
 					Helper::get_sureforms_website_url( 'pricing' )
