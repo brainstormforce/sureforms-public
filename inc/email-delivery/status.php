@@ -216,6 +216,11 @@ class Status {
 			'is_paid'        => null,
 		];
 
+		// Refreshed in the background by Suremail_Adapter, never fetched here, so
+		// building the status stays free of remote calls.
+		$surecontact['quota']     = $suremail_active && $surecontact['connected'] ? Suremail_Adapter::get_surecontact_quota() : null;
+		$surecontact['quota_low'] = Suremail_Adapter::is_quota_low( $surecontact['quota'] );
+
 		if ( $failure_open || $connection_lost ) {
 			$state = 'attention';
 		} elseif ( 'none' === $mailer['slug'] ) {

@@ -80,6 +80,7 @@ class Test_Email_Delivery_Action_Items extends TestCase {
 		delete_option( Suremail_Adapter::CONNECTIONS_OPTION );
 		delete_option( Status::OUTCOMES_OPTION );
 		delete_option( Client_Logger::FAILURES_OPTION );
+		delete_transient( Suremail_Adapter::QUOTA_TRANSIENT );
 		Status::reset();
 		Admin::reset_action_items_cache();
 		Admin::reset_form_setup_card_cache();
@@ -310,5 +311,127 @@ class Test_Email_Delivery_Action_Items extends TestCase {
 
 		$this->assertStringContainsString( 'Emails are sent through FluentSMTP', $handled );
 		$this->assertStringNotContainsString( 'data-srfm-event="email_delivery"', $handled, 'Nothing to do, so no button.' );
+	}
+
+	/**
+	 * SureMail sending through SureContact, with a cached quota.
+	 *
+	 * @param int    $used   Emails used.
+	 * @param int    $limit  Emails in the plan.
+	 * @param string $period SureContact's cap period.
+	 */
+	private function surecontact_with_quota( $used, $limit, $period = 'monthly' ) {
+		$this->use_plugins( [ 'suremails/suremails.php' ] );
+		update_option(
+			Suremail_Adapter::CONNECTIONS_OPTION,
+			[
+				'connections'        => [
+					'sc1' => [
+						'type'           => 'SURECONTACT',
+						'priority'       => 1,
+						'email_verified' => true,
+						'is_paid'        => false,
+					],
+				],
+				'default_connection' => [ 'id' => 'sc1' ],
+			]
+		);
+		set_transient(
+			Suremail_Adapter::QUOTA_TRANSIENT,
+			[
+				'known'      => true,
+				'used'       => $used,
+				'limit'      => $limit,
+				'remaining'  => max( 0, $limit - $used ),
+				'period'     => $period,
+				'checked_at' => time(),
+			],
+			HOUR_IN_SECONDS
+		);
+		Status::reset();
+		Admin::reset_action_items_cache();
+	}
+
+	private function on_entries_screen() {
+		$_GET['page']     = SRFM_ENTRIES;
+		$_REQUEST['page'] = SRFM_ENTRIES;
+		Admin::reset_action_items_cache();
+	}
+
+	public function test_quota_warning_when_free_emails_are_almost_used_up() {
+		$this->surecontact_with_quota( 85, 100 );
+		$this->on_sureforms_dashboard();
+
+		$item = $this->items()['email_delivery_quota'] ?? [];
+
+		$this->assertSame( 'warning', $item['status'] ?? '' );
+		$this->assertTrue( $item['dismissible'] ?? false );
+		$this->assertSame( 'Your free SureContact emails are almost used up', $item['title'] ?? '' );
+		$this->assertStringContainsString( '85 of 100 emails used this month', $item['message'] ?? '' );
+		$this->assertStringContainsString( 'source=sureforms', $item['cta_url'] ?? '' );
+		$this->assertSame( 'open_suremail', $item['cta_action'] ?? '' );
+	}
+
+	public function test_quota_warning_is_also_on_entries_but_not_elsewhere() {
+		$this->surecontact_with_quota( 90, 100 );
+
+		\SRFM\Admin\Notice_Manager::clear_notices();
+		$this->on_entries_screen();
+		$this->assertArrayHasKey( 'email_delivery_quota', $this->items() );
+		$notices = wp_list_pluck( \SRFM\Admin\Notice_Manager::get_notices(), 'pages', 'id' );
+		$this->assertSame( [ SRFM_ENTRIES ], $notices['srfm-email_delivery_quota'] ?? null, 'Entries hides classic notices, so it gets the React notice.' );
+		\SRFM\Admin\Notice_Manager::clear_notices();
+
+		$this->on_sureforms_dashboard( false );
+		$this->assertArrayNotHasKey( 'email_delivery_quota', $this->items() );
+	}
+
+	public function test_no_quota_warning_with_plenty_left() {
+		$this->surecontact_with_quota( 40, 100 );
+		$this->on_sureforms_dashboard();
+
+		$this->assertArrayNotHasKey( 'email_delivery_quota', $this->items() );
+	}
+
+	public function test_used_up_quota_is_an_error_that_cannot_be_dismissed() {
+		$this->surecontact_with_quota( 100, 100, 'lifetime' );
+		Helper::update_srfm_option( 'dismissed_action_items', [ 'email_delivery_quota' ] );
+		$this->on_sureforms_dashboard();
+
+		$item = $this->items()['email_delivery_quota'] ?? [];
+
+		$this->assertSame( 'error', $item['status'] ?? '' );
+		$this->assertFalse( $item['dismissible'] ?? true );
+		$this->assertStringContainsString( 'All 100 emails are used', $item['message'] ?? '' );
+	}
+
+	public function test_quota_dismissal_lasts_until_the_quota_recovers() {
+		$this->surecontact_with_quota( 85, 100 );
+		$this->on_sureforms_dashboard();
+
+		$dismiss = new ReflectionMethod( Admin::class, 'dismiss_action_item' );
+		$dismiss->setAccessible( true );
+		$this->assertTrue( $dismiss->invoke( Admin::get_instance(), 'email_delivery_quota' ) );
+
+		Admin::reset_action_items_cache();
+		$this->assertArrayNotHasKey( 'email_delivery_quota', $this->items() );
+
+		// A new month: plenty left again, so the dismissal is forgotten.
+		$this->surecontact_with_quota( 5, 100 );
+		$this->on_sureforms_dashboard();
+		$this->items();
+		$this->assertNotContains( 'email_delivery_quota', Helper::get_srfm_option( 'dismissed_action_items', [] ) );
+
+		$this->surecontact_with_quota( 95, 100 );
+		$this->on_sureforms_dashboard();
+		$this->assertArrayHasKey( 'email_delivery_quota', $this->items() );
+	}
+
+	public function test_quota_warning_is_hidden_with_promotions() {
+		$this->surecontact_with_quota( 95, 100 );
+		$this->on_sureforms_dashboard();
+		add_filter( 'srfm_hide_promotions', '__return_true' );
+
+		$this->assertArrayNotHasKey( 'email_delivery_quota', $this->items() );
 	}
 }

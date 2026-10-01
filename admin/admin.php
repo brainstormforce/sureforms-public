@@ -2932,6 +2932,9 @@ JS;
 			'email_delivery_limited'      => [
 				'open_suremail' => 'email_limited_notice_cta',
 			],
+			'email_delivery_quota'        => [
+				'open_suremail' => 'email_quota_notice_cta',
+			],
 			'integration_error'           => [
 				'contact_support' => 'integration_failure_notice_cta',
 				'dismissed'       => 'integration_failure_notice_dismiss',
@@ -3748,8 +3751,42 @@ JS;
 		// an owner who has not set up email yet needs telling where they manage
 		// forms, not on every admin screen -- which also keeps the form lookup
 		// behind it off every other page load.
-		if ( Helper::validate_request_context( 'sureforms_menu', 'page' ) ) {
+		$on_dashboard = Helper::validate_request_context( 'sureforms_menu', 'page' );
+		if ( $on_dashboard ) {
 			$warnings = array_merge( $warnings, $this->get_email_delivery_action_items() );
+		}
+
+		// A quota running out also belongs on Entries, where an owner notices
+		// submissions arriving but not their emails.
+		if ( $on_dashboard || Helper::validate_request_context( SRFM_ENTRIES, 'page' ) ) {
+			$quota_items = $this->get_email_quota_action_items();
+			$warnings    = array_merge( $warnings, $quota_items );
+
+			// SureForms hides classic notices on its own screens and Entries has no
+			// Form Checks panel, so it gets the warning in its React notice bar. The
+			// bar reads the notices when the page data is filtered, after this.
+			if ( ! $on_dashboard ) {
+				foreach ( $quota_items as $quota_item ) {
+					Notice_Manager::register_notice(
+						[
+							'id'          => 'srfm-' . $quota_item['id'],
+							'variant'     => $quota_item['status'],
+							'title'       => $quota_item['title'],
+							'message'     => $quota_item['message'],
+							'actions'     => [
+								[
+									'label'   => $quota_item['cta_label'],
+									'url'     => $quota_item['cta_url'],
+									'target'  => '_blank',
+									'variant' => 'link',
+								],
+							],
+							'dismissible' => false,
+							'pages'       => [ SRFM_ENTRIES ],
+						]
+					);
+				}
+			}
 		}
 
 		$this->track_action_item_impressions( $warnings );
@@ -4164,6 +4201,95 @@ CSS;
 		}
 
 		return '' !== $item['cta_label'] && '' !== $item['cta_url'] ? [ $item ] : [];
+	}
+
+	/**
+	 * Warning when the SureContact sending quota is nearly or fully used up.
+	 *
+	 * Shown on the SureForms dashboard and the Entries screen, where an owner
+	 * waiting on submissions looks. The quota comes from a background refresh,
+	 * which this queues when the cached copy has expired.
+	 *
+	 * Dismissing hides it until the quota recovers (a new period, or an upgrade);
+	 * it comes back, and can no longer be dismissed, once nothing is left.
+	 *
+	 * @since x.x.x
+	 * @return array<int,array<string,mixed>>
+	 */
+	private function get_email_quota_action_items() {
+		if ( Helper::hide_promotions() ) {
+			return [];
+		}
+
+		Suremail_Adapter::maybe_schedule_quota_refresh();
+
+		$status      = Email_Delivery_Status::get_status();
+		$surecontact = Helper::get_array_value( $status['surecontact'] ?? [] );
+		$quota       = isset( $surecontact['quota'] ) && is_array( $surecontact['quota'] ) ? $surecontact['quota'] : null;
+		$dismissed   = Helper::get_array_value( Helper::get_srfm_option( 'dismissed_action_items', [] ) );
+
+		if ( null === $quota || empty( $surecontact['quota_low'] ) ) {
+			// Recovered: forget the dismissal so the next low point is shown again.
+			if ( null !== $quota && in_array( 'email_delivery_quota', $dismissed, true ) ) {
+				Helper::update_srfm_option( 'dismissed_action_items', array_values( array_diff( $dismissed, [ 'email_delivery_quota' ] ) ) );
+			}
+			return [];
+		}
+
+		$used      = Helper::get_integer_value( $quota['used'] ?? 0 );
+		$limit     = Helper::get_integer_value( $quota['limit'] ?? 0 );
+		$remaining = Helper::get_integer_value( $quota['remaining'] ?? 0 );
+		$monthly   = 'monthly' === ( $quota['period'] ?? '' );
+		$exhausted = 0 === $remaining;
+
+		if ( ! $exhausted && in_array( 'email_delivery_quota', $dismissed, true ) ) {
+			return [];
+		}
+
+		if ( $exhausted ) {
+			$title   = __( 'Your SureContact emails have run out', 'sureforms' );
+			$message = $monthly
+				? sprintf(
+					/* translators: %s: number of emails in the SureContact plan. */
+					__( 'All %s emails for this month are used, so form notifications are not being sent until next month. Upgrade in SureMail to keep sending.', 'sureforms' ),
+					number_format_i18n( $limit )
+				)
+				: sprintf(
+					/* translators: %s: number of emails in the SureContact plan. */
+					__( 'All %s emails are used, so form notifications are not being sent. Upgrade in SureMail to keep sending.', 'sureforms' ),
+					number_format_i18n( $limit )
+				);
+		} else {
+			$title   = empty( $surecontact['is_paid'] )
+				? __( 'Your free SureContact emails are almost used up', 'sureforms' )
+				: __( 'Your SureContact emails are almost used up', 'sureforms' );
+			$message = $monthly
+				? sprintf(
+					/* translators: 1: emails used, 2: emails in the plan. */
+					__( '%1$s of %2$s emails used this month. When they run out, form notifications stop being sent until next month, unless you upgrade.', 'sureforms' ),
+					number_format_i18n( $used ),
+					number_format_i18n( $limit )
+				)
+				: sprintf(
+					/* translators: 1: emails used, 2: emails in the plan. */
+					__( '%1$s of %2$s emails used. When they run out, form notifications stop being sent until you upgrade.', 'sureforms' ),
+					number_format_i18n( $used ),
+					number_format_i18n( $limit )
+				);
+		}
+
+		return [
+			[
+				'id'          => 'email_delivery_quota',
+				'status'      => $exhausted ? 'error' : 'warning',
+				'title'       => $title,
+				'message'     => $message,
+				'cta_label'   => __( 'Upgrade in SureMail', 'sureforms' ),
+				'cta_url'     => Suremail_Adapter::upgrade_url(),
+				'cta_action'  => 'open_suremail',
+				'dismissible' => ! $exhausted,
+			],
+		];
 	}
 
 	/**
@@ -5230,7 +5356,7 @@ CSS;
 	 * @return bool False when the id is not dismissible.
 	 */
 	private function dismiss_action_item( $item_id ) {
-		if ( ! in_array( $item_id, [ 'caching_plugin', 'email_delivery_setup', 'email_delivery_limited' ], true ) ) {
+		if ( ! in_array( $item_id, [ 'caching_plugin', 'email_delivery_setup', 'email_delivery_limited', 'email_delivery_quota' ], true ) ) {
 			return false;
 		}
 
