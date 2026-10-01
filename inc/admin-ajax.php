@@ -84,7 +84,12 @@ class Admin_Ajax {
 
 		$plugin_slug = isset( $_POST['slug'] ) ? sanitize_text_field( wp_unslash( $_POST['slug'] ) ) : '';
 
-		$activate = activate_plugin( $plugin_init, '', false, true );
+		// Not silent: a silent activation skips the plugin's activation hook, so
+		// whatever it sets up there never happens. SureMail, for one, creates its
+		// email log table on activation; installed from SureForms, its Email Logs
+		// screen failed with "Failed to retrieve email logs." Output from the
+		// hook is caught by activate_plugin() and returned as an error.
+		$activate = activate_plugin( $plugin_init, '', false, false );
 
 		if ( is_wp_error( $activate ) ) {
 			wp_send_json_error(

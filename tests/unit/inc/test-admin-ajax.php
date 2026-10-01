@@ -203,6 +203,59 @@ class Test_Admin_Ajax extends SRFM_Unit_Test_Case {
 		$this->assertFalse( current_user_can( 'manage_options' ) );
 	}
 
+	/**
+	 * Installed from SureForms, SureMail's email log table was never created:
+	 * the activation was silent, which skips the plugin's activation hook.
+	 */
+	public function test_required_plugin_activate_runs_the_activation_hook() {
+		$file = 'srfm-activation-probe/srfm-activation-probe.php';
+		$path = WP_PLUGIN_DIR . '/' . $file;
+		wp_mkdir_p( dirname( $path ) );
+		file_put_contents( // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents -- Test fixture.
+			$path,
+			"<?php\n/**\n * Plugin Name: SRFM Activation Probe\n */\nregister_activation_hook( __FILE__, function () { update_option( 'srfm_activation_probe_ran', 1 ); } );\n"
+		);
+		wp_clean_plugins_cache( false );
+
+		$admin = self::factory()->user->create( [ 'role' => 'administrator' ] );
+		wp_set_current_user( $admin );
+		$_POST = [
+			'security' => wp_create_nonce( 'sf_plugin_manager_nonce' ),
+			'init'     => $file,
+			'slug'     => 'srfm-activation-probe',
+		];
+		$_REQUEST = $_POST;
+
+		add_filter( 'wp_doing_ajax', '__return_true' );
+		$die = static function () {
+			return static function () {
+				throw new \RuntimeException( 'wp_die' );
+			};
+		};
+		add_filter( 'wp_die_ajax_handler', $die );
+
+		ob_start();
+		try {
+			$this->admin_ajax->required_plugin_activate();
+		} catch ( \RuntimeException $e ) {
+			unset( $e );
+		}
+		$response = (string) ob_get_clean();
+
+		remove_filter( 'wp_die_ajax_handler', $die );
+		remove_filter( 'wp_doing_ajax', '__return_true' );
+		$ran = get_option( 'srfm_activation_probe_ran' );
+		deactivate_plugins( $file, true );
+		delete_option( 'srfm_activation_probe_ran' );
+		wp_delete_file( $path );
+		rmdir( dirname( $path ) ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_rmdir -- Test fixture.
+		$_POST    = [];
+		$_REQUEST = [];
+
+		$this->assertStringContainsString( '"success":true', $response );
+		$this->assertSame( '1', (string) $ran, 'The plugin\'s activation hook must run.' );
+	}
+
 	// ---------------------------------------------------------------
 	// Tests for download_export_file() security - path traversal
 	// ---------------------------------------------------------------
