@@ -1056,7 +1056,7 @@ class Analytics {
 				if ( ! empty( $onboarding_analytics['emailDelivery'] ) && is_array( $onboarding_analytics['emailDelivery'] ) ) {
 					$email_delivery = $onboarding_analytics['emailDelivery'];
 					$states         = [ 'attention', 'not_configured', 'suremail_no_connection', 'limited', 'other_mailer', 'ready' ];
-					$step_actions   = [ 'skip', 'cannot_install', 'continue_limited', 'continue_other_mailer', 'continue_ready' ];
+					$step_actions   = [ 'skip', 'cannot_install', 'continue_limited', 'continue_other_mailer', 'continue_ready', 'continue_attention', 'continue_not_set_up' ];
 
 					$state_props = [
 						'stateAtStep' => 'email_delivery_state_at_step',

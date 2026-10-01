@@ -1828,7 +1828,6 @@ JS;
 			'ajax_url'                     => admin_url( 'admin-ajax.php' ),
 			'client_logs_nonce'            => Helper::current_user_can() ? wp_create_nonce( 'srfm_client_logs' ) : '',
 			'action_items'                 => $this->get_action_items(),
-			'email_delivery'               => Email_Delivery_Status::get_status(),
 			'notice_response_nonce'        => Helper::current_user_can() ? wp_create_nonce( 'srfm_notice_response' ) : '',
 			'dismiss_action_item_nonce'    => Helper::current_user_can() ? wp_create_nonce( 'srfm_dismiss_action_item' ) : '',
 			'sf_plugin_manager_nonce'      => wp_create_nonce( 'sf_plugin_manager_nonce' ),
@@ -1933,6 +1932,12 @@ JS;
 		 * @param bool $is_sureforms_screen Whether the current screen is a SureForms dashboard screen.
 		 */
 		$is_sureforms_screen = apply_filters( 'srfm_is_dashboard_screen', $is_sureforms_screen );
+
+		// Built only where SureForms' own screens read it: on other admin pages the
+		// status (and, with SureMail inactive, a get_plugins() scan) is wasted work.
+		if ( $is_sureforms_screen ) {
+			$localization_data['email_delivery'] = Email_Delivery_Status::get_status();
+		}
 
 		if ( $is_sureforms_screen ) {
 			$asset_handle = '-dashboard';
