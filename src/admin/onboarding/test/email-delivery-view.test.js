@@ -4,7 +4,12 @@
  * must never fall through to the "done" screen, which is how an owner was
  * told "Continue" with no way to fix a failing site.
  */
-import { getView, getDoneAction } from '../pages/email-delivery-view';
+import {
+	getView,
+	getDoneAction,
+	getProvisionFailure,
+	isSiteRefused,
+} from '../pages/email-delivery-view';
 
 const status = ( state, action = 'none' ) => ( {
 	state,
@@ -44,5 +49,47 @@ describe( 'getDoneAction', () => {
 		[ 'not_configured', 'continue_not_set_up' ],
 	] )( 'records %s as %s', ( state, action ) => {
 		expect( getDoneAction( status( state ) ) ).toBe( action );
+	} );
+} );
+
+describe( 'getProvisionFailure', () => {
+	it( 'sends an existing account to sign in, never connects it', () => {
+		expect(
+			getProvisionFailure( {
+				success: false,
+				reason: 'email_already_registered',
+			} )
+		).toBe( 'already_registered' );
+	} );
+
+	it( 'hands over to SureMail when the route is missing', () => {
+		expect( getProvisionFailure( { code: 'rest_no_route' } ) ).toBe(
+			'unavailable'
+		);
+	} );
+
+	it.each( [ [ {} ], [ null ], [ { reason: 'site_unreachable' } ] ] )(
+		'treats %o as a failure',
+		( error ) => {
+			expect( getProvisionFailure( error ) ).toBe( 'failed' );
+		}
+	);
+} );
+
+describe( 'isSiteRefused', () => {
+	it.each( [
+		[ { reason: 'site_unreachable' }, true ],
+		[ { reason: 'site_not_verified' }, true ],
+		[
+			{
+				message:
+					'site_url: The site url must not point to an internal or private network address.',
+			},
+			true,
+		],
+		[ { reason: 'email_already_registered' }, false ],
+		[ null, false ],
+	] )( '%o → %s', ( error, refused ) => {
+		expect( isSiteRefused( error ) ).toBe( refused );
 	} );
 } );

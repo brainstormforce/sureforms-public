@@ -47,3 +47,32 @@ export const getDoneAction = ( status ) => {
 	}
 	return 'continue_not_set_up';
 };
+
+/**
+ * Sort a failed SureContact sign-up into what the step shows next.
+ *
+ * @param {Object} provisionError Error body apiFetch rejected with.
+ * @return {'already_registered'|'unavailable'|'failed'} Outcome.
+ */
+export const getProvisionFailure = ( provisionError ) => {
+	if ( 'email_already_registered' === provisionError?.reason ) {
+		return 'already_registered';
+	}
+	// No route: SureMail too old, or the endpoint moved. Hand over to SureMail.
+	if ( 'rest_no_route' === provisionError?.code ) {
+		return 'unavailable';
+	}
+	return 'failed';
+};
+
+/**
+ * Whether SureContact refused the site itself: it calls the site back to
+ * confirm ownership, so local, private or firewalled sites are refused.
+ *
+ * @param {Object} provisionError Error body apiFetch rejected with.
+ * @return {boolean} Refused for the site.
+ */
+export const isSiteRefused = ( provisionError ) =>
+	[ 'site_unreachable', 'site_not_verified' ].includes(
+		provisionError?.reason
+	) || /^site_url:/.test( provisionError?.message ?? '' );
