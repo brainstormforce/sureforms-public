@@ -239,12 +239,24 @@ class Status {
 		// one was lost or never made -- not SureMail's (empty) email logs.
 		$needs_connection = $connection_lost || ( $suremail_active && 0 === $connections );
 
+		// Why mail is failing, when SureForms can tell. An unverified SureContact
+		// account accepts only a few emails a day, so a failure through it is
+		// almost always that allowance running out: the fix is verifying the
+		// account email, not reading logs. 'surecontact_cap' when SureContact
+		// itself reported today's allowance as used up.
+		$cause = '';
+		if ( 'attention' === $state && $suremail_active && ! $needs_connection && $surecontact['connected'] && false === $surecontact['email_verified'] ) {
+			$quota = $surecontact['quota'];
+			$cause = is_array( $quota ) && 'daily' === $quota['period'] && 0 === $quota['remaining'] ? 'surecontact_cap' : 'surecontact_unverified';
+		}
+
 		$plugin_status = $suremail_active ? 'Activated' : self::get_suremail_plugin_status();
 		$provider      = null !== $readiness ? $readiness['provider_label'] : '';
-		$copy          = self::get_copy( $state, $mailer, $provider, $needs_connection, $failure_open, $outcomes );
+		$copy          = self::get_copy( $state, $mailer, $provider, $needs_connection, $failure_open, $outcomes, $cause );
 
 		return [
 			'state'        => $state,
+			'cause'        => $cause,
 			'severity'     => $copy['severity'],
 			'title'        => $copy['title'],
 			'message'      => $copy['message'],
@@ -268,7 +280,7 @@ class Status {
 				'reason'         => $outcomes['last_failure_reason'],
 				'entry_saved'    => $outcomes['last_failure_entry_saved'],
 			],
-			'action'       => self::get_action( $state, $mailer, $plugin_status, $needs_connection ),
+			'action'       => self::get_action( $state, $mailer, $plugin_status, $needs_connection, $cause ),
 			'links'        => [
 				'setup' => $suremail_active ? Suremail_Adapter::setup_url() : '',
 				'logs'  => $suremail_active ? Suremail_Adapter::logs_url() : '',
@@ -332,14 +344,24 @@ class Status {
 	 * @param array{slug:string,label:string,file:string} $mailer          Active mailer.
 	 * @param string                                      $plugin_status   SureMail install state.
 	 * @param bool                                        $needs_connection Whether SureMail has no connection to send through.
+	 * @param string                                      $cause            Why mail is failing, from compute(); '' when unknown.
 	 * @return array{type:string,label:string,url:string}
 	 */
-	private static function get_action( $state, array $mailer, $plugin_status, $needs_connection ) {
+	private static function get_action( $state, array $mailer, $plugin_status, $needs_connection, $cause = '' ) {
 		$none = [
 			'type'  => 'none',
 			'label' => '',
 			'url'   => '',
 		];
+
+		// SureMail's dashboard carries the verify banner with "Resend verification".
+		if ( '' !== $cause ) {
+			return [
+				'type'  => 'verify_surecontact',
+				'label' => __( 'Verify in SureMail', 'sureforms' ),
+				'url'   => Suremail_Adapter::admin_url( '/dashboard' ),
+			];
+		}
 
 		if ( 'not_configured' === $state || ( 'attention' === $state && 'none' === $mailer['slug'] ) ) {
 			return [
@@ -386,11 +408,22 @@ class Status {
 	 * @param bool                                        $needs_connection Whether SureMail has no connection to send through.
 	 * @param bool                                        $failure_open    Whether a notification failure is unresolved.
 	 * @param array<string,mixed>                         $outcomes        Stored outcomes.
+	 * @param string                                      $cause            Why mail is failing, from compute(); '' when unknown.
 	 * @return array{severity:string,title:string,message:string}
 	 */
-	private static function get_copy( $state, array $mailer, $provider, $needs_connection, $failure_open, array $outcomes ) {
+	private static function get_copy( $state, array $mailer, $provider, $needs_connection, $failure_open, array $outcomes, $cause = '' ) {
 		switch ( $state ) {
 			case 'attention':
+				if ( '' !== $cause ) {
+					return [
+						'severity' => 'error',
+						'title'    => __( 'Verify your SureContact email to keep sending', 'sureforms' ),
+						'message'  => 'surecontact_cap' === $cause
+							? __( 'Your SureContact account is not verified, so it accepts only a few emails a day, and today\'s are used up. New form notifications are not sent until you verify the account email or the allowance resets.', 'sureforms' )
+							: __( 'SureMail did not accept a recent form notification. Your SureContact account is not verified yet, which limits it to a few emails a day. Verify the account email to keep sending; SureMail\'s email logs show the exact reason.', 'sureforms' ),
+					];
+				}
+
 				if ( $needs_connection && ! $failure_open ) {
 					return [
 						'severity' => 'error',

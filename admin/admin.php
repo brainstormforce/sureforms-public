@@ -4137,12 +4137,15 @@ CSS;
 		$action      = Helper::get_array_value( $status['action'] ?? [] );
 		$action_type = Helper::get_string_value( $action['type'] ?? '' );
 		$installs    = in_array( $action_type, [ 'install_activate', 'activate' ], true );
+		// An unverified SureContact account that failed to send has hit its daily
+		// allowance: the advice is to verify, shown beside the failure itself.
+		$verify = 'verify_surecontact' === $action_type;
 
 		// Keyed off the next step, not only the state: when a notification has
 		// already failed ("attention") and the fix is still to set up or connect
 		// SureMail, that is exactly when the owner needs this button -- found on a
 		// fresh ZipWP site, whose first notification failed with no mailer.
-		if ( 'limited' === $state ) {
+		if ( 'limited' === $state || $verify ) {
 			$item_id = 'email_delivery_limited';
 		} elseif ( $installs || 'open_suremail' === $action_type ) {
 			$item_id = 'email_delivery_setup';
@@ -4165,7 +4168,7 @@ CSS;
 
 		// The failure itself is notification_error's to report; this item names
 		// the fix, so it does not repeat "a notification was not sent".
-		if ( 'attention' === $state ) {
+		if ( 'attention' === $state && ! $verify ) {
 			if ( $installs ) {
 				$title   = __( 'Email delivery is not set up', 'sureforms' );
 				$message = __( 'Form notifications have no email service behind them, which is why they can fail. Set up email delivery so new entries reach your inbox.', 'sureforms' );

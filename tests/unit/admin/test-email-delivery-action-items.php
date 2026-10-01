@@ -434,4 +434,37 @@ class Test_Email_Delivery_Action_Items extends TestCase {
 
 		$this->assertArrayNotHasKey( 'email_delivery_quota', $this->items() );
 	}
+
+	public function test_unverified_surecontact_failure_advises_verifying() {
+		$this->use_plugins( [ 'suremails/suremails.php' ] );
+		update_option(
+			Suremail_Adapter::CONNECTIONS_OPTION,
+			[
+				'connections'        => [
+					'sc1' => [
+						'type'           => 'SURECONTACT',
+						'priority'       => 1,
+						'email_verified' => false,
+					],
+				],
+				'default_connection' => [ 'id' => 'sc1' ],
+			]
+		);
+		$form_id = $this->make_form();
+		Status::get_status();
+		Status::reset();
+		Client_Logger::record_failure( 'notification', $form_id, 'Contact Form' );
+		Status::record_outcome( false, $form_id, 'mailer_rejected' );
+		Helper::update_srfm_option( 'dismissed_action_items', [ 'email_delivery_limited' ] );
+		$this->on_sureforms_dashboard();
+
+		$items = $this->items();
+		$item  = $items['email_delivery_limited'] ?? [];
+
+		$this->assertSame( 'Verify your SureContact email to keep sending', $item['title'] ?? '' );
+		$this->assertSame( 'Verify in SureMail', $item['cta_label'] ?? '' );
+		$this->assertFalse( $item['dismissible'] ?? true, 'Mail is failing, so it stays until fixed.' );
+		$this->assertArrayHasKey( 'notification_error', $items, 'The failure itself is still reported.' );
+		$this->assertArrayNotHasKey( 'email_delivery_setup', $items );
+	}
 }
