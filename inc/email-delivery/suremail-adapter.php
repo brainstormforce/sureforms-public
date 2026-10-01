@@ -84,6 +84,22 @@ class Suremail_Adapter {
 	public const QUOTA_TTL = 6 * HOUR_IN_SECONDS;
 
 	/**
+	 * How long a nearly used-up quota is trusted, in seconds. Shorter, so an
+	 * upgrade or a period reset clears the warning soon.
+	 *
+	 * @since x.x.x
+	 */
+	public const QUOTA_LOW_TTL = HOUR_IN_SECONDS;
+
+	/**
+	 * How long a used-up quota is trusted, in seconds. Its warning cannot be
+	 * dismissed, so it must not outlive an upgrade by long.
+	 *
+	 * @since x.x.x
+	 */
+	public const QUOTA_EXHAUSTED_TTL = 30 * MINUTE_IN_SECONDS;
+
+	/**
 	 * Share of the cap left at which the quota counts as nearly used up.
 	 *
 	 * @since x.x.x
@@ -343,19 +359,23 @@ class Suremail_Adapter {
 
 		$limit = (int) $cap['limit'];
 		$used  = isset( $cap['used'] ) && is_numeric( $cap['used'] ) ? max( 0, (int) $cap['used'] ) : 0;
+		$quota = [
+			'used'       => $used,
+			'limit'      => $limit,
+			'remaining'  => isset( $cap['remaining'] ) && is_numeric( $cap['remaining'] ) ? max( 0, (int) $cap['remaining'] ) : max( 0, $limit - $used ),
+			'period'     => isset( $cap['period'] ) && is_string( $cap['period'] ) ? sanitize_key( $cap['period'] ) : '',
+			'checked_at' => time(),
+		];
 
-		set_transient(
-			self::QUOTA_TRANSIENT,
-			[
-				'known'      => true,
-				'used'       => $used,
-				'limit'      => $limit,
-				'remaining'  => isset( $cap['remaining'] ) && is_numeric( $cap['remaining'] ) ? max( 0, (int) $cap['remaining'] ) : max( 0, $limit - $used ),
-				'period'     => isset( $cap['period'] ) && is_string( $cap['period'] ) ? sanitize_key( $cap['period'] ) : '',
-				'checked_at' => time(),
-			],
-			self::QUOTA_TTL
-		);
+		if ( ! self::is_quota_low( $quota ) ) {
+			$ttl = self::QUOTA_TTL;
+		} elseif ( 0 === $quota['remaining'] ) {
+			$ttl = self::QUOTA_EXHAUSTED_TTL;
+		} else {
+			$ttl = self::QUOTA_LOW_TTL;
+		}
+
+		set_transient( self::QUOTA_TRANSIENT, array_merge( [ 'known' => true ], $quota ), $ttl );
 	}
 
 	/**
@@ -379,7 +399,9 @@ class Suremail_Adapter {
 	 * @return string
 	 */
 	private static function get_surecontact_connection_id() {
-		if ( ! self::supports_surecontact() ) {
+		// From the active plugins, like the rest of the status; whether SureMail's
+		// handler can be called is checked where it is called.
+		if ( 'suremail' !== Mailer::get_active()['slug'] ) {
 			return '';
 		}
 
