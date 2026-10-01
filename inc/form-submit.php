@@ -11,6 +11,7 @@ namespace SRFM\Inc;
 use SRFM\Inc\Compatibility\Multilingual\Multilingual_Manager;
 use SRFM\Inc\Database\Tables\Entries;
 use SRFM\Inc\Email\Email_Template;
+use SRFM\Inc\Email_Delivery\Lost_Submissions;
 use SRFM\Inc\Email_Delivery\Mailer;
 use SRFM\Inc\Email_Delivery\Status as Email_Delivery_Status;
 use SRFM\Inc\Lib\Browser\Browser;
@@ -1051,6 +1052,9 @@ class Form_Submit {
 		$entry_saved        = ! is_array( $context ) || ! isset( $context['entry_saved'] ) || (bool) $context['entry_saved'];
 		$email_notification = get_post_meta( intval( $id ), '_srfm_email_notification' );
 		$is_mail_sent       = false;
+		// Whether any notification was accepted: on a form that stores no entries,
+		// none at all means the submission is gone.
+		$any_accepted = false;
 		// Any recipient failing counts as a failure for the whole submission, so
 		// these are set inside the loop and only read after it.
 		$notification_failed = false;
@@ -1216,6 +1220,7 @@ class Form_Submit {
 						);
 
 						$is_mail_sent = $sent;
+						$any_accepted = $any_accepted || true === $sent;
 						$emails[]     = $parsed['to'];
 					}
 				}
@@ -1251,6 +1256,13 @@ class Form_Submit {
 			// clear one.
 			if ( ! empty( $emails ) && ! $notification_failed && ! $used_mail_fallback ) {
 				Email_Delivery_Status::record_outcome( true, intval( $id ) );
+			}
+
+			// Kept apart from the notification fault, which the next success
+			// clears, and recorded with logging off: until the owner has seen it,
+			// a lost submission must not disappear.
+			if ( ! $entry_saved && $notification_failed && ! $any_accepted ) {
+				Lost_Submissions::record( intval( $id ) );
 			}
 
 			$open_failures = Client_Logger::get_failures();

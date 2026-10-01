@@ -12,6 +12,7 @@ use SRFM\Inc\AI_Form_Builder\AI_Helper;
 use SRFM\Inc\Client_Logger;
 use SRFM\Inc\Database\Register;
 use SRFM\Inc\Database\Tables\Entries;
+use SRFM\Inc\Email_Delivery\Lost_Submissions;
 use SRFM\Inc\Email_Delivery\Status as Email_Delivery_Status;
 use SRFM\Inc\Email_Delivery\Suremail_Adapter;
 use SRFM\Inc\Generate_Form_Markup;
@@ -2901,6 +2902,9 @@ JS;
 				'contact_support' => 'integration_failure_notice_cta',
 				'dismissed'       => 'integration_failure_notice_dismiss',
 			],
+			'lost_submissions'            => [
+				'help_me_fix' => 'lost_submissions_notice_guide',
+			],
 			'caching_plugin'              => [
 				'help_me_fix' => 'caching_plugin_notice_cta',
 				'dismissed'   => 'caching_plugin_notice_dismiss',
@@ -3707,6 +3711,10 @@ JS;
 		if ( Client_Logger::is_enabled() ) {
 			$warnings = $this->get_first_party_action_items();
 		}
+
+		// Lost submissions, outside the logging gate and on every screen: data is
+		// gone, and Distraction Free (which turns logging off) must not hide it.
+		$warnings = array_merge( $warnings, $this->get_lost_submissions_action_items() );
 
 		$this->track_action_item_impressions( $warnings );
 
@@ -5045,6 +5053,60 @@ CSS;
 	}
 
 	/**
+	 * Submissions lost on forms that never store entries.
+	 *
+	 * A never-store form keeps no copy of a submission, so when none of its
+	 * notifications is accepted the submission is gone. Lost_Submissions keeps
+	 * the count until the owner acknowledges it here.
+	 *
+	 * @since x.x.x
+	 * @return array<int,array<string,mixed>>
+	 */
+	private function get_lost_submissions_action_items() {
+		$lost = Lost_Submissions::get();
+		if ( $lost['count'] < 1 ) {
+			return [];
+		}
+
+		$titles = [];
+		foreach ( $lost['form_ids'] as $form_id ) {
+			$title = get_the_title( $form_id );
+			if ( '' !== $title ) {
+				$titles[] = $title;
+			}
+		}
+
+		$message = __( 'These forms are set to never store entries, and no email notification for them could be sent, so the submissions were not saved anywhere. Set up email delivery, or turn off "Never store entry data after form submission" on these forms.', 'sureforms' );
+		if ( ! empty( $titles ) ) {
+			/* translators: %s: comma-separated form titles. */
+			$message .= ' ' . sprintf( __( 'Forms: %s.', 'sureforms' ), implode( ', ', $titles ) );
+		}
+
+		return [
+			[
+				'id'          => 'lost_submissions',
+				'status'      => 'error',
+				'title'       => sprintf(
+					/* translators: %s: number of lost submissions. */
+					_n( '%s form submission was lost', '%s form submissions were lost', $lost['count'], 'sureforms' ),
+					number_format_i18n( $lost['count'] )
+				),
+				'message'     => $message,
+				'cta_label'   => __( 'Help Me Fix', 'sureforms' ),
+				'cta_url'     => Helper::get_sureforms_website_url(
+					'docs/troubleshooting-email-sending-in-sureforms/',
+					[
+						'utm_medium'  => 'form_checks_notice',
+						'utm_content' => 'lost_submissions',
+					]
+				),
+				'cta_action'  => 'help_me_fix',
+				'dismissible' => true,
+			],
+		];
+	}
+
+	/**
 	 * Record one dismissal, shared by the AJAX and no-JS entry points.
 	 *
 	 * Allowlisted, so only advisory items can be dismissed. A run of failed
@@ -5056,6 +5118,14 @@ CSS;
 	 * @return bool False when the id is not dismissible.
 	 */
 	private function dismiss_action_item( $item_id ) {
+		// "Ignore" on lost submissions means "I have seen them": the record is
+		// cleared rather than hidden, so the next loss shows again.
+		if ( 'lost_submissions' === $item_id ) {
+			Lost_Submissions::acknowledge();
+			$this->track_notice_event( 'lost_submissions_notice_dismiss' );
+			return true;
+		}
+
 		if ( ! in_array( $item_id, [ 'caching_plugin' ], true ) ) {
 			return false;
 		}
