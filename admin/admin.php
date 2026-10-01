@@ -4186,33 +4186,53 @@ CSS;
 	 * @return bool
 	 */
 	private function has_form_with_active_notification() {
-		$form_ids = get_posts(
-			[
-				'post_type'      => SRFM_FORMS_POST_TYPE,
-				'post_status'    => 'publish',
-				'posts_per_page' => 50,
-				'fields'         => 'ids',
-				'no_found_rows'  => true,
-				'meta_key'       => '_srfm_email_notification', // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- SureForms dashboard only, capped at 50.
-			]
-		);
+		// In pages, newest first, with each page's meta primed in one query:
+		// usually the first page answers, and sites with many forms whose newest
+		// fifty send nothing are still covered.
+		for ( $page = 1; $page <= 10; $page++ ) {
+			$form_ids = array_map(
+				[ Helper::class, 'get_integer_value' ],
+				get_posts(
+					[
+						'post_type'      => SRFM_FORMS_POST_TYPE,
+						'post_status'    => 'publish',
+						'posts_per_page' => 50,
+						'paged'          => $page,
+						'fields'         => 'ids',
+						'no_found_rows'  => true,
+						'meta_key'       => '_srfm_email_notification', // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- SureForms dashboard only, paged by 50.
+					]
+				)
+			);
 
-		foreach ( $form_ids as $form_id ) {
-			$notifications = get_post_meta( Helper::get_integer_value( $form_id ), '_srfm_email_notification', true );
-
-			if ( ! is_array( $notifications ) ) {
-				continue;
+			if ( empty( $form_ids ) ) {
+				return false;
 			}
 
-			foreach ( $notifications as $notification ) {
-				if ( is_array( $notification ) && ! empty( $notification['status'] ) ) {
-					return true;
+			update_meta_cache( 'post', $form_ids );
+
+			foreach ( $form_ids as $form_id ) {
+				$notifications = get_post_meta( $form_id, '_srfm_email_notification', true );
+
+				if ( ! is_array( $notifications ) ) {
+					continue;
 				}
+
+				foreach ( $notifications as $notification ) {
+					if ( is_array( $notification ) && ! empty( $notification['status'] ) ) {
+						return true;
+					}
+				}
+			}
+
+			if ( count( $form_ids ) < 50 ) {
+				return false;
 			}
 		}
 
 		return false;
 	}
+
 
 	/**
 	 * Nonce-protected URL that repairs the entries table.
