@@ -1132,8 +1132,12 @@ class Form_Submit {
 
 							// Outside the logging guard below: this is the site's
 							// current email state, which the owner needs to see
-							// even with debug logging switched off.
-							Email_Delivery_Status::record_outcome( false, intval( $id ), '' !== $email_report ? 'mailer_error' : $rejection['code'] );
+							// even with debug logging switched off. A rejected
+							// recipient address (often what a visitor typed) is
+							// logged on the entry but says nothing about the site.
+							if ( ! Mailer::is_recipient_error( $email_report ) ) {
+								Email_Delivery_Status::record_outcome( false, intval( $id ), '' !== $email_report ? 'mailer_error' : $rejection['code'] );
+							}
 						}
 
 						if ( is_int( $log_key ) ) {

@@ -76,4 +76,39 @@ class Test_Mailer extends TestCase {
 		$this->activate_plugins( [ 'post-smtp/postman-smtp.php' ] );
 		$this->assertTrue( Mailer::has_mailer() );
 	}
+
+	public function test_allow_php_mail_fallback() {
+		$this->activate_plugins( [] );
+		$this->assertFalse( Mailer::allow_php_mail_fallback( 1 ), 'Off by default.' );
+
+		add_filter( 'srfm_allow_php_mail_fallback', '__return_true' );
+		$this->assertTrue( Mailer::allow_php_mail_fallback( 1 ), 'The owner can opt in when no mail plugin is active.' );
+
+		$this->activate_plugins( [ 'wp-mail-smtp/wp_mail_smtp.php' ] );
+		$this->assertFalse( Mailer::allow_php_mail_fallback( 1 ), 'Never around a mail plugin, filter or not.' );
+		remove_all_filters( 'srfm_allow_php_mail_fallback' );
+	}
+
+	public function test_get_rejection_reason() {
+		$this->activate_plugins( [] );
+		$this->assertSame( 'php_mail_failed', Mailer::get_rejection_reason()['code'] );
+
+		$this->activate_plugins( [ 'fluent-smtp/fluent-smtp.php' ] );
+		$reason = Mailer::get_rejection_reason();
+		$this->assertSame( 'mailer_rejected', $reason['code'] );
+		$this->assertStringContainsString( 'FluentSMTP', $reason['message'] );
+
+		$this->activate_plugins( [ Mailer::SUREMAIL_FILE ] );
+		$this->set_suremail_connections( [ 'sc1' => $this->surecontact_row( true ) ], 'sc1' );
+		$this->assertSame( 'suremail_rejected', Mailer::get_rejection_reason()['code'] );
+	}
+
+	public function test_is_recipient_error() {
+		$this->assertTrue( Mailer::is_recipient_error( 'Invalid address:  (to): not-an-address' ) );
+		$this->assertTrue( Mailer::is_recipient_error( 'Invalid address:  (Reply-To): x@' ) );
+		$this->assertTrue( Mailer::is_recipient_error( 'You must provide at least one recipient email address.' ) );
+		$this->assertFalse( Mailer::is_recipient_error( 'Invalid address:  (From): wordpress@localhost' ), 'A broken From address is the site\'s problem.' );
+		$this->assertFalse( Mailer::is_recipient_error( 'SMTP Error: Could not authenticate.' ) );
+		$this->assertFalse( Mailer::is_recipient_error( '' ) );
+	}
 }

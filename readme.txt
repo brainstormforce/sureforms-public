@@ -426,6 +426,8 @@ Visit the [SureForms features page](https://sureforms.com/features/?utm_source=w
 You can report security issues through our [Bug Bounty Program](https://brainstormforce.com/bug-bounty-program/). We collaborate with Patchstack to validate, triage, and handle security reports.
 
 == Changelog ==
+= x.x.x =
+* Improvement: When WordPress cannot send a form notification, SureForms no longer retries it silently through PHP's mail(), which hid the real problem and could send twice alongside a mail plugin. The failure and its reason now show in Entry Logs and Form Checks. Sites that relied on that fallback can turn it back on with the `srfm_allow_php_mail_fallback` filter (only used when no mail plugin is active).
 = 2.12.8 - 25th September 2026 =
 * Improvement: The debug log no longer records routine validation stops, such as an empty required field, keeping it focused on real failures.
 * Fix: Entry Logs now record the email notification sent when a form is submitted.

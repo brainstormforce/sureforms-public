@@ -156,6 +156,39 @@ class Mailer {
 	}
 
 	/**
+	 * Whether a mailer error is about a recipient address rather than the
+	 * site's mail setup.
+	 *
+	 * Recipients often come from what a visitor typed ({form:email}), so an
+	 * address PHPMailer rejects says nothing about whether the site can send:
+	 * it is logged on the entry, but must not put the whole site into
+	 * "attention". An invalid From address is a site problem and stays one.
+	 *
+	 * @since x.x.x
+	 * @param string $message Error message from wp_mail_failed.
+	 * @return bool
+	 */
+	public static function is_recipient_error( $message ) {
+		$message = (string) $message;
+		if ( '' === $message ) {
+			return false;
+		}
+
+		// PHPMailer names the header in parentheses, untranslated: "(to)", "(cc)".
+		if ( preg_match( '/\\((to|cc|bcc|reply-to)\\)/i', $message ) ) {
+			return true;
+		}
+
+		foreach ( [ 'You must provide at least one recipient email address.', __( 'You must provide at least one recipient email address.' ) ] as $no_recipient ) { // phpcs:ignore WordPress.WP.I18n.MissingArgDomain -- Matching WordPress core's own PHPMailer string.
+			if ( false !== strpos( $message, $no_recipient ) ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
 	 * Why a mailer did not accept an email, for when it gave no reason itself.
 	 *
 	 * @since x.x.x

@@ -968,8 +968,9 @@ class Test_Form_Submit extends SRFM_Unit_Test_Case {
 	 * @param callable $pre_wp_mail pre_wp_mail callback deciding the outcome.
 	 * @return array{form_id:int,response:array<mixed>,logs:array<mixed>}
 	 */
-	private function send_one_notification( $pre_wp_mail ) {
-		$form_id = wp_insert_post(
+	private function send_one_notification( $pre_wp_mail, $to = 'owner@example.com', $form_id = 0 ) {
+		$keep    = $form_id > 0;
+		$form_id = $keep ? $form_id : wp_insert_post(
 			[
 				'post_type'   => 'sureforms_form',
 				'post_title'  => 'Delivery Form',
@@ -988,9 +989,9 @@ class Test_Form_Submit extends SRFM_Unit_Test_Case {
 			]
 		);
 
-		$parsed = static function () {
+		$parsed = static function () use ( $to ) {
 			return [
-				'to'      => 'owner@example.com',
+				'to'      => $to,
 				'subject' => 'New entry',
 				'message' => 'An entry arrived.',
 				'headers' => [],
@@ -1006,7 +1007,9 @@ class Test_Form_Submit extends SRFM_Unit_Test_Case {
 
 		remove_filter( 'pre_wp_mail', $pre_wp_mail, 99 );
 		remove_filter( 'srfm_email_notification', $parsed, 99 );
-		wp_delete_post( $form_id, true );
+		if ( ! $keep ) {
+			wp_delete_post( $form_id, true );
+		}
 
 		return [
 			'form_id'  => $form_id,
@@ -1145,12 +1148,52 @@ class Test_Form_Submit extends SRFM_Unit_Test_Case {
 	 */
 	public function test_send_email_records_recovery_after_a_failure() {
 		$this->reset_email_delivery_state();
-		Email_Delivery_Status::record_outcome( false, 5, 'mailer_rejected' );
+		$form_id = wp_insert_post(
+			[
+				'post_type'   => 'sureforms_form',
+				'post_title'  => 'Recovering Form',
+				'post_status' => 'publish',
+			]
+		);
+		Email_Delivery_Status::record_outcome( false, $form_id, 'mailer_rejected' );
 
-		$result = $this->send_one_notification( '__return_true' );
+		$result = $this->send_one_notification( '__return_true', 'owner@example.com', $form_id );
 
 		$this->assertTrue( $result['response']['success'] );
 		$this->assertSame( 'success', Email_Delivery_Status::get_outcomes()['last_result'] );
+		$this->assertArrayNotHasKey( $form_id, Email_Delivery_Status::get_outcomes()['open_forms'] );
+
+		wp_delete_post( $form_id, true );
+		$this->reset_email_delivery_state();
+	}
+
+	/**
+	 * Recipients often come from what a visitor typed. An address PHPMailer
+	 * rejects is logged on the entry, but must not put the whole site into
+	 * "attention" -- a visitor could otherwise hold the dashboard there.
+	 */
+	public function test_send_email_does_not_open_site_attention_for_a_bad_recipient() {
+		$this->reset_email_delivery_state();
+
+		$result = $this->send_one_notification(
+			static function () {
+				do_action( 'wp_mail_failed', new WP_Error( 'wp_mail_failed', 'Invalid address:  (to): not-an-address' ) );
+				return false;
+			},
+			'not-an-address'
+		);
+
+		$this->assertStringContainsString( 'Invalid address', $this->notification_log_text( $result['logs'] ) );
+		$this->assertSame( [], Email_Delivery_Status::get_outcomes()['open_forms'] );
+
+		// A broken From address is the site's problem and still counts.
+		$this->send_one_notification(
+			static function () {
+				do_action( 'wp_mail_failed', new WP_Error( 'wp_mail_failed', 'Invalid address:  (From): wordpress@localhost' ) );
+				return false;
+			}
+		);
+		$this->assertNotEmpty( Email_Delivery_Status::get_outcomes()['open_forms'] );
 
 		$this->reset_email_delivery_state();
 	}

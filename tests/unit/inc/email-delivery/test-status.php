@@ -106,4 +106,52 @@ class Test_Status extends TestCase {
 		Status::reset();
 		$this->assertSame( 'other_mailer', Status::get_status()['state'] );
 	}
+
+	/**
+	 * Failures are kept per form: a working form B does not clear form A,
+	 * whose notifications often go to other recipients.
+	 */
+	public function test_record_outcome_clears_only_the_succeeding_form() {
+		$this->activate_plugins( [ 'wp-mail-smtp/wp_mail_smtp.php' ] );
+
+		Status::record_outcome( false, 11, 'mailer_rejected' );
+		Status::record_outcome( true, 22 );
+		$this->assertSame( 'attention', Status::get_status()['state'], 'Form 11 still failed.' );
+
+		Status::record_outcome( true, 11 );
+		$this->assertSame( 'other_mailer', Status::get_status()['state'] );
+	}
+
+	/**
+	 * The submit path is public: repeat failures from one form inside the
+	 * write interval are not written again.
+	 */
+	public function test_record_outcome_throttles_repeat_failures() {
+		Status::record_outcome( false, 11, 'mailer_rejected' );
+		$first = Status::get_outcomes();
+
+		Status::record_outcome( false, 11, 'mailer_rejected' );
+		$this->assertSame( $first['consecutive_failures'], Status::get_outcomes()['consecutive_failures'] );
+
+		update_option( Status::OUTCOMES_OPTION, array_merge( $first, [ 'open_forms' => [ 11 => time() - Status::FAILURE_WRITE_INTERVAL - 1 ] ] ) );
+		Status::record_outcome( false, 11, 'mailer_rejected' );
+		$this->assertSame( $first['consecutive_failures'] + 1, Status::get_outcomes()['consecutive_failures'] );
+	}
+
+	/**
+	 * Outcomes stored before failures were kept per form keep their open
+	 * failure through the update.
+	 */
+	public function test_get_outcomes_migrates_a_stored_failure() {
+		update_option(
+			Status::OUTCOMES_OPTION,
+			[
+				'last_result'          => 'failure',
+				'last_failure_at'      => time() - 60,
+				'last_failure_form_id' => 7,
+			]
+		);
+
+		$this->assertSame( [ 7 ], array_keys( Status::get_outcomes()['open_forms'] ) );
+	}
 }
