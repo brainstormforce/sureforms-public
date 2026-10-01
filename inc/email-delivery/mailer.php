@@ -129,7 +129,26 @@ class Mailer {
 		$active = self::get_active_plugin_files();
 		$known  = self::get_known_plugins();
 
+		$other = null;
+		foreach ( $known as $file => $label ) {
+			if ( self::SUREMAIL_FILE !== $file && in_array( $file, $active, true ) ) {
+				$other = [
+					'slug'  => 'other',
+					'label' => (string) $label,
+					'file'  => (string) $file,
+				];
+				break;
+			}
+		}
+
 		if ( in_array( self::SUREMAIL_FILE, $active, true ) ) {
+			// SureMail with no connection hands mail to WordPress's default
+			// handler, which fires phpmailer_init, so another SMTP plugin that is
+			// also active is what actually sends. Report that one.
+			if ( null !== $other && 0 === Suremail_Adapter::get_readiness()['connections'] ) {
+				return $other;
+			}
+
 			return [
 				'slug'  => 'suremail',
 				'label' => 'SureMail',
@@ -137,14 +156,8 @@ class Mailer {
 			];
 		}
 
-		foreach ( $known as $file => $label ) {
-			if ( in_array( $file, $active, true ) ) {
-				return [
-					'slug'  => 'other',
-					'label' => (string) $label,
-					'file'  => (string) $file,
-				];
-			}
+		if ( null !== $other ) {
+			return $other;
 		}
 
 		$override = self::get_wp_mail_override_file();
