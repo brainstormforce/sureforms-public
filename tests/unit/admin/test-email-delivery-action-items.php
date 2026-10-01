@@ -451,7 +451,8 @@ class Test_Email_Delivery_Action_Items extends TestCase {
 			]
 		);
 		$form_id = $this->make_form();
-		Status::get_status();
+		// Connected a minute before the failure, as on a real site.
+		update_option( Status::OUTCOMES_OPTION, [ 'suremail_connected_at' => time() - 60 ] );
 		Status::reset();
 		Client_Logger::record_failure( 'notification', $form_id, 'Contact Form' );
 		Status::record_outcome( false, $form_id, 'mailer_rejected' );

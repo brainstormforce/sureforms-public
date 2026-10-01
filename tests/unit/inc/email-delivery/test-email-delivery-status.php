@@ -349,7 +349,8 @@ class Test_Email_Delivery_Status extends TestCase {
 	public function test_failure_through_unverified_surecontact_says_verify() {
 		$this->activate_plugins( [ Mailer::SUREMAIL_FILE ] );
 		$this->set_suremail_connections( [ 'sc1' => $this->surecontact_row( false ) ], 'sc1' );
-		Status::get_status();
+		// Connected a minute before the failure, as on a real site.
+		update_option( Status::OUTCOMES_OPTION, [ 'suremail_connected_at' => time() - 60 ] );
 		Status::reset();
 		Status::record_outcome( false, 12, 'mailer_rejected' );
 		$status = Status::get_status();
@@ -376,7 +377,8 @@ class Test_Email_Delivery_Status extends TestCase {
 			],
 			HOUR_IN_SECONDS
 		);
-		Status::get_status();
+		// Connected a minute before the failure, as on a real site.
+		update_option( Status::OUTCOMES_OPTION, [ 'suremail_connected_at' => time() - 60 ] );
 		Status::reset();
 		Status::record_outcome( false, 12, 'mailer_rejected' );
 		$status = Status::get_status();
