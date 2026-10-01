@@ -310,6 +310,7 @@ class Test_Analytics extends TestCase {
 					'finalState'     => 'suremail_no_connection',
 					'action'         => 'skip',
 					'suremailOpened' => true,
+					'consented'      => true,
 				],
 			]
 		);
@@ -318,6 +319,7 @@ class Test_Analytics extends TestCase {
 		$this->assertSame( 'suremail_no_connection', $props['email_delivery_state_at_exit'] );
 		$this->assertSame( 'skip', $props['email_delivery_action'] );
 		$this->assertSame( 'yes', $props['email_delivery_suremail_opened'] );
+		$this->assertSame( 'yes', $props['email_delivery_consented'] );
 	}
 
 	/**
@@ -340,6 +342,7 @@ class Test_Analytics extends TestCase {
 		$this->assertArrayNotHasKey( 'email_delivery_state_at_exit', $props );
 		$this->assertArrayNotHasKey( 'email_delivery_action', $props );
 		$this->assertArrayNotHasKey( 'email_delivery_suremail_opened', $props );
+		$this->assertArrayNotHasKey( 'email_delivery_consented', $props );
 	}
 
 	/**

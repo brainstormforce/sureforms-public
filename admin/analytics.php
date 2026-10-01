@@ -1076,6 +1076,10 @@ class Analytics {
 					if ( isset( $email_delivery['suremailOpened'] ) ) {
 						$onboarding_props['email_delivery_suremail_opened'] = (bool) $email_delivery['suremailOpened'] ? 'yes' : 'no';
 					}
+
+					if ( isset( $email_delivery['consented'] ) ) {
+						$onboarding_props['email_delivery_consented'] = (bool) $email_delivery['consented'] ? 'yes' : 'no';
+					}
 				}
 
 				if ( isset( $onboarding_analytics['accountConnected'] ) ) {
