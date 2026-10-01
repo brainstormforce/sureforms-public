@@ -132,7 +132,6 @@ class Admin_Ajax {
 		);
 	}
 
-
 	/**
 	 * Plugins the recommended-plugin installer may activate: the ones SureForms
 	 * offers (Helper::sureforms_get_integration(), both Starter Templates
