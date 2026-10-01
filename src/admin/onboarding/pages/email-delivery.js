@@ -105,7 +105,7 @@ const ConsentCheckbox = ( { checked, onChange, installs, email } ) => {
 			  ),
 		account,
 		__(
-			'Your outgoing emails, including recipients and content, are then sent through SureContact. <privacy>Privacy Policy</privacy> · <terms>Terms</terms>',
+			'Your outgoing emails, including recipients and content, are then sent through SureContact, from that email address. SureContact also receives this site\'s address and name and its WordPress and SureMail versions. <privacy>Privacy Policy</privacy> · <terms>Terms</terms>',
 			'sureforms'
 		),
 	].join( ' ' );
