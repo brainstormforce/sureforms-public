@@ -6,7 +6,7 @@ import {
 	createInterpolateElement,
 } from '@wordpress/element';
 import { Checkbox, Text } from '@bsf/force-ui';
-import { ExternalLink, MailCheck } from 'lucide-react';
+import { CheckCircle2, ExternalLink, MailCheck } from 'lucide-react';
 import apiFetch from '@wordpress/api-fetch';
 import { useOnboardingNavigation } from '../hooks';
 import { useOnboardingState } from '../onboarding-state';
@@ -62,6 +62,24 @@ const ValueBanner = () => (
 			</div>
 			<FeatureList items={ features } />
 		</div>
+	</div>
+);
+
+/**
+ * Confirmation after the one-click sign-up, so the owner sees it worked
+ * without leaving the step.
+ *
+ * @return {JSX.Element} Connected note.
+ */
+const ConnectedNote = () => (
+	<div className="flex items-center gap-2" role="status">
+		<CheckCircle2 className="size-5 shrink-0 text-support-success" />
+		<Text size={ 14 } weight={ 500 } color="primary">
+			{ __(
+				'SureMail is installed and sending through SureContact.',
+				'sureforms'
+			) }
+		</Text>
 	</div>
 );
 
@@ -171,6 +189,28 @@ const getView = ( status ) => {
 	return 'done';
 };
 
+// SureMail's REST routes. SureMail checks manage_options and the wp_rest
+// nonce, which apiFetch already sends from this screen.
+const SUREMAIL_PROVISION_PATH = '/suremails/v1/surecontact/provision';
+const SUREMAIL_AUTH_URL_PATH = '/suremails/v1/get-auth-url';
+
+/**
+ * Sort a failed SureContact sign-up into what the step should show next.
+ *
+ * @param {Object} provisionError Error body apiFetch rejected with.
+ * @return {'already_registered'|'unavailable'|'failed'} Outcome.
+ */
+const getProvisionFailure = ( provisionError ) => {
+	if ( 'email_already_registered' === provisionError?.reason ) {
+		return 'already_registered';
+	}
+	// No route: SureMail too old, or the endpoint moved. Hand over to SureMail.
+	if ( 'rest_no_route' === provisionError?.code ) {
+		return 'unavailable';
+	}
+	return 'failed';
+};
+
 const fetchStatus = () =>
 	apiFetch( {
 		path: '/sureforms/v1/email-delivery/status',
@@ -242,7 +282,8 @@ const EmailDelivery = () => {
 	const [ status, setStatus ] = useState(
 		srfm_admin?.email_delivery ?? null
 	);
-	// 'installing' | 'activating' while the button is working, '' otherwise.
+	// 'installing' | 'activating' | 'provisioning' while the button is
+	// working, '' otherwise.
 	const [ progress, setProgress ] = useState( '' );
 	const [ error, setError ] = useState( '' );
 	// Set once SureMail was opened in a new tab, until the step is left.
@@ -250,6 +291,15 @@ const EmailDelivery = () => {
 	// Required before SureMail is installed or opened to connect SureContact.
 	const [ consented, setConsented ] = useState( false );
 	const userEmail = srfm_admin?.website_lead_details?.email ?? '';
+	const userName = [
+		srfm_admin?.website_lead_details?.first_name,
+		srfm_admin?.website_lead_details?.last_name,
+	]
+		.filter( Boolean )
+		.join( ' ' );
+	// Outcome of the one-click SureContact sign-up: '' until tried, then
+	// 'created' | 'already_registered' | 'unavailable' | 'failed'.
+	const [ provision, setProvision ] = useState( '' );
 	// State the owner arrived with, for analytics. Captured once.
 	const stateAtStep = useRef( srfm_admin?.email_delivery?.state ?? '' );
 
@@ -309,9 +359,93 @@ const EmailDelivery = () => {
 			action,
 			suremailOpened: openedSureMail,
 			consented,
+			provision,
 		} );
 		navigateToNextRoute();
 	};
+
+	// Creates the SureContact account through SureMail, which stores the
+	// returned key as its connection. Only after the consent box is ticked.
+	const provisionSureContact = async () => {
+		setError( '' );
+		setProgress( 'provisioning' );
+		try {
+			await apiFetch( {
+				path: SUREMAIL_PROVISION_PATH,
+				method: 'POST',
+				data: { email: userEmail, name: userName },
+			} );
+			setProvision( 'created' );
+		} catch ( provisionError ) {
+			const outcome = getProvisionFailure( provisionError );
+			setProvision( outcome );
+			// SureContact calls the site back to confirm it owns it, so local,
+			// private or firewalled sites are refused. SureMail can still connect
+			// another provider there.
+			const siteRefused =
+				[ 'site_unreachable', 'site_not_verified' ].includes(
+					provisionError?.reason
+				) || /^site_url:/.test( provisionError?.message ?? '' );
+			if ( siteRefused ) {
+				setError(
+					__(
+						'SureContact could not reach this site to confirm it is yours. This happens on local, private or firewalled sites. Connect another email provider in SureMail instead.',
+						'sureforms'
+					)
+				);
+			} else if ( 'failed' === outcome ) {
+				setError(
+					provisionError?.message ||
+						__(
+							'Your SureContact account could not be created. Please try again, or connect it in SureMail.',
+							'sureforms'
+						)
+				);
+			}
+		} finally {
+			setProgress( '' );
+		}
+		await refreshStatus();
+	};
+
+	// An existing account is never connected by email alone: the owner signs
+	// in to SureContact, and SureMail finishes the connection on its return.
+	// The tab opens from the click so popup blockers allow it, then receives
+	// SureMail's sign-in URL.
+	const signInToSureContact = async () => {
+		setError( '' );
+		const tab = window.open( '', '_blank' );
+		try {
+			const response = await apiFetch( {
+				path: SUREMAIL_AUTH_URL_PATH,
+				method: 'POST',
+				data: { provider: 'surecontact' },
+			} );
+			if ( ! tab || ! response?.auth_url ) {
+				throw new Error( 'no_auth_url' );
+			}
+			tab.opener = null;
+			tab.location.href = response.auth_url;
+			setOpenedSureMail( true );
+		} catch ( authError ) {
+			tab?.close();
+			setError(
+				__(
+					'The SureContact sign-in could not be opened. Please connect your account in SureMail.',
+					'sureforms'
+				)
+			);
+		}
+	};
+
+	// SureMail is active with no connection at all: never set up, or a lost
+	// connection (reported as 'attention'). Any connection, even a broken
+	// one, is left for the owner to fix in SureMail.
+	const canProvision = ( currentStatus ) =>
+		Boolean( userEmail ) &&
+		Boolean( currentStatus?.suremail?.supports_surecontact ) &&
+		0 === Number( currentStatus?.suremail?.connections ?? -1 ) &&
+		'open_suremail' === currentStatus?.action?.type;
 
 	const handleInstall = async () => {
 		if ( ! sureMailsPlugin ) {
@@ -333,7 +467,11 @@ const EmailDelivery = () => {
 			actions.setSuremailInstalled( true );
 			// SureMail skips its own welcome redirect for an AJAX activation, so
 			// the next screen here is what leads the owner into its setup.
-			await refreshStatus();
+			const next = await refreshStatus();
+			// The consent box covered the account, so carry on in one click.
+			if ( canProvision( next ) ) {
+				await provisionSureContact();
+			}
 		} catch ( installError ) {
 			setError(
 				installError?.message ||
@@ -366,6 +504,9 @@ const EmailDelivery = () => {
 		if ( 'activating' === progress ) {
 			return __( 'Activating SureMail…', 'sureforms' );
 		}
+		if ( 'provisioning' === progress ) {
+			return __( 'Creating your SureContact account…', 'sureforms' );
+		}
 		return 'activate' === status?.action?.type
 			? __( 'Activate SureMail', 'sureforms' )
 			: __( 'Set up email delivery', 'sureforms' );
@@ -380,10 +521,26 @@ const EmailDelivery = () => {
 				email={ userEmail }
 			/>
 			<Text size={ 12 } color="tertiary">
-				{ __(
-					'Prefer another provider? You can connect one in SureMail instead of SureContact.',
-					'sureforms'
-				) }
+				{ installs
+					? __(
+						'Prefer another provider? You can connect one in SureMail instead of SureContact.',
+						'sureforms'
+					  )
+					: createInterpolateElement(
+						__(
+							'Prefer another provider, or a different email? <a>Connect it in SureMail</a>.',
+							'sureforms'
+						),
+						{
+							a: (
+								<button
+									type="button"
+									onClick={ openSureMail }
+									className={ `${ linkClass } cursor-pointer border-0 bg-transparent p-0 text-xs` }
+								/>
+							),
+						}
+					  ) }
 			</Text>
 		</div>
 	);
@@ -433,6 +590,36 @@ const EmailDelivery = () => {
 			break;
 
 		case 'connect':
+			if ( 'already_registered' === provision ) {
+				title = __(
+					'You Already Have a SureContact Account',
+					'sureforms'
+				);
+				description = openedSureMail
+					? __(
+						'Finish signing in on the SureContact tab, then come back here. This step updates by itself.',
+						'sureforms'
+					  )
+					: sprintf(
+						/* translators: %s: the current user's email address. */
+						__(
+							'%s already has a SureContact account. Sign in to connect it; SureMail finishes the connection.',
+							'sureforms'
+						),
+						userEmail
+					  );
+				continueProps = {
+					onClick: signInToSureContact,
+					text: __( 'Sign in to SureContact', 'sureforms' ),
+					icon: <ExternalLink />,
+				};
+				skipProps = {
+					onClick: () => leave( 'skip', { skipped: true } ),
+					text: __( 'Skip for now', 'sureforms' ),
+				};
+				break;
+			}
+
 			title = __( 'Connect an Email Service in SureMail', 'sureforms' );
 			description = openedSureMail
 				? __(
@@ -449,14 +636,27 @@ const EmailDelivery = () => {
 					{ consent( false ) }
 				</>
 			);
-			continueProps = {
-				onClick: openSureMail,
-				disabled: ! consented,
-				text:
-					status?.action?.label ||
-					__( 'Connect in SureMail', 'sureforms' ),
-				icon: <ExternalLink />,
-			};
+			continueProps =
+				canProvision( status ) && 'unavailable' !== provision
+					? {
+						onClick: provisionSureContact,
+						disabled: ! consented,
+						text:
+							'provisioning' === progress
+								? installLabel()
+								: __(
+									'Create free SureContact account',
+									'sureforms'
+								  ),
+					  }
+					: {
+						onClick: openSureMail,
+						disabled: ! consented,
+						text:
+							status?.action?.label ||
+							__( 'Connect in SureMail', 'sureforms' ),
+						icon: <ExternalLink />,
+					  };
 			skipProps = {
 				onClick: () => leave( 'skip', { skipped: true } ),
 				text: __( 'Skip for now', 'sureforms' ),
@@ -464,13 +664,26 @@ const EmailDelivery = () => {
 			break;
 
 		case 'limited':
-			title = __( 'Verify Your SureContact Account', 'sureforms' );
-			description =
-				status?.message ||
-				__(
-					'SureContact is connected, but only a few emails a day are accepted until you verify your account email.',
-					'sureforms'
+			if ( 'created' === provision ) {
+				title = __( 'SureContact SMTP Connected', 'sureforms' );
+				description = sprintf(
+					/* translators: %s: the current user's email address. */
+					__(
+						'Your form emails now go out through SureContact. Check %s for a verification email: until you verify it, only a few emails a day are accepted.',
+						'sureforms'
+					),
+					userEmail
 				);
+				body = <ConnectedNote />;
+			} else {
+				title = __( 'Verify Your SureContact Account', 'sureforms' );
+				description =
+					status?.message ||
+					__(
+						'SureContact is connected, but only a few emails a day are accepted until you verify your account email.',
+						'sureforms'
+					);
+			}
 			continueProps = {
 				onClick: () => leave( 'continue_limited' ),
 				text: __( 'Continue', 'sureforms' ),
@@ -485,6 +698,9 @@ const EmailDelivery = () => {
 		default:
 			title = status?.title || __( 'Email Delivery', 'sureforms' );
 			description = status?.message || '';
+			if ( 'created' === provision ) {
+				body = <ConnectedNote />;
+			}
 			continueProps = {
 				onClick: () =>
 					leave(
