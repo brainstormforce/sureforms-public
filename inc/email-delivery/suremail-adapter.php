@@ -324,6 +324,26 @@ class Suremail_Adapter {
 	}
 
 	/**
+	 * Drop the cached quota and fetch it again in the background, now.
+	 *
+	 * Called when a notification through SureMail fails, so the status can
+	 * tell whether SureContact's allowance is why.
+	 *
+	 * @since x.x.x
+	 * @return void
+	 */
+	public static function request_quota_refresh() {
+		if ( '' === self::get_surecontact_connection_id() ) {
+			return;
+		}
+
+		delete_transient( self::QUOTA_TRANSIENT );
+		if ( ! wp_next_scheduled( self::QUOTA_REFRESH_HOOK ) ) {
+			wp_schedule_single_event( time(), self::QUOTA_REFRESH_HOOK );
+		}
+	}
+
+	/**
 	 * Ask SureContact for the quota through SureMail's status handler.
 	 *
 	 * Calls the handler behind SureMail's `surecontact/status` route directly,

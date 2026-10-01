@@ -176,11 +176,17 @@ class Status {
 				$outcomes['open_forms'] = array_slice( $outcomes['open_forms'], -self::MAX_OPEN_FORMS, null, true );
 			}
 
-			$outcomes['last_result']              = 'failure';
-			$outcomes['last_failure_at']          = $now;
-			$outcomes['last_failure_form_id']     = $form_id;
-			$outcomes['last_failure_reason']      = substr( sanitize_key( (string) $reason ), 0, 64 );
-			$outcomes['last_failure_mailer']      = Mailer::get_active()['slug'];
+			$outcomes['last_result']          = 'failure';
+			$outcomes['last_failure_at']      = $now;
+			$outcomes['last_failure_form_id'] = $form_id;
+			$outcomes['last_failure_reason']  = substr( sanitize_key( (string) $reason ), 0, 64 );
+			$outcomes['last_failure_mailer']  = Mailer::get_active()['slug'];
+
+			// SureContact may have refused it for its daily allowance: ask for a
+			// fresh quota now instead of trusting a copy up to hours old.
+			if ( 'suremail' === $outcomes['last_failure_mailer'] ) {
+				Suremail_Adapter::request_quota_refresh();
+			}
 			$outcomes['last_failure_entry_saved'] = (bool) $entry_saved;
 			++$outcomes['consecutive_failures'];
 		}
@@ -312,15 +318,17 @@ class Status {
 		// one was lost or never made -- not SureMail's (empty) email logs.
 		$needs_connection = $connection_lost || ( $suremail_active && 0 === $connections );
 
-		// Why mail is failing, when SureForms can tell. An unverified SureContact
-		// account accepts only a few emails a day, so a failure through it is
-		// almost always that allowance running out: the fix is verifying the
-		// account email, not reading logs. 'surecontact_cap' when SureContact
-		// itself reported today's allowance as used up.
+		// Why mail is failing, only when SureContact itself says so: an
+		// unverified account whose daily allowance is used up. A failure asks for
+		// a fresh quota (Suremail_Adapter::request_quota_refresh()), which also
+		// refreshes email_verified, and a used-up quota is cached for at most
+		// half an hour, so neither a verified account nor a reset allowance gets
+		// this advice. Any other failure keeps pointing at SureMail's logs.
 		$cause = '';
-		if ( 'attention' === $state && $suremail_active && ! $needs_connection && $surecontact['connected'] && false === $surecontact['email_verified'] ) {
-			$quota = $surecontact['quota'];
-			$cause = is_array( $quota ) && 'daily' === $quota['period'] && 0 === $quota['remaining'] ? 'surecontact_cap' : 'surecontact_unverified';
+		$quota = $surecontact['quota'];
+		if ( 'attention' === $state && $suremail_active && ! $needs_connection && $surecontact['connected'] && false === $surecontact['email_verified']
+			&& is_array( $quota ) && 'daily' === $quota['period'] && 0 === $quota['remaining'] ) {
+			$cause = 'surecontact_cap';
 		}
 
 		$plugin_status = $suremail_active ? 'Activated' : self::get_suremail_plugin_status();
@@ -497,9 +505,7 @@ class Status {
 					return [
 						'severity' => 'error',
 						'title'    => __( 'Verify your SureContact email to keep sending', 'sureforms' ),
-						'message'  => 'surecontact_cap' === $cause
-							? __( 'Your SureContact account is not verified, so it accepts only a few emails a day, and today\'s are used up. New form notifications are not sent until you verify the account email or the allowance resets.', 'sureforms' )
-							: __( 'SureMail did not accept a recent form notification. Your SureContact account is not verified yet, which limits it to a few emails a day. Verify the account email to keep sending; SureMail\'s email logs show the exact reason.', 'sureforms' ),
+						'message'  => __( 'Your SureContact account is not verified, so it accepts only a few emails a day, and today\'s are used up. New form notifications are not sent until you verify the account email or the allowance resets.', 'sureforms' ),
 					];
 				}
 

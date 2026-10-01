@@ -478,6 +478,20 @@ class Test_Email_Delivery_Action_Items extends TestCase {
 		Status::reset();
 		Client_Logger::record_failure( 'notification', $form_id, 'Contact Form' );
 		Status::record_outcome( false, $form_id, 'mailer_rejected' );
+		// The fresh quota the failure asked for: today's allowance is used up.
+		set_transient(
+			Suremail_Adapter::QUOTA_TRANSIENT,
+			[
+				'known'      => true,
+				'used'       => 3,
+				'limit'      => 3,
+				'remaining'  => 0,
+				'period'     => 'daily',
+				'checked_at' => time(),
+			],
+			HOUR_IN_SECONDS
+		);
+		Status::reset();
 		Helper::update_srfm_option( 'dismissed_action_items', [ 'email_delivery_limited' ] );
 		$this->on_sureforms_dashboard();
 

@@ -25,11 +25,16 @@ const EmailDeliveryStatus = () => {
 	}
 
 	const ok = OK_STATES.includes( status.state );
-	const actionUrl =
-		'open_suremail' === status.action?.type ||
-		'view_logs' === status.action?.type
-			? status.action.url
-			: '';
+	const actionUrl = [
+		'open_suremail',
+		'view_logs',
+		'verify_surecontact',
+	].includes( status.action?.type )
+		? status.action.url
+		: '';
+	// Verifying is the fix, but SureMail's logs still show the exact reason.
+	const logsUrl =
+		'verify_surecontact' === status.action?.type ? status.links?.logs : '';
 
 	let message = status.message || '';
 	if ( 'ready' === status.state && 'suremail' === status.mailer?.slug ) {
@@ -69,6 +74,19 @@ const EmailDeliveryStatus = () => {
 							className="self-start [&>span]:px-0"
 						>
 							{ status.action.label }
+						</Button>
+					) }
+					{ !! logsUrl && (
+						<Button
+							variant="link"
+							size="xs"
+							tag="a"
+							href={ logsUrl }
+							target="_blank"
+							rel="noopener noreferrer"
+							className="self-start [&>span]:px-0"
+						>
+							{ __( 'View SureMail logs', 'sureforms' ) }
 						</Button>
 					) }
 				</Container>

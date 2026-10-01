@@ -254,4 +254,15 @@ class Test_Suremail_Adapter extends TestCase {
 		$this->assertStringContainsString( 'source=sureforms', $url );
 		$this->assertStringEndsWith( '#/dashboard', $url, 'The query string goes before the hash route.' );
 	}
+
+	public function test_request_quota_refresh() {
+		set_transient( Suremail_Adapter::QUOTA_TRANSIENT, [ 'known' => false ], HOUR_IN_SECONDS );
+		Suremail_Adapter::request_quota_refresh();
+		$this->assertNotFalse( get_transient( Suremail_Adapter::QUOTA_TRANSIENT ), 'Nothing to refresh without a SureContact connection.' );
+
+		$this->connect_surecontact();
+		Suremail_Adapter::request_quota_refresh();
+		$this->assertFalse( get_transient( Suremail_Adapter::QUOTA_TRANSIENT ), 'The cached copy is dropped.' );
+		$this->assertNotFalse( wp_next_scheduled( Suremail_Adapter::QUOTA_REFRESH_HOOK ), 'And fetched again now.' );
+	}
 }

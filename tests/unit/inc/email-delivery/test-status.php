@@ -154,4 +154,69 @@ class Test_Status extends TestCase {
 
 		$this->assertSame( [ 7 ], array_keys( Status::get_outcomes()['open_forms'] ) );
 	}
+
+	private function unverified_failure( $verified, $quota_remaining = null ) {
+		$this->activate_plugins( [ Mailer::SUREMAIL_FILE ] );
+		$this->set_suremail_connections( [ 'sc1' => $this->surecontact_row( $verified ) ], 'sc1' );
+		// Connected a minute before the failure, as on a real site.
+		update_option( Status::OUTCOMES_OPTION, [ 'suremail_connected_at' => time() - 60 ] );
+		Status::reset();
+		Status::record_outcome( false, 12, 'mailer_rejected' );
+		if ( null !== $quota_remaining ) {
+			set_transient(
+				\SRFM\Inc\Email_Delivery\Suremail_Adapter::QUOTA_TRANSIENT,
+				[
+					'known'      => true,
+					'used'       => 3 - $quota_remaining,
+					'limit'      => 3,
+					'remaining'  => $quota_remaining,
+					'period'     => 'daily',
+					'checked_at' => time(),
+				],
+				HOUR_IN_SECONDS
+			);
+		}
+		Status::reset();
+		return Status::get_status();
+	}
+
+	/**
+	 * Found live: an unverified SureContact account accepts 3 emails a day, and
+	 * the 4th notification failed with only "view logs". When SureContact's
+	 * fresh quota confirms the allowance is used up, the status says verify.
+	 */
+	public function test_get_status_advises_verifying_when_the_daily_allowance_is_used_up() {
+		$status = $this->unverified_failure( false, 0 );
+
+		$this->assertSame( 'surecontact_cap', $status['cause'] );
+		$this->assertSame( 'Verify your SureContact email to keep sending', $status['title'] );
+		$this->assertStringContainsString( "today's are used up", $status['message'] );
+		$this->assertSame( 'verify_surecontact', $status['action']['type'] );
+		$this->assertNotSame( '', $status['links']['logs'], 'The logs stay one click away.' );
+	}
+
+	/**
+	 * Any other failure through an unverified account -- a bad From domain,
+	 * say -- keeps pointing at SureMail's logs, and asks for a fresh quota.
+	 */
+	public function test_get_status_points_to_logs_without_fresh_evidence() {
+		wp_clear_scheduled_hook( \SRFM\Inc\Email_Delivery\Suremail_Adapter::QUOTA_REFRESH_HOOK );
+		$status = $this->unverified_failure( false );
+
+		$this->assertSame( '', $status['cause'] );
+		$this->assertSame( 'view_logs', $status['action']['type'] );
+		$this->assertNotFalse( wp_next_scheduled( \SRFM\Inc\Email_Delivery\Suremail_Adapter::QUOTA_REFRESH_HOOK ), 'The failure asked for a fresh quota.' );
+
+		$status = $this->unverified_failure( false, 2 );
+		$this->assertSame( '', $status['cause'], 'Allowance left: not the cap.' );
+		wp_clear_scheduled_hook( \SRFM\Inc\Email_Delivery\Suremail_Adapter::QUOTA_REFRESH_HOOK );
+	}
+
+	public function test_get_status_never_tells_a_verified_account_to_verify() {
+		$status = $this->unverified_failure( true, 0 );
+
+		$this->assertSame( '', $status['cause'] );
+		$this->assertSame( 'view_logs', $status['action']['type'] );
+		delete_transient( \SRFM\Inc\Email_Delivery\Suremail_Adapter::QUOTA_TRANSIENT );
+	}
 }
