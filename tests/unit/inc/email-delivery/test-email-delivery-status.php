@@ -94,7 +94,8 @@ class Test_Email_Delivery_Status extends TestCase {
 
 	public function test_suremail_wins_over_another_mail_plugin() {
 		$this->activate_plugins( [ 'wp-mail-smtp/wp_mail_smtp.php', Mailer::SUREMAIL_FILE ] );
-		$this->assertSame( 'suremail', Mailer::get_active()['slug'] );
+		$this->set_suremail_connections( [ 'sc1' => $this->surecontact_row( true ) ], 'sc1' );
+		$this->assertSame( 'suremail', Mailer::get_active()['slug'], 'A connected SureMail sends.' );
 	}
 
 	public function test_other_mail_plugin_is_named() {
@@ -341,15 +342,16 @@ class Test_Email_Delivery_Status extends TestCase {
 		$this->assertSame( 'open_suremail', $status['action']['type'] );
 	}
 
-	public function test_form_checks_fault_counts_only_until_mail_works_again() {
+	/**
+	 * The status reads its own per-form outcomes. A Form Checks fault on its
+	 * own -- e.g. a rejected visitor address, which is not recorded as a site
+	 * outcome -- still shows in Form Checks but does not put the site into
+	 * "attention".
+	 */
+	public function test_form_checks_fault_alone_does_not_need_attention() {
 		$this->activate_plugins( [ 'wp-mail-smtp/wp_mail_smtp.php' ] );
-		$fault_at = time() - 100;
-		update_option( Client_Logger::FAILURES_OPTION, [ 'notification' => [ 'count' => 1, 'acked' => 0, 'at' => $fault_at, 'form_id' => 3 ] ] );
+		update_option( Client_Logger::FAILURES_OPTION, [ 'notification' => [ 'count' => 1, 'acked' => 0, 'at' => time() - 100, 'form_id' => 3 ] ] );
 
-		$this->assertSame( 'attention', Status::get_status()['state'] );
-
-		update_option( Status::OUTCOMES_OPTION, [ 'last_result' => 'success', 'last_success_at' => $fault_at + 50 ] );
-		Status::reset();
 		$this->assertSame( 'other_mailer', Status::get_status()['state'] );
 	}
 
