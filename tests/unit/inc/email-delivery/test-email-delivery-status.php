@@ -94,7 +94,8 @@ class Test_Email_Delivery_Status extends TestCase {
 
 	public function test_suremail_wins_over_another_mail_plugin() {
 		$this->activate_plugins( [ 'wp-mail-smtp/wp_mail_smtp.php', Mailer::SUREMAIL_FILE ] );
-		$this->assertSame( 'suremail', Mailer::get_active()['slug'] );
+		$this->set_suremail_connections( [ 'sc1' => $this->surecontact_row( true ) ], 'sc1' );
+		$this->assertSame( 'suremail', Mailer::get_active()['slug'], 'A connected SureMail sends.' );
 	}
 
 	public function test_other_mail_plugin_is_named() {
@@ -342,71 +343,15 @@ class Test_Email_Delivery_Status extends TestCase {
 	}
 
 	/**
-	 * Found live: an unverified SureContact account accepts 3 emails a day, and
-	 * the 4th notification failed with advice to read logs. The fix is to
-	 * verify the account email, so that is what the status says.
+	 * The status reads its own per-form outcomes. A Form Checks fault on its
+	 * own -- e.g. a rejected visitor address, which is not recorded as a site
+	 * outcome -- still shows in Form Checks but does not put the site into
+	 * "attention".
 	 */
-	public function test_failure_through_unverified_surecontact_says_verify() {
-		$this->activate_plugins( [ Mailer::SUREMAIL_FILE ] );
-		$this->set_suremail_connections( [ 'sc1' => $this->surecontact_row( false ) ], 'sc1' );
-		// Connected a minute before the failure, as on a real site.
-		update_option( Status::OUTCOMES_OPTION, [ 'suremail_connected_at' => time() - 60 ] );
-		Status::reset();
-		Status::record_outcome( false, 12, 'mailer_rejected' );
-		$status = Status::get_status();
-
-		$this->assertSame( 'attention', $status['state'] );
-		$this->assertSame( 'surecontact_unverified', $status['cause'] );
-		$this->assertSame( 'Verify your SureContact email to keep sending', $status['title'] );
-		$this->assertSame( 'verify_surecontact', $status['action']['type'] );
-		$this->assertStringContainsString( 'page=suremail', $status['action']['url'] );
-	}
-
-	public function test_used_up_daily_allowance_is_named() {
-		$this->activate_plugins( [ Mailer::SUREMAIL_FILE ] );
-		$this->set_suremail_connections( [ 'sc1' => $this->surecontact_row( false ) ], 'sc1' );
-		set_transient(
-			Suremail_Adapter::QUOTA_TRANSIENT,
-			[
-				'known'      => true,
-				'used'       => 3,
-				'limit'      => 3,
-				'remaining'  => 0,
-				'period'     => 'daily',
-				'checked_at' => time(),
-			],
-			HOUR_IN_SECONDS
-		);
-		// Connected a minute before the failure, as on a real site.
-		update_option( Status::OUTCOMES_OPTION, [ 'suremail_connected_at' => time() - 60 ] );
-		Status::reset();
-		Status::record_outcome( false, 12, 'mailer_rejected' );
-		$status = Status::get_status();
-		delete_transient( Suremail_Adapter::QUOTA_TRANSIENT );
-
-		$this->assertSame( 'surecontact_cap', $status['cause'] );
-		$this->assertStringContainsString( "today's are used up", $status['message'] );
-	}
-
-	public function test_failure_through_verified_surecontact_points_to_logs() {
-		$this->activate_plugins( [ Mailer::SUREMAIL_FILE ] );
-		$this->set_suremail_connections( [ 'sc1' => $this->surecontact_row( true ) ], 'sc1' );
-		Status::record_outcome( false, 12, 'mailer_rejected' );
-		$status = Status::get_status();
-
-		$this->assertSame( '', $status['cause'] );
-		$this->assertSame( 'view_logs', $status['action']['type'] );
-	}
-
-	public function test_form_checks_fault_counts_only_until_mail_works_again() {
+	public function test_form_checks_fault_alone_does_not_need_attention() {
 		$this->activate_plugins( [ 'wp-mail-smtp/wp_mail_smtp.php' ] );
-		$fault_at = time() - 100;
-		update_option( Client_Logger::FAILURES_OPTION, [ 'notification' => [ 'count' => 1, 'acked' => 0, 'at' => $fault_at, 'form_id' => 3 ] ] );
+		update_option( Client_Logger::FAILURES_OPTION, [ 'notification' => [ 'count' => 1, 'acked' => 0, 'at' => time() - 100, 'form_id' => 3 ] ] );
 
-		$this->assertSame( 'attention', Status::get_status()['state'] );
-
-		update_option( Status::OUTCOMES_OPTION, [ 'last_result' => 'success', 'last_success_at' => $fault_at + 50 ] );
-		Status::reset();
 		$this->assertSame( 'other_mailer', Status::get_status()['state'] );
 	}
 

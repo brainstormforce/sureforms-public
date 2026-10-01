@@ -128,6 +128,41 @@ const ComplianceFields = ( { context, values, onChange } ) => {
 		! values?.do_not_store_entries &&
 		values?.gdpr;
 
+	// On the global settings page this is the default for new forms, not one
+	// form, so the wording says so.
+	const isGlobal = 'global' === context;
+	const deliveryTitle = emailDelivery?.title || '';
+	let neverStoreWarning;
+	if ( emailAtRisk ) {
+		neverStoreWarning = isGlobal
+			? sprintf(
+				/* translators: %s: current email delivery status, e.g. "Email delivery is not set up". */
+				__(
+					'New forms will not store entries by default, so if a notification email is not sent, that submission is gone. Email delivery on this site needs attention first: %s.',
+					'sureforms'
+				),
+				deliveryTitle
+			  )
+			: sprintf(
+				/* translators: %s: current email delivery status, e.g. "Email delivery is not set up". */
+				__(
+					'This form will not store entries, so if a notification email is not sent, that submission is gone. Email delivery on this site needs attention first: %s.',
+					'sureforms'
+				),
+				deliveryTitle
+			  );
+	} else {
+		neverStoreWarning = isGlobal
+			? __(
+				'New forms will not store entries by default. If a notification email ever fails to send, that submission cannot be recovered.',
+				'sureforms'
+			  )
+			: __(
+				'This form will not store entries. If a notification email ever fails to send, that submission cannot be recovered.',
+				'sureforms'
+			  );
+	}
+
 	return (
 		<Container direction="column" className="gap-6">
 			{ switches.map(
@@ -157,19 +192,7 @@ const ComplianceFields = ( { context, values, onChange } ) => {
 					}
 					content={
 						<Text size={ 13 }>
-							{ emailAtRisk
-								? sprintf(
-									/* translators: %s: current email delivery status, e.g. "Email delivery is not set up". */
-									__(
-										'This form will not store entries, so if a notification email is not sent, that submission is gone. Email delivery on this site needs attention first: %s.',
-										'sureforms'
-									),
-									emailDelivery?.title || ''
-								  )
-								: __(
-									'This form will not store entries. If a notification email ever fails to send, that submission cannot be recovered.',
-									'sureforms'
-								  ) }
+							{ neverStoreWarning }
 						</Text>
 					}
 					icon={ <AlertTriangle /> }
