@@ -262,7 +262,26 @@ class Test_Suremail_Adapter extends TestCase {
 
 		$this->connect_surecontact();
 		Suremail_Adapter::request_quota_refresh();
-		$this->assertFalse( get_transient( Suremail_Adapter::QUOTA_TRANSIENT ), 'The cached copy is dropped.' );
-		$this->assertNotFalse( wp_next_scheduled( Suremail_Adapter::QUOTA_REFRESH_HOOK ), 'And fetched again now.' );
+		$this->assertNotFalse( get_transient( Suremail_Adapter::QUOTA_TRANSIENT ), 'The cached copy is kept until the fetch replaces it.' );
+		$this->assertNotFalse( wp_next_scheduled( Suremail_Adapter::QUOTA_REFRESH_HOOK ), 'A fetch is queued now.' );
+	}
+
+	/**
+	 * A real SureMail response (unverified account, daily allowance used up)
+	 * is parsed as-is and rechecked within half an hour, not six hours.
+	 */
+	public function test_refresh_surecontact_quota_parses_a_real_daily_response() {
+		$this->connect_surecontact();
+		$real = json_decode( (string) file_get_contents( __DIR__ . '/fixtures/suremail-surecontact-status-unverified-daily.json' ), true ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- Test fixture.
+		\SureMails\Inc\API\SureContactStatus::$response = new WP_REST_Response( $real, 200 );
+
+		Suremail_Adapter::refresh_surecontact_quota();
+
+		$quota = Suremail_Adapter::get_surecontact_quota();
+		$this->assertSame( 3, $quota['used'] );
+		$this->assertSame( 3, $quota['limit'] );
+		$this->assertSame( 0, $quota['remaining'] );
+		$this->assertSame( 'daily', $quota['period'] );
+		$this->assertLessThanOrEqual( Suremail_Adapter::QUOTA_EXHAUSTED_TTL, (int) get_option( '_transient_timeout_' . Suremail_Adapter::QUOTA_TRANSIENT ) - time() );
 	}
 }

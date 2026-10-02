@@ -73,7 +73,7 @@ class Test_Lost_Submissions extends TestCase {
 		remove_filter( 'srfm_email_notification', $parsed, 99 );
 	}
 
-	private function make_form() {
+	private function make_form( $notifications = 1 ) {
 		$form_id = wp_insert_post(
 			[
 				'post_type'   => SRFM_FORMS_POST_TYPE,
@@ -84,12 +84,15 @@ class Test_Lost_Submissions extends TestCase {
 		update_post_meta(
 			$form_id,
 			'_srfm_email_notification',
-			[
-				[
-					'id'     => 1,
-					'status' => true,
-				],
-			]
+			array_map(
+				static function ( $n ) {
+					return [
+						'id'     => $n,
+						'status' => true,
+					];
+				},
+				range( 1, $notifications )
+			)
 		);
 		return $form_id;
 	}
@@ -182,5 +185,25 @@ class Test_Lost_Submissions extends TestCase {
 		wp_set_current_user( $this->admin_id );
 		Admin::reset_action_items_cache();
 		$this->assertContains( 'lost_submissions', wp_list_pluck( Admin::get_instance()->get_action_items(), 'id' ) );
+	}
+
+	/**
+	 * One notification accepted and another rejected: someone received the
+	 * submission, so it is not lost even though the form stores nothing.
+	 */
+	public function test_a_partly_sent_submission_is_not_lost() {
+		$form_id = $this->make_form( 2 );
+		$calls   = 0;
+
+		$this->send_never_stored(
+			$form_id,
+			static function () use ( &$calls ) {
+				return 1 === ++$calls; // First accepted, second rejected.
+			}
+		);
+
+		$this->assertSame( 2, $calls, 'Both notifications were attempted.' );
+		$this->assertSame( 0, Lost_Submissions::get()['count'] );
+		wp_delete_post( $form_id, true );
 	}
 }

@@ -219,4 +219,52 @@ class Test_Status extends TestCase {
 		$this->assertSame( 'view_logs', $status['action']['type'] );
 		delete_transient( \SRFM\Inc\Email_Delivery\Suremail_Adapter::QUOTA_TRANSIENT );
 	}
+
+	/**
+	 * A throttled repeat still records what it says that is new: here, a
+	 * submission on a never-store form that was not saved.
+	 */
+	public function test_record_outcome_keeps_a_newer_reason_when_throttled() {
+		Status::record_outcome( false, 11, 'mailer_rejected', true );
+		Status::record_outcome( false, 11, 'mailer_error', false );
+
+		$outcomes = Status::get_outcomes();
+		$this->assertSame( 'mailer_error', $outcomes['last_failure_reason'] );
+		$this->assertFalse( $outcomes['last_failure_entry_saved'] );
+		$this->assertSame( 1, $outcomes['consecutive_failures'], 'Still one write-worthy failure.' );
+	}
+
+	/**
+	 * A fails, then B fails, then A recovers: the status keeps describing B,
+	 * which is still open, not A's old reason.
+	 */
+	public function test_record_outcome_describes_the_newest_open_failure_after_a_success() {
+		$this->activate_plugins( [ 'wp-mail-smtp/wp_mail_smtp.php' ] );
+		update_option(
+			Status::OUTCOMES_OPTION,
+			[
+				'open_forms'   => [
+					11 => time() - 120,
+					22 => time() - 60,
+				],
+				'open_details' => [
+					11 => [ 'reason' => 'mailer_rejected', 'mailer' => 'other', 'entry_saved' => true ],
+					22 => [ 'reason' => 'mailer_error', 'mailer' => 'other', 'entry_saved' => false ],
+				],
+				'last_result'  => 'failure',
+			]
+		);
+
+		Status::record_outcome( true, 11 );
+		$outcomes = Status::get_outcomes();
+
+		$this->assertSame( 'failure', $outcomes['last_result'] );
+		$this->assertSame( 22, $outcomes['last_failure_form_id'] );
+		$this->assertSame( 'mailer_error', $outcomes['last_failure_reason'] );
+		$this->assertFalse( $outcomes['last_failure_entry_saved'] );
+		$this->assertSame( 'attention', Status::get_status()['state'] );
+
+		Status::record_outcome( true, 22 );
+		$this->assertSame( 'success', Status::get_outcomes()['last_result'] );
+	}
 }
