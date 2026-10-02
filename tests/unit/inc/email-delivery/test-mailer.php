@@ -107,6 +107,7 @@ class Test_Mailer extends TestCase {
 		$this->assertTrue( Mailer::is_recipient_error( 'Invalid address:  (to): not-an-address' ) );
 		$this->assertTrue( Mailer::is_recipient_error( 'Invalid address:  (Reply-To): x@' ) );
 		$this->assertTrue( Mailer::is_recipient_error( 'You must provide at least one recipient email address.' ) );
+		$this->assertTrue( Mailer::is_recipient_error( 'SMTP Error: The following recipients failed: visitor@exampel.con: 550 5.1.1 User unknown' ), 'Refused by the mail server.' );
 		$this->assertFalse( Mailer::is_recipient_error( 'Invalid address:  (From): wordpress@localhost' ), 'A broken From address is the site\'s problem.' );
 		$this->assertFalse( Mailer::is_recipient_error( 'SMTP Error: Could not authenticate.' ) );
 		$this->assertFalse( Mailer::is_recipient_error( '' ) );

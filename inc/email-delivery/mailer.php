@@ -179,8 +179,18 @@ class Mailer {
 			return true;
 		}
 
-		foreach ( [ 'You must provide at least one recipient email address.', __( 'You must provide at least one recipient email address.' ) ] as $no_recipient ) { // phpcs:ignore WordPress.WP.I18n.MissingArgDomain -- Matching WordPress core's own PHPMailer string.
-			if ( false !== strpos( $message, $no_recipient ) ) {
+		// No recipient at all, or the mail server refusing the recipient (RCPT)
+		// over SMTP. API-based mailers word recipient rejections their own way and
+		// are not recognised here; those still count, which errs towards telling
+		// the owner.
+		$recipient_texts = [
+			'You must provide at least one recipient email address.',
+			__( 'You must provide at least one recipient email address.' ), // phpcs:ignore WordPress.WP.I18n.MissingArgDomain -- Matching WordPress core's own PHPMailer string.
+			'SMTP Error: The following recipients failed:',
+			trim( __( 'SMTP Error: The following recipients failed: ' ) ), // phpcs:ignore WordPress.WP.I18n.MissingArgDomain -- Matching WordPress core's own PHPMailer string.
+		];
+		foreach ( $recipient_texts as $recipient_text ) {
+			if ( '' !== $recipient_text && false !== strpos( $message, $recipient_text ) ) {
 				return true;
 			}
 		}
