@@ -156,32 +156,57 @@ class Status {
 			}
 
 			if ( 0 === $form_id ) {
-				$outcomes['open_forms'] = [];
+				$outcomes['open_forms']   = [];
+				$outcomes['open_details'] = [];
 			} else {
-				unset( $outcomes['open_forms'][ $form_id ] );
+				unset( $outcomes['open_forms'][ $form_id ], $outcomes['open_details'][ $form_id ] );
 			}
 
-			$outcomes['last_result']          = 'success';
 			$outcomes['last_success_at']      = $now;
 			$outcomes['consecutive_failures'] = 0;
+
+			if ( empty( $outcomes['open_forms'] ) ) {
+				$outcomes['last_result'] = 'success';
+			} else {
+				// Another form is still failing: the status describes that one, the
+				// newest still open, not the failure this success just cleared.
+				$outcomes = self::describe_newest_open_failure( $outcomes );
+			}
 		} else {
+			$details = [
+				'reason'      => substr( sanitize_key( (string) $reason ), 0, 64 ),
+				'mailer'      => Mailer::get_active()['slug'],
+				'entry_saved' => (bool) $entry_saved,
+			];
+
 			$last_for_form = $outcomes['open_forms'][ $form_id ] ?? 0;
 			if ( $last_for_form > 0 && $now - $last_for_form < self::FAILURE_WRITE_INTERVAL ) {
+				// Throttled, but a repeat that says something new (another reason,
+				// mailer, or a submission not stored) still updates what is shown.
+				if ( ( $outcomes['open_details'][ $form_id ] ?? null ) === $details ) {
+					return;
+				}
+				$outcomes['open_details'][ $form_id ] = $details;
+				$outcomes                             = self::describe_newest_open_failure( $outcomes );
+				update_option( self::OUTCOMES_OPTION, $outcomes, false );
+				self::$memo = null;
 				return;
 			}
 
-			$outcomes['open_forms'][ $form_id ] = $now;
+			$outcomes['open_forms'][ $form_id ]   = $now;
+			$outcomes['open_details'][ $form_id ] = $details;
 			if ( count( $outcomes['open_forms'] ) > self::MAX_OPEN_FORMS ) {
 				asort( $outcomes['open_forms'] );
-				$outcomes['open_forms'] = array_slice( $outcomes['open_forms'], -self::MAX_OPEN_FORMS, null, true );
+				$outcomes['open_forms']   = array_slice( $outcomes['open_forms'], -self::MAX_OPEN_FORMS, null, true );
+				$outcomes['open_details'] = array_intersect_key( $outcomes['open_details'], $outcomes['open_forms'] );
 			}
 
 			$outcomes['last_result']              = 'failure';
 			$outcomes['last_failure_at']          = $now;
 			$outcomes['last_failure_form_id']     = $form_id;
-			$outcomes['last_failure_reason']      = substr( sanitize_key( (string) $reason ), 0, 64 );
-			$outcomes['last_failure_mailer']      = Mailer::get_active()['slug'];
-			$outcomes['last_failure_entry_saved'] = (bool) $entry_saved;
+			$outcomes['last_failure_reason']      = $details['reason'];
+			$outcomes['last_failure_mailer']      = $details['mailer'];
+			$outcomes['last_failure_entry_saved'] = $details['entry_saved'];
 			++$outcomes['consecutive_failures'];
 		}
 
@@ -193,7 +218,7 @@ class Status {
 	 * Stored send outcomes with defaults filled in.
 	 *
 	 * @since x.x.x
-	 * @return array{last_result:string,last_success_at:int,last_failure_at:int,last_failure_form_id:int,last_failure_reason:string,last_failure_mailer:string,last_failure_entry_saved:bool,consecutive_failures:int,suremail_connected_at:int,open_forms:array<int,int>}
+	 * @return array{last_result:string,last_success_at:int,last_failure_at:int,last_failure_form_id:int,last_failure_reason:string,last_failure_mailer:string,last_failure_entry_saved:bool,consecutive_failures:int,suremail_connected_at:int,open_forms:array<int,int>,open_details:array<int,array{reason:string,mailer:string,entry_saved:bool}>}
 	 */
 	public static function get_outcomes() {
 		$stored = get_option( self::OUTCOMES_OPTION, [] );
@@ -210,7 +235,55 @@ class Status {
 			'consecutive_failures'     => isset( $stored['consecutive_failures'] ) ? absint( $stored['consecutive_failures'] ) : 0,
 			'suremail_connected_at'    => isset( $stored['suremail_connected_at'] ) ? absint( $stored['suremail_connected_at'] ) : 0,
 			'open_forms'               => self::read_open_forms( $stored ),
+			'open_details'             => self::read_open_details( $stored ),
 		];
+	}
+
+	/**
+	 * Point the last_failure_* fields at the newest form still failing.
+	 *
+	 * @since x.x.x
+	 * @param array<string,mixed> $outcomes Outcomes with at least one open form.
+	 * @return array<string,mixed>
+	 */
+	private static function describe_newest_open_failure( array $outcomes ) {
+		$open = array_map( [ Helper::class, 'get_integer_value' ], Helper::get_array_value( $outcomes['open_forms'] ?? [] ) );
+		arsort( $open );
+		$form_id     = Helper::get_integer_value( array_key_first( $open ) );
+		$all_details = Helper::get_array_value( $outcomes['open_details'] ?? [] );
+		$details     = Helper::get_array_value( $all_details[ $form_id ] ?? [] );
+
+		$outcomes['last_result']              = 'failure';
+		$outcomes['last_failure_at']          = $open[ $form_id ] ?? 0;
+		$outcomes['last_failure_form_id']     = $form_id;
+		$outcomes['last_failure_reason']      = Helper::get_string_value( $details['reason'] ?? $outcomes['last_failure_reason'] ?? '' );
+		$outcomes['last_failure_mailer']      = Helper::get_string_value( $details['mailer'] ?? $outcomes['last_failure_mailer'] ?? '' );
+		$outcomes['last_failure_entry_saved'] = (bool) ( $details['entry_saved'] ?? $outcomes['last_failure_entry_saved'] ?? true );
+		return $outcomes;
+	}
+
+
+	/**
+	 * Per-form failure details, as form id => reason, mailer, entry_saved.
+	 *
+	 * @since x.x.x
+	 * @param array<string,mixed> $stored Raw stored outcomes.
+	 * @return array<int,array{reason:string,mailer:string,entry_saved:bool}>
+	 */
+	private static function read_open_details( array $stored ) {
+		$details = [];
+		if ( isset( $stored['open_details'] ) && is_array( $stored['open_details'] ) ) {
+			foreach ( $stored['open_details'] as $form_id => $row ) {
+				if ( is_numeric( $form_id ) && is_array( $row ) ) {
+					$details[ absint( $form_id ) ] = [
+						'reason'      => isset( $row['reason'] ) && is_string( $row['reason'] ) ? $row['reason'] : '',
+						'mailer'      => isset( $row['mailer'] ) && is_string( $row['mailer'] ) ? $row['mailer'] : '',
+						'entry_saved' => ! isset( $row['entry_saved'] ) || (bool) $row['entry_saved'],
+					];
+				}
+			}
+		}
+		return $details;
 	}
 
 	/**
@@ -483,7 +556,7 @@ class Status {
 				} elseif ( 'suremail' === $mailer['slug'] ) {
 					$message = __( 'SureMail did not accept a recent form notification. It may retry automatically; SureMail\'s email logs show the reason.', 'sureforms' );
 				} elseif ( 'none' === $mailer['slug'] ) {
-					$message = __( 'A recent form notification could not be handed to your server\'s mail function. Set up email delivery so notifications are sent through a proper email service. If your host\'s mail function used to work, the email troubleshooting guide explains how to turn the old fallback back on.', 'sureforms' );
+					$message = __( 'A recent form notification could not be handed to your server\'s mail function. Set up email delivery so notifications are sent through a proper email service.', 'sureforms' );
 				} else {
 					/* translators: %s: name of the site's mail plugin. */
 					$message = sprintf( __( '%s did not accept a recent form notification. Its logs show the reason.', 'sureforms' ), $mailer['label'] );
