@@ -324,10 +324,12 @@ class Suremail_Adapter {
 	}
 
 	/**
-	 * Drop the cached quota and fetch it again in the background, now.
+	 * Fetch the quota again in the background, now.
 	 *
 	 * Called when a notification through SureMail fails, so the status can
-	 * tell whether SureContact's allowance is why.
+	 * tell whether SureContact's allowance is why. The cached copy is kept
+	 * until the fetch replaces it: deleting it would leave nothing at all on
+	 * sites where cron never runs (DISABLE_WP_CRON without a real cron).
 	 *
 	 * @since x.x.x
 	 * @return void
@@ -337,7 +339,6 @@ class Suremail_Adapter {
 			return;
 		}
 
-		delete_transient( self::QUOTA_TRANSIENT );
 		if ( ! wp_next_scheduled( self::QUOTA_REFRESH_HOOK ) ) {
 			wp_schedule_single_event( time(), self::QUOTA_REFRESH_HOOK );
 		}

@@ -26,6 +26,8 @@ trait SRFM_Email_Delivery_Fixtures {
 		delete_option( Suremail_Adapter::CONNECTIONS_OPTION );
 		delete_option( Suremail_Adapter::ONBOARDING_OPTION );
 		delete_option( Client_Logger::FAILURES_OPTION );
+		delete_transient( Suremail_Adapter::QUOTA_TRANSIENT );
+		wp_clear_scheduled_hook( Suremail_Adapter::QUOTA_REFRESH_HOOK );
 		Status::reset();
 	}
 
