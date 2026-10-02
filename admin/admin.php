@@ -4198,6 +4198,12 @@ CSS;
 						'post_status'    => 'publish',
 						'posts_per_page' => 50,
 						'paged'          => $page,
+						// A stable order across pages: forms published in the same
+						// second would otherwise be returned in any order.
+						'orderby'        => [
+							'date' => 'DESC',
+							'ID'   => 'DESC',
+						],
 						'fields'         => 'ids',
 						'no_found_rows'  => true,
 						'meta_key'       => '_srfm_email_notification', // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- SureForms dashboard only, paged by 50.
