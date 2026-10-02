@@ -367,12 +367,15 @@ class Suremail_Adapter {
 			'checked_at' => time(),
 		];
 
-		if ( ! self::is_quota_low( $quota ) ) {
-			$ttl = self::QUOTA_TTL;
-		} elseif ( 0 === $quota['remaining'] ) {
+		// Used up first, whatever the period: a daily allowance is never "low"
+		// (that is the limited state's job), but at zero it must be rechecked
+		// as soon as a monthly one.
+		if ( $limit > 0 && 0 === $quota['remaining'] ) {
 			$ttl = self::QUOTA_EXHAUSTED_TTL;
-		} else {
+		} elseif ( self::is_quota_low( $quota ) ) {
 			$ttl = self::QUOTA_LOW_TTL;
+		} else {
+			$ttl = self::QUOTA_TTL;
 		}
 
 		set_transient( self::QUOTA_TRANSIENT, array_merge( [ 'known' => true ], $quota ), $ttl );

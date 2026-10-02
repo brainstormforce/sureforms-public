@@ -254,4 +254,23 @@ class Test_Suremail_Adapter extends TestCase {
 		$this->assertStringContainsString( 'source=sureforms', $url );
 		$this->assertStringEndsWith( '#/dashboard', $url, 'The query string goes before the hash route.' );
 	}
+
+	/**
+	 * A real SureMail response (unverified account, daily allowance used up)
+	 * is parsed as-is and rechecked within half an hour, not six hours.
+	 */
+	public function test_refresh_surecontact_quota_parses_a_real_daily_response() {
+		$this->connect_surecontact();
+		$real = json_decode( (string) file_get_contents( __DIR__ . '/fixtures/suremail-surecontact-status-unverified-daily.json' ), true ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- Test fixture.
+		\SureMails\Inc\API\SureContactStatus::$response = new WP_REST_Response( $real, 200 );
+
+		Suremail_Adapter::refresh_surecontact_quota();
+
+		$quota = Suremail_Adapter::get_surecontact_quota();
+		$this->assertSame( 3, $quota['used'] );
+		$this->assertSame( 3, $quota['limit'] );
+		$this->assertSame( 0, $quota['remaining'] );
+		$this->assertSame( 'daily', $quota['period'] );
+		$this->assertLessThanOrEqual( Suremail_Adapter::QUOTA_EXHAUSTED_TTL, (int) get_option( '_transient_timeout_' . Suremail_Adapter::QUOTA_TRANSIENT ) - time() );
+	}
 }
