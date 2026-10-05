@@ -219,8 +219,15 @@ export default ( props ) => {
 				} );
 			};
 			recognition.onerror = ( e ) => {
-				recognition.stop();
 				setIsListening( false );
+
+				// abort() reports 'aborted' when typing or a card click stops voice
+				// input on purpose; that isn't an error to show.
+				if ( 'aborted' === e.error ) {
+					return;
+				}
+
+				recognition.stop();
 				toast.dismiss();
 
 				if ( e.error === 'not-allowed' ) {
@@ -463,9 +470,13 @@ export default ( props ) => {
 	}
 
 	return (
-		<Container className="gap-0" direction="column">
+		// The only scroller on this screen: Header.js sets body to overflow hidden,
+		// and this fills the window below the 3.5rem fixed header.
+		<Container
+			className="gap-0 h-[calc(100vh-3.5rem)] overflow-y-auto"
+			direction="column"
+		>
 			<Container.Item className="w-full">
-				{ /* The page is the only scroller; the screen sits below the 3.5rem header. */ }
 				<Container
 					className="p-4 sm:p-8 gap-6 mx-auto w-full min-h-[calc(100vh-3.5rem)] pb-16 bg-background-secondary"
 					direction="column"
