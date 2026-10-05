@@ -53,6 +53,9 @@ class Test_Analytics extends TestCase {
 		// Clear object cache.
 		wp_cache_flush();
 
+		// Reset the AI starter counters so they don't leak into other tests.
+		Helper::update_srfm_option( 'ai_starter_usage', [] );
+
 		// Clean up any test posts.
 		$posts = get_posts(
 			[
@@ -1550,8 +1553,8 @@ class Test_Analytics extends TestCase {
 		$this->assertSame( '0', $event['event_value'] );
 		$this->assertSame(
 			[
-				'total_ai_forms' => '1',
-				'edited'         => '0',
+				'ai_forms_created' => '1',
+				'edited'           => '0',
 			],
 			$event['properties']
 		);
@@ -1567,7 +1570,7 @@ class Test_Analytics extends TestCase {
 
 		$event = $this->get_pending_ai_starter_event();
 		$this->assertSame( '3', $event['event_value'] );
-		$this->assertSame( '4', $event['properties']['total_ai_forms'] );
+		$this->assertSame( '4', $event['properties']['ai_forms_created'] );
 		$this->assertSame( '1', $event['properties']['edited'] );
 		$this->assertSame( '2', $event['properties']['starter_contact'] );
 		$this->assertSame( '1', $event['properties']['starter_feedback'] );
@@ -1594,7 +1597,7 @@ class Test_Analytics extends TestCase {
 
 		$usage = Helper::get_srfm_option( 'ai_starter_usage', [] );
 		$this->assertCount( 20, $usage['starters'] );
-		$this->assertSame( 25, $usage['total_ai_forms'] );
+		$this->assertSame( 25, $usage['ai_forms_created'] );
 	}
 
 	public function test_track_ai_starter_usage_sanitizes_the_starter_id() {

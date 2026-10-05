@@ -120,3 +120,36 @@ export const getStarterPrompts = () => {
 			prompt: starter.prompt.slice( 0, MAX_PROMPT_LENGTH ),
 		} ) );
 };
+
+// Share of a starter prompt's words that must remain for an edited prompt to
+// still count as that starter.
+const STARTER_WORD_SHARE = 0.5;
+
+const toWords = ( value ) =>
+	value.toLowerCase().match( /[\p{L}\p{N}]+/gu ) ?? [];
+
+/**
+ * Whether an edited prompt still comes from a starter prompt.
+ *
+ * Small edits keep the starter; replacing or rewriting most of it does not,
+ * so a prompt the user wrote themselves isn't counted against a card.
+ *
+ * @since x.x.x
+ * @param {string} text          Current prompt.
+ * @param {string} starterPrompt The starter's prompt.
+ * @return {boolean} Whether at least half of the starter's words remain.
+ */
+export const isFromStarter = ( text, starterPrompt ) => {
+	const starterWords = new Set( toWords( starterPrompt ) );
+	if ( ! starterWords.size ) {
+		return false;
+	}
+	const textWords = new Set( toWords( text ) );
+	let kept = 0;
+	starterWords.forEach( ( word ) => {
+		if ( textWords.has( word ) ) {
+			kept++;
+		}
+	} );
+	return kept / starterWords.size >= STARTER_WORD_SHARE;
+};

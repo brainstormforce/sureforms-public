@@ -740,9 +740,9 @@ class Analytics {
 	/**
 	 * Track AI form creation, broken down by the starter card used (if any).
 	 *
-	 * Keeps cumulative counters in srfm_options and re-sends the latest totals
-	 * as the `ai_starter_usage` event, so the share of AI forms started from
-	 * each card can be read from the warehouse.
+	 * Keeps cumulative counters in srfm_options and queues the latest totals as
+	 * the `ai_starter_usage` event each time an AI form is created, so the share
+	 * of AI forms started from each card can be read from the warehouse.
 	 *
 	 * @param mixed $starter_id Starter card id (sanitized here), or empty string for a free-text prompt.
 	 * @param bool  $edited     Whether the starter prompt was edited before generating.
@@ -759,7 +759,9 @@ class Analytics {
 
 		$counts = isset( $usage['starters'] ) && is_array( $usage['starters'] ) ? array_map( 'absint', $usage['starters'] ) : [];
 
-		$usage['total_ai_forms'] = absint( $usage['total_ai_forms'] ?? 0 ) + 1;
+		// Counts AI forms created since this tracking shipped, deleted ones included
+		// (unlike the `ai_generated_forms` stat, which counts forms that exist now).
+		$usage['ai_forms_created'] = absint( $usage['ai_forms_created'] ?? 0 ) + 1;
 
 		// Cap distinct keys so a filtered starter list can't grow the option unbounded.
 		if ( '' !== $starter_id && ( isset( $counts[ $starter_id ] ) || count( $counts ) < 20 ) ) {
@@ -774,14 +776,16 @@ class Analytics {
 		Helper::update_srfm_option( 'ai_starter_usage', $usage );
 
 		$properties = [
-			'total_ai_forms' => (string) $usage['total_ai_forms'],
-			'edited'         => (string) absint( $usage['edited'] ?? 0 ),
+			'ai_forms_created' => (string) $usage['ai_forms_created'],
+			'edited'           => (string) absint( $usage['edited'] ?? 0 ),
 		];
 		foreach ( $counts as $id => $count ) {
 			$properties[ 'starter_' . $id ] = (string) $count;
 		}
 
-		// $force = true: cumulative counter, must re-send the latest totals each cycle.
+		// $force = true: skip the already-sent check and replace any queued copy, so
+		// the next flush sends these totals. Nothing is re-sent until another AI form
+		// is created.
 		self::events()->track( 'ai_starter_usage', (string) array_sum( $counts ), $properties, true );
 	}
 

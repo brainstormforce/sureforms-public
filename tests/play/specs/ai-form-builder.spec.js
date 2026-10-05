@@ -363,6 +363,27 @@ test.describe( 'Generate with AI — starter cards', () => {
 		} );
 	} );
 
+	test( 'create-new-form gets no starter once the card prompt is replaced', async ( {
+		page,
+	} ) => {
+		await openAiScreen( page );
+		const createRequests = await captureCreateForm( page );
+
+		await starterCard( page, 'Contact form' ).click();
+		// fill() selects all and replaces it, like a paste over the example.
+		await promptBox( page ).fill( 'Booking form for my salon with preferred date' );
+		await expect(
+			starterCard( page, 'Contact form' )
+		).toHaveAttribute( 'aria-pressed', 'false' );
+		await generateButton( page ).click();
+
+		await expect.poll( () => createRequests.length ).toBe( 1 );
+		expect( createRequests[ 0 ] ).toMatchObject( {
+			ai_starter: '',
+			ai_starter_edited: false,
+		} );
+	} );
+
 	test( 'create-new-form gets no starter for a free-text prompt', async ( {
 		page,
 	} ) => {

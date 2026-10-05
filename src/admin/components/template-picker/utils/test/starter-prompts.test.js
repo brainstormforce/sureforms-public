@@ -14,7 +14,11 @@ jest.mock( 'lucide-react', () => ( {
 } ) );
 
 import { addFilter, removeAllFilters } from '@wordpress/hooks';
-import { getStarterPrompts, MAX_PROMPT_LENGTH } from '../starter-prompts';
+import {
+	getStarterPrompts,
+	isFromStarter,
+	MAX_PROMPT_LENGTH,
+} from '../starter-prompts';
 
 const FILTER = 'srfm.aiFormScreen.starterPrompts';
 
@@ -108,5 +112,35 @@ describe( 'getStarterPrompts', () => {
 	it( 'returns an empty list when a filter returns a non-array', () => {
 		addFilter( FILTER, 'test', () => null );
 		expect( getStarterPrompts() ).toEqual( [] );
+	} );
+} );
+
+describe( 'isFromStarter', () => {
+	const contact = () =>
+		getStarterPrompts().find( ( starter ) => 'contact' === starter.id )
+			.prompt;
+
+	it( 'keeps the untouched and lightly edited prompt', () => {
+		expect( isFromStarter( contact(), contact() ) ).toBe( true );
+		expect(
+			isFromStarter( contact() + ' Add a company name field.', contact() )
+		).toBe( true );
+		expect(
+			isFromStarter( contact().replace( 'subject and ', '' ), contact() )
+		).toBe( true );
+	} );
+
+	it( 'drops a prompt the user wrote over the example', () => {
+		expect(
+			isFromStarter(
+				'Booking form for my salon with name, email, service and preferred date.',
+				contact()
+			)
+		).toBe( false );
+		expect( isFromStarter( '', contact() ) ).toBe( false );
+	} );
+
+	it( 'is false for an empty starter prompt', () => {
+		expect( isFromStarter( 'Anything', '' ) ).toBe( false );
 	} );
 } );
