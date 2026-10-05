@@ -399,4 +399,51 @@ test.describe( 'Generate with AI — starter cards', () => {
 			ai_starter_edited: false,
 		} );
 	} );
+
+	test( 'a short window can scroll down to Generate', async ( { page } ) => {
+		await page.setViewportSize( { width: 1366, height: 450 } );
+		await openAiScreen( page );
+
+		// Header.js hides body overflow, so scroll with the wheel the way a user
+		// would; scrollIntoView() would move even an overflow-hidden body.
+		await expect( generateButton( page ) ).not.toBeInViewport();
+		await page.mouse.move( 683, 225 );
+		await expect
+			.poll( async () => {
+				await page.mouse.wheel( 0, 100 );
+				const box = await generateButton( page ).boundingBox();
+				return box && box.y >= 0 && box.y + box.height <= 450;
+			} )
+			.toBe( true );
+	} );
+
+	test( 'picking a card while listening shows no voice error', async ( {
+		page,
+	} ) => {
+		// Fake recognition that reports 'aborted' on abort(), as browsers do.
+		await page.addInitScript( () => {
+			window.SpeechRecognition = class {
+				start() {}
+				stop() {}
+				abort() {
+					window.srfmTestAborts = ( window.srfmTestAborts || 0 ) + 1;
+					this.onerror?.( { error: 'aborted' } );
+				}
+			};
+		} );
+		await openAiScreen( page );
+
+		await page.locator( 'button:has(svg.lucide-mic-off)' ).click();
+		await expect( page.locator( 'button:has(svg.lucide-mic)' ) ).toBeVisible();
+		await starterCard( page, 'Contact form' ).click();
+
+		await expect( page.locator( 'button:has(svg.lucide-mic-off)' ) ).toBeVisible();
+		await expect
+			.poll( () => page.evaluate( () => window.srfmTestAborts ) )
+			.toBe( 1 );
+		// Check once: a retrying assertion would pass after the toast auto-closes.
+		expect(
+			await page.getByText( /Speech recognition is not supported/ ).count()
+		).toBe( 0 );
+	} );
 } );

@@ -240,7 +240,7 @@ class AI_Helper {
 				'fields'         => 'ids',
 				'no_found_rows'  => true,
 				'orderby'        => 'none',
-				'meta_query'     => [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- One-row lookup, only on the Generate with AI screen.
+				'meta_query'     => [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- One-row lookup: on the Generate with AI screen, and once from Analytics behind is_tracked().
 					[
 						'key'     => '_srfm_is_ai_generated',
 						'value'   => '',
