@@ -88,6 +88,10 @@ export default ( props ) => {
 	const [ isFocused, setIsFocused ] = useState( false );
 
 	const starters = useMemo( () => getStarterPrompts(), [] );
+	// Examples describe simple forms, so they are hidden for other form types
+	// (Quiz, Conversational, Payment...) rather than sent with the wrong type.
+	const startersAvailable =
+		starters.length > 0 && ( ! formType || 'simple' === formType );
 	const [ selectedStarterId, setSelectedStarterId ] = useState( null );
 	// Prompt replaced by a starter card, kept so the user can undo.
 	const [ replacedPrompt, setReplacedPrompt ] = useState( null );
@@ -127,6 +131,14 @@ export default ( props ) => {
 	);
 	const [ focusStarters, setFocusStarters ] = useState( false );
 
+	// Leaving the simple form type drops the example selection; the prompt
+	// text stays.
+	useEffect( () => {
+		if ( ! startersAvailable ) {
+			setSelectedStarterId( null );
+		}
+	}, [ startersAvailable ] );
+
 	// Move focus to the first example after "Show examples" is clicked.
 	useEffect( () => {
 		if ( focusStarters && showStarters ) {
@@ -153,10 +165,11 @@ export default ( props ) => {
 		return recognition;
 	};
 
-	// Stops voice input if typing begins
+	// Stops voice input if typing begins. abort() drops a pending phrase that
+	// stop() would still deliver on top of the new text.
 	const handleTyping = () => {
 		if ( isListening && recognitionRef.current ) {
-			recognitionRef.current.stop();
+			recognitionRef.current.abort();
 			setIsListening( false );
 		}
 	};
@@ -405,21 +418,33 @@ export default ( props ) => {
 			return;
 		}
 
-		const isStarterText =
-			! text.trim() || starters.some( ( item ) => item.prompt === text );
-
-		setReplacedPrompt( isStarterText ? null : text );
+		// Switching from an untouched example keeps the text that example
+		// replaced, so Undo still gives back what the user typed.
+		let undoText = text.trim() ? text : null;
+		if ( starters.some( ( item ) => item.prompt === text ) ) {
+			undoText = replacedPrompt;
+		}
+		setReplacedPrompt( undoText );
 		setPrompt( starter.prompt );
 		setSelectedStarterId( starter.id );
 		speak(
-			sprintf(
-				/* translators: %s: starter example title, e.g. "Contact form". */
-				__(
-					'%s example added to the prompt. Edit it or press Generate.',
-					'sureforms'
-				),
-				starter.title
-			)
+			null !== undoText
+				? sprintf(
+					/* translators: %s: starter example title, e.g. "Contact form". */
+					__(
+						'%s example replaced your prompt. Press Undo to get your text back.',
+						'sureforms'
+					),
+					starter.title
+				  )
+				: sprintf(
+					/* translators: %s: starter example title, e.g. "Contact form". */
+					__(
+						'%s example added to the prompt. Edit it or press Generate.',
+						'sureforms'
+					),
+					starter.title
+				  )
 		);
 	};
 
@@ -445,13 +470,11 @@ export default ( props ) => {
 	}
 
 	return (
-		<Container
-			className="gap-0 h-screen overflow-y-auto"
-			direction="column"
-		>
+		<Container className="gap-0" direction="column">
 			<Container.Item className="w-full">
+				{ /* The page is the only scroller; the screen sits below the 3.5rem header. */ }
 				<Container
-					className="p-4 sm:p-8 gap-6 mx-auto w-full min-h-screen pb-16 bg-background-secondary"
+					className="p-4 sm:p-8 gap-6 mx-auto w-full min-h-[calc(100vh-3.5rem)] pb-16 bg-background-secondary"
 					direction="column"
 					justify="center"
 					align="center"
@@ -471,7 +494,7 @@ export default ( props ) => {
 									) }
 								</h1>
 								<p className="m-0 text-base font-normal text-text-secondary">
-									{ showStarters
+									{ showStarters && startersAvailable
 										? __(
 											'Start with an example, or describe your own form below.',
 											'sureforms'
@@ -484,7 +507,7 @@ export default ( props ) => {
 							</Container.Item>
 							<Container.Item className="w-full">
 								<div className="w-full max-w-[750px] lg:max-w-[900px] mx-auto p-2 flex flex-col gap-4">
-									{ showStarters ? (
+									{ showStarters && startersAvailable ? (
 										<StarterPrompts
 											starters={ starters }
 											selectedStarterId={
@@ -493,7 +516,7 @@ export default ( props ) => {
 											onToggle={ handleStarterToggle }
 										/>
 									) : (
-										starters.length > 0 && (
+										startersAvailable && (
 											<Container
 												align="center"
 												className="gap-1 text-sm text-text-secondary"
@@ -524,10 +547,15 @@ export default ( props ) => {
 										{ showLearnTip && (
 											<div className="absolute top-4 right-4 z-[999999] pointer-events-none">
 												<div className="bg-tooltip-background-dark text-text-on-color text-sm px-3 py-2 rounded-md shadow-lg whitespace-nowrap">
-													{ __(
-														'Pick an example or describe your form',
-														'sureforms'
-													) }
+													{ startersAvailable
+														? __(
+															'Pick an example or describe your form',
+															'sureforms'
+														  )
+														: __(
+															'Describe your form',
+															'sureforms'
+														  ) }
 												</div>
 											</div>
 										) }

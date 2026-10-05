@@ -1,5 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
+import { isValidElement } from '@wordpress/element';
 import { Mail, FileText, CalendarCheck, MessageSquare } from 'lucide-react';
 
 // Maximum prompt length accepted by the AI form builder.
@@ -7,6 +8,41 @@ export const MAX_PROMPT_LENGTH = 2000;
 
 // Maximum number of starter cards rendered in the grid.
 const MAX_STARTERS = 4;
+
+const isNonEmptyString = ( value ) =>
+	'string' === typeof value && value.trim() !== '';
+
+/**
+ * Whether a value can be rendered as `<Icon />`: a function component or a
+ * forwardRef/memo object (lucide icons), but not an element such as `<Mail />`.
+ *
+ * @since x.x.x
+ * @param {*} icon Icon from a starter.
+ * @return {boolean} Whether the icon is a component.
+ */
+const isIconComponent = ( icon ) =>
+	'function' === typeof icon ||
+	( null !== icon &&
+		'object' === typeof icon &&
+		Boolean( icon.$$typeof ) &&
+		! isValidElement( icon ) );
+
+/**
+ * Whether a starter from the filter can be rendered without breaking the screen.
+ *
+ * @since x.x.x
+ * @param {*} starter Starter from the filter.
+ * @return {boolean} Whether the starter is valid.
+ */
+const isValidStarter = ( starter ) =>
+	null !== starter &&
+	'object' === typeof starter &&
+	isNonEmptyString( starter.id ) &&
+	isNonEmptyString( starter.title ) &&
+	isNonEmptyString( starter.prompt ) &&
+	( undefined === starter.description ||
+		'string' === typeof starter.description ) &&
+	( undefined === starter.icon || isIconComponent( starter.icon ) );
 
 /**
  * Get the starter prompts shown above the AI prompt box.
@@ -72,12 +108,7 @@ export const getStarterPrompts = () => {
 
 	return starters
 		.filter( ( starter ) => {
-			if (
-				! starter?.id ||
-				! starter?.title ||
-				! starter?.prompt ||
-				seenIds.has( starter.id )
-			) {
+			if ( ! isValidStarter( starter ) || seenIds.has( starter.id ) ) {
 				return false;
 			}
 			seenIds.add( starter.id );

@@ -60,6 +60,38 @@ describe( 'getStarterPrompts', () => {
 		expect( ids ).not.toContain( 'no-prompt' );
 	} );
 
+	it.each( [
+		[ 'a number prompt', { prompt: 123 } ],
+		[ 'an object title', { title: { text: 'Bad' } } ],
+		[ 'a number id', { id: 7 } ],
+		[ 'an array description', { description: [ 'Bad' ] } ],
+		[ 'an element icon', { icon: { $$typeof: Symbol.for( 'react.element' ), type: 'svg', props: {} } } ],
+		[ 'a string icon', { icon: 'mail' } ],
+	] )( 'drops a filtered starter with %s', ( _label, override ) => {
+		addFilter( FILTER, 'test', () => [
+			{ id: 'bad', title: 'Bad', prompt: 'Bad', ...override },
+			{ id: 'good', title: 'Good', prompt: 'Good' },
+		] );
+		expect( getStarterPrompts().map( ( starter ) => starter.id ) ).toEqual(
+			[ 'good' ]
+		);
+	} );
+
+	it( 'keeps function and forwardRef icon components', () => {
+		const FunctionIcon = () => null;
+		const ForwardRefIcon = {
+			$$typeof: Symbol.for( 'react.forward_ref' ),
+			render: () => null,
+		};
+		addFilter( FILTER, 'test', () => [
+			{ id: 'fn', title: 'Fn', prompt: 'Fn', icon: FunctionIcon },
+			{ id: 'ref', title: 'Ref', prompt: 'Ref', icon: ForwardRefIcon },
+		] );
+		expect( getStarterPrompts().map( ( starter ) => starter.id ) ).toEqual(
+			[ 'fn', 'ref' ]
+		);
+	} );
+
 	it( 'caps the number of starters and trims long prompts', () => {
 		addFilter( FILTER, 'test', () => [
 			{ id: 'a', title: 'A', prompt: 'x'.repeat( 2500 ) },

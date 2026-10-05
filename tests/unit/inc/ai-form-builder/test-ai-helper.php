@@ -317,6 +317,10 @@ class Test_AI_Helper extends TestCase {
 	 * has_ai_generated_forms() counts AI forms in any status, including drafts.
 	 */
 	public function test_has_ai_generated_forms_true_for_draft_ai_form() {
+		// Clear AI flags left by other tests so only this draft can make it true.
+		delete_post_meta_by_key( '_srfm_is_ai_generated' );
+		$this->assertFalse( AI_Helper::has_ai_generated_forms() );
+
 		$post_id = wp_insert_post(
 			[
 				'post_type'   => SRFM_FORMS_POST_TYPE,
