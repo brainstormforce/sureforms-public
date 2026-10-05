@@ -371,7 +371,9 @@ test.describe( 'Generate with AI — starter cards', () => {
 
 		await starterCard( page, 'Contact form' ).click();
 		// fill() selects all and replaces it, like a paste over the example.
-		await promptBox( page ).fill( 'Booking form for my salon with preferred date' );
+		await promptBox( page ).fill(
+			'Job application form with full name, email address, phone number, a resume upload and a message to the hiring team'
+		);
 		await expect(
 			starterCard( page, 'Contact form' )
 		).toHaveAttribute( 'aria-pressed', 'false' );

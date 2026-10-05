@@ -96,12 +96,13 @@ export const handleAddNewPost = async (
 				'X-WP-Nonce': srfm_admin.template_picker_nonce,
 			},
 			data: {
+				// First, so extra data can't overwrite the form itself.
+				...extraData,
 				form_data: formData,
 				template_name: templateName,
 				template_metas: templateMetas,
 				is_conversational: isConversational,
 				form_type: formType,
-				...extraData,
 			},
 		} );
 

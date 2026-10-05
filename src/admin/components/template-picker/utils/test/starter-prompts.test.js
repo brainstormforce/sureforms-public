@@ -140,6 +140,45 @@ describe( 'isFromStarter', () => {
 		expect( isFromStarter( '', contact() ) ).toBe( false );
 	} );
 
+	it( 'drops a different form that shares the field names', () => {
+		expect(
+			isFromStarter(
+				'Job application form with full name, email address, phone number, a resume upload and a message to the hiring team',
+				contact()
+			)
+		).toBe( false );
+	} );
+
+	it( 'keeps a card whose form type is reworded but still there', () => {
+		const feedback = getStarterPrompts().find(
+			( starter ) => 'feedback' === starter.id
+		).prompt;
+		expect(
+			isFromStarter(
+				feedback.replace( 'Customer feedback form', 'Feedback form for clients' ),
+				feedback
+			)
+		).toBe( true );
+	} );
+
+	it( 'counts words in languages written without spaces', () => {
+		// Without spaces, a whole phrase would count as one word, so changing a
+		// single character in two phrases would drop the card.
+		const prompt = '联系表单，包含姓名、电子邮件和留言。';
+		expect(
+			isFromStarter( '联系表单，包括姓名、电子邮件和备注。', prompt )
+		).toBe( true );
+	} );
+
+	it( 'never counts one default card prompt as another card', () => {
+		const starters = getStarterPrompts();
+		starters.forEach( ( a ) => {
+			starters.forEach( ( b ) => {
+				expect( isFromStarter( a.prompt, b.prompt ) ).toBe( a.id === b.id );
+			} );
+		} );
+	} );
+
 	it( 'is false for an empty starter prompt', () => {
 		expect( isFromStarter( 'Anything', '' ) ).toBe( false );
 	} );
