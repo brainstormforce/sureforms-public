@@ -7,6 +7,7 @@
 
 namespace SRFM\Admin;
 
+use SRFM\Inc\AI_Form_Builder\AI_Helper;
 use SRFM\Inc\Database\Register;
 use SRFM\Inc\Database\Tables\Entries;
 use SRFM\Inc\Form_Views;
@@ -1066,25 +1067,8 @@ class Analytics {
 
 		// first_ai_form_generated: detect if any AI-generated form exists.
 		// Guard with is_tracked() to skip the meta_query after the event is already tracked.
-		if ( ! self::events()->is_tracked( 'first_ai_form_generated' ) ) {
-			$ai_forms = get_posts(
-				[
-					'post_type'      => SRFM_FORMS_POST_TYPE,
-					'post_status'    => 'any',
-					'posts_per_page' => 1,
-					'fields'         => 'ids',
-					'meta_query'     => [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Runs once per lifecycle via is_tracked guard.
-						[
-							'key'     => '_srfm_is_ai_generated',
-							'value'   => '',
-							'compare' => '!=',
-						],
-					],
-				]
-			);
-			if ( ! empty( $ai_forms ) ) {
-				self::events()->track( 'first_ai_form_generated' );
-			}
+		if ( ! self::events()->is_tracked( 'first_ai_form_generated' ) && AI_Helper::has_ai_generated_forms() ) {
+			self::events()->track( 'first_ai_form_generated' );
 		}
 
 		// MCP / Abilities API first-enable events.

@@ -183,6 +183,44 @@ test.describe( 'Generate with AI — starter cards', () => {
 		).toHaveAttribute( 'aria-pressed', 'false' );
 	} );
 
+	test( 'switching cards keeps the typed text for Undo', async ( { page } ) => {
+		await openAiScreen( page );
+
+		await promptBox( page ).fill( 'Booking form for my salon' );
+		await starterCard( page, 'Contact form' ).click();
+		await starterCard( page, 'Quote request' ).click();
+
+		await expect( promptBox( page ) ).toHaveValue( /^Quote request form/ );
+		await page.getByRole( 'button', { name: 'Undo' } ).click();
+
+		await expect( promptBox( page ) ).toHaveValue( 'Booking form for my salon' );
+		await expect(
+			starterCard( page, 'Quote request' )
+		).toHaveAttribute( 'aria-pressed', 'false' );
+	} );
+
+	test( 'switching cards then deselecting gives back the typed text', async ( {
+		page,
+	} ) => {
+		await openAiScreen( page );
+
+		await promptBox( page ).fill( 'Booking form for my salon' );
+		await starterCard( page, 'Contact form' ).click();
+		await starterCard( page, 'Quote request' ).click();
+		await starterCard( page, 'Quote request' ).click();
+
+		await expect( promptBox( page ) ).toHaveValue( 'Booking form for my salon' );
+	} );
+
+	test( 'examples are hidden for a non-simple form type', async ( { page } ) => {
+		await openAiScreen( page, { query: '&form_type=quiz' } );
+
+		await expect( starterCard( page, 'Contact form' ) ).toHaveCount( 0 );
+		await expect(
+			page.getByRole( 'button', { name: 'Show examples' } )
+		).toHaveCount( 0 );
+	} );
+
 	test( 'examples collapse once the site has an AI form and can be expanded', async ( {
 		page,
 	} ) => {
