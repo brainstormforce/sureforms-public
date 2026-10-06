@@ -370,21 +370,6 @@ class Form_Submit {
 	}
 
 	/**
-	 * Whether a captcha siteverify response proves the token is valid.
-	 *
-	 * The verdict comes from the decoded response only. A body that does not decode
-	 * to an array, an array without a success key, or any value other than boolean
-	 * true means the token was never confirmed, so it is not treated as verified.
-	 *
-	 * @param mixed $result Return value of one of the validate_*_token() methods.
-	 * @since 2.12.9
-	 * @return bool
-	 */
-	private static function is_captcha_verified( $result ) {
-		return is_array( $result ) && isset( $result['success'] ) && true === $result['success'];
-	}
-
-	/**
 	 * Handle Form Submission
 	 *
 	 * @param \WP_REST_Request $request Request object or array containing form data.
@@ -2095,5 +2080,20 @@ class Form_Submit {
 		}
 
 		return 'From: ' . esc_html( Helper::get_string_value( $smart_tags->process_smart_tags( $from_name, $submission_data ) ) ) . ' <' . esc_html( Helper::get_string_value( $smart_tags->process_smart_tags( $from_email, $submission_data ) ) ) . '>' . "\r\n";
+	}
+
+	/**
+	 * Whether a captcha siteverify response proves the token is valid.
+	 *
+	 * The verdict comes from the decoded response only. A body that does not decode
+	 * to an array, an array without a success key, or any value other than boolean
+	 * true means the token was never confirmed, so it is not treated as verified.
+	 *
+	 * @param mixed $result Return value of one of the validate_*_token() methods.
+	 * @since 2.12.9
+	 * @return bool
+	 */
+	private static function is_captcha_verified( $result ) {
+		return is_array( $result ) && isset( $result['success'] ) && true === $result['success'];
 	}
 }
