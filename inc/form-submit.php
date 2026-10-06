@@ -370,6 +370,21 @@ class Form_Submit {
 	}
 
 	/**
+	 * Whether a captcha siteverify response proves the token is valid.
+	 *
+	 * The verdict comes from the decoded response only. A body that does not decode
+	 * to an array, an array without a success key, or any value other than boolean
+	 * true means the token was never confirmed, so it is not treated as verified.
+	 *
+	 * @param mixed $result Return value of one of the validate_*_token() methods.
+	 * @since 2.12.9
+	 * @return bool
+	 */
+	private static function is_captcha_verified( $result ) {
+		return is_array( $result ) && isset( $result['success'] ) && true === $result['success'];
+	}
+
+	/**
 	 * Handle Form Submission
 	 *
 	 * @param \WP_REST_Request $request Request object or array containing form data.
@@ -501,9 +516,9 @@ class Form_Submit {
 
 			$turnstile_validation_result = self::validate_turnstile_token( $srfm_cf_turnstile_secret_key, $cf_response, $remote_ip );
 
-			// If the cloudflare validation fails, return an error.
-			if ( is_array( $turnstile_validation_result ) && isset( $turnstile_validation_result['success'] ) && false === $turnstile_validation_result['success'] ) {
-				$this->recaptcha_error_response( 'cf-turnstile', $turnstile_validation_result );
+			// Anything short of a confirmed success is a failed validation.
+			if ( ! self::is_captcha_verified( $turnstile_validation_result ) ) {
+				$this->recaptcha_error_response( 'cf-turnstile', is_array( $turnstile_validation_result ) ? $turnstile_validation_result : [] );
 			}
 		}
 
@@ -526,9 +541,9 @@ class Form_Submit {
 			$remote_ip                  = $gdpr || ( ! $srfm_ip_log ) ? '' : ( isset( $_SERVER['REMOTE_ADDR'] ) ? filter_var( wp_unslash( $_SERVER['REMOTE_ADDR'] ), FILTER_VALIDATE_IP ) : '' );
 			$hcaptcha_validation_result = self::validate_hcaptcha_token( $srfm_hcaptcha_secret_key, $hcaptcha_response, $remote_ip );
 
-			// If the hcaptcha validation fails, return an error.
-			if ( is_array( $hcaptcha_validation_result ) && isset( $hcaptcha_validation_result['success'] ) && false === $hcaptcha_validation_result['success'] ) {
-				$this->recaptcha_error_response( 'hcaptcha', $hcaptcha_validation_result );
+			// Anything short of a confirmed success is a failed validation.
+			if ( ! self::is_captcha_verified( $hcaptcha_validation_result ) ) {
+				$this->recaptcha_error_response( 'hcaptcha', is_array( $hcaptcha_validation_result ) ? $hcaptcha_validation_result : [] );
 			}
 		}
 

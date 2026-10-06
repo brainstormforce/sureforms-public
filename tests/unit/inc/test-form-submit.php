@@ -420,6 +420,154 @@ class Test_Form_Submit extends SRFM_Unit_Test_Case {
 	}
 
 	/**
+	 * A siteverify body that does not decode to an array proves nothing, so the
+	 * submission must be rejected rather than treated as verified.
+	 *
+	 * @dataProvider provide_unverifiable_siteverify_bodies
+	 *
+	 * @param string $security_type  Captcha the form is configured with.
+	 * @param string $secret_option  Global settings key holding the secret.
+	 * @param string $token_field    Request field carrying the visitor's token.
+	 * @param string $body           Raw body Cloudflare/hCaptcha replies with.
+	 */
+	public function test_handle_form_submission_rejects_unverifiable_captcha_response( $security_type, $secret_option, $token_field, $body ) {
+		$form_id = wp_insert_post(
+			[
+				'post_type'   => 'sureforms_form',
+				'post_status' => 'publish',
+				'post_title'  => 'Captcha Test Form',
+			]
+		);
+
+		update_post_meta( $form_id, '_srfm_captcha_security_type', $security_type );
+		update_option( 'srfm_security_settings_options', [ $secret_option => 'secret-key' ] );
+
+		$siteverify = static function () use ( $body ) {
+			return [
+				'headers'  => [],
+				'body'     => $body,
+				'response' => [
+					'code'    => 200,
+					'message' => 'OK',
+				],
+			];
+		};
+		add_filter( 'pre_http_request', $siteverify );
+
+		$request = new \WP_REST_Request( 'POST', '/sureforms/v1/submit-form' );
+		$request->set_body_params(
+			[
+				'form-id'               => (string) $form_id,
+				'srfm-honeypot-field'   => '',
+				$token_field            => 'visitor-token',
+			]
+		);
+
+		ob_start();
+		try {
+			$this->form_submit->handle_form_submission( $request );
+		} catch ( \WPDieException $e ) {
+			$output = ob_get_clean();
+			$data   = json_decode( $output, true );
+
+			remove_filter( 'pre_http_request', $siteverify );
+			wp_delete_post( $form_id, true );
+			delete_option( 'srfm_security_settings_options' );
+
+			$this->assertIsArray( $data );
+			$this->assertFalse( $data['success'] );
+			$this->assertStringContainsString( 'Captcha validation failed', $data['data']['detail_message'] );
+			return;
+		}
+		ob_end_clean();
+
+		remove_filter( 'pre_http_request', $siteverify );
+		wp_delete_post( $form_id, true );
+		delete_option( 'srfm_security_settings_options' );
+		$this->fail( 'A siteverify response that does not prove success must not be accepted.' );
+	}
+
+	/**
+	 * The happy path still passes: a success:true response is accepted, so the
+	 * stricter guard cannot be satisfied by rejecting everything.
+	 */
+	public function test_handle_form_submission_accepts_verified_captcha() {
+		$form_id = wp_insert_post(
+			[
+				'post_type'   => 'sureforms_form',
+				'post_status' => 'publish',
+				'post_title'  => 'Verified Captcha Form',
+			]
+		);
+
+		update_post_meta( $form_id, '_srfm_captcha_security_type', 'cf-turnstile' );
+		update_option( 'srfm_security_settings_options', [ 'srfm_cf_turnstile_secret_key' => 'secret-key' ] );
+
+		$siteverify = static function () {
+			return [
+				'headers'  => [],
+				'body'     => '{"success":true}',
+				'response' => [
+					'code'    => 200,
+					'message' => 'OK',
+				],
+			];
+		};
+		add_filter( 'pre_http_request', $siteverify );
+
+		$request = new \WP_REST_Request( 'POST', '/sureforms/v1/submit-form' );
+		$request->set_body_params(
+			[
+				'form-id'               => (string) $form_id,
+				'srfm-honeypot-field'   => '',
+				'cf-turnstile-response' => 'visitor-token',
+			]
+		);
+
+		ob_start();
+		try {
+			$result = $this->form_submit->handle_form_submission( $request );
+		} catch ( \WPDieException $e ) {
+			$output = ob_get_clean();
+			$data   = json_decode( $output, true );
+
+			remove_filter( 'pre_http_request', $siteverify );
+			wp_delete_post( $form_id, true );
+			delete_option( 'srfm_security_settings_options' );
+
+			// The submission may still stop for unrelated reasons, but never
+			// because the captcha was treated as unverified.
+			$this->assertIsArray( $data );
+			$this->assertArrayNotHasKey( 'detail_message', (array) $data['data'], 'A verified captcha must not be reported as a captcha failure.' );
+			return;
+		}
+		ob_end_clean();
+
+		remove_filter( 'pre_http_request', $siteverify );
+		wp_delete_post( $form_id, true );
+		delete_option( 'srfm_security_settings_options' );
+
+		$this->assertNotInstanceOf( \WP_Error::class, $result, 'A verified captcha must let the submission through.' );
+	}
+
+	/**
+	 * Bodies that decode to something other than a success:true array.
+	 *
+	 * @return array<string,array<string>>
+	 */
+	public function provide_unverifiable_siteverify_bodies() {
+		return [
+			'turnstile empty body'    => [ 'cf-turnstile', 'srfm_cf_turnstile_secret_key', 'cf-turnstile-response', '' ],
+			'turnstile malformed'     => [ 'cf-turnstile', 'srfm_cf_turnstile_secret_key', 'cf-turnstile-response', '<html>503</html>' ],
+			'turnstile no success'    => [ 'cf-turnstile', 'srfm_cf_turnstile_secret_key', 'cf-turnstile-response', '{"error-codes":[]}' ],
+			'turnstile success null'  => [ 'cf-turnstile', 'srfm_cf_turnstile_secret_key', 'cf-turnstile-response', '{"success":null}' ],
+			'hcaptcha empty body'     => [ 'hcaptcha', 'srfm_hcaptcha_secret_key', 'h-captcha-response', '' ],
+			'hcaptcha malformed'      => [ 'hcaptcha', 'srfm_hcaptcha_secret_key', 'h-captcha-response', '<html>503</html>' ],
+			'hcaptcha no success'     => [ 'hcaptcha', 'srfm_hcaptcha_secret_key', 'h-captcha-response', '{"error-codes":[]}' ],
+		];
+	}
+
+	/**
 	 * Test parse_email_notification_template returns expected structure.
 	 */
 	public function test_parse_email_notification_template() {
