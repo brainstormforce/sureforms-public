@@ -228,24 +228,34 @@ const EmailDelivery = () => {
 	// State the owner arrived with, for analytics. Captured once.
 	const stateAtStep = useRef( srfm_admin?.email_delivery?.state ?? '' );
 
-	// One request at a time: coming back from SureMail fires both focus and
-	// visibilitychange, which would otherwise fetch the status twice.
+	// Coming back from SureMail fires both focus and visibilitychange, so a
+	// plain refresh joins one already running. After the site changed (SureMail
+	// installed, an account created), `force` starts a new request instead: one
+	// begun before the change would report the old state. Only the newest
+	// request's answer is applied, so a slow older one cannot overwrite it.
 	const inFlight = useRef( null );
-	const refreshStatus = () => {
-		if ( ! inFlight.current ) {
-			inFlight.current = fetchStatus()
-				.then( ( next ) => {
-					if ( next?.state ) {
-						setStatus( next );
-					}
-					return next;
-				} )
-				.catch( () => null )
-				.finally( () => {
-					inFlight.current = null;
-				} );
+	const latestRequest = useRef( 0 );
+	const refreshStatus = ( { force = false } = {} ) => {
+		if ( inFlight.current && ! force ) {
+			return inFlight.current;
 		}
-		return inFlight.current;
+		latestRequest.current += 1;
+		const requestId = latestRequest.current;
+		const request = fetchStatus()
+			.then( ( next ) => {
+				if ( requestId === latestRequest.current && next?.state ) {
+					setStatus( next );
+				}
+				return next;
+			} )
+			.catch( () => null )
+			.finally( () => {
+				if ( inFlight.current === request ) {
+					inFlight.current = null;
+				}
+			} );
+		inFlight.current = request;
+		return request;
 	};
 
 	useEffect( () => {
@@ -316,7 +326,7 @@ const EmailDelivery = () => {
 			actions.setSuremailInstalled( true );
 			// SureMail skips its own welcome redirect for an AJAX activation, so
 			// the next screen here is what leads the owner into its setup.
-			await refreshStatus();
+			await refreshStatus( { force: true } );
 		} catch ( installError ) {
 			setError(
 				installError?.message ||
@@ -326,7 +336,7 @@ const EmailDelivery = () => {
 					)
 			);
 			// The install may have landed and only the activation failed.
-			refreshStatus();
+			await refreshStatus( { force: true } );
 		} finally {
 			setProgress( '' );
 		}
