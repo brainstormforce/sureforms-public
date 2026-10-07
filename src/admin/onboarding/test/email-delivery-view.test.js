@@ -24,6 +24,8 @@ describe( 'getView', () => {
 		[ status( 'suremail_no_connection', 'open_suremail' ), 'connect' ],
 		[ status( 'attention', 'open_suremail' ), 'connect' ],
 		[ status( 'limited', 'open_suremail' ), 'limited' ],
+		// Without an action to match first, only the state check sends it here.
+		[ status( 'limited', 'none' ), 'limited' ],
 		[ status( 'attention', 'view_logs' ), 'attention' ],
 		[ status( 'attention', 'verify_surecontact' ), 'attention' ],
 		[ status( 'attention', 'none' ), 'attention' ],
