@@ -1295,6 +1295,61 @@ class Test_Admin extends TestCase {
 	}
 
 	/**
+	 * The setup reminder's Connect SureContact press is accepted, and counted as
+	 * the Connect in SureMail press it replaces.
+	 */
+	public function test_handle_notice_response_accepts_connect_surecontact_on_the_setup_reminder() {
+		wp_set_current_user( $this->make_user( 'administrator' ) );
+
+		// check_ajax_referer() reads $_REQUEST, so $_POST alone fails the nonce.
+		$nonce                 = wp_create_nonce( 'srfm_notice_response' );
+		$_POST['nonce']        = $nonce;
+		$_REQUEST['nonce']     = $nonce;
+		$_POST['notice_id']    = 'email_delivery_setup';
+		$_REQUEST['notice_id'] = 'email_delivery_setup';
+		$_POST['button']       = 'connect_surecontact';
+		$_REQUEST['button']    = 'connect_surecontact';
+
+		// wp_send_json_*() terminates via wp_die(); make the handlers throw so the
+		// runner survives and the emitted body can be asserted on. Asserting on the
+		// body rather than "did it die" is what separates accept from reject here --
+		// both end the request.
+		$throw_handler = static function () {
+			return static function () {
+				throw new \WPDieException( 'srfm_test_die' );
+			};
+		};
+		// wp_send_json() only routes through wp_die() when wp_doing_ajax() is true;
+		// otherwise it calls a bare die() that no filter can intercept, which takes
+		// the test runner with it.
+		add_filter( 'wp_doing_ajax', '__return_true' );
+		add_filter( 'wp_die_ajax_handler', $throw_handler );
+		add_filter( 'wp_die_handler', $throw_handler );
+
+		ob_start();
+		try {
+			Admin::get_instance()->handle_notice_response();
+		} catch ( \WPDieException $e ) {
+			// Expected.
+		} finally {
+			$body = (string) ob_get_clean();
+			remove_filter( 'wp_doing_ajax', '__return_true' );
+			remove_filter( 'wp_die_ajax_handler', $throw_handler );
+			remove_filter( 'wp_die_handler', $throw_handler );
+			unset(
+				$_POST['nonce'],
+				$_POST['notice_id'],
+				$_POST['button'],
+				$_REQUEST['nonce'],
+				$_REQUEST['notice_id'],
+				$_REQUEST['button']
+			);
+		}
+
+		$this->assertStringContainsString( '"success":true', $body, 'Connect SureContact on the setup reminder must be on the allowlist.' );
+	}
+
+	/**
 	 * Each failure describes the failure that actually happened.
 	 *
 	 * Subject and opening line were both hardcoded to submissions, so a site whose
@@ -1645,7 +1700,7 @@ class Test_Admin extends TestCase {
 
 		$pairs = [];
 		foreach ( $items as $item ) {
-			foreach ( [ 'cta_action', 'guide_action' ] as $key ) {
+			foreach ( [ 'connect_action', 'cta_action', 'guide_action' ] as $key ) {
 				if ( ! empty( $item[ $key ] ) ) {
 					$pairs[] = [ $item['id'], $item[ $key ] ];
 				}
@@ -2655,7 +2710,8 @@ class Test_Admin extends TestCase {
 		\SRFM\Inc\Email_Delivery\Status::reset();
 		Admin::reset_action_items_cache();
 
-		$this->assertMatchesRegularExpression( '/class="button button-primary"[^>]*data-srfm-button="connect_surecontact"/', $html );
+		$this->assertMatchesRegularExpression( '/class="button button-primary srfm-connect-surecontact"[^>]*data-srfm-button="connect_surecontact"/', $html );
+		$this->assertStringContainsString( 'srfm-connect-surecontact-styles', $html, 'Connect SureContact is SureContact purple here too.' );
 		$this->assertMatchesRegularExpression( '/class="button"[^>]*data-srfm-button="help_me_fix"/', $html );
 		$this->assertMatchesRegularExpression( '/class="button"[^>]*data-srfm-button="contact_support"/', $html );
 		$this->assertLessThan( strpos( $html, 'help_me_fix' ), strpos( $html, 'connect_surecontact' ) );

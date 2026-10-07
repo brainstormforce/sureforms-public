@@ -231,9 +231,48 @@ class Test_Email_Delivery_Action_Items extends TestCase {
 
 		$item = $this->items()['email_delivery_setup'] ?? [];
 
+		$this->assertArrayNotHasKey( 'cta_install', $item );
+
+		// A SureMail that can connect SureContact gets the same purple
+		// "Connect SureContact" the failure notice leads with, not a second
+		// wording of the same step.
+		if ( Suremail_Adapter::supports_surecontact() ) {
+			$this->assertSame( 'Connect SureContact', $item['connect_label'] ?? '' );
+			$this->assertSame( 'connect_surecontact', $item['connect_action'] ?? '' );
+			$this->assertStringContainsString( 'page=suremail', $item['connect_url'] ?? '' );
+			$this->assertArrayNotHasKey( 'cta_label', $item, 'One action, not two for the same step.' );
+			return;
+		}
+
 		$this->assertSame( 'open_suremail', $item['cta_action'] ?? '' );
 		$this->assertStringContainsString( 'page=suremail', $item['cta_url'] ?? '' );
-		$this->assertArrayNotHasKey( 'cta_install', $item );
+		$this->assertArrayNotHasKey( 'connect_label', $item );
+	}
+
+	/**
+	 * With a SureMail that can connect SureContact, the setup reminder offers the
+	 * same purple "Connect SureContact" the failure notice leads with, instead of
+	 * a second wording ("Connect SureContact in SureMail") of the same step.
+	 *
+	 * @runInSeparateProcess
+	 * @preserveGlobalState disabled
+	 */
+	public function test_setup_reminder_leads_with_connect_surecontact_when_suremail_supports_it() {
+		if ( ! defined( 'SUREMAILS_VERSION' ) ) {
+			define( 'SUREMAILS_VERSION', Suremail_Adapter::SURECONTACT_MIN_VERSION );
+		}
+		$this->assertTrue( Suremail_Adapter::supports_surecontact(), 'Precondition: SureMail can connect SureContact.' );
+
+		$this->use_plugins( [ 'suremails/suremails.php' ] );
+		$this->make_form();
+		$this->on_sureforms_dashboard();
+
+		$item = $this->items()['email_delivery_setup'] ?? [];
+
+		$this->assertSame( 'Connect SureContact', $item['connect_label'] ?? '' );
+		$this->assertSame( 'connect_surecontact', $item['connect_action'] ?? '' );
+		$this->assertStringContainsString( 'page=suremail', $item['connect_url'] ?? '' );
+		$this->assertArrayNotHasKey( 'cta_label', $item, 'One action, not two for the same step.' );
 	}
 
 	public function test_unverified_surecontact_gets_the_limited_item() {

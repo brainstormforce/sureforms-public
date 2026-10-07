@@ -2935,6 +2935,7 @@ JS;
 			'email_delivery_setup'        => [
 				'setup_email_delivery' => 'email_setup_notice_install',
 				'open_suremail'        => 'email_setup_notice_connect',
+				'connect_surecontact'  => 'email_setup_notice_connect',
 			],
 			'email_delivery_limited'      => [
 				'open_suremail' => 'email_limited_notice_cta',
@@ -3556,6 +3557,20 @@ JS;
 
 		$this->enqueue_notice_response_script();
 
+		// Only when a notice carries Connect SureContact, so the other notices
+		// print nothing extra.
+		if ( ! empty( array_filter( array_column( $items, 'connect_label' ) ) ) ) {
+			?>
+			<style id="srfm-connect-surecontact-styles">
+				/* SureContact's purple, matching the SureForms dashboard panel. */
+				.notice .button.srfm-connect-surecontact { background: #8345DD; border-color: #8345DD; color: #fff; }
+				.notice .button.srfm-connect-surecontact:hover,
+				.notice .button.srfm-connect-surecontact:focus { background: #6D35C2; border-color: #6D35C2; color: #fff; }
+				.notice .button.srfm-connect-surecontact:focus { box-shadow: 0 0 0 1px #fff, 0 0 0 3px #8345DD; }
+			</style>
+			<?php
+		}
+
 		foreach ( $items as $item ) {
 			$status = Helper::get_string_value( $item['status'] ?? '' );
 
@@ -3602,7 +3617,7 @@ JS;
 						?>
 						<a
 							href="<?php echo esc_url( Helper::get_string_value( $item['connect_url'] ) ); ?>"
-							class="button button-primary"
+							class="button button-primary srfm-connect-surecontact"
 							data-srfm-notice-id="<?php echo esc_attr( Helper::get_string_value( $item['id'] ) ); ?>"
 							data-srfm-button="<?php echo esc_attr( Helper::get_string_value( $item['connect_action'] ?? '' ) ); ?>"
 						>
@@ -4270,6 +4285,18 @@ CSS;
 			'dismissible' => ! $failing,
 		];
 
+		// SureMail is active with nothing to send through, and its SureContact
+		// screen is the fix: offer it as the same purple "Connect SureContact" the
+		// failure notice leads with, rather than a second wording of one action.
+		if ( 'open_suremail' === $action_type && ! $verify ) {
+			$connect = $this->get_connect_surecontact_action();
+
+			if ( ! empty( $connect ) && Suremail_Adapter::supports_surecontact() ) {
+				unset( $item['cta_label'], $item['cta_url'], $item['cta_action'] );
+				$item = array_merge( $item, $connect );
+			}
+		}
+
 		// SureMail not active yet. The link is WordPress's own installer, which
 		// works in both renderers without JavaScript; the dashboard panel turns
 		// it into a one-click install when the user may install plugins.
@@ -4284,7 +4311,10 @@ CSS;
 			}
 		}
 
-		return '' !== $item['cta_label'] && '' !== $item['cta_url'] ? [ $item ] : [];
+		$has_cta     = '' !== ( $item['cta_label'] ?? '' ) && '' !== ( $item['cta_url'] ?? '' );
+		$has_connect = ! empty( $item['connect_label'] ) && ! empty( $item['connect_url'] );
+
+		return $has_cta || $has_connect ? [ $item ] : [];
 	}
 
 	/**
