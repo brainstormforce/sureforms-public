@@ -495,7 +495,7 @@ export const ConsentCheckbox = ( {
 							sprintf(
 								/* translators: %s: the current user's email address. */
 								__(
-									'Outgoing emails, including recipients and content, are sent through SureContact, from %s. To create the account, SureContact receives your name and email, this site\'s name and address, and its WordPress and SureMail versions. You can disconnect from SureMail settings at any time. <privacy>Privacy Policy</privacy> · <terms>Terms</terms>',
+									'Outgoing emails, including recipients and content, are sent through SureContact. Every email from this site is sent from %s and your name, replacing the From it used before. To create the account, SureContact receives your name and email, this site\'s name and address, and its WordPress and SureMail versions. You can disconnect from SureMail settings at any time. <privacy>Privacy Policy</privacy> · <terms>Terms</terms>',
 									'sureforms'
 								),
 								email
