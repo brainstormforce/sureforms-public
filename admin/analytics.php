@@ -1056,7 +1056,7 @@ class Analytics {
 				if ( ! empty( $onboarding_analytics['emailDelivery'] ) && is_array( $onboarding_analytics['emailDelivery'] ) ) {
 					$email_delivery = $onboarding_analytics['emailDelivery'];
 					$states         = [ 'attention', 'not_configured', 'suremail_no_connection', 'limited', 'other_mailer', 'ready' ];
-					$step_actions   = [ 'skip', 'cannot_install', 'continue_limited', 'continue_other_mailer', 'continue_ready', 'continue_attention', 'continue_not_set_up' ];
+					$step_actions   = [ 'skip', 'cannot_install', 'install_other_smtp', 'continue_limited', 'continue_other_mailer', 'continue_ready', 'continue_attention', 'continue_not_set_up' ];
 
 					$state_props = [
 						'stateAtStep' => 'email_delivery_state_at_step',
@@ -1079,6 +1079,11 @@ class Analytics {
 
 					if ( isset( $email_delivery['consented'] ) ) {
 						$onboarding_props['email_delivery_consented'] = (bool) $email_delivery['consented'] ? 'yes' : 'no';
+					}
+
+					// The option card open when the step was left.
+					if ( isset( $email_delivery['option'] ) && in_array( $email_delivery['option'], [ 'surecontact', 'other_smtp' ], true ) ) {
+						$onboarding_props['email_delivery_option'] = $email_delivery['option'];
 					}
 
 					// Outcome of the one-click SureContact sign-up, when it was tried.

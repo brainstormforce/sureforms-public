@@ -312,6 +312,7 @@ class Test_Analytics extends TestCase {
 					'suremailOpened' => true,
 					'consented'      => true,
 					'provision'      => 'already_registered',
+					'option'         => 'surecontact',
 				],
 			]
 		);
@@ -322,6 +323,26 @@ class Test_Analytics extends TestCase {
 		$this->assertSame( 'yes', $props['email_delivery_suremail_opened'] );
 		$this->assertSame( 'yes', $props['email_delivery_consented'] );
 		$this->assertSame( 'already_registered', $props['email_delivery_provision'] );
+		$this->assertSame( 'surecontact', $props['email_delivery_option'] );
+	}
+
+	/**
+	 * Choosing another provider installs SureMail and moves on, which is its
+	 * own action.
+	 */
+	public function test_onboarding_completed_maps_the_other_smtp_choice() {
+		$props = $this->detect_onboarding_completed_props(
+			[
+				'onboardingV2'  => true,
+				'emailDelivery' => [
+					'action' => 'install_other_smtp',
+					'option' => 'other_smtp',
+				],
+			]
+		);
+
+		$this->assertSame( 'install_other_smtp', $props['email_delivery_action'] );
+		$this->assertSame( 'other_smtp', $props['email_delivery_option'] );
 	}
 
 	/**
@@ -337,6 +358,7 @@ class Test_Analytics extends TestCase {
 					'finalState'  => [ 'ready' ],
 					'action'      => 'drop table',
 					'provision'   => 'pwned',
+					'option'      => 'mailchimp',
 				],
 			]
 		);
@@ -347,6 +369,7 @@ class Test_Analytics extends TestCase {
 		$this->assertArrayNotHasKey( 'email_delivery_suremail_opened', $props );
 		$this->assertArrayNotHasKey( 'email_delivery_consented', $props );
 		$this->assertArrayNotHasKey( 'email_delivery_provision', $props );
+		$this->assertArrayNotHasKey( 'email_delivery_option', $props );
 	}
 
 	/**

@@ -1,9 +1,12 @@
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import { useState } from '@wordpress/element';
+import { Gift } from 'lucide-react';
+import { Text } from '@bsf/force-ui';
 import { Divider, Header, FeatureList } from '../components';
 import NavigationButtons from '../components/navigation-buttons';
 import { useOnboardingState } from '../onboarding-state';
 import apiFetch from '@wordpress/api-fetch';
+import { getFreeEmails } from './email-delivery-options';
 
 const features = [
 	__( "Style your form to better match your site's design", 'sureforms' ),
@@ -21,6 +24,12 @@ const features = [
 const Done = () => {
 	const [ onboardingState, actions ] = useOnboardingState();
 	const [ isCompleting, setIsCompleting ] = useState( false );
+	// Only an account created in the email step comes with the free emails;
+	// skipping it, or choosing another provider, does not.
+	const freeEmails =
+		'created' === onboardingState.analytics?.emailDelivery?.provision
+			? getFreeEmails()
+			: 0;
 
 	const handleBuildForm = () => {
 		// Prevent multiple clicks
@@ -86,6 +95,25 @@ const Done = () => {
 				) }
 				items={ features }
 			/>
+
+			{ freeEmails > 0 && (
+				<div className="flex items-center gap-3 rounded-lg border border-solid border-alert-border-green bg-alert-background-green p-3">
+					<Gift
+						className="size-5 shrink-0 text-support-success"
+						aria-hidden="true"
+					/>
+					<Text size={ 14 } weight={ 400 } color="primary">
+						{ sprintf(
+							/* translators: %d: number of free emails. */
+							__(
+								'You get %d free email notifications, sent to your inbox with every form submission.',
+								'sureforms'
+							),
+							freeEmails
+						) }
+					</Text>
+				</div>
+			) }
 
 			<Divider />
 

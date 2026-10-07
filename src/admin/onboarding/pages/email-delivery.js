@@ -3,73 +3,28 @@ import {
 	useState,
 	useEffect,
 	useRef,
-	createInterpolateElement,
 } from '@wordpress/element';
-import { Checkbox, Text } from '@bsf/force-ui';
-import { CheckCircle2, ExternalLink, MailCheck } from 'lucide-react';
+import { Text } from '@bsf/force-ui';
+import { CheckCircle2, ExternalLink } from 'lucide-react';
 import apiFetch from '@wordpress/api-fetch';
 import { useOnboardingNavigation } from '../hooks';
 import { useOnboardingState } from '../onboarding-state';
 import { installAndActivatePlugin } from '@Utils/Helpers';
-import { Divider, Header, FeatureList, HERO_PANEL_CLASS } from '../components';
+import { Divider, Header, HERO_PANEL_CLASS } from '../components';
 import NavigationButtons from '../components/navigation-buttons';
 import {
 	getView,
 	getDoneAction,
 	getProvisionFailure,
 	isSiteRefused,
+	isLikelyLocalHost,
+	getDefaultOption,
 } from './email-delivery-view';
+import { EmailOptions, ConsentCheckbox } from './email-delivery-options';
 // Rendered via <object>, not <img> or an inlined component: the artwork
 // animates with CSS keyframes, which svgr/svgo strips when inlining, and
 // <object> gives the SVG its own document where they run untouched.
 import emailDeliveryIllustration from '@Image/onboarding/email-delivery.svg';
-
-const features = [
-	__(
-		'Sends form emails through a real email service, not your server',
-		'sureforms'
-	),
-	__(
-		'Free SureContact sending, or connect a provider you already use',
-		'sureforms'
-	),
-	__(
-		'Covers every email your site sends, with logs of each one',
-		'sureforms'
-	),
-];
-
-const SURECONTACT_PRIVACY_URL = 'https://surecontact.com/privacy-policy/';
-const SURECONTACT_TERMS_URL = 'https://surecontact.com/smtp-terms-of-service/';
-
-const linkClass =
-	'underline text-button-primary hover:text-button-primary-hover';
-
-/**
- * The offer, in a tinted card so it reads as the point of the step rather
- * than small print under it.
- *
- * @return {JSX.Element} Value banner.
- */
-const ValueBanner = () => (
-	<div className="flex gap-3 rounded-lg border border-solid border-brand-border-300 bg-brand-background-50 p-4">
-		<MailCheck className="mt-0.5 size-5 shrink-0 text-icon-interactive" />
-		<div className="space-y-3">
-			<div className="space-y-1">
-				<Text size={ 16 } weight={ 600 } color="primary">
-					{ __( 'Free email sending with SureContact', 'sureforms' ) }
-				</Text>
-				<Text size={ 14 } color="secondary">
-					{ __(
-						'SureMail connects your site to SureContact, a free sending service from the SureForms team. Your form notifications go out through a real email service instead of your server.',
-						'sureforms'
-					) }
-				</Text>
-			</div>
-			<FeatureList items={ features } />
-		</div>
-	</div>
-);
 
 /**
  * Confirmation after the one-click sign-up, so the owner sees it worked
@@ -90,83 +45,18 @@ const ConnectedNote = () => (
 );
 
 /**
- * What the owner agrees to before SureMail is installed or SureContact is
- * connected: both services, named, and what SureContact receives.
+ * Whether this site's address looks local or private.
  *
- * @param {Object}   props
- * @param {boolean}  props.checked  Whether the box is ticked.
- * @param {Function} props.onChange Called with the new checked value.
- * @param {boolean}  props.installs Whether continuing installs SureMail.
- * @param {string}   props.email    The current user's email, shown so the
- *                                  owner knows which address the account uses.
- * @return {JSX.Element} Consent checkbox.
+ * @return {boolean} Looks local or private.
  */
-const ConsentCheckbox = ( { checked, onChange, installs, email } ) => {
-	const account = email
-		? sprintf(
-			/* translators: %s: the current user's email address. */
-			__(
-				'Connecting SureContact creates a free SureContact account for <b>%s</b>.',
-				'sureforms'
-			),
-			email
-		  )
-		: __(
-			'Connecting SureContact creates a free SureContact account for you.',
-			'sureforms'
-		  );
-
-	const text = [
-		installs
-			? __(
-				'I agree to set up SureMail, a free plugin that sends and logs every email from this site.',
-				'sureforms'
-			  )
-			: __(
-				'I understand that SureMail sends and logs every email from this site.',
-				'sureforms'
-			  ),
-		account,
-		__(
-			'Your outgoing emails, including recipients and content, are then sent through SureContact, from that email address. SureContact also receives this site\'s address and name and its WordPress and SureMail versions. <privacy>Privacy Policy</privacy> · <terms>Terms</terms>',
-			'sureforms'
-		),
-	].join( ' ' );
-
-	return (
-		<Checkbox
-			checked={ checked }
-			onChange={ onChange }
-			size="sm"
-			label={ {
-				heading: (
-					<span className="font-normal">
-						{ createInterpolateElement( text, {
-							b: <strong />,
-							privacy: (
-								// eslint-disable-next-line jsx-a11y/anchor-has-content -- Text comes from the interpolated string.
-								<a
-									href={ SURECONTACT_PRIVACY_URL }
-									target="_blank"
-									rel="noopener noreferrer"
-									className={ linkClass }
-								/>
-							),
-							terms: (
-								// eslint-disable-next-line jsx-a11y/anchor-has-content -- Text comes from the interpolated string.
-								<a
-									href={ SURECONTACT_TERMS_URL }
-									target="_blank"
-									rel="noopener noreferrer"
-									className={ linkClass }
-								/>
-							),
-						} ) }
-					</span>
-				),
-			} }
-		/>
-	);
+const siteLooksLocal = () => {
+	try {
+		return isLikelyLocalHost(
+			new URL( srfm_admin?.site_url || window.location.href ).hostname
+		);
+	} catch ( e ) {
+		return false;
+	}
 };
 
 // SureMail's REST routes. SureMail checks manage_options and the wp_rest
@@ -250,8 +140,15 @@ const EmailDelivery = () => {
 	const [ error, setError ] = useState( '' );
 	// Set once SureMail was opened in a new tab, until the step is left.
 	const [ openedSureMail, setOpenedSureMail ] = useState( false );
-	// Required before SureMail is installed or opened to connect SureContact.
+	// Required before a SureContact account is created; the other option
+	// creates nothing, so it needs no consent.
 	const [ consented, setConsented ] = useState( false );
+	// Whether one-click sign-up is likely to be refused here, read once.
+	const [ localSite ] = useState( siteLooksLocal );
+	// 'surecontact' | 'other_smtp': the open option card.
+	const [ option, setOption ] = useState( () =>
+		getDefaultOption( srfm_admin?.email_delivery ?? null, localSite )
+	);
 	const userEmail = srfm_admin?.website_lead_details?.email ?? '';
 	const userName = [
 		srfm_admin?.website_lead_details?.first_name,
@@ -331,6 +228,7 @@ const EmailDelivery = () => {
 			suremailOpened: openedSureMail,
 			consented,
 			provision,
+			option,
 		} );
 		navigateToNextRoute();
 	};
@@ -358,6 +256,8 @@ const EmailDelivery = () => {
 			// private or firewalled sites are refused. SureMail can still connect
 			// another provider there.
 			if ( isSiteRefused( provisionError ) ) {
+				// Open the option that still works here.
+				setOption( 'other_smtp' );
 				setError(
 					__(
 						'SureContact could not reach this site to confirm it is yours. This happens on local, private or firewalled sites. Connect another email provider in SureMail instead.',
@@ -409,6 +309,13 @@ const EmailDelivery = () => {
 			// SureMail skips its own welcome redirect for an AJAX activation, so
 			// the next screen here is what leads the owner into its setup.
 			const next = await refreshStatus();
+			// Another provider: SureMail is in place, and connecting it is left
+			// for later rather than sending the owner out of the setup. The
+			// dashboard keeps reminding them until it is connected.
+			if ( 'other_smtp' === option ) {
+				leave( 'install_other_smtp' );
+				return;
+			}
 			// The consent box covered the account, so carry on in one click.
 			if ( canProvision( next ) ) {
 				await provisionSureContact();
@@ -438,7 +345,7 @@ const EmailDelivery = () => {
 		setOpenedSureMail( true );
 	};
 
-	const installLabel = () => {
+	const progressLabel = () => {
 		if ( 'installing' === progress ) {
 			return __( 'Installing SureMail…', 'sureforms' );
 		}
@@ -448,42 +355,47 @@ const EmailDelivery = () => {
 		if ( 'provisioning' === progress ) {
 			return __( 'Creating your SureContact account…', 'sureforms' );
 		}
-		return 'activate' === status?.action?.type
-			? __( 'Activate SureMail', 'sureforms' )
-			: __( 'Set up email delivery', 'sureforms' );
+		return '';
 	};
 
-	const consent = ( installs ) => (
-		<div className="space-y-1.5">
+	// The button says what it will do for the open option, so "SureContact"
+	// on the card never meets a button that only mentions SureMail.
+	const installLabel = () => {
+		if ( busy ) {
+			return progressLabel();
+		}
+		const activates = 'activate' === status?.action?.type;
+		if ( 'other_smtp' === option ) {
+			return activates
+				? __( 'Activate SureMail', 'sureforms' )
+				: __( 'Install SureMail', 'sureforms' );
+		}
+		return activates
+			? __( 'Activate SureMail & Connect SureContact', 'sureforms' )
+			: __( 'Install SureMail & Connect SureContact', 'sureforms' );
+	};
+
+	// Consent is about the SureContact account, so it shows only with that
+	// option open, and only when an account can be created by email.
+	const consent = ( installs ) =>
+		'surecontact' === option && userEmail ? (
 			<ConsentCheckbox
 				checked={ consented }
 				onChange={ setConsented }
 				installs={ installs }
 				email={ userEmail }
 			/>
-			<Text size={ 12 } color="tertiary">
-				{ installs
-					? __(
-						'Prefer another provider? You can connect one in SureMail instead of SureContact.',
-						'sureforms'
-					  )
-					: createInterpolateElement(
-						__(
-							'Prefer another provider, or a different email? <a>Connect it in SureMail</a>.',
-							'sureforms'
-						),
-						{
-							a: (
-								<button
-									type="button"
-									onClick={ openSureMail }
-									className={ `${ linkClass } cursor-pointer border-0 bg-transparent p-0 text-xs` }
-								/>
-							),
-						}
-					  ) }
-			</Text>
-		</div>
+		) : null;
+
+	const options = (
+		<EmailOptions
+			option={ option }
+			onSelect={ ( next ) => {
+				setOption( next );
+				setError( '' );
+			} }
+			localSite={ localSite }
+		/>
 	);
 
 	let title;
@@ -491,6 +403,9 @@ const EmailDelivery = () => {
 	let body = null;
 	let continueProps;
 	let skipProps;
+	// The option cards replace the illustration: together they push the
+	// buttons below the fold on a laptop screen.
+	let showsOptions = false;
 
 	// A sign-up that succeeded is connected, even if reading the status back
 	// failed: offering "Create account" again would only meet SureMail's
@@ -499,37 +414,41 @@ const EmailDelivery = () => {
 
 	switch ( shownView ) {
 		case 'install':
-			title = __( 'Make Sure Your Form Emails Are Sent', 'sureforms' );
+			title = __( 'Make Sure Your Emails Get Delivered', 'sureforms' );
 			description = __(
-				'WordPress hands form emails to your server\'s built-in mail function, which many hosts block or send to spam. SureMail sends them through a proper email service instead.',
+				'Most hosts block the mail function WordPress uses by default. SureMail installs now and sends through a real service instead.',
 				'sureforms'
 			);
-			body = (
-				<>
-					<ValueBanner />
-					{ false !== status?.can_install && consent( true ) }
-					{ false === status?.can_install && (
-						<Text size={ 14 } color="secondary">
-							{ __(
-								'Your account cannot install plugins. Ask a site administrator to set up email delivery.',
-								'sureforms'
-							) }
-						</Text>
-					) }
-				</>
-			);
-			continueProps =
-				false === status?.can_install
-					? {
-						onClick: () =>
-							leave( 'cannot_install', { skipped: true } ),
-						text: __( 'Continue', 'sureforms' ),
-					  }
-					: {
-						onClick: handleInstall,
-						text: installLabel(),
-						disabled: ! consented,
-					  };
+			if ( false === status?.can_install ) {
+				body = (
+					<Text size={ 14 } color="secondary">
+						{ __(
+							'Your account cannot install plugins. Ask a site administrator to set up email delivery.',
+							'sureforms'
+						) }
+					</Text>
+				);
+				continueProps = {
+					onClick: () => leave( 'cannot_install', { skipped: true } ),
+					text: __( 'Continue', 'sureforms' ),
+				};
+			} else {
+				showsOptions = true;
+				body = (
+					<>
+						{ options }
+						{ consent( true ) }
+					</>
+				);
+				continueProps = {
+					onClick: handleInstall,
+					text: installLabel(),
+					// No address to create the account for: SureMail's own
+					// screens can still connect SureContact.
+					disabled:
+						'surecontact' === option && Boolean( userEmail ) && ! consented,
+				};
+			}
 			skipProps = {
 				onClick: () => leave( 'skip', { skipped: true } ),
 			};
@@ -569,43 +488,46 @@ const EmailDelivery = () => {
 				break;
 			}
 
-			title = __( 'Connect an Email Service in SureMail', 'sureforms' );
+			title = __( 'Make Sure Your Emails Get Delivered', 'sureforms' );
 			description = openedSureMail
 				? __(
 					'Finish connecting in the SureMail tab, then come back here. This step updates by itself.',
 					'sureforms'
 				  )
 				: __(
-					'SureMail is active but not connected to an email service yet, so form emails are not being sent through it. Connect SureContact for free, or another provider.',
+					'SureMail is installed but not connected to an email service yet, so your form emails are not sent through it. Connect SureContact in one click, or a provider you already use.',
 					'sureforms'
 				  );
+			showsOptions = true;
 			body = (
 				<>
-					<ValueBanner />
+					{ options }
 					{ consent( false ) }
 				</>
 			);
-			continueProps =
-				canProvision( status ) && 'unavailable' !== provision
-					? {
-						onClick: provisionSureContact,
-						disabled: ! consented,
-						text:
-							'provisioning' === progress
-								? installLabel()
-								: __(
-									'Create free SureContact account',
-									'sureforms'
-								  ),
-					  }
-					: {
-						onClick: openSureMail,
-						disabled: ! consented,
-						text:
-							status?.action?.label ||
-							__( 'Connect in SureMail', 'sureforms' ),
-						icon: <ExternalLink />,
-					  };
+			if ( 'other_smtp' === option ) {
+				continueProps = {
+					onClick: openSureMail,
+					text: __( 'Set Up in SureMail', 'sureforms' ),
+					icon: <ExternalLink />,
+				};
+			} else if ( canProvision( status ) && 'unavailable' !== provision ) {
+				continueProps = {
+					onClick: provisionSureContact,
+					disabled: ! consented,
+					text: busy
+						? progressLabel()
+						: __( 'Connect SureContact', 'sureforms' ),
+				};
+			} else {
+				// SureMail too old for the one-click sign-up, or no address to
+				// create the account for: its own screens connect SureContact.
+				continueProps = {
+					onClick: openSureMail,
+					text: __( 'Connect in SureMail', 'sureforms' ),
+					icon: <ExternalLink />,
+				};
+			}
 			skipProps = {
 				onClick: () => leave( 'skip', { skipped: true } ),
 				text: __( 'Skip for now', 'sureforms' ),
@@ -677,17 +599,19 @@ const EmailDelivery = () => {
 
 	return (
 		<div className="space-y-4">
-			<div className={ HERO_PANEL_CLASS }>
-				<object
-					type="image/svg+xml"
-					data={ emailDeliveryIllustration }
-					className="pointer-events-none block h-auto w-full"
-					aria-label={ __(
-						'Illustration of a form submission travelling to an inbox',
-						'sureforms'
-					) }
-				/>
-			</div>
+			{ ! showsOptions && (
+				<div className={ HERO_PANEL_CLASS }>
+					<object
+						type="image/svg+xml"
+						data={ emailDeliveryIllustration }
+						className="pointer-events-none block h-auto w-full"
+						aria-label={ __(
+							'Illustration of a form submission travelling to an inbox',
+							'sureforms'
+						) }
+					/>
+				</div>
+			) }
 
 			<Header title={ title } description={ description } />
 			{ /* The step changes in place (installing, connected); announce it. */ }

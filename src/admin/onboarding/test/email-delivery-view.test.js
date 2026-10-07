@@ -9,6 +9,8 @@ import {
 	getDoneAction,
 	getProvisionFailure,
 	isSiteRefused,
+	isLikelyLocalHost,
+	getDefaultOption,
 } from '../pages/email-delivery-view';
 
 const status = ( state, action = 'none' ) => ( {
@@ -91,5 +93,60 @@ describe( 'isSiteRefused', () => {
 		[ null, false ],
 	] )( '%o → %s', ( error, refused ) => {
 		expect( isSiteRefused( error ) ).toBe( refused );
+	} );
+} );
+
+describe( 'isLikelyLocalHost', () => {
+	it.each( [
+		'localhost',
+		'my-site.test',
+		'shop.local',
+		'wp.localhost',
+		'127.0.0.1',
+		'10.0.0.12',
+		'192.168.1.20',
+		'172.16.0.1',
+		'172.31.255.255',
+		'169.254.10.10',
+		'[::1]',
+		'',
+	] )( 'treats %p as local', ( host ) => {
+		expect( isLikelyLocalHost( host ) ).toBe( true );
+	} );
+
+	it.each( [
+		'example.com',
+		'accessible-aristide-0ygqd.zipwp.link',
+		'172.32.0.1',
+		'8.8.8.8',
+		'test.example.org',
+		'localhost.example.com',
+	] )( 'treats %p as public', ( host ) => {
+		expect( isLikelyLocalHost( host ) ).toBe( false );
+	} );
+} );
+
+describe( 'getDefaultOption', () => {
+	it( 'opens SureContact on a public site', () => {
+		expect( getDefaultOption( null, false ) ).toBe( 'surecontact' );
+	} );
+
+	it( 'opens another provider on a local site', () => {
+		expect( getDefaultOption( null, true ) ).toBe( 'other_smtp' );
+	} );
+
+	it( 'opens another provider when SureMail cannot connect SureContact', () => {
+		expect(
+			getDefaultOption(
+				{ suremail: { supports_surecontact: false } },
+				false
+			)
+		).toBe( 'other_smtp' );
+	} );
+
+	it( 'treats an unknown SureMail version as able', () => {
+		expect( getDefaultOption( { suremail: {} }, false ) ).toBe(
+			'surecontact'
+		);
 	} );
 } );

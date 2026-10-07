@@ -76,3 +76,60 @@ export const isSiteRefused = ( provisionError ) =>
 	[ 'site_unreachable', 'site_not_verified' ].includes(
 		provisionError?.reason
 	) || /^site_url:/.test( provisionError?.message ?? '' );
+
+/**
+ * Whether a host looks local or private, where SureContact cannot call the
+ * site back to confirm it owns it, so the one-click sign-up would be refused.
+ *
+ * A hint only: the sign-up is still allowed, and its own refusal is handled.
+ *
+ * @param {string} host Hostname, without port.
+ * @return {boolean} Looks local or private.
+ */
+export const isLikelyLocalHost = ( host = '' ) => {
+	const name = String( host ).toLowerCase().replace( /^\[|\]$/g, '' );
+	if ( ! name || 'localhost' === name || '::1' === name ) {
+		return true;
+	}
+	if (
+		/\.(test|local|localhost|invalid|example|internal|lan|home\.arpa)$/.test(
+			name
+		)
+	) {
+		return true;
+	}
+	const ip = name.match( /^(\d{1,3})\.(\d{1,3})\.\d{1,3}\.\d{1,3}$/ );
+	if ( ! ip ) {
+		return false;
+	}
+	const [ a, b ] = [ Number( ip[ 1 ] ), Number( ip[ 2 ] ) ];
+	return (
+		10 === a ||
+		127 === a ||
+		( 192 === a && 168 === b ) ||
+		( 172 === a && b >= 16 && b <= 31 ) ||
+		( 169 === a && 254 === b )
+	);
+};
+
+/**
+ * Which option the step opens with.
+ *
+ * SureContact unless it cannot work here: a local or private site, or a
+ * SureMail too old to connect SureContact.
+ *
+ * @param {Object|null} status    Email delivery status.
+ * @param {boolean}     localSite Whether the site looks local or private.
+ * @return {'surecontact'|'other_smtp'} Option.
+ */
+export const getDefaultOption = ( status, localSite ) => {
+	if ( localSite ) {
+		return 'other_smtp';
+	}
+	// Only known once SureMail is active; before that, the version installed
+	// is the latest one, which supports it.
+	if ( false === status?.suremail?.supports_surecontact ) {
+		return 'other_smtp';
+	}
+	return 'surecontact';
+};
