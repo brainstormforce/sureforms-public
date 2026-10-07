@@ -126,9 +126,13 @@ export const getDefaultOption = ( status, localSite ) => {
 	if ( localSite ) {
 		return 'other_smtp';
 	}
-	// Only known once SureMail is active; before that, the version installed
-	// is the latest one, which supports it.
-	if ( false === status?.suremail?.supports_surecontact ) {
+	// Only known while SureMail is active: an inactive plugin's version cannot
+	// be read, so the status reports false then. Installing or activating it
+	// from this step brings the latest version, which supports it.
+	if (
+		'Activated' === status?.suremail?.plugin_status &&
+		false === status?.suremail?.supports_surecontact
+	) {
 		return 'other_smtp';
 	}
 	return 'surecontact';

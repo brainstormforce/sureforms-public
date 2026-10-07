@@ -135,13 +135,34 @@ describe( 'getDefaultOption', () => {
 		expect( getDefaultOption( null, true ) ).toBe( 'other_smtp' );
 	} );
 
-	it( 'opens another provider when SureMail cannot connect SureContact', () => {
+	it( 'opens another provider when an active SureMail cannot connect SureContact', () => {
 		expect(
 			getDefaultOption(
-				{ suremail: { supports_surecontact: false } },
+				{
+					suremail: {
+						plugin_status: 'Activated',
+						supports_surecontact: false,
+					},
+				},
 				false
 			)
 		).toBe( 'other_smtp' );
+	} );
+
+	// Found on the QA site: an inactive SureMail reports false because its
+	// version cannot be read, which opened Other SMTP on a public site.
+	it( 'ignores the support flag while SureMail is not active', () => {
+		expect(
+			getDefaultOption(
+				{
+					suremail: {
+						plugin_status: 'Installed',
+						supports_surecontact: false,
+					},
+				},
+				false
+			)
+		).toBe( 'surecontact' );
 	} );
 
 	it( 'treats an unknown SureMail version as able', () => {
