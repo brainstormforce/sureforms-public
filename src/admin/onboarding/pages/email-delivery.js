@@ -238,24 +238,34 @@ const EmailDelivery = () => {
 	// State the owner arrived with, for analytics. Captured once.
 	const stateAtStep = useRef( srfm_admin?.email_delivery?.state ?? '' );
 
-	// One request at a time: coming back from SureMail fires both focus and
-	// visibilitychange, which would otherwise fetch the status twice.
+	// Coming back from SureMail fires both focus and visibilitychange, so a
+	// plain refresh joins one already running. After the site changed (SureMail
+	// installed, an account created), `force` starts a new request instead: one
+	// begun before the change would report the old state. Only the newest
+	// request's answer is applied, so a slow older one cannot overwrite it.
 	const inFlight = useRef( null );
-	const refreshStatus = () => {
-		if ( ! inFlight.current ) {
-			inFlight.current = fetchStatus()
-				.then( ( next ) => {
-					if ( next?.state ) {
-						setStatus( next );
-					}
-					return next;
-				} )
-				.catch( () => null )
-				.finally( () => {
-					inFlight.current = null;
-				} );
+	const latestRequest = useRef( 0 );
+	const refreshStatus = ( { force = false } = {} ) => {
+		if ( inFlight.current && ! force ) {
+			return inFlight.current;
 		}
-		return inFlight.current;
+		latestRequest.current += 1;
+		const requestId = latestRequest.current;
+		const request = fetchStatus()
+			.then( ( next ) => {
+				if ( requestId === latestRequest.current && next?.state ) {
+					setStatus( next );
+				}
+				return next;
+			} )
+			.catch( () => null )
+			.finally( () => {
+				if ( inFlight.current === request ) {
+					inFlight.current = null;
+				}
+			} );
+		inFlight.current = request;
+		return request;
 	};
 
 	useEffect( () => {
@@ -366,10 +376,15 @@ const EmailDelivery = () => {
 						)
 				);
 			}
+		}
+		// A new read, not one already in flight from before the account
+		// existed, and the step stays busy until it lands so Skip and Back
+		// cannot record the old state.
+		try {
+			await refreshStatus( { force: true } );
 		} finally {
 			setProgress( '' );
 		}
-		await refreshStatus();
 	};
 
 	// SureMail is active with no connection at all: never set up, or a lost
@@ -401,7 +416,7 @@ const EmailDelivery = () => {
 			actions.setSuremailInstalled( true );
 			// SureMail skips its own welcome redirect for an AJAX activation, so
 			// the next screen here is what leads the owner into its setup.
-			const next = await refreshStatus();
+			const next = await refreshStatus( { force: true } );
 			// Another provider: SureMail is in place, and connecting it is left
 			// for later rather than sending the owner out of the setup. The
 			// dashboard keeps reminding them until it is connected.
@@ -422,7 +437,7 @@ const EmailDelivery = () => {
 					)
 			);
 			// The install may have landed and only the activation failed.
-			refreshStatus();
+			await refreshStatus( { force: true } );
 		} finally {
 			setProgress( '' );
 		}
