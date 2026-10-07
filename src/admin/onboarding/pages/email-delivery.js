@@ -1,15 +1,15 @@
-import { __, sprintf } from '@wordpress/i18n';
+import { __, _n, sprintf } from '@wordpress/i18n';
 import {
 	useState,
 	useEffect,
 	useRef,
 } from '@wordpress/element';
 import { Text } from '@bsf/force-ui';
-import { CheckCircle2, ExternalLink } from 'lucide-react';
+import { Check, ExternalLink } from 'lucide-react';
 import apiFetch from '@wordpress/api-fetch';
 import { useOnboardingNavigation } from '../hooks';
 import { useOnboardingState } from '../onboarding-state';
-import { installAndActivatePlugin } from '@Utils/Helpers';
+import { installAndActivatePlugin, getFreeEmails } from '@Utils/Helpers';
 import { Divider, Header, HERO_PANEL_CLASS } from '../components';
 import NavigationButtons from '../components/navigation-buttons';
 import {
@@ -30,22 +30,76 @@ import { EmailOptions, ConsentCheckbox } from './email-delivery-options';
 import emailDeliveryIllustration from '@Image/onboarding/email-delivery.svg';
 
 /**
- * Confirmation after the one-click sign-up, so the owner sees it worked
- * without leaving the step.
+ * The check mark above "You're all set", once the one-click sign-up worked.
  *
- * @return {JSX.Element} Connected note.
+ * @return {JSX.Element} Success mark.
  */
-const ConnectedNote = () => (
-	<div className="flex items-center gap-2">
-		<CheckCircle2 className="size-5 shrink-0 text-support-success" />
-		<Text size={ 14 } weight={ 500 } color="primary">
-			{ __(
-				'SureMail is installed and connected to SureContact.',
-				'sureforms'
-			) }
-		</Text>
-	</div>
+const SuccessMark = () => (
+	<svg
+		width="58"
+		height="59"
+		viewBox="0 0 58 59"
+		fill="none"
+		aria-hidden="true"
+		className="mx-auto block"
+	>
+		<circle
+			cx="29"
+			cy="29.5"
+			r="24.17"
+			fill="#F0FDF4"
+			stroke="#15803D"
+			strokeWidth="1.25"
+		/>
+		<path
+			d="M21.75 29.5l4.83 4.92 9.67-9.84"
+			stroke="#15803D"
+			strokeWidth="1.25"
+			strokeLinecap="round"
+			strokeLinejoin="round"
+		/>
+	</svg>
 );
+
+/**
+ * What the one-click sign-up set up, as the chips under "You're all set".
+ *
+ * @return {JSX.Element} Success chips.
+ */
+const SuccessChips = () => {
+	const freeEmails = getFreeEmails();
+	const chips = [
+		__( 'SureMail installed', 'sureforms' ),
+		__( 'SureContact connected', 'sureforms' ),
+	];
+	if ( freeEmails > 0 ) {
+		chips.push(
+			sprintf(
+				/* translators: %d: number of free emails. */
+				_n(
+					'%d free email added',
+					'%d free emails added',
+					freeEmails,
+					'sureforms'
+				),
+				freeEmails
+			)
+		);
+	}
+	return (
+		<ul className="m-0 flex list-none flex-wrap items-center justify-center gap-4 p-0">
+			{ chips.map( ( chip ) => (
+				<li
+					key={ chip }
+					className="m-0 inline-flex h-6 items-center gap-0.5 rounded-full border border-solid border-[#BBF7D0] bg-badge-background-green px-4 py-1 text-xs font-medium leading-4 text-badge-color-green"
+				>
+					<Check className="size-3 shrink-0" strokeWidth={ 1.25 } />
+					{ chip }
+				</li>
+			) ) }
+		</ul>
+	);
+};
 
 /**
  * Whether this site's address looks local or private.
@@ -454,6 +508,11 @@ const EmailDelivery = () => {
 	// failed: offering "Create account" again would only meet SureMail's
 	// "already connected" error.
 	const shownView = 'created' === provision && 'connect' === view ? 'limited' : view;
+	// The one-click sign-up worked: show "You're all set" in place of the
+	// status SureForms reads back.
+	const connected =
+		'created' === provision &&
+		! [ 'install', 'connect', 'attention' ].includes( shownView );
 
 	switch ( shownView ) {
 		case 'install':
@@ -590,17 +649,13 @@ const EmailDelivery = () => {
 			break;
 
 		case 'limited':
-			if ( 'created' === provision ) {
-				title = __( 'SureContact SMTP Connected', 'sureforms' );
-				description = sprintf(
-					/* translators: %s: the current user's email address. */
-					__(
-						'Your form emails now go out through SureContact. Check %s for a verification email: until you verify it, only a few emails a day are accepted.',
-						'sureforms'
-					),
-					userEmail
+			if ( connected ) {
+				title = __( "You're all set", 'sureforms' );
+				description = __(
+					'SureMail is installed and SureContact is connected. Your forms can send email right now.',
+					'sureforms'
 				);
-				body = <ConnectedNote />;
+				body = <SuccessChips />;
 			} else {
 				title = __( 'Verify Your SureContact Account', 'sureforms' );
 				description =
@@ -614,11 +669,13 @@ const EmailDelivery = () => {
 				onClick: () => leave( 'continue_limited' ),
 				text: __( 'Continue', 'sureforms' ),
 			};
-			skipProps = {
-				onClick: openSureMail,
-				text: __( 'Finish in SureMail', 'sureforms' ),
-				icon: <ExternalLink />,
-			};
+			skipProps = connected
+				? { onClick: () => leave( 'continue_limited' ) }
+				: {
+					onClick: openSureMail,
+					text: __( 'Finish in SureMail', 'sureforms' ),
+					icon: <ExternalLink />,
+				  };
 			break;
 
 		case 'attention':
@@ -640,21 +697,29 @@ const EmailDelivery = () => {
 			break;
 
 		default:
-			title = status?.title || __( 'Email Delivery', 'sureforms' );
-			description = status?.message || '';
-			if ( 'created' === provision ) {
-				body = <ConnectedNote />;
+			if ( connected ) {
+				title = __( "You're all set", 'sureforms' );
+				description = __(
+					'SureMail is installed and SureContact is connected. Your forms can send email right now.',
+					'sureforms'
+				);
+				body = <SuccessChips />;
+			} else {
+				title = status?.title || __( 'Email Delivery', 'sureforms' );
+				description = status?.message || '';
 			}
 			continueProps = {
 				onClick: () => leave( getDoneAction( status ) ),
 				text: __( 'Continue', 'sureforms' ),
 			};
-			skipProps = {};
+			skipProps = connected
+				? { onClick: () => leave( getDoneAction( status ) ) }
+				: {};
 	}
 
 	return (
 		<div className="space-y-4">
-			{ ! showsOptions && (
+			{ ! showsOptions && ! connected && (
 				<div className={ HERO_PANEL_CLASS }>
 					<object
 						type="image/svg+xml"
@@ -668,7 +733,19 @@ const EmailDelivery = () => {
 				</div>
 			) }
 
-			<Header title={ title } description={ description } />
+			{ connected ? (
+				<div className="space-y-2">
+					<SuccessMark />
+					<Header
+						title={ title }
+						description={ description }
+						tag="h2"
+						align="center"
+					/>
+				</div>
+			) : (
+				<Header title={ title } description={ description } />
+			) }
 			{ /* The step changes in place (installing, connected); announce it. */ }
 			<div className="sr-only" aria-live="polite">
 				{ title }

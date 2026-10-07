@@ -26,7 +26,7 @@ import sureContactIcon from '@Image/onboarding/email-delivery/surecontact.svg';
 import sureMailIcon from '@Image/onboarding/email-delivery/suremail.svg';
 // Animated with CSS keyframes, so it is shown through <object>: svgr/svgo
 // would strip them if inlined. Its two captions are HTML, for translation.
-import freeEmailsVisual from '@Image/onboarding/email-delivery/surecontact-free-emails.svg';
+import freeEmailsVisual from '@Image/onboarding/email-delivery/surecontact-mails-free.svg';
 import gmailLogo from '@Image/onboarding/email-delivery/gmail.svg';
 import outlookLogo from '@Image/onboarding/email-delivery/outlook.svg';
 import postmarkLogo from '@Image/onboarding/email-delivery/postmark.svg';
