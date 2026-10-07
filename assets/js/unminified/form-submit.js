@@ -1087,6 +1087,16 @@ async function handleFormSubmission(
 			form
 		);
 
+		// Turnstile in on-interaction mode holds its token until the challenge
+		// runs. A visitor who submits without ever interacting (keyboard
+		// autofill, a programmatic submit) has no token yet, so the challenge is
+		// run here and the submission waits for it instead of being rejected as
+		// an unverified captcha. Resolves empty on timeout, which falls through
+		// to the existing captcha error below.
+		if ( window.srfmTurnstile?.isDeferred?.( turnstileDiv ) ) {
+			await window.srfmTurnstile.getToken( turnstileDiv );
+		}
+
 		// Handle captcha validation, returns true if captcha is valid or not present.
 		const isCaptchaValid = handleCaptchaValidation(
 			recaptchaType,
