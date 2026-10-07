@@ -1,5 +1,5 @@
 import { __ } from '@wordpress/i18n';
-import { useState } from '@wordpress/element';
+import { createInterpolateElement, useState } from '@wordpress/element';
 import { Badge, Button, Select, Switch } from '@bsf/force-ui';
 import { CopyCheckIcon, CopyIcon, Download } from 'lucide-react';
 import ContentSection from '../components/ContentSection';
@@ -240,9 +240,11 @@ const McpAdapterPrompt = ( { adapterStatus: initialStatus } ) => {
 	const isInstalled = 'installed' === status;
 	const isBusy = 'installing' === status || 'activating' === status;
 	// install_plugins is not granted on every site (multisite subsites, or a
-	// DISALLOW_FILE_MODS install), so the button is only offered when the
-	// request would actually be allowed to run.
+	// DISALLOW_FILE_MODS install). Activation only needs manage_options (see
+	// Admin_Ajax::required_plugin_activate), so an adapter already on disk can
+	// still be activated without it.
 	const canInstall = !! srfm_admin?.can_install_plugins;
+	const canSetUp = isInstalled || canInstall;
 
 	const postAction = ( body ) =>
 		wp.apiFetch( {
@@ -298,17 +300,15 @@ const McpAdapterPrompt = ( { adapterStatus: initialStatus } ) => {
 			setStatus( 'active' );
 			window.location.reload();
 		} catch ( e ) {
-			// Reporting the failure matters more than the step it failed on:
-			// an install that succeeded leaves the plugin on disk, so the next
-			// attempt is an activation and the reload picks the status up.
 			setError(
 				e?.message ||
-					__(
-						'Something went wrong. Please try again.',
-						'sureforms'
-					)
+					__( 'Something went wrong. Please try again.', 'sureforms' )
 			);
-			setStatus( initialStatus );
+			// 'activating' is only reached once the plugin is on disk, so a
+			// retry must activate rather than install it a second time.
+			setStatus( ( prev ) =>
+				'activating' === prev ? 'installed' : 'not_installed'
+			);
 		}
 	};
 
@@ -324,20 +324,28 @@ const McpAdapterPrompt = ( { adapterStatus: initialStatus } ) => {
 			: __( 'Install & Activate MCP Adapter', 'sureforms' );
 	};
 
+	const introText = () => {
+		if ( isInstalled ) {
+			return __(
+				'The MCP Adapter plugin is installed but not active. Activate it to configure MCP settings.',
+				'sureforms'
+			);
+		}
+		return canInstall
+			? __(
+				'The MCP Adapter plugin is required to connect AI clients to your forms. It is free on WordPress.org and can be installed from here.',
+				'sureforms'
+			  )
+			: __(
+				'The MCP Adapter plugin is required to connect AI clients to your forms. It is free on WordPress.org.',
+				'sureforms'
+			  );
+	};
+
 	return (
 		<div className="space-y-4">
-			<p className="text-sm text-text-secondary m-0">
-				{ isInstalled
-					? __(
-						'The MCP Adapter plugin is installed but not active. Activate it to configure MCP settings.',
-						'sureforms'
-					  )
-					: __(
-						'The MCP Adapter plugin is required to connect AI clients to your forms. It is free on WordPress.org and can be installed from here.',
-						'sureforms'
-					  ) }
-			</p>
-			{ canInstall ? (
+			<p className="text-sm text-text-secondary m-0">{ introText() }</p>
+			{ canSetUp ? (
 				<div className="flex items-center gap-3">
 					<Button
 						variant="primary"
@@ -346,9 +354,7 @@ const McpAdapterPrompt = ( { adapterStatus: initialStatus } ) => {
 						disabled={ isBusy }
 						loading={ isBusy }
 						icon={
-							isInstalled ? null : (
-								<Download className="size-4" />
-							)
+							isInstalled ? null : <Download className="size-4" />
 						}
 						iconPosition="left"
 					>
@@ -357,19 +363,24 @@ const McpAdapterPrompt = ( { adapterStatus: initialStatus } ) => {
 				</div>
 			) : (
 				<p className="text-sm text-text-secondary m-0">
-					{ __(
-						'You do not have permission to install plugins on this site. Ask an administrator to install',
-						'sureforms'
-					) }{ ' ' }
-					<a
-						href={ MCP_ADAPTER_PLUGIN_URL }
-						target="_blank"
-						rel="noopener noreferrer"
-						className="text-field-helper underline"
-					>
-						{ __( 'MCP Adapter', 'sureforms' ) }
-					</a>
-					{ __( '.', 'sureforms' ) }
+					{ createInterpolateElement(
+						__(
+							'You do not have permission to install plugins on this site. Ask an administrator to install <a>MCP Adapter</a>.',
+							'sureforms'
+						),
+						{
+							a: (
+								<a
+									href={ MCP_ADAPTER_PLUGIN_URL }
+									target="_blank"
+									rel="noopener noreferrer"
+									className="text-field-helper underline"
+								>
+									{ __( 'MCP Adapter', 'sureforms' ) }
+								</a>
+							),
+						}
+					) }
 				</p>
 			) }
 			{ error && (
