@@ -383,10 +383,15 @@ const EmailDelivery = () => {
 						)
 				);
 			}
+		}
+		// A new read, not one already in flight from before the account
+		// existed, and the step stays busy until it lands so Skip and Back
+		// cannot record the old state.
+		try {
+			await refreshStatus( { force: true } );
 		} finally {
 			setProgress( '' );
 		}
-		await refreshStatus();
 	};
 
 	// SureMail is active with no connection at all: never set up, or a lost
