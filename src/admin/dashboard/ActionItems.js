@@ -98,7 +98,29 @@ export default () => {
 	// they are pointed at a support queue, and the emphasis follows the order
 	// rather than the identity -- whichever action leads reads as the primary one,
 	// so an item with no guide still has Contact Support in front.
-	const actionsFor = ( item ) => [
+	const actionsFor = ( item ) =>
+		// Emphasis follows the order among the regular actions, so a Connect
+		// link in front does not demote the guide.
+		listActions( item ).map( ( action, _index, all ) => ( {
+			...action,
+			secondary:
+				! action.accent &&
+				all.filter( ( a ) => ! a.accent ).indexOf( action ) > 0,
+		} ) );
+
+	const listActions = ( item ) => [
+		// The one-click fix, when the server offers one, leads.
+		...( item.connect_label && item.connect_url
+			? [
+				{
+					name: item.connect_action,
+					label: item.connect_label,
+					url: safeUrl( item.connect_url ),
+					external: false,
+					accent: true,
+				},
+			  ]
+			: [] ),
 		...( item.guide_label && item.guide_url
 			? [
 				{
@@ -285,7 +307,12 @@ export default () => {
 											// column read as a block of noise
 											// rather than as actions.
 											className={ `font-medium no-underline hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-1 focus:[box-shadow:none] [&>span]:px-0${
-												index > 0
+												// SureContact's purple, as in the design.
+												action.accent
+													? ' text-[#8345DD] hover:text-[#6D35C2]'
+													: ''
+											}${
+												action.secondary
 													? ' text-text-secondary'
 													: ''
 											}` }

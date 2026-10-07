@@ -298,6 +298,57 @@ class Test_Email_Delivery_Action_Items extends TestCase {
 		$this->assertArrayHasKey( 'email_delivery_setup', $this->items() );
 	}
 
+	/**
+	 * A failed notification with nothing sending leads with Connect SureContact,
+	 * through SureForms -> SMTP while SureMail is not active.
+	 */
+	public function test_notification_failure_offers_connect_surecontact_without_suremail() {
+		$this->use_plugins( [] );
+		Client_Logger::record_failure( 'notification', 42, 'Contact Form' );
+
+		$item = $this->items()['notification_error'] ?? [];
+
+		$this->assertSame( 'Connect SureContact', $item['connect_label'] ?? '' );
+		$this->assertSame( 'connect_surecontact', $item['connect_action'] ?? '' );
+		$this->assertStringContainsString( 'page=sureforms_smtp', $item['connect_url'] ?? '' );
+		$this->assertSame( 'help_me_fix', $item['guide_action'] ?? '', 'The guide stays.' );
+		$this->assertSame( 'contact_support', $item['cta_action'] ?? '', 'Contact Support stays.' );
+	}
+
+	public function test_notification_failure_connect_goes_into_suremail_when_it_has_no_connection() {
+		$this->use_plugins( [ 'suremails/suremails.php' ] );
+		Client_Logger::record_failure( 'notification', 42, 'Contact Form' );
+
+		$item = $this->items()['notification_error'] ?? [];
+
+		$this->assertStringContainsString( 'page=suremail', $item['connect_url'] ?? '' );
+	}
+
+	public function test_notification_failure_has_no_connect_with_a_connection_or_promotions_hidden() {
+		$this->use_plugins( [ 'suremails/suremails.php' ] );
+		update_option(
+			Suremail_Adapter::CONNECTIONS_OPTION,
+			[
+				'connections'        => [
+					'g1' => [
+						'type'     => 'GMAIL',
+						'priority' => 1,
+					],
+				],
+				'default_connection' => [ 'id' => 'g1' ],
+			]
+		);
+		Client_Logger::record_failure( 'notification', 42, 'Contact Form' );
+		$this->assertArrayNotHasKey( 'connect_label', $this->items()['notification_error'] ?? [] );
+
+		delete_option( Suremail_Adapter::CONNECTIONS_OPTION );
+		$this->use_plugins( [] );
+		add_filter( 'srfm_hide_promotions', '__return_true' );
+		Status::reset();
+		Admin::reset_action_items_cache();
+		$this->assertArrayNotHasKey( 'connect_label', $this->items()['notification_error'] ?? [] );
+	}
+
 	public function test_notification_failure_points_at_suremail_logs_when_suremail_sends() {
 		$this->use_plugins( [ 'suremails/suremails.php' ] );
 		Client_Logger::record_failure( 'notification', 42, 'Contact Form' );

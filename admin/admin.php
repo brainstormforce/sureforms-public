@@ -2924,10 +2924,11 @@ JS;
 				'dismissed'       => 'submission_failure_notice_dismiss',
 			],
 			'notification_error'          => [
-				'contact_support' => 'notification_failure_notice_cta',
-				'help_me_fix'     => 'notification_failure_notice_guide',
-				'view_logs'       => 'notification_failure_notice_logs',
-				'dismissed'       => 'notification_failure_notice_dismiss',
+				'connect_surecontact' => 'notification_failure_notice_connect',
+				'contact_support'     => 'notification_failure_notice_cta',
+				'help_me_fix'         => 'notification_failure_notice_guide',
+				'view_logs'           => 'notification_failure_notice_logs',
+				'dismissed'           => 'notification_failure_notice_dismiss',
 			],
 			// Email delivery advice (#3150), dashboard panel only. Ignore goes through
 			// srfm_dismiss_action_item, which records its own dismiss event.
@@ -3594,10 +3595,24 @@ JS;
 				$has_cta = ! empty( $item['cta_label'] ) && ! empty( $item['cta_url'] );
 				?>
 				<p>
+					<?php
+					// The one-click fix, when there is one, leads.
+					$has_connect = ! empty( $item['connect_label'] ) && ! empty( $item['connect_url'] );
+					if ( $has_connect ) {
+						?>
+						<a
+							href="<?php echo esc_url( Helper::get_string_value( $item['connect_url'] ) ); ?>"
+							class="button button-primary"
+							data-srfm-notice-id="<?php echo esc_attr( Helper::get_string_value( $item['id'] ) ); ?>"
+							data-srfm-button="<?php echo esc_attr( Helper::get_string_value( $item['connect_action'] ?? '' ) ); ?>"
+						>
+							<?php echo esc_html( Helper::get_string_value( $item['connect_label'] ) ); ?>
+						</a>
+					<?php } ?>
 					<?php if ( $has_guide ) { ?>
 						<a
 							href="<?php echo esc_url( Helper::get_string_value( $item['guide_url'] ) ); ?>"
-							class="button button-primary"
+							class="<?php echo $has_connect ? 'button' : 'button button-primary'; ?>"
 							data-srfm-notice-id="<?php echo esc_attr( Helper::get_string_value( $item['id'] ) ); ?>"
 							data-srfm-button="<?php echo esc_attr( Helper::get_string_value( $item['guide_action'] ?? '' ) ); ?>"
 							target="_blank"
@@ -3609,7 +3624,7 @@ JS;
 					<?php if ( $has_cta ) { ?>
 						<a
 							href="<?php echo esc_url( Helper::get_string_value( $item['cta_url'] ) ); ?>"
-							class="<?php echo $has_guide ? 'button' : 'button button-primary'; ?>"
+							class="<?php echo $has_guide || $has_connect ? 'button' : 'button button-primary'; ?>"
 							data-srfm-notice-id="<?php echo esc_attr( Helper::get_string_value( $item['id'] ) ); ?>"
 							data-srfm-button="<?php echo esc_attr( Helper::get_string_value( $item['cta_action'] ?? '' ) ); ?>"
 							<?php
@@ -3844,7 +3859,7 @@ JS;
 				continue;
 			}
 
-			foreach ( [ 'cta_url', 'guide_url' ] as $key ) {
+			foreach ( [ 'cta_url', 'guide_url', 'connect_url' ] as $key ) {
 				if ( ! isset( $item[ $key ] ) ) {
 					continue;
 				}
@@ -4096,6 +4111,12 @@ CSS;
 				$warning['guide_action'] = $copy['guide_action'] ?? 'help_me_fix';
 			}
 
+			// A failed notification on a site with no sending service behind it:
+			// lead with the one-click fix.
+			if ( 'notification' === $category ) {
+				$warning = array_merge( $warning, $this->get_connect_surecontact_action() );
+			}
+
 			$warnings[] = $warning;
 		}
 
@@ -4127,6 +4148,53 @@ CSS;
 		}
 
 		return $warnings;
+	}
+
+	/**
+	 * "Connect SureContact" for a notification failure, when nothing is sending.
+	 *
+	 * Offered while SureMail is not active, or is active with no connection --
+	 * the cases where the failure is almost certainly the missing service. With
+	 * a connection in place the failure is that connection's, and View SureMail
+	 * Logs is the closer next step. Hidden with promotions.
+	 *
+	 * Leads to SureForms -> SMTP while SureMail is not active, which installs it
+	 * and hands over to its SureContact screen; once active, straight to that
+	 * screen. The account itself is only ever created behind SureMail's consent.
+	 *
+	 * @since x.x.x
+	 * @return array<string,string> connect_* keys, or none.
+	 */
+	private function get_connect_surecontact_action() {
+		if ( Helper::hide_promotions() ) {
+			return [];
+		}
+
+		$status = Email_Delivery_Status::get_status();
+		$action = Helper::get_array_value( $status['action'] ?? [] );
+		$type   = Helper::get_string_value( $action['type'] ?? '' );
+
+		if ( 'limited' === Helper::get_string_value( $status['state'] ?? '' ) ) {
+			return [];
+		}
+
+		if ( in_array( $type, [ 'install_activate', 'activate' ], true ) ) {
+			$url = admin_url( 'admin.php?page=sureforms_smtp' );
+		} elseif ( 'open_suremail' === $type && 0 === (int) ( $status['suremail']['connections'] ?? -1 ) ) {
+			$url = Helper::get_string_value( $action['url'] ?? '' );
+		} else {
+			return [];
+		}
+
+		if ( '' === $url ) {
+			return [];
+		}
+
+		return [
+			'connect_label'  => __( 'Connect SureContact', 'sureforms' ),
+			'connect_url'    => $url,
+			'connect_action' => 'connect_surecontact',
+		];
 	}
 
 	/**

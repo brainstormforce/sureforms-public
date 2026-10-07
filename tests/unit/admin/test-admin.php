@@ -1427,6 +1427,10 @@ class Test_Admin extends TestCase {
 	 */
 	public function test_render_action_item_notices_puts_the_guide_before_contact_support() {
 		wp_set_current_user( $this->make_user( 'administrator' ) );
+		// Without a mailer, Connect SureContact would lead; that order is covered
+		// by test_render_action_item_notices_leads_with_connect_surecontact().
+		add_filter( 'srfm_hide_promotions', '__return_true' );
+		Admin::reset_action_items_cache();
 		delete_option( Client_Logger::FAILURES_OPTION );
 		Client_Logger::record_failure( 'notification', 42, 'Contact Form' );
 		Client_Logger::record_failure( 'submission', 42, 'Contact Form' );
@@ -1494,6 +1498,8 @@ class Test_Admin extends TestCase {
 			$alone,
 			'A stale list would still carry the notification guide.'
 		);
+
+		remove_filter( 'srfm_hide_promotions', '__return_true' );
 	}
 
 	/**
@@ -2591,6 +2597,68 @@ class Test_Admin extends TestCase {
 		$captured = [];
 		Admin::get_instance()->enqueue_scripts();
 		$this->assertFalse( $captured[0]['hide_promotions'], 'Control: off by default.' );
+	}
+
+	/**
+	 * Connect SureContact is offered while nothing is sending, and not once
+	 * SureMail has a connection of its own.
+	 */
+	public function test_get_connect_surecontact_action() {
+		$admin  = Admin::get_instance();
+		$method = new \ReflectionMethod( $admin, 'get_connect_surecontact_action' );
+		$method->setAccessible( true );
+
+		$plugins = static function () {
+			return [];
+		};
+		add_filter( 'pre_option_active_plugins', $plugins );
+		\SRFM\Inc\Email_Delivery\Status::reset();
+
+		$action = $method->invoke( $admin );
+		$this->assertSame( 'connect_surecontact', $action['connect_action'] ?? '' );
+		$this->assertStringContainsString( 'page=sureforms_smtp', $action['connect_url'] ?? '' );
+
+		add_filter( 'srfm_hide_promotions', '__return_true' );
+		$this->assertSame( [], $method->invoke( $admin ) );
+
+		remove_filter( 'srfm_hide_promotions', '__return_true' );
+		remove_filter( 'pre_option_active_plugins', $plugins );
+		\SRFM\Inc\Email_Delivery\Status::reset();
+	}
+
+	/**
+	 * With nothing sending, the classic notice leads with Connect SureContact
+	 * and the guide and Contact Support follow as secondary buttons.
+	 */
+	public function test_render_action_item_notices_leads_with_connect_surecontact() {
+		wp_set_current_user( $this->make_user( 'administrator' ) );
+		$plugins = static function () {
+			return [];
+		};
+		add_filter( 'pre_option_active_plugins', $plugins );
+		\SRFM\Inc\Email_Delivery\Status::reset();
+		Admin::reset_action_items_cache();
+		delete_option( Client_Logger::FAILURES_OPTION );
+		Client_Logger::record_failure( 'notification', 42, 'Contact Form' );
+
+		global $pagenow;
+		$previous_pagenow = $pagenow;
+		$pagenow          = 'plugins.php';
+
+		ob_start();
+		Admin::get_instance()->render_action_item_notices();
+		$html = (string) ob_get_clean();
+
+		$pagenow = $previous_pagenow;
+		remove_filter( 'pre_option_active_plugins', $plugins );
+		delete_option( Client_Logger::FAILURES_OPTION );
+		\SRFM\Inc\Email_Delivery\Status::reset();
+		Admin::reset_action_items_cache();
+
+		$this->assertMatchesRegularExpression( '/class="button button-primary"[^>]*data-srfm-button="connect_surecontact"/', $html );
+		$this->assertMatchesRegularExpression( '/class="button"[^>]*data-srfm-button="help_me_fix"/', $html );
+		$this->assertMatchesRegularExpression( '/class="button"[^>]*data-srfm-button="contact_support"/', $html );
+		$this->assertLessThan( strpos( $html, 'help_me_fix' ), strpos( $html, 'connect_surecontact' ) );
 	}
 }
 
@@ -4108,5 +4176,7 @@ class Test_Thankyou_Prompt_Notice extends TestCase {
 		$reset();
 		$pagenow = $previous_pagenow;
 	}
+
+
 
 }
