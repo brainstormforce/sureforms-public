@@ -329,7 +329,9 @@ const EmailDelivery = () => {
 			await apiFetch( {
 				path: SUREMAIL_PROVISION_PATH,
 				method: 'POST',
-				data: { email: userEmail, name: userName },
+				// utm_source tells SureContact the account came from SureForms.
+				// SureMail versions without suremails#814 ignore it.
+				data: { email: userEmail, name: userName, utm_source: 'sureforms' },
 			} );
 			setProvision( 'created' );
 		} catch ( provisionError ) {
