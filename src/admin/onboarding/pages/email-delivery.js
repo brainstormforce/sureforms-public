@@ -498,6 +498,9 @@ const EmailDelivery = () => {
 	let title;
 	let description;
 	let body = null;
+	// Shown with the actions, so on a short screen the box that enables the
+	// button is never scrolled out of view behind them.
+	let consentBox = null;
 	let continueProps;
 	let skipProps;
 	// The option cards replace the illustration: together they push the
@@ -536,12 +539,8 @@ const EmailDelivery = () => {
 				};
 			} else {
 				showsOptions = true;
-				body = (
-					<>
-						{ options }
-						{ consent( true ) }
-					</>
-				);
+				body = options;
+				consentBox = consent( true );
 				continueProps = {
 					onClick: handleInstall,
 					text: installLabel(),
@@ -613,12 +612,8 @@ const EmailDelivery = () => {
 					'sureforms'
 				  );
 			showsOptions = true;
-			body = (
-				<>
-					{ options }
-					{ consent( false ) }
-				</>
-			);
+			body = options;
+			consentBox = consent( false );
 			if ( 'other_smtp' === option ) {
 				continueProps = {
 					onClick: openSureMail,
@@ -753,15 +748,20 @@ const EmailDelivery = () => {
 
 			{ body }
 
-			{ error && (
-				<Text size={ 14 } color="error" role="alert">
-					{ error }
-				</Text>
-			) }
-
-			{ /* Sticky so the actions stay in view on short laptop screens. */ }
+			{ /* Sticky so the actions, the consent that enables them and any
+			error stay in view on short laptop screens. */ }
 			{ /* !-mb-6: the parent's space-y also sets margin-bottom and would win. */ }
 			<div className="sticky bottom-0 z-10 -mx-6 !-mb-6 !mt-3 space-y-6 rounded-b-xl bg-background-primary px-6 pb-6 pt-3">
+				{ ( consentBox || error ) && (
+					<div className="space-y-4">
+						{ consentBox }
+						{ error && (
+							<Text size={ 14 } color="error" role="alert">
+								{ error }
+							</Text>
+						) }
+					</div>
+				) }
 				<Divider />
 
 				<NavigationButtons
