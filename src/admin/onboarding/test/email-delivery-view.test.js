@@ -11,6 +11,8 @@ import {
 	isSiteRefused,
 	isLikelyLocalHost,
 	getDefaultOption,
+	canCreateAccount,
+	getSureContactSignInUrl,
 } from '../pages/email-delivery-view';
 
 const status = ( state, action = 'none' ) => ( {
@@ -110,6 +112,12 @@ describe( 'isLikelyLocalHost', () => {
 		'169.254.10.10',
 		'[::1]',
 		'',
+		'0.0.0.0',
+		'100.64.1.2',
+		'100.127.0.1',
+		'fd12:3456::1',
+		'fe80::1',
+		'::ffff:127.0.0.1',
 	] )( 'treats %p as local', ( host ) => {
 		expect( isLikelyLocalHost( host ) ).toBe( true );
 	} );
@@ -121,6 +129,9 @@ describe( 'isLikelyLocalHost', () => {
 		'8.8.8.8',
 		'test.example.org',
 		'localhost.example.com',
+		'100.128.0.1',
+		'2606:4700::6810:84e5',
+		'::ffff:8.8.8.8',
 	] )( 'treats %p as public', ( host ) => {
 		expect( isLikelyLocalHost( host ) ).toBe( false );
 	} );
@@ -169,5 +180,54 @@ describe( 'getDefaultOption', () => {
 		expect( getDefaultOption( { suremail: {} }, false ) ).toBe(
 			'surecontact'
 		);
+	} );
+} );
+
+describe( 'canCreateAccount', () => {
+	const ok = { consented: true, option: 'surecontact', email: 'a@b.co' };
+
+	it( 'allows it with consent, SureContact open and an address', () => {
+		expect( canCreateAccount( ok ) ).toBe( true );
+	} );
+
+	// Vansh's review: tick, click, then untick or switch while SureMail installs.
+	it( 'refuses once consent is withdrawn', () => {
+		expect( canCreateAccount( { ...ok, consented: false } ) ).toBe( false );
+	} );
+
+	it( 'refuses once another option is open', () => {
+		expect( canCreateAccount( { ...ok, option: 'other_smtp' } ) ).toBe(
+			false
+		);
+	} );
+
+	it( 'refuses without an address', () => {
+		expect( canCreateAccount( { ...ok, email: '' } ) ).toBe( false );
+	} );
+} );
+
+describe( 'getSureContactSignInUrl', () => {
+	it( 'opens SureMail on its SureContact screen', () => {
+		expect(
+			getSureContactSignInUrl( {
+				action: {
+					url: 'https://x.test/wp-admin/options-general.php?page=suremail#/onboarding/connection',
+				},
+			} )
+		).toBe(
+			'https://x.test/wp-admin/options-general.php?page=suremail#/onboarding/connect'
+		);
+	} );
+
+	it( 'falls back to the setup link and adds the screen', () => {
+		expect(
+			getSureContactSignInUrl( {
+				links: { setup: 'https://x.test/wp-admin/admin.php?page=suremail' },
+			} )
+		).toBe( 'https://x.test/wp-admin/admin.php?page=suremail#/onboarding/connect' );
+	} );
+
+	it( 'returns nothing without a SureMail link', () => {
+		expect( getSureContactSignInUrl( null ) ).toBe( '' );
 	} );
 } );

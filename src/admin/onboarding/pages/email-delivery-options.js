@@ -6,7 +6,7 @@
  * Sizes and colours follow the "Final flow for SureMail + SureContact" Figma
  * (Sureforms / Onboarding / Connect).
  */
-import { __, sprintf } from '@wordpress/i18n';
+import { __, _n, sprintf } from '@wordpress/i18n';
 import { createInterpolateElement } from '@wordpress/element';
 import { Checkbox } from '@bsf/force-ui';
 import {
@@ -16,7 +16,7 @@ import {
 	ChevronRight,
 	Settings,
 } from 'lucide-react';
-import { cn } from '@Utils/Helpers';
+import { cn, getFreeEmails } from '@Utils/Helpers';
 // Emitted as files (see the images/onboarding rule in webpack.config.js), so
 // the step does not carry them in its bundle.
 import sureContactIcon from '@Image/onboarding/email-delivery/surecontact.svg';
@@ -47,14 +47,6 @@ const OPEN_BORDER = {
 	other_smtp: 'border-[#0D7EE8]',
 };
 
-/**
- * Number of free SureContact emails, as localized by the server.
- *
- * @return {number} Free emails, 0 when the offer is not shown.
- */
-export const getFreeEmails = () =>
-	Number( srfm_admin?.email_delivery_offer?.free_emails ?? 0 );
-
 const RecommendedBadge = () => (
 	<span className="inline-flex items-center rounded-full bg-badge-background-green px-1.5 py-1 text-xs font-medium leading-4 text-badge-color-green">
 		{ __( 'Recommended', 'sureforms' ) }
@@ -62,13 +54,16 @@ const RecommendedBadge = () => (
 );
 
 /**
- * One accordion card. Closed, it is a single row that opens it; open, it
- * holds the option's details and shows it is the one selected.
+ * One option card, a radio in the group of two. Its header is the radio: the
+ * same button whether the card is open or closed, so keyboard focus stays on
+ * it when it opens. The details show only while it is the selected option.
  *
  * @param {Object}      props
  * @param {string}      props.id         Option id.
  * @param {boolean}     props.open       Whether this option is selected.
  * @param {Function}    props.onSelect   Called with the id to select it.
+ * @param {Function}    props.onArrow    Called with the key to move selection.
+ * @param {boolean}     props.disabled   Whether the choice is locked.
  * @param {JSX.Element} props.icon       Icon shown while open.
  * @param {JSX.Element} props.closedIcon Icon shown while closed.
  * @param {string}      props.title      Option name.
@@ -80,6 +75,8 @@ const OptionCard = ( {
 	id,
 	open,
 	onSelect,
+	onArrow,
+	disabled,
 	icon,
 	closedIcon,
 	title,
@@ -88,63 +85,75 @@ const OptionCard = ( {
 } ) => {
 	const bodyId = `srfm-email-option-${ id }`;
 
-	if ( ! open ) {
-		return (
-			<button
-				type="button"
-				onClick={ () => onSelect( id ) }
-				aria-expanded={ false }
-				aria-controls={ bodyId }
-				className={ cn(
-					'flex w-full cursor-pointer items-center gap-1 rounded-md border border-solid bg-background-primary p-4 text-left',
-					'focus:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2',
-					'surecontact' === id
-						? 'border-[#F3F4F6]'
-						: 'border-border-disabled'
-				) }
-			>
-				<span className="flex flex-1 items-center gap-2">
-					{ closedIcon }
-					<span className="text-base font-semibold leading-6 text-text-primary">
-						{ title }
-					</span>
-					{ badge }
-				</span>
-				<ChevronDown
-					className="size-5 shrink-0 text-icon-secondary"
-					aria-hidden="true"
-				/>
-			</button>
-		);
-	}
-
 	return (
 		<div
 			className={ cn(
-				'flex w-full flex-col gap-5 rounded-md border border-solid bg-background-primary p-5',
-				OPEN_BORDER[ id ]
+				'flex w-full flex-col rounded-md border border-solid bg-background-primary',
+				open && [ 'gap-5 p-5', OPEN_BORDER[ id ] ],
+				! open && [
+					'p-4',
+					'surecontact' === id
+						? 'border-[#F3F4F6]'
+						: 'border-border-disabled',
+				],
+				disabled && 'opacity-80'
 			) }
 		>
-			<div
-				className="flex items-center gap-1"
-				aria-expanded={ true }
-				aria-controls={ bodyId }
+			<button
+				type="button"
+				role="radio"
+				id={ `srfm-email-option-${ id }-radio` }
+				aria-checked={ open }
+				aria-controls={ open ? bodyId : undefined }
+				// Roving tabindex: the group is one tab stop, arrows move within it.
+				tabIndex={ open ? 0 : -1 }
+				disabled={ disabled }
+				onClick={ () => onSelect( id ) }
+				onKeyDown={ ( event ) => {
+					if (
+						[ 'ArrowDown', 'ArrowUp', 'ArrowLeft', 'ArrowRight' ].includes(
+							event.key
+						)
+					) {
+						event.preventDefault();
+						onArrow();
+					}
+				} }
+				className={ cn(
+					'flex w-full items-center gap-1 rounded border-0 bg-transparent p-0 text-left',
+					'focus:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-4',
+					disabled ? 'cursor-not-allowed' : 'cursor-pointer'
+				) }
 			>
 				<span className="flex flex-1 items-center gap-2">
-					{ icon }
+					{ open ? icon : closedIcon }
 					<span className="text-base font-semibold leading-6 text-text-primary">
 						{ title }
 					</span>
 					{ badge }
 				</span>
-				<CheckCircle2
-					className="size-5 shrink-0 text-brand-800"
-					aria-label={ __( 'Selected', 'sureforms' ) }
-				/>
-			</div>
-			<div id={ bodyId } className="flex flex-col gap-5">
-				{ children }
-			</div>
+				{ open ? (
+					<CheckCircle2
+						className="size-5 shrink-0 text-brand-800"
+						aria-hidden="true"
+					/>
+				) : (
+					<ChevronDown
+						className="size-5 shrink-0 text-icon-secondary"
+						aria-hidden="true"
+					/>
+				) }
+			</button>
+			{ open && (
+				<div
+					id={ bodyId }
+					role="region"
+					aria-labelledby={ `srfm-email-option-${ id }-radio` }
+					className="flex flex-col gap-5"
+				>
+					{ children }
+				</div>
+			) }
 		</div>
 	);
 };
@@ -236,7 +245,12 @@ const SureContactDetails = ( { localSite } ) => {
 						<p className="absolute inset-x-0 top-[112px] m-0 text-center text-base font-semibold leading-6 text-text-primary">
 							{ sprintf(
 								/* translators: %d: number of free emails. */
-								__( '%d free emails', 'sureforms' ),
+								_n(
+									'%d free email',
+									'%d free emails',
+									freeEmails,
+									'sureforms'
+								),
 								freeEmails
 							) }
 						</p>
@@ -361,48 +375,71 @@ const OtherSmtpDetails = () => (
 );
 
 /**
- * Both options, one open at a time.
+ * Both options as a radio group, one open at a time.
  *
  * @param {Object}   props
  * @param {string}   props.option    Selected option id.
  * @param {Function} props.onSelect  Called with the option id to select.
  * @param {boolean}  props.localSite Whether the site looks local or private.
+ * @param {boolean}  props.disabled  Lock the choice (while installing or
+ *                                   creating the account).
  * @return {JSX.Element} Options.
  */
-export const EmailOptions = ( { option, onSelect, localSite } ) => (
-	<div className="flex flex-col gap-4" role="group">
-		<OptionCard
-			id="surecontact"
-			open={ 'surecontact' === option }
-			onSelect={ onSelect }
-			icon={
-				<img src={ sureContactIcon } alt="" className="size-5 shrink-0" />
-			}
-			closedIcon={
-				<img src={ sureContactIcon } alt="" className="size-5 shrink-0" />
-			}
-			title={ __( 'SureContact', 'sureforms' ) }
-			badge={ <RecommendedBadge /> }
+export const EmailOptions = ( { option, onSelect, localSite, disabled } ) => {
+	// Arrow keys move the selection and the focus with it, as in any radio
+	// group; with two options either arrow means "the other one".
+	const selectOther = () => {
+		const next = 'surecontact' === option ? 'other_smtp' : 'surecontact';
+		onSelect( next );
+		window.requestAnimationFrame( () =>
+			document.getElementById( `srfm-email-option-${ next }-radio` )?.focus()
+		);
+	};
+
+	return (
+		<div
+			className="flex flex-col gap-4"
+			role="radiogroup"
+			aria-label={ __( 'How your form emails are sent', 'sureforms' ) }
+			aria-disabled={ disabled || undefined }
 		>
-			<SureContactDetails localSite={ localSite } />
-		</OptionCard>
-		<OptionCard
-			id="other_smtp"
-			open={ 'other_smtp' === option }
-			onSelect={ onSelect }
-			icon={ <img src={ sureMailIcon } alt="" className="size-5 shrink-0" /> }
-			closedIcon={
-				<Settings
-					className="size-5 shrink-0 text-icon-secondary"
-					aria-hidden="true"
-				/>
-			}
-			title={ __( 'Other SMTP Provider', 'sureforms' ) }
-		>
-			<OtherSmtpDetails />
-		</OptionCard>
-	</div>
-);
+			<OptionCard
+				id="surecontact"
+				open={ 'surecontact' === option }
+				onSelect={ onSelect }
+				onArrow={ selectOther }
+				disabled={ disabled }
+				icon={
+					<img src={ sureContactIcon } alt="" className="size-5 shrink-0" />
+				}
+				closedIcon={
+					<img src={ sureContactIcon } alt="" className="size-5 shrink-0" />
+				}
+				title={ __( 'SureContact', 'sureforms' ) }
+				badge={ <RecommendedBadge /> }
+			>
+				<SureContactDetails localSite={ localSite } />
+			</OptionCard>
+			<OptionCard
+				id="other_smtp"
+				open={ 'other_smtp' === option }
+				onSelect={ onSelect }
+				onArrow={ selectOther }
+				disabled={ disabled }
+				icon={ <img src={ sureMailIcon } alt="" className="size-5 shrink-0" /> }
+				closedIcon={
+					<Settings
+						className="size-5 shrink-0 text-icon-secondary"
+						aria-hidden="true"
+					/>
+				}
+				title={ __( 'Other SMTP Provider', 'sureforms' ) }
+			>
+				<OtherSmtpDetails />
+			</OptionCard>
+		</div>
+	);
+};
 
 /**
  * What the owner agrees to before SureContact is set up: the account, which
@@ -413,9 +450,17 @@ export const EmailOptions = ( { option, onSelect, localSite } ) => (
  * @param {Function} props.onChange Called with the new checked value.
  * @param {boolean}  props.installs Whether continuing also installs SureMail.
  * @param {string}   props.email    Address the account is created for.
+ * @param {boolean}  props.disabled Lock the box while the account is being
+ *                                  set up: unticking then would not stop it.
  * @return {JSX.Element} Consent checkbox.
  */
-export const ConsentCheckbox = ( { checked, onChange, installs, email } ) => {
+export const ConsentCheckbox = ( {
+	checked,
+	onChange,
+	installs,
+	email,
+	disabled,
+} ) => {
 	const heading = installs
 		? sprintf(
 			/* translators: %s: the current user's email address. */
@@ -439,6 +484,7 @@ export const ConsentCheckbox = ( { checked, onChange, installs, email } ) => {
 			id="srfm-email-delivery-consent"
 			checked={ checked }
 			onChange={ onChange }
+			disabled={ disabled }
 			size="sm"
 			// An element rather than { heading, description }: Force UI sets the
 			// heading at 16px line height, the design at 20px, and its text
@@ -446,16 +492,23 @@ export const ConsentCheckbox = ( { checked, onChange, installs, email } ) => {
 			label={
 				<label
 					htmlFor="srfm-email-delivery-consent"
-					className="flex cursor-pointer flex-col gap-0.5"
+					className={ cn(
+						'flex flex-col gap-0.5',
+						disabled ? 'cursor-not-allowed' : 'cursor-pointer'
+					) }
 				>
 					<span className="text-sm font-medium leading-5 text-field-label">
 						{ heading }
 					</span>
 					<span className="text-sm leading-5 text-[#6B7280]">
 						{ createInterpolateElement(
-							__(
-								'Outgoing emails, including recipients and content, are sent through SureContact. Your address is used only to create the account, and you can disconnect from SureMail settings at any time. <privacy>Privacy Policy</privacy> · <terms>Terms</terms>',
-								'sureforms'
+							sprintf(
+								/* translators: %s: the current user's email address. */
+								__(
+									'Outgoing emails, including recipients and content, are sent through SureContact, from %s. To create the account, SureContact receives your name and email, this site\'s name and address, and its WordPress and SureMail versions. You can disconnect from SureMail settings at any time. <privacy>Privacy Policy</privacy> · <terms>Terms</terms>',
+									'sureforms'
+								),
+								email
 							),
 							{
 								privacy: (

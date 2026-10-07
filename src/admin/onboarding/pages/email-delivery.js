@@ -19,6 +19,8 @@ import {
 	isSiteRefused,
 	isLikelyLocalHost,
 	getDefaultOption,
+	canCreateAccount,
+	getSureContactSignInUrl,
 } from './email-delivery-view';
 import { EmailOptions, ConsentCheckbox } from './email-delivery-options';
 // Rendered via <object>, not <img> or an inlined component: the artwork
@@ -70,7 +72,7 @@ const fetchStatus = () =>
 	} );
 
 const EmailDelivery = () => {
-	const [ , actions ] = useOnboardingState();
+	const [ onboardingState, actions ] = useOnboardingState();
 	const { navigateToNextRoute, navigateToPreviousRoute } =
 		useOnboardingNavigation();
 
@@ -142,13 +144,26 @@ const EmailDelivery = () => {
 	const [ openedSureMail, setOpenedSureMail ] = useState( false );
 	// Required before a SureContact account is created; the other option
 	// creates nothing, so it needs no consent.
-	const [ consented, setConsented ] = useState( false );
+	const [ consented, setConsentedState ] = useState( false );
 	// Whether one-click sign-up is likely to be refused here, read once.
 	const [ localSite ] = useState( siteLooksLocal );
 	// 'surecontact' | 'other_smtp': the open option card.
-	const [ option, setOption ] = useState( () =>
+	const [ option, setOptionState ] = useState( () =>
 		getDefaultOption( srfm_admin?.email_delivery ?? null, localSite )
 	);
+	// The live values, for the account request: it runs seconds after the
+	// click, and must see consent withdrawn or the option switched meanwhile,
+	// not the values the click was rendered with.
+	const consentRef = useRef( false );
+	const optionRef = useRef( option );
+	const setConsented = ( value ) => {
+		consentRef.current = value;
+		setConsentedState( value );
+	};
+	const setOption = ( value ) => {
+		optionRef.current = value;
+		setOptionState( value );
+	};
 	const userEmail = srfm_admin?.website_lead_details?.email ?? '';
 	const userName = [
 		srfm_admin?.website_lead_details?.first_name,
@@ -157,8 +172,14 @@ const EmailDelivery = () => {
 		.filter( Boolean )
 		.join( ' ' );
 	// Outcome of the one-click SureContact sign-up: '' until tried, then
-	// 'created' | 'already_registered' | 'unavailable' | 'failed'.
-	const [ provision, setProvision ] = useState( '' );
+	// 'created' | 'already_registered' | 'unavailable' | 'failed'. An account
+	// created earlier in this run survives Back and Continue (the step remounts),
+	// so the final step still knows it came with the free emails.
+	const [ provision, setProvision ] = useState( () =>
+		'created' === onboardingState?.analytics?.emailDelivery?.provision
+			? 'created'
+			: ''
+	);
 	// State the owner arrived with, for analytics. Captured once.
 	const stateAtStep = useRef( srfm_admin?.email_delivery?.state ?? '' );
 
@@ -236,8 +257,15 @@ const EmailDelivery = () => {
 	// Creates the SureContact account through SureMail, which stores the
 	// returned key as its connection. Only after the consent box is ticked.
 	const provisionSureContact = async () => {
-		// Every caller is gated on the box today; this keeps it so.
-		if ( ! consented ) {
+		// Checked against the live values: consent can be withdrawn, or the
+		// other option opened, while SureMail installs.
+		if (
+			! canCreateAccount( {
+				consented: consentRef.current,
+				option: optionRef.current,
+				email: userEmail,
+			} )
+		) {
 			return;
 		}
 		setError( '' );
@@ -312,7 +340,7 @@ const EmailDelivery = () => {
 			// Another provider: SureMail is in place, and connecting it is left
 			// for later rather than sending the owner out of the setup. The
 			// dashboard keeps reminding them until it is connected.
-			if ( 'other_smtp' === option ) {
+			if ( 'other_smtp' === optionRef.current ) {
 				leave( 'install_other_smtp' );
 				return;
 			}
@@ -336,8 +364,11 @@ const EmailDelivery = () => {
 	};
 
 	// window.open() straight from the click, so popup blockers allow it.
-	const openSureMail = () => {
-		const url = status?.action?.url || status?.links?.setup;
+	const openSureMail = ( target = '' ) => {
+		const url =
+			( 'string' === typeof target && target ) ||
+			status?.action?.url ||
+			status?.links?.setup;
 		if ( ! url ) {
 			return;
 		}
@@ -384,6 +415,7 @@ const EmailDelivery = () => {
 				onChange={ setConsented }
 				installs={ installs }
 				email={ userEmail }
+				disabled={ busy }
 			/>
 		) : null;
 
@@ -395,6 +427,9 @@ const EmailDelivery = () => {
 				setError( '' );
 			} }
 			localSite={ localSite }
+			// Locked while installing or creating the account: a change then
+			// would not stop what the click started.
+			disabled={ busy }
 		/>
 	);
 
@@ -456,29 +491,41 @@ const EmailDelivery = () => {
 
 		case 'connect':
 			if ( 'already_registered' === provision ) {
-				// An existing account is never connected by email alone. SureMail
-				// only completes a SureContact sign-in that its own screens
-				// started, so the owner signs in from there.
+				// An existing account is never connected by email alone: anyone
+				// who knows an address could attach its account to their site, so
+				// the owner signs in once. SureMail only completes a sign-in its
+				// own screen started, so this opens straight on that screen, the
+				// one with "Connect it instead", rather than its provider picker.
 				title = __(
 					'You Already Have a SureContact Account',
 					'sureforms'
 				);
 				description = openedSureMail
 					? __(
-						'In the SureMail tab, choose SureContact, then "Already have a SureContact account? Connect it instead" and sign in. Come back here when done; this step updates by itself.',
+						'In the SureMail tab, click "Already have a SureContact account? Connect it instead" and sign in. Come back here when done; this step updates by itself.',
 						'sureforms'
 					  )
 					: sprintf(
 						/* translators: %s: the current user's email address. */
 						__(
-							'%s already has a SureContact account. In SureMail, choose SureContact, then "Already have a SureContact account? Connect it instead" to sign in.',
+							'%s already has a SureContact account. Sign in once to connect it to this site.',
 							'sureforms'
 						),
 						userEmail
 					  );
+				// Accounts made by the one-click sign-up have no password yet.
+				body = (
+					<Text size={ 14 } color="secondary">
+						{ __(
+							'Never set a password? Use "Forgot password" on the SureContact sign-in page, or continue with Google.',
+							'sureforms'
+						) }
+					</Text>
+				);
 				continueProps = {
-					onClick: openSureMail,
-					text: __( 'Open SureMail', 'sureforms' ),
+					onClick: () =>
+						openSureMail( getSureContactSignInUrl( status ) ),
+					text: __( 'Sign In to SureContact', 'sureforms' ),
 					icon: <ExternalLink />,
 				};
 				skipProps = {

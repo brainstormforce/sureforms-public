@@ -1408,3 +1408,16 @@ export function useShouldIframe() {
 		);
 	}, [] );
 }
+
+/**
+ * Free emails a new SureContact account comes with, as localized by the
+ * server (Status::get_offer()); 0 hides the offer.
+ *
+ * @since x.x.x
+ * @return {number} Free emails.
+ */
+export const getFreeEmails = () =>
+	Math.max(
+		0,
+		Number( window.srfm_admin?.email_delivery_offer?.free_emails ?? 0 ) || 0
+	);

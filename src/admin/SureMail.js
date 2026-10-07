@@ -9,7 +9,7 @@
  * @since 1.7.1
  */
 
-import { __, sprintf } from '@wordpress/i18n';
+import { __, _n, sprintf } from '@wordpress/i18n';
 import {
 	useState,
 	useEffect,
@@ -32,7 +32,7 @@ import {
 	X,
 	Zap,
 } from 'lucide-react';
-import { installAndActivatePlugin } from '@Utils/Helpers';
+import { installAndActivatePlugin, getFreeEmails } from '@Utils/Helpers';
 import sureContactIcon from '@Image/onboarding/email-delivery/surecontact.svg';
 import freeEmailsVisual from '@Image/onboarding/email-delivery/surecontact-free-emails.svg';
 import './tw-base.scss';
@@ -44,14 +44,6 @@ const SUREMAIL_PLUGIN = {
 	slug: 'suremails',
 	path: 'suremails/suremails.php',
 };
-
-/**
- * Free SureContact emails, as localized by the server; 0 hides the offer.
- *
- * @return {number} Free emails.
- */
-const getFreeEmails = () =>
-	Number( window.srfm_admin?.email_delivery_offer?.free_emails ?? 0 );
 
 const SureFormsLogo = ( { size } ) => (
 	<svg
@@ -140,17 +132,19 @@ const Operator = ( { children } ) => (
 
 /**
  * The page's one action: install and activate SureMail, then hand over to
- * SureMail's own screen to connect SureContact. The account is created
- * there, behind SureMail's consent, never from this button.
+ * SureMail's own screen to connect SureContact. The account is created there,
+ * behind SureMail's consent, never from this page.
  *
- * @param {Object}   props
- * @param {string}   props.status   'not_installed' | 'installed'.
- * @param {Function} props.onError  Called with a message on failure.
- * @param {boolean}  props.withIcon Whether to show the gift icon.
- * @return {JSX.Element} Button.
+ * One state for the whole page: both buttons run the same install, so while
+ * one runs the other is busy too, and a second install never starts.
+ *
+ * @param {string}   status  'not_installed' | 'installed'.
+ * @param {Function} onError Called with a message on failure ('' to clear).
+ * @return {Object} { progress, busy, label, run }.
  */
-const SetupButton = ( { status, onError, withIcon = false } ) => {
+const useSureMailSetup = ( status, onError ) => {
 	const [ progress, setProgress ] = useState( '' );
+	const running = useRef( false );
 
 	const label = () => {
 		if ( 'installing' === progress ) {
@@ -163,14 +157,17 @@ const SetupButton = ( { status, onError, withIcon = false } ) => {
 			return __( 'Opening SureMail…', 'sureforms' );
 		}
 		return 'installed' === status
-			? __( 'Activate SureMail And Connect SureContact', 'sureforms' )
-			: __( 'Install SureMail And Connect SureContact', 'sureforms' );
+			? __( 'Activate SureMail and Set Up SureContact', 'sureforms' )
+			: __( 'Install SureMail and Set Up SureContact', 'sureforms' );
 	};
 
 	const run = async () => {
-		if ( progress ) {
+		// A ref, not the state: two clicks in the same tick both see the old
+		// state, and each would start an install.
+		if ( running.current ) {
 			return;
 		}
+		running.current = true;
 		onError( '' );
 		try {
 			await installAndActivatePlugin(
@@ -196,6 +193,7 @@ const SetupButton = ( { status, onError, withIcon = false } ) => {
 				url ||
 				`${ window.srfm_admin?.admin_url }options-general.php?page=suremail#/dashboard`;
 		} catch ( error ) {
+			running.current = false;
 			setProgress( '' );
 			onError(
 				error?.message ||
@@ -207,28 +205,39 @@ const SetupButton = ( { status, onError, withIcon = false } ) => {
 		}
 	};
 
-	const busy = '' !== progress;
-
-	return (
-		<button
-			type="button"
-			onClick={ run }
-			disabled={ busy }
-			aria-busy={ busy }
-			className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-md border-0 bg-[#0D7EE8] px-4 py-3 text-base font-semibold leading-6 text-white shadow-sm transition-colors hover:bg-[#0B6FCC] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0D7EE8] focus-visible:ring-offset-2 disabled:cursor-wait disabled:opacity-80"
-		>
-			{ busy && <Loader size="sm" variant="secondary" /> }
-			{ ! busy && withIcon && (
-				<Gift className="size-5 shrink-0" aria-hidden="true" />
-			) }
-			{ label() }
-		</button>
-	);
+	return { progress, busy: '' !== progress, label, run };
 };
 
 /**
+ * A button for the page's action.
+ *
+ * @param {Object}  props
+ * @param {Object}  props.setup    The shared setup state (useSureMailSetup).
+ * @param {boolean} props.withIcon Whether to show the gift icon.
+ * @return {JSX.Element} Button.
+ */
+const SetupButton = ( { setup, withIcon = false } ) => (
+	<button
+		type="button"
+		onClick={ setup.run }
+		disabled={ setup.busy }
+		aria-busy={ setup.busy }
+		className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-md border-0 bg-[#0D7EE8] px-4 py-3 text-base font-semibold leading-6 text-white shadow-sm transition-colors hover:bg-[#0B6FCC] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0D7EE8] focus-visible:ring-offset-2 disabled:cursor-wait disabled:opacity-80"
+	>
+		{ setup.busy && <Loader size="sm" variant="secondary" /> }
+		{ ! setup.busy && withIcon && (
+			<Gift className="size-5 shrink-0" aria-hidden="true" />
+		) }
+		{ setup.label() }
+	</button>
+);
+
+/**
  * The introduction video, over the page. Escape, the backdrop and the close
- * button dismiss it; focus moves in and back.
+ * button dismiss it; focus moves in, Tab stays inside, and focus returns to
+ * the opener. Once the player itself has focus its keys belong to YouTube's
+ * frame (cross-origin), so Escape there is the player's; the backdrop and the
+ * close button still work.
  *
  * @param {Object}   props
  * @param {Function} props.onClose Called to close.
@@ -236,6 +245,7 @@ const SetupButton = ( { status, onError, withIcon = false } ) => {
  */
 const VideoModal = ( { onClose } ) => {
 	const closeRef = useRef( null );
+	const dialogRef = useRef( null );
 
 	useEffect( () => {
 		const opener = closeRef.current?.ownerDocument?.activeElement;
@@ -243,6 +253,26 @@ const VideoModal = ( { onClose } ) => {
 		const onKey = ( event ) => {
 			if ( 'Escape' === event.key ) {
 				onClose();
+				return;
+			}
+			// Keep Tab inside the dialog: the close button and the player.
+			if ( 'Tab' === event.key && dialogRef.current ) {
+				const focusables = [
+					...dialogRef.current.querySelectorAll( 'button, iframe' ),
+				];
+				const first = focusables[ 0 ];
+				const last = focusables[ focusables.length - 1 ];
+				const active = dialogRef.current.ownerDocument.activeElement;
+				if ( event.shiftKey && active === first ) {
+					event.preventDefault();
+					last.focus();
+				} else if (
+					! event.shiftKey &&
+					( active === last || ! dialogRef.current.contains( active ) )
+				) {
+					event.preventDefault();
+					first.focus();
+				}
 			}
 		};
 		document.addEventListener( 'keydown', onKey );
@@ -259,6 +289,7 @@ const VideoModal = ( { onClose } ) => {
 			onClick={ ( event ) => event.target === event.currentTarget && onClose() }
 		>
 			<div
+				ref={ dialogRef }
 				role="dialog"
 				aria-modal="true"
 				aria-label={ __( 'How SureMail and SureContact work', 'sureforms' ) }
@@ -275,7 +306,7 @@ const VideoModal = ( { onClose } ) => {
 				</button>
 				<div className="aspect-video w-full overflow-hidden rounded-lg bg-black shadow-2xl">
 					<iframe
-						src={ `https://www.youtube.com/embed/${ VIDEO_ID }?autoplay=1&rel=0` }
+						src={ `https://www.youtube-nocookie.com/embed/${ VIDEO_ID }?autoplay=1&rel=0` }
 						title={ __( 'SureMail introduction video', 'sureforms' ) }
 						className="block size-full border-0"
 						allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -505,7 +536,12 @@ const FreeEmailsCard = ( { freeEmails } ) => (
 			<span className="text-lg font-semibold leading-7 text-text-primary">
 				{ sprintf(
 					/* translators: %d: number of free emails. */
-					__( 'Start with %d free emails', 'sureforms' ),
+					_n(
+						'Start with %d free email',
+						'Start with %d free emails',
+						freeEmails,
+						'sureforms'
+					),
 					freeEmails
 				) }
 			</span>
@@ -541,7 +577,7 @@ const FreeEmailsCard = ( { freeEmails } ) => (
 			<span className="absolute inset-x-0 top-[112px] text-center text-base font-semibold leading-6 text-text-primary">
 				{ sprintf(
 					/* translators: %d: number of free emails. */
-					__( '%d free emails', 'sureforms' ),
+					_n( '%d free email', '%d free emails', freeEmails, 'sureforms' ),
 					freeEmails
 				) }
 			</span>
@@ -556,6 +592,7 @@ const SureMail = () => {
 	const status = window.srfm_admin?.suremail_status || 'not_installed';
 	const freeEmails = getFreeEmails();
 	const [ error, setError ] = useState( '' );
+	const setup = useSureMailSetup( status, setError );
 	const [ videoOpen, setVideoOpen ] = useState( false );
 
 	const errorNote = error ? (
@@ -585,8 +622,10 @@ const SureMail = () => {
 					{ freeEmails > 0
 						? sprintf(
 							/* translators: %d: number of free emails. */
-							__(
+							_n(
+								'Every form submission reaches the inbox. Starting with %d free email.',
 								'Every form submission reaches the inbox. Starting with %d free emails.',
+								freeEmails,
 								'sureforms'
 							),
 							freeEmails
@@ -597,20 +636,22 @@ const SureMail = () => {
 					{ freeEmails > 0
 						? sprintf(
 							/* translators: %d: number of free emails. */
-							__(
-								"SureForms collects the entry. SureMail takes over your site's email. SureContact does the sending. One click sets up all three, and the first %d emails are on us.",
+							_n(
+								"SureForms collects the entry. SureMail takes over your site's email. SureContact does the sending. One click installs SureMail and opens SureContact's setup, and the first %d email is on us.",
+								"SureForms collects the entry. SureMail takes over your site's email. SureContact does the sending. One click installs SureMail and opens SureContact's setup, and the first %d emails are on us.",
+								freeEmails,
 								'sureforms'
 							),
 							freeEmails
 						  )
 						: __(
-							"SureForms collects the entry. SureMail takes over your site's email. SureContact does the sending. One click sets up all three.",
+							"SureForms collects the entry. SureMail takes over your site's email. SureContact does the sending. One click installs SureMail and opens SureContact's setup.",
 							'sureforms'
 						  ) }
 				</p>
 
 				<div className="mt-[30px]">
-					<SetupButton status={ status } onError={ setError } />
+					<SetupButton setup={ setup } />
 				</div>
 				{ errorNote }
 				<p className="m-0 mt-4 text-sm leading-5 text-[#6B7280]">
@@ -633,7 +674,7 @@ const SureMail = () => {
 					<span className="text-[#6B7280]">
 						{ sprintf(
 							/* translators: %d: video length in minutes. */
-							__( '%d min', 'sureforms' ),
+							_n( '%d minute', '%d minutes', VIDEO_MINUTES, 'sureforms' ),
 							VIDEO_MINUTES
 						) }
 					</span>
@@ -648,7 +689,7 @@ const SureMail = () => {
 					{ __( 'Forms Submitted. Emails Delivered. Leads Kept.', 'sureforms' ) }
 				</h2>
 				<div className="mt-4">
-					<SetupButton status={ status } onError={ setError } withIcon />
+					<SetupButton setup={ setup } withIcon />
 				</div>
 				<ul className="m-0 mt-3 flex list-none flex-wrap items-center justify-center gap-x-5 gap-y-2 p-0">
 					{ [

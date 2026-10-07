@@ -1,4 +1,4 @@
-import { __, sprintf } from '@wordpress/i18n';
+import { __, _n, sprintf } from '@wordpress/i18n';
 import { useState } from '@wordpress/element';
 import { Gift } from 'lucide-react';
 import { Text } from '@bsf/force-ui';
@@ -6,7 +6,7 @@ import { Divider, Header, FeatureList } from '../components';
 import NavigationButtons from '../components/navigation-buttons';
 import { useOnboardingState } from '../onboarding-state';
 import apiFetch from '@wordpress/api-fetch';
-import { getFreeEmails } from './email-delivery-options';
+import { getFreeEmails } from '@Utils/Helpers';
 
 const features = [
 	__( "Style your form to better match your site's design", 'sureforms' ),
@@ -105,8 +105,10 @@ const Done = () => {
 					<Text size={ 14 } weight={ 400 } color="primary">
 						{ sprintf(
 							/* translators: %d: number of free emails. */
-							__(
+							_n(
+								'You get %d free email notification, sent to your inbox with a form submission.',
 								'You get %d free email notifications, sent to your inbox with every form submission.',
+								freeEmails,
 								'sureforms'
 							),
 							freeEmails

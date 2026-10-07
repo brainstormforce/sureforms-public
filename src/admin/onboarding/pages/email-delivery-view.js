@@ -87,8 +87,10 @@ export const isSiteRefused = ( provisionError ) =>
  * @return {boolean} Looks local or private.
  */
 export const isLikelyLocalHost = ( host = '' ) => {
-	const name = String( host ).toLowerCase().replace( /^\[|\]$/g, '' );
-	if ( ! name || 'localhost' === name || '::1' === name ) {
+	let name = String( host ).toLowerCase().replace( /^\[|\]$/g, '' );
+	// An IPv4 address written as IPv6 (::ffff:127.0.0.1) is still IPv4.
+	name = name.replace( /^::ffff:/, '' );
+	if ( ! name || 'localhost' === name || '::1' === name || '::' === name ) {
 		return true;
 	}
 	if (
@@ -98,14 +100,20 @@ export const isLikelyLocalHost = ( host = '' ) => {
 	) {
 		return true;
 	}
+	// IPv6 unique-local (fc00::/7) and link-local (fe80::/10).
+	if ( name.includes( ':' ) ) {
+		return /^(f[cd][0-9a-f]{0,2}|fe[89ab][0-9a-f]?):/.test( name );
+	}
 	const ip = name.match( /^(\d{1,3})\.(\d{1,3})\.\d{1,3}\.\d{1,3}$/ );
 	if ( ! ip ) {
 		return false;
 	}
 	const [ a, b ] = [ Number( ip[ 1 ] ), Number( ip[ 2 ] ) ];
 	return (
+		0 === a ||
 		10 === a ||
 		127 === a ||
+		( 100 === a && b >= 64 && b <= 127 ) ||
 		( 192 === a && 168 === b ) ||
 		( 172 === a && b >= 16 && b <= 31 ) ||
 		( 169 === a && 254 === b )
@@ -136,4 +144,38 @@ export const getDefaultOption = ( status, localSite ) => {
 		return 'other_smtp';
 	}
 	return 'surecontact';
+};
+
+/**
+ * Whether a SureContact account may be created right now.
+ *
+ * Read at the moment of the request, not when the button was clicked: install
+ * takes seconds, and an owner who unticks consent or switches option in that
+ * time has withdrawn it.
+ *
+ * @param {Object}  args
+ * @param {boolean} args.consented Whether the consent box is ticked now.
+ * @param {string}  args.option    The open option card now.
+ * @param {string}  args.email     Address the account would be created for.
+ * @return {boolean} May create.
+ */
+export const canCreateAccount = ( { consented, option, email } ) =>
+	true === consented && 'surecontact' === option && Boolean( email );
+
+/**
+ * SureMail's SureContact sign-up screen, which carries "Already have a
+ * SureContact account? Connect it instead": the closest SureMail lets another
+ * plugin take an existing account, since it only completes a sign-in its own
+ * screen started.
+ *
+ * @param {Object|null} status Email delivery status.
+ * @return {string} URL, or '' when SureMail's screen is unknown.
+ */
+export const getSureContactSignInUrl = ( status ) => {
+	const base = status?.action?.url || status?.links?.setup || '';
+	if ( ! base ) {
+		return '';
+	}
+	const hash = base.indexOf( '#' );
+	return ( -1 === hash ? base : base.slice( 0, hash ) ) + '#/onboarding/connect';
 };
