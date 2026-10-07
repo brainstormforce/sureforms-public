@@ -44,8 +44,12 @@ export const SURECONTACT_TERMS_URL =
 
 const linkClass = 'text-inherit underline hover:text-text-secondary';
 
-// Stroke of the open card: the same 1px purple whichever option is open.
-const OPEN_BORDER = 'border-[#C3A4FA]';
+// Stroke of the open card, in the colour of the product it sets up:
+// SureContact purple, SureMail blue.
+const OPEN_BORDER = {
+	surecontact: 'border-[#C3A4FA]',
+	other_smtp: 'border-[#0D7EE8]',
+};
 
 const RecommendedBadge = () => (
 	<span className="inline-flex items-center rounded-full bg-badge-background-green px-1.5 py-1 text-xs font-medium leading-4 text-badge-color-green">
@@ -87,7 +91,7 @@ const OptionCard = ( {
 		<div
 			className={ cn(
 				'flex w-full flex-col rounded-md border border-solid bg-background-primary',
-				open ? [ 'gap-5 p-5', OPEN_BORDER ] : 'border-border-disabled p-4',
+				open ? [ 'gap-5 p-5', OPEN_BORDER[ id ] ] : 'border-border-disabled p-4',
 				disabled && 'opacity-80'
 			) }
 		>
