@@ -9,6 +9,7 @@ import {
 	getDoneAction,
 	getProvisionFailure,
 	isSiteRefused,
+	isRateLimited,
 	isLikelyLocalHost,
 	getDefaultOption,
 	canCreateAccount,
@@ -229,5 +230,30 @@ describe( 'getSureContactSignInUrl', () => {
 
 	it( 'returns nothing without a SureMail link', () => {
 		expect( getSureContactSignInUrl( null ) ).toBe( '' );
+	} );
+} );
+
+describe( 'isRateLimited', () => {
+	it( 'spots an HTTP 429 from SureContact', () => {
+		expect( isRateLimited( { data: { status: 429 } } ) ).toBe( true );
+	} );
+
+	it( 'spots a "too many requests" message or code', () => {
+		expect(
+			isRateLimited( {
+				message: 'Too many provisioning requests. Please wait a few minutes and try again.',
+			} )
+		).toBe( true );
+		expect( isRateLimited( { code: 'rate_limited' } ) ).toBe( true );
+	} );
+
+	it( 'leaves other failures alone', () => {
+		expect(
+			isRateLimited( { data: { status: 500 }, message: 'Server error' } )
+		).toBe( false );
+		expect( isRateLimited( { reason: 'email_already_registered' } ) ).toBe(
+			false
+		);
+		expect( isRateLimited( null ) ).toBe( false );
 	} );
 } );

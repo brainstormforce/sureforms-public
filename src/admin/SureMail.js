@@ -660,7 +660,7 @@ const SureMail = () => {
 				<button
 					type="button"
 					onClick={ () => setVideoOpen( true ) }
-					className="mt-2 inline-flex cursor-pointer items-center gap-2 border-0 bg-transparent p-0 text-sm leading-5 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#8345DD] focus-visible:ring-offset-2"
+					className="mt-5 inline-flex cursor-pointer items-center gap-2 border-0 bg-transparent p-0 text-sm leading-5 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#8345DD] focus-visible:ring-offset-2"
 				>
 					<span
 						className="flex size-5 items-center justify-center rounded-full bg-[#F1EAFD]"

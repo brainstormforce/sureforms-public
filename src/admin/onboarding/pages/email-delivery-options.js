@@ -18,7 +18,6 @@ import {
 	CheckCircle2,
 	ChevronDown,
 	ChevronRight,
-	Settings,
 } from 'lucide-react';
 import { cn, getFreeEmails } from '@Utils/Helpers';
 // Emitted as files (see the images/onboarding rule in webpack.config.js), so
@@ -45,11 +44,8 @@ export const SURECONTACT_TERMS_URL =
 
 const linkClass = 'text-inherit underline hover:text-text-secondary';
 
-// Border of the open card, per option: SureContact's purple, SureMail's blue.
-const OPEN_BORDER = {
-	surecontact: 'border-[#C3A4FA]',
-	other_smtp: 'border-[#0D7EE8]',
-};
+// Stroke of the open card: the same 1px purple whichever option is open.
+const OPEN_BORDER = 'border-[#C3A4FA]';
 
 const RecommendedBadge = () => (
 	<span className="inline-flex items-center rounded-full bg-badge-background-green px-1.5 py-1 text-xs font-medium leading-4 text-badge-color-green">
@@ -63,16 +59,15 @@ const RecommendedBadge = () => (
  * it when it opens. The details show only while it is the selected option.
  *
  * @param {Object}      props
- * @param {string}      props.id         Option id.
- * @param {boolean}     props.open       Whether this option is selected.
- * @param {Function}    props.onSelect   Called with the id to select it.
- * @param {Function}    props.onArrow    Called with the key to move selection.
- * @param {boolean}     props.disabled   Whether the choice is locked.
- * @param {JSX.Element} props.icon       Icon shown while open.
- * @param {JSX.Element} props.closedIcon Icon shown while closed.
- * @param {string}      props.title      Option name.
- * @param {JSX.Element} props.badge      Optional badge after the name.
- * @param {JSX.Element} props.children   Details, shown while open.
+ * @param {string}      props.id       Option id.
+ * @param {boolean}     props.open     Whether this option is selected.
+ * @param {Function}    props.onSelect Called with the id to select it.
+ * @param {Function}    props.onArrow  Called with the key to move selection.
+ * @param {boolean}     props.disabled Whether the choice is locked.
+ * @param {JSX.Element} props.icon     Option icon.
+ * @param {string}      props.title    Option name.
+ * @param {JSX.Element} props.badge    Optional badge after the name.
+ * @param {JSX.Element} props.children Details, shown while open.
  * @return {JSX.Element} Option card.
  */
 const OptionCard = ( {
@@ -82,7 +77,6 @@ const OptionCard = ( {
 	onArrow,
 	disabled,
 	icon,
-	closedIcon,
 	title,
 	badge,
 	children,
@@ -93,13 +87,7 @@ const OptionCard = ( {
 		<div
 			className={ cn(
 				'flex w-full flex-col rounded-md border border-solid bg-background-primary',
-				open && [ 'gap-5 p-5', OPEN_BORDER[ id ] ],
-				! open && [
-					'p-4',
-					'surecontact' === id
-						? 'border-[#F3F4F6]'
-						: 'border-border-disabled',
-				],
+				open ? [ 'gap-5 p-5', OPEN_BORDER ] : 'border-border-disabled p-4',
 				disabled && 'opacity-80'
 			) }
 		>
@@ -130,7 +118,7 @@ const OptionCard = ( {
 				) }
 			>
 				<span className="flex flex-1 items-center gap-2">
-					{ open ? icon : closedIcon }
+					{ icon }
 					<span className="text-base font-semibold leading-6 text-text-primary">
 						{ title }
 					</span>
@@ -195,9 +183,9 @@ const DetailList = ( { heading, items, marker, gap } ) => (
 	</div>
 );
 
-const GreenCheck = (
+const GreyCheck = (
 	<span className="flex shrink-0 p-0.5" aria-hidden="true">
-		<span className="flex size-4 items-center justify-center rounded bg-badge-color-green">
+		<span className="flex size-4 items-center justify-center rounded bg-[#9CA3AF]">
 			<Check className="size-3 text-text-on-color" strokeWidth={ 3 } />
 		</span>
 	</span>
@@ -224,12 +212,15 @@ const SureContactDetails = ( { localSite } ) => {
 		<>
 			<div className="flex max-w-[568px] flex-col items-center gap-9 rounded-lg border border-solid border-[#DACFF9] bg-[linear-gradient(90deg,#FEFDFF_0%,#E8DDFC_100%)] p-4 sm:flex-row">
 				<div className="flex flex-1 flex-col gap-2">
-					<p className="m-0 text-lg font-semibold leading-7 text-text-primary">
-						{ __( 'Start sending in one click, no setup', 'sureforms' ) }
+					<p className="m-0 text-base font-semibold leading-6 text-text-primary">
+						{ __(
+							'Start sending in one click, no setup needed.',
+							'sureforms'
+						) }
 					</p>
 					<p className="m-0 text-sm leading-5 text-text-secondary">
 						{ __(
-							'Our own sending service, set up inside SureMail for you. It handles every email your site sends, and doubles as a CRM for following up with the people who fill your forms.',
+							'SureContact SMTP is our email sending service, set up inside SureMail for you. Start sending your WordPress emails without manually configuring an SMTP provider.',
 							'sureforms'
 						) }
 					</p>
@@ -250,8 +241,8 @@ const SureContactDetails = ( { localSite } ) => {
 							{ sprintf(
 								/* translators: %d: number of free emails. */
 								_n(
-									'%d free email',
-									'%d free emails',
+									'%d Mail Free',
+									'%d Mails Free',
 									freeEmails,
 									'sureforms'
 								),
@@ -259,7 +250,7 @@ const SureContactDetails = ( { localSite } ) => {
 							) }
 						</p>
 						<p className="absolute inset-x-0 top-[136px] m-0 text-center text-[9px] leading-3 text-text-secondary">
-							{ __( 'One time, no card needed', 'sureforms' ) }
+							{ __( 'One time setup, No card required', 'sureforms' ) }
 						</p>
 					</div>
 				) }
@@ -277,50 +268,37 @@ const SureContactDetails = ( { localSite } ) => {
 				</p>
 			) }
 
-			<DetailList
-				heading={ __( 'We’ll take care of the technical stuff.', 'sureforms' ) }
-				marker={ GreenCheck }
-				gap="gap-2"
-				items={ [
-					{
-						label: __( 'Account creation', 'sureforms' ),
-						hint: __(
-							'Using your admin email, no password to pick',
-							'sureforms'
-						),
-					},
-					{
-						label: __( 'SMTP configuration', 'sureforms' ),
-						hint: __( 'No host, port or credentials to enter', 'sureforms' ),
-					},
-					{
-						label: __( 'Sender ready', 'sureforms' ),
-						hint: __(
-							'Your forms can send the moment this finishes',
-							'sureforms'
-						),
-					},
-					{
-						label: __( 'Delivery logs on', 'sureforms' ),
-						hint: __(
-							'See what sent and what failed, in one place',
-							'sureforms'
-						),
-					},
-				] }
-			/>
+			<div className="flex flex-col gap-4">
+				<p className="m-0 text-sm font-medium leading-5 text-text-primary">
+					{ __( 'We’ll take care of the technical stuff.', 'sureforms' ) }
+				</p>
+				<ul className="m-0 flex list-none flex-wrap gap-x-7 gap-y-2 p-0">
+					{ [
+						__( 'Account creation', 'sureforms' ),
+						__( 'SMTP configuration', 'sureforms' ),
+						__( 'Ready to send', 'sureforms' ),
+					].map( ( label ) => (
+						<li key={ label } className="m-0 flex items-center gap-2">
+							{ GreyCheck }
+							<span className="text-sm font-medium leading-5 text-field-label">
+								{ label }
+							</span>
+						</li>
+					) ) }
+				</ul>
+			</div>
 		</>
 	);
 };
 
 const PROVIDERS = [
 	[ gmailLogo, 'Gmail' ],
+	[ sesLogo, 'Amazon SES' ],
 	[ outlookLogo, 'Microsoft 365 / Outlook' ],
 	[ postmarkLogo, 'Postmark' ],
 	[ sendgridLogo, 'SendGrid' ],
 	[ brevoLogo, 'Brevo' ],
 	[ mailgunLogo, 'Mailgun' ],
-	[ sesLogo, 'Amazon SES' ],
 	[ netcoreLogo, 'Netcore' ],
 	[ smtpLogo, __( 'Other SMTP', 'sureforms' ) ],
 ];
@@ -424,9 +402,6 @@ export const EmailOptions = ( { option, onSelect, localSite, disabled } ) => {
 				icon={
 					<img src={ sureContactIcon } alt="" className="size-5 shrink-0" />
 				}
-				closedIcon={
-					<img src={ sureContactIcon } alt="" className="size-5 shrink-0" />
-				}
 				title={ __( 'SureContact', 'sureforms' ) }
 				badge={ <RecommendedBadge /> }
 			>
@@ -439,12 +414,6 @@ export const EmailOptions = ( { option, onSelect, localSite, disabled } ) => {
 				onArrow={ selectOther }
 				disabled={ disabled }
 				icon={ <img src={ sureMailIcon } alt="" className="size-5 shrink-0" /> }
-				closedIcon={
-					<Settings
-						className="size-5 shrink-0 text-icon-secondary"
-						aria-hidden="true"
-					/>
-				}
 				title={ __( 'Other SMTP Provider', 'sureforms' ) }
 			>
 				<OtherSmtpDetails />
@@ -473,23 +442,28 @@ export const ConsentCheckbox = ( {
 	email,
 	disabled,
 } ) => {
-	const heading = installs
-		? sprintf(
-			/* translators: %s: the current user's email address. */
-			__(
-				'I agree to install SureMail and create a free SureContact account for %s.',
-				'sureforms'
-			),
-			email
-		  )
-		: sprintf(
-			/* translators: %s: the current user's email address. */
-			__(
-				'I agree to create a free SureContact account for %s.',
-				'sureforms'
-			),
-			email
-		  );
+	// The address is underlined so the owner checks it is the right one; it
+	// goes in as a tag, never parsed as markup itself.
+	const heading = createInterpolateElement(
+		installs
+			? sprintf(
+				/* translators: %s: the current user's email address. */
+				__(
+					'I agree to install SureMail and create a free SureContact account for %s.',
+					'sureforms'
+				),
+				'<email/>'
+			  )
+			: sprintf(
+				/* translators: %s: the current user's email address. */
+				__(
+					'I agree to create a free SureContact account for %s.',
+					'sureforms'
+				),
+				'<email/>'
+			  ),
+		{ email: <span className="underline">{ email }</span> }
+	);
 
 	return (
 		<Checkbox
@@ -512,7 +486,7 @@ export const ConsentCheckbox = ( {
 					<span className="text-sm font-medium leading-5 text-field-label">
 						{ heading }
 					</span>
-					<span className="text-sm leading-5 text-[#6B7280]">
+					<span className="text-xs leading-[19px] text-[#6B7280]">
 						{ createInterpolateElement(
 							sprintf(
 								/* translators: %s: the current user's email address. */

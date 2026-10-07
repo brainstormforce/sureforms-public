@@ -147,6 +147,18 @@ export const getDefaultOption = ( status, localSite ) => {
 };
 
 /**
+ * Whether SureContact turned the sign-up away for coming too often, a pause
+ * the owner can wait out rather than a failure to report.
+ *
+ * @param {Object} provisionError Error thrown by apiFetch.
+ * @return {boolean} Rate limited.
+ */
+export const isRateLimited = ( provisionError ) =>
+	429 === Number( provisionError?.data?.status ) ||
+	/rate_limit|too_many/i.test( provisionError?.code ?? '' ) ||
+	/too many/i.test( provisionError?.message ?? '' );
+
+/**
  * Whether a SureContact account may be created right now.
  *
  * Read at the moment of the request, not when the button was clicked: install

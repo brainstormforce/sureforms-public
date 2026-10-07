@@ -17,6 +17,7 @@ import {
 	getDoneAction,
 	getProvisionFailure,
 	isSiteRefused,
+	isRateLimited,
 	isLikelyLocalHost,
 	getDefaultOption,
 	canCreateAccount,
@@ -292,6 +293,14 @@ const EmailDelivery = () => {
 						'sureforms'
 					)
 				);
+			} else if ( isRateLimited( provisionError ) ) {
+				// SureContact's limit on sign-ups: a short wait, not a failure.
+				setError(
+					__(
+						'SureContact is busy right now. Please wait a minute and try again.',
+						'sureforms'
+					)
+				);
 			} else if ( 'failed' === outcome ) {
 				setError(
 					provisionError?.message ||
@@ -389,8 +398,8 @@ const EmailDelivery = () => {
 		return '';
 	};
 
-	// The button says what it will do for the open option, so "SureContact"
-	// on the card never meets a button that only mentions SureMail.
+	// The button label for the open option: another provider only gets
+	// SureMail, SureContact gets the whole setup in one click.
 	const installLabel = () => {
 		if ( busy ) {
 			return progressLabel();
@@ -401,9 +410,8 @@ const EmailDelivery = () => {
 				? __( 'Activate SureMail', 'sureforms' )
 				: __( 'Install SureMail', 'sureforms' );
 		}
-		return activates
-			? __( 'Activate SureMail & Connect SureContact', 'sureforms' )
-			: __( 'Install SureMail & Connect SureContact', 'sureforms' );
+		// The consent box above says what this click installs and creates.
+		return __( "Let's Do It", 'sureforms' );
 	};
 
 	// Consent is about the SureContact account, so it shows only with that
@@ -451,7 +459,7 @@ const EmailDelivery = () => {
 		case 'install':
 			title = __( 'Make Sure Your Emails Get Delivered', 'sureforms' );
 			description = __(
-				'Most hosts block the mail function WordPress uses by default. SureMail installs now and sends through a real service instead.',
+				'WordPress emails can sometimes fail to reach the inbox when they rely on the default mail setup. Using a reliable mail service helps improve delivery and makes your emails more dependable.',
 				'sureforms'
 			);
 			if ( false === status?.can_install ) {
