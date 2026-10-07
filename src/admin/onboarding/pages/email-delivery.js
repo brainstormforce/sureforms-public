@@ -760,7 +760,8 @@ const EmailDelivery = () => {
 			) }
 
 			{ /* Sticky so the actions stay in view on short laptop screens. */ }
-			<div className="sticky bottom-0 z-10 -mx-6 -mb-6 space-y-4 rounded-b-xl bg-background-primary px-6 pb-6">
+			{ /* !-mb-6: the parent's space-y also sets margin-bottom and would win. */ }
+			<div className="sticky bottom-0 z-10 -mx-6 !-mb-6 !mt-3 space-y-6 rounded-b-xl bg-background-primary px-6 pb-6 pt-3">
 				<Divider />
 
 				<NavigationButtons
