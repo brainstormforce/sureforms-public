@@ -759,18 +759,21 @@ const EmailDelivery = () => {
 				</Text>
 			) }
 
-			<Divider />
+			{ /* Sticky so the actions stay in view on short laptop screens. */ }
+			<div className="sticky bottom-0 z-10 -mx-6 -mb-6 space-y-4 rounded-b-xl bg-background-primary px-6 pb-6">
+				<Divider />
 
-			<NavigationButtons
-				backProps={ {
-					onClick: navigateToPreviousRoute,
-					disabled: busy,
-				} }
-				continueProps={ continueProps }
-				// Sign-up can wait up to 30s on SureContact; leaving meanwhile would
-				// record a skip while the account is still being created.
-				skipProps={ busy ? { ...skipProps, disabled: true } : skipProps }
-			/>
+				<NavigationButtons
+					backProps={ {
+						onClick: navigateToPreviousRoute,
+						disabled: busy,
+					} }
+					continueProps={ continueProps }
+					// Sign-up can wait up to 30s on SureContact; leaving meanwhile would
+					// record a skip while the account is still being created.
+					skipProps={ busy ? { ...skipProps, disabled: true } : skipProps }
+				/>
+			</div>
 		</div>
 	);
 };
