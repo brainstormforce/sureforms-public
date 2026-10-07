@@ -179,8 +179,14 @@ class Status {
 				'entry_saved' => (bool) $entry_saved,
 			];
 
+			// Throttle repeats of a failure from the same setup only. One that
+			// predates the current SureMail connection belongs to an older setup,
+			// so this failure must be written with its own time -- or a new
+			// connection that also fails would keep the old failure's time and
+			// could read as working.
 			$last_for_form = $outcomes['open_forms'][ $form_id ] ?? 0;
-			if ( $last_for_form > 0 && $now - $last_for_form < self::FAILURE_WRITE_INTERVAL ) {
+			$same_setup    = $last_for_form > (int) ( $outcomes['suremail_connected_at'] ?? 0 );
+			if ( $last_for_form > 0 && $same_setup && $now - $last_for_form < self::FAILURE_WRITE_INTERVAL ) {
 				// Throttled, but a repeat that says something new (another reason,
 				// mailer, or a submission not stored) still updates what is shown.
 				if ( ( $outcomes['open_details'][ $form_id ] ?? null ) === $details ) {
