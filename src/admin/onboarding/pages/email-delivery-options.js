@@ -7,7 +7,11 @@
  * (Sureforms / Onboarding / Connect).
  */
 import { __, _n, sprintf } from '@wordpress/i18n';
-import { createInterpolateElement } from '@wordpress/element';
+import {
+	createInterpolateElement,
+	useEffect,
+	useRef,
+} from '@wordpress/element';
 import { Checkbox } from '@bsf/force-ui';
 import {
 	Check,
@@ -387,13 +391,21 @@ const OtherSmtpDetails = () => (
  */
 export const EmailOptions = ( { option, onSelect, localSite, disabled } ) => {
 	// Arrow keys move the selection and the focus with it, as in any radio
-	// group; with two options either arrow means "the other one".
+	// group; with two options either arrow means "the other one". The focus
+	// moves after the new selection has rendered, in the effect below.
+	const focusAfterSelect = useRef( '' );
+	useEffect( () => {
+		if ( focusAfterSelect.current === option ) {
+			focusAfterSelect.current = '';
+			document
+				.getElementById( `srfm-email-option-${ option }-radio` )
+				?.focus();
+		}
+	}, [ option ] );
 	const selectOther = () => {
 		const next = 'surecontact' === option ? 'other_smtp' : 'surecontact';
+		focusAfterSelect.current = next;
 		onSelect( next );
-		window.requestAnimationFrame( () =>
-			document.getElementById( `srfm-email-option-${ next }-radio` )?.focus()
-		);
 	};
 
 	return (
