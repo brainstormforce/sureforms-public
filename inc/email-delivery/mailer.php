@@ -256,11 +256,11 @@ class Mailer {
 			if ( ! in_array( $address, $visitor, true ) ) {
 				return false;
 			}
-			// The server refused the address for itself (unknown mailbox, bad
-			// syntax), not because of the site's setup ("554 Relay access
-			// denied", "530", a 4xx deferral): only then is it the visitor's.
-			$code = self::get_refusal_code( $message, $address );
-			if ( null !== $code && ! self::is_address_level_code( $code ) ) {
+			// Excused only when the address itself is wrong: PHPMailer rejected
+			// its syntax, or the server says there is no such mailbox. Anything
+			// else, including a refusal with no reason we can read, counts: a
+			// "Relay access denied" or "Authentication required" is the site.
+			if ( ! self::is_invalid_address_error( $message, $address ) && ! self::is_mailbox_refusal( self::get_refusal_reason( $message, $address ) ) ) {
 				return false;
 			}
 		}
@@ -269,40 +269,90 @@ class Mailer {
 	}
 
 	/**
-	 * The SMTP reply PHPMailer gives for one refused address, e.g. "550 5.1.1".
+	 * Whether PHPMailer itself rejected an address as malformed, before any
+	 * server saw it ("Invalid address:  (to): x@").
 	 *
 	 * @since x.x.x
 	 * @param string $message Error message from wp_mail_failed.
 	 * @param string $address A refused address, lowercased.
-	 * @return string|null Reply code and any enhanced code, or null when the
-	 *                     error names no SMTP reply for it (PHPMailer's own
-	 *                     address validation).
+	 * @return bool
 	 */
-	public static function get_refusal_code( $message, $address ) {
-		$pattern = '/' . preg_quote( (string) $address, '/' ) . '>?\\s*:\\s*(\\d{3})(?:[\\s-]+(\\d\\.\\d{1,3}\\.\\d{1,3}))?/i';
-		if ( ! preg_match( $pattern, (string) $message, $match ) ) {
-			return null;
-		}
-		return trim( $match[1] . ' ' . ( $match[2] ?? '' ) );
+	public static function is_invalid_address_error( $message, $address ) {
+		$pattern = '/\\((?:to|cc|bcc)\\):\\s*' . preg_quote( (string) $address, '/' ) . '(?:[\\s,]|$)/i';
+		return 1 === preg_match( $pattern, (string) $message );
 	}
 
 	/**
-	 * Whether an SMTP reply is about the address itself: 550 (no such
-	 * mailbox), 553 (name not allowed) or an enhanced 5.1.x code.
+	 * What the mail server said about one refused address.
+	 *
+	 * PHPMailer lists refusals as "address: reason", and strips the SMTP reply
+	 * code and enhanced status code from the reason before reporting it
+	 * (PHPMailer 7.1.1, SMTP::sendCommand()): "v@x.org: <v@x.org>: Relay
+	 * access denied". So the reason is all there is to go on.
 	 *
 	 * @since x.x.x
-	 * @param string $code Reply from get_refusal_code(), e.g. "550 5.1.1".
+	 * @param string $message Error message from wp_mail_failed.
+	 * @param string $address A refused address, lowercased.
+	 * @return string The reason, '' when none is given.
+	 */
+	public static function get_refusal_reason( $message, $address ) {
+		$message = (string) $message;
+		$marker  = 'recipients failed:';
+		$start   = stripos( $message, $marker );
+		$list    = false === $start ? $message : substr( $message, $start + strlen( $marker ) );
+
+		$pattern = '/(?:^|[\\s,])' . preg_quote( (string) $address, '/' ) . '\\s*:\\s*(.*?)(?=(?:[\\r\\n]+|\\s)[^\\s:<>]+@[^\\s:<>]+\\s*:\\s|$)/is';
+		if ( ! preg_match( $pattern, $list, $match ) ) {
+			return '';
+		}
+		return trim( $match[1] );
+	}
+
+	/**
+	 * Whether a server's reason says the mailbox itself does not exist, rather
+	 * than the site being refused (relay, authentication, rate limits, policy).
+	 * Kept to clear wording, so an unknown reason counts as the site's.
+	 *
+	 * @since x.x.x
+	 * @param string $reason Reason from get_refusal_reason().
 	 * @return bool
 	 */
-	public static function is_address_level_code( $code ) {
-		$parts    = explode( ' ', (string) $code );
-		$basic    = $parts[0] ?? '';
-		$enhanced = $parts[1] ?? '';
-
-		if ( '' !== $enhanced ) {
-			return 0 === strpos( $enhanced, '5.1.' );
+	public static function is_mailbox_refusal( $reason ) {
+		$reason = strtolower( (string) $reason );
+		if ( '' === $reason ) {
+			return false;
 		}
-		return in_array( $basic, [ '550', '553' ], true );
+
+		// Some servers repeat the enhanced status in the text: 5.1.x is about
+		// the address (5.1.1 bad mailbox, 5.1.2 bad domain, 5.1.3 bad syntax).
+		if ( preg_match( '/\\b5\\.1\\.\\d{1,3}\\b/', $reason ) ) {
+			return true;
+		}
+
+		$mailbox_wording = [
+			'user unknown',
+			'unknown user',
+			'no such user',
+			'no such mailbox',
+			'no such recipient',
+			'unknown recipient',
+			'recipient unknown',
+			'user not found',
+			'recipient not found',
+			'mailbox not found',
+			'mailbox unavailable',
+			'mailbox does not exist',
+			'does not exist',
+			'invalid mailbox',
+			'address rejected: user unknown',
+		];
+		foreach ( $mailbox_wording as $wording ) {
+			if ( false !== strpos( $reason, $wording ) ) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/**
