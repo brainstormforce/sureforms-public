@@ -524,6 +524,7 @@ class Test_Html_Form_Detector extends SRFM_Unit_Test_Case {
 			);
 		} finally {
 			remove_filter( 'user_has_cap', $deny_unfiltered_html );
+			wp_set_current_user( 0 );
 			wp_delete_user( $user_id );
 		}
 	}
