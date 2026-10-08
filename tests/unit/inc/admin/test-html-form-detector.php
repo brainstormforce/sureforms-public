@@ -495,29 +495,37 @@ class Test_Html_Form_Detector extends SRFM_Unit_Test_Case {
 		};
 		add_filter( 'user_has_cap', $deny_unfiltered_html );
 
-		$html = '<div class="wrap"><h2>Free eBook</h2>'
-			. '<form><input type="email" name="email" required></form>'
-			. '<p>Thanks for signing up.</p>'
-			. '<script>alert("xss")</script>'
-			. '</div>';
+		// Cleaned up whatever happens: a leaked cap filter would run every later
+		// test without unfiltered_html.
+		try {
+			$html = '<div class="wrap"><h2>Free eBook</h2>'
+				. '<form><input type="email" name="email" required></form>'
+				. '<p>Thanks for signing up.</p>'
+				. '<script>alert("xss")</script>'
+				. '</div>';
 
-		$preserved = $this->call_protected( 'strip_form_for_preservation', [ $html ] );
+			$preserved = $this->call_protected( 'strip_form_for_preservation', [ $html ] );
 
-		$this->assertStringContainsString( '<h2>Free eBook</h2>', $preserved );
-		$this->assertStringContainsString( 'Thanks for signing up', $preserved );
-		$this->assertStringNotContainsString( '<form', $preserved );
-		$this->assertStringNotContainsString( '<script', $preserved );
+			$this->assertStringContainsString( '<h2>Free eBook</h2>', $preserved );
+			$this->assertStringContainsString( 'Thanks for signing up', $preserved );
+			$this->assertStringNotContainsString( '<form', $preserved );
+			$this->assertStringNotContainsString( '<script', $preserved );
 
-		// wp_kses_post() removes the element but keeps its text, which is inert
-		// once the tags are gone. Assert the whole result so any future change to
-		// what survives has to be made deliberately.
-		$this->assertSame(
-			'<div class="wrap"><h2>Free eBook</h2><p>Thanks for signing up.</p>alert("xss")</div>',
-			$preserved
-		);
-
-		remove_filter( 'user_has_cap', $deny_unfiltered_html );
-		wp_delete_user( $user_id );
+			// wp_kses_post() removes the element. Up to WordPress 7.1 it keeps the
+			// text inside it, which is inert once the tags are gone; from 7.2 it drops
+			// a script's contents too. Assert the whole result for both, so any other
+			// change to what survives has to be made deliberately.
+			$this->assertContains(
+				$preserved,
+				[
+					'<div class="wrap"><h2>Free eBook</h2><p>Thanks for signing up.</p>alert("xss")</div>',
+					'<div class="wrap"><h2>Free eBook</h2><p>Thanks for signing up.</p></div>',
+				]
+			);
+		} finally {
+			remove_filter( 'user_has_cap', $deny_unfiltered_html );
+			wp_delete_user( $user_id );
+		}
 	}
 
 	public function test_strip_form_for_preservation_preserves_form_only_block() {
