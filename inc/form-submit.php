@@ -1037,6 +1037,44 @@ class Form_Submit {
 	}
 
 	/**
+	 * Recipients of a notification that came from the visitor's own fields.
+	 *
+	 * A recipient template part with a {form:*} tag is filled in by the
+	 * visitor; anything else ({admin_email}, a typed address) is the owner's.
+	 *
+	 * @param array<mixed> $item            Notification settings.
+	 * @param array<mixed> $submission_data Submission data.
+	 * @since x.x.x
+	 * @return array{addresses:array<int,string>,only_visitor:bool}
+	 */
+	private static function get_visitor_recipients( $item, $submission_data ) {
+		$smart_tags   = Smart_Tags::get_instance();
+		$addresses    = [];
+		$only_visitor = true;
+
+		foreach ( [ 'email_to', 'email_cc', 'email_bcc' ] as $key ) {
+			$template = Helper::get_string_value( $item[ $key ] ?? '' );
+			foreach ( explode( ',', $template ) as $part ) {
+				$part = trim( $part );
+				if ( '' === $part ) {
+					continue;
+				}
+				if ( false === strpos( $part, '{form:' ) ) {
+					$only_visitor = false;
+					continue;
+				}
+				$resolved  = Helper::get_string_value( $smart_tags->process_smart_tags( $part, $submission_data ) );
+				$addresses = array_merge( $addresses, array_map( 'trim', explode( ',', $resolved ) ) );
+			}
+		}
+
+		return [
+			'addresses'    => array_values( array_filter( $addresses ) ),
+			'only_visitor' => $only_visitor,
+		];
+	}
+
+	/**
 	 * Send Email.
 	 *
 	 * @param string        $id Form ID.
@@ -1144,7 +1182,8 @@ class Form_Submit {
 							// even with debug logging switched off. A rejected
 							// recipient address (often what a visitor typed) is
 							// logged on the entry but says nothing about the site.
-							if ( ! Mailer::is_recipient_error( $email_report ) ) {
+							$recipients = self::get_visitor_recipients( $item, $submission_data );
+							if ( ! Mailer::is_visitor_recipient_failure( $email_report, $recipients['addresses'], $recipients['only_visitor'] ) ) {
 								Email_Delivery_Status::record_outcome( false, intval( $id ), '' !== $email_report ? 'mailer_error' : $rejection['code'], $entry_saved );
 							}
 						}
