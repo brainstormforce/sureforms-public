@@ -152,4 +152,35 @@ class Test_Mailer extends TestCase {
 		$this->assertFalse( Mailer::is_visitor_recipient_failure( $none, [], false ), 'An owner address resolved to nothing.' );
 		$this->assertFalse( Mailer::is_visitor_recipient_failure( 'SMTP Error: Could not authenticate.', [ 'a@b.co' ], true ) );
 	}
+
+	public function test_get_refusal_code() {
+		$this->assertSame( '550 5.1.1', Mailer::get_refusal_code( 'SMTP Error: The following recipients failed: visitor@exampel.con: 550 5.1.1 User unknown', 'visitor@exampel.con' ) );
+		$this->assertSame( '554 5.7.1', Mailer::get_refusal_code( 'SMTP Error: The following recipients failed: v@example.org: 554 5.7.1 <v@example.org>: Relay access denied', 'v@example.org' ) );
+		$this->assertSame( '553', Mailer::get_refusal_code( 'SMTP Error: The following recipients failed: v@example.org: 553 sorry, that domain isn\'t allowed', 'v@example.org' ) );
+		$this->assertNull( Mailer::get_refusal_code( 'Invalid address:  (to): not-an-address', 'not-an-address' ) );
+	}
+
+	public function test_is_address_level_code() {
+		$this->assertTrue( Mailer::is_address_level_code( '550 5.1.1' ) );
+		$this->assertTrue( Mailer::is_address_level_code( '550' ) );
+		$this->assertTrue( Mailer::is_address_level_code( '553' ) );
+		$this->assertTrue( Mailer::is_address_level_code( '553 5.1.3' ) );
+		$this->assertFalse( Mailer::is_address_level_code( '554 5.7.1' ), 'Relay denied is the site.' );
+		$this->assertFalse( Mailer::is_address_level_code( '550 5.7.1' ), 'A policy refusal, not the mailbox.' );
+		$this->assertFalse( Mailer::is_address_level_code( '530 5.7.0' ) );
+		$this->assertFalse( Mailer::is_address_level_code( '451 4.7.1' ) );
+		$this->assertFalse( Mailer::is_address_level_code( '452' ) );
+	}
+
+	public function test_a_site_refusal_of_a_visitor_address_is_still_a_site_failure() {
+		// An autoresponder to the visitor only, on a host that relays only to its own domain.
+		$relay = 'SMTP Error: The following recipients failed: visitor@example.org: 554 5.7.1 <visitor@example.org>: Relay access denied';
+		$this->assertFalse( Mailer::is_visitor_recipient_failure( $relay, [ 'visitor@example.org' ], true ) );
+
+		$greylist = 'SMTP Error: The following recipients failed: visitor@example.org: 451 4.7.1 Please try again later';
+		$this->assertFalse( Mailer::is_visitor_recipient_failure( $greylist, [ 'visitor@example.org' ], true ) );
+
+		$unknown = 'SMTP Error: The following recipients failed: visitor@example.org: 550 5.1.1 No such user';
+		$this->assertTrue( Mailer::is_visitor_recipient_failure( $unknown, [ 'visitor@example.org' ], true ) );
+	}
 }
