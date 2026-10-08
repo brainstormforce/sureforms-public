@@ -432,6 +432,13 @@ if ( 'loading' === document.readyState ) {
 	srfmWatchForTurnstile();
 }
 
+// A form can arrive after the page has loaded -- an Elementor popup, a page
+// builder preview, anything dispatching srfm_form_initialize. form-submit.js
+// re-runs its handlers for those and announces each one here, which is the only
+// signal this renderer needs: without it a late form would have no widget, and
+// so no way to produce a token.
+document.addEventListener( 'srfm_form_after_initialization', srfmWatchForTurnstile );
+
 // eslint-disable-next-line
 function onTurnstileError() {
 	showErrorMessageOnRecaptchaError( {
