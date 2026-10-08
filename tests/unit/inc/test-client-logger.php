@@ -1138,4 +1138,19 @@ class Test_Client_Logger extends TestCase {
 			}
 		}
 	}
+
+	/**
+	 * A failure records whether the submission was stored, and the latest failure
+	 * wins -- the notice describes what just happened.
+	 */
+	public function test_record_failure_carries_whether_the_entry_was_saved() {
+		Client_Logger::record_failure( 'notification', 7, 'Private Form', [ 'entry_saved' => false ] );
+		$this->assertFalse( Client_Logger::get_failures()['notification']['entry_saved'] );
+
+		Client_Logger::record_failure( 'notification', 8, 'Contact Form' );
+		$this->assertTrue(
+			Client_Logger::get_failures()['notification']['entry_saved'],
+			'Without context a failure is assumed to have a saved entry, as before.'
+		);
+	}
 }

@@ -120,6 +120,275 @@ class Mailer {
 	}
 
 	/**
+	 * Whether a failed wp_mail() may be retried through PHP's own mail().
+	 *
+	 * Off by default. Core's wp_mail() already sends through mail() when no mail
+	 * plugin is active, so a raw mail() that succeeds after it failed has usually
+	 * skipped the validation that caught a broken From address — the email
+	 * "works" and the misconfiguration stays hidden. With a mail plugin active it
+	 * is worse: the email bypasses that plugin's routing and logs, and SureMail,
+	 * which retries a rejected email itself, would send it twice.
+	 *
+	 * So the filter is only consulted when no mail plugin is active, for hosts
+	 * where raw mail() genuinely is the only thing that works.
+	 *
+	 * @since x.x.x
+	 * @param int    $form_id Form the email belongs to.
+	 * @param string $context What is being sent, e.g. 'notification'.
+	 * @return bool
+	 */
+	public static function allow_php_mail_fallback( $form_id = 0, $context = 'notification' ) {
+		if ( self::has_mailer() ) {
+			return false;
+		}
+
+		/**
+		 * Filters whether a failed wp_mail() is retried through PHP's mail().
+		 *
+		 * Only applied when no mail plugin is active.
+		 *
+		 * @since x.x.x
+		 * @param bool   $allow   Whether to retry. Default false.
+		 * @param int    $form_id Form the email belongs to.
+		 * @param string $context What is being sent, e.g. 'notification'.
+		 */
+		return (bool) apply_filters( 'srfm_allow_php_mail_fallback', false, (int) $form_id, (string) $context );
+	}
+
+	/**
+	 * Whether a mailer error is about a recipient address rather than the
+	 * site's mail setup.
+	 *
+	 * Recipients often come from what a visitor typed ({form:email}), so an
+	 * address PHPMailer rejects says nothing about whether the site can send:
+	 * it is logged on the entry, but must not put the whole site into
+	 * "attention". An invalid From address is a site problem and stays one.
+	 *
+	 * @since x.x.x
+	 * @param string $message Error message from wp_mail_failed.
+	 * @return bool
+	 */
+	public static function is_recipient_error( $message ) {
+		$message = (string) $message;
+		if ( '' === $message ) {
+			return false;
+		}
+
+		// PHPMailer names the header in parentheses, untranslated: "(to)", "(cc)".
+		if ( preg_match( '/\\((to|cc|bcc|reply-to)\\)/i', $message ) ) {
+			return true;
+		}
+
+		// No recipient at all, or the mail server refusing the recipient (RCPT)
+		// over SMTP. API-based mailers word recipient rejections their own way and
+		// are not recognised here; those still count, which errs towards telling
+		// the owner.
+		$recipient_texts = [
+			'You must provide at least one recipient email address.',
+			__( 'You must provide at least one recipient email address.' ), // phpcs:ignore WordPress.WP.I18n.MissingArgDomain -- Matching WordPress core's own PHPMailer string.
+			'SMTP Error: The following recipients failed:',
+			trim( __( 'SMTP Error: The following recipients failed: ' ) ), // phpcs:ignore WordPress.WP.I18n.MissingArgDomain -- Matching WordPress core's own PHPMailer string.
+		];
+		foreach ( $recipient_texts as $recipient_text ) {
+			if ( '' !== $recipient_text && false !== strpos( $message, $recipient_text ) ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * The addresses a recipient error names, lowercased.
+	 *
+	 * PHPMailer lists refused recipients ("SMTP Error: The following recipients
+	 * failed: a@b.c: 554 ...") and names invalid ones by header ("(to): x@").
+	 *
+	 * @since x.x.x
+	 * @param string $message Error message from wp_mail_failed.
+	 * @return array<int,string>
+	 */
+	public static function get_refused_addresses( $message ) {
+		$message   = (string) $message;
+		$addresses = [];
+
+		if ( preg_match_all( '/\\((?:to|cc|bcc)\\):\\s*([^\\s,]+)/i', $message, $named ) ) {
+			$addresses = array_merge( $addresses, $named[1] );
+		}
+		if ( preg_match_all( '/[a-z0-9._%+\\-\']+@[a-z0-9.\\-]+\\.[a-z]{2,}/i', $message, $emails ) ) {
+			$addresses = array_merge( $addresses, $emails[0] );
+		}
+
+		return array_values( array_unique( array_map( 'strtolower', array_map( 'trim', $addresses ) ) ) );
+	}
+
+	/**
+	 * Whether a failed send is down only to addresses the visitor typed.
+	 *
+	 * Decided by where each refused address came from, not by the error text:
+	 * PHPMailer reports every refusal at the recipient step the same way,
+	 * including a host's "554 Relay access denied" or "530 Authentication
+	 * required", which are the site's setup failing. So a failure is the
+	 * visitor's only when every address it names came from a field they filled
+	 * in ({form:*}). An address the owner typed into the notification still
+	 * counts, typos included.
+	 *
+	 * @since x.x.x
+	 * @param string            $message           Error message from wp_mail_failed.
+	 * @param array<int,string> $visitor_addresses Recipients that came from the visitor's fields.
+	 * @param bool              $only_visitor      Whether every recipient template is a visitor field.
+	 * @return bool
+	 */
+	public static function is_visitor_recipient_failure( $message, $visitor_addresses, $only_visitor ) {
+		if ( ! self::is_recipient_error( $message ) ) {
+			return false;
+		}
+
+		$refused = self::get_refused_addresses( $message );
+		if ( empty( $refused ) ) {
+			// No address named ("You must provide at least one recipient"): the
+			// visitor's only if every recipient was theirs to fill in.
+			return (bool) $only_visitor;
+		}
+
+		$visitor = array_map( 'strtolower', array_map( 'trim', (array) $visitor_addresses ) );
+		foreach ( $refused as $address ) {
+			if ( ! in_array( $address, $visitor, true ) ) {
+				return false;
+			}
+			// Excused only when the address itself is wrong: PHPMailer rejected
+			// its syntax, or the server says there is no such mailbox. Anything
+			// else, including a refusal with no reason we can read, counts: a
+			// "Relay access denied" or "Authentication required" is the site.
+			if ( ! self::is_invalid_address_error( $message, $address ) && ! self::is_mailbox_refusal( self::get_refusal_reason( $message, $address ) ) ) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * Whether PHPMailer itself rejected an address as malformed, before any
+	 * server saw it ("Invalid address:  (to): x@").
+	 *
+	 * @since x.x.x
+	 * @param string $message Error message from wp_mail_failed.
+	 * @param string $address A refused address, lowercased.
+	 * @return bool
+	 */
+	public static function is_invalid_address_error( $message, $address ) {
+		$pattern = '/\\((?:to|cc|bcc)\\):\\s*' . preg_quote( (string) $address, '/' ) . '(?:[\\s,]|$)/i';
+		return 1 === preg_match( $pattern, (string) $message );
+	}
+
+	/**
+	 * What the mail server said about one refused address.
+	 *
+	 * PHPMailer lists refusals as "address: reason", and strips the SMTP reply
+	 * code and enhanced status code from the reason before reporting it
+	 * (PHPMailer 7.1.1, SMTP::sendCommand()): "v@x.org: <v@x.org>: Relay
+	 * access denied". So the reason is all there is to go on.
+	 *
+	 * @since x.x.x
+	 * @param string $message Error message from wp_mail_failed.
+	 * @param string $address A refused address, lowercased.
+	 * @return string The reason, '' when none is given.
+	 */
+	public static function get_refusal_reason( $message, $address ) {
+		$message = (string) $message;
+		$marker  = 'recipients failed:';
+		$start   = stripos( $message, $marker );
+		$list    = false === $start ? $message : substr( $message, $start + strlen( $marker ) );
+
+		$pattern = '/(?:^|[\\s,])' . preg_quote( (string) $address, '/' ) . '\\s*:\\s*(.*?)(?=(?:[\\r\\n]+|\\s)[^\\s:<>]+@[^\\s:<>]+\\s*:\\s|$)/is';
+		if ( ! preg_match( $pattern, $list, $match ) ) {
+			return '';
+		}
+		return trim( $match[1] );
+	}
+
+	/**
+	 * Whether a server's reason says the mailbox itself does not exist, rather
+	 * than the site being refused (relay, authentication, rate limits, policy).
+	 * Kept to clear wording, so an unknown reason counts as the site's.
+	 *
+	 * @since x.x.x
+	 * @param string $reason Reason from get_refusal_reason().
+	 * @return bool
+	 */
+	public static function is_mailbox_refusal( $reason ) {
+		$reason = strtolower( (string) $reason );
+		if ( '' === $reason ) {
+			return false;
+		}
+
+		// Some servers repeat the enhanced status in the text: 5.1.x is about
+		// the address (5.1.1 bad mailbox, 5.1.2 bad domain, 5.1.3 bad syntax).
+		if ( preg_match( '/\\b5\\.1\\.\\d{1,3}\\b/', $reason ) ) {
+			return true;
+		}
+
+		$mailbox_wording = [
+			'user unknown',
+			'unknown user',
+			'no such user',
+			'no such mailbox',
+			'no such recipient',
+			'unknown recipient',
+			'recipient unknown',
+			'user not found',
+			'recipient not found',
+			'mailbox not found',
+			'mailbox unavailable',
+			'mailbox does not exist',
+			'does not exist',
+			'invalid mailbox',
+			'address rejected: user unknown',
+		];
+		foreach ( $mailbox_wording as $wording ) {
+			if ( false !== strpos( $reason, $wording ) ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Why a mailer did not accept an email, for when it gave no reason itself.
+	 *
+	 * @since x.x.x
+	 * @return array{code:string,message:string}
+	 */
+	public static function get_rejection_reason() {
+		$mailer = self::get_active();
+
+		if ( 'suremail' === $mailer['slug'] ) {
+			return [
+				'code'    => 'suremail_rejected',
+				'message' => __( 'SureMail did not accept this email. It may retry it automatically; SureMail\'s email logs show the reason.', 'sureforms' ),
+			];
+		}
+
+		if ( 'none' !== $mailer['slug'] ) {
+			return [
+				'code'    => 'mailer_rejected',
+				'message' => sprintf(
+					/* translators: %s: name of the site's mail plugin. */
+					__( '%s did not accept this email. Its logs show the reason.', 'sureforms' ),
+					'' !== $mailer['label'] ? $mailer['label'] : __( 'Your mail plugin', 'sureforms' )
+				),
+			];
+		}
+
+		return [
+			'code'    => 'php_mail_failed',
+			'message' => __( 'No SMTP plugin detected. Please configure an SMTP plugin to enable email sending.', 'sureforms' ),
+		];
+	}
+
+	/**
 	 * Detection without the filter.
 	 *
 	 * @since x.x.x
