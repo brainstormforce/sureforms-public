@@ -12,6 +12,8 @@ use SRFM\Inc\AI_Form_Builder\AI_Helper;
 use SRFM\Inc\Client_Logger;
 use SRFM\Inc\Database\Register;
 use SRFM\Inc\Database\Tables\Entries;
+use SRFM\Inc\Email_Delivery\Status as Email_Delivery_Status;
+use SRFM\Inc\Email_Delivery\Suremail_Adapter;
 use SRFM\Inc\Generate_Form_Markup;
 use SRFM\Inc\Global_Settings\Global_Settings;
 use SRFM\Inc\Helper;
@@ -1410,8 +1412,9 @@ JS;
 
 		// Check if SureMail is installed and active.
 		if ( 'sureforms_smtp' === $submenu_page && file_exists( WP_PLUGIN_DIR . '/suremails/suremails.php' ) && is_plugin_active( 'suremails/suremails.php' ) ) {
-			// Plugin is installed and active - redirect to SureMail dashboard.
-			wp_safe_redirect( admin_url( 'options-general.php?page=suremail#/dashboard' ) );
+			// Plugin is installed and active - redirect to SureMail dashboard. SureMail
+			// can live under Settings or as a top-level menu, so let it build the URL.
+			wp_safe_redirect( Suremail_Adapter::admin_url( '/dashboard' ) );
 			exit;
 		}
 	}
@@ -1929,6 +1932,12 @@ JS;
 		 * @param bool $is_sureforms_screen Whether the current screen is a SureForms dashboard screen.
 		 */
 		$is_sureforms_screen = apply_filters( 'srfm_is_dashboard_screen', $is_sureforms_screen );
+
+		// Built only where SureForms' own screens read it: on other admin pages the
+		// status (and, with SureMail inactive, a get_plugins() scan) is wasted work.
+		if ( $is_sureforms_screen ) {
+			$localization_data['email_delivery'] = Email_Delivery_Status::get_status();
+		}
 
 		if ( $is_sureforms_screen ) {
 			$asset_handle = '-dashboard';
