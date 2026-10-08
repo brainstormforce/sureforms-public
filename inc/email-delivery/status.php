@@ -107,6 +107,30 @@ class Status {
 	}
 
 	/**
+	 * The free SureContact offer shown beside the one-click sign-up.
+	 *
+	 * One number, read by every screen that mentions it (onboarding, the SMTP
+	 * page, the final onboarding step), so a change to the offer is one filter
+	 * and never a copy edit. 0 hides the offer.
+	 *
+	 * @since x.x.x
+	 * @return array<string,int>
+	 */
+	public static function get_offer() {
+		/**
+		 * Filters how many free emails a new SureContact account comes with.
+		 *
+		 * @since x.x.x
+		 * @param int $free_emails Free emails; 0 hides the offer.
+		 */
+		$free_emails = apply_filters( 'srfm_surecontact_free_emails', 100 );
+
+		return [
+			'free_emails' => max( 0, is_numeric( $free_emails ) ? (int) $free_emails : 0 ),
+		];
+	}
+
+	/**
 	 * Record whether a notification was accepted by the mail system.
 	 *
 	 * Recorded whether or not debug logging is on: this is the site's current

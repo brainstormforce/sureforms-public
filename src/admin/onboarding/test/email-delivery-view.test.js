@@ -9,6 +9,12 @@ import {
 	getDoneAction,
 	getProvisionFailure,
 	isSiteRefused,
+	isRateLimited,
+	readProvisionError,
+	isLikelyLocalHost,
+	getDefaultOption,
+	canCreateAccount,
+	getSureContactSignInUrl,
 } from '../pages/email-delivery-view';
 
 const status = ( state, action = 'none' ) => ( {
@@ -93,5 +99,209 @@ describe( 'isSiteRefused', () => {
 		[ null, false ],
 	] )( '%o → %s', ( error, refused ) => {
 		expect( isSiteRefused( error ) ).toBe( refused );
+	} );
+} );
+
+describe( 'isLikelyLocalHost', () => {
+	it.each( [
+		'localhost',
+		'my-site.test',
+		'shop.local',
+		'wp.localhost',
+		'127.0.0.1',
+		'10.0.0.12',
+		'192.168.1.20',
+		'172.16.0.1',
+		'172.31.255.255',
+		'169.254.10.10',
+		'[::1]',
+		'',
+		'0.0.0.0',
+		'100.64.1.2',
+		'100.127.0.1',
+		'fd12:3456::1',
+		'fe80::1',
+		'::ffff:127.0.0.1',
+	] )( 'treats %p as local', ( host ) => {
+		expect( isLikelyLocalHost( host ) ).toBe( true );
+	} );
+
+	it.each( [
+		'example.com',
+		'accessible-aristide-0ygqd.zipwp.link',
+		'172.32.0.1',
+		'8.8.8.8',
+		'test.example.org',
+		'localhost.example.com',
+		'100.128.0.1',
+		'2606:4700::6810:84e5',
+		'::ffff:8.8.8.8',
+	] )( 'treats %p as public', ( host ) => {
+		expect( isLikelyLocalHost( host ) ).toBe( false );
+	} );
+} );
+
+describe( 'getDefaultOption', () => {
+	it( 'opens SureContact on a public site', () => {
+		expect( getDefaultOption( null, false ) ).toBe( 'surecontact' );
+	} );
+
+	it( 'opens another provider on a local site', () => {
+		expect( getDefaultOption( null, true ) ).toBe( 'other_smtp' );
+	} );
+
+	it( 'opens another provider when an active SureMail cannot connect SureContact', () => {
+		expect(
+			getDefaultOption(
+				{
+					suremail: {
+						plugin_status: 'Activated',
+						supports_surecontact: false,
+					},
+				},
+				false
+			)
+		).toBe( 'other_smtp' );
+	} );
+
+	// Found on the QA site: an inactive SureMail reports false because its
+	// version cannot be read, which opened Other SMTP on a public site.
+	it( 'ignores the support flag while SureMail is not active', () => {
+		expect(
+			getDefaultOption(
+				{
+					suremail: {
+						plugin_status: 'Installed',
+						supports_surecontact: false,
+					},
+				},
+				false
+			)
+		).toBe( 'surecontact' );
+	} );
+
+	it( 'treats an unknown SureMail version as able', () => {
+		expect( getDefaultOption( { suremail: {} }, false ) ).toBe(
+			'surecontact'
+		);
+	} );
+} );
+
+describe( 'canCreateAccount', () => {
+	const ok = { consented: true, option: 'surecontact', email: 'a@b.co' };
+
+	it( 'allows it with consent, SureContact open and an address', () => {
+		expect( canCreateAccount( ok ) ).toBe( true );
+	} );
+
+	// Vansh's review: tick, click, then untick or switch while SureMail installs.
+	it( 'refuses once consent is withdrawn', () => {
+		expect( canCreateAccount( { ...ok, consented: false } ) ).toBe( false );
+	} );
+
+	it( 'refuses once another option is open', () => {
+		expect( canCreateAccount( { ...ok, option: 'other_smtp' } ) ).toBe(
+			false
+		);
+	} );
+
+	it( 'refuses without an address', () => {
+		expect( canCreateAccount( { ...ok, email: '' } ) ).toBe( false );
+	} );
+} );
+
+describe( 'getSureContactSignInUrl', () => {
+	it( 'opens SureMail on its SureContact screen', () => {
+		expect(
+			getSureContactSignInUrl( {
+				action: {
+					url: 'https://x.test/wp-admin/options-general.php?page=suremail#/onboarding/connection',
+				},
+			} )
+		).toBe(
+			'https://x.test/wp-admin/options-general.php?page=suremail#/onboarding/connect'
+		);
+	} );
+
+	it( 'falls back to the setup link and adds the screen', () => {
+		expect(
+			getSureContactSignInUrl( {
+				links: { setup: 'https://x.test/wp-admin/admin.php?page=suremail' },
+			} )
+		).toBe( 'https://x.test/wp-admin/admin.php?page=suremail#/onboarding/connect' );
+	} );
+
+	it( 'returns nothing without a SureMail link', () => {
+		expect( getSureContactSignInUrl( null ) ).toBe( '' );
+	} );
+} );
+
+describe( 'isRateLimited', () => {
+	it( 'spots an HTTP 429 from SureMail, whatever the language', () => {
+		expect(
+			isRateLimited( {
+				status: 429,
+				success: false,
+				message: 'Demasiadas solicitudes de aprovisionamiento.',
+				reason: '',
+			} )
+		).toBe( true );
+		expect( isRateLimited( { data: { status: 429 } } ) ).toBe( true );
+	} );
+
+	it( 'spots a rate-limit reason', () => {
+		expect( isRateLimited( { status: 400, reason: 'too_many_requests' } ) ).toBe(
+			true
+		);
+		expect( isRateLimited( { reason: 'rate_limited' } ) ).toBe( true );
+	} );
+
+	it( 'leaves other failures alone, including other "too many" messages', () => {
+		expect(
+			isRateLimited( {
+				status: 502,
+				message: 'Too many redirects.',
+				reason: '',
+			} )
+		).toBe( false );
+		expect(
+			isRateLimited( { status: 409, reason: 'email_already_registered' } )
+		).toBe( false );
+		expect( isRateLimited( {} ) ).toBe( false );
+	} );
+} );
+
+describe( 'readProvisionError', () => {
+	it( 'keeps the HTTP status next to SureMail\'s error body', async () => {
+		const response = {
+			status: 429,
+			json: () =>
+				Promise.resolve( {
+					success: false,
+					message: 'Too many provisioning requests.',
+					reason: '',
+				} ),
+		};
+		await expect( readProvisionError( response ) ).resolves.toEqual( {
+			success: false,
+			message: 'Too many provisioning requests.',
+			reason: '',
+			status: 429,
+		} );
+	} );
+
+	it( 'keeps the status when the body is not JSON', async () => {
+		const response = {
+			status: 502,
+			json: () => Promise.reject( new Error( 'not json' ) ),
+		};
+		await expect( readProvisionError( response ) ).resolves.toEqual( {
+			status: 502,
+		} );
+	} );
+
+	it( 'passes a network error through', async () => {
+		const error = { code: 'fetch_error', message: 'You are probably offline.' };
+		await expect( readProvisionError( error ) ).resolves.toBe( error );
 	} );
 } );

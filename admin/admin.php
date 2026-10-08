@@ -1936,7 +1936,8 @@ JS;
 		// Built only where SureForms' own screens read it: on other admin pages the
 		// status (and, with SureMail inactive, a get_plugins() scan) is wasted work.
 		if ( $is_sureforms_screen ) {
-			$localization_data['email_delivery'] = Email_Delivery_Status::get_status();
+			$localization_data['email_delivery']       = Email_Delivery_Status::get_status();
+			$localization_data['email_delivery_offer'] = Email_Delivery_Status::get_offer();
 		}
 
 		if ( $is_sureforms_screen ) {
@@ -2070,6 +2071,7 @@ JS;
 				'suremail_status'        => file_exists( WP_PLUGIN_DIR . '/suremails/suremails.php' )
 					? ( is_plugin_active( 'suremails/suremails.php' ) ? 'active' : 'installed' )
 					: 'not_installed',
+				'email_delivery_offer'   => Email_Delivery_Status::get_offer(),
 			];
 
 			wp_localize_script(
