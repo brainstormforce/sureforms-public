@@ -1080,6 +1080,12 @@ class Analytics {
 					if ( isset( $email_delivery['consented'] ) ) {
 						$onboarding_props['email_delivery_consented'] = (bool) $email_delivery['consented'] ? 'yes' : 'no';
 					}
+
+					// Outcome of the one-click SureContact sign-up, when it was tried.
+					$provision_outcomes = [ 'created', 'already_registered', 'unavailable', 'failed' ];
+					if ( isset( $email_delivery['provision'] ) && in_array( $email_delivery['provision'], $provision_outcomes, true ) ) {
+						$onboarding_props['email_delivery_provision'] = $email_delivery['provision'];
+					}
 				}
 
 				if ( isset( $onboarding_analytics['accountConnected'] ) ) {

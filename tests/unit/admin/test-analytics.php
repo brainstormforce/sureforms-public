@@ -311,6 +311,7 @@ class Test_Analytics extends TestCase {
 					'action'         => 'skip',
 					'suremailOpened' => true,
 					'consented'      => true,
+					'provision'      => 'already_registered',
 				],
 			]
 		);
@@ -320,6 +321,7 @@ class Test_Analytics extends TestCase {
 		$this->assertSame( 'skip', $props['email_delivery_action'] );
 		$this->assertSame( 'yes', $props['email_delivery_suremail_opened'] );
 		$this->assertSame( 'yes', $props['email_delivery_consented'] );
+		$this->assertSame( 'already_registered', $props['email_delivery_provision'] );
 	}
 
 	/**
@@ -334,6 +336,7 @@ class Test_Analytics extends TestCase {
 					'stateAtStep' => 'delivered<script>',
 					'finalState'  => [ 'ready' ],
 					'action'      => 'drop table',
+					'provision'   => 'pwned',
 				],
 			]
 		);
@@ -343,6 +346,7 @@ class Test_Analytics extends TestCase {
 		$this->assertArrayNotHasKey( 'email_delivery_action', $props );
 		$this->assertArrayNotHasKey( 'email_delivery_suremail_opened', $props );
 		$this->assertArrayNotHasKey( 'email_delivery_consented', $props );
+		$this->assertArrayNotHasKey( 'email_delivery_provision', $props );
 	}
 
 	/**
