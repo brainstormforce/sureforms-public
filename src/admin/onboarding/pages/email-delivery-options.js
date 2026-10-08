@@ -28,7 +28,7 @@ import sureMailIcon from '@Image/onboarding/email-delivery/suremail.svg';
 // would strip them if inlined. Its two captions are HTML, for translation.
 import freeEmailsVisual from '@Image/onboarding/email-delivery/surecontact-mails-free.svg';
 import gmailLogo from '@Image/onboarding/email-delivery/gmail.svg';
-import outlookLogo from '@Image/onboarding/email-delivery/outlook.svg';
+import mailjetLogo from '@Image/onboarding/email-delivery/mailjet.svg';
 import postmarkLogo from '@Image/onboarding/email-delivery/postmark.svg';
 import sendgridLogo from '@Image/onboarding/email-delivery/sendgrid.svg';
 import brevoLogo from '@Image/onboarding/email-delivery/brevo.svg';
@@ -298,7 +298,8 @@ const SureContactDetails = ( { localSite } ) => {
 const PROVIDERS = [
 	[ gmailLogo, 'Gmail' ],
 	[ sesLogo, 'Amazon SES' ],
-	[ outlookLogo, 'Microsoft 365 / Outlook' ],
+	// SureMail lists Outlook as coming soon; Mailjet it supports today.
+	[ mailjetLogo, 'Mailjet' ],
 	[ postmarkLogo, 'Postmark' ],
 	[ sendgridLogo, 'SendGrid' ],
 	[ brevoLogo, 'Brevo' ],
