@@ -325,4 +325,41 @@ class Test_Status extends TestCase {
 		Status::reset();
 		$this->assertSame( 'attention', Status::get_status()['state'] );
 	}
+
+	/**
+	 * The real sequence, with nothing seeded: a form fails, SureMail is then
+	 * connected (so the connection time moves forward), and the new
+	 * connection fails within the five-minute throttle. The status must say
+	 * so, not read the first failure as the old setup's and report ready.
+	 */
+	public function test_a_failure_on_a_new_connection_within_the_throttle_reads_as_attention() {
+		$this->activate_plugins( [ Mailer::SUREMAIL_FILE ] );
+		$this->set_suremail_connections( [] );
+		Status::reset();
+
+		Status::record_outcome( false, 6, 'suremail_rejected' );
+
+		// Whole seconds: each step must land in a later second than the last.
+		sleep( 1 );
+		$this->set_suremail_connections(
+			[
+				'p1' => [
+					'type'     => 'PHPMAIL',
+					'priority' => 10,
+				],
+			],
+			'p1'
+		);
+		Status::reset();
+		Status::get_status();
+		$connected_at = Status::get_outcomes()['suremail_connected_at'];
+		$this->assertGreaterThan( 0, $connected_at, 'The new connection is noticed.' );
+
+		sleep( 1 );
+		Status::record_outcome( false, 6, 'suremail_rejected' );
+
+		$this->assertGreaterThan( $connected_at, Status::get_outcomes()['open_forms'][6], 'The new failure carries its own time.' );
+		Status::reset();
+		$this->assertSame( 'attention', Status::get_status()['state'] );
+	}
 }
