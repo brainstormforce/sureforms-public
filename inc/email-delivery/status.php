@@ -272,7 +272,7 @@ class Status {
 					[ 'utm_medium' => 'email_delivery_status' ]
 				),
 			],
-			'can_install'  => current_user_can( 'install_plugins' ),
+			'can_install'  => function_exists( 'wp_get_current_user' ) && current_user_can( 'install_plugins' ),
 			'source'       => null !== $readiness ? $readiness['source'] : 'heuristic',
 		];
 	}

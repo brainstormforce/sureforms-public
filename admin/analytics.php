@@ -9,6 +9,7 @@ namespace SRFM\Admin;
 
 use SRFM\Inc\Database\Register;
 use SRFM\Inc\Database\Tables\Entries;
+use SRFM\Inc\Email_Delivery\Status as Email_Delivery_Status;
 use SRFM\Inc\Form_Views;
 use SRFM\Inc\Helper;
 use SRFM\Inc\Learn;
@@ -92,6 +93,7 @@ class Analytics {
 		add_action( 'current_screen', [ $this, 'track_first_editor_open' ] );
 		add_action( 'transition_post_status', [ $this, 'track_first_form_published' ], 10, 3 );
 		add_action( 'save_post', [ $this, 'track_embed_styling_configured' ], 10, 2 );
+		add_action( 'admin_init', [ $this, 'track_email_delivery_status' ] );
 
 		// Detect state-based events on admin load (dedup prevents repeat tracking).
 		$this->detect_state_events();
@@ -959,6 +961,47 @@ class Analytics {
 	}
 
 	/**
+	 * Track the site's email delivery state.
+	 *
+	 * Whether form notifications have a real mailer behind them. A state, not a
+	 * milestone, so it is re-sent (forced) whenever it changes -- and checked at
+	 * most daily, because admin_init runs on every admin page load and the status
+	 * can scan the plugins directory. Only fixed labels are sent: connection
+	 * titles are owner-entered text.
+	 *
+	 * On admin_init rather than in detect_state_events(), which runs while
+	 * plugins are still loading: pluggable functions do not exist yet, so a
+	 * redefined wp_mail() would be missed and current_user_can() is undefined.
+	 *
+	 * @since x.x.x
+	 * @return void
+	 */
+	public function track_email_delivery_status() {
+		if ( false !== get_transient( 'srfm_email_delivery_state_checked' ) ) {
+			return;
+		}
+
+		set_transient( 'srfm_email_delivery_state_checked', 1, DAY_IN_SECONDS );
+
+		$email_delivery = Email_Delivery_Status::get_status();
+		$mailer_slug    = Helper::get_string_value( $email_delivery['mailer']['slug'] ?? '' );
+		$verified       = $email_delivery['surecontact']['email_verified'] ?? null;
+		$delivery_props = [
+			'mailer'               => $mailer_slug,
+			'mailer_plugin'        => 'other' === $mailer_slug ? Helper::get_string_value( $email_delivery['mailer']['label'] ?? '' ) : '',
+			'surecontact'          => ! empty( $email_delivery['surecontact']['connected'] ) ? 'yes' : 'no',
+			'surecontact_verified' => null === $verified ? 'unknown' : ( $verified ? 'yes' : 'no' ),
+		];
+		$delivery_state = Helper::get_string_value( $email_delivery['state'] ?? '' );
+		$fingerprint    = $delivery_state . '|' . implode( '|', $delivery_props );
+
+		if ( '' !== $delivery_state && Helper::get_srfm_option( 'email_delivery_state_tracked', '' ) !== $fingerprint ) {
+			self::events()->track( 'email_delivery_status', $delivery_state, $delivery_props, true );
+			Helper::update_srfm_option( 'email_delivery_state_tracked', $fingerprint );
+		}
+	}
+
+	/**
 	 * Detect state-based events that can't use direct hooks.
 	 * Uses dedup in self::events()->track() — safe to call repeatedly.
 	 *
@@ -1005,6 +1048,34 @@ class Analytics {
 
 				if ( isset( $onboarding_analytics['suremailInstalled'] ) ) {
 					$onboarding_props['suremail_installed'] = (bool) $onboarding_analytics['suremailInstalled'] ? 'yes' : 'no';
+				}
+
+				// Email delivery step: the delivery state on arrival and on leaving,
+				// and what the owner did. Closed sets, intersected like the premium
+				// tabs below, because the blob is whatever the wizard POSTed.
+				if ( ! empty( $onboarding_analytics['emailDelivery'] ) && is_array( $onboarding_analytics['emailDelivery'] ) ) {
+					$email_delivery = $onboarding_analytics['emailDelivery'];
+					$states         = [ 'attention', 'not_configured', 'suremail_no_connection', 'limited', 'other_mailer', 'ready' ];
+					$step_actions   = [ 'skip', 'cannot_install', 'continue_limited', 'continue_other_mailer', 'continue_ready', 'continue_attention', 'continue_not_set_up' ];
+
+					$state_props = [
+						'stateAtStep' => 'email_delivery_state_at_step',
+						'finalState'  => 'email_delivery_state_at_exit',
+					];
+
+					foreach ( $state_props as $key => $prop ) {
+						if ( isset( $email_delivery[ $key ] ) && in_array( $email_delivery[ $key ], $states, true ) ) {
+							$onboarding_props[ $prop ] = $email_delivery[ $key ];
+						}
+					}
+
+					if ( isset( $email_delivery['action'] ) && in_array( $email_delivery['action'], $step_actions, true ) ) {
+						$onboarding_props['email_delivery_action'] = $email_delivery['action'];
+					}
+
+					if ( isset( $email_delivery['suremailOpened'] ) ) {
+						$onboarding_props['email_delivery_suremail_opened'] = (bool) $email_delivery['suremailOpened'] ? 'yes' : 'no';
+					}
 				}
 
 				if ( isset( $onboarding_analytics['accountConnected'] ) ) {
