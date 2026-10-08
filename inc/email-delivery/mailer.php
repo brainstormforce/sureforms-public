@@ -256,9 +256,53 @@ class Mailer {
 			if ( ! in_array( $address, $visitor, true ) ) {
 				return false;
 			}
+			// The server refused the address for itself (unknown mailbox, bad
+			// syntax), not because of the site's setup ("554 Relay access
+			// denied", "530", a 4xx deferral): only then is it the visitor's.
+			$code = self::get_refusal_code( $message, $address );
+			if ( null !== $code && ! self::is_address_level_code( $code ) ) {
+				return false;
+			}
 		}
 
 		return true;
+	}
+
+	/**
+	 * The SMTP reply PHPMailer gives for one refused address, e.g. "550 5.1.1".
+	 *
+	 * @since x.x.x
+	 * @param string $message Error message from wp_mail_failed.
+	 * @param string $address A refused address, lowercased.
+	 * @return string|null Reply code and any enhanced code, or null when the
+	 *                     error names no SMTP reply for it (PHPMailer's own
+	 *                     address validation).
+	 */
+	public static function get_refusal_code( $message, $address ) {
+		$pattern = '/' . preg_quote( (string) $address, '/' ) . '>?\\s*:\\s*(\\d{3})(?:[\\s-]+(\\d\\.\\d{1,3}\\.\\d{1,3}))?/i';
+		if ( ! preg_match( $pattern, (string) $message, $match ) ) {
+			return null;
+		}
+		return trim( $match[1] . ' ' . ( $match[2] ?? '' ) );
+	}
+
+	/**
+	 * Whether an SMTP reply is about the address itself: 550 (no such
+	 * mailbox), 553 (name not allowed) or an enhanced 5.1.x code.
+	 *
+	 * @since x.x.x
+	 * @param string $code Reply from get_refusal_code(), e.g. "550 5.1.1".
+	 * @return bool
+	 */
+	public static function is_address_level_code( $code ) {
+		$parts    = explode( ' ', (string) $code );
+		$basic    = $parts[0] ?? '';
+		$enhanced = $parts[1] ?? '';
+
+		if ( '' !== $enhanced ) {
+			return 0 === strpos( $enhanced, '5.1.' );
+		}
+		return in_array( $basic, [ '550', '553' ], true );
 	}
 
 	/**
