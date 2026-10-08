@@ -267,4 +267,41 @@ class Test_Status extends TestCase {
 		Status::record_outcome( true, 22 );
 		$this->assertSame( 'success', Status::get_outcomes()['last_result'] );
 	}
+
+	/**
+	 * Found on a fresh QA site: a form failed with no connection, SureMail was
+	 * then connected, and the next notification failed within five minutes. The
+	 * throttle kept the first failure's time, from before the connection, so the
+	 * status discarded it as the old setup's and reported "ready".
+	 */
+	public function test_record_outcome_does_not_throttle_a_failure_across_a_new_connection() {
+		$this->activate_plugins( [ Mailer::SUREMAIL_FILE ] );
+		$now = time();
+		update_option(
+			Status::OUTCOMES_OPTION,
+			[
+				'last_result'          => 'failure',
+				'last_failure_at'      => $now - 120,
+				'last_failure_form_id' => 6,
+				'open_forms'           => [ 6 => $now - 120 ],
+				'suremail_connected_at' => $now - 60,
+			]
+		);
+		$this->set_suremail_connections(
+			[
+				'p1' => [
+					'type'     => 'PHPMAIL',
+					'priority' => 10,
+				],
+			],
+			'p1'
+		);
+		Status::reset();
+
+		Status::record_outcome( false, 6, 'suremail_rejected' );
+
+		$this->assertGreaterThan( $now - 60, Status::get_outcomes()['open_forms'][6], 'The failure carries its own time.' );
+		Status::reset();
+		$this->assertSame( 'attention', Status::get_status()['state'] );
+	}
 }
