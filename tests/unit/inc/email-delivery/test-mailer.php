@@ -133,7 +133,7 @@ class Test_Mailer extends TestCase {
 		$this->assertFalse( Mailer::is_visitor_recipient_failure( $auth, [], false ) );
 	}
 
-	public function test_a_refused_visitor_address_is_not_a_site_failure() {
+	public function test_is_visitor_recipient_failure() {
 		$typo = 'SMTP Error: The following recipients failed: visitor@exampel.con: 550 5.1.1 User unknown';
 		$this->assertTrue( Mailer::is_visitor_recipient_failure( $typo, [ 'Visitor@Exampel.con' ], false ) );
 
