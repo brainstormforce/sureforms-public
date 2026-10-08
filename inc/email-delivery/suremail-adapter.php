@@ -63,6 +63,50 @@ class Suremail_Adapter {
 	private const PAGE_SLUG = 'suremail';
 
 	/**
+	 * Transient holding the last known SureContact quota.
+	 *
+	 * @since x.x.x
+	 */
+	public const QUOTA_TRANSIENT = 'srfm_surecontact_quota';
+
+	/**
+	 * Cron hook that refreshes the quota in the background.
+	 *
+	 * @since x.x.x
+	 */
+	public const QUOTA_REFRESH_HOOK = 'srfm_refresh_surecontact_quota';
+
+	/**
+	 * How long a known quota is trusted, in seconds.
+	 *
+	 * @since x.x.x
+	 */
+	public const QUOTA_TTL = 6 * HOUR_IN_SECONDS;
+
+	/**
+	 * How long a nearly used-up quota is trusted, in seconds. Shorter, so an
+	 * upgrade or a period reset clears the warning soon.
+	 *
+	 * @since x.x.x
+	 */
+	public const QUOTA_LOW_TTL = HOUR_IN_SECONDS;
+
+	/**
+	 * How long a used-up quota is trusted, in seconds. Its warning cannot be
+	 * dismissed, so it must not outlive an upgrade by long.
+	 *
+	 * @since x.x.x
+	 */
+	public const QUOTA_EXHAUSTED_TTL = 30 * MINUTE_IN_SECONDS;
+
+	/**
+	 * Share of the cap left at which the quota counts as nearly used up.
+	 *
+	 * @since x.x.x
+	 */
+	public const QUOTA_LOW_SHARE = 0.2;
+
+	/**
 	 * Whether SureMail is loaded.
 	 *
 	 * @since x.x.x
@@ -217,6 +261,193 @@ class Suremail_Adapter {
 	 */
 	public static function logs_url() {
 		return self::admin_url( '/logs' );
+	}
+
+	/**
+	 * Cached SureContact sending quota, or null when unknown.
+	 *
+	 * SureMail does not store the quota: its own meter asks SureContact live.
+	 * SureForms keeps a copy refreshed in the background by
+	 * refresh_surecontact_quota(), so no admin page waits on SureContact.
+	 *
+	 * @since x.x.x
+	 * @return array{used:int,limit:int,remaining:int,period:string,checked_at:int}|null
+	 */
+	public static function get_surecontact_quota() {
+		$cached = get_transient( self::QUOTA_TRANSIENT );
+		if ( ! is_array( $cached ) || empty( $cached['known'] ) ) {
+			return null;
+		}
+
+		return [
+			'used'       => isset( $cached['used'] ) ? (int) $cached['used'] : 0,
+			'limit'      => isset( $cached['limit'] ) ? (int) $cached['limit'] : 0,
+			'remaining'  => isset( $cached['remaining'] ) ? (int) $cached['remaining'] : 0,
+			'period'     => isset( $cached['period'] ) && is_string( $cached['period'] ) ? $cached['period'] : '',
+			'checked_at' => isset( $cached['checked_at'] ) ? (int) $cached['checked_at'] : 0,
+		];
+	}
+
+	/**
+	 * Whether a quota is nearly used up: a real, finite cap with a fifth or
+	 * less left. The daily allowance of an unverified account is left to the
+	 * 'limited' state, which already says to verify.
+	 *
+	 * @since x.x.x
+	 * @param array{used:int,limit:int,remaining:int,period:string,checked_at:int}|null $quota Quota from get_surecontact_quota().
+	 * @return bool
+	 */
+	public static function is_quota_low( $quota ) {
+		if ( ! is_array( $quota ) || $quota['limit'] <= 0 || 'daily' === $quota['period'] ) {
+			return false;
+		}
+
+		return $quota['remaining'] <= (int) ceil( $quota['limit'] * self::QUOTA_LOW_SHARE );
+	}
+
+	/**
+	 * Queue a background quota refresh when the cached copy has expired.
+	 *
+	 * Called from SureForms admin screens. The refresh itself runs on cron.
+	 *
+	 * @since x.x.x
+	 * @return void
+	 */
+	public static function maybe_schedule_quota_refresh() {
+		if ( '' === self::get_surecontact_connection_id() || false !== get_transient( self::QUOTA_TRANSIENT ) ) {
+			return;
+		}
+
+		if ( ! wp_next_scheduled( self::QUOTA_REFRESH_HOOK ) ) {
+			wp_schedule_single_event( time(), self::QUOTA_REFRESH_HOOK );
+		}
+	}
+
+	/**
+	 * Fetch the quota again in the background, now.
+	 *
+	 * Called when a notification through SureMail fails, so the status can
+	 * tell whether SureContact's allowance is why. The cached copy is kept
+	 * until the fetch replaces it: deleting it would leave nothing at all on
+	 * sites where cron never runs (DISABLE_WP_CRON without a real cron).
+	 *
+	 * @since x.x.x
+	 * @return void
+	 */
+	public static function request_quota_refresh() {
+		if ( '' === self::get_surecontact_connection_id() ) {
+			return;
+		}
+
+		if ( ! wp_next_scheduled( self::QUOTA_REFRESH_HOOK ) ) {
+			wp_schedule_single_event( time(), self::QUOTA_REFRESH_HOOK );
+		}
+	}
+
+	/**
+	 * Ask SureContact for the quota through SureMail's status handler.
+	 *
+	 * Calls the handler behind SureMail's `surecontact/status` route directly,
+	 * not over REST, because cron has no logged-in user to pass the route's
+	 * permission check. SureMail reads its own encrypted key, so SureForms never
+	 * touches it. A missing handler or a failed call caches "unknown" for an
+	 * hour so a broken setup is not retried on every screen.
+	 *
+	 * @since x.x.x
+	 * @return void
+	 */
+	public static function refresh_surecontact_quota() {
+		$connection_id = self::get_surecontact_connection_id();
+		$instance      = [ '\SureMails\Inc\API\SureContactStatus', 'instance' ];
+
+		if ( '' === $connection_id || ! is_callable( $instance ) ) {
+			set_transient( self::QUOTA_TRANSIENT, [ 'known' => false ], HOUR_IN_SECONDS );
+			return;
+		}
+
+		$request = new \WP_REST_Request( 'GET', '/suremails/v1/surecontact/status' );
+		$request->set_param( 'connection_id', $connection_id );
+
+		$handler  = call_user_func( $instance );
+		$response = is_object( $handler ) && is_callable( [ $handler, 'status' ] ) ? call_user_func( [ $handler, 'status' ], $request ) : null;
+		$data     = $response instanceof \WP_REST_Response && 200 === $response->get_status() ? $response->get_data() : null;
+		$cap      = is_array( $data ) && isset( $data['cap'] ) && is_array( $data['cap'] ) ? $data['cap'] : null;
+
+		if ( null === $cap || ! isset( $cap['limit'] ) || ! is_numeric( $cap['limit'] ) ) {
+			set_transient( self::QUOTA_TRANSIENT, [ 'known' => false ], HOUR_IN_SECONDS );
+			return;
+		}
+
+		$limit = (int) $cap['limit'];
+		$used  = isset( $cap['used'] ) && is_numeric( $cap['used'] ) ? max( 0, (int) $cap['used'] ) : 0;
+		$quota = [
+			'used'       => $used,
+			'limit'      => $limit,
+			'remaining'  => isset( $cap['remaining'] ) && is_numeric( $cap['remaining'] ) ? max( 0, (int) $cap['remaining'] ) : max( 0, $limit - $used ),
+			'period'     => isset( $cap['period'] ) && is_string( $cap['period'] ) ? sanitize_key( $cap['period'] ) : '',
+			'checked_at' => time(),
+		];
+
+		// Used up first, whatever the period: a daily allowance is never "low"
+		// (that is the limited state's job), but at zero it must be rechecked
+		// as soon as a monthly one.
+		if ( $limit > 0 && 0 === $quota['remaining'] ) {
+			$ttl = self::QUOTA_EXHAUSTED_TTL;
+		} elseif ( self::is_quota_low( $quota ) ) {
+			$ttl = self::QUOTA_LOW_TTL;
+		} else {
+			$ttl = self::QUOTA_TTL;
+		}
+
+		set_transient( self::QUOTA_TRANSIENT, array_merge( [ 'known' => true ], $quota ), $ttl );
+	}
+
+	/**
+	 * Where the owner upgrades: SureMail's dashboard, whose SureContact meter
+	 * carries the upgrade button. `source` tells SureMail the click came from
+	 * SureForms, ready for when it forwards attribution to SureContact.
+	 *
+	 * @since x.x.x
+	 * @return string
+	 */
+	public static function upgrade_url() {
+		return add_query_arg( 'source', 'sureforms', self::admin_url( '/dashboard' ) );
+	}
+
+	/**
+	 * The SureContact connection to read the quota for: the default one when it
+	 * is SureContact, else the first SureContact row. '' when there is none or
+	 * SureMail is not active.
+	 *
+	 * @since x.x.x
+	 * @return string
+	 */
+	private static function get_surecontact_connection_id() {
+		// From the active plugins, like the rest of the status; whether SureMail's
+		// handler can be called is checked where it is called.
+		if ( 'suremail' !== Mailer::get_active()['slug'] ) {
+			return '';
+		}
+
+		$settings = get_option( self::CONNECTIONS_OPTION, [] );
+		if ( ! is_array( $settings ) || ! isset( $settings['connections'] ) || ! is_array( $settings['connections'] ) ) {
+			return '';
+		}
+
+		$default_id = isset( $settings['default_connection']['id'] ) && is_scalar( $settings['default_connection']['id'] ) ? (string) $settings['default_connection']['id'] : '';
+		$rows       = array_filter(
+			$settings['connections'],
+			static function ( $row ) {
+				return is_array( $row ) && isset( $row['type'] ) && is_string( $row['type'] ) && self::SURECONTACT_TYPE === strtoupper( $row['type'] );
+			}
+		);
+
+		if ( '' !== $default_id && isset( $rows[ $default_id ] ) ) {
+			return $default_id;
+		}
+
+		$first = array_key_first( $rows );
+		return null === $first ? '' : (string) $first;
 	}
 
 	/**

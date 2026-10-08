@@ -15,7 +15,6 @@
 
 namespace SRFM\Inc\Email_Delivery;
 
-use SRFM\Inc\Client_Logger;
 use SRFM\Inc\Helper;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -73,6 +72,23 @@ class Status {
 	public const SUCCESS_WRITE_INTERVAL = HOUR_IN_SECONDS;
 
 	/**
+	 * Repeat failures from one form within this window are not written again.
+	 *
+	 * The submit path is public, so a visitor who can make wp_mail() fail must
+	 * not be able to turn every submission into an option write.
+	 *
+	 * @since x.x.x
+	 */
+	public const FAILURE_WRITE_INTERVAL = 5 * MINUTE_IN_SECONDS;
+
+	/**
+	 * Most forms tracked with an open failure; the oldest is dropped first.
+	 *
+	 * @since x.x.x
+	 */
+	public const MAX_OPEN_FORMS = 20;
+
+	/**
 	 * Memoised status for this request.
 	 *
 	 * @var array<string,mixed>|null
@@ -112,6 +128,11 @@ class Status {
 	 * Recorded whether or not debug logging is on: this is the site's current
 	 * state, not a log, and the attention window bounds how stale it can get.
 	 *
+	 * SureMail retries a rejected email itself, on its own cron. A retry that
+	 * succeeds is not reported back, so the failure stays open until the next
+	 * notification from that form is accepted (or the window passes); the
+	 * message points at SureMail's logs, which show the retry.
+	 *
 	 * @since x.x.x
 	 * @param bool   $accepted    Whether wp_mail() accepted the email.
 	 * @param int    $form_id     Form the notification belongs to.
@@ -123,22 +144,75 @@ class Status {
 		$outcomes = self::get_outcomes();
 		$now      = time();
 
+		$form_id = absint( $form_id );
+
 		if ( $accepted ) {
-			$recovering = 'failure' === $outcomes['last_result'];
+			// A success clears only its own form's failure: a working form B does
+			// not prove form A's notifications (often other recipients) go out.
+			// Without a form id it is not tied to one form, so it clears them all.
+			$recovering = 0 === $form_id ? ! empty( $outcomes['open_forms'] ) : isset( $outcomes['open_forms'][ $form_id ] );
 			if ( ! $recovering && $now - $outcomes['last_success_at'] < self::SUCCESS_WRITE_INTERVAL ) {
 				return;
 			}
 
-			$outcomes['last_result']          = 'success';
+			if ( 0 === $form_id ) {
+				$outcomes['open_forms']   = [];
+				$outcomes['open_details'] = [];
+			} else {
+				unset( $outcomes['open_forms'][ $form_id ], $outcomes['open_details'][ $form_id ] );
+			}
+
 			$outcomes['last_success_at']      = $now;
 			$outcomes['consecutive_failures'] = 0;
+
+			if ( empty( $outcomes['open_forms'] ) ) {
+				$outcomes['last_result'] = 'success';
+			} else {
+				// Another form is still failing: the status describes that one, the
+				// newest still open, not the failure this success just cleared.
+				$outcomes = self::describe_newest_open_failure( $outcomes );
+			}
 		} else {
+			$details = [
+				'reason'      => substr( sanitize_key( (string) $reason ), 0, 64 ),
+				'mailer'      => Mailer::get_active()['slug'],
+				'entry_saved' => (bool) $entry_saved,
+			];
+
+			$last_for_form = $outcomes['open_forms'][ $form_id ] ?? 0;
+			if ( $last_for_form > 0 && $now - $last_for_form < self::FAILURE_WRITE_INTERVAL ) {
+				// Throttled, but a repeat that says something new (another reason,
+				// mailer, or a submission not stored) still updates what is shown.
+				if ( ( $outcomes['open_details'][ $form_id ] ?? null ) === $details ) {
+					return;
+				}
+				$outcomes['open_details'][ $form_id ] = $details;
+				$outcomes                             = self::describe_newest_open_failure( $outcomes );
+				update_option( self::OUTCOMES_OPTION, $outcomes, false );
+				self::$memo = null;
+				return;
+			}
+
+			$outcomes['open_forms'][ $form_id ]   = $now;
+			$outcomes['open_details'][ $form_id ] = $details;
+			if ( count( $outcomes['open_forms'] ) > self::MAX_OPEN_FORMS ) {
+				asort( $outcomes['open_forms'] );
+				$outcomes['open_forms']   = array_slice( $outcomes['open_forms'], -self::MAX_OPEN_FORMS, null, true );
+				$outcomes['open_details'] = array_intersect_key( $outcomes['open_details'], $outcomes['open_forms'] );
+			}
+
 			$outcomes['last_result']              = 'failure';
 			$outcomes['last_failure_at']          = $now;
-			$outcomes['last_failure_form_id']     = absint( $form_id );
-			$outcomes['last_failure_reason']      = substr( sanitize_key( (string) $reason ), 0, 64 );
-			$outcomes['last_failure_mailer']      = Mailer::get_active()['slug'];
-			$outcomes['last_failure_entry_saved'] = (bool) $entry_saved;
+			$outcomes['last_failure_form_id']     = $form_id;
+			$outcomes['last_failure_reason']      = $details['reason'];
+			$outcomes['last_failure_mailer']      = $details['mailer'];
+			$outcomes['last_failure_entry_saved'] = $details['entry_saved'];
+
+			// SureContact may have refused it for its daily allowance: ask for a
+			// fresh quota now instead of trusting a copy up to hours old.
+			if ( 'suremail' === $details['mailer'] ) {
+				Suremail_Adapter::request_quota_refresh();
+			}
 			++$outcomes['consecutive_failures'];
 		}
 
@@ -150,7 +224,7 @@ class Status {
 	 * Stored send outcomes with defaults filled in.
 	 *
 	 * @since x.x.x
-	 * @return array{last_result:string,last_success_at:int,last_failure_at:int,last_failure_form_id:int,last_failure_reason:string,last_failure_mailer:string,last_failure_entry_saved:bool,consecutive_failures:int,suremail_connected_at:int}
+	 * @return array{last_result:string,last_success_at:int,last_failure_at:int,last_failure_form_id:int,last_failure_reason:string,last_failure_mailer:string,last_failure_entry_saved:bool,consecutive_failures:int,suremail_connected_at:int,open_forms:array<int,int>,open_details:array<int,array{reason:string,mailer:string,entry_saved:bool}>}
 	 */
 	public static function get_outcomes() {
 		$stored = get_option( self::OUTCOMES_OPTION, [] );
@@ -166,7 +240,56 @@ class Status {
 			'last_failure_entry_saved' => ! isset( $stored['last_failure_entry_saved'] ) || (bool) $stored['last_failure_entry_saved'],
 			'consecutive_failures'     => isset( $stored['consecutive_failures'] ) ? absint( $stored['consecutive_failures'] ) : 0,
 			'suremail_connected_at'    => isset( $stored['suremail_connected_at'] ) ? absint( $stored['suremail_connected_at'] ) : 0,
+			'open_forms'               => self::read_open_forms( $stored ),
+			'open_details'             => self::read_open_details( $stored ),
 		];
+	}
+
+	/**
+	 * Point the last_failure_* fields at the newest form still failing.
+	 *
+	 * @since x.x.x
+	 * @param array<string,mixed> $outcomes Outcomes with at least one open form.
+	 * @return array<string,mixed>
+	 */
+	private static function describe_newest_open_failure( array $outcomes ) {
+		$open = array_map( [ Helper::class, 'get_integer_value' ], Helper::get_array_value( $outcomes['open_forms'] ?? [] ) );
+		arsort( $open );
+		$form_id     = Helper::get_integer_value( array_key_first( $open ) );
+		$all_details = Helper::get_array_value( $outcomes['open_details'] ?? [] );
+		$details     = Helper::get_array_value( $all_details[ $form_id ] ?? [] );
+
+		$outcomes['last_result']              = 'failure';
+		$outcomes['last_failure_at']          = $open[ $form_id ] ?? 0;
+		$outcomes['last_failure_form_id']     = $form_id;
+		$outcomes['last_failure_reason']      = Helper::get_string_value( $details['reason'] ?? $outcomes['last_failure_reason'] ?? '' );
+		$outcomes['last_failure_mailer']      = Helper::get_string_value( $details['mailer'] ?? $outcomes['last_failure_mailer'] ?? '' );
+		$outcomes['last_failure_entry_saved'] = (bool) ( $details['entry_saved'] ?? $outcomes['last_failure_entry_saved'] ?? true );
+		return $outcomes;
+	}
+
+
+	/**
+	 * Per-form failure details, as form id => reason, mailer, entry_saved.
+	 *
+	 * @since x.x.x
+	 * @param array<string,mixed> $stored Raw stored outcomes.
+	 * @return array<int,array{reason:string,mailer:string,entry_saved:bool}>
+	 */
+	private static function read_open_details( array $stored ) {
+		$details = [];
+		if ( isset( $stored['open_details'] ) && is_array( $stored['open_details'] ) ) {
+			foreach ( $stored['open_details'] as $form_id => $row ) {
+				if ( is_numeric( $form_id ) && is_array( $row ) ) {
+					$details[ absint( $form_id ) ] = [
+						'reason'      => isset( $row['reason'] ) && is_string( $row['reason'] ) ? $row['reason'] : '',
+						'mailer'      => isset( $row['mailer'] ) && is_string( $row['mailer'] ) ? $row['mailer'] : '',
+						'entry_saved' => ! isset( $row['entry_saved'] ) || (bool) $row['entry_saved'],
+					];
+				}
+			}
+		}
+		return $details;
 	}
 
 	/**
@@ -177,6 +300,34 @@ class Status {
 	 */
 	public static function reset() {
 		self::$memo = null;
+	}
+
+	/**
+	 * The open failures from stored outcomes, as form id => failed-at.
+	 *
+	 * Outcomes stored before failures were kept per form have only the last
+	 * failure: it becomes that form's entry, so an open failure survives the
+	 * update.
+	 *
+	 * @since x.x.x
+	 * @param array<string,mixed> $stored Raw stored outcomes.
+	 * @return array<int,int>
+	 */
+	private static function read_open_forms( array $stored ) {
+		if ( ! isset( $stored['open_forms'] ) ) {
+			$legacy = isset( $stored['last_result'] ) && 'failure' === $stored['last_result'] && ! empty( $stored['last_failure_at'] );
+			return $legacy ? [ Helper::get_integer_value( $stored['last_failure_form_id'] ?? 0 ) => Helper::get_integer_value( $stored['last_failure_at'] ) ] : [];
+		}
+
+		$open = [];
+		if ( is_array( $stored['open_forms'] ) ) {
+			foreach ( $stored['open_forms'] as $form_id => $failed_at ) {
+				if ( is_numeric( $form_id ) && is_numeric( $failed_at ) && (int) $failed_at > 0 ) {
+					$open[ absint( $form_id ) ] = absint( $failed_at );
+				}
+			}
+		}
+		return $open;
 	}
 
 	/**
@@ -201,13 +352,14 @@ class Status {
 			$connection_lost = self::track_suremail_connection( $outcomes, $connections ) || $readiness['default_missing'];
 		}
 
-		$failure_open = 'failure' === $outcomes['last_result'] && $outcomes['last_failure_at'] >= $now - self::ATTENTION_WINDOW;
-		if ( ! $failure_open ) {
-			// Form Checks' fault only clears on a later success from the same form,
-			// so a site-wide success after it means mail is working again.
-			$open         = Client_Logger::get_open_failures();
-			$fault_at     = isset( $open['notification']['at'] ) ? Helper::get_integer_value( $open['notification']['at'] ) : 0;
-			$failure_open = $fault_at > 0 && $fault_at >= $now - self::ATTENTION_WINDOW && $fault_at > $outcomes['last_success_at'];
+		// Any form with a failure inside the window that no later success from
+		// the same form has cleared.
+		$failure_open = false;
+		foreach ( $outcomes['open_forms'] as $failed_at ) {
+			if ( $failed_at >= $now - self::ATTENTION_WINDOW ) {
+				$failure_open = true;
+				break;
+			}
 		}
 
 		$surecontact = null !== $readiness ? $readiness['surecontact'] : [
@@ -215,6 +367,11 @@ class Status {
 			'email_verified' => null,
 			'is_paid'        => null,
 		];
+
+		// Refreshed in the background by Suremail_Adapter, never fetched here, so
+		// building the status stays free of remote calls.
+		$surecontact['quota']     = $suremail_active && $surecontact['connected'] ? Suremail_Adapter::get_surecontact_quota() : null;
+		$surecontact['quota_low'] = Suremail_Adapter::is_quota_low( $surecontact['quota'] );
 
 		if ( $failure_open || $connection_lost ) {
 			$state = 'attention';
@@ -234,12 +391,26 @@ class Status {
 		// one was lost or never made -- not SureMail's (empty) email logs.
 		$needs_connection = $connection_lost || ( $suremail_active && 0 === $connections );
 
+		// Why mail is failing, only when SureContact itself says so: an
+		// unverified account whose daily allowance is used up. A failure asks for
+		// a fresh quota (Suremail_Adapter::request_quota_refresh()), which also
+		// refreshes email_verified, and a used-up quota is cached for at most
+		// half an hour, so neither a verified account nor a reset allowance gets
+		// this advice. Any other failure keeps pointing at SureMail's logs.
+		$cause = '';
+		$quota = $surecontact['quota'];
+		if ( 'attention' === $state && $suremail_active && ! $needs_connection && $surecontact['connected'] && false === $surecontact['email_verified']
+			&& is_array( $quota ) && 'daily' === $quota['period'] && 0 === $quota['remaining'] ) {
+			$cause = 'surecontact_cap';
+		}
+
 		$plugin_status = $suremail_active ? 'Activated' : self::get_suremail_plugin_status();
 		$provider      = null !== $readiness ? $readiness['provider_label'] : '';
-		$copy          = self::get_copy( $state, $mailer, $provider, $needs_connection, $failure_open, $outcomes );
+		$copy          = self::get_copy( $state, $mailer, $provider, $needs_connection, $failure_open, $outcomes, $cause );
 
 		return [
 			'state'        => $state,
+			'cause'        => $cause,
 			'severity'     => $copy['severity'],
 			'title'        => $copy['title'],
 			'message'      => $copy['message'],
@@ -263,7 +434,7 @@ class Status {
 				'reason'         => $outcomes['last_failure_reason'],
 				'entry_saved'    => $outcomes['last_failure_entry_saved'],
 			],
-			'action'       => self::get_action( $state, $mailer, $plugin_status, $needs_connection ),
+			'action'       => self::get_action( $state, $mailer, $plugin_status, $needs_connection, $cause ),
 			'links'        => [
 				'setup' => $suremail_active ? Suremail_Adapter::setup_url() : '',
 				'logs'  => $suremail_active ? Suremail_Adapter::logs_url() : '',
@@ -327,14 +498,24 @@ class Status {
 	 * @param array{slug:string,label:string,file:string} $mailer          Active mailer.
 	 * @param string                                      $plugin_status   SureMail install state.
 	 * @param bool                                        $needs_connection Whether SureMail has no connection to send through.
+	 * @param string                                      $cause            Why mail is failing, from compute(); '' when unknown.
 	 * @return array{type:string,label:string,url:string}
 	 */
-	private static function get_action( $state, array $mailer, $plugin_status, $needs_connection ) {
+	private static function get_action( $state, array $mailer, $plugin_status, $needs_connection, $cause = '' ) {
 		$none = [
 			'type'  => 'none',
 			'label' => '',
 			'url'   => '',
 		];
+
+		// SureMail's dashboard carries the verify banner with "Resend verification".
+		if ( '' !== $cause ) {
+			return [
+				'type'  => 'verify_surecontact',
+				'label' => __( 'Verify in SureMail', 'sureforms' ),
+				'url'   => Suremail_Adapter::admin_url( '/dashboard' ),
+			];
+		}
 
 		if ( 'not_configured' === $state || ( 'attention' === $state && 'none' === $mailer['slug'] ) ) {
 			// Installing SureMail is a promotion, so it follows the same switch as
@@ -387,11 +568,20 @@ class Status {
 	 * @param bool                                        $needs_connection Whether SureMail has no connection to send through.
 	 * @param bool                                        $failure_open    Whether a notification failure is unresolved.
 	 * @param array<string,mixed>                         $outcomes        Stored outcomes.
+	 * @param string                                      $cause            Why mail is failing, from compute(); '' when unknown.
 	 * @return array{severity:string,title:string,message:string}
 	 */
-	private static function get_copy( $state, array $mailer, $provider, $needs_connection, $failure_open, array $outcomes ) {
+	private static function get_copy( $state, array $mailer, $provider, $needs_connection, $failure_open, array $outcomes, $cause = '' ) {
 		switch ( $state ) {
 			case 'attention':
+				if ( '' !== $cause ) {
+					return [
+						'severity' => 'error',
+						'title'    => __( 'Verify your SureContact email to keep sending', 'sureforms' ),
+						'message'  => __( 'Your SureContact account is not verified, so it accepts only a few emails a day, and today\'s are used up. New form notifications are not sent until you verify the account email or the allowance resets.', 'sureforms' ),
+					];
+				}
+
 				if ( $needs_connection && ! $failure_open ) {
 					return [
 						'severity' => 'error',

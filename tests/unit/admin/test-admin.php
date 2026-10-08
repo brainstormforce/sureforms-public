@@ -1212,6 +1212,31 @@ class Test_Admin extends TestCase {
 	}
 
 	/**
+	 * On a form that never stores entries, the failed email was the only copy of
+	 * the submission, so the notice must not claim the entry was saved.
+	 */
+	public function test_notification_failure_on_a_form_without_entries_says_the_submission_was_lost() {
+		wp_set_current_user( $this->make_user( 'administrator' ) );
+		delete_option( Client_Logger::FAILURES_OPTION );
+
+		Client_Logger::record_failure( 'notification', 42, 'Private Form', [ 'entry_saved' => false ] );
+
+		$items = [];
+		foreach ( Admin::get_instance()->get_action_items() as $item ) {
+			$items[ $item['id'] ] = $item;
+		}
+
+		$this->assertArrayHasKey( 'notification_error', $items );
+		$this->assertStringContainsString( 'Private Form', $items['notification_error']['title'] );
+		$this->assertStringContainsString( 'not stored', $items['notification_error']['title'] );
+		$this->assertStringNotContainsString( 'The entry was saved', $items['notification_error']['message'] );
+		$this->assertStringContainsString( 'Never store entry data', $items['notification_error']['message'] );
+		$this->assertSame( 'help_me_fix', $items['notification_error']['guide_action'] ?? '', 'The guide stays: setting up email is the fix.' );
+
+		delete_option( Client_Logger::FAILURES_OPTION );
+	}
+
+	/**
 	 * The guide click is a distinct analytics event, and is accepted by the
 	 * allowlist that gates every notice response.
 	 *
@@ -1267,6 +1292,61 @@ class Test_Admin extends TestCase {
 		}
 
 		$this->assertStringContainsString( '"success":true', $body, 'The guide button must be on the allowlist.' );
+	}
+
+	/**
+	 * The setup reminder's Connect SureContact press is accepted, and counted as
+	 * the Connect in SureMail press it replaces.
+	 */
+	public function test_handle_notice_response_accepts_connect_surecontact_on_the_setup_reminder() {
+		wp_set_current_user( $this->make_user( 'administrator' ) );
+
+		// check_ajax_referer() reads $_REQUEST, so $_POST alone fails the nonce.
+		$nonce                 = wp_create_nonce( 'srfm_notice_response' );
+		$_POST['nonce']        = $nonce;
+		$_REQUEST['nonce']     = $nonce;
+		$_POST['notice_id']    = 'email_delivery_setup';
+		$_REQUEST['notice_id'] = 'email_delivery_setup';
+		$_POST['button']       = 'connect_surecontact';
+		$_REQUEST['button']    = 'connect_surecontact';
+
+		// wp_send_json_*() terminates via wp_die(); make the handlers throw so the
+		// runner survives and the emitted body can be asserted on. Asserting on the
+		// body rather than "did it die" is what separates accept from reject here --
+		// both end the request.
+		$throw_handler = static function () {
+			return static function () {
+				throw new \WPDieException( 'srfm_test_die' );
+			};
+		};
+		// wp_send_json() only routes through wp_die() when wp_doing_ajax() is true;
+		// otherwise it calls a bare die() that no filter can intercept, which takes
+		// the test runner with it.
+		add_filter( 'wp_doing_ajax', '__return_true' );
+		add_filter( 'wp_die_ajax_handler', $throw_handler );
+		add_filter( 'wp_die_handler', $throw_handler );
+
+		ob_start();
+		try {
+			Admin::get_instance()->handle_notice_response();
+		} catch ( \WPDieException $e ) {
+			// Expected.
+		} finally {
+			$body = (string) ob_get_clean();
+			remove_filter( 'wp_doing_ajax', '__return_true' );
+			remove_filter( 'wp_die_ajax_handler', $throw_handler );
+			remove_filter( 'wp_die_handler', $throw_handler );
+			unset(
+				$_POST['nonce'],
+				$_POST['notice_id'],
+				$_POST['button'],
+				$_REQUEST['nonce'],
+				$_REQUEST['notice_id'],
+				$_REQUEST['button']
+			);
+		}
+
+		$this->assertStringContainsString( '"success":true', $body, 'Connect SureContact on the setup reminder must be on the allowlist.' );
 	}
 
 	/**
@@ -1402,6 +1482,10 @@ class Test_Admin extends TestCase {
 	 */
 	public function test_render_action_item_notices_puts_the_guide_before_contact_support() {
 		wp_set_current_user( $this->make_user( 'administrator' ) );
+		// Without a mailer, Connect SureContact would lead; that order is covered
+		// by test_render_action_item_notices_leads_with_connect_surecontact().
+		add_filter( 'srfm_hide_promotions', '__return_true' );
+		Admin::reset_action_items_cache();
 		delete_option( Client_Logger::FAILURES_OPTION );
 		Client_Logger::record_failure( 'notification', 42, 'Contact Form' );
 		Client_Logger::record_failure( 'submission', 42, 'Contact Form' );
@@ -1469,6 +1553,8 @@ class Test_Admin extends TestCase {
 			$alone,
 			'A stale list would still carry the notification guide.'
 		);
+
+		remove_filter( 'srfm_hide_promotions', '__return_true' );
 	}
 
 	/**
@@ -1614,7 +1700,7 @@ class Test_Admin extends TestCase {
 
 		$pairs = [];
 		foreach ( $items as $item ) {
-			foreach ( [ 'cta_action', 'guide_action' ] as $key ) {
+			foreach ( [ 'connect_action', 'cta_action', 'guide_action' ] as $key ) {
 				if ( ! empty( $item[ $key ] ) ) {
 					$pairs[] = [ $item['id'], $item[ $key ] ];
 				}
@@ -2566,6 +2652,69 @@ class Test_Admin extends TestCase {
 		$captured = [];
 		Admin::get_instance()->enqueue_scripts();
 		$this->assertFalse( $captured[0]['hide_promotions'], 'Control: off by default.' );
+	}
+
+	/**
+	 * Connect SureContact is offered while nothing is sending, and not once
+	 * SureMail has a connection of its own.
+	 */
+	public function test_get_connect_surecontact_action() {
+		$admin  = Admin::get_instance();
+		$method = new \ReflectionMethod( $admin, 'get_connect_surecontact_action' );
+		$method->setAccessible( true );
+
+		$plugins = static function () {
+			return [];
+		};
+		add_filter( 'pre_option_active_plugins', $plugins );
+		\SRFM\Inc\Email_Delivery\Status::reset();
+
+		$action = $method->invoke( $admin );
+		$this->assertSame( 'connect_surecontact', $action['connect_action'] ?? '' );
+		$this->assertStringContainsString( 'page=sureforms_smtp', $action['connect_url'] ?? '' );
+
+		add_filter( 'srfm_hide_promotions', '__return_true' );
+		$this->assertSame( [], $method->invoke( $admin ) );
+
+		remove_filter( 'srfm_hide_promotions', '__return_true' );
+		remove_filter( 'pre_option_active_plugins', $plugins );
+		\SRFM\Inc\Email_Delivery\Status::reset();
+	}
+
+	/**
+	 * With nothing sending, the classic notice leads with Connect SureContact
+	 * and the guide and Contact Support follow as secondary buttons.
+	 */
+	public function test_render_action_item_notices_leads_with_connect_surecontact() {
+		wp_set_current_user( $this->make_user( 'administrator' ) );
+		$plugins = static function () {
+			return [];
+		};
+		add_filter( 'pre_option_active_plugins', $plugins );
+		\SRFM\Inc\Email_Delivery\Status::reset();
+		Admin::reset_action_items_cache();
+		delete_option( Client_Logger::FAILURES_OPTION );
+		Client_Logger::record_failure( 'notification', 42, 'Contact Form' );
+
+		global $pagenow;
+		$previous_pagenow = $pagenow;
+		$pagenow          = 'plugins.php';
+
+		ob_start();
+		Admin::get_instance()->render_action_item_notices();
+		$html = (string) ob_get_clean();
+
+		$pagenow = $previous_pagenow;
+		remove_filter( 'pre_option_active_plugins', $plugins );
+		delete_option( Client_Logger::FAILURES_OPTION );
+		\SRFM\Inc\Email_Delivery\Status::reset();
+		Admin::reset_action_items_cache();
+
+		$this->assertMatchesRegularExpression( '/class="button button-primary srfm-connect-surecontact"[^>]*data-srfm-button="connect_surecontact"/', $html );
+		$this->assertStringContainsString( 'srfm-connect-surecontact-styles', $html, 'Connect SureContact is SureContact purple here too.' );
+		$this->assertMatchesRegularExpression( '/class="button"[^>]*data-srfm-button="help_me_fix"/', $html );
+		$this->assertMatchesRegularExpression( '/class="button"[^>]*data-srfm-button="contact_support"/', $html );
+		$this->assertLessThan( strpos( $html, 'help_me_fix' ), strpos( $html, 'connect_surecontact' ) );
 	}
 }
 
@@ -4083,5 +4232,7 @@ class Test_Thankyou_Prompt_Notice extends TestCase {
 		$reset();
 		$pagenow = $previous_pagenow;
 	}
+
+
 
 }
