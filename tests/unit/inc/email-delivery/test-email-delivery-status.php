@@ -356,7 +356,6 @@ class Test_Email_Delivery_Status extends TestCase {
 				'last_failure_at' => time() - 120,
 			]
 		);
-		Client_Logger::record_failure( 'notification', 7, 'Contact' );
 		$this->assertSame( 'attention', Status::get_status()['state'] );
 
 		$this->activate_plugins( [ Mailer::SUREMAIL_FILE ] );

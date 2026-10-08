@@ -1964,14 +1964,12 @@ JS;
 		 */
 		$is_sureforms_screen = apply_filters( 'srfm_is_dashboard_screen', $is_sureforms_screen );
 
-		// Built only where SureForms' own screens read it: on other admin pages the
-		// status (and, with SureMail inactive, a get_plugins() scan) is wasted work.
 		if ( $is_sureforms_screen ) {
+			// Built only where SureForms' own screens read it: on other admin pages the
+			// status (and, with SureMail inactive, a get_plugins() scan) is wasted work.
 			$localization_data['email_delivery']       = Email_Delivery_Status::get_status();
 			$localization_data['email_delivery_offer'] = Email_Delivery_Status::get_offer();
-		}
 
-		if ( $is_sureforms_screen ) {
 			$asset_handle = '-dashboard';
 
 			wp_enqueue_style( SRFM_SLUG . $asset_handle . '-font', 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap', [], SRFM_VER );
