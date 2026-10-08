@@ -968,7 +968,7 @@ class Test_Form_Submit extends SRFM_Unit_Test_Case {
 	 * @param callable $pre_wp_mail pre_wp_mail callback deciding the outcome.
 	 * @return array{form_id:int,response:array<mixed>,logs:array<mixed>}
 	 */
-	private function send_one_notification( $pre_wp_mail, $to = 'owner@example.com', $form_id = 0 ) {
+	private function send_one_notification( $pre_wp_mail, $to = 'owner@example.com', $form_id = 0, $email_to = 'owner@example.com', $submission_data = [] ) {
 		$keep    = $form_id > 0;
 		$form_id = $keep ? $form_id : wp_insert_post(
 			[
@@ -983,8 +983,9 @@ class Test_Form_Submit extends SRFM_Unit_Test_Case {
 			'_srfm_email_notification',
 			[
 				[
-					'id'     => 1,
-					'status' => true,
+					'id'       => 1,
+					'status'   => true,
+					'email_to' => $email_to,
 				],
 			]
 		);
@@ -1002,7 +1003,7 @@ class Test_Form_Submit extends SRFM_Unit_Test_Case {
 		add_filter( 'pre_wp_mail', $pre_wp_mail, 99, 2 );
 
 		EntriesTable::get_instance()->reset_logs();
-		$response = Form_Submit::send_email( $form_id, [] );
+		$response = Form_Submit::send_email( $form_id, $submission_data );
 		$logs     = EntriesTable::get_instance()->get_logs();
 
 		remove_filter( 'pre_wp_mail', $pre_wp_mail, 99 );
@@ -1168,23 +1169,34 @@ class Test_Form_Submit extends SRFM_Unit_Test_Case {
 	}
 
 	/**
-	 * Recipients often come from what a visitor typed. An address PHPMailer
+	 * A recipient from a field the visitor filled in ({form:*}) that PHPMailer
 	 * rejects is logged on the entry, but must not put the whole site into
-	 * "attention" -- a visitor could otherwise hold the dashboard there.
+	 * "attention" -- a visitor could otherwise hold the dashboard there. The
+	 * same rejection of an address the owner typed still counts.
 	 */
 	public function test_send_email_does_not_open_site_attention_for_a_bad_recipient() {
 		$this->reset_email_delivery_state();
 
+		$invalid_to = static function () {
+			do_action( 'wp_mail_failed', new WP_Error( 'wp_mail_failed', 'Invalid address:  (to): not-an-address' ) );
+			return false;
+		};
+
 		$result = $this->send_one_notification(
-			static function () {
-				do_action( 'wp_mail_failed', new WP_Error( 'wp_mail_failed', 'Invalid address:  (to): not-an-address' ) );
-				return false;
-			},
-			'not-an-address'
+			$invalid_to,
+			'not-an-address',
+			0,
+			'{form:email}',
+			[ 'srfm-email-abc123-lbl-email-email' => 'not-an-address' ]
 		);
 
 		$this->assertStringContainsString( 'Invalid address', $this->notification_log_text( $result['logs'] ) );
-		$this->assertSame( [], Email_Delivery_Status::get_outcomes()['open_forms'] );
+		$this->assertSame( [], Email_Delivery_Status::get_outcomes()['open_forms'], 'The visitor typed it.' );
+
+		// The owner typed the same bad address into the notification: theirs to fix.
+		$this->send_one_notification( $invalid_to, 'not-an-address', 0, 'not-an-address' );
+		$this->assertNotEmpty( Email_Delivery_Status::get_outcomes()['open_forms'], 'The owner typed it.' );
+		$this->reset_email_delivery_state();
 
 		// A broken From address is the site's problem and still counts.
 		$this->send_one_notification(
@@ -1808,4 +1820,36 @@ class Test_Form_Submit extends SRFM_Unit_Test_Case {
 		$this->set_client_logging( false );
 	}
 
+	public function test_get_visitor_recipients_tells_visitor_fields_from_owner_addresses() {
+		$method = new \ReflectionMethod( Form_Submit::class, 'get_visitor_recipients' );
+		$method->setAccessible( true );
+
+		$owner = $method->invoke( null, [ 'email_to' => '{admin_email}, owner@example.com' ], [] );
+		$this->assertFalse( $owner['only_visitor'] );
+		$this->assertSame( [], $owner['addresses'] );
+
+		$visitor = $method->invoke( null, [ 'email_to' => '{form:email}', 'email_cc' => '', 'email_bcc' => ' ' ], [] );
+		$this->assertTrue( $visitor['only_visitor'], 'Only a visitor field: a missing recipient is the visitor\'s.' );
+
+		$mixed = $method->invoke( null, [ 'email_to' => '{form:email}', 'email_bcc' => 'owner@example.com' ], [] );
+		$this->assertFalse( $mixed['only_visitor'] );
+	}
+
+	/**
+	 * A host's SMTP refusing outside domains words it as a recipient failure.
+	 * The refused address is the owner's, so the site goes into "attention".
+	 */
+	public function test_send_email_counts_relay_denied_as_a_site_failure() {
+		$this->reset_email_delivery_state();
+
+		$this->send_one_notification(
+			static function () {
+				do_action( 'wp_mail_failed', new WP_Error( 'wp_mail_failed', 'SMTP Error: The following recipients failed: owner@example.com: 554 5.7.1 <owner@example.com>: Relay access denied' ) );
+				return false;
+			}
+		);
+
+		$this->assertNotEmpty( Email_Delivery_Status::get_outcomes()['open_forms'] );
+		$this->reset_email_delivery_state();
+	}
 }
