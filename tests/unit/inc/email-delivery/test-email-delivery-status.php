@@ -342,6 +342,67 @@ class Test_Email_Delivery_Status extends TestCase {
 		$this->assertSame( 'open_suremail', $status['action']['type'] );
 	}
 
+	/**
+	 * Found on a fresh ZipWP site: the first notification fails through PHP
+	 * mail(), the owner connects SureContact in one click, and the old failure
+	 * must not keep reporting "SureMail did not accept a notification".
+	 */
+	public function test_failure_before_the_connection_does_not_need_attention() {
+		$this->activate_plugins( [] );
+		update_option(
+			Status::OUTCOMES_OPTION,
+			[
+				'last_result'     => 'failure',
+				'last_failure_at' => time() - 120,
+			]
+		);
+		Client_Logger::record_failure( 'notification', 7, 'Contact' );
+		$this->assertSame( 'attention', Status::get_status()['state'] );
+
+		$this->activate_plugins( [ Mailer::SUREMAIL_FILE ] );
+		$this->set_suremail_connections( [ 'sc1' => $this->surecontact_row( false ) ], 'sc1' );
+
+		$this->assertSame( 'limited', Status::get_status()['state'] );
+	}
+
+	public function test_failure_through_the_connection_still_needs_attention() {
+		$this->activate_plugins( [ Mailer::SUREMAIL_FILE ] );
+		update_option(
+			Status::OUTCOMES_OPTION,
+			[
+				'last_result'           => 'failure',
+				'last_failure_at'       => time() - 60,
+				'suremail_connected_at' => time() - 300,
+			]
+		);
+		$this->set_suremail_connections( [ 'sc1' => $this->surecontact_row( true ) ], 'sc1' );
+
+		$this->assertSame( 'attention', Status::get_status()['state'] );
+	}
+
+	public function test_reconnecting_moves_the_connection_time_forward() {
+		$this->activate_plugins( [ Mailer::SUREMAIL_FILE ] );
+		update_option(
+			Status::OUTCOMES_OPTION,
+			[
+				'last_result'           => 'failure',
+				'last_failure_at'       => time() - 60,
+				'suremail_connected_at' => time() - 600,
+			]
+		);
+
+		// Connection lost: attention, and the loss is remembered.
+		$this->set_suremail_connections( [], '' );
+		$this->assertSame( 'attention', Status::get_status()['state'] );
+		$this->assertGreaterThan( 0, Status::get_outcomes()['suremail_lost_at'] );
+
+		// Reconnected: the failure was before it, so mail is no longer in doubt.
+		$this->set_suremail_connections( [ 'sc1' => $this->surecontact_row( true ) ], 'sc1' );
+		$this->assertSame( 'ready', Status::get_status()['state'] );
+		$this->assertSame( 0, Status::get_outcomes()['suremail_lost_at'] );
+		$this->assertGreaterThanOrEqual( time() - 5, Status::get_outcomes()['suremail_connected_at'] );
+	}
+
 	public function test_form_checks_fault_counts_only_until_mail_works_again() {
 		$this->activate_plugins( [ 'wp-mail-smtp/wp_mail_smtp.php' ] );
 		$fault_at = time() - 100;

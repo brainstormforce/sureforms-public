@@ -133,11 +133,21 @@ class Status {
 			$outcomes['last_success_at']      = $now;
 			$outcomes['consecutive_failures'] = 0;
 		} else {
+			$mailer_slug = Mailer::get_active()['slug'];
+
+			// A connection in place now was made before this failure, even if no
+			// SureForms screen has noticed it yet. Recording it first stops the
+			// next status read from dating the connection after the failure and
+			// dismissing it as belonging to an older setup.
+			if ( 'suremail' === $mailer_slug ) {
+				self::track_suremail_connection( $outcomes, Suremail_Adapter::get_readiness()['connections'], $now - 1 );
+			}
+
 			$outcomes['last_result']              = 'failure';
 			$outcomes['last_failure_at']          = $now;
 			$outcomes['last_failure_form_id']     = absint( $form_id );
 			$outcomes['last_failure_reason']      = substr( sanitize_key( (string) $reason ), 0, 64 );
-			$outcomes['last_failure_mailer']      = Mailer::get_active()['slug'];
+			$outcomes['last_failure_mailer']      = $mailer_slug;
 			$outcomes['last_failure_entry_saved'] = (bool) $entry_saved;
 			++$outcomes['consecutive_failures'];
 		}
@@ -150,7 +160,7 @@ class Status {
 	 * Stored send outcomes with defaults filled in.
 	 *
 	 * @since x.x.x
-	 * @return array{last_result:string,last_success_at:int,last_failure_at:int,last_failure_form_id:int,last_failure_reason:string,last_failure_mailer:string,last_failure_entry_saved:bool,consecutive_failures:int,suremail_connected_at:int}
+	 * @return array{last_result:string,last_success_at:int,last_failure_at:int,last_failure_form_id:int,last_failure_reason:string,last_failure_mailer:string,last_failure_entry_saved:bool,consecutive_failures:int,suremail_connected_at:int,suremail_lost_at:int}
 	 */
 	public static function get_outcomes() {
 		$stored = get_option( self::OUTCOMES_OPTION, [] );
@@ -166,6 +176,7 @@ class Status {
 			'last_failure_entry_saved' => ! isset( $stored['last_failure_entry_saved'] ) || (bool) $stored['last_failure_entry_saved'],
 			'consecutive_failures'     => isset( $stored['consecutive_failures'] ) ? absint( $stored['consecutive_failures'] ) : 0,
 			'suremail_connected_at'    => isset( $stored['suremail_connected_at'] ) ? absint( $stored['suremail_connected_at'] ) : 0,
+			'suremail_lost_at'         => isset( $stored['suremail_lost_at'] ) ? absint( $stored['suremail_lost_at'] ) : 0,
 		];
 	}
 
@@ -201,13 +212,18 @@ class Status {
 			$connection_lost = self::track_suremail_connection( $outcomes, $connections ) || $readiness['default_missing'];
 		}
 
-		$failure_open = 'failure' === $outcomes['last_result'] && $outcomes['last_failure_at'] >= $now - self::ATTENTION_WINDOW;
+		// A failure from before the current SureMail connection was made belongs to
+		// the old setup (often PHP mail() on a fresh ZipWP site), not to this one:
+		// connecting is the fix, so it must not keep the site in "attention".
+		$connected_at = $connections > 0 ? $outcomes['suremail_connected_at'] : 0;
+
+		$failure_open = 'failure' === $outcomes['last_result'] && $outcomes['last_failure_at'] >= $now - self::ATTENTION_WINDOW && $outcomes['last_failure_at'] > $connected_at;
 		if ( ! $failure_open ) {
 			// Form Checks' fault only clears on a later success from the same form,
 			// so a site-wide success after it means mail is working again.
 			$open         = Client_Logger::get_open_failures();
 			$fault_at     = isset( $open['notification']['at'] ) ? Helper::get_integer_value( $open['notification']['at'] ) : 0;
-			$failure_open = $fault_at > 0 && $fault_at >= $now - self::ATTENTION_WINDOW && $fault_at > $outcomes['last_success_at'];
+			$failure_open = $fault_at > 0 && $fault_at >= $now - self::ATTENTION_WINDOW && $fault_at > $outcomes['last_success_at'] && $fault_at > $connected_at;
 		}
 
 		$surecontact = null !== $readiness ? $readiness['surecontact'] : [
@@ -278,28 +294,43 @@ class Status {
 	}
 
 	/**
-	 * Remember that SureMail once had a connection, and report losing it.
+	 * Remember when SureMail got its connection, and report losing it.
 	 *
 	 * SureMail rebalances its storage when a connection is deleted — including
 	 * when SureContact revokes it remotely — so zero connections looks the same
 	 * as never having set one up. The only way to tell is to have seen one.
-	 * Writes only on the transition, not on every read.
+	 *
+	 * `suremail_connected_at` moves forward on every (re)connection, so failures
+	 * from before it can be told apart from failures through it. Writes only on
+	 * the transitions, not on every read; updates `$outcomes` in place.
 	 *
 	 * @since x.x.x
-	 * @param array<string,mixed> $outcomes    Stored outcomes.
+	 * @param array<string,mixed> $outcomes    Stored outcomes, updated in place.
 	 * @param int                 $connections Current connection count.
+	 * @param int|null            $at          When the connection was made, if known; now otherwise.
 	 * @return bool Whether a previously seen connection is gone.
 	 */
-	private static function track_suremail_connection( array $outcomes, $connections ) {
+	private static function track_suremail_connection( array &$outcomes, $connections, $at = null ) {
 		$seen = ! empty( $outcomes['suremail_connected_at'] );
 
-		if ( $connections > 0 && ! $seen ) {
-			$outcomes['suremail_connected_at'] = time();
-			update_option( self::OUTCOMES_OPTION, $outcomes, false );
+		if ( $connections > 0 ) {
+			if ( ! $seen || ! empty( $outcomes['suremail_lost_at'] ) ) {
+				$outcomes['suremail_connected_at'] = null === $at ? time() : (int) $at;
+				$outcomes['suremail_lost_at']      = 0;
+				update_option( self::OUTCOMES_OPTION, $outcomes, false );
+			}
 			return false;
 		}
 
-		return 0 === $connections && $seen;
+		if ( ! $seen ) {
+			return false;
+		}
+
+		if ( empty( $outcomes['suremail_lost_at'] ) ) {
+			$outcomes['suremail_lost_at'] = time();
+			update_option( self::OUTCOMES_OPTION, $outcomes, false );
+		}
+		return true;
 	}
 
 	/**
