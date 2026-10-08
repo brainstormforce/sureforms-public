@@ -199,6 +199,69 @@ class Mailer {
 	}
 
 	/**
+	 * The addresses a recipient error names, lowercased.
+	 *
+	 * PHPMailer lists refused recipients ("SMTP Error: The following recipients
+	 * failed: a@b.c: 554 ...") and names invalid ones by header ("(to): x@").
+	 *
+	 * @since x.x.x
+	 * @param string $message Error message from wp_mail_failed.
+	 * @return array<int,string>
+	 */
+	public static function get_refused_addresses( $message ) {
+		$message   = (string) $message;
+		$addresses = [];
+
+		if ( preg_match_all( '/\\((?:to|cc|bcc)\\):\\s*([^\\s,]+)/i', $message, $named ) ) {
+			$addresses = array_merge( $addresses, $named[1] );
+		}
+		if ( preg_match_all( '/[a-z0-9._%+\\-\']+@[a-z0-9.\\-]+\\.[a-z]{2,}/i', $message, $emails ) ) {
+			$addresses = array_merge( $addresses, $emails[0] );
+		}
+
+		return array_values( array_unique( array_map( 'strtolower', array_map( 'trim', $addresses ) ) ) );
+	}
+
+	/**
+	 * Whether a failed send is down only to addresses the visitor typed.
+	 *
+	 * Decided by where each refused address came from, not by the error text:
+	 * PHPMailer reports every refusal at the recipient step the same way,
+	 * including a host's "554 Relay access denied" or "530 Authentication
+	 * required", which are the site's setup failing. So a failure is the
+	 * visitor's only when every address it names came from a field they filled
+	 * in ({form:*}). An address the owner typed into the notification still
+	 * counts, typos included.
+	 *
+	 * @since x.x.x
+	 * @param string            $message           Error message from wp_mail_failed.
+	 * @param array<int,string> $visitor_addresses Recipients that came from the visitor's fields.
+	 * @param bool              $only_visitor      Whether every recipient template is a visitor field.
+	 * @return bool
+	 */
+	public static function is_visitor_recipient_failure( $message, $visitor_addresses, $only_visitor ) {
+		if ( ! self::is_recipient_error( $message ) ) {
+			return false;
+		}
+
+		$refused = self::get_refused_addresses( $message );
+		if ( empty( $refused ) ) {
+			// No address named ("You must provide at least one recipient"): the
+			// visitor's only if every recipient was theirs to fill in.
+			return (bool) $only_visitor;
+		}
+
+		$visitor = array_map( 'strtolower', array_map( 'trim', (array) $visitor_addresses ) );
+		foreach ( $refused as $address ) {
+			if ( ! in_array( $address, $visitor, true ) ) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	/**
 	 * Why a mailer did not accept an email, for when it gave no reason itself.
 	 *
 	 * @since x.x.x
