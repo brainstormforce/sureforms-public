@@ -3852,8 +3852,8 @@ JS;
 		 */
 		$items = Helper::apply_filters_as_array( 'srfm_action_items', $warnings );
 
-		// Both URLs normalised once, here, rather than trusting each renderer to do
-		// it. Two things are being fixed at once.
+		// The CTA, guide and connect URLs normalised once, here, rather than
+		// trusting each renderer to do it. Two things are being fixed at once.
 		//
 		// The scheme: the classic notice runs esc_url() and drops anything outside
 		// the allowlist, while React assigns href directly and react-dom 18 leaves
@@ -4173,9 +4173,10 @@ CSS;
 	 * a connection in place the failure is that connection's, and View SureMail
 	 * Logs is the closer next step. Hidden with promotions.
 	 *
-	 * Leads to SureForms -> SMTP while SureMail is not active, which installs it
-	 * and hands over to its SureContact screen; once active, straight to that
-	 * screen. The account itself is only ever created behind SureMail's consent.
+	 * Leads to SureForms -> SMTP while SureMail is not active, which installs
+	 * it; once active, straight to SureMail's SureContact screen. (The SMTP page
+	 * hands over to that screen after install once #3205 is in.) The account
+	 * itself is only ever created behind SureMail's consent.
 	 *
 	 * @since x.x.x
 	 * @return array<string,string> connect_* keys, or none.
