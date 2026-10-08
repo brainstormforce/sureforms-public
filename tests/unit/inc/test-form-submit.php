@@ -1911,7 +1911,7 @@ class Test_Form_Submit extends SRFM_Unit_Test_Case {
 
 		$this->send_one_notification(
 			static function () {
-				do_action( 'wp_mail_failed', new WP_Error( 'wp_mail_failed', 'SMTP Error: The following recipients failed: owner@example.com: 554 5.7.1 <owner@example.com>: Relay access denied' ) );
+				do_action( 'wp_mail_failed', new WP_Error( 'wp_mail_failed', "SMTP Error: The following recipients failed: owner@example.com: <owner@example.com>: Relay access denied\r\n" ) );
 				return false;
 			}
 		);
