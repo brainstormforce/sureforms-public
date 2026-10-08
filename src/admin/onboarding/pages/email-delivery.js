@@ -1,7 +1,12 @@
-import { __ } from '@wordpress/i18n';
-import { useState, useEffect, useRef } from '@wordpress/element';
-import { Text } from '@bsf/force-ui';
-import { ExternalLink } from 'lucide-react';
+import { __, sprintf } from '@wordpress/i18n';
+import {
+	useState,
+	useEffect,
+	useRef,
+	createInterpolateElement,
+} from '@wordpress/element';
+import { Checkbox, Text } from '@bsf/force-ui';
+import { ExternalLink, MailCheck } from 'lucide-react';
 import apiFetch from '@wordpress/api-fetch';
 import { useOnboardingNavigation } from '../hooks';
 import { useOnboardingState } from '../onboarding-state';
@@ -28,6 +33,118 @@ const features = [
 		'sureforms'
 	),
 ];
+
+const SURECONTACT_PRIVACY_URL = 'https://surecontact.com/privacy-policy/';
+const SURECONTACT_TERMS_URL = 'https://surecontact.com/smtp-terms-of-service/';
+
+const linkClass =
+	'underline text-button-primary hover:text-button-primary-hover';
+
+/**
+ * The offer, in a tinted card so it reads as the point of the step rather
+ * than small print under it.
+ *
+ * @return {JSX.Element} Value banner.
+ */
+const ValueBanner = () => (
+	<div className="flex gap-3 rounded-lg border border-solid border-brand-border-300 bg-brand-background-50 p-4">
+		<MailCheck className="mt-0.5 size-5 shrink-0 text-icon-interactive" />
+		<div className="space-y-3">
+			<div className="space-y-1">
+				<Text size={ 16 } weight={ 600 } color="primary">
+					{ __( 'Free email sending with SureContact', 'sureforms' ) }
+				</Text>
+				<Text size={ 14 } color="secondary">
+					{ __(
+						'SureMail connects your site to SureContact, a free sending service from the SureForms team. Your form notifications go out through a real email service instead of your server.',
+						'sureforms'
+					) }
+				</Text>
+			</div>
+			<FeatureList items={ features } />
+		</div>
+	</div>
+);
+
+/**
+ * What the owner agrees to before SureMail is installed or SureContact is
+ * connected: both services, named, and what SureContact receives.
+ *
+ * @param {Object}   props
+ * @param {boolean}  props.checked  Whether the box is ticked.
+ * @param {Function} props.onChange Called with the new checked value.
+ * @param {boolean}  props.installs Whether continuing installs SureMail.
+ * @param {string}   props.email    The current user's email, shown so the
+ *                                  owner knows which address the account uses.
+ * @return {JSX.Element} Consent checkbox.
+ */
+const ConsentCheckbox = ( { checked, onChange, installs, email } ) => {
+	const account = email
+		? sprintf(
+			/* translators: %s: the current user's email address. */
+			__(
+				'Connecting SureContact creates a free SureContact account for <b>%s</b>.',
+				'sureforms'
+			),
+			email
+		  )
+		: __(
+			'Connecting SureContact creates a free SureContact account for you.',
+			'sureforms'
+		  );
+
+	const text = [
+		installs
+			? __(
+				'I agree to set up SureMail, a free plugin that sends and logs every email from this site.',
+				'sureforms'
+			  )
+			: __(
+				'I understand that SureMail sends and logs every email from this site.',
+				'sureforms'
+			  ),
+		account,
+		__(
+			'Your outgoing emails, including recipients and content, are then sent through SureContact. Every email from this site is sent from your account\'s email address and name, replacing the From address it used before. SureContact also receives your name and email, this site\'s address and name, and its WordPress and SureMail versions. <privacy>Privacy Policy</privacy> · <terms>Terms</terms>',
+			'sureforms'
+		),
+	].join( ' ' );
+
+	return (
+		<Checkbox
+			checked={ checked }
+			onChange={ onChange }
+			size="sm"
+			label={ {
+				heading: (
+					<span className="font-normal">
+						{ createInterpolateElement( text, {
+							b: <strong />,
+							privacy: (
+								// eslint-disable-next-line jsx-a11y/anchor-has-content -- Text comes from the interpolated string.
+								<a
+									href={ SURECONTACT_PRIVACY_URL }
+									target="_blank"
+									rel="noopener noreferrer"
+									className={ linkClass }
+								/>
+							),
+							terms: (
+								// eslint-disable-next-line jsx-a11y/anchor-has-content -- Text comes from the interpolated string.
+								<a
+									href={ SURECONTACT_TERMS_URL }
+									target="_blank"
+									rel="noopener noreferrer"
+									className={ linkClass }
+								/>
+							),
+						} ) }
+					</span>
+				),
+			} }
+		/>
+	);
+};
 
 const fetchStatus = () =>
 	apiFetch( {
@@ -105,6 +222,9 @@ const EmailDelivery = () => {
 	const [ error, setError ] = useState( '' );
 	// Set once SureMail was opened in a new tab, until the step is left.
 	const [ openedSureMail, setOpenedSureMail ] = useState( false );
+	// Required before SureMail is installed or opened to connect SureContact.
+	const [ consented, setConsented ] = useState( false );
+	const userEmail = srfm_admin?.website_lead_details?.email ?? '';
 	// State the owner arrived with, for analytics. Captured once.
 	const stateAtStep = useRef( srfm_admin?.email_delivery?.state ?? '' );
 
@@ -181,6 +301,7 @@ const EmailDelivery = () => {
 			finalState: status?.state ?? '',
 			action,
 			suremailOpened: openedSureMail,
+			consented,
 		} );
 		navigateToNextRoute();
 	};
@@ -243,13 +364,21 @@ const EmailDelivery = () => {
 			: __( 'Set up email delivery', 'sureforms' );
 	};
 
-	const disclosure = (
-		<Text size={ 14 } color="secondary">
-			{ __(
-				'SureMail is a free plugin from the SureForms team that sends every email your site sends. If you choose SureContact in SureMail, you create a free SureContact account there, and your site\'s outgoing emails, including recipient addresses and content, are sent through SureContact. You can pick a different email provider in SureMail instead.',
-				'sureforms'
-			) }
-		</Text>
+	const consent = ( installs ) => (
+		<div className="space-y-1.5">
+			<ConsentCheckbox
+				checked={ consented }
+				onChange={ setConsented }
+				installs={ installs }
+				email={ userEmail }
+			/>
+			<Text size={ 12 } color="tertiary">
+				{ __(
+					'Prefer another provider? You can connect one in SureMail instead of SureContact.',
+					'sureforms'
+				) }
+			</Text>
+		</div>
 	);
 
 	let title;
@@ -267,11 +396,8 @@ const EmailDelivery = () => {
 			);
 			body = (
 				<>
-					<FeatureList
-						heading={ __( 'What SureMail does', 'sureforms' ) }
-						items={ features }
-					/>
-					{ disclosure }
+					<ValueBanner />
+					{ false !== status?.can_install && consent( true ) }
 					{ false === status?.can_install && (
 						<Text size={ 14 } color="secondary">
 							{ __(
@@ -289,7 +415,11 @@ const EmailDelivery = () => {
 							leave( 'cannot_install', { skipped: true } ),
 						text: __( 'Continue', 'sureforms' ),
 					  }
-					: { onClick: handleInstall, text: installLabel() };
+					: {
+						onClick: handleInstall,
+						text: installLabel(),
+						disabled: ! consented,
+					  };
 			skipProps = {
 				onClick: () => leave( 'skip', { skipped: true } ),
 			};
@@ -306,9 +436,15 @@ const EmailDelivery = () => {
 					'SureMail is active but not connected to an email service yet, so form emails are not being sent through it. Connect SureContact for free, or another provider.',
 					'sureforms'
 				  );
-			body = disclosure;
+			body = (
+				<>
+					<ValueBanner />
+					{ consent( false ) }
+				</>
+			);
 			continueProps = {
 				onClick: openSureMail,
+				disabled: ! consented,
 				text:
 					status?.action?.label ||
 					__( 'Connect in SureMail', 'sureforms' ),
