@@ -1919,4 +1919,91 @@ class Test_Form_Submit extends SRFM_Unit_Test_Case {
 		$this->assertNotEmpty( Email_Delivery_Status::get_outcomes()['open_forms'] );
 		$this->reset_email_delivery_state();
 	}
+
+	/**
+	 * Whether the submission was stored comes from the server, never the
+	 * request: on the "do not store entries" path a POST that carries an
+	 * entry_id must still be recorded as not saved.
+	 */
+	public function test_entry_saved_is_decided_by_the_server_on_both_paths() {
+		$this->reset_email_delivery_state();
+		$fail = static function () {
+			do_action( 'wp_mail_failed', new WP_Error( 'wp_mail_failed', 'SMTP Error: Could not authenticate.' ) );
+			return false;
+		};
+		add_filter( 'pre_wp_mail', $fail, 99 );
+
+		foreach ( [ 'no-store' => false, 'stored' => true ] as $path => $saved ) {
+			$form_id = wp_insert_post(
+				[
+					'post_type'   => 'sureforms_form',
+					'post_title'  => 'Entry Saved ' . $path,
+					'post_status' => 'publish',
+				]
+			);
+			update_post_meta(
+				$form_id,
+				'_srfm_email_notification',
+				[
+					[
+						'id'         => 1,
+						'status'     => true,
+						'email_to'   => 'owner@example.com',
+						'subject'    => 'New entry',
+						'email_body' => 'An entry arrived.',
+					],
+				]
+			);
+			if ( ! $saved ) {
+				update_post_meta(
+					$form_id,
+					'_srfm_compliance',
+					[
+						[
+							'gdpr'                 => true,
+							'do_not_store_entries' => true,
+						],
+					]
+				);
+			}
+
+			// The visitor's POST claims an entry was stored.
+			$this->form_submit->handle_form_entry(
+				[
+					'form-id'  => (string) $form_id,
+					'entry_id' => '1',
+				]
+			);
+
+			$outcomes = Email_Delivery_Status::get_outcomes();
+			$this->assertArrayHasKey( $form_id, $outcomes['open_forms'], $path );
+			$this->assertSame( $saved, $outcomes['open_details'][ $form_id ]['entry_saved'], $path );
+
+			wp_delete_post( $form_id, true );
+			$this->reset_email_delivery_state();
+		}
+
+		remove_filter( 'pre_wp_mail', $fail, 99 );
+}
+
+	/**
+	 * An address the owner set stays the owner's, even when a visitor also
+	 * typed it into the form.
+	 */
+	public function test_get_visitor_recipients_leaves_owner_addresses_out() {
+		$method = new \ReflectionMethod( Form_Submit::class, 'get_visitor_recipients' );
+		$method->setAccessible( true );
+
+		$result = $method->invoke(
+			null,
+			[
+				'email_to'  => '{form:email}',
+				'email_bcc' => 'Owner@Example.com',
+			],
+			[ 'srfm-email-abc123-lbl-email-email' => 'owner@example.com' ]
+		);
+
+		$this->assertSame( [], $result['addresses'] );
+		$this->assertFalse( $result['only_visitor'] );
+	}
 }

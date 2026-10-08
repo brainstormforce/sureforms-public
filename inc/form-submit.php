@@ -822,7 +822,7 @@ class Form_Submit {
 			$entries_db_instance->reset_logs();
 
 			// Send email after entry creation so {entry_id} is available when smart tags are processed.
-			$send_email = $this->send_email( $id, $submission_data, $form_data );
+			$send_email = $this->send_email( $id, $submission_data, $form_data, [ 'entry_saved' => true ] );
 			if ( $send_email ) {
 				$emails = $send_email['emails'];
 			}
@@ -1050,6 +1050,7 @@ class Form_Submit {
 	private static function get_visitor_recipients( $item, $submission_data ) {
 		$smart_tags   = Smart_Tags::get_instance();
 		$addresses    = [];
+		$owner        = [];
 		$only_visitor = true;
 
 		foreach ( [ 'email_to', 'email_cc', 'email_bcc' ] as $key ) {
@@ -1059,17 +1060,27 @@ class Form_Submit {
 				if ( '' === $part ) {
 					continue;
 				}
+				$resolved = array_map( 'trim', explode( ',', Helper::get_string_value( $smart_tags->process_smart_tags( $part, $submission_data ) ) ) );
 				if ( false === strpos( $part, '{form:' ) ) {
 					$only_visitor = false;
+					$owner        = array_merge( $owner, $resolved );
 					continue;
 				}
-				$resolved  = Helper::get_string_value( $smart_tags->process_smart_tags( $part, $submission_data ) );
-				$addresses = array_merge( $addresses, array_map( 'trim', explode( ',', $resolved ) ) );
+				$addresses = array_merge( $addresses, $resolved );
 			}
 		}
 
+		// An address the owner set is theirs even when a visitor also typed it.
+		$owner     = array_map( 'strtolower', array_filter( $owner ) );
+		$addresses = array_filter(
+			$addresses,
+			static function ( $address ) use ( $owner ) {
+				return '' !== $address && ! in_array( strtolower( $address ), $owner, true );
+			}
+		);
+
 		return [
-			'addresses'    => array_values( array_filter( $addresses ) ),
+			'addresses'    => array_values( $addresses ),
 			'only_visitor' => $only_visitor,
 		];
 	}
@@ -1087,6 +1098,9 @@ class Form_Submit {
 	 * @return array<mixed> Array containing the response data.
 	 */
 	public static function send_email( $id, $submission_data, $form_data = [], $context = [] ) {
+		// Set by the caller, which knows whether the entry was stored -- never
+		// read from the request ($form_data is the visitor's POST on the
+		// no-store path, so an entry_id there proves nothing).
 		$entry_saved        = ! is_array( $context ) || ! isset( $context['entry_saved'] ) || (bool) $context['entry_saved'];
 		$email_notification = get_post_meta( intval( $id ), '_srfm_email_notification' );
 		$is_mail_sent       = false;
