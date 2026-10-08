@@ -362,4 +362,39 @@ class Test_Status extends TestCase {
 		Status::reset();
 		$this->assertSame( 'attention', Status::get_status()['state'] );
 	}
+
+	/**
+	 * The same sequence with no status read between connecting and the next
+	 * failure, as on a site where nobody opens a SureForms screen: the new
+	 * connection must be noticed by record_outcome() itself.
+	 */
+	public function test_a_failure_on_a_new_connection_is_noticed_without_a_status_read() {
+		$this->activate_plugins( [ Mailer::SUREMAIL_FILE ] );
+		$this->set_suremail_connections( [] );
+		Status::reset();
+
+		Status::record_outcome( false, 6, 'suremail_rejected' );
+		$first = Status::get_outcomes()['open_forms'][6];
+
+		// Whole seconds: each step must land in a later second than the last.
+		sleep( 1 );
+		$this->set_suremail_connections(
+			[
+				'p1' => [
+					'type'     => 'PHPMAIL',
+					'priority' => 10,
+				],
+			],
+			'p1'
+		);
+		Status::reset();
+
+		sleep( 1 );
+		Status::record_outcome( false, 6, 'suremail_rejected' );
+
+		$this->assertGreaterThan( $first, Status::get_outcomes()['suremail_connected_at'], 'The connection is recorded by the failure itself.' );
+		$this->assertGreaterThan( $first, Status::get_outcomes()['open_forms'][6], 'The new failure carries its own time.' );
+		Status::reset();
+		$this->assertSame( 'attention', Status::get_status()['state'] );
+	}
 }
