@@ -604,6 +604,53 @@ class Test_Form_Submit extends SRFM_Unit_Test_Case {
 	}
 
 	/**
+	 * The submission path restores a checkbox the browser never posted.
+	 *
+	 * The unit tests for backfill_unsubmitted_fields() prove the function works; this
+	 * one proves it runs. Without it the only coverage would stay green with the call
+	 * deleted from handle_form_entry(), which is where the field actually goes missing.
+	 *
+	 * The data is captured from srfm_before_fields_processing, the first filter after
+	 * the back-fill, so the assertion does not depend on entry storage or email.
+	 */
+	public function test_handle_form_entry_restores_an_unticked_checkbox() {
+		$form_id = wp_insert_post(
+			[
+				'post_type'    => 'sureforms_form',
+				'post_status'  => 'publish',
+				'post_title'   => 'Consent Form',
+				'post_content' => '<!-- wp:srfm/checkbox {"block_id":"cb123456","slug":"seasonal-offers","label":"Seasonal offers"} /-->',
+			]
+		);
+
+		$captured = null;
+		$capture  = static function ( $data ) use ( &$captured ) {
+			$captured = $data;
+			return $data;
+		};
+		add_filter( 'srfm_before_fields_processing', $capture );
+
+		ob_start();
+		try {
+			$this->form_submit->handle_form_entry( [ 'form-id' => (string) $form_id ] );
+		} catch ( \Exception $e ) { // phpcs:ignore Generic.CodeAnalysis.EmptyStatement.DetectedCatch
+			// The handler terminates the request once it is done; the filter has
+			// already run by then.
+		}
+		ob_end_clean();
+
+		remove_filter( 'srfm_before_fields_processing', $capture );
+
+		$key = 'srfm-checkbox-cb123456-lbl-' . Helper::encode( 'Seasonal offers' ) . '-seasonal-offers';
+
+		$this->assertIsArray( $captured, 'the submission reached field processing' );
+		$this->assertArrayHasKey( $key, $captured, 'an unticked checkbox must still reach the entry' );
+		$this->assertSame( '', $captured[ $key ] );
+
+		wp_delete_post( $form_id, true );
+	}
+
+	/**
 	 * Test send_email is callable.
 	 */
 	public function test_send_email() {
