@@ -18,6 +18,7 @@ import {
 	getProvisionFailure,
 	isSiteRefused,
 	isRateLimited,
+	readProvisionError,
 	isLikelyLocalHost,
 	getDefaultOption,
 	canCreateAccount,
@@ -64,9 +65,11 @@ const SuccessMark = () => (
 /**
  * What the one-click sign-up set up, as the chips under "You're all set".
  *
+ * @param {Object} props
+ * @param {string} props.verifyEmail Address still to verify, '' when verified.
  * @return {JSX.Element} Success chips.
  */
-const SuccessChips = () => {
+const SuccessChips = ( { verifyEmail = '' } ) => {
 	const freeEmails = getFreeEmails();
 	const chips = [
 		__( 'SureMail installed', 'sureforms' ),
@@ -86,7 +89,7 @@ const SuccessChips = () => {
 			)
 		);
 	}
-	return (
+	const list = (
 		<ul className="m-0 flex list-none flex-wrap items-center justify-center gap-4 p-0">
 			{ chips.map( ( chip ) => (
 				<li
@@ -98,6 +101,24 @@ const SuccessChips = () => {
 				</li>
 			) ) }
 		</ul>
+	);
+	if ( ! verifyEmail ) {
+		return list;
+	}
+	return (
+		<div className="space-y-3">
+			{ list }
+			<Text size={ 14 } color="secondary" className="text-center">
+				{ sprintf(
+					/* translators: %s: the current user's email address. */
+					__(
+						'Check %s for a verification email to unlock your free emails.',
+						'sureforms'
+					),
+					verifyEmail
+				) }
+			</Text>
+		</div>
 	);
 };
 
@@ -235,6 +256,9 @@ const EmailDelivery = () => {
 			? 'created'
 			: ''
 	);
+	// Set when the status read straight after a sign-up failed. Not restored
+	// on remount, so a connection deleted in SureMail later shows as gone.
+	const [ unreadAfterSignUp, setUnreadAfterSignUp ] = useState( false );
 	// State the owner arrived with, for analytics. Captured once.
 	const stateAtStep = useRef( srfm_admin?.email_delivery?.state ?? '' );
 
@@ -339,12 +363,15 @@ const EmailDelivery = () => {
 			await apiFetch( {
 				path: SUREMAIL_PROVISION_PATH,
 				method: 'POST',
+				// Raw response, so a refusal keeps its HTTP status (429).
+				parse: false,
 				// utm_source tells SureContact the account came from SureForms.
 				// SureMail versions without suremails#814 ignore it.
 				data: { email: userEmail, name: userName, utm_source: 'sureforms' },
 			} );
 			setProvision( 'created' );
-		} catch ( provisionError ) {
+		} catch ( rawError ) {
+			const provisionError = await readProvisionError( rawError );
 			const outcome = getProvisionFailure( provisionError );
 			setProvision( outcome );
 			// SureContact calls the site back to confirm it owns it, so local,
@@ -381,7 +408,10 @@ const EmailDelivery = () => {
 		// existed, and the step stays busy until it lands so Skip and Back
 		// cannot record the old state.
 		try {
-			await refreshStatus( { force: true } );
+			const next = await refreshStatus( { force: true } );
+			// The account exists but its status could not be read back: only
+			// then is a still-"connect" status treated as connected.
+			setUnreadAfterSignUp( ! next?.state );
 		} finally {
 			setProgress( '' );
 		}
@@ -494,6 +524,7 @@ const EmailDelivery = () => {
 				onChange={ setConsented }
 				installs={ installs }
 				email={ userEmail }
+				named={ Boolean( userName ) }
 				disabled={ busy }
 			/>
 		) : null;
@@ -524,15 +555,22 @@ const EmailDelivery = () => {
 	// buttons below the fold on a laptop screen.
 	let showsOptions = false;
 
-	// A sign-up that succeeded is connected, even if reading the status back
-	// failed: offering "Create account" again would only meet SureMail's
-	// "already connected" error.
-	const shownView = 'created' === provision && 'connect' === view ? 'limited' : view;
+	// A sign-up that succeeded is connected even if reading the status back
+	// straight after failed: offering "Create account" again would only meet
+	// SureMail's "already connected" error. Only then: a later "connect"
+	// means the connection was removed in SureMail.
+	const shownView =
+		'created' === provision && unreadAfterSignUp && 'connect' === view
+			? 'limited'
+			: view;
 	// The one-click sign-up worked: show "You're all set" in place of the
 	// status SureForms reads back.
 	const connected =
 		'created' === provision &&
 		! [ 'install', 'connect', 'attention' ].includes( shownView );
+	// A new account starts unverified: SureContact accepts only a few emails a
+	// day until the owner confirms the address.
+	const needsVerify = connected && 'limited' === status?.state;
 
 	switch ( shownView ) {
 		case 'install':
@@ -667,7 +705,9 @@ const EmailDelivery = () => {
 					'SureMail is installed and SureContact is connected. Your forms can send email right now.',
 					'sureforms'
 				);
-				body = <SuccessChips />;
+				body = (
+					<SuccessChips verifyEmail={ needsVerify ? userEmail : '' } />
+				);
 			} else {
 				title = __( 'Verify Your SureContact Account', 'sureforms' );
 				description =
@@ -715,7 +755,9 @@ const EmailDelivery = () => {
 					'SureMail is installed and SureContact is connected. Your forms can send email right now.',
 					'sureforms'
 				);
-				body = <SuccessChips />;
+				body = (
+					<SuccessChips verifyEmail={ needsVerify ? userEmail : '' } />
+				);
 			} else {
 				title = status?.title || __( 'Email Delivery', 'sureforms' );
 				description = status?.message || '';

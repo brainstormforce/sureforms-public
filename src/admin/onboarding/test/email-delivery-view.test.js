@@ -10,6 +10,7 @@ import {
 	getProvisionFailure,
 	isSiteRefused,
 	isRateLimited,
+	readProvisionError,
 	isLikelyLocalHost,
 	getDefaultOption,
 	canCreateAccount,
@@ -236,26 +237,71 @@ describe( 'getSureContactSignInUrl', () => {
 } );
 
 describe( 'isRateLimited', () => {
-	it( 'spots an HTTP 429 from SureContact', () => {
+	it( 'spots an HTTP 429 from SureMail, whatever the language', () => {
+		expect(
+			isRateLimited( {
+				status: 429,
+				success: false,
+				message: 'Demasiadas solicitudes de aprovisionamiento.',
+				reason: '',
+			} )
+		).toBe( true );
 		expect( isRateLimited( { data: { status: 429 } } ) ).toBe( true );
 	} );
 
-	it( 'spots a "too many requests" message or code', () => {
-		expect(
-			isRateLimited( {
-				message: 'Too many provisioning requests. Please wait a few minutes and try again.',
-			} )
-		).toBe( true );
-		expect( isRateLimited( { code: 'rate_limited' } ) ).toBe( true );
+	it( 'spots a rate-limit reason', () => {
+		expect( isRateLimited( { status: 400, reason: 'too_many_requests' } ) ).toBe(
+			true
+		);
+		expect( isRateLimited( { reason: 'rate_limited' } ) ).toBe( true );
 	} );
 
-	it( 'leaves other failures alone', () => {
+	it( 'leaves other failures alone, including other "too many" messages', () => {
 		expect(
-			isRateLimited( { data: { status: 500 }, message: 'Server error' } )
+			isRateLimited( {
+				status: 502,
+				message: 'Too many redirects.',
+				reason: '',
+			} )
 		).toBe( false );
-		expect( isRateLimited( { reason: 'email_already_registered' } ) ).toBe(
-			false
-		);
-		expect( isRateLimited( null ) ).toBe( false );
+		expect(
+			isRateLimited( { status: 409, reason: 'email_already_registered' } )
+		).toBe( false );
+		expect( isRateLimited( {} ) ).toBe( false );
+	} );
+} );
+
+describe( 'readProvisionError', () => {
+	it( 'keeps the HTTP status next to SureMail\'s error body', async () => {
+		const response = {
+			status: 429,
+			json: () =>
+				Promise.resolve( {
+					success: false,
+					message: 'Too many provisioning requests.',
+					reason: '',
+				} ),
+		};
+		await expect( readProvisionError( response ) ).resolves.toEqual( {
+			success: false,
+			message: 'Too many provisioning requests.',
+			reason: '',
+			status: 429,
+		} );
+	} );
+
+	it( 'keeps the status when the body is not JSON', async () => {
+		const response = {
+			status: 502,
+			json: () => Promise.reject( new Error( 'not json' ) ),
+		};
+		await expect( readProvisionError( response ) ).resolves.toEqual( {
+			status: 502,
+		} );
+	} );
+
+	it( 'passes a network error through', async () => {
+		const error = { code: 'fetch_error', message: 'You are probably offline.' };
+		await expect( readProvisionError( error ) ).resolves.toBe( error );
 	} );
 } );

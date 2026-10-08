@@ -147,16 +147,39 @@ export const getDefaultOption = ( status, localSite ) => {
 };
 
 /**
- * Whether SureContact turned the sign-up away for coming too often, a pause
- * the owner can wait out rather than a failure to report.
+ * The error from SureMail's provision request, with its HTTP status.
  *
- * @param {Object} provisionError Error thrown by apiFetch.
+ * The request is made with `parse: false`, so a refusal arrives as the raw
+ * Response: its status is kept here alongside SureMail's `{ success, message,
+ * reason }` body. Anything else (a network error) is passed through.
+ *
+ * @param {*} provisionError What apiFetch rejected with.
+ * @return {Promise<Object>} Error body, plus `status` when there was one.
+ */
+export const readProvisionError = async ( provisionError ) => {
+	if ( ! provisionError || 'function' !== typeof provisionError.json ) {
+		return provisionError || {};
+	}
+	let body = {};
+	try {
+		body = ( await provisionError.json() ) || {};
+	} catch ( e ) {
+		body = {};
+	}
+	return { ...body, status: provisionError.status };
+};
+
+/**
+ * Whether SureContact turned a sign-up away for coming too often: a short
+ * wait, not a failure. Read from the HTTP status and SureMail's `reason`,
+ * never the message, which is translated.
+ *
+ * @param {Object} provisionError Error from readProvisionError().
  * @return {boolean} Rate limited.
  */
 export const isRateLimited = ( provisionError ) =>
-	429 === Number( provisionError?.data?.status ) ||
-	/rate_limit|too_many/i.test( provisionError?.code ?? '' ) ||
-	/too many/i.test( provisionError?.message ?? '' );
+	429 === Number( provisionError?.status ?? provisionError?.data?.status ) ||
+	/^(rate_limit(ed)?|too_many_requests)$/i.test( provisionError?.reason ?? '' );
 
 /**
  * Whether a SureContact account may be created right now.

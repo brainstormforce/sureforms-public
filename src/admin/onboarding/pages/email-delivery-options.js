@@ -435,6 +435,8 @@ export const EmailOptions = ( { option, onSelect, localSite, disabled } ) => {
  * @param {Function} props.onChange Called with the new checked value.
  * @param {boolean}  props.installs Whether continuing also installs SureMail.
  * @param {string}   props.email    Address the account is created for.
+ * @param {boolean}  props.named    Whether the profile has a name, which
+ *                                  SureMail then sends as the From name.
  * @param {boolean}  props.disabled Lock the box while the account is being
  *                                  set up: unticking then would not stop it.
  * @return {JSX.Element} Consent checkbox.
@@ -444,6 +446,7 @@ export const ConsentCheckbox = ( {
 	onChange,
 	installs,
 	email,
+	named = false,
 	disabled,
 } ) => {
 	// The address is underlined so the owner checks it is the right one; it
@@ -469,6 +472,25 @@ export const ConsentCheckbox = ( {
 		{ email: <span className="underline">{ email }</span> }
 	);
 
+	// SureMail sets the From name only when it is given a name.
+	const disclosure = named
+		? sprintf(
+			/* translators: %s: the current user's email address. */
+			__(
+				'Outgoing emails, including recipients and content, are sent through SureContact. Every email from this site is sent from %s and your name, replacing the From it used before. To create the account, SureContact receives your name and email, this site\'s name and address, and its WordPress and SureMail versions. You can disconnect from SureMail settings at any time. <privacy>Privacy Policy</privacy> · <terms>Terms</terms>',
+				'sureforms'
+			),
+			email
+		  )
+		: sprintf(
+			/* translators: %s: the current user's email address. */
+			__(
+				'Outgoing emails, including recipients and content, are sent through SureContact. Every email from this site is sent from %s, replacing the From address it used before. To create the account, SureContact receives your email, this site\'s name and address, and its WordPress and SureMail versions. You can disconnect from SureMail settings at any time. <privacy>Privacy Policy</privacy> · <terms>Terms</terms>',
+				'sureforms'
+			),
+			email
+		  );
+
 	return (
 		<Checkbox
 			id="srfm-email-delivery-consent"
@@ -492,14 +514,7 @@ export const ConsentCheckbox = ( {
 					</span>
 					<span className="text-xs leading-[19px] text-[#6B7280]">
 						{ createInterpolateElement(
-							sprintf(
-								/* translators: %s: the current user's email address. */
-								__(
-									'Outgoing emails, including recipients and content, are sent through SureContact. Every email from this site is sent from %s and your name, replacing the From it used before. To create the account, SureContact receives your name and email, this site\'s name and address, and its WordPress and SureMail versions. You can disconnect from SureMail settings at any time. <privacy>Privacy Policy</privacy> · <terms>Terms</terms>',
-									'sureforms'
-								),
-								email
-							),
+							disclosure,
 							{
 								privacy: (
 									// eslint-disable-next-line jsx-a11y/anchor-has-content -- Text comes from the interpolated string.
