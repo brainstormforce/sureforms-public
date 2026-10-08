@@ -220,6 +220,27 @@ class Test_Status extends TestCase {
 		delete_transient( \SRFM\Inc\Email_Delivery\Suremail_Adapter::QUOTA_TRANSIENT );
 	}
 
+	public function test_get_offer() {
+		$this->assertSame( [ 'free_emails' => 100 ], Status::get_offer() );
+
+		$set = static function () {
+			return 250;
+		};
+		add_filter( 'srfm_surecontact_free_emails', $set );
+		$this->assertSame( 250, Status::get_offer()['free_emails'] );
+		remove_filter( 'srfm_surecontact_free_emails', $set );
+
+		// Nonsense from a filter hides the offer rather than showing it.
+		foreach ( [ -5, 'lots', null ] as $bad ) {
+			$filter = static function () use ( $bad ) {
+				return $bad;
+			};
+			add_filter( 'srfm_surecontact_free_emails', $filter );
+			$this->assertSame( 0, Status::get_offer()['free_emails'] );
+			remove_filter( 'srfm_surecontact_free_emails', $filter );
+		}
+	}
+
 	/**
 	 * A throttled repeat still records what it says that is new: here, a
 	 * submission on a never-store form that was not saved.

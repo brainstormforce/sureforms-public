@@ -123,6 +123,30 @@ class Status {
 	}
 
 	/**
+	 * The free SureContact offer shown beside the one-click sign-up.
+	 *
+	 * One number, read by every screen that mentions it (onboarding, the SMTP
+	 * page, the final onboarding step), so a change to the offer is one filter
+	 * and never a copy edit. 0 hides the offer.
+	 *
+	 * @since x.x.x
+	 * @return array<string,int>
+	 */
+	public static function get_offer() {
+		/**
+		 * Filters how many free emails a new SureContact account comes with.
+		 *
+		 * @since x.x.x
+		 * @param int $free_emails Free emails; 0 hides the offer.
+		 */
+		$free_emails = apply_filters( 'srfm_surecontact_free_emails', 100 );
+
+		return [
+			'free_emails' => max( 0, is_numeric( $free_emails ) ? (int) $free_emails : 0 ),
+		];
+	}
+
+	/**
 	 * Record whether a notification was accepted by the mail system.
 	 *
 	 * Recorded whether or not debug logging is on: this is the site's current
@@ -179,11 +203,17 @@ class Status {
 				'entry_saved' => (bool) $entry_saved,
 			];
 
+			// A connection in place now was made before this failure, even if no
+			// SureForms screen has noticed it yet. Recorded before the throttle
+			// below, which must know whether the open failure is this setup's.
+			if ( 'suremail' === $details['mailer'] ) {
+				self::track_suremail_connection( $outcomes, Suremail_Adapter::get_readiness()['connections'], $now - 1 );
+			}
+
 			// Throttle repeats of a failure from the same setup only. One that
-			// predates the current SureMail connection belongs to an older setup,
-			// so this failure must be written with its own time -- or a new
-			// connection that also fails would keep the old failure's time and
-			// could read as working.
+			// predates the current SureMail connection belongs to an older setup and
+			// is ignored by the status, so this failure must be written with its own
+			// time -- or a new connection that also fails reads as working.
 			$last_for_form = $outcomes['open_forms'][ $form_id ] ?? 0;
 			$same_setup    = $last_for_form > (int) ( $outcomes['suremail_connected_at'] ?? 0 );
 			if ( $last_for_form > 0 && $same_setup && $now - $last_for_form < self::FAILURE_WRITE_INTERVAL ) {
@@ -230,7 +260,7 @@ class Status {
 	 * Stored send outcomes with defaults filled in.
 	 *
 	 * @since x.x.x
-	 * @return array{last_result:string,last_success_at:int,last_failure_at:int,last_failure_form_id:int,last_failure_reason:string,last_failure_mailer:string,last_failure_entry_saved:bool,consecutive_failures:int,suremail_connected_at:int,open_forms:array<int,int>,open_details:array<int,array{reason:string,mailer:string,entry_saved:bool}>}
+	 * @return array{last_result:string,last_success_at:int,last_failure_at:int,last_failure_form_id:int,last_failure_reason:string,last_failure_mailer:string,last_failure_entry_saved:bool,consecutive_failures:int,suremail_connected_at:int,suremail_lost_at:int,open_forms:array<int,int>,open_details:array<int,array{reason:string,mailer:string,entry_saved:bool}>}
 	 */
 	public static function get_outcomes() {
 		$stored = get_option( self::OUTCOMES_OPTION, [] );
@@ -246,6 +276,7 @@ class Status {
 			'last_failure_entry_saved' => ! isset( $stored['last_failure_entry_saved'] ) || (bool) $stored['last_failure_entry_saved'],
 			'consecutive_failures'     => isset( $stored['consecutive_failures'] ) ? absint( $stored['consecutive_failures'] ) : 0,
 			'suremail_connected_at'    => isset( $stored['suremail_connected_at'] ) ? absint( $stored['suremail_connected_at'] ) : 0,
+			'suremail_lost_at'         => isset( $stored['suremail_lost_at'] ) ? absint( $stored['suremail_lost_at'] ) : 0,
 			'open_forms'               => self::read_open_forms( $stored ),
 			'open_details'             => self::read_open_details( $stored ),
 		];
@@ -358,11 +389,16 @@ class Status {
 			$connection_lost = self::track_suremail_connection( $outcomes, $connections ) || $readiness['default_missing'];
 		}
 
-		// Any form with a failure inside the window that no later success from
-		// the same form has cleared.
+		// A failure from before the current SureMail connection was made belongs to
+		// the old setup (often PHP mail() on a fresh ZipWP site), not to this one:
+		// connecting is the fix, so it must not keep the site in "attention".
+		$connected_at = $connections > 0 ? $outcomes['suremail_connected_at'] : 0;
+
+		// Any form with a failure inside the window, after the connection, that
+		// no later success from the same form has cleared.
 		$failure_open = false;
 		foreach ( $outcomes['open_forms'] as $failed_at ) {
-			if ( $failed_at >= $now - self::ATTENTION_WINDOW ) {
+			if ( $failed_at >= $now - self::ATTENTION_WINDOW && $failed_at > $connected_at ) {
 				$failure_open = true;
 				break;
 			}
@@ -455,28 +491,43 @@ class Status {
 	}
 
 	/**
-	 * Remember that SureMail once had a connection, and report losing it.
+	 * Remember when SureMail got its connection, and report losing it.
 	 *
 	 * SureMail rebalances its storage when a connection is deleted — including
 	 * when SureContact revokes it remotely — so zero connections looks the same
 	 * as never having set one up. The only way to tell is to have seen one.
-	 * Writes only on the transition, not on every read.
+	 *
+	 * `suremail_connected_at` moves forward on every (re)connection, so failures
+	 * from before it can be told apart from failures through it. Writes only on
+	 * the transitions, not on every read; updates `$outcomes` in place.
 	 *
 	 * @since x.x.x
-	 * @param array<string,mixed> $outcomes    Stored outcomes.
+	 * @param array<string,mixed> $outcomes    Stored outcomes, updated in place.
 	 * @param int                 $connections Current connection count.
+	 * @param int|null            $at          When the connection was made, if known; now otherwise.
 	 * @return bool Whether a previously seen connection is gone.
 	 */
-	private static function track_suremail_connection( array $outcomes, $connections ) {
+	private static function track_suremail_connection( array &$outcomes, $connections, $at = null ) {
 		$seen = ! empty( $outcomes['suremail_connected_at'] );
 
-		if ( $connections > 0 && ! $seen ) {
-			$outcomes['suremail_connected_at'] = time();
-			update_option( self::OUTCOMES_OPTION, $outcomes, false );
+		if ( $connections > 0 ) {
+			if ( ! $seen || ! empty( $outcomes['suremail_lost_at'] ) ) {
+				$outcomes['suremail_connected_at'] = null === $at ? time() : (int) $at;
+				$outcomes['suremail_lost_at']      = 0;
+				update_option( self::OUTCOMES_OPTION, $outcomes, false );
+			}
 			return false;
 		}
 
-		return 0 === $connections && $seen;
+		if ( ! $seen ) {
+			return false;
+		}
+
+		if ( empty( $outcomes['suremail_lost_at'] ) ) {
+			$outcomes['suremail_lost_at'] = time();
+			update_option( self::OUTCOMES_OPTION, $outcomes, false );
+		}
+		return true;
 	}
 
 	/**
