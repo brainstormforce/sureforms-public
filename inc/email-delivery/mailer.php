@@ -340,7 +340,6 @@ class Mailer {
 			'user not found',
 			'recipient not found',
 			'mailbox not found',
-			'mailbox unavailable',
 			'mailbox does not exist',
 			'does not exist',
 			'invalid mailbox',

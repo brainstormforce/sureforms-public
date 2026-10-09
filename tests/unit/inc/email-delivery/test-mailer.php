@@ -170,7 +170,6 @@ class Test_Mailer extends TestCase {
 		$this->assertTrue( Mailer::is_mailbox_refusal( '<v@example.org>: Recipient address rejected: User unknown in virtual mailbox table' ) );
 		$this->assertTrue( Mailer::is_mailbox_refusal( 'The email account that you tried to reach does not exist.' ) );
 		$this->assertTrue( Mailer::is_mailbox_refusal( 'No such user here' ) );
-		$this->assertTrue( Mailer::is_mailbox_refusal( 'Requested action not taken: mailbox unavailable' ) );
 		$this->assertTrue( Mailer::is_mailbox_refusal( '5.1.1 <v@example.org>: Recipient address rejected' ), 'An enhanced 5.1.x repeated in the text.' );
 
 		$this->assertFalse( Mailer::is_mailbox_refusal( '<v@example.org>: Relay access denied' ) );
@@ -178,6 +177,7 @@ class Test_Mailer extends TestCase {
 		$this->assertFalse( Mailer::is_mailbox_refusal( 'sorry, that domain isn\'t allowed' ) );
 		$this->assertFalse( Mailer::is_mailbox_refusal( 'Authentication required' ) );
 		$this->assertFalse( Mailer::is_mailbox_refusal( 'Greylisted, please try again later' ) );
+		$this->assertFalse( Mailer::is_mailbox_refusal( 'Requested action not taken: mailbox unavailable' ), 'Generic 550 text some servers also use for policy refusals.' );
 		$this->assertFalse( Mailer::is_mailbox_refusal( '' ), 'No reason: deny by default.' );
 	}
 
