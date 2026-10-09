@@ -56,13 +56,6 @@ class Suremail_Adapter {
 	public const SURECONTACT_TYPE = 'SURECONTACT';
 
 	/**
-	 * SureMail's admin page slug.
-	 *
-	 * @since x.x.x
-	 */
-	private const PAGE_SLUG = 'suremail';
-
-	/**
 	 * Transient holding the last known SureContact quota.
 	 *
 	 * @since x.x.x
@@ -105,6 +98,13 @@ class Suremail_Adapter {
 	 * @since x.x.x
 	 */
 	public const QUOTA_LOW_SHARE = 0.2;
+
+	/**
+	 * SureMail's admin page slug.
+	 *
+	 * @since x.x.x
+	 */
+	private const PAGE_SLUG = 'suremail';
 
 	/**
 	 * Whether SureMail is loaded.

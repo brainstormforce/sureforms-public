@@ -283,6 +283,16 @@ class Status {
 	}
 
 	/**
+	 * Drop the memoised status.
+	 *
+	 * @since x.x.x
+	 * @return void
+	 */
+	public static function reset() {
+		self::$memo = null;
+	}
+
+	/**
 	 * Point the last_failure_* fields at the newest form still failing.
 	 *
 	 * @since x.x.x
@@ -305,7 +315,6 @@ class Status {
 		return $outcomes;
 	}
 
-
 	/**
 	 * Per-form failure details, as form id => reason, mailer, entry_saved.
 	 *
@@ -327,16 +336,6 @@ class Status {
 			}
 		}
 		return $details;
-	}
-
-	/**
-	 * Drop the memoised status.
-	 *
-	 * @since x.x.x
-	 * @return void
-	 */
-	public static function reset() {
-		self::$memo = null;
 	}
 
 	/**

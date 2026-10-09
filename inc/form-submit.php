@@ -1037,55 +1037,6 @@ class Form_Submit {
 	}
 
 	/**
-	 * Recipients of a notification that came from the visitor's own fields.
-	 *
-	 * A recipient template part with a {form:*} tag is filled in by the
-	 * visitor; anything else ({admin_email}, a typed address) is the owner's.
-	 *
-	 * @param array<mixed> $item            Notification settings.
-	 * @param array<mixed> $submission_data Submission data.
-	 * @since x.x.x
-	 * @return array{addresses:array<int,string>,only_visitor:bool}
-	 */
-	private static function get_visitor_recipients( $item, $submission_data ) {
-		$smart_tags   = Smart_Tags::get_instance();
-		$addresses    = [];
-		$owner        = [];
-		$only_visitor = true;
-
-		foreach ( [ 'email_to', 'email_cc', 'email_bcc' ] as $key ) {
-			$template = Helper::get_string_value( $item[ $key ] ?? '' );
-			foreach ( explode( ',', $template ) as $part ) {
-				$part = trim( $part );
-				if ( '' === $part ) {
-					continue;
-				}
-				$resolved = array_map( 'trim', explode( ',', Helper::get_string_value( $smart_tags->process_smart_tags( $part, $submission_data ) ) ) );
-				if ( false === strpos( $part, '{form:' ) ) {
-					$only_visitor = false;
-					$owner        = array_merge( $owner, $resolved );
-					continue;
-				}
-				$addresses = array_merge( $addresses, $resolved );
-			}
-		}
-
-		// An address the owner set is theirs even when a visitor also typed it.
-		$owner     = array_map( 'strtolower', array_filter( $owner ) );
-		$addresses = array_filter(
-			$addresses,
-			static function ( $address ) use ( $owner ) {
-				return '' !== $address && ! in_array( strtolower( $address ), $owner, true );
-			}
-		);
-
-		return [
-			'addresses'    => array_values( $addresses ),
-			'only_visitor' => $only_visitor,
-		];
-	}
-
-	/**
 	 * Send Email.
 	 *
 	 * @param string        $id Form ID.
@@ -1330,58 +1281,6 @@ class Form_Submit {
 		return [
 			'success' => $is_mail_sent,
 			'emails'  => $emails,
-		];
-	}
-
-	/**
-	 * Hand one notification to wp_mail().
-	 *
-	 * Output is buffered because some mail plugins (Zoho Mail, for one) echo
-	 * notices or errors instead of throwing, which would corrupt the JSON
-	 * response. The wp_mail_failed listener is attached for this call only, so
-	 * the reason recorded is the mailer's own rather than a guess.
-	 *
-	 * Raw PHP mail() is not tried unless Mailer::allow_php_mail_fallback() says
-	 * so; see there for why.
-	 *
-	 * @param array<string,mixed> $parsed  Parsed notification: to, subject, message, headers.
-	 * @param int                 $form_id Form the notification belongs to.
-	 * @since x.x.x
-	 * @return array{sent:bool,via_php_mail:bool,error:string}
-	 */
-	private static function dispatch_notification( $parsed, $form_id ) {
-		$to      = Helper::get_string_value( $parsed['to'] ?? '' );
-		$subject = Helper::get_string_value( $parsed['subject'] ?? '' );
-		$message = Helper::get_string_value( $parsed['message'] ?? '' );
-		$headers = $parsed['headers'] ?? '';
-		$headers = is_array( $headers ) ? $headers : Helper::get_string_value( $headers );
-
-		$error   = '';
-		$capture = static function ( $wp_error ) use ( &$error ) {
-			if ( $wp_error instanceof \WP_Error ) {
-				$error = $wp_error->get_error_message();
-			}
-		};
-
-		add_action( 'wp_mail_failed', $capture );
-		ob_start();
-
-		$sent         = (bool) wp_mail( $to, $subject, $message, $headers );
-		$via_php_mail = false;
-
-		if ( ! $sent && Mailer::allow_php_mail_fallback( $form_id, 'notification' ) ) {
-			// phpcs:ignore WordPress.WP.AlternativeFunctions -- Owner opted in via srfm_allow_php_mail_fallback.
-			$sent         = mail( $to, $subject, $message, is_array( $headers ) ? implode( "\r\n", $headers ) : $headers );
-			$via_php_mail = $sent;
-		}
-
-		$output = Helper::get_string_value( ob_get_clean() );
-		remove_action( 'wp_mail_failed', $capture );
-
-		return [
-			'sent'         => $sent,
-			'via_php_mail' => $via_php_mail,
-			'error'        => '' !== $error ? $error : trim( $output ),
 		];
 	}
 
@@ -1723,6 +1622,107 @@ class Form_Submit {
 		// defaults $entry_language to current_language(), so this keeps mis-tagging
 		// to the server's own determination instead of the (cacheable) client value.
 		return $language === $provider->current_language();
+	}
+
+	/**
+	 * Recipients of a notification that came from the visitor's own fields.
+	 *
+	 * A recipient template part with a {form:*} tag is filled in by the
+	 * visitor; anything else ({admin_email}, a typed address) is the owner's.
+	 *
+	 * @param array<mixed> $item            Notification settings.
+	 * @param array<mixed> $submission_data Submission data.
+	 * @since x.x.x
+	 * @return array{addresses:array<int,string>,only_visitor:bool}
+	 */
+	private static function get_visitor_recipients( $item, $submission_data ) {
+		$smart_tags   = Smart_Tags::get_instance();
+		$addresses    = [];
+		$owner        = [];
+		$only_visitor = true;
+
+		foreach ( [ 'email_to', 'email_cc', 'email_bcc' ] as $key ) {
+			$template = Helper::get_string_value( $item[ $key ] ?? '' );
+			foreach ( explode( ',', $template ) as $part ) {
+				$part = trim( $part );
+				if ( '' === $part ) {
+					continue;
+				}
+				$resolved = array_map( 'trim', explode( ',', Helper::get_string_value( $smart_tags->process_smart_tags( $part, $submission_data ) ) ) );
+				if ( false === strpos( $part, '{form:' ) ) {
+					$only_visitor = false;
+					$owner        = array_merge( $owner, $resolved );
+					continue;
+				}
+				$addresses = array_merge( $addresses, $resolved );
+			}
+		}
+
+		// An address the owner set is theirs even when a visitor also typed it.
+		$owner     = array_map( 'strtolower', array_filter( $owner ) );
+		$addresses = array_filter(
+			$addresses,
+			static function ( $address ) use ( $owner ) {
+				return '' !== $address && ! in_array( strtolower( $address ), $owner, true );
+			}
+		);
+
+		return [
+			'addresses'    => array_values( $addresses ),
+			'only_visitor' => $only_visitor,
+		];
+	}
+
+	/**
+	 * Hand one notification to wp_mail().
+	 *
+	 * Output is buffered because some mail plugins (Zoho Mail, for one) echo
+	 * notices or errors instead of throwing, which would corrupt the JSON
+	 * response. The wp_mail_failed listener is attached for this call only, so
+	 * the reason recorded is the mailer's own rather than a guess.
+	 *
+	 * Raw PHP mail() is not tried unless Mailer::allow_php_mail_fallback() says
+	 * so; see there for why.
+	 *
+	 * @param array<string,mixed> $parsed  Parsed notification: to, subject, message, headers.
+	 * @param int                 $form_id Form the notification belongs to.
+	 * @since x.x.x
+	 * @return array{sent:bool,via_php_mail:bool,error:string}
+	 */
+	private static function dispatch_notification( $parsed, $form_id ) {
+		$to      = Helper::get_string_value( $parsed['to'] ?? '' );
+		$subject = Helper::get_string_value( $parsed['subject'] ?? '' );
+		$message = Helper::get_string_value( $parsed['message'] ?? '' );
+		$headers = $parsed['headers'] ?? '';
+		$headers = is_array( $headers ) ? $headers : Helper::get_string_value( $headers );
+
+		$error   = '';
+		$capture = static function ( $wp_error ) use ( &$error ) {
+			if ( $wp_error instanceof \WP_Error ) {
+				$error = $wp_error->get_error_message();
+			}
+		};
+
+		add_action( 'wp_mail_failed', $capture );
+		ob_start();
+
+		$sent         = (bool) wp_mail( $to, $subject, $message, $headers );
+		$via_php_mail = false;
+
+		if ( ! $sent && Mailer::allow_php_mail_fallback( $form_id, 'notification' ) ) {
+			// phpcs:ignore WordPress.WP.AlternativeFunctions -- Owner opted in via srfm_allow_php_mail_fallback.
+			$sent         = mail( $to, $subject, $message, is_array( $headers ) ? implode( "\r\n", $headers ) : $headers );
+			$via_php_mail = $sent;
+		}
+
+		$output = Helper::get_string_value( ob_get_clean() );
+		remove_action( 'wp_mail_failed', $capture );
+
+		return [
+			'sent'         => $sent,
+			'via_php_mail' => $via_php_mail,
+			'error'        => '' !== $error ? $error : trim( $output ),
+		];
 	}
 
 	/**

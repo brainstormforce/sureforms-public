@@ -827,6 +827,47 @@ class Analytics {
 	}
 
 	/**
+	 * Track the site's email delivery state.
+	 *
+	 * Whether form notifications have a real mailer behind them. A state, not a
+	 * milestone, so it is re-sent (forced) whenever it changes -- and checked at
+	 * most daily, because admin_init runs on every admin page load and the status
+	 * can scan the plugins directory. Only fixed labels are sent: connection
+	 * titles are owner-entered text.
+	 *
+	 * On admin_init rather than in detect_state_events(), which runs while
+	 * plugins are still loading: pluggable functions do not exist yet, so a
+	 * redefined wp_mail() would be missed and current_user_can() is undefined.
+	 *
+	 * @since x.x.x
+	 * @return void
+	 */
+	public function track_email_delivery_status() {
+		if ( false !== get_transient( 'srfm_email_delivery_state_checked' ) ) {
+			return;
+		}
+
+		set_transient( 'srfm_email_delivery_state_checked', 1, DAY_IN_SECONDS );
+
+		$email_delivery = Email_Delivery_Status::get_status();
+		$mailer_slug    = Helper::get_string_value( $email_delivery['mailer']['slug'] ?? '' );
+		$verified       = $email_delivery['surecontact']['email_verified'] ?? null;
+		$delivery_props = [
+			'mailer'               => $mailer_slug,
+			'mailer_plugin'        => 'other' === $mailer_slug ? Helper::get_string_value( $email_delivery['mailer']['label'] ?? '' ) : '',
+			'surecontact'          => ! empty( $email_delivery['surecontact']['connected'] ) ? 'yes' : 'no',
+			'surecontact_verified' => null === $verified ? 'unknown' : ( $verified ? 'yes' : 'no' ),
+		];
+		$delivery_state = Helper::get_string_value( $email_delivery['state'] ?? '' );
+		$fingerprint    = $delivery_state . '|' . implode( '|', $delivery_props );
+
+		if ( '' !== $delivery_state && Helper::get_srfm_option( 'email_delivery_state_tracked', '' ) !== $fingerprint ) {
+			self::events()->track( 'email_delivery_status', $delivery_state, $delivery_props, true );
+			Helper::update_srfm_option( 'email_delivery_state_tracked', $fingerprint );
+		}
+	}
+
+	/**
 	 * Extract non-inherit formTheme values from Bricks element data.
 	 *
 	 * Recursively walks the unserialized Bricks elements array looking for
@@ -958,47 +999,6 @@ class Analytics {
 		];
 
 		return Entries::get_instance()->get_total_count( $where_conditions );
-	}
-
-	/**
-	 * Track the site's email delivery state.
-	 *
-	 * Whether form notifications have a real mailer behind them. A state, not a
-	 * milestone, so it is re-sent (forced) whenever it changes -- and checked at
-	 * most daily, because admin_init runs on every admin page load and the status
-	 * can scan the plugins directory. Only fixed labels are sent: connection
-	 * titles are owner-entered text.
-	 *
-	 * On admin_init rather than in detect_state_events(), which runs while
-	 * plugins are still loading: pluggable functions do not exist yet, so a
-	 * redefined wp_mail() would be missed and current_user_can() is undefined.
-	 *
-	 * @since x.x.x
-	 * @return void
-	 */
-	public function track_email_delivery_status() {
-		if ( false !== get_transient( 'srfm_email_delivery_state_checked' ) ) {
-			return;
-		}
-
-		set_transient( 'srfm_email_delivery_state_checked', 1, DAY_IN_SECONDS );
-
-		$email_delivery = Email_Delivery_Status::get_status();
-		$mailer_slug    = Helper::get_string_value( $email_delivery['mailer']['slug'] ?? '' );
-		$verified       = $email_delivery['surecontact']['email_verified'] ?? null;
-		$delivery_props = [
-			'mailer'               => $mailer_slug,
-			'mailer_plugin'        => 'other' === $mailer_slug ? Helper::get_string_value( $email_delivery['mailer']['label'] ?? '' ) : '',
-			'surecontact'          => ! empty( $email_delivery['surecontact']['connected'] ) ? 'yes' : 'no',
-			'surecontact_verified' => null === $verified ? 'unknown' : ( $verified ? 'yes' : 'no' ),
-		];
-		$delivery_state = Helper::get_string_value( $email_delivery['state'] ?? '' );
-		$fingerprint    = $delivery_state . '|' . implode( '|', $delivery_props );
-
-		if ( '' !== $delivery_state && Helper::get_srfm_option( 'email_delivery_state_tracked', '' ) !== $fingerprint ) {
-			self::events()->track( 'email_delivery_status', $delivery_state, $delivery_props, true );
-			Helper::update_srfm_option( 'email_delivery_state_tracked', $fingerprint );
-		}
 	}
 
 	/**
