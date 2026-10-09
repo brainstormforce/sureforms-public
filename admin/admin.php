@@ -4467,7 +4467,6 @@ CSS;
 		return false;
 	}
 
-
 	/**
 	 * Nonce-protected URL that repairs the entries table.
 	 *
