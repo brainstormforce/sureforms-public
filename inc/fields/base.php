@@ -534,11 +534,14 @@ class Base {
 	/**
 	 * Setter for the aria-describedby attribute.
 	 *
+	 * Only references elements that exist in the rendered markup. The error
+	 * message id is added and removed by toggleErrorState() in frontend.js on
+	 * controls marked with data-srfm-error-target.
+	 *
 	 * @since 0.0.6
 	 * @return void
 	 */
 	protected function set_aria_described_by() {
-		$this->aria_described_by .= ' srfm-error-' . esc_attr( $this->block_id );
 		$this->aria_described_by .= ! empty( $this->help ) ? ' srfm-description-' . esc_attr( $this->block_id ) : '';
 	}
 }

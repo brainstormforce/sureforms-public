@@ -35,10 +35,10 @@ window.addGlobalSrfmObject = addGlobalSrfmObject;
  *
  *                                Description:
  *                                - When `hasError` is true, the function adds the "srfm-error" class to the container, enabling styling for invalid fields.
- *                                - If an error message element with the `data-srfm-id` attribute exists as a child of the container,
- *                                this function assigns its value as the `id` attribute to allow screen readers to announce the error when visible.
- *                                - Conversely, if `hasError` is false, the function removes both the "srfm-error" class and `id` attribute from the
- *                                error message element, making it hidden from screen readers when the field is valid.
+ *                                - The error message element gets its `id` (from `data-srfm-id`) and is added to the
+ *                                `aria-describedby` of the field controls marked with `data-srfm-error-target`, so screen
+ *                                readers announce it. When `hasError` is false, both are removed so that every
+ *                                `aria-describedby` reference always points to an element that exists.
  */
 function toggleErrorState( container, hasError ) {
 	// Check if the current class state already matches the intended state to avoid redundant operations
@@ -49,17 +49,48 @@ function toggleErrorState( container, hasError ) {
 	// Toggle the "srfm-error" class based on `hasError` state
 	container.classList.toggle( 'srfm-error', hasError );
 
-	// Manage the error message's `id` attribute for screen reader accessibility
 	const errorMessage = container.querySelector( '.srfm-error-message' );
 	if ( errorMessage ) {
-		if ( hasError && errorMessage.hasAttribute( 'data-srfm-id' ) ) {
-			// Set the `id` to `data-srfm-id` value to allow screen readers to announce the error message
-			errorMessage.id = errorMessage.getAttribute( 'data-srfm-id' );
-		} else {
-			// Remove the `id` when the field is valid, hiding the message from screen readers
-			errorMessage.removeAttribute( 'id' );
-		}
+		linkErrorMessage( errorMessage, container, hasError );
 	}
+}
+
+/**
+ * Links or unlinks an error message to the field controls inside `scope`.
+ *
+ * The message only gets its `id` while it is shown, and the controls marked with
+ * `data-srfm-error-target` only reference that `id` while it exists.
+ *
+ * @param {HTMLElement} errorMessage - The `.srfm-error-message` element.
+ * @param {HTMLElement} scope        - The element containing the field controls.
+ * @param {boolean}     hasError     - Whether the error is shown.
+ */
+function linkErrorMessage( errorMessage, scope, hasError ) {
+	const errorId = errorMessage.getAttribute( 'data-srfm-id' );
+	if ( hasError && errorId ) {
+		errorMessage.id = errorId;
+	} else {
+		errorMessage.removeAttribute( 'id' );
+	}
+	if ( ! errorId ) {
+		return;
+	}
+
+	scope
+		.querySelectorAll( '[data-srfm-error-target]' )
+		.forEach( ( control ) => {
+			const ids = ( control.getAttribute( 'aria-describedby' ) || '' )
+				.split( /\s+/ )
+				.filter( ( id ) => id && id !== errorId );
+			if ( hasError ) {
+				ids.unshift( errorId );
+			}
+			if ( ids.length ) {
+				control.setAttribute( 'aria-describedby', ids.join( ' ' ) );
+			} else {
+				control.removeAttribute( 'aria-describedby' );
+			}
+		} );
 }
 /**
  * Replaces "%s" or "%1$s", "%2$s", etc., placeholders in a string with provided arguments, in sequence.
@@ -108,6 +139,7 @@ function srfmSprintfString( str, ...args ) {
 
 // Add the functions in the srfm global object so they can be accessed from anywhere within the project.
 addGlobalSrfmObject( 'toggleErrorState', toggleErrorState );
+addGlobalSrfmObject( 'linkErrorMessage', linkErrorMessage );
 addGlobalSrfmObject( 'srfmSprintfString', srfmSprintfString );
 
 // Character counter for textarea/input fields with min or max length configured.

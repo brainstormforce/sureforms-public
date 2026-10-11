@@ -137,7 +137,7 @@ class Number_Markup extends Base {
 							<span class="srfm-number-prefix" aria-hidden="true"><?php echo esc_html( $this->prefix ); ?></span>
 						<?php } ?>
 						<input class="srfm-input-common srfm-input-<?php echo esc_attr( $this->slug ); ?>" type="text" name="<?php echo esc_attr( $this->field_name ); ?>" id="<?php echo esc_attr( $this->unique_slug ); ?>"
-						<?php echo ! empty( $this->aria_described_by ) ? "aria-describedby='" . esc_attr( trim( $this->aria_described_by ) ) . "'" : ''; ?>
+						<?php echo ! empty( $this->aria_described_by ) ? "aria-describedby='" . esc_attr( trim( $this->aria_described_by ) ) . "'" : ''; ?> data-srfm-error-target
 						data-required="<?php echo esc_attr( $this->data_require_attr ); ?>" aria-required="<?php echo esc_attr( $this->data_require_attr ); ?>" <?php echo wp_kses_post( $this->placeholder_attr . '' . $this->default_value_attr . '' . $this->format_attr . '' . $this->min_value_attr . '' . $this->max_value_attr ); ?> <?php echo $this->read_only ? 'readonly' : ''; ?> />
 						<?php if ( ! empty( $this->suffix ) ) { ?>
 							<span class="srfm-number-suffix" aria-hidden="true"><?php echo esc_html( $this->suffix ); ?></span>
