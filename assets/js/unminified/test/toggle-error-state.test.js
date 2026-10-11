@@ -45,4 +45,33 @@ describe( 'toggleErrorState', () => {
 			'srfm-description-b1'
 		);
 	} );
+	it( 'keeps a shared error id linked while another message still shows it', () => {
+		document.body.innerHTML = `
+			<div class="srfm-block wrap">
+				<div class="srfm-email-block">
+					<input id="main" data-srfm-error-target />
+					<div class="srfm-error-message" data-srfm-id="srfm-error-e1">Main</div>
+				</div>
+				<div class="srfm-email-confirm-block">
+					<input id="confirm" data-srfm-error-target />
+					<div class="srfm-error-message" data-srfm-id="srfm-error-e1">Confirm</div>
+				</div>
+			</div>`;
+		const wrap = document.querySelector( '.wrap' );
+		const confirmBlock = document.querySelector(
+			'.srfm-email-confirm-block'
+		);
+		const confirmInput = document.getElementById( 'confirm' );
+
+		window.srfm.toggleErrorState( wrap, true );
+		window.srfm.toggleErrorState( confirmBlock, true );
+		window.srfm.toggleErrorState( wrap, false );
+
+		expect( confirmInput.getAttribute( 'aria-describedby' ) ).toBe(
+			'srfm-error-e1'
+		);
+		expect( document.getElementById( 'srfm-error-e1' ).textContent ).toBe(
+			'Confirm'
+		);
+	} );
 } );

@@ -59,7 +59,9 @@ function toggleErrorState( container, hasError ) {
  * Links or unlinks an error message to the field controls inside `scope`.
  *
  * The message only gets its `id` while it is shown, and the controls marked with
- * `data-srfm-error-target` only reference that `id` while it exists.
+ * `data-srfm-error-target` only reference that `id` while an element has it. The
+ * email confirm box shares the main box's `data-srfm-id`, so clearing one keeps
+ * the reference while the other is still shown.
  *
  * @param {HTMLElement} errorMessage - The `.srfm-error-message` element.
  * @param {HTMLElement} scope        - The element containing the field controls.
@@ -75,6 +77,8 @@ function linkErrorMessage( errorMessage, scope, hasError ) {
 	if ( ! errorId ) {
 		return;
 	}
+	const linked =
+		hasError || !! errorMessage.ownerDocument.getElementById( errorId );
 
 	scope
 		.querySelectorAll( '[data-srfm-error-target]' )
@@ -82,7 +86,7 @@ function linkErrorMessage( errorMessage, scope, hasError ) {
 			const ids = ( control.getAttribute( 'aria-describedby' ) || '' )
 				.split( /\s+/ )
 				.filter( ( id ) => id && id !== errorId );
-			if ( hasError ) {
+			if ( linked ) {
 				ids.unshift( errorId );
 			}
 			if ( ids.length ) {
