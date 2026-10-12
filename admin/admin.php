@@ -2227,6 +2227,7 @@ JS;
 					'template_picker_nonce'        => Helper::current_user_can() ? wp_create_nonce( 'wp_rest' ) : '',
 					'is_pro_active'                => Helper::has_pro(),
 					'srfm_ai_usage_details'        => AI_Helper::get_current_usage_details(),
+					'has_ai_generated_forms'       => AI_Helper::has_ai_generated_forms(),
 					'is_pro_license_active'        => AI_Helper::is_pro_license_active(),
 					'srfm_ai_auth_user_email'      => get_option( 'srfm_ai_auth_user_email' ),
 					'pricing_page_url'             => Helper::get_sureforms_website_url( 'pricing' ),

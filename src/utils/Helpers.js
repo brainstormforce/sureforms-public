@@ -68,7 +68,8 @@ export const handleAddNewPost = async (
 	templateMetas,
 	isConversational = false,
 	formType = '',
-	onError
+	onError,
+	extraData = {}
 ) => {
 	const reportError = ( message ) => {
 		if ( typeof onError === 'function' ) {
@@ -95,6 +96,8 @@ export const handleAddNewPost = async (
 				'X-WP-Nonce': srfm_admin.template_picker_nonce,
 			},
 			data: {
+				// First, so extra data can't overwrite the form itself.
+				...extraData,
 				form_data: formData,
 				template_name: templateName,
 				template_metas: templateMetas,

@@ -26,6 +26,9 @@ $sidebar_width: 290px;
 	}
 
 	#wpbody-content {
+		// No room for the hidden #wpfooter, so the screen doesn't scroll past its content.
+		padding-bottom: 0;
+
 		// Hide all admin notices on SureForms Template Picker.
 		.notice,
 		.error {
