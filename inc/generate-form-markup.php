@@ -42,6 +42,16 @@ class Generate_Form_Markup {
 	private static $current_block_attrs = [];
 
 	/**
+	 * ID of the form whose content get_form_markup() is rendering, or 0 outside one.
+	 *
+	 * Smart_Tags::render_form() resolves smart tags only inside this content.
+	 *
+	 * @var int
+	 * @since 2.12.9
+	 */
+	private static $rendering_form_id = 0;
+
+	/**
 	 * IDs of the forms known to be on the current request, keyed by form ID.
 	 *
 	 * Seeded at the `wp` hook (collect_queried_form_ids(), before any output) by
@@ -122,6 +132,16 @@ class Generate_Form_Markup {
 	 */
 	public static function get_current_block_attrs() {
 		return self::$current_block_attrs;
+	}
+
+	/**
+	 * Get the ID of the form whose content is being rendered.
+	 *
+	 * @return int Form ID, or 0 when no form content is rendering.
+	 * @since 2.12.9
+	 */
+	public static function get_rendering_form_id() {
+		return self::$rendering_form_id;
 	}
 
 	/**
@@ -350,6 +370,37 @@ class Generate_Form_Markup {
 	 * @since 0.0.1
 	 */
 	public static function get_form_markup( $id, $show_title_current_page = true, $sf_classname = '', $post_type = 'post', $do_blocks = false, $block_attrs = [] ) {
+		// Everything rendered here, including blocks rendered from hooks such as page break
+		// and conversational forms, is form content: smart tags resolve in it. Only a real
+		// form post qualifies, since get_post() accepts any post ID.
+		$form_id                 = Helper::get_integer_value( $id );
+		$previous_form_id        = self::$rendering_form_id;
+		self::$rendering_form_id = $form_id > 0 && SRFM_FORMS_POST_TYPE === get_post_type( $form_id ) ? $form_id : 0;
+
+		try {
+			return self::render_form_markup( $id, $show_title_current_page, $sf_classname, $post_type, $do_blocks, $block_attrs );
+		} finally {
+			self::$rendering_form_id = $previous_form_id;
+		}
+	}
+
+	/**
+	 * Render the form markup for get_form_markup().
+	 *
+	 * Internal: call get_form_markup(), which marks the output as form content. Called
+	 * directly, smart tags in the form are left unresolved.
+	 *
+	 * @param int|string   $id Contains form ID.
+	 * @param bool         $show_title_current_page Boolean to srfm-show/srfm-hide form title.
+	 * @param string       $sf_classname additional class_name.
+	 * @param string       $post_type Contains post type.
+	 * @param bool         $do_blocks Boolean to enable/disable parsing dynamic blocks.
+	 * @param array<mixed> $block_attrs Block attributes for per-embed styling.
+	 *
+	 * @return string|false
+	 * @since 2.12.9
+	 */
+	public static function render_form_markup( $id, $show_title_current_page, $sf_classname, $post_type, $do_blocks, $block_attrs ) {
 		// SECURITY INVARIANT — a renderer must never read the request to decide what to
 		// render. The caller's `$id` is the only source of truth here; the REST route
 		// owns request parsing (see render_form_markup_endpoint). Reintroducing any
