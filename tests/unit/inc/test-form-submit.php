@@ -9,6 +9,7 @@ use Yoast\PHPUnitPolyfills\TestCases\TestCase;
 
 use SRFM\Inc\Client_Logger;
 use SRFM\Inc\Database\Tables\Entries as EntriesTable;
+use SRFM\Inc\Email_Delivery\Lost_Submissions;
 use SRFM\Inc\Email_Delivery\Status as Email_Delivery_Status;
 use SRFM\Inc\Form_Submit;
 use SRFM\Inc\Helper;
@@ -1275,6 +1276,118 @@ class Test_Form_Submit extends SRFM_Unit_Test_Case {
 
 		wp_delete_post( $form_id, true );
 		$this->reset_email_delivery_state();
+	}
+
+	/**
+	 * A notification that only a visitor's own address refused loses nothing:
+	 * the owner would not have received that copy anyway. It must not add to
+	 * the "submissions were lost" count, which shows on every admin screen.
+	 * A refusal of the owner's address on the same never-stored form does.
+	 */
+	public function test_send_email_records_a_lost_submission_only_for_a_site_failure() {
+		$this->reset_email_delivery_state();
+		Lost_Submissions::acknowledge();
+
+		$form_id = wp_insert_post(
+			[
+				'post_type'   => 'sureforms_form',
+				'post_title'  => 'Private Form',
+				'post_status' => 'publish',
+			]
+		);
+		$send    = static function ( $email_to, $to, $refusal ) use ( $form_id ) {
+			update_post_meta(
+				$form_id,
+				'_srfm_email_notification',
+				[
+					[
+						'id'       => 1,
+						'status'   => true,
+						'email_to' => $email_to,
+					],
+				]
+			);
+			$parsed = static function () use ( $to ) {
+				return [
+					'to'      => $to,
+					'subject' => 'New entry',
+					'message' => 'An entry arrived.',
+					'headers' => [],
+				];
+			};
+			$refuse = static function () use ( $refusal ) {
+				do_action( 'wp_mail_failed', new WP_Error( 'wp_mail_failed', $refusal ) );
+				return false;
+			};
+			add_filter( 'srfm_email_notification', $parsed, 99 );
+			add_filter( 'pre_wp_mail', $refuse, 99 );
+			Form_Submit::send_email(
+				$form_id,
+				[ 'srfm-email-abc123-lbl-email-email' => $to ],
+				[],
+				[ 'entry_saved' => false ]
+			);
+			remove_filter( 'pre_wp_mail', $refuse, 99 );
+			remove_filter( 'srfm_email_notification', $parsed, 99 );
+		};
+
+		// The visitor's own mailbox does not exist.
+		$send(
+			'{form:email}',
+			'typo@example.org',
+			'SMTP Error: The following recipients failed: typo@example.org: <typo@example.org>: Recipient address rejected: User unknown in virtual mailbox table'
+		);
+		$this->assertSame( 0, Lost_Submissions::get()['count'], 'Only the visitor\'s address was refused.' );
+
+		// The relay refuses the owner's address: the submission is gone.
+		$send(
+			'owner@example.com',
+			'owner@example.com',
+			'SMTP Error: The following recipients failed: owner@example.com: <owner@example.com>: Relay access denied'
+		);
+		$this->assertSame( 1, Lost_Submissions::get()['count'] );
+		$this->assertSame( [ $form_id ], Lost_Submissions::get()['form_ids'] );
+
+		wp_delete_post( $form_id, true );
+		Lost_Submissions::acknowledge();
+		$this->reset_email_delivery_state();
+	}
+
+	/**
+	 * A mailer that throws must not leave the wp_mail_failed listener on for
+	 * the next send, or an output buffer open on the submit response.
+	 */
+	public function test_dispatch_notification_cleans_up_when_the_mailer_throws() {
+		$listeners = has_action( 'wp_mail_failed' ) ? count( $GLOBALS['wp_filter']['wp_mail_failed']->callbacks, COUNT_RECURSIVE ) : 0;
+		$level     = ob_get_level();
+		$throw     = static function () {
+			throw new \RuntimeException( 'Mailer exploded' );
+		};
+		add_filter( 'pre_wp_mail', $throw, 99 );
+
+		$dispatch = new \ReflectionMethod( Form_Submit::class, 'dispatch_notification' );
+		$dispatch->setAccessible( true );
+		$thrown = null;
+		try {
+			$dispatch->invoke(
+				null,
+				[
+					'to'      => 'owner@example.com',
+					'subject' => 'New entry',
+					'message' => 'An entry arrived.',
+					'headers' => [],
+				],
+				1
+			);
+		} catch ( \RuntimeException $e ) {
+			$thrown = $e;
+		}
+		remove_filter( 'pre_wp_mail', $throw, 99 );
+
+		$this->assertInstanceOf( \RuntimeException::class, $thrown );
+		$this->assertSame( $level, ob_get_level(), 'The output buffer was closed.' );
+		$after = has_action( 'wp_mail_failed' ) ? count( $GLOBALS['wp_filter']['wp_mail_failed']->callbacks, COUNT_RECURSIVE ) : 0;
+		$this->assertSame( $listeners, $after, 'The wp_mail_failed listener was removed.' );
 	}
 
 	/**

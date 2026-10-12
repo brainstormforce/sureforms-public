@@ -427,7 +427,11 @@ You can report security issues through our [Bug Bounty Program](https://brainsto
 
 == Changelog ==
 = x.x.x =
+* New: Onboarding has an email delivery step that installs SureMail and, with your consent, sets up a free SureContact account, so form emails reach the inbox.
+* New: The dashboard, Form Checks and the form editor show whether this site can send email, and what to do when it cannot.
+* New: Forms that do not store entries now warn you when a submission was lost because its notification could not be sent.
 * Improvement: When WordPress cannot send a form notification, SureForms no longer retries it silently through PHP's mail(), which hid the real problem and could send twice alongside a mail plugin. The failure and its reason now show in Entry Logs and Form Checks. Sites that relied on that fallback can turn it back on with the `srfm_allow_php_mail_fallback` filter (only used when no mail plugin is active).
+* Fix: Activating a recommended plugin from SureForms now requires permission to activate plugins and is limited to the plugins SureForms recommends.
 = 2.12.8 - 25th September 2026 =
 * Improvement: The debug log no longer records routine validation stops, such as an empty required field, keeping it focused on real failures.
 * Fix: Entry Logs now record the email notification sent when a form is submitted.

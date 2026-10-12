@@ -1061,6 +1061,10 @@ class Form_Submit {
 		// Any recipient failing counts as a failure for the whole submission, so
 		// these are set inside the loop and only read after it.
 		$notification_failed = false;
+		// Whether a failure was the site's, not only a visitor's own address
+		// being refused. Only then is a never-stored submission lost: the owner
+		// would not have received a copy sent to the visitor anyway.
+		$site_failed = false;
 		// Whether any recipient's "success" came from the opt-in mail() fallback,
 		// which reports true for a message the local MTA accepted and may bounce.
 		$used_mail_fallback = false;
@@ -1149,6 +1153,7 @@ class Form_Submit {
 							// logged on the entry but says nothing about the site.
 							$recipients = self::get_visitor_recipients( $item, $submission_data );
 							if ( ! Mailer::is_visitor_recipient_failure( $email_report, $recipients['addresses'], $recipients['only_visitor'] ) ) {
+								$site_failed = true;
 								Email_Delivery_Status::record_outcome( false, intval( $id ), '' !== $email_report ? 'mailer_error' : $rejection['code'], $entry_saved );
 							}
 						}
@@ -1265,7 +1270,7 @@ class Form_Submit {
 			// Kept apart from the notification fault, which the next success
 			// clears, and recorded with logging off: until the owner has seen it,
 			// a lost submission must not disappear.
-			if ( ! $entry_saved && $notification_failed && ! $any_accepted ) {
+			if ( ! $entry_saved && $site_failed && ! $any_accepted ) {
 				Lost_Submissions::record( intval( $id ) );
 			}
 
@@ -1705,18 +1710,23 @@ class Form_Submit {
 
 		add_action( 'wp_mail_failed', $capture );
 		ob_start();
+		$output = '';
 
-		$sent         = (bool) wp_mail( $to, $subject, $message, $headers );
-		$via_php_mail = false;
+		// try/finally: a mailer that throws must not leave the listener on for
+		// the next send, or the output buffer open on the submit response.
+		try {
+			$sent         = (bool) wp_mail( $to, $subject, $message, $headers );
+			$via_php_mail = false;
 
-		if ( ! $sent && Mailer::allow_php_mail_fallback( $form_id, 'notification' ) ) {
-			// phpcs:ignore WordPress.WP.AlternativeFunctions -- Owner opted in via srfm_allow_php_mail_fallback.
-			$sent         = mail( $to, $subject, $message, is_array( $headers ) ? implode( "\r\n", $headers ) : $headers );
-			$via_php_mail = $sent;
+			if ( ! $sent && Mailer::allow_php_mail_fallback( $form_id, 'notification' ) ) {
+				// phpcs:ignore WordPress.WP.AlternativeFunctions -- Owner opted in via srfm_allow_php_mail_fallback.
+				$sent         = mail( $to, $subject, $message, is_array( $headers ) ? implode( "\r\n", $headers ) : $headers );
+				$via_php_mail = $sent;
+			}
+		} finally {
+			$output = Helper::get_string_value( ob_get_clean() );
+			remove_action( 'wp_mail_failed', $capture );
 		}
-
-		$output = Helper::get_string_value( ob_get_clean() );
-		remove_action( 'wp_mail_failed', $capture );
 
 		return [
 			'sent'         => $sent,
