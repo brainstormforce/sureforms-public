@@ -36,6 +36,64 @@ class Test_Generate_Form_Markup extends TestCase {
 		parent::tearDown();
 	}
 
+	/**
+	 * Outside get_form_markup() no form content is rendering, and the mark is set while it runs.
+	 */
+	public function test_get_rendering_form_id_tracks_get_form_markup() {
+		$form_id = wp_insert_post(
+			[
+				'post_type'    => SRFM_FORMS_POST_TYPE,
+				'post_status'  => 'publish',
+				'post_title'   => 'Rendering Id Form',
+				'post_content' => "<!-- wp:paragraph -->\n<p>Body</p>\n<!-- /wp:paragraph -->",
+			]
+		);
+		$seen    = null;
+		$record  = static function () use ( &$seen ) {
+			$seen = Generate_Form_Markup::get_rendering_form_id();
+		};
+		add_action( 'srfm_after_field_content', $record );
+
+		try {
+			Generate_Form_Markup::get_form_markup( $form_id );
+		} finally {
+			remove_action( 'srfm_after_field_content', $record );
+			wp_delete_post( $form_id, true );
+		}
+
+		$this->assertSame( $form_id, $seen );
+		$this->assertSame( 0, Generate_Form_Markup::get_rendering_form_id() );
+	}
+
+	/**
+	 * Called directly, render_form_markup() renders the form without marking it as form content.
+	 */
+	public function test_render_form_markup_does_not_mark_form_content() {
+		$form_id = wp_insert_post(
+			[
+				'post_type'    => SRFM_FORMS_POST_TYPE,
+				'post_status'  => 'publish',
+				'post_title'   => 'Direct Render Form',
+				'post_content' => "<!-- wp:paragraph -->\n<p>Body</p>\n<!-- /wp:paragraph -->",
+			]
+		);
+		$seen    = null;
+		$record  = static function () use ( &$seen ) {
+			$seen = Generate_Form_Markup::get_rendering_form_id();
+		};
+		add_action( 'srfm_after_field_content', $record );
+
+		try {
+			$markup = Generate_Form_Markup::render_form_markup( $form_id, true, '', 'post', false, [] );
+		} finally {
+			remove_action( 'srfm_after_field_content', $record );
+			wp_delete_post( $form_id, true );
+		}
+
+		$this->assertIsString( $markup );
+		$this->assertSame( 0, $seen );
+	}
+
 	public function test_get_form_markup_empty_id() {
 		$result = Generate_Form_Markup::get_form_markup( 0 );
 		$this->assertIsString( $result );
