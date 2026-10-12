@@ -190,6 +190,17 @@ class Analytics
     {
     }
     /**
+     * Track AI form creation, broken down by the starter card used (if any).
+     *
+     * @param string $starter_id Starter card id, or empty string for a free-text prompt.
+     * @param bool   $edited     Whether the starter prompt was edited before generating.
+     * @since x.x.x
+     * @return void
+     */
+    public static function track_ai_starter_usage($starter_id, $edited)
+    {
+    }
+    /**
      * Return total number of forms using instant forms.
      *
      * @since 1.4.0

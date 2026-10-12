@@ -7,6 +7,7 @@
 
 use Yoast\PHPUnitPolyfills\TestCases\TestCase;
 use SRFM\Inc\Create_New_Form;
+use SRFM\Inc\Helper;
 
 class Test_Create_New_Form extends TestCase {
 
@@ -85,5 +86,52 @@ class Test_Create_New_Form extends TestCase {
 		$this->assertIsArray( $data );
 		$this->assertArrayHasKey( 'message', $data );
 		$this->assertSame( 500, $response->get_status() );
+	}
+
+	/**
+	 * create_form() counts the AI form against the starter card it came from.
+	 *
+	 * Goes through the REST handler, so removing the tracking call fails it.
+	 */
+	public function test_create_form_tracks_the_starter_card() {
+		$user_id = wp_insert_user(
+			[
+				'user_login' => 'srfm_test_admin_' . uniqid(),
+				'user_pass'  => 'password',
+				'user_email' => 'srfm_test_' . uniqid() . '@example.com',
+				'role'       => 'administrator',
+			]
+		);
+		wp_set_current_user( $user_id );
+		Helper::update_srfm_option( 'ai_starter_usage', [] );
+
+		$request = new WP_REST_Request( 'POST' );
+		$request->set_header( 'X-WP-Nonce', wp_create_nonce( 'wp_rest' ) );
+		$request->set_body(
+			wp_json_encode(
+				[
+					'template_name'     => 'AI Starter Form',
+					'form_data'         => '<!-- wp:paragraph --><p>hi</p><!-- /wp:paragraph -->',
+					'template_metas'    => [],
+					'ai_starter'        => 'contact',
+					'ai_starter_edited' => true,
+				]
+			)
+		);
+
+		$response = Create_New_Form::create_form( $request );
+		$usage    = Helper::get_srfm_option( 'ai_starter_usage', [] );
+
+		$data = $response->get_data();
+		if ( ! empty( $data['id'] ) ) {
+			wp_delete_post( $data['id'], true );
+		}
+		Helper::update_srfm_option( 'ai_starter_usage', [] );
+		wp_delete_user( $user_id );
+
+		$this->assertSame( 200, $response->get_status() );
+		$this->assertSame( 1, $usage['ai_forms_created'] ?? 0 );
+		$this->assertSame( 1, $usage['edited'] ?? 0 );
+		$this->assertSame( [ 'contact' => 1 ], $usage['starters'] ?? [] );
 	}
 }

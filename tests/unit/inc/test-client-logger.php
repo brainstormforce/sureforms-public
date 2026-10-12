@@ -815,6 +815,16 @@ class Test_Client_Logger extends TestCase {
 	}
 
 	/**
+	 * A 'network' entry with no status means no response came back. form-submit.js
+	 * logs a submission the browser cancelled while the page was unloading this
+	 * way, and that says nothing about whether the site can take submissions.
+	 */
+	public function test_is_fault_ignores_a_network_entry_without_a_status() {
+		$this->assertFalse( Client_Logger::is_fault( [ 'type' => 'network' ] ) );
+		$this->assertFalse( Client_Logger::is_fault( Client_Logger::sanitize_entry( [ 'type' => 'network', 'message' => 'TypeError: Load failed' ] ) ) );
+	}
+
+	/**
 	 * The notice appears only after a run of faults, so one bad request on an
 	 * otherwise healthy site says nothing.
 	 */
@@ -1137,5 +1147,20 @@ class Test_Client_Logger extends TestCase {
 				return;
 			}
 		}
+	}
+
+	/**
+	 * A failure records whether the submission was stored, and the latest failure
+	 * wins -- the notice describes what just happened.
+	 */
+	public function test_record_failure_carries_whether_the_entry_was_saved() {
+		Client_Logger::record_failure( 'notification', 7, 'Private Form', [ 'entry_saved' => false ] );
+		$this->assertFalse( Client_Logger::get_failures()['notification']['entry_saved'] );
+
+		Client_Logger::record_failure( 'notification', 8, 'Contact Form' );
+		$this->assertTrue(
+			Client_Logger::get_failures()['notification']['entry_saved'],
+			'Without context a failure is assumed to have a saved entry, as before.'
+		);
 	}
 }

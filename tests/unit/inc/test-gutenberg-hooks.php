@@ -96,4 +96,39 @@ class Test_Gutenberg_Hooks extends TestCase {
 
 		$this->assertTrue( $result, 'Should return the default value for non-sureforms post types.' );
 	}
+
+	/**
+	 * The email delivery status names the mailer and SureMail's admin URLs, so
+	 * it reaches only admins in the SureForms form editor, not every
+	 * block-editor screen.
+	 */
+	public function test_block_editor_assets_scopes_email_delivery_to_the_form_editor() {
+		$admin  = wp_insert_user( [ 'user_login' => 'srfm_ed_admin_' . wp_rand(), 'user_pass' => wp_generate_password(), 'role' => 'administrator' ] );
+		$author = wp_insert_user( [ 'user_login' => 'srfm_ed_author_' . wp_rand(), 'user_pass' => wp_generate_password(), 'role' => 'author' ] );
+		$hooks  = \SRFM\Inc\Gutenberg_Hooks::get_instance();
+
+		$localized = function () use ( $hooks ) {
+			wp_scripts()->registered = [];
+			$hooks->block_editor_assets();
+			$data = wp_scripts()->get_data( SRFM_SLUG . '-blocks', 'data' );
+			preg_match( '/"email_delivery":(null|\{)/', (string) $data, $m );
+			return $m[1] ?? 'missing';
+		};
+
+		wp_set_current_user( $admin );
+		set_current_screen( 'post' );
+		$this->assertSame( 'null', $localized(), 'Not on other post types.' );
+
+		set_current_screen( SRFM_FORMS_POST_TYPE );
+		$this->assertSame( '{', $localized(), 'Admins in the form editor get it.' );
+
+		wp_set_current_user( $author );
+		$this->assertSame( 'null', $localized(), 'Not for non-admins.' );
+
+		wp_set_current_user( 0 );
+		set_current_screen( 'front' );
+		require_once ABSPATH . 'wp-admin/includes/user.php';
+		wp_delete_user( $admin );
+		wp_delete_user( $author );
+	}
 }
