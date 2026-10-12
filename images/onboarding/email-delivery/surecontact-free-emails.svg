@@ -5725,6 +5725,9 @@ svg { overflow: visible; }
     kf_Confetti_24_transform_0 8s linear infinite,
     kf_Confetti_24_opacity_0 8s linear infinite;
 }
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; }
+}
 </style>
 <g id="Title">
 <rect x="0.5" y="0.5" width="168" height="162" rx="9.5" id="Title_bg_0" fill="white">

@@ -230,6 +230,11 @@ const EmailDelivery = () => {
 	// The SureContact sign-in window for an existing account, while it is open.
 	const signInWindow = useRef( null );
 	const [ signingIn, setSigningIn ] = useState( false );
+	// The browser blocked the sign-in window: { url, viaSureMail } for a link
+	// the owner clicks, since a window opened after an await is blocked too.
+	const [ blockedSignIn, setBlockedSignIn ] = useState( null );
+	// SureContact's sign-in was opened in a tab from that link.
+	const [ signInTabOpened, setSignInTabOpened ] = useState( false );
 	// An existing account was signed in to and connected from this step.
 	const [ signedIn, setSignedIn ] = useState( false );
 	// Required before a SureContact account is created; the other option
@@ -320,7 +325,7 @@ const EmailDelivery = () => {
 	// SureMail's connection flow runs in its own tab. When the owner comes back,
 	// read the status again so a finished connection shows up without a reload.
 	useEffect( () => {
-		if ( ! openedSureMail ) {
+		if ( ! openedSureMail && ! signInTabOpened ) {
 			return;
 		}
 		const onReturn = () => {
@@ -334,7 +339,7 @@ const EmailDelivery = () => {
 			window.removeEventListener( 'focus', onReturn );
 			document.removeEventListener( 'visibilitychange', onReturn );
 		};
-	}, [ openedSureMail ] );
+	}, [ openedSureMail, signInTabOpened ] );
 
 	// While the sign-in window is open, watch for the connection SureMail
 	// saves when SureContact sends the owner back, then close the window.
@@ -549,6 +554,7 @@ const EmailDelivery = () => {
 			open.focus();
 			return;
 		}
+		setBlockedSignIn( null );
 		// Opened straight from the click, so popup blockers allow it, and
 		// pointed at SureContact once the link is ready.
 		const popup = window.open(
@@ -589,8 +595,9 @@ const EmailDelivery = () => {
 		// SureMail without this route, or no storage: its own sign-in screen.
 		const target = url || getSureContactSignInUrl( status );
 		if ( ! popup ) {
-			// Blocked: a tab, as before.
-			openSureMail( target );
+			// Blocked. Opening a tab now would be blocked as well (this is after
+			// an await, no longer the click), so offer a link to click instead.
+			setBlockedSignIn( { url: target, viaSureMail: ! url } );
 			return;
 		}
 		popup.location.href = target;
@@ -740,27 +747,62 @@ const EmailDelivery = () => {
 						'Sign in to SureContact in the window that opened. This step finishes by itself once you are signed in.',
 						'sureforms'
 					  )
-					: openedSureMail
+					: signInTabOpened
 						? __(
-							'In the SureMail tab, click "Already have a SureContact account? Connect it instead" and sign in. Come back here when done; this step updates by itself.',
+							'Sign in to SureContact in the new tab. Come back here when done; this step updates by itself.',
 							'sureforms'
 					  )
-						: sprintf(
-						/* translators: %s: the current user's email address. */
-							__(
-								'%s already has a SureContact account. Sign in once to connect it to this site.',
+						: openedSureMail
+							? __(
+								'In the SureMail tab, click "Already have a SureContact account? Connect it instead" and sign in. Come back here when done; this step updates by itself.',
 								'sureforms'
-							),
-							userEmail
+					  )
+							: sprintf(
+								/* translators: %s: the current user's email address. */
+								__(
+									'%s already has a SureContact account. Sign in once to connect it to this site.',
+									'sureforms'
+								),
+								userEmail
 					  );
 				// Accounts made by the one-click sign-up have no password yet.
 				body = (
-					<Text size={ 14 } color="secondary">
-						{ __(
-							'Never set a password? Use "Forgot password" on the SureContact sign-in page, or continue with Google.',
-							'sureforms'
+					<>
+						{ blockedSignIn && (
+							<Text size={ 14 } color="secondary" role="status">
+								{ __(
+									'Your browser blocked the sign-in window.',
+									'sureforms'
+								) }{ ' ' }
+								<a
+									href={ blockedSignIn.url }
+									target="_blank"
+									rel="noopener noreferrer"
+									onClick={ () => {
+										if ( blockedSignIn.viaSureMail ) {
+											setOpenedSureMail( true );
+										} else {
+											setSignInTabOpened( true );
+										}
+										setBlockedSignIn( null );
+									} }
+								>
+									{ blockedSignIn.viaSureMail
+										? __( 'Open SureMail', 'sureforms' )
+										: __(
+											'Open the SureContact sign-in',
+											'sureforms'
+										  ) }
+								</a>
+							</Text>
 						) }
-					</Text>
+						<Text size={ 14 } color="secondary">
+							{ __(
+								'Never set a password? Use "Forgot password" on the SureContact sign-in page, or continue with Google.',
+								'sureforms'
+							) }
+						</Text>
+					</>
 				);
 				continueProps = {
 					onClick: signInToSureContact,
