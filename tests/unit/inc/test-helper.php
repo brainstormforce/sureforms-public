@@ -1086,18 +1086,19 @@ class Test_Helper extends TestCase {
     }
 
     /**
-     * Test is_any_smtp_plugin_active - should return true when Newsletter plugin is active
+     * Test is_any_smtp_plugin_active - Newsletter is a newsletter sender, not a
+     * wp_mail() transport, so it must not hide "No SMTP plugin detected".
      */
     public function test_is_any_smtp_plugin_active_newsletter() {
         $this->reset_smtp_test_data();
         $this->setup_smtp_plugin_mocks([
-            'newsletter/plugin.php', // Correct file path is plugin.php not newsletter.php
+            'newsletter/plugin.php',
             'akismet/akismet.php'
         ]);
 
         $result = Helper::is_any_smtp_plugin_active();
 
-        $this->assertTrue($result);
+        $this->assertFalse($result);
     }
 
     /**
@@ -1271,7 +1272,6 @@ class Test_Helper extends TestCase {
             'post-smtp/postman-smtp.php',
             'easy-wp-smtp/easy-wp-smtp.php',
             'wp-smtp/wp-smtp.php',
-            'newsletter/plugin.php',
             'fluent-smtp/fluent-smtp.php',
             'pepipost-smtp/pepipost-smtp.php',
             'mail-bank/wp-mail-bank.php',

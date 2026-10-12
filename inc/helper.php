@@ -10,6 +10,7 @@ namespace SRFM\Inc;
 
 use SRFM\Inc\Compatibility\Multilingual\String_Translator;
 use SRFM\Inc\Database\Tables\Entries;
+use SRFM\Inc\Email_Delivery\Mailer;
 use SRFM\Inc\Traits\Get_Instance;
 use WP_Error;
 use WP_Post;
@@ -2285,34 +2286,15 @@ class Helper {
 	}
 
 	/**
-	 * Check if any of the top 10 popular WordPress SMTP plugins is active using array_intersect.
+	 * Check whether anything beyond PHP's own mail() carries wp_mail().
 	 *
 	 * @since 1.9.1
-	 * @return bool True if any SMTP plugin is active, false otherwise.
+	 * @since x.x.x Delegates to Email_Delivery\Mailer, which also recognises a
+	 *              redefined wp_mail() and no longer counts the Newsletter plugin.
+	 * @return bool True if a mail plugin or wp_mail() override is active.
 	 */
 	public static function is_any_smtp_plugin_active() {
-		$smtp_plugins = [
-			'wp-mail-smtp/wp_mail_smtp.php',
-			'post-smtp/postman-smtp.php',
-			'easy-wp-smtp/easy-wp-smtp.php',
-			'wp-smtp/wp-smtp.php',
-			'newsletter/plugin.php',
-			'fluent-smtp/fluent-smtp.php',
-			'pepipost-smtp/pepipost-smtp.php',
-			'mail-bank/wp-mail-bank.php',
-			'smtp-mailer/smtp-mailer.php',
-			'suremails/suremails.php',
-			'site-mailer/site-mailer.php',
-		];
-
-		$active_plugins = (array) get_option( 'active_plugins', [] );
-		// For multisite, merge sitewide active plugins.
-		if ( is_multisite() ) {
-			$network_plugins = (array) get_site_option( 'active_sitewide_plugins', [] );
-			$active_plugins  = array_merge( $active_plugins, array_keys( $network_plugins ) );
-		}
-
-		return (bool) array_intersect( $smtp_plugins, $active_plugins );
+		return Mailer::has_mailer();
 	}
 
 	/**
