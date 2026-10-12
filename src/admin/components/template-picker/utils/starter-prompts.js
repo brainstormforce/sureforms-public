@@ -120,3 +120,86 @@ export const getStarterPrompts = () => {
 			prompt: starter.prompt.slice( 0, MAX_PROMPT_LENGTH ),
 		} ) );
 };
+
+// Share of a starter prompt's words that must remain for an edited prompt to
+// still count as that starter.
+const STARTER_WORD_SHARE = 0.5;
+
+// Words most prompts share, which say nothing about which form it is.
+const STOP_WORDS = new Set( [
+	'a',
+	'an',
+	'and',
+	'the',
+	'to',
+	'of',
+	'for',
+	'with',
+	'by',
+	'or',
+	'in',
+	'on',
+	'form',
+	'add',
+	'asking',
+] );
+
+const wordSegmenter =
+	'undefined' !== typeof Intl && Intl.Segmenter
+		? new Intl.Segmenter( undefined, { granularity: 'word' } )
+		: null;
+
+// Split into lowercase words, including languages written without spaces.
+const toWords = ( value ) => {
+	const text = value.toLowerCase();
+	const words = wordSegmenter
+		? Array.from( wordSegmenter.segment( text ) )
+			.filter( ( part ) => part.isWordLike )
+			.map( ( part ) => part.segment )
+		: text.match( /[\p{L}\p{N}]+/gu ) ?? [];
+	return words.filter( ( word ) => ! STOP_WORDS.has( word ) );
+};
+
+// The words before the first "form", e.g. "Quote request" in "Quote request form ...".
+const formTypeOf = ( value ) => value.match( /^(.*?)\bform\b/i )?.[ 1 ] ?? null;
+
+/**
+ * Whether an edited prompt still comes from a starter prompt.
+ *
+ * Field names like name, email and phone appear in most forms, so word overlap
+ * alone can't tell a contact form from a job application. The prompt must also
+ * keep the starter's form type, the words before "form" ("Contact form",
+ * "Quote request form"), when the starter has one. A field like "preferred
+ * contact method" doesn't make a quote request a contact form.
+ *
+ * @since x.x.x
+ * @param {string} text          Current prompt.
+ * @param {string} starterPrompt The starter's prompt.
+ * @return {boolean} Whether the prompt still comes from the starter.
+ */
+export const isFromStarter = ( text, starterPrompt ) => {
+	const starterWords = new Set( toWords( starterPrompt ) );
+	const textWords = new Set( toWords( text ) );
+	if ( ! starterWords.size || ! textWords.size ) {
+		return false;
+	}
+
+	// Compare form types where both prompts name one ("Simple contact form"
+	// still matches "Contact form"); otherwise look anywhere in the prompt.
+	const starterType = toWords( formTypeOf( starterPrompt ) ?? '' );
+	if ( starterType.length ) {
+		const textType = formTypeOf( text );
+		const typeWords = textType ? new Set( toWords( textType ) ) : textWords;
+		if ( ! starterType.some( ( word ) => typeWords.has( word ) ) ) {
+			return false;
+		}
+	}
+
+	let kept = 0;
+	starterWords.forEach( ( word ) => {
+		if ( textWords.has( word ) ) {
+			kept++;
+		}
+	} );
+	return kept / starterWords.size >= STARTER_WORD_SHARE;
+};

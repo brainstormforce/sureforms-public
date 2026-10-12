@@ -53,6 +53,9 @@ class Test_Analytics extends TestCase {
 		// Clear object cache.
 		wp_cache_flush();
 
+		// Reset the AI starter counters so they don't leak into other tests.
+		Helper::update_srfm_option( 'ai_starter_usage', [] );
+
 		// Clean up any test posts.
 		$posts = get_posts(
 			[
@@ -1523,5 +1526,86 @@ class Test_Analytics extends TestCase {
 		$memo = new ReflectionProperty( \SRFM\Inc\Database\Register::class, 'entries_table_present' );
 		$memo->setAccessible( true );
 		$memo->setValue( null, null );
+	}
+
+	/**
+	 * Get the pending ai_starter_usage event, if any.
+	 *
+	 * @return array|null
+	 */
+	private function get_pending_ai_starter_event() {
+		$pending = Helper::get_srfm_option( 'usage_events_pending', [] );
+		foreach ( (array) $pending as $event ) {
+			if ( isset( $event['event_name'] ) && 'ai_starter_usage' === $event['event_name'] ) {
+				return $event;
+			}
+		}
+		return null;
+	}
+
+	public function test_track_ai_starter_usage_counts_free_text_toward_total_only() {
+		Helper::update_srfm_option( 'ai_starter_usage', [] );
+
+		Analytics::track_ai_starter_usage( '', false );
+
+		$event = $this->get_pending_ai_starter_event();
+		$this->assertNotNull( $event );
+		$this->assertSame( '0', $event['event_value'] );
+		$this->assertSame(
+			[
+				'ai_forms_created' => '1',
+				'edited'           => '0',
+			],
+			$event['properties']
+		);
+	}
+
+	public function test_track_ai_starter_usage_counts_per_card_with_edits() {
+		Helper::update_srfm_option( 'ai_starter_usage', [] );
+
+		Analytics::track_ai_starter_usage( 'contact', false );
+		Analytics::track_ai_starter_usage( 'contact', true );
+		Analytics::track_ai_starter_usage( 'feedback', false );
+		Analytics::track_ai_starter_usage( '', false );
+
+		$event = $this->get_pending_ai_starter_event();
+		$this->assertSame( '3', $event['event_value'] );
+		$this->assertSame( '4', $event['properties']['ai_forms_created'] );
+		$this->assertSame( '1', $event['properties']['edited'] );
+		$this->assertSame( '2', $event['properties']['starter_contact'] );
+		$this->assertSame( '1', $event['properties']['starter_feedback'] );
+	}
+
+	public function test_track_ai_starter_usage_replaces_the_pending_event() {
+		Helper::update_srfm_option( 'ai_starter_usage', [] );
+
+		Analytics::track_ai_starter_usage( 'contact', false );
+		Analytics::track_ai_starter_usage( 'contact', false );
+
+		$pending = Helper::get_srfm_option( 'usage_events_pending', [] );
+		$names   = array_column( (array) $pending, 'event_name' );
+		$this->assertSame( 1, count( array_keys( $names, 'ai_starter_usage', true ) ) );
+		$this->assertSame( '2', $this->get_pending_ai_starter_event()['event_value'] );
+	}
+
+	public function test_track_ai_starter_usage_caps_distinct_starter_keys() {
+		Helper::update_srfm_option( 'ai_starter_usage', [] );
+
+		for ( $i = 0; $i < 25; $i++ ) {
+			Analytics::track_ai_starter_usage( 'starter-' . $i, false );
+		}
+
+		$usage = Helper::get_srfm_option( 'ai_starter_usage', [] );
+		$this->assertCount( 20, $usage['starters'] );
+		$this->assertSame( 25, $usage['ai_forms_created'] );
+	}
+
+	public function test_track_ai_starter_usage_sanitizes_the_starter_id() {
+		Helper::update_srfm_option( 'ai_starter_usage', [] );
+
+		Analytics::track_ai_starter_usage( 'Contact<script>Form', false );
+
+		$usage = Helper::get_srfm_option( 'ai_starter_usage', [] );
+		$this->assertSame( [ 'contactscriptform' => 1 ], $usage['starters'] );
 	}
 }

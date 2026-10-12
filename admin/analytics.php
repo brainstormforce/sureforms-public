@@ -738,6 +738,58 @@ class Analytics {
 	}
 
 	/**
+	 * Track AI form creation, broken down by the starter card used (if any).
+	 *
+	 * Keeps cumulative counters in srfm_options and queues the latest totals as
+	 * the `ai_starter_usage` event each time an AI form is created, so the share
+	 * of AI forms started from each card can be read from the warehouse.
+	 *
+	 * @param mixed $starter_id Starter card id (sanitized here), or empty string for a free-text prompt.
+	 * @param bool  $edited     Whether the starter prompt was edited before generating.
+	 * @since x.x.x
+	 * @return void
+	 */
+	public static function track_ai_starter_usage( $starter_id, $edited ) {
+		// The id becomes an option key and an event property key, so clean it here
+		// rather than trusting every caller.
+		$starter_id = substr( sanitize_key( Helper::get_string_value( $starter_id ) ), 0, 40 );
+
+		$usage = Helper::get_srfm_option( 'ai_starter_usage', [] );
+		$usage = is_array( $usage ) ? $usage : [];
+
+		$counts = isset( $usage['starters'] ) && is_array( $usage['starters'] ) ? array_map( 'absint', $usage['starters'] ) : [];
+
+		// Counts AI forms created since this tracking shipped, deleted ones included
+		// (unlike the `ai_generated_forms` stat, which counts forms that exist now).
+		$usage['ai_forms_created'] = absint( $usage['ai_forms_created'] ?? 0 ) + 1;
+
+		// Cap distinct keys so a filtered starter list can't grow the option unbounded.
+		if ( '' !== $starter_id && ( isset( $counts[ $starter_id ] ) || count( $counts ) < 20 ) ) {
+			$counts[ $starter_id ] = absint( $counts[ $starter_id ] ?? 0 ) + 1;
+
+			if ( $edited ) {
+				$usage['edited'] = absint( $usage['edited'] ?? 0 ) + 1;
+			}
+		}
+
+		$usage['starters'] = $counts;
+		Helper::update_srfm_option( 'ai_starter_usage', $usage );
+
+		$properties = [
+			'ai_forms_created' => (string) $usage['ai_forms_created'],
+			'edited'           => (string) absint( $usage['edited'] ?? 0 ),
+		];
+		foreach ( $counts as $id => $count ) {
+			$properties[ 'starter_' . $id ] = (string) $count;
+		}
+
+		// $force = true: skip the already-sent check and replace any queued copy, so
+		// the next flush sends these totals. Nothing is re-sent until another AI form
+		// is created.
+		self::events()->track( 'ai_starter_usage', (string) array_sum( $counts ), $properties, true );
+	}
+
+	/**
 	 * Track embed styling configuration when a post/page is saved.
 	 *
 	 * Detects custom formTheme in Gutenberg blocks (post_content),

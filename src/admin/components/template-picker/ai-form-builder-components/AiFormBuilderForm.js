@@ -16,6 +16,7 @@ import CreditDetailsPopup from './CreditDetailsPopup.js';
 import StarterPrompts from './StarterPrompts.js';
 import {
 	getStarterPrompts,
+	isFromStarter,
 	MAX_PROMPT_LENGTH,
 } from '../utils/starter-prompts.js';
 import { useLocation } from 'react-router-dom';
@@ -108,7 +109,15 @@ export default ( props ) => {
 	const handlePromptClick = ( prompt ) => {
 		setPrompt( prompt );
 		setReplacedPrompt( null );
-		if ( ! prompt.trim() ) {
+		// Drop the card once the prompt no longer comes from it, so a prompt
+		// the user wrote themselves isn't counted as that card.
+		const selected = starters.find(
+			( item ) => item.id === selectedStarterId
+		);
+		if (
+			! prompt.trim() ||
+			( selected && ! isFromStarter( prompt, selected.prompt ) )
+		) {
 			setSelectedStarterId( null );
 		}
 	};
@@ -462,6 +471,13 @@ export default ( props ) => {
 		document.getElementById( 'textarea' )?.focus();
 	};
 
+	// Whether the prompt is still exactly the selected starter's text (for tracking edits).
+	const isUntouchedStarter =
+		!! selectedStarterId &&
+		starters.some(
+			( item ) => item.id === selectedStarterId && item.prompt === text
+		);
+
 	let counterColorClass = 'text-field-helper';
 	if ( characterCount >= MAX_PROMPT_LENGTH ) {
 		counterColorClass = 'text-support-error';
@@ -711,7 +727,14 @@ export default ( props ) => {
 																	handleCreateAiForm(
 																		text,
 																		[],
-																		true
+																		true,
+																		{
+																			starterId:
+																				selectedStarterId,
+																			starterEdited:
+																				!! selectedStarterId &&
+																				! isUntouchedStarter,
+																		}
 																	);
 																} }
 															>
