@@ -14,7 +14,7 @@ const DEFAULT_ACCENT_CLASSES = 'bg-background-secondary text-icon-secondary';
 /**
  * Starter prompt cards shown above the AI prompt box.
  *
- * @since x.x.x
+ * @since 2.12.9
  * @param {Object}   props
  * @param {Array}    props.starters          Starter prompts to render.
  * @param {string}   props.selectedStarterId Currently selected starter id, or null.
