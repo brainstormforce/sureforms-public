@@ -300,6 +300,148 @@ class Test_Analytics extends TestCase {
 		$this->assertSame( 'no', $props['onboarding_v2'] );
 	}
 
+	/**
+	 * The email delivery step reports the delivery state on arrival and on
+	 * leaving, what the owner did, and whether SureMail was opened.
+	 */
+	public function test_onboarding_completed_maps_the_email_delivery_step() {
+		$props = $this->detect_onboarding_completed_props(
+			[
+				'onboardingV2'  => true,
+				'emailDelivery' => [
+					'stateAtStep'    => 'not_configured',
+					'finalState'     => 'suremail_no_connection',
+					'action'         => 'skip',
+					'suremailOpened' => true,
+					'consented'      => true,
+					'provision'      => 'already_registered',
+					'option'         => 'surecontact',
+				],
+			]
+		);
+
+		$this->assertSame( 'not_configured', $props['email_delivery_state_at_step'] );
+		$this->assertSame( 'suremail_no_connection', $props['email_delivery_state_at_exit'] );
+		$this->assertSame( 'skip', $props['email_delivery_action'] );
+		$this->assertSame( 'yes', $props['email_delivery_suremail_opened'] );
+		$this->assertSame( 'yes', $props['email_delivery_consented'] );
+		$this->assertSame( 'already_registered', $props['email_delivery_provision'] );
+		$this->assertSame( 'surecontact', $props['email_delivery_option'] );
+	}
+
+	/**
+	 * Choosing another provider installs SureMail and moves on, which is its
+	 * own action.
+	 */
+	public function test_onboarding_completed_maps_the_other_smtp_choice() {
+		$props = $this->detect_onboarding_completed_props(
+			[
+				'onboardingV2'  => true,
+				'emailDelivery' => [
+					'action' => 'install_other_smtp',
+					'option' => 'other_smtp',
+				],
+			]
+		);
+
+		$this->assertSame( 'install_other_smtp', $props['email_delivery_action'] );
+		$this->assertSame( 'other_smtp', $props['email_delivery_option'] );
+	}
+
+	/**
+	 * The blob is whatever the wizard POSTed: unknown states and actions are
+	 * dropped rather than forwarded.
+	 */
+	public function test_onboarding_completed_drops_unknown_email_delivery_values() {
+		$props = $this->detect_onboarding_completed_props(
+			[
+				'onboardingV2'  => true,
+				'emailDelivery' => [
+					'stateAtStep' => 'delivered<script>',
+					'finalState'  => [ 'ready' ],
+					'action'      => 'drop table',
+					'provision'   => 'pwned',
+					'option'      => 'mailchimp',
+				],
+			]
+		);
+
+		$this->assertArrayNotHasKey( 'email_delivery_state_at_step', $props );
+		$this->assertArrayNotHasKey( 'email_delivery_state_at_exit', $props );
+		$this->assertArrayNotHasKey( 'email_delivery_action', $props );
+		$this->assertArrayNotHasKey( 'email_delivery_suremail_opened', $props );
+		$this->assertArrayNotHasKey( 'email_delivery_consented', $props );
+		$this->assertArrayNotHasKey( 'email_delivery_provision', $props );
+		$this->assertArrayNotHasKey( 'email_delivery_option', $props );
+	}
+
+	/**
+	 * Run the email delivery check and return the tracked event, if any.
+	 *
+	 * @return array<string,mixed>|null
+	 */
+	private function detect_email_delivery_event() {
+		\SRFM\Inc\Email_Delivery\Status::reset();
+
+		Analytics::get_instance()->track_email_delivery_status();
+
+		$pending = get_option( 'srfm_options', [] )['usage_events_pending'] ?? [];
+		foreach ( $pending as $event ) {
+			if ( 'email_delivery_status' === ( $event['event_name'] ?? '' ) ) {
+				return $event;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * The site's email delivery state is sent when it changes, not on every
+	 * admin page load, and at most once a day.
+	 */
+	public function test_email_delivery_status_is_tracked_when_it_changes() {
+		$tracked_backup = Helper::get_srfm_option( 'email_delivery_state_tracked', '' );
+		Helper::update_srfm_option( 'email_delivery_state_tracked', '' );
+		delete_transient( 'srfm_email_delivery_state_checked' );
+		add_filter(
+			'pre_option_active_plugins',
+			static function () {
+				return [];
+			}
+		);
+
+		$first = $this->detect_email_delivery_event();
+		$this->assertNotNull( $first );
+		$this->assertSame( 'not_configured', $first['event_value'] );
+		$this->assertSame( 'none', $first['properties']['mailer'] );
+		$this->assertSame( 'no', $first['properties']['surecontact'] );
+
+		// Same state again, even past the daily check: nothing new to send.
+		Analytics::events()->flush_pending();
+		delete_transient( 'srfm_email_delivery_state_checked' );
+		$this->assertNull( $this->detect_email_delivery_event() );
+
+		// A change inside the day waits for the next check.
+		remove_all_filters( 'pre_option_active_plugins' );
+		add_filter(
+			'pre_option_active_plugins',
+			static function () {
+				return [ 'fluent-smtp/fluent-smtp.php' ];
+			}
+		);
+		$this->assertNull( $this->detect_email_delivery_event(), 'Checked at most once a day.' );
+
+		delete_transient( 'srfm_email_delivery_state_checked' );
+		$changed = $this->detect_email_delivery_event();
+		$this->assertNotNull( $changed );
+		$this->assertSame( 'other_mailer', $changed['event_value'] );
+		$this->assertSame( 'FluentSMTP', $changed['properties']['mailer_plugin'] );
+
+		remove_all_filters( 'pre_option_active_plugins' );
+		delete_transient( 'srfm_email_delivery_state_checked' );
+		Helper::update_srfm_option( 'email_delivery_state_tracked', $tracked_backup );
+		\SRFM\Inc\Email_Delivery\Status::reset();
+	}
+
 	// ─── embed_styling_gutenberg_count ────────────────────────────
 
 	/**
@@ -1607,5 +1749,40 @@ class Test_Analytics extends TestCase {
 
 		$usage = Helper::get_srfm_option( 'ai_starter_usage', [] );
 		$this->assertSame( [ 'contactscriptform' => 1 ], $usage['starters'] );
+	}
+
+	/**
+	 * The email delivery state is sent once a day at most, and only when it
+	 * changed since the last one sent.
+	 */
+	public function test_track_email_delivery_status() {
+		delete_transient( 'srfm_email_delivery_state_checked' );
+		\SRFM\Inc\Helper::update_srfm_option( 'email_delivery_state_tracked', '' );
+		add_filter( 'pre_option_active_plugins', '__return_empty_array' );
+		\SRFM\Inc\Email_Delivery\Status::reset();
+
+		$analytics = \SRFM\Admin\Analytics::get_instance();
+		$analytics->track_email_delivery_status();
+		$tracked = \SRFM\Inc\Helper::get_srfm_option( 'email_delivery_state_tracked', '' );
+		$this->assertStringStartsWith( 'not_configured|none|', $tracked );
+
+		// Checked again within the day: nothing new, even if the state moved.
+		remove_filter( 'pre_option_active_plugins', '__return_empty_array' );
+		$smtp = static function () {
+			return [ 'wp-mail-smtp/wp_mail_smtp.php' ];
+		};
+		add_filter( 'pre_option_active_plugins', $smtp );
+		\SRFM\Inc\Email_Delivery\Status::reset();
+		$analytics->track_email_delivery_status();
+		$this->assertSame( $tracked, \SRFM\Inc\Helper::get_srfm_option( 'email_delivery_state_tracked', '' ) );
+
+		// A day later the change is sent.
+		delete_transient( 'srfm_email_delivery_state_checked' );
+		$analytics->track_email_delivery_status();
+		$this->assertStringStartsWith( 'other_mailer|other|WP Mail SMTP', \SRFM\Inc\Helper::get_srfm_option( 'email_delivery_state_tracked', '' ) );
+
+		remove_filter( 'pre_option_active_plugins', $smtp );
+		delete_transient( 'srfm_email_delivery_state_checked' );
+		\SRFM\Inc\Email_Delivery\Status::reset();
 	}
 }

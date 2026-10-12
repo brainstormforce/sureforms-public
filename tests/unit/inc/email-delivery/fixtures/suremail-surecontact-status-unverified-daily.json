@@ -1,0 +1,14 @@
+{
+	"_source": "Captured 2026-10-01 from GET /wp-json/suremails/v1/surecontact/status on a ZipWP site running SureMail 2.0.2, unverified free SureContact account, after its daily allowance was used.",
+	"success": true,
+	"email_verified": false,
+	"is_paid": false,
+	"cap": {
+		"verified": false,
+		"period": "daily",
+		"limit": 3,
+		"used": 3,
+		"remaining": 0,
+		"resets_at": "2026-10-02T04:45:17+00:00"
+	}
+}
