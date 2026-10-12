@@ -33,12 +33,19 @@ import {
 	Zap,
 } from 'lucide-react';
 import { installAndActivatePlugin, getFreeEmails } from '@Utils/Helpers';
+import {
+	getSureMailPluginStatus,
+	installSureMail,
+} from '@Utils/suremail-install';
 import sureContactIcon from '@Image/onboarding/email-delivery/surecontact.svg';
 import freeEmailsVisual from '@Image/onboarding/email-delivery/surecontact-free-emails.svg';
 import './tw-base.scss';
 
 const VIDEO_ID = 'fFKJfbWLif4';
 const VIDEO_MINUTES = 6;
+
+const fetchEmailDeliveryStatus = () =>
+	apiFetch( { path: '/sureforms/v1/email-delivery/status' } );
 
 const SUREMAIL_PLUGIN = {
 	slug: 'suremails',
@@ -138,12 +145,15 @@ const Operator = ( { children } ) => (
  * One state for the whole page: both buttons run the same install, so while
  * one runs the other is busy too, and a second install never starts.
  *
- * @param {string}   status  'not_installed' | 'installed'.
- * @param {Function} onError Called with a message on failure ('' to clear).
+ * @param {string}   initialStatus 'not_installed' | 'installed', as the page loaded.
+ * @param {Function} onError       Called with a message on failure ('' to clear).
  * @return {Object} { progress, busy, label, run }.
  */
-const useSureMailSetup = ( status, onError ) => {
+const useSureMailSetup = ( initialStatus, onError ) => {
 	const [ progress, setProgress ] = useState( '' );
+	// The page-load state, updated after a failed attempt: an install can land
+	// while its activation fails, and the button should then say "Activate".
+	const [ status, setStatus ] = useState( initialStatus );
 	const running = useRef( false );
 
 	const label = () => {
@@ -170,21 +180,23 @@ const useSureMailSetup = ( status, onError ) => {
 		running.current = true;
 		onError( '' );
 		try {
-			await installAndActivatePlugin(
-				{
+			// Read again first: after an install whose activation failed, the
+			// page-load state would install again and fail.
+			await installSureMail( {
+				plugin: {
 					...SUREMAIL_PLUGIN,
 					status: 'installed' === status ? 'Installed' : 'Install',
 				},
-				setProgress
-			);
+				readStatus: fetchEmailDeliveryStatus,
+				install: installAndActivatePlugin,
+				onProgress: setProgress,
+			} );
 			setProgress( 'redirecting' );
 			// SureMail skips its welcome redirect for an AJAX activation, so ask
 			// where its setup lives now that it is loaded.
 			let url = '';
 			try {
-				const next = await apiFetch( {
-					path: '/sureforms/v1/email-delivery/status',
-				} );
+				const next = await fetchEmailDeliveryStatus();
 				url = next?.action?.url || next?.links?.setup || '';
 			} catch ( e ) {
 				// Fall back to SureMail's own screen below.
@@ -202,6 +214,20 @@ const useSureMailSetup = ( status, onError ) => {
 						'sureforms'
 					)
 			);
+			// The install may have landed and only the activation failed.
+			try {
+				const pluginStatus = getSureMailPluginStatus(
+					await fetchEmailDeliveryStatus(),
+					''
+				);
+				if ( pluginStatus ) {
+					setStatus(
+						'Install' === pluginStatus ? 'not_installed' : 'installed'
+					);
+				}
+			} catch ( e ) {
+				// Keep the label as it is.
+			}
 		}
 	};
 

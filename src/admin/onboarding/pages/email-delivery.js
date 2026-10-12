@@ -10,6 +10,7 @@ import apiFetch from '@wordpress/api-fetch';
 import { useOnboardingNavigation } from '../hooks';
 import { useOnboardingState } from '../onboarding-state';
 import { installAndActivatePlugin, getFreeEmails } from '@Utils/Helpers';
+import { installSureMail } from '@Utils/suremail-install';
 import { Divider, Header, HERO_PANEL_CLASS } from '../components';
 import NavigationButtons from '../components/navigation-buttons';
 import {
@@ -487,7 +488,14 @@ const EmailDelivery = () => {
 		// Awaited so a failure shows here, not on a step the owner already left.
 		// NavigationButtons shows its spinner while this promise is pending.
 		try {
-			await installAndActivatePlugin( sureMailsPlugin, setProgress );
+			// The page-load state is stale after an install whose activation
+			// failed, so the retry would try to install again.
+			await installSureMail( {
+				plugin: sureMailsPlugin,
+				readStatus: () => refreshStatus( { force: true } ),
+				install: installAndActivatePlugin,
+				onProgress: setProgress,
+			} );
 			actions.setSuremailInstalled( true );
 			// SureMail skips its own welcome redirect for an AJAX activation, so
 			// the next screen here is what leads the owner into its setup.
