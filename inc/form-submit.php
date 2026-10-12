@@ -11,6 +11,9 @@ namespace SRFM\Inc;
 use SRFM\Inc\Compatibility\Multilingual\Multilingual_Manager;
 use SRFM\Inc\Database\Tables\Entries;
 use SRFM\Inc\Email\Email_Template;
+use SRFM\Inc\Email_Delivery\Lost_Submissions;
+use SRFM\Inc\Email_Delivery\Mailer;
+use SRFM\Inc\Email_Delivery\Status as Email_Delivery_Status;
 use SRFM\Inc\Lib\Browser\Browser;
 use SRFM\Inc\Traits\Get_Instance;
 use WP_Error;
@@ -685,7 +688,8 @@ class Form_Submit {
 		// If so, send email and do not store entries.
 		if ( $gdpr && $do_not_store_entries ) {
 			// Send email before early return. No entry is created in this path so {entry_id} will be empty — that is expected.
-			$send_email = $this->send_email( $id, $submission_data, $form_data );
+			// The email is the only copy of this submission, so a failure is recorded as such.
+			$send_email = $this->send_email( $id, $submission_data, $form_data, [ 'entry_saved' => false ] );
 			if ( $send_email ) {
 				$emails = $send_email['emails'];
 			}
@@ -818,7 +822,7 @@ class Form_Submit {
 			$entries_db_instance->reset_logs();
 
 			// Send email after entry creation so {entry_id} is available when smart tags are processed.
-			$send_email = $this->send_email( $id, $submission_data, $form_data );
+			$send_email = $this->send_email( $id, $submission_data, $form_data, [ 'entry_saved' => true ] );
 			if ( $send_email ) {
 				$emails = $send_email['emails'];
 			}
@@ -1038,17 +1042,31 @@ class Form_Submit {
 	 * @param string        $id Form ID.
 	 * @param array<mixed>  $submission_data Submission data.
 	 * @param array<string> $form_data Request object or array containing form data.
+	 * @param array<mixed>  $context   Optional. 'entry_saved' => false when the form does not store entries,
+	 *                                 so a failed notification is the loss of the submission itself.
 	 * @since 0.0.1
+	 * @since x.x.x Added $context.
 	 * @return array<mixed> Array containing the response data.
 	 */
-	public static function send_email( $id, $submission_data, $form_data = [] ) {
+	public static function send_email( $id, $submission_data, $form_data = [], $context = [] ) {
+		// Set by the caller, which knows whether the entry was stored -- never
+		// read from the request ($form_data is the visitor's POST on the
+		// no-store path, so an entry_id there proves nothing).
+		$entry_saved        = ! is_array( $context ) || ! isset( $context['entry_saved'] ) || (bool) $context['entry_saved'];
 		$email_notification = get_post_meta( intval( $id ), '_srfm_email_notification' );
 		$is_mail_sent       = false;
+		// Whether any notification was accepted: on a form that stores no entries,
+		// none at all means the submission is gone.
+		$any_accepted = false;
 		// Any recipient failing counts as a failure for the whole submission, so
 		// these are set inside the loop and only read after it.
 		$notification_failed = false;
-		// Whether any recipient's "success" came from the mail() fallback, which
-		// reports true for a message the local MTA accepted and will bounce.
+		// Whether a failure was the site's, not only a visitor's own address
+		// being refused. Only then is a never-stored submission lost: the owner
+		// would not have received a copy sent to the visitor anyway.
+		$site_failed = false;
+		// Whether any recipient's "success" came from the opt-in mail() fallback,
+		// which reports true for a message the local MTA accepted and may bounce.
 		$used_mail_fallback = false;
 		$emails             = [];
 
@@ -1114,24 +1132,30 @@ class Form_Submit {
 						 *
 						 * @since 1.2.2
 						 */
-						$sent = false;
-						ob_start();
-						$sent = wp_mail( $parsed['to'], $parsed['subject'], $parsed['message'], $parsed['headers'] );
-						if ( ! $sent ) {
-							// Fallback to default PHP mail if for some reasons wp_mail fails.
-							$sent = mail( $parsed['to'], $parsed['subject'], $parsed['message'], $parsed['headers'] );
+						$dispatch     = self::dispatch_notification( $parsed, intval( $id ) );
+						$sent         = $dispatch['sent'];
+						$email_report = $dispatch['error'];
 
-							if ( $sent ) {
-								// Accepted by the local MTA, not delivered. Good
-								// enough to avoid recording a fault, not good
-								// enough to retire one.
-								$used_mail_fallback = true;
-							}
+						if ( $dispatch['via_php_mail'] ) {
+							// Accepted by the local MTA, not delivered. Good enough
+							// to avoid recording a fault, not good enough to retire one.
+							$used_mail_fallback = true;
 						}
-						$email_report = ob_get_clean(); // Catch any printed notice/errors/message for reports.
 
 						if ( true !== $sent ) {
 							$notification_failed = true;
+							$rejection           = Mailer::get_rejection_reason();
+
+							// Outside the logging guard below: this is the site's
+							// current email state, which the owner needs to see
+							// even with debug logging switched off. A rejected
+							// recipient address (often what a visitor typed) is
+							// logged on the entry but says nothing about the site.
+							$recipients = self::get_visitor_recipients( $item, $submission_data );
+							if ( ! Mailer::is_visitor_recipient_failure( $email_report, $recipients['addresses'], $recipients['only_visitor'] ) ) {
+								$site_failed = true;
+								Email_Delivery_Status::record_outcome( false, intval( $id ), '' !== $email_report ? 'mailer_error' : $rejection['code'], $entry_saved );
+							}
 						}
 
 						if ( is_int( $log_key ) ) {
@@ -1145,12 +1169,9 @@ class Form_Submit {
 									]
 								);
 							} else {
-								$reason = ! empty( $email_report )
+								$reason = '' !== $email_report
 									? esc_html( $email_report )
-									: ( ! Helper::is_any_smtp_plugin_active()
-									? esc_html__( 'No SMTP plugin detected. Please configure an SMTP plugin to enable email sending.', 'sureforms' )
-									: esc_html__( 'Email sending failed for an unknown reason.', 'sureforms' )
-									);
+									: esc_html( Mailer::get_rejection_reason()['message'] );
 
 								$entries_db_instance->update_log(
 									$log_key,
@@ -1179,18 +1200,21 @@ class Form_Submit {
 											'type'       => 'message',
 											'form_id'    => intval( $id ),
 											'form_title' => Helper::get_string_value( get_the_title( intval( $id ) ) ),
-											'message'    => 'Email notification failed to send. ' . $reason,
+											'message'    => 'Email notification failed to send. ' . $reason . ( $entry_saved ? '' : ' The form does not store entries, so this submission was not saved.' ),
 										]
 									)
 								);
 
-								// Its own category: the entry saved, so this is not a
-								// submission failure. The site owner is simply not being
-								// told about entries they did receive.
+								// Its own category: the submission reached PHP, so this is
+								// not a submission failure. The site owner is not being
+								// told about entries they received -- or, on a form that
+								// does not store entries, has lost this one outright,
+								// which the notice has to say.
 								Client_Logger::record_failure(
 									'notification',
 									intval( $id ),
-									Helper::get_string_value( get_the_title( intval( $id ) ) )
+									Helper::get_string_value( get_the_title( intval( $id ) ) ),
+									[ 'entry_saved' => $entry_saved ]
 								);
 							}
 						}
@@ -1205,6 +1229,7 @@ class Form_Submit {
 						);
 
 						$is_mail_sent = $sent;
+						$any_accepted = $any_accepted || true === $sent;
 						$emails[]     = $parsed['to'];
 					}
 				}
@@ -1230,7 +1255,7 @@ class Form_Submit {
 			// by anyone. The notice names a form, so the granularity is visible
 			// now that this clears as well as records.
 			//
-			// wp_mail() only. The mail() fallback above returns true when the local
+			// wp_mail() only. The opt-in mail() fallback returns true when the local
 			// MTA merely accepts a message it will later bounce, which is the
 			// broken configuration rather than the fixed one.
 			//
@@ -1238,6 +1263,17 @@ class Form_Submit {
 			// inside it, so without it an install where add_log() returns a
 			// non-int would never record a notification fault but would still
 			// clear one.
+			if ( ! empty( $emails ) && ! $notification_failed && ! $used_mail_fallback ) {
+				Email_Delivery_Status::record_outcome( true, intval( $id ) );
+			}
+
+			// Kept apart from the notification fault, which the next success
+			// clears, and recorded with logging off: until the owner has seen it,
+			// a lost submission must not disappear.
+			if ( ! $entry_saved && $site_failed && ! $any_accepted ) {
+				Lost_Submissions::record( intval( $id ) );
+			}
+
 			$open_failures = Client_Logger::get_failures();
 
 			if ( ! empty( $emails ) && ! $notification_failed && is_int( $log_key )
@@ -1591,6 +1627,112 @@ class Form_Submit {
 		// defaults $entry_language to current_language(), so this keeps mis-tagging
 		// to the server's own determination instead of the (cacheable) client value.
 		return $language === $provider->current_language();
+	}
+
+	/**
+	 * Recipients of a notification that came from the visitor's own fields.
+	 *
+	 * A recipient template part with a {form:*} tag is filled in by the
+	 * visitor; anything else ({admin_email}, a typed address) is the owner's.
+	 *
+	 * @param array<mixed> $item            Notification settings.
+	 * @param array<mixed> $submission_data Submission data.
+	 * @since x.x.x
+	 * @return array{addresses:array<int,string>,only_visitor:bool}
+	 */
+	private static function get_visitor_recipients( $item, $submission_data ) {
+		$smart_tags   = Smart_Tags::get_instance();
+		$addresses    = [];
+		$owner        = [];
+		$only_visitor = true;
+
+		foreach ( [ 'email_to', 'email_cc', 'email_bcc' ] as $key ) {
+			$template = Helper::get_string_value( $item[ $key ] ?? '' );
+			foreach ( explode( ',', $template ) as $part ) {
+				$part = trim( $part );
+				if ( '' === $part ) {
+					continue;
+				}
+				$resolved = array_map( 'trim', explode( ',', Helper::get_string_value( $smart_tags->process_smart_tags( $part, $submission_data ) ) ) );
+				if ( false === strpos( $part, '{form:' ) ) {
+					$only_visitor = false;
+					$owner        = array_merge( $owner, $resolved );
+					continue;
+				}
+				$addresses = array_merge( $addresses, $resolved );
+			}
+		}
+
+		// An address the owner set is theirs even when a visitor also typed it.
+		$owner     = array_map( 'strtolower', array_filter( $owner ) );
+		$addresses = array_filter(
+			$addresses,
+			static function ( $address ) use ( $owner ) {
+				return '' !== $address && ! in_array( strtolower( $address ), $owner, true );
+			}
+		);
+
+		return [
+			'addresses'    => array_values( $addresses ),
+			'only_visitor' => $only_visitor,
+		];
+	}
+
+	/**
+	 * Hand one notification to wp_mail().
+	 *
+	 * Output is buffered because some mail plugins (Zoho Mail, for one) echo
+	 * notices or errors instead of throwing, which would corrupt the JSON
+	 * response. The wp_mail_failed listener is attached for this call only, so
+	 * the reason recorded is the mailer's own rather than a guess.
+	 *
+	 * Raw PHP mail() is not tried unless Mailer::allow_php_mail_fallback() says
+	 * so; see there for why.
+	 *
+	 * @param array<string,mixed> $parsed  Parsed notification: to, subject, message, headers.
+	 * @param int                 $form_id Form the notification belongs to.
+	 * @since x.x.x
+	 * @return array{sent:bool,via_php_mail:bool,error:string}
+	 */
+	private static function dispatch_notification( $parsed, $form_id ) {
+		$to      = Helper::get_string_value( $parsed['to'] ?? '' );
+		$subject = Helper::get_string_value( $parsed['subject'] ?? '' );
+		$message = Helper::get_string_value( $parsed['message'] ?? '' );
+		$headers = $parsed['headers'] ?? '';
+		$headers = is_array( $headers ) ? $headers : Helper::get_string_value( $headers );
+
+		$error   = '';
+		$capture = static function ( $wp_error ) use ( &$error ) {
+			if ( $wp_error instanceof \WP_Error ) {
+				$error = $wp_error->get_error_message();
+			}
+		};
+
+		add_action( 'wp_mail_failed', $capture );
+		ob_start();
+		$output = '';
+
+		// try/finally: a mailer that throws must not leave the listener on for
+		// the next send, or the output buffer open on the submit response.
+		try {
+			$sent         = (bool) wp_mail( $to, $subject, $message, $headers );
+			$via_php_mail = false;
+
+			if ( ! $sent && Mailer::allow_php_mail_fallback( $form_id, 'notification' ) ) {
+				// phpcs:ignore WordPress.WP.AlternativeFunctions -- Owner opted in via srfm_allow_php_mail_fallback.
+				$sent         = mail( $to, $subject, $message, is_array( $headers ) ? implode( "\r\n", $headers ) : $headers );
+				$via_php_mail = $sent;
+			}
+		} finally {
+			$output = Helper::get_string_value( ob_get_clean() );
+			remove_action( 'wp_mail_failed', $capture );
+		}
+
+		return [
+			'sent'         => $sent,
+			'via_php_mail' => $via_php_mail,
+			'error'        => '' !== $error ? $error : trim( $output ),
+		];
 	}
 
 	/**
