@@ -662,6 +662,13 @@ class Form_Submit {
 			unset( $form_data['srfm_addresses'] );
 		}
 
+		// A browser posts nothing for an unticked checkbox, so those keys never arrive
+		// and the field is missing from the entry and from notification emails while
+		// every other empty field is stored as ''. Restore them from the form's own
+		// blocks before anything reads the submission. Runs after validation, so no
+		// validation outcome depends on it, and it never replaces a submitted value.
+		$form_data = Field_Validation::backfill_unsubmitted_fields( $form_data, $id );
+
 		$form_data = apply_filters( 'srfm_before_fields_processing', $form_data );
 
 		$submission_data = $this->process_form_fields( $form_data );
