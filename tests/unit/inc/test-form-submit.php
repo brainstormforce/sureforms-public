@@ -826,6 +826,109 @@ class Test_Form_Submit extends SRFM_Unit_Test_Case {
 	}
 
 	/**
+	 * srfm_submission_accepted fires with the stored entry id, before any mail is sent.
+	 *
+	 * Listeners use it to stop follow-up work for an unfinished copy of the form, so it
+	 * must not wait behind a slow mail transport, and it must carry the non-field keys the
+	 * client sent with the submission.
+	 */
+	public function test_handle_form_entry_fires_submission_accepted_before_mail() {
+		$form_id = wp_insert_post(
+			[
+				'post_type'   => 'sureforms_form',
+				'post_title'  => 'Accepted Hook Form',
+				'post_status' => 'publish',
+			]
+		);
+		update_post_meta( $form_id, '_srfm_email_notification', [ [ 'id' => 1, 'status' => true ] ] );
+
+		$calls   = [];
+		$mailed  = false;
+		$listen  = static function ( $entry_id, $hook_form_id, $form_data ) use ( &$calls, &$mailed ) {
+			$calls[] = [ $entry_id, $hook_form_id, $form_data, $mailed ];
+		};
+		$parsed  = static function () {
+			return [
+				'to'      => 'owner@example.com',
+				'subject' => 'New entry',
+				'message' => 'An entry arrived.',
+				'headers' => [],
+			];
+		};
+		$sending = static function () use ( &$mailed ) {
+			$mailed = true;
+			return true;
+		};
+
+		add_action( 'srfm_submission_accepted', $listen, 10, 3 );
+		add_filter( 'srfm_email_notification', $parsed, 99 );
+		add_filter( 'pre_wp_mail', $sending, 99 );
+
+		$response = $this->form_submit->handle_form_entry(
+			[
+				'form-id'                 => (string) $form_id,
+				'srfm_partial_session_id' => 'abc-123',
+			]
+		);
+
+		remove_filter( 'pre_wp_mail', $sending, 99 );
+		remove_filter( 'srfm_email_notification', $parsed, 99 );
+		remove_action( 'srfm_submission_accepted', $listen, 10 );
+
+		$entry_id = Helper::get_integer_value( $response['data']['submission_id'] );
+
+		$this->assertTrue( $mailed, 'The notification must still be sent.' );
+		$this->assertCount( 1, $calls );
+		$this->assertSame( $entry_id, $calls[0][0] );
+		$this->assertSame( $form_id, $calls[0][1] );
+		$this->assertSame( 'abc-123', $calls[0][2]['srfm_partial_session_id'] );
+		$this->assertFalse( $calls[0][3], 'The hook must fire before mail is handed to the transport.' );
+
+		EntriesTable::delete( $entry_id );
+		wp_delete_post( $form_id, true );
+	}
+
+	/**
+	 * A submission accepted without storing an entry still fires the hook, with entry id 0.
+	 *
+	 * Otherwise a completed no-store form would look unfinished to every listener.
+	 */
+	public function test_handle_form_entry_fires_submission_accepted_when_not_stored() {
+		$form_id = wp_insert_post(
+			[
+				'post_type'   => 'sureforms_form',
+				'post_title'  => 'No Store Form',
+				'post_status' => 'publish',
+			]
+		);
+		update_post_meta(
+			$form_id,
+			'_srfm_compliance',
+			[
+				[
+					'gdpr'                 => true,
+					'do_not_store_entries' => true,
+				],
+			]
+		);
+
+		$calls  = [];
+		$listen = static function ( $entry_id, $hook_form_id ) use ( &$calls ) {
+			$calls[] = [ $entry_id, $hook_form_id ];
+		};
+		add_action( 'srfm_submission_accepted', $listen, 10, 2 );
+
+		$response = $this->form_submit->handle_form_entry( [ 'form-id' => (string) $form_id ] );
+
+		remove_action( 'srfm_submission_accepted', $listen, 10 );
+
+		$this->assertTrue( $response['success'] );
+		$this->assertSame( [ [ 0, $form_id ] ], $calls );
+
+		wp_delete_post( $form_id, true );
+	}
+
+	/**
 	 * One recipient succeeding while another fails is still a failure.
 	 *
 	 * This is the case the flag is hoisted out of the loop for, and the one

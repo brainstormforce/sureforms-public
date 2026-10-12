@@ -684,6 +684,9 @@ class Form_Submit {
 		// Check if GDPR is enabled and do not store entries is enabled.
 		// If so, send email and do not store entries.
 		if ( $gdpr && $do_not_store_entries ) {
+			/** This action is documented below, where the stored-entry path fires it. */
+			do_action( 'srfm_submission_accepted', 0, Helper::get_integer_value( $id ), $form_data );
+
 			// Send email before early return. No entry is created in this path so {entry_id} will be empty — that is expected.
 			$send_email = $this->send_email( $id, $submission_data, $form_data );
 			if ( $send_email ) {
@@ -798,6 +801,26 @@ class Form_Submit {
 		if ( $entry_id ) {
 			// Inject entry_id so {entry_id} smart tag resolves in confirmation message, redirect URL, email notifications, and downstream integrations.
 			$form_data['entry_id'] = intval( $entry_id );
+
+			/**
+			 * Fires once a submission has been accepted, before notification email is sent.
+			 *
+			 * Runs as early as the accepted state is known, so listeners that must react to
+			 * "this form was completed" (for example, stopping follow-up work queued against
+			 * an unfinished copy of it) are not held behind a slow mail transport. The
+			 * `srfm_form_submit` action still fires after mail, unchanged.
+			 *
+			 * Also fires when the form's compliance settings accept a submission without
+			 * storing it; `$entry_id` is 0 on that path.
+			 *
+			 * @param int          $entry_id  Stored entry ID, or 0 when the entry is not stored.
+			 * @param int          $form_id   Form ID.
+			 * @param array<mixed> $form_data Parsed request data for the submission (JSON or
+			 *                                multipart), including any non-field keys a client
+			 *                                sent alongside the fields.
+			 * @since x.x.x
+			 */
+			do_action( 'srfm_submission_accepted', intval( $entry_id ), Helper::get_integer_value( $id ), $form_data );
 
 			// Switch the multilingual provider to the entry's language so the
 			// confirmation message, redirect URL, and email notifications render
