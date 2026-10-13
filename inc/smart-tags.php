@@ -64,7 +64,7 @@ class Smart_Tags {
 	 *
 	 * @param int|false $id Form id.
 	 * @since 0.0.1
-	 * @since x.x.x True only for a SureForms form post.
+	 * @since 2.12.9 True only for a SureForms form post.
 	 * @return bool
 	 */
 	public function check_form_by_id( $id ) {
@@ -707,7 +707,7 @@ class Smart_Tags {
 	 * Get the form a rendered block belongs to.
 	 *
 	 * @param array<mixed> $block Block Properties As An Array.
-	 * @since x.x.x
+	 * @since 2.12.9
 	 * @return int Form ID, or 0 when the block is not form content.
 	 */
 	private function get_block_form_id( $block ) {
@@ -734,7 +734,7 @@ class Smart_Tags {
 	 * Whether a tag is a request smart tag: {get_input:name} or {get_cookie:name}, matched in full.
 	 *
 	 * @param string $tag Smart tag.
-	 * @since x.x.x
+	 * @since 2.12.9
 	 * @return bool
 	 */
 	private static function is_request_tag( $tag ) {
@@ -751,7 +751,7 @@ class Smart_Tags {
 	 * later smart tag pass over the same markup cannot read a tag inside the value.
 	 *
 	 * @param string $value Escaped request value.
-	 * @since x.x.x
+	 * @since 2.12.9
 	 * @return string The value, or an empty string when it carries a script scheme.
 	 */
 	private static function neutralize_request_value( $value ) {

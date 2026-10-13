@@ -805,4 +805,140 @@ class Test_Field_Validation extends TestCase {
 
 		wp_delete_post( $form_id, true );
 	}
+
+	/**
+	 * Build a form whose content is one checkbox block.
+	 *
+	 * @param string $label    Checkbox label, or '' to leave it unset.
+	 * @param string $block_id Block id.
+	 * @param string $slug     Field slug.
+	 * @return int Form post id.
+	 */
+	private function make_checkbox_form( $label = 'Seasonal offers', $block_id = 'cb123456', $slug = 'seasonal-offers' ) {
+		$attrs = [
+			'block_id' => $block_id,
+			'slug'     => $slug,
+		];
+		if ( '' !== $label ) {
+			$attrs['label'] = $label;
+		}
+
+		return wp_insert_post(
+			[
+				'post_type'    => 'sureforms_form',
+				'post_status'  => 'publish',
+				'post_title'   => 'Checkbox Form',
+				'post_content' => '<!-- wp:srfm/checkbox ' . wp_json_encode( $attrs ) . ' /-->',
+			]
+		);
+	}
+
+	/**
+	 * An unticked checkbox is restored as an empty value instead of vanishing.
+	 *
+	 * A browser posts nothing for it, so without this the field has no key at all and
+	 * is missing from the entry and from notification emails, while every other empty
+	 * field is stored as '' and shown as '-'.
+	 */
+	public function test_backfill_unsubmitted_fields_adds_an_unticked_checkbox() {
+		$form_id = $this->make_checkbox_form();
+		$key     = 'srfm-checkbox-cb123456-lbl-' . \SRFM\Inc\Helper::encode( 'Seasonal offers' ) . '-seasonal-offers';
+
+		$result = Field_Validation::backfill_unsubmitted_fields( [ 'form-id' => (string) $form_id ], $form_id );
+
+		$this->assertArrayHasKey( $key, $result );
+		$this->assertSame( '', $result[ $key ] );
+
+		wp_delete_post( $form_id, true );
+	}
+
+	/**
+	 * The rebuilt key is the one the field actually renders.
+	 *
+	 * backfill_unsubmitted_fields() assembles the key the same way Base::set_input_label()
+	 * and checkbox-markup.php do. If either side changes, the back-filled key stops
+	 * matching the submitted one and a ticked box would be stored twice -- once under
+	 * each spelling. Rendering the real field and comparing is what keeps them in step.
+	 */
+	public function test_backfill_key_matches_the_rendered_field_name() {
+		$attrs = [
+			'block_id' => 'cb123456',
+			'slug'     => 'seasonal-offers',
+			'label'    => 'Seasonal offers',
+		];
+
+		$markup = ( new \SRFM\Inc\Fields\Checkbox_Markup( $attrs ) )->markup();
+		$this->assertIsString( $markup );
+		$this->assertSame( 1, preg_match( '/name="(srfm-checkbox-[^"]+)"/', $markup, $matches ), 'the checkbox renders a name' );
+
+		$form_id = $this->make_checkbox_form();
+		$result  = Field_Validation::backfill_unsubmitted_fields( [], $form_id );
+
+		$this->assertArrayHasKey( $matches[1], $result, 'the back-filled key must be the key the browser would post' );
+
+		wp_delete_post( $form_id, true );
+	}
+
+	/**
+	 * The same holds when the form leaves the label empty and the markup falls back.
+	 */
+	public function test_backfill_key_matches_the_rendered_name_without_a_label() {
+		$attrs = [
+			'block_id' => 'cb999999',
+			'slug'     => 'plain-checkbox',
+		];
+
+		$markup = ( new \SRFM\Inc\Fields\Checkbox_Markup( $attrs ) )->markup();
+		$this->assertSame( 1, preg_match( '/name="(srfm-checkbox-[^"]+)"/', $markup, $matches ) );
+
+		$form_id = $this->make_checkbox_form( '', 'cb999999', 'plain-checkbox' );
+		$result  = Field_Validation::backfill_unsubmitted_fields( [], $form_id );
+
+		$this->assertArrayHasKey( $matches[1], $result );
+
+		wp_delete_post( $form_id, true );
+	}
+
+	/**
+	 * A ticked checkbox keeps the value the browser sent.
+	 */
+	public function test_backfill_unsubmitted_fields_never_replaces_a_submitted_value() {
+		$form_id = $this->make_checkbox_form();
+		$key     = 'srfm-checkbox-cb123456-lbl-' . \SRFM\Inc\Helper::encode( 'Seasonal offers' ) . '-seasonal-offers';
+
+		$result = Field_Validation::backfill_unsubmitted_fields( [ $key => 'on' ], $form_id );
+
+		$this->assertSame( 'on', $result[ $key ] );
+
+		wp_delete_post( $form_id, true );
+	}
+
+	/**
+	 * Forms without a checkbox are untouched, and no other field type is invented.
+	 */
+	public function test_backfill_unsubmitted_fields_leaves_other_forms_alone() {
+		$form_id = wp_insert_post(
+			[
+				'post_type'    => 'sureforms_form',
+				'post_status'  => 'publish',
+				'post_title'   => 'Input Form',
+				'post_content' => '<!-- wp:srfm/input {"block_id":"in123456","slug":"name","label":"Name"} /-->',
+			]
+		);
+
+		$submitted = [ 'srfm-input-in123456-lbl-TmFtZQ-name' => 'Alan' ];
+
+		$this->assertSame( $submitted, Field_Validation::backfill_unsubmitted_fields( $submitted, $form_id ) );
+
+		wp_delete_post( $form_id, true );
+	}
+
+	/**
+	 * Nothing is added when the form id cannot be resolved, so a malformed submission
+	 * is not decorated with fields it never had.
+	 */
+	public function test_backfill_unsubmitted_fields_needs_a_form() {
+		$this->assertSame( [ 'a' => 'b' ], Field_Validation::backfill_unsubmitted_fields( [ 'a' => 'b' ], 0 ) );
+		$this->assertSame( [ 'a' => 'b' ], Field_Validation::backfill_unsubmitted_fields( [ 'a' => 'b' ], 'not-an-id' ) );
+	}
 }

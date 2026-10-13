@@ -47,7 +47,7 @@ class Generate_Form_Markup {
 	 * Smart_Tags::render_form() resolves smart tags only inside this content.
 	 *
 	 * @var int
-	 * @since x.x.x
+	 * @since 2.12.9
 	 */
 	private static $rendering_form_id = 0;
 
@@ -138,7 +138,7 @@ class Generate_Form_Markup {
 	 * Get the ID of the form whose content is being rendered.
 	 *
 	 * @return int Form ID, or 0 when no form content is rendering.
-	 * @since x.x.x
+	 * @since 2.12.9
 	 */
 	public static function get_rendering_form_id() {
 		return self::$rendering_form_id;
@@ -398,7 +398,7 @@ class Generate_Form_Markup {
 	 * @param array<mixed> $block_attrs Block attributes for per-embed styling.
 	 *
 	 * @return string|false
-	 * @since x.x.x
+	 * @since 2.12.9
 	 */
 	public static function render_form_markup( $id, $show_title_current_page, $sf_classname, $post_type, $do_blocks, $block_attrs ) {
 		// SECURITY INVARIANT — a renderer must never read the request to decide what to

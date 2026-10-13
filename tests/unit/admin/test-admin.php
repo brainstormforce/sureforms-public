@@ -23,7 +23,12 @@ class Test_Admin extends TestCase {
         // Without this, an assertion failure anywhere in this class leaves $_GET and
         // the current user set for every test that runs after it, turning one real
         // failure into a wall of unrelated ones.
-        $_GET = [];
+        //
+        // $_REQUEST matters as much as $_GET: Helper::validate_request_context()
+        // reads $_REQUEST, so a leaked page=sureforms_menu makes every later test
+        // look like it is on the SureForms dashboard.
+        $_GET     = [];
+        $_REQUEST = [];
         wp_set_current_user( 0 );
         parent::tearDown();
     }
@@ -2652,6 +2657,41 @@ class Test_Admin extends TestCase {
 		$captured = [];
 		Admin::get_instance()->enqueue_scripts();
 		$this->assertFalse( $captured[0]['hide_promotions'], 'Control: off by default.' );
+	}
+
+	/**
+	 * Test that the MCP settings screen is told whether the user may install plugins.
+	 *
+	 * @return void
+	 */
+	public function test_enqueue_scripts_localizes_can_install_plugins() {
+		wp_set_current_user( (int) wp_insert_user( [ 'user_login' => 'srfm_cip_' . wp_rand(), 'user_pass' => 'password', 'user_email' => 'srfm_cip_' . wp_rand() . '@example.com', 'role' => 'administrator' ] ) );
+		set_current_screen( 'toplevel_page_sureforms_menu' );
+		$_GET['page']     = 'sureforms_menu';
+		$_REQUEST['page'] = 'sureforms_menu';
+
+		$captured = [];
+		add_filter(
+			'srfm_admin_filter',
+			static function ( $data ) use ( &$captured ) {
+				$captured[] = $data;
+				return $data;
+			}
+		);
+
+		Admin::get_instance()->enqueue_scripts();
+		$this->assertNotEmpty( $captured, 'The dashboard localization must run.' );
+		$this->assertTrue( $captured[0]['can_install_plugins'] );
+
+		// Same as a multisite subsite admin or a DISALLOW_FILE_MODS site.
+		$deny = static function ( $caps, $cap ) {
+			return 'install_plugins' === $cap ? [ 'do_not_allow' ] : $caps;
+		};
+		add_filter( 'map_meta_cap', $deny, 10, 2 );
+		$captured = [];
+		Admin::get_instance()->enqueue_scripts();
+		remove_filter( 'map_meta_cap', $deny, 10 );
+		$this->assertFalse( $captured[0]['can_install_plugins'] );
 	}
 
 	/**

@@ -16,7 +16,7 @@ const PLUGIN_STATES = [ 'Install', 'Installed', 'Activated' ];
 /**
  * SureMail's install state from an email-delivery status response.
  *
- * @since x.x.x
+ * @since 2.12.9
  * @param {Object|null} status   Response of /sureforms/v1/email-delivery/status.
  * @param {string}      fallback State to use when the response has none.
  * @return {string} 'Install' | 'Installed' | 'Activated'.
@@ -30,7 +30,7 @@ export const getSureMailPluginStatus = ( status, fallback ) => {
  * Install (only if it is not there) and activate SureMail, going by its
  * current state rather than the one the page loaded with.
  *
- * @since x.x.x
+ * @since 2.12.9
  * @param {Object}   args
  * @param {Object}   args.plugin     Plugin descriptor; its status is the page-load fallback.
  * @param {Function} args.readStatus Resolves with the current email-delivery status.

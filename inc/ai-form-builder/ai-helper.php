@@ -228,7 +228,7 @@ class AI_Helper {
 	 * Used by the Generate with AI screen to collapse the starter examples once
 	 * the site has made its first AI form.
 	 *
-	 * @since x.x.x
+	 * @since 2.12.9
 	 * @return bool
 	 */
 	public static function has_ai_generated_forms() {

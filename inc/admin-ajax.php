@@ -137,7 +137,7 @@ class Admin_Ajax {
 	 * offers (Helper::sureforms_get_integration(), both Starter Templates
 	 * editions) and the MCP adapter from Settings.
 	 *
-	 * @since x.x.x
+	 * @since 2.12.9
 	 * @return array<int,string> Plugin files.
 	 */
 	public static function get_activatable_plugins() {
@@ -152,7 +152,7 @@ class Admin_Ajax {
 		/**
 		 * Filters the plugins SureForms' installer may activate.
 		 *
-		 * @since x.x.x
+		 * @since 2.12.9
 		 * @param array<int,string> $plugins Plugin files.
 		 */
 		$plugins = apply_filters( 'srfm_activatable_plugins', $plugins );
@@ -167,7 +167,7 @@ class Admin_Ajax {
 	 * set a flag there that sends the owner to their onboarding on the next admin
 	 * page load -- pulling them out of SureForms' own onboarding mid-step.
 	 *
-	 * @since x.x.x
+	 * @since 2.12.9
 	 * @param string $plugin_init Plugin file that was activated.
 	 * @return void
 	 */
@@ -175,7 +175,7 @@ class Admin_Ajax {
 		/**
 		 * Filters the redirect flags cleared after activating a plugin.
 		 *
-		 * @since x.x.x
+		 * @since 2.12.9
 		 * @param array<string,array{option?:string,transient?:string}> $flags Plugin file => flag.
 		 */
 		$flags = apply_filters(

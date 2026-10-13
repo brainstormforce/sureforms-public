@@ -1416,7 +1416,7 @@ export function useShouldIframe() {
  * Free emails a new SureContact account comes with, as localized by the
  * server (Status::get_offer()); 0 hides the offer.
  *
- * @since x.x.x
+ * @since 2.12.9
  * @return {number} Free emails.
  */
 export const getFreeEmails = () =>

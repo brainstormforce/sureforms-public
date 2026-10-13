@@ -2289,7 +2289,7 @@ class Helper {
 	 * Check whether anything beyond PHP's own mail() carries wp_mail().
 	 *
 	 * @since 1.9.1
-	 * @since x.x.x Delegates to Email_Delivery\Mailer, which also recognises a
+	 * @since 2.12.9 Delegates to Email_Delivery\Mailer, which also recognises a
 	 *              redefined wp_mail() and no longer counts the Newsletter plugin.
 	 * @return bool True if a mail plugin or wp_mail() override is active.
 	 */

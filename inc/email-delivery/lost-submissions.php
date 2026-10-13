@@ -9,7 +9,7 @@
  * clears) and from the debug log (which can be switched off).
  *
  * @package SureForms
- * @since   x.x.x
+ * @since   2.12.9
  */
 
 namespace SRFM\Inc\Email_Delivery;
@@ -23,27 +23,27 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Lost_Submissions
  *
- * @since x.x.x
+ * @since 2.12.9
  */
 class Lost_Submissions {
 	/**
 	 * Option holding the record. Not autoloaded; no personal data.
 	 *
-	 * @since x.x.x
+	 * @since 2.12.9
 	 */
 	public const OPTION = 'srfm_lost_submissions';
 
 	/**
 	 * Most form ids kept; the oldest is dropped first.
 	 *
-	 * @since x.x.x
+	 * @since 2.12.9
 	 */
 	public const MAX_FORMS = 10;
 
 	/**
 	 * Record one lost submission.
 	 *
-	 * @since x.x.x
+	 * @since 2.12.9
 	 * @param int $form_id Form the submission belonged to.
 	 * @return void
 	 */
@@ -70,7 +70,7 @@ class Lost_Submissions {
 	/**
 	 * The record, normalised. A count of 0 means nothing was lost.
 	 *
-	 * @since x.x.x
+	 * @since 2.12.9
 	 * @return array{count:int,form_ids:array<int,int>,last_at:int}
 	 */
 	public static function get() {
@@ -96,7 +96,7 @@ class Lost_Submissions {
 	/**
 	 * The owner has seen it: start counting again from zero.
 	 *
-	 * @since x.x.x
+	 * @since 2.12.9
 	 * @return void
 	 */
 	public static function acknowledge() {
