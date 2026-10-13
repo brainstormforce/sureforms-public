@@ -28,7 +28,7 @@ class Field_Validation {
 	 * GDPR_Markup; they are what the rendered input name encodes when a form leaves the
 	 * label empty, so the two have to agree.
 	 *
-	 * @since x.x.x
+	 * @since 2.12.9
 	 */
 	public const UNSUBMITTABLE_BLOCKS = [
 		'srfm/checkbox' => [
@@ -238,7 +238,7 @@ class Field_Validation {
 	 *
 	 * @param array<mixed> $form_data Submitted form data.
 	 * @param int|mixed    $form_id   The form post id.
-	 * @since x.x.x
+	 * @since 2.12.9
 	 * @return array<mixed> Form data with the missing keys added.
 	 */
 	public static function backfill_unsubmitted_fields( $form_data, $form_id ) {

@@ -206,7 +206,7 @@ class Client_Logger {
 	 *                                 cost the submission itself (a form that does
 	 *                                 not store entries). Describes the latest failure.
 	 * @since 2.12.6
-	 * @since x.x.x Added $context.
+	 * @since 2.12.9 Added $context.
 	 * @return void
 	 */
 	public static function record_failure( $category, $form_id = 0, $form_title = '', $context = [] ) {

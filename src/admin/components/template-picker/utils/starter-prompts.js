@@ -16,7 +16,7 @@ const isNonEmptyString = ( value ) =>
  * Whether a value can be rendered as `<Icon />`: a function component or a
  * forwardRef/memo object (lucide icons), but not an element such as `<Mail />`.
  *
- * @since x.x.x
+ * @since 2.12.9
  * @param {*} icon Icon from a starter.
  * @return {boolean} Whether the icon is a component.
  */
@@ -30,7 +30,7 @@ const isIconComponent = ( icon ) =>
 /**
  * Whether a starter from the filter can be rendered without breaking the screen.
  *
- * @since x.x.x
+ * @since 2.12.9
  * @param {*} starter Starter from the filter.
  * @return {boolean} Whether the starter is valid.
  */
@@ -49,7 +49,7 @@ const isValidStarter = ( starter ) =>
  *
  * Default prompts only ask for fields available in the free plugin.
  *
- * @since x.x.x
+ * @since 2.12.9
  * @return {Array<{id: string, title: string, description: string, icon: Function, accent?: string, prompt: string}>} Starter prompts.
  */
 export const getStarterPrompts = () => {
@@ -172,7 +172,7 @@ const formTypeOf = ( value ) => value.match( /^(.*?)\bform\b/i )?.[ 1 ] ?? null;
  * "Quote request form"), when the starter has one. A field like "preferred
  * contact method" doesn't make a quote request a contact form.
  *
- * @since x.x.x
+ * @since 2.12.9
  * @param {string} text          Current prompt.
  * @param {string} starterPrompt The starter's prompt.
  * @return {boolean} Whether the prompt still comes from the starter.

@@ -10,7 +10,7 @@
  * accepted by, or handed off to, the mailer. It is never described as delivered.
  *
  * @package SureForms
- * @since   x.x.x
+ * @since   2.12.9
  */
 
 namespace SRFM\Inc\Email_Delivery;
@@ -36,7 +36,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *                           second-guess its configuration.
  *  - ready                  SureMail has a connection that is not limited.
  *
- * @since x.x.x
+ * @since 2.12.9
  */
 class Status {
 	/**
@@ -44,7 +44,7 @@ class Status {
 	 *
 	 * Timestamps, a form id and a reason code only — no addresses or content.
 	 *
-	 * @since x.x.x
+	 * @since 2.12.9
 	 */
 	public const OUTCOMES_OPTION = 'srfm_email_delivery_outcomes';
 
@@ -56,7 +56,7 @@ class Status {
 	 * there when the owner next logs in, short enough not to nag about a fault
 	 * fixed outside SureForms' sight.
 	 *
-	 * @since x.x.x
+	 * @since 2.12.9
 	 */
 	public const ATTENTION_WINDOW = 14 * DAY_IN_SECONDS;
 
@@ -67,7 +67,7 @@ class Status {
 	 * write an option on every submission. A success that follows a failure is
 	 * always written: it is the one that clears the warning.
 	 *
-	 * @since x.x.x
+	 * @since 2.12.9
 	 */
 	public const SUCCESS_WRITE_INTERVAL = HOUR_IN_SECONDS;
 
@@ -77,14 +77,14 @@ class Status {
 	 * The submit path is public, so a visitor who can make wp_mail() fail must
 	 * not be able to turn every submission into an option write.
 	 *
-	 * @since x.x.x
+	 * @since 2.12.9
 	 */
 	public const FAILURE_WRITE_INTERVAL = 5 * MINUTE_IN_SECONDS;
 
 	/**
 	 * Most forms tracked with an open failure; the oldest is dropped first.
 	 *
-	 * @since x.x.x
+	 * @since 2.12.9
 	 */
 	public const MAX_OPEN_FORMS = 20;
 
@@ -92,14 +92,14 @@ class Status {
 	 * Memoised status for this request.
 	 *
 	 * @var array<string,mixed>|null
-	 * @since x.x.x
+	 * @since 2.12.9
 	 */
 	private static $memo = null;
 
 	/**
 	 * Current email delivery status.
 	 *
-	 * @since x.x.x
+	 * @since 2.12.9
 	 * @return array<string,mixed>
 	 */
 	public static function get_status() {
@@ -112,7 +112,7 @@ class Status {
 		/**
 		 * Filters the email delivery status.
 		 *
-		 * @since x.x.x
+		 * @since 2.12.9
 		 * @param array<string,mixed> $status Status array.
 		 */
 		$filtered = apply_filters( 'srfm_email_delivery_status', $status );
@@ -129,14 +129,14 @@ class Status {
 	 * page, the final onboarding step), so a change to the offer is one filter
 	 * and never a copy edit. 0 hides the offer.
 	 *
-	 * @since x.x.x
+	 * @since 2.12.9
 	 * @return array<string,int>
 	 */
 	public static function get_offer() {
 		/**
 		 * Filters how many free emails a new SureContact account comes with.
 		 *
-		 * @since x.x.x
+		 * @since 2.12.9
 		 * @param int $free_emails Free emails; 0 hides the offer.
 		 */
 		$free_emails = apply_filters( 'srfm_surecontact_free_emails', 100 );
@@ -157,7 +157,7 @@ class Status {
 	 * notification from that form is accepted (or the window passes); the
 	 * message points at SureMail's logs, which show the retry.
 	 *
-	 * @since x.x.x
+	 * @since 2.12.9
 	 * @param bool   $accepted    Whether wp_mail() accepted the email.
 	 * @param int    $form_id     Form the notification belongs to.
 	 * @param string $reason      Short reason code for a failure.
@@ -259,7 +259,7 @@ class Status {
 	/**
 	 * Stored send outcomes with defaults filled in.
 	 *
-	 * @since x.x.x
+	 * @since 2.12.9
 	 * @return array{last_result:string,last_success_at:int,last_failure_at:int,last_failure_form_id:int,last_failure_reason:string,last_failure_mailer:string,last_failure_entry_saved:bool,consecutive_failures:int,suremail_connected_at:int,suremail_lost_at:int,open_forms:array<int,int>,open_details:array<int,array{reason:string,mailer:string,entry_saved:bool}>}
 	 */
 	public static function get_outcomes() {
@@ -285,7 +285,7 @@ class Status {
 	/**
 	 * Drop the memoised status.
 	 *
-	 * @since x.x.x
+	 * @since 2.12.9
 	 * @return void
 	 */
 	public static function reset() {
@@ -295,7 +295,7 @@ class Status {
 	/**
 	 * Point the last_failure_* fields at the newest form still failing.
 	 *
-	 * @since x.x.x
+	 * @since 2.12.9
 	 * @param array<string,mixed> $outcomes Outcomes with at least one open form.
 	 * @return array<string,mixed>
 	 */
@@ -318,7 +318,7 @@ class Status {
 	/**
 	 * Per-form failure details, as form id => reason, mailer, entry_saved.
 	 *
-	 * @since x.x.x
+	 * @since 2.12.9
 	 * @param array<string,mixed> $stored Raw stored outcomes.
 	 * @return array<int,array{reason:string,mailer:string,entry_saved:bool}>
 	 */
@@ -345,7 +345,7 @@ class Status {
 	 * failure: it becomes that form's entry, so an open failure survives the
 	 * update.
 	 *
-	 * @since x.x.x
+	 * @since 2.12.9
 	 * @param array<string,mixed> $stored Raw stored outcomes.
 	 * @return array<int,int>
 	 */
@@ -369,7 +369,7 @@ class Status {
 	/**
 	 * Build the status.
 	 *
-	 * @since x.x.x
+	 * @since 2.12.9
 	 * @return array<string,mixed>
 	 */
 	private static function compute() {
@@ -500,7 +500,7 @@ class Status {
 	 * from before it can be told apart from failures through it. Writes only on
 	 * the transitions, not on every read; updates `$outcomes` in place.
 	 *
-	 * @since x.x.x
+	 * @since 2.12.9
 	 * @param array<string,mixed> $outcomes    Stored outcomes, updated in place.
 	 * @param int                 $connections Current connection count.
 	 * @param int|null            $at          When the connection was made, if known; now otherwise.
@@ -532,7 +532,7 @@ class Status {
 	/**
 	 * SureMail's install state when it is not loaded.
 	 *
-	 * @since x.x.x
+	 * @since 2.12.9
 	 * @return string Install | Installed | Activated.
 	 */
 	private static function get_suremail_plugin_status() {
@@ -549,7 +549,7 @@ class Status {
 	 * The install_activate and activate steps are carried out by the SureForms UI
 	 * through the existing plugin installer, which is why they have no URL.
 	 *
-	 * @since x.x.x
+	 * @since 2.12.9
 	 * @param string                                      $state           Status state.
 	 * @param array{slug:string,label:string,file:string} $mailer          Active mailer.
 	 * @param string                                      $plugin_status   SureMail install state.
@@ -617,7 +617,7 @@ class Status {
 	/**
 	 * Owner-facing title, message and severity.
 	 *
-	 * @since x.x.x
+	 * @since 2.12.9
 	 * @param string                                      $state           Status state.
 	 * @param array{slug:string,label:string,file:string} $mailer          Active mailer.
 	 * @param string                                      $provider        SureMail provider label.

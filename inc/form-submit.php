@@ -829,7 +829,7 @@ class Form_Submit {
 			 * @param array<mixed> $form_data Parsed request data for the submission (JSON or
 			 *                                multipart), including any non-field keys a client
 			 *                                sent alongside the fields.
-			 * @since x.x.x
+			 * @since 2.12.9
 			 */
 			do_action( 'srfm_submission_accepted', intval( $entry_id ), Helper::get_integer_value( $id ), $form_data );
 
@@ -1075,7 +1075,7 @@ class Form_Submit {
 	 * @param array<mixed>  $context   Optional. 'entry_saved' => false when the form does not store entries,
 	 *                                 so a failed notification is the loss of the submission itself.
 	 * @since 0.0.1
-	 * @since x.x.x Added $context.
+	 * @since 2.12.9 Added $context.
 	 * @return array<mixed> Array containing the response data.
 	 */
 	public static function send_email( $id, $submission_data, $form_data = [], $context = [] ) {
@@ -1667,7 +1667,7 @@ class Form_Submit {
 	 *
 	 * @param array<mixed> $item            Notification settings.
 	 * @param array<mixed> $submission_data Submission data.
-	 * @since x.x.x
+	 * @since 2.12.9
 	 * @return array{addresses:array<int,string>,only_visitor:bool}
 	 */
 	private static function get_visitor_recipients( $item, $submission_data ) {
@@ -1721,7 +1721,7 @@ class Form_Submit {
 	 *
 	 * @param array<string,mixed> $parsed  Parsed notification: to, subject, message, headers.
 	 * @param int                 $form_id Form the notification belongs to.
-	 * @since x.x.x
+	 * @since 2.12.9
 	 * @return array{sent:bool,via_php_mail:bool,error:string}
 	 */
 	private static function dispatch_notification( $parsed, $form_id ) {

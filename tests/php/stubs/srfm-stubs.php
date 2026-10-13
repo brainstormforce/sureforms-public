@@ -194,7 +194,7 @@ class Analytics
      *
      * @param string $starter_id Starter card id, or empty string for a free-text prompt.
      * @param bool   $edited     Whether the starter prompt was edited before generating.
-     * @since x.x.x
+     * @since 2.12.9
      * @return void
      */
     public static function track_ai_starter_usage($starter_id, $edited)
