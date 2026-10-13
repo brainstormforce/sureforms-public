@@ -44,6 +44,10 @@ class Smart_Tags {
 	 * @return string
 	 */
 	public function render_form( $block_content, $block ) {
+		if ( false === strpos( $block_content, '{' ) ) {
+			return $block_content;
+		}
+
 		$form_id = $this->get_block_form_id( $block );
 
 		if ( ! $form_id || ! preg_match( '/\{[^\}]+\}/', $block_content ) ) {
@@ -60,7 +64,7 @@ class Smart_Tags {
 	 *
 	 * @param int|false $id Form id.
 	 * @since 0.0.1
-	 * @since 2.12.9 True only for a SureForms form post.
+	 * @since x.x.x True only for a SureForms form post.
 	 * @return bool
 	 */
 	public function check_form_by_id( $id ) {
@@ -405,6 +409,13 @@ class Smart_Tags {
 		}
 
 		if ( $param && strpos( $value, 'get_cookie:' ) !== false ) {
+			// WordPress' own cookies carry the session and the comment author identity.
+			// Reading them here would hand them to whoever can place the tag, server
+			// side, which is why being HttpOnly does not protect them.
+			if ( preg_match( '/^(?:wordpress_|wp-|wp_|comment_author)/i', $param ) ) {
+				return '';
+			}
+
 			return isset( $_COOKIE[ $param ] ) ? self::neutralize_request_value( esc_attr( sanitize_text_field( wp_unslash( $_COOKIE[ $param ] ) ) ) ) : '';
 		}
 
@@ -696,7 +707,7 @@ class Smart_Tags {
 	 * Get the form a rendered block belongs to.
 	 *
 	 * @param array<mixed> $block Block Properties As An Array.
-	 * @since 2.12.9
+	 * @since x.x.x
 	 * @return int Form ID, or 0 when the block is not form content.
 	 */
 	private function get_block_form_id( $block ) {
@@ -709,8 +720,10 @@ class Smart_Tags {
 		if ( isset( $block['blockName'] ) && 'srfm/form' === $block['blockName'] && ! empty( $block['attrs']['id'] ) ) {
 			// The form block itself, after its markup has rendered.
 			$form_id = Helper::get_integer_value( $block['attrs']['id'] );
-		} else {
-			// A form post's own page, such as the Instant Form page.
+		} elseif ( is_singular( SRFM_FORMS_POST_TYPE ) && get_queried_object_id() === get_the_ID() ) {
+			// The form post's own page, such as the Instant Form page. Tied to the queried
+			// object so that a loop rendering forms inside another post cannot borrow it:
+			// in that case the queried object is the outer post, not the form.
 			$form_id = Helper::get_integer_value( get_the_ID() );
 		}
 
@@ -721,11 +734,11 @@ class Smart_Tags {
 	 * Whether a tag is a request smart tag: {get_input:name} or {get_cookie:name}, matched in full.
 	 *
 	 * @param string $tag Smart tag.
-	 * @since 2.12.9
+	 * @since x.x.x
 	 * @return bool
 	 */
 	private static function is_request_tag( $tag ) {
-		return 1 === preg_match( '/^\{get_(?:input|cookie):[\p{L}\p{N}_-]+\}\z/u', $tag );
+		return 1 === preg_match( '/^\{get_(?:input|cookie):[\p{L}\p{M}\p{N}_-]+\}\z/u', $tag );
 	}
 
 	/**
@@ -738,12 +751,12 @@ class Smart_Tags {
 	 * later smart tag pass over the same markup cannot read a tag inside the value.
 	 *
 	 * @param string $value Escaped request value.
-	 * @since 2.12.9
+	 * @since x.x.x
 	 * @return string The value, or an empty string when it carries a script scheme.
 	 */
 	private static function neutralize_request_value( $value ) {
 		$decoded = html_entity_decode( wp_kses_decode_entities( $value ), ENT_QUOTES | ENT_HTML5, 'UTF-8' );
-		$scheme  = strtolower( Helper::get_string_value( preg_replace( '/[\x00-\x20]+/', '', $decoded ) ) );
+		$scheme  = strtolower( Helper::get_string_value( preg_replace( '/[\t\r\n]+/', '', ltrim( $decoded, "\x00..\x20" ) ) ) );
 
 		if ( preg_match( '/^(?:javascript|vbscript|data):/', $scheme ) ) {
 			return '';
@@ -899,7 +912,9 @@ class Smart_Tags {
 		}
 
 		if ( property_exists( $post, $value ) ) {
-			return $post->{$value};
+			// Escaped here because a field default is escaped while it is still the
+			// literal tag, so this value is pasted in after that happened.
+			return esc_attr( Helper::get_string_value( $post->{$value} ) );
 		}
 
 		return '';

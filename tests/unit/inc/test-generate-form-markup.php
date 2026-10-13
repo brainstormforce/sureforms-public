@@ -1026,4 +1026,28 @@ class Test_Generate_Form_Markup extends TestCase {
 
 		wp_delete_post( $form_id, true );
 	}
+
+	/**
+	 * blockId comes from block attributes and reaches a container id and a <style>
+	 * selector, so anything outside the CSS-safe set is dropped rather than printed.
+	 */
+	public function test_get_form_markup_sanitises_block_id_in_the_container_id() {
+		remove_all_actions( 'wp_insert_post_data' );
+
+		$form_id = wp_insert_post(
+			[
+				'post_title'   => 'Block id scoping',
+				'post_type'    => SRFM_FORMS_POST_TYPE,
+				'post_status'  => 'publish',
+				'post_content' => 'content',
+			]
+		);
+
+		$markup = Generate_Form_Markup::get_form_markup( $form_id, true, '', 'post', false, [ 'blockId' => 'abc"><style>x{}' ] );
+
+		$this->assertStringContainsString( 'srfm-form-container-' . $form_id . '-abcstylex', $markup );
+		$this->assertStringNotContainsString( '<style>x{}', $markup );
+
+		wp_delete_post( $form_id, true );
+	}
 }

@@ -7896,7 +7896,7 @@ namespace SRFM\Inc {
          * @param array<mixed> $block_attrs Block attributes for per-embed styling.
          *
          * @return string|false
-         * @since 2.12.9
+         * @since x.x.x
          */
         public static function render_form_markup($id, $show_title_current_page, $sf_classname, $post_type, $do_blocks, $block_attrs)
         {
@@ -7905,7 +7905,7 @@ namespace SRFM\Inc {
          * Get the ID of the form whose content is being rendered.
          *
          * @return int Form ID, or 0 when no form content is rendering.
-         * @since 2.12.9
+         * @since x.x.x
          */
         public static function get_rendering_form_id()
         {

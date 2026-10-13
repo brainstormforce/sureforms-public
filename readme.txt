@@ -432,6 +432,8 @@ You can report security issues through our [Bug Bounty Program](https://brainsto
 * New: Forms that do not store entries now warn you when a submission was lost because its notification could not be sent.
 * Improvement: When WordPress cannot send a form notification, SureForms no longer retries it silently through PHP's mail(), which hid the real problem and could send twice alongside a mail plugin. The failure and its reason now show in Entry Logs and Form Checks. Sites that relied on that fallback can turn it back on with the `srfm_allow_php_mail_fallback` filter (only used when no mail plugin is active).
 * Fix: Activating a recommended plugin from SureForms now requires permission to activate plugins and is limited to the plugins SureForms recommends.
+* Improvement: Smart tags such as {get_input:name} now resolve only inside SureForms form content. A tag written in ordinary page or post content is shown as written.
+* Fix: This update addressed a security bug. Props to dzaku from Patchstack for reporting it responsibly to our team.
 = 2.12.8 - 25th September 2026 =
 * Improvement: The debug log no longer records routine validation stops, such as an empty required field, keeping it focused on real failures.
 * Fix: Entry Logs now record the email notification sent when a form is submitted.

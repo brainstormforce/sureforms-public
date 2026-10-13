@@ -46,6 +46,11 @@ class Test_Smart_Tags extends TestCase {
 		$_COOKIE         = $this->saved_request['cookie'];
 		$GLOBALS['post'] = $this->saved_request['post'];
 		$this->set_rendering_form_id( 0 );
+		global $wp_query;
+		$wp_query->is_singular       = false;
+		$wp_query->is_single         = false;
+		$wp_query->queried_object    = null;
+		$wp_query->queried_object_id = 0;
 		foreach ( $this->post_ids as $post_id ) {
 			wp_delete_post( $post_id, true );
 		}
@@ -212,6 +217,19 @@ class Test_Smart_Tags extends TestCase {
 	}
 
 	/**
+	 * Make $post_id the queried object of the main query, as a singular request does.
+	 *
+	 * @param int $post_id Post ID.
+	 */
+	private function make_queried_singular( $post_id ) {
+		global $wp_query;
+		$wp_query->is_singular        = true;
+		$wp_query->is_single          = true;
+		$wp_query->queried_object     = get_post( $post_id );
+		$wp_query->queried_object_id  = $post_id;
+	}
+
+	/**
 	 * Set the form id that Generate_Form_Markup is rendering.
 	 *
 	 * @param int $form_id Form ID, or 0 for none.
@@ -260,7 +278,8 @@ class Test_Smart_Tags extends TestCase {
 	}
 
 	public function test_render_form_resolves_tags_on_form_post() {
-		$this->make_current_post( SRFM_FORMS_POST_TYPE );
+		$form_id = $this->make_current_post( SRFM_FORMS_POST_TYPE );
+		$this->make_queried_singular( $form_id );
 		$_SERVER['QUERY_STRING'] = 'u=hello';
 		$html                    = '<p>{get_input:u}</p>';
 
@@ -446,7 +465,6 @@ class Test_Smart_Tags extends TestCase {
 			'javascript'        => [ 'u=javascript:alert(1)' ],
 			'mixed case'        => [ 'u=JaVaScRiPt:alert(1)' ],
 			'leading space'     => [ 'u=%20javascript:alert(1)' ],
-			'tab inside'        => [ 'u=java%09script:alert(1)' ],
 			'entity colon'      => [ 'u=javascript%26%2358%3Balert(1)' ],
 			'hex entity colon'  => [ 'u=javascript%26%23x3a%3Balert(1)' ],
 			'cr reference'      => [ 'u=java%26%2313%3Bscript:alert(1)' ],
@@ -523,5 +541,75 @@ class Test_Smart_Tags extends TestCase {
 		$_SERVER['QUERY_STRING'] = 'u=hello';
 
 		$this->assertSame( '', Smart_Tags::parse_request_param( '{x/?get_input:u}' ) );
+	}
+
+	/**
+	 * A loop can make any viewable post the global post while another post is being
+	 * rendered. The form must not lend its scope to the post hosting that loop, or a
+	 * Contributor's own block would resolve tags, including the viewer's cookies.
+	 */
+	public function test_render_form_ignores_a_form_the_global_post_points_at_inside_another_post() {
+		$host_id = $this->make_current_post( 'post' );
+		$this->make_queried_singular( $host_id );
+
+		// What a query loop over forms does while the host post renders.
+		$form_id         = $this->make_current_post( SRFM_FORMS_POST_TYPE );
+		$GLOBALS['post'] = get_post( $form_id );
+
+		$_COOKIE['wordpress_logged_in_probe'] = 'session-value';
+		$_SERVER['QUERY_STRING']              = 'u=hello';
+		$html                                 = '<p><img src="https://example.test/?c={get_cookie:wordpress_logged_in_probe}&amp;u={get_input:u}" /></p>';
+
+		$this->assertSame( $html, $this->smart_tags->render_form( $html, $this->paragraph_block( $html ) ) );
+	}
+
+	/**
+	 * Defence in depth: even inside form content, WordPress' own cookies are not readable.
+	 */
+	public function test_parse_request_param_refuses_wordpress_cookies() {
+		$_COOKIE['wordpress_logged_in_probe'] = 'session-value';
+		$_COOKIE['wp-settings-1']             = 'editor';
+		$_COOKIE['comment_author_probe']      = 'Someone';
+		$_COOKIE['srfm_campaign']             = 'spring';
+
+		$this->assertSame( '', Smart_Tags::parse_request_param( '{get_cookie:wordpress_logged_in_probe}' ) );
+		$this->assertSame( '', Smart_Tags::parse_request_param( '{get_cookie:wp-settings-1}' ) );
+		$this->assertSame( '', Smart_Tags::parse_request_param( '{get_cookie:comment_author_probe}' ) );
+		$this->assertSame( 'spring', Smart_Tags::parse_request_param( '{get_cookie:srfm_campaign}' ), 'Control: an ordinary cookie still resolves.' );
+	}
+
+	/**
+	 * The embedding post's title reaches a field default that was escaped while it was
+	 * still the literal tag, so it has to carry its own escaping.
+	 */
+	public function test_embed_post_title_is_escaped() {
+		$post_id              = $this->make_current_post( 'post' );
+		$GLOBALS['post']      = get_post( $post_id );
+		$GLOBALS['post']->post_title = 'x" autofocus data-probe="1';
+
+		$resolved = Helper::get_string_value( $this->smart_tags->process_smart_tags( '{embed_post_title}' ) );
+
+		$this->assertStringNotContainsString( '"', $resolved );
+		$this->assertStringContainsString( '&quot;', $resolved );
+	}
+
+	/**
+	 * Only leading whitespace and tab/CR/LF inside a scheme are ignored by a browser.
+	 * A space elsewhere makes the value a relative URL, so the value is ordinary text.
+	 */
+	public function test_request_value_keeps_interior_spaces() {
+		$_SERVER['QUERY_STRING'] = 'talk=Java%20Script%3A%20intro&tabbed=java%09script:alert(1)';
+
+		$this->assertSame( 'Java Script: intro', Smart_Tags::parse_request_param( '{get_input:talk}' ) );
+
+		// sanitize_text_field() collapses the tab to a space before the scheme check runs,
+		// and a space cannot sit inside a scheme, so this is a relative URL to a browser.
+		$this->assertSame( 'java script:alert(1)', Smart_Tags::parse_request_param( '{get_input:tabbed}' ) );
+	}
+
+	public function test_request_tag_allows_combining_marks() {
+		$_SERVER['QUERY_STRING'] = '%E0%A4%A8%E0%A4%BE%E0%A4%AE=Asha';
+
+		$this->assertSame( 'Asha', Smart_Tags::parse_request_param( '{get_input:नाम}' ) );
 	}
 }
