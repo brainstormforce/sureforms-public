@@ -431,10 +431,12 @@ You can report security issues through our [Bug Bounty Program](https://brainsto
 * New: Forms that do not store entries now warn you when a failed notification loses a submission.
 * New: MCP Adapter can now be installed and activated in one click.
 * Improvement: Failed notifications are no longer silently retried through PHP's mail(); the reason now shows in Entry Logs and Form Checks. Use the `srfm_allow_php_mail_fallback` filter to restore it.
+* Improvement: Smart tags such as {get_input:name} now resolve only inside SureForms form content. A tag written in ordinary page or post content is shown as written.
 * Fix: Deleting an option in a duplicated Multiple Choice block no longer removes it from the original.
 * Fix: Form fields no longer fail accessibility scans for a missing error message reference.
 * Fix: The submit button now stays disabled while a form redirects, preventing duplicate submissions.
 * Fix: Unticked Checkbox fields now appear in entries and notification emails.
+* Fix: This update addressed a security bug. Props to dzaku from Patchstack for reporting it responsibly to our team.
 = 2.12.8 - 25th September 2026 =
 * Improvement: The debug log no longer records routine validation stops, such as an empty required field, keeping it focused on real failures.
 * Fix: Entry Logs now record the email notification sent when a form is submitted.

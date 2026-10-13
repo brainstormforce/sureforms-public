@@ -234,7 +234,7 @@ class Multichoice_Markup extends Base {
 			return;
 		}
 
-		$smart_tags = new Smart_Tags();
+		$smart_tags = Smart_Tags::get_instance();
 		$resolved   = $smart_tags->process_smart_tags( $dynamic_default );
 
 		if ( empty( $resolved ) || ! is_string( $resolved ) || ! is_array( $this->options ) ) {
