@@ -428,10 +428,18 @@ You can report security issues through our [Bug Bounty Program](https://brainsto
 == Changelog ==
 = 2.12.9 - 13th October 2026 =
 * New: Added an email delivery step to onboarding that installs SureMail and, with your consent, sets up a free SureContact account so form emails reach the inbox.
+* New: Added starter prompt cards to Generate with AI, so you can create a contact, quote request, event registration or feedback form in one click.
+* New: Added the `srfm_submission_accepted` action for developers, which fires as soon as a submission is accepted, before notification emails are sent.
 * New: Forms that do not store entries now warn you when a submission was lost because its notification could not be sent.
+* New: MCP Adapter can now be installed and activated from the MCP settings in one click, with no manual download from GitHub.
 * New: The dashboard, Form Checks and the form editor now show whether this site can send email, and what to do when it cannot.
 * Improvement: Failed form notifications are no longer silently retried through PHP's mail(), which hid the real problem and could send duplicates alongside a mail plugin. The failure and its reason now appear in Entry Logs and Form Checks. Sites that relied on this fallback can re-enable it with the `srfm_allow_php_mail_fallback` filter (applies only when no mail plugin is active).
 * Fix: Activating a recommended plugin from SureForms now requires permission to activate plugins and is limited to the plugins SureForms recommends.
+* Fix: Deleting an option from a duplicated Multiple Choice block no longer removes it from the original block too.
+* Fix: Form fields no longer point to an error message that is not on the page, so accessibility scanners stop flagging every field.
+* Fix: Plugins installed from SureForms, such as SureMail, now run their activation setup, so features like SureMail's Email Logs work right after install.
+* Fix: The submit button now stays disabled while a form redirects after submission, preventing duplicate submissions and false "submissions failing" alerts.
+* Fix: Unticked Checkbox fields now appear in entries and notification emails as empty, like other blank fields.
 = 2.12.8 - 25th September 2026 =
 * Improvement: The debug log no longer records routine validation stops, such as an empty required field, keeping it focused on real failures.
 * Fix: Entry Logs now record the email notification sent when a form is submitted.
