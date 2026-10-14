@@ -202,7 +202,21 @@ return [
 				Catalog::field( 'textarea', 'description', __( 'About the Business', 'sureforms' ), true, [ 'helpText' => __( 'What you offer and what makes you different. This appears on your listing.', 'sureforms' ) ] ),
 				[ 'rows' => 5 ]
 			),
-			Catalog::field( 'address', 'address', __( 'Business Address', 'sureforms' ), true ),
+			// Named sub-fields, so the post can show the address: the address block itself has no single value.
+			Catalog::field(
+				'address',
+				'address',
+				__( 'Business Address', 'sureforms' ),
+				true,
+				[
+					'innerFields' => [
+						Catalog::attrs( Catalog::field( 'input', 'street-address', __( 'Street Address', 'sureforms' ), true ), [ 'addressComponent' => 'line1' ] ),
+						Catalog::attrs( Catalog::width( Catalog::field( 'input', 'city', __( 'City', 'sureforms' ), true ), 50 ), [ 'addressComponent' => 'city' ] ),
+						Catalog::attrs( Catalog::width( Catalog::field( 'input', 'state', __( 'State or Region', 'sureforms' ), false ), 25 ), [ 'addressComponent' => 'state' ] ),
+						Catalog::attrs( Catalog::width( Catalog::field( 'input', 'postal-code', __( 'Postal Code', 'sureforms' ), true ), 25 ), [ 'addressComponent' => 'postal_code' ] ),
+					],
+				]
+			),
 			Catalog::width(
 				array_merge(
 					$c['phone'],
@@ -227,7 +241,7 @@ return [
 		'cpt'           => [
 			'name'           => __( 'Directory listing', 'sureforms' ),
 			'title'          => 'business-name',
-			'content'        => '<p>{form:description}</p><p>{form:address}</p><p>{form:phone}<br>{form:website}</p><p>{form:opening-hours}</p>',
+			'content'        => '<p>{form:description}</p><p>{form:street-address}, {form:city} {form:state} {form:postal-code}</p><p>{form:phone}<br>{form:website}</p><p>{form:opening-hours}</p>',
 			'featured_image' => 'logo',
 			'post_type'      => 'post',
 			'status'         => 'pending',
