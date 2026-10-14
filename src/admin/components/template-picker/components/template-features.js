@@ -14,6 +14,9 @@ import {
 	ListOrdered,
 	Lock,
 	Mail,
+	MailCheck,
+	MailPlus,
+	MessageSquareText,
 	MessagesSquare,
 	Paperclip,
 	PenTool,
@@ -66,6 +69,16 @@ const getFeatureMap = () => ( {
 		short: __( 'Conditions', 'sureforms' ),
 		Icon: GitBranch,
 	},
+	conditional_confirmations: {
+		label: __( 'Thank-you message per answer', 'sureforms' ),
+		short: __( 'Smart thank-you', 'sureforms' ),
+		Icon: MessageSquareText,
+	},
+	conditional_emails: {
+		label: __( 'Conditional emails', 'sureforms' ),
+		short: __( 'Smart emails', 'sureforms' ),
+		Icon: MailCheck,
+	},
 	user_registration: {
 		label: __( 'User registration', 'sureforms' ),
 		short: __( 'Registration', 'sureforms' ),
@@ -115,6 +128,11 @@ const getFeatureMap = () => ( {
 		label: __( 'File upload', 'sureforms' ),
 		short: __( 'File upload', 'sureforms' ),
 		Icon: Paperclip,
+	},
+	email_attachments: {
+		label: __( 'Uploads attached to emails', 'sureforms' ),
+		short: __( 'Attachments', 'sureforms' ),
+		Icon: MailPlus,
 	},
 	autoresponder: {
 		label: __( 'Auto-reply email', 'sureforms' ),
