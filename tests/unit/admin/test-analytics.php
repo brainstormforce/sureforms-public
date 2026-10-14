@@ -1183,6 +1183,138 @@ class Test_Analytics extends TestCase {
 	}
 
 	/**
+	 * Forms created by make_template_form(), deleted after each test.
+	 *
+	 * @var array<int, int>
+	 */
+	private $template_forms = [];
+
+	/**
+	 * Delete the forms make_template_form() created.
+	 *
+	 * @return void
+	 */
+	private function delete_template_forms() {
+		foreach ( $this->template_forms as $id ) {
+			wp_delete_post( $id, true );
+		}
+		$this->template_forms = [];
+		Helper::update_srfm_option( 'form_template_usage', [] );
+		Analytics::events()->flush_pending();
+	}
+
+	/**
+	 * Create a form as a template would, with the given status.
+	 *
+	 * @param string $template_id Template id, or '' for a hand-made form.
+	 * @param string $status      Post status.
+	 * @return int Form id.
+	 */
+	private function make_template_form( $template_id, $status ) {
+		$id = wp_insert_post(
+			[
+				'post_type'   => SRFM_FORMS_POST_TYPE,
+				'post_status' => $status,
+				'post_title'  => 'Template form',
+			]
+		);
+		$this->template_forms[] = $id;
+		if ( '' !== $template_id ) {
+			update_post_meta( $id, '_srfm_created_via', 'template' );
+			update_post_meta( $id, '_srfm_template_id', $template_id );
+		}
+		return $id;
+	}
+
+	/**
+	 * The queued form_template_usage properties, or null when not queued.
+	 *
+	 * @return array<string, string>|null
+	 */
+	private function queued_template_usage() {
+		foreach ( get_option( 'srfm_options', [] )['usage_events_pending'] ?? [] as $event ) {
+			if ( 'form_template_usage' === ( $event['event_name'] ?? '' ) ) {
+				return $event['properties'] ?? [];
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Test the template usage event counts published template forms per template.
+	 *
+	 * @return void
+	 */
+	public function test_template_usage_counts_published_template_forms() {
+		Analytics::events()->flush_pending();
+		Helper::update_srfm_option( 'form_template_usage', [ 'created' => 4, 'templates' => [ 'contact-us' => 3, 'quote-request' => 1 ] ] );
+
+		$this->make_template_form( 'contact-us', 'publish' );
+		$this->make_template_form( 'contact-us', 'publish' );
+		$draft = $this->make_template_form( 'contact-us', 'draft' );
+		$this->make_template_form( 'quote-request', 'draft' );
+		$this->make_template_form( '', 'publish' );
+
+		Analytics::refresh_form_template_usage();
+		$props = $this->queued_template_usage();
+
+		$this->assertNotNull( $props );
+		$this->assertSame( '4', $props['created'] );
+		$this->assertSame( '2', $props['published'], 'Drafts and hand-made forms are not counted.' );
+		$this->assertSame( '2', $props['published_contact-us'] );
+		$this->assertArrayNotHasKey( 'published_quote-request', $props );
+		$this->assertSame( '3', $props['template_contact-us'] );
+
+		// Publishing later, or unpublishing, shows up on the next refresh.
+		wp_update_post( [ 'ID' => $draft, 'post_status' => 'publish' ] );
+		Analytics::refresh_form_template_usage();
+		$this->assertSame( '3', $this->queued_template_usage()['published_contact-us'] );
+
+		wp_update_post( [ 'ID' => $draft, 'post_status' => 'draft' ] );
+		Analytics::refresh_form_template_usage();
+		$this->assertSame( '2', $this->queued_template_usage()['published'] );
+
+		$this->delete_template_forms();
+	}
+
+	/**
+	 * Test sites that never used a template send no template usage event.
+	 *
+	 * @return void
+	 */
+	public function test_template_usage_is_not_sent_without_templates() {
+		Analytics::events()->flush_pending();
+		Helper::update_srfm_option( 'form_template_usage', [] );
+		$this->make_template_form( '', 'publish' );
+
+		Analytics::refresh_form_template_usage();
+
+		$this->assertNull( $this->queued_template_usage() );
+
+		$this->delete_template_forms();
+	}
+
+	/**
+	 * Test creating a template form queues the published counts too.
+	 *
+	 * @return void
+	 */
+	public function test_creating_a_template_form_sends_published_counts() {
+		Analytics::events()->flush_pending();
+		Helper::update_srfm_option( 'form_template_usage', [] );
+		$this->make_template_form( 'rsvp', 'publish' );
+
+		Analytics::track_form_template_usage( 'rsvp' );
+		$props = $this->queued_template_usage();
+
+		$this->assertSame( '1', $props['created'] );
+		$this->assertSame( '1', $props['template_rsvp'] );
+		$this->assertSame( '1', $props['published_rsvp'] );
+
+		$this->delete_template_forms();
+	}
+
+	/**
 	 * Test track_first_form_published skips when status is not changing to publish.
 	 *
 	 * @return void

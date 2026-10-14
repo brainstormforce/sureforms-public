@@ -176,6 +176,9 @@ class Analytics {
 		// Build learn progress snapshot.
 		$this->get_learn_tracking_data();
 
+		// Recount published template forms so this report carries current numbers.
+		self::refresh_form_template_usage();
+
 		// Flush pending events into payload (only if any exist).
 		$pending_events = self::events()->flush_pending();
 		if ( ! empty( $pending_events ) ) {
@@ -832,12 +835,97 @@ class Analytics {
 		$usage['templates'] = $counts;
 		Helper::update_srfm_option( 'form_template_usage', $usage );
 
+		self::send_form_template_usage( $usage );
+	}
+
+	/**
+	 * Refresh the `form_template_usage` event with the current number of
+	 * published template forms, just before an analytics report is built.
+	 *
+	 * Publishing happens long after a form is created, and forms get
+	 * unpublished or deleted, so the published counts are recounted from the
+	 * forms each cycle instead of being added up. Sites that never used a
+	 * template send nothing.
+	 *
+	 * @since x.x.x
+	 * @return void
+	 */
+	public static function refresh_form_template_usage() {
+		$usage = Helper::get_srfm_option( 'form_template_usage', [] );
+		$usage = is_array( $usage ) ? $usage : [];
+
+		$used = absint( $usage['created'] ?? 0 ) + absint( $usage['swaps'] ?? 0 );
+		if ( 0 === $used && 0 === array_sum( self::published_template_forms() ) ) {
+			return;
+		}
+
+		self::send_form_template_usage( $usage );
+	}
+
+	/**
+	 * Number of published forms per template id, counted from the forms
+	 * themselves (forms created from a template carry `_srfm_created_via` =
+	 * `template` and `_srfm_template_id`).
+	 *
+	 * @since x.x.x
+	 * @return array<string, int> Template id => published forms, at most 40 ids.
+	 */
+	public static function published_template_forms() {
+		global $wpdb;
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- One grouped count per analytics cycle; caching would only delay the numbers.
+		$rows = $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT tm.meta_value AS template_id, COUNT(*) AS forms
+				FROM {$wpdb->posts} p
+				INNER JOIN {$wpdb->postmeta} cv ON cv.post_id = p.ID AND cv.meta_key = %s AND cv.meta_value = %s
+				INNER JOIN {$wpdb->postmeta} tm ON tm.post_id = p.ID AND tm.meta_key = %s
+				WHERE p.post_type = %s AND p.post_status = %s
+				GROUP BY tm.meta_value
+				ORDER BY forms DESC
+				LIMIT 40",
+				'_srfm_created_via',
+				'template',
+				'_srfm_template_id',
+				SRFM_FORMS_POST_TYPE,
+				'publish'
+			),
+			ARRAY_A
+		);
+
+		$counts = [];
+		foreach ( is_array( $rows ) ? $rows : [] as $row ) {
+			$id = substr( sanitize_key( Helper::get_string_value( $row['template_id'] ?? '' ) ), 0, 40 );
+			if ( '' !== $id ) {
+				$counts[ $id ] = absint( $row['forms'] ?? 0 );
+			}
+		}
+
+		return $counts;
+	}
+
+	/**
+	 * Queue the `form_template_usage` event: the stored creation and swap
+	 * totals plus the forms published right now, per template.
+	 *
+	 * @param array<string, mixed> $usage Stored usage totals.
+	 * @since x.x.x
+	 * @return void
+	 */
+	private static function send_form_template_usage( $usage ) {
+		$counts    = isset( $usage['templates'] ) && is_array( $usage['templates'] ) ? array_map( 'absint', $usage['templates'] ) : [];
+		$published = self::published_template_forms();
+
 		$properties = [
-			'created' => (string) absint( $usage['created'] ?? 0 ),
-			'swaps'   => (string) absint( $usage['swaps'] ?? 0 ),
+			'created'   => (string) Helper::get_integer_value( $usage['created'] ?? 0 ),
+			'swaps'     => (string) Helper::get_integer_value( $usage['swaps'] ?? 0 ),
+			'published' => (string) array_sum( $published ),
 		];
 		foreach ( $counts as $id => $count ) {
 			$properties[ 'template_' . $id ] = (string) $count;
+		}
+		foreach ( $published as $id => $count ) {
+			$properties[ 'published_' . $id ] = (string) $count;
 		}
 
 		// $force = true: cumulative counter, must re-send the latest totals each cycle.
