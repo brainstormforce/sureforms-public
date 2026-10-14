@@ -62,7 +62,8 @@ const AiFormBuilder = () => {
 	const handleCreateAiForm = async (
 		userCommand,
 		previousMessages,
-		useSystemMessage
+		useSystemMessage,
+		starterInfo = {}
 	) => {
 		// Check if the user has permission to create posts.
 		if ( '1' !== srfm_admin.capability ) {
@@ -209,7 +210,11 @@ const AiFormBuilder = () => {
 			metasToUpdate,
 			formTypeObj?.isConversationalForm,
 			formType,
-			handleFormCreationError
+			handleFormCreationError,
+			{
+				ai_starter: starterInfo?.starterId || '',
+				ai_starter_edited: Boolean( starterInfo?.starterEdited ),
+			}
 		);
 	};
 

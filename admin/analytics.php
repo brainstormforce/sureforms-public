@@ -7,8 +7,10 @@
 
 namespace SRFM\Admin;
 
+use SRFM\Inc\AI_Form_Builder\AI_Helper;
 use SRFM\Inc\Database\Register;
 use SRFM\Inc\Database\Tables\Entries;
+use SRFM\Inc\Email_Delivery\Status as Email_Delivery_Status;
 use SRFM\Inc\Form_Views;
 use SRFM\Inc\Helper;
 use SRFM\Inc\Learn;
@@ -92,6 +94,7 @@ class Analytics {
 		add_action( 'current_screen', [ $this, 'track_first_editor_open' ] );
 		add_action( 'transition_post_status', [ $this, 'track_first_form_published' ], 10, 3 );
 		add_action( 'save_post', [ $this, 'track_embed_styling_configured' ], 10, 2 );
+		add_action( 'admin_init', [ $this, 'track_email_delivery_status' ] );
 
 		// Detect state-based events on admin load (dedup prevents repeat tracking).
 		$this->detect_state_events();
@@ -737,6 +740,58 @@ class Analytics {
 	}
 
 	/**
+	 * Track AI form creation, broken down by the starter card used (if any).
+	 *
+	 * Keeps cumulative counters in srfm_options and queues the latest totals as
+	 * the `ai_starter_usage` event each time an AI form is created, so the share
+	 * of AI forms started from each card can be read from the warehouse.
+	 *
+	 * @param mixed $starter_id Starter card id (sanitized here), or empty string for a free-text prompt.
+	 * @param bool  $edited     Whether the starter prompt was edited before generating.
+	 * @since 2.12.9
+	 * @return void
+	 */
+	public static function track_ai_starter_usage( $starter_id, $edited ) {
+		// The id becomes an option key and an event property key, so clean it here
+		// rather than trusting every caller.
+		$starter_id = substr( sanitize_key( Helper::get_string_value( $starter_id ) ), 0, 40 );
+
+		$usage = Helper::get_srfm_option( 'ai_starter_usage', [] );
+		$usage = is_array( $usage ) ? $usage : [];
+
+		$counts = isset( $usage['starters'] ) && is_array( $usage['starters'] ) ? array_map( 'absint', $usage['starters'] ) : [];
+
+		// Counts AI forms created since this tracking shipped, deleted ones included
+		// (unlike the `ai_generated_forms` stat, which counts forms that exist now).
+		$usage['ai_forms_created'] = absint( $usage['ai_forms_created'] ?? 0 ) + 1;
+
+		// Cap distinct keys so a filtered starter list can't grow the option unbounded.
+		if ( '' !== $starter_id && ( isset( $counts[ $starter_id ] ) || count( $counts ) < 20 ) ) {
+			$counts[ $starter_id ] = absint( $counts[ $starter_id ] ?? 0 ) + 1;
+
+			if ( $edited ) {
+				$usage['edited'] = absint( $usage['edited'] ?? 0 ) + 1;
+			}
+		}
+
+		$usage['starters'] = $counts;
+		Helper::update_srfm_option( 'ai_starter_usage', $usage );
+
+		$properties = [
+			'ai_forms_created' => (string) $usage['ai_forms_created'],
+			'edited'           => (string) absint( $usage['edited'] ?? 0 ),
+		];
+		foreach ( $counts as $id => $count ) {
+			$properties[ 'starter_' . $id ] = (string) $count;
+		}
+
+		// $force = true: skip the already-sent check and replace any queued copy, so
+		// the next flush sends these totals. Nothing is re-sent until another AI form
+		// is created.
+		self::events()->track( 'ai_starter_usage', (string) array_sum( $counts ), $properties, true );
+	}
+
+	/**
 	 * Track embed styling configuration when a post/page is saved.
 	 *
 	 * Detects custom formTheme in Gutenberg blocks (post_content),
@@ -822,6 +877,47 @@ class Analytics {
 		$bsf_referrers = get_option( 'bsf_product_referers', [] );
 		$source        = ! empty( $bsf_referrers['sureforms'] ) ? $bsf_referrers['sureforms'] : 'self';
 		self::events()->track( 'plugin_activated', SRFM_VER, [ 'source' => $source ] );
+	}
+
+	/**
+	 * Track the site's email delivery state.
+	 *
+	 * Whether form notifications have a real mailer behind them. A state, not a
+	 * milestone, so it is re-sent (forced) whenever it changes -- and checked at
+	 * most daily, because admin_init runs on every admin page load and the status
+	 * can scan the plugins directory. Only fixed labels are sent: connection
+	 * titles are owner-entered text.
+	 *
+	 * On admin_init rather than in detect_state_events(), which runs while
+	 * plugins are still loading: pluggable functions do not exist yet, so a
+	 * redefined wp_mail() would be missed and current_user_can() is undefined.
+	 *
+	 * @since 2.12.9
+	 * @return void
+	 */
+	public function track_email_delivery_status() {
+		if ( false !== get_transient( 'srfm_email_delivery_state_checked' ) ) {
+			return;
+		}
+
+		set_transient( 'srfm_email_delivery_state_checked', 1, DAY_IN_SECONDS );
+
+		$email_delivery = Email_Delivery_Status::get_status();
+		$mailer_slug    = Helper::get_string_value( $email_delivery['mailer']['slug'] ?? '' );
+		$verified       = $email_delivery['surecontact']['email_verified'] ?? null;
+		$delivery_props = [
+			'mailer'               => $mailer_slug,
+			'mailer_plugin'        => 'other' === $mailer_slug ? Helper::get_string_value( $email_delivery['mailer']['label'] ?? '' ) : '',
+			'surecontact'          => ! empty( $email_delivery['surecontact']['connected'] ) ? 'yes' : 'no',
+			'surecontact_verified' => null === $verified ? 'unknown' : ( $verified ? 'yes' : 'no' ),
+		];
+		$delivery_state = Helper::get_string_value( $email_delivery['state'] ?? '' );
+		$fingerprint    = $delivery_state . '|' . implode( '|', $delivery_props );
+
+		if ( '' !== $delivery_state && Helper::get_srfm_option( 'email_delivery_state_tracked', '' ) !== $fingerprint ) {
+			self::events()->track( 'email_delivery_status', $delivery_state, $delivery_props, true );
+			Helper::update_srfm_option( 'email_delivery_state_tracked', $fingerprint );
+		}
 	}
 
 	/**
@@ -1007,6 +1103,49 @@ class Analytics {
 					$onboarding_props['suremail_installed'] = (bool) $onboarding_analytics['suremailInstalled'] ? 'yes' : 'no';
 				}
 
+				// Email delivery step: the delivery state on arrival and on leaving,
+				// and what the owner did. Closed sets, intersected like the premium
+				// tabs below, because the blob is whatever the wizard POSTed.
+				if ( ! empty( $onboarding_analytics['emailDelivery'] ) && is_array( $onboarding_analytics['emailDelivery'] ) ) {
+					$email_delivery = $onboarding_analytics['emailDelivery'];
+					$states         = [ 'attention', 'not_configured', 'suremail_no_connection', 'limited', 'other_mailer', 'ready' ];
+					$step_actions   = [ 'skip', 'cannot_install', 'install_other_smtp', 'continue_limited', 'continue_other_mailer', 'continue_ready', 'continue_attention', 'continue_not_set_up' ];
+
+					$state_props = [
+						'stateAtStep' => 'email_delivery_state_at_step',
+						'finalState'  => 'email_delivery_state_at_exit',
+					];
+
+					foreach ( $state_props as $key => $prop ) {
+						if ( isset( $email_delivery[ $key ] ) && in_array( $email_delivery[ $key ], $states, true ) ) {
+							$onboarding_props[ $prop ] = $email_delivery[ $key ];
+						}
+					}
+
+					if ( isset( $email_delivery['action'] ) && in_array( $email_delivery['action'], $step_actions, true ) ) {
+						$onboarding_props['email_delivery_action'] = $email_delivery['action'];
+					}
+
+					if ( isset( $email_delivery['suremailOpened'] ) ) {
+						$onboarding_props['email_delivery_suremail_opened'] = (bool) $email_delivery['suremailOpened'] ? 'yes' : 'no';
+					}
+
+					if ( isset( $email_delivery['consented'] ) ) {
+						$onboarding_props['email_delivery_consented'] = (bool) $email_delivery['consented'] ? 'yes' : 'no';
+					}
+
+					// The option card open when the step was left.
+					if ( isset( $email_delivery['option'] ) && in_array( $email_delivery['option'], [ 'surecontact', 'other_smtp' ], true ) ) {
+						$onboarding_props['email_delivery_option'] = $email_delivery['option'];
+					}
+
+					// Outcome of the one-click SureContact sign-up, when it was tried.
+					$provision_outcomes = [ 'created', 'already_registered', 'unavailable', 'failed' ];
+					if ( isset( $email_delivery['provision'] ) && in_array( $email_delivery['provision'], $provision_outcomes, true ) ) {
+						$onboarding_props['email_delivery_provision'] = $email_delivery['provision'];
+					}
+				}
+
 				if ( isset( $onboarding_analytics['accountConnected'] ) ) {
 					$onboarding_props['account_connected'] = (bool) $onboarding_analytics['accountConnected'] ? 'yes' : 'no';
 				}
@@ -1066,25 +1205,8 @@ class Analytics {
 
 		// first_ai_form_generated: detect if any AI-generated form exists.
 		// Guard with is_tracked() to skip the meta_query after the event is already tracked.
-		if ( ! self::events()->is_tracked( 'first_ai_form_generated' ) ) {
-			$ai_forms = get_posts(
-				[
-					'post_type'      => SRFM_FORMS_POST_TYPE,
-					'post_status'    => 'any',
-					'posts_per_page' => 1,
-					'fields'         => 'ids',
-					'meta_query'     => [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Runs once per lifecycle via is_tracked guard.
-						[
-							'key'     => '_srfm_is_ai_generated',
-							'value'   => '',
-							'compare' => '!=',
-						],
-					],
-				]
-			);
-			if ( ! empty( $ai_forms ) ) {
-				self::events()->track( 'first_ai_form_generated' );
-			}
+		if ( ! self::events()->is_tracked( 'first_ai_form_generated' ) && AI_Helper::has_ai_generated_forms() ) {
+			self::events()->track( 'first_ai_form_generated' );
 		}
 
 		// MCP / Abilities API first-enable events.

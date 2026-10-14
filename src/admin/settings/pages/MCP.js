@@ -1,11 +1,12 @@
 import { __ } from '@wordpress/i18n';
-import { useState } from '@wordpress/element';
+import { createInterpolateElement, useState } from '@wordpress/element';
 import { Badge, Button, Select, Switch } from '@bsf/force-ui';
 import { CopyCheckIcon, CopyIcon, Download } from 'lucide-react';
 import ContentSection from '../components/ContentSection';
 
-const MCP_ADAPTER_DOWNLOAD_URL =
-	'https://github.com/WordPress/mcp-adapter/releases/latest';
+const MCP_ADAPTER_SLUG = 'mcp-adapter';
+const MCP_ADAPTER_INIT = 'mcp-adapter/mcp-adapter.php';
+const MCP_ADAPTER_PLUGIN_URL = 'https://wordpress.org/plugins/mcp-adapter/';
 
 const CopyButton = ( { textToCopy, isCopied, setIsCopied } ) => (
 	<Button
@@ -235,10 +236,39 @@ const SetupInstructions = ( { mcpEndpointUrl } ) => {
 
 const McpAdapterPrompt = ( { adapterStatus: initialStatus } ) => {
 	const [ status, setStatus ] = useState( initialStatus );
+	const [ error, setError ] = useState( '' );
 	const isInstalled = 'installed' === status;
+	const isBusy = 'installing' === status || 'activating' === status;
+	// install_plugins is not granted on every site (multisite subsites, or a
+	// DISALLOW_FILE_MODS install). Activation only needs manage_options (see
+	// Admin_Ajax::required_plugin_activate), so an adapter already on disk can
+	// still be activated without it.
+	const canInstall = !! srfm_admin?.can_install_plugins;
+	const canSetUp = isInstalled || canInstall;
+
+	const postAction = ( body ) =>
+		wp.apiFetch( {
+			url: srfm_admin.ajax_url,
+			method: 'POST',
+			body,
+		} );
+
+	const installAdapter = async () => {
+		const formData = new window.FormData();
+		formData.append( 'action', 'sureforms_recommended_plugin_install' );
+		formData.append( '_ajax_nonce', srfm_admin.plugin_installer_nonce );
+		formData.append( 'slug', MCP_ADAPTER_SLUG );
+
+		const response = await postAction( formData );
+		if ( ! response.success ) {
+			throw new Error(
+				response?.data?.errorMessage ||
+					__( 'The plugin could not be installed.', 'sureforms' )
+			);
+		}
+	};
 
 	const activateAdapter = async () => {
-		setStatus( 'activating' );
 		const formData = new window.FormData();
 		formData.append( 'action', 'sureforms_recommended_plugin_activate' );
 		formData.append(
@@ -246,102 +276,118 @@ const McpAdapterPrompt = ( { adapterStatus: initialStatus } ) => {
 			srfm_admin.sfPluginManagerNonce ??
 				srfm_admin.sf_plugin_manager_nonce
 		);
-		formData.append( 'init', 'mcp-adapter/mcp-adapter.php' );
-		formData.append( 'slug', 'mcp-adapter' );
+		formData.append( 'init', MCP_ADAPTER_INIT );
+		formData.append( 'slug', MCP_ADAPTER_SLUG );
 
-		try {
-			const response = await wp.apiFetch( {
-				url: srfm_admin.ajax_url,
-				method: 'POST',
-				body: formData,
-			} );
-
-			if ( response.success ) {
-				setStatus( 'active' );
-				window.location.reload();
-			} else {
-				setStatus( 'installed' );
-			}
-		} catch {
-			setStatus( 'installed' );
+		const response = await postAction( formData );
+		if ( ! response.success ) {
+			throw new Error(
+				response?.data?.message ||
+					__( 'The plugin could not be activated.', 'sureforms' )
+			);
 		}
+	};
+
+	const setUpAdapter = async () => {
+		setError( '' );
+		try {
+			if ( ! isInstalled ) {
+				setStatus( 'installing' );
+				await installAdapter();
+			}
+			setStatus( 'activating' );
+			await activateAdapter();
+			setStatus( 'active' );
+			window.location.reload();
+		} catch ( e ) {
+			setError(
+				e?.message ||
+					__( 'Something went wrong. Please try again.', 'sureforms' )
+			);
+			// 'activating' is only reached once the plugin is on disk, so a
+			// retry must activate rather than install it a second time.
+			setStatus( ( prev ) =>
+				'activating' === prev ? 'installed' : 'not_installed'
+			);
+		}
+	};
+
+	const buttonLabel = () => {
+		if ( 'installing' === status ) {
+			return __( 'Installing…', 'sureforms' );
+		}
+		if ( 'activating' === status ) {
+			return __( 'Activating…', 'sureforms' );
+		}
+		return isInstalled
+			? __( 'Activate MCP Adapter', 'sureforms' )
+			: __( 'Install & Activate MCP Adapter', 'sureforms' );
+	};
+
+	const introText = () => {
+		if ( isInstalled ) {
+			return __(
+				'The MCP Adapter plugin is installed but not active. Activate it to configure MCP settings.',
+				'sureforms'
+			);
+		}
+		return canInstall
+			? __(
+				'The MCP Adapter plugin is required to connect AI clients to your forms. It is free on WordPress.org and can be installed from here.',
+				'sureforms'
+			  )
+			: __(
+				'The MCP Adapter plugin is required to connect AI clients to your forms. It is free on WordPress.org.',
+				'sureforms'
+			  );
 	};
 
 	return (
 		<div className="space-y-4">
-			<p className="text-sm text-text-secondary m-0">
-				{ isInstalled
-					? __(
-						'The MCP Adapter plugin is installed but not active. Activate it to configure MCP settings.',
-						'sureforms'
-					  )
-					: __(
-						'The MCP Adapter plugin is required to connect AI clients to your forms. Download and install it from GitHub, then activate it.',
-						'sureforms'
-					  ) }
-			</p>
-			{ ! isInstalled && (
-				<ol className="list-decimal space-y-2 text-sm text-text-secondary m-0 pl-4">
-					<li>
-						{ __(
-							'Download the latest release from',
-							'sureforms'
-						) }{ ' ' }
-						<a
-							href={ MCP_ADAPTER_DOWNLOAD_URL }
-							target="_blank"
-							rel="noopener noreferrer"
-							className="text-field-helper underline"
-						>
-							{ __( 'GitHub', 'sureforms' ) }
-						</a>
-						.
-					</li>
-					<li>
-						{ __(
-							'Install the plugin via Plugins > Add New Plugin > Upload Plugin.',
-							'sureforms'
-						) }
-					</li>
-					<li>
-						{ __(
-							'Activate the MCP Adapter plugin.',
-							'sureforms'
-						) }
-					</li>
-				</ol>
-			) }
-			<div className="flex items-center gap-3">
-				{ isInstalled ? (
+			<p className="text-sm text-text-secondary m-0">{ introText() }</p>
+			{ canSetUp ? (
+				<div className="flex items-center gap-3">
 					<Button
 						variant="primary"
 						size="md"
-						onClick={ activateAdapter }
-						disabled={ 'activating' === status }
-						loading={ 'activating' === status }
+						onClick={ setUpAdapter }
+						disabled={ isBusy }
+						loading={ isBusy }
+						icon={
+							isInstalled ? null : <Download className="size-4" />
+						}
+						iconPosition="left"
 					>
-						{ 'activating' === status
-							? __( 'Activating…', 'sureforms' )
-							: __( 'Activate MCP Adapter', 'sureforms' ) }
+						{ buttonLabel() }
 					</Button>
-				) : (
-					<>
-						<Button
-							className="no-underline hover:no-underline"
-							variant="primary"
-							size="md"
-							icon={ <Download className="size-4" /> }
-							iconPosition="left"
-							tag="a"
-							href={ MCP_ADAPTER_DOWNLOAD_URL }
-							target="_blank"
-							rel="noopener noreferrer"
-						>
-							{ __( 'Download MCP Adapter', 'sureforms' ) }
-						</Button>
-					</>
-				) }
-			</div>
+				</div>
+			) : (
+				<p className="text-sm text-text-secondary m-0">
+					{ createInterpolateElement(
+						__(
+							'You do not have permission to install plugins on this site. Ask an administrator to install <a>MCP Adapter</a>.',
+							'sureforms'
+						),
+						{
+							a: (
+								<a
+									href={ MCP_ADAPTER_PLUGIN_URL }
+									target="_blank"
+									rel="noopener noreferrer"
+									className="text-field-helper underline"
+								>
+									{ __( 'MCP Adapter', 'sureforms' ) }
+								</a>
+							),
+						}
+					) }
+				</p>
+			) }
+			{ error && (
+				<p className="text-sm text-support-error m-0" role="alert">
+					{ error }
+				</p>
+			) }
 		</div>
 	);
 };
