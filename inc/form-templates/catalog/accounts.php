@@ -171,4 +171,152 @@ return [
 			],
 		],
 	],
+	[
+		'id'            => 'business-directory-listing',
+		'category'      => 'accounts',
+		'theme'         => 'mint',
+		'icon'          => 'store',
+		'requires'      => 'business',
+		'title'         => __( 'Business Directory Listing', 'sureforms' ),
+		'description'   => __( 'Let businesses add themselves to your directory, with their logo and address, for you to approve.', 'sureforms' ),
+		'submit_text'   => __( 'Submit my listing', 'sureforms' ),
+		'fields'        => [
+			Catalog::width( Catalog::field( 'input', 'business-name', __( 'Business Name', 'sureforms' ), true, [ 'placeholder' => __( 'e.g. Bright Bakery', 'sureforms' ) ] ), 50 ),
+			Catalog::width(
+				Catalog::attrs(
+					Catalog::field(
+						'dropdown',
+						'category',
+						__( 'Category', 'sureforms' ),
+						true,
+						array_merge(
+							Catalog::dropdown_options( [ __( 'Food and drink', 'sureforms' ), __( 'Shops and retail', 'sureforms' ), __( 'Health and beauty', 'sureforms' ), __( 'Home and garden services', 'sureforms' ), __( 'Professional services', 'sureforms' ), __( 'Other', 'sureforms' ) ] ),
+							[ 'placeholder' => __( 'Choose a category', 'sureforms' ) ]
+						)
+					),
+					$no_search
+				),
+				50
+			),
+			Catalog::attrs(
+				Catalog::field( 'textarea', 'description', __( 'About the Business', 'sureforms' ), true, [ 'helpText' => __( 'What you offer and what makes you different. This appears on your listing.', 'sureforms' ) ] ),
+				[ 'rows' => 5 ]
+			),
+			Catalog::field( 'address', 'address', __( 'Business Address', 'sureforms' ), true ),
+			Catalog::width( array_merge( $c['phone'], [ 'label' => __( 'Business Phone', 'sureforms' ), 'required' => true ] ), 50 ),
+			Catalog::width( Catalog::field( 'url', 'website', __( 'Website', 'sureforms' ), false, [ 'placeholder' => 'https://' ] ), 50 ),
+			Catalog::attrs(
+				Catalog::field( 'textarea', 'opening-hours', __( 'Opening Hours', 'sureforms' ), false, [ 'placeholder' => __( 'e.g. Mon–Fri 8am–6pm, Sat 9am–2pm, closed Sunday', 'sureforms' ) ] ),
+				[ 'rows' => 2 ]
+			),
+			$image_upload( 'logo', __( 'Logo', 'sureforms' ), __( 'A square JPG, PNG or WebP image, up to 5 MB.', 'sureforms' ) ),
+			Catalog::width( array_merge( $c['name'], [ 'label' => __( 'Your Name', 'sureforms' ) ] ), 50 ),
+			Catalog::width( array_merge( $c['email'], [ 'label' => __( 'Your Email', 'sureforms' ) ] ), 50 ),
+			array_merge( $c['consent'], [ 'label' => __( 'I agree to have this website store these details and publish the business details in its directory.', 'sureforms' ) ] ),
+		],
+		// The listing waits in Posts as Pending; the logo becomes its featured image.
+		'cpt'           => [
+			'name'           => __( 'Directory listing', 'sureforms' ),
+			'title'          => 'business-name',
+			'content'        => '<p>{form:description}</p><p>{form:address}</p><p>{form:phone}<br>{form:website}</p><p>{form:opening-hours}</p>',
+			'featured_image' => 'logo',
+			'post_type'      => 'post',
+			'status'         => 'pending',
+		],
+		'confirmation'  => [
+			'heading' => __( 'Thanks, {form:full-name}!', 'sureforms' ),
+			'text'    => __( 'We have received the listing for {form:business-name}. We will review it and email you at {form:email} once it is live.', 'sureforms' ),
+		],
+		'email_subject' => __( 'New directory listing for review: {form:business-name}', 'sureforms' ),
+		'email_intro'   => __( '{form:full-name} submitted a listing for {form:business-name} ({form:category}). It is waiting for review under Posts, marked Pending.', 'sureforms' ),
+		'autoresponder' => [
+			'subject' => __( 'We received the listing for {form:business-name}', 'sureforms' ),
+			'lines'   => [
+				__( 'Thank you for adding {form:business-name} to the {site_title} directory.', 'sureforms' ),
+				__( 'We check every listing before it goes live, and will let you know when it is published.', 'sureforms' ),
+			],
+		],
+	],
+	// Library category: Contact & Leads, with the other order and quote requests.
+	[
+		'id'            => 'bulk-order-form',
+		'category'      => 'contact',
+		'theme'         => 'sand',
+		'icon'          => 'package',
+		'requires'      => 'business',
+		'title'         => __( 'Bulk / Catering Order', 'sureforms' ),
+		'description'   => __( 'Take large or catering orders with as many items as the customer needs, for delivery or pickup.', 'sureforms' ),
+		'submit_text'   => __( 'Send my order', 'sureforms' ),
+		'fields'        => [
+			Catalog::width( $c['name'], 50 ),
+			Catalog::width( Catalog::field( 'input', 'company', __( 'Company or Organization', 'sureforms' ), false, [ 'placeholder' => __( 'e.g. Bright Bakery', 'sureforms' ) ] ), 50 ),
+			Catalog::width( $c['email'], 50 ),
+			Catalog::width( array_merge( $c['phone'], [ 'required' => true ] ), 50 ),
+			Catalog::field(
+				'repeater',
+				'items',
+				__( 'Your Order', 'sureforms' ),
+				false,
+				[
+					'minItems'    => 1,
+					'maxItems'    => 30,
+					'innerFields' => [
+						Catalog::width( Catalog::field( 'input', 'item', __( 'Item', 'sureforms' ), true, [ 'placeholder' => __( 'e.g. Sandwich platter for 10', 'sureforms' ) ] ), 75 ),
+						Catalog::width( Catalog::number_field( 'quantity', __( 'Quantity', 'sureforms' ), true, 1, 1000, [ 'placeholder' => __( 'e.g. 4', 'sureforms' ) ] ), 25 ),
+					],
+				]
+			),
+			Catalog::attrs(
+				Catalog::field(
+					'multi-choice',
+					'fulfilment',
+					__( 'Delivery or Pickup?', 'sureforms' ),
+					true,
+					Catalog::choice_options( [ __( 'Delivery', 'sureforms' ), __( 'Pickup', 'sureforms' ) ], true, [ 'truck', 'store' ] )
+				),
+				[ 'choiceWidth' => 50 ]
+			),
+			Catalog::width( Catalog::date_field( 'delivery-date', __( 'Date Needed', 'sureforms' ), true, true ), 50 ),
+			Catalog::width(
+				Catalog::field(
+					'time-picker',
+					'delivery-time',
+					__( 'Time Needed', 'sureforms' ),
+					true,
+					[
+						'increment' => 30,
+						'minTime'   => '07:00',
+						'maxTime'   => '20:00',
+					]
+				),
+				50
+			),
+			Catalog::field( 'address', 'delivery-address', __( 'Delivery Address', 'sureforms' ), true ),
+			Catalog::attrs(
+				Catalog::field( 'textarea', 'notes', __( 'Order Notes', 'sureforms' ), false, [ 'placeholder' => __( 'Allergies, dietary needs, packaging or delivery instructions', 'sureforms' ) ] ),
+				[ 'rows' => 3 ]
+			),
+			array_merge( $c['consent'], [ 'label' => __( 'I agree to have this website store my details so it can confirm and deliver my order.', 'sureforms' ) ] ),
+		],
+		// The delivery address is only asked for deliveries.
+		'conditions'    => [
+			'delivery-address' => [
+				'action' => 'show',
+				'logic'  => [ [ [ 'fulfilment', '==', __( 'Delivery', 'sureforms' ) ] ] ],
+			],
+		],
+		'confirmation'  => [
+			'heading' => __( 'Thanks for your order, {form:full-name}!', 'sureforms' ),
+			'text'    => __( 'We will check availability for {form:delivery-date} and email you at {form:email} to confirm your order and the total.', 'sureforms' ),
+		],
+		'email_subject' => __( 'Bulk order for {form:delivery-date} from {form:full-name}', 'sureforms' ),
+		'email_intro'   => __( '{form:full-name} placed an order for {form:fulfilment} on {form:delivery-date} at {form:delivery-time}. Reply to confirm the order and its total.', 'sureforms' ),
+		'autoresponder' => [
+			'subject' => __( 'We received your order for {form:delivery-date}', 'sureforms' ),
+			'lines'   => [
+				__( 'Thank you for your order. Your order details are below.', 'sureforms' ),
+				__( 'This is not a confirmation yet: we will check availability and reply with the total before we confirm.', 'sureforms' ),
+			],
+		],
+	],
 ];
