@@ -19,6 +19,21 @@ $c         = Catalog::common_fields();
 $no_search = [ 'searchable' => false ];
 $services  = [ __( 'Consultation', 'sureforms' ), __( 'Installation', 'sureforms' ), __( 'Maintenance', 'sureforms' ), __( 'Repair', 'sureforms' ), __( 'Something else', 'sureforms' ) ];
 
+// With SureForms Pro, lead forms record the page the visitor sent them from.
+$source_page = Catalog::field(
+	'hidden',
+	'source-page',
+	__( 'Sent From Page', 'sureforms' ),
+	false,
+	[
+		'defaultValue' => '{current_page_url}',
+		'pro_only'     => true,
+	]
+);
+
+// A thank-you message in the layout of the template's own one.
+$thank_you = static fn( $heading, $text ) => '<p style="text-align: center;"><img src="' . esc_url( SRFM_URL . 'images/check-icon.svg' ) . '" alt="" aria-hidden="true" /></p><h2 style="text-align: center;">' . esc_html( $heading ) . '</h2><p style="text-align: center;">' . esc_html( $text ) . '</p>';
+
 return [
 	[
 		'id'            => 'contact-us',
@@ -36,6 +51,7 @@ return [
 			Catalog::field( 'input', 'subject', __( 'Subject', 'sureforms' ), false, [ 'placeholder' => __( 'What is this about?', 'sureforms' ) ] ),
 			Catalog::attrs( Catalog::field( 'textarea', 'message', __( 'Message', 'sureforms' ), true, [ 'placeholder' => __( 'How can we help?', 'sureforms' ) ] ), [ 'rows' => 5 ] ),
 			$c['consent'],
+			$source_page,
 		],
 		'confirmation'  => [
 			'heading' => __( 'Thanks, {form:first-name}!', 'sureforms' ),
@@ -50,15 +66,15 @@ return [
 		],
 	],
 	[
-		'id'            => 'quote-request',
-		'category'      => 'contact',
-		'theme'         => 'midnight',
-		'icon'          => 'receipt',
-		'title'         => __( 'Quote Request', 'sureforms' ),
-		'description'   => __( 'Collect project details so you can send an estimate.', 'sureforms' ),
-		'submit_text'   => __( 'Request my quote', 'sureforms' ),
-		'steps'         => [ __( 'Your details', 'sureforms' ), __( 'Your project', 'sureforms' ) ],
-		'fields'        => [
+		'id'             => 'quote-request',
+		'category'       => 'contact',
+		'theme'          => 'midnight',
+		'icon'           => 'receipt',
+		'title'          => __( 'Quote Request', 'sureforms' ),
+		'description'    => __( 'Collect project details so you can send an estimate.', 'sureforms' ),
+		'submit_text'    => __( 'Request my quote', 'sureforms' ),
+		'steps'          => [ __( 'Your details', 'sureforms' ), __( 'Your project', 'sureforms' ) ],
+		'fields'         => [
 			$c['first_name'],
 			$c['last_name'],
 			Catalog::width( $c['email'], 50 ),
@@ -96,14 +112,17 @@ return [
 				]
 			),
 			$c['consent'],
+			$source_page,
 		],
-		'confirmation'  => [
+		// With SureForms Pro, the files arrive with the notification.
+		'attach_uploads' => [ 'attachments' ],
+		'confirmation'   => [
 			'heading' => __( 'Thanks, {form:first-name}!', 'sureforms' ),
 			'text'    => __( 'Your quote request is in. We will review your project details and send your estimate to {form:email}.', 'sureforms' ),
 		],
-		'email_subject' => __( 'Quote request: {form:service} from {form:first-name} {form:last-name}', 'sureforms' ),
-		'email_intro'   => __( '{form:first-name} {form:last-name} asked for a quote for {form:service}. Reply to this email to send your estimate.', 'sureforms' ),
-		'autoresponder' => [
+		'email_subject'  => __( 'Quote request: {form:service} from {form:first-name} {form:last-name}', 'sureforms' ),
+		'email_intro'    => __( '{form:first-name} {form:last-name} asked for a quote for {form:service}. Reply to this email to send your estimate.', 'sureforms' ),
+		'autoresponder'  => [
 			'subject'  => __( 'We received your quote request', 'sureforms' ),
 			'greeting' => __( 'Hi {form:first-name},', 'sureforms' ),
 			'lines'    => [ __( 'Thanks for telling us about your project. We will review the details and get back to you with an estimate.', 'sureforms' ) ],
@@ -172,9 +191,25 @@ return [
 				[ 'rows' => 4 ]
 			),
 			Catalog::field( 'multi-choice', 'meeting-type', __( 'How would you like to meet?', 'sureforms' ), false, Catalog::choice_options( [ __( 'Video call', 'sureforms' ), __( 'Phone call', 'sureforms' ), __( 'In person', 'sureforms' ) ], true, [ 'video', 'phone', 'handshake' ] ) ),
-			Catalog::date_field( 'preferred-date', __( 'Preferred Date', 'sureforms' ), false, true ) + [ 'pro_only' => true ],
+			Catalog::width( Catalog::date_field( 'preferred-date', __( 'Preferred Date', 'sureforms' ), false, true ) + [ 'pro_only' => true ], 50 ),
+			Catalog::width(
+				Catalog::field(
+					'time-picker',
+					'preferred-time',
+					__( 'Preferred Time', 'sureforms' ),
+					false,
+					[
+						'pro_only'  => true,
+						'minTime'   => '09:00',
+						'maxTime'   => '18:00',
+						'increment' => 30,
+					]
+				),
+				50
+			),
 			Catalog::attrs( Catalog::field( 'dropdown', 'how-heard', __( 'How did you hear about us?', 'sureforms' ), false, array_merge( Catalog::dropdown_options( [ __( 'Search engine', 'sureforms' ), __( 'Social media', 'sureforms' ), __( 'Referral', 'sureforms' ), __( 'Advertisement', 'sureforms' ), __( 'Other', 'sureforms' ) ] ), [ 'placeholder' => __( 'Select an option', 'sureforms' ) ] ) ), $no_search ),
 			$c['consent'],
+			$source_page,
 		],
 		'confirmation'  => [
 			'heading' => __( 'Thanks, {form:first-name}!', 'sureforms' ),
@@ -203,10 +238,24 @@ return [
 			Catalog::width( Catalog::number_field( 'quantity', __( 'Quantity', 'sureforms' ), false, 1, 10000, [ 'placeholder' => '1' ] ), 33.33 ),
 			Catalog::attrs( Catalog::field( 'textarea', 'question', __( 'Your Question', 'sureforms' ), true, [ 'placeholder' => __( 'e.g. Is it in stock? Does it come in other sizes? Do you offer bulk pricing?', 'sureforms' ) ] ), [ 'rows' => 4 ] ),
 			$c['consent'],
+			$source_page,
 		],
 		'confirmation'  => [
 			'heading' => __( 'Thanks for your question', 'sureforms' ),
 			'text'    => __( 'We will reply to {form:email} with an answer about {form:product} as soon as we can.', 'sureforms' ),
+		],
+		// With SureForms Pro, a bulk order gets its own thank-you message.
+		'confirmations' => [
+			[
+				'name'    => __( 'Bulk order', 'sureforms' ),
+				'message' => $thank_you(
+					__( 'Thanks for your question', 'sureforms' ),
+					__( 'Asking about a larger order? We will reply to {form:email} with volume pricing for {form:product} as soon as we can.', 'sureforms' )
+				),
+				// 50 or more. A pattern, not _GREATER_OR_EQUAL_: the number field
+				// stores 1000 as "1,000" (or "1.000"), which compares as text.
+				'rules'   => [ [ 'quantity', '_REGEX_', '^([5-9][0-9]|[1-9][0-9]{2,}|[1-9][0-9]{0,2}[.,][0-9]{3})$' ] ],
+			],
 		],
 		'email_subject' => __( 'Product question: {form:product} from {form:full-name}', 'sureforms' ),
 		'email_intro'   => __( '{form:full-name} has a question about {form:product}. Reply to this email to answer them directly.', 'sureforms' ),
@@ -216,14 +265,14 @@ return [
 		],
 	],
 	[
-		'id'            => 'partnership-inquiry',
-		'category'      => 'contact',
-		'theme'         => 'midnight',
-		'icon'          => 'handshake',
-		'title'         => __( 'Partnership Inquiry', 'sureforms' ),
-		'description'   => __( 'Hear from businesses that want to work with you.', 'sureforms' ),
-		'submit_text'   => __( 'Send proposal', 'sureforms' ),
-		'fields'        => [
+		'id'             => 'partnership-inquiry',
+		'category'       => 'contact',
+		'theme'          => 'midnight',
+		'icon'           => 'handshake',
+		'title'          => __( 'Partnership Inquiry', 'sureforms' ),
+		'description'    => __( 'Hear from businesses that want to work with you.', 'sureforms' ),
+		'submit_text'    => __( 'Send proposal', 'sureforms' ),
+		'fields'         => [
 			Catalog::width( $c['name'], 50 ),
 			Catalog::width(
 				array_merge(
@@ -262,13 +311,15 @@ return [
 			),
 			$c['consent'],
 		],
-		'confirmation'  => [
+		// With SureForms Pro, the deck arrives with the notification.
+		'attach_uploads' => [ 'media-kit' ],
+		'confirmation'   => [
 			'heading' => __( 'Thanks for your interest', 'sureforms' ),
 			'text'    => __( 'We have received the proposal from {form:company}. We review every one and will be in touch if it is a good fit.', 'sureforms' ),
 		],
-		'email_subject' => __( 'Partnership inquiry: {form:partnership-type} from {form:company}', 'sureforms' ),
-		'email_intro'   => __( '{form:full-name} from {form:company} sent a partnership proposal ({form:partnership-type}). Reply to this email to continue the conversation.', 'sureforms' ),
-		'autoresponder' => [
+		'email_subject'  => __( 'Partnership inquiry: {form:partnership-type} from {form:company}', 'sureforms' ),
+		'email_intro'    => __( '{form:full-name} from {form:company} sent a partnership proposal ({form:partnership-type}). Reply to this email to continue the conversation.', 'sureforms' ),
+		'autoresponder'  => [
 			'subject' => __( 'Thanks for your partnership proposal', 'sureforms' ),
 			'lines'   => [ __( 'Thanks for thinking of us. We have received the proposal from {form:company} and will get back to you if it is a good fit.', 'sureforms' ) ],
 		],

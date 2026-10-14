@@ -20,6 +20,9 @@ $no_search    = [ 'searchable' => false ];
 $satisfaction = [ __( 'Very satisfied', 'sureforms' ), __( 'Satisfied', 'sureforms' ), __( 'Neutral', 'sureforms' ), __( 'Dissatisfied', 'sureforms' ), __( 'Very dissatisfied', 'sureforms' ) ];
 $nps_scale    = array_map( 'strval', range( 0, 10 ) );
 
+// A thank-you message in the layout of the template's own one.
+$thank_you = static fn( $heading, $text ) => '<p style="text-align: center;"><img src="' . esc_url( SRFM_URL . 'images/check-icon.svg' ) . '" alt="" aria-hidden="true" /></p><h2 style="text-align: center;">' . esc_html( $heading ) . '</h2><p style="text-align: center;">' . esc_html( $text ) . '</p>';
+
 return [
 	[
 		'id'            => 'customer-feedback',
@@ -72,6 +75,25 @@ return [
 			'heading' => __( 'Thanks for your feedback', 'sureforms' ),
 			'text'    => __( 'Your answers help us do better.', 'sureforms' ),
 		],
+		// With SureForms Pro, the thank-you message follows the rating (1 to 5 stars).
+		'confirmations' => [
+			[
+				'name'    => __( 'Happy customer', 'sureforms' ),
+				'message' => $thank_you(
+					__( 'Thank you, we are glad you are happy', 'sureforms' ),
+					__( 'If you have a minute, a short online review would help other people find us.', 'sureforms' )
+				),
+				'rules'   => [ [ 'satisfaction', '_GREATER_OR_EQUAL_', '4' ] ],
+			],
+			[
+				'name'    => __( 'Unhappy customer', 'sureforms' ),
+				'message' => $thank_you(
+					__( 'We are sorry we let you down', 'sureforms' ),
+					__( 'Thank you for telling us. Your feedback goes straight to our team, and if you left your email address, someone will be in touch to put things right.', 'sureforms' )
+				),
+				'rules'   => [ [ 'satisfaction', '_LESSER_OR_EQUAL_', '2' ] ],
+			],
+		],
 		'email_subject' => __( 'New customer feedback – overall: {form:satisfaction}', 'sureforms' ),
 		'email_intro'   => __( 'A customer rated their overall experience: {form:satisfaction}. Their answers are below. If they left an email address, you can follow up there.', 'sureforms' ),
 	],
@@ -123,6 +145,27 @@ return [
 			'heading' => __( 'Thank you', 'sureforms' ),
 			'text'    => __( 'We appreciate you taking the time to answer.', 'sureforms' ),
 		],
+		// With SureForms Pro, the thank-you message follows the score, and the
+		// answers are charted in the form's survey report.
+		'confirmations' => [
+			[
+				'name'    => __( 'Promoter (9–10)', 'sureforms' ),
+				'message' => $thank_you(
+					__( 'Thank you, that means a lot', 'sureforms' ),
+					__( 'If you have a minute, a short online review would help other people find us.', 'sureforms' )
+				),
+				'rules'   => [ [ 'recommend-score', '_GREATER_OR_EQUAL_', '9' ] ],
+			],
+			[
+				'name'    => __( 'Detractor (0–6)', 'sureforms' ),
+				'message' => $thank_you(
+					__( 'Thank you for being honest', 'sureforms' ),
+					__( 'We are sorry we fell short. We read every response and will use yours to work out what to fix.', 'sureforms' )
+				),
+				'rules'   => [ [ 'recommend-score', '_LESSER_OR_EQUAL_', '6' ] ],
+			],
+		],
+		'survey'        => [ 'show_live_results' => false ],
 		'email_subject' => __( 'New survey response: {form:recommend-score}/10', 'sureforms' ),
 		'email_intro'   => __( 'New recommend score: {form:recommend-score}/10. As a guide, 9–10 are promoters, 7–8 passives and 0–6 detractors. The full response is below.', 'sureforms' ),
 	],
@@ -167,6 +210,15 @@ return [
 		'confirmation'  => [
 			'heading' => __( 'Thanks for helping us improve', 'sureforms' ),
 			'text'    => __( 'We read every response and use it to make the site better.', 'sureforms' ),
+		],
+		// With SureForms Pro, the screenshot is only asked for when something went wrong.
+		'conditions'    => [
+			'screenshot' => [
+				'logic' => [
+					[ [ 'found-it', 'in', [ __( 'Partly', 'sureforms' ), __( 'No', 'sureforms' ) ] ] ],
+					[ [ 'ease', 'in', [ __( 'Difficult', 'sureforms' ), __( 'Very difficult', 'sureforms' ) ] ] ],
+				],
+			],
 		],
 		'email_subject' => __( 'Website feedback: found what they needed? {form:found-it}', 'sureforms' ),
 		'email_intro'   => __( 'A visitor left feedback from {current_page_url}. If they left an email address, you will find it below.', 'sureforms' ),
@@ -236,15 +288,15 @@ return [
 		],
 	],
 	[
-		'id'            => 'complaint',
-		'category'      => 'feedback',
-		'theme'         => 'mint',
-		'icon'          => 'circle-alert',
-		'title'         => __( 'Complaint Form', 'sureforms' ),
-		'description'   => __( 'Give customers a clear way to raise a problem.', 'sureforms' ),
-		'submit_text'   => __( 'Submit complaint', 'sureforms' ),
-		'steps'         => [ __( 'Your details', 'sureforms' ), __( 'Your complaint', 'sureforms' ) ],
-		'fields'        => [
+		'id'             => 'complaint',
+		'category'       => 'feedback',
+		'theme'          => 'mint',
+		'icon'           => 'circle-alert',
+		'title'          => __( 'Complaint Form', 'sureforms' ),
+		'description'    => __( 'Give customers a clear way to raise a problem.', 'sureforms' ),
+		'submit_text'    => __( 'Submit complaint', 'sureforms' ),
+		'steps'          => [ __( 'Your details', 'sureforms' ), __( 'Your complaint', 'sureforms' ) ],
+		'fields'         => [
 			Catalog::width( $c['name'], 50 ),
 			Catalog::width( $c['email'], 50 ),
 			Catalog::width( $c['phone'], 50 ),
@@ -274,15 +326,28 @@ return [
 				]
 			),
 			Catalog::attrs( Catalog::field( 'textarea', 'resolution', __( 'How would you like us to put it right?', 'sureforms' ), false, [ 'placeholder' => __( 'e.g. a refund, a replacement or a call back', 'sureforms' ) ] ), [ 'rows' => 3 ] ),
+			// With SureForms Pro (Pro plan), a signed declaration.
+			Catalog::field(
+				'signature',
+				'declaration-signature',
+				__( 'Your Signature', 'sureforms' ),
+				true,
+				[
+					'helpText' => __( 'By signing, you confirm that the information you have given is accurate.', 'sureforms' ),
+					'pro_tier' => 'pro',
+				]
+			),
 			$c['consent'],
 		],
-		'confirmation'  => [
+		// With SureForms Pro, the evidence arrives with the notification.
+		'attach_uploads' => [ 'evidence' ],
+		'confirmation'   => [
 			'heading' => __( 'We have received your complaint', 'sureforms' ),
 			'text'    => __( 'We are sorry for the trouble, {form:full-name}. A copy has been sent to {form:email}, and we will contact you once we have looked into it.', 'sureforms' ),
 		],
-		'email_subject' => __( 'Complaint from {form:full-name}: {form:complaint-type}', 'sureforms' ),
-		'email_intro'   => __( '{form:full-name} raised a complaint about: {form:complaint-type}. Reply to this email to respond to them directly.', 'sureforms' ),
-		'autoresponder' => [
+		'email_subject'  => __( 'Complaint from {form:full-name}: {form:complaint-type}', 'sureforms' ),
+		'email_intro'    => __( '{form:full-name} raised a complaint about: {form:complaint-type}. Reply to this email to respond to them directly.', 'sureforms' ),
+		'autoresponder'  => [
 			'subject' => __( 'We have received your complaint', 'sureforms' ),
 			'lines'   => [
 				__( 'We are sorry for the trouble, and thank you for letting us know.', 'sureforms' ),
