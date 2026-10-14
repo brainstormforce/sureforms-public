@@ -64,6 +64,62 @@ class Form_Templates {
 	private const PREVIEW_POST_ID = 2147483600;
 
 	/**
+	 * Plan tiers a template can require, lowest first.
+	 *
+	 * @since x.x.x
+	 */
+	public const TIERS = [ 'free', 'starter', 'pro', 'business' ];
+
+	/**
+	 * Template keys that SureForms Pro builds into the form (through the
+	 * `srfm_form_template_content` and `srfm_form_template_metas` filters),
+	 * with the tier whose Pro build handles each.
+	 *
+	 * @since x.x.x
+	 */
+	public const PRO_FEATURE_KEYS = [
+		'conditions'       => 'starter',
+		'confirmations'    => 'starter',
+		'email_conditions' => 'starter',
+		'attach_uploads'   => 'starter',
+		'restrictions'     => 'starter',
+		'save_resume'      => 'pro',
+		'survey'           => 'pro',
+		'conversational'   => 'pro',
+		'quiz'             => 'business',
+		'partial_entries'  => 'business',
+		'cpt'              => 'business',
+		'registration'     => 'business',
+		'entry_limit'      => 'business',
+		'pdf'              => 'business',
+	];
+
+	/**
+	 * Lowest `SRFM_PRO_TEMPLATE_API` that builds the PRO_FEATURE_KEYS. A paid
+	 * template declaring any of them is locked (reason `update`) below it.
+	 *
+	 * @since x.x.x
+	 */
+	public const REQUIRED_PRO_TEMPLATE_API = 1;
+
+	/**
+	 * The "Included" feature each Pro template key adds.
+	 *
+	 * @since x.x.x
+	 */
+	private const FEATURE_BY_KEY = [
+		'conditions'      => 'conditional_logic',
+		'save_resume'     => 'save_resume',
+		'survey'          => 'survey',
+		'conversational'  => 'conversational',
+		'quiz'            => 'quiz',
+		'partial_entries' => 'partial_entries',
+		'cpt'             => 'post_submission',
+		'registration'    => 'user_registration',
+		'pdf'             => 'pdf',
+	];
+
+	/**
 	 * Memoised template list, keyed by id.
 	 *
 	 * @var array<string, array<string, mixed>>|null
@@ -222,11 +278,19 @@ class Form_Templates {
 		 * `icon`, `fields` (the AI builder field schema), and optional
 		 * `confirmation` ([ 'heading', 'text' ]), `submit_text`, `email_subject`,
 		 * `email_intro`, `autoresponder` ([ 'subject', 'lines', 'greeting', 'summary' ]),
-		 * `steps` (step titles for multi-step forms) and `is_pro`.
+		 * `steps` (step titles for multi-step forms), `features` (extra "Included"
+		 * feature ids, such as `calculation`) and the Pro keys in PRO_FEATURE_KEYS.
 		 *
-		 * A field may carry `pro` (schema keys that replace its own when SureForms Pro
-		 * is active), `pro_only` (only added with Pro) and `blockAttributes` (extra
-		 * block attributes, such as `minValue` and `maxValue` on a number field).
+		 * `requires` is the plan a template needs: `free` (default), `starter`,
+		 * `pro` or `business`; `is_pro => true` is read as `starter`. A paid
+		 * template can also set `min_pro_version`, the lowest SureForms Pro version
+		 * it works with.
+		 *
+		 * A field may carry `pro` (schema keys that replace its own with SureForms
+		 * Pro), `pro_only` (only added with Pro), `pro_tier` (the plan those need,
+		 * `starter` by default; a field with `pro_tier` and no `pro` is only added
+		 * from that plan) and `blockAttributes` (extra block attributes, such as
+		 * `minValue` and `maxValue` on a number field).
 		 *
 		 * @since x.x.x
 		 * @param array<int, array<string, mixed>> $templates Templates.
@@ -265,11 +329,11 @@ class Form_Templates {
 	 * @return array<int, array<string, mixed>>
 	 */
 	public static function get_templates_for_js() {
-		$list    = [];
-		$has_pro = Helper::has_pro();
+		$list = [];
+		$tier = Helper::get_pro_tier();
 		foreach ( self::get_templates() as $template ) {
-			$resolved = self::resolve_fields( $template, $has_pro );
-			$fields   = array_values(
+			$resolved    = self::resolve_fields( $template, $tier );
+			$fields      = array_values(
 				array_filter(
 					array_map(
 						static fn( $field ) => ! in_array( $field['fieldType'] ?? '', [ 'gdpr', 'page-break' ], true ) ? Helper::get_string_value( $field['label'] ?? '' ) : '',
@@ -277,7 +341,9 @@ class Form_Templates {
 					)
 				)
 			);
-			$features = self::get_features( $template, $resolved );
+			$features    = self::get_features( $template, $resolved, $tier );
+			$requires    = self::get_required_tier( $template );
+			$lock_reason = self::lock_reason( $template );
 
 			$list[] = [
 				'id'           => $template['id'],
@@ -289,16 +355,165 @@ class Form_Templates {
 				'theme'        => isset( self::get_themes()[ $template['theme'] ?? '' ] ) ? Helper::get_string_value( $template['theme'] ) : 'ocean',
 				'fields'       => $fields,
 				'features'     => $features,
-				// What the template gains with SureForms Pro, for sites without it.
-				'pro_features' => $has_pro ? [] : array_values( array_diff( self::get_features( $template, self::resolve_fields( $template, true ) ), $features ) ),
+				// What the template gains with a higher SureForms Pro plan.
+				'pro_features' => 'business' === $tier ? [] : array_values( array_diff( self::get_features( $template, self::resolve_fields( $template, 'business' ), 'business' ), $features ) ),
 				'submit_text'  => Helper::get_string_value( $template['submit_text'] ?? '' ),
 				'messages'     => self::get_messages( $template, $resolved ),
 				'answers'      => self::get_answers( $resolved ),
-				'is_pro'       => ! empty( $template['is_pro'] ),
-				'is_locked'    => ! empty( $template['is_pro'] ) && ! Helper::has_pro(),
+				'requires'     => $requires,
+				'is_pro'       => 'free' !== $requires,
+				'is_locked'    => '' !== $lock_reason,
+				// `tier` (needs a higher plan) or `update` (needs a newer SureForms Pro).
+				'lock_reason'  => $lock_reason,
+				'unlock_url'   => self::get_unlock_url( Helper::get_string_value( $template['id'] ), $lock_reason ),
 			];
 		}
 		return $list;
+	}
+
+	/**
+	 * The plan a template needs: `requires`, or `starter` for the older
+	 * `is_pro` flag, or `free`.
+	 *
+	 * @param array<string, mixed> $template Template.
+	 * @since x.x.x
+	 * @return string 'free', 'starter', 'pro' or 'business'.
+	 */
+	public static function get_required_tier( $template ) {
+		$requires = $template['requires'] ?? '';
+		if ( is_string( $requires ) && in_array( $requires, self::TIERS, true ) ) {
+			return $requires;
+		}
+		return ! empty( $template['is_pro'] ) ? 'starter' : 'free';
+	}
+
+	/**
+	 * Why a template can't be used on this site.
+	 *
+	 * @param array<string, mixed> $template Template.
+	 * @since x.x.x
+	 * @return string '' when it can be used, `tier` when it needs a higher plan,
+	 *                `update` when it needs a newer SureForms Pro.
+	 */
+	public static function lock_reason( $template ) {
+		$requires = self::get_required_tier( $template );
+		$reason   = '';
+
+		if ( ! Helper::has_tier( $requires ) ) {
+			$reason = 'tier';
+		} elseif ( 'free' !== $requires && self::needs_pro_update( $template ) ) {
+			$reason = 'update';
+		}
+
+		/**
+		 * Filters whether a template can be used on this site. Returning false
+		 * locks it, for example to hide a broken template in a hotfix.
+		 *
+		 * @since x.x.x
+		 * @param bool                 $available Whether the template can be used.
+		 * @param array<string, mixed> $template  Template.
+		 * @param string               $reason    Lock reason: '', `tier` or `update`.
+		 */
+		$available = (bool) apply_filters( 'srfm_form_template_is_available', '' === $reason, $template, $reason );
+
+		if ( $available ) {
+			return '';
+		}
+		return '' === $reason ? 'tier' : $reason;
+	}
+
+	/**
+	 * Whether a template can be used on this site.
+	 *
+	 * @param array<string, mixed> $template Template.
+	 * @since x.x.x
+	 * @return bool
+	 */
+	public static function is_template_available( $template ) {
+		return '' === self::lock_reason( $template );
+	}
+
+	/**
+	 * Whether the active SureForms Pro is too old for a template: older than its
+	 * `min_pro_version`, or without the template builder its Pro keys need.
+	 *
+	 * @param array<string, mixed> $template Template.
+	 * @since x.x.x
+	 * @return bool
+	 */
+	private static function needs_pro_update( $template ) {
+		$min_version = Helper::get_string_value( $template['min_pro_version'] ?? '' );
+		$pro_version = defined( 'SRFM_PRO_VER' ) ? Helper::get_string_value( constant( 'SRFM_PRO_VER' ) ) : '';
+		if ( '' !== $min_version && version_compare( $pro_version, $min_version, '<' ) ) {
+			return true;
+		}
+
+		$pro_keys = array_intersect_key( $template, self::PRO_FEATURE_KEYS );
+		return ! empty( $pro_keys ) && self::get_pro_template_api() < self::REQUIRED_PRO_TEMPLATE_API;
+	}
+
+	/**
+	 * Version of the template builder in the active SureForms Pro, 0 without one.
+	 *
+	 * @since x.x.x
+	 * @return int
+	 */
+	public static function get_pro_template_api() {
+		return defined( 'SRFM_PRO_TEMPLATE_API' ) ? Helper::get_integer_value( constant( 'SRFM_PRO_TEMPLATE_API' ) ) : 0;
+	}
+
+	/**
+	 * Where a locked template's button leads: the pricing page, or the plugin
+	 * updates when SureForms Pro is too old.
+	 *
+	 * @param string $template_id Template id.
+	 * @param string $lock_reason From lock_reason().
+	 * @since x.x.x
+	 * @return string Unescaped URL, or '' when the template isn't locked.
+	 */
+	public static function get_unlock_url( $template_id, $lock_reason ) {
+		if ( '' === $lock_reason ) {
+			return '';
+		}
+		if ( 'update' === $lock_reason ) {
+			return admin_url( 'plugins.php?plugin_status=upgrade' );
+		}
+		$url = Helper::get_sureforms_website_url(
+			'pricing',
+			[
+				'utm_medium'  => 'form-templates',
+				'utm_content' => 'template-' . $template_id,
+			]
+		);
+		// The helper returns a URL escaped for HTML; this one is opened from JS.
+		return esc_url_raw( wp_specialchars_decode( $url ) );
+	}
+
+	/**
+	 * The error for a template that can't be used on this site.
+	 *
+	 * @param array<string, mixed> $template Template.
+	 * @since x.x.x
+	 * @return WP_Error|null Null when the template can be used.
+	 */
+	private static function locked_error( $template ) {
+		$reason = self::lock_reason( $template );
+		if ( '' === $reason ) {
+			return null;
+		}
+		$message = 'update' === $reason
+			? __( 'Update SureForms Pro to use this template.', 'sureforms' )
+			: __( 'This template needs a SureForms Premium plan.', 'sureforms' );
+
+		return new WP_Error(
+			'srfm_template_locked',
+			$message,
+			[
+				'status'   => 403,
+				'requires' => self::get_required_tier( $template ),
+				'reason'   => $reason,
+			]
+		);
 	}
 
 	/**
@@ -734,21 +949,29 @@ class Form_Templates {
 	}
 
 	/**
-	 * A template's fields as they will be built: `pro` variants applied and
-	 * `pro_only` fields kept only when SureForms Pro is active.
+	 * A template's fields as they will be built on a plan: `pro` variants
+	 * applied and `pro_only` fields kept only from their `pro_tier` (Starter
+	 * by default).
 	 *
 	 * @param array<string, mixed> $template Template.
-	 * @param bool                 $with_pro Whether SureForms Pro is active.
+	 * @param string|bool          $tier     Plan tier from Helper::get_pro_tier(). `true` is
+	 *                                       read as `business` and `false` as `free`.
 	 * @since x.x.x
 	 * @return array<int, array<string, mixed>>
 	 */
-	public static function resolve_fields( $template, $with_pro ) {
+	public static function resolve_fields( $template, $tier ) {
+		if ( is_bool( $tier ) ) {
+			$tier = $tier ? 'business' : 'free';
+		}
+		$rank   = Helper::tier_rank( $tier );
 		$fields = [];
 		foreach ( Helper::get_array_value( $template['fields'] ?? [] ) as $field ) {
 			if ( ! is_array( $field ) ) {
 				continue;
 			}
-			if ( ! empty( $field['pro_only'] ) && ! $with_pro ) {
+			$with_pro = $rank >= max( 1, Helper::tier_rank( Helper::get_string_value( $field['pro_tier'] ?? 'starter' ) ) );
+			$pro_only = ! empty( $field['pro_only'] ) || ( isset( $field['pro_tier'] ) && empty( $field['pro'] ) );
+			if ( $pro_only && ! $with_pro ) {
 				continue;
 			}
 			if ( $with_pro && ! empty( $field['pro'] ) && is_array( $field['pro'] ) ) {
@@ -759,7 +982,7 @@ class Form_Templates {
 				}
 				$field = array_merge( $field, $pro );
 			}
-			unset( $field['pro'], $field['pro_only'] );
+			unset( $field['pro'], $field['pro_only'], $field['pro_tier'] );
 			$fields[] = $field;
 		}
 		return $fields;
@@ -768,12 +991,17 @@ class Form_Templates {
 	/**
 	 * What a template sets up, for the "Included" chips in the library.
 	 *
+	 * Besides the features its fields bring, a template's Pro keys (such as
+	 * `conditions`) count from the plan that builds them, and ids listed in its
+	 * `features` key (such as `calculation`) always count.
+	 *
 	 * @param array<string, mixed>             $template Template.
 	 * @param array<int, array<string, mixed>> $fields   Fields from resolve_fields().
+	 * @param string                           $tier     Plan the fields were resolved for. Defaults to this site's.
 	 * @since x.x.x
 	 * @return array<int, string>
 	 */
-	public static function get_features( $template, $fields ) {
+	public static function get_features( $template, $fields, $tier = '' ) {
 		$by_type = [
 			'page-break'  => 'multi_step',
 			'upload'      => 'file_upload',
@@ -782,7 +1010,12 @@ class Form_Templates {
 			'rating'      => 'rating',
 			'nps'         => 'nps',
 			'gdpr'        => 'consent',
+			'signature'   => 'signature',
+			'slider'      => 'slider',
+			'repeater'    => 'repeater',
+			'payment'     => 'payment',
 		];
+		$tier    = '' === $tier ? Helper::get_pro_tier() : $tier;
 
 		$features = [ 'notification' ];
 		if ( ! empty( $template['autoresponder'] ) && self::has_required_email( $fields ) ) {
@@ -790,11 +1023,30 @@ class Form_Templates {
 		}
 		foreach ( $fields as $field ) {
 			$type = Helper::get_string_value( $field['fieldType'] ?? '' );
-			if ( isset( $by_type[ $type ] ) && ! in_array( $by_type[ $type ], $features, true ) ) {
+			if ( isset( $by_type[ $type ] ) ) {
 				$features[] = $by_type[ $type ];
 			}
 		}
-		return $features;
+		foreach ( self::FEATURE_BY_KEY as $key => $feature ) {
+			if ( ! empty( $template[ $key ] ) && Helper::tier_rank( $tier ) >= Helper::tier_rank( self::PRO_FEATURE_KEYS[ $key ] ) ) {
+				$features[] = $feature;
+			}
+		}
+		foreach ( Helper::get_array_value( $template['features'] ?? [] ) as $feature ) {
+			$features[] = sanitize_key( Helper::get_string_value( $feature ) );
+		}
+
+		/**
+		 * Filters what a template sets up, for the "Included" chips in the library.
+		 *
+		 * @since x.x.x
+		 * @param array<int, string>               $features Feature ids, such as `multi_step` or `quiz`.
+		 * @param array<string, mixed>             $template Template.
+		 * @param array<int, array<string, mixed>> $fields   Fields from resolve_fields().
+		 */
+		$features = apply_filters( 'srfm_form_template_features', $features, $template, $fields );
+
+		return array_values( array_unique( array_filter( array_map( [ Helper::class, 'get_string_value' ], Helper::get_array_value( $features ) ) ) ) );
 	}
 
 	/**
@@ -839,13 +1091,14 @@ class Form_Templates {
 	 * @return string|WP_Error
 	 */
 	public static function build_content( $template ) {
+		$fields  = self::resolve_fields( $template, Helper::get_pro_tier() );
 		$request = new WP_REST_Request( 'POST' );
 		$request->set_param(
 			'form_data',
 			[
 				'form' => [
 					'formTitle'  => $template['title'] ?? '',
-					'formFields' => self::resolve_fields( $template, Helper::has_pro() ),
+					'formFields' => $fields,
 				],
 			]
 		);
@@ -858,7 +1111,48 @@ class Form_Templates {
 			return $content;
 		}
 
-		return Helper::get_string_value( $content );
+		/**
+		 * Filters the block markup built from a template, before it is saved,
+		 * previewed or swapped into a form. SureForms Pro uses it to add the block
+		 * attributes its template features need.
+		 *
+		 * @since x.x.x
+		 * @param string                           $content  Block markup.
+		 * @param array<string, mixed>             $template Template.
+		 * @param array<int, array<string, mixed>> $fields   Fields from resolve_fields(), as built.
+		 */
+		return Helper::get_string_value( apply_filters( 'srfm_form_template_content', Helper::get_string_value( $content ), $template, $fields ) );
+	}
+
+	/**
+	 * Build a template's block markup and metas together.
+	 *
+	 * @param array<string, mixed> $template Template.
+	 * @param array<string, mixed> $style    Style from sanitize_style().
+	 * @param string               $context  `create` or `preview` for all the form's metas,
+	 *                                       `swap` for the settings metas and the thank-you message.
+	 * @since x.x.x
+	 * @return array{content: string, metas: array<string, mixed>}|WP_Error
+	 */
+	private static function build( $template, $style, $context ) {
+		$content = self::build_content( $template );
+		if ( is_wp_error( $content ) ) {
+			return $content;
+		}
+
+		if ( 'swap' === $context ) {
+			$metas = array_merge(
+				self::build_settings_metas( $template, $content, 'swap' ),
+				[ '_srfm_form_confirmation' => self::confirmation_meta( $template ) ]
+			);
+		} else {
+			$metas = self::build_metas( $template, $style, $content, $context );
+		}
+
+		return [
+			'content' => $content,
+			'metas'   => $metas,
+		];
 	}
 
 	/**
@@ -869,29 +1163,24 @@ class Form_Templates {
 	 *
 	 * @param array<string, mixed> $template Template.
 	 * @param array<string, mixed> $style    Optional style from sanitize_style().
+	 * @param string               $content  The form's block markup, from build_content(). Built when
+	 *                                       empty and something filters the metas.
+	 * @param string               $context  `create` or `preview`.
 	 * @since x.x.x
 	 * @return array<string, mixed>
 	 */
-	public static function build_metas( $template, $style = [] ) {
+	public static function build_metas( $template, $style = [], $content = '', $context = 'create' ) {
 		$metas      = Create_New_Form::get_default_meta_keys();
 		$registered = get_registered_meta_keys( 'post', SRFM_FORMS_POST_TYPE );
 
-		$confirmation = $registered['_srfm_form_confirmation']['default'] ?? [];
-		if ( ! empty( $template['confirmation'] ) && is_array( $template['confirmation'] ) && isset( $confirmation[0] ) && is_array( $confirmation[0] ) ) {
-			$confirmation[0]['message'] = self::confirmation_message(
-				Helper::get_string_value( $template['confirmation']['heading'] ?? '' ),
-				Helper::get_string_value( $template['confirmation']['text'] ?? '' )
-			);
-		}
-
-		$metas['_srfm_form_confirmation'] = $confirmation;
-		$metas                            = array_merge( $metas, self::build_settings_metas( $template ), self::build_style_metas( $template, $style ) );
+		$metas['_srfm_form_confirmation'] = self::confirmation_meta( $template );
+		$metas                            = array_merge( $metas, self::settings_metas( $template ), self::build_style_metas( $template, $style ) );
 
 		$metas['_srfm_compliance']       = $registered['_srfm_compliance']['default'] ?? [];
 		$metas[ self::CREATED_VIA_META ] = 'template';
 		$metas[ self::TEMPLATE_ID_META ] = $template['id'];
 
-		return $metas;
+		return self::filter_metas( $metas, $template, $content, $context );
 	}
 
 	/**
@@ -899,12 +1188,86 @@ class Form_Templates {
 	 * Used when creating a form and when a template is applied in the editor.
 	 *
 	 * @param array<string, mixed> $template Template.
+	 * @param string               $content  The form's block markup, from build_content(). Built when
+	 *                                       empty and something filters the metas.
+	 * @param string               $context  `swap`, `create` or `preview`.
 	 * @since x.x.x
 	 * @return array<string, mixed>
 	 */
-	public static function build_settings_metas( $template ) {
+	public static function build_settings_metas( $template, $content = '', $context = 'swap' ) {
+		return self::filter_metas( self::settings_metas( $template ), $template, $content, $context );
+	}
+
+	/**
+	 * Run a template's metas through `srfm_form_template_metas`.
+	 *
+	 * @param array<string, mixed> $metas    Metas.
+	 * @param array<string, mixed> $template Template.
+	 * @param string               $content  The form's block markup, or '' to build it when needed.
+	 * @param string               $context  `create`, `swap` or `preview`.
+	 * @since x.x.x
+	 * @return array<string, mixed>
+	 */
+	private static function filter_metas( $metas, $template, $content, $context ) {
+		if ( ! has_filter( 'srfm_form_template_metas' ) ) {
+			return $metas;
+		}
+		if ( '' === $content ) {
+			$built   = self::build_content( $template );
+			$content = is_string( $built ) ? $built : '';
+		}
+
+		/**
+		 * Filters the metas a template sets on a form. SureForms Pro uses it to
+		 * write the settings of the template's Pro features, such as conditional
+		 * logic, matching fields by slug in `$content`.
+		 *
+		 * In the `swap` context the metas go back to the editor as they are, and
+		 * only the template's settings metas (plus `_srfm_form_confirmation`) are
+		 * passed; `create` metas are saved through wp_insert_post() and are
+		 * unslashed on the way; `preview` metas render an in-memory form.
+		 *
+		 * @since x.x.x
+		 * @param array<string, mixed>             $metas    Metas, keyed by meta key.
+		 * @param array<string, mixed>             $template Template.
+		 * @param string                           $content  The form's block markup.
+		 * @param array<int, array<string, mixed>> $fields   Fields from resolve_fields(), as built.
+		 * @param string                           $context  `create`, `swap` or `preview`.
+		 */
+		$filtered = apply_filters( 'srfm_form_template_metas', $metas, $template, $content, self::resolve_fields( $template, Helper::get_pro_tier() ), $context );
+
+		return is_array( $filtered ) ? $filtered : $metas;
+	}
+
+	/**
+	 * The thank-you message meta a template sets.
+	 *
+	 * @param array<string, mixed> $template Template.
+	 * @since x.x.x
+	 * @return mixed `_srfm_form_confirmation` value.
+	 */
+	private static function confirmation_meta( $template ) {
+		$registered   = get_registered_meta_keys( 'post', SRFM_FORMS_POST_TYPE );
+		$confirmation = $registered['_srfm_form_confirmation']['default'] ?? [];
+		if ( ! empty( $template['confirmation'] ) && is_array( $template['confirmation'] ) && is_array( $confirmation ) && isset( $confirmation[0] ) && is_array( $confirmation[0] ) ) {
+			$confirmation[0]['message'] = self::confirmation_message(
+				Helper::get_string_value( $template['confirmation']['heading'] ?? '' ),
+				Helper::get_string_value( $template['confirmation']['text'] ?? '' )
+			);
+		}
+		return $confirmation;
+	}
+
+	/**
+	 * The behaviour metas a template sets, before `srfm_form_template_metas`.
+	 *
+	 * @param array<string, mixed> $template Template.
+	 * @since x.x.x
+	 * @return array<string, mixed>
+	 */
+	private static function settings_metas( $template ) {
 		$registered = get_registered_meta_keys( 'post', SRFM_FORMS_POST_TYPE );
-		$fields     = self::resolve_fields( $template, Helper::has_pro() );
+		$fields     = self::resolve_fields( $template, Helper::get_pro_tier() );
 		$has_email  = self::has_required_email( $fields );
 		$metas      = [];
 
@@ -1066,15 +1429,15 @@ class Form_Templates {
 			return new WP_Error( 'srfm_template_not_found', __( 'That template could not be found.', 'sureforms' ), [ 'status' => 404 ] );
 		}
 
-		if ( ! empty( $template['is_pro'] ) && ! Helper::has_pro() ) {
-			return new WP_Error( 'srfm_template_locked', __( 'This template needs SureForms Pro.', 'sureforms' ), [ 'status' => 403 ] );
+		$locked = self::locked_error( $template );
+		if ( null !== $locked ) {
+			return $locked;
 		}
 
 		$template = self::apply_messages( $template, self::sanitize_messages( $messages ) );
-		$style    = self::sanitize_style( $style );
-		$content  = self::build_content( $template );
-		if ( is_wp_error( $content ) ) {
-			return $content;
+		$built    = self::build( $template, self::sanitize_style( $style ), 'create' );
+		if ( is_wp_error( $built ) ) {
+			return $built;
 		}
 
 		// wp_insert_post() unslashes its input, which would strip the backslashes
@@ -1084,10 +1447,10 @@ class Form_Templates {
 			wp_slash(
 				[
 					'post_title'   => Helper::get_string_value( $template['title'] ?? '' ),
-					'post_content' => $content,
+					'post_content' => $built['content'],
 					'post_status'  => 'draft',
 					'post_type'    => SRFM_FORMS_POST_TYPE,
-					'meta_input'   => self::build_metas( $template, $style ),
+					'meta_input'   => $built['metas'],
 				]
 			),
 			true
@@ -1116,6 +1479,7 @@ class Form_Templates {
 		return new WP_REST_Response(
 			[
 				'templates'       => self::get_templates_for_js(),
+				'pro_tier'        => Helper::get_pro_tier(),
 				'categories'      => self::get_categories(),
 				'themes'          => self::get_themes_for_js(),
 				'requests'        => self::get_request_settings_for_js(),
@@ -1196,33 +1560,32 @@ class Form_Templates {
 			return new WP_Error( 'srfm_template_not_found', __( 'That template could not be found.', 'sureforms' ), [ 'status' => 404 ] );
 		}
 
-		if ( ! empty( $template['is_pro'] ) && ! Helper::has_pro() ) {
-			return new WP_Error( 'srfm_template_locked', __( 'This template needs SureForms Pro.', 'sureforms' ), [ 'status' => 403 ] );
+		$locked = self::locked_error( $template );
+		if ( null !== $locked ) {
+			return $locked;
 		}
 
-		$style   = self::sanitize_style( $request->get_param( 'style' ) );
-		$content = self::build_content( $template );
-		if ( is_wp_error( $content ) ) {
-			return $content;
+		$style = self::sanitize_style( $request->get_param( 'style' ) );
+		$built = self::build( $template, $style, 'swap' );
+		if ( is_wp_error( $built ) ) {
+			return $built;
 		}
 
-		$style_metas    = self::build_style_metas( $template, $style );
-		$settings_metas = self::build_settings_metas( $template );
-		$confirmation   = self::build_metas( $template, $style )['_srfm_form_confirmation'];
-		$form_id        = Helper::get_integer_value( $request->get_param( 'form_id' ) );
-		$has_entries    = $form_id > 0 && Entries::get_total_entries_by_status( 'all', $form_id ) > 0;
+		$style_metas = self::build_style_metas( $template, $style );
+		$form_id     = Helper::get_integer_value( $request->get_param( 'form_id' ) );
+		$has_entries = $form_id > 0 && Entries::get_total_entries_by_status( 'all', $form_id ) > 0;
 
 		return new WP_REST_Response(
 			[
 				'id'           => $template['id'],
 				'title'        => Helper::get_string_value( $template['title'] ?? '' ),
-				'content'      => $content,
+				'content'      => $built['content'],
 				'has_entries'  => $has_entries,
 				// Applied over the open form's own settings in the editor.
 				'styling'      => self::changed_keys( $style_metas['_srfm_forms_styling'], Helper::get_array_value( get_registered_meta_keys( 'post', SRFM_FORMS_POST_TYPE )['_srfm_forms_styling']['default'] ?? [] ) ),
 				'instant_form' => self::instant_form_style( self::resolve_theme( $template, $style ) ),
 				// Button text, emails, thank-you message and steps the template sets.
-				'settings'     => array_merge( $settings_metas, [ '_srfm_form_confirmation' => $confirmation ] ),
+				'settings'     => $built['metas'],
 			]
 		);
 	}
@@ -1444,13 +1807,15 @@ class Form_Templates {
 		}
 
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only preview; the style is sanitized to known keys and hex colors.
-		$style   = self::sanitize_style( isset( $_GET['srfm_style'] ) ? sanitize_text_field( wp_unslash( $_GET['srfm_style'] ) ) : '' );
-		$content = self::build_content( $template );
-		if ( is_wp_error( $content ) ) {
-			wp_die( esc_html( $content->get_error_message() ), '', [ 'response' => 500 ] );
+		$style = self::sanitize_style( isset( $_GET['srfm_style'] ) ? sanitize_text_field( wp_unslash( $_GET['srfm_style'] ) ) : '' );
+		// A locked template still previews, built with this site's fields, so
+		// the library can show what it offers.
+		$built = self::build( $template, $style, 'preview' );
+		if ( is_wp_error( $built ) ) {
+			wp_die( esc_html( $built->get_error_message() ), '', [ 'response' => 500 ] );
 		}
 
-		self::seed_preview_form( $template, $content, $style );
+		self::seed_preview_form( $template, $built['content'], $built['metas'] );
 
 		if ( ! defined( 'DONOTCACHEPAGE' ) ) {
 			define( 'DONOTCACHEPAGE', true ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound -- Standard page-cache opt-out constant.
@@ -1483,11 +1848,11 @@ class Form_Templates {
 	 *
 	 * @param array<string, mixed> $template Template.
 	 * @param string               $content  Block markup.
-	 * @param array<string, mixed> $style    Style from sanitize_style().
+	 * @param array<string, mixed> $metas    Metas from build_metas(), including any a filter added.
 	 * @since x.x.x
 	 * @return void
 	 */
-	private static function seed_preview_form( $template, $content, $style = [] ) {
+	private static function seed_preview_form( $template, $content, $metas ) {
 		$post = (object) [
 			'ID'                => self::get_preview_post_id(),
 			'post_author'       => get_current_user_id(),
@@ -1517,7 +1882,7 @@ class Form_Templates {
 		add_action( 'shutdown', [ self::class, 'forget_preview_form' ] );
 
 		$meta = [];
-		foreach ( self::build_metas( $template, $style ) as $key => $value ) {
+		foreach ( $metas as $key => $value ) {
 			$meta[ $key ] = [ is_scalar( $value ) ? (string) $value : maybe_serialize( Helper::get_array_value( $value ) ) ];
 		}
 		wp_cache_set( self::get_preview_post_id(), $meta, 'post_meta' );
