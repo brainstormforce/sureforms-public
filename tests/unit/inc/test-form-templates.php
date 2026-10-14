@@ -50,6 +50,15 @@ class Test_Form_Templates extends TestCase {
 		$this->assertSame( array_keys( $templates ), array_unique( array_keys( $templates ) ) );
 	}
 
+	public function test_categories_without_templates_are_hidden() {
+		$used = array_unique( array_column( Form_Templates::get_templates(), 'category' ) );
+		$ids  = wp_list_pluck( Form_Templates::get_categories(), 'id' );
+
+		sort( $used );
+		sort( $ids );
+		$this->assertSame( $used, $ids );
+	}
+
 	public function test_every_template_has_a_known_category() {
 		$categories = wp_list_pluck( Form_Templates::get_categories(), 'id' );
 
