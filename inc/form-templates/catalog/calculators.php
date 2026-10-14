@@ -213,23 +213,20 @@ return [
 					Catalog::field(
 						'number',
 						'interest-rate',
-						__( 'Interest Rate', 'sureforms' ),
+						__( 'Interest Rate (% a year)', 'sureforms' ),
 						true,
 						[ 'placeholder' => __( 'e.g. 6.5', 'sureforms' ) ]
 					),
 					[
 						'minValue' => 0.1,
 						'maxValue' => 50,
-						'suffix'   => __( '% a year', 'sureforms' ),
+						'suffix'   => '%',
 					]
 				),
 				25
 			),
 			Catalog::width(
-				Catalog::attrs(
-					Catalog::number_field( 'term-years', __( 'Term', 'sureforms' ), true, 1, 40, [ 'placeholder' => __( 'e.g. 5', 'sureforms' ) ] ),
-					[ 'suffix' => __( 'years', 'sureforms' ) ]
-				),
+				Catalog::number_field( 'term-years', __( 'Term (years)', 'sureforms' ), true, 1, 40, [ 'placeholder' => __( 'e.g. 5', 'sureforms' ) ] ),
 				25
 			),
 			Catalog::width( $result( 'monthly-payment', __( 'Monthly Repayment', 'sureforms' ), $repayment, 2, $symbol ), 50 ),
