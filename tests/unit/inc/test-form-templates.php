@@ -46,7 +46,8 @@ class Test_Form_Templates extends TestCase {
 	public function test_ships_twenty_templates_with_unique_ids() {
 		$templates = Form_Templates::get_templates();
 
-		$this->assertCount( 20, $templates );
+		// The 20 free templates, in display order; the Premium categories follow.
+		$this->assertSame( \SRFM\Inc\Form_Templates\Catalog::ORDER, array_slice( array_keys( $templates ), 0, 20 ) );
 		$this->assertSame( array_keys( $templates ), array_unique( array_keys( $templates ) ) );
 	}
 
@@ -71,6 +72,10 @@ class Test_Form_Templates extends TestCase {
 
 	public function test_every_template_builds_only_free_blocks() {
 		foreach ( Form_Templates::get_templates() as $id => $template ) {
+			// Paid templates are only built on a plan that has their blocks.
+			if ( 'free' !== Form_Templates::get_required_tier( $template ) ) {
+				continue;
+			}
 			$content = Form_Templates::build_content( $template );
 
 			$this->assertIsString( $content, "Template {$id} failed to build." );
