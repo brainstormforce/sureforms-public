@@ -9,6 +9,7 @@
 
 use Yoast\PHPUnitPolyfills\TestCases\TestCase;
 use SRFM\Admin\Analytics;
+use SRFM\Inc\Form_Templates;
 use SRFM\Inc\Helper;
 use SRFM\Inc\Onboarding;
 
@@ -1180,6 +1181,43 @@ class Test_Analytics extends TestCase {
 		$analytics->track_first_form_published( 'publish', 'draft', $post );
 
 		$this->assertTrue( Analytics::events()->is_tracked( 'first_form_published' ) );
+	}
+
+	/**
+	 * Test track_first_form_published names the template a form came from.
+	 *
+	 * @return void
+	 */
+	public function test_track_first_form_published_names_the_template() {
+		Analytics::events()->flush_pending();
+		$post = $this->create_mock_post( [ 'post_content' => '<!-- wp:srfm/input /-->' ] );
+		update_post_meta( $post->ID, '_srfm_created_via', 'template' );
+		update_post_meta( $post->ID, '_srfm_template_id', 'loan-emi-calculator' );
+
+		( new Analytics() )->track_first_form_published( 'publish', 'draft', $post );
+
+		$event = null;
+		foreach ( get_option( 'srfm_options', [] )['usage_events_pending'] ?? [] as $pending ) {
+			if ( 'first_form_published' === ( $pending['event_name'] ?? '' ) ) {
+				$event = $pending;
+			}
+		}
+		$this->assertNotNull( $event );
+		$this->assertSame( 'template', $event['properties']['created_via'] );
+		$this->assertSame( 'loan-emi-calculator', $event['properties']['template_slug'] );
+		$this->assertSame( 'Loan Repayment Calculator', $event['properties']['template_name'] );
+		$this->assertArrayNotHasKey( 'template_id', $event['properties'] );
+	}
+
+	/**
+	 * Test the template name is empty for an unknown template.
+	 *
+	 * @return void
+	 */
+	public function test_template_name_is_empty_for_an_unknown_template() {
+		$this->assertSame( '', Form_Templates::get_template_name( 'no-such-template' ) );
+		$this->assertSame( '', Form_Templates::get_template_name( '' ) );
+		$this->assertSame( 'Contact Us', Form_Templates::get_template_name( 'contact-us' ) );
 	}
 
 	/**
