@@ -12,6 +12,7 @@
 
 namespace SRFM\Inc\Form_Templates;
 
+use SRFM\Inc\Form_Templates;
 use SRFM\Inc\Helper;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -180,6 +181,19 @@ class Catalog {
 	public static function attrs( $field, $attributes ) {
 		$field['blockAttributes'] = array_merge( Helper::get_array_value( $field['blockAttributes'] ?? [] ), $attributes );
 		return $field;
+	}
+
+	/**
+	 * A thank-you message in the layout of a template's own one (check icon,
+	 * heading, text), for the messages in a template's `confirmations`.
+	 *
+	 * @param string $heading Heading.
+	 * @param string $text    Text.
+	 * @since x.x.x
+	 * @return string HTML.
+	 */
+	public static function thank_you( $heading, $text ) {
+		return Form_Templates::confirmation_message( $heading, $text );
 	}
 
 	/**

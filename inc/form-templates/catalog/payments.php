@@ -33,7 +33,8 @@ $setup     = [ 'stripe', 'paypal' ];
  * A payment field. Stripe takes the payment on every plan; with SureForms
  * Business the visitor can also pay with PayPal.
  */
-$payment = static function ( $slug, $label, $schema ) use ( $currency ) {
+$payment = static function ( $slug, $label, $schema ) {
+	// The block charges in the currency set in the payment settings.
 	return Catalog::field(
 		'payment',
 		$slug,
@@ -42,8 +43,6 @@ $payment = static function ( $slug, $label, $schema ) use ( $currency ) {
 		array_merge(
 			$schema,
 			[
-				// The block charges in the settings currency; this tells the library preview.
-				'currency' => $currency,
 				'pro'      => [ 'blockAttributes' => [ 'paymentMethods' => [ 'stripe', 'paypal' ] ] ],
 				'pro_tier' => 'business',
 			]
@@ -73,21 +72,11 @@ $priced_options = static function ( $options, $icons = [] ) {
 
 /*
  * A read-only order total worked out by a formula (SureForms Business). The
- * block shows the currency; the empty schema keys keep it out of the
- * library's example answer, as the saved answer has none.
+ * block shows the currency; the saved answer has none.
  */
 $total = static function ( $formula ) use ( $symbol ) {
 	return Catalog::attrs(
-		Catalog::field(
-			'number',
-			'total',
-			__( 'Total', 'sureforms' ),
-			true,
-			[
-				'prefix' => '',
-				'suffix' => '',
-			]
-		),
+		Catalog::field( 'number', 'total', __( 'Total', 'sureforms' ), true ),
 		[
 			'enableCalculation'  => true,
 			'calculationFormula' => $formula,

@@ -26,17 +26,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 $c         = Catalog::common_fields();
 $no_search = [ 'searchable' => false ];
 
-/**
- * A conditional thank-you message, in the same look as the template's own one.
- *
- * @param string $heading Heading.
- * @param string $text    Text.
- * @return string HTML.
- */
-$message = static function ( $heading, $text ) {
-	return '<p style="text-align: center;"><img src="' . esc_url( SRFM_URL . 'images/check-icon.svg' ) . '" alt="" aria-hidden="true" /></p><h2 style="text-align: center;">' . esc_html( $heading ) . '</h2><p style="text-align: center;">' . esc_html( $text ) . '</p>';
-};
-
 $team_sizes = [ __( 'Just me', 'sureforms' ), __( '2–10 people', 'sureforms' ), __( '11–50 people', 'sureforms' ), __( 'More than 50', 'sureforms' ) ];
 
 /**
@@ -159,12 +148,12 @@ return [
 		'confirmations' => [
 			[
 				'name'    => __( 'Passed', 'sureforms' ),
-				'message' => $message( __( 'Well done, {form:first-name}!', 'sureforms' ), __( 'You scored {quiz_score} ({quiz_percentage}) and passed the quiz. We have emailed your results to {form:email}.', 'sureforms' ) ),
+				'message' => Catalog::thank_you( __( 'Well done, {form:first-name}!', 'sureforms' ), __( 'You scored {quiz_score} ({quiz_percentage}) and passed the quiz. We have emailed your results to {form:email}.', 'sureforms' ) ),
 				'rules'   => [ [ '{quiz_percentage}', '_GREATER_OR_EQUAL_', (string) $quiz_pass ] ],
 			],
 			[
 				'name'    => __( 'Not passed yet', 'sureforms' ),
-				'message' => $message( __( 'Nice try, {form:first-name}', 'sureforms' ), sprintf( /* translators: %d: pass mark, a percentage. */ __( 'You scored {quiz_score} ({quiz_percentage}). You need %d%% to pass, so have another go. We have emailed the right answers to {form:email}.', 'sureforms' ), $quiz_pass ) ),
+				'message' => Catalog::thank_you( __( 'Nice try, {form:first-name}', 'sureforms' ), sprintf( /* translators: %d: pass mark, a percentage. */ __( 'You scored {quiz_score} ({quiz_percentage}). You need %d%% to pass, so have another go. We have emailed the right answers to {form:email}.', 'sureforms' ), $quiz_pass ) ),
 				'rules'   => [ [ '{quiz_percentage}', '_LESSER_', (string) $quiz_pass ] ],
 			],
 		],
@@ -249,22 +238,22 @@ return [
 		'confirmations' => [
 			[
 				'name'    => __( 'Grade A', 'sureforms' ),
-				'message' => $message( __( 'Your readiness grade: A', 'sureforms' ), __( '{form:first-name}, you scored {quiz_score} ({quiz_percentage}). Your business is ready to grow online. Your next step: put more into the channels that already bring in customers. We have emailed your results to {form:email}.', 'sureforms' ) ),
+				'message' => Catalog::thank_you( __( 'Your readiness grade: A', 'sureforms' ), __( '{form:first-name}, you scored {quiz_score} ({quiz_percentage}). Your business is ready to grow online. Your next step: put more into the channels that already bring in customers. We have emailed your results to {form:email}.', 'sureforms' ) ),
 				'rules'   => [ [ '{quiz_letter_grade}', '_EQUAL_', 'A' ] ],
 			],
 			[
 				'name'    => __( 'Grade B', 'sureforms' ),
-				'message' => $message( __( 'Your readiness grade: B', 'sureforms' ), __( '{form:first-name}, you scored {quiz_score} ({quiz_percentage}). The basics are in place. Your next step: track your leads and numbers each month, so you can see what brings in customers. We have emailed your results to {form:email}.', 'sureforms' ) ),
+				'message' => Catalog::thank_you( __( 'Your readiness grade: B', 'sureforms' ), __( '{form:first-name}, you scored {quiz_score} ({quiz_percentage}). The basics are in place. Your next step: track your leads and numbers each month, so you can see what brings in customers. We have emailed your results to {form:email}.', 'sureforms' ) ),
 				'rules'   => [ [ '{quiz_letter_grade}', '_EQUAL_', 'B' ] ],
 			],
 			[
 				'name'    => __( 'Grade C', 'sureforms' ),
-				'message' => $message( __( 'Your readiness grade: C', 'sureforms' ), __( '{form:first-name}, you scored {quiz_score} ({quiz_percentage}). There is plenty of room to grow. Your next step: start collecting email addresses and let customers buy or book online. We have emailed your results to {form:email}.', 'sureforms' ) ),
+				'message' => Catalog::thank_you( __( 'Your readiness grade: C', 'sureforms' ), __( '{form:first-name}, you scored {quiz_score} ({quiz_percentage}). There is plenty of room to grow. Your next step: start collecting email addresses and let customers buy or book online. We have emailed your results to {form:email}.', 'sureforms' ) ),
 				'rules'   => [ [ '{quiz_letter_grade}', '_EQUAL_', 'C' ] ],
 			],
 			[
 				'name'    => __( 'Grade D', 'sureforms' ),
-				'message' => $message( __( 'Your readiness grade: D', 'sureforms' ), __( '{form:first-name}, you scored {quiz_score} ({quiz_percentage}). Every business starts somewhere. Your next step: a simple, mobile-friendly website with a way to contact you. We have emailed your results to {form:email}.', 'sureforms' ) ),
+				'message' => Catalog::thank_you( __( 'Your readiness grade: D', 'sureforms' ), __( '{form:first-name}, you scored {quiz_score} ({quiz_percentage}). Every business starts somewhere. Your next step: a simple, mobile-friendly website with a way to contact you. We have emailed your results to {form:email}.', 'sureforms' ) ),
 				'rules'   => [ [ '{quiz_letter_grade}', '_EQUAL_', 'D' ] ],
 			],
 		],
@@ -428,17 +417,17 @@ return [
 		'confirmations' => [
 			[
 				'name'    => __( 'Large teams: talk to sales', 'sureforms' ),
-				'message' => $message( __( 'We recommend: Enterprise', 'sureforms' ), __( 'For a team your size, a short call is the quickest way to the right setup. We will email {form:email} to find a time.', 'sureforms' ) ),
+				'message' => Catalog::thank_you( __( 'We recommend: Enterprise', 'sureforms' ), __( 'For a team your size, a short call is the quickest way to the right setup. We will email {form:email} to find a time.', 'sureforms' ) ),
 				'rules'   => [ [ 'team-size', '_EQUAL_', __( 'More than 50', 'sureforms' ) ] ],
 			],
 			[
 				'name'    => __( 'Solo: Basic plan', 'sureforms' ),
-				'message' => $message( __( 'We recommend: Basic', 'sureforms' ), __( 'Everything one person needs to get going, at the lowest price. We have sent the details to {form:email}.', 'sureforms' ) ),
+				'message' => Catalog::thank_you( __( 'We recommend: Basic', 'sureforms' ), __( 'Everything one person needs to get going, at the lowest price. We have sent the details to {form:email}.', 'sureforms' ) ),
 				'rules'   => [ [ 'team-size', '_EQUAL_', __( 'Just me', 'sureforms' ) ] ],
 			],
 			[
 				'name'    => __( 'Teams: Growth plan', 'sureforms' ),
-				'message' => $message( __( 'We recommend: Growth', 'sureforms' ), __( 'Built for growing teams, with room to add people as you go. We have sent the details to {form:email}.', 'sureforms' ) ),
+				'message' => Catalog::thank_you( __( 'We recommend: Growth', 'sureforms' ), __( 'Built for growing teams, with room to add people as you go. We have sent the details to {form:email}.', 'sureforms' ) ),
 				'logic'   => '_OR_',
 				'rules'   => [
 					[ 'team-size', '_EQUAL_', __( '2–10 people', 'sureforms' ) ],

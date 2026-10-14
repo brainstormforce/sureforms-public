@@ -335,12 +335,12 @@ class Test_Form_Templates_UI extends TestCase {
 		$fields  = $this->calc_fields();
 		$answers = array_column( Form_Templates::get_answers( $fields ), 'sample', 'slug' );
 
-		// (1200 + 3) * 2, with the field's prefix.
+		// (1200 + 3) * 2, without the field's prefix: the entry saves the number only.
 		$this->assertSame( '1,200', $answers['price'] );
-		$this->assertSame( '$2,406', $answers['total'] );
+		$this->assertSame( '2,406', $answers['total'] );
 
 		$samples = Form_Templates::get_tag_samples( '{calculation-result}', [], $fields );
-		$this->assertSame( '$2,406', $samples['{calculation-result}'] );
+		$this->assertSame( '2,406', $samples['{calculation-result}'] );
 	}
 
 	public function test_calculated_sample_falls_back_and_is_filterable() {
@@ -400,5 +400,83 @@ class Test_Form_Templates_UI extends TestCase {
 			'too deep'            => [ str_repeat( '(', 40 ) . '1' . str_repeat( ')', 40 ), null ],
 			'complex root'        => [ '(-8) ^ 0.5', null ],
 		];
+	}
+
+	public function test_answers_leave_out_fields_without_a_readable_value() {
+		$types  = [ 'input', 'hidden', 'gdpr', 'page-break', 'inline-button', 'upload', 'html', 'signature', 'payment', 'password', 'repeater' ];
+		$fields = array_map(
+			static fn( $type ) => [
+				'fieldType' => $type,
+				'slug'      => 'f-' . $type,
+				'label'     => ucfirst( $type ),
+			],
+			$types
+		);
+
+		// Hidden values (source page, UTM tags) are useful in the owner's email.
+		$this->assertSame( [ 'f-input', 'f-hidden' ], array_column( Form_Templates::get_answers( $fields ), 'slug' ) );
+	}
+
+	public function test_library_cards_do_not_list_hidden_fields() {
+		add_filter( 'srfm_pro_tier', static fn() => 'business' );
+		$item = wp_list_filter( Form_Templates::get_templates_for_js(), [ 'id' => 'contact-us' ] );
+		$item = reset( $item );
+		remove_all_filters( 'srfm_pro_tier' );
+
+		$hidden = wp_list_filter( Form_Templates::resolve_fields( Form_Templates::get_template( 'contact-us' ), 'business' ), [ 'fieldType' => 'hidden' ] );
+		$this->assertNotEmpty( $hidden, 'contact-us records the source page with a plan.' );
+		foreach ( $hidden as $field ) {
+			$this->assertNotContains( $field['label'], $item['fields'] );
+		}
+		$this->assertContains( 'source-page', array_column( $item['answers'], 'slug' ) );
+	}
+
+	public function test_pro_keys_show_as_features_from_their_plan() {
+		$template = [
+			'confirmations'    => [ [ 'message' => 'x', 'rules' => [] ] ],
+			'email_conditions' => [ [ 'rules' => [] ] ],
+			'attach_uploads'   => [ 'cv' ],
+		];
+		$expected = [ 'conditional_confirmations', 'conditional_emails', 'email_attachments' ];
+
+		$this->assertEmpty( array_intersect( $expected, Form_Templates::get_features( $template, [], 'free' ) ) );
+		foreach ( $expected as $feature ) {
+			$this->assertContains( $feature, Form_Templates::get_features( $template, [], 'starter' ) );
+		}
+
+		// Free sites see them as what Premium adds.
+		add_filter( 'srfm_pro_tier', static fn() => 'free' );
+		$item = wp_list_filter( Form_Templates::get_templates_for_js(), [ 'id' => 'customer-feedback' ] );
+		$this->assertContains( 'conditional_confirmations', reset( $item )['pro_features'] );
+		remove_all_filters( 'srfm_pro_tier' );
+	}
+
+	public function test_payment_amount_sample_uses_the_store_currency() {
+		$fields = [
+			[
+				'fieldType'   => 'payment',
+				'slug'        => 'pay',
+				'amountType'  => 'fixed',
+				'fixedAmount' => 25,
+				// Ignored: the block charges in the payment settings currency.
+				'currency'    => 'USD',
+			],
+		];
+		$before = \SRFM\Inc\Payments\Payment_Helper::get_global_setting( 'currency', 'USD' );
+		\SRFM\Inc\Payments\Payment_Helper::update_global_setting( 'currency', 'EUR' );
+		$samples = Form_Templates::get_tag_samples( '{form-payment:pay:amount}', [], $fields );
+		\SRFM\Inc\Payments\Payment_Helper::update_global_setting( 'currency', $before );
+
+		$this->assertSame( '€25.00', $samples['{form-payment:pay:amount}'] );
+	}
+
+	public function test_catalog_thank_you_matches_the_template_message() {
+		$message = \SRFM\Inc\Form_Templates\Catalog::thank_you( 'Thanks, "Jane"', 'We will reply <soon>.' );
+
+		$this->assertSame( Form_Templates::confirmation_message( 'Thanks, "Jane"', 'We will reply <soon>.' ), $message );
+		$this->assertStringContainsString( 'images/check-icon.svg', $message );
+		$this->assertStringContainsString( '&lt;soon&gt;', $message );
+		// Saved through wp_kses_post(), which must keep the icon.
+		$this->assertStringContainsString( 'images/check-icon.svg', wp_kses_post( $message ) );
 	}
 }

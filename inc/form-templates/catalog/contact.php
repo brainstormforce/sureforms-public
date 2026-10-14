@@ -31,9 +31,6 @@ $source_page = Catalog::field(
 	]
 );
 
-// A thank-you message in the layout of the template's own one.
-$thank_you = static fn( $heading, $text ) => '<p style="text-align: center;"><img src="' . esc_url( SRFM_URL . 'images/check-icon.svg' ) . '" alt="" aria-hidden="true" /></p><h2 style="text-align: center;">' . esc_html( $heading ) . '</h2><p style="text-align: center;">' . esc_html( $text ) . '</p>';
-
 return [
 	[
 		'id'            => 'contact-us',
@@ -248,7 +245,7 @@ return [
 		'confirmations' => [
 			[
 				'name'    => __( 'Bulk order', 'sureforms' ),
-				'message' => $thank_you(
+				'message' => Catalog::thank_you(
 					__( 'Thanks for your question', 'sureforms' ),
 					__( 'Asking about a larger order? We will reply to {form:email} with volume pricing for {form:product} as soon as we can.', 'sureforms' )
 				),

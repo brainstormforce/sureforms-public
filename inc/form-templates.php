@@ -19,6 +19,7 @@ use SRFM\Inc\AI_Form_Builder\Field_Mapping;
 use SRFM\Inc\Database\Tables\Entries;
 use SRFM\Inc\Form_Templates\Catalog;
 use SRFM\Inc\Form_Templates\Formula;
+use SRFM\Inc\Payments\Payment_Helper;
 use SRFM\Inc\Payments\Stripe\Stripe_Helper;
 use SRFM\Inc\Traits\Get_Instance;
 use WP_Error;
@@ -117,16 +118,29 @@ class Form_Templates {
 	 * @since x.x.x
 	 */
 	private const FEATURE_BY_KEY = [
-		'conditions'      => 'conditional_logic',
-		'save_resume'     => 'save_resume',
-		'survey'          => 'survey',
-		'conversational'  => 'conversational',
-		'quiz'            => 'quiz',
-		'partial_entries' => 'partial_entries',
-		'cpt'             => 'post_submission',
-		'registration'    => 'user_registration',
-		'pdf'             => 'pdf',
+		'conditions'       => 'conditional_logic',
+		'confirmations'    => 'conditional_confirmations',
+		'email_conditions' => 'conditional_emails',
+		'attach_uploads'   => 'email_attachments',
+		'save_resume'      => 'save_resume',
+		'survey'           => 'survey',
+		'conversational'   => 'conversational',
+		'quiz'             => 'quiz',
+		'partial_entries'  => 'partial_entries',
+		'cpt'              => 'post_submission',
+		'registration'     => 'user_registration',
+		'pdf'              => 'pdf',
 	];
+
+	/**
+	 * Field types whose answer can't be put in a message as `{form:slug}`: no
+	 * value (consent, steps, buttons, HTML), a file or image (uploads,
+	 * signatures), a secret (passwords), rows of values (repeaters), or a
+	 * payment, whose details come with the `{form-payment:…}` result tags.
+	 *
+	 * @since x.x.x
+	 */
+	private const NO_ANSWER_TYPES = [ 'gdpr', 'page-break', 'inline-button', 'upload', 'html', 'signature', 'payment', 'password', 'repeater' ];
 
 	/**
 	 * Memoised template list, keyed by id.
@@ -341,11 +355,12 @@ class Form_Templates {
 		$list = [];
 		$tier = Helper::get_pro_tier();
 		foreach ( self::get_templates() as $template ) {
-			$resolved    = self::resolve_fields( $template, $tier );
-			$fields      = array_values(
+			$resolved = self::resolve_fields( $template, $tier );
+			$fields   = array_values(
 				array_filter(
 					array_map(
-						static fn( $field ) => ! in_array( $field['fieldType'] ?? '', [ 'gdpr', 'page-break' ], true ) ? Helper::get_string_value( $field['label'] ?? '' ) : '',
+						// Hidden fields are never seen by the visitor, so the card doesn't list them.
+						static fn( $field ) => ! in_array( $field['fieldType'] ?? '', [ 'gdpr', 'page-break', 'hidden' ], true ) ? Helper::get_string_value( $field['label'] ?? '' ) : '',
 						$resolved
 					)
 				)
@@ -686,7 +701,7 @@ class Form_Templates {
 		return [
 			// Example values for the SureForms Pro tags (quiz score, payment amount, …)
 			// the messages use or the "Results" chips insert.
-			'tag_samples'   => self::get_tag_samples( implode( "\n", array_map( [ Helper::class, 'get_string_value' ], $texts ) ), $result_tags, $fields ),
+			'tag_samples'   => self::get_tag_samples( implode( "\n", array_map( [ Helper::class, 'get_string_value' ], $texts ) ), $result_tags, $fields, $template ),
 			// Results the messages can include: { tag, label }.
 			'result_tags'   => $result_tags,
 			'confirmation'  => [
@@ -708,7 +723,10 @@ class Form_Templates {
 
 	/**
 	 * The answers a message can include as `{form:slug}`, each with an example
-	 * value for the preview.
+	 * value for the preview. Fields without a readable answer (consent, steps,
+	 * buttons, uploads, HTML, signatures, payments, passwords and repeaters) are
+	 * left out; hidden fields stay, as their values (a source page, UTM tags)
+	 * are useful in the site owner's email.
 	 *
 	 * @param array<int, array<string, mixed>> $fields Fields from resolve_fields().
 	 * @since x.x.x
@@ -718,7 +736,7 @@ class Form_Templates {
 		$answers = [];
 		foreach ( $fields as $field ) {
 			$type = Helper::get_string_value( $field['fieldType'] ?? '' );
-			if ( in_array( $type, [ 'gdpr', 'page-break', 'inline-button', 'upload' ], true ) ) {
+			if ( in_array( $type, self::NO_ANSWER_TYPES, true ) ) {
 				continue;
 			}
 			$answers[] = [
@@ -851,15 +869,16 @@ class Form_Templates {
 	 * @param string                                        $text        Message text.
 	 * @param array<int, array{tag: string, label: string}> $result_tags From get_result_tags().
 	 * @param array<int, array<string, mixed>>              $fields      Fields from resolve_fields().
+	 * @param array<string, mixed>                          $template    Template, for its quiz settings.
 	 * @since x.x.x
-	 * @return array<string, string> Sample by tag, e.g. `{quiz_score}` => '8 / 10'.
+	 * @return array<string, string> Sample by tag, e.g. `{quiz_score}` => '4 / 5'.
 	 */
-	public static function get_tag_samples( $text, $result_tags, $fields ) {
+	public static function get_tag_samples( $text, $result_tags, $fields, $template = [] ) {
 		preg_match_all( '/\{(?:quiz_[a-z_]+|poll_results|calculation-result|form-payment:[a-z0-9_-]+:[a-z-]+)\}/i', $text, $matches );
 		$tags    = array_merge( $matches[0], array_column( $result_tags, 'tag' ) );
 		$samples = [];
 		foreach ( array_unique( $tags ) as $tag ) {
-			$sample = self::tag_sample( strtolower( $tag ), $fields );
+			$sample = self::tag_sample( strtolower( $tag ), $fields, $template );
 			if ( null !== $sample ) {
 				$samples[ $tag ] = $sample;
 			}
@@ -870,21 +889,17 @@ class Form_Templates {
 	/**
 	 * Example value of one SureForms Pro tag.
 	 *
-	 * @param string                           $tag    Tag, lowercase, with braces.
-	 * @param array<int, array<string, mixed>> $fields Fields from resolve_fields().
+	 * @param string                           $tag      Tag, lowercase, with braces.
+	 * @param array<int, array<string, mixed>> $fields   Fields from resolve_fields().
+	 * @param array<string, mixed>             $template Template, for its quiz settings.
 	 * @since x.x.x
 	 * @return string|null Null for tags without an example (answers, unknown tags).
 	 */
-	private static function tag_sample( $tag, $fields ) {
-		$fixed = [
-			// As SureForms Pro writes them: score out of the most points, and so on.
-			'{quiz_score}'        => '8 / 10',
-			'{quiz_percentage}'   => '80%',
-			'{quiz_pass_fail}'    => __( 'Pass', 'sureforms' ),
-			'{quiz_letter_grade}' => 'B',
-			'{quiz_result}'       => __( '8 of 10 answers correct', 'sureforms' ),
-			'{poll_results}'      => __( '(live poll results)', 'sureforms' ),
-		];
+	private static function tag_sample( $tag, $fields, $template = [] ) {
+		$fixed = array_merge(
+			self::quiz_samples( Helper::get_array_value( $template['quiz'] ?? [] ), $fields ),
+			[ '{poll_results}' => __( '(live poll results)', 'sureforms' ) ]
+		);
 		if ( isset( $fixed[ $tag ] ) ) {
 			return $fixed[ $tag ];
 		}
@@ -916,8 +931,69 @@ class Form_Templates {
 	}
 
 	/**
-	 * Example amount a payment field takes: its fixed amount, or the example
-	 * value of the field the amount comes from, else $49.00.
+	 * Example values of the quiz tags, as SureForms Pro writes them, for a
+	 * person who scored 80% of the quiz's most points: `{quiz_score}` is the
+	 * score out of the most points, which come from the quiz's questions
+	 * (one `correctAnswerScore` per question, or each question's best
+	 * `individualScore` in advanced scoring). 8 / 10 when the fields have no
+	 * scored question.
+	 *
+	 * @param array<string, mixed>             $quiz   Template `quiz` settings.
+	 * @param array<int, array<string, mixed>> $fields Fields from resolve_fields().
+	 * @since x.x.x
+	 * @return array<string, string> Sample by tag.
+	 */
+	private static function quiz_samples( $quiz, $fields ) {
+		$advanced  = 'advanced' === ( $quiz['scoreType'] ?? '' );
+		$per_right = is_numeric( $quiz['correctAnswerScore'] ?? null ) ? (float) $quiz['correctAnswerScore'] : 1.0;
+		$questions = 0;
+		$most      = 0.0;
+		foreach ( $fields as $field ) {
+			$options = array_filter( Helper::get_array_value( $field['fieldOptions'] ?? [] ), 'is_array' );
+			$scores  = array_filter( array_column( $options, 'individualScore' ), 'is_numeric' );
+			if ( $advanced && ! empty( $scores ) ) {
+				++$questions;
+				$most += (float) max( $scores );
+			} elseif ( ! $advanced && in_array( true, array_column( $options, 'isCorrect' ), true ) ) {
+				++$questions;
+				$most += $per_right;
+			}
+		}
+		if ( 0 === $questions || $most <= 0 ) {
+			$questions = 10;
+			$most      = 10.0 * $per_right;
+		}
+		$score      = round( $most * 0.8 );
+		$percentage = (int) round( $score / $most * 100 );
+		$number     = static fn( $value ) => floor( $value ) === $value ? number_format( $value ) : number_format( $value, 2 );
+
+		$pass  = ! is_numeric( $quiz['passPercent'] ?? null ) || $percentage >= (float) $quiz['passPercent'];
+		$grade = 'B';
+		foreach ( Helper::get_array_value( $quiz['letterGrades'] ?? [] ) as $letter ) {
+			// Grades are listed from the highest; the first one reached applies.
+			if ( is_array( $letter ) && is_numeric( $letter['percentage'] ?? null ) && $percentage >= (float) $letter['percentage'] ) {
+				$grade = Helper::get_string_value( $letter['grade'] ?? $grade );
+				break;
+			}
+		}
+
+		return [
+			'{quiz_score}'        => $number( $score ) . ' / ' . $number( $most ),
+			'{quiz_percentage}'   => $percentage . '%',
+			'{quiz_pass_fail}'    => $pass ? __( 'Pass', 'sureforms' ) : __( 'Fail', 'sureforms' ),
+			'{quiz_letter_grade}' => $grade,
+			'{quiz_result}'       => $advanced
+				/* translators: 1: points scored, 2: most points. */
+				? sprintf( __( '%1$s of %2$s points', 'sureforms' ), $number( $score ), $number( $most ) )
+				/* translators: 1: right answers, 2: questions. */
+				: sprintf( __( '%1$d of %2$d answers correct', 'sureforms' ), (int) round( $questions * 0.8 ), $questions ),
+		];
+	}
+
+	/**
+	 * Example amount a payment field takes, in the currency set in the payment
+	 * settings: its fixed amount, or the example value of the field the amount
+	 * comes from, else 49.00.
 	 *
 	 * @param string                           $slug   Payment field slug.
 	 * @param array<int, array<string, mixed>> $fields Fields from resolve_fields().
@@ -925,14 +1001,13 @@ class Form_Templates {
 	 * @return string
 	 */
 	private static function payment_amount_sample( $slug, $fields ) {
-		$payment = self::find_field( $slug, $fields );
-		$amount  = 49.0;
-		$symbol  = '$';
+		$payment  = self::find_field( $slug, $fields );
+		$amount   = 49.0;
+		$currency = strtoupper( Payment_Helper::get_currency() );
+		$symbol   = Helper::get_string_value( Payment_Helper::get_currency_symbol( $currency ) );
+		$symbol   = '' === $symbol ? $currency . ' ' : $symbol;
 		if ( null !== $payment ) {
-			$currency = strtoupper( Helper::get_string_value( $payment['currency'] ?? 'USD' ) );
-			$symbol   = Helper::get_string_value( Stripe_Helper::get_currency_symbol( $currency ) );
-			$symbol   = '' === $symbol ? $currency . ' ' : $symbol;
-			$type     = Helper::get_string_value( $payment['amountType'] ?? 'fixed' );
+			$type = Helper::get_string_value( $payment['amountType'] ?? 'fixed' );
 			if ( 'fixed' === $type && isset( $payment['fixedAmount'] ) && is_numeric( $payment['fixedAmount'] ) ) {
 				$amount = (float) $payment['fixedAmount'];
 			} elseif ( 'variable' === $type && ! empty( $payment['variableAmountField'] ) ) {
@@ -973,8 +1048,9 @@ class Form_Templates {
 
 	/**
 	 * Example result of a calculated field: its formula worked out from the
-	 * example answers, rounded and with the field's prefix and suffix, as the
-	 * form shows it. 123.45 when the formula can't be worked out.
+	 * example answers and rounded, as the entry saves it. The field's prefix
+	 * and suffix (a currency symbol, a unit) are only shown on the form, not
+	 * saved, so they are left out. 123.45 when the formula can't be worked out.
 	 *
 	 * @param array<string, mixed>             $field  Field schema.
 	 * @param array<int, array<string, mixed>> $fields All fields, for the answers the formula uses.
@@ -1000,16 +1076,14 @@ class Form_Templates {
 		$value = apply_filters( 'srfm_form_template_calculation_sample', self::evaluate_formula( $formula, $fields ), $formula, $field, $fields );
 
 		$attributes = Helper::get_array_value( $field['blockAttributes'] ?? [] );
-		$prefix     = Helper::get_string_value( $field['prefix'] ?? $attributes['prefix'] ?? '' );
-		$suffix     = Helper::get_string_value( $field['suffix'] ?? $attributes['suffix'] ?? '' );
 		if ( ! is_numeric( $value ) ) {
-			return $prefix . self::CALCULATION_FALLBACK . $suffix;
+			return self::CALCULATION_FALLBACK;
 		}
 		$value    = (float) $value;
 		$round    = $field['calculationRound'] ?? $attributes['calculationRound'] ?? null;
 		$decimals = is_numeric( $round ) ? max( 0, min( 6, (int) $round ) ) : ( floor( $value ) === $value ? 0 : 2 );
 
-		return $prefix . number_format( $value, $decimals ) . $suffix;
+		return number_format( $value, $decimals );
 	}
 
 	/**
@@ -2460,14 +2534,15 @@ class Form_Templates {
 	}
 
 	/**
-	 * Thank-you message in the same layout as the default confirmation.
+	 * Thank-you message in the same layout as the default confirmation. Catalog
+	 * files use it through Catalog::thank_you() for conditional messages.
 	 *
 	 * @param string $heading Heading.
 	 * @param string $text    Body text.
 	 * @since x.x.x
 	 * @return string
 	 */
-	private static function confirmation_message( $heading, $text ) {
+	public static function confirmation_message( $heading, $text ) {
 		// A file URL, not a data: URI: the saved message goes through wp_kses_post(),
 		// which strips the data: scheme and would leave a broken image.
 		$check_icon = SRFM_URL . 'images/check-icon.svg';

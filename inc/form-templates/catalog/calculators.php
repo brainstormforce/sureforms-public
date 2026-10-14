@@ -59,22 +59,9 @@ $priced_options = static function ( $options, $field_type = 'multi-choice', $sin
  * the formula are the answers it uses.
  */
 $result = static function ( $slug, $label, $formula, $round, $prefix = '', $suffix = '', $extra = [] ) {
+	// The block shows the prefix and suffix; the saved answer has neither.
 	return Catalog::attrs(
-		// The block shows the prefix and suffix; the empty schema keys keep them out
-		// of the library's example answer, as the saved answer has neither.
-		Catalog::field(
-			'number',
-			$slug,
-			$label,
-			true,
-			array_merge(
-				[
-					'prefix' => '',
-					'suffix' => '',
-				],
-				$extra
-			)
-		),
+		Catalog::field( 'number', $slug, $label, true, $extra ),
 		[
 			'enableCalculation'  => true,
 			'calculationFormula' => $formula,
@@ -355,17 +342,17 @@ return [
 		'confirmations' => [
 			[
 				'name'    => __( 'BMI under 18.5', 'sureforms' ),
-				'message' => '<h2>' . __( 'Thanks, {form:first-name}!', 'sureforms' ) . '</h2><p>' . __( 'Your BMI is {form:bmi}, below the usual healthy range. A coach will email you a plan for your goal ({form:goal}), with a focus on healthy, steady gains.', 'sureforms' ) . '</p>',
+				'message' => Catalog::thank_you( __( 'Thanks, {form:first-name}!', 'sureforms' ), __( 'Your BMI is {form:bmi}, below the usual healthy range. A coach will email you a plan for your goal ({form:goal}), with a focus on healthy, steady gains.', 'sureforms' ) ),
 				'rules'   => [ [ 'bmi', '_LESSER_', '18.5' ] ],
 			],
 			[
 				'name'    => __( 'BMI 18.5 to 24.9', 'sureforms' ),
-				'message' => '<h2>' . __( 'Thanks, {form:first-name}!', 'sureforms' ) . '</h2><p>' . __( 'Your BMI is {form:bmi}, within the usual healthy range. A coach will email you a plan for your goal ({form:goal}).', 'sureforms' ) . '</p>',
+				'message' => Catalog::thank_you( __( 'Thanks, {form:first-name}!', 'sureforms' ), __( 'Your BMI is {form:bmi}, within the usual healthy range. A coach will email you a plan for your goal ({form:goal}).', 'sureforms' ) ),
 				'rules'   => [ [ 'bmi', '_GREATER_OR_EQUAL_', '18.5' ], [ 'bmi', '_LESSER_', '25' ] ],
 			],
 			[
 				'name'    => __( 'BMI 25 and over', 'sureforms' ),
-				'message' => '<h2>' . __( 'Thanks, {form:first-name}!', 'sureforms' ) . '</h2><p>' . __( 'Your BMI is {form:bmi}, above the usual healthy range. A coach will email you a realistic plan for your goal ({form:goal}).', 'sureforms' ) . '</p>',
+				'message' => Catalog::thank_you( __( 'Thanks, {form:first-name}!', 'sureforms' ), __( 'Your BMI is {form:bmi}, above the usual healthy range. A coach will email you a realistic plan for your goal ({form:goal}).', 'sureforms' ) ),
 				'rules'   => [ [ 'bmi', '_GREATER_OR_EQUAL_', '25' ] ],
 			],
 		],

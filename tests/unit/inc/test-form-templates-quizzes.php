@@ -176,11 +176,16 @@ class Test_Form_Templates_Quizzes extends TestCase {
 	}
 
 	public function test_library_preview_shows_quiz_samples() {
+		// 80% of each quiz's most points: five 1-point questions, six questions worth up to 3.
+		$expected = [
+			'knowledge-quiz'        => [ '4 / 5', '80%' ],
+			'lead-magnet-scorecard' => [ '14 / 18', '78%' ],
+		];
 		foreach ( self::QUIZZES as $id ) {
 			$template = $this->template( $id );
 			$messages = Form_Templates::get_messages( $template, Form_Templates::resolve_fields( $template, 'business' ) );
-			$this->assertSame( '8 / 10', $messages['tag_samples']['{quiz_score}'] );
-			$this->assertSame( '80%', $messages['tag_samples']['{quiz_percentage}'] );
+			$this->assertSame( $expected[ $id ][0], $messages['tag_samples']['{quiz_score}'], "Template {$id}: score sample." );
+			$this->assertSame( $expected[ $id ][1], $messages['tag_samples']['{quiz_percentage}'], "Template {$id}: percentage sample." );
 			$this->assertNotNull( $messages['autoresponder'], "Template {$id} emails the results." );
 		}
 	}
@@ -192,5 +197,18 @@ class Test_Form_Templates_Quizzes extends TestCase {
 			array_values( wp_list_pluck( $this->questions( $this->template( 'knowledge-quiz' ) ), 'slug' ) )
 		);
 		$this->assertCount( 6, $this->questions( $this->template( 'lead-magnet-scorecard' ) ) );
+	}
+
+	public function test_quiz_samples_follow_the_grading() {
+		$knowledge = $this->template( 'knowledge-quiz' );
+		$samples   = Form_Templates::get_messages( $knowledge, Form_Templates::resolve_fields( $knowledge, 'business' ) )['tag_samples'];
+		$this->assertSame( 'Pass', $samples['{quiz_pass_fail}'] );
+		$this->assertSame( '4 of 5 answers correct', $samples['{quiz_result}'] );
+
+		// 78% reaches grade B (65%) but not A (85%).
+		$scorecard = $this->template( 'lead-magnet-scorecard' );
+		$samples   = Form_Templates::get_messages( $scorecard, Form_Templates::resolve_fields( $scorecard, 'business' ) )['tag_samples'];
+		$this->assertSame( 'B', $samples['{quiz_letter_grade}'] );
+		$this->assertSame( '14 of 18 points', $samples['{quiz_result}'] );
 	}
 }

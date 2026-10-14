@@ -20,9 +20,6 @@ $no_search    = [ 'searchable' => false ];
 $satisfaction = [ __( 'Very satisfied', 'sureforms' ), __( 'Satisfied', 'sureforms' ), __( 'Neutral', 'sureforms' ), __( 'Dissatisfied', 'sureforms' ), __( 'Very dissatisfied', 'sureforms' ) ];
 $nps_scale    = array_map( 'strval', range( 0, 10 ) );
 
-// A thank-you message in the layout of the template's own one.
-$thank_you = static fn( $heading, $text ) => '<p style="text-align: center;"><img src="' . esc_url( SRFM_URL . 'images/check-icon.svg' ) . '" alt="" aria-hidden="true" /></p><h2 style="text-align: center;">' . esc_html( $heading ) . '</h2><p style="text-align: center;">' . esc_html( $text ) . '</p>';
-
 return [
 	[
 		'id'            => 'customer-feedback',
@@ -79,7 +76,7 @@ return [
 		'confirmations' => [
 			[
 				'name'    => __( 'Happy customer', 'sureforms' ),
-				'message' => $thank_you(
+				'message' => Catalog::thank_you(
 					__( 'Thank you, we are glad you are happy', 'sureforms' ),
 					__( 'If you have a minute, a short online review would help other people find us.', 'sureforms' )
 				),
@@ -87,7 +84,7 @@ return [
 			],
 			[
 				'name'    => __( 'Unhappy customer', 'sureforms' ),
-				'message' => $thank_you(
+				'message' => Catalog::thank_you(
 					__( 'We are sorry we let you down', 'sureforms' ),
 					__( 'Thank you for telling us. Your feedback goes straight to our team, and if you left your email address, someone will be in touch to put things right.', 'sureforms' )
 				),
@@ -150,7 +147,7 @@ return [
 		'confirmations' => [
 			[
 				'name'    => __( 'Promoter (9–10)', 'sureforms' ),
-				'message' => $thank_you(
+				'message' => Catalog::thank_you(
 					__( 'Thank you, that means a lot', 'sureforms' ),
 					__( 'If you have a minute, a short online review would help other people find us.', 'sureforms' )
 				),
@@ -158,7 +155,7 @@ return [
 			],
 			[
 				'name'    => __( 'Detractor (0–6)', 'sureforms' ),
-				'message' => $thank_you(
+				'message' => Catalog::thank_you(
 					__( 'Thank you for being honest', 'sureforms' ),
 					__( 'We are sorry we fell short. We read every response and will use yours to work out what to fix.', 'sureforms' )
 				),
