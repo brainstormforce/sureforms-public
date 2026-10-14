@@ -8,7 +8,7 @@
  * who already configured WP Mail SMTP must never be pushed to install SureMail.
  *
  * @package SureForms
- * @since   x.x.x
+ * @since   2.12.9
  */
 
 namespace SRFM\Inc\Email_Delivery;
@@ -20,13 +20,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Mailer
  *
- * @since x.x.x
+ * @since 2.12.9
  */
 class Mailer {
 	/**
 	 * SureMail's plugin file.
 	 *
-	 * @since x.x.x
+	 * @since 2.12.9
 	 */
 	public const SUREMAIL_FILE = 'suremails/suremails.php';
 
@@ -38,7 +38,7 @@ class Mailer {
 	 * so it made "No SMTP plugin detected" silently disappear on sites that had
 	 * none.
 	 *
-	 * @since x.x.x
+	 * @since 2.12.9
 	 * @return array<string,string> Plugin file => display name.
 	 */
 	public static function get_known_plugins() {
@@ -65,7 +65,7 @@ class Mailer {
 		/**
 		 * Filters the mail plugins SureForms recognises.
 		 *
-		 * @since x.x.x
+		 * @since 2.12.9
 		 * @param array<string,string> $plugins Plugin file => display name.
 		 */
 		$filtered = apply_filters( 'srfm_smtp_plugins', $plugins );
@@ -80,7 +80,7 @@ class Mailer {
 	 * state from, and a site running it next to another mail plugin is still
 	 * sending through SureMail's connections.
 	 *
-	 * @since x.x.x
+	 * @since 2.12.9
 	 * @return array{slug:string,label:string,file:string} slug is one of
 	 *         suremail | other | wp_mail_override | none.
 	 */
@@ -93,7 +93,7 @@ class Mailer {
 		 * For hosts that deliver mail through something SureForms cannot see — a
 		 * platform relay, an mu-plugin — so the owner is not told email is unset.
 		 *
-		 * @since x.x.x
+		 * @since 2.12.9
 		 * @param array{slug:string,label:string,file:string} $mailer Detected mailer.
 		 */
 		$filtered = apply_filters( 'srfm_active_mailer', $mailer );
@@ -112,7 +112,7 @@ class Mailer {
 	/**
 	 * Whether anything beyond PHP's own mail() will carry wp_mail().
 	 *
-	 * @since x.x.x
+	 * @since 2.12.9
 	 * @return bool
 	 */
 	public static function has_mailer() {
@@ -132,7 +132,7 @@ class Mailer {
 	 * So the filter is only consulted when no mail plugin is active, for hosts
 	 * where raw mail() genuinely is the only thing that works.
 	 *
-	 * @since x.x.x
+	 * @since 2.12.9
 	 * @param int    $form_id Form the email belongs to.
 	 * @param string $context What is being sent, e.g. 'notification'.
 	 * @return bool
@@ -147,7 +147,7 @@ class Mailer {
 		 *
 		 * Only applied when no mail plugin is active.
 		 *
-		 * @since x.x.x
+		 * @since 2.12.9
 		 * @param bool   $allow   Whether to retry. Default false.
 		 * @param int    $form_id Form the email belongs to.
 		 * @param string $context What is being sent, e.g. 'notification'.
@@ -164,7 +164,7 @@ class Mailer {
 	 * it is logged on the entry, but must not put the whole site into
 	 * "attention". An invalid From address is a site problem and stays one.
 	 *
-	 * @since x.x.x
+	 * @since 2.12.9
 	 * @param string $message Error message from wp_mail_failed.
 	 * @return bool
 	 */
@@ -204,7 +204,7 @@ class Mailer {
 	 * PHPMailer lists refused recipients ("SMTP Error: The following recipients
 	 * failed: a@b.c: 554 ...") and names invalid ones by header ("(to): x@").
 	 *
-	 * @since x.x.x
+	 * @since 2.12.9
 	 * @param string $message Error message from wp_mail_failed.
 	 * @return array<int,string>
 	 */
@@ -233,7 +233,7 @@ class Mailer {
 	 * in ({form:*}). An address the owner typed into the notification still
 	 * counts, typos included.
 	 *
-	 * @since x.x.x
+	 * @since 2.12.9
 	 * @param string            $message           Error message from wp_mail_failed.
 	 * @param array<int,string> $visitor_addresses Recipients that came from the visitor's fields.
 	 * @param bool              $only_visitor      Whether every recipient template is a visitor field.
@@ -272,7 +272,7 @@ class Mailer {
 	 * Whether PHPMailer itself rejected an address as malformed, before any
 	 * server saw it ("Invalid address:  (to): x@").
 	 *
-	 * @since x.x.x
+	 * @since 2.12.9
 	 * @param string $message Error message from wp_mail_failed.
 	 * @param string $address A refused address, lowercased.
 	 * @return bool
@@ -290,7 +290,7 @@ class Mailer {
 	 * (PHPMailer 7.1.1, SMTP::sendCommand()): "v@x.org: <v@x.org>: Relay
 	 * access denied". So the reason is all there is to go on.
 	 *
-	 * @since x.x.x
+	 * @since 2.12.9
 	 * @param string $message Error message from wp_mail_failed.
 	 * @param string $address A refused address, lowercased.
 	 * @return string The reason, '' when none is given.
@@ -313,7 +313,7 @@ class Mailer {
 	 * than the site being refused (relay, authentication, rate limits, policy).
 	 * Kept to clear wording, so an unknown reason counts as the site's.
 	 *
-	 * @since x.x.x
+	 * @since 2.12.9
 	 * @param string $reason Reason from get_refusal_reason().
 	 * @return bool
 	 */
@@ -357,7 +357,7 @@ class Mailer {
 	/**
 	 * Why a mailer did not accept an email, for when it gave no reason itself.
 	 *
-	 * @since x.x.x
+	 * @since 2.12.9
 	 * @return array{code:string,message:string}
 	 */
 	public static function get_rejection_reason() {
@@ -390,7 +390,7 @@ class Mailer {
 	/**
 	 * Detection without the filter.
 	 *
-	 * @since x.x.x
+	 * @since 2.12.9
 	 * @return array{slug:string,label:string,file:string}
 	 */
 	private static function detect() {
@@ -447,7 +447,7 @@ class Mailer {
 	/**
 	 * Active plugin files, including network-activated ones.
 	 *
-	 * @since x.x.x
+	 * @since 2.12.9
 	 * @return array<int,string>
 	 */
 	private static function get_active_plugin_files() {
@@ -468,7 +468,7 @@ class Mailer {
 	 * sending by redefining it. Empty when core's own definition is in use, or when
 	 * pluggable functions have not been loaded yet.
 	 *
-	 * @since x.x.x
+	 * @since 2.12.9
 	 * @return string
 	 */
 	private static function get_wp_mail_override_file() {

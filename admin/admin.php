@@ -1905,6 +1905,7 @@ JS;
 					'currency_sign_position'  => Payment_Helper::get_currency_sign_position(),
 				]
 			),
+			'can_install_plugins'          => current_user_can( 'install_plugins' ),
 			'mcp_adapter_status'           => file_exists( WP_PLUGIN_DIR . '/mcp-adapter/mcp-adapter.php' )
 				? ( is_plugin_active( 'mcp-adapter/mcp-adapter.php' ) ? 'active' : 'installed' )
 				: 'not_installed',
@@ -4179,7 +4180,7 @@ CSS;
 	 * hands over to that screen after install once #3205 is in.) The account
 	 * itself is only ever created behind SureMail's consent.
 	 *
-	 * @since x.x.x
+	 * @since 2.12.9
 	 * @return array<string,string> connect_* keys, or none.
 	 */
 	private function get_connect_surecontact_action() {
@@ -4222,7 +4223,7 @@ CSS;
 	 * dismissible -- an actual failure is reported by notification_error, which
 	 * is not. Hidden with promotions, since the fix is installing SureMail.
 	 *
-	 * @since x.x.x
+	 * @since 2.12.9
 	 * @return array<int,array<string,mixed>>
 	 */
 	private function get_email_delivery_action_items() {
@@ -4329,7 +4330,7 @@ CSS;
 	 * Dismissing hides it until the quota recovers (a new period, or an upgrade);
 	 * it comes back, and can no longer be dismissed, once nothing is left.
 	 *
-	 * @since x.x.x
+	 * @since 2.12.9
 	 * @return array<int,array<string,mixed>>
 	 */
 	private function get_email_quota_action_items() {
@@ -4411,7 +4412,7 @@ CSS;
 	/**
 	 * Whether any published form sends at least one email notification.
 	 *
-	 * @since x.x.x
+	 * @since 2.12.9
 	 * @return bool
 	 */
 	private function has_form_with_active_notification() {
@@ -5492,7 +5493,7 @@ CSS;
 	 * notifications is accepted the submission is gone. Lost_Submissions keeps
 	 * the count until the owner acknowledges it here.
 	 *
-	 * @since x.x.x
+	 * @since 2.12.9
 	 * @return array<int,array<string,mixed>>
 	 */
 	private function get_lost_submissions_action_items() {
