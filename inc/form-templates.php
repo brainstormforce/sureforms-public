@@ -1076,14 +1076,19 @@ class Form_Templates {
 			return $content;
 		}
 
+		// wp_insert_post() unslashes its input, which would strip the backslashes
+		// that escape quotes inside the block JSON (a label like `Say "hi"`) and
+		// in edited message text, so slash everything first.
 		$post_id = wp_insert_post(
-			[
-				'post_title'   => Helper::get_string_value( $template['title'] ?? '' ),
-				'post_content' => $content,
-				'post_status'  => 'draft',
-				'post_type'    => SRFM_FORMS_POST_TYPE,
-				'meta_input'   => self::build_metas( $template, $style ),
-			],
+			wp_slash(
+				[
+					'post_title'   => Helper::get_string_value( $template['title'] ?? '' ),
+					'post_content' => $content,
+					'post_status'  => 'draft',
+					'post_type'    => SRFM_FORMS_POST_TYPE,
+					'meta_input'   => self::build_metas( $template, $style ),
+				]
+			),
 			true
 		);
 

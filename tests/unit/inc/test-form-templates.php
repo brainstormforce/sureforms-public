@@ -685,6 +685,44 @@ class Test_Form_Templates extends TestCase {
 		$this->assertStringContainsString( 'Thanks for reaching out', $emails[1]['email_body'] );
 	}
 
+	public function test_quotes_and_backslashes_survive_creating_the_form() {
+		$add_template = static function ( $templates ) {
+			$templates[] = [
+				'id'           => 'quotes',
+				'title'        => 'The "Best" Form',
+				'category'     => 'contact',
+				'fields'       => [
+					[
+						'fieldType'   => 'input',
+						'label'       => 'Company "Inc"',
+						'slug'        => 'company',
+						'required'    => true,
+						'placeholder' => 'C:\\path',
+					],
+				],
+				'confirmation' => [
+					'heading' => 'Thanks',
+					'text'    => 'We said "hi" to {form:company}.',
+				],
+			];
+			return $templates;
+		};
+		add_filter( 'srfm_form_templates', $add_template );
+		$this->reset_template_cache();
+
+		$post_id = Form_Templates::create_form_from_template( 'quotes' );
+
+		$this->assertIsInt( $post_id );
+		$this->assertSame( 'The "Best" Form', get_post_field( 'post_title', $post_id ) );
+
+		$blocks = parse_blocks( get_post_field( 'post_content', $post_id ) );
+		$this->assertSame( 'Company "Inc"', $blocks[0]['attrs']['label'] ?? null, 'Block JSON stays valid when a label has quotes.' );
+		$this->assertSame( 'C:\\path', $blocks[0]['attrs']['placeholder'] ?? null );
+
+		$message = get_post_meta( $post_id, '_srfm_form_confirmation', true )[0]['message'];
+		$this->assertStringContainsString( 'We said &quot;hi&quot; to {form:company}.', $message, 'Message text is escaped, not cut at the quote.' );
+	}
+
 	public function test_saved_thank_you_message_keeps_its_icon() {
 		$post_id = Form_Templates::create_form_from_template( 'contact-us' );
 		$message = get_post_meta( $post_id, '_srfm_form_confirmation', true )[0]['message'];
