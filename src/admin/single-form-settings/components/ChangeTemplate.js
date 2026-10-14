@@ -18,6 +18,7 @@ import {
 	TemplateGrid,
 	TemplatePreview,
 } from '@Admin/components/template-picker/components/TemplateLibrary';
+import { openTemplateUnlock } from '@Admin/components/template-picker/components/template-features';
 import {
 	createFormFromTemplate,
 	fetchTemplateContent,
@@ -248,12 +249,7 @@ const ChangeTemplate = () => {
 		}
 
 		if ( template.is_locked ) {
-			window.open(
-				srfm_block_data?.upgrade_url ||
-					'https://sureforms.com/pricing/',
-				'_blank',
-				'noopener,noreferrer'
-			);
+			openTemplateUnlock( template );
 			return;
 		}
 

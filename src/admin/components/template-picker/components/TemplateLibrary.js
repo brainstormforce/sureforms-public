@@ -32,6 +32,8 @@ import {
 	FeatureChip,
 	IncludedFeatures,
 	getFeatures,
+	getLockLabels,
+	openTemplateUnlock,
 } from './template-features.js';
 import useFocusTrap from '../use-focus-trap.js';
 import { resolveLook } from '../template-colors.js';
@@ -499,6 +501,7 @@ export const TemplatePreview = ( {
 	];
 
 	const canCustomize = ! template.is_locked;
+	const lockLabels = getLockLabels( template );
 	const showSpamOption = offerSpamProtection && ! template.is_locked;
 	const panelId = 'srfm-template-customize-panel';
 
@@ -793,6 +796,11 @@ export const TemplatePreview = ( {
 					<IncludedFeatures template={ template } />
 				</div>
 				<div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-5 shrink-0">
+					{ lockLabels.notice && (
+						<p className="m-0 text-xs text-text-secondary">
+							{ lockLabels.notice }
+						</p>
+					) }
 					{ showSpamOption && (
 						<Checkbox
 							size="sm"
@@ -829,7 +837,7 @@ export const TemplatePreview = ( {
 						onClick={ use }
 					>
 						{ template.is_locked
-							? __( 'Upgrade to use', 'sureforms' )
+							? lockLabels.button
 							: __( 'Use this template', 'sureforms' ) }
 					</Button>
 				</div>
@@ -1176,7 +1184,7 @@ export const TemplateGrid = ( {
 												className="size-3"
 												aria-hidden="true"
 											/>
-											{ __( 'Pro', 'sureforms' ) }
+											{ getLockLabels( template ).badge }
 										</span>
 									) }
 								</span>
@@ -1237,11 +1245,7 @@ const TemplateLibrary = () => {
 		}
 
 		if ( template.is_locked ) {
-			window.open(
-				srfm_admin?.pricing_page_url,
-				'_blank',
-				'noopener,noreferrer'
-			);
+			openTemplateUnlock( template );
 			return;
 		}
 
