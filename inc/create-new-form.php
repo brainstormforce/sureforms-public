@@ -182,6 +182,7 @@ class Create_New_Form {
 		 * If the request is coming here then the form is AI generated.
 		 */
 		update_post_meta( $post_id, '_srfm_is_ai_generated', true );
+		update_post_meta( $post_id, Form_Templates::CREATED_VIA_META, 'ai' );
 
 		// Count the AI form against the starter card (if any) its prompt came from.
 		$starter_id = isset( $form_info_obj->ai_starter ) && is_string( $form_info_obj->ai_starter ) ? $form_info_obj->ai_starter : '';

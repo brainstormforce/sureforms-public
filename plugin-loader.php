@@ -31,6 +31,7 @@ use SRFM\Inc\Compatibility\Multilingual\String_Backfill;
 use SRFM\Inc\Compatibility\Multilingual\String_Collector;
 use SRFM\Inc\Compatibility\Themes\Astra;
 use SRFM\Inc\Create_New_Form;
+use SRFM\Inc\Form_Templates;
 use SRFM\Inc\Database\Register as DatabaseRegister;
 use SRFM\Inc\Duplicate_Form;
 use SRFM\Inc\Email_Delivery\Suremail_Adapter;
@@ -312,6 +313,7 @@ class Plugin_Loader {
 		Smart_Tags::get_instance();
 		Generate_Form_Markup::get_instance();
 		Create_New_Form::get_instance();
+		Form_Templates::get_instance();
 		Global_Settings::get_instance();
 		Global_Settings_Defaults::get_instance();
 		Email_Summary::get_instance();

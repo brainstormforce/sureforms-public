@@ -194,8 +194,17 @@
 		align-items: center;
 		justify-content: center;
 		flex-direction: column;
-		color: var( --srfm-body-input-color );
+		// --srfm-body-input-color is no longer set, so fall back to the Style tab's
+		// text color; otherwise the message takes the theme's color and can
+		// disappear on a dark form background.
+		color: var( --srfm-body-input-color, var( --srfm-color-scheme-text ) );
 		min-height: 20vh;
+		h1,
+		h2,
+		h3,
+		h4 {
+			color: inherit;
+		}
 		p {
 			margin: 0;
 			img {
@@ -215,7 +224,7 @@
 			font-size: 0.9em;
 			font-weight: 400;
 			line-height: 26px;
-			color: var( --srfm-body-input-color );
+			color: var( --srfm-body-input-color, var( --srfm-color-scheme-text ) );
 			display: flex;
 			flex-direction: column;
 			gap: 8px;

@@ -735,6 +735,8 @@ class Analytics {
 				'is_ai_generated'    => (string) (int) $is_ai,
 				'block_count'        => (string) $block_count,
 				'days_since_install' => (string) $days_since_install,
+				'created_via'        => Helper::get_string_value( get_post_meta( $post->ID, '_srfm_created_via', true ) ),
+				'template_id'        => Helper::get_string_value( get_post_meta( $post->ID, '_srfm_template_id', true ) ),
 			]
 		);
 	}
@@ -789,6 +791,108 @@ class Analytics {
 		// the next flush sends these totals. Nothing is re-sent until another AI form
 		// is created.
 		self::events()->track( 'ai_starter_usage', (string) array_sum( $counts ), $properties, true );
+	}
+
+	/**
+	 * Track forms started from a prebuilt template.
+	 *
+	 * Keeps cumulative counters in srfm_options and re-sends the latest totals
+	 * as the `form_template_usage` event, so template popularity and how often
+	 * templates are swapped inside the editor can be read from the warehouse.
+	 *
+	 * @param mixed  $template_id Template id (sanitized here).
+	 * @param string $action      `create` for a new form, `swap` for a template swapped into an open form.
+	 * @since x.x.x
+	 * @return void
+	 */
+	public static function track_form_template_usage( $template_id, $action = 'create' ) {
+		// The id becomes an option key and an event property key, so clean it here
+		// rather than trusting every caller.
+		$template_id = substr( sanitize_key( Helper::get_string_value( $template_id ) ), 0, 40 );
+		if ( '' === $template_id ) {
+			return;
+		}
+
+		$usage = Helper::get_srfm_option( 'form_template_usage', [] );
+		$usage = is_array( $usage ) ? $usage : [];
+
+		$counts = isset( $usage['templates'] ) && is_array( $usage['templates'] ) ? array_map( 'absint', $usage['templates'] ) : [];
+
+		if ( 'swap' === $action ) {
+			$usage['swaps'] = absint( $usage['swaps'] ?? 0 ) + 1;
+		} else {
+			$usage['created'] = absint( $usage['created'] ?? 0 ) + 1;
+		}
+
+		// Cap distinct keys so a filtered template list can't grow the option unbounded.
+		if ( isset( $counts[ $template_id ] ) || count( $counts ) < 40 ) {
+			$counts[ $template_id ] = absint( $counts[ $template_id ] ?? 0 ) + 1;
+		}
+
+		$usage['templates'] = $counts;
+		Helper::update_srfm_option( 'form_template_usage', $usage );
+
+		$properties = [
+			'created' => (string) absint( $usage['created'] ?? 0 ),
+			'swaps'   => (string) absint( $usage['swaps'] ?? 0 ),
+		];
+		foreach ( $counts as $id => $count ) {
+			$properties[ 'template_' . $id ] = (string) $count;
+		}
+
+		// $force = true: cumulative counter, must re-send the latest totals each cycle.
+		self::events()->track( 'form_template_usage', (string) array_sum( $counts ), $properties, true );
+	}
+
+	/**
+	 * Track demand for templates that do not exist yet: what people request
+	 * from the template library, and what they search for without a match.
+	 *
+	 * Keeps cumulative counters in srfm_options and re-sends the latest totals
+	 * as the `form_template_demand` event, so the most wanted templates can be
+	 * read from the warehouse. Callers pass a query already cleaned by
+	 * Form_Templates::clean_demand_query().
+	 *
+	 * @param string $query Cleaned search text.
+	 * @param string $type  `request` for an explicit request, `search` for a search with no results.
+	 * @since x.x.x
+	 * @return void
+	 */
+	public static function track_form_template_demand( $query, $type = 'request' ) {
+		$type = 'search' === $type ? 'search' : 'request';
+		// The query becomes an option key and an event property key.
+		$key = substr( str_replace( '-', '_', sanitize_title( Helper::get_string_value( $query ) ) ), 0, 40 );
+		if ( '' === $key ) {
+			return;
+		}
+
+		$demand = Helper::get_srfm_option( 'form_template_demand', [] );
+		$demand = is_array( $demand ) ? $demand : [];
+
+		$counts = isset( $demand[ $type ] ) && is_array( $demand[ $type ] ) ? array_map( 'absint', $demand[ $type ] ) : [];
+
+		// Cap distinct keys per type so free text can't grow the option unbounded.
+		if ( isset( $counts[ $key ] ) || count( $counts ) < 30 ) {
+			$counts[ $key ] = absint( $counts[ $key ] ?? 0 ) + 1;
+		}
+		$demand[ $type ] = $counts;
+		Helper::update_srfm_option( 'form_template_demand', $demand );
+
+		$requests   = isset( $demand['request'] ) && is_array( $demand['request'] ) ? array_map( 'absint', $demand['request'] ) : [];
+		$searches   = isset( $demand['search'] ) && is_array( $demand['search'] ) ? array_map( 'absint', $demand['search'] ) : [];
+		$properties = [
+			'requests' => (string) array_sum( $requests ),
+			'searches' => (string) array_sum( $searches ),
+		];
+		foreach ( $requests as $id => $count ) {
+			$properties[ 'request_' . $id ] = (string) $count;
+		}
+		foreach ( $searches as $id => $count ) {
+			$properties[ 'search_' . $id ] = (string) $count;
+		}
+
+		// $force = true: cumulative counter, must re-send the latest totals each cycle.
+		self::events()->track( 'form_template_demand', (string) array_sum( $requests ), $properties, true );
 	}
 
 	/**

@@ -15,6 +15,7 @@ import { applyFilters } from '@wordpress/hooks';
 import { Container, Toaster } from '@bsf/force-ui';
 import AiFormBuilderForm from '../ai-form-builder-components/AiFormBuilderForm.js';
 import AiFormProgressPage from '../ai-form-builder-components/AiFormProgressPage.js';
+import useOpenTemplateLibrary from '../use-open-template-library.js';
 
 const AiFormBuilder = () => {
 	const [ message, setMessage ] = useState(
@@ -58,6 +59,17 @@ const AiFormBuilder = () => {
 
 	const isRTL = srfm_admin?.is_rtl;
 	const toasterPosition = isRTL ? 'bottom-left' : 'bottom-right';
+
+	// Templates still work when AI generations run out, so the limit popup
+	// offers the template library instead.
+	const isAiLimited =
+		srfm_admin?.srfm_ai_usage_details?.remaining === 0 ||
+		Boolean( srfm_admin?.srfm_ai_usage_details?.code );
+	const openTemplateLibrary = useOpenTemplateLibrary();
+	const openTemplatesInstead =
+		srfm_admin?.form_templates?.length > 0
+			? openTemplateLibrary
+			: undefined;
 
 	const handleCreateAiForm = async (
 		userCommand,
@@ -304,6 +316,7 @@ const AiFormBuilder = () => {
 		if ( errorCode ) {
 			return (
 				<LimitReachedPopup
+					onUseTemplate={ openTemplatesInstead }
 					title={ srfm_admin?.srfm_ai_usage_details?.title }
 					paraOne={ srfm_admin?.srfm_ai_usage_details?.message }
 					buttonText={ __( 'Try Again', 'sureforms' ) }
@@ -327,7 +340,10 @@ const AiFormBuilder = () => {
 			formCreationleft === 0
 		) {
 			return (
-				<LimitReachedPopup deactivatedLicense={ deactivatedLicense } />
+				<LimitReachedPopup
+					onUseTemplate={ openTemplatesInstead }
+					deactivatedLicense={ deactivatedLicense }
+				/>
 			);
 		}
 
@@ -342,6 +358,7 @@ const AiFormBuilder = () => {
 		) {
 			return (
 				<LimitReachedPopup
+					onUseTemplate={ openTemplatesInstead }
 					title={ __( 'Form Generation Limit Reached', 'sureforms' ) }
 					paraTitle={ __(
 						"You've reached your daily generation limit.",
@@ -370,6 +387,7 @@ const AiFormBuilder = () => {
 		if ( type === 'registered' && formCreationleft === 0 ) {
 			return (
 				<LimitReachedPopup
+					onUseTemplate={ openTemplatesInstead }
 					paraOne={ __(
 						'You have reached the maximum number of form generations in your Free Plan. SureForms Premium allows:',
 						'sureforms'
@@ -402,6 +420,7 @@ const AiFormBuilder = () => {
 		if ( type === 'non-registered' && formCreationleft === 0 ) {
 			return (
 				<LimitReachedPopup
+					onUseTemplate={ openTemplatesInstead }
 					title={ __( 'Connect to SureForms AI', 'sureforms' ) }
 					paraTitle={ __(
 						'You Have Hit Your Free Limit.',
@@ -421,6 +440,9 @@ const AiFormBuilder = () => {
 			);
 		}
 	};
+
+	// Null when no limit applies, or none of the limit states matches.
+	const limitPopup = isAiLimited ? getLimitReachedPopup() : null;
 
 	// shows while the form is being built. The error popup is intentionally
 	// rendered only at the bottom of the component (outer return) — when
@@ -444,7 +466,7 @@ const AiFormBuilder = () => {
 	}
 
 	return (
-		<div className="max-h-screen">
+		<div className="h-screen overflow-y-auto">
 			<Toaster
 				className={ cn(
 					'z-[999999]',
@@ -473,10 +495,7 @@ const AiFormBuilder = () => {
 				/>
 			</div>
 
-			{ srfm_admin?.srfm_ai_usage_details?.remaining === 0 ||
-			srfm_admin?.srfm_ai_usage_details?.code
-				? getLimitReachedPopup()
-				: null }
+			{ limitPopup }
 
 			{ formCreationErr && (
 				<ErrorPopup

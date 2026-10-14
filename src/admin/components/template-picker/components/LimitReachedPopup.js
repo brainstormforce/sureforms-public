@@ -16,6 +16,7 @@ const LimitReachedPopup = ( {
 	features = [],
 	showFeatures = false,
 	setShowCreditDetailsPopup,
+	onUseTemplate,
 } ) => {
 	// Get filter values
 	const {
@@ -151,6 +152,16 @@ const LimitReachedPopup = ( {
 
 				<Container.Item className="flex flex-col w-full gap-3 pb-2">
 					{ FinalButton }
+
+					{ typeof onUseTemplate === 'function' && (
+						<Button
+							size="md"
+							variant="outline"
+							onClick={ onUseTemplate }
+						>
+							{ __( 'Use a template instead', 'sureforms' ) }
+						</Button>
+					) }
 
 					<Button
 						size="md"

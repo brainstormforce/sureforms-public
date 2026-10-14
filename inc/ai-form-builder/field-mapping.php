@@ -259,8 +259,9 @@ class Field_Mapping {
 					}
 
 					// Handle specific attributes for certain fields.
+					// A first option of "0" (a 0-10 scale) is a real label, so check for an empty string rather than empty().
 					if ( 'dropdown' === $field_type && ! empty( $question['fieldOptions'] ) && is_array( $question['fieldOptions'] ) &&
-					! empty( $question['fieldOptions'][0]['label'] )
+					'' !== Helper::get_string_value( $question['fieldOptions'][0]['label'] ?? '' )
 					) {
 						// Defense-in-depth: although the upstream middleware is
 						// trusted and these endpoints are capability-gated,
@@ -292,7 +293,7 @@ class Field_Mapping {
 						}
 
 						// Set options if they are valid.
-						if ( ! empty( $question['fieldOptions'][0]['optionTitle'] ) ) {
+						if ( '' !== Helper::get_string_value( $question['fieldOptions'][0]['optionTitle'] ?? '' ) ) {
 							// Same defense-in-depth sanitization as the
 							// dropdown branch above.
 							$merged_attributes['options'] = self::sanitize_field_options( $question['fieldOptions'] );
@@ -376,13 +377,13 @@ class Field_Mapping {
 						}
 					}
 					if ( 'date-picker' === $field_type ) {
-						$merged_attributes['dateFormat'] = ! empty( $question['dateFormat'] ) ? sanitize_text_field( $question['dateFormat'] ) : 'mm/dd/yy';
+						$merged_attributes['dateFormat'] = ! empty( $question['dateFormat'] ) ? sanitize_text_field( $question['dateFormat'] ) : 'mm/dd/yyyy';
 						$merged_attributes['min']        = ! empty( $question['minDate'] ) ? sanitize_text_field( $question['minDate'] ) : '';
 						$merged_attributes['max']        = ! empty( $question['maxDate'] ) ? sanitize_text_field( $question['maxDate'] ) : '';
 					}
 					if ( 'time-picker' === $field_type ) {
 						$merged_attributes['increment']            = ! empty( $question['increment'] ) ? filter_var( $question['increment'], FILTER_VALIDATE_INT ) : 30;
-						$merged_attributes['showTwelveHourFormat'] = ! empty( $question['showTwelveHourFormat'] ) ? filter_var( $question['useTwelveHourFormat'], FILTER_VALIDATE_BOOLEAN ) : false;
+						$merged_attributes['showTwelveHourFormat'] = ! empty( $question['showTwelveHourFormat'] ) ? filter_var( $question['showTwelveHourFormat'], FILTER_VALIDATE_BOOLEAN ) : false;
 						$merged_attributes['min']                  = ! empty( $question['minTime'] ) ? sanitize_text_field( $question['minTime'] ) : '';
 						$merged_attributes['max']                  = ! empty( $question['maxTime'] ) ? sanitize_text_field( $question['maxTime'] ) : '';
 					}
@@ -450,6 +451,9 @@ class Field_Mapping {
 						$merged_attributes['maxFiles'] = ! empty( $question['multiFilesNumber'] ) ? filter_var( $question['multiFilesNumber'], FILTER_VALIDATE_INT ) : 2;
 
 					}
+
+					// Same filter as the free fields, so callers can set widths and other block attributes on Pro fields too.
+					$merged_attributes = apply_filters( 'srfm_ai_form_builder_modify_merged_attributes', $merged_attributes, $question, $is_conversational, $form_type );
 
 					$post_content .= '<!-- wp:srfm/' . $field_type . ' ' . Helper::encode_json( $merged_attributes ) . ' /-->' . PHP_EOL;
 					break;

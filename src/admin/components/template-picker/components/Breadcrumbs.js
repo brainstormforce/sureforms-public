@@ -10,6 +10,7 @@ const Breadcrumbs = () => {
 
 	const query = useQuery();
 	const page = query.get( 'page' );
+	const isTemplates = query.get( 'view' ) === 'templates';
 
 	return (
 		<Breadcrumb>
@@ -29,10 +30,22 @@ const Breadcrumbs = () => {
 						<Breadcrumb.Link
 							href={ `${ srfm_admin.site_url }/wp-admin/admin.php?page=add-new-form` }
 						>
-							<Breadcrumb.Page>
-								{ __( 'Generate with AI', 'sureforms' ) }
-							</Breadcrumb.Page>
+							{ isTemplates ? (
+								__( 'Add New Form', 'sureforms' )
+							) : (
+								<Breadcrumb.Page>
+									{ __( 'Generate with AI', 'sureforms' ) }
+								</Breadcrumb.Page>
+							) }
 						</Breadcrumb.Link>
+					</Breadcrumb.Item>
+				) }
+				{ page === 'add-new-form' && isTemplates && (
+					<Breadcrumb.Item>
+						<ChevronRight color="#bdc1c7" className="size-3" />
+						<Breadcrumb.Page>
+							{ __( 'Templates', 'sureforms' ) }
+						</Breadcrumb.Page>
 					</Breadcrumb.Item>
 				) }
 			</Breadcrumb.List>

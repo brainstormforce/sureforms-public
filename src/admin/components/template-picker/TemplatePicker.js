@@ -1,6 +1,17 @@
 import { useEffect, createRoot } from '@wordpress/element';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { BrowserRouter as Router, useLocation } from 'react-router-dom';
 import AiFormBuilder from './components/AiFormBuilder.js';
+import TemplateLibrary from './components/TemplateLibrary.js';
+
+/**
+ * Picks the screen from the URL. Reads the router's location, so moving to the
+ * template library with `useOpenTemplateLibrary()` swaps screens in place.
+ */
+const QueryScreen = () => {
+	const { search } = useLocation();
+	const view = new URLSearchParams( search ).get( 'view' );
+	return 'templates' === view ? <TemplateLibrary /> : <AiFormBuilder />;
+};
 
 const TemplatePicker = () => {
 	// Remove admin bar padding.
@@ -21,10 +32,6 @@ const TemplatePicker = () => {
 			htmlElement.style.paddingTop = previousPaddingTop;
 		};
 	}, [] );
-
-	function QueryScreen() {
-		return <AiFormBuilder />;
-	}
 
 	return (
 		<>
