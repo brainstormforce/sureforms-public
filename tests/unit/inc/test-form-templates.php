@@ -46,7 +46,9 @@ class Test_Form_Templates extends TestCase {
 	public function test_ships_twenty_templates_with_unique_ids() {
 		$templates = Form_Templates::get_templates();
 
-		$this->assertCount( 20, $templates );
+		// Twenty free templates; the Premium ones come on top.
+		$free = array_filter( $templates, static fn( $template ) => 'free' === Form_Templates::get_required_tier( $template ) );
+		$this->assertCount( 20, $free );
 		$this->assertSame( array_keys( $templates ), array_unique( array_keys( $templates ) ) );
 	}
 
