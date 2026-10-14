@@ -90,6 +90,15 @@ return [
 				)
 			),
 			Catalog::field( 'textarea', 'skills', __( 'Relevant Skills or Experience', 'sureforms' ), false, [ 'placeholder' => __( 'e.g. first aid, driving licence, languages, event planning', 'sureforms' ) ] ),
+			// With SureForms Pro (Pro plan), a signed volunteer waiver.
+			Catalog::field(
+				'checkbox',
+				'waiver-agreement',
+				__( 'I will follow the volunteer guidelines and safety instructions I am given, and I understand that I take part at my own risk.', 'sureforms' ),
+				true,
+				[ 'pro_tier' => 'pro' ]
+			),
+			Catalog::field( 'signature', 'waiver-signature', __( 'Your Signature', 'sureforms' ), true, [ 'pro_tier' => 'pro' ] ),
 			array_merge( $c['consent'], [ 'label' => __( 'I agree to have this website store my details so it can contact me about volunteering opportunities.', 'sureforms' ) ] ),
 		],
 		'confirmation'  => [
@@ -107,15 +116,15 @@ return [
 		],
 	],
 	[
-		'id'            => 'job-application',
-		'category'      => 'signup',
-		'theme'         => 'lavender',
-		'icon'          => 'briefcase',
-		'title'         => __( 'Job Application', 'sureforms' ),
-		'description'   => __( 'Accept applications with the applicant\'s CV.', 'sureforms' ),
-		'submit_text'   => __( 'Submit application', 'sureforms' ),
-		'steps'         => [ __( 'About you', 'sureforms' ), __( 'Your experience', 'sureforms' ) ],
-		'fields'        => [
+		'id'             => 'job-application',
+		'category'       => 'signup',
+		'theme'          => 'lavender',
+		'icon'           => 'briefcase',
+		'title'          => __( 'Job Application', 'sureforms' ),
+		'description'    => __( 'Accept applications with the applicant\'s CV.', 'sureforms' ),
+		'submit_text'    => __( 'Submit application', 'sureforms' ),
+		'steps'          => [ __( 'About you', 'sureforms' ), __( 'Your experience', 'sureforms' ) ],
+		'fields'         => [
 			Catalog::width( $c['name'], 50 ),
 			Catalog::width( $c['email'], 50 ),
 			Catalog::width( array_merge( $c['phone'], [ 'required' => true ] ), 50 ),
@@ -146,13 +155,17 @@ return [
 			Catalog::attrs( Catalog::field( 'textarea', 'cover-letter', __( 'Why are you a good fit for this role?', 'sureforms' ), true, [ 'helpText' => __( 'A few sentences about your relevant experience is plenty.', 'sureforms' ) ] ), [ 'rows' => 6 ] ),
 			array_merge( $c['consent'], [ 'label' => __( 'I agree to have this website store my application details so they can be used to assess my application.', 'sureforms' ) ] ),
 		],
-		'confirmation'  => [
+		'confirmation'   => [
 			'heading' => __( 'Your application for {form:position} is in', 'sureforms' ),
 			'text'    => __( 'Thanks, {form:full-name}. We will review it and contact you at {form:email} if your experience is a good match.', 'sureforms' ),
 		],
-		'email_subject' => __( 'Application for {form:position} from {form:full-name}', 'sureforms' ),
-		'email_intro'   => __( '{form:full-name} applied for {form:position}. Their details and answers are below.', 'sureforms' ),
-		'autoresponder' => [
+		// With SureForms Pro, the CV arrives with the notification, and (Pro plan)
+		// applicants can save the form and finish it later.
+		'attach_uploads' => [ 'cv' ],
+		'save_resume'    => true,
+		'email_subject'  => __( 'Application for {form:position} from {form:full-name}', 'sureforms' ),
+		'email_intro'    => __( '{form:full-name} applied for {form:position}. Their details and answers are below.', 'sureforms' ),
+		'autoresponder'  => [
 			'subject' => __( 'We received your application for {form:position}', 'sureforms' ),
 			'lines'   => [
 				__( 'Thank you for applying for the {form:position} role at {site_title}.', 'sureforms' ),

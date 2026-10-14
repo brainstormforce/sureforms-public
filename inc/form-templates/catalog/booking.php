@@ -18,6 +18,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 $c         = Catalog::common_fields();
 $no_search = [ 'searchable' => false ];
 
+// With SureForms Pro, the appointment date shares its row with a time picker.
+$appointment_date = Catalog::date_field( 'preferred-date', __( 'Preferred Date', 'sureforms' ), true, true );
+$appointment_date['pro']['blockAttributes']['fieldWidth'] = 50;
+
 return [
 	[
 		'id'            => 'appointment-request',
@@ -32,8 +36,29 @@ return [
 			Catalog::width( $c['email'], 50 ),
 			Catalog::width( array_merge( $c['phone'], [ 'required' => true ] ), 50 ),
 			Catalog::width( Catalog::attrs( Catalog::field( 'dropdown', 'service', __( 'Service', 'sureforms' ), true, array_merge( Catalog::dropdown_options( [ __( 'First visit', 'sureforms' ), __( 'Follow-up visit', 'sureforms' ), __( 'Consultation', 'sureforms' ), __( 'Something else', 'sureforms' ) ] ), [ 'placeholder' => __( 'Select a service', 'sureforms' ) ] ) ), $no_search ), 50 ),
-			Catalog::date_field( 'preferred-date', __( 'Preferred Date', 'sureforms' ), true, true ),
-			Catalog::attrs( Catalog::field( 'multi-choice', 'preferred-time', __( 'Preferred Time', 'sureforms' ), true, Catalog::choice_options( [ __( 'Morning', 'sureforms' ), __( 'Afternoon', 'sureforms' ), __( 'Evening', 'sureforms' ) ], true, [ 'sun', 'cloud-sun', 'moon' ] ) ), [ 'choiceWidth' => 33.33 ] ),
+			$appointment_date,
+			// With SureForms Pro, an exact time next to the date instead of a part of the day.
+			Catalog::attrs(
+				Catalog::field(
+					'multi-choice',
+					'preferred-time',
+					__( 'Preferred Time', 'sureforms' ),
+					true,
+					array_merge(
+						Catalog::choice_options( [ __( 'Morning', 'sureforms' ), __( 'Afternoon', 'sureforms' ), __( 'Evening', 'sureforms' ) ], true, [ 'sun', 'cloud-sun', 'moon' ] ),
+						[
+							'pro' => [
+								'fieldType'       => 'time-picker',
+								'minTime'         => '09:00',
+								'maxTime'         => '18:00',
+								'increment'       => 30,
+								'blockAttributes' => [ 'fieldWidth' => 50 ],
+							],
+						]
+					)
+				),
+				[ 'choiceWidth' => 33.33 ]
+			),
 			Catalog::attrs( Catalog::field( 'textarea', 'notes', __( 'Anything we should know?', 'sureforms' ), false, [ 'placeholder' => __( 'e.g. the reason for your visit, access needs, or other times that work', 'sureforms' ) ] ), [ 'rows' => 3 ] ),
 			$c['consent'],
 		],
@@ -81,6 +106,37 @@ return [
 			Catalog::attrs( Catalog::field( 'textarea', 'questions', __( 'Anything else we should know?', 'sureforms' ), false, [ 'placeholder' => __( 'Accessibility needs, dietary details or questions for the organizers', 'sureforms' ) ] ), [ 'rows' => 3 ] ),
 			Catalog::field( 'checkbox', 'event-updates', __( 'Email me about future events', 'sureforms' ) ),
 			$c['consent'],
+			// With SureForms Pro, the campaign that brought each registration.
+			Catalog::field(
+				'hidden',
+				'utm-source',
+				__( 'UTM Source', 'sureforms' ),
+				false,
+				[
+					'defaultValue' => '{get_input:utm_source}',
+					'pro_only'     => true,
+				]
+			),
+			Catalog::field(
+				'hidden',
+				'utm-medium',
+				__( 'UTM Medium', 'sureforms' ),
+				false,
+				[
+					'defaultValue' => '{get_input:utm_medium}',
+					'pro_only'     => true,
+				]
+			),
+			Catalog::field(
+				'hidden',
+				'utm-campaign',
+				__( 'UTM Campaign', 'sureforms' ),
+				false,
+				[
+					'defaultValue' => '{get_input:utm_campaign}',
+					'pro_only'     => true,
+				]
+			),
 		],
 		'confirmation'  => [
 			'heading' => __( 'You are registered', 'sureforms' ),
@@ -129,6 +185,11 @@ return [
 		'confirmation'  => [
 			'heading' => __( 'Thanks, {form:first-name}!', 'sureforms' ),
 			'text'    => __( 'Your RSVP is saved. We have sent a copy to {form:email}.', 'sureforms' ),
+		],
+		// With SureForms Pro, guest questions only show for guests who are coming.
+		'conditions'    => [
+			'guests'  => [ 'logic' => [ [ [ 'attending', '==', __( 'Yes, I will be there', 'sureforms' ) ] ] ] ],
+			'dietary' => [ 'logic' => [ [ [ 'attending', '==', __( 'Yes, I will be there', 'sureforms' ) ] ] ] ],
 		],
 		'email_subject' => __( 'RSVP: {form:first-name} {form:last-name} – {form:attending}', 'sureforms' ),
 		'email_intro'   => __( '{form:first-name} {form:last-name} replied to your invitation: {form:attending}. Their full RSVP is below. Reply to this email to get in touch with them.', 'sureforms' ),
