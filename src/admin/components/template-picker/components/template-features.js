@@ -29,6 +29,7 @@ import {
 	UserPlus,
 } from 'lucide-react';
 import { cn } from '@Utils/Helpers';
+import { trackTemplateAction } from '@Utils/form-templates';
 
 /**
  * What a template ships with, keyed by the ids in a template's `features` and
@@ -295,6 +296,9 @@ export const PremiumBadge = ( { template, className } ) => (
  * @param {Object} template Template.
  */
 export const openTemplateUnlock = ( template ) => {
+	if ( template?.id && 'tier' === template.lock_reason ) {
+		trackTemplateAction( 'upgrade_click', template.id );
+	}
 	const url =
 		template?.unlock_url ||
 		window.srfm_admin?.pricing_page_url ||

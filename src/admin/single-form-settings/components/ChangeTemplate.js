@@ -24,6 +24,7 @@ import {
 	fetchTemplateContent,
 	fetchTemplates,
 	recordTemplateSwap,
+	trackTemplateAction,
 } from '@Utils/form-templates';
 
 /**
@@ -113,6 +114,7 @@ const ChangeTemplate = () => {
 			document.getElementById( 'wpadminbar' )?.offsetHeight || 0
 		);
 		setIsOpen( true );
+		trackTemplateAction( 'library_open' );
 		if ( library ) {
 			return;
 		}

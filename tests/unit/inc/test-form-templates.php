@@ -506,6 +506,53 @@ class Test_Form_Templates extends TestCase {
 		$this->assertEmpty( \SRFM\Inc\Helper::get_srfm_option( 'form_template_demand', [] ) );
 	}
 
+	public function test_library_steps_are_tracked_and_locked_previews_counted() {
+		$this->login_admin();
+		add_filter( 'sureforms_tracking_enabled', '__return_true' );
+		$free = static fn() => 'free';
+		add_filter( 'srfm_pro_tier', $free );
+		\SRFM\Inc\Helper::update_srfm_option( 'form_template_usage', [] );
+
+		$track = static function ( $action, $template_id = '' ) {
+			$request = new WP_REST_Request( 'POST', '/sureforms/v1/form-templates/track' );
+			$request->set_param( 'action', $action );
+			$request->set_param( 'template_id', $template_id );
+			return rest_do_request( $request );
+		};
+
+		$this->assertTrue( $track( 'library_open' )->get_data()['recorded'] );
+		$track( 'preview', 'contact-us' );
+		$track( 'preview', 'loan-emi-calculator' );
+		$track( 'upgrade_click', 'loan-emi-calculator' );
+		$this->assertSame( 404, $track( 'preview', 'no-such-template' )->get_status() );
+		$this->assertSame( 400, $track( 'locked_preview', 'contact-us' )->get_status(), 'Locked previews are decided on the server.' );
+
+		remove_filter( 'srfm_pro_tier', $free );
+		remove_filter( 'sureforms_tracking_enabled', '__return_true' );
+
+		$usage = \SRFM\Inc\Helper::get_srfm_option( 'form_template_usage', [] );
+		$this->assertSame( 1, $usage['library_opens'] );
+		$this->assertSame( 2, $usage['previews'] );
+		$this->assertSame( 1, $usage['locked_previews'], 'Only the Business template counts as locked on a free site.' );
+		$this->assertSame( [ 'loan-emi-calculator' => 1 ], $usage['locked_preview_counts'] );
+		$this->assertSame( [ 'loan-emi-calculator' => 1 ], $usage['upgrade_click_counts'] );
+	}
+
+	public function test_library_steps_are_not_tracked_without_usage_sharing() {
+		$this->login_admin();
+		add_filter( 'sureforms_tracking_enabled', '__return_false' );
+		\SRFM\Inc\Helper::update_srfm_option( 'form_template_usage', [] );
+
+		$request = new WP_REST_Request( 'POST', '/sureforms/v1/form-templates/track' );
+		$request->set_param( 'action', 'library_open' );
+		$response = rest_do_request( $request );
+
+		remove_filter( 'sureforms_tracking_enabled', '__return_false' );
+
+		$this->assertFalse( $response->get_data()['recorded'] );
+		$this->assertEmpty( \SRFM\Inc\Helper::get_srfm_option( 'form_template_usage', [] ) );
+	}
+
 	public function test_template_requests_and_empty_searches_are_counted() {
 		$this->login_admin();
 		add_filter( 'sureforms_tracking_enabled', '__return_true' );

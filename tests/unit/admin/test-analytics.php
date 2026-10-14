@@ -1315,6 +1315,83 @@ class Test_Analytics extends TestCase {
 	}
 
 	/**
+	 * Test library steps are counted, with locked previews and upgrade clicks per template.
+	 *
+	 * @return void
+	 */
+	public function test_template_library_steps_are_counted() {
+		Analytics::events()->flush_pending();
+		Helper::update_srfm_option( 'form_template_usage', [] );
+
+		Analytics::track_form_template_action( 'library_open' );
+		Analytics::track_form_template_action( 'library_open' );
+		Analytics::track_form_template_action( 'preview', 'contact-us' );
+		Analytics::track_form_template_action( 'preview', 'loan-emi-calculator' );
+		Analytics::track_form_template_action( 'locked_preview', 'loan-emi-calculator' );
+		Analytics::track_form_template_action( 'upgrade_click', 'loan-emi-calculator' );
+		$props = $this->queued_template_usage();
+
+		$this->assertSame( has_filter( 'srfm_pro_tier' ) || defined( 'SRFM_PRO_VER' ) ? 'business' : 'free', $props['plan'] );
+		$this->assertSame( '2', $props['library_opens'] );
+		$this->assertSame( '2', $props['previews'] );
+		$this->assertSame( '1', $props['locked_previews'] );
+		$this->assertSame( '1', $props['upgrade_clicks'] );
+		$this->assertSame( '1', $props['locked_preview_loan-emi-calculator'] );
+		$this->assertSame( '1', $props['upgrade_loan-emi-calculator'] );
+		$this->assertArrayNotHasKey( 'locked_preview_contact-us', $props, 'Plain previews are only totalled.' );
+
+		$this->delete_template_forms();
+	}
+
+	/**
+	 * Test unknown actions, and template actions without a template, are ignored.
+	 *
+	 * @return void
+	 */
+	public function test_invalid_template_library_steps_are_ignored() {
+		Helper::update_srfm_option( 'form_template_usage', [] );
+
+		$this->assertFalse( Analytics::track_form_template_action( 'delete_everything', 'contact-us' ) );
+		$this->assertFalse( Analytics::track_form_template_action( 'preview' ) );
+		$this->assertTrue( Analytics::track_form_template_action( 'library_open' ) );
+		$this->assertSame( 1, Helper::get_srfm_option( 'form_template_usage', [] )['library_opens'] );
+
+		$this->delete_template_forms();
+	}
+
+	/**
+	 * Test template forms that received an entry are counted per template.
+	 *
+	 * @return void
+	 */
+	public function test_template_forms_with_entries_are_counted() {
+		Analytics::events()->flush_pending();
+		Helper::update_srfm_option( 'form_template_usage', [ 'created' => 3 ] );
+
+		$with_entry = $this->make_template_form( 'rsvp', 'publish' );
+		$this->make_template_form( 'rsvp', 'publish' );
+		$trashed_entry = $this->make_template_form( 'contact-us', 'publish' );
+		\SRFM\Inc\Database\Tables\Entries::add( [ 'form_id' => $with_entry ] );
+		\SRFM\Inc\Database\Tables\Entries::add( [ 'form_id' => $with_entry ] );
+		\SRFM\Inc\Database\Tables\Entries::add(
+			[
+				'form_id' => $trashed_entry,
+				'status'  => 'trash',
+			]
+		);
+
+		Analytics::refresh_form_template_usage();
+		$props = $this->queued_template_usage();
+
+		$this->assertSame( '1', $props['with_entries'] );
+		$this->assertSame( '1', $props['with_entries_rsvp'] );
+		$this->assertArrayNotHasKey( 'with_entries_contact-us', $props, 'Trashed entries do not count.' );
+		$this->assertSame( '3', $props['published'] );
+
+		$this->delete_template_forms();
+	}
+
+	/**
 	 * Test track_first_form_published skips when status is not changing to publish.
 	 *
 	 * @return void

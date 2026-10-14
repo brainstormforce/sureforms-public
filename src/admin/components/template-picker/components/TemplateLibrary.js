@@ -29,7 +29,11 @@ import {
 	X,
 } from 'lucide-react';
 import { cn } from '@Utils/Helpers';
-import { createFormFromTemplate, requestTemplate } from '@Utils/form-templates';
+import {
+	createFormFromTemplate,
+	requestTemplate,
+	trackTemplateAction,
+} from '@Utils/form-templates';
 import Header from './Header.js';
 import TemplateStylePanel from './TemplateStylePanel.js';
 import {
@@ -467,6 +471,10 @@ export const TemplatePreview = ( {
 	const [ imageFailed, setImageFailed ] = useState( false );
 	const showImage = showsPreviewImage( template ) && ! imageFailed;
 	const [ dialogNode, setDialogNode ] = useState( null );
+
+	useEffect( () => {
+		trackTemplateAction( 'preview', template.id );
+	}, [ template.id ] );
 	// The card that opened the preview gets focus back on close. Read before
 	// the dialog exists, so there is no node to take ownerDocument from yet.
 	const [ opener ] = useState( () =>
@@ -1441,6 +1449,10 @@ const TemplateLibrary = () => {
 	const [ creatingId, setCreatingId ] = useState( '' );
 
 	const closePreview = useCallback( () => setPreviewId( '' ), [] );
+
+	useEffect( () => {
+		trackTemplateAction( 'library_open' );
+	}, [] );
 
 	const isRTL = srfm_admin?.is_rtl;
 	const preview = templates.find( ( t ) => t.id === previewId );

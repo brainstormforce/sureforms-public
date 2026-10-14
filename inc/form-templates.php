@@ -240,6 +240,28 @@ class Form_Templates {
 
 		register_rest_route(
 			'sureforms/v1',
+			'/form-templates/track',
+			[
+				'methods'             => 'POST',
+				'callback'            => [ $this, 'rest_record_action' ],
+				'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
+				'args'                => [
+					'action'      => [
+						'type'     => 'string',
+						'required' => true,
+						'enum'     => [ 'library_open', 'preview', 'upgrade_click' ],
+					],
+					'template_id' => [
+						'type'              => 'string',
+						'default'           => '',
+						'sanitize_callback' => 'sanitize_key',
+					],
+				],
+			]
+		);
+
+		register_rest_route(
+			'sureforms/v1',
 			'/form-templates/swap',
 			[
 				'methods'             => 'POST',
@@ -2168,6 +2190,39 @@ class Form_Templates {
 			static fn( $value, $key ) => ! array_key_exists( $key, $defaults ) || $defaults[ $key ] !== $value,
 			ARRAY_FILTER_USE_BOTH
 		);
+	}
+
+	/**
+	 * POST /form-templates/track
+	 *
+	 * Counts a step of the template journey in the library: opening it,
+	 * previewing a template, or clicking "Upgrade to unlock". A preview of a
+	 * template this site can't use is also counted as a locked preview.
+	 * Nothing is recorded unless the site shares usage data with SureForms.
+	 *
+	 * @param WP_REST_Request $request Request.
+	 * @since x.x.x
+	 * @return WP_REST_Response|WP_Error
+	 */
+	public function rest_record_action( $request ) {
+		$action      = Helper::get_string_value( $request->get_param( 'action' ) );
+		$template_id = Helper::get_string_value( $request->get_param( 'template_id' ) );
+		$template    = '' !== $template_id ? self::get_template( $template_id ) : null;
+
+		if ( 'library_open' !== $action && ! $template ) {
+			return new WP_Error( 'srfm_template_not_found', __( 'Template not found.', 'sureforms' ), [ 'status' => 404 ] );
+		}
+
+		if ( ! self::is_usage_sharing_on() ) {
+			return new WP_REST_Response( [ 'recorded' => false ] );
+		}
+
+		Analytics::track_form_template_action( $action, 'library_open' === $action ? '' : $template_id );
+		if ( 'preview' === $action && $template && ! self::is_template_available( $template ) ) {
+			Analytics::track_form_template_action( 'locked_preview', $template_id );
+		}
+
+		return new WP_REST_Response( [ 'recorded' => true ] );
 	}
 
 	/**

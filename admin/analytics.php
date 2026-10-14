@@ -854,12 +854,140 @@ class Analytics {
 		$usage = Helper::get_srfm_option( 'form_template_usage', [] );
 		$usage = is_array( $usage ) ? $usage : [];
 
-		$used = absint( $usage['created'] ?? 0 ) + absint( $usage['swaps'] ?? 0 );
+		$used = 0;
+		foreach ( [ 'created', 'swaps', 'library_opens', 'previews' ] as $key ) {
+			$used += absint( $usage[ $key ] ?? 0 );
+		}
 		if ( 0 === $used && 0 === array_sum( self::published_template_forms() ) ) {
 			return;
 		}
 
 		self::send_form_template_usage( $usage );
+	}
+
+	/**
+	 * Count a step of the template journey that happens in the library: the
+	 * library being opened, a template previewed, a locked Premium template
+	 * previewed, or its "Upgrade to unlock" button clicked.
+	 *
+	 * Adds to the running totals in srfm_options and re-sends them with the
+	 * `form_template_usage` event. Locked previews and upgrade clicks are also
+	 * counted per template.
+	 *
+	 * @param string $action      `library_open`, `preview`, `locked_preview` or `upgrade_click`.
+	 * @param string $template_id Template id, for every action but `library_open`.
+	 * @since x.x.x
+	 * @return bool Whether the action was counted.
+	 */
+	public static function track_form_template_action( $action, $template_id = '' ) {
+		$totals = [
+			'library_open'   => 'library_opens',
+			'preview'        => 'previews',
+			'locked_preview' => 'locked_previews',
+			'upgrade_click'  => 'upgrade_clicks',
+		];
+		if ( ! isset( $totals[ $action ] ) ) {
+			return false;
+		}
+
+		$template_id = substr( sanitize_key( Helper::get_string_value( $template_id ) ), 0, 40 );
+		if ( 'library_open' !== $action && '' === $template_id ) {
+			return false;
+		}
+
+		$usage = Helper::get_srfm_option( 'form_template_usage', [] );
+		$usage = is_array( $usage ) ? $usage : [];
+
+		$usage[ $totals[ $action ] ] = absint( $usage[ $totals[ $action ] ] ?? 0 ) + 1;
+
+		$per_template = [
+			'locked_preview' => 'locked_preview_counts',
+			'upgrade_click'  => 'upgrade_click_counts',
+		];
+		if ( isset( $per_template[ $action ] ) ) {
+			$counts = self::usage_counts( $usage, $per_template[ $action ] );
+			// Cap distinct keys so the option and the event stay small.
+			if ( isset( $counts[ $template_id ] ) || count( $counts ) < 40 ) {
+				$counts[ $template_id ] = ( $counts[ $template_id ] ?? 0 ) + 1;
+			}
+			$usage[ $per_template[ $action ] ] = $counts;
+		}
+
+		Helper::update_srfm_option( 'form_template_usage', $usage );
+		self::send_form_template_usage( $usage );
+
+		return true;
+	}
+
+	/**
+	 * A per-template count map stored in the usage totals.
+	 *
+	 * @param array<string, mixed> $usage Stored usage totals.
+	 * @param string               $key   Map key.
+	 * @since x.x.x
+	 * @return array<string, int>
+	 */
+	private static function usage_counts( $usage, $key ) {
+		if ( ! isset( $usage[ $key ] ) || ! is_array( $usage[ $key ] ) ) {
+			return [];
+		}
+
+		$counts = [];
+		foreach ( $usage[ $key ] as $id => $count ) {
+			$counts[ (string) $id ] = Helper::get_integer_value( $count );
+		}
+		return $counts;
+	}
+
+	/**
+	 * Number of forms per template id that have received at least one entry,
+	 * the sign a template form is actually working on the site.
+	 *
+	 * @since x.x.x
+	 * @return array<string, int> Template id => forms with entries, at most 40 ids.
+	 */
+	public static function template_forms_with_entries() {
+		global $wpdb;
+
+		if ( Register::is_entries_table_missing() ) {
+			return [];
+		}
+
+		$entries = Entries::get_instance()->get_tablename();
+
+		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- The table name comes from the Entries class, not from input.
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- One grouped count per analytics cycle; caching would only delay the numbers.
+		$rows = $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT tm.meta_value AS template_id, COUNT(DISTINCT p.ID) AS forms
+				FROM {$wpdb->posts} p
+				INNER JOIN {$wpdb->postmeta} cv ON cv.post_id = p.ID AND cv.meta_key = %s AND cv.meta_value = %s
+				INNER JOIN {$wpdb->postmeta} tm ON tm.post_id = p.ID AND tm.meta_key = %s
+				WHERE p.post_type = %s AND p.post_status <> %s
+				AND EXISTS ( SELECT 1 FROM {$entries} e WHERE e.form_id = p.ID AND e.status <> %s )
+				GROUP BY tm.meta_value
+				ORDER BY forms DESC
+				LIMIT 40",
+				'_srfm_created_via',
+				'template',
+				'_srfm_template_id',
+				SRFM_FORMS_POST_TYPE,
+				'trash',
+				'trash'
+			),
+			ARRAY_A
+		);
+		// phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+
+		$counts = [];
+		foreach ( is_array( $rows ) ? $rows : [] as $row ) {
+			$id = substr( sanitize_key( Helper::get_string_value( $row['template_id'] ?? '' ) ), 0, 40 );
+			if ( '' !== $id ) {
+				$counts[ $id ] = absint( $row['forms'] ?? 0 );
+			}
+		}
+
+		return $counts;
 	}
 
 	/**
@@ -916,16 +1044,32 @@ class Analytics {
 		$counts    = isset( $usage['templates'] ) && is_array( $usage['templates'] ) ? array_map( 'absint', $usage['templates'] ) : [];
 		$published = self::published_template_forms();
 
-		$properties = [
-			'created'   => (string) Helper::get_integer_value( $usage['created'] ?? 0 ),
-			'swaps'     => (string) Helper::get_integer_value( $usage['swaps'] ?? 0 ),
-			'published' => (string) array_sum( $published ),
+		$with_entries = self::template_forms_with_entries();
+		$locked       = self::usage_counts( $usage, 'locked_preview_counts' );
+		$upgrades     = self::usage_counts( $usage, 'upgrade_click_counts' );
+
+		$properties   = [
+			'plan'            => Helper::has_pro() ? 'business' : 'free',
+			'library_opens'   => (string) Helper::get_integer_value( $usage['library_opens'] ?? 0 ),
+			'previews'        => (string) Helper::get_integer_value( $usage['previews'] ?? 0 ),
+			'created'         => (string) Helper::get_integer_value( $usage['created'] ?? 0 ),
+			'swaps'           => (string) Helper::get_integer_value( $usage['swaps'] ?? 0 ),
+			'published'       => (string) array_sum( $published ),
+			'with_entries'    => (string) array_sum( $with_entries ),
+			'locked_previews' => (string) Helper::get_integer_value( $usage['locked_previews'] ?? 0 ),
+			'upgrade_clicks'  => (string) Helper::get_integer_value( $usage['upgrade_clicks'] ?? 0 ),
 		];
-		foreach ( $counts as $id => $count ) {
-			$properties[ 'template_' . $id ] = (string) $count;
-		}
-		foreach ( $published as $id => $count ) {
-			$properties[ 'published_' . $id ] = (string) $count;
+		$per_template = [
+			'template_'       => $counts,
+			'published_'      => $published,
+			'with_entries_'   => $with_entries,
+			'locked_preview_' => $locked,
+			'upgrade_'        => $upgrades,
+		];
+		foreach ( $per_template as $prefix => $values ) {
+			foreach ( $values as $id => $count ) {
+				$properties[ $prefix . $id ] = (string) $count;
+			}
 		}
 
 		// $force = true: cumulative counter, must re-send the latest totals each cycle.
@@ -969,6 +1113,7 @@ class Analytics {
 		$requests   = isset( $demand['request'] ) && is_array( $demand['request'] ) ? array_map( 'absint', $demand['request'] ) : [];
 		$searches   = isset( $demand['search'] ) && is_array( $demand['search'] ) ? array_map( 'absint', $demand['search'] ) : [];
 		$properties = [
+			'plan'     => Helper::has_pro() ? 'business' : 'free',
 			'requests' => (string) array_sum( $requests ),
 			'searches' => (string) array_sum( $searches ),
 		];

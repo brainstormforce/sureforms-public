@@ -59,3 +59,18 @@ export const requestTemplate = ( query, type = 'request' ) =>
 		method: 'POST',
 		data: { query, type },
 	} );
+
+/**
+ * Count a step of the template journey for usage analytics: the library being
+ * opened, a template previewed, or "Upgrade to unlock" clicked. Never throws.
+ *
+ * @param {string} action     'library_open', 'preview' or 'upgrade_click'.
+ * @param {string} templateId Template id, for 'preview' and 'upgrade_click'.
+ * @return {Promise} Settles when recorded or ignored.
+ */
+export const trackTemplateAction = ( action, templateId = '' ) =>
+	apiFetch( {
+		path: 'sureforms/v1/form-templates/track',
+		method: 'POST',
+		data: { action, template_id: templateId },
+	} ).catch( () => {} );
