@@ -365,8 +365,8 @@ return [
 			Catalog::width( $c['email'], 50 ),
 			Catalog::width( array_merge( $c['phone'], [ 'required' => true ] ), 50 ),
 			Catalog::field( 'address', 'current-address', __( 'Current Address', 'sureforms' ), true ),
-			Catalog::width( Catalog::date_field( 'move-in-date', __( 'Preferred Move-in Date', 'sureforms' ), true, true ), 33.33 ),
-			Catalog::width( Catalog::number_field( 'occupants', __( 'Number of Occupants', 'sureforms' ), true, 1, 20, [ 'placeholder' => __( 'e.g. 2', 'sureforms' ) ] ), 33.33 ),
+			Catalog::width( Catalog::date_field( 'move-in-date', __( 'Preferred Move-in Date', 'sureforms' ), true, true ), 50 ),
+			Catalog::width( Catalog::number_field( 'occupants', __( 'Number of Occupants', 'sureforms' ), true, 1, 20, [ 'placeholder' => __( 'e.g. 2', 'sureforms' ) ] ), 50 ),
 			Catalog::width(
 				Catalog::attrs(
 					Catalog::field(
@@ -378,7 +378,7 @@ return [
 					),
 					$no_search
 				),
-				33.33
+				100
 			),
 			Catalog::step( 'work-step', __( 'Work and income', 'sureforms' ) ),
 			Catalog::width(

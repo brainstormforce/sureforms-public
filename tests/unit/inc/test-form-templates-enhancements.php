@@ -27,7 +27,7 @@ class Test_Form_Templates_Enhancements extends TestCase {
 		'product-inquiry'      => 'full-name:input email:email product:input quantity:number question:textarea consent:gdpr',
 		'partnership-inquiry'  => 'full-name:input email:email company:input job-title:input website:url partnership-type:dropdown proposal:textarea consent:gdpr',
 		'appointment-request'  => 'full-name:input email:email phone:phone service:dropdown preferred-date:input preferred-time:multi-choice notes:textarea consent:gdpr',
-		'event-registration'   => 'full-name:input email:email phone:phone organization:input attendees:number dietary:multi-choice questions:textarea event-updates:checkbox consent:gdpr',
+		'event-registration'   => 'full-name:input email:email phone:phone attendees:number organization:input dietary:multi-choice questions:textarea event-updates:checkbox consent:gdpr',
 		'rsvp'                 => 'first-name:input last-name:input email:email attending:multi-choice guests:number dietary:input message:textarea consent:gdpr',
 		'customer-feedback'    => 'satisfaction:multi-choice liked:textarea improve:textarea full-name:input email:email',
 		'satisfaction-survey'  => 'recommend-score:dropdown reason:textarea frequency:multi-choice email:email',

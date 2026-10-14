@@ -206,7 +206,7 @@ return [
 					Catalog::number_field( 'loan-amount', __( 'Loan Amount', 'sureforms' ), true, 100, 10000000, [ 'placeholder' => __( 'e.g. 25,000', 'sureforms' ) ] ),
 					[ 'prefix' => $symbol ]
 				),
-				50
+				100
 			),
 			Catalog::width(
 				Catalog::attrs(
@@ -223,11 +223,11 @@ return [
 						'suffix'   => '%',
 					]
 				),
-				25
+				50
 			),
 			Catalog::width(
 				Catalog::number_field( 'term-years', __( 'Term (years)', 'sureforms' ), true, 1, 40, [ 'placeholder' => __( 'e.g. 5', 'sureforms' ) ] ),
-				25
+				50
 			),
 			Catalog::width( $result( 'monthly-payment', __( 'Monthly Repayment', 'sureforms' ), $repayment, 2, $symbol ), 50 ),
 			Catalog::width( $result( 'total-interest', __( 'Total Interest', 'sureforms' ), '(' . $repayment . ') * {form:term-years} * 12 - {form:loan-amount}', 2, $symbol ), 50 ),
@@ -383,7 +383,14 @@ return [
 		'description'   => __( 'Show prospects how much time and money your product could save them a year.', 'sureforms' ),
 		'submit_text'   => __( 'Send me the breakdown', 'sureforms' ),
 		'fields'        => [
-			Catalog::width( Catalog::number_field( 'team-size', __( 'Team Size', 'sureforms' ), true, 1, 10000, [ 'placeholder' => __( 'e.g. 10', 'sureforms' ) ] ), 33.33 ),
+			Catalog::width( Catalog::number_field( 'team-size', __( 'Team Size', 'sureforms' ), true, 1, 10000, [ 'placeholder' => __( 'e.g. 10', 'sureforms' ) ] ), 50 ),
+			Catalog::width(
+				Catalog::attrs(
+					Catalog::number_field( 'hourly-cost', __( 'Hourly Cost per Person', 'sureforms' ), true, 1, 1000, [ 'placeholder' => __( 'e.g. 40', 'sureforms' ) ] ),
+					[ 'prefix' => $symbol ]
+				),
+				50
+			),
 			Catalog::width(
 				Catalog::attrs(
 					Catalog::field(
@@ -402,14 +409,7 @@ return [
 					),
 					[ 'numberDefaultValue' => '5' ]
 				),
-				33.33
-			),
-			Catalog::width(
-				Catalog::attrs(
-					Catalog::number_field( 'hourly-cost', __( 'Hourly Cost per Person', 'sureforms' ), true, 1, 1000, [ 'placeholder' => __( 'e.g. 40', 'sureforms' ) ] ),
-					[ 'prefix' => $symbol ]
-				),
-				33.33
+				100
 			),
 			$result(
 				'yearly-savings',

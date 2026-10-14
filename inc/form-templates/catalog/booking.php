@@ -87,8 +87,7 @@ return [
 		'fields'        => [
 			Catalog::width( $c['name'], 50 ),
 			Catalog::width( $c['email'], 50 ),
-			Catalog::width( $c['phone'], 33.33 ),
-			Catalog::width( Catalog::field( 'input', 'organization', __( 'Organization', 'sureforms' ) ), 33.33 ),
+			Catalog::width( $c['phone'], 50 ),
 			Catalog::width(
 				Catalog::number_field(
 					'attendees',
@@ -100,8 +99,9 @@ return [
 						'placeholder' => __( 'Including yourself', 'sureforms' ),
 					]
 				),
-				33.33
+				50
 			),
+			Catalog::field( 'input', 'organization', __( 'Organization', 'sureforms' ) ),
 			Catalog::field( 'multi-choice', 'dietary', __( 'Dietary Requirements', 'sureforms' ), false, array_merge( Catalog::choice_options( [ __( 'Vegetarian', 'sureforms' ), __( 'Vegan', 'sureforms' ), __( 'Gluten-free', 'sureforms' ), __( 'Dairy-free', 'sureforms' ), __( 'Halal', 'sureforms' ), __( 'Other', 'sureforms' ) ], false ), [ 'helpText' => __( 'For in-person events. Leave blank if none.', 'sureforms' ) ] ) ),
 			Catalog::attrs( Catalog::field( 'textarea', 'questions', __( 'Anything else we should know?', 'sureforms' ), false, [ 'placeholder' => __( 'Accessibility needs, dietary details or questions for the organizers', 'sureforms' ) ] ), [ 'rows' => 3 ] ),
 			Catalog::field( 'checkbox', 'event-updates', __( 'Email me about future events', 'sureforms' ) ),
