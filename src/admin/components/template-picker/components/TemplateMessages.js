@@ -9,9 +9,10 @@ import {
 } from 'lucide-react';
 import { cn } from '@Utils/Helpers';
 
-// Smart tags the template messages use.
+// Smart tags the template messages use, including the SureForms Pro results
+// (quiz, calculation, payment and poll).
 const TAG_PATTERN =
-	/\{(form:[a-z0-9_-]+|site_title|entry_id|current_page_url|admin_email)\}/gi;
+	/\{(form:[a-z0-9_-]+|form-payment:[a-z0-9_-]+:[a-z-]+|quiz_[a-z_]+|poll_results|calculation-result|site_title|entry_id|current_page_url|admin_email)\}/gi;
 
 // Paragraphs in the visitor email's text are separated by a blank line.
 const PARAGRAPH_SPLIT = /\n\s*\n/;
@@ -157,12 +158,21 @@ const siteData = ( key ) =>
 /**
  * Sample values for the smart tags, for previews.
  *
- * @param {Array} answers `template.answers`.
- * @return {Object} { samples, labels, siteTitle, siteUrl, adminEmail }.
+ * @param {Object} template Template: its `answers` and `messages.tag_samples`.
+ * @return {Object} { samples, tagSamples, siteTitle, siteUrl, adminEmail }.
  */
-const getSampleContext = ( answers ) => ( {
+const getSampleContext = ( template ) => ( {
 	samples: Object.fromEntries(
-		( answers || [] ).map( ( answer ) => [ answer.slug, answer.sample ] )
+		( template?.answers || [] ).map( ( answer ) => [
+			answer.slug,
+			answer.sample,
+		] )
+	),
+	// Lowercase tag ( `{quiz_score}` ) to its sample.
+	tagSamples: Object.fromEntries(
+		Object.entries( template?.messages?.tag_samples || {} ).map(
+			( [ tag, sample ] ) => [ tag.toLowerCase(), sample ]
+		)
 	),
 	siteTitle:
 		siteData( 'site_title' ) ||
@@ -190,10 +200,11 @@ const renderWithSamples = ( text, context ) => {
 		nodes.push( text.slice( last, offset ) );
 		last = offset + match.length;
 		const name = tag.toLowerCase();
-		let value;
-		if ( name.startsWith( 'form:' ) ) {
+		// A SureForms Pro result (e.g. the quiz score) has its own sample.
+		let value = context.tagSamples?.[ `{${ name }}` ];
+		if ( undefined === value && name.startsWith( 'form:' ) ) {
 			value = context.samples[ name.slice( 5 ) ];
-		} else {
+		} else if ( undefined === value ) {
 			value = {
 				site_title: context.siteTitle,
 				entry_id: SAMPLE_ENTRY_ID,
@@ -325,15 +336,21 @@ const useAnswerInsertion = ( values, setValue ) => {
 };
 
 /**
- * Chips that insert an answer into the field being edited.
+ * Chips that insert an answer, or a SureForms Pro result such as the quiz
+ * score, into the field being edited.
  *
  * @param {Object}   props          Props.
  * @param {Array}    props.answers  `template.answers`.
+ * @param {Array}    props.results  `template.messages.result_tags`: { tag, label }.
  * @param {Function} props.onInsert Called with the tag to insert.
  */
-const AnswerChips = ( { answers, onInsert } ) => {
-	const sorted = sortAnswers( answers );
-	if ( ! sorted.length ) {
+const AnswerChips = ( { answers, results = [], onInsert } ) => {
+	// Results (a calculated total, say) are offered in their own group.
+	const resultTags = results.map( ( result ) => result.tag );
+	const sorted = sortAnswers( answers ).filter(
+		( answer ) => ! resultTags.includes( `{form:${ answer.slug }}` )
+	);
+	if ( ! sorted.length && ! results.length ) {
 		return null;
 	}
 	const firstOptional = sorted.findIndex( ( answer ) => ! answer.required );
@@ -406,6 +423,38 @@ const AnswerChips = ( { answers, onInsert } ) => {
 						</span>
 					) ) }
 				</div>
+				{ results.length > 0 && (
+					<div
+						className="flex flex-wrap items-center gap-1.5"
+						role="group"
+						aria-label={ __( 'Insert result', 'sureforms' ) }
+					>
+						<span className="mr-0.5 text-[11px] font-semibold text-text-secondary">
+							{ __( 'Results', 'sureforms' ) }
+						</span>
+						{ results.map( ( result ) => (
+							<button
+								key={ result.tag }
+								type="button"
+								onMouseDown={ ( event ) => event.preventDefault() }
+								onClick={ () => onInsert( result.tag ) }
+								aria-label={ sprintf(
+									/* translators: %s: result name, e.g. "Quiz score". */
+									__( 'Insert result: %s', 'sureforms' ),
+									result.label
+								) }
+								title={ result.tag }
+								className={ cn(
+									'flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded-full border border-solid border-brand-border-300 bg-brand-background-50 text-brand-800 cursor-pointer transition-colors hover:border-border-interactive motion-reduce:transition-none',
+									ringClass
+								) }
+							>
+								<Plus className="size-3" aria-hidden="true" />
+								{ result.label }
+							</button>
+						) ) }
+					</div>
+				) }
 			</div>
 		</div>
 	);
@@ -663,7 +712,7 @@ export const ThankYouPanel = ( {
 	editable,
 	device,
 } ) => {
-	const context = getSampleContext( template.answers );
+	const context = getSampleContext( template );
 	const { fieldProps, insert } = useAnswerInsertion( values, setValue );
 	const defaults = getMessageDefaults( template.messages );
 	const keys = [ 'confirmation.heading', 'confirmation.text' ];
@@ -722,6 +771,7 @@ export const ThankYouPanel = ( {
 				>
 					<AnswerChips
 						answers={ template.answers }
+						results={ template.messages?.result_tags }
 						onInsert={ ( tag ) => insert( tag, keys ) }
 					/>
 					<MessageField
@@ -848,7 +898,7 @@ const SectionHeading = ( { id, label, action } ) => (
  * @param {boolean}  props.editable Show the fields to edit the emails.
  */
 export const EmailsPanel = ( { template, values, setValue, editable } ) => {
-	const context = getSampleContext( template.answers );
+	const context = getSampleContext( template );
 	const { fieldProps, insert } = useAnswerInsertion( values, setValue );
 	const defaults = getMessageDefaults( template.messages );
 	const answers = template.answers || [];
@@ -873,6 +923,7 @@ export const EmailsPanel = ( { template, values, setValue, editable } ) => {
 		<>
 			<AnswerChips
 				answers={ answers }
+				results={ template.messages?.result_tags }
 				onInsert={ ( tag ) => insert( tag, ownerKeys ) }
 			/>
 			<MessageField
@@ -903,6 +954,7 @@ export const EmailsPanel = ( { template, values, setValue, editable } ) => {
 		<>
 			<AnswerChips
 				answers={ answers }
+				results={ template.messages?.result_tags }
 				onInsert={ ( tag ) => insert( tag, visitorKeys ) }
 			/>
 			<MessageField

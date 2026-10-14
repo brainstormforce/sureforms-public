@@ -11,9 +11,12 @@ import {
 	ArrowLeft,
 	ArrowRight,
 	Check,
+	Crown,
+	ExternalLink,
 	Eye,
 	FileText,
 	ImageOff,
+	Info,
 	Lock,
 	Mail,
 	MessageSquarePlus,
@@ -22,6 +25,7 @@ import {
 	PartyPopper,
 	Search,
 	Smartphone,
+	Wrench,
 	X,
 } from 'lucide-react';
 import { cn } from '@Utils/Helpers';
@@ -31,9 +35,13 @@ import TemplateStylePanel from './TemplateStylePanel.js';
 import {
 	FeatureChip,
 	IncludedFeatures,
+	PremiumBadge,
 	getFeatures,
 	getLockLabels,
+	getMissingSetup,
+	isPremiumTemplate,
 	openTemplateUnlock,
+	showsPreviewImage,
 } from './template-features.js';
 import useFocusTrap from '../use-focus-trap.js';
 import { resolveLook } from '../template-colors.js';
@@ -181,6 +189,50 @@ const THUMB_HEIGHT = 288;
  * @param {Object} props.template Template.
  */
 export const TemplateThumbnail = ( { template } ) => {
+	// A picture that doesn't load falls back to the live preview.
+	const [ imageFailed, setImageFailed ] = useState( false );
+	if ( showsPreviewImage( template ) && ! imageFailed ) {
+		return (
+			<ImageThumbnail
+				template={ template }
+				onError={ () => setImageFailed( true ) }
+			/>
+		);
+	}
+	return <LiveThumbnail template={ template } />;
+};
+
+/**
+ * Card thumbnail of a locked template: the picture of its Premium version.
+ *
+ * @param {Object}   props          Props.
+ * @param {Object}   props.template Template.
+ * @param {Function} props.onError  Called when the picture doesn't load.
+ */
+const ImageThumbnail = ( { template, onError } ) => (
+	<span
+		className="relative block w-full overflow-hidden bg-background-primary"
+		style={ { height: THUMB_HEIGHT } }
+		aria-hidden="true"
+	>
+		<img
+			src={ template.preview_image }
+			alt=""
+			loading="lazy"
+			decoding="async"
+			onError={ onError }
+			className="block w-full h-full object-cover object-top"
+		/>
+	</span>
+);
+
+/**
+ * Live thumbnail: the preview page, scaled down.
+ *
+ * @param {Object} props          Props.
+ * @param {Object} props.template Template.
+ */
+const LiveThumbnail = ( { template } ) => {
 	const boxRef = useRef( null );
 	const [ scale, setScale ] = useState( 0.35 );
 	// 'loading', 'ready' or 'failed'.
@@ -411,6 +463,9 @@ export const TemplatePreview = ( {
 	const [ shown, setShown ] = useState( 0 );
 	// 'loading', 'ready' or 'failed'.
 	const [ status, setStatus ] = useState( 'loading' );
+	// A locked template's picture that doesn't load falls back to the live preview.
+	const [ imageFailed, setImageFailed ] = useState( false );
+	const showImage = showsPreviewImage( template ) && ! imageFailed;
 	const [ dialogNode, setDialogNode ] = useState( null );
 	// The card that opened the preview gets focus back on close. Read before
 	// the dialog exists, so there is no node to take ownerDocument from yet.
@@ -443,6 +498,9 @@ export const TemplatePreview = ( {
 	}, [ style, template, shown ] );
 
 	useEffect( () => {
+		if ( showImage ) {
+			return;
+		}
 		const timer = setTimeout(
 			() =>
 				setStatus( ( current ) =>
@@ -451,7 +509,7 @@ export const TemplatePreview = ( {
 			PREVIEW_TIMEOUT
 		);
 		return () => clearTimeout( timer );
-	}, [] );
+	}, [ showImage ] );
 
 	useEffect( () => {
 		dialogNode?.focus();
@@ -502,6 +560,11 @@ export const TemplatePreview = ( {
 
 	const canCustomize = ! template.is_locked;
 	const lockLabels = getLockLabels( template );
+	const missingSetup = getMissingSetup( template );
+	// The live preview of a locked template leaves out the fields this site
+	// can't show; say so, unless its picture is shown instead.
+	const showMissingNotice =
+		template.is_locked && ! showImage && template.preview_missing > 0;
 	const showSpamOption = offerSpamProtection && ! template.is_locked;
 	const panelId = 'srfm-template-customize-panel';
 
@@ -598,12 +661,20 @@ export const TemplatePreview = ( {
 					</span>
 				</Button>
 				<div className="flex flex-col min-w-0 flex-1">
-					<h2
-						id="srfm-template-preview-title"
-						className="m-0 text-base font-semibold text-text-primary truncate"
-					>
-						{ template.title }
-					</h2>
+					<div className="flex items-center gap-2 min-w-0">
+						<h2
+							id="srfm-template-preview-title"
+							className="m-0 text-base font-semibold text-text-primary truncate"
+						>
+							{ template.title }
+						</h2>
+						{ template.is_locked && (
+							<PremiumBadge
+								template={ template }
+								className="shrink-0"
+							/>
+						) }
+					</div>
 					<span
 						id="srfm-template-preview-description"
 						className="hidden sm:block text-xs text-text-secondary truncate"
@@ -670,6 +741,23 @@ export const TemplatePreview = ( {
 							/>
 						</div>
 					) }
+					{ showMissingNotice && 'form' === activeTab && (
+						<div className="flex justify-center px-3 sm:px-6 pt-3 sm:pt-4">
+							<p
+								className="m-0 flex items-start gap-1.5 px-3 py-1.5 text-xs text-text-secondary rounded-md bg-background-primary border border-solid border-border-subtle"
+								role="note"
+							>
+								<Info
+									className="size-3.5 shrink-0 mt-px text-icon-secondary"
+									aria-hidden="true"
+								/>
+								{ __(
+									'Some fields in this template need SureForms Premium, so this preview leaves them out.',
+									'sureforms'
+								) }
+							</p>
+						</div>
+					) }
 					<div
 						{ ...tabPanelProps( 'form' ) }
 						className={ cn(
@@ -685,15 +773,17 @@ export const TemplatePreview = ( {
 									: 'w-full max-w-[1100px]'
 							) }
 						>
-							{ frames.map(
-								( src, index ) =>
-									!! src && (
-										<iframe
-											// One element per slot, so React keeps the shown
-											// frame while the other one reloads.
-											key={ index }
-											src={ src }
-											title={ sprintf(
+							{ showImage && (
+								<>
+									<div
+										// Scrolls with the keyboard too, like the live preview.
+										// eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
+										tabIndex={ 0 }
+										className="absolute inset-0 overflow-y-auto rounded-lg border border-solid border-border-subtle bg-background-primary shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-interactive"
+									>
+										<img
+											src={ template.preview_image }
+											alt={ sprintf(
 												/* translators: %s: template name. */
 												__(
 													'Preview of the %s form',
@@ -701,38 +791,72 @@ export const TemplatePreview = ( {
 												),
 												template.title
 											) }
-											aria-hidden={ index !== shown }
-											tabIndex={
-												index === shown ? 0 : -1
-											}
-											onLoad={ ( event ) => {
-												if (
-													isPreviewBroken(
-														event.currentTarget
-													)
-												) {
-													setStatus( 'failed' );
-													return;
-												}
-												if ( index !== shown ) {
-													setShown( index );
-												}
-												setStatus( 'ready' );
-											} }
-											className={ cn(
-												'absolute inset-0 size-full border border-solid border-border-subtle rounded-lg bg-background-primary shadow-sm transition-opacity duration-200 motion-reduce:transition-none',
-												index === shown &&
-													'ready' === status
-													? 'opacity-100 z-10'
-													: 'opacity-0 z-0 pointer-events-none'
-											) }
+											decoding="async"
+											onError={ () => setImageFailed( true ) }
+											className="block w-full h-auto"
 										/>
-									)
+									</div>
+									<span className="absolute top-3 left-1/2 -translate-x-1/2 z-10 inline-flex items-center gap-1.5 px-3 py-1 text-xs font-medium whitespace-nowrap rounded-full bg-background-inverse/90 text-text-on-color shadow-md">
+										<Crown
+											className="size-3.5"
+											aria-hidden="true"
+										/>
+										{ __(
+											'Preview of the Premium version',
+											'sureforms'
+										) }
+									</span>
+								</>
 							) }
-							{ 'loading' === status && (
+							{ ! showImage &&
+								frames.map(
+									( src, index ) =>
+										!! src && (
+											<iframe
+											// One element per slot, so React keeps the shown
+											// frame while the other one reloads.
+												key={ index }
+												src={ src }
+												title={ sprintf(
+												/* translators: %s: template name. */
+													__(
+														'Preview of the %s form',
+														'sureforms'
+													),
+													template.title
+												) }
+												aria-hidden={ index !== shown }
+												tabIndex={
+													index === shown ? 0 : -1
+												}
+												onLoad={ ( event ) => {
+													if (
+														isPreviewBroken(
+															event.currentTarget
+														)
+													) {
+														setStatus( 'failed' );
+														return;
+													}
+													if ( index !== shown ) {
+														setShown( index );
+													}
+													setStatus( 'ready' );
+												} }
+												className={ cn(
+													'absolute inset-0 size-full border border-solid border-border-subtle rounded-lg bg-background-primary shadow-sm transition-opacity duration-200 motion-reduce:transition-none',
+													index === shown &&
+													'ready' === status
+														? 'opacity-100 z-10'
+														: 'opacity-0 z-0 pointer-events-none'
+												) }
+											/>
+										)
+								) }
+							{ ! showImage && 'loading' === status && (
 								<FormSkeleton className="z-20 rounded-lg border border-solid border-border-subtle shadow-sm" />
 							) }
-							{ 'failed' === status && (
+							{ ! showImage && 'failed' === status && (
 								<div
 									className="absolute inset-0 z-20 flex flex-col items-center justify-center gap-3 p-6 text-center rounded-lg border border-dashed border-border-subtle bg-background-primary"
 									role="status"
@@ -799,6 +923,44 @@ export const TemplatePreview = ( {
 					{ lockLabels.notice && (
 						<p className="m-0 text-xs text-text-secondary">
 							{ lockLabels.notice }
+						</p>
+					) }
+					{ missingSetup.length > 0 && (
+						<p className="m-0 flex flex-wrap items-center gap-x-1.5 gap-y-1 text-xs text-text-secondary">
+							<Wrench
+								className="size-3.5 shrink-0 text-icon-secondary"
+								aria-hidden="true"
+							/>
+							<span className="font-medium text-text-primary">
+								{ __( 'Needs setup:', 'sureforms' ) }
+							</span>
+							{ missingSetup.map( ( step, index ) => (
+								<span key={ step.id } className="inline-flex">
+									{ step.url ? (
+										<a
+											href={ step.url }
+											target="_blank"
+											rel="noopener noreferrer"
+											className="inline-flex items-center gap-0.5 font-medium text-link-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-interactive rounded-sm"
+										>
+											{ step.label }
+											<ExternalLink
+												className="size-3"
+												aria-hidden="true"
+											/>
+											<span className="sr-only">
+												{ __(
+													'(opens in a new tab)',
+													'sureforms'
+												) }
+											</span>
+										</a>
+									) : (
+										step.label
+									) }
+									{ index < missingSetup.length - 1 && ',' }
+								</span>
+							) ) }
 						</p>
 					) }
 					{ showSpamOption && (
@@ -1008,6 +1170,8 @@ export const TemplateGrid = ( {
 	requests,
 } ) => {
 	const [ activeCategory, setActiveCategory ] = useState( 'all' );
+	// Only templates that need a paid plan. Combines with a category or search.
+	const [ premiumOnly, setPremiumOnly ] = useState( false );
 	const [ query, setQuery ] = useState( '' );
 	const [ gridNode, setGridNode ] = useState( null );
 
@@ -1020,10 +1184,12 @@ export const TemplateGrid = ( {
 
 	// A search looks through every category.
 	const isShown = ( template ) =>
-		search
+		( ! premiumOnly || isPremiumTemplate( template ) ) &&
+		( search
 			? matches.has( template.id )
-			: 'all' === activeCategory || template.category === activeCategory;
+			: 'all' === activeCategory || template.category === activeCategory );
 	const shownCount = templates.filter( isShown ).length;
+	const hasPremium = templates.some( isPremiumTemplate );
 
 	const chips = [
 		{ id: 'all', label: __( 'All', 'sureforms' ) },
@@ -1059,10 +1225,7 @@ export const TemplateGrid = ( {
 						/>
 					</label>
 					<div
-						className={ cn(
-							'flex flex-wrap gap-2',
-							search && 'opacity-50'
-						) }
+						className="flex flex-wrap gap-2"
 						role="group"
 						aria-label={ __( 'Filter templates', 'sureforms' ) }
 					>
@@ -1082,12 +1245,40 @@ export const TemplateGrid = ( {
 									'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-interactive',
 									! search && activeCategory === chip.id
 										? 'bg-button-primary text-text-on-color border-transparent'
-										: 'bg-background-primary text-text-secondary border-border-subtle hover:text-text-primary'
+										: 'bg-background-primary text-text-secondary border-border-subtle hover:text-text-primary',
+									search && 'opacity-50'
 								) }
 							>
 								{ chip.label }
 							</button>
 						) ) }
+						{ hasPremium && (
+							<button
+								type="button"
+								aria-pressed={ premiumOnly }
+								aria-label={ __(
+									'Show only Premium templates',
+									'sureforms'
+								) }
+								title={ __(
+									'Show only Premium templates',
+									'sureforms'
+								) }
+								onClick={ () =>
+									setPremiumOnly( ( current ) => ! current )
+								}
+								className={ cn(
+									'inline-flex items-center gap-1 px-3 py-1 text-xs font-medium rounded-full border border-solid cursor-pointer transition-colors',
+									'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-interactive',
+									premiumOnly
+										? 'bg-brand-background-50 text-brand-800 border-brand-border-300'
+										: 'bg-background-primary text-text-secondary border-border-subtle hover:text-text-primary',
+								) }
+							>
+								<Crown className="size-3" aria-hidden="true" />
+								{ __( 'Premium', 'sureforms' ) }
+							</button>
+						) }
 					</div>
 				</div>
 			</div>
@@ -1108,6 +1299,12 @@ export const TemplateGrid = ( {
 						shownCount,
 						search
 					) }
+				</p>
+			) }
+
+			{ ! search && premiumOnly && 0 === shownCount && (
+				<p className="m-0 text-sm text-text-secondary" role="status">
+					{ __( 'No Premium templates in this category yet.', 'sureforms' ) }
 				</p>
 			) }
 
@@ -1134,11 +1331,22 @@ export const TemplateGrid = ( {
 									? `srfm-template-features-${ template.id }`
 									: undefined
 							}
-							aria-label={ sprintf(
-								/* translators: %s: template name. */
-								__( 'Preview the %s template', 'sureforms' ),
-								template.title
-							) }
+							aria-label={
+								template.is_locked
+									? sprintf(
+										/* translators: %s: template name. */
+										__(
+											'Preview the %s template (Premium)',
+											'sureforms'
+										),
+										template.title
+									  )
+									: sprintf(
+										/* translators: %s: template name. */
+										__( 'Preview the %s template', 'sureforms' ),
+										template.title
+									  )
+							}
 							className={ cn(
 								'group flex flex-col p-0 text-left bg-background-primary border border-solid border-border-subtle rounded-lg overflow-hidden shadow-sm cursor-pointer',
 								'transition-[transform,box-shadow,border-color] duration-200 ease-out hover:-translate-y-0.5 hover:shadow-lg hover:border-border-interactive',
@@ -1179,13 +1387,10 @@ export const TemplateGrid = ( {
 										</span>
 									</span>
 									{ template.is_locked && (
-										<span className="flex items-center gap-1 text-xs font-medium text-text-tertiary">
-											<Lock
-												className="size-3"
-												aria-hidden="true"
-											/>
-											{ getLockLabels( template ).badge }
-										</span>
+										<PremiumBadge
+											template={ template }
+											className="shrink-0"
+										/>
 									) }
 								</span>
 								{ features.length > 0 && (

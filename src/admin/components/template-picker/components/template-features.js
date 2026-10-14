@@ -12,6 +12,7 @@ import {
 	GraduationCap,
 	History,
 	ListOrdered,
+	Lock,
 	Mail,
 	MessagesSquare,
 	Paperclip,
@@ -215,6 +216,60 @@ export const getLockLabels = ( template ) => {
 };
 
 /**
+ * Whether a template needs a paid plan, whether or not this site has it.
+ *
+ * @since x.x.x
+ * @param {Object} template Template.
+ * @return {boolean} Paid template.
+ */
+export const isPremiumTemplate = ( template ) =>
+	Boolean( template?.requires ) && 'free' !== template.requires;
+
+/**
+ * Whether a locked template's preview shows its picture instead of the live
+ * form, which can't render the blocks it is built on here.
+ *
+ * @since x.x.x
+ * @param {Object} template Template.
+ * @return {boolean} Show the picture.
+ */
+export const showsPreviewImage = ( template ) =>
+	Boolean( template?.is_locked && template?.preview_image );
+
+/**
+ * Setup steps a template still needs on this site, e.g. connecting Stripe.
+ * Only for templates that can be used: a locked one can't be created yet.
+ *
+ * @since x.x.x
+ * @param {Object} template Template.
+ * @return {Array<{id: string, label: string, url: string}>} Steps not done.
+ */
+export const getMissingSetup = ( template ) =>
+	template?.is_locked
+		? []
+		: ( template?.setup || [] ).filter( ( step ) => ! step.done );
+
+/**
+ * "Premium" badge on a locked template. Always text, never only an icon.
+ *
+ * @since x.x.x
+ * @param {Object} props           Props.
+ * @param {Object} props.template  Template.
+ * @param {string} props.className Extra classes.
+ */
+export const PremiumBadge = ( { template, className } ) => (
+	<span
+		className={ cn(
+			'inline-flex items-center gap-1 px-1.5 py-0.5 text-[11px] leading-4 font-semibold whitespace-nowrap rounded border border-solid border-brand-border-300 bg-brand-background-50 text-brand-800',
+			className
+		) }
+	>
+		<Lock className="size-3 shrink-0" aria-hidden="true" />
+		{ getLockLabels( template ).badge }
+	</span>
+);
+
+/**
  * Open where a locked template is unlocked: the pricing page for that
  * template, or the plugin updates when SureForms Pro is too old.
  *
@@ -299,7 +354,7 @@ export const IncludedFeatures = ( { template } ) => {
 				<p className="m-0 text-xs text-text-tertiary">
 					{ sprintf(
 						/* translators: %s: comma-separated feature names, e.g. "File upload, Rating". */
-						__( 'More with Pro: %s', 'sureforms' ),
+						__( 'More with Premium: %s', 'sureforms' ),
 						proFeatures
 							.map( ( feature ) => feature.label )
 							.join( ', ' )
