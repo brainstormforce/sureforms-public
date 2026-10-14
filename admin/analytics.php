@@ -28,6 +28,26 @@ class Analytics {
 	use Get_Instance;
 
 	/**
+	 * Ajax action backing the deactivation-survey checkbox.
+	 *
+	 * Shared between the survey config that declares it and the handler that
+	 * serves it, so the two cannot drift.
+	 *
+	 * @since 2.13.0
+	 */
+	public const UNINSTALL_PREF_ACTION = 'srfm_set_uninstall_pref';
+
+	/**
+	 * Key inside srfm_options holding the uninstall opt-in.
+	 *
+	 * The uninstall script reads this key straight out of the row, since the
+	 * plugin is not loaded by then and this class does not exist.
+	 *
+	 * @since 2.13.0
+	 */
+	public const UNINSTALL_PREF_KEY = 'remove_analytics_data_on_uninstall';
+
+	/**
 	 * BSF_Analytics_Events instance for one-time event tracking.
 	 *
 	 * @var \BSF_Analytics_Events|null
@@ -59,6 +79,41 @@ class Analytics {
 			}
 		);
 
+		add_action( 'plugins_loaded', [ $this, 'register_analytics_entity' ] );
+
+		// Saves the uninstall preference from the deactivation survey checkbox.
+		add_action( 'wp_ajax_' . self::UNINSTALL_PREF_ACTION, [ $this, 'save_uninstall_preference' ] );
+
+		add_filter( 'bsf_core_stats', [ $this, 'add_srfm_analytics_data' ] );
+
+		// Event tracking hooks.
+		add_action( 'current_screen', [ $this, 'track_first_editor_open' ] );
+		add_action( 'transition_post_status', [ $this, 'track_first_form_published' ], 10, 3 );
+		add_action( 'save_post', [ $this, 'track_embed_styling_configured' ], 10, 2 );
+		add_action( 'admin_init', [ $this, 'track_email_delivery_status' ] );
+
+		// Detect state-based events on admin load (dedup prevents repeat tracking).
+		$this->detect_state_events();
+	}
+
+	/**
+	 * Register the analytics entity, including the deactivation survey.
+	 *
+	 * On plugins_loaded rather than in the constructor, which runs while plugins
+	 * are still being required - before wp-includes/pluggable.php exists. Both
+	 * current_user_can() and wp_create_nonce() below need it: the first is
+	 * undefined that early and fatals the whole site, and the second would mint
+	 * a nonce bound to user 0, which then fails verification for the
+	 * administrator who actually submits it.
+	 *
+	 * Still early enough for the library, which reads its entities on init (see
+	 * BSF_Analytics_Loader::load_analytics) and renders the survey on
+	 * admin_footer.
+	 *
+	 * @since 2.13.0
+	 * @return void
+	 */
+	public function register_analytics_entity() {
 		$srfm_bsf_analytics = \BSF_Analytics_Loader::get_instance();
 
 		$srfm_bsf_analytics->set_entity(
@@ -80,6 +135,35 @@ class Analytics {
 								'popup_description' => 'If you have a moment, please share why you are deactivating SureForms:',
 								'show_on_screens'   => [ 'plugins' ],
 								'plugin_version'    => SRFM_VER,
+
+								/*
+								 * Offers the uninstall preference at the moment
+								 * the decision is being made. This is the only
+								 * surface for the flag, so the copy has to carry
+								 * the whole promise on its own.
+								 *
+								 * Only offered to someone who could act on it, so
+								 * the control is never rendered for a user the
+								 * handler would reject.
+								 *
+								 * is_admin() first, and not merely as an
+								 * optimisation: the popup renders only on the
+								 * plugins screen (see uds_survey_allowed_screens
+								 * above), while this runs on every request. Asking
+								 * current_user_can() on a front-end view would
+								 * resolve and pin the current user on every page
+								 * load, ahead of anything that sets it on init.
+								 */
+								'extra_options'     => is_admin() && current_user_can( 'manage_options' ) ? [
+									[
+										'type'        => 'checkbox',
+										'name'        => self::UNINSTALL_PREF_KEY,
+										'label'       => __( 'Check this to remove the usage data SureForms has collected when you delete the plugin. Note: your forms, entries and settings are never deleted.', 'sureforms' ),
+										'checked'     => true === Helper::get_srfm_option( self::UNINSTALL_PREF_KEY, false ),
+										'ajax_action' => self::UNINSTALL_PREF_ACTION,
+										'nonce'       => wp_create_nonce( self::UNINSTALL_PREF_ACTION ),
+									],
+								] : [],
 							],
 						]
 					),
@@ -87,17 +171,37 @@ class Analytics {
 				],
 			]
 		);
+	}
 
-		add_filter( 'bsf_core_stats', [ $this, 'add_srfm_analytics_data' ] );
+	/**
+	 * Save the uninstall preference set from the deactivation survey.
+	 *
+	 * Writing this neither deactivates nor deletes anything: it only records
+	 * what should happen if the plugin is deleted later, and it stays
+	 * reversible - the box reflects the stored value next time the popup opens.
+	 *
+	 * The library posts the value as the string '1' or '0' on change, so this
+	 * compares strictly and stores a real boolean. A cast would read 'no' as
+	 * consent, and uninstall.php's gate only accepts boolean true.
+	 *
+	 * @since 2.13.0
+	 * @return void
+	 */
+	public function save_uninstall_preference() {
 
-		// Event tracking hooks.
-		add_action( 'current_screen', [ $this, 'track_first_editor_open' ] );
-		add_action( 'transition_post_status', [ $this, 'track_first_form_published' ], 10, 3 );
-		add_action( 'save_post', [ $this, 'track_embed_styling_configured' ], 10, 2 );
-		add_action( 'admin_init', [ $this, 'track_email_delivery_status' ] );
+		if ( ! check_ajax_referer( self::UNINSTALL_PREF_ACTION, 'security', false ) ) {
+			wp_send_json_error( [ 'message' => __( 'Invalid nonce.', 'sureforms' ) ], 403 );
+		}
 
-		// Detect state-based events on admin load (dedup prevents repeat tracking).
-		$this->detect_state_events();
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( [ 'message' => __( 'You do not have permission to change this setting.', 'sureforms' ) ], 403 );
+		}
+
+		$checked = isset( $_POST['checked'] ) ? sanitize_text_field( wp_unslash( $_POST['checked'] ) ) : '';
+
+		Helper::update_srfm_option( self::UNINSTALL_PREF_KEY, '1' === $checked );
+
+		wp_send_json_success();
 	}
 
 	/**
