@@ -307,7 +307,9 @@ class Test_Form_Templates_UI extends TestCase {
 		$this->assertSame( 'B', $samples['{quiz_letter_grade}'] );
 		$this->assertNotEmpty( $samples['{quiz_result}'] );
 		$this->assertSame( '(live poll results)', $samples['{poll_results}'] );
-		$this->assertSame( '$49.00', $samples['{form-payment:pay:amount}'] );
+		// In the store currency, which other tests may change.
+		$symbol = \SRFM\Inc\Payments\Payment_Helper::get_currency_symbol( \SRFM\Inc\Payments\Payment_Helper::get_currency() );
+		$this->assertSame( $symbol . '49.00', $samples['{form-payment:pay:amount}'] );
 		$this->assertSame( 'SF-#1042', $samples['{form-payment:pay:order-id}'] );
 		$this->assertSame( 'succeeded', $samples['{form-payment:pay:status}'] );
 		$this->assertArrayNotHasKey( '{form:name}', $samples );
