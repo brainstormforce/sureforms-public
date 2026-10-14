@@ -163,9 +163,11 @@ class Test_Form_Templates extends TestCase {
 	}
 
 	public function test_every_row_is_full_and_email_tags_use_required_fields() {
-		foreach ( [ false, true ] as $with_pro ) {
+		// Every template on every plan: a paid template still previews with the free fields.
+		foreach ( Form_Templates::TIERS as $tier ) {
 			foreach ( Form_Templates::get_templates() as $id => $template ) {
-				$fields = Form_Templates::resolve_fields( $template, $with_pro );
+				$fields = Form_Templates::resolve_fields( $template, $tier );
+				$id    .= " ({$tier})";
 
 				// Fields sit side by side until their widths reach 100; a half-empty row looks unfinished.
 				$row = 0;
@@ -194,6 +196,10 @@ class Test_Form_Templates extends TestCase {
 					$texts   = array_merge( $texts, $template['autoresponder']['lines'] );
 					$texts[] = $template['autoresponder']['subject'];
 					$texts[] = $template['autoresponder']['greeting'] ?? 'Hi {form:full-name},';
+				}
+				// Conditional thank-you messages are built from Starter on.
+				if ( 'free' !== $tier ) {
+					$texts = array_merge( $texts, array_column( $template['confirmations'] ?? [], 'message' ) );
 				}
 				preg_match_all( '/\{form:([a-z0-9-]+)\}/', implode( ' ', $texts ), $tags );
 				foreach ( $tags[1] as $slug ) {

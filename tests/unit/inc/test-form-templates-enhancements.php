@@ -143,7 +143,9 @@ class Test_Form_Templates_Enhancements extends TestCase {
 			'job-application'     => [ 'attach_uploads', 'save_resume' ],
 		];
 
-		foreach ( Form_Templates::get_templates() as $id => $template ) {
+		// The 20 original templates; the Premium batches test their own declarations.
+		foreach ( \SRFM\Inc\Form_Templates\Catalog::ORDER as $id ) {
+			$template = Form_Templates::get_template( $id );
 			$declared = array_keys( array_intersect_key( $template, Form_Templates::PRO_FEATURE_KEYS ) );
 			sort( $declared );
 			$this->assertSame( $expected[ $id ] ?? [], $declared, "Template {$id} declares other Pro features." );
