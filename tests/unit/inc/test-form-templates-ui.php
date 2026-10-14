@@ -18,6 +18,7 @@ class Test_Form_Templates_UI extends TestCase {
 		remove_all_filters( 'srfm_form_templates' );
 		remove_all_filters( 'srfm_pro_tier' );
 		remove_all_filters( 'srfm_form_template_calculation_sample' );
+		remove_filter( 'srfm_payment_methods_registry', [ Form_Templates::class, 'preview_payment_methods' ], 99 );
 		delete_option( 'srfm_google_maps_settings' );
 		$property = new ReflectionProperty( Form_Templates::class, 'templates' );
 		$property->setAccessible( true );
@@ -136,6 +137,118 @@ class Test_Form_Templates_UI extends TestCase {
 		);
 		$this->assertTrue( $item['is_locked'] );
 		$this->assertSame( 1, $item['preview_missing'] );
+	}
+
+	/**
+	 * Block markup of a template with a payment field, as the preview builds it.
+	 *
+	 * @return string
+	 */
+	private function payment_template_content() {
+		return Form_Templates::build_content(
+			[
+				'id'     => 'ui-pay',
+				'title'  => 'Pay',
+				'fields' => [
+					[
+						'fieldType' => 'input',
+						'slug'      => 'full-name',
+						'label'     => 'Name',
+					],
+					[
+						'fieldType' => 'email',
+						'slug'      => 'email',
+						'label'     => 'Email',
+					],
+					[
+						'fieldType'          => 'payment',
+						'slug'               => 'pay',
+						'label'              => 'Payment',
+						'paymentType'        => 'one-time',
+						'amountType'         => 'fixed',
+						'fixedAmount'        => 25,
+						'customerNameField'  => 'full-name',
+						'customerEmailField' => 'email',
+					],
+				],
+			]
+		);
+	}
+
+	public function test_preview_payment_methods_show_stripe_before_it_is_connected() {
+		$methods = Form_Templates::preview_payment_methods(
+			[
+				'stripe' => [
+					'id'              => 'stripe',
+					'enabled'         => false,
+					'container_class' => 'srfm-stripe-payment-element',
+				],
+				'paypal' => [
+					'id'      => 'paypal',
+					'enabled' => false,
+				],
+			]
+		);
+		$this->assertTrue( $methods['stripe']['enabled'] );
+		$this->assertStringContainsString( 'srfm-template-preview__payment-note', $methods['stripe']['place_holder_content'] );
+		// Only Stripe, the free gateway, is shown; other methods are left as they are.
+		$this->assertFalse( $methods['paypal']['enabled'] );
+	}
+
+	public function test_preview_payment_methods_leave_a_connected_stripe_alone() {
+		$connected = [
+			'stripe' => [
+				'id'      => 'stripe',
+				'enabled' => true,
+			],
+		];
+		$this->assertSame( $connected, Form_Templates::preview_payment_methods( $connected ) );
+		$this->assertSame( 'not-an-array', Form_Templates::preview_payment_methods( 'not-an-array' ) );
+		$this->assertSame( [], Form_Templates::preview_payment_methods( [] ) );
+	}
+
+	public function test_preview_renders_the_payment_field_of_a_template() {
+		$content = $this->payment_template_content();
+		$this->assertStringContainsString( '<!-- wp:srfm/payment ', $content );
+
+		// A form leaves the field out while Stripe is not connected...
+		$this->assertStringNotContainsString( 'srfm-payment-block', do_blocks( $content ) );
+
+		// ...the preview shows it, with the note where the card fields go.
+		add_filter( 'srfm_payment_methods_registry', [ Form_Templates::class, 'preview_payment_methods' ], 99 );
+		$markup = do_blocks( $content );
+		$this->assertStringContainsString( 'srfm-payment-block', $markup );
+		$this->assertStringContainsString( 'srfm-template-preview__payment-note', $markup );
+		$this->assertStringContainsString( 'data-customer-email-field="email"', $markup );
+		$this->assertStringContainsString( 'data-stripe-key=""', $markup );
+	}
+
+	public function test_preview_form_renders_each_block_through_render_block() {
+		// SureForms Pro enqueues each Pro block's scripts and styles from the
+		// `render_block` filter, so the preview must render the in-memory form
+		// through the block pipeline like a saved form.
+		$content = $this->payment_template_content();
+		$seed    = new ReflectionMethod( Form_Templates::class, 'seed_preview_form' );
+		$seed->setAccessible( true );
+		$seed->invoke( null, [ 'title' => 'Pay' ], $content, [] );
+		$id = new ReflectionMethod( Form_Templates::class, 'get_preview_post_id' );
+		$id->setAccessible( true );
+		$form_id = $id->invoke( null );
+
+		$rendered = [];
+		$spy      = static function ( $block_content, $block ) use ( &$rendered ) {
+			$rendered[] = $block['blockName'] ?? '';
+			return $block_content;
+		};
+		add_filter( 'render_block', $spy, 10, 2 );
+		$markup = \SRFM\Inc\Generate_Form_Markup::get_form_markup( $form_id, false );
+		remove_filter( 'render_block', $spy, 10 );
+		Form_Templates::forget_preview_form();
+
+		$this->assertStringContainsString( 'srfm-input-block', (string) $markup );
+		$this->assertContains( 'srfm/input', $rendered );
+		$this->assertContains( 'srfm/email', $rendered );
+		$this->assertContains( 'srfm/payment', $rendered );
 	}
 
 	public function test_setup_stripe_not_connected_and_unknown_ids_ignored() {

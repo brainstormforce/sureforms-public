@@ -2312,6 +2312,7 @@ class Form_Templates {
 		nocache_headers();
 		show_admin_bar( false );
 		add_action( 'wp_enqueue_scripts', [ Frontend_Assets::class, 'enqueue_scripts_and_styles' ], 20 );
+		add_filter( 'srfm_payment_methods_registry', [ self::class, 'preview_payment_methods' ], 99 );
 
 		// Block styles are normally built from the page's main post, which this
 		// preview does not have, so build them from the in-memory form instead.
@@ -2328,6 +2329,30 @@ class Form_Templates {
 
 		self::render_preview_document( $markup, $width, $is_thumbnail );
 		exit;
+	}
+
+	/**
+	 * Show the Stripe payment field in a template preview even before Stripe is
+	 * connected.
+	 *
+	 * A form leaves out a payment field whose payment method isn't connected, so
+	 * a payment template would preview with no payment step at all. The preview
+	 * is a picture of the form, so it shows the field with a note where the card
+	 * fields will appear; the field takes no payment here (it has no Stripe key,
+	 * and submitting is switched off).
+	 *
+	 * @param mixed $methods Payment methods from `srfm_payment_methods_registry`.
+	 * @since x.x.x
+	 * @return mixed
+	 */
+	public static function preview_payment_methods( $methods ) {
+		if ( ! is_array( $methods ) || ! isset( $methods['stripe'] ) || ! is_array( $methods['stripe'] ) || ! empty( $methods['stripe']['enabled'] ) ) {
+			return $methods;
+		}
+
+		$methods['stripe']['enabled']              = true;
+		$methods['stripe']['place_holder_content'] = '<p class="srfm-template-preview__payment-note">' . esc_html__( 'Connect Stripe to take payments. The card fields appear here once it is connected.', 'sureforms' ) . '</p>';
+		return $methods;
 	}
 
 	/**
@@ -2402,6 +2427,7 @@ class Form_Templates {
 		html { margin-top: 0 !important; }
 		body.srfm-template-preview { margin: 0; }
 		.srfm-template-preview .srfm-edit-form-btn-wrap { display: none !important; }
+		.srfm-template-preview__payment-note { margin: 0; font-size: 14px; line-height: 20px; color: var(--srfm-color-input-description, #6b7280); }
 		.srfm-template-preview__wrap { box-sizing: border-box; max-width: <?php echo esc_attr( (string) $width ); ?>px; margin: 0 auto; padding: 40px 24px; }
 		<?php if ( $is_thumbnail ) { ?>
 		html, body.srfm-template-preview { overflow: hidden !important; }
