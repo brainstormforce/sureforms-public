@@ -33,7 +33,7 @@ $setup     = [ 'stripe', 'paypal' ];
  * A payment field. Stripe takes the payment on every plan; with SureForms
  * Business the visitor can also pay with PayPal.
  */
-$payment = static function ( $slug, $label, $schema ) {
+$payment = static function ( $slug, $label, $schema ) use ( $currency ) {
 	return Catalog::field(
 		'payment',
 		$slug,
@@ -42,6 +42,8 @@ $payment = static function ( $slug, $label, $schema ) {
 		array_merge(
 			$schema,
 			[
+				// The block charges in the settings currency; this tells the library preview.
+				'currency' => $currency,
 				'pro'      => [ 'blockAttributes' => [ 'paymentMethods' => [ 'stripe', 'paypal' ] ] ],
 				'pro_tier' => 'business',
 			]
