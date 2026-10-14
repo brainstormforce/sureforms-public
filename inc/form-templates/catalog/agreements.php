@@ -6,10 +6,7 @@
  * Catalog::templates(); see Form_Templates::get_templates() for the schema.
  *
  * The terms are starting-point wording for the site owner to replace with
- * their own, not legal advice. The rental and scholarship applications at the
- * end belong to Sign-ups & Applications: a template's category is its
- * `category` key, not the file it lives in, and they sit here because, like
- * the agreements, they end with a signed declaration.
+ * their own, not legal advice.
  *
  * @package sureforms
  * @since x.x.x
@@ -21,8 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
-$c         = Catalog::common_fields();
-$no_search = [ 'searchable' => false ];
+$c = Catalog::common_fields();
 
 /**
  * A block of terms text shown above the signature (SureForms Pro HTML block).
@@ -233,203 +229,6 @@ return [
 			'lines'   => [
 				__( 'Thank you for signing our photo and media release. You allowed us to use your photos and video on: {form:usage}.', 'sureforms' ),
 				__( 'You can change your mind at any time. Just reply to this email.', 'sureforms' ),
-			],
-		],
-	],
-
-	// Sign-ups & Applications.
-	[
-		'id'            => 'rental-application',
-		'preview_image' => 'rental-application.webp',
-		'category'      => 'signup',
-		'requires'      => 'pro',
-		'theme'         => 'mint',
-		'icon'          => 'house',
-		'title'         => __( 'Rental Application', 'sureforms' ),
-		'description'   => __( 'A step-by-step tenant application with income, references, documents and a signature. Applicants can save and finish later.', 'sureforms' ),
-		'submit_text'   => __( 'Submit application', 'sureforms' ),
-		'steps'         => [ __( 'About you', 'sureforms' ), __( 'Employment', 'sureforms' ), __( 'References', 'sureforms' ), __( 'Documents and signature', 'sureforms' ) ],
-		'save_resume'   => true,
-		'fields'        => [
-			$c['first_name'],
-			$c['last_name'],
-			Catalog::width( $c['email'], 50 ),
-			Catalog::width( array_merge( $c['phone'], [ 'required' => true ] ), 50 ),
-			Catalog::attrs( Catalog::field( 'textarea', 'current-address', __( 'Current Address', 'sureforms' ), true, [ 'placeholder' => __( 'Street, city and postcode', 'sureforms' ) ] ), [ 'rows' => 2 ] ),
-			Catalog::width( Catalog::date_field( 'move-in', __( 'Preferred Move-in Date', 'sureforms' ), true, true ), 50 ),
-			Catalog::width( Catalog::number_field( 'occupants', __( 'Number of Occupants', 'sureforms' ), true, 1, 20, [ 'placeholder' => __( 'e.g. 2', 'sureforms' ) ] ), 50 ),
-			Catalog::step( 'employment-step', __( 'Employment', 'sureforms' ) ),
-			Catalog::width(
-				Catalog::field(
-					'dropdown',
-					'employment-status',
-					__( 'Employment Status', 'sureforms' ),
-					true,
-					array_merge(
-						Catalog::dropdown_options( [ __( 'Employed full-time', 'sureforms' ), __( 'Employed part-time', 'sureforms' ), __( 'Self-employed', 'sureforms' ), __( 'Student', 'sureforms' ), __( 'Retired', 'sureforms' ), __( 'Not working', 'sureforms' ) ] ),
-						[
-							'placeholder'     => __( 'Select one', 'sureforms' ),
-							'blockAttributes' => $no_search,
-						]
-					)
-				),
-				50
-			),
-			Catalog::width( Catalog::field( 'input', 'employer', __( 'Employer', 'sureforms' ), false, [ 'placeholder' => __( 'e.g. Bright Bakery', 'sureforms' ) ] ), 50 ),
-			Catalog::width( Catalog::number_field( 'monthly-income', __( 'Monthly Income (before tax)', 'sureforms' ), true, 0, 1000000, [ 'placeholder' => __( 'e.g. 4,500', 'sureforms' ) ] ), 50 ),
-			Catalog::width( Catalog::field( 'input', 'time-employed', __( 'Time with Current Employer', 'sureforms' ), false, [ 'placeholder' => __( 'e.g. 2 years', 'sureforms' ) ] ), 50 ),
-			Catalog::step( 'references-step', __( 'References', 'sureforms' ) ),
-			Catalog::width( Catalog::field( 'input', 'landlord-name', __( 'Current Landlord or Agent', 'sureforms' ), false, [ 'placeholder' => __( 'e.g. Park Lane Lettings', 'sureforms' ) ] ), 50 ),
-			Catalog::width(
-				array_merge(
-					$c['phone'],
-					[
-						'slug'  => 'landlord-phone',
-						'label' => __(
-							'Landlord’s Phone',
-							'sureforms'
-						),
-					]
-				),
-				50
-			),
-			Catalog::width( Catalog::field( 'input', 'reference-name', __( 'Personal Reference', 'sureforms' ), true, [ 'placeholder' => __( 'e.g. John Smith', 'sureforms' ) ] ), 50 ),
-			Catalog::width(
-				array_merge(
-					$c['phone'],
-					[
-						'slug'     => 'reference-phone',
-						'label'    => __( 'Reference’s Phone', 'sureforms' ),
-						'required' => true,
-					]
-				),
-				50
-			),
-			Catalog::step( 'documents-step', __( 'Documents and signature', 'sureforms' ) ),
-			Catalog::field(
-				'upload',
-				'id-proof',
-				__( 'Photo ID', 'sureforms' ),
-				true,
-				[
-					'pro_only'     => true,
-					'helpText'     => __( 'A passport or driving licence. JPG, PNG or PDF.', 'sureforms' ),
-					'allowedTypes' => 'jpg,jpeg,png,pdf',
-					'uploadSize'   => 10,
-				]
-			),
-			Catalog::field(
-				'upload',
-				'proof-of-income',
-				__( 'Proof of Income (optional)', 'sureforms' ),
-				false,
-				[
-					'pro_only'         => true,
-					'helpText'         => __( 'Up to 3 recent payslips or bank statements.', 'sureforms' ),
-					'allowedTypes'     => 'jpg,jpeg,png,pdf',
-					'uploadSize'       => 10,
-					'multiUpload'      => true,
-					'multiFilesNumber' => 3,
-				]
-			),
-			Catalog::field( 'gdpr', 'declaration', __( 'The information I have given is true and complete. I agree that you may check it, including by contacting my references.', 'sureforms' ), true ),
-			$signature( 'signature', __( 'Signature', 'sureforms' ) ),
-		],
-		'confirmation'  => [
-			'heading' => __( 'Application received', 'sureforms' ),
-			'text'    => __( 'Thank you, {form:first-name}. We will review your application and contact you at {form:email}.', 'sureforms' ),
-		],
-		'email_subject' => __( 'Rental application: {form:first-name} {form:last-name}, move-in {form:move-in}', 'sureforms' ),
-		'email_intro'   => __( '{form:first-name} {form:last-name} applied to rent, for {form:occupants} occupant(s) moving in on {form:move-in}. Their application, documents and signature are below.', 'sureforms' ),
-		'autoresponder' => [
-			'subject'  => __( 'We have received your rental application', 'sureforms' ),
-			'greeting' => __( 'Hi {form:first-name},', 'sureforms' ),
-			'lines'    => [
-				__( 'Thank you for applying. We will review your application, check your references and let you know the outcome.', 'sureforms' ),
-				__( 'If you need to update anything in the meantime, just reply to this email.', 'sureforms' ),
-			],
-		],
-	],
-	[
-		'id'            => 'scholarship-application',
-		'preview_image' => 'scholarship-application.webp',
-		'category'      => 'signup',
-		'requires'      => 'pro',
-		'theme'         => 'lavender',
-		'icon'          => 'graduation-cap',
-		'title'         => __( 'Scholarship Application', 'sureforms' ),
-		'description'   => __( 'A step-by-step application with an essay, transcript upload and a signed declaration. Applicants can save and finish later.', 'sureforms' ),
-		'submit_text'   => __( 'Submit application', 'sureforms' ),
-		'steps'         => [ __( 'About you', 'sureforms' ), __( 'Education', 'sureforms' ), __( 'Your essay', 'sureforms' ), __( 'Documents and signature', 'sureforms' ) ],
-		'save_resume'   => true,
-		'fields'        => [
-			$c['first_name'],
-			$c['last_name'],
-			Catalog::width( $c['email'], 50 ),
-			Catalog::width( $c['phone'], 50 ),
-			Catalog::date_field( 'date-of-birth', __( 'Date of Birth', 'sureforms' ), true ),
-			Catalog::step( 'education-step', __( 'Education', 'sureforms' ) ),
-			Catalog::width( Catalog::field( 'input', 'school', __( 'School or University', 'sureforms' ), true, [ 'placeholder' => __( 'e.g. Riverside College', 'sureforms' ) ] ), 50 ),
-			Catalog::width( Catalog::field( 'input', 'field-of-study', __( 'Field of Study', 'sureforms' ), true, [ 'placeholder' => __( 'e.g. Biology', 'sureforms' ) ] ), 50 ),
-			Catalog::width(
-				Catalog::field(
-					'dropdown',
-					'level',
-					__( 'Current Level', 'sureforms' ),
-					true,
-					array_merge(
-						Catalog::dropdown_options( [ __( 'High school', 'sureforms' ), __( 'Undergraduate', 'sureforms' ), __( 'Postgraduate', 'sureforms' ), __( 'Other', 'sureforms' ) ] ),
-						[
-							'placeholder'     => __( 'Select one', 'sureforms' ),
-							'blockAttributes' => $no_search,
-						]
-					)
-				),
-				50
-			),
-			Catalog::width( Catalog::field( 'input', 'grades', __( 'Grade Average', 'sureforms' ), false, [ 'placeholder' => __( 'e.g. 3.6 GPA', 'sureforms' ) ] ), 50 ),
-			Catalog::step( 'essay-step', __( 'Your essay', 'sureforms' ) ),
-			Catalog::attrs( Catalog::field( 'textarea', 'essay', __( 'Why should you receive this scholarship?', 'sureforms' ), true, [ 'helpText' => __( 'Tell us about your goals and what this support would make possible. About 300–500 words.', 'sureforms' ) ] ), [ 'rows' => 10 ] ),
-			Catalog::attrs( Catalog::field( 'textarea', 'achievements', __( 'Achievements and activities (optional)', 'sureforms' ), false, [ 'placeholder' => __( 'Awards, volunteering, clubs, part-time work…', 'sureforms' ) ] ), [ 'rows' => 4 ] ),
-			Catalog::step( 'documents-step', __( 'Documents and signature', 'sureforms' ) ),
-			Catalog::field(
-				'upload',
-				'transcript',
-				__( 'Academic Transcript', 'sureforms' ),
-				true,
-				[
-					'pro_only'     => true,
-					'helpText'     => __( 'Your most recent transcript or report card, as a PDF or photo.', 'sureforms' ),
-					'allowedTypes' => 'pdf,jpg,jpeg,png',
-					'uploadSize'   => 10,
-				]
-			),
-			Catalog::field(
-				'upload',
-				'recommendation',
-				__( 'Letter of Recommendation (optional)', 'sureforms' ),
-				false,
-				[
-					'pro_only'     => true,
-					'allowedTypes' => 'pdf,doc,docx',
-					'uploadSize'   => 10,
-				]
-			),
-			Catalog::field( 'gdpr', 'declaration', __( 'The information in my application is true and my own work, and I agree that it may be checked.', 'sureforms' ), true ),
-			$signature( 'signature', __( 'Signature', 'sureforms' ) ),
-		],
-		'confirmation'  => [
-			'heading' => __( 'Application submitted', 'sureforms' ),
-			'text'    => __( 'Thank you, {form:first-name}. We have sent a confirmation to {form:email} and will contact you once the review is complete.', 'sureforms' ),
-		],
-		'email_subject' => __( 'Scholarship application: {form:first-name} {form:last-name} ({form:field-of-study})', 'sureforms' ),
-		'email_intro'   => __( '{form:first-name} {form:last-name} ({form:level}, {form:field-of-study} at {form:school}) applied for the scholarship. Their essay, documents and signature are below.', 'sureforms' ),
-		'autoresponder' => [
-			'subject'  => __( 'We have received your scholarship application', 'sureforms' ),
-			'greeting' => __( 'Hi {form:first-name},', 'sureforms' ),
-			'lines'    => [
-				__( 'Thank you for applying. Your application is complete and will be reviewed with all the others once applications close.', 'sureforms' ),
-				__( 'We will let you know the outcome by email. If you have a question in the meantime, just reply to this email.', 'sureforms' ),
 			],
 		],
 	],

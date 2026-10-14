@@ -3,7 +3,8 @@
  * Class Test_Form_Templates_Polls_Agreements
  *
  * The Premium poll, survey, lead and agreement templates: their plans, the Pro
- * features they declare and the fields those declarations name.
+ * features they declare and the fields those declarations name. The rental and
+ * scholarship applications are covered by Test_Form_Templates_Accounts.
  *
  * @package sureforms
  */
@@ -25,8 +26,6 @@ class Test_Form_Templates_Polls_Agreements extends TestCase {
 		'service-agreement'             => [ 'agreements', 'pro' ],
 		'liability-waiver'              => [ 'agreements', 'pro' ],
 		'photo-release-consent'         => [ 'agreements', 'pro' ],
-		'rental-application'            => [ 'signup', 'pro' ],
-		'scholarship-application'       => [ 'signup', 'pro' ],
 	];
 
 	public function tear_down() {
@@ -122,7 +121,7 @@ class Test_Form_Templates_Polls_Agreements extends TestCase {
 	}
 
 	public function test_signatures_need_the_pro_plan() {
-		$with_signature = [ 'service-agreement', 'liability-waiver', 'photo-release-consent', 'rental-application', 'scholarship-application' ];
+		$with_signature = [ 'service-agreement', 'liability-waiver', 'photo-release-consent' ];
 		foreach ( $with_signature as $id ) {
 			$template   = $this->template( $id );
 			$signatures = array_filter( $template['fields'], static fn( $f ) => 'signature' === $f['fieldType'] );
@@ -211,16 +210,6 @@ class Test_Form_Templates_Polls_Agreements extends TestCase {
 		$this->assertCount( 3, $template['confirmations'] );
 		$this->assertNotEmpty( $template['confirmation']['text'] );
 		$this->assertContains( 'conditional_logic', Form_Templates::get_features( $template, Form_Templates::resolve_fields( $template, 'starter' ), 'starter' ) );
-	}
-
-	public function test_multi_step_templates_resume_and_name_their_steps() {
-		foreach ( [ 'rental-application', 'scholarship-application' ] as $id ) {
-			$template = $this->template( $id );
-			$breaks   = array_filter( Form_Templates::resolve_fields( $template, 'pro' ), static fn( $f ) => 'page-break' === $f['fieldType'] );
-			$this->assertCount( count( $template['steps'] ) - 1, $breaks, "Template {$id}: one step title per step." );
-			$this->assertTrue( $template['save_resume'] );
-			$this->assertContains( 'save_resume', Form_Templates::get_features( $template, [], 'pro' ) );
-		}
 	}
 
 	public function test_locked_on_free_with_a_premium_preview() {

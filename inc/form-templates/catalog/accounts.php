@@ -345,6 +345,7 @@ return [
 	// Library category: Sign-ups & Applications, with the job application.
 	[
 		'id'              => 'rental-application',
+		'preview_image'   => 'rental-application.webp',
 		'category'        => 'signup',
 		'theme'           => 'ocean',
 		'icon'            => 'house',
@@ -453,6 +454,7 @@ return [
 	// Library category: Sign-ups & Applications.
 	[
 		'id'              => 'scholarship-application',
+		'preview_image'   => 'scholarship-application.webp',
 		'category'        => 'signup',
 		'theme'           => 'lavender',
 		'icon'            => 'graduation-cap',
@@ -500,7 +502,7 @@ return [
 			Catalog::step( 'documents-step', __( 'Documents and signature', 'sureforms' ) ),
 			$document_upload( 'transcript', __( 'Transcript or Latest Grades', 'sureforms' ), true, __( 'PDF, JPG or PNG, up to 5 MB.', 'sureforms' ) ),
 			$document_upload( 'recommendation-letter', __( 'Letter of Recommendation', 'sureforms' ), false, __( 'Optional. From a teacher, tutor or employer.', 'sureforms' ) ),
-			array_merge( $c['consent'], [ 'label' => __( 'I confirm these details are true and agree to have this website store them to assess my application.', 'sureforms' ) ] ),
+			array_merge( $c['consent'], [ 'label' => __( 'I confirm these details are true and the essay is my own work, and agree to have this website store them to assess my application.', 'sureforms' ) ] ),
 			$signature( __( 'Signature', 'sureforms' ) ),
 		],
 		'save_resume'     => true,

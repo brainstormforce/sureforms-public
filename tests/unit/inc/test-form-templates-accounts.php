@@ -193,6 +193,10 @@ class Test_Form_Templates_Accounts extends TestCase {
 
 			$this->assertTrue( $template['save_resume'], "Template {$id} cannot be saved and resumed." );
 			$this->assertContains( 'signature', $types, "Template {$id} is not signed." );
+			// Signatures are a Pro block, not Starter; signing comes with a required acknowledgement.
+			$this->assertNotContains( 'signature', wp_list_pluck( Form_Templates::resolve_fields( $template, 'starter' ), 'fieldType' ), "Template {$id}: the signature needs the Pro plan." );
+			$this->assertNotEmpty( wp_list_filter( $fields, [ 'fieldType' => 'gdpr', 'required' => true ] ), "Template {$id} has no required acknowledgement." );
+			$this->assertNotEmpty( Form_Templates::get_preview_image_url( $template ), "Template {$id} has no Premium preview image." );
 			$breaks = count( array_filter( $types, static fn( $type ) => 'page-break' === $type ) );
 			$this->assertCount( $breaks + 1, $template['steps'], "Template {$id} needs a title for each step." );
 
@@ -244,7 +248,7 @@ class Test_Form_Templates_Accounts extends TestCase {
 	}
 
 	public function test_templates_use_only_known_pro_keys() {
-		$known = array_merge( array_keys( Form_Templates::PRO_FEATURE_KEYS ), [ 'id', 'category', 'theme', 'icon', 'requires', 'setup', 'title', 'description', 'submit_text', 'steps', 'fields', 'confirmation', 'email_subject', 'email_intro', 'autoresponder', 'features' ] );
+		$known = array_merge( array_keys( Form_Templates::PRO_FEATURE_KEYS ), [ 'id', 'category', 'theme', 'icon', 'requires', 'setup', 'preview_image', 'title', 'description', 'submit_text', 'steps', 'fields', 'confirmation', 'email_subject', 'email_intro', 'autoresponder', 'features' ] );
 		foreach ( array_keys( self::TEMPLATES ) as $id ) {
 			$this->assertSame( [], array_diff( array_keys( Form_Templates::get_template( $id ) ), $known ), "Template {$id} has an unknown key." );
 		}

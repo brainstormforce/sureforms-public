@@ -48,7 +48,11 @@ class Test_Form_Templates extends TestCase {
 
 		// The 20 free templates, in display order; the Premium categories follow.
 		$this->assertSame( \SRFM\Inc\Form_Templates\Catalog::ORDER, array_slice( array_keys( $templates ), 0, 20 ) );
-		$this->assertSame( array_keys( $templates ), array_unique( array_keys( $templates ) ) );
+		// get_templates() is keyed by id, so a repeated id would silently replace
+		// the first template: check the catalog files themselves.
+		$ids = array_column( \SRFM\Inc\Form_Templates\Catalog::templates(), 'id' );
+		$this->assertSame( array_unique( $ids ), $ids, 'Two catalog templates share an id.' );
+		$this->assertCount( count( $ids ), $templates );
 	}
 
 	public function test_categories_without_templates_are_hidden() {
