@@ -83,7 +83,7 @@ class Client_Logger {
 	 * Option holding per-category failure state, keyed by category.
 	 *
 	 * Shape: [ category => [ 'count' => int, 'form_id' => int, 'form_title' => string,
-	 * 'at' => int, 'acked' => int, 'acked_at' => int ] ].
+	 * 'at' => int, 'acked' => int, 'acked_at' => int, 'entry_saved' => bool ] ].
 	 *
 	 * Kept per category because the three read completely differently to a site
 	 * owner: submissions failing means visitors cannot reach you, a notification
@@ -199,13 +199,17 @@ class Client_Logger {
 	 * The form is carried because "a form is failing" is not actionable on a site
 	 * with twenty of them -- the first thing anyone asks is which one.
 	 *
-	 * @param string $category   One of self::CATEGORIES.
-	 * @param int    $form_id    Form the failure happened on.
-	 * @param string $form_title Form title, resolved by the caller.
+	 * @param string       $category   One of self::CATEGORIES.
+	 * @param int          $form_id    Form the failure happened on.
+	 * @param string       $form_title Form title, resolved by the caller.
+	 * @param array<mixed> $context    Optional. 'entry_saved' => false when the failure
+	 *                                 cost the submission itself (a form that does
+	 *                                 not store entries). Describes the latest failure.
 	 * @since 2.12.6
+	 * @since 2.12.9 Added $context.
 	 * @return void
 	 */
-	public static function record_failure( $category, $form_id = 0, $form_title = '' ) {
+	public static function record_failure( $category, $form_id = 0, $form_title = '', $context = [] ) {
 		// Logging off means nothing is recorded, not merely nothing displayed.
 		//
 		// The display side was already gated -- get_action_items() skips the
@@ -233,18 +237,21 @@ class Client_Logger {
 		$existing = $failures[ $category ] ?? [];
 
 		$failures[ $category ] = [
-			'count'      => Helper::get_integer_value( $existing['count'] ?? 0 ) + 1,
-			'form_id'    => absint( $form_id ),
-			'form_title' => mb_substr( sanitize_text_field( $form_title ), 0, 100 ),
-			'at'         => time(),
+			'count'       => Helper::get_integer_value( $existing['count'] ?? 0 ) + 1,
+			'form_id'     => absint( $form_id ),
+			'form_title'  => mb_substr( sanitize_text_field( $form_title ), 0, 100 ),
+			'at'          => time(),
 			// Preserved: a report already made still stands until this new count
 			// overtakes it, which is what get_open_failures() compares.
-			'acked'      => Helper::get_integer_value( $existing['acked'] ?? 0 ),
+			'acked'       => Helper::get_integer_value( $existing['acked'] ?? 0 ),
 			// Carried forward too. This array is rebuilt from a fixed set of keys, so
 			// anything not named here is dropped -- and "when did I last report
 			// this" quietly disappearing on the next failure is exactly the kind of
 			// loss nobody notices until support asks.
-			'acked_at'   => Helper::get_integer_value( $existing['acked_at'] ?? 0 ),
+			'acked_at'    => Helper::get_integer_value( $existing['acked_at'] ?? 0 ),
+			// Of the latest failure, like form_id: the notice describes what just
+			// happened, and "the entry was saved" is false on a form that stores none.
+			'entry_saved' => ! is_array( $context ) || ! isset( $context['entry_saved'] ) || (bool) $context['entry_saved'],
 		];
 
 		update_option( self::FAILURES_OPTION, $failures, false );

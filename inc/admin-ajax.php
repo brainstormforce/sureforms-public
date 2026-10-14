@@ -82,11 +82,33 @@ class Admin_Ajax {
 
 		$plugin_init = isset( $_POST['init'] ) ? sanitize_text_field( wp_unslash( $_POST['init'] ) ) : '';
 
+		// Activation runs the plugin's own activation code, so this needs the
+		// real capability (a multisite sub-site admin has manage_options but not
+		// activate_plugins) and only plugins SureForms itself offers.
+		if ( ! current_user_can( 'activate_plugins' ) ) {
+			wp_send_json_error( $response_data );
+		}
+
+		if ( ! in_array( $plugin_init, self::get_activatable_plugins(), true ) ) {
+			wp_send_json_error(
+				[
+					'success' => false,
+					'message' => __( 'This plugin cannot be activated from SureForms.', 'sureforms' ),
+				]
+			);
+		}
+
 		$plugin_slug = isset( $_POST['slug'] ) ? sanitize_text_field( wp_unslash( $_POST['slug'] ) ) : '';
 
-		$activate = activate_plugin( $plugin_init, '', false, true );
+		// Not silent: a silent activation skips the plugin's activation hook, so
+		// whatever it sets up there never happens. SureMail, for one, creates its
+		// email log table on activation; installed from SureForms, its Email Logs
+		// screen failed with "Failed to retrieve email logs." Output from the
+		// hook is caught by activate_plugin() and returned as an error -- but the
+		// plugin is active by then, so that one error is not a failure.
+		$activate = activate_plugin( $plugin_init, '', false, false );
 
-		if ( is_wp_error( $activate ) ) {
+		if ( is_wp_error( $activate ) && ! ( 'unexpected_output' === $activate->get_error_code() && is_plugin_active( $plugin_init ) ) ) {
 			wp_send_json_error(
 				[
 					'success' => false,
@@ -94,6 +116,8 @@ class Admin_Ajax {
 				]
 			);
 		}
+
+		self::clear_activation_redirect( $plugin_init );
 
 		if ( class_exists( 'BSF_UTM_Analytics' ) && is_callable( 'BSF_UTM_Analytics::update_referer' ) ) {
 			$plugin_slug = pathinfo( $plugin_slug, PATHINFO_FILENAME );
@@ -108,6 +132,74 @@ class Admin_Ajax {
 		);
 	}
 
+	/**
+	 * Plugins the recommended-plugin installer may activate: the ones SureForms
+	 * offers (Helper::sureforms_get_integration(), both Starter Templates
+	 * editions) and the MCP adapter from Settings.
+	 *
+	 * @since 2.12.9
+	 * @return array<int,string> Plugin files.
+	 */
+	public static function get_activatable_plugins() {
+		$plugins = [ 'mcp-adapter/mcp-adapter.php', 'astra-sites/astra-sites.php', 'astra-pro-sites/astra-pro-sites.php' ];
+
+		foreach ( Helper::sureforms_get_integration() as $integration ) {
+			if ( is_array( $integration ) && ! empty( $integration['path'] ) && is_string( $integration['path'] ) ) {
+				$plugins[] = $integration['path'];
+			}
+		}
+
+		/**
+		 * Filters the plugins SureForms' installer may activate.
+		 *
+		 * @since 2.12.9
+		 * @param array<int,string> $plugins Plugin files.
+		 */
+		$plugins = apply_filters( 'srfm_activatable_plugins', $plugins );
+
+		return array_values( array_unique( array_filter( is_array( $plugins ) ? $plugins : [], 'is_string' ) ) );
+	}
+
+	/**
+	 * Clear the "show my onboarding" flag a plugin sets on activation.
+	 *
+	 * Activation now runs the plugin's activation hook, and most of these plugins
+	 * set a flag there that sends the owner to their onboarding on the next admin
+	 * page load -- pulling them out of SureForms' own onboarding mid-step.
+	 *
+	 * @since 2.12.9
+	 * @param string $plugin_init Plugin file that was activated.
+	 * @return void
+	 */
+	public static function clear_activation_redirect( $plugin_init ) {
+		/**
+		 * Filters the redirect flags cleared after activating a plugin.
+		 *
+		 * @since 2.12.9
+		 * @param array<string,array{option?:string,transient?:string}> $flags Plugin file => flag.
+		 */
+		$flags = apply_filters(
+			'srfm_plugin_activation_redirect_flags',
+			[
+				'suremails/suremails.php'             => [ 'option' => 'suremails_do_redirect' ],
+				'surerank/surerank.php'               => [ 'option' => 'surerank_redirect_on_activation' ],
+				'suretriggers/suretriggers.php'       => [ 'transient' => 'st-redirect-after-activation' ],
+				'suredonation/suredonation.php'       => [ 'option' => '__suredonation_do_redirect' ],
+				'header-footer-elementor/header-footer-elementor.php' => [ 'option' => 'hfe_start_onboarding' ],
+				'astra-sites/astra-sites.php'         => [ 'option' => 'st_start_onboarding' ],
+				'astra-pro-sites/astra-pro-sites.php' => [ 'option' => 'st_start_onboarding' ],
+			]
+		);
+
+		$flag = is_array( $flags ) && isset( $flags[ $plugin_init ] ) && is_array( $flags[ $plugin_init ] ) ? $flags[ $plugin_init ] : [];
+
+		if ( ! empty( $flag['option'] ) && is_string( $flag['option'] ) ) {
+			delete_option( $flag['option'] );
+		}
+		if ( ! empty( $flag['transient'] ) && is_string( $flag['transient'] ) ) {
+			delete_transient( $flag['transient'] );
+		}
+	}
 	/**
 	 * Get ajax error message.
 	 *

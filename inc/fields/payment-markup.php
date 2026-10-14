@@ -328,13 +328,16 @@ class Payment_Markup extends Base {
 			'data-payment-mode'         => $this->payment_mode,
 			'data-amount-type'          => $this->amount_type,
 			'data-fixed-amount'         => $this->fixed_amount,
-			'aria-describedby'          => trim( $this->aria_described_by ),
 			'data-payment-type'         => $this->payment_type,
 			'data-customer-name-field'  => $this->customer_name_field,
 			'data-customer-email-field' => $this->customer_email_field,
 			'data-payment-methods'      => wp_json_encode( array_keys( $registered_methods ) ),
 			'data-selected-method'      => $first_method_id,
 		];
+
+		if ( ! empty( $this->aria_described_by ) ) {
+			$data_input_attributes['aria-describedby'] = trim( $this->aria_described_by );
+		}
 
 		// Subscription plan attributes are emitted when subscription is the active type
 		// OR when "both" mode allows it as a possible end-user choice.
