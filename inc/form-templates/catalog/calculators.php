@@ -553,7 +553,7 @@ return [
 			'heading' => __( 'Thanks, {form:first-name}!', 'sureforms' ),
 			'text'    => sprintf(
 				/* translators: %s: estimated shipping cost. */
-				__( 'Your estimated shipping is %s ({form:speed}). We will email {form:email} to confirm the booking and the final price.', 'sureforms' ),
+				__( 'Your estimated shipping is %s. Delivery: {form:speed}. We will email {form:email} to confirm the booking and the final price.', 'sureforms' ),
 				$amount( 'shipping-cost' )
 			),
 		],
@@ -577,7 +577,7 @@ return [
 			'lines'    => [
 				sprintf(
 					/* translators: %s: estimated shipping cost. */
-					__( 'Thanks for your request. Shipping a {form:weight-kg} kg parcel ({form:speed}) comes to about %s.', 'sureforms' ),
+					__( 'Thanks for your request. Shipping a {form:weight-kg} kg parcel comes to about %s. Delivery: {form:speed}.', 'sureforms' ),
 					$amount( 'shipping-cost' )
 				),
 				__( 'We will confirm the booking and the final price shortly. Questions? Just reply to this email.', 'sureforms' ),
