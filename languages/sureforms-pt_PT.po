@@ -14,17 +14,18 @@ msgstr ""
 #. Plugin Name of the plugin
 #. Author of the plugin
 #: sureforms.php
-#: admin/admin.php:1211
-#: admin/admin.php:1212
-#: admin/admin.php:3124
+#: admin/admin.php:1244
+#: admin/admin.php:1245
+#: admin/admin.php:3175
 #: inc/abilities/abilities-registrar.php:139
-#: inc/gutenberg-hooks.php:109
+#: inc/gutenberg-hooks.php:110
 #: inc/page-builders/bricks/elements/form-widget.php:67
 #: inc/page-builders/bricks/service-provider.php:93
 #: inc/page-builders/elementor/form-widget.php:144
 #: inc/page-builders/elementor/form-widget.php:301
 #: inc/page-builders/elementor/service-provider.php:74
 #: assets/build/formEditor.js:172
+#: assets/build/suremail.js:172
 msgid "SureForms"
 msgstr "SureForms"
 
@@ -43,8 +44,8 @@ msgstr "Uma maneira simples, mas poderosa, de criar formulários modernos para o
 msgid "https://sureforms.com/"
 msgstr "https://sureforms.com/"
 
-#: admin/admin.php:1224
-#: admin/admin.php:1225
+#: admin/admin.php:1257
+#: admin/admin.php:1258
 #: assets/build/dashboard.js:172
 #: assets/build/entries.js:172
 #: assets/build/forms.js:172
@@ -53,15 +54,15 @@ msgstr "https://sureforms.com/"
 #: assets/build/partialEntriesEmptyState.js:172
 #: assets/build/payments.js:172
 #: assets/build/quizEmptyState.js:172
-#: assets/build/settings.js:172
+#: assets/build/settings.js:2
 #: assets/build/surveyEmptyState.js:172
 #: assets/build/templatePicker.js:172
 msgid "Dashboard"
 msgstr "Painel de Controle"
 
-#: admin/admin.php:1242
-#: admin/admin.php:1243
-#: admin/admin.php:1675
+#: admin/admin.php:1275
+#: admin/admin.php:1276
+#: admin/admin.php:1700
 #: inc/compatibility/multilingual/string-collector.php:236
 #: inc/compatibility/multilingual/string-collector.php:245
 #: inc/compatibility/multilingual/string-collector.php:319
@@ -74,20 +75,20 @@ msgstr "Painel de Controle"
 #: assets/build/partialEntriesEmptyState.js:172
 #: assets/build/payments.js:172
 #: assets/build/quizEmptyState.js:172
-#: assets/build/settings.js:172
+#: assets/build/settings.js:2
 #: assets/build/surveyEmptyState.js:172
 msgid "Settings"
 msgstr "Configurações"
 
-#: admin/admin.php:1511
-#: admin/admin.php:1512
+#: admin/admin.php:1536
+#: admin/admin.php:1537
 #: inc/post-types.php:270
 msgid "New Form"
 msgstr "Novo Formulário"
 
-#: admin/admin.php:1520
-#: admin/admin.php:1521
-#: admin/admin.php:3443
+#: admin/admin.php:1545
+#: admin/admin.php:1546
+#: admin/admin.php:3494
 #: inc/generate-form-markup.php:211
 #: inc/generate-form-markup.php:224
 #: inc/global-settings/email-summary.php:225
@@ -99,13 +100,13 @@ msgstr "Novo Formulário"
 #: assets/build/partialEntriesEmptyState.js:172
 #: assets/build/payments.js:172
 #: assets/build/quizEmptyState.js:172
-#: assets/build/settings.js:172
+#: assets/build/settings.js:2
 #: assets/build/surveyEmptyState.js:172
 msgid "Entries"
 msgstr "Entradas"
 
 #. Translators: Post Title.
-#: admin/admin.php:1763
+#: admin/admin.php:1788
 #, php-format
 msgid "Edit %1$s"
 msgstr "Editar %1$s"
@@ -114,30 +115,30 @@ msgstr "Editar %1$s"
 #: inc/ai-form-builder/ai-auth.php:93
 #: inc/ai-form-builder/ai-auth.php:170
 #: inc/background-process.php:112
-#: inc/create-new-form.php:102
+#: inc/create-new-form.php:103
 #: inc/duplicate-form.php:191
 #: inc/export.php:126
 #: inc/export.php:184
 #: inc/forms-data.php:108
 #: inc/global-settings/global-settings.php:89
 #: inc/global-settings/global-settings.php:639
-#: inc/rest-api.php:203
+#: inc/rest-api.php:204
 msgid "Nonce verification failed."
 msgstr "A verificação do nonce falhou."
 
 #. translators: %1$s: Opening anchor tag with URL, %2$s: Closing anchor tag, %3$s: SureForms Pro Plugin Name.
-#: admin/admin.php:2637
+#: admin/admin.php:2670
 #, php-format
 msgid "Please %1$sactivate%2$s your copy of %3$s to get new features, access support, receive update notifications, and more."
 msgstr "Por favor, %1$sative%2$s sua cópia do %3$s para obter novos recursos, acessar suporte, receber notificações de atualizações e muito mais."
 
 #. translators: %1$s: SureForms version, %2$s: SureForms Pro Plugin Name, %3$s: SureForms Pro Version, %4$s: Anchor tag open, %5$s: Closing anchor tag.
-#: admin/admin.php:2655
+#: admin/admin.php:2688
 #, php-format
 msgid "SureForms %1$s requires minimum %2$s %3$s to work properly. Please update to the latest version from %4$shere%5$s."
 msgstr "O SureForms %1$s requer um mínimo de %2$s %3$s para funcionar corretamente. Por favor, atualize para a versão mais recente %4$saqui%5$s."
 
-#: admin/admin.php:3442
+#: admin/admin.php:3493
 #: inc/global-settings/email-summary.php:224
 #: assets/build/entries.js:172
 #: assets/build/payments.js:172
@@ -207,7 +208,7 @@ msgstr "Lixo"
 msgid "Published"
 msgstr "Publicado"
 
-#: admin/admin.php:3434
+#: admin/admin.php:3485
 msgid "View"
 msgstr "Visualizar"
 
@@ -235,7 +236,7 @@ msgstr "Todas as entradas do formulário"
 #. translators: %d is the form ID.
 #: inc/abilities/entries/entry-parser.php:72
 #: inc/compatibility/multilingual/string-translator.php:198
-#: inc/rest-api.php:866
+#: inc/rest-api.php:881
 #, php-format
 msgid "SureForms Form #%d"
 msgstr "Formulário SureForms nº %d"
@@ -295,15 +296,15 @@ msgstr "Registros de Entrada"
 msgid "No plugin specified"
 msgstr "Nenhum plugin especificado"
 
-#: inc/admin-ajax.php:106
+#: inc/admin-ajax.php:130
 msgid "Plugin Successfully Activated"
 msgstr "Plugin ativado com sucesso"
 
-#: admin/admin.php:1841
+#: admin/admin.php:1866
 msgid "Activating..."
 msgstr "Ativando..."
 
-#: admin/admin.php:1842
+#: admin/admin.php:1867
 #: assets/build/dashboard.js:172
 #: assets/build/entries.js:172
 #: assets/build/formEditor.js:172
@@ -313,97 +314,98 @@ msgstr "Ativando..."
 #: assets/build/partialEntriesEmptyState.js:172
 #: assets/build/payments.js:172
 #: assets/build/quizEmptyState.js:172
+#: assets/build/settings.js:2
 #: assets/build/settings.js:172
 #: assets/build/surveyEmptyState.js:172
 msgid "Activated"
 msgstr "Ativado"
 
-#: admin/admin.php:1843
+#: admin/admin.php:1868
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:172
 msgid "Activate"
 msgstr "Ativar"
 
-#: admin/admin.php:1844
+#: admin/admin.php:1869
 msgid "Installing..."
 msgstr "Instalando..."
 
-#: admin/admin.php:1845
+#: admin/admin.php:1870
 msgid "Installed"
 msgstr "Instalado"
 
-#: inc/admin-ajax.php:160
+#: inc/admin-ajax.php:252
 msgid "You do not have permission to access this page."
 msgstr "Você não tem permissão para acessar esta página."
 
-#: admin/admin.php:2859
-#: admin/admin.php:3014
-#: admin/admin.php:3052
-#: admin/admin.php:3073
-#: admin/admin.php:3397
-#: admin/admin.php:3798
-#: inc/admin-ajax.php:164
+#: admin/admin.php:2892
+#: admin/admin.php:3065
+#: admin/admin.php:3103
+#: admin/admin.php:3124
+#: admin/admin.php:3448
+#: admin/admin.php:3924
+#: inc/admin-ajax.php:256
 #: inc/payments/admin/admin-handler.php:638
 #: inc/payments/stripe/admin-stripe-handler.php:80
 #: inc/payments/stripe/admin-stripe-handler.php:448
 msgid "Invalid nonce."
 msgstr "Nonce inválido."
 
-#: inc/admin-ajax.php:168
+#: inc/admin-ajax.php:260
 msgid "Form ID is required."
 msgstr "O ID do formulário é obrigatório."
 
-#: inc/admin-ajax.php:184
-#: inc/form-submit.php:1275
+#: inc/admin-ajax.php:276
+#: inc/form-submit.php:1341
 msgid "Invalid form ID."
 msgstr "ID de formulário inválido."
 
 #. Translators: %s: Form ID.
-#: inc/admin-ajax.php:188
+#: inc/admin-ajax.php:280
 #, php-format
 msgid "SureForms id: %s"
 msgstr "SureForms id: %s"
 
-#: inc/admin-ajax.php:198
+#: inc/admin-ajax.php:290
 msgid "Form Submitted"
 msgstr "Formulário Enviado"
 
-#: inc/admin-ajax.php:200
+#: inc/admin-ajax.php:292
 msgid "Runs when a form is submitted"
 msgstr "Executa quando um formulário é enviado"
 
-#: inc/admin-ajax.php:327
-#: inc/admin-ajax.php:378
+#: inc/admin-ajax.php:419
+#: inc/admin-ajax.php:470
 msgid "Sample data"
 msgstr "Dados de amostra"
 
-#: inc/admin-ajax.php:331
+#: inc/admin-ajax.php:423
 msgid "Sample input data"
 msgstr "Dados de entrada de amostra"
 
-#: inc/admin-ajax.php:333
+#: inc/admin-ajax.php:425
 msgid "Sample textarea data"
 msgstr "Dados de exemplo da área de texto"
 
-#: inc/admin-ajax.php:338
-#: inc/admin-ajax.php:339
+#: inc/admin-ajax.php:430
+#: inc/admin-ajax.php:431
 msgid "Address data"
 msgstr "Dados de endereço"
 
-#: inc/admin-ajax.php:340
+#: inc/admin-ajax.php:432
 msgid "Selected dropdown option"
 msgstr "Opção selecionada no menu suspenso"
 
-#: inc/admin-ajax.php:341
+#: inc/admin-ajax.php:433
 msgid "Selected Multichoice option"
 msgstr "Opção de múltipla escolha selecionada"
 
-#: inc/admin-ajax.php:342
+#: inc/admin-ajax.php:434
 msgid "Selected radio option"
 msgstr "Opção de rádio selecionada"
 
-#: inc/admin-ajax.php:343
-#: inc/create-new-form.php:64
+#: inc/admin-ajax.php:435
+#: inc/create-new-form.php:65
 #: inc/migrator/importers/gravity-importer.php:289
 #: inc/migrator/importers/ninja-importer.php:309
 #: inc/migrator/importers/wpforms-importer.php:286
@@ -412,7 +414,7 @@ msgstr "Opção de rádio selecionada"
 msgid "Submit"
 msgstr "Enviar"
 
-#: inc/admin-ajax.php:346
+#: inc/admin-ajax.php:438
 msgid "Hidden Value"
 msgstr "Valor Oculto"
 
@@ -446,7 +448,7 @@ msgstr "O array de mensagens não foi fornecido"
 
 #: inc/ai-form-builder/ai-form-builder.php:80
 #: inc/ai-form-builder/ai-form-builder.php:99
-#: inc/ai-form-builder/ai-helper.php:294
+#: inc/ai-form-builder/ai-helper.php:325
 msgid "The SureForms AI Middleware encountered an error."
 msgstr "O middleware de IA SureForms encontrou um erro."
 
@@ -499,15 +501,15 @@ msgstr "Erro Desconhecido"
 msgid "Submission id missing."
 msgstr "Falta o ID da submissão."
 
-#: inc/create-new-form.php:114
+#: inc/create-new-form.php:115
 msgid "Invalid JSON format."
 msgstr "Formato JSON inválido."
 
-#: inc/create-new-form.php:126
+#: inc/create-new-form.php:127
 msgid "Missing required properties in form info."
 msgstr "Faltam propriedades obrigatórias nas informações do formulário."
 
-#: inc/create-new-form.php:187
+#: inc/create-new-form.php:194
 msgid "SureForms Form created successfully."
 msgstr "SureForms Formulário criado com sucesso."
 
@@ -541,7 +543,7 @@ msgid "Dropdown"
 msgstr "Menu suspenso"
 
 #: inc/fields/dropdown-markup.php:112
-#: inc/gutenberg-hooks.php:234
+#: inc/gutenberg-hooks.php:238
 msgid "Select an option"
 msgstr "Selecione uma opção"
 
@@ -561,7 +563,7 @@ msgstr "Confirmar"
 msgid "Confirm %s"
 msgstr "Confirmar %s"
 
-#: inc/gutenberg-hooks.php:233
+#: inc/gutenberg-hooks.php:237
 msgid "I consent to have this website store my submitted information so they can respond to my inquiry."
 msgstr "Eu consinto que este site armazene as informações que enviei para que possam responder à minha consulta."
 
@@ -593,24 +595,24 @@ msgstr "Telefone"
 msgid "Textarea"
 msgstr "Área de texto"
 
-#: inc/form-submit.php:281
+#: inc/form-submit.php:284
 msgid "Cloudflare Turnstile secret key is invalid."
 msgstr "A chave secreta do Cloudflare Turnstile é inválida."
 
-#: inc/form-submit.php:288
+#: inc/form-submit.php:291
 msgid "Cloudflare Turnstile response is missing."
 msgstr "Resposta do Cloudflare Turnstile está faltando."
 
-#: inc/form-submit.php:332
+#: inc/form-submit.php:335
 msgid "hCaptcha secret key is invalid."
 msgstr "A chave secreta do hCaptcha é inválida."
 
-#: inc/form-submit.php:339
+#: inc/form-submit.php:342
 msgid "hCaptcha response is missing."
 msgstr "Falta a resposta do hCaptcha."
 
-#: inc/form-submit.php:380
-#: inc/form-submit.php:639
+#: inc/form-submit.php:383
+#: inc/form-submit.php:642
 msgid "Form data is not found."
 msgstr "Os dados do formulário não foram encontrados."
 
@@ -646,28 +648,27 @@ msgstr "Configurações Globais"
 msgid "Settings Saved Successfully."
 msgstr "Configurações salvas com sucesso."
 
-#: inc/gutenberg-hooks.php:107
+#: inc/gutenberg-hooks.php:108
 msgid "General Fields"
 msgstr "Campos Gerais"
 
-#: inc/gutenberg-hooks.php:119
-#: assets/build/dashboard.js:172
+#: inc/gutenberg-hooks.php:120
 msgid "Advanced Fields"
 msgstr "Campos Avançados"
 
-#: inc/helper.php:72
+#: inc/helper.php:73
 msgid "This field is required."
 msgstr "Este campo é obrigatório."
 
-#: inc/helper.php:73
+#: inc/helper.php:74
 msgid "Value needs to be unique."
 msgstr "O valor precisa ser único."
 
-#: inc/helper.php:747
+#: inc/helper.php:748
 msgid "Sorry, you are not allowed to perform this action."
 msgstr "Desculpe, você não tem permissão para realizar esta ação."
 
-#: admin/admin.php:2704
+#: admin/admin.php:2737
 msgid "Rate SureForms"
 msgstr "Avalie SureForms"
 
@@ -728,7 +729,7 @@ msgstr "Editar Formulário"
 msgid "Edit"
 msgstr "Editar"
 
-#: admin/admin.php:3175
+#: admin/admin.php:3226
 #: inc/page-builders/elementor/form-widget.php:346
 #: assets/build/dashboard.js:2
 msgid "Create New Form"
@@ -765,8 +766,8 @@ msgstr "Ver Formulário"
 msgid "View Forms"
 msgstr "Ver Formulários"
 
-#: admin/admin.php:1502
-#: admin/admin.php:1503
+#: admin/admin.php:1527
+#: admin/admin.php:1528
 #: inc/post-types.php:274
 #: assets/build/dashboard.js:172
 #: assets/build/entries.js:172
@@ -776,6 +777,7 @@ msgstr "Ver Formulários"
 #: assets/build/partialEntriesEmptyState.js:172
 #: assets/build/payments.js:172
 #: assets/build/quizEmptyState.js:172
+#: assets/build/settings.js:2
 #: assets/build/settings.js:172
 #: assets/build/surveyEmptyState.js:172
 msgid "Forms"
@@ -8244,7 +8246,6 @@ msgid "Brands"
 msgstr "Marcas"
 
 #: modules/gutenberg/icons/icons-v6-3.php:5206
-#: assets/build/dashboard.js:172
 msgid "Business"
 msgstr "Negócio"
 
@@ -8280,7 +8281,7 @@ msgstr "Social"
 msgid "Travel"
 msgstr "Viagem"
 
-#: inc/helper.php:2394
+#: inc/helper.php:2376
 msgid "Blank Form"
 msgstr "Formulário em Branco"
 
@@ -8600,7 +8601,6 @@ msgid "Icon Library"
 msgstr "Biblioteca de Ícones"
 
 #: assets/build/blocks.js:172
-#: assets/build/dashboard.js:172
 #: modules/gutenberg/build/blocks.js:4
 msgid "Close"
 msgstr "Fechar"
@@ -8814,7 +8814,7 @@ msgstr "Integrações"
 #: assets/build/partialEntriesEmptyState.js:172
 #: assets/build/payments.js:172
 #: assets/build/quizEmptyState.js:172
-#: assets/build/settings.js:172
+#: assets/build/settings.js:2
 #: assets/build/surveyEmptyState.js:172
 msgid "What's New?"
 msgstr "O que há de novo?"
@@ -8827,7 +8827,7 @@ msgstr "O que há de novo?"
 #: assets/build/partialEntriesEmptyState.js:172
 #: assets/build/payments.js:172
 #: assets/build/quizEmptyState.js:172
-#: assets/build/settings.js:172
+#: assets/build/settings.js:2
 #: assets/build/surveyEmptyState.js:172
 msgid "Core"
 msgstr "Núcleo"
@@ -8840,68 +8840,64 @@ msgstr "Núcleo"
 #: assets/build/partialEntriesEmptyState.js:172
 #: assets/build/payments.js:172
 #: assets/build/quizEmptyState.js:172
-#: assets/build/settings.js:172
+#: assets/build/settings.js:2
 #: assets/build/surveyEmptyState.js:172
 msgid "Unlicensed"
 msgstr "Sem licença"
 
 #. translators: abbreviation for units
-#: assets/build/formEditor.js:172
+#: assets/build/formEditor.js:2
 #: modules/quick-action-sidebar/components/draggable-block.js:83
 #, js-format
 msgid "%s Removed from Quick Action Bar."
 msgstr "%s removido da Barra de Ação Rápida."
 
-#: assets/build/formEditor.js:172
+#: assets/build/formEditor.js:2
 #: modules/quick-action-sidebar/components/Modal.js:145
 msgid "Add to Quick Action Bar"
 msgstr "Adicionar à Barra de Ações Rápidas"
 
 #. translators: abbreviation for units
-#: assets/build/formEditor.js:172
+#: assets/build/formEditor.js:2
 #: modules/quick-action-sidebar/components/Modal.js:42
 #, js-format
 msgid "%s Added to Quick Action Bar."
 msgstr "%s adicionado à barra de ações rápidas."
 
-#: assets/build/formEditor.js:172
+#: assets/build/formEditor.js:2
 #: modules/quick-action-sidebar/components/Modal.js:155
 msgid "Already Present in Quick Action Bar"
 msgstr "Já presente na barra de ações rápidas"
 
-#: assets/build/formEditor.js:172
+#: assets/build/formEditor.js:2
 #: modules/quick-action-sidebar/components/Modal.js:174
 msgid "No results found."
 msgstr "Nenhum resultado encontrado."
 
-#: assets/build/formEditor.js:172
+#: assets/build/formEditor.js:2
 #: modules/gutenberg/build/blocks.js:6
 msgid "data object is empty"
 msgstr "o objeto de dados está vazio"
 
-#: assets/build/formEditor.js:172
+#: assets/build/formEditor.js:2
 #: modules/quick-action-sidebar/components/Sidebar.js:181
 msgid "Add blocks to Quick Action Bar"
 msgstr "Adicionar blocos à Barra de Ação Rápida"
 
-#: assets/build/formEditor.js:172
+#: assets/build/formEditor.js:2
 #: modules/quick-action-sidebar/components/Sidebar.js:231
 msgid "Re-arrange block inside Quick Action Bar"
 msgstr "Reorganizar bloco dentro da Barra de Ação Rápida"
 
-#: admin/admin.php:1295
-#: admin/admin.php:1296
-#: admin/admin.php:4534
+#: admin/admin.php:1328
+#: admin/admin.php:1329
+#: admin/admin.php:4986
 #: assets/build/blocks.js:172
 #: assets/build/dashboard.js:172
 #: assets/build/entries.js:172
 #: assets/build/formEditor.js:172
 msgid "Upgrade"
 msgstr "Atualizar"
-
-#: assets/build/dashboard.js:172
-msgid "Webhooks"
-msgstr "Webhooks"
 
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:172
@@ -9264,7 +9260,7 @@ msgstr "Centro"
 msgid "Right"
 msgstr "Certo"
 
-#: inc/form-submit.php:1466
+#: inc/form-submit.php:1532
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:172
 msgid "Google reCAPTCHA"
@@ -9274,7 +9270,7 @@ msgstr "Google reCAPTCHA"
 msgid "CloudFlare Turnstile"
 msgstr "CloudFlare Turnstile"
 
-#: inc/form-submit.php:1470
+#: inc/form-submit.php:1536
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:172
 msgid "hCaptcha"
@@ -9570,7 +9566,7 @@ msgstr "Chave do Site"
 msgid "Secret Key"
 msgstr "Chave Secreta"
 
-#: inc/form-submit.php:1474
+#: inc/form-submit.php:1540
 #: assets/build/settings.js:172
 msgid "Cloudflare Turnstile"
 msgstr "Cloudflare Turnstile"
@@ -9595,8 +9591,7 @@ msgstr "Conectar agora"
 msgid "Authentication Failed"
 msgstr "Falha na autenticação"
 
-#: admin/admin.php:3972
-#: assets/build/dashboard.js:172
+#: admin/admin.php:4116
 #: assets/build/templatePicker.js:172
 msgid "Contact Support"
 msgstr "Contactar Suporte"
@@ -9609,6 +9604,7 @@ msgstr "Clique aqui para tentar novamente"
 msgid "Exit to Dashboard"
 msgstr "Sair para o Painel de Controle"
 
+#: assets/build/dashboard.js:172
 #: assets/build/templatePicker.js:172
 msgid "AI Form Builder"
 msgstr "Construtor de Formulários de IA"
@@ -10568,18 +10564,18 @@ msgstr "Desbloquear Adicionar Nota"
 msgid "With the SureForms Starter plan, enhance your submitted form entries by adding personalized notes for better clarity and tracking."
 msgstr "Com o plano SureForms Starter, melhore suas entradas de formulário enviadas adicionando notas personalizadas para maior clareza e acompanhamento."
 
-#: inc/form-submit.php:1060
+#: inc/form-submit.php:1108
 msgid "Email notification passed to the sending server"
 msgstr "Notificação por email enviada para o servidor de envio"
 
 #. translators: Here, %s is the comma separated emails list.
-#: inc/form-submit.php:1144
+#: inc/form-submit.php:1198
 #, php-format
 msgid "Email notification recipient: %s"
 msgstr "Destinatário da notificação por e-mail: %s"
 
 #. translators: Here, %1$s is the comma separated emails list and %2$s is error report ( if any ).
-#: inc/form-submit.php:1161
+#: inc/form-submit.php:1212
 #, php-format
 msgid "Email server was unable to send the email notification. Recipient: %1$s. Reason: %2$s"
 msgstr "O servidor de e-mail não conseguiu enviar a notificação por e-mail. Destinatário: %1$s. Motivo: %2$s"
@@ -10622,7 +10618,7 @@ msgstr "Desbloquear Formulários Conversacionais"
 msgid "With the SureForms Pro Plan, you can transform your forms into engaging conversational layouts for a seamless user experience."
 msgstr "Com o Plano SureForms Pro, você pode transformar seus formulários em layouts conversacionais envolventes para uma experiência do usuário perfeita."
 
-#: admin/admin.php:1134
+#: admin/admin.php:1167
 msgid "Get SureForms Pro"
 msgstr "Obtenha o SureForms Pro"
 
@@ -10719,13 +10715,13 @@ msgstr "PX"
 msgid "Button"
 msgstr "Botão"
 
-#: inc/helper.php:1939
+#: inc/helper.php:1940
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:172
 msgid "OttoKit"
 msgstr "OttoKit"
 
-#: inc/admin-ajax.php:175
+#: inc/admin-ajax.php:267
 msgid "OttoKit is not configured properly."
 msgstr "O OttoKit não está configurado corretamente."
 
@@ -10834,24 +10830,24 @@ msgstr "Selecionar Gradiente"
 msgid "reCAPTCHA"
 msgstr "reCAPTCHA"
 
-#: inc/form-submit.php:1410
+#: inc/form-submit.php:1476
 msgid "Captcha validation failed. No error code provided."
 msgstr "A validação do Captcha falhou. Nenhum código de erro fornecido."
 
-#: inc/form-submit.php:1411
+#: inc/form-submit.php:1477
 msgid "Captcha validation failed."
 msgstr "Falha na validação do captcha."
 
-#: inc/form-submit.php:1478
+#: inc/form-submit.php:1544
 msgid "Unknown Captcha"
 msgstr "Captcha Desconhecido"
 
-#: inc/form-submit.php:1479
+#: inc/form-submit.php:1545
 msgid "Invalid captcha type."
 msgstr "Tipo de captcha inválido."
 
 #. translators: %s is the captcha title.
-#: inc/form-submit.php:1492
+#: inc/form-submit.php:1558
 #, php-format
 msgid "%s verification failed. Please contact your site administrator."
 msgstr "A verificação de %s falhou. Por favor, entre em contato com o administrador do seu site."
@@ -10869,16 +10865,17 @@ msgid "HCaptcha sitekey verification failed. Please contact your site administra
 msgstr "A verificação do sitekey do HCaptcha falhou. Por favor, entre em contato com o administrador do seu site."
 
 #. translators: %s: Provider name like HCaptcha, Google reCAPTCHA, Turnstile
-#: inc/helper.php:1239
+#: inc/helper.php:1240
 #, php-format
 msgid "%s sitekey is missing. Please contact your site administrator."
 msgstr "O sitekey %s está faltando. Por favor, entre em contato com o administrador do seu site."
 
-#: inc/helper.php:1930
+#: inc/helper.php:1931
+#: assets/build/suremail.js:172
 msgid "SureMail"
 msgstr "SureMail"
 
-#: inc/helper.php:1951
+#: inc/helper.php:1952
 msgid "Starter Templates"
 msgstr "Modelos Iniciais"
 
@@ -10922,7 +10919,7 @@ msgstr "Data Inválida"
 #: assets/build/partialEntriesEmptyState.js:172
 #: assets/build/payments.js:172
 #: assets/build/quizEmptyState.js:172
-#: assets/build/settings.js:172
+#: assets/build/settings.js:2
 #: assets/build/surveyEmptyState.js:172
 msgid "Ready to go beyond free plan?"
 msgstr "Pronto para ir além do plano gratuito?"
@@ -10935,7 +10932,7 @@ msgstr "Pronto para ir além do plano gratuito?"
 #: assets/build/partialEntriesEmptyState.js:172
 #: assets/build/payments.js:172
 #: assets/build/quizEmptyState.js:172
-#: assets/build/settings.js:172
+#: assets/build/settings.js:2
 #: assets/build/surveyEmptyState.js:172
 msgid "Upgrade now"
 msgstr "Atualize agora"
@@ -10948,7 +10945,7 @@ msgstr "Atualize agora"
 #: assets/build/partialEntriesEmptyState.js:172
 #: assets/build/payments.js:172
 #: assets/build/quizEmptyState.js:172
-#: assets/build/settings.js:172
+#: assets/build/settings.js:2
 #: assets/build/surveyEmptyState.js:172
 msgid "and unlock the full power of SureForms!"
 msgstr "e desbloqueie todo o poder do SureForms!"
@@ -10961,7 +10958,7 @@ msgstr "e desbloqueie todo o poder do SureForms!"
 #: assets/build/partialEntriesEmptyState.js:172
 #: assets/build/payments.js:172
 #: assets/build/quizEmptyState.js:172
-#: assets/build/settings.js:172
+#: assets/build/settings.js:2
 #: assets/build/surveyEmptyState.js:172
 msgid "Upgrade SureForms"
 msgstr "Atualizar SureForms"
@@ -11043,10 +11040,6 @@ msgstr "Assim que você criar um formulário e começar a receber submissões, o
 #: assets/build/formEditor.js:172
 msgid "SureTriggers"
 msgstr "SureTriggers"
-
-#: assets/build/dashboard.js:172
-msgid "Free"
-msgstr "Grátis"
 
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:172
@@ -11248,98 +11241,22 @@ msgstr "Descreva o formulário que você deseja criar"
 msgid "We are building your form…"
 msgstr "Estamos construindo seu formulário…"
 
-#: admin/admin.php:1410
-#: admin/admin.php:1411
+#: admin/admin.php:1434
+#: admin/admin.php:1435
 msgid "SMTP"
 msgstr "SMTP"
 
-#: assets/build/suremail.js:2
-msgid "SureMail Introduction Video"
-msgstr "Vídeo de Introdução do SureMail"
-
-#: assets/build/suremail.js:2
-msgid "Installing SureMail Now…"
-msgstr "Instalando SureMail agora…"
-
-#: assets/build/suremail.js:2
-msgid "Activating SureMail Now…"
-msgstr "Ativando o SureMail agora…"
-
-#: assets/build/suremail.js:2
-msgid "Redirecting to SureMail Dashboard…"
-msgstr "Redirecionando para o Painel SureMail…"
-
-#: assets/build/suremail.js:2
-msgid "Activate SureMail Now"
-msgstr "Ative o SureMail agora"
-
-#: assets/build/suremail.js:2
-msgid "Install SureMail Now"
-msgstr "Instale o SureMail agora"
-
-#: assets/build/suremail.js:2
+#: assets/build/suremail.js:172
 msgid "Multiple Backup Connections"
 msgstr "Múltiplas Conexões de Backup"
 
-#: assets/build/suremail.js:2
-msgid "Never worry about email failures. SureMail automatically reroutes through backup SMTP providers."
-msgstr "Nunca se preocupe com falhas de e-mail. O SureMail redireciona automaticamente através de provedores SMTP de backup."
-
-#: assets/build/suremail.js:2
+#: assets/build/suremail.js:172
 msgid "Email Logs & Resending"
 msgstr "Registros de Email e Reenvio"
 
-#: assets/build/suremail.js:2
-msgid "Keep a complete record of every email sent from your WordPress site, and resend any email message with ease."
-msgstr "Mantenha um registro completo de cada e-mail enviado do seu site WordPress e reenvie qualquer mensagem de e-mail com facilidade."
-
-#: assets/build/suremail.js:2
-msgid "Reputation Shield"
-msgstr "Escudo de Reputação"
-
-#: assets/build/suremail.js:2
-msgid "Reputation Shield protects your sender reputation by identifying and blocking potentially problematic emails before they're sent."
-msgstr "O Reputation Shield protege sua reputação de remetente identificando e bloqueando e-mails potencialmente problemáticos antes de serem enviados."
-
-#: assets/build/suremail.js:2
-msgid "Advanced Retry Logic"
-msgstr "Lógica Avançada de Repetição"
-
-#: assets/build/suremail.js:2
-msgid "Failed emails are automatically retried through all of the configured connections to ensure seamless delivery."
-msgstr "E-mails falhados são automaticamente reenviados através de todas as conexões configuradas para garantir uma entrega contínua."
-
-#: assets/build/suremail.js:2
+#: assets/build/suremail.js:172
 msgid "Built-In Email Testing Tool"
 msgstr "Ferramenta de Teste de Email Integrada"
-
-#: assets/build/suremail.js:2
-msgid "Easily send test emails for verifying your SMTP configuration before sending live emails to your customers and subscribers."
-msgstr "Envie facilmente e-mails de teste para verificar sua configuração SMTP antes de enviar e-mails reais para seus clientes e assinantes."
-
-#: assets/build/suremail.js:2
-msgid "Multiple SMTP Providers"
-msgstr "Múltiplos Provedores SMTP"
-
-#: assets/build/suremail.js:2
-msgid "Integrate and switch between leading SMTP services like Amazon SES, Gmail, SendGrid, SMTP2GO, and many more."
-msgstr "Integre e alterne entre os principais serviços SMTP como Amazon SES, Gmail, SendGrid, SMTP2GO e muitos mais."
-
-#: assets/build/suremail.js:2
-msgid "Plugin installation/activation failed. Please try again later."
-msgstr "A instalação/ativação do plugin falhou. Por favor, tente novamente mais tarde."
-
-#: assets/build/suremail.js:2
-msgid "Ensure Every Form Submission Reaches the Inbox with SureMail"
-msgstr "Garanta que cada envio de formulário chegue à caixa de entrada com o SureMail"
-
-#: assets/build/suremail.js:2
-msgid "SureForms and SureMail are the perfect pair! SureMail ensures that every form submission you receive is reliably delivered to your inbox. You'll never lose a lead, miss a support request, or overlook a customer inquiry again."
-msgstr "SureForms e SureMail são a dupla perfeita! SureMail garante que cada envio de formulário que você recebe seja entregue de forma confiável na sua caixa de entrada. Você nunca perderá um lead, deixará de atender a uma solicitação de suporte ou ignorará uma consulta de cliente novamente."
-
-#: assets/build/suremail.js:2
-msgid "Forms Submitted. Emails Delivered. Every Time."
-msgstr "Formulários enviados. E-mails entregues. Sempre."
 
 #: assets/build/blocks.js:172
 msgid "Rich Text Editor"
@@ -11381,31 +11298,31 @@ msgstr "Ativar Notificação de Administrador"
 msgid "Admin notifications keep you informed about new form entries since your last visit."
 msgstr "As notificações de administrador mantêm você informado sobre novas entradas de formulário desde sua última visita."
 
-#: admin/admin.php:2864
-#: admin/admin.php:3010
-#: admin/admin.php:3048
-#: admin/admin.php:3069
-#: admin/admin.php:3401
-#: admin/admin.php:3793
+#: admin/admin.php:2897
+#: admin/admin.php:3061
+#: admin/admin.php:3099
+#: admin/admin.php:3120
+#: admin/admin.php:3452
+#: admin/admin.php:3919
 msgid "Unauthorized user."
 msgstr "Usuário não autorizado."
 
 #. translators: 1: opening span, 2: opening strong (inline), 3: closing strong, 4: closing span, 5: opening strong (block), 6: closing strong
-#: admin/admin.php:3019
+#: admin/admin.php:3070
 #, php-format
 msgid "%1$sGet started by %2$sbuilding your first form%3$s.%4$s%5$sExperience the power of our intuitive AI Form Builder%6$s"
 msgstr "%1$sComece por %2$scriar o seu primeiro formulário%3$s.%4$s%5$sExperimente o poder do nosso intuitivo Criador de Formulários com IA%6$s"
 
-#: admin/admin.php:3030
+#: admin/admin.php:3081
 msgid "SureForms is waiting for you!"
 msgstr "SureForms está esperando por você!"
 
-#: admin/admin.php:3032
+#: admin/admin.php:3083
 msgid "Build My First Form"
 msgstr "Construir Meu Primeiro Formulário"
 
-#: admin/admin.php:3033
-#: admin/admin.php:3582
+#: admin/admin.php:3084
+#: admin/admin.php:3661
 msgid "Dismiss"
 msgstr "Dispensar"
 
@@ -11425,51 +11342,51 @@ msgstr "Entrar"
 msgid "Register"
 msgstr "Registrar"
 
-#: admin/admin.php:3430
+#: admin/admin.php:3481
 msgid "Recent Entries"
 msgstr "Entradas Recentes"
 
-#: admin/admin.php:3431
+#: admin/admin.php:3482
 msgid "( Last 7 days )"
 msgstr "( Últimos 7 dias )"
 
-#: admin/admin.php:4475
+#: admin/admin.php:4927
 msgid "Use Conditional Logic to show only what matters"
 msgstr "Use lógica condicional para mostrar apenas o que importa"
 
-#: admin/admin.php:4476
+#: admin/admin.php:4928
 msgid "Split your form into steps to keep it easy"
 msgstr "Divida seu formulário em etapas para mantê-lo simples"
 
-#: admin/admin.php:4477
+#: admin/admin.php:4929
 msgid "Let people upload files directly to your form"
 msgstr "Permita que as pessoas enviem arquivos diretamente para o seu formulário"
 
-#: admin/admin.php:4478
+#: admin/admin.php:4930
 msgid "Turn responses into downloadable PDFs automatically"
 msgstr "Transforme as respostas em PDFs baixáveis automaticamente"
 
-#: admin/admin.php:4479
+#: admin/admin.php:4931
 msgid "Let users sign with a simple signature field"
 msgstr "Permita que os usuários assinem com um campo de assinatura simples"
 
-#: admin/admin.php:4480
+#: admin/admin.php:4932
 msgid "Connect your form to other tools using webhooks"
 msgstr "Conecte seu formulário a outras ferramentas usando webhooks"
 
-#: admin/admin.php:4481
+#: admin/admin.php:4933
 msgid "Use Conversational Forms for a chat-like experience"
 msgstr "Use Formulários de Conversa para uma experiência semelhante a um chat"
 
-#: admin/admin.php:4482
+#: admin/admin.php:4934
 msgid "Let users register or log in through your form"
 msgstr "Permita que os usuários se registrem ou façam login através do seu formulário"
 
-#: admin/admin.php:4483
+#: admin/admin.php:4935
 msgid "Build forms that create WordPress user accounts"
 msgstr "Crie formulários que criem contas de usuário no WordPress"
 
-#: admin/admin.php:4484
+#: admin/admin.php:4936
 msgid "Add calculations to auto-total scores or prices"
 msgstr "Adicione cálculos para totalizar automaticamente pontuações ou preços"
 
@@ -11487,186 +11404,29 @@ msgid "Skip"
 msgstr "Pular"
 
 #: assets/build/dashboard.js:172
-msgid "Build beautiful forms visually"
-msgstr "Crie formulários bonitos visualmente"
-
-#: assets/build/dashboard.js:172
-msgid "Works perfectly on mobile"
-msgstr "Funciona perfeitamente no celular"
-
-#: assets/build/dashboard.js:172
-msgid "Easy to connect with automation tools"
-msgstr "Fácil de conectar com ferramentas de automação"
-
-#: assets/build/dashboard.js:172
-msgid "Welcome to SureForms"
-msgstr "Bem-vindo ao SureForms"
-
-#: assets/build/dashboard.js:172
-msgid "Smart, Quick and Powerful Forms."
-msgstr "Formulários Inteligentes, Rápidos e Poderosos."
-
-#: assets/build/dashboard.js:172
-msgid "Let's Get Started"
-msgstr "Vamos começar"
-
-#: assets/build/dashboard.js:172
-msgid "Build up to 10 forms using AI"
-msgstr "Crie até 10 formulários usando IA"
-
-#: assets/build/dashboard.js:172
-msgid "A secure and private connection"
-msgstr "Uma conexão segura e privada"
-
-#: assets/build/dashboard.js:172
-msgid "Smart form drafts based on your input"
-msgstr "Rascunhos de formulários inteligentes com base no seu input"
-
-#: assets/build/dashboard.js:172
-msgid "Starting from a blank form isn't always easy. Our AI can help by creating a draft form based on what you're trying to do — saving you time and giving you a clear direction."
-msgstr "Começar a partir de um formulário em branco nem sempre é fácil. Nossa IA pode ajudar criando um rascunho de formulário com base no que você está tentando fazer — economizando tempo e dando-lhe uma direção clara."
-
-#: assets/build/dashboard.js:172
-msgid "To do this, you'll need to connect your account."
-msgstr "Para fazer isso, você precisará conectar sua conta."
-
-#: assets/build/dashboard.js:172
-msgid "Let AI Help You Build Smarter, Faster Forms"
-msgstr "Deixe a IA Ajudá-lo a Criar Formulários Mais Inteligentes e Rápidos"
-
-#: assets/build/dashboard.js:172
-msgid "Here's what that gives you:"
-msgstr "Aqui está o que isso lhe dá:"
-
-#: assets/build/dashboard.js:172
 #: assets/build/settings.js:172
 msgid "Continue"
 msgstr "Continuar"
-
-#: assets/build/dashboard.js:172
-msgid "Connect"
-msgstr "Conectar"
-
-#: assets/build/dashboard.js:172
-msgid "Works smoothly with forms made using SureForms"
-msgstr "Funciona perfeitamente com formulários feitos usando SureForms"
-
-#: assets/build/dashboard.js:172
-msgid "Helps your emails reach the inbox instead of spam"
-msgstr "Ajuda seus e-mails a chegarem na caixa de entrada em vez de irem para o spam"
-
-#: assets/build/dashboard.js:172
-msgid "Setup is straightforward, even if you're not technical"
-msgstr "A configuração é simples, mesmo se você não for técnico"
-
-#: assets/build/dashboard.js:172
-msgid "Lightweight and easy to use without adding clutter"
-msgstr "Leve e fácil de usar sem adicionar desordem"
 
 #: assets/build/dashboard.js:172
 msgid "Make Sure Your Emails Get Delivered"
 msgstr "Certifique-se de que seus e-mails sejam entregues"
 
 #: assets/build/dashboard.js:172
-msgid "Most WordPress sites struggle to send emails reliably, which means form submissions from your site might not reach your inbox — or end up in spam."
-msgstr "A maioria dos sites WordPress tem dificuldade em enviar e-mails de forma confiável, o que significa que os envios de formulários do seu site podem não chegar à sua caixa de entrada — ou acabar no spam."
-
-#: assets/build/dashboard.js:172
-msgid "SureMail is a simple SMTP plugin that helps make sure your emails actually get delivered."
-msgstr "SureMail é um plugin SMTP simples que ajuda a garantir que seus e-mails sejam realmente entregues."
-
-#: assets/build/dashboard.js:172
-msgid "What you will get:"
-msgstr "O que você receberá:"
-
-#: assets/build/dashboard.js:172
 msgid "Install SureMail"
 msgstr "Instalar SureMail"
-
-#: assets/build/dashboard.js:172
-msgid "AI Form Generation"
-msgstr "Geração de Formulários por IA"
-
-#: assets/build/dashboard.js:172
-msgid "Tired of building forms manually? Let AI do the work for you. Just describe and our AI will create your perfect form in seconds."
-msgstr "Cansado de criar formulários manualmente? Deixe a IA fazer o trabalho por você. Basta descrever e nossa IA criará seu formulário perfeito em segundos."
 
 #: inc/global-settings/email-summary.php:276
 msgid "View Entries"
 msgstr "Ver Entradas"
 
 #: assets/build/dashboard.js:172
-msgid "Break complex forms into simple steps, reducing overwhelm and boosting completion rates. Guide users smoothly through the process"
-msgstr "Divida formulários complexos em etapas simples, reduzindo a sobrecarga e aumentando as taxas de conclusão. Guie os usuários suavemente pelo processo"
-
-#: assets/build/dashboard.js:172
 msgid "Conditional Fields"
 msgstr "Campos Condicionais"
 
 #: assets/build/dashboard.js:172
-msgid "Show or hide fields based on user answers. Ask the right questions and display only what's needed to keep forms clean and relevant."
-msgstr "Mostrar ou ocultar campos com base nas respostas do usuário. Faça as perguntas certas e exiba apenas o que é necessário para manter os formulários limpos e relevantes."
-
-#: assets/build/dashboard.js:172
-msgid "Enhance your forms with advanced fields like multi-file upload, rating fields, and date & time pickers to collect richer, flexible data."
-msgstr "Melhore seus formulários com campos avançados, como upload de múltiplos arquivos, campos de avaliação e seletores de data e hora para coletar dados mais ricos e flexíveis."
-
-#: assets/build/dashboard.js:172
 msgid "Conversational Forms"
 msgstr "Formas de Conversação"
-
-#: assets/build/dashboard.js:172
-msgid "Create forms that feel like a conversation. One question at a time keeps users engaged and makes form completion easy."
-msgstr "Crie formulários que pareçam uma conversa. Uma pergunta de cada vez mantém os usuários engajados e facilita o preenchimento do formulário."
-
-#: assets/build/dashboard.js:172
-msgid "Digital Signatures"
-msgstr "Assinaturas Digitais"
-
-#: assets/build/dashboard.js:172
-msgid "Collect legally binding digital signatures directly in your forms for agreements, approvals, and contracts."
-msgstr "Recolha assinaturas digitais legalmente vinculativas diretamente nos seus formulários para acordos, aprovações e contratos."
-
-#: assets/build/dashboard.js:172
-msgid "Calculators"
-msgstr "Calculadoras"
-
-#: assets/build/dashboard.js:172
-msgid "Add interactive calculators to your forms for instant estimates, quotes, and calculations for your users."
-msgstr "Adicione calculadoras interativas aos seus formulários para estimativas, cotações e cálculos instantâneos para seus usuários."
-
-#: assets/build/dashboard.js:172
-msgid "User Registration and Login"
-msgstr "Registro e Login de Usuário"
-
-#: assets/build/dashboard.js:172
-msgid "Allow visitors to register and log in to your site. Useful for membership, community, or any site that needs user access."
-msgstr "Permita que os visitantes se registrem e façam login no seu site. Útil para associações, comunidades ou qualquer site que necessite de acesso de usuários."
-
-#: assets/build/dashboard.js:172
-msgid "PDF Generation Made Simple"
-msgstr "Geração de PDF Simplificada"
-
-#: assets/build/dashboard.js:172
-msgid "Custom App"
-msgstr "Aplicativo Personalizado"
-
-#: assets/build/dashboard.js:172
-msgid "Collect data, send it to external applications for processing, and display results instantly — all seamlessly integrated to create dynamic, interactive user experiences."
-msgstr "Coletar dados, enviá-los para aplicativos externos para processamento e exibir resultados instantaneamente — tudo integrado de forma harmoniosa para criar experiências de usuário dinâmicas e interativas."
-
-#: assets/build/dashboard.js:172
-msgid "Select Your Features"
-msgstr "Selecione suas funcionalidades"
-
-#: assets/build/dashboard.js:172
-msgid "Get more control, faster workflows, and deeper customization — all designed to help you build better websites with less effort."
-msgstr "Obtenha mais controle, fluxos de trabalho mais rápidos e personalização mais profunda — tudo projetado para ajudá-lo a construir melhores sites com menos esforço."
-
-#: assets/build/dashboard.js:172
-#, js-format
-msgid "Selected features require %1$s - use code %2$s to get 10% off on any plan."
-msgstr "Recursos selecionados requerem %1$s - use o código %2$s para obter 10% de desconto em qualquer plano."
 
 #: assets/build/dashboard.js:172
 msgid "Copied"
@@ -11689,10 +11449,6 @@ msgid "You're All Set! 🚀"
 msgstr "Está tudo pronto! 🚀"
 
 #: assets/build/dashboard.js:172
-msgid "Use our AI form builder to get started quickly, or build your form from scratch if you already know what you need. Your forms are ready to create, share, and connect with your site visitors."
-msgstr "Use nosso construtor de formulários de IA para começar rapidamente ou construa seu formulário do zero se você já souber o que precisa. Seus formulários estão prontos para criar, compartilhar e conectar com os visitantes do seu site."
-
-#: assets/build/dashboard.js:172
 msgid "Final Touches That Make a Difference:"
 msgstr "Toques Finais Que Fazem a Diferença:"
 
@@ -11700,21 +11456,21 @@ msgstr "Toques Finais Que Fazem a Diferença:"
 msgid "Build Your First Form"
 msgstr "Crie Seu Primeiro Formulário"
 
-#: inc/helper.php:2182
+#: inc/helper.php:2183
 msgid "Invalid nonce action or name."
 msgstr "Ação ou nome de nonce inválido."
 
 #: inc/admin/editor-nudge.php:237
-#: inc/helper.php:2192
-#: inc/helper.php:2200
+#: inc/helper.php:2193
+#: inc/helper.php:2201
 msgid "Invalid security token."
 msgstr "Token de segurança inválido."
 
-#: inc/helper.php:2207
+#: inc/helper.php:2208
 msgid "Invalid request type."
 msgstr "Tipo de solicitação inválido."
 
-#: inc/helper.php:2215
+#: inc/helper.php:2216
 msgid "You do not have permission to perform this action."
 msgstr "Você não tem permissão para realizar esta ação."
 
@@ -11829,7 +11585,7 @@ msgstr "Olá,"
 msgid "Email Summary of your last week -  %1$s to %2$s"
 msgstr "Resumo do e-mail da sua última semana - %1$s a %2$s"
 
-#: inc/helper.php:1965
+#: inc/helper.php:1966
 msgid "Ultimate Addons for Elementor"
 msgstr "Complementos Definitivos para Elementor"
 
@@ -11891,7 +11647,7 @@ msgstr "Explore o SureDash"
 msgid "Something went wrong. We have logged the error for further investigation"
 msgstr "Algo deu errado. Registramos o erro para investigação posterior"
 
-#: inc/field-validation.php:440
+#: inc/field-validation.php:513
 msgid "Field is not valid."
 msgstr "O campo não é válido."
 
@@ -11916,6 +11672,7 @@ msgstr "Repetidor"
 msgid "OttoKit Settings"
 msgstr "Configurações do OttoKit"
 
+#: assets/build/dashboard.js:172
 #: assets/build/formEditor.js:172
 #: assets/build/settings.js:172
 msgid "Get Started"
@@ -11959,8 +11716,8 @@ msgstr "Miniatura de Vídeo do SureForms"
 msgid "Expected format for emails - email@sureforms.com or John Doe <email@sureforms.com>"
 msgstr "Formato esperado para e-mails - email@sureforms.com ou John Doe <email@sureforms.com>"
 
-#: admin/admin.php:1530
-#: admin/admin.php:1531
+#: admin/admin.php:1555
+#: admin/admin.php:1556
 #: assets/build/dashboard.js:172
 #: assets/build/entries.js:172
 #: assets/build/forms.js:172
@@ -11969,31 +11726,32 @@ msgstr "Formato esperado para e-mails - email@sureforms.com ou John Doe <email@s
 #: assets/build/partialEntriesEmptyState.js:172
 #: assets/build/payments.js:172
 #: assets/build/quizEmptyState.js:172
+#: assets/build/settings.js:2
 #: assets/build/settings.js:172
 #: assets/build/surveyEmptyState.js:172
 msgid "Payments"
 msgstr "Pagamentos"
 
-#: inc/admin-ajax.php:390
-#: inc/admin-ajax.php:541
+#: inc/admin-ajax.php:482
+#: inc/admin-ajax.php:633
 msgid "You do not have permission to access this file."
 msgstr "Você não tem permissão para acessar este arquivo."
 
-#: inc/admin-ajax.php:395
-#: inc/admin-ajax.php:545
+#: inc/admin-ajax.php:487
+#: inc/admin-ajax.php:637
 #: inc/payments/payment-history-shortcode.php:308
 msgid "Security check failed."
 msgstr "Verificação de segurança falhou."
 
-#: inc/admin-ajax.php:402
+#: inc/admin-ajax.php:494
 msgid "Invalid file request."
 msgstr "Pedido de arquivo inválido."
 
-#: inc/admin-ajax.php:411
+#: inc/admin-ajax.php:503
 msgid "Invalid file path."
 msgstr "Caminho de arquivo inválido."
 
-#: inc/admin-ajax.php:416
+#: inc/admin-ajax.php:508
 msgid "File not found."
 msgstr "Arquivo não encontrado."
 
@@ -12052,130 +11810,130 @@ msgstr "Nenhum dado de formulário fornecido para importação."
 msgid "Invalid form data structure provided."
 msgstr "Estrutura de dados do formulário inválida fornecida."
 
-#: inc/fields/payment-markup.php:346
+#: inc/fields/payment-markup.php:349
 #: inc/payments/payment-helper.php:545
 msgid "Subscription Plan"
 msgstr "Plano de Assinatura"
 
 #. translators: 1: Amount with currency, 2: Interval (day/week/month/quarter/year)
-#: inc/fields/payment-markup.php:647
+#: inc/fields/payment-markup.php:650
 #, php-format
 msgid "%1$s per %2$s (until cancelled)"
 msgstr "%1$s por %2$s (até ser cancelado)"
 
 #. translators: 1: Amount with currency, 2: Interval (day/week/month/quarter/year), 3: Number of billing cycles
-#: inc/fields/payment-markup.php:656
+#: inc/fields/payment-markup.php:659
 #, php-format
 msgid "%1$s per %2$s (%3$s payments)"
 msgstr "%1$s por %2$s (%3$s pagamentos)"
 
 #. translators: 1: Amount with currency, 2: Interval (day/week/month/quarter/year)
-#: inc/fields/payment-markup.php:666
+#: inc/fields/payment-markup.php:669
 #, php-format
 msgid "%1$s per %2$s"
 msgstr "%1$s por %2$s"
 
 #. translators: 1: Amount with currency placeholder, 2: Interval (day/week/month/quarter/year)
-#: inc/fields/payment-markup.php:689
+#: inc/fields/payment-markup.php:692
 #, php-format
 msgid "{amount} per %s (until cancelled)"
 msgstr "{amount} por %s (até ser cancelado)"
 
 #. translators: 1: Amount with currency placeholder, 2: Interval (day/week/month/quarter/year), 3: Number of billing cycles
-#: inc/fields/payment-markup.php:692
+#: inc/fields/payment-markup.php:695
 #, php-format
 msgid "{amount} per %1$s (%2$s payments)"
 msgstr "{amount} por %1$s (%2$s pagamentos)"
 
 #. translators: 1: Amount with currency placeholder, 2: Interval (day/week/month/quarter/year)
-#: inc/fields/payment-markup.php:695
+#: inc/fields/payment-markup.php:698
 #, php-format
 msgid "{amount} per %s"
 msgstr "{amount} por %s"
 
 #. translators: %s: Minimum amount with currency
-#: inc/fields/payment-markup.php:715
+#: inc/fields/payment-markup.php:718
 #, php-format
 msgid "Minimum amount: %s"
 msgstr "Montante mínimo: %s"
 
-#: inc/fields/payment-markup.php:486
+#: inc/fields/payment-markup.php:489
 msgid "Processing payment..."
 msgstr "Processando pagamento..."
 
-#: inc/fields/payment-markup.php:881
+#: inc/fields/payment-markup.php:884
 msgid "day"
 msgstr "dia"
 
-#: inc/fields/payment-markup.php:882
+#: inc/fields/payment-markup.php:885
 msgid "week"
 msgstr "semana"
 
-#: inc/fields/payment-markup.php:883
+#: inc/fields/payment-markup.php:886
 msgid "month"
 msgstr "mês"
 
-#: inc/fields/payment-markup.php:884
+#: inc/fields/payment-markup.php:887
 msgid "quarter"
 msgstr "trimestre"
 
-#: inc/fields/payment-markup.php:885
+#: inc/fields/payment-markup.php:888
 msgid "year"
 msgstr "ano"
 
-#: inc/fields/payment-markup.php:910
+#: inc/fields/payment-markup.php:913
 msgid "Test mode is enabled:"
 msgstr "O modo de teste está ativado:"
 
-#: inc/fields/payment-markup.php:912
+#: inc/fields/payment-markup.php:915
 msgid "Click here to enable live mode and accept payment"
 msgstr "Clique aqui para ativar o modo ao vivo e aceitar pagamento"
 
-#: inc/helper.php:1931
+#: inc/helper.php:1932
 msgid "Boost Your Email Deliverability Instantly!"
 msgstr "Aumente a Entregabilidade do Seu Email Instantaneamente!"
 
-#: inc/helper.php:1932
+#: inc/helper.php:1933
 msgid "Access a powerful, easy-to-use email delivery service that ensures your emails land in inboxes, not spam folders. Automate your WordPress email workflows confidently with SureMail."
 msgstr "Acesse um serviço de entrega de e-mails poderoso e fácil de usar que garante que seus e-mails cheguem nas caixas de entrada, e não nas pastas de spam. Automatize seus fluxos de trabalho de e-mail do WordPress com confiança usando o SureMail."
 
-#: inc/helper.php:1940
+#: inc/helper.php:1941
 msgid "Automate your WordPress workflows effortlessly."
 msgstr "Automatize seus fluxos de trabalho do WordPress sem esforço."
 
-#: inc/helper.php:1941
+#: inc/helper.php:1942
 msgid "Connect your WordPress plugins and favourite apps, automate tasks, and sync data effortlessly using OttoKit’s clean, visual workflow builder — no coding or complex setup required."
 msgstr "Conecte seus plugins do WordPress e aplicativos favoritos, automatize tarefas e sincronize dados sem esforço usando o construtor de fluxo de trabalho visual e limpo do OttoKit — sem necessidade de codificação ou configuração complexa."
 
-#: inc/helper.php:1952
+#: inc/helper.php:1953
 msgid "Launch Beautiful Websites in Minutes!"
 msgstr "Lance belos sites em minutos!"
 
-#: inc/helper.php:1953
+#: inc/helper.php:1954
 msgid "Choose from professionally designed templates, import with one click, and customize effortlessly to match your brand."
 msgstr "Escolha entre modelos projetados profissionalmente, importe com um clique e personalize sem esforço para combinar com sua marca."
 
-#: inc/helper.php:1966
+#: inc/helper.php:1967
 msgid "Power Up Elementor to Build Stunning Websites Faster!"
 msgstr "Potencie o Elementor para criar sites impressionantes mais rapidamente!"
 
-#: inc/helper.php:1967
+#: inc/helper.php:1968
 msgid "Enhance Elementor with powerful widgets and templates. Build stunning, high-performing websites faster with creative design elements and seamless customization."
 msgstr "Melhore o Elementor com widgets e modelos poderosos. Construa sites impressionantes e de alto desempenho mais rapidamente com elementos de design criativos e personalização perfeita."
 
-#: inc/helper.php:1975
+#: inc/helper.php:1976
 msgid "SureRank"
 msgstr "SureRank"
 
-#: inc/helper.php:1976
+#: inc/helper.php:1977
 msgid "Elevate Your SEO and Climb Search Rankings Effortlessly!"
 msgstr "Eleve seu SEO e suba nos rankings de busca sem esforço!"
 
-#: inc/helper.php:1977
+#: inc/helper.php:1978
 msgid "Boost your website's visibility with smart SEO automation. Optimize content, track keyword performance, and get actionable insights, all inside WordPress."
 msgstr "Aumente a visibilidade do seu site com automação inteligente de SEO. Otimize o conteúdo, acompanhe o desempenho das palavras-chave e obtenha insights acionáveis, tudo dentro do WordPress."
 
-#: inc/form-submit.php:174
+#: inc/form-submit.php:177
 #: inc/form-views.php:205
 #: inc/payments/admin/admin-handler.php:99
 #: inc/payments/admin/admin-handler.php:183
@@ -13482,15 +13240,15 @@ msgstr "Edite este formulário"
 msgid "Your form has been submitted successfully. We'll review your details and get back to you soon."
 msgstr "Seu formulário foi enviado com sucesso. Analisaremos seus dados e entraremos em contato em breve."
 
-#: inc/rest-api.php:784
-#: inc/rest-api.php:929
+#: inc/rest-api.php:799
+#: inc/rest-api.php:944
 msgid "Entry ID is required."
 msgstr "É necessário o ID de entrada."
 
 #: inc/abilities/entries/bulk-get-entries.php:172
 #: inc/abilities/entries/get-entry.php:121
-#: inc/rest-api.php:793
-#: inc/rest-api.php:938
+#: inc/rest-api.php:808
+#: inc/rest-api.php:953
 msgid "Entry not found."
 msgstr "Entrada não encontrada."
 
@@ -13693,7 +13451,7 @@ msgstr "Selecione o campo de email que contém o email do cliente"
 #: assets/build/partialEntriesEmptyState.js:172
 #: assets/build/payments.js:172
 #: assets/build/quizEmptyState.js:172
-#: assets/build/settings.js:172
+#: assets/build/settings.js:2
 #: assets/build/surveyEmptyState.js:172
 msgid "Knowledge Base"
 msgstr "Base de Conhecimento"
@@ -13706,7 +13464,7 @@ msgstr "Base de Conhecimento"
 #: assets/build/partialEntriesEmptyState.js:172
 #: assets/build/payments.js:172
 #: assets/build/quizEmptyState.js:172
-#: assets/build/settings.js:172
+#: assets/build/settings.js:2
 #: assets/build/surveyEmptyState.js:172
 msgid "What’s New"
 msgstr "O que há de novo"
@@ -14056,6 +13814,7 @@ msgstr "Automatize tarefas repetitivas com sincronização de dados perfeita."
 msgid "Access exclusive native integrations for faster workflows."
 msgstr "Acesse integrações nativas exclusivas para fluxos de trabalho mais rápidos."
 
+#: assets/build/dashboard.js:172
 #: assets/build/formEditor.js:172
 msgid "PDF Generation"
 msgstr "Geração de PDF"
@@ -14883,6 +14642,7 @@ msgstr "Forneça respostas instantâneas aos usuários"
 msgid "Perfect for finance, health, and pricing forms"
 msgstr "Perfeito para formulários de finanças, saúde e preços"
 
+#: assets/build/dashboard.js:172
 #: assets/build/templatePicker.js:172
 msgid "Conversational"
 msgstr "Conversacional"
@@ -14939,10 +14699,6 @@ msgid "Contact form to collect name, email, and message from visitors"
 msgstr "Formulário de contato para coletar nome, email e mensagem dos visitantes"
 
 #: assets/build/templatePicker.js:172
-msgid "Job application form for \"Marketing Manager\" with resume upload"
-msgstr "Formulário de candidatura para \"Gerente de Marketing\" com upload de currículo"
-
-#: assets/build/templatePicker.js:172
 msgid "Feedback form to ask customers: \"How would you rate our product and what should we improve?\""
 msgstr "Formulário de feedback para perguntar aos clientes: \"Como você classificaria nosso produto e o que devemos melhorar?\""
 
@@ -14965,10 +14721,6 @@ msgstr "Formulário de pesquisa: \"Quão satisfeito está com o nosso serviço? 
 #: assets/build/templatePicker.js:172
 msgid "Appointment booking form for \"Consultation Call\" with preferred time"
 msgstr "Formulário de agendamento para \"Chamada de Consulta\" com horário preferido"
-
-#: assets/build/templatePicker.js:172
-msgid "Describe the form that you want"
-msgstr "Descreva o formulário que você deseja"
 
 #: assets/build/templatePicker.js:172
 msgid "Generate"
@@ -15175,7 +14927,7 @@ msgstr "É necessário o valor do campo de quantidade variável."
 msgid "Payment amount below minimum. Minimum: %1$s, received %2$s."
 msgstr "Valor do pagamento abaixo do mínimo. Mínimo: %1$s, recebido %2$s."
 
-#: inc/rest-api.php:1932
+#: inc/rest-api.php:1953
 msgid " (Copy)"
 msgstr "(Cópia)"
 
@@ -15374,24 +15126,26 @@ msgid "Stripe Settings"
 msgstr "Configurações do Stripe"
 
 #. translators: %1$s: SureForms version, %2$s: SureForms Pro Plugin Name, %3$s: SureForms Pro Version.
-#: admin/admin.php:2346
+#: admin/admin.php:2379
 #, php-format
 msgid "SureForms %1$s requires minimum %2$s %3$s to work properly. Please update to the latest version."
 msgstr "O SureForms %1$s requer o mínimo %2$s %3$s para funcionar corretamente. Por favor, atualize para a versão mais recente."
 
-#: admin/admin.php:2359
+#: admin/admin.php:2392
 msgid "Update Now"
 msgstr "Atualizar agora"
 
-#: inc/helper.php:1921
+#: inc/helper.php:1922
+#: assets/build/dashboard.js:172
+#: assets/build/suremail.js:172
 msgid "SureContact"
 msgstr "SureContact"
 
-#: inc/helper.php:1922
+#: inc/helper.php:1923
 msgid "Turn Emails Into Revenue with a CRM Built for Your Website!"
 msgstr "Transforme e-mails em receita com um CRM feito para o seu site!"
 
-#: inc/helper.php:1923
+#: inc/helper.php:1924
 msgid "Send newsletters, run campaigns, set up automations, manage contacts, and see exactly how much revenue your emails generate, all in one place."
 msgstr "Envie newsletters, execute campanhas, configure automações, gerencie contatos e veja exatamente quanto de receita seus e-mails geram, tudo em um só lugar."
 
@@ -15427,8 +15181,8 @@ msgstr "Posição do Sinal de Moeda"
 msgid "Select the position of the currency symbol relative to the amount."
 msgstr "Selecione a posição do símbolo da moeda em relação ao valor."
 
-#: admin/admin.php:1473
-#: admin/admin.php:1474
+#: admin/admin.php:1498
+#: admin/admin.php:1499
 #: assets/build/dashboard.js:172
 #: assets/build/entries.js:172
 #: assets/build/forms.js:172
@@ -15437,46 +15191,46 @@ msgstr "Selecione a posição do símbolo da moeda em relação ao valor."
 #: assets/build/partialEntriesEmptyState.js:172
 #: assets/build/payments.js:172
 #: assets/build/quizEmptyState.js:172
-#: assets/build/settings.js:172
+#: assets/build/settings.js:2
 #: assets/build/surveyEmptyState.js:172
 msgid "Learn"
 msgstr "Aprender"
 
-#: admin/admin.php:2700
+#: admin/admin.php:2733
 msgid "Amazing! SureForms is powering your forms and submissions - let's keep growing together!"
 msgstr "Incrível! SureForms está alimentando seus formulários e submissões - vamos continuar crescendo juntos!"
 
-#: admin/admin.php:2701
+#: admin/admin.php:2734
 msgid "If SureForms has been helpful, would you mind taking a moment to leave a 5-star review on WordPress.org?"
 msgstr "Se o SureForms foi útil, você se importaria de deixar um comentário de 5 estrelas no WordPress.org?"
 
-#: admin/admin.php:2712
-#: admin/admin.php:2776
+#: admin/admin.php:2745
+#: admin/admin.php:2809
 msgid "Maybe later"
 msgstr "Talvez mais tarde"
 
-#: admin/admin.php:2718
+#: admin/admin.php:2751
 msgid "I already did"
 msgstr "Eu já fiz"
 
-#: admin/admin.php:2767
+#: admin/admin.php:2800
 msgid "SureForms is ready to power your forms — explore what's possible!"
 msgstr "SureForms está pronto para potencializar seus formulários — explore o que é possível!"
 
-#: admin/admin.php:2768
+#: admin/admin.php:2801
 msgid "Manage your forms, track submissions, and discover features like AI Form Builder, payment integrations, and more from the SureForms dashboard."
 msgstr "Gerencie seus formulários, acompanhe as submissões e descubra recursos como o Construtor de Formulários com IA, integrações de pagamento e muito mais no painel do SureForms."
 
-#: admin/admin.php:2771
+#: admin/admin.php:2804
 msgid "Go to Dashboard"
 msgstr "Ir para o Painel"
 
-#: admin/admin.php:2782
+#: admin/admin.php:2815
 msgid "I already know"
 msgstr "Eu já sei"
 
-#: admin/admin.php:2917
-#: admin/admin.php:3805
+#: admin/admin.php:2968
+#: admin/admin.php:3931
 msgid "Invalid parameters."
 msgstr "Parâmetros inválidos."
 
@@ -15860,74 +15614,70 @@ msgid "This form is not yet available. Check back after the scheduled start time
 msgstr "Este formulário ainda não está disponível. Verifique novamente após o horário de início programado."
 
 #: inc/admin/html-form-detector.php:268
-#: inc/form-submit.php:247
-#: inc/form-submit.php:553
-#: inc/form-submit.php:598
-#: inc/form-submit.php:1271
+#: inc/form-submit.php:250
+#: inc/form-submit.php:556
+#: inc/form-submit.php:601
+#: inc/form-submit.php:1337
 #: inc/migrator/bootstrap.php:357
 #: inc/payments/front-end.php:79
 #: inc/payments/front-end.php:266
-#: inc/rest-api.php:124
-#: inc/rest-api.php:183
-#: inc/rest-api.php:349
-#: inc/rest-api.php:381
-#: inc/rest-api.php:403
-#: inc/rest-api.php:508
-#: inc/rest-api.php:599
-#: inc/rest-api.php:644
-#: inc/rest-api.php:693
-#: inc/rest-api.php:742
-#: inc/rest-api.php:775
-#: inc/rest-api.php:916
-#: inc/rest-api.php:1001
-#: inc/rest-api.php:1061
-#: inc/rest-api.php:1436
+#: inc/rest-api.php:125
+#: inc/rest-api.php:184
+#: inc/rest-api.php:350
+#: inc/rest-api.php:382
+#: inc/rest-api.php:404
+#: inc/rest-api.php:523
+#: inc/rest-api.php:614
+#: inc/rest-api.php:659
+#: inc/rest-api.php:708
+#: inc/rest-api.php:757
+#: inc/rest-api.php:790
+#: inc/rest-api.php:931
+#: inc/rest-api.php:1016
+#: inc/rest-api.php:1076
+#: inc/rest-api.php:1451
 #: inc/single-form-settings/form-settings-api.php:89
 msgid "Security verification failed. Please refresh the page and try again."
 msgstr "A verificação de segurança falhou. Por favor, atualize a página e tente novamente."
 
-#: inc/form-submit.php:632
+#: inc/form-submit.php:635
 msgid "Form data was not found."
 msgstr "Os dados do formulário não foram encontrados."
 
-#: inc/form-submit.php:386
+#: inc/form-submit.php:389
 msgid "Form ID is missing."
 msgstr "O ID do formulário está ausente."
 
-#: inc/form-submit.php:263
+#: inc/form-submit.php:266
 msgid "Sorry, you do not have permission to access this resource."
 msgstr "Desculpe, você não tem permissão para acessar este recurso."
 
-#: inc/form-submit.php:418
+#: inc/form-submit.php:421
 msgid "You do not have permission to submit this form."
 msgstr "Você não tem permissão para enviar este formulário."
 
-#: inc/form-submit.php:428
+#: inc/form-submit.php:431
 msgid "This form is no longer available."
 msgstr "Este formulário não está mais disponível."
 
-#: inc/form-submit.php:446
+#: inc/form-submit.php:449
 msgid "Please check the form for errors."
 msgstr "Por favor, verifique o formulário em busca de erros."
 
-#: inc/form-submit.php:573
-#: inc/form-submit.php:614
+#: inc/form-submit.php:576
+#: inc/form-submit.php:617
 msgid "Your submission was flagged as spam. Please try again."
 msgstr "Sua submissão foi marcada como spam. Por favor, tente novamente."
 
-#: inc/form-submit.php:882
+#: inc/form-submit.php:916
 msgid "Unable to submit form. Please try again."
 msgstr "Não foi possível enviar o formulário. Por favor, tente novamente."
 
-#: inc/form-submit.php:1151
+#: inc/email-delivery/mailer.php:386
 msgid "No SMTP plugin detected. Please configure an SMTP plugin to enable email sending."
 msgstr "Nenhum plugin SMTP detectado. Por favor, configure um plugin SMTP para habilitar o envio de e-mails."
 
-#: inc/form-submit.php:1152
-msgid "Email sending failed for an unknown reason."
-msgstr "O envio do e-mail falhou por uma razão desconhecida."
-
-#: inc/form-submit.php:1215
+#: inc/form-submit.php:1270
 msgid "No emails were sent."
 msgstr "Nenhum e-mail foi enviado."
 
@@ -16145,63 +15895,63 @@ msgstr "Não foi possível conectar ao Stripe."
 msgid "This form is closed. The submission period has ended."
 msgstr "Este formulário está fechado. O período de envio terminou."
 
-#: inc/rest-api.php:130
+#: inc/rest-api.php:131
 msgid "Missing required parameters."
 msgstr "Faltando parâmetros obrigatórios."
 
-#: inc/rest-api.php:137
+#: inc/rest-api.php:138
 msgid "Invalid date range."
 msgstr "Intervalo de datas inválido."
 
-#: inc/rest-api.php:519
+#: inc/rest-api.php:534
 msgid "Plugin identifier is required."
 msgstr "É necessário o identificador do plugin."
 
-#: inc/rest-api.php:528
+#: inc/rest-api.php:543
 msgid "Integration not found."
 msgstr "Integração não encontrada."
 
-#: inc/rest-api.php:654
-#: inc/rest-api.php:703
-#: inc/rest-api.php:751
+#: inc/rest-api.php:669
+#: inc/rest-api.php:718
+#: inc/rest-api.php:766
 msgid "Select at least one entry."
 msgstr "Selecione pelo menos uma entrada."
 
-#: inc/rest-api.php:661
-#: inc/rest-api.php:710
+#: inc/rest-api.php:676
+#: inc/rest-api.php:725
 msgid "Action is required."
 msgstr "Ação é necessária."
 
-#: inc/rest-api.php:669
+#: inc/rest-api.php:684
 msgid "Invalid action. Use \"read\" or \"unread\"."
 msgstr "Ação inválida. Use \"ler\" ou \"não lida\"."
 
-#: inc/rest-api.php:718
+#: inc/rest-api.php:733
 msgid "Invalid action. Use \"trash\" or \"restore\"."
 msgstr "Ação inválida. Use \"trash\" ou \"restore\"."
 
-#: inc/rest-api.php:1075
+#: inc/rest-api.php:1090
 msgid "Select at least one form and specify an action."
 msgstr "Selecione pelo menos um formulário e especifique uma ação."
 
-#: inc/rest-api.php:1090
+#: inc/rest-api.php:1105
 msgid "Form not found or is not a valid form type."
 msgstr "Formulário não encontrado ou não é um tipo de formulário válido."
 
-#: inc/rest-api.php:1102
+#: inc/rest-api.php:1117
 msgid "This form is already in the trash."
 msgstr "Este formulário já está na lixeira."
 
-#: inc/rest-api.php:1113
+#: inc/rest-api.php:1128
 msgid "This form is not in the trash."
 msgstr "Este formulário não está na lixeira."
 
-#: inc/rest-api.php:1149
+#: inc/rest-api.php:1164
 msgid "Invalid action."
 msgstr "Ação inválida."
 
 #. translators: %s: action name
-#: inc/rest-api.php:1164
+#: inc/rest-api.php:1179
 #, php-format
 msgid "Failed to %s this form. Please try again."
 msgstr "Falha ao %s este formulário. Por favor, tente novamente."
@@ -16265,24 +16015,8 @@ msgid "Supercharge Your Workflow"
 msgstr "Supercarregue seu fluxo de trabalho"
 
 #: assets/build/dashboard.js:172
-msgid "Spam protection included"
-msgstr "Proteção contra spam incluída"
-
-#: assets/build/dashboard.js:172
 msgid "Multistep Forms"
 msgstr "Formulários em várias etapas"
-
-#: assets/build/dashboard.js:172
-msgid "Send form entries instantly to any external system or endpoint to power advanced workflows."
-msgstr "Envie entradas de formulário instantaneamente para qualquer sistema externo ou endpoint para impulsionar fluxos de trabalho avançados."
-
-#: assets/build/dashboard.js:172
-msgid "Automatically turn form entries into clean, ready-to-download PDFs. Perfect for records, sharing, archiving, or keeping things organized."
-msgstr "Transforme automaticamente as entradas de formulários em PDFs limpos e prontos para download. Perfeito para registros, compartilhamento, arquivamento ou para manter tudo organizado."
-
-#: assets/build/dashboard.js:172
-msgid "Set up confirmation messages and email notifications for each entry"
-msgstr "Configure mensagens de confirmação e notificações por e-mail para cada entrada"
 
 #: assets/build/entries.js:172
 msgid "All Statuses"
@@ -16440,7 +16174,7 @@ msgid "Duplicate form?"
 msgstr "Duplicar formulário?"
 
 #: assets/build/formSubmit.js:2
-#: assets/js/unminified/form-submit.js:953
+#: assets/js/unminified/form-submit.js:1015
 msgid "An error occurred while submitting your form. Please try again."
 msgstr "Ocorreu um erro ao enviar o seu formulário. Por favor, tente novamente."
 
@@ -16580,10 +16314,6 @@ msgstr "Não foi possível criar o formulário"
 #: assets/build/templatePicker.js:172
 msgid "Something went wrong. Please try again."
 msgstr "Algo deu errado. Por favor, tente novamente."
-
-#: assets/build/templatePicker.js:172
-msgid "Describe what kind of form you want"
-msgstr "Descreva que tipo de formulário você deseja"
 
 #: assets/build/templatePicker.js:172
 msgid "Click to generate the form"
@@ -16817,28 +16547,25 @@ msgstr "Segredo do webhook não configurado."
 msgid "Invalid webhook signature."
 msgstr "Assinatura de webhook inválida."
 
-#: admin/admin.php:1312
-#: admin/admin.php:1916
+#: admin/admin.php:1345
+#: admin/admin.php:1942
 #: assets/build/formEditor.js:172
 msgid "Quizzes"
 msgstr "Questionários"
 
-#: admin/admin.php:1311
+#: admin/admin.php:1344
 msgid "Quiz Entries"
 msgstr "Entradas do Quiz"
 
-#: admin/admin.php:1314
-#: admin/admin.php:1347
-#: admin/admin.php:1380
 #: assets/build/settings.js:172
 msgid "New"
 msgstr "Novo"
 
-#: inc/form-submit.php:1280
+#: inc/form-submit.php:1346
 msgid "Invalid form."
 msgstr "Formulário inválido."
 
-#: inc/form-submit.php:1285
+#: inc/form-submit.php:1351
 msgid "Too many requests. Please try again shortly."
 msgstr "Solicitações demais. Por favor, tente novamente em breve."
 
@@ -16899,7 +16626,7 @@ msgstr "Preenchimento do Formulário"
 msgid "Form Border Radius"
 msgstr "Raio da Borda do Formulário"
 
-#: inc/rest-api.php:414
+#: inc/rest-api.php:415
 msgid "Invalid onboarding user details."
 msgstr "Detalhes de usuário de integração inválidos."
 
@@ -16986,29 +16713,8 @@ msgid "Payment Forms"
 msgstr "Formas de Pagamento"
 
 #: assets/build/dashboard.js:172
-msgid "Collect payments directly through your forms. Accept one-time and recurring payments seamlessly."
-msgstr "Cobre pagamentos diretamente através dos seus formulários. Aceite pagamentos únicos e recorrentes de forma fluida."
-
-#: assets/build/dashboard.js:172
-#, js-format
-msgid "SureForms %s"
-msgstr "SureForms %s"
-
-#: assets/build/dashboard.js:172
-msgid "First name is required."
-msgstr "O primeiro nome é obrigatório."
-
-#: assets/build/dashboard.js:172
 msgid "Please enter a valid email address."
 msgstr "Por favor, insira um endereço de e-mail válido."
-
-#: assets/build/dashboard.js:172
-msgid "Email address is required."
-msgstr "Endereço de e-mail é obrigatório."
-
-#: assets/build/dashboard.js:172
-msgid "This is required."
-msgstr "Isto é necessário."
 
 #: assets/build/dashboard.js:172
 msgid "Okay, just one last step…"
@@ -17025,10 +16731,6 @@ msgstr "Primeiro Nome"
 #: assets/build/dashboard.js:172
 msgid "Enter your first name"
 msgstr "Insira seu primeiro nome"
-
-#: assets/build/dashboard.js:172
-msgid "Last Name"
-msgstr "Sobrenome"
 
 #: assets/build/dashboard.js:172
 msgid "Enter your last name"
@@ -17347,9 +17049,9 @@ msgstr "Perfeito para educação, treinamento e curiosidades divertidas"
 msgid "Select this to create a quiz with scored questions and graded results."
 msgstr "Selecione isto para criar um questionário com perguntas pontuadas e resultados avaliados."
 
-#: admin/admin.php:1344
-#: admin/admin.php:1345
-#: admin/admin.php:1921
+#: admin/admin.php:1374
+#: admin/admin.php:1375
+#: admin/admin.php:1947
 msgid "Survey Reports"
 msgstr "Relatórios de Pesquisa"
 
@@ -17749,13 +17451,13 @@ msgstr "A resposta da IA não incluiu um formulário. Por favor, tente novamente
 msgid "The AI returned a malformed form field. Please try again."
 msgstr "A IA retornou um campo de formulário malformado. Por favor, tente novamente."
 
-#: inc/create-new-form.php:160
-#: inc/create-new-form.php:173
+#: inc/create-new-form.php:161
+#: inc/create-new-form.php:174
 msgid "Error creating SureForms Form."
 msgstr "Erro ao criar o formulário SureForms."
 
 #. translators: %s represents the minimum number of characters required
-#: inc/field-validation.php:453
+#: inc/field-validation.php:526
 #: inc/translatable.php:94
 #, php-format
 msgid "Please enter at least %s characters."
@@ -17765,7 +17467,7 @@ msgstr "Por favor, insira pelo menos %s caracteres."
 msgid "One-Time Payment"
 msgstr "Pagamento Único"
 
-#: inc/fields/payment-markup.php:537
+#: inc/fields/payment-markup.php:540
 msgid "Choose payment type"
 msgstr "Escolha o tipo de pagamento"
 
@@ -17913,9 +17615,9 @@ msgstr "A resposta da IA estava vazia. Por favor, refine seu prompt e tente nova
 msgid "Unable to build form fields from the AI response."
 msgstr "Não foi possível criar campos de formulário a partir da resposta da IA."
 
-#: admin/admin.php:1377
-#: admin/admin.php:1378
-#: admin/admin.php:1926
+#: admin/admin.php:1404
+#: admin/admin.php:1405
+#: admin/admin.php:1952
 msgid "Partial Entries"
 msgstr "Entradas Parciais"
 
@@ -17935,11 +17637,11 @@ msgstr "Aba de configurações inválida."
 msgid "Thank you for contacting us! We will be in touch with you shortly."
 msgstr "Obrigado por nos contatar! Entraremos em contato com você em breve."
 
-#: inc/rest-api.php:1129
+#: inc/rest-api.php:1144
 msgid "Use the restore action to recover a trashed form before switching it to draft."
 msgstr "Use a ação de restauração para recuperar um formulário descartado antes de alterá-lo para rascunho."
 
-#: inc/rest-api.php:1134
+#: inc/rest-api.php:1149
 msgid "This form is already a draft."
 msgstr "Este formulário já é um rascunho."
 
@@ -18759,15 +18461,15 @@ msgstr "Múltipla escolha"
 msgid "Consent"
 msgstr "Consentimento"
 
-#: inc/helper.php:1912
+#: inc/helper.php:1913
 msgid "SureDonation"
 msgstr "SureDonation"
 
-#: inc/helper.php:1913
+#: inc/helper.php:1914
 msgid "Start Collecting Donations Today"
 msgstr "Comece a Coletar Doações Hoje"
 
-#: inc/helper.php:1914
+#: inc/helper.php:1915
 msgid "Want to accept donations too? SureDonation makes it easy to collect contributions right on your WordPress site."
 msgstr "Quer aceitar doações também? O SureDonation facilita a coleta de contribuições diretamente no seu site WordPress."
 
@@ -18782,23 +18484,24 @@ msgstr "O valor do pagamento não pôde ser verificado para este formulário. Po
 msgid "Cancellation is not supported for this payment gateway."
 msgstr "O cancelamento não é suportado para este gateway de pagamento."
 
-#: admin/admin.php:3142
+#: admin/admin.php:3193
 msgid "SureForms AI Quick Draft"
 msgstr "SureForms AI Rascunho Rápido"
 
-#: admin/admin.php:3161
+#: admin/admin.php:3212
 msgid "Describe the form and let SureForms AI generate it for you."
 msgstr "Descreva o formulário e deixe o SureForms AI gerá-lo para você."
 
-#: admin/admin.php:3164
+#: admin/admin.php:3215
+#: assets/build/templatePicker.js:172
 msgid "Describe your form"
 msgstr "Descreva seu formulário"
 
-#: admin/admin.php:3171
+#: admin/admin.php:3222
 msgid "Example: Create a contact form with name, email, phone, and message fields."
 msgstr "Exemplo: Crie um formulário de contato com campos de nome, email, telefone e mensagem."
 
-#: admin/admin.php:3212
+#: admin/admin.php:3263
 msgid "Redirecting..."
 msgstr "Redirecionando..."
 
@@ -18811,14 +18514,14 @@ msgid "The prompt is too long. Please shorten it and try again."
 msgstr "O prompt é muito longo. Por favor, encurte-o e tente novamente."
 
 #. translators: %s: maximum characters allowed before the @ symbol.
-#: inc/field-validation.php:475
+#: inc/field-validation.php:548
 #: inc/translatable.php:97
 #, php-format
 msgid "The part before @ may not exceed %s characters."
 msgstr "A parte antes do @ não pode exceder %s caracteres."
 
 #. translators: %s: maximum characters allowed after the @ symbol.
-#: inc/field-validation.php:481
+#: inc/field-validation.php:554
 #: inc/translatable.php:100
 #, php-format
 msgid "The part after @ may not exceed %s characters."
@@ -18905,74 +18608,74 @@ msgstr "Desculpe, você não tem permissão para renderizar este formulário."
 msgid "This form requires a payment. Please complete the payment and submit again."
 msgstr "Este formulário requer um pagamento. Por favor, complete o pagamento e envie novamente."
 
-#: admin/admin.php:611
+#: admin/admin.php:615
 msgid "You are not allowed to update this prompt."
 msgstr "Você não tem permissão para atualizar este prompt."
 
-#: admin/admin.php:654
+#: admin/admin.php:659
 msgid "Finish setting up your form"
 msgstr "Conclua a configuração do seu formulário"
 
-#: admin/admin.php:686
+#: admin/admin.php:691
 msgid "Review or edit your form"
 msgstr "Revise ou edite seu formulário"
 
-#: admin/admin.php:687
-#: admin/admin.php:4312
+#: admin/admin.php:692
+#: admin/admin.php:4764
 msgid "Edit form"
 msgstr "Editar formulário"
 
-#: admin/admin.php:692
+#: admin/admin.php:697
 msgid "Personalize the Thank You message"
 msgstr "Personalize a mensagem de agradecimento"
 
-#: admin/admin.php:693
+#: admin/admin.php:698
 msgid "Edit message"
 msgstr "Editar mensagem"
 
-#: admin/admin.php:698
+#: admin/admin.php:703
 msgid "Choose who gets notified of new replies"
 msgstr "Escolha quem será notificado sobre novas respostas"
 
-#: admin/admin.php:699
+#: admin/admin.php:704
 msgid "Set up email"
 msgstr "Configurar e-mail"
 
-#: admin/admin.php:707
+#: admin/admin.php:738
 msgid "your form"
 msgstr "seu formulário"
 
 #. translators: %s: form title.
-#: admin/admin.php:710
+#: admin/admin.php:741
 #, php-format
 msgid "Finish setting up %s"
 msgstr "Conclua a configuração de %s"
 
 #. translators: %s: form title.
-#: admin/admin.php:718
+#: admin/admin.php:749
 #, php-format
 msgid "View %s (opens in a new tab)"
 msgstr "Visualizar %s (abre em uma nova aba)"
 
-#: admin/admin.php:723
+#: admin/admin.php:754
 msgid "Customize your form to get it ready for real submissions:"
 msgstr "Personalize seu formulário para deixá-lo pronto para envios reais:"
 
-#: admin/admin.php:4301
+#: admin/admin.php:4753
 msgid "We’ve already created this form for you. Finish customising it so it’s ready to collect real submissions."
 msgstr "Já criamos este formulário para você. Termine de personalizá-lo para que esteja pronto para coletar envios reais."
 
 #. translators: %s: form name.
-#: admin/admin.php:4306
+#: admin/admin.php:4758
 #, php-format
 msgid "Finish setting up “%s”"
 msgstr "Conclua a configuração de “%s”"
 
-#: admin/admin.php:4319
+#: admin/admin.php:4771
 msgid "Edit the Thank You message"
 msgstr "Edite a mensagem de agradecimento"
 
-#: admin/admin.php:4325
+#: admin/admin.php:4777
 msgid "Set where replies go"
 msgstr "Defina para onde vão as respostas"
 
@@ -19000,68 +18703,69 @@ msgstr "Por favor, escolha um arquivo de imagem."
 msgid "This form could not be submitted. Please refresh the page and try again."
 msgstr "Este formulário não pôde ser enviado. Por favor, atualize a página e tente novamente."
 
-#: admin/admin.php:2406
-#: admin/admin.php:2495
+#: admin/admin.php:2439
+#: admin/admin.php:2528
 msgid "Your SureForms database is up to date. New form entries will be saved as usual."
 msgstr "Seu banco de dados SureForms está atualizado. Novas entradas de formulário serão salvas como de costume."
 
-#: admin/admin.php:2420
-#: admin/admin.php:2504
-#: inc/rest-api.php:1447
+#: admin/admin.php:2453
+#: admin/admin.php:2537
+#: inc/rest-api.php:1462
 msgid "SureForms could not finish updating the database. Your hosting may not allow SureForms to create database tables — please contact your hosting provider or SureForms support."
 msgstr "SureForms não conseguiu concluir a atualização do banco de dados. Sua hospedagem pode não permitir que o SureForms crie tabelas de banco de dados — por favor, entre em contato com seu provedor de hospedagem ou com o suporte do SureForms."
 
-#: admin/admin.php:2423
+#: admin/admin.php:2456
 msgid "Contact support"
 msgstr "Contatar suporte"
 
-#: admin/admin.php:2443
+#: admin/admin.php:2476
 msgid "Database update needed"
 msgstr "Atualização do banco de dados necessária"
 
-#: admin/admin.php:2449
+#: admin/admin.php:2482
 msgid "Fix now"
 msgstr "Corrigir agora"
 
-#: admin/admin.php:2518
+#: admin/admin.php:2551
 msgid "SureForms — database update needed"
 msgstr "SureForms — atualização do banco de dados necessária"
 
-#: admin/admin.php:2523
+#: admin/admin.php:2556
 msgid "Update database"
 msgstr "Atualizar banco de dados"
 
-#: admin/admin.php:2543
+#: admin/admin.php:2576
 msgid "You do not have permission to update the database."
 msgstr "Você não tem permissão para atualizar o banco de dados."
 
-#: admin/admin.php:3601
+#: admin/admin.php:3680
 msgid "You do not have permission to do this."
 msgstr "Você não tem permissão para fazer isso."
 
 #. translators: %s: caching plugin name.
-#: admin/admin.php:4006
+#: admin/admin.php:4156
 msgid "%s may interfere with your forms."
 msgstr "%s pode interferir com seus formulários."
 
-#: admin/admin.php:3982
-#: admin/admin.php:4010
+#: admin/admin.php:4126
+#: admin/admin.php:4160
+#: admin/admin.php:5529
 msgid "Help Me Fix"
 msgstr "Ajude-me a corrigir"
 
-#: admin/admin.php:4055
+#: admin/admin.php:4507
 msgid "SureForms found your form entries stored under a different database table prefix. Reconnecting them takes a moment, and your existing entries will be kept."
 msgstr "SureForms encontrou suas entradas de formulário armazenadas sob um prefixo de tabela de banco de dados diferente. Reconectá-las leva um momento, e suas entradas existentes serão mantidas."
 
-#: admin/admin.php:4058
+#: admin/admin.php:4510
 msgid "SureForms needs to update your database before it can save new form entries. This only takes a moment and will not change your forms or existing content. Entries submitted before now cannot be recovered from here."
 msgstr "SureForms precisa atualizar seu banco de dados antes que possa salvar novas entradas de formulário. Isso leva apenas um momento e não alterará seus formulários ou conteúdo existente. Entradas enviadas antes de agora não podem ser recuperadas daqui."
 
-#: inc/admin-ajax.php:492
+#: inc/admin-ajax.php:584
 msgid "No form submission failures have been recorded."
 msgstr "Nenhuma falha de envio de formulário foi registrada."
 
-#: inc/form-submit.php:163
+#: inc/form-submit.php:166
 msgid "Not found."
 msgstr "Não encontrado."
 
@@ -19142,67 +18846,59 @@ msgstr "Visualizações e Conversão de Formulários"
 msgid "Logs"
 msgstr "Logs"
 
-#: admin/admin.php:2839
+#: admin/admin.php:2872
 msgid "Previous notice"
 msgstr "Aviso anterior"
 
-#: admin/admin.php:2840
+#: admin/admin.php:2873
 msgid "Next notice"
 msgstr "Próximo aviso"
 
 #. translators: 1: current position, 2: total notices.
-#: admin/admin.php:2842
+#: admin/admin.php:2875
 msgid "%1$d of %2$d"
 msgstr "%1$d de %2$d"
 
-#: assets/build/dashboard.js:172
-msgid "Details"
-msgstr "Detalhes"
-
-#: assets/build/dashboard.js:172
-msgid "Copy details"
-msgstr "Copiar detalhes"
-
 #. translators: %s: form title.
-#: admin/admin.php:3911
+#: admin/admin.php:4037
 msgid "We noticed a form submission failure on %s."
 msgstr "Notamos uma falha de envio de formulário em %s."
 
-#: admin/admin.php:3912
+#: admin/admin.php:4038
 msgid "We noticed a form submission failure."
 msgstr "Notamos uma falha de envio de formulário."
 
-#: admin/admin.php:3913
+#: admin/admin.php:4039
 msgid "Visitors may not be able to reach you, and their entries were not saved."
 msgstr "Os visitantes podem não conseguir entrar em contato com você, e suas entradas não foram salvas."
 
 #. translators: %s: form title.
-#: admin/admin.php:3918
+#: admin/admin.php:4044
 msgid "We noticed a notification failure on %s."
 msgstr "Notamos uma falha de notificação em %s."
 
-#: admin/admin.php:3919
+#: admin/admin.php:4045
 msgid "We noticed a notification failure."
 msgstr "Notamos uma falha de notificação."
 
-#: admin/admin.php:3920
+#: admin/admin.php:4046
 msgid "The entry was saved, but we could not send the email about it. New entries may be coming in without you knowing."
 msgstr "A entrada foi salva, mas não conseguimos enviar o e-mail sobre ela. Novas entradas podem estar chegando sem que você saiba."
 
 #. translators: %s: form title.
-#: admin/admin.php:3935
+#: admin/admin.php:4061
 msgid "We noticed an integration failure on %s."
 msgstr "Notamos uma falha de integração em %s."
 
-#: admin/admin.php:3936
+#: admin/admin.php:4062
 msgid "We noticed an integration failure."
 msgstr "Notamos uma falha de integração."
 
-#: admin/admin.php:3937
+#: admin/admin.php:4063
 msgid "The entry was saved, but we could not send it to a connected service."
 msgstr "A entrada foi salva, mas não conseguimos enviá-la para um serviço conectado."
 
-#: admin/admin.php:4009
+#: admin/admin.php:4159
 msgid "Caching can show visitors an old copy of your form, or load its scripts in the wrong order."
 msgstr "O cache pode mostrar aos visitantes uma cópia antiga do seu formulário ou carregar seus scripts na ordem errada."
 
@@ -19238,6 +18934,1052 @@ msgstr "Capture os dados do formulário em andamento no momento em que os visita
 #: assets/build/settings.js:172
 msgid "Receive a scheduled digest of form submissions straight to your inbox."
 msgstr "Receba um resumo agendado das submissões de formulários diretamente na sua caixa de entrada."
+
+#: admin/admin.php:725
+#: inc/email-delivery/status.php:585
+msgid "Set up email delivery"
+msgstr "Configurar entrega de email"
+
+#: admin/admin.php:4071
+msgid "View SureMail Logs"
+msgstr "Ver Logs do SureMail"
+
+#. translators: %s: form title.
+#: admin/admin.php:4080
+msgid "A notification failed on %s, and the submission was not stored."
+msgstr "Uma notificação falhou em %s, e a submissão não foi armazenada."
+
+#: admin/admin.php:4081
+msgid "A notification failed, and the submission was not stored."
+msgstr "Uma notificação falhou, e a submissão não foi armazenada."
+
+#: admin/admin.php:4082
+msgid "This form is set to never store entries, so the email was the only copy of that submission and it could not be sent. Set up email delivery, or turn off \"Never store entry data after form submission\" for this form, so submissions are not lost."
+msgstr "Este formulário está configurado para nunca armazenar entradas, então o email era a única cópia dessa submissão e não pôde ser enviado. Configure a entrega de email ou desative \"Nunca armazenar dados de entrada após a submissão do formulário\" para este formulário, para que as submissões não sejam perdidas."
+
+#: admin/admin.php:4212
+#: assets/build/dashboard.js:172
+msgid "Connect SureContact"
+msgstr "Conectar SureContact"
+
+#: admin/admin.php:4272
+#: inc/email-delivery/status.php:673
+msgid "Email delivery is not set up"
+msgstr "A entrega de email não está configurada"
+
+#: admin/admin.php:4273
+msgid "Form notifications have no email service behind them, which is why they can fail. Set up email delivery so new entries reach your inbox."
+msgstr "As notificações do formulário não têm um serviço de email por trás delas, por isso podem falhar. Configure a entrega de email para que novas entradas cheguem à sua caixa de entrada."
+
+#: admin/admin.php:4275
+#: inc/email-delivery/status.php:680
+msgid "SureMail needs a sending connection"
+msgstr "SureMail precisa de uma conexão de envio"
+
+#: admin/admin.php:4276
+msgid "SureMail has no working connection, so form notifications are not handed to an email service."
+msgstr "SureMail não tem uma conexão funcional, então as notificações do formulário não são entregues a um serviço de email."
+
+#: admin/admin.php:4367
+msgid "Your SureContact emails have run out"
+msgstr "Seus emails do SureContact acabaram"
+
+#. translators: %s: number of emails in the SureContact plan.
+#: admin/admin.php:4371
+msgid "All %s emails for this month are used, so form notifications are not being sent until next month. Upgrade in SureMail to keep sending."
+msgstr "Todos os %s emails deste mês foram usados, então as notificações do formulário não estão sendo enviadas até o próximo mês. Faça um upgrade no SureMail para continuar enviando."
+
+#. translators: %s: number of emails in the SureContact plan.
+#: admin/admin.php:4376
+msgid "All %s emails are used, so form notifications are not being sent. Upgrade in SureMail to keep sending."
+msgstr "Todos os %s emails foram usados, então as notificações do formulário não estão sendo enviadas. Faça um upgrade no SureMail para continuar enviando."
+
+#: admin/admin.php:4381
+msgid "Your free SureContact emails are almost used up"
+msgstr "Seus emails gratuitos do SureContact estão quase acabando"
+
+#: admin/admin.php:4382
+msgid "Your SureContact emails are almost used up"
+msgstr "Seus emails do SureContact estão quase acabando"
+
+#. translators: 1: emails used, 2: emails in the plan.
+#: admin/admin.php:4386
+msgid "%1$s of %2$s emails used this month. When they run out, form notifications stop being sent until next month, unless you upgrade."
+msgstr "%1$s de %2$s emails usados este mês. Quando acabarem, as notificações do formulário param de ser enviadas até o próximo mês, a menos que você faça um upgrade."
+
+#. translators: 1: emails used, 2: emails in the plan.
+#: admin/admin.php:4392
+msgid "%1$s of %2$s emails used. When they run out, form notifications stop being sent until you upgrade."
+msgstr "%1$s de %2$s emails usados. Quando acabarem, as notificações do formulário param de ser enviadas até que você faça um upgrade."
+
+#: admin/admin.php:4404
+msgid "Upgrade in SureMail"
+msgstr "Faça um upgrade no SureMail"
+
+#: admin/admin.php:5513
+msgid "These forms are set to never store entries, and no email notification for them could be sent, so the submissions were not saved anywhere. Set up email delivery, or turn off \"Never store entry data after form submission\" on these forms."
+msgstr "Estes formulários estão configurados para nunca armazenar entradas, e nenhuma notificação de email para eles pôde ser enviada, então as submissões não foram salvas em lugar algum. Configure a entrega de email ou desative \"Nunca armazenar dados de entrada após a submissão do formulário\" nesses formulários."
+
+#. translators: %s: comma-separated form titles.
+#: admin/admin.php:5516
+msgid "Forms: %s."
+msgstr "Formulários: %s."
+
+#. translators: %s: number of lost submissions.
+#: admin/admin.php:5525
+msgid "%s form submission was lost"
+msgid_plural "%s form submissions were lost"
+msgstr[0] "%s submissão de formulário foi perdida"
+msgstr[1] ""
+
+#: inc/admin-ajax.php:96
+msgid "This plugin cannot be activated from SureForms."
+msgstr "Este plugin não pode ser ativado a partir do SureForms."
+
+#: inc/email-delivery/mailer.php:369
+msgid "SureMail did not accept this email. It may retry it automatically; SureMail's email logs show the reason."
+msgstr "SureMail não aceitou este email. Ele pode tentar novamente automaticamente; os logs de email do SureMail mostram o motivo."
+
+#. translators: %s: name of the site's mail plugin.
+#: inc/email-delivery/mailer.php:378
+msgid "%s did not accept this email. Its logs show the reason."
+msgstr "%s não aceitou este email. Seus logs mostram o motivo."
+
+#: inc/email-delivery/mailer.php:379
+msgid "Your mail plugin"
+msgstr "Seu plugin de email"
+
+#: inc/email-delivery/status.php:571
+msgid "Verify in SureMail"
+msgstr "Verificar no SureMail"
+
+#: inc/email-delivery/status.php:585
+#: assets/build/dashboard.js:172
+msgid "Activate SureMail"
+msgstr "Ativar SureMail"
+
+#: inc/email-delivery/status.php:593
+msgid "Connect SureContact in SureMail"
+msgstr "Conectar SureContact no SureMail"
+
+#: inc/email-delivery/status.php:593
+msgid "Add a connection in SureMail"
+msgstr "Adicionar uma conexão no SureMail"
+
+#: inc/email-delivery/status.php:601
+#: assets/build/dashboard.js:172
+msgid "Finish in SureMail"
+msgstr "Concluir no SureMail"
+
+#: inc/email-delivery/status.php:609
+#: assets/build/formEditor.js:172
+msgid "View SureMail logs"
+msgstr "Ver logs do SureMail"
+
+#: inc/email-delivery/status.php:636
+msgid "Verify your SureContact email to keep sending"
+msgstr "Verifique seu email do SureContact para continuar enviando"
+
+#: inc/email-delivery/status.php:637
+msgid "Your SureContact account is not verified, so it accepts only a few emails a day, and today's are used up. New form notifications are not sent until you verify the account email or the allowance resets."
+msgstr "Sua conta SureContact não está verificada, então aceita apenas alguns emails por dia, e os de hoje já foram usados. Novas notificações de formulário não são enviadas até que você verifique o email da conta ou que a cota seja reiniciada."
+
+#: inc/email-delivery/status.php:644
+msgid "SureMail lost its sending connection"
+msgstr "SureMail perdeu sua conexão de envio"
+
+#: inc/email-delivery/status.php:645
+msgid "SureMail no longer has a connection, so form notifications are not handed to an email service. Reconnect in SureMail."
+msgstr "SureMail não tem mais uma conexão, então as notificações de formulário não são entregues a um serviço de e-mail. Reconecte no SureMail."
+
+#: inc/email-delivery/status.php:650
+msgid "A recent form notification was not sent, and SureMail has no sending connection yet. Connect one so notifications are handed to an email service."
+msgstr "Uma notificação de formulário recente não foi enviada, e SureMail ainda não tem uma conexão de envio. Conecte uma para que as notificações sejam entregues a um serviço de e-mail."
+
+#: inc/email-delivery/status.php:652
+msgid "SureMail did not accept a recent form notification. It may retry automatically; SureMail's email logs show the reason."
+msgstr "SureMail não aceitou uma notificação de formulário recente. Pode tentar novamente automaticamente; os registros de e-mail do SureMail mostram o motivo."
+
+#: inc/email-delivery/status.php:654
+msgid "A recent form notification could not be handed to your server's mail function. Set up email delivery so notifications are sent through a proper email service."
+msgstr "Uma notificação de formulário recente não pôde ser entregue à função de e-mail do servidor. Configure a entrega de e-mail para que as notificações sejam enviadas através de um serviço de e-mail adequado."
+
+#. translators: %s: name of the site's mail plugin.
+#: inc/email-delivery/status.php:657
+msgid "%s did not accept a recent form notification. Its logs show the reason."
+msgstr "%s não aceitou uma notificação de formulário recente. Seus registros mostram o motivo."
+
+#: inc/email-delivery/status.php:661
+msgid "That form does not store entries, so the submission was not saved anywhere."
+msgstr "Esse formulário não armazena entradas, então a submissão não foi salva em nenhum lugar."
+
+#: inc/email-delivery/status.php:666
+msgid "A form notification was not sent"
+msgstr "Uma notificação de formulário não foi enviada"
+
+#: inc/email-delivery/status.php:674
+msgid "Form notifications are handed to your server's built-in mail function, which many hosts block or send to spam. Set up email delivery so new entries reach your inbox."
+msgstr "As notificações de formulário são entregues à função de e-mail integrada do servidor, que muitos hosts bloqueiam ou enviam para spam. Configure a entrega de e-mail para que novas entradas cheguem à sua caixa de entrada."
+
+#: inc/email-delivery/status.php:681
+msgid "SureMail is active but has no connection yet, so form notifications are not handed to an email service."
+msgstr "SureMail está ativo, mas ainda não tem conexão, então as notificações de formulário não são entregues a um serviço de e-mail."
+
+#: inc/email-delivery/status.php:687
+msgid "SureContact sending is limited"
+msgstr "Envio do SureContact está limitado"
+
+#: inc/email-delivery/status.php:688
+msgid "Your SureContact account email is not verified yet, so only a few emails a day are accepted. Verify it from the email SureContact sent you."
+msgstr "O e-mail da sua conta SureContact ainda não está verificado, então apenas alguns e-mails por dia são aceitos. Verifique-o a partir do e-mail que o SureContact enviou para você."
+
+#. translators: %s: name of the site's mail plugin.
+#: inc/email-delivery/status.php:695
+msgid "Emails are sent through %s"
+msgstr "Os e-mails são enviados através de %s"
+
+#. translators: %s: name of the site's mail plugin.
+#: inc/email-delivery/status.php:695
+msgid "your mail plugin"
+msgstr "seu plugin de e-mail"
+
+#: inc/email-delivery/status.php:696
+msgid "Form notifications are handed off to your mail plugin. Manage sending and logs there."
+msgstr "As notificações de formulário são entregues ao seu plugin de e-mail. Gerencie o envio e os registros lá."
+
+#: inc/email-delivery/status.php:702
+msgid "Email delivery is set up"
+msgstr "Entrega de e-mail configurada"
+
+#. translators: %s: SureMail connection name, e.g. SureContact.
+#: inc/email-delivery/status.php:705
+msgid "Form notifications are handed off to SureMail (%s)."
+msgstr "As notificações de formulário são entregues ao SureMail (%s)."
+
+#: inc/email-delivery/status.php:706
+msgid "Form notifications are handed off to SureMail."
+msgstr "As notificações de formulário são entregues ao SureMail."
+
+#: assets/build/dashboard.js:172
+#: assets/build/suremail.js:172
+msgid "Activating SureMail…"
+msgstr "Ativando SureMail…"
+
+#: assets/build/dashboard.js:172
+#: assets/build/suremail.js:172
+msgid "Installing SureMail…"
+msgstr "Instalando SureMail…"
+
+#: assets/build/dashboard.js:172
+msgid "Compare free and premium"
+msgstr "Compare grátis e premium"
+
+#: assets/build/dashboard.js:172
+msgid "%s of the free version shown"
+msgstr "%s da versão gratuita mostrada"
+
+#: assets/build/dashboard.js:172
+msgid "Drag & Drop Fields"
+msgstr "Arrastar e Soltar Campos"
+
+#: assets/build/dashboard.js:172
+msgid "Manage Form Entries"
+msgstr "Gerenciar Entradas de Formulário"
+
+#: assets/build/dashboard.js:172
+msgid "Calculator Forms"
+msgstr "Formulários de Calculadora"
+
+#: assets/build/dashboard.js:172
+msgid "Connect Your Apps"
+msgstr "Conecte Seus Apps"
+
+#: assets/build/dashboard.js:172
+msgid "Built for WordPress"
+msgstr "Desenvolvido para WordPress"
+
+#: assets/build/dashboard.js:172
+msgid "No Coding Required"
+msgstr "Não é Necessário Codificar"
+
+#: assets/build/dashboard.js:172
+msgid "Works With Any Theme"
+msgstr "Funciona Com Qualquer Tema"
+
+#: assets/build/dashboard.js:172
+msgid "Welcome to <brand>SureForms</brand>! <wave>👋</wave>"
+msgstr "Bem-vindo ao <brand>SureForms</brand>! <wave>👋</wave>"
+
+#: assets/build/dashboard.js:172
+msgid "Create beautiful WordPress forms that convert."
+msgstr "Crie belos formulários WordPress que convertem."
+
+#: assets/build/dashboard.js:172
+msgid "Get started in less than a minute."
+msgstr "Comece em menos de um minuto."
+
+#: assets/build/dashboard.js:172
+msgid "Create complete forms from a simple description"
+msgstr "Crie formulários completos a partir de uma descrição simples"
+
+#: assets/build/dashboard.js:172
+msgid "Get the right fields, labels, and layout added for you"
+msgstr "Obtenha os campos, rótulos e layout certos adicionados para você"
+
+#: assets/build/dashboard.js:172
+msgid "Get 10 AI form generations for free"
+msgstr "Obtenha 10 gerações de formulários por IA gratuitamente"
+
+#: assets/build/dashboard.js:172
+msgid "From Idea to a Ready-to-Publish Form in Seconds"
+msgstr "De uma Ideia a um Formulário Pronto para Publicar em Segundos"
+
+#: assets/build/dashboard.js:172
+msgid "Describe the form you need, and SureForms will create the fields, labels, and layout for you."
+msgstr "Descreva o formulário que você precisa, e o SureForms criará os campos, rótulos e layout para você."
+
+#: assets/build/dashboard.js:172
+msgid "Connect this website to your free SureForms account to activate AI form creation and get 10 free AI generations."
+msgstr "Conecte este site à sua conta gratuita do SureForms para ativar a criação de formulários por IA e obter 10 gerações de IA gratuitas."
+
+#: assets/build/dashboard.js:172
+msgid "Connect and Activate AI"
+msgstr "Conectar e Ativar IA"
+
+#: assets/build/dashboard.js:172
+msgid "Recommended"
+msgstr "Recomendado"
+
+#: assets/build/dashboard.js:172
+msgid "Start sending in one click, no setup needed."
+msgstr "Comece a enviar com um clique, sem necessidade de configuração."
+
+#: assets/build/dashboard.js:172
+msgid "SureContact SMTP is our email sending service, set up inside SureMail for you. Start sending your WordPress emails without manually configuring an SMTP provider."
+msgstr "SureContact SMTP é nosso serviço de envio de e-mails, configurado dentro do SureMail para você. Comece a enviar seus e-mails do WordPress sem configurar manualmente um provedor SMTP."
+
+#: assets/build/dashboard.js:172
+#: assets/build/suremail.js:172
+msgid "A gift box with emails rising out of it"
+msgstr "Uma caixa de presente com e-mails saindo dela"
+
+#: assets/build/dashboard.js:172
+msgid "%d Mail Free"
+msgid_plural "%d Mails Free"
+msgstr[0] "%d E-mails Gratuitos"
+msgstr[1] ""
+
+#: assets/build/dashboard.js:172
+msgid "One time setup, No card required"
+msgstr "Configuração única, Não é necessário cartão"
+
+#: assets/build/dashboard.js:172
+msgid "This site looks local or private. SureContact has to reach a site to confirm it is yours, so one-click sign-up usually fails here. Use another provider for now, and switch to SureContact once the site is live."
+msgstr "Este site parece local ou privado. O SureContact precisa acessar um site para confirmar que é seu, então o cadastro com um clique geralmente falha aqui. Use outro provedor por enquanto e mude para o SureContact assim que o site estiver ativo."
+
+#: assets/build/dashboard.js:172
+msgid "We’ll take care of the technical stuff."
+msgstr "Nós cuidaremos da parte técnica."
+
+#: assets/build/dashboard.js:172
+msgid "Account creation"
+msgstr "Criação de conta"
+
+#: assets/build/dashboard.js:172
+msgid "SMTP configuration"
+msgstr "Configuração de SMTP"
+
+#: assets/build/dashboard.js:172
+msgid "Ready to send"
+msgstr "Pronto para enviar"
+
+#: assets/build/dashboard.js:172
+msgid "Other SMTP"
+msgstr "Outro SMTP"
+
+#: assets/build/dashboard.js:172
+msgid "Works with the provider you already have"
+msgstr "Funciona com o provedor que você já tem"
+
+#: assets/build/dashboard.js:172
+msgid "And many more…"
+msgstr "E muitos mais…"
+
+#: assets/build/dashboard.js:172
+msgid "Here’s the path"
+msgstr "Aqui está o caminho"
+
+#: assets/build/dashboard.js:172
+msgid "Your SMTP plugin opens"
+msgstr "Seu plugin SMTP abre"
+
+#: assets/build/dashboard.js:172
+msgid "SureMail, or the one you already use"
+msgstr "SureMail, ou o que você já usa"
+
+#: assets/build/dashboard.js:172
+msgid "Add your provider details"
+msgstr "Adicione os detalhes do seu provedor"
+
+#: assets/build/dashboard.js:172
+msgid "Host, port, username and password"
+msgstr "Host, porta, nome de usuário e senha"
+
+#: assets/build/dashboard.js:172
+msgid "Send a test email"
+msgstr "Envie um e-mail de teste"
+
+#: assets/build/dashboard.js:172
+msgid "Confirms it reaches an inbox, not spam"
+msgstr "Confirma que chega a uma caixa de entrada, não spam"
+
+#: assets/build/dashboard.js:172
+msgid "Come back and finish"
+msgstr "Volte e termine"
+
+#: assets/build/dashboard.js:172
+msgid "Around two minutes in total"
+msgstr "Cerca de dois minutos no total"
+
+#: assets/build/dashboard.js:172
+msgid "How your form emails are sent"
+msgstr "Como seus e-mails de formulário são enviados"
+
+#: assets/build/dashboard.js:172
+msgid "Other SMTP Provider"
+msgstr "Outro Provedor SMTP"
+
+#: assets/build/dashboard.js:172
+msgid "I agree to install SureMail and create a free SureContact account for %s."
+msgstr "Concordo em instalar o SureMail e criar uma conta gratuita do SureContact para %s."
+
+#: assets/build/dashboard.js:172
+msgid "I agree to create a free SureContact account for %s."
+msgstr "Concordo em criar uma conta gratuita do SureContact para %s."
+
+#: assets/build/dashboard.js:172
+msgid "Outgoing emails, including recipients and content, are sent through SureContact. Every email from this site is sent from %s and your name, replacing the From it used before. To create the account, SureContact receives your name and email, this site's name and address, and its WordPress and SureMail versions. You can disconnect from SureMail settings at any time. <privacy>Privacy Policy</privacy> · <terms>Terms</terms>"
+msgstr "E-mails de saída, incluindo destinatários e conteúdo, são enviados através do SureContact. Todo e-mail deste site é enviado de %s e seu nome, substituindo o De que usava antes. Para criar a conta, o SureContact recebe seu nome e e-mail, o nome e endereço deste site, e as versões do WordPress e SureMail. Você pode se desconectar das configurações do SureMail a qualquer momento. <privacy>Política de Privacidade</privacy> · <terms>Termos</terms>"
+
+#: assets/build/dashboard.js:172
+msgid "Outgoing emails, including recipients and content, are sent through SureContact. Every email from this site is sent from %s, replacing the From address it used before. To create the account, SureContact receives your email, this site's name and address, and its WordPress and SureMail versions. You can disconnect from SureMail settings at any time. <privacy>Privacy Policy</privacy> · <terms>Terms</terms>"
+msgstr "E-mails de saída, incluindo destinatários e conteúdo, são enviados através do SureContact. Todo e-mail deste site é enviado de %s, substituindo o endereço De que usava antes. Para criar a conta, o SureContact recebe seu e-mail, o nome e endereço deste site, e as versões do WordPress e SureMail. Você pode se desconectar das configurações do SureMail a qualquer momento. <privacy>Política de Privacidade</privacy> · <terms>Termos</terms>"
+
+#: assets/build/dashboard.js:172
+msgid "SureMail installed"
+msgstr "SureMail instalado"
+
+#: assets/build/dashboard.js:172
+msgid "SureContact connected"
+msgstr "SureContact conectado"
+
+#: assets/build/dashboard.js:172
+msgid "%d free email added"
+msgid_plural "%d free emails added"
+msgstr[0] "%d email gratuito adicionado"
+msgstr[1] ""
+
+#: assets/build/dashboard.js:172
+msgid "Check %s for a verification email to unlock your free emails."
+msgstr "Verifique %s para um email de verificação para desbloquear seus emails gratuitos."
+
+#: assets/build/dashboard.js:172
+msgid "SureContact could not reach this site to confirm it is yours. This happens on local, private or firewalled sites. Connect another email provider in SureMail instead."
+msgstr "SureContact não conseguiu acessar este site para confirmar que é seu. Isso acontece em sites locais, privados ou com firewall. Conecte outro provedor de email no SureMail em vez disso."
+
+#: assets/build/dashboard.js:172
+msgid "SureContact is busy right now. Please wait a minute and try again."
+msgstr "SureContact está ocupado no momento. Por favor, aguarde um minuto e tente novamente."
+
+#: assets/build/dashboard.js:172
+msgid "Your SureContact account could not be created. Please try again, or connect it in SureMail."
+msgstr "Sua conta SureContact não pôde ser criada. Por favor, tente novamente ou conecte-a no SureMail."
+
+#: assets/build/dashboard.js:172
+msgid "SureMail could not be found. Please skip this step and install it from Plugins → Add New."
+msgstr "SureMail não pôde ser encontrado. Por favor, pule esta etapa e instale-o em Plugins → Adicionar Novo."
+
+#: assets/build/dashboard.js:172
+msgid "SureMail could not be installed. Please try again, or skip this step."
+msgstr "SureMail não pôde ser instalado. Por favor, tente novamente ou pule esta etapa."
+
+#: assets/build/dashboard.js:172
+msgid "Creating your SureContact account…"
+msgstr "Criando sua conta SureContact…"
+
+#: assets/build/dashboard.js:172
+msgid "WordPress emails can sometimes fail to reach the inbox when they rely on the default mail setup. Using a reliable mail service helps improve delivery and makes your emails more dependable."
+msgstr "Os emails do WordPress às vezes podem falhar em chegar à caixa de entrada quando dependem da configuração de email padrão. Usar um serviço de email confiável ajuda a melhorar a entrega e torna seus emails mais confiáveis."
+
+#: assets/build/dashboard.js:172
+msgid "Your account cannot install plugins. Ask a site administrator to set up email delivery."
+msgstr "Sua conta não pode instalar plugins. Peça a um administrador do site para configurar a entrega de emails."
+
+#: assets/build/dashboard.js:172
+msgid "Let's Do It"
+msgstr "Vamos Fazer Isso"
+
+#: assets/build/dashboard.js:172
+msgid "You Already Have a SureContact Account"
+msgstr "Você Já Tem uma Conta SureContact"
+
+#: assets/build/dashboard.js:172
+msgid "Sign in to SureContact in the window that opened. This step finishes by itself once you are signed in."
+msgstr "Faça login no SureContact na janela que foi aberta. Esta etapa termina por si só assim que você estiver logado."
+
+#: assets/build/dashboard.js:172
+msgid "Sign in to SureContact in the new tab. Come back here when done; this step updates by itself."
+msgstr "Faça login no SureContact na nova aba. Volte aqui quando terminar; esta etapa se atualiza por si só."
+
+#: assets/build/dashboard.js:172
+msgid "In the SureMail tab, click \"Already have a SureContact account? Connect it instead\" and sign in. Come back here when done; this step updates by itself."
+msgstr "Na aba SureMail, clique em \"Já tem uma conta SureContact? Conecte-a em vez disso\" e faça login. Volte aqui quando terminar; esta etapa se atualiza por si só."
+
+#: assets/build/dashboard.js:172
+msgid "%s already has a SureContact account. Sign in once to connect it to this site."
+msgstr "%s já tem uma conta SureContact. Faça login uma vez para conectá-la a este site."
+
+#: assets/build/dashboard.js:172
+msgid "Your browser blocked the sign-in window."
+msgstr "Seu navegador bloqueou a janela de login."
+
+#: assets/build/dashboard.js:172
+msgid "Open SureMail"
+msgstr "Abrir SureMail"
+
+#: assets/build/dashboard.js:172
+msgid "Open the SureContact sign-in"
+msgstr "Abrir o login do SureContact"
+
+#: assets/build/dashboard.js:172
+msgid "Never set a password? Use \"Forgot password\" on the SureContact sign-in page, or continue with Google."
+msgstr "Nunca definiu uma senha? Use \"Esqueceu a senha\" na página de login do SureContact, ou continue com o Google."
+
+#: assets/build/dashboard.js:172
+msgid "Waiting for Sign-In…"
+msgstr "Aguardando Login…"
+
+#: assets/build/dashboard.js:172
+msgid "Sign In to SureContact"
+msgstr "Fazer Login no SureContact"
+
+#: assets/build/dashboard.js:172
+msgid "Skip for now"
+msgstr "Pular por enquanto"
+
+#: assets/build/dashboard.js:172
+msgid "Finish connecting in the SureMail tab, then come back here. This step updates by itself."
+msgstr "Termine de conectar na aba SureMail, depois volte aqui. Esta etapa se atualiza por si só."
+
+#: assets/build/dashboard.js:172
+msgid "SureMail is installed but not connected to an email service yet, so your form emails are not sent through it. Connect SureContact in one click, or a provider you already use."
+msgstr "SureMail está instalado, mas ainda não está conectado a um serviço de email, então seus emails de formulário não são enviados por ele. Conecte o SureContact com um clique, ou um provedor que você já usa."
+
+#: assets/build/dashboard.js:172
+msgid "Set Up in SureMail"
+msgstr "Configurar no SureMail"
+
+#: assets/build/dashboard.js:172
+msgid "Connect in SureMail"
+msgstr "Conectar no SureMail"
+
+#: assets/build/dashboard.js:172
+msgid "You're all set"
+msgstr "Tudo pronto"
+
+#: assets/build/dashboard.js:172
+msgid "SureMail is installed and SureContact is connected. Your forms can send email right now."
+msgstr "SureMail está instalado e SureContact está conectado. Seus formulários podem enviar emails agora mesmo."
+
+#: assets/build/dashboard.js:172
+msgid "Verify Your SureContact Account"
+msgstr "Verifique sua conta SureContact"
+
+#: assets/build/dashboard.js:172
+msgid "SureContact is connected, but only a few emails a day are accepted until you verify your account email."
+msgstr "SureContact está conectado, mas apenas alguns e-mails por dia são aceitos até que você verifique o e-mail da sua conta."
+
+#: assets/build/dashboard.js:172
+msgid "Email Delivery"
+msgstr "Entrega de E-mail"
+
+#: assets/build/dashboard.js:172
+msgid "Illustration of a form submission travelling to an inbox"
+msgstr "Ilustração de um envio de formulário viajando para uma caixa de entrada"
+
+#: assets/build/dashboard.js:172
+msgid "Multistep"
+msgstr "Multietapas"
+
+#: assets/build/dashboard.js:172
+msgid "Break long forms into short steps. Fewer drop-offs, more completions."
+msgstr "Divida formulários longos em etapas curtas. Menos desistências, mais conclusões."
+
+#: assets/build/dashboard.js:172
+msgid "Conditional"
+msgstr "Condicional"
+
+#: assets/build/dashboard.js:172
+msgid "Show fields only when they're relevant. Cleaner forms, better answers."
+msgstr "Mostre campos apenas quando forem relevantes. Formulários mais limpos, melhores respostas."
+
+#: assets/build/dashboard.js:172
+msgid "Calculation"
+msgstr "Cálculo"
+
+#: assets/build/dashboard.js:172
+msgid "Give instant estimates, quotes, and totals as users fill things in."
+msgstr "Forneça estimativas, cotações e totais instantâneos à medida que os usuários preenchem."
+
+#: assets/build/dashboard.js:172
+msgid "One question at a time. Feels like a chat — completes like one too."
+msgstr "Uma pergunta de cada vez. Parece um chat — completa como um também."
+
+#: assets/build/dashboard.js:172
+msgid "Add more to your forms"
+msgstr "Adicione mais aos seus formulários"
+
+#: assets/build/dashboard.js:172
+msgid "Small additions that make a big difference"
+msgstr "Pequenas adições que fazem uma grande diferença"
+
+#: assets/build/dashboard.js:172
+msgid "Compare %s: free versus premium"
+msgstr "Compare %s: gratuito versus premium"
+
+#: assets/build/dashboard.js:172
+msgid "Use code <code>%1$s</code> for 10%% off any SureForms Business plan."
+msgstr "Use o código <code>%1$s</code> para 10%% de desconto em qualquer plano SureForms Business."
+
+#: assets/build/dashboard.js:172
+msgid "Please enter your first name."
+msgstr "Por favor, insira seu primeiro nome."
+
+#: assets/build/dashboard.js:172
+msgid "Please enter your email address."
+msgstr "Por favor, insira seu endereço de e-mail."
+
+#: assets/build/dashboard.js:172
+msgid "Please check this box to continue."
+msgstr "Por favor, marque esta caixa para continuar."
+
+#: assets/build/dashboard.js:172
+msgid "Last Name (optional)"
+msgstr "Sobrenome (opcional)"
+
+#: assets/build/dashboard.js:172
+msgid "Exclude SureForms pages from the cache completely"
+msgstr "Exclua completamente as páginas SureForms do cache"
+
+#: assets/build/dashboard.js:172
+msgid "Clear your browser cache after changing plugin settings"
+msgstr "Limpe o cache do seu navegador após alterar as configurações do plugin"
+
+#: assets/build/dashboard.js:172
+msgid "Prevent failed form submissions and unexpected caching errors"
+msgstr "Evite falhas no envio de formulários e erros de cache inesperados"
+
+#: assets/build/dashboard.js:172
+msgid "Illustration comparing a form with and without a cache exclusion"
+msgstr "Ilustração comparando um formulário com e sem uma exclusão de cache"
+
+#: assets/build/dashboard.js:172
+msgid "%s might be blocking your forms"
+msgstr "%s pode estar bloqueando seus formulários"
+
+#: assets/build/dashboard.js:172
+msgid "Without an exclusion, visitors may see outdated pages or submissions that don't go through as expected, leading to failed form entries and frustrated users."
+msgstr "Sem uma exclusão, os visitantes podem ver páginas desatualizadas ou envios que não são processados como esperado, levando a falhas nas entradas de formulários e usuários frustrados."
+
+#: assets/build/dashboard.js:172
+msgid "Keep Your Forms Working"
+msgstr "Mantenha seus formulários funcionando"
+
+#: assets/build/dashboard.js:172
+msgid "View full guide"
+msgstr "Ver guia completo"
+
+#: assets/build/dashboard.js:172
+msgid "I've fixed this, continue setup"
+msgstr "Corrigi isso, continuar configuração"
+
+#: assets/build/dashboard.js:172
+msgid "Set up confirmation messages and email notifications for each submission"
+msgstr "Configure mensagens de confirmação e notificações por e-mail para cada envio"
+
+#: assets/build/dashboard.js:172
+msgid "Try AI if you want a quick head start or start from scratch if you have a clear idea in mind. Forms are ready to be created, shared, and connected to your audience."
+msgstr "Experimente a IA se quiser um início rápido ou comece do zero se tiver uma ideia clara em mente. Os formulários estão prontos para serem criados, compartilhados e conectados ao seu público."
+
+#: assets/build/dashboard.js:172
+msgid "You get %d free email notification, sent to your inbox with a form submission."
+msgid_plural "You get %d free email notifications, sent to your inbox with every form submission."
+msgstr[0] "Você recebe %d notificação por e-mail gratuita, enviada para sua caixa de entrada com um envio de formulário."
+msgstr[1] ""
+
+#: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
+msgid "New forms will not store entries by default, so if a notification email is not sent, that submission is gone. Email delivery on this site needs attention first: %s."
+msgstr "Novos formulários não armazenarão entradas por padrão, então se um e-mail de notificação não for enviado, esse envio será perdido. A entrega de e-mails neste site precisa de atenção primeiro: %s."
+
+#: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
+msgid "This form will not store entries, so if a notification email is not sent, that submission is gone. Email delivery on this site needs attention first: %s."
+msgstr "Este formulário não armazenará entradas, então se um e-mail de notificação não for enviado, esse envio será perdido. A entrega de e-mails neste site precisa de atenção primeiro: %s."
+
+#: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
+msgid "New forms will not store entries by default. If a notification email ever fails to send, that submission cannot be recovered."
+msgstr "Novos formulários não armazenarão entradas por padrão. Se um e-mail de notificação falhar ao ser enviado, esse envio não poderá ser recuperado."
+
+#: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
+msgid "This form will not store entries. If a notification email ever fails to send, that submission cannot be recovered."
+msgstr "Este formulário não armazenará entradas. Se um e-mail de notificação falhar ao ser enviado, essa submissão não poderá ser recuperada."
+
+#: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
+msgid "Submissions may be lost if an email fails"
+msgstr "As submissões podem ser perdidas se um e-mail falhar"
+
+#: assets/build/formEditor.js:172
+#: assets/build/settings.js:172
+msgid "Email is the only copy of each submission"
+msgstr "O e-mail é a única cópia de cada submissão"
+
+#: assets/build/formEditor.js:172
+msgid "SureMail sends from the address set on its connection, so the From address set in these notifications may be replaced."
+msgstr "O SureMail envia a partir do endereço configurado em sua conexão, então o endereço De configurado nessas notificações pode ser substituído."
+
+#: assets/build/formEditor.js:172
+msgid "You can set it up from the SureForms dashboard."
+msgstr "Você pode configurá-lo a partir do painel do SureForms."
+
+#: assets/build/suremail.js:172
+msgid "How SureMail and SureContact work"
+msgstr "Como SureMail e SureContact funcionam"
+
+#: assets/build/suremail.js:172
+msgid "Close video"
+msgstr "Fechar vídeo"
+
+#: assets/build/suremail.js:172
+msgid "SureMail introduction video"
+msgstr "Vídeo de introdução ao SureMail"
+
+#: assets/build/suremail.js:172
+msgid "Collects the entry"
+msgstr "Coleta a entrada"
+
+#: assets/build/suremail.js:172
+msgid "The plugin that connects the two"
+msgstr "O plugin que conecta os dois"
+
+#: assets/build/suremail.js:172
+msgid "Sends it and keeps the lead"
+msgstr "Envia e mantém o lead"
+
+#: assets/build/suremail.js:172
+msgid "SureContact is the service configured by default, not the only option. Once SureMail is installed you can keep it, connect a provider you already use, or run both so one covers the other if it fails."
+msgstr "SureContact é o serviço configurado por padrão, não a única opção. Uma vez que o SureMail está instalado, você pode mantê-lo, conectar um provedor que já usa ou executar ambos para que um cubra o outro se falhar."
+
+#: assets/build/suremail.js:172
+msgid "Setting up SMTP yourself"
+msgstr "Configurando SMTP você mesmo"
+
+#: assets/build/suremail.js:172
+msgid "About 20 minutes"
+msgstr "Cerca de 20 minutos"
+
+#: assets/build/suremail.js:172
+msgid "Choose a provider and make an account"
+msgstr "Escolha um provedor e crie uma conta"
+
+#: assets/build/suremail.js:172
+msgid "Hunt down the API key or password"
+msgstr "Encontre a chave API ou senha"
+
+#: assets/build/suremail.js:172
+msgid "Add SPF and DKIM records to your DNS"
+msgstr "Adicione registros SPF e DKIM ao seu DNS"
+
+#: assets/build/suremail.js:172
+msgid "Wait for those records to propagate"
+msgstr "Aguarde a propagação desses registros"
+
+#: assets/build/suremail.js:172
+msgid "Send a test, then debug what failed"
+msgstr "Envie um teste, depois depure o que falhou"
+
+#: assets/build/suremail.js:172
+msgid "With SureContact"
+msgstr "Com SureContact"
+
+#: assets/build/suremail.js:172
+msgid "About 10 seconds"
+msgstr "Cerca de 10 segundos"
+
+#: assets/build/suremail.js:172
+msgid "Click the button, nothing to choose"
+msgstr "Clique no botão, nada para escolher"
+
+#: assets/build/suremail.js:172
+msgid "No API key or password to hunt for"
+msgstr "Nenhuma chave API ou senha para procurar"
+
+#: assets/build/suremail.js:172
+msgid "Authentication is handled for you"
+msgstr "A autenticação é feita para você"
+
+#: assets/build/suremail.js:172
+msgid "Nothing to wait for, it works now"
+msgstr "Nada para esperar, funciona agora"
+
+#: assets/build/suremail.js:172
+msgid "Send a test and watch it arrive"
+msgstr "Envie um teste e veja-o chegar"
+
+#: assets/build/suremail.js:172
+msgid "If one route fails, SureMail reroutes through a backup provider automatically."
+msgstr "Se uma rota falhar, o SureMail redireciona automaticamente através de um provedor de backup."
+
+#: assets/build/suremail.js:172
+msgid "A record of every email your site sent, with one click to send any of them again."
+msgstr "Um registro de cada e-mail enviado pelo seu site, com um clique para enviar qualquer um deles novamente."
+
+#: assets/build/suremail.js:172
+msgid "Every Lead Becomes A Contact"
+msgstr "Cada Lead Torna-se Um Contato"
+
+#: assets/build/suremail.js:172
+msgid "Submissions become real contact records you can tag, segment and search, not just table rows."
+msgstr "As submissões tornam-se registros de contato reais que você pode marcar, segmentar e pesquisar, não apenas linhas de tabela."
+
+#: assets/build/suremail.js:172
+msgid "Automated Follow Ups"
+msgstr "Acompanhamentos Automatizados"
+
+#: assets/build/suremail.js:172
+msgid "Send a welcome note, a quote or a reminder automatically, triggered by the form they filled in."
+msgstr "Envie automaticamente uma nota de boas-vindas, uma cotação ou um lembrete, acionado pelo formulário que preencheram."
+
+#: assets/build/suremail.js:172
+msgid "Send a test before anything goes live, so you never find out from a missed lead."
+msgstr "Envie um teste antes de qualquer coisa ir ao ar, para que você nunca descubra por um lead perdido."
+
+#: assets/build/suremail.js:172
+msgid "Retries And Any SMTP"
+msgstr "Repetições E Qualquer SMTP"
+
+#: assets/build/suremail.js:172
+msgid "Failed sends retry automatically, and you can swap to your own SMTP provider any time."
+msgstr "Envios falhados são repetidos automaticamente, e você pode trocar para seu próprio provedor SMTP a qualquer momento."
+
+#: assets/build/suremail.js:172
+msgid "Start with %d free email"
+msgid_plural "Start with %d free emails"
+msgstr[0] "Comece com %d e-mails gratuitos"
+msgstr[1] ""
+
+#: assets/build/suremail.js:172
+msgid "A one time welcome credit on your new SureContact account. Enough to set everything up, test it properly and cover your first run of submissions."
+msgstr "Um crédito de boas-vindas único na sua nova conta SureContact. O suficiente para configurar tudo, testá-lo adequadamente e cobrir sua primeira rodada de submissões."
+
+#: assets/build/suremail.js:172
+msgid "No credit card"
+msgstr "Sem cartão de crédito"
+
+#: assets/build/suremail.js:172
+msgid "No expiry"
+msgstr "Sem expiração"
+
+#: assets/build/suremail.js:172
+msgid "Top up only if you need more"
+msgstr "Recarregue apenas se precisar de mais"
+
+#: assets/build/suremail.js:172
+msgid "%d free email"
+msgid_plural "%d free emails"
+msgstr[0] "%d e-mails gratuitos"
+msgstr[1] ""
+
+#: assets/build/suremail.js:172
+msgid "One time, no card needed"
+msgstr "Uma vez, sem necessidade de cartão"
+
+#: assets/build/suremail.js:172
+msgid "SureMail could not be installed. Please try again, or install it from Plugins → Add New."
+msgstr "O SureMail não pôde ser instalado. Por favor, tente novamente ou instale-o em Plugins → Adicionar Novo."
+
+#: assets/build/suremail.js:172
+msgid "Opening SureMail…"
+msgstr "Abrindo SureMail…"
+
+#: assets/build/suremail.js:172
+msgid "Activate SureMail and Set Up SureContact"
+msgstr "Ative o SureMail e configure o SureContact"
+
+#: assets/build/suremail.js:172
+msgid "Install SureMail and Set Up SureContact"
+msgstr "Instale o SureMail e configure o SureContact"
+
+#: assets/build/suremail.js:172
+msgid "Every form submission reaches the inbox. Starting with %d free email."
+msgid_plural "Every form submission reaches the inbox. Starting with %d free emails."
+msgstr[0] "Cada envio de formulário chega à caixa de entrada. Começando com %d e-mails gratuitos."
+msgstr[1] ""
+
+#: assets/build/suremail.js:172
+msgid "Every form submission reaches the inbox."
+msgstr "Cada envio de formulário chega à caixa de entrada."
+
+#: assets/build/suremail.js:172
+msgid "SureForms collects the entry. SureMail takes over your site's email. SureContact does the sending. One click installs SureMail and opens SureContact's setup, and the first %d email is on us."
+msgid_plural "SureForms collects the entry. SureMail takes over your site's email. SureContact does the sending. One click installs SureMail and opens SureContact's setup, and the first %d emails are on us."
+msgstr[0] "SureForms coleta a entrada. SureMail assume o e-mail do seu site. SureContact faz o envio. Com um clique, instala o SureMail e abre a configuração do SureContact, e os primeiros %d e-mails são por nossa conta."
+msgstr[1] ""
+
+#: assets/build/suremail.js:172
+msgid "SureForms collects the entry. SureMail takes over your site's email. SureContact does the sending. One click installs SureMail and opens SureContact's setup."
+msgstr "SureForms coleta a entrada. SureMail assume o e-mail do seu site. SureContact faz o envio. Com um clique, instala o SureMail e abre a configuração do SureContact."
+
+#: assets/build/suremail.js:172
+msgid "Both are free. No card needed. About 10 seconds."
+msgstr "Ambos são gratuitos. Não é necessário cartão. Cerca de 10 segundos."
+
+#: assets/build/suremail.js:172
+msgid "Watch how it works"
+msgstr "Veja como funciona"
+
+#: assets/build/suremail.js:172
+msgid "%d minute"
+msgid_plural "%d minutes"
+msgstr[0] "%d minuto"
+msgstr[1] ""
+
+#: assets/build/suremail.js:172
+msgid "Forms Submitted. Emails Delivered. Leads Kept."
+msgstr "Formulários Enviados. E-mails Entregues. Leads Mantidos."
+
+#: assets/build/suremail.js:172
+msgid "Disconnect any time"
+msgstr "Desconecte a qualquer momento"
+
+#: assets/build/suremail.js:172
+msgid "Keep your own SMTP if you prefer"
+msgstr "Mantenha seu próprio SMTP se preferir"
+
+#: assets/build/templatePicker.js:172
+msgid "Start with an example"
+msgstr "Comece com um exemplo"
+
+#: assets/build/templatePicker.js:172
+msgid "Contact form"
+msgstr "Formulário de contato"
+
+#: assets/build/templatePicker.js:172
+msgid "Name, email and message"
+msgstr "Nome, e-mail e mensagem"
+
+#: assets/build/templatePicker.js:172
+msgid "Contact form with full name, email address, phone number (optional), subject and message. Add a consent checkbox asking permission to reply by email."
+msgstr "Formulário de contato com nome completo, endereço de e-mail, número de telefone (opcional), assunto e mensagem. Adicione uma caixa de seleção de consentimento pedindo permissão para responder por e-mail."
+
+#: assets/build/templatePicker.js:172
+msgid "Quote request"
+msgstr "Pedido de orçamento"
+
+#: assets/build/templatePicker.js:172
+msgid "Enquiries with project details"
+msgstr "Consultas com detalhes do projeto"
+
+#: assets/build/templatePicker.js:172
+msgid "Quote request form for a service business with full name, email, phone number, company name (optional), a dropdown to choose the service needed, a dropdown for budget range (Under $500, $500–$2,000, $2,000–$5,000, Over $5,000), a dropdown for timeline (As soon as possible, Within a month, 1–3 months, Just exploring), a field describing the project, and preferred contact method (Email, Phone)."
+msgstr "Formulário de pedido de orçamento para um negócio de serviços com nome completo, e-mail, telefone, nome da empresa (opcional), um menu suspenso para escolher o serviço necessário, um menu suspenso para faixa de orçamento (Menos de $500, $500–$2,000, $2,000–$5,000, Mais de $5,000), um menu suspenso para cronograma (O mais rápido possível, Dentro de um mês, 1–3 meses, Apenas explorando), um campo descrevendo o projeto e método de contato preferido (E-mail, Telefone)."
+
+#: assets/build/templatePicker.js:172
+msgid "Event registration"
+msgstr "Registro de evento"
+
+#: assets/build/templatePicker.js:172
+msgid "Sign-ups with attendee details"
+msgstr "Inscrições com detalhes dos participantes"
+
+#: assets/build/templatePicker.js:172
+msgid "Event registration form with full name, email address, phone number, number of attendees, a dropdown to choose a session (Morning, Afternoon, Evening), a multiple-choice question for dietary needs that allows selecting more than one option (Vegetarian, Vegan, Gluten-free, None), and a field for questions or special requests."
+msgstr "Formulário de registro de evento com nome completo, endereço de e-mail, número de telefone, número de participantes, um menu suspenso para escolher uma sessão (Manhã, Tarde, Noite), uma pergunta de múltipla escolha para necessidades alimentares que permite selecionar mais de uma opção (Vegetariano, Vegano, Sem glúten, Nenhuma), e um campo para perguntas ou solicitações especiais."
+
+#: assets/build/templatePicker.js:172
+msgid "Feedback form"
+msgstr "Formulário de feedback"
+
+#: assets/build/templatePicker.js:172
+msgid "Ratings and suggestions"
+msgstr "Classificações e sugestões"
+
+#: assets/build/templatePicker.js:172
+msgid "Customer feedback form with name (optional), email (optional), a multiple-choice question \"How satisfied are you with our service?\" from Very satisfied to Very dissatisfied, a field for what we did well, a field for what we could improve, and a Yes/No question \"Would you recommend us to a friend?\""
+msgstr "Formulário de feedback do cliente com nome (opcional), e-mail (opcional), uma pergunta de múltipla escolha \"Quão satisfeito você está com nosso serviço?\" de Muito satisfeito a Muito insatisfeito, um campo para o que fizemos bem, um campo para o que poderíamos melhorar, e uma pergunta Sim/Não \"Você nos recomendaria a um amigo?\""
+
+#: assets/build/templatePicker.js:172
+msgid "Job application form for \"Marketing Manager\" with a link to their resume or LinkedIn profile"
+msgstr "Formulário de candidatura para \"Gerente de Marketing\" com um link para o currículo ou perfil do LinkedIn"
+
+#: assets/build/templatePicker.js:172
+msgid "What form should we build?"
+msgstr "Que formulário devemos criar?"
+
+#: assets/build/templatePicker.js:172
+msgid "Start with an example, or describe your own form below."
+msgstr "Comece com um exemplo ou descreva seu próprio formulário abaixo."
+
+#: assets/build/templatePicker.js:172
+msgid "Describe the form you want to create."
+msgstr "Descreva o formulário que você deseja criar."
+
+#: assets/build/templatePicker.js:172
+msgid "Example removed."
+msgstr "Exemplo removido."
+
+#: assets/build/templatePicker.js:172
+msgid "Example unselected. Your edits were kept."
+msgstr "Exemplo desselecionado. Suas edições foram mantidas."
+
+#: assets/build/templatePicker.js:172
+msgid "%s example replaced your prompt. Press Undo to get your text back."
+msgstr "O exemplo %s substituiu seu prompt. Pressione Desfazer para recuperar seu texto."
+
+#: assets/build/templatePicker.js:172
+msgid "%s example added to the prompt. Edit it or press Generate."
+msgstr "Exemplo %s adicionado ao prompt. Edite-o ou pressione Gerar."
+
+#: assets/build/templatePicker.js:172
+msgid "Need ideas?"
+msgstr "Precisa de ideias?"
+
+#: assets/build/templatePicker.js:172
+msgid "Show examples"
+msgstr "Mostrar exemplos"
+
+#: assets/build/templatePicker.js:172
+msgid "Pick an example or describe your form"
+msgstr "Escolha um exemplo ou descreva seu formulário"
+
+#: assets/build/templatePicker.js:172
+msgid "%1$d/%2$d"
+msgstr "%1$d/%2$d"
+
+#: assets/build/templatePicker.js:172
+msgid "Describe your form or pick an example to continue."
+msgstr "Descreva seu formulário ou escolha um exemplo para continuar."
+
+#: assets/build/templatePicker.js:172
+msgid "Your previous prompt was replaced."
+msgstr "Seu prompt anterior foi substituído."
+
+#: assets/build/templatePicker.js:172
+msgid "Undo"
+msgstr "Desfazer"
 
 #: inc/post-types.php:265
 msgctxt "post type general name"

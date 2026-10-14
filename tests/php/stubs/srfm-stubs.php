@@ -194,7 +194,7 @@ class Analytics
      *
      * @param string $starter_id Starter card id, or empty string for a free-text prompt.
      * @param bool   $edited     Whether the starter prompt was edited before generating.
-     * @since x.x.x
+     * @since 2.12.9
      * @return void
      */
     public static function track_ai_starter_usage($starter_id, $edited)
@@ -7883,6 +7883,31 @@ namespace SRFM\Inc {
          * @since 0.0.1
          */
         public static function get_form_markup($id, $show_title_current_page = true, $sf_classname = '', $post_type = 'post')
+        {
+        }
+        /**
+         * Render the form markup for get_form_markup().
+         *
+         * @param int|string   $id Contains form ID.
+         * @param bool         $show_title_current_page Boolean to srfm-show/srfm-hide form title.
+         * @param string       $sf_classname additional class_name.
+         * @param string       $post_type Contains post type.
+         * @param bool         $do_blocks Boolean to enable/disable parsing dynamic blocks.
+         * @param array<mixed> $block_attrs Block attributes for per-embed styling.
+         *
+         * @return string|false
+         * @since 2.12.9
+         */
+        public static function render_form_markup($id, $show_title_current_page, $sf_classname, $post_type, $do_blocks, $block_attrs)
+        {
+        }
+        /**
+         * Get the ID of the form whose content is being rendered.
+         *
+         * @return int Form ID, or 0 when no form content is rendering.
+         * @since 2.12.9
+         */
+        public static function get_rendering_form_id()
         {
         }
     }

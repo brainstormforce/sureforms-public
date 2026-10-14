@@ -12,7 +12,7 @@
  * becomes dead code to remove.
  *
  * @package SureForms
- * @since   x.x.x
+ * @since   2.12.9
  */
 
 namespace SRFM\Inc\Email_Delivery;
@@ -24,55 +24,55 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Suremail_Adapter
  *
- * @since x.x.x
+ * @since 2.12.9
  */
 class Suremail_Adapter {
 	/**
 	 * SureMail's connections option.
 	 *
-	 * @since x.x.x
+	 * @since 2.12.9
 	 */
 	public const CONNECTIONS_OPTION = 'suremails_connections';
 
 	/**
 	 * SureMail's onboarding-completed option ('yes' once finished).
 	 *
-	 * @since x.x.x
+	 * @since 2.12.9
 	 */
 	public const ONBOARDING_OPTION = 'suremails_onboarding_completed';
 
 	/**
 	 * First SureMail release with the SureContact provider.
 	 *
-	 * @since x.x.x
+	 * @since 2.12.9
 	 */
 	public const SURECONTACT_MIN_VERSION = '2.0.0';
 
 	/**
 	 * SureMail's connection type for SureContact.
 	 *
-	 * @since x.x.x
+	 * @since 2.12.9
 	 */
 	public const SURECONTACT_TYPE = 'SURECONTACT';
 
 	/**
 	 * Transient holding the last known SureContact quota.
 	 *
-	 * @since x.x.x
+	 * @since 2.12.9
 	 */
 	public const QUOTA_TRANSIENT = 'srfm_surecontact_quota';
 
 	/**
 	 * Cron hook that refreshes the quota in the background.
 	 *
-	 * @since x.x.x
+	 * @since 2.12.9
 	 */
 	public const QUOTA_REFRESH_HOOK = 'srfm_refresh_surecontact_quota';
 
 	/**
 	 * How long a known quota is trusted, in seconds.
 	 *
-	 * @since x.x.x
+	 * @since 2.12.9
 	 */
 	public const QUOTA_TTL = 6 * HOUR_IN_SECONDS;
 
@@ -80,7 +80,7 @@ class Suremail_Adapter {
 	 * How long a nearly used-up quota is trusted, in seconds. Shorter, so an
 	 * upgrade or a period reset clears the warning soon.
 	 *
-	 * @since x.x.x
+	 * @since 2.12.9
 	 */
 	public const QUOTA_LOW_TTL = HOUR_IN_SECONDS;
 
@@ -88,28 +88,28 @@ class Suremail_Adapter {
 	 * How long a used-up quota is trusted, in seconds. Its warning cannot be
 	 * dismissed, so it must not outlive an upgrade by long.
 	 *
-	 * @since x.x.x
+	 * @since 2.12.9
 	 */
 	public const QUOTA_EXHAUSTED_TTL = 30 * MINUTE_IN_SECONDS;
 
 	/**
 	 * Share of the cap left at which the quota counts as nearly used up.
 	 *
-	 * @since x.x.x
+	 * @since 2.12.9
 	 */
 	public const QUOTA_LOW_SHARE = 0.2;
 
 	/**
 	 * SureMail's admin page slug.
 	 *
-	 * @since x.x.x
+	 * @since 2.12.9
 	 */
 	private const PAGE_SLUG = 'suremail';
 
 	/**
 	 * Whether SureMail is loaded.
 	 *
-	 * @since x.x.x
+	 * @since 2.12.9
 	 * @return bool
 	 */
 	public static function is_active() {
@@ -119,7 +119,7 @@ class Suremail_Adapter {
 	/**
 	 * Loaded SureMail version, or '' when it is not active.
 	 *
-	 * @since x.x.x
+	 * @since 2.12.9
 	 * @return string
 	 */
 	public static function get_version() {
@@ -129,7 +129,7 @@ class Suremail_Adapter {
 	/**
 	 * Whether the loaded SureMail can connect SureContact.
 	 *
-	 * @since x.x.x
+	 * @since 2.12.9
 	 * @return bool
 	 */
 	public static function supports_surecontact() {
@@ -140,7 +140,7 @@ class Suremail_Adapter {
 	/**
 	 * Whether the owner finished SureMail's own onboarding.
 	 *
-	 * @since x.x.x
+	 * @since 2.12.9
 	 * @return bool
 	 */
 	public static function is_onboarding_completed() {
@@ -160,7 +160,7 @@ class Suremail_Adapter {
 	 * `email_verified` and `is_paid` are whatever SureMail last cached on the row,
 	 * refreshed only when its own screens call SureContact. Null means unknown.
 	 *
-	 * @since x.x.x
+	 * @since 2.12.9
 	 * @return array{source:string,connections:int,default_type:string,default_missing:bool,provider_label:string,surecontact:array{connected:bool,email_verified:bool|null,is_paid:bool|null}}
 	 */
 	public static function get_readiness() {
@@ -220,7 +220,7 @@ class Suremail_Adapter {
 	 * SureMail lives under Settings or as a top-level menu depending on its own
 	 * setting, so its helper builds the base URL when loaded.
 	 *
-	 * @since x.x.x
+	 * @since 2.12.9
 	 * @param string $fragment Hash route, e.g. '/logs'.
 	 * @return string
 	 */
@@ -246,7 +246,7 @@ class Suremail_Adapter {
 	 * onboarding is done; the connections screen after. `#/onboarding/connect`
 	 * is avoided: it relies on state SureMail's wizard sets on the way in.
 	 *
-	 * @since x.x.x
+	 * @since 2.12.9
 	 * @return string
 	 */
 	public static function setup_url() {
@@ -256,7 +256,7 @@ class Suremail_Adapter {
 	/**
 	 * SureMail's email log screen.
 	 *
-	 * @since x.x.x
+	 * @since 2.12.9
 	 * @return string
 	 */
 	public static function logs_url() {
@@ -270,7 +270,7 @@ class Suremail_Adapter {
 	 * SureForms keeps a copy refreshed in the background by
 	 * refresh_surecontact_quota(), so no admin page waits on SureContact.
 	 *
-	 * @since x.x.x
+	 * @since 2.12.9
 	 * @return array{used:int,limit:int,remaining:int,period:string,checked_at:int}|null
 	 */
 	public static function get_surecontact_quota() {
@@ -293,7 +293,7 @@ class Suremail_Adapter {
 	 * less left. The daily allowance of an unverified account is left to the
 	 * 'limited' state, which already says to verify.
 	 *
-	 * @since x.x.x
+	 * @since 2.12.9
 	 * @param array{used:int,limit:int,remaining:int,period:string,checked_at:int}|null $quota Quota from get_surecontact_quota().
 	 * @return bool
 	 */
@@ -310,7 +310,7 @@ class Suremail_Adapter {
 	 *
 	 * Called from SureForms admin screens. The refresh itself runs on cron.
 	 *
-	 * @since x.x.x
+	 * @since 2.12.9
 	 * @return void
 	 */
 	public static function maybe_schedule_quota_refresh() {
@@ -331,7 +331,7 @@ class Suremail_Adapter {
 	 * until the fetch replaces it: deleting it would leave nothing at all on
 	 * sites where cron never runs (DISABLE_WP_CRON without a real cron).
 	 *
-	 * @since x.x.x
+	 * @since 2.12.9
 	 * @return void
 	 */
 	public static function request_quota_refresh() {
@@ -353,7 +353,7 @@ class Suremail_Adapter {
 	 * touches it. A missing handler or a failed call caches "unknown" for an
 	 * hour so a broken setup is not retried on every screen.
 	 *
-	 * @since x.x.x
+	 * @since 2.12.9
 	 * @return void
 	 */
 	public static function refresh_surecontact_quota() {
@@ -407,7 +407,7 @@ class Suremail_Adapter {
 	 * carries the upgrade button. `source` tells SureMail the click came from
 	 * SureForms, ready for when it forwards attribution to SureContact.
 	 *
-	 * @since x.x.x
+	 * @since 2.12.9
 	 * @return string
 	 */
 	public static function upgrade_url() {
@@ -419,7 +419,7 @@ class Suremail_Adapter {
 	 * is SureContact, else the first SureContact row. '' when there is none or
 	 * SureMail is not active.
 	 *
-	 * @since x.x.x
+	 * @since 2.12.9
 	 * @return string
 	 */
 	private static function get_surecontact_connection_id() {
@@ -457,7 +457,7 @@ class Suremail_Adapter {
 	 * in brainstormforce/suremails#809; until it lands, has_filter() keeps this
 	 * branch inert and the option read above is what runs.
 	 *
-	 * @since x.x.x
+	 * @since 2.12.9
 	 * @return array{source:string,connections:int,default_type:string,default_missing:bool,provider_label:string,surecontact:array{connected:bool,email_verified:bool|null,is_paid:bool|null}}|null
 	 */
 	private static function get_contract_readiness() {
@@ -497,7 +497,7 @@ class Suremail_Adapter {
 	/**
 	 * Readiness with nothing connected.
 	 *
-	 * @since x.x.x
+	 * @since 2.12.9
 	 * @param string $source Where the data came from.
 	 * @return array{source:string,connections:int,default_type:string,default_missing:bool,provider_label:string,surecontact:array{connected:bool,email_verified:bool|null,is_paid:bool|null}}
 	 */
@@ -519,7 +519,7 @@ class Suremail_Adapter {
 	/**
 	 * Connection row with the lowest priority number.
 	 *
-	 * @since x.x.x
+	 * @since 2.12.9
 	 * @param array<mixed> $connections Connection rows.
 	 * @return array<mixed>|null
 	 */

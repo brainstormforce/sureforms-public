@@ -500,7 +500,7 @@ class Rest_Api {
 	 * Re-read on demand so onboarding can see SureMail's connection appear after
 	 * the owner finishes setup in another tab.
 	 *
-	 * @since x.x.x
+	 * @since 2.12.9
 	 * @return \WP_REST_Response
 	 */
 	public function get_email_delivery_status() {

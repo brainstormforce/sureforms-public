@@ -750,7 +750,7 @@ class Analytics {
 	 *
 	 * @param mixed $starter_id Starter card id (sanitized here), or empty string for a free-text prompt.
 	 * @param bool  $edited     Whether the starter prompt was edited before generating.
-	 * @since x.x.x
+	 * @since 2.12.9
 	 * @return void
 	 */
 	public static function track_ai_starter_usage( $starter_id, $edited ) {
@@ -996,7 +996,7 @@ class Analytics {
 	 * plugins are still loading: pluggable functions do not exist yet, so a
 	 * redefined wp_mail() would be missed and current_user_can() is undefined.
 	 *
-	 * @since x.x.x
+	 * @since 2.12.9
 	 * @return void
 	 */
 	public function track_email_delivery_status() {

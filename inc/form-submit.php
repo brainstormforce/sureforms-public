@@ -665,6 +665,13 @@ class Form_Submit {
 			unset( $form_data['srfm_addresses'] );
 		}
 
+		// A browser posts nothing for an unticked checkbox, so those keys never arrive
+		// and the field is missing from the entry and from notification emails while
+		// every other empty field is stored as ''. Restore them from the form's own
+		// blocks before anything reads the submission. Runs after validation, so no
+		// validation outcome depends on it, and it never replaces a submitted value.
+		$form_data = Field_Validation::backfill_unsubmitted_fields( $form_data, $id );
+
 		$form_data = apply_filters( 'srfm_before_fields_processing', $form_data );
 
 		$submission_data = $this->process_form_fields( $form_data );
@@ -687,6 +694,9 @@ class Form_Submit {
 		// Check if GDPR is enabled and do not store entries is enabled.
 		// If so, send email and do not store entries.
 		if ( $gdpr && $do_not_store_entries ) {
+			/** This action is documented below, where the stored-entry path fires it. */
+			do_action( 'srfm_submission_accepted', 0, Helper::get_integer_value( $id ), $form_data );
+
 			// Send email before early return. No entry is created in this path so {entry_id} will be empty — that is expected.
 			// The email is the only copy of this submission, so a failure is recorded as such.
 			$send_email = $this->send_email( $id, $submission_data, $form_data, [ 'entry_saved' => false ] );
@@ -802,6 +812,26 @@ class Form_Submit {
 		if ( $entry_id ) {
 			// Inject entry_id so {entry_id} smart tag resolves in confirmation message, redirect URL, email notifications, and downstream integrations.
 			$form_data['entry_id'] = intval( $entry_id );
+
+			/**
+			 * Fires once a submission has been accepted, before notification email is sent.
+			 *
+			 * Runs as early as the accepted state is known, so listeners that must react to
+			 * "this form was completed" (for example, stopping follow-up work queued against
+			 * an unfinished copy of it) are not held behind a slow mail transport. The
+			 * `srfm_form_submit` action still fires after mail, unchanged.
+			 *
+			 * Also fires when the form's compliance settings accept a submission without
+			 * storing it; `$entry_id` is 0 on that path.
+			 *
+			 * @param int          $entry_id  Stored entry ID, or 0 when the entry is not stored.
+			 * @param int          $form_id   Form ID.
+			 * @param array<mixed> $form_data Parsed request data for the submission (JSON or
+			 *                                multipart), including any non-field keys a client
+			 *                                sent alongside the fields.
+			 * @since 2.12.9
+			 */
+			do_action( 'srfm_submission_accepted', intval( $entry_id ), Helper::get_integer_value( $id ), $form_data );
 
 			// Switch the multilingual provider to the entry's language so the
 			// confirmation message, redirect URL, and email notifications render
@@ -1045,7 +1075,7 @@ class Form_Submit {
 	 * @param array<mixed>  $context   Optional. 'entry_saved' => false when the form does not store entries,
 	 *                                 so a failed notification is the loss of the submission itself.
 	 * @since 0.0.1
-	 * @since x.x.x Added $context.
+	 * @since 2.12.9 Added $context.
 	 * @return array<mixed> Array containing the response data.
 	 */
 	public static function send_email( $id, $submission_data, $form_data = [], $context = [] ) {
@@ -1637,7 +1667,7 @@ class Form_Submit {
 	 *
 	 * @param array<mixed> $item            Notification settings.
 	 * @param array<mixed> $submission_data Submission data.
-	 * @since x.x.x
+	 * @since 2.12.9
 	 * @return array{addresses:array<int,string>,only_visitor:bool}
 	 */
 	private static function get_visitor_recipients( $item, $submission_data ) {
@@ -1691,7 +1721,7 @@ class Form_Submit {
 	 *
 	 * @param array<string,mixed> $parsed  Parsed notification: to, subject, message, headers.
 	 * @param int                 $form_id Form the notification belongs to.
-	 * @since x.x.x
+	 * @since 2.12.9
 	 * @return array{sent:bool,via_php_mail:bool,error:string}
 	 */
 	private static function dispatch_notification( $parsed, $form_id ) {
