@@ -267,6 +267,7 @@ return [
 	],
 	[
 		'id'              => 'event-ticket-order',
+		'preview_image'   => 'event-ticket-order.webp',
 		'category'        => 'payments',
 		'theme'           => 'sunset',
 		'icon'            => 'ticket',
@@ -330,6 +331,7 @@ return [
 	],
 	[
 		'id'              => 'paid-class-registration',
+		'preview_image'   => 'paid-class-registration.webp',
 		'category'        => 'payments',
 		'theme'           => 'ocean',
 		'icon'            => 'graduation-cap',

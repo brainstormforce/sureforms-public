@@ -72,6 +72,7 @@ $signature = static fn( $label ) => Catalog::field( 'signature', 'signature', $l
 return [
 	[
 		'id'            => 'member-registration',
+		'preview_image' => 'member-registration.webp',
 		'category'      => 'accounts',
 		'theme'         => 'ocean',
 		'icon'          => 'user-plus',
@@ -117,6 +118,7 @@ return [
 	],
 	[
 		'id'            => 'guest-post-submission',
+		'preview_image' => 'guest-post-submission.webp',
 		'category'      => 'accounts',
 		'theme'         => 'lavender',
 		'icon'          => 'pen-line',
@@ -173,6 +175,7 @@ return [
 	],
 	[
 		'id'            => 'business-directory-listing',
+		'preview_image' => 'business-directory-listing.webp',
 		'category'      => 'accounts',
 		'theme'         => 'mint',
 		'icon'          => 'store',
@@ -263,6 +266,7 @@ return [
 	// Library category: Contact & Leads, with the other order and quote requests.
 	[
 		'id'            => 'bulk-order-form',
+		'preview_image' => 'bulk-order-form.webp',
 		'category'      => 'contact',
 		'theme'         => 'sand',
 		'icon'          => 'package',

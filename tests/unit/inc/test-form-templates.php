@@ -758,6 +758,31 @@ class Test_Form_Templates extends TestCase {
 		$this->assertStringContainsString( 'src="' . SRFM_URL . 'images/check-icon.svg"', $message );
 	}
 
+	public function test_premium_templates_the_free_preview_cannot_show_have_a_small_picture() {
+		add_filter( 'srfm_pro_tier', static fn() => 'free' );
+		$items = array_column( Form_Templates::get_templates_for_js(), null, 'id' );
+		remove_all_filters( 'srfm_pro_tier' );
+
+		foreach ( Form_Templates::get_templates() as $id => $template ) {
+			$image = $template['preview_image'] ?? '';
+			if ( '' !== $image ) {
+				$path = SRFM_DIR . 'images/templates/' . $image;
+				$this->assertFileExists( $path, "Template {$id}: preview image missing." );
+				$this->assertLessThan( 60 * 1024, filesize( $path ), "Template {$id}: preview image is 60 KB or more." );
+			}
+
+			if ( 'free' === Form_Templates::get_required_tier( $template ) ) {
+				continue;
+			}
+			// Fields the free preview drops, or a calculation it can't run.
+			$calculated = in_array( 'calculation', $template['features'] ?? [], true );
+			if ( $items[ $id ]['preview_missing'] > 0 || $calculated ) {
+				$this->assertNotSame( '', $image, "Template {$id}: the free preview can't show it, so it needs a preview image." );
+				$this->assertSame( SRFM_URL . 'images/templates/' . $image, $items[ $id ]['preview_image'] );
+			}
+		}
+	}
+
 	public function test_visitor_email_can_be_turned_off_in_the_preview() {
 		$post_id = Form_Templates::create_form_from_template( 'contact-us', [], [ 'autoresponder' => [ 'enabled' => false ] ] );
 

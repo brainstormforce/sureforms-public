@@ -84,6 +84,7 @@ $disclaimer = __( 'An estimate for guidance only, not financial advice.', 'suref
 return [
 	[
 		'id'            => 'instant-quote-calculator',
+		'preview_image' => 'instant-quote-calculator.webp',
 		'category'      => 'calculators',
 		'theme'         => 'midnight',
 		'icon'          => 'calculator',
@@ -190,6 +191,7 @@ return [
 	],
 	[
 		'id'            => 'loan-emi-calculator',
+		'preview_image' => 'loan-emi-calculator.webp',
 		'category'      => 'calculators',
 		'theme'         => 'ocean',
 		'icon'          => 'landmark',
@@ -285,6 +287,7 @@ return [
 	],
 	[
 		'id'            => 'bmi-calculator',
+		'preview_image' => 'bmi-calculator.webp',
 		'category'      => 'calculators',
 		'theme'         => 'mint',
 		'icon'          => 'activity',
@@ -373,6 +376,7 @@ return [
 	],
 	[
 		'id'            => 'roi-savings-calculator',
+		'preview_image' => 'roi-savings-calculator.webp',
 		'category'      => 'calculators',
 		'theme'         => 'lavender',
 		'icon'          => 'trending-up',
@@ -460,6 +464,7 @@ return [
 	],
 	[
 		'id'            => 'shipping-cost-estimator',
+		'preview_image' => 'shipping-cost-estimator.webp',
 		'category'      => 'calculators',
 		'theme'         => 'sand',
 		'icon'          => 'truck',
