@@ -11,7 +11,6 @@ use SRFM\Inc\AI_Form_Builder\AI_Helper;
 use SRFM\Inc\Database\Register;
 use SRFM\Inc\Database\Tables\Entries;
 use SRFM\Inc\Email_Delivery\Status as Email_Delivery_Status;
-use SRFM\Inc\Form_Templates;
 use SRFM\Inc\Form_Views;
 use SRFM\Inc\Helper;
 use SRFM\Inc\Learn;
@@ -729,8 +728,6 @@ class Analytics {
 			$days_since_install = (int) floor( ( time() - $install_time ) / DAY_IN_SECONDS );
 		}
 
-		$template_slug = Helper::get_string_value( get_post_meta( $post->ID, '_srfm_template_id', true ) );
-
 		self::events()->track(
 			'first_form_published',
 			(string) $post->ID,
@@ -739,8 +736,7 @@ class Analytics {
 				'block_count'        => (string) $block_count,
 				'days_since_install' => (string) $days_since_install,
 				'created_via'        => Helper::get_string_value( get_post_meta( $post->ID, '_srfm_created_via', true ) ),
-				'template_slug'      => $template_slug,
-				'template_name'      => '' !== $template_slug ? Form_Templates::get_template_name( $template_slug ) : '',
+				'template_id'        => Helper::get_string_value( get_post_meta( $post->ID, '_srfm_template_id', true ) ),
 			]
 		);
 	}

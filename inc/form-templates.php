@@ -346,43 +346,6 @@ class Form_Templates {
 	}
 
 	/**
-	 * A template's title in English, whatever the site language, so usage
-	 * reports name the same template the same way on every site.
-	 *
-	 * @param string $template_id Template id.
-	 * @since x.x.x
-	 * @return string Empty when the template doesn't exist.
-	 */
-	public static function get_template_name( $template_id ) {
-		$template_id = sanitize_key( $template_id );
-		if ( '' === $template_id ) {
-			return '';
-		}
-
-		// The catalog files are read again on each call, so their strings
-		// follow the locale switched to here.
-		$switched = switch_to_locale( 'en_US' );
-		$name     = '';
-		foreach ( Catalog::templates() as $template ) {
-			if ( ( $template['id'] ?? '' ) === $template_id ) {
-				$name = Helper::get_string_value( $template['title'] ?? '' );
-				break;
-			}
-		}
-		if ( $switched ) {
-			restore_previous_locale();
-		}
-
-		// Templates added through the `srfm_form_templates` filter aren't in the catalog.
-		if ( '' === $name ) {
-			$template = self::get_template( $template_id );
-			$name     = $template ? Helper::get_string_value( $template['title'] ?? '' ) : '';
-		}
-
-		return $name;
-	}
-
-	/**
 	 * Template summaries for the picker: everything except the field schema.
 	 *
 	 * @since x.x.x
