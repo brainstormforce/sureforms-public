@@ -20,6 +20,7 @@ class Test_Form_Templates extends TestCase {
 
 	public function tear_down() {
 		remove_all_filters( 'srfm_form_templates' );
+		remove_all_filters( 'srfm_form_template_message_meta_keys' );
 		$this->reset_template_cache();
 		wp_set_current_user( 0 );
 		parent::tear_down();
@@ -697,5 +698,56 @@ class Test_Form_Templates extends TestCase {
 		$post_id = Form_Templates::create_form_from_template( 'contact-us', [], [ 'autoresponder' => [ 'enabled' => false ] ] );
 
 		$this->assertCount( 1, get_post_meta( $post_id, '_srfm_email_notification', true ) );
+	}
+
+	public function test_get_message_meta_keys_lists_the_form_messages() {
+		$this->assertSame(
+			[ '_srfm_submit_button_text', '_srfm_email_notification', '_srfm_form_confirmation', '_srfm_page_break_settings' ],
+			Form_Templates::get_message_meta_keys()
+		);
+
+		// The emails, thank-you message and button text a swap sends are all message keys,
+		// so leaving the message keys out keeps the form's own.
+		$request = new WP_REST_Request( 'GET', '/sureforms/v1/form-templates/rsvp' );
+		$request->set_param( 'template_id', 'rsvp' );
+		$this->login_admin();
+		$settings = ( new Form_Templates() )->rest_get_template_content( $request )->get_data()['settings'];
+		foreach ( [ '_srfm_submit_button_text', '_srfm_email_notification', '_srfm_form_confirmation' ] as $key ) {
+			$this->assertArrayHasKey( $key, $settings );
+			$this->assertContains( $key, Form_Templates::get_message_meta_keys() );
+		}
+		// Fields and design are never message keys: the swap always applies them.
+		$this->assertNotContains( '_srfm_forms_styling', Form_Templates::get_message_meta_keys() );
+		$this->assertNotContains( '_srfm_is_inline_button', Form_Templates::get_message_meta_keys() );
+	}
+
+	public function test_get_message_meta_keys_can_be_extended_by_pro() {
+		add_filter(
+			'srfm_form_template_message_meta_keys',
+			static function ( $keys ) {
+				$keys[] = '_srfm_conditional_confirmations';
+				$keys[] = '_srfm_email_notification';
+				$keys[] = [ 'not-a-key' ];
+				return $keys;
+			}
+		);
+
+		$keys = Form_Templates::get_message_meta_keys();
+		$this->assertContains( '_srfm_conditional_confirmations', $keys );
+		$this->assertSame( $keys, array_values( array_unique( $keys ) ), 'Keys are listed once.' );
+		$this->assertContainsOnly( 'string', $keys );
+
+		add_filter( 'srfm_form_template_message_meta_keys', '__return_null', 20 );
+		$this->assertSame( [], Form_Templates::get_message_meta_keys(), 'A broken filter gives no keys rather than an error.' );
+	}
+
+	public function test_rest_list_templates_sends_the_message_meta_keys() {
+		$this->login_admin();
+
+		$data = ( new Form_Templates() )->rest_list_templates()->get_data();
+
+		$this->assertSame( Form_Templates::get_message_meta_keys(), $data['message_meta_keys'] );
+		$this->assertNotEmpty( $data['templates'] );
+		$this->assertArrayHasKey( 'spam_protection', $data );
 	}
 }

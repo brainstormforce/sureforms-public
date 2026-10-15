@@ -1109,13 +1109,46 @@ class Form_Templates {
 	public function rest_list_templates() {
 		return new WP_REST_Response(
 			[
-				'templates'       => self::get_templates_for_js(),
-				'categories'      => self::get_categories(),
-				'themes'          => self::get_themes_for_js(),
-				'requests'        => self::get_request_settings_for_js(),
-				'spam_protection' => self::is_spam_protection_on(),
+				'templates'         => self::get_templates_for_js(),
+				'categories'        => self::get_categories(),
+				'themes'            => self::get_themes_for_js(),
+				'requests'          => self::get_request_settings_for_js(),
+				'spam_protection'   => self::is_spam_protection_on(),
+				// Settings the editor only replaces when the user chooses to.
+				'message_meta_keys' => self::get_message_meta_keys(),
 			]
 		);
+	}
+
+	/**
+	 * The form settings that hold a form's messages: emails, the thank-you
+	 * message, the button text and the step labels.
+	 *
+	 * Applying a template to an open form always replaces its fields and
+	 * design. These keys are only replaced when the user chooses to, so a
+	 * form can take a new look and keep its own emails and messages.
+	 *
+	 * @since x.x.x
+	 * @return array<int, string> Meta keys.
+	 */
+	public static function get_message_meta_keys() {
+		$keys = [
+			'_srfm_submit_button_text',
+			'_srfm_email_notification',
+			'_srfm_form_confirmation',
+			'_srfm_page_break_settings',
+		];
+
+		/**
+		 * Filters the form settings a template swap only replaces when the user
+		 * chooses to also replace the form's emails and messages.
+		 *
+		 * @since x.x.x
+		 * @param array<int, string> $keys Meta keys.
+		 */
+		$keys = apply_filters( 'srfm_form_template_message_meta_keys', $keys );
+
+		return array_values( array_unique( array_filter( array_map( [ Helper::class, 'get_string_value' ], is_array( $keys ) ? $keys : [] ) ) ) );
 	}
 
 	/**
@@ -1216,6 +1249,8 @@ class Form_Templates {
 				'styling'      => self::changed_keys( $style_metas['_srfm_forms_styling'], Helper::get_array_value( get_registered_meta_keys( 'post', SRFM_FORMS_POST_TYPE )['_srfm_forms_styling']['default'] ?? [] ) ),
 				'instant_form' => self::instant_form_style( self::resolve_theme( $template, $style ) ),
 				// Button text, emails, thank-you message and steps the template sets.
+				// The editor only applies the get_message_meta_keys() ones when the
+				// user chooses to replace the form's messages too.
 				'settings'     => array_merge( $settings_metas, [ '_srfm_form_confirmation' => $confirmation ] ),
 			]
 		);

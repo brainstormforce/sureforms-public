@@ -59,3 +59,31 @@ export const requestTemplate = ( query, type = 'request' ) =>
 		method: 'POST',
 		data: { query, type },
 	} );
+
+/**
+ * The template settings to apply to an open form.
+ *
+ * Only settings the editor knows about are applied. The form's messages
+ * (`messageKeys`: emails, thank-you message, button text, step labels) are
+ * left alone unless the user chose to replace them too.
+ *
+ * @since x.x.x
+ * @param {Object}   settings        `settings` from the template content.
+ * @param {Object}   meta            The open form's meta.
+ * @param {string[]} messageKeys     `message_meta_keys` from the template list.
+ * @param {boolean}  replaceMessages Also replace the form's messages.
+ * @return {Object} Settings to apply, by meta key.
+ */
+export const pickTemplateSettings = (
+	settings,
+	meta,
+	messageKeys,
+	replaceMessages
+) =>
+	Object.fromEntries(
+		Object.entries( settings || {} ).filter(
+			( [ key ] ) =>
+				Object.prototype.hasOwnProperty.call( meta || {}, key ) &&
+				( replaceMessages || ! ( messageKeys || [] ).includes( key ) )
+		)
+	);
