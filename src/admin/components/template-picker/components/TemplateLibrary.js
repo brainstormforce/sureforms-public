@@ -1257,9 +1257,10 @@ export const TemplateGrid = ( {
 							}
 							className={ cn(
 								'group flex flex-col p-0 text-left bg-background-primary border border-solid border-border-subtle rounded-lg overflow-hidden shadow-sm cursor-pointer',
-								'transition-[transform,box-shadow,border-color] duration-200 ease-out hover:-translate-y-0.5 hover:shadow-lg hover:border-border-interactive',
+								// No lift on hover: moving the card re-draws its text and picture a little off while it moves.
+								'transition-[box-shadow,border-color] duration-200 ease-out hover:shadow-lg hover:border-border-interactive',
 								'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-border-interactive',
-								'motion-reduce:transition-none motion-reduce:hover:translate-y-0',
+								'motion-reduce:transition-none',
 								! isShown( template ) && 'hidden'
 							) }
 						>
