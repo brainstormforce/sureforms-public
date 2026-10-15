@@ -50,7 +50,7 @@ class Test_Form_Templates extends TestCase {
 		$this->assertSame( array_keys( $templates ), array_unique( array_keys( $templates ) ) );
 	}
 
-	public function test_categories_without_templates_are_hidden() {
+	public function test_get_categories_hides_categories_without_templates() {
 		$used = array_unique( array_column( Form_Templates::get_templates(), 'category' ) );
 		$ids  = wp_list_pluck( Form_Templates::get_categories(), 'id' );
 
