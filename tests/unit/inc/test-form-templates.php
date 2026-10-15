@@ -1045,11 +1045,12 @@ class Test_Form_Templates extends TestCase {
 		$this->assertStringContainsString( '<!-- wp:srfm/', $context[1], 'The content is built when none is given.' );
 	}
 
-	public function test_get_categories_has_one_per_catalog_file() {
+	public function test_get_categories_match_the_catalog_files() {
 		$ids = wp_list_pluck( Form_Templates::get_categories(), 'id' );
 
-		foreach ( Catalog::FILES as $file ) {
-			$this->assertContains( $file, $ids );
+		$this->assertSame( [], array_values( array_diff( $ids, Catalog::FILES ) ), 'Each category has a catalog file.' );
+		foreach ( Catalog::templates() as $template ) {
+			$this->assertContains( $template['category'], $ids, $template['id'] );
 		}
 	}
 

@@ -18,11 +18,9 @@ class Test_Catalog extends TestCase {
 		$this->assertSame( Catalog::ORDER, array_slice( $ids, 0, count( Catalog::ORDER ) ), 'Listed templates come first, in ORDER.' );
 		$this->assertSame( $ids, array_unique( $ids ) );
 
+		// Each catalog file holds the templates of one category (a file may still be empty).
 		$categories = array_unique( wp_list_pluck( Catalog::templates(), 'category' ) );
-		sort( $categories );
-		$files = Catalog::FILES;
-		sort( $files );
-		$this->assertSame( $files, $categories, 'Each catalog file holds the templates of one category.' );
+		$this->assertSame( [], array_values( array_diff( $categories, Catalog::FILES ) ) );
 	}
 
 	public function test_field_fills_the_schema_keys_and_keeps_extras() {
