@@ -724,12 +724,35 @@ export const TemplatePreview = ( {
 						size="sm"
 						aria-expanded={ showPanel }
 						aria-controls={ showPanel ? panelId : undefined }
+						aria-label={ __( 'Customize', 'sureforms' ) }
 						icon={ <Palette className="size-4" /> }
 						onClick={ () => setShowPanel( ( open ) => ! open ) }
 					>
-						{ __( 'Customize', 'sureforms' ) }
+						<span className="hidden sm:inline">
+							{ __( 'Customize', 'sureforms' ) }
+						</span>
 					</Button>
 				) }
+				<Button
+					variant="primary"
+					size="sm"
+					className="shrink-0 whitespace-nowrap"
+					loading={ isCreating }
+					disabled={ isCreating }
+					icon={
+						template.is_locked ? (
+							<Lock className="size-4" />
+						) : (
+							<ArrowRight className="size-4" />
+						)
+					}
+					iconPosition={ template.is_locked ? 'left' : 'right' }
+					onClick={ use }
+				>
+					{ template.is_locked
+						? lockLabels.button
+						: __( 'Use this template', 'sureforms' ) }
+				</Button>
 				<Button
 					variant="ghost"
 					size="sm"
@@ -991,26 +1014,6 @@ export const TemplatePreview = ( {
 							} }
 						/>
 					) }
-					<Button
-						variant="primary"
-						size="md"
-						className="w-full sm:w-auto whitespace-nowrap"
-						loading={ isCreating }
-						disabled={ isCreating }
-						icon={
-							template.is_locked ? (
-								<Lock className="size-4" />
-							) : (
-								<ArrowRight className="size-4" />
-							)
-						}
-						iconPosition={ template.is_locked ? 'left' : 'right' }
-						onClick={ use }
-					>
-						{ template.is_locked
-							? lockLabels.button
-							: __( 'Use this template', 'sureforms' ) }
-					</Button>
 				</div>
 			</div>
 		</div>
