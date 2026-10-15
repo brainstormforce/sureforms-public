@@ -95,6 +95,10 @@
 			"type": "boolean",
 			"default": false
 		},
+		"showOptionDescriptions": {
+			"type": "boolean",
+			"default": false
+		},
 		"preselectedOptions": {
 			"type": "array",
 			"default": []

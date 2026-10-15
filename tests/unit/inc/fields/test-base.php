@@ -116,6 +116,69 @@ class Test_Base extends TestCase {
 		$this->assertSame( 'srfm-description-b1', trim( $this->get_private_property( $base, 'aria_described_by' ) ) );
 	}
 
+	/**
+	 * The description only renders once the block opts in, so an option array
+	 * saved before the setting existed renders exactly as it did before.
+	 */
+	public function test_get_option_description() {
+		$option = [ 'optionTitle' => 'Early Bird', 'description' => '  $149 until 1 March  ' ];
+
+		// Opted out: the stored description is ignored.
+		$this->assertSame( '', $this->call_private_method( $this->base, 'get_option_description', [ $option ] ) );
+
+		$this->set_private_property( $this->base, 'show_option_descriptions', true );
+
+		$this->assertSame( '$149 until 1 March', $this->call_private_method( $this->base, 'get_option_description', [ $option ] ) );
+
+		// Nothing to show: absent, blank, non-scalar, and a non-array option all
+		// land on the same empty string rather than on a notice or on "Array".
+		$this->assertSame( '', $this->call_private_method( $this->base, 'get_option_description', [ [ 'optionTitle' => 'Plain' ] ] ) );
+		$this->assertSame( '', $this->call_private_method( $this->base, 'get_option_description', [ [ 'description' => '   ' ] ] ) );
+		$this->assertSame( '', $this->call_private_method( $this->base, 'get_option_description', [ [ 'description' => [ 'nested' ] ] ] ) );
+		$this->assertSame( '', $this->call_private_method( $this->base, 'get_option_description', [ 'not-an-array' ] ) );
+
+		// A numeric description is still a description.
+		$this->assertSame( '0', $this->call_private_method( $this->base, 'get_option_description', [ [ 'description' => 0 ] ] ) );
+	}
+
+	/**
+	 * Only the first option carries the field-level ids, which is what the field
+	 * did before descriptions existed; each option points at its own description.
+	 */
+	public function test_get_option_described_by() {
+		$this->set_private_property( $this->base, 'aria_described_by', ' srfm-description-b1' );
+
+		$this->assertSame(
+			'aria-describedby="srfm-description-b1 opt-0-desc" ',
+			$this->call_private_method( $this->base, 'get_option_described_by', [ 0, 'opt-0-desc' ] )
+		);
+
+		// Later options never repeat the field-level ids.
+		$this->assertSame(
+			'aria-describedby="opt-2-desc" ',
+			$this->call_private_method( $this->base, 'get_option_described_by', [ 2, 'opt-2-desc' ] )
+		);
+
+		// First option without a description keeps exactly the old attribute.
+		$this->assertSame(
+			'aria-describedby="srfm-description-b1" ',
+			$this->call_private_method( $this->base, 'get_option_described_by', [ 0, '' ] )
+		);
+
+		// Nothing to point at anywhere: no empty attribute left in the markup.
+		$this->assertSame( '', $this->call_private_method( $this->base, 'get_option_described_by', [ 1, '' ] ) );
+
+		$plain = new Base();
+		$this->assertSame( '', $this->call_private_method( $plain, 'get_option_described_by', [ 0, '' ] ) );
+	}
+
+	private function set_private_property( $object, $property_name, $value ) {
+		$reflection = new \ReflectionClass( get_class( $object ) );
+		$property   = $reflection->getProperty( $property_name );
+		$property->setAccessible( true );
+		$property->setValue( $object, $value );
+	}
+
 	private function call_private_method( $object, $method_name, $parameters = [] ) {
 		$reflection = new \ReflectionClass( get_class( $object ) );
 		$method     = $reflection->getMethod( $method_name );

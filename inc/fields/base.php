@@ -298,6 +298,14 @@ class Base {
 	protected $aria_described_by;
 
 	/**
+	 * Whether per-option descriptions should be rendered for this field.
+	 *
+	 * @var bool
+	 * @since 2.13.0
+	 */
+	protected $show_option_descriptions = false;
+
+	/**
 	 * Stores the minimum number of selections required.
 	 *
 	 * @var string
@@ -541,5 +549,47 @@ class Base {
 		// Only reference elements that exist in the rendered markup. The error message id
 		// is linked by toggleErrorState() in frontend.js on controls marked data-srfm-error-target.
 		$this->aria_described_by .= ! empty( $this->help ) ? ' srfm-description-' . esc_attr( $this->block_id ) : '';
+	}
+
+	/**
+	 * Read one option's description.
+	 *
+	 * Returns an empty string unless the block has descriptions switched on and
+	 * this option carries a scalar, non-empty one, so an option that predates the
+	 * setting and an option left blank both render exactly as they did before.
+	 *
+	 * @param mixed $option Single entry from the block's options array.
+	 * @since 2.13.0
+	 * @return string
+	 */
+	protected function get_option_description( $option ) {
+		if ( empty( $this->show_option_descriptions ) || ! is_array( $option ) ) {
+			return '';
+		}
+
+		$description = $option['description'] ?? '';
+
+		return is_scalar( $description ) ? trim( (string) $description ) : '';
+	}
+
+	/**
+	 * Build the aria-describedby attribute for a single option's control.
+	 *
+	 * The first option also carries the field-level ids (help text, and the error
+	 * message once frontend.js links it), matching what the field rendered before
+	 * descriptions existed. Every option additionally points at its own
+	 * description when it has one, so the second line is announced together with
+	 * that option instead of being read as loose text.
+	 *
+	 * @param int    $index          Zero-based option index.
+	 * @param string $description_id Element id of this option's description, empty when it has none.
+	 * @since 2.13.0
+	 * @return string Attribute markup including a trailing space, or an empty string.
+	 */
+	protected function get_option_described_by( $index, $description_id ) {
+		$ids = 0 === $index && ! empty( $this->aria_described_by ) ? trim( $this->aria_described_by ) : '';
+		$ids = trim( $ids . ' ' . $description_id );
+
+		return '' === $ids ? '' : 'aria-describedby="' . esc_attr( $ids ) . '" ';
 	}
 }

@@ -20,6 +20,7 @@ export const MultiChoiceComponent = ( {
 		singleSelection,
 		verticalLayout,
 		optionType,
+		showOptionDescriptions,
 	} = attributes;
 	const isRequired = required ? ' srfm-required' : '';
 	const slug = 'multi-choice';
@@ -73,7 +74,17 @@ export const MultiChoiceComponent = ( {
 											/>
 										</span>
 									) }
-									<p>{ option.optionTitle }</p>
+									{ showOptionDescriptions &&
+									option.description ? (
+											<div className="srfm-option-text">
+												<p>{ option.optionTitle }</p>
+												<span className="srfm-option-description">
+													{ option.description }
+												</span>
+											</div>
+										) : (
+											<p>{ option.optionTitle }</p>
+										) }
 								</div>
 								<div className="srfm-icon-container">
 									<span

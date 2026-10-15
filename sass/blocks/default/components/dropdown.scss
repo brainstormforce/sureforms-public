@@ -212,6 +212,18 @@
 								fill: var( --srfm-dropdown-icon-color );
 								stroke: var( --srfm-dropdown-icon-color );
 							}
+
+							// The description is only rendered when the option has one,
+							// so options without one keep the single-line flex row.
+							&:has( .srfm-option-description ) {
+								flex-wrap: wrap;
+							}
+
+							.srfm-option-description {
+								@include srfm-description-styles;
+								flex-basis: 100%;
+								margin-top: 2px;
+							}
 						}
 					}
 

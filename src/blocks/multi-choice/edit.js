@@ -60,6 +60,7 @@ const Edit = ( props ) => {
 		minValue,
 		maxValue,
 		showValues,
+		showOptionDescriptions,
 		preselectedOptions = [],
 		dynamicDefaultValue,
 	} = attributes;
@@ -270,6 +271,20 @@ const Edit = ( props ) => {
 						} }
 						onChange={ ( value ) => editOption( value, i ) }
 					/>
+					{ showOptionDescriptions && (
+						<SRFMTextControl
+							showHeaderControls={ false }
+							value={ option.description || '' }
+							data={ {
+								value: option.description,
+								label: 'optionDescription',
+							} }
+							placeholder={ __( 'Description', 'sureforms' ) }
+							onChange={ ( value ) =>
+								changeOption( { description: value }, i )
+							}
+						/>
+					) }
 				</div>
 				{ optionType === 'icon' && (
 					<div className="srfm-icon-picker">
@@ -605,6 +620,22 @@ const Edit = ( props ) => {
 					checked={ showValues }
 					onChange={ ( value ) =>
 						setAttributes( { showValues: value } )
+					}
+				/>
+			),
+		},
+		{
+			id: 'show-option-descriptions',
+			component: (
+				<ToggleControl
+					label={ __( 'Add Option Descriptions', 'sureforms' ) }
+					help={ __(
+						'Shows a second line under each option. The option title stays the submitted value, so pre-filled links keep working.',
+						'sureforms'
+					) }
+					checked={ showOptionDescriptions }
+					onChange={ ( value ) =>
+						setAttributes( { showOptionDescriptions: value } )
 					}
 				/>
 			),

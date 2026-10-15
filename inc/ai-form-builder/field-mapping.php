@@ -480,7 +480,7 @@ class Field_Mapping {
 		if ( ! is_array( $options ) ) {
 			return [];
 		}
-		$sanitizable_keys = [ 'label', 'value', 'optionTitle' ];
+		$sanitizable_keys = [ 'label', 'value', 'optionTitle', 'description' ];
 		foreach ( $options as $key => $option ) {
 			if ( ! is_array( $option ) ) {
 				continue;
