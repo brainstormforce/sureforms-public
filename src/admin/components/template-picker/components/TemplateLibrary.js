@@ -48,7 +48,7 @@ import {
 	showsPreviewImage,
 } from './template-features.js';
 import useFocusTrap from '../use-focus-trap.js';
-import { resolveLook } from '../template-colors.js';
+import { resolveLook, restyleDocument } from '../template-colors.js';
 import {
 	EmailsPanel,
 	ThankYouPanel,
@@ -57,7 +57,8 @@ import {
 	hasMessages,
 } from './TemplateMessages.js';
 
-// Wait this long after the last change before rendering the preview again.
+// When a preview can't be restyled in place, wait this long after the last
+// change before rendering it again.
 const RESTYLE_DELAY = 250;
 
 // A preview that hasn't loaded after this long is treated as blocked.
@@ -461,10 +462,10 @@ export const TemplatePreview = ( {
 	const [ tab, setTab ] = useState( 'form' );
 	// Message text changed from the template's, by key. Kept across tabs.
 	const [ messageEdits, setMessageEdits ] = useState( {} );
-	// Two frames: the new render loads behind the shown one and swaps in when
-	// ready, so restyling never flashes an empty page.
-	const [ frames, setFrames ] = useState( [ template.preview_url, '' ] );
-	const [ shown, setShown ] = useState( 0 );
+	// The preview is rendered once and restyled in place; it only loads again
+	// when its colors can't be swapped (see restyleDocument()).
+	const [ frameSrc, setFrameSrc ] = useState( template.preview_url );
+	const frameRef = useRef( null );
 	// 'loading', 'ready' or 'failed'.
 	const [ status, setStatus ] = useState( 'loading' );
 	// A locked template's picture that doesn't load falls back to the live preview.
@@ -490,20 +491,33 @@ export const TemplatePreview = ( {
 		}
 	}, [ isNarrow ] );
 
+	const themePresets = presets || srfm_admin?.form_template_themes;
+	const look = useMemo(
+		() => resolveLook( style, template.theme, themePresets ),
+		[ style, template.theme, themePresets ]
+	);
+
 	useEffect( () => {
-		const url = styledPreviewUrl( template, style );
-		const timer = setTimeout( () => {
-			setFrames( ( current ) => {
-				if ( current[ shown ] === url ) {
-					return current;
-				}
-				const next = [ ...current ];
-				next[ 1 - shown ] = url;
-				return next;
-			} );
-		}, RESTYLE_DELAY );
+		if ( 'ready' !== status ) {
+			return;
+		}
+		let doc = null;
+		try {
+			doc = frameRef.current?.contentDocument;
+		} catch ( error ) {
+			doc = null;
+		}
+		// The page was first rendered without a style, in the template's own look.
+		const renderedLook = resolveLook( {}, template.theme, themePresets );
+		if ( frameSrc === template.preview_url && restyleDocument( doc, renderedLook, look ) ) {
+			return;
+		}
+		const timer = setTimeout(
+			() => setFrameSrc( styledPreviewUrl( template, style ) ),
+			RESTYLE_DELAY
+		);
 		return () => clearTimeout( timer );
-	}, [ style, template, shown ] );
+	}, [ look, status, frameSrc, template, style, themePresets ] );
 
 	useEffect( () => {
 		if ( showImage ) {
@@ -817,51 +831,30 @@ export const TemplatePreview = ( {
 									</span>
 								</>
 							) }
-							{ ! showImage &&
-								frames.map(
-									( src, index ) =>
-										!! src && (
-											<iframe
-											// One element per slot, so React keeps the shown
-											// frame while the other one reloads.
-												key={ index }
-												src={ src }
-												title={ sprintf(
-												/* translators: %s: template name. */
-													__(
-														'Preview of the %s form',
-														'sureforms'
-													),
-													template.title
-												) }
-												aria-hidden={ index !== shown }
-												tabIndex={
-													index === shown ? 0 : -1
-												}
-												onLoad={ ( event ) => {
-													if (
-														isPreviewBroken(
-															event.currentTarget
-														)
-													) {
-														setStatus( 'failed' );
-														return;
-													}
-													if ( index !== shown ) {
-														setShown( index );
-													}
-													setStatus( 'ready' );
-												} }
-												className={ cn(
-													'absolute inset-0 size-full border border-solid border-border-subtle rounded-lg bg-background-primary shadow-sm transition-opacity duration-200 motion-reduce:transition-none',
-													index === shown &&
-													'ready' === status
-														? 'opacity-100 z-10'
-														: 'opacity-0 z-0 pointer-events-none'
-												) }
-											/>
+							{ ! showImage && (
+								<iframe
+									ref={ frameRef }
+									src={ frameSrc }
+									title={ sprintf(
+										/* translators: %s: template name. */
+										__( 'Preview of the %s form', 'sureforms' ),
+										template.title
+									) }
+									onLoad={ ( event ) =>
+										setStatus(
+											isPreviewBroken( event.currentTarget )
+												? 'failed'
+												: 'ready'
 										)
-								) }
+									}
+									className={ cn(
+										'absolute inset-0 size-full border border-solid border-border-subtle rounded-lg bg-background-primary shadow-sm transition-opacity duration-200 motion-reduce:transition-none',
+										'ready' === status
+											? 'opacity-100 z-10'
+											: 'opacity-0 z-0 pointer-events-none'
+									) }
+								/>
+							) }
 							{ ! showImage && 'loading' === status && (
 								<FormSkeleton className="z-20 rounded-lg border border-solid border-border-subtle shadow-sm" />
 							) }
@@ -893,11 +886,7 @@ export const TemplatePreview = ( {
 								template={ template }
 								values={ messageValues }
 								setValue={ setMessage }
-								look={ resolveLook(
-									style,
-									template.theme,
-									presets || srfm_admin?.form_template_themes
-								) }
+								look={ look }
 								editable={ canEditMessages }
 								device={ device }
 							/>

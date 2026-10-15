@@ -80,7 +80,7 @@ const mix = ( hex, with_, amount ) => {
  * @since x.x.x
  * @param {Object} style   { preset?, background?, accent? }.
  * @param {string} theme   The template's own preset id.
- * @param {Array}  presets Presets: { id, background, accent }.
+ * @param {Array}  presets Presets: { id, background, accent, text, onPrimary }.
  * @return {{background: string, primary: string, text: string, onPrimary: string}} Look.
  */
 export const resolveLook = ( style, theme, presets ) => {
@@ -88,19 +88,90 @@ export const resolveLook = ( style, theme, presets ) => {
 	const preset = list.find( ( p ) => p.id === ( style.preset || theme ) ) ||
 		list.find( ( p ) => p.id === theme ) ||
 		list[ 0 ] || { background: '#FFFFFF', accent: '#2563EB' };
-	const background =
-		style.background && /^#[0-9a-f]{6}$/i.test( style.background )
-			? `linear-gradient(135deg, ${ style.background } 0%, ${ mix(
-				style.background,
-				'#FFFFFF',
-				0.35
-			  ) } 100%)`
-			: preset.background;
+	const hasBackground =
+		!! style.background && /^#[0-9a-f]{6}$/i.test( style.background );
+	const background = hasBackground
+		? `linear-gradient(135deg, ${ style.background } 0%, ${ mix(
+			style.background,
+			'#FFFFFF',
+			0.35
+		  ).toUpperCase() } 100%)`
+		: preset.background;
 	const primary = style.accent || preset.accent;
-	return {
-		background,
-		primary,
-		text: isDark( firstHex( background ) ) ? '#E2E8F0' : '#1E293B',
-		onPrimary: isDark( firstHex( primary ) ) ? '#FFFFFF' : '#0F172A',
-	};
+	// A preset keeps its own text colors; a chosen color gets readable ones.
+	const text =
+		! hasBackground && preset.text
+			? preset.text
+			: isDark( firstHex( background ) )
+				? '#E2E8F0'
+				: '#1E293B';
+	const onPrimary =
+		! style.accent && preset.onPrimary
+			? preset.onPrimary
+			: isDark( firstHex( primary ) )
+				? '#FFFFFF'
+				: '#0F172A';
+	return { background, primary, text, onPrimary };
+};
+
+const escapeRegExp = ( value ) =>
+	value.replace( /[.*+?^${}()|[\]\\]/g, '\\$&' );
+
+// Each style block as first rendered, with its colors swapped for tokens.
+const restyleSources = new WeakMap();
+
+/**
+ * Restyle a rendered preview in place. The form's colors are written as
+ * plain values into its own <style> block, so they are swapped there for the
+ * new ones instead of rendering the whole page (and its scripts) again.
+ *
+ * @since x.x.x
+ * @param {Document} doc  Preview document.
+ * @param {Object}   from Look the page was rendered with, from resolveLook().
+ * @param {Object}   to   Look to show, from resolveLook().
+ * @return {boolean} Whether the page was restyled. False when its colors
+ *                   could not be found, so it has to be rendered again.
+ */
+export const restyleDocument = ( doc, from, to ) => {
+	const blocks = Array.from( doc?.querySelectorAll?.( 'style' ) || [] ).filter(
+		( node ) =>
+			restyleSources.has( node ) ||
+			node.textContent.includes( '--srfm-color-scheme-primary' )
+	);
+	if ( ! blocks.length ) {
+		return false;
+	}
+
+	// The background goes first: its gradient can hold the other colors.
+	const keys = [ 'background', 'primary', 'text', 'onPrimary' ];
+	for ( const node of blocks ) {
+		if ( ! restyleSources.has( node ) ) {
+			let source = node.textContent;
+			for ( const key of keys ) {
+				const value = String( from[ key ] || '' );
+				if ( ! value ) {
+					return false;
+				}
+				const pattern = new RegExp(
+					escapeRegExp( value ) +
+						( 'background' === key ? '' : '(?![0-9a-f])' ),
+					'gi'
+				);
+				if ( 'primary' === key && ! pattern.test( source ) ) {
+					return false;
+				}
+				pattern.lastIndex = 0;
+				source = source.replace( pattern, `__srfm_${ key }__` );
+			}
+			restyleSources.set( node, source );
+		}
+		let css = restyleSources.get( node );
+		for ( const key of keys ) {
+			css = css.split( `__srfm_${ key }__` ).join( to[ key ] );
+		}
+		if ( css !== node.textContent ) {
+			node.textContent = css;
+		}
+	}
+	return true;
 };
