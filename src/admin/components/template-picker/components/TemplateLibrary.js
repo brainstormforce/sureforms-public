@@ -1406,9 +1406,11 @@ export const TemplateGrid = ( {
 									) }
 								</span>
 								{ features.length > 0 && (
+									// One row of chips: a chip that doesn't fit wraps out of
+									// sight whole instead of being cut off. The preview lists all.
 									<span
 										id={ `srfm-template-features-${ template.id }` }
-										className="flex flex-nowrap gap-1 overflow-hidden"
+										className="flex flex-wrap gap-1 h-5 overflow-hidden"
 									>
 										{ features.map( ( feature ) => (
 											<FeatureChip
