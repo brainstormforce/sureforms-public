@@ -14,7 +14,7 @@
  * tests/unit/inc/test-admin-ajax.php.
  *
  * @package sureforms
- * @since 2.13.0
+ * @since x.x.x
  */
 
 use SRFM\Admin\Analytics;
@@ -23,7 +23,7 @@ use SRFM\Inc\Helper;
 /**
  * Class Test_Analytics_Uninstall_Pref
  *
- * @since 2.13.0
+ * @since x.x.x
  */
 class Test_Analytics_Uninstall_Pref extends SRFM_Unit_Test_Case {
 
@@ -316,23 +316,41 @@ class Test_Analytics_Uninstall_Pref extends SRFM_Unit_Test_Case {
 	}
 
 	/**
-	 * The survey config is built on plugins_loaded, never at plugin-load time.
+	 * The survey config is built on init at priority 0, never at plugin-load
+	 * time.
 	 *
-	 * It calls current_user_can() and wp_create_nonce(), and neither exists
-	 * until wp-includes/pluggable.php is required - which happens after every
-	 * plugin file has been included but before plugins_loaded fires. Building it
-	 * in the constructor fatals the entire site on every request.
+	 * It calls current_user_can() and wp_create_nonce(). Both end in
+	 * wp_get_current_user(), which lives in wp-includes/pluggable.php - required
+	 * after every plugin file has been included. Building the config in the
+	 * constructor fatals the entire site on every request.
 	 *
-	 * The real regression guard is this suite's own bootstrap, which loads the
-	 * plugin at muplugins_loaded and dies outright if the call moves back. This
-	 * asserts the hook so the reason is written down where the next person looks.
+	 * Priority 0 on init, rather than plugins_loaded, so an add-on that filters
+	 * srfm_deactivation_survey_data from plugins_loaded is still in time. The
+	 * library reads its entities on init at the default priority 10
+	 * (BSF_Analytics_Loader::load_analytics), so 0 is the latest safe point.
 	 *
 	 * @return void
 	 */
 	public function test_entity_registration_waits_for_pluggable_functions() {
+		$this->assertSame(
+			0,
+			has_action( 'init', [ $this->analytics, 'register_analytics_entity' ] ),
+			'the survey config needs pluggable functions, and has to be in place before the library reads it on init'
+		);
+		$this->assertFalse( has_action( 'plugins_loaded', [ $this->analytics, 'register_analytics_entity' ] ) );
+	}
+
+	/**
+	 * The checkbox saves through admin-ajax, so the handler has to be wired to
+	 * its action. Every other test here calls the handler directly and would
+	 * stay green without this line.
+	 *
+	 * @return void
+	 */
+	public function test_save_handler_is_registered_on_the_ajax_action() {
 		$this->assertNotFalse(
-			has_action( 'plugins_loaded', [ $this->analytics, 'register_analytics_entity' ] ),
-			'the survey config needs current_user_can() and wp_create_nonce(), so it cannot be built at plugin-load time'
+			has_action( 'wp_ajax_' . Analytics::UNINSTALL_PREF_ACTION, [ $this->analytics, 'save_uninstall_preference' ] ),
+			'the checkbox cannot save if the ajax action is not registered'
 		);
 	}
 

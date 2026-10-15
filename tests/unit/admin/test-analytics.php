@@ -1809,20 +1809,22 @@ class Test_Analytics extends TestCase {
 	 * register_analytics_entity() hands the library a survey carrying the
 	 * uninstall checkbox, for an administrator in the admin.
 	 *
-	 * The config is built here rather than in the constructor because it needs
-	 * current_user_can() and wp_create_nonce(), neither of which exists until
-	 * wp-includes/pluggable.php is loaded - after every plugin file has been
-	 * required. See tests/unit/admin/test-analytics-uninstall-pref.php for the
-	 * capability, nonce and stored-value cases.
+	 * The config is built here rather than in the constructor because
+	 * current_user_can() and wp_create_nonce() both call the pluggable
+	 * wp_get_current_user(), which does not exist until wp-includes/pluggable.php
+	 * is loaded - after every plugin file has been required. See
+	 * tests/unit/admin/test-analytics-uninstall-pref.php for the capability,
+	 * nonce and stored-value cases.
 	 *
 	 * @return void
 	 */
 	public function test_register_analytics_entity() {
 		$analytics = Analytics::get_instance();
 
-		$this->assertNotFalse(
-			has_action( 'plugins_loaded', [ $analytics, 'register_analytics_entity' ] ),
-			'it cannot run any earlier than plugins_loaded'
+		$this->assertSame(
+			0,
+			has_action( 'init', [ $analytics, 'register_analytics_entity' ] ),
+			'it runs on init at priority 0, before the library reads its entities at 10'
 		);
 
 		$captured = [];

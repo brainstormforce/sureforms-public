@@ -33,7 +33,7 @@ class Analytics {
 	 * Shared between the survey config that declares it and the handler that
 	 * serves it, so the two cannot drift.
 	 *
-	 * @since 2.13.0
+	 * @since x.x.x
 	 */
 	public const UNINSTALL_PREF_ACTION = 'srfm_set_uninstall_pref';
 
@@ -43,7 +43,7 @@ class Analytics {
 	 * The uninstall script reads this key straight out of the row, since the
 	 * plugin is not loaded by then and this class does not exist.
 	 *
-	 * @since 2.13.0
+	 * @since x.x.x
 	 */
 	public const UNINSTALL_PREF_KEY = 'remove_analytics_data_on_uninstall';
 
@@ -79,7 +79,7 @@ class Analytics {
 			}
 		);
 
-		add_action( 'plugins_loaded', [ $this, 'register_analytics_entity' ] );
+		add_action( 'init', [ $this, 'register_analytics_entity' ], 0 );
 
 		// Saves the uninstall preference from the deactivation survey checkbox.
 		add_action( 'wp_ajax_' . self::UNINSTALL_PREF_ACTION, [ $this, 'save_uninstall_preference' ] );
@@ -99,18 +99,18 @@ class Analytics {
 	/**
 	 * Register the analytics entity, including the deactivation survey.
 	 *
-	 * On plugins_loaded rather than in the constructor, which runs while plugins
-	 * are still being required - before wp-includes/pluggable.php exists. Both
-	 * current_user_can() and wp_create_nonce() below need it: the first is
-	 * undefined that early and fatals the whole site, and the second would mint
-	 * a nonce bound to user 0, which then fails verification for the
-	 * administrator who actually submits it.
+	 * On init at priority 0 rather than in the constructor, which runs while
+	 * plugins are still being required - before wp-includes/pluggable.php
+	 * exists. current_user_can() and wp_create_nonce() below both call the
+	 * pluggable wp_get_current_user(): undefined that early, it fatals the whole
+	 * site.
 	 *
-	 * Still early enough for the library, which reads its entities on init (see
-	 * BSF_Analytics_Loader::load_analytics) and renders the survey on
-	 * admin_footer.
+	 * Priority 0 is the latest safe point: the library reads its entities on
+	 * init at the default priority 10 (BSF_Analytics_Loader::load_analytics). It
+	 * is also late enough that an add-on filtering srfm_deactivation_survey_data
+	 * from plugins_loaded is in time.
 	 *
-	 * @since 2.13.0
+	 * @since x.x.x
 	 * @return void
 	 */
 	public function register_analytics_entity() {
@@ -184,7 +184,7 @@ class Analytics {
 	 * compares strictly and stores a real boolean. A cast would read 'no' as
 	 * consent, and uninstall.php's gate only accepts boolean true.
 	 *
-	 * @since 2.13.0
+	 * @since x.x.x
 	 * @return void
 	 */
 	public function save_uninstall_preference() {

@@ -26,14 +26,16 @@
  * (see uninstall_plugin() in wp-admin/includes/plugin.php), so no SureForms
  * class, constant or autoloader is available here. Everything is plain core API.
  *
- * Multisite: deleting through the admin UI is a network-admin action, so this
- * file runs once against the main site's options table and sub-site rows are
- * left in place. There is no per-site loop in core and none is added here.
- * `wp plugin uninstall --url=<subsite>` is the exception: WP-CLI runs it in that
- * sub-site's context, so it cleans that sub-site instead.
+ * Multisite: core runs this file once, in the main site's context, so it only
+ * ever reads and cleans the main site's row. Sub-site rows are never touched.
+ * On a network-activated install the opt-in cannot be given at all: the plugin
+ * is deactivated from the network plugins screen (`plugins-network`), where the
+ * deactivation survey is not shown, so the flag is never set and this file is
+ * a no-op there. That fails closed. Offering the choice network-wide needs a
+ * decision on sub-site rows first, so it is left out on purpose.
  *
  * @package sureforms
- * @since 2.13.0
+ * @since x.x.x
  */
 
 // Exit if not called by WordPress uninstall.
@@ -91,6 +93,14 @@ if ( ! is_array( $srfm_options ) || true !== ( $srfm_options['remove_analytics_d
  *                               so dropping it costs one re-report of the state
  *                               as it stands after a reinstall, which is the
  *                               correct value anyway.
+ *  - db_repair_attempts         admin/admin.php. A cumulative counter sent with
+ *                               the database-error notice event, and read
+ *                               nowhere else, so it gates no behaviour.
+ *
+ * Plus the contact details inside onboarding_user_details (first_name,
+ * last_name, email), written by inc/rest-api.php. They are collected data, not
+ * a setting. Its `lead` flag stays: it is the once-per-site guard that stops a
+ * reinstall sending the same lead again.
  *
  * Plus the opt-in itself. Consent is deliberately not inherited: re-persisting
  * the live toggle would mean a reinstall silently carries a previous operator's
@@ -108,9 +118,8 @@ if ( ! is_array( $srfm_options ) || true !== ( $srfm_options['remove_analytics_d
  *                               those one-time events are measured against.
  *
  * Every other key - payment_settings, forms_per_page, dismissed_action_items,
- * the pointer-popup flags, plugin_banner_rotation, remaining_promos,
- * db_repair_attempts, the onboarding settings - is configuration or UI state and
- * survives untouched.
+ * the pointer-popup flags, plugin_banner_rotation, remaining_promos, the
+ * onboarding settings - is configuration or UI state and survives untouched.
  */
 $srfm_analytics_keys = [
 	'usage_events_pending',
@@ -122,20 +131,28 @@ $srfm_analytics_keys = [
 	'onboarding_analytics',
 	'user_active',
 	'email_delivery_state_tracked',
+	'db_repair_attempts',
 	'remove_analytics_data_on_uninstall',
 ];
 
-$srfm_removed = false;
-
+/*
+ * No "anything removed?" check: the gate above already proved the opt-in key is
+ * present, and it is on this list, so there is always something to write.
+ */
 foreach ( $srfm_analytics_keys as $srfm_analytics_key ) {
-	if ( array_key_exists( $srfm_analytics_key, $srfm_options ) ) {
-		unset( $srfm_options[ $srfm_analytics_key ] );
-		$srfm_removed = true;
-	}
+	unset( $srfm_options[ $srfm_analytics_key ] );
 }
 
-if ( ! $srfm_removed ) {
-	return;
+if ( isset( $srfm_options['onboarding_user_details'] ) && is_array( $srfm_options['onboarding_user_details'] ) ) {
+	unset(
+		$srfm_options['onboarding_user_details']['first_name'],
+		$srfm_options['onboarding_user_details']['last_name'],
+		$srfm_options['onboarding_user_details']['email']
+	);
+
+	if ( [] === $srfm_options['onboarding_user_details'] ) {
+		unset( $srfm_options['onboarding_user_details'] );
+	}
 }
 
 if ( [] === $srfm_options ) {
@@ -149,12 +166,12 @@ if ( [] === $srfm_options ) {
 }
 
 /*
- * Evict the cached copy as well.
+ * Evict the cached copies as well.
  *
- * update_option() and delete_option() already maintain the option cache, so
- * this is belt and braces rather than a fix for a known gap - but the row is
- * autoloaded, the write happens with the plugin unloaded and nothing left on
- * this site will ever correct a stale entry under a persistent backend.
+ * update_option() and delete_option() already keep the option cache, including
+ * `alloptions`, in step, so this is belt and braces and fixes no known gap. It
+ * costs nothing on a one-off delete. (The row is autoloaded, so core keeps no
+ * separate `srfm_options` cache key and that first call is normally a no-op.)
  */
 wp_cache_delete( 'srfm_options', 'options' );
 wp_cache_delete( 'alloptions', 'options' );

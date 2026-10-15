@@ -12,13 +12,13 @@
  * unset again within a process. Plugin Check enforces that guard separately.
  *
  * @package sureforms
- * @since 2.13.0
+ * @since x.x.x
  */
 
 /**
  * Class Test_Uninstall
  *
- * @since 2.13.0
+ * @since x.x.x
  */
 class Test_Uninstall extends WP_UnitTestCase {
 
@@ -44,6 +44,7 @@ class Test_Uninstall extends WP_UnitTestCase {
 		'onboarding_analytics',
 		'user_active',
 		'email_delivery_state_tracked',
+		'db_repair_attempts',
 		'remove_analytics_data_on_uninstall',
 	];
 
@@ -63,7 +64,6 @@ class Test_Uninstall extends WP_UnitTestCase {
 		'pointer_popup_dismissed',
 		'plugin_banner_rotation',
 		'remaining_promos',
-		'db_repair_attempts',
 	];
 
 	/**
@@ -105,6 +105,7 @@ class Test_Uninstall extends WP_UnitTestCase {
 			'onboarding_analytics'         => [ 'step' => 'done' ],
 			'user_active'                  => true,
 			'email_delivery_state_tracked' => 'healthy|wp_mail||no|unknown',
+			'db_repair_attempts'           => 1,
 
 			// Analytics bookkeeping that is a guard, not a counter.
 			'usage_events_pushed'          => [ 'first_form_created' ],
@@ -119,7 +120,6 @@ class Test_Uninstall extends WP_UnitTestCase {
 			'pointer_popup_dismissed'      => 0,
 			'plugin_banner_rotation'       => 2,
 			'remaining_promos'             => [ 'blackfriday' ],
-			'db_repair_attempts'           => 1,
 		];
 
 		if ( null !== $opt_in ) {
@@ -301,8 +301,8 @@ class Test_Uninstall extends WP_UnitTestCase {
 	}
 
 	/**
-	 * Consent given, but nothing buffered: the row is left exactly as found
-	 * rather than rewritten.
+	 * Consent given, but nothing buffered: only the opt-in itself is taken, and
+	 * every other key is written back unchanged.
 	 *
 	 * @return void
 	 */
@@ -325,6 +325,82 @@ class Test_Uninstall extends WP_UnitTestCase {
 			],
 			get_option( 'srfm_options' )
 		);
+	}
+
+	/**
+	 * The contact details from onboarding are collected data, so they go. The
+	 * `lead` flag stays: it is a once-per-site guard, and without it a reinstall
+	 * would send the same lead again.
+	 *
+	 * @return void
+	 */
+	public function test_onboarding_contact_details_are_removed_but_the_lead_flag_stays() {
+		update_option(
+			'srfm_options',
+			[
+				'onboarding_user_details'            => [
+					'first_name' => 'Jane',
+					'last_name'  => 'Doe',
+					'email'      => 'jane@example.com',
+					'lead'       => true,
+				],
+				'forms_per_page'                     => 20,
+				'remove_analytics_data_on_uninstall' => true,
+			]
+		);
+
+		$this->run_uninstall();
+
+		$this->assertSame(
+			[
+				'onboarding_user_details' => [ 'lead' => true ],
+				'forms_per_page'          => 20,
+			],
+			get_option( 'srfm_options' )
+		);
+	}
+
+	/**
+	 * With no lead flag, nothing is left of the onboarding details, so the key
+	 * goes rather than staying behind as an empty array.
+	 *
+	 * @return void
+	 */
+	public function test_onboarding_details_without_a_lead_flag_are_removed_whole() {
+		update_option(
+			'srfm_options',
+			[
+				'onboarding_user_details'            => [
+					'first_name' => 'Jane',
+					'email'      => 'jane@example.com',
+				],
+				'forms_per_page'                     => 20,
+				'remove_analytics_data_on_uninstall' => true,
+			]
+		);
+
+		$this->run_uninstall();
+
+		$this->assertSame( [ 'forms_per_page' => 20 ], get_option( 'srfm_options' ) );
+	}
+
+	/**
+	 * Without consent the contact details stay where they are.
+	 *
+	 * @return void
+	 */
+	public function test_onboarding_contact_details_survive_without_opt_in() {
+		$details = [
+			'first_name' => 'Jane',
+			'email'      => 'jane@example.com',
+			'lead'       => true,
+		];
+
+		update_option( 'srfm_options', [ 'onboarding_user_details' => $details ] );
+
+		$this->run_uninstall();
+
+		$this->assertSame( [ 'onboarding_user_details' => $details ], get_option( 'srfm_options' ) );
 	}
 
 	/**
