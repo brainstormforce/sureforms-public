@@ -18,6 +18,8 @@ use SRFM\Admin\Analytics;
 use SRFM\Inc\AI_Form_Builder\Field_Mapping;
 use SRFM\Inc\Database\Tables\Entries;
 use SRFM\Inc\Form_Templates\Catalog;
+use SRFM\Inc\Form_Templates\Formula;
+use SRFM\Inc\Payments\Stripe\Stripe_Helper;
 use SRFM\Inc\Traits\Get_Instance;
 use WP_Error;
 use WP_REST_Request;
@@ -118,6 +120,13 @@ class Form_Templates {
 		'entry_limit'      => 2,
 		'pdf'              => 2,
 	];
+
+	/**
+	 * Example result of a calculated field whose formula can't be worked out.
+	 *
+	 * @since x.x.x
+	 */
+	public const CALCULATION_FALLBACK = '123.45';
 
 	/**
 	 * The "Included" feature each Pro template key adds.
@@ -363,28 +372,36 @@ class Form_Templates {
 			$features    = self::get_features( $template, $resolved, $tier );
 			$requires    = self::get_required_tier( $template );
 			$lock_reason = self::lock_reason( $template );
+			// A locked template's messages describe its Premium version, whose
+			// answers (a calculated total, say) they use.
+			$message_fields = '' === $lock_reason ? $resolved : self::resolve_fields( $template, 'business' );
 
 			$list[] = [
-				'id'           => $template['id'],
-				'preview_url'  => self::get_preview_url( Helper::get_string_value( $template['id'] ) ),
-				'title'        => Helper::get_string_value( $template['title'] ?? '' ),
-				'description'  => Helper::get_string_value( $template['description'] ?? '' ),
-				'category'     => Helper::get_string_value( $template['category'] ?? 'other' ),
-				'icon'         => Helper::get_string_value( $template['icon'] ?? '' ),
-				'theme'        => isset( self::get_themes()[ $template['theme'] ?? '' ] ) ? Helper::get_string_value( $template['theme'] ) : 'ocean',
-				'fields'       => $fields,
-				'features'     => $features,
+				'id'              => $template['id'],
+				'preview_url'     => self::get_preview_url( Helper::get_string_value( $template['id'] ) ),
+				'title'           => Helper::get_string_value( $template['title'] ?? '' ),
+				'description'     => Helper::get_string_value( $template['description'] ?? '' ),
+				'category'        => Helper::get_string_value( $template['category'] ?? 'other' ),
+				'icon'            => Helper::get_string_value( $template['icon'] ?? '' ),
+				'theme'           => isset( self::get_themes()[ $template['theme'] ?? '' ] ) ? Helper::get_string_value( $template['theme'] ) : 'ocean',
+				'fields'          => $fields,
+				'features'        => $features,
 				// What the template gains with a higher SureForms Pro plan.
-				'pro_features' => 'business' === $tier ? [] : array_values( array_diff( self::get_features( $template, self::resolve_fields( $template, 'business' ), 'business' ), $features ) ),
-				'submit_text'  => Helper::get_string_value( $template['submit_text'] ?? '' ),
-				'messages'     => self::get_messages( $template, $resolved ),
-				'answers'      => self::get_answers( $resolved ),
-				'requires'     => $requires,
-				'is_pro'       => 'free' !== $requires,
-				'is_locked'    => '' !== $lock_reason,
+				'pro_features'    => 'business' === $tier ? [] : array_values( array_diff( self::get_features( $template, self::resolve_fields( $template, 'business' ), 'business' ), $features ) ),
+				'submit_text'     => Helper::get_string_value( $template['submit_text'] ?? '' ),
+				'messages'        => self::get_messages( $template, $message_fields ),
+				'answers'         => self::get_answers( $message_fields ),
+				'requires'        => $requires,
+				'is_pro'          => 'free' !== $requires,
+				'is_locked'       => '' !== $lock_reason,
 				// `tier` (needs a higher plan) or `update` (needs a newer SureForms Pro).
-				'lock_reason'  => $lock_reason,
-				'unlock_url'   => self::get_unlock_url( Helper::get_string_value( $template['id'] ), $lock_reason ),
+				'lock_reason'     => $lock_reason,
+				'unlock_url'      => self::get_unlock_url( Helper::get_string_value( $template['id'] ), $lock_reason ),
+				// Picture of the Premium version, shown instead of the live preview while locked.
+				'preview_image'   => self::get_preview_image_url( $template ),
+				// How many of the Premium version's fields the live preview can't show here.
+				'preview_missing' => '' === $lock_reason ? 0 : self::count_missing_preview_fields( $template, $resolved ),
+				'setup'           => self::get_setup( $template ),
 			];
 		}
 		return $list;
@@ -523,6 +540,136 @@ class Form_Templates {
 	}
 
 	/**
+	 * URL of a template's `preview_image`: a picture of its Premium version,
+	 * for sites where the live preview can't render the blocks it is built on.
+	 *
+	 * The catalog gives a file name relative to the plugin's `images/templates/`
+	 * folder (e.g. `quiz.webp`); a template added through `srfm_form_templates`
+	 * may give a full http(s) URL instead.
+	 *
+	 * @param array<string, mixed> $template Template.
+	 * @since x.x.x
+	 * @return string Unescaped URL, '' when the template has none.
+	 */
+	public static function get_preview_image_url( $template ) {
+		$image = trim( Helper::get_string_value( $template['preview_image'] ?? '' ) );
+		if ( '' === $image ) {
+			return '';
+		}
+		if ( preg_match( '#^https?://#i', $image ) ) {
+			return esc_url_raw( $image );
+		}
+		// A plain file path inside images/templates/, nothing that leaves it.
+		if ( false !== strpos( $image, '..' ) || ! preg_match( '#^[a-z0-9][a-z0-9/_.-]*\.(webp|png|jpe?g|avif)$#i', $image ) ) {
+			return '';
+		}
+		return SRFM_URL . 'images/templates/' . ltrim( $image, '/' );
+	}
+
+	/**
+	 * How many fields of a template's Premium version the live preview on this
+	 * site leaves out: fields only added on a higher plan, and fields whose
+	 * block this site doesn't have.
+	 *
+	 * @param array<string, mixed>             $template Template.
+	 * @param array<int, array<string, mixed>> $resolved Fields from resolve_fields() for this site.
+	 * @since x.x.x
+	 * @return int
+	 */
+	public static function count_missing_preview_fields( $template, $resolved ) {
+		$here     = array_map( static fn( $field ) => Helper::get_string_value( $field['slug'] ?? '' ), $resolved );
+		$registry = \WP_Block_Type_Registry::get_instance();
+		$missing  = 0;
+		foreach ( self::resolve_fields( $template, 'business' ) as $field ) {
+			$type = Helper::get_string_value( $field['fieldType'] ?? '' );
+			if ( in_array( $type, [ 'page-break', 'hidden' ], true ) ) {
+				continue; // Not shown as a field anyway.
+			}
+			if ( ! in_array( Helper::get_string_value( $field['slug'] ?? '' ), $here, true ) || ( '' !== $type && ! $registry->is_registered( 'srfm/' . $type ) ) ) {
+				++$missing;
+			}
+		}
+		return $missing;
+	}
+
+	/**
+	 * What a template needs set up on the site to work fully, from its `setup`
+	 * key: a list of `stripe`, `paypal`, `pdf_library` and `google_maps`.
+	 * Unknown ids, and PayPal and the PDF library without the SureForms Pro
+	 * that provides them, are left out. Setup never stops a form being created.
+	 *
+	 * @param array<string, mixed> $template Template.
+	 * @since x.x.x
+	 * @return array<int, array{id: string, label: string, done: bool, url: string}>
+	 */
+	public static function get_setup( $template ) {
+		$setup = [];
+		foreach ( array_unique( array_map( [ Helper::class, 'get_string_value' ], Helper::get_array_value( $template['setup'] ?? [] ) ) ) as $id ) {
+			$item = self::resolve_setup_item( $id );
+			if ( null !== $item ) {
+				$setup[] = $item;
+			}
+		}
+		return $setup;
+	}
+
+	/**
+	 * One setup step and whether it is done.
+	 *
+	 * @param string $id `stripe`, `paypal`, `pdf_library` or `google_maps`.
+	 * @since x.x.x
+	 * @return array{id: string, label: string, done: bool, url: string}|null Null for an unknown id or one this site can't do.
+	 */
+	private static function resolve_setup_item( $id ) {
+		$settings_url = static fn( $tab ) => admin_url( 'admin.php?page=sureforms_form_settings&tab=' . $tab );
+
+		switch ( $id ) {
+			case 'stripe':
+				return [
+					'id'    => $id,
+					'label' => __( 'Connect Stripe', 'sureforms' ),
+					'done'  => Stripe_Helper::is_stripe_connected(),
+					'url'   => Stripe_Helper::get_stripe_settings_url(),
+				];
+
+			case 'paypal':
+				$connected = [ '\SRFM_Pro\Inc\Business\Payments\PayPal\Helper', 'is_paypal_connected' ];
+				if ( ! class_exists( $connected[0] ) || ! is_callable( $connected ) ) {
+					return null;
+				}
+				return [
+					'id'    => $id,
+					'label' => __( 'Connect PayPal', 'sureforms' ),
+					'done'  => (bool) call_user_func( $connected ),
+					'url'   => $settings_url( 'payments-settings&subpage=payment-methods&gateway=paypal' ),
+				];
+
+			case 'pdf_library':
+				$installed = [ '\SRFM_Pro\Inc\Business\Pdf\Utils', 'check_if_library_exists' ];
+				if ( ! class_exists( $installed[0] ) || ! is_callable( $installed ) ) {
+					return null;
+				}
+				return [
+					'id'    => $id,
+					// The library is installed from a form's PDF settings, so there is no page to link to.
+					'label' => __( 'Install the PDF library (in the form’s PDF settings)', 'sureforms' ),
+					'done'  => (bool) call_user_func( $installed ),
+					'url'   => '',
+				];
+
+			case 'google_maps':
+				$maps = Helper::get_array_value( get_option( 'srfm_google_maps_settings', [] ) );
+				return [
+					'id'    => $id,
+					'label' => __( 'Add a Google Maps API key', 'sureforms' ),
+					'done'  => '' !== trim( Helper::get_string_value( $maps['srfm_google_maps_api_key'] ?? '' ) ),
+					'url'   => $settings_url( 'google-maps-settings' ),
+				];
+		}
+		return null;
+	}
+
+	/**
 	 * The error for a template that can't be used on this site.
 	 *
 	 * @param array<string, mixed> $template Template.
@@ -561,8 +708,20 @@ class Form_Templates {
 	public static function get_messages( $template, $fields ) {
 		$confirmation  = Helper::get_array_value( $template['confirmation'] ?? [] );
 		$autoresponder = ! empty( $template['autoresponder'] ) && self::has_required_email( $fields ) ? Helper::get_array_value( $template['autoresponder'] ) : null;
+		$result_tags   = self::get_result_tags( $template, $fields );
+
+		// Every text the messages hold, to find the result tags they use.
+		$texts = array_merge(
+			[ $confirmation['heading'] ?? '', $confirmation['text'] ?? '', $template['email_subject'] ?? '', $template['email_intro'] ?? '' ],
+			null === $autoresponder ? [] : array_merge( [ $autoresponder['subject'] ?? '', $autoresponder['greeting'] ?? '' ], Helper::get_array_value( $autoresponder['lines'] ?? [] ) )
+		);
 
 		return [
+			// Example values for the SureForms Pro tags (quiz score, payment amount, …)
+			// the messages use or the "Results" chips insert.
+			'tag_samples'   => self::get_tag_samples( implode( "\n", array_map( [ Helper::class, 'get_string_value' ], $texts ) ), $result_tags, $fields ),
+			// Results the messages can include: { tag, label }.
+			'result_tags'   => $result_tags,
 			'confirmation'  => [
 				'heading' => Helper::get_string_value( $confirmation['heading'] ?? '' ),
 				'text'    => Helper::get_string_value( $confirmation['text'] ?? '' ),
@@ -598,10 +757,299 @@ class Form_Templates {
 				'slug'     => Helper::get_string_value( $field['slug'] ?? '' ),
 				'label'    => Helper::get_string_value( $field['label'] ?? '' ),
 				'required' => ! empty( $field['required'] ),
-				'sample'   => self::sample_answer( $field ),
+				'sample'   => self::calculated_sample( $field, $fields ) ?? self::sample_answer( $field ),
 			];
 		}
 		return $answers;
+	}
+
+	/**
+	 * Results a template's messages can include, from the SureForms Pro
+	 * features it uses: quiz scores, calculated totals, payment details and
+	 * poll results. The library offers them as "Results" chips.
+	 *
+	 * @param array<string, mixed>             $template Template.
+	 * @param array<int, array<string, mixed>> $fields   Fields from resolve_fields().
+	 * @since x.x.x
+	 * @return array<int, array{tag: string, label: string}>
+	 */
+	public static function get_result_tags( $template, $fields ) {
+		$features = array_map( [ Helper::class, 'get_string_value' ], Helper::get_array_value( $template['features'] ?? [] ) );
+		$tags     = [];
+
+		if ( ! empty( $template['quiz'] ) || in_array( 'quiz', $features, true ) ) {
+			$tags['{quiz_score}']        = __( 'Quiz score', 'sureforms' );
+			$tags['{quiz_percentage}']   = __( 'Quiz percentage', 'sureforms' );
+			$tags['{quiz_pass_fail}']    = __( 'Pass or fail', 'sureforms' );
+			$tags['{quiz_letter_grade}'] = __( 'Letter grade', 'sureforms' );
+			$tags['{quiz_result}']       = __( 'All quiz results', 'sureforms' );
+		}
+		foreach ( $fields as $field ) {
+			$slug = Helper::get_string_value( $field['slug'] ?? '' );
+			if ( '' === $slug ) {
+				continue;
+			}
+			if ( '' !== self::get_formula( $field ) ) {
+				$tags[ '{form:' . $slug . '}' ] = Helper::get_string_value( $field['label'] ?? $slug );
+			}
+			if ( 'payment' === ( $field['fieldType'] ?? '' ) ) {
+				$tags[ '{form-payment:' . $slug . ':amount}' ]   = __( 'Amount paid', 'sureforms' );
+				$tags[ '{form-payment:' . $slug . ':order-id}' ] = __( 'Order ID', 'sureforms' );
+				$tags[ '{form-payment:' . $slug . ':status}' ]   = __( 'Payment status', 'sureforms' );
+			}
+		}
+		if ( ! empty( $template['survey'] ) || in_array( 'survey', $features, true ) ) {
+			$tags['{poll_results}'] = __( 'Poll results', 'sureforms' );
+		}
+
+		$list = [];
+		foreach ( $tags as $tag => $label ) {
+			$list[] = [
+				'tag'   => $tag,
+				'label' => $label,
+			];
+		}
+		return $list;
+	}
+
+	/**
+	 * Example values for the SureForms Pro tags in a text and for the result
+	 * tags, for the message previews. Answers (`{form:slug}`) aren't included:
+	 * they come with get_answers().
+	 *
+	 * @param string                                        $text        Message text.
+	 * @param array<int, array{tag: string, label: string}> $result_tags From get_result_tags().
+	 * @param array<int, array<string, mixed>>              $fields      Fields from resolve_fields().
+	 * @since x.x.x
+	 * @return array<string, string> Sample by tag, e.g. `{quiz_score}` => '8 / 10'.
+	 */
+	public static function get_tag_samples( $text, $result_tags, $fields ) {
+		preg_match_all( '/\{(?:quiz_[a-z_]+|poll_results|calculation-result|form-payment:[a-z0-9_-]+:[a-z-]+)\}/i', $text, $matches );
+		$tags    = array_merge( $matches[0], array_column( $result_tags, 'tag' ) );
+		$samples = [];
+		foreach ( array_unique( $tags ) as $tag ) {
+			$sample = self::tag_sample( strtolower( $tag ), $fields );
+			if ( null !== $sample ) {
+				$samples[ $tag ] = $sample;
+			}
+		}
+		return $samples;
+	}
+
+	/**
+	 * Example value of one SureForms Pro tag.
+	 *
+	 * @param string                           $tag    Tag, lowercase, with braces.
+	 * @param array<int, array<string, mixed>> $fields Fields from resolve_fields().
+	 * @since x.x.x
+	 * @return string|null Null for tags without an example (answers, unknown tags).
+	 */
+	private static function tag_sample( $tag, $fields ) {
+		$fixed = [
+			// As SureForms Pro writes them: score out of the most points, and so on.
+			'{quiz_score}'        => '8 / 10',
+			'{quiz_percentage}'   => '80%',
+			'{quiz_pass_fail}'    => __( 'Pass', 'sureforms' ),
+			'{quiz_letter_grade}' => 'B',
+			'{quiz_result}'       => __( '8 of 10 answers correct', 'sureforms' ),
+			'{poll_results}'      => __( '(live poll results)', 'sureforms' ),
+		];
+		if ( isset( $fixed[ $tag ] ) ) {
+			return $fixed[ $tag ];
+		}
+
+		if ( '{calculation-result}' === $tag ) {
+			foreach ( $fields as $field ) {
+				$sample = self::calculated_sample( $field, $fields );
+				if ( null !== $sample ) {
+					return $sample;
+				}
+			}
+			return self::CALCULATION_FALLBACK;
+		}
+
+		if ( ! preg_match( '/^\{form-payment:([a-z0-9_-]+):([a-z-]+)\}$/', $tag, $match ) ) {
+			return null;
+		}
+		$by_property = [
+			'order-id'    => 'SF-#1042',
+			'status'      => 'succeeded',
+			'name'        => 'Jane Smith',
+			'email'       => 'jane@example.com',
+			'description' => __( 'Order payment', 'sureforms' ),
+		];
+		if ( 'amount' === $match[2] ) {
+			return self::payment_amount_sample( $match[1], $fields );
+		}
+		return $by_property[ $match[2] ] ?? null;
+	}
+
+	/**
+	 * Example amount a payment field takes: its fixed amount, or the example
+	 * value of the field the amount comes from, else $49.00.
+	 *
+	 * @param string                           $slug   Payment field slug.
+	 * @param array<int, array<string, mixed>> $fields Fields from resolve_fields().
+	 * @since x.x.x
+	 * @return string
+	 */
+	private static function payment_amount_sample( $slug, $fields ) {
+		$payment = self::find_field( $slug, $fields );
+		$amount  = 49.0;
+		$symbol  = '$';
+		if ( null !== $payment ) {
+			$currency = strtoupper( Helper::get_string_value( $payment['currency'] ?? 'USD' ) );
+			$symbol   = Helper::get_string_value( Stripe_Helper::get_currency_symbol( $currency ) );
+			$symbol   = '' === $symbol ? $currency . ' ' : $symbol;
+			$type     = Helper::get_string_value( $payment['amountType'] ?? 'fixed' );
+			if ( 'fixed' === $type && isset( $payment['fixedAmount'] ) && is_numeric( $payment['fixedAmount'] ) ) {
+				$amount = (float) $payment['fixedAmount'];
+			} elseif ( 'variable' === $type && ! empty( $payment['variableAmountField'] ) ) {
+				$amount = self::numeric_sample( Helper::get_string_value( $payment['variableAmountField'] ), $fields ) ?? $amount;
+			}
+		}
+		return $symbol . number_format( $amount, 2 );
+	}
+
+	/**
+	 * A field by slug.
+	 *
+	 * @param string                           $slug   Slug.
+	 * @param array<int, array<string, mixed>> $fields Fields.
+	 * @since x.x.x
+	 * @return array<string, mixed>|null
+	 */
+	private static function find_field( $slug, $fields ) {
+		foreach ( $fields as $field ) {
+			if ( ( $field['slug'] ?? '' ) === $slug ) {
+				return $field;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * A field's calculation formula, '' for a field that isn't calculated.
+	 *
+	 * @param array<string, mixed> $field Field schema.
+	 * @since x.x.x
+	 * @return string
+	 */
+	private static function get_formula( $field ) {
+		$attributes = Helper::get_array_value( $field['blockAttributes'] ?? [] );
+		return trim( Helper::get_string_value( $field['calculationFormula'] ?? $attributes['calculationFormula'] ?? '' ) );
+	}
+
+	/**
+	 * Example result of a calculated field: its formula worked out from the
+	 * example answers, rounded and with the field's prefix and suffix, as the
+	 * form shows it. 123.45 when the formula can't be worked out.
+	 *
+	 * @param array<string, mixed>             $field  Field schema.
+	 * @param array<int, array<string, mixed>> $fields All fields, for the answers the formula uses.
+	 * @since x.x.x
+	 * @return string|null Null for a field that isn't calculated.
+	 */
+	public static function calculated_sample( $field, $fields ) {
+		$formula = self::get_formula( $field );
+		if ( '' === $formula ) {
+			return null;
+		}
+
+		/**
+		 * Filters the example result of a calculated field in the template
+		 * library, e.g. so SureForms Pro can work it out with its own calculator.
+		 *
+		 * @since x.x.x
+		 * @param float|null                       $value   Result from the free evaluator, null when it couldn't work it out.
+		 * @param string                           $formula Formula, with `{form:slug}` tags.
+		 * @param array<string, mixed>             $field   Calculated field.
+		 * @param array<int, array<string, mixed>> $fields  All fields.
+		 */
+		$value = apply_filters( 'srfm_form_template_calculation_sample', self::evaluate_formula( $formula, $fields ), $formula, $field, $fields );
+
+		$attributes = Helper::get_array_value( $field['blockAttributes'] ?? [] );
+		$prefix     = Helper::get_string_value( $field['prefix'] ?? $attributes['prefix'] ?? '' );
+		$suffix     = Helper::get_string_value( $field['suffix'] ?? $attributes['suffix'] ?? '' );
+		if ( ! is_numeric( $value ) ) {
+			return $prefix . self::CALCULATION_FALLBACK . $suffix;
+		}
+		$value    = (float) $value;
+		$round    = $field['calculationRound'] ?? $attributes['calculationRound'] ?? null;
+		$decimals = is_numeric( $round ) ? max( 0, min( 6, (int) $round ) ) : ( floor( $value ) === $value ? 0 : 2 );
+
+		return $prefix . number_format( $value, $decimals ) . $suffix;
+	}
+
+	/**
+	 * Work out a formula from the example answers.
+	 *
+	 * @param string                           $formula Formula with `{form:slug}` tags.
+	 * @param array<int, array<string, mixed>> $fields  Fields.
+	 * @param int                              $depth   Calculated fields already being worked out, against loops.
+	 * @since x.x.x
+	 * @return float|null Null when a tag has no number or the arithmetic is invalid.
+	 */
+	public static function evaluate_formula( $formula, $fields, $depth = 0 ) {
+		// The editor saves the tags escaped as %{%form:slug%}%.
+		$formula = str_replace( [ '%{%', '%}%' ], [ '{', '}' ], $formula );
+		$invalid = false;
+
+		$expression = preg_replace_callback(
+			'/\{([^:{}]+):([^{}]+)\}/',
+			static function ( $match ) use ( $fields, $depth, &$invalid ) {
+				$value = 'form' === trim( $match[1] ) ? self::numeric_sample( trim( $match[2] ), $fields, $depth ) : null;
+				if ( null === $value ) {
+					$invalid = true;
+					return '0';
+				}
+				$number = rtrim( rtrim( sprintf( '%.10F', abs( $value ) ), '0' ), '.' );
+				$number = '' === $number ? '0' : $number;
+				// Parenthesized, so a negative answer stays one value next to any operator.
+				return $value < 0 ? '(-' . $number . ')' : $number;
+			},
+			$formula
+		);
+
+		if ( $invalid || ! is_string( $expression ) ) {
+			return null;
+		}
+		return Formula::evaluate( $expression );
+	}
+
+	/**
+	 * A field's example answer as a number, as the calculator reads it: a
+	 * choice's option value, a calculated field's result, or the answer itself.
+	 *
+	 * @param string                           $slug   Field slug.
+	 * @param array<int, array<string, mixed>> $fields Fields.
+	 * @param int                              $depth  Calculated fields already being worked out.
+	 * @since x.x.x
+	 * @return float|null Null for an unknown field or a non-numeric answer.
+	 */
+	private static function numeric_sample( $slug, $fields, $depth = 0 ) {
+		$field = self::find_field( $slug, $fields );
+		if ( null === $field ) {
+			return null;
+		}
+		if ( '' !== self::get_formula( $field ) ) {
+			return $depth < 5 ? self::evaluate_formula( self::get_formula( $field ), $fields, $depth + 1 ) : null;
+		}
+
+		$type    = Helper::get_string_value( $field['fieldType'] ?? '' );
+		$options = Helper::get_array_value( $field['fieldOptions'] ?? [] );
+		if ( in_array( $type, [ 'dropdown', 'multi-choice' ], true ) && ! empty( $options[0] ) && is_array( $options[0] ) ) {
+			// The first option is the example answer; the calculator uses its value.
+			$value = $options[0]['value'] ?? 0;
+			return is_numeric( $value ) ? (float) $value : 0.0;
+		}
+		if ( 'hidden' === $type ) {
+			$value = $field['defaultValue'] ?? Helper::get_array_value( $field['blockAttributes'] ?? [] )['defaultValue'] ?? '';
+			return is_numeric( $value ) ? (float) $value : 0.0;
+		}
+
+		$answer = str_replace( ',', '', self::sample_answer( $field ) );
+		return is_numeric( $answer ) ? (float) $answer : null;
 	}
 
 	/**
@@ -1755,6 +2203,10 @@ class Form_Templates {
 		// Example placeholders ("e.g. 14 October") read as real answers without the prefix.
 		$example = preg_replace( '/^' . preg_quote( __( 'e.g.', 'sureforms' ), '/' ) . '\s*/u', '', $placeholder );
 
+		// A number field's example placeholder ("e.g. 1,200") is a better example than 2.
+		if ( 'number' === $type && is_numeric( str_replace( ',', '', Helper::get_string_value( $example ) ) ) ) {
+			return Helper::get_string_value( $example );
+		}
 		if ( isset( $samples[ $type ] ) && 'textarea' !== $type ) {
 			return $samples[ $type ];
 		}

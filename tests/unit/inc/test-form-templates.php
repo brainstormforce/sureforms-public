@@ -781,6 +781,317 @@ class Test_Form_Templates extends TestCase {
 		$this->assertCount( 1, get_post_meta( $post_id, '_srfm_email_notification', true ) );
 	}
 
+	public function test_get_preview_image_url_from_a_catalog_file_or_a_full_url() {
+		$this->assertSame( SRFM_URL . 'images/templates/quiz.webp', Form_Templates::get_preview_image_url( [ 'preview_image' => 'quiz.webp' ] ) );
+		$this->assertSame( SRFM_URL . 'images/templates/quizzes/score.png', Form_Templates::get_preview_image_url( [ 'preview_image' => 'quizzes/score.png' ] ) );
+		$this->assertSame( 'https://cdn.example.com/q.webp', Form_Templates::get_preview_image_url( [ 'preview_image' => ' https://cdn.example.com/q.webp ' ] ) );
+
+		// Nothing outside images/templates/, and only image files.
+		$this->assertSame( '', Form_Templates::get_preview_image_url( [] ) );
+		$this->assertSame( '', Form_Templates::get_preview_image_url( [ 'preview_image' => '../../wp-config.png' ] ) );
+		$this->assertSame( '', Form_Templates::get_preview_image_url( [ 'preview_image' => '/etc/quiz.webp' ] ) );
+		$this->assertSame( '', Form_Templates::get_preview_image_url( [ 'preview_image' => 'quiz.php' ] ) );
+		$this->assertSame( '', Form_Templates::get_preview_image_url( [ 'preview_image' => 'javascript:alert(1).png' ] ) );
+	}
+
+	public function test_count_missing_preview_fields_counts_higher_plan_and_unknown_blocks() {
+		$template = [
+			'fields' => [
+				[
+					'fieldType' => 'input',
+					'slug'      => 'name',
+				],
+				[
+					'fieldType' => 'signature',
+					'slug'      => 'sign',
+					'pro_tier'  => 'business',
+				],
+				[
+					'fieldType' => 'page-break',
+					'slug'      => 'step',
+					'pro_only'  => true,
+				],
+				[
+					'fieldType' => 'not-a-block',
+					'slug'      => 'ghost',
+				],
+			],
+		];
+		$resolved = Form_Templates::resolve_fields( $template, 'free' );
+
+		// `sign` needs Business and `ghost` has no block; the step divider isn't a field.
+		$this->assertSame( 2, Form_Templates::count_missing_preview_fields( $template, $resolved ) );
+	}
+
+	public function test_get_setup_lists_each_known_step_once() {
+		$setup = Form_Templates::get_setup( [ 'setup' => [ 'stripe', 'fax_machine', 'stripe', 'google_maps' ] ] );
+
+		$this->assertSame( [ 'stripe', 'google_maps' ], array_column( $setup, 'id' ) );
+		foreach ( $setup as $item ) {
+			$this->assertSame( [ 'id', 'label', 'done', 'url' ], array_keys( $item ) );
+			$this->assertFalse( $item['done'], $item['id'] );
+			$this->assertNotSame( '', $item['label'] );
+		}
+		$this->assertStringContainsString( 'tab=google-maps-settings', $setup[1]['url'] );
+		$this->assertSame( [], Form_Templates::get_setup( [] ) );
+
+		// A step SureForms Pro provides is left out without it.
+		if ( ! class_exists( '\SRFM_Pro\Inc\Business\Payments\PayPal\Helper' ) ) {
+			$this->assertSame( [], Form_Templates::get_setup( [ 'setup' => [ 'paypal' ] ] ) );
+		}
+
+		update_option( 'srfm_google_maps_settings', [ 'srfm_google_maps_api_key' => 'AIza-test' ] );
+		$this->assertTrue( Form_Templates::get_setup( [ 'setup' => [ 'google_maps' ] ] )[0]['done'] );
+		delete_option( 'srfm_google_maps_settings' );
+	}
+
+	public function test_get_result_tags_from_quiz_calculations_payments_and_polls() {
+		$fields = [
+			[
+				'fieldType' => 'number',
+				'slug'      => 'price',
+				'label'     => 'Price',
+			],
+			[
+				'fieldType'       => 'number',
+				'slug'            => 'total',
+				'label'           => 'Total',
+				'blockAttributes' => [ 'calculationFormula' => '{form:price} * 2' ],
+			],
+			[
+				'fieldType' => 'payment',
+				'slug'      => 'pay',
+				'label'     => 'Payment',
+			],
+			[
+				'fieldType'          => 'number',
+				'label'              => 'No slug',
+				'calculationFormula' => '1 + 1',
+			],
+		];
+
+		$tags = Form_Templates::get_result_tags(
+			[
+				'features' => [ 'quiz' ],
+				'survey'   => true,
+			],
+			$fields
+		);
+
+		$this->assertSame(
+			[
+				'{quiz_score}',
+				'{quiz_percentage}',
+				'{quiz_pass_fail}',
+				'{quiz_letter_grade}',
+				'{quiz_result}',
+				'{form:total}',
+				'{form-payment:pay:amount}',
+				'{form-payment:pay:order-id}',
+				'{form-payment:pay:status}',
+				'{poll_results}',
+			],
+			array_column( $tags, 'tag' )
+		);
+		$this->assertSame( 'Total', array_column( $tags, 'label', 'tag' )['{form:total}'], 'A calculated field is offered by its label.' );
+
+		$this->assertSame( [], Form_Templates::get_result_tags( [], [ $fields[0] ] ), 'Plain fields give no result tags.' );
+	}
+
+	public function test_get_tag_samples_for_tags_in_the_text_and_result_tags() {
+		$fields = [
+			[
+				'fieldType'   => 'number',
+				'slug'        => 'deposit',
+				'placeholder' => 'e.g. 1,200',
+			],
+			[
+				'fieldType'   => 'payment',
+				'slug'        => 'pay',
+				'amountType'  => 'fixed',
+				'fixedAmount' => '10',
+			],
+			[
+				'fieldType'           => 'payment',
+				'slug'                => 'balance',
+				'amountType'          => 'variable',
+				'variableAmountField' => 'deposit',
+			],
+		];
+		$text   = 'Paid {form-payment:pay:amount} and {form-payment:balance:amount} as {form-payment:pay:name}. {form-payment:pay:unknown} {form:deposit} {calculation-result}';
+
+		$samples = Form_Templates::get_tag_samples( $text, [ [ 'tag' => '{quiz_score}', 'label' => 'Quiz score' ] ], $fields );
+
+		$this->assertSame(
+			[
+				'{form-payment:pay:amount}'     => '$10.00',
+				'{form-payment:balance:amount}' => '$1,200.00',
+				'{form-payment:pay:name}'       => 'Jane Smith',
+				// No calculated field, so the fixed example.
+				'{calculation-result}'          => Form_Templates::CALCULATION_FALLBACK,
+				'{quiz_score}'                  => '8 / 10',
+			],
+			$samples,
+			'Answers and unknown payment properties have no sample.'
+		);
+	}
+
+	public function test_calculated_sample_rounds_and_adds_prefix_and_suffix() {
+		$fields = [
+			[
+				'fieldType'   => 'number',
+				'slug'        => 'hours',
+				'placeholder' => 'e.g. 10',
+			],
+			[
+				'fieldType'          => 'number',
+				'slug'               => 'per-day',
+				'calculationFormula' => '{form:hours} / 3',
+				'prefix'             => '~',
+				'suffix'             => 'h',
+			],
+		];
+
+		$this->assertSame( '~3.33h', Form_Templates::calculated_sample( $fields[1], $fields ), 'Fractions show two decimals.' );
+
+		$fields[1]['blockAttributes'] = [ 'calculationRound' => 0 ];
+		$this->assertSame( '~3h', Form_Templates::calculated_sample( $fields[1], $fields ), 'The field rounding applies.' );
+
+		$this->assertNull( Form_Templates::calculated_sample( $fields[0], $fields ), 'A field without a formula is not calculated.' );
+	}
+
+	public function test_evaluate_formula_reads_escaped_tags_choices_hidden_and_calculated_fields() {
+		$fields = [
+			[
+				'fieldType'    => 'dropdown',
+				'slug'         => 'plan',
+				'fieldOptions' => [
+					[
+						'label' => 'Basic',
+						'value' => '3',
+					],
+				],
+			],
+			[
+				'fieldType'    => 'hidden',
+				'slug'         => 'discount',
+				'defaultValue' => '-4',
+			],
+			[
+				'fieldType'          => 'number',
+				'slug'               => 'double',
+				'calculationFormula' => '{form:plan} * 2',
+			],
+			[
+				'fieldType'          => 'number',
+				'slug'               => 'loop',
+				'calculationFormula' => '{form:loop} + 1',
+			],
+		];
+
+		$this->assertSame( 3.0, Form_Templates::evaluate_formula( '%{%form:plan%}%', $fields ), 'The editor escapes tags as %{%...%}%.' );
+		$this->assertSame( 7.0, Form_Templates::evaluate_formula( '{form:double} + 1', $fields ) );
+		$this->assertSame( 14.0, Form_Templates::evaluate_formula( '10 - {form:discount}', $fields ), 'A negative answer stays one value.' );
+
+		$this->assertNull( Form_Templates::evaluate_formula( '{form:missing} + 1', $fields ) );
+		$this->assertNull( Form_Templates::evaluate_formula( '{other:plan} + 1', $fields ) );
+		$this->assertNull( Form_Templates::evaluate_formula( '{form:loop}', $fields ), 'A formula that uses itself gives up.' );
+	}
+
+	public function test_get_templates_for_js_shows_a_locked_templates_premium_version() {
+		add_filter( 'srfm_pro_tier', static fn() => 'free' );
+		add_filter(
+			'srfm_form_templates',
+			static function ( $templates ) {
+				$templates[] = [
+					'id'            => 'premium-ui',
+					'title'         => 'Premium',
+					'category'      => 'contact',
+					'requires'      => 'business',
+					'preview_image' => 'premium.webp',
+					'setup'         => [ 'stripe' ],
+					'fields'        => [
+						[
+							'fieldType' => 'input',
+							'slug'      => 'name',
+							'label'     => 'Name',
+							'required'  => false,
+						],
+						[
+							'fieldType' => 'signature',
+							'slug'      => 'sign',
+							'label'     => 'Sign',
+							'required'  => false,
+							'pro_tier'  => 'business',
+						],
+					],
+				];
+				return $templates;
+			}
+		);
+		$this->reset_template_cache();
+
+		$found = wp_list_filter( Form_Templates::get_templates_for_js(), [ 'id' => 'premium-ui' ] );
+		$item  = reset( $found );
+		remove_all_filters( 'srfm_pro_tier' );
+
+		$this->assertTrue( $item['is_locked'] );
+		$this->assertSame( SRFM_URL . 'images/templates/premium.webp', $item['preview_image'] );
+		$this->assertSame( 1, $item['preview_missing'] );
+		$this->assertSame( [ 'stripe' ], array_column( $item['setup'], 'id' ) );
+		// The messages describe the Premium version, so its answers include the Business field.
+		$this->assertContains( 'sign', array_column( $item['answers'], 'slug' ) );
+		$this->assertNotContains( 'Sign', $item['fields'], 'The field list is what this site builds.' );
+	}
+
+	public function test_get_unlock_url_matches_the_lock_reason() {
+		$this->assertSame( '', Form_Templates::get_unlock_url( 'quiz', '' ) );
+		$this->assertSame( admin_url( 'plugins.php?plugin_status=upgrade' ), Form_Templates::get_unlock_url( 'quiz', 'update' ) );
+		$this->assertStringContainsString( 'utm_content=template-quiz', Form_Templates::get_unlock_url( 'quiz', 'tier' ) );
+	}
+
+	public function test_get_messages_carries_result_tags_and_their_samples() {
+		$messages = Form_Templates::get_messages(
+			[
+				'quiz'          => [ 'pass' => 70 ],
+				'confirmation'  => [
+					'heading' => 'You scored {quiz_score}',
+					'text'    => 'Thanks',
+				],
+				'email_subject' => 'Paid {form-payment:pay:amount}',
+			],
+			[]
+		);
+
+		$this->assertContains( '{quiz_percentage}', array_column( $messages['result_tags'], 'tag' ) );
+		$this->assertSame( '8 / 10', $messages['tag_samples']['{quiz_score}'] );
+		$this->assertSame( '80%', $messages['tag_samples']['{quiz_percentage}'], 'Result tags get a sample even when no message uses them yet.' );
+		$this->assertSame( '$49.00', $messages['tag_samples']['{form-payment:pay:amount}'], 'Without the payment field, the example amount.' );
+		$this->assertSame( 'You scored {quiz_score}', $messages['confirmation']['heading'] );
+	}
+
+	public function test_get_answers_samples_number_placeholders_and_calculations() {
+		$fields  = [
+			[
+				'fieldType'   => 'number',
+				'slug'        => 'price',
+				'label'       => 'Price',
+				'placeholder' => 'e.g. 1,200',
+			],
+			[
+				'fieldType'          => 'number',
+				'slug'               => 'total',
+				'label'              => 'Total',
+				'calculationFormula' => '{form:price} * 2',
+				'prefix'             => '$',
+			],
+		];
+		$answers = array_column( Form_Templates::get_answers( $fields ), 'sample', 'slug' );
+
+		$this->assertSame( '1,200', $answers['price'], "A number field's example placeholder is its sample." );
+		$this->assertSame( '$2,400', $answers['total'] );
+	}
+
 	/**
 	 * Add one-field test templates through `srfm_form_templates`.
 	 *
