@@ -1491,9 +1491,11 @@ class Form_Templates {
 		 * @since x.x.x
 		 * @param array<int, string> $keys Meta keys.
 		 */
-		$keys = apply_filters( 'srfm_form_template_message_meta_keys', $keys );
+		$filtered = apply_filters( 'srfm_form_template_message_meta_keys', $keys );
 
-		return array_values( array_unique( array_filter( array_map( [ Helper::class, 'get_string_value' ], is_array( $keys ) ? $keys : [] ) ) ) );
+		// A broken filter falls back to the defaults: with no keys, a swap the user
+		// asked to keep the form's messages would replace them anyway.
+		return array_values( array_unique( array_filter( array_map( [ Helper::class, 'get_string_value' ], is_array( $filtered ) ? $filtered : $keys ) ) ) );
 	}
 
 	/**

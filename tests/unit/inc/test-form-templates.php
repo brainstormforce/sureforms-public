@@ -2065,7 +2065,11 @@ class Test_Form_Templates extends TestCase {
 		$this->assertContainsOnly( 'string', $keys );
 
 		add_filter( 'srfm_form_template_message_meta_keys', '__return_null', 20 );
-		$this->assertSame( [], Form_Templates::get_message_meta_keys(), 'A broken filter gives no keys rather than an error.' );
+		$this->assertSame(
+			[ '_srfm_submit_button_text', '_srfm_email_notification', '_srfm_form_confirmation', '_srfm_page_break_settings' ],
+			Form_Templates::get_message_meta_keys(),
+			'A broken filter falls back to the default keys, so the form keeps its messages.'
+		);
 	}
 
 	public function test_rest_list_templates_sends_the_message_meta_keys() {
