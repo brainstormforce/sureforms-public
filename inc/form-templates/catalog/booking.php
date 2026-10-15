@@ -10,6 +10,7 @@
  */
 
 use SRFM\Inc\Form_Templates\Catalog;
+use SRFM\Inc\Helper;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -19,8 +20,8 @@ $c         = Catalog::common_fields();
 $no_search = [ 'searchable' => false ];
 
 // With SureForms Pro, the appointment date shares its row with a time picker.
-$appointment_date = Catalog::date_field( 'preferred-date', __( 'Preferred Date', 'sureforms' ), true, true );
-$appointment_date['pro']['blockAttributes']['fieldWidth'] = 50;
+$appointment_date        = Catalog::date_field( 'preferred-date', __( 'Preferred Date', 'sureforms' ), true, true );
+$appointment_date['pro'] = Catalog::attrs( Helper::get_array_value( $appointment_date['pro'] ), [ 'fieldWidth' => 50 ] );
 
 return [
 	[

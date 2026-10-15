@@ -1472,7 +1472,7 @@ class Form_Templates {
 	 * @return array<int, array<string, string>>
 	 */
 	public static function get_categories() {
-		$used = array_flip( array_column( self::get_templates(), 'category' ) );
+		$used = array_flip( array_map( [ Helper::class, 'get_string_value' ], array_column( self::get_templates(), 'category' ) ) );
 
 		return array_values(
 			array_filter(

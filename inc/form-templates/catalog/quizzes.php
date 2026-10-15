@@ -18,6 +18,7 @@
  */
 
 use SRFM\Inc\Form_Templates\Catalog;
+use SRFM\Inc\Helper;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -38,10 +39,12 @@ $team_sizes = [ __( 'Just me', 'sureforms' ), __( '2–10 people', 'sureforms' )
  * @return array<string, mixed> Field schema.
  */
 $question = static function ( $slug, $label, $options, $correct ) {
-	$field = Catalog::field( 'multi-choice', $slug, $label, true, Catalog::choice_options( $options ) );
-	foreach ( $field['fieldOptions'] as $index => $option ) {
-		$field['fieldOptions'][ $index ]['isCorrect'] = $correct === $index;
+	$field   = Catalog::field( 'multi-choice', $slug, $label, true, Catalog::choice_options( $options ) );
+	$choices = Helper::get_array_value( $field['fieldOptions'] );
+	foreach ( $choices as $index => $option ) {
+		$choices[ $index ] = array_merge( Helper::get_array_value( $option ), [ 'isCorrect' => $correct === $index ] );
 	}
+	$field['fieldOptions'] = $choices;
 	return $field;
 };
 
@@ -56,12 +59,19 @@ $question = static function ( $slug, $label, $options, $correct ) {
  * @return array<string, mixed> Field schema.
  */
 $assessment = static function ( $slug, $label, $options ) {
-	$field = Catalog::field( 'multi-choice', $slug, $label, true, Catalog::choice_options( $options ) );
-	$best  = count( $options ) - 1;
-	foreach ( $field['fieldOptions'] as $index => $option ) {
-		$field['fieldOptions'][ $index ]['individualScore'] = $index;
-		$field['fieldOptions'][ $index ]['isCorrect']       = $best === $index;
+	$field   = Catalog::field( 'multi-choice', $slug, $label, true, Catalog::choice_options( $options ) );
+	$best    = count( $options ) - 1;
+	$choices = Helper::get_array_value( $field['fieldOptions'] );
+	foreach ( $choices as $index => $option ) {
+		$choices[ $index ] = array_merge(
+			Helper::get_array_value( $option ),
+			[
+				'individualScore' => $index,
+				'isCorrect'       => $best === $index,
+			]
+		);
 	}
+	$field['fieldOptions'] = $choices;
 	return $field;
 };
 
