@@ -7,6 +7,7 @@
 
 use Yoast\PHPUnitPolyfills\TestCases\TestCase;
 use SRFM\Inc\Form_Templates;
+use SRFM\Inc\Form_Templates\Catalog;
 
 class Test_Form_Templates extends TestCase {
 
@@ -19,7 +20,9 @@ class Test_Form_Templates extends TestCase {
 	private $free_blocks = [ 'input', 'email', 'number', 'textarea', 'dropdown', 'checkbox', 'address', 'gdpr', 'multi-choice', 'url', 'phone', 'inline-button' ];
 
 	public function tear_down() {
-		remove_all_filters( 'srfm_form_templates' );
+		foreach ( [ 'srfm_form_templates', 'srfm_pro_tier', 'srfm_form_template_is_available', 'srfm_form_template_content', 'srfm_form_template_metas', 'srfm_form_template_features' ] as $hook ) {
+			remove_all_filters( $hook );
+		}
 		$this->reset_template_cache();
 		wp_set_current_user( 0 );
 		parent::tear_down();
@@ -720,7 +723,8 @@ class Test_Form_Templates extends TestCase {
 		$this->assertSame( 'C:\\path', $blocks[0]['attrs']['placeholder'] ?? null );
 
 		$message = get_post_meta( $post_id, '_srfm_form_confirmation', true )[0]['message'];
-		$this->assertStringContainsString( 'We said &quot;hi&quot; to {form:company}.', $message, 'Message text is escaped, not cut at the quote.' );
+		// Kses may return the quotes as &quot; or as plain ", depending on the WordPress version. Decode so the test checks they survived, not how they are encoded.
+		$this->assertStringContainsString( 'We said "hi" to {form:company}.', html_entity_decode( $message, ENT_QUOTES ), 'Message text keeps its quotes, not cut at the quote.' );
 	}
 
 	public function test_saved_thank_you_message_keeps_its_icon() {
@@ -735,5 +739,388 @@ class Test_Form_Templates extends TestCase {
 		$post_id = Form_Templates::create_form_from_template( 'contact-us', [], [ 'autoresponder' => [ 'enabled' => false ] ] );
 
 		$this->assertCount( 1, get_post_meta( $post_id, '_srfm_email_notification', true ) );
+	}
+
+	/**
+	 * Add one-field test templates through `srfm_form_templates`.
+	 *
+	 * @param array<int, array<string, mixed>> $templates Keys over a one-field template; `id` required.
+	 */
+	private function add_tier_templates( $templates ) {
+		add_filter(
+			'srfm_form_templates',
+			static function ( $list ) use ( $templates ) {
+				foreach ( $templates as $template ) {
+					$list[] = array_merge(
+						[
+							'title'    => 'Tier test',
+							'category' => 'contact',
+							'fields'   => [
+								[
+									'fieldType' => 'input',
+									'slug'      => 'name',
+									'label'     => 'Name',
+									'required'  => false,
+								],
+							],
+						],
+						$template
+					);
+				}
+				return $list;
+			}
+		);
+		$this->reset_template_cache();
+	}
+
+	private function use_tier( $tier ) {
+		remove_all_filters( 'srfm_pro_tier' );
+		add_filter( 'srfm_pro_tier', static fn() => $tier );
+	}
+
+	public function test_get_templates_keeps_plan_keys_and_cleans_the_id() {
+		$this->add_tier_templates(
+			[
+				[
+					'id'         => 'Tier Test!',
+					'requires'   => 'business',
+					'conditions' => [ 'name' => [ 'show', [] ] ],
+				],
+			]
+		);
+
+		$templates = Form_Templates::get_templates();
+
+		$this->assertArrayHasKey( 'tiertest', $templates );
+		$this->assertSame( 'tiertest', $templates['tiertest']['id'] );
+		$this->assertSame( 'business', $templates['tiertest']['requires'] );
+		$this->assertArrayHasKey( 'conditions', $templates['tiertest'] );
+	}
+
+	public function test_get_templates_for_js_reports_the_lock_for_the_site_plan() {
+		$this->add_tier_templates(
+			[
+				[
+					'id'       => 'business-only',
+					'requires' => 'business',
+				],
+			]
+		);
+		$item = static function ( $id ) {
+			$found = wp_list_filter( Form_Templates::get_templates_for_js(), [ 'id' => $id ] );
+			return reset( $found );
+		};
+
+		$this->use_tier( 'pro' );
+		$locked = $item( 'business-only' );
+		$this->assertSame( 'business', $locked['requires'] );
+		$this->assertTrue( $locked['is_pro'] );
+		$this->assertTrue( $locked['is_locked'] );
+		$this->assertSame( 'tier', $locked['lock_reason'] );
+		$this->assertStringContainsString( 'utm_content=template-business-only', $locked['unlock_url'] );
+
+		$this->use_tier( 'business' );
+		$open = $item( 'business-only' );
+		$this->assertFalse( $open['is_locked'] );
+		$this->assertSame( '', $open['lock_reason'] );
+		$this->assertSame( '', $open['unlock_url'] );
+		$this->assertSame( [], $open['pro_features'], 'Business has nothing left to unlock.' );
+
+		$free = $item( 'contact-us' );
+		$this->assertSame( 'free', $free['requires'] );
+		$this->assertFalse( $free['is_pro'] );
+	}
+
+	public function test_get_required_tier_reads_requires_then_is_pro() {
+		$this->assertSame( 'free', Form_Templates::get_required_tier( [] ) );
+		$this->assertSame( 'pro', Form_Templates::get_required_tier( [ 'requires' => 'pro' ] ) );
+		$this->assertSame( 'starter', Form_Templates::get_required_tier( [ 'is_pro' => true ] ), 'The older is_pro flag means Starter.' );
+		$this->assertSame( 'business', Form_Templates::get_required_tier( [ 'requires' => 'business', 'is_pro' => true ] ) );
+		$this->assertSame( 'free', Form_Templates::get_required_tier( [ 'requires' => 'enterprise' ] ), 'An unknown plan is ignored.' );
+	}
+
+	public function test_lock_reason_for_plan_builder_version_and_filter() {
+		if ( defined( 'SRFM_PRO_TEMPLATE_API' ) ) {
+			$this->markTestSkipped( 'SureForms Pro is loaded in this run.' );
+		}
+
+		$this->use_tier( 'starter' );
+		$this->assertSame( 'tier', Form_Templates::lock_reason( [ 'requires' => 'pro' ] ) );
+		$this->assertSame( '', Form_Templates::lock_reason( [ 'requires' => 'starter' ] ) );
+
+		$this->use_tier( 'business' );
+		// The Pro build has no template builder here, so its keys can't be built.
+		$this->assertSame(
+			'update',
+			Form_Templates::lock_reason(
+				[
+					'requires' => 'business',
+					'quiz'     => [],
+				]
+			)
+		);
+		// A free template's Pro keys only add to it, so they never lock it.
+		$this->assertSame( '', Form_Templates::lock_reason( [ 'quiz' => [] ] ) );
+
+		add_filter( 'srfm_form_template_is_available', '__return_false' );
+		$this->assertSame( 'tier', Form_Templates::lock_reason( [] ), 'A filter can lock any template.' );
+	}
+
+	public function test_is_template_available_follows_the_lock_reason() {
+		$this->use_tier( 'free' );
+
+		$this->assertTrue( Form_Templates::is_template_available( [] ) );
+		$this->assertFalse( Form_Templates::is_template_available( [ 'requires' => 'starter' ] ) );
+
+		add_filter( 'srfm_form_template_is_available', '__return_true' );
+		$this->assertTrue( Form_Templates::is_template_available( [ 'requires' => 'starter' ] ), 'A filter can unlock a template.' );
+	}
+
+	public function test_get_pro_template_api_reads_the_pro_constant() {
+		$expected = defined( 'SRFM_PRO_TEMPLATE_API' ) ? (int) constant( 'SRFM_PRO_TEMPLATE_API' ) : 0;
+
+		$this->assertSame( $expected, Form_Templates::get_pro_template_api() );
+	}
+
+	public function test_get_required_pro_template_api_per_feature_key() {
+		$this->assertSame( 0, Form_Templates::get_required_pro_template_api( [ 'requires' => 'business' ] ), 'No Pro keys, no builder needed.' );
+		$this->assertSame(
+			1,
+			Form_Templates::get_required_pro_template_api(
+				[
+					'conditions'  => [],
+					'save_resume' => true,
+				]
+			)
+		);
+		$this->assertSame(
+			2,
+			Form_Templates::get_required_pro_template_api(
+				[
+					'conditions' => [],
+					'pdf'        => [],
+				]
+			),
+			'The highest version a key needs wins.'
+		);
+
+		// Every Pro key has a version: the Business keys arrive with version 2, the rest with 1.
+		$this->assertSame( array_keys( Form_Templates::PRO_FEATURE_KEYS ), array_keys( Form_Templates::PRO_FEATURE_API ) );
+		foreach ( Form_Templates::PRO_FEATURE_KEYS as $key => $tier ) {
+			$this->assertSame( 'business' === $tier ? 2 : 1, Form_Templates::get_required_pro_template_api( [ $key => [] ] ), $key );
+		}
+	}
+
+	public function test_get_unlock_url_by_lock_reason() {
+		$this->assertSame( '', Form_Templates::get_unlock_url( 'rsvp', '' ) );
+		$this->assertStringContainsString( 'plugins.php?plugin_status=upgrade', Form_Templates::get_unlock_url( 'rsvp', 'update' ) );
+
+		$pricing = Form_Templates::get_unlock_url( 'rsvp', 'tier' );
+		$this->assertStringContainsString( 'utm_medium=form-templates', $pricing );
+		$this->assertStringContainsString( 'utm_content=template-rsvp', $pricing );
+		$this->assertStringNotContainsString( '&#038;', $pricing, 'The URL is opened from JS, so it is not HTML-escaped.' );
+	}
+
+	public function test_resolve_fields_keeps_fields_from_their_pro_tier() {
+		$template = [
+			'fields' => [
+				[
+					'fieldType' => 'input',
+					'slug'      => 'name',
+				],
+				[
+					'fieldType' => 'signature',
+					'slug'      => 'signature',
+					'pro_tier'  => 'pro',
+				],
+				[
+					'fieldType' => 'input',
+					'slug'      => 'when',
+					'pro_tier'  => 'business',
+					'pro'       => [ 'fieldType' => 'date-picker' ],
+				],
+			],
+		];
+		$types = static fn( $tier ) => wp_list_pluck( Form_Templates::resolve_fields( $template, $tier ), 'fieldType', 'slug' );
+
+		$this->assertSame(
+			[
+				'name' => 'input',
+				'when' => 'input',
+			],
+			$types( 'starter' )
+		);
+		$this->assertSame(
+			[
+				'name'      => 'input',
+				'signature' => 'signature',
+				'when'      => 'input',
+			],
+			$types( 'pro' )
+		);
+		$this->assertSame( 'date-picker', $types( 'business' )['when'] );
+		$this->assertSame( $types( 'business' ), $types( true ), '`true` is read as Business.' );
+		$this->assertSame( $types( 'free' ), $types( false ), '`false` is read as free.' );
+	}
+
+	public function test_get_features_counts_pro_keys_from_their_plan() {
+		$template = [
+			'conditions' => [ 'name' => [ 'show', [] ] ],
+			'quiz'       => [ 'questions' => [] ],
+			'features'   => [ 'calculation', 'calculation' ],
+		];
+		$fields   = [ [ 'fieldType' => 'signature' ] ];
+
+		$starter = Form_Templates::get_features( $template, $fields, 'starter' );
+		$this->assertContains( 'conditional_logic', $starter );
+		$this->assertContains( 'calculation', $starter );
+		$this->assertContains( 'signature', $starter );
+		$this->assertNotContains( 'quiz', $starter, 'Quiz is built from Business.' );
+		$this->assertSame( $starter, array_values( array_unique( $starter ) ) );
+
+		$this->assertContains( 'quiz', Form_Templates::get_features( $template, $fields, 'business' ) );
+		$this->assertNotContains( 'conditional_logic', Form_Templates::get_features( $template, $fields, 'free' ) );
+
+		$this->use_tier( 'business' );
+		$this->assertContains( 'quiz', Form_Templates::get_features( $template, $fields ), "Defaults to the site's plan." );
+	}
+
+	public function test_build_content_passes_the_markup_through_the_content_filter() {
+		$seen = null;
+		add_filter(
+			'srfm_form_template_content',
+			static function ( $content, $template, $fields ) use ( &$seen ) {
+				$seen = [ $template['id'], wp_list_pluck( $fields, 'slug' ) ];
+				return $content . '<!-- srfm-content-filter -->';
+			},
+			10,
+			3
+		);
+
+		$content = Form_Templates::build_content( Form_Templates::get_template( 'contact-us' ) );
+
+		$this->assertStringEndsWith( '<!-- srfm-content-filter -->', $content );
+		$this->assertSame( 'contact-us', $seen[0] );
+		$this->assertContains( 'email', $seen[1] );
+	}
+
+	public function test_build_metas_gives_the_metas_filter_the_content_and_context() {
+		$seen = null;
+		add_filter(
+			'srfm_form_template_metas',
+			static function ( $metas, $template, $content, $fields, $context ) use ( &$seen ) {
+				$seen                    = [ $content, $context ];
+				$metas['_srfm_test_key'] = 'added';
+				return $metas;
+			},
+			10,
+			5
+		);
+
+		$metas = Form_Templates::build_metas( Form_Templates::get_template( 'rsvp' ), [], '<!-- given -->', 'preview' );
+
+		$this->assertSame( [ '<!-- given -->', 'preview' ], $seen );
+		$this->assertSame( 'added', $metas['_srfm_test_key'] );
+		$this->assertArrayHasKey( '_srfm_form_confirmation', $metas );
+		$this->assertArrayHasKey( '_srfm_forms_styling', $metas );
+	}
+
+	public function test_build_settings_metas_defaults_to_the_swap_context() {
+		$template = Form_Templates::get_template( 'rsvp' );
+		$plain    = Form_Templates::build_settings_metas( $template );
+		$this->assertArrayNotHasKey( '_srfm_form_confirmation', $plain, 'Settings metas leave the thank-you message out.' );
+
+		$context = null;
+		add_filter(
+			'srfm_form_template_metas',
+			static function ( $metas, $template, $content, $fields, $ctx ) use ( &$context ) {
+				$context = [ $ctx, $content ];
+				return [ '_srfm_only' => 1 ];
+			},
+			10,
+			5
+		);
+
+		$this->assertSame( [ '_srfm_only' => 1 ], Form_Templates::build_settings_metas( $template ) );
+		$this->assertSame( 'swap', $context[0] );
+		$this->assertStringContainsString( '<!-- wp:srfm/', $context[1], 'The content is built when none is given.' );
+	}
+
+	public function test_get_categories_match_the_catalog_files() {
+		$ids = wp_list_pluck( Form_Templates::get_categories(), 'id' );
+
+		$this->assertSame( [], array_values( array_diff( $ids, Catalog::FILES ) ), 'Each category has a catalog file.' );
+		foreach ( Catalog::templates() as $template ) {
+			$this->assertContains( $template['category'], $ids, $template['id'] );
+		}
+	}
+
+	public function test_rest_list_templates_reports_the_pro_tier() {
+		$this->use_tier( 'pro' );
+
+		$data = ( new Form_Templates() )->rest_list_templates()->get_data();
+
+		$this->assertSame( 'pro', $data['pro_tier'] );
+		$this->assertArrayHasKey( 'lock_reason', $data['templates'][0] );
+	}
+
+	public function test_rest_get_template_content_refuses_a_locked_template_with_its_reason() {
+		$this->login_admin();
+		$this->add_tier_templates(
+			[
+				[
+					'id'       => 'pro-locked',
+					'requires' => 'pro',
+				],
+			]
+		);
+		$this->use_tier( 'starter' );
+
+		$request = new WP_REST_Request( 'GET', '/sureforms/v1/form-templates/pro-locked' );
+		$request->set_param( 'template_id', 'pro-locked' );
+		$result = ( new Form_Templates() )->rest_get_template_content( $request );
+
+		$this->assertInstanceOf( WP_Error::class, $result );
+		$this->assertSame( 'srfm_template_locked', $result->get_error_code() );
+		$this->assertSame( 403, $result->get_error_data()['status'] );
+		$this->assertSame( 'tier', $result->get_error_data()['reason'] );
+		$this->assertSame( 'pro', $result->get_error_data()['requires'] );
+	}
+
+	public function test_maybe_render_preview_builds_a_locked_template_in_the_preview_context() {
+		$this->login_admin();
+		$this->add_tier_templates(
+			[
+				[
+					'id'       => 'preview-locked',
+					'requires' => 'business',
+				],
+			]
+		);
+		$this->use_tier( 'free' );
+
+		// Stop at the metas filter, before the page is printed and the request ends.
+		$context = null;
+		add_filter(
+			'srfm_form_template_metas',
+			static function ( $metas, $template, $content, $fields, $ctx ) use ( &$context ) {
+				$context = [ $template['id'], $ctx ];
+				throw new RuntimeException( 'srfm-preview-built' );
+			},
+			10,
+			5
+		);
+
+		$_GET[ Form_Templates::PREVIEW_QUERY_VAR ] = 'preview-locked';
+		try {
+			( new Form_Templates() )->maybe_render_preview();
+			$this->fail( 'The preview should have been built.' );
+		} catch ( RuntimeException $e ) {
+			$this->assertSame( 'srfm-preview-built', $e->getMessage() );
+		} finally {
+			unset( $_GET[ Form_Templates::PREVIEW_QUERY_VAR ] );
+		}
+
+		$this->assertSame( [ 'preview-locked', 'preview' ], $context, 'A locked template still previews.' );
 	}
 }
