@@ -12,7 +12,13 @@ import { cloneBlock, parse } from '@wordpress/blocks';
 import { store as blockEditorStore } from '@wordpress/block-editor';
 import { store as editorStore } from '@wordpress/editor';
 import { store as noticesStore } from '@wordpress/notices';
-import { Button, Modal, Notice, Spinner } from '@wordpress/components';
+import {
+	Button,
+	CheckboxControl,
+	Modal,
+	Notice,
+	Spinner,
+} from '@wordpress/components';
 import { LayoutTemplate, X } from 'lucide-react';
 import {
 	TemplateGrid,
@@ -22,6 +28,7 @@ import {
 	createFormFromTemplate,
 	fetchTemplateContent,
 	fetchTemplates,
+	pickTemplateSettings,
 	recordTemplateSwap,
 } from '@Utils/form-templates';
 
@@ -53,7 +60,9 @@ const usePortalRoot = () => {
  *
  * Existing entries and integrations are keyed to the form's fields, so a form
  * that already has entries is offered a new form instead. Otherwise the user
- * confirms before their form is replaced, and the change can be undone.
+ * confirms before their form is replaced, and the change can be undone. The
+ * confirmation says what is replaced and lets the user keep the form's own
+ * emails, thank-you message and button text.
  */
 const ChangeTemplate = () => {
 	const [ isOpen, setIsOpen ] = useState( false );
@@ -62,7 +71,8 @@ const ChangeTemplate = () => {
 	const [ previewId, setPreviewId ] = useState( '' );
 	const [ busy, setBusy ] = useState( false );
 	// The template waiting on the user:
-	// { template, style, content, styling, instantForm, hasEntries }.
+	// { template, style, content, styling, instantForm, settings, hasEntries,
+	//   replaceMessages }.
 	const [ pending, setPending ] = useState( null );
 	const portalRoot = usePortalRoot();
 	// The admin bar stays visible over the editor, so the screens start below it.
@@ -154,6 +164,7 @@ const ChangeTemplate = () => {
 		styling,
 		instantForm,
 		settings,
+		replaceMessages = true,
 	} ) => {
 		const blocks = parse( content );
 
@@ -169,11 +180,13 @@ const ChangeTemplate = () => {
 			_srfm_single_page_form_title: meta._srfm_single_page_form_title,
 		};
 		// The template's button text, emails, thank-you message and steps.
-		// Only keys the editor knows about are applied.
-		const templateSettings = Object.fromEntries(
-			Object.entries( settings || {} ).filter( ( [ key ] ) =>
-				Object.prototype.hasOwnProperty.call( meta, key )
-			)
+		// Only keys the editor knows about are applied, and the messages only
+		// when the user chose to replace them too.
+		const templateSettings = pickTemplateSettings(
+			settings,
+			meta,
+			library?.message_meta_keys,
+			replaceMessages
 		);
 		Object.keys( templateSettings ).forEach( ( key ) => {
 			previousMeta[ key ] = meta[ key ];
@@ -274,6 +287,9 @@ const ChangeTemplate = () => {
 				instantForm: response.instant_form || {},
 				settings: response.settings || {},
 				hasEntries: Boolean( response?.has_entries ),
+				// The template's context (a quote form's emails for a quote
+				// form) is what most swaps want, so this starts ticked.
+				replaceMessages: true,
 			};
 
 			if ( next.hasEntries || rootClientIds.length ) {
@@ -345,16 +361,36 @@ const ChangeTemplate = () => {
 							</p>
 						</>
 					) : (
-						<p>
-							{ sprintf(
-								/* translators: %s: template name. */
-								__(
-									'Replace this form\'s fields and design with the %s template as you previewed it? You can undo this straight after.',
+						<>
+							<p>
+								{ sprintf(
+									/* translators: %s: template name. */
+									__(
+										'Replace this form\'s fields and design with the %s template as you previewed it? You can undo this straight after.',
+										'sureforms'
+									),
+									template.title
+								) }
+							</p>
+							<CheckboxControl
+								__nextHasNoMarginBottom
+								label={ __(
+									'Also replace emails, thank-you message and button text with the template\'s',
 									'sureforms'
-								),
-								template.title
-							) }
-						</p>
+								) }
+								help={ __(
+									'When unticked, this form keeps its current email notifications, thank-you message, button text and step names.',
+									'sureforms'
+								) }
+								checked={ pending.replaceMessages }
+								onChange={ ( checked ) =>
+									setPending( {
+										...pending,
+										replaceMessages: checked,
+									} )
+								}
+							/>
+						</>
 					) }
 					<div className="srfm-change-template__actions">
 						<Button
@@ -412,7 +448,7 @@ const ChangeTemplate = () => {
 			>
 				<p className="m-0 text-sm text-text-secondary">
 					{ __(
-						'Preview a template and customize its design. Using it replaces this form\'s fields and design.',
+						'Preview a template and customize its design. Using it replaces this form\'s fields and design, and you choose whether its emails, thank-you message and button text are replaced too.',
 						'sureforms'
 					) }
 				</p>
@@ -466,6 +502,9 @@ const ChangeTemplate = () => {
 								isCreating={ busy }
 								presets={ library?.themes }
 								top={ adminBarHeight }
+								spamProtectionOff={
+									false === library?.spam_protection
+								}
 								onUse={ chooseTemplate }
 								onClose={ closePreview }
 							/>
