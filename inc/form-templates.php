@@ -2464,6 +2464,11 @@ class Form_Templates {
 		show_admin_bar( false );
 		add_action( 'wp_enqueue_scripts', [ Frontend_Assets::class, 'enqueue_scripts_and_styles' ], 20 );
 		add_filter( 'srfm_payment_methods_registry', [ self::class, 'preview_payment_methods' ], 99 );
+		// Print only the form's own scripts and styles, so other plugins'
+		// analytics, pixels, chat widgets and cookie banners don't run here.
+		add_action( 'wp_print_styles', [ self::class, 'filter_preview_assets' ], PHP_INT_MAX );
+		add_action( 'wp_print_scripts', [ self::class, 'filter_preview_assets' ], PHP_INT_MAX );
+		add_action( 'wp_print_footer_scripts', [ self::class, 'filter_preview_assets' ], 9 );
 
 		// Block styles are normally built from the page's main post, which this
 		// preview does not have, so build them from the in-memory form instead.
@@ -2478,6 +2483,184 @@ class Form_Templates {
 
 		self::render_preview_document( $markup, $width );
 		exit;
+	}
+
+	/**
+	 * Hooks whose callbacks print or enqueue assets on the preview page.
+	 *
+	 * @since x.x.x
+	 * @var array<int, string>
+	 */
+	private const PREVIEW_ASSET_HOOKS = [ 'wp_enqueue_scripts', 'wp_head', 'wp_print_styles', 'wp_print_scripts', 'wp_body_open', 'wp_footer', 'wp_print_footer_scripts' ];
+
+	/**
+	 * Core styles the preview keeps besides the form's own: block and global
+	 * styles, which give the form the theme's fonts and colors.
+	 *
+	 * @since x.x.x
+	 * @var array<int, string>
+	 */
+	private const PREVIEW_CORE_STYLES = [ 'wp-block-library', 'global-styles', 'classic-theme-styles', 'core-block-supports', 'core-block-supports-duotone', 'wp-img-auto-sizes-contain' ];
+
+	/**
+	 * Spam-protection scripts SureForms loads under their providers' handles.
+	 *
+	 * @since x.x.x
+	 * @var array<int, string>
+	 */
+	private const PREVIEW_CAPTCHA_SCRIPTS = [ 'google-recaptcha', 'google-recaptcha-invisible', 'hcaptcha' ];
+
+	/**
+	 * Leave only the preview's own scripts and styles in the queues: SureForms
+	 * and SureForms Pro handles, its spam-protection scripts, the core styles in
+	 * PREVIEW_CORE_STYLES and the active theme's styles. Everything else (another plugin's analytics, pixel,
+	 * chat widget or cookie banner, the theme's scripts) is dropped. The kept
+	 * handles' dependencies (wp-i18n, wp-hooks, ...) still print, since
+	 * WordPress resolves them when it prints the queue.
+	 *
+	 * @since x.x.x
+	 * @return void
+	 */
+	public static function filter_preview_assets() {
+		$queues = [
+			'script' => wp_scripts(),
+			'style'  => wp_styles(),
+		];
+		foreach ( $queues as $type => $assets ) {
+			$assets->queue = array_values(
+				array_filter(
+					$assets->queue,
+					static function ( $handle ) use ( $assets, $type ) {
+						$src = isset( $assets->registered[ $handle ] ) ? $assets->registered[ $handle ]->src : '';
+						return self::is_preview_asset( Helper::get_string_value( $handle ), is_string( $src ) ? $src : '', $type );
+					}
+				)
+			);
+		}
+	}
+
+	/**
+	 * Whether the preview page prints a queued script or style.
+	 *
+	 * @param string $handle Handle.
+	 * @param string $src    Source URL, '' for an inline-only handle.
+	 * @param string $type   'script' or 'style'.
+	 * @since x.x.x
+	 * @return bool
+	 */
+	public static function is_preview_asset( $handle, $src, $type ) {
+		// SureForms and SureForms Pro: srfm-*, sureforms-*, sureforms-pro-*.
+		if ( 1 === preg_match( '/^(srfm|sureforms)[-_]/', $handle ) ) {
+			return true;
+		}
+		$own = [ Helper::get_string_value( SRFM_URL ) ];
+		if ( defined( 'SRFM_PRO_URL' ) ) {
+			$own[] = Helper::get_string_value( constant( 'SRFM_PRO_URL' ) );
+		}
+		foreach ( $own as $url ) {
+			if ( '' !== $src && 0 === strpos( $src, $url ) ) {
+				return true;
+			}
+		}
+		if ( 'style' !== $type ) {
+			return in_array( $handle, self::PREVIEW_CAPTCHA_SCRIPTS, true );
+		}
+		if ( in_array( $handle, self::PREVIEW_CORE_STYLES, true ) ) {
+			return true;
+		}
+		// The theme's styles: the form takes its fonts from the theme.
+		foreach ( array_unique( [ get_stylesheet(), get_template() ] ) as $theme ) {
+			if ( '' !== $theme && 0 === strpos( $handle, $theme . '-' ) ) {
+				return true;
+			}
+		}
+		foreach ( array_unique( [ get_stylesheet_directory_uri(), get_template_directory_uri() ] ) as $url ) {
+			if ( '' !== $src && 0 === strpos( $src, trailingslashit( $url ) ) ) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Remove the callbacks other plugins add to the hooks that build the page's
+	 * head and footer, so code they print directly (a tracking snippet, a
+	 * chat widget) is left out like their queued assets. WordPress core,
+	 * SureForms, SureForms Pro and the active theme keep theirs.
+	 *
+	 * @since x.x.x
+	 * @return void
+	 */
+	public static function remove_third_party_hooks() {
+		global $wp_filter;
+
+		$kept = [ ABSPATH . 'wp-includes', Helper::get_string_value( SRFM_DIR ), get_stylesheet_directory(), get_template_directory() ];
+		if ( defined( 'SRFM_PRO_DIR' ) ) {
+			$kept[] = Helper::get_string_value( constant( 'SRFM_PRO_DIR' ) );
+		}
+		$kept = array_map(
+			static function ( $dir ) {
+				$real = realpath( $dir );
+				return trailingslashit( wp_normalize_path( false === $real ? $dir : $real ) );
+			},
+			$kept
+		);
+
+		foreach ( self::PREVIEW_ASSET_HOOKS as $hook ) {
+			if ( ! isset( $wp_filter[ $hook ] ) || ! $wp_filter[ $hook ] instanceof \WP_Hook ) {
+				continue;
+			}
+			foreach ( $wp_filter[ $hook ]->callbacks as $priority => $callbacks ) {
+				foreach ( $callbacks as $callback ) {
+					$file = self::callback_file( $callback['function'] );
+					if ( '' === $file ) {
+						continue; // Unknown origin: keep it.
+					}
+					$is_kept = false;
+					foreach ( $kept as $dir ) {
+						if ( 0 === strpos( $file, $dir ) ) {
+							$is_kept = true;
+							break;
+						}
+					}
+					if ( ! $is_kept ) {
+						remove_action( $hook, $callback['function'], $priority );
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * File a hook callback is defined in.
+	 *
+	 * @param mixed $callback Callback.
+	 * @since x.x.x
+	 * @return string Normalized real path, '' when it can't be told.
+	 */
+	private static function callback_file( $callback ) {
+		try {
+			if ( is_string( $callback ) && false !== strpos( $callback, '::' ) ) {
+				$callback = explode( '::', $callback, 2 );
+			}
+			if ( is_array( $callback ) && 2 === count( $callback ) && is_string( $callback[1] ) && ( is_object( $callback[0] ) || is_string( $callback[0] ) ) ) {
+				$reflection = new \ReflectionMethod( $callback[0], $callback[1] );
+			} elseif ( $callback instanceof \Closure || is_string( $callback ) ) {
+				$reflection = new \ReflectionFunction( $callback );
+			} elseif ( is_object( $callback ) && method_exists( $callback, '__invoke' ) ) {
+				$reflection = new \ReflectionMethod( $callback, '__invoke' );
+			} else {
+				return '';
+			}
+		} catch ( \ReflectionException $e ) {
+			return '';
+		}
+		$file = $reflection->getFileName();
+		if ( ! is_string( $file ) ) {
+			return ''; // Internal PHP function.
+		}
+		$real = realpath( $file );
+		return wp_normalize_path( false === $real ? $file : $real );
 	}
 
 	/**
@@ -2570,7 +2753,10 @@ class Form_Templates {
 	<meta charset="<?php bloginfo( 'charset' ); ?>">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="robots" content="noindex, nofollow">
-		<?php wp_head(); ?>
+		<?php
+		self::remove_third_party_hooks();
+		wp_head();
+		?>
 	<style>
 		html { margin-top: 0 !important; }
 		body.srfm-template-preview { margin: 0; }
@@ -2597,7 +2783,10 @@ class Form_Templates {
 			document.addEventListener( 'click', stop, true );
 		}() );
 	</script>
-		<?php wp_footer(); ?>
+		<?php
+		self::remove_third_party_hooks();
+		wp_footer();
+		?>
 </body>
 </html>
 		<?php

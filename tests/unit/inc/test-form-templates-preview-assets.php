@@ -2,7 +2,8 @@
 /**
  * Class Test_Form_Templates_Preview_Assets
  *
- * What a template preview loads: card pictures for the library grid.
+ * What a template preview loads: card pictures for the library grid, and only
+ * SureForms' own scripts and styles on the preview page.
  *
  * @package sureforms
  */
@@ -79,5 +80,66 @@ class Test_Form_Templates_Preview_Assets extends TestCase {
 		$this->assertSame( 'https://example.com/card.webp', Form_Templates::get_thumbnail_url( [ 'id' => 'added', 'preview_image' => 'https://example.com/card.webp' ] ) );
 		// The id can't point outside the pictures folder.
 		$this->assertSame( '', Form_Templates::get_thumbnail_url( [ 'id' => '../images/templates/contact-us' ] ) );
+	}
+
+	public function test_preview_keeps_only_sureforms_core_and_theme_assets() {
+		$this->assertTrue( Form_Templates::is_preview_asset( 'srfm-form-submit', SRFM_URL . 'assets/js/x.js', 'script' ) );
+		$this->assertTrue( Form_Templates::is_preview_asset( 'sureforms-pro-page-break-deps', 'https://example.com/pro.js', 'script' ) );
+		$this->assertTrue( Form_Templates::is_preview_asset( 'srfm-pro-signature-pad-lib', 'https://example.com/lib.js', 'script' ) );
+		$this->assertTrue( Form_Templates::is_preview_asset( 'any-handle', SRFM_URL . 'assets/js/x.js', 'script' ) );
+		$this->assertTrue( Form_Templates::is_preview_asset( 'hcaptcha', 'https://js.hcaptcha.com/1/api.js', 'script' ) );
+		$this->assertTrue( Form_Templates::is_preview_asset( 'global-styles', '', 'style' ) );
+		$this->assertTrue( Form_Templates::is_preview_asset( get_stylesheet() . '-style', '', 'style' ) );
+		$this->assertTrue( Form_Templates::is_preview_asset( 'theme-css', trailingslashit( get_stylesheet_directory_uri() ) . 'style.css', 'style' ) );
+
+		$this->assertFalse( Form_Templates::is_preview_asset( 'third-party-test', 'https://example.com/pixel.js', 'script' ) );
+		$this->assertFalse( Form_Templates::is_preview_asset( 'chat-widget', 'https://example.com/chat.css', 'style' ) );
+		$this->assertFalse( Form_Templates::is_preview_asset( 'admin-bar', '/wp-includes/css/admin-bar.min.css', 'style' ) );
+		// The theme's scripts don't run either.
+		$this->assertFalse( Form_Templates::is_preview_asset( get_stylesheet() . '-navigation', trailingslashit( get_stylesheet_directory_uri() ) . 'nav.js', 'script' ) );
+		$this->assertFalse( Form_Templates::is_preview_asset( 'global-styles', '', 'script' ) );
+	}
+
+	public function test_filter_preview_assets_drops_other_plugins_and_keeps_dependencies() {
+		wp_enqueue_script( 'srfm-test-form', SRFM_URL . 'assets/js/test.js', [ 'wp-i18n', 'wp-hooks' ], '1', true );
+		wp_enqueue_script( 'third-party-test', 'https://example.com/third-party-test.js', [], '1', true );
+		wp_enqueue_style( 'srfm-test-form', SRFM_URL . 'assets/css/test.css', [], '1' );
+		wp_enqueue_style( 'third-party-test', 'https://example.com/third-party-test.css', [], '1' );
+		wp_register_style( 'global-styles', false, [], '1' );
+		wp_enqueue_style( 'global-styles' );
+
+		Form_Templates::filter_preview_assets();
+
+		$this->assertSame( [ 'srfm-test-form' ], wp_scripts()->queue );
+		$this->assertSame( [ 'srfm-test-form', 'global-styles' ], wp_styles()->queue );
+
+		// The kept scripts' dependencies still print.
+		wp_scripts()->all_deps( wp_scripts()->queue );
+		$this->assertContains( 'wp-i18n', wp_scripts()->to_do );
+		$this->assertContains( 'wp-hooks', wp_scripts()->to_do );
+		$this->assertNotContains( 'third-party-test', wp_scripts()->to_do );
+	}
+
+	public function test_third_party_head_and_footer_callbacks_are_removed() {
+		// Defined outside WordPress, SureForms and the theme, like another
+		// plugin's tracking snippet. (This test file is inside SureForms.)
+		$file = trailingslashit( get_temp_dir() ) . 'srfm-third-party-pixel.php';
+		file_put_contents( $file, '<?php return static function () { echo "<script>window.thirdPartyPixel = 1;</script>"; };' ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents -- Test fixture.
+		$pixel = require $file;
+		unlink( $file ); // phpcs:ignore WordPress.WP.AlternativeFunctions.unlink_unlink -- Test fixture.
+		add_action( 'wp_head', $pixel );
+		add_action( 'wp_footer', $pixel, 30 );
+		add_action( 'wp_enqueue_scripts', $pixel );
+		add_action( 'wp_head', [ Form_Templates::class, 'filter_preview_assets' ], 5 );
+
+		Form_Templates::remove_third_party_hooks();
+
+		$this->assertFalse( has_action( 'wp_head', $pixel ) );
+		$this->assertFalse( has_action( 'wp_footer', $pixel ) );
+		$this->assertFalse( has_action( 'wp_enqueue_scripts', $pixel ) );
+		// WordPress core and SureForms keep theirs.
+		$this->assertSame( 8, has_action( 'wp_head', 'wp_print_styles' ) );
+		$this->assertSame( 20, has_action( 'wp_footer', 'wp_print_footer_scripts' ) );
+		$this->assertSame( 5, has_action( 'wp_head', [ Form_Templates::class, 'filter_preview_assets' ] ) );
 	}
 }
