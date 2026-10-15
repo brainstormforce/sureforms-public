@@ -48,7 +48,12 @@ import {
 	showsPreviewImage,
 } from './template-features.js';
 import useFocusTrap from '../use-focus-trap.js';
-import { resolveLook, restyleDocument } from '../template-colors.js';
+import {
+	getFormStyleBlocks,
+	getProbePreset,
+	resolveLook,
+	restyleDocument,
+} from '../template-colors.js';
 import {
 	EmailsPanel,
 	ThankYouPanel,
@@ -496,9 +501,47 @@ export const TemplatePreview = ( {
 		() => resolveLook( style, template.theme, themePresets ),
 		[ style, template.theme, themePresets ]
 	);
+	// The page is first rendered without a style, in the template's own look.
+	const renderedLook = useMemo(
+		() => resolveLook( {}, template.theme, themePresets ),
+		[ template.theme, themePresets ]
+	);
+	// The form's CSS rendered once more in another preset, to tell which of
+	// it follows the theme. Null while loading, false when it can't be had.
+	const [ probe, setProbe ] = useState( null );
 
 	useEffect( () => {
-		if ( 'ready' !== status ) {
+		const preset = getProbePreset( renderedLook, themePresets );
+		if ( ! preset ) {
+			setProbe( false );
+			return;
+		}
+		let cancelled = false;
+		window
+			.fetch( styledPreviewUrl( template, { preset } ), {
+				credentials: 'same-origin',
+			} )
+			.then( ( response ) => ( response.ok ? response.text() : '' ) )
+			.then( ( html ) => {
+				const doc = new window.DOMParser().parseFromString(
+					html,
+					'text/html'
+				);
+				const blocks = getFormStyleBlocks( doc ).map(
+					( node ) => node.textContent
+				);
+				if ( ! cancelled ) {
+					setProbe( blocks.length ? blocks : false );
+				}
+			} )
+			.catch( () => ! cancelled && setProbe( false ) );
+		return () => {
+			cancelled = true;
+		};
+	}, [ template, renderedLook, themePresets ] );
+
+	useEffect( () => {
+		if ( 'ready' !== status || null === probe ) {
 			return;
 		}
 		let doc = null;
@@ -507,9 +550,10 @@ export const TemplatePreview = ( {
 		} catch ( error ) {
 			doc = null;
 		}
-		// The page was first rendered without a style, in the template's own look.
-		const renderedLook = resolveLook( {}, template.theme, themePresets );
-		if ( frameSrc === template.preview_url && restyleDocument( doc, renderedLook, look ) ) {
+		if (
+			frameSrc === template.preview_url &&
+			restyleDocument( doc, renderedLook, look, probe || undefined )
+		) {
 			return;
 		}
 		const timer = setTimeout(
@@ -517,7 +561,7 @@ export const TemplatePreview = ( {
 			RESTYLE_DELAY
 		);
 		return () => clearTimeout( timer );
-	}, [ look, status, frameSrc, template, style, themePresets ] );
+	}, [ look, renderedLook, probe, status, frameSrc, template, style ] );
 
 	useEffect( () => {
 		if ( showImage ) {
