@@ -7,6 +7,7 @@
 
 use Yoast\PHPUnitPolyfills\TestCases\TestCase;
 use SRFM\Inc\Form_Templates;
+use SRFM\Inc\Form_Templates\Catalog;
 
 class Test_Form_Templates extends TestCase {
 
@@ -19,8 +20,11 @@ class Test_Form_Templates extends TestCase {
 	private $free_blocks = [ 'input', 'email', 'number', 'textarea', 'dropdown', 'checkbox', 'address', 'gdpr', 'multi-choice', 'url', 'phone', 'inline-button' ];
 
 	public function tear_down() {
-		remove_all_filters( 'srfm_form_templates' );
+		foreach ( [ 'srfm_form_templates', 'srfm_pro_tier', 'srfm_form_template_is_available', 'srfm_form_template_content', 'srfm_form_template_metas', 'srfm_form_template_features', 'srfm_form_template_message_meta_keys' ] as $hook ) {
+			remove_all_filters( $hook );
+		}
 		$this->reset_template_cache();
+		delete_option( 'srfm_security_settings_options' );
 		wp_set_current_user( 0 );
 		parent::tear_down();
 	}
@@ -29,6 +33,13 @@ class Test_Form_Templates extends TestCase {
 		$property = new ReflectionProperty( Form_Templates::class, 'templates' );
 		$property->setAccessible( true );
 		$property->setValue( null, null );
+	}
+
+	/**
+	 * The visitor confirmation email is only set up while the honeypot is on.
+	 */
+	private function turn_on_spam_protection() {
+		update_option( 'srfm_security_settings_options', [ 'srfm_honeypot' => true ] );
 	}
 
 	private function login_admin() {
@@ -43,7 +54,7 @@ class Test_Form_Templates extends TestCase {
 		wp_set_current_user( $user_id );
 	}
 
-	public function test_ships_twenty_templates_with_unique_ids() {
+	public function test_get_templates_ships_twenty_with_unique_ids() {
 		$templates = Form_Templates::get_templates();
 
 		$this->assertCount( 20, $templates );
@@ -59,7 +70,7 @@ class Test_Form_Templates extends TestCase {
 		$this->assertSame( $used, $ids );
 	}
 
-	public function test_every_template_has_a_known_category() {
+	public function test_get_categories_cover_every_template() {
 		$categories = wp_list_pluck( Form_Templates::get_categories(), 'id' );
 
 		foreach ( Form_Templates::get_templates() as $id => $template ) {
@@ -69,7 +80,7 @@ class Test_Form_Templates extends TestCase {
 		}
 	}
 
-	public function test_every_template_builds_only_free_blocks() {
+	public function test_build_content_uses_only_free_blocks() {
 		foreach ( Form_Templates::get_templates() as $id => $template ) {
 			$content = Form_Templates::build_content( $template );
 
@@ -87,7 +98,7 @@ class Test_Form_Templates extends TestCase {
 		}
 	}
 
-	public function test_templates_for_js_omit_the_field_schema_and_consent_label() {
+	public function test_get_templates_for_js_omits_the_field_schema_and_consent_label() {
 		$list = Form_Templates::get_templates_for_js();
 		$item = $list[0];
 
@@ -100,7 +111,7 @@ class Test_Form_Templates extends TestCase {
 		$this->assertFalse( $item['is_locked'] );
 	}
 
-	public function test_templates_for_js_link_to_a_front_end_preview() {
+	public function test_get_preview_url_links_each_card_to_a_front_end_preview() {
 		$item = Form_Templates::get_templates_for_js()[0];
 
 		$this->assertSame(
@@ -117,6 +128,7 @@ class Test_Form_Templates extends TestCase {
 
 	public function test_create_form_from_template_creates_a_stamped_draft() {
 		$this->login_admin();
+		$this->turn_on_spam_protection();
 
 		$post_id = Form_Templates::create_form_from_template( 'quote-request' );
 
@@ -151,6 +163,8 @@ class Test_Form_Templates extends TestCase {
 		$this->assertSame( 'We received your quote request', $reply['subject'] );
 		$this->assertStringContainsString( 'Hi {form:first-name},', $reply['email_body'] );
 		$this->assertStringContainsString( '{site_title}', $reply['email_body'] );
+		// The visitor's copy never repeats their answers: see test_autoresponder_body_never_echoes_answers().
+		$this->assertStringNotContainsString( '{all_data}', $reply['email_body'] );
 	}
 
 	public function test_every_row_is_full_and_email_tags_use_required_fields() {
@@ -231,6 +245,7 @@ class Test_Form_Templates extends TestCase {
 	}
 
 	public function test_every_template_is_ready_to_publish() {
+		$this->turn_on_spam_protection();
 		foreach ( Form_Templates::get_templates() as $id => $template ) {
 			$this->assertNotEmpty( $template['submit_text'] ?? '', "Template {$id} has no button text." );
 			$this->assertNotEmpty( $template['email_subject'] ?? '', "Template {$id} has no email subject." );
@@ -262,7 +277,7 @@ class Test_Form_Templates extends TestCase {
 		}
 	}
 
-	public function test_pro_fields_replace_free_ones_only_with_pro() {
+	public function test_resolve_fields_replaces_free_ones_only_with_pro() {
 		$template = Form_Templates::get_template( 'job-application' );
 
 		$free = wp_list_pluck( Form_Templates::resolve_fields( $template, false ), 'fieldType' );
@@ -282,7 +297,7 @@ class Test_Form_Templates extends TestCase {
 		$this->assertSame( 'Submit application', $item['submit_text'] );
 	}
 
-	public function test_number_fields_carry_their_limits() {
+	public function test_apply_block_attributes_carries_number_limits() {
 		$content = Form_Templates::build_content( Form_Templates::get_template( 'event-registration' ) );
 
 		$this->assertMatchesRegularExpression( '/wp:srfm\/number \{[^}]*"minValue":1,"maxValue":20/', $content );
@@ -290,7 +305,7 @@ class Test_Form_Templates extends TestCase {
 		$this->assertFalse( has_filter( 'srfm_ai_form_builder_modify_merged_attributes', [ Form_Templates::class, 'apply_block_attributes' ] ) );
 	}
 
-	public function test_creating_can_turn_on_spam_protection() {
+	public function test_enable_spam_protection_from_create_keeps_other_security_settings() {
 		$this->login_admin();
 		delete_option( 'srfm_security_settings_options' );
 		update_option( 'srfm_security_settings_options', [ 'srfm_v3_site_key' => 'keep-me' ] );
@@ -307,6 +322,7 @@ class Test_Form_Templates extends TestCase {
 
 	public function test_swap_content_carries_the_template_settings() {
 		$this->login_admin();
+		$this->turn_on_spam_protection();
 
 		$request = new WP_REST_Request( 'GET', '/sureforms/v1/form-templates/rsvp' );
 		$request->set_param( 'template_id', 'rsvp' );
@@ -320,7 +336,7 @@ class Test_Form_Templates extends TestCase {
 		$this->assertLessThan( count( Form_Templates::build_style_metas( Form_Templates::get_template( 'rsvp' ) )['_srfm_forms_styling'] ), count( $data['styling'] ) );
 	}
 
-	public function test_every_template_uses_a_known_theme() {
+	public function test_get_themes_cover_every_template() {
 		$themes = Form_Templates::get_themes();
 
 		foreach ( Form_Templates::get_templates() as $id => $template ) {
@@ -334,7 +350,7 @@ class Test_Form_Templates extends TestCase {
 		}
 	}
 
-	public function test_created_form_carries_the_theme_styling() {
+	public function test_build_style_metas_reach_the_created_form() {
 		$this->login_admin();
 
 		$post_id = Form_Templates::create_form_from_template( 'quote-request' );
@@ -396,7 +412,7 @@ class Test_Form_Templates extends TestCase {
 		$this->assertSame( 'srfm_template_locked', $result->get_error_code() );
 	}
 
-	public function test_template_without_fields_is_ignored() {
+	public function test_get_template_ignores_a_template_without_fields() {
 		add_filter(
 			'srfm_form_templates',
 			static function ( $templates ) {
@@ -413,7 +429,7 @@ class Test_Form_Templates extends TestCase {
 		$this->assertNull( Form_Templates::get_template( 'empty' ) );
 	}
 
-	public function test_rest_content_reports_no_entries_for_a_new_form() {
+	public function test_rest_get_template_content_reports_no_entries_for_a_new_form() {
 		$this->login_admin();
 		$post_id = Form_Templates::create_form_from_template( 'contact-us' );
 
@@ -434,7 +450,7 @@ class Test_Form_Templates extends TestCase {
 	 * The editor's "Change template" gets the chosen style back, to apply to
 	 * the open form exactly as previewed.
 	 */
-	public function test_rest_content_returns_the_chosen_style_for_the_editor() {
+	public function test_rest_get_template_content_returns_the_chosen_style_for_the_editor() {
 		$this->login_admin();
 		$style = [
 			'preset' => 'midnight',
@@ -503,7 +519,32 @@ class Test_Form_Templates extends TestCase {
 
 		$demand = \SRFM\Inc\Helper::get_srfm_option( 'form_template_demand', [] );
 		$this->assertSame( 2, $demand['request']['gym_membership'] );
-		$this->assertSame( 1, $demand['search']['pet_adoption'] );
+		// A search with no results is only counted, never its text.
+		$this->assertSame( 1, $demand['searches'] );
+		$this->assertStringNotContainsString( 'pet', wp_json_encode( $demand ) );
+		\SRFM\Inc\Helper::update_srfm_option( 'form_template_demand', [] );
+	}
+
+	public function test_rest_record_demand_counts_an_empty_search_without_text() {
+		$this->login_admin();
+		add_filter( 'sureforms_tracking_enabled', '__return_true' );
+		\SRFM\Inc\Helper::update_srfm_option( 'form_template_demand', [] );
+
+		// What the library sends: no query at all.
+		$request = new WP_REST_Request( 'POST', '/sureforms/v1/form-templates/request' );
+		$request->set_param( 'type', 'search' );
+		$response = rest_do_request( $request );
+
+		remove_filter( 'sureforms_tracking_enabled', '__return_true' );
+
+		$this->assertSame( 200, $response->get_status() );
+		$this->assertTrue( $response->get_data()['recorded'] );
+		$this->assertSame( [ 'searches' => 1 ], \SRFM\Inc\Helper::get_srfm_option( 'form_template_demand', [] ) );
+		\SRFM\Inc\Helper::update_srfm_option( 'form_template_demand', [] );
+
+		// A request still needs its text.
+		$request = new WP_REST_Request( 'POST', '/sureforms/v1/form-templates/request' );
+		$this->assertSame( 400, rest_do_request( $request )->get_status() );
 	}
 
 	public function test_template_request_rejects_contact_details() {
@@ -625,12 +666,12 @@ class Test_Form_Templates extends TestCase {
 		$this->assertSame( $theme['banner'], get_post_meta( $post_id, '_srfm_instant_form_settings', true )['cover_color'] );
 	}
 
-	public function test_themes_for_js_list_every_preset() {
+	public function test_get_themes_for_js_lists_every_preset() {
 		$ids = wp_list_pluck( Form_Templates::get_themes_for_js(), 'id' );
 		$this->assertSame( array_keys( Form_Templates::get_themes() ), $ids );
 	}
 
-	public function test_library_gets_each_templates_messages_and_answers() {
+	public function test_get_messages_and_answers_reach_the_library() {
 		$templates = array_column( Form_Templates::get_templates_for_js(), null, 'id' );
 
 		$contact = $templates['contact-us'];
@@ -669,8 +710,9 @@ class Test_Form_Templates extends TestCase {
 		$this->assertSame( [], Form_Templates::sanitize_messages( 'nope' ) );
 	}
 
-	public function test_created_form_uses_the_messages_edited_in_the_preview() {
+	public function test_apply_messages_from_the_preview_reach_the_created_form() {
 		$this->login_admin();
+		$this->turn_on_spam_protection();
 
 		$request = new WP_REST_Request( 'POST', '/sureforms/v1/form-templates/create' );
 		$request->set_param( 'template_id', 'contact-us' );
@@ -729,7 +771,8 @@ class Test_Form_Templates extends TestCase {
 		$this->assertSame( 'C:\\path', $blocks[0]['attrs']['placeholder'] ?? null );
 
 		$message = get_post_meta( $post_id, '_srfm_form_confirmation', true )[0]['message'];
-		$this->assertStringContainsString( 'We said &quot;hi&quot; to {form:company}.', $message, 'Message text is escaped, not cut at the quote.' );
+		// Kses may return the quotes as &quot; or as plain ", depending on the WordPress version. Decode so the test checks they survived, not how they are encoded.
+		$this->assertStringContainsString( 'We said "hi" to {form:company}.', html_entity_decode( $message, ENT_QUOTES ), 'Message text keeps its quotes, not cut at the quote.' );
 	}
 
 	public function test_saved_thank_you_message_keeps_its_icon() {
@@ -741,8 +784,1048 @@ class Test_Form_Templates extends TestCase {
 	}
 
 	public function test_visitor_email_can_be_turned_off_in_the_preview() {
+		$this->turn_on_spam_protection();
 		$post_id = Form_Templates::create_form_from_template( 'contact-us', [], [ 'autoresponder' => [ 'enabled' => false ] ] );
 
 		$this->assertCount( 1, get_post_meta( $post_id, '_srfm_email_notification', true ) );
+	}
+
+	public function test_get_preview_image_url_from_a_catalog_file_or_a_full_url() {
+		$this->assertSame( SRFM_URL . 'images/templates/quiz.webp', Form_Templates::get_preview_image_url( [ 'preview_image' => 'quiz.webp' ] ) );
+		$this->assertSame( SRFM_URL . 'images/templates/quizzes/score.png', Form_Templates::get_preview_image_url( [ 'preview_image' => 'quizzes/score.png' ] ) );
+		$this->assertSame( 'https://cdn.example.com/q.webp', Form_Templates::get_preview_image_url( [ 'preview_image' => ' https://cdn.example.com/q.webp ' ] ) );
+
+		// Nothing outside images/templates/, and only image files.
+		$this->assertSame( '', Form_Templates::get_preview_image_url( [] ) );
+		$this->assertSame( '', Form_Templates::get_preview_image_url( [ 'preview_image' => '../../wp-config.png' ] ) );
+		$this->assertSame( '', Form_Templates::get_preview_image_url( [ 'preview_image' => '/etc/quiz.webp' ] ) );
+		$this->assertSame( '', Form_Templates::get_preview_image_url( [ 'preview_image' => 'quiz.php' ] ) );
+		$this->assertSame( '', Form_Templates::get_preview_image_url( [ 'preview_image' => 'javascript:alert(1).png' ] ) );
+	}
+
+	public function test_count_missing_preview_fields_counts_higher_plan_and_unknown_blocks() {
+		$template = [
+			'fields' => [
+				[
+					'fieldType' => 'input',
+					'slug'      => 'name',
+				],
+				[
+					'fieldType' => 'signature',
+					'slug'      => 'sign',
+					'pro_tier'  => 'business',
+				],
+				[
+					'fieldType' => 'page-break',
+					'slug'      => 'step',
+					'pro_only'  => true,
+				],
+				[
+					'fieldType' => 'not-a-block',
+					'slug'      => 'ghost',
+				],
+			],
+		];
+		$resolved = Form_Templates::resolve_fields( $template, 'free' );
+
+		// `sign` needs Business and `ghost` has no block; the step divider isn't a field.
+		$this->assertSame( 2, Form_Templates::count_missing_preview_fields( $template, $resolved ) );
+	}
+
+	public function test_get_setup_lists_each_known_step_once() {
+		$setup = Form_Templates::get_setup( [ 'setup' => [ 'stripe', 'fax_machine', 'stripe', 'google_maps' ] ] );
+
+		$this->assertSame( [ 'stripe', 'google_maps' ], array_column( $setup, 'id' ) );
+		foreach ( $setup as $item ) {
+			$this->assertSame( [ 'id', 'label', 'done', 'url' ], array_keys( $item ) );
+			$this->assertFalse( $item['done'], $item['id'] );
+			$this->assertNotSame( '', $item['label'] );
+		}
+		$this->assertStringContainsString( 'tab=google-maps-settings', $setup[1]['url'] );
+		$this->assertSame( [], Form_Templates::get_setup( [] ) );
+
+		// A step SureForms Pro provides is left out without it.
+		if ( ! class_exists( '\SRFM_Pro\Inc\Business\Payments\PayPal\Helper' ) ) {
+			$this->assertSame( [], Form_Templates::get_setup( [ 'setup' => [ 'paypal' ] ] ) );
+		}
+
+		update_option( 'srfm_google_maps_settings', [ 'srfm_google_maps_api_key' => 'AIza-test' ] );
+		$this->assertTrue( Form_Templates::get_setup( [ 'setup' => [ 'google_maps' ] ] )[0]['done'] );
+		delete_option( 'srfm_google_maps_settings' );
+	}
+
+	public function test_get_result_tags_from_quiz_calculations_payments_and_polls() {
+		$fields = [
+			[
+				'fieldType' => 'number',
+				'slug'      => 'price',
+				'label'     => 'Price',
+			],
+			[
+				'fieldType'       => 'number',
+				'slug'            => 'total',
+				'label'           => 'Total',
+				'blockAttributes' => [ 'calculationFormula' => '{form:price} * 2' ],
+			],
+			[
+				'fieldType' => 'payment',
+				'slug'      => 'pay',
+				'label'     => 'Payment',
+			],
+			[
+				'fieldType'          => 'number',
+				'label'              => 'No slug',
+				'calculationFormula' => '1 + 1',
+			],
+		];
+
+		$tags = Form_Templates::get_result_tags(
+			[
+				'features' => [ 'quiz' ],
+				'survey'   => true,
+			],
+			$fields
+		);
+
+		$this->assertSame(
+			[
+				'{quiz_score}',
+				'{quiz_percentage}',
+				'{quiz_pass_fail}',
+				'{quiz_letter_grade}',
+				'{quiz_result}',
+				'{form:total}',
+				'{form-payment:pay:amount}',
+				'{form-payment:pay:order-id}',
+				'{form-payment:pay:status}',
+				'{poll_results}',
+			],
+			array_column( $tags, 'tag' )
+		);
+		$this->assertSame( 'Total', array_column( $tags, 'label', 'tag' )['{form:total}'], 'A calculated field is offered by its label.' );
+
+		$this->assertSame( [], Form_Templates::get_result_tags( [], [ $fields[0] ] ), 'Plain fields give no result tags.' );
+	}
+
+	public function test_get_tag_samples_for_tags_in_the_text_and_result_tags() {
+		$fields = [
+			[
+				'fieldType'   => 'number',
+				'slug'        => 'deposit',
+				'placeholder' => 'e.g. 1,200',
+			],
+			[
+				'fieldType'   => 'payment',
+				'slug'        => 'pay',
+				'amountType'  => 'fixed',
+				'fixedAmount' => '10',
+			],
+			[
+				'fieldType'           => 'payment',
+				'slug'                => 'balance',
+				'amountType'          => 'variable',
+				'variableAmountField' => 'deposit',
+			],
+		];
+		$text   = 'Paid {form-payment:pay:amount} and {form-payment:balance:amount} as {form-payment:pay:name}. {form-payment:pay:unknown} {form:deposit} {calculation-result}';
+
+		$samples = Form_Templates::get_tag_samples( $text, [ [ 'tag' => '{quiz_score}', 'label' => 'Quiz score' ] ], $fields );
+
+		$this->assertSame(
+			[
+				'{form-payment:pay:amount}'     => '$10.00',
+				'{form-payment:balance:amount}' => '$1,200.00',
+				'{form-payment:pay:name}'       => 'Jane Smith',
+				// No calculated field, so the fixed example.
+				'{calculation-result}'          => Form_Templates::CALCULATION_FALLBACK,
+				'{quiz_score}'                  => '8 / 10',
+			],
+			$samples,
+			'Answers and unknown payment properties have no sample.'
+		);
+	}
+
+	public function test_calculated_sample_rounds_and_adds_prefix_and_suffix() {
+		$fields = [
+			[
+				'fieldType'   => 'number',
+				'slug'        => 'hours',
+				'placeholder' => 'e.g. 10',
+			],
+			[
+				'fieldType'          => 'number',
+				'slug'               => 'per-day',
+				'calculationFormula' => '{form:hours} / 3',
+				'prefix'             => '~',
+				'suffix'             => 'h',
+			],
+		];
+
+		$this->assertSame( '~3.33h', Form_Templates::calculated_sample( $fields[1], $fields ), 'Fractions show two decimals.' );
+
+		$fields[1]['blockAttributes'] = [ 'calculationRound' => 0 ];
+		$this->assertSame( '~3h', Form_Templates::calculated_sample( $fields[1], $fields ), 'The field rounding applies.' );
+
+		$this->assertNull( Form_Templates::calculated_sample( $fields[0], $fields ), 'A field without a formula is not calculated.' );
+	}
+
+	public function test_evaluate_formula_reads_escaped_tags_choices_hidden_and_calculated_fields() {
+		$fields = [
+			[
+				'fieldType'    => 'dropdown',
+				'slug'         => 'plan',
+				'fieldOptions' => [
+					[
+						'label' => 'Basic',
+						'value' => '3',
+					],
+				],
+			],
+			[
+				'fieldType'    => 'hidden',
+				'slug'         => 'discount',
+				'defaultValue' => '-4',
+			],
+			[
+				'fieldType'          => 'number',
+				'slug'               => 'double',
+				'calculationFormula' => '{form:plan} * 2',
+			],
+			[
+				'fieldType'          => 'number',
+				'slug'               => 'loop',
+				'calculationFormula' => '{form:loop} + 1',
+			],
+		];
+
+		$this->assertSame( 3.0, Form_Templates::evaluate_formula( '%{%form:plan%}%', $fields ), 'The editor escapes tags as %{%...%}%.' );
+		$this->assertSame( 7.0, Form_Templates::evaluate_formula( '{form:double} + 1', $fields ) );
+		$this->assertSame( 14.0, Form_Templates::evaluate_formula( '10 - {form:discount}', $fields ), 'A negative answer stays one value.' );
+
+		$this->assertNull( Form_Templates::evaluate_formula( '{form:missing} + 1', $fields ) );
+		$this->assertNull( Form_Templates::evaluate_formula( '{other:plan} + 1', $fields ) );
+		$this->assertNull( Form_Templates::evaluate_formula( '{form:loop}', $fields ), 'A formula that uses itself gives up.' );
+	}
+
+	public function test_get_templates_for_js_shows_a_locked_templates_premium_version() {
+		add_filter( 'srfm_pro_tier', static fn() => 'free' );
+		add_filter(
+			'srfm_form_templates',
+			static function ( $templates ) {
+				$templates[] = [
+					'id'            => 'premium-ui',
+					'title'         => 'Premium',
+					'category'      => 'contact',
+					'requires'      => 'business',
+					'preview_image' => 'premium.webp',
+					'setup'         => [ 'stripe' ],
+					'fields'        => [
+						[
+							'fieldType' => 'input',
+							'slug'      => 'name',
+							'label'     => 'Name',
+							'required'  => false,
+						],
+						[
+							'fieldType' => 'signature',
+							'slug'      => 'sign',
+							'label'     => 'Sign',
+							'required'  => false,
+							'pro_tier'  => 'business',
+						],
+					],
+				];
+				return $templates;
+			}
+		);
+		$this->reset_template_cache();
+
+		$found = wp_list_filter( Form_Templates::get_templates_for_js(), [ 'id' => 'premium-ui' ] );
+		$item  = reset( $found );
+		remove_all_filters( 'srfm_pro_tier' );
+
+		$this->assertTrue( $item['is_locked'] );
+		$this->assertSame( SRFM_URL . 'images/templates/premium.webp', $item['preview_image'] );
+		$this->assertSame( 1, $item['preview_missing'] );
+		$this->assertSame( [ 'stripe' ], array_column( $item['setup'], 'id' ) );
+		// The messages describe the Premium version, so its answers include the Business field.
+		$this->assertContains( 'sign', array_column( $item['answers'], 'slug' ) );
+		$this->assertNotContains( 'Sign', $item['fields'], 'The field list is what this site builds.' );
+	}
+
+	public function test_get_unlock_url_matches_the_lock_reason() {
+		$this->assertSame( '', Form_Templates::get_unlock_url( 'quiz', '' ) );
+		$this->assertSame( admin_url( 'plugins.php?plugin_status=upgrade' ), Form_Templates::get_unlock_url( 'quiz', 'update' ) );
+		$this->assertStringContainsString( 'utm_content=template-quiz', Form_Templates::get_unlock_url( 'quiz', 'tier' ) );
+	}
+
+	public function test_get_messages_carries_result_tags_and_their_samples() {
+		$messages = Form_Templates::get_messages(
+			[
+				'quiz'          => [ 'pass' => 70 ],
+				'confirmation'  => [
+					'heading' => 'You scored {quiz_score}',
+					'text'    => 'Thanks',
+				],
+				'email_subject' => 'Paid {form-payment:pay:amount}',
+			],
+			[]
+		);
+
+		$this->assertContains( '{quiz_percentage}', array_column( $messages['result_tags'], 'tag' ) );
+		$this->assertSame( '8 / 10', $messages['tag_samples']['{quiz_score}'] );
+		$this->assertSame( '80%', $messages['tag_samples']['{quiz_percentage}'], 'Result tags get a sample even when no message uses them yet.' );
+		$this->assertSame( '$49.00', $messages['tag_samples']['{form-payment:pay:amount}'], 'Without the payment field, the example amount.' );
+		$this->assertSame( 'You scored {quiz_score}', $messages['confirmation']['heading'] );
+	}
+
+	public function test_get_answers_samples_number_placeholders_and_calculations() {
+		$fields  = [
+			[
+				'fieldType'   => 'number',
+				'slug'        => 'price',
+				'label'       => 'Price',
+				'placeholder' => 'e.g. 1,200',
+			],
+			[
+				'fieldType'          => 'number',
+				'slug'               => 'total',
+				'label'              => 'Total',
+				'calculationFormula' => '{form:price} * 2',
+				'prefix'             => '$',
+			],
+		];
+		$answers = array_column( Form_Templates::get_answers( $fields ), 'sample', 'slug' );
+
+		$this->assertSame( '1,200', $answers['price'], "A number field's example placeholder is its sample." );
+		$this->assertSame( '$2,400', $answers['total'] );
+	}
+
+	/**
+	 * Add one-field test templates through `srfm_form_templates`.
+	 *
+	 * @param array<int, array<string, mixed>> $templates Keys over a one-field template; `id` required.
+	 */
+	private function add_tier_templates( $templates ) {
+		add_filter(
+			'srfm_form_templates',
+			static function ( $list ) use ( $templates ) {
+				foreach ( $templates as $template ) {
+					$list[] = array_merge(
+						[
+							'title'    => 'Tier test',
+							'category' => 'contact',
+							'fields'   => [
+								[
+									'fieldType' => 'input',
+									'slug'      => 'name',
+									'label'     => 'Name',
+									'required'  => false,
+								],
+							],
+						],
+						$template
+					);
+				}
+				return $list;
+			}
+		);
+		$this->reset_template_cache();
+	}
+
+	private function use_tier( $tier ) {
+		remove_all_filters( 'srfm_pro_tier' );
+		add_filter( 'srfm_pro_tier', static fn() => $tier );
+	}
+
+	public function test_get_templates_keeps_plan_keys_and_cleans_the_id() {
+		$this->add_tier_templates(
+			[
+				[
+					'id'         => 'Tier Test!',
+					'requires'   => 'business',
+					'conditions' => [ 'name' => [ 'show', [] ] ],
+				],
+			]
+		);
+
+		$templates = Form_Templates::get_templates();
+
+		$this->assertArrayHasKey( 'tiertest', $templates );
+		$this->assertSame( 'tiertest', $templates['tiertest']['id'] );
+		$this->assertSame( 'business', $templates['tiertest']['requires'] );
+		$this->assertArrayHasKey( 'conditions', $templates['tiertest'] );
+	}
+
+	public function test_get_templates_for_js_reports_the_lock_for_the_site_plan() {
+		$this->add_tier_templates(
+			[
+				[
+					'id'       => 'business-only',
+					'requires' => 'business',
+				],
+			]
+		);
+		$item = static function ( $id ) {
+			$found = wp_list_filter( Form_Templates::get_templates_for_js(), [ 'id' => $id ] );
+			return reset( $found );
+		};
+
+		$this->use_tier( 'pro' );
+		$locked = $item( 'business-only' );
+		$this->assertSame( 'business', $locked['requires'] );
+		$this->assertTrue( $locked['is_pro'] );
+		$this->assertTrue( $locked['is_locked'] );
+		$this->assertSame( 'tier', $locked['lock_reason'] );
+		$this->assertStringContainsString( 'utm_content=template-business-only', $locked['unlock_url'] );
+
+		$this->use_tier( 'business' );
+		$open = $item( 'business-only' );
+		$this->assertFalse( $open['is_locked'] );
+		$this->assertSame( '', $open['lock_reason'] );
+		$this->assertSame( '', $open['unlock_url'] );
+		$this->assertSame( [], $open['pro_features'], 'Business has nothing left to unlock.' );
+
+		$free = $item( 'contact-us' );
+		$this->assertSame( 'free', $free['requires'] );
+		$this->assertFalse( $free['is_pro'] );
+	}
+
+	public function test_get_required_tier_reads_requires_then_is_pro() {
+		$this->assertSame( 'free', Form_Templates::get_required_tier( [] ) );
+		$this->assertSame( 'pro', Form_Templates::get_required_tier( [ 'requires' => 'pro' ] ) );
+		$this->assertSame( 'starter', Form_Templates::get_required_tier( [ 'is_pro' => true ] ), 'The older is_pro flag means Starter.' );
+		$this->assertSame( 'business', Form_Templates::get_required_tier( [ 'requires' => 'business', 'is_pro' => true ] ) );
+		$this->assertSame( 'free', Form_Templates::get_required_tier( [ 'requires' => 'enterprise' ] ), 'An unknown plan is ignored.' );
+	}
+
+	public function test_lock_reason_for_plan_builder_version_and_filter() {
+		if ( defined( 'SRFM_PRO_TEMPLATE_API' ) ) {
+			$this->markTestSkipped( 'SureForms Pro is loaded in this run.' );
+		}
+
+		$this->use_tier( 'starter' );
+		$this->assertSame( 'tier', Form_Templates::lock_reason( [ 'requires' => 'pro' ] ) );
+		$this->assertSame( '', Form_Templates::lock_reason( [ 'requires' => 'starter' ] ) );
+
+		$this->use_tier( 'business' );
+		// The Pro build has no template builder here, so its keys can't be built.
+		$this->assertSame(
+			'update',
+			Form_Templates::lock_reason(
+				[
+					'requires' => 'business',
+					'quiz'     => [],
+				]
+			)
+		);
+		// A free template's Pro keys only add to it, so they never lock it.
+		$this->assertSame( '', Form_Templates::lock_reason( [ 'quiz' => [] ] ) );
+
+		add_filter( 'srfm_form_template_is_available', '__return_false' );
+		$this->assertSame( 'tier', Form_Templates::lock_reason( [] ), 'A filter can lock any template.' );
+	}
+
+	public function test_is_template_available_follows_the_lock_reason() {
+		$this->use_tier( 'free' );
+
+		$this->assertTrue( Form_Templates::is_template_available( [] ) );
+		$this->assertFalse( Form_Templates::is_template_available( [ 'requires' => 'starter' ] ) );
+
+		add_filter( 'srfm_form_template_is_available', '__return_true' );
+		$this->assertTrue( Form_Templates::is_template_available( [ 'requires' => 'starter' ] ), 'A filter can unlock a template.' );
+	}
+
+	public function test_get_pro_template_api_reads_the_pro_constant() {
+		$expected = defined( 'SRFM_PRO_TEMPLATE_API' ) ? (int) constant( 'SRFM_PRO_TEMPLATE_API' ) : 0;
+
+		$this->assertSame( $expected, Form_Templates::get_pro_template_api() );
+	}
+
+	public function test_get_required_pro_template_api_per_feature_key() {
+		$this->assertSame( 0, Form_Templates::get_required_pro_template_api( [ 'requires' => 'business' ] ), 'No Pro keys, no builder needed.' );
+		$this->assertSame(
+			1,
+			Form_Templates::get_required_pro_template_api(
+				[
+					'conditions'  => [],
+					'save_resume' => true,
+				]
+			)
+		);
+		$this->assertSame(
+			2,
+			Form_Templates::get_required_pro_template_api(
+				[
+					'conditions' => [],
+					'pdf'        => [],
+				]
+			),
+			'The highest version a key needs wins.'
+		);
+
+		// Every Pro key has a version: the Business keys arrive with version 2, the rest with 1.
+		$this->assertSame( array_keys( Form_Templates::PRO_FEATURE_KEYS ), array_keys( Form_Templates::PRO_FEATURE_API ) );
+		foreach ( Form_Templates::PRO_FEATURE_KEYS as $key => $tier ) {
+			$this->assertSame( 'business' === $tier ? 2 : 1, Form_Templates::get_required_pro_template_api( [ $key => [] ] ), $key );
+		}
+	}
+
+	public function test_get_unlock_url_by_lock_reason() {
+		$this->assertSame( '', Form_Templates::get_unlock_url( 'rsvp', '' ) );
+		$this->assertStringContainsString( 'plugins.php?plugin_status=upgrade', Form_Templates::get_unlock_url( 'rsvp', 'update' ) );
+
+		$pricing = Form_Templates::get_unlock_url( 'rsvp', 'tier' );
+		$this->assertStringContainsString( 'utm_medium=form-templates', $pricing );
+		$this->assertStringContainsString( 'utm_content=template-rsvp', $pricing );
+		$this->assertStringNotContainsString( '&#038;', $pricing, 'The URL is opened from JS, so it is not HTML-escaped.' );
+	}
+
+	public function test_resolve_fields_keeps_fields_from_their_pro_tier() {
+		$template = [
+			'fields' => [
+				[
+					'fieldType' => 'input',
+					'slug'      => 'name',
+				],
+				[
+					'fieldType' => 'signature',
+					'slug'      => 'signature',
+					'pro_tier'  => 'pro',
+				],
+				[
+					'fieldType' => 'input',
+					'slug'      => 'when',
+					'pro_tier'  => 'business',
+					'pro'       => [ 'fieldType' => 'date-picker' ],
+				],
+			],
+		];
+		$types = static fn( $tier ) => wp_list_pluck( Form_Templates::resolve_fields( $template, $tier ), 'fieldType', 'slug' );
+
+		$this->assertSame(
+			[
+				'name' => 'input',
+				'when' => 'input',
+			],
+			$types( 'starter' )
+		);
+		$this->assertSame(
+			[
+				'name'      => 'input',
+				'signature' => 'signature',
+				'when'      => 'input',
+			],
+			$types( 'pro' )
+		);
+		$this->assertSame( 'date-picker', $types( 'business' )['when'] );
+		$this->assertSame( $types( 'business' ), $types( true ), '`true` is read as Business.' );
+		$this->assertSame( $types( 'free' ), $types( false ), '`false` is read as free.' );
+	}
+
+	public function test_get_features_counts_pro_keys_from_their_plan() {
+		$template = [
+			'conditions' => [ 'name' => [ 'show', [] ] ],
+			'quiz'       => [ 'questions' => [] ],
+			'features'   => [ 'calculation', 'calculation' ],
+		];
+		$fields   = [ [ 'fieldType' => 'signature' ] ];
+
+		$starter = Form_Templates::get_features( $template, $fields, 'starter' );
+		$this->assertContains( 'conditional_logic', $starter );
+		$this->assertContains( 'calculation', $starter );
+		$this->assertContains( 'signature', $starter );
+		$this->assertNotContains( 'quiz', $starter, 'Quiz is built from Business.' );
+		$this->assertSame( $starter, array_values( array_unique( $starter ) ) );
+
+		$this->assertContains( 'quiz', Form_Templates::get_features( $template, $fields, 'business' ) );
+		$this->assertNotContains( 'conditional_logic', Form_Templates::get_features( $template, $fields, 'free' ) );
+
+		$this->use_tier( 'business' );
+		$this->assertContains( 'quiz', Form_Templates::get_features( $template, $fields ), "Defaults to the site's plan." );
+	}
+
+	public function test_build_content_passes_the_markup_through_the_content_filter() {
+		$seen = null;
+		add_filter(
+			'srfm_form_template_content',
+			static function ( $content, $template, $fields ) use ( &$seen ) {
+				$seen = [ $template['id'], wp_list_pluck( $fields, 'slug' ) ];
+				return $content . '<!-- srfm-content-filter -->';
+			},
+			10,
+			3
+		);
+
+		$content = Form_Templates::build_content( Form_Templates::get_template( 'contact-us' ) );
+
+		$this->assertStringEndsWith( '<!-- srfm-content-filter -->', $content );
+		$this->assertSame( 'contact-us', $seen[0] );
+		$this->assertContains( 'email', $seen[1] );
+	}
+
+	public function test_build_metas_gives_the_metas_filter_the_content_and_context() {
+		$seen = null;
+		add_filter(
+			'srfm_form_template_metas',
+			static function ( $metas, $template, $content, $fields, $context ) use ( &$seen ) {
+				$seen                    = [ $content, $context ];
+				$metas['_srfm_test_key'] = 'added';
+				return $metas;
+			},
+			10,
+			5
+		);
+
+		$metas = Form_Templates::build_metas( Form_Templates::get_template( 'rsvp' ), [], '<!-- given -->', 'preview' );
+
+		$this->assertSame( [ '<!-- given -->', 'preview' ], $seen );
+		$this->assertSame( 'added', $metas['_srfm_test_key'] );
+		$this->assertArrayHasKey( '_srfm_form_confirmation', $metas );
+		$this->assertArrayHasKey( '_srfm_forms_styling', $metas );
+	}
+
+	public function test_build_settings_metas_defaults_to_the_swap_context() {
+		$template = Form_Templates::get_template( 'rsvp' );
+		$plain    = Form_Templates::build_settings_metas( $template );
+		$this->assertArrayNotHasKey( '_srfm_form_confirmation', $plain, 'Settings metas leave the thank-you message out.' );
+
+		$context = null;
+		add_filter(
+			'srfm_form_template_metas',
+			static function ( $metas, $template, $content, $fields, $ctx ) use ( &$context ) {
+				$context = [ $ctx, $content ];
+				return [ '_srfm_only' => 1 ];
+			},
+			10,
+			5
+		);
+
+		$this->assertSame( [ '_srfm_only' => 1 ], Form_Templates::build_settings_metas( $template ) );
+		$this->assertSame( 'swap', $context[0] );
+		$this->assertStringContainsString( '<!-- wp:srfm/', $context[1], 'The content is built when none is given.' );
+	}
+
+	public function test_get_categories_match_the_catalog_files() {
+		$ids = wp_list_pluck( Form_Templates::get_categories(), 'id' );
+
+		$this->assertSame( [], array_values( array_diff( $ids, Catalog::FILES ) ), 'Each category has a catalog file.' );
+		foreach ( Catalog::templates() as $template ) {
+			$this->assertContains( $template['category'], $ids, $template['id'] );
+		}
+	}
+
+	public function test_rest_list_templates_reports_the_pro_tier() {
+		$this->use_tier( 'pro' );
+
+		$data = ( new Form_Templates() )->rest_list_templates()->get_data();
+
+		$this->assertSame( 'pro', $data['pro_tier'] );
+		$this->assertArrayHasKey( 'lock_reason', $data['templates'][0] );
+	}
+
+	public function test_rest_get_template_content_refuses_a_locked_template_with_its_reason() {
+		$this->login_admin();
+		$this->add_tier_templates(
+			[
+				[
+					'id'       => 'pro-locked',
+					'requires' => 'pro',
+				],
+			]
+		);
+		$this->use_tier( 'starter' );
+
+		$request = new WP_REST_Request( 'GET', '/sureforms/v1/form-templates/pro-locked' );
+		$request->set_param( 'template_id', 'pro-locked' );
+		$result = ( new Form_Templates() )->rest_get_template_content( $request );
+
+		$this->assertInstanceOf( WP_Error::class, $result );
+		$this->assertSame( 'srfm_template_locked', $result->get_error_code() );
+		$this->assertSame( 403, $result->get_error_data()['status'] );
+		$this->assertSame( 'tier', $result->get_error_data()['reason'] );
+		$this->assertSame( 'pro', $result->get_error_data()['requires'] );
+	}
+
+	public function test_maybe_render_preview_builds_a_locked_template_in_the_preview_context() {
+		$this->login_admin();
+		$this->add_tier_templates(
+			[
+				[
+					'id'       => 'preview-locked',
+					'requires' => 'business',
+				],
+			]
+		);
+		$this->use_tier( 'free' );
+
+		// Stop at the metas filter, before the page is printed and the request ends.
+		$context = null;
+		add_filter(
+			'srfm_form_template_metas',
+			static function ( $metas, $template, $content, $fields, $ctx ) use ( &$context ) {
+				$context = [ $template['id'], $ctx ];
+				throw new RuntimeException( 'srfm-preview-built' );
+			},
+			10,
+			5
+		);
+
+		$_GET[ Form_Templates::PREVIEW_QUERY_VAR ] = 'preview-locked';
+		try {
+			( new Form_Templates() )->maybe_render_preview();
+			$this->fail( 'The preview should have been built.' );
+		} catch ( RuntimeException $e ) {
+			$this->assertSame( 'srfm-preview-built', $e->getMessage() );
+		} finally {
+			unset( $_GET[ Form_Templates::PREVIEW_QUERY_VAR ] );
+		}
+
+		$this->assertSame( [ 'preview-locked', 'preview' ], $context, 'A locked template still previews.' );
+	}
+
+	public function test_get_message_meta_keys_lists_the_form_messages() {
+		$this->assertSame(
+			[ '_srfm_submit_button_text', '_srfm_email_notification', '_srfm_form_confirmation', '_srfm_page_break_settings' ],
+			Form_Templates::get_message_meta_keys()
+		);
+
+		// The emails, thank-you message and button text a swap sends are all message keys,
+		// so leaving the message keys out keeps the form's own.
+		$request = new WP_REST_Request( 'GET', '/sureforms/v1/form-templates/rsvp' );
+		$request->set_param( 'template_id', 'rsvp' );
+		$this->login_admin();
+		$settings = ( new Form_Templates() )->rest_get_template_content( $request )->get_data()['settings'];
+		foreach ( [ '_srfm_submit_button_text', '_srfm_email_notification', '_srfm_form_confirmation' ] as $key ) {
+			$this->assertArrayHasKey( $key, $settings );
+			$this->assertContains( $key, Form_Templates::get_message_meta_keys() );
+		}
+		// Fields and design are never message keys: the swap always applies them.
+		$this->assertNotContains( '_srfm_forms_styling', Form_Templates::get_message_meta_keys() );
+		$this->assertNotContains( '_srfm_is_inline_button', Form_Templates::get_message_meta_keys() );
+	}
+
+	public function test_get_message_meta_keys_can_be_extended_by_pro() {
+		add_filter(
+			'srfm_form_template_message_meta_keys',
+			static function ( $keys ) {
+				$keys[] = '_srfm_conditional_confirmations';
+				$keys[] = '_srfm_email_notification';
+				$keys[] = [ 'not-a-key' ];
+				return $keys;
+			}
+		);
+
+		$keys = Form_Templates::get_message_meta_keys();
+		$this->assertContains( '_srfm_conditional_confirmations', $keys );
+		$this->assertSame( $keys, array_values( array_unique( $keys ) ), 'Keys are listed once.' );
+		$this->assertContainsOnly( 'string', $keys );
+
+		add_filter( 'srfm_form_template_message_meta_keys', '__return_null', 20 );
+		$this->assertSame( [], Form_Templates::get_message_meta_keys(), 'A broken filter gives no keys rather than an error.' );
+	}
+
+	public function test_rest_list_templates_sends_the_message_meta_keys() {
+		$this->login_admin();
+
+		$data = ( new Form_Templates() )->rest_list_templates()->get_data();
+
+		$this->assertSame( Form_Templates::get_message_meta_keys(), $data['message_meta_keys'] );
+		$this->assertNotEmpty( $data['templates'] );
+		$this->assertArrayHasKey( 'spam_protection', $data );
+	}
+
+	public function test_autoresponder_body_never_echoes_answers() {
+		$this->turn_on_spam_protection();
+
+		foreach ( Form_Templates::get_templates() as $id => $template ) {
+			$emails = Form_Templates::build_settings_metas( $template )['_srfm_email_notification'];
+			foreach ( $emails as $email ) {
+				if ( '{form:email}' !== $email['email_to'] ) {
+					continue;
+				}
+				// The address is typed into the form, so free text echoed back
+				// would let bots send their own text from this site to anyone.
+				$this->assertStringNotContainsString( '{all_data}', $email['email_body'], "Template {$id} echoes the answers to the visitor." );
+				$this->assertStringNotContainsString( '{form:message}', $email['email_body'], "Template {$id} echoes the message to the visitor." );
+			}
+			// The site owner's notification keeps every answer.
+			$this->assertStringEndsWith( '{all_data}', $emails[0]['email_body'] );
+		}
+
+		// A filtered template asking for a summary still gets none.
+		$template                             = Form_Templates::get_template( 'contact-us' );
+		$template['autoresponder']['summary'] = true;
+		$emails                               = Form_Templates::build_settings_metas( $template )['_srfm_email_notification'];
+		$this->assertStringNotContainsString( '{all_data}', $emails[1]['email_body'] );
+	}
+
+	public function test_build_settings_metas_holds_the_visitor_email_without_spam_protection() {
+		delete_option( 'srfm_security_settings_options' );
+
+		$emails = Form_Templates::build_settings_metas( Form_Templates::get_template( 'contact-us' ) )['_srfm_email_notification'];
+		$this->assertCount( 1, $emails, 'Only the site owner is notified.' );
+		$this->assertSame( '{admin_email}', $emails[0]['email_to'] );
+		$this->assertTrue( $emails[0]['status'] );
+
+		$this->turn_on_spam_protection();
+		$this->assertCount( 2, Form_Templates::build_settings_metas( Form_Templates::get_template( 'contact-us' ) )['_srfm_email_notification'] );
+	}
+
+	public function test_rest_create_form_without_spam_protection_has_no_visitor_email() {
+		$this->login_admin();
+		delete_option( 'srfm_security_settings_options' );
+
+		$request = new WP_REST_Request( 'POST', '/sureforms/v1/form-templates/create' );
+		$request->set_param( 'template_id', 'contact-us' );
+		$post_id = ( new Form_Templates() )->rest_create_form( $request )->get_data()['id'];
+
+		$emails = get_post_meta( $post_id, '_srfm_email_notification', true );
+		$this->assertCount( 1, $emails );
+		$this->assertNotSame( '{form:email}', $emails[0]['email_to'] );
+		$this->assertFalse( Form_Templates::is_spam_protection_on() );
+	}
+
+	public function test_rest_create_form_turning_on_spam_protection_keeps_the_visitor_email() {
+		$this->login_admin();
+		delete_option( 'srfm_security_settings_options' );
+
+		// What "Protect this form from spam" (ticked by default) sends.
+		$request = new WP_REST_Request( 'POST', '/sureforms/v1/form-templates/create' );
+		$request->set_param( 'template_id', 'contact-us' );
+		$request->set_param( 'enable_spam_protection', true );
+		$post_id = ( new Form_Templates() )->rest_create_form( $request )->get_data()['id'];
+
+		$emails = get_post_meta( $post_id, '_srfm_email_notification', true );
+		$this->assertCount( 2, $emails );
+		$this->assertSame( '{form:email}', $emails[1]['email_to'] );
+		$this->assertTrue( Form_Templates::is_spam_protection_on() );
+	}
+
+	public function test_register_routes_adds_every_template_route() {
+		do_action( 'rest_api_init' );
+		$routes = rest_get_server()->get_routes();
+
+		foreach ( [ '/sureforms/v1/form-templates', '/sureforms/v1/form-templates/create', '/sureforms/v1/form-templates/request', '/sureforms/v1/form-templates/swap', '/sureforms/v1/form-templates/(?P<template_id>[a-z0-9-]+)' ] as $route ) {
+			$this->assertArrayHasKey( $route, $routes, "{$route} is not registered." );
+		}
+
+		// Every route needs a user who can manage forms.
+		wp_set_current_user( 0 );
+		$this->assertSame( 401, rest_do_request( new WP_REST_Request( 'GET', '/sureforms/v1/form-templates' ) )->get_status() );
+		$this->login_admin();
+		$this->assertSame( 200, rest_do_request( new WP_REST_Request( 'GET', '/sureforms/v1/form-templates' ) )->get_status() );
+	}
+
+	public function test_get_answers_skips_fields_nobody_answers_in_an_email() {
+		$fields = [
+			[ 'fieldType' => 'input', 'slug' => 'full-name', 'label' => 'Name', 'required' => true ],
+			[ 'fieldType' => 'gdpr', 'slug' => 'consent', 'label' => 'I agree' ],
+			[ 'fieldType' => 'page-break', 'slug' => 'step-2', 'label' => 'Step 2' ],
+			[ 'fieldType' => 'upload', 'slug' => 'files', 'label' => 'Files' ],
+			[ 'fieldType' => 'email', 'slug' => 'email', 'label' => 'Email' ],
+			[ 'fieldType' => 'dropdown', 'slug' => 'topic', 'label' => 'Topic', 'fieldOptions' => [ [ 'label' => 'Sales' ] ] ],
+		];
+
+		$answers = Form_Templates::get_answers( $fields );
+
+		$this->assertSame( [ 'full-name', 'email', 'topic' ], wp_list_pluck( $answers, 'slug' ) );
+		$this->assertSame( 'Jane Smith', $answers[0]['sample'] );
+		$this->assertTrue( $answers[0]['required'] );
+		$this->assertSame( 'jane@example.com', $answers[1]['sample'] );
+		$this->assertFalse( $answers[1]['required'] );
+		$this->assertSame( 'Sales', $answers[2]['sample'], 'Choices use their first option.' );
+	}
+
+	public function test_apply_messages_merges_edits_and_can_drop_the_visitor_email() {
+		$template = Form_Templates::get_template( 'contact-us' );
+
+		$edited = Form_Templates::apply_messages(
+			$template,
+			[
+				'confirmation'  => [ 'heading' => 'Got it' ],
+				'email_subject' => '',
+				'autoresponder' => [ 'subject' => 'Hello', 'lines' => [] ],
+			]
+		);
+		$this->assertSame( 'Got it', $edited['confirmation']['heading'] );
+		$this->assertSame( $template['confirmation']['text'], $edited['confirmation']['text'] );
+		$this->assertSame( $template['email_subject'], $edited['email_subject'], 'An emptied subject keeps the template text.' );
+		$this->assertSame( 'Hello', $edited['autoresponder']['subject'] );
+		$this->assertSame( $template['autoresponder']['lines'], $edited['autoresponder']['lines'], 'Empty values are ignored.' );
+
+		$off = Form_Templates::apply_messages( $template, [ 'autoresponder' => [ 'enabled' => false ] ] );
+		$this->assertArrayNotHasKey( 'autoresponder', $off );
+	}
+
+	public function test_get_features_lists_what_a_template_sets_up() {
+		$this->assertSame(
+			[ 'notification', 'autoresponder', 'consent' ],
+			Form_Templates::get_features( Form_Templates::get_template( 'contact-us' ), Form_Templates::resolve_fields( Form_Templates::get_template( 'contact-us' ), false ) )
+		);
+
+		// No required email, so no confirmation to the visitor.
+		$callback = Form_Templates::get_template( 'callback-request' );
+		$this->assertNotContains( 'autoresponder', Form_Templates::get_features( $callback, Form_Templates::resolve_fields( $callback, false ) ) );
+
+		$job = Form_Templates::get_template( 'job-application' );
+		$this->assertContains( 'multi_step', Form_Templates::get_features( $job, Form_Templates::resolve_fields( $job, true ) ) );
+		$this->assertContains( 'file_upload', Form_Templates::get_features( $job, Form_Templates::resolve_fields( $job, true ) ) );
+	}
+
+	public function test_build_metas_stamps_the_form_and_sets_its_messages() {
+		$this->turn_on_spam_protection();
+		$template = Form_Templates::get_template( 'contact-us' );
+
+		$metas = Form_Templates::build_metas( $template );
+
+		$this->assertSame( 'template', $metas[ Form_Templates::CREATED_VIA_META ] );
+		$this->assertSame( 'contact-us', $metas[ Form_Templates::TEMPLATE_ID_META ] );
+		$this->assertStringContainsString( 'Thanks, {form:first-name}!', $metas['_srfm_form_confirmation'][0]['message'] );
+		$this->assertSame( 'Send message', $metas['_srfm_submit_button_text'] );
+		$this->assertCount( 2, $metas['_srfm_email_notification'] );
+		$this->assertSame( 1, $metas['_srfm_single_page_form_title'] );
+		// Starts from the defaults a hand-made form gets.
+		$this->assertArrayHasKey( '_srfm_form_container_width', $metas );
+	}
+
+	public function test_build_style_metas_follow_the_chosen_style() {
+		$template = Form_Templates::get_template( 'contact-us' );
+		$style    = [ 'preset' => 'midnight' ];
+		$theme    = Form_Templates::resolve_theme( $template, $style );
+
+		$metas = Form_Templates::build_style_metas( $template, $style );
+
+		$this->assertSame( [ '_srfm_forms_styling', '_srfm_instant_form_settings', '_srfm_single_page_form_title' ], array_keys( $metas ) );
+		$this->assertSame( $theme['primary'], $metas['_srfm_forms_styling']['primary_color'] );
+		$this->assertSame( $theme['background'], $metas['_srfm_forms_styling']['bg_gradient'] );
+		$this->assertSame( $theme['radius'], $metas['_srfm_forms_styling']['instant_form_border_radius_right'] );
+		$this->assertSame( $theme['banner'], $metas['_srfm_instant_form_settings']['cover_color'] );
+	}
+
+	public function test_is_spam_protection_on_reads_the_honeypot_setting() {
+		delete_option( 'srfm_security_settings_options' );
+		$this->assertFalse( Form_Templates::is_spam_protection_on() );
+
+		update_option( 'srfm_security_settings_options', 'garbage' );
+		$this->assertFalse( Form_Templates::is_spam_protection_on() );
+
+		update_option( 'srfm_security_settings_options', [ 'srfm_honeypot' => false ] );
+		$this->assertFalse( Form_Templates::is_spam_protection_on() );
+
+		$this->turn_on_spam_protection();
+		$this->assertTrue( Form_Templates::is_spam_protection_on() );
+	}
+
+	public function test_enable_spam_protection_turns_on_the_honeypot_only() {
+		update_option( 'srfm_security_settings_options', [ 'srfm_cf_appearance_mode' => 'dark' ] );
+
+		Form_Templates::enable_spam_protection();
+
+		$this->assertSame(
+			[
+				'srfm_cf_appearance_mode' => 'dark',
+				'srfm_honeypot'           => true,
+			],
+			get_option( 'srfm_security_settings_options' )
+		);
+	}
+
+	public function test_is_usage_sharing_on_follows_the_opt_in() {
+		$previous = get_site_option( 'sureforms_usage_optin', false );
+
+		update_site_option( 'sureforms_usage_optin', 'no' );
+		$this->assertFalse( Form_Templates::is_usage_sharing_on() );
+
+		update_site_option( 'sureforms_usage_optin', 'yes' );
+		$this->assertTrue( Form_Templates::is_usage_sharing_on() );
+
+		// The global BSF switch wins over the opt-in.
+		add_filter( 'bsf_usage_tracking_enabled', '__return_false' );
+		$this->assertFalse( Form_Templates::is_usage_sharing_on() );
+		remove_filter( 'bsf_usage_tracking_enabled', '__return_false' );
+
+		false === $previous ? delete_site_option( 'sureforms_usage_optin' ) : update_site_option( 'sureforms_usage_optin', $previous );
+	}
+
+	public function test_get_request_settings_for_js_follow_usage_sharing() {
+		add_filter( 'sureforms_tracking_enabled', '__return_false' );
+		$settings = Form_Templates::get_request_settings_for_js();
+		remove_filter( 'sureforms_tracking_enabled', '__return_false' );
+
+		$this->assertFalse( $settings['enabled'] );
+		$this->assertStringContainsString( 'page=sureforms_form_settings', $settings['settings_url'] );
+
+		add_filter( 'sureforms_tracking_enabled', '__return_true' );
+		$this->assertTrue( Form_Templates::get_request_settings_for_js()['enabled'] );
+		remove_filter( 'sureforms_tracking_enabled', '__return_true' );
+	}
+
+	public function test_rest_record_swap_stamps_the_form() {
+		$this->login_admin();
+		$post_id = Form_Templates::create_form_from_template( 'contact-us' );
+
+		$request = new WP_REST_Request( 'POST', '/sureforms/v1/form-templates/swap' );
+		$request->set_param( 'form_id', $post_id );
+		$request->set_param( 'template_id', 'rsvp' );
+		$response = rest_do_request( $request );
+
+		$this->assertSame( 200, $response->get_status() );
+		$this->assertTrue( $response->get_data()['success'] );
+		$this->assertSame( 'rsvp', get_post_meta( $post_id, Form_Templates::TEMPLATE_ID_META, true ) );
+	}
+
+	public function test_forget_preview_form_clears_the_preview_cache() {
+		$property = new ReflectionProperty( Form_Templates::class, 'preview_post_id' );
+		$property->setAccessible( true );
+
+		// Nothing previewed: nothing to clear, and nothing breaks.
+		$property->setValue( null, null );
+		Form_Templates::forget_preview_form();
+
+		$property->setValue( null, 2147000001 );
+		wp_cache_set( 2147000001, (object) [ 'ID' => 2147000001 ], 'posts' );
+		wp_cache_set( 2147000001, [ '_srfm_template_id' => [ 'contact-us' ] ], 'post_meta' );
+
+		Form_Templates::forget_preview_form();
+
+		$this->assertFalse( wp_cache_get( 2147000001, 'posts' ) );
+		$this->assertFalse( wp_cache_get( 2147000001, 'post_meta' ) );
+		$property->setValue( null, null );
+	}
+
+	public function test_maybe_render_preview_needs_the_query_var_and_capability() {
+		$die = static function () {
+			return static function ( $message, $title, $args ) {
+				throw new RuntimeException( (string) ( $args['response'] ?? 0 ) );
+			};
+		};
+		add_filter( 'wp_die_handler', $die );
+
+		// Not a preview request: the page renders as usual.
+		unset( $_GET[ Form_Templates::PREVIEW_QUERY_VAR ] );
+		$this->assertNull( ( new Form_Templates() )->maybe_render_preview() );
+
+		$_GET[ Form_Templates::PREVIEW_QUERY_VAR ] = 'contact-us';
+		$status                                    = 0;
+		try {
+			( new Form_Templates() )->maybe_render_preview();
+		} catch ( RuntimeException $e ) {
+			$status = (int) $e->getMessage();
+		}
+		$this->assertSame( 403, $status, 'Visitors cannot preview templates.' );
+
+		$this->login_admin();
+		$_GET[ Form_Templates::PREVIEW_QUERY_VAR ] = 'does-not-exist';
+		$status                                    = 0;
+		try {
+			( new Form_Templates() )->maybe_render_preview();
+		} catch ( RuntimeException $e ) {
+			$status = (int) $e->getMessage();
+		}
+		$this->assertSame( 404, $status );
+
+		unset( $_GET[ Form_Templates::PREVIEW_QUERY_VAR ] );
+		remove_filter( 'wp_die_handler', $die );
 	}
 }
