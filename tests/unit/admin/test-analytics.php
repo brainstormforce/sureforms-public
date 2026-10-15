@@ -1245,7 +1245,7 @@ class Test_Analytics extends TestCase {
 	 *
 	 * @return void
 	 */
-	public function test_template_usage_counts_published_template_forms() {
+	public function test_refresh_form_template_usage_counts_published_template_forms() {
 		Analytics::events()->flush_pending();
 		Helper::update_srfm_option( 'form_template_usage', [ 'created' => 4, 'templates' => [ 'contact-us' => 3, 'quote-request' => 1 ] ] );
 
@@ -1282,7 +1282,7 @@ class Test_Analytics extends TestCase {
 	 *
 	 * @return void
 	 */
-	public function test_template_usage_is_not_sent_without_templates() {
+	public function test_refresh_form_template_usage_sends_nothing_without_templates() {
 		Analytics::events()->flush_pending();
 		Helper::update_srfm_option( 'form_template_usage', [] );
 		$this->make_template_form( '', 'publish' );
@@ -1299,7 +1299,7 @@ class Test_Analytics extends TestCase {
 	 *
 	 * @return void
 	 */
-	public function test_creating_a_template_form_sends_published_counts() {
+	public function test_track_form_template_usage_sends_published_counts() {
 		Analytics::events()->flush_pending();
 		Helper::update_srfm_option( 'form_template_usage', [] );
 		$this->make_template_form( 'rsvp', 'publish' );
@@ -1319,7 +1319,7 @@ class Test_Analytics extends TestCase {
 	 *
 	 * @return void
 	 */
-	public function test_template_library_steps_are_counted() {
+	public function test_track_form_template_action_counts_library_steps() {
 		Analytics::events()->flush_pending();
 		Helper::update_srfm_option( 'form_template_usage', [] );
 
@@ -1348,7 +1348,7 @@ class Test_Analytics extends TestCase {
 	 *
 	 * @return void
 	 */
-	public function test_invalid_template_library_steps_are_ignored() {
+	public function test_track_form_template_action_ignores_invalid_steps() {
 		Helper::update_srfm_option( 'form_template_usage', [] );
 
 		$this->assertFalse( Analytics::track_form_template_action( 'delete_everything', 'contact-us' ) );
@@ -1389,6 +1389,77 @@ class Test_Analytics extends TestCase {
 		$this->assertSame( '3', $props['published'] );
 
 		$this->delete_template_forms();
+	}
+
+	/**
+	 * Test published_template_forms() counts only published forms made from a template.
+	 *
+	 * @return void
+	 */
+	public function test_published_template_forms() {
+		$this->make_template_form( 'contact-us', 'publish' );
+		$this->make_template_form( 'contact-us', 'publish' );
+		$this->make_template_form( 'rsvp', 'publish' );
+		$this->make_template_form( 'rsvp', 'draft' );
+		$this->make_template_form( 'quote-request', 'trash' );
+		$this->make_template_form( '', 'publish' );
+
+		$counts = Analytics::published_template_forms();
+
+		$this->assertSame(
+			[
+				'contact-us' => 2,
+				'rsvp'       => 1,
+			],
+			$counts,
+			'Most-used first; drafts, trashed and hand-made forms are left out.'
+		);
+
+		$this->delete_template_forms();
+		$this->assertSame( [], Analytics::published_template_forms() );
+	}
+
+	/**
+	 * Test track_form_template_demand() keeps request and search counts apart and queues them.
+	 *
+	 * @return void
+	 */
+	public function test_track_form_template_demand() {
+		Analytics::events()->flush_pending();
+		Helper::update_srfm_option( 'form_template_demand', [] );
+
+		Analytics::track_form_template_demand( 'Gym Membership' );
+		Analytics::track_form_template_demand( 'gym membership', 'request' );
+		Analytics::track_form_template_demand( 'Pet adoption', 'search' );
+		Analytics::track_form_template_demand( 'Car wash', 'anything-else' );
+		Analytics::track_form_template_demand( '   ' );
+
+		$demand = Helper::get_srfm_option( 'form_template_demand', [] );
+		$this->assertSame(
+			[
+				'gym_membership' => 2,
+				'car_wash'       => 1,
+			],
+			$demand['request'],
+			'Unknown types count as requests; queries are normalised to keys.'
+		);
+		$this->assertSame( [ 'pet_adoption' => 1 ], $demand['search'] );
+
+		$props = null;
+		foreach ( get_option( 'srfm_options', [] )['usage_events_pending'] ?? [] as $event ) {
+			if ( 'form_template_demand' === ( $event['event_name'] ?? '' ) ) {
+				$props = $event['properties'] ?? [];
+			}
+		}
+		$this->assertNotNull( $props );
+		$this->assertSame( '3', $props['requests'] );
+		$this->assertSame( '1', $props['searches'] );
+		$this->assertSame( '2', $props['request_gym_membership'] );
+		$this->assertSame( '1', $props['search_pet_adoption'] );
+		$this->assertContains( $props['plan'], [ 'free', 'business' ] );
+
+		Helper::update_srfm_option( 'form_template_demand', [] );
+		Analytics::events()->flush_pending();
 	}
 
 	/**
