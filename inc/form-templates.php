@@ -17,6 +17,7 @@ namespace SRFM\Inc;
 use SRFM\Admin\Analytics;
 use SRFM\Inc\AI_Form_Builder\Field_Mapping;
 use SRFM\Inc\Database\Tables\Entries;
+use SRFM\Inc\Form_Templates\Catalog;
 use SRFM\Inc\Traits\Get_Instance;
 use WP_Error;
 use WP_REST_Request;
@@ -61,6 +62,79 @@ class Form_Templates {
 	 * @since x.x.x
 	 */
 	private const PREVIEW_POST_ID = 2147483600;
+
+	/**
+	 * Plan tiers a template can require, lowest first.
+	 *
+	 * @since x.x.x
+	 */
+	public const TIERS = [ 'free', 'starter', 'pro', 'business' ];
+
+	/**
+	 * Template keys that SureForms Pro builds into the form (through the
+	 * `srfm_form_template_content` and `srfm_form_template_metas` filters),
+	 * with the tier whose Pro build handles each.
+	 *
+	 * @since x.x.x
+	 */
+	public const PRO_FEATURE_KEYS = [
+		'conditions'       => 'starter',
+		'confirmations'    => 'starter',
+		'email_conditions' => 'starter',
+		'attach_uploads'   => 'starter',
+		'restrictions'     => 'starter',
+		'save_resume'      => 'pro',
+		'survey'           => 'pro',
+		'conversational'   => 'pro',
+		'quiz'             => 'business',
+		'partial_entries'  => 'business',
+		'cpt'              => 'business',
+		'registration'     => 'business',
+		'entry_limit'      => 'business',
+		'pdf'              => 'business',
+	];
+
+	/**
+	 * Lowest `SRFM_PRO_TEMPLATE_API` that builds each of the PRO_FEATURE_KEYS.
+	 * Version 1 builds the Starter and Pro keys, version 2 adds the Business
+	 * ones. A paid template declaring a key is locked (reason `update`) while
+	 * the active SureForms Pro reports a lower version.
+	 *
+	 * @since x.x.x
+	 */
+	public const PRO_FEATURE_API = [
+		'conditions'       => 1,
+		'confirmations'    => 1,
+		'email_conditions' => 1,
+		'attach_uploads'   => 1,
+		'restrictions'     => 1,
+		'save_resume'      => 1,
+		'survey'           => 1,
+		'conversational'   => 1,
+		'quiz'             => 2,
+		'partial_entries'  => 2,
+		'cpt'              => 2,
+		'registration'     => 2,
+		'entry_limit'      => 2,
+		'pdf'              => 2,
+	];
+
+	/**
+	 * The "Included" feature each Pro template key adds.
+	 *
+	 * @since x.x.x
+	 */
+	private const FEATURE_BY_KEY = [
+		'conditions'      => 'conditional_logic',
+		'save_resume'     => 'save_resume',
+		'survey'          => 'survey',
+		'conversational'  => 'conversational',
+		'quiz'            => 'quiz',
+		'partial_entries' => 'partial_entries',
+		'cpt'             => 'post_submission',
+		'registration'    => 'user_registration',
+		'pdf'             => 'pdf',
+	];
 
 	/**
 	 * Memoised template list, keyed by id.
@@ -223,11 +297,19 @@ class Form_Templates {
 		 * `icon`, `fields` (the AI builder field schema), and optional
 		 * `confirmation` ([ 'heading', 'text' ]), `submit_text`, `email_subject`,
 		 * `email_intro`, `autoresponder` ([ 'subject', 'lines', 'greeting' ]),
-		 * `steps` (step titles for multi-step forms) and `is_pro`.
+		 * `steps` (step titles for multi-step forms), `features` (extra "Included"
+		 * feature ids, such as `calculation`) and the Pro keys in PRO_FEATURE_KEYS.
 		 *
-		 * A field may carry `pro` (schema keys that replace its own when SureForms Pro
-		 * is active), `pro_only` (only added with Pro) and `blockAttributes` (extra
-		 * block attributes, such as `minValue` and `maxValue` on a number field).
+		 * `requires` is the plan a template needs: `free` (default), `starter`,
+		 * `pro` or `business`; `is_pro => true` is read as `starter`. A paid
+		 * template can also set `min_pro_version`, the lowest SureForms Pro version
+		 * it works with.
+		 *
+		 * A field may carry `pro` (schema keys that replace its own with SureForms
+		 * Pro), `pro_only` (only added with Pro), `pro_tier` (the plan those need,
+		 * `starter` by default; a field with `pro_tier` and no `pro` is only added
+		 * from that plan) and `blockAttributes` (extra block attributes, such as
+		 * `minValue` and `maxValue` on a number field).
 		 *
 		 * @since x.x.x
 		 * @param array<int, array<string, mixed>> $templates Templates.
@@ -266,11 +348,11 @@ class Form_Templates {
 	 * @return array<int, array<string, mixed>>
 	 */
 	public static function get_templates_for_js() {
-		$list    = [];
-		$has_pro = Helper::has_pro();
+		$list = [];
+		$tier = Helper::get_pro_tier();
 		foreach ( self::get_templates() as $template ) {
-			$resolved = self::resolve_fields( $template, $has_pro );
-			$fields   = array_values(
+			$resolved    = self::resolve_fields( $template, $tier );
+			$fields      = array_values(
 				array_filter(
 					array_map(
 						static fn( $field ) => ! in_array( $field['fieldType'] ?? '', [ 'gdpr', 'page-break' ], true ) ? Helper::get_string_value( $field['label'] ?? '' ) : '',
@@ -278,7 +360,9 @@ class Form_Templates {
 					)
 				)
 			);
-			$features = self::get_features( $template, $resolved );
+			$features    = self::get_features( $template, $resolved, $tier );
+			$requires    = self::get_required_tier( $template );
+			$lock_reason = self::lock_reason( $template );
 
 			$list[] = [
 				'id'           => $template['id'],
@@ -290,16 +374,179 @@ class Form_Templates {
 				'theme'        => isset( self::get_themes()[ $template['theme'] ?? '' ] ) ? Helper::get_string_value( $template['theme'] ) : 'ocean',
 				'fields'       => $fields,
 				'features'     => $features,
-				// What the template gains with SureForms Pro, for sites without it.
-				'pro_features' => $has_pro ? [] : array_values( array_diff( self::get_features( $template, self::resolve_fields( $template, true ) ), $features ) ),
+				// What the template gains with a higher SureForms Pro plan.
+				'pro_features' => 'business' === $tier ? [] : array_values( array_diff( self::get_features( $template, self::resolve_fields( $template, 'business' ), 'business' ), $features ) ),
 				'submit_text'  => Helper::get_string_value( $template['submit_text'] ?? '' ),
 				'messages'     => self::get_messages( $template, $resolved ),
 				'answers'      => self::get_answers( $resolved ),
-				'is_pro'       => ! empty( $template['is_pro'] ),
-				'is_locked'    => ! empty( $template['is_pro'] ) && ! Helper::has_pro(),
+				'requires'     => $requires,
+				'is_pro'       => 'free' !== $requires,
+				'is_locked'    => '' !== $lock_reason,
+				// `tier` (needs a higher plan) or `update` (needs a newer SureForms Pro).
+				'lock_reason'  => $lock_reason,
+				'unlock_url'   => self::get_unlock_url( Helper::get_string_value( $template['id'] ), $lock_reason ),
 			];
 		}
 		return $list;
+	}
+
+	/**
+	 * The plan a template needs: `requires`, or `starter` for the older
+	 * `is_pro` flag, or `free`.
+	 *
+	 * @param array<string, mixed> $template Template.
+	 * @since x.x.x
+	 * @return string 'free', 'starter', 'pro' or 'business'.
+	 */
+	public static function get_required_tier( $template ) {
+		$requires = $template['requires'] ?? '';
+		if ( is_string( $requires ) && in_array( $requires, self::TIERS, true ) ) {
+			return $requires;
+		}
+		return ! empty( $template['is_pro'] ) ? 'starter' : 'free';
+	}
+
+	/**
+	 * Why a template can't be used on this site.
+	 *
+	 * @param array<string, mixed> $template Template.
+	 * @since x.x.x
+	 * @return string '' when it can be used, `tier` when it needs a higher plan,
+	 *                `update` when it needs a newer SureForms Pro.
+	 */
+	public static function lock_reason( $template ) {
+		$requires = self::get_required_tier( $template );
+		$reason   = '';
+
+		if ( ! Helper::has_tier( $requires ) ) {
+			$reason = 'tier';
+		} elseif ( 'free' !== $requires && self::needs_pro_update( $template ) ) {
+			$reason = 'update';
+		}
+
+		/**
+		 * Filters whether a template can be used on this site. Returning false
+		 * locks it, for example to hide a broken template in a hotfix.
+		 *
+		 * @since x.x.x
+		 * @param bool                 $available Whether the template can be used.
+		 * @param array<string, mixed> $template  Template.
+		 * @param string               $reason    Lock reason: '', `tier` or `update`.
+		 */
+		$available = (bool) apply_filters( 'srfm_form_template_is_available', '' === $reason, $template, $reason );
+
+		if ( $available ) {
+			return '';
+		}
+		return '' === $reason ? 'tier' : $reason;
+	}
+
+	/**
+	 * Whether a template can be used on this site.
+	 *
+	 * @param array<string, mixed> $template Template.
+	 * @since x.x.x
+	 * @return bool
+	 */
+	public static function is_template_available( $template ) {
+		return '' === self::lock_reason( $template );
+	}
+
+	/**
+	 * Whether the active SureForms Pro is too old for a template: older than its
+	 * `min_pro_version`, or without the template builder its Pro keys need.
+	 *
+	 * @param array<string, mixed> $template Template.
+	 * @since x.x.x
+	 * @return bool
+	 */
+	private static function needs_pro_update( $template ) {
+		$min_version = Helper::get_string_value( $template['min_pro_version'] ?? '' );
+		$pro_version = defined( 'SRFM_PRO_VER' ) ? Helper::get_string_value( constant( 'SRFM_PRO_VER' ) ) : '';
+		if ( '' !== $min_version && version_compare( $pro_version, $min_version, '<' ) ) {
+			return true;
+		}
+
+		return self::get_pro_template_api() < self::get_required_pro_template_api( $template );
+	}
+
+	/**
+	 * Lowest `SRFM_PRO_TEMPLATE_API` that builds every Pro key a template declares.
+	 *
+	 * @param array<string, mixed> $template Template.
+	 * @since x.x.x
+	 * @return int 0 when the template declares no Pro keys.
+	 */
+	public static function get_required_pro_template_api( $template ) {
+		$required = 0;
+		foreach ( array_keys( array_intersect_key( $template, self::PRO_FEATURE_API ) ) as $key ) {
+			$required = max( $required, self::PRO_FEATURE_API[ $key ] );
+		}
+		return $required;
+	}
+
+	/**
+	 * Version of the template builder in the active SureForms Pro, 0 without one.
+	 *
+	 * @since x.x.x
+	 * @return int
+	 */
+	public static function get_pro_template_api() {
+		return defined( 'SRFM_PRO_TEMPLATE_API' ) ? Helper::get_integer_value( constant( 'SRFM_PRO_TEMPLATE_API' ) ) : 0;
+	}
+
+	/**
+	 * Where a locked template's button leads: the pricing page, or the plugin
+	 * updates when SureForms Pro is too old.
+	 *
+	 * @param string $template_id Template id.
+	 * @param string $lock_reason From lock_reason().
+	 * @since x.x.x
+	 * @return string Unescaped URL, or '' when the template isn't locked.
+	 */
+	public static function get_unlock_url( $template_id, $lock_reason ) {
+		if ( '' === $lock_reason ) {
+			return '';
+		}
+		if ( 'update' === $lock_reason ) {
+			return admin_url( 'plugins.php?plugin_status=upgrade' );
+		}
+		$url = Helper::get_sureforms_website_url(
+			'pricing',
+			[
+				'utm_medium'  => 'form-templates',
+				'utm_content' => 'template-' . $template_id,
+			]
+		);
+		// The helper returns a URL escaped for HTML; this one is opened from JS.
+		return esc_url_raw( wp_specialchars_decode( $url ) );
+	}
+
+	/**
+	 * The error for a template that can't be used on this site.
+	 *
+	 * @param array<string, mixed> $template Template.
+	 * @since x.x.x
+	 * @return WP_Error|null Null when the template can be used.
+	 */
+	private static function locked_error( $template ) {
+		$reason = self::lock_reason( $template );
+		if ( '' === $reason ) {
+			return null;
+		}
+		$message = 'update' === $reason
+			? __( 'Update SureForms Pro to use this template.', 'sureforms' )
+			: __( 'This template needs a SureForms Premium plan.', 'sureforms' );
+
+		return new WP_Error(
+			'srfm_template_locked',
+			$message,
+			[
+				'status'   => 403,
+				'requires' => self::get_required_tier( $template ),
+				'reason'   => $reason,
+			]
+		);
 	}
 
 	/**
@@ -608,21 +855,29 @@ class Form_Templates {
 	}
 
 	/**
-	 * A template's fields as they will be built: `pro` variants applied and
-	 * `pro_only` fields kept only when SureForms Pro is active.
+	 * A template's fields as they will be built on a plan: `pro` variants
+	 * applied and `pro_only` fields kept only from their `pro_tier` (Starter
+	 * by default).
 	 *
 	 * @param array<string, mixed> $template Template.
-	 * @param bool                 $with_pro Whether SureForms Pro is active.
+	 * @param string|bool          $tier     Plan tier from Helper::get_pro_tier(). `true` is
+	 *                                       read as `business` and `false` as `free`.
 	 * @since x.x.x
 	 * @return array<int, array<string, mixed>>
 	 */
-	public static function resolve_fields( $template, $with_pro ) {
+	public static function resolve_fields( $template, $tier ) {
+		if ( is_bool( $tier ) ) {
+			$tier = $tier ? 'business' : 'free';
+		}
+		$rank   = Helper::tier_rank( $tier );
 		$fields = [];
 		foreach ( Helper::get_array_value( $template['fields'] ?? [] ) as $field ) {
 			if ( ! is_array( $field ) ) {
 				continue;
 			}
-			if ( ! empty( $field['pro_only'] ) && ! $with_pro ) {
+			$with_pro = $rank >= max( 1, Helper::tier_rank( Helper::get_string_value( $field['pro_tier'] ?? 'starter' ) ) );
+			$pro_only = ! empty( $field['pro_only'] ) || ( isset( $field['pro_tier'] ) && empty( $field['pro'] ) );
+			if ( $pro_only && ! $with_pro ) {
 				continue;
 			}
 			if ( $with_pro && ! empty( $field['pro'] ) && is_array( $field['pro'] ) ) {
@@ -633,7 +888,7 @@ class Form_Templates {
 				}
 				$field = array_merge( $field, $pro );
 			}
-			unset( $field['pro'], $field['pro_only'] );
+			unset( $field['pro'], $field['pro_only'], $field['pro_tier'] );
 			$fields[] = $field;
 		}
 		return $fields;
@@ -642,12 +897,17 @@ class Form_Templates {
 	/**
 	 * What a template sets up, for the "Included" chips in the library.
 	 *
+	 * Besides the features its fields bring, a template's Pro keys (such as
+	 * `conditions`) count from the plan that builds them, and ids listed in its
+	 * `features` key (such as `calculation`) always count.
+	 *
 	 * @param array<string, mixed>             $template Template.
 	 * @param array<int, array<string, mixed>> $fields   Fields from resolve_fields().
+	 * @param string                           $tier     Plan the fields were resolved for. Defaults to this site's.
 	 * @since x.x.x
 	 * @return array<int, string>
 	 */
-	public static function get_features( $template, $fields ) {
+	public static function get_features( $template, $fields, $tier = '' ) {
 		$by_type = [
 			'page-break'  => 'multi_step',
 			'upload'      => 'file_upload',
@@ -656,7 +916,12 @@ class Form_Templates {
 			'rating'      => 'rating',
 			'nps'         => 'nps',
 			'gdpr'        => 'consent',
+			'signature'   => 'signature',
+			'slider'      => 'slider',
+			'repeater'    => 'repeater',
+			'payment'     => 'payment',
 		];
+		$tier    = '' === $tier ? Helper::get_pro_tier() : $tier;
 
 		$features = [ 'notification' ];
 		if ( ! empty( $template['autoresponder'] ) && self::has_required_email( $fields ) ) {
@@ -664,11 +929,30 @@ class Form_Templates {
 		}
 		foreach ( $fields as $field ) {
 			$type = Helper::get_string_value( $field['fieldType'] ?? '' );
-			if ( isset( $by_type[ $type ] ) && ! in_array( $by_type[ $type ], $features, true ) ) {
+			if ( isset( $by_type[ $type ] ) ) {
 				$features[] = $by_type[ $type ];
 			}
 		}
-		return $features;
+		foreach ( self::FEATURE_BY_KEY as $key => $feature ) {
+			if ( ! empty( $template[ $key ] ) && Helper::tier_rank( $tier ) >= Helper::tier_rank( self::PRO_FEATURE_KEYS[ $key ] ) ) {
+				$features[] = $feature;
+			}
+		}
+		foreach ( Helper::get_array_value( $template['features'] ?? [] ) as $feature ) {
+			$features[] = sanitize_key( Helper::get_string_value( $feature ) );
+		}
+
+		/**
+		 * Filters what a template sets up, for the "Included" chips in the library.
+		 *
+		 * @since x.x.x
+		 * @param array<int, string>               $features Feature ids, such as `multi_step` or `quiz`.
+		 * @param array<string, mixed>             $template Template.
+		 * @param array<int, array<string, mixed>> $fields   Fields from resolve_fields().
+		 */
+		$features = apply_filters( 'srfm_form_template_features', $features, $template, $fields );
+
+		return array_values( array_unique( array_filter( array_map( [ Helper::class, 'get_string_value' ], Helper::get_array_value( $features ) ) ) ) );
 	}
 
 	/**
@@ -696,13 +980,14 @@ class Form_Templates {
 	 * @return string|WP_Error
 	 */
 	public static function build_content( $template ) {
+		$fields  = self::resolve_fields( $template, Helper::get_pro_tier() );
 		$request = new WP_REST_Request( 'POST' );
 		$request->set_param(
 			'form_data',
 			[
 				'form' => [
 					'formTitle'  => $template['title'] ?? '',
-					'formFields' => self::resolve_fields( $template, Helper::has_pro() ),
+					'formFields' => $fields,
 				],
 			]
 		);
@@ -715,7 +1000,48 @@ class Form_Templates {
 			return $content;
 		}
 
-		return Helper::get_string_value( $content );
+		/**
+		 * Filters the block markup built from a template, before it is saved,
+		 * previewed or swapped into a form. SureForms Pro uses it to add the block
+		 * attributes its template features need.
+		 *
+		 * @since x.x.x
+		 * @param string                           $content  Block markup.
+		 * @param array<string, mixed>             $template Template.
+		 * @param array<int, array<string, mixed>> $fields   Fields from resolve_fields(), as built.
+		 */
+		return Helper::get_string_value( apply_filters( 'srfm_form_template_content', Helper::get_string_value( $content ), $template, $fields ) );
+	}
+
+	/**
+	 * Build a template's block markup and metas together.
+	 *
+	 * @param array<string, mixed> $template Template.
+	 * @param array<string, mixed> $style    Style from sanitize_style().
+	 * @param string               $context  `create` or `preview` for all the form's metas,
+	 *                                       `swap` for the settings metas and the thank-you message.
+	 * @since x.x.x
+	 * @return array{content: string, metas: array<string, mixed>}|WP_Error
+	 */
+	private static function build( $template, $style, $context ) {
+		$content = self::build_content( $template );
+		if ( is_wp_error( $content ) ) {
+			return $content;
+		}
+
+		if ( 'swap' === $context ) {
+			$metas = array_merge(
+				self::build_settings_metas( $template, $content, 'swap' ),
+				[ '_srfm_form_confirmation' => self::confirmation_meta( $template ) ]
+			);
+		} else {
+			$metas = self::build_metas( $template, $style, $content, $context );
+		}
+
+		return [
+			'content' => $content,
+			'metas'   => $metas,
+		];
 	}
 
 	/**
@@ -726,29 +1052,24 @@ class Form_Templates {
 	 *
 	 * @param array<string, mixed> $template Template.
 	 * @param array<string, mixed> $style    Optional style from sanitize_style().
+	 * @param string               $content  The form's block markup, from build_content(). Built when
+	 *                                       empty and something filters the metas.
+	 * @param string               $context  `create` or `preview`.
 	 * @since x.x.x
 	 * @return array<string, mixed>
 	 */
-	public static function build_metas( $template, $style = [] ) {
+	public static function build_metas( $template, $style = [], $content = '', $context = 'create' ) {
 		$metas      = Create_New_Form::get_default_meta_keys();
 		$registered = get_registered_meta_keys( 'post', SRFM_FORMS_POST_TYPE );
 
-		$confirmation = $registered['_srfm_form_confirmation']['default'] ?? [];
-		if ( ! empty( $template['confirmation'] ) && is_array( $template['confirmation'] ) && isset( $confirmation[0] ) && is_array( $confirmation[0] ) ) {
-			$confirmation[0]['message'] = self::confirmation_message(
-				Helper::get_string_value( $template['confirmation']['heading'] ?? '' ),
-				Helper::get_string_value( $template['confirmation']['text'] ?? '' )
-			);
-		}
-
-		$metas['_srfm_form_confirmation'] = $confirmation;
-		$metas                            = array_merge( $metas, self::build_settings_metas( $template ), self::build_style_metas( $template, $style ) );
+		$metas['_srfm_form_confirmation'] = self::confirmation_meta( $template );
+		$metas                            = array_merge( $metas, self::settings_metas( $template ), self::build_style_metas( $template, $style ) );
 
 		$metas['_srfm_compliance']       = $registered['_srfm_compliance']['default'] ?? [];
 		$metas[ self::CREATED_VIA_META ] = 'template';
 		$metas[ self::TEMPLATE_ID_META ] = $template['id'];
 
-		return $metas;
+		return self::filter_metas( $metas, $template, $content, $context );
 	}
 
 	/**
@@ -760,12 +1081,86 @@ class Form_Templates {
 	 * on. Otherwise bots could use the form to send email to anyone.
 	 *
 	 * @param array<string, mixed> $template Template.
+	 * @param string               $content  The form's block markup, from build_content(). Built when
+	 *                                       empty and something filters the metas.
+	 * @param string               $context  `swap`, `create` or `preview`.
 	 * @since x.x.x
 	 * @return array<string, mixed>
 	 */
-	public static function build_settings_metas( $template ) {
+	public static function build_settings_metas( $template, $content = '', $context = 'swap' ) {
+		return self::filter_metas( self::settings_metas( $template ), $template, $content, $context );
+	}
+
+	/**
+	 * Run a template's metas through `srfm_form_template_metas`.
+	 *
+	 * @param array<string, mixed> $metas    Metas.
+	 * @param array<string, mixed> $template Template.
+	 * @param string               $content  The form's block markup, or '' to build it when needed.
+	 * @param string               $context  `create`, `swap` or `preview`.
+	 * @since x.x.x
+	 * @return array<string, mixed>
+	 */
+	private static function filter_metas( $metas, $template, $content, $context ) {
+		if ( ! has_filter( 'srfm_form_template_metas' ) ) {
+			return $metas;
+		}
+		if ( '' === $content ) {
+			$built   = self::build_content( $template );
+			$content = is_string( $built ) ? $built : '';
+		}
+
+		/**
+		 * Filters the metas a template sets on a form. SureForms Pro uses it to
+		 * write the settings of the template's Pro features, such as conditional
+		 * logic, matching fields by slug in `$content`.
+		 *
+		 * In the `swap` context the metas go back to the editor as they are, and
+		 * only the template's settings metas (plus `_srfm_form_confirmation`) are
+		 * passed; `create` metas are saved through wp_insert_post() and are
+		 * unslashed on the way; `preview` metas render an in-memory form.
+		 *
+		 * @since x.x.x
+		 * @param array<string, mixed>             $metas    Metas, keyed by meta key.
+		 * @param array<string, mixed>             $template Template.
+		 * @param string                           $content  The form's block markup.
+		 * @param array<int, array<string, mixed>> $fields   Fields from resolve_fields(), as built.
+		 * @param string                           $context  `create`, `swap` or `preview`.
+		 */
+		$filtered = apply_filters( 'srfm_form_template_metas', $metas, $template, $content, self::resolve_fields( $template, Helper::get_pro_tier() ), $context );
+
+		return is_array( $filtered ) ? $filtered : $metas;
+	}
+
+	/**
+	 * The thank-you message meta a template sets.
+	 *
+	 * @param array<string, mixed> $template Template.
+	 * @since x.x.x
+	 * @return mixed `_srfm_form_confirmation` value.
+	 */
+	private static function confirmation_meta( $template ) {
+		$registered   = get_registered_meta_keys( 'post', SRFM_FORMS_POST_TYPE );
+		$confirmation = $registered['_srfm_form_confirmation']['default'] ?? [];
+		if ( ! empty( $template['confirmation'] ) && is_array( $template['confirmation'] ) && is_array( $confirmation ) && isset( $confirmation[0] ) && is_array( $confirmation[0] ) ) {
+			$confirmation[0]['message'] = self::confirmation_message(
+				Helper::get_string_value( $template['confirmation']['heading'] ?? '' ),
+				Helper::get_string_value( $template['confirmation']['text'] ?? '' )
+			);
+		}
+		return $confirmation;
+	}
+
+	/**
+	 * The behaviour metas a template sets, before `srfm_form_template_metas`.
+	 *
+	 * @param array<string, mixed> $template Template.
+	 * @since x.x.x
+	 * @return array<string, mixed>
+	 */
+	private static function settings_metas( $template ) {
 		$registered = get_registered_meta_keys( 'post', SRFM_FORMS_POST_TYPE );
-		$fields     = self::resolve_fields( $template, Helper::has_pro() );
+		$fields     = self::resolve_fields( $template, Helper::get_pro_tier() );
 		$has_email  = self::has_required_email( $fields );
 		$metas      = [];
 
@@ -892,15 +1287,15 @@ class Form_Templates {
 			return new WP_Error( 'srfm_template_not_found', __( 'That template could not be found.', 'sureforms' ), [ 'status' => 404 ] );
 		}
 
-		if ( ! empty( $template['is_pro'] ) && ! Helper::has_pro() ) {
-			return new WP_Error( 'srfm_template_locked', __( 'This template needs SureForms Pro.', 'sureforms' ), [ 'status' => 403 ] );
+		$locked = self::locked_error( $template );
+		if ( null !== $locked ) {
+			return $locked;
 		}
 
 		$template = self::apply_messages( $template, self::sanitize_messages( $messages ) );
-		$style    = self::sanitize_style( $style );
-		$content  = self::build_content( $template );
-		if ( is_wp_error( $content ) ) {
-			return $content;
+		$built    = self::build( $template, self::sanitize_style( $style ), 'create' );
+		if ( is_wp_error( $built ) ) {
+			return $built;
 		}
 
 		// wp_insert_post() unslashes its input, which would strip the backslashes
@@ -910,10 +1305,10 @@ class Form_Templates {
 			wp_slash(
 				[
 					'post_title'   => Helper::get_string_value( $template['title'] ?? '' ),
-					'post_content' => $content,
+					'post_content' => $built['content'],
 					'post_status'  => 'draft',
 					'post_type'    => SRFM_FORMS_POST_TYPE,
-					'meta_input'   => self::build_metas( $template, $style ),
+					'meta_input'   => $built['metas'],
 				]
 			),
 			true
@@ -942,6 +1337,7 @@ class Form_Templates {
 		return new WP_REST_Response(
 			[
 				'templates'         => self::get_templates_for_js(),
+				'pro_tier'          => Helper::get_pro_tier(),
 				'categories'        => self::get_categories(),
 				'themes'            => self::get_themes_for_js(),
 				'requests'          => self::get_request_settings_for_js(),
@@ -1057,27 +1453,26 @@ class Form_Templates {
 			return new WP_Error( 'srfm_template_not_found', __( 'That template could not be found.', 'sureforms' ), [ 'status' => 404 ] );
 		}
 
-		if ( ! empty( $template['is_pro'] ) && ! Helper::has_pro() ) {
-			return new WP_Error( 'srfm_template_locked', __( 'This template needs SureForms Pro.', 'sureforms' ), [ 'status' => 403 ] );
+		$locked = self::locked_error( $template );
+		if ( null !== $locked ) {
+			return $locked;
 		}
 
-		$style   = self::sanitize_style( $request->get_param( 'style' ) );
-		$content = self::build_content( $template );
-		if ( is_wp_error( $content ) ) {
-			return $content;
+		$style = self::sanitize_style( $request->get_param( 'style' ) );
+		$built = self::build( $template, $style, 'swap' );
+		if ( is_wp_error( $built ) ) {
+			return $built;
 		}
 
-		$style_metas    = self::build_style_metas( $template, $style );
-		$settings_metas = self::build_settings_metas( $template );
-		$confirmation   = self::build_metas( $template, $style )['_srfm_form_confirmation'];
-		$form_id        = Helper::get_integer_value( $request->get_param( 'form_id' ) );
-		$has_entries    = $form_id > 0 && Entries::get_total_entries_by_status( 'all', $form_id ) > 0;
+		$style_metas = self::build_style_metas( $template, $style );
+		$form_id     = Helper::get_integer_value( $request->get_param( 'form_id' ) );
+		$has_entries = $form_id > 0 && Entries::get_total_entries_by_status( 'all', $form_id ) > 0;
 
 		return new WP_REST_Response(
 			[
 				'id'           => $template['id'],
 				'title'        => Helper::get_string_value( $template['title'] ?? '' ),
-				'content'      => $content,
+				'content'      => $built['content'],
 				'has_entries'  => $has_entries,
 				// Applied over the open form's own settings in the editor.
 				'styling'      => self::changed_keys( $style_metas['_srfm_forms_styling'], Helper::get_array_value( get_registered_meta_keys( 'post', SRFM_FORMS_POST_TYPE )['_srfm_forms_styling']['default'] ?? [] ) ),
@@ -1085,7 +1480,7 @@ class Form_Templates {
 				// Button text, emails, thank-you message and steps the template sets.
 				// The editor only applies the get_message_meta_keys() ones when the
 				// user chooses to replace the form's messages too.
-				'settings'     => array_merge( $settings_metas, [ '_srfm_form_confirmation' => $confirmation ] ),
+				'settings'     => $built['metas'],
 			]
 		);
 	}
@@ -1277,13 +1672,15 @@ class Form_Templates {
 		}
 
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only preview; the style is sanitized to known keys and hex colors.
-		$style   = self::sanitize_style( isset( $_GET['srfm_style'] ) ? sanitize_text_field( wp_unslash( $_GET['srfm_style'] ) ) : '' );
-		$content = self::build_content( $template );
-		if ( is_wp_error( $content ) ) {
-			wp_die( esc_html( $content->get_error_message() ), '', [ 'response' => 500 ] );
+		$style = self::sanitize_style( isset( $_GET['srfm_style'] ) ? sanitize_text_field( wp_unslash( $_GET['srfm_style'] ) ) : '' );
+		// A locked template still previews, built with this site's fields, so
+		// the library can show what it offers.
+		$built = self::build( $template, $style, 'preview' );
+		if ( is_wp_error( $built ) ) {
+			wp_die( esc_html( $built->get_error_message() ), '', [ 'response' => 500 ] );
 		}
 
-		self::seed_preview_form( $template, $content, $style );
+		self::seed_preview_form( $template, $built['content'], $built['metas'] );
 
 		if ( ! defined( 'DONOTCACHEPAGE' ) ) {
 			define( 'DONOTCACHEPAGE', true ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound -- Standard page-cache opt-out constant.
@@ -1527,11 +1924,11 @@ class Form_Templates {
 	 *
 	 * @param array<string, mixed> $template Template.
 	 * @param string               $content  Block markup.
-	 * @param array<string, mixed> $style    Style from sanitize_style().
+	 * @param array<string, mixed> $metas    Metas from build_metas(), including any a filter added.
 	 * @since x.x.x
 	 * @return void
 	 */
-	private static function seed_preview_form( $template, $content, $style = [] ) {
+	private static function seed_preview_form( $template, $content, $metas ) {
 		$post = (object) [
 			'ID'                => self::get_preview_post_id(),
 			'post_author'       => get_current_user_id(),
@@ -1561,7 +1958,7 @@ class Form_Templates {
 		add_action( 'shutdown', [ self::class, 'forget_preview_form' ] );
 
 		$meta = [];
-		foreach ( self::build_metas( $template, $style ) as $key => $value ) {
+		foreach ( $metas as $key => $value ) {
 			$meta[ $key ] = [ is_scalar( $value ) ? (string) $value : maybe_serialize( Helper::get_array_value( $value ) ) ];
 		}
 		wp_cache_set( self::get_preview_post_id(), $meta, 'post_meta' );
@@ -1640,1142 +2037,12 @@ class Form_Templates {
 	}
 
 	/**
-	 * Field helper: one field in the AI builder schema.
-	 *
-	 * @param string               $type     Field type (block name without `srfm/`).
-	 * @param string               $slug     Field slug.
-	 * @param string               $label    Label.
-	 * @param bool                 $required Required.
-	 * @param array<string, mixed> $extra    Extra schema keys (placeholder, helpText, fieldOptions, ...).
-	 * @since x.x.x
-	 * @return array<string, mixed>
-	 */
-	private static function field( $type, $slug, $label, $required = false, $extra = [] ) {
-		return array_merge(
-			[
-				'fieldType' => $type,
-				'slug'      => $slug,
-				'label'     => $label,
-				'required'  => $required,
-			],
-			$extra
-		);
-	}
-
-	/**
-	 * Options for a dropdown field.
-	 *
-	 * @param array<int, string> $labels Option labels.
-	 * @since x.x.x
-	 * @return array<string, mixed>
-	 */
-	private static function dropdown_options( $labels ) {
-		return [ 'fieldOptions' => array_map( static fn( $label ) => [ 'label' => $label ], $labels ) ];
-	}
-
-	/**
-	 * Options for a multiple-choice field.
-	 *
-	 * @param array<int, string> $labels Option labels.
-	 * @param bool               $single Single selection.
-	 * @param array<int, string> $icons  Optional icon per option (Font Awesome names). With
-	 *                                   an icon on every option the choices show as cards.
-	 * @since x.x.x
-	 * @return array<string, mixed>
-	 */
-	private static function choice_options( $labels, $single = true, $icons = [] ) {
-		$options = [];
-		foreach ( $labels as $index => $label ) {
-			$options[] = [
-				'optionTitle' => $label,
-				'icon'        => $icons[ $index ] ?? '',
-			];
-		}
-		return [
-			'fieldOptions'    => $options,
-			'singleSelection' => $single,
-		];
-	}
-
-	/**
-	 * Sets how much of the row a field takes.
-	 *
-	 * @param array<string, mixed> $field Field schema.
-	 * @param float|int            $width 100, 75, 66.66, 50, 33.33 or 25, as in the editor.
-	 * @since x.x.x
-	 * @return array<string, mixed>
-	 */
-	private static function width( $field, $width ) {
-		return self::attrs( $field, [ 'fieldWidth' => $width ] );
-	}
-
-	/**
-	 * Adds block attributes to a field, keeping the ones it already has.
-	 *
-	 * @param array<string, mixed> $field      Field schema.
-	 * @param array<string, mixed> $attributes Block attributes.
-	 * @since x.x.x
-	 * @return array<string, mixed>
-	 */
-	private static function attrs( $field, $attributes ) {
-		$field['blockAttributes'] = array_merge( Helper::get_array_value( $field['blockAttributes'] ?? [] ), $attributes );
-		return $field;
-	}
-
-	/**
-	 * Name, email and consent fields most templates share.
-	 *
-	 * @since x.x.x
-	 * @return array<string, array<string, mixed>>
-	 */
-	private static function common_fields() {
-		return [
-			'name'       => self::field( 'input', 'full-name', __( 'Full Name', 'sureforms' ), true, [ 'placeholder' => __( 'Jane Smith', 'sureforms' ) ] ),
-			'first_name' => self::width( self::field( 'input', 'first-name', __( 'First Name', 'sureforms' ), true, [ 'placeholder' => __( 'Jane', 'sureforms' ) ] ), 50 ),
-			'last_name'  => self::width( self::field( 'input', 'last-name', __( 'Last Name', 'sureforms' ), true, [ 'placeholder' => __( 'Smith', 'sureforms' ) ] ), 50 ),
-			'email'      => self::field( 'email', 'email', __( 'Email', 'sureforms' ), true, [ 'placeholder' => __( 'jane@example.com', 'sureforms' ) ] ),
-			'phone'      => self::field( 'phone', 'phone', __( 'Phone', 'sureforms' ), false, [ 'blockAttributes' => [ 'defaultCountry' => self::site_country() ] ] ),
-			'consent'    => self::field( 'gdpr', 'consent', __( 'I agree to have this website store my submitted information so it can respond to my request.', 'sureforms' ), true ),
-		];
-	}
-
-	/**
-	 * The site's country from its language (en_GB gives gb), used when the
-	 * phone field cannot detect the visitor's country.
-	 *
-	 * @since x.x.x
-	 * @return string Two-letter country code, or empty when the language has none.
-	 */
-	private static function site_country() {
-		$parts = explode( '_', get_locale() );
-		return isset( $parts[1] ) && 2 === strlen( $parts[1] ) ? strtolower( $parts[1] ) : '';
-	}
-
-	/**
-	 * A date question: a date picker with SureForms Pro, a text field without it.
-	 *
-	 * @param string $slug     Field slug.
-	 * @param string $label    Label.
-	 * @param bool   $required Required.
-	 * @param bool   $future   Only dates from today on (bookings), not past ones.
-	 * @since x.x.x
-	 * @return array<string, mixed>
-	 */
-	private static function date_field( $slug, $label, $required = false, $future = false ) {
-		return self::field(
-			'input',
-			$slug,
-			$label,
-			$required,
-			[
-				'placeholder' => __( 'e.g. 14 October', 'sureforms' ),
-				'pro'         => [
-					'fieldType'       => 'date-picker',
-					'placeholder'     => '',
-					'dateFormat'      => 'mm/dd/yyyy',
-					'blockAttributes' => [ 'disablePastDates' => $future ],
-				],
-			]
-		);
-	}
-
-	/**
-	 * A step divider for multi-step forms. Only added with SureForms Pro, which
-	 * renders the form as steps; free forms stay on one page.
-	 *
-	 * @param string $slug  Field slug.
-	 * @param string $label Title of the step that starts here.
-	 * @since x.x.x
-	 * @return array<string, mixed>
-	 */
-	private static function step( $slug, $label ) {
-		return self::field( 'page-break', $slug, $label, false, [ 'pro_only' => true ] );
-	}
-
-	/**
-	 * A number field limited to a range.
-	 *
-	 * @param string               $slug     Field slug.
-	 * @param string               $label    Label.
-	 * @param bool                 $required Required.
-	 * @param int                  $min      Lowest value.
-	 * @param int                  $max      Highest value.
-	 * @param array<string, mixed> $extra    Extra schema keys.
-	 * @since x.x.x
-	 * @return array<string, mixed>
-	 */
-	private static function number_field( $slug, $label, $required, $min, $max, $extra = [] ) {
-		return self::attrs(
-			self::field( 'number', $slug, $label, $required, $extra ),
-			[
-				'minValue' => $min,
-				'maxValue' => $max,
-			]
-		);
-	}
-
-	/**
-	 * The templates that ship with the plugin.
-	 *
-	 * Every template works with the free plugin. Fields marked `pro` switch to a
-	 * richer SureForms Pro field (date picker, file upload, rating, NPS) when Pro
-	 * is active, and `pro_only` fields (step dividers, ratings) are only added then.
-	 *
-	 * Each template also sets the button text, the email to the site owner, an
-	 * optional confirmation email to the person who filled it in, and the
-	 * thank-you message, so a form is ready to publish as soon as it is created.
+	 * The templates that ship with the plugin, from the catalog files.
 	 *
 	 * @since x.x.x
 	 * @return array<int, array<string, mixed>>
 	 */
 	private static function default_templates() {
-		$c = self::common_fields();
-
-		$satisfaction = [ __( 'Very satisfied', 'sureforms' ), __( 'Satisfied', 'sureforms' ), __( 'Neutral', 'sureforms' ), __( 'Dissatisfied', 'sureforms' ), __( 'Very dissatisfied', 'sureforms' ) ];
-		$nps_scale    = array_map( 'strval', range( 0, 10 ) );
-		$services     = [ __( 'Consultation', 'sureforms' ), __( 'Installation', 'sureforms' ), __( 'Maintenance', 'sureforms' ), __( 'Repair', 'sureforms' ), __( 'Something else', 'sureforms' ) ];
-		$no_search    = [ 'searchable' => false ];
-		$screenshots  = [
-			'pro' => [
-				'fieldType'        => 'upload',
-				'label'            => __( 'Screenshots (optional)', 'sureforms' ),
-				'placeholder'      => '',
-				'helpText'         => __( 'Add up to 3 images or PDFs.', 'sureforms' ),
-				'allowedTypes'     => 'jpg,jpeg,png,gif,webp,pdf',
-				'multiUpload'      => true,
-				'multiFilesNumber' => 3,
-			],
-		];
-
-		return [
-			// Contact & leads.
-			[
-				'id'            => 'contact-us',
-				'category'      => 'contact',
-				'theme'         => 'ocean',
-				'icon'          => 'mail',
-				'title'         => __( 'Contact Us', 'sureforms' ),
-				'description'   => __( 'A simple form for visitors to send you a message.', 'sureforms' ),
-				'submit_text'   => __( 'Send message', 'sureforms' ),
-				'fields'        => [
-					$c['first_name'],
-					$c['last_name'],
-					self::width( $c['email'], 50 ),
-					self::width( $c['phone'], 50 ),
-					self::field( 'input', 'subject', __( 'Subject', 'sureforms' ), false, [ 'placeholder' => __( 'What is this about?', 'sureforms' ) ] ),
-					self::attrs( self::field( 'textarea', 'message', __( 'Message', 'sureforms' ), true, [ 'placeholder' => __( 'How can we help?', 'sureforms' ) ] ), [ 'rows' => 5 ] ),
-					$c['consent'],
-				],
-				'confirmation'  => [
-					'heading' => __( 'Thanks, {form:first-name}!', 'sureforms' ),
-					'text'    => __( 'Your message is with us. We will reply to {form:email} as soon as we can.', 'sureforms' ),
-				],
-				'email_subject' => __( 'New message from {form:first-name} {form:last-name}', 'sureforms' ),
-				'email_intro'   => __( '{form:first-name} {form:last-name} sent a message through your contact form. Reply to this email to answer them directly.', 'sureforms' ),
-				'autoresponder' => [
-					'subject'  => __( 'Thanks for contacting {site_title}', 'sureforms' ),
-					'greeting' => __( 'Hi {form:first-name},', 'sureforms' ),
-					'lines'    => [ __( 'Thanks for reaching out. Your message has reached us and we will get back to you as soon as we can.', 'sureforms' ) ],
-				],
-			],
-			[
-				'id'            => 'quote-request',
-				'category'      => 'contact',
-				'theme'         => 'midnight',
-				'icon'          => 'receipt',
-				'title'         => __( 'Quote Request', 'sureforms' ),
-				'description'   => __( 'Collect project details so you can send an estimate.', 'sureforms' ),
-				'submit_text'   => __( 'Request my quote', 'sureforms' ),
-				'steps'         => [ __( 'Your details', 'sureforms' ), __( 'Your project', 'sureforms' ) ],
-				'fields'        => [
-					$c['first_name'],
-					$c['last_name'],
-					self::width( $c['email'], 50 ),
-					self::width( $c['phone'], 50 ),
-					self::field( 'input', 'company', __( 'Company', 'sureforms' ), false, [ 'placeholder' => __( 'If you are asking for a business', 'sureforms' ) ] ),
-					self::step( 'project-step', __( 'Your project', 'sureforms' ) ),
-					self::attrs( self::field( 'dropdown', 'service', __( 'Service Needed', 'sureforms' ), true, array_merge( self::dropdown_options( $services ), [ 'placeholder' => __( 'Select a service', 'sureforms' ) ] ) ), $no_search ),
-					self::width( self::attrs( self::field( 'dropdown', 'budget', __( 'Estimated Budget', 'sureforms' ), false, array_merge( self::dropdown_options( [ __( 'Under 1,000', 'sureforms' ), __( '1,000 – 5,000', 'sureforms' ), __( '5,000 – 20,000', 'sureforms' ), __( 'Over 20,000', 'sureforms' ), __( 'Not sure yet', 'sureforms' ) ] ), [ 'placeholder' => __( 'Select a range', 'sureforms' ) ] ) ), $no_search ), 50 ),
-					self::width( self::attrs( self::field( 'dropdown', 'timeline', __( 'Timeline', 'sureforms' ), false, array_merge( self::dropdown_options( [ __( 'As soon as possible', 'sureforms' ), __( 'Within a month', 'sureforms' ), __( '1–3 months', 'sureforms' ), __( 'More than 3 months', 'sureforms' ), __( 'Flexible', 'sureforms' ) ] ), [ 'placeholder' => __( 'When do you need it?', 'sureforms' ) ] ) ), $no_search ), 50 ),
-					self::attrs(
-						self::field(
-							'textarea',
-							'project-details',
-							__( 'Project Details', 'sureforms' ),
-							true,
-							[
-								'placeholder' => __( 'What do you need, how big is the job, and is there anything we should know?', 'sureforms' ),
-								'helpText'    => __( 'The more detail you share, the more accurate your quote will be.', 'sureforms' ),
-							]
-						),
-						[ 'rows' => 5 ]
-					),
-					self::field(
-						'upload',
-						'attachments',
-						__( 'Attachments', 'sureforms' ),
-						false,
-						[
-							'pro_only'         => true,
-							'helpText'         => __( 'Plans, photos or specs help us quote accurately. Up to 5 files.', 'sureforms' ),
-							'allowedTypes'     => 'jpg,jpeg,png,pdf,doc,docx',
-							'uploadSize'       => 10,
-							'multiUpload'      => true,
-							'multiFilesNumber' => 5,
-						]
-					),
-					$c['consent'],
-				],
-				'confirmation'  => [
-					'heading' => __( 'Thanks, {form:first-name}!', 'sureforms' ),
-					'text'    => __( 'Your quote request is in. We will review your project details and send your estimate to {form:email}.', 'sureforms' ),
-				],
-				'email_subject' => __( 'Quote request: {form:service} from {form:first-name} {form:last-name}', 'sureforms' ),
-				'email_intro'   => __( '{form:first-name} {form:last-name} asked for a quote for {form:service}. Reply to this email to send your estimate.', 'sureforms' ),
-				'autoresponder' => [
-					'subject'  => __( 'We received your quote request', 'sureforms' ),
-					'greeting' => __( 'Hi {form:first-name},', 'sureforms' ),
-					'lines'    => [ __( 'Thanks for telling us about your project. We will review the details and get back to you with an estimate.', 'sureforms' ) ],
-				],
-			],
-			[
-				'id'            => 'callback-request',
-				'category'      => 'contact',
-				'theme'         => 'mint',
-				'icon'          => 'phone-call',
-				'title'         => __( 'Callback Request', 'sureforms' ),
-				'description'   => __( 'Let visitors ask for a phone call at a time that suits them.', 'sureforms' ),
-				'submit_text'   => __( 'Request a call', 'sureforms' ),
-				'fields'        => [
-					self::width( $c['name'], 50 ),
-					self::width( array_merge( $c['phone'], [ 'required' => true ] ), 50 ),
-					self::attrs(
-						self::field(
-							'multi-choice',
-							'best-time',
-							__( 'Best time to call', 'sureforms' ),
-							true,
-							array_merge(
-								self::choice_options( [ __( 'Morning', 'sureforms' ), __( 'Afternoon', 'sureforms' ), __( 'Evening', 'sureforms' ), __( 'Any time', 'sureforms' ) ], true, [ 'sun', 'cloud-sun', 'moon', 'clock' ] ),
-								[ 'helpText' => __( 'In your local time.', 'sureforms' ) ]
-							)
-						),
-						[ 'choiceWidth' => 25 ]
-					),
-					self::attrs( self::field( 'textarea', 'topic', __( 'What would you like to talk about?', 'sureforms' ), false, [ 'placeholder' => __( 'A quick note helps us prepare for the call.', 'sureforms' ) ] ), [ 'rows' => 3 ] ),
-					$c['consent'],
-				],
-				'confirmation'  => [
-					'heading' => __( 'Thanks, we will call you back', 'sureforms' ),
-					'text'    => __( 'We will call you on {form:phone}. Best time noted: {form:best-time}.', 'sureforms' ),
-				],
-				'email_subject' => __( 'Call {form:full-name} back ({form:best-time})', 'sureforms' ),
-				'email_intro'   => __( '{form:full-name} would like a call on {form:phone}. Best time: {form:best-time}.', 'sureforms' ),
-			],
-			[
-				'id'            => 'consultation-request',
-				'category'      => 'contact',
-				'theme'         => 'lavender',
-				'icon'          => 'messages-square',
-				'title'         => __( 'Consultation Request', 'sureforms' ),
-				'description'   => __( 'Qualify leads who want a free consultation.', 'sureforms' ),
-				'submit_text'   => __( 'Request a consultation', 'sureforms' ),
-				'fields'        => [
-					$c['first_name'],
-					$c['last_name'],
-					self::width( $c['email'], 50 ),
-					self::width( $c['phone'], 50 ),
-					self::width( self::field( 'input', 'company', __( 'Company', 'sureforms' ) ), 50 ),
-					self::width( self::field( 'url', 'website', __( 'Website', 'sureforms' ), false, [ 'placeholder' => 'https://' ] ), 50 ),
-					self::attrs(
-						self::field(
-							'textarea',
-							'goals',
-							__( 'What are your goals?', 'sureforms' ),
-							true,
-							[
-								'placeholder' => __( 'What would you like to achieve, and what is getting in the way?', 'sureforms' ),
-								'helpText'    => __( 'A few sentences is plenty.', 'sureforms' ),
-							]
-						),
-						[ 'rows' => 4 ]
-					),
-					self::field( 'multi-choice', 'meeting-type', __( 'How would you like to meet?', 'sureforms' ), false, self::choice_options( [ __( 'Video call', 'sureforms' ), __( 'Phone call', 'sureforms' ), __( 'In person', 'sureforms' ) ], true, [ 'video', 'phone', 'handshake' ] ) ),
-					self::date_field( 'preferred-date', __( 'Preferred Date', 'sureforms' ), false, true ) + [ 'pro_only' => true ],
-					self::attrs( self::field( 'dropdown', 'how-heard', __( 'How did you hear about us?', 'sureforms' ), false, array_merge( self::dropdown_options( [ __( 'Search engine', 'sureforms' ), __( 'Social media', 'sureforms' ), __( 'Referral', 'sureforms' ), __( 'Advertisement', 'sureforms' ), __( 'Other', 'sureforms' ) ] ), [ 'placeholder' => __( 'Select an option', 'sureforms' ) ] ) ), $no_search ),
-					$c['consent'],
-				],
-				'confirmation'  => [
-					'heading' => __( 'Thanks, {form:first-name}!', 'sureforms' ),
-					'text'    => __( 'We have your request and will email {form:email} to arrange a time for your consultation.', 'sureforms' ),
-				],
-				'email_subject' => __( 'Consultation request from {form:first-name} {form:last-name}', 'sureforms' ),
-				'email_intro'   => __( '{form:first-name} {form:last-name} would like a consultation. Reply to this email to arrange a time.', 'sureforms' ),
-				'autoresponder' => [
-					'subject'  => __( 'Your consultation request with {site_title}', 'sureforms' ),
-					'greeting' => __( 'Hi {form:first-name},', 'sureforms' ),
-					'lines'    => [ __( 'Thanks for your interest. We will review your goals and get in touch to find a time that works for you.', 'sureforms' ) ],
-				],
-			],
-			[
-				'id'            => 'product-inquiry',
-				'category'      => 'contact',
-				'theme'         => 'sand',
-				'icon'          => 'package',
-				'title'         => __( 'Product Inquiry', 'sureforms' ),
-				'description'   => __( 'Answer questions about a product before someone buys.', 'sureforms' ),
-				'submit_text'   => __( 'Send my question', 'sureforms' ),
-				'fields'        => [
-					self::width( $c['name'], 50 ),
-					self::width( $c['email'], 50 ),
-					self::width( self::field( 'input', 'product', __( 'Product', 'sureforms' ), true, [ 'placeholder' => __( 'Product name or code', 'sureforms' ) ] ), 66.66 ),
-					self::width( self::number_field( 'quantity', __( 'Quantity', 'sureforms' ), false, 1, 10000, [ 'placeholder' => '1' ] ), 33.33 ),
-					self::attrs( self::field( 'textarea', 'question', __( 'Your Question', 'sureforms' ), true, [ 'placeholder' => __( 'e.g. Is it in stock? Does it come in other sizes? Do you offer bulk pricing?', 'sureforms' ) ] ), [ 'rows' => 4 ] ),
-					$c['consent'],
-				],
-				'confirmation'  => [
-					'heading' => __( 'Thanks for your question', 'sureforms' ),
-					'text'    => __( 'We will reply to {form:email} with an answer about {form:product} as soon as we can.', 'sureforms' ),
-				],
-				'email_subject' => __( 'Product question: {form:product} from {form:full-name}', 'sureforms' ),
-				'email_intro'   => __( '{form:full-name} has a question about {form:product}. Reply to this email to answer them directly.', 'sureforms' ),
-				'autoresponder' => [
-					'subject' => __( 'We got your question about {form:product}', 'sureforms' ),
-					'lines'   => [ __( 'Thanks for your interest in {form:product}. We have received your question and will get back to you with an answer soon.', 'sureforms' ) ],
-				],
-			],
-			[
-				'id'            => 'partnership-inquiry',
-				'category'      => 'contact',
-				'theme'         => 'midnight',
-				'icon'          => 'handshake',
-				'title'         => __( 'Partnership Inquiry', 'sureforms' ),
-				'description'   => __( 'Hear from businesses that want to work with you.', 'sureforms' ),
-				'submit_text'   => __( 'Send proposal', 'sureforms' ),
-				'fields'        => [
-					self::width( $c['name'], 50 ),
-					self::width(
-						array_merge(
-							$c['email'],
-							[
-								'label'       => __( 'Work Email', 'sureforms' ),
-								'placeholder' => __( 'jane@company.com', 'sureforms' ),
-							]
-						),
-						50
-					),
-					self::width( self::field( 'input', 'company', __( 'Company', 'sureforms' ), true ), 50 ),
-					self::width( self::field( 'input', 'job-title', __( 'Your Role', 'sureforms' ), false, [ 'placeholder' => __( 'e.g. Head of Partnerships', 'sureforms' ) ] ), 50 ),
-					self::width( self::field( 'url', 'website', __( 'Company Website', 'sureforms' ), false, [ 'placeholder' => 'https://' ] ), 50 ),
-					self::width( self::attrs( self::field( 'dropdown', 'partnership-type', __( 'Type of Partnership', 'sureforms' ), true, array_merge( self::dropdown_options( [ __( 'Reseller or distributor', 'sureforms' ), __( 'Affiliate or referral', 'sureforms' ), __( 'Technology integration', 'sureforms' ), __( 'Co-marketing', 'sureforms' ), __( 'Sponsorship', 'sureforms' ), __( 'Something else', 'sureforms' ) ] ), [ 'placeholder' => __( 'Select a type', 'sureforms' ) ] ) ), $no_search ), 50 ),
-					self::field(
-						'textarea',
-						'proposal',
-						__( 'Tell us about your proposal', 'sureforms' ),
-						true,
-						[
-							'placeholder' => __( 'What do you have in mind, and how would it benefit both sides?', 'sureforms' ),
-							'helpText'    => __( 'Include your audience or customer base if it is relevant.', 'sureforms' ),
-						]
-					),
-					self::field(
-						'upload',
-						'media-kit',
-						__( 'Pitch Deck or Media Kit', 'sureforms' ),
-						false,
-						[
-							'pro_only'     => true,
-							'allowedTypes' => 'pdf,ppt,pptx,key',
-							'uploadSize'   => 10,
-						]
-					),
-					$c['consent'],
-				],
-				'confirmation'  => [
-					'heading' => __( 'Thanks for your interest', 'sureforms' ),
-					'text'    => __( 'We have received the proposal from {form:company}. We review every one and will be in touch if it is a good fit.', 'sureforms' ),
-				],
-				'email_subject' => __( 'Partnership inquiry: {form:partnership-type} from {form:company}', 'sureforms' ),
-				'email_intro'   => __( '{form:full-name} from {form:company} sent a partnership proposal ({form:partnership-type}). Reply to this email to continue the conversation.', 'sureforms' ),
-				'autoresponder' => [
-					'subject' => __( 'Thanks for your partnership proposal', 'sureforms' ),
-					'lines'   => [ __( 'Thanks for thinking of us. We have received the proposal from {form:company} and will get back to you if it is a good fit.', 'sureforms' ) ],
-				],
-			],
-
-			// Bookings & events.
-			[
-				'id'            => 'appointment-request',
-				'category'      => 'booking',
-				'theme'         => 'lavender',
-				'icon'          => 'calendar-clock',
-				'title'         => __( 'Appointment Request', 'sureforms' ),
-				'description'   => __( 'Let clients request an appointment and preferred time.', 'sureforms' ),
-				'submit_text'   => __( 'Request appointment', 'sureforms' ),
-				'fields'        => [
-					self::width( $c['name'], 50 ),
-					self::width( $c['email'], 50 ),
-					self::width( array_merge( $c['phone'], [ 'required' => true ] ), 50 ),
-					self::width( self::attrs( self::field( 'dropdown', 'service', __( 'Service', 'sureforms' ), true, array_merge( self::dropdown_options( [ __( 'First visit', 'sureforms' ), __( 'Follow-up visit', 'sureforms' ), __( 'Consultation', 'sureforms' ), __( 'Something else', 'sureforms' ) ] ), [ 'placeholder' => __( 'Select a service', 'sureforms' ) ] ) ), $no_search ), 50 ),
-					self::date_field( 'preferred-date', __( 'Preferred Date', 'sureforms' ), true, true ),
-					self::attrs( self::field( 'multi-choice', 'preferred-time', __( 'Preferred Time', 'sureforms' ), true, self::choice_options( [ __( 'Morning', 'sureforms' ), __( 'Afternoon', 'sureforms' ), __( 'Evening', 'sureforms' ) ], true, [ 'sun', 'cloud-sun', 'moon' ] ) ), [ 'choiceWidth' => 33.33 ] ),
-					self::attrs( self::field( 'textarea', 'notes', __( 'Anything we should know?', 'sureforms' ), false, [ 'placeholder' => __( 'e.g. the reason for your visit, access needs, or other times that work', 'sureforms' ) ] ), [ 'rows' => 3 ] ),
-					$c['consent'],
-				],
-				'confirmation'  => [
-					'heading' => __( 'Appointment requested', 'sureforms' ),
-					'text'    => __( 'We have noted {form:preferred-date} ({form:preferred-time}). This is not confirmed yet: we will check availability and confirm by email or phone.', 'sureforms' ),
-				],
-				'email_subject' => __( 'Appointment request from {form:full-name}: {form:preferred-date}, {form:preferred-time}', 'sureforms' ),
-				'email_intro'   => __( '{form:full-name} would like an appointment ({form:service}) on {form:preferred-date}, {form:preferred-time}. Reply to this email to confirm, or call them on {form:phone}.', 'sureforms' ),
-				'autoresponder' => [
-					'subject' => __( 'We received your appointment request', 'sureforms' ),
-					'lines'   => [
-						__( 'Thanks for your request. We have noted {form:service} on {form:preferred-date} ({form:preferred-time}).', 'sureforms' ),
-						__( 'This is not a confirmation yet: we will check availability and get back to you to confirm.', 'sureforms' ),
-					],
-				],
-			],
-			[
-				'id'            => 'event-registration',
-				'category'      => 'booking',
-				'theme'         => 'sunset',
-				'icon'          => 'ticket',
-				'title'         => __( 'Event Registration', 'sureforms' ),
-				'description'   => __( 'Register attendees for a workshop, webinar or meetup.', 'sureforms' ),
-				'submit_text'   => __( 'Register now', 'sureforms' ),
-				'fields'        => [
-					self::width( $c['name'], 50 ),
-					self::width( $c['email'], 50 ),
-					self::width( $c['phone'], 33.33 ),
-					self::width( self::field( 'input', 'organization', __( 'Organization', 'sureforms' ) ), 33.33 ),
-					self::width(
-						self::number_field(
-							'attendees',
-							__( 'Attendees', 'sureforms' ),
-							true,
-							1,
-							20,
-							[
-								'placeholder' => __( 'Including yourself', 'sureforms' ),
-							]
-						),
-						33.33
-					),
-					self::field( 'multi-choice', 'dietary', __( 'Dietary Requirements', 'sureforms' ), false, array_merge( self::choice_options( [ __( 'Vegetarian', 'sureforms' ), __( 'Vegan', 'sureforms' ), __( 'Gluten-free', 'sureforms' ), __( 'Dairy-free', 'sureforms' ), __( 'Halal', 'sureforms' ), __( 'Other', 'sureforms' ) ], false ), [ 'helpText' => __( 'For in-person events. Leave blank if none.', 'sureforms' ) ] ) ),
-					self::attrs( self::field( 'textarea', 'questions', __( 'Anything else we should know?', 'sureforms' ), false, [ 'placeholder' => __( 'Accessibility needs, dietary details or questions for the organizers', 'sureforms' ) ] ), [ 'rows' => 3 ] ),
-					self::field( 'checkbox', 'event-updates', __( 'Email me about future events', 'sureforms' ) ),
-					$c['consent'],
-				],
-				'confirmation'  => [
-					'heading' => __( 'You are registered', 'sureforms' ),
-					'text'    => __( 'Thanks for registering. We will send the event details to {form:email}.', 'sureforms' ),
-				],
-				'email_subject' => __( 'New registration: {form:full-name} ({form:attendees} attending)', 'sureforms' ),
-				'email_intro'   => __( '{form:full-name} has registered for your event. Places requested: {form:attendees}. Reply to this email to reach them directly.', 'sureforms' ),
-				'autoresponder' => [
-					'subject' => __( 'You are registered', 'sureforms' ),
-					'lines'   => [
-						__( 'Thanks for registering. Places requested: {form:attendees}.', 'sureforms' ),
-						__( 'We will send you the event details before the day. If your plans change, just reply to this email.', 'sureforms' ),
-					],
-				],
-			],
-			[
-				'id'            => 'rsvp',
-				'category'      => 'booking',
-				'theme'         => 'sunset',
-				'icon'          => 'party-popper',
-				'title'         => __( 'RSVP', 'sureforms' ),
-				'description'   => __( 'Find out who is coming to your party, wedding or gathering.', 'sureforms' ),
-				'submit_text'   => __( 'Send my RSVP', 'sureforms' ),
-				'fields'        => [
-					$c['first_name'],
-					$c['last_name'],
-					$c['email'],
-					self::attrs( self::field( 'multi-choice', 'attending', __( 'Will you attend?', 'sureforms' ), true, self::choice_options( [ __( 'Yes, I will be there', 'sureforms' ), __( 'Sorry, I can\'t make it', 'sureforms' ) ], true, [ 'circle-check', 'circle-xmark' ] ) ), [ 'choiceWidth' => 50 ] ),
-					self::width(
-						self::number_field(
-							'guests',
-							__( 'Number of Guests', 'sureforms' ),
-							false,
-							1,
-							10,
-							[
-								'placeholder' => __( 'Including you', 'sureforms' ),
-							]
-						),
-						50
-					),
-					self::width( self::field( 'input', 'dietary', __( 'Dietary Requirements', 'sureforms' ), false, [ 'placeholder' => __( 'e.g. vegetarian, nut allergy', 'sureforms' ) ] ), 50 ),
-					self::attrs( self::field( 'textarea', 'message', __( 'Message for the Host', 'sureforms' ), false, [ 'placeholder' => __( 'Anything you would like to share?', 'sureforms' ) ] ), [ 'rows' => 3 ] ),
-					$c['consent'],
-				],
-				'confirmation'  => [
-					'heading' => __( 'Thanks, {form:first-name}!', 'sureforms' ),
-					'text'    => __( 'Your RSVP is saved. Thank you for letting us know.', 'sureforms' ),
-				],
-				'email_subject' => __( 'RSVP: {form:first-name} {form:last-name} – {form:attending}', 'sureforms' ),
-				'email_intro'   => __( '{form:first-name} {form:last-name} replied to your invitation: {form:attending}. Their full RSVP is below. Reply to this email to get in touch with them.', 'sureforms' ),
-				'autoresponder' => [
-					'subject'  => __( 'We got your RSVP', 'sureforms' ),
-					'greeting' => __( 'Hi {form:first-name},', 'sureforms' ),
-					'lines'    => [
-						__( 'Thanks for letting us know. Your reply: {form:attending}.', 'sureforms' ),
-						__( 'If your plans change, just reply to this email.', 'sureforms' ),
-					],
-				],
-			],
-			[
-				'id'            => 'class-enrollment',
-				'category'      => 'booking',
-				'theme'         => 'ocean',
-				'icon'          => 'graduation-cap',
-				'title'         => __( 'Class Enrollment', 'sureforms' ),
-				'description'   => __( 'Enroll students in a class or course.', 'sureforms' ),
-				'submit_text'   => __( 'Enroll now', 'sureforms' ),
-				'fields'        => [
-					$c['first_name'],
-					$c['last_name'],
-					self::width( $c['email'], 50 ),
-					self::width( $c['phone'], 50 ),
-					self::width( self::attrs( self::field( 'dropdown', 'course', __( 'Course', 'sureforms' ), true, array_merge( self::dropdown_options( [ __( 'Beginner workshop', 'sureforms' ), __( 'Weekly class', 'sureforms' ), __( 'Weekend intensive', 'sureforms' ), __( 'Private lesson', 'sureforms' ) ] ), [ 'placeholder' => __( 'Select a course', 'sureforms' ) ] ) ), $no_search ), 50 ),
-					self::width( self::date_field( 'start-date', __( 'Preferred Start Date', 'sureforms' ), false, true ), 50 ),
-					self::field( 'multi-choice', 'experience', __( 'Experience Level', 'sureforms' ), true, self::choice_options( [ __( 'New to this', 'sureforms' ), __( 'Some experience', 'sureforms' ), __( 'Experienced', 'sureforms' ) ], true, [ 'seedling', 'arrow-trend-up', 'award' ] ) ),
-					self::field( 'multi-choice', 'schedule', __( 'Times That Suit You', 'sureforms' ), false, array_merge( self::choice_options( [ __( 'Weekday mornings', 'sureforms' ), __( 'Weekday evenings', 'sureforms' ), __( 'Weekends', 'sureforms' ) ], false, [ 'sun', 'moon', 'calendar-week' ] ), [ 'helpText' => __( 'Select all that apply.', 'sureforms' ) ] ) ),
-					self::attrs( self::field( 'textarea', 'goals', __( 'Goals or Anything We Should Know', 'sureforms' ), false, [ 'placeholder' => __( 'What you hope to learn, access needs, questions…', 'sureforms' ) ] ), [ 'rows' => 3 ] ),
-					$c['consent'],
-				],
-				'confirmation'  => [
-					'heading' => __( 'Thanks, {form:first-name}!', 'sureforms' ),
-					'text'    => __( 'We have received your enrollment for {form:course}. We will be in touch at {form:email} with your place and the next steps.', 'sureforms' ),
-				],
-				'email_subject' => __( 'New enrollment: {form:first-name} {form:last-name} – {form:course}', 'sureforms' ),
-				'email_intro'   => __( '{form:first-name} {form:last-name} wants to enroll in {form:course} (level: {form:experience}). Reply to this email to confirm their place.', 'sureforms' ),
-				'autoresponder' => [
-					'subject'  => __( 'Your enrollment for {form:course}', 'sureforms' ),
-					'greeting' => __( 'Hi {form:first-name},', 'sureforms' ),
-					'lines'    => [
-						__( 'Thanks for enrolling in {form:course}. We have your details and will be in touch shortly to confirm your place and share the schedule.', 'sureforms' ),
-						__( 'Questions in the meantime? Just reply to this email.', 'sureforms' ),
-					],
-				],
-			],
-
-			// Feedback & surveys.
-			[
-				'id'            => 'customer-feedback',
-				'category'      => 'feedback',
-				'theme'         => 'mint',
-				'icon'          => 'message-circle-heart',
-				'title'         => __( 'Customer Feedback', 'sureforms' ),
-				'description'   => __( 'Ask customers what they liked and what to improve.', 'sureforms' ),
-				'submit_text'   => __( 'Send feedback', 'sureforms' ),
-				'fields'        => [
-					self::field(
-						'multi-choice',
-						'satisfaction',
-						__( 'How satisfied are you overall?', 'sureforms' ),
-						true,
-						array_merge(
-							self::choice_options( $satisfaction, true, [ 'face-grin-stars', 'face-smile', 'face-meh', 'face-frown', 'face-angry' ] ),
-							[
-								// One option per row, so the five faces read as a scale.
-								'blockAttributes' => [
-									'verticalLayout' => false,
-									'choiceWidth'    => 100,
-								],
-								'pro'             => [
-									'fieldType'     => 'rating',
-									'label'         => __( 'How would you rate your overall experience?', 'sureforms' ),
-									'showTooltip'   => true,
-									'tooltipValues' => [ [ __( 'Very poor', 'sureforms' ), __( 'Poor', 'sureforms' ), __( 'Okay', 'sureforms' ), __( 'Good', 'sureforms' ), __( 'Excellent', 'sureforms' ) ] ],
-								],
-							]
-						)
-					),
-					self::attrs( self::field( 'textarea', 'liked', __( 'What did you like most?', 'sureforms' ) ), [ 'rows' => 3 ] ),
-					self::attrs( self::field( 'textarea', 'improve', __( 'What could we do better?', 'sureforms' ) ), [ 'rows' => 3 ] ),
-					self::width( self::field( 'input', 'full-name', __( 'Name (optional)', 'sureforms' ), false, [ 'placeholder' => __( 'Jane Smith', 'sureforms' ) ] ), 50 ),
-					self::width(
-						self::field(
-							'email',
-							'email',
-							__( 'Email (if you would like a reply)', 'sureforms' ),
-							false,
-							[
-								'placeholder' => __( 'jane@example.com', 'sureforms' ),
-							]
-						),
-						50
-					),
-				],
-				'confirmation'  => [
-					'heading' => __( 'Thanks for your feedback', 'sureforms' ),
-					'text'    => __( 'Your answers help us do better.', 'sureforms' ),
-				],
-				'email_subject' => __( 'New customer feedback – overall: {form:satisfaction}', 'sureforms' ),
-				'email_intro'   => __( 'A customer rated their overall experience: {form:satisfaction}. Their answers are below. If they left an email address, you can follow up there.', 'sureforms' ),
-			],
-			[
-				'id'            => 'satisfaction-survey',
-				'category'      => 'feedback',
-				'theme'         => 'lavender',
-				'icon'          => 'gauge',
-				'title'         => __( 'Satisfaction Survey', 'sureforms' ),
-				'description'   => __( 'A short survey with a 0–10 recommend score.', 'sureforms' ),
-				'submit_text'   => __( 'Submit survey', 'sureforms' ),
-				'fields'        => [
-					self::field(
-						'dropdown',
-						'recommend-score',
-						__( 'How likely are you to recommend us to a friend or colleague?', 'sureforms' ),
-						true,
-						array_merge(
-							self::dropdown_options( $nps_scale ),
-							[
-								'placeholder'     => __( 'Select a score', 'sureforms' ),
-								'helpText'        => __( '0 = not at all likely, 10 = extremely likely', 'sureforms' ),
-								'blockAttributes' => $no_search,
-								'pro'             => [
-									'fieldType'   => 'nps',
-									'helpText'    => '',
-									'placeholder' => '',
-								],
-							]
-						)
-					),
-					self::attrs( self::field( 'textarea', 'reason', __( 'What is the main reason for your score?', 'sureforms' ) ), [ 'rows' => 3 ] ),
-					self::attrs( self::field( 'multi-choice', 'frequency', __( 'How often do you use our product or service?', 'sureforms' ), false, self::choice_options( [ __( 'Daily', 'sureforms' ), __( 'Weekly', 'sureforms' ), __( 'Monthly', 'sureforms' ), __( 'Rarely', 'sureforms' ) ], true, [ 'calendar-day', 'calendar-week', 'calendar', 'hourglass' ] ) ), [ 'choiceWidth' => 25 ] ),
-					self::field(
-						'email',
-						'email',
-						__( 'Email (optional)', 'sureforms' ),
-						false,
-						[
-							'placeholder' => __( 'jane@example.com', 'sureforms' ),
-							'helpText'    => __(
-								'Only if you would like us to follow up.',
-								'sureforms'
-							),
-						]
-					),
-				],
-				'confirmation'  => [
-					'heading' => __( 'Thank you', 'sureforms' ),
-					'text'    => __( 'We appreciate you taking the time to answer.', 'sureforms' ),
-				],
-				'email_subject' => __( 'New survey response: {form:recommend-score}/10', 'sureforms' ),
-				'email_intro'   => __( 'New recommend score: {form:recommend-score}/10. As a guide, 9–10 are promoters, 7–8 passives and 0–6 detractors. The full response is below.', 'sureforms' ),
-			],
-			[
-				'id'            => 'website-feedback',
-				'category'      => 'feedback',
-				'theme'         => 'ocean',
-				'icon'          => 'monitor',
-				'title'         => __( 'Website Feedback', 'sureforms' ),
-				'description'   => __( 'Learn whether visitors found what they came for.', 'sureforms' ),
-				'submit_text'   => __( 'Send feedback', 'sureforms' ),
-				'fields'        => [
-					self::field( 'multi-choice', 'found-it', __( 'Did you find what you were looking for?', 'sureforms' ), true, self::choice_options( [ __( 'Yes', 'sureforms' ), __( 'Partly', 'sureforms' ), __( 'No', 'sureforms' ) ], true, [ 'circle-check', 'circle-half-stroke', 'circle-xmark' ] ) ),
-					self::attrs( self::field( 'multi-choice', 'ease', __( 'How easy was the site to use?', 'sureforms' ), true, self::choice_options( [ __( 'Very easy', 'sureforms' ), __( 'Easy', 'sureforms' ), __( 'Difficult', 'sureforms' ), __( 'Very difficult', 'sureforms' ) ], true, [ 'face-grin-beam', 'face-smile', 'face-frown', 'face-angry' ] ) ), [ 'choiceWidth' => 25 ] ),
-					self::field( 'textarea', 'improve', __( 'What could we do better?', 'sureforms' ), false, [ 'placeholder' => __( 'Tell us what was missing, confusing or not working.', 'sureforms' ) ] ),
-					self::field(
-						'upload',
-						'screenshot',
-						__( 'Screenshot (optional)', 'sureforms' ),
-						false,
-						[
-							'pro_only'     => true,
-							'helpText'     => __( 'Helpful if something looked broken.', 'sureforms' ),
-							'allowedTypes' => 'jpg,jpeg,png,gif,webp',
-							'uploadSize'   => 5,
-						]
-					),
-					self::width( self::field( 'input', 'page', __( 'Which page is this about?', 'sureforms' ), false, [ 'placeholder' => __( 'e.g. Pricing, or paste a link', 'sureforms' ) ] ), 50 ),
-					self::width(
-						self::field(
-							'email',
-							'email',
-							__( 'Email (if you would like a reply)', 'sureforms' ),
-							false,
-							[
-								'placeholder' => __( 'jane@example.com', 'sureforms' ),
-							]
-						),
-						50
-					),
-				],
-				'confirmation'  => [
-					'heading' => __( 'Thanks for helping us improve', 'sureforms' ),
-					'text'    => __( 'We read every response and use it to make the site better.', 'sureforms' ),
-				],
-				'email_subject' => __( 'Website feedback: found what they needed? {form:found-it}', 'sureforms' ),
-				'email_intro'   => __( 'A visitor left feedback from {current_page_url}. If they left an email address, you will find it below.', 'sureforms' ),
-			],
-			[
-				'id'            => 'testimonial',
-				'category'      => 'feedback',
-				'theme'         => 'sand',
-				'icon'          => 'quote',
-				'title'         => __( 'Testimonial Submission', 'sureforms' ),
-				'description'   => __( 'Collect reviews you can feature on your site.', 'sureforms' ),
-				'submit_text'   => __( 'Share my testimonial', 'sureforms' ),
-				'fields'        => [
-					self::width( $c['name'], 50 ),
-					self::width( array_merge( $c['email'], [ 'label' => __( 'Email (never published)', 'sureforms' ) ] ), 50 ),
-					self::width( self::field( 'input', 'role', __( 'Job Title', 'sureforms' ), false, [ 'placeholder' => __( 'e.g. Owner', 'sureforms' ) ] ), 50 ),
-					self::width( self::field( 'input', 'company', __( 'Company', 'sureforms' ), false, [ 'placeholder' => __( 'e.g. Bright Bakery', 'sureforms' ) ] ), 50 ),
-					self::field(
-						'rating',
-						'rating',
-						__( 'How would you rate us?', 'sureforms' ),
-						false,
-						[
-							'pro_only'  => true,
-							'iconShape' => 'star',
-						]
-					),
-					self::attrs(
-						self::field(
-							'textarea',
-							'testimonial',
-							__( 'Your Testimonial', 'sureforms' ),
-							true,
-							[
-								'placeholder' => __( 'What did we help you with, and what difference did it make?', 'sureforms' ),
-								'helpText'    => __( 'A few honest sentences are perfect.', 'sureforms' ),
-							]
-						),
-						[ 'rows' => 5 ]
-					),
-					self::field(
-						'upload',
-						'photo',
-						__( 'Your Photo (optional)', 'sureforms' ),
-						false,
-						[
-							'pro_only'     => true,
-							'helpText'     => __( 'A clear headshot shown next to your testimonial.', 'sureforms' ),
-							'allowedTypes' => 'jpg,jpeg,png',
-							'uploadSize'   => 5,
-						]
-					),
-					self::field( 'gdpr', 'publish-permission', __( 'You may publish my testimonial with my name and job title on this website. It may be lightly edited for length.', 'sureforms' ), true ),
-				],
-				'confirmation'  => [
-					'heading' => __( 'Thank you, {form:full-name}', 'sureforms' ),
-					'text'    => __( 'We really appreciate you sharing your experience. We will review it before it appears on our site.', 'sureforms' ),
-				],
-				'email_subject' => __( 'New testimonial from {form:full-name}', 'sureforms' ),
-				'email_intro'   => __( '{form:full-name} shared a testimonial and gave permission to publish it. Reply to this email to thank them or ask a question.', 'sureforms' ),
-				'autoresponder' => [
-					'subject' => __( 'Thank you for your testimonial', 'sureforms' ),
-					'lines'   => [
-						__( 'Thank you for taking the time to share your experience. It means a lot to us.', 'sureforms' ),
-						__( 'We review every testimonial before publishing it. If you would like to change anything, just reply to this email.', 'sureforms' ),
-					],
-				],
-			],
-			[
-				'id'            => 'complaint',
-				'category'      => 'feedback',
-				'theme'         => 'mint',
-				'icon'          => 'circle-alert',
-				'title'         => __( 'Complaint Form', 'sureforms' ),
-				'description'   => __( 'Give customers a clear way to raise a problem.', 'sureforms' ),
-				'submit_text'   => __( 'Submit complaint', 'sureforms' ),
-				'steps'         => [ __( 'Your details', 'sureforms' ), __( 'Your complaint', 'sureforms' ) ],
-				'fields'        => [
-					self::width( $c['name'], 50 ),
-					self::width( $c['email'], 50 ),
-					self::width( $c['phone'], 50 ),
-					self::width( self::field( 'input', 'reference', __( 'Order or Reference Number', 'sureforms' ), false, [ 'placeholder' => __( 'e.g. #10234', 'sureforms' ) ] ), 50 ),
-					self::step( 'complaint-step', __( 'Your complaint', 'sureforms' ) ),
-					self::width( self::attrs( self::field( 'dropdown', 'complaint-type', __( 'What is your complaint about?', 'sureforms' ), true, array_merge( self::dropdown_options( [ __( 'Product quality', 'sureforms' ), __( 'Service or staff', 'sureforms' ), __( 'Billing or payment', 'sureforms' ), __( 'Delivery or shipping', 'sureforms' ), __( 'Website or account', 'sureforms' ), __( 'Something else', 'sureforms' ) ] ), [ 'placeholder' => __( 'Select a topic', 'sureforms' ) ] ) ), $no_search ), 50 ),
-					self::width( self::date_field( 'incident-date', __( 'When did it happen?', 'sureforms' ) ), 50 ),
-					self::attrs( self::field( 'textarea', 'details', __( 'What happened?', 'sureforms' ), true, [ 'helpText' => __( 'Please include names, dates and anything you have already tried.', 'sureforms' ) ] ), [ 'rows' => 6 ] ),
-					self::field(
-						'url',
-						'evidence',
-						__( 'Link to a photo or document (optional)', 'sureforms' ),
-						false,
-						[
-							'placeholder' => 'https://',
-							'helpText'    => __( 'For example a shared Google Drive or Dropbox link.', 'sureforms' ),
-							'pro'         => [
-								'fieldType'        => 'upload',
-								'label'            => __( 'Photos or documents (optional)', 'sureforms' ),
-								'placeholder'      => '',
-								'helpText'         => __( 'Up to 3 files: JPG, PNG or PDF.', 'sureforms' ),
-								'allowedTypes'     => 'jpg,jpeg,png,pdf',
-								'uploadSize'       => 10,
-								'multiUpload'      => true,
-								'multiFilesNumber' => 3,
-							],
-						]
-					),
-					self::attrs( self::field( 'textarea', 'resolution', __( 'How would you like us to put it right?', 'sureforms' ), false, [ 'placeholder' => __( 'e.g. a refund, a replacement or a call back', 'sureforms' ) ] ), [ 'rows' => 3 ] ),
-					$c['consent'],
-				],
-				'confirmation'  => [
-					'heading' => __( 'We have received your complaint', 'sureforms' ),
-					'text'    => __( 'We are sorry for the trouble, {form:full-name}. We will look into it and contact you at {form:email}.', 'sureforms' ),
-				],
-				'email_subject' => __( 'Complaint from {form:full-name}: {form:complaint-type}', 'sureforms' ),
-				'email_intro'   => __( '{form:full-name} raised a complaint about: {form:complaint-type}. Reply to this email to respond to them directly.', 'sureforms' ),
-				'autoresponder' => [
-					'subject' => __( 'We have received your complaint', 'sureforms' ),
-					'lines'   => [
-						__( 'We are sorry for the trouble, and thank you for letting us know.', 'sureforms' ),
-						__( 'Your complaint has been logged and someone from our team will look into it and contact you. If you have anything to add, just reply to this email.', 'sureforms' ),
-					],
-				],
-			],
-
-			// Sign-ups & applications.
-			[
-				'id'            => 'newsletter-signup',
-				'category'      => 'signup',
-				'theme'         => 'sunset',
-				'icon'          => 'newspaper',
-				'title'         => __( 'Newsletter Signup', 'sureforms' ),
-				'description'   => __( 'Grow your mailing list with a one-line signup form.', 'sureforms' ),
-				'submit_text'   => __( 'Subscribe', 'sureforms' ),
-				'fields'        => [
-					self::width( array_merge( $c['email'], [ 'label' => __( 'Email Address', 'sureforms' ) ] ), 75 ),
-					self::attrs(
-						self::field( 'inline-button', 'subscribe', __( 'Subscribe', 'sureforms' ) ),
-						[
-							'fieldWidth' => 25,
-							'buttonText' => __( 'Subscribe', 'sureforms' ),
-						]
-					),
-					self::field( 'gdpr', 'subscribe-consent', __( 'Yes, send me news and updates by email. I can unsubscribe at any time.', 'sureforms' ), true ),
-				],
-				'confirmation'  => [
-					'heading' => __( 'You are on the list', 'sureforms' ),
-					'text'    => __( 'Thanks for subscribing. We have sent a welcome email to {form:email}.', 'sureforms' ),
-				],
-				'email_subject' => __( 'New subscriber: {form:email}', 'sureforms' ),
-				'email_intro'   => __( '{form:email} signed up for your newsletter. Add them to your email list, or connect an email marketing integration to do this automatically.', 'sureforms' ),
-				'autoresponder' => [
-					'greeting' => __( 'Hi there,', 'sureforms' ),
-					'subject'  => __( 'Welcome to {site_title}', 'sureforms' ),
-					'lines'    => [
-						__( 'Thanks for subscribing. We will send our latest news and updates to this address.', 'sureforms' ),
-						__( 'If you did not sign up, you can ignore this email or reply to let us know.', 'sureforms' ),
-					],
-				],
-			],
-
-			// Support.
-			[
-				'id'            => 'support-request',
-				'category'      => 'support',
-				'theme'         => 'ocean',
-				'icon'          => 'life-buoy',
-				'title'         => __( 'Support Request', 'sureforms' ),
-				'description'   => __( 'Let customers report an issue and how urgent it is.', 'sureforms' ),
-				'submit_text'   => __( 'Send request', 'sureforms' ),
-				'fields'        => [
-					self::width( $c['name'], 50 ),
-					self::width( $c['email'], 50 ),
-					self::width( self::attrs( self::field( 'dropdown', 'topic', __( 'Topic', 'sureforms' ), false, array_merge( self::dropdown_options( [ __( 'Technical issue', 'sureforms' ), __( 'Billing or payment', 'sureforms' ), __( 'Account or login', 'sureforms' ), __( 'Orders and delivery', 'sureforms' ), __( 'Something else', 'sureforms' ) ] ), [ 'placeholder' => __( 'Choose a topic', 'sureforms' ) ] ) ), $no_search ), 50 ),
-					self::width( self::field( 'input', 'order-number', __( 'Order or Account Number', 'sureforms' ), false, [ 'placeholder' => __( 'If you have one', 'sureforms' ) ] ), 50 ),
-					self::field( 'input', 'subject', __( 'Subject', 'sureforms' ), true, [ 'placeholder' => __( 'A short summary of the issue', 'sureforms' ) ] ),
-					self::attrs(
-						self::field(
-							'multi-choice',
-							'priority',
-							__( 'How urgent is this?', 'sureforms' ),
-							true,
-							array_merge(
-								self::choice_options( [ __( 'Low', 'sureforms' ), __( 'Normal', 'sureforms' ), __( 'High', 'sureforms' ), __( 'Urgent', 'sureforms' ) ], true, [ 'arrow-down', 'equals', 'arrow-up', 'fire' ] ),
-								[ 'helpText' => __( 'Choose Urgent only if you cannot use the product or service at all.', 'sureforms' ) ]
-							)
-						),
-						[ 'choiceWidth' => 25 ]
-					),
-					self::attrs( self::field( 'textarea', 'description', __( 'Describe the issue', 'sureforms' ), true, [ 'helpText' => __( 'Include what you were doing, what happened and any error messages you saw.', 'sureforms' ) ] ), [ 'rows' => 6 ] ),
-					self::field( 'url', 'link', __( 'Link to a screenshot or page (optional)', 'sureforms' ), false, array_merge( [ 'placeholder' => 'https://' ], $screenshots ) ),
-					$c['consent'],
-				],
-				'confirmation'  => [
-					'heading' => __( 'Request received', 'sureforms' ),
-					'text'    => __( 'Thanks, {form:full-name}. Your reference number is #{entry_id}. We will reply to {form:email} as soon as we can.', 'sureforms' ),
-				],
-				'email_subject' => __( 'Support: {form:subject} ({form:priority}) from {form:full-name}', 'sureforms' ),
-				'email_intro'   => __( '{form:full-name} needs help ({form:priority} priority, request #{entry_id}). Reply to this email to answer them directly.', 'sureforms' ),
-				'autoresponder' => [
-					'subject' => __( 'We received your request: {form:subject}', 'sureforms' ),
-					'lines'   => [
-						__( 'Thanks for getting in touch. We have logged your request about "{form:subject}" with reference number #{entry_id}.', 'sureforms' ),
-						__( 'Our team will reply as soon as we can. If you have anything to add, just reply to this email.', 'sureforms' ),
-					],
-				],
-			],
-			[
-				'id'            => 'bug-report',
-				'category'      => 'support',
-				'theme'         => 'midnight',
-				'icon'          => 'bug',
-				'title'         => __( 'Bug Report', 'sureforms' ),
-				'description'   => __( 'Collect clear, reproducible bug reports.', 'sureforms' ),
-				'submit_text'   => __( 'Report bug', 'sureforms' ),
-				'fields'        => [
-					self::width( $c['name'], 50 ),
-					self::width( $c['email'], 50 ),
-					self::field( 'input', 'summary', __( 'Bug Summary', 'sureforms' ), true, [ 'placeholder' => __( 'e.g. The checkout button does nothing on mobile', 'sureforms' ) ] ),
-					self::field(
-						'multi-choice',
-						'severity',
-						__( 'Severity', 'sureforms' ),
-						true,
-						array_merge(
-							self::choice_options( [ __( 'Minor', 'sureforms' ), __( 'Major', 'sureforms' ), __( 'Blocking', 'sureforms' ) ], true, [ 'circle-info', 'triangle-exclamation', 'ban' ] ),
-							[ 'helpText' => __( 'Minor: looks wrong or is annoying. Major: something does not work. Blocking: you cannot continue.', 'sureforms' ) ]
-						)
-					),
-					self::attrs( self::field( 'textarea', 'what-happened', __( 'What went wrong?', 'sureforms' ), true, [ 'helpText' => __( 'Tell us what you saw, including any error message, and what you expected to happen instead.', 'sureforms' ) ] ), [ 'rows' => 5 ] ),
-					self::field(
-						'textarea',
-						'steps',
-						__( 'Steps to Reproduce', 'sureforms' ),
-						false,
-						[
-							'placeholder' => __( '1. Go to… 2. Click… 3. See the error', 'sureforms' ),
-							'helpText'    => __( 'Optional, but it helps us fix the problem much faster.', 'sureforms' ),
-						]
-					),
-					self::field( 'url', 'page-url', __( 'Page Where It Happened', 'sureforms' ), false, [ 'placeholder' => 'https://' ] ),
-					self::width( self::attrs( self::field( 'dropdown', 'browser', __( 'Browser', 'sureforms' ), false, array_merge( self::dropdown_options( [ 'Chrome', 'Safari', 'Firefox', 'Edge', __( 'Other', 'sureforms' ) ] ), [ 'placeholder' => __( 'Choose a browser', 'sureforms' ) ] ) ), $no_search ), 50 ),
-					self::width( self::attrs( self::field( 'dropdown', 'device', __( 'Device', 'sureforms' ), false, array_merge( self::dropdown_options( [ __( 'Desktop or laptop', 'sureforms' ), __( 'Phone', 'sureforms' ), __( 'Tablet', 'sureforms' ) ] ), [ 'placeholder' => __( 'Choose a device', 'sureforms' ) ] ) ), $no_search ), 50 ),
-					self::field( 'url', 'screenshot', __( 'Link to a screenshot (optional)', 'sureforms' ), false, array_merge( [ 'placeholder' => 'https://' ], $screenshots ) ),
-					$c['consent'],
-				],
-				'confirmation'  => [
-					'heading' => __( 'Thanks for the report', 'sureforms' ),
-					'text'    => __( 'We have logged "{form:summary}" as report #{entry_id}. We will contact you at {form:email} if we need more details.', 'sureforms' ),
-				],
-				'email_subject' => __( 'Bug: {form:summary} ({form:severity})', 'sureforms' ),
-				'email_intro'   => __( '{form:full-name} reported a {form:severity} bug (report #{entry_id}). Reply to this email to ask them for more details.', 'sureforms' ),
-				'autoresponder' => [
-					'subject' => __( 'We received your bug report: {form:summary}', 'sureforms' ),
-					'lines'   => [
-						__( 'Thanks for helping us improve. We have logged your report "{form:summary}" with reference number #{entry_id}.', 'sureforms' ),
-						__( 'We will look into it and get back to you if we need more details.', 'sureforms' ),
-					],
-				],
-			],
-
-			// Sign-ups & applications.
-			[
-				'id'            => 'volunteer-signup',
-				'category'      => 'signup',
-				'theme'         => 'mint',
-				'icon'          => 'hand-heart',
-				'title'         => __( 'Volunteer Signup', 'sureforms' ),
-				'description'   => __( 'Recruit volunteers and see when they can help.', 'sureforms' ),
-				'submit_text'   => __( 'Sign me up', 'sureforms' ),
-				'fields'        => [
-					$c['name'],
-					self::width( $c['email'], 50 ),
-					self::width( $c['phone'], 50 ),
-					self::attrs(
-						self::field(
-							'multi-choice',
-							'availability',
-							__( 'When are you available?', 'sureforms' ),
-							true,
-							array_merge(
-								self::choice_options( [ __( 'Weekday daytime', 'sureforms' ), __( 'Weekday evenings', 'sureforms' ), __( 'Weekends', 'sureforms' ), __( 'Flexible', 'sureforms' ) ], false, [ 'sun', 'moon', 'calendar-week', 'clock' ] ),
-								[ 'helpText' => __( 'Select all that apply.', 'sureforms' ) ]
-							)
-						),
-						[ 'choiceWidth' => 25 ]
-					),
-					self::field(
-						'multi-choice',
-						'interests',
-						__( 'How would you like to help?', 'sureforms' ),
-						false,
-						array_merge(
-							self::choice_options( [ __( 'Events', 'sureforms' ), __( 'Fundraising', 'sureforms' ), __( 'Outreach', 'sureforms' ), __( 'Admin and office', 'sureforms' ), __( 'Social media', 'sureforms' ), __( 'Wherever needed', 'sureforms' ) ], false, [ 'calendar-days', 'hand-holding-dollar', 'bullhorn', 'file-lines', 'hashtag', 'heart' ] ),
-							[ 'helpText' => __( 'Select all that apply.', 'sureforms' ) ]
-						)
-					),
-					self::field( 'textarea', 'skills', __( 'Relevant Skills or Experience', 'sureforms' ), false, [ 'placeholder' => __( 'e.g. first aid, driving licence, languages, event planning', 'sureforms' ) ] ),
-					array_merge( $c['consent'], [ 'label' => __( 'I agree to have this website store my details so it can contact me about volunteering opportunities.', 'sureforms' ) ] ),
-				],
-				'confirmation'  => [
-					'heading' => __( 'Thanks for volunteering, {form:full-name}!', 'sureforms' ),
-					'text'    => __( 'We will be in touch at {form:email} about opportunities that suit your availability.', 'sureforms' ),
-				],
-				'email_subject' => __( 'New volunteer: {form:full-name}', 'sureforms' ),
-				'email_intro'   => __( '{form:full-name} signed up to volunteer. Available: {form:availability}.', 'sureforms' ),
-				'autoresponder' => [
-					'subject' => __( 'Thanks for volunteering with {site_title}', 'sureforms' ),
-					'lines'   => [
-						__( 'Thank you for offering your time. We have noted when you are available and what you would like to help with.', 'sureforms' ),
-						__( 'We will contact you about upcoming opportunities that match.', 'sureforms' ),
-					],
-				],
-			],
-			[
-				'id'            => 'job-application',
-				'category'      => 'signup',
-				'theme'         => 'lavender',
-				'icon'          => 'briefcase',
-				'title'         => __( 'Job Application', 'sureforms' ),
-				'description'   => __( 'Accept applications with the applicant\'s CV.', 'sureforms' ),
-				'submit_text'   => __( 'Submit application', 'sureforms' ),
-				'steps'         => [ __( 'About you', 'sureforms' ), __( 'Your experience', 'sureforms' ) ],
-				'fields'        => [
-					self::width( $c['name'], 50 ),
-					self::width( $c['email'], 50 ),
-					self::width( array_merge( $c['phone'], [ 'required' => true ] ), 50 ),
-					self::width( self::field( 'input', 'position', __( 'Position Applied For', 'sureforms' ), true, [ 'placeholder' => __( 'e.g. Marketing Manager', 'sureforms' ) ] ), 50 ),
-					self::step( 'experience-step', __( 'Your experience', 'sureforms' ) ),
-					self::field(
-						'url',
-						'cv',
-						__( 'Link to your CV', 'sureforms' ),
-						true,
-						[
-							'placeholder' => 'https://',
-							'helpText'    => __( 'A Google Drive, Dropbox or OneDrive link that anyone with the link can view.', 'sureforms' ),
-							'pro'         => [
-								'fieldType'    => 'upload',
-								'label'        => __( 'Your CV', 'sureforms' ),
-								'placeholder'  => '',
-								'helpText'     => __( 'PDF or Word document, up to 5 MB.', 'sureforms' ),
-								'allowedTypes' => 'pdf,doc,docx',
-								'uploadSize'   => 5,
-							],
-						]
-					),
-					self::width( self::field( 'url', 'linkedin', __( 'LinkedIn Profile', 'sureforms' ), false, [ 'placeholder' => 'https://linkedin.com/in/' ] ), 50 ),
-					self::width( self::field( 'url', 'portfolio', __( 'Portfolio or Website', 'sureforms' ), false, [ 'placeholder' => 'https://' ] ), 50 ),
-					self::width( self::attrs( self::number_field( 'years-experience', __( 'Years of Relevant Experience', 'sureforms' ), false, 0, 50, [ 'placeholder' => __( 'e.g. 3', 'sureforms' ) ] ), [ 'suffix' => __( 'years', 'sureforms' ) ] ), 50 ),
-					self::width( self::attrs( self::field( 'dropdown', 'start-date', __( 'When Could You Start?', 'sureforms' ), false, array_merge( self::dropdown_options( [ __( 'Immediately', 'sureforms' ), __( 'Within a month', 'sureforms' ), __( 'In 1–3 months', 'sureforms' ), __( 'Later than that', 'sureforms' ) ] ), [ 'placeholder' => __( 'Choose an option', 'sureforms' ) ] ) ), $no_search ), 50 ),
-					self::attrs( self::field( 'textarea', 'cover-letter', __( 'Why are you a good fit for this role?', 'sureforms' ), true, [ 'helpText' => __( 'A few sentences about your relevant experience is plenty.', 'sureforms' ) ] ), [ 'rows' => 6 ] ),
-					array_merge( $c['consent'], [ 'label' => __( 'I agree to have this website store my application details so they can be used to assess my application.', 'sureforms' ) ] ),
-				],
-				'confirmation'  => [
-					'heading' => __( 'Your application for {form:position} is in', 'sureforms' ),
-					'text'    => __( 'Thanks, {form:full-name}. We will review it and contact you at {form:email} if your experience is a good match.', 'sureforms' ),
-				],
-				'email_subject' => __( 'Application for {form:position} from {form:full-name}', 'sureforms' ),
-				'email_intro'   => __( '{form:full-name} applied for {form:position}. Their details and answers are below.', 'sureforms' ),
-				'autoresponder' => [
-					'subject' => __( 'We received your application for {form:position}', 'sureforms' ),
-					'lines'   => [
-						__( 'Thank you for applying for the {form:position} role at {site_title}.', 'sureforms' ),
-						__( 'Our team reviews every application. If your experience is a good match, we will contact you about next steps.', 'sureforms' ),
-					],
-				],
-			],
-		];
+		return Catalog::templates();
 	}
 }

@@ -2235,6 +2235,7 @@ JS;
 					'pricing_page_url'              => Helper::get_sureforms_website_url( 'pricing' ),
 					'licensing_nonce'               => wp_create_nonce( 'srfm_pro_licensing_nonce' ),
 					'form_templates'                => Form_Templates::get_templates_for_js(),
+					'pro_tier'                      => Helper::get_pro_tier(),
 					'form_template_categories'      => Form_Templates::get_categories(),
 					'form_template_themes'          => Form_Templates::get_themes_for_js(),
 					'form_template_requests'        => Form_Templates::get_request_settings_for_js(),

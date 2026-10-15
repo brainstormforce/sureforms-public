@@ -1,0 +1,162 @@
+<?php
+/**
+ * Form templates: Sign-ups & applications.
+ *
+ * Returns the templates of one library category, in display order. Loaded by
+ * Catalog::templates(); see Form_Templates::get_templates() for the schema.
+ *
+ * @package sureforms
+ * @since x.x.x
+ */
+
+use SRFM\Inc\Form_Templates\Catalog;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
+
+$c         = Catalog::common_fields();
+$no_search = [ 'searchable' => false ];
+
+return [
+	[
+		'id'            => 'newsletter-signup',
+		'category'      => 'signup',
+		'theme'         => 'sunset',
+		'icon'          => 'newspaper',
+		'title'         => __( 'Newsletter Signup', 'sureforms' ),
+		'description'   => __( 'Grow your mailing list with a one-line signup form.', 'sureforms' ),
+		'submit_text'   => __( 'Subscribe', 'sureforms' ),
+		'fields'        => [
+			Catalog::width( array_merge( $c['email'], [ 'label' => __( 'Email Address', 'sureforms' ) ] ), 75 ),
+			Catalog::attrs(
+				Catalog::field( 'inline-button', 'subscribe', __( 'Subscribe', 'sureforms' ) ),
+				[
+					'fieldWidth' => 25,
+					'buttonText' => __( 'Subscribe', 'sureforms' ),
+				]
+			),
+			Catalog::field( 'gdpr', 'subscribe-consent', __( 'Yes, send me news and updates by email. I can unsubscribe at any time.', 'sureforms' ), true ),
+		],
+		'confirmation'  => [
+			'heading' => __( 'You are on the list', 'sureforms' ),
+			'text'    => __( 'Thanks for subscribing. We have sent a welcome email to {form:email}.', 'sureforms' ),
+		],
+		'email_subject' => __( 'New subscriber: {form:email}', 'sureforms' ),
+		'email_intro'   => __( '{form:email} signed up for your newsletter. Add them to your email list, or connect an email marketing integration to do this automatically.', 'sureforms' ),
+		'autoresponder' => [
+			'greeting' => __( 'Hi there,', 'sureforms' ),
+			'subject'  => __( 'Welcome to {site_title}', 'sureforms' ),
+			'lines'    => [
+				__( 'Thanks for subscribing. We will send our latest news and updates to this address.', 'sureforms' ),
+				__( 'If you did not sign up, you can ignore this email or reply to let us know.', 'sureforms' ),
+			],
+		],
+	],
+	[
+		'id'            => 'volunteer-signup',
+		'category'      => 'signup',
+		'theme'         => 'mint',
+		'icon'          => 'hand-heart',
+		'title'         => __( 'Volunteer Signup', 'sureforms' ),
+		'description'   => __( 'Recruit volunteers and see when they can help.', 'sureforms' ),
+		'submit_text'   => __( 'Sign me up', 'sureforms' ),
+		'fields'        => [
+			$c['name'],
+			Catalog::width( $c['email'], 50 ),
+			Catalog::width( $c['phone'], 50 ),
+			Catalog::attrs(
+				Catalog::field(
+					'multi-choice',
+					'availability',
+					__( 'When are you available?', 'sureforms' ),
+					true,
+					array_merge(
+						Catalog::choice_options( [ __( 'Weekday daytime', 'sureforms' ), __( 'Weekday evenings', 'sureforms' ), __( 'Weekends', 'sureforms' ), __( 'Flexible', 'sureforms' ) ], false, [ 'sun', 'moon', 'calendar-week', 'clock' ] ),
+						[ 'helpText' => __( 'Select all that apply.', 'sureforms' ) ]
+					)
+				),
+				[ 'choiceWidth' => 25 ]
+			),
+			Catalog::field(
+				'multi-choice',
+				'interests',
+				__( 'How would you like to help?', 'sureforms' ),
+				false,
+				array_merge(
+					Catalog::choice_options( [ __( 'Events', 'sureforms' ), __( 'Fundraising', 'sureforms' ), __( 'Outreach', 'sureforms' ), __( 'Admin and office', 'sureforms' ), __( 'Social media', 'sureforms' ), __( 'Wherever needed', 'sureforms' ) ], false, [ 'calendar-days', 'hand-holding-dollar', 'bullhorn', 'file-lines', 'hashtag', 'heart' ] ),
+					[ 'helpText' => __( 'Select all that apply.', 'sureforms' ) ]
+				)
+			),
+			Catalog::field( 'textarea', 'skills', __( 'Relevant Skills or Experience', 'sureforms' ), false, [ 'placeholder' => __( 'e.g. first aid, driving licence, languages, event planning', 'sureforms' ) ] ),
+			array_merge( $c['consent'], [ 'label' => __( 'I agree to have this website store my details so it can contact me about volunteering opportunities.', 'sureforms' ) ] ),
+		],
+		'confirmation'  => [
+			'heading' => __( 'Thanks for volunteering, {form:full-name}!', 'sureforms' ),
+			'text'    => __( 'We will be in touch at {form:email} about opportunities that suit your availability.', 'sureforms' ),
+		],
+		'email_subject' => __( 'New volunteer: {form:full-name}', 'sureforms' ),
+		'email_intro'   => __( '{form:full-name} signed up to volunteer. Available: {form:availability}.', 'sureforms' ),
+		'autoresponder' => [
+			'subject' => __( 'Thanks for volunteering with {site_title}', 'sureforms' ),
+			'lines'   => [
+				__( 'Thank you for offering your time. We have noted when you are available and what you would like to help with.', 'sureforms' ),
+				__( 'We will contact you about upcoming opportunities that match.', 'sureforms' ),
+			],
+		],
+	],
+	[
+		'id'            => 'job-application',
+		'category'      => 'signup',
+		'theme'         => 'lavender',
+		'icon'          => 'briefcase',
+		'title'         => __( 'Job Application', 'sureforms' ),
+		'description'   => __( 'Accept applications with the applicant\'s CV.', 'sureforms' ),
+		'submit_text'   => __( 'Submit application', 'sureforms' ),
+		'steps'         => [ __( 'About you', 'sureforms' ), __( 'Your experience', 'sureforms' ) ],
+		'fields'        => [
+			Catalog::width( $c['name'], 50 ),
+			Catalog::width( $c['email'], 50 ),
+			Catalog::width( array_merge( $c['phone'], [ 'required' => true ] ), 50 ),
+			Catalog::width( Catalog::field( 'input', 'position', __( 'Position Applied For', 'sureforms' ), true, [ 'placeholder' => __( 'e.g. Marketing Manager', 'sureforms' ) ] ), 50 ),
+			Catalog::step( 'experience-step', __( 'Your experience', 'sureforms' ) ),
+			Catalog::field(
+				'url',
+				'cv',
+				__( 'Link to your CV', 'sureforms' ),
+				true,
+				[
+					'placeholder' => 'https://',
+					'helpText'    => __( 'A Google Drive, Dropbox or OneDrive link that anyone with the link can view.', 'sureforms' ),
+					'pro'         => [
+						'fieldType'    => 'upload',
+						'label'        => __( 'Your CV', 'sureforms' ),
+						'placeholder'  => '',
+						'helpText'     => __( 'PDF or Word document, up to 5 MB.', 'sureforms' ),
+						'allowedTypes' => 'pdf,doc,docx',
+						'uploadSize'   => 5,
+					],
+				]
+			),
+			Catalog::width( Catalog::field( 'url', 'linkedin', __( 'LinkedIn Profile', 'sureforms' ), false, [ 'placeholder' => 'https://linkedin.com/in/' ] ), 50 ),
+			Catalog::width( Catalog::field( 'url', 'portfolio', __( 'Portfolio or Website', 'sureforms' ), false, [ 'placeholder' => 'https://' ] ), 50 ),
+			Catalog::width( Catalog::attrs( Catalog::number_field( 'years-experience', __( 'Years of Relevant Experience', 'sureforms' ), false, 0, 50, [ 'placeholder' => __( 'e.g. 3', 'sureforms' ) ] ), [ 'suffix' => __( 'years', 'sureforms' ) ] ), 50 ),
+			Catalog::width( Catalog::attrs( Catalog::field( 'dropdown', 'start-date', __( 'When Could You Start?', 'sureforms' ), false, array_merge( Catalog::dropdown_options( [ __( 'Immediately', 'sureforms' ), __( 'Within a month', 'sureforms' ), __( 'In 1–3 months', 'sureforms' ), __( 'Later than that', 'sureforms' ) ] ), [ 'placeholder' => __( 'Choose an option', 'sureforms' ) ] ) ), $no_search ), 50 ),
+			Catalog::attrs( Catalog::field( 'textarea', 'cover-letter', __( 'Why are you a good fit for this role?', 'sureforms' ), true, [ 'helpText' => __( 'A few sentences about your relevant experience is plenty.', 'sureforms' ) ] ), [ 'rows' => 6 ] ),
+			array_merge( $c['consent'], [ 'label' => __( 'I agree to have this website store my application details so they can be used to assess my application.', 'sureforms' ) ] ),
+		],
+		'confirmation'  => [
+			'heading' => __( 'Your application for {form:position} is in', 'sureforms' ),
+			'text'    => __( 'Thanks, {form:full-name}. We will review it and contact you at {form:email} if your experience is a good match.', 'sureforms' ),
+		],
+		'email_subject' => __( 'Application for {form:position} from {form:full-name}', 'sureforms' ),
+		'email_intro'   => __( '{form:full-name} applied for {form:position}. Their details and answers are below.', 'sureforms' ),
+		'autoresponder' => [
+			'subject' => __( 'We received your application for {form:position}', 'sureforms' ),
+			'lines'   => [
+				__( 'Thank you for applying for the {form:position} role at {site_title}.', 'sureforms' ),
+				__( 'Our team reviews every application. If your experience is a good match, we will contact you about next steps.', 'sureforms' ),
+			],
+		],
+	],
+];

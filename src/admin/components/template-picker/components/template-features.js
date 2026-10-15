@@ -1,14 +1,28 @@
 import { __, sprintf } from '@wordpress/i18n';
 import {
+	Calculator,
 	CalendarDays,
+	ChartColumn,
 	Clock,
+	CreditCard,
+	FilePlus,
+	FileText,
 	Gauge,
+	GitBranch,
+	GraduationCap,
+	History,
 	ListOrdered,
 	Mail,
+	MessagesSquare,
 	Paperclip,
+	PenTool,
+	Repeat,
 	Reply,
+	Save,
 	ShieldCheck,
+	SlidersHorizontal,
 	Star,
+	UserPlus,
 } from 'lucide-react';
 import { cn } from '@Utils/Helpers';
 
@@ -21,6 +35,76 @@ import { cn } from '@Utils/Helpers';
  * @return {Object<string, {label: string, short: string, Icon: Function}>} Features by id.
  */
 const getFeatureMap = () => ( {
+	quiz: {
+		label: __( 'Quiz scoring', 'sureforms' ),
+		short: __( 'Quiz', 'sureforms' ),
+		Icon: GraduationCap,
+	},
+	calculation: {
+		label: __( 'Calculations', 'sureforms' ),
+		short: __( 'Calculator', 'sureforms' ),
+		Icon: Calculator,
+	},
+	payment: {
+		label: __( 'Payments', 'sureforms' ),
+		short: __( 'Payment', 'sureforms' ),
+		Icon: CreditCard,
+	},
+	conversational: {
+		label: __( 'Conversational form', 'sureforms' ),
+		short: __( 'Conversational', 'sureforms' ),
+		Icon: MessagesSquare,
+	},
+	survey: {
+		label: __( 'Survey reports', 'sureforms' ),
+		short: __( 'Survey', 'sureforms' ),
+		Icon: ChartColumn,
+	},
+	conditional_logic: {
+		label: __( 'Conditional logic', 'sureforms' ),
+		short: __( 'Conditions', 'sureforms' ),
+		Icon: GitBranch,
+	},
+	user_registration: {
+		label: __( 'User registration', 'sureforms' ),
+		short: __( 'Registration', 'sureforms' ),
+		Icon: UserPlus,
+	},
+	post_submission: {
+		label: __( 'Creates a post', 'sureforms' ),
+		short: __( 'Post', 'sureforms' ),
+		Icon: FilePlus,
+	},
+	signature: {
+		label: __( 'Signature', 'sureforms' ),
+		short: __( 'Signature', 'sureforms' ),
+		Icon: PenTool,
+	},
+	pdf: {
+		label: __( 'PDF copy', 'sureforms' ),
+		short: __( 'PDF', 'sureforms' ),
+		Icon: FileText,
+	},
+	save_resume: {
+		label: __( 'Save and resume', 'sureforms' ),
+		short: __( 'Save & resume', 'sureforms' ),
+		Icon: Save,
+	},
+	partial_entries: {
+		label: __( 'Partial entries', 'sureforms' ),
+		short: __( 'Partial entries', 'sureforms' ),
+		Icon: History,
+	},
+	repeater: {
+		label: __( 'Repeatable fields', 'sureforms' ),
+		short: __( 'Repeater', 'sureforms' ),
+		Icon: Repeat,
+	},
+	slider: {
+		label: __( 'Slider', 'sureforms' ),
+		short: __( 'Slider', 'sureforms' ),
+		Icon: SlidersHorizontal,
+	},
 	multi_step: {
 		label: __( 'Multi-step', 'sureforms' ),
 		short: __( 'Multi-step', 'sureforms' ),
@@ -108,6 +192,44 @@ export const isProActive = () =>
  */
 export const getProFeatures = ( template ) =>
 	isProActive() ? [] : getFeatures( template?.pro_features );
+
+/**
+ * Labels for a locked template. The badge always reads "Premium", whatever
+ * plan the template needs.
+ *
+ * @since x.x.x
+ * @param {Object} template Template.
+ * @return {{badge: string, button: string, notice: string}} Labels; `notice` is '' unless SureForms Pro needs an update.
+ */
+export const getLockLabels = ( template ) => {
+	const needsUpdate = 'update' === template?.lock_reason;
+	return {
+		badge: __( 'Premium', 'sureforms' ),
+		button: needsUpdate
+			? __( 'Update SureForms Pro', 'sureforms' )
+			: __( 'Upgrade to unlock', 'sureforms' ),
+		notice: needsUpdate
+			? __( 'Update SureForms Pro to use this template', 'sureforms' )
+			: '',
+	};
+};
+
+/**
+ * Open where a locked template is unlocked: the pricing page for that
+ * template, or the plugin updates when SureForms Pro is too old.
+ *
+ * @since x.x.x
+ * @param {Object} template Template.
+ */
+export const openTemplateUnlock = ( template ) => {
+	const url =
+		template?.unlock_url ||
+		window.srfm_admin?.pricing_page_url ||
+		window.srfm_block_data?.upgrade_url;
+	if ( url ) {
+		window.open( url, '_blank', 'noopener,noreferrer' );
+	}
+};
 
 /**
  * Small chip naming one feature.
