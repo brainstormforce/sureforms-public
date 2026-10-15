@@ -835,4 +835,38 @@ class Test_Form_Templates extends TestCase {
 
 		$this->assertCount( 1, get_post_meta( $post_id, '_srfm_email_notification', true ) );
 	}
+	public function test_set_form_id_points_unset_blocks_at_the_form() {
+		$content = '<!-- wp:srfm/input {"block_id":"a","formId":0,"slug":"name"} /--><!-- wp:srfm/email {"formId":0} /--><!-- wp:srfm/url {"formId":12} /-->';
+
+		$this->assertSame(
+			'<!-- wp:srfm/input {"block_id":"a","formId":7,"slug":"name"} /--><!-- wp:srfm/email {"formId":7} /--><!-- wp:srfm/url {"formId":12} /-->',
+			Form_Templates::set_form_id( $content, 7 )
+		);
+		$this->assertSame( $content, Form_Templates::set_form_id( $content, 0 ) );
+	}
+
+	public function test_created_form_blocks_carry_its_id() {
+		$post_id = Form_Templates::create_form_from_template( 'job-application' );
+		$content = get_post( $post_id )->post_content;
+
+		$this->assertStringNotContainsString( '"formId":0', $content );
+		$this->assertStringContainsString( '"formId":' . $post_id, $content );
+		foreach ( parse_blocks( $content ) as $block ) {
+			if ( ! empty( $block['blockName'] ) && array_key_exists( 'formId', $block['attrs'] ) ) {
+				$this->assertSame( $post_id, $block['attrs']['formId'], $block['blockName'] );
+			}
+		}
+	}
+
+	public function test_swapped_blocks_carry_the_open_forms_id() {
+		$this->login_admin();
+
+		$request = new WP_REST_Request( 'GET', '/sureforms/v1/form-templates/rsvp' );
+		$request->set_param( 'template_id', 'rsvp' );
+		$request->set_param( 'form_id', 42 );
+		$data = ( new Form_Templates() )->rest_get_template_content( $request )->get_data();
+
+		$this->assertStringNotContainsString( '"formId":0', $data['content'] );
+		$this->assertStringContainsString( '"formId":42', $data['content'] );
+	}
 }
