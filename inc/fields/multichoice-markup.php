@@ -158,7 +158,7 @@ class Multichoice_Markup extends Base {
 									<input type="<?php echo esc_attr( $this->type_attr ); ?>"
 										id="srfm-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id . '-' . $i ); ?>"
 										class="srfm-input-<?php echo esc_attr( $this->slug ); ?>-single" <?php echo wp_kses_post( $this->name_attr ); ?>
-										<?php echo 0 === $i ? 'aria-describedby="' . ( ! empty( $this->aria_described_by ) ? esc_attr( trim( $this->aria_described_by ) ) : '' ) . '"' : ''; ?>
+										<?php echo 0 === $i ? ( ! empty( $this->aria_described_by ) ? 'aria-describedby="' . esc_attr( trim( $this->aria_described_by ) ) . '" ' : '' ) . 'data-srfm-error-target' : ''; ?>
 										<?php echo 0 === $i ? 'aria-required="' . ( ! empty( $this->data_require_attr ) ? esc_attr( $this->data_require_attr ) : '' ) . '"' : ''; ?>
 										<?php echo $this->show_values && isset( $option['value'] ) ? 'option-value="' . esc_attr( $option['value'] ) . '"' : ''; ?>
 										<?php echo is_array( $this->preselected_options ) && in_array( $i, $this->preselected_options, true ) ? 'checked' : ''; ?>
@@ -234,7 +234,7 @@ class Multichoice_Markup extends Base {
 			return;
 		}
 
-		$smart_tags = new Smart_Tags();
+		$smart_tags = Smart_Tags::get_instance();
 		$resolved   = $smart_tags->process_smart_tags( $dynamic_default );
 
 		if ( empty( $resolved ) || ! is_string( $resolved ) || ! is_array( $this->options ) ) {

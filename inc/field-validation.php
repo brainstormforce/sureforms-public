@@ -19,6 +19,29 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class Field_Validation {
 	/**
+	 * Field blocks whose markup is a single checkbox input, mapped to the field type
+	 * slug and the label their markup class falls back to.
+	 *
+	 * A browser submits nothing for an unticked checkbox, so these are the only fields
+	 * that can be absent from a submission while every other field posts an empty value.
+	 * The label fallbacks mirror the set_input_label() calls in Checkbox_Markup and
+	 * GDPR_Markup; they are what the rendered input name encodes when a form leaves the
+	 * label empty, so the two have to agree.
+	 *
+	 * @since 2.12.9
+	 */
+	public const UNSUBMITTABLE_BLOCKS = [
+		'srfm/checkbox' => [
+			'type'  => 'checkbox',
+			'label' => 'Checkbox',
+		],
+		'srfm/gdpr'     => [
+			'type'  => 'gdpr',
+			'label' => 'I consent to have this website store my information so they can respond to my inquiry.',
+		],
+	];
+
+	/**
 	 * Add block configuration for form fields.
 	 *
 	 * This function processes blocks in a form and stores their configuration as post meta.
@@ -194,6 +217,56 @@ class Field_Validation {
 
 		// Return the processed configuration array, or an empty array if not found.
 		return is_array( $get_form_config ) ? $get_form_config : [];
+	}
+
+	/**
+	 * Restore the fields a browser never submits when the visitor leaves them unset.
+	 *
+	 * An unticked checkbox is not posted at all, so its key never reaches the server:
+	 * the field is missing from the entry and from notification emails, while every
+	 * other field left empty arrives as '' and is shown as '-'. This rebuilds those
+	 * keys from the form's own blocks so an untouched checkbox reads like every other
+	 * untouched field.
+	 *
+	 * Submitted values are never replaced -- a key already present is left exactly as
+	 * it arrived, so a ticked box keeps the value the browser sent.
+	 *
+	 * The key is assembled the same way the markup does it
+	 * ({@see \SRFM\Inc\Fields\Base::set_input_label()} and the `name` attribute in
+	 * checkbox-markup.php), so the two have to stay in step; test-field-validation.php
+	 * asserts they do by rendering the field and comparing.
+	 *
+	 * @param array<mixed> $form_data Submitted form data.
+	 * @param int|mixed    $form_id   The form post id.
+	 * @since 2.12.9
+	 * @return array<mixed> Form data with the missing keys added.
+	 */
+	public static function backfill_unsubmitted_fields( $form_data, $form_id ) {
+		if ( ! is_array( $form_data ) ) {
+			return $form_data;
+		}
+
+		$form_id = Helper::get_integer_value( $form_id );
+		if ( $form_id <= 0 ) {
+			return $form_data;
+		}
+
+		$walked = self::get_field_identifiers( $form_id );
+		if ( empty( $walked['unsubmittable'] ) || ! is_array( $walked['unsubmittable'] ) ) {
+			return $form_data;
+		}
+
+		foreach ( $walked['unsubmittable'] as $field ) {
+			$key = 'srfm-' . $field['type'] . '-' . $field['block_id'] . '-lbl-' . Helper::encode( $field['label'] ) . '-' . $field['slug'];
+
+			// array_key_exists(), not isset(): a submitted null must still count as
+			// submitted, so this never overwrites what the visitor sent.
+			if ( ! array_key_exists( $key, $form_data ) ) {
+				$form_data[ $key ] = '';
+			}
+		}
+
+		return $form_data;
 	}
 
 	/**
@@ -539,7 +612,7 @@ class Field_Validation {
 	 *
 	 * @param int $form_id The form post id, already normalised by the callers.
 	 * @since 2.12.8
-	 * @return array{ids:array<string,true>,slugs:array<string,true>}
+	 * @return array{ids:array<string,true>,slugs:array<string,true>,unsubmittable:array<int,array<string,string>>}
 	 */
 	private static function get_field_identifiers( $form_id ) {
 		static $cache = [];
@@ -556,21 +629,23 @@ class Field_Validation {
 	 *
 	 * @param int $form_id The form post id.
 	 * @since 2.12.7
-	 * @return array{ids:array<string,true>,slugs:array<string,true>}
+	 * @return array{ids:array<string,true>,slugs:array<string,true>,unsubmittable:array<int,array<string,string>>}
 	 */
 	private static function walk_field_identifiers( $form_id ) {
-		$ids   = [];
-		$slugs = [];
-		$post  = get_post( $form_id );
+		$ids           = [];
+		$slugs         = [];
+		$unsubmittable = [];
+		$post          = get_post( $form_id );
 
 		if ( $post instanceof \WP_Post && ! empty( $post->post_content ) && function_exists( 'parse_blocks' ) ) {
 			$visited = [];
-			self::collect_field_block_ids( parse_blocks( $post->post_content ), $ids, $slugs, $visited );
+			self::collect_field_block_ids( parse_blocks( $post->post_content ), $ids, $slugs, $visited, 0, $unsubmittable );
 		}
 
 		return [
-			'ids'   => $ids,
-			'slugs' => $slugs,
+			'ids'           => $ids,
+			'slugs'         => $slugs,
+			'unsubmittable' => $unsubmittable,
 		];
 	}
 
@@ -651,15 +726,18 @@ class Field_Validation {
 	/**
 	 * Recursively collect SureForms block ids from a parsed block tree.
 	 *
-	 * @param array<mixed>       $blocks  Parsed blocks from parse_blocks().
-	 * @param array<string,true> $ids     Accumulator of block id => true (by reference).
-	 * @param array<string,true> $slugs   Accumulator of field slug => true (by reference).
-	 * @param array<int,true>    $visited Expanded reusable-block post ids, guards cycles.
-	 * @param int                $depth   Current recursion depth, guards pathological trees.
+	 * @param array<mixed>                    $blocks  Parsed blocks from parse_blocks().
+	 * @param array<string,true>              $ids     Accumulator of block id => true (by reference).
+	 * @param array<string,true>              $slugs   Accumulator of field slug => true (by reference).
+	 * @param array<int,true>                 $visited Expanded reusable-block post ids, guards cycles.
+	 * @param int                             $depth   Current recursion depth, guards pathological trees.
+	 * @param array<int,array<string,string>> $unsubmittable Accumulator of the checkbox/GDPR
+	 *                                                       fields a browser cannot submit
+	 *                                                       when unticked (by reference).
 	 * @since 2.12.3
 	 * @return void
 	 */
-	private static function collect_field_block_ids( $blocks, &$ids, &$slugs, &$visited, $depth = 0 ) {
+	private static function collect_field_block_ids( $blocks, &$ids, &$slugs, &$visited, $depth = 0, &$unsubmittable = [] ) {
 		if ( ! is_array( $blocks ) || $depth > 50 ) {
 			return;
 		}
@@ -689,6 +767,19 @@ class Field_Validation {
 				if ( ! empty( $attrs['slug'] ) && is_string( $attrs['slug'] ) ) {
 					$slugs[ $attrs['slug'] ] = true;
 				}
+
+				// A browser posts nothing for an unticked checkbox, so these fields need
+				// rebuilding from the form itself -- see backfill_unsubmitted_fields().
+				if ( isset( self::UNSUBMITTABLE_BLOCKS[ $block_name ] ) && ! empty( $attrs['block_id'] ) && is_string( $attrs['block_id'] ) ) {
+					$unsubmittable[] = [
+						'type'     => self::UNSUBMITTABLE_BLOCKS[ $block_name ]['type'],
+						'block_id' => $attrs['block_id'],
+						'slug'     => isset( $attrs['slug'] ) && is_string( $attrs['slug'] ) ? $attrs['slug'] : '',
+						'label'    => ! empty( $attrs['label'] ) && is_string( $attrs['label'] )
+							? $attrs['label']
+							: self::UNSUBMITTABLE_BLOCKS[ $block_name ]['label'],
+					];
+				}
 			}
 
 			// Expand reusable/synced patterns so fields living inside a pattern count as
@@ -699,13 +790,13 @@ class Field_Validation {
 					$visited[ $ref ] = true;
 					$ref_post        = get_post( $ref );
 					if ( $ref_post instanceof \WP_Post && 'wp_block' === $ref_post->post_type && '' !== $ref_post->post_content ) {
-						self::collect_field_block_ids( parse_blocks( $ref_post->post_content ), $ids, $slugs, $visited, $depth + 1 );
+						self::collect_field_block_ids( parse_blocks( $ref_post->post_content ), $ids, $slugs, $visited, $depth + 1, $unsubmittable );
 					}
 				}
 			}
 
 			if ( ! empty( $block['innerBlocks'] ) && is_array( $block['innerBlocks'] ) ) {
-				self::collect_field_block_ids( $block['innerBlocks'], $ids, $slugs, $visited, $depth + 1 );
+				self::collect_field_block_ids( $block['innerBlocks'], $ids, $slugs, $visited, $depth + 1, $unsubmittable );
 			}
 		}
 	}

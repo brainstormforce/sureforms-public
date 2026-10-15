@@ -1211,14 +1211,21 @@ function addEmailBlurListener( areaInput, blockClass ) {
 				errorContainer.innerHTML = lengthErrorMessage
 					? lengthErrorMessage
 					: window?.srfm_submit?.messages?.srfm_valid_email;
-				errorContainer.id =
-					errorContainer.getAttribute( 'data-srfm-id' );
+				window?.srfm?.linkErrorMessage(
+					errorContainer,
+					inputBlock,
+					true
+				);
 			} else {
 				errorContainer.style.display = 'none';
 				inputBlock.parentElement.classList.remove(
 					'srfm-valid-email-error'
 				);
-				errorContainer.removeAttribute( 'id' );
+				window?.srfm?.linkErrorMessage(
+					errorContainer,
+					inputBlock,
+					false
+				);
 			}
 		} );
 	} );

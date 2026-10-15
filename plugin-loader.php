@@ -33,6 +33,7 @@ use SRFM\Inc\Compatibility\Themes\Astra;
 use SRFM\Inc\Create_New_Form;
 use SRFM\Inc\Database\Register as DatabaseRegister;
 use SRFM\Inc\Duplicate_Form;
+use SRFM\Inc\Email_Delivery\Suremail_Adapter;
 use SRFM\Inc\Events_Scheduler;
 use SRFM\Inc\Export;
 use SRFM\Inc\Form_Restriction;
@@ -314,6 +315,7 @@ class Plugin_Loader {
 		Global_Settings::get_instance();
 		Global_Settings_Defaults::get_instance();
 		Email_Summary::get_instance();
+		add_action( Suremail_Adapter::QUOTA_REFRESH_HOOK, [ Suremail_Adapter::class, 'refresh_surecontact_quota' ] );
 		Compliance_Settings::get_instance();
 		Form_Settings_Api::get_instance();
 		Events_Scheduler::get_instance();

@@ -11,6 +11,7 @@ use SRFM\Inc\AI_Form_Builder\AI_Auth;
 use SRFM\Inc\AI_Form_Builder\AI_Form_Builder;
 use SRFM\Inc\AI_Form_Builder\Field_Mapping;
 use SRFM\Inc\Database\Tables\Entries;
+use SRFM\Inc\Email_Delivery\Status as Email_Delivery_Status;
 use SRFM\Inc\Entries as Entries_Class;
 use SRFM\Inc\Traits\Get_Instance;
 
@@ -491,6 +492,20 @@ class Rest_Api {
 				'lead'    => $lead_captured,
 			]
 		);
+	}
+
+	/**
+	 * Email delivery status for the admin UI.
+	 *
+	 * Re-read on demand so onboarding can see SureMail's connection appear after
+	 * the owner finishes setup in another tab.
+	 *
+	 * @since 2.12.9
+	 * @return \WP_REST_Response
+	 */
+	public function get_email_delivery_status() {
+		Email_Delivery_Status::reset();
+		return new \WP_REST_Response( Email_Delivery_Status::get_status(), 200 );
 	}
 
 	/**
@@ -1623,6 +1638,12 @@ class Rest_Api {
 							'sanitize_callback' => 'sanitize_text_field',
 						],
 					],
+				],
+				// Email delivery status: what carries form notifications and what to do next.
+				'email-delivery/status'         => [
+					'methods'             => 'GET',
+					'callback'            => [ $this, 'get_email_delivery_status' ],
+					'permission_callback' => [ Helper::class, 'get_items_permissions_check' ],
 				],
 				// Entries endpoints.
 				'entries/list'                  => [
