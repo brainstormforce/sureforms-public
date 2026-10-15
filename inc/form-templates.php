@@ -358,65 +358,6 @@ class Form_Templates {
 	}
 
 	/**
-	 * An example answer for a field, taken from its placeholder or first option.
-	 *
-	 * @param array<string, mixed> $field Field schema.
-	 * @since x.x.x
-	 * @return string
-	 */
-	private static function sample_answer( $field ) {
-		// Fields whose placeholder or first option would make a poor example.
-		$by_slug = [
-			'full-name'       => 'Jane Smith',
-			'first-name'      => 'Jane',
-			'last-name'       => 'Smith',
-			'company'         => __( 'Bright Bakery', 'sureforms' ),
-			'organization'    => __( 'Bright Bakery', 'sureforms' ),
-			'subject'         => __( 'Question about my order', 'sureforms' ),
-			'order-number'    => '#10234',
-			'reference'       => '#10234',
-			'product'         => __( 'Oak dining table', 'sureforms' ),
-			'position'        => __( 'Marketing Manager', 'sureforms' ),
-			'summary'         => __( 'The checkout button does nothing', 'sureforms' ),
-			'page'            => __( 'Pricing', 'sureforms' ),
-			'recommend-score' => '9',
-		];
-		$slug    = Helper::get_string_value( $field['slug'] ?? '' );
-		if ( isset( $by_slug[ $slug ] ) ) {
-			return $by_slug[ $slug ];
-		}
-		$type    = Helper::get_string_value( $field['fieldType'] ?? '' );
-		$options = Helper::get_array_value( $field['fieldOptions'] ?? [] );
-		if ( ! empty( $options[0] ) && is_array( $options[0] ) ) {
-			return Helper::get_string_value( $options[0]['optionTitle'] ?? $options[0]['label'] ?? '' );
-		}
-
-		$samples     = [
-			'email'       => 'jane@example.com',
-			'phone'       => '+1 555 010 2030',
-			'url'         => 'https://example.com',
-			'number'      => '2',
-			'date-picker' => '10/14/2026',
-			'rating'      => '5',
-			'nps'         => '9',
-			'textarea'    => __( 'A short message from the visitor.', 'sureforms' ),
-			'checkbox'    => __( 'Yes', 'sureforms' ),
-		];
-		$placeholder = Helper::get_string_value( $field['placeholder'] ?? '' );
-		// Example placeholders ("e.g. 14 October") read as real answers without the prefix.
-		$example = preg_replace( '/^' . preg_quote( __( 'e.g.', 'sureforms' ), '/' ) . '\s*/u', '', $placeholder );
-
-		if ( isset( $samples[ $type ] ) && 'textarea' !== $type ) {
-			return $samples[ $type ];
-		}
-		if ( 'input' === $type && '' !== $placeholder && $example !== $placeholder ) {
-			return Helper::get_string_value( $example );
-		}
-
-		return $samples[ $type ] ?? ( '' !== $placeholder ? $placeholder : __( 'Their answer', 'sureforms' ) );
-	}
-
-	/**
 	 * Clean up the thank-you message and email text edited in the preview.
 	 *
 	 * @param mixed $raw `messages` from the create request.
@@ -550,19 +491,6 @@ class Form_Templates {
 	}
 
 	/**
-	 * A template's theme, falling back to the first one.
-	 *
-	 * @param array<string, mixed> $template Template.
-	 * @since x.x.x
-	 * @return array<string, string>
-	 */
-	private static function get_template_theme( $template ) {
-		$themes = self::get_themes();
-		$key    = Helper::get_string_value( $template['theme'] ?? '' );
-		return $themes[ $key ] ?? $themes['ocean'];
-	}
-
-	/**
 	 * Presets for the preview's style panel: name, background and accent.
 	 *
 	 * @since x.x.x
@@ -628,7 +556,7 @@ class Form_Templates {
 	public static function resolve_theme( $template, $style = [] ) {
 		$themes = self::get_themes();
 		$preset = Helper::get_string_value( $style['preset'] ?? '' );
-		$theme  = isset( $themes[ $preset ] ) ? $themes[ $preset ] : self::get_template_theme( $template );
+		$theme  = $themes[ $preset ] ?? self::get_template_theme( $template );
 
 		if ( ! empty( $style['background'] ) ) {
 			$background          = Helper::get_string_value( $style['background'] );
@@ -646,60 +574,6 @@ class Form_Templates {
 		$theme['radius'] = 16;
 
 		return $theme;
-	}
-
-	/**
-	 * Whether a hex color is dark enough to need light text on it.
-	 *
-	 * @param string $hex Hex color.
-	 * @since x.x.x
-	 * @return bool
-	 */
-	private static function is_dark( $hex ) {
-		[ $r, $g, $b ] = self::hex_to_rgb( $hex );
-		$channel       = static function ( $value ) {
-			$value /= 255;
-			return $value <= 0.03928 ? $value / 12.92 : ( ( $value + 0.055 ) / 1.055 ) ** 2.4;
-		};
-		$luminance     = 0.2126 * $channel( $r ) + 0.7152 * $channel( $g ) + 0.0722 * $channel( $b );
-
-		// Below this, white text has the better contrast.
-		return $luminance < 0.179;
-	}
-
-	/**
-	 * Mix two hex colors.
-	 *
-	 * @param string $hex    Base color.
-	 * @param string $with   Color mixed in.
-	 * @param float  $amount Share of $with, 0 to 1.
-	 * @since x.x.x
-	 * @return string
-	 */
-	private static function mix_with( $hex, $with, $amount ) {
-		$base = self::hex_to_rgb( $hex );
-		$mix  = self::hex_to_rgb( $with );
-		$out  = '#';
-		foreach ( [ 0, 1, 2 ] as $i ) {
-			$out .= str_pad( dechex( (int) round( $base[ $i ] + ( $mix[ $i ] - $base[ $i ] ) * $amount ) ), 2, '0', STR_PAD_LEFT );
-		}
-		return strtoupper( $out );
-	}
-
-	/**
-	 * Hex color to RGB.
-	 *
-	 * @param string $hex #RGB or #RRGGBB.
-	 * @since x.x.x
-	 * @return array{0:int,1:int,2:int}
-	 */
-	private static function hex_to_rgb( $hex ) {
-		$hex = ltrim( $hex, '#' );
-		if ( 3 === strlen( $hex ) ) {
-			$hex = $hex[0] . $hex[0] . $hex[1] . $hex[1] . $hex[2] . $hex[2];
-		}
-		$hex = str_pad( substr( $hex, 0, 6 ), 6, '0' );
-		return [ (int) hexdec( substr( $hex, 0, 2 ) ), (int) hexdec( substr( $hex, 2, 2 ) ), (int) hexdec( substr( $hex, 4, 2 ) ) ];
 	}
 
 	/**
@@ -795,23 +669,6 @@ class Form_Templates {
 			}
 		}
 		return $features;
-	}
-
-	/**
-	 * Whether the form always collects the visitor's email in the `email` field,
-	 * so replies and confirmation emails have somewhere to go.
-	 *
-	 * @param array<int, array<string, mixed>> $fields Fields from resolve_fields().
-	 * @since x.x.x
-	 * @return bool
-	 */
-	private static function has_required_email( $fields ) {
-		foreach ( $fields as $field ) {
-			if ( 'email' === ( $field['fieldType'] ?? '' ) && 'email' === ( $field['slug'] ?? '' ) && ! empty( $field['required'] ) ) {
-				return true;
-			}
-		}
-		return false;
 	}
 
 	/**
@@ -970,26 +827,6 @@ class Form_Templates {
 	}
 
 	/**
-	 * Body of the confirmation email sent to the person who filled in the form.
-	 *
-	 * It never repeats the answers ({all_data}): the address it goes to is
-	 * typed into the form, so echoing free text would let anyone send their
-	 * own text from this site to any address.
-	 *
-	 * @param array<string, mixed> $autoresponder Template `autoresponder`.
-	 * @since x.x.x
-	 * @return string
-	 */
-	private static function autoresponder_body( $autoresponder ) {
-		$greeting = Helper::get_string_value( $autoresponder['greeting'] ?? __( 'Hi {form:full-name},', 'sureforms' ) );
-		$body     = '<p>' . esc_html( $greeting ) . '</p>';
-		foreach ( Helper::get_array_value( $autoresponder['lines'] ?? [] ) as $line ) {
-			$body .= '<p>' . esc_html( Helper::get_string_value( $line ) ) . '</p>';
-		}
-		return $body . '<p>' . esc_html__( 'Thanks,', 'sureforms' ) . '<br>{site_title}</p>';
-	}
-
-	/**
 	 * The metas that carry a template's look: form styling, and the banner on
 	 * the form's own page. Used when creating a form and when a template is
 	 * applied to an open form in the editor.
@@ -1036,22 +873,6 @@ class Form_Templates {
 			'_srfm_forms_styling'          => $styling,
 			'_srfm_instant_form_settings'  => $instant_form,
 			'_srfm_single_page_form_title' => 1,
-		];
-	}
-
-	/**
-	 * The Instant Form settings a template sets. Only these keys change when
-	 * a template is applied to a form, so its other page settings stay.
-	 *
-	 * @param array<string, mixed> $theme Theme from resolve_theme().
-	 * @since x.x.x
-	 * @return array<string, mixed>
-	 */
-	private static function instant_form_style( $theme ) {
-		return [
-			'single_page_form_title' => true,
-			'cover_type'             => 'color',
-			'cover_color'            => $theme['banner'],
 		];
 	}
 
@@ -1265,23 +1086,6 @@ class Form_Templates {
 	}
 
 	/**
-	 * The entries of `$values` that differ from `$defaults`, so applying a
-	 * template in the editor keeps the form's other style choices.
-	 *
-	 * @param array<string, mixed> $values   Values.
-	 * @param array<string, mixed> $defaults Defaults.
-	 * @since x.x.x
-	 * @return array<string, mixed>
-	 */
-	private static function changed_keys( $values, $defaults ) {
-		return array_filter(
-			$values,
-			static fn( $value, $key ) => ! array_key_exists( $key, $defaults ) || $defaults[ $key ] !== $value,
-			ARRAY_FILTER_USE_BOTH
-		);
-	}
-
-	/**
 	 * POST /form-templates/request
 	 *
 	 * Records a template someone asked for, or counts a search without a
@@ -1420,21 +1224,6 @@ class Form_Templates {
 	}
 
 	/**
-	 * ID of the in-memory preview form. Each request uses its own ID in a range
-	 * real posts don't reach, so previews rendering at the same time never share
-	 * cache entries.
-	 *
-	 * @since x.x.x
-	 * @return int
-	 */
-	private static function get_preview_post_id() {
-		if ( null === self::$preview_post_id ) {
-			self::$preview_post_id = self::PREVIEW_POST_ID - wp_rand( 0, 999999 );
-		}
-		return self::$preview_post_id;
-	}
-
-	/**
 	 * Remove the in-memory preview form from the object cache at the end of the
 	 * request, so a persistent cache (Redis, Memcached) never keeps it.
 	 *
@@ -1513,6 +1302,217 @@ class Form_Templates {
 
 		self::render_preview_document( $markup, $width, $is_thumbnail );
 		exit;
+	}
+
+	/**
+	 * An example answer for a field, taken from its placeholder or first option.
+	 *
+	 * @param array<string, mixed> $field Field schema.
+	 * @since x.x.x
+	 * @return string
+	 */
+	private static function sample_answer( $field ) {
+		// Fields whose placeholder or first option would make a poor example.
+		$by_slug = [
+			'full-name'       => 'Jane Smith',
+			'first-name'      => 'Jane',
+			'last-name'       => 'Smith',
+			'company'         => __( 'Bright Bakery', 'sureforms' ),
+			'organization'    => __( 'Bright Bakery', 'sureforms' ),
+			'subject'         => __( 'Question about my order', 'sureforms' ),
+			'order-number'    => '#10234',
+			'reference'       => '#10234',
+			'product'         => __( 'Oak dining table', 'sureforms' ),
+			'position'        => __( 'Marketing Manager', 'sureforms' ),
+			'summary'         => __( 'The checkout button does nothing', 'sureforms' ),
+			'page'            => __( 'Pricing', 'sureforms' ),
+			'recommend-score' => '9',
+		];
+		$slug    = Helper::get_string_value( $field['slug'] ?? '' );
+		if ( isset( $by_slug[ $slug ] ) ) {
+			return $by_slug[ $slug ];
+		}
+		$type    = Helper::get_string_value( $field['fieldType'] ?? '' );
+		$options = Helper::get_array_value( $field['fieldOptions'] ?? [] );
+		if ( ! empty( $options[0] ) && is_array( $options[0] ) ) {
+			return Helper::get_string_value( $options[0]['optionTitle'] ?? $options[0]['label'] ?? '' );
+		}
+
+		$samples     = [
+			'email'       => 'jane@example.com',
+			'phone'       => '+1 555 010 2030',
+			'url'         => 'https://example.com',
+			'number'      => '2',
+			'date-picker' => '10/14/2026',
+			'rating'      => '5',
+			'nps'         => '9',
+			'textarea'    => __( 'A short message from the visitor.', 'sureforms' ),
+			'checkbox'    => __( 'Yes', 'sureforms' ),
+		];
+		$placeholder = Helper::get_string_value( $field['placeholder'] ?? '' );
+		// Example placeholders ("e.g. 14 October") read as real answers without the prefix.
+		$example = preg_replace( '/^' . preg_quote( __( 'e.g.', 'sureforms' ), '/' ) . '\s*/u', '', $placeholder );
+
+		if ( isset( $samples[ $type ] ) && 'textarea' !== $type ) {
+			return $samples[ $type ];
+		}
+		if ( 'input' === $type && '' !== $placeholder && $example !== $placeholder ) {
+			return Helper::get_string_value( $example );
+		}
+
+		return $samples[ $type ] ?? ( '' !== $placeholder ? $placeholder : __( 'Their answer', 'sureforms' ) );
+	}
+
+	/**
+	 * A template's theme, falling back to the first one.
+	 *
+	 * @param array<string, mixed> $template Template.
+	 * @since x.x.x
+	 * @return array<string, string>
+	 */
+	private static function get_template_theme( $template ) {
+		$themes = self::get_themes();
+		$key    = Helper::get_string_value( $template['theme'] ?? '' );
+		return $themes[ $key ] ?? $themes['ocean'];
+	}
+
+	/**
+	 * Whether a hex color is dark enough to need light text on it.
+	 *
+	 * @param string $hex Hex color.
+	 * @since x.x.x
+	 * @return bool
+	 */
+	private static function is_dark( $hex ) {
+		[ $r, $g, $b ] = self::hex_to_rgb( $hex );
+		$channel       = static function ( $value ) {
+			$value /= 255;
+			return $value <= 0.03928 ? $value / 12.92 : ( ( $value + 0.055 ) / 1.055 ) ** 2.4;
+		};
+		$luminance     = 0.2126 * $channel( $r ) + 0.7152 * $channel( $g ) + 0.0722 * $channel( $b );
+
+		// Below this, white text has the better contrast.
+		return $luminance < 0.179;
+	}
+
+	/**
+	 * Mix two hex colors.
+	 *
+	 * @param string $hex    Base color.
+	 * @param string $with   Color mixed in.
+	 * @param float  $amount Share of $with, 0 to 1.
+	 * @since x.x.x
+	 * @return string
+	 */
+	private static function mix_with( $hex, $with, $amount ) {
+		$base = self::hex_to_rgb( $hex );
+		$mix  = self::hex_to_rgb( $with );
+		$out  = '#';
+		foreach ( [ 0, 1, 2 ] as $i ) {
+			$out .= str_pad( dechex( (int) round( $base[ $i ] + ( $mix[ $i ] - $base[ $i ] ) * $amount ) ), 2, '0', STR_PAD_LEFT );
+		}
+		return strtoupper( $out );
+	}
+
+	/**
+	 * Hex color to RGB.
+	 *
+	 * @param string $hex #RGB or #RRGGBB.
+	 * @since x.x.x
+	 * @return array{0:int,1:int,2:int}
+	 */
+	private static function hex_to_rgb( $hex ) {
+		$hex = ltrim( $hex, '#' );
+		if ( 3 === strlen( $hex ) ) {
+			$hex = $hex[0] . $hex[0] . $hex[1] . $hex[1] . $hex[2] . $hex[2];
+		}
+		$hex = str_pad( substr( $hex, 0, 6 ), 6, '0' );
+		return [ (int) hexdec( substr( $hex, 0, 2 ) ), (int) hexdec( substr( $hex, 2, 2 ) ), (int) hexdec( substr( $hex, 4, 2 ) ) ];
+	}
+
+	/**
+	 * Whether the form always collects the visitor's email in the `email` field,
+	 * so replies and confirmation emails have somewhere to go.
+	 *
+	 * @param array<int, array<string, mixed>> $fields Fields from resolve_fields().
+	 * @since x.x.x
+	 * @return bool
+	 */
+	private static function has_required_email( $fields ) {
+		foreach ( $fields as $field ) {
+			if ( 'email' === ( $field['fieldType'] ?? '' ) && 'email' === ( $field['slug'] ?? '' ) && ! empty( $field['required'] ) ) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Body of the confirmation email sent to the person who filled in the form.
+	 *
+	 * It never repeats the answers ({all_data}): the address it goes to is
+	 * typed into the form, so echoing free text would let anyone send their
+	 * own text from this site to any address.
+	 *
+	 * @param array<string, mixed> $autoresponder Template `autoresponder`.
+	 * @since x.x.x
+	 * @return string
+	 */
+	private static function autoresponder_body( $autoresponder ) {
+		$greeting = Helper::get_string_value( $autoresponder['greeting'] ?? __( 'Hi {form:full-name},', 'sureforms' ) );
+		$body     = '<p>' . esc_html( $greeting ) . '</p>';
+		foreach ( Helper::get_array_value( $autoresponder['lines'] ?? [] ) as $line ) {
+			$body .= '<p>' . esc_html( Helper::get_string_value( $line ) ) . '</p>';
+		}
+		return $body . '<p>' . esc_html__( 'Thanks,', 'sureforms' ) . '<br>{site_title}</p>';
+	}
+
+	/**
+	 * The Instant Form settings a template sets. Only these keys change when
+	 * a template is applied to a form, so its other page settings stay.
+	 *
+	 * @param array<string, mixed> $theme Theme from resolve_theme().
+	 * @since x.x.x
+	 * @return array<string, mixed>
+	 */
+	private static function instant_form_style( $theme ) {
+		return [
+			'single_page_form_title' => true,
+			'cover_type'             => 'color',
+			'cover_color'            => $theme['banner'],
+		];
+	}
+
+	/**
+	 * The entries of `$values` that differ from `$defaults`, so applying a
+	 * template in the editor keeps the form's other style choices.
+	 *
+	 * @param array<string, mixed> $values   Values.
+	 * @param array<string, mixed> $defaults Defaults.
+	 * @since x.x.x
+	 * @return array<string, mixed>
+	 */
+	private static function changed_keys( $values, $defaults ) {
+		return array_filter(
+			$values,
+			static fn( $value, $key ) => ! array_key_exists( $key, $defaults ) || $defaults[ $key ] !== $value,
+			ARRAY_FILTER_USE_BOTH
+		);
+	}
+
+	/**
+	 * ID of the in-memory preview form. Each request uses its own ID in a range
+	 * real posts don't reach, so previews rendering at the same time never share
+	 * cache entries.
+	 *
+	 * @since x.x.x
+	 * @return int
+	 */
+	private static function get_preview_post_id() {
+		if ( null === self::$preview_post_id ) {
+			self::$preview_post_id = self::PREVIEW_POST_ID - wp_rand( 0, 999999 );
+		}
+		return self::$preview_post_id;
 	}
 
 	/**
