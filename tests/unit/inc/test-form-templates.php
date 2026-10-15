@@ -2414,6 +2414,9 @@ class Test_Form_Templates extends TestCase {
 		$this->assertFalse( Form_Templates::is_preview_asset( 'third-party-test', 'https://example.com/pixel.js', 'script' ) );
 		$this->assertFalse( Form_Templates::is_preview_asset( 'chat-widget', 'https://example.com/chat.css', 'style' ) );
 		$this->assertFalse( Form_Templates::is_preview_asset( 'admin-bar', '/wp-includes/css/admin-bar.min.css', 'style' ) );
+		// Core scripts stay: SureForms Pro's field scripts call wp.a11y.speak().
+		$this->assertTrue( Form_Templates::is_preview_asset( 'wp-a11y', '/wp-includes/js/dist/a11y.min.js', 'script' ) );
+		$this->assertTrue( Form_Templates::is_preview_asset( 'wp-a11y', includes_url( 'js/dist/a11y.min.js' ), 'script' ) );
 		// The theme's scripts don't run either.
 		$this->assertFalse( Form_Templates::is_preview_asset( get_stylesheet() . '-navigation', trailingslashit( get_stylesheet_directory_uri() ) . 'nav.js', 'script' ) );
 		$this->assertFalse( Form_Templates::is_preview_asset( 'global-styles', '', 'script' ) );
@@ -2438,6 +2441,23 @@ class Test_Form_Templates extends TestCase {
 		$this->assertContains( 'wp-i18n', wp_scripts()->to_do );
 		$this->assertContains( 'wp-hooks', wp_scripts()->to_do );
 		$this->assertNotContains( 'third-party-test', wp_scripts()->to_do );
+	}
+
+	/**
+	 * SureForms Pro enqueues wp-a11y on its own (not as a dependency) and its
+	 * rating, upload, NPS, page-break and date-picker scripts call
+	 * wp.a11y.speak(), so the preview must keep it.
+	 */
+	public function test_filter_preview_assets_keeps_wp_a11y() {
+		$this->isolate_preview_globals();
+		wp_enqueue_script( 'srfm-test-form', SRFM_URL . 'assets/js/test.js', [], '1', true );
+		wp_enqueue_script( 'wp-a11y' );
+		wp_enqueue_script( 'third-party-test', 'https://example.com/third-party-test.js', [], '1', true );
+
+		Form_Templates::filter_preview_assets();
+
+		$this->assertContains( 'wp-a11y', wp_scripts()->queue );
+		$this->assertNotContains( 'third-party-test', wp_scripts()->queue );
 	}
 
 	public function test_remove_third_party_hooks_removes_third_party_head_and_footer_callbacks() {

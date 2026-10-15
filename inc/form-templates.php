@@ -1880,7 +1880,10 @@ class Form_Templates {
 			}
 		}
 		if ( 'style' !== $type ) {
-			return in_array( $handle, self::PREVIEW_CAPTCHA_SCRIPTS, true );
+			// WordPress core scripts (wp-a11y, wp-i18n, ...): SureForms Pro enqueues
+			// some on their own rather than as dependencies, and its field scripts
+			// call them (wp.a11y.speak()).
+			return self::is_core_asset( $src ) || in_array( $handle, self::PREVIEW_CAPTCHA_SCRIPTS, true );
 		}
 		if ( in_array( $handle, self::PREVIEW_CORE_STYLES, true ) ) {
 			return true;
@@ -2890,5 +2893,21 @@ class Form_Templates {
 	 */
 	private static function default_templates() {
 		return Catalog::templates();
+	}
+
+	/**
+	 * Whether an asset is served from WordPress core (wp-includes). Core
+	 * registers its scripts with site-relative paths, so both forms are checked.
+	 *
+	 * @param string $src Source URL.
+	 * @since x.x.x
+	 * @return bool
+	 */
+	private static function is_core_asset( $src ) {
+		if ( '' === $src ) {
+			return false;
+		}
+		$path = Helper::get_string_value( wp_parse_url( includes_url(), PHP_URL_PATH ) );
+		return 0 === strpos( $src, includes_url() ) || ( '' !== $path && 0 === strpos( $src, $path ) );
 	}
 }
