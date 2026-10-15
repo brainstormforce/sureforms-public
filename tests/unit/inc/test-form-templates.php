@@ -720,7 +720,8 @@ class Test_Form_Templates extends TestCase {
 		$this->assertSame( 'C:\\path', $blocks[0]['attrs']['placeholder'] ?? null );
 
 		$message = get_post_meta( $post_id, '_srfm_form_confirmation', true )[0]['message'];
-		$this->assertStringContainsString( 'We said &quot;hi&quot; to {form:company}.', $message, 'Message text is escaped, not cut at the quote.' );
+		// Kses may return the quotes as &quot; or as plain ", depending on the WordPress version. Decode so the test checks they survived, not how they are encoded.
+		$this->assertStringContainsString( 'We said "hi" to {form:company}.', html_entity_decode( $message, ENT_QUOTES ), 'Message text keeps its quotes, not cut at the quote.' );
 	}
 
 	public function test_saved_thank_you_message_keeps_its_icon() {
