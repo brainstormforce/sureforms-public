@@ -1272,12 +1272,29 @@ class Form_Templates {
 	}
 
 	/**
-	 * Template categories, in display order.
+	 * Template categories that have at least one template, in display order.
 	 *
 	 * @since x.x.x
 	 * @return array<int, array<string, string>>
 	 */
 	public static function get_categories() {
+		$used = array_flip( array_map( [ Helper::class, 'get_string_value' ], array_column( self::get_templates(), 'category' ) ) );
+
+		return array_values(
+			array_filter(
+				self::all_categories(),
+				static fn( $category ) => isset( $used[ $category['id'] ] )
+			)
+		);
+	}
+
+	/**
+	 * Every template category, in display order.
+	 *
+	 * @since x.x.x
+	 * @return array<int, array<string, string>>
+	 */
+	private static function all_categories() {
 		return [
 			[
 				'id'    => 'contact',
@@ -1298,6 +1315,26 @@ class Form_Templates {
 			[
 				'id'    => 'support',
 				'label' => __( 'Support', 'sureforms' ),
+			],
+			[
+				'id'    => 'calculators',
+				'label' => __( 'Calculators', 'sureforms' ),
+			],
+			[
+				'id'    => 'quizzes',
+				'label' => __( 'Quizzes & Polls', 'sureforms' ),
+			],
+			[
+				'id'    => 'payments',
+				'label' => __( 'Payments', 'sureforms' ),
+			],
+			[
+				'id'    => 'agreements',
+				'label' => __( 'Agreements', 'sureforms' ),
+			],
+			[
+				'id'    => 'accounts',
+				'label' => __( 'Accounts & Submissions', 'sureforms' ),
 			],
 		];
 	}

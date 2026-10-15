@@ -29,7 +29,7 @@ class Catalog {
 	 *
 	 * @since x.x.x
 	 */
-	public const FILES = [ 'contact', 'booking', 'feedback', 'signup', 'support' ];
+	public const FILES = [ 'contact', 'booking', 'feedback', 'signup', 'support', 'calculators', 'quizzes', 'payments', 'agreements', 'accounts' ];
 
 	/**
 	 * Display order of the templates in the library. Templates not listed here
