@@ -30,6 +30,7 @@ import {
 import { cn } from '@Utils/Helpers';
 import {
 	createFormFromTemplate,
+	recordEmptySearch,
 	requestTemplate,
 	trackTemplateAction,
 } from '@Utils/form-templates';
@@ -324,6 +325,9 @@ const PreviewTabs = ( { tabs, selected, onSelect } ) => {
  * @param {number}   props.top                 Space to leave above, e.g. for the admin bar.
  * @param {boolean}  props.offerSpamProtection Offer to turn on the site-wide honeypot
  *                                             while creating. Off by default.
+ * @param {boolean}  props.spamProtectionOff   The site-wide honeypot is off, so the
+ *                                             visitor email is held back unless it
+ *                                             is turned on while creating.
  * @param {boolean}  props.editMessages        Let the thank-you message and emails be
  *                                             edited before creating. Otherwise they
  *                                             are only shown.
@@ -336,6 +340,7 @@ export const TemplatePreview = ( {
 	presets,
 	top = 0,
 	offerSpamProtection = false,
+	spamProtectionOff = offerSpamProtection,
 	editMessages = false,
 } ) => {
 	const isNarrow = useMediaQuery( NARROW_QUERY );
@@ -461,6 +466,9 @@ export const TemplatePreview = ( {
 	const showMissingNotice =
 		template.is_locked && ! showImage && template.preview_missing > 0;
 	const showSpamOption = offerSpamProtection && ! template.is_locked;
+	// The server only sets up the visitor email while spam protection is on.
+	const holdsVisitorEmail =
+		spamProtectionOff && ! ( showSpamOption && protectFromSpam );
 	const panelId = 'srfm-template-customize-panel';
 
 	const showMessages = hasMessages( template );
@@ -800,6 +808,7 @@ export const TemplatePreview = ( {
 								values={ messageValues }
 								setValue={ setMessage }
 								editable={ canEditMessages }
+								held={ holdsVisitorEmail }
 							/>
 						</div>
 					) }
@@ -947,7 +956,7 @@ const NO_RESULTS_DELAY = 1500;
  *
  * Requests reach the SureForms team through usage sharing, so they are only
  * sent when the site has it on. Searches with no results are counted the
- * same way, once per search, to show which templates people look for.
+ * same way, once per search, without their text.
  *
  * @param {Object} props          Props.
  * @param {string} props.query    Search text.
@@ -963,7 +972,7 @@ const TemplateRequestCard = ( { query, requests } ) => {
 			return;
 		}
 		const timer = setTimeout( () => {
-			requestTemplate( query, 'search' ).catch( () => {} );
+			recordEmptySearch().catch( () => {} );
 		}, NO_RESULTS_DELAY );
 		return () => clearTimeout( timer );
 	}, [ query, enabled ] );
@@ -971,7 +980,7 @@ const TemplateRequestCard = ( { query, requests } ) => {
 	const send = async () => {
 		setStatus( 'sending' );
 		try {
-			await requestTemplate( query, 'request' );
+			await requestTemplate( query );
 			setStatus( 'sent' );
 		} catch ( error ) {
 			setStatus( 'error' );

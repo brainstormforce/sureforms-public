@@ -51,7 +51,6 @@ return [
 				__( 'Thanks for subscribing. We will send our latest news and updates to this address.', 'sureforms' ),
 				__( 'If you did not sign up, you can ignore this email or reply to let us know.', 'sureforms' ),
 			],
-			'summary'  => false,
 		],
 	],
 	[
