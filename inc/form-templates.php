@@ -95,12 +95,29 @@ class Form_Templates {
 	];
 
 	/**
-	 * Lowest `SRFM_PRO_TEMPLATE_API` that builds the PRO_FEATURE_KEYS. A paid
-	 * template declaring any of them is locked (reason `update`) below it.
+	 * Lowest `SRFM_PRO_TEMPLATE_API` that builds each of the PRO_FEATURE_KEYS.
+	 * Version 1 builds the Starter and Pro keys, version 2 adds the Business
+	 * ones. A paid template declaring a key is locked (reason `update`) while
+	 * the active SureForms Pro reports a lower version.
 	 *
 	 * @since x.x.x
 	 */
-	public const REQUIRED_PRO_TEMPLATE_API = 1;
+	public const PRO_FEATURE_API = [
+		'conditions'       => 1,
+		'confirmations'    => 1,
+		'email_conditions' => 1,
+		'attach_uploads'   => 1,
+		'restrictions'     => 1,
+		'save_resume'      => 1,
+		'survey'           => 1,
+		'conversational'   => 1,
+		'quiz'             => 2,
+		'partial_entries'  => 2,
+		'cpt'              => 2,
+		'registration'     => 2,
+		'entry_limit'      => 2,
+		'pdf'              => 2,
+	];
 
 	/**
 	 * The "Included" feature each Pro template key adds.
@@ -448,8 +465,22 @@ class Form_Templates {
 			return true;
 		}
 
-		$pro_keys = array_intersect_key( $template, self::PRO_FEATURE_KEYS );
-		return ! empty( $pro_keys ) && self::get_pro_template_api() < self::REQUIRED_PRO_TEMPLATE_API;
+		return self::get_pro_template_api() < self::get_required_pro_template_api( $template );
+	}
+
+	/**
+	 * Lowest `SRFM_PRO_TEMPLATE_API` that builds every Pro key a template declares.
+	 *
+	 * @param array<string, mixed> $template Template.
+	 * @since x.x.x
+	 * @return int 0 when the template declares no Pro keys.
+	 */
+	public static function get_required_pro_template_api( $template ) {
+		$required = 0;
+		foreach ( array_keys( array_intersect_key( $template, self::PRO_FEATURE_API ) ) as $key ) {
+			$required = max( $required, self::PRO_FEATURE_API[ $key ] );
+		}
+		return $required;
 	}
 
 	/**
