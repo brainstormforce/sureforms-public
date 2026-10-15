@@ -256,6 +256,18 @@ export const showsPreviewImage = ( template ) =>
 	Boolean( template?.is_locked && template?.preview_image );
 
 /**
+ * Picture shown on a template's library card: its own `thumbnail`, else the
+ * picture of its Premium version. Cards always use a picture, never the live
+ * preview page.
+ *
+ * @since x.x.x
+ * @param {Object} template Template.
+ * @return {string} Image URL, '' when the template has none.
+ */
+export const getCardImage = ( template ) =>
+	template?.thumbnail || template?.preview_image || '';
+
+/**
  * Setup steps a template still needs on this site, e.g. connecting Stripe.
  * Only for templates that can be used: a locked one can't be created yet.
  *

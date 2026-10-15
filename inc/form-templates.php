@@ -417,6 +417,8 @@ class Form_Templates {
 				'unlock_url'      => self::get_unlock_url( Helper::get_string_value( $template['id'] ), $lock_reason ),
 				// Picture of the Premium version, shown instead of the live preview while locked.
 				'preview_image'   => self::get_preview_image_url( $template ),
+				// Picture on the library card, so the grid never loads live previews.
+				'thumbnail'       => self::get_thumbnail_url( $template ),
 				// How many of the Premium version's fields the live preview can't show here.
 				'preview_missing' => '' === $lock_reason ? 0 : self::count_missing_preview_fields( $template, $resolved ),
 				'setup'           => self::get_setup( $template ),
@@ -568,6 +570,26 @@ class Form_Templates {
 			return '';
 		}
 		return SRFM_URL . 'images/templates/' . ltrim( $image, '/' );
+	}
+
+	/**
+	 * URL of the picture on a template's library card: its `preview_image`, or
+	 * the plugin's `images/templates/<id>.webp` when there is one.
+	 *
+	 * @param array<string, mixed> $template Template.
+	 * @since x.x.x
+	 * @return string Unescaped URL, '' when the template has no picture.
+	 */
+	public static function get_thumbnail_url( $template ) {
+		$image = self::get_preview_image_url( $template );
+		if ( '' !== $image ) {
+			return $image;
+		}
+		$id = sanitize_key( Helper::get_string_value( $template['id'] ?? '' ) );
+		if ( '' === $id || ! file_exists( SRFM_DIR . 'images/templates/' . $id . '.webp' ) ) {
+			return '';
+		}
+		return SRFM_URL . 'images/templates/' . $id . '.webp';
 	}
 
 	/**
@@ -2453,10 +2475,8 @@ class Form_Templates {
 		// before the head and footer print them.
 		$markup = Helper::get_string_value( Generate_Form_Markup::get_form_markup( self::get_preview_post_id(), false ) );
 		$width  = Helper::get_integer_value( Create_New_Form::get_default_meta_keys()['_srfm_form_container_width'] ?? 650 );
-		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Display flag only.
-		$is_thumbnail = ! empty( $_GET['srfm_thumb'] );
 
-		self::render_preview_document( $markup, $width, $is_thumbnail );
+		self::render_preview_document( $markup, $width );
 		exit;
 	}
 
@@ -2537,13 +2557,12 @@ class Form_Templates {
 	 * Submitting is switched off: this is a picture of the form, and the
 	 * in-memory form it renders cannot take entries.
 	 *
-	 * @param string $markup       Rendered form markup.
-	 * @param int    $width        Form container width in px.
-	 * @param bool   $is_thumbnail Whether the page is shown as a scaled-down card thumbnail.
+	 * @param string $markup Rendered form markup.
+	 * @param int    $width  Form container width in px.
 	 * @since x.x.x
 	 * @return void
 	 */
-	private static function render_preview_document( $markup, $width, $is_thumbnail = false ) {
+	private static function render_preview_document( $markup, $width ) {
 		?>
 <!DOCTYPE html>
 <html <?php language_attributes(); ?>>
@@ -2558,10 +2577,6 @@ class Form_Templates {
 		.srfm-template-preview .srfm-edit-form-btn-wrap { display: none !important; }
 		.srfm-template-preview__payment-note { margin: 0; font-size: 14px; line-height: 20px; color: var(--srfm-color-input-description, #6b7280); }
 		.srfm-template-preview__wrap { box-sizing: border-box; max-width: <?php echo esc_attr( (string) $width ); ?>px; margin: 0 auto; padding: 40px 24px; }
-		<?php if ( $is_thumbnail ) { ?>
-		html, body.srfm-template-preview { overflow: hidden !important; }
-		.srfm-template-preview__wrap { padding: 20px 16px; }
-		<?php } ?>
 	</style>
 </head>
 <body <?php body_class( 'srfm-template-preview' ); ?>>
