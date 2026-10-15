@@ -442,6 +442,85 @@ class Test_Analytics extends TestCase {
 		\SRFM\Inc\Email_Delivery\Status::reset();
 	}
 
+	// ─── form templates ───────────────────────────────────────────
+
+	/**
+	 * The pending copy of an event, or null when it was not tracked.
+	 *
+	 * @param string $name Event name.
+	 * @return array<string,mixed>|null
+	 */
+	private function pending_event( $name ) {
+		foreach ( get_option( 'srfm_options', [] )['usage_events_pending'] ?? [] as $event ) {
+			if ( $name === ( $event['event_name'] ?? '' ) ) {
+				return $event;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Template usage is counted and queued only while the site shares usage data.
+	 */
+	public function test_track_form_template_usage_needs_usage_sharing() {
+		Helper::update_srfm_option( 'form_template_usage', [] );
+
+		add_filter( 'sureforms_tracking_enabled', '__return_false' );
+		Analytics::track_form_template_usage( 'contact-us', 'create' );
+		remove_filter( 'sureforms_tracking_enabled', '__return_false' );
+
+		$this->assertEmpty( Helper::get_srfm_option( 'form_template_usage', [] ) );
+		$this->assertNull( $this->pending_event( 'form_template_usage' ) );
+
+		add_filter( 'sureforms_tracking_enabled', '__return_true' );
+		Analytics::track_form_template_usage( 'contact-us', 'create' );
+		Analytics::track_form_template_usage( 'contact-us', 'swap' );
+		Analytics::track_form_template_usage( 'Bad Id!', 'create' );
+		remove_filter( 'sureforms_tracking_enabled', '__return_true' );
+
+		$event = $this->pending_event( 'form_template_usage' );
+		$this->assertNotNull( $event );
+		$this->assertSame( '2', $event['properties']['created'] );
+		$this->assertSame( '1', $event['properties']['swaps'] );
+		$this->assertSame( '2', $event['properties']['template_contact-us'] );
+		$this->assertSame( '1', $event['properties']['template_badid'], 'Ids are cleaned before they become keys.' );
+
+		Helper::update_srfm_option( 'form_template_usage', [] );
+	}
+
+	/**
+	 * Requests carry their (cleaned) text; searches with no results are only
+	 * counted; nothing is kept without usage sharing.
+	 */
+	public function test_track_form_template_demand_counts_searches_without_text() {
+		Helper::update_srfm_option( 'form_template_demand', [] );
+
+		add_filter( 'sureforms_tracking_enabled', '__return_false' );
+		Analytics::track_form_template_demand( 'gym membership', 'request' );
+		Analytics::track_form_template_demand( '', 'search' );
+		remove_filter( 'sureforms_tracking_enabled', '__return_false' );
+
+		$this->assertEmpty( Helper::get_srfm_option( 'form_template_demand', [] ) );
+		$this->assertNull( $this->pending_event( 'form_template_demand' ) );
+
+		add_filter( 'sureforms_tracking_enabled', '__return_true' );
+		Analytics::track_form_template_demand( 'gym membership', 'request' );
+		Analytics::track_form_template_demand( 'pet adoption', 'search' );
+		Analytics::track_form_template_demand( '', 'search' );
+		Analytics::track_form_template_demand( '', 'request' );
+		remove_filter( 'sureforms_tracking_enabled', '__return_true' );
+
+		$event = $this->pending_event( 'form_template_demand' );
+		$this->assertNotNull( $event );
+		$this->assertSame( '1', $event['properties']['requests'] );
+		$this->assertSame( '1', $event['properties']['request_gym_membership'] );
+		$this->assertSame( '2', $event['properties']['searches'] );
+		$this->assertStringNotContainsString( 'pet', wp_json_encode( $event ) );
+		$this->assertStringNotContainsString( 'pet', wp_json_encode( Helper::get_srfm_option( 'form_template_demand', [] ) ) );
+
+		Helper::update_srfm_option( 'form_template_demand', [] );
+	}
+
 	// ─── embed_styling_gutenberg_count ────────────────────────────
 
 	/**
